@@ -52,6 +52,7 @@
 #include "mailwebpage.h"
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
+#include "messagelisteditormanager.h"
 
 namespace LeechCraft
 {
@@ -105,8 +106,12 @@ namespace Snails
 		MailSortFilterModel_->setSortRole (MailModel::MailRole::Sort);
 		MailSortFilterModel_->sort (static_cast<int> (MailModel::Column::Date),
 				Qt::DescendingOrder);
-		Ui_.MailTree_->setItemDelegate (new MailTreeDelegate (this));
+
+		const auto delegate = new MailTreeDelegate (this);
+		Ui_.MailTree_->setItemDelegate (delegate);
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
+
+		MsgListEditorMgr_ = new MessageListEditorManager { Ui_.MailTree_, delegate, this };
 
 		connect (Ui_.AccountsTree_->selectionModel (),
 				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
@@ -528,6 +533,10 @@ namespace Snails
 				SLOT (handleMessageBodyFetched (Message_ptr)));
 
 		MailModel_.reset (CurrAcc_->GetMailModelsManager ()->CreateModel ());
+		connect (MailModel_.get (),
+				SIGNAL (messageListUpdated ()),
+				MsgListEditorMgr_,
+				SLOT (handleMessageListUpdated ()));
 		MailSortFilterModel_->setSourceModel (MailModel_.get ());
 		MailSortFilterModel_->setDynamicSortFilter (true);
 
