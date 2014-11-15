@@ -85,7 +85,6 @@ namespace Snails
 		}
 
 		const auto container = new QToolBar { parent };
-		container->setFocusPolicy (Qt::StrongFocus);
 		for (const auto actInfo : actionInfos)
 		{
 			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
