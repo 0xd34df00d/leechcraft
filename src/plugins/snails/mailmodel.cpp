@@ -202,6 +202,14 @@ namespace Snails
 		return {};
 	}
 
+	Qt::ItemFlags MailModel::flags (const QModelIndex& index) const
+	{
+		auto flags = QAbstractItemModel::flags (index);
+		if (index.column () == static_cast<int> (Column::Subject))
+			flags |= Qt::ItemIsEditable;
+		return flags;
+	}
+
 	QModelIndex MailModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		const auto structItem = parent.isValid () ?

@@ -79,6 +79,7 @@ namespace Snails
 		QVariant headerData (int, Qt::Orientation, int) const;
 		int columnCount (const QModelIndex& = {}) const;
 		QVariant data (const QModelIndex&, int) const;
+		Qt::ItemFlags flags (const QModelIndex&) const;
 		QModelIndex index (int, int, const QModelIndex& = {}) const;
 		QModelIndex parent (const QModelIndex&) const;
 		int rowCount (const QModelIndex& = {}) const;
