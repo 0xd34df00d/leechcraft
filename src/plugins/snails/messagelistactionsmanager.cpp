@@ -85,7 +85,8 @@ namespace Snails
 
 				return {
 						{
-							("Open"),
+							MessageListActionsManager::tr ("Open"),
+							MessageListActionsManager::tr ("Open the bug page on Bugzilla"),
 							QIcon::fromTheme ("document-open"),
 							[url, bugId] (const Message_ptr&)
 							{

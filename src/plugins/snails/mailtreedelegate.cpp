@@ -88,6 +88,7 @@ namespace Snails
 		for (const auto actInfo : actionInfos)
 		{
 			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
+			action->setToolTip (actInfo.Description_);
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{

@@ -46,6 +46,7 @@ namespace Snails
 	struct MessageListActionInfo
 	{
 		QString Name_;
+		QString Description_;
 		QIcon Icon_;
 
 		std::function<void (Message_ptr)> Handler_;
