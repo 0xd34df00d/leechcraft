@@ -59,6 +59,24 @@ namespace Util
 		{
 			constexpr static bool Result_ = true;
 		};
+
+		template<typename RetType, typename ResultHandler>
+		struct HandlerInvoker
+		{
+			void operator() (const ResultHandler& rh, QFutureWatcher<RetType> *watcher) const
+			{
+				rh (watcher->result ());
+			}
+		};
+
+		template<typename ResultHandler>
+		struct HandlerInvoker<void, ResultHandler>
+		{
+			void operator() (const ResultHandler& rh, QFutureWatcher<void>*) const
+			{
+				rh ();
+			}
+		};
 	}
 
 	template<typename Executor, typename ResultHandler, typename... Args>
@@ -66,11 +84,13 @@ namespace Util
 	{
 		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
 				"The passed functor should return a QFuture.");
-		const auto watcher = new QFutureWatcher<typename detail::UnwrapFutureType<decltype (f (args...))>::type> { parent };
+
+		using RetType_t = typename detail::UnwrapFutureType<decltype (f (args...))>::type;
+		const auto watcher = new QFutureWatcher<RetType_t> { parent };
 
 		new SlotClosure<DeleteLaterPolicy>
 		{
-			[watcher, rh] { rh (watcher->result ()); },
+			[watcher, rh] { detail::HandlerInvoker<RetType_t, ResultHandler> {} (rh, watcher); },
 			watcher,
 			SIGNAL (finished ()),
 			watcher
