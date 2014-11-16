@@ -49,6 +49,51 @@ namespace Snails
 
 	namespace
 	{
+		class GithubProvider : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			{
+				const auto& headers = msg->GetVmimeHeader ();
+				if (!headers)
+					return {};
+
+				const auto header = headers->findField ("X-GitHub-Sender");
+				if (!header)
+					return {};
+
+				const auto& referencesField = headers->References ();
+				if (!referencesField)
+					return {};
+
+				const auto& refSeq = referencesField->getValue<vmime::messageIdSequence> ();
+				if (!refSeq)
+					return {};
+
+				const auto& ref = refSeq->getMessageIdAt (0);
+				if (!ref)
+					return {};
+
+				const auto& addrReq = QString::fromUtf8 (ref->getLeft ().c_str ());
+				if (addrReq.isEmpty ())
+					return {};
+
+				return {
+						{
+							MessageListActionsManager::tr ("Open"),
+							MessageListActionsManager::tr ("Open the bug page on Bugzilla"),
+							QIcon::fromTheme ("document-open"),
+							[addrReq] (const Message_ptr&)
+							{
+								const QUrl fullUrl { "https://github.com/" + addrReq };
+								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
+								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+							}
+						}
+					};
+			}
+		};
+
 		class BugzillaProvider : public MessageListActionsProvider
 		{
 		public:
@@ -137,6 +182,7 @@ namespace Snails
 	MessageListActionsManager::MessageListActionsManager (QObject *parent)
 	: QObject { parent }
 	{
+		Providers_ << std::make_shared<GithubProvider> ();
 		Providers_ << std::make_shared<BugzillaProvider> ();
 		Providers_ << std::make_shared<ReviewboardProvider> ();
 	}
