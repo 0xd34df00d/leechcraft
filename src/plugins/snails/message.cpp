@@ -137,6 +137,15 @@ namespace Snails
 		Addresses_ [a] = list;
 	}
 
+	QString Message::GetAddressString (Message::Address addr) const
+	{
+		const auto& pair = GetAddress (addr);
+		if (pair.first.isEmpty ())
+			return pair.second;
+
+		return pair.first + " <" + pair.second + ">";
+	}
+
 	QDateTime Message::GetDate () const
 	{
 		return Date_;
