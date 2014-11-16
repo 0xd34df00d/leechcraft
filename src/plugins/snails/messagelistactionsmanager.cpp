@@ -81,7 +81,7 @@ namespace Snails
 				return {
 						{
 							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the page on GitHub"),
+							MessageListActionsManager::tr ("Open the page on GitHub."),
 							QIcon::fromTheme ("document-open"),
 							[addrReq] (const Message_ptr&)
 							{
@@ -131,7 +131,7 @@ namespace Snails
 				return {
 						{
 							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the bug page on Bugzilla"),
+							MessageListActionsManager::tr ("Open the bug page on Bugzilla."),
 							QIcon::fromTheme ("document-open"),
 							[url, bugId] (const Message_ptr&)
 							{
@@ -166,7 +166,7 @@ namespace Snails
 				return {
 						{
 							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the review page on ReviewBoard"),
+							MessageListActionsManager::tr ("Open the review page on ReviewBoard."),
 							QIcon::fromTheme ("document-open"),
 							[url] (const Message_ptr&)
 							{
