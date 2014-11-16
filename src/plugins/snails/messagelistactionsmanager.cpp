@@ -29,10 +29,10 @@
 
 #include "messagelistactionsmanager.h"
 #include <QUrl>
-#include <QFuture>
 #include <QtDebug>
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
+#include <util/sll/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "message.h"
@@ -220,7 +220,17 @@ namespace Snails
 				msg->SetAddress (Message::Address::To, { {}, url.path () });
 				msg->SetSubject ("Unsubscribe");
 
-				acc->SendMessage (msg);
+				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
+						[]
+						{
+							const auto& entity = Util::MakeNotification ("Snails",
+									MessageListActionsManager::tr ("Successfully sent unsubscribe request to %1.")
+										.arg ("<em>" + url.path () + "</em>"),
+									PInfo_);
+							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+						},
+						nullptr,
+						msg);
 			}
 			else
 			{
