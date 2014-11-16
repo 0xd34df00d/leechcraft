@@ -98,12 +98,47 @@ namespace Snails
 					};
 			}
 		};
+
+		class ReviewboardProvider : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			{
+				const auto& headers = msg->GetVmimeHeader ();
+				if (!headers)
+					return {};
+
+				const auto header = headers->findField ("X-ReviewRequest-URL");
+				if (!header)
+					return {};
+
+				const auto& urlText = header->getValue<vmime::text> ();
+				if (!urlText)
+					return {};
+
+				const auto& url = StringizeCT (*urlText);
+
+				return {
+						{
+							MessageListActionsManager::tr ("Open"),
+							MessageListActionsManager::tr ("Open the review page on ReviewBoard"),
+							QIcon::fromTheme ("document-open"),
+							[url] (const Message_ptr&)
+							{
+								const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
+								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+							}
+						}
+					};
+			}
+		};
 	}
 
 	MessageListActionsManager::MessageListActionsManager (QObject *parent)
 	: QObject { parent }
 	{
 		Providers_ << std::make_shared<BugzillaProvider> ();
+		Providers_ << std::make_shared<ReviewboardProvider> ();
 	}
 
 	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
