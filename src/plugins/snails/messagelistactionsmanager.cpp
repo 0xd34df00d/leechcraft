@@ -29,6 +29,8 @@
 
 #include "messagelistactionsmanager.h"
 #include <QUrl>
+#include <QMessageBox>
+#include <QTextDocument>
 #include <QtDebug>
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
@@ -210,12 +212,41 @@ namespace Snails
 			return email.isValid () ? email : url;
 		}
 
-		void HandleUnsubscribeText (const QString& text, Account *acc)
+		QString GetListName (const Message_ptr& msg)
+		{
+			const auto& addrString = "<em>" + Qt::escape (msg->GetAddressString (Message::Address::From)) + "</em>";
+
+			const auto& headers = msg->GetVmimeHeader ();
+			if (!headers)
+				return addrString;
+
+			const auto header = headers->findField ("List-Id");
+			if (!header)
+				return addrString;
+
+			const auto& vmimeText = header->getValue<vmime::text> ();
+			if (!vmimeText)
+				return addrString;
+
+			return "<em>" + Qt::escape (StringizeCT (*vmimeText)) + "</em>";
+		}
+
+		void HandleUnsubscribeText (const QString& text, const Message_ptr& msg, Account *acc)
 		{
 			const auto& url = GetUnsubscribeUrl (text);
 
+			const auto& addrString = GetListName (msg);
 			if (url.scheme () == "mailto")
 			{
+				if (QMessageBox::question (nullptr,
+						QObject::tr ("Unsubscription confirmation"),
+						QObject::tr ("Are you sure you want to unsubscribe from %1? "
+							"This will send an email to %2.")
+							.arg (addrString)
+							.arg ("<em>" + Qt::escape (url.path ()) + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
 				const auto& msg = std::make_shared<Message> ();
 				msg->SetAddress (Message::Address::To, { {}, url.path () });
 				msg->SetSubject ("Unsubscribe");
@@ -234,6 +265,15 @@ namespace Snails
 			}
 			else
 			{
+				if (QMessageBox::question (nullptr,
+						QObject::tr ("Unsubscription confirmation"),
+						QObject::tr ("Are you sure you want to unsubscribe from %1? "
+							"This will open the following web page in your browser: %2")
+							.arg (addrString)
+							.arg ("<br/><em>" + url.toString () + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
 				const auto& entity = Util::MakeEntity (url, {}, FromUserInitiated | OnlyHandle);
 				Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
 			}
@@ -257,13 +297,13 @@ namespace Snails
 							QObject::tr ("Unsubscribe"),
 							QObject::tr ("Try canceling receiving further messages like this."),
 							QIcon::fromTheme ("news-unsubscribe"),
-							[header, acc] (const Message_ptr&)
+							[header, acc] (const Message_ptr& msg)
 							{
 								const auto& vmimeText = header->getValue<vmime::text> ();
 								if (!vmimeText)
 									return;
 
-								HandleUnsubscribeText (StringizeCT (*vmimeText), acc);
+								HandleUnsubscribeText (StringizeCT (*vmimeText), msg, acc);
 							}
 						}
 					};
