@@ -38,14 +38,16 @@ namespace LeechCraft
 namespace Snails
 {
 	class MessageListActionsProvider;
+	class Account;
 
 	class MessageListActionsManager : public QObject
 	{
 		Q_OBJECT
 
+		Account * const Acc_;
 		QList<std::shared_ptr<MessageListActionsProvider>> Providers_;
 	public:
-		MessageListActionsManager (QObject* = nullptr);
+		MessageListActionsManager (Account*, QObject* = nullptr);
 
 		QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const;
 	};

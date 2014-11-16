@@ -44,7 +44,7 @@ namespace Snails
 	class MessageListActionsProvider
 	{
 	public:
-		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const = 0;
+		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, Account*) const = 0;
 	};
 
 	namespace
@@ -52,7 +52,7 @@ namespace Snails
 		class GithubProvider : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
 				const auto& headers = msg->GetVmimeHeader ();
 				if (!headers)
@@ -97,7 +97,7 @@ namespace Snails
 		class BugzillaProvider : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
 				const auto& headers = msg->GetVmimeHeader ();
 				if (!headers)
@@ -147,7 +147,7 @@ namespace Snails
 		class ReviewboardProvider : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
 				const auto& headers = msg->GetVmimeHeader ();
 				if (!headers)
@@ -179,19 +179,21 @@ namespace Snails
 		};
 	}
 
-	MessageListActionsManager::MessageListActionsManager (QObject *parent)
+	MessageListActionsManager::MessageListActionsManager (Account *acc, QObject *parent)
 	: QObject { parent }
+	, Acc_ { acc }
 	{
 		Providers_ << std::make_shared<GithubProvider> ();
 		Providers_ << std::make_shared<BugzillaProvider> ();
 		Providers_ << std::make_shared<ReviewboardProvider> ();
+		Providers_ << std::make_shared<UnsubscribeProvider> ();
 	}
 
 	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
 	{
 		QList<MessageListActionInfo> result;
 		for (const auto provider : Providers_)
-			result += provider->GetMessageActions (msg);
+			result += provider->GetMessageActions (msg, Acc_);
 		return result;
 	}
 }

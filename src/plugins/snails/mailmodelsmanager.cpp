@@ -41,7 +41,7 @@ namespace Snails
 	MailModelsManager::MailModelsManager (Account *acc)
 	: QObject { acc }
 	, Acc_ { acc }
-	, MsgListActionsMgr_ { new MessageListActionsManager { this } }
+	, MsgListActionsMgr_ { new MessageListActionsManager { Acc_, this } }
 	{
 	}
 
