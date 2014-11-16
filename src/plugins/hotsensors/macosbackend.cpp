@@ -192,11 +192,11 @@ namespace HotSensors
 		{
 			str [0] = 0;
 			std::sprintf (str,
-						"%c%c%c%c",
-				 		static_cast<unsigned int> (val) >> 24,
-				 		static_cast<unsigned int> (val) >> 16,
-				 		static_cast<unsigned int> (val) >> 8,
-				 		static_cast<unsigned int> (val));
+					"%c%c%c%c",
+					static_cast<unsigned int> (val) >> 24,
+					static_cast<unsigned int> (val) >> 16,
+					static_cast<unsigned int> (val) >> 8,
+					static_cast<unsigned int> (val));
 		}
 
 		SMCVal_t SMC::ReadKey (const char *srcKey)
