@@ -39,14 +39,16 @@ namespace Snails
 	class MailModel;
 	class Account;
 	class Message;
+	class MessageListActionsManager;
 
-	typedef std::shared_ptr<Message> Message_ptr;
+	using Message_ptr = std::shared_ptr<Message>;
 
 	class MailModelsManager : public QObject
 	{
 		Q_OBJECT
 
 		Account * const Acc_;
+		MessageListActionsManager * const MsgListActionsMgr_;
 
 		QList<MailModel*> Models_;
 	public:

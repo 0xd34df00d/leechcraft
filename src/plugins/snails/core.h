@@ -49,7 +49,6 @@ namespace Snails
 {
 	class Storage;
 	class ProgressManager;
-	class MessageListActionsManager;
 
 	class Core : public QObject
 	{
@@ -62,7 +61,6 @@ namespace Snails
 
 		Storage * const Storage_;
 		ProgressManager * const ProgressManager_;
-		MessageListActionsManager * const MsgListActionsMgr_;
 
 		std::shared_ptr<Util::ResourceLoader> MsgView_;
 
@@ -81,7 +79,6 @@ namespace Snails
 
 		Storage* GetStorage () const;
 		ProgressManager* GetProgressManager () const;
-		MessageListActionsManager* GetMessageListActionsManager () const;
 
 		QString GetMsgViewTemplate () const;
 

@@ -32,6 +32,7 @@
 #include "mailmodel.h"
 #include "core.h"
 #include "storage.h"
+#include "messagelistactionsmanager.h"
 
 namespace LeechCraft
 {
@@ -40,12 +41,13 @@ namespace Snails
 	MailModelsManager::MailModelsManager (Account *acc)
 	: QObject { acc }
 	, Acc_ { acc }
+	, MsgListActionsMgr_ { new MessageListActionsManager { this } }
 	{
 	}
 
 	MailModel* MailModelsManager::CreateModel ()
 	{
-		auto model = new MailModel { Core::Instance ().GetMessageListActionsManager (), Acc_ };
+		auto model = new MailModel { MsgListActionsMgr_, Acc_ };
 		Models_ << model;
 
 		connect (model,
