@@ -249,7 +249,9 @@ namespace Snails
 
 				const auto& msg = std::make_shared<Message> ();
 				msg->SetAddress (Message::Address::To, { {}, url.path () });
-				msg->SetSubject ("Unsubscribe");
+
+				const auto& subjQuery = url.queryItemValue ("subject");
+				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
 
 				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
 						[url]
