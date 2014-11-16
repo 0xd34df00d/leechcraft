@@ -81,8 +81,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the page on GitHub."),
+							QObject::tr ("Open"),
+							QObject::tr ("Open the page on GitHub."),
 							QIcon::fromTheme ("document-open"),
 							[addrReq] (const Message_ptr&)
 							{
@@ -131,8 +131,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the bug page on Bugzilla."),
+							QObject::tr ("Open"),
+							QObject::tr ("Open the bug page on Bugzilla."),
 							QIcon::fromTheme ("document-open"),
 							[url, bugId] (const Message_ptr&)
 							{
@@ -166,8 +166,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the review page on ReviewBoard."),
+							QObject::tr ("Open"),
+							QObject::tr ("Open the review page on ReviewBoard."),
 							QIcon::fromTheme ("document-open"),
 							[url] (const Message_ptr&)
 							{
@@ -224,7 +224,7 @@ namespace Snails
 						[url]
 						{
 							const auto& entity = Util::MakeNotification ("Snails",
-									MessageListActionsManager::tr ("Successfully sent unsubscribe request to %1.")
+									QObject::tr ("Successfully sent unsubscribe request to %1.")
 										.arg ("<em>" + url.path () + "</em>"),
 									PInfo_);
 							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
@@ -254,8 +254,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Unsubscribe"),
-							MessageListActionsManager::tr ("Try canceling receiving further messages like this."),
+							QObject::tr ("Unsubscribe"),
+							QObject::tr ("Try canceling receiving further messages like this."),
 							QIcon::fromTheme ("news-unsubscribe"),
 							[header, acc] (const Message_ptr&)
 							{
