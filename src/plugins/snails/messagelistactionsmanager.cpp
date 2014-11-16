@@ -29,6 +29,7 @@
 
 #include "messagelistactionsmanager.h"
 #include <QUrl>
+#include <QFuture>
 #include <QtDebug>
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
@@ -172,6 +173,87 @@ namespace Snails
 							{
 								const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
 								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+							}
+						}
+					};
+			}
+		};
+
+		QUrl GetUnsubscribeUrl (const QString& text)
+		{
+			const auto& parts = text.split (',', QString::SkipEmptyParts);
+
+			QUrl email;
+			QUrl url;
+			for (auto part : parts)
+			{
+				part = part.simplified ();
+				if (part.startsWith ('<'))
+					part = part.mid (1, part.size () - 2);
+
+				const auto& ascii = part.toAscii ();
+
+				if (ascii.startsWith ("mailto:"))
+				{
+					const auto& testEmail = QUrl::fromEncoded (ascii);
+					if (testEmail.isValid ())
+						email = testEmail;
+				}
+				else
+				{
+					const auto& testUrl = QUrl::fromEncoded (ascii);
+					if (testUrl.isValid ())
+						url = testUrl;
+				}
+			}
+
+			return email.isValid () ? email : url;
+		}
+
+		void HandleUnsubscribeText (const QString& text, Account *acc)
+		{
+			const auto& url = GetUnsubscribeUrl (text);
+
+			if (url.scheme () == "mailto")
+			{
+				const auto& msg = std::make_shared<Message> ();
+				msg->SetAddress (Message::Address::To, { {}, url.path () });
+				msg->SetSubject ("Unsubscribe");
+
+				acc->SendMessage (msg);
+			}
+			else
+			{
+				const auto& entity = Util::MakeEntity (url, {}, FromUserInitiated | OnlyHandle);
+				Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+			}
+		}
+
+		class UnsubscribeProvider : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account *acc) const override
+			{
+				const auto& headers = msg->GetVmimeHeader ();
+				if (!headers)
+					return {};
+
+				const auto header = headers->findField ("List-Unsubscribe");
+				if (!header)
+					return {};
+
+				return {
+						{
+							MessageListActionsManager::tr ("Unsubscribe"),
+							MessageListActionsManager::tr ("Try canceling receiving further messages like this."),
+							QIcon::fromTheme ("news-unsubscribe"),
+							[header, acc] (const Message_ptr&)
+							{
+								const auto& vmimeText = header->getValue<vmime::text> ();
+								if (!vmimeText)
+									return;
+
+								HandleUnsubscribeText (StringizeCT (*vmimeText), acc);
 							}
 						}
 					};
