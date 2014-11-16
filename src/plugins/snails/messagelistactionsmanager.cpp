@@ -221,7 +221,7 @@ namespace Snails
 				msg->SetSubject ("Unsubscribe");
 
 				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
-						[]
+						[url]
 						{
 							const auto& entity = Util::MakeNotification ("Snails",
 									MessageListActionsManager::tr ("Successfully sent unsubscribe request to %1.")
