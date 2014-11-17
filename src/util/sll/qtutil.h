@@ -92,6 +92,35 @@ namespace Util
 		};
 	}
 
+	/** @brief Converts an Qt's associative sequence \em assoc to an
+	 * STL-like iteratable range.
+	 *
+	 * This function takes an associative container \em assoc (one of
+	 * Qt's containers like QHash and QMap) and returns a range with
+	 * <code>value_type</code> equal to <code>PairType<K, V></code>.
+	 *
+	 * This way, both the key and the value of each pair in the \em assoc
+	 * can be accessed in a range-for loop, for example.
+	 *
+	 * Example usage:
+	 *	<code>
+		QMap<QString, int> someMap;
+		for (const auto& pair : Util::Stlize (someMap))
+			qDebug () << pair.first		// outputs a QString key
+					<< pair.second;		// outputs an integer value corresponding to the key
+		</code>
+	 *
+	 * All kinds of accesses are supported: elements of a non-const
+	 * container may be modified via the iterators in the returned range.
+	 *
+	 * @param[in] assoc The Qt's associative container to iterate over.
+	 * @return A range with iterators providing access to both the key
+	 * and the value via its <code>value_type</code>.
+	 *
+	 * @tparam PairType The type of the pairs that should be used in the
+	 * resulting range's iterators' <code>value_type</code>.
+	 * @tparam Assoc The type of the source Qt associative container.
+	 */
 	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
 	auto Stlize (Assoc&& assoc) -> detail::StlAssocRange<decltype (assoc.begin ()), Assoc, PairType>
 	{
