@@ -37,6 +37,35 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Executes a given action after a given timeout.
+	 *
+	 * This class can be used to schedule execution of arbitrary
+	 * functions after some arbitrary amount of time.
+	 *
+	 * The DelayedExecutor objects should be created via <code>new</code>
+	 * on heap, and they will delete themselves after the corresponding
+	 * action is executed.
+	 *
+	 * The typical usage is as follows:
+	 *	<code>
+		new Util::DelayedExecutor
+		{
+			[] ()
+			{
+				// body of some lambda
+			},
+			interval
+		};
+		</code>
+	 * or
+	 *	<code>
+	   new Util::DelayedExecutor
+	   {
+		   someCallable,
+		   interval
+	   };
+	   </code>
+	 */
 	class UTIL_SLL_API DelayedExecutor : QObject
 	{
 		Q_OBJECT
@@ -45,7 +74,18 @@ namespace Util
 	private:
 		const Actor_f Actor_;
 	public:
-		DelayedExecutor (Actor_f actor, int timeout);
+		/** @brief Constructs the delayed executor.
+		 *
+		 * Schedules the execution of \em action after a given \em
+		 * timeout.
+		 *
+		 * If the \em timeout is 0, the \em action will be executed next
+		 * time event loop is run.
+		 *
+		 * @param[in] action The action to execute.
+		 * @param[in] timeout The timeout before executing the action.
+		 */
+		DelayedExecutor (Actor_f action, int timeout);
 	private slots:
 		void handleTimeout ();
 	};
