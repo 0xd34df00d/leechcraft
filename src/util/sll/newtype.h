@@ -33,6 +33,25 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A somewhat "strong" typedef.
+	 *
+	 * \em NewType provides Haskell's newtype-like semantics.
+	 *
+	 * Typical usage is as follows:
+	 *	<code>
+		using FirstAlias = Util::NewType<BaseType, NewTypeTag>;
+		using SecondAlias = Util::NewType<BaseType, NewTypeTag>;
+		</code>
+	 *
+	 * After this, <code>FirstAlias</code> and <code>SecondAlias</code>
+	 * become more or less independent from C++'s type system point of
+	 * view.
+	 *
+	 * @note Using this class (and this header) requires pretty decent
+	 * C++14 support for now provided only by clang 3.4+.
+	 *
+	 * @tparam T The type for which to create the params for.
+	 */
 	template<typename T, size_t, size_t>
 	class NewType : public T
 	{
