@@ -38,7 +38,11 @@ namespace HotSensors
 	: QObject { parent }
 	{
 		auto timer = new QTimer { this };
+#ifndef Q_OS_MAC
+		timer->start (4000);
+#else
 		timer->start (1000);
+#endif
 		connect (timer,
 				SIGNAL (timeout ()),
 				this,
