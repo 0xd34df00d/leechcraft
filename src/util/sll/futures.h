@@ -79,6 +79,29 @@ namespace Util
 		};
 	}
 
+	/** @brief Runs a QFuture-returning function and feeding the future
+	 * to a handler when it is ready.
+	 *
+	 * This function creates a <code>QFutureWatcher</code> of a type
+	 * compatible with the QFuture type returned from the \em f, makes
+	 * sure that \em rh handler is invoked when the future finishes,
+	 * and then invokes the \em f with the given list of \em args (that
+	 * may be empty).
+	 *
+	 * \em rh should accept a single argument of the same type \em T
+	 * that is wrapped in a <code>QFuture</code> returned by the \em f
+	 * (that is, \em f should return <code>QFuture<T></code>).
+	 *
+	 * @param[in] f A callable that should be executed, taking the
+	 * arguments \em args and returning a <code>QFuture<T></code> for
+	 * some \em T.
+	 * @param[in] rh A callable that will be invoked when the future
+	 * finishes, that should be callable with a single argument of type
+	 * \em T.
+	 * @param[in] parent The parent object for all QObject-derived
+	 * classes created in this function, may be a <code>nullptr</code>.
+	 * @param[in] args The arguments to be passed to the callable \em f.
+	 */
 	template<typename Executor, typename ResultHandler, typename... Args>
 	void ExecuteFuture (Executor f, ResultHandler rh, QObject *parent, Args... args)
 	{
