@@ -43,9 +43,16 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief The priority of the action in the queue.
+	 */
 	enum class QueuePriority
 	{
+		/** @brief Standard priority.
+		 */
 		Normal,
+
+		/** @brief Higher priority.
+		 */
 		High
 	};
 
@@ -73,7 +80,7 @@ namespace Util
 		 * in milliseconds.
 		 * @param[in] parent The parent object of this queue manager.
 		 */
-		QueueManager (int timeout, QObject *parent = 0);
+		QueueManager (int timeout, QObject *parent = nullptr);
 
 		/** @brief Adds the given \em functor.
 		 *
