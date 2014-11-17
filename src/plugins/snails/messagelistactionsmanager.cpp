@@ -29,9 +29,12 @@
 
 #include "messagelistactionsmanager.h"
 #include <QUrl>
+#include <QMessageBox>
+#include <QTextDocument>
 #include <QtDebug>
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
+#include <util/sll/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "message.h"
@@ -44,7 +47,7 @@ namespace Snails
 	class MessageListActionsProvider
 	{
 	public:
-		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&) const = 0;
+		virtual QList<MessageListActionInfo> GetMessageActions (const Message_ptr&, Account*) const = 0;
 	};
 
 	namespace
@@ -52,7 +55,7 @@ namespace Snails
 		class GithubProvider : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
 				const auto& headers = msg->GetVmimeHeader ();
 				if (!headers)
@@ -80,8 +83,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the bug page on Bugzilla"),
+							QObject::tr ("Open"),
+							QObject::tr ("Open the page on GitHub."),
 							QIcon::fromTheme ("document-open"),
 							[addrReq] (const Message_ptr&)
 							{
@@ -97,7 +100,7 @@ namespace Snails
 		class BugzillaProvider : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
 				const auto& headers = msg->GetVmimeHeader ();
 				if (!headers)
@@ -130,8 +133,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the bug page on Bugzilla"),
+							QObject::tr ("Open"),
+							QObject::tr ("Open the bug page on Bugzilla."),
 							QIcon::fromTheme ("document-open"),
 							[url, bugId] (const Message_ptr&)
 							{
@@ -147,7 +150,7 @@ namespace Snails
 		class ReviewboardProvider : public MessageListActionsProvider
 		{
 		public:
-			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg) const override
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
 				const auto& headers = msg->GetVmimeHeader ();
 				if (!headers)
@@ -165,8 +168,8 @@ namespace Snails
 
 				return {
 						{
-							MessageListActionsManager::tr ("Open"),
-							MessageListActionsManager::tr ("Open the review page on ReviewBoard"),
+							QObject::tr ("Open"),
+							QObject::tr ("Open the review page on ReviewBoard."),
 							QIcon::fromTheme ("document-open"),
 							[url] (const Message_ptr&)
 							{
@@ -177,21 +180,154 @@ namespace Snails
 					};
 			}
 		};
+
+		QUrl GetUnsubscribeUrl (const QString& text)
+		{
+			const auto& parts = text.split (',', QString::SkipEmptyParts);
+
+			QUrl email;
+			QUrl url;
+			for (auto part : parts)
+			{
+				part = part.simplified ();
+				if (part.startsWith ('<'))
+					part = part.mid (1, part.size () - 2);
+
+				const auto& ascii = part.toAscii ();
+
+				if (ascii.startsWith ("mailto:"))
+				{
+					const auto& testEmail = QUrl::fromEncoded (ascii);
+					if (testEmail.isValid ())
+						email = testEmail;
+				}
+				else
+				{
+					const auto& testUrl = QUrl::fromEncoded (ascii);
+					if (testUrl.isValid ())
+						url = testUrl;
+				}
+			}
+
+			return email.isValid () ? email : url;
+		}
+
+		QString GetListName (const Message_ptr& msg)
+		{
+			const auto& addrString = "<em>" + Qt::escape (msg->GetAddressString (Message::Address::From)) + "</em>";
+
+			const auto& headers = msg->GetVmimeHeader ();
+			if (!headers)
+				return addrString;
+
+			const auto header = headers->findField ("List-Id");
+			if (!header)
+				return addrString;
+
+			const auto& vmimeText = header->getValue<vmime::text> ();
+			if (!vmimeText)
+				return addrString;
+
+			return "<em>" + Qt::escape (StringizeCT (*vmimeText)) + "</em>";
+		}
+
+		void HandleUnsubscribeText (const QString& text, const Message_ptr& msg, Account *acc)
+		{
+			const auto& url = GetUnsubscribeUrl (text);
+
+			const auto& addrString = GetListName (msg);
+			if (url.scheme () == "mailto")
+			{
+				if (QMessageBox::question (nullptr,
+						QObject::tr ("Unsubscription confirmation"),
+						QObject::tr ("Are you sure you want to unsubscribe from %1? "
+							"This will send an email to %2.")
+							.arg (addrString)
+							.arg ("<em>" + Qt::escape (url.path ()) + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
+				const auto& msg = std::make_shared<Message> ();
+				msg->SetAddress (Message::Address::To, { {}, url.path () });
+
+				const auto& subjQuery = url.queryItemValue ("subject");
+				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
+
+				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
+						[url]
+						{
+							const auto& entity = Util::MakeNotification ("Snails",
+									QObject::tr ("Successfully sent unsubscribe request to %1.")
+										.arg ("<em>" + url.path () + "</em>"),
+									PInfo_);
+							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+						},
+						nullptr,
+						msg);
+			}
+			else
+			{
+				if (QMessageBox::question (nullptr,
+						QObject::tr ("Unsubscription confirmation"),
+						QObject::tr ("Are you sure you want to unsubscribe from %1? "
+							"This will open the following web page in your browser: %2")
+							.arg (addrString)
+							.arg ("<br/><em>" + url.toString () + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
+				const auto& entity = Util::MakeEntity (url, {}, FromUserInitiated | OnlyHandle);
+				Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+			}
+		}
+
+		class UnsubscribeProvider : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account *acc) const override
+			{
+				const auto& headers = msg->GetVmimeHeader ();
+				if (!headers)
+					return {};
+
+				const auto header = headers->findField ("List-Unsubscribe");
+				if (!header)
+					return {};
+
+				return {
+						{
+							QObject::tr ("Unsubscribe"),
+							QObject::tr ("Try canceling receiving further messages like this."),
+							QIcon::fromTheme ("news-unsubscribe"),
+							[header, acc] (const Message_ptr& msg)
+							{
+								const auto& vmimeText = header->getValue<vmime::text> ();
+								if (!vmimeText)
+									return;
+
+								HandleUnsubscribeText (StringizeCT (*vmimeText), msg, acc);
+							}
+						}
+					};
+			}
+		};
 	}
 
-	MessageListActionsManager::MessageListActionsManager (QObject *parent)
+	MessageListActionsManager::MessageListActionsManager (Account *acc, QObject *parent)
 	: QObject { parent }
+	, Acc_ { acc }
 	{
 		Providers_ << std::make_shared<GithubProvider> ();
 		Providers_ << std::make_shared<BugzillaProvider> ();
 		Providers_ << std::make_shared<ReviewboardProvider> ();
+		Providers_ << std::make_shared<UnsubscribeProvider> ();
 	}
 
 	QList<MessageListActionInfo> MessageListActionsManager::GetMessageActions (const Message_ptr& msg) const
 	{
 		QList<MessageListActionInfo> result;
 		for (const auto provider : Providers_)
-			result += provider->GetMessageActions (msg);
+			result += provider->GetMessageActions (msg, Acc_);
 		return result;
 	}
 }

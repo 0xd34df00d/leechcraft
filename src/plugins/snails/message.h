@@ -110,6 +110,8 @@ namespace Snails
 		void SetAddress (Address, const Address_t&);
 		void SetAddresses (Address, const Addresses_t&);
 
+		QString GetAddressString (Address) const;
+
 		QDateTime GetDate () const;
 		void SetDate (const QDateTime&);
 
