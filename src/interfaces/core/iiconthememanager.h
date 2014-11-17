@@ -36,6 +36,26 @@
 class QAction;
 class QIcon;
 
+/** @brief Interface for accessing LeechCraft-wide icons manager.
+ *
+ * The icon theme manager provides access to actions icon sets managed
+ * globally in LeechCraft.
+ *
+ * The icons are identified by their Freedesktop.org-like name, and they
+ * should be contained at least in the KDE's Oxygen icon theme.
+ *
+ * Icons may be retrieved via the GetIcon() method, and actions (QAction
+ * subclasses) can be automatically set with a proper icon by setting
+ * their \em ActionIcon dynamic property to the name of the desired icon.
+ * This way they will also be automatically updated if the iconset
+ * changes.
+ *
+ * Please note that the \em ActionIcon property should be set before
+ * QAction (or its parent) widget is exposed to the rest oF LeechCraft
+ * (for example, a menu embedded into a ITabWidget-implementing tab, or
+ * an ITabWidget added to LeechCrat windows). Otherwise, UpdateIconset()
+ * should be called on the actions for them to be registered.
+ */
 class IIconThemeManager
 {
 protected:
@@ -43,6 +63,9 @@ protected:
 public:
 	/** @brief Returns the current theme's icon for the given on and off
 	 * states.
+	 *
+	 * The name should match the Freedesktop.org's icons naming scheme
+	 * and be contained at least in the KDE's Oxygen iconset.
 	 *
 	 * @param[in] on The name of the icon in the "on" state.
 	 * @param[in] off The name of the icon in the "off" state, if any.
@@ -57,9 +80,12 @@ public:
 	 *
 	 * This function sets or updates the icons of \em actions according
 	 * to the current iconset. This function also registers the actions
-	 * so that they are automatically updated when the iconset changes.
+	 * so that they are automatically updated when the iconset changes,
+	 * analogously to ManageWidget().
 	 *
 	 * @param[in] actions The list of actions to update.
+	 *
+	 * @sa ManageWidget()
 	 */
 	virtual void UpdateIconset (const QList<QAction*>& actions) = 0;
 
