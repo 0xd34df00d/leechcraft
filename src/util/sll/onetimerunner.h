@@ -35,6 +35,11 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief An utility typedef for SlotClosure deleting immediately
+	 * after firing.
+	 *
+	 * @sa SlotClosure
+	 */
 	using OneTimeRunner = SlotClosure<DeleteLaterPolicy>;
 }
 }
