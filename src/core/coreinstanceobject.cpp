@@ -36,6 +36,7 @@
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "pluginmanagerdialog.h"
@@ -78,23 +79,23 @@ namespace LeechCraft
 					.entryList (QStringList ("leechcraft_*.qm"));
 	#endif
 
-			int length = QString ("leechcraft_").size ();
+			int length = qstrlen ("leechcraft_");
 			QMap<QString, QString> languages;
-			Q_FOREACH (QString fname, filenames)
+			for (auto fname : filenames)
 			{
 				fname = fname.mid (length);
 				fname.chop (3);					// for .qm
-				QStringList parts = fname.split ('_', QString::SkipEmptyParts);
+				auto parts = fname.split ('_', QString::SkipEmptyParts);
 
 				QString language;
-				Q_FOREACH (const QString& part, parts)
+				for (const auto& part : parts)
 				{
 					if (part.size () != 2)
 						continue;
 					if (!part.at (0).isLower ())
 						continue;
 
-					QLocale locale (part);
+					QLocale locale { part };
 					if (locale.language () == QLocale::C)
 						continue;
 
@@ -113,16 +114,14 @@ namespace LeechCraft
 
 		QAbstractItemModel* GetInstalledLangsModel ()
 		{
-			QMap<QString, QString> languages = GetInstalledLanguages ();
-
-			QStandardItemModel *model = new QStandardItemModel ();
-			QStandardItem *systemItem = new QStandardItem (QObject::tr ("System"));
+			const auto model = new QStandardItemModel ();
+			const auto systemItem = new QStandardItem (QObject::tr ("System"));
 			systemItem->setData ("system", Qt::UserRole);
 			model->appendRow (systemItem);
-			Q_FOREACH (const QString& language, languages.keys ())
+			for (const auto& pair : Util::Stlize (GetInstalledLanguages ()))
 			{
-				QStandardItem *item = new QStandardItem (language);
-				item->setData (languages [language], Qt::UserRole);
+				const auto item = new QStandardItem { pair.first };
+				item->setData (pair.second, Qt::UserRole);
 				model->appendRow (item);
 			}
 			return model;
