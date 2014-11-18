@@ -35,6 +35,7 @@
 #include "interfaces/ihaveshortcuts.h"
 #include "interfaces/core/ientitymanager.h"
 #include "interfaces/core/iiconthememanager.h"
+#include "interfaces/core/ishortcutproxy.h"
 
 namespace LeechCraft
 {

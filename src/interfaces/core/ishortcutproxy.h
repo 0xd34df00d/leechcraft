@@ -29,46 +29,49 @@
 
 #pragma once
 
-#include <QDialog>
-#include "interfaces/core/ishortcutproxy.h"
-#include "ui_shortcutmanager.h"
+#include <QtPlugin>
 
-class QSortFilterProxyModel;
-class QStandardItemModel;
+class QObject;
+class QString;
+class QKeySequence;
 
-namespace LeechCraft
+template<typename T>
+class QList;
+
+/** @brief Proxy for requesting shortcuts from the shortcut manager in
+ * the Core.
+ *
+ * The plugin can communicate with the shortcut manager via this proxy.
+ *
+ * @sa IHaveShortcuts::SetShortcutProxy().
+ */
+class Q_DECL_EXPORT IShortcutProxy
 {
-	class ShortcutManager : public QWidget
-						  , public IShortcutProxy
-	{
-		Q_OBJECT
-		Q_INTERFACES (IShortcutProxy)
+public:
+	/** @brief Checks whether a given object has been registered already.
+	 *
+	 * @return Returns whether the \em object has been already registered.
+	 */
+	virtual bool HasObject (QObject *object) const = 0;
 
-		Ui::ShortcutManager Ui_;
-		QStandardItemModel *Model_;
-		QSortFilterProxyModel *Filter_;
-	public:
-		enum Roles
-		{
-			Object = Qt::UserRole + 1,
-			OriginalName,
-			Sequence,
-			OldSequence
-		};
+	/** @brief Returns a QKeySequence for the given action.
+	 *
+	 * Returns a list of key sequences for the action with given id for
+	 * the given object which is currently set in the shortcut manager.
+	 * The id is the same as in return value of
+	 * IHaveShortcuts::GetActionInfo().
+	 *
+	 * The object is used to distinguish between ids of different
+	 * plugins. It can be said that object defines the context for the
+	 * id.
+	 *
+	 * @param[in] object The object that should be checked.
+	 * @param[in] id ID of the action.
+	 * @return The key sequences for the passed action.
+	 */
+	virtual QList<QKeySequence> GetShortcuts (QObject *object, const QString& id) = 0;
 
-		ShortcutManager (QWidget* = 0);
-
-		bool HasObject (QObject*) const;
-
-		void AddObject (QObject*);
-		void AddObject (QObject*, const QString&,
-				const QString&, const QIcon&);
-		QList<QKeySequence> GetShortcuts (QObject*, const QString&);
-	private:
-		int GetObjectRow (QObject*) const;
-	public slots:
-		void on_Tree__activated (const QModelIndex&);
-		virtual void accept ();
-		virtual void reject ();
-	};
+	virtual ~IShortcutProxy () { }
 };
+
+Q_DECLARE_INTERFACE (IShortcutProxy, "org.Deviant.LeechCraft.IShortcutProxy/1.0");

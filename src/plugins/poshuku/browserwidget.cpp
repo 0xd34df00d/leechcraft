@@ -76,6 +76,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ishortcutproxy.h>
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"

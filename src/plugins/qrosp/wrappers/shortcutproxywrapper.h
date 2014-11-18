@@ -31,6 +31,7 @@
 #define PLUGINS_QROSP_WRAPPERS_SHORTCUTPROXYWRAPPER_H
 #include <QObject>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/core/ishortcutproxy.h>
 
 namespace LeechCraft
 {
