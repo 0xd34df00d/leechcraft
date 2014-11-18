@@ -38,10 +38,10 @@ namespace Util
 	 * \em NewType provides Haskell's newtype-like semantics.
 	 *
 	 * Typical usage is as follows:
-	 *	<code>
+	 *	\code
 		using FirstAlias = Util::NewType<BaseType, NewTypeTag>;
 		using SecondAlias = Util::NewType<BaseType, NewTypeTag>;
-		</code>
+		\endcode
 	 *
 	 * After this, <code>FirstAlias</code> and <code>SecondAlias</code>
 	 * become more or less independent from C++'s type system point of

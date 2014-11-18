@@ -103,12 +103,12 @@ namespace Util
 	 * can be accessed in a range-for loop, for example.
 	 *
 	 * Example usage:
-	 *	<code>
+	 *	\code
 		QMap<QString, int> someMap;
 		for (const auto& pair : Util::Stlize (someMap))
 			qDebug () << pair.first		// outputs a QString key
 					<< pair.second;		// outputs an integer value corresponding to the key
-		</code>
+		\endcode
 	 *
 	 * All kinds of accesses are supported: elements of a non-const
 	 * container may be modified via the iterators in the returned range.

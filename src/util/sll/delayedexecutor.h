@@ -47,7 +47,7 @@ namespace Util
 	 * action is executed.
 	 *
 	 * The typical usage is as follows:
-	 *	<code>
+	 *	\code
 		new Util::DelayedExecutor
 		{
 			[] ()
@@ -56,15 +56,15 @@ namespace Util
 			},
 			interval
 		};
-		</code>
+		\endcode
 	 * or
-	 *	<code>
+	 *	\code
 	   new Util::DelayedExecutor
 	   {
 		   someCallable,
 		   interval
 	   };
-	   </code>
+	   \endcode
 	 */
 	class UTIL_SLL_API DelayedExecutor : QObject
 	{
