@@ -37,9 +37,9 @@ namespace LeechCraft
 namespace Util
 {
 	FindNotification::FindNotification (ICoreProxy_ptr proxy, QWidget *parent)
-	: Util::PageNotification (parent)
-	, Ui_ (new Ui::FindNotification)
-	, EscShortcut_ (new QShortcut (QString ("Esc"), this, SLOT (reject ())))
+	: Util::PageNotification { parent }
+	, Ui_ { new Ui::FindNotification }
+	, EscShortcut_ { new QShortcut { Qt::Key_Escape, this, SLOT (reject ()) } }
 	{
 		Ui_->setupUi (this);
 
@@ -47,8 +47,9 @@ namespace Util
 
 		EscShortcut_->setContext (Qt::WidgetWithChildrenShortcut);
 
-		const auto addon = new Util::ClearLineEditAddon (proxy, Ui_->Pattern_);
+		const auto addon = new Util::ClearLineEditAddon { proxy, Ui_->Pattern_ };
 		addon->SetEscClearsEdit (false);
+
 	}
 
 	FindNotification::~FindNotification ()
@@ -73,8 +74,8 @@ namespace Util
 
 	void FindNotification::SetSuccessful (bool success)
 	{
-		QString ss = QString ("QLineEdit {"
-				"background-color:rgb(");
+		auto ss = QString { "QLineEdit {"
+				"background-color:rgb(" };
 		if (!success)
 			ss.append ("255,0,0");
 		else
