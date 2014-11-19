@@ -38,6 +38,7 @@ add_library (leechcraft-util-gui${LC_LIBSUFFIX} SHARED
 	)
 target_link_libraries (leechcraft-util-gui${LC_LIBSUFFIX}
 	leechcraft-util-network${LC_LIBSUFFIX}
+	leechcraft-util-shortcuts${LC_LIBSUFFIX}
 	)
 set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-gui${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
