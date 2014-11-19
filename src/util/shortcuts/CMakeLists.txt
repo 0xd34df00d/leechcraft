@@ -1,5 +1,6 @@
 set (SHORTCUTS_SRCS
 	shortcutmanager.cpp
+	util.cpp
 	)
 
 foreach (SRC ${SHORTCUTS_SRCS})
