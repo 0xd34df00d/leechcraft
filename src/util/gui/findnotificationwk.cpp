@@ -73,6 +73,8 @@ namespace Util
 	void FindNotificationWk::reject ()
 	{
 		FindNotification::reject ();
+
+		PreviousFindText_ = "";
 		WebView_->page ()->findText ("", QWebPage::HighlightAllOccurrences);
 	}
 }
