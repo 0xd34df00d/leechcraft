@@ -46,7 +46,7 @@ namespace Util
 				func,
 				obj,
 				SIGNAL (activated ()),
-				nullptr
+				parent
 			};
 		}
 	}
