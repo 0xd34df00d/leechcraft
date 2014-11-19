@@ -557,7 +557,6 @@ namespace Poshuku
 		Reload_->setShortcuts (proxy->GetShortcuts (object, "BrowserReload_"));
 		Stop_->setShortcuts (proxy->GetShortcuts (object, "BrowserStop_"));
 		Add2Favorites_->setShortcuts (proxy->GetShortcuts (object, "BrowserAdd2Favorites_"));
-		Find_->setShortcuts (proxy->GetShortcuts (object, "BrowserFind_"));
 		FindNext_->setShortcuts (proxy->GetShortcuts (object, "BrowserFindNext_"));
 		FindPrevious_->setShortcuts (proxy->GetShortcuts (object, "BrowserFindPrevious_"));
 		Print_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrint_"));
@@ -704,7 +703,6 @@ namespace Poshuku
 	{
 		QMap<QString, QAction*> name2act;
 		_LC_EXPANDER ((Add2Favorites_)
-				(Find_)
 				(FindNext_)
 				(FindPrevious_)
 				(Print_)
@@ -731,7 +729,6 @@ namespace Poshuku
 	{
 		QMap<QString, ActionInfo> result;
 		_L (Add2Favorites_, tr ("Ctrl+D"));
-		_L (Find_, tr ("Ctrl+F"));
 		_L (FindNext_, tr ("F3"));
 		_L (FindPrevious_, tr ("Shift+F3"));
 		_L (Print_, tr ("Ctrl+P"));
