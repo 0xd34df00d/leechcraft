@@ -29,7 +29,10 @@
 
 #include "findnotification.h"
 #include <QShortcut>
+#include <interfaces/core/ishortcutproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "clearlineeditaddon.h"
+#include "util/shortcuts/util.h"
 #include "ui_findnotification.h"
 
 namespace LeechCraft
@@ -50,6 +53,17 @@ namespace Util
 		const auto addon = new Util::ClearLineEditAddon { proxy, Ui_->Pattern_ };
 		addon->SetEscClearsEdit (false);
 
+		const auto coreInstance = proxy->GetPluginsManager ()->
+				GetPluginByID ("org.LeechCraft.CoreInstance");
+		const auto scProxy = proxy->GetShortcutProxy ();
+
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Show"),
+				[this]
+				{
+					show ();
+					setFocus ();
+				},
+				parent);
 	}
 
 	FindNotification::~FindNotification ()
