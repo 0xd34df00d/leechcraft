@@ -57,12 +57,13 @@ namespace Util
 
 	void FindNotificationWk::handleNext (const QString& text, FindNotification::FindFlags findFlags)
 	{
-		const auto flags = ToPageFlags (findFlags) | QWebPage::HighlightAllOccurrences;
+		const auto flags = ToPageFlags (findFlags);
 
 		if (PreviousFindText_ != text)
 		{
-			WebView_->page ()->findText (QString (), flags);
-			WebView_->page ()->findText (text, flags);
+			const auto nflags = flags | QWebPage::HighlightAllOccurrences;
+			WebView_->page ()->findText ({}, nflags);
+			WebView_->page ()->findText (text, nflags);
 			PreviousFindText_ = text;
 		}
 
