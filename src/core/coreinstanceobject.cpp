@@ -201,6 +201,12 @@ namespace LeechCraft
 					QString ("F10"),
 					iconMgr->GetIcon ("application-exit")
 				});
+		CoreShortcutManager_->RegisterActionInfo ("Find.Show",
+				{
+					tr ("Open find dialog (where applicable)"),
+					{ QString { "Ctrl+F" }, QString ("Ctrl+F3") },
+					iconMgr->GetIcon ("edit-find")
+				});
 
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
