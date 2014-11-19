@@ -29,7 +29,6 @@
 
 #include "util.h"
 #include <QShortcut>
-#include <QtDebug>
 #include <util/sll/slotclosure.h>
 
 namespace LeechCraft
