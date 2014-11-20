@@ -211,12 +211,6 @@ namespace Poshuku
 		Find_->setProperty ("ActionIcon", "edit-find");
 		Find_->setEnabled (false);
 
-		FindNext_ = new QAction (tr ("Find next"), this);
-		FindNext_->setEnabled (false);
-
-		FindPrevious_ = new QAction (tr ("Find previous"), this);
-		FindPrevious_->setEnabled (false);
-
 		Print_ = new QAction (tr ("Print..."),
 				this);
 		Print_->setProperty ("ActionIcon", "document-print");
@@ -288,8 +282,6 @@ namespace Poshuku
 		{
 			const QString tools = "Poshuku";
 			WindowMenus_ [tools] << Find_;
-			WindowMenus_ [tools] << FindNext_;
-			WindowMenus_ [tools] << FindPrevious_;
 			WindowMenus_ [tools] << Util::CreateSeparator (this);
 			WindowMenus_ [tools] << Add2Favorites_;
 			WindowMenus_ [tools] << HistoryAction_;
@@ -505,14 +497,6 @@ namespace Poshuku
 
 		FindDialog_ = new FindDialog (WebView_);
 		FindDialog_->hide ();
-		connect (FindNext_,
-				SIGNAL (triggered ()),
-				FindDialog_,
-				SLOT (findNext ()));
-		connect (FindPrevious_,
-				SIGNAL (triggered ()),
-				FindDialog_,
-				SLOT (findPrevious ()));
 
 		RememberDialog_ = new PasswordRemember (WebView_);
 		RememberDialog_->hide ();
@@ -557,8 +541,6 @@ namespace Poshuku
 		Reload_->setShortcuts (proxy->GetShortcuts (object, "BrowserReload_"));
 		Stop_->setShortcuts (proxy->GetShortcuts (object, "BrowserStop_"));
 		Add2Favorites_->setShortcuts (proxy->GetShortcuts (object, "BrowserAdd2Favorites_"));
-		FindNext_->setShortcuts (proxy->GetShortcuts (object, "BrowserFindNext_"));
-		FindPrevious_->setShortcuts (proxy->GetShortcuts (object, "BrowserFindPrevious_"));
 		Print_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrint_"));
 		PrintPreview_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrintPreview_"));
 		ScreenSave_->setShortcuts (proxy->GetShortcuts (object, "BrowserScreenSave_"));
@@ -703,8 +685,6 @@ namespace Poshuku
 	{
 		QMap<QString, QAction*> name2act;
 		_LC_EXPANDER ((Add2Favorites_)
-				(FindNext_)
-				(FindPrevious_)
 				(Print_)
 				(PrintPreview_)
 				(ScreenSave_)
@@ -729,8 +709,6 @@ namespace Poshuku
 	{
 		QMap<QString, ActionInfo> result;
 		_L (Add2Favorites_, tr ("Ctrl+D"));
-		_L (FindNext_, tr ("F3"));
-		_L (FindPrevious_, tr ("Shift+F3"));
 		_L (Print_, tr ("Ctrl+P"));
 		_L (PrintPreview_, tr ("Ctrl+Shift+P"));
 		_L (ScreenSave_, Qt::Key_F12);
@@ -1138,8 +1116,6 @@ namespace Poshuku
 	{
 		Add2Favorites_->setEnabled (true);
 		Find_->setEnabled (true);
-		FindNext_->setEnabled (true);
-		FindPrevious_->setEnabled (true);
 		Print_->setEnabled (true);
 		PrintPreview_->setEnabled (true);
 		ScreenSave_->setEnabled (true);

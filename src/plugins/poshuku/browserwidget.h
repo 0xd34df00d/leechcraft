@@ -79,8 +79,6 @@ namespace Poshuku
 		QToolBar *ToolBar_;
 		QAction *Add2Favorites_;
 		QAction *Find_;
-		QAction *FindNext_;
-		QAction *FindPrevious_;
 		QAction *Print_;
 		QAction *PrintPreview_;
 		QAction *ScreenSave_;
