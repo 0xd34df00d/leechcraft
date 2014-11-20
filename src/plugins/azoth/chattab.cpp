@@ -1573,18 +1573,6 @@ namespace Azoth
 		auto shortcut = new QShortcut (openLinkInfo.Seqs_.value (0),
 				this, SLOT (handleOpenLastLink ()), 0, Qt::WidgetWithChildrenShortcut);
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
-
-		auto findShortcut = new QShortcut (this);
-		findShortcut->setContext (Qt::WidgetWithChildrenShortcut);
-		findShortcut->setKey (QString ("Ctrl+F"));
-		connect (findShortcut,
-				SIGNAL (activated ()),
-				ChatFinder_,
-				SLOT (show ()));
-		connect (findShortcut,
-				SIGNAL (activated ()),
-				ChatFinder_,
-				SLOT (setFocus ()));
 	}
 
 	void ChatTab::InitEntry ()
