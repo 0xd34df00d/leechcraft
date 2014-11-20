@@ -207,6 +207,18 @@ namespace LeechCraft
 					{ QString { "Ctrl+F" }, QString ("Ctrl+F3") },
 					iconMgr->GetIcon ("edit-find")
 				});
+		CoreShortcutManager_->RegisterActionInfo ("Find.Prev",
+				{
+					tr ("Find previous (where applicable)"),
+					QString { "Shift+F3" },
+					{}
+				});
+		CoreShortcutManager_->RegisterActionInfo ("Find.Next",
+				{
+					tr ("Find next (where applicable)"),
+					QString { "F3" },
+					{}
+				});
 
 		Classes_ << SettingsTab_->GetTabClassInfo ();
 
