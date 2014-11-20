@@ -50,5 +50,15 @@ namespace Util
 			};
 		}
 	}
+
+	void CreateShortcuts (const QList<QKeySequence>& shortcuts,
+			QObject *object, const char *metamethod, QWidget *parent)
+	{
+		for (const auto& sc : shortcuts)
+			QObject::connect (new QShortcut { sc, parent },
+					SIGNAL (activated ()),
+					object,
+					metamethod);
+	}
 }
 }

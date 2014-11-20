@@ -34,6 +34,7 @@
 
 class QKeySequence;
 class QWidget;
+class QObject;
 
 template<typename T>
 class QList;
@@ -44,5 +45,8 @@ namespace Util
 {
 	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>&,
 			const std::function<void ()>&, QWidget *parent);
+
+	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>&,
+			QObject *object, const char *metamethod, QWidget *parent);
 }
 }
