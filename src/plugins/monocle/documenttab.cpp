@@ -584,7 +584,6 @@ namespace Monocle
 		Toolbar_->addSeparator ();
 
 		FindAction_ = new QAction (tr ("Find..."), this);
-		FindAction_->setShortcut (QString ("Ctrl+F"));
 		FindAction_->setProperty ("ActionIcon", "edit-find");
 		FindAction_->setEnabled (false);
 		connect (FindAction_,
@@ -596,9 +595,6 @@ namespace Monocle
 				FindDialog_,
 				SLOT (setFocus ()));
 		Toolbar_->addAction (FindAction_);
-
-		new QShortcut (QString ("F3"), FindDialog_, SLOT (findNext ()));
-		new QShortcut (QString ("Shift+F3"), FindDialog_, SLOT (findPrevious ()));
 
 		Toolbar_->addSeparator ();
 
