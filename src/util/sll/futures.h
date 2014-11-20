@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <type_traits>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include "slotclosure.h"
@@ -108,7 +109,7 @@ namespace Util
 		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
 				"The passed functor should return a QFuture.");
 
-		using RetType_t = typename detail::UnwrapFutureType<decltype (f (args...))>::type;
+		using RetType_t = typename detail::UnwrapFutureType<typename std::result_of<Executor (Args...)>::type>::type;
 		const auto watcher = new QFutureWatcher<RetType_t> { parent };
 
 		new SlotClosure<DeleteLaterPolicy>
