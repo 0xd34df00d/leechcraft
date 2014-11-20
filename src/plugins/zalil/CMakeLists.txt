@@ -15,7 +15,7 @@ set (SRCS
 	servicesmanager.cpp
 	zalil.cpp
 	)
-#CreateTrs("zalil" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("zalil" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("zalil" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_zalil SHARED
