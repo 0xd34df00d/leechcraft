@@ -64,6 +64,10 @@ namespace Util
 					setFocus ();
 				},
 				parent);
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Next"),
+				this, SLOT (findNext ()), parent);
+		CreateShortcuts (scProxy->GetShortcuts (coreInstance, "Find.Prev"),
+				this, SLOT (findPrevious ()), parent);
 	}
 
 	FindNotification::~FindNotification ()
