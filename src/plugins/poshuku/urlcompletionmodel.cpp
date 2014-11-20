@@ -45,6 +45,7 @@ namespace Poshuku
 	: QAbstractItemModel { parent }
 	, ValidateTimer_ { new QTimer { this } }
 	{
+		ValidateTimer_->setSingleShot (true);
 		connect (ValidateTimer_,
 				SIGNAL (timeout ()),
 				this,
