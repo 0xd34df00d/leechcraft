@@ -1519,23 +1519,13 @@ namespace Azoth
 				{
 					{
 						"org.LC.Plugins.Azoth.SourceID",
-						ANStringFieldValue
-						{
-							QRegExp { entry->GetEntryID (), Qt::CaseSensitive, QRegExp::FixedString },
-							true
-						}
+						ANStringFieldValue { entry->GetEntryID () }
 					},
 					{
 						"org.LC.Plugins.Azoth.NewStatus",
 						ANStringFieldValue
 						{
-							QRegExp
-							{
-								Core::Instance ().GetPluginProxy ()->StateToString (SOnline),
-								Qt::CaseSensitive,
-								QRegExp::FixedString
-							},
-							true
+							Core::Instance ().GetPluginProxy ()->StateToString (SOnline)
 						}
 					}
 				});
