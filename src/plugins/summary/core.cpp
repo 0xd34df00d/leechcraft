@@ -246,7 +246,7 @@ namespace Summary
 
 		Current_ = CreateSummaryWidget ();
 
-		Q_FOREACH (const auto& pair, info.DynProperties_)
+		for (const auto& pair : info.DynProperties_)
 			Current_->setProperty (pair.first, pair.second);
 
 		Current_->RestoreState (info.Data_);

@@ -175,10 +175,10 @@ namespace Monocle
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const auto& info, infos)
+		for (const auto& info : infos)
 		{
 			auto tab = new DocumentTab (DocTabInfo_, this);
-			Q_FOREACH (const auto& pair, info.DynProperties_)
+			for (const auto& pair : info.DynProperties_)
 				tab->setProperty (pair.first, pair.second);
 
 			EmitTab (tab);

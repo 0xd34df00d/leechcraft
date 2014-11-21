@@ -481,13 +481,13 @@ namespace Aggregator
 
 	void Aggregator::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const auto& recInfo, infos)
+		for (const auto& recInfo : infos)
 		{
 			qDebug () << Q_FUNC_INFO << recInfo.Data_;
 
 			if (recInfo.Data_ == "aggregatortab")
 			{
-				Q_FOREACH (const auto& pair, recInfo.DynProperties_)
+				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
 				TabOpenRequested (Impl_->TabInfo_.TabClass_);
