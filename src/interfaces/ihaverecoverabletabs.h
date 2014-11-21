@@ -166,6 +166,30 @@ public:
 	 * are restored.
 	 */
 	virtual void RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos) = 0;
+
+	/** @brief Checks if there is a tab similar to the one defined by \em data.
+	 *
+	 * The \em data is guaranteed to be obtained from a tab belonging
+	 * to the plugin being queried. That is, no checks for the tab
+	 * belonging to the plugin should be made.
+	 *
+	 * @param[in] data The tab recover data previously obtained from
+	 * IRecoverableTab::GetTabRecoverData()
+	 * @param[in] existing The list of existing tabs, provided for convenience.
+	 * @return Whether the tab similar to the one defined by \em data
+	 * exists already.
+	 */
+	virtual bool HasSimilarTab (const QByteArray& data,
+			const QList<QByteArray>& existing) const = 0;
+protected:
+	template<typename T>
+	static bool StandardSimilarImpl (const QByteArray& data,
+			const QList<QByteArray>& existing, const T& f)
+	{
+		const auto& thisData = f (data);
+		return std::any_of (existing.begin (), existing.end (),
+				[&thisData, &f] (const QByteArray& other) { return thisData == f (other); });
+	}
 };
 
 Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0");

@@ -258,6 +258,16 @@ namespace Woodpecker
 						<< recInfo.Data_;
 		}
 	}
+
+	bool Plugin::HasSimilarTab (const QByteArray& data,
+			const QList<QByteArray>& existing) const
+	{
+		// TODO implement me
+#pragma warning Implement me.
+		Q_UNUSED (data)
+		Q_UNUSED (existing)
+		return false;
+	}
 }
 }
 }

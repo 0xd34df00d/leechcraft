@@ -210,6 +210,11 @@ namespace LackMan
 						<< "unknown context"
 						<< recInfo.Data_;
 	}
+
+	bool Plugin::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
+	{
+		return true;
+	}
 }
 }
 

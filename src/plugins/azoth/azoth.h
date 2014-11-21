@@ -110,6 +110,7 @@ namespace Azoth
 		void TabOpenRequested (const QByteArray&);
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo() const;

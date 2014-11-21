@@ -499,6 +499,11 @@ namespace Aggregator
 		}
 	}
 
+	bool Aggregator::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
+	{
+		return true;
+	}
+
 	QByteArray Aggregator::GetTabRecoverData () const
 	{
 		return "aggregatortab";

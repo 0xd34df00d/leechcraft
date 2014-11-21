@@ -75,6 +75,7 @@ namespace Popishu
 		std::shared_ptr<Util::XmlSettingsDialog> GetSettingsDialog () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	private:
 		EditorPage* MakeEditorPage ();
 		void AnnouncePage (EditorPage*);

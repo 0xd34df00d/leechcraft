@@ -378,12 +378,24 @@ namespace Poshuku
 
 	void Poshuku::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const TabRecoverInfo& info, infos)
+		for (const auto& info : infos)
 		{
 			auto bw = Core::Instance ().NewURL (QUrl (), false, info.DynProperties_);
 			bw->SetTabRecoverData (info.Data_);
 			emit tabRecovered (info.Data_, bw);
 		}
+	}
+
+	bool Poshuku::HasSimilarTab (const QByteArray& data, const QList<QByteArray>& existing) const
+	{
+		return StandardSimilarImpl (data, existing,
+				[] (const QByteArray& data)
+				{
+					QUrl url;
+					QDataStream str { data };
+					str >> url;
+					return url;
+				});
 	}
 
 	void Poshuku::InitConnections ()

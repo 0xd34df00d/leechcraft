@@ -187,6 +187,19 @@ namespace Monocle
 		}
 	}
 
+	bool Plugin::HasSimilarTab (const QByteArray& data, const QList<QByteArray>& other) const
+	{
+		return StandardSimilarImpl (data, other,
+				[] (const QByteArray& data)
+				{
+					quint8 version = 0;
+					QString path;
+					QDataStream str { data };
+					str >> version >> path;
+					return std::make_tuple (version, path);
+				});
+	}
+
 	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return Core::Instance ().GetShortcutManager( )->GetActionInfo ();

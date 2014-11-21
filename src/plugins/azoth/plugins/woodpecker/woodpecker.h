@@ -84,7 +84,9 @@ namespace Woodpecker
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		bool HasSimilarTab (const QByteArray& data, const QList<QByteArray>&) const;
 
 		/** @brief Create new tab with certain parameters
 		 *
@@ -96,7 +98,6 @@ namespace Woodpecker
 		void AddTab (const TabClassInfo& tc, const QString& name = QString (),
 					 const FeedMode mode = FeedMode::HomeTimeline,
 					 const KQOAuthParameters& params = KQOAuthParameters ());
-
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

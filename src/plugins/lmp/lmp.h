@@ -109,6 +109,7 @@ namespace LMP
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;

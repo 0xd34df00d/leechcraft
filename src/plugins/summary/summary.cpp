@@ -148,6 +148,11 @@ namespace Summary
 	{
 		Core::Instance ().RecoverTabs (infos);
 	}
+
+	bool Summary::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
+	{
+		return true;
+	}
 }
 }
 

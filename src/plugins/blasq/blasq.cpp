@@ -143,6 +143,19 @@ namespace Blasq
 		}
 	}
 
+	bool Plugin::HasSimilarTab (const QByteArray& data, const QList<QByteArray>& existing) const
+	{
+		return StandardSimilarImpl (data, existing,
+				[] (const QByteArray& data)
+				{
+					QByteArray acc;
+					QString coll;
+					QDataStream str { data };
+					str >> acc >> coll;
+					return std::make_tuple (acc, coll);
+				});
+	}
+
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
 	{
 		QSet<QByteArray> result;

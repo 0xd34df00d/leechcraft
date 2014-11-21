@@ -83,9 +83,9 @@ namespace Blogique
 		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	private:
 		void CreateTab ();
-
 	signals:
 		void addNewTab (const QString& name, QWidget *tabContents);
 		void removeTab (QWidget *tabContents);

@@ -296,6 +296,11 @@ namespace Azoth
 		}
 	}
 
+	bool Plugin::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
+	{
+		return false;
+	}
+
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 	{
 		Core::Instance ().GetShortcutManager ()->SetShortcut (id, seqs);

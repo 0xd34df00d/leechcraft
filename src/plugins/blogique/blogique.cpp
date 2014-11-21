@@ -186,7 +186,7 @@ namespace Blogique
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
-		Q_FOREACH (const TabRecoverInfo& recInfo, infos)
+		for (const auto& recInfo : infos)
 		{
 			QDataStream str (recInfo.Data_);
 			qint8 version;
@@ -216,6 +216,11 @@ namespace Blogique
 						<< "unknown version"
 						<< version;
 		}
+	}
+
+	bool Plugin::HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const
+	{
+		return false;
 	}
 
 	void Plugin::CreateTab ()

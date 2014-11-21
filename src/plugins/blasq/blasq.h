@@ -80,7 +80,8 @@ namespace Blasq
 		TabClasses_t GetTabClasses () const;
 		void TabOpenRequested (const QByteArray&);
 
-		void RecoverTabs (const QList<TabRecoverInfo>& );
+		void RecoverTabs (const QList<TabRecoverInfo>&);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);

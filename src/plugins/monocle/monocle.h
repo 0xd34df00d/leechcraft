@@ -88,6 +88,7 @@ namespace Monocle
 		void AddPlugin (QObject*);
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 
 		QMap<QString, ActionInfo> GetActionInfo () const;
 		void SetShortcut (const QString&, const QKeySequences_t&);

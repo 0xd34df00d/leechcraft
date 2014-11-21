@@ -128,6 +128,7 @@ namespace Aggregator
 		void AddPlugin (QObject*);
 
 		void RecoverTabs (const QList<TabRecoverInfo>& infos);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 
 		QByteArray GetTabRecoverData () const;
 		QIcon GetTabRecoverIcon () const;

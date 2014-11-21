@@ -71,6 +71,7 @@ namespace Summary
 		QTreeView* GetCurrentView () const;
 
 		void RecoverTabs (const QList<TabRecoverInfo>&);
+		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

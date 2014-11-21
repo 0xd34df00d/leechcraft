@@ -150,6 +150,19 @@ namespace Popishu
 		}
 	}
 
+	bool Plugin::HasSimilarTab (const QByteArray& data, const QList<QByteArray>& others) const
+	{
+		return StandardSimilarImpl (data, others,
+				[] (const QByteArray& data)
+				{
+					QByteArray id;
+					QString filename;
+					QDataStream str { data };
+					str >> id >> filename;
+					return std::make_tuple (id, filename);
+				});
+	}
+
 	EditorPage* Plugin::MakeEditorPage ()
 	{
 		auto result = new EditorPage (Proxy_, TabClass_, this);
