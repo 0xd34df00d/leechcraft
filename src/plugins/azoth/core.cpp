@@ -1427,6 +1427,18 @@ namespace Azoth
 				QVariant::String,
 				commonFields);
 
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.ParentSourceName",
+				tr ("Sender's parent entry name"),
+				tr ("Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				QVariant::String,
+				commonFields);
+
+		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.ParentSourceID",
+				tr ("Sender's parent ID"),
+				tr ("Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant."),
+				QVariant::String,
+				commonFields);
+
 		ANFields_ << ANFieldData ("org.LC.Plugins.Azoth.SourceGroups",
 				tr ("Sender groups"),
 				tr ("Groups to which the sender belongs."),
