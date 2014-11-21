@@ -322,10 +322,10 @@ namespace Azoth
 		const auto& status = CLTooltipManager::Status2Str (entrySt, &azothProxy);
 
 		const auto& text = variant.isEmpty () ?
-				Core::tr ("%1 is now %2.")
+				tr ("%1 is now %2.")
 					.arg (name)
 					.arg (status) :
-				Core::tr ("%1/%2 is now %3.")
+				tr ("%1/%2 is now %3.")
 					.arg (name)
 					.arg (variant)
 					.arg (status);
@@ -335,8 +335,9 @@ namespace Azoth
 
 		BuildNotification (e, entry, "StatusChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue<QPixmap> (QPixmap::fromImage (entry->GetAvatar ()));
+
+		const auto& avatarPx = QPixmap::fromImage (entry->GetAvatar ());
+		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (avatarPx);
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
