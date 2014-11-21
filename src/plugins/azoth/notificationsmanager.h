@@ -66,6 +66,7 @@ namespace Azoth
 		void NotifyWithReason (QObject*, const QString&,
 				const char*, const QString&,
 				const QString&, const QString&);
+		void HandleStatusChanged (ICLEntry*, const EntryStatus&, const QString&);
 	public slots:
 		void handleClearUnreadMsgCount (QObject*);
 	private slots:

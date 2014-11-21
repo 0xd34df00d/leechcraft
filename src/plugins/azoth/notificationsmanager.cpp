@@ -303,6 +303,52 @@ namespace Azoth
 		EntityMgr_->HandleEntity (e);
 	}
 
+	void NotificationsManager::HandleStatusChanged (ICLEntry *entry,
+			const EntryStatus& entrySt, const QString& variant)
+	{
+		const auto acc = entry->GetParentAccount ();
+		if (!LastAccountStatusChange_.contains (acc) ||
+				LastAccountStatusChange_ [acc].secsTo (QDateTime::currentDateTime ()) < 5)
+			return;
+
+		const auto extAcc = qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ()->GetQObject ());
+		if (extAcc &&
+				extAcc->GetSelfContact () == entry->GetQObject ())
+			return;
+
+		ProxyObject azothProxy;
+
+		const auto& name = entry->GetEntryName ();
+		const auto& status = CLTooltipManager::Status2Str (entrySt, &azothProxy);
+
+		const auto& text = variant.isEmpty () ?
+				Core::tr ("%1 is now %2.")
+					.arg (name)
+					.arg (status) :
+				Core::tr ("%1/%2 is now %3.")
+					.arg (name)
+					.arg (variant)
+					.arg (status);
+
+		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
+		e.Mime_ += "+advanced";
+
+		BuildNotification (e, entry, "StatusChangeEvent");
+		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
+		e.Additional_ ["NotificationPixmap"] =
+				QVariant::fromValue<QPixmap> (QPixmap::fromImage (entry->GetAvatar ()));
+
+		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
+		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
+
+		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
+		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = azothProxy.StateToString (entrySt.State_);
+
+		EntityMgr_->HandleEntity (e);
+	}
+
+
 	void NotificationsManager::handleClearUnreadMsgCount (QObject *entryObj)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
@@ -410,47 +456,7 @@ namespace Azoth
 					<< sender ();
 			return;
 		}
-
-		const auto acc = entry->GetParentAccount ();
-		if (!LastAccountStatusChange_.contains (acc) ||
-				LastAccountStatusChange_ [acc].secsTo (QDateTime::currentDateTime ()) < 5)
-			return;
-
-		const auto extAcc = qobject_cast<IExtSelfInfoAccount*> (entry->GetParentAccount ()->GetQObject ());
-		if (extAcc &&
-				extAcc->GetSelfContact () == entry->GetQObject ())
-			return;
-
-		ProxyObject azothProxy;
-
-		const auto& name = entry->GetEntryName ();
-		const auto& status = CLTooltipManager::Status2Str (entrySt, &azothProxy);
-
-		const auto& text = variant.isEmpty () ?
-				Core::tr ("%1 is now %2.")
-					.arg (name)
-					.arg (status) :
-				Core::tr ("%1/%2 is now %3.")
-					.arg (name)
-					.arg (variant)
-					.arg (status);
-
-		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
-		e.Mime_ += "+advanced";
-
-		BuildNotification (e, entry);
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue<QPixmap> (QPixmap::fromImage (entry->GetAvatar ()));
-
-		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
-		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
-
-		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
-		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = azothProxy.StateToString (entrySt.State_);
-
-		EntityMgr_->HandleEntity (e);
+		HandleStatusChanged (entry, entrySt, variant);
 	}
 
 	namespace
