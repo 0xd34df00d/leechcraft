@@ -327,7 +327,7 @@ namespace TabSessManager
 	{
 		auto tabs = GetSession (name, Proxy_);
 
-		QHash<QObject*, QSet<QByteArray>> plugin2recoveries;
+		QHash<QObject*, QList<QByteArray>> plugin2recoveries;
 		for (const auto window : Tabs_)
 			for (const auto tab : window)
 			{
@@ -343,9 +343,14 @@ namespace TabSessManager
 		{
 			const auto& present = plugin2recoveries.value (pair.first);
 
+			const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first);
 			auto& recList = pair.second;
 			recList.erase (std::remove_if (recList.begin (), recList.end (),
-						[&present] (const RecInfo& info) { return present.contains (info.Data_); }),
+						[&present, ihrt] (const RecInfo& info)
+						{
+							return present.contains (info.Data_) ||
+									ihrt->HasSimilarTab (info.Data_, present);
+						}),
 					recList.end ());
 		}
 
