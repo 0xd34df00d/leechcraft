@@ -400,14 +400,7 @@ namespace LMP
 	bool Plugin::HasSimilarTab (const QByteArray& data, const QList<QByteArray>& others) const
 	{
 		return StandardSimilarImpl (data, others,
-				[] (const QByteArray& data)
-				{
-					QByteArray key;
-					QString artist;
-					QDataStream str { data };
-					str >> key >> artist;
-					return std::make_tuple (key, artist);
-				});
+				[] (const QByteArray& data) { return data; });
 	}
 
 	QSet<QByteArray> Plugin::GetExpectedPluginClasses () const
