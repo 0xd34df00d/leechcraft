@@ -13,6 +13,7 @@ add_library (leechcraft-util-shortcuts${LC_LIBSUFFIX} SHARED
 	)
 target_link_libraries (leechcraft-util-shortcuts${LC_LIBSUFFIX}
 	leechcraft-util-xpc${LC_LIBSUFFIX}
+	leechcraft-util-sll${LC_LIBSUFFIX}
 	)
 set_property (TARGET leechcraft-util-shortcuts${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-shortcuts${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
