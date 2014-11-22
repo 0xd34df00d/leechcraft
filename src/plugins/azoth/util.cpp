@@ -81,6 +81,12 @@ namespace Azoth
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceName"] = other->GetEntryName ();
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceID"] = other->GetEntryID ();
 		e.Additional_ ["org.LC.Plugins.Azoth.SourceGroups"] = other->Groups ();
+
+		if (const auto parent = other->GetParentCLEntry ())
+		{
+			e.Additional_ ["org.LC.Plugins.Azoth.ParentSourceID"] = parent->GetEntryID ();
+			e.Additional_ ["org.LC.Plugins.Azoth.ParentSourceName"] = parent->GetEntryName ();
+		}
 	}
 
 	QString GetActivityIconName (const QString& general, const QString& specific)
