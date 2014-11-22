@@ -324,6 +324,11 @@ namespace Azoth
 						.arg (name)
 						.arg (variant)
 						.arg (status);
+			else if (const auto parent = entry->GetParentCLEntry ())
+				return NotificationsManager::tr ("%1 in room %2 is now %3.")
+						.arg (name)
+						.arg (parent->GetEntryName ())
+						.arg (status);
 			else
 				return NotificationsManager::tr ("%1 is now %2.")
 						.arg (name)
