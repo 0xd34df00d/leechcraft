@@ -293,6 +293,12 @@ namespace LMP
 		if (e.Mime_ == "x-leechcraft/power-state-changed")
 			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 
+		if (e.Mime_ == "x-leechcraft/data-filter-request")
+			return e.Entity_.type () == QVariant::String &&
+						e.Entity_.toString ().size () < 80 ?
+					EntityTestHandleResult { EntityTestHandleResult::PHigh } :
+					EntityTestHandleResult {};
+
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
@@ -329,6 +335,11 @@ namespace LMP
 				Core::Instance ().GetRadioManager ()->HandleWokeUp ();
 			}
 
+			return;
+		}
+		if (e.Mime_ == "x-leechcraft/data-filter-request")
+		{
+			handleArtistBrowseRequested (e.Entity_.toString ().trimmed ());
 			return;
 		}
 
@@ -426,6 +437,24 @@ namespace LMP
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return Core::Instance ().GetProgressManager ()->GetModel ();
+	}
+
+	QString Plugin::GetFilterVerb () const
+	{
+		return tr ("Show artist information");
+	}
+
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	{
+		return
+		{
+			{
+				GetUniqueID () + ".ArtistBrowser",
+				tr ("Show artist information"),
+				tr ("Search for artist biography, similar artists, releases and so on."),
+				ArtistBrowserTC_.Icon_
+			}
+		};
 	}
 
 	QString Plugin::GetDiagInfoString () const

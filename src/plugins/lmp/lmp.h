@@ -39,6 +39,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/idatafilter.h>
 #include <interfaces/ihavediaginfo.h>
 
 namespace LeechCraft
@@ -58,6 +59,7 @@ namespace LMP
 				 , public IHaveShortcuts
 				 , public IPluginReady
 				 , public IJobHolder
+				 , public IDataFilter
 				 , public IHaveDiagInfo
 	{
 		Q_OBJECT
@@ -70,6 +72,7 @@ namespace LMP
 				IHaveShortcuts
 				IPluginReady
 				IJobHolder
+				IDataFilter
 				IHaveDiagInfo)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP")
@@ -118,6 +121,9 @@ namespace LMP
 		void AddPlugin (QObject* plugin);
 
 		QAbstractItemModel* GetRepresentation () const;
+
+		QString GetFilterVerb () const;
+		QList<FilterVariant> GetFilterVariants () const;
 
 		QString GetDiagInfoString () const;
 	private:
