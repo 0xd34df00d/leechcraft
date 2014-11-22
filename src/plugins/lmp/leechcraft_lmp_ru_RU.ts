@@ -588,27 +588,27 @@
 <context>
     <name>LeechCraft::LMP::NPStateUpdater</name>
     <message>
-        <location filename="npstateupdater.cpp" line="74"/>
+        <location filename="npstateupdater.cpp" line="83"/>
         <source>Playback is stopped.</source>
         <translation>Воспроизведение остановлено.</translation>
     </message>
     <message>
-        <location filename="npstateupdater.cpp" line="76"/>
+        <location filename="npstateupdater.cpp" line="85"/>
         <source>unknown song</source>
         <translation>неизвестная песня</translation>
     </message>
     <message>
-        <location filename="npstateupdater.cpp" line="77"/>
+        <location filename="npstateupdater.cpp" line="86"/>
         <source>unknown album</source>
         <translation>неизвестный альбом</translation>
     </message>
     <message>
-        <location filename="npstateupdater.cpp" line="78"/>
+        <location filename="npstateupdater.cpp" line="87"/>
         <source>unknown artist</source>
         <translation>неизвестный исполнитель</translation>
     </message>
     <message>
-        <location filename="npstateupdater.cpp" line="80"/>
+        <location filename="npstateupdater.cpp" line="89"/>
         <source>Now playing: %1 from %2 by %3</source>
         <translation>Сейчас играется: %1 с %2 от %3</translation>
     </message>
@@ -650,77 +650,77 @@
 <context>
     <name>LeechCraft::LMP::Player</name>
     <message>
-        <location filename="player.cpp" line="550"/>
+        <location filename="player.cpp" line="561"/>
         <source>Radio</source>
         <translation>Радио</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="620"/>
+        <location filename="player.cpp" line="632"/>
         <source>Bitrate</source>
         <translation>Битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="621"/>
+        <location filename="player.cpp" line="633"/>
         <source>Minimum bitrate</source>
         <translation>Минимальный битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="622"/>
+        <location filename="player.cpp" line="634"/>
         <source>Maximum bitrate</source>
         <translation>Максимальный битрейт</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="763"/>
+        <location filename="player.cpp" line="775"/>
         <source>Playlist</source>
         <translation>Список воспроизведения</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="825"/>
+        <location filename="player.cpp" line="843"/>
         <source>paused</source>
         <translation>пауза</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="830"/>
+        <location filename="player.cpp" line="848"/>
         <source>playing</source>
         <translation>играет</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="834"/>
+        <location filename="player.cpp" line="852"/>
         <source>stopped</source>
         <translation>остановлено</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="839"/>
+        <location filename="player.cpp" line="857"/>
         <source>%1 by %2 is now %3</source>
         <translation>%1 от %2 теперь %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1183"/>
+        <location filename="player.cpp" line="1202"/>
         <source>Stream</source>
         <translation>Поток</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1295"/>
+        <location filename="player.cpp" line="1314"/>
         <source>Radio station error: %1.</source>
         <translation>Ошибка радиостанции: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1484"/>
+        <location filename="player.cpp" line="1523"/>
         <source>GStreamer says: %1.</source>
         <translation>GStreamer сообщает: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1489"/>
+        <location filename="player.cpp" line="1528"/>
         <source>Cannot find a proper audio decoder. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Невозможно найти необходимый аудиодекодер. Возможно, у вас не установлены все необходимые модули кодеков.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1493"/>
+        <location filename="player.cpp" line="1532"/>
         <source>Audio source %1 not found, playing next track...</source>
         <translation>Аудиоисточник %1 не найден, играем следующий трек…</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1498"/>
+        <location filename="player.cpp" line="1537"/>
         <source>Audio source %1 is invalid, playing next track...</source>
         <translation>Аудиоисточник %1 некорректен, пробуем следующий…</translation>
     </message>
@@ -1099,69 +1099,80 @@
 <context>
     <name>LeechCraft::LMP::Plugin</name>
     <message>
-        <location filename="lmp.cpp" line="129"/>
-        <location filename="lmp.cpp" line="494"/>
+        <location filename="lmp.cpp" line="130"/>
+        <location filename="lmp.cpp" line="532"/>
         <source>Artist browser</source>
         <translation>Обзор исполнителей</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="130"/>
+        <location filename="lmp.cpp" line="131"/>
         <source>Allows one to browse information about different artists.</source>
         <oldsource>Allows to browse information about different artists.</oldsource>
         <translation>Позволяет просматривать информацию о различных исполнителях.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="187"/>
+        <location filename="lmp.cpp" line="188"/>
         <source>Rescan collection</source>
         <translation>Пересканировать коллекцию</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="194"/>
+        <location filename="lmp.cpp" line="195"/>
         <source>Collection statistics</source>
         <translation>Статистика по коллекции</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="463"/>
+        <location filename="lmp.cpp" line="444"/>
+        <location filename="lmp.cpp" line="453"/>
+        <source>Show artist information</source>
+        <translation>Показать информацию об исполнителе</translation>
+    </message>
+    <message>
+        <location filename="lmp.cpp" line="454"/>
+        <source>Search for artist biography, similar artists, releases and so on.</source>
+        <translation>Поискать биографию исполнителя, похожих исполнителей, релизы и тому подобное.</translation>
+    </message>
+    <message>
+        <location filename="lmp.cpp" line="501"/>
         <source>Play/pause</source>
         <translation>Играть/приостановить</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="464"/>
+        <location filename="lmp.cpp" line="502"/>
         <source>Previous track</source>
         <translation>Предыдущий трек</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="465"/>
+        <location filename="lmp.cpp" line="503"/>
         <source>Next track</source>
         <translation>Следующий трек</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="466"/>
+        <location filename="lmp.cpp" line="504"/>
         <source>Stop playback</source>
         <translation>Остановать воспроизведение</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="467"/>
+        <location filename="lmp.cpp" line="505"/>
         <source>Love track</source>
         <translation>Отметить трек как любимый</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="469"/>
+        <location filename="lmp.cpp" line="507"/>
         <source>Notify about current track</source>
         <translation>Уведомить о текущем треке</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="471"/>
+        <location filename="lmp.cpp" line="509"/>
         <source>Increase volume</source>
         <translation>Увеличить громкость</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="472"/>
+        <location filename="lmp.cpp" line="510"/>
         <source>Decrease volume</source>
         <translation>Уменьшить громкость</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="251"/>
+        <location filename="lmp.cpp" line="254"/>
         <source>LeechCraft Music Player.</source>
         <translation>Музыкальный плеер LeechCraft.</translation>
     </message>
@@ -1760,8 +1771,9 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <source>The following variables are allowed: &amp;lt;em&amp;gt;$artist&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$year&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$album&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$trackNumber&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$title&amp;lt;/em&amp;gt;.</source>
-        <translation>Разрешены следующие переменные: &amp;lt;em&amp;gt;$artist&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$year&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$album&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$trackNumber&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$title&amp;lt;/em&amp;gt;.</translation>
+        <source>The following variables are allowed: &lt;em&gt;$artist&lt;/em&gt;, &lt;em&gt;$year&lt;/em&gt;, &lt;em&gt;$album&lt;/em&gt;, &lt;em&gt;$trackNumber&lt;/em&gt;, &lt;em&gt;$title&lt;/em&gt;.</source>
+        <oldsource>The following variables are allowed: &amp;lt;em&amp;gt;$artist&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$year&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$album&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$trackNumber&amp;lt;/em&amp;gt;, &amp;lt;em&amp;gt;$title&amp;lt;/em&amp;gt;.</oldsource>
+        <translation>Разрешены следующие переменные: &lt;em&gt;$artist&lt;/em&gt;, &lt;em&gt;$year&lt;/em&gt;, &lt;em&gt;$album&lt;/em&gt;, &lt;em&gt;$trackNumber&lt;/em&gt;, &lt;em&gt;$title&lt;/em&gt;.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="35"/>
