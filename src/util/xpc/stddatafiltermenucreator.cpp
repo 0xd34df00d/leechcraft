@@ -30,28 +30,11 @@
 #include "stddatafiltermenucreator.h"
 #include <QVariant>
 #include <QMenu>
+#include <util/sll/slotclosure.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/ientitymanager.h>
 #include "util.h"
-
-namespace LeechCraft
-{
-namespace Util
-{
-	namespace
-	{
-		struct DataFilterActionInfo
-		{
-			Entity Entity_;
-			QObject *Plugin_;
-			QByteArray VarID_;
-		};
-	}
-}
-}
-
-Q_DECLARE_METATYPE (LeechCraft::Util::DataFilterActionInfo)
 
 namespace LeechCraft
 {
@@ -81,18 +64,21 @@ namespace Util
 			searchMenu->menuAction ()->setIcon (ii->GetIcon ());
 			for (const auto& var : vars)
 			{
-				auto act = searchMenu->addAction (var.Name_);
-				const DataFilterActionInfo info =
+				const auto act = searchMenu->addAction (var.Name_);
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
-					entity,
-					plugin,
-					var.ID_
+					[this, entity, plugin, var] () mutable
+					{
+						entity.Additional_ ["DataFilter"] = var.ID_;
+						EntityMgr_->HandleEntity (entity, plugin);
+
+						ChosenPlugin_ = qobject_cast<IInfo*> (plugin)->GetUniqueID ();
+						ChosenVariant_ = var.ID_;
+					},
+					act,
+					SIGNAL (triggered ()),
+					act
 				};
-				act->setData (QVariant::fromValue (info));
-				connect (act,
-						SIGNAL (triggered ()),
-						this,
-						SLOT (handleDataFilterAction ()));
 			}
 		}
 	}
@@ -105,19 +91,6 @@ namespace Util
 	const QByteArray& StdDataFilterMenuCreator::GetChosenVariant () const
 	{
 		return ChosenVariant_;
-	}
-
-	void StdDataFilterMenuCreator::handleDataFilterAction ()
-	{
-		auto action = qobject_cast<QAction*> (sender ());
-		const auto& data = action->data ().value<DataFilterActionInfo> ();
-
-		auto entity = data.Entity_;
-		entity.Additional_ ["DataFilter"] = data.VarID_;
-		EntityMgr_->HandleEntity (entity, data.Plugin_);
-
-		ChosenPlugin_ = qobject_cast<IInfo*> (data.Plugin_)->GetUniqueID ();
-		ChosenVariant_ = data.VarID_;
 	}
 }
 }

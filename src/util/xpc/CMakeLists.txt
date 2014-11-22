@@ -18,6 +18,7 @@ add_library (leechcraft-util-xpc${LC_LIBSUFFIX} SHARED
 	${XPC_SRCS}
 	)
 target_link_libraries (leechcraft-util-xpc${LC_LIBSUFFIX}
+	leechcraft-util-sll${LC_LIBSUFFIX}
 	)
 set_property (TARGET leechcraft-util-xpc${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-xpc${LC_LIBSUFFIX} DESTINATION ${LIBDIR})

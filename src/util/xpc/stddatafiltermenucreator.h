@@ -42,8 +42,6 @@ namespace Util
 {
 	class UTIL_XPC_API StdDataFilterMenuCreator : public QObject
 	{
-		Q_OBJECT
-
 		IEntityManager * const EntityMgr_;
 
 		QByteArray ChosenPlugin_;
@@ -53,8 +51,6 @@ namespace Util
 
 		const QByteArray& GetChosenPlugin () const;
 		const QByteArray& GetChosenVariant () const;
-	private slots:
-		void handleDataFilterAction ();
 	};
 }
 }
