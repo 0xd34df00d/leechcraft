@@ -32,6 +32,7 @@
 #include <memory>
 #include <QSyntaxHighlighter>
 #include <QTextFormat>
+#include <QCache>
 #include <interfaces/ispellcheckprovider.h>
 
 namespace LeechCraft
@@ -46,6 +47,12 @@ namespace Rosenthal
 
 		QTextCharFormat SpellCheckFormat_;
 		const ISpellChecker_ptr Checker_;
+
+		struct SCResult
+		{
+			bool IsCorrect_;
+		};
+		QCache<QString, SCResult> SpellcheckCache_;
 	public:
 		Highlighter (const ISpellChecker_ptr&, QTextDocument*);
 	protected:

@@ -36,10 +36,11 @@ namespace Azoth
 namespace Rosenthal
 {
 	Highlighter::Highlighter (const ISpellChecker_ptr& checker, QTextDocument *parent)
-	: QSyntaxHighlighter (parent)
-	, Checker_ (checker)
+	: QSyntaxHighlighter { parent }
+	, Checker_ { checker }
+	, SpellcheckCache_ { 50 * 1024 }
 	{
-		SpellCheckFormat_.setUnderlineColor (QColor (Qt::red));
+		SpellCheckFormat_.setUnderlineColor ({ Qt::red });
 		SpellCheckFormat_.setUnderlineStyle (QTextCharFormat::SpellCheckUnderline);
 	}
 
@@ -50,7 +51,19 @@ namespace Rosenthal
 		int prevStopPos = 0;
 		for (const auto& str : splitted)
 		{
-			if (str.size () <= 1 || Checker_->IsCorrect (str))
+			if (str.size () <= 1)
+				continue;
+
+			const auto val = SpellcheckCache_ [str];
+
+			const auto isCorrect = val ?
+					val->IsCorrect_ :
+					Checker_->IsCorrect (str);
+
+			if (!val)
+				SpellcheckCache_.insert (str, new SCResult { isCorrect }, str.size ());
+
+			if (isCorrect)
 				continue;
 
 			const int pos = text.indexOf (str, prevStopPos);
