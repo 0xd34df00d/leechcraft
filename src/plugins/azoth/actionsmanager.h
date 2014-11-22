@@ -88,6 +88,7 @@ namespace Azoth
 
 		void handleActionNotifyChangesState ();
 		void handleActionNotifyBecomesOnline ();
+		void handleActionNotifyParticipantEnter ();
 	signals:
 		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *action,

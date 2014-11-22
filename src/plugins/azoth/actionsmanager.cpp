@@ -1040,18 +1040,20 @@ namespace Azoth
 			rerequestReason->setProperty ("Azoth/WithReason", true);
 		}
 
+		auto notifyMenu = new QMenu (tr ("Notify when"));
+		Entry2Actions_ [entry] ["notifywhen"] = notifyMenu->menuAction ();
+		Action2Areas_ [notifyMenu->menuAction ()] << CLEAAContactListCtxtMenu
+				<< CLEAATabCtxtMenu;
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
-			auto notifyMenu = new QMenu (tr ("Notify when"));
-			Entry2Actions_ [entry] ["notifywhen"] = notifyMenu->menuAction ();
-			Action2Areas_ [notifyMenu->menuAction ()] << CLEAAContactListCtxtMenu
-					<< CLEAATabCtxtMenu;
-
 			notifyMenu->addAction (tr ("changes state"),
 					this, SLOT (handleActionNotifyChangesState ()));
 			notifyMenu->addAction (tr ("becomes online"),
 					this, SLOT (handleActionNotifyBecomesOnline ()));
 		}
+		else
+			notifyMenu->addAction (tr ("participant enters the room..."),
+					this, SLOT (handleActionNotifyParticipantEnter ()));
 
 		const auto accObj = entry->GetParentAccount ()->GetQObject ();
 		if (qobject_cast<IHaveServerHistory*> (accObj))
@@ -1527,6 +1529,47 @@ namespace Azoth
 						{
 							Core::Instance ().GetPluginProxy ()->StateToString (SOnline)
 						}
+					}
+				});
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+	}
+
+	void ActionsManager::handleActionNotifyParticipantEnter ()
+	{
+		QAction *action = qobject_cast<QAction*> (sender ());
+		if (!action)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "is not a QAction";
+			return;
+		}
+
+		const auto& nickname = QInputDialog::getText (nullptr,
+				"LeechCraft",
+				tr ("Enter the nick of the participant to alert for:"));
+		if (nickname.isEmpty ())
+			return;
+
+		auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto& hrId = entry->GetHumanReadableID ();
+
+		const auto& e = Util::MakeANRule (tr ("Notify when %1 joins %2")
+					.arg (nickname)
+					.arg (hrId),
+				"org.LeechCraft.Azoth",
+				AN::CatIM,
+				{ AN::TypeIMStatusChange },
+				AN::NotifyPersistent | AN::NotifyTransient | AN::NotifySingleShot,
+				false,
+				{
+					{
+						"org.LC.Plugins.Azoth.SourceName",
+						ANStringFieldValue { nickname }
+					},
+					{
+						"org.LC.Plugins.Azoth.ParentSourceID",
+						ANStringFieldValue { entry->GetEntryID () }
 					}
 				});
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
