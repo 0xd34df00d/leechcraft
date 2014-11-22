@@ -135,7 +135,7 @@ namespace Snails
 						{
 							QObject::tr ("Open"),
 							QObject::tr ("Open the bug page on Bugzilla."),
-							QIcon::fromTheme ("document-open"),
+							QIcon::fromTheme ("tools-report-bug"),
 							[url, bugId] (const Message_ptr&)
 							{
 								const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
