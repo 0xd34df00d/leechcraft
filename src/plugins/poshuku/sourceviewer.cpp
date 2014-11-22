@@ -79,18 +79,6 @@ namespace Poshuku
 			Core::Instance ().GetProxy ()
 		};
 		finder->hide ();
-
-		const auto shortcut = new QShortcut { this };
-		shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-		shortcut->setKey (QString { "Ctrl+F" });
-		connect (shortcut,
-				SIGNAL (activated ()),
-				finder,
-				SLOT (show ()));
-		connect (shortcut,
-				SIGNAL (activated ()),
-				finder,
-				SLOT (setFocus ()));
 	}
 
 	void SourceViewer::SetHtml (const QString& html)
