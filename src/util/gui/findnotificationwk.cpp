@@ -29,6 +29,7 @@
 
 #include "findnotificationwk.h"
 #include <QWebView>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -38,6 +39,20 @@ namespace Util
 	: FindNotification { proxy, near }
 	, WebView_ { near }
 	{
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this]
+			{
+				if (PreviousFindText_.isEmpty ())
+					return;
+
+				ClearFindResults ();
+				findNext ();
+			},
+			near,
+			SIGNAL (loadFinished (bool)),
+			this
+		};
 	}
 
 	QWebPage::FindFlags FindNotificationWk::ToPageFlags (FindFlags flags)
