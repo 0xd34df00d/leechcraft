@@ -147,6 +147,51 @@ namespace Snails
 			}
 		};
 
+		class RedmineProvider : public MessageListActionsProvider
+		{
+		public:
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
+			{
+				const auto& headers = msg->GetVmimeHeader ();
+				if (!headers)
+					return {};
+
+				const auto header = headers->findField ("X-Redmine-Host");
+				if (!header)
+					return {};
+
+				const auto& urlText = header->getValue<vmime::text> ();
+				if (!urlText)
+					return {};
+
+				const auto& url = StringizeCT (*urlText);
+
+				const auto issueHeader = headers->findField ("X-Redmine-Issue-Id");
+				if (!issueHeader)
+					return {};
+
+				const auto& issueText = issueHeader->getValue<vmime::text> ();
+				if (!issueText)
+					return {};
+
+				const auto& issue = StringizeCT (*issueText);
+
+				return {
+						{
+							QObject::tr ("Open"),
+							QObject::tr ("Open the issue page on Redmine."),
+							QIcon::fromTheme ("tools-report-bug"),
+							[url, issue] (const Message_ptr&)
+							{
+								const QUrl fullUrl { "http://" + url + "/issues/" + issue };
+								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
+								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
+							}
+						}
+					};
+			}
+		};
+
 		class ReviewboardProvider : public MessageListActionsProvider
 		{
 		public:
@@ -318,6 +363,7 @@ namespace Snails
 	, Acc_ { acc }
 	{
 		Providers_ << std::make_shared<GithubProvider> ();
+		Providers_ << std::make_shared<RedmineProvider> ();
 		Providers_ << std::make_shared<BugzillaProvider> ();
 		Providers_ << std::make_shared<ReviewboardProvider> ();
 		Providers_ << std::make_shared<UnsubscribeProvider> ();
