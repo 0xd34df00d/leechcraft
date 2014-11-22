@@ -34,7 +34,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	FindNotificationWk::FindNotificationWk (ICoreProxy_ptr proxy, QWebView* near)
+	FindNotificationWk::FindNotificationWk (ICoreProxy_ptr proxy, QWebView *near)
 	: FindNotification { proxy, near }
 	, WebView_ { near }
 	{
@@ -43,14 +43,14 @@ namespace Util
 	QWebPage::FindFlags FindNotificationWk::ToPageFlags (FindFlags flags)
 	{
 		QWebPage::FindFlags pageFlags;
-		auto check = [&pageFlags, flags] (Util::FindNotification::FindFlag ourFlag, QWebPage::FindFlag pageFlag)
+		auto check = [&pageFlags, flags] (FindFlag ourFlag, QWebPage::FindFlag pageFlag)
 		{
 			if (flags & ourFlag)
 				pageFlags |= pageFlag;
 		};
-		check (Util::FindNotification::FindCaseSensitively, QWebPage::FindCaseSensitively);
-		check (Util::FindNotification::FindBackwards, QWebPage::FindBackward);
-		check (Util::FindNotification::FindWrapsAround, QWebPage::FindWrapsAroundDocument);
+		check (FindCaseSensitively, QWebPage::FindCaseSensitively);
+		check (FindBackwards, QWebPage::FindBackward);
+		check (FindWrapsAround, QWebPage::FindWrapsAroundDocument);
 		return pageFlags;
 	}
 
