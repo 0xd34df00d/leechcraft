@@ -64,7 +64,7 @@ namespace Util
 			searchMenu->menuAction ()->setIcon (ii->GetIcon ());
 			for (const auto& var : vars)
 			{
-				const auto act = searchMenu->addAction (var.Name_);
+				const auto act = searchMenu->addAction (var.Icon_, var.Name_);
 				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
 					[this, entity, plugin, var] () mutable
