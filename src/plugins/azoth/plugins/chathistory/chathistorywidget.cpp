@@ -81,9 +81,6 @@ namespace ChatHistory
 				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
 		FindBox_->SetEscCloses (false);
 
-		new QShortcut (QString ("F3"), FindBox_, SLOT (findNext ()));
-		new QShortcut (QString ("Shift+F3"), FindBox_, SLOT (findPrevious ()));
-
 		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
 
