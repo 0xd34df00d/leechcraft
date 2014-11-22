@@ -125,9 +125,6 @@ namespace Lastfmscrobble
 	private slots:
 		void reloadRecommendedEvents ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
 		void gotRecentReleases (const QList<Media::AlbumRelease>&);
 
 		void gotRecommendedEvents (const Media::EventInfos_t&);

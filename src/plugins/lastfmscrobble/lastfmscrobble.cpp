@@ -64,14 +64,6 @@ namespace Lastfmscrobble
 				"lastfmscrobblesettings.xml");
 
 		Auth_ = new Authenticator (proxy->GetNetworkAccessManager (), proxy, this);
-		connect (Auth_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (Auth_,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
 		LFSubmitter_ = new LastFMSubmitter (this);
 		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
