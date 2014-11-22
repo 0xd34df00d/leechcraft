@@ -89,5 +89,10 @@ namespace Util
 	private slots:
 		void handleTimeout ();
 	};
+
+	inline void ExecuteLater (const DelayedExecutor::Actor_f& actor, int delay = 0)
+	{
+		new DelayedExecutor { actor, delay };
+	}
 }
 }
