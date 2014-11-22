@@ -43,8 +43,6 @@ namespace Rosenthal
 {
 	class Highlighter : public QSyntaxHighlighter
 	{
-		Q_OBJECT
-
 		QTextCharFormat SpellCheckFormat_;
 		const ISpellChecker_ptr Checker_;
 
