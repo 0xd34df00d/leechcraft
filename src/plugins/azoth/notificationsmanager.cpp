@@ -151,6 +151,11 @@ namespace Azoth
 					SIGNAL (activityChanged (QString)),
 					this,
 					SLOT (handleActivityChanged (QString)));
+
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto status = entry->GetStatus ();
+		if (status.State_ != SOffline)
+			HandleStatusChanged (entry, status, entry->Variants ().value (0));
 	}
 
 	void NotificationsManager::RemoveCLEntry (QObject *entryObj)
@@ -303,6 +308,29 @@ namespace Azoth
 		EntityMgr_->HandleEntity (e);
 	}
 
+	namespace
+	{
+		QString GetStatusChangeText (const ICLEntry *entry,
+				const EntryStatus& entrySt, const QString& variant, QString status)
+		{
+			const auto& statusString = Qt::escape (entrySt.StatusString_);
+			if (!statusString.isEmpty ())
+				status += " (" + statusString + ")";
+
+			const auto& name = entry->GetEntryName ();
+
+			if (!variant.isEmpty ())
+				return NotificationsManager::tr ("%1/%2 is now %3.")
+						.arg (name)
+						.arg (variant)
+						.arg (status);
+			else
+				return NotificationsManager::tr ("%1 is now %2.")
+						.arg (name)
+						.arg (status);
+		}
+	}
+
 	void NotificationsManager::HandleStatusChanged (ICLEntry *entry,
 			const EntryStatus& entrySt, const QString& variant)
 	{
@@ -316,19 +344,9 @@ namespace Azoth
 				extAcc->GetSelfContact () == entry->GetQObject ())
 			return;
 
-		ProxyObject azothProxy;
+		const auto& status = ProxyObject {}.StateToString (entrySt.State_);
 
-		const auto& name = entry->GetEntryName ();
-		const auto& status = CLTooltipManager::Status2Str (entrySt, &azothProxy);
-
-		const auto& text = variant.isEmpty () ?
-				tr ("%1 is now %2.")
-					.arg (name)
-					.arg (status) :
-				tr ("%1/%2 is now %3.")
-					.arg (name)
-					.arg (variant)
-					.arg (status);
+		const auto& text = GetStatusChangeText (entry, entrySt, variant, status);
 
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
@@ -344,7 +362,7 @@ namespace Azoth
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
-		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = azothProxy.StateToString (entrySt.State_);
+		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = status;
 
 		EntityMgr_->HandleEntity (e);
 	}
