@@ -76,6 +76,8 @@ namespace Util
 		 * @return The find flags in terms of WebKit.
 		 */
 		static QWebPage::FindFlags ToPageFlags (FindFlags findFlags);
+	private:
+		void ClearFindResults ();
 	protected:
 		void handleNext (const QString& text, FindFlags flags);
 		void reject () override;

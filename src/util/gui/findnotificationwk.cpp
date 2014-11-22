@@ -54,6 +54,11 @@ namespace Util
 		return pageFlags;
 	}
 
+	void FindNotificationWk::ClearFindResults ()
+	{
+		PreviousFindText_ = "";
+		WebView_->page ()->findText ("", QWebPage::HighlightAllOccurrences);
+	}
 
 	void FindNotificationWk::handleNext (const QString& text, FindNotification::FindFlags findFlags)
 	{
@@ -74,9 +79,7 @@ namespace Util
 	void FindNotificationWk::reject ()
 	{
 		FindNotification::reject ();
-
-		PreviousFindText_ = "";
-		WebView_->page ()->findText ("", QWebPage::HighlightAllOccurrences);
+		ClearFindResults ();
 	}
 }
 }
