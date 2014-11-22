@@ -276,7 +276,7 @@ namespace LMP
 			emit raiseTab (PlayerTab_);
 		}
 		else if (tc == ArtistBrowserTC_.TabClass_)
-			handleArtistBrowseRequested (QString ());
+			handleArtistBrowseRequested ({});
 		else
 			qWarning () << Q_FUNC_INFO
 					<< "unknown tab class"
@@ -291,7 +291,7 @@ namespace LMP
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		if (e.Mime_ == "x-leechcraft/power-state-changed")
-			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
@@ -307,9 +307,9 @@ namespace LMP
 		if ((fi.exists () && goodExt.contains (fi.suffix ())) ||
 				e.Additional_ ["Action"] == "AudioEnqueuePlay" ||
 				e.Additional_ ["Action"] == "AudioEnqueue")
-			return EntityTestHandleResult (EntityTestHandleResult::PHigh);
+			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 		else
-			return EntityTestHandleResult ();
+			return {};
 	}
 
 	void Plugin::Handle (Entity e)
