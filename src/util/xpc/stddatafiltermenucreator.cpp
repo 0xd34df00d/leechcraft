@@ -40,6 +40,22 @@ namespace LeechCraft
 {
 namespace Util
 {
+	namespace
+	{
+		template<typename T>
+		void AddDatafilterMenuItem (const IDataFilter::FilterVariant& var, QMenu *menu, T actor)
+		{
+				const auto act = menu->addAction (var.Icon_, var.Name_);
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[var, actor] () mutable { actor (var); },
+					act,
+					SIGNAL (triggered ()),
+					act
+				};
+		}
+	}
+
 	StdDataFilterMenuCreator::StdDataFilterMenuCreator (const QVariant& dataVar, IEntityManager *em, QMenu *menu)
 	: QObject (menu)
 	, EntityMgr_ (em)
@@ -60,25 +76,23 @@ namespace Util
 			if (vars.isEmpty ())
 				continue;
 
-			auto searchMenu = menu->addMenu (ii->GetIcon (), idf->GetFilterVerb ());
-			searchMenu->menuAction ()->setIcon (ii->GetIcon ());
-			for (const auto& var : vars)
-			{
-				const auto act = searchMenu->addAction (var.Icon_, var.Name_);
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[this, entity, plugin, var] () mutable
+			const auto actor = [this, entity, plugin] (const IDataFilter::FilterVariant& var) mutable
 					{
 						entity.Additional_ ["DataFilter"] = var.ID_;
 						EntityMgr_->HandleEntity (entity, plugin);
 
 						ChosenPlugin_ = qobject_cast<IInfo*> (plugin)->GetUniqueID ();
 						ChosenVariant_ = var.ID_;
-					},
-					act,
-					SIGNAL (triggered ()),
-					act
-				};
+					};
+
+			if (vars.size () == 1)
+				AddDatafilterMenuItem (vars.value (0), menu, actor);
+			else
+			{
+				auto searchMenu = menu->addMenu (ii->GetIcon (), idf->GetFilterVerb ());
+				searchMenu->menuAction ()->setIcon (ii->GetIcon ());
+				for (const auto& var : vars)
+					AddDatafilterMenuItem (var, searchMenu, actor);
 			}
 		}
 	}
