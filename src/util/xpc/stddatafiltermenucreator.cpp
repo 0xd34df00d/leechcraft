@@ -90,7 +90,6 @@ namespace Util
 			else
 			{
 				auto searchMenu = menu->addMenu (ii->GetIcon (), idf->GetFilterVerb ());
-				searchMenu->menuAction ()->setIcon (ii->GetIcon ());
 				for (const auto& var : vars)
 					AddDatafilterMenuItem (var, searchMenu, actor);
 			}
