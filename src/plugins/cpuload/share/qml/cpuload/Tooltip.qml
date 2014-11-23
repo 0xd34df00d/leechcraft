@@ -78,6 +78,8 @@ Rectangle {
 
                 minYValue: 0
                 maxYValue: 100
+                minXValue: 0
+                maxXValue: loadObj.getPointsCount() - 1
 
                 alpha: 1
                 background: "transparent"
