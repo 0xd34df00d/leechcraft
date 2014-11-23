@@ -36,7 +36,7 @@ Rectangle {
         anchors.fill: parent
 
         cellWidth: 400
-        cellHeight: 100
+        cellHeight: 120
 
         property int desiredRows: Math.ceil(Math.sqrt(count))
 
@@ -61,7 +61,7 @@ Rectangle {
                 anchors.top: parent.top
 
                 width: parent.width
-                height: 100
+                height: 120
 
                 multipoints: [
                         { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
@@ -71,8 +71,10 @@ Rectangle {
                     ]
 
                 leftAxisEnabled: true
-                leftAxisTitle: qsTr ("Load, %")
+                leftAxisTitle: qsTr("Load, %")
                 yGridEnabled: true
+
+                plotTitle: "CPU " + cpuIdx
 
                 minYValue: 0
                 maxYValue: 100
@@ -81,18 +83,6 @@ Rectangle {
                 background: "transparent"
                 textColor: colorProxy.color_TextBox_TextColor
                 gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
-            }
-
-            Text {
-                id: cpuLabel
-                text: "CPU " + cpuIdx
-
-                anchors.top: plot.top
-                anchors.horizontalCenter: parent.horizontalCenter
-
-                color: colorProxy.color_TextBox_TitleTextColor
-
-                font.bold: true
             }
         }
     }
