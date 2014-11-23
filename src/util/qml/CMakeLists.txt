@@ -35,7 +35,7 @@ target_link_libraries (leechcraft-util-qml${LC_LIBSUFFIX}
 	leechcraft-util-network${LC_LIBSUFFIX}
 	leechcraft-util-sys${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-qml${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-util-qml${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-qml${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-qml${LC_LIBSUFFIX} Network Quick QuickWidgets)
