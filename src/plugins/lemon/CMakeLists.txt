@@ -20,6 +20,7 @@ set (SRCS
 	trafficdialog.cpp
 	platformbackend.cpp
 	linuxplatformbackend.cpp
+	xmlsettingsmanager.cpp
 	)
 set (FORMS
 	trafficdialog.ui
@@ -27,7 +28,7 @@ set (FORMS
 QtWrapUi (UIS_H ${FORMS})
 
 CreateTrs("lemon" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("lemon" "en;ru_RU" "${SRCS}" "" "")
+CreateTrsUpTarget("lemon" "en;ru_RU" "${SRCS}" "" "lemonsettings.xml")
 
 add_library (leechcraft_lemon SHARED
 	${COMPILED_TRANSLATIONS}
@@ -42,5 +43,6 @@ target_link_libraries (leechcraft_lemon
 install (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/lemon DESTINATION ${LC_QML5_DEST})
+install (FILES lemonsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_lemon Network Widgets)

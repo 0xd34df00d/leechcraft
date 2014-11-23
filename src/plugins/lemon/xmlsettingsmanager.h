@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,49 +30,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Lemon
 {
-	class TrafficManager;
-	class TrafficDialog;
-	class ActionsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public IQuarkComponentProvider
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Lemon")
-
-		Util::XmlSettingsDialog_ptr XSD_;
-
-		TrafficManager *TrafficMgr_;
-		QuarkComponent_ptr PanelComponent_;
-
-		QMap<QString, QPointer<TrafficDialog>> Iface2Dialog_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QuarkComponents_t GetComponents () const;
-	public slots:
-		void showGraph (const QString&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		QSettings* BeginSettings () const;
+		void EndSettings (QSettings*) const;
 	};
 }
 }

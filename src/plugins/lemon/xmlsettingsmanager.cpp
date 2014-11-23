@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2011  Minh Ngo
+ * Copyright (C) 2006-2011  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,90 +28,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "lemon.h"
-#include <QIcon>
-#include <QAbstractItemModel>
-#include <util/util.h>
-#include <util/sys/paths.h>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include "core.h"
-#include "trafficmanager.h"
-#include "trafficdialog.h"
 #include "xmlsettingsmanager.h"
+#include <QApplication>
 
 namespace LeechCraft
 {
 namespace Lemon
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Util::InstallTranslator ("lemon");
-
-		XSD_.reset (new Util::XmlSettingsDialog);
-		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lemonsettings.xml");
-
-		Core::Instance ().SetProxy (proxy);
-
-		TrafficMgr_ = new TrafficManager;
-
-		PanelComponent_ = std::make_shared<QuarkComponent> ("lemon", "LemonQuark.qml");
-		PanelComponent_->DynamicProps_.append ({ "Lemon_infoModel", TrafficMgr_->GetModel () });
-		PanelComponent_->DynamicProps_.append ({ "Lemon_proxy", this });
+		Util::BaseSettingsManager::Init ();
 	}
 
-	void Plugin::SecondInit ()
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager xsm;
+		return xsm;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
 	{
 	}
 
-	QByteArray Plugin::GetUniqueID () const
+	QSettings* XmlSettingsManager::BeginSettings () const
 	{
-		return "org.LeechCraft.Lemon";
-	}
-
-	void Plugin::Release ()
-	{
-		Core::Instance ().Release ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Lemon";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Global network status monitor.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
-	{
-		return XSD_;
-	}
-
-	QuarkComponents_t Plugin::GetComponents () const
-	{
-		return { PanelComponent_ };
-	}
-
-	void Plugin::showGraph (const QString& ifaceName)
-	{
-		if (auto dia = Iface2Dialog_ [ifaceName])
-		{
-			delete dia;
-			return;
-		}
-
-		auto dia = new TrafficDialog (ifaceName, TrafficMgr_);
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
-		Iface2Dialog_ [ifaceName] = dia;
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Lemon");
+		return settings;
 	}
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_lemon, LeechCraft::Lemon::Plugin);
