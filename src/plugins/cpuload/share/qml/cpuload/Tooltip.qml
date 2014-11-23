@@ -80,6 +80,7 @@ Rectangle {
                 alpha: 1
                 background: "transparent"
                 textColor: colorProxy.color_TextBox_TextColor
+                gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
             }
 
             Text {
