@@ -4,7 +4,7 @@ import org.LC.common 1.0
 Rectangle {
     id: rootRect
     width: loadView.cellWidth * 2
-    height: loadView.cellHeight * Math.ceil(loadView.count / 2)
+    height: loadView.cellHeight * loadView.rows
 
     smooth: true
     radius: 5
@@ -28,63 +28,67 @@ Rectangle {
         return first;
     }
 
-    GridView {
+    Grid {
         id: loadView
-
-        model: loadModel
 
         anchors.fill: parent
 
-        cellWidth: 400
-        cellHeight: 120
+        rows: Math.ceil(loadRepeater.count / 2)
+        columns: 2
 
-        property int desiredRows: Math.ceil(Math.sqrt(count))
+        property int cellWidth: 400
+        property int cellHeight: 120
 
-        delegate: Rectangle {
-            width: 400
-            height: plot.height
+        Repeater {
+            id: loadRepeater
+            model: loadModel
 
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: colorProxy.color_TextBox_TopColor
+            Rectangle {
+                width: 400
+                height: plot.height
+
+                gradient: Gradient {
+                    GradientStop {
+                        position: 0
+                        color: colorProxy.color_TextBox_TopColor
+                    }
+                    GradientStop {
+                        position: 1
+                        color: colorProxy.color_TextBox_BottomColor
+                    }
                 }
-                GradientStop {
-                    position: 1
-                    color: colorProxy.color_TextBox_BottomColor
+
+                Plot {
+                    id: plot
+
+                    anchors.top: parent.top
+
+                    width: parent.width
+                    height: 120
+
+                    multipoints: [
+                            { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
+                            { color: "blue", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist) },
+                            { color: "yellow", points: zipN(loadObj.ioHist, loadObj.lowHist) },
+                            { color: "green", points: loadObj.ioHist }
+                        ]
+
+                    leftAxisEnabled: true
+                    leftAxisTitle: qsTr("Load, %")
+                    yGridEnabled: true
+
+                    plotTitle: "CPU " + cpuIdx
+
+                    minYValue: 0
+                    maxYValue: 100
+                    minXValue: 0
+                    maxXValue: loadObj.getPointsCount() - 1
+
+                    alpha: 1
+                    background: "transparent"
+                    textColor: colorProxy.color_TextBox_TextColor
+                    gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
                 }
-            }
-
-            Plot {
-                id: plot
-
-                anchors.top: parent.top
-
-                width: parent.width
-                height: 120
-
-                multipoints: [
-                        { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
-                        { color: "blue", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist) },
-                        { color: "yellow", points: zipN(loadObj.ioHist, loadObj.lowHist) },
-                        { color: "green", points: loadObj.ioHist }
-                    ]
-
-                leftAxisEnabled: true
-                leftAxisTitle: qsTr("Load, %")
-                yGridEnabled: true
-
-                plotTitle: "CPU " + cpuIdx
-
-                minYValue: 0
-                maxYValue: 100
-                minXValue: 0
-                maxXValue: loadObj.getPointsCount() - 1
-
-                alpha: 1
-                background: "transparent"
-                textColor: colorProxy.color_TextBox_TextColor
-                gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
             }
         }
     }
