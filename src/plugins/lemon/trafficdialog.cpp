@@ -161,7 +161,7 @@ namespace Lemon
 			Ui_.MaxRXSpeed_->setText (Util::MakePrettySize (maxRx) + tr ("/s"));
 			Ui_.MaxTXSpeed_->setText (Util::MakePrettySize (maxTx) + tr ("/s"));
 
-			auto avgList = [] (const QList<qint64>& list)
+			auto avgList = [] (const QVector<qint64>& list)
 				{ return std::accumulate (list.begin (), list.end (), 0.0) / list.size (); };
 			const auto avgRx = avgList (downList);
 			const auto avgTx = avgList (upList);

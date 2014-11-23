@@ -113,12 +113,12 @@ namespace Lemon
 		return Model_;
 	}
 
-	QList<qint64> TrafficManager::GetDownHistory (const QString& name) const
+	QVector<qint64> TrafficManager::GetDownHistory (const QString& name) const
 	{
 		return ActiveInterfaces_ [name].DownSpeeds_;
 	}
 
-	QList<qint64> TrafficManager::GetUpHistory (const QString& name) const
+	QVector<qint64> TrafficManager::GetUpHistory (const QString& name) const
 	{
 		return ActiveInterfaces_ [name].UpSpeeds_;
 	}
@@ -232,7 +232,7 @@ namespace Lemon
 			const auto& bytesStats = backend->GetCurrentNumBytes (name);
 
 			auto updateCounts = [&info, backtrack] (const qint64 now, qint64& prev,
-					QList<qint64>& list, IfacesModel::Roles role, const QString& text) -> qint64
+					QVector<qint64>& list, IfacesModel::Roles role, const QString& text) -> qint64
 			{
 				const auto diff = now - prev;
 
@@ -252,7 +252,7 @@ namespace Lemon
 			updateCounts (bytesStats.Up_, info.PrevWritten_, info.UpSpeeds_,
 					IfacesModel::Roles::UpSpeed, tr ("Upload speed: %1/s"));
 
-			auto updateMax = [&info] (const QList<qint64>& speeds, IfacesModel::Roles role)
+			auto updateMax = [&info] (const QVector<qint64>& speeds, IfacesModel::Roles role)
 			{
 				const auto max = *std::max_element (speeds.begin (), speeds.end ());
 				info.Item_->setData (max, role);

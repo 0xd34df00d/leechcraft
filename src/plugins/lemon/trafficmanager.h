@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QHash>
+#include <QVector>
 
 class QStandardItem;
 class QNetworkConfiguration;
@@ -63,8 +64,8 @@ namespace Lemon
 
 			QNetworkSession_ptr LastSession_;
 
-			QList<qint64> DownSpeeds_;
-			QList<qint64> UpSpeeds_;
+			QVector<qint64> DownSpeeds_;
+			QVector<qint64> UpSpeeds_;
 
 			InterfaceInfo (QStandardItem *item = 0)
 			: Item_ (item)
@@ -79,8 +80,8 @@ namespace Lemon
 
 		QAbstractItemModel* GetModel () const;
 
-		QList<qint64> GetDownHistory (const QString&) const;
-		QList<qint64> GetUpHistory (const QString&) const;
+		QVector<qint64> GetDownHistory (const QString&) const;
+		QVector<qint64> GetUpHistory (const QString&) const;
 
 		int GetBacktrackSize () const;
 	private slots:
