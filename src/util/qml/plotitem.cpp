@@ -234,6 +234,16 @@ namespace Util
 		SetNewValue (color, TextColor_, [this] { emit textColorChanged (); });
 	}
 
+	QColor PlotItem::GetGridLinesColor () const
+	{
+		return GridLinesColor_;
+	}
+
+	void PlotItem::SetGridLinesColor (const QColor& color)
+	{
+		SetNewValue (color, GridLinesColor_, [this] { emit gridLinesColorChanged (); });
+	}
+
 #if QT_VERSION < 0x050000
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
@@ -283,9 +293,9 @@ namespace Util
 			grid->enableYMin (YMinorGridEnabled_);
 			grid->enableX (false);
 #if QWT_VERSION >= 0x060100
-			grid->setMinorPen (QPen (Qt::gray, 1, Qt::DashLine));
+			grid->setMinorPen (QPen (GridLinesColor_, 1, Qt::DashLine));
 #else
-			grid->setMinPen (QPen (Qt::gray, 1, Qt::DashLine));
+			grid->setMinPen (QPen (GridLinesColor_, 1, Qt::DashLine));
 #endif
 			grid->attach (&plot);
 		}

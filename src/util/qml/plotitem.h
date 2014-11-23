@@ -71,6 +71,7 @@ namespace Util
 
 		Q_PROPERTY (QColor background READ GetBackground WRITE SetBackground NOTIFY backgroundChanged)
 		Q_PROPERTY (QColor textColor READ GetTextColor WRITE SetTextColor NOTIFY textColorChanged)
+		Q_PROPERTY (QColor gridLinesColor READ GetGridLinesColor WRITE SetGridLinesColor NOTIFY gridLinesColorChanged)
 
 		QList<QPointF> Points_;
 
@@ -101,6 +102,7 @@ namespace Util
 
 		QColor BackgroundColor_;
 		QColor TextColor_;
+		QColor GridLinesColor_;
 	public:
 #if QT_VERSION < 0x050000
 		PlotItem (QDeclarativeItem* = 0);
@@ -147,6 +149,8 @@ namespace Util
 		void SetBackground (const QColor&);
 		QColor GetTextColor () const;
 		void SetTextColor (const QColor&);
+		QColor GetGridLinesColor () const;
+		void SetGridLinesColor (const QColor&);
 
 #if QT_VERSION < 0x050000
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
@@ -180,6 +184,7 @@ namespace Util
 
 		void backgroundChanged ();
 		void textColorChanged ();
+		void gridLinesColorChanged ();
 	};
 }
 }
