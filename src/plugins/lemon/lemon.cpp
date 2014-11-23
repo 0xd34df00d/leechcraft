@@ -48,9 +48,9 @@ namespace Lemon
 
 		TrafficMgr_ = new TrafficManager;
 
-		PanelComponent_.reset (new QuarkComponent ("lemon", "LemonQuark.qml"));
-		PanelComponent_->DynamicProps_ << QPair<QString, QObject*> ("Lemon_infoModel", TrafficMgr_->GetModel ());
-		PanelComponent_->DynamicProps_ << QPair<QString, QObject*> ("Lemon_proxy", this);
+		PanelComponent_ = std::make_shared<QuarkComponent> ("lemon", "LemonQuark.qml");
+		PanelComponent_->DynamicProps_.append ({ "Lemon_infoModel", TrafficMgr_->GetModel () });
+		PanelComponent_->DynamicProps_.append ({ "Lemon_proxy", this });
 	}
 
 	void Plugin::SecondInit ()
