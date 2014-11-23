@@ -81,6 +81,8 @@ namespace Blogique
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 #endif
 
+		View_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
+
 		auto context = View_->rootContext ();
 		context->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ()

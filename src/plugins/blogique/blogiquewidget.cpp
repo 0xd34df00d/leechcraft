@@ -120,9 +120,10 @@ namespace Blogique
 		Tags_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 #endif
 
-		TagsCloud_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		TagsCloud_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
 		Ui_.PluginOptionsWidget_->layout ()->addWidget (TagsCloud_);
-		Tags_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+		Tags_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
 		Ui_.TagsBox_->layout ()->addWidget (Tags_);
 
 		auto dwa = static_cast<Qt::DockWidgetArea> (XmlSettingsManager::Instance ()
