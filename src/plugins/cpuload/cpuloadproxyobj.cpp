@@ -105,5 +105,10 @@ namespace CpuLoad
 			result.push_back ({ static_cast<double> (i++), pt });
 		return result;
 	}
+
+	int CpuLoadProxyObj::getPointsCount () const
+	{
+		return HistCount;
+	}
 }
 }

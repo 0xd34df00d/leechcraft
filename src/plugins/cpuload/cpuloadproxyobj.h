@@ -72,6 +72,8 @@ namespace CpuLoad
 		QList<QPointF> GetHighHist () const;
 	private:
 		QList<QPointF> GetHist (LoadPriority) const;
+	public slots:
+		int getPointsCount () const;
 	signals:
 		void percentagesChanged ();
 		void histChanged ();
