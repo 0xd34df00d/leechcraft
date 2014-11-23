@@ -36,13 +36,13 @@ Rectangle {
         anchors.fill: parent
 
         cellWidth: 400
-        cellHeight: 120
+        cellHeight: 130
 
         property int desiredRows: Math.ceil(Math.sqrt(count))
 
         delegate: Rectangle {
-            width: 400
-            height: plot.height
+            width: loadView.cellWidth
+            height: loadView.cellHeight
 
             gradient: Gradient {
                 GradientStop {
@@ -60,8 +60,8 @@ Rectangle {
 
                 anchors.top: parent.top
 
-                width: parent.width
-                height: 120
+                width: loadView.cellWidth
+                height: loadView.cellHeight
 
                 multipoints: [
                         { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
