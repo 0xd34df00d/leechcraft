@@ -38,6 +38,7 @@
 #endif
 #include <util/util.h>
 #include "trafficmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -130,6 +131,35 @@ namespace Lemon
 		handleUpdated ();
 	}
 
+	namespace
+	{
+		double GetSmoothed (const QVector<qint64>& list, size_t pos, bool smooth)
+		{
+			if (!smooth)
+				return list.at (pos);
+
+			const std::array<double, 3> kernel { { 1, 1.2, 1 } };
+			const auto kernelSum = std::accumulate (kernel.begin (), kernel.end (), 0);
+
+			if (static_cast<size_t> (list.size ()) < kernel.size ())
+				return list.at (pos);
+
+			const auto halfSize = kernel.size () / 2;
+			if (pos < halfSize)
+				return list.at (pos);
+
+			double result = 0;
+			for (size_t i = 0; i < kernel.size (); ++i)
+			{
+				auto listPos = i + pos - halfSize;
+				if (listPos >= static_cast<size_t> (list.size ()))
+					listPos = 2 * static_cast<size_t> (list.size ()) - listPos - 1;
+				result += kernel.at (i) * list.at (listPos);
+			}
+			return result / kernelSum;
+		}
+	}
+
 	void TrafficDialog::handleUpdated ()
 	{
 		const auto& downList = Manager_->GetDownHistory (IfaceName_);
@@ -139,11 +169,14 @@ namespace Lemon
 		QVector<double> down (downList.size ());
 		QVector<double> up (downList.size ());
 
+		const auto shouldSmooth = XmlSettingsManager::Instance ()
+				.property ("EnableSmoothing").toBool ();
+
 		for (int i = 0; i < downList.size (); ++i)
 		{
 			xdata [i] = i;
-			down [i] = downList [i] / 1024.;
-			up [i] = upList [i] / 1024.;
+			down [i] = GetSmoothed (downList, i, shouldSmooth) / 1024.;
+			up [i] = GetSmoothed (upList, i, shouldSmooth) / 1024.;
 		}
 
 		DownTraffic_->setSamples (xdata, down);
