@@ -103,6 +103,26 @@ namespace Util
 		update ();
 	}
 
+	double PlotItem::GetMinXValue () const
+	{
+		return MinXValue_;
+	}
+
+	void PlotItem::SetMinXValue (double val)
+	{
+		SetNewValue (val, MinXValue_, [this] { emit minXValueChanged (); });
+	}
+
+	double PlotItem::GetMaxXValue () const
+	{
+		return MaxXValue_;
+	}
+
+	void PlotItem::SetMaxXValue (double val)
+	{
+		SetNewValue (val, MaxXValue_, [this] { emit maxXValueChanged (); });
+	}
+
 	double PlotItem::GetMinYValue () const
 	{
 		return MinYValue_;
@@ -306,8 +326,9 @@ namespace Util
 		if (items.isEmpty ())
 			items.push_back ({ Color_, Points_ });
 
-		const auto ptsCount = items.first ().Points_.size ();
-		if (ptsCount)
+		if (MinXValue_ < MaxXValue_)
+			plot.setAxisScale (QwtPlot::xBottom, MinXValue_, MaxXValue_);
+		else if (const auto ptsCount = items.first ().Points_.size ())
 			plot.setAxisScale (QwtPlot::xBottom, 0, ptsCount - 1);
 
 		std::vector<std::unique_ptr<QwtPlotCurve>> curves;

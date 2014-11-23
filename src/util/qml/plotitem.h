@@ -54,6 +54,8 @@ namespace Util
 
 		Q_PROPERTY (QVariant multipoints READ GetMultipoints WRITE SetMultipoints NOTIFY multipointsChanged)
 
+		Q_PROPERTY (double minXValue READ GetMinXValue WRITE SetMinXValue NOTIFY minXValueChanged)
+		Q_PROPERTY (double maxXValue READ GetMaxXValue WRITE SetMaxXValue NOTIFY maxXValueChanged)
 		Q_PROPERTY (double minYValue READ GetMinYValue WRITE SetMinYValue NOTIFY minYValueChanged)
 		Q_PROPERTY (double maxYValue READ GetMaxYValue WRITE SetMaxYValue NOTIFY maxYValueChanged)
 
@@ -82,6 +84,8 @@ namespace Util
 		};
 		QList<PointsSet> Multipoints_;
 
+		double MinXValue_ = -1;
+		double MaxXValue_ = -1;
 		double MinYValue_ = -1;
 		double MaxYValue_ = -1;
 
@@ -116,6 +120,10 @@ namespace Util
 		QVariant GetMultipoints () const;
 		void SetMultipoints (const QVariant&);
 
+		double GetMinXValue () const;
+		void SetMinXValue (double);
+		double GetMaxXValue () const;
+		void SetMaxXValue (double);
 		double GetMinYValue () const;
 		void SetMinYValue (double);
 		double GetMaxYValue () const;
@@ -164,6 +172,8 @@ namespace Util
 		void pointsChanged ();
 		void multipointsChanged ();
 
+		void minXValueChanged ();
+		void maxXValueChanged ();
 		void minYValueChanged ();
 		void maxYValueChanged ();
 
