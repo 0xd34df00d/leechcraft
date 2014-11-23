@@ -313,7 +313,8 @@ namespace Util
 		std::vector<std::unique_ptr<QwtPlotCurve>> curves;
 		for (const auto& item : items)
 		{
-			auto curve = new QwtPlotCurve;
+			curves.emplace_back (new QwtPlotCurve);
+			const auto curve = curves.back ().get ();
 
 			curve->setPen (QPen (item.Color_));
 			auto transpColor = item.Color_;
