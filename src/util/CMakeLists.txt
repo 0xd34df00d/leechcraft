@@ -10,7 +10,7 @@ include_directories (${Boost_INCLUDE_DIRS}
 	..)
 
 if (ENABLE_UTIL_TESTS)
-	function (AddSllTest _execName _cppFile _testName _depLib)
+	function (AddUtilTest _execName _cppFile _testName _depLib)
 		set (_fullExecName lc_util_${_execName}_test)
 		add_executable (${_fullExecName} WIN32 ${_cppFile})
 		add_test (${_testName} ${_fullExecName})
