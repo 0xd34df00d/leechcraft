@@ -811,7 +811,7 @@ namespace Aggregator
 		if (t.size () < 19)
 			return QDateTime ();
 
-		QDateTime result = QDateTime::fromString (t.left (19).toUpper (), "yyyy-MM-ddTHH:mm:ss");
+		auto result = QDateTime::fromString (t.left (19).toUpper (), "yyyy-MM-ddTHH:mm:ss");
 		QRegExp fractionalSeconds ("(\\.)(\\d+)");
 		if (fractionalSeconds.indexIn (t) > -1)
 		{
@@ -823,7 +823,7 @@ namespace Aggregator
 					fractional *= 10;
 				if (fractional < 10)
 					fractional *= 100;
-				result.addMSecs (fractional);
+				result = result.addMSecs (fractional);
 			}
 		}
 
