@@ -73,7 +73,7 @@ namespace CpuLoad
 	private:
 		QList<QPointF> GetHist (LoadPriority) const;
 	public slots:
-		int getPointsCount () const;
+		int getMaxX () const;
 	signals:
 		void percentagesChanged ();
 		void histChanged ();

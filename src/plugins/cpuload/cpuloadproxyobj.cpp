@@ -35,7 +35,8 @@ namespace LeechCraft
 {
 namespace CpuLoad
 {
-	const auto HistCount = 350;
+	const auto HistCount = 500;
+	const auto PointsPerPixel = 2.0;
 
 	CpuLoadProxyObj::CpuLoadProxyObj (const QMap<LoadPriority, LoadTypeInfo>& infos)
 	{
@@ -102,13 +103,13 @@ namespace CpuLoad
 		QList<QPointF> result;
 		int i = 0;
 		for (const auto pt : History_ [key])
-			result.push_back ({ static_cast<double> (i++), pt });
+			result.push_back ({ i++ / PointsPerPixel, pt });
 		return result;
 	}
 
-	int CpuLoadProxyObj::getPointsCount () const
+	int CpuLoadProxyObj::getMaxX () const
 	{
-		return HistCount;
+		return HistCount / PointsPerPixel;
 	}
 }
 }

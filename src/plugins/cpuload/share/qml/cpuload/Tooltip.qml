@@ -35,7 +35,7 @@ Rectangle {
 
         anchors.fill: parent
 
-        cellWidth: 400
+        cellWidth: 300
         cellHeight: 130
 
         property int desiredRows: Math.ceil(Math.sqrt(count))
@@ -79,7 +79,7 @@ Rectangle {
                 minYValue: 0
                 maxYValue: 100
                 minXValue: 0
-                maxXValue: loadObj.getPointsCount() - 1
+                maxXValue: loadObj.getMaxX()
 
                 alpha: 1
                 background: "transparent"
