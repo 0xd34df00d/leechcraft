@@ -90,7 +90,7 @@ namespace ChatHistory
 		Storage (QObject* = 0);
 	private:
 		void InitializeTables ();
-		void UpdateTables (QMap<QString, int>&);
+		void UpdateTables ();
 
 		QHash<QString, qint32> GetUsers ();
 		qint32 GetUserID (const QString&);
