@@ -46,6 +46,7 @@
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/standardnamfactory.h>
+#include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/lmp/ilmpproxy.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "checkmodel.h"
@@ -122,6 +123,8 @@ namespace BrainSlugz
 			[] { return 50 * 1024 * 1024; },
 			CheckView_->engine ()
 		};
+
+		new Util::QmlErrorWatcher { CheckView_ };
 
 		const auto& filename = Util::GetSysPath (Util::SysPath::QML, "lmp/brainslugz", "CheckView.qml");
 		CheckView_->setSource (QUrl::fromLocalFile (filename));
