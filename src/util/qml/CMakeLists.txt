@@ -15,6 +15,7 @@ set (QML_SRCS
 	unhidelistmodel.cpp
 	unhidelistviewbase.cpp
 	widthiconprovider.cpp
+	qmlerrorwatcher.cpp
 	)
 
 if (WITH_QWT)
@@ -33,6 +34,7 @@ target_link_libraries (leechcraft-util-qml${LC_LIBSUFFIX}
 	${ADDITIONAL_LIBS}
 	leechcraft-util-gui${LC_LIBSUFFIX}
 	leechcraft-util-network${LC_LIBSUFFIX}
+	leechcraft-util-sll${LC_LIBSUFFIX}
 	leechcraft-util-sys${LC_LIBSUFFIX}
 	)
 set_property (TARGET leechcraft-util-qml${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
