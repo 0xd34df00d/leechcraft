@@ -16,6 +16,7 @@ Rectangle {
     property alias isHovered: wholeArea.containsMouse
 
     MouseArea {
+        anchors.fill: parent
         id: wholeArea
         hoverEnabled: true
     }
