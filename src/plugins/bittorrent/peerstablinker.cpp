@@ -159,14 +159,12 @@ namespace BitTorrent
 		Ui_->PeerIsSeed_->setText (p.PI_->seed ?
 				tr ("yes") : tr ("no"));
 
-		QTime lastRequest (0, 0, 0);
-		lastRequest.addMSecs (libtorrent::total_milliseconds (p.PI_->last_request));
+		const auto& lastRequest = QTime {}.addMSecs (libtorrent::total_milliseconds (p.PI_->last_request));
 		Ui_->PeerLastRequest_->setText (tr ("%1 (%n second(s) remaining)",
 					"", p.PI_->request_timeout)
 				.arg (lastRequest.toString ()));
 
-		QTime lastActive (0, 0, 0);
-		lastActive.addMSecs (libtorrent::total_milliseconds (p.PI_->last_active));
+		const auto& lastActive = QTime {}.addMSecs (libtorrent::total_milliseconds (p.PI_->last_active));
 		Ui_->PeerLastActive_->setText (lastActive.toString ());
 
 		int sendBuf = p.PI_->send_buffer_size;
