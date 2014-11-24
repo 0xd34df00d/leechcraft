@@ -35,10 +35,20 @@ Rectangle {
 
         anchors.fill: parent
 
-        cellWidth: 300
+        cellWidth: maxPlotX + xExtent
         cellHeight: 130
 
         property int desiredRows: Math.ceil(Math.sqrt(count))
+
+        property int maxPlotX: 200
+        property int xExtent: 0
+
+        function setPlotParams(xex, maxX) {
+            if (xExtent !== xex)
+                xExtent = xex;
+            if (maxPlotX !== maxX)
+                maxPlotX = maxX;
+        }
 
         delegate: Rectangle {
             width: loadView.cellWidth
@@ -85,6 +95,8 @@ Rectangle {
                 background: "transparent"
                 textColor: colorProxy.color_TextBox_TextColor
                 gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
+
+                onExtentsChanged: loadView.setPlotParams(xExtent, loadObj.getMaxX())
             }
         }
     }
