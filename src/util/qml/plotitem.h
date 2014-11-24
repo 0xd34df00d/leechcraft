@@ -38,6 +38,8 @@
 #endif
 #include "qmlconfig.h"
 
+class QwtPlot;
+
 namespace LeechCraft
 {
 namespace Util
@@ -75,6 +77,9 @@ namespace Util
 		Q_PROPERTY (QColor textColor READ GetTextColor WRITE SetTextColor NOTIFY textColorChanged)
 		Q_PROPERTY (QColor gridLinesColor READ GetGridLinesColor WRITE SetGridLinesColor NOTIFY gridLinesColorChanged)
 
+		Q_PROPERTY (int xExtent READ GetXExtent NOTIFY extentsChanged)
+		Q_PROPERTY (int yExtent READ GetYExtent NOTIFY extentsChanged)
+
 		QList<QPointF> Points_;
 
 		struct PointsSet
@@ -107,6 +112,9 @@ namespace Util
 		QColor BackgroundColor_;
 		QColor TextColor_;
 		QColor GridLinesColor_;
+
+		int XExtent_ = 0;
+		int YExtent_ = 0;
 	public:
 #if QT_VERSION < 0x050000
 		PlotItem (QDeclarativeItem* = 0);
@@ -160,6 +168,9 @@ namespace Util
 		QColor GetGridLinesColor () const;
 		void SetGridLinesColor (const QColor&);
 
+		int GetXExtent () const;
+		int GetYExtent () const;
+
 #if QT_VERSION < 0x050000
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*) override;
 #else
@@ -168,6 +179,9 @@ namespace Util
 	private:
 		template<typename T>
 		void SetNewValue (T val, T& ourVal, const std::function<void ()>& notifier);
+
+		int CalcXExtent (QwtPlot&) const;
+		int CalcYExtent (QwtPlot&) const;
 	signals:
 		void pointsChanged ();
 		void multipointsChanged ();
@@ -195,6 +209,8 @@ namespace Util
 		void backgroundChanged ();
 		void textColorChanged ();
 		void gridLinesColorChanged ();
+
+		void extentsChanged ();
 	};
 }
 }

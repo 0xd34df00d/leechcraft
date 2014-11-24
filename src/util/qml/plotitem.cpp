@@ -38,6 +38,8 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_grid.h>
+#include <qwt_scale_draw.h>
+#include <qwt_text_label.h>
 #include <util.h>
 
 Q_DECLARE_METATYPE (QList<QPointF>)
@@ -264,6 +266,16 @@ namespace Util
 		SetNewValue (color, GridLinesColor_, [this] { emit gridLinesColorChanged (); });
 	}
 
+	int PlotItem::GetXExtent () const
+	{
+		return XExtent_;
+	}
+
+	int PlotItem::GetYExtent () const
+	{
+		return YExtent_;
+	}
+
 #if QT_VERSION < 0x050000
 	void PlotItem::paint (QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget*)
 	{
@@ -347,9 +359,19 @@ namespace Util
 
 			curve->setSamples (item.Points_.toVector ());
 		}
+
 		plot.replot ();
 
 		QwtPlotRenderer {}.render (&plot, painter, rect);
+
+		const auto xExtent = CalcXExtent (plot);
+		const auto yExtent = CalcYExtent (plot);
+		if (xExtent != XExtent_ || yExtent != YExtent_)
+		{
+			XExtent_ = xExtent;
+			YExtent_ = yExtent;
+			emit extentsChanged ();
+		}
 	}
 
 	template<typename T>
@@ -361,6 +383,26 @@ namespace Util
 		ourVal = val;
 		notifier ();
 		update ();
+	}
+
+	int PlotItem::CalcXExtent (QwtPlot& plot) const
+	{
+		int result = 0;
+		if (LeftAxisEnabled_)
+			result += plot.axisScaleDraw (QwtPlot::yLeft)->
+					extent (plot.axisFont (QwtPlot::yLeft));
+		return result;
+	}
+
+	int PlotItem::CalcYExtent (QwtPlot& plot) const
+	{
+		int result = 0;
+		if (BottomAxisEnabled_)
+			result += plot.axisScaleDraw (QwtPlot::xBottom)->
+					extent (plot.axisFont (QwtPlot::xBottom));
+		if (!PlotTitle_.isEmpty ())
+			result += plot.titleLabel ()->sizeHint ().height ();
+		return result;
 	}
 }
 }
