@@ -77,7 +77,7 @@ namespace CertMgr
 		const auto& paths = QFileDialog::getOpenFileNames (this,
 				tr ("Select certificate files"),
 				QDir::homePath (),
-				"Certificates (*.crt);;All files (*)");
+				"Certificates (*.crt *.pem);;All files (*)");
 		if (paths.isEmpty ())
 			return;
 
