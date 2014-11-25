@@ -30,6 +30,7 @@
 #include "managerdialog.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <util/sll/prelude.h>
 #include "manager.h"
 #include "certsmodel.h"
 
@@ -81,14 +82,31 @@ namespace CertMgr
 		if (paths.isEmpty ())
 			return;
 
-		QList<QSslCertificate> certs;
+		using CertPair_t = QPair<QSslCertificate, QByteArray>;
+		QList<CertPair_t> certs;
 		for (const auto& path : paths)
 		{
-			certs << QSslCertificate::fromPath (path, QSsl::Pem);
-			certs << QSslCertificate::fromPath (path, QSsl::Der);
+			const auto addCert = [&certs, &path] (QSsl::EncodingFormat type)
+			{
+				for (const auto& cert : QSslCertificate::fromPath (path, type))
+					if (!cert.isNull ())
+						certs.append ({ cert, cert.digest () });
+			};
+			addCert (QSsl::Pem);
+			addCert (QSsl::Der);
 		}
 
-		const auto numAdded = Manager_->AddCerts (certs);
+		certs.erase (std::remove_if (certs.begin (), certs.end (),
+					[] (const CertPair_t& p) { return p.first.isNull (); }),
+				certs.end ());
+
+		const auto comparator = [] (const CertPair_t& p1, const CertPair_t& p2)
+				{ return p1.second < p2.second; };
+		std::sort (certs.begin (), certs.end (), comparator);
+		certs.erase (std::unique (certs.begin (), certs.end (), comparator), certs.end ());
+
+		const auto numAdded = Manager_->AddCerts (Util::Map (certs,
+					[] (const CertPair_t& p) { return p.first; }));
 
 		if (paths.size () > 1 ||
 				QFileInfo { paths.value (0) }.isDir ())
