@@ -105,10 +105,23 @@ namespace CertMgr
 		std::sort (certs.begin (), certs.end (), comparator);
 		certs.erase (std::unique (certs.begin (), certs.end (), comparator), certs.end ());
 
+		if (certs.isEmpty ())
+		{
+			QMessageBox::warning (this,
+					tr ("Certificates import"),
+					tr ("No valid certificates could be found."));
+			return;
+		}
+
 		const auto numAdded = Manager_->AddCerts (Util::Map (certs,
 					[] (const CertPair_t& p) { return p.first; }));
 
-		if (paths.size () > 1 ||
+		if (!numAdded)
+			QMessageBox::warning (this,
+					tr ("Certificates import"),
+					tr ("No certificates were added. Very likely all of them are "
+						"already present in the system certificates database."));
+		else if (paths.size () > 1 ||
 				QFileInfo { paths.value (0) }.isDir ())
 			QMessageBox::information (this,
 					tr ("Certificates import"),
