@@ -49,9 +49,10 @@ namespace XProxy
 			rxPat.append (".*");
 		}
 
+		const Util::RegExp rx { rxPat, Qt::CaseInsensitive };
 		return
 		{
-			{ rxPat, Qt::CaseInsensitive },
+			rx,
 			Ui_.TargetPort_->value (),
 			Ui_.TargetProto_->text ().split (" ", QString::SkipEmptyParts)
 		};
