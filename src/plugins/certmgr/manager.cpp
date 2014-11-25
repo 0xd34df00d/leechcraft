@@ -76,10 +76,19 @@ namespace CertMgr
 		for (const auto& cert : certs)
 		{
 			if (cert.isNull ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "the certificate is null"
+						<< cert;
 				continue;
+			}
 
 			if (Defaults_.contains (cert) || Locals_.contains (cert))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "certificate is already added";
 				continue;
+			}
 
 			Locals_ << cert;
 			LocalCertsModel_->AddCert (cert);
