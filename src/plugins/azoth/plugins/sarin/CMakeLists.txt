@@ -80,3 +80,7 @@ install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES azothsarinsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_azoth_sarin Concurrent Widgets)
+
+if (ENABLE_MEDIACALLS AND USE_QT5)
+	FindQtLibs (leechcraft_azoth_sarin Multimedia)
+endif ()
