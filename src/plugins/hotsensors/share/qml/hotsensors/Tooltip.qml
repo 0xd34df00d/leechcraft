@@ -24,25 +24,12 @@ Rectangle {
         }
     }
 
-    Text {
-        id: sensorNameLabel
-        text: sensorName
-
-        anchors.top: parent.top
-        anchors.topMargin: 5
-        anchors.horizontalCenter: parent.horizontalCenter
-
-        color: colorProxy.color_TextView_TitleTextColor
-        font.bold: true
-    }
-
     Plot {
-        anchors.top: sensorNameLabel.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
+        anchors.fill: parent
 
         points: pointsList
+
+        plotTitle: sensorName
 
         minYValue: 0
         maxYValue: Math.max(maxTemp, critTemp)
