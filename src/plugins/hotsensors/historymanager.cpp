@@ -40,6 +40,11 @@ namespace HotSensors
 	{
 	}
 
+	int HistoryManager::GetMaxHistorySize ()
+	{
+		return PointsCount;
+	}
+
 	void HistoryManager::handleReadings (const Readings_t& readings)
 	{
 		for (auto i = History_.begin (); i != History_.end (); )

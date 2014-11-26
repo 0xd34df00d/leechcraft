@@ -35,6 +35,7 @@
 #include <QDir>
 #include "contextwrapper.h"
 #include "sensorsgraphmodel.h"
+#include "historymanager.h"
 
 Q_DECLARE_METATYPE (QList<QPointF>)
 
@@ -93,6 +94,8 @@ namespace HotSensors
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
 			item->setData (max, SensorsGraphModel::MaxTemp);
 			item->setData (crit, SensorsGraphModel::CritTemp);
+			item->setData (HistoryManager::GetMaxHistorySize (),
+					SensorsGraphModel::MaxPointsCount);
 			if (!isKnownSensor)
 				items << item;
 		}

@@ -44,6 +44,8 @@ namespace HotSensors
 		ReadingsHistory_t History_;
 	public:
 		HistoryManager (QObject* = 0);
+
+		static int GetMaxHistorySize ();
 	public slots:
 		void handleReadings (const Readings_t&);
 	signals:
