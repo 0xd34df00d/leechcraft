@@ -33,6 +33,8 @@ Rectangle {
 
         minYValue: 0
         maxYValue: Math.max(maxTemp, critTemp)
+        minXValue: 0
+        maxXValue: maxPointsCount
 
         leftAxisEnabled: true
         leftAxisTitle: qsTr ("Temperature, °C")

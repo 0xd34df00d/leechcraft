@@ -84,7 +84,8 @@ Rectangle {
                         "colorProxy": colorProxy,
                         "maxTemp": maxTemp,
                         "critTemp": critTemp,
-                        "sensorName": sensorName
+                        "sensorName": sensorName,
+                        "maxPointsCount": maxPointsCount
                     };
                     tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
                     tooltip.pointsList = (function() { return pointsList; });
