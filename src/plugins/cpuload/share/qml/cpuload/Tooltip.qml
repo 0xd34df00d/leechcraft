@@ -9,6 +9,8 @@ Rectangle {
     smooth: true
     radius: 5
 
+    opacity: 0.001
+
     signal closeRequested()
 
     function beforeDelete() {}
@@ -27,6 +29,13 @@ Rectangle {
             first = cpuProxy.sumPoints(first, other);
         }
         return first;
+    }
+
+    Timer {
+        id: showTimer
+        repeat: false
+        interval: 0
+        onTriggered: { rootRect.opacity = 1; }
     }
 
     GridView {
@@ -49,6 +58,9 @@ Rectangle {
                 xExtent = xex;
             if (maxPlotX !== maxX)
                 maxPlotX = maxX;
+
+            if (rootRect.opacity !== 1)
+                showTimer.start();
         }
 
         delegate: Rectangle {
