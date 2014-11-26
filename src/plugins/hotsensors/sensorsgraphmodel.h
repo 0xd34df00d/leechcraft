@@ -45,7 +45,8 @@ namespace HotSensors
 			SensorName,
 			PointsList,
 			MaxTemp,
-			CritTemp
+			CritTemp,
+			MaxPointsCount
 		};
 
 		SensorsGraphModel (QObject*);

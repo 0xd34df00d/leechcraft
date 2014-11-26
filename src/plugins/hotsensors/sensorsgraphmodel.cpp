@@ -42,6 +42,7 @@ namespace HotSensors
 		roleNames [PointsList] = "pointsList";
 		roleNames [MaxTemp] = "maxTemp";
 		roleNames [CritTemp] = "critTemp";
+		roleNames [MaxPointsCount] = "maxPointsCount";
 		setRoleNames (roleNames);
 	}
 }
