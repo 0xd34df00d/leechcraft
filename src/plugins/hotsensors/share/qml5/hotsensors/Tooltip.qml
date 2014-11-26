@@ -29,32 +29,27 @@ Window {
             }
         }
 
-        Text {
-            id: sensorNameLabel
-            text: sensorName
-
-            anchors.top: parent.top
-            anchors.topMargin: 5
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            color: colorProxy.color_TextView_TitleTextColor
-            font.bold: true
-        }
-
         Plot {
-            anchors.top: sensorNameLabel.bottom
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.bottom: parent.bottom
+            anchors.fill: parent
 
             points: pointsList
 
+            plotTitle: sensorName
+
             minYValue: 0
             maxYValue: Math.max(maxTemp, critTemp)
+            minXValue: 0
+            maxXValue: maxPointsCount
 
             leftAxisEnabled: true
             leftAxisTitle: qsTr ("Temperature, °C")
             yGridEnabled: true
+            yMinorGridEnabled: true
+
+            alpha: 1
+            background: "transparent"
+            textColor: colorProxy.color_TextBox_TextColor
+            gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
         }
     }
 }
