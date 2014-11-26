@@ -82,6 +82,8 @@ namespace Ooronee
 		{
 			const auto& pluginId = qobject_cast<IInfo*> (obj)->GetUniqueID ();
 			const auto idf = qobject_cast<IDataFilter*> (obj);
+			if (!idf)
+				continue;
 
 			for (const auto& var : idf->GetFilterVariants ())
 			{
