@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QFile>
 #include <QDir>
+#include <util/sll/qtutil.h>
 #include "contextwrapper.h"
 #include "sensorsgraphmodel.h"
 #include "historymanager.h"
@@ -72,13 +73,13 @@ namespace HotSensors
 
 		QList<QStandardItem*> items;
 
-		for (auto i = history.begin (); i != history.end (); ++i)
+		for (const auto& pair : Util::Stlize (history))
 		{
-			const auto& name = i.key ();
+			const auto& name = pair.first;
 
 			double max = 0, crit = 0;
 			QList<QPointF> points;
-			for (const auto& item : *i)
+			for (const auto& item : pair.second)
 			{
 				points.append ({ static_cast<qreal> (points.size ()), item.Value_ });
 				max = std::max (max, item.Max_);
@@ -88,7 +89,9 @@ namespace HotSensors
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
 
-			const auto lastTemp = i->isEmpty () ? 0 : static_cast<int> (i->last ().Value_);
+			const auto lastTemp = pair.second.isEmpty () ?
+					0 :
+					static_cast<int> (pair.second.last ().Value_);
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
