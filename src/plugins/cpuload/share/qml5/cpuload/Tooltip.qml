@@ -3,6 +3,8 @@ import QtQuick.Window 2.1
 import org.LC.common 1.0
 
 Window {
+    id: rootWindow
+
     width: loadView.cellWidth * 2
     height: loadView.cellHeight * Math.ceil(loadView.count / 2)
 
@@ -32,6 +34,7 @@ Window {
         property alias isHovered: wholeArea.containsMouse
 
         MouseArea {
+            anchors.fill: parent
             id: wholeArea
             hoverEnabled: true
         }
@@ -43,14 +46,24 @@ Window {
 
             anchors.fill: parent
 
-            cellWidth: 400
-            cellHeight: 100
+            cellWidth: maxPlotX + xExtent
+            cellHeight: 130
 
             property int desiredRows: Math.ceil(Math.sqrt(count))
 
+            property int maxPlotX: 200
+            property int xExtent: 0
+
+            function setPlotParams(xex, maxX) {
+                if (xExtent !== xex)
+                    xExtent = xex;
+                if (maxPlotX !== maxX)
+                    maxPlotX = maxX;
+            }
+
             delegate: Rectangle {
-                width: 400
-                height: plot.height
+                width: loadView.cellWidth
+                height: loadView.cellHeight
 
                 gradient: Gradient {
                     GradientStop {
@@ -68,8 +81,8 @@ Window {
 
                     anchors.top: parent.top
 
-                    width: parent.width
-                    height: 100
+                    width: loadView.cellWidth
+                    height: loadView.cellHeight
 
                     multipoints: [
                             { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
@@ -79,28 +92,22 @@ Window {
                         ]
 
                     leftAxisEnabled: true
-                    leftAxisTitle: qsTr ("Load, %")
+                    leftAxisTitle: qsTr("Load, %")
                     yGridEnabled: true
+
+                    plotTitle: "CPU " + cpuIdx
 
                     minYValue: 0
                     maxYValue: 100
+                    minXValue: 0
+                    maxXValue: loadObj.getMaxX()
 
                     alpha: 1
                     background: "transparent"
                     textColor: colorProxy.color_TextBox_TextColor
                     gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
-                }
 
-                Text {
-                    id: cpuLabel
-                    text: "CPU " + cpuIdx
-
-                    anchors.top: plot.top
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    color: colorProxy.color_TextBox_TitleTextColor
-
-                    font.bold: true
+                    onExtentsChanged: loadView.setPlotParams(xExtent, loadObj.getMaxX())
                 }
             }
         }
