@@ -45,6 +45,7 @@ namespace CertMgr
 		Ui_.setupUi (this);
 
 		Ui_.SystemTree_->setModel (manager->GetSystemModel ());
+		Ui_.LocalTree_->setModel (manager->GetLocalModel ());
 
 		connect (Ui_.SystemTree_->selectionModel (),
 				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
