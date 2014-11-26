@@ -39,6 +39,7 @@ Rectangle {
         leftAxisEnabled: true
         leftAxisTitle: qsTr ("Temperature, °C")
         yGridEnabled: true
+        yMinorGridEnabled: true
 
         alpha: 1
         background: "transparent"
