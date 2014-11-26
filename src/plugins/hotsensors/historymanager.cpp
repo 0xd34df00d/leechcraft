@@ -33,6 +33,8 @@ namespace LeechCraft
 {
 namespace HotSensors
 {
+	const auto PointsCount = 300;
+
 	HistoryManager::HistoryManager (QObject *parent)
 	: QObject (parent)
 	{
@@ -54,7 +56,7 @@ namespace HotSensors
 		{
 			auto& vec = History_ [r.Name_];
 			vec << r;
-			if (vec.size () >= 100)
+			if (vec.size () >= PointsCount)
 				vec.pop_front ();
 		}
 
