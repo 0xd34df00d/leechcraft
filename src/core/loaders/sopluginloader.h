@@ -40,6 +40,7 @@ namespace Loaders
 	class SOPluginLoader : public IPluginLoader
 	{
 		std::shared_ptr<QPluginLoader> Loader_;
+		bool IsLoaded_ = false;
 	public:
 		SOPluginLoader (const QString&);
 

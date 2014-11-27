@@ -29,6 +29,7 @@
 
 #include "sopluginloader.h"
 #include <QPluginLoader>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -47,22 +48,40 @@ namespace Loaders
 
 	bool SOPluginLoader::Load ()
 	{
-		return Loader_->load ();
+		if (IsLoaded_)
+			return true;
+
+		const auto res = Loader_->load ();
+		if (!res)
+			return false;
+
+		IsLoaded_ = true;
+		return true;
 	}
 
 	bool SOPluginLoader::Unload ()
 	{
+		if (!IsLoaded_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "trying to unload already loaded instance";
+			return true;
+		}
+
+		IsLoaded_ = false;
 		return Loader_->unload ();
 	}
 
 	QObject* SOPluginLoader::Instance ()
 	{
-		return Loader_->instance ();
+		return IsLoaded_ ?
+				Loader_->instance () :
+				nullptr;
 	}
 
 	bool SOPluginLoader::IsLoaded () const
 	{
-		return Loader_->isLoaded ();
+		return IsLoaded_;
 	}
 
 	QString SOPluginLoader::GetFileName () const
