@@ -42,6 +42,7 @@
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/util.h>
 #include "core.h"
 #include "authenticationdialog.h"
 #include "sslerrorsdialog.h"
@@ -269,10 +270,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	const auto& urlString = url.toString ();
 	const auto& host = url.host ();
 
-	std::shared_ptr<void> guard {
-			nullptr,
-			[&settings] (void*) { settings.endGroup (); }
-		};
+	const auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
 
 	if (keys.contains (urlString))
 	{
