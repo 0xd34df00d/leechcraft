@@ -71,11 +71,11 @@ namespace LeechCraft
 		UnfulfilledFeatureDeps_ = AllFeatureDeps_;
 		FeatureProvides_ = QSet<QString>::fromList (info->Provides ());
 
-		IPluginReady *ipr = qobject_cast<IPluginReady*> (obj);
+		const auto ipr = qobject_cast<IPluginReady*> (obj);
 		if (ipr)
 			P2PProvides_ = ipr->GetExpectedPluginClasses ();
 
-		IPlugin2 *ip2 = qobject_cast<IPlugin2*> (obj);
+		const auto ip2 = qobject_cast<IPlugin2*> (obj);
 		if (ip2)
 		{
 			AllP2PDeps_ = ip2->GetPluginClasses ();
@@ -146,7 +146,7 @@ namespace LeechCraft
 						<< G_ [u].UnfulfilledFeatureDeps_
 						<< G_ [u].UnfulfilledP2PDeps_;
 
-			Q_FOREACH (const Vertex& v, Reachable_ [u])
+			for (const auto& v : Reachable_ [u])
 				if (!G_ [v].IsFulfilled_)
 				{
 					G_ [u].IsFulfilled_ = false;
@@ -184,11 +184,10 @@ namespace LeechCraft
 		Result_.clear ();
 
 		CreateGraph ();
-		QMap<Edge_t, QPair<Vertex_t, Vertex_t>> edge2vert = MakeEdges ();
+		const auto& edge2vert = MakeEdges ();
 
 		QMap<Vertex_t, QList<Vertex_t>> reachable;
-		QPair<Vertex_t, Vertex_t> pair;
-		Q_FOREACH (pair, edge2vert)
+		for (const auto& pair : edge2vert)
 			reachable [pair.first] << pair.second;
 
 		QList<Edge_t> backEdges;
@@ -196,22 +195,23 @@ namespace LeechCraft
 		boost::depth_first_search (Graph_, boost::visitor (cd));
 
 		QList<Vertex_t> backVertices;
-		Q_FOREACH (const Edge_t& backEdge, backEdges)
+		for (const auto& backEdge : backEdges)
 			backVertices << edge2vert [backEdge].first;
 
 		FulfillableChecker<Graph_t, Vertex_t> checker (Graph_, backVertices, reachable);
 		boost::depth_first_search (Graph_, boost::visitor (checker));
 
-		typedef boost::filtered_graph<Graph_t, boost::keep_all, VertexPredicate<Graph_t>> fg_t;
-		fg_t fg = fg_t (Graph_,
-				boost::keep_all (),
-				VertexPredicate<Graph_t> (Graph_));
+		boost::filtered_graph<Graph_t, boost::keep_all, VertexPredicate<Graph_t>> fulfilledSubgraph
+		{
+			Graph_,
+			boost::keep_all {},
+			VertexPredicate<Graph_t> (Graph_)
+		};
 
 		QList<Vertex_t> vertices;
-		boost::topological_sort (fg,
-				std::back_inserter (vertices));
-		Q_FOREACH (const Vertex_t& vertex, vertices)
-			Result_ << fg [vertex].Object_;
+		boost::topological_sort (fulfilledSubgraph, std::back_inserter (vertices));
+		for (const auto& vertex : vertices)
+			Result_ << fulfilledSubgraph [vertex].Object_;
 	}
 
 	QObjectList PluginTreeBuilder::GetResult () const
@@ -221,7 +221,7 @@ namespace LeechCraft
 
 	void PluginTreeBuilder::CreateGraph ()
 	{
-		Q_FOREACH (QObject *object, Instances_)
+		for (const auto object : Instances_)
 		{
 			try
 			{
