@@ -259,9 +259,11 @@ void LeechCraft::NetworkAccessManager::handleAuthentication (const QNetworkProxy
 	DoCommonAuth (msg, authen);
 }
 
-void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
+void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
 		const QList<QSslError>& errors)
 {
+	QPointer<QNetworkReply> reply { replyObj };
+
 	QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName ());
 	settings.beginGroup ("SSL exceptions");
@@ -308,7 +310,10 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 	if (reply->isFinished ())
 		return;
 
-	switch (reply->error ())
+	const auto err = reply ?
+			reply->error () :
+			QNetworkReply::NoError;
+	switch (err)
 	{
 	case QNetworkReply::SslHandshakeFailedError:
 		qWarning () << Q_FUNC_INFO
@@ -331,7 +336,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *reply,
 		break;
 	}
 
-	if (ignore)
+	if (ignore && reply)
 		reply->ignoreSslErrors ();
 }
 
