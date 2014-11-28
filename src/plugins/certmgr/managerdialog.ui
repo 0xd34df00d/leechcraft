@@ -89,7 +89,11 @@
         <number>2</number>
        </property>
        <item>
-        <widget class="QTreeView" name="LocalTree_"/>
+        <widget class="QTreeView" name="LocalTree_">
+         <attribute name="headerVisible">
+          <bool>false</bool>
+         </attribute>
+        </widget>
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_3">
