@@ -42,6 +42,9 @@
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="4" column="0">
@@ -58,6 +61,9 @@
        <horstretch>0</horstretch>
        <verstretch>1</verstretch>
       </sizepolicy>
+     </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -76,6 +82,9 @@
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="2" column="0">
@@ -92,6 +101,9 @@
        <horstretch>0</horstretch>
        <verstretch>1</verstretch>
       </sizepolicy>
+     </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

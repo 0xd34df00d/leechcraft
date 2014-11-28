@@ -42,6 +42,9 @@
        <verstretch>1</verstretch>
       </sizepolicy>
      </property>
+     <property name="tabChangesFocus">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
   </layout>
