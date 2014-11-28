@@ -293,7 +293,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
 			" What do you want to do?")
 		.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
 
-	SslErrorsDialog errDialog { new SslErrorsDialog () };
+	SslErrorsDialog errDialog;
 	errDialog.Update (msg, errors);
 
 	const bool ignore = errDialog.exec () == QDialog::Accepted;
