@@ -1,7 +1,5 @@
 <RCC>
   <qresource prefix="/" >
-    <file>leechcraft_networkmonitor_ru_RU.qm</file>
-    <file>leechcraft_networkmonitor_uk_UA.qm</file>
 	<file>resources/images/networkmonitor.svg</file>
   </qresource>
 </RCC>
