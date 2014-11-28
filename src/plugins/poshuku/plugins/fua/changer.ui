@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>706</width>
-    <height>236</height>
+    <height>122</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,17 +50,6 @@
       <widget class="QLineEdit" name="IDString_"/>
      </item>
     </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_4">
-     <property name="text">
-      <string>%Platform% and %Subplatform% are expanded to the windowing system and the operation system.
-%Security% is expanded to U if SSL is enabled, otherwise N.
-%Locale% is replaced with current locale name.
-%WebKitVersion% is expanded to WebKit version.
-%AppVersion% is expanded to the application's version.</string>
-     </property>
-    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="ButtonBox_">
