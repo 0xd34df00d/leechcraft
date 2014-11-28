@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef SSLERRORSDIALOG_H
-#define SSLERRORSDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include <QList>
 #include <QSslError>
@@ -51,7 +51,6 @@ namespace LeechCraft
 
 		SslErrorsDialog (QWidget* = 0);
 		SslErrorsDialog (const QString&, const QList<QSslError>&, QWidget* = 0);
-		virtual ~SslErrorsDialog ();
 
 		void Update (const QString&, const QList<QSslError>&);
 
@@ -59,7 +58,4 @@ namespace LeechCraft
 	private:
 		void PopulateTree (const QSslError&);
 	};
-};
-
-#endif
-
+}

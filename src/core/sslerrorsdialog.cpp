@@ -47,10 +47,6 @@ LeechCraft::SslErrorsDialog::SslErrorsDialog (const QString& msg,
 	Update (msg, errors);
 }
 
-LeechCraft::SslErrorsDialog::~SslErrorsDialog ()
-{
-}
-
 void LeechCraft::SslErrorsDialog::Update (const QString& msg,
 		const QList<QSslError>& errors)
 {
@@ -175,4 +171,3 @@ void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("State or province name:")) << tmpString);
 }
-
