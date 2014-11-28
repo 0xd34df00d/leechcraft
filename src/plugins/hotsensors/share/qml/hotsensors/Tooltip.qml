@@ -41,7 +41,7 @@ Rectangle {
         yGridEnabled: true
         yMinorGridEnabled: true
 
-        alpha: 1
+        alpha: 0.4
         background: "transparent"
         textColor: colorProxy.color_TextBox_TextColor
         gridLinesColor: colorProxy.color_TextBox_Aux2TextColor
