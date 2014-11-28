@@ -92,6 +92,7 @@ set (SRCS
 	rootwindowsmanager.cpp
 	docktoolbarmanager.cpp
 	mainwindowmenumanager.cpp
+	sslerrorshandler.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	)

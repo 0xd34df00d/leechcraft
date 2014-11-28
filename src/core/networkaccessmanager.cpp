@@ -42,13 +42,12 @@
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/sll/util.h>
 #include "core.h"
 #include "authenticationdialog.h"
-#include "sslerrorsdialog.h"
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
 #include "storagebackend.h"
+#include "sslerrorshandler.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
@@ -262,70 +261,7 @@ void LeechCraft::NetworkAccessManager::handleAuthentication (const QNetworkProxy
 void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
 		const QList<QSslError>& errors)
 {
-	QPointer<QNetworkReply> reply { replyObj };
-
-	QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName ());
-	settings.beginGroup ("SSL exceptions");
-	const auto& keys = settings.allKeys ();
-	const auto& url = reply->url ();
-	const auto& urlString = url.toString ();
-	const auto& host = url.host ();
-
-	const auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
-
-	if (keys.contains (urlString))
-	{
-		if (settings.value (urlString).toBool ())
-			reply->ignoreSslErrors ();
-
-		return;
-	}
-	else if (keys.contains (host))
-	{
-		if (settings.value (host).toBool ())
-			reply->ignoreSslErrors ();
-
-		return;
-	}
-
-	QString msg = tr ("<code>%1</code><br />has SSL errors."
-			" What do you want to do?")
-		.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
-
-	SslErrorsDialog errDialog;
-	errDialog.Update (msg, errors);
-
-	const bool ignore = errDialog.exec () == QDialog::Accepted;
-
-	const auto err = reply ?
-			reply->error () :
-			QNetworkReply::NoError;
-	switch (err)
-	{
-	case QNetworkReply::SslHandshakeFailedError:
-		qWarning () << Q_FUNC_INFO
-				<< "got SSL handshake error in handleSslErrors, but let's try to continue";
-	case QNetworkReply::NoError:
-		break;
-	default:
-		return;
-	}
-
-	switch (errDialog.GetRememberChoice ())
-	{
-	case SslErrorsDialog::RCFile:
-		settings.setValue (urlString, ignore);
-		break;
-	case SslErrorsDialog::RCHost:
-		settings.setValue (host, ignore);
-		break;
-	default:
-		break;
-	}
-
-	if (ignore && reply)
-		reply->ignoreSslErrors ();
+	new SslErrorsHandler { replyObj, errors };
 }
 
 void LeechCraft::NetworkAccessManager::saveCookies () const
