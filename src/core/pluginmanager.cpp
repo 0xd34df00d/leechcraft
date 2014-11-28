@@ -136,75 +136,75 @@ namespace LeechCraft
 
 		switch (index.column ())
 		{
-			case 0:
-				switch (role)
-				{
-					case Qt::DisplayRole:
-						{
-							QSettings settings (QCoreApplication::organizationName (),
-									QCoreApplication::applicationName () + "-pg");
-							settings.beginGroup ("Plugins");
-							settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
-							QVariant result = settings.value ("Name");
-							settings.endGroup ();
-							settings.endGroup ();
-							return result;
-						}
-					case Qt::DecorationRole:
-						{
-							const auto& loader = AvailablePlugins_.at (index.row ());
-							if (!loader->IsLoaded ())
-								return DefaultPluginIcon_;
-							const auto& res = qobject_cast<IInfo*> (loader->Instance ())->GetIcon ();
-							return res.isNull () ? DefaultPluginIcon_ : res;
-						}
-					case Qt::CheckStateRole:
-						{
-							QSettings settings (QCoreApplication::organizationName (),
-									QCoreApplication::applicationName () + "-pg");
-							settings.beginGroup ("Plugins");
-							settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
-							bool result = settings.value ("AllowLoad", true).toBool ();
-							settings.endGroup ();
-							settings.endGroup ();
-							return result ? Qt::Checked : Qt::Unchecked;
-						}
-					case Qt::ForegroundRole:
-						return QApplication::palette ()
-							.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
-									QPalette::Normal :
-									QPalette::Disabled,
-								QPalette::WindowText);
-					default:
-						return QVariant ();
-				}
-			case 1:
-				if (role == Qt::DisplayRole)
+		case 0:
+			switch (role)
+			{
+			case Qt::DisplayRole:
 				{
 					QSettings settings (QCoreApplication::organizationName (),
 							QCoreApplication::applicationName () + "-pg");
 					settings.beginGroup ("Plugins");
 					settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
-					QVariant result = settings.value ("Info");
+					QVariant result = settings.value ("Name");
 					settings.endGroup ();
 					settings.endGroup ();
 					return result;
 				}
-				else if (role == Qt::ForegroundRole)
-					return QApplication::palette ()
-						.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
-								QPalette::Normal :
-								QPalette::Disabled,
-							QPalette::WindowText);
-				else
-					return QVariant ();
-			case 2:
-				if (role == Qt::SizeHintRole)
-					return QSize (32, 32);
-				else
-					return QVariant ();
+			case Qt::DecorationRole:
+				{
+					const auto& loader = AvailablePlugins_.at (index.row ());
+					if (!loader->IsLoaded ())
+						return DefaultPluginIcon_;
+					const auto& res = qobject_cast<IInfo*> (loader->Instance ())->GetIcon ();
+					return res.isNull () ? DefaultPluginIcon_ : res;
+				}
+			case Qt::CheckStateRole:
+				{
+					QSettings settings (QCoreApplication::organizationName (),
+							QCoreApplication::applicationName () + "-pg");
+					settings.beginGroup ("Plugins");
+					settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
+					bool result = settings.value ("AllowLoad", true).toBool ();
+					settings.endGroup ();
+					settings.endGroup ();
+					return result ? Qt::Checked : Qt::Unchecked;
+				}
+			case Qt::ForegroundRole:
+				return QApplication::palette ()
+					.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
+							QPalette::Normal :
+							QPalette::Disabled,
+						QPalette::WindowText);
 			default:
 				return QVariant ();
+			}
+		case 1:
+			if (role == Qt::DisplayRole)
+			{
+				QSettings settings (QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "-pg");
+				settings.beginGroup ("Plugins");
+				settings.beginGroup (AvailablePlugins_.at (index.row ())->GetFileName ());
+				QVariant result = settings.value ("Info");
+				settings.endGroup ();
+				settings.endGroup ();
+				return result;
+			}
+			else if (role == Qt::ForegroundRole)
+				return QApplication::palette ()
+					.brush (AvailablePlugins_.at (index.row ())->IsLoaded () ?
+							QPalette::Normal :
+							QPalette::Disabled,
+						QPalette::WindowText);
+			else
+				return QVariant ();
+		case 2:
+			if (role == Qt::SizeHintRole)
+				return QSize (32, 32);
+			else
+				return QVariant ();
+		default:
+			return QVariant ();
 		}
 	}
 
@@ -266,12 +266,12 @@ namespace LeechCraft
 			builder.AddObjects (Plugins_);
 			builder.Calculate ();
 
-			QSet<QObject*> oldSet = QSet<QObject*>::fromList (builder.GetResult ());
+			auto oldSet = QSet<QObject*>::fromList (builder.GetResult ());
 
 			builder.RemoveObject (loader->Instance ());
 			builder.Calculate ();
 
-			const QSet<QObject*>& newSet = QSet<QObject*>::fromList (builder.GetResult ());
+			const auto& newSet = QSet<QObject*>::fromList (builder.GetResult ());
 			oldSet.subtract (newSet);
 
 			oldSet.remove (loader->Instance ());
@@ -279,9 +279,9 @@ namespace LeechCraft
 			if (!oldSet.isEmpty ())
 			{
 				QStringList pluginNames;
-				Q_FOREACH (QObject *obj, oldSet)
+				for (auto obj : oldSet)
 				{
-					IInfo *ii = qobject_cast<IInfo*> (obj);
+					const auto ii = qobject_cast<IInfo*> (obj);
 					pluginNames << (ii->GetName () + " (" + ii->GetInfo () + ")");
 				}
 
@@ -297,7 +297,7 @@ namespace LeechCraft
 				QCoreApplication::applicationName () + "-pg");
 				settings.beginGroup ("Plugins");
 
-				Q_FOREACH (QObject *obj, oldSet)
+				for (const auto obj : oldSet)
 				{
 					if (!Obj2Loader_.contains (obj))
 						continue;
@@ -340,19 +340,19 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		std::shared_ptr<void> groupGuard (static_cast<void*> (0),
+		std::shared_ptr<void> groupGuard (nullptr,
 				[&settings] (void*) { settings.endGroup (); });
 
-		Q_FOREACH (QObject *obj, ordered)
+		for (const auto obj : ordered)
 		{
-			IInfo *ii = qobject_cast<IInfo*> (obj);
+			const auto ii = qobject_cast<IInfo*> (obj);
 			try
 			{
 				qDebug () << "Initializing" << ii->GetName ();
 				emit loadProgress (tr ("Initializing %1: stage one...").arg (ii->GetName ()));
-				ii->Init (ICoreProxy_ptr (new CoreProxy ()));
+				ii->Init (std::make_shared<CoreProxy> ());
 
-				const QString& path = GetPluginLibraryPath (obj);
+				const auto& path = GetPluginLibraryPath (obj);
 				if (path.isEmpty ())
 					continue;
 
@@ -384,7 +384,7 @@ namespace LeechCraft
 
 	void PluginManager::TryUnload (QObjectList plugins)
 	{
-		Q_FOREACH (QObject *object, plugins)
+		for (const auto object : plugins)
 		{
 			if (!Obj2Loader_.contains (object))
 				continue;
@@ -394,12 +394,10 @@ namespace LeechCraft
 			Obj2Loader_ [object]->Unload ();
 			Obj2Loader_.remove (object);
 
-			Q_FOREACH (auto loader, PluginContainers_)
-				if (loader->Instance () == object)
-				{
-					PluginContainers_.removeAll (loader);
-					break;
-				}
+			PluginContainers_.erase (std::remove_if (PluginContainers_.begin (), PluginContainers_.end (),
+						[object] (const Loaders::IPluginLoader_ptr& loader)
+							{ return loader->Instance () == object; }),
+					PluginContainers_.end ());
 		}
 	}
 
@@ -417,30 +415,40 @@ namespace LeechCraft
 		PluginTreeBuilder_->AddObjects (Plugins_);
 		PluginTreeBuilder_->Calculate ();
 
-		QObjectList failed = FirstInitAll ();
+		const auto& ordered = PluginTreeBuilder_->GetResult ();
 
-		QObjectList ordered = PluginTreeBuilder_->GetResult ();
+		for (const auto plugin : Plugins_)
+			if (!ordered.contains (plugin))
+				if (const auto val = Obj2Loader_.value (plugin))
+				{
+					const auto ii = qobject_cast<IInfo*> (plugin);
+					qDebug () << Q_FUNC_INFO
+							<< "will try to unload loader for failed instance"
+							<< (ii ? ii->GetUniqueID () : "<unknown>");
+					qDebug () << val->Unload ();
+				}
 
-		Q_FOREACH (QObject *obj, ordered)
+		const auto& failed = FirstInitAll ();
+
+		for (const auto obj : ordered)
 			Core::Instance ().Setup (obj);
 
 		auto coreInstanceObj = Core::Instance ().GetCoreInstanceObject ();
 		for (auto obj : GetAllCastableRoots<IHaveShortcuts*> ())
 			coreInstanceObj->GetShortcutManager ()->AddObject (obj);
 
-		QObjectList plugins2 = GetAllCastableRoots<IPlugin2*> ();
-		Q_FOREACH (IPluginReady *provider, GetAllCastableTo<IPluginReady*> ())
+		const auto& plugins2 = GetAllCastableRoots<IPlugin2*> ();
+		for (const auto provider : GetAllCastableTo<IPluginReady*> ())
 		{
-			const QSet<QByteArray>& expected = provider->GetExpectedPluginClasses ();
-			Q_FOREACH (QObject *ip2, plugins2)
-				if (qobject_cast<IPlugin2*> (ip2)->
-						GetPluginClasses ().intersect (expected).size ())
+			const auto& expected = provider->GetExpectedPluginClasses ();
+			for (QObject *ip2 : plugins2)
+				if (qobject_cast<IPlugin2*> (ip2)->GetPluginClasses ().intersect (expected).size ())
 					provider->AddPlugin (ip2);
 		}
 
-		Q_FOREACH (QObject *obj, ordered)
+		for (const auto obj : ordered)
 		{
-			IInfo *ii = qobject_cast<IInfo*> (obj);
+			const auto ii = qobject_cast<IInfo*> (obj);
 			try
 			{
 				emit loadProgress (tr ("Initializing %1: stage two...").arg (ii->GetName ()));
@@ -457,7 +465,7 @@ namespace LeechCraft
 			}
 		}
 
-		Q_FOREACH (QObject *plugin, GetAllPlugins ())
+		for (const auto plugin : GetAllPlugins ())
 			Core::Instance ().PostSecondInit (plugin);
 
 		TryUnload (failed);
@@ -1068,7 +1076,7 @@ namespace LeechCraft
 			{
 				if (ip2)
 				{
-					QSet<QByteArray> pcs = ip2->GetPluginClasses ();
+					auto pcs = ip2->GetPluginClasses ();
 					qDebug () << qobject_cast<IInfo*> (*i)->GetName () << pcs << expecteds;
 					if (!pcs.intersect (expecteds).isEmpty ())
 						result << i;
