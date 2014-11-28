@@ -111,8 +111,8 @@ namespace LeechCraft
 
 		QString NameForGroup (const QString& origName, const QString& group)
 		{
-			QStringList origSplit = origName.split (' ', QString::SkipEmptyParts);
-			QStringList groupSplit = group.split (' ', QString::SkipEmptyParts);
+			auto origSplit = origName.split (' ', QString::SkipEmptyParts);
+			auto groupSplit = group.split (' ', QString::SkipEmptyParts);
 
 			while (origSplit.value (0) == groupSplit.value (0) &&
 					origSplit.size () > 1)
@@ -137,9 +137,9 @@ namespace LeechCraft
 			for (const auto obj : settables)
 			{
 				if (obj == Core::Instance ().GetCoreInstanceObject ())
-					result [obj] << qMakePair (QString ("LeechCraft"), QString ());
+					result [obj].append ({ "LeechCraft", {} });
 				else if (!IsProperPlugin2 (obj, settables))
-					result [obj] << qMakePair (SettingsTab::tr ("General plugins"), QString ());
+					result [obj].append ({ SettingsTab::tr ("General plugins"), {} });
 			}
 
 			return result;
@@ -469,7 +469,7 @@ namespace LeechCraft
 		Ui_.Cats_->clear ();
 		if (Ui_.DialogContents_->layout ()->count ())
 		{
-			QLayoutItem *item = Ui_.DialogContents_->layout ()->takeAt (0);
+			const auto item = Ui_.DialogContents_->layout ()->takeAt (0);
 			item->widget ()->hide ();
 			delete item;
 		}
@@ -500,7 +500,7 @@ namespace LeechCraft
 
 		if (Ui_.DialogContents_->layout ()->count ())
 		{
-			QLayoutItem *item = Ui_.DialogContents_->layout ()->takeAt (0);
+			const auto item = Ui_.DialogContents_->layout ()->takeAt (0);
 			item->widget ()->hide ();
 			delete item;
 		}
