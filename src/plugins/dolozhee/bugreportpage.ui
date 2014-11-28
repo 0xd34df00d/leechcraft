@@ -109,6 +109,13 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>Title_</tabstop>
+  <tabstop>ShortDesc_</tabstop>
+  <tabstop>STR_</tabstop>
+  <tabstop>ER_</tabstop>
+  <tabstop>AR_</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
