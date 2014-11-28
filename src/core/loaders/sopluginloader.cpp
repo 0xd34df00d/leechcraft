@@ -36,7 +36,7 @@ namespace LeechCraft
 namespace Loaders
 {
 	SOPluginLoader::SOPluginLoader (const QString& filename)
-	: Loader_ { new QPluginLoader (filename) }
+	: Loader_ { std::make_shared<QPluginLoader> (filename) }
 	{
 		Loader_->setLoadHints (QLibrary::ExportExternalSymbolsHint);
 	}
