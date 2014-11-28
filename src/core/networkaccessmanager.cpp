@@ -296,19 +296,7 @@ void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,
 	SslErrorsDialog errDialog { new SslErrorsDialog () };
 	errDialog.Update (msg, errors);
 
-	connect (reply,
-			SIGNAL (error (QNetworkReply::NetworkError)),
-			&errDialog,
-			SLOT (reject ()));
-	connect (reply,
-			SIGNAL (finished ()),
-			&errDialog,
-			SLOT (reject ()));
-
 	const bool ignore = errDialog.exec () == QDialog::Accepted;
-
-	if (reply->isFinished ())
-		return;
 
 	const auto err = reply ?
 			reply->error () :
