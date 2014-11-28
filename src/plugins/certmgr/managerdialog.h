@@ -59,6 +59,7 @@ namespace CertMgr
 	private slots:
 		void on_AddLocal__released ();
 		void on_RemoveLocal__released ();
+		void updateLocalButtons ();
 
 		void on_Enable__released ();
 		void on_Disable__released ();

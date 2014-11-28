@@ -52,6 +52,12 @@ namespace CertMgr
 				this,
 				SLOT (updateSystemButtons ()));
 		updateSystemButtons ();
+
+		connect (Ui_.LocalTree_->selectionModel (),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
+				this,
+				SLOT (updateLocalButtons ()));
+		updateLocalButtons ();
 	}
 
 	QSslCertificate ManagerDialog::GetSelectedCert (CertPart part) const
@@ -132,6 +138,12 @@ namespace CertMgr
 	void ManagerDialog::on_RemoveLocal__released ()
 	{
 		Manager_->RemoveCert (GetSelectedCert (CertPart::Local));
+	}
+
+	void ManagerDialog::updateLocalButtons ()
+	{
+		const auto& cert = GetSelectedCert (CertPart::Local);
+		Ui_.RemoveLocal_->setEnabled (!cert.isNull ());
 	}
 
 	void ManagerDialog::on_Enable__released ()
