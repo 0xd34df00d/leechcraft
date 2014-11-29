@@ -53,8 +53,10 @@ namespace FatApe
 	{
 		QFile resource (Script_->GetResourcePath (ResourceName_));
 		QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+				QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
+		Reply_->deleteLater ();
+		deleteLater ();
 
 		if (!resource.open (QFile::WriteOnly))
 		{
@@ -72,8 +74,6 @@ namespace FatApe
 				.arg (Script_->Name ())
 				.arg (ResourceName_),
 				Reply_->header (QNetworkRequest::ContentTypeHeader));
-		Reply_->deleteLater ();
-		deleteLater ();
 	}
 }
 }
