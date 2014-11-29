@@ -1686,7 +1686,9 @@ namespace Azoth
 				handleFileOffered (object);
 		}
 
+#if defined(ENABLE_MEDIACALLS) || defined(ENABLE_CRYPT)
 		const auto accObj = acc->GetQObject ();
+#endif
 
 #ifdef ENABLE_MEDIACALLS
 		if (qobject_cast<ISupportMediaCalls*> (accObj) &&
