@@ -161,32 +161,34 @@ void RequestModel::handleFinished ()
 
 	for (int i = 0; i < rowCount (); ++i)
 	{
-		QStandardItem *ci = item (i);
-		if (ci->data ().value<QNetworkReply*> () == reply)
-		{
-			if (Clear_)
-				removeRow (i);
-			else
-			{
-				item (i, 1)->setText (QDateTime::currentDateTime ().toString ());
-				item (i, 0)->setData (0);
-				QNetworkRequest r = reply->request ();
-				item (i, 1)->setData (GetHeaders (&r));
+		if (item (i)->data ().value<QNetworkReply*> () != reply)
+			continue;
 
-				auto headers = GetHeaders (reply);
-				headers ["[HTTP response]"] = QString ("%1 (%2)")
-						.arg (reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ())
-						.arg (reply->attribute (QNetworkRequest::HttpReasonPhraseAttribute).toString ());
-				item (i, 2)->setData (headers);
-			}
+		if (Clear_)
+		{
+			removeRow (i);
 			break;
 		}
+
+		item (i, 0)->setData ({});
+		item (i, 1)->setText (QDateTime::currentDateTime ().toString ());
+
+		const auto& r = reply->request ();
+		item (i, 1)->setData (GetHeaders (&r));
+
+		auto headers = GetHeaders (reply);
+		headers ["[HTTP response]"] = QString ("%1 (%2)")
+				.arg (reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ())
+				.arg (reply->attribute (QNetworkRequest::HttpReasonPhraseAttribute).toString ());
+		item (i, 2)->setData (headers);
+		break;
 	}
 }
 
 void RequestModel::setClear (bool clear)
 {
 	Clear_ = clear;
+
 	if (Clear_)
 	{
 		for (int i = rowCount () - 1; i >= 0; --i)
