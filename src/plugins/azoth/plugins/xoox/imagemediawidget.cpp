@@ -49,12 +49,9 @@ namespace Xoox
 			data = manager->Take (from, Cid_);
 		}
 		else
-		{
-			// FIXME
 			qWarning () << Q_FUNC_INFO
 					<< "unhandled uri:"
 					<< uri.second;
-		}
 
 		if (!data.isNull ())
 			setPixmap (QPixmap::fromImage (QImage::fromData (data)));
