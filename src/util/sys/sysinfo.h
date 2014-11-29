@@ -51,9 +51,19 @@ namespace SysInfo
 		QString Name_;
 		QString Version_;
 
+		QString Flavour_;
+
 		OSInfo (const QString& name, const QString& version)
 		: Name_ { name }
 		, Version_ { version }
+		, Flavour_ { name }
+		{
+		}
+
+		OSInfo (const QString& flavour, const QString& name, const QString& version)
+		: Name_ { name }
+		, Version_ { version }
+		, Flavour_ { flavour }
 		{
 		}
 	};

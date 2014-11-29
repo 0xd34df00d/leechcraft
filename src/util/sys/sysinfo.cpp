@@ -221,7 +221,8 @@ namespace SysInfo
 
 		return
 		{
-			osName.isEmpty () ? QString (u.sysname) : osName,
+			u.sysname,
+			osName.isEmpty () ? u.sysname : osName,
 			QString ("%1 %2 %3").arg (u.machine, u.release, u.version)
 		};
 #endif
