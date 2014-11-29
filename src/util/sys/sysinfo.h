@@ -29,10 +29,8 @@
 
 #pragma once
 
-#include <QPair>
+#include <QString>
 #include "sysconfig.h"
-
-class QString;
 
 namespace LeechCraft
 {
