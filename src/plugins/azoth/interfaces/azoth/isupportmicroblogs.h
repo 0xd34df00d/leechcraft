@@ -33,6 +33,7 @@
 #include <QList>
 #include <QMap>
 #include <QDateTime>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
