@@ -39,7 +39,11 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
+
+#if QT_VERSION < 0x050000
 #include <qwebkitversion.h>
+#endif
+
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/slotclosure.h>
