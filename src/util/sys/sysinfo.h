@@ -51,9 +51,14 @@ namespace SysInfo
 
 		QString Flavour_;
 
-		UTIL_SYS_API OSInfo (const QString& name, const QString& version);
+		QString Arch_;
 
-		UTIL_SYS_API OSInfo (const QString& flavour, const QString& name, const QString& version);
+		UTIL_SYS_API OSInfo (const QString& arch, const QString& name, const QString& version);
+
+		UTIL_SYS_API OSInfo (const QString& flavour,
+				const QString& arch,
+				const QString& name,
+				const QString& version);
 	};
 
 	/** @brief Returns more precise information about OS name and version.

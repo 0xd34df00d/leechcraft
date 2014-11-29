@@ -44,15 +44,17 @@ namespace Util
 {
 namespace SysInfo
 {
-	OSInfo::OSInfo (const QString& name, const QString& version)
-	: OSInfo { name, name, version }
+	OSInfo::OSInfo (const QString& arch, const QString& name, const QString& version)
+	: OSInfo { name, arch, name, version }
 	{
 	}
 
-	OSInfo::OSInfo (const QString& flavour, const QString& name, const QString& version)
+	OSInfo::OSInfo (const QString& arch, const QString& flavour,
+			const QString& name, const QString& version)
 	: Name_ { name }
 	, Version_ { version }
 	, Flavour_ { flavour }
+	, Arch_ { arch }
 	{
 	}
 
@@ -168,30 +170,37 @@ namespace SysInfo
 	OSInfo GetOSInfo ()
 	{
 #if defined(Q_OS_MAC)
+		const auto retVer = [] (const QString& version)
+		{
+			// LC only supports building on OS X 10.7 and higher, which all work only on x86_64.
+			return OSInfo { "x86_64", "Mac OS X", version };
+		};
+
 		switch (QSysInfo::MacintoshVersion)
 		{
 		case QSysInfo::MV_10_3:
-			return { "Mac OS X", "10.3" };
+			return retVer ("10.3");
 		case QSysInfo::MV_10_4:
-			return { "Mac OS X", "10.4" };
+			return retVer ("10.4");
 		case QSysInfo::MV_10_5:
-			return { "Mac OS X", "10.5" };
+			return retVer ("10.5");
 		case QSysInfo::MV_10_6:
-			return { "Mac OS X", "10.6" };
+			return retVer ("10.6");
 		case QSysInfo::MV_10_7:
-			return { "Mac OS X", "10.7" };
+			return retVer ("10.7");
 		case QSysInfo::MV_10_8:
-			return { "Mac OS X", "10.8" };
+			return retVer ("10.8");
 		case QSysInfo::MV_10_9:
-			return { "Mac OS X", "10.9" };
+			return retVer ("10.9");
 		default:
-			return { "Max OS X", "Unknown version" };
+			return retVer ("Unknown version");
 		}
 #elif defined(Q_OS_WIN32)
 		const auto retVer = [] (const QString& version)
 		{
 			return OSInfo
 			{
+				QSysInfo::WordSize == 64 ? "x86_64" : "x86",
 				"Windows",
 				version
 			};
@@ -240,13 +249,14 @@ namespace SysInfo
 
 		return
 		{
+			u.machine,
 			u.sysname,
 			osName.isEmpty () ? u.sysname : osName,
 			QString ("%1 %2 %3").arg (u.machine, u.release, u.version)
 		};
 #endif
 
-		return { "Unknown OS", "Unknown version" };
+		return { "Unknown arch", "Unknown OS", "Unknown version" };
 	}
 }
 }
