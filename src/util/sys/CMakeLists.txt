@@ -42,7 +42,7 @@ add_library (leechcraft-util-sys${LC_LIBSUFFIX} SHARED
 target_link_libraries (leechcraft-util-sys${LC_LIBSUFFIX}
 	${MAGIC_LIBRARIES}
 	)
-set_property (TARGET leechcraft-util-sys${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-util-sys${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-sys${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-sys${LC_LIBSUFFIX} Network Widgets)
