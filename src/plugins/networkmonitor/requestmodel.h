@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_NETWORKMONITOR_REQUESTMODEL_H 
-#define PLUGINS_NETWORKMONITOR_REQUESTMODEL_H 
+#pragma once
+
 #include <QStandardItemModel>
 #include <QNetworkAccessManager>
 
@@ -44,9 +44,9 @@ namespace LeechCraft
 			{
 				Q_OBJECT
 
-				HeaderModel *RequestHeadersModel_;
-				HeaderModel *ReplyHeadersModel_;
-				bool Clear_;
+				HeaderModel * const RequestHeadersModel_;
+				HeaderModel * const ReplyHeadersModel_;
+				bool Clear_ = true;
 			public:
 				RequestModel (QObject* = 0);
 				HeaderModel* GetRequestHeadersModel () const;
@@ -59,9 +59,6 @@ namespace LeechCraft
 				void handleCurrentChanged (const QModelIndex&);
 				void handleGonnaDestroy (QObject*);
 			};
-		};
-	};
-};
-
-#endif
-
+		}
+	}
+}

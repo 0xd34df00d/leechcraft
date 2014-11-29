@@ -40,16 +40,16 @@ Q_DECLARE_METATYPE (QNetworkReply*);
 using namespace LeechCraft::Plugins::NetworkMonitor;
 
 LeechCraft::Plugins::NetworkMonitor::RequestModel::RequestModel (QObject *parent)
-: QStandardItemModel (parent)
-, Clear_ (true)
+: QStandardItemModel { parent }
+, RequestHeadersModel_ { new HeaderModel { this } }
+, ReplyHeadersModel_ { new HeaderModel { this } }
 {
-	setHorizontalHeaderLabels (QStringList (tr ("Date started"))
-			<< tr ("Date finished")
-			<< tr ("Type")
-			<< tr ("Host"));
-
-	RequestHeadersModel_ = new HeaderModel (this);
-	ReplyHeadersModel_ = new HeaderModel (this);
+	setHorizontalHeaderLabels ({
+			tr ("Date started"),
+			tr ("Date finished"),
+			tr ("Type"),
+			tr ("Host")
+		});
 }
 
 HeaderModel* RequestModel::GetRequestHeadersModel () const
@@ -236,4 +236,3 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 		}
 	}
 }
-

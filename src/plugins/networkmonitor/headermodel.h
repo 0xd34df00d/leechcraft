@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_NETWORKMONITOR_HEADERMODEL_H 
-#define PLUGINS_NETWORKMONITOR_HEADERMODEL_H 
+#pragma once
+
 #include <QStandardItemModel>
 #include <QNetworkAccessManager>
 
@@ -45,9 +45,6 @@ namespace LeechCraft
 				HeaderModel (QObject* = 0);
 				void AddHeader (const QString&, const QString&);
 			};
-		};
-	};
-};
-
-#endif
-
+		}
+	}
+}
