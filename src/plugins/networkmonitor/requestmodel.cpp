@@ -102,7 +102,7 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 	items.push_back (new QStandardItem (tr ("In progress")));
 	items.push_back (new QStandardItem (opName));
 	items.push_back (new QStandardItem (req.url ().toString ()));
-	items.first ()->setData (QVariant::fromValue<QObject*> (rep));
+	items.first ()->setData (QVariant::fromValue (rep));
 	appendRow (items);
 
 	connect (rep,
@@ -234,7 +234,7 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 	for (int i = 0; i < rowCount (); ++i)
 	{
 		const auto ci = item (i);
-		if (ci->data ().value<QObject*> () == obj)
+		if (ci->data ().value<QNetworkReply*> () == obj)
 		{
 			removeRow (i);
 			break;
