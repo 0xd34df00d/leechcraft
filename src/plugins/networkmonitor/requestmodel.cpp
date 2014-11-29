@@ -225,6 +225,9 @@ void RequestModel::handleCurrentChanged (const QModelIndex& newItem)
 
 void RequestModel::handleGonnaDestroy (QObject *obj)
 {
+	if (!Clear_)
+		return;
+
 	if (!obj && sender ())
 		obj = sender ();
 
