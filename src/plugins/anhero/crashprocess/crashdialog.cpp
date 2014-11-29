@@ -219,9 +219,9 @@ namespace CrashProcess
 		Ui_.TraceDisplay_->append ("Qt version (build-time): " + QString (QT_VERSION_STR));
 		Ui_.TraceDisplay_->append ("Qt version (runtime): " + QString (qVersion ()));
 
-		const auto& osInfo = Util::SysInfo::GetOSNameSplit ();
-		Ui_.TraceDisplay_->append ("OS: " + osInfo.first);
-		Ui_.TraceDisplay_->append ("OS version: " + osInfo.second);
+		const auto& osInfo = Util::SysInfo::GetOSInfo ();
+		Ui_.TraceDisplay_->append ("OS: " + osInfo.Name_);
+		Ui_.TraceDisplay_->append ("OS version: " + osInfo.Version_);
 
 		Ui_.TraceDisplay_->append ("\n\n=== BACKTRACE ===");
 

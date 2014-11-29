@@ -1546,10 +1546,10 @@ namespace Xoox
 		const bool advertiseOS = XmlSettingsManager::Instance ()
 				.property ("AdvertiseOSVersion").toBool ();
 
-		const auto& sysInfo = Util::SysInfo::GetOSNameSplit ();
-		auto infoStr = sysInfo.first;
+		const auto& sysInfo = Util::SysInfo::GetOSInfo ();
+		auto infoStr = sysInfo.Name_;
 		if (advertiseOS)
-			infoStr += " " + sysInfo.second;
+			infoStr += " " + sysInfo.Version_;
 
 		auto versionStr = Core::Instance ().GetProxy ()->GetVersion ();
 		if (advertiseQt)
@@ -1565,15 +1565,15 @@ namespace Xoox
 		vm.setClientOs (infoStr);
 		vm.setClientVersion (versionStr);
 
-		XEP0232Handler::SoftwareInformation si =
+		XEP0232Handler::SoftwareInformation si
 		{
 			64,
 			64,
 			QUrl ("http://leechcraft.org/leechcraft.png"),
 			QString (),
 			"image/png",
-			sysInfo.first,
-			advertiseOS ? sysInfo.second : QString (),
+			sysInfo.Name_,
+			advertiseOS ? sysInfo.Version_ : QString (),
 			vm.clientName (),
 			vm.clientVersion ()
 		};

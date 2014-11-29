@@ -46,11 +46,24 @@ namespace SysInfo
 	 */
 	UTIL_SYS_API QString GetOSName ();
 
-	/** @brief Returns a pair of OS name and version.
+	struct OSInfo
+	{
+		QString Name_;
+		QString Version_;
+
+		OSInfo (const QString& name, const QString& version)
+		: Name_ { name }
+		, Version_ { version }
+		{
+		}
+	};
+
+	/** @brief Returns more precise information about OS name and version.
 	 *
-	 * @return A pair consisting of operating system name and version.
+	 * @return A structure OSInfo consisting of OS name, version and other
+	 * fields.
 	 */
-	UTIL_SYS_API QPair<QString, QString> GetOSNameSplit ();
+	UTIL_SYS_API OSInfo GetOSInfo ();
 }
 }
 }

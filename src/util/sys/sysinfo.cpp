@@ -46,8 +46,8 @@ namespace SysInfo
 {
 	QString GetOSName ()
 	{
-		const auto& pair = GetOSNameSplit ();
-		return pair.first + ' ' + pair.second;
+		const auto& info = GetOSInfo ();
+		return info.Name_ + ' ' + info.Version_;
 	}
 
 	typedef QPair<QString, QString> SplitInfo_t;
@@ -155,11 +155,10 @@ namespace SysInfo
 #endif
 	}
 
-	QPair<QString, QString> GetOSNameSplit ()
+	OSInfo GetOSInfo ()
 	{
 #if defined(Q_OS_MAC)
-		QSysInfo::MacVersion v = QSysInfo::MacintoshVersion;
-		switch (v)
+		switch (QSysInfo::MacintoshVersion)
 		{
 		case QSysInfo::MV_10_3:
 			return { "Mac OS X", "10.3" };
@@ -179,31 +178,33 @@ namespace SysInfo
 			return { "Max OS X", "Unknown version" };
 		}
 #elif defined(Q_OS_WIN32)
-		QSysInfo::WinVersion v = QSysInfo::WindowsVersion;
-		if (v == QSysInfo::WV_95)
-			return SplitInfo_t ("Windows", "95");
-		else if (v == QSysInfo::WV_98)
-			return SplitInfo_t ("Windows", "98");
-		else if (v == QSysInfo::WV_Me)
-			return SplitInfo_t ("Windows", "Me");
-		else if (v == QSysInfo::WV_DOS_based)
-			return SplitInfo_t ("Windows", "9x/Me");
-		else if (v == QSysInfo::WV_NT)
-			return SplitInfo_t ("Windows", "NT 4.x");
-		else if (v == QSysInfo::WV_2000)
-			return SplitInfo_t ("Windows", "2000");
-		else if (v == QSysInfo::WV_XP)
-			return SplitInfo_t ("Windows", "XP");
-		else if (v == QSysInfo::WV_2003)
-			return SplitInfo_t ("Windows", "2003");
-		else if (v == QSysInfo::WV_VISTA)
-			return SplitInfo_t ("Windows", "Vista");
-		else if (v == QSysInfo::WV_WINDOWS7)
-			return SplitInfo_t ("Windows", "7");
-		else if (v == 0x00a0)
-			return SplitInfo_t ("Windows", "8");
-		else if (v == QSysInfo::WV_NT_based)
-			return SplitInfo_t ("Windows", "NT-based");
+		switch (QSysInfo::WindowsVersion)
+		{
+		case QSysInfo::WV_95:
+			return { "Windows", "95" };
+		case QSysInfo::WV_98:
+			return { "Windows", "98" };
+		case QSysInfo::WV_Me:
+			return { "Windows", "Me" };
+		case QSysInfo::WV_DOS_based:
+			return { "Windows", "9x/Me" };
+		case QSysInfo::WV_NT:
+			return { "Windows", "NT 4.x" };
+		case QSysInfo::WV_2000:
+			return { "Windows", "2000" };
+		case QSysInfo::WV_XP:
+			return { "Windows", "XP" };
+		case QSysInfo::WV_2003:
+			return { "Windows", "2003" };
+		case QSysInfo::WV_VISTA:
+			return { "Windows", "Vista" };
+		case QSysInfo::WV_WINDOWS7:
+			return { "Windows", "7" };
+		case 0x00a0:
+			return { "Windows", "8" };
+		case QSysInfo::WV_NT_based:
+			return { "Windows", "NT-based" };
+		}
 #else
 		auto osName = Linux::GetEtcOsName ();
 
@@ -218,11 +219,14 @@ namespace SysInfo
 		utsname u;
 		uname (&u);
 
-		return qMakePair (osName.isEmpty () ? QString (u.sysname) : osName,
-				QString ("%1 %2 %3").arg (u.machine, u.release, u.version));
+		return
+		{
+			osName.isEmpty () ? QString (u.sysname) : osName,
+			QString ("%1 %2 %3").arg (u.machine, u.release, u.version)
+		};
 #endif
 
-		return qMakePair (QString ("Unknown OS"), QString ("Unknown version"));
+		return { "Unknown OS", "Unknown version" };
 	}
 }
 }
