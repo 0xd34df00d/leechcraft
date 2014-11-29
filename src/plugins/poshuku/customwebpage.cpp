@@ -885,7 +885,11 @@ namespace Poshuku
 		const auto platform = "X11";
 #endif
 
-		const auto& osVersion = Util::SysInfo::GetOSInfo ().Flavour_;
+		const auto& osInfo = Util::SysInfo::GetOSInfo ();
+		auto osVersion = osInfo.Flavour_;
+		if (!osInfo.Arch_.isEmpty ())
+			osVersion += " " + osInfo.Arch_;
+
 		const auto& lcVersion = Core::Instance ().GetProxy ()->GetVersion ();
 
 		return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%4 Safari/%3" }
