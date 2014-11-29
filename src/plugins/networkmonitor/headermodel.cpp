@@ -44,5 +44,7 @@ void HeaderModel::AddHeader (const QString& name, const QString& value)
 		new QStandardItem { name },
 		new QStandardItem { value }
 	};
+	for (const auto item : items)
+		item->setEditable (false);
 	appendRow (items);
 }
