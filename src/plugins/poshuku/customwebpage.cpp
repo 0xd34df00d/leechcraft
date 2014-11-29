@@ -893,16 +893,15 @@ namespace Poshuku
 
 	QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
 	{
-		QList<QWebFrame*> frames;
-		frames.append (mainFrame ());
+		QList<QWebFrame*> frames { mainFrame () };
 		while (!frames.isEmpty ())
 		{
-			QWebFrame *frame = frames.takeFirst ();
+			const auto frame = frames.takeFirst ();
 			if (frame->url () == url)
 				return frame;
 			frames << frame->childFrames ();
 		}
-		return 0;
+		return nullptr;
 	}
 
 	namespace
