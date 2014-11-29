@@ -225,18 +225,15 @@ void RequestModel::handleCurrentChanged (const QModelIndex& newItem)
 
 void RequestModel::handleGonnaDestroy (QObject *obj)
 {
-	if (!Clear_)
-		return;
-
-	if (!obj && sender ())
-		obj = sender ();
-
 	for (int i = 0; i < rowCount (); ++i)
 	{
 		const auto ci = item (i);
 		if (ci->data ().value<QNetworkReply*> () == obj)
 		{
-			removeRow (i);
+			if (Clear_)
+				removeRow (i);
+			else
+				ci->setData ({});
 			break;
 		}
 	}
