@@ -44,13 +44,23 @@ namespace Util
 {
 namespace SysInfo
 {
+	OSInfo::OSInfo (const QString& name, const QString& version)
+	: OSInfo { name, name, version }
+	{
+	}
+
+	OSInfo::OSInfo (const QString& flavour, const QString& name, const QString& version)
+	: Name_ { name }
+	, Version_ { version }
+	, Flavour_ { flavour }
+	{
+	}
+
 	QString GetOSName ()
 	{
 		const auto& info = GetOSInfo ();
 		return info.Name_ + ' ' + info.Version_;
 	}
-
-	typedef QPair<QString, QString> SplitInfo_t;
 
 	namespace Linux
 	{
