@@ -877,9 +877,9 @@ namespace Poshuku
 		if (!ua.isEmpty ())
 			return ua;
 
-#if Q_OS_WIN32
+#if defined(Q_OS_WIN32)
 		const auto platform = "Windows";
-#elif Q_OS_MAC
+#elif defined (Q_OS_MAC)
 		const auto platform = "Macintosh";
 #else
 		const auto platform = "X11";
