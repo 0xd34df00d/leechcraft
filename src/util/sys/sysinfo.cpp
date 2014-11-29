@@ -188,32 +188,41 @@ namespace SysInfo
 			return { "Max OS X", "Unknown version" };
 		}
 #elif defined(Q_OS_WIN32)
+		const auto retVer = [] (const QString& version)
+		{
+			return OSInfo
+			{
+				"Windows",
+				version
+			};
+		};
+
 		switch (QSysInfo::WindowsVersion)
 		{
 		case QSysInfo::WV_95:
-			return { "Windows", "95" };
+			return retVer ("95");
 		case QSysInfo::WV_98:
-			return { "Windows", "98" };
+			return retVer ("98");
 		case QSysInfo::WV_Me:
-			return { "Windows", "Me" };
+			return retVer ("Me");
 		case QSysInfo::WV_DOS_based:
-			return { "Windows", "9x/Me" };
+			return retVer ("9x/Me");
 		case QSysInfo::WV_NT:
-			return { "Windows", "NT 4.x" };
+			return retVer ("NT 4.x");
 		case QSysInfo::WV_2000:
-			return { "Windows", "2000" };
+			return retVer ("2000");
 		case QSysInfo::WV_XP:
-			return { "Windows", "XP" };
+			return retVer ("XP");
 		case QSysInfo::WV_2003:
-			return { "Windows", "2003" };
+			return retVer ("2003");
 		case QSysInfo::WV_VISTA:
-			return { "Windows", "Vista" };
+			return retVer ("Vista");
 		case QSysInfo::WV_WINDOWS7:
-			return { "Windows", "7" };
+			return retVer ("7");
 		case 0x00a0:
-			return { "Windows", "8" };
+			return retVer ("8");
 		case QSysInfo::WV_NT_based:
-			return { "Windows", "NT-based" };
+			return retVer ("NT-based");
 		}
 #else
 		auto osName = Linux::GetEtcOsName ();
