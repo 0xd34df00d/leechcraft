@@ -39,9 +39,11 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
+#include <qwebkitversion.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/slotclosure.h>
+#include <util/sys/sysinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -867,11 +869,26 @@ namespace Poshuku
 
 	QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 	{
-		QString ua = Core::Instance ().GetUserAgent (url, this);
-		if (ua.isEmpty ())
-			return QWebPage::userAgentForUrl (url);
-		else
+		const auto& ua = Core::Instance ().GetUserAgent (url, this);
+		if (!ua.isEmpty ())
 			return ua;
+
+#if Q_OS_WIN32
+		const auto platform = "Windows";
+#elif Q_OS_MAC
+		const auto platform = "Macintosh";
+#else
+		const auto platform = "X11";
+#endif
+
+		const auto& osVersion = Util::SysInfo::GetOSNameSplit ().first;
+		const auto& lcVersion = Core::Instance ().GetProxy ()->GetVersion ();
+
+		return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%4 Safari/%3" }
+				.arg (platform)
+				.arg (osVersion)
+				.arg (qWebKitVersion ())
+				.arg (lcVersion.section ('-', 0, 0));
 	}
 
 	QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
