@@ -40,6 +40,7 @@ namespace Azoth
 namespace Sarin
 {
 	class ToxThread;
+	class ToxAccount;
 
 	class FileTransferManager : public QObject
 							  , public ITransferManager
@@ -47,9 +48,10 @@ namespace Sarin
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ITransferManager)
 
+		ToxAccount * const Acc_;
 		std::weak_ptr<ToxThread> ToxThread_;
 	public:
-		FileTransferManager (QObject* = nullptr);
+		FileTransferManager (ToxAccount*);
 
 		bool IsAvailable () const override;
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;

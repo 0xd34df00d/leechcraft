@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "filetransfermanager.h"
+#include "toxaccount.h"
 #include "toxthread.h"
 
 namespace LeechCraft
@@ -36,8 +37,9 @@ namespace Azoth
 {
 namespace Sarin
 {
-	FileTransferManager::FileTransferManager (QObject *parent)
-	: QObject { parent }
+	FileTransferManager::FileTransferManager (ToxAccount *acc)
+	: QObject { acc }
+	, Acc_ { acc }
 	{
 	}
 
