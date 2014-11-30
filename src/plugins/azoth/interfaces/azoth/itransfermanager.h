@@ -157,7 +157,7 @@ namespace Azoth
 		 * request or abort an already accepted one that's in progress.
 		 */
 		virtual void Abort () = 0;
-
+	protected:
 		/** @brief Notifies about transfer progress.
 		 *
 		 * @note This function is expected to be a signal.
@@ -236,7 +236,7 @@ namespace Azoth
 				const QString& variant,
 				const QString& name,
 				const QString& comment) = 0;
-
+	protected:
 		/** @brief Notifies about incoming transfer request.
 		 *
 		 * This signal should be emitted by the transfer manager
