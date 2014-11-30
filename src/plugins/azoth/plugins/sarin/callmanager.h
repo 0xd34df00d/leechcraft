@@ -80,7 +80,7 @@ namespace Sarin
 
 		void HandleAvStart (int32_t);
 
-		void HandleAudio (int32_t call, int16_t *frames, int size);
+		void HandleAudio (int32_t call, const int16_t *frames, int size);
 
 		void PrepareTransmission (int32_t);
 	signals:

@@ -240,9 +240,9 @@ namespace Sarin
 		emit transferStarting (callIdx);
 	}
 
-	void CallManager::HandleAudio (int32_t call, int16_t *frames, int size)
+	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size)
 	{
-		const QByteArray data { reinterpret_cast<char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
+		const QByteArray data { reinterpret_cast<const char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
 		emit gotFrame (call, data);
 	}
 
