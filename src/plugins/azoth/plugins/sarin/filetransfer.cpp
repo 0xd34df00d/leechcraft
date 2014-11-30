@@ -29,6 +29,10 @@
 
 #include "filetransfer.h"
 #include <QFileInfo>
+#include <tox/tox.h>
+#include <util/sll/futures.h>
+#include "toxthread.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -48,6 +52,32 @@ namespace Sarin
 	, Thread_ { thread }
 	, Filesize_ { QFileInfo { filename }.size () }
 	{
+		connect (Thread_.get (),
+				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
+				this,
+				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+		const auto sendScheduler = [this]
+		{
+			return Thread_->ScheduleFunction ([this] (Tox *tox)
+					{
+						const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
+						FriendNum_ = GetFriendId (tox, PubKey_);
+						return tox_new_file_sender (tox,
+								FriendNum_,
+								static_cast<uint64_t> (Filesize_),
+								reinterpret_cast<const uint8_t*> (name.constData ()),
+								name.size ());
+					});
+		};
+		Util::ExecuteFuture (sendScheduler,
+				[this] (int filenum)
+				{
+					if (filenum >= 0)
+						return;
+					qWarning () << Q_FUNC_INFO
+							<< "unable to send file";
+				},
+				this);
 	}
 
 	QString FileTransfer::GetSourceID () const
@@ -81,6 +111,13 @@ namespace Sarin
 
 	void FileTransfer::Abort ()
 	{
+	}
+
+	void FileTransfer::handleFileControl (qint32 friendNum,
+			qint8 fileNum, qint8 type, const QByteArray& data)
+	{
+		if (friendNum != FriendNum_ || fileNum != FileNum_)
+			return;
 	}
 }
 }

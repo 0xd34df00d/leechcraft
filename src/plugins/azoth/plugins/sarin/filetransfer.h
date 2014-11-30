@@ -53,6 +53,9 @@ namespace Sarin
 		const std::shared_ptr<ToxThread> Thread_;
 
 		const int64_t Filesize_;
+
+		int FriendNum_;
+		int FileNum_;
 	public:
 		FileTransfer (const QString& azothId,
 				const QByteArray& pubkey,
@@ -68,6 +71,8 @@ namespace Sarin
 
 		void Accept (const QString&) override;
 		void Abort () override;
+	private slots:
+		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
 	signals:
 		void transferProgress (qint64 done, qint64 total) override;
 		void errorAppeared (TransferError error, const QString& msg) override;
