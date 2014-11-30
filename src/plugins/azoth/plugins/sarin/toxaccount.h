@@ -82,6 +82,8 @@ namespace Sarin
 
 		void SetNickname (const QString&);
 
+		ToxContact* GetByAzothId (const QString&) const;
+
 		QObject* GetQObject () override;
 		QObject* GetParentProtocol () const override;
 		AccountFeatures GetAccountFeatures () const override;
@@ -113,8 +115,6 @@ namespace Sarin
 	private:
 		void InitThread (const EntryStatus&);
 		void InitEntry (const QByteArray&);
-
-		ToxContact* GetByAzothId (const QString&) const;
 
 		void HandleConfigAccepted (AccountConfigDialog*);
 	private slots:
