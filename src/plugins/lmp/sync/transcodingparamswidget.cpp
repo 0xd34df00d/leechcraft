@@ -96,7 +96,6 @@ namespace LMP
 	{
 		Ui_.TranscodingBox_->setChecked (!params.FormatID_.isEmpty ());
 		Ui_.FilenameMask_->setText (params.FilePattern_);
-		Ui_.QualitySlider_->setValue (params.Quality_);
 
 		const auto& formats = Formats_->GetFormats ();
 		const auto pos = std::find_if (formats.begin (), formats.end (),
@@ -126,6 +125,8 @@ namespace LMP
 			Ui_.BitrateTypeBox_->setCurrentIndex (i);
 			break;
 		}
+
+		Ui_.QualitySlider_->setValue (params.Quality_);
 	}
 
 	Format_ptr TranscodingParamsWidget::GetCurrentFormat () const
