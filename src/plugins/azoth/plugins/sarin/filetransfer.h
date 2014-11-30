@@ -56,6 +56,13 @@ namespace Sarin
 		int FriendNum_;
 		int FileNum_;
 
+		enum class State
+		{
+			Idle,
+			Waiting,
+			Transferring
+		} State_ = State::Waiting;
+
 		QFile File_;
 		qint64 Filesize_;
 	public:
@@ -73,6 +80,9 @@ namespace Sarin
 
 		void Accept (const QString&) override;
 		void Abort () override;
+	private:
+		void HandleAccept ();
+		void TransferChunk ();
 	private slots:
 		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
 	signals:

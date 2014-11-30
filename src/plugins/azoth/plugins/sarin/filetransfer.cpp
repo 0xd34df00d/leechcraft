@@ -122,11 +122,61 @@ namespace Sarin
 	{
 	}
 
+	void FileTransfer::HandleAccept ()
+	{
+		State_ = State::Transferring;
+		TransferChunk ();
+	}
+
+	void FileTransfer::TransferChunk ()
+	{
+		const auto sendScheduler = [this]
+		{
+			return Thread_->ScheduleFunction ([this] (Tox *tox)
+					{
+						const int chunkSize = tox_file_data_size (tox, FriendNum_);
+						const auto& data = File_.read (chunkSize);
+						return tox_file_send_data (tox, FriendNum_, FileNum_,
+								reinterpret_cast<const uint8_t*> (data.constData ()), data.size ());
+					});
+		};
+		Util::ExecuteFuture (sendScheduler,
+				[this] (int sendRes)
+				{
+					if (!sendRes)
+					{
+						TransferChunk ();
+						return;
+					}
+
+					qWarning () << Q_FUNC_INFO
+							<< "error sending the file";
+				},
+				this);
+	}
+
 	void FileTransfer::handleFileControl (qint32 friendNum,
 			qint8 fileNum, qint8 type, const QByteArray& data)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
+
+		switch (State_)
+		{
+		case State::Waiting:
+			switch (type)
+			{
+			case TOX_FILECONTROL_ACCEPT:
+				HandleAccept ();
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected control type in Waiting state:"
+						<< type;
+				break;
+			}
+			break;
+		}
 	}
 }
 }
