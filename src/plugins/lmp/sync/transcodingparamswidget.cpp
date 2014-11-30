@@ -29,6 +29,7 @@
 
 #include "transcodingparamswidget.h"
 #include <QThread>
+#include <QtDebug>
 #include "transcodingparams.h"
 #include "formats.h"
 
@@ -101,20 +102,29 @@ namespace LMP
 		const auto pos = std::find_if (formats.begin (), formats.end (),
 				[params] (const Format_ptr& format)
 					{ return format->GetFormatID () == params.FormatID_; });
-		if (pos != formats.end ())
+		if (pos == formats.end ())
 		{
-			const auto idx = std::distance (formats.begin (), pos);
-			Ui_.TranscodingFormat_->setCurrentIndex (idx);
+			qWarning () << Q_FUNC_INFO
+					<< "unknown format"
+					<< params.FormatID_
+					<< "; available formats:";
+			for (const auto& format : formats)
+				qWarning () << "\t"
+						<< format->GetFormatID ();
+			return;
+		}
 
-			for (int i = 0; i < Ui_.BitrateTypeBox_->count (); ++i)
-			{
-				const auto& data = Ui_.BitrateTypeBox_->itemData (i);
-				if (data.toInt () != static_cast<int> (params.BitrateType_))
-					continue;
+		const auto idx = std::distance (formats.begin (), pos);
+		Ui_.TranscodingFormat_->setCurrentIndex (idx);
 
-				Ui_.BitrateTypeBox_->setCurrentIndex (i);
-				break;
-			}
+		for (int i = 0; i < Ui_.BitrateTypeBox_->count (); ++i)
+		{
+			const auto& data = Ui_.BitrateTypeBox_->itemData (i);
+			if (data.toInt () != static_cast<int> (params.BitrateType_))
+				continue;
+
+			Ui_.BitrateTypeBox_->setCurrentIndex (i);
+			break;
 		}
 	}
 
