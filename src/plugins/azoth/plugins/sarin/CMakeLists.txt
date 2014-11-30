@@ -50,6 +50,7 @@ set (SARIN_SRCS
 	audiocall.cpp
 	audiocalldevice.cpp
 	calldatawriter.cpp
+	filetransfermanager.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
