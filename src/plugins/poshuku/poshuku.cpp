@@ -82,10 +82,8 @@ namespace Poshuku
 
 		try
 		{
-			QWebSettings::setIconDatabasePath (
-					Util::CreateIfNotExists ("poshuku/favicons")
-							.absolutePath ()
-					);
+			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/favicons").absolutePath ();
+			QWebSettings::setIconDatabasePath (path);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -96,10 +94,8 @@ namespace Poshuku
 
 		try
 		{
-			QWebSettings::setOfflineStoragePath (
-					Util::CreateIfNotExists ("poshuku/offlinestorage")
-							.absolutePath ()
-					);
+			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/offlinestorage").absolutePath ();
+			QWebSettings::setOfflineStoragePath (path);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -110,10 +106,8 @@ namespace Poshuku
 
 		try
 		{
-			QWebSettings::setOfflineWebApplicationCachePath (
-					Util::CreateIfNotExists ("poshuku/offlinewebappcache")
-						.absolutePath ()
-					);
+			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/offlinewebappcache").absolutePath ();
+			QWebSettings::setOfflineWebApplicationCachePath (path);
 		}
 		catch (const std::runtime_error& e)
 		{
