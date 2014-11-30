@@ -60,15 +60,8 @@ namespace Sarin
 				},
 				av_OnStart,
 				this);
-		toxav_register_callstate_callback (ToxAv_.get (),
-				[] (void*, int32_t callIdx, void *udata)
-				{
-					static_cast<CallManager*> (udata)->HandleAvStart (callIdx);
-				},
-				av_OnStarting,
-				this);
-		toxav_register_audio_recv_callback (ToxAv_.get (),
-				[] (ToxAv*, int32_t callIdx, int16_t *frames, int size, void *udata)
+		toxav_register_audio_callback (ToxAv_.get (),
+				[] (void*, int32_t callIdx, const int16_t *frames, uint16_t size, void *udata)
 				{
 					static_cast<CallManager*> (udata)->HandleAudio (callIdx, frames, size);
 				},
@@ -213,7 +206,7 @@ namespace Sarin
 			return;
 		}
 
-		if (settings.call_type == TypeVideo)
+		if (settings.call_type == av_TypeVideo)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "video calls are unsupported for now";
@@ -248,7 +241,7 @@ namespace Sarin
 
 	void CallManager::PrepareTransmission (int32_t callIdx)
 	{
-		if (const auto rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, av_jbufdc, av_VADd, false))
+		if (const auto rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, false))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to prepare transmission:"
