@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "filetransfer.h"
-#include <QFileInfo>
 #include <tox/tox.h>
 #include <util/sll/futures.h>
 #include "toxthread.h"
@@ -50,12 +49,22 @@ namespace Sarin
 	, PubKey_ { pubkey }
 	, FilePath_ { filename }
 	, Thread_ { thread }
-	, Filesize_ { QFileInfo { filename }.size () }
+	, File_ { filename }
+	, Filesize_ { File_.size () }
 	{
+		if (!File_.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open local file"
+					<< filename;
+			return;
+		}
+
 		connect (Thread_.get (),
 				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
 				this,
 				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+
 		const auto sendScheduler = [this]
 		{
 			return Thread_->ScheduleFunction ([this] (Tox *tox)

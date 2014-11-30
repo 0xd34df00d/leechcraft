@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <QFile>
 #include <interfaces/azoth/itransfermanager.h>
 
 namespace LeechCraft
@@ -52,10 +53,11 @@ namespace Sarin
 		const QString FilePath_;
 		const std::shared_ptr<ToxThread> Thread_;
 
-		const int64_t Filesize_;
-
 		int FriendNum_;
 		int FileNum_;
+
+		QFile File_;
+		qint64 Filesize_;
 	public:
 		FileTransfer (const QString& azothId,
 				const QByteArray& pubkey,
