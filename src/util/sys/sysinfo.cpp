@@ -192,6 +192,8 @@ namespace SysInfo
 			return retVer ("10.8");
 		case QSysInfo::MV_10_9:
 			return retVer ("10.9");
+		case 0x000C:
+			return retVer ("10.10");
 		default:
 			return retVer ("Unknown version");
 		}
