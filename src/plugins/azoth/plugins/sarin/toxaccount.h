@@ -105,8 +105,8 @@ namespace Sarin
 		void RequestAuth (const QString&, const QString&, const QString&, const QStringList&) override;
 		void RemoveEntry (QObject*) override;
 
-		MediaCallFeatures GetMediaCallFeatures () const;
-		QObject* Call (const QString& id, const QString& variant);
+		MediaCallFeatures GetMediaCallFeatures () const override;
+		QObject* Call (const QString& id, const QString& variant) override;
 
 		QObject* GetTransferManager () const override;
 
