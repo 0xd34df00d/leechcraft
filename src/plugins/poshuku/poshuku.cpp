@@ -94,7 +94,7 @@ namespace Poshuku
 
 		try
 		{
-			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/offlinestorage").absolutePath ();
+			const auto& path = Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ();
 			QWebSettings::setOfflineStoragePath (path);
 		}
 		catch (const std::runtime_error& e)
