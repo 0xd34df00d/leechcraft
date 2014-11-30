@@ -28,8 +28,12 @@
  **********************************************************************/
 
 #include "filetransfermanager.h"
+#include <QtDebug>
+#include <tox/tox.h>
 #include "toxaccount.h"
 #include "toxthread.h"
+#include "filetransfer.h"
+#include "toxcontact.h"
 
 namespace LeechCraft
 {
@@ -49,9 +53,26 @@ namespace Sarin
 	}
 
 	QObject* FileTransferManager::SendFile (const QString& id,
-			const QString&, const QString& name, const QString& comment)
+			const QString&, const QString& name, const QString&)
 	{
-		return nullptr;
+		const auto toxThread = ToxThread_.lock ();
+		if (!toxThread)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Tox thread is not available";
+			return nullptr;
+		}
+
+		const auto contact = Acc_->GetByAzothId (id);
+		if (!contact)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find contact by the ID"
+					<< id;
+			return nullptr;
+		}
+
+		return new FileTransfer { id, contact->GetPubKey (), name, toxThread };
 	}
 
 	void FileTransferManager::handleToxThread (const std::shared_ptr<ToxThread>& thread)
