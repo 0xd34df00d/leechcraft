@@ -30,15 +30,15 @@
 #include "sslerrorsdialog.h"
 #include <QDateTime>
 
-using namespace LeechCraft;
-
-LeechCraft::SslErrorsDialog::SslErrorsDialog (QWidget *parent)
+namespace LeechCraft
+{
+SslErrorsDialog::SslErrorsDialog (QWidget *parent)
 : QDialog (parent)
 {
 	Ui_.setupUi (this);
 }
 
-LeechCraft::SslErrorsDialog::SslErrorsDialog (const QString& msg,
+SslErrorsDialog::SslErrorsDialog (const QString& msg,
 		const QList<QSslError>& errors,
 		QWidget *parent)
 : QDialog (parent)
@@ -47,7 +47,7 @@ LeechCraft::SslErrorsDialog::SslErrorsDialog (const QString& msg,
 	Update (msg, errors);
 }
 
-void LeechCraft::SslErrorsDialog::Update (const QString& msg,
+void SslErrorsDialog::Update (const QString& msg,
 		const QList<QSslError>& errors)
 {
 	Ui_.Description_->setText (msg);
@@ -56,7 +56,7 @@ void LeechCraft::SslErrorsDialog::Update (const QString& msg,
 	Ui_.Errors_->expandAll ();
 }
 
-LeechCraft::SslErrorsDialog::RememberChoice LeechCraft::SslErrorsDialog::GetRememberChoice () const
+SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
 {
 	if (Ui_.RememberNot_->isChecked ())
 		return RCNot;
@@ -66,7 +66,7 @@ LeechCraft::SslErrorsDialog::RememberChoice LeechCraft::SslErrorsDialog::GetReme
 		return RCHost;
 }
 
-void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
+void SslErrorsDialog::PopulateTree (const QSslError& error)
 {
 	QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Errors_,
 			QStringList ("Error:") << error.errorString ());
@@ -170,4 +170,5 @@ void LeechCraft::SslErrorsDialog::PopulateTree (const QSslError& error)
 	if (!tmpString.isEmpty ())
 		new QTreeWidgetItem (subject,
 				QStringList (tr ("State or province name:")) << tmpString);
+}
 }
