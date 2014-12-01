@@ -42,11 +42,11 @@ namespace LeechCraft
 
 		Ui::SslErrorsDialog Ui_;
 	public:
-		enum RememberChoice
+		enum class RememberChoice
 		{
-			RCNot
-			, RCFile
-			, RCHost
+			Not,
+			File,
+			Host
 		};
 
 		SslErrorsDialog (QWidget* = 0);

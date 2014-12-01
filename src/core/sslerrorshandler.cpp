@@ -164,15 +164,14 @@ namespace LeechCraft
 
 		switch (rc)
 		{
-		case SslErrorsDialog::RCFile:
+		case SslErrorsDialog::RememberChoice::File:
 			settings->setValue (urlString, ignore);
 			break;
-		case SslErrorsDialog::RCHost:
+		case SslErrorsDialog::RememberChoice::Host:
 			settings->setValue (host, ignore);
 			break;
 		default:
 			break;
 		}
-
 	}
 }

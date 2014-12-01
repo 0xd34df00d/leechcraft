@@ -59,11 +59,11 @@ void SslErrorsDialog::Update (const QString& msg,
 SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
 {
 	if (Ui_.RememberNot_->isChecked ())
-		return RCNot;
+		return RememberChoice::Not;
 	else if (Ui_.RememberFile_->isChecked ())
-		return RCFile;
+		return RememberChoice::File;
 	else
-		return RCHost;
+		return RememberChoice::Host;
 }
 
 void SslErrorsDialog::PopulateTree (const QSslError& error)
