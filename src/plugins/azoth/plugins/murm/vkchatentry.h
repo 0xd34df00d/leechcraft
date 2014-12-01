@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSet>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include "structures.h"
@@ -50,6 +51,7 @@ namespace Murm
 		Q_INTERFACES (LeechCraft::Azoth::IMUCEntry)
 
 		ChatInfo Info_;
+		QSet<int> PendingUserInfoRequests_;
 	public:
 		enum class HandleMessageResult
 		{

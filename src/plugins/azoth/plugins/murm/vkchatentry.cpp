@@ -73,7 +73,14 @@ namespace Murm
 			qDebug () << Q_FUNC_INFO
 					<< "unknown entry for"
 					<< from;
-			Account_->GetConnection ()->GetUserInfo ({ from });
+			if (!PendingUserInfoRequests_.contains (from))
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "requesting user info for"
+						<< from;
+				Account_->GetConnection ()->GetUserInfo ({ from });
+				PendingUserInfoRequests_ << from;
+			}
 			return HandleMessageResult::UserInfoRequested;
 		}
 
