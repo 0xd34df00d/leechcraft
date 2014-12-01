@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>339</height>
+    <width>537</width>
+    <height>587</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -21,7 +21,21 @@
    <item>
     <widget class="QLabel" name="Description_">
      <property name="text">
-      <string>&lt;Here we say that errors happened&gt;</string>
+      <string>The following URL has SSL errors:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="UrlEdit_">
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>What should we do?</string>
      </property>
     </widget>
    </item>

@@ -78,11 +78,7 @@ namespace LeechCraft
 			return;
 		}
 
-		QString msg = tr ("<code>%1</code><br />has SSL errors."
-				" What do you want to do?")
-			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
-
-		auto errDialog = new SslErrorsDialog (msg, errors);
+		auto errDialog = new SslErrorsDialog (urlString, errors);
 		errDialog->setAttribute (Qt::WA_DeleteOnClose);
 		errDialog->open ();
 

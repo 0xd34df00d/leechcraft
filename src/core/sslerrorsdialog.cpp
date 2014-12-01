@@ -39,6 +39,8 @@ SslErrorsDialog::SslErrorsDialog (const QString& url,
 {
 	Ui_.setupUi (this);
 
+	Ui_.UrlEdit_->setText (url);
+
 	for (const auto& err : errors)
 		PopulateTree (err);
 	Ui_.Errors_->expandAll ();
