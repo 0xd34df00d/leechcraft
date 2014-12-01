@@ -49,6 +49,11 @@ namespace Murm
 		for (auto id : info.Users_)
 			if (auto entry = acc->GetEntry (id))
 				entry->RegisterIn (this);
+
+		connect (acc->GetConnection (),
+				SIGNAL (gotUsers (QList<UserInfo>)),
+				this,
+				SLOT (handleGotUsers (QList<UserInfo>)));
 	}
 
 	void VkChatEntry::Send (VkMessage *msg)
@@ -305,6 +310,12 @@ namespace Murm
 		}
 
 		Account_->GetConnection ()->AddChatUser (Info_.ChatID_, numericId);
+	}
+
+	void VkChatEntry::handleGotUsers (const QList<UserInfo>& infos)
+	{
+		for (const auto& info : infos)
+			PendingUserInfoRequests_.remove (info.ID_);
 	}
 }
 }

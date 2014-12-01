@@ -103,6 +103,8 @@ namespace Murm
 		QString GetRealID (QObject*) const;
 		QVariantMap GetIdentifyingData () const;
 		void InviteToMUC (const QString& userId, const QString& msg);
+	private slots:
+		void handleGotUsers (const QList<UserInfo>&);
 	signals:
 		void gotNewParticipants (const QList<QObject*>& parts);
 		void mucSubjectChanged (const QString& newSubj);
