@@ -68,7 +68,7 @@ namespace Murm
 		const ChatInfo& GetInfo () const;
 		void UpdateInfo (const ChatInfo&);
 
-		void HandleAdded (qulonglong);
+		void HandleAdded (const UserInfo&);
 		void HandleRemoved (qulonglong);
 
 		Features GetEntryFeatures () const;

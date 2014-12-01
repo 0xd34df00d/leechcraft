@@ -238,6 +238,14 @@ namespace Murm
 		return SelfEntry_;
 	}
 
+	VkEntry* VkAccount::GetEntryOrCreate (const UserInfo& info)
+	{
+		if (!Entries_.contains (info.ID_))
+			CreateUsers ({ info });
+
+		return Entries_.value (info.ID_);
+	}
+
 	ICoreProxy_ptr VkAccount::GetCoreProxy () const
 	{
 		return CoreProxy_;

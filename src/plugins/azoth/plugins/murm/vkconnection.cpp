@@ -37,6 +37,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/prelude.h>
 #include "longpollmanager.h"
 #include "logger.h"
 #include "xmlsettingsmanager.h"
@@ -470,8 +471,9 @@ namespace Murm
 
 				AddParams (url, params);
 
+				const auto& infos = Util::Map (ids, [] (qulonglong id) { return UserInfo { id }; });
 				auto reply = nam->get (QNetworkRequest (url));
-				Reply2ChatInfo_ [reply] = { 0, title, ids };
+				Reply2ChatInfo_ [reply] = { 0, title, infos };
 				connect (reply,
 						SIGNAL (finished ()),
 						this,
@@ -489,7 +491,8 @@ namespace Murm
 				QUrl url ("https://api.vk.com/method/messages.getChat");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("chat_id", QString::number (id));
+						("chat_id", QString::number (id))
+						("fields", UserFields);
 
 				AddParams (url, params);
 
@@ -1312,15 +1315,10 @@ namespace Murm
 		}
 
 		const auto& map = data.toMap () ["response"].toMap ();
-
-		QList<qulonglong> users;
-		for (auto item : map ["users"].toList ())
-			users << item.toULongLong ();
-
 		emit gotChatInfo ({
 				map ["id"].toULongLong (),
 				map ["title"].toString (),
-				users
+				ParseUsers (map ["users"].toList ())
 			});
 	}
 

@@ -46,8 +46,8 @@ namespace Murm
 	: EntryBase (acc)
 	, Info_ (info)
 	{
-		for (auto id : info.Users_)
-			if (auto entry = acc->GetEntry (id))
+		for (const auto& info : info.Users_)
+			if (const auto entry = acc->GetEntryOrCreate (info))
 				entry->RegisterIn (this);
 
 		connect (acc->GetConnection (),
@@ -107,12 +107,14 @@ namespace Murm
 
 	void VkChatEntry::UpdateInfo (const ChatInfo& info)
 	{
-		for (auto id : info.Users_)
-			if (!Info_.Users_.contains (id))
-				HandleAdded (id);
-		for (auto id : Info_.Users_)
-			if (!info.Users_.contains (id))
-				HandleRemoved (id);
+		for (const auto& userInfo : info.Users_)
+			if (std::none_of (Info_.Users_.begin (), Info_.Users_.end (),
+					[userInfo] (const UserInfo& other) { return other.ID_ == userInfo.ID_; }))
+				HandleAdded (userInfo);
+		for (const auto& userInfo : Info_.Users_)
+			if (std::none_of (info.Users_.begin (), info.Users_.end (),
+					[userInfo] (const UserInfo& other) { return other.ID_ == userInfo.ID_; }))
+				HandleRemoved (userInfo.ID_);
 
 		const bool titleChanged = info.Title_ != Info_.Title_;
 
@@ -121,15 +123,15 @@ namespace Murm
 		{
 			emit nameChanged (GetEntryName ());
 
-			for (auto id : Info_.Users_)
-				if (auto entry = Account_->GetEntry (id))
+			for (const auto& info : Info_.Users_)
+				if (const auto entry = Account_->GetEntry (info.ID_))
 					entry->ReemitGroups ();
 		}
 	}
 
-	void VkChatEntry::HandleAdded (qulonglong id)
+	void VkChatEntry::HandleAdded (const UserInfo& info)
 	{
-		if (auto entry = Account_->GetEntry (id))
+		if (const auto entry = Account_->GetEntryOrCreate (info))
 			entry->RegisterIn (this);
 	}
 
@@ -137,13 +139,13 @@ namespace Murm
 	{
 		if (id == Account_->GetSelf ()->GetInfo ().ID_)
 		{
-			for (auto id : Info_.Users_)
-				if (auto entry = Account_->GetEntry (id))
+			for (const auto& otherInfo : Info_.Users_)
+				if (auto entry = Account_->GetEntry (otherInfo.ID_))
 					entry->UnregisterIn (this);
 
 			emit removeEntry (this);
 		}
-		else if (auto entry = Account_->GetEntry (id))
+		else if (const auto entry = Account_->GetEntry (id))
 			entry->UnregisterIn (this);
 	}
 
@@ -251,8 +253,8 @@ namespace Murm
 	QList<QObject*> VkChatEntry::GetParticipants ()
 	{
 		QList<QObject*> result;
-		for (const auto id : Info_.Users_)
-			if (auto entry = Account_->GetEntry (id))
+		for (const auto& info : Info_.Users_)
+			if (const auto entry = Account_->GetEntry (info.ID_))
 				result << entry;
 		return result;
 	}

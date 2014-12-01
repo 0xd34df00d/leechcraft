@@ -116,7 +116,7 @@ namespace Murm
 		qulonglong ChatID_;
 
 		QString Title_;
-		QList<qulonglong> Users_;
+		QList<UserInfo> Users_;
 	};
 
 	enum class GeoIdType

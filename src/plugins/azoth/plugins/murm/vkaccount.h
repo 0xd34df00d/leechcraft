@@ -128,6 +128,8 @@ namespace Murm
 		VkEntry* FindEntryById (const QString&) const;
 		VkEntry* GetSelf () const;
 
+		VkEntry* GetEntryOrCreate (const UserInfo&);
+
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
 		PhotoStorage* GetPhotoStorage () const;
