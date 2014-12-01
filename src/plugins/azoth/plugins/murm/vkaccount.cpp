@@ -605,10 +605,18 @@ namespace Murm
 			{
 				qDebug () << Q_FUNC_INFO
 						<< "unknown chat entry"
-						<< from
-						<< "; requesting info";
+						<< from;
+
+				if (!std::any_of (PendingMessages_.begin (), PendingMessages_.end (),
+						[from] (const MessageInfo& info) { return from == info.From_; }))
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "requesting info for"
+							<< from;
+					Conn_->RequestChatInfo (from);
+				}
+
 				PendingMessages_ << info;
-				Conn_->RequestChatInfo (from);
 				return;
 			}
 
