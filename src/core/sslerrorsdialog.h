@@ -49,7 +49,6 @@ namespace LeechCraft
 			Host
 		};
 
-		SslErrorsDialog (QWidget* = 0);
 		SslErrorsDialog (const QString&, const QList<QSslError>&, QWidget* = 0);
 
 		void Update (const QString&, const QList<QSslError>&);

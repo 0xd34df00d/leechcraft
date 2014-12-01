@@ -82,9 +82,8 @@ namespace LeechCraft
 				" What do you want to do?")
 			.arg (QApplication::fontMetrics ().elidedText (urlString, Qt::ElideMiddle, 300));
 
-		auto errDialog = new SslErrorsDialog;
+		auto errDialog = new SslErrorsDialog (msg, errors);
 		errDialog->setAttribute (Qt::WA_DeleteOnClose);
-		errDialog->Update (msg, errors);
 		errDialog->open ();
 
 		const auto contSync = 0;

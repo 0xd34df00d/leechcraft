@@ -32,12 +32,6 @@
 
 namespace LeechCraft
 {
-SslErrorsDialog::SslErrorsDialog (QWidget *parent)
-: QDialog (parent)
-{
-	Ui_.setupUi (this);
-}
-
 SslErrorsDialog::SslErrorsDialog (const QString& msg,
 		const QList<QSslError>& errors,
 		QWidget *parent)
