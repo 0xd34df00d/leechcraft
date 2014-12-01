@@ -69,12 +69,12 @@ namespace HotStreams
 	, JobID_ (0)
 	, RadioIcon_ (":/hotstreams/resources/images/radio.png")
 	{
-		auto dir = Util::CreateIfNotExists ("hotstreams/cache");
-		const bool exists = dir.exists (XiphFilename);
-		if (!exists || ShouldUpdateFile (dir.filePath (XiphFilename)))
+		const auto& fullPath = GetFilePath ();
+		const auto exists = QFile::exists (fullPath);
+		if (!exists || ShouldUpdateFile (fullPath))
 		{
 			if (exists)
-				dir.remove (XiphFilename);
+				QFile::remove (fullPath);
 
 			QTimer::singleShot (0,
 					this,
