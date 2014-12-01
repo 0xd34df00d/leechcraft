@@ -51,8 +51,6 @@ namespace LeechCraft
 
 		SslErrorsDialog (const QString&, const QList<QSslError>&, QWidget* = 0);
 
-		void Update (const QString&, const QList<QSslError>&);
-
 		RememberChoice GetRememberChoice () const;
 	private:
 		void PopulateTree (const QSslError&);
