@@ -54,7 +54,7 @@ namespace HotStreams
 	{
 		QString GetFilePath ()
 		{
-			return Util::CreateIfNotExists ("hotstreams/cache").filePath (XiphFilename);
+			return Util::GetUserDir (Util::UserDir::Cache, "hotstreams").filePath (XiphFilename);
 		}
 
 		bool ShouldUpdateFile (const QString& path)
