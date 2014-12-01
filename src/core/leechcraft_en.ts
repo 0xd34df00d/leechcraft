@@ -487,53 +487,68 @@
 <context>
     <name>LeechCraft::CoreInstanceObject</name>
     <message>
-        <location filename="coreinstanceobject.cpp" line="274"/>
+        <location filename="coreinstanceobject.cpp" line="291"/>
         <source>LeechCraft Core module.</source>
         <translation>LeechCraft Core module.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="195"/>
-        <location filename="coreinstanceobject.cpp" line="296"/>
+        <location filename="coreinstanceobject.cpp" line="194"/>
+        <location filename="coreinstanceobject.cpp" line="313"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="165"/>
+        <location filename="coreinstanceobject.cpp" line="164"/>
         <source>Switch to previously active tab</source>
         <translation>Switch to previously active tab</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="171"/>
+        <location filename="coreinstanceobject.cpp" line="170"/>
         <source>Toggle fullscreen</source>
         <translation>Toggle fullscreen</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="177"/>
+        <location filename="coreinstanceobject.cpp" line="176"/>
         <source>Close tab</source>
         <translation>Close tab</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="183"/>
+        <location filename="coreinstanceobject.cpp" line="182"/>
         <source>Switch to tab to the left</source>
         <translation>Switch to tab to the left</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="189"/>
+        <location filename="coreinstanceobject.cpp" line="188"/>
         <source>Switch to tab to the right</source>
         <translation>Switch to tab to the right</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="201"/>
+        <location filename="coreinstanceobject.cpp" line="200"/>
         <source>Quit LeechCraft</source>
         <translation>Quit LeechCraft</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="355"/>
+        <location filename="coreinstanceobject.cpp" line="206"/>
+        <source>Open find dialog (where applicable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="coreinstanceobject.cpp" line="212"/>
+        <source>Find previous (where applicable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="coreinstanceobject.cpp" line="218"/>
+        <source>Find next (where applicable)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="coreinstanceobject.cpp" line="372"/>
         <source>Context-dependent</source>
         <translation>Context-dependent</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="413"/>
+        <location filename="coreinstanceobject.cpp" line="430"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
         <translation>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</translation>
     </message>
@@ -649,17 +664,12 @@
         <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="292"/>
-        <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</translation>
-    </message>
-    <message>
-        <location filename="networkaccessmanager.cpp" line="347"/>
+        <location filename="networkaccessmanager.cpp" line="274"/>
         <source>Could not create Core directory.</source>
         <translation>Could not create Core directory.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="355"/>
+        <location filename="networkaccessmanager.cpp" line="282"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Could not save cookies, error opening cookie file.</translation>
     </message>
@@ -707,42 +717,42 @@
         <translation>Initializing %1: stage one...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="446"/>
+        <location filename="pluginmanager.cpp" line="454"/>
         <source>Initializing %1: stage two...</source>
         <translation>Initializing %1: stage two...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="773"/>
+        <location filename="pluginmanager.cpp" line="781"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusing to load plugin from %1 because it&apos;s not a file.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="787"/>
+        <location filename="pluginmanager.cpp" line="795"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Could not load plugin from %1: API level mismatch.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="801"/>
+        <location filename="pluginmanager.cpp" line="809"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Could not load plugin from %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="821"/>
+        <location filename="pluginmanager.cpp" line="829"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="832"/>
+        <location filename="pluginmanager.cpp" line="840"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="842"/>
+        <location filename="pluginmanager.cpp" line="850"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="927"/>
+        <location filename="pluginmanager.cpp" line="935"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin with ID %1 is already loaded from %2; aborting load from %3.</translation>
     </message>
@@ -860,105 +870,105 @@
 <context>
     <name>LeechCraft::SslErrorsDialog</name>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="82"/>
+        <location filename="sslerrorsdialog.cpp" line="68"/>
         <source>Certificate</source>
         <translation>Certificate</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="83"/>
+        <location filename="sslerrorsdialog.cpp" line="69"/>
         <source>(No certificate available for this error)</source>
         <translation>(No certificate available for this error)</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="87"/>
+        <location filename="sslerrorsdialog.cpp" line="73"/>
         <source>Valid:</source>
         <translation>Valid:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="89"/>
-        <location filename="sslerrorsdialog.cpp" line="91"/>
+        <location filename="sslerrorsdialog.cpp" line="75"/>
+        <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>yes</source>
         <translation>yes</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="89"/>
-        <location filename="sslerrorsdialog.cpp" line="91"/>
+        <location filename="sslerrorsdialog.cpp" line="75"/>
+        <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>no</source>
         <translation>no</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="93"/>
+        <location filename="sslerrorsdialog.cpp" line="79"/>
         <source>Effective date:</source>
         <translation>Effective date:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="95"/>
+        <location filename="sslerrorsdialog.cpp" line="81"/>
         <source>Expiry date:</source>
         <translation>Expiry date:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="97"/>
+        <location filename="sslerrorsdialog.cpp" line="83"/>
         <source>Version:</source>
         <translation>Version:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="99"/>
+        <location filename="sslerrorsdialog.cpp" line="85"/>
         <source>Serial number:</source>
         <translation>Serial number:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="101"/>
+        <location filename="sslerrorsdialog.cpp" line="87"/>
         <source>MD5 digest:</source>
         <translation>MD5 digest:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="103"/>
+        <location filename="sslerrorsdialog.cpp" line="89"/>
         <source>SHA1 digest:</source>
         <translation>SHA1 digest:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="107"/>
+        <location filename="sslerrorsdialog.cpp" line="93"/>
         <source>Issuer info</source>
         <translation>Issuer info</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="118"/>
-        <location filename="sslerrorsdialog.cpp" line="151"/>
+        <location filename="sslerrorsdialog.cpp" line="104"/>
+        <location filename="sslerrorsdialog.cpp" line="137"/>
         <source>Organization:</source>
         <translation>Organization:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="123"/>
-        <location filename="sslerrorsdialog.cpp" line="156"/>
+        <location filename="sslerrorsdialog.cpp" line="109"/>
+        <location filename="sslerrorsdialog.cpp" line="142"/>
         <source>Common name:</source>
         <translation>Common name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="128"/>
-        <location filename="sslerrorsdialog.cpp" line="161"/>
+        <location filename="sslerrorsdialog.cpp" line="114"/>
+        <location filename="sslerrorsdialog.cpp" line="147"/>
         <source>Locality:</source>
         <translation>Locality:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="133"/>
-        <location filename="sslerrorsdialog.cpp" line="166"/>
+        <location filename="sslerrorsdialog.cpp" line="119"/>
+        <location filename="sslerrorsdialog.cpp" line="152"/>
         <source>Organizational unit name:</source>
         <translation>Organizational unit name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="138"/>
-        <location filename="sslerrorsdialog.cpp" line="171"/>
+        <location filename="sslerrorsdialog.cpp" line="124"/>
+        <location filename="sslerrorsdialog.cpp" line="157"/>
         <source>Country name:</source>
         <translation>Country name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="143"/>
-        <location filename="sslerrorsdialog.cpp" line="176"/>
+        <location filename="sslerrorsdialog.cpp" line="129"/>
+        <location filename="sslerrorsdialog.cpp" line="162"/>
         <source>State or province name:</source>
         <translation>State or province name:</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.cpp" line="146"/>
+        <location filename="sslerrorsdialog.cpp" line="132"/>
         <source>Subject info</source>
         <translation>Subject info</translation>
     </message>
@@ -1168,7 +1178,7 @@ If you have read and really understood all these letters, click Cancel button in
         <translation>Could not create %1</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="119"/>
+        <location filename="coreinstanceobject.cpp" line="118"/>
         <source>System</source>
         <translation>System</translation>
     </message>
@@ -1609,37 +1619,42 @@ If you have read and really understood all these letters, click Cancel button in
 <context>
     <name>SslErrorsDialog</name>
     <message>
-        <location filename="sslerrorsdialog.ui" line="13"/>
+        <location filename="sslerrorsdialog.ui" line="14"/>
         <source>SSL errors occured</source>
         <translation>SSL errors occured</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.ui" line="23"/>
-        <source>&lt;Here we say that errors happened&gt;</source>
-        <translation>&lt;Here we say that errors happened&gt;</translation>
+        <location filename="sslerrorsdialog.ui" line="24"/>
+        <source>The following URL has SSL errors:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.ui" line="31"/>
+        <location filename="sslerrorsdialog.ui" line="38"/>
+        <source>What should we do?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="sslerrorsdialog.ui" line="46"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.ui" line="36"/>
+        <location filename="sslerrorsdialog.ui" line="51"/>
         <source>Value</source>
         <translation>Value</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.ui" line="50"/>
+        <location filename="sslerrorsdialog.ui" line="65"/>
         <source>Don&apos;t remember my choice</source>
         <translation>Don&apos;t remember my choice</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.ui" line="57"/>
+        <location filename="sslerrorsdialog.ui" line="72"/>
         <source>Remember my choice for the resource</source>
         <translation>Remember my choice for the resource</translation>
     </message>
     <message>
-        <location filename="sslerrorsdialog.ui" line="64"/>
+        <location filename="sslerrorsdialog.ui" line="79"/>
         <source>Remember my choice for the whole host</source>
         <translation>Remember my choice for the whole host</translation>
     </message>

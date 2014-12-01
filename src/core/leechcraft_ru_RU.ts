@@ -436,6 +436,18 @@
         <source>Quit LeechCraft</source>
         <translation>Выйти из LeechCraft</translation>
     </message>
+    <message>
+        <source>Open find dialog (where applicable)</source>
+        <translation>Открыть диалог поиска (если применимо)</translation>
+    </message>
+    <message>
+        <source>Find previous (where applicable)</source>
+        <translation>Предыдущее вхождение при поиске (если применимо)</translation>
+    </message>
+    <message>
+        <source>Find next (where applicable)</source>
+        <translation>Следующее вхождение при поиске (если применимо)</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::FilePicker</name>
@@ -523,10 +535,6 @@
 </context>
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
-    <message>
-        <source>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;has SSL errors. What do you want to do?</source>
-        <translation>&lt;code&gt;%1&lt;/code&gt;&lt;br /&gt;имеет ошибки SSL. Что хотите сделать?</translation>
-    </message>
     <message>
         <source>Could not create Core directory.</source>
         <translation>Невозможно создать каталог Ядра.</translation>
@@ -1298,10 +1306,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Возникли SSL-ошибки</translation>
     </message>
     <message>
-        <source>&lt;Here we say that errors happened&gt;</source>
-        <translation>&lt;&gt;</translation>
-    </message>
-    <message>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
@@ -1320,6 +1324,14 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Remember my choice for the resource</source>
         <translation>Запомнить мой выбор для ресурса</translation>
+    </message>
+    <message>
+        <source>The following URL has SSL errors:</source>
+        <translation>Следующий URL имеет ошибки SSL:</translation>
+    </message>
+    <message>
+        <source>What should we do?</source>
+        <translation>Что надо сделать?</translation>
     </message>
 </context>
 <context>
