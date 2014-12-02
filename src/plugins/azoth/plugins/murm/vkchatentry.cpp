@@ -42,11 +42,11 @@ namespace Azoth
 {
 namespace Murm
 {
-	VkChatEntry::VkChatEntry (const ChatInfo& info, VkAccount *acc)
+	VkChatEntry::VkChatEntry (const ChatInfo& chatInfo, VkAccount *acc)
 	: EntryBase (acc)
-	, Info_ (info)
+	, Info_ (chatInfo)
 	{
-		for (const auto& info : info.Users_)
+		for (const auto& info : chatInfo.Users_)
 			if (const auto entry = acc->GetEntryOrCreate (info))
 				entry->RegisterIn (this);
 
