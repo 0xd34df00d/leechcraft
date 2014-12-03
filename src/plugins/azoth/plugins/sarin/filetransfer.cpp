@@ -132,6 +132,8 @@ namespace Sarin
 	{
 		State_ = State::Transferring;
 		TransferChunk ();
+
+		emit stateChanged (TSTransfer);
 	}
 
 	void FileTransfer::TransferChunk ()
@@ -158,7 +160,10 @@ namespace Sarin
 						}
 
 						qWarning () << Q_FUNC_INFO
-								<< "error sending the file";
+								<< "error sending the file"
+								<< sendRes;
+						emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
+						emit stateChanged (TSFinished);
 					},
 					this);
 		}
@@ -175,10 +180,15 @@ namespace Sarin
 					[this] (int sendRes)
 					{
 						if (!sendRes)
+						{
+							emit stateChanged (TSFinished);
 							return;
+						}
 
 						qWarning () << Q_FUNC_INFO
 								<< "error finalizing the file transfer";
+						emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
+						emit stateChanged (TSFinished);
 					},
 					this);
 		}
