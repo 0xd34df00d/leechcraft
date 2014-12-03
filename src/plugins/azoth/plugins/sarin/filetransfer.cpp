@@ -30,6 +30,7 @@
 #include "filetransfer.h"
 #include <tox/tox.h>
 #include <util/sll/futures.h>
+#include <util/sll/delayedexecutor.h>
 #include "toxthread.h"
 #include "util.h"
 
@@ -87,6 +88,11 @@ namespace Sarin
 							<< "unable to send file";
 				},
 				this);
+
+		new Util::DelayedExecutor
+		{
+			[this] { emit stateChanged (TransferState::TSOffer); }
+		};
 	}
 
 	QString FileTransfer::GetSourceID () const
