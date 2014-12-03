@@ -60,7 +60,8 @@ namespace Sarin
 		{
 			Idle,
 			Waiting,
-			Transferring
+			Transferring,
+			Paused
 		} State_ = State::Waiting;
 
 		QFile File_;
@@ -85,6 +86,8 @@ namespace Sarin
 	private:
 		void HandleAccept ();
 		void HandleKill ();
+		void HandlePause ();
+		void HandleResume ();
 		void TransferChunk ();
 	private slots:
 		void handleFileControl (qint32, qint8, qint8, const QByteArray&);

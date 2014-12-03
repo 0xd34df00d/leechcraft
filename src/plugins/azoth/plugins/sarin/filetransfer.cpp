@@ -156,6 +156,19 @@ namespace Sarin
 		State_ = State::Idle;
 	}
 
+	void FileTransfer::HandlePause ()
+	{
+		TransferAllowed_ = false;
+		State_ = State::Paused;
+	}
+
+	void FileTransfer::HandleResume ()
+	{
+		TransferAllowed_ = true;
+		State_ = State::Transferring;
+		TransferChunk ();
+	}
+
 	void FileTransfer::TransferChunk ()
 	{
 		if (!TransferAllowed_)
@@ -248,9 +261,25 @@ namespace Sarin
 			case TOX_FILECONTROL_KILL:
 				HandleKill ();
 				break;
+			case TOX_FILECONTROL_PAUSE:
+				HandlePause ();
+				break;
 			default:
 				qWarning () << Q_FUNC_INFO
 						<< "unexpected control type in Transferring state:"
+						<< type;
+				break;
+			}
+			break;
+		case State::Paused:
+			switch (type)
+			{
+			case TOX_FILECONTROL_ACCEPT:
+				HandleResume ();
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected control type in Killed state:"
 						<< type;
 				break;
 			}
