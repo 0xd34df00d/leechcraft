@@ -167,6 +167,7 @@ namespace Sarin
 					{
 						if (!sendRes)
 						{
+							emit transferProgress (File_.pos (), File_.size ());
 							TransferChunk ();
 							return;
 						}
