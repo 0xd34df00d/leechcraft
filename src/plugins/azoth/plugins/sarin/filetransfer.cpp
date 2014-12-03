@@ -150,6 +150,9 @@ namespace Sarin
 
 	void FileTransfer::TransferChunk ()
 	{
+		if (!TransferAllowed_)
+			return;
+
 		if (!File_.atEnd ())
 		{
 			const auto sendScheduler = [this]
@@ -224,6 +227,7 @@ namespace Sarin
 			case TOX_FILECONTROL_KILL:
 				emit errorAppeared (TEAborted, tr ("Remote party denied file transfer."));
 				emit stateChanged (TSFinished);
+				State_ = State::Idle;
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
@@ -232,6 +236,21 @@ namespace Sarin
 				break;
 			}
 			break;
+		case State::Transferring:
+			switch (type)
+			{
+			case TOX_FILECONTROL_KILL:
+				TransferAllowed_ = false;
+				emit errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
+				emit stateChanged (TSFinished);
+				State_ = State::Idle;
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected control type in Transferring state:"
+						<< type;
+				break;
+			}
 		}
 	}
 }

@@ -65,6 +65,8 @@ namespace Sarin
 
 		QFile File_;
 		qint64 Filesize_;
+
+		bool TransferAllowed_ = true;
 	public:
 		FileTransfer (const QString& azothId,
 				const QByteArray& pubkey,
