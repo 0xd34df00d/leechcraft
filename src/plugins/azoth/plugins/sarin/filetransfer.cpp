@@ -148,6 +148,14 @@ namespace Sarin
 		emit stateChanged (TSTransfer);
 	}
 
+	void FileTransfer::HandleKill ()
+	{
+		TransferAllowed_ = false;
+		emit errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
+		emit stateChanged (TSFinished);
+		State_ = State::Idle;
+	}
+
 	void FileTransfer::TransferChunk ()
 	{
 		if (!TransferAllowed_)
@@ -225,9 +233,7 @@ namespace Sarin
 				HandleAccept ();
 				break;
 			case TOX_FILECONTROL_KILL:
-				emit errorAppeared (TEAborted, tr ("Remote party denied file transfer."));
-				emit stateChanged (TSFinished);
-				State_ = State::Idle;
+				HandleKill ();
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
@@ -240,10 +246,7 @@ namespace Sarin
 			switch (type)
 			{
 			case TOX_FILECONTROL_KILL:
-				TransferAllowed_ = false;
-				emit errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
-				emit stateChanged (TSFinished);
-				State_ = State::Idle;
+				HandleKill ();
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
