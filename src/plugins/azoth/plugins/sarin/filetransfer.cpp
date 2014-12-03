@@ -58,6 +58,18 @@ namespace Sarin
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open local file"
 					<< filename;
+
+			new Util::DelayedExecutor
+			{
+				[this]
+				{
+					emit errorAppeared (TEFileAccessError,
+							tr ("Error opening local file: %1.")
+								.arg (File_.errorString ()));
+					emit stateChanged (TransferState::TSFinished);
+				}
+			};
+
 			return;
 		}
 
