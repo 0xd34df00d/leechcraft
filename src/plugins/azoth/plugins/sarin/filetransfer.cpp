@@ -254,6 +254,7 @@ namespace Sarin
 						<< type;
 				break;
 			}
+			break;
 		}
 	}
 }
