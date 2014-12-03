@@ -130,29 +130,52 @@ namespace Sarin
 
 	void FileTransfer::TransferChunk ()
 	{
-		const auto sendScheduler = [this]
+		if (!File_.atEnd ())
 		{
-			return Thread_->ScheduleFunction ([this] (Tox *tox)
+			const auto sendScheduler = [this]
+			{
+				return Thread_->ScheduleFunction ([this] (Tox *tox)
+						{
+							const int chunkSize = tox_file_data_size (tox, FriendNum_);
+							const auto& data = File_.read (chunkSize);
+							return tox_file_send_data (tox, FriendNum_, FileNum_,
+									reinterpret_cast<const uint8_t*> (data.constData ()), data.size ());
+						});
+			};
+			Util::ExecuteFuture (sendScheduler,
+					[this] (int sendRes)
 					{
-						const int chunkSize = tox_file_data_size (tox, FriendNum_);
-						const auto& data = File_.read (chunkSize);
-						return tox_file_send_data (tox, FriendNum_, FileNum_,
-								reinterpret_cast<const uint8_t*> (data.constData ()), data.size ());
-					});
-		};
-		Util::ExecuteFuture (sendScheduler,
-				[this] (int sendRes)
-				{
-					if (!sendRes)
-					{
-						TransferChunk ();
-						return;
-					}
+						if (!sendRes)
+						{
+							TransferChunk ();
+							return;
+						}
 
-					qWarning () << Q_FUNC_INFO
-							<< "error sending the file";
-				},
-				this);
+						qWarning () << Q_FUNC_INFO
+								<< "error sending the file";
+					},
+					this);
+		}
+		else
+		{
+			const auto finishSheduler = [this]
+			{
+				return Thread_->ScheduleFunction ([this] (Tox *tox)
+						{
+							return tox_file_send_control (tox, FriendNum_, 0, FileNum_, TOX_FILECONTROL_FINISHED, nullptr, 0);
+						});
+			};
+			Util::ExecuteFuture (finishSheduler,
+					[this] (int sendRes)
+					{
+						if (!sendRes)
+							return;
+
+						qWarning () << Q_FUNC_INFO
+								<< "error finalizing the file transfer";
+					},
+					this);
+		}
 	}
 
 	void FileTransfer::handleFileControl (qint32 friendNum,
