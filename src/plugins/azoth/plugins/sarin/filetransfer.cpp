@@ -277,6 +277,9 @@ namespace Sarin
 			case TOX_FILECONTROL_ACCEPT:
 				HandleResume ();
 				break;
+			case TOX_FILECONTROL_KILL:
+				HandleKill ();
+				break;
 			default:
 				qWarning () << Q_FUNC_INFO
 						<< "unexpected control type in Killed state:"
