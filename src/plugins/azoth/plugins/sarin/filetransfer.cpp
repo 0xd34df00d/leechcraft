@@ -221,6 +221,10 @@ namespace Sarin
 			case TOX_FILECONTROL_ACCEPT:
 				HandleAccept ();
 				break;
+			case TOX_FILECONTROL_KILL:
+				emit errorAppeared (TEAborted, tr ("Remote party denied file transfer."));
+				emit stateChanged (TSFinished);
+				break;
 			default:
 				qWarning () << Q_FUNC_INFO
 						<< "unexpected control type in Waiting state:"
