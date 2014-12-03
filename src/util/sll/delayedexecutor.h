@@ -85,7 +85,7 @@ namespace Util
 		 * @param[in] action The action to execute.
 		 * @param[in] timeout The timeout before executing the action.
 		 */
-		DelayedExecutor (Actor_f action, int timeout);
+		DelayedExecutor (Actor_f action, int timeout = 0);
 	private slots:
 		void handleTimeout ();
 	};
