@@ -181,8 +181,8 @@ namespace HotStreams
 	{
 		auto clearRoot = [] (QStandardItem *item)
 		{
-			while (item->rowCount ())
-				item->removeRow (0);
+			if (const auto rc = item->rowCount ())
+				item->removeRows (0, rc);
 		};
 
 		for (auto item : items)
