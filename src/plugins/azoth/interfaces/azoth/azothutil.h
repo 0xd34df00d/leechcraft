@@ -92,7 +92,8 @@ namespace AzothUtil
 				qWarning () << Q_FUNC_INFO
 						<< "unable to cast"
 						<< messages.at (0)
-						<< "to IMessage";
+						<< "to IMessage; just blindly removing it and hoping for the best";
+				messages.removeAt (0);
 				continue;
 			}
 			if (msg->GetDateTime () < before)
