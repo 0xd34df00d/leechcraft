@@ -299,14 +299,14 @@ namespace Eleeminator
 		if (!workingDir.exists (selected))
 			return;
 
-		const auto openAct = menu.addAction (tr ("Open file").arg (selected),
+		const auto openAct = menu.addAction (tr ("Open file"),
 				this,
 				SLOT (openSelectedFile ()));
 		openAct->setProperty ("ER/LCHandle", true);
 		openAct->setProperty ("ER/Path",
 				workingDir.filePath (selected));
 
-		const auto openExternally = menu.addAction (tr ("Open file externally").arg (selected),
+		const auto openExternally = menu.addAction (tr ("Open file externally"),
 				this,
 				SLOT (openSelectedFile ()));
 		openExternally->setProperty ("ER/LCHandle", false);
