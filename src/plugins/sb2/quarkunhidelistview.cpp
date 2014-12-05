@@ -79,7 +79,6 @@ namespace SB2
 			parent)
 	, ViewManager_ (viewMgr)
 	{
-		QList<QStandardItem*> items;
 		for (const auto& comp : components)
 		{
 			try
@@ -92,8 +91,6 @@ namespace SB2
 			{
 			}
 		}
-
-		Model_->invisibleRootItem ()->appendRows (items);
 
 		connect (rootObject (),
 				SIGNAL (itemUnhideRequested (QString)),
