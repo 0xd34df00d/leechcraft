@@ -46,6 +46,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
@@ -104,6 +105,24 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDetectNick ()));
+
+		QPointer<EntryBase> guard { this };
+		new Util::DelayedExecutor
+		{
+			[guard, this]
+			{
+				if (!guard)
+					return;
+
+				const auto id = GetEntryID ().toUtf8 ().toHex ();
+				auto newAvatar = Core::Instance ().GetAvatarsStorage ()->GetAvatar (id);
+				if (newAvatar == Avatar_)
+					return;
+
+				Avatar_ = std::move (newAvatar);
+				emit avatarChanged (Avatar_);
+			}
+		};
 	}
 
 	EntryBase::~EntryBase ()
