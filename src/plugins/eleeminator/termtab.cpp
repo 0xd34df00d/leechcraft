@@ -312,7 +312,6 @@ namespace Eleeminator
 		openExternally->setProperty ("ER/Path",
 				workingDir.filePath (selected));
 
-		new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
 
 		menu.addSeparator ();
 	}
@@ -348,6 +347,8 @@ namespace Eleeminator
 				Term_,
 				SLOT (pasteClipboard ()));
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
+
+		new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
 
 		menu.exec (Term_->mapToGlobal (point));
 	}
