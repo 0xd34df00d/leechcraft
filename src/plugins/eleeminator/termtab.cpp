@@ -327,6 +327,8 @@ namespace Eleeminator
 		};
 
 		menu.addSeparator ();
+
+		new Util::StdDataFilterMenuCreator { localUrl, CoreProxy_->GetEntityManager (), &menu };
 	}
 
 	void TermTab::setHistorySettings ()
