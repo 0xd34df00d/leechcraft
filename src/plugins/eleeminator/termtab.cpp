@@ -274,8 +274,6 @@ namespace Eleeminator
 		if (cap.isEmpty ())
 			return;
 
-		menu.addSeparator ();
-
 		const auto itm = CoreProxy_->GetIconThemeManager ();
 		const auto openAct = menu.addAction (itm->GetIcon ("document-open-remote"),
 				tr ("Open URL"),
@@ -287,6 +285,8 @@ namespace Eleeminator
 				this,
 				SLOT (copyUrl ()));
 		copyAct->setProperty ("ER/Url", cap);
+
+		menu.addSeparator ();
 	}
 
 	void TermTab::AddLocalFileActions (QMenu& menu, const QPoint&)
@@ -331,6 +331,7 @@ namespace Eleeminator
 	{
 		QMenu menu;
 
+		AddUrlActions (menu, point);
 		AddLocalFileActions (menu, point);
 
 		const auto itm = CoreProxy_->GetIconThemeManager ();
@@ -347,7 +348,6 @@ namespace Eleeminator
 				SLOT (pasteClipboard ()));
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
 
-		AddUrlActions (menu, point);
 		menu.exec (Term_->mapToGlobal (point));
 	}
 
