@@ -289,9 +289,8 @@ namespace Eleeminator
 		menu.addSeparator ();
 	}
 
-	void TermTab::AddLocalFileActions (QMenu& menu, const QPoint&)
+	void TermTab::AddLocalFileActions (QMenu& menu, const QString& selected)
 	{
-		const auto& selected = Term_->selectedText ();
 		if (selected.isEmpty ())
 			return;
 
@@ -332,7 +331,9 @@ namespace Eleeminator
 		QMenu menu;
 
 		AddUrlActions (menu, point);
-		AddLocalFileActions (menu, point);
+
+		const auto& selected = Term_->selectedText ();
+		AddLocalFileActions (menu, selected);
 
 		const auto itm = CoreProxy_->GetIconThemeManager ();
 
