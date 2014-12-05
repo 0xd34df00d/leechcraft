@@ -89,6 +89,11 @@ namespace SB2
 			}
 			catch (const std::exception& e)
 			{
+				qWarning () << Q_FUNC_INFO
+						<< "skipping component"
+						<< comp->Url_
+						<< ":"
+						<< e.what ();
 			}
 		}
 
