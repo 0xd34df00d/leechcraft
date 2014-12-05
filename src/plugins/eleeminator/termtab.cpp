@@ -298,20 +298,33 @@ namespace Eleeminator
 		if (!workingDir.exists (selected))
 			return;
 
-		const auto openAct = menu.addAction (tr ("Open file"),
-				this,
-				SLOT (openSelectedFile ()));
-		openAct->setProperty ("ER/LCHandle", true);
-		openAct->setProperty ("ER/Path",
-				workingDir.filePath (selected));
+		const auto& localUrl = QUrl::fromLocalFile (workingDir.filePath (selected));
+		auto openHandler = [this, localUrl] (bool internally)
+		{
+			if (internally)
+				CoreProxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (localUrl,
+							{}, OnlyHandle | FromUserInitiated));
+			else
+				QDesktopServices::openUrl (localUrl);
+		};
 
-		const auto openExternally = menu.addAction (tr ("Open file externally"),
-				this,
-				SLOT (openSelectedFile ()));
-		openExternally->setProperty ("ER/LCHandle", false);
-		openExternally->setProperty ("ER/Path",
-				workingDir.filePath (selected));
+		const auto openAct = menu.addAction (tr ("Open file"));
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[openHandler] { openHandler (true); },
+			openAct,
+			SIGNAL (triggered ()),
+			openAct
+		};
 
+		const auto openExternally = menu.addAction (tr ("Open file externally"));
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[openHandler] { openHandler (true); },
+			openExternally,
+			SIGNAL (triggered ()),
+			openExternally
+		};
 
 		menu.addSeparator ();
 	}
@@ -367,28 +380,6 @@ namespace Eleeminator
 		const auto& url = sender ()->property ("ER/Url").toUrl ();
 
 		QApplication::clipboard ()->setText (url.toString (), QClipboard::Clipboard);
-	}
-
-	void TermTab::openSelectedFile ()
-	{
-		const auto& path = sender ()->property ("ER/Path").toString ();
-		const bool internally = sender ()->property ("ER/LCHandle").toBool ();
-		if (!QFile::exists (path))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "path does not exist"
-					<< path;
-			return;
-		}
-
-		const auto& url = QUrl::fromLocalFile (path);
-		if (internally)
-		{
-			const auto& entity = Util::MakeEntity (url, {}, OnlyHandle | FromUserInitiated);
-			CoreProxy_->GetEntityManager ()->HandleEntity (entity);
-		}
-		else
-			QDesktopServices::openUrl (url);
 	}
 
 	void TermTab::setColorScheme (QAction *schemeAct)
