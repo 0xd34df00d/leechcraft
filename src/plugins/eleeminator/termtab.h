@@ -79,6 +79,7 @@ namespace Eleeminator
 		void SetupShortcuts (Util::ShortcutManager*);
 
 		void AddUrlActions (QMenu&, const QPoint&);
+		void AddLocalFileActions (QMenu&, const QPoint&);
 	private slots:
 		void setHistorySettings ();
 

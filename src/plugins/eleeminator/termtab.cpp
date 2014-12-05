@@ -289,6 +289,35 @@ namespace Eleeminator
 		copyAct->setProperty ("ER/Url", cap);
 	}
 
+	void TermTab::AddLocalFileActions (QMenu& menu, const QPoint&)
+	{
+		const auto& selected = Term_->selectedText ();
+		if (selected.isEmpty ())
+			return;
+
+		const QDir workingDir { Term_->workingDirectory () };
+		if (!workingDir.exists (selected))
+			return;
+
+		const auto openAct = menu.addAction (tr ("Open file").arg (selected),
+				this,
+				SLOT (openSelectedFile ()));
+		openAct->setProperty ("ER/LCHandle", true);
+		openAct->setProperty ("ER/Path",
+				workingDir.filePath (selected));
+
+		const auto openExternally = menu.addAction (tr ("Open file externally").arg (selected),
+				this,
+				SLOT (openSelectedFile ()));
+		openExternally->setProperty ("ER/LCHandle", false);
+		openExternally->setProperty ("ER/Path",
+				workingDir.filePath (selected));
+
+		new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
+
+		menu.addSeparator ();
+	}
+
 	void TermTab::setHistorySettings ()
 	{
 		const bool isFinite = XmlSettingsManager::Instance ().property ("FiniteHistory").toBool ();
@@ -301,6 +330,8 @@ namespace Eleeminator
 	void TermTab::handleTermContextMenu (const QPoint& point)
 	{
 		QMenu menu;
+
+		AddLocalFileActions (menu, point);
 
 		const auto itm = CoreProxy_->GetIconThemeManager ();
 
@@ -317,31 +348,6 @@ namespace Eleeminator
 		pasteAct->setEnabled (!QApplication::clipboard ()->text (QClipboard::Clipboard).isEmpty ());
 
 		AddUrlActions (menu, point);
-
-		const auto& selected = Term_->selectedText ();
-		if (!selected.isEmpty ())
-		{
-			const QDir workingDir { Term_->workingDirectory () };
-			if (workingDir.exists (selected))
-			{
-				const auto openAct = menu.addAction (tr ("Open file").arg (selected),
-						this,
-						SLOT (openSelectedFile ()));
-				openAct->setProperty ("ER/LCHandle", true);
-				openAct->setProperty ("ER/Path",
-						workingDir.filePath (selected));
-
-				const auto openExternally = menu.addAction (tr ("Open file externally").arg (selected),
-						this,
-						SLOT (openSelectedFile ()));
-				openExternally->setProperty ("ER/LCHandle", false);
-				openExternally->setProperty ("ER/Path",
-						workingDir.filePath (selected));
-			}
-
-			new Util::StdDataFilterMenuCreator { selected, CoreProxy_->GetEntityManager (), &menu };
-		}
-
 		menu.exec (Term_->mapToGlobal (point));
 	}
 
