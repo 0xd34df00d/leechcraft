@@ -221,14 +221,10 @@ namespace Xoox
 							<< "entry ID is empty";
 				else
 				{
-					OfflineDataSource_ptr ods (new OfflineDataSource);
+					const auto ods = std::make_shared<OfflineDataSource> ();
 					Load (ods, entry);
 
-					GlooxCLEntry *clEntry = id2account [id]->CreateFromODS (ods);
-
-					const QString& path = Util::CreateIfNotExists ("azoth/xoox/avatars")
-							.absoluteFilePath (entryID.toBase64 ());
-					clEntry->SetAvatar (QImage (path, "PNG"));
+					id2account [id]->CreateFromODS (ods);
 				}
 				entry = entry.nextSiblingElement ("entry");
 			}
@@ -271,7 +267,6 @@ namespace Xoox
 						continue;
 
 					Save (entry->ToOfflineDataSource (), &w);
-					saveAvatarFor (entry);
 				}
 				w.writeEndElement ();
 			w.writeEndElement ();
@@ -291,39 +286,10 @@ namespace Xoox
 				continue;
 
 			shouldSave = true;
-
-			connect (entry,
-					SIGNAL (avatarChanged (const QImage&)),
-					this,
-					SLOT (saveAvatarFor ()),
-					Qt::UniqueConnection);
 		}
 
 		if (shouldSave)
 			ScheduleSaveRoster (5000);
-	}
-
-	void Core::saveAvatarFor (GlooxCLEntry *entry)
-	{
-		const bool lazy = entry;
-		if (!entry)
-			entry = qobject_cast<GlooxCLEntry*> (sender ());
-
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "null parameter and wrong sender():"
-					<< sender ();
-			return;
-		}
-
-		const QByteArray& filename = entry->GetEntryID ().toUtf8 ().toBase64 ();
-		const QDir& avatarDir = Util::CreateIfNotExists ("azoth/xoox/avatars");
-		if (lazy && avatarDir.exists (filename))
-			return;
-
-		const QString& path = avatarDir.absoluteFilePath (filename);
-		entry->GetAvatar ().save (path, "PNG", 100);
 	}
 }
 }

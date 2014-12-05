@@ -684,6 +684,9 @@ namespace Xoox
 	{
 		Avatar_ = avatar;
 
+		const auto id = GetEntryID ().toUtf8 ().toHex ();
+		Core::Instance ().GetAvatarsStorage ()->StoreAvatar (Avatar_, id);
+
 		emit avatarChanged (Avatar_);
 	}
 
@@ -705,10 +708,7 @@ namespace Xoox
 				QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
 
 		if (!vcard.photo ().isEmpty ())
-		{
 			SetAvatar (vcard.photo ());
-			Core::Instance ().GetAvatarsStorage ()->StoreAvatar (Avatar_, VCardPhotoHash_.toHex ());
-		}
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
@@ -923,10 +923,7 @@ namespace Xoox
 		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
 		{
 			if (!Avatar_.isNull ())
-			{
-				Avatar_ = QImage ();
-				emit avatarChanged (GetAvatar ());
-			}
+				SetAvatar (QImage {});
 		}
 		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
 		{

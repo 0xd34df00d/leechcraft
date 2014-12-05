@@ -82,7 +82,6 @@ namespace Xoox
 	public slots:
 		void saveRoster ();
 	private slots:
-		void saveAvatarFor (GlooxCLEntry* = 0);
 		void handleItemsAdded (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
