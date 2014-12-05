@@ -169,6 +169,62 @@ namespace Sarin
 		TransferChunk ();
 	}
 
+	void FileTransfer::HandleResumeBroken (const QByteArray& data)
+	{
+		if (data.size () < 8)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "insufficient data to get the 64-bit position value:"
+					<< data.toHex ();
+			return;
+		}
+
+		const uint64_t pos = *reinterpret_cast<const uint64_t*> (data.constData ());
+		qDebug () << Q_FUNC_INFO
+				<< "would resume broken transfer starting from position"
+				<< pos
+				<< "of"
+				<< File_.size ()
+				<< "; current pos:"
+				<< File_.pos ();
+
+		if (!File_.seek (pos))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to seek to"
+					<< pos
+					<< "of"
+					<< File_.size ()
+					<< "; error:"
+					<< File_.errorString ();
+			return;
+		}
+
+		const auto finishSheduler = [this]
+		{
+			return Thread_->ScheduleFunction ([this] (Tox *tox)
+					{
+						return tox_file_send_control (tox, FriendNum_, 0, FileNum_, TOX_FILECONTROL_ACCEPT, nullptr, 0);
+					});
+		};
+		Util::ExecuteFuture (finishSheduler,
+				[this] (int sendRes)
+				{
+					if (!sendRes)
+					{
+						emit stateChanged (TSFinished);
+						TransferChunk ();
+						return;
+					}
+
+					qWarning () << Q_FUNC_INFO
+							<< "error finalizing the file transfer";
+					emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
+					emit stateChanged (TSFinished);
+				},
+				this);
+	}
+
 	void FileTransfer::TransferChunk ()
 	{
 		if (!TransferAllowed_)
@@ -263,6 +319,9 @@ namespace Sarin
 				break;
 			case TOX_FILECONTROL_PAUSE:
 				HandlePause ();
+				break;
+			case TOX_FILECONTROL_RESUME_BROKEN:
+				HandleResumeBroken (data);
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO

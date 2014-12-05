@@ -88,6 +88,7 @@ namespace Sarin
 		void HandleKill ();
 		void HandlePause ();
 		void HandleResume ();
+		void HandleResumeBroken (const QByteArray&);
 		void TransferChunk ();
 	private slots:
 		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
