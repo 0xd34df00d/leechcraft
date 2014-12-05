@@ -76,7 +76,7 @@ namespace Pogooglue
 	{
 		if (e.Mime_ != "x-leechcraft/data-filter-request" ||
 				!e.Entity_.canConvert<QString> ())
-			return EntityTestHandleResult ();
+			return {};
 
 		if (e.Additional_.contains ("DataFilter"))
 		{
@@ -86,8 +86,11 @@ namespace Pogooglue
 			if (std::find_if (vars.begin (), vars.end (),
 					[&catStr] (decltype (vars.front ()) var)
 						{ return var.ID_ == catStr; }) == vars.end ())
-				return EntityTestHandleResult ();
+				return {};
 		}
+
+		if (e.Entity_.type () != QVariant::String)
+			return {};
 
 		const auto& str = e.Entity_.toString ();
 		return str.size () < 200 && str.count ("\n") < 3 ?
