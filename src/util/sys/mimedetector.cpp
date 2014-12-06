@@ -84,5 +84,10 @@ namespace Util
 	{
 		return Detect (path);
 	}
+
+	QByteArray DetectFileMime (const QString& path)
+	{
+		return MimeDetector {} (path);
+	}
 }
 }

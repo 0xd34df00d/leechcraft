@@ -50,5 +50,7 @@ namespace Util
 		UTIL_SYS_API QByteArray Detect (const QString&);
 		UTIL_SYS_API QByteArray operator() (const QString&);
 	};
+
+	UTIL_SYS_API QByteArray DetectFileMime (const QString&);
 }
 }
