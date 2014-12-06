@@ -71,7 +71,7 @@ namespace Util
 #endif
 
 	MimeDetector::MimeDetector ()
-	: Impl_ (new MimeDetectorImpl)
+	: Impl_ { std::make_shared<MimeDetectorImpl> () }
 	{
 	}
 
