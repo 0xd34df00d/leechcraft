@@ -31,6 +31,7 @@
 #include <memory>
 #include <QtDebug>
 #include <QTemporaryFile>
+#include <QUrl>
 #include <QInputDialog>
 #include <interfaces/structures.h>
 #include <interfaces/idatafilter.h>
@@ -110,13 +111,20 @@ namespace Blasq
 			return;
 		}
 
-		auto tempFile = new QTemporaryFile { this };
-		Entity_.Entity_.value<QImage> ().save (tempFile, "PNG", 0);
-		UploadFileName_ = tempFile->fileName ();
+		const auto& image = Entity_.Entity_.value<QImage> ();
+		const auto& localFile = Entity_.Entity_.toUrl ().toLocalFile ();
+		if (!image.isNull ())
+		{
+			auto tempFile = new QTemporaryFile { this };
+			Entity_.Entity_.value<QImage> ().save (tempFile, "PNG", 0);
+			UploadFileName_ = tempFile->fileName ();
+		}
+		else if (QFile::exists (localFile))
+			UploadFileName_ = localFile;
 
 		UploadPhotosDialog dia { acc->GetQObject() };
 		dia.LockFiles ();
-		dia.SetFiles ({ { tempFile->fileName (), {} } });
+		dia.SetFiles ({ { UploadFileName_, {} } });
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
