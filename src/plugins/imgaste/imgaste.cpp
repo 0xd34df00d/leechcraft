@@ -30,8 +30,10 @@
 #include "imgaste.h"
 #include <QIcon>
 #include <QBuffer>
+#include <QUrl>
 #include <QStandardItemModel>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "hostingservice.h"
 #include "poster.h"
@@ -81,39 +83,32 @@ namespace Imgaste
 		if (e.Mime_ != "x-leechcraft/data-filter-request")
 			return {};
 
-		if (!e.Entity_.canConvert<QImage> ())
+		const auto& image = e.Entity_.value<QImage> ();
+		if (!image.isNull ())
+			return EntityTestHandleResult { EntityTestHandleResult::PIdeal };
+
+		const auto& localFile = e.Entity_.toUrl ().toLocalFile ();
+		if (!QFile::exists (localFile))
 			return {};
 
-		const auto& image = e.Entity_.value<QImage> ();
-		return EntityTestHandleResult (image.isNull () ?
-				EntityTestHandleResult::PNone :
-				EntityTestHandleResult::PIdeal);
+		if (Util::DetectFileMime (localFile).startsWith ("image/"))
+			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
+
+		return {};
 	}
 
 	void Plugin::Handle (Entity e)
 	{
 		const auto& img = e.Entity_.value<QImage> ();
-
-		const auto& format = e.Additional_.value ("Format", "PNG").toString ();
-
-		QByteArray bytes;
-		QBuffer buf (&bytes);
-		buf.open (QIODevice::ReadWrite);
-		if (!img.save (&buf,
-					qPrintable (format),
-					e.Additional_ ["Quality"].toInt ()))
-		{
+		const auto& localFile = e.Entity_.toUrl ().toLocalFile ();
+		if (!img.isNull ())
+			UploadImage (img, e);
+		else if (QFile::exists (localFile))
+			UploadFile (localFile, e);
+		else
 			qWarning () << Q_FUNC_INFO
-					<< "save failed";
-			return;
-		}
-
-		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
-				buf.data (),
-				format,
-				Proxy_,
-				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
-				ReprModel_);
+					<< "unhandled entity"
+					<< e.Entity_;
 	}
 
 	QString Plugin::GetFilterVerb () const
@@ -143,6 +138,51 @@ namespace Imgaste
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
 		return ReprModel_;
+	}
+
+	void Plugin::UploadFile (const QString& name, const Entity& e)
+	{
+		QFile file { name };
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open file:"
+					<< file.errorString ();
+			return;
+		}
+
+		const auto& format = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
+
+		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
+				file.readAll (),
+				format,
+				Proxy_,
+				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
+				ReprModel_);
+	}
+
+	void Plugin::UploadImage (const QImage& img, const Entity& e)
+	{
+		const auto& format = e.Additional_.value ("Format", "PNG").toString ();
+
+		QByteArray bytes;
+		QBuffer buf (&bytes);
+		buf.open (QIODevice::ReadWrite);
+		if (!img.save (&buf,
+					qPrintable (format),
+					e.Additional_ ["Quality"].toInt ()))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "save failed";
+			return;
+		}
+
+		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
+				buf.data (),
+				format,
+				Proxy_,
+				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
+				ReprModel_);
 	}
 }
 }

@@ -72,6 +72,9 @@ namespace Imgaste
 		QList<FilterVariant> GetFilterVariants () const;
 
 		QAbstractItemModel* GetRepresentation () const;
+	private:
+		void UploadFile (const QString&, const Entity&);
+		void UploadImage (const QImage&, const Entity&);
 	};
 }
 }
