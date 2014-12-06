@@ -38,6 +38,7 @@
 
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/sys/mimedetector.h>
 #include <interfaces/entitytesthandleresult.h>
 #include "interfaces/blasq/iservicesplugin.h"
 #include "interfaces/blasq/iaccount.h"
@@ -195,11 +196,22 @@ namespace Blasq
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& entity) const
 	{
-		const bool suitable = entity.Mime_ == "x-leechcraft/data-filter-request" &&
-				!entity.Entity_.value<QImage> ().isNull ();
-		return EntityTestHandleResult { suitable ?
-					EntityTestHandleResult::PIdeal :
-					EntityTestHandleResult::PNone };
+		if (entity.Mime_ != "x-leechcraft/data-filter-request")
+			return {};
+
+		if (!entity.Entity_.value<QImage> ().isNull ())
+			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
+
+		const auto& url = entity.Entity_.toUrl ();
+		const auto& localFile = url.toLocalFile ();
+		if (!QFile::exists (localFile))
+			return {};
+
+		const auto& mime = Util::MimeDetector {} (localFile);
+		if (mime.startsWith ("image/"))
+			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
+
+		return {};
 	}
 
 	void Plugin::Handle (Entity entity)
