@@ -43,7 +43,7 @@ namespace Util
 
 	class MimeDetector
 	{
-		std::shared_ptr<MimeDetectorImpl> Impl_;
+		const std::shared_ptr<MimeDetectorImpl> Impl_;
 	public:
 		UTIL_SYS_API MimeDetector ();
 
