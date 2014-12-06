@@ -181,7 +181,7 @@ namespace DeadLyrics
 	, Query_ (query)
 	, Desc_ (desc)
 	{
-		auto replace = [this] (QString str) -> QString
+		auto replace = [this] (QString str)
 		{
 			for (const auto& c : Desc_.Replacements_.keys ())
 				str.replace (c, Desc_.Replacements_ [c]);
@@ -199,7 +199,7 @@ namespace DeadLyrics
 		if (!artist.isEmpty ())
 			urlStr.replace ("{a}", artist.at (0).toLower ());
 
-		auto cap = [] (QString str) -> QString
+		auto cap = [] (QString str)
 		{
 			if (!str.isEmpty ())
 				str [0] = str [0].toUpper ();
