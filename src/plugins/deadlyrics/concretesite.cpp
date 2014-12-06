@@ -209,10 +209,12 @@ namespace DeadLyrics
 		urlStr.replace ("{Album}", cap (album));
 		urlStr.replace ("{Title}", cap (title));
 
+		QUrl url { urlStr };
+
 #ifdef QT_DEBUG
 		qDebug () << Q_FUNC_INFO
 				<< "requesting"
-				<< urlStr
+				<< url.toEncoded ()
 				<< "from"
 				<< Desc_.Name_
 				<< "for"
@@ -223,7 +225,6 @@ namespace DeadLyrics
 
 		auto nam = proxy->GetNetworkAccessManager ();
 
-		QUrl url { urlStr };
 		QNetworkRequest req { url };
 
 		url.setPath ({});
