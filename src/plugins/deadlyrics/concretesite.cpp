@@ -234,6 +234,7 @@ namespace DeadLyrics
 		url.setQuery (QString {});
 #endif
 		req.setRawHeader ("Referer", url.toString ().toUtf8 ());
+		req.setAttribute (QNetworkRequest::HttpPipeliningAllowedAttribute, false);
 
 		auto reply = nam->get (req);
 		connect (reply,
