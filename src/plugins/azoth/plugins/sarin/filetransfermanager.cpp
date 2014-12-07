@@ -72,12 +72,31 @@ namespace Sarin
 			return nullptr;
 		}
 
-		return new FileTransfer { id, contact->GetPubKey (), name, toxThread };
+		const auto transfer = new FileTransfer { id, contact->GetPubKey (), name, toxThread };
+		connect (this,
+				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
+				transfer,
+				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+		return transfer;
 	}
 
 	void FileTransferManager::handleToxThreadChanged (const std::shared_ptr<ToxThread>& thread)
 	{
 		ToxThread_ = thread;
+	}
+
+	void FileTransferManager::handleToxCreated (Tox *tox)
+	{
+		tox_callback_file_control (tox,
+				[] (Tox*, int32_t friendNum,
+						uint8_t, uint8_t filenum, uint8_t type,
+						const uint8_t *rawData, uint16_t len, void *udata)
+				{
+					const QByteArray data { reinterpret_cast<const char*> (rawData), len };
+					static_cast<FileTransferManager*> (udata)->
+							gotFileControl (friendNum, filenum, type, data);
+				},
+				this);
 	}
 }
 }

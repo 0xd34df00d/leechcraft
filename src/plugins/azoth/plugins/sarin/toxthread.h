@@ -169,8 +169,6 @@ namespace Sarin
 		void HandleNameChange (int32_t, const uint8_t*, uint16_t);
 		void UpdateFriendStatus (int32_t);
 		void HandleTypingChange (int32_t, uint8_t);
-
-		void HandleFileControl (int32_t, uint8_t, uint8_t, const uint8_t*, uint16_t);
 	protected:
 		virtual void run ();
 	signals:
@@ -189,8 +187,6 @@ namespace Sarin
 		void friendStatusChanged (const QByteArray& pubkey, const EntryStatus& status);
 
 		void friendTypingChanged (const QByteArray& pubkey, bool isTyping);
-
-		void gotFileControl (qint32, qint8, qint8, const QByteArray&);
 	};
 }
 }

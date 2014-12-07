@@ -448,13 +448,6 @@ namespace Sarin
 		emit friendTypingChanged (id, isTyping);
 	}
 
-	void ToxThread::HandleFileControl (int32_t friendNum,
-			uint8_t filenum, uint8_t type, const uint8_t *rawData, uint16_t len)
-	{
-		const QByteArray data { reinterpret_cast<const char*> (rawData), len };
-		emit gotFileControl (friendNum, filenum, type, data);
-	}
-
 	void ToxThread::run ()
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -515,15 +508,6 @@ namespace Sarin
 				[] (Tox*, int32_t friendId, uint8_t isTyping, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->HandleTypingChange (friendId, isTyping);
-				},
-				this);
-		tox_callback_file_control (Tox_.get (),
-				[] (Tox*, int32_t friendId,
-						uint8_t receiveSend, uint8_t filenumber, uint8_t type,
-						const uint8_t *data, uint16_t len, void *udata)
-				{
-					static_cast<ToxThread*> (udata)->HandleFileControl (friendId,
-							filenumber, type, data, len);
 				},
 				this);
 

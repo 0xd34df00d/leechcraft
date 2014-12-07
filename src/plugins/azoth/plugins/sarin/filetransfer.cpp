@@ -73,11 +73,6 @@ namespace Sarin
 			return;
 		}
 
-		connect (Thread_.get (),
-				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
-				this,
-				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
-
 		const auto sendScheduler = [this]
 		{
 			return Thread_->ScheduleFunction ([this] (Tox *tox)

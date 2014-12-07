@@ -33,6 +33,8 @@
 #include <QObject>
 #include <interfaces/azoth/itransfermanager.h>
 
+typedef struct Tox Tox;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -57,8 +59,11 @@ namespace Sarin
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
 	public slots:
 		void handleToxThreadChanged (const std::shared_ptr<ToxThread>&);
+		void handleToxCreated (Tox*);
 	signals:
 		void fileOffered (QObject*) override;
+
+		void gotFileControl (qint32, qint8, qint8, const QByteArray&);
 	};
 }
 }
