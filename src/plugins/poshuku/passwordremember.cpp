@@ -32,7 +32,9 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <interfaces/core/ientitymanager.h>
+#include <util/sll/util.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/ipersistentstorageplugin.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -54,30 +56,27 @@ namespace Poshuku
 
 	void PasswordRemember::on_Remember__released ()
 	{
+		auto hideGuard = Util::MakeScopeGuard ([this]
+				{
+					TempData_.clear ();
+					hide ();
+				});
+
 		if (TempData_.isEmpty ())
-		{
-			hide ();
 			return;
-		}
 
-		QList<QVariant> keys;
-		QList<QVariant> values;
+		const auto storagePlugin = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+				GetAllCastableTo<IPersistentStoragePlugin*> ().value (0);
+		if (!storagePlugin)
+			return;
+
+		const auto& storage = storagePlugin->RequestStorage ();
+		if (!storage)
+			return;
+
 		for (const auto& pair : Util::Stlize (TempData_))
-		{
-			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + pair.first.toUtf8 ();
-			values << QVariant { Util::Map (pair.second, &QVariant::fromValue<ElementData>) };
-		}
-
-		auto e = Util::MakeEntity (keys,
-				{},
-				Internal,
-				"x-leechcraft/data-persistent-save");
-		e.Additional_ ["Values"] = values;
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
-
-		TempData_.clear ();
-
-		hide ();
+			storage->Set ("org.LeechCraft.Poshuku.Forms.InputByName/" + pair.first.toUtf8 (),
+					Util::Map (pair.second, &QVariant::fromValue<ElementData>));
 	}
 
 	void PasswordRemember::on_NotNow__released ()
