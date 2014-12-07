@@ -256,8 +256,6 @@ namespace Poshuku
 					if (error->domain == QWebPage::QtNetwork)
 						switch (error->error)
 						{
-						case QNetworkReply::UnknownNetworkError:
-							return QWebPage::extension (e, eo, er);
 						case QNetworkReply::ContentReSendError:
 							emit gotEntity (Util::MakeNotification ("Poshuku",
 										tr ("Unable to send the request to %1. Please try submitting it again.")
