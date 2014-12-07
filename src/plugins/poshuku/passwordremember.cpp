@@ -88,12 +88,6 @@ namespace Poshuku
 
 	void PasswordRemember::on_Never__released ()
 	{
-		if (TempData_.isEmpty ())
-		{
-			hide ();
-			return;
-		}
-
 		const auto sb = Core::Instance ().GetStorageBackend ();
 		for (const auto& pair : Util::Stlize (TempData_))
 			for (const auto& ed : pair.second)
