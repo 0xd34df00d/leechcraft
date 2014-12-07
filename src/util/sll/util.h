@@ -41,7 +41,7 @@ namespace Util
 			const F F_;
 			bool Perform_ = true;
 		public:
-			ScopeGuard (const F& f)
+			ScopeGuard (const F& f) noexcept
 			: F_ { f }
 			{
 			}
@@ -50,20 +50,20 @@ namespace Util
 			ScopeGuard& operator= (const ScopeGuard&) = delete;
 			ScopeGuard& operator= (ScopeGuard&&) = delete;
 
-			ScopeGuard (ScopeGuard&& other)
+			ScopeGuard (ScopeGuard&& other) noexcept
 			: F_ { other.F_ }
 			, Perform_ { other.Perform_ }
 			{
 				other.Perform_ = false;
 			}
 
-			~ScopeGuard ()
+			~ScopeGuard () noexcept (noexcept (F_ ()))
 			{
 				if (Perform_)
 					F_ ();
 			}
 
-			void Dismiss ()
+			void Dismiss () noexcept
 			{
 				Perform_ = false;
 			}
