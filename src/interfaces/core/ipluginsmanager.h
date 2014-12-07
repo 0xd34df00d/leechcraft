@@ -66,10 +66,11 @@ public:
 	 * @param[in] source The list of plugins to filter.
 	 * @return The list of plugins from source that can be casted ty type T.
 	 */
-	template<typename T> QObjectList Filter (QObjectList source) const
+	template<typename T>
+	QObjectList Filter (const QObjectList& source) const
 	{
 		QObjectList result;
-		Q_FOREACH (QObject *sp, source)
+		for (const auto sp : source)
 			if (qobject_cast<T> (sp))
 				result << sp;
 		return result;
@@ -84,7 +85,8 @@ public:
 	 * @return The list of pointers to plugin instances that are
 	 * castable to type T.
 	 */
-	template<typename T> QObjectList GetAllCastableRoots () const
+	template<typename T>
+	QObjectList GetAllCastableRoots () const
 	{
 		return Filter<T> (GetAllPlugins ());
 	}
@@ -100,11 +102,11 @@ public:
 	 *
 	 * @return The list of pointers to the requested interface.
 	 */
-	template<typename T> QList<T> GetAllCastableTo () const
+	template<typename T>
+	QList<T> GetAllCastableTo () const
 	{
-		QObjectList roots = GetAllCastableRoots<T> ();
 		QList<T> result;
-		Q_FOREACH (QObject *root, roots)
+		for (const auto root : GetAllCastableRoots<T> ())
 			result << qobject_cast<T> (root);
 		return result;
 	}
