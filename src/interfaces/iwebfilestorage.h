@@ -43,6 +43,11 @@ class QUrl;
  * service (like a dumb filebin) is called a \emph{service variant}. The
  * list of all service variants is returned via GetServiceVariants()
  * method.
+ *
+ * Good IWebFileStorage plugins also implement IDataFilter, exposing
+ * filtering entities containing URLs to local files.
+ *
+ * @sa IDataFilter
  */
 class Q_DECL_EXPORT IWebFileStorage
 {
