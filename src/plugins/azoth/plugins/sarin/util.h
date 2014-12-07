@@ -29,9 +29,8 @@
 
 #pragma once
 
-#include <QtGlobal>
-
-class QByteArray;
+#include <array>
+#include <QByteArray>
 
 typedef struct Tox Tox;
 
@@ -42,6 +41,32 @@ namespace Azoth
 namespace Sarin
 {
 	qint32 GetFriendId (Tox *tox, const QByteArray& privkey);
+	QByteArray GetFriendId (Tox *tox, int32_t friendId);
+
+	template<size_t Size>
+	QByteArray ToxId2HR (const uint8_t *address)
+	{
+		QByteArray result;
+		auto toHexChar = [] (uint8_t num) -> char
+		{
+			return num >= 10 ? (num - 10 + 'A') : (num + '0');
+		};
+
+		for (size_t i = 0; i < Size; ++i)
+		{
+			const auto num = address [i];
+			result += toHexChar ((num & 0xf0) >> 4);
+			result += toHexChar (num & 0xf);
+		}
+
+		return result;
+	}
+
+	template<size_t Size>
+	QByteArray ToxId2HR (const std::array<uint8_t, Size>& address)
+	{
+		return ToxId2HR<Size> (address.data ());
+	}
 }
 }
 }

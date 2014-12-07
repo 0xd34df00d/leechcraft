@@ -42,6 +42,14 @@ namespace Sarin
 		const auto& binPkey = QByteArray::fromHex (privkey);
 		return tox_get_friend_number (tox, reinterpret_cast<const uint8_t*> (binPkey.constData ()));
 	}
+
+	QByteArray GetFriendId (Tox *tox, int32_t friendId)
+	{
+		std::array<uint8_t, TOX_CLIENT_ID_SIZE> clientId;
+		if (tox_get_client_id (tox, friendId, clientId.data ()) == -1)
+			throw std::runtime_error ("Cannot get friend's pubkey.");
+		return ToxId2HR (clientId);
+	}
 }
 }
 }
