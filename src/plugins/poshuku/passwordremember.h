@@ -27,16 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PASSWORDREMEMBER_H
+#pragma once
+
 #include <util/gui/pagenotification.h>
 #include "pageformsdata.h"
 #include "ui_passwordremember.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Poshuku
 {
 	class PasswordRemember : public Util::PageNotification
@@ -55,10 +53,6 @@ namespace Poshuku
 		void on_Remember__released ();
 		void on_NotNow__released ();
 		void on_Never__released ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
-
-#endif

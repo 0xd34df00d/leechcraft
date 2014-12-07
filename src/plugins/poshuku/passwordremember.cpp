@@ -30,6 +30,7 @@
 #include "passwordremember.h"
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -40,11 +41,6 @@ namespace Poshuku
 	: Util::PageNotification (parent)
 	{
 		Ui_.setupUi (this);
-
-		connect (this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
 	}
 
 	void PasswordRemember::add (const PageFormsData_t& data)
@@ -56,25 +52,29 @@ namespace Poshuku
 
 	void PasswordRemember::on_Remember__released ()
 	{
+		if (TempData_.isEmpty ())
+		{
+			hide ();
+			return;
+		}
+
 		QList<QVariant> keys;
 		QList<QVariant> values;
-		Q_FOREACH (const QString& key, TempData_.keys ())
+		for (const auto& key : TempData_.keys ())
 		{
 			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + key.toUtf8 ();
 			QVariantList value;
-			Q_FOREACH (const ElementData& ed, TempData_ [key])
-				value << QVariant::fromValue<ElementData> (ed);
+			for (const auto& ed : TempData_ [key])
+				value << QVariant::fromValue (ed);
 			values << QVariant (value);
 		}
-		if (keys.size ())
-		{
-			Entity e = Util::MakeEntity (keys,
-					QString (),
-					Internal,
-					"x-leechcraft/data-persistent-save");
-			e.Additional_ ["Values"] = values;
-			emit delegateEntity (e, 0, 0);
-		}
+
+		auto e = Util::MakeEntity (keys,
+				{},
+				Internal,
+				"x-leechcraft/data-persistent-save");
+		e.Additional_ ["Values"] = values;
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 
 		TempData_.clear ();
 
@@ -89,17 +89,19 @@ namespace Poshuku
 
 	void PasswordRemember::on_Never__released ()
 	{
-		if (TempData_.size ())
+		if (TempData_.isEmpty ())
 		{
-			QSet<QString> urls;
-			Q_FOREACH (const QString& key, TempData_.keys ())
-				Q_FOREACH (const ElementData& ed, TempData_ [key])
-					urls << ed.PageURL_.toString ();
-
-			Q_FOREACH (const QString& url, urls)
-				Core::Instance ().GetStorageBackend ()->
-					SetFormsIgnored (url, true);
+			hide ();
+			return;
 		}
+
+		QSet<QString> urls;
+		for (const auto& key : TempData_.keys ())
+			for (const auto& ed : TempData_ [key])
+				urls << ed.PageURL_.toString ();
+
+		for (const auto& url : urls)
+			Core::Instance ().GetStorageBackend ()->SetFormsIgnored (url, true);
 
 		TempData_.clear ();
 		hide ();
