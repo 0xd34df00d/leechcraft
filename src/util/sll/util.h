@@ -29,16 +29,51 @@
 
 #pragma once
 
-#include <memory>
-
 namespace LeechCraft
 {
 namespace Util
 {
-	template<typename F>
-	std::shared_ptr<void> MakeScopeGuard (const F& f)
+	namespace detail
 	{
-		return std::shared_ptr<void> { nullptr, [f] (void*) { f (); } };
+		template<typename F>
+		class ScopeGuard
+		{
+			const F F_;
+			bool Perform_ = true;
+		public:
+			ScopeGuard (const F& f)
+			: F_ { f }
+			{
+			}
+
+			ScopeGuard (const ScopeGuard&) = delete;
+			ScopeGuard& operator= (const ScopeGuard&) = delete;
+			ScopeGuard& operator= (ScopeGuard&&) = delete;
+
+			ScopeGuard (ScopeGuard&& other)
+			: F_ { other.F_ }
+			, Perform_ { other.Perform_ }
+			{
+				other.Perform_ = false;
+			}
+
+			~ScopeGuard ()
+			{
+				if (Perform_)
+					F_ ();
+			}
+
+			void Dismiss ()
+			{
+				Perform_ = false;
+			}
+		};
+	}
+
+	template<typename F>
+	detail::ScopeGuard<F> MakeScopeGuard (const F& f)
+	{
+		return { f };
 	}
 }
 }
