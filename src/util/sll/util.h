@@ -35,19 +35,10 @@ namespace LeechCraft
 {
 namespace Util
 {
-#if USE_CPP14
-	template<typename F>
-	auto MakeScopeGuard (const F& f)
-	{
-		const auto deleter = [f] (void*) { f (); };
-		return std::unique_ptr<void, decltype (deleter)> { nullptr, deleter };
-	}
-#else
 	template<typename F>
 	std::shared_ptr<void> MakeScopeGuard (const F& f)
 	{
 		return std::shared_ptr<void> { nullptr, [f] (void*) { f (); } };
 	}
-#endif
 }
 }
