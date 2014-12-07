@@ -47,8 +47,6 @@ namespace Poshuku
 		PasswordRemember (QWidget* = 0);
 	public slots:
 		void add (const PageFormsData_t&);
-	private:
-		bool Changed (const ElementsData_t&, const QString&);
 	private slots:
 		void on_Remember__released ();
 		void on_NotNow__released ();
