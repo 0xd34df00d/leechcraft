@@ -30,6 +30,8 @@
 #include "passwordremember.h"
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
@@ -60,13 +62,10 @@ namespace Poshuku
 
 		QList<QVariant> keys;
 		QList<QVariant> values;
-		for (const auto& key : TempData_.keys ())
+		for (const auto& pair : Util::Stlize (TempData_))
 		{
-			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + key.toUtf8 ();
-			QVariantList value;
-			for (const auto& ed : TempData_ [key])
-				value << QVariant::fromValue (ed);
-			values << QVariant (value);
+			keys << "org.LeechCraft.Poshuku.Forms.InputByName/" + pair.first.toUtf8 ();
+			values << QVariant { Util::Map (pair.second, &QVariant::fromValue<ElementData>) };
 		}
 
 		auto e = Util::MakeEntity (keys,
@@ -95,13 +94,10 @@ namespace Poshuku
 			return;
 		}
 
-		QSet<QString> urls;
-		for (const auto& key : TempData_.keys ())
-			for (const auto& ed : TempData_ [key])
-				urls << ed.PageURL_.toString ();
-
-		for (const auto& url : urls)
-			Core::Instance ().GetStorageBackend ()->SetFormsIgnored (url, true);
+		const auto sb = Core::Instance ().GetStorageBackend ();
+		for (const auto& pair : Util::Stlize (TempData_))
+			for (const auto& ed : pair.second)
+				sb->SetFormsIgnored (ed.PageURL_.toString (), true);
 
 		TempData_.clear ();
 		hide ();
