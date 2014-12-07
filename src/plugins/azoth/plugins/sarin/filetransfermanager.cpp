@@ -75,7 +75,7 @@ namespace Sarin
 		return new FileTransfer { id, contact->GetPubKey (), name, toxThread };
 	}
 
-	void FileTransferManager::handleToxThread (const std::shared_ptr<ToxThread>& thread)
+	void FileTransferManager::handleToxThreadChanged (const std::shared_ptr<ToxThread>& thread)
 	{
 		ToxThread_ = thread;
 	}
