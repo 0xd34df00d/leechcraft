@@ -202,13 +202,11 @@ namespace Blasq
 		if (!entity.Entity_.value<QImage> ().isNull ())
 			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 
-		const auto& url = entity.Entity_.toUrl ();
-		const auto& localFile = url.toLocalFile ();
+		const auto& localFile = entity.Entity_.toUrl ().toLocalFile ();
 		if (!QFile::exists (localFile))
 			return {};
 
-		const auto& mime = Util::MimeDetector {} (localFile);
-		if (mime.startsWith ("image/"))
+		if (Util::DetectFileMime (localFile).startsWith ("image/"))
 			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 
 		return {};
