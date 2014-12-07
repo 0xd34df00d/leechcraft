@@ -264,7 +264,7 @@ namespace Poshuku
 											.arg (error->url.host ()),
 										PCritical_));
 							return false;
-						default :
+						default:
 							return true;
 						}
 					else
