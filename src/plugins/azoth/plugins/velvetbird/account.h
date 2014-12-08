@@ -48,8 +48,8 @@ namespace VelvetBird
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount)
 
-		PurpleAccount *Account_;
-		Protocol *Proto_;
+		PurpleAccount * const Account_;
+		Protocol * const Proto_;
 
 		EntryStatus CurrentStatus_;
 
@@ -68,8 +68,8 @@ namespace VelvetBird
 		QString GetAccountName () const;
 		QString GetOurNick () const;
 		void RenameAccount (const QString& name);
-		virtual QByteArray GetAccountID () const;
-		QList< QAction* > GetActions () const;
+		QByteArray GetAccountID () const;
+		QList<QAction*> GetActions () const;
 		void OpenConfigurationDialog ();
 		EntryStatus GetState () const;
 		void ChangeState (const EntryStatus&);
