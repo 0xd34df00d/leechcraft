@@ -32,6 +32,7 @@
 #include <QObject>
 #include <libpurple/account.h>
 #include <interfaces/azoth/iaccount.h>
+#include "protocol.h"
 
 namespace LeechCraft
 {
@@ -62,7 +63,7 @@ namespace VelvetBird
 		PurpleAccount* GetPurpleAcc () const;
 
 		QObject* GetQObject ();
-		QObject* GetParentProtocol () const;
+		Protocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;

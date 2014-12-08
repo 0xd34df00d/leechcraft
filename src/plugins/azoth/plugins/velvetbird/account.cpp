@@ -33,7 +33,6 @@
 #include <util/xpc/passutils.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
-#include "protocol.h"
 #include "util.h"
 #include "buddy.h"
 #include "accountconfigdialog.h"
@@ -69,7 +68,7 @@ namespace VelvetBird
 		return this;
 	}
 
-	QObject* Account::GetParentProtocol () const
+	Protocol* Account::GetParentProtocol () const
 	{
 		return Proto_;
 	}
