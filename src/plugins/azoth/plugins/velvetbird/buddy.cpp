@@ -30,6 +30,8 @@
 #include "buddy.h"
 #include <QImage>
 #include <QtDebug>
+#include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "account.h"
 #include "util.h"
 #include "convimmessage.h"
@@ -173,11 +175,44 @@ namespace VelvetBird
 	void Buddy::Send (ConvIMMessage *msg)
 	{
 		auto name = purple_buddy_get_name (Buddy_);
+		if (!name)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to get buddy name"
+					<< Name_;
+
+			const auto& notify = Util::MakeNotification ("Azoth VelvetBird",
+					tr ("Unable to send message: protocol error.")
+						.arg (name),
+					PInfo_);
+
+			const auto& proxy = Account_->GetParentProtocol ()->GetCoreProxy ();
+			proxy->GetEntityManager ()->HandleEntity (notify);
+
+			return;
+		}
+
 		auto conv = purple_find_conversation_with_account (PURPLE_CONV_TYPE_IM,
 				name, Account_->GetPurpleAcc ());
 		if (!conv)
 		{
 			conv = purple_conversation_new (PURPLE_CONV_TYPE_IM, Account_->GetPurpleAcc (), name);
+			if (!conv)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to create conversation with"
+						<< name;
+
+				const auto& notify = Util::MakeNotification ("Azoth VelvetBird",
+						tr ("Unable to send message to %1: protocol error.")
+							.arg (name),
+						PInfo_);
+
+				const auto& proxy = Account_->GetParentProtocol ()->GetCoreProxy ();
+				proxy->GetEntityManager ()->HandleEntity (notify);
+				return;
+			}
+
 			conv->ui_data = this;
 			purple_conversation_set_logging (conv, false);
 		}
