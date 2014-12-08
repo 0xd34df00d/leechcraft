@@ -172,8 +172,6 @@ namespace VelvetBird
 
 	void Buddy::Send (ConvIMMessage *msg)
 	{
-		Store (msg);
-
 		auto name = purple_buddy_get_name (Buddy_);
 		auto conv = purple_find_conversation_with_account (PURPLE_CONV_TYPE_IM,
 				name, Account_->GetPurpleAcc ());
@@ -183,6 +181,8 @@ namespace VelvetBird
 			conv->ui_data = this;
 			purple_conversation_set_logging (conv, false);
 		}
+
+		Store (msg);
 
 		purple_conv_im_send (PURPLE_CONV_IM (conv), msg->GetBody ().toUtf8 ().constData ());
 	}
