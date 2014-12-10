@@ -144,18 +144,20 @@ namespace LeechCraft
 
 		bool NoHandlersAvailable (const Entity& e)
 		{
-			const auto& url = e.Entity_.toUrl ();
-			if (!url.scheme ().isEmpty () &&
-					(e.Parameters_ & FromUserInitiated) &&
-					!(e.Parameters_ & OnlyDownload) &&
-					XmlSettingsManager::Instance ()->
-						property ("FallbackExternalHandlers").toBool ())
-			{
-				QDesktopServices::openUrl (url);
-				return true;
-			}
-			else
+			if (!(e.Parameters_ & FromUserInitiated) ||
+					(e.Parameters_ & OnlyDownload))
 				return false;
+
+			if (!XmlSettingsManager::Instance ()->
+						property ("FallbackExternalHandlers").toBool ())
+				return false;
+
+			const auto& url = e.Entity_.toUrl ();
+			if (url.scheme ().isEmpty ())
+				return false;
+
+			QDesktopServices::openUrl (url);
+			return true;
 		}
 
 		bool GetPreparedObjectList (Entity& e, QObject *desired, QObjectList& handlers, bool handling)
