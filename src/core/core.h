@@ -187,9 +187,6 @@ namespace LeechCraft
 
 		void PostSecondInit (QObject *object);
 	public slots:
-		/** Handles changes of proxy settings in the Settings Dialog.
-		 */
-		void handleProxySettings () const;
 		/* Dispatcher of button clicks in the Settings Dialog (of the
 		 * settings of type 'pushbutton').
 		 */

@@ -130,18 +130,6 @@ namespace LeechCraft
 				paths << QString::fromUtf8 (plugin.c_str ());
 		}
 		PluginManager_ = new PluginManager (paths, this);
-
-		QList<QByteArray> proxyProperties;
-		proxyProperties << "ProxyEnabled"
-			<< "ProxyHost"
-			<< "ProxyPort"
-			<< "ProxyLogin"
-			<< "ProxyPassword"
-			<< "ProxyType";
-		XmlSettingsManager::Instance ()->RegisterObject (proxyProperties,
-				this, "handleProxySettings");
-
-		handleProxySettings ();
 	}
 
 	Core::~Core ()
@@ -353,34 +341,6 @@ namespace LeechCraft
 	NewTabMenuManager* Core::GetNewTabMenuManager () const
 	{
 		return NewTabMenuManager_.get ();
-	}
-
-	void Core::handleProxySettings () const
-	{
-		const bool enabled = XmlSettingsManager::Instance ()->property ("ProxyEnabled").toBool ();
-		QNetworkProxy pr;
-		if (enabled)
-		{
-			pr.setHostName (XmlSettingsManager::Instance ()->property ("ProxyHost").toString ());
-			pr.setPort (XmlSettingsManager::Instance ()->property ("ProxyPort").toInt ());
-			pr.setUser (XmlSettingsManager::Instance ()->property ("ProxyLogin").toString ());
-			pr.setPassword (XmlSettingsManager::Instance ()->property ("ProxyPassword").toString ());
-			const QString& type = XmlSettingsManager::Instance ()->property ("ProxyType").toString ();
-			QNetworkProxy::ProxyType pt = QNetworkProxy::HttpProxy;
-			if (type == "socks5")
-				pt = QNetworkProxy::Socks5Proxy;
-			else if (type == "tphttp")
-				pt = QNetworkProxy::HttpProxy;
-			else if (type == "chttp")
-				pr = QNetworkProxy::HttpCachingProxy;
-			else if (type == "cftp")
-				pr = QNetworkProxy::FtpCachingProxy;
-			pr.setType (pt);
-		}
-		else
-			pr.setType (QNetworkProxy::NoProxy);
-		QNetworkProxy::setApplicationProxy (pr);
-		NetworkAccessManager_->setProxy (pr);
 	}
 
 	void Core::handleSettingClicked (const QString& name)

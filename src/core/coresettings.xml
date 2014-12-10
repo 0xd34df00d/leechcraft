@@ -154,36 +154,6 @@
 			<item type="pushbutton" name="ClearCache">
 				<label lang="en" value="Clear cache" />
 			</item>
-			<item type="groupbox" property="ProxyEnabled" checkable="true" state="off">
-				<label lang="en" value="Application-wide proxy" />
-				<item type="lineedit" property="ProxyHost">
-					<label lang="en" value="Host:" />
-				</item>
-				<item type="spinbox" property="ProxyPort" default="3128" minimum="1" maximum="65535" step="1">
-					<label lang="en" value="Port:" />
-				</item>
-				<item type="lineedit" property="ProxyLogin">
-					<label lang="en" value="Login:" />
-				</item>
-				<item type="lineedit" property="ProxyPassword" password="true">
-					<label lang="en" value="Password:" />
-				</item>
-				<item type="combobox" property="ProxyType">
-					<label lang="en" value="Proxy type:" />
-					<option name="socks5" default="true">
-						<label lang="en" value="SOCKS5" />
-					</option>
-					<option name="tphttp">
-						<label lang="en" value="Transparent HTTP" />
-					</option>
-					<option name="chttp">
-						<label lang="en" value="Caching HTTP" />
-					</option>
-					<option name="cftp">
-						<label lang="en" value="Caching FTP" />
-					</option>
-				</item>
-			</item>
 		</tab>
 		<tab>
 			<label value="Privacy" />
