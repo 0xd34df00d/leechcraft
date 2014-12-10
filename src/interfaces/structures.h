@@ -99,7 +99,12 @@ namespace LeechCraft
 		/** This task should be automatically accepted if any handler is
 		 * available.
 		 */
-		AutoAccept = 2048
+		AutoAccept = 2048,
+
+		/** The entity was generated from command line parameters or
+		 * LeechCraft process invocation.
+		 */
+		FromCommandLine = 4096
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);
