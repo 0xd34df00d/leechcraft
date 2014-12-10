@@ -102,7 +102,7 @@ namespace LeechCraft
 		if (!map.count ("entity"))
 			return;
 
-		TaskParameters tp;
+		TaskParameters tp { FromCommandLine };
 		if (map.count ("automatic"))
 			tp |= AutoAccept;
 		else
