@@ -29,7 +29,10 @@
 
 #pragma once
 
+#include <memory>
 #include "filetransferbase.h"
+
+class QFile;
 
 namespace LeechCraft
 {
@@ -46,6 +49,8 @@ namespace Sarin
 
 		QString Filename_;
 		const qint64 Filesize_;
+
+		std::shared_ptr<QFile> File_;
 	public:
 		FileTransferIn (const QString& azothId,
 				const QByteArray& pubkey,
@@ -63,6 +68,7 @@ namespace Sarin
 		void Accept (const QString&) override;
 		void Abort () override;
 	private slots:
+		void handleData (qint32, qint8, const QByteArray&);
 		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
 	};
 }

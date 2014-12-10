@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "filetransferin.h"
+#include <QFile>
+#include <tox/tox.h>
+#include "toxthread.h"
 
 namespace LeechCraft
 {
@@ -66,19 +69,67 @@ namespace Sarin
 		return TDIn;
 	}
 
-	void FileTransferIn::Accept (const QString& outName)
+	void FileTransferIn::Accept (const QString& dirName)
 	{
+		const auto& outName = dirName + '/' + Filename_;
+		File_ = std::make_shared<QFile> (outName);
+		if (!File_->open (QIODevice::WriteOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open"
+					<< outName
+					<< "for write"
+					<< File_->errorString ();
+			emit errorAppeared (TEFileAccessError, File_->errorString ());
+			emit stateChanged (TSFinished);
+			return;
+		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "gonna accept";
+		Thread_->ScheduleFunction ([this] (Tox *tox)
+				{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_ACCEPT, nullptr, 0); });
 	}
 
 	void FileTransferIn::Abort ()
 	{
+		Thread_->ScheduleFunction ([this] (Tox *tox)
+				{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_KILL, nullptr, 0); });
+	}
+
+	void FileTransferIn::handleData (qint32 friendNum, qint8 fileNum, const QByteArray& data)
+	{
+		qDebug () << Q_FUNC_INFO << "got data" << data.size ();
+		if (friendNum != FriendNum_ || fileNum != FileNum_)
+			return;
+
+		File_->write (data);
+		emit transferProgress (File_->pos (), Filesize_);
 	}
 
 	void FileTransferIn::handleFileControl (qint32 friendNum,
-			qint8 fileNum, qint8 type, const QByteArray& data)
+			qint8 fileNum, qint8 type, const QByteArray&)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
+
+		switch (type)
+		{
+		case TOX_FILECONTROL_FINISHED:
+			Thread_->ScheduleFunction ([this] (Tox *tox)
+					{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_FINISHED, nullptr, 0); });
+			emit stateChanged (TSFinished);
+			break;
+		case TOX_FILECONTROL_KILL:
+			emit errorAppeared (TEAborted, tr ("Remote party aborted the transfer."));
+			emit stateChanged (TSFinished);
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown filecontrol type"
+					<< type;
+			break;
+		}
 	}
 }
 }
