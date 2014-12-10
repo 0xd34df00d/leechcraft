@@ -83,6 +83,7 @@ namespace Sarin
 		void SetNickname (const QString&);
 
 		ToxContact* GetByAzothId (const QString&) const;
+		ToxContact* GetByPubkey (const QByteArray&) const;
 
 		QObject* GetQObject () override;
 		QObject* GetParentProtocol () const override;

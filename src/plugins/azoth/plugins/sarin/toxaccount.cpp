@@ -138,6 +138,11 @@ namespace Sarin
 		return Contacts_.value (localId);
 	}
 
+	ToxContact* ToxAccount::GetByPubkey (const QByteArray& pubkey) const
+	{
+		return Contacts_.value (pubkey);
+	}
+
 	QObject* ToxAccount::GetQObject ()
 	{
 		return this;
