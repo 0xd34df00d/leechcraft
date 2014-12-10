@@ -99,12 +99,7 @@ namespace LeechCraft
 		/** This task should be automatically accepted if any handler is
 		 * available.
 		 */
-		AutoAccept = 2048,
-
-		/** The plugin that was the source of this task should be
-		 * queried if it could handle the task.
-		 */
-		ShouldQuerySource = 4096
+		AutoAccept = 2048
 	};
 
 	Q_DECLARE_FLAGS (TaskParameters, TaskParameter);

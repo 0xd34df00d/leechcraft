@@ -76,8 +76,6 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 			e.Parameters_ |= LeechCraft::OnlyDownload;
 		if (parameters & LeechCraft::AutoAccept)
 			e.Parameters_ |= LeechCraft::AutoAccept;
-		if (parameters & LeechCraft::ShouldQuerySource)
-			e.Parameters_ |= LeechCraft::ShouldQuerySource;
 	}
 	else if (version == 1)
 	{
@@ -113,8 +111,6 @@ QDataStream& operator>> (QDataStream& in, LeechCraft::Entity& e)
 			e.Parameters_ |= LeechCraft::OnlyDownload;
 		if (parameters & LeechCraft::AutoAccept)
 			e.Parameters_ |= LeechCraft::AutoAccept;
-		if (parameters & LeechCraft::ShouldQuerySource)
-			e.Parameters_ |= LeechCraft::ShouldQuerySource;
 	}
 	else
 	{
