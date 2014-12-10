@@ -27,11 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QFile>
 #include "filetransferbase.h"
 
 namespace LeechCraft
@@ -40,52 +35,26 @@ namespace Azoth
 {
 namespace Sarin
 {
-	class ToxThread;
-
-	class FileTransferIn : public FileTransferBase
+	FileTransferBase::FileTransferBase (const QString& azothId,
+			const QByteArray& pubkey,
+			const std::shared_ptr<ToxThread>& thread,
+			QObject *parent)
+	: QObject { parent }
+	, AzothId_ { azothId }
+	, PubKey_ { pubkey }
+	, Thread_ { thread }
 	{
-		Q_OBJECT
+	}
 
-		const QString FilePath_;
+	QString FileTransferBase::GetSourceID () const
+	{
+		return AzothId_;
+	}
 
-		int FriendNum_;
-		int FileNum_;
-
-		enum class State
-		{
-			Idle,
-			Waiting,
-			Transferring,
-			Paused
-		} State_ = State::Waiting;
-
-		QFile File_;
-		qint64 Filesize_;
-
-		bool TransferAllowed_ = true;
-	public:
-		FileTransferIn (const QString& azothId,
-				const QByteArray& pubkey,
-				const QString& filename,
-				const std::shared_ptr<ToxThread>& thread,
-				QObject *parent = nullptr);
-
-		QString GetName () const override;
-		qint64 GetSize () const override;
-		TransferDirection GetDirection () const override;
-
-		void Accept (const QString&) override;
-		void Abort () override;
-	private:
-		void HandleAccept ();
-		void HandleKill ();
-		void HandlePause ();
-		void HandleResume ();
-		void HandleResumeBroken (const QByteArray&);
-		void TransferChunk ();
-	private slots:
-		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
-	};
+	QString FileTransferBase::GetComment () const
+	{
+		return {};
+	}
 }
 }
 }

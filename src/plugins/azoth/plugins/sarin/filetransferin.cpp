@@ -45,11 +45,8 @@ namespace Sarin
 			const QString& filename,
 			const std::shared_ptr<ToxThread>& thread,
 			QObject *parent)
-	: QObject { parent }
-	, AzothId_ { azothId }
-	, PubKey_ { pubkey }
+	: FileTransferBase { azothId, pubkey, thread, parent }
 	, FilePath_ { filename }
-	, Thread_ { thread }
 	, File_ { filename }
 	, Filesize_ { File_.size () }
 	{
@@ -102,11 +99,6 @@ namespace Sarin
 		};
 	}
 
-	QString FileTransferIn::GetSourceID () const
-	{
-		return AzothId_;
-	}
-
 	QString FileTransferIn::GetName () const
 	{
 		return FilePath_;
@@ -115,11 +107,6 @@ namespace Sarin
 	qint64 FileTransferIn::GetSize () const
 	{
 		return Filesize_;
-	}
-
-	QString FileTransferIn::GetComment () const
-	{
-		return {};
 	}
 
 	TransferDirection FileTransferIn::GetDirection () const

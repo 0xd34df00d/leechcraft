@@ -31,8 +31,7 @@
 
 #include <memory>
 #include <QObject>
-#include <QFile>
-#include "filetransferbase.h"
+#include <interfaces/azoth/itransfermanager.h>
 
 namespace LeechCraft
 {
@@ -42,49 +41,27 @@ namespace Sarin
 {
 	class ToxThread;
 
-	class FileTransferIn : public FileTransferBase
+	class FileTransferBase : public QObject
+						   , public ITransferJob
 	{
 		Q_OBJECT
-
-		const QString FilePath_;
-
-		int FriendNum_;
-		int FileNum_;
-
-		enum class State
-		{
-			Idle,
-			Waiting,
-			Transferring,
-			Paused
-		} State_ = State::Waiting;
-
-		QFile File_;
-		qint64 Filesize_;
-
-		bool TransferAllowed_ = true;
+		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
+	protected:
+		const QString AzothId_;
+		const QByteArray PubKey_;
+		const std::shared_ptr<ToxThread> Thread_;
 	public:
-		FileTransferIn (const QString& azothId,
+		FileTransferBase (const QString& azothId,
 				const QByteArray& pubkey,
-				const QString& filename,
 				const std::shared_ptr<ToxThread>& thread,
 				QObject *parent = nullptr);
 
-		QString GetName () const override;
-		qint64 GetSize () const override;
-		TransferDirection GetDirection () const override;
-
-		void Accept (const QString&) override;
-		void Abort () override;
-	private:
-		void HandleAccept ();
-		void HandleKill ();
-		void HandlePause ();
-		void HandleResume ();
-		void HandleResumeBroken (const QByteArray&);
-		void TransferChunk ();
-	private slots:
-		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
+		QString GetSourceID () const override;
+		QString GetComment () const override;
+	signals:
+		void transferProgress (qint64 done, qint64 total) override;
+		void errorAppeared (TransferError error, const QString& msg) override;
+		void stateChanged (TransferState state) override;
 	};
 }
 }

@@ -51,6 +51,7 @@ set (SARIN_SRCS
 	audiocalldevice.cpp
 	calldatawriter.cpp
 	filetransfermanager.cpp
+	filetransferbase.cpp
 	filetransferin.cpp
 	)
 set (SARIN_FORMS
