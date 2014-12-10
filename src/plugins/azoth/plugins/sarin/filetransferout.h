@@ -29,6 +29,9 @@
 
 #pragma once
 
+#include <memory>
+#include <QObject>
+#include <QFile>
 #include "filetransferbase.h"
 
 namespace LeechCraft
@@ -37,22 +40,33 @@ namespace Azoth
 {
 namespace Sarin
 {
+	class ToxThread;
+
 	class FileTransferOut : public FileTransferBase
 	{
 		Q_OBJECT
 
-		const int FriendNum_;
-		const int FileNum_;
+		const QString FilePath_;
 
-		QString Filename_;
-		const qint64 Filesize_;
+		int FriendNum_;
+		int FileNum_;
+
+		enum class State
+		{
+			Idle,
+			Waiting,
+			Transferring,
+			Paused
+		} State_ = State::Waiting;
+
+		QFile File_;
+		qint64 Filesize_;
+
+		bool TransferAllowed_ = true;
 	public:
 		FileTransferOut (const QString& azothId,
 				const QByteArray& pubkey,
-				int friendNum,
-				int fileNum,
-				qint64 fileSize,
-				const QString& offeredName,
+				const QString& filename,
 				const std::shared_ptr<ToxThread>& thread,
 				QObject *parent = nullptr);
 
@@ -62,6 +76,13 @@ namespace Sarin
 
 		void Accept (const QString&) override;
 		void Abort () override;
+	private:
+		void HandleAccept ();
+		void HandleKill ();
+		void HandlePause ();
+		void HandleResume ();
+		void HandleResumeBroken (const QByteArray&);
+		void TransferChunk ();
 	private slots:
 		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
 	};

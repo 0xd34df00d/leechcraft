@@ -78,7 +78,7 @@ namespace Sarin
 			return nullptr;
 		}
 
-		const auto transfer = new FileTransferIn { id, contact->GetPubKey (), name, toxThread };
+		const auto transfer = new FileTransferOut { id, contact->GetPubKey (), name, toxThread };
 		connect (this,
 				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
 				transfer,
@@ -137,7 +137,7 @@ namespace Sarin
 			return;
 		}
 
-		const auto transfer = new FileTransferOut
+		const auto transfer = new FileTransferIn
 		{
 			entry->GetEntryID (),
 			pkey,

@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "filetransferout.h"
+#include <tox/tox.h>
+#include <util/sll/futures.h>
+#include <util/sll/delayedexecutor.h>
+#include "toxthread.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -37,23 +42,66 @@ namespace Sarin
 {
 	FileTransferOut::FileTransferOut (const QString& azothId,
 			const QByteArray& pubkey,
-			int friendNum,
-			int fileNum,
-			qint64 filesize,
-			const QString& offeredName,
+			const QString& filename,
 			const std::shared_ptr<ToxThread>& thread,
 			QObject *parent)
 	: FileTransferBase { azothId, pubkey, thread, parent }
-	, FriendNum_ { friendNum }
-	, FileNum_ { fileNum }
-	, Filename_ { offeredName }
-	, Filesize_ { filesize }
+	, FilePath_ { filename }
+	, File_ { filename }
+	, Filesize_ { File_.size () }
 	{
+		if (!File_.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open local file"
+					<< filename;
+
+			new Util::DelayedExecutor
+			{
+				[this]
+				{
+					emit errorAppeared (TEFileAccessError,
+							tr ("Error opening local file: %1.")
+								.arg (File_.errorString ()));
+					emit stateChanged (TransferState::TSFinished);
+				}
+			};
+
+			return;
+		}
+
+		const auto sendScheduler = [this]
+		{
+			return Thread_->ScheduleFunction ([this] (Tox *tox)
+					{
+						const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
+						FriendNum_ = GetFriendId (tox, PubKey_);
+						return tox_new_file_sender (tox,
+								FriendNum_,
+								static_cast<uint64_t> (Filesize_),
+								reinterpret_cast<const uint8_t*> (name.constData ()),
+								name.size ());
+					});
+		};
+		Util::ExecuteFuture (sendScheduler,
+				[this] (int filenum)
+				{
+					if (filenum >= 0)
+						return;
+					qWarning () << Q_FUNC_INFO
+							<< "unable to send file";
+				},
+				this);
+
+		new Util::DelayedExecutor
+		{
+			[this] { emit stateChanged (TransferState::TSOffer); }
+		};
 	}
 
 	QString FileTransferOut::GetName () const
 	{
-		return Filename_;
+		return FilePath_;
 	}
 
 	qint64 FileTransferOut::GetSize () const
@@ -63,10 +111,10 @@ namespace Sarin
 
 	TransferDirection FileTransferOut::GetDirection () const
 	{
-		return TDIn;
+		return TransferDirection::TDOut;
 	}
 
-	void FileTransferOut::Accept (const QString& outName)
+	void FileTransferOut::Accept (const QString&)
 	{
 	}
 
@@ -74,11 +122,213 @@ namespace Sarin
 	{
 	}
 
+	void FileTransferOut::HandleAccept ()
+	{
+		State_ = State::Transferring;
+		TransferChunk ();
+
+		emit stateChanged (TSTransfer);
+	}
+
+	void FileTransferOut::HandleKill ()
+	{
+		TransferAllowed_ = false;
+		emit errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
+		emit stateChanged (TSFinished);
+		State_ = State::Idle;
+	}
+
+	void FileTransferOut::HandlePause ()
+	{
+		TransferAllowed_ = false;
+		State_ = State::Paused;
+	}
+
+	void FileTransferOut::HandleResume ()
+	{
+		TransferAllowed_ = true;
+		State_ = State::Transferring;
+		TransferChunk ();
+	}
+
+	void FileTransferOut::HandleResumeBroken (const QByteArray& data)
+	{
+		if (data.size () < 8)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "insufficient data to get the 64-bit position value:"
+					<< data.toHex ();
+			return;
+		}
+
+		const uint64_t pos = *reinterpret_cast<const uint64_t*> (data.constData ());
+		qDebug () << Q_FUNC_INFO
+				<< "would resume broken transfer starting from position"
+				<< pos
+				<< "of"
+				<< File_.size ()
+				<< "; current pos:"
+				<< File_.pos ();
+
+		if (!File_.seek (pos))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to seek to"
+					<< pos
+					<< "of"
+					<< File_.size ()
+					<< "; error:"
+					<< File_.errorString ();
+			return;
+		}
+
+		const auto finishSheduler = [this]
+		{
+			return Thread_->ScheduleFunction ([this] (Tox *tox)
+					{
+						return tox_file_send_control (tox, FriendNum_, 0, FileNum_, TOX_FILECONTROL_ACCEPT, nullptr, 0);
+					});
+		};
+		Util::ExecuteFuture (finishSheduler,
+				[this] (int sendRes)
+				{
+					if (!sendRes)
+					{
+						emit stateChanged (TSFinished);
+						TransferChunk ();
+						return;
+					}
+
+					qWarning () << Q_FUNC_INFO
+							<< "error finalizing the file transfer";
+					emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
+					emit stateChanged (TSFinished);
+				},
+				this);
+	}
+
+	void FileTransferOut::TransferChunk ()
+	{
+		if (!TransferAllowed_)
+			return;
+
+		if (!File_.atEnd ())
+		{
+			const auto sendScheduler = [this]
+			{
+				return Thread_->ScheduleFunction ([this] (Tox *tox)
+						{
+							const int chunkSize = tox_file_data_size (tox, FriendNum_);
+							const auto& data = File_.read (chunkSize);
+							return tox_file_send_data (tox, FriendNum_, FileNum_,
+									reinterpret_cast<const uint8_t*> (data.constData ()), data.size ());
+						});
+			};
+			Util::ExecuteFuture (sendScheduler,
+					[this] (int sendRes)
+					{
+						if (!sendRes)
+						{
+							emit transferProgress (File_.pos (), File_.size ());
+							TransferChunk ();
+							return;
+						}
+
+						qWarning () << Q_FUNC_INFO
+								<< "error sending the file"
+								<< sendRes;
+						emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
+						emit stateChanged (TSFinished);
+					},
+					this);
+		}
+		else
+		{
+			const auto finishSheduler = [this]
+			{
+				return Thread_->ScheduleFunction ([this] (Tox *tox)
+						{
+							return tox_file_send_control (tox, FriendNum_, 0, FileNum_, TOX_FILECONTROL_FINISHED, nullptr, 0);
+						});
+			};
+			Util::ExecuteFuture (finishSheduler,
+					[this] (int sendRes)
+					{
+						if (!sendRes)
+						{
+							emit stateChanged (TSFinished);
+							return;
+						}
+
+						qWarning () << Q_FUNC_INFO
+								<< "error finalizing the file transfer";
+						emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
+						emit stateChanged (TSFinished);
+					},
+					this);
+		}
+	}
+
 	void FileTransferOut::handleFileControl (qint32 friendNum,
 			qint8 fileNum, qint8 type, const QByteArray& data)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
+
+		switch (State_)
+		{
+		case State::Waiting:
+			switch (type)
+			{
+			case TOX_FILECONTROL_ACCEPT:
+				HandleAccept ();
+				break;
+			case TOX_FILECONTROL_KILL:
+				HandleKill ();
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected control type in Waiting state:"
+						<< type;
+				break;
+			}
+			break;
+		case State::Transferring:
+			switch (type)
+			{
+			case TOX_FILECONTROL_KILL:
+				HandleKill ();
+				break;
+			case TOX_FILECONTROL_PAUSE:
+				HandlePause ();
+				break;
+			case TOX_FILECONTROL_RESUME_BROKEN:
+				HandleResumeBroken (data);
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected control type in Transferring state:"
+						<< type;
+				break;
+			}
+			break;
+		case State::Paused:
+			switch (type)
+			{
+			case TOX_FILECONTROL_ACCEPT:
+				HandleResume ();
+				break;
+			case TOX_FILECONTROL_KILL:
+				HandleKill ();
+				break;
+			default:
+				qWarning () << Q_FUNC_INFO
+						<< "unexpected control type in Killed state:"
+						<< type;
+				break;
+			}
+			break;
+		}
 	}
 }
 }
