@@ -156,6 +156,15 @@ namespace LeechCraft
 			if (url.scheme ().isEmpty ())
 				return false;
 
+			if (e.Parameters_ & FromCommandLine)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "refusing to pass again "
+						<< url
+						<< "to the environment as it was added from there";
+				return false;
+			}
+
 			if (e.Parameters_ & IsDownloaded)
 			{
 				qDebug () << Q_FUNC_INFO
