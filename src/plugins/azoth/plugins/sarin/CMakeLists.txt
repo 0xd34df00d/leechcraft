@@ -53,6 +53,7 @@ set (SARIN_SRCS
 	filetransfermanager.cpp
 	filetransferbase.cpp
 	filetransferin.cpp
+	filetransferout.cpp
 	)
 set (SARIN_FORMS
 	accregisterdetailspage.ui
