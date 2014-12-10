@@ -33,7 +33,9 @@
 #include "toxaccount.h"
 #include "toxthread.h"
 #include "filetransferin.h"
+#include "filetransferout.h"
 #include "toxcontact.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -45,6 +47,10 @@ namespace Sarin
 	: QObject { acc }
 	, Acc_ { acc }
 	{
+		connect (this,
+				SIGNAL (requested (int32_t, QByteArray, uint8_t, uint64_t, QString)),
+				this,
+				SLOT (handleRequest (int32_t, QByteArray, uint8_t, uint64_t, QString)));
 	}
 
 	bool FileTransferManager::IsAvailable () const
@@ -97,6 +103,57 @@ namespace Sarin
 							gotFileControl (friendNum, filenum, type, data);
 				},
 				this);
+		tox_callback_file_send_request (tox,
+				[] (Tox *tox, int32_t friendNum,
+						uint8_t filenum, uint64_t filesize,
+						const uint8_t *rawFilename, uint16_t filenameLength,
+						void *udata)
+				{
+					const auto filenameStr = reinterpret_cast<const char*> (rawFilename);
+					const auto& name = QString::fromUtf8 (filenameStr, filenameLength);
+					static_cast<FileTransferManager*> (udata)->requested (friendNum,
+							GetFriendId (tox, friendNum), filenum, filesize, name);
+				},
+				this);
+	}
+
+	void FileTransferManager::handleRequest (int32_t friendNum,
+			const QByteArray& pkey, uint8_t filenum, uint64_t size, const QString& name)
+	{
+		const auto toxThread = ToxThread_.lock ();
+		if (!toxThread)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "Tox thread is not available";
+			return;
+		}
+
+		const auto entry = Acc_->GetByPubkey (pkey);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to find entry for pubkey"
+					<< pkey;
+			return;
+		}
+
+		const auto transfer = new FileTransferOut
+		{
+			entry->GetEntryID (),
+			pkey,
+			friendNum,
+			filenum,
+			static_cast<qint64> (size),
+			name,
+			toxThread
+		};
+
+		connect (this,
+				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
+				transfer,
+				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+
+		emit fileOffered (transfer);
 	}
 }
 }

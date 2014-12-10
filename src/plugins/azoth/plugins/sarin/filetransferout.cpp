@@ -73,6 +73,13 @@ namespace Sarin
 	void FileTransferOut::Abort ()
 	{
 	}
+
+	void FileTransferOut::handleFileControl (qint32 friendNum,
+			qint8 fileNum, qint8 type, const QByteArray& data)
+	{
+		if (friendNum != FriendNum_ || fileNum != FileNum_)
+			return;
+	}
 }
 }
 }
