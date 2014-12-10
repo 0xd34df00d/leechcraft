@@ -52,9 +52,8 @@ namespace LeechCraft
 
 	namespace
 	{
-		template<typename T>
-		QObjectList GetSubtype (const Entity& e, bool fullScan,
-				std::function<EntityTestHandleResult (Entity, T)> queryFunc)
+		template<typename T, typename F>
+		QObjectList GetSubtype (const Entity& e, bool fullScan, const F& queryFunc)
 		{
 			auto pm = Core::Instance ().GetPluginManager ();
 			QMap<int, QObjectList> result;
