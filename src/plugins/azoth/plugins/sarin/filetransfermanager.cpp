@@ -115,6 +115,16 @@ namespace Sarin
 							GetFriendId (tox, friendNum), filenum, filesize, name);
 				},
 				this);
+		tox_callback_file_data (tox,
+				[] (Tox*,
+						int32_t friendNum, uint8_t fileNum,
+						const uint8_t *rawData, const uint16_t rawSize,
+						void *udata)
+				{
+					const QByteArray data { reinterpret_cast<const char*> (rawData), rawSize };
+					static_cast<FileTransferManager*> (udata)->gotData (friendNum, fileNum, data);
+				},
+				this);
 	}
 
 	void FileTransferManager::handleRequest (int32_t friendNum,
@@ -152,6 +162,10 @@ namespace Sarin
 				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
 				transfer,
 				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+		connect (this,
+				SIGNAL (gotData (qint32, qint8, QByteArray)),
+				transfer,
+				SLOT (handleData (qint32, qint8, QByteArray)));
 
 		emit fileOffered (transfer);
 	}
