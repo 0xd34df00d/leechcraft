@@ -156,6 +156,15 @@ namespace LeechCraft
 			if (url.scheme ().isEmpty ())
 				return false;
 
+			if (e.Parameters_ & IsDownloaded)
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "avoiding opening"
+						<< url
+						<< "by external apps as it is just downloaded from teh internets";
+				return false;
+			}
+
 			QDesktopServices::openUrl (url);
 			return true;
 		}
