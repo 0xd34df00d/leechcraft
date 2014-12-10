@@ -46,6 +46,7 @@
 #include "accountconfigdialog.h"
 #include "util.h"
 #include "audiocall.h"
+#include "filetransfermanager.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,7 @@ namespace Sarin
 	, Name_ { name }
 	, ActionGetToxId_ { new QAction { tr ("Get Tox ID"), this } }
 	, MsgsMgr_ { new MessagesManager { this } }
+	, XferMgr_ { new FileTransferManager { this } }
 	{
 		connect (ActionGetToxId_,
 				SIGNAL (triggered ()),
@@ -70,6 +72,11 @@ namespace Sarin
 				SIGNAL (gotMessage (QByteArray, QString)),
 				this,
 				SLOT (handleInMessage (QByteArray, QString)));
+
+		connect (this,
+				SIGNAL (threadChanged (std::shared_ptr<ToxThread>)),
+				XferMgr_,
+				SLOT (handleToxThreadChanged (std::shared_ptr<ToxThread>)));
 	}
 
 	ToxAccount::ToxAccount (const QString& name, ToxProtocol *parent)
@@ -381,7 +388,7 @@ namespace Sarin
 
 	QObject* ToxAccount::GetTransferManager () const
 	{
-		return nullptr;
+		return XferMgr_;
 	}
 
 	void ToxAccount::SendMessage (const QByteArray& pkey, ChatMessage *message)
@@ -449,6 +456,10 @@ namespace Sarin
 				SIGNAL (toxCreated (Tox*)),
 				this,
 				SLOT (handleThreadReady ()));
+		connect (Thread_.get (),
+				SIGNAL (toxCreated (Tox*)),
+				XferMgr_,
+				SLOT (handleToxCreated (Tox*)));
 
 		emit threadChanged (Thread_);
 

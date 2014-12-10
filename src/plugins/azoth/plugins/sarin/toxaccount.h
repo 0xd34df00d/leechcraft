@@ -47,6 +47,7 @@ namespace Sarin
 	class ChatMessage;
 	class MessagesManager;
 	class AccountConfigDialog;
+	class FileTransferManager;
 
 	class ToxAccount : public QObject
 					 , public IAccount
@@ -70,6 +71,7 @@ namespace Sarin
 		std::shared_ptr<ToxThread> Thread_;
 
 		MessagesManager * const MsgsMgr_;
+		FileTransferManager * const XferMgr_;
 
 		QHash<QByteArray, ToxContact*> Contacts_;
 
