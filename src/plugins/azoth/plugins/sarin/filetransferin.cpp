@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "filetransfer.h"
+#include "filetransferin.h"
 #include <tox/tox.h>
 #include <util/sll/futures.h>
 #include <util/sll/delayedexecutor.h>
@@ -40,7 +40,7 @@ namespace Azoth
 {
 namespace Sarin
 {
-	FileTransfer::FileTransfer (const QString& azothId,
+	FileTransferIn::FileTransferIn (const QString& azothId,
 			const QByteArray& pubkey,
 			const QString& filename,
 			const std::shared_ptr<ToxThread>& thread,
@@ -102,40 +102,40 @@ namespace Sarin
 		};
 	}
 
-	QString FileTransfer::GetSourceID () const
+	QString FileTransferIn::GetSourceID () const
 	{
 		return AzothId_;
 	}
 
-	QString FileTransfer::GetName () const
+	QString FileTransferIn::GetName () const
 	{
 		return FilePath_;
 	}
 
-	qint64 FileTransfer::GetSize () const
+	qint64 FileTransferIn::GetSize () const
 	{
 		return Filesize_;
 	}
 
-	QString FileTransfer::GetComment () const
+	QString FileTransferIn::GetComment () const
 	{
 		return {};
 	}
 
-	TransferDirection FileTransfer::GetDirection () const
+	TransferDirection FileTransferIn::GetDirection () const
 	{
 		return TransferDirection::TDOut;
 	}
 
-	void FileTransfer::Accept (const QString&)
+	void FileTransferIn::Accept (const QString&)
 	{
 	}
 
-	void FileTransfer::Abort ()
+	void FileTransferIn::Abort ()
 	{
 	}
 
-	void FileTransfer::HandleAccept ()
+	void FileTransferIn::HandleAccept ()
 	{
 		State_ = State::Transferring;
 		TransferChunk ();
@@ -143,7 +143,7 @@ namespace Sarin
 		emit stateChanged (TSTransfer);
 	}
 
-	void FileTransfer::HandleKill ()
+	void FileTransferIn::HandleKill ()
 	{
 		TransferAllowed_ = false;
 		emit errorAppeared (TEAborted, tr ("Remote party aborted file transfer."));
@@ -151,20 +151,20 @@ namespace Sarin
 		State_ = State::Idle;
 	}
 
-	void FileTransfer::HandlePause ()
+	void FileTransferIn::HandlePause ()
 	{
 		TransferAllowed_ = false;
 		State_ = State::Paused;
 	}
 
-	void FileTransfer::HandleResume ()
+	void FileTransferIn::HandleResume ()
 	{
 		TransferAllowed_ = true;
 		State_ = State::Transferring;
 		TransferChunk ();
 	}
 
-	void FileTransfer::HandleResumeBroken (const QByteArray& data)
+	void FileTransferIn::HandleResumeBroken (const QByteArray& data)
 	{
 		if (data.size () < 8)
 		{
@@ -220,7 +220,7 @@ namespace Sarin
 				this);
 	}
 
-	void FileTransfer::TransferChunk ()
+	void FileTransferIn::TransferChunk ()
 	{
 		if (!TransferAllowed_)
 			return;
@@ -282,7 +282,7 @@ namespace Sarin
 		}
 	}
 
-	void FileTransfer::handleFileControl (qint32 friendNum,
+	void FileTransferIn::handleFileControl (qint32 friendNum,
 			qint8 fileNum, qint8 type, const QByteArray& data)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)

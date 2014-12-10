@@ -32,7 +32,7 @@
 #include <tox/tox.h>
 #include "toxaccount.h"
 #include "toxthread.h"
-#include "filetransfer.h"
+#include "filetransferin.h"
 #include "toxcontact.h"
 
 namespace LeechCraft
@@ -72,7 +72,7 @@ namespace Sarin
 			return nullptr;
 		}
 
-		const auto transfer = new FileTransfer { id, contact->GetPubKey (), name, toxThread };
+		const auto transfer = new FileTransferIn { id, contact->GetPubKey (), name, toxThread };
 		connect (this,
 				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
 				transfer,

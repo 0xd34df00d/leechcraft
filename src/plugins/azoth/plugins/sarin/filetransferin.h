@@ -42,8 +42,8 @@ namespace Sarin
 {
 	class ToxThread;
 
-	class FileTransfer : public QObject
-					   , public ITransferJob
+	class FileTransferIn : public QObject
+						 , public ITransferJob
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ITransferJob)
@@ -69,7 +69,7 @@ namespace Sarin
 
 		bool TransferAllowed_ = true;
 	public:
-		FileTransfer (const QString& azothId,
+		FileTransferIn (const QString& azothId,
 				const QByteArray& pubkey,
 				const QString& filename,
 				const std::shared_ptr<ToxThread>& thread,
