@@ -85,8 +85,6 @@ namespace Sarin
 			return;
 		}
 
-		qDebug () << Q_FUNC_INFO
-				<< "gonna accept";
 		Thread_->ScheduleFunction ([this] (Tox *tox)
 				{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_ACCEPT, nullptr, 0); });
 	}
@@ -99,7 +97,6 @@ namespace Sarin
 
 	void FileTransferIn::handleData (qint32 friendNum, qint8 fileNum, const QByteArray& data)
 	{
-		qDebug () << Q_FUNC_INFO << "got data" << data.size ();
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
 
