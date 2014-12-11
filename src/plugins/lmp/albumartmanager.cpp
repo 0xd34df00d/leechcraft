@@ -168,6 +168,10 @@ namespace LMP
 
 		if (failed)
 		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to create"
+					<< path;
+
 			const auto& e = Util::MakeNotification ("LMP",
 					tr ("Path %1 cannot be used as album art storage, default path will be used instead."),
 					PWarning_);
