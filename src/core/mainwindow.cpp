@@ -183,7 +183,7 @@ void LeechCraft::MainWindow::SetAdditionalTitle (const QString& title)
 	if (title.isEmpty ())
 		setWindowTitle ("LeechCraft");
 	else
-		setWindowTitle (QString ("%1 - LeechCraft").arg (title));
+		setWindowTitle (title + " - LeechCraft");
 }
 
 QMenu* LeechCraft::MainWindow::GetMainMenu () const
