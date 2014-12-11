@@ -180,7 +180,7 @@ namespace LMP
 					PWarning_);
 			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 
-			AADir_ = Util::CreateIfNotExists ("lmp/covers");
+			AADir_ = Util::GetUserDir (Util::UserDir::Cache, "lmp/covers");
 		}
 		else
 			AADir_ = QDir (path);
