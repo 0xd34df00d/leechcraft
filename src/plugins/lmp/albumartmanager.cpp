@@ -48,7 +48,6 @@ namespace LMP
 {
 	AlbumArtManager::AlbumArtManager (QObject *parent)
 	: QObject (parent)
-	, AADir_ (Util::CreateIfNotExists ("lmp/covers"))
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CoversStoragePath",
 				this, "handleCoversPath");
