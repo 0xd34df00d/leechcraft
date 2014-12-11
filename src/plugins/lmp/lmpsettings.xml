@@ -32,7 +32,7 @@
 			<item type="checkbox" property="AutoContinuePlayback" default="false">
 				<label value="Continue playback automatically" />
 			</item>
-			<item type="path" property="CoversStoragePath" default="{LCDIR}/lmp/covers">
+			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers">
 				<label value="Album art storage path:" />
 			</item>
 			<item type="groupbox" checkable="true" property="EnableTagsRecoding" default="false">
