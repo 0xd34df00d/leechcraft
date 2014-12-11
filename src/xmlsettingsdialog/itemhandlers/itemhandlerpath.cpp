@@ -116,6 +116,7 @@ namespace LeechCraft
 				str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
 #endif
 				str2loc ["LCDIR"] = Util::GetUserDir (Util::UserDir::LC, {}).absolutePath ();
+				str2loc ["CACHEDIR"] = Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath ();
 				for (const auto& key : str2loc.keys ())
 					if (text.startsWith ("{" + key + "}"))
 					{
