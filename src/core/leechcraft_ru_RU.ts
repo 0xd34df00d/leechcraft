@@ -1514,46 +1514,6 @@ LeechCraft для Windows — довольно экспериментальна�
         <translation>Очистить cookies</translation>
     </message>
     <message>
-        <source>Application-wide proxy</source>
-        <translation>Прокси приложения</translation>
-    </message>
-    <message>
-        <source>Host:</source>
-        <translation>Хост:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation>Порт:</translation>
-    </message>
-    <message>
-        <source>Login:</source>
-        <translation>Логин:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <source>Proxy type:</source>
-        <translation>Тип прокси:</translation>
-    </message>
-    <message>
-        <source>SOCKS5</source>
-        <translation>SOCKS5</translation>
-    </message>
-    <message>
-        <source>Transparent HTTP</source>
-        <translation>Прозрачный HTTP</translation>
-    </message>
-    <message>
-        <source>Caching HTTP</source>
-        <translation>Кэширующий HTTP</translation>
-    </message>
-    <message>
-        <source>Caching FTP</source>
-        <translation>Кэширующий FTP</translation>
-    </message>
-    <message>
         <source>Plugins</source>
         <translation>Модули</translation>
     </message>

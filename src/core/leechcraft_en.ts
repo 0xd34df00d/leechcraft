@@ -454,32 +454,32 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="293"/>
+        <location filename="core.cpp" line="281"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>No plugins are able to download &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="393"/>
+        <location filename="core.cpp" line="353"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>Do you really want to clear the network cache?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="405"/>
+        <location filename="core.cpp" line="365"/>
         <source>Do you really want to clear cookies?</source>
         <translation>Do you really want to clear cookies?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="417"/>
+        <location filename="core.cpp" line="377"/>
         <source>This security measure is easily circumvented by modifying LeechCraft&apos;s settings files (or registry on Windows) in a text editor. For proper and robust protection consider using some third-party tools like &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Accept this dialog if you understand the above and this kind of security through obscurity is OK for you.</source>
         <translation>This security measure is easily circumvented by modifying LeechCraft&apos;s settings files (or registry on Windows) in a text editor. For proper and robust protection consider using some third-party tools like &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Accept this dialog if you understand the above and this kind of security through obscurity is OK for you.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="429"/>
+        <location filename="core.cpp" line="389"/>
         <source>Enter new startup password:</source>
         <translation>Enter new startup password:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="476"/>
+        <location filename="core.cpp" line="436"/>
         <source>Plugin load error</source>
         <translation>Plugin load error</translation>
     </message>
@@ -1926,7 +1926,7 @@ If you have read and really understood all these letters, click Cancel button in
         <translation> MB</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="56"/>
         <source>Filter tracking cookies</source>
         <translation>Filter tracking cookies</translation>
     </message>
@@ -1936,14 +1936,9 @@ If you have read and really understood all these letters, click Cancel button in
         <translation>Clear cache</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="61"/>
         <source>Clear cookies</source>
         <translation>Clear cookies</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="52"/>
-        <source>Application-wide proxy</source>
-        <translation>Application-wide proxy</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
@@ -1981,122 +1976,77 @@ If you have read and really understood all these letters, click Cancel button in
         <translation>Select based on tab class</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="53"/>
-        <source>Host:</source>
-        <translation>Host:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="54"/>
-        <source>Port:</source>
-        <translation>Port:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="55"/>
-        <source>Login:</source>
-        <translation>Login:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="56"/>
-        <source>Password:</source>
-        <translation>Password:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="57"/>
-        <source>Proxy type:</source>
-        <translation>Proxy type:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="58"/>
-        <source>SOCKS5</source>
-        <translation>SOCKS5</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="59"/>
-        <source>Transparent HTTP</source>
-        <translation>Transparent HTTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="60"/>
-        <source>Caching HTTP</source>
-        <translation>Caching HTTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="61"/>
-        <source>Caching FTP</source>
-        <translation>Caching FTP</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="62"/>
+        <location filename="dummy.cpp" line="52"/>
         <source>Privacy</source>
         <translation>Privacy</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="63"/>
+        <location filename="dummy.cpp" line="53"/>
         <source>Enable cookies</source>
         <translation>Enable cookies</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="64"/>
+        <location filename="dummy.cpp" line="54"/>
         <source>Delete cookies on application exit</source>
         <translation>Delete cookies on application exit</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="55"/>
         <source>Match domain exactly</source>
         <translation>Match domain exactly</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="57"/>
         <source>Cookie domains whitelist:</source>
         <translation>Cookie domains whitelist:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="58"/>
         <source>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</source>
         <translation>Cookies whose domain matches one of these will always be accepted. Whitelist rules override blacklist.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="69"/>
+        <location filename="dummy.cpp" line="59"/>
         <source>Cookie domains blacklist:</source>
         <translation>Cookie domains blacklist:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="60"/>
         <source>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</source>
         <translation>Cookies whose domain matches one of these will always be rejected. Whitelist rules override blacklist.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="62"/>
         <source>Set Do Not Track option</source>
         <translation>Set Do Not Track option</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
+        <location filename="dummy.cpp" line="63"/>
         <source>Do not track</source>
         <translation>Do not track</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Languages</source>
         <translation>Languages</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="75"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Plugins manager</source>
         <translation>Plugins manager</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="77"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Enable all plugins</source>
         <translation>Enable all plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="78"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Disable all plugins</source>
         <translation>Disable all plugins</translation>
     </message>
