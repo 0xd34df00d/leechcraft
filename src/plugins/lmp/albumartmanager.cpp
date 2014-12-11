@@ -51,7 +51,10 @@ namespace LMP
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CoversStoragePath",
 				this, "handleCoversPath");
-		handleCoversPath ();
+
+		QTimer::singleShot (0,
+				this,
+				SLOT (handleCoversPath ()));
 	}
 
 	void AlbumArtManager::CheckAlbumArt (const Collection::Artist& artist, Collection::Album_ptr album)
