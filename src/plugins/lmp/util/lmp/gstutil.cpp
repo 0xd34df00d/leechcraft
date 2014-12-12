@@ -242,7 +242,7 @@ namespace GstUtil
 #if GST_VERSION_MAJOR < 1
 		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
 #else
-		data->ID_ = gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_IDLE,
+		gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_IDLE,
 				ProbeHandler, data, nullptr);
 #endif
 	}
