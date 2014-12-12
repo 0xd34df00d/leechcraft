@@ -623,7 +623,6 @@ namespace Xoox
 			const auto& newEntry = GetParticipantEntry (newNick, false);
 			newEntry->SetAffiliation (entry->GetAffiliation ());
 			newEntry->SetRole (entry->GetRole ());
-			newEntry->SetPhotoHash (entry->GetPhotoHash ());
 			Account_->handleGotRosterItems ({ newEntry.get () });
 		}
 
@@ -681,8 +680,7 @@ namespace Xoox
 		entry->SetAffiliation (pres.mucItem ().affiliation ());
 		entry->SetRole (pres.mucItem ().role ());
 
-		entry->SetPhotoHash (pres.photoHash ());
-		entry->HandlePresence (pres, QString ());
+		entry->HandlePresence (pres, {});
 
 		if (!existed)
 			Account_->handleGotRosterItems ({ entry.get () });

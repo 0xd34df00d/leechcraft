@@ -169,25 +169,6 @@ namespace Xoox
 		}
 	}
 
-	QByteArray RoomParticipantEntry::GetPhotoHash () const
-	{
-		return VCardPhotoHash_;
-	}
-
-	void RoomParticipantEntry::SetPhotoHash (const QByteArray& hash)
-	{
-		VCardPhotoHash_ = hash;
-		if (hash.isEmpty ())
-			Avatar_ = QImage ();
-		else
-		{
-			Avatar_ = Core::Instance ().GetAvatarsStorage ()->GetAvatar (hash.toHex ());
-			if (Avatar_.isNull ())
-				VCardPhotoHash_.clear ();
-		}
-		emit avatarChanged (GetAvatar ());
-	}
-
 	QXmppMucItem::Affiliation RoomParticipantEntry::GetAffiliation () const
 	{
 		return Affiliation_;
