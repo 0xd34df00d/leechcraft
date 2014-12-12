@@ -48,6 +48,7 @@
 #include <util/gui/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "notificationaction.h"
 #include "xmlsettingsmanager.h"
 
@@ -456,9 +457,10 @@ namespace Kinotify
 		if (!url.isValid ())
 			return;
 
-		emit gotEntity (Util::MakeEntity (url,
-					QString (),
-					FromUserInitiated | OnlyHandle));
+		const auto& e = Util::MakeEntity (url,
+				{},
+				FromUserInitiated | OnlyHandle);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

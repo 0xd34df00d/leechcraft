@@ -208,10 +208,6 @@ namespace Kinotify
 				SIGNAL (checkNotificationQueue ()),
 				this,
 				SLOT (pushNotification ()));
-		connect (notificationWidget,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		notificationWidget->SetContent (header, text, QString ());
 

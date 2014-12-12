@@ -116,7 +116,6 @@ namespace Kinotify
 	signals:
 		void initiateCloseNotification ();
 		void checkNotificationQueue ();
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

@@ -81,8 +81,6 @@ namespace Kinotify
 		void pushNotification ();
 	private slots:
 		void handleWatchedDirsChanged ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
