@@ -363,9 +363,6 @@ namespace Azoth
 		BuildNotification (e, entry, "StatusChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
 
-		const auto& avatarPx = QPixmap::fromImage (entry->GetAvatar ());
-		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (avatarPx);
-
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
@@ -514,8 +511,6 @@ namespace Azoth
 
 		BuildNotification (e, entry, "TuneChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
@@ -563,8 +558,6 @@ namespace Azoth
 
 		BuildNotification (e, entry, "ActivityChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
@@ -603,8 +596,6 @@ namespace Azoth
 
 		BuildNotification (e, entry, "MoodChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
@@ -692,8 +683,6 @@ namespace Azoth
 
 		BuildNotification (e, entry, "LocationChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventLocationChange;
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue (QPixmap::fromImage (entry->GetAvatar ()));
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = text;
