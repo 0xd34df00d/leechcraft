@@ -33,13 +33,18 @@
 #include <QTextCodec>
 #include <QDateTime>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "headermodel.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 
-using namespace LeechCraft::Plugins::NetworkMonitor;
-
-LeechCraft::Plugins::NetworkMonitor::RequestModel::RequestModel (QObject *parent)
+namespace LeechCraft
+{
+namespace Plugins
+{
+namespace NetworkMonitor
+{
+RequestModel::RequestModel (QObject *parent)
 : QStandardItemModel { parent }
 , RequestHeadersModel_ { new HeaderModel { this } }
 , ReplyHeadersModel_ { new HeaderModel { this } }
@@ -62,7 +67,7 @@ HeaderModel* RequestModel::GetReplyHeadersModel () const
 	return ReplyHeadersModel_;
 }
 
-void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkAccessManager::Operation op,
+void RequestModel::handleRequest (QNetworkAccessManager::Operation op,
 		const QNetworkRequest& req, QNetworkReply *rep)
 {
 	if (rep->isFinished ())
@@ -122,29 +127,26 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 namespace
 {
 	template<typename T>
-	QMap<QString, QVariant> GetHeaders (const T* object)
+	QMap<QString, QVariant> GetHeaders (const T *object)
 	{
 		QMap<QString, QVariant> result;
-		QList<QByteArray> headers = object->rawHeaderList ();
-		QTextCodec *codec = QTextCodec::codecForName ("UTF-8");
-		Q_FOREACH (QByteArray header, headers)
+		const auto codec = QTextCodec::codecForName ("UTF-8");
+		for (const auto& header : object->rawHeaderList ())
 			result [codec->toUnicode (header)] = codec->toUnicode (object->rawHeader (header));
 		return result;
 	}
 
 	template<typename T>
-	void FeedHeaders (T object, HeaderModel* model)
+	void FeedHeaders (const T& object, HeaderModel *model)
 	{
-		QMap<QString, QVariant> headers = GetHeaders (object);
-		Q_FOREACH (QString header, headers.keys ())
-			model->AddHeader (header, headers [header].toString ());
+		FeedHeaders (GetHeaders (object), model);
 	}
 
 	template<>
-	void FeedHeaders (QMap<QString, QVariant> headers, HeaderModel* model)
+	void FeedHeaders (const QMap<QString, QVariant>& headers, HeaderModel *model)
 	{
-		Q_FOREACH (QString header, headers.keys ())
-			model->AddHeader (header, headers [header].toString ());
+		for (const auto& pair : Util::Stlize (headers))
+			model->AddHeader (pair.first, pair.second.toString ());
 	}
 }
 
@@ -237,4 +239,7 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 			break;
 		}
 	}
+}
+}
+}
 }
