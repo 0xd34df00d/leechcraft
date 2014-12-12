@@ -115,9 +115,23 @@ namespace Kinotify
 				const QVariant& notifVar, Priority prio, const ICoreProxy_ptr& proxy)
 		{
 			if (notifVar.canConvert<QPixmap> ())
-				notificationWidget->OverrideImage (notifVar.value<QPixmap> ());
+			{
+				const auto& pixmap = notifVar.value<QPixmap> ();
+				if (!pixmap.isNull ())
+				{
+					notificationWidget->OverrideImage (pixmap);
+					return;
+				}
+			}
 			else if (notifVar.canConvert<QImage> ())
-				notificationWidget->OverrideImage (notifVar.value<QImage> ());
+			{
+				const auto& image = notifVar.value<QImage> ();
+				if (!image.isNull ())
+				{
+					notificationWidget->OverrideImage (image);
+					return;
+				}
+			}
 
 			QString mi = "dialog-information";
 			switch (prio)
