@@ -107,6 +107,20 @@ namespace Sysnotify
 				SLOT (handleCapCheckCallFinished (QDBusPendingCallWatcher*)));
 	}
 
+	namespace
+	{
+		QImage ToImage (const QVariant& imageVar)
+		{
+			if (imageVar.canConvert<QPixmap> ())
+				return imageVar.value<QPixmap> ()
+						.toImage ().convertToFormat (QImage::Format_ARGB32);
+			else if (imageVar.canConvert<QImage> ())
+				return imageVar.value<QImage> ().convertToFormat (QImage::Format_ARGB32);
+
+			return {};
+		}
+	}
+
 	void NotificationManager::DoNotify (const Entity& e, bool hasActions)
 	{
 		const auto& prio = static_cast<Priority> (e.Additional_ ["Priority"].toInt ());
@@ -132,8 +146,7 @@ namespace Sysnotify
 			timeout = 5000;
 
 		QVariantMap hints;
-		const auto& image = e.Additional_ ["NotificationPixmap"].value<QPixmap> ()
-				.toImage ().convertToFormat (QImage::Format_ARGB32);
+		const auto& image = ToImage (e.Additional_ ["NotificationPixmap"]);
 		if (!image.isNull ())
 		{
 			const auto& imageVar = QVariant::fromValue<ImageHint> (image);
