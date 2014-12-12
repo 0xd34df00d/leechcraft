@@ -244,8 +244,7 @@ namespace Azoth
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
 					AN::TypeIMMUCHighlight :
 					AN::TypeIMMUCMsg;
-			e.Additional_ ["NotificationPixmap"] =
-					QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
+			e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (other->GetAvatar ());
 
 			if (isHighlightMsg)
 				e.Additional_ ["org.LC.AdvNotifications.FullText"] =

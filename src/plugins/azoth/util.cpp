@@ -52,8 +52,7 @@ namespace Azoth
 {
 	void BuildNotification (Entity& e, ICLEntry *other, const QString& id)
 	{
-		e.Additional_ ["NotificationPixmap"] =
-				QVariant::fromValue<QPixmap> (QPixmap::fromImage (other->GetAvatar ()));
+		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (other->GetAvatar ());
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =

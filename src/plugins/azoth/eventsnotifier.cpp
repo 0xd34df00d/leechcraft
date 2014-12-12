@@ -84,8 +84,7 @@ namespace Azoth
 					tr ("%1 started composing a message to you.")
 						.arg (entry->GetEntryName ()),
 					PInfo_);
-			e.Additional_ ["NotificationPixmap"] =
-						QVariant::fromValue<QPixmap> (QPixmap::fromImage (entry->GetAvatar ()));
+			e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (entry->GetAvatar ());
 			Util::NotificationActionHandler *nh =
 					new Util::NotificationActionHandler (e, this);
 			nh->AddFunction (tr ("Open chat"),
