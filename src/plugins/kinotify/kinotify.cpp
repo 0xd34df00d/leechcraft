@@ -186,8 +186,13 @@ namespace Kinotify
 		const QPixmap& px = icon.pixmap (QSize (128, 128));
 		notificationWidget->SetContent (header, text, QString ());
 
-		const QPixmap& notif = e.Additional_ ["NotificationPixmap"].value<QPixmap> ();
-		notificationWidget->OverrideImage (notif.isNull () ? px : notif);
+		const auto& notifVar = e.Additional_ ["NotificationPixmap"];
+		if (notifVar.canConvert<QPixmap> ())
+			notificationWidget->OverrideImage (notifVar.value<QPixmap> ());
+		else if (notifVar.canConvert<QImage> ())
+			notificationWidget->OverrideImage (notifVar.value<QImage> ());
+		else
+			notificationWidget->OverrideImage (px);
 
 		if (!ActiveNotifications_.size ())
 			notificationWidget->PrepareNotification ();

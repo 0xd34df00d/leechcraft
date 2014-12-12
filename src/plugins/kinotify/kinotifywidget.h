@@ -31,6 +31,7 @@
 #pragma once
 
 #include "kinotify.h"
+#include <boost/variant.hpp>
 #include <QWebView>
 #include <QStateMachine>
 #include "interfaces/structures.h"
@@ -45,6 +46,8 @@ namespace Util
 namespace Kinotify
 {
 	class NotificationAction;
+
+	using ImageVar_t = boost::variant<boost::blank, QPixmap, QImage>;
 
 	class KinotifyWidget : public QWebView
 	{
@@ -69,7 +72,7 @@ namespace Kinotify
 		QStringList ActionsNames_;
 		NotificationAction *Action_;
 		std::shared_ptr<Util::ResourceLoader> ThemeLoader_;
-		QPixmap OverridePixmap_;
+		ImageVar_t OverridePixmap_;
 		QObject_ptr HandlerGuard_;
 
 		static QMap<QString, QString> ThemeCache_;
@@ -91,7 +94,7 @@ namespace Kinotify
 
 		void SetContent (const QString&, const QString&,
 				const QString&, const QSize& size = QSize (350, 70));
-		void OverrideImage (const QPixmap&);
+		void OverrideImage (const ImageVar_t&);
 		void PrepareNotification ();
 		void SetActions (const QStringList&, QObject_ptr);
 	protected:
@@ -99,7 +102,6 @@ namespace Kinotify
 		virtual void showEvent (QShowEvent*);
 	private:
 		const QByteArray MakeImage (const QString& imgPath = QString ());
-		const QByteArray MakeImage (const QPixmap&);
 		void CreateWidget ();
 		void LoadTheme (const QString&);
 		void SetData ();

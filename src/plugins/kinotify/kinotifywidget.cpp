@@ -182,23 +182,33 @@ namespace Kinotify
 
 	const QByteArray KinotifyWidget::MakeImage (const QString& imgPath)
 	{
-		QPixmap pixmap;
-		if (imgPath.isNull ())
-			pixmap.load (ImagePath_);
-		else
-			pixmap.load (imgPath);
+		QFile file { imgPath };
+		if (!file.open (QIODevice::ReadOnly))
+			return {};
 
-		return MakeImage (pixmap);
+		return QByteArray ("data:image/png;base64,") + file.readAll ().toBase64 ();
 	}
 
-	const QByteArray KinotifyWidget::MakeImage (const QPixmap& pixmap)
+	namespace
 	{
-		QBuffer iconBuffer;
-		iconBuffer.open (QIODevice::ReadWrite);
-		pixmap.save (&iconBuffer, "PNG");
+		struct ImageSaver : boost::static_visitor<QByteArray>
+		{
+			QByteArray operator() (boost::blank) const
+			{
+				return {};
+			}
 
-		return QByteArray ("data:image/png;base64,") +
-				iconBuffer.buffer ().toBase64 ();
+			template<typename T>
+			QByteArray operator() (const T& pixmap) const
+			{
+				QBuffer iconBuffer;
+				iconBuffer.open (QIODevice::ReadWrite);
+				pixmap.save (&iconBuffer, "PNG");
+
+				return QByteArray ("data:image/png;base64,") +
+						iconBuffer.buffer ().toBase64 ();
+			}
+		};
 	}
 
 	void KinotifyWidget::mousePressEvent (QMouseEvent *event)
@@ -237,7 +247,7 @@ namespace Kinotify
 		SetWidgetPlace ();
 	}
 
-	void KinotifyWidget::OverrideImage (const QPixmap& px)
+	void KinotifyWidget::OverrideImage (const ImageVar_t& px)
 	{
 		OverridePixmap_ = px;
 	}
@@ -349,10 +359,13 @@ namespace Kinotify
 		QString data = Theme_;
 		data.replace ("{title}", Title_);
 		data.replace ("{body}", Body_);
-		if (OverridePixmap_.isNull ())
+
+		const auto& overrideData = boost::apply_visitor (ImageSaver {}, OverridePixmap_);
+		if (overrideData.isNull ())
 			data.replace ("{imagepath}", MakeImage (ImagePath_));
 		else
-			data.replace ("{imagepath}", MakeImage (OverridePixmap_));
+			data.replace ("{imagepath}", overrideData);
+
 		setHtml (data);
 
 		if (!ActionsNames_.isEmpty ())
