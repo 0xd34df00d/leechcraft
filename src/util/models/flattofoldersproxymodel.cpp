@@ -77,7 +77,7 @@ namespace LeechCraft
 		: QAbstractItemModel (parent)
 		, SourceModel_ (0)
 		, TM_ (0)
-		, Root_ (new FlatTreeItem)
+		, Root_ (std::make_shared<FlatTreeItem> ())
 		{
 			Root_->Type_ = FlatTreeItem::TRoot;
 		}
@@ -376,7 +376,7 @@ namespace LeechCraft
 				if (item->Tag_ == tag)
 					return item;
 
-			FlatTreeItem_ptr item (new FlatTreeItem);
+			const auto& item = std::make_shared<FlatTreeItem> ();
 			item->Type_ = FlatTreeItem::TFolder;
 			item->Tag_ = tag;
 			item->Parent_ = Root_;
@@ -425,7 +425,7 @@ namespace LeechCraft
 		{
 			FlatTreeItem_ptr folder = GetFolder (tag);
 
-			FlatTreeItem_ptr item (new FlatTreeItem);
+			const auto& item = std::make_shared<FlatTreeItem> ();
 			item->Type_ = FlatTreeItem::TItem;
 			item->Index_ = pidx;
 			item->Parent_ = folder;
