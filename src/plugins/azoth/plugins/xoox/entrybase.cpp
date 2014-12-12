@@ -116,7 +116,7 @@ namespace Xoox
 
 				const auto id = GetEntryID ().toUtf8 ().toHex ();
 				auto newAvatar = Core::Instance ().GetAvatarsStorage ()->GetAvatar (id);
-				if (newAvatar == Avatar_)
+				if (newAvatar.isNull ())
 					return;
 
 				Avatar_ = std::move (newAvatar);
