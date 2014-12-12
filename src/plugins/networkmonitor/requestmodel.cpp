@@ -30,13 +30,15 @@
 #include "requestmodel.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QPointer>
 #include <QTextCodec>
 #include <QDateTime>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include "headermodel.h"
 
-Q_DECLARE_METATYPE (QNetworkReply*);
+using GuardedReply_t = QPointer<QNetworkReply>;
+Q_DECLARE_METATYPE (GuardedReply_t)
 
 namespace LeechCraft
 {
@@ -107,7 +109,7 @@ void RequestModel::handleRequest (QNetworkAccessManager::Operation op,
 	items.push_back (new QStandardItem (tr ("In progress")));
 	items.push_back (new QStandardItem (opName));
 	items.push_back (new QStandardItem (req.url ().toString ()));
-	items.first ()->setData (QVariant::fromValue (rep));
+	items.first ()->setData (QVariant::fromValue<GuardedReply_t> (rep));
 	appendRow (items);
 
 	connect (rep,
@@ -152,7 +154,7 @@ namespace
 
 void RequestModel::handleFinished ()
 {
-	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+	const auto reply = qobject_cast<QNetworkReply*> (sender ());
 	if (!reply)
 	{
 		qWarning () << Q_FUNC_INFO
@@ -163,7 +165,7 @@ void RequestModel::handleFinished ()
 
 	for (int i = 0; i < rowCount (); ++i)
 	{
-		if (item (i)->data ().value<QNetworkReply*> () != reply)
+		if (item (i)->data ().value<GuardedReply_t> () != reply)
 			continue;
 
 		if (Clear_)
@@ -194,9 +196,9 @@ void RequestModel::setClear (bool clear)
 	if (Clear_)
 	{
 		for (int i = rowCount () - 1; i >= 0; --i)
-			if (!item (i)->data ().value<QObject*> ())
+			if (!item (i)->data ().value<GuardedReply_t> ())
 				removeRow (i);
-		handleCurrentChanged (QModelIndex ());
+		handleCurrentChanged ({});
 	}
 }
 
@@ -208,19 +210,18 @@ void RequestModel::handleCurrentChanged (const QModelIndex& newItem)
 	if (!newItem.isValid ())
 		return;
 
-	QNetworkReply *reply = item (itemFromIndex (newItem)->row (), 0)->
-		data ().value<QNetworkReply*> ();
+	const auto reply = item (newItem.row (), 0)->data ().value<GuardedReply_t> ();
 	if (reply)
 	{
-		QNetworkRequest r = reply->request ();
+		const auto& r = reply->request ();
 		FeedHeaders (&r, RequestHeadersModel_);
-		FeedHeaders (reply, ReplyHeadersModel_);
+		FeedHeaders (reply.data (), ReplyHeadersModel_);
 	}
 	else
 	{
-		FeedHeaders (item (itemFromIndex (newItem)->row (), 1)->
+		FeedHeaders (item (newItem.row (), 1)->
 				data ().toMap (), RequestHeadersModel_);
-		FeedHeaders (item (itemFromIndex (newItem)->row (), 2)->
+		FeedHeaders (item (newItem.row (), 2)->
 				data ().toMap (), ReplyHeadersModel_);
 	}
 }
@@ -230,7 +231,7 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 	for (int i = 0; i < rowCount (); ++i)
 	{
 		const auto ci = item (i);
-		if (ci->data ().value<QNetworkReply*> () == obj)
+		if (ci->data ().value<GuardedReply_t> () == obj)
 		{
 			if (Clear_)
 				removeRow (i);
