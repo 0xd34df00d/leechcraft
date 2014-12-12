@@ -111,6 +111,19 @@ namespace Kinotify
 
 	namespace
 	{
+		QString GetPriorityIconName (Priority prio)
+		{
+			switch (prio)
+			{
+			case PWarning_:
+				return "dialog-warning";
+			case PCritical_:
+				return "dialog-error";
+			default:
+				return "dialog-information";
+			}
+		}
+
 		void OverridePixmap (KinotifyWidget *notificationWidget,
 				const QVariant& notifVar, Priority prio, const ICoreProxy_ptr& proxy)
 		{
@@ -133,19 +146,7 @@ namespace Kinotify
 				}
 			}
 
-			QString mi = "dialog-information";
-			switch (prio)
-			{
-				case PWarning_:
-					mi = "dialog-warning";
-					break;
-				case PCritical_:
-					mi = "dialog-error";
-				default:
-					break;
-			}
-
-			const auto& icon = proxy->GetIconThemeManager ()->GetIcon (mi);
+			const auto& icon = proxy->GetIconThemeManager ()->GetIcon (GetPriorityIconName (prio));
 			const auto& px = icon.pixmap ({ 128, 128 });
 			notificationWidget->OverrideImage (px);
 		}
