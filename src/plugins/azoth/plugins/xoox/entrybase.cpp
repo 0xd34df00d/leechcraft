@@ -47,6 +47,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"
@@ -115,12 +116,25 @@ namespace Xoox
 					return;
 
 				const auto id = GetEntryID ().toUtf8 ().toHex ();
-				auto newAvatar = Core::Instance ().GetAvatarsStorage ()->GetAvatar (id);
-				if (newAvatar.isNull ())
-					return;
+				Util::ExecuteFuture ([id]
+						{
+							return QtConcurrent::run ([id]
+									{
+										return Core::Instance ().GetAvatarsStorage ()->GetAvatar (id);
+									});
+						},
+						[this, guard] (const QImage& newAvatar)
+						{
+							if (!guard)
+								return;
 
-				Avatar_ = std::move (newAvatar);
-				emit avatarChanged (Avatar_);
+							if (newAvatar.isNull ())
+								return;
+
+							Avatar_ = std::move (newAvatar);
+							emit avatarChanged (Avatar_);
+						},
+						this);
 			}
 		};
 	}
