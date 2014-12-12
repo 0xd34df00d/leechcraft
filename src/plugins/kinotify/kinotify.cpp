@@ -109,6 +109,34 @@ namespace Kinotify
 				EntityTestHandleResult ();
 	}
 
+	namespace
+	{
+		void OverridePixmap (KinotifyWidget *notificationWidget,
+				const QVariant& notifVar, Priority prio, const ICoreProxy_ptr& proxy)
+		{
+			if (notifVar.canConvert<QPixmap> ())
+				notificationWidget->OverrideImage (notifVar.value<QPixmap> ());
+			else if (notifVar.canConvert<QImage> ())
+				notificationWidget->OverrideImage (notifVar.value<QImage> ());
+
+			QString mi = "dialog-information";
+			switch (prio)
+			{
+				case PWarning_:
+					mi = "dialog-warning";
+					break;
+				case PCritical_:
+					mi = "dialog-error";
+				default:
+					break;
+			}
+
+			const auto& icon = proxy->GetIconThemeManager ()->GetIcon (mi);
+			const auto& px = icon.pixmap ({ 128, 128 });
+			notificationWidget->OverrideImage (px);
+		}
+	}
+
 	void Plugin::Handle (Entity e)
 	{
 		if (XmlSettingsManager::Instance ()->
@@ -170,29 +198,9 @@ namespace Kinotify
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-		QString mi = "dialog-information";
-		switch (prio)
-		{
-			case PWarning_:
-				mi = "dialog-warning";
-				break;
-			case PCritical_:
-				mi = "dialog-error";
-			default:
-				break;
-		}
-
-		const QIcon& icon = Proxy_->GetIconThemeManager ()->GetIcon (mi);
-		const QPixmap& px = icon.pixmap (QSize (128, 128));
 		notificationWidget->SetContent (header, text, QString ());
 
-		const auto& notifVar = e.Additional_ ["NotificationPixmap"];
-		if (notifVar.canConvert<QPixmap> ())
-			notificationWidget->OverrideImage (notifVar.value<QPixmap> ());
-		else if (notifVar.canConvert<QImage> ())
-			notificationWidget->OverrideImage (notifVar.value<QImage> ());
-		else
-			notificationWidget->OverrideImage (px);
+		OverridePixmap (notificationWidget, e.Additional_ ["NotificationPixmap"], prio, Proxy_);
 
 		if (!ActiveNotifications_.size ())
 			notificationWidget->PrepareNotification ();
