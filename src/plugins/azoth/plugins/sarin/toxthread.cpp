@@ -317,7 +317,7 @@ namespace Sarin
 			{
 				std::unique_ptr<uint8_t []> statusMsg { new uint8_t [statusMsgSize] };
 				tox_get_status_message (tox, id, statusMsg.get (), statusMsgSize);
-				statusStr = QString::fromUtf8 (reinterpret_cast<char*> (statusMsg.get ()));
+				statusStr = QString::fromUtf8 (reinterpret_cast<char*> (statusMsg.get ()), statusMsgSize);
 			}
 			return
 				{
