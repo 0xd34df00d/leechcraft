@@ -84,7 +84,9 @@ namespace CpuLoad
 
 		QString GetAccumulatedStr (const QMap<LoadPriority, LoadTypeInfo>& map)
 		{
-			return QString { "%1%" }.arg (static_cast<double> (std::round (GetAccumulated (map) * 100)));
+			const auto percents = static_cast<int> (std::round (GetAccumulated (map) * 100));
+			return QString { "%1%" }
+					.arg (percents);
 		}
 	}
 
