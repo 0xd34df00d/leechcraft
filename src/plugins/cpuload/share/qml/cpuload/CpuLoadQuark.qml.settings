@@ -9,5 +9,14 @@
 		<item type="checkbox" property="CpuLoad_showIOTime" default="true">
 			<label value="Show IO time in popup window" />
 		</item>
+		<item type="checkbox" property="CpuLoad_showLowTime" default="true">
+			<label value="Show low priority time in popup window" />
+		</item>
+		<item type="checkbox" property="CpuLoad_showMediumTime" default="true">
+			<label value="Show medium priority time in popup window" />
+		</item>
+		<item type="checkbox" property="CpuLoad_showHighTime" default="true">
+			<label value="Show high priority time in popup window" />
+		</item>
 	</page>
 </settings>

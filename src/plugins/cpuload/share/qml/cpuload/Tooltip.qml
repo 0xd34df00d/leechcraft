@@ -93,18 +93,18 @@ Rectangle {
                 multipoints: [
                         { color: "red", points: zipN(
                                 enableIf(loadObj.ioHist, showIOTime),
-                                loadObj.lowHist,
-                                loadObj.mediumHist,
-                                loadObj.highHist
+                                enableIf(loadObj.lowHist, showLowTime),
+                                enableIf(loadObj.mediumHist, showMediumTime),
+                                enableIf(loadObj.highHist, showHighTime)
                             ) },
                         { color: "blue", points: zipN(
                                 enableIf(loadObj.ioHist, showIOTime),
-                                loadObj.lowHist,
-                                loadObj.mediumHist
+                                enableIf(loadObj.lowHist, showLowTime),
+                                enableIf(loadObj.mediumHist, showMediumTime)
                             ) },
                         { color: "yellow", points: zipN(
                                 enableIf(loadObj.ioHist, showIOTime),
-                                loadObj.lowHist
+                                enableIf(loadObj.lowHist, showLowTime)
                             ) },
                         { color: "green", points: enableIf(loadObj.ioHist, showIOTime) }
                     ]
