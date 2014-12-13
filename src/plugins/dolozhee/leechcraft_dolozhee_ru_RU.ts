@@ -20,7 +20,7 @@
         <translation>Краткое описание:</translation>
     </message>
     <message>
-        <location filename="bugreportpage.ui" line="43"/>
+        <location filename="bugreportpage.ui" line="93"/>
         <source>Steps to reproduce:</source>
         <translation>Как воспроизвести:</translation>
     </message>
@@ -30,7 +30,7 @@
         <translation>Ожидаемый результат:</translation>
     </message>
     <message>
-        <location filename="bugreportpage.ui" line="63"/>
+        <location filename="bugreportpage.ui" line="73"/>
         <source>Actual result:</source>
         <translation>А на самом деле:</translation>
     </message>
@@ -152,7 +152,7 @@
 <context>
     <name>LeechCraft::Dolozhee::ChooseUserPage</name>
     <message>
-        <location filename="chooseuserpage.cpp" line="77"/>
+        <location filename="chooseuserpage.cpp" line="78"/>
         <source>Please enter password for user %1:</source>
         <translation>Пожалуйста, введите пароль для пользователя %1:</translation>
     </message>
@@ -183,35 +183,40 @@
 <context>
     <name>LeechCraft::Dolozhee::FinalPage</name>
     <message>
-        <location filename="finalpage.cpp" line="83"/>
+        <location filename="finalpage.cpp" line="86"/>
         <source>Sending %1...</source>
         <translation>Отправка %1...</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="167"/>
+        <location filename="finalpage.cpp" line="170"/>
         <source>I&apos;m very sorry to say that, but seems like we&apos;re unable to handle your report at the time :(</source>
         <translation>Очень жаль это говорить, но похоже, что мы в настоящее время не можем обработать ваше сообщение :(</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="175"/>
+        <location filename="finalpage.cpp" line="178"/>
         <source>Report has been sent successfully. Thanks for your time!</source>
         <translation>Сообщение успешно отправлено. Спасибо за ваше время!</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="179"/>
+        <location filename="finalpage.cpp" line="182"/>
         <source>Your issue number is %1. You can view it here:</source>
         <translation>Номер вашего тикета — %1. Вы можете посмотреть его здесь:</translation>
+    </message>
+    <message>
+        <location filename="finalpage.cpp" line="184"/>
+        <source>You can also track it via an Atom feed reader:</source>
+        <translation>Вы также можете отслеживать судьбу сообщения при помощи Atom-ленты:</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Dolozhee::Plugin</name>
     <message>
-        <location filename="dolozhee.cpp" line="48"/>
+        <location filename="dolozhee.cpp" line="49"/>
         <source>Report an issue...</source>
         <translation>Сообщить о проблеме...</translation>
     </message>
     <message>
-        <location filename="dolozhee.cpp" line="79"/>
+        <location filename="dolozhee.cpp" line="80"/>
         <source>Bug and feature request reporter.</source>
         <translation>Инструмент отправки сообщений об ошибках и запросов функций.</translation>
     </message>
@@ -242,7 +247,7 @@
         <translation>Подготовка сообщения о проблеме</translation>
     </message>
     <message>
-        <location filename="reportwizard.cpp" line="137"/>
+        <location filename="reportwizard.cpp" line="124"/>
         <source>Invalid credentials</source>
         <translation>Неправильные данные</translation>
     </message>
