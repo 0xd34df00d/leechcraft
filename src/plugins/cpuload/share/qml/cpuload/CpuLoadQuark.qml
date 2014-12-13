@@ -54,7 +54,8 @@ Rectangle {
                     "y": global.y,
                     "loadModel": CpuLoad_model,
                     "cpuProxy": CpuLoad_proxy,
-                    "colorProxy": colorProxy
+                    "colorProxy": colorProxy,
+                    "showIOTime": CpuLoad_showIOTime
                 };
                 tooltip = quarkProxy.openWindow(sourceURL, "Tooltip.qml", params);
                 closeOnExit = true;

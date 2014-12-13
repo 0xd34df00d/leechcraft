@@ -31,6 +31,10 @@ Rectangle {
         return first;
     }
 
+    function enableIf(array, flag) {
+        return cpuProxy.enableIf(array, flag);
+    }
+
     Timer {
         id: showTimer
         repeat: false
@@ -87,10 +91,22 @@ Rectangle {
                 height: loadView.cellHeight
 
                 multipoints: [
-                        { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
-                        { color: "blue", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist) },
-                        { color: "yellow", points: zipN(loadObj.ioHist, loadObj.lowHist) },
-                        { color: "green", points: loadObj.ioHist }
+                        { color: "red", points: zipN(
+                                enableIf(loadObj.ioHist, showIOTime),
+                                loadObj.lowHist,
+                                loadObj.mediumHist,
+                                loadObj.highHist
+                            ) },
+                        { color: "blue", points: zipN(
+                                enableIf(loadObj.ioHist, showIOTime),
+                                loadObj.lowHist,
+                                loadObj.mediumHist
+                            ) },
+                        { color: "yellow", points: zipN(
+                                enableIf(loadObj.ioHist, showIOTime),
+                                loadObj.lowHist
+                            ) },
+                        { color: "green", points: enableIf(loadObj.ioHist, showIOTime) }
                     ]
 
                 leftAxisEnabled: true
