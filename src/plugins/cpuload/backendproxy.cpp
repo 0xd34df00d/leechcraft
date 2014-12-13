@@ -46,6 +46,7 @@ namespace CpuLoad
 			enum Role
 			{
 				CpuIdxRole = Qt::UserRole + 1,
+				MomentalLoadStr,
 				CpuLoadObj
 			};
 
@@ -55,6 +56,7 @@ namespace CpuLoad
 				QHash<int, QByteArray> roleNames;
 				roleNames [CpuIdxRole] = "cpuIdx";
 				roleNames [CpuLoadObj] = "loadObj";
+				roleNames [MomentalLoadStr] = "momentalLoadStr";
 				setRoleNames (roleNames);
 			}
 		};
@@ -72,6 +74,20 @@ namespace CpuLoad
 		return Model_;
 	}
 
+	namespace
+	{
+		double GetAccumulated (const QMap<LoadPriority, LoadTypeInfo>& map)
+		{
+			return std::accumulate (map.begin (), map.end (), 0.0,
+					[] (double res, const LoadTypeInfo& info) { return info.LoadPercentage_ + res; });
+		}
+
+		QString GetAccumulatedStr (const QMap<LoadPriority, LoadTypeInfo>& map)
+		{
+			return QString { "%1%" }.arg (static_cast<double> (std::round (GetAccumulated (map) * 100)));
+		}
+	}
+
 	void BackendProxy::update ()
 	{
 		Backend_->Update ();
@@ -81,7 +97,13 @@ namespace CpuLoad
 		{
 			if (rc > 0)
 				for (int i = 0; i < rc; ++i)
-					ModelPropObjs_.at (i)->Set (Backend_->GetLoads (i));
+				{
+					const auto& loads = Backend_->GetLoads (i);
+					ModelPropObjs_.at (i)->Set (loads);
+
+					const auto item = Model_->item (i);
+					item->setData (GetAccumulatedStr (loads), CpusModel::MomentalLoadStr);
+				}
 
 			return;
 		}
@@ -97,12 +119,15 @@ namespace CpuLoad
 
 		for (int i = 0; i < Backend_->GetCpuCount (); ++i)
 		{
+			const auto& loads = Backend_->GetLoads (i);
+
 			auto obj = new CpuLoadProxyObj { Backend_->GetLoads (i) };
 			ModelPropObjs_ << obj;
 
 			auto modelItem = new QStandardItem;
 			modelItem->setData (i, CpusModel::CpuIdxRole);
 			modelItem->setData (QVariant::fromValue<QObject*> (obj), CpusModel::CpuLoadObj);
+			modelItem->setData (GetAccumulatedStr (loads), CpusModel::MomentalLoadStr);
 			newItems << modelItem;
 		}
 
