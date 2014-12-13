@@ -86,7 +86,7 @@ namespace CpuLoad
 		{
 			const auto percents = static_cast<int> (std::round (GetAccumulated (map) * 100));
 			return QString { "%1%" }
-					.arg (percents);
+					.arg (percents, 2);
 		}
 	}
 
