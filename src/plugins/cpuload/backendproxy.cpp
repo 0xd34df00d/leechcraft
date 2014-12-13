@@ -142,5 +142,14 @@ namespace CpuLoad
 			list [i].ry () += other [i].y ();
 		return list;
 	}
+
+	QList<QPointF> BackendProxy::enableIf (QList<QPointF> pts, bool flag)
+	{
+		if (!flag)
+			for (auto& p : pts)
+				p.ry () = 0;
+
+		return pts;
+	}
 }
 }
