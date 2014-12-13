@@ -442,8 +442,8 @@ namespace LeechCraft
 		void FlatToFoldersProxyModel::RemoveFromTag (const QString& tag,
 				const QPersistentModelIndex& pidx)
 		{
-			FlatTreeItem_ptr folder = GetFolder (tag);
-			QList<FlatTreeItem_ptr>& c = folder->C_;
+			const auto& folder = GetFolder (tag);
+			auto& c = folder->C_;
 			int findex = Root_->C_.indexOf (folder);
 			for (int i = 0, size = c.size ();
 					i < size; ++i)
