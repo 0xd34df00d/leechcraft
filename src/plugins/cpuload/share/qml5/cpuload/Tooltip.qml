@@ -95,7 +95,7 @@ Window {
                     leftAxisTitle: qsTr("Load, %")
                     yGridEnabled: true
 
-                    plotTitle: "CPU " + cpuIdx
+                    plotTitle: "CPU " + cpuIdx + "; " + momentalLoadStr
 
                     minYValue: 0
                     maxYValue: 100
