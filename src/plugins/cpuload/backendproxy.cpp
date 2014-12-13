@@ -79,8 +79,8 @@ namespace CpuLoad
 		const auto rc = Model_->rowCount ();
 		if (rc == Backend_->GetCpuCount ())
 		{
-			if (Backend_->GetCpuCount () > 0)
-				for (int i = 0; i < Backend_->GetCpuCount (); ++i)
+			if (rc > 0)
+				for (int i = 0; i < rc; ++i)
 					ModelPropObjs_.at (i)->Set (Backend_->GetLoads (i));
 
 			return;
