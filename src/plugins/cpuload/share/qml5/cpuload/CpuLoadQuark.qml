@@ -50,12 +50,6 @@ Rectangle {
             hoverInTimeout: commonHoverInTimeout
 
             onHoverInTimedOut: {
-                var params = {
-                    "loadModel": CpuLoad_model,
-                    "cpuProxy": CpuLoad_proxy,
-                    "colorProxy": colorProxy
-                };
-
                 commonJS.openWindow(rootRect,
                         {
                             "loadModel": CpuLoad_model,
