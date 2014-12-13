@@ -945,7 +945,7 @@ namespace Xoox
 		if (!conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::VCard, this))
 			return;
 
-		auto fetchVCard = [this, conn] () -> void
+		auto fetchVCard = [this, conn]
 		{
 			QPointer<EntryBase> ptr (this);
 			conn->FetchVCard (GetJID (),
