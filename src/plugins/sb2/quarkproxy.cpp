@@ -49,6 +49,7 @@
 #include "quarkorderview.h"
 #include "declarativewindow.h"
 #include "viewsettingsmanager.h"
+#include "sb2util.h"
 
 namespace LeechCraft
 {
@@ -201,7 +202,8 @@ namespace SB2
 
 	void QuarkProxy::panelSettingsRequested ()
 	{
-		Manager_->GetViewSettingsManager ()->ShowSettings ();
+		OpenSettingsDialog (Manager_->GetViewSettingsManager ()->GetXSD (),
+				tr ("SB2 panel settings"));
 	}
 
 	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)

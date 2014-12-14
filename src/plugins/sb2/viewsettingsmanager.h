@@ -53,7 +53,7 @@ namespace SB2
 	public:
 		ViewSettingsManager (ViewManager*);
 
-		void ShowSettings ();
+		Util::XmlSettingsDialog* GetXSD () const;
 		Util::BaseSettingsManager* GetXSM () const;
 	};
 }

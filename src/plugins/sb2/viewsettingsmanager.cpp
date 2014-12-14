@@ -31,7 +31,6 @@
 #include <QCoreApplication>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "viewmanager.h"
-#include "sb2util.h"
 
 namespace LeechCraft
 {
@@ -81,9 +80,9 @@ namespace SB2
 		XSD_->RegisterObject (XSM_.get (), "sb2panelsettings.xml");
 	}
 
-	void ViewSettingsManager::ShowSettings ()
+	Util::XmlSettingsDialog* ViewSettingsManager::GetXSD () const
 	{
-		OpenSettingsDialog (XSD_.get (), tr ("SB2 panel settings"));
+		return XSD_.get ();
 	}
 
 	Util::BaseSettingsManager* ViewSettingsManager::GetXSM () const
