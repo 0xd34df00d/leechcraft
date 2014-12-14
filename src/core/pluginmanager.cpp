@@ -473,13 +473,13 @@ namespace LeechCraft
 
 	void PluginManager::Release ()
 	{
-		QObjectList ordered = PluginTreeBuilder_->GetResult ();
+		auto ordered = PluginTreeBuilder_->GetResult ();
 		std::reverse (ordered.begin (), ordered.end ());
-		Q_FOREACH (QObject *obj, ordered)
+		for (const auto obj : ordered)
 		{
 			try
 			{
-				IInfo *ii = qobject_cast<IInfo*> (obj);
+				const auto ii = qobject_cast<IInfo*> (obj);
 				if (!ii)
 				{
 					qWarning () << Q_FUNC_INFO
