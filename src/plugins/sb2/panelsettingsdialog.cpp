@@ -44,7 +44,7 @@ namespace SB2
 
 		for (const auto& item : Items_)
 		{
-			const auto rowItem = new QStandardItem { item.Name_ };
+			const auto rowItem = new QStandardItem { item.Icon_, item.Name_ };
 			rowItem->setEditable (false);
 			ItemsModel_->appendRow (rowItem);
 

@@ -201,7 +201,11 @@ namespace SB2
 	{
 		QList<SettingsItem> xsds
 		{
-			{ tr ("SB2 panel settings"), Manager_->GetViewSettingsManager ()->GetXSD () }
+			{
+				tr ("SB2 panel settings"),
+				QIcon { "lcicons:/resources/images/sb2.svg" },
+				Manager_->GetViewSettingsManager ()->GetXSD ()
+			}
 		};
 
 		for (const auto& added : Manager_->GetAddedQuarks ())
@@ -210,7 +214,12 @@ namespace SB2
 			if (!addedManager->HasSettings ())
 				continue;
 
-			xsds.append ({ addedManager->GetManifest ().GetName (), addedManager->GetXSD () });
+			const auto& manifest = addedManager->GetManifest ();
+			xsds.append ({
+					manifest.GetName (),
+					manifest.GetIcon (),
+					addedManager->GetXSD ()
+				});
 		}
 
 		PanelSettingsDialog dia { xsds };

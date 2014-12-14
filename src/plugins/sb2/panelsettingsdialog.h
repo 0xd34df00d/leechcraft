@@ -47,6 +47,7 @@ namespace SB2
 	struct SettingsItem
 	{
 		QString Name_;
+		QIcon Icon_;
 		Util::XmlSettingsDialog *XSD_;
 	};
 	using SettingsList_t = QList<SettingsItem>;
