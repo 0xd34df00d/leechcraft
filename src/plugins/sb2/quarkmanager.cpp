@@ -141,6 +141,11 @@ namespace SB2
 		return SettingsManager_;
 	}
 
+	Util::XmlSettingsDialog* QuarkManager::GetXSD () const
+	{
+		return XSD_.get ();
+	}
+
 	void QuarkManager::ShowSettings ()
 	{
 		if (!HasSettings ())

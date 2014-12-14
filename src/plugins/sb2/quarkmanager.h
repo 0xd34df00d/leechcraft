@@ -63,6 +63,7 @@ namespace SB2
 		bool IsValidArea () const;
 
 		bool HasSettings () const;
+		Util::XmlSettingsDialog* GetXSD () const;
 		void ShowSettings ();
 	private:
 		QString GetSuffixedName (const QString&) const;
