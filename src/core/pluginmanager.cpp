@@ -511,6 +511,17 @@ namespace LeechCraft
 						<< obj;
 			}
 		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "destroying loaders...";
+		PluginTreeBuilder_.reset ();
+		FeatureProviders_.clear ();
+		AvailablePlugins_.clear ();
+		Obj2Loader_.clear ();
+		Plugins_.clear ();
+		PluginContainers_.clear ();
+		qDebug () << Q_FUNC_INFO
+				<< "done!";
 	}
 
 	QString PluginManager::Name (const PluginManager::Size_t& pos) const
