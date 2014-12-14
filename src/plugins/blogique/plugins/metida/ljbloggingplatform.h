@@ -63,7 +63,7 @@ namespace Metida
 			Second
 		};
 	public:
-		LJBloggingPlatform (QObject *parent = 0);
+		LJBloggingPlatform (QObject *parent);
 
 		QObject* GetQObject ();
 		BloggingPlatfromFeatures GetFeatures () const;
