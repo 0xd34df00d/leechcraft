@@ -101,8 +101,6 @@ namespace LeechCraft
 
 				std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 				std::auto_ptr<AddTorrent> AddTorrentDialog_;
-				std::auto_ptr<QTimer> OverallStatsUpdateTimer_;
-				std::auto_ptr<QTime> LastPeersUpdate_;
 				bool TorrentSelectionChanged_;
 				std::unique_ptr<LeechCraft::Util::TagsCompleter> TagsAddDiaCompleter_;
 				std::unique_ptr<TabWidget> TabWidget_;

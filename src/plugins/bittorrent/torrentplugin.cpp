@@ -931,8 +931,6 @@ namespace LeechCraft
 				SetupActions ();
 				TabWidget_.reset (new TabWidget);
 				TorrentSelectionChanged_ = true;
-				LastPeersUpdate_.reset (new QTime);
-				LastPeersUpdate_->start ();
 
 				AddTorrentDialog_.reset (new AddTorrent);
 				connect (Core::Instance (),
@@ -960,16 +958,16 @@ namespace LeechCraft
 				TagsAddDiaCompleter_.reset (new TagsCompleter (AddTorrentDialog_->GetEdit ()));
 				AddTorrentDialog_->GetEdit ()->AddSelector ();
 
-				OverallStatsUpdateTimer_.reset (new QTimer (this));
-				connect (OverallStatsUpdateTimer_.get (),
+				auto statsUpdateTimer = new QTimer { this };
+				connect (statsUpdateTimer,
 						SIGNAL (timeout ()),
 						TabWidget_.get (),
 						SLOT (updateTorrentStats ()));
-				connect (OverallStatsUpdateTimer_.get (),
+				connect (statsUpdateTimer,
 						SIGNAL (timeout ()),
 						Core::Instance (),
 						SLOT (updateRows ()));
-				OverallStatsUpdateTimer_->start (2000);
+				statsUpdateTimer->start (2000);
 
 				FastSpeedControlWidget *fsc = new FastSpeedControlWidget ();
 				XmlSettingsDialog_->SetCustomWidget ("FastSpeedControl", fsc);
