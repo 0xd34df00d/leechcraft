@@ -42,8 +42,6 @@ namespace SB2
 		class XmlViewSettingsManager : public Util::BaseSettingsManager
 		{
 			ViewManager * const ViewMgr_;
-
-			mutable std::shared_ptr<QSettings> SettingsInstance_;
 		public:
 			XmlViewSettingsManager (ViewManager*);
 		protected:
@@ -54,8 +52,7 @@ namespace SB2
 		};
 
 		XmlViewSettingsManager::XmlViewSettingsManager (ViewManager *view)
-		: BaseSettingsManager ()
-		, ViewMgr_ (view)
+		: ViewMgr_ (view)
 		{
 			Util::BaseSettingsManager::Init ();
 		}
