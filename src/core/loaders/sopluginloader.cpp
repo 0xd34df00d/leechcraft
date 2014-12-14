@@ -69,7 +69,9 @@ namespace Loaders
 		}
 
 		IsLoaded_ = false;
-		return Loader_->unload ();
+		delete Loader_->instance ();
+		Loader_->unload ();
+		return true;
 	}
 
 	QObject* SOPluginLoader::Instance ()
