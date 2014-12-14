@@ -490,6 +490,13 @@ namespace LeechCraft
 				}
 				qDebug () << "Releasing" << ii->GetName ();
 				ii->Release ();
+
+				const auto& loader = Obj2Loader_.value (obj);
+				if (!loader)
+					continue;
+
+				qDebug () << "Unloading" << loader->GetFileName ();
+				loader->Unload ();
 			}
 			catch (const std::exception& e)
 			{
