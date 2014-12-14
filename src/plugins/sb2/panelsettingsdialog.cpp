@@ -62,18 +62,31 @@ namespace SB2
 	void PanelSettingsDialog::on_ButtonBox__accepted ()
 	{
 		for (const auto& item : Items_)
-		{
-			item.XSD_->accept ();
 			item.XSD_->setParent (0);
-		}
 	}
 
 	void PanelSettingsDialog::on_ButtonBox__rejected ()
 	{
 		for (const auto& item : Items_)
-		{
-			item.XSD_->reject ();
 			item.XSD_->setParent (0);
+	}
+
+	void PanelSettingsDialog::on_ButtonBox__clicked (QAbstractButton *button)
+	{
+		switch (Ui_.ButtonBox_->buttonRole (button))
+		{
+		case QDialogButtonBox::AcceptRole:
+		case QDialogButtonBox::ApplyRole:
+			for (const auto& item : Items_)
+				item.XSD_->accept ();
+			break;
+		case QDialogButtonBox::RejectRole:
+		case QDialogButtonBox::ResetRole:
+			for (const auto& item : Items_)
+				item.XSD_->reject ();
+			break;
+		default:
+			break;
 		}
 	}
 

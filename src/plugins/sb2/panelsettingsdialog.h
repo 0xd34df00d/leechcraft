@@ -64,6 +64,8 @@ namespace SB2
 	private slots:
 		void on_ButtonBox__accepted ();
 		void on_ButtonBox__rejected ();
+		void on_ButtonBox__clicked (QAbstractButton*);
+
 		void handleItemSelected (const QModelIndex&);
 	};
 }
