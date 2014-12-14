@@ -59,16 +59,13 @@ namespace SB2
 				SLOT (handleItemSelected (QModelIndex)));
 	}
 
-	void PanelSettingsDialog::on_ButtonBox__accepted ()
+	PanelSettingsDialog::~PanelSettingsDialog()
 	{
 		for (const auto& item : Items_)
-			item.XSD_->setParent (0);
-	}
-
-	void PanelSettingsDialog::on_ButtonBox__rejected ()
-	{
-		for (const auto& item : Items_)
-			item.XSD_->setParent (0);
+		{
+			Ui_.SettingsStack_->removeWidget (item.XSD_);
+			item.XSD_->setParent (nullptr);
+		}
 	}
 
 	void PanelSettingsDialog::on_ButtonBox__clicked (QAbstractButton *button)

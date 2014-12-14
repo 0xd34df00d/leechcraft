@@ -62,9 +62,8 @@ namespace SB2
 		const QList<SettingsItem> Items_;
 	public:
 		PanelSettingsDialog (const SettingsList_t&, QWidget* = nullptr);
+		~PanelSettingsDialog ();
 	private slots:
-		void on_ButtonBox__accepted ();
-		void on_ButtonBox__rejected ();
 		void on_ButtonBox__clicked (QAbstractButton*);
 
 		void handleItemSelected (const QModelIndex&);
