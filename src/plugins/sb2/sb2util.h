@@ -29,17 +29,9 @@
 
 #pragma once
 
-class QString;
-
 namespace LeechCraft
 {
-namespace Util
-{
-	class XmlSettingsDialog;
-}
-
 namespace SB2
 {
-	void OpenSettingsDialog (Util::XmlSettingsDialog *xsd, const QString& name);
 }
 }

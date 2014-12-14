@@ -84,11 +84,6 @@ namespace SB2
 		QToolTip::showText ({ x, y }, str);
 	}
 
-	void QuarkProxy::showSettings (const QUrl& url)
-	{
-		Manager_->ShowSettings (url);
-	}
-
 	void QuarkProxy::removeQuark (const QUrl& url)
 	{
 		Manager_->RemoveQuark (url);

@@ -28,44 +28,10 @@
  **********************************************************************/
 
 #include "sb2util.h"
-#include <QDialog>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
-#include <xmlsettingsdialog/xmlsettingsdialog.h>
 
 namespace LeechCraft
 {
 namespace SB2
 {
-	void OpenSettingsDialog (Util::XmlSettingsDialog *xsd, const QString& name)
-	{
-		QDialog dia;
-		dia.setWindowTitle (name);
-
-		dia.setLayout (new QVBoxLayout ());
-		dia.layout ()->addWidget (xsd);
-
-		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
-		QObject::connect (box,
-				SIGNAL (accepted ()),
-				&dia,
-				SLOT (accept ()));
-		QObject::connect (box,
-				SIGNAL (rejected ()),
-				&dia,
-				SLOT (reject ()));
-		QObject::connect (box,
-				SIGNAL (accepted ()),
-				xsd,
-				SLOT (accept ()));
-		QObject::connect (box,
-				SIGNAL (rejected ()),
-				xsd,
-				SLOT (reject ()));
-		dia.layout ()->addWidget (box);
-
-		dia.exec ();
-		xsd->setParent (0);
-	}
 }
 }

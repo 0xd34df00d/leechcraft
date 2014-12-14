@@ -50,7 +50,6 @@
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarksettingsmanager.h"
-#include "sb2util.h"
 
 namespace LeechCraft
 {
@@ -144,17 +143,6 @@ namespace SB2
 	Util::XmlSettingsDialog* QuarkManager::GetXSD () const
 	{
 		return XSD_.get ();
-	}
-
-	void QuarkManager::ShowSettings ()
-	{
-		if (!HasSettings ())
-			return;
-
-		const auto& settingsTitle = Manifest_.GetName ().isEmpty () ?
-				tr ("Settings") :
-				tr ("Settings for %1").arg (Manifest_.GetName ());
-		OpenSettingsDialog (XSD_.get (), settingsTitle);
 	}
 
 	QString QuarkManager::GetSuffixedName (const QString& suffix) const
