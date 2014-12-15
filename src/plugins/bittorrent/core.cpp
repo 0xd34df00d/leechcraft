@@ -2207,7 +2207,8 @@ namespace BitTorrent
 			"NotificationTracker",
 			"NotificationStatus",
 			"NotificationProgress",
-			"NotificationIPBlock"
+			"NotificationIPBlock",
+			"NotificationDHT"
 		};
 		XmlSettingsManager::Instance ()->RegisterObject (loggingSettings,
 				this, "setLoggingSettings");
