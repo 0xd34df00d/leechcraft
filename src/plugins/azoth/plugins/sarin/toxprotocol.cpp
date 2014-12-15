@@ -53,6 +53,12 @@ namespace Sarin
 		LoadAccounts ();
 	}
 
+	ToxProtocol::~ToxProtocol ()
+	{
+		for (auto acc : Accounts_)
+			emit accountRemoved (acc);
+	}
+
 	QObject* ToxProtocol::GetQObject ()
 	{
 		return this;
