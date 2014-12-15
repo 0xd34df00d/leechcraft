@@ -2197,16 +2197,18 @@ namespace BitTorrent
 		XmlSettingsManager::Instance ()->RegisterObject ("ScrapeEnabled",
 				this, "setScrapeInterval");
 
-		QList<QByteArray> loggingSettings;
-		loggingSettings << "PerformanceWarning"
-			<< "NotificationError"
-			<< "NotificationPeer"
-			<< "NotificationPortMapping"
-			<< "NotificationStorage"
-			<< "NotificationTracker"
-			<< "NotificationStatus"
-			<< "NotificationProgress"
-			<< "NotificationIPBlock";
+		const QList<QByteArray> loggingSettings
+		{
+			"PerformanceWarning",
+			"NotificationError",
+			"NotificationPeer",
+			"NotificationPortMapping",
+			"NotificationStorage",
+			"NotificationTracker",
+			"NotificationStatus",
+			"NotificationProgress",
+			"NotificationIPBlock"
+		};
 		XmlSettingsManager::Instance ()->RegisterObject (loggingSettings,
 				this, "setLoggingSettings");
 
