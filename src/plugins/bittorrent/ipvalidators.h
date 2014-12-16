@@ -39,7 +39,6 @@ namespace BitTorrent
 {
 	class ValidateIPv4 : public QValidator
 	{
-		Q_OBJECT
 	public:
 		ValidateIPv4 (QObject* = 0);
 
@@ -48,7 +47,6 @@ namespace BitTorrent
 
 	class ValidateIPv6 : public QValidator
 	{
-		Q_OBJECT
 	public:
 		ValidateIPv6 (QObject* = 0);
 
