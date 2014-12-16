@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class ValidateIPv4 : public QValidator
@@ -52,6 +50,5 @@ namespace BitTorrent
 
 		State validate (QString&, int&) const;
 	};
-}
 }
 }

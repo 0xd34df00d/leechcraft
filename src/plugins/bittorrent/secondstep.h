@@ -27,31 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_SECONDSTEP_H
-#define PLUGINS_BITTORRENT_SECONDSTEP_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_newtorrentsecondstep.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class SecondStep : public QWizardPage, private Ui::NewTorrentSecondStep
 	{
-		namespace BitTorrent
-		{
-			class SecondStep : public QWizardPage, private Ui::NewTorrentSecondStep
-			{
-				Q_OBJECT
-			public:
-				SecondStep (QWidget *parent = 0);
-				QStringList GetPaths () const;
-			private slots:
-				void on_AddPath__released ();
-				void on_RemoveSelected__released ();
-				void on_Clear__released ();
-			};
-		};
+		Q_OBJECT
+	public:
+		SecondStep (QWidget *parent = 0);
+		QStringList GetPaths () const;
+	private slots:
+		void on_AddPath__released ();
+		void on_RemoveSelected__released ();
+		void on_Clear__released ();
 	};
-};
-
-#endif
-
+}
+}

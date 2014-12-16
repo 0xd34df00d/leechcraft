@@ -27,29 +27,23 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_TORRENTMAKER_H
-#define PLUGINS_BITTORRENT_TORRENTMAKER_H
+#pragma once
+
 #include <QObject>
 #include "newtorrentparams.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class TorrentMaker : public QObject
 	{
-		namespace BitTorrent
-		{
-			class TorrentMaker : public QObject
-			{
-				Q_OBJECT
-			public:
-				TorrentMaker (QObject* = 0);
-				void Start (NewTorrentParams);
-			signals:
-				void error (const QString&);
-			};
-		};
+		Q_OBJECT
+	public:
+		TorrentMaker (QObject* = 0);
+		void Start (NewTorrentParams);
+	signals:
+		void error (const QString&);
 	};
-};
-
-#endif
-
+}
+}

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_TORRENTINFO_H
-#define PLUGINS_BITTORRENT_TORRENTINFO_H
+#pragma once
+
 #include <memory>
 #include <QTime>
 #include <libtorrent/bitfield.hpp>
@@ -37,20 +37,14 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	struct TorrentInfo
 	{
-		namespace BitTorrent
-		{
-			struct TorrentInfo
-			{
-				QString Destination_,
-						State_;
-				libtorrent::torrent_status Status_;
-				std::auto_ptr<libtorrent::torrent_info> Info_;
-			};
-		};
+		QString Destination_,
+				State_;
+		libtorrent::torrent_status Status_;
+		std::auto_ptr<libtorrent::torrent_info> Info_;
 	};
-};
-
-#endif
-
+}
+}

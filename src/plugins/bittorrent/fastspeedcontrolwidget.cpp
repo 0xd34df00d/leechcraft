@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	FastSpeedControlWidget::FastSpeedControlWidget (QWidget *parent)
@@ -150,6 +148,5 @@ namespace BitTorrent
 	{
 		LoadSettings ();
 	}
-}
 }
 }

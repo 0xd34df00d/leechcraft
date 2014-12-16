@@ -39,8 +39,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	FilesViewDelegate::FilesViewDelegate (QTreeView *parent)
@@ -155,6 +153,5 @@ namespace BitTorrent
 		rect.setWidth (editor->parentWidget ()->width ());
 		editor->setGeometry (rect);
 	}
-}
 }
 }

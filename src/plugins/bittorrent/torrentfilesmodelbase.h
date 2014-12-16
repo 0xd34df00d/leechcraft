@@ -41,8 +41,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	template<typename T>
@@ -234,6 +232,5 @@ namespace BitTorrent
 			Path2Node_.clear ();
 		}
 	};
-}
 }
 }

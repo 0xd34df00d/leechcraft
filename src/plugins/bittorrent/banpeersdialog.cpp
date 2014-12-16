@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	BanPeersDialog::BanPeersDialog (QWidget *parent)
@@ -99,6 +97,5 @@ namespace BitTorrent
 				Ui_.IP6End_->text () :
 				QString ();
 	}
-}
 }
 }

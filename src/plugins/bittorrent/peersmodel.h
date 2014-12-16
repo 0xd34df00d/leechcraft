@@ -36,8 +36,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class PeersModel : public QAbstractItemModel
@@ -71,6 +69,5 @@ namespace BitTorrent
 		void Clear ();
 		void Update (const QList<PeerInfo>&);
 	};
-}
 }
 }

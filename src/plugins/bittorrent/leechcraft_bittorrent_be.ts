@@ -355,7 +355,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::AddMultipleTorrents</name>
+    <name>LeechCraft::BitTorrent::AddMultipleTorrents</name>
     <message>
         <location filename="addmultipletorrents.cpp" line="83"/>
         <source>Select directory with torrents</source>
@@ -368,7 +368,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::AddTorrent</name>
+    <name>LeechCraft::BitTorrent::AddTorrent</name>
     <message>
         <location filename="addtorrent.cpp" line="71"/>
         <location filename="addtorrent.cpp" line="72"/>
@@ -410,7 +410,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::Core</name>
+    <name>LeechCraft::BitTorrent::Core</name>
     <message>
         <location filename="core.cpp" line="138"/>
         <source>Unknown</source>
@@ -632,7 +632,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::ExportDialog</name>
+    <name>LeechCraft::BitTorrent::ExportDialog</name>
     <message>
         <location filename="exportdialog.cpp" line="57"/>
         <source>Save file</source>
@@ -645,7 +645,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::FastSpeedControlWidget</name>
+    <name>LeechCraft::BitTorrent::FastSpeedControlWidget</name>
     <message>
         <location filename="fastspeedcontrolwidget.cpp" line="93"/>
         <location filename="fastspeedcontrolwidget.cpp" line="94"/>
@@ -654,7 +654,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::FilesViewDelegate</name>
+    <name>LeechCraft::BitTorrent::FilesViewDelegate</name>
     <message>
         <location filename="filesviewdelegate.cpp" line="99"/>
         <source>%1% (%2 of %3)</source>
@@ -662,7 +662,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::FirstStep</name>
+    <name>LeechCraft::BitTorrent::FirstStep</name>
     <message>
         <location filename="firststep.cpp" line="82"/>
         <source>Select where to save torrent file</source>
@@ -676,7 +676,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::IPFilterDialog</name>
+    <name>LeechCraft::BitTorrent::IPFilterDialog</name>
     <message>
         <location filename="ipfilterdialog.cpp" line="45"/>
         <location filename="ipfilterdialog.cpp" line="79"/>
@@ -692,7 +692,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::IntroPage</name>
+    <name>LeechCraft::BitTorrent::IntroPage</name>
     <message>
         <location filename="intropage.cpp" line="32"/>
         <source>Introduction</source>
@@ -705,7 +705,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::MoveTorrentFiles</name>
+    <name>LeechCraft::BitTorrent::MoveTorrentFiles</name>
     <message>
         <location filename="movetorrentfiles.cpp" line="43"/>
         <source>New location</source>
@@ -713,7 +713,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::NewTorrentWizard</name>
+    <name>LeechCraft::BitTorrent::NewTorrentWizard</name>
     <message>
         <location filename="newtorrentwizard.cpp" line="34"/>
         <source>New torrent wizard</source>
@@ -721,7 +721,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::PeersModel</name>
+    <name>LeechCraft::BitTorrent::PeersModel</name>
     <message>
         <location filename="peersmodel.cpp" line="35"/>
         <source>IP</source>
@@ -770,7 +770,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::PeersTabLinker</name>
+    <name>LeechCraft::BitTorrent::PeersTabLinker</name>
     <message>
         <location filename="peerstablinker.cpp" line="113"/>
         <source>%1 %2 from %3</source>
@@ -847,7 +847,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::PiecesModel</name>
+    <name>LeechCraft::BitTorrent::PiecesModel</name>
     <message>
         <location filename="piecesmodel.cpp" line="35"/>
         <source>Index</source>
@@ -885,7 +885,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::SecondStep</name>
+    <name>LeechCraft::BitTorrent::SecondStep</name>
     <message>
         <location filename="secondstep.cpp" line="47"/>
         <source>Select one or more paths to add</source>
@@ -893,7 +893,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::SpeedSelectorAction</name>
+    <name>LeechCraft::BitTorrent::SpeedSelectorAction</name>
     <message>
         <location filename="speedselectoraction.cpp" line="93"/>
         <source>%1 KiB/s</source>
@@ -901,7 +901,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::StartupFirstPage</name>
+    <name>LeechCraft::BitTorrent::StartupFirstPage</name>
     <message>
         <location filename="startupfirstpage.cpp" line="35"/>
         <source>Set basic options</source>
@@ -909,7 +909,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::TabWidget</name>
+    <name>LeechCraft::BitTorrent::TabWidget</name>
     <message>
         <location filename="tabwidget.cpp" line="167"/>
         <source>Add peer...</source>
@@ -973,7 +973,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::ThirdStep</name>
+    <name>LeechCraft::BitTorrent::ThirdStep</name>
     <message>
         <location filename="thirdstep.cpp" line="93"/>
         <source> pieces (%1)</source>
@@ -981,7 +981,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::TorrentFilesModel</name>
+    <name>LeechCraft::BitTorrent::TorrentFilesModel</name>
     <message>
         <location filename="torrentfilesmodel.cpp" line="43"/>
         <location filename="torrentfilesmodel.cpp" line="45"/>
@@ -1010,7 +1010,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::TorrentMaker</name>
+    <name>LeechCraft::BitTorrent::TorrentMaker</name>
     <message>
         <location filename="torrentmaker.cpp" line="73"/>
         <source>Could not open file %1 for write!</source>
@@ -1033,7 +1033,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::TorrentPlugin</name>
+    <name>LeechCraft::BitTorrent::TorrentPlugin</name>
     <message>
         <location filename="torrentplugin.cpp" line="97"/>
         <source>Full-featured BitTorrent client.</source>
@@ -1197,7 +1197,7 @@ IPv6 input mask</extracomment>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::BitTorrent::TrackersChanger</name>
+    <name>LeechCraft::BitTorrent::TrackersChanger</name>
     <message>
         <location filename="trackerschanger.cpp" line="57"/>
         <source>%1 s</source>

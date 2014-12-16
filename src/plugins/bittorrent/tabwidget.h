@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_TORRENT_TABWIDGET_H
-#define PLUGINS_TORRENT_TABWIDGET_H
+#pragma once
+
 #include <memory>
 #include <QWidget>
 #include <QAction>
@@ -37,43 +37,37 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class TabWidget : public QWidget
 	{
-		namespace BitTorrent
-		{
-			class TabWidget : public QWidget
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::TabWidget Ui_;
-				bool TorrentSelectionChanged_;
-				std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
-			public:
-				TabWidget (QWidget* = 0);
+		Ui::TabWidget Ui_;
+		bool TorrentSelectionChanged_;
+		std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
+	public:
+		TabWidget (QWidget* = 0);
 
-				void InvalidateSelection ();
-				void SetOverallDownloadRateController (int);
-				void SetOverallUploadRateController (int);
-			public slots:
-				void updateTorrentStats ();
-			private:
-				void UpdateDashboard ();
-				void UpdateOverallStats ();
-				void UpdateTorrentControl ();
-			private slots:
-				void on_OverallDownloadRateController__valueChanged (int);
-				void on_OverallUploadRateController__valueChanged (int);
-				void on_TorrentDownloadRateController__valueChanged (int);
-				void on_TorrentUploadRateController__valueChanged (int);
-				void on_TorrentManaged__stateChanged (int);
-				void on_TorrentSequentialDownload__stateChanged (int);
-				void on_DownloadingTorrents__valueChanged (int);
-				void on_UploadingTorrents__valueChanged (int);
-				void on_TorrentTags__editingFinished ();
-			};
-		};
+		void InvalidateSelection ();
+		void SetOverallDownloadRateController (int);
+		void SetOverallUploadRateController (int);
+	public slots:
+		void updateTorrentStats ();
+	private:
+		void UpdateDashboard ();
+		void UpdateOverallStats ();
+		void UpdateTorrentControl ();
+	private slots:
+		void on_OverallDownloadRateController__valueChanged (int);
+		void on_OverallUploadRateController__valueChanged (int);
+		void on_TorrentDownloadRateController__valueChanged (int);
+		void on_TorrentUploadRateController__valueChanged (int);
+		void on_TorrentManaged__stateChanged (int);
+		void on_TorrentSequentialDownload__stateChanged (int);
+		void on_DownloadingTorrents__valueChanged (int);
+		void on_UploadingTorrents__valueChanged (int);
+		void on_TorrentTags__editingFinished ();
 	};
-};
-
-#endif
-
+}
+}

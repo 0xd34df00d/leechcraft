@@ -54,8 +54,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	namespace
@@ -701,6 +699,5 @@ namespace BitTorrent
 		dia->resize (700, dia->height ());
 		dia->show ();
 	}
-}
 }
 }

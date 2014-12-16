@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class TorrentTab : public QWidget
@@ -109,6 +107,5 @@ namespace BitTorrent
 	signals:
 		void removeTab (QWidget*);
 	};
-}
 }
 }

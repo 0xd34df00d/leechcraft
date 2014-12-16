@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	struct FileInfo
@@ -44,6 +42,5 @@ namespace BitTorrent
 		int Priority_;
 		float Progress_;
 	};
-}
 }
 }

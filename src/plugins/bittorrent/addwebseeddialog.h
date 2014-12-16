@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class AddWebSeedDialog : public QDialog
@@ -50,6 +48,5 @@ namespace BitTorrent
 		// True if URL (BEP 19), false if HTTP (BEP 17).
 		bool GetType () const;
 	};
-}
 }
 }

@@ -104,8 +104,6 @@ using namespace LeechCraft::Util;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	Core::PerTrackerAccumulator::PerTrackerAccumulator (Core::pertrackerstats_t& stats)
@@ -3070,7 +3068,6 @@ namespace BitTorrent
 				this,
 				SLOT (queryLibtorrentForWarnings ()));
 	}
-}
 }
 }
 

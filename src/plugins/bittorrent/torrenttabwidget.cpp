@@ -48,8 +48,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	TorrentTabWidget::TorrentTabWidget (QWidget *parent)
@@ -659,6 +657,5 @@ namespace BitTorrent
 		bool bep19 = index.sibling (index.row (), 1).data ().toString () == "BEP 19";
 		Core::Instance ()->RemoveWebSeed (index.data ().toString (), bep19, Index_);
 	}
-}
 }
 }

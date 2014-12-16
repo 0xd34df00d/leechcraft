@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	FirstStep::FirstStep (QWidget *parent)
@@ -132,6 +130,5 @@ namespace BitTorrent
 
 		emit completeChanged ();
 	}
-}
 }
 }

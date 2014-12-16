@@ -42,8 +42,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	TorrentFilesModel::TorrentFilesModel (int index)
@@ -423,6 +421,5 @@ namespace BitTorrent
 
 		UpdateSizeGraph (RootNode_);
 	}
-}
 }
 }

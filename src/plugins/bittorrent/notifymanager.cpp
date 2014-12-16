@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	NotifyManager::NotifyManager (QObject *parent)
@@ -72,6 +70,5 @@ namespace BitTorrent
 			SendNotification (e);
 		Queue_.clear ();
 	}
-}
 }
 }

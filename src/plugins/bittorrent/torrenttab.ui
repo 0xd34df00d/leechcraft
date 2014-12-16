@@ -72,7 +72,7 @@
        <bool>true</bool>
       </property>
      </widget>
-     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabWidget" name="Tabs_" native="true">
+     <widget class="LeechCraft::BitTorrent::TorrentTabWidget" name="Tabs_" native="true">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
         <horstretch>0</horstretch>
@@ -91,7 +91,7 @@
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::BitTorrent::TorrentTabWidget</class>
+   <class>LeechCraft::BitTorrent::TorrentTabWidget</class>
    <extends>QWidget</extends>
    <header>torrenttabwidget.h</header>
    <container>1</container>

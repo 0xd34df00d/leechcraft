@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	const int BlockRole = 101;
@@ -132,6 +130,5 @@ namespace BitTorrent
 	{
 		delete Ui_.Tree_->currentItem ();
 	}
-}
 }
 }

@@ -33,45 +33,41 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	StartupFirstPage::StartupFirstPage (QWidget *parent)
+	: QWizardPage (parent)
 	{
-		namespace BitTorrent
-		{
-			StartupFirstPage::StartupFirstPage (QWidget *parent)
-			: QWizardPage (parent)
-			{
-				Ui_.setupUi (this);
+		Ui_.setupUi (this);
 
-				setTitle ("BitTorrent");
-				setSubTitle (tr ("Set basic options"));
+		setTitle ("BitTorrent");
+		setSubTitle (tr ("Set basic options"));
 
-				setProperty ("WizardType", 1);
-			}
+		setProperty ("WizardType", 1);
+	}
 
-			void StartupFirstPage::initializePage ()
-			{
-				connect (wizard (),
-						SIGNAL (accepted ()),
-						this,
-						SLOT (handleAccepted ()));
-			}
+	void StartupFirstPage::initializePage ()
+	{
+		connect (wizard (),
+				SIGNAL (accepted ()),
+				this,
+				SLOT (handleAccepted ()));
+	}
 
-			void StartupFirstPage::handleAccepted ()
-			{
-				QList<QVariant> ports;
-				ports << Ui_.LowerPort_->value ()
-					<< Ui_.UpperPort_->value ();
-				XmlSettingsManager::Instance ()->setProperty ("TCPPortRange", ports);
+	void StartupFirstPage::handleAccepted ()
+	{
+		QList<QVariant> ports;
+		ports << Ui_.LowerPort_->value ()
+			<< Ui_.UpperPort_->value ();
+		XmlSettingsManager::Instance ()->setProperty ("TCPPortRange", ports);
 
-				XmlSettingsManager::Instance ()->setProperty ("MaxUploads",
-						Ui_.UploadConnections_->value ());
-				XmlSettingsManager::Instance ()->setProperty ("MaxConnections",
-						Ui_.TotalConnections_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("MaxUploads",
+				Ui_.UploadConnections_->value ());
+		XmlSettingsManager::Instance ()->setProperty ("MaxConnections",
+				Ui_.TotalConnections_->value ());
 
-				int sset = Ui_.SettingsSet_->currentIndex ();
-				Core::Instance ()->SetPreset (static_cast<Core::SettingsPreset> (sset));
-			}
-		};
-	};
-};
-
+		int sset = Ui_.SettingsSet_->currentIndex ();
+		Core::Instance ()->SetPreset (static_cast<Core::SettingsPreset> (sset));
+	}
+}
+}

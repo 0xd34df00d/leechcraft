@@ -43,8 +43,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	namespace
@@ -139,6 +137,5 @@ namespace BitTorrent
 				IsMagnet (Ui_.Magnet_->text ());
 		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (isComplete);
 	}
-}
 }
 }

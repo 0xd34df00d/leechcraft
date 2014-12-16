@@ -37,8 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class LiveStreamDevice;
@@ -59,6 +57,5 @@ namespace BitTorrent
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
-}
 }
 }

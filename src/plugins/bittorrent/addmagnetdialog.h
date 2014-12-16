@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class AddMagnetDialog : public QDialog
@@ -53,6 +51,5 @@ namespace BitTorrent
 		void on_BrowseButton__released ();
 		void checkComplete ();
 	};
-}
 }
 }

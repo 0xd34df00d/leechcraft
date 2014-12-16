@@ -37,8 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	struct PeerInfo
@@ -49,6 +47,5 @@ namespace BitTorrent
 		QString CountryCode_;
 		std::shared_ptr<libtorrent::peer_info> PI_;
 	};
-}
 }
 }

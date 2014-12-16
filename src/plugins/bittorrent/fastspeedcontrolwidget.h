@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class FastSpeedControlWidget : public QWidget
@@ -60,6 +58,5 @@ namespace BitTorrent
 	signals:
 		void speedsChanged ();
 	};
-}
 }
 }

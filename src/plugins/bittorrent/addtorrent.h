@@ -38,8 +38,6 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class AddTorrentFilesModel;
@@ -88,6 +86,5 @@ namespace BitTorrent
 		void on_TorrentFile__textChanged ();
 		void on_Destination__textChanged ();
 	};
-}
 }
 }

@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	LiveStreamManager::LiveStreamManager (QObject *parent)
@@ -100,6 +98,5 @@ namespace BitTorrent
 		e.Mime_ = "x-leechcraft/media-qiodevice";
 		emit gotEntity (e);
 	}
-}
 }
 }

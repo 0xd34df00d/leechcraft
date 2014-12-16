@@ -31,8 +31,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	AddWebSeedDialog::AddWebSeedDialog (QWidget *parent)
@@ -50,6 +48,5 @@ namespace BitTorrent
 	{
 		return Ui_.BEP19_->isChecked ();
 	}
-}
 }
 }

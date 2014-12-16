@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	struct NewTorrentParams
@@ -51,6 +49,5 @@ namespace BitTorrent
 		QStringList DHTNodes_;
 		bool DHTEnabled_;
 	};
-}
 }
 }

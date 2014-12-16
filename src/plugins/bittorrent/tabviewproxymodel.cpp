@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	TabViewProxyModel::TabViewProxyModel (QObject *parent)
@@ -88,6 +86,5 @@ namespace BitTorrent
 		StateFilter_ = static_cast<StateFilterMode> (mode);
 		invalidateFilter ();
 	}
-}
 }
 }

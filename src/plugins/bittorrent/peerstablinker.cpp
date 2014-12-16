@@ -37,8 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	PeersTabLinker::PeersTabLinker (Ui::TorrentTabWidget *ui,
@@ -195,6 +193,5 @@ namespace BitTorrent
 
 		Ui_->PeerRTT_->setText (QString::number (p.PI_->rtt));
 	}
-}
 }
 }

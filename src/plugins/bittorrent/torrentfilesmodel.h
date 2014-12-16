@@ -37,8 +37,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	struct TorrentNodeInfo : public TorrentNodeInfoBase<TorrentNodeInfo>
@@ -93,6 +91,5 @@ namespace BitTorrent
 		void update ();
 		void handleFileRenamed (int, int, const QString&);
 	};
-}
 }
 }

@@ -70,9 +70,6 @@ namespace Util
 {
 class ShortcutManager;
 }
-
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class NotifyManager;
@@ -390,7 +387,6 @@ namespace BitTorrent
 		void taskRemoved (int);
 		void fileRenamed (int torrent, int file, const QString& newName);
 	};
-}
 }
 }
 

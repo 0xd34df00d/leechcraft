@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class MoveTorrentFiles : public QDialog
@@ -49,6 +47,5 @@ namespace BitTorrent
 	private slots:
 		void on_Browse__released ();
 	};
-}
 }
 }

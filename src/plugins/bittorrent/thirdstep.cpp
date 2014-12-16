@@ -38,74 +38,69 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	ThirdStep::ThirdStep (QWidget *parent)
+	: QWizardPage (parent)
+	, TotalSize_ (0)
 	{
-		namespace BitTorrent
+		setupUi (this);
+		registerField ("PieceSize", PieceSize_);
+		registerField ("URLSeeds", URLSeeds_);
+		registerField ("DHTEnabled", DHTEnabled_);
+		registerField ("DHTNodes", DHTNodes_);
+	}
+
+	void ThirdStep::initializePage ()
+	{
+		TotalSize_ = 0;
+		QString path = field ("RootPath").toString ();
+
+		QFileInfo pathInfo (path);
+		if (pathInfo.isDir ())
 		{
-			ThirdStep::ThirdStep (QWidget *parent)
-			: QWizardPage (parent)
-			, TotalSize_ (0)
+			QDirIterator it (path,
+					QDirIterator::Subdirectories);
+			while (it.hasNext ())
 			{
-				setupUi (this);
-				registerField ("PieceSize", PieceSize_);
-				registerField ("URLSeeds", URLSeeds_);
-				registerField ("DHTEnabled", DHTEnabled_);
-				registerField ("DHTNodes", DHTNodes_);
+				it.next ();
+				QFileInfo info = it.fileInfo ();
+				if (info.isFile () && info.isReadable ())
+					TotalSize_ += info.size ();
 			}
+		}
+		else if (pathInfo.isFile () &&
+				pathInfo.isReadable ())
+			TotalSize_ += pathInfo.size ();
 
-			void ThirdStep::initializePage ()
-			{
-				TotalSize_ = 0;
-				QString path = field ("RootPath").toString ();
+		quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
 
-				QFileInfo pathInfo (path);
-				if (pathInfo.isDir ())
-				{
-					QDirIterator it (path,
-							QDirIterator::Subdirectories);
-					while (it.hasNext ())
-					{
-						it.next ();
-						QFileInfo info = it.fileInfo ();
-						if (info.isFile () && info.isReadable ())
-							TotalSize_ += info.size ();
-					}
-				}
-				else if (pathInfo.isFile () &&
-						pathInfo.isReadable ())
-					TotalSize_ += pathInfo.size ();
+		quint32 pieceSize = 32 * 1024;
+		int shouldIndex = 0;
+		for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex) ;
 
-				quint64 max = std::log (static_cast<long double> (TotalSize_ / 102400)) * 80;
+		if (shouldIndex > PieceSize_->count () - 1)
+			shouldIndex = PieceSize_->count () - 1;
 
-				quint32 pieceSize = 32 * 1024;
-				int shouldIndex = 0;
-				for (; TotalSize_ / pieceSize >= max; pieceSize *= 2, ++shouldIndex) ;
+		PieceSize_->setCurrentIndex (shouldIndex);
 
-				if (shouldIndex > PieceSize_->count () - 1)
-					shouldIndex = PieceSize_->count () - 1;
+		on_PieceSize__currentIndexChanged ();
+	}
 
-				PieceSize_->setCurrentIndex (shouldIndex);
+	void ThirdStep::on_PieceSize__currentIndexChanged ()
+	{
+		quint32 mul = 32 * 1024;
+		int index = PieceSize_->currentIndex ();
+		while (index--)
+			mul *= 2;
 
-				on_PieceSize__currentIndexChanged ();
-			}
+		int numPieces = TotalSize_ / mul;
+		if (TotalSize_ % mul)
+			++numPieces;
 
-			void ThirdStep::on_PieceSize__currentIndexChanged ()
-			{
-				quint32 mul = 32 * 1024;
-				int index = PieceSize_->currentIndex ();
-				while (index--)
-					mul *= 2;
-
-				int numPieces = TotalSize_ / mul;
-				if (TotalSize_ % mul)
-					++numPieces;
-
-				NumPieces_->setText (QString::number (numPieces) +
-						tr (" pieces (%1)")
-						.arg (LeechCraft::Util::MakePrettySize (TotalSize_)));
-			}
-
-		};
-	};
-};
-
+		NumPieces_->setText (QString::number (numPieces) +
+				tr (" pieces (%1)")
+				.arg (LeechCraft::Util::MakePrettySize (TotalSize_)));
+	}
+}
+}

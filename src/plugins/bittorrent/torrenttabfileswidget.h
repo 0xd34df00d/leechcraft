@@ -36,8 +36,6 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class TorrentFilesModel;
@@ -62,6 +60,5 @@ namespace BitTorrent
 
 		void on_FilesView__customContextMenuRequested (const QPoint&);
 	};
-}
 }
 }

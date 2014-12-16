@@ -38,8 +38,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	PeersModel::PeersModel (int idx, QObject *parent)
@@ -247,6 +245,5 @@ namespace BitTorrent
 			endInsertRows ();
 		}
 	}
-}
 }
 }
