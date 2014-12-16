@@ -29,7 +29,6 @@
 
 #ifndef PLUGINS_BITTORRENT_PIECESMODEL_H
 #define PLUGINS_BITTORRENT_PIECESMODEL_H
-#define PLUGINS_BITTORRENT_WIN32_LEAN_AND_MEAN
 #include <QAbstractItemModel>
 #include <QStringList>
 #include <QList>
