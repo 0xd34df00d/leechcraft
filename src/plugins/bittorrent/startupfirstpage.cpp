@@ -56,9 +56,11 @@ namespace BitTorrent
 
 	void StartupFirstPage::handleAccepted ()
 	{
-		QList<QVariant> ports;
-		ports << Ui_.LowerPort_->value ()
-			<< Ui_.UpperPort_->value ();
+		const QList<QVariant> ports
+		{
+			Ui_.LowerPort_->value (),
+			Ui_.UpperPort_->value ()
+		};
 		XmlSettingsManager::Instance ()->setProperty ("TCPPortRange", ports);
 
 		XmlSettingsManager::Instance ()->setProperty ("MaxUploads",
