@@ -42,6 +42,7 @@
 #include "addpeerdialog.h"
 #include "addwebseeddialog.h"
 #include "banpeersdialog.h"
+#include "sessionsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -146,10 +147,11 @@ namespace BitTorrent
 
 	void TabWidget::UpdateDashboard ()
 	{
-		Ui_.OverallDownloadRateController_->setValue (Core::Instance ()->GetOverallDownloadRate ());
-		Ui_.OverallUploadRateController_->setValue (Core::Instance ()->GetOverallUploadRate ());
-		Ui_.DownloadingTorrents_->setValue (Core::Instance ()->GetMaxDownloadingTorrents ());
-		Ui_.UploadingTorrents_->setValue (Core::Instance ()->GetMaxUploadingTorrents ());
+		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
+		Ui_.OverallDownloadRateController_->setValue (ssm->GetOverallDownloadRate ());
+		Ui_.OverallUploadRateController_->setValue (ssm->GetOverallUploadRate ());
+		Ui_.DownloadingTorrents_->setValue (ssm->GetMaxDownloadingTorrents ());
+		Ui_.UploadingTorrents_->setValue (ssm->GetMaxUploadingTorrents ());
 	}
 
 	void TabWidget::UpdateTorrentControl ()
@@ -195,12 +197,12 @@ namespace BitTorrent
 
 	void TabWidget::on_OverallDownloadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetOverallDownloadRate (val);
+		Core::Instance ()->GetSessionSettingsManager ()->SetOverallDownloadRate (val);
 	}
 
 	void TabWidget::on_OverallUploadRateController__valueChanged (int val)
 	{
-		Core::Instance ()->SetOverallUploadRate (val);
+		Core::Instance ()->GetSessionSettingsManager ()->SetOverallUploadRate (val);
 	}
 
 	void TabWidget::on_TorrentDownloadRateController__valueChanged (int val)
@@ -225,12 +227,12 @@ namespace BitTorrent
 
 	void TabWidget::on_DownloadingTorrents__valueChanged (int newValue)
 	{
-		Core::Instance ()->SetMaxDownloadingTorrents (newValue);
+		Core::Instance ()->GetSessionSettingsManager ()->SetMaxDownloadingTorrents (newValue);
 	}
 
 	void TabWidget::on_UploadingTorrents__valueChanged (int newValue)
 	{
-		Core::Instance ()->SetMaxUploadingTorrents (newValue);
+		Core::Instance ()->GetSessionSettingsManager ()->SetMaxUploadingTorrents (newValue);
 	}
 
 	void TabWidget::on_TorrentTags__editingFinished ()

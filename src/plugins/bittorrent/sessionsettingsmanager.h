@@ -27,51 +27,67 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "startupfirstpage.h"
-#include "xmlsettingsmanager.h"
-#include "core.h"
-#include "sessionsettingsmanager.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/core/icoreproxy.h>
+
+class QTimer;
+
+namespace libtorrent
+{
+	class session;
+}
 
 namespace LeechCraft
 {
 namespace BitTorrent
 {
-	StartupFirstPage::StartupFirstPage (QWidget *parent)
-	: QWizardPage (parent)
+	class SessionSettingsManager : public QObject
 	{
-		Ui_.setupUi (this);
+		Q_OBJECT
 
-		setTitle ("BitTorrent");
-		setSubTitle (tr ("Set basic options"));
+		libtorrent::session * const Session_;
+		const ICoreProxy_ptr Proxy_;
+		QTimer * const ScrapeTimer_;
+		QTimer * const SettingsSaveTimer_;
+	public:
+		SessionSettingsManager (libtorrent::session*, const ICoreProxy_ptr& proxy, QObject* = nullptr);
 
-		setProperty ("WizardType", 1);
-	}
-
-	void StartupFirstPage::initializePage ()
-	{
-		connect (wizard (),
-				SIGNAL (accepted ()),
-				this,
-				SLOT (handleAccepted ()));
-	}
-
-	void StartupFirstPage::handleAccepted ()
-	{
-		const QList<QVariant> ports
+		enum SettingsPreset
 		{
-			Ui_.LowerPort_->value (),
-			Ui_.UpperPort_->value ()
+			SPDefault,
+			SPMinMemoryUsage,
+			SPHighPerfSeed
 		};
-		XmlSettingsManager::Instance ()->setProperty ("TCPPortRange", ports);
 
-		XmlSettingsManager::Instance ()->setProperty ("MaxUploads",
-				Ui_.UploadConnections_->value ());
-		XmlSettingsManager::Instance ()->setProperty ("MaxConnections",
-				Ui_.TotalConnections_->value ());
+		void SetPreset (SettingsPreset);
 
-		const auto idx = Ui_.SettingsSet_->currentIndex ();
-		const auto sset = static_cast<SessionSettingsManager::SettingsPreset> (idx);
-		Core::Instance ()->GetSessionSettingsManager ()->SetPreset (sset);
-	}
+		void SetOverallDownloadRate (int);
+		void SetOverallUploadRate (int);
+		void SetMaxDownloadingTorrents (int);
+		void SetMaxUploadingTorrents (int);
+		int GetOverallDownloadRate () const;
+		int GetOverallUploadRate () const;
+		int GetMaxDownloadingTorrents () const;
+		int GetMaxUploadingTorrents () const;
+	private:
+		void ManipulateSettings ();
+	private slots:
+		void setLoggingSettings ();
+		void tcpPortRangeChanged ();
+		void sslPortChanged ();
+		void maxUploadsChanged ();
+		void maxConnectionsChanged ();
+		void setProxySettings ();
+		void setGeneralSettings ();
+		void setDHTSettings ();
+
+		void setScrapeInterval ();
+		void autosaveIntervalChanged ();
+	signals:
+		void scrapeRequested ();
+		void saveSettingsRequested ();
+	};
 }
 }
