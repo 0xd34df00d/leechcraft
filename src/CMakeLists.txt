@@ -428,6 +428,12 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 
 	CreateTrsUpTargetImpl (${_basename} "${Langs}" "${Sources}" "${Xml}")
 endfunction ()
+
+function (CreateQmlTrsUpTarget PlugName Langs QmlFiles Xml)
+	set (_basename "leechcraft_${PlugName}_qml")
+	CreateTrsUpTargetImpl (${_basename} "${Langs}" "${QmlFiles}" "${Xml}")
+endfunction ()
+
 if (ENABLE_SUMMARY)
 	add_subdirectory (plugins/summary)
 endif ()
