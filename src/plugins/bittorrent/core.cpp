@@ -2391,30 +2391,3 @@ namespace BitTorrent
 	}
 }
 }
-
-namespace libtorrent
-{
-	QDataStream& operator>> (QDataStream& in, entry& e)
-	{
-		qint8 version;
-		in >> version;
-		if (version == 1)
-		{
-			QByteArray ba;
-			in >> ba;
-			const char *begin = ba;
-			try
-			{
-				e = libtorrent::bdecode (begin, begin + ba.size ());
-			}
-			catch (const libtorrent::libtorrent_exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< version
-					<< "while bdecoding"
-					<< e.what ();
-			}
-		}
-		return in;
-	}
-}

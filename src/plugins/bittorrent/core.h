@@ -365,9 +365,3 @@ namespace BitTorrent
 	};
 }
 }
-
-namespace libtorrent
-{
-	QDataStream& operator<< (QDataStream&, const libtorrent::entry&);
-	QDataStream& operator>> (QDataStream&, libtorrent::entry&);
-}
