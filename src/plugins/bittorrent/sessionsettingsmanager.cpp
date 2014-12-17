@@ -313,10 +313,7 @@ namespace BitTorrent
 		XmlSettingsManager::Instance ()->RegisterObject (dhtSettings,
 				this, "setDHTSettings");
 
-		// TODO unite
-		XmlSettingsManager::Instance ()->RegisterObject ("ScrapeInterval",
-				this, "setScrapeInterval");
-		XmlSettingsManager::Instance ()->RegisterObject ("ScrapeEnabled",
+		XmlSettingsManager::Instance ()->RegisterObject ({ "ScrapeInterval", "ScrapeEnabled" },
 				this, "setScrapeInterval");
 
 		const QList<QByteArray> loggingSettings
