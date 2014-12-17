@@ -104,71 +104,41 @@ namespace BitTorrent
 			// optimize_hashing_for_speed = false
 			// coalesce_reads = false
 			// coalesce_writes = false
-			XmlSettingsManager::Instance ()->
-				setProperty ("WholePiecesThreshold", 2);
-			XmlSettingsManager::Instance ()->
-				setProperty ("UseParoleMode", false);
-			XmlSettingsManager::Instance ()->
-				setProperty ("PrioritizePartialPieces", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("FilePoolSize", 4);
-			XmlSettingsManager::Instance ()->
-				setProperty ("AllowMultipleConnectionsPerIP", false);
-			XmlSettingsManager::Instance ()->
-				setProperty ("MaxFailcount", 2);
-			XmlSettingsManager::Instance ()->
-				setProperty ("InactivityTimeout", 120);
-			XmlSettingsManager::Instance ()->
-				setProperty ("MaxOutstandingDiskBytesPerConnection", 1);
-			XmlSettingsManager::Instance ()->
-				setProperty ("UPNPIgnoreNonrouters", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("SendBufferWatermark", 9);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CacheSize", 0);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CacheBufferChunkSize", 1);
-			XmlSettingsManager::Instance ()->
-				setProperty ("UseReadCache", false);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CloseRedundantConnections", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("MaxPeerListSize", 500);
-			XmlSettingsManager::Instance ()->
-				setProperty ("PreferUDPTrackers", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("MaxRejects", 10);
+			XmlSettingsManager::Instance ()->setProperty ("WholePiecesThreshold", 2);
+			XmlSettingsManager::Instance ()->setProperty ("UseParoleMode", false);
+			XmlSettingsManager::Instance ()->setProperty ("PrioritizePartialPieces", true);
+			XmlSettingsManager::Instance ()->setProperty ("FilePoolSize", 4);
+			XmlSettingsManager::Instance ()->setProperty ("AllowMultipleConnectionsPerIP", false);
+			XmlSettingsManager::Instance ()->setProperty ("MaxFailcount", 2);
+			XmlSettingsManager::Instance ()->setProperty ("InactivityTimeout", 120);
+			XmlSettingsManager::Instance ()->setProperty ("MaxOutstandingDiskBytesPerConnection", 1);
+			XmlSettingsManager::Instance ()->setProperty ("UPNPIgnoreNonrouters", true);
+			XmlSettingsManager::Instance ()->setProperty ("SendBufferWatermark", 9);
+			XmlSettingsManager::Instance ()->setProperty ("CacheSize", 0);
+			XmlSettingsManager::Instance ()->setProperty ("CacheBufferChunkSize", 1);
+			XmlSettingsManager::Instance ()->setProperty ("UseReadCache", false);
+			XmlSettingsManager::Instance ()->setProperty ("CloseRedundantConnections", true);
+			XmlSettingsManager::Instance ()->setProperty ("MaxPeerListSize", 500);
+			XmlSettingsManager::Instance ()->setProperty ("PreferUDPTrackers", true);
+			XmlSettingsManager::Instance ()->setProperty ("MaxRejects", 10);
 			break;
 		case Preset::HighPerfSeed:
 			// TODO read_cache_line_size = 512
 			// write_cache_line_size = 512
 			// optimize_hashing_for_speed = true
-			XmlSettingsManager::Instance ()->
-				setProperty ("FilePoolSize", 500);
-			XmlSettingsManager::Instance ()->
-				setProperty ("AllowMultipleConnectionsPerIP", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CacheSize", 512);
-			XmlSettingsManager::Instance ()->
-				setProperty ("UseReadCache", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CacheBufferChunkSize", 128);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CacheExpiry", 60 * 60);
-			XmlSettingsManager::Instance ()->
-				setProperty ("CloseRedundantConnections", true);
-			XmlSettingsManager::Instance ()->
-				setProperty ("MaxRejects", 10);
-			XmlSettingsManager::Instance ()->
-				setProperty ("RequestTimeout", 10);
-			XmlSettingsManager::Instance ()->
-				setProperty ("PeerTimeout", 20);
-			XmlSettingsManager::Instance ()->
-				setProperty ("InactivityTimeout", 20);
-			XmlSettingsManager::Instance ()->
-				setProperty ("AutoUploadSlots", false);
-			XmlSettingsManager::Instance ()->
-				setProperty ("MaxFailcount", 1);
+			XmlSettingsManager::Instance ()->setProperty ("FilePoolSize", 500);
+			XmlSettingsManager::Instance ()->setProperty ("AllowMultipleConnectionsPerIP", true);
+			XmlSettingsManager::Instance ()->setProperty ("CacheSize", 512);
+			XmlSettingsManager::Instance ()->setProperty ("UseReadCache", true);
+			XmlSettingsManager::Instance ()->setProperty ("CacheBufferChunkSize", 128);
+			XmlSettingsManager::Instance ()->setProperty ("CacheExpiry", 60 * 60);
+			XmlSettingsManager::Instance ()->setProperty ("CloseRedundantConnections", true);
+			XmlSettingsManager::Instance ()->setProperty ("MaxRejects", 10);
+			XmlSettingsManager::Instance ()->setProperty ("RequestTimeout", 10);
+			XmlSettingsManager::Instance ()->setProperty ("PeerTimeout", 20);
+			XmlSettingsManager::Instance ()->setProperty ("InactivityTimeout", 20);
+			XmlSettingsManager::Instance ()->setProperty ("AutoUploadSlots", false);
+			XmlSettingsManager::Instance ()->setProperty ("MaxFailcount", 1);
 			break;
 		default:
 			break;
