@@ -211,6 +211,8 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;/usr/local/share/apps/
 
 enable_testing ()
 
+set (LC_SOVERSION 0.6.75)
+
 add_subdirectory (util)
 add_subdirectory (xmlsettingsdialog)
 
