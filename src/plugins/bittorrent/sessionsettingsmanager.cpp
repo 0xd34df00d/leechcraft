@@ -220,9 +220,6 @@ namespace BitTorrent
 
 		XmlSettingsManager::Instance ()->RegisterObject ("TCPPortRange",
 				this, "tcpPortRangeChanged");
-		// TODO remove this
-		XmlSettingsManager::Instance ()->RegisterObject ("DHTEnabled",
-				this, "dhtStateChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("AutosaveInterval",
 				this, "autosaveIntervalChanged");
 		XmlSettingsManager::Instance ()->RegisterObject ("MaxUploads",
