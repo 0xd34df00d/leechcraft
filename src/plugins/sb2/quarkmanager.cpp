@@ -40,11 +40,14 @@
 #endif
 
 #include <QStandardItem>
+#include <QApplication>
+#include <QTranslator>
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
 #include <QDir>
 #include <qjson/parser.h>
+#include <util/util.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "viewmanager.h"
@@ -96,6 +99,7 @@ namespace SB2
 	, Component_ (comp)
 	, URL_ (comp->Url_)
 	, SettingsManager_ (0)
+	, Translator_ (TryLoadTranslator ())
 	, Manifest_ (URL_.toLocalFile ())
 	{
 		if (!ViewMgr_)
@@ -148,14 +152,43 @@ namespace SB2
 	QString QuarkManager::GetSuffixedName (const QString& suffix) const
 	{
 		if (!URL_.isLocalFile ())
-			return QString ();
+			return {};
 
 		const auto& localName = URL_.toLocalFile ();
 		const auto& suffixed = localName + suffix;
 		if (!QFile::exists (suffixed))
-			return QString ();
+			return {};
 
 		return suffixed;
+	}
+
+	std::shared_ptr<QTranslator> QuarkManager::TryLoadTranslator () const
+	{
+		if (!URL_.isLocalFile ())
+			return {};
+
+		auto dir = QFileInfo { URL_.toLocalFile () }.dir ();
+		if (!dir.cd ("ts"))
+			return {};
+
+		const auto& locale = Util::GetLocaleName ();
+
+		std::shared_ptr<QTranslator> result
+		{
+			new QTranslator,
+			[] (QTranslator *tr)
+			{
+				QApplication::removeTranslator (tr);
+				delete tr;
+			}
+		};
+		const auto& filename = dir.filePath ("ts_" + locale + ".qm");
+		if (!result->load (filename))
+			return {};
+
+		QApplication::installTranslator (result.get ());
+
+		return result;
 	}
 
 	void QuarkManager::CreateSettings ()
