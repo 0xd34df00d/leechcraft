@@ -70,7 +70,7 @@ namespace BitTorrent
 				Ui_.TotalConnections_->value ());
 
 		const auto idx = Ui_.SettingsSet_->currentIndex ();
-		const auto sset = static_cast<SessionSettingsManager::SettingsPreset> (idx);
+		const auto sset = static_cast<SessionSettingsManager::Preset> (idx);
 		Core::Instance ()->GetSessionSettingsManager ()->SetPreset (sset);
 	}
 }

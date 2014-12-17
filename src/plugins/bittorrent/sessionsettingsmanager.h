@@ -54,14 +54,14 @@ namespace BitTorrent
 	public:
 		SessionSettingsManager (libtorrent::session*, const ICoreProxy_ptr& proxy, QObject* = nullptr);
 
-		enum SettingsPreset
+		enum class Preset
 		{
-			SPDefault,
-			SPMinMemoryUsage,
-			SPHighPerfSeed
+			Default,
+			MinMemoryUsage,
+			HighPerfSeed
 		};
 
-		void SetPreset (SettingsPreset);
+		void SetPreset (Preset);
 
 		void SetOverallDownloadRate (int);
 		void SetOverallUploadRate (int);

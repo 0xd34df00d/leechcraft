@@ -92,11 +92,11 @@ namespace BitTorrent
 				SIGNAL (saveSettingsRequested ()));
 	}
 
-	void SessionSettingsManager::SetPreset (SettingsPreset sp)
+	void SessionSettingsManager::SetPreset (Preset sp)
 	{
 		switch (sp)
 		{
-		case SPMinMemoryUsage:
+		case Preset::MinMemoryUsage:
 			// TODO file_checks_delay_per_block = 15
 			// max_paused_peerlist_size = 50
 			// recv_socket_buffer_size = 16 * 1024
@@ -139,7 +139,7 @@ namespace BitTorrent
 			XmlSettingsManager::Instance ()->
 				setProperty ("MaxRejects", 10);
 			break;
-		case SPHighPerfSeed:
+		case Preset::HighPerfSeed:
 			// TODO read_cache_line_size = 512
 			// write_cache_line_size = 512
 			// optimize_hashing_for_speed = true
@@ -173,6 +173,7 @@ namespace BitTorrent
 		default:
 			break;
 		}
+
 		setGeneralSettings ();
 	}
 
