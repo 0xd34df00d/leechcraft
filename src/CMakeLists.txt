@@ -372,27 +372,20 @@ endfunction ()
 
 set (GENCPP_XML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../tools/scripts/translationstuff/gencpp.sh")
 
-function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
-	string (LENGTH "${PlugName}" _pnameLength)
+function (CreateTrsUpTargetImpl _basename Langs Sources Xml)
 	string (LENGTH "${Xml}" _xmlLength)
-	set (_basename "leechcraft")
-
-	if (_pnameLength)
-		set (_basename "${_basename}_${PlugName}")
-	endif ()
-
 	if (_xmlLength)
 		set (Sources "${Sources};dummy.cpp")
 	endif ()
 
 	foreach (_LANG ${Langs})
 		add_custom_target (${_basename}_ts_${_LANG}
-				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_${_LANG}.ts"
+				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} "-ts" "${_basename}_${_LANG}.ts"
 				COMMAND "rm" "-f" "dummy.cpp"
 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 	endforeach ()
 	add_custom_target (${_basename}_ts
-			${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_\${TSLANG}.ts"
+			${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} "-ts" "${_basename}_\${TSLANG}.ts"
 			COMMAND "rm" "-f" "dummy.cpp"
 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -424,6 +417,17 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 	endif ()
 endfunction ()
 
+function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
+	string (LENGTH "${PlugName}" _pnameLength)
+	set (_basename "leechcraft")
+	if (_pnameLength)
+		set (_basename "${_basename}_${PlugName}")
+	endif ()
+
+	list (APPEND Sources ${Forms})
+
+	CreateTrsUpTargetImpl (${_basename} "${Langs}" "${Sources}" "${Xml}")
+endfunction ()
 if (ENABLE_SUMMARY)
 	add_subdirectory (plugins/summary)
 endif ()
