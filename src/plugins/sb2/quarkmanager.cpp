@@ -172,6 +172,12 @@ namespace SB2
 			return {};
 
 		const auto& locale = Util::GetLocaleName ();
+		const auto& localeLang = locale.section ('_', 0, 0);
+
+		const QStringList filters { "*_" + locale + ".qm", "*_" + localeLang + ".qm" };
+		const auto& files = dir.entryList (filters, QDir::Files);
+		if (files.isEmpty ())
+			return {};
 
 		std::shared_ptr<QTranslator> result
 		{
@@ -182,7 +188,7 @@ namespace SB2
 				delete tr;
 			}
 		};
-		const auto& filename = dir.filePath ("ts_" + locale + ".qm");
+		const auto& filename = dir.filePath (files.value (0));
 		if (!result->load (filename))
 			return {};
 
