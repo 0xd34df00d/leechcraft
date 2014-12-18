@@ -349,27 +349,6 @@ if (USE_QT5)
     endif()
 endif (USE_QT5)
 
-function (CreateTrs PlugName Langs CompiledTranVar)
-	string (LENGTH "${PlugName}" _pnameLength)
-	set (_basename "leechcraft")
-	if (_pnameLength)
-		set (_basename "${_basename}_${PlugName}")
-	endif ()
-	foreach (_LANG ${Langs})
-		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
-		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
-	endforeach ()
-	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
-
-	add_custom_command (OUTPUT ${_ctran}
-		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
-		DEPENDS ${_tran}
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		)
-	install (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
-	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
-endfunction ()
-
 set (GENCPP_XML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../tools/scripts/translationstuff/gencpp.sh")
 
 function (CreateTrsUpTargetImpl _basename Langs Sources Xml)
@@ -432,6 +411,55 @@ endfunction ()
 function (CreateQmlTrsUpTarget PlugName Langs QmlFiles Xml)
 	set (_basename "leechcraft_${PlugName}_qml")
 	CreateTrsUpTargetImpl (${_basename} "${Langs}" "${QmlFiles}" "${Xml}")
+endfunction ()
+
+function (CreateTrs PlugName Langs CompiledTranVar)
+	string (LENGTH "${PlugName}" _pnameLength)
+	set (_basename "leechcraft")
+	if (_pnameLength)
+		set (_basename "${_basename}_${PlugName}")
+	endif ()
+	foreach (_LANG ${Langs})
+		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	endforeach ()
+	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+
+	add_custom_command (OUTPUT ${_ctran}
+		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
+		DEPENDS ${_tran}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	install (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
+	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+endfunction ()
+
+function (CreateTrsQml PlugName Langs Target QmlDirs)
+	set (_basename "leechcraft_${PlugName}_qml")
+	foreach (_LANG ${Langs})
+		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	endforeach ()
+	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+
+	add_custom_command (TARGET ${Target} PRE_BUILD
+		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
+		COMMAND "${CMAKE_COMMAND}" -E tar cfj temp.tar ${_ctran}
+		DEPENDS ${_tran}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	foreach (_DIR ${QmlDirs})
+		add_custom_command (TARGET ${Target} PRE_BUILD
+			COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/${_DIR}/ts/"
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			)
+		add_custom_command (TARGET ${Target} PRE_BUILD
+			COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/temp.tar" "temp.tar"
+			COMMAND "${CMAKE_COMMAND}" -E tar xfj temp.tar
+			COMMAND "${CMAKE_COMMAND}" -E remove temp.tar
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_DIR}/ts/
+			)
+	endforeach ()
 endfunction ()
 
 if (ENABLE_SUMMARY)
