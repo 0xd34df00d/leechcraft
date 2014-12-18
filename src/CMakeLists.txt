@@ -442,24 +442,40 @@ function (CreateTrsQml PlugName Langs Target QmlDirs)
 	endforeach ()
 	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
 
-	add_custom_command (TARGET ${Target} PRE_BUILD
+	set (_marker "${_basename}_trsqml_marker")
+
+	add_custom_target (${_marker}
 		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
 		COMMAND "${CMAKE_COMMAND}" -E tar cfj temp.tar ${_ctran}
 		DEPENDS ${_tran}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		)
 	foreach (_DIR ${QmlDirs})
-		add_custom_command (TARGET ${Target} PRE_BUILD
+		string (REPLACE "/" "_" _ODIR ${_DIR})
+		add_custom_target ("${_marker}_${_ODIR}_mkdir"
 			COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/${_DIR}/ts/"
+			DEPENDS ${_marker}
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 			)
-		add_custom_command (TARGET ${Target} PRE_BUILD
+		add_custom_target ("${_marker}_${_ODIR}"
 			COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/temp.tar" "temp.tar"
 			COMMAND "${CMAKE_COMMAND}" -E tar xfj temp.tar
 			COMMAND "${CMAKE_COMMAND}" -E remove temp.tar
+			DEPENDS "${_marker}_${_ODIR}_mkdir"
 			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_DIR}/ts/
 			)
 	endforeach ()
+
+	add_custom_target ("${_marker}_whole"
+		COMMAND "${CMAKE_COMMAND}" -E remove temp.tar
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	foreach (_DIR ${QmlDirs})
+		string (REPLACE "/" "_" _ODIR ${_DIR})
+		add_dependencies ("${_marker}_whole" "${_marker}_${_ODIR}")
+	endforeach ()
+
+	add_dependencies (${Target} "${_marker}_whole")
 endfunction ()
 
 if (ENABLE_SUMMARY)
