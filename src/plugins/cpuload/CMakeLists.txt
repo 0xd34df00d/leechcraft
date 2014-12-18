@@ -26,6 +26,9 @@ endif ()
 #CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("cpuload" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
+file(GLOB QML_FILES "share/qml/cpuload/*.qml")
+CreateQmlTrsUpTarget("cpuload" "en;ru_RU" "${QML_FILES}" "share/qml/cpuload/CpuLoadQuark.qml.settings")
+
 add_library (leechcraft_cpuload SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
