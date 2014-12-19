@@ -442,8 +442,9 @@ namespace BitTorrent
 			return QVariant::fromValue<QWidget*> (TabWidget_);
 		if (role == RoleContextMenu)
 			return QVariant::fromValue<QMenu*> (Menu_);
-		int row = index.row (),
-			column = index.column ();
+
+		const int row = index.row ();
+		const int column = index.column ();
 
 		if (!CheckValidity (row))
 			return QVariant ();
@@ -1384,23 +1385,28 @@ namespace BitTorrent
 		ScheduleSave ();
 	}
 
+	namespace
+	{
+		template<typename Range>
+		Core::BanRange_t GetBanRange (const Range& range)
+		{
+			return
+			{
+				QString::fromStdString (range.first.to_string ()),
+				QString::fromStdString (range.last.to_string ())
+			};
+		}
+	}
+
 	QMap<Core::BanRange_t, bool> Core::GetFilter () const
 	{
-		boost::tuple<std::vector<libtorrent::ip_range<libtorrent::address_v4>>,
-			std::vector<libtorrent::ip_range<libtorrent::address_v6>>> both =
-				Session_->get_ip_filter ().export_filter ();
-		std::vector<libtorrent::ip_range<libtorrent::address_v4>> v4 = both.get<0> ();
-		std::vector<libtorrent::ip_range<libtorrent::address_v6>> v6 = both.get<1> ();
+		const auto& both = Session_->get_ip_filter ().export_filter ();
 
 		QMap<Core::BanRange_t, bool> result;
-		Q_FOREACH (libtorrent::ip_range<libtorrent::address_v4> range, v4)
-			result [BanRange_t (QString::fromStdString (range.first.to_string ()),
-					QString::fromStdString (range.last.to_string ()))] =
-				range.flags;
-		Q_FOREACH (libtorrent::ip_range<libtorrent::address_v6> range, v6)
-			result [BanRange_t (QString::fromStdString (range.first.to_string ()),
-					QString::fromStdString (range.last.to_string ()))] =
-				range.flags;
+		for (const auto& range : both.get<0> ())
+			result [GetBanRange (range)] = range.flags;
+		for (const auto& range : both.get<1> ())
+			result [GetBanRange (range)] = range.flags;
 		return result;
 	}
 
