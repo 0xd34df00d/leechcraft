@@ -1109,7 +1109,18 @@ namespace BitTorrent
 		if (!CheckValidity (pos))
 			return;
 
-		Handles_.at (pos).Handle_.force_recheck ();
+		const auto& handle = Handles_.at (pos).Handle_;
+		switch (handle.status (0).state)
+		{
+		case libtorrent::torrent_status::checking_files:
+		case libtorrent::torrent_status::checking_resume_data:
+		case libtorrent::torrent_status::queued_for_checking:
+			return;
+		default:
+			break;
+		}
+
+		handle.force_recheck ();
 	}
 
 	void Core::SetTorrentDownloadRate (int val, int idx)
