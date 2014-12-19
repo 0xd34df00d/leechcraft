@@ -1110,7 +1110,8 @@ namespace BitTorrent
 			return;
 
 		const auto& handle = Handles_.at (pos).Handle_;
-		switch (handle.status (0).state)
+		const auto& status = handle.status (0);
+		switch (status.state)
 		{
 		case libtorrent::torrent_status::checking_files:
 		case libtorrent::torrent_status::checking_resume_data:
@@ -1121,6 +1122,12 @@ namespace BitTorrent
 		}
 
 		handle.force_recheck ();
+
+		if (status.paused && !status.auto_managed)
+		{
+			handle.resume ();
+			Handles_ [pos].PauseAfterCheck_ = true;
+		}
 	}
 
 	void Core::SetTorrentDownloadRate (int val, int idx)
@@ -1480,6 +1487,24 @@ namespace BitTorrent
 			const auto row = std::distance (Handles_.begin (), pos);
 			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
 		}
+	}
+
+	void Core::HandleTorrentChecked (const libtorrent::torrent_handle& h)
+	{
+		const auto pos = FindHandle (h);
+		if (pos == Handles_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown torrent handle"
+					<< QString::fromUtf8 (h.name ().c_str ());
+			return;
+		}
+
+		if (!pos->PauseAfterCheck_)
+			return;
+
+		pos->PauseAfterCheck_ = false;
+		h.pause ();
 	}
 
 	void Core::MoveUp (const std::vector<int>& selections)
@@ -2266,6 +2291,7 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::torrent_checked_alert& a) const
 		{
+			Core::Instance ()->HandleTorrentChecked (a.handle);
 			Core::Instance ()->UpdateStatus ({ a.handle.status () });
 		}
 

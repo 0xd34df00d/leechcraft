@@ -108,6 +108,8 @@ namespace BitTorrent
 
 			int ID_;
 			LeechCraft::TaskParameters Parameters_;
+
+			bool PauseAfterCheck_ = false;
 		};
 
 		friend struct SimpleDispatcher;
@@ -308,6 +310,8 @@ namespace BitTorrent
 		void HandleMetadata (const libtorrent::metadata_received_alert&);
 		void PieceRead (const libtorrent::read_piece_alert&);
 		void UpdateStatus (const std::vector<libtorrent::torrent_status>&);
+
+		void HandleTorrentChecked (const libtorrent::torrent_handle&);
 
 		void MoveUp (const std::vector<int>&);
 		void MoveDown (const std::vector<int>&);
