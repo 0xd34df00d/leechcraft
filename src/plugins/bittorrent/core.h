@@ -87,10 +87,10 @@ namespace BitTorrent
 
 		enum TorrentState
 		{
-			TSIdle
-			, TSPreparing
-			, TSDownloading
-			, TSSeeding
+			TSIdle,
+			TSPreparing,
+			TSDownloading,
+			TSSeeding
 		};
 
 		struct TorrentStruct
