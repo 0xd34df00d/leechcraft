@@ -465,6 +465,27 @@ namespace BitTorrent
 
 		switch (role)
 		{
+		case Qt::DecorationRole:
+			if (column != ColumnName)
+				return {};
+
+			if (status.paused)
+				return QIcon::fromTheme ("media-playback-stop");
+
+			switch (status.state)
+			{
+			case libtorrent::torrent_status::queued_for_checking:
+			case libtorrent::torrent_status::checking_files:
+			case libtorrent::torrent_status::checking_resume_data:
+				return QIcon::fromTheme ("tools-check-spelling");
+			case libtorrent::torrent_status::downloading:
+			case libtorrent::torrent_status::downloading_metadata:
+			case libtorrent::torrent_status::allocating:
+				return QIcon::fromTheme ("media-playback-start");
+			case libtorrent::torrent_status::finished:
+			case libtorrent::torrent_status::seeding:
+				return QIcon::fromTheme ("dialog-ok");
+			}
 		case Roles::SortRole:
 			switch (column)
 			{
