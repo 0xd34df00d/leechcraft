@@ -43,13 +43,29 @@ public:
 	virtual void LearnWord (const QString&) = 0;
 };
 
-typedef std::shared_ptr<ISpellChecker> ISpellChecker_ptr;
+/** @brief A shared pointer to an ISpellChecker instance.
+ */
+using ISpellChecker_ptr = std::shared_ptr<ISpellChecker>;
 
+/** @brief Interface for plugins providing spell checker capabilities.
+ *
+ * This interface itself does not expose anything for spell checking.
+ * Instead, a spell checker instance should be requested via
+ * CreateSpellchecker().
+ *
+ * @sa ISpellChecker
+ */
 class ISpellCheckProvider
 {
 protected:
 	virtual ~ISpellCheckProvider () {}
 public:
+	/** @brief Requests a new spellchecker.
+	 *
+	 * The ownership is passed to the caller.
+	 *
+	 * @return A ISpellChecker object.
+	 */
 	virtual ISpellChecker_ptr CreateSpellchecker () = 0;
 };
 
