@@ -946,22 +946,18 @@ namespace BitTorrent
 			return -1;
 		}
 
-		TorrentStruct tmp =
+		const TorrentStruct tmp
 		{
-			std::vector<int> (),
 			handle,
-			QByteArray (),
-			QString (),
-			TSIdle,
-			0,
 			tags,
-			true,
 			Proxy_->GetID (),
 			params
 		};
-		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+
+		beginInsertRows ({}, Handles_.size (), Handles_.size ());
 		Handles_ << tmp;
 		endInsertRows ();
+
 		return tmp.ID_;
 	}
 
@@ -1036,20 +1032,18 @@ namespace BitTorrent
 		QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
 		if (!torrentFileName.endsWith (".torrent"))
 			torrentFileName.append (".torrent");
-		TorrentStruct tmp =
-		{
-			priorities,
-			handle,
-			contents,
-			torrentFileName,
-			TSIdle,
-			0,
-			tags,
-			autoManaged,
-			Proxy_->GetID (),
-			params
-		};
-		Handles_.append (tmp);
+
+		const auto newId = Proxy_->GetID ();
+		Handles_.append ({
+				priorities,
+				handle,
+				contents,
+				torrentFileName,
+				tags,
+				autoManaged,
+				newId,
+				params
+			});
 		endInsertRows ();
 
 		if (tryLive)
@@ -1059,7 +1053,7 @@ namespace BitTorrent
 		}
 
 		ScheduleSave ();
-		return tmp.ID_;
+		return newId;
 	}
 
 	void Core::KillTask (int id)
@@ -1782,21 +1776,17 @@ namespace BitTorrent
 
 			handle.prioritize_files (priorities);
 
-			TorrentStruct tmp =
-			{
-				priorities,
-				handle,
-				data,
-				filename,
-				TSIdle,
-				0,
-				settings.value ("Tags").toStringList (),
-				automanaged,
-				Proxy_->GetID (),
-				taskParameters
-			};
-			beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-			Handles_.append (tmp);
+			beginInsertRows ({}, Handles_.size (), Handles_.size ());
+			Handles_.append ({
+					priorities,
+					handle,
+					data,
+					filename,
+					settings.value ("Tags").toStringList (),
+					automanaged,
+					Proxy_->GetID (),
+					taskParameters
+				});
 			endInsertRows ();
 			qDebug () << "restored a torrent";
 		}

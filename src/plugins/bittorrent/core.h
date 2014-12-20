@@ -95,21 +95,51 @@ namespace BitTorrent
 
 		struct TorrentStruct
 		{
-			std::vector<int> FilePriorities_;
+			std::vector<int> FilePriorities_ = {};
 			libtorrent::torrent_handle Handle_;
-			QByteArray TorrentFileContents_;
-			QString TorrentFileName_;
-			TorrentState State_;
-			double Ratio_;
+			QByteArray TorrentFileContents_ = {};
+			QString TorrentFileName_ = {};
+			TorrentState State_ = TSIdle;
+			double Ratio_ = 0;
 			/** Holds the IDs of tags of the torrent.
 				*/
 			QStringList Tags_;
-			bool AutoManaged_;
+			bool AutoManaged_ = true;
 
 			int ID_;
 			TaskParameters Parameters_;
 
 			bool PauseAfterCheck_ = false;
+
+			TorrentStruct (const libtorrent::torrent_handle& handle,
+					const QStringList& tags,
+					int id,
+					TaskParameters params)
+			: Handle_ { handle }
+			, Tags_ { tags }
+			, ID_ { id }
+			, Parameters_ { params }
+			{
+			}
+
+			TorrentStruct (const std::vector<int>& prios,
+					const libtorrent::torrent_handle& handle,
+					const QByteArray& torrentFile,
+					const QString& filename,
+					const QStringList& tags,
+					bool autoManaged,
+					int id,
+					TaskParameters params)
+			: FilePriorities_ { prios }
+			, Handle_ { handle }
+			, TorrentFileContents_ { torrentFile }
+			, TorrentFileName_ { filename }
+			, Tags_ { tags }
+			, AutoManaged_ { autoManaged }
+			, ID_ { id }
+			, Parameters_ { params }
+			{
+			}
 		};
 
 		friend struct SimpleDispatcher;
