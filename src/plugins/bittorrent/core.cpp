@@ -738,7 +738,11 @@ namespace BitTorrent
 	{
 		if (idx < 0)
 			idx = CurrentTorrent_;
-		return Handles_.value (idx).Handle_;
+
+		if (idx >= Handles_.size ())
+			return {};
+
+		return Handles_.at (idx).Handle_;
 	}
 
 	libtorrent::torrent_info Core::GetTorrentInfo (const QString& filename)
