@@ -480,11 +480,13 @@ namespace BitTorrent
 				return QIcon::fromTheme ("tools-check-spelling");
 			case libtorrent::torrent_status::downloading:
 			case libtorrent::torrent_status::downloading_metadata:
+				return QIcon::fromTheme ("arrow-down");
 			case libtorrent::torrent_status::allocating:
 				return QIcon::fromTheme ("media-playback-start");
 			case libtorrent::torrent_status::finished:
+				return QIcon::fromTheme ("arrow-up");
 			case libtorrent::torrent_status::seeding:
-				return QIcon::fromTheme ("dialog-ok");
+				return QIcon::fromTheme ("arrow-up-double");
 			}
 		case Roles::SortRole:
 			switch (column)
