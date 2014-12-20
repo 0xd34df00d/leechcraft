@@ -18,16 +18,21 @@ set (FORMS
 	)
 QtWrapUi (UIS_H "${FORMS}")
 
-add_executable (lc_anhero_crashprocess WIN32
+set (EXECSUFFIX)
+if (USE_QT5)
+	set (EXECSUFFIX "-qt5")
+endif ()
+
+add_executable (lc_anhero_crashprocess${EXECSUFFIX} WIN32
 	${SRCS}
 	${UIS_H}
 	)
-target_link_libraries (lc_anhero_crashprocess
+target_link_libraries (lc_anhero_crashprocess${EXECSUFFIX}
 	${LEECHCRAFT_LIBRARIES}
 	${Boost_PROGRAM_OPTIONS_LIBRARY}
 	)
-install (TARGETS lc_anhero_crashprocess DESTINATION ${LC_BINDIR})
-FindQtLibs (lc_anhero_crashprocess Widgets)
+install (TARGETS lc_anhero_crashprocess${EXECSUFFIX} DESTINATION ${LC_BINDIR})
+FindQtLibs (lc_anhero_crashprocess${EXECSUFFIX} Widgets)
 
 if (UNIX AND NOT APPLE)
 	add_custom_target (data_lc_anhero_crashprocess_gz ALL
