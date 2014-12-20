@@ -107,7 +107,7 @@ namespace BitTorrent
 			bool AutoManaged_;
 
 			int ID_;
-			LeechCraft::TaskParameters Parameters_;
+			TaskParameters Parameters_;
 
 			bool PauseAfterCheck_ = false;
 		};
