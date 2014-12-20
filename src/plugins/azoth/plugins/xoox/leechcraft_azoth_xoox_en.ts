@@ -384,14 +384,22 @@
         <translation>JID</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="192"/>
+        <location filename="executecommanddialog.cpp" line="200"/>
         <source>Execute another command</source>
         <translation>Execute another command</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="218"/>
+        <location filename="executecommanddialog.cpp" line="214"/>
         <source>Please wait while the selected command is executed.</source>
         <translation>Please wait while the selected command is executed.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Xoox::AdHocCommandManager</name>
+    <message>
+        <location filename="adhoccommandmanager.cpp" line="222"/>
+        <source>Original message: %1.</source>
+        <translation>Original message: %1.</translation>
     </message>
 </context>
 <context>
@@ -495,7 +503,7 @@
         <translation>You have received dataform from %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1004"/>
+        <location filename="clientconnection.cpp" line="1008"/>
         <source>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</source>
         <translation>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</translation>
     </message>
@@ -503,147 +511,147 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnectionErrorMgr</name>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="96"/>
+        <location filename="clientconnectionerrormgr.cpp" line="102"/>
         <source>Error from %1: %2</source>
         <translation>Error from %1: %2</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="99"/>
+        <location filename="clientconnectionerrormgr.cpp" line="105"/>
         <source>Error from %1: %2 (%3).</source>
         <translation>Error from %1: %2 (%3).</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="114"/>
+        <location filename="clientconnectionerrormgr.cpp" line="120"/>
         <source>Bad request.</source>
         <translation>Bad request.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="116"/>
+        <location filename="clientconnectionerrormgr.cpp" line="122"/>
         <source>Conflict (possibly, resource conflict).</source>
         <translation>Conflict (possibly, resource conflict).</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="118"/>
+        <location filename="clientconnectionerrormgr.cpp" line="124"/>
         <source>Feature not implemented.</source>
         <translation>Feature not implemented.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="120"/>
+        <location filename="clientconnectionerrormgr.cpp" line="126"/>
         <source>Forbidden.</source>
         <translation>Forbidden.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="123"/>
+        <location filename="clientconnectionerrormgr.cpp" line="129"/>
         <source>Internal server error.</source>
         <translation>Internal server error.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="125"/>
+        <location filename="clientconnectionerrormgr.cpp" line="131"/>
         <source>Item not found.</source>
         <translation>Item not found.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="127"/>
+        <location filename="clientconnectionerrormgr.cpp" line="133"/>
         <source>JID is malformed.</source>
         <translation>JID is malformed.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="129"/>
+        <location filename="clientconnectionerrormgr.cpp" line="135"/>
         <source>Data is not acceptable.</source>
         <translation>Data is not acceptable.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="131"/>
+        <location filename="clientconnectionerrormgr.cpp" line="137"/>
         <source>Action is not allowed.</source>
         <translation>Action is not allowed.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="133"/>
+        <location filename="clientconnectionerrormgr.cpp" line="139"/>
         <source>Not authorized.</source>
         <translation>Not authorized.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="135"/>
+        <location filename="clientconnectionerrormgr.cpp" line="141"/>
         <source>Payment required.</source>
         <translation>Payment required.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="137"/>
+        <location filename="clientconnectionerrormgr.cpp" line="143"/>
         <source>Recipient unavailable.</source>
         <translation>Recipient unavailable.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="139"/>
+        <location filename="clientconnectionerrormgr.cpp" line="145"/>
         <source>Got redirect.</source>
         <translation>Got redirect.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="141"/>
+        <location filename="clientconnectionerrormgr.cpp" line="147"/>
         <source>Registration required.</source>
         <translation>Registration required.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="143"/>
+        <location filename="clientconnectionerrormgr.cpp" line="149"/>
         <source>Remote server not found.</source>
         <translation>Remote server not found.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="145"/>
+        <location filename="clientconnectionerrormgr.cpp" line="151"/>
         <source>Timeout contacting remote server.</source>
         <translation>Timeout contacting remote server.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="147"/>
+        <location filename="clientconnectionerrormgr.cpp" line="153"/>
         <source>Error due to resource constraint.</source>
         <translation>Error due to resource constraint.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="149"/>
+        <location filename="clientconnectionerrormgr.cpp" line="155"/>
         <source>Service is unavailable at the moment.</source>
         <translation>Service is unavailable at the moment.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="151"/>
+        <location filename="clientconnectionerrormgr.cpp" line="157"/>
         <source>Subscription is required to perform this action.</source>
         <translation>Subscription is required to perform this action.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="155"/>
+        <location filename="clientconnectionerrormgr.cpp" line="161"/>
         <source>Other error.</source>
         <translation>Other error.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="175"/>
+        <location filename="clientconnectionerrormgr.cpp" line="185"/>
         <source>Error from %1: </source>
         <translation>Error from %1: </translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="180"/>
+        <location filename="clientconnectionerrormgr.cpp" line="190"/>
         <source>Error text: %1.</source>
         <translation>Error text: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="221"/>
+        <location filename="clientconnectionerrormgr.cpp" line="231"/>
         <source>socket error: %1.</source>
         <translation>socket error: %1.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="226"/>
+        <location filename="clientconnectionerrormgr.cpp" line="236"/>
         <source>keep-alive error.</source>
         <translation>keep-alive error.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="229"/>
+        <location filename="clientconnectionerrormgr.cpp" line="239"/>
         <source>error while connecting: </source>
         <translation>error while connecting: </translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="235"/>
+        <location filename="clientconnectionerrormgr.cpp" line="245"/>
         <source>no error.</source>
         <translation>no error.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="251"/>
+        <location filename="clientconnectionerrormgr.cpp" line="261"/>
         <source>Account %1:</source>
         <translation>Account %1:</translation>
     </message>
@@ -659,139 +667,139 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="87"/>
+        <location filename="entrybase.cpp" line="90"/>
         <source>Commands...</source>
         <translation>Commands...</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="88"/>
+        <location filename="entrybase.cpp" line="91"/>
         <source>Detect nick</source>
         <translation>Detect nick</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="186"/>
+        <location filename="entrybase.cpp" line="222"/>
         <source>Can&apos;t view info while offline</source>
         <translation>Can&apos;t view info while offline</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="289"/>
+        <location filename="entrybase.cpp" line="325"/>
         <source>Photo</source>
         <translation>Photo</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="291"/>
+        <location filename="entrybase.cpp" line="327"/>
         <source>Real name</source>
         <translation>Real name</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="292"/>
+        <location filename="entrybase.cpp" line="328"/>
         <source>Birthday</source>
         <translation>Birthday</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="294"/>
+        <location filename="entrybase.cpp" line="330"/>
         <source>About</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="304"/>
-        <location filename="entrybase.cpp" line="324"/>
-        <location filename="entrybase.cpp" line="351"/>
+        <location filename="entrybase.cpp" line="340"/>
+        <location filename="entrybase.cpp" line="360"/>
+        <location filename="entrybase.cpp" line="387"/>
         <source>preferred</source>
         <translation>preferred</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="306"/>
-        <location filename="entrybase.cpp" line="326"/>
-        <location filename="entrybase.cpp" line="345"/>
+        <location filename="entrybase.cpp" line="342"/>
+        <location filename="entrybase.cpp" line="362"/>
+        <location filename="entrybase.cpp" line="381"/>
         <source>home</source>
         <translation>home</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="308"/>
-        <location filename="entrybase.cpp" line="328"/>
-        <location filename="entrybase.cpp" line="347"/>
+        <location filename="entrybase.cpp" line="344"/>
+        <location filename="entrybase.cpp" line="364"/>
+        <location filename="entrybase.cpp" line="383"/>
         <source>work</source>
         <translation>work</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="310"/>
+        <location filename="entrybase.cpp" line="346"/>
         <source>cell</source>
         <translation>cell</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="312"/>
+        <location filename="entrybase.cpp" line="348"/>
         <source>Phone</source>
         <translation>Phone</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="349"/>
+        <location filename="entrybase.cpp" line="385"/>
         <source>postal</source>
         <translation>postal</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="360"/>
+        <location filename="entrybase.cpp" line="396"/>
         <source>Country: %1</source>
         <translation>Country: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="361"/>
+        <location filename="entrybase.cpp" line="397"/>
         <source>Region: %1</source>
         <translation>Region: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="362"/>
+        <location filename="entrybase.cpp" line="398"/>
         <source>Locality: %1</source>
         <comment>User&apos;s locality</comment>
         <translation>Locality: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="363"/>
+        <location filename="entrybase.cpp" line="399"/>
         <source>Street: %1</source>
         <translation>Street: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="364"/>
+        <location filename="entrybase.cpp" line="400"/>
         <source>Postal code: %1</source>
         <translation>Postal code: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="366"/>
+        <location filename="entrybase.cpp" line="402"/>
         <source>Address</source>
         <translation>Address</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="371"/>
+        <location filename="entrybase.cpp" line="407"/>
         <source>Organization</source>
         <translation>Organization</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="372"/>
+        <location filename="entrybase.cpp" line="408"/>
         <source>Organization unit</source>
         <translation>Organization unit</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="373"/>
+        <location filename="entrybase.cpp" line="409"/>
         <source>Job title</source>
         <translation>Job title</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="374"/>
+        <location filename="entrybase.cpp" line="410"/>
         <source>Job role</source>
         <translation>Job role</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="690"/>
+        <location filename="entrybase.cpp" line="700"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 is now %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="977"/>
+        <location filename="entrybase.cpp" line="1050"/>
         <source>Select resource</source>
         <translation>Select resource</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="978"/>
+        <location filename="entrybase.cpp" line="1051"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Select resource for which to fetch the commands</translation>
     </message>
@@ -799,17 +807,17 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ExecuteCommandDialog</name>
     <message>
-        <location filename="executecommanddialog.cpp" line="228"/>
+        <location filename="executecommanddialog.cpp" line="224"/>
         <source>Please wait while the list of commands is fetched.</source>
         <translation>Please wait while the list of commands is fetched.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="305"/>
+        <location filename="executecommanddialog.cpp" line="301"/>
         <source>Please wait while command result is fetched.</source>
         <translation>Please wait while command result is fetched.</translation>
     </message>
     <message>
-        <location filename="executecommanddialog.cpp" line="322"/>
+        <location filename="executecommanddialog.cpp" line="318"/>
         <source>Please wait while action is performed</source>
         <translation>Please wait while action is performed</translation>
     </message>
@@ -838,42 +846,42 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="95"/>
+        <location filename="glooxaccount.cpp" line="96"/>
         <source>Self VCard...</source>
         <translation>Self VCard...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="96"/>
+        <location filename="glooxaccount.cpp" line="97"/>
         <source>Privacy lists...</source>
         <translation>Privacy lists...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="97"/>
+        <location filename="glooxaccount.cpp" line="98"/>
         <source>Enable message carbons</source>
         <translation>Enable message carbons</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="105"/>
+        <location filename="glooxaccount.cpp" line="106"/>
         <source>Deliver messages from conversations on other resources to this resource as well.</source>
         <translation>Deliver messages from conversations on other resources to this resource as well.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="491"/>
+        <location filename="glooxaccount.cpp" line="492"/>
         <source>Why would you call yourself?</source>
         <translation>Why would you call yourself?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="814"/>
+        <location filename="glooxaccount.cpp" line="818"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Unable to enable encryption for entry %1: no key has been set.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="823"/>
+        <location filename="glooxaccount.cpp" line="827"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Unable to change encryption state for %1.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="851"/>
+        <location filename="glooxaccount.cpp" line="855"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
         <translation>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</translation>
     </message>
@@ -894,32 +902,32 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxCLEntry</name>
     <message>
-        <location filename="glooxclentry.cpp" line="139"/>
+        <location filename="glooxclentry.cpp" line="141"/>
         <source>Block contact</source>
         <translation>Block contact</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="140"/>
+        <location filename="glooxclentry.cpp" line="142"/>
         <source>Add this user to the active privacy list (not all servers support this feature).</source>
         <translation>Add this user to the active privacy list (not all servers support this feature).</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="276"/>
+        <location filename="glooxclentry.cpp" line="278"/>
         <source>Unauthorized users</source>
         <translation>Unauthorized users</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="372"/>
+        <location filename="glooxclentry.cpp" line="369"/>
         <source>Login</source>
         <translation>Login</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="380"/>
+        <location filename="glooxclentry.cpp" line="377"/>
         <source>Logout</source>
         <translation>Logout</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="388"/>
+        <location filename="glooxclentry.cpp" line="385"/>
         <source>Gateway preferences...</source>
         <translation>Gateway preferences...</translation>
     </message>
@@ -1315,28 +1323,28 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomConfigWidget</name>
     <message>
-        <location filename="roomconfigwidget.cpp" line="79"/>
-        <location filename="roomconfigwidget.cpp" line="89"/>
+        <location filename="roomconfigwidget.cpp" line="78"/>
+        <location filename="roomconfigwidget.cpp" line="88"/>
         <source>Reason</source>
         <translation>Reason</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="81"/>
+        <location filename="roomconfigwidget.cpp" line="80"/>
         <source>Banned</source>
         <translation>Banned</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="82"/>
+        <location filename="roomconfigwidget.cpp" line="81"/>
         <source>Members</source>
         <translation>Members</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="83"/>
+        <location filename="roomconfigwidget.cpp" line="82"/>
         <source>Admins</source>
         <translation>Admins</translation>
     </message>
     <message>
-        <location filename="roomconfigwidget.cpp" line="84"/>
+        <location filename="roomconfigwidget.cpp" line="83"/>
         <source>Owners</source>
         <translation>Owners</translation>
     </message>
@@ -1576,7 +1584,7 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::SelfContact</name>
     <message>
-        <location filename="selfcontact.cpp" line="93"/>
+        <location filename="selfcontact.cpp" line="94"/>
         <source>Self contact</source>
         <translation>Self contact</translation>
     </message>
