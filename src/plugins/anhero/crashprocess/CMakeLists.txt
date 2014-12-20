@@ -35,10 +35,10 @@ install (TARGETS lc_anhero_crashprocess${EXECSUFFIX} DESTINATION ${LC_BINDIR})
 FindQtLibs (lc_anhero_crashprocess${EXECSUFFIX} Widgets)
 
 if (UNIX AND NOT APPLE)
-	add_custom_target (data_lc_anhero_crashprocess_gz ALL
-		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-		DEPENDS data/lc_anhero_crashprocess.1
+	add_custom_target (data_lc_anhero_crashprocess_gz${EXECSUFFIX} ALL
+		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress" "lc_anhero_crashprocess${EXECSUFFIX}.1"
+		DEPENDS data/lc_anhero_crashprocess${EXECSUFFIX}.1
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 		)
-	install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
+	install (FILES data/lc_anhero_crashprocess${EXECSUFFIX}.1.gz DESTINATION share/man/man1)
 endif ()
