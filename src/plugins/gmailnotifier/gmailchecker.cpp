@@ -160,7 +160,6 @@ namespace GmailNotifier
 			entry = entry.nextSiblingElement ("entry");
 		}
 
-		qDebug () << Q_FUNC_INFO;
 		emit gotConversations (result);
 	}
 
