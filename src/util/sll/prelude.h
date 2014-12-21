@@ -130,5 +130,7 @@ namespace Util
 	{
 		return [r] (const auto& left, const auto& right) { return r (left) < r (right); };
 	}
+
+	auto Apply = [] (const auto& t) { return t (); };
 }
 }
