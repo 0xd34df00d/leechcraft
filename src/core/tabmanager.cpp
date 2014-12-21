@@ -291,8 +291,7 @@ void TabManager::bringToFront (QWidget *widget) const
 	if (TabWidget_->IndexOf (widget) != -1)
 	{
 		TabWidget_->setCurrentWidget (widget);
-		Window_->show ();
-		Window_->activateWindow ();
+		Window_->showMain ();
 	}
 }
 
