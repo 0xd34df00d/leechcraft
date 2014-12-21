@@ -125,7 +125,7 @@ namespace Util
 		return {};
 	}
 
-#if USE_CPP14
+#ifdef USE_CPP14
 	template<typename R>
 	auto ComparingBy (R r)
 	{
