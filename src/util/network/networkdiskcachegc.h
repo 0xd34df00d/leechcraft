@@ -35,6 +35,9 @@
 #include <QMap>
 #include <QLinkedList>
 
+template<typename T>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Util
@@ -56,6 +59,8 @@ namespace Util
 		NetworkDiskCacheGC& operator= (const NetworkDiskCacheGC&) = delete;
 
 		static NetworkDiskCacheGC& Instance ();
+
+		QFuture<qint64> GetCurrentSize (const QString& path) const;
 
 		std::shared_ptr<void> RegisterDirectory (const QString& path,
 				const std::function<int ()>& sizeGetter);

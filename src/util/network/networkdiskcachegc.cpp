@@ -84,6 +84,11 @@ namespace Util
 		}
 	}
 
+	QFuture<qint64> NetworkDiskCacheGC::GetCurrentSize (const QString& path) const
+	{
+		return QtConcurrent::run ([path] { return CollectSizes (path).TotalSize_; });
+	}
+
 	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path, const std::function<int ()>& sizeGetter)
 	{
 		auto& list = Directories_ [path];
