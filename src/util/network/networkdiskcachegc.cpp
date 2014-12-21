@@ -44,9 +44,15 @@ namespace Util
 		return gc;
 	}
 
-	void NetworkDiskCacheGC::RegisterDirectory (const QString& path)
+	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path, const std::function<int>& )
 	{
 		++Directories_ [path];
+
+		return std::shared_ptr<void>
+		{
+			nullptr,
+			[this, path] (void*) { UnregisterDirectory (path); }
+		};
 	}
 
 	void NetworkDiskCacheGC::UnregisterDirectory (const QString& path)

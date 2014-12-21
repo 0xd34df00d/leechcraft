@@ -29,8 +29,11 @@
 
 #pragma once
 
+#include <memory>
+#include <functional>
 #include <QObject>
 #include <QMap>
+#include <QLinkedList>
 
 namespace LeechCraft
 {
@@ -40,7 +43,8 @@ namespace Util
 	{
 		Q_OBJECT
 
-		QMap<QString, int> Directories_;
+		using CacheSizeGetters_t = QLinkedList<std::function<int ()>>;
+		QMap<QString, CacheSizeGetters_t> Directories_;
 
 		NetworkDiskCacheGC ();
 	public:
@@ -49,7 +53,8 @@ namespace Util
 
 		static NetworkDiskCacheGC& Instance ();
 
-		void RegisterDirectory (const QString&);
+		std::shared_ptr<void> RegisterDirectory (const QString& path);
+	private:
 		void UnregisterDirectory (const QString&);
 	};
 }
