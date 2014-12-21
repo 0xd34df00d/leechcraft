@@ -169,6 +169,10 @@ namespace GmailNotifier
 
 		if (Reply_->error ())
 		{
+			qWarning () << Q_FUNC_INFO
+					<< "reply error:"
+					<< Reply_->errorString ()
+					<< Reply_->error ();
 			QString error = tr ("Error");
 			error.prepend ("Gmail Notifier: ");
 
