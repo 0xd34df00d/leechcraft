@@ -227,7 +227,10 @@ namespace Xoox
 		}
 
 		if (!VCardDialog_)
+		{
 			VCardDialog_ = new VCardDialog (this);
+			VCardDialog_->UpdateInfo (VCardIq_);
+		}
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
