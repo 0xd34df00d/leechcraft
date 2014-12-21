@@ -53,9 +53,10 @@ namespace Util
 
 		static NetworkDiskCacheGC& Instance ();
 
-		std::shared_ptr<void> RegisterDirectory (const QString& path);
+		std::shared_ptr<void> RegisterDirectory (const QString& path,
+				const std::function<int ()>& sizeGetter);
 	private:
-		void UnregisterDirectory (const QString&);
+		void UnregisterDirectory (const QString&, CacheSizeGetters_t::iterator);
 	};
 }
 }

@@ -44,18 +44,20 @@ namespace Util
 		return gc;
 	}
 
-	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path, const std::function<int>& )
+	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path, const std::function<int ()>& sizeGetter)
 	{
-		++Directories_ [path];
+		auto& list = Directories_ [path];
+		list.push_front (sizeGetter);
+		const auto thisItem = list.begin ();
 
 		return std::shared_ptr<void>
 		{
 			nullptr,
-			[this, path] (void*) { UnregisterDirectory (path); }
+			[this, path, thisItem] (void*) { UnregisterDirectory (path, thisItem); }
 		};
 	}
 
-	void NetworkDiskCacheGC::UnregisterDirectory (const QString& path)
+	void NetworkDiskCacheGC::UnregisterDirectory (const QString& path, CacheSizeGetters_t::iterator pos)
 	{
 		if (!Directories_.contains (path))
 		{
@@ -65,10 +67,13 @@ namespace Util
 			return;
 		}
 
-		if (--Directories_ [path])
+		auto& list = Directories_ [path];
+		list.erase (pos);
+
+		if (!list.isEmpty ())
 			return;
 
-		Directories_.take (path);
+		Directories_.remove (path);
 	}
 }
 }
