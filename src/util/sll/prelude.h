@@ -124,5 +124,11 @@ namespace Util
 
 		return {};
 	}
+
+	template<typename R>
+	auto ComparingBy (R r)
+	{
+		return [r] (const auto& left, const auto& right) { return r (left) < r (right); };
+	}
 }
 }
