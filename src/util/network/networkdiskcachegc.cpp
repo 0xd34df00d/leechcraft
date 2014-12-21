@@ -133,6 +133,13 @@ namespace Util
 
 	void NetworkDiskCacheGC::handleCollect ()
 	{
+		if (IsCollecting_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "already collecting";
+			return;
+		}
+
 		QList<QPair<QString, int>> dirs;
 		for (const auto& pair : Util::Stlize (Directories_))
 		{
