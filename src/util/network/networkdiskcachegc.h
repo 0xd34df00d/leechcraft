@@ -46,6 +46,8 @@ namespace Util
 		using CacheSizeGetters_t = QLinkedList<std::function<int ()>>;
 		QMap<QString, CacheSizeGetters_t> Directories_;
 
+		bool IsCollecting_ = false;
+
 		NetworkDiskCacheGC ();
 	public:
 		NetworkDiskCacheGC (const NetworkDiskCacheGC&) = delete;
@@ -57,6 +59,8 @@ namespace Util
 				const std::function<int ()>& sizeGetter);
 	private:
 		void UnregisterDirectory (const QString&, CacheSizeGetters_t::iterator);
+	private slots:
+		void handleCollect ();
 	};
 }
 }

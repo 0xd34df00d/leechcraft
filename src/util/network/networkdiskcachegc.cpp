@@ -28,7 +28,14 @@
  **********************************************************************/
 
 #include "networkdiskcachegc.h"
+#include <QTimer>
+#include <QDir>
+#include <QDirIterator>
+#include <QDateTime>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
+#include <util/sll/futures.h>
 
 namespace LeechCraft
 {
@@ -36,6 +43,12 @@ namespace Util
 {
 	NetworkDiskCacheGC::NetworkDiskCacheGC ()
 	{
+		const auto timer = new QTimer { this };
+		connect (timer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleCollect ()));
+		timer->start (60 * 60 * 1000);
 	}
 
 	NetworkDiskCacheGC& NetworkDiskCacheGC::Instance ()
@@ -74,6 +87,76 @@ namespace Util
 			return;
 
 		Directories_.remove (path);
+	}
+
+	namespace
+	{
+		qint64 Collector (const QString& cacheDirectory, qint64 goal)
+		{
+			if (cacheDirectory.isEmpty ())
+				return 0;
+
+			qDebug () << Q_FUNC_INFO << "running..." << cacheDirectory;
+
+			const QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
+			QDirIterator it { cacheDirectory, filters, QDirIterator::Subdirectories };
+
+			QMultiMap<QDateTime, QString> cacheItems;
+			qint64 totalSize = 0;
+			while (it.hasNext ())
+			{
+				const auto& path = it.next ();
+				const auto& info = it.fileInfo ();
+				cacheItems.insert (info.created (), path);
+				totalSize += info.size ();
+			}
+
+			auto i = cacheItems.constBegin ();
+			while (i != cacheItems.constEnd ())
+			{
+				if (totalSize < goal)
+					break;
+
+				QFile file { *i };
+				const auto size = file.size ();
+				totalSize -= size;
+				++i;
+
+				file.remove ();
+			}
+
+			qDebug () << "collector finished" << totalSize;
+
+			return totalSize;
+		}
+	};
+
+	void NetworkDiskCacheGC::handleCollect ()
+	{
+		QList<QPair<QString, int>> dirs;
+		for (const auto& pair : Util::Stlize (Directories_))
+		{
+			const auto& getters = pair.second;
+			const auto minSize = (*std::min_element (getters.begin (), getters.end (),
+						Util::ComparingBy (Apply))) ();
+			dirs.append ({ pair.first, minSize });
+		}
+
+		if (dirs.isEmpty ())
+			return;
+
+		IsCollecting_ = true;
+
+		Util::ExecuteFuture ([dirs]
+				{
+					return QtConcurrent::run ([dirs]
+							{
+								for (const auto& pair : dirs)
+									Collector (pair.first, pair.second);
+							});
+				},
+				[this] { IsCollecting_ = false; },
+				this);
 	}
 }
 }
