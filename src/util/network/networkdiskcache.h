@@ -29,13 +29,11 @@
 
 #pragma once
 
+#include <memory>
 #include <QNetworkDiskCache>
 #include <QMutex>
 #include <QHash>
 #include "networkconfig.h"
-
-template<typename T>
-class QFutureWatcher;
 
 namespace LeechCraft
 {
@@ -62,10 +60,10 @@ namespace Util
 
 		mutable QMutex InsertRemoveMutex_;
 
-		QFutureWatcher<qint64> *GarbageCollectorWatcher_;
-
 		QHash<QIODevice*, QUrl> PendingDev2Url_;
 		QHash<QUrl, QList<QIODevice*>> PendingUrl2Devs_;
+
+		const std::shared_ptr<void> GcGuard_;
 	public:
 		/** @brief Constructs the new disk cache.
 		 *
@@ -78,13 +76,6 @@ namespace Util
 		 * @sa GetUserDir(), UserDir::Cache.
 		 */
 		NetworkDiskCache (const QString& subpath, QObject *parent = 0);
-
-		/** @brief Destroys the cache.
-		 *
-		 * Destroys the cache object, possibly blocking until the garbage
-		 * collector finishes if it is running.
-		 */
-		~NetworkDiskCache ();
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
@@ -115,23 +106,8 @@ namespace Util
 		virtual void updateMetaData (const QNetworkCacheMetaData& metaData);
 	protected:
 		/** @brief Reimplemented from QNetworkDiskCache.
-		 *
-		 * Runs the garbage collector if required.
-		 *
-		 * @sa collectGarbage()
 		 */
 		virtual qint64 expire ();
-	public slots:
-		/** @brief Runs the garbage collector.
-		 *
-		 * This function initiates garbage collection in a background
-		 * thread and returns immediately.
-		 *
-		 * If a collector is already running, this function does nothing.
-		 */
-		void collectGarbage ();
-	private slots:
-		void handleCollectorFinished ();
 	};
 }
 }
