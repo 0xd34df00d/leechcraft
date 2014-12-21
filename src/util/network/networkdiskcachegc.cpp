@@ -112,17 +112,11 @@ namespace Util
 				totalSize += info.size ();
 			}
 
-			auto i = cacheItems.constBegin ();
-			while (i != cacheItems.constEnd ())
+			for (auto i = cacheItems.constBegin ();
+					i != cacheItems.constEnd () && totalSize > goal; ++i)
 			{
-				if (totalSize < goal)
-					break;
-
 				QFile file { *i };
-				const auto size = file.size ();
-				totalSize -= size;
-				++i;
-
+				totalSize -= file.size ();
 				file.remove ();
 			}
 
