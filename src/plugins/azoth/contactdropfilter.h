@@ -57,6 +57,10 @@ namespace Azoth
 	private:
 		bool CheckImage (const QList<QUrl>&);
 
+		void CollectDataFilters (QStringList& choiceItems,
+				QList<std::function<void ()>>& functions,
+				const QImage& image, const QString& entryId, const QString& variant);
+
 		void HandleImageDropped (const QImage&, const QUrl&);
 		void PerformChoice (const QStringList&, const QList<std::function<void ()>>&);
 
