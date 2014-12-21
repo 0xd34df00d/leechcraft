@@ -46,6 +46,8 @@ namespace Util
 		using CacheSizeGetters_t = QLinkedList<std::function<int ()>>;
 		QMap<QString, CacheSizeGetters_t> Directories_;
 
+		QMap<QString, qint64> LastSizes_;
+
 		bool IsCollecting_ = false;
 
 		NetworkDiskCacheGC ();

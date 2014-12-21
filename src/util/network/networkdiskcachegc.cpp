@@ -87,6 +87,7 @@ namespace Util
 			return;
 
 		Directories_.remove (path);
+		LastSizes_.remove (path);
 	}
 
 	namespace
@@ -158,11 +159,18 @@ namespace Util
 				{
 					return QtConcurrent::run ([dirs]
 							{
+								QMap<QString, qint64> sizes;
 								for (const auto& pair : dirs)
-									Collector (pair.first, pair.second);
+									sizes [pair.first] = Collector (pair.first, pair.second);
+								return sizes;
 							});
 				},
-				[this] { IsCollecting_ = false; },
+				[this] (const QMap<QString, qint64>& sizes)
+				{
+					IsCollecting_ = false;
+					for (const auto& pair : Util::Stlize (sizes))
+						LastSizes_ [pair.first] = pair.second;
+				},
 				this);
 	}
 }
