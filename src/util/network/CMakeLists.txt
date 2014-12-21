@@ -3,6 +3,7 @@ set (NETWORK_SRCS
 	customcookiejar.cpp
 	customnetworkreply.cpp
 	networkdiskcache.cpp
+	networkdiskcachegc.cpp
 	socketerrorstrings.cpp
 	)
 
