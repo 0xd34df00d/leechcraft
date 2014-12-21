@@ -124,7 +124,7 @@ namespace Util
 			if (cacheDirectory.isEmpty ())
 				return 0;
 
-			qDebug () << Q_FUNC_INFO << "running..." << cacheDirectory;
+			qDebug () << Q_FUNC_INFO << "running..." << cacheDirectory << goal;
 
 			auto sizeInfoResult = CollectSizes (cacheDirectory);
 
