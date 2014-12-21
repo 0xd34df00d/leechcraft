@@ -57,6 +57,33 @@ namespace Util
 		return gc;
 	}
 
+	namespace
+	{
+		struct SizeCollectInfo
+		{
+			QMultiMap<QDateTime, QString> Items_;
+			qint64 TotalSize_ = 0;
+		};
+
+		SizeCollectInfo CollectSizes (const QString& cacheDirectory)
+		{
+			SizeCollectInfo result;
+
+			const QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
+			QDirIterator it { cacheDirectory, filters, QDirIterator::Subdirectories };
+
+			while (it.hasNext ())
+			{
+				const auto& path = it.next ();
+				const auto& info = it.fileInfo ();
+				result.Items_.insert (info.created (), path);
+				result.TotalSize_ += info.size ();
+			}
+
+			return result;
+		}
+	}
+
 	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path, const std::function<int ()>& sizeGetter)
 	{
 		auto& list = Directories_ [path];
@@ -99,30 +126,20 @@ namespace Util
 
 			qDebug () << Q_FUNC_INFO << "running..." << cacheDirectory;
 
-			const QDir::Filters filters = QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot;
-			QDirIterator it { cacheDirectory, filters, QDirIterator::Subdirectories };
+			auto sizeInfoResult = CollectSizes (cacheDirectory);
 
-			QMultiMap<QDateTime, QString> cacheItems;
-			qint64 totalSize = 0;
-			while (it.hasNext ())
-			{
-				const auto& path = it.next ();
-				const auto& info = it.fileInfo ();
-				cacheItems.insert (info.created (), path);
-				totalSize += info.size ();
-			}
-
-			for (auto i = cacheItems.constBegin ();
-					i != cacheItems.constEnd () && totalSize > goal; ++i)
+			for (auto i = sizeInfoResult.Items_.constBegin ();
+					i != sizeInfoResult.Items_.constEnd () && sizeInfoResult.TotalSize_ > goal;
+					++i)
 			{
 				QFile file { *i };
-				totalSize -= file.size ();
+				sizeInfoResult.TotalSize_ -= file.size ();
 				file.remove ();
 			}
 
-			qDebug () << "collector finished" << totalSize;
+			qDebug () << "collector finished" << sizeInfoResult.TotalSize_;
 
-			return totalSize;
+			return sizeInfoResult.TotalSize_;
 		}
 	};
 
