@@ -143,12 +143,6 @@ namespace Liznoo
 			static const CFNumberType Value = kCFNumberIntType;
 		};
 
-		template<>
-		struct Numeric2ID<double>
-		{
-			static const CFNumberType Value = kCFNumberDoubleType;
-		};
-
 		template<typename T>
 		T GetNum (CFDictionaryRef dict, NSString *keyStr, T def)
 		{
