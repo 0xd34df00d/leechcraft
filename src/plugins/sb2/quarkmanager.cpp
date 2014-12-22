@@ -40,17 +40,19 @@
 #endif
 
 #include <QStandardItem>
+#include <QApplication>
+#include <QTranslator>
 #include <QFile>
 #include <QtDebug>
 #include <QFileInfo>
 #include <QDir>
 #include <qjson/parser.h>
+#include <util/util.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarksettingsmanager.h"
-#include "sb2util.h"
 
 namespace LeechCraft
 {
@@ -97,6 +99,7 @@ namespace SB2
 	, Component_ (comp)
 	, URL_ (comp->Url_)
 	, SettingsManager_ (0)
+	, Translator_ (TryLoadTranslator ())
 	, Manifest_ (URL_.toLocalFile ())
 	{
 		if (!ViewMgr_)
@@ -141,28 +144,57 @@ namespace SB2
 		return SettingsManager_;
 	}
 
-	void QuarkManager::ShowSettings ()
+	Util::XmlSettingsDialog* QuarkManager::GetXSD () const
 	{
-		if (!HasSettings ())
-			return;
-
-		const auto& settingsTitle = Manifest_.GetName ().isEmpty () ?
-				tr ("Settings") :
-				tr ("Settings for %1").arg (Manifest_.GetName ());
-		OpenSettingsDialog (XSD_.get (), settingsTitle);
+		return XSD_.get ();
 	}
 
 	QString QuarkManager::GetSuffixedName (const QString& suffix) const
 	{
 		if (!URL_.isLocalFile ())
-			return QString ();
+			return {};
 
 		const auto& localName = URL_.toLocalFile ();
 		const auto& suffixed = localName + suffix;
 		if (!QFile::exists (suffixed))
-			return QString ();
+			return {};
 
 		return suffixed;
+	}
+
+	std::shared_ptr<QTranslator> QuarkManager::TryLoadTranslator () const
+	{
+		if (!URL_.isLocalFile ())
+			return {};
+
+		auto dir = QFileInfo { URL_.toLocalFile () }.dir ();
+		if (!dir.cd ("ts"))
+			return {};
+
+		const auto& locale = Util::GetLocaleName ();
+		const auto& localeLang = locale.section ('_', 0, 0);
+
+		const QStringList filters { "*_" + locale + ".qm", "*_" + localeLang + ".qm" };
+		const auto& files = dir.entryList (filters, QDir::Files);
+		if (files.isEmpty ())
+			return {};
+
+		std::shared_ptr<QTranslator> result
+		{
+			new QTranslator,
+			[] (QTranslator *tr)
+			{
+				QApplication::removeTranslator (tr);
+				delete tr;
+			}
+		};
+		const auto& filename = dir.filePath (files.value (0));
+		if (!result->load (filename))
+			return {};
+
+		QApplication::installTranslator (result.get ());
+
+		return result;
 	}
 
 	void QuarkManager::CreateSettings ()

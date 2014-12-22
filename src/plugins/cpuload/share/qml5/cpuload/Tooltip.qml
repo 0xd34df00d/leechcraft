@@ -12,6 +12,10 @@ Window {
 
     property variant loadModel
     property variant cpuProxy
+    property bool showIOTime
+    property bool showLowTime
+    property bool showMediumTime
+    property bool showHighTime
 
     function zipN(first) {
         for (var i = 1; i < arguments.length; ++i) {
@@ -19,6 +23,10 @@ Window {
             first = cpuProxy.sumPoints(first, other);
         }
         return first;
+    }
+
+    function enableIf(array, flag) {
+        return cpuProxy.enableIf(array, flag);
     }
 
     Rectangle {
@@ -85,17 +93,29 @@ Window {
                     height: loadView.cellHeight
 
                     multipoints: [
-                            { color: "red", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist, loadObj.highHist) },
-                            { color: "blue", points: zipN(loadObj.ioHist, loadObj.lowHist, loadObj.mediumHist) },
-                            { color: "yellow", points: zipN(loadObj.ioHist, loadObj.lowHist) },
-                            { color: "green", points: loadObj.ioHist }
+                            { color: "red", points: zipN(
+                                    enableIf(loadObj.ioHist, showIOTime),
+                                    enableIf(loadObj.lowHist, showLowTime),
+                                    enableIf(loadObj.mediumHist, showMediumTime),
+                                    enableIf(loadObj.highHist, showHighTime)
+                                ) },
+                            { color: "blue", points: zipN(
+                                    enableIf(loadObj.ioHist, showIOTime),
+                                    enableIf(loadObj.lowHist, showLowTime),
+                                    enableIf(loadObj.mediumHist, showMediumTime)
+                                ) },
+                            { color: "yellow", points: zipN(
+                                    enableIf(loadObj.ioHist, showIOTime),
+                                    enableIf(loadObj.lowHist, showLowTime)
+                                ) },
+                            { color: "green", points: enableIf(loadObj.ioHist, showIOTime) }
                         ]
 
                     leftAxisEnabled: true
                     leftAxisTitle: qsTr("Load, %")
                     yGridEnabled: true
 
-                    plotTitle: "CPU " + cpuIdx
+                    plotTitle: "CPU " + cpuIdx + "; " + momentalLoadStr
 
                     minYValue: 0
                     maxYValue: 100

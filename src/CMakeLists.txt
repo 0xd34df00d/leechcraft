@@ -211,6 +211,8 @@ set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;/usr/local/share/apps/
 
 enable_testing ()
 
+set (LC_SOVERSION 0.6.75)
+
 add_subdirectory (util)
 add_subdirectory (xmlsettingsdialog)
 
@@ -347,50 +349,22 @@ if (USE_QT5)
     endif()
 endif (USE_QT5)
 
-function (CreateTrs PlugName Langs CompiledTranVar)
-	string (LENGTH "${PlugName}" _pnameLength)
-	set (_basename "leechcraft")
-	if (_pnameLength)
-		set (_basename "${_basename}_${PlugName}")
-	endif ()
-	foreach (_LANG ${Langs})
-		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
-		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
-	endforeach ()
-	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
-
-	add_custom_command (OUTPUT ${_ctran}
-		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
-		DEPENDS ${_tran}
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-		)
-	install (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
-	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
-endfunction ()
-
 set (GENCPP_XML_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../tools/scripts/translationstuff/gencpp.sh")
 
-function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
-	string (LENGTH "${PlugName}" _pnameLength)
+function (CreateTrsUpTargetImpl _basename Langs Sources Xml)
 	string (LENGTH "${Xml}" _xmlLength)
-	set (_basename "leechcraft")
-
-	if (_pnameLength)
-		set (_basename "${_basename}_${PlugName}")
-	endif ()
-
 	if (_xmlLength)
 		set (Sources "${Sources};dummy.cpp")
 	endif ()
 
 	foreach (_LANG ${Langs})
 		add_custom_target (${_basename}_ts_${_LANG}
-				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_${_LANG}.ts"
+				${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} "-ts" "${_basename}_${_LANG}.ts"
 				COMMAND "rm" "-f" "dummy.cpp"
 				WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}" VERBATIM)
 	endforeach ()
 	add_custom_target (${_basename}_ts
-			${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} ${Forms} "-ts" "${_basename}_\${TSLANG}.ts"
+			${QT_LUPDATE_EXECUTABLE} "-noobsolete" ${Sources} "-ts" "${_basename}_\${TSLANG}.ts"
 			COMMAND "rm" "-f" "dummy.cpp"
 			WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}")
 
@@ -420,6 +394,88 @@ function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 			endif ()
 		endforeach ()
 	endif ()
+endfunction ()
+
+function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
+	string (LENGTH "${PlugName}" _pnameLength)
+	set (_basename "leechcraft")
+	if (_pnameLength)
+		set (_basename "${_basename}_${PlugName}")
+	endif ()
+
+	list (APPEND Sources ${Forms})
+
+	CreateTrsUpTargetImpl (${_basename} "${Langs}" "${Sources}" "${Xml}")
+endfunction ()
+
+function (CreateQmlTrsUpTarget PlugName Langs QmlFiles Xml)
+	set (_basename "leechcraft_${PlugName}_qml")
+	CreateTrsUpTargetImpl (${_basename} "${Langs}" "${QmlFiles}" "${Xml}")
+endfunction ()
+
+function (CreateTrs PlugName Langs CompiledTranVar)
+	string (LENGTH "${PlugName}" _pnameLength)
+	set (_basename "leechcraft")
+	if (_pnameLength)
+		set (_basename "${_basename}_${PlugName}")
+	endif ()
+	foreach (_LANG ${Langs})
+		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	endforeach ()
+	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+
+	add_custom_command (OUTPUT ${_ctran}
+		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
+		DEPENDS ${_tran}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	install (FILES ${_ctran} DESTINATION ${LC_TRANSLATIONS_DEST})
+	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+endfunction ()
+
+function (CreateTrsQml PlugName Langs Target QmlDirs)
+	set (_basename "leechcraft_${PlugName}_qml")
+	foreach (_LANG ${Langs})
+		set (_tran ${_tran} ${_basename}_${_LANG}.ts)
+		set (_ctran ${_ctran} ${CMAKE_CURRENT_SOURCE_DIR}/${_basename}_${_LANG}.qm)
+	endforeach ()
+	set (${CompiledTranVar} ${_ctran} PARENT_SCOPE)
+
+	set (_marker "${_basename}_trsqml_marker")
+
+	add_custom_target (${_marker}
+		COMMAND "${QT_LRELEASE_EXECUTABLE}" ${_tran}
+		COMMAND "${CMAKE_COMMAND}" -E tar cfj temp.tar ${_ctran}
+		DEPENDS ${_tran}
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	foreach (_DIR ${QmlDirs})
+		string (REPLACE "/" "_" _ODIR ${_DIR})
+		add_custom_target ("${_marker}_${_ODIR}_mkdir"
+			COMMAND "${CMAKE_COMMAND}" -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/${_DIR}/ts/"
+			DEPENDS ${_marker}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+			)
+		add_custom_target ("${_marker}_${_ODIR}"
+			COMMAND "${CMAKE_COMMAND}" -E copy "${CMAKE_CURRENT_SOURCE_DIR}/temp.tar" "temp.tar"
+			COMMAND "${CMAKE_COMMAND}" -E tar xfj temp.tar
+			COMMAND "${CMAKE_COMMAND}" -E remove temp.tar
+			DEPENDS "${_marker}_${_ODIR}_mkdir"
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${_DIR}/ts/
+			)
+	endforeach ()
+
+	add_custom_target ("${_marker}_whole"
+		COMMAND "${CMAKE_COMMAND}" -E remove temp.tar
+		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
+	foreach (_DIR ${QmlDirs})
+		string (REPLACE "/" "_" _ODIR ${_DIR})
+		add_dependencies ("${_marker}_whole" "${_marker}_${_ODIR}")
+	endforeach ()
+
+	add_dependencies (${Target} "${_marker}_whole")
 endfunction ()
 
 if (ENABLE_SUMMARY)

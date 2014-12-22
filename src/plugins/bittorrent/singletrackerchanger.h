@@ -27,33 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_SINGLETRACKERCHANGER_H
-#define PLUGINS_BITTORRENT_SINGLETRACKERCHANGER_H
+#pragma once
+
 #include <QDialog>
 #include "ui_singletrackerchanger.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class SingleTrackerChanger : public QDialog
 	{
-		namespace BitTorrent
-		{
-			class SingleTrackerChanger : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::SingleTrackerChanger Ui_;
-			public:
-				SingleTrackerChanger (QWidget* = 0);
+		Ui::SingleTrackerChanger Ui_;
+	public:
+		SingleTrackerChanger (QWidget* = 0);
 
-				void SetTracker (const QString&);
-				void SetTier (int);
-				QString GetTracker () const;
-				int GetTier () const;
-			};
-		};
+		void SetTracker (const QString&);
+		void SetTier (int);
+		QString GetTracker () const;
+		int GetTier () const;
 	};
-};
-
-#endif
-
+}
+}

@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	struct AddTorrentNodeInfo : public TorrentNodeInfoBase<AddTorrentNodeInfo>
@@ -81,6 +79,5 @@ namespace BitTorrent
 
 		void UpdateSizeGraph (const AddTorrentNodeInfo_ptr& node);
 	};
-}
 }
 }

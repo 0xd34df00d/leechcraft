@@ -27,36 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_TRACKERSCHANGER_H
-#define PLUGINS_BITTORRENT_TRACKERSCHANGER_H
+#pragma once
+
 #include <QDialog>
 #include <libtorrent/torrent_info.hpp>
 #include "ui_trackerschanger.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class TrackersChanger : public QDialog
 	{
-		namespace BitTorrent
-		{
-			class TrackersChanger : public QDialog
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				Ui::TrackersChanger Ui_;
-			public:
-				TrackersChanger (QWidget* = 0);
-				void SetTrackers (const std::vector<libtorrent::announce_entry>&);
-				std::vector<libtorrent::announce_entry> GetTrackers () const;
-			private slots:
-				void currentItemChanged (QTreeWidgetItem*);
-				void on_ButtonAdd__released ();
-				void on_ButtonModify__released ();
-				void on_ButtonRemove__released ();
-			};
-		};
+		Ui::TrackersChanger Ui_;
+	public:
+		TrackersChanger (QWidget* = 0);
+		void SetTrackers (const std::vector<libtorrent::announce_entry>&);
+		std::vector<libtorrent::announce_entry> GetTrackers () const;
+	private slots:
+		void currentItemChanged (QTreeWidgetItem*);
+		void on_ButtonAdd__released ();
+		void on_ButtonModify__released ();
+		void on_ButtonRemove__released ();
 	};
-};
-
-#endif
-
+}
+}

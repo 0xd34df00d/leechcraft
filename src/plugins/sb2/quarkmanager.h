@@ -37,6 +37,8 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include "manifest.h"
 
+class QTranslator;
+
 namespace LeechCraft
 {
 namespace SB2
@@ -55,6 +57,8 @@ namespace SB2
 		Util::XmlSettingsDialog_ptr XSD_;
 		QuarkSettingsManager *SettingsManager_;
 
+		const std::shared_ptr<QTranslator> Translator_;
+
 		const Manifest Manifest_;
 	public:
 		QuarkManager (QuarkComponent_ptr, ViewManager*, ICoreProxy_ptr);
@@ -63,9 +67,10 @@ namespace SB2
 		bool IsValidArea () const;
 
 		bool HasSettings () const;
-		void ShowSettings ();
+		Util::XmlSettingsDialog* GetXSD () const;
 	private:
 		QString GetSuffixedName (const QString&) const;
+		std::shared_ptr<QTranslator> TryLoadTranslator () const;
 
 		void CreateSettings ();
 	};

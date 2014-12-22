@@ -58,6 +58,12 @@ namespace Murm
 		settings.endGroup ();
 	}
 
+	VkProtocol::~VkProtocol ()
+	{
+		for (auto acc : Accounts_)
+			emit accountRemoved (acc);
+	}
+
 	IProxyObject* VkProtocol::GetAzothProxy () const
 	{
 		return AzothProxy_;

@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	AddTorrentFilesModel::AddTorrentFilesModel (QObject *parent)
@@ -261,6 +259,5 @@ namespace BitTorrent
 
 		node->SubtreeSize_ = size;
 	}
-}
 }
 }

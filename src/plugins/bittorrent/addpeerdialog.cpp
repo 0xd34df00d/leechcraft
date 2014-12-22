@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	AddPeerDialog::AddPeerDialog (QWidget *parent)
@@ -53,6 +51,5 @@ namespace BitTorrent
 	{
 		return Ui_.Port_->value ();
 	}
-}
 }
 }

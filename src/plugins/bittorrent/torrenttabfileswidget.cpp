@@ -41,8 +41,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	namespace
@@ -283,6 +281,5 @@ namespace BitTorrent
 
 		menu.exec (Ui_.FilesView_->viewport ()->mapToGlobal (pos));
 	}
-}
 }
 }

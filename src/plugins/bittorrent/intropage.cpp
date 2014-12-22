@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	IntroPage::IntroPage (QWidget *parent)
@@ -50,6 +48,5 @@ namespace BitTorrent
 		lay->addWidget (Label_);
 		setLayout (lay);
 	}
-}
 }
 }

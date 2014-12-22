@@ -82,12 +82,25 @@ namespace Azoth
 	ChatTab* ChatTabsManager::OpenChat (const ICLEntry *entry,
 			bool fromUser, const DynPropertiesList_t& props)
 	{
-		const QString& id = entry->GetEntryID ();
+		const auto& id = entry->GetEntryID ();
 		if (Entry2Tab_.contains (id))
 		{
 			auto tab = Entry2Tab_ [id];
 			emit raiseTab (tab);
 			return tab;
+		}
+
+		if (!Core::Instance ().GetEntry (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "the entry"
+					<< id
+					<< "is obviously alive, but Core doesn't know about it."
+					<< "Will wait for re-appearing.";
+
+			EnqueueRestoreInfos ({ { id } });
+
+			return nullptr;
 		}
 
 		EverOpened_ << id;

@@ -37,8 +37,6 @@ class QSortFilterProxyModel;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class TorrentTabWidget : public QTabWidget
@@ -92,6 +90,5 @@ namespace BitTorrent
 		void currentWebSeedChanged (const QModelIndex&);
 		void handleRemoveWebSeed ();
 	};
-}
 }
 }

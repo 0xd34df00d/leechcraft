@@ -91,7 +91,20 @@ namespace LeechCraft
 		/** @brief Context-depended properties to be exposed to the engine.
 		 */
 		QList<QPair<QString, QObject*>> ContextProps_;
+
+		/** @brief Statis properties to be exposed to the engine.
+		 *
+		 * These properties are set once upon adding quark to a view,
+		 * and they are not modified further.
+		 */
 		QList<QPair<QString, QVariant>> StaticProps_;
+
+		/** @brief The image providers to be exposed to the engine.
+		 *
+		 * The list contains pairs of a QString and an image provider.
+		 * Each image provider is added to the engine under the name in
+		 * the corresponding QString upon addng the quark to the view.
+		 */
 #if QT_VERSION < 0x050000
 		QList<QPair<QString, QDeclarativeImageProvider*>> ImageProviders_;
 #else

@@ -41,8 +41,6 @@ namespace Ui
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class PeersTabLinker : public QObject
@@ -59,6 +57,5 @@ namespace BitTorrent
 		void handleNewRow (const QModelIndex&);
 		void update ();
 	};
-}
 }
 }

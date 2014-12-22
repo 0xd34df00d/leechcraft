@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h, QObject *parent)
@@ -234,6 +232,5 @@ namespace BitTorrent
 			Handle_.prioritize_pieces (prios);
 		}
 	}
-}
 }
 }

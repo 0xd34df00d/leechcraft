@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_murm)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
 if (NOT USE_QT5)
 	find_package (QJSON REQUIRED)
 endif ()

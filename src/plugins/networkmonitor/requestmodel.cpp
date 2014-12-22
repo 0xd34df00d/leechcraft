@@ -30,16 +30,23 @@
 #include "requestmodel.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QPointer>
 #include <QTextCodec>
 #include <QDateTime>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "headermodel.h"
 
-Q_DECLARE_METATYPE (QNetworkReply*);
+using GuardedReply_t = QPointer<QNetworkReply>;
+Q_DECLARE_METATYPE (GuardedReply_t)
 
-using namespace LeechCraft::Plugins::NetworkMonitor;
-
-LeechCraft::Plugins::NetworkMonitor::RequestModel::RequestModel (QObject *parent)
+namespace LeechCraft
+{
+namespace Plugins
+{
+namespace NetworkMonitor
+{
+RequestModel::RequestModel (QObject *parent)
 : QStandardItemModel { parent }
 , RequestHeadersModel_ { new HeaderModel { this } }
 , ReplyHeadersModel_ { new HeaderModel { this } }
@@ -62,7 +69,7 @@ HeaderModel* RequestModel::GetReplyHeadersModel () const
 	return ReplyHeadersModel_;
 }
 
-void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkAccessManager::Operation op,
+void RequestModel::handleRequest (QNetworkAccessManager::Operation op,
 		const QNetworkRequest& req, QNetworkReply *rep)
 {
 	if (rep->isFinished ())
@@ -102,7 +109,7 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 	items.push_back (new QStandardItem (tr ("In progress")));
 	items.push_back (new QStandardItem (opName));
 	items.push_back (new QStandardItem (req.url ().toString ()));
-	items.first ()->setData (QVariant::fromValue (rep));
+	items.first ()->setData (QVariant::fromValue<GuardedReply_t> (rep));
 	appendRow (items);
 
 	connect (rep,
@@ -122,35 +129,32 @@ void LeechCraft::Plugins::NetworkMonitor::RequestModel::handleRequest (QNetworkA
 namespace
 {
 	template<typename T>
-	QMap<QString, QVariant> GetHeaders (const T* object)
+	QMap<QString, QVariant> GetHeaders (const T *object)
 	{
 		QMap<QString, QVariant> result;
-		QList<QByteArray> headers = object->rawHeaderList ();
-		QTextCodec *codec = QTextCodec::codecForName ("UTF-8");
-		Q_FOREACH (QByteArray header, headers)
+		const auto codec = QTextCodec::codecForName ("UTF-8");
+		for (const auto& header : object->rawHeaderList ())
 			result [codec->toUnicode (header)] = codec->toUnicode (object->rawHeader (header));
 		return result;
 	}
 
 	template<typename T>
-	void FeedHeaders (T object, HeaderModel* model)
+	void FeedHeaders (const T& object, HeaderModel *model)
 	{
-		QMap<QString, QVariant> headers = GetHeaders (object);
-		Q_FOREACH (QString header, headers.keys ())
-			model->AddHeader (header, headers [header].toString ());
+		FeedHeaders (GetHeaders (object), model);
 	}
 
 	template<>
-	void FeedHeaders (QMap<QString, QVariant> headers, HeaderModel* model)
+	void FeedHeaders (const QMap<QString, QVariant>& headers, HeaderModel *model)
 	{
-		Q_FOREACH (QString header, headers.keys ())
-			model->AddHeader (header, headers [header].toString ());
+		for (const auto& pair : Util::Stlize (headers))
+			model->AddHeader (pair.first, pair.second.toString ());
 	}
 }
 
 void RequestModel::handleFinished ()
 {
-	QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
+	const auto reply = qobject_cast<QNetworkReply*> (sender ());
 	if (!reply)
 	{
 		qWarning () << Q_FUNC_INFO
@@ -161,7 +165,7 @@ void RequestModel::handleFinished ()
 
 	for (int i = 0; i < rowCount (); ++i)
 	{
-		if (item (i)->data ().value<QNetworkReply*> () != reply)
+		if (item (i)->data ().value<GuardedReply_t> () != reply)
 			continue;
 
 		if (Clear_)
@@ -192,9 +196,9 @@ void RequestModel::setClear (bool clear)
 	if (Clear_)
 	{
 		for (int i = rowCount () - 1; i >= 0; --i)
-			if (!item (i)->data ().value<QObject*> ())
+			if (!item (i)->data ().value<GuardedReply_t> ())
 				removeRow (i);
-		handleCurrentChanged (QModelIndex ());
+		handleCurrentChanged ({});
 	}
 }
 
@@ -206,19 +210,18 @@ void RequestModel::handleCurrentChanged (const QModelIndex& newItem)
 	if (!newItem.isValid ())
 		return;
 
-	QNetworkReply *reply = item (itemFromIndex (newItem)->row (), 0)->
-		data ().value<QNetworkReply*> ();
+	const auto reply = item (newItem.row (), 0)->data ().value<GuardedReply_t> ();
 	if (reply)
 	{
-		QNetworkRequest r = reply->request ();
+		const auto& r = reply->request ();
 		FeedHeaders (&r, RequestHeadersModel_);
-		FeedHeaders (reply, ReplyHeadersModel_);
+		FeedHeaders (reply.data (), ReplyHeadersModel_);
 	}
 	else
 	{
-		FeedHeaders (item (itemFromIndex (newItem)->row (), 1)->
+		FeedHeaders (item (newItem.row (), 1)->
 				data ().toMap (), RequestHeadersModel_);
-		FeedHeaders (item (itemFromIndex (newItem)->row (), 2)->
+		FeedHeaders (item (newItem.row (), 2)->
 				data ().toMap (), ReplyHeadersModel_);
 	}
 }
@@ -228,7 +231,7 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 	for (int i = 0; i < rowCount (); ++i)
 	{
 		const auto ci = item (i);
-		if (ci->data ().value<QNetworkReply*> () == obj)
+		if (ci->data ().value<GuardedReply_t> () == obj)
 		{
 			if (Clear_)
 				removeRow (i);
@@ -237,4 +240,7 @@ void RequestModel::handleGonnaDestroy (QObject *obj)
 			break;
 		}
 	}
+}
+}
+}
 }

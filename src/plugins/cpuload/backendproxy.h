@@ -56,7 +56,9 @@ namespace CpuLoad
 		QAbstractItemModel* GetModel () const;
 	public slots:
 		void update ();
+
 		QList<QPointF> sumPoints (QList<QPointF>, const QList<QPointF>&);
+		QList<QPointF> enableIf (QList<QPointF>, bool);
 	};
 }
 }

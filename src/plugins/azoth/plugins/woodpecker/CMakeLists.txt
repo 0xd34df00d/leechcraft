@@ -14,8 +14,6 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (QtKOAuth REQUIRED)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
 if (NOT USE_QT5)
 	find_package (QJSON REQUIRED)
 else ()

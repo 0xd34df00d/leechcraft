@@ -37,124 +37,120 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	TrackersChanger::TrackersChanger (QWidget *parent)
+	: QDialog (parent)
 	{
-		namespace BitTorrent
+		Ui_.setupUi (this);
+
+		connect (Ui_.Trackers_,
+				SIGNAL (currentItemChanged (QTreeWidgetItem*, QTreeWidgetItem*)),
+				this,
+				SLOT (currentItemChanged (QTreeWidgetItem*)));
+		currentItemChanged (0);
+	}
+
+	void TrackersChanger::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
+	{
+		Ui_.Trackers_->clear ();
+		Q_FOREACH (const auto& tracker, trackers)
 		{
-			TrackersChanger::TrackersChanger (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
+			QStringList strings;
+			bool torrent, client, magnet, tex;
+			torrent = tracker.source & libtorrent::announce_entry::source_torrent;
+			client = tracker.source & libtorrent::announce_entry::source_client;
+			magnet = tracker.source & libtorrent::announce_entry::source_magnet_link;
+			tex = tracker.source & libtorrent::announce_entry::source_tex;
+			strings << QString::fromUtf8 (tracker.url.c_str ())
+				<< QString::number (tracker.tier)
+				<< tr ("%1 s").arg (tracker.next_announce_in ())
+				<< QString::number (tracker.fails)
+				<< QString::number (tracker.fail_limit)
+				<< (tracker.verified ? tr ("true") : tr ("false"))
+				<< (tracker.updating ? tr ("true") : tr ("false"))
+				<< (tracker.start_sent ? tr ("true") : tr ("false"))
+				<< (tracker.complete_sent ? tr ("true") : tr ("false"))
+				<< (torrent ? tr ("true") : tr ("false"))
+				<< (client ? tr ("true") : tr ("false"))
+				<< (magnet ? tr ("true") : tr ("false"))
+				<< (tex ? tr ("true") : tr ("false"));
+			Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
+		}
+		for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
+			Ui_.Trackers_->resizeColumnToContents (i);
+	}
 
-				connect (Ui_.Trackers_,
-						SIGNAL (currentItemChanged (QTreeWidgetItem*, QTreeWidgetItem*)),
-						this,
-						SLOT (currentItemChanged (QTreeWidgetItem*)));
-				currentItemChanged (0);
-			}
+	std::vector<libtorrent::announce_entry> TrackersChanger::GetTrackers () const
+	{
+		const int count = Ui_.Trackers_->topLevelItemCount ();
+		std::vector<libtorrent::announce_entry> result (count, std::string ());
+		for (int i = 0; i < count; ++i)
+		{
+			QTreeWidgetItem *item = Ui_.Trackers_->topLevelItem (i);
+			result [i].url = (item->text (0).toStdString ());
+			result [i].tier = item->text (1).toInt ();
+		}
+		return result;
+	}
 
-			void TrackersChanger::SetTrackers (const std::vector<libtorrent::announce_entry>& trackers)
-			{
-				Ui_.Trackers_->clear ();
-				Q_FOREACH (const auto& tracker, trackers)
-				{
-					QStringList strings;
-					bool torrent, client, magnet, tex;
-					torrent = tracker.source & libtorrent::announce_entry::source_torrent;
-					client = tracker.source & libtorrent::announce_entry::source_client;
-					magnet = tracker.source & libtorrent::announce_entry::source_magnet_link;
-					tex = tracker.source & libtorrent::announce_entry::source_tex;
-					strings << QString::fromUtf8 (tracker.url.c_str ())
-						<< QString::number (tracker.tier)
-						<< tr ("%1 s").arg (tracker.next_announce_in ())
-						<< QString::number (tracker.fails)
-						<< QString::number (tracker.fail_limit)
-						<< (tracker.verified ? tr ("true") : tr ("false"))
-						<< (tracker.updating ? tr ("true") : tr ("false"))
-						<< (tracker.start_sent ? tr ("true") : tr ("false"))
-						<< (tracker.complete_sent ? tr ("true") : tr ("false"))
-						<< (torrent ? tr ("true") : tr ("false"))
-						<< (client ? tr ("true") : tr ("false"))
-						<< (magnet ? tr ("true") : tr ("false"))
-						<< (tex ? tr ("true") : tr ("false"));
-					Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
-				}
-				for (int i = 0; i < Ui_.Trackers_->columnCount (); ++i)
-					Ui_.Trackers_->resizeColumnToContents (i);
-			}
+	void TrackersChanger::currentItemChanged (QTreeWidgetItem *current)
+	{
+		Ui_.ButtonModify_->setEnabled (current);
+		Ui_.ButtonRemove_->setEnabled (current);
+	}
 
-			std::vector<libtorrent::announce_entry> TrackersChanger::GetTrackers () const
-			{
-				const int count = Ui_.Trackers_->topLevelItemCount ();
-				std::vector<libtorrent::announce_entry> result (count, std::string ());
-				for (int i = 0; i < count; ++i)
-				{
-					QTreeWidgetItem *item = Ui_.Trackers_->topLevelItem (i);
-					result [i].url = (item->text (0).toStdString ());
-					result [i].tier = item->text (1).toInt ();
-				}
-				return result;
-			}
+	void TrackersChanger::on_ButtonAdd__released ()
+	{
+		SingleTrackerChanger dia (this);
+		if (dia.exec () != QDialog::Accepted)
+			return;
 
-			void TrackersChanger::currentItemChanged (QTreeWidgetItem *current)
-			{
-				Ui_.ButtonModify_->setEnabled (current);
-				Ui_.ButtonRemove_->setEnabled (current);
-			}
+		QStringList strings;
+		strings << dia.GetTracker ()
+			<< QString::number (dia.GetTier ());
+		while (strings.size () < Ui_.Trackers_->columnCount ())
+			strings << QString ();
+		Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
+	}
 
-			void TrackersChanger::on_ButtonAdd__released ()
-			{
-				SingleTrackerChanger dia (this);
-				if (dia.exec () != QDialog::Accepted)
-					return;
+	void TrackersChanger::on_ButtonModify__released ()
+	{
+		QTreeWidgetItem *current = Ui_.Trackers_->currentItem ();
+		if (!current)
+			return;
 
-				QStringList strings;
-				strings << dia.GetTracker ()
-					<< QString::number (dia.GetTier ());
-				while (strings.size () < Ui_.Trackers_->columnCount ())
-					strings << QString ();
-				Ui_.Trackers_->addTopLevelItem (new QTreeWidgetItem (strings));
-			}
+		SingleTrackerChanger dia (this);
+		dia.SetTracker (current->text (0));
+		dia.SetTier (current->text (1).toInt ());
+		if (dia.exec () != QDialog::Accepted)
+			return;
 
-			void TrackersChanger::on_ButtonModify__released ()
-			{
-				QTreeWidgetItem *current = Ui_.Trackers_->currentItem ();
-				if (!current)
-					return;
+		QStringList strings;
+		strings << dia.GetTracker ()
+			<< QString::number (dia.GetTier ());
+		while (strings.size () < Ui_.Trackers_->columnCount ())
+			strings << QString ();
 
-				SingleTrackerChanger dia (this);
-				dia.SetTracker (current->text (0));
-				dia.SetTier (current->text (1).toInt ());
-				if (dia.exec () != QDialog::Accepted)
-					return;
+		int idx = Ui_.Trackers_->indexOfTopLevelItem (current);
+		Ui_.Trackers_->insertTopLevelItem (idx, new QTreeWidgetItem (strings));
+		delete Ui_.Trackers_->takeTopLevelItem (idx);
+	}
 
-				QStringList strings;
-				strings << dia.GetTracker ()
-					<< QString::number (dia.GetTier ());
-				while (strings.size () < Ui_.Trackers_->columnCount ())
-					strings << QString ();
+	void TrackersChanger::on_ButtonRemove__released ()
+	{
+		QTreeWidgetItem *current = Ui_.Trackers_->currentItem ();
+		if (!current)
+			return;
 
-				int idx = Ui_.Trackers_->indexOfTopLevelItem (current);
-				Ui_.Trackers_->insertTopLevelItem (idx, new QTreeWidgetItem (strings));
-				delete Ui_.Trackers_->takeTopLevelItem (idx);
-			}
-
-			void TrackersChanger::on_ButtonRemove__released ()
-			{
-				QTreeWidgetItem *current = Ui_.Trackers_->currentItem ();
-				if (!current)
-					return;
-
-				auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
-				if (QMessageBox::question (rootWM->GetPreferredWindow (),
-							tr ("Confirm tracker removal"),
-							tr ("Are you sure you want to remove the "
-								"following tracker:<br />%1")
-								.arg (current->text (0)),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-					delete current;
-			}
-		};
-	};
-};
-
+		auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
+		if (QMessageBox::question (rootWM->GetPreferredWindow (),
+					tr ("Confirm tracker removal"),
+					tr ("Are you sure you want to remove the "
+						"following tracker:<br />%1")
+						.arg (current->text (0)),
+					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			delete current;
+	}
+}
+}

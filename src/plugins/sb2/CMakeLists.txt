@@ -4,7 +4,6 @@ include (InitLCPlugin OPTIONAL)
 include (CMakeDependentOption)
 
 if (NOT USE_QT5)
-	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 	find_package (QJSON REQUIRED)
 else ()
 	set (QJSON_INCLUDE_DIR)
@@ -44,6 +43,10 @@ set (SRCS
 	viewpropsmanager.cpp
 	dirwatcher.cpp
 	manifest.cpp
+	panelsettingsdialog.cpp
+	)
+set (FORMS
+	panelsettingsdialog.ui
 	)
 
 if (WITH_X11 AND NOT USE_QT5)
@@ -56,6 +59,7 @@ endif ()
 
 set (SB2_RESOURCES sb2resources.qrc)
 QtAddResources (SB2_RCCS ${SB2_RESOURCES})
+QtWrapUi (UIS_H ${FORMS})
 
 CreateTrs ("sb2" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("sb2" "en;ru_RU" "${SRCS}" "" "sb2panelsettings.xml")
@@ -65,6 +69,7 @@ add_library (leechcraft_sb2 SHARED
 	${SRCS}
 	${MOC_SRCS}
 	${SB2_RCCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_sb2
 	${LEECHCRAFT_LIBRARIES}

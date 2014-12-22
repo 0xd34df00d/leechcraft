@@ -66,7 +66,6 @@ namespace SB2
 	public slots:
 		QPoint mapToGlobal (double, double);
 		void showTextTooltip (int, int, const QString&);
-		void showSettings (const QUrl&);
 		void removeQuark (const QUrl&);
 		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
 		QRect getWinRect ();

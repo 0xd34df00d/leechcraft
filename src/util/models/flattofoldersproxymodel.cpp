@@ -77,7 +77,7 @@ namespace LeechCraft
 		: QAbstractItemModel (parent)
 		, SourceModel_ (0)
 		, TM_ (0)
-		, Root_ (new FlatTreeItem)
+		, Root_ (std::make_shared<FlatTreeItem> ())
 		{
 			Root_->Type_ = FlatTreeItem::TRoot;
 		}
@@ -376,7 +376,7 @@ namespace LeechCraft
 				if (item->Tag_ == tag)
 					return item;
 
-			FlatTreeItem_ptr item (new FlatTreeItem);
+			const auto& item = std::make_shared<FlatTreeItem> ();
 			item->Type_ = FlatTreeItem::TFolder;
 			item->Tag_ = tag;
 			item->Parent_ = Root_;
@@ -425,7 +425,7 @@ namespace LeechCraft
 		{
 			FlatTreeItem_ptr folder = GetFolder (tag);
 
-			FlatTreeItem_ptr item (new FlatTreeItem);
+			const auto& item = std::make_shared<FlatTreeItem> ();
 			item->Type_ = FlatTreeItem::TItem;
 			item->Index_ = pidx;
 			item->Parent_ = folder;
@@ -442,8 +442,8 @@ namespace LeechCraft
 		void FlatToFoldersProxyModel::RemoveFromTag (const QString& tag,
 				const QPersistentModelIndex& pidx)
 		{
-			FlatTreeItem_ptr folder = GetFolder (tag);
-			QList<FlatTreeItem_ptr>& c = folder->C_;
+			const auto& folder = GetFolder (tag);
+			auto& c = folder->C_;
 			int findex = Root_->C_.indexOf (folder);
 			for (int i = 0, size = c.size ();
 					i < size; ++i)

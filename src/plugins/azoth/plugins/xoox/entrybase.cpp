@@ -227,7 +227,10 @@ namespace Xoox
 		}
 
 		if (!VCardDialog_)
+		{
 			VCardDialog_ = new VCardDialog (this);
+			VCardDialog_->UpdateInfo (VCardIq_);
+		}
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
@@ -945,7 +948,7 @@ namespace Xoox
 		if (!conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::VCard, this))
 			return;
 
-		auto fetchVCard = [this, conn] () -> void
+		auto fetchVCard = [this, conn]
 		{
 			QPointer<EntryBase> ptr (this);
 			conn->FetchVCard (GetJID (),

@@ -27,31 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_THIRDSTEP_H
-#define PLUGINS_BITTORRENT_THIRDSTEP_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_newtorrentthirdstep.h"
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class ThirdStep : public QWizardPage, private Ui::NewTorrentThirdStep
 	{
-		namespace BitTorrent
-		{
-			class ThirdStep : public QWizardPage, private Ui::NewTorrentThirdStep
-			{
-				Q_OBJECT
+		Q_OBJECT
 
-				quint64 TotalSize_;
-			public:
-				ThirdStep (QWidget *parent = 0);
-				virtual void initializePage ();
-			private slots:
-				void on_PieceSize__currentIndexChanged ();
-			};
-		};
+		quint64 TotalSize_;
+	public:
+		ThirdStep (QWidget *parent = 0);
+		virtual void initializePage ();
+	private slots:
+		void on_PieceSize__currentIndexChanged ();
 	};
-};
-
-#endif
-
+}
+}

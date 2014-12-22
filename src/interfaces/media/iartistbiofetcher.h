@@ -36,12 +36,28 @@ class QObject;
 
 namespace Media
 {
+	/** @brief Describes a single artist photo.
+	 */
 	struct ArtistImage
 	{
+		/** @brief The title of the image.
+		 */
 		QString Title_;
+
+		/** @brief The author if the image.
+		 */
 		QString Author_;
+
+		/** @brief The date and time the image was taken.
+		 */
 		QDateTime Date_;
+
+		/** @brief URL of the thumbnail version of the image.
+		 */
 		QUrl Thumb_;
+
+		/** @brief URL of the full version of the image.
+		 */
 		QUrl Full_;
 	};
 

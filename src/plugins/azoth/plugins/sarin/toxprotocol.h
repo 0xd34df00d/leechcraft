@@ -54,6 +54,7 @@ namespace Sarin
 		QList<ToxAccount*> Accounts_;
 	public:
 		ToxProtocol (const ICoreProxy_ptr&, QObject *parentPlugin);
+		~ToxProtocol ();
 
 		QObject* GetQObject () override;
 		ProtocolFeatures GetFeatures () const override;

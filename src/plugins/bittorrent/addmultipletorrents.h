@@ -37,10 +37,8 @@ namespace LeechCraft
 namespace Util
 {
 	class TagsLineEdit;
-};
+}
 
-namespace Plugins
-{
 namespace BitTorrent
 {
 
@@ -59,6 +57,5 @@ namespace BitTorrent
 		void on_BrowseOpen__released ();
 		void on_BrowseSave__released ();
 	};
-}
 }
 }

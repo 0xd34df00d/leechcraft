@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class IPFilterDialog : public QDialog
@@ -55,6 +53,5 @@ namespace BitTorrent
 		void on_Modify__released ();
 		void on_Remove__released ();
 	};
-}
 }
 }

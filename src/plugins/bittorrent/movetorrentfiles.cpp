@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	MoveTorrentFiles::MoveTorrentFiles (const QString& old, QWidget *parent)
@@ -57,6 +55,5 @@ namespace BitTorrent
 			return;
 		Ui_.NewLocation_->setText (dir);
 	}
-}
 }
 }

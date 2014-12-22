@@ -183,17 +183,16 @@ namespace Xoox
 		}
 
 		QMap<QByteArray, GlooxAccount*> id2account;
-		Q_FOREACH (QObject *accObj,
-				GlooxProtocol_->GetRegisteredAccounts ())
+		for (const auto accObj : GlooxProtocol_->GetRegisteredAccounts ())
 		{
-			GlooxAccount *acc = qobject_cast<GlooxAccount*> (accObj);
+			const auto acc = qobject_cast<GlooxAccount*> (accObj);
 			id2account [acc->GetAccountID ()] = acc;
 		}
 
-		QDomElement account = root.firstChildElement ("account");
+		auto account = root.firstChildElement ("account");
 		while (!account.isNull ())
 		{
-			const QByteArray& id = account.firstChildElement ("id").text ().toUtf8 ();
+			const auto& id = account.firstChildElement ("id").text ().toUtf8 ();
 			if (id.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -207,13 +206,12 @@ namespace Xoox
 				continue;
 			}
 
-			QDomElement entry = account
+			auto entry = account
 					.firstChildElement ("entries")
 					.firstChildElement ("entry");
 			while (!entry.isNull ())
 			{
-				const QByteArray& entryID =
-						QByteArray::fromPercentEncoding (entry
+				const auto& entryID = QByteArray::fromPercentEncoding (entry
 								.firstChildElement ("id").text ().toLatin1 ());
 
 				if (entryID.isEmpty ())

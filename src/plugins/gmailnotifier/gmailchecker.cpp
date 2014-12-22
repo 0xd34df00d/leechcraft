@@ -119,13 +119,13 @@ namespace GmailNotifier
 
 	void GmailChecker::ParseData (const QString& data)
 	{
-		QString error = tr ("Error");
-		error.prepend ("Gmail Notifier: ");
 
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
-			emit anErrorOccupied (error, tr ("Cannot parse XML data"));
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse XML data:"
+					<< data;
 			return;
 		}
 
@@ -160,7 +160,6 @@ namespace GmailNotifier
 			entry = entry.nextSiblingElement ("entry");
 		}
 
-		qDebug () << Q_FUNC_INFO;
 		emit gotConversations (result);
 	}
 
@@ -170,6 +169,10 @@ namespace GmailNotifier
 
 		if (Reply_->error ())
 		{
+			qWarning () << Q_FUNC_INFO
+					<< "reply error:"
+					<< Reply_->errorString ()
+					<< Reply_->error ();
 			QString error = tr ("Error");
 			error.prepend ("Gmail Notifier: ");
 

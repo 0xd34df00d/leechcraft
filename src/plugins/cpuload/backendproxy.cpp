@@ -46,6 +46,7 @@ namespace CpuLoad
 			enum Role
 			{
 				CpuIdxRole = Qt::UserRole + 1,
+				MomentalLoadStr,
 				CpuLoadObj
 			};
 
@@ -55,6 +56,7 @@ namespace CpuLoad
 				QHash<int, QByteArray> roleNames;
 				roleNames [CpuIdxRole] = "cpuIdx";
 				roleNames [CpuLoadObj] = "loadObj";
+				roleNames [MomentalLoadStr] = "momentalLoadStr";
 				setRoleNames (roleNames);
 			}
 		};
@@ -72,6 +74,22 @@ namespace CpuLoad
 		return Model_;
 	}
 
+	namespace
+	{
+		double GetAccumulated (const QMap<LoadPriority, LoadTypeInfo>& map)
+		{
+			return std::accumulate (map.begin (), map.end (), 0.0,
+					[] (double res, const LoadTypeInfo& info) { return info.LoadPercentage_ + res; });
+		}
+
+		QString GetAccumulatedStr (const QMap<LoadPriority, LoadTypeInfo>& map)
+		{
+			const auto percents = static_cast<int> (std::round (GetAccumulated (map) * 100));
+			return QString { "%1%" }
+					.arg (percents, 2);
+		}
+	}
+
 	void BackendProxy::update ()
 	{
 		Backend_->Update ();
@@ -79,9 +97,15 @@ namespace CpuLoad
 		const auto rc = Model_->rowCount ();
 		if (rc == Backend_->GetCpuCount ())
 		{
-			if (Backend_->GetCpuCount () > 0)
-				for (int i = 0; i < Backend_->GetCpuCount (); ++i)
-					ModelPropObjs_.at (i)->Set (Backend_->GetLoads (i));
+			if (rc > 0)
+				for (int i = 0; i < rc; ++i)
+				{
+					const auto& loads = Backend_->GetLoads (i);
+					ModelPropObjs_.at (i)->Set (loads);
+
+					const auto item = Model_->item (i);
+					item->setData (GetAccumulatedStr (loads), CpusModel::MomentalLoadStr);
+				}
 
 			return;
 		}
@@ -97,12 +121,15 @@ namespace CpuLoad
 
 		for (int i = 0; i < Backend_->GetCpuCount (); ++i)
 		{
+			const auto& loads = Backend_->GetLoads (i);
+
 			auto obj = new CpuLoadProxyObj { Backend_->GetLoads (i) };
 			ModelPropObjs_ << obj;
 
 			auto modelItem = new QStandardItem;
 			modelItem->setData (i, CpusModel::CpuIdxRole);
 			modelItem->setData (QVariant::fromValue<QObject*> (obj), CpusModel::CpuLoadObj);
+			modelItem->setData (GetAccumulatedStr (loads), CpusModel::MomentalLoadStr);
 			newItems << modelItem;
 		}
 
@@ -114,6 +141,15 @@ namespace CpuLoad
 		for (auto i = 0; i < list.size (); ++i)
 			list [i].ry () += other [i].y ();
 		return list;
+	}
+
+	QList<QPointF> BackendProxy::enableIf (QList<QPointF> pts, bool flag)
+	{
+		if (!flag)
+			for (auto& p : pts)
+				p.ry () = 0;
+
+		return pts;
 	}
 }
 }

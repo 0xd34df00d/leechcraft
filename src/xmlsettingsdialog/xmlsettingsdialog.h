@@ -66,7 +66,9 @@ namespace Util
 		std::shared_ptr<QDomDocument> Document_;
 		QList<QWidget*> Customs_;
 		ItemHandlerFactory *HandlersManager_;
+
 		QString Basename_;
+		QString TrContext_;
 	public:
 		struct LangElements
 		{

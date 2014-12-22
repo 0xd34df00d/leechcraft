@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	NewTorrentWizard::NewTorrentWizard (QWidget *parent)
@@ -77,6 +75,5 @@ namespace BitTorrent
 
 		return result;
 	}
-}
 }
 }

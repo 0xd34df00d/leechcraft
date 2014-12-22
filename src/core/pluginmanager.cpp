@@ -473,13 +473,13 @@ namespace LeechCraft
 
 	void PluginManager::Release ()
 	{
-		QObjectList ordered = PluginTreeBuilder_->GetResult ();
+		auto ordered = PluginTreeBuilder_->GetResult ();
 		std::reverse (ordered.begin (), ordered.end ());
-		Q_FOREACH (QObject *obj, ordered)
+		for (const auto obj : ordered)
 		{
 			try
 			{
-				IInfo *ii = qobject_cast<IInfo*> (obj);
+				const auto ii = qobject_cast<IInfo*> (obj);
 				if (!ii)
 				{
 					qWarning () << Q_FUNC_INFO
@@ -490,6 +490,13 @@ namespace LeechCraft
 				}
 				qDebug () << "Releasing" << ii->GetName ();
 				ii->Release ();
+
+				const auto& loader = Obj2Loader_.value (obj);
+				if (!loader)
+					continue;
+
+				qDebug () << "Unloading" << loader->GetFileName ();
+				loader->Unload ();
 			}
 			catch (const std::exception& e)
 			{
@@ -504,6 +511,17 @@ namespace LeechCraft
 						<< obj;
 			}
 		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "destroying loaders...";
+		PluginTreeBuilder_.reset ();
+		FeatureProviders_.clear ();
+		AvailablePlugins_.clear ();
+		Obj2Loader_.clear ();
+		Plugins_.clear ();
+		PluginContainers_.clear ();
+		qDebug () << Q_FUNC_INFO
+				<< "done!";
 	}
 
 	QString PluginManager::Name (const PluginManager::Size_t& pos) const

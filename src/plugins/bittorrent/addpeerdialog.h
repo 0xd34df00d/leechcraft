@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class AddPeerDialog : public QDialog
@@ -49,6 +47,5 @@ namespace BitTorrent
 		QString GetIP () const;
 		int GetPort () const;
 	};
-}
 }
 }

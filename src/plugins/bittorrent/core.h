@@ -70,9 +70,6 @@ namespace Util
 {
 class ShortcutManager;
 }
-
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class NotifyManager;
@@ -81,6 +78,7 @@ namespace BitTorrent
 	class TorrentFilesModel;
 	class RepresentationModel;
 	class LiveStreamManager;
+	class SessionSettingsManager;
 	struct NewTorrentParams;
 
 	class Core : public QAbstractItemModel
@@ -89,27 +87,59 @@ namespace BitTorrent
 
 		enum TorrentState
 		{
-			TSIdle
-			, TSPreparing
-			, TSDownloading
-			, TSSeeding
+			TSIdle,
+			TSPreparing,
+			TSDownloading,
+			TSSeeding
 		};
 
 		struct TorrentStruct
 		{
-			std::vector<int> FilePriorities_;
+			std::vector<int> FilePriorities_ = {};
 			libtorrent::torrent_handle Handle_;
-			QByteArray TorrentFileContents_;
-			QString TorrentFileName_;
-			TorrentState State_;
-			double Ratio_;
+			QByteArray TorrentFileContents_ = {};
+			QString TorrentFileName_ = {};
+			TorrentState State_ = TSIdle;
+			double Ratio_ = 0;
 			/** Holds the IDs of tags of the torrent.
 				*/
 			QStringList Tags_;
-			bool AutoManaged_;
+			bool AutoManaged_ = true;
 
 			int ID_;
-			LeechCraft::TaskParameters Parameters_;
+			TaskParameters Parameters_;
+
+			bool PauseAfterCheck_ = false;
+
+			TorrentStruct (const libtorrent::torrent_handle& handle,
+					const QStringList& tags,
+					int id,
+					TaskParameters params)
+			: Handle_ { handle }
+			, Tags_ { tags }
+			, ID_ { id }
+			, Parameters_ { params }
+			{
+			}
+
+			TorrentStruct (const std::vector<int>& prios,
+					const libtorrent::torrent_handle& handle,
+					const QByteArray& torrentFile,
+					const QString& filename,
+					const QStringList& tags,
+					bool autoManaged,
+					int id,
+					TaskParameters params)
+			: FilePriorities_ { prios }
+			, Handle_ { handle }
+			, TorrentFileContents_ { torrentFile }
+			, TorrentFileName_ { filename }
+			, Tags_ { tags }
+			, AutoManaged_ { autoManaged }
+			, ID_ { id }
+			, Parameters_ { params }
+			{
+			}
 		};
 
 		friend struct SimpleDispatcher;
@@ -136,12 +166,13 @@ namespace BitTorrent
 		NotifyManager *NotifyManager_;
 
 		libtorrent::session *Session_;
+		SessionSettingsManager *SessionSettingsMgr_ = nullptr;
 
 		typedef QList<TorrentStruct> HandleDict_t;
 		HandleDict_t Handles_;
 		QList<QString> Headers_;
 		mutable int CurrentTorrent_;
-		std::shared_ptr<QTimer> SettingsSaveTimer_, FinishedTimer_, WarningWatchdog_, ScrapeTimer_;
+		std::shared_ptr<QTimer> FinishedTimer_, WarningWatchdog_;
 		std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 		QString ExternalAddress_;
 		bool SaveScheduled_;
@@ -175,12 +206,6 @@ namespace BitTorrent
 			Started,
 			Paused
 		};
-		enum SettingsPreset
-		{
-			SPDefault,
-			SPMinMemoryUsage,
-			SPHighPerfSeed
-		};
 		enum Roles
 		{
 			FullLengthText = Qt::UserRole + 1,
@@ -198,6 +223,8 @@ namespace BitTorrent
 		ICoreProxy_ptr GetProxy () const;
 
 		Util::ShortcutManager* GetShortcutManager () const;
+
+		SessionSettingsManager* GetSessionSettingsManager () const;
 
 		EntityTestHandleResult CouldDownload (const LeechCraft::Entity&) const;
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
@@ -274,14 +301,6 @@ namespace BitTorrent
 		void ResumeTorrent (int);
 		void ForceReannounce (int);
 		void ForceRecheck (int);
-		void SetOverallDownloadRate (int);
-		void SetOverallUploadRate (int);
-		void SetMaxDownloadingTorrents (int);
-		void SetMaxUploadingTorrents (int);
-		int GetOverallDownloadRate () const;
-		int GetOverallUploadRate () const;
-		int GetMaxDownloadingTorrents () const;
-		int GetMaxUploadingTorrents () const;
 		void SetTorrentDownloadRate (int, int);
 		void SetTorrentUploadRate (int, int);
 		int GetTorrentDownloadRate (int) const;
@@ -322,12 +341,12 @@ namespace BitTorrent
 		void PieceRead (const libtorrent::read_piece_alert&);
 		void UpdateStatus (const std::vector<libtorrent::torrent_status>&);
 
+		void HandleTorrentChecked (const libtorrent::torrent_handle&);
+
 		void MoveUp (const std::vector<int>&);
 		void MoveDown (const std::vector<int>&);
 		void MoveToTop (const std::vector<int>&);
 		void MoveToBottom (const std::vector<int>&);
-
-		void SetPreset (SettingsPreset);
 
 		QList<FileInfo> GetTorrentFiles (int = -1) const;
 	private:
@@ -347,8 +366,6 @@ namespace BitTorrent
 
 		void HandleSingleFinished (int);
 		void HandleFileRenamed (const libtorrent::file_renamed_alert&);
-
-		void ManipulateSettings ();
 
 		/** Returns human-readable list of tags for the given torrent.
 		 *
@@ -370,16 +387,6 @@ namespace BitTorrent
 		void scrape ();
 	public slots:
 		void queryLibtorrentForWarnings ();
-		void tcpPortRangeChanged ();
-		void sslPortChanged ();
-		void autosaveIntervalChanged ();
-		void maxUploadsChanged ();
-		void maxConnectionsChanged ();
-		void setProxySettings ();
-		void setGeneralSettings ();
-		void setDHTSettings ();
-		void setLoggingSettings ();
-		void setScrapeInterval ();
 		void updateRows ();
 	signals:
 		void error (QString) const;
@@ -391,11 +398,4 @@ namespace BitTorrent
 		void fileRenamed (int torrent, int file, const QString& newName);
 	};
 }
-}
-}
-
-namespace libtorrent
-{
-	QDataStream& operator<< (QDataStream&, const libtorrent::entry&);
-	QDataStream& operator>> (QDataStream&, libtorrent::entry&);
 }

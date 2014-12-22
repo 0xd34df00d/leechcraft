@@ -66,6 +66,7 @@ set (SRCS
 	addmagnetdialog.cpp
 	addtorrentfilesmodel.cpp
 	torrenttabfileswidget.cpp
+	sessionsettingsmanager.cpp
 	)
 
 set (FORMS

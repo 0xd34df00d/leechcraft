@@ -32,8 +32,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	ValidateIPv4::ValidateIPv4 (QObject *parent)
@@ -80,6 +78,5 @@ namespace BitTorrent
 		}
 		return Acceptable;
 	}
-}
 }
 }

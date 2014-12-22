@@ -61,9 +61,9 @@ namespace SB2
 	public slots:
 		void setSettingsValue (const QString& key, const QVariant& value);
 	protected:
-		QSettings* BeginSettings () const;
-		void EndSettings (QSettings*) const;
-		void PropertyChanged (const QString&, const QVariant&);
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
+		void PropertyChanged (const QString&, const QVariant&) override;
 	};
 }
 }

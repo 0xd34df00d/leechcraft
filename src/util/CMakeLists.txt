@@ -19,8 +19,6 @@ if (ENABLE_UTIL_TESTS)
 	endfunction ()
 endif ()
 
-set (LC_SOVERSION 0.6.75)
-
 add_subdirectory (db)
 add_subdirectory (gui)
 add_subdirectory (models)

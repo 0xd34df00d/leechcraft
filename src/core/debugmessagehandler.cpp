@@ -29,7 +29,6 @@
 
 #include "debugmessagehandler.h"
 #include <fstream>
-#include <map>
 #include <iomanip>
 #include <cstdlib>
 #ifdef _GNU_SOURCE
@@ -44,6 +43,23 @@ uint Counter = 0;
 
 namespace
 {
+	QString GetFilename (QtMsgType type)
+	{
+		switch (type)
+		{
+		case QtDebugMsg:
+			return "debug.log";
+		case QtWarningMsg:
+			return "warning.log";
+		case QtCriticalMsg:
+			return "critical.log";
+		case QtFatalMsg:
+			return "fatal.log";
+		}
+
+		return "unknown.log";
+	}
+
 	void Write (QtMsgType type, const char *message, bool bt)
 	{
 #if !defined (Q_OS_WIN32)
@@ -55,15 +71,7 @@ namespace
 		if (!strcmp (message, "QObject::startTimer: QTimer can only be used with threads started with QThread"))
 			return;
 #endif
-		static const std::map<QtMsgType, QString> fileName =
-		{
-			{QtDebugMsg, "debug.log"},
-			{QtWarningMsg, "warning.log"},
-			{QtCriticalMsg, "critical.log"},
-			{QtFatalMsg, "fatal.log"}
-		};
-
-		const QString name = QDir::homePath () + "/.leechcraft/" + fileName.at (type);
+		const QString name = QDir::homePath () + "/.leechcraft/" + GetFilename (type);
 
 		G_DbgMutex.lock ();
 

@@ -33,8 +33,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class TabViewProxyModel : public QSortFilterProxyModel
@@ -54,6 +52,5 @@ namespace BitTorrent
 	public slots:
 		void setStateFilterMode (int);
 	};
-}
 }
 }

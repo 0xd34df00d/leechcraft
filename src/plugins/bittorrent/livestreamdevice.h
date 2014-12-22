@@ -36,8 +36,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class LiveStreamDevice : public QIODevice
@@ -77,6 +75,5 @@ namespace BitTorrent
 	signals:
 		void ready ();
 	};
-}
 }
 }

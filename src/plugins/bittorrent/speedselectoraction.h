@@ -27,46 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_BITTORRENT_SPEEDSELECTORACTION_H
-#define PLUGINS_BITTORRENT_SPEEDSELECTORACTION_H
+#pragma once
+
 #include <QWidgetAction>
 #include <QComboBox>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class SpeedSelectorAction : public QWidgetAction
 	{
-		namespace BitTorrent
+		Q_OBJECT
+
+		QString Setting_;
+	public:
+		SpeedSelectorAction (const QString&, QObject*);
+
+		int CurrentData ();
+	protected:
+		QWidget* createWidget (QWidget*);
+		void deleteWidget (QWidget*);
+	public slots:
+		void handleSpeedsChanged ();
+	private slots:
+		void syncSpeeds (int);
+	private:
+		template<typename F>
+		void Call (F f)
 		{
-			class SpeedSelectorAction : public QWidgetAction
-			{
-				Q_OBJECT
-
-				QString Setting_;
-			public:
-				SpeedSelectorAction (const QString&, QObject*);
-
-				int CurrentData ();
-			protected:
-				QWidget* createWidget (QWidget*);
-				void deleteWidget (QWidget*);
-			public slots:
-				void handleSpeedsChanged ();
-			private slots:
-				void syncSpeeds (int);
-			private:
-				template<typename F>
-				void Call (F f)
-				{
-					Q_FOREACH (QWidget *w, createdWidgets ())
-						f (static_cast<QComboBox*> (w));
-				}
-			signals:
-				void currentIndexChanged (int);
-			};
-		};
+			Q_FOREACH (QWidget *w, createdWidgets ())
+				f (static_cast<QComboBox*> (w));
+		}
+	signals:
+		void currentIndexChanged (int);
 	};
-};
-
-#endif
-
+}
+}

@@ -44,6 +44,11 @@ namespace Loaders
 	public:
 		SOPluginLoader (const QString&);
 
+		SOPluginLoader (const SOPluginLoader&) = delete;
+		SOPluginLoader (SOPluginLoader&&) = delete;
+		SOPluginLoader& operator= (const SOPluginLoader&) = delete;
+		SOPluginLoader& operator= (SOPluginLoader&&) = delete;
+
 		quint64 GetAPILevel ();
 
 		bool Load ();

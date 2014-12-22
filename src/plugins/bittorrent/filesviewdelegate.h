@@ -35,8 +35,6 @@ class QTreeView;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class FilesViewDelegate : public QStyledItemDelegate
@@ -54,6 +52,5 @@ namespace BitTorrent
 		void setModelData (QWidget*, QAbstractItemModel*, const QModelIndex&) const override;
 		void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 	};
-}
 }
 }

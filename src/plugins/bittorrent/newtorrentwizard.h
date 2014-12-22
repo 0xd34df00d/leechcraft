@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class NewTorrentWizard : public QWizard
@@ -51,6 +49,5 @@ namespace BitTorrent
 		virtual void accept ();
 		NewTorrentParams GetParams () const;
 	};
-}
 }
 }

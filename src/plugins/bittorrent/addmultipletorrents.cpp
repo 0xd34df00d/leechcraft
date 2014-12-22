@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	AddMultipleTorrents::AddMultipleTorrents (QWidget *parent)
@@ -109,6 +107,5 @@ namespace BitTorrent
 		XmlSettingsManager::Instance ()->setProperty ("LastSaveDirectory", dir);
 		SaveDirectory_->setText (dir);
 	}
-}
 }
 }

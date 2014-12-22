@@ -27,41 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QSettings>
-#include <QDynamicPropertyChangeEvent>
-#include <QtDebug>
-#include <QCoreApplication>
 #include "xmlsettingsmanager.h"
+#include <QSettings>
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		namespace BitTorrent
-		{
-			XmlSettingsManager::XmlSettingsManager ()
-			{
-				LeechCraft::Util::BaseSettingsManager::Init ();
-			}
-			
-			XmlSettingsManager* XmlSettingsManager::Instance ()
-			{
-				static XmlSettingsManager manager;
-				return &manager;
-			}
-			
-			QSettings* XmlSettingsManager::BeginSettings () const
-			{
-				QSettings *settings =
-					new QSettings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "_Torrent");
-				return settings;
-			}
-			
-			void XmlSettingsManager::EndSettings (QSettings*) const
-			{
-			}
-		};
-	};
-};
+		BaseSettingsManager::Init ();
+	}
 
+	XmlSettingsManager* XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return &manager;
+	}
+
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		return new QSettings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Torrent");
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
+}

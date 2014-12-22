@@ -38,85 +38,81 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	SpeedSelectorAction::SpeedSelectorAction (const QString& s, QObject *parent)
+	: QWidgetAction (parent)
+	, Setting_ (s)
 	{
-		namespace BitTorrent
+	}
+
+	int SpeedSelectorAction::CurrentData ()
+	{
+		QList<QWidget*> ws = createdWidgets ();
+		if (ws.size ())
 		{
-			SpeedSelectorAction::SpeedSelectorAction (const QString& s, QObject *parent)
-			: QWidgetAction (parent)
-			, Setting_ (s)
-			{
-			}
+			QComboBox *bx = static_cast<QComboBox*> (ws.at (0));
+			return bx->itemData (bx->currentIndex ()).toInt ();
+		}
+		else
+			return 0;
+	}
 
-			int SpeedSelectorAction::CurrentData ()
-			{
-				QList<QWidget*> ws = createdWidgets ();
-				if (ws.size ())
-				{
-					QComboBox *bx = static_cast<QComboBox*> (ws.at (0));
-					return bx->itemData (bx->currentIndex ()).toInt ();
-				}
-				else
-					return 0;
-			}
+	QWidget* SpeedSelectorAction::createWidget (QWidget *parent)
+	{
+		QComboBox *selector = new QComboBox (parent);
+		connect (selector,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (syncSpeeds (int)));
 
-			QWidget* SpeedSelectorAction::createWidget (QWidget *parent)
-			{
-				QComboBox *selector = new QComboBox (parent);
-				connect (selector,
-						SIGNAL (currentIndexChanged (int)),
-						this,
-						SLOT (syncSpeeds (int)));
+		QTimer::singleShot (0,
+				this,
+				SLOT (handleSpeedsChanged ()));
 
-				QTimer::singleShot (0,
-						this,
-						SLOT (handleSpeedsChanged ()));
+		return selector;
+	}
 
-				return selector;
-			}
+	void SpeedSelectorAction::deleteWidget (QWidget *w)
+	{
+		delete w;
+	}
 
-			void SpeedSelectorAction::deleteWidget (QWidget *w)
-			{
-				delete w;
-			}
+	void SpeedSelectorAction::handleSpeedsChanged ()
+	{
+		Call ([] (QComboBox *box) { box->clear (); });
 
-			void SpeedSelectorAction::handleSpeedsChanged ()
-			{
-				Call ([] (QComboBox *box) { box->clear (); });
+		if (!XmlSettingsManager::Instance ()->
+				property ("EnableFastSpeedControl").toBool ())
+		{
+			setVisible (false);
+			return;
+		}
 
-				if (!XmlSettingsManager::Instance ()->
-						property ("EnableFastSpeedControl").toBool ())
-				{
-					setVisible (false);
-					return;
-				}
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Torrent");
+		settings.beginGroup ("FastSpeedControl");
+		int num = settings.beginReadArray ("Values");
+		for (int i = 0; i < num; ++i)
+		{
+			settings.setArrayIndex (i);
+			int dv = settings.value (Setting_ + "Value").toInt ();
+			const auto& str = tr ("%1 KiB/s").arg (dv);
+			Call ([dv, str] (QComboBox *box) { box->addItem (str, dv); });
+		}
+		settings.endArray ();
+		settings.endGroup ();
 
-				QSettings settings (QCoreApplication::organizationName (),
-						QCoreApplication::applicationName () + "_Torrent");
-				settings.beginGroup ("FastSpeedControl");
-				int num = settings.beginReadArray ("Values");
-				for (int i = 0; i < num; ++i)
-				{
-					settings.setArrayIndex (i);
-					int dv = settings.value (Setting_ + "Value").toInt ();
-					const auto& str = tr ("%1 KiB/s").arg (dv);
-					Call ([dv, str] (QComboBox *box) { box->addItem (str, dv); });
-				}
-				settings.endArray ();
-				settings.endGroup ();
+		Call ([] (QComboBox *box) { box->addItem (QString::fromUtf8 ("\u221E"), 0); });
+		Call ([] (QComboBox *box) { box->setCurrentIndex (box->count () - 1); });
 
-				Call ([] (QComboBox *box) { box->addItem (QString::fromUtf8 ("\u221E"), 0); });
-				Call ([] (QComboBox *box) { box->setCurrentIndex (box->count () - 1); });
+		setVisible (true);
+	}
 
-				setVisible (true);
-			}
-
-			void SpeedSelectorAction::syncSpeeds (int s)
-			{
-				Call ([s] (QComboBox *box) { box->setCurrentIndex (s); });
-				emit currentIndexChanged (s);
-			}
-		};
-	};
-};
-
+	void SpeedSelectorAction::syncSpeeds (int s)
+	{
+		Call ([s] (QComboBox *box) { box->setCurrentIndex (s); });
+		emit currentIndexChanged (s);
+	}
+}
+}

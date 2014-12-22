@@ -31,7 +31,6 @@
 #include <QCoreApplication>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include "viewmanager.h"
-#include "sb2util.h"
 
 namespace LeechCraft
 {
@@ -42,8 +41,6 @@ namespace SB2
 		class XmlViewSettingsManager : public Util::BaseSettingsManager
 		{
 			ViewManager * const ViewMgr_;
-
-			mutable std::shared_ptr<QSettings> SettingsInstance_;
 		public:
 			XmlViewSettingsManager (ViewManager*);
 		protected:
@@ -54,8 +51,7 @@ namespace SB2
 		};
 
 		XmlViewSettingsManager::XmlViewSettingsManager (ViewManager *view)
-		: BaseSettingsManager ()
-		, ViewMgr_ (view)
+		: ViewMgr_ (view)
 		{
 			Util::BaseSettingsManager::Init ();
 		}
@@ -78,20 +74,20 @@ namespace SB2
 	ViewSettingsManager::ViewSettingsManager (ViewManager *mgr)
 	: QObject (mgr)
 	, ViewMgr_ (mgr)
-	, XSM_ (new XmlViewSettingsManager (mgr))
-	, XSD_ (new Util::XmlSettingsDialog)
+	, XSM_ (std::make_shared<XmlViewSettingsManager> (mgr))
+	, XSD_ (std::make_shared<Util::XmlSettingsDialog> ())
 	{
 		XSD_->RegisterObject (XSM_.get (), "sb2panelsettings.xml");
 	}
 
-	void ViewSettingsManager::ShowSettings ()
+	Util::XmlSettingsDialog* ViewSettingsManager::GetXSD () const
 	{
-		OpenSettingsDialog (XSD_.get (), tr ("SB2 panel settings"));
+		return XSD_.get ();
 	}
 
-	const std::shared_ptr<Util::BaseSettingsManager>& ViewSettingsManager::GetXSM () const
+	Util::BaseSettingsManager* ViewSettingsManager::GetXSM () const
 	{
-		return XSM_;
+		return XSM_.get ();
 	}
 }
 }

@@ -3,7 +3,6 @@ project (leechcraft_touchstreams)
 include (InitLCPlugin OPTIONAL)
 
 if (NOT USE_QT5)
-	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 	find_package (QJSON REQUIRED)
 else ()
 	unset (QJSON_INCLUDE_DIR)

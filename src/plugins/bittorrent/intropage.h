@@ -35,8 +35,6 @@ class QLabel;
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class IntroPage : public QWizardPage
@@ -47,6 +45,5 @@ namespace BitTorrent
 	public:
 		IntroPage (QWidget *parent = 0);
 	};
-}
 }
 }

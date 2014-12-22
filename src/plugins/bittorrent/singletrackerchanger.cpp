@@ -33,52 +33,48 @@
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace BitTorrent
+{
+	class URLValidator : public QValidator
 	{
-		namespace BitTorrent
+	public:
+		URLValidator (QObject *parent)
+		: QValidator (parent)
 		{
-			class URLValidator : public QValidator
-			{
-			public:
-				URLValidator (QObject *parent)
-				: QValidator (parent)
-				{
-				}
+		}
 
-				State validate (QString& input, int&) const
-				{
-					QUrl url (input);
-					return url.isValid () ? Acceptable : Intermediate;
-				}
-			};
-
-			SingleTrackerChanger::SingleTrackerChanger (QWidget *parent)
-			: QDialog (parent)
-			{
-				Ui_.setupUi (this);
-				Ui_.Tracker_->setValidator (new URLValidator (this));
-			}
-
-			void SingleTrackerChanger::SetTracker (const QString& tracker)
-			{
-				Ui_.Tracker_->setText (tracker);
-			}
-
-			void SingleTrackerChanger::SetTier (int tier)
-			{
-				Ui_.Tier_->setValue (tier);
-			}
-
-			QString SingleTrackerChanger::GetTracker () const
-			{
-				return Ui_.Tracker_->text ();
-			}
-
-			int SingleTrackerChanger::GetTier () const
-			{
-				return Ui_.Tier_->value ();
-			}
-		};
+		State validate (QString& input, int&) const
+		{
+			QUrl url (input);
+			return url.isValid () ? Acceptable : Intermediate;
+		}
 	};
-};
 
+	SingleTrackerChanger::SingleTrackerChanger (QWidget *parent)
+	: QDialog (parent)
+	{
+		Ui_.setupUi (this);
+		Ui_.Tracker_->setValidator (new URLValidator (this));
+	}
+
+	void SingleTrackerChanger::SetTracker (const QString& tracker)
+	{
+		Ui_.Tracker_->setText (tracker);
+	}
+
+	void SingleTrackerChanger::SetTier (int tier)
+	{
+		Ui_.Tier_->setValue (tier);
+	}
+
+	QString SingleTrackerChanger::GetTracker () const
+	{
+		return Ui_.Tracker_->text ();
+	}
+
+	int SingleTrackerChanger::GetTier () const
+	{
+		return Ui_.Tier_->value ();
+	}
+}
+}

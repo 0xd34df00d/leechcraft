@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class FirstStep : public QWizardPage, private Ui::NewTorrentFirstStep
@@ -52,6 +50,5 @@ namespace BitTorrent
 		void on_BrowseFile__released ();
 		void on_BrowseDirectory__released ();
 	};
-}
 }
 }

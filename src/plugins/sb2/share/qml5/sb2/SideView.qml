@@ -273,41 +273,6 @@ Rectangle {
                         }
                     ]
                 }
-
-                ActionButton {
-                    id: settingsButton
-
-                    visible: quarkHasSettings
-                    opacity: 0
-                    z: 10
-
-                    actionIconURL: "image://ThemeIcons/preferences-desktop"
-
-                    property real dimension: Math.min(itemLoader.width / 2, itemLoader.height / 2)
-                    width: dimension
-                    height: dimension
-                    anchors.bottom: itemLoader.bottom
-                    anchors.right: itemLoader.right
-
-                    states: [
-                        State {
-                            name: "inSettingsMode"
-                            when: enableSettingsModeButton.settingsMode
-                            PropertyChanges { target: settingsButton; opacity: 1 }
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: ""
-                            to: "inSettingsMode"
-                            reversible: true
-                            PropertyAnimation { properties: "opacity"; duration: 200 }
-                        }
-                    ]
-
-                    onTriggered: quarkProxy.showSettings(sourceURL)
-                }
             }
         }
     }

@@ -221,12 +221,6 @@ namespace SB2
 		InternalComponents_ << c;
 	}
 
-	void ViewManager::ShowSettings (const QUrl& url)
-	{
-		auto manager = Quark2Manager_ [url];
-		manager->ShowSettings ();
-	}
-
 	void ViewManager::RemoveQuark (const QUrl& url)
 	{
 		for (int i = 0; i < ViewItemsModel_->rowCount (); ++i)

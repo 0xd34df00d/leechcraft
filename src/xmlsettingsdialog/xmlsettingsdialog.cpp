@@ -74,6 +74,9 @@ namespace Util
 	void XmlSettingsDialog::RegisterObject (BaseSettingsManager *obj, const QString& basename)
 	{
 		Basename_ = QFileInfo (basename).baseName ();
+		TrContext_ = basename.endsWith (".xml") ?
+				Basename_ :
+				QFileInfo (basename).fileName ();
 		WorkingObject_ = obj;
 		QString filename;
 		if (QFile::exists (basename))
@@ -543,7 +546,7 @@ namespace Util
 		QDomElement label = item.firstChildElement ("label");
 		if (!label.isNull ())
 			result = label.attribute ("value");
-		return QCoreApplication::translate (qPrintable (Basename_),
+		return QCoreApplication::translate (qPrintable (TrContext_),
 				result.toUtf8 ().constData (),
 #if QT_VERSION < 0x050000
 				0,
@@ -557,7 +560,7 @@ namespace Util
 	{
 		const auto& label = item.firstChildElement ("tooltip");
 		const auto& text = label.text ().simplified ();
-		return QCoreApplication::translate (qPrintable (Basename_),
+		return QCoreApplication::translate (qPrintable (TrContext_),
 				text.toUtf8 ().constData ());
 	}
 
@@ -582,7 +585,7 @@ namespace Util
 			return
 			{
 				true,
-				QCoreApplication::translate (qPrintable (Basename_),
+				QCoreApplication::translate (qPrintable (TrContext_),
 						label.attribute ("value").toUtf8 ().constData (),
 #if QT_VERSION < 0x050000
 						0,
@@ -613,7 +616,7 @@ namespace Util
 		{
 			QString def = item.attribute ("default");
 			if (item.attribute ("translatable") == "true")
-				def = QCoreApplication::translate (qPrintable (Basename_),
+				def = QCoreApplication::translate (qPrintable (TrContext_),
 						def.toUtf8 ().constData ());
 			value = def;
 		}

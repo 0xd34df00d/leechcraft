@@ -46,8 +46,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	AddTorrent::AddTorrent (QWidget *parent)
@@ -378,6 +376,5 @@ namespace BitTorrent
 			return qMakePair<quint64, quint64> (-1, -1);
 		}
 	}
-}
 }
 }

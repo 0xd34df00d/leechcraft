@@ -58,6 +58,7 @@ namespace Murm
 		QList<VkAccount*> Accounts_;
 	public:
 		VkProtocol (ICoreProxy_ptr, IProxyObject*, QObject*);
+		~VkProtocol ();
 
 		IProxyObject* GetAzothProxy () const;
 

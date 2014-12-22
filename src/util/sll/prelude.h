@@ -124,5 +124,45 @@ namespace Util
 
 		return {};
 	}
+
+#ifdef USE_CPP14
+	template<typename R>
+	auto ComparingBy (R r)
+	{
+		return [r] (const auto& left, const auto& right) { return r (left) < r (right); };
+	}
+
+	auto Apply = [] (const auto& t) { return t (); };
+#else
+	namespace detail
+	{
+		template<typename R>
+		struct ComparingByClosure
+		{
+			const R R_;
+
+			template<typename T>
+			bool operator() (const T& left, const T& right) const
+			{
+				return R_ (left) < R_ (right);
+			}
+		};
+	}
+
+	template<typename R>
+	detail::ComparingByClosure<R> ComparingBy (R r)
+	{
+		return detail::ComparingByClosure<R> { r };
+	}
+
+	struct
+	{
+		template<typename T>
+		typename std::result_of<T ()>::type operator() (const T& t) const
+		{
+			return t ();
+		}
+	} Apply;
+#endif
 }
 }

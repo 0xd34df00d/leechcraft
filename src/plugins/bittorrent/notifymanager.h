@@ -35,8 +35,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class NotifyManager : public QObject
@@ -61,6 +59,5 @@ namespace BitTorrent
 	private slots:
 		void makeDelayedReady ();
 	};
-}
 }
 }

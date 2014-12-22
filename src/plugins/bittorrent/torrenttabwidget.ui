@@ -65,7 +65,7 @@
          </widget>
         </item>
         <item>
-         <widget class="LeechCraft::Plugins::BitTorrent::PiecesWidget" name="PiecesWidget_" native="true">
+         <widget class="LeechCraft::BitTorrent::PiecesWidget" name="PiecesWidget_" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>1</horstretch>
@@ -664,7 +664,7 @@
      <number>1</number>
     </property>
     <item>
-     <widget class="LeechCraft::Plugins::BitTorrent::TorrentTabFilesWidget" name="FilesWidget_" native="true"/>
+     <widget class="LeechCraft::BitTorrent::TorrentTabFilesWidget" name="FilesWidget_" native="true"/>
     </item>
    </layout>
   </widget>
@@ -698,7 +698,7 @@
       <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
-         <widget class="LeechCraft::Plugins::BitTorrent::PiecesWidget" name="PeerPieces_" native="true">
+         <widget class="LeechCraft::BitTorrent::PiecesWidget" name="PeerPieces_" native="true">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -2020,12 +2020,12 @@
    <header location="global">util/tags/tagslineedit.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::BitTorrent::PiecesWidget</class>
+   <class>LeechCraft::BitTorrent::PiecesWidget</class>
    <extends>QWidget</extends>
    <header>pieceswidget.h</header>
   </customwidget>
   <customwidget>
-   <class>LeechCraft::Plugins::BitTorrent::TorrentTabFilesWidget</class>
+   <class>LeechCraft::BitTorrent::TorrentTabFilesWidget</class>
    <extends>QWidget</extends>
    <header>torrenttabfileswidget.h</header>
    <container>1</container>

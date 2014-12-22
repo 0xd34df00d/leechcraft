@@ -153,61 +153,75 @@ namespace Azoth
 					url.toEncoded ());
 			msg->Send ();
 		}
+	}
 
-		void CollectDataFilters (QStringList& choiceItems,
-				QList<std::function<void ()>>& functions,
-				const QImage& image, const QString& entryId, const QString& variant)
+	void ContactDropFilter::CollectDataFilters (QStringList& choiceItems,
+			QList<std::function<void ()>>& functions,
+			const QImage& image, const QString& entryId, const QString& variant)
+	{
+		const auto& entity = Util::MakeEntity (image,
+				{},
+				TaskParameter::NoParameters,
+				"x-leechcraft/data-filter-request");
+
+		auto prevChoices = choiceItems;
+		choiceItems.clear ();
+		auto prevFunctions = functions;
+		functions.clear ();
+
+		auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+		for (const auto obj : em->GetPossibleHandlers (entity))
 		{
-			const auto& entity = Util::MakeEntity (image,
-					{},
-					TaskParameter::NoParameters,
-					"x-leechcraft/data-filter-request");
+			const auto idf = qobject_cast<IDataFilter*> (obj);
 
-			auto prevChoices = choiceItems;
-			choiceItems.clear ();
-			auto prevFunctions = functions;
-			functions.clear ();
+			const auto& verb = idf->GetFilterVerb ();
 
-			auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
-			for (const auto obj : em->GetPossibleHandlers (entity))
+			for (const auto& var : idf->GetFilterVariants ())
 			{
-				const auto idf = qobject_cast<IDataFilter*> (obj);
+				auto thisEnt = entity;
+				thisEnt.Additional_ ["DataFilter"] = verb;
 
-				const auto& verb = idf->GetFilterVerb ();
+				choiceItems << verb + ": " + var.Name_;
+				thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
+						[entryId, variant] (const QVariant& var)
+						{
+							const auto& url = var.toUrl ();
+							if (url.isEmpty ())
+								return;
 
-				for (const auto& var : idf->GetFilterVariants ())
-				{
-					choiceItems << verb + ": " + var.Name_;
+							auto entry = GetEntry<ICLEntry> (entryId);
+							if (!entry)
+								return;
 
-					auto thisEnt = entity;
-					thisEnt.Additional_ ["DataFilter"] = verb;
-					thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
-							[entryId, variant] (const QVariant& var) -> void
-							{
-								const auto& url = var.toUrl ();
-								if (url.isEmpty ())
-									return;
+							const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
+										IMessage::Type::MUCMessage :
+										IMessage::Type::ChatMessage;
+							entry->CreateMessage (msgType, variant, url.toString ())->Send ();
+						});
+				functions.append ([thisEnt, obj]
+						{
+							qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt);
+						});
 
-								auto entry = GetEntry<ICLEntry> (entryId);
-								if (!entry)
-									return;
+				choiceItems << verb + ": " + var.Name_ + " " + tr ("(append link to message)");
+				thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
+						[this] (const QVariant& var)
+						{
+							const auto& url = var.toUrl ();
+							if (url.isEmpty ())
+								return;
 
-								const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-											IMessage::Type::MUCMessage :
-											IMessage::Type::ChatMessage;
-								entry->CreateMessage (msgType, variant, url.toString ())->Send ();
-							});
-
-					functions.append ([thisEnt, obj]
-							{
-								qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt);
-							});
-				}
+							ChatTab_->appendMessageText (url.toEncoded ());
+						});
+				functions.append ([thisEnt, obj]
+						{
+							qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt);
+						});
 			}
-
-			choiceItems << prevChoices;
-			functions << prevFunctions;
 		}
+
+		choiceItems << prevChoices;
+		functions << prevFunctions;
 	}
 
 	void ContactDropFilter::HandleImageDropped (const QImage& image, const QUrl& url)

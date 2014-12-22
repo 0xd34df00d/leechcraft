@@ -49,6 +49,9 @@
 #include "quarkorderview.h"
 #include "declarativewindow.h"
 #include "viewsettingsmanager.h"
+#include "sb2util.h"
+#include "quarkmanager.h"
+#include "panelsettingsdialog.h"
 
 namespace LeechCraft
 {
@@ -79,11 +82,6 @@ namespace SB2
 	void QuarkProxy::showTextTooltip (int x, int y, const QString& str)
 	{
 		QToolTip::showText ({ x, y }, str);
-	}
-
-	void QuarkProxy::showSettings (const QUrl& url)
-	{
-		Manager_->ShowSettings (url);
 	}
 
 	void QuarkProxy::removeQuark (const QUrl& url)
@@ -201,7 +199,31 @@ namespace SB2
 
 	void QuarkProxy::panelSettingsRequested ()
 	{
-		Manager_->GetViewSettingsManager ()->ShowSettings ();
+		QList<SettingsItem> xsds
+		{
+			{
+				tr ("SB2 panel settings"),
+				QIcon { "lcicons:/resources/images/sb2.svg" },
+				Manager_->GetViewSettingsManager ()->GetXSD ()
+			}
+		};
+
+		for (const auto& added : Manager_->GetAddedQuarks ())
+		{
+			const auto& addedManager = Manager_->GetAddedQuarkManager (added);
+			if (!addedManager->HasSettings ())
+				continue;
+
+			const auto& manifest = addedManager->GetManifest ();
+			xsds.append ({
+					manifest.GetName (),
+					manifest.GetIcon (),
+					addedManager->GetXSD ()
+				});
+		}
+
+		PanelSettingsDialog dia { xsds };
+		dia.exec ();
 	}
 
 	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)

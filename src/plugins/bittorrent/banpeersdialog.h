@@ -34,8 +34,6 @@
 
 namespace LeechCraft
 {
-namespace Plugins
-{
 namespace BitTorrent
 {
 	class BanPeersDialog : public QDialog
@@ -51,6 +49,5 @@ namespace BitTorrent
 		QString GetStart () const;
 		QString GetEnd () const;
 	};
-}
 }
 }
