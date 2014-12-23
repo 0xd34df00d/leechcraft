@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "backendproxy.h"
+#include <numeric>
+#include <cmath>
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/models/rolenamesmixin.h>

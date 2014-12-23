@@ -56,23 +56,6 @@ namespace LeechCraft
 			return QString::fromUtf8 (str.c_str ());
 		}
 
-		template<typename T>
-		struct ValueFinder
-		{
-			typedef typename T::data_type data_type;
-			data_type Object_;
-
-			ValueFinder (data_type data)
-			: Object_ (data)
-			{
-			}
-
-			bool operator() (typename T::value_type i)
-			{
-				return i.second == Object_;
-			}
-		};
-
 		/** @brief Returns the given image in a Base64-encoded form.
 		 *
 		 * The return result is suitable for inserting into
