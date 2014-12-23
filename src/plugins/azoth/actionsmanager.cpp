@@ -646,6 +646,19 @@ namespace Azoth
 					})
 			},
 			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
+			{ "saveAvatar", SingleEntryActor_f ([] (ICLEntry *e)
+					{
+						const auto& image = e->GetAvatar ();
+						if (image.isNull ())
+							return;
+
+						const auto& filename = QFileDialog::getSaveFileName (nullptr,
+								ActionsManager::tr ("Save avatar"));
+						if (filename.isEmpty ())
+							return;
+
+						image.save (filename, "PNG", 0);
+					}) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
 			{ "sep_beforemuc", {} },
 			{ "changenick", MultiEntryActor_f (ChangeNick) },
@@ -1088,6 +1101,10 @@ namespace Azoth
 			Entry2Actions_ [entry] ["inviteToMuc"] = inviteTo;
 			Action2Areas_ [inviteTo] << CLEAAContactListCtxtMenu;
 
+			const auto saveAvatar = new QAction (tr ("Save avatar..."), entry->GetQObject ());
+			Entry2Actions_ [entry] ["saveAvatar"] = saveAvatar;
+			Action2Areas_ [saveAvatar] << CLEAAContactListCtxtMenu;
+
 			const auto vcard = new QAction (tr ("VCard"), entry->GetQObject ());
 			vcard->setProperty ("ActionIcon", "text-x-vcard");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
@@ -1308,6 +1325,8 @@ namespace Azoth
 			bool enableVCard = account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
+
+			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (!entry->GetAvatar ().isNull ());
 
 			const auto& allEntries = account->GetCLEntries ();
 			const auto hasMucs = std::any_of (allEntries.begin (), allEntries.end (),
