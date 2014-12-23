@@ -1084,11 +1084,11 @@ namespace Azoth
 
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
-			auto inviteTo = new QAction (tr ("Invite to a MUC..."), entry->GetQObject ());
+			const auto inviteTo = new QAction (tr ("Invite to a MUC..."), entry->GetQObject ());
 			Entry2Actions_ [entry] ["inviteToMuc"] = inviteTo;
 			Action2Areas_ [inviteTo] << CLEAAContactListCtxtMenu;
 
-			QAction *vcard = new QAction (tr ("VCard"), entry->GetQObject ());
+			const auto vcard = new QAction (tr ("VCard"), entry->GetQObject ());
 			vcard->setProperty ("ActionIcon", "text-x-vcard");
 			Entry2Actions_ [entry] ["vcard"] = vcard;
 			Action2Areas_ [vcard] << CLEAAContactListCtxtMenu
@@ -1305,8 +1305,7 @@ namespace Azoth
 		const bool isOnline = account->GetState ().State_ != SOffline;
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
-			bool enableVCard =
-					account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
+			bool enableVCard = account->GetAccountFeatures () & IAccount::FCanViewContactsInfoInOffline ||
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
 
