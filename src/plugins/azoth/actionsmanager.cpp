@@ -662,7 +662,7 @@ namespace Azoth
 						if (!supported)
 							filename += ".png";
 
-						image.save (filename, nullptr, 0);
+						image.save (filename);
 					}) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
 			{ "sep_beforemuc", {} },
