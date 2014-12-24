@@ -846,7 +846,11 @@ namespace BitTorrent
 #else
 		result->Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
 #endif
-		result->State_ = result->Status_.paused ? tr ("Idle") : GetStringForState (result->Status_.state);
+		result->State_ = GetStringForStatus (result->Status_);
+
+		if (!result->Status_.error.empty ())
+			result->State_ += " (" + QString::fromUtf8 (result->Status_.error.c_str ()) + ")";
+
 		return result;
 	}
 
