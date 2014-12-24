@@ -37,6 +37,7 @@
 #include <libtorrent/extensions/ut_pex.hpp>
 #include <libtorrent/extensions/smart_ban.hpp>
 #include <util/xpc/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "xmlsettingsmanager.h"
@@ -354,19 +355,35 @@ namespace BitTorrent
 			mask |= libtorrent::alert::storage_notification;
 		else
 		{
-			auto rootWM = Proxy_->GetRootWindowsManager ();
-			if (QMessageBox::question (rootWM->GetPreferredWindow (),
-						"LeechCraft BitTorrent",
-						tr ("Storage notifications are disabled. Live streaming "
-							"definitely won't work without them, so if you are "
-							"experiencing troubles, re-enable storage notifications "
-							"in \"Notifications\" section of BitTorrent settings. "
-							"Do you want to enable them now?"),
-						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			const auto rootWM = Proxy_->GetRootWindowsManager ();
+
+			const auto box = new QMessageBox
 			{
-				XmlSettingsManager::Instance ()->setProperty ("NotificationStorage", true);
-				mask |= libtorrent::alert::storage_notification;
-			}
+				QMessageBox::Question,
+				"LeechCraft BitTorrent",
+				tr ("Storage notifications are disabled. Live streaming "
+					"definitely won't work without them, so if you are "
+					"experiencing troubles, re-enable storage notifications "
+					"in \"Notifications\" section of BitTorrent settings. "
+					"Do you want to enable them now?"),
+				QMessageBox::Yes | QMessageBox::No,
+				rootWM->GetPreferredWindow ()
+			};
+
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this, box]
+				{
+					box->deleteLater ();
+					if (box->standardButton (box->clickedButton ()) == QMessageBox::Yes)
+						XmlSettingsManager::Instance ()->setProperty ("NotificationStorage", true);
+				},
+				box,
+				SIGNAL (finished (int)),
+				box
+			};
+
+			box->show ();
 		}
 
 		if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
