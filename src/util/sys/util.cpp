@@ -29,7 +29,7 @@
 
 #include "util.h"
 #include <QString>
-#include <QImageReader>
+#include <QImageWriter>
 
 namespace LeechCraft
 {
@@ -41,7 +41,7 @@ namespace Util
 			return false;
 
 		const auto& ext = filename.section ('.', -1, -1);
-		const auto& formats = QImageReader::supportedImageFormats ();
+		const auto& formats = QImageWriter::supportedImageFormats ();
 		return std::any_of (formats.begin (), formats.end (),
 				[&ext] (const QByteArray& format)
 					{ return !QString::compare (ext, format, Qt::CaseInsensitive); });
