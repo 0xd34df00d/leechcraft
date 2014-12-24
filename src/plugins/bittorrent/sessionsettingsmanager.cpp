@@ -232,87 +232,93 @@ namespace BitTorrent
 		XmlSettingsManager::Instance ()->RegisterObject ({ "SSLPort", "EnableSSLPort" },
 				this, "sslPortChanged");
 
-		QList<QByteArray> proxySettings;
-		proxySettings << "TrackerProxyEnabled"
-			<< "TrackerProxyHost"
-			<< "TrackerProxyPort"
-			<< "TrackerProxyAuth"
-			<< "PeerProxyEnabled"
-			<< "PeerProxyHost"
-			<< "PeerProxyPort"
-			<< "PeerProxyAuth";
+		const QList<QByteArray> proxySettings
+		{
+			"TrackerProxyEnabled",
+			"TrackerProxyHost",
+			"TrackerProxyPort",
+			"TrackerProxyAuth",
+			"PeerProxyEnabled",
+			"PeerProxyHost",
+			"PeerProxyPort",
+			"PeerProxyAuth"
+		};
 		XmlSettingsManager::Instance ()->RegisterObject (proxySettings,
 				this, "setProxySettings");
 
-		QList<QByteArray> generalSettings;
-		generalSettings << "TrackerCompletionTimeout"
-			<< "TrackerReceiveTimeout"
-			<< "StopTrackerTimeout"
-			<< "TrackerMaximumResponseLength"
-			<< "PieceTimeout"
-			<< "RequestQueueTime"
-			<< "MaxAllowedInRequestQueue"
-			<< "MaxOutRequestQueue"
-			<< "WholePiecesThreshold"
-			<< "PeerTimeout"
-			<< "UrlSeedTimeout"
-			<< "UrlSeedPipelineSize"
-			<< "SeedingPieceQuota"
-			<< "UrlSeedWaitRetry"
-			<< "FilePoolSize"
-			<< "AllowMultipleConnectionsPerIP"
-			<< "MaxFailcount"
-			<< "MinReconnectTime"
-			<< "PeerConnectTimeout"
-			<< "IgnoreLimitsOnLocalNetwork"
-			<< "ConnectionSpeed"
-			<< "SendRedundantHave"
-			<< "LazyBitfields"
-			<< "InactivityTimeout"
-			<< "UnchokeInterval"
-			<< "OptimisticUnchokeMultiplier"
-			<< "AnnounceIP"
-			<< "NumWant"
-			<< "InitialPickerThreshold"
-			<< "AllowedFastSetSize"
-			<< "MaxOutstandingDiskBytesPerConnection"
-			<< "HandshakeTimeout"
-			<< "UseDHTAsFallback"
-			<< "FreeTorrentHashes"
-			<< "UPNPIgnoreNonrouters"
-			<< "SendBufferWatermark"
-			<< "AutoUploadSlots"
-			<< "UseParoleMode"
-			<< "CacheSize"
-			<< "CacheExpiry"
-			<< "OutgoingPorts"
-			<< "PeerTOS"
-			<< "DontCountSlowTorrents"
-			<< "AutoManageInterval"
-			<< "ShareRatioLimit"
-			<< "SeedTimeRatioLimit"
-			<< "SeedTimeLimit"
-			<< "CloseRedundantConnections"
-			<< "AutoScrapeInterval"
-			<< "AutoScrapeMinInterval"
-			<< "MaxPeerListSize"
-			<< "MinAnnounceInterval"
-			<< "PrioritizePartialPieces"
-			<< "AnnounceToAllTrackers"
-			<< "PreferUDPTrackers"
-			<< "StrictSuperSeeding";
+		const QList<QByteArray> generalSettings
+		{
+			"TrackerCompletionTimeout",
+			"TrackerReceiveTimeout",
+			"StopTrackerTimeout",
+			"TrackerMaximumResponseLength",
+			"PieceTimeout",
+			"RequestQueueTime",
+			"MaxAllowedInRequestQueue",
+			"MaxOutRequestQueue",
+			"WholePiecesThreshold",
+			"PeerTimeout",
+			"UrlSeedTimeout",
+			"UrlSeedPipelineSize",
+			"SeedingPieceQuota",
+			"UrlSeedWaitRetry",
+			"FilePoolSize",
+			"AllowMultipleConnectionsPerIP",
+			"MaxFailcount",
+			"MinReconnectTime",
+			"PeerConnectTimeout",
+			"IgnoreLimitsOnLocalNetwork",
+			"ConnectionSpeed",
+			"SendRedundantHave",
+			"LazyBitfields",
+			"InactivityTimeout",
+			"UnchokeInterval",
+			"OptimisticUnchokeMultiplier",
+			"AnnounceIP",
+			"NumWant",
+			"InitialPickerThreshold",
+			"AllowedFastSetSize",
+			"MaxOutstandingDiskBytesPerConnection",
+			"HandshakeTimeout",
+			"UseDHTAsFallback",
+			"FreeTorrentHashes",
+			"UPNPIgnoreNonrouters",
+			"SendBufferWatermark",
+			"AutoUploadSlots",
+			"UseParoleMode",
+			"CacheSize",
+			"CacheExpiry",
+			"OutgoingPorts",
+			"PeerTOS",
+			"DontCountSlowTorrents",
+			"AutoManageInterval",
+			"ShareRatioLimit",
+			"SeedTimeRatioLimit",
+			"SeedTimeLimit",
+			"CloseRedundantConnections",
+			"AutoScrapeInterval",
+			"AutoScrapeMinInterval",
+			"MaxPeerListSize",
+			"MinAnnounceInterval",
+			"PrioritizePartialPieces",
+			"AnnounceToAllTrackers",
+			"PreferUDPTrackers",
+			"StrictSuperSeeding"
+		};
 		XmlSettingsManager::Instance ()->RegisterObject (generalSettings,
 				this, "setGeneralSettings");
 
-		QList<QByteArray> dhtSettings;
-		dhtSettings << "MaxPeersReply"
-			<< "SearchBranching"
-			<< "ServicePort"
-			<< "MaxDHTFailcount"
-			<< "DHTEnabled"
-			<< "EnableLSD"
-			<< "EnableUPNP"
-			<< "EnableNATPMP";
+		const QList<QByteArray> dhtSettings
+		{
+			"MaxPeersReply",
+			"SearchBranching",
+			"ServicePort",
+			"MaxDHTFailcount",
+			"DHTEnabled",
+			"EnableLSD",
+			"EnableUPNP",
+			"EnableNATPMP"
+		};
 		XmlSettingsManager::Instance ()->RegisterObject (dhtSettings,
 				this, "setDHTSettings");
 
