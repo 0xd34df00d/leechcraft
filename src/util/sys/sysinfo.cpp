@@ -45,7 +45,7 @@ namespace Util
 namespace SysInfo
 {
 	OSInfo::OSInfo (const QString& arch, const QString& name, const QString& version)
-	: OSInfo { name, arch, name, version }
+	: OSInfo { arch, name, name, version }
 	{
 	}
 
