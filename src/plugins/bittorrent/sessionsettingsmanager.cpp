@@ -90,6 +90,8 @@ namespace BitTorrent
 				SIGNAL (timeout ()),
 				this,
 				SIGNAL (saveSettingsRequested ()));
+
+		ManipulateSettings ();
 	}
 
 	void SessionSettingsManager::SetPreset (Preset sp)
