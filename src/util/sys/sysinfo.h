@@ -55,8 +55,8 @@ namespace SysInfo
 
 		UTIL_SYS_API OSInfo (const QString& arch, const QString& name, const QString& version);
 
-		UTIL_SYS_API OSInfo (const QString& flavour,
-				const QString& arch,
+		UTIL_SYS_API OSInfo (const QString& arch,
+				const QString& flavour,
 				const QString& name,
 				const QString& version);
 	};
