@@ -355,7 +355,6 @@ namespace BitTorrent
 
 		void MoveToTop (int);
 		void MoveToBottom (int);
-		QString GetStringForState (libtorrent::torrent_status::state_t) const;
 		void RestoreTorrents ();
 		bool DecodeEntry (const QByteArray&, libtorrent::lazy_entry&);
 		libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,

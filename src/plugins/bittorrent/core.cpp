@@ -435,6 +435,34 @@ namespace BitTorrent
 		return Headers_.size ();
 	}
 
+	namespace
+	{
+		QString GetStringForState (libtorrent::torrent_status::state_t state)
+		{
+			switch (state)
+			{
+				case libtorrent::torrent_status::queued_for_checking:
+					return Core::tr ("Queued for checking");
+				case libtorrent::torrent_status::checking_files:
+					return Core::tr ("Checking files");
+				case libtorrent::torrent_status::downloading_metadata:
+					return Core::tr ("Downloading metadata");
+				case libtorrent::torrent_status::downloading:
+					return Core::tr ("Downloading");
+				case libtorrent::torrent_status::finished:
+					return Core::tr ("Finished");
+				case libtorrent::torrent_status::seeding:
+					return Core::tr ("Seeding");
+				case libtorrent::torrent_status::allocating:
+					return Core::tr ("Allocating");
+				case libtorrent::torrent_status::checking_resume_data:
+					return Core::tr ("Checking resume data");
+			}
+			return "Uninitialized?!";
+		}
+
+	}
+
 	QVariant Core::data (const QModelIndex& index, int role) const
 	{
 		if (role == RoleControls)
@@ -1685,30 +1713,6 @@ namespace BitTorrent
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
 		Handles_.push_back (tmp);
 		endInsertRows ();
-	}
-
-	QString Core::GetStringForState (libtorrent::torrent_status::state_t state) const
-	{
-		switch (state)
-		{
-			case libtorrent::torrent_status::queued_for_checking:
-				return tr ("Queued for checking");
-			case libtorrent::torrent_status::checking_files:
-				return tr ("Checking files");
-			case libtorrent::torrent_status::downloading_metadata:
-				return tr ("Downloading metadata");
-			case libtorrent::torrent_status::downloading:
-				return tr ("Downloading");
-			case libtorrent::torrent_status::finished:
-				return tr ("Finished");
-			case libtorrent::torrent_status::seeding:
-				return tr ("Seeding");
-			case libtorrent::torrent_status::allocating:
-				return tr ("Allocating");
-			case libtorrent::torrent_status::checking_resume_data:
-				return tr ("Checking resume data");
-		}
-		return "Uninitialized?!";
 	}
 
 	void Core::RestoreTorrents ()
