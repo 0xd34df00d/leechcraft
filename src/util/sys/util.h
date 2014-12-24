@@ -37,6 +37,14 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Checks if the given filename has a known image extension.
+	 *
+	 * This function checks if the \em filename has an extension matching
+	 * any image format known to QImageWriter.
+	 *
+	 * @param[in] filename The name of the file, either relative or absolute.
+	 * @return Whether the \em filename has a known image suffix.
+	 */
 	UTIL_SYS_API bool HasSupportedImageExtension (const QString& filename);
 }
 }
