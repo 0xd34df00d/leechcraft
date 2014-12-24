@@ -100,10 +100,6 @@ namespace BitTorrent
 
 				if (normCol == Core::ColumnProgress && role == Qt::DisplayRole)
 					return sourceModel ()->data (index, Core::Roles::FullLengthText);
-				else if (role == Qt::DecorationRole)
-					return normCol == Core::ColumnName ?
-							Core::Instance ()->GetTorrentIcon (index.row ()) :
-							QVariant ();
 				else
 					return QSortFilterProxyModel::data (unmapped, role);
 			}
