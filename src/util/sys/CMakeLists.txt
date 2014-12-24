@@ -15,6 +15,7 @@ set (SYS_SRCS
 	resourceloader.cpp
 	sysinfo.cpp
 	extensionsdata.cpp
+	util.cpp
 	)
 
 if (UNIX AND NOT APPLE)
