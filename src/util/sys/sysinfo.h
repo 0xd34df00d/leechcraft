@@ -44,17 +44,73 @@ namespace SysInfo
 	 */
 	UTIL_SYS_API QString GetOSName ();
 
+	/** @brief Describes the OS running LeechCraft.
+	 */
 	struct OSInfo
 	{
+		/** @brief The name of the OS, including the distribution.
+		 *
+		 * Typical values are:
+		 * - Gentoo/Linux
+		 * - openSUSE 13.1 (Bottle) (x86_64)
+		 * - Mac OS X
+		 * - Windows
+		 *
+		 * On non-Linux systems this field typically matches the Flavour_
+		 * field. On Linux it also includes the distribution name and
+		 * possibly version.
+		 *
+		 * @sa Flavour_
+		 */
 		QString Name_;
+
+		/** @brief The full version of the OS.
+		 *
+		 * This possibly includes the architecture, the OS release and
+		 * OS-dependent version components like kernel version on Linux.
+		 */
 		QString Version_;
 
+		/** @brief The OS flavour, or name of the OS without any
+		 * distribution.
+		 *
+		 * Typical values are:
+		 * - Linux
+		 * - Mac OS X
+		 * - Windows
+		 * - FreeBSD
+		 *
+		 * On non-Linux systems this typically matches the Name_ field.
+		 *
+		 * @sa Name_
+		 */
 		QString Flavour_;
 
+		/** @brief Describes the CPU architecture of the OS.
+		 *
+		 * This describes the architecture of the OS, not the machine
+		 * itself. Thus, a 32-bit Linux running on a 64-bit CPU will
+		 * still be reported as \em x86 instead of \em x86_64.
+		 */
 		QString Arch_;
 
+		/** @brief Constructs the OSInfo object.
+		 *
+		 * Sets both the Name_ and the Flavour_ of the OS to \em name.
+		 *
+		 * \param[in] arch Initializer for the Arch_ field.
+		 * \param[in] name Initializer for the Name_ and Flavour_ fields.
+		 * \param[in] version Initializer for the Version_ field.
+		 */
 		UTIL_SYS_API OSInfo (const QString& arch, const QString& name, const QString& version);
 
+		/** @brief Constructs the OSInfo object.
+		 *
+		 * \param[in] arch Initializer for the Arch_ field.
+		 * \param[in] flavour Initializer for the Flavour_ field.
+		 * \param[in] name Initializer for the Name_ field.
+		 * \param[in] version Initializer for the Version_ field.
+		 */
 		UTIL_SYS_API OSInfo (const QString& arch,
 				const QString& flavour,
 				const QString& name,
