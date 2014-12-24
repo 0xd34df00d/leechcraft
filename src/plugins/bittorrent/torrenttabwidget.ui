@@ -236,6 +236,9 @@
                     <property name="text">
                      <string/>
                     </property>
+                    <property name="wordWrap">
+                     <bool>true</bool>
+                    </property>
                    </widget>
                   </item>
                  </layout>
@@ -723,7 +726,7 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>288</width>
+             <width>170</width>
              <height>366</height>
             </rect>
            </property>
@@ -1286,7 +1289,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>750</width>
+         <width>360</width>
          <height>553</height>
         </rect>
        </property>
