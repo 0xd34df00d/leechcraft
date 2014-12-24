@@ -2373,6 +2373,11 @@ namespace BitTorrent
 			const auto& n = Util::MakeNotification ("BitTorrent", text, PCritical_);
 			Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (n);
 		}
+
+		void operator() (const libtorrent::torrent_error_alert& a) const
+		{
+			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+		}
 	};
 
 #undef __LLEECHCRAFT_API
@@ -2413,6 +2418,7 @@ namespace BitTorrent
 					, libtorrent::dht_reply_alert
 					, libtorrent::dht_bootstrap_alert
 					, libtorrent::dht_get_peers_alert
+					, libtorrent::torrent_error_alert
 					> { a, sd };
 			}
 			catch (const libtorrent::libtorrent_exception&)
