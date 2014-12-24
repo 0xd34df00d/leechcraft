@@ -466,6 +466,12 @@ namespace BitTorrent
 			const auto& stateStr = GetStringForState (status.state);
 			if (status.state == libtorrent::torrent_status::downloading)
 			{
+				if (!status.error.empty ())
+				{
+					static const auto errorStr = Core::tr ("Error");
+					return errorStr;
+				}
+
 				if (status.paused)
 				{
 					static const auto pausedStr = Core::tr ("Paused");
@@ -522,6 +528,9 @@ namespace BitTorrent
 		case Qt::DecorationRole:
 			if (column != ColumnName)
 				return {};
+
+			if (!status.error.empty ())
+				return QIcon::fromTheme ("dialog-error");
 
 			if (status.paused)
 				return QIcon::fromTheme ("media-playback-stop");
@@ -699,6 +708,8 @@ namespace BitTorrent
 						.arg (Util::MakePrettySize (status.total_wanted_done))
 						.arg (Util::MakePrettySize (status.total_wanted))) + "\n";
 			result += tr ("Status:") + " " + GetStringForStatus (status);
+			if (!status.error.empty ())
+				result += " (" + QString::fromUtf8 (status.error.c_str ()) + ")";
 			result += "\n";
 
 			result += tr ("Downloading speed:") + " " +
