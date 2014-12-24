@@ -76,6 +76,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -2246,20 +2247,6 @@ namespace BitTorrent
 			Core::Instance ()->HandleMetadata (a);
 		}
 
-		void operator() (const libtorrent::file_error_alert& a) const
-		{
-			QString text = QObject::tr ("File error for torrent:<br />%1<br />"
-				"file:<br />%2<br />error:<br />%3")
-				.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-				.arg (QString::fromUtf8 (a.file.c_str ()))
-				.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			QMetaObject::invokeMethod (Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, n));
-		}
-
 		void operator() (const libtorrent::file_renamed_alert& a) const
 		{
 			Core::Instance ()->HandleFileRenamed (a);
@@ -2353,6 +2340,18 @@ namespace BitTorrent
 					<< "got peers for"
 					<< libtorrent::to_hex (a.info_hash.to_string ()).c_str ();
 			NeedToLog_ = false;
+		}
+
+		void operator() (const libtorrent::file_error_alert& a) const
+		{
+			const auto& text = QObject::tr ("File error for torrent:<br />%1<br />"
+						"file:<br />%2<br />error:<br />%3")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::fromUtf8 (a.file.c_str ()))
+					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+
+			const auto& n = Util::MakeNotification ("BitTorrent", text, PCritical_);
+			Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (n);
 		}
 	};
 
