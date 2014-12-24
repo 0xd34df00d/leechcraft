@@ -43,6 +43,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sys/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -652,12 +653,16 @@ namespace Azoth
 						if (image.isNull ())
 							return;
 
-						const auto& filename = QFileDialog::getSaveFileName (nullptr,
+						auto filename = QFileDialog::getSaveFileName (nullptr,
 								ActionsManager::tr ("Save avatar"));
 						if (filename.isEmpty ())
 							return;
 
-						image.save (filename, "PNG", 0);
+						const auto& supported = Util::HasSupportedImageExtension (filename);
+						if (!supported)
+							filename += ".png";
+
+						image.save (filename, nullptr, 0);
 					}) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
 			{ "sep_beforemuc", {} },
