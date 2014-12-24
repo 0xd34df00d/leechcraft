@@ -836,7 +836,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			throw std::runtime_error ("Invalid torrent for stats");
 
-		const libtorrent::torrent_handle& handle = Handles_.at (idx).Handle_;
+		const auto& handle = Handles_.at (idx).Handle_;
 
 		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));

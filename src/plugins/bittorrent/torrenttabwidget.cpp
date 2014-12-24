@@ -205,10 +205,12 @@ namespace BitTorrent
 
 		Ui_.FilesWidget_->SetCurrentIndex (Index_);
 
-		QList<QAbstractItemModel*> oldModels;
-		oldModels << Ui_.PiecesView_->model ()
-				<< PeersSorter_->sourceModel ()
-				<< Ui_.WebSeedsView_->model ();
+		const QList<QAbstractItemModel*> oldModels
+		{
+			Ui_.PiecesView_->model (),
+			PeersSorter_->sourceModel (),
+			Ui_.WebSeedsView_->model ()
+		};
 
 		auto piecesModel = Core::Instance ()->GetPiecesModel (Index_);
 		Ui_.PiecesView_->setModel (piecesModel);
@@ -217,9 +219,9 @@ namespace BitTorrent
 
 		Ui_.WebSeedsView_->setModel (Core::Instance ()->GetWebSeedsModel (Index_));
 		connect (Ui_.WebSeedsView_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
 				this,
-				SLOT (currentWebSeedChanged (const QModelIndex&)));
+				SLOT (currentWebSeedChanged (QModelIndex)));
 
 		qDeleteAll (oldModels);
 	}
