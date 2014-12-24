@@ -1502,7 +1502,7 @@ namespace BitTorrent
 		for (const auto& status : statuses)
 		{
 			const auto handle = status.handle;
-			Handle2Status_ [handle] = handle.status (0);
+			Handle2Status_ [handle] = status;
 
 			const auto pos = FindHandle (handle);
 			if (pos == Handles_.end ())
