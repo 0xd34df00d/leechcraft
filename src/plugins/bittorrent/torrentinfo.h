@@ -44,7 +44,7 @@ namespace BitTorrent
 		QString Destination_,
 				State_;
 		libtorrent::torrent_status Status_;
-		std::auto_ptr<libtorrent::torrent_info> Info_;
+		std::unique_ptr<libtorrent::torrent_info> Info_;
 	};
 }
 }
