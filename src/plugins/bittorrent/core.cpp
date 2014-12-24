@@ -461,6 +461,31 @@ namespace BitTorrent
 			return "Uninitialized?!";
 		}
 
+		QString GetStringForStatus (const libtorrent::torrent_status& status)
+		{
+			const auto& stateStr = GetStringForState (status.state);
+			if (status.state == libtorrent::torrent_status::downloading)
+			{
+				if (status.paused)
+				{
+					static const auto pausedStr = Core::tr ("Paused");
+					return pausedStr;
+				}
+
+				const auto remaining = status.total_wanted - status.total_wanted_done;
+				const auto time = static_cast<double> (remaining) / status.download_rate;
+				return QString ("%1 (ETA: %2)")
+					.arg (stateStr)
+					.arg (Util::MakeTimeFromLong (time));
+			}
+			else if (status.paused)
+			{
+				static const auto idleStr = Core::tr ("Idle");
+				return idleStr;
+			}
+			else
+				return stateStr;
+		}
 	}
 
 	QVariant Core::data (const QModelIndex& index, int role) const
@@ -563,29 +588,8 @@ namespace BitTorrent
 			case ColumnName:
 				return QString::fromUtf8 (h.name ().c_str ());
 			case ColumnState:
+				return GetStringForStatus (status);
 			{
-				const auto& stateStr = GetStringForState (status.state);
-				if (status.state == libtorrent::torrent_status::downloading)
-				{
-					if (status.paused)
-					{
-						static const auto pausedStr = tr ("Paused");
-						return pausedStr;
-					}
-
-					const auto remaining = status.total_wanted - status.total_wanted_done;
-					const auto time = static_cast<double> (remaining) / status.download_rate;
-					return QString ("%1 (ETA: %2)")
-						.arg (stateStr)
-						.arg (Util::MakeTimeFromLong (time));
-				}
-				else if (status.paused)
-				{
-					static const auto idleStr = tr ("Idle");
-					return idleStr;
-				}
-				else
-					return stateStr;
 			}
 			case ColumnProgress:
 				if (role == Roles::FullLengthText)
@@ -693,9 +697,10 @@ namespace BitTorrent
 				QString (tr ("%1% (%2 of %3)")
 						.arg (status.progress * 100, 0, 'f', 2)
 						.arg (Util::MakePrettySize (status.total_wanted_done))
-						.arg (Util::MakePrettySize (status.total_wanted))) +
-				tr ("; status:") + " " +
-				(status.paused ? tr ("Idle") : GetStringForState (status.state)) + "\n";
+						.arg (Util::MakePrettySize (status.total_wanted))) + "\n";
+			result += tr ("Status:") + " " + GetStringForStatus (status);
+			result += "\n";
+
 			result += tr ("Downloading speed:") + " " +
 				Util::MakePrettySize (status.download_payload_rate) + tr ("/s") +
 				tr ("; uploading speed:") + " " +
