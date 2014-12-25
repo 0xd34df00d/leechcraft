@@ -359,7 +359,6 @@ namespace BitTorrent
 			mask |= libtorrent::alert::peer_notification;
 		if (XmlSettingsManager::Instance ()->property ("NotificationPortMapping").toBool ())
 			mask |= libtorrent::alert::port_mapping_notification;
-
 		if (XmlSettingsManager::Instance ()->property ("NotificationStorage").toBool ())
 			mask |= libtorrent::alert::storage_notification;
 		if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
@@ -586,11 +585,11 @@ namespace BitTorrent
 			property ("CacheBufferChunkSize").toInt ();
 		settings.cache_expiry = XmlSettingsManager::Instance ()->
 			property ("CacheExpiry").toInt ();
-		QList<QVariant> ports = XmlSettingsManager::Instance ()->
-			property ("OutgoingPorts").toList ();
+
+		const auto& ports = XmlSettingsManager::Instance ()->property ("OutgoingPorts").toList ();
 		if (ports.size () == 2)
-			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (),
-					ports.at (1).toInt ());
+			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
+
 		settings.use_read_cache = XmlSettingsManager::Instance ()->
 			property ("UseReadCache").toBool ();
 		settings.peer_tos = XmlSettingsManager::Instance ()->
@@ -719,8 +718,7 @@ namespace BitTorrent
 
 	void SessionSettingsManager::setScrapeInterval ()
 	{
-		bool scrapeEnabled = XmlSettingsManager::Instance ()->property ("ScrapeEnabled").toBool ();
-		if (scrapeEnabled)
+		if (XmlSettingsManager::Instance ()->property ("ScrapeEnabled").toBool ())
 		{
 			ScrapeTimer_->stop ();
 			ScrapeTimer_->start (XmlSettingsManager::Instance ()->
