@@ -2218,6 +2218,15 @@ namespace BitTorrent
 	{
 		mutable bool NeedToLog_ = true;
 
+		const ICoreProxy_ptr Proxy_;
+		IEntityManager * const IEM_;
+
+		SimpleDispatcher (const ICoreProxy_ptr& proxy)
+		: Proxy_ { proxy }
+		, IEM_ { Proxy_->GetEntityManager () }
+		{
+		}
+
 		void operator() (const libtorrent::external_ip_alert& a) const
 		{
 			Core::Instance ()->SetExternalAddress (QString::
@@ -2400,7 +2409,7 @@ namespace BitTorrent
 
 		while (a.get ())
 		{
-			SimpleDispatcher sd;
+			SimpleDispatcher sd { Proxy_ };
 			try
 			{
 				libtorrent::handle_alert<
