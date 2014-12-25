@@ -111,6 +111,9 @@ namespace LeechCraft
 
 		QObjectList GetObjects (const Entity& e, int *downloaders = 0, int *handlers = 0)
 		{
+			if (Core::Instance ().IsShuttingDown ())
+				return {};
+
 			const auto& unwanted = e.Additional_ ["IgnorePlugins"].toStringList ();
 			auto removeUnwanted = [&unwanted] (QObjectList& handlers)
 			{
