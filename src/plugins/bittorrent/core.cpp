@@ -123,12 +123,6 @@ namespace BitTorrent
 		return 0;
 	}
 
-	Core::PerTrackerStats::PerTrackerStats ()
-	: DownloadRate_ (0)
-	, UploadRate_ (0)
-	{
-	}
-
 	Core* Core::Instance ()
 	{
 		static Core core;

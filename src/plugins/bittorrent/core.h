@@ -148,10 +148,8 @@ namespace BitTorrent
 	public:
 		struct PerTrackerStats
 		{
-			qint64 DownloadRate_;
-			qint64 UploadRate_;
-
-			PerTrackerStats ();
+			qint64 DownloadRate_ = 0;
+			qint64 UploadRate_ = 0;
 		};
 		typedef QMap<QString, PerTrackerStats> pertrackerstats_t;
 	private:
