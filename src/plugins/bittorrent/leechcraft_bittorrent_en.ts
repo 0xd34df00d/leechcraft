@@ -513,47 +513,45 @@ IPv6 input mask</extracomment>
         <translation>Rejecting file %1 because it&apos;s bigger than current auto limit.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="543"/>
+        <location filename="core.cpp" line="476"/>
         <source>Paused</source>
         <translation>Paused</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="555"/>
-        <location filename="core.cpp" line="669"/>
-        <location filename="core.cpp" line="804"/>
+        <location filename="core.cpp" line="488"/>
         <source>Idle</source>
         <translation>Idle</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="572"/>
-        <location filename="core.cpp" line="586"/>
+        <location filename="core.cpp" line="613"/>
         <location filename="core.cpp" line="627"/>
-        <location filename="core.cpp" line="629"/>
-        <location filename="core.cpp" line="671"/>
-        <location filename="core.cpp" line="673"/>
+        <location filename="core.cpp" line="668"/>
+        <location filename="core.cpp" line="670"/>
+        <location filename="core.cpp" line="715"/>
+        <location filename="core.cpp" line="717"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="656"/>
+        <location filename="core.cpp" line="697"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="657"/>
+        <location filename="core.cpp" line="698"/>
         <source>Destination:</source>
         <translation>Destination:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="663"/>
+        <location filename="core.cpp" line="704"/>
         <source>Progress:</source>
         <translation>Progress:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="592"/>
-        <location filename="core.cpp" line="603"/>
-        <location filename="core.cpp" line="619"/>
-        <location filename="core.cpp" line="664"/>
+        <location filename="core.cpp" line="633"/>
+        <location filename="core.cpp" line="644"/>
+        <location filename="core.cpp" line="660"/>
+        <location filename="core.cpp" line="705"/>
         <source>%1% (%2 of %3)</source>
         <translation>%1% (%2 of %3)</translation>
     </message>
@@ -583,137 +581,142 @@ IPv6 input mask</extracomment>
         <translation>Total uploaded</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="566"/>
+        <location filename="core.cpp" line="607"/>
         <source>%1% (%2 of %3 at %4 from %5 peers)</source>
         <translation>%1% (%2 of %3 at %4 from %5 peers)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="582"/>
+        <location filename="core.cpp" line="623"/>
         <source>%1, seeding at %2 to %3 leechers (of around %4)</source>
         <translation>%1, seeding at %2 to %3 leechers (of around %4)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="613"/>
+        <location filename="core.cpp" line="654"/>
         <source>100% (%1)</source>
         <translation>100% (%1)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="668"/>
-        <source>; status:</source>
-        <translation>; status:</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="670"/>
+        <location filename="core.cpp" line="714"/>
         <source>Downloading speed:</source>
         <translation>Downloading speed:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="672"/>
+        <location filename="core.cpp" line="716"/>
         <source>; uploading speed:</source>
         <translation>; uploading speed:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="674"/>
+        <location filename="core.cpp" line="718"/>
         <source>Peers/seeds: %1/%2</source>
         <translation>Peers/seeds: %1/%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="755"/>
+        <location filename="core.cpp" line="799"/>
         <source>Could not open file %1 for read: %2</source>
         <translation>Could not open file %1 for read: %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="975"/>
+        <location filename="core.cpp" line="1023"/>
         <source>File %1 doesn&apos;t exist or could not be read</source>
         <translation>File %1 doesn&apos;t exist or could not be read</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1010"/>
+        <location filename="core.cpp" line="1058"/>
         <source>Runtime error</source>
         <translation>Runtime error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1124"/>
+        <location filename="core.cpp" line="1172"/>
         <source>Torrent %1 could not be reannounced at the moment, try again later.</source>
         <translation>Torrent %1 could not be reannounced at the moment, try again later.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1694"/>
+        <location filename="core.cpp" line="444"/>
         <source>Queued for checking</source>
         <translation>Queued for checking</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1696"/>
+        <location filename="core.cpp" line="446"/>
         <source>Checking files</source>
         <translation>Checking files</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1698"/>
+        <location filename="core.cpp" line="448"/>
         <source>Downloading metadata</source>
         <translation>Downloading metadata</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1700"/>
+        <location filename="core.cpp" line="450"/>
         <source>Downloading</source>
         <translation>Downloading</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1702"/>
+        <location filename="core.cpp" line="452"/>
         <source>Finished</source>
         <translation>Finished</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1704"/>
+        <location filename="core.cpp" line="454"/>
         <source>Seeding</source>
         <translation>Seeding</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1706"/>
+        <location filename="core.cpp" line="456"/>
         <source>Allocating</source>
         <translation>Allocating</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1708"/>
+        <location filename="core.cpp" line="458"/>
         <source>Checking resume data</source>
         <translation>Checking resume data</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1729"/>
+        <location filename="core.cpp" line="470"/>
+        <source>Error</source>
+        <translation>Error</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="709"/>
+        <source>Status:</source>
+        <translation>Status:</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="1763"/>
         <source>Could not open saved torrent %1 for read.</source>
         <translation>Could not open saved torrent %1 for read.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1816"/>
+        <location filename="core.cpp" line="1850"/>
         <source>Bad bencoding in saved torrent data: %1</source>
         <translation>Bad bencoding in saved torrent data: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1823"/>
+        <location filename="core.cpp" line="1857"/>
         <source>Bad bencoding in saved torrent data</source>
         <translation>Bad bencoding in saved torrent data</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1903"/>
+        <location filename="core.cpp" line="1937"/>
         <source>Torrent finished: %1</source>
         <translation>Torrent finished: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1919"/>
+        <location filename="core.cpp" line="1953"/>
         <source>Open...</source>
         <translation>Open...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1927"/>
+        <location filename="core.cpp" line="1961"/>
         <source>Show folder</source>
         <translation>Show folder</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2005"/>
+        <location filename="core.cpp" line="2039"/>
         <source>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</source>
         <translation>Error code %1 of category:&lt;blockquote&gt;%2&lt;/blockquote&gt;error message:&lt;blockquote&gt;%3&lt;/blockquote&gt;raw exception message:&lt;blockquote&gt;%4&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2021"/>
+        <location filename="core.cpp" line="2055"/>
         <source>Could not create path %1/.leechcraft/bittorrent</source>
         <translation>Could not create path %1/.leechcraft/bittorrent</translation>
     </message>
@@ -967,17 +970,17 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::BitTorrent::SessionSettingsManager</name>
     <message>
-        <location filename="sessionsettingsmanager.cpp" line="358"/>
+        <location filename="sessionsettingsmanager.cpp" line="694"/>
         <source>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</source>
         <translation>Storage notifications are disabled. Live streaming definitely won&apos;t work without them, so if you are experiencing troubles, re-enable storage notifications in &quot;Notifications&quot; section of BitTorrent settings. Do you want to enable them now?</translation>
     </message>
     <message>
-        <location filename="sessionsettingsmanager.cpp" line="396"/>
+        <location filename="sessionsettingsmanager.cpp" line="390"/>
         <source>Error listening on ports %1-%2: %3</source>
         <translation>Error listening on ports %1-%2: %3</translation>
     </message>
     <message>
-        <location filename="sessionsettingsmanager.cpp" line="560"/>
+        <location filename="sessionsettingsmanager.cpp" line="554"/>
         <source>Wrong announce address %1</source>
         <translation>Wrong announce address %1</translation>
     </message>
@@ -1066,22 +1069,22 @@ IPv6 input mask</extracomment>
 <context>
     <name>LeechCraft::BitTorrent::TorrentPlugin</name>
     <message>
-        <location filename="torrentplugin.cpp" line="131"/>
+        <location filename="torrentplugin.cpp" line="127"/>
         <source>BitTorrent tab</source>
         <translation>BitTorrent tab</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="132"/>
+        <location filename="torrentplugin.cpp" line="128"/>
         <source>Full BitTorrent downloads tab.</source>
         <translation>Full BitTorrent downloads tab.</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="162"/>
+        <location filename="torrentplugin.cpp" line="158"/>
         <source>Full-featured BitTorrent client.</source>
         <translation>Full-featured BitTorrent client.</translation>
     </message>
     <message numerus="yes">
-        <location filename="torrentplugin.cpp" line="554"/>
+        <location filename="torrentplugin.cpp" line="550"/>
         <source>Do you really want to delete %n torrent(s)?</source>
         <translation>
             <numerusform>Do you really want to delete %n torrent?</numerusform>
@@ -1089,138 +1092,138 @@ IPv6 input mask</extracomment>
         </translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="557"/>
+        <location filename="torrentplugin.cpp" line="553"/>
         <source>&amp;Delete</source>
         <translation>&amp;Delete</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="559"/>
+        <location filename="torrentplugin.cpp" line="555"/>
         <source>Delete with &amp;files</source>
         <oldsource>Delete torrent(s) and their &amp;files</oldsource>
         <translation>Delete with &amp;files</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="872"/>
+        <location filename="torrentplugin.cpp" line="868"/>
         <source>Failed to move torrent&apos;s files from %1 to %2</source>
         <translation>Failed to move torrent&apos;s files from %1 to %2</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="887"/>
+        <location filename="torrentplugin.cpp" line="883"/>
         <source>Magnet link:</source>
         <translation>Magnet link:</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1021"/>
+        <location filename="torrentplugin.cpp" line="1017"/>
         <source>Open torrent...</source>
         <translation>Open torrent...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1030"/>
+        <location filename="torrentplugin.cpp" line="1026"/>
         <source>Create torrent...</source>
         <translation>Create torrent...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1038"/>
+        <location filename="torrentplugin.cpp" line="1034"/>
         <source>Open multiple torrents...</source>
         <translation>Open multiple torrents...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1046"/>
+        <location filename="torrentplugin.cpp" line="1042"/>
         <source>IP filter...</source>
         <translation>IP filter...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1054"/>
+        <location filename="torrentplugin.cpp" line="1050"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1056"/>
+        <location filename="torrentplugin.cpp" line="1052"/>
         <source>Del</source>
         <translation>Del</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1063"/>
+        <location filename="torrentplugin.cpp" line="1059"/>
         <source>Resume</source>
         <translation>Resume</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1065"/>
+        <location filename="torrentplugin.cpp" line="1061"/>
         <source>R</source>
         <translation>R</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1072"/>
+        <location filename="torrentplugin.cpp" line="1068"/>
         <source>Pause</source>
         <translation>Pause</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1074"/>
+        <location filename="torrentplugin.cpp" line="1070"/>
         <source>S</source>
         <translation>S</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1081"/>
+        <location filename="torrentplugin.cpp" line="1077"/>
         <source>Move up</source>
         <translation>Move up</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1090"/>
+        <location filename="torrentplugin.cpp" line="1086"/>
         <source>Move down</source>
         <translation>Move down</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1099"/>
+        <location filename="torrentplugin.cpp" line="1095"/>
         <source>Move to top</source>
         <translation>Move to top</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1108"/>
+        <location filename="torrentplugin.cpp" line="1104"/>
         <source>Move to bottom</source>
         <translation>Move to bottom</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1117"/>
+        <location filename="torrentplugin.cpp" line="1113"/>
         <source>Reannounce</source>
         <translation>Reannounce</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1119"/>
+        <location filename="torrentplugin.cpp" line="1115"/>
         <source>F</source>
         <translation>F</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1126"/>
+        <location filename="torrentplugin.cpp" line="1122"/>
         <source>Recheck</source>
         <translation>Recheck</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1134"/>
+        <location filename="torrentplugin.cpp" line="1130"/>
         <source>Move files...</source>
         <translation>Move files...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1136"/>
+        <location filename="torrentplugin.cpp" line="1132"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1143"/>
+        <location filename="torrentplugin.cpp" line="1139"/>
         <source>Change trackers...</source>
         <translation>Change trackers...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1145"/>
+        <location filename="torrentplugin.cpp" line="1141"/>
         <source>C</source>
         <translation>C</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1152"/>
+        <location filename="torrentplugin.cpp" line="1148"/>
         <source>Make magnet link...</source>
         <translation>Make magnet link...</translation>
     </message>
     <message>
-        <location filename="torrentplugin.cpp" line="1193"/>
+        <location filename="torrentplugin.cpp" line="1189"/>
         <source>Torrents actions</source>
         <translation>Torrents actions</translation>
     </message>
@@ -1470,38 +1473,38 @@ IPv6 input mask</extracomment>
         <translation>Remove web seed</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="290"/>
         <location filename="torrenttabwidget.cpp" line="292"/>
-        <location filename="torrenttabwidget.cpp" line="372"/>
-        <location filename="torrenttabwidget.cpp" line="373"/>
-        <location filename="torrenttabwidget.cpp" line="415"/>
+        <location filename="torrenttabwidget.cpp" line="294"/>
+        <location filename="torrenttabwidget.cpp" line="374"/>
+        <location filename="torrenttabwidget.cpp" line="375"/>
         <location filename="torrenttabwidget.cpp" line="417"/>
+        <location filename="torrenttabwidget.cpp" line="419"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="452"/>
+        <location filename="torrenttabwidget.cpp" line="454"/>
         <source>Wasn&apos;t yet</source>
         <translation>Wasn&apos;t yet</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="484"/>
+        <location filename="torrenttabwidget.cpp" line="486"/>
         <source>Yes</source>
         <translation>Yes</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="485"/>
+        <location filename="torrenttabwidget.cpp" line="487"/>
         <source>No</source>
         <translation>No</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="508"/>
+        <location filename="torrenttabwidget.cpp" line="510"/>
         <source>Not tracking</source>
         <translation>Not tracking</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="518"/>
-        <location filename="torrenttabwidget.cpp" line="522"/>
+        <location filename="torrenttabwidget.cpp" line="520"/>
+        <location filename="torrenttabwidget.cpp" line="524"/>
         <source>Unknown</source>
         <translation>Unknown</translation>
     </message>
@@ -1753,37 +1756,37 @@ IPv6 input mask</extracomment>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="core.cpp" line="2209"/>
+        <location filename="core.cpp" line="2244"/>
         <source>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</source>
         <translation>Saving resume data failed for torrent:&lt;br /&gt;%1&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2221"/>
+        <location filename="core.cpp" line="2252"/>
         <source>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</source>
         <translation>Storage for torrent:&lt;br /&gt;%1&lt;br /&gt;moved successfully to:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2234"/>
+        <location filename="core.cpp" line="2261"/>
         <source>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</source>
         <translation>Storage move failure:&lt;br /&gt;%2&lt;br /&gt;for torrent:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2251"/>
+        <location filename="core.cpp" line="2361"/>
         <source>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</source>
         <translation>File error for torrent:&lt;br /&gt;%1&lt;br /&gt;file:&lt;br /&gt;%2&lt;br /&gt;error:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2270"/>
+        <location filename="core.cpp" line="2279"/>
         <source>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</source>
         <translation>File rename failed for torrent:&lt;br /&gt;%1&lt;br /&gt;file %2, error:&lt;br /&gt;%3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2284"/>
+        <location filename="core.cpp" line="2289"/>
         <source>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</source>
         <translation>Failed to delete torrent:&lt;br /&gt;%1&lt;br /&gt;error:&lt;br /&gt;%2</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.cpp" line="280"/>
+        <location filename="torrenttabwidget.cpp" line="282"/>
         <source>/s</source>
         <translation>/s</translation>
     </message>
@@ -1848,64 +1851,64 @@ IPv6 input mask</extracomment>
     </message>
     <message>
         <location filename="tabwidget.ui" line="63"/>
-        <location filename="tabwidget.ui" line="295"/>
+        <location filename="tabwidget.ui" line="298"/>
         <source>Download/upload rate:</source>
         <translation>Download/upload rate:</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="72"/>
         <location filename="tabwidget.ui" line="107"/>
-        <location filename="tabwidget.ui" line="304"/>
-        <location filename="tabwidget.ui" line="342"/>
-        <location filename="tabwidget.ui" line="378"/>
-        <location filename="tabwidget.ui" line="407"/>
+        <location filename="tabwidget.ui" line="307"/>
+        <location filename="tabwidget.ui" line="345"/>
+        <location filename="tabwidget.ui" line="381"/>
+        <location filename="tabwidget.ui" line="410"/>
         <source>Unlimited</source>
         <translation>Unlimited</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="78"/>
         <location filename="tabwidget.ui" line="110"/>
-        <location filename="tabwidget.ui" line="310"/>
-        <location filename="tabwidget.ui" line="348"/>
+        <location filename="tabwidget.ui" line="313"/>
+        <location filename="tabwidget.ui" line="351"/>
         <source> kb/s</source>
         <translation> kb/s</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="100"/>
-        <location filename="tabwidget.ui" line="335"/>
-        <location filename="tabwidget.ui" line="400"/>
+        <location filename="tabwidget.ui" line="338"/>
+        <location filename="tabwidget.ui" line="403"/>
         <source>/</source>
         <translation>/</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="283"/>
+        <location filename="tabwidget.ui" line="286"/>
         <source>Overall settings</source>
         <translation>Overall settings</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="369"/>
+        <location filename="tabwidget.ui" line="372"/>
         <source>Leeching/seeding torrents:</source>
         <translation>Leeching/seeding torrents:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="428"/>
+        <location filename="tabwidget.ui" line="431"/>
         <source>Session stats</source>
         <translation>Session stats</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="204"/>
-        <location filename="tabwidget.ui" line="440"/>
+        <location filename="tabwidget.ui" line="207"/>
+        <location filename="tabwidget.ui" line="443"/>
         <source>Total download rate:</source>
         <translation>Total download rate:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="218"/>
-        <location filename="tabwidget.ui" line="454"/>
+        <location filename="tabwidget.ui" line="221"/>
+        <location filename="tabwidget.ui" line="457"/>
         <source>Total upload rate:</source>
         <translation>Total upload rate:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="260"/>
+        <location filename="tabwidget.ui" line="263"/>
         <source>Total uploaded:</source>
         <translation>Total uploaded:</translation>
     </message>
@@ -1935,17 +1938,17 @@ IPv6 input mask</extracomment>
         <translation>State:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="190"/>
+        <location filename="tabwidget.ui" line="193"/>
         <source>Progress:</source>
         <translation>Progress:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="232"/>
+        <location filename="tabwidget.ui" line="235"/>
         <source>Wanted size:</source>
         <translation>Wanted size:</translation>
     </message>
     <message>
-        <location filename="tabwidget.ui" line="246"/>
+        <location filename="tabwidget.ui" line="249"/>
         <source>Wanted done:</source>
         <translation>Wanted done:</translation>
     </message>
@@ -2005,38 +2008,38 @@ IPv6 input mask</extracomment>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="89"/>
-        <location filename="torrenttabwidget.ui" line="1306"/>
+        <location filename="torrenttabwidget.ui" line="1309"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="112"/>
-        <location filename="torrenttabwidget.ui" line="1315"/>
+        <location filename="torrenttabwidget.ui" line="1318"/>
         <source>Download/upload rate:</source>
         <translation>Download/upload rate:</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="121"/>
         <location filename="torrenttabwidget.ui" line="156"/>
-        <location filename="torrenttabwidget.ui" line="1324"/>
-        <location filename="torrenttabwidget.ui" line="1362"/>
-        <location filename="torrenttabwidget.ui" line="1398"/>
-        <location filename="torrenttabwidget.ui" line="1427"/>
+        <location filename="torrenttabwidget.ui" line="1327"/>
+        <location filename="torrenttabwidget.ui" line="1365"/>
+        <location filename="torrenttabwidget.ui" line="1401"/>
+        <location filename="torrenttabwidget.ui" line="1430"/>
         <source>Unlimited</source>
         <translation>Unlimited</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="127"/>
         <location filename="torrenttabwidget.ui" line="159"/>
-        <location filename="torrenttabwidget.ui" line="1330"/>
-        <location filename="torrenttabwidget.ui" line="1368"/>
+        <location filename="torrenttabwidget.ui" line="1333"/>
+        <location filename="torrenttabwidget.ui" line="1371"/>
         <source> kb/s</source>
         <translation> kb/s</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="149"/>
-        <location filename="torrenttabwidget.ui" line="1355"/>
-        <location filename="torrenttabwidget.ui" line="1420"/>
+        <location filename="torrenttabwidget.ui" line="1358"/>
+        <location filename="torrenttabwidget.ui" line="1423"/>
         <source>/</source>
         <translation>/</translation>
     </message>
@@ -2071,523 +2074,523 @@ IPv6 input mask</extracomment>
         <translation>State:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="246"/>
-        <location filename="torrenttabwidget.ui" line="835"/>
+        <location filename="torrenttabwidget.ui" line="249"/>
+        <location filename="torrenttabwidget.ui" line="838"/>
         <source>Progress:</source>
         <translation>Progress:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="260"/>
-        <location filename="torrenttabwidget.ui" line="1459"/>
+        <location filename="torrenttabwidget.ui" line="263"/>
+        <location filename="torrenttabwidget.ui" line="1462"/>
         <source>Total download rate:</source>
         <translation>Total download rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="274"/>
-        <location filename="torrenttabwidget.ui" line="1473"/>
+        <location filename="torrenttabwidget.ui" line="277"/>
+        <location filename="torrenttabwidget.ui" line="1476"/>
         <source>Total upload rate:</source>
         <translation>Total upload rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="288"/>
+        <location filename="torrenttabwidget.ui" line="291"/>
         <source>Downloaded, all time:</source>
         <translation>Downloaded, all time:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="302"/>
+        <location filename="torrenttabwidget.ui" line="305"/>
         <source>Uploaded, all time:</source>
         <translation>Uploaded, all time:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="316"/>
+        <location filename="torrenttabwidget.ui" line="319"/>
         <source>Total size:</source>
         <translation>Total size:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="330"/>
+        <location filename="torrenttabwidget.ui" line="333"/>
         <source>Wanted size:</source>
         <translation>Wanted size:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="344"/>
+        <location filename="torrenttabwidget.ui" line="347"/>
         <source>Wanted done:</source>
         <translation>Wanted done:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="361"/>
+        <location filename="torrenttabwidget.ui" line="364"/>
         <source>Advanced status</source>
         <translation>Advanced status</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="370"/>
+        <location filename="torrenttabwidget.ui" line="373"/>
         <source>Active time:</source>
         <translation>Active time:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="384"/>
+        <location filename="torrenttabwidget.ui" line="387"/>
         <source>Seeding time:</source>
         <translation>Seeding time:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="398"/>
+        <location filename="torrenttabwidget.ui" line="401"/>
         <source>Seed rank:</source>
         <translation>Seed rank:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="412"/>
+        <location filename="torrenttabwidget.ui" line="415"/>
         <source>Next announce:</source>
         <translation>Next announce:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="426"/>
+        <location filename="torrenttabwidget.ui" line="429"/>
         <source>Last scrape:</source>
         <translation>Last scrape:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="440"/>
+        <location filename="torrenttabwidget.ui" line="443"/>
         <source>Downloaded (session):</source>
         <translation>Downloaded (session):</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="447"/>
+        <location filename="torrenttabwidget.ui" line="450"/>
         <source>Uploaded (session):</source>
         <translation>Uploaded (session):</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="468"/>
+        <location filename="torrenttabwidget.ui" line="471"/>
         <source>Overall rating:</source>
         <translation>Overall rating:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="475"/>
-        <location filename="torrenttabwidget.ui" line="1515"/>
+        <location filename="torrenttabwidget.ui" line="478"/>
+        <location filename="torrenttabwidget.ui" line="1518"/>
         <source>Session rating:</source>
         <translation>Session rating:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="504"/>
-        <location filename="torrenttabwidget.ui" line="673"/>
+        <location filename="torrenttabwidget.ui" line="507"/>
+        <location filename="torrenttabwidget.ui" line="676"/>
         <source>Peers</source>
         <translation>Peers</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="513"/>
+        <location filename="torrenttabwidget.ui" line="516"/>
         <source>Connected peers:</source>
         <translation>Connected peers:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="527"/>
+        <location filename="torrenttabwidget.ui" line="530"/>
         <source>Peers in list:</source>
         <translation>Peers in list:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="541"/>
+        <location filename="torrenttabwidget.ui" line="544"/>
         <source>Peers in swarm:</source>
         <translation>Peers in swarm:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="555"/>
+        <location filename="torrenttabwidget.ui" line="558"/>
         <source>Connect candidates:</source>
         <translation>Connect candidates:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="569"/>
+        <location filename="torrenttabwidget.ui" line="572"/>
         <source>Upload queue:</source>
         <translation>Upload queue:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="583"/>
+        <location filename="torrenttabwidget.ui" line="586"/>
         <source>Connected seeds:</source>
         <translation>Connected seeds:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="597"/>
+        <location filename="torrenttabwidget.ui" line="600"/>
         <source>Seeds in list:</source>
         <translation>Seeds in list:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="611"/>
+        <location filename="torrenttabwidget.ui" line="614"/>
         <source>Seeds in swarm:</source>
         <translation>Seeds in swarm:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="625"/>
+        <location filename="torrenttabwidget.ui" line="628"/>
         <source>Download queue:</source>
         <translation>Download queue:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="660"/>
+        <location filename="torrenttabwidget.ui" line="663"/>
         <source>Files</source>
         <translation>Files</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="737"/>
+        <location filename="torrenttabwidget.ui" line="740"/>
         <source>Peer:</source>
         <translation>Peer:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="751"/>
+        <location filename="torrenttabwidget.ui" line="754"/>
         <source>Peer type:</source>
         <translation>Peer type:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="765"/>
+        <location filename="torrenttabwidget.ui" line="768"/>
         <source>DL/UL speeds:</source>
         <translation>DL/UL speeds:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="779"/>
+        <location filename="torrenttabwidget.ui" line="782"/>
         <source>Payload DL/UL speeds:</source>
         <translation>Payload DL/UL speeds:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="793"/>
+        <location filename="torrenttabwidget.ui" line="796"/>
         <source>Peak DL/UL speeds:</source>
         <translation>Peak DL/UL speeds:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="807"/>
+        <location filename="torrenttabwidget.ui" line="810"/>
         <source>Downloaded/uploaded:</source>
         <translation>Downloaded/uploaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="821"/>
+        <location filename="torrenttabwidget.ui" line="824"/>
         <source>Remote DL speed:</source>
         <translation>Remote DL speed:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="849"/>
+        <location filename="torrenttabwidget.ui" line="852"/>
         <source>Seed:</source>
         <translation>Seed:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="863"/>
+        <location filename="torrenttabwidget.ui" line="866"/>
         <source>Last request:</source>
         <translation>Last request:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="877"/>
+        <location filename="torrenttabwidget.ui" line="880"/>
         <source>Last active:</source>
         <translation>Last active:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="891"/>
+        <location filename="torrenttabwidget.ui" line="894"/>
         <source>Send buffer:</source>
         <translation>Send buffer:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="905"/>
+        <location filename="torrenttabwidget.ui" line="908"/>
         <source>Receive buffer:</source>
         <translation>Receive buffer:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="919"/>
+        <location filename="torrenttabwidget.ui" line="922"/>
         <source>Corrupt pieces:</source>
         <translation>Corrupt pieces:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="933"/>
+        <location filename="torrenttabwidget.ui" line="936"/>
         <source>Download/upload queue:</source>
         <translation>Download/upload queue:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="947"/>
+        <location filename="torrenttabwidget.ui" line="950"/>
         <source>Failcount:</source>
         <translation>Failcount:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="961"/>
+        <location filename="torrenttabwidget.ui" line="964"/>
         <source>Pending disk bytes:</source>
         <translation>Pending disk bytes:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="975"/>
+        <location filename="torrenttabwidget.ui" line="978"/>
         <source>Estimated round trip time:</source>
         <translation>Estimated round trip time:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="998"/>
+        <location filename="torrenttabwidget.ui" line="1001"/>
         <source>Web seeds</source>
         <translation>Web seeds</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1015"/>
+        <location filename="torrenttabwidget.ui" line="1018"/>
         <source>Pieces</source>
         <translation>Pieces</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1035"/>
+        <location filename="torrenttabwidget.ui" line="1038"/>
         <source>Torrent info</source>
         <translation>Torrent info</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1044"/>
+        <location filename="torrenttabwidget.ui" line="1047"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1053"/>
+        <location filename="torrenttabwidget.ui" line="1056"/>
         <source>Tracker:</source>
         <translation>Tracker:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1072"/>
+        <location filename="torrenttabwidget.ui" line="1075"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1081"/>
+        <location filename="torrenttabwidget.ui" line="1084"/>
         <source>Destination:</source>
         <translation>Destination:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1098"/>
+        <location filename="torrenttabwidget.ui" line="1101"/>
         <source>Creator:</source>
         <translation>Creator:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1112"/>
+        <location filename="torrenttabwidget.ui" line="1115"/>
         <source>Comment:</source>
         <translation>Comment:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1129"/>
+        <location filename="torrenttabwidget.ui" line="1132"/>
         <source>Private:</source>
         <translation>Private:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1143"/>
+        <location filename="torrenttabwidget.ui" line="1146"/>
         <source>Downloaded pieces:</source>
         <translation>Downloaded pieces:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1157"/>
+        <location filename="torrenttabwidget.ui" line="1160"/>
         <source>Total pieces:</source>
         <translation>Total pieces:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1171"/>
+        <location filename="torrenttabwidget.ui" line="1174"/>
         <source>Piece size:</source>
         <translation>Piece size:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1185"/>
+        <location filename="torrenttabwidget.ui" line="1188"/>
         <source>Block size:</source>
         <translation>Block size:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1199"/>
+        <location filename="torrenttabwidget.ui" line="1202"/>
         <source>Announce interval:</source>
         <translation>Announce interval:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1213"/>
+        <location filename="torrenttabwidget.ui" line="1216"/>
         <source>Failed:</source>
         <translation>Failed:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1227"/>
+        <location filename="torrenttabwidget.ui" line="1230"/>
         <source>Redundant:</source>
         <translation>Redundant:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1241"/>
+        <location filename="torrenttabwidget.ui" line="1244"/>
         <source>DHT nodes count:</source>
         <translation>DHT nodes count:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1255"/>
+        <location filename="torrenttabwidget.ui" line="1258"/>
         <source>Distributed copies:</source>
         <translation>Distributed copies:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1273"/>
+        <location filename="torrenttabwidget.ui" line="1276"/>
         <source>Dashboard</source>
         <translation>Dashboard</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1389"/>
+        <location filename="torrenttabwidget.ui" line="1392"/>
         <source>Leeching/seeding torrents:</source>
         <translation>Leeching/seeding torrents:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1450"/>
+        <location filename="torrenttabwidget.ui" line="1453"/>
         <source>Session stats</source>
         <translation>Session stats</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1487"/>
+        <location filename="torrenttabwidget.ui" line="1490"/>
         <source>Total downloaded:</source>
         <translation>Total downloaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1501"/>
+        <location filename="torrenttabwidget.ui" line="1504"/>
         <source>Total uploaded:</source>
         <translation>Total uploaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1529"/>
+        <location filename="torrenttabwidget.ui" line="1532"/>
         <source>Peers:</source>
         <translation>Peers:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1543"/>
+        <location filename="torrenttabwidget.ui" line="1546"/>
         <source>(Global) DHT nodes:</source>
         <translation>(Global) DHT nodes:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1557"/>
+        <location filename="torrenttabwidget.ui" line="1560"/>
         <source>DHT torrents:</source>
         <translation>DHT torrents:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1571"/>
+        <location filename="torrenttabwidget.ui" line="1574"/>
         <source>TCP listen port:</source>
         <translation>TCP listen port:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1585"/>
+        <location filename="torrenttabwidget.ui" line="1588"/>
         <source>External address:</source>
         <translation>External address:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1604"/>
+        <location filename="torrenttabwidget.ui" line="1607"/>
         <source>Per-tracker stats</source>
         <translation>Per-tracker stats</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1620"/>
+        <location filename="torrenttabwidget.ui" line="1623"/>
         <source>Tracker</source>
         <translation>Tracker</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1625"/>
+        <location filename="torrenttabwidget.ui" line="1628"/>
         <source>Download rate</source>
         <translation>Download rate</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1630"/>
+        <location filename="torrenttabwidget.ui" line="1633"/>
         <source>Upload rate</source>
         <translation>Upload rate</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1659"/>
-        <location filename="torrenttabwidget.ui" line="1834"/>
+        <location filename="torrenttabwidget.ui" line="1662"/>
+        <location filename="torrenttabwidget.ui" line="1837"/>
         <source>Advanced session stats</source>
         <translation>Advanced session stats</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1676"/>
+        <location filename="torrenttabwidget.ui" line="1679"/>
         <source>Cache stats</source>
         <translation>Cache stats</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1685"/>
+        <location filename="torrenttabwidget.ui" line="1688"/>
         <source>Total blocks read:</source>
         <translation>Total blocks read:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1699"/>
+        <location filename="torrenttabwidget.ui" line="1702"/>
         <source>Cached block reads:</source>
         <translation>Cached block reads:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1713"/>
+        <location filename="torrenttabwidget.ui" line="1716"/>
         <source>Read hit ratio:</source>
         <translation>Read hit ratio:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1727"/>
+        <location filename="torrenttabwidget.ui" line="1730"/>
         <source>Read cache size:</source>
         <translation>Read cache size:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1741"/>
+        <location filename="torrenttabwidget.ui" line="1744"/>
         <source>Total redundant data:</source>
         <translation>Total redundant data:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1755"/>
+        <location filename="torrenttabwidget.ui" line="1758"/>
         <source>Blocks written:</source>
         <translation>Blocks written:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1769"/>
+        <location filename="torrenttabwidget.ui" line="1772"/>
         <source>Write operations:</source>
         <translation>Write operations:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1783"/>
+        <location filename="torrenttabwidget.ui" line="1786"/>
         <source>Write hit ratio:</source>
         <translation>Write hit ratio:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1797"/>
+        <location filename="torrenttabwidget.ui" line="1800"/>
         <source>Cache size:</source>
         <translation>Cache size:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1811"/>
+        <location filename="torrenttabwidget.ui" line="1814"/>
         <source>Total failed data:</source>
         <translation>Total failed data:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1843"/>
+        <location filename="torrenttabwidget.ui" line="1846"/>
         <source>Overhead downloaded:</source>
         <translation>Overhead downloaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1857"/>
+        <location filename="torrenttabwidget.ui" line="1860"/>
         <source>Overhead uploaded:</source>
         <translation>Overhead uploaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1871"/>
+        <location filename="torrenttabwidget.ui" line="1874"/>
         <source>Tracker downloaded:</source>
         <translation>Tracker downloaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1885"/>
+        <location filename="torrenttabwidget.ui" line="1888"/>
         <source>Tracker uploaded:</source>
         <translation>Tracker uploaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1899"/>
+        <location filename="torrenttabwidget.ui" line="1902"/>
         <source>DHT downloaded:</source>
         <translation>DHT downloaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1913"/>
+        <location filename="torrenttabwidget.ui" line="1916"/>
         <source>DHT uploaded:</source>
         <translation>DHT uploaded:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1927"/>
+        <location filename="torrenttabwidget.ui" line="1930"/>
         <source>Overhead download rate:</source>
         <translation>Overhead download rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1934"/>
+        <location filename="torrenttabwidget.ui" line="1937"/>
         <source>Overhead upload rate:</source>
         <translation>Overhead upload rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1955"/>
+        <location filename="torrenttabwidget.ui" line="1958"/>
         <source>DHT download rate:</source>
         <translation>DHT download rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1962"/>
+        <location filename="torrenttabwidget.ui" line="1965"/>
         <source>DHT upload rate:</source>
         <translation>DHT upload rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1969"/>
+        <location filename="torrenttabwidget.ui" line="1972"/>
         <source>Tracker download rate:</source>
         <translation>Tracker download rate:</translation>
     </message>
     <message>
-        <location filename="torrenttabwidget.ui" line="1976"/>
+        <location filename="torrenttabwidget.ui" line="1979"/>
         <source>Tracker upload rate:</source>
         <translation>Tracker upload rate:</translation>
     </message>
