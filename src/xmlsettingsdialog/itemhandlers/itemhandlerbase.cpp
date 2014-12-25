@@ -58,8 +58,8 @@ namespace LeechCraft
 
 	void ItemHandlerBase::updatePreferences ()
 	{
-		const QString& propertyName = sender ()->objectName ();
-		const QVariant& value = GetObjectValue (sender ());
+		const auto& propertyName = sender ()->objectName ();
+		const auto& value = GetObjectValue (sender ());
 		ChangedProperties_ [propertyName] = value;
 
 		XSD_->GetManagerObject ()->OptionSelected (propertyName.toLatin1 (), value);

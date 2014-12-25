@@ -70,9 +70,9 @@ namespace Util
 			QObject *object, const QByteArray& funcName, EventFlags flags)
 	{
 		if (flags & EventFlag::Apply)
-			ApplyProps_.insertMulti (propName, qMakePair (QPointer<QObject> (object), funcName));
+			ApplyProps_.insertMulti (propName, { object, funcName });
 		if (flags & EventFlag::Select)
-			SelectProps_.insertMulti (propName, qMakePair (QPointer<QObject> (object), funcName));
+			SelectProps_.insertMulti (propName, { object, funcName });
 
 		connect (object,
 				SIGNAL (destroyed (QObject*)),
@@ -84,13 +84,13 @@ namespace Util
 	void BaseSettingsManager::RegisterObject (const QList<QByteArray>& propNames,
 			QObject* object, const QByteArray& funcName, EventFlags flags)
 	{
-		for (auto i = propNames.begin (), end = propNames.end (); i != end; ++i)
-			RegisterObject (*i, object, funcName, flags);
+		for (const auto& prop : propNames)
+			RegisterObject (prop, object, funcName, flags);
 	}
 
 	QVariant BaseSettingsManager::Property (const QString& propName, const QVariant& def)
 	{
-		QVariant result = property (PROP2CHAR (propName));
+		auto result = property (PROP2CHAR (propName));
 		if (!result.isValid ())
 		{
 			result = def;
@@ -120,8 +120,7 @@ namespace Util
 		if (!SelectProps_.contains (prop))
 			return;
 
-		const auto& objects = SelectProps_.values (prop);
-		for (const ObjectElement_t& object : objects)
+		for (const auto& object : SelectProps_.values (prop))
 		{
 			if (!object.first)
 				continue;
