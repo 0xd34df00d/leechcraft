@@ -27,8 +27,6 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#define TORRENT_MAX_ALERT_TYPES 20
-
 #include "core.h"
 #include <memory>
 #include <numeric>
@@ -84,6 +82,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -2206,15 +2205,7 @@ namespace BitTorrent
 		}
 	}
 
-#if defined(Q_CC_GNU)
-# define __LLEECHCRAFT_API __attribute__ ((visibility("default")))
-#elif defined(Q_CC_MSVC)
-# define __LLEECHCRAFT_API __declspec(dllexport)
-#else
-# define __LLEECHCRAFT_API
-#endif
-
-	struct __LLEECHCRAFT_API SimpleDispatcher
+	struct SimpleDispatcher
 	{
 		mutable bool NeedToLog_ = true;
 
@@ -2371,27 +2362,54 @@ namespace BitTorrent
 		}
 	};
 
-#undef __LLEECHCRAFT_API
+	namespace
+	{
+		template<typename Dispatcher, typename... Types>
+		struct HandleAlert;
+
+		template<typename Dispatcher>
+		struct HandleAlert<Dispatcher>
+		{
+			Dispatcher D_;
+
+			void operator() (libtorrent::alert*) const
+			{
+			}
+		};
+
+		template<typename Dispatcher, typename Head, typename... Tail>
+		struct HandleAlert<Dispatcher, Head, Tail...>
+		{
+			Dispatcher D_;
+
+			void operator() (libtorrent::alert *alert) const
+			{
+				if (const auto casted = dynamic_cast<Head*> (alert))
+					D_ (*casted);
+				else
+					HandleAlert<Dispatcher, Tail...> { D_ } (alert);
+			}
+		};
+	}
 
 	void Core::queryLibtorrentForWarnings ()
 	{
-		// I know auto_ptr is bad & deprecated & things, but libtorrent API strongly needs it :(
-#if defined __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-		std::auto_ptr<libtorrent::alert> a (Session_->pop_alert ());
-#if defined __GNUC__
-#pragma GCC diagnostic pop
-#endif
+		std::deque<libtorrent::alert*> alerts;
+		const auto guard = Util::MakeScopeGuard ([&alerts]
+				{
+					for (const auto elem : alerts)
+						delete elem;
+				});
+		Session_->pop_alerts (&alerts);
 
-		while (a.get ())
+		for (const auto& alert : alerts)
 		{
 			SimpleDispatcher sd { Proxy_ };
 			try
 			{
-				libtorrent::handle_alert<
-					libtorrent::external_ip_alert
+				HandleAlert<
+					SimpleDispatcher
+					, libtorrent::external_ip_alert
 					, libtorrent::save_resume_data_alert
 					, libtorrent::save_resume_data_failed_alert
 					, libtorrent::storage_moved_alert
@@ -2410,7 +2428,7 @@ namespace BitTorrent
 					, libtorrent::dht_bootstrap_alert
 					, libtorrent::dht_get_peers_alert
 					, libtorrent::torrent_error_alert
-					> { a, sd };
+					> { sd } (alert);
 			}
 			catch (const libtorrent::libtorrent_exception&)
 			{
@@ -2423,7 +2441,7 @@ namespace BitTorrent
 			{
 				if (sd.NeedToLog_)
 				{
-					const auto& logmsg = QString::fromUtf8 (a->message ().c_str ());
+					const auto& logmsg = QString::fromUtf8 (alert->message ().c_str ());
 					qDebug () << "<libtorrent>" << logmsg;
 				}
 			}
@@ -2431,8 +2449,6 @@ namespace BitTorrent
 			{
 				qWarning () << Q_FUNC_INFO << typeid (e).name ();
 			}
-
-			a = Session_->pop_alert ();
 		}
 	}
 
