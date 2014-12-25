@@ -340,6 +340,9 @@ namespace BitTorrent
 		};
 		XmlSettingsManager::Instance ()->RegisterObject (loggingSettings,
 				this, "setLoggingSettings");
+
+		XmlSettingsManager::Instance ()->RegisterObject ("NotificationStorage",
+				this, "checkStorageSettings", Util::BaseSettingsManager::EventFlag::Select);
 	}
 
 	void SessionSettingsManager::setLoggingSettings ()
@@ -359,39 +362,6 @@ namespace BitTorrent
 
 		if (XmlSettingsManager::Instance ()->property ("NotificationStorage").toBool ())
 			mask |= libtorrent::alert::storage_notification;
-		else
-		{
-			const auto rootWM = Proxy_->GetRootWindowsManager ();
-
-			const auto box = new QMessageBox
-			{
-				QMessageBox::Question,
-				"LeechCraft BitTorrent",
-				tr ("Storage notifications are disabled. Live streaming "
-					"definitely won't work without them, so if you are "
-					"experiencing troubles, re-enable storage notifications "
-					"in \"Notifications\" section of BitTorrent settings. "
-					"Do you want to enable them now?"),
-				QMessageBox::Yes | QMessageBox::No,
-				rootWM->GetPreferredWindow ()
-			};
-
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				[this, box]
-				{
-					box->deleteLater ();
-					if (box->standardButton (box->clickedButton ()) == QMessageBox::Yes)
-						XmlSettingsManager::Instance ()->setProperty ("NotificationStorage", true);
-				},
-				box,
-				SIGNAL (finished (int)),
-				box
-			};
-
-			box->show ();
-		}
-
 		if (XmlSettingsManager::Instance ()->property ("NotificationTracker").toBool ())
 			mask |= libtorrent::alert::tracker_notification;
 		if (XmlSettingsManager::Instance ()->property ("NotificationStatus").toBool ())
@@ -709,6 +679,42 @@ namespace BitTorrent
 		settings.max_fail_count = XmlSettingsManager::Instance ()->property ("MaxDHTFailcount").toInt ();
 
 		Session_->set_dht_settings (settings);
+	}
+
+	void SessionSettingsManager::checkStorageSettings (const QVariant& val)
+	{
+		if (val.toBool ())
+			return;
+
+		const auto rootWM = Proxy_->GetRootWindowsManager ();
+
+		const auto box = new QMessageBox
+		{
+			QMessageBox::Question,
+			"LeechCraft BitTorrent",
+			tr ("Storage notifications are disabled. Live streaming "
+				"definitely won't work without them, so if you are "
+				"experiencing troubles, re-enable storage notifications "
+				"in \"Notifications\" section of BitTorrent settings. "
+				"Do you want to enable them now?"),
+			QMessageBox::Yes | QMessageBox::No,
+			rootWM->GetPreferredWindow ()
+		};
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, box]
+			{
+				box->deleteLater ();
+				if (box->standardButton (box->clickedButton ()) == QMessageBox::Yes)
+					XmlSettingsManager::Instance ()->setProperty ("NotificationStorage", true);
+			},
+			box,
+			SIGNAL (finished (int)),
+			box
+		};
+
+		box->show ();
 	}
 
 	void SessionSettingsManager::setScrapeInterval ()

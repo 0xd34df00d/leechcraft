@@ -83,6 +83,8 @@ namespace BitTorrent
 		void setGeneralSettings ();
 		void setDHTSettings ();
 
+		void checkStorageSettings (const QVariant&);
+
 		void setScrapeInterval ();
 		void autosaveIntervalChanged ();
 	signals:
