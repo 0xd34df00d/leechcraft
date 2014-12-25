@@ -1489,6 +1489,16 @@ namespace BitTorrent
 			return;
 		}
 
+		const auto& status = a.handle.status (0);
+		if (!status.error.empty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "not saving erroneous torrent:"
+					<< a.handle.name ().c_str ();
+
+			return;
+		}
+
 		QFile file (QDir::homePath () +
 				"/.leechcraft/bittorrent/" +
 				torrent->TorrentFileName_ +
