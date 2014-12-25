@@ -2365,11 +2365,12 @@ namespace BitTorrent
 	namespace
 	{
 		template<typename Dispatcher, typename... Types>
-		struct HandleAlert;
+		struct HandleAlertImpl;
 
 		template<typename Dispatcher>
-		struct HandleAlert<Dispatcher>
+		struct HandleAlertImpl<Dispatcher>
 		{
+			const std::type_info& Info_;
 			Dispatcher D_;
 
 			void operator() (libtorrent::alert*) const
@@ -2378,18 +2379,25 @@ namespace BitTorrent
 		};
 
 		template<typename Dispatcher, typename Head, typename... Tail>
-		struct HandleAlert<Dispatcher, Head, Tail...>
+		struct HandleAlertImpl<Dispatcher, Head, Tail...>
 		{
+			const std::type_info& Info_;
 			Dispatcher D_;
 
 			void operator() (libtorrent::alert *alert) const
 			{
-				if (const auto casted = dynamic_cast<Head*> (alert))
-					D_ (*casted);
+				if (Info_ == typeid (Head))
+					D_ (*static_cast<Head*> (alert));
 				else
-					HandleAlert<Dispatcher, Tail...> { D_ } (alert);
+					HandleAlertImpl<Dispatcher, Tail...> { Info_, D_ } (alert);
 			}
 		};
+
+		template<typename... Types, typename Dispatcher>
+		void HandleAlert (libtorrent::alert *alert, const Dispatcher& dispatcher)
+		{
+			HandleAlertImpl<Dispatcher, Types...> { typeid (*alert), dispatcher } (alert);
+		}
 	}
 
 	void Core::queryLibtorrentForWarnings ()
@@ -2408,8 +2416,7 @@ namespace BitTorrent
 			try
 			{
 				HandleAlert<
-					SimpleDispatcher
-					, libtorrent::external_ip_alert
+					libtorrent::external_ip_alert
 					, libtorrent::save_resume_data_alert
 					, libtorrent::save_resume_data_failed_alert
 					, libtorrent::storage_moved_alert
@@ -2428,7 +2435,7 @@ namespace BitTorrent
 					, libtorrent::dht_bootstrap_alert
 					, libtorrent::dht_get_peers_alert
 					, libtorrent::torrent_error_alert
-					> { sd } (alert);
+					> (alert, sd);
 			}
 			catch (const libtorrent::libtorrent_exception&)
 			{
