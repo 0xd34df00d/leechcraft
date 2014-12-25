@@ -2229,8 +2229,8 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::external_ip_alert& a) const
 		{
-			Core::Instance ()->SetExternalAddress (QString::
-					fromStdString (a.external_address.to_string ()));
+			const auto& extAddrStr = QString::fromStdString (a.external_address.to_string ());
+			Core::Instance ()->SetExternalAddress (extAddrStr);
 		}
 
 		void operator() (const libtorrent::save_resume_data_alert& a) const
@@ -2240,39 +2240,27 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::save_resume_data_failed_alert& a) const
 		{
-			QString text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
-				.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-				.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			Entity n = Util::MakeNotification ("BitTorrent", text, PWarning_);
-			QMetaObject::invokeMethod (Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, n));
+			const auto& text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PWarning_));
 		}
 
 		void operator() (const libtorrent::storage_moved_alert& a) const
 		{
-			QString text = QObject::tr ("Storage for torrent:<br />%1"
-					"<br />moved successfully to:<br />%2")
-				.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-				.arg (QString::fromUtf8 (a.path.c_str ()));
-			Entity n = Util::MakeNotification ("BitTorrent", text, PInfo_);
-			QMetaObject::invokeMethod (Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, n));
+			const auto& text = QObject::tr ("Storage for torrent:<br />%1"
+						"<br />moved successfully to:<br />%2")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::fromUtf8 (a.path.c_str ()));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PInfo_));
 		}
 
 		void operator() (const libtorrent::storage_moved_failed_alert& a) const
 		{
-			QString text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
-				.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-				.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			QMetaObject::invokeMethod (Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, n));
+			const auto& text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
 
 		void operator() (const libtorrent::metadata_received_alert& a) const
@@ -2287,28 +2275,20 @@ namespace BitTorrent
 
 		void operator() (const libtorrent::file_rename_failed_alert& a) const
 		{
-			QString text = QObject::tr ("File rename failed for torrent:<br />%1<br />"
-				"file %2, error:<br />%3")
-				.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-				.arg (QString::number (a.index))
-				.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			QMetaObject::invokeMethod (Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, n));
+			const auto& text = QObject::tr ("File rename failed for torrent:<br />%1<br />"
+						"file %2, error:<br />%3")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::number (a.index))
+					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
 
 		void operator() (const libtorrent::torrent_delete_failed_alert& a) const
 		{
-			QString text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
-				.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
-				.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-			Entity n = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			QMetaObject::invokeMethod (Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, n));
+			const auto& text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
+					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
 
 		void operator() (const libtorrent::read_piece_alert& a) const
@@ -2382,9 +2362,7 @@ namespace BitTorrent
 					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
 					.arg (QString::fromUtf8 (a.file.c_str ()))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
-
-			const auto& n = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (n);
+			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
 
 		void operator() (const libtorrent::torrent_error_alert& a) const
