@@ -98,6 +98,16 @@ namespace Aggregator
 		return {};
 	}
 
+	boost::optional<IDType_t> DumbStorage::FindItemByTitle (const QString&, const IDType_t&) const
+	{
+		return {};
+	}
+
+	boost::optional<IDType_t> DumbStorage::FindItemByLink (const QString&, const IDType_t&) const
+	{
+		return {};
+	}
+
 	void DumbStorage::GetItems (items_container_t&, const IDType_t&) const
 	{
 	}

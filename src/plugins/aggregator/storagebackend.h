@@ -222,6 +222,11 @@ namespace Aggregator
 		virtual boost::optional<IDType_t> FindItem (const QString& title,
 				const QString& link, const IDType_t& channel) const = 0;
 
+		virtual boost::optional<IDType_t> FindItemByTitle (const QString& title,
+				const IDType_t& channel) const = 0;
+		virtual boost::optional<IDType_t> FindItemByLink (const QString& link,
+				const IDType_t& channel) const = 0;
+
 		/** @brief Returns all items in the channel.
 		 *
 		 * Returns full information about all the items in the

@@ -52,6 +52,8 @@ namespace Aggregator
 		int GetUnreadItems (const IDType_t&) const;
 		Item_ptr GetItem (const IDType_t&) const;
 		boost::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const;
+		boost::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const;
+		boost::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const;
 		void GetItems (items_container_t&, const IDType_t&) const;
 		void AddFeed (Feed_ptr);
 		void AddChannel (Channel_ptr);

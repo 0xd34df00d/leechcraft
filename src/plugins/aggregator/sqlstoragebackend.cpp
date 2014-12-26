@@ -310,6 +310,18 @@ namespace Aggregator
 				"AND COALESCE (title,'') = COALESCE (:title,'') "
 				"AND COALESCE (url,'') = COALESCE (:url,'')");
 
+		ItemIDFromURL_ = QSqlQuery (DB_);
+		ItemIDFromURL_.prepare ("SELECT item_id "
+				"FROM items "
+				"WHERE channel_id = :channel_id "
+				"AND COALESCE (url,'') = COALESCE (:url,'')");
+
+		ItemIDFromTitle_ = QSqlQuery (DB_);
+		ItemIDFromTitle_.prepare ("SELECT item_id "
+				"FROM items "
+				"WHERE channel_id = :channel_id "
+				"AND COALESCE (title,'') = COALESCE (:title,'')");
+
 		InsertFeed_ = QSqlQuery (DB_);
 		InsertFeed_.prepare ("INSERT INTO feeds (feed_id, url, last_update) VALUES (:feed_id, :url, :last_update);");
 
@@ -1164,6 +1176,47 @@ namespace Aggregator
 
 		const auto& result = ItemIDFromTitleURL_.value (0).value<IDType_t> ();
 		ItemIDFromTitleURL_.finish ();
+		return result;
+	}
+
+	boost::optional<IDType_t> SQLStorageBackend::FindItemByLink (const QString& link,
+			const IDType_t& channelId) const
+	{
+		if (link.isEmpty ())
+			return {};
+
+		ItemIDFromURL_.bindValue (":channel_id", channelId);
+		ItemIDFromURL_.bindValue (":url", link);
+		if (!ItemIDFromURL_.exec ())
+		{
+			Util::DBLock::DumpError (ItemIDFromURL_);
+			throw ItemGettingError ();
+		}
+
+		if (!ItemIDFromURL_.next ())
+			return {};
+
+		const auto& result = ItemIDFromURL_.value (0).value<IDType_t> ();
+		ItemIDFromURL_.finish ();
+		return result;
+	}
+
+	boost::optional<IDType_t> SQLStorageBackend::FindItemByTitle (const QString& title,
+			const IDType_t& channelId) const
+	{
+		ItemIDFromTitle_.bindValue (":channel_id", channelId);
+		ItemIDFromTitle_.bindValue (":title", title);
+		if (!ItemIDFromTitle_.exec ())
+		{
+			Util::DBLock::DumpError (ItemIDFromTitle_);
+			throw ItemGettingError ();
+		}
+
+		if (!ItemIDFromTitle_.next ())
+			return {};
+
+		const auto& result = ItemIDFromTitle_.value (0).value<IDType_t> ();
+		ItemIDFromTitle_.finish ();
 		return result;
 	}
 

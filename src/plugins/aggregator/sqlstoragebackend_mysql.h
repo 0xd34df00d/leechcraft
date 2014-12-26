@@ -189,6 +189,22 @@ namespace Aggregator
 							* - channel_id
 							*/
 							ItemIDFromTitleURL_,
+							/** Returns:
+							* - item_id
+							*
+							* Binds:
+							* - url
+							* - channel_id
+							*/
+							ItemIDFromURL_,
+							/** Returns:
+							* - item_id
+							*
+							* Binds:
+							* - title
+							* - channel_id
+							*/
+							ItemIDFromTitle_,
 							/** Binds:
 							* - url
 							* - last_update
@@ -538,10 +554,13 @@ namespace Aggregator
 		virtual IDType_t FindChannel (const QString& ,
 				const QString&, const IDType_t&) const;
 		virtual void TrimChannel (const IDType_t&, int, int);
+
 		virtual void GetItems (items_shorts_t&, const IDType_t&) const;
 		virtual int GetUnreadItems (const IDType_t&) const;
 		virtual Item_ptr GetItem (const IDType_t&) const;
 		virtual boost::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const;
+		virtual boost::optional<IDType_t> FindItemByLink (const QString&, const IDType_t&) const;
+		virtual boost::optional<IDType_t> FindItemByTitle (const QString&, const IDType_t&) const;
 		virtual void GetItems (items_container_t&, const IDType_t&) const;
 
 		virtual void AddFeed (Feed_ptr);

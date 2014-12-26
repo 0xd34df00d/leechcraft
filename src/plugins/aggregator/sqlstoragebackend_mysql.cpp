@@ -113,6 +113,12 @@ namespace Aggregator
 		ItemIDFromTitleURL_ = QSqlQuery (DB_);
 		ItemIDFromTitleURL_.prepare (StorageBackend::LoadQuery ("mysql", "ItemIDFromTitleURL_query"));
 
+		ItemIDFromURL_ = QSqlQuery (DB_);
+		ItemIDFromURL_.prepare (StorageBackend::LoadQuery ("mysql", "ItemIDFromURL_query"));
+
+		ItemIDFromTitle_ = QSqlQuery (DB_);
+		ItemIDFromTitle_.prepare (StorageBackend::LoadQuery ("mysql", "ItemIDFromTitle_query"));
+
 		InsertFeed_ = QSqlQuery (DB_);
 		InsertFeed_.prepare (StorageBackend::LoadQuery ("mysql", "InsertFeed_query"));
 
@@ -521,6 +527,47 @@ namespace Aggregator
 
 		const auto& result = ItemIDFromTitleURL_.value (0).value<IDType_t> ();
 		ItemIDFromTitleURL_.finish ();
+		return result;
+	}
+
+	boost::optional<IDType_t> SQLStorageBackendMysql::FindItemByLink (const QString& link,
+			const IDType_t& channelId) const
+	{
+		if (link.isEmpty ())
+			return {};
+
+		ItemIDFromURL_.bindValue (0, channelId);				//channel_id
+		ItemIDFromURL_.bindValue (1, link);						//url
+		if (!ItemIDFromURL_.exec ())
+		{
+			Util::DBLock::DumpError (ItemIDFromURL_);
+			throw ItemGettingError ();
+		}
+
+		if (!ItemIDFromURL_.next ())
+			return {};
+
+		const auto& result = ItemIDFromURL_.value (0).value<IDType_t> ();
+		ItemIDFromURL_.finish ();
+		return result;
+	}
+
+	boost::optional<IDType_t> SQLStorageBackendMysql::FindItemByTitle (const QString& title,
+			const IDType_t& channelId) const
+	{
+		ItemIDFromTitle_.bindValue (0, channelId);				//channel_id
+		ItemIDFromTitle_.bindValue (1, title);					//title
+		if (!ItemIDFromTitle_.exec ())
+		{
+			Util::DBLock::DumpError (ItemIDFromTitle_);
+			throw ItemGettingError ();
+		}
+
+		if (!ItemIDFromTitle_.next ())
+			return {};
+
+		const auto& result = ItemIDFromTitle_.value (0).value<IDType_t> ();
+		ItemIDFromTitle_.finish ();
 		return result;
 	}
 
