@@ -209,21 +209,60 @@ namespace Aggregator
 		 */
 		virtual Item_ptr GetItem (const IDType_t& id) const = 0;
 
-		/** @brief Finds first item with the given title, link
-		 * and parent channel and returns its ID or an empty
-		 * optional object if the item is not found.
+		/** @brief Finds first item with the given title, link and parent
+		 * channel.
+		 *
+		 * Returns its ID or an empty optional object if no such item is
+		 * found.
+		 *
+		 * This function requires both \em title and \em link to match.
+		 * Sometimes this may be too strict, so functions FindItemByLink()
+		 * and FindItemByTitle() may be useful instead.
 		 *
 		 * @param[in] title Title of the item to be found.
 		 * @param[in] link Link of the item to be found.
 		 * @param[in] channel ID of the parent channel.
 		 * @return ID of the found item or an empty optional object if no
 		 * such item exists.
+		 *
+		 * @sa FindItemByLink()
+		 * @sa FindItemByTitle()
 		 */
 		virtual boost::optional<IDType_t> FindItem (const QString& title,
 				const QString& link, const IDType_t& channel) const = 0;
 
+		/** @brief Finds first item with the given title and parent
+		 * channel.
+		 *
+		 * This function may be seen as a less strict one than FindItem().
+		 *
+		 * @param[in] title Title of the item to be found.
+		 * @param[in] channel ID of the parent channel.
+		 * @return ID of the found item or an empty optional object if no
+		 * such item exists.
+		 *
+		 * @sa FindItem()
+		 * @sa FindItemByLink()
+		 */
 		virtual boost::optional<IDType_t> FindItemByTitle (const QString& title,
 				const IDType_t& channel) const = 0;
+
+		/** @brief Finds first item with the given link and parent
+		 * channel.
+		 *
+		 * If the link is an empty string, this function returns an empty
+		 * optional object.
+		 *
+		 * This function may be seen as a less strict one than FindItem().
+		 *
+		 * @param[in] link Link of the item to be found.
+		 * @param[in] channel ID of the parent channel.
+		 * @return ID of the found item or an empty optional object if no
+		 * such item exists, or if \em link is empty.
+		 *
+		 * @sa FindItem()
+		 * @sa FindItemByTitle()
+		 */
 		virtual boost::optional<IDType_t> FindItemByLink (const QString& link,
 				const IDType_t& channel) const = 0;
 
