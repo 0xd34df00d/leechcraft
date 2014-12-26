@@ -79,14 +79,7 @@ namespace Aggregator
 		if (t1.size () != t2.size ())
 			return false;
 
-		bool ok = true;
-		Q_FOREACH (T t, t1)
-			if (!t2.contains (t))
-			{
-				ok = false;
-				break;
-			}
-		return ok;
+		return std::all_of (t1.begin (), t1.end (), [t2] (const T& val) { return t2.contains (val); });
 	}
 
 	bool operator== (const Enclosure& e1, const Enclosure& e2)
@@ -217,7 +210,7 @@ namespace Aggregator
 
 	ItemShort Item::ToShort () const
 	{
-		ItemShort is =
+		return
 		{
 			ItemID_,
 			ChannelID_,
@@ -227,7 +220,6 @@ namespace Aggregator
 			PubDate_,
 			Unread_
 		};
-		return is;
 	}
 
 	void Item::FixDate ()
