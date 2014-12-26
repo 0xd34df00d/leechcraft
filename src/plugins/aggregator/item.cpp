@@ -236,16 +236,6 @@ namespace Aggregator
 			PubDate_ = QDateTime::currentDateTime ();
 	}
 
-	ItemComparator::ItemComparator (const Item_ptr& item)
-	: Item_ (item)
-	{
-	}
-
-	bool ItemComparator::operator() (const Item_ptr& item)
-	{
-		return *Item_ == *item;
-	}
-
 	bool operator== (const Item& i1, const Item& i2)
 	{
 		return i1.ItemID_ == i2.ItemID_;

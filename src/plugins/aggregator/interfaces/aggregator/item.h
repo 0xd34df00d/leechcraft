@@ -377,14 +377,6 @@ namespace Aggregator
 	typedef std::vector<Item_ptr> items_container_t;
 	typedef std::vector<ItemShort> items_shorts_t;
 
-	struct ItemComparator
-	{
-		Item_ptr Item_;
-
-		ItemComparator (const Item_ptr&);
-		bool operator() (const Item_ptr&);
-	};
-
 	bool operator== (const Item&, const Item&);
 	QDataStream& operator<< (QDataStream&, const Enclosure&);
 	QDataStream& operator>> (QDataStream&, Enclosure&);
