@@ -227,6 +227,20 @@ namespace Aggregator
 		SB_->ToggleChannelUnread (channel, state);
 	}
 
+	namespace
+	{
+		// TODO CPP14 merge with plusadic
+		template<typename T, template<typename, typename...> class List = std::initializer_list>
+		boost::optional<T> GetFirst (const List<std::function<boost::optional<T> ()>>& producers)
+		{
+			for (const auto& prod : producers)
+					if (const auto& res = prod ())
+							return res;
+
+			return {};
+		}
+	}
+
 	void DBUpdateThreadWorker::updateFeed (channels_container_t channels, QString url)
 	{
 		auto feedId = SB_->FindFeed (url);
@@ -265,7 +279,11 @@ namespace Aggregator
 
 			for (const auto& item : channel->Items_)
 			{
-				if (const auto& ourItemID = SB_->FindItem (item->Title_, item->Link_, ourChannel->ChannelID_))
+				if (const auto& ourItemID = GetFirst<IDType_t> ({
+							[&] { return SB_->FindItem (item->Title_, item->Link_, ourChannel->ChannelID_); },
+							[&] { return SB_->FindItemByLink (item->Link_, ourChannel->ChannelID_); },
+							[&] { return SB_->FindItemByTitle (item->Title_, ourChannel->ChannelID_); }
+						}))
 				{
 					const auto& ourItem = SB_->GetItem (*ourItemID);
 					if (UpdateItem (item, ourItem))
