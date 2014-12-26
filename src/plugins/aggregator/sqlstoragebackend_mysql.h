@@ -541,10 +541,8 @@ namespace Aggregator
 		virtual void GetItems (items_shorts_t&, const IDType_t&) const;
 		virtual int GetUnreadItems (const IDType_t&) const;
 		virtual Item_ptr GetItem (const IDType_t&) const;
-		virtual IDType_t FindItem (const QString&,
-				const QString&, const IDType_t&) const;
-		virtual void GetItems (items_container_t&,
-				const IDType_t&) const;
+		virtual boost::optional<IDType_t> FindItem (const QString&, const QString&, const IDType_t&) const;
+		virtual void GetItems (items_container_t&, const IDType_t&) const;
 
 		virtual void AddFeed (Feed_ptr);
 		virtual void UpdateChannel (Channel_ptr);

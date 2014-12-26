@@ -1147,7 +1147,7 @@ namespace Aggregator
 		return result;
 	}
 
-	IDType_t SQLStorageBackend::FindItem (const QString& title,
+	boost::optional<IDType_t> SQLStorageBackend::FindItem (const QString& title,
 			const QString& link, const IDType_t& channelId) const
 	{
 		ItemIDFromTitleURL_.bindValue (":channel_id", channelId);
@@ -1160,9 +1160,9 @@ namespace Aggregator
 		}
 
 		if (!ItemIDFromTitleURL_.next ())
-			throw ItemNotFoundError ();
+			return {};
 
-		IDType_t result = ItemIDFromTitleURL_.value (0).value<IDType_t> ();
+		const auto& result = ItemIDFromTitleURL_.value (0).value<IDType_t> ();
 		ItemIDFromTitleURL_.finish ();
 		return result;
 	}

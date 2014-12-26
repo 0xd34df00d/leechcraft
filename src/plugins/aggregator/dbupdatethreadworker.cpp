@@ -29,6 +29,7 @@
 
 #include "dbupdatethreadworker.h"
 #include <stdexcept>
+#include <boost/optional.hpp>
 #include <QUrl>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -264,22 +265,14 @@ namespace Aggregator
 
 			for (const auto& item : channel->Items_)
 			{
-				Item_ptr ourItem;
-				try
+				if (const auto& ourItemID = SB_->FindItem (item->Title_, item->Link_, ourChannel->ChannelID_))
 				{
-					const auto ourItemID = SB_->FindItem (item->Title_, item->Link_,
-							ourChannel->ChannelID_);
-					ourItem = SB_->GetItem (ourItemID);
+					const auto& ourItem = SB_->GetItem (*ourItemID);
+					if (UpdateItem (item, ourItem))
+						++updatedItems;
 				}
-				catch (const StorageBackend::ItemNotFoundError&)
-				{
-					if (AddItem (item, ourChannel, channelPart, feedSettings))
-						++newItems;
-					continue;
-				}
-
-				if (UpdateItem (item, ourItem))
-					++updatedItems;
+				else if (AddItem (item, ourChannel, channelPart, feedSettings))
+					++newItems;
 			}
 
 			SB_->TrimChannel (ourChannel->ChannelID_, days, ipc);

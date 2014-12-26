@@ -27,8 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_STORAGEBACKEND_H
-#define PLUGINS_AGGREGATOR_STORAGEBACKEND_H
+#pragma once
+
+#include <boost/optional/optional_fwd.hpp>
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/ihookproxy.h>
@@ -209,16 +210,16 @@ namespace Aggregator
 		virtual Item_ptr GetItem (const IDType_t& id) const = 0;
 
 		/** @brief Finds first item with the given title, link
-		 * and parent channel and returns its ID or -1 if it's
-		 * not found.
+		 * and parent channel and returns its ID or an empty
+		 * optional object if the item is not found.
 		 *
 		 * @param[in] title Title of the item to be found.
 		 * @param[in] link Link of the item to be found.
 		 * @param[in] channel ID of the parent channel.
-		 * @return ID of the found item or -1 if no such item
-		 * exists.
+		 * @return ID of the found item or an empty optional object if no
+		 * such item exists.
 		 */
-		virtual IDType_t FindItem (const QString& title,
+		virtual boost::optional<IDType_t> FindItem (const QString& title,
 				const QString& link, const IDType_t& channel) const = 0;
 
 		/** @brief Returns all items in the channel.
@@ -456,5 +457,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

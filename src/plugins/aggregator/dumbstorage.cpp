@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "dumbstorage.h"
+#include <boost/optional.hpp>
 
 namespace LeechCraft
 {
@@ -92,7 +93,7 @@ namespace Aggregator
 		return {};
 	}
 
-	IDType_t DumbStorage::FindItem (const QString&, const QString&, const IDType_t&) const
+	boost::optional<IDType_t> DumbStorage::FindItem (const QString&, const QString&, const IDType_t&) const
 	{
 		return {};
 	}
