@@ -225,7 +225,7 @@ namespace Aggregator
 			UnreadItemsCounter_.prepare ("SELECT COUNT (unread) "
 					"FROM items "
 					"WHERE channel_id = :channel_id "
-					"AND unread = 1");
+					"AND (unread = 1 OR unread = 'true')");
 			break;
 		case SBPostgres:
 			UnreadItemsCounter_.prepare ("SELECT COUNT (1) "
