@@ -157,8 +157,11 @@ namespace Fua
 
 	void FUA::initPlugin (QObject *proxyObj)
 	{
+		const auto proxy = qobject_cast<IProxyObject*> (proxyObj);
+
 		Browser2ID_ = QList<QPair<QString, QString>>
 		{
+			{ tr ("LeechCraft (this machine)"), proxy->GetDefaultUserAgent () },
 			{ "Chromium 28.0 on Linux", "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36" },
 			{ "Chromium 30.0 on Linux", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36" },
 			{ "Chrome 30.0 on Windows 7", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36" },
