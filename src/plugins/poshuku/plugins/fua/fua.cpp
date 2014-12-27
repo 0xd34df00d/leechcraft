@@ -73,31 +73,31 @@ namespace Fua
 		Browser2ID_ ["Safari 7.0 on Mac OS X"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9) AppleWebKit/537.71 (KHTML, like Gecko) Version/7.0 Safari/537.71";
 		Browser2ID_ ["UCWeb 7 on Windows Mobile 5"] = "HTC_P3400-Mozilla/4.0 Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC)/UCWEB7.0.0.41/31/400";
 
-		Model_.reset (new QStandardItemModel);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Domain"))
-					<< tr ("Agent")
-					<< tr ("Identification string"));
+		Model_ = std::make_shared<QStandardItemModel> ();
+		Model_->setHorizontalHeaderLabels ({ tr ("Domain"), tr ("Agent"), tr ("Identification string") });
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FUA");
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_FUA" };
 		int size = settings.beginReadArray ("Fakes");
 		for (int i = 0; i < size; ++i)
 		{
 			settings.setArrayIndex (i);
-			QString domain = settings.value ("domain").toString ();
-			QString identification = settings.value ("identification").toString ();
-			QList<QStandardItem*> items;
-			items << new QStandardItem (domain)
-				<< new QStandardItem (Browser2ID_.key (identification))
-				<< new QStandardItem (identification);
+			const auto& domain = settings.value ("domain").toString ();
+			const auto& identification = settings.value ("identification").toString ();
+			const QList<QStandardItem*> items
+			{
+				new QStandardItem { domain },
+				new QStandardItem { Browser2ID_.key (identification) },
+				new QStandardItem { identification }
+			};
 			Model_->appendRow (items);
 		}
 		settings.endArray ();
 
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukufuasettings.xml");
-		XmlSettingsDialog_->SetCustomWidget ("Settings", new Settings (Model_.get (), this));
+		XmlSettingsDialog_->SetCustomWidget ("Settings", new Settings { Model_.get (), this });
 	}
 
 	void FUA::SecondInit ()
@@ -125,7 +125,7 @@ namespace Fua
 
 	QIcon FUA::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/resources/images/poshuku_fua.svg");
+		static QIcon icon { "lcicons:/resources/images/poshuku_fua.svg" };
 		return icon;
 	}
 
@@ -144,11 +144,11 @@ namespace Fua
 	void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 			const QUrl& url, const QWebPage*)
 	{
-		QString host = url.host ();
+		const auto& host = url.host ();
 		for (int i = 0; i < Model_->rowCount (); ++i)
 		{
-			QStandardItem *item = Model_->item (i);
-			QRegExp re (item->text (), Qt::CaseSensitive, QRegExp::Wildcard);
+			const auto item = Model_->item (i);
+			QRegExp re { item->text (), Qt::CaseSensitive, QRegExp::Wildcard };
 			if (re.exactMatch (host))
 			{
 				proxy->CancelDefault ();
@@ -160,8 +160,8 @@ namespace Fua
 
 	void FUA::Save () const
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FUA");
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_FUA" };
 		settings.beginWriteArray ("Fakes");
 		settings.remove ("");
 		for (int i = 0; i < Model_->rowCount (); ++i)
