@@ -129,25 +129,6 @@ namespace Fua
 		return icon;
 	}
 
-	QStringList FUA::Provides () const
-	{
-		return QStringList ();
-	}
-
-	QStringList FUA::Needs () const
-	{
-		return QStringList ("webbrowser");
-	}
-
-	QStringList FUA::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void FUA::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> FUA::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
