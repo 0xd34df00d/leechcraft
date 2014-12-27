@@ -234,7 +234,7 @@ namespace Xoox
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
-				[ptr] (const QXmppVCardIq& iq) -> void
+				[ptr] (const QXmppVCardIq& iq)
 				{
 					if (ptr)
 						ptr->UpdateInfo (iq);
