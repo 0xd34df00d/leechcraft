@@ -47,6 +47,8 @@ namespace Poshuku
 		QObject* OpenInNewTab (const QUrl&, bool) const;
 
 		IStorageBackend_ptr CreateStorageBackend ();
+
+		QString GetDefaultUserAgent () const;
 	};
 }
 }

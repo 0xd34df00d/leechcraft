@@ -39,15 +39,9 @@
 #include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
-
-#if QT_VERSION < 0x050000
-#include <qwebkitversion.h>
-#endif
-
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/slotclosure.h>
-#include <util/sys/sysinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -60,6 +54,7 @@
 #include "webpluginfactory.h"
 #include "browserwidget.h"
 #include "featurepermnotification.h"
+#include "proxyobject.h"
 
 Q_DECLARE_METATYPE (QVariantList*);
 Q_DECLARE_METATYPE (QNetworkReply*);
@@ -875,26 +870,7 @@ namespace Poshuku
 		if (!ua.isEmpty ())
 			return ua;
 
-#if defined(Q_OS_WIN32)
-		const auto platform = "Windows";
-#elif defined (Q_OS_MAC)
-		const auto platform = "Macintosh";
-#else
-		const auto platform = "X11";
-#endif
-
-		const auto& osInfo = Util::SysInfo::GetOSInfo ();
-		auto osVersion = osInfo.Flavour_;
-		if (!osInfo.Arch_.isEmpty ())
-			osVersion += " " + osInfo.Arch_;
-
-		const auto& lcVersion = Core::Instance ().GetProxy ()->GetVersion ();
-
-		return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%4 Safari/%3" }
-				.arg (platform)
-				.arg (osVersion)
-				.arg (qWebKitVersion ())
-				.arg (lcVersion.section ('-', 0, 0));
+		return ProxyObject {}.GetDefaultUserAgent ();
 	}
 
 	QWebFrame* CustomWebPage::FindFrame (const QUrl& url)

@@ -50,6 +50,8 @@ namespace Poshuku
 				bool inverted = false) const = 0;
 
 		virtual IStorageBackend_ptr CreateStorageBackend () = 0;
+
+		virtual QString GetDefaultUserAgent () const = 0;
 	};
 }
 }

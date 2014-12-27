@@ -28,6 +28,13 @@
  **********************************************************************/
 
 #include "proxyobject.h"
+
+#if QT_VERSION < 0x050000
+#include <qwebkitversion.h>
+#endif
+
+#include <util/sys/sysinfo.h>
+#include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "browserwidget.h"
@@ -58,6 +65,30 @@ namespace Poshuku
 	IStorageBackend_ptr ProxyObject::CreateStorageBackend ()
 	{
 		return StorageBackend::Create ();
+	}
+
+	QString ProxyObject::GetDefaultUserAgent () const
+	{
+#if defined(Q_OS_WIN32)
+		const auto platform = "Windows";
+#elif defined (Q_OS_MAC)
+		const auto platform = "Macintosh";
+#else
+		const auto platform = "X11";
+#endif
+
+		const auto& osInfo = Util::SysInfo::GetOSInfo ();
+		auto osVersion = osInfo.Flavour_;
+		if (!osInfo.Arch_.isEmpty ())
+			osVersion += " " + osInfo.Arch_;
+
+		const auto& lcVersion = Core::Instance ().GetProxy ()->GetVersion ();
+
+		return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%4 Safari/%3" }
+				.arg (platform)
+				.arg (osVersion)
+				.arg (qWebKitVersion ())
+				.arg (lcVersion.section ('-', 0, 0));
 	}
 }
 }
