@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <QMouseEvent>
 #include <QMenu>
+#include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "mediainfo.h"
 #include "core.h"
@@ -163,6 +164,13 @@ namespace LMP
 	void NowPlayingWidget::on_LyricsBrowser__customContextMenuRequested (const QPoint& p)
 	{
 		std::shared_ptr<QMenu> menu { Ui_.LyricsBrowser_->createStandardContextMenu (p) };
+
+		const auto& cursor = Ui_.LyricsBrowser_->textCursor ();
+		const auto& selection = cursor.selectedText ();
+
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		new Util::StdDataFilterMenuCreator { selection, iem, menu.get () };
+
 		menu->exec (Ui_.LyricsBrowser_->mapToGlobal (p));
 	}
 
