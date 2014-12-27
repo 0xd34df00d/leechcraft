@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <blist.h>
 #include <interfaces/core/icoreproxy.h>
@@ -48,7 +49,7 @@ namespace VelvetBird
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		QList<Protocol*> Protocols_;
+		QList<std::shared_ptr<Protocol>> Protocols_;
 	public:
 		ProtoManager (ICoreProxy_ptr, QObject*);
 

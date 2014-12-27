@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <plugin.h>
 #include <account.h>
@@ -79,6 +80,8 @@ namespace VelvetBird
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
 	};
+
+	using Protocol_ptr = std::shared_ptr<Protocol>;
 }
 }
 }

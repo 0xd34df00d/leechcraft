@@ -339,7 +339,7 @@ namespace VelvetBird
 			return;
 		}
 
-		QMap<QByteArray, Protocol*> id2proto;
+		QMap<QByteArray, Protocol_ptr> id2proto;
 
 		auto protos = purple_plugins_get_protocols ();
 		while (protos)
@@ -347,7 +347,7 @@ namespace VelvetBird
 			auto item = static_cast<PurplePlugin*> (protos->data);
 			protos = protos->next;
 
-			auto proto = new Protocol (item, Proxy_, this);
+			const auto& proto = std::make_shared<Protocol> (item, Proxy_);
 			Protocols_ << proto;
 			id2proto [proto->GetPurpleID ()] = proto;
 		}
@@ -378,7 +378,7 @@ namespace VelvetBird
 	{
 		QList<QObject*> result;
 		for (auto proto : Protocols_)
-			result << proto;
+			result << proto.get ();
 		return result;
 	}
 
