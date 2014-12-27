@@ -350,15 +350,6 @@ namespace VelvetBird
 			auto proto = new Protocol (item, Proxy_, this);
 			Protocols_ << proto;
 			id2proto [proto->GetPurpleID ()] = proto;
-
-			connect (proto,
-					SIGNAL (gotEntity (LeechCraft::Entity)),
-					this,
-					SIGNAL (gotEntity (LeechCraft::Entity)));
-			connect (proto,
-					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-					this,
-					SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		}
 
 		auto accs = purple_accounts_get_all ();

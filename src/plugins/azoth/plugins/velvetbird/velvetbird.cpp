@@ -52,14 +52,6 @@ namespace VelvetBird
 		}
 
 		ProtoMgr_ = new ProtoManager (proxy, this);
-		connect (ProtoMgr_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (ProtoMgr_,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 	}
 
 	void Plugin::SecondInit ()

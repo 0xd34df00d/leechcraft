@@ -78,9 +78,6 @@ namespace VelvetBird
 	signals:
 		void accountAdded (QObject*);
 		void accountRemoved (QObject*);
-
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
