@@ -168,8 +168,11 @@ namespace LMP
 		const auto& cursor = Ui_.LyricsBrowser_->textCursor ();
 		const auto& selection = cursor.selectedText ();
 
-		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
-		new Util::StdDataFilterMenuCreator { selection, iem, menu.get () };
+		if (!selection.isEmpty ())
+		{
+			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+			new Util::StdDataFilterMenuCreator { selection, iem, menu.get () };
+		}
 
 		menu->exec (Ui_.LyricsBrowser_->mapToGlobal (p));
 	}
