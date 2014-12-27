@@ -34,6 +34,7 @@
 #include <QCoreApplication>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include "settings.h"
 #include "xmlsettingsmanager.h"
 
@@ -62,54 +63,8 @@ namespace Fua
 	{
 		Util::InstallTranslator ("poshuku_fua");
 
-		Browser2ID_ = QList<QPair<QString, QString>>
-		{
-			{ "Chromium 28.0 on Linux", "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36" },
-			{ "Chromium 30.0 on Linux", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36" },
-			{ "Chrome 30.0 on Windows 7", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36" },
-			{ "Chrome 30.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36"},
-			{ "Epiphany 2.30.6 on Linux (Ubuntu 10.04)", "Mozilla/5.0 (X11; U; Linux x86_64; en_US) AppleWebKit/534.26+ (KHTML, like Gecko) Ubuntu/11.04 Epiphany/2.30.6"},
-			{ "Firefox 24.0 on Linux", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0"},
-			{ "Firefox 24.0 on Windows 7", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0"},
-			{ "Firefox 24.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0"},
-			{ "IE 5.0 on Mac PPC", "Mozilla/4.0 (compatible; MSIE 5.0; Mac_PowerPC)"},
-			{ "IE 6.0 on Windows XP", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)"},
-			{ "IE 8.0 on Windows XP SP3", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648; InfoPath.1; .NET CLR 3.5.21022; .NET CLR 1.1.4322; OfficeLiveConnector.1.4; OfficeLivePatch.1.3; .NET CLR 3.0.4506.2152)"},
-			{ "IE 8.0 on Windows 7", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3)"},
-			{ "IE 9.0 on Windows 7", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"},
-			{ "IE 10.0 on Windows 7", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"},
-			{ "Opera 4.03 on Windows NT 4.0", "Opera/4.03 (Windows NT 4.0; U)"},
-			{ "Opera 12.16 on Windows 7", "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.16"},
-			{ "Safari 2 on Mac OS X", "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; appLanguage) AppleWebKit/412 (KHTML, like Gecko) Safari/412"},
-			{ "Safari 5 on Windows 7", "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru-RU) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16"},
-			{ "Safari 6.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1"},
-			{ "Safari 7.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9) AppleWebKit/537.71 (KHTML, like Gecko) Version/7.0 Safari/537.71"},
-			{ "UCWeb 7 on Windows Mobile 5", "HTC_P3400-Mozilla/4.0 Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC)/UCWEB7.0.0.41/31/400"}
-		};
-
-		BackLookup_ = MakeLookupMap (Browser2ID_);
-
 		Model_ = std::make_shared<QStandardItemModel> ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Domain"), tr ("Agent"), tr ("Identification string") });
-
-		QSettings settings { QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Poshuku_FUA" };
-		int size = settings.beginReadArray ("Fakes");
-
-		for (int i = 0; i < size; ++i)
-		{
-			settings.setArrayIndex (i);
-			const auto& domain = settings.value ("domain").toString ();
-			const auto& identification = settings.value ("identification").toString ();
-			const QList<QStandardItem*> items
-			{
-				new QStandardItem { domain },
-				new QStandardItem { BackLookup_ [identification] },
-				new QStandardItem { identification }
-			};
-			Model_->appendRow (items);
-		}
-		settings.endArray ();
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -198,6 +153,55 @@ namespace Fua
 	const QMap< QString, QString >& FUA::GetBackLookupMap () const
 	{
 		return BackLookup_;
+	}
+
+	void FUA::initPlugin (QObject *proxyObj)
+	{
+		Browser2ID_ = QList<QPair<QString, QString>>
+		{
+			{ "Chromium 28.0 on Linux", "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36" },
+			{ "Chromium 30.0 on Linux", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36" },
+			{ "Chrome 30.0 on Windows 7", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36" },
+			{ "Chrome 30.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36"},
+			{ "Epiphany 2.30.6 on Linux (Ubuntu 10.04)", "Mozilla/5.0 (X11; U; Linux x86_64; en_US) AppleWebKit/534.26+ (KHTML, like Gecko) Ubuntu/11.04 Epiphany/2.30.6"},
+			{ "Firefox 24.0 on Linux", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:24.0) Gecko/20100101 Firefox/24.0"},
+			{ "Firefox 24.0 on Windows 7", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:24.0) Gecko/20100101 Firefox/24.0"},
+			{ "Firefox 24.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0"},
+			{ "IE 5.0 on Mac PPC", "Mozilla/4.0 (compatible; MSIE 5.0; Mac_PowerPC)"},
+			{ "IE 6.0 on Windows XP", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)"},
+			{ "IE 8.0 on Windows XP SP3", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30; .NET CLR 3.0.04506.648; InfoPath.1; .NET CLR 3.5.21022; .NET CLR 1.1.4322; OfficeLiveConnector.1.4; OfficeLivePatch.1.3; .NET CLR 3.0.4506.2152)"},
+			{ "IE 8.0 on Windows 7", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; InfoPath.3)"},
+			{ "IE 9.0 on Windows 7", "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)"},
+			{ "IE 10.0 on Windows 7", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"},
+			{ "Opera 4.03 on Windows NT 4.0", "Opera/4.03 (Windows NT 4.0; U)"},
+			{ "Opera 12.16 on Windows 7", "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.16"},
+			{ "Safari 2 on Mac OS X", "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; appLanguage) AppleWebKit/412 (KHTML, like Gecko) Safari/412"},
+			{ "Safari 5 on Windows 7", "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru-RU) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16"},
+			{ "Safari 6.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1"},
+			{ "Safari 7.0 on Mac OS X", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9) AppleWebKit/537.71 (KHTML, like Gecko) Version/7.0 Safari/537.71"},
+			{ "UCWeb 7 on Windows Mobile 5", "HTC_P3400-Mozilla/4.0 Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC)/UCWEB7.0.0.41/31/400"}
+		};
+
+		BackLookup_ = MakeLookupMap (Browser2ID_);
+
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_FUA" };
+		int size = settings.beginReadArray ("Fakes");
+
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			const auto& domain = settings.value ("domain").toString ();
+			const auto& identification = settings.value ("identification").toString ();
+			const QList<QStandardItem*> items
+			{
+				new QStandardItem { domain },
+				new QStandardItem { BackLookup_ [identification] },
+				new QStandardItem { identification }
+			};
+			Model_->appendRow (items);
+		}
+		settings.endArray ();
 	}
 }
 }

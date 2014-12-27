@@ -80,6 +80,7 @@ namespace Fua
 		const QList<QPair<QString, QString>>& GetBrowser2ID () const;
 		const QMap<QString, QString>& GetBackLookupMap () const;
 	public slots:
+		void initPlugin (QObject*);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl&, const QWebPage*);
 	};
