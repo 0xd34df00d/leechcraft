@@ -348,8 +348,13 @@ namespace VelvetBird
 			protos = protos->next;
 
 			const auto& proto = std::make_shared<Protocol> (item, Proxy_);
+			const auto& purpleId = proto->GetPurpleID ();
+
+			if (purpleId == "prpl-jabber" || purpleId == "prpl-irc")
+				continue;
+
 			Protocols_ << proto;
-			id2proto [proto->GetPurpleID ()] = proto;
+			id2proto [purpleId] = proto;
 		}
 
 		auto accs = purple_accounts_get_all ();
