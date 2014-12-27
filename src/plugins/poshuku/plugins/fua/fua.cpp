@@ -150,7 +150,7 @@ namespace Fua
 		return Browser2ID_;
 	}
 
-	const QMap< QString, QString >& FUA::GetBackLookupMap () const
+	const QMap<QString, QString>& FUA::GetBackLookupMap () const
 	{
 		return BackLookup_;
 	}
