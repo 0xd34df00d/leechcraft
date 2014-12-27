@@ -112,6 +112,9 @@ namespace LMP
 
 	void NowPlayingWidget::SetTrackInfo (const MediaInfo& info)
 	{
+		if (CurrentInfo_ == info)
+			return;
+
 		CurrentInfo_ = info;
 
 		BioWidget_->SetCurrentArtist (info.Artist_);
