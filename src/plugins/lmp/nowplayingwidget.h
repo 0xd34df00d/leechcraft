@@ -70,6 +70,8 @@ namespace LMP
 		void on_PrevLyricsButton__released ();
 		void on_NextLyricsButton__released ();
 		void updateLyricsSwitcher ();
+		void on_LyricsBrowser__customContextMenuRequested (const QPoint&);
+
 		void resetSimilarArtists ();
 	signals:
 		void gotArtistImage (const QString&, const QUrl&);

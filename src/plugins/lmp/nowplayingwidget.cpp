@@ -30,6 +30,7 @@
 #include "nowplayingwidget.h"
 #include <algorithm>
 #include <QMouseEvent>
+#include <QMenu>
 #include <interfaces/core/iiconthememanager.h>
 #include "mediainfo.h"
 #include "core.h"
@@ -157,6 +158,12 @@ namespace LMP
 
 		Ui_.PrevLyricsButton_->setEnabled (LyricsVariantPos_);
 		Ui_.NextLyricsButton_->setEnabled (LyricsVariantPos_ < size - 1);
+	}
+
+	void NowPlayingWidget::on_LyricsBrowser__customContextMenuRequested (const QPoint& p)
+	{
+		std::shared_ptr<QMenu> menu { Ui_.LyricsBrowser_->createStandardContextMenu (p) };
+		menu->exec (Ui_.LyricsBrowser_->mapToGlobal (p));
 	}
 
 	void NowPlayingWidget::resetSimilarArtists ()
