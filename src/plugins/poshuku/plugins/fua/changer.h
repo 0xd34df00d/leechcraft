@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FUA_CHANGER_H
-#define PLUGINS_POSHUKU_PLUGINS_FUA_CHANGER_H
+#pragma once
+
 #include <QDialog>
 #include <QMap>
 #include "ui_changer.h"
@@ -44,9 +44,12 @@ namespace Fua
 		Q_OBJECT
 
 		Ui::Changer Ui_;
-		QMap<QString, QString> IDs_;
+
+		const QList<QPair<QString, QString>> IDs_;
+		const QMap<QString, QString> BackLookup_;
 	public:
-		Changer (const QMap<QString, QString>&,
+		Changer (const QList<QPair<QString, QString>>&,
+				const QMap<QString, QString>&,
 				const QString& = QString (),
 				const QString& = QString (),
 				QWidget* = 0);
@@ -55,12 +58,10 @@ namespace Fua
 	private slots:
 		void on_Domain__textChanged ();
 		void on_IDString__textChanged ();
-		void on_Agent__currentIndexChanged (const QString&);
+		void on_Agent__currentIndexChanged (int);
 	private:
 		void SetEnabled ();
 	};
 }
 }
 }
-
-#endif

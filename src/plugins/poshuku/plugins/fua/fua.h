@@ -60,7 +60,9 @@ namespace Fua
 
 		std::shared_ptr<QStandardItemModel> Model_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		QMap<QString, QString> Browser2ID_;
+
+		QList<QPair<QString, QString>> Browser2ID_;
+		QMap<QString, QString> BackLookup_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -75,7 +77,8 @@ namespace Fua
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		void Save () const;
-		const QMap<QString, QString>& GetBrowser2ID () const;
+		const QList<QPair<QString, QString>>& GetBrowser2ID () const;
+		const QMap<QString, QString>& GetBackLookupMap () const;
 	public slots:
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl&, const QWebPage*);

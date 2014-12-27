@@ -29,6 +29,7 @@
 
 #include "changer.h"
 #include <QPushButton>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -36,19 +37,21 @@ namespace Poshuku
 {
 namespace Fua
 {
-	Changer::Changer (const QMap<QString, QString>& ids,
+	Changer::Changer (const QList<QPair<QString, QString>>& ids,
+			const QMap<QString, QString>& backLookup,
 			const QString& suggestedDomain,
 			const QString& selectedID,
 			QWidget *parent)
 	: QDialog (parent)
 	, IDs_ (ids)
+	, BackLookup_ (backLookup)
 	{
 		Ui_.setupUi (this);
 
-		Ui_.Agent_->addItems (ids.keys ());
+		Ui_.Agent_->addItems (Util::Map (ids, [] (const QPair<QString, QString>& pair) { return pair.first; }));
 		Ui_.Domain_->setText (suggestedDomain);
 		Ui_.IDString_->setText (selectedID);
-		Ui_.Agent_->setCurrentIndex (Ui_.Agent_->findText (IDs_.key (selectedID)));
+		Ui_.Agent_->setCurrentIndex (Ui_.Agent_->findText (BackLookup_ [selectedID]));
 		SetEnabled ();
 	}
 
@@ -72,10 +75,10 @@ namespace Fua
 		SetEnabled ();
 	}
 
-	void Changer::on_Agent__currentIndexChanged (const QString& agent)
+	void Changer::on_Agent__currentIndexChanged (int idx)
 	{
-		if (!agent.isEmpty ())
-			Ui_.IDString_->setText (IDs_ [agent]);
+		if (idx >= 0)
+			Ui_.IDString_->setText (IDs_.value (idx).second);
 	}
 
 	void Changer::SetEnabled ()

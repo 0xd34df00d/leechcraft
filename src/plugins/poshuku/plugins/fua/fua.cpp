@@ -47,12 +47,27 @@ namespace Poshuku
 {
 namespace Fua
 {
+	namespace
+	{
+		QMap<QString, QString> MakeLookupMap (const QList<QPair<QString, QString>>& pairs)
+		{
+			QMap<QString, QString> result;
+			for (const auto& pair : pairs)
+				result [pair.second] = pair.first;
+			return result;
+		}
+	}
+
 	void FUA::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("poshuku_fua");
 
-		Browser2ID_ ["Chromium 28.0 on Linux"] = "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36";
-		Browser2ID_ ["Chromium 30.0 on Linux"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36";
+		Browser2ID_ = QList<QPair<QString, QString>>
+		{
+			{ "Chromium 28.0 on Linux", "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36" },
+			{ "Chromium 30.0 on Linux", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36" }
+		};
+			/*
 		Browser2ID_ ["Chrome 30.0 on Windows 7"] = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36";
 		Browser2ID_ ["Chrome 30.0 on Mac OS X"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.69 Safari/537.36";
 		Browser2ID_ ["Epiphany 2.30.6 on Linux (Ubuntu 10.04)"] = "Mozilla/5.0 (X11; U; Linux x86_64; en_US) AppleWebKit/534.26+ (KHTML, like Gecko) Ubuntu/11.04 Epiphany/2.30.6";
@@ -72,6 +87,9 @@ namespace Fua
 		Browser2ID_ ["Safari 6.0 on Mac OS X"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1";
 		Browser2ID_ ["Safari 7.0 on Mac OS X"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9) AppleWebKit/537.71 (KHTML, like Gecko) Version/7.0 Safari/537.71";
 		Browser2ID_ ["UCWeb 7 on Windows Mobile 5"] = "HTC_P3400-Mozilla/4.0 Mozilla/4.0 (compatible; MSIE 4.01; Windows CE; PPC)/UCWEB7.0.0.41/31/400";
+		*/
+
+		BackLookup_ = MakeLookupMap (Browser2ID_);
 
 		Model_ = std::make_shared<QStandardItemModel> ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Domain"), tr ("Agent"), tr ("Identification string") });
@@ -79,6 +97,7 @@ namespace Fua
 		QSettings settings { QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Poshuku_FUA" };
 		int size = settings.beginReadArray ("Fakes");
+
 		for (int i = 0; i < size; ++i)
 		{
 			settings.setArrayIndex (i);
@@ -87,7 +106,7 @@ namespace Fua
 			const QList<QStandardItem*> items
 			{
 				new QStandardItem { domain },
-				new QStandardItem { Browser2ID_.key (identification) },
+				new QStandardItem { BackLookup_ [identification] },
 				new QStandardItem { identification }
 			};
 			Model_->appendRow (items);
@@ -173,9 +192,14 @@ namespace Fua
 		settings.endArray ();
 	}
 
-	const QMap<QString, QString>& FUA::GetBrowser2ID () const
+	const QList<QPair<QString, QString>>& FUA::GetBrowser2ID () const
 	{
 		return Browser2ID_;
+	}
+
+	const QMap< QString, QString >& FUA::GetBackLookupMap () const
+	{
+		return BackLookup_;
 	}
 }
 }

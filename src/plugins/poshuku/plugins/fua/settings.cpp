@@ -48,7 +48,7 @@ namespace Fua
 
 	void Settings::on_Add__released ()
 	{
-		Changer changer (Fua_->GetBrowser2ID ());
+		Changer changer (Fua_->GetBrowser2ID (), Fua_->GetBackLookupMap ());
 		if (changer.exec () != QDialog::Accepted)
 			return;
 
@@ -56,7 +56,7 @@ namespace Fua
 		QString identification = changer.GetID ();
 		QList<QStandardItem*> items;
 		items << new QStandardItem (domain)
-			<< new QStandardItem (Fua_->GetBrowser2ID ().key (identification))
+			<< new QStandardItem (Fua_->GetBackLookupMap () [identification])
 			<< new QStandardItem (identification);
 		Model_->appendRow (items);
 		Fua_->Save ();
@@ -71,7 +71,7 @@ namespace Fua
 		QString domain = Model_->item (cur.row (), 0)->text ();
 		QString identification = Model_->item (cur.row (), 2)->text ();
 
-		Changer changer (Fua_->GetBrowser2ID (), domain, identification);
+		Changer changer (Fua_->GetBrowser2ID (), Fua_->GetBackLookupMap (), domain, identification);
 		if (changer.exec () != QDialog::Accepted)
 			return;
 
@@ -79,7 +79,7 @@ namespace Fua
 		identification = changer.GetID ();
 		QList<QStandardItem*> items;
 		Model_->item (cur.row (), 0)->setText (domain);
-		Model_->item (cur.row (), 1)->setText (Fua_->GetBrowser2ID ().key (identification));
+		Model_->item (cur.row (), 1)->setText (Fua_->GetBackLookupMap () [identification]);
 		Model_->item (cur.row (), 2)->setText (identification);
 		Fua_->Save ();
 	}
