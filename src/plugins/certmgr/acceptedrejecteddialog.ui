@@ -27,6 +27,9 @@
        <property name="rootIsDecorated">
         <bool>false</bool>
        </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -37,7 +40,9 @@
           <string>Remove</string>
          </property>
          <property name="icon">
-          <iconset theme="list-remove"/>
+          <iconset theme="list-remove">
+           <normaloff/>
+          </iconset>
          </property>
         </widget>
        </item>
