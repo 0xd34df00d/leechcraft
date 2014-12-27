@@ -161,7 +161,7 @@ namespace VelvetBird
 
 	QMap<QString, QVariant> Buddy::GetClientInfo (const QString& variant) const
 	{
-		return QMap<QString, QVariant> ();
+		return {};
 	}
 
 	void Buddy::MarkMsgsRead ()
