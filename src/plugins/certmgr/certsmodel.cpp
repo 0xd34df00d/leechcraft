@@ -223,7 +223,7 @@ namespace CertMgr
 			const auto colorGroup = Blacklisted_.contains (cert) ?
 					QPalette::Disabled :
 					QPalette::Normal;
-			return QBrush { qApp->palette ().color (colorGroup, QPalette::WindowText) };
+			return QBrush { qApp->palette ().color (colorGroup, QPalette::Text) };
 		}
 		case CertificateRole:
 			return QVariant::fromValue (cert);
