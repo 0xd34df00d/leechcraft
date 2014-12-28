@@ -162,6 +162,8 @@ namespace Fua
 		Browser2ID_ = QList<QPair<QString, QString>>
 		{
 			{ tr ("LeechCraft (this machine)"), proxy->GetDefaultUserAgent () },
+			{ "Android Webkit Browser (Android 2.2.1, HTC Desire Z)", "Mozilla/5.0 (Linux; U; Android 2.2.1; en-gb; HTC_DesireZ_A7272 Build/FRG83D) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1" },
+			{ "Android Webkit Browser (Android 4.0.3)", "Mozilla/5.0 (Linux; U; Android 4.0.3; de-ch; HTC Sensation Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30" },
 			{ "Chromium 28.0 (Linux x86)", "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36" },
 			{ "Chromium 30.0 (Linux x86_64)", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.66 Safari/537.36" },
 			{ "Chrome 30.0 (Windows 7)", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36" },
@@ -178,6 +180,8 @@ namespace Fua
 			{ "IE 10.0 (Windows 7)", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)" },
 			{ "Opera 4.03 (Windows NT 4.0)", "Opera/4.03 (Windows NT 4.0; U)" },
 			{ "Opera 12.16 (Windows 7)", "Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.16" },
+			{ "Opera Mini 9.80 (S60)", "Opera/9.80 (J2ME/MIDP; Opera Mini/9.80 (S60; SymbOS; Opera Mobi/23.348; U; en) Presto/2.5.25 Version/10.54" },
+			{ "Opera Mobile 12.02 (Android 4.1)", "Opera/12.02 (Android 4.1; Linux; Opera Mobi/ADR-1111101157; U; en-US) Presto/2.9.201 Version/12.02" },
 			{ "Safari 2 (Mac OS X PowerPC)", "Mozilla/5.0 (Macintosh; U; PPC Mac OS X; appLanguage) AppleWebKit/412 (KHTML, like Gecko) Safari/412" },
 			{ "Safari 5 (Windows 7)", "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru-RU) AppleWebKit/533.16 (KHTML, like Gecko) Version/5.0 Safari/533.16" },
 			{ "Safari 6.0 (Mac OS X 10.8)", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/536.30.1 (KHTML, like Gecko) Version/6.0.5 Safari/536.30.1" },
