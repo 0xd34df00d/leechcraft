@@ -2,27 +2,37 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::Plugins::NetworkMonitor::HeaderModel</name>
+    <name>LeechCraft::Plugins::NetworkMonitor</name>
     <message>
-        <location filename="headermodel.cpp" line="26"/>
-        <source>Name</source>
-        <translation>Name</translation>
+        <location filename="requestmodel.cpp" line="55"/>
+        <source>Date started</source>
+        <translation>Date started</translation>
     </message>
     <message>
-        <location filename="headermodel.cpp" line="27"/>
-        <source>Value</source>
-        <translation>Value</translation>
+        <location filename="requestmodel.cpp" line="56"/>
+        <source>Date finished</source>
+        <translation>Date finished</translation>
+    </message>
+    <message>
+        <location filename="requestmodel.cpp" line="57"/>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <location filename="requestmodel.cpp" line="58"/>
+        <source>Host</source>
+        <translation>Host</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::Plugin</name>
     <message>
-        <location filename="networkmonitor.cpp" line="79"/>
+        <location filename="networkmonitor.cpp" line="90"/>
         <source>Network monitor...</source>
         <translation>Network monitor...</translation>
     </message>
     <message>
-        <location filename="networkmonitor.cpp" line="110"/>
+        <location filename="networkmonitor.cpp" line="121"/>
         <source>Monitors HTTP network requests and responses.</source>
         <translation>Monitors HTTP network requests and responses.</translation>
     </message>
@@ -30,27 +40,7 @@
 <context>
     <name>LeechCraft::Plugins::NetworkMonitor::RequestModel</name>
     <message>
-        <location filename="requestmodel.cpp" line="35"/>
-        <source>Date started</source>
-        <translation>Date started</translation>
-    </message>
-    <message>
-        <location filename="requestmodel.cpp" line="36"/>
-        <source>Date finished</source>
-        <translation>Date finished</translation>
-    </message>
-    <message>
-        <location filename="requestmodel.cpp" line="37"/>
-        <source>Type</source>
-        <translation>Type</translation>
-    </message>
-    <message>
-        <location filename="requestmodel.cpp" line="38"/>
-        <source>Host</source>
-        <translation>Host</translation>
-    </message>
-    <message>
-        <location filename="requestmodel.cpp" line="93"/>
+        <location filename="requestmodel.cpp" line="109"/>
         <source>In progress</source>
         <translation>In progress</translation>
     </message>
