@@ -109,6 +109,12 @@ namespace LMP
 		Ui_.setupUi (this);
 		layout ()->addWidget (HypesView_);
 
+#if QT_VERSION < 0x050000
+		HypesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
+#else
+		HypesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
+
 		HypesView_->engine ()->addImageProvider ("ThemeIcons",
 				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
 
