@@ -20,6 +20,7 @@ Rectangle {
         width: parent.width / 1.618
 
         BioView {
+            anchors.fill: parent
             onLinkActivated: rootRect.linkActivated(id)
             onAlbumPreviewRequested: rootRect.albumPreviewRequested(idx)
         }
