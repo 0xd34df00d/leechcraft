@@ -3,7 +3,6 @@ import "."
 
 Rectangle {
     id: rootRect
-    anchors.fill: parent
 
     gradient: Gradient {
         GradientStop {

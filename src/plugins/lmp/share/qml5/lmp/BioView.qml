@@ -6,7 +6,6 @@ import "."
 Rectangle {
     id: rootRect
 
-    anchors.fill: parent
     smooth: true
     z: 0
 

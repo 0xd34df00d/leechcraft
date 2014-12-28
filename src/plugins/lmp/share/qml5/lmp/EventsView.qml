@@ -19,7 +19,6 @@ Rectangle {
             color: colorProxy.color_TextView_BottomColor
         }
     }
-    anchors.fill: parent
 
     Image {
         id: fullSizeEventImg

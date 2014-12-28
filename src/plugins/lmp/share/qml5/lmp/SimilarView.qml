@@ -15,7 +15,6 @@ Rectangle {
             color: colorProxy.color_TextView_BottomColor
         }
     }
-    anchors.fill: parent
 
     signal bookmarkArtistRequested(string id, string page, string tags)
     signal previewRequested(string artist)

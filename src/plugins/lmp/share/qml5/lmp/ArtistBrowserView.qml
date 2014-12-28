@@ -3,7 +3,6 @@ import "."
 
 Rectangle {
     id: rootRect
-    anchors.fill: parent
 
     signal linkActivated(string id)
     signal albumPreviewRequested(int idx)
