@@ -6,8 +6,6 @@ import org.LC.Blasq 1.0
 Rectangle {
     id: rootRect
 
-    anchors.fill: parent
-
     gradient: Gradient {
         GradientStop {
             position: 0
