@@ -1029,6 +1029,9 @@ namespace LMP
 			return;
 		}
 
+		if (Source_->GetState () != SourceState::Stopped)
+			emit aboutToStopInternally ();
+
 		Source_->Stop ();
 		Source_->ClearQueue ();
 		const auto& source = index.data (Role::Source).value<AudioSource> ();
