@@ -1056,7 +1056,8 @@ namespace LMP
 			next = pos == CurrentQueue_.end () ? CurrentQueue_.value (0) : *(pos - 1);
 		}
 
-		emit aboutToStopInternally ();
+		if (Source_->GetState () != SourceState::Stopped)
+			emit aboutToStopInternally ();
 		Source_->Stop ();
 		Source_->SetCurrentSource (next);
 		Source_->Play ();
@@ -1076,7 +1077,8 @@ namespace LMP
 		if (next.IsEmpty ())
 			return;
 
-		emit aboutToStopInternally ();
+		if (Source_->GetState () != SourceState::Stopped)
+			emit aboutToStopInternally ();
 		Source_->Stop ();
 		Source_->SetCurrentSource (next);
 		Source_->Play ();
