@@ -32,6 +32,7 @@
 #include <QStandardItem>
 #include <QTimer>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
 #include "stealkilllistfetcher.h"
@@ -56,6 +57,8 @@ namespace HotStreams
 	{
 		Util::InstallTranslator ("hotstreams");
 
+		Model_ = new QStandardItemModel;
+
 		Proxy_ = proxy;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
@@ -71,6 +74,7 @@ namespace HotStreams
 				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
 						di, nam, this);
 			};
+		Model_->appendRow (di);
 
 		auto sky = new QStandardItem ("SkyFM");
 		sky->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -82,6 +86,7 @@ namespace HotStreams
 				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
 						sky, nam, this);
 			};
+		Model_->appendRow (sky);
 
 		auto rr = new QStandardItem ("RockRadio");
 		rr->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -90,6 +95,7 @@ namespace HotStreams
 		Roots_ ["rr"] = rr;
 		Root2Fetcher_ [rr] = [nam, this] (QStandardItem *rr)
 				{ new RockRadioListFetcher (rr, nam, this); };
+		Model_->appendRow (rr);
 #endif
 
 		auto somafm = new QStandardItem ("SomaFM");
@@ -99,6 +105,7 @@ namespace HotStreams
 		Roots_ ["somafm"] = somafm;
 		Root2Fetcher_ [somafm] = [nam, this] (QStandardItem *somafm)
 				{ new SomaFMListFetcher (somafm, nam, this); };
+		Model_->appendRow (somafm);
 
 		auto stealkill = new QStandardItem ("42fm");
 		stealkill->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -107,6 +114,7 @@ namespace HotStreams
 		Roots_ ["42fm"] = stealkill;
 		Root2Fetcher_ [stealkill] = [nam, this] (QStandardItem *stealkill)
 				{ new StealKillListFetcher (stealkill, nam, this); };
+		Model_->appendRow (stealkill);
 
 		auto icecast = new QStandardItem ("Icecast");
 		icecast->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -115,6 +123,7 @@ namespace HotStreams
 		Roots_ ["icecast"] = icecast;
 		Root2Fetcher_ [icecast] = [proxy, nam, this] (QStandardItem *icecast)
 				{ new IcecastFetcher (icecast, proxy, this); };
+		Model_->appendRow (icecast);
 	}
 
 	void Plugin::SecondInit ()
@@ -149,29 +158,29 @@ namespace HotStreams
 		return icon;
 	}
 
-	QList<QStandardItem*> Plugin::GetRadioListItems () const
+	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const
 	{
-		return Roots_.values ();
+		return { Model_ };
 	}
 
-	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
+	Media::IRadioStation_ptr Plugin::GetRadioStation (const QModelIndex& index, const QString&)
 	{
-		const auto& name = item->data (StreamItemRoles::PristineName).toString ();
-		const auto& format = item->data (StreamItemRoles::PlaylistFormat).toString ();
+		const auto& name = index.data (StreamItemRoles::PristineName).toString ();
+		const auto& format = index.data (StreamItemRoles::PlaylistFormat).toString ();
 		if (format != "urllist")
 		{
 			auto nam = Proxy_->GetNetworkAccessManager ();
-			const auto& url = item->data (Media::RadioItemRole::RadioID).toUrl ();
+			const auto& url = index.data (Media::RadioItemRole::RadioID).toUrl ();
 			return Media::IRadioStation_ptr (new RadioStation (url, name, nam, format));
 		}
 		else
 		{
-			const auto& urlList = item->data (Media::RadioItemRole::RadioID).value<QList<QUrl>> ();
+			const auto& urlList = index.data (Media::RadioItemRole::RadioID).value<QList<QUrl>> ();
 			return Media::IRadioStation_ptr (new StringListRadioStation (urlList, name));
 		}
 	}
 
-	void Plugin::RefreshItems (const QList<QStandardItem*>& items)
+	void Plugin::RefreshItems (const QList<QModelIndex>& indices)
 	{
 		auto clearRoot = [] (QStandardItem *item)
 		{
@@ -179,6 +188,10 @@ namespace HotStreams
 				item->removeRows (0, rc);
 		};
 
+		const auto& items = indices.isEmpty () ?
+				Root2Fetcher_.keys () :
+				Util::Map (indices,
+						[this] (const QModelIndex& index) { return Model_->itemFromIndex (index); });
 		for (auto item : items)
 		{
 			if (!Root2Fetcher_.contains (item))
@@ -191,7 +204,7 @@ namespace HotStreams
 
 	void Plugin::refreshRadios ()
 	{
-		RefreshItems (GetRadioListItems ());
+		RefreshItems ({});
 	}
 }
 }

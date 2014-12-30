@@ -35,6 +35,9 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/media/iradiostationprovider.h>
 
+class QStandardItem;
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace HotStreams
@@ -49,6 +52,8 @@ namespace HotStreams
 		LC_PLUGIN_METADATA ("org.LeechCraft.HotStreams")
 
 		ICoreProxy_ptr Proxy_;
+
+		QStandardItemModel *Model_;
 		QHash<QString, QStandardItem*> Roots_;
 		QHash<QStandardItem*, std::function<void (QStandardItem*)>> Root2Fetcher_;
 	public:
@@ -60,9 +65,9 @@ namespace HotStreams
 		QString GetInfo () const;
 		QIcon GetIcon () const;
 
-		QList<QStandardItem*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
-		void RefreshItems (const QList<QStandardItem*>&);
+		QList<QAbstractItemModel*> GetRadioListItems () const;
+		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
+		void RefreshItems (const QList<QModelIndex>&);
 	protected slots:
 		void refreshRadios ();
 	};
