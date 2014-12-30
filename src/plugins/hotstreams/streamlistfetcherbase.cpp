@@ -67,15 +67,14 @@ namespace HotStreams
 				this,
 				SLOT (handleParsed ()));
 
-		auto task = [this, data] () -> decltype (Parse (data))
-		{
-			auto result = Parse (data);
-			std::sort (result.begin (), result.end (),
-					[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
-						{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
-			return result;
-		};
-		watcher->setFuture (QtConcurrent::run (task));
+		watcher->setFuture (QtConcurrent::run ([this, data]
+				{
+					auto result = Parse (data);
+					std::sort (result.begin (), result.end (),
+							[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
+								{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
+					return result;
+				}));
 	}
 
 	void StreamListFetcherBase::handleReplyFinished ()
