@@ -43,6 +43,7 @@
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <interfaces/idownload.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -63,7 +64,7 @@ namespace HotStreams
 		}
 	}
 
-	IcecastFetcher::IcecastFetcher (QStandardItem *root, QNetworkAccessManager*, QObject *parent)
+	IcecastFetcher::IcecastFetcher (QStandardItem *root, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	, Root_ (root)
 	, JobID_ (0)
@@ -75,27 +76,23 @@ namespace HotStreams
 		{
 			if (exists)
 				QFile::remove (fullPath);
-
-			QTimer::singleShot (0,
-					this,
-					SLOT (handleFetchList ()));
+			FetchList (proxy);
 		}
 		else
 			ParseList ();
 	}
 
-	void IcecastFetcher::FetchList ()
+	void IcecastFetcher::FetchList (const ICoreProxy_ptr& proxy)
 	{
-		auto entity = Util::MakeEntity (QUrl ("http://dir.xiph.org/yp.xml"),
+		const auto& entity = Util::MakeEntity (QUrl ("http://dir.xiph.org/yp.xml"),
 				GetFilePath (),
 				OnlyDownload |
 					Internal |
 					DoNotAnnounceEntity |
 					DoNotNotifyUser |
 					DoNotSaveInHistory);
-		QObject *obj = 0;
-		emit delegateEntity (entity, &JobID_, &obj);
-		if (!obj)
+		const auto& res = proxy->GetEntityManager ()->DelegateEntity (entity);
+		if (!res.Handler_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to delegate entity";
@@ -103,11 +100,13 @@ namespace HotStreams
 			return;
 		}
 
-		connect (obj,
+		JobID_ = res.ID_;
+
+		connect (res.Handler_,
 				SIGNAL (jobFinished (int)),
 				this,
 				SLOT (handleJobFinished (int)));
-		connect (obj,
+		connect (res.Handler_,
 				SIGNAL (jobRemoved (int)),
 				this,
 				SLOT (checkDelete (int)));
@@ -222,11 +221,6 @@ namespace HotStreams
 				this,
 				SLOT (handleParsed ()));
 		watcher->setFuture (QtConcurrent::run (ParseWorker));
-	}
-
-	void IcecastFetcher::handleFetchList ()
-	{
-		FetchList ();
 	}
 
 	void IcecastFetcher::handleParsed ()

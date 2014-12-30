@@ -113,14 +113,8 @@ namespace HotStreams
 		icecast->setEditable (false);
 		icecast->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
 		Roots_ ["icecast"] = icecast;
-		Root2Fetcher_ [icecast] = [nam, this] (QStandardItem *icecast)
-			{
-				auto icecastFetcher = new IcecastFetcher (icecast, nam, this);
-				connect (icecastFetcher,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-						this,
-						SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-			};
+		Root2Fetcher_ [icecast] = [proxy, nam, this] (QStandardItem *icecast)
+				{ new IcecastFetcher (icecast, proxy, this); };
 	}
 
 	void Plugin::SecondInit ()

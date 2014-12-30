@@ -65,8 +65,6 @@ namespace HotStreams
 		void RefreshItems (const QList<QStandardItem*>&);
 	protected slots:
 		void refreshRadios ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity& entity, int*, QObject**);
 	};
 }
 }

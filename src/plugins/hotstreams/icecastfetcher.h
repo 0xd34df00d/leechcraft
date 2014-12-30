@@ -31,9 +31,9 @@
 
 #include <QObject>
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
 
 class QStandardItem;
-class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -49,16 +49,13 @@ namespace HotStreams
 		int JobID_;
 		QIcon RadioIcon_;
 	public:
-		IcecastFetcher (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+		IcecastFetcher (QStandardItem*, const ICoreProxy_ptr&, QObject* = 0);
 	private:
-		void FetchList ();
+		void FetchList (const ICoreProxy_ptr&);
 		void ParseList ();
 	private slots:
-		void handleFetchList ();
 		void handleParsed ();
 		void handleJobFinished (int);
-	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
