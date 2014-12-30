@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <QStandardItem>
 #include <util/sll/queuemanager.h>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -70,6 +71,11 @@ namespace TouchStreams
 		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
 		RecsManager_ = new RecsManager ({}, AuthMgr_, Queue_, proxy, this);
+
+		Model_ = new QStandardItemModel;
+		Model_->appendRow (AlbumsMgr_->GetRootItem ());
+		Model_->appendRow (FriendsMgr_->GetRootItem ());
+		Model_->appendRow (RecsManager_->GetRootItem ());
 	}
 
 	void Plugin::SecondInit ()
@@ -130,19 +136,14 @@ namespace TouchStreams
 		return new AudioSearch (Proxy_, realReq, AuthMgr_, Queue_);
 	}
 
-	QList<QStandardItem*> Plugin::GetRadioListItems () const
+	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const
 	{
-		return
-		{
-			AlbumsMgr_->GetRootItem (),
-			RecsManager_->GetRootItem (),
-			FriendsMgr_->GetRootItem ()
-		};
+		return { Model_ };
 	}
 
-	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString&)
+	Media::IRadioStation_ptr Plugin::GetRadioStation (const QModelIndex& index, const QString&)
 	{
-		if (item->data (Media::RadioItemRole::RadioID).toString () == "auth")
+		if (index.data (Media::RadioItemRole::RadioID).toString () == "auth")
 		{
 			AuthMgr_->clearAuthData ();
 			AuthMgr_->reauth ();
@@ -151,8 +152,13 @@ namespace TouchStreams
 		return {};
 	}
 
-	void Plugin::RefreshItems (const QList<QStandardItem*>& items)
+	void Plugin::RefreshItems (const QList<QModelIndex>& indices)
 	{
+		const auto& items = indices.isEmpty () ?
+				Model_->findItems ({}) :
+				Util::Map (indices, [this] (const QModelIndex& index)
+						{ return Model_->itemFromIndex (index); });
+
 		AlbumsMgr_->RefreshItems (items);
 		FriendsMgr_->RefreshItems (items);
 		RecsManager_->RefreshItems (items);

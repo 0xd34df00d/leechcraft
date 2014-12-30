@@ -35,6 +35,8 @@
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
 
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Util
@@ -73,6 +75,8 @@ namespace TouchStreams
 		Util::XmlSettingsDialog_ptr XSD_;
 		Util::SvcAuth::VkAuthManager *AuthMgr_;
 
+		QStandardItemModel *Model_;
+
 		AlbumsManager *AlbumsMgr_;
 		FriendsManager *FriendsMgr_;
 		RecsManager *RecsManager_;
@@ -91,9 +95,9 @@ namespace TouchStreams
 		QIcon GetServiceIcon () const;
 		Media::IPendingAudioSearch* Search (const Media::AudioSearchRequest&);
 
-		QList<QStandardItem*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem* , const QString&);
-		void RefreshItems (const QList<QStandardItem*>&);
+		QList<QAbstractItemModel*> GetRadioListItems () const;
+		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
+		void RefreshItems (const QList<QModelIndex>&);
 	private slots:
 		void saveCookies (const QByteArray&);
 	};
