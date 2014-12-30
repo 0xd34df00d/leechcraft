@@ -68,7 +68,6 @@ namespace HotStreams
 		di->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		di->setEditable (false);
 		di->setIcon (QIcon (":/hotstreams/resources/images/di.png"));
-		Roots_ ["di"] = di;
 		Root2Fetcher_ [di] = [nam, this] (QStandardItem *di)
 			{
 				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::DI,
@@ -80,7 +79,6 @@ namespace HotStreams
 		sky->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		sky->setEditable (false);
 		sky->setIcon (QIcon (":/hotstreams/resources/images/skyfm.png"));
-		Roots_ ["sky"] = sky;
 		Root2Fetcher_ [sky] = [nam, this] (QStandardItem *sky)
 			{
 				new AudioAddictStreamFetcher (AudioAddictStreamFetcher::Service::SkyFM,
@@ -92,7 +90,6 @@ namespace HotStreams
 		rr->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		rr->setEditable (false);
 		rr->setIcon (QIcon (":/hotstreams/resources/images/rockradio.png"));
-		Roots_ ["rr"] = rr;
 		Root2Fetcher_ [rr] = [nam, this] (QStandardItem *rr)
 				{ new RockRadioListFetcher (rr, nam, this); };
 		Model_->appendRow (rr);
@@ -102,7 +99,6 @@ namespace HotStreams
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		somafm->setEditable (false);
 		somafm->setIcon (QIcon (":/hotstreams/resources/images/somafm.png"));
-		Roots_ ["somafm"] = somafm;
 		Root2Fetcher_ [somafm] = [nam, this] (QStandardItem *somafm)
 				{ new SomaFMListFetcher (somafm, nam, this); };
 		Model_->appendRow (somafm);
@@ -111,7 +107,6 @@ namespace HotStreams
 		stealkill->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		stealkill->setEditable (false);
 		stealkill->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
-		Roots_ ["42fm"] = stealkill;
 		Root2Fetcher_ [stealkill] = [nam, this] (QStandardItem *stealkill)
 				{ new StealKillListFetcher (stealkill, nam, this); };
 		Model_->appendRow (stealkill);
@@ -120,7 +115,6 @@ namespace HotStreams
 		icecast->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		icecast->setEditable (false);
 		icecast->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
-		Roots_ ["icecast"] = icecast;
 		Root2Fetcher_ [icecast] = [proxy, nam, this] (QStandardItem *icecast)
 				{ new IcecastFetcher (icecast, proxy, this); };
 		Model_->appendRow (icecast);

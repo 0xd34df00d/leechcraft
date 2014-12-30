@@ -54,7 +54,6 @@ namespace HotStreams
 		ICoreProxy_ptr Proxy_;
 
 		QStandardItemModel *Model_;
-		QHash<QString, QStandardItem*> Roots_;
 		QHash<QStandardItem*, std::function<void (QStandardItem*)>> Root2Fetcher_;
 	public:
 		void Init (ICoreProxy_ptr);
