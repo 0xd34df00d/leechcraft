@@ -42,6 +42,7 @@
 #include <QDir>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
 
@@ -230,16 +231,15 @@ namespace HotStreams
 
 		const auto& stringTemplate = tr ("Genre: %1\nBitrate: %2 kbps\nType: %3");
 
-		const auto& result = watcher->result ();
-		for (const auto& genre : result.keys ())
+		for (const auto& pair : Util::Stlize (watcher->result ()))
 		{
-			auto uppercased = genre;
+			auto uppercased = pair.first;
 			uppercased [0] = uppercased.at (0).toUpper ();
 
 			auto genreItem = new QStandardItem (uppercased);
 			genreItem->setEditable (false);
 
-			for (const auto& station : result [genre])
+			for (const auto& station : pair.second)
 			{
 				const auto& tooltip = stringTemplate
 						.arg (station.Genre_)
