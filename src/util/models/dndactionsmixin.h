@@ -46,7 +46,7 @@ namespace Util
 	public:
 		template<typename... Args>
 		DndActionsMixin (Args&&... args)
-		: Model { std::forward<Args...> (args...) }
+		: Model { std::forward<Args> (args)... }
 #if QT_VERSION >= 0x050000
 		, Drags_ { Model::supportedDragActions () }
 		, Drops_ { Model::supportedDropActions () }
