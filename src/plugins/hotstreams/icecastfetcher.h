@@ -57,7 +57,6 @@ namespace HotStreams
 		void handleFetchList ();
 		void handleParsed ();
 		void handleJobFinished (int);
-		void checkDelete (int);
 	signals:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};

@@ -265,22 +265,14 @@ namespace HotStreams
 
 			Root_->appendRow (genreItem);
 		}
+
+		deleteLater ();
 	}
 
 	void IcecastFetcher::handleJobFinished (int id)
 	{
-		if (id != JobID_)
-			return;
-
-		ParseList ();
-
-		checkDelete (id);
-	}
-
-	void IcecastFetcher::checkDelete (int id)
-	{
 		if (id == JobID_)
-			deleteLater ();
+			ParseList ();
 	}
 }
 }
