@@ -47,7 +47,7 @@ namespace Util
 
 		template<typename... Args>
 		RoleNamesMixin (Args&&... args)
-		: Model { std::forward<Args...> (args...) }
+		: Model { std::forward<Args> (args)... }
 		{
 		}
 
