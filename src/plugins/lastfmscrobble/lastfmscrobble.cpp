@@ -97,6 +97,9 @@ namespace Lastfmscrobble
 		auto globalItem = addPredefined (tr ("Global tag"),
 				QString (), QIcon (":/resources/images/tag.png"));
 		globalItem->setData (Media::RadioType::GlobalTag, Media::RadioItemRole::ItemType);;
+
+		RadioModel_ = new QStandardItemModel;
+		RadioModel_->appendRow (RadioRoot_);
 	}
 
 	void Plugin::SecondInit ()
@@ -180,33 +183,33 @@ namespace Lastfmscrobble
 				Proxy_->GetNetworkAccessManager (), num, this);
 	}
 
-	Media::IRadioStation_ptr Plugin::GetRadioStation (QStandardItem *item, const QString& name)
+	Media::IRadioStation_ptr Plugin::GetRadioStation (const QModelIndex& item, const QString& name)
 	{
 		try
 		{
-			auto type = item->data (Media::RadioItemRole::ItemType).toInt ();
+			auto type = item.data (Media::RadioItemRole::ItemType).toInt ();
 			const auto& param = type == Media::RadioType::Predefined ?
-					item->data (Media::RadioItemRole::RadioID).toString () :
+					item.data (Media::RadioItemRole::RadioID).toString () :
 					name;
 
 			auto nam = Proxy_->GetNetworkAccessManager ();
 			return Media::IRadioStation_ptr (new RadioStation (nam,
 						static_cast<Media::RadioType> (type),
 						param,
-						item->text ()));
+						item.data (Qt::DisplayRole).toString ()));
 		}
 		catch (const RadioStation::UnsupportedType&)
 		{
-			return Media::IRadioStation_ptr ();
+			return {};
 		}
 	}
 
-	QList<QStandardItem*> Plugin::GetRadioListItems () const
+	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const
 	{
-		return { RadioRoot_ };
+		return { RadioModel_ };
 	}
 
-	void Plugin::RefreshItems (const QList<QStandardItem*>&)
+	void Plugin::RefreshItems (const QList<QModelIndex>&)
 	{
 	}
 

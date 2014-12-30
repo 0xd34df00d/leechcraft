@@ -42,6 +42,9 @@
 #include <interfaces/media/ieventsprovider.h>
 #include <interfaces/media/ihypesprovider.h>
 
+class QStandardItem;
+class QStandardItemModel;
+
 namespace LeechCraft
 {
 namespace Lastfmscrobble
@@ -84,6 +87,7 @@ namespace Lastfmscrobble
 
 		ICoreProxy_ptr Proxy_;
 
+		QStandardItemModel *RadioModel_;
 		QStandardItem *RadioRoot_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
@@ -109,9 +113,9 @@ namespace Lastfmscrobble
 
 		Media::IPendingSimilarArtists* RequestRecommended (int);
 
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
-		QList<QStandardItem*> GetRadioListItems () const;
-		void RefreshItems (const QList<QStandardItem*>&);
+		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
+		QList<QAbstractItemModel*> GetRadioListItems () const;
+		void RefreshItems (const QList<QModelIndex>&);
 
 		void RequestRecentReleases (int, bool);
 
