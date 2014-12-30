@@ -33,7 +33,8 @@
 #include <QMap>
 #include <QtPlugin>
 
-class QStandardItem;
+class QModelIndex;
+class QAbstractItemModel;
 
 namespace Media
 {
@@ -170,7 +171,7 @@ namespace Media
 		 * @param[in] query The additional user input, if applicable.
 		 * @return The radio station object.
 		 */
-		virtual IRadioStation_ptr GetRadioStation (QStandardItem *item, const QString& query) = 0;
+		virtual IRadioStation_ptr GetRadioStation (const QModelIndex& item, const QString& query) = 0;
 
 		/** @brief Returns the list of stations provided by this plugin.
 		 *
@@ -187,11 +188,11 @@ namespace Media
 		 *
 		 * @return The list of root items.
 		 */
-		virtual QList<QStandardItem*> GetRadioListItems () const = 0;
+		virtual QList<QAbstractItemModel*> GetRadioListItems () const = 0;
 
 		/** @brief Refreshes the list of radio items.
 		 */
-		virtual void RefreshItems (const QList<QStandardItem*>&) = 0;
+		virtual void RefreshItems (const QList<QModelIndex>&) = 0;
 	};
 }
 
