@@ -53,34 +53,36 @@ namespace LMP
 	}
 
 	RadioCustomStreams::RadioCustomStreams (QObject *parent)
-	: QObject (parent)
-	, Root_ (new QStandardItem (tr ("Custom streams")))
+	: QObject { parent }
+	, Model_ { new QStandardItemModel { this } }
+	, Root_ { new QStandardItem { tr ("Custom streams") } }
 	{
 		Root_->setIcon (Core::Instance ().GetProxy ()->
 					GetIconThemeManager ()->GetIcon ("favorites"));
 		Root_->setData (Media::RadioType::CustomAddableStreams, Media::RadioItemRole::ItemType);
 		Root_->setData ("org.LeechCraft.LMP.Custom", Media::RadioItemRole::RadioID);
 		Root_->setEditable (false);
+		Model_->appendRow (Root_);
 
 		LoadSettings ();
 	}
 
-	QList<QStandardItem*> RadioCustomStreams::GetRadioListItems () const
+	QList<QAbstractItemModel*> RadioCustomStreams::GetRadioListItems () const
 	{
-		return { Root_ };
+		return { Model_ };
 	}
 
-	Media::IRadioStation_ptr RadioCustomStreams::GetRadioStation (QStandardItem *item, const QString&)
+	Media::IRadioStation_ptr RadioCustomStreams::GetRadioStation (const QModelIndex& item, const QString&)
 	{
 		QList<QUrl> urls;
-		if (item == Root_)
+		if (item == Root_->index ())
 			urls = GetAllUrls ();
 		else
-			urls << item->data (CustomRole::UrlRole).toUrl ();
+			urls << item.data (CustomRole::UrlRole).toUrl ();
 		return std::make_shared<RadioCustomStation> (urls, this);
 	}
 
-	void RadioCustomStreams::RefreshItems (const QList<QStandardItem*>&)
+	void RadioCustomStreams::RefreshItems (const QList<QModelIndex>&)
 	{
 	}
 

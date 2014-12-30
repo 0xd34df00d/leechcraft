@@ -34,6 +34,7 @@
 #include <QMimeData>
 #include <QtDebug>
 #include <util/models/dndactionsmixin.h>
+#include <util/models/mergemodel.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/imodifiableradiostation.h>
@@ -68,12 +69,12 @@ namespace LMP
 			}
 		}
 
-		class RadioModel : public Util::DndActionsMixin<QStandardItemModel>
+		class RadioModel : public Util::DndActionsMixin<Util::MergeModel>
 		{
 			RadioManager * const Manager_;
 		public:
-			RadioModel (RadioManager *manager)
-			: DndActionsMixin<QStandardItemModel> { manager }
+			RadioModel (const QStringList& headers, RadioManager *manager)
+			: DndActionsMixin { headers, manager }
 			, Manager_ { manager }
 			{
 				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
@@ -135,9 +136,10 @@ namespace LMP
 	}
 
 	RadioManager::RadioManager (QObject *parent)
-	: QObject (parent)
-	, StationsModel_ (new RadioModel (this))
-	, AutoRefreshTimer_ (new QTimer (this))
+	: QObject { parent }
+	, MergeModel_ { new RadioModel { { "Station" }, this } }
+	, PilesModel_ { new QStandardItemModel { this } }
+	, AutoRefreshTimer_ { new QTimer { this } }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ({ "AutoRefreshRadios",
 					"RadioRefreshTimeout" },
@@ -148,6 +150,8 @@ namespace LMP
 				SIGNAL (timeout ()),
 				this,
 				SLOT (refreshAll ()));
+
+		MergeModel_->AddModel (PilesModel_);
 	}
 
 	void RadioManager::InitProviders ()
@@ -166,7 +170,7 @@ namespace LMP
 			item->setEditable (false);
 			item->setData (QVariant::fromValue (pileObj), RadioWidgetRole::PileObject);
 
-			StationsModel_->appendRow (item);
+			PilesModel_->appendRow (item);
 		}
 
 		auto providerObjs = pm->GetAllCastableRoots<Media::IRadioStationProvider*> ();
@@ -176,122 +180,79 @@ namespace LMP
 
 	QAbstractItemModel* RadioManager::GetModel () const
 	{
-		return StationsModel_;
-	}
-
-	namespace
-	{
-		QStandardItem* GetRootItem (QStandardItem *item)
-		{
-			auto root = item;
-			while (auto parent = root->parent ())
-				root = parent;
-			return root;
-		}
+		return MergeModel_;
 	}
 
 	void RadioManager::Refresh (const QModelIndex& index)
 	{
-		const auto item = StationsModel_->itemFromIndex (index);
-		if (item->data (RadioWidgetRole::PileObject).value<QObject*> ())
+		if (index.data (RadioWidgetRole::PileObject).value<QObject*> ())
 			return;
 
-		const auto root = GetRootItem (item);
-		if (!Root2Prov_.contains (root))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown provider for index"
-					<< index;
-			return;
-		}
-
-		Root2Prov_ [root]->RefreshItems ({ item });
+		WithSourceProv (index,
+				[] (Media::IRadioStationProvider *prov, const QModelIndex& srcIdx)
+					{ prov->RefreshItems ({ srcIdx }); });
 	}
 
 	void RadioManager::AddUrl (const QModelIndex& index, const QUrl& url, const QString& name)
 	{
-		const auto item = StationsModel_->itemFromIndex (index);
-		const auto root = GetRootItem (item);
-		if (!Root2Prov_.contains (root))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown provider for index"
-					<< index;
-			return;
-		}
+		WithSourceProv (index,
+				[url, name] (Media::IRadioStationProvider *prov, const QModelIndex& srcIdx)
+				{
+					const auto radio = prov->GetRadioStation (srcIdx, {});
+					if (!radio)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "got a null radio station from provider";
+						return;
+					}
 
-		const auto radio = Root2Prov_ [root]->GetRadioStation (item, {});
-		if (!radio)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got a null radio station from provider";
-			return;
-		}
+					auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
+					if (!modifiable)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< radio->GetRadioName ()
+								<< "is not modifiable";
+						return;
+					}
 
-		auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
-		if (!modifiable)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< radio->GetRadioName ()
-					<< "is not modifiable";
-			return;
-		}
-
-		modifiable->AddItem (url, name);
+					modifiable->AddItem (url, name);
+				});
 	}
 
 	void RadioManager::RemoveUrl (const QModelIndex& index)
 	{
-		const auto item = StationsModel_->itemFromIndex (index);
-		const auto root = GetRootItem (item);
-		if (!Root2Prov_.contains (root))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown provider for index"
-					<< index;
-			return;
-		}
+		WithSourceProv (index,
+				[] (Media::IRadioStationProvider *prov, const QModelIndex& index)
+				{
+					const auto radio = prov->GetRadioStation (index, {});
+					if (!radio)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "got a null radio station from provider";
+						return;
+					}
 
-		const auto radio = Root2Prov_ [root]->GetRadioStation (item, {});
-		if (!radio)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got a null radio station from provider";
-			return;
-		}
+					auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
+					if (!modifiable)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< radio->GetRadioName ()
+								<< "is not modifiable";
+						return;
+					}
 
-		auto modifiable = qobject_cast<Media::IModifiableRadioStation*> (radio->GetQObject ());
-		if (!modifiable)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< radio->GetRadioName ()
-					<< "is not modifiable";
-			return;
-		}
-
-		modifiable->RemoveItem (index);
+					modifiable->RemoveItem (index);
+				});
 	}
 
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
 	{
-		const auto item = StationsModel_->itemFromIndex (index);
-
-		if (const auto pileObj = item->data (RadioWidgetRole::PileObject).value<QObject*> ())
+		if (const auto pileObj = index.data (RadioWidgetRole::PileObject).value<QObject*> ())
 			return HandlePile (pileObj);
-
-		const auto root = GetRootItem (item);
-		if (!Root2Prov_.contains (root))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown provider for index"
-					<< index;
-			return;
-		}
 
 		QString param;
 
-		const auto intRadioType = item->data (Media::RadioItemRole::ItemType).toInt ();
-		switch (static_cast<Media::RadioType> (intRadioType))
+		switch (static_cast<Media::RadioType> (index.data (Media::RadioItemRole::ItemType).toInt ()))
 		{
 		case Media::RadioType::None:
 			return;
@@ -329,8 +290,12 @@ namespace LMP
 		}
 		}
 
-		if (auto station = Root2Prov_ [root]->GetRadioStation (item, param))
-			player->SetRadioStation (station);
+		WithSourceProv (index,
+				[player, &param] (Media::IRadioStationProvider *prov, const QModelIndex& srcIdx)
+				{
+					if (auto station = prov->GetRadioStation (srcIdx, param))
+						player->SetRadioStation (station);
+				});
 	}
 
 	void RadioManager::HandleWokeUp ()
@@ -385,27 +350,22 @@ namespace LMP
 		if (radioId.isEmpty ())
 			return {};
 
-		QList<QStandardItem*> items { StationsModel_->invisibleRootItem () };
+		QList<QModelIndex> items { {} };
 		for (int i = 0; i < items.size (); ++i)
 		{
-			const auto item = items.at (i);
+			const auto& index = items.at (i);
 
-			if (item->data (Media::RadioItemRole::RadioID).toString () == radioId)
+			if (index.data (Media::RadioItemRole::RadioID).toString () == radioId)
 			{
-				const auto root = GetRootItem (item);
-				if (!Root2Prov_.contains (root))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "no root item for radio"
-							<< radioId;
-					return {};
-				}
-
-				return Root2Prov_ [root]->GetRadioStation (item, {});
+				Media::IRadioStation_ptr station;
+				WithSourceProv (index,
+						[&station] (Media::IRadioStationProvider *prov, const QModelIndex& srcIdx)
+							{ station = prov->GetRadioStation (srcIdx, {}); });
+				return station;
 			}
 
-			for (int j = 0; j < item->rowCount (); ++j)
-				items << item->child (j);
+			for (int j = 0; j < MergeModel_->rowCount (index); ++j)
+				items << MergeModel_->index (j, 0, index);
 		}
 
 		return {};
@@ -413,11 +373,11 @@ namespace LMP
 
 	void RadioManager::InitProvider (QObject *provObj)
 	{
-		auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
-		for (auto item : prov->GetRadioListItems ())
+		const auto prov = qobject_cast<Media::IRadioStationProvider*> (provObj);
+		for (const auto model : prov->GetRadioListItems ())
 		{
-			StationsModel_->appendRow (item);
-			Root2Prov_ [item] = prov;
+			MergeModel_->AddModel (model);
+			Model2Prov_ [model] = prov;
 		}
 	}
 
@@ -436,10 +396,27 @@ namespace LMP
 		Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
 	}
 
+	template<typename T>
+	void RadioManager::WithSourceProv (const QModelIndex& mapped, T f) const
+	{
+		const auto& src = MergeModel_->mapToSource (mapped);
+		const auto prov = Model2Prov_.value (src.model ());
+		if (!prov)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown provider for"
+					<< mapped
+					<< mapped.data ();
+			return;
+		}
+
+		f (prov, src);
+	}
+
 	void RadioManager::refreshAll ()
 	{
-		for (auto prov : Root2Prov_)
-			prov->RefreshItems (prov->GetRadioListItems ());
+		for (auto prov : Model2Prov_)
+			prov->RefreshItems ({});
 	}
 
 	void RadioManager::handleRefreshSettingsChanged ()

@@ -32,8 +32,9 @@
 #include <QObject>
 #include <interfaces/media/iradiostationprovider.h>
 
-class QModelIndex;
 class QUrl;
+class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -45,13 +46,14 @@ namespace LMP
 		Q_OBJECT
 		Q_INTERFACES (Media::IRadioStationProvider)
 
-		QStandardItem *Root_;
+		QStandardItemModel * const Model_;
+		QStandardItem * const Root_;
 	public:
 		RadioCustomStreams (QObject* = 0);
 
-		QList<QStandardItem*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (QStandardItem*, const QString&);
-		void RefreshItems (const QList<QStandardItem*>&);
+		QList<QAbstractItemModel*> GetRadioListItems () const;
+		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
+		void RefreshItems (const QList<QModelIndex>&);
 
 		void Add (const QUrl&, const QString&);
 		void Remove (const QModelIndex&);

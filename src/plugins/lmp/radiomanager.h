@@ -48,6 +48,11 @@ namespace Media
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class MergeModel;
+}
+
 namespace LMP
 {
 	class Player;
@@ -56,8 +61,9 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		QStandardItemModel *StationsModel_;
-		QHash<QStandardItem*, Media::IRadioStationProvider*> Root2Prov_;
+		Util::MergeModel * const MergeModel_;
+		QStandardItemModel * const PilesModel_;
+		QHash<const QAbstractItemModel*, Media::IRadioStationProvider*> Model2Prov_;
 
 		QTimer *AutoRefreshTimer_;
 	public:
@@ -80,6 +86,9 @@ namespace LMP
 	private:
 		void InitProvider (QObject*);
 		void HandlePile (QObject*);
+
+		template<typename T>
+		void WithSourceProv (const QModelIndex&, T) const;
 	public slots:
 		void refreshAll ();
 	private slots:
