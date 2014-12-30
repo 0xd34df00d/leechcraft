@@ -277,7 +277,7 @@ namespace LMP
 		const auto item = StationsModel_->itemFromIndex (index);
 
 		if (const auto pileObj = item->data (RadioWidgetRole::PileObject).value<QObject*> ())
-			return HandlePile (item, pileObj);
+			return HandlePile (pileObj);
 
 		const auto root = GetRootItem (item);
 		if (!Root2Prov_.contains (root))
@@ -421,7 +421,7 @@ namespace LMP
 		}
 	}
 
-	void RadioManager::HandlePile (QStandardItem*, QObject *pileObj)
+	void RadioManager::HandlePile (QObject *pileObj)
 	{
 		const auto& query = QInputDialog::getText (0,
 				tr ("Audio search"),

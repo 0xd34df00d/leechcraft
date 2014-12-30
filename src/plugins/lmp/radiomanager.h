@@ -79,7 +79,7 @@ namespace LMP
 		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
 	private:
 		void InitProvider (QObject*);
-		void HandlePile (QStandardItem*, QObject*);
+		void HandlePile (QObject*);
 	public slots:
 		void refreshAll ();
 	private slots:
