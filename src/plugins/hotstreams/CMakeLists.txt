@@ -18,6 +18,7 @@ include_directories (
 set (SRCS
 	hotstreams.cpp
 	icecastfetcher.cpp
+	icecastmodel.cpp
 	radiostation.cpp
 	somafmlistfetcher.cpp
 	stealkilllistfetcher.cpp
