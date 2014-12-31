@@ -43,6 +43,52 @@ namespace HotStreams
 				s1.URLs_ == s2.URLs_;
 	}
 
+	namespace
+	{
+		enum class IndexType
+		{
+			Root,
+			Category,
+			Genre,
+			Station
+		};
+
+		IndexType GetIndexType (const QModelIndex& index)
+		{
+			if (!index.isValid ())
+				return IndexType::Root;
+
+			const auto id = static_cast<quint32> (index.internalId ());
+			if (id == 0xffffffff)
+				return IndexType::Category;
+
+			if (!id)
+				return IndexType::Genre;
+
+			return IndexType::Station;
+		}
+
+		int GetGenreIndex (const QModelIndex& index)
+		{
+			return index.internalId () - 1;
+		}
+
+		quint32 MakeStationId (int genre)
+		{
+			return genre + 1;
+		}
+
+		quint32 MakeGenreId ()
+		{
+			return 0;
+		}
+
+		quint32 MakeCategoryId ()
+		{
+			return 0xffffffff;
+		}
+	}
+
 	IcecastModel::IcecastModel (QObject *parent)
 	: QAbstractItemModel { parent }
 	{
