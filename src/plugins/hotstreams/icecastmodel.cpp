@@ -29,6 +29,7 @@
 
 #include "icecastmodel.h"
 #include <QUrl>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -96,22 +97,102 @@ namespace HotStreams
 
 	QModelIndex IcecastModel::index (int row, int column, const QModelIndex& parent) const
 	{
+		if (!hasIndex (row, column, parent))
+			return {};
+
+		switch (GetIndexType (parent))
+		{
+		case IndexType::Root:
+			return createIndex (row, column, MakeCategoryId ());
+		case IndexType::Category:
+			return createIndex (row, column, MakeGenreId ());
+		case IndexType::Genre:
+			return createIndex (row, column, MakeStationId (parent.row ()));
+		case IndexType::Station:
+			return {};
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown index type"
+				<< parent;
+		return {};
 	}
 
 	QModelIndex IcecastModel::parent (const QModelIndex& child) const
 	{
+		switch (GetIndexType (child))
+		{
+		case IndexType::Root:
+		case IndexType::Category:
+			return {};
+		case IndexType::Genre:
+			return createIndex (0, 0, MakeCategoryId ());
+		case IndexType::Station:
+			return createIndex (GetGenreIndex (child), 0, MakeGenreId ());
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown index type"
+				<< child;
+		return {};
 	}
 
 	int IcecastModel::rowCount (const QModelIndex& parent) const
 	{
+		switch (GetIndexType (parent))
+		{
+		case IndexType::Root:
+			return 1;
+		case IndexType::Category:
+			return Stations_.size ();
+		case IndexType::Genre:
+			return Stations_.value (parent.row ()).second.size ();
+		case IndexType::Station:
+			return 0;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown index type"
+				<< parent;
+		return 0;
 	}
 
-	int IcecastModel::columnCount (const QModelIndex& parent) const
+	int IcecastModel::columnCount (const QModelIndex&) const
 	{
+		return 1;
 	}
 
 	QVariant IcecastModel::data (const QModelIndex& index, int role) const
 	{
+		switch (GetIndexType (index))
+		{
+		case IndexType::Root:
+			return {};
+		case IndexType::Category:
+			switch (role)
+			{
+			case Qt::DisplayRole:
+				return tr ("Icecast");
+			default:
+				return {};
+			}
+		case IndexType::Genre:
+			switch (role)
+			{
+			case Qt::DisplayRole:
+				return Stations_.value (index.row ()).first;
+			default:
+				return {};
+			}
+		case IndexType::Station:
+			switch (role)
+			{
+			case Qt::DisplayRole:
+				return Stations_.value (GetGenreIndex (index)).second.value (index.row ()).Name_;
+			default:
+				return {};
+			}
+		}
 	}
 
 	void IcecastModel::SetStations (const StationInfoList_t& stations)
@@ -121,14 +202,14 @@ namespace HotStreams
 
 		const auto prevSize = Stations_.size ();
 		if (prevSize)
-			beginRemoveRows ({}, 0, prevSize - 1);
+			beginRemoveRows (index (0, 0, {}), 0, prevSize - 1);
 		Stations_.clear ();
 		if (prevSize)
 			endRemoveRows ();
 
 		const auto newSize = stations.size ();
 		if (newSize)
-			beginInsertRows ({}, 0, newSize - 1);
+			beginInsertRows (index (0, 0, {}), 0, newSize - 1);
 		Stations_ = stations;
 		if (newSize)
 			endInsertRows ();
