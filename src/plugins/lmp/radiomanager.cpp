@@ -80,7 +80,7 @@ namespace LMP
 				setSupportedDragActions (Qt::CopyAction | Qt::MoveAction);
 			}
 
-			QStringList mimeTypes () const
+			QStringList mimeTypes () const override
 			{
 				return
 				{
@@ -90,7 +90,7 @@ namespace LMP
 				};
 			}
 
-			QMimeData* mimeData (const QModelIndexList& indexes) const
+			QMimeData* mimeData (const QModelIndexList& indexes) const override
 			{
 				QList<QUrl> urls;
 				QList<MediaInfo> infos;
