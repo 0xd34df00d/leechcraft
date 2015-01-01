@@ -37,6 +37,7 @@
 #include "somafmlistfetcher.h"
 #include "stealkilllistfetcher.h"
 #include "icecastfetcher.h"
+#include "icecastmodel.h"
 
 #ifdef HAVE_QJSON
 #include "audioaddictstreamfetcher.h"
@@ -111,13 +112,8 @@ namespace HotStreams
 				{ new StealKillListFetcher (stealkill, nam, this); };
 		Model_->appendRow (stealkill);
 
-		auto icecast = new QStandardItem ("Icecast");
-		icecast->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
-		icecast->setEditable (false);
-		icecast->setIcon (QIcon (":/hotstreams/resources/images/radio.png"));
-		Root2Fetcher_ [icecast] = [proxy, nam, this] (QStandardItem *icecast)
-				{ new IcecastFetcher (icecast, proxy, this); };
-		Model_->appendRow (icecast);
+		IcecastModel_ = new IcecastModel;
+		Model2Fetcher_ [IcecastModel_] = [proxy, this] { new IcecastFetcher (IcecastModel_, proxy, this); };
 	}
 
 	void Plugin::SecondInit ()
@@ -154,7 +150,7 @@ namespace HotStreams
 
 	QList<QAbstractItemModel*> Plugin::GetRadioListItems () const
 	{
-		return { Model_ };
+		return { Model_, IcecastModel_ };
 	}
 
 	Media::IRadioStation_ptr Plugin::GetRadioStation (const QModelIndex& index, const QString&)

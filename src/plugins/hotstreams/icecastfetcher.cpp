@@ -31,7 +31,6 @@
 #include "roles.h"
 #include <algorithm>
 #include <functional>
-#include <QStandardItem>
 #include <QFileInfo>
 #include <QUrl>
 #include <QDateTime>
@@ -45,6 +44,7 @@
 #include <util/sll/qtutil.h>
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
+#include "icecastmodel.h"
 
 namespace LeechCraft
 {
@@ -65,11 +65,9 @@ namespace HotStreams
 		}
 	}
 
-	IcecastFetcher::IcecastFetcher (QStandardItem *root, const ICoreProxy_ptr& proxy, QObject *parent)
+	IcecastFetcher::IcecastFetcher (IcecastModel *model, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
-	, Root_ (root)
-	, JobID_ (0)
-	, RadioIcon_ (":/hotstreams/resources/images/radio.png")
+	, Model_ (model)
 	{
 		const auto& fullPath = GetFilePath ();
 		const auto exists = QFile::exists (fullPath);
@@ -115,88 +113,23 @@ namespace HotStreams
 
 	namespace
 	{
-		struct StationInfo
-		{
-			QString Name_;
-			QString Genre_;
-			int Bitrate_;
-			QList<QUrl> URLs_;
-			QString MIME_;
-		};
-
-		typedef QMap<QString, QList<StationInfo>> Stations_t;
-
-		void SortInfoList (QList<StationInfo>& infos)
+		void SortInfoList (QList<IcecastModel::StationInfo>& infos)
 		{
 			std::sort (infos.begin (), infos.end (),
 				[] (decltype (infos.at (0)) left, decltype (infos.at (0)) right)
 					{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
 		}
 
-		Stations_t ParseWorker ()
+		void CoalesceOthers (QMap<QString, QList<IcecastModel::StationInfo>>& stations, int count)
 		{
-			QFile file (GetFilePath ());
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open file";
-				return Stations_t ();
-			}
-
-			QDomDocument doc;
-			if (!doc.setContent (&file))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "parse failure, removing the file";
-				file.remove ();
-				return Stations_t ();
-			}
-
-			Stations_t stations;
-
-			auto entry = doc.documentElement ().firstChildElement ("entry");
-			while (!entry.isNull ())
-			{
-				auto getText = [&entry] (const QString& tagName)
-				{
-					return entry.firstChildElement (tagName).text ();
-				};
-
-				const auto& genre = getText ("genre");
-
-				auto& genreStations = stations [genre];
-				const StationInfo info =
-				{
-					getText ("server_name"),
-					genre,
-					getText ("bitrate").toInt (),
-					QList<QUrl> () << QUrl (getText ("listen_url")),
-					getText ("server_type")
-				};
-				const auto pos = std::find_if (genreStations.begin (), genreStations.end (),
-						[&info] (const StationInfo& otherInfo)
-							{ return info.Name_ == otherInfo.Name_ &&
-									info.Bitrate_ == otherInfo.Bitrate_ &&
-									info.MIME_ == otherInfo.MIME_; });
-				if (pos == genreStations.end ())
-					genreStations << info;
-				else
-					pos->URLs_ << info.URLs_;
-
-				entry = entry.nextSiblingElement ("entry");
-			}
-
-			if (stations.size () <= 20)
-				return stations;
-
 			QList<int> lengths;
 			for (const auto& genre : stations.keys ())
 				lengths << stations [genre].size ();
 
 			std::sort (lengths.begin (), lengths.end (), std::greater<int> ());
-			const int threshold = lengths.at (20);
+			const int threshold = lengths.at (count);
 
-			QList<StationInfo> otherInfos;
+			QList<IcecastModel::StationInfo> otherInfos;
 			for (const auto& genre : stations.keys ())
 			{
 				auto& genreStations = stations [genre];
@@ -210,13 +143,74 @@ namespace HotStreams
 			}
 			SortInfoList (otherInfos);
 			stations ["Other"] = otherInfos;
-			return stations;
+		}
+
+		IcecastModel::StationInfoList_t ParseWorker ()
+		{
+			QFile file (GetFilePath ());
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open file";
+				return {};
+			}
+
+			QDomDocument doc;
+			if (!doc.setContent (&file))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "parse failure, removing the file";
+				file.remove ();
+				return {};
+			}
+
+			QMap<QString, QList<IcecastModel::StationInfo>> stations;
+
+			auto entry = doc.documentElement ().firstChildElement ("entry");
+			while (!entry.isNull ())
+			{
+				auto getText = [&entry] (const QString& tagName)
+				{
+					return entry.firstChildElement (tagName).text ();
+				};
+
+				const auto& genre = getText ("genre");
+
+				auto& genreStations = stations [genre];
+				const IcecastModel::StationInfo info
+				{
+					getText ("server_name"),
+					genre,
+					getText ("bitrate").toInt (),
+					QList<QUrl> () << QUrl (getText ("listen_url")),
+					getText ("server_type")
+				};
+				const auto pos = std::find_if (genreStations.begin (), genreStations.end (),
+						[&info] (const IcecastModel::StationInfo& otherInfo)
+							{ return info.Name_ == otherInfo.Name_ &&
+									info.Bitrate_ == otherInfo.Bitrate_ &&
+									info.MIME_ == otherInfo.MIME_; });
+				if (pos == genreStations.end ())
+					genreStations << info;
+				else
+					pos->URLs_ << info.URLs_;
+
+				entry = entry.nextSiblingElement ("entry");
+			}
+
+			if (stations.size () > 20)
+				CoalesceOthers (stations, 20);
+
+			IcecastModel::StationInfoList_t result;
+			for (const auto& pair : Util::Stlize (stations))
+				result.append ({ pair.first, pair.second });
+			return result;
 		}
 	}
 
 	void IcecastFetcher::ParseList ()
 	{
-		auto watcher = new QFutureWatcher<Stations_t> (this);
+		auto watcher = new QFutureWatcher<IcecastModel::StationInfoList_t> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
@@ -226,40 +220,10 @@ namespace HotStreams
 
 	void IcecastFetcher::handleParsed ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<Stations_t>*> (sender ());
+		auto watcher = dynamic_cast<QFutureWatcher<IcecastModel::StationInfoList_t>*> (sender ());
 		watcher->deleteLater ();
 
-		const auto& stringTemplate = tr ("Genre: %1\nBitrate: %2 kbps\nType: %3");
-
-		for (const auto& pair : Util::Stlize (watcher->result ()))
-		{
-			auto uppercased = pair.first;
-			uppercased [0] = uppercased.at (0).toUpper ();
-
-			auto genreItem = new QStandardItem (uppercased);
-			genreItem->setEditable (false);
-
-			for (const auto& station : pair.second)
-			{
-				const auto& tooltip = stringTemplate
-						.arg (station.Genre_)
-						.arg (station.Bitrate_)
-						.arg (station.MIME_);
-				auto item = new QStandardItem (station.Name_);
-				item->setToolTip (tooltip);
-				item->setIcon (RadioIcon_);
-				item->setData (station.Name_, StreamItemRoles::PristineName);
-				item->setData (Media::RadioType::Predefined, Media::RadioItemRole::ItemType);
-				item->setData ("urllist", StreamItemRoles::PlaylistFormat);
-				item->setData (QVariant::fromValue (station.URLs_), Media::RadioItemRole::RadioID);
-				item->setEditable (false);
-
-				genreItem->appendRow (item);
-			}
-
-			Root_->appendRow (genreItem);
-		}
-
+		Model_->SetStations (watcher->result ());
 		deleteLater ();
 	}
 

@@ -37,19 +37,20 @@ class QStandardItem;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace HotStreams
 {
+	class IcecastModel;
+
 	class IcecastFetcher : public QObject
 	{
 		Q_OBJECT
 
-		QStandardItem *Root_;
-		int JobID_;
-		QIcon RadioIcon_;
+		int JobID_ = 0;
+		QIcon RadioIcon_ { ":/hotstreams/resources/images/radio.png" };
+
+		IcecastModel * const Model_;
 	public:
-		IcecastFetcher (QStandardItem*, const ICoreProxy_ptr&, QObject* = 0);
+		IcecastFetcher (IcecastModel*, const ICoreProxy_ptr&, QObject* = 0);
 	private:
 		void FetchList (const ICoreProxy_ptr&);
 		void ParseList ();

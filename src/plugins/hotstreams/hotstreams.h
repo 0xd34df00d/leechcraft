@@ -42,6 +42,8 @@ namespace LeechCraft
 {
 namespace HotStreams
 {
+	class IcecastModel;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public Media::IRadioStationProvider
@@ -52,6 +54,8 @@ namespace HotStreams
 		LC_PLUGIN_METADATA ("org.LeechCraft.HotStreams")
 
 		ICoreProxy_ptr Proxy_;
+
+		IcecastModel *IcecastModel_;
 
 		QStandardItemModel *Model_;
 		QHash<QStandardItem*, std::function<void (QStandardItem*)>> Root2Fetcher_;
