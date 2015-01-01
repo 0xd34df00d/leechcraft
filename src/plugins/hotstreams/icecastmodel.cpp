@@ -164,6 +164,9 @@ namespace HotStreams
 
 	QVariant IcecastModel::data (const QModelIndex& index, int role) const
 	{
+		if (role == Qt::DecorationRole)
+			return RadioIcon_;
+
 		switch (GetIndexType (index))
 		{
 		case IndexType::Root:
