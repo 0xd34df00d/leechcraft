@@ -205,6 +205,11 @@ namespace HotStreams
 		case IndexType::Station:
 			return GetStationData (index, role);
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown index type"
+				<< index;
+		return {};
 	}
 
 	void IcecastModel::SetStations (const StationInfoList_t& stations)
