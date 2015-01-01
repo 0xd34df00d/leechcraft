@@ -194,6 +194,14 @@ namespace HotStreams
 			clearRoot (item);
 			Root2Fetcher_ [item] (item);
 		}
+
+		auto models = indices.isEmpty () ?
+				Model2Fetcher_.keys () :
+				Util::Map (indices,
+						[this] (const QModelIndex& index) { return index.model (); });
+		models.removeAll (Model_);
+		for (auto model : models)
+			Model2Fetcher_ [model] ();
 	}
 
 	void Plugin::refreshRadios ()
