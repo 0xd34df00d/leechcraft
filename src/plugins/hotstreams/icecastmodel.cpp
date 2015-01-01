@@ -162,6 +162,14 @@ namespace HotStreams
 		return 1;
 	}
 
+	Qt::ItemFlags IcecastModel::flags (const QModelIndex& index) const
+	{
+		auto flags = QAbstractItemModel::flags (index);
+		if (GetIndexType (index) == IndexType::Station)
+			flags |= Qt::ItemIsDragEnabled;
+		return flags;
+	}
+
 	QVariant IcecastModel::data (const QModelIndex& index, int role) const
 	{
 		if (role == Qt::DecorationRole)
