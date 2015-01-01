@@ -239,6 +239,11 @@ namespace HotStreams
 
 		switch (role)
 		{
+		case Qt::ToolTipRole:
+			return tr ("Genre: %1\nBitrate: %2 kbps\nType: %3")
+					.arg (station.Genre_)
+					.arg (station.Bitrate_)
+					.arg (station.MIME_);
 		case Qt::DisplayRole:
 		case StreamItemRoles::PristineName:
 			return station.Name_;
