@@ -161,12 +161,12 @@ namespace HotStreams
 		{
 			auto nam = Proxy_->GetNetworkAccessManager ();
 			const auto& url = index.data (Media::RadioItemRole::RadioID).toUrl ();
-			return Media::IRadioStation_ptr (new RadioStation (url, name, nam, format));
+			return std::make_shared<RadioStation> (url, name, nam, format);
 		}
 		else
 		{
 			const auto& urlList = index.data (Media::RadioItemRole::RadioID).value<QList<QUrl>> ();
-			return Media::IRadioStation_ptr (new StringListRadioStation (urlList, name));
+			return std::make_shared<StringListRadioStation> (urlList, name);
 		}
 	}
 
