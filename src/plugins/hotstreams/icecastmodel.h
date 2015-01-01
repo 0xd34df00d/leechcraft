@@ -65,6 +65,8 @@ namespace HotStreams
 		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
 		void SetStations (const StationInfoList_t& stations);
+	private:
+		QVariant GetStationData (const QModelIndex&, int role) const;
 	};
 }
 }

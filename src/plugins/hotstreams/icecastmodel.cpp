@@ -30,6 +30,9 @@
 #include "icecastmodel.h"
 #include <QUrl>
 #include <QtDebug>
+#include "roles.h"
+
+Q_DECLARE_METATYPE (QList<QUrl>)
 
 namespace LeechCraft
 {
@@ -196,13 +199,7 @@ namespace HotStreams
 				return {};
 			}
 		case IndexType::Station:
-			switch (role)
-			{
-			case Qt::DisplayRole:
-				return Stations_.value (GetGenreIndex (index)).second.value (index.row ()).Name_;
-			default:
-				return {};
-			}
+			return GetStationData (index, role);
 		}
 	}
 
@@ -225,5 +222,27 @@ namespace HotStreams
 		if (newSize)
 			endInsertRows ();
 	}
+
+	QVariant IcecastModel::GetStationData (const QModelIndex& index, int role) const
+	{
+		const auto& genred = Stations_.value (GetGenreIndex (index));
+		const auto& station = genred.second.value (index.row ());
+
+		switch (role)
+		{
+		case Qt::DisplayRole:
+		case StreamItemRoles::PristineName:
+			return station.Name_;
+		case StreamItemRoles::PlaylistFormat:
+			return "urllist";
+		case Media::RadioItemRole::ItemType:
+			return Media::RadioType::Predefined;
+		case Media::RadioItemRole::RadioID:
+			return QVariant::fromValue (station.URLs_);
+		default:
+			return {};
+		}
+	}
+
 }
 }
