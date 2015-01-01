@@ -187,6 +187,8 @@ namespace HotStreams
 			{
 			case Qt::DisplayRole:
 				return tr ("Icecast");
+			case Media::RadioItemRole::ItemType:
+				return Media::RadioType::None;
 			default:
 				return {};
 			}
@@ -195,6 +197,8 @@ namespace HotStreams
 			{
 			case Qt::DisplayRole:
 				return Stations_.value (index.row ()).first;
+			case Media::RadioItemRole::ItemType:
+				return Media::RadioType::None;
 			default:
 				return {};
 			}
