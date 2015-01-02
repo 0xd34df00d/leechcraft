@@ -36,7 +36,7 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 		install_name_tool -change $LIB @executable_path/../Frameworks/$(basename $LIB) $GST
 	done
 done
-sudo macdeployqt $TARGET/leechcraft.app -verbose=2
+sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess
 
 # Kludge
 sudo rm /usr/lib/libleechcraft-*
