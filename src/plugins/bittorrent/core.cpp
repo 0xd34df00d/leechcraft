@@ -1692,21 +1692,21 @@ namespace BitTorrent
 				property ("AccurateFileProgress").toBool ())
 			flags |= libtorrent::torrent_handle::piece_granularity;
 		handle.file_progress (prbytes, flags);
-#if LIBTORRENT_VERSION_NUM >= 1600
-		const auto& storage = info.files ();
-#endif
-		for (auto i = info.begin_files (); i != info.end_files (); ++i)
+
+		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
+			const auto& entry = info.file_at (i);
+
 			FileInfo fi;
 #if LIBTORRENT_VERSION_NUM >= 1600
-			fi.Path_ = boost::filesystem::path (storage.at (i).path);
+			fi.Path_ = boost::filesystem::path (entry.path);
 #else
-			fi.Path_ = i->path;
+			fi.Path_ = entry.path;
 #endif
-			fi.Size_ = i->size;
-			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i - info.begin_files ());
+			fi.Size_ = entry.size;
+			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i);
 			fi.Progress_ = fi.Size_ ?
-					prbytes.at (i - info.begin_files ()) / static_cast<float> (fi.Size_) :
+					prbytes.at (i) / static_cast<float> (fi.Size_) :
 					1;
 			result << fi;
 		}
@@ -1981,12 +1981,14 @@ namespace BitTorrent
 		e.Location_ = torrent.TorrentFileName_;
 		e.Additional_ [" Tags"] = torrent.Tags_;
 		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.BitTorrent");
-		for (auto i = info.begin_files (), end = info.end_files (); i != end; ++i)
+
+		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
+			const auto& entry = info.file_at (i);
 #if LIBTORRENT_VERSION_NUM >= 1600
-			const auto& path = QByteArray ((savePath + '/' + info.files ().at (i).path).c_str ());
+			const auto& path = QByteArray ((savePath + '/' + entry.path).c_str ());
 #else
-			const auto& path = QByteArray ((savePath / i->path).string ().c_str ());
+			const auto& path = QByteArray ((savePath / entry.path).string ().c_str ());
 #endif
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 			emit gotEntity (e);
