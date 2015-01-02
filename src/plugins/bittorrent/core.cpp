@@ -1053,12 +1053,10 @@ namespace BitTorrent
 			return -1;
 		}
 
-		std::vector<int> priorities;
-		priorities.resize (handle.get_torrent_info ().num_files ());
-		for (size_t i = 0; i < priorities.size (); ++i)
-			priorities [i] = 1;
+		const auto numFiles = handle.get_torrent_info ().num_files ();
+		std::vector<int> priorities (numFiles, 1);
 
-		if (files.size ())
+		if (!files.isEmpty ())
 		{
 			for (int i = 0; i < files.size (); ++i)
 				priorities [i] = files [i];
