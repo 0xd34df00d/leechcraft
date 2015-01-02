@@ -1020,9 +1020,10 @@ namespace BitTorrent
 
 		libtorrent::torrent_handle handle;
 		bool autoManaged = !(params & NoAutostart);
+
+		libtorrent::add_torrent_params atp;
 		try
 		{
-			libtorrent::add_torrent_params atp;
 			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 			atp.storage_mode = GetCurrentStorageMode ();
 #if LIBTORRENT_VERSION_NUM >= 1600
@@ -1053,8 +1054,7 @@ namespace BitTorrent
 			return -1;
 		}
 
-		const auto numFiles = handle.get_torrent_info ().num_files ();
-		std::vector<int> priorities (numFiles, 1);
+		std::vector<int> priorities (atp.ti->num_files (), 1);
 
 		if (!files.isEmpty ())
 		{
