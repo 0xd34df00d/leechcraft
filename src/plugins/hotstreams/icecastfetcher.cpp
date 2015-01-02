@@ -34,7 +34,7 @@
 #include <QFileInfo>
 #include <QUrl>
 #include <QDateTime>
-#include <QDomDocument>
+#include <QXmlStreamReader>
 #include <QTimer>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
@@ -145,49 +145,93 @@ namespace HotStreams
 			stations ["Other"] = otherInfos;
 		}
 
+		IcecastModel::StationInfo ParseStationEntry (QXmlStreamReader& reader)
+		{
+			IcecastModel::StationInfo info;
+
+			while (!reader.atEnd ())
+			{
+				switch (reader.readNext ())
+				{
+				case QXmlStreamReader::StartElement:
+				{
+					const auto& elementName = reader.qualifiedName ();
+					auto readField = [&elementName, &reader] (const QString& tagName, QString& field)
+					{
+						if (elementName != tagName)
+							return false;
+
+						field = reader.readElementText (QXmlStreamReader::ErrorOnUnexpectedElement);
+						return true;
+					};
+					auto readAct = [&elementName, &reader] (const QString& tagName, std::function<void (QString)> action)
+					{
+						if (elementName != tagName)
+							return false;
+
+						action (reader.readElementText (QXmlStreamReader::ErrorOnUnexpectedElement));
+						return true;
+					};
+
+					readField ("server_name", info.Name_) ||
+						readField ("genre", info.Genre_) ||
+						readAct ("bitrate", [&info] (const QString& str) { info.Bitrate_ = str.toInt (); }) ||
+						readAct ("listen_url", [&info] (const QString& str) { info.URLs_ << QUrl { str }; }) ||
+						readField ("server_type", info.MIME_);
+					break;
+				}
+				case QXmlStreamReader::EndElement:
+					if (reader.qualifiedName () == "entry")
+						return info;
+				default:
+					break;
+				}
+			}
+
+			return info;
+		}
+
 		QMap<QString, QList<IcecastModel::StationInfo>> ParseStationsXml (QFile& file)
 		{
 			QMap<QString, QList<IcecastModel::StationInfo>> stations;
 
-			QDomDocument doc;
-			if (!doc.setContent (&file))
+			QXmlStreamReader reader { &file };
+			while (!reader.atEnd ())
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "parse failure, removing the file";
-				file.remove ();
-				return {};
+				switch (reader.readNext ())
+				{
+				case QXmlStreamReader::StartElement:
+					if (reader.qualifiedName () == "entry")
+					{
+						const auto& info = ParseStationEntry (reader);
+						const auto& genre = info.Genre_;
+						auto& genreStations = stations [genre];
+						const auto pos = std::find_if (genreStations.begin (), genreStations.end (),
+								[&info] (const IcecastModel::StationInfo& other)
+								{
+									return info.Name_ == other.Name_ &&
+											info.Bitrate_ == other.Bitrate_ &&
+											info.MIME_ == other.MIME_;
+								});
+						if (pos == genreStations.end ())
+							genreStations << info;
+						else
+							pos->URLs_ += info.URLs_;
+					}
+					break;
+				default:
+					continue;
+				}
 			}
 
-			auto entry = doc.documentElement ().firstChildElement ("entry");
-			while (!entry.isNull ())
+			if (reader.hasError ())
 			{
-				auto getText = [&entry] (const QString& tagName)
-				{
-					return entry.firstChildElement (tagName).text ();
-				};
-
-				const auto& genre = getText ("genre");
-
-				auto& genreStations = stations [genre];
-				const IcecastModel::StationInfo info
-				{
-					getText ("server_name"),
-					genre,
-					getText ("bitrate").toInt (),
-					{ QUrl { getText ("listen_url") } },
-					getText ("server_type")
-				};
-				const auto pos = std::find_if (genreStations.begin (), genreStations.end (),
-						[&info] (const IcecastModel::StationInfo& otherInfo)
-							{ return info.Name_ == otherInfo.Name_ &&
-									info.Bitrate_ == otherInfo.Bitrate_ &&
-									info.MIME_ == otherInfo.MIME_; });
-				if (pos == genreStations.end ())
-					genreStations << info;
-				else
-					pos->URLs_ << info.URLs_;
-
-				entry = entry.nextSiblingElement ("entry");
+				qWarning () << Q_FUNC_INFO
+						<< "parse failure:"
+						<< reader.errorString ()
+						<< ", removing the file";
+				file.remove ();
+				return {};
 			}
 
 			return stations;
