@@ -1521,14 +1521,13 @@ namespace BitTorrent
 			return;
 		}
 
-		libtorrent::torrent_info info = a.handle.get_torrent_info ();
+		const auto& info = a.handle.get_torrent_info ();
 		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
-		torrent->FilePriorities_
-			.resize (std::distance (info.begin_files (), info.end_files ()));
+		torrent->FilePriorities_.resize (info.num_files ());
 		std::fill (torrent->FilePriorities_.begin (),
 				torrent->FilePriorities_.end (), 1);
 
-		libtorrent::entry infoE = libtorrent::bdecode (info.metadata ().get (),
+		const auto& infoE = libtorrent::bdecode (info.metadata ().get (),
 				info.metadata ().get () + info.metadata_size ());
 		libtorrent::entry e;
 		e ["info"] = infoE;
