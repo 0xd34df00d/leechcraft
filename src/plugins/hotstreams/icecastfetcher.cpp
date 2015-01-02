@@ -145,15 +145,9 @@ namespace HotStreams
 			stations ["Other"] = otherInfos;
 		}
 
-		IcecastModel::StationInfoList_t ParseWorker ()
+		QMap<QString, QList<IcecastModel::StationInfo>> ParseStationsXml (QFile& file)
 		{
-			QFile file (GetFilePath ());
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open file";
-				return {};
-			}
+			QMap<QString, QList<IcecastModel::StationInfo>> stations;
 
 			QDomDocument doc;
 			if (!doc.setContent (&file))
@@ -163,8 +157,6 @@ namespace HotStreams
 				file.remove ();
 				return {};
 			}
-
-			QMap<QString, QList<IcecastModel::StationInfo>> stations;
 
 			auto entry = doc.documentElement ().firstChildElement ("entry");
 			while (!entry.isNull ())
@@ -182,7 +174,7 @@ namespace HotStreams
 					getText ("server_name"),
 					genre,
 					getText ("bitrate").toInt (),
-					QList<QUrl> () << QUrl (getText ("listen_url")),
+					{ QUrl { getText ("listen_url") } },
 					getText ("server_type")
 				};
 				const auto pos = std::find_if (genreStations.begin (), genreStations.end (),
@@ -198,6 +190,24 @@ namespace HotStreams
 				entry = entry.nextSiblingElement ("entry");
 			}
 
+			return stations;
+		}
+
+		IcecastModel::StationInfoList_t ParseWorker ()
+		{
+			QFile file { GetFilePath () };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open file";
+				return {};
+			}
+
+			auto stations = ParseStationsXml (file);
+
+			int size = 0;
+			for (const auto& list : stations)
+				size += list.size ();
 			if (stations.size () > 20)
 				CoalesceOthers (stations, 20);
 
