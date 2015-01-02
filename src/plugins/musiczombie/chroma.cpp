@@ -140,7 +140,7 @@ namespace MusicZombie
 			if (packet.stream_index != streamIndex)
 				continue;
 
-			avcodec_get_frame_defaults (frame.get ());
+			av_frame_unref (frame.get ());
 			int gotFrame = false;
 			auto consumed = avcodec_decode_audio4 (codecCtx.get (), frame.get (), &gotFrame, &packet);
 
