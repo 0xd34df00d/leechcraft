@@ -832,7 +832,12 @@ namespace BitTorrent
 		const auto& handle = Handles_.at (idx).Handle_;
 
 		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
+#if LIBTORRENT_VERSION_NUM >= 10000
+		if (const auto info = handle.torrent_file ())
+			result->Info_.reset (new libtorrent::torrent_info (*info));
+#else
 		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
+#endif
 		result->Status_ = handle.status ();
 #if LIBTORRENT_VERSION_NUM >= 1600
 		result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
@@ -1521,7 +1526,19 @@ namespace BitTorrent
 			return;
 		}
 
+#if LIBTORRENT_VERSION_NUM >= 10000
+		const auto& file = a.handle.torrent_file ();
+		if (!file)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "torrent doesn't have a torrent file yet";
+			return;
+		}
+
+		const auto& info = *file;
+#else
 		const auto& info = a.handle.get_torrent_info ();
+#endif
 		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
 		torrent->FilePriorities_.resize (info.num_files ());
 		std::fill (torrent->FilePriorities_.begin (),
