@@ -90,13 +90,13 @@ namespace HotStreams
 		if (!map.contains ("channel_filters"))
 			return result;
 
-		Q_FOREACH (const auto& filterVar, map ["channel_filters"].toList ())
+		for (const auto& filterVar : map ["channel_filters"].toList ())
 		{
 			const auto& filter = filterVar.toMap ();
 			if (filter ["name"].toString () != "All")
 				continue;
 
-			Q_FOREACH (const auto& channelVar, filter.value ("channels").toList ())
+			for (const auto& channelVar : filter.value ("channels").toList ())
 			{
 				const auto& channel = channelVar.toMap ();
 
@@ -105,7 +105,7 @@ namespace HotStreams
 				const QUrl url (QString ("http://listen.%1.fm/public3/%2.pls")
 							.arg (Service2ID (Service_))
 							.arg (key));
-				StreamInfo info =
+				const StreamInfo info
 				{
 					channel ["name"].toString (),
 					channel ["description"].toString (),
