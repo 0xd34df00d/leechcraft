@@ -156,7 +156,7 @@ namespace HotStreams
 				case QXmlStreamReader::StartElement:
 				{
 					const auto& elementName = reader.qualifiedName ();
-					auto readField = [&elementName, &reader] (const QString& tagName, QString& field)
+					auto readField = [&elementName, &reader] (const QLatin1String& tagName, QString& field)
 					{
 						if (elementName != tagName)
 							return false;
@@ -164,7 +164,7 @@ namespace HotStreams
 						field = reader.readElementText (QXmlStreamReader::ErrorOnUnexpectedElement);
 						return true;
 					};
-					auto readAct = [&elementName, &reader] (const QString& tagName, std::function<void (QString)> action)
+					auto readAct = [&elementName, &reader] (const QLatin1String& tagName, std::function<void (QString)> action)
 					{
 						if (elementName != tagName)
 							return false;
@@ -173,11 +173,11 @@ namespace HotStreams
 						return true;
 					};
 
-					readField ("server_name", info.Name_) ||
-						readField ("genre", info.Genre_) ||
-						readAct ("bitrate", [&info] (const QString& str) { info.Bitrate_ = str.toInt (); }) ||
-						readAct ("listen_url", [&info] (const QString& str) { info.URLs_ << QUrl { str }; }) ||
-						readField ("server_type", info.MIME_);
+					readField (QLatin1String { "server_name" }, info.Name_) ||
+						readField (QLatin1String { "genre" }, info.Genre_) ||
+						readAct (QLatin1String { "bitrate" }, [&info] (const QString& str) { info.Bitrate_ = str.toInt (); }) ||
+						readAct (QLatin1String { "listen_url" }, [&info] (const QString& str) { info.URLs_ << QUrl { str }; }) ||
+						readField (QLatin1String { "server_type" }, info.MIME_);
 					break;
 				}
 				case QXmlStreamReader::EndElement:
