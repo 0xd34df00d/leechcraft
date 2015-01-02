@@ -248,6 +248,12 @@ namespace HotStreams
 			}
 
 			auto stations = ParseStationsXml (file);
+			if (stations.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "empty stations";
+				return {};
+			}
 
 			int size = 0;
 			for (const auto& list : stations)
