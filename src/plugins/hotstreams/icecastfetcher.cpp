@@ -155,7 +155,7 @@ namespace HotStreams
 				{
 				case QXmlStreamReader::StartElement:
 				{
-					const auto& elementName = reader.qualifiedName ();
+					const auto& elementName = reader.name ();
 					auto readField = [&elementName, &reader] (const QLatin1String& tagName, QString& field)
 					{
 						if (elementName != tagName)
