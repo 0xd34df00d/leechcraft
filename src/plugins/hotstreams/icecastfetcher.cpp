@@ -120,7 +120,7 @@ namespace HotStreams
 						{ return left.Name_ < right.Name_; });
 		}
 
-		void CoalesceOthers (QMap<QString, QList<IcecastModel::StationInfo>>& stations, int count)
+		void CoalesceOthers (QHash<QString, QList<IcecastModel::StationInfo>>& stations, int count)
 		{
 			QList<int> lengths;
 			for (const auto& genre : stations.keys ())
@@ -191,9 +191,9 @@ namespace HotStreams
 			return info;
 		}
 
-		QMap<QString, QList<IcecastModel::StationInfo>> ParseStationsXml (QFile& file)
+		QHash<QString, QList<IcecastModel::StationInfo>> ParseStationsXml (QFile& file)
 		{
-			QMap<QString, QList<IcecastModel::StationInfo>> stations;
+			QHash<QString, QList<IcecastModel::StationInfo>> stations;
 
 			QXmlStreamReader reader { &file };
 			while (!reader.atEnd ())
