@@ -123,6 +123,8 @@ namespace Media
 		ItemType = Qt::UserRole + 1,
 
 		/** @brief The internal ID of the radio.
+		 *
+		 * The value should be a QString.
 		 */
 		RadioID,
 
