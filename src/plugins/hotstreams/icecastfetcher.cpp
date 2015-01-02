@@ -116,8 +116,8 @@ namespace HotStreams
 		void SortInfoList (QList<IcecastModel::StationInfo>& infos)
 		{
 			std::sort (infos.begin (), infos.end (),
-				[] (decltype (infos.at (0)) left, decltype (infos.at (0)) right)
-					{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
+					[] (decltype (infos.at (0)) left, decltype (infos.at (0)) right)
+						{ return left.Name_ < right.Name_; });
 		}
 
 		void CoalesceOthers (QMap<QString, QList<IcecastModel::StationInfo>>& stations, int count)
