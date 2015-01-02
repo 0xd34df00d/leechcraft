@@ -259,9 +259,6 @@ namespace HotStreams
 				return {};
 			}
 
-			int size = 0;
-			for (const auto& list : stations)
-				size += list.size ();
 			if (stations.size () > 20)
 				CoalesceOthers (stations, 20);
 
