@@ -165,7 +165,7 @@ namespace HotStreams
 		}
 		else
 		{
-			const auto& urlList = index.data (Media::RadioItemRole::RadioID).value<QList<QUrl>> ();
+			const auto& urlList = index.data (StreamItemRoles::UrlList).value<QList<QUrl>> ();
 			return std::make_shared<StringListRadioStation> (urlList, name);
 		}
 	}

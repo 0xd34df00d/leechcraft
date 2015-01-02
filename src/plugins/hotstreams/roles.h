@@ -38,7 +38,8 @@ namespace HotStreams
 	enum StreamItemRoles
 	{
 		PristineName = Media::RadioItemRole::MaxRadioRole + 1,
-		PlaylistFormat
+		PlaylistFormat,
+		UrlList
 	};
 }
 }

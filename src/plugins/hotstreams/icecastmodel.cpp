@@ -246,17 +246,17 @@ namespace HotStreams
 					.arg (station.MIME_);
 		case Qt::DisplayRole:
 		case StreamItemRoles::PristineName:
+		case Media::RadioItemRole::RadioID:
 			return station.Name_;
 		case StreamItemRoles::PlaylistFormat:
 			return "urllist";
+		case StreamItemRoles::UrlList:
+			return QVariant::fromValue (station.URLs_);
 		case Media::RadioItemRole::ItemType:
 			return Media::RadioType::Predefined;
-		case Media::RadioItemRole::RadioID:
-			return QVariant::fromValue (station.URLs_);
 		default:
 			return {};
 		}
 	}
-
 }
 }
