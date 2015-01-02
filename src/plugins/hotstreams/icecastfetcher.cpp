@@ -270,6 +270,8 @@ namespace HotStreams
 
 	void IcecastFetcher::ParseList ()
 	{
+		Model_->SetStations ({});
+
 		auto watcher = new QFutureWatcher<IcecastModel::StationInfoList_t> (this);
 		connect (watcher,
 				SIGNAL (finished ()),
