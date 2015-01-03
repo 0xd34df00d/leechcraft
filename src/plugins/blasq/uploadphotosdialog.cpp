@@ -34,6 +34,7 @@
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "selectalbumdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -137,13 +138,18 @@ namespace Blasq
 
 	void UploadPhotosDialog::on_AddPhotoButton__released ()
 	{
+		const auto& lastUploadDirectory = XmlSettingsManager::Instance ()
+				.Property ("LastUploadDirectory", QDir::homePath ()).toString ();
 		const auto& filenames = QFileDialog::getOpenFileNames (this,
 				tr ("Select photos to upload"),
-				QDir::homePath (),
+				lastUploadDirectory,
 				tr ("Images (*.jpg *.png *.gif);;All files (*.*)"));
 
 		if (filenames.isEmpty ())
 			return;
+
+		const auto& filePath = QFileInfo { filenames.value (0) }.path ();
+		XmlSettingsManager::Instance ().setProperty ("LastUploadDirectory", filePath);
 
 		for (const auto& filename : filenames)
 			AppendPhotoItem ({ filename, {} });
