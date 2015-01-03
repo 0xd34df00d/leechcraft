@@ -142,6 +142,9 @@ namespace Blasq
 				QDir::homePath (),
 				tr ("Images (*.jpg *.png *.gif);;All files (*.*)"));
 
+		if (filenames.isEmpty ())
+			return;
+
 		for (const auto& filename : filenames)
 			AppendPhotoItem ({ filename, {} });
 
