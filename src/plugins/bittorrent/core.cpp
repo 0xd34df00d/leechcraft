@@ -832,7 +832,12 @@ namespace BitTorrent
 		const auto& handle = Handles_.at (idx).Handle_;
 
 		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
+#if LIBTORRENT_VERSION_NUM >= 10000
+		if (const auto info = handle.torrent_file ())
+			result->Info_.reset (new libtorrent::torrent_info (*info));
+#else
 		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
+#endif
 		result->Status_ = handle.status ();
 #if LIBTORRENT_VERSION_NUM >= 1600
 		result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
@@ -1020,9 +1025,10 @@ namespace BitTorrent
 
 		libtorrent::torrent_handle handle;
 		bool autoManaged = !(params & NoAutostart);
+
+		libtorrent::add_torrent_params atp;
 		try
 		{
-			libtorrent::add_torrent_params atp;
 			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 			atp.storage_mode = GetCurrentStorageMode ();
 #if LIBTORRENT_VERSION_NUM >= 1600
@@ -1053,12 +1059,9 @@ namespace BitTorrent
 			return -1;
 		}
 
-		std::vector<int> priorities;
-		priorities.resize (handle.get_torrent_info ().num_files ());
-		for (size_t i = 0; i < priorities.size (); ++i)
-			priorities [i] = 1;
+		std::vector<int> priorities (atp.ti->num_files (), 1);
 
-		if (files.size ())
+		if (!files.isEmpty ())
 		{
 			for (int i = 0; i < files.size (); ++i)
 				priorities [i] = files [i];
@@ -1523,14 +1526,25 @@ namespace BitTorrent
 			return;
 		}
 
-		libtorrent::torrent_info info = a.handle.get_torrent_info ();
+#if LIBTORRENT_VERSION_NUM >= 10000
+		const auto& file = a.handle.torrent_file ();
+		if (!file)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "torrent doesn't have a torrent file yet";
+			return;
+		}
+
+		const auto& info = *file;
+#else
+		const auto& info = a.handle.get_torrent_info ();
+#endif
 		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
-		torrent->FilePriorities_
-			.resize (std::distance (info.begin_files (), info.end_files ()));
+		torrent->FilePriorities_.resize (info.num_files ());
 		std::fill (torrent->FilePriorities_.begin (),
 				torrent->FilePriorities_.end (), 1);
 
-		libtorrent::entry infoE = libtorrent::bdecode (info.metadata ().get (),
+		const auto& infoE = libtorrent::bdecode (info.metadata ().get (),
 				info.metadata ().get () + info.metadata_size ());
 		libtorrent::entry e;
 		e ["info"] = infoE;
@@ -1678,21 +1692,21 @@ namespace BitTorrent
 				property ("AccurateFileProgress").toBool ())
 			flags |= libtorrent::torrent_handle::piece_granularity;
 		handle.file_progress (prbytes, flags);
-#if LIBTORRENT_VERSION_NUM >= 1600
-		const auto& storage = info.files ();
-#endif
-		for (auto i = info.begin_files (); i != info.end_files (); ++i)
+
+		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
+			const auto& entry = info.file_at (i);
+
 			FileInfo fi;
 #if LIBTORRENT_VERSION_NUM >= 1600
-			fi.Path_ = boost::filesystem::path (storage.at (i).path);
+			fi.Path_ = boost::filesystem::path (entry.path);
 #else
-			fi.Path_ = i->path;
+			fi.Path_ = entry.path;
 #endif
-			fi.Size_ = i->size;
-			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i - info.begin_files ());
+			fi.Size_ = entry.size;
+			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i);
 			fi.Progress_ = fi.Size_ ?
-					prbytes.at (i - info.begin_files ()) / static_cast<float> (fi.Size_) :
+					prbytes.at (i) / static_cast<float> (fi.Size_) :
 					1;
 			result << fi;
 		}
@@ -1967,12 +1981,14 @@ namespace BitTorrent
 		e.Location_ = torrent.TorrentFileName_;
 		e.Additional_ [" Tags"] = torrent.Tags_;
 		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.BitTorrent");
-		for (auto i = info.begin_files (), end = info.end_files (); i != end; ++i)
+
+		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
+			const auto& entry = info.file_at (i);
 #if LIBTORRENT_VERSION_NUM >= 1600
-			const auto& path = QByteArray ((savePath + '/' + info.files ().at (i).path).c_str ());
+			const auto& path = QByteArray ((savePath + '/' + entry.path).c_str ());
 #else
-			const auto& path = QByteArray ((savePath / i->path).string ().c_str ());
+			const auto& path = QByteArray ((savePath / entry.path).string ().c_str ());
 #endif
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 			emit gotEntity (e);

@@ -122,8 +122,8 @@ namespace MusicZombie
 		auto remaining = maxLength * codecCtx->channels * codecCtx->sample_rate;
 		chromaprint_start (Ctx_, codecCtx->sample_rate, codecCtx->channels);
 
-		std::shared_ptr<AVFrame> frame (avcodec_alloc_frame (),
-				[] (AVFrame *frame) { avcodec_free_frame (&frame); });
+		std::shared_ptr<AVFrame> frame (av_frame_alloc (),
+				[] (AVFrame *frame) { av_frame_free (&frame); });
 		auto maxDstNbSamples = 0;
 
 		uint8_t *dstData [1] = { nullptr };
@@ -140,7 +140,7 @@ namespace MusicZombie
 			if (packet.stream_index != streamIndex)
 				continue;
 
-			avcodec_get_frame_defaults (frame.get ());
+			av_frame_unref (frame.get ());
 			int gotFrame = false;
 			auto consumed = avcodec_decode_audio4 (codecCtx.get (), frame.get (), &gotFrame, &packet);
 
