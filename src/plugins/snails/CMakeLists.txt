@@ -50,6 +50,7 @@ set (SRCS
 	messagelistactioninfo.cpp
 	messagelisteditormanager.cpp
 	messagelistactionsmanager.cpp
+	mailtabreadmarker.cpp
 	)
 set (FORMS
 	mailtab.ui
