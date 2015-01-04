@@ -33,6 +33,7 @@
 #include <QTemporaryFile>
 #include <QUrl>
 #include <QInputDialog>
+#include <util/sll/slotclosure.h>
 #include <interfaces/structures.h>
 #include <interfaces/idatafilter.h>
 #include "accountsmanager.h"
@@ -122,20 +123,35 @@ namespace Blasq
 		else if (QFile::exists (localFile))
 			UploadFileName_ = localFile;
 
-		UploadPhotosDialog dia { acc->GetQObject() };
-		dia.LockFiles ();
-		dia.SetFiles ({ { UploadFileName_, {} } });
-		if (dia.exec () != QDialog::Accepted)
-			return;
-
-		connect (acc->GetQObject (),
-				SIGNAL (itemUploaded (UploadItem, QUrl)),
-				this,
-				SLOT (checkItemUploaded (UploadItem, QUrl)));
-
-		const auto isu = qobject_cast<ISupportUploads*> (acc->GetQObject ());
-		isu->UploadImages (dia.GetSelectedCollection (), dia.GetSelectedFiles ());
 		shouldCleanup = false;
+
+		const auto dia = new UploadPhotosDialog { acc->GetQObject () };
+		dia->LockFiles ();
+		dia->SetFiles ({ { UploadFileName_, {} } });
+		dia->open ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, dia, acc]
+			{
+				connect (acc->GetQObject (),
+						SIGNAL (itemUploaded (UploadItem, QUrl)),
+						this,
+						SLOT (checkItemUploaded (UploadItem, QUrl)));
+
+				const auto isu = qobject_cast<ISupportUploads*> (acc->GetQObject ());
+				isu->UploadImages (dia->GetSelectedCollection (), dia->GetSelectedFiles ());
+			},
+			dia,
+			SIGNAL (accepted ()),
+			dia
+		};
+
+		connect (dia,
+				SIGNAL (finished (int)),
+				this,
+				SLOT (deleteLater ()));
 	}
 
 	void DataFilterUploader::checkItemUploaded (const UploadItem& item, const QUrl& url)
