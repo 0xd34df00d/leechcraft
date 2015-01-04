@@ -66,11 +66,6 @@ namespace BitTorrent
 				return true;
 			return false;
 		}
-
-		void UpdateProgress (int i, QProgressDialog *pd)
-		{
-			pd->setValue (i);
-		}
 	}
 
 	TorrentMaker::TorrentMaker (const ICoreProxy_ptr& proxy, QObject *parent)
@@ -125,7 +120,7 @@ namespace BitTorrent
 		boost::system::error_code hashesError;
 		libtorrent::set_piece_hashes (ct,
 				fullPath,
-				[this, &pd] (int i) { UpdateProgress (i, pd.get ()); },
+				[&pd] (int i) { pd->setValue (i); },
 				hashesError);
 		if (hashesError)
 		{
