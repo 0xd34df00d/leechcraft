@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 #include "newtorrentparams.h"
 
 namespace LeechCraft
@@ -39,9 +40,13 @@ namespace BitTorrent
 	class TorrentMaker : public QObject
 	{
 		Q_OBJECT
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		TorrentMaker (QObject* = 0);
+		TorrentMaker (const ICoreProxy_ptr&, QObject* = 0);
 		void Start (NewTorrentParams);
+	private:
+		void ReportError (const QString&);
 	signals:
 		void error (const QString&);
 	};

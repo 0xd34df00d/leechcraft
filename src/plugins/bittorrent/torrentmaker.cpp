@@ -38,8 +38,10 @@
 #include <QtDebug>
 #include <QMainWindow>
 #include <libtorrent/create_torrent.hpp>
+#include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -71,8 +73,9 @@ namespace BitTorrent
 		}
 	}
 
-	TorrentMaker::TorrentMaker (QObject *parent)
-	: QObject (parent)
+	TorrentMaker::TorrentMaker (const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, Proxy_ { proxy }
 	{
 	}
 
@@ -84,7 +87,7 @@ namespace BitTorrent
 		QFile file (filename);
 		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
 		{
-			emit error (tr ("Could not open file %1 for write!").arg (filename));
+			ReportError (tr ("Could not open file %1 for write!").arg (filename));
 			return;
 		}
 
@@ -132,7 +135,7 @@ namespace BitTorrent
 				<< "while in libtorrent::set_piece_hashes():"
 				<< message
 				<< hashesError.category ().name ();
-			emit error (tr ("Torrent creation failed: %1")
+			ReportError (tr ("Torrent creation failed: %1")
 					.arg (message));
 			return;
 		}
@@ -156,6 +159,12 @@ namespace BitTorrent
 					QString::fromUtf8 (fullPath.c_str ()),
 					QStringList (),
 					false);
+	}
+
+	void TorrentMaker::ReportError (const QString& error)
+	{
+		const auto& entity = Util::MakeNotification ("BitTorrent", error, PCritical_);
+		Proxy_->GetEntityManager ()->HandleEntity (entity);
 	}
 }
 }
