@@ -1311,7 +1311,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return Handles_.at (idx).Handle_.status (0).auto_managed;
+		return GetCachedStatus (Handles_.at (idx).Handle_).auto_managed;
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1327,7 +1327,8 @@ namespace BitTorrent
 	{
 		if (!CheckValidity (idx))
 			return false;
-		return Handles_.at (idx).Handle_.status (0).sequential_download;
+
+		return GetCachedStatus (Handles_.at (idx).Handle_).sequential_download;
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1343,7 +1344,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return Handles_.at (idx).Handle_.status (0).super_seeding;
+		return GetCachedStatus (Handles_.at (idx).Handle_).super_seeding;
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
