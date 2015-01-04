@@ -522,10 +522,8 @@ namespace Snails
 			const QByteArray& last)
 	{
 		for (const auto& folder : origFolders)
-		{
 			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadWrite))
 				FetchMessagesInFolder (folder, netFolder, last);
-		}
 	}
 
 	namespace
