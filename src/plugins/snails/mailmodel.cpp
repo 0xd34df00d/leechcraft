@@ -40,9 +40,7 @@ namespace Snails
 {
 	struct MailModel::TreeNode : std::enable_shared_from_this<TreeNode>
 	{
-		QByteArray FolderID_;
-
-		QByteArray MsgID_;
+		const Message_ptr Msg_;
 
 		TreeNode_wptr Parent_;
 		QList<TreeNode_ptr> Children_;
@@ -61,7 +59,7 @@ namespace Snails
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unknown row for item"
-						<< FolderID_;
+						<< Msg_->GetFolderID ();
 				return -1;
 			}
 
@@ -71,8 +69,7 @@ namespace Snails
 		TreeNode () = default;
 
 		TreeNode (const Message_ptr& msg, const TreeNode_ptr& parent)
-		: FolderID_ { msg->GetFolderID () }
-		, MsgID_ { msg->GetMessageID () }
+		: Msg_ { msg }
 		, Parent_ { parent }
 		{
 		}
@@ -106,14 +103,7 @@ namespace Snails
 		if (structItem == Root_.get ())
 			return {};
 
-		const auto& msg = GetMessageByFolderId (structItem->FolderID_);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no message for ID"
-					<< structItem->FolderID_;
-			return {};
-		}
+		const auto& msg = structItem->Msg_;
 
 		const auto column = static_cast<Column> (index.column ());
 
