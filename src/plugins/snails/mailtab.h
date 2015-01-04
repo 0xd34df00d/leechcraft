@@ -120,6 +120,8 @@ namespace Snails
 		void removeTab (QWidget*);
 
 		void mailActionsEnabledChanged (bool);
+
+		void willMoveMessages (const QList<QByteArray>& ids, const QStringList& folder);
 	};
 }
 }

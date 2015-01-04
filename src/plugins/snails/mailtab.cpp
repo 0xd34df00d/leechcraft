@@ -538,6 +538,11 @@ namespace Snails
 
 		ReadMarker_.reset (new MailTabReadMarker { CurrAcc_, this },
 				[] (QObject *obj) { obj->deleteLater (); });
+		connect (this,
+				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
+				ReadMarker_.get (),
+				SLOT (handleWillMoveMessages (QList<QByteArray>, QStringList)));
+
 		connect (CurrAcc_.get (),
 				SIGNAL (messageBodyFetched (Message_ptr)),
 				this,
@@ -717,7 +722,10 @@ namespace Snails
 		if (selectedPaths.isEmpty ())
 			return;
 
-		CurrAcc_->CopyMessages (ids, MailModel_->GetCurrentFolder (), selectedPaths);
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		emit willMoveMessages (ids, folder);
+
+		CurrAcc_->CopyMessages (ids, folder, selectedPaths);
 	}
 
 	void MailTab::handleCopyMessages (QAction *action)
@@ -730,7 +738,11 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->CopyMessages (ids, MailModel_->GetCurrentFolder (), { folderPath });
+
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		emit willMoveMessages (ids, folder);
+
+		CurrAcc_->CopyMessages (ids, folder, { folderPath });
 	}
 
 	void MailTab::handleMoveMultipleFolders ()
@@ -750,7 +762,10 @@ namespace Snails
 		if (selectedPaths.isEmpty ())
 			return;
 
-		CurrAcc_->MoveMessages (ids, MailModel_->GetCurrentFolder (), selectedPaths);
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		emit willMoveMessages (ids, folder);
+
+		CurrAcc_->MoveMessages (ids, folder, selectedPaths);
 	}
 
 	void MailTab::handleMoveMessages (QAction *action)
@@ -763,7 +778,11 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->MoveMessages (ids, MailModel_->GetCurrentFolder (), { folderPath });
+
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		emit willMoveMessages (ids, folder);
+
+		CurrAcc_->MoveMessages (ids, folder, { folderPath });
 	}
 
 	void MailTab::handleMarkMsgUnread ()
@@ -781,7 +800,11 @@ namespace Snails
 			return;
 
 		const auto& ids = GetSelectedIds ();
-		CurrAcc_->DeleteMessages (ids, MailModel_->GetCurrentFolder ());
+
+		const auto& folder = MailModel_->GetCurrentFolder ();
+		emit willMoveMessages (ids, folder);
+
+		CurrAcc_->DeleteMessages (ids, folder);
 	}
 
 	void MailTab::handleViewHeaders ()
