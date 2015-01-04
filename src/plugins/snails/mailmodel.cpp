@@ -456,14 +456,7 @@ namespace Snails
 				break;
 		}
 		if (folderId.isEmpty ())
-		{
-			qDebug () << Q_FUNC_INFO
-					<< refs
-					<< msg->GetSubject ()
-					<< msg->GetDate ()
-					<< "not found";
 			return false;
-		}
 
 		const auto& indexes = GetIndexes (folderId, 0);
 		for (const auto& parentIndex : indexes)
