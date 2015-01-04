@@ -124,7 +124,7 @@ namespace Blasq
 
 		QByteArray GetUniSettingName () const;
 
-		void FinishUploadDialog (UploadPhotosDialog&);
+		void FinishUploadDialog (UploadPhotosDialog*);
 
 		void PerformCtxMenu (std::function<void (QModelIndex)>);
 	private slots:

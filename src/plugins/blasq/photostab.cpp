@@ -59,6 +59,7 @@
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include <util/network/networkdiskcache.h>
+#include <util/sll/slotclosure.h>
 #include "interfaces/blasq/iaccount.h"
 #include "interfaces/blasq/isupportuploads.h"
 #include "interfaces/blasq/isupportdeletes.h"
@@ -385,13 +386,22 @@ namespace Blasq
 		return SingleImageMode_ ? "ZoomSliderValue" : "ScaleSliderValue";
 	}
 
-	void PhotosTab::FinishUploadDialog (UploadPhotosDialog& dia)
+	void PhotosTab::FinishUploadDialog (UploadPhotosDialog *dia)
 	{
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		dia->show ();
+		dia->setAttribute (Qt::WA_DeleteOnClose);
 
-		auto isu = qobject_cast<ISupportUploads*> (CurAccObj_);
-		isu->UploadImages (dia.GetSelectedCollection (), dia.GetSelectedFiles ());
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, dia]
+			{
+				auto isu = qobject_cast<ISupportUploads*> (CurAccObj_);
+				isu->UploadImages (dia->GetSelectedCollection (), dia->GetSelectedFiles ());
+			},
+			dia,
+			SIGNAL (accepted ()),
+			dia
+		};
 	}
 
 	void PhotosTab::PerformCtxMenu (std::function<void (QModelIndex)> functor)
@@ -536,23 +546,23 @@ namespace Blasq
 
 	void PhotosTab::uploadPhotos ()
 	{
-		UploadPhotosDialog dia (CurAccObj_, this);
+		const auto dia = new UploadPhotosDialog { CurAccObj_, this };
 
 		auto curSelectedIdx = Ui_.CollectionsTree_->currentIndex ();
 		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Image)
 			curSelectedIdx = curSelectedIdx.parent ();
 		if (curSelectedIdx.data (CollectionRole::Type).toInt () == ItemType::Collection)
-			dia.SetSelectedCollection (curSelectedIdx);
+			dia->SetSelectedCollection (curSelectedIdx);
 
 		FinishUploadDialog (dia);
 	}
 
 	void PhotosTab::handleUploadRequested ()
 	{
-		PerformCtxMenu ([this] (const QModelIndex& idx) -> void
+		PerformCtxMenu ([this] (const QModelIndex& idx)
 				{
-					UploadPhotosDialog dia (CurAccObj_, this);
-					dia.SetSelectedCollection (idx);
+					const auto dia = new UploadPhotosDialog (CurAccObj_, this);
+					dia->SetSelectedCollection (idx);
 					FinishUploadDialog (dia);
 				});
 	}
