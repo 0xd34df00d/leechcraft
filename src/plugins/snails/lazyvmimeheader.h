@@ -29,59 +29,33 @@
 
 #pragma once
 
-#include <functional>
-#include <boost/optional.hpp>
+#include <util/sll/lazyinitializer.h>
 #include <vmime/header.hpp>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class LazyVmimeHeader
+	class LazyVmimeHeader : public Util::LazyInitializer<QByteArray, vmime::shared_ptr<const vmime::header>>
 	{
-		QByteArray Source_;
-
-		boost::optional<vmime::shared_ptr<const vmime::header>> Header_;
 	public:
 		LazyVmimeHeader (const QByteArray& data)
-		: Source_ { data }
+		: LazyInitializer
+		{
+			data,
+			[] (const QByteArray& source)
+			{
+				auto header = vmime::make_shared<vmime::header> ();
+				header->parse ({ source.constData (), static_cast<size_t> (source.size ()) });
+				return header;
+			}
+		}
 		{
 		}
 
 		LazyVmimeHeader (const vmime::shared_ptr<const vmime::header>& header)
-		: Header_ { header }
+		: LazyInitializer { header }
 		{
-		}
-
-		LazyVmimeHeader& operator= (const vmime::shared_ptr<const vmime::header>& header)
-		{
-			Header_ = header;
-			Source_.clear ();
-			return *this;
-		}
-
-		operator vmime::shared_ptr<const vmime::header>()
-		{
-			CheckInit ();
-			return *Header_;
-		}
-
-		vmime::shared_ptr<const vmime::header>& operator-> ()
-		{
-			CheckInit ();
-			return *Header_;
-		}
-	private:
-		void CheckInit ()
-		{
-			if (!Header_)
-			{
-				auto header = vmime::make_shared<vmime::header> ();
-				header->parse ({ Source_.constData (), static_cast<size_t> (Source_.size ()) });
-				Header_ = header;
-
-				Source_.clear ();
-			}
 		}
 	};
 }
