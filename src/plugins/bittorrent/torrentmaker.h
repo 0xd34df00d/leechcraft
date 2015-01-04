@@ -47,8 +47,6 @@ namespace BitTorrent
 		void Start (NewTorrentParams);
 	private:
 		void ReportError (const QString&);
-	signals:
-		void error (const QString&);
 	};
 }
 }

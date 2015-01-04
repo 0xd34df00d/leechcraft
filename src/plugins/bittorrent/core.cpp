@@ -1360,10 +1360,6 @@ namespace BitTorrent
 	void Core::MakeTorrent (const NewTorrentParams& params) const
 	{
 		const auto tm = new TorrentMaker { Proxy_ };
-		connect (tm,
-				SIGNAL (error (const QString&)),
-				this,
-				SIGNAL (error (const QString&)));
 		tm->Start (params);
 	}
 
