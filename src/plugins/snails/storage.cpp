@@ -31,6 +31,7 @@
 #include <stdexcept>
 #include <QFile>
 #include <QApplication>
+#include <QtConcurrentMap>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -272,8 +273,15 @@ namespace Snails
 		}
 
 		QList<Message_ptr> result;
-		for (const auto& id : ids)
-			result << LoadMessage (acc, rootDir, id);
+		auto future = QtConcurrent::mapped (ids,
+				std::function<Message_ptr (QByteArray)>
+				{
+					[this, acc, rootDir] (const QByteArray& id)
+						{ return LoadMessage (acc, rootDir, id); }
+				});
+
+		for (const auto& item : future.results ())
+			result << item;
 
 		for (const auto& msg : result)
 			UpdateCaches (msg);
