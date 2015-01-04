@@ -77,10 +77,9 @@ namespace Snails
 
 		mailModel->SetFolder (path);
 
-		QList<Message_ptr> messages;
-		const auto& ids = Core::Instance ().GetStorage ()->LoadIDs (Acc_, path);
-		for (const auto& id : ids)
-			messages << Core::Instance ().GetStorage ()->LoadMessage (Acc_, path, id);
+		const auto storage = Core::Instance ().GetStorage ();
+		const auto& ids = storage->LoadIDs (Acc_, path);
+		const auto& messages = storage->LoadMessages (Acc_, path, ids);
 
 		mailModel->Append (messages);
 
