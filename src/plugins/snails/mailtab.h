@@ -45,6 +45,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class MessageListEditorManager;
+	class MailTabReadMarker;
 
 	class MailTab : public QWidget
 				  , public ITabWidget
@@ -74,6 +75,8 @@ namespace Snails
 		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;
 		Message_ptr CurrMsg_;
+
+		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 	public:
 		MailTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*, QWidget* = 0);
 

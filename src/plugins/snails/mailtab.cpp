@@ -36,7 +36,6 @@
 #include <QFileDialog>
 #include <QToolButton>
 #include <util/util.h>
-#include <util/sll/delayedexecutor.h>
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/urloperator.h>
@@ -54,6 +53,7 @@
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
 #include "messagelisteditormanager.h"
+#include "mailtabreadmarker.h"
 
 namespace LeechCraft
 {
@@ -527,6 +527,7 @@ namespace Snails
 			MailSortFilterModel_->setSourceModel (nullptr);
 			MailModel_.reset ();
 			CurrAcc_.reset ();
+			ReadMarker_.reset ();
 
 			rebuildOpsToFolders ();
 		}
@@ -535,6 +536,8 @@ namespace Snails
 		if (!CurrAcc_)
 			return;
 
+		ReadMarker_.reset (new MailTabReadMarker { CurrAcc_, this },
+				[] (QObject *obj) { obj->deleteLater (); });
 		connect (CurrAcc_.get (),
 				SIGNAL (messageBodyFetched (Message_ptr)),
 				this,
@@ -585,10 +588,7 @@ namespace Snails
 		}
 
 		const auto& folder = MailModel_->GetCurrentFolder ();
-
-		if (CurrMsg_ && !CurrMsg_->IsRead ())
-			Util::ExecuteLater ([this, folder, msgId = CurrMsg_->GetFolderID ()]
-					{ CurrAcc_->SetReadStatus (true, { msgId }, folder); });
+		ReadMarker_->HandleDeselectingMessage (CurrMsg_, folder);
 
 		CurrMsg_.reset ();
 
@@ -632,6 +632,8 @@ namespace Snails
 		SetMessage (msg);
 
 		CurrMsg_ = msg;
+
+		ReadMarker_->SetCurrentMessage (CurrMsg_);
 	}
 
 	void MailTab::rebuildOpsToFolders ()
