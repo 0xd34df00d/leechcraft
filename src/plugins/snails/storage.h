@@ -61,8 +61,11 @@ namespace Snails
 		Storage (QObject* = 0);
 
 		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
+
 		MessageSet LoadMessages (Account*);
 		Message_ptr LoadMessage (Account*, const QStringList& folder, const QByteArray& id);
+		QList<Message_ptr> LoadMessages (Account*, const QStringList& folder, const QList<QByteArray>& ids);
+
 		QList<QByteArray> LoadIDs (Account*, const QStringList& folder);
 		void RemoveMessage (Account*, const QStringList&, const QByteArray&);
 
