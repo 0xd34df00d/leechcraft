@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <QBuffer>
+#include "lazyvmimeheader.h"
 
 namespace LeechCraft
 {
@@ -270,12 +271,18 @@ namespace Snails
 
 	vmime::shared_ptr<const vmime::header> Message::GetVmimeHeader () const
 	{
-		return VmimeHeader_;
+		if (!VmimeHeader_)
+			return {};
+
+		return *VmimeHeader_;
 	}
 
 	void Message::SetVmimeHeader (const vmime::shared_ptr<const vmime::header>& header)
 	{
-		VmimeHeader_ = header;
+		if (header)
+			VmimeHeader_ = std::make_shared<LazyVmimeHeader> (header);
+		else
+			VmimeHeader_.reset ();
 	}
 
 	QByteArray Message::Serialize () const
@@ -304,7 +311,7 @@ namespace Snails
 			QBuffer buffer;
 			buffer.open (QIODevice::WriteOnly);
 			OutputIODevAdapter adapter { &buffer };
-			VmimeHeader_->generate (adapter);
+			(*VmimeHeader_)->generate (adapter);
 
 			str << buffer.buffer ();
 		}
@@ -340,11 +347,7 @@ namespace Snails
 		QByteArray headerBA;
 		str >> headerBA;
 		if (!headerBA.isEmpty ())
-		{
-			auto header = vmime::make_shared<vmime::header> ();
-			header->parse ({ headerBA.constData (), static_cast<size_t> (headerBA.size ()) });
-			VmimeHeader_ = header;
-		}
+			VmimeHeader_ = std::make_shared<LazyVmimeHeader> (headerBA);
 		else
 			VmimeHeader_.reset ();
 	}
