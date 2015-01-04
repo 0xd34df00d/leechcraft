@@ -58,7 +58,7 @@ namespace BitTorrent
 		sslPortChanged ();
 		tcpPortRangeChanged ();
 
-#if LIBTORRENT_VERSION_NUM < 010000
+#if LIBTORRENT_VERSION_NUM < 10000
 		if (XmlSettingsManager::Instance ()->
 				property ("EnableMetadata").toBool ())
 			Session_->add_extension (&libtorrent::create_metadata_plugin);
@@ -152,25 +152,19 @@ namespace BitTorrent
 
 	void SessionSettingsManager::SetOverallDownloadRate (int val)
 	{
-#if LIBTORRENT_VERSION_NUM >= 1600
 		auto settings = Session_->settings ();
 		settings.download_rate_limit = val == 0 ? -1 : val * 1024;
 		Session_->set_settings (settings);
-#else
-		Session_->set_download_rate_limit (val == 0 ? -1 : val * 1024);
-#endif
+
 		XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
 	}
 
 	void SessionSettingsManager::SetOverallUploadRate (int val)
 	{
-#if LIBTORRENT_VERSION_NUM >= 1600
 		auto settings = Session_->settings ();
 		settings.upload_rate_limit = val == 0 ? -1 : val * 1024;
 		Session_->set_settings (settings);
-#else
-		Session_->set_upload_rate_limit (val == 0 ? -1 : val * 1024);
-#endif
+
 		XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
 	}
 
@@ -376,7 +370,6 @@ namespace BitTorrent
 	void SessionSettingsManager::tcpPortRangeChanged ()
 	{
 		const auto& ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 		boost::system::error_code ec;
 		Session_->listen_on ({ ports.at (0).toInt (), ports.at (1).toInt () }, ec);
 		if (ec)
@@ -394,9 +387,6 @@ namespace BitTorrent
 			const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
-#else
-		Session_->listen_on ({ ports.at (0).toInt (), ports.at (1).toInt () });
-#endif
 	}
 
 	void SessionSettingsManager::sslPortChanged ()
@@ -414,25 +404,17 @@ namespace BitTorrent
 	void SessionSettingsManager::maxUploadsChanged ()
 	{
 		const int maxUps = XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ();
-#if LIBTORRENT_VERSION_NUM >= 1603
 		auto settings = Session_->settings ();
 		settings.unchoke_slots_limit = maxUps;
 		Session_->set_settings (settings);
-#else
-		Session_->set_max_uploads (maxUps);
-#endif
 	}
 
 	void SessionSettingsManager::maxConnectionsChanged ()
 	{
 		const int maxConn = XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ();
-#if LIBTORRENT_VERSION_NUM >= 1603
 		auto settings = Session_->settings ();
 		settings.connections_limit = maxConn;
 		Session_->set_settings (settings);
-#else
-		Session_->set_max_connections (maxConn);
-#endif
 	}
 
 	void SessionSettingsManager::setProxySettings ()
@@ -467,13 +449,7 @@ namespace BitTorrent
 		}
 		else
 			peerProxySettings.type = libtorrent::proxy_settings::none;
-#if LIBTORRENT_VERSION_NUM >= 1504
 		Session_->set_proxy (peerProxySettings);
-#else
-		Session_->set_peer_proxy (peerProxySettings);
-		Session_->set_tracker_proxy (peerProxySettings);
-		Session_->set_web_seed_proxy (peerProxySettings);
-#endif
 	}
 
 	void SessionSettingsManager::setGeneralSettings ()
@@ -539,14 +515,7 @@ namespace BitTorrent
 				property ("AnnounceIP").toString ();
 		try
 		{
-#if LIBTORRENT_VERSION_NUM >= 1600
 			settings.announce_ip = announceIP.toStdString ();
-#else
-			if (announceIP.isEmpty ())
-				settings.announce_ip = boost::asio::ip::address ();
-			else
-				settings.announce_ip = boost::asio::ip::address::from_string (announceIP.toStdString ());
-#endif
 		}
 		catch (...)
 		{

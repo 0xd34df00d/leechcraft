@@ -109,11 +109,7 @@ namespace BitTorrent
 	int Core::PerTrackerAccumulator::operator() (int,
 			const Core::TorrentStruct& str)
 	{
-#if LIBTORRENT_VERSION_NUM >= 1600
 		const auto& s = str.Handle_.status (0);
-#else
-		libtorrent::torrent_status s = str.Handle_.status ();
-#endif
 		QString domain = QUrl (s.current_tracker.c_str ()).host ();
 		if (domain.size ())
 		{
@@ -504,15 +500,7 @@ namespace BitTorrent
 
 		const auto& h = Handles_.at (row).Handle_;
 		if (!Handle2Status_.contains (h))
-		{
-#if LIBTORRENT_VERSION_NUM >= 1600
-			const auto& status = h.status (0);
-#else
-			const auto& status = h.status ();
-#endif
-
-			Handle2Status_ [h] = status;
-		}
+			Handle2Status_ [h] = h.status (0);
 
 		const auto& status = Handle2Status_ [h];
 
@@ -690,11 +678,7 @@ namespace BitTorrent
 			QString result;
 			result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
 			result += tr ("Destination:") + " " +
-#if LIBTORRENT_VERSION_NUM >= 1600
 				QString::fromUtf8 (h.save_path ().c_str ()) + "\n";
-#else
-				QString::fromUtf8 (h.save_path ().directory_string ().c_str ()) + "\n";
-#endif
 			result += tr ("Progress:") + " " +
 				QString (tr ("%1% (%2 of %3)")
 						.arg (status.progress * 100, 0, 'f', 2)
@@ -839,11 +823,7 @@ namespace BitTorrent
 		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
 #endif
 		result->Status_ = handle.status ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 		result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
-#else
-		result->Destination_ = QString::fromUtf8 (handle.save_path ().directory_string ().c_str ());
-#endif
 		result->State_ = GetStringForStatus (result->Status_);
 
 		if (!result->Status_.error.empty ())
@@ -885,11 +865,7 @@ namespace BitTorrent
 		std::vector<libtorrent::peer_info> peerInfos;
 		Handles_.at (idx).Handle_.get_peer_info (peerInfos);
 
-#if LIBTORRENT_VERSION_NUM >= 1600
 		const auto& localPieces = Handles_.at (idx).Handle_.status (libtorrent::torrent_handle::query_pieces).pieces;
-#else
-		const auto& localPieces = Handles_.at (idx).Handle_.status ().pieces;
-#endif
 
 		QList<int> ourMissing;
 		for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
@@ -965,22 +941,13 @@ namespace BitTorrent
 		{
 			libtorrent::add_torrent_params atp;
 			atp.storage_mode = GetCurrentStorageMode ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			atp.url = magnet.toStdString ();
 			if (params & NoAutostart)
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 			handle = Session_->add_torrent (atp);
-#else
-			atp.duplicate_is_error = true;
-			atp.auto_managed = true;
-			atp.paused = (params & NoAutostart);
-			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
-			handle = libtorrent::add_magnet_uri (*Session_,
-					magnet.toStdString (),
-					atp);
-#endif
+
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
 				handle.resolve_countries (true);
 		}
@@ -1031,19 +998,13 @@ namespace BitTorrent
 		{
 			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
 			atp.storage_mode = GetCurrentStorageMode ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
 				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
 			if (tryLive || (params & NoAutostart))
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
-#else
-			atp.save_path = boost::filesystem::path (std::string (path.toUtf8 ().constData ()));
-			atp.duplicate_is_error = true;
-			atp.paused = tryLive || (params & NoAutostart);
-			atp.auto_managed = autoManaged;
-#endif
+
 			handle = Session_->add_torrent (atp);
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
 				handle.resolve_countries (true);
@@ -1326,11 +1287,7 @@ namespace BitTorrent
 			return QString ();
 
 		const auto& path = Handles_.at (idx).Handle_.save_path ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 		return QString::fromUtf8 (path.c_str ());
-#else
-		return QString::fromUtf8 (path.string ().c_str ());
-#endif
 	}
 
 	bool Core::MoveTorrentFiles (const QString& newDir, int idx)
@@ -1357,11 +1314,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-#if LIBTORRENT_VERSION_NUM >= 1600
 		return Handles_.at (idx).Handle_.status (0).auto_managed;
-#else
-		return Handles_.at (idx).Handle_.is_auto_managed ();
-#endif
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1377,11 +1330,7 @@ namespace BitTorrent
 	{
 		if (!CheckValidity (idx))
 			return false;
-#if LIBTORRENT_VERSION_NUM >= 1600
 		return Handles_.at (idx).Handle_.status (0).sequential_download;
-#else
-		return Handles_.at (idx).Handle_.is_sequential_download ();
-#endif
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1397,11 +1346,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-#if LIBTORRENT_VERSION_NUM >= 1600
 		return Handles_.at (idx).Handle_.status (0).super_seeding;
-#else
-		return Handles_.at (idx).Handle_.super_seeding ();
-#endif
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
@@ -1698,11 +1643,7 @@ namespace BitTorrent
 			const auto& entry = info.file_at (i);
 
 			FileInfo fi;
-#if LIBTORRENT_VERSION_NUM >= 1600
 			fi.Path_ = boost::filesystem::path (entry.path);
-#else
-			fi.Path_ = entry.path;
-#endif
 			fi.Size_ = entry.size;
 			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i);
 			fi.Progress_ = fi.Size_ ?
@@ -1851,7 +1792,6 @@ namespace BitTorrent
 
 	bool Core::DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
 	{
-#if LIBTORRENT_VERSION_NUM >= 1600
 		boost::system::error_code ec;
 		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
 		{
@@ -1859,13 +1799,6 @@ namespace BitTorrent
 						.arg (QString::fromUtf8 (ec.message ().c_str ())));
 			return false;
 		}
-#else
-		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e))
-		{
-			emit error (tr ("Bad bencoding in saved torrent data"));
-			return false;
-		}
-#endif
 
 		return true;
 	}
@@ -1887,21 +1820,14 @@ namespace BitTorrent
 			libtorrent::add_torrent_params atp;
 			atp.ti = new libtorrent::torrent_info (e);
 			atp.storage_mode = GetCurrentStorageMode ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 			atp.save_path = path.string ();
 			if (!automanaged)
 				atp.flags &= ~libtorrent::add_torrent_params::flag_auto_managed;
 			if (pause)
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
-#else
-			atp.save_path = path;
-			atp.auto_managed = automanaged;
-			atp.paused = pause;
-			atp.duplicate_is_error = true;
-#endif
 
-#if LIBTORRENT_VERSION_NUM >= 010000
+#if LIBTORRENT_VERSION_NUM >= 10000
 			std::copy (resumeData.constData (),
 					resumeData.constData () + resumeData.size (),
 					std::back_inserter (atp.resume_data));
@@ -1931,11 +1857,7 @@ namespace BitTorrent
 		const auto& info = torrent.Handle_.get_torrent_info ();
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
-#if LIBTORRENT_VERSION_NUM >= 1600
 				torrent.Handle_.status (libtorrent::torrent_handle::query_pieces).num_pieces !=
-#else
-				torrent.Handle_.status ().num_pieces !=
-#endif
 					torrent.Handle_.get_torrent_info ().num_pieces ())
 			return;
 
@@ -1951,7 +1873,6 @@ namespace BitTorrent
 				QStringList (name));
 
 		const auto& savePath = torrent.Handle_.save_path ();
-#if LIBTORRENT_VERSION_NUM >= 1600
 		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
 
 		auto nah = new Util::NotificationActionHandler (notifyE);
@@ -1972,7 +1893,6 @@ namespace BitTorrent
 					const auto& dirPath = QFileInfo (savePathStr).absolutePath ();
 					QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
 				});
-#endif
 		emit gotEntity (notifyE);
 
 		auto localeCodec = QTextCodec::codecForLocale ();
@@ -1985,11 +1905,7 @@ namespace BitTorrent
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
 			const auto& entry = info.file_at (i);
-#if LIBTORRENT_VERSION_NUM >= 1600
 			const auto& path = QByteArray ((savePath + '/' + entry.path).c_str ());
-#else
-			const auto& path = QByteArray ((savePath / entry.path).string ().c_str ());
-#endif
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 			emit gotEntity (e);
 		}
@@ -2105,19 +2021,11 @@ namespace BitTorrent
 					file_info.close ();
 
 					const auto& handle = Handles_.at (i).Handle_;
-#if LIBTORRENT_VERSION_NUM >= 1600
 					if (handle.need_save_resume_data () || handle.status (0).need_save_resume)
 						handle.save_resume_data ();
-#else
-					handle.save_resume_data ();
-#endif
 
 					settings.setValue ("SavePath",
-#if LIBTORRENT_VERSION_NUM >= 1600
 							QString::fromUtf8 (handle.save_path ().c_str ()));
-#else
-							QString::fromUtf8 (handle.save_path ().string ().c_str ()));
-#endif
 					settings.setValue ("Filename",
 							Handles_.at (i).TorrentFileName_);
 					settings.setValue ("Tags",
@@ -2186,11 +2094,7 @@ namespace BitTorrent
 			if (Handles_.at (i).State_ == TSSeeding)
 				continue;
 
-#if LIBTORRENT_VERSION_NUM >= 1600
 			const auto& status = Handles_.at (i).Handle_.status (0);
-#else
-			const auto& status = Handles_.at (i).Handle_.status ();
-#endif
 			libtorrent::torrent_status::state_t state = status.state;
 
 			if (status.paused)

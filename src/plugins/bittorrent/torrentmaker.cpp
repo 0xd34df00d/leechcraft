@@ -93,11 +93,7 @@ namespace BitTorrent
 #endif
 
 		libtorrent::file_storage fs;
-#if LIBTORRENT_VERSION_NUM >= 1600
 		const auto& fullPath = std::string (params.Path_.toUtf8 ().constData ());
-#else
-		const auto& fullPath = boost::filesystem::complete (params.Path_.toUtf8 ().constData ());
-#endif
 		libtorrent::add_files (fs, fullPath, FileFilter);
 		libtorrent::create_torrent ct (fs, params.PieceSize_);
 
@@ -125,11 +121,7 @@ namespace BitTorrent
 
 		boost::system::error_code hashesError;
 		libtorrent::set_piece_hashes (ct,
-#if LIBTORRENT_VERSION_NUM >= 1600
 				fullPath,
-#else
-				fullPath.branch_path (),
-#endif
 				[this, &pd] (int i) { UpdateProgress (i, pd.get ()); },
 				hashesError);
 		if (hashesError)
@@ -161,11 +153,7 @@ namespace BitTorrent
 					QMessageBox::Yes | QMessageBox::No) ==
 				QMessageBox::Yes)
 			Core::Instance ()->AddFile (filename,
-#if LIBTORRENT_VERSION_NUM >= 1600
 					QString::fromUtf8 (fullPath.c_str ()),
-#else
-					QString::fromUtf8 (fullPath.branch_path ().string ().c_str ()),
-#endif
 					QStringList (),
 					false);
 	}

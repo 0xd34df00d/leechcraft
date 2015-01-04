@@ -173,11 +173,7 @@ namespace BitTorrent
 
 		for (auto pos = begin; pos != end; ++pos)
 		{
-#if LIBTORRENT_VERSION_NUM >= 1600
 			const boost::filesystem::path path { storage.at (pos).path };
-#else
-			const auto& path = pos->path;
-#endif
 			const auto& parentItem = MkParentIfDoesntExist (path);
 
 			const auto& name =

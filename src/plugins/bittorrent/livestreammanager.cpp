@@ -45,11 +45,7 @@ namespace BitTorrent
 		{
 			qDebug () << Q_FUNC_INFO
 				<< "on"
-#if LIBTORRENT_VERSION_NUM >= 1600
 				<< QString::fromUtf8 (handle.save_path ().c_str ());
-#else
-				<< QString::fromUtf8 (handle.save_path ().string ().c_str ());
-#endif
 			LiveStreamDevice *lsd = new LiveStreamDevice (handle, this);
 			Handle2Device_ [handle] = lsd;
 			connect (lsd,

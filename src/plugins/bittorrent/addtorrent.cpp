@@ -336,13 +336,8 @@ namespace BitTorrent
 				comment = QString::fromUtf8 (info.comment ().c_str ());
 
 		QString date;
-		auto maybeDate = info.creation_date ();
-		if (maybeDate)
-#if LIBTORRENT_VERSION_NUM >= 1600
+		if (const auto maybeDate = info.creation_date ())
 			date = QDateTime::fromTime_t (*maybeDate).toString ();
-#else
-			date = QString::fromStdString (boost::posix_time::to_simple_string (*maybeDate));
-#endif
 
 		if (!creator.isEmpty () && !creator.isNull ())
 			Ui_.Creator_->setText (creator);
