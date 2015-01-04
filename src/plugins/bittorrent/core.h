@@ -351,6 +351,8 @@ namespace BitTorrent
 		HandleDict_t::iterator FindHandle (const libtorrent::torrent_handle&);
 		HandleDict_t::const_iterator FindHandle (const libtorrent::torrent_handle&) const;
 
+		libtorrent::torrent_status GetCachedStatus (const libtorrent::torrent_handle&) const;
+
 		void MoveToTop (int);
 		void MoveToBottom (int);
 		void RestoreTorrents ();

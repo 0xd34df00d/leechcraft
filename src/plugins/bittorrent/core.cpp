@@ -499,10 +499,7 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
-		if (!Handle2Status_.contains (h))
-			Handle2Status_ [h] = h.status (0);
-
-		const auto& status = Handle2Status_ [h];
+		const auto& status = GetCachedStatus (h);
 
 		switch (role)
 		{
@@ -1661,6 +1658,16 @@ namespace BitTorrent
 	{
 		return std::find_if (Handles_.begin (), Handles_.end (),
 				[&h] (const TorrentStruct& ts) { return ts.Handle_ == h; });
+	}
+
+	libtorrent::torrent_status Core::GetCachedStatus (const libtorrent::torrent_handle& handle) const
+	{
+		if (Handle2Status_.contains (handle))
+			return Handle2Status_ [handle];
+
+		const auto& status = handle.status (0);
+		Handle2Status_ [handle] = status;
+		return status;
 	}
 
 	void Core::MoveToTop (int row)
