@@ -351,7 +351,12 @@ namespace BitTorrent
 			Ui_.Date_->setText (date);
 		else
 			Ui_.Date_->setText ("<>");
-		FilesModel_->ResetFiles (info.begin_files (), info.end_files (), info.files ());
+
+		QList<libtorrent::file_entry> torrentFiles;
+		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
+			torrentFiles << info.file_at (i);
+		FilesModel_->ResetFiles (torrentFiles);
+
 		Ui_.FilesView_->expandAll ();
 	}
 

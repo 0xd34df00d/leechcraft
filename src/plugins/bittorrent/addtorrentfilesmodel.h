@@ -68,9 +68,7 @@ namespace BitTorrent
 		Qt::ItemFlags flags (const QModelIndex&) const override;
 		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
 
-		void ResetFiles (libtorrent::torrent_info::file_iterator,
-				libtorrent::torrent_info::file_iterator,
-				const libtorrent::file_storage&);
+		void ResetFiles (const QList<libtorrent::file_entry>&);
 		QVector<bool> GetSelectedFiles () const;
 		void MarkAll ();
 		void UnmarkAll ();
