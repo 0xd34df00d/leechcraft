@@ -2024,7 +2024,7 @@ namespace BitTorrent
 					file_info.close ();
 
 					const auto& handle = Handles_.at (i).Handle_;
-					if (handle.need_save_resume_data () || handle.status (0).need_save_resume)
+					if (handle.need_save_resume_data ())
 						handle.save_resume_data ();
 
 					settings.setValue ("SavePath",
