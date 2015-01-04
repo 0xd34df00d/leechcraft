@@ -211,6 +211,16 @@ namespace Snails
 			}
 		}
 
+		const auto& msg = LoadMessage (acc, dir, id);
+		UpdateCaches (msg);
+		return msg;
+	}
+
+	Message_ptr Storage::LoadMessage (Account *acc, QDir dir, const QByteArray& id) const
+	{
+		if (PendingSaveMessages_ [acc].contains (id))
+			return PendingSaveMessages_ [acc] [id];
+
 		if (!dir.cd (id.toHex ().right (3)))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -229,11 +239,10 @@ namespace Snails
 			throw std::runtime_error ("Unable to open the message file");
 		}
 
-		Message_ptr msg (new Message);
+		const auto& msg = std::make_shared<Message> ();
 		try
 		{
 			msg->Deserialize (qUncompress (file.readAll ()));
-			UpdateCaches (msg);
 		}
 		catch (const std::exception& e)
 		{
@@ -264,46 +273,7 @@ namespace Snails
 
 		QList<Message_ptr> result;
 		for (const auto& id : ids)
-		{
-			if (PendingSaveMessages_ [acc].contains (id))
-			{
-				result << PendingSaveMessages_ [acc] [id];
-				continue;
-			}
-
-			auto dir = rootDir;
-			if (!dir.cd (id.toHex ().right (3)))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to cd to"
-						<< dir.filePath (id.toHex ().right (3));
-				throw std::runtime_error ("Unable to cd to the directory");
-			}
-
-			QFile file (dir.filePath (id.toHex ()));
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open"
-						<< file.fileName ()
-						<< file.errorString ();
-				throw std::runtime_error ("Unable to open the message file");
-			}
-
-			Message_ptr msg (new Message);
-			try
-			{
-				msg->Deserialize (qUncompress (file.readAll ()));
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error deserializing the message from"
-						<< file.fileName ()
-						<< e.what ();
-				throw;
-			}
-		}
+			result << LoadMessage (acc, rootDir, id);
 
 		for (const auto& msg : result)
 			UpdateCaches (msg);

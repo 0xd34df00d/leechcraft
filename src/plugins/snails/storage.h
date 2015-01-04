@@ -76,6 +76,7 @@ namespace Snails
 
 		bool IsMessageRead (Account*, const QStringList& folder, const QByteArray&);
 	private:
+		Message_ptr LoadMessage (Account*, QDir, const QByteArray&) const;
 		void RemoveMessageFile (Account*, const QStringList&, const QByteArray&);
 	private:
 		QDir DirForAccount (Account*) const;
