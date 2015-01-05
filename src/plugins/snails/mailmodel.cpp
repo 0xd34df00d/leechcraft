@@ -340,7 +340,11 @@ namespace Snails
 
 			*pos = msg;
 			for (const auto& indexPair : GetIndexes (msg->GetFolderID (), { 0, columnCount () - 1 }))
+			{
+				for (const auto& index : indexPair)
+					static_cast<TreeNode*> (index.internalPointer ())->Msg_ = msg;
 				emit dataChanged (indexPair.value (0), indexPair.value (1));
+			}
 
 			if (readChanged)
 				UpdateParentReadCount (msg->GetFolderID (), !msg->IsRead ());
