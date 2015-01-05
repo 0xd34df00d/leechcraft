@@ -40,7 +40,7 @@ namespace Snails
 {
 	struct MailModel::TreeNode : std::enable_shared_from_this<TreeNode>
 	{
-		const Message_ptr Msg_;
+		Message_ptr Msg_;
 
 		TreeNode_wptr Parent_;
 		QList<TreeNode_ptr> Children_;
