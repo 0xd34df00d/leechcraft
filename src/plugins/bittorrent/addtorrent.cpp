@@ -317,6 +317,7 @@ namespace BitTorrent
 	{
 		const auto& filename = Ui_.TorrentFile_->text ();
 		const auto& info = Core::Instance ()->GetTorrentInfo (filename);
+		Ui_.OK_->setEnabled (info.is_valid ());
 		if (!info.is_valid ())
 		{
 			QMessageBox::critical (this,
