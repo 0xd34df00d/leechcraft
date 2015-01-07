@@ -80,19 +80,18 @@ namespace Util
 				QObject *parent);
 
 		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject on the given list of
-		 * \em signals.
+		 * the given \em parent as a QObject on the given \em signalsList.
 		 *
 		 * @param[in] func The function to run when a matching signal is
 		 * fired.
 		 * @param[in] sender The sender of the signal to connect to.
-		 * @param[in] signals The list of signals, any of which triggers
+		 * @param[in] signalsList The list of signals, any of which triggers
 		 * the \em func.
 		 * @param[in] parent The parent object of this SlotClosure.
 		 */
 		SlotClosureBase (const std::function<void ()>& func,
 				QObject *sender,
-				const std::initializer_list<const char*>& signals,
+				const std::initializer_list<const char*>& signalsList,
 				QObject *parent);
 
 		virtual ~SlotClosureBase () = default;
