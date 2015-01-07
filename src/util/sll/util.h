@@ -70,6 +70,26 @@ namespace Util
 		};
 	}
 
+	/** @brief Returns an object performing passed function on scope exit.
+	 *
+	 * The returned object performs the passed function \em f upon
+	 * destruction (and, thus, on scope exit).
+	 *
+	 * The object is not copyable and not movable, and otherwise is
+	 * implementation-defined.
+	 *
+	 * Typical usage:
+	 * \code{.cpp}
+		QSettings settings { "OrgNameName", "AppName" };
+		settings.beginGroup ();
+		const auto& guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
+		// ...
+	   \endcode
+	 *
+	 * @param[in] f The function to execute on scope exit. Should be a
+	 * callable without any arguments.
+	 * @return An object executing \em f on destruction.
+	 */
 	template<typename F>
 	detail::ScopeGuard<F> MakeScopeGuard (const F& f)
 	{
