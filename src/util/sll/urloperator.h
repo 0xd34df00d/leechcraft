@@ -41,6 +41,23 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Manipulates query part of an QUrl object.
+	 *
+	 * This class abstracts away differences between Qt4 and Qt5 QUrl and
+	 * QUrlQuery handling, and it should be used in all new code instead
+	 * of direct calls to Qt API.
+	 *
+	 * This class is used as follows:
+	 * # An object of this class is constructed on a (named) QUrl object.
+	 * # New URL query parameters are added by calling this object with a
+	 *   pair of matching key and value.
+	 * # Existing URL query parameters are removed via the -= operator.
+	 * # The URL is updated on UrlOperator object destruction.
+	 *
+	 * @note The changes are \em guaranteed to be applied on UrlOperator
+	 * object destruction. Nevertheless, they may still be applied
+	 * earlier on during calls to operator()() and operator-=().
+	 */
 	class UTIL_SLL_API UrlOperator
 	{
 		QUrl& Url_;
@@ -49,14 +66,51 @@ namespace Util
 		QUrlQuery Query_;
 #endif
 	public:
+		/** @brief Constructs the object modifying the query of \em url.
+		 *
+		 * @param[in] url The URL to modify.
+		 */
 		UrlOperator (QUrl& url);
+
+		/** @brief Flushes any pending changes to the QUrl query and
+		 * destroys the UrlOperator.
+		 *
+		 * @sa Flush()
+		 * @sa operator()()
+		 */
 		~UrlOperator ();
 
+		/** @brief Flushes any pending changes to the QUrl query.
+		 */
 		void Flush ();
 
+		/** @brief Adds a new \em key = \em value parameters pair.
+		 *
+		 * If the URL already contains this \em key, a new value is added
+		 * in addition to the already existing one.
+		 *
+		 * The key/value pair is encoded before it is added to the query.
+		 * The key and value are also encoded into UTF-8. Both \em key
+		 * and \em value are URL-encoded as well. So, this function is
+		 * analogous in effect to standard relevant Qt APIs.
+		 *
+		 * @param[in] key The query parameter key.
+		 * @param[in] value The query parameter value.
+		 * @return This UrlOperator object.
+		 */
 		UrlOperator& operator() (const QString& key, const QString& value);
+
+		/** @brief Returns the first query parameter under the \em key.
+		 *
+		 * If no such parameters exist, this function does nothing.
+		 *
+		 * @param[in] key The query parameter key.
+		 * @return This UrlOperator object.
+		 */
 		UrlOperator& operator-= (const QString& key);
 
+		/** @brief Flushes any pending changes to the QUrl query.
+		 */
 		QUrl operator() ();
 	};
 }
