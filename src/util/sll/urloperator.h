@@ -54,6 +54,18 @@ namespace Util
 	 * # Existing URL query parameters are removed via the -= operator.
 	 * # The URL is updated on UrlOperator object destruction.
 	 *
+	 * Intended usage:
+	 * \code{.cpp}
+		QUrl someUrl { ... };
+		UrlOperator { someUrl }
+				("key1", "value1")
+				("key2", "value2");
+	   \endcode
+	 *
+	 * Here, an unnamed UrlOperator object is created that is valid only
+	 * inside the corresponding expression, thus the changes to
+	 * <code>someUrl</code> are visible immediately after executing that line.
+	 *
 	 * @note The changes are \em guaranteed to be applied on UrlOperator
 	 * object destruction. Nevertheless, they may still be applied
 	 * earlier on during calls to operator()() and operator-=().
