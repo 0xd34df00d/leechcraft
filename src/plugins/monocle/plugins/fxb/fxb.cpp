@@ -104,6 +104,17 @@ namespace FXB
 	{
 		return { "application/x-fictionbook+xml", "application/x-fictionbook" };
 	}
+
+	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
+	{
+		return
+		{
+			{
+				tr ("FB2 books"),
+				{ "fb2" }
+			}
+		};
+	}
 }
 }
 }

@@ -34,6 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/monocle/ibackendplugin.h>
+#include <interfaces/monocle/iknowfileextensions.h>
 
 namespace LeechCraft
 {
@@ -46,12 +47,14 @@ namespace FXB
 				 , public IPlugin2
 				 , public IHaveSettings
 				 , public IBackendPlugin
+				 , public IKnowFileExtensions
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
-				LeechCraft::Monocle::IBackendPlugin)
+				LeechCraft::Monocle::IBackendPlugin
+				LeechCraft::Monocle::IKnowFileExtensions)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.FXB")
 
@@ -72,6 +75,8 @@ namespace FXB
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 		QStringList GetSupportedMimes () const;
+
+		virtual QList<ExtInfo> GetKnownFileExtensions () const;
 	};
 }
 }
