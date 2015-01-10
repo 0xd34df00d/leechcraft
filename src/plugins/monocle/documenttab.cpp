@@ -1025,11 +1025,9 @@ namespace Monocle
 		for (const auto plugin : extPlugins)
 			for (const auto& info : plugin->GetKnownFileExtensions ())
 			{
-				auto filter = info.Description_ + " ";
 				const auto& mapped = Util::Map (info.Extensions_,
 						[] (const QString& str) { return "*." + str; });
-				filter += "(" + QStringList { mapped }.join (", ") + ")";
-				filters << filter;
+				filters << info.Description_ + " (" + QStringList { mapped }.join (" ") + ")";
 			}
 		filters << tr ("All files") + " (*.*)";
 
