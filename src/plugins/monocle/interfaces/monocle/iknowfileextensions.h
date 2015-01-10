@@ -44,7 +44,7 @@ namespace Monocle
 		struct ExtInfo
 		{
 			QString Description_;
-			QStringList Extensions_;
+			QList<QString> Extensions_;
 		};
 
 		virtual QList<ExtInfo> GetKnownFileExtensions () const = 0;
