@@ -1022,13 +1022,17 @@ namespace Monocle
 		const auto& extPlugins = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableTo<IKnowFileExtensions*> ();
 		QStringList filters;
+		QList<QString> allExts;
 		for (const auto plugin : extPlugins)
 			for (const auto& info : plugin->GetKnownFileExtensions ())
 			{
 				const auto& mapped = Util::Map (info.Extensions_,
 						[] (const QString& str) { return "*." + str; });
+				allExts += mapped;
 				filters << info.Description_ + " (" + QStringList { mapped }.join (" ") + ")";
 			}
+		if (!allExts.isEmpty ())
+			filters.prepend (tr ("Known files") + " (" + QStringList { allExts }.join (" ") + ")");
 		filters << tr ("All files") + " (*.*)";
 
 		const auto& prevPath = XmlSettingsManager::Instance ()
