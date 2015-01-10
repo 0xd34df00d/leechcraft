@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/monocle/ibackendplugin.h>
+#include <interfaces/monocle/iknowfileextensions.h>
 
 namespace LeechCraft
 {
@@ -44,9 +45,13 @@ namespace Dik
 				 , public IInfo
 				 , public IPlugin2
 				 , public IBackendPlugin
+				 , public IKnowFileExtensions
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Monocle::IBackendPlugin
+				LeechCraft::Monocle::IKnowFileExtensions)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Dik")
 	public:
@@ -63,6 +68,8 @@ namespace Dik
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 		QStringList GetSupportedMimes () const;
+
+		QList<ExtInfo> GetKnownFileExtensions () const;
 	};
 }
 }

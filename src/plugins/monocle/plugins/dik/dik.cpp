@@ -95,6 +95,17 @@ namespace Dik
 	{
 		return { "application/x-mobipocket-ebook", "application/x-mobipocket" };
 	}
+
+	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
+	{
+		return
+		{
+			{
+				tr ("MOBI books"),
+				{ "mobi" }
+			}
+		};
+	}
 }
 }
 }
