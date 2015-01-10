@@ -18,7 +18,11 @@ set (SRCS
 	document.cpp
 	)
 
+CreateTrs ("monocle_seen" "en;ru_RU" SEEN_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("monocle_seen" "en;ru_RU" "${SRCS}" "" "")
+
 add_library (leechcraft_monocle_seen SHARED
+	${SEEN_COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
 target_link_libraries (leechcraft_monocle_seen
