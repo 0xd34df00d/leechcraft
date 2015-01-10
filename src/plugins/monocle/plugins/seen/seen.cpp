@@ -119,7 +119,7 @@ namespace Seen
 		{
 			{
 				tr ("DjVu files"),
-				{ "djvu" }
+				{ "djvu", "djv" }
 			}
 		};
 	}
