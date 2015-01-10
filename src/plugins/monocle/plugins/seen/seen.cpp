@@ -113,6 +113,17 @@ namespace Seen
 		return { "image/vnd.djvu" };
 	}
 
+	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
+	{
+		return
+		{
+			{
+				tr ("DjVu files"),
+				{ "djvu" }
+			}
+		};
+	}
+
 	void Plugin::checkMessageQueue ()
 	{
 		while (const ddjvu_message_t *msg = ddjvu_message_peek (Context_))

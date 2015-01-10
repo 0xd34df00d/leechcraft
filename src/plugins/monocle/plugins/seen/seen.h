@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/monocle/ibackendplugin.h>
+#include <interfaces/monocle/iknowfileextensions.h>
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 
@@ -48,9 +49,13 @@ namespace Seen
 				 , public IInfo
 				 , public IPlugin2
 				 , public IBackendPlugin
+				 , public IKnowFileExtensions
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Monocle::IBackendPlugin)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Monocle::IKnowFileExtensions
+				LeechCraft::Monocle::IBackendPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.Seen")
 
@@ -70,6 +75,8 @@ namespace Seen
 		LoadCheckResult CanLoadDocument (const QString&);
 		IDocument_ptr LoadDocument (const QString&);
 		QStringList GetSupportedMimes () const;
+
+		QList<ExtInfo> GetKnownFileExtensions () const;
 	private slots:
 		void checkMessageQueue ();
 	};
