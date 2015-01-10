@@ -13,7 +13,11 @@ set (SRCS
 	redirector.cpp
 	)
 
+CreateTrs ("monocle_postrus" "en;ru_RU" POSTRUS_COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("monocle_postrus" "en;ru_RU" "${SRCS}" "" "")
+
 add_library (leechcraft_monocle_postrus SHARED
+	${POSTRUS_COMPILED_TRANSLATIONS}
 	${SRCS}
 	)
 target_link_libraries (leechcraft_monocle_postrus

@@ -30,6 +30,7 @@
 #include "postrus.h"
 #include <QIcon>
 #include <util/sys/mimedetector.h>
+#include <util/util.h>
 #include "redirector.h"
 
 namespace LeechCraft
@@ -40,6 +41,7 @@ namespace Postrus
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("monocle_postrus");
 	}
 
 	void Plugin::SecondInit ()
