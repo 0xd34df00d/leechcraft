@@ -54,9 +54,11 @@
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/imwproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/monocle/ihavetoc.h"
 #include "interfaces/monocle/ihavetextcontent.h"
 #include "interfaces/monocle/isupportannotations.h"
@@ -64,6 +66,7 @@
 #include "interfaces/monocle/isaveabledocument.h"
 #include "interfaces/monocle/isearchabledocument.h"
 #include "interfaces/monocle/isupportpainting.h"
+#include "interfaces/monocle/iknowfileextensions.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -1016,11 +1019,26 @@ namespace Monocle
 
 	void DocumentTab::selectFile ()
 	{
+		const auto& extPlugins = Core::Instance ().GetProxy ()->
+				GetPluginsManager ()->GetAllCastableTo<IKnowFileExtensions*> ();
+		QStringList filters;
+		for (const auto plugin : extPlugins)
+			for (const auto& info : plugin->GetKnownFileExtensions ())
+			{
+				auto filter = info.Description_ + " ";
+				const auto& mapped = Util::Map (info.Extensions_,
+						[] (const QString& str) { return "*." + str; });
+				filter += "(" + QStringList { mapped }.join (", ") + ")";
+				filters << filter;
+			}
+		filters << tr ("All files") + " (*.*)";
+
 		const auto& prevPath = XmlSettingsManager::Instance ()
 				.Property ("LastOpenFileName", QDir::homePath ()).toString ();
 		const auto& path = QFileDialog::getOpenFileName (this,
 					tr ("Select file"),
-					prevPath);
+					prevPath,
+					filters.join (";;"));
 		if (path.isEmpty ())
 			return;
 
