@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::Monocle::PDF::Document</name>
     <message>
-        <location filename="document.cpp" line="262"/>
+        <location filename="document.cpp" line="282"/>
         <source>saving encrypted documents is not supported</source>
         <translation>saving encrypted documents is not supported</translation>
     </message>
@@ -12,9 +12,14 @@
 <context>
     <name>LeechCraft::Monocle::PDF::Plugin</name>
     <message>
-        <location filename="pdf.cpp" line="69"/>
+        <location filename="pdf.cpp" line="72"/>
         <source>PDF backend for Monocle.</source>
         <translation>PDF backend for Monocle.</translation>
+    </message>
+    <message>
+        <location filename="pdf.cpp" line="124"/>
+        <source>PDF files</source>
+        <translation>PDF files</translation>
     </message>
 </context>
 <context>
