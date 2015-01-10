@@ -1,7 +1,5 @@
-if (COMMAND cmake_policy)
-	cmake_policy (SET CMP0003 NEW)
-endif ()
 cmake_minimum_required(VERSION 2.8)
+cmake_policy (SET CMP0003 NEW)
 project (leechcraft)
 #if (NOT DISABLE_RPATH_TRICKS)
 #	set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
