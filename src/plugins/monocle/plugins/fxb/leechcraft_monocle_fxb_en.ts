@@ -16,6 +16,11 @@
         <source>FictionBook (fb2) backend for Monocle.</source>
         <translation>FictionBook (fb2) backend for Monocle.</translation>
     </message>
+    <message>
+        <location filename="fxb.cpp" line="113"/>
+        <source>FB2 books</source>
+        <translation>FB2 books</translation>
+    </message>
 </context>
 <context>
     <name>monoclefxbsettings</name>
