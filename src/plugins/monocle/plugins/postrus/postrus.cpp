@@ -99,6 +99,17 @@ namespace Postrus
 	{
 		return { "application/postscript" };
 	}
+
+	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
+	{
+		return
+		{
+			{
+				tr ("PostScript files"),
+				{ "ps", "eps" }
+			}
+		};
+	}
 }
 }
 }
