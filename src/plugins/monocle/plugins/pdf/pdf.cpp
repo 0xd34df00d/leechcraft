@@ -115,6 +115,17 @@ namespace PDF
 		return false;
 #endif
 	}
+
+	QList<IKnowFileExtensions::ExtInfo> Plugin::GetKnownFileExtensions () const
+	{
+		return
+		{
+			{
+				tr ("PDF files"),
+				{ "pdf" }
+			}
+		};
+	}
 }
 }
 }

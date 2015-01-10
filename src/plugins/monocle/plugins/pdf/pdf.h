@@ -34,6 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/monocle/ibackendplugin.h>
+#include <interfaces/monocle/iknowfileextensions.h>
 
 namespace LeechCraft
 {
@@ -46,12 +47,14 @@ namespace PDF
 				 , public IPlugin2
 				 , public IHaveSettings
 				 , public IBackendPlugin
+				 , public IKnowFileExtensions
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
 				IHaveSettings
-				LeechCraft::Monocle::IBackendPlugin)
+				LeechCraft::Monocle::IBackendPlugin
+				LeechCraft::Monocle::IKnowFileExtensions)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Monocle.PDF")
 
@@ -74,6 +77,8 @@ namespace PDF
 
 		QStringList GetSupportedMimes () const;
 		bool IsThreaded () const;
+
+		QList<ExtInfo> GetKnownFileExtensions () const;
 	};
 }
 }
