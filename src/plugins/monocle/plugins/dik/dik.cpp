@@ -29,6 +29,7 @@
 
 #include "dik.h"
 #include <QIcon>
+#include <util/util.h>
 #include "document.h"
 
 namespace LeechCraft
