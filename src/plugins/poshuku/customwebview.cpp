@@ -457,8 +457,7 @@ namespace Poshuku
 			ScrollDelta_ = 0;
 			ScrollTimer_->stop ();
 		}
-
-		if (!handled)
+		else
 			QWebView::keyReleaseEvent (event);
 	}
 
