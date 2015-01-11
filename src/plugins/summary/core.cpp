@@ -30,6 +30,7 @@
 #include "core.h"
 #include <interfaces/ijobholder.h>
 #include <util/tags/tagsfiltermodel.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -101,8 +102,8 @@ namespace Summary
 
 	bool Core::SameModel (const QModelIndex& i1, const QModelIndex& i2) const
 	{
-		const QModelIndex& mapped1 = MapToSourceRecursively (i1);
-		const QModelIndex& mapped2 = MapToSourceRecursively (i2);
+		const auto& mapped1 = MapToSourceRecursively (i1);
+		const auto& mapped2 = MapToSourceRecursively (i2);
 		return mapped1.model () == mapped2.model ();
 	}
 
@@ -137,27 +138,26 @@ namespace Summary
 	QStringList Core::GetTagsForIndex (int index, QAbstractItemModel *model) const
 	{
 		int starting = 0;
-		auto merger = dynamic_cast<Util::MergeModel*> (model);
+		const auto merger = dynamic_cast<Util::MergeModel*> (model);
 		if (!merger)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "could not get model" << model;
-			return QStringList ();
+			return {};
 		}
-		auto modIter = merger->GetModelForRow (index, &starting);
+		const auto modIter = merger->GetModelForRow (index, &starting);
+		const auto idxModel = *modIter;
 
-		QStringList ids = (*modIter)->data ((*modIter)->
+		const auto& ids = idxModel->data (idxModel->
 				index (index - starting, 0), RoleTags).toStringList ();
-		QStringList result;
-		Q_FOREACH (const QString& id, ids)
-			result << Proxy_->GetTagsManager ()->GetTag (id);
-		return result;
+		const auto tm = Proxy_->GetTagsManager ();
+		return Util::Map (ids, [tm] (const QString& id) { return tm->GetTag (id); });
 	}
 
 	QModelIndex Core::MapToSourceRecursively (QModelIndex index) const
 	{
 		if (!index.isValid ())
-			return QModelIndex ();
+			return {};
 
 		while (true)
 		{
