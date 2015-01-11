@@ -441,18 +441,7 @@ namespace Poshuku
 	{
 		bool handled = false;
 		if (event->matches (QKeySequence::Copy))
-		{
 			pageAction (QWebPage::Copy)->trigger ();
-			/* TODO
-			const QString& text = selectedText ();
-			if (!text.isEmpty ())
-			{
-				QApplication::clipboard ()->setText (text,
-						QClipboard::Clipboard);
-				handled = true;
-			}
-			*/
-		}
 		else if (event->key () == Qt::Key_F6)
 			Browser_->focusLineEdit ();
 		else if (event->modifiers () == Qt::SHIFT &&
