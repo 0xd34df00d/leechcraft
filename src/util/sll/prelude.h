@@ -69,6 +69,15 @@ namespace Util
 		return result;
 	}
 
+	template<typename F>
+	QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> Map (const QStringList& c, F f)
+	{
+		QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> result;
+		for (auto t : c)
+			result.push_back (f (t));
+		return result;
+	}
+
 	template<typename T, template<typename U> class Container, typename F>
 	typename std::enable_if<std::is_same<void, typename std::result_of<F (T)>::type>::value, void>::type Map (const Container<T>& c, F f)
 	{
