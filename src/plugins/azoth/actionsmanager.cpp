@@ -856,17 +856,8 @@ namespace Azoth
 		setter (BeforeRolesNames);
 
 		if (const auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntryObject ()))
-		{
-			// TODO use any_of
-			bool allSame = true;
-			for (const auto entry : entries)
-				if (perms != qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()))
-				{
-					allSame = false;
-					break;
-				}
-
-			if (allSame)
+			if (std::all_of (entries.begin (), entries.end (), [perms] (ICLEntry *e)
+					{ return perms == qobject_cast<IMUCPerms*> (e->GetParentCLEntryObject ()); }))
 			{
 				std::remove_cv<decltype (BeforeRolesNames)>::type permPairs;
 				const auto& id2action = Entry2Actions_ [entries.first ()];
@@ -879,7 +870,6 @@ namespace Azoth
 
 				setter (permPairs);
 			}
-		}
 
 		setter (AfterRolesNames);
 
