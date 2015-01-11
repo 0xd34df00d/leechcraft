@@ -43,12 +43,11 @@ namespace Summary
 
 	QStringList SummaryTagsFilter::GetTagsForIndex (int index) const
 	{
-		QAbstractItemModel *model = sourceModel ();
+		const auto model = sourceModel ();
 		if (!model)
-			return QStringList ();
+			return {};
 
-		return model->data (model->index (index, 0),
-				RoleTags).toStringList ();
+		return model->data (model->index (index, 0), RoleTags).toStringList ();
 	}
 }
 }
