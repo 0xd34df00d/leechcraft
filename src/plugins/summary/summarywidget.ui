@@ -48,13 +48,13 @@
        <bool>false</bool>
       </property>
       <property name="headerHidden">
-       <bool>true</bool>
+       <bool>false</bool>
       </property>
       <property name="expandsOnDoubleClick">
        <bool>false</bool>
       </property>
       <attribute name="headerVisible">
-       <bool>false</bool>
+       <bool>true</bool>
       </attribute>
      </widget>
      <widget class="QDockWidget" name="ControlsDockWidget_">
