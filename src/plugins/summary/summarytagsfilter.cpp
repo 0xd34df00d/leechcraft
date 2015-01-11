@@ -41,6 +41,18 @@ namespace Summary
 		setProperty ("__LeechCraft_own_core_model", true);
 	}
 
+	QVariant SummaryTagsFilter::data (const QModelIndex& index, int role) const
+	{
+		const auto& result = QSortFilterProxyModel::data (index, role);
+		if (role != Qt::ToolTipRole)
+			return result;
+
+		if (result.isValid ())
+			return result;
+
+		return QSortFilterProxyModel::data (index, Qt::DisplayRole);
+	}
+
 	QStringList SummaryTagsFilter::GetTagsForIndex (int index) const
 	{
 		const auto model = sourceModel ();

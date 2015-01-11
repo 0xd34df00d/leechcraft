@@ -40,6 +40,8 @@ namespace Summary
 		Q_OBJECT
 	public:
 		SummaryTagsFilter (QObject* = 0);
+
+		QVariant data (const QModelIndex&, int) const override;
 	protected:
 		QStringList GetTagsForIndex (int) const;
 	};
