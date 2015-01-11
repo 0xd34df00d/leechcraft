@@ -45,9 +45,7 @@ namespace LeechCraft
 namespace Summary
 {
 	Core::Core ()
-	: MergeModel_ (new Util::MergeModel (QStringList (QString ())
-				<< QString ()
-				<< QString ()))
+	: MergeModel_ (new Util::MergeModel ({ {}, {}, {} }))
 	, Current_ (0)
 	{
 		MergeModel_->setObjectName ("Core MergeModel");
@@ -92,9 +90,7 @@ namespace Summary
 
 	void Core::SecondInit ()
 	{
-		QList<IJobHolder*> plugins = Proxy_->
-			GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ();
-		Q_FOREACH (IJobHolder *plugin, plugins)
+		for (const auto plugin : Proxy_->GetPluginsManager ()->GetAllCastableTo<IJobHolder*> ())
 			MergeModel_->AddModel (plugin->GetRepresentation ());
 	}
 
@@ -130,7 +126,7 @@ namespace Summary
 
 	QSortFilterProxyModel* Core::GetTasksModel () const
 	{
-		SummaryTagsFilter *filter = new SummaryTagsFilter ();
+		const auto filter = new SummaryTagsFilter ();
 		filter->setProperty ("__LeechCraft_own_core_model", true);
 		filter->setDynamicSortFilter (true);
 		filter->setSourceModel (MergeModel_.get ());
