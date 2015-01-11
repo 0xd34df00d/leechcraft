@@ -48,10 +48,10 @@ namespace TPI
 
 		ModelMgr_ = new InfoModelManager (proxy);
 
-		QuarkComponent_ptr comp (new QuarkComponent ("tpi", "TPIQuark.qml"));
-		comp->DynamicProps_ << QPair<QString, QObject*> ("TPI_infoModel", ModelMgr_->GetModel ());
+		auto comp = std::make_shared<QuarkComponent> ("tpi", "TPIQuark.qml");
+		comp->DynamicProps_.append ({ "TPI_infoModel", ModelMgr_->GetModel () });
 #if QT_VERSION < 0x050000
-		comp->DynamicProps_ << QPair<QString, QObject*> ("TPI_proxy", this);
+		comp->DynamicProps_.append ({ "TPI_proxy", this });
 #endif
 		Components_ << comp;
 	}
