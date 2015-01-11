@@ -90,10 +90,10 @@ namespace SpeedDial
 				this,
 				SLOT (handleLoadFinished ()));
 
-		if (PendingLoads_.isEmpty ())
-			page->mainFrame ()->load (url);
-
 		PendingLoads_ << page;
+
+		if (PendingLoads_.size () <= 2)
+			page->mainFrame ()->load (url);
 
 		return {};
 	}
