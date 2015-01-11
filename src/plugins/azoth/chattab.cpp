@@ -1387,14 +1387,13 @@ namespace Azoth
 			const auto msg = qobject_cast<IMessage*> (msgObj);
 			const auto& dt = msg->GetDateTime ();
 
-			// TODO use std::any_of
-			if (std::find_if (rMsgs.begin (), rMsgs.end (),
+			if (std::any_of (rMsgs.begin (), rMsgs.end (),
 					[msg] (IMessage *tMsg)
 					{
 						return tMsg->GetDirection () == msg->GetDirection () &&
 								tMsg->GetBody () == msg->GetBody () &&
 								std::abs (tMsg->GetDateTime ().secsTo (msg->GetDateTime ())) < 5;
-					}) != rMsgs.end ())
+					}))
 				continue;
 
 			if (HistoryMessages_.isEmpty () ||
