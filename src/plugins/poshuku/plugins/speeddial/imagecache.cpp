@@ -114,6 +114,8 @@ namespace SpeedDial
 					page->mainFrame ()->load (Page2Url_.value (page));
 				});
 
+		PendingLoads_.removeAll (page);
+
 		const auto& url = Page2Url_.take (page);
 		if (url.isEmpty ())
 			return;
