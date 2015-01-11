@@ -114,13 +114,6 @@ namespace Summary
 			*
 			* For example, this is used in the Summary.
 			*/
-		QAbstractItemModel* GetTasksModel (const QString& request) const;
-
-		/** Creates a new model for the given request and returns a
-			* pointer to it. Ownership is transferred to the caller.
-			*
-			* For example, this is used in the Summary.
-			*/
 		QSortFilterProxyModel* GetTasksModel () const;
 
 		/** Returns list of tags for a given row using given model. It's
