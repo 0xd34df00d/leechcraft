@@ -35,8 +35,10 @@
 #include <QWebPage>
 #include <QWebFrame>
 #include <QPainter>
+#include <QtDebug>
 #include <util/sys/paths.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -88,7 +90,10 @@ namespace SpeedDial
 				this,
 				SLOT (handleLoadFinished ()));
 
-		page->mainFrame ()->load (url);
+		if (PendingLoads_.isEmpty ())
+			page->mainFrame ()->load (url);
+
+		PendingLoads_ << page;
 
 		return {};
 	}
@@ -100,9 +105,19 @@ namespace SpeedDial
 
 	void ImageCache::Render (QWebPage *page)
 	{
+		const auto pullNextGuard = Util::MakeScopeGuard ([this]
+				{
+					if (PendingLoads_.isEmpty ())
+						return;
+
+					const auto page = PendingLoads_.takeFirst ();
+					page->mainFrame ()->load (Page2Url_.value (page));
+				});
+
 		const auto& url = Page2Url_.take (page);
 		if (url.isEmpty ())
 			return;
+
 		Url2Page_.remove (url);
 
 		QImage image { page->viewportSize (), QImage::Format_ARGB32 };

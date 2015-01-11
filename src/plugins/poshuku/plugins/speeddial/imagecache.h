@@ -53,6 +53,8 @@ namespace SpeedDial
 
 		QMap<QWebPage*, QUrl> Page2Url_;
 		QMap<QUrl, QWebPage*> Url2Page_;
+
+		QList<QWebPage*> PendingLoads_;
 	public:
 		ImageCache (const ICoreProxy_ptr&);
 
