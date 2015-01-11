@@ -83,6 +83,14 @@ namespace SpeedDial
 		frame->setScrollBarPolicy (Qt::Horizontal, Qt::ScrollBarAlwaysOff);
 		page->setViewportSize (RenderSize);
 		page->setNetworkAccessManager (Proxy_->GetNetworkAccessManager ());
+
+		const auto settings = page->settings ();
+		settings->setAttribute (QWebSettings::DnsPrefetchEnabled, false);
+		settings->setAttribute (QWebSettings::JavaEnabled, false);
+		settings->setAttribute (QWebSettings::PluginsEnabled, false);
+		settings->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
+		settings->setAttribute (QWebSettings::XSSAuditingEnabled, false);
+
 		Page2Url_ [page] = url;
 		Url2Page_ [url] = page;
 		connect (page,
