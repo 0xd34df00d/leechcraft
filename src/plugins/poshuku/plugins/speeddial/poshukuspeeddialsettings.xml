@@ -6,6 +6,9 @@
 			<label value="Snapshots are valid for:" />
 			<suffix value=" days" />
 		</item>
+		<item type="checkbox" property="EnableJS" default="true">
+			<label value="Enable JavaScript during snapshotting" />
+		</item>
 		<item type="groupbox" checkable="true" property="UseStaticList" default="false">
 			<label value="Use static pages list" />
 			<item type="dataview" property="SitesView" />

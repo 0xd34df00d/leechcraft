@@ -91,6 +91,9 @@ namespace SpeedDial
 		settings->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
 		settings->setAttribute (QWebSettings::XSSAuditingEnabled, false);
 
+		settings->setAttribute (QWebSettings::JavascriptEnabled,
+				XmlSettingsManager::Instance ().property ("EnableJS").toBool ());
+
 		Page2Url_ [page] = url;
 		Url2Page_ [url] = page;
 		connect (page,
