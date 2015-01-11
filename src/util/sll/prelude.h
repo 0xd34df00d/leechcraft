@@ -31,6 +31,7 @@
 
 #include <type_traits>
 #include <iterator>
+#include <QStringList>
 #include <boost/optional.hpp>
 
 namespace LeechCraft
