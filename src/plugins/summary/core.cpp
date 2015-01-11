@@ -128,7 +128,6 @@ namespace Summary
 	QSortFilterProxyModel* Core::GetTasksModel () const
 	{
 		const auto filter = new SummaryTagsFilter ();
-		filter->setProperty ("__LeechCraft_own_core_model", true);
 		filter->setDynamicSortFilter (true);
 		filter->setSourceModel (MergeModel_.get ());
 		filter->setFilterCaseSensitivity (Qt::CaseInsensitive);
