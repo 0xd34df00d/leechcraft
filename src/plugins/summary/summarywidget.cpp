@@ -125,23 +125,23 @@ namespace Summary
 		Ui_.ControlsDockWidget_->hide ();
 
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		Q_FOREACH (QObject *plugin, pm->GetAllCastableRoots<IJobHolder*> ())
+		for (const auto plugin : pm->GetAllCastableRoots<IJobHolder*> ())
 			ConnectObject (plugin);
 
 		Ui_.PluginsTasksTree_->setModel (Sorter_);
 
 		connect (Sorter_,
-				SIGNAL (dataChanged (const QModelIndex&, const QModelIndex&)),
+				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
-				SLOT (checkDataChanged (const QModelIndex&, const QModelIndex&)));
+				SLOT (checkDataChanged (QModelIndex, QModelIndex)));
 		connect (Sorter_,
 				SIGNAL (modelAboutToBeReset ()),
 				this,
 				SLOT (handleReset ()));
 		connect (Sorter_,
-				SIGNAL (rowsAboutToBeRemoved (const QModelIndex&, int, int)),
+				SIGNAL (rowsAboutToBeRemoved (QModelIndex, int, int)),
 				this,
-				SLOT (checkRowsToBeRemoved (const QModelIndex&, int, int)));
+				SLOT (checkRowsToBeRemoved (QModelIndex, int, int)));
 		connect (Ui_.PluginsTasksTree_->selectionModel (),
 				SIGNAL (currentRowChanged (QModelIndex, QModelIndex)),
 				this,
@@ -152,8 +152,8 @@ namespace Summary
 				SLOT (syncSelection (QModelIndex)),
 				Qt::QueuedConnection);
 
-		QHeaderView *itemsHeader = Ui_.PluginsTasksTree_->header ();
-		QFontMetrics fm = fontMetrics ();
+		const auto itemsHeader = Ui_.PluginsTasksTree_->header ();
+		const auto& fm = fontMetrics ();
 		itemsHeader->resizeSection (0,
 				fm.width ("Average download job or torrent name is just like this."));
 		itemsHeader->resizeSection (1,
@@ -166,7 +166,7 @@ namespace Summary
 
 	void SummaryWidget::ReconnectModelSpecific ()
 	{
-		QItemSelectionModel *sel = Ui_.PluginsTasksTree_->selectionModel ();
+		const auto sel = Ui_.PluginsTasksTree_->selectionModel ();
 
 #define C2(sig,sl,arg1,arg2) \
 		if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTreeSelection" #sl "(" #arg1 ", " #arg2 ")")) != -1) \
@@ -178,18 +178,18 @@ namespace Summary
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 		Q_FOREACH (QObject *object, pm->GetAllCastableRoots<IJobHolder*> ())
 		{
-			const QMetaObject *mo = object->metaObject ();
+			const auto *mo = object->metaObject ();
 
-			C2 (currentChanged, CurrentChanged, const QModelIndex&, const QModelIndex&);
-			C2 (currentColumnChanged, CurrentColumnChanged, const QModelIndex&, const QModelIndex&);
-			C2 (currentRowChanged, CurrentRowChanged, const QModelIndex&, const QModelIndex&);
+			C2 (currentChanged, CurrentChanged, QModelIndex, QModelIndex);
+			C2 (currentColumnChanged, CurrentColumnChanged, QModelIndex, QModelIndex);
+			C2 (currentRowChanged, CurrentRowChanged, QModelIndex, QModelIndex);
 		}
 #undef C2
 	}
 
 	void SummaryWidget::ConnectObject (QObject *object)
 	{
-		const QMetaObject *mo = object->metaObject ();
+		const auto *mo = object->metaObject ();
 
 #define C1(sig,sl,arg) \
 		if (mo->indexOfMethod (QMetaObject::normalizedSignature ("handleTasksTree" #sl "(" #arg ")")) != -1) \
@@ -198,11 +198,11 @@ namespace Summary
 					object, \
 					SLOT (handleTasksTree##sl (arg)));
 
-		C1 (activated, Activated, const QModelIndex&);
-		C1 (clicked, Clicked, const QModelIndex&);
-		C1 (doubleClicked, DoubleClicked, const QModelIndex&);
-		C1 (entered, Entered, const QModelIndex&);
-		C1 (pressed, Pressed, const QModelIndex&);
+		C1 (activated, Activated, QModelIndex);
+		C1 (clicked, Clicked, QModelIndex);
+		C1 (doubleClicked, DoubleClicked, QModelIndex);
+		C1 (entered, Entered, QModelIndex);
+		C1 (pressed, Pressed, QModelIndex);
 		C1 (viewportEntered, ViewportEntered, );
 #undef C1
 	}
