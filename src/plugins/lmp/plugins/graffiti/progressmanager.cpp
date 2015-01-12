@@ -29,6 +29,7 @@
 
 #include "progressmanager.h"
 #include <QStandardItemModel>
+#include <util/xpc/util.h>
 #include <interfaces/ijobholder.h>
 #include "cuesplitter.h"
 
@@ -83,8 +84,7 @@ namespace Graffiti
 
 		auto item = list.at (JobHolderColumn::JobProgress);
 		item->setText (tr ("%1 of %2").arg (fetched).arg (total));
-		item->setData (fetched, ProcessState::Done);
-		item->setData (total, ProcessState::Total);
+		Util::SetJobHolderProgress (item, fetched, total);
 	}
 
 	void ProgressManager::handleCueSplitter (CueSplitter *splitter)
