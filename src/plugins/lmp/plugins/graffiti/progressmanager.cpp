@@ -125,12 +125,8 @@ namespace Graffiti
 		if (done == total)
 			return;
 
-		const auto& list = Splitter2Row_ [splitter];
-
-		auto item = list.at (JobHolderColumn::JobProgress);
-		item->setText (tr ("%1 of %2").arg (done).arg (total));
-		item->setData (done, ProcessState::Done);
-		item->setData (total, ProcessState::Total);
+		Util::SetJobHolderProgress (Splitter2Row_ [splitter], done, total,
+				tr ("%1 of %2").arg (done).arg (total));
 	}
 
 	void ProgressManager::handleSplitFinished (CueSplitter *splitter)
