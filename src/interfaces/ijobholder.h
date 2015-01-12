@@ -90,9 +90,7 @@ namespace LeechCraft
 		 * BitTorrent client or an HTTP downloader.
 		 *
 		 * If a row has this type, then it also has to have meaningful
-		 * values for ProcessState::Done and ProcessState::Total roles.
-		 * These values are expected to be contained in the Progress
-		 * column (the third column).
+		 * process state for the JobHolderRole::ProcessState role.
 		 */
 		DownloadProgress,
 
@@ -100,28 +98,61 @@ namespace LeechCraft
 		 * IM, unpacking an archive or checking for new mail.
 		 *
 		 * If a row has this type, then it also has to have meaningful
-		 * values for ProcessState::Done and ProcessState::Total roles.
-		 * These values are expected to be contained in the Progress
-		 * column (the third column).
+		 * process state for the JobHolderRole::ProcessState role.
 		 */
 		ProcessProgress
 	};
 
+	/** @brief State of a single process represented in a IJobHolder model.
+	 *
+	 * This structure should be returned by the model for the
+	 * JobHolderRole::ProcessState role if the value of the
+	 * CustomDataRoles::RoleJobHolderRow role is
+	 * JobHolderRow::DownloadProgress or JobHolderRow::ProcessProgress.
+	 */
 	struct ProcessStateInfo
 	{
+		/** @brief The amount of items already processed or downloaded.
+		 *
+		 * This can be the number of already downloaded bytes in an HTTP
+		 * client, a number of messages fetched in an email client, and
+		 * so on.
+		 */
 		qlonglong Done_ = 0;
+
+		/** @brief The total amount of items to be processed or downloaded.
+		 *
+		 * This can be the number of already downloaded bytes in an HTTP
+		 * client, a number of messages fetched in an email client, and
+		 * so on.
+		 */
 		qlonglong Total_ = 0;
 
 		/** @brief The flags of the task as it was original added to the
 		 * downloader, if relevant.
+		 *
+		 * This field only makes sense if the relevant process is a
+		 * download process, that is, if value of the
+		 * CustomDataRoles::RoleJobHolderRow role is
+		 * JobHolderRow::DownloadProgress.
 		 */
 		TaskParameters Params_ = {};
 	};
 
-	/** This enum contains roles that are used to query job states.
+	/** @brief This enum contains roles that are used to query job states.
 	 */
 	enum JobHolderRole
 	{
+		/** @brief Describes the state of a process.
+		 *
+		 * This role should return a meaningful value for the
+		 * JobHolderRow::DownloadProgress and
+		 * JobHolderRow::ProcessProgress rows.
+		 *
+		 * The returned value should be a ProcessStateInfo structure.
+		 *
+		 * @sa ProcessStateInfo
+		 */
 		ProcessState = CustomDataRoles::RoleMAX + 1
 	};
 }
@@ -135,17 +166,20 @@ namespace LeechCraft
  * to implement this interface to display itself in plugins like
  * Summary.
  *
- * Model with jobs and notifications is obtained via GetRepresentation(),
+ * The model with jobs and state info is obtained via GetRepresentation(),
  * and various roles are used to retrieve controls and information pane
- * of the plugin, as well as some metadata like job progress (see
- * CustomDataRoles and ProcessState for example).
- * Returned model should have three columns: one for name, state and
- * status. Controls and additional information pane are only visible
- * when a job handled by the plugin is selected.
+ * of the plugin from that model, as well as some metadata like job
+ * progress (see JobHolderRole enumeration and ProcessStateInfo for an
+ * example).
+ *
+ * Returned model should have three columns: name, state and status.
+ * Controls and additional information pane are only visible when a job
+ * handled by the plugin is selected.
  *
  * @sa IDownloader
  * @sa CustomDataRoles
- * @sa ProcessState
+ * @sa JobHolderRole::ProcessState
+ * @sa ProcessStateInfo
  */
 class Q_DECL_EXPORT IJobHolder
 {
@@ -177,7 +211,7 @@ public:
 	 *
 	 * @sa LeechCraft::CustomDataRoles
 	 * @sa LeechCraft::JobHolderRow
-	 * @sa LeechCraft::ProcessState
+	 * @sa LeechCraft::ProcessStateInfo
 	 */
 	virtual QAbstractItemModel* GetRepresentation () const = 0;
 
