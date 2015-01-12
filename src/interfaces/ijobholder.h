@@ -137,6 +137,14 @@ namespace LeechCraft
 		 * JobHolderRow::DownloadProgress.
 		 */
 		TaskParameters Params_ = {};
+
+		enum class State
+		{
+			Unknown,
+			Running,
+			Paused,
+			Error
+		} State_ = State::Unknown;
 	};
 
 	/** @brief This enum contains roles that are used to query job states.
