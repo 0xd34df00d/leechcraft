@@ -243,8 +243,7 @@ namespace NetStoreManager
 		item->setText (tr ("%1 of %2")
 				.arg (Util::MakePrettySize (done))
 				.arg (Util::MakePrettySize (total)));
-		item->setData (done, ProcessState::Done);
-		item->setData (total, ProcessState::Total);
+		Util::SetJobHolderProgress (item, done, total);
 	}
 }
 }
