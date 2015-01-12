@@ -29,8 +29,8 @@
 
 #include "progressmanager.h"
 #include <QStandardItemModel>
-#include "sync/syncmanagerbase.h"
 #include <interfaces/ijobholder.h>
+#include "sync/syncmanagerbase.h"
 
 namespace LeechCraft
 {
