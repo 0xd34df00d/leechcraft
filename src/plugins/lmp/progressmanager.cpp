@@ -29,6 +29,7 @@
 
 #include "progressmanager.h"
 #include <QStandardItemModel>
+#include <util/xpc/util.h>
 #include <interfaces/ijobholder.h>
 #include "sync/syncmanagerbase.h"
 
@@ -89,10 +90,7 @@ namespace LMP
 			return;
 		}
 
-		auto item = row.at (JobHolderColumn::JobProgress);
-		item->setText (tr ("%1 of %2").arg (done).arg (total));
-		item->setData (done, ProcessState::Done);
-		item->setData (total, ProcessState::Total);
+		Util::SetJobHolderProgress (row, done, total, tr ("%1 of %2").arg (done).arg (total));
 	}
 
 	void ProgressManager::handleTCProgress (int done, int total, SyncManagerBase *syncer)
