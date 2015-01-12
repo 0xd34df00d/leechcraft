@@ -192,5 +192,7 @@ namespace Util
 
 	UTIL_XPC_API void SetJobHolderProgress (const QList<QStandardItem*>& row,
 			qint64 done, qint64 total, const QString& text);
+
+	UTIL_XPC_API void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total);
 }
 }

@@ -168,6 +168,11 @@ namespace Util
 	{
 		const auto item = row.value (JobHolderColumn::JobProgress);
 		item->setText (text);
+		SetJobHolderProgress (item, done, total);
+	}
+
+	void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total)
+	{
 		item->setData (done, ProcessState::Done);
 		item->setData (total, ProcessState::Total);
 	}
