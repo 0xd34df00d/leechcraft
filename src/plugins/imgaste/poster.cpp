@@ -139,12 +139,10 @@ namespace Imgaste
 
 	void Poster::setUploadProgress (qint64 done, qint64 total)
 	{
-		const auto progItem = ReprRow_.value (JobHolderColumn::JobProgress);
-		progItem->setData (done, ProcessState::Done);
-		progItem->setData (total, ProcessState::Total);
-		progItem->setText (tr ("%1 of %2")
-				.arg (Util::MakePrettySize (done))
-				.arg (Util::MakePrettySize (total)));
+		Util::SetJobHolderProgress (ReprRow_, done, total,
+				tr ("%1 of %2")
+					.arg (Util::MakePrettySize (done))
+					.arg (Util::MakePrettySize (total)));
 	}
 }
 }
