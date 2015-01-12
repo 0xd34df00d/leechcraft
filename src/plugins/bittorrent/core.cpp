@@ -697,12 +697,12 @@ namespace BitTorrent
 			return Handles_.at (row).Tags_;
 		case CustomDataRoles::RoleJobHolderRow:
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
-		case ProcessState::Done:
-			return static_cast<qlonglong> (status.total_wanted_done);
-		case ProcessState::Total:
-			return static_cast<qlonglong> (status.total_wanted);
-		case ProcessState::TaskFlags:
-			return QVariant::fromValue (Handles_.at (row).Parameters_);
+		case JobHolderRole::ProcessState:
+			return QVariant::fromValue<ProcessStateInfo> ({
+					status.total_wanted_done,
+					status.total_wanted,
+					Handles_.at (row).Parameters_
+				});
 		default:
 			return QVariant ();
 		}

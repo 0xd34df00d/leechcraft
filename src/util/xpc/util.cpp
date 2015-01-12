@@ -173,8 +173,10 @@ namespace Util
 
 	void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total)
 	{
-		item->setData (done, ProcessState::Done);
-		item->setData (total, ProcessState::Total);
+		auto data = item->data (JobHolderRole::ProcessState).value<ProcessStateInfo> ();
+		data.Done_ = done;
+		data.Total_ = total;
+		item->setData (QVariant::fromValue (data), JobHolderRole::ProcessState);
 	}
 }
 }

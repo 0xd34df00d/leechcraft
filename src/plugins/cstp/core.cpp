@@ -492,12 +492,15 @@ namespace CSTP
 			return QVariant::fromValue<QToolBar*> (Toolbar_);
 		else if (role == CustomDataRoles::RoleJobHolderRow)
 			return QVariant::fromValue<JobHolderRow> (JobHolderRow::DownloadProgress);
-		else if (role == ProcessState::Done)
-			return TaskAt (index.row ()).Task_->GetDone ();
-		else if (role == ProcessState::Total)
-			return TaskAt (index.row ()).Task_->GetTotal ();
-		else if (role == ProcessState::TaskFlags)
-			return QVariant::fromValue (TaskAt (index.row ()).Parameters_);
+		else if (role == JobHolderRole::ProcessState)
+		{
+			const auto& task = TaskAt (index.row ());
+			return QVariant::fromValue<ProcessStateInfo> ({
+					task.Task_->GetDone (),
+					task.Task_->GetTotal (),
+					task.Parameters_
+				});
+		}
 		else
 			return QVariant ();
 	}

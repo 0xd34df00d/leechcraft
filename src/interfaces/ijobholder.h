@@ -107,32 +107,22 @@ namespace LeechCraft
 		ProcessProgress
 	};
 
-	/** This enum contains roles that are used to query against process
-	 * or download completion.
-	 *
-	 * Rows of types JobHolderRow::DownloadProgress and
-	 * JobHolderRow::ProcessProgress are expected to return meaningful
-	 * values for roles of this enum.
-	 */
-	enum ProcessState
+	struct ProcessStateInfo
 	{
-		/** This role is expected to contain a qlonglong meaning how much
-		 * of the task is completed. For example, how much bytes are
-		 * transferred for a download task or how much files are unpacked
-		 * in an archive.
-		 */
-		Done = CustomDataRoles::RoleMAX + 1,
+		qlonglong Done_ = 0;
+		qlonglong Total_ = 0;
 
-		/** This role is expected to contain a qlonglong meaning the total
-		 * size of the task. For example, how big is the file to be
-		 * downloaded, or how many files an archive contains.
+		/** @brief The flags of the task as it was original added to the
+		 * downloader, if relevant.
 		 */
-		Total,
+		TaskParameters Params_ = {};
+	};
 
-		/** This role is expected to contain the flags of the task as it
-		 * was originally added to the downloader.
-		 */
-		TaskFlags
+	/** This enum contains roles that are used to query job states.
+	 */
+	enum JobHolderRole
+	{
+		ProcessState = CustomDataRoles::RoleMAX + 1
 	};
 }
 
@@ -197,5 +187,7 @@ public:
 };
 
 Q_DECLARE_METATYPE (LeechCraft::JobHolderRow);
+Q_DECLARE_METATYPE (LeechCraft::ProcessStateInfo);
 Q_DECLARE_METATYPE (QAbstractItemModel*);
+
 Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
