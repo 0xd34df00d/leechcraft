@@ -565,8 +565,7 @@ namespace Azoth
 					.arg (Util::MakePrettySize (done))
 					.arg (Util::MakePrettySize (total))
 					.arg (done * 100 / total));
-		progress->setData (done, ProcessState::Done);
-		progress->setData (total, ProcessState::Total);
+		Util::SetJobHolderProgress (progress, done, total);
 	}
 
 	void TransferJobManager::handleAbortAction ()
