@@ -29,6 +29,7 @@
 
 #include "infomodelmanager.h"
 #include <QStandardItemModel>
+#include <QUrl>
 #include <util/models/rolenamesmixin.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ijobholder.h>
@@ -48,7 +49,8 @@ namespace TPI
 			{
 				Done = Qt::UserRole + 1,
 				Total,
-				Name
+				Name,
+				StateIcon
 			};
 
 			InfoModel (QObject *parent)
@@ -58,6 +60,7 @@ namespace TPI
 				roleNames [Roles::Done] = "jobDone";
 				roleNames [Roles::Total] = "jobTotal";
 				roleNames [Roles::Name] = "jobName";
+				roleNames [Roles::StateIcon] = "stateIcon";
 				setRoleNames (roleNames);
 			}
 		};
@@ -140,6 +143,30 @@ namespace TPI
 		}
 	}
 
+	namespace
+	{
+		QUrl GetIconUrl (ProcessStateInfo::State state)
+		{
+			switch (state)
+			{
+			case ProcessStateInfo::State::Unknown:
+				return QUrl { "image://ThemeIcons/dialog-information" };
+			case ProcessStateInfo::State::Running:
+				return QUrl { "image://ThemeIcons/media-playback-start" };
+			case ProcessStateInfo::State::Paused:
+				return QUrl { "image://ThemeIcons/media-playback-pause" };
+			case ProcessStateInfo::State::Error:
+				return QUrl { "image://ThemeIcons/dialog-error" };
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown process info state"
+					<< static_cast<int> (state);
+
+			return QUrl { "image://ThemeIcons/dialog-information" };
+		}
+	}
+
 	void InfoModelManager::HandleData (QAbstractItemModel *model, int from, int to)
 	{
 		for (int i = from; i <= to; ++i)
@@ -177,6 +204,7 @@ namespace TPI
 			item->setData (static_cast<double> (total), InfoModel::Roles::Total);
 			item->setData (model->index (i, JobHolderColumn::JobName).data ().toString (),
 					InfoModel::Roles::Name);
+			item->setData (GetIconUrl (state.State_), InfoModel::Roles::StateIcon);
 		}
 	}
 
