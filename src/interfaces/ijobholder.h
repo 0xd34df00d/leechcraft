@@ -145,6 +145,21 @@ namespace LeechCraft
 			Paused,
 			Error
 		} State_ = State::Unknown;
+
+		ProcessStateInfo () = default;
+
+		ProcessStateInfo (qlonglong done, qlonglong total, TaskParameters params)
+		: ProcessStateInfo { done, total, params, State::Unknown }
+		{
+		}
+
+		ProcessStateInfo (qlonglong done, qlonglong total, TaskParameters params, State state)
+		: Done_ { done }
+		, Total_ { total }
+		, Params_ { params }
+		, State_ { state }
+		{
+		}
 	};
 
 	/** @brief This enum contains roles that are used to query job states.
