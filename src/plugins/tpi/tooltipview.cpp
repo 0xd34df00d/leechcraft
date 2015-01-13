@@ -40,7 +40,7 @@ namespace LeechCraft
 namespace TPI
 {
 	TooltipView::TooltipView (QAbstractItemModel *model,
-			IColorThemeManager *manager, QWidget *parent)
+			const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QDeclarativeView (parent)
 	, UnhoverDeleter_ (new Util::UnhoverDeleteMixin (this, SLOT (hide ())))
 	{
@@ -49,7 +49,8 @@ namespace TPI
 		setAttribute (Qt::WA_TranslucentBackground);
 
 		rootContext ()->setContextProperty ("infoModel", model);
-		rootContext ()->setContextProperty ("colorProxy", new Util::ColorThemeProxy (manager, this));
+		rootContext ()->setContextProperty ("colorProxy",
+				new Util::ColorThemeProxy (proxy->GetColorThemeManager (), this));
 
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);

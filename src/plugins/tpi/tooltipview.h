@@ -30,9 +30,9 @@
 #pragma once
 
 #include <QDeclarativeView>
+#include <interfaces/core/icoreproxy.h>
 
 class QAbstractItemModel;
-class IColorThemeManager;
 
 namespace LeechCraft
 {
@@ -47,7 +47,7 @@ namespace TPI
 	{
 		Util::UnhoverDeleteMixin * const UnhoverDeleter_;
 	public:
-		TooltipView (QAbstractItemModel*, IColorThemeManager*, QWidget* = 0);
+		TooltipView (QAbstractItemModel*, const ICoreProxy_ptr&, QWidget* = 0);
 
 		void Hovered ();
 		void Unhovered ();
