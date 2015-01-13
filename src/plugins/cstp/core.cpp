@@ -495,10 +495,18 @@ namespace CSTP
 		else if (role == JobHolderRole::ProcessState)
 		{
 			const auto& task = TaskAt (index.row ());
+
+			auto state = ProcessStateInfo::State::Running;
+			if (task.ErrorFlag_)
+				state = ProcessStateInfo::State::Error;
+			else if (!task.Task_->IsRunning ())
+				state = ProcessStateInfo::State::Paused;
+
 			return QVariant::fromValue<ProcessStateInfo> ({
 					task.Task_->GetDone (),
 					task.Task_->GetTotal (),
-					task.Parameters_
+					task.Parameters_,
+					state
 				});
 		}
 		else
