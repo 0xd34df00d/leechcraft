@@ -45,7 +45,7 @@ namespace TPI
 {
 	class TooltipView : public QDeclarativeView
 	{
-		Util::UnhoverDeleteMixin *UnhoverDeleter_;
+		Util::UnhoverDeleteMixin * const UnhoverDeleter_;
 	public:
 		TooltipView (QAbstractItemModel*, IColorThemeManager*, QWidget* = 0);
 
