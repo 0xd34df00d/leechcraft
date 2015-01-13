@@ -34,6 +34,7 @@
 #include <util/sys/paths.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/themeimageprovider.h>
 
 namespace LeechCraft
 {
@@ -55,7 +56,9 @@ namespace TPI
 		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
 			engine ()->addImportPath (cand);
 
-		setSource (QUrl::fromLocalFile (Util::GetSysPath (Util::SysPath::QML, "tpi", "Tooltip.qml")));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "tpi", "Tooltip.qml"));
 	}
 
 	void TooltipView::Hovered ()
