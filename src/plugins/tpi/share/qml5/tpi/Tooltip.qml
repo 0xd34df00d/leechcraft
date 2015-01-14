@@ -44,6 +44,19 @@ Window {
                     }
                 }
 
+                Image {
+                    id: stateImage
+                    source: stateIcon
+
+                    width: 32
+                    height: width
+
+                    anchors.top: parent.top
+                    anchors.topMargin: (rowHeight - height) / 2
+                    anchors.left: parent.left
+                    anchors.leftMargin: 3
+                }
+
                 Text {
                     id: jobNameLabel
                     text: jobName + ": " + Math.floor(100 * jobDone / jobTotal) + "%"
@@ -52,7 +65,7 @@ Window {
 
                     anchors.top: parent.top
                     anchors.topMargin: 5
-                    anchors.left: parent.left
+                    anchors.left: stateImage.right
                     anchors.leftMargin: 3
                     anchors.right: parent.right
                     anchors.rightMargin: 3
@@ -65,7 +78,7 @@ Window {
 
                     anchors.top: jobNameLabel.bottom
                     anchors.topMargin: 3
-                    anchors.left: parent.left
+                    anchors.left: stateImage.right
                     anchors.leftMargin: 3
                     anchors.right: parent.right
                     anchors.rightMargin: 3
