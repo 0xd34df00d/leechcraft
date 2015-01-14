@@ -376,6 +376,16 @@ namespace VelvetBird
 			proto->Release ();
 		Protocols_.clear ();
 
+		AccUiOps.status_changed = nullptr;
+		ConnUiOps.connected = nullptr;
+		ConnUiOps.disconnected = nullptr;
+		ConnUiOps.report_disconnect_reason = nullptr;
+		BListUiOps.show = nullptr;
+		BListUiOps.update = nullptr;
+		BListUiOps.remove = nullptr;
+		ConvUiOps.write_im = nullptr;
+		ConvUiOps.write_conv = nullptr;
+
 		purple_core_quit ();
 	}
 
