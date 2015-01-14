@@ -39,8 +39,6 @@ namespace VelvetBird
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		ProtoMgr_ = 0;
-
 		PurpleLib_.setLoadHints (QLibrary::ExportExternalSymbolsHint | QLibrary::ResolveAllSymbolsHint);
 		PurpleLib_.setFileNameAndVersion ("purple", 0);
 		if (!PurpleLib_.load ())

@@ -54,7 +54,7 @@ namespace VelvetBird
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Zheet")
 
 		QLibrary PurpleLib_;
-		ProtoManager *ProtoMgr_;
+		ProtoManager *ProtoMgr_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
