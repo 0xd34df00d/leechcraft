@@ -439,7 +439,6 @@ namespace Poshuku
 
 	void CustomWebView::keyReleaseEvent (QKeyEvent *event)
 	{
-		bool handled = false;
 		if (event->matches (QKeySequence::Copy))
 			pageAction (QWebPage::Copy)->trigger ();
 		else if (event->key () == Qt::Key_F6)
