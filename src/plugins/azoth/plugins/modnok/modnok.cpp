@@ -36,6 +36,7 @@
 #include <interfaces/azoth/irichtextmessage.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/qtutil.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -57,22 +58,25 @@ namespace Modnok
 				this, "handleCacheSize");
 		handleCacheSize ();
 
-		QList<QByteArray> invalidates;
-		invalidates << "HorizontalDPI"
-				<< "VerticalDPI"
-				<< "TextColor";
-		XmlSettingsManager::Instance ().RegisterObject (invalidates, this, "clearCaches");
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"HorizontalDPI",
+					"VerticalDPI",
+					"TextColor"
+				},
+				this, "clearCaches");
 
-		QStringList candidates;
-		candidates << "/usr/local/bin"
-				<< "/usr/bin"
-				<< "/usr/local/share/leechcraft/azoth"
-				<< "/usr/share/leechcraft/azoth";
-
-		Q_FOREACH (const QString& dir, candidates)
+		const QStringList candidates
 		{
-			const QString& path = dir + "/lc_azoth_modnok_latexconvert.sh";
-			QFileInfo info (path);
+			"/usr/local/bin",
+			"/usr/bin",
+			"/usr/local/share/leechcraft/azoth",
+			"/usr/share/leechcraft/azoth"
+		};
+
+		for (const auto& dir : candidates)
+		{
+			const auto& path = dir + "/lc_azoth_modnok_latexconvert.sh";
+			QFileInfo info { path };
 			if (info.exists () &&
 					info.isReadable () &&
 					info.isExecutable ())
@@ -212,15 +216,15 @@ namespace Modnok
 		if (replaceMap.isEmpty ())
 			return body;
 
-		Q_FOREACH (const QString& key, replaceMap.keys ())
+		for (const auto& pair : Util::Stlize (replaceMap))
 		{
-			QString escFormula = key;
+			auto escFormula = pair.first;
 			escFormula.replace ('\"', "&quot;");
 			escFormula.remove ("$$");
 			const QString img = QString ("<img src=\"%1\" alt=\"%2\" style=\"vertical-align: middle;\" />")
-					.arg (replaceMap [key])
+					.arg (pair.second)
 					.arg (escFormula.trimmed ().simplified ());
-			body.replace (key, img);
+			body.replace (pair.first, img);
 		}
 
 		return body;
