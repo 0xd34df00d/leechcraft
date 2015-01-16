@@ -195,6 +195,9 @@ namespace Modnok
 			const QString& match = rx.cap (0);
 			pos += rx.matchedLength ();
 
+			if (replaceMap.contains (match))
+				continue;
+
 			QString formula = match;
 			formula.remove ("$$");
 			formula = formula.trimmed ();
