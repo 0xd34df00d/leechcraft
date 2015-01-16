@@ -71,6 +71,8 @@ namespace Murm
 		void RequestHistory (const QModelIndex&, int, int);
 	private:
 		void Request (int);
+
+		void AddUserItem (const QVariantMap&);
 	public slots:
 		void refresh ();
 	private slots:

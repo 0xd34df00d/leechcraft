@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/serializejson.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "vkaccount.h"
 #include "vkentry.h"
@@ -138,6 +139,25 @@ namespace Murm
 		Acc_->GetConnection ()->QueueRequest (getter);
 	}
 
+	void ServerHistoryManager::AddUserItem (const QVariantMap& varmap)
+	{
+		const auto uid = varmap ["user_id"].toULongLong ();
+		const auto ts = varmap ["date"].toULongLong ();
+
+		const auto entry = Acc_->GetEntry (uid);
+		if (!entry)
+			return;
+
+		auto item = new QStandardItem (entry->GetEntryName ());
+		item->setEditable (false);
+		item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
+		item->setData (QVariant::fromValue<QObject*> (Acc_->GetEntry (uid)),
+				ServerHistoryRole::CLEntry);
+		item->setData (uid, CustomHistRole::UserUid);
+		item->setData (entry->GetEntryName (), CustomHistRole::UserName);
+		ContactsModel_->appendRow (item);
+	}
+
 	void ServerHistoryManager::refresh ()
 	{
 		if (IsRefreshing_)
@@ -240,27 +260,12 @@ namespace Murm
 			if (varmap.isEmpty ())
 				continue;
 
-			// TODO handle MUCs
 			if (varmap.contains ("admin_id"))
-				continue;
-
-			const auto uid = varmap ["user_id"].toULongLong ();
-			const auto ts = varmap ["date"].toULongLong ();
-
-			const auto entry = Acc_->GetEntry (uid);
-			if (!entry)
-				continue;
-
-			auto item = new QStandardItem (entry->GetEntryName ());
-			item->setEditable (false);
-			item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
-			item->setData (QVariant::fromValue<QObject*> (Acc_->GetEntry (uid)),
-					ServerHistoryRole::CLEntry);
-			item->setData (uid, CustomHistRole::UserUid);
-			item->setData (entry->GetEntryName (), CustomHistRole::UserName);
-			ContactsModel_->appendRow (item);
+				qDebug () << Q_FUNC_INFO
+						<< Util::SerializeJson (varmap, false);
+			else
+				AddUserItem (varmap);
 		}
-
 
 		if (LastOffset_ + DlgChunkCount < MsgCount_)
 		{
