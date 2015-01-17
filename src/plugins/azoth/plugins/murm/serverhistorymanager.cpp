@@ -53,6 +53,7 @@ namespace Murm
 		enum CustomHistRole
 		{
 			UserUid = ServerHistoryRole::ServerHistoryRoleMax,
+			ChatUid,
 			UserName
 		};
 	}
@@ -159,12 +160,14 @@ namespace Murm
 
 	void ServerHistoryManager::AddRoomItem (const QVariantMap& varmap)
 	{
+		const auto chatId = varmap ["chat_id"].toULongLong ();
 		const auto ts = varmap ["date"].toULongLong ();
 		const auto& title = varmap ["title"].toString ();
 
 		auto item = new QStandardItem { title };
 		item->setEditable (false);
 		item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
+		item->setData (chatId, CustomHistRole::ChatUid);
 		item->setData (title, CustomHistRole::UserName);
 		ContactsModel_->appendRow (item);
 	}
