@@ -86,15 +86,19 @@ namespace Murm
 
 		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
 
-		const auto uid = index.data (CustomHistRole::UserUid).toULongLong ();
+		const auto uidVar = index.data (CustomHistRole::UserUid);
+		const auto chatIdVar = index.data (CustomHistRole::ChatUid);
+		const auto paramName = uidVar.isValid () ?
+				"uid" :
+				"chat_id";
+		const auto uid = (uidVar.isValid () ? uidVar : chatIdVar).toULongLong ();
 
-		auto getter = [count, offset, nam, uid, index, this]
-				(const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
+		auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.getHistory");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("uid", QString::number (uid))
+						(paramName, QString::number (uid))
 						("count", QString::number (count))
 						("offset", QString::number (offset));
 				VkConnection::AddParams (url, params);
