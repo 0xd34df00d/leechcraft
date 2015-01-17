@@ -157,6 +157,18 @@ namespace Murm
 		ContactsModel_->appendRow (item);
 	}
 
+	void ServerHistoryManager::AddRoomItem (const QVariantMap& varmap)
+	{
+		const auto ts = varmap ["date"].toULongLong ();
+		const auto& title = varmap ["title"].toString ();
+
+		auto item = new QStandardItem { title };
+		item->setEditable (false);
+		item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
+		item->setData (title, CustomHistRole::UserName);
+		ContactsModel_->appendRow (item);
+	}
+
 	void ServerHistoryManager::refresh ()
 	{
 		if (IsRefreshing_)
@@ -260,8 +272,7 @@ namespace Murm
 				continue;
 
 			if (varmap.contains ("admin_id"))
-				qDebug () << Q_FUNC_INFO
-						<< Util::SerializeJson (varmap, false);
+				AddRoomItem (varmap);
 			else
 				AddUserItem (varmap);
 		}

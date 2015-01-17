@@ -73,6 +73,7 @@ namespace Murm
 		void Request (int);
 
 		void AddUserItem (const QVariantMap&);
+		void AddRoomItem (const QVariantMap&);
 	public slots:
 		void refresh ();
 	private slots:
