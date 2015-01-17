@@ -151,8 +151,7 @@ namespace Murm
 		auto item = new QStandardItem (entry->GetEntryName ());
 		item->setEditable (false);
 		item->setData (QDateTime::fromTime_t (ts), ServerHistoryRole::LastMessageDate);
-		item->setData (QVariant::fromValue<QObject*> (Acc_->GetEntry (uid)),
-				ServerHistoryRole::CLEntry);
+		item->setData (QVariant::fromValue<QObject*> (entry), ServerHistoryRole::CLEntry);
 		item->setData (uid, CustomHistRole::UserUid);
 		item->setData (entry->GetEntryName (), CustomHistRole::UserName);
 		ContactsModel_->appendRow (item);
