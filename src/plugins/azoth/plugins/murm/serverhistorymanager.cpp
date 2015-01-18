@@ -39,6 +39,7 @@
 #include "vkaccount.h"
 #include "vkentry.h"
 #include "logger.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -278,35 +279,69 @@ namespace Murm
 
 		const auto& varmap = replyVar.toMap ();
 
-		SrvHistMessages_t messages;
+		QList<qulonglong> toRequest;
+		QList<QPair<SrvHistMessage, qulonglong>> messages;
 		for (const auto& var : varmap ["response"].toMap () ["items"].toList ())
 		{
 			const auto& map = var.toMap ();
 			if (map.isEmpty ())
 				continue;
 
-			qDebug () << Q_FUNC_INFO
-					<< Util::SerializeJson (var);
+			const auto from = map ["from_id"].toULongLong ();
 
 			const auto& username = reqContext.Index_.data (CustomHistRole::UserName).toString ();
 
 			messages.append ({
-					IMessage::Direction::In,
-					{},
-					username,
-					map ["body"].toString (),
-					QDateTime::fromTime_t (map ["date"].toULongLong ()),
-					{}
+					{
+						IMessage::Direction::In,
+						{},
+						username,
+						map ["body"].toString (),
+						QDateTime::fromTime_t (map ["date"].toULongLong ()),
+						{}
+					},
+					from
 				});
+
+			if (const auto entry = Acc_->GetEntry (from))
+				messages.last ().first.Nick_ = entry->GetEntryName ();
+			else
+				toRequest << from;
 		}
 
-		for (int i = 0; i < messages.size (); ++i)
-			messages [i].ID_ = QByteArray::number (reqContext.Offset_ + i);
+		auto infosHandler = [this, messages, reqContext] (const QList<UserInfo>& infos)
+		{
+			const auto& infosMap = [&infos]
+			{
+				QHash<qulonglong, UserInfo> infosMap;
+				for (const auto& info : infos)
+					infosMap [info.ID_] = info;
+				return infosMap;
+			} ();
 
-		std::reverse (messages.begin (), messages.end ());
+			SrvHistMessages_t result;
+			for (int i = 0; i < messages.size (); ++i)
+			{
+				const auto& pair = messages [i];
+				auto message = pair.first;
+				message.ID_ = QByteArray::number (reqContext.Offset_ + i);
 
-		emit serverHistoryFetched (reqContext.Index_,
-				QByteArray::number (reqContext.Offset_), messages);
+				if (infosMap.contains (pair.second))
+					message.Nick_ = FormatUserInfoName (infosMap.value (pair.second));
+
+				result << message;
+			}
+
+			std::reverse (result.begin (), result.end ());
+
+			emit serverHistoryFetched (reqContext.Index_,
+					QByteArray::number (reqContext.Offset_), result);
+		};
+
+		if (!toRequest.isEmpty ())
+			Acc_->GetConnection ()->GetUserInfo (toRequest, infosHandler);
+		else
+			infosHandler ({});
 	}
 
 	void ServerHistoryManager::handleGotMessagesList ()
