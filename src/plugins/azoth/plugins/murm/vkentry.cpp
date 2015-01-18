@@ -41,6 +41,7 @@
 #include "groupsmanager.h"
 #include "vkchatentry.h"
 #include "georesolver.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -383,12 +384,7 @@ namespace Murm
 
 	QString VkEntry::GetEntryName () const
 	{
-		auto string = XmlSettingsManager::Instance ().property ("EntryNameFormat").toString ();
-		string.replace ("$name", Info_.FirstName_);
-		string.replace ("$surname", Info_.LastName_);
-		string.replace ("$nick", Info_.Nick_);
-		string.replace ("  ", " ");
-		return string;
+		return FormatUserInfoName (Info_);
 	}
 
 	void VkEntry::SetEntryName (const QString&)
