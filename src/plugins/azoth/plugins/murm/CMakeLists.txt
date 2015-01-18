@@ -36,6 +36,7 @@ set (MURM_SRCS
 	vkconnectiontunesetter.cpp
 	transfermanager.cpp
 	pendingupload.cpp
+	util.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
