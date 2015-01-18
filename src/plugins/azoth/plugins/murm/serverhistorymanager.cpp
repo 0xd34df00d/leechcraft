@@ -87,34 +87,58 @@ namespace Murm
 		const auto nam = Acc_->GetCoreProxy ()->GetNetworkAccessManager ();
 
 		const auto uidVar = index.data (CustomHistRole::UserUid);
-		const auto chatIdVar = index.data (CustomHistRole::ChatUid);
-		const auto paramName = uidVar.isValid () ?
-				"uid" :
-				"chat_id";
-		const auto uid = (uidVar.isValid () ? uidVar : chatIdVar).toULongLong ();
+		if (uidVar.isValid ())
+		{
+			const auto uid = uidVar.toULongLong ();
+			auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
+				{
+					QUrl url ("https://api.vk.com/method/messages.getHistory");
+					Util::UrlOperator { url }
+							("access_token", key)
+							("uid", QString::number (uid))
+							("count", QString::number (count))
+							("offset", QString::number (offset));
+					VkConnection::AddParams (url, params);
 
-		auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
-			{
-				QUrl url ("https://api.vk.com/method/messages.getHistory");
-				Util::UrlOperator { url }
-						("access_token", key)
-						(paramName, QString::number (uid))
-						("count", QString::number (count))
-						("offset", QString::number (offset));
-				VkConnection::AddParams (url, params);
+					LastOffset_ = offset;
 
-				LastOffset_ = offset;
+					auto reply = nam->get (QNetworkRequest (url));
+					MsgRequestState_ [reply] = RequestState { index, offset };
+					connect (reply,
+							SIGNAL (finished ()),
+							this,
+							SLOT (handleGotHistory ()));
+					return reply;
+				};
 
-				auto reply = nam->get (QNetworkRequest (url));
-				MsgRequestState_ [reply] = RequestState { index, offset };
-				connect (reply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleGotHistory ()));
-				return reply;
-			};
+			Acc_->GetConnection ()->QueueRequest (getter);
+		}
+		else
+		{
+			const auto chatId = index.data (CustomHistRole::ChatUid).toULongLong ();
+			auto getter = [=] (const QString& key, const VkConnection::UrlParams_t& params)
+				{
+					QUrl url ("https://api.vk.com/method/messages.getHistory");
+					Util::UrlOperator { url }
+							("access_token", key)
+							("chat_id", QString::number (chatId))
+							("count", QString::number (count))
+							("offset", QString::number (offset));
+					VkConnection::AddParams (url, params);
 
-		Acc_->GetConnection ()->QueueRequest (getter);
+					LastOffset_ = offset;
+
+					auto reply = nam->get (QNetworkRequest (url));
+					MsgRequestState_ [reply] = RequestState { index, offset };
+					connect (reply,
+							SIGNAL (finished ()),
+							this,
+							SLOT (handleGotChatHistory ()));
+					return reply;
+				};
+
+			Acc_->GetConnection ()->QueueRequest (getter);
+		}
 	}
 
 	void ServerHistoryManager::Request (int offset)
@@ -222,6 +246,52 @@ namespace Murm
 
 			messages.append ({
 					dir,
+					{},
+					username,
+					map ["body"].toString (),
+					QDateTime::fromTime_t (map ["date"].toULongLong ()),
+					{}
+				});
+		}
+
+		for (int i = 0; i < messages.size (); ++i)
+			messages [i].ID_ = QByteArray::number (reqContext.Offset_ + i);
+
+		std::reverse (messages.begin (), messages.end ());
+
+		emit serverHistoryFetched (reqContext.Index_,
+				QByteArray::number (reqContext.Offset_), messages);
+	}
+
+	void ServerHistoryManager::handleGotChatHistory ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		const auto& reqContext = MsgRequestState_.take (reply);
+
+		const auto& replyVar = Util::ParseJson (reply, Q_FUNC_INFO);
+		if (replyVar.isNull ())
+			return;
+
+		Acc_->GetLogger () << replyVar;
+
+		const auto& varmap = replyVar.toMap ();
+
+		SrvHistMessages_t messages;
+		for (const auto& var : varmap ["response"].toMap () ["items"].toList ())
+		{
+			const auto& map = var.toMap ();
+			if (map.isEmpty ())
+				continue;
+
+			qDebug () << Q_FUNC_INFO
+					<< Util::SerializeJson (var);
+
+			const auto& username = reqContext.Index_.data (CustomHistRole::UserName).toString ();
+
+			messages.append ({
+					IMessage::Direction::In,
 					{},
 					username,
 					map ["body"].toString (),

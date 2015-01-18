@@ -78,6 +78,7 @@ namespace Murm
 		void refresh ();
 	private slots:
 		void handleGotHistory ();
+		void handleGotChatHistory ();
 		void handleGotMessagesList ();
 	signals:
 		void serverHistoryFetched (const QModelIndex&,
