@@ -1045,11 +1045,15 @@ namespace Xoox
 			if (commandable.isEmpty ())
 				return;
 			else if (commandable.size () == 1)
-				jid += '/' + commandable.first ();
+			{
+				const auto& var = commandable.first ();
+				if (!var.isEmpty ())
+					jid += '/' + var;
+			}
 			else
 			{
 				bool ok = true;
-				const QString& var = QInputDialog::getItem (0,
+				const auto& var = QInputDialog::getItem (0,
 						tr ("Select resource"),
 						tr ("Select resource for which to fetch the commands"),
 						commandable,
