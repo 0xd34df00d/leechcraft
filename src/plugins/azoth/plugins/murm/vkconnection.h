@@ -189,6 +189,7 @@ namespace Murm
 		void RequestGeoIds (const QList<int>&, GeoSetter_f, GeoIdType);
 
 		void GetUserInfo (const QList<qulonglong>& ids);
+		void GetUserInfo (const QList<qulonglong>& ids, const std::function<void (QList<UserInfo>)>&);
 
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
@@ -247,7 +248,6 @@ namespace Murm
 		void handleGotFriendLists ();
 		void handleGotFriends ();
 		void handleGotNRI ();
-		void handleGotUserInfo ();
 		void handleGotUnreadMessages ();
 
 		void handleChatCreated ();

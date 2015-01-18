@@ -38,6 +38,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include "longpollmanager.h"
 #include "logger.h"
 #include "xmlsettingsmanager.h"
@@ -311,9 +312,75 @@ namespace Murm
 
 	void VkConnection::GetUserInfo (const QList<qulonglong>& ids)
 	{
+		GetUserInfo (ids,
+				[this] (const QList<UserInfo>& ids) { emit gotUsers (ids); });
+	}
+
+	namespace
+	{
+		UserInfo UserMap2Info (const QVariantMap& userMap)
+		{
+			QList<qulonglong> lists;
+			for (const auto& item : userMap ["lists"].toList ())
+				lists << item.toULongLong ();
+
+			auto dateString = userMap ["bdate"].toString ();
+			if (dateString.count ('.') == 1)
+				dateString += ".1800";
+
+			const auto& contacts = userMap ["contacts"].toMap ();
+
+			return
+			{
+				userMap ["id"].toULongLong (),
+
+				userMap ["first_name"].toString (),
+				userMap ["last_name"].toString (),
+				userMap ["nickname"].toString (),
+
+				QUrl (userMap ["photo"].toString ()),
+				QUrl (userMap ["photo_big"].toString ()),
+
+				userMap ["sex"].toInt (),
+
+				QDate::fromString (dateString, "d.M.yyyy"),
+
+				contacts ["home_phone"].toString (),
+				contacts ["mobile_phone"].toString (),
+
+				userMap ["timezone"].toInt (),
+				userMap ["country"].toInt (),
+				userMap ["city"].toInt (),
+
+				static_cast<bool> (userMap ["online"].toULongLong ()),
+
+				lists
+			};
+		}
+
+		QList<UserInfo> ParseUsers (const QVariantList& usersList)
+		{
+			QList<UserInfo> users;
+
+			for (const auto& item : usersList)
+			{
+				const auto& userMap = item.toMap ();
+				if (userMap.contains ("deactivated"))
+					continue;
+
+				users << UserMap2Info (userMap);
+			}
+
+			return users;
+		}
+	}
+
+	void VkConnection::GetUserInfo (const QList<qulonglong>& ids,
+			const std::function<void (QList<UserInfo>)>& cont)
+	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		const auto& joined = CommaJoin (ids);
-		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/users.get");
 				Util::UrlOperator { url }
@@ -324,11 +391,31 @@ namespace Murm
 
 				AddParams (url, params);
 
-				auto reply = nam->get (QNetworkRequest (url));
-				connect (reply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleGotUserInfo ()));
+				auto reply = nam->get (QNetworkRequest { url });
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[this, reply, cont]
+					{
+						if (!CheckFinishedReply (reply))
+							return;
+
+						const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
+						Logger_ << "got users reply" << data;
+						try
+						{
+							CheckReplyData (data, reply);
+						}
+						catch (const CommandException&)
+						{
+							return;
+						}
+
+						cont (ParseUsers (data.toMap () ["response"].toList ()));
+					},
+					reply,
+					SIGNAL (finished ()),
+					reply
+				};
 				return reply;
 			});
 		AuthMgr_->GetAuthKey ();
@@ -1003,49 +1090,6 @@ namespace Murm
 		emit addedLists ({ { id, name } });
 	}
 
-	namespace
-	{
-		UserInfo UserMap2Info (const QVariantMap& userMap)
-		{
-			QList<qulonglong> lists;
-			for (const auto& item : userMap ["lists"].toList ())
-				lists << item.toULongLong ();
-
-			auto dateString = userMap ["bdate"].toString ();
-			if (dateString.count ('.') == 1)
-				dateString += ".1800";
-
-			const auto& contacts = userMap ["contacts"].toMap ();
-
-			return
-			{
-				userMap ["id"].toULongLong (),
-
-				userMap ["first_name"].toString (),
-				userMap ["last_name"].toString (),
-				userMap ["nickname"].toString (),
-
-				QUrl (userMap ["photo"].toString ()),
-				QUrl (userMap ["photo_big"].toString ()),
-
-				userMap ["sex"].toInt (),
-
-				QDate::fromString (dateString, "d.M.yyyy"),
-
-				contacts ["home_phone"].toString (),
-				contacts ["mobile_phone"].toString (),
-
-				userMap ["timezone"].toInt (),
-				userMap ["country"].toInt (),
-				userMap ["city"].toInt (),
-
-				static_cast<bool> (userMap ["online"].toULongLong ()),
-
-				lists
-			};
-		}
-	}
-
 	void VkConnection::handleGotSelfInfo ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1100,25 +1144,6 @@ namespace Murm
 
 		PushFriendsRequest ();
 		AuthMgr_->GetAuthKey ();
-	}
-
-	namespace
-	{
-		QList<UserInfo> ParseUsers (const QVariantList& usersList)
-		{
-			QList<UserInfo> users;
-
-			for (const auto& item : usersList)
-			{
-				const auto& userMap = item.toMap ();
-				if (userMap.contains ("deactivated"))
-					continue;
-
-				users << UserMap2Info (userMap);
-			}
-
-			return users;
-		}
 	}
 
 	void VkConnection::handleGotFriends ()
@@ -1185,28 +1210,6 @@ namespace Murm
 		}
 
 		emit gotNRIList (ids);
-	}
-
-	void VkConnection::handleGotUserInfo ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!CheckFinishedReply (reply))
-			return;
-
-
-		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		Logger_ << "got users reply" << data;
-		try
-		{
-			CheckReplyData (data, reply);
-		}
-		catch (const CommandException&)
-		{
-			return;
-		}
-
-		const auto& users = ParseUsers (data.toMap () ["response"].toList ());
-		emit gotUsers (users);
 	}
 
 	void VkConnection::handleGotUnreadMessages ()
