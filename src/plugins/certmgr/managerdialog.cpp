@@ -74,7 +74,7 @@ namespace CertMgr
 		}
 
 		if (!view)
-			return QSslCertificate {};
+			return {};
 
 		const auto& selected = view->selectionModel ()->selectedRows ();
 		return selected.value (0).data (CertsModel::CertificateRole).value<QSslCertificate> ();
