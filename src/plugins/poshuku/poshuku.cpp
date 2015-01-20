@@ -534,6 +534,27 @@ namespace Poshuku
 			QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
 		}
 
+		void SetSubsts ()
+		{
+			const auto& fixedFont = XmlSettingsManager::Instance ()->
+					property ("FixedFont").value<QFont> ().family ();
+			const auto& knownFamilies = QFontDatabase {}.families ();
+			const auto& substs = QFont::substitutions ();
+
+			auto setSubst = [&fixedFont, &knownFamilies, &substs] (const QString& fontName)
+			{
+				if (knownFamilies.contains (fontName))
+					return;
+
+				if (substs.contains (fontName, Qt::CaseInsensitive))
+					QFont::removeSubstitution (fontName);
+
+				QFont::insertSubstitutions (fontName, { fixedFont, "monospace" });
+			};
+			setSubst ("Consolas");
+			setSubst ("Menlo");
+		}
+
 		void SetFontSettings ()
 		{
 			const auto settings = QWebSettings::globalSettings ();
@@ -548,6 +569,8 @@ namespace Poshuku
 			setFamily (QWebSettings::SansSerifFont, "SansSerifFont");
 			setFamily (QWebSettings::CursiveFont, "CursiveFont");
 			setFamily (QWebSettings::FantasyFont, "FantasyFont");
+
+			SetSubsts ();
 		}
 	}
 
