@@ -536,18 +536,18 @@ namespace Poshuku
 
 		void SetFontSettings ()
 		{
-			QWebSettings::globalSettings ()->setFontFamily (QWebSettings::StandardFont,
-				XmlSettingsManager::Instance ()->property ("StandardFont").value<QFont> ().family ());
-			QWebSettings::globalSettings ()->setFontFamily (QWebSettings::FixedFont,
-					XmlSettingsManager::Instance ()->property ("FixedFont").value<QFont> ().family ());
-			QWebSettings::globalSettings ()->setFontFamily (QWebSettings::SerifFont,
-					XmlSettingsManager::Instance ()->property ("SerifFont").value<QFont> ().family ());
-			QWebSettings::globalSettings ()->setFontFamily (QWebSettings::SansSerifFont,
-					XmlSettingsManager::Instance ()->property ("SansSerifFont").value<QFont> ().family ());
-			QWebSettings::globalSettings ()->setFontFamily (QWebSettings::CursiveFont,
-					XmlSettingsManager::Instance ()->property ("CursiveFont").value<QFont> ().family ());
-			QWebSettings::globalSettings ()->setFontFamily (QWebSettings::FantasyFont,
-					XmlSettingsManager::Instance ()->property ("FantasyFont").value<QFont> ().family ());
+			const auto settings = QWebSettings::globalSettings ();
+			auto xsm = XmlSettingsManager::Instance ();
+			auto setFamily = [settings, xsm] (QWebSettings::FontFamily family, const char *prop)
+			{
+				settings->setFontFamily (family, xsm->property (prop).value<QFont> ().family ());
+			};
+			setFamily (QWebSettings::StandardFont, "StandardFont");
+			setFamily (QWebSettings::FixedFont, "FixedFont");
+			setFamily (QWebSettings::SerifFont, "SerifFont");
+			setFamily (QWebSettings::SansSerifFont, "SansSerifFont");
+			setFamily (QWebSettings::CursiveFont, "CursiveFont");
+			setFamily (QWebSettings::FantasyFont, "FantasyFont");
 		}
 	}
 
