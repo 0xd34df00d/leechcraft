@@ -570,7 +570,9 @@ namespace Poshuku
 			setFamily (QWebSettings::CursiveFont, "CursiveFont");
 			setFamily (QWebSettings::FantasyFont, "FantasyFont");
 
+#if QT_VERSION < 0x050000
 			SetSubsts ();
+#endif
 		}
 	}
 
