@@ -517,6 +517,11 @@ namespace Poshuku
 		default:
 		{
 			int statusCode = reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+			if (statusCode / 100 == 2 || statusCode / 100 == 3)
+			{
+				sendEnt ();
+				return;
+			}
 
 			qDebug () << Q_FUNC_INFO
 					<< "general unsupported content"
