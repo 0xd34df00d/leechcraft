@@ -155,7 +155,8 @@ namespace CertMgr
 	void ManagerDialog::updateLocalButtons ()
 	{
 		const auto& cert = GetSelectedCert (CertPart::Local);
-		Ui_.RemoveLocal_->setEnabled (!cert.isNull ());
+		const auto& selected = Ui_.LocalTree_->selectionModel ()->selectedRows ();
+		Ui_.RemoveLocal_->setEnabled (!cert.isNull () || !selected.isEmpty ());
 	}
 
 	void ManagerDialog::on_Enable__released ()
