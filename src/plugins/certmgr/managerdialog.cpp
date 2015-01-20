@@ -137,7 +137,19 @@ namespace CertMgr
 
 	void ManagerDialog::on_RemoveLocal__released ()
 	{
-		Manager_->RemoveCert (GetSelectedCert (CertPart::Local));
+		const auto& selectedCert = GetSelectedCert (CertPart::Local);
+		if (!selectedCert.isNull ())
+			Manager_->RemoveCert (selectedCert);
+		else
+		{
+			const auto& selected = Ui_.LocalTree_->selectionModel ()->selectedRows ().value (0);
+			for (auto i = 0, rc = Manager_->GetLocalModel ()->rowCount (selected); i < rc; ++i)
+			{
+				const auto& child = selected.child (i, 0);
+				const auto& certVar = child.data (CertsModel::CertificateRole);
+				Manager_->RemoveCert (certVar.value<QSslCertificate> ());
+			}
+		}
 	}
 
 	void ManagerDialog::updateLocalButtons ()
