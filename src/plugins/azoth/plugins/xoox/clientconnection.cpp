@@ -250,17 +250,17 @@ namespace Xoox
 				this,
 				SLOT (handleDisconnected ()));
 		connect (Client_,
-				SIGNAL (iqReceived (const QXmppIq&)),
+				SIGNAL (iqReceived (QXmppIq)),
 				this,
-				SLOT (handleIqReceived (const QXmppIq&)));
+				SLOT (handleIqReceived (QXmppIq)));
 		connect (Client_,
-				SIGNAL (presenceReceived (const QXmppPresence&)),
+				SIGNAL (presenceReceived (QXmppPresence)),
 				this,
-				SLOT (handlePresenceChanged (const QXmppPresence&)));
+				SLOT (handlePresenceChanged (QXmppPresence)));
 		connect (Client_,
-				SIGNAL (messageReceived (const QXmppMessage&)),
+				SIGNAL (messageReceived (QXmppMessage)),
 				this,
-				SLOT (handleMessageReceived (const QXmppMessage&)));
+				SLOT (handleMessageReceived (QXmppMessage)));
 
 		connect (MUCManager_,
 				SIGNAL (invitationReceived (QString, QString, QString)),
@@ -277,32 +277,32 @@ namespace Xoox
 				this,
 				SLOT (handleRosterReceived ()));
 		connect (&Client_->rosterManager (),
-				SIGNAL (itemAdded (const QString&)),
+				SIGNAL (itemAdded (QString)),
 				this,
-				SLOT (handleRosterChanged (const QString&)));
+				SLOT (handleRosterChanged (QString)));
 		connect (&Client_->rosterManager (),
-				SIGNAL (itemChanged (const QString&)),
+				SIGNAL (itemChanged (QString)),
 				this,
-				SLOT (handleRosterChanged (const QString&)));
+				SLOT (handleRosterChanged (QString)));
 		connect (&Client_->rosterManager (),
-				SIGNAL (itemRemoved (const QString&)),
+				SIGNAL (itemRemoved (QString)),
 				this,
-				SLOT (handleRosterItemRemoved (const QString&)));
+				SLOT (handleRosterItemRemoved (QString)));
 
 		connect (&Client_->vCardManager (),
-				SIGNAL (vCardReceived (const QXmppVCardIq&)),
+				SIGNAL (vCardReceived (QXmppVCardIq)),
 				this,
-				SLOT (handleVCardReceived (const QXmppVCardIq&)));
+				SLOT (handleVCardReceived (QXmppVCardIq)));
 
 		connect (&Client_->versionManager (),
-				SIGNAL (versionReceived (const QXmppVersionIq&)),
+				SIGNAL (versionReceived (QXmppVersionIq)),
 				this,
-				SLOT (handleVersionReceived (const QXmppVersionIq&)));
+				SLOT (handleVersionReceived (QXmppVersionIq)));
 
 		connect (DeliveryReceiptsManager_,
-				SIGNAL (messageDelivered (const QString&, const QString&)),
+				SIGNAL (messageDelivered (QString, QString)),
 				this,
-				SLOT (handleMessageDelivered (const QString&, const QString&)));
+				SLOT (handleMessageDelivered (QString, QString)));
 
 		connect (BMManager_,
 				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
