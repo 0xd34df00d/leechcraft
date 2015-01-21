@@ -253,11 +253,19 @@ namespace CertMgr
 		if (certIdx == -1)
 			return;
 
-		const auto& parentIndex = index (std::distance (Issuer2Certs_.begin (), pos), 0, {});
+		const auto issuerRow = std::distance (Issuer2Certs_.begin (), pos);
+		const auto& parentIndex = index (issuerRow, 0, {});
 
 		beginRemoveRows (parentIndex, certIdx, certIdx);
 		pos->second.removeAt (certIdx);
 		endRemoveRows ();
+
+		if (pos->second.isEmpty ())
+		{
+			beginRemoveRows ({}, issuerRow, issuerRow);
+			Issuer2Certs_.erase (pos);
+			endRemoveRows ();
+		}
 	}
 
 	void CertsModel::ResetCerts (const QList<QSslCertificate>& certs)
