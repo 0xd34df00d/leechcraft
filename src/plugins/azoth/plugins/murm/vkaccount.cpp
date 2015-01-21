@@ -767,6 +767,8 @@ namespace Murm
 
 	void VkAccount::handleRemoveEntry (VkChatEntry *entry)
 	{
+		ChatEntries_.remove (ChatEntries_.key (entry));
+
 		emit removedCLItems ({ entry });
 		entry->deleteLater ();
 	}
