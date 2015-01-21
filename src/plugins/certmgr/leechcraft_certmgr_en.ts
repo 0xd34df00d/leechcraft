@@ -9,7 +9,7 @@
         <translation>Accepted and rejected SSL errors</translation>
     </message>
     <message>
-        <location filename="acceptedrejecteddialog.ui" line="37"/>
+        <location filename="acceptedrejecteddialog.ui" line="40"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
@@ -17,12 +17,12 @@
 <context>
     <name>LeechCraft::CertMgr</name>
     <message>
-        <location filename="acceptedrejecteddialog.cpp" line="49"/>
+        <location filename="acceptedrejecteddialog.cpp" line="48"/>
         <source>Address</source>
         <translation>Address</translation>
     </message>
     <message>
-        <location filename="acceptedrejecteddialog.cpp" line="49"/>
+        <location filename="acceptedrejecteddialog.cpp" line="48"/>
         <source>State</source>
         <translation>State</translation>
     </message>
@@ -30,12 +30,12 @@
 <context>
     <name>LeechCraft::CertMgr::AcceptedRejectedDialog</name>
     <message>
-        <location filename="acceptedrejecteddialog.cpp" line="88"/>
+        <location filename="acceptedrejecteddialog.cpp" line="82"/>
         <source>Remove exceptions</source>
         <translation>Remove exceptions</translation>
     </message>
     <message numerus="yes">
-        <location filename="acceptedrejecteddialog.cpp" line="89"/>
+        <location filename="acceptedrejecteddialog.cpp" line="83"/>
         <source>Are you sure you want to remove %n exception(s)?</source>
         <oldsource>Are you sure you want to remove %n address(es)?</oldsource>
         <translation>
@@ -47,105 +47,92 @@
 <context>
     <name>LeechCraft::CertMgr::CertsModel</name>
     <message>
-        <location filename="certsmodel.cpp" line="107"/>
+        <location filename="certsmodel.cpp" line="114"/>
         <source>Organization</source>
         <translation>Organization</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="109"/>
+        <location filename="certsmodel.cpp" line="116"/>
         <source>Unit</source>
         <translation>Unit</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="111"/>
+        <location filename="certsmodel.cpp" line="118"/>
         <source>Common name</source>
         <translation>Common name</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="113"/>
+        <location filename="certsmodel.cpp" line="120"/>
         <source>Locality</source>
         <translation>Locality</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="115"/>
+        <location filename="certsmodel.cpp" line="122"/>
         <source>State</source>
         <translation>State</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="117"/>
+        <location filename="certsmodel.cpp" line="124"/>
         <source>Country</source>
         <translation>Country</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="121"/>
+        <location filename="certsmodel.cpp" line="128"/>
         <source>Issuee</source>
         <translation>Issuee</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="126"/>
+        <location filename="certsmodel.cpp" line="133"/>
         <source>Serial number</source>
         <translation>Serial number</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="129"/>
+        <location filename="certsmodel.cpp" line="136"/>
         <source>Issuer</source>
         <translation>Issuer</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="135"/>
+        <location filename="certsmodel.cpp" line="142"/>
         <source>Dates</source>
         <translation>Dates</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="137"/>
+        <location filename="certsmodel.cpp" line="144"/>
         <source>Valid since</source>
         <translation>Valid since</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="139"/>
+        <location filename="certsmodel.cpp" line="146"/>
         <source>Valid until</source>
         <translation>Valid until</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="146"/>
+        <location filename="certsmodel.cpp" line="157"/>
         <source>Alternate names</source>
         <translation>Alternate names</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="154"/>
+        <location filename="certsmodel.cpp" line="165"/>
         <source>DNS</source>
         <translation>DNS</translation>
     </message>
     <message>
-        <location filename="certsmodel.cpp" line="157"/>
+        <location filename="certsmodel.cpp" line="168"/>
         <source>Email</source>
         <translation>Email</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::CertMgr::ExceptionsDelegate</name>
-    <message>
-        <location filename="exceptionsdelegate.cpp" line="44"/>
-        <source>allow</source>
-        <translation>allow</translation>
-    </message>
-    <message>
-        <location filename="exceptionsdelegate.cpp" line="45"/>
-        <source>deny</source>
-        <translation>deny</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::CertMgr::ExceptionsModel</name>
     <message>
-        <location filename="exceptionsmodel.cpp" line="48"/>
-        <location filename="exceptionsmodel.cpp" line="66"/>
+        <location filename="exceptionsmodel.cpp" line="59"/>
+        <location filename="exceptionsmodel.cpp" line="72"/>
         <source>allow</source>
         <translation>allow</translation>
     </message>
     <message>
-        <location filename="exceptionsmodel.cpp" line="48"/>
-        <location filename="exceptionsmodel.cpp" line="67"/>
+        <location filename="exceptionsmodel.cpp" line="60"/>
+        <location filename="exceptionsmodel.cpp" line="72"/>
         <source>deny</source>
         <translation>deny</translation>
     </message>
@@ -153,17 +140,29 @@
 <context>
     <name>LeechCraft::CertMgr::ManagerDialog</name>
     <message>
-        <location filename="managerdialog.cpp" line="78"/>
+        <location filename="managerdialog.cpp" line="86"/>
         <source>Select certificate files</source>
         <translation>Select certificate files</translation>
     </message>
     <message>
-        <location filename="managerdialog.cpp" line="96"/>
+        <location filename="managerdialog.cpp" line="118"/>
+        <location filename="managerdialog.cpp" line="128"/>
+        <location filename="managerdialog.cpp" line="134"/>
         <source>Certificates import</source>
         <translation>Certificates import</translation>
     </message>
+    <message>
+        <location filename="managerdialog.cpp" line="119"/>
+        <source>No valid certificates could be found.</source>
+        <translation>No valid certificates could be found.</translation>
+    </message>
+    <message>
+        <location filename="managerdialog.cpp" line="129"/>
+        <source>No certificates were added. Very likely all of them are already present in the system certificates database.</source>
+        <translation>No certificates were added. Very likely all of them are already present in the system certificates database.</translation>
+    </message>
     <message numerus="yes">
-        <location filename="managerdialog.cpp" line="97"/>
+        <location filename="managerdialog.cpp" line="135"/>
         <source>%n certificate(s) were added.</source>
         <translation>
             <numerusform>%n certificate was added.</numerusform>
@@ -207,12 +206,12 @@
         <translation>Local certificates</translation>
     </message>
     <message>
-        <location filename="managerdialog.ui" line="99"/>
+        <location filename="managerdialog.ui" line="103"/>
         <source>Add...</source>
         <translation>Add...</translation>
     </message>
     <message>
-        <location filename="managerdialog.ui" line="111"/>
+        <location filename="managerdialog.ui" line="115"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
