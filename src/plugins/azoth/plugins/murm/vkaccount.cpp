@@ -606,6 +606,10 @@ namespace Murm
 
 	void VkAccount::handleMessage (const MessageInfo& info)
 	{
+		if (info.Params_.value ("source_act") == "chat_kick_user" &&
+				info.Params_.value ("source_mid").toULongLong () == SelfEntry_->GetInfo ().ID_)
+			return;
+
 		const auto from = info.From_;
 		if (info.Flags_ & MessageFlag::Chat)
 		{
