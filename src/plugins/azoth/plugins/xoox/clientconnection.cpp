@@ -106,6 +106,7 @@ namespace Xoox
 	: Account_ (account)
 	, Settings_ (account->GetSettings ())
 	, Client_ (new QXmppClient (this))
+	, FileLogSink_ (new QXmppLogger (this))
 	, MUCManager_ (new QXmppMucManager)
 	, XferManager_ (new QXmppTransferManager)
 	, DiscoveryManager_ (Client_->findExtension<QXmppDiscoveryManager> ())
@@ -310,9 +311,9 @@ namespace Xoox
 				SIGNAL (bookmarksChanged ()));
 
 		connect (Settings_,
-				SIGNAL (kaParamsChanged (QPair<int,int>)),
+				SIGNAL (kaParamsChanged (QPair<int, int>)),
 				this,
-				SLOT (setKAParams (QPair<int,int>)));
+				SLOT (setKAParams (QPair<int, int>)));
 		connect (Settings_,
 				SIGNAL (fileLogChanged (bool)),
 				this,
@@ -603,24 +604,16 @@ namespace Xoox
 	void ClientConnection::SetSignaledLog (bool signaled)
 	{
 		if (signaled)
-		{
 			connect (Client_->logger (),
-					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					SIGNAL (message (QXmppLogger::MessageType, QString)),
 					this,
-					SLOT (handleLog (QXmppLogger::MessageType, const QString&)),
+					SLOT (handleLog (QXmppLogger::MessageType, QString)),
 					Qt::UniqueConnection);
-			Client_->logger ()->setLoggingType (QXmppLogger::SignalLogging);
-		}
 		else
-		{
 			disconnect (Client_->logger (),
-					SIGNAL (message (QXmppLogger::MessageType, const QString&)),
+					SIGNAL (message (QXmppLogger::MessageType, QString)),
 					this,
-					SLOT (handleLog (QXmppLogger::MessageType, const QString&)));
-			Client_->logger ()->setLoggingType (Settings_->GetFileLogEnabled () ?
-						QXmppLogger::FileLogging :
-						QXmppLogger::NoLogging);
-		}
+					SLOT (handleLog (QXmppLogger::MessageType, QString)));
 	}
 
 	void ClientConnection::RequestInfo (const QString& jid) const
@@ -894,13 +887,19 @@ namespace Xoox
 		if (info.size () > 1024 * 1024 * 10)
 			QFile::remove (path);
 
-		QXmppLogger *logger = new QXmppLogger (Client_);
-		logger->setLoggingType (QXmppLogger::NoLogging);
-		logger->setLogFilePath (path);
+		const auto logger = new QXmppLogger (Client_);
+		logger->setLoggingType (QXmppLogger::SignalLogging);
 		logger->setMessageTypes (QXmppLogger::AnyMessage);
+		connect (logger,
+				SIGNAL (message (QXmppLogger::MessageType, QString)),
+				FileLogSink_,
+				SLOT (log (QXmppLogger::MessageType, QString)));
 		Client_->setLogger (logger);
 
-		SetSignaledLog (false);
+		FileLogSink_->setLogFilePath (path);
+		FileLogSink_->setMessageTypes (QXmppLogger::AnyMessage);
+
+		setFileLogging (Settings_->GetFileLogEnabled ());
 	}
 
 	void ClientConnection::Split (const QString& jid,
@@ -1374,6 +1373,7 @@ namespace Xoox
 			else if (type == QXmppLogger::SentMessage)
 				entryId = elem.attribute ("to");
 		}
+
 		switch (type)
 		{
 		case QXmppLogger::SentMessage:
@@ -1487,11 +1487,7 @@ namespace Xoox
 
 	void ClientConnection::setFileLogging (bool fileLog)
 	{
-		auto type = Client_->logger ()->loggingType ();
-		if (type == QXmppLogger::FileLogging && !fileLog)
-			Client_->logger ()->setLoggingType (QXmppLogger::NoLogging);
-		else if (type == QXmppLogger::NoLogging && fileLog)
-			Client_->logger ()->setLoggingType (QXmppLogger::FileLogging);
+		FileLogSink_->setLoggingType (fileLog ? QXmppLogger::FileLogging : QXmppLogger::NoLogging);
 	}
 
 	void ClientConnection::handlePhotoHash ()

@@ -106,6 +106,9 @@ namespace Xoox
 		AccountSettingsHolder *Settings_;
 
 		QXmppClient *Client_;
+
+		QXmppLogger *FileLogSink_;
+
 		QXmppMucManager *MUCManager_;
 		QXmppTransferManager *XferManager_;
 		QXmppDiscoveryManager *DiscoveryManager_;
