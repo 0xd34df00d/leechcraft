@@ -48,6 +48,7 @@
 #include <util/util.h>
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
+#include "settingsthreadmanager.h"
 
 namespace LeechCraft
 {
@@ -68,6 +69,8 @@ namespace Util
 
 	XmlSettingsDialog::~XmlSettingsDialog ()
 	{
+		if (!WorkingObject_)
+			SettingsThreadManager::Instance ().Flush (WorkingObject_);
 	}
 
 	void XmlSettingsDialog::RegisterObject (BaseSettingsManager *obj, const QString& basename)
