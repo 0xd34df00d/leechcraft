@@ -43,7 +43,7 @@ namespace LeechCraft
 
 	SettingsThread::~SettingsThread ()
 	{
-		QMutexLocker l (&Mutex_);
+		QMutexLocker l { &Mutex_ };
 		if (!Pendings_.isEmpty ())
 			qWarning () << Q_FUNC_INFO
 					<< "there are pending settings to be saved, unfortunately they will be lost :(";
@@ -51,7 +51,7 @@ namespace LeechCraft
 
 	void SettingsThread::Save (Util::BaseSettingsManager *bsm, QString name, QVariant value)
 	{
-		QMutexLocker l (&Mutex_);
+		QMutexLocker l { &Mutex_ };
 
 		if (Pendings_.isEmpty ())
 			QTimer::singleShot (0, this, SLOT (saveScheduled ()));
@@ -63,7 +63,7 @@ namespace LeechCraft
 		decltype (Pendings_) pendings;
 
 		{
-			QMutexLocker l (&Mutex_);
+			QMutexLocker l { &Mutex_ };
 			using std::swap;
 			swap (pendings, Pendings_);
 		}
