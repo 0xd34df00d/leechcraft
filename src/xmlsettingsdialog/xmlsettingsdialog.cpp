@@ -67,7 +67,7 @@ namespace Util
 
 	XmlSettingsDialog::~XmlSettingsDialog ()
 	{
-		if (!WorkingObject_)
+		if (WorkingObject_)
 			SettingsThreadManager::Instance ().Flush (WorkingObject_);
 	}
 
