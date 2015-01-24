@@ -64,7 +64,8 @@ namespace LeechCraft
 
 		{
 			QMutexLocker l (&Mutex_);
-			std::swap (pendings, Pendings_);
+			using std::swap;
+			swap (pendings, Pendings_);
 		}
 
 		for (const auto& pair : Util::Stlize (pendings))
