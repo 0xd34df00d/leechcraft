@@ -43,13 +43,10 @@ namespace LeechCraft
 
 	SettingsThread::~SettingsThread ()
 	{
-		{
-			QMutexLocker l (&Mutex_);
-			if (Pendings_.isEmpty ())
-				return;
-		}
-
-		saveScheduled ();
+		QMutexLocker l (&Mutex_);
+		if (!Pendings_.isEmpty ())
+			qWarning () << Q_FUNC_INFO
+					<< "there are pending settings to be saved, unfortunately they will be lost :(";
 	}
 
 	void SettingsThread::Save (Util::BaseSettingsManager *bsm, QString name, QVariant value)
