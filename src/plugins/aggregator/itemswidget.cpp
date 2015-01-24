@@ -315,6 +315,10 @@ namespace Aggregator
 			return Impl_->ActionNextUnreadItem_;
 		case Action::Delete:
 			return Impl_->ActionDeleteItem_;
+		case Action::OpenLink:
+			return Impl_->ActionItemLinkOpen_;
+		case Action::CopyLink:
+			return Impl_->ActionItemLinkCopy_;
 		case Action::MaxAction:
 			break;
 		}

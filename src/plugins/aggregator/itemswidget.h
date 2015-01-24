@@ -66,6 +66,8 @@ namespace Aggregator
 			NextItem,
 			NextUnreadItem,
 			Delete,
+			OpenLink,
+			CopyLink,
 
 			MaxAction
 		};
