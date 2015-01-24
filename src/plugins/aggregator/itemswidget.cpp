@@ -667,6 +667,7 @@ namespace Aggregator
 
 		Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"),
 				this);
+		Impl_->ActionItemLinkOpen_->setProperty ("ActionIcon", "internet-web-browser");
 		Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
 	}
 
