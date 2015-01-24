@@ -63,4 +63,9 @@ namespace LeechCraft
 	{
 		Worker_->Save (bsm, name, value);
 	}
+
+	void SettingsThreadManager::Flush (Util::BaseSettingsManager *bsm)
+	{
+		Worker_->Flush (bsm);
+	}
 }
