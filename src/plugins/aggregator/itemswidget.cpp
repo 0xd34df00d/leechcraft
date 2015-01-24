@@ -674,7 +674,7 @@ namespace Aggregator
 		Impl_->ActionItemLinkOpen_->setShortcut ({ "O" });
 		Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
 
-		Impl_->ActionItemLinkCopy_ = new QAction (tr ("Copy link to the news item"), this);
+		Impl_->ActionItemLinkCopy_ = new QAction (tr ("Copy news item link"), this);
 		Impl_->ActionItemLinkCopy_->setProperty ("ActionIcon", "edit-copy");
 		Impl_->ActionItemLinkCopy_->setShortcut ({ "C" });
 		Impl_->ActionItemLinkCopy_->setObjectName ("ActionItemLinkCopy_");
