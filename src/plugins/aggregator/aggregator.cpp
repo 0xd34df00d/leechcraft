@@ -425,8 +425,7 @@ namespace Aggregator
 		Core::Instance ().Handle (e);
 	}
 
-	void Aggregator::SetShortcut (const QString& name,
-			const QKeySequences_t& shortcuts)
+	void Aggregator::SetShortcut (const QString& name, const QKeySequences_t& shortcuts)
 	{
 		Core::Instance ().GetShortcutManager ()->SetShortcut (name, shortcuts);
 	}
