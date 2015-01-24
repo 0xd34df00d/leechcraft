@@ -53,6 +53,20 @@ namespace LeechCraft
 		Pendings_ [bsm].push_back ({ name, value });
 	}
 
+	void SettingsThread::Flush (Util::BaseSettingsManager *bsm)
+	{
+		{
+			QMutexLocker l { &Mutex_ };
+			if (!Pendings_.contains (bsm))
+				return;
+		}
+
+		QMetaObject::invokeMethod (this,
+				"flushSync",
+				Qt::BlockingQueuedConnection,
+				Q_ARG (Util::BaseSettingsManager*, bsm));
+	}
+
 	void SettingsThread::saveScheduled ()
 	{
 		decltype (Pendings_) pendings;
@@ -69,5 +83,14 @@ namespace LeechCraft
 			for (const auto& p : pair.second)
 				s->setValue (p.first, p.second);
 		}
+	}
+
+	void SettingsThread::flushSync (Util::BaseSettingsManager *bsm)
+	{
+		const auto settings = bsm->GetSettings ();
+
+		QMutexLocker l { &Mutex_ };
+		for (const auto& p : Pendings_.take (bsm))
+			settings->setValue (p.first, p.second);
 	}
 }
