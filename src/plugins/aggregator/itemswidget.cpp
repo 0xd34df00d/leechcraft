@@ -46,6 +46,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
@@ -1363,16 +1364,11 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionItemLinkOpen__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
-		{
-			Entity e = Util::MakeEntity (QUrl (GetItem (idx)->Link_),
-					QString (),
-					FromUserInitiated | OnlyHandle);
-			QMetaObject::invokeMethod (&Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, e));
-		}
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		for (const auto& idx : GetSelected ())
+			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx)->Link_ },
+						{},
+						FromUserInitiated | OnlyHandle));
 	}
 
 	void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
