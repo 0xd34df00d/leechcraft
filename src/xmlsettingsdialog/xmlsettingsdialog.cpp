@@ -54,12 +54,11 @@ namespace LeechCraft
 namespace Util
 {
 	XmlSettingsDialog::XmlSettingsDialog ()
-	: Document_ (new QDomDocument)
-	, HandlersManager_ (new ItemHandlerFactory (this))
+	: Pages_ { new QStackedWidget { this } }
+	, Document_ { std::make_shared<QDomDocument> () }
+	, HandlersManager_ { new ItemHandlerFactory { this } }
 	{
-		Pages_ = new QStackedWidget (this);
-
-		QHBoxLayout *mainLay = new QHBoxLayout (this);
+		const auto mainLay = new QHBoxLayout (this);
 		mainLay->setContentsMargins (0, 0, 0, 0);
 		mainLay->addWidget (Pages_);
 		setLayout (mainLay);

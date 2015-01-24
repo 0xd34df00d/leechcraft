@@ -56,7 +56,7 @@ namespace Util
 	{
 		Q_OBJECT
 
-		QStackedWidget *Pages_;
+		QStackedWidget * const Pages_;
 
 		QStringList Titles_;
 		QList<QStringList> IconNames_;
