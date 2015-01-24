@@ -73,7 +73,7 @@ target_link_libraries (leechcraft-xsd${LC_LIBSUFFIX}
 	leechcraft-util-sys${LC_LIBSUFFIX}
 	)
 
-set_property (TARGET leechcraft-xsd${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-xsd${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-xsd${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 if (USE_QT5)
