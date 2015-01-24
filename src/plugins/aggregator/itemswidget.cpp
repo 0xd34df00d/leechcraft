@@ -253,18 +253,16 @@ namespace Aggregator
 		Impl_->ChannelsFilter_ = m;
 
 		connect (m,
-				SIGNAL (rowsInserted (const QModelIndex&,
-						int, int)),
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
 				SLOT (invalidateMergeMode ()));
 		connect (m,
-				SIGNAL (rowsRemoved (const QModelIndex&,
-						int, int)),
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (invalidateMergeMode ()));
 	}
 
-	void ItemsWidget::RegisterShortcuts()
+	void ItemsWidget::RegisterShortcuts ()
 	{
 		auto mgr = Core::Instance ().GetShortcutManager ();
 		auto addAct = [this, mgr] (ItemsWidget::Action actId) -> void
@@ -614,8 +612,7 @@ namespace Aggregator
 		Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("HideReadItems", false).toBool ());
 
-		Impl_->ActionShowAsTape_ = new QAction (tr ("Show items as tape"),
-				this);
+		Impl_->ActionShowAsTape_ = new QAction (tr ("Show items as tape"), this);
 		Impl_->ActionShowAsTape_->setObjectName ("ActionShowAsTape_");
 		Impl_->ActionShowAsTape_->setCheckable (true);
 		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "format-list-unordered");
@@ -661,12 +658,10 @@ namespace Aggregator
 		Impl_->ActionDeleteItem_->setProperty ("ActionIcon", "remove");
 		Impl_->ActionDeleteItem_->setShortcut ({ "Delete" });
 
-		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
-				this);
+		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"), this);
 		Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
 
-		Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"),
-				this);
+		Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"), this);
 		Impl_->ActionItemLinkOpen_->setProperty ("ActionIcon", "internet-web-browser");
 		Impl_->ActionItemLinkOpen_->setShortcut ({ "O" });
 		Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
@@ -1362,7 +1357,7 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 			SubscribeToComments (idx);
 	}
 
