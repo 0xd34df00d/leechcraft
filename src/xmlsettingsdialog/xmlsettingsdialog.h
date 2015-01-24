@@ -62,7 +62,7 @@ namespace Util
 		QList<QStringList> IconNames_;
 
 		BaseSettingsManager *WorkingObject_ = nullptr;
-		QString DefaultLang_;
+		QString DefaultLang_ = "en";
 		std::shared_ptr<QDomDocument> Document_;
 		QList<QWidget*> Customs_;
 		ItemHandlerFactory * const HandlersManager_;

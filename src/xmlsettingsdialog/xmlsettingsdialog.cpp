@@ -63,8 +63,6 @@ namespace Util
 		mainLay->setContentsMargins (0, 0, 0, 0);
 		mainLay->addWidget (Pages_);
 		setLayout (mainLay);
-
-		DefaultLang_ = "en";
 	}
 
 	XmlSettingsDialog::~XmlSettingsDialog ()
