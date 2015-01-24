@@ -144,6 +144,8 @@ namespace Aggregator
 		void on_CaseSensitiveSearch__stateChanged (int);
 		void on_ActionItemCommentsSubscribe__triggered ();
 		void on_ActionItemLinkOpen__triggered ();
+		void on_ActionItemLinkCopy__triggered ();
+
 		void on_CategoriesSplitter__splitterMoved ();
 		void currentItemChanged ();
 		void checkSelected ();

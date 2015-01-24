@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QClipboard>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
@@ -81,6 +82,7 @@ namespace Aggregator
 		QAction *ActionDeleteItem_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
+		QAction *ActionItemLinkCopy_;
 
 		bool TapeMode_;
 		bool MergeMode_;
@@ -149,6 +151,7 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
+		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkCopy_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
 		addActions ({
@@ -666,6 +669,10 @@ namespace Aggregator
 		Impl_->ActionItemLinkOpen_->setProperty ("ActionIcon", "internet-web-browser");
 		Impl_->ActionItemLinkOpen_->setShortcut ({ "O" });
 		Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
+
+		Impl_->ActionItemLinkCopy_ = new QAction (tr ("Copy link to the news item"), this);
+		Impl_->ActionItemLinkCopy_->setProperty ("ActionIcon", "edit-copy");
+		Impl_->ActionItemLinkCopy_->setObjectName ("ActionItemLinkCopy_");
 	}
 
 	QToolBar* ItemsWidget::SetupToolBar ()
@@ -1371,6 +1378,16 @@ namespace Aggregator
 						FromUserInitiated | OnlyHandle));
 	}
 
+	void ItemsWidget::on_ActionItemLinkCopy__triggered ()
+	{
+		const auto& idx = GetSelected ().value (0);
+		const auto& item = GetItem (idx);
+		if (!item)
+			return;
+
+		QApplication::clipboard ()->setText (item->Link_);
+	}
+
 	void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
 	{
 		QList<int> sizes = Impl_->Ui_.CategoriesSplitter_->sizes ();
@@ -1441,6 +1458,7 @@ namespace Aggregator
 				Impl_->ActionMarkItemAsUnread_->setEnabled (false);
 				Impl_->ActionMarkItemAsRead_->setEnabled (false);
 				Impl_->ActionItemLinkOpen_->setEnabled (false);
+				Impl_->ActionItemLinkCopy_->setEnabled (false);
 			}
 			else
 			{
@@ -1458,6 +1476,7 @@ namespace Aggregator
 				Impl_->ActionMarkItemAsUnread_->setEnabled (true);
 				Impl_->ActionMarkItemAsRead_->setEnabled (true);
 				Impl_->ActionItemLinkOpen_->setEnabled (true);
+				Impl_->ActionItemLinkCopy_->setEnabled (true);
 			}
 		}
 	}
