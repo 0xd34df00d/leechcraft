@@ -31,6 +31,7 @@
 #include <QMutexLocker>
 #include <QTimer>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "basesettingsmanager.h"
 
 namespace LeechCraft
@@ -69,10 +70,10 @@ namespace LeechCraft
 			std::swap (pendings, Pendings_);
 		}
 
-		for (auto i = pendings.begin (), end = pendings.end (); i != end; ++i)
+		for (const auto& pair : Util::Stlize (pendings))
 		{
-			const auto& s = i.key ()->GetSettings ();
-			for (const auto& p : i.value ())
+			const auto& s = pair.first->GetSettings ();
+			for (const auto& p : pair.second)
 				s->setValue (p.first, p.second);
 		}
 	}
