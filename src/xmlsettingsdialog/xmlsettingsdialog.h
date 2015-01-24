@@ -61,11 +61,11 @@ namespace Util
 		QStringList Titles_;
 		QList<QStringList> IconNames_;
 
-		BaseSettingsManager *WorkingObject_;
+		BaseSettingsManager *WorkingObject_ = nullptr;
 		QString DefaultLang_;
 		std::shared_ptr<QDomDocument> Document_;
 		QList<QWidget*> Customs_;
-		ItemHandlerFactory *HandlersManager_;
+		ItemHandlerFactory * const HandlersManager_;
 
 		QString Basename_;
 		QString TrContext_;
