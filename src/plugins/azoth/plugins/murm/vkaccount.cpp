@@ -748,6 +748,14 @@ namespace Murm
 
 	void VkAccount::handleMucChanged (qulonglong chat)
 	{
+		if (!ChatEntries_.contains (chat))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "ignoring chat change for non-present chat"
+					<< chat;
+			return;
+		}
+
 		Conn_->RequestChatInfo (chat);
 	}
 
