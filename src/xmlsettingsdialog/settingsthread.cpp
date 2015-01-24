@@ -36,11 +36,6 @@
 
 namespace LeechCraft
 {
-	SettingsThread::SettingsThread (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	SettingsThread::~SettingsThread ()
 	{
 		QMutexLocker l { &Mutex_ };
