@@ -525,6 +525,7 @@ namespace Murm
 	{
 		QList<QObject*> newEntries;
 		QHash<int, QString> newCountries;
+		QHash<int, QString> newCities;
 		bool hadNew = false;
 		for (const auto& info : infos)
 		{
@@ -539,11 +540,13 @@ namespace Murm
 			newEntries << entry;
 
 			newCountries [info.Country_] = info.CountryName_;
+			newCities [info.City_] = info.CityName_;
 
 			hadNew = true;
 		}
 
 		GeoResolver_->AddCountriesToCache (newCountries);
+		GeoResolver_->AddCitiesToCache (newCities);
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
