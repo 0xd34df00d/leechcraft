@@ -330,6 +330,9 @@ namespace Murm
 
 			const auto& contacts = userMap ["contacts"].toMap ();
 
+			const auto& countryMap = userMap ["country"].toMap ();
+			const auto& cityMap = userMap ["city"].toMap ();
+
 			return
 			{
 				userMap ["id"].toULongLong (),
@@ -349,8 +352,9 @@ namespace Murm
 				contacts ["mobile_phone"].toString (),
 
 				userMap ["timezone"].toInt (),
-				userMap ["country"].toInt (),
-				userMap ["city"].toInt (),
+
+				countryMap ["id"].toInt (),
+				cityMap ["id"].toInt (),
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
