@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "georesolver.h"
+#include <util/sll/qtutil.h>
 #include "vkconnection.h"
 
 namespace LeechCraft
@@ -44,7 +45,7 @@ namespace Murm
 
 	void GeoResolver::CacheCountries (QList<int> ids)
 	{
-		Cache (ids, Countries_, GeoIdType::Country);
+		Cache (ids, Countries_, PendingCountries_, GeoIdType::Country);
 	}
 
 	void GeoResolver::GetCountry (int code, std::function<void (QString)> setter)
@@ -59,7 +60,7 @@ namespace Murm
 
 	void GeoResolver::CacheCities (QList<int> ids)
 	{
-		Cache (ids, Cities_, GeoIdType::Country);
+		Cache (ids, Cities_, PendingCities_, GeoIdType::Country);
 	}
 
 	void GeoResolver::GetCity (int code, std::function<void (QString)> setter)
@@ -72,18 +73,28 @@ namespace Murm
 		return Cities_.value (code);
 	}
 
-	void GeoResolver::Cache (QList<int> ids, QHash<int, QString>& result, GeoIdType type)
+	void GeoResolver::Cache (QList<int> ids, QHash<int, QString>& result, QSet<int>& pending, GeoIdType type)
 	{
 		auto newEnd = std::remove_if (ids.begin (), ids.end (),
-				[&result] (int id) { return result.contains (id); });
+				[&result, &pending] (int id)
+				{
+					return result.contains (id) || pending.contains (id);
+				});
 		ids.erase (newEnd, ids.end ());
 
 		if (ids.isEmpty ())
 			return;
 
+		for (const auto id : ids)
+			pending << id;
+
 		Conn_->RequestGeoIds (ids,
-				[&result] (const QHash<int, QString>& newItems)
-					{ result.unite (newItems); },
+				[&result, &pending] (const QHash<int, QString>& newItems)
+				{
+					result.unite (newItems);
+					for (const auto& pair : Util::Stlize (newItems))
+						pending.remove (pair.first);
+				},
 				type);
 	}
 
