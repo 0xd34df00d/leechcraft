@@ -432,13 +432,18 @@ namespace Murm
 
 	void VkConnection::GetMessageInfo (qulonglong id, MessageInfoSetter_f setter)
 	{
+		GetMessageInfo (QString::number (id), setter);
+	}
+
+	void VkConnection::GetMessageInfo (const QString& idStr, MessageInfoSetter_f setter)
+	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QUrl url ("https://api.vk.com/method/messages.getById");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("message_ids", QString::number (id))
+						("message_ids", idStr)
 						("photo_sizes", "1");
 
 				AddParams (url, params);
