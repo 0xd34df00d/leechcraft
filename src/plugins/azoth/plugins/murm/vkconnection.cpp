@@ -282,20 +282,23 @@ namespace Murm
 		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
 			{
 				QString method;
+				QString paramName;
 				switch (type)
 				{
 				case GeoIdType::Country:
-					method = "getCountries";
+					method = "Countries";
+					paramName = "country_ids";
 					break;
 				case GeoIdType::City:
-					method = "getCities";
+					method = "Cities";
+					paramName = "city_ids";
 					break;
 				}
 
-				QUrl url ("https://api.vk.com/method/" + method);
+				QUrl url ("https://api.vk.com/method/database.get" + method + "ById");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("cids", joined);
+						(paramName, joined);
 
 				AddParams (url, params);
 
