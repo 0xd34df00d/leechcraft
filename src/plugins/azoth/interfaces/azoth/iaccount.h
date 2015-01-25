@@ -64,13 +64,8 @@ namespace Azoth
 	 */
 	class IAccount
 	{
-		bool IsShown_;
+		bool IsShown_ = true;
 	public:
-		IAccount ()
-		: IsShown_ (true)
-		{
-		}
-
 		virtual ~IAccount () {}
 
 		/** Represents the features that may be supported by an acoount.
