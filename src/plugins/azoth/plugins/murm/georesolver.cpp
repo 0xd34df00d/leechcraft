@@ -78,6 +78,9 @@ namespace Murm
 				[&result] (int id) { return result.contains (id); });
 		ids.erase (newEnd, ids.end ());
 
+		if (ids.isEmpty ())
+			return;
+
 		Conn_->RequestGeoIds (ids,
 				[&result] (const QHash<int, QString>& newItems)
 					{ result.unite (newItems); },
