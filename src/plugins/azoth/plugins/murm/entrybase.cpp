@@ -418,7 +418,7 @@ namespace Murm
 			}
 
 			Account_->GetConnection ()->GetMessageInfo (id,
-					[this, safeMsg, idStr] (const FullMessageInfo& msgInfo) -> void
+					[this, safeMsg, idStr] (const FullMessageInfo& msgInfo)
 					{
 						if (!safeMsg)
 							return;
@@ -441,7 +441,7 @@ namespace Murm
 			return;
 
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[safeMsg] (const FullMessageInfo& msgInfo) -> void
+				[safeMsg] (const FullMessageInfo& msgInfo)
 				{
 					if (!safeMsg)
 						return;
