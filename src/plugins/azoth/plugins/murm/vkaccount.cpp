@@ -524,7 +524,7 @@ namespace Murm
 	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
-		QSet<int> newCountries;
+		QHash<int, QString> newCountries;
 		bool hadNew = false;
 		for (const auto& info : infos)
 		{
@@ -538,12 +538,12 @@ namespace Murm
 			Entries_ [info.ID_] = entry;
 			newEntries << entry;
 
-			newCountries << info.Country_;
+			newCountries [info.Country_] = info.CountryName_;
 
 			hadNew = true;
 		}
 
-		GeoResolver_->CacheCountries (newCountries.toList ());
+		GeoResolver_->AddCountriesToCache (newCountries);
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
