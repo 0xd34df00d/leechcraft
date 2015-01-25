@@ -1400,10 +1400,10 @@ namespace Murm
 		}
 
 		QHash<int, QString> result;
-		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())
+		for (const auto& item : data.toMap () ["response"].toList ())
 		{
 			const auto& map = item.toMap ();
-			result [map ["cid"].toInt ()] = map ["name"].toString ();
+			result [map ["id"].toInt ()] = map ["title"].toString ();
 		}
 
 		setter (result);
