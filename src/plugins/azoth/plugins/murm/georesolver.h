@@ -58,10 +58,12 @@ namespace Murm
 		GeoResolver (VkConnection*, QObject* = 0);
 
 		void CacheCountries (QList<int>);
+		void AddCountriesToCache (const QHash<int, QString>&);
 		void GetCountry (int, std::function<void (QString)>);
 		QString GetCountry (int) const;
 
 		void CacheCities (QList<int>);
+		void AddCitiesToCache (const QHash<int, QString>&);
 		void GetCity (int, std::function<void (QString)>);
 		QString GetCity (int) const;
 	private:
