@@ -69,7 +69,9 @@ namespace Murm
 		int Timezone_;
 
 		int Country_;
+		QString CountryName_;
 		int City_;
+		QString CityName_;
 
 		bool IsOnline_;
 

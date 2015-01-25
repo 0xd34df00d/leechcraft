@@ -357,7 +357,9 @@ namespace Murm
 				userMap ["timezone"].toInt (),
 
 				countryMap ["id"].toInt (),
+				countryMap ["title"].toString (),
 				cityMap ["id"].toInt (),
+				cityMap ["title"].toString (),
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
