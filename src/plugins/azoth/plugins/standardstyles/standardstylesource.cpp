@@ -354,7 +354,7 @@ namespace StandardStyles
 
 	QStringList StandardStyleSource::GetVariantsForPack (const QString&)
 	{
-		return QStringList ();
+		return {};
 	}
 
 	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme, QWebFrame *frame)
