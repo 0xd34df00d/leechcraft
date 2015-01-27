@@ -238,8 +238,14 @@ namespace Xoox
 		case QXmppClient::XmppStreamError:
 			str = tr ("error while connecting: ");
 			str += HandleErrorCondition (Client_->xmppStreamError ());
-			if (Client_->xmppStreamError () == QXmppStanza::Error::NotAuthorized)
+			switch (Client_->xmppStreamError ())
+			{
+			case QXmppStanza::Error::NotAuthorized:
 				emit serverAuthFailed ();
+				break;
+			default:
+				break;
+			}
 			break;
 		case QXmppClient::NoError:
 			str = tr ("no error.");
