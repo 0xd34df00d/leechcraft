@@ -100,7 +100,7 @@ namespace Murm
 		QHash<qulonglong, VkEntry*> Entries_;
 		QHash<qulonglong, VkChatEntry*> ChatEntries_;
 
-		QList<MessageInfo> PendingMessages_;
+		QList<QPair<MessageInfo, FullMessageInfo>> PendingMessages_;
 
 		bool PublishTune_ = false;
 		bool EnableFileLog_ = false;

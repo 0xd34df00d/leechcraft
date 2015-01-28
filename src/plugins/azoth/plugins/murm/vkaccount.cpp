@@ -509,8 +509,8 @@ namespace Murm
 	{
 		decltype (PendingMessages_) pending;
 		std::swap (pending, PendingMessages_);
-		for (const auto& info : pending)
-			handleMessage (info);
+		for (const auto& pair : pending)
+			handleMessage (pair.second, pair.first);
 	}
 
 	VkEntry* VkAccount::CreateNonRosterItem (qulonglong id)
@@ -632,7 +632,10 @@ namespace Murm
 						<< from;
 
 				if (!std::any_of (PendingMessages_.begin (), PendingMessages_.end (),
-						[from] (const MessageInfo& info) { return from == info.From_; }))
+						[from] (const QPair<MessageInfo, FullMessageInfo>& info)
+						{
+							return from == info.first.From_;
+						}))
 				{
 					qDebug () << Q_FUNC_INFO
 							<< "requesting info for"
@@ -640,7 +643,7 @@ namespace Murm
 					Conn_->RequestChatInfo (from);
 				}
 
-				PendingMessages_ << info;
+				PendingMessages_.append ({ info, fullInfo });
 				return;
 			}
 
@@ -650,7 +653,7 @@ namespace Murm
 			case VkChatEntry::HandleMessageResult::Rejected:
 				return;
 			case VkChatEntry::HandleMessageResult::UserInfoRequested:
-				PendingMessages_ << info;
+				PendingMessages_.append ({ info, fullInfo });
 				return;
 			}
 		}
@@ -662,7 +665,7 @@ namespace Murm
 						<< "message from unknown user"
 						<< from;
 
-				PendingMessages_ << info;
+				PendingMessages_.append ({ info, fullInfo });
 
 				Conn_->GetUserInfo ({ from });
 				return;
