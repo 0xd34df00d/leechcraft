@@ -194,8 +194,8 @@ namespace Murm
 
 	struct FullMessageInfo
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
 
 		QString Text_;
 
