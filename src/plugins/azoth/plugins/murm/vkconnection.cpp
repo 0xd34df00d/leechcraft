@@ -817,6 +817,16 @@ namespace Murm
 		{
 			info.From_ -= 2000000000;
 			info.Flags_ |= MessageFlag::Chat;
+
+			if (info.Params_.contains ("fwd"))
+			{
+				GetMessageInfo (info.ID_,
+						[this, info] (const FullMessageInfo& fullInfo)
+						{
+							emit gotMessage (fullInfo, info);
+						});
+				return;
+			}
 		}
 		else
 			info.Flags_ &= ~MessageFlag::Chat;

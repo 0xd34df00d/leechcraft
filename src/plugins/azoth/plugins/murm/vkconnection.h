@@ -277,6 +277,7 @@ namespace Murm
 		void gotUsers (const QList<UserInfo>&);
 		void gotNRIList (const QList<qulonglong>&);
 		void gotMessage (const MessageInfo&);
+		void gotMessage (const FullMessageInfo&, const MessageInfo&);
 		void gotTypingNotification (qulonglong uid);
 
 		void gotChatInfo (const ChatInfo&);
