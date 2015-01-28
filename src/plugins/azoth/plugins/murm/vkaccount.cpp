@@ -101,6 +101,10 @@ namespace Murm
 				this,
 				SLOT (handleMessage (MessageInfo)));
 		connect (Conn_,
+				SIGNAL (gotMessage (FullMessageInfo, MessageInfo)),
+				this,
+				SLOT (handleMessage (FullMessageInfo, MessageInfo)));
+		connect (Conn_,
 				SIGNAL (gotTypingNotification (qulonglong)),
 				this,
 				SLOT (handleTypingNotification (qulonglong)));
@@ -608,6 +612,11 @@ namespace Murm
 	}
 
 	void VkAccount::handleMessage (const MessageInfo& info)
+	{
+		handleMessage ({}, info);
+	}
+
+	void VkAccount::handleMessage (const FullMessageInfo& fullInfo, const MessageInfo& info)
 	{
 		if (info.Params_.value ("source_act") == "chat_kick_user" &&
 				info.Params_.value ("source_mid").toULongLong () == SelfEntry_->GetInfo ().ID_)

@@ -186,7 +186,10 @@ namespace Murm
 		void handleUsers (const QList<UserInfo>&);
 		void handleNRIList (const QList<qulonglong>&);
 		void handleUserState (qulonglong, bool);
+
 		void handleMessage (const MessageInfo&);
+		void handleMessage (const FullMessageInfo&, const MessageInfo&);
+
 		void handleTypingNotification (qulonglong);
 
 		void handleMucChanged (qulonglong);
