@@ -647,7 +647,7 @@ namespace Murm
 				return;
 			}
 
-			switch (ChatEntries_.value (from)->HandleMessage (info))
+			switch (ChatEntries_.value (from)->HandleMessage (info, fullInfo))
 			{
 			case VkChatEntry::HandleMessageResult::Accepted:
 			case VkChatEntry::HandleMessageResult::Rejected:

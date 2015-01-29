@@ -61,7 +61,7 @@ namespace Murm
 		Account_->Send (GetInfo ().ChatID_, VkConnection::Type::Chat, msg);
 	}
 
-	VkChatEntry::HandleMessageResult VkChatEntry::HandleMessage (const MessageInfo& info)
+	VkChatEntry::HandleMessageResult VkChatEntry::HandleMessage (const MessageInfo& info, const FullMessageInfo& full)
 	{
 		const auto from = info.Params_ ["from"].toULongLong ();
 		if (from == 0)
@@ -93,7 +93,7 @@ namespace Murm
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
 
-		HandleAttaches (msg, info, {});
+		HandleAttaches (msg, info, full);
 
 		Store (msg);
 
