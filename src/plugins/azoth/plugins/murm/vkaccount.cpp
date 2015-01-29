@@ -671,7 +671,7 @@ namespace Murm
 				return;
 			}
 
-			Entries_.value (from)->HandleMessage (info);
+			Entries_.value (from)->HandleMessage (info, fullInfo);
 		}
 	}
 

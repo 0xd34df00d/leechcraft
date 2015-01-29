@@ -320,7 +320,7 @@ namespace Murm
 		}
 	}
 
-	void VkEntry::HandleMessage (MessageInfo info)
+	void VkEntry::HandleMessage (MessageInfo info, const FullMessageInfo& fullInfo)
 	{
 		if (FindMessage (info.ID_))
 			return;
@@ -355,7 +355,7 @@ namespace Murm
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
 
-		HandleAttaches (msg, info, {});
+		HandleAttaches (msg, info, fullInfo);
 
 		Store (msg);
 	}
