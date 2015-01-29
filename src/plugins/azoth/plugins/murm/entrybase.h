@@ -69,7 +69,7 @@ namespace Murm
 		QList<IMessage*> GetAllMessages () const;
 		void PurgeMessages (const QDateTime& before);
 	protected:
-		void HandleAttaches (VkMessage*, const MessageInfo&);
+		void HandleAttaches (VkMessage*, const MessageInfo&, const FullMessageInfo&);
 	private:
 		void HandleFullMessageInfo (const FullMessageInfo&, VkMessage*);
 		void PerformReplacements (QList<QPair<QString, QString>>, QString&);

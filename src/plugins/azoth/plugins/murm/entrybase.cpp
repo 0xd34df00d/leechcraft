@@ -397,8 +397,15 @@ namespace Murm
 		}
 	}
 
-	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
+	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info, const FullMessageInfo& full)
 	{
+		if (full.ID_)
+		{
+			const auto& body = FullInfo2Replacement (full, Account_->GetCoreProxy (), false);
+			msg->SetBody (body);
+			return;
+		}
+
 		const auto& contentsInfo = ToMessageContents (info);
 
 		msg->SetBody (contentsInfo.Contents_);

@@ -93,7 +93,7 @@ namespace Murm
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
 
-		HandleAttaches (msg, info);
+		HandleAttaches (msg, info, {});
 
 		Store (msg);
 
