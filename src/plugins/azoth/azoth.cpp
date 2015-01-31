@@ -428,7 +428,7 @@ namespace Azoth
 
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"StatusIcons",
-					"ClientIcon",
+					"ClientIcons",
 					"AffIcons",
 					"MoodIcons",
 					"ActivityIcons",
