@@ -164,6 +164,7 @@
 		<tab>
 			<label lang="en" value="Fonts" />
 			<groupbox>
+				<label value="Font families" />
 				<item type="customwidget" label="own" name="FontsSelector" />
 			</groupbox>
 			<groupbox>
