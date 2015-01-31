@@ -3,11 +3,13 @@ include_directories (${CMAKE_CURRENT_SOURCE_DIR})
 set (XSD_SRCS
 	addressesmodelmanager.cpp
 	fontchooserwidget.cpp
-	wkfontswidget.cpp
+	massfontchangedialog.cpp
 	util.cpp
+	wkfontswidget.cpp
 	)
 set (XSD_FORMS
 	fontchooserwidget.ui
+	massfontchangedialog.ui
 	wkfontswidget.ui
 	)
 
