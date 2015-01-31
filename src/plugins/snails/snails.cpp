@@ -30,6 +30,7 @@
 #include "snails.h"
 #include <QIcon>
 #include <util/util.h>
+#include <util/xsd/wkfontswidget.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
@@ -88,7 +89,10 @@ namespace Snails
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
-		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget ());
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+
+		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
 	}
 
 	void Plugin::SecondInit ()
