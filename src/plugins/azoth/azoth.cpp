@@ -49,6 +49,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/xsd/wkfontswidget.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
 #include "core.h"
@@ -460,6 +461,9 @@ namespace Azoth
 				&Core::Instance (),
 				SLOT (saveAccountVisibility (IAccount*)));
 
+		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
+
 		XmlSettingsDialog_->SetCustomWidget ("ColorListEditor", new ColorListEditorWidget);
 
 		XmlSettingsDialog_->SetDataSource ("CustomStatusesView",
@@ -529,6 +533,11 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
+
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (addNewTab (QString, QWidget*)),
+				this,
+				SLOT (registerTabFonts (QString, QWidget*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -699,6 +708,12 @@ namespace Azoth
 				Qt::UniqueConnection);
 		emit addNewTab (cw->GetTitle (), cw);
 		emit raiseTab (cw);
+	}
+
+	void Plugin::registerTabFonts (const QString&, QWidget *w)
+	{
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (w))
+			FontsWidget_->RegisterSettable (iwfs);
 	}
 }
 }

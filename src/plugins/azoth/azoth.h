@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_AZOTH_H
-#define PLUGINS_AZOTH_AZOTH_H
+#pragma once
+
 #include <QObject>
 #include <QModelIndex>
 #include <interfaces/iinfo.h>
@@ -44,6 +44,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class WkFontsWidget;
+}
+
 namespace Azoth
 {
 	class ServiceDiscoveryWidget;
@@ -83,6 +88,8 @@ namespace Azoth
 
 		TabClasses_t TabClasses_;
 		TabClassInfo ServerHistoryTC_;
+
+		Util::WkFontsWidget *FontsWidget_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -133,6 +140,8 @@ namespace Azoth
 		void handleMWFloating (bool);
 		void handleMoreThisStuff (const QString&);
 		void handleConsoleWidget (ConsoleWidget*);
+
+		void registerTabFonts (const QString&, QWidget*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
@@ -149,6 +158,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif
-

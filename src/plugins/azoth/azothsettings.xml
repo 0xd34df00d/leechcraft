@@ -182,27 +182,7 @@
 		</tab>
 		<tab>
 			<label value="Fonts" />
-			<groupbox>
-				<label value="Fonts" />
-				<item type="font" property="StandardFont">
-					<label value="Standard font:" />
-				</item>
-				<item type="font" property="FixedFont">
-					<label value="Fixed font:" />
-				</item>
-				<item type="font" property="SerifFont">
-					<label value="Serif font:" />
-				</item>
-				<item type="font" property="SansSerifFont">
-					<label value="SansSerif font:" />
-				</item>
-				<item type="font" property="CursiveFont">
-					<label value="Cursive font:" />
-				</item>
-				<item type="font" property="FantasyFont">
-					<label value="Fantasy font:" />
-				</item>
-			</groupbox>
+			<item type="customwidget" label="own" name="FontsSelector" />
 		</tab>
 	</page>
 	<page>
