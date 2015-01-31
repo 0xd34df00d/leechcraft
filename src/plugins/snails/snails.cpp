@@ -136,10 +136,14 @@ namespace Snails
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "mail")
-			handleNewTab (MailTabClass_.VisibleName_, new MailTab (Proxy_, MailTabClass_, this));
+		{
+			const auto mt = new MailTab { Proxy_, MailTabClass_, this };
+			handleNewTab (MailTabClass_.VisibleName_, mt);
+			WkFontsWidget_->RegisterSettable (mt);
+		}
 		else if (tabClass == "compose")
 		{
-			auto ct = new ComposeMessageTab ();
+			auto ct = new ComposeMessageTab;
 			handleNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
 		}
 		else
