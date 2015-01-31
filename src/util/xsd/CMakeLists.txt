@@ -1,10 +1,12 @@
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set (XSD_SRCS
 	addressesmodelmanager.cpp
+	fontchooserwidget.cpp
 	wkfontswidget.cpp
 	util.cpp
 	)
 set (XSD_FORMS
+	fontchooserwidget.ui
 	)
 
 if (USE_QT5)
