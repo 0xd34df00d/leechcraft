@@ -56,6 +56,8 @@ namespace Util
 
 		QHash<QWebSettings::FontFamily, FontChooserWidget*> Family2Chooser_;
 		QHash<QWebSettings::FontFamily, QByteArray> Family2Name_;
+
+		QHash<QWebSettings::FontFamily, QFont> PendingChanges_;
 	public:
 		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 	private:

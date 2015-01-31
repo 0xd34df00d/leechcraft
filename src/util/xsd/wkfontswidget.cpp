@@ -30,6 +30,7 @@
 #include "wkfontswidget.h"
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/slotclosure.h>
 #include "ui_wkfontswidget.h"
 
 namespace LeechCraft
@@ -58,6 +59,15 @@ namespace Util
 		Family2Name_ [QWebSettings::FantasyFont] = "FantasyFont";
 
 		ResetFontChoosers ();
+
+		for (const auto& pair : Util::Stlize (Family2Chooser_))
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[this, pair] { PendingChanges_ [pair.first] = pair.second->GetFont (); },
+				pair.second,
+				SIGNAL (fontChanged (QFont)),
+				this
+			};
 	}
 
 	void WkFontsWidget::ResetFontChoosers ()
