@@ -439,14 +439,12 @@ namespace Azoth
 
 #ifdef ENABLE_MEDIACALLS
 		QStringList audioIns (tr ("Default input device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
+		for (const auto& info : QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
 			audioIns << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
 
 		QStringList audioOuts (tr ("Default output device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
+		for (const auto& info : QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
 			audioOuts << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 #endif
