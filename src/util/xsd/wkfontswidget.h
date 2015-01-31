@@ -40,6 +40,8 @@ namespace Ui
 	class WkFontsWidget;
 }
 
+class IWkFontsSettable;
+
 namespace LeechCraft
 {
 namespace Util
@@ -58,8 +60,12 @@ namespace Util
 		QHash<QWebSettings::FontFamily, QByteArray> Family2Name_;
 
 		QHash<QWebSettings::FontFamily, QFont> PendingChanges_;
+
+		QList<IWkFontsSettable*> Settables_;
 	public:
 		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
+
+		void RegisterSettable (IWkFontsSettable*);
 	private:
 		void ResetFontChoosers ();
 	public slots:

@@ -31,6 +31,7 @@
 #include <xmlsettingsdialog/basesettingsmanager.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
+#include <interfaces/iwkfontssettable.h>
 #include "ui_wkfontswidget.h"
 
 namespace LeechCraft
@@ -70,6 +71,21 @@ namespace Util
 			};
 	}
 
+	void WkFontsWidget::RegisterSettable (IWkFontsSettable *settable)
+	{
+		Settables_ << settable;
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[settable, this] { Settables_.removeAll (settable); },
+			settable->GetQObject (),
+			SIGNAL (destroyed ()),
+			settable->GetQObject ()
+		};
+
+		for (const auto& pair : Util::Stlize (Family2Chooser_))
+			settable->SetFontFamily (pair.first, pair.second->GetFont ());
+	}
+
 	void WkFontsWidget::ResetFontChoosers ()
 	{
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
@@ -85,6 +101,9 @@ namespace Util
 		{
 			emit fontChanged (pair.first, pair.second);
 			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
+
+			for (const auto settable : Settables_)
+				settable->SetFontFamily (pair.first, pair.second);
 		}
 
 		PendingChanges_.clear ();
