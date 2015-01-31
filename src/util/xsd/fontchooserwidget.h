@@ -41,8 +41,13 @@ namespace Util
 		Q_OBJECT
 
 		Ui::FontChooserWidget Ui_;
+
+		QFont CurrentFont_;
 	public:
 		FontChooserWidget (QWidget* = nullptr);
+
+		QFont GetFont () const;
+		void SetFont (const QFont&);
 	};
 }
 }

@@ -38,5 +38,28 @@ namespace Util
 	{
 		Ui_.setupUi (this);
 	}
+
+	QFont FontChooserWidget::GetFont () const
+	{
+		return CurrentFont_;
+	}
+
+	void FontChooserWidget::SetFont (const QFont& font)
+	{
+		Ui_.FontName_->setFont (font);
+
+		auto text = font.family ();
+		if (font.bold ())
+			text += ", " + tr ("bold");
+		if (font.italic ())
+			text += ", " + tr ("italic");
+		if (font.underline ())
+			text += ", " + tr ("underlined");
+		if (font.strikeOut ())
+			text += ", " + tr ("striken out");
+		Ui_.FontName_->setText (text);
+
+		CurrentFont_ = font;
+	}
 }
 }
