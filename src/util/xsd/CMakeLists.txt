@@ -1,5 +1,6 @@
 set (XSD_SRCS
 	addressesmodelmanager.cpp
+	wkfontswidget.cpp
 	util.cpp
 	)
 
