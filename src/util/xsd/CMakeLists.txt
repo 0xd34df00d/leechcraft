@@ -26,6 +26,7 @@ foreach (FORM ${XSD_FORMS})
 	set (UTIL_FORMS "${UTIL_FORMS};util/xsd/${FORM}")
 endforeach ()
 set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
+set (UTIL_FORMS ${UTIL_FORMS} PARENT_SCOPE)
 
 add_library (leechcraft-util-xsd${LC_LIBSUFFIX} SHARED
 	${XSD_SRCS}
