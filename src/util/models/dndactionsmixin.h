@@ -36,6 +36,25 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Abstracts away differences between Qt4 and Qt5 in model
+	 * DnD support.
+	 *
+	 * Derive from this class (and parametrize the template by desired
+	 * base class like QStandardItemModel or QAbstractItemModel) to
+	 * obtain Qt4-style getter and setter functions for supported drag
+	 * and drop actions (supportedDragActions(),
+	 * setSupportedDragActions(), supportedDropActions(),
+	 * setSupportedDropActions()).
+	 *
+	 * @tparam Model The source model type that you wish to derive from.
+	 *
+	 * @sa supportedDragActions()
+	 * @sa setSupportedDragActions()
+	 * @sa supportedDropActions()
+	 * @sa setSupportedDropActions()
+	 *
+	 * @ingroup ModelUtil
+	 */
 	template<typename Model>
 	class DndActionsMixin : public Model
 	{
@@ -44,6 +63,14 @@ namespace Util
 		Qt::DropActions Drops_;
 #endif
 	public:
+		/** @brief Constructs the model passing the arguments to the base
+		 * constructor.
+		 *
+		 * @param[in] args The list of parameters to pass to the
+		 * constructor of the base \em Model.
+		 * @tparam Args The variadic template parameter pack of arguments
+		 * for the base \em Model constructor.
+		 */
 		template<typename... Args>
 		DndActionsMixin (Args&&... args)
 		: Model { std::forward<Args> (args)... }
