@@ -466,6 +466,16 @@ namespace Azoth
 			appendMessageText (data->text ());
 	}
 
+	QObject* ChatTab::GetQObject ()
+	{
+		return this;
+	}
+
+	void ChatTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		Ui_.View_->settings ()->setFontFamily (family, font.family ());
+	}
+
 	void ChatTab::ShowUsersList ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();

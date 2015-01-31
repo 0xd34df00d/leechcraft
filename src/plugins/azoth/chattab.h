@@ -37,6 +37,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/iwkfontssettable.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "ui_chattab.h"
 
@@ -65,9 +66,10 @@ namespace Azoth
 				  , public ITabWidget
 				  , public IRecoverableTab
 				  , public IDNDTab
+				  , public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget IRecoverableTab IDNDTab)
+		Q_INTERFACES (ITabWidget IRecoverableTab IDNDTab IWkFontsSettable)
 
 		static QObject *S_ParentMultiTabs_;
 		static TabClassInfo S_ChatTabClass_;
@@ -149,6 +151,9 @@ namespace Azoth
 		void FillMimeData (QMimeData*);
 		void HandleDragEnter (QDragMoveEvent*);
 		void HandleDrop (QDropEvent*);
+
+		QObject* GetQObject ();
+		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
 
 		void ShowUsersList ();
 
