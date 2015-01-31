@@ -154,6 +154,20 @@ namespace Snails
 		return TabToolbar_;
 	}
 
+	QObject* MailTab::GetQObject ()
+	{
+		return this;
+	}
+
+	void MailTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		const auto settings = Ui_.MailView_->settings ();
+		if (font == QFont {})
+			settings->resetFontFamily (family);
+		else
+			settings->setFontFamily (family, font.family ());
+	}
+
 	void MailTab::FillCommonActions ()
 	{
 		const auto fetch = new QAction (tr ("Fetch new mail"), this);
