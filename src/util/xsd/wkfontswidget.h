@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QWidget>
+#include <QHash>
 #include <QtWebKit/QWebSettings>
 #include "xsdconfig.h"
 
@@ -44,12 +45,16 @@ namespace LeechCraft
 namespace Util
 {
 	class BaseSettingsManager;
+	class FontChooserWidget;
 
 	class UTIL_XSD_API WkFontsWidget : public QWidget
 	{
 		Q_OBJECT
 
 		std::shared_ptr<Ui::WkFontsWidget> Ui_;
+
+		QHash<QWebSettings::FontFamily, FontChooserWidget*> Family2Chooser_;
+		QHash<QWebSettings::FontFamily, QByteArray> Family2Name_;
 	public:
 		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 	signals:

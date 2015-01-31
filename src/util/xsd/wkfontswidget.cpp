@@ -40,6 +40,20 @@ namespace Util
 	, Ui_ { std::make_shared<Ui::WkFontsWidget> () }
 	{
 		Ui_->setupUi (this);
+
+		Family2Chooser_ [QWebSettings::StandardFont] = Ui_->StandardChooser_;
+		Family2Chooser_ [QWebSettings::FixedFont] = Ui_->FixedChooser_;
+		Family2Chooser_ [QWebSettings::SerifFont] = Ui_->SerifChooser_;
+		Family2Chooser_ [QWebSettings::SansSerifFont] = Ui_->SansSerifChooser_;
+		Family2Chooser_ [QWebSettings::CursiveFont] = Ui_->CursiveChooser_;
+		Family2Chooser_ [QWebSettings::FantasyFont] = Ui_->FantasyChooser_;
+
+		Family2Name_ [QWebSettings::StandardFont] = "StandardFont";
+		Family2Name_ [QWebSettings::FixedFont] = "FixedFont";
+		Family2Name_ [QWebSettings::SerifFont] = "SerifFont";
+		Family2Name_ [QWebSettings::SansSerifFont] = "SansSerifFont";
+		Family2Name_ [QWebSettings::CursiveFont] = "CursiveFont";
+		Family2Name_ [QWebSettings::FantasyFont] = "FantasyFont";
 	}
 }
 }
