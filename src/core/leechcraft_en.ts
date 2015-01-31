@@ -530,17 +530,17 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="206"/>
         <source>Open find dialog (where applicable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Open find dialog (where applicable)</translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="212"/>
         <source>Find previous (where applicable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Find previous (where applicable)</translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="218"/>
         <source>Find next (where applicable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Find next (where applicable)</translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="372"/>
@@ -722,37 +722,37 @@
         <translation>Initializing %1: stage two...</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="781"/>
+        <location filename="pluginmanager.cpp" line="799"/>
         <source>Refusing to load plugin from %1 because it&apos;s not a file.</source>
         <translation>Refusing to load plugin from %1 because it&apos;s not a file.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="795"/>
+        <location filename="pluginmanager.cpp" line="813"/>
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Could not load plugin from %1: API level mismatch.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="809"/>
+        <location filename="pluginmanager.cpp" line="827"/>
         <source>Could not load plugin from %1: %2.</source>
         <translation>Could not load plugin from %1: %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="829"/>
+        <location filename="pluginmanager.cpp" line="847"/>
         <source>Could not load plugin from %1: failed to construct plugin instance with exception %2.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance with exception %2.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="840"/>
+        <location filename="pluginmanager.cpp" line="858"/>
         <source>Could not load plugin from %1: failed to construct plugin instance.</source>
         <translation>Could not load plugin from %1: failed to construct plugin instance.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="850"/>
+        <location filename="pluginmanager.cpp" line="868"/>
         <source>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</source>
         <translation>Could not load plugin from %1: unable to cast plugin instance to IInfo*.</translation>
     </message>
     <message>
-        <location filename="pluginmanager.cpp" line="935"/>
+        <location filename="pluginmanager.cpp" line="953"/>
         <source>Plugin with ID %1 is already loaded from %2; aborting load from %3.</source>
         <translation>Plugin with ID %1 is already loaded from %2; aborting load from %3.</translation>
     </message>
@@ -1102,6 +1102,44 @@ If you have read and really understood all these letters, click Cancel button in
 LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That&apos;s because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you&apos;ll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</translation>
+    </message>
+</context>
+<context>
+    <name>MassFontChangeDialog</name>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="14"/>
+        <source>Change fonts</source>
+        <translation>Change fonts</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="30"/>
+        <source>Standard font</source>
+        <translation>Standard font</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="37"/>
+        <source>Monospace font</source>
+        <translation>Monospace font</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="44"/>
+        <source>Serif font</source>
+        <translation>Serif font</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="51"/>
+        <source>Sans-serif font</source>
+        <translation>Sans-serif font</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="58"/>
+        <source>Cursive font</source>
+        <translation>Cursive font</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/massfontchangedialog.ui" line="65"/>
+        <source>Fantasy font</source>
+        <translation>Fantasy font</translation>
     </message>
 </context>
 <context>
@@ -1626,12 +1664,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="sslerrorsdialog.ui" line="24"/>
         <source>The following URL has SSL errors:</source>
-        <translation type="unfinished"></translation>
+        <translation>The following URL has SSL errors:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="38"/>
         <source>What should we do?</source>
-        <translation type="unfinished"></translation>
+        <translation>What should we do?</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.ui" line="46"/>
@@ -1726,6 +1764,44 @@ If you have read and really understood all these letters, click Cancel button in
         <location filename="wizardtypechoicepage.ui" line="49"/>
         <source>Advanced setup</source>
         <translation>Advanced setup</translation>
+    </message>
+</context>
+<context>
+    <name>WkFontsWidget</name>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="20"/>
+        <source>Standard font:</source>
+        <translation>Standard font:</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="30"/>
+        <source>Monospace font:</source>
+        <translation>Monospace font:</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="40"/>
+        <source>Serif font:</source>
+        <translation>Serif font:</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="50"/>
+        <source>Sans-serif font:</source>
+        <translation>Sans-serif font:</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="60"/>
+        <source>Cursive font:</source>
+        <translation>Cursive font:</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="70"/>
+        <source>Fantasy font:</source>
+        <translation>Fantasy font:</translation>
+    </message>
+    <message>
+        <location filename="../util/xsd/wkfontswidget.ui" line="80"/>
+        <source>Change all...</source>
+        <translation>Change all...</translation>
     </message>
 </context>
 <context>

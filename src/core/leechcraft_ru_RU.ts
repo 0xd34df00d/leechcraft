@@ -895,6 +895,37 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
 </context>
 <context>
+    <name>MassFontChangeDialog</name>
+    <message>
+        <source>Change fonts</source>
+        <translation>Изменение шрифтов</translation>
+    </message>
+    <message>
+        <source>Standard font</source>
+        <translation>Стандартный шрифт</translation>
+    </message>
+    <message>
+        <source>Monospace font</source>
+        <translation>Моноширинный шрифт</translation>
+    </message>
+    <message>
+        <source>Serif font</source>
+        <translation>Шрифт с засечками</translation>
+    </message>
+    <message>
+        <source>Sans-serif font</source>
+        <translation>Шрифт без засечек</translation>
+    </message>
+    <message>
+        <source>Cursive font</source>
+        <translation>Курсивный шрифт</translation>
+    </message>
+    <message>
+        <source>Fantasy font</source>
+        <translation>Фигурный шрифт</translation>
+    </message>
+</context>
+<context>
     <name>PluginManagerDialog</name>
     <message>
         <source>Plugin Manager</source>
@@ -1389,6 +1420,37 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Advanced setup</source>
         <translation>Продвинутая настройка</translation>
+    </message>
+</context>
+<context>
+    <name>WkFontsWidget</name>
+    <message>
+        <source>Standard font:</source>
+        <translation>Стандартный шрифт:</translation>
+    </message>
+    <message>
+        <source>Serif font:</source>
+        <translation>Шрифт с засечками:</translation>
+    </message>
+    <message>
+        <source>Sans-serif font:</source>
+        <translation>Шрифт без засечек:</translation>
+    </message>
+    <message>
+        <source>Cursive font:</source>
+        <translation>Курсивный шрифт:</translation>
+    </message>
+    <message>
+        <source>Fantasy font:</source>
+        <translation>Фигурный шрифт:</translation>
+    </message>
+    <message>
+        <source>Change all...</source>
+        <translation>Изменить все…</translation>
+    </message>
+    <message>
+        <source>Monospace font:</source>
+        <translation>Моноширинный шрифт:</translation>
     </message>
 </context>
 <context>
