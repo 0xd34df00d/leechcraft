@@ -512,17 +512,17 @@ namespace Azoth
 				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
 
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
+				SIGNAL (addNewTab (QString, QWidget*)),
 				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
+				SIGNAL (addNewTab (QString, QWidget*)));
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
+				SIGNAL (changeTabName (QWidget*, QString)),
 				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
+				SIGNAL (changeTabName (QWidget*, QString)));
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				SIGNAL (changeTabIcon (QWidget*, QIcon)),
 				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				SIGNAL (changeTabIcon (QWidget*, QIcon)));
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (removeTab (QWidget*)),
 				this,
