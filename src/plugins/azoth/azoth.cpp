@@ -426,14 +426,14 @@ namespace Azoth
 		setLoader ("ActivityIcons", ResourcesManager::RLTActivityIconLoader);
 		setLoader ("SystemIcons", ResourcesManager::RLTSystemIconLoader);
 
-		QList<QByteArray> iconsPropList;
-		iconsPropList << "StatusIcons"
-				<< "ClientIcon"
-				<< "AffIcons"
-				<< "MoodIcons"
-				<< "ActivityIcons"
-				<< "SystemIcons";
-		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"StatusIcons",
+					"ClientIcon",
+					"AffIcons",
+					"MoodIcons",
+					"ActivityIcons",
+					"SystemIcons"
+				},
 				&Core::Instance (),
 				"flushIconCaches");
 
