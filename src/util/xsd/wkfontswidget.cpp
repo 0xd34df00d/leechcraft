@@ -29,15 +29,17 @@
 
 #include "wkfontswidget.h"
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <util/sll/qtutil.h>
 #include "ui_wkfontswidget.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	WkFontsWidget::WkFontsWidget (BaseSettingsManager*, QWidget *parent)
+	WkFontsWidget::WkFontsWidget (BaseSettingsManager *bsm, QWidget *parent)
 	: QWidget { parent }
 	, Ui_ { std::make_shared<Ui::WkFontsWidget> () }
+	, BSM_ { bsm }
 	{
 		Ui_->setupUi (this);
 
@@ -54,6 +56,17 @@ namespace Util
 		Family2Name_ [QWebSettings::SansSerifFont] = "SansSerifFont";
 		Family2Name_ [QWebSettings::CursiveFont] = "CursiveFont";
 		Family2Name_ [QWebSettings::FantasyFont] = "FantasyFont";
+
+		ResetFontChoosers ();
+	}
+
+	void WkFontsWidget::ResetFontChoosers ()
+	{
+		for (const auto& pair : Util::Stlize (Family2Chooser_))
+		{
+			const auto& option = Family2Name_ [pair.first];
+			pair.second->SetFont (BSM_->property (option).value<QFont> ());
+		}
 	}
 }
 }

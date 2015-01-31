@@ -52,11 +52,14 @@ namespace Util
 		Q_OBJECT
 
 		std::shared_ptr<Ui::WkFontsWidget> Ui_;
+		BaseSettingsManager * const BSM_;
 
 		QHash<QWebSettings::FontFamily, FontChooserWidget*> Family2Chooser_;
 		QHash<QWebSettings::FontFamily, QByteArray> Family2Name_;
 	public:
 		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
+	private:
+		void ResetFontChoosers ();
 	signals:
 		void fontChanged (QWebSettings::FontFamily, const QFont&);
 	};
