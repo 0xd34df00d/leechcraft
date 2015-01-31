@@ -98,6 +98,14 @@ namespace Util
 
 	void WkFontsWidget::on_ChangeAll__released ()
 	{
+#ifndef USE_CPP14
+		const auto dialog = new MassFontChangeDialog
+		{
+			Family2Chooser_ [QWebSettings::StandardFont]->GetFont (),
+			Family2Chooser_.keys (),
+			this
+		};
+#else
 		QHash<QString, QList<QWebSettings::FontFamily>> families;
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 			families [pair.second->GetFont ().family ()] << pair.first;
@@ -107,6 +115,7 @@ namespace Util
 				[] (auto left, auto right) { return left.second.size () < right.second.size (); });
 
 		const auto dialog = new MassFontChangeDialog { maxElem->first, maxElem->second, this };
+#endif
 		dialog->show ();
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
