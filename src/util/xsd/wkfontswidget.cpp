@@ -33,6 +33,7 @@
 #include <util/sll/slotclosure.h>
 #include <interfaces/iwkfontssettable.h>
 #include "ui_wkfontswidget.h"
+#include "massfontchangedialog.h"
 
 namespace LeechCraft
 {
@@ -93,6 +94,39 @@ namespace Util
 			const auto& option = Family2Name_ [pair.first];
 			pair.second->SetFont (BSM_->property (option).value<QFont> ());
 		}
+	}
+
+	void WkFontsWidget::on_ChangeAll__released ()
+	{
+		QHash<QString, QList<QWebSettings::FontFamily>> families;
+		for (const auto& pair : Util::Stlize (Family2Chooser_))
+			families [pair.second->GetFont ().family ()] << pair.first;
+
+		const auto& stlized = Util::Stlize (families);
+		const auto& maxElem = std::max_element (stlized.begin (), stlized.end (),
+				[] (auto left, auto right) { return left.second.size () < right.second.size (); });
+
+		const auto dialog = new MassFontChangeDialog { maxElem->first, maxElem->second, this };
+		dialog->show ();
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[dialog, this]
+			{
+				dialog->deleteLater ();
+				if (dialog->result () == QDialog::Rejected)
+					return;
+
+				const auto& font = dialog->GetFont ();
+				for (const auto family : dialog->GetFamilies ())
+				{
+					PendingChanges_ [family] = font;
+					Family2Chooser_ [family]->SetFont (font);
+				}
+			},
+			dialog,
+			SIGNAL (finished (int)),
+			dialog
+		};
 	}
 
 	void WkFontsWidget::accept ()

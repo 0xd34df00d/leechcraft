@@ -68,6 +68,8 @@ namespace Util
 		void RegisterSettable (IWkFontsSettable*);
 	private:
 		void ResetFontChoosers ();
+	private slots:
+		void on_ChangeAll__released ();
 	public slots:
 		void accept ();
 		void reject ();
