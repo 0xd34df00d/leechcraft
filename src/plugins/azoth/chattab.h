@@ -218,7 +218,6 @@ namespace Azoth
 		void handleSendButtonVisible ();
 		void handleMinLinesHeightChanged ();
 		void handleRichFormatterPosition ();
-		void handleFontSettingsChanged ();
 		void handleFontSizeChanged ();
 
 		void handleAccountStyleChanged (IAccount*);
