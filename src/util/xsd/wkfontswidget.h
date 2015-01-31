@@ -29,9 +29,15 @@
 
 #pragma once
 
+#include <memory>
 #include <QWidget>
 #include <QtWebKit/QWebSettings>
 #include "xsdconfig.h"
+
+namespace Ui
+{
+	class WkFontsWidget;
+}
 
 namespace LeechCraft
 {
@@ -42,6 +48,8 @@ namespace Util
 	class UTIL_XSD_API WkFontsWidget : public QWidget
 	{
 		Q_OBJECT
+
+		std::shared_ptr<Ui::WkFontsWidget> Ui_;
 	public:
 		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 	signals:

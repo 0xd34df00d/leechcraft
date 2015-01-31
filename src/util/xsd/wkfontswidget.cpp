@@ -29,6 +29,7 @@
 
 #include "wkfontswidget.h"
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include "ui_wkfontswidget.h"
 
 namespace LeechCraft
 {
@@ -36,7 +37,9 @@ namespace Util
 {
 	WkFontsWidget::WkFontsWidget (BaseSettingsManager*, QWidget *parent)
 	: QWidget { parent }
+	, Ui_ { std::make_shared<Ui::WkFontsWidget> () }
 	{
+		Ui_->setupUi (this);
 	}
 }
 }

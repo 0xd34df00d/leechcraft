@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WkFontsWidget</class>
+ <widget class="QWidget" name="WkFontsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>403</width>
+    <height>120</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <layout class="QFormLayout" name="formLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Standard font:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="LeechCraft::Util::FontChooserWidget" name="StandardChooser_" native="true"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Fixed font:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="LeechCraft::Util::FontChooserWidget" name="FixedChooser_" native="true"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Serif font:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="LeechCraft::Util::FontChooserWidget" name="SerifChooser_" native="true"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Sans-serif font:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="LeechCraft::Util::FontChooserWidget" name="SansSerifChooser_" native="true"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Cursive font:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="LeechCraft::Util::FontChooserWidget" name="CursiveChooser_" native="true"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Fantasy font:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="LeechCraft::Util::FontChooserWidget" name="FantasyChooser_" native="true"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Util::FontChooserWidget</class>
+   <extends>QWidget</extends>
+   <header>fontchooserwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
