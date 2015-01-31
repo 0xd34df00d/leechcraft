@@ -62,6 +62,9 @@ namespace Util
 		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 	private:
 		void ResetFontChoosers ();
+	public slots:
+		void accept ();
+		void reject ();
 	signals:
 		void fontChanged (QWebSettings::FontFamily, const QFont&);
 	};

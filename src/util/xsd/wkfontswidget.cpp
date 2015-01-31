@@ -78,5 +78,22 @@ namespace Util
 			pair.second->SetFont (BSM_->property (option).value<QFont> ());
 		}
 	}
+
+	void WkFontsWidget::accept ()
+	{
+		for (const auto& pair : Util::Stlize (PendingChanges_))
+		{
+			emit fontChanged (pair.first, pair.second);
+			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
+		}
+
+		PendingChanges_.clear ();
+	}
+
+	void WkFontsWidget::reject ()
+	{
+		ResetFontChoosers ();
+		PendingChanges_.clear ();
+	}
 }
 }
