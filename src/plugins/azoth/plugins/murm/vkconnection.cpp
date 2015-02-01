@@ -1531,6 +1531,15 @@ namespace Murm
 			};
 		}
 
+		GiftInfo GiftMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["id"].toULongLong (),
+				QUrl::fromEncoded (map ["thumb_256"].toByteArray ())
+			};
+		}
+
 		PagePreview PagePreviewMap2Info (const QVariantMap& map)
 		{
 			return
@@ -1556,6 +1565,8 @@ namespace Murm
 					info.Videos_ << VideoMap2Info (attMap ["video"].toMap ());
 				else if (attMap.contains ("doc"))
 					info.Documents_ << DocMap2Info (attMap ["doc"].toMap ());
+				else if (attMap.contains ("gift"))
+					info.Gifts_ << GiftMap2Info (attMap ["gift"].toMap ());
 				else if (attMap.contains ("page"))
 					info.PagesPreviews_ << PagePreviewMap2Info (attMap ["page"].toMap ());
 				else if (attMap.contains ("wall"))

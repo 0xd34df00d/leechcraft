@@ -192,6 +192,12 @@ namespace Murm
 		QUrl Url_;
 	};
 
+	struct GiftInfo
+	{
+		qulonglong Id_;
+		QUrl Thumb_;
+	};
+
 	struct FullMessageInfo
 	{
 		qlonglong OwnerID_ = 0;
@@ -207,6 +213,7 @@ namespace Murm
 		QList<AudioInfo> Audios_;
 		QList<VideoInfo> Videos_;
 		QList<DocumentInfo> Documents_;
+		QList<GiftInfo> Gifts_;
 		QList<PagePreview> PagesPreviews_;
 		QList<FullMessageInfo> ContainedReposts_;
 		QList<FullMessageInfo> ForwardedMessages_;
