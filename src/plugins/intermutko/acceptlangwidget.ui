@@ -52,6 +52,9 @@
          <property name="text">
           <string>Add</string>
          </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
+         </property>
         </widget>
        </item>
       </layout>
@@ -65,6 +68,9 @@
        <property name="text">
         <string>Move up</string>
        </property>
+       <property name="icon">
+        <iconset theme="go-up"/>
+       </property>
       </widget>
      </item>
      <item>
@@ -72,12 +78,18 @@
        <property name="text">
         <string>Move down</string>
        </property>
+       <property name="icon">
+        <iconset theme="go-down"/>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="Remove_">
        <property name="text">
         <string>Remove</string>
+       </property>
+       <property name="icon">
+        <iconset theme="list-remove"/>
        </property>
       </widget>
      </item>
