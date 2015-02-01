@@ -536,6 +536,7 @@ namespace Poshuku
 			QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
 		}
 
+#if QT_VERSION < 0x050000
 		void SetSubsts ()
 		{
 			const auto& fixedFont = XmlSettingsManager::Instance ()->
@@ -556,6 +557,7 @@ namespace Poshuku
 			setSubst ("Consolas");
 			setSubst ("Menlo");
 		}
+#endif
 	}
 
 	void Poshuku::handleFontChanged (QWebSettings::FontFamily family, const QFont& font)
