@@ -34,6 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/iplugin2.h>
 
 namespace LeechCraft
 {
@@ -41,10 +42,11 @@ namespace Intermutko
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IPlugin2
 				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Intermutko")
 
