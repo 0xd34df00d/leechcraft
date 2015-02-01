@@ -10,6 +10,7 @@ include_directories (
 set (SRCS
 	acceptlangwidget.cpp
 	intermutko.cpp
+	localeentry.cpp
 	xmlsettingsmanager.cpp
 	)
 set (FORMS
