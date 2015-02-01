@@ -32,6 +32,7 @@
 #include <QNetworkRequest>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "acceptlangwidget.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,9 @@ namespace Intermutko
 	{
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "intermutkosettings.xml");
+
+		const auto alWidget = new AcceptLangWidget;
+		XSD_->SetCustomWidget ("AcceptLangWidget", alWidget);
 	}
 
 	void Plugin::SecondInit ()
@@ -69,6 +73,11 @@ namespace Intermutko
 	QIcon Plugin::GetIcon () const
 	{
 		return {};
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	void Plugin::hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,

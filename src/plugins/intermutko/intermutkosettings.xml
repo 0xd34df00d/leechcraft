@@ -2,5 +2,6 @@
 <settings>
 	<page>
 		<label value="Intermutko" />
+		<item type="customwidget" name="AcceptLangWidget" label="own" />
 	</page>
 </settings>
