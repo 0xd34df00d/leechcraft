@@ -346,6 +346,9 @@ namespace Murm
 			for (const auto& gift : info.Gifts_)
 				replacement += "<br/>" + Gift2Replacement (gift);
 
+			for (const auto& sticker : info.Stickers_)
+				replacement += "<br/>" + StickerId2Replacement (sticker.Id_);
+
 			for (const auto& photo : info.Photos_)
 				replacement += "<br/>" + Photo2Replacement (photo);
 
