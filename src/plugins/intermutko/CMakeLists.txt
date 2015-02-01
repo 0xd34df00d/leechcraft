@@ -22,5 +22,6 @@ target_link_libraries (leechcraft_intermutko
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_intermutko DESTINATION ${LC_PLUGINS_DEST})
+install (FILES intermutkosettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_intermutko Core Network)
