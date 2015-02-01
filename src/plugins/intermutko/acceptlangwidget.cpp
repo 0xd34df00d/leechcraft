@@ -36,11 +36,13 @@ namespace LeechCraft
 namespace Intermutko
 {
 	AcceptLangWidget::AcceptLangWidget (QWidget *parent)
-	: QWidget (parent)
-	, Model_ (new QStandardItemModel (this))
+	: QWidget { parent }
+	, Model_ { new QStandardItemModel { this } }
 	{
 		Ui_.setupUi (this);
 		Ui_.LangsTree_->setModel (Model_);
+
+		Model_->setHorizontalHeaderLabels ({ tr ("Language"), tr ("Country"), tr ("Code") });
 
 		reject ();
 
@@ -61,10 +63,12 @@ namespace Intermutko
 
 	void AcceptLangWidget::AddLocale (const QLocale& locale)
 	{
-		QList<QStandardItem*> items;
-		items << new QStandardItem (QLocale::languageToString (locale.language ()));
-		items << new QStandardItem (QLocale::countryToString (locale.country ()));
-		items << new QStandardItem (Util::GetInternetLocaleName (locale));
+		QList<QStandardItem*> items
+		{
+			new QStandardItem { QLocale::languageToString (locale.language ()) },
+			new QStandardItem { QLocale::countryToString (locale.country ()) },
+			new QStandardItem { Util::GetInternetLocaleName (locale) }
+		};
 		Model_->appendRow (items);
 		items.first ()->setData (locale, Roles::LocaleObj);
 	}
@@ -80,7 +84,6 @@ namespace Intermutko
 	{
 		if (const auto rc = Model_->rowCount ())
 			Model_->removeRows (0, rc);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Language")) << tr ("Country") << tr ("Code"));
 
 		for (const auto& locale : Locales_)
 			AddLocale (locale);
@@ -118,7 +121,7 @@ namespace Intermutko
 
 	void AcceptLangWidget::on_MoveUp__released ()
 	{
-		QStandardItem *item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
+		const auto item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
 		if (!item || !item->row ())
 			return;
 
@@ -128,7 +131,7 @@ namespace Intermutko
 
 	void AcceptLangWidget::on_MoveDown__released ()
 	{
-		QStandardItem *item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
+		const auto item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
 		if (!item || item->row () == Model_->rowCount () - 1)
 			return;
 
@@ -145,8 +148,10 @@ namespace Intermutko
 		auto countries = QLocale::countriesForLanguage (lang);
 		if (!countries.contains (QLocale::AnyCountry))
 			countries << QLocale::AnyCountry;
-		Q_FOREACH (QLocale::Country c, countries)
+
+		for (auto c : countries)
 			Ui_.Country_->addItem (QLocale::countryToString (c), c);
+
 		Ui_.Country_->model ()->sort (0);
 	}
 }
