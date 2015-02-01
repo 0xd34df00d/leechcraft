@@ -227,6 +227,12 @@ namespace Murm
 			return result;
 		}
 
+		QString StickerId2Replacement (const QString& stickerId)
+		{
+			return QString { "<img src='https://vk.com/images/stickers/%1/256.png' alt='' />" }
+					.arg (stickerId);
+		}
+
 		struct ContentsInfo
 		{
 			QString Contents_;
@@ -292,6 +298,8 @@ namespace Murm
 					docIds << info.ID_;
 				else if (info.Type_ == "page")
 					pageIds << info.ID_;
+				else if (info.Type_ == "sticker")
+					newContents += "<br/>" + StickerId2Replacement (info.ID_);
 
 			const auto hasAdditional = !photoIds.isEmpty () ||
 					!wallIds.isEmpty () ||
