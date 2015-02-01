@@ -111,6 +111,7 @@ namespace Snails
 		void handleCopyMessages (QAction*);
 		void handleMoveMultipleFolders ();
 		void handleMoveMessages (QAction*);
+		void handleMarkMsgRead ();
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
 		void handleViewHeaders ();

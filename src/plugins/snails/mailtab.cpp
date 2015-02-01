@@ -241,6 +241,15 @@ namespace Snails
 
 		registerMailAction (msgMoveButton);
 
+		const auto msgMarkRead = new QAction (tr ("Mark as read"), this);
+		msgMarkRead->setProperty ("ActionIcon", "mail-mark-read");
+		connect (msgMarkRead,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMarkMsgRead ()));
+		TabToolbar_->addAction (msgMarkRead);
+		registerMailAction (msgMarkRead);
+
 		const auto msgMarkUnread = new QAction (tr ("Mark as unread"), this);
 		msgMarkUnread->setProperty ("ActionIcon", "mail-mark-unread");
 		connect (msgMarkUnread,
@@ -799,13 +808,20 @@ namespace Snails
 		CurrAcc_->MoveMessages (ids, folder, { folderPath });
 	}
 
+	void MailTab::handleMarkMsgRead ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		CurrAcc_->SetReadStatus (true, GetSelectedIds (), MailModel_->GetCurrentFolder ());
+	}
+
 	void MailTab::handleMarkMsgUnread ()
 	{
 		if (!CurrAcc_)
 			return;
 
-		const auto& ids = GetSelectedIds ();
-		CurrAcc_->SetReadStatus (false, ids, MailModel_->GetCurrentFolder ());
+		CurrAcc_->SetReadStatus (false, GetSelectedIds (), MailModel_->GetCurrentFolder ());
 	}
 
 	void MailTab::handleRemoveMsgs ()
