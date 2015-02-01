@@ -9,9 +9,10 @@ include_directories (
 	)
 set (SRCS
 	intermutko.cpp
+	xmlsettingsmanager.cpp
 	)
 #CreateTrs("intermutko" "en;ru_RU" COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("intermutko" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+CreateTrsUpTarget("intermutko" "en;ru_RU" "${SRCS}" "${FORMS}" "intermutkosettings.xml")
 
 add_library (leechcraft_intermutko SHARED
 	${COMPILED_TRANSLATIONS}

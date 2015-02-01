@@ -29,41 +29,21 @@
 
 #pragma once
 
-#include <QObject>
-#include <QNetworkAccessManager>
-#include <interfaces/iinfo.h>
-#include <interfaces/core/ihookproxy.h>
-#include <interfaces/ihavesettings.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Intermutko
 {
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings)
-
-		LC_PLUGIN_METADATA ("org.LeechCraft.Intermutko")
-
-		Util::XmlSettingsDialog_ptr XSD_;
+		XmlSettingsManager ();
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	public slots:
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
-					QNetworkAccessManager*,
-					QNetworkAccessManager::Operation*,
-					QIODevice**);
+		static XmlSettingsManager& Instance ();
+	protected:
+		QSettings* BeginSettings () const;
+		void EndSettings (QSettings*) const;
 	};
 }
 }

@@ -29,6 +29,9 @@
 
 #include "intermutko.h"
 #include <QIcon>
+#include <QNetworkRequest>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +39,8 @@ namespace Intermutko
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "intermutkosettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +69,14 @@ namespace Intermutko
 	QIcon Plugin::GetIcon () const
 	{
 		return {};
+	}
+
+	void Plugin::hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
+			QNetworkAccessManager*, QNetworkAccessManager::Operation*, QIODevice**)
+	{
+		auto req = proxy->GetValue ("request").value<QNetworkRequest> ();
+		if (!req.url ().scheme ().startsWith ("http"))
+			return;
 	}
 }
 }
