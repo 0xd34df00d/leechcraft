@@ -29,7 +29,8 @@
 
 #include "acceptlangwidget.h"
 #include <QStandardItemModel>
-#include "util/util.h"
+#include <util/sll/prelude.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 
 Q_DECLARE_METATYPE (QList<QLocale>)
@@ -66,6 +67,11 @@ namespace Intermutko
 		on_Language__currentIndexChanged (Ui_.Language_->currentIndex ());
 	}
 
+	const QString& AcceptLangWidget::GetLocaleString () const
+	{
+		return LocaleStr_;
+	}
+
 	void AcceptLangWidget::AddLocale (const QLocale& locale)
 	{
 		QList<QStandardItem*> items
@@ -87,6 +93,13 @@ namespace Intermutko
 	{
 		Locales_ = XmlSettingsManager::Instance ()
 				.property ("Locales").value<QList<QLocale>> ();
+
+		RebuildLocaleStr ();
+	}
+
+	void AcceptLangWidget::RebuildLocaleStr ()
+	{
+		LocaleStr_ = QStringList { Util::Map (Locales_, &Util::GetInternetLocaleName) }.join (", ");
 	}
 
 	void AcceptLangWidget::accept ()
@@ -96,6 +109,7 @@ namespace Intermutko
 			Locales_ << Model_->item (i)->data (Roles::LocaleObj).toLocale ();
 
 		WriteSettings ();
+		RebuildLocaleStr ();
 	}
 
 	void AcceptLangWidget::reject ()
@@ -125,7 +139,7 @@ namespace Intermutko
 	{
 		const auto country = GetValue<QLocale::Country> (Ui_.Country_);
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		AddLocale (QLocale (lang, country));
+		AddLocale ({ lang, country });
 	}
 
 	void AcceptLangWidget::on_Remove__released ()

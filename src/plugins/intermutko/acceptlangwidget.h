@@ -51,13 +51,18 @@ namespace Intermutko
 		};
 
 		QList<QLocale> Locales_;
+		QString LocaleStr_;
 	public:
 		AcceptLangWidget (QWidget* = 0);
+
+		const QString& GetLocaleString () const;
 	private:
 		void AddLocale (const QLocale&);
 
 		void WriteSettings ();
 		void LoadSettings ();
+
+		void RebuildLocaleStr ();
 	public slots:
 		void accept ();
 		void reject ();
