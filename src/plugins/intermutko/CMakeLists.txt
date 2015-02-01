@@ -8,15 +8,21 @@ include_directories (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
+	acceptlangwidget.cpp
 	intermutko.cpp
 	xmlsettingsmanager.cpp
 	)
+set (FORMS
+	acceptlangwidget.ui
+	)
 #CreateTrs("intermutko" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("intermutko" "en;ru_RU" "${SRCS}" "${FORMS}" "intermutkosettings.xml")
+QtWrapUi (UIS_H ${FORMS})
 
 add_library (leechcraft_intermutko SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_intermutko
 	${LEECHCRAFT_LIBRARIES}
