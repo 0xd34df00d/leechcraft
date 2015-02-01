@@ -1540,6 +1540,14 @@ namespace Murm
 			};
 		}
 
+		StickerInfo StickerMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["id"].toString ()
+			};
+		}
+
 		PagePreview PagePreviewMap2Info (const QVariantMap& map)
 		{
 			return
@@ -1567,6 +1575,8 @@ namespace Murm
 					info.Documents_ << DocMap2Info (attMap ["doc"].toMap ());
 				else if (attMap.contains ("gift"))
 					info.Gifts_ << GiftMap2Info (attMap ["gift"].toMap ());
+				else if (attMap.contains ("sticker"))
+					info.Stickers_ << StickerMap2Info (attMap ["sticker"].toMap ());
 				else if (attMap.contains ("page"))
 					info.PagesPreviews_ << PagePreviewMap2Info (attMap ["page"].toMap ());
 				else if (attMap.contains ("wall"))
