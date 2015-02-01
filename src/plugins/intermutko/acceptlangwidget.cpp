@@ -182,7 +182,10 @@ namespace Intermutko
 			countries << QLocale::AnyCountry;
 
 		for (auto c : countries)
-			Ui_.Country_->addItem (QLocale::countryToString (c), c);
+			Ui_.Country_->addItem (c != QLocale::AnyCountry ?
+						QLocale::countryToString (c) :
+						tr ("All countries"),
+					c);
 
 		Ui_.Country_->model ()->sort (0);
 	}
