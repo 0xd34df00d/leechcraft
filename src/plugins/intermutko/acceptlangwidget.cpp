@@ -78,7 +78,8 @@ namespace Intermutko
 
 	void AcceptLangWidget::reject ()
 	{
-		Model_->clear ();
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
 		Model_->setHorizontalHeaderLabels (QStringList (tr ("Language")) << tr ("Country") << tr ("Code"));
 
 		for (const auto& locale : Locales_)
