@@ -15,7 +15,7 @@ set (SRCS
 set (FORMS
 	acceptlangwidget.ui
 	)
-#CreateTrs("intermutko" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("intermutko" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("intermutko" "en;ru_RU" "${SRCS}" "${FORMS}" "intermutkosettings.xml")
 QtWrapUi (UIS_H ${FORMS})
 
