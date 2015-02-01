@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "acceptlangwidget.h"
+#include "localeentry.h"
 
 Q_DECLARE_METATYPE (QList<QLocale>)
 
@@ -43,6 +44,8 @@ namespace Intermutko
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		qRegisterMetaType<QList<LocaleEntry>> ("QList<LocaleEntry>");
+		qRegisterMetaTypeStreamOperators<QList<LocaleEntry>> ();
 		qRegisterMetaType<QList<QLocale>> ("QList<QLocale>");
 		qRegisterMetaTypeStreamOperators<QList<QLocale>> ();
 
