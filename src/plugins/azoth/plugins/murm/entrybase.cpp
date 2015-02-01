@@ -98,6 +98,12 @@ namespace Murm
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
 
+		QString Gift2Replacement (const GiftInfo& info)
+		{
+			return QString ("<img src='%1' alt='' />")
+					.arg (QString::fromUtf8 (info.Thumb_.toEncoded ()));
+		}
+
 		QString Photo2Replacement (const PhotoInfo& info)
 		{
 			const auto& fullSizeStr = QString::number (info.FullSize_.width ()) +
@@ -328,6 +334,9 @@ namespace Murm
 			}
 
 			replacement += ProcessMessageBody (info.Text_);
+
+			for (const auto& gift : info.Gifts_)
+				replacement += "<br/>" + Gift2Replacement (gift);
 
 			for (const auto& photo : info.Photos_)
 				replacement += "<br/>" + Photo2Replacement (photo);
