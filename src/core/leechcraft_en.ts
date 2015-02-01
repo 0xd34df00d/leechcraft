@@ -46,29 +46,6 @@
     </message>
 </context>
 <context>
-    <name>AcceptLangWidget</name>
-    <message>
-        <location filename="acceptlangwidget.ui" line="53"/>
-        <source>Add</source>
-        <translation>Add</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.ui" line="66"/>
-        <source>Move up</source>
-        <translation>Move up</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.ui" line="73"/>
-        <source>Move down</source>
-        <translation>Move down</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.ui" line="80"/>
-        <source>Remove</source>
-        <translation>Remove</translation>
-    </message>
-</context>
-<context>
     <name>AuthenticationDialog</name>
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
@@ -388,24 +365,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::AcceptLangWidget</name>
-    <message>
-        <location filename="acceptlangwidget.cpp" line="90"/>
-        <source>Language</source>
-        <translation>Language</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.cpp" line="90"/>
-        <source>Country</source>
-        <translation>Country</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.cpp" line="90"/>
-        <source>Code</source>
-        <translation>Code</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Application</name>
     <message>
         <location filename="application.cpp" line="157"/>
@@ -487,68 +446,68 @@
 <context>
     <name>LeechCraft::CoreInstanceObject</name>
     <message>
-        <location filename="coreinstanceobject.cpp" line="291"/>
+        <location filename="coreinstanceobject.cpp" line="289"/>
         <source>LeechCraft Core module.</source>
         <translation>LeechCraft Core module.</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="194"/>
-        <location filename="coreinstanceobject.cpp" line="313"/>
+        <location filename="coreinstanceobject.cpp" line="193"/>
+        <location filename="coreinstanceobject.cpp" line="311"/>
         <source>Settings</source>
         <translation>Settings</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="164"/>
+        <location filename="coreinstanceobject.cpp" line="163"/>
         <source>Switch to previously active tab</source>
         <translation>Switch to previously active tab</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="170"/>
+        <location filename="coreinstanceobject.cpp" line="169"/>
         <source>Toggle fullscreen</source>
         <translation>Toggle fullscreen</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="176"/>
+        <location filename="coreinstanceobject.cpp" line="175"/>
         <source>Close tab</source>
         <translation>Close tab</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="182"/>
+        <location filename="coreinstanceobject.cpp" line="181"/>
         <source>Switch to tab to the left</source>
         <translation>Switch to tab to the left</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="188"/>
+        <location filename="coreinstanceobject.cpp" line="187"/>
         <source>Switch to tab to the right</source>
         <translation>Switch to tab to the right</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="200"/>
+        <location filename="coreinstanceobject.cpp" line="199"/>
         <source>Quit LeechCraft</source>
         <translation>Quit LeechCraft</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="206"/>
+        <location filename="coreinstanceobject.cpp" line="205"/>
         <source>Open find dialog (where applicable)</source>
         <translation>Open find dialog (where applicable)</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="212"/>
+        <location filename="coreinstanceobject.cpp" line="211"/>
         <source>Find previous (where applicable)</source>
         <translation>Find previous (where applicable)</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="218"/>
+        <location filename="coreinstanceobject.cpp" line="217"/>
         <source>Find next (where applicable)</source>
         <translation>Find next (where applicable)</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="372"/>
+        <location filename="coreinstanceobject.cpp" line="370"/>
         <source>Context-dependent</source>
         <translation>Context-dependent</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="430"/>
+        <location filename="coreinstanceobject.cpp" line="428"/>
         <source>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</source>
         <translation>Due to licensing issues, some artwork may have been removed from this package. Consider using the LackMan plugin to install that artwork.</translation>
     </message>
@@ -658,18 +617,18 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="241"/>
-        <location filename="networkaccessmanager.cpp" line="254"/>
+        <location filename="networkaccessmanager.cpp" line="196"/>
+        <location filename="networkaccessmanager.cpp" line="209"/>
         <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
         <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="274"/>
+        <location filename="networkaccessmanager.cpp" line="229"/>
         <source>Could not create Core directory.</source>
         <translation>Could not create Core directory.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="282"/>
+        <location filename="networkaccessmanager.cpp" line="237"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Could not save cookies, error opening cookie file.</translation>
     </message>
@@ -1216,7 +1175,7 @@ If you have read and really understood all these letters, click Cancel button in
         <translation>Could not create %1</translation>
     </message>
     <message>
-        <location filename="coreinstanceobject.cpp" line="118"/>
+        <location filename="coreinstanceobject.cpp" line="117"/>
         <source>System</source>
         <translation>System</translation>
     </message>
@@ -2103,26 +2062,21 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
     <message>
         <location filename="dummy.cpp" line="64"/>
-        <source>Languages</source>
-        <translation>Languages</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="65"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Plugins manager</source>
         <translation>Plugins manager</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Enable all plugins</source>
         <translation>Enable all plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="68"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Disable all plugins</source>
         <translation>Disable all plugins</translation>
     </message>
