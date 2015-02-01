@@ -187,10 +187,6 @@
 				</item>
 			</item>
 		</tab>
-		<tab>
-			<label value="Languages" />
-			<item type="customwidget" label="own" name="AcceptLanguages" />
-		</tab>
 	</page>
 	<page>
 		<icons>
