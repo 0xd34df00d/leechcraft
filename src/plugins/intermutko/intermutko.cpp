@@ -34,12 +34,17 @@
 #include "xmlsettingsmanager.h"
 #include "acceptlangwidget.h"
 
+Q_DECLARE_METATYPE (QList<QLocale>)
+
 namespace LeechCraft
 {
 namespace Intermutko
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
+		qRegisterMetaType<QList<QLocale>> ("QList<QLocale>");
+		qRegisterMetaTypeStreamOperators<QList<QLocale>> ();
+
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "intermutkosettings.xml");
 
