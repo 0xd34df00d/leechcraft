@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace Intermutko
 {
+	class AcceptLangWidget;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -51,6 +53,8 @@ namespace Intermutko
 		LC_PLUGIN_METADATA ("org.LeechCraft.Intermutko")
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		AcceptLangWidget *AcceptLangWidget_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -59,6 +63,8 @@ namespace Intermutko
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	public slots:

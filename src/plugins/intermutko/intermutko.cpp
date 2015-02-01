@@ -48,8 +48,8 @@ namespace Intermutko
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "intermutkosettings.xml");
 
-		const auto alWidget = new AcceptLangWidget;
-		XSD_->SetCustomWidget ("AcceptLangWidget", alWidget);
+		AcceptLangWidget_ = new AcceptLangWidget;
+		XSD_->SetCustomWidget ("AcceptLangWidget", AcceptLangWidget_);
 	}
 
 	void Plugin::SecondInit ()
@@ -98,6 +98,13 @@ namespace Intermutko
 		auto req = proxy->GetValue ("request").value<QNetworkRequest> ();
 		if (!req.url ().scheme ().startsWith ("http"))
 			return;
+
+		const auto& localeStr = AcceptLangWidget_->GetLocaleString ();
+		if (localeStr.isEmpty ())
+			return;
+
+		req.setRawHeader ("Accept-Language", localeStr.toUtf8 ());
+		proxy->SetValue ("request", QVariant::fromValue (req));
 	}
 }
 }
