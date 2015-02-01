@@ -30,6 +30,9 @@
 #include "acceptlangwidget.h"
 #include <QStandardItemModel>
 #include "util/util.h"
+#include "xmlsettingsmanager.h"
+
+Q_DECLARE_METATYPE (QList<QLocale>)
 
 namespace LeechCraft
 {
@@ -43,6 +46,8 @@ namespace Intermutko
 		Ui_.LangsTree_->setModel (Model_);
 
 		Model_->setHorizontalHeaderLabels ({ tr ("Language"), tr ("Country"), tr ("Code") });
+
+		LoadSettings ();
 
 		reject ();
 
@@ -73,11 +78,24 @@ namespace Intermutko
 		items.first ()->setData (locale, Roles::LocaleObj);
 	}
 
+	void AcceptLangWidget::WriteSettings ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("Locales", QVariant::fromValue (Locales_));
+	}
+
+	void AcceptLangWidget::LoadSettings ()
+	{
+		Locales_ = XmlSettingsManager::Instance ()
+				.property ("Locales").value<QList<QLocale>> ();
+	}
+
 	void AcceptLangWidget::accept ()
 	{
 		Locales_.clear ();
 		for (int i = 0; i < Model_->rowCount (); ++i)
 			Locales_ << Model_->item (i)->data (Roles::LocaleObj).toLocale ();
+
+		WriteSettings ();
 	}
 
 	void AcceptLangWidget::reject ()

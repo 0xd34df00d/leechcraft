@@ -55,6 +55,9 @@ namespace Intermutko
 		AcceptLangWidget (QWidget* = 0);
 	private:
 		void AddLocale (const QLocale&);
+
+		void WriteSettings ();
+		void LoadSettings ();
 	public slots:
 		void accept ();
 		void reject ();
