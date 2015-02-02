@@ -29,6 +29,7 @@
 
 #include "acceptlangwidget.h"
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <util/sll/prelude.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
@@ -166,6 +167,14 @@ namespace Intermutko
 		const auto country = GetValue<QLocale::Country> (Ui_.Country_);
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
 		AddLocale ({ lang, country });
+
+		if (!GetModelLocales ().contains ({ lang, QLocale::AnyCountry }) &&
+				QMessageBox::question (this,
+						"LeechCraft",
+						tr ("Do you want to add an accepted language without "
+							"any country specified as a fallback?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			AddLocale ({ lang, QLocale::AnyCountry });
 	}
 
 	void AcceptLangWidget::on_Remove__released ()
