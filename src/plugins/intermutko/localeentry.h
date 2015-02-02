@@ -41,6 +41,9 @@ namespace Intermutko
 		QLocale::Country Country_;
 	};
 
+	bool operator== (const LocaleEntry&, const LocaleEntry&);
+	bool operator!= (const LocaleEntry&, const LocaleEntry&);
+
 	QDataStream& operator<< (QDataStream&, const LocaleEntry&);
 	QDataStream& operator>> (QDataStream&, LocaleEntry&);
 }

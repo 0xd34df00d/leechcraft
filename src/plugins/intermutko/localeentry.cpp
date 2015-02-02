@@ -34,6 +34,17 @@ namespace LeechCraft
 {
 namespace Intermutko
 {
+	bool operator== (const LocaleEntry& l1, const LocaleEntry& l2)
+	{
+		return l1.Country_ == l2.Country_ &&
+				l1.Language_ == l2.Language_;
+	}
+
+	bool operator!= (const LocaleEntry& l1, const LocaleEntry& l2)
+	{
+		return !(l1 == l2);
+	}
+
 	QDataStream& operator<< (QDataStream& out, const LocaleEntry& entry)
 	{
 		out << static_cast<quint8> (1)
