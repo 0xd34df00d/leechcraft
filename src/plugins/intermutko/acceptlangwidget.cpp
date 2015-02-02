@@ -75,12 +75,17 @@ namespace Intermutko
 
 	namespace
 	{
-		QString GetCode (const LocaleEntry& entry)
+		QString GetDisplayCode (const LocaleEntry& entry)
 		{
 			const auto& name = Util::GetInternetLocaleName ({ entry.Language_, entry.Country_ });
 			return entry.Country_ != QLocale::AnyCountry ?
 					name :
 					name.left (2);
+		}
+
+		QString GetFullCode (const LocaleEntry& entry)
+		{
+			return GetDisplayCode (entry) + ";q=" + QString::number (entry.Q_);
 		}
 
 		QString GetCountryName (QLocale::Country c)
@@ -101,7 +106,7 @@ namespace Intermutko
 			new QStandardItem { QLocale::languageToString (entry.Language_) },
 			new QStandardItem { GetCountryName (entry.Country_) },
 			new QStandardItem { QString::number (entry.Q_) },
-			new QStandardItem { GetCode (entry) }
+			new QStandardItem { GetDisplayCode (entry) }
 		};
 		Model_->appendRow (items);
 		items.first ()->setData (QVariant::fromValue (entry), Roles::LocaleObj);
@@ -130,7 +135,7 @@ namespace Intermutko
 
 	void AcceptLangWidget::RebuildLocaleStr ()
 	{
-		LocaleStr_ = QStringList { Util::Map (Locales_, &GetCode) }.join (", ");
+		LocaleStr_ = QStringList { Util::Map (Locales_, &GetFullCode) }.join (", ");
 	}
 
 	void AcceptLangWidget::accept ()
