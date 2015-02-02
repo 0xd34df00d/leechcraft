@@ -36,8 +36,6 @@
 #include "acceptlangwidget.h"
 #include "localeentry.h"
 
-Q_DECLARE_METATYPE (QList<QLocale>)
-
 namespace LeechCraft
 {
 namespace Intermutko
@@ -46,8 +44,6 @@ namespace Intermutko
 	{
 		qRegisterMetaType<QList<LocaleEntry>> ("QList<LocaleEntry>");
 		qRegisterMetaTypeStreamOperators<QList<LocaleEntry>> ();
-		qRegisterMetaType<QList<QLocale>> ("QList<QLocale>");
-		qRegisterMetaTypeStreamOperators<QList<QLocale>> ();
 
 		Util::InstallTranslator ("intermutko");
 
