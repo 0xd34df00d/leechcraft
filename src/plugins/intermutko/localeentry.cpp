@@ -49,7 +49,8 @@ namespace Intermutko
 	{
 		out << static_cast<quint8> (1)
 				<< static_cast<qint32> (entry.Language_)
-				<< static_cast<qint32> (entry.Country_);
+				<< static_cast<qint32> (entry.Country_)
+				<< entry.Q_;
 		return out;
 	}
 
@@ -57,7 +58,7 @@ namespace Intermutko
 	{
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -69,6 +70,8 @@ namespace Intermutko
 		qint32 country = 0;
 		in >> lang
 				>> country;
+		if (version >= 1)
+				in >> entry.Q_;
 		entry.Language_ = static_cast<QLocale::Language> (lang);
 		entry.Country_ = static_cast<QLocale::Country> (country);
 		return in;

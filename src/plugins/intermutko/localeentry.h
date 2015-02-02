@@ -39,6 +39,7 @@ namespace Intermutko
 	{
 		QLocale::Language Language_;
 		QLocale::Country Country_;
+		double Q_;
 	};
 
 	bool operator== (const LocaleEntry&, const LocaleEntry&);
