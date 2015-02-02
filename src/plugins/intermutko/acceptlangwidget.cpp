@@ -166,15 +166,16 @@ namespace Intermutko
 	{
 		const auto country = GetValue<QLocale::Country> (Ui_.Country_);
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		AddLocale ({ lang, country });
+		const auto qval = Ui_.Q_->value ();
+		AddLocale ({ lang, country, qval });
 
-		if (!GetModelLocales ().contains ({ lang, QLocale::AnyCountry }) &&
+		if (!GetModelLocales ().contains ({ lang, QLocale::AnyCountry, qval }) &&
 				QMessageBox::question (this,
 						"LeechCraft",
 						tr ("Do you want to add an accepted language without "
 							"any country specified as a fallback?"),
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-			AddLocale ({ lang, QLocale::AnyCountry });
+			AddLocale ({ lang, QLocale::AnyCountry, qval });
 	}
 
 	void AcceptLangWidget::on_Remove__released ()
