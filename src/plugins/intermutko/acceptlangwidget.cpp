@@ -156,7 +156,7 @@ namespace Intermutko
 		{
 			const int idx = box->currentIndex ();
 			if (idx <= 0)
-				return T ();
+				return {};
 
 			const int val = box->itemData (idx).toInt ();
 			return static_cast<T> (val);
