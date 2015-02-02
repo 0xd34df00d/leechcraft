@@ -76,7 +76,10 @@ namespace Intermutko
 	{
 		QString GetCode (const LocaleEntry& entry)
 		{
-			return Util::GetInternetLocaleName ({ entry.Language_, entry.Country_ });
+			const auto& name = Util::GetInternetLocaleName ({ entry.Language_, entry.Country_ });
+			return entry.Country_ != QLocale::AnyCountry ?
+					name :
+					name.left (2);
 		}
 
 		QString GetCountryName (QLocale::Country c)
