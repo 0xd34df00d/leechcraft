@@ -47,7 +47,7 @@ namespace Intermutko
 		Ui_.setupUi (this);
 		Ui_.LangsTree_->setModel (Model_);
 
-		Model_->setHorizontalHeaderLabels ({ tr ("Language"), tr ("Country"), tr ("Code") });
+		Model_->setHorizontalHeaderLabels ({ tr ("Language"), tr ("Country"), tr ("Quality"), tr ("Code") });
 
 		LoadSettings ();
 
@@ -100,6 +100,7 @@ namespace Intermutko
 		{
 			new QStandardItem { QLocale::languageToString (entry.Language_) },
 			new QStandardItem { GetCountryName (entry.Country_) },
+			new QStandardItem { QString::number (entry.Q_) },
 			new QStandardItem { GetCode (entry) }
 		};
 		Model_->appendRow (items);
