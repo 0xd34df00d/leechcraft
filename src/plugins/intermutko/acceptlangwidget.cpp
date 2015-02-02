@@ -99,6 +99,14 @@ namespace Intermutko
 		items.first ()->setData (QVariant::fromValue (entry), Roles::LocaleObj);
 	}
 
+	QList<LocaleEntry> AcceptLangWidget::GetModelLocales () const
+	{
+		QList<LocaleEntry> result;
+		for (int i = 0; i < Model_->rowCount (); ++i)
+			result << Model_->item (i)->data (Roles::LocaleObj).value<LocaleEntry> ();
+		return result;
+	}
+
 	void AcceptLangWidget::WriteSettings ()
 	{
 		XmlSettingsManager::Instance ().setProperty ("LocaleEntries", QVariant::fromValue (Locales_));
@@ -119,10 +127,7 @@ namespace Intermutko
 
 	void AcceptLangWidget::accept ()
 	{
-		Locales_.clear ();
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			Locales_ << Model_->item (i)->data (Roles::LocaleObj).value<LocaleEntry> ();
-
+		Locales_ = GetModelLocales ();
 		WriteSettings ();
 		RebuildLocaleStr ();
 	}

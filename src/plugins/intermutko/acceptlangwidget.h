@@ -59,6 +59,7 @@ namespace Intermutko
 		const QString& GetLocaleString () const;
 	private:
 		void AddLocale (const LocaleEntry&);
+		QList<LocaleEntry> GetModelLocales () const;
 
 		void WriteSettings ();
 		void LoadSettings ();
