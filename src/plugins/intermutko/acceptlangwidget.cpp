@@ -89,6 +89,9 @@ namespace Intermutko
 
 	void AcceptLangWidget::AddLocale (const LocaleEntry& entry)
 	{
+		if (GetModelLocales ().contains (entry))
+			return;
+
 		QList<QStandardItem*> items
 		{
 			new QStandardItem { QLocale::languageToString (entry.Language_) },
