@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include "ui_acceptlangwidget.h"
+#include "localeentry.h"
 
 class QStandardItemModel;
 
@@ -50,14 +51,14 @@ namespace Intermutko
 			LocaleObj = Qt::UserRole + 1
 		};
 
-		QList<QLocale> Locales_;
+		QList<LocaleEntry> Locales_;
 		QString LocaleStr_;
 	public:
 		AcceptLangWidget (QWidget* = 0);
 
 		const QString& GetLocaleString () const;
 	private:
-		void AddLocale (const QLocale&);
+		void AddLocale (const LocaleEntry&);
 
 		void WriteSettings ();
 		void LoadSettings ();

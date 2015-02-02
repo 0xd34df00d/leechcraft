@@ -72,41 +72,56 @@ namespace Intermutko
 		return LocaleStr_;
 	}
 
-	void AcceptLangWidget::AddLocale (const QLocale& locale)
+	namespace
+	{
+		QString GetCode (const LocaleEntry& entry)
+		{
+			return Util::GetInternetLocaleName ({ entry.Language_, entry.Country_ });
+		}
+
+		QString GetCountryName (QLocale::Country c)
+		{
+			return c == QLocale::AnyCountry ?
+					AcceptLangWidget::tr ("Any country") :
+					QLocale::countryToString (c);
+		}
+	}
+
+	void AcceptLangWidget::AddLocale (const LocaleEntry& entry)
 	{
 		QList<QStandardItem*> items
 		{
-			new QStandardItem { QLocale::languageToString (locale.language ()) },
-			new QStandardItem { QLocale::countryToString (locale.country ()) },
-			new QStandardItem { Util::GetInternetLocaleName (locale) }
+			new QStandardItem { QLocale::languageToString (entry.Language_) },
+			new QStandardItem { GetCountryName (entry.Country_) },
+			new QStandardItem { GetCode (entry) }
 		};
 		Model_->appendRow (items);
-		items.first ()->setData (locale, Roles::LocaleObj);
+		items.first ()->setData (QVariant::fromValue (entry), Roles::LocaleObj);
 	}
 
 	void AcceptLangWidget::WriteSettings ()
 	{
-		XmlSettingsManager::Instance ().setProperty ("Locales", QVariant::fromValue (Locales_));
+		XmlSettingsManager::Instance ().setProperty ("LocaleEntries", QVariant::fromValue (Locales_));
 	}
 
 	void AcceptLangWidget::LoadSettings ()
 	{
 		Locales_ = XmlSettingsManager::Instance ()
-				.property ("Locales").value<QList<QLocale>> ();
+				.property ("LocaleEntries").value<QList<LocaleEntry>> ();
 
 		RebuildLocaleStr ();
 	}
 
 	void AcceptLangWidget::RebuildLocaleStr ()
 	{
-		LocaleStr_ = QStringList { Util::Map (Locales_, &Util::GetInternetLocaleName) }.join (", ");
+		LocaleStr_ = QStringList { Util::Map (Locales_, &GetCode) }.join (", ");
 	}
 
 	void AcceptLangWidget::accept ()
 	{
 		Locales_.clear ();
 		for (int i = 0; i < Model_->rowCount (); ++i)
-			Locales_ << Model_->item (i)->data (Roles::LocaleObj).toLocale ();
+			Locales_ << Model_->item (i)->data (Roles::LocaleObj).value<LocaleEntry> ();
 
 		WriteSettings ();
 		RebuildLocaleStr ();
@@ -182,10 +197,7 @@ namespace Intermutko
 			countries << QLocale::AnyCountry;
 
 		for (auto c : countries)
-			Ui_.Country_->addItem (c != QLocale::AnyCountry ?
-						QLocale::countryToString (c) :
-						tr ("All countries"),
-					c);
+			Ui_.Country_->addItem (GetCountryName (c), c);
 
 		Ui_.Country_->model ()->sort (0);
 	}
