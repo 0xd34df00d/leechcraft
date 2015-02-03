@@ -102,10 +102,10 @@ namespace Intermutko
 			return;
 
 		const auto& localeStr = AcceptLangWidget_->GetLocaleString ();
-		if (localeStr.isEmpty ())
-			return;
-
-		req.setRawHeader ("Accept-Language", localeStr.toUtf8 ());
+		req.setRawHeader ("Accept-Language",
+				localeStr.isEmpty () ?
+						" " :
+						localeStr.toUtf8 ());
 		proxy->SetValue ("request", QVariant::fromValue (req));
 	}
 }
