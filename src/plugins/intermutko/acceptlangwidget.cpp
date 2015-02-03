@@ -125,10 +125,30 @@ namespace Intermutko
 		XmlSettingsManager::Instance ().setProperty ("LocaleEntries", QVariant::fromValue (Locales_));
 	}
 
+	namespace
+	{
+		QList<LocaleEntry> BuildDefaultLocaleList ()
+		{
+			QList<LocaleEntry> result;
+
+			const QLocale defLocale;
+			result.append ({ defLocale.language (), defLocale.country (), 1 });
+			result.append ({ defLocale.language (), QLocale::AnyCountry, 0.9 });
+
+			return result;
+		}
+	}
+
 	void AcceptLangWidget::LoadSettings ()
 	{
-		Locales_ = XmlSettingsManager::Instance ()
-				.property ("LocaleEntries").value<QList<LocaleEntry>> ();
+		const auto& localesVar = XmlSettingsManager::Instance ().property ("LocaleEntries");
+		if (!localesVar.isNull ())
+			Locales_ = localesVar.value<QList<LocaleEntry>> ();
+		else
+		{
+			Locales_ = BuildDefaultLocaleList ();
+			WriteSettings ();
+		}
 
 		RebuildLocaleStr ();
 	}
