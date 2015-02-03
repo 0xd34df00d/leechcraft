@@ -88,11 +88,11 @@ namespace Intermutko
 			return GetDisplayCode (entry) + ";q=" + QString::number (entry.Q_);
 		}
 
-		QString GetCountryName (QLocale::Country c)
+		QString GetCountryName (QLocale::Language lang, QLocale::Country country)
 		{
-			return c == QLocale::AnyCountry ?
+			return country == QLocale::AnyCountry ?
 					AcceptLangWidget::tr ("Any country") :
-					QLocale::countryToString (c);
+					QLocale {lang, country }.nativeCountryName ();
 		}
 	}
 
@@ -104,7 +104,7 @@ namespace Intermutko
 		QList<QStandardItem*> items
 		{
 			new QStandardItem { QLocale::languageToString (entry.Language_) },
-			new QStandardItem { GetCountryName (entry.Country_) },
+			new QStandardItem { GetCountryName (entry.Language_, entry.Country_) },
 			new QStandardItem { QString::number (entry.Q_) },
 			new QStandardItem { GetDisplayCode (entry) }
 		};
@@ -244,7 +244,7 @@ namespace Intermutko
 			countries << QLocale::AnyCountry;
 
 		for (auto c : countries)
-			Ui_.Country_->addItem (GetCountryName (c), c);
+			Ui_.Country_->addItem (GetCountryName (lang, c), c);
 
 		Ui_.Country_->model ()->sort (0);
 	}
