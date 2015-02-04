@@ -180,14 +180,7 @@ namespace Intermutko
 		Ui_.Country_->clear ();
 
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		auto countries = QLocale::countriesForLanguage (lang);
-		if (!countries.contains (QLocale::AnyCountry))
-			countries << QLocale::AnyCountry;
-
-		for (auto c : countries)
-			Ui_.Country_->addItem (GetCountryName (lang, c), c);
-
-		Ui_.Country_->model ()->sort (0);
+		FillCountryCombobox (Ui_.Country_, lang);
 	}
 }
 }

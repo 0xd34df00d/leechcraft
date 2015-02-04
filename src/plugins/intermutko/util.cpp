@@ -62,5 +62,17 @@ namespace Intermutko
 		}
 		combo->model ()->sort (0);
 	}
+
+	void FillCountryCombobox (QComboBox *combo, QLocale::Language language)
+	{
+		auto countries = QLocale::countriesForLanguage (language);
+		if (!countries.contains (QLocale::AnyCountry))
+			countries << QLocale::AnyCountry;
+
+		for (auto c : countries)
+			combo->addItem (GetCountryName (language, c), c);
+
+		combo->model ()->sort (0);
+	}
 }
 }

@@ -43,5 +43,6 @@ namespace Intermutko
 	QString GetDisplayCode (const LocaleEntry& entry);
 
 	void FillLanguageCombobox (QComboBox *combo);
+	void FillCountryCombobox (QComboBox *combo, QLocale::Language language);
 }
 }
