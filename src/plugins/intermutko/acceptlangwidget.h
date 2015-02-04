@@ -33,23 +33,18 @@
 #include "ui_acceptlangwidget.h"
 #include "localeentry.h"
 
-class QStandardItemModel;
-
 namespace LeechCraft
 {
 namespace Intermutko
 {
+	class LocalesModel;
+
 	class AcceptLangWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::AcceptLangWidget Ui_;
-		QStandardItemModel * const Model_;
-
-		enum Roles
-		{
-			LocaleObj = Qt::UserRole + 1
-		};
+		LocalesModel * const Model_;
 
 		QList<LocaleEntry> Locales_;
 		QString LocaleStr_;
@@ -59,7 +54,6 @@ namespace Intermutko
 		const QString& GetLocaleString () const;
 	private:
 		void AddLocale (const LocaleEntry&);
-		QList<LocaleEntry> GetModelLocales () const;
 
 		void WriteSettings ();
 		void LoadSettings ();

@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "acceptlangwidget.h"
-#include <QStandardItemModel>
 #include <QMessageBox>
 #include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
+#include "localesmodel.h"
 #include "util.h"
 
 Q_DECLARE_METATYPE (QList<QLocale>)
@@ -42,12 +42,10 @@ namespace Intermutko
 {
 	AcceptLangWidget::AcceptLangWidget (QWidget *parent)
 	: QWidget { parent }
-	, Model_ { new QStandardItemModel { this } }
+	, Model_ { new LocalesModel { this } }
 	{
 		Ui_.setupUi (this);
 		Ui_.LangsTree_->setModel (Model_);
-
-		Model_->setHorizontalHeaderLabels ({ tr ("Language"), tr ("Country"), tr ("Quality"), tr ("Code") });
 
 		LoadSettings ();
 
@@ -83,26 +81,10 @@ namespace Intermutko
 
 	void AcceptLangWidget::AddLocale (const LocaleEntry& entry)
 	{
-		if (GetModelLocales ().contains (entry))
+		if (Model_->GetEntries ().contains (entry))
 			return;
 
-		QList<QStandardItem*> items
-		{
-			new QStandardItem { QLocale::languageToString (entry.Language_) },
-			new QStandardItem { GetCountryName (entry.Language_, entry.Country_) },
-			new QStandardItem { QString::number (entry.Q_) },
-			new QStandardItem { GetDisplayCode (entry) }
-		};
-		Model_->appendRow (items);
-		items.first ()->setData (QVariant::fromValue (entry), Roles::LocaleObj);
-	}
-
-	QList<LocaleEntry> AcceptLangWidget::GetModelLocales () const
-	{
-		QList<LocaleEntry> result;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			result << Model_->item (i)->data (Roles::LocaleObj).value<LocaleEntry> ();
-		return result;
+		Model_->AddLocaleEntry (entry);
 	}
 
 	void AcceptLangWidget::WriteSettings ()
@@ -145,18 +127,14 @@ namespace Intermutko
 
 	void AcceptLangWidget::accept ()
 	{
-		Locales_ = GetModelLocales ();
+		Locales_ = Model_->GetEntries ();
 		WriteSettings ();
 		RebuildLocaleStr ();
 	}
 
 	void AcceptLangWidget::reject ()
 	{
-		if (const auto rc = Model_->rowCount ())
-			Model_->removeRows (0, rc);
-
-		for (const auto& locale : Locales_)
-			AddLocale (locale);
+		Model_->SetLocales (Locales_);
 	}
 
 	namespace
@@ -180,7 +158,7 @@ namespace Intermutko
 		const auto qval = Ui_.Q_->value ();
 		AddLocale ({ lang, country, qval });
 
-		if (!GetModelLocales ().contains ({ lang, QLocale::AnyCountry, qval }) &&
+		if (!Model_->GetEntries ().contains ({ lang, QLocale::AnyCountry, qval }) &&
 				QMessageBox::question (this,
 						"LeechCraft",
 						tr ("Do you want to add an accepted language without "
@@ -191,25 +169,18 @@ namespace Intermutko
 
 	void AcceptLangWidget::on_Remove__released ()
 	{
-		const auto& idx = Ui_.LangsTree_->currentIndex ();
-		if (!idx.isValid ())
-			return;
-
-		Model_->removeRow (idx.row ());
+		Model_->Remove (Ui_.LangsTree_->currentIndex ());
 	}
 
 	void AcceptLangWidget::on_MoveUp__released ()
 	{
-		const auto item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
-		if (!item || !item->row ())
-			return;
-
-		const int row = item->row ();
-		Model_->insertRow (row - 1, Model_->takeRow (row));
+		Model_->MoveUp (Ui_.LangsTree_->currentIndex ());
 	}
 
 	void AcceptLangWidget::on_MoveDown__released ()
 	{
+		Model_->MoveDown (Ui_.LangsTree_->currentIndex ());
+		/*
 		const auto item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
 		if (!item || item->row () == Model_->rowCount () - 1)
 			return;
@@ -217,6 +188,7 @@ namespace Intermutko
 		const int row = item->row ();
 		auto items = Model_->takeRow (row);
 		Model_->insertRow (row + 1, items);
+		*/
 	}
 
 	void AcceptLangWidget::on_Language__currentIndexChanged (int)
