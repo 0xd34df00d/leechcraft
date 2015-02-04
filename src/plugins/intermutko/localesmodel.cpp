@@ -97,6 +97,14 @@ namespace Intermutko
 		return {};
 	}
 
+	Qt::ItemFlags LocalesModel::flags (const QModelIndex& index) const
+	{
+		Qt::ItemFlags result = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+		if (index.column () != static_cast<int> (Column::Code))
+			result |= Qt::ItemIsEditable;
+		return result;
+	}
+
 	const QList<LocaleEntry>& LocalesModel::GetEntries () const
 	{
 		return Locales_;
