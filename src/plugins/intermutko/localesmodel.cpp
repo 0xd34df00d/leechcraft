@@ -75,10 +75,13 @@ namespace Intermutko
 
 	QVariant LocalesModel::data (const QModelIndex& index, int role) const
 	{
+		const auto& entry = Locales_.value (index.row ());
+		if (role == static_cast<int> (Role::LocaleEntry))
+			return QVariant::fromValue (entry);
+
 		if (role != Qt::DisplayRole && role != Qt::EditRole)
 			return {};
 
-		const auto& entry = Locales_.value (index.row ());
 		switch (static_cast<Column> (index.column ()))
 		{
 		case Column::Language:

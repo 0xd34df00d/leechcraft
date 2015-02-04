@@ -59,6 +59,11 @@ namespace Intermutko
 			Code
 		};
 
+		enum class Role
+		{
+			LocaleEntry = Qt::UserRole + 1
+		};
+
 		using QAbstractItemModel::QAbstractItemModel;
 
 		int columnCount (const QModelIndex&) const override;
