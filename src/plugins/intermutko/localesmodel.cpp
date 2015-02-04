@@ -96,5 +96,76 @@ namespace Intermutko
 				<< index;
 		return {};
 	}
+
+	const QList<LocaleEntry>& LocalesModel::GetEntries () const
+	{
+		return Locales_;
+	}
+
+	void LocalesModel::AddLocaleEntry (const LocaleEntry& entry)
+	{
+		beginInsertRows ({}, Locales_.size (), Locales_.size ());
+		Locales_ << entry;
+		endInsertRows ();
+	}
+
+	void LocalesModel::SetLocales (const QList<LocaleEntry>& entries)
+	{
+		if (const auto rc = Locales_.size ())
+		{
+			beginRemoveRows ({}, 0, rc - 1);
+			Locales_.clear ();
+			endRemoveRows ();
+		}
+
+		if (const auto rc = entries.size ())
+		{
+			beginInsertRows ({}, 0, rc - 1);
+			Locales_ = entries;
+			endInsertRows ();
+		}
+	}
+
+	void LocalesModel::Remove (const QModelIndex& index)
+	{
+		if (!index.isValid ())
+			return;
+
+		const auto r = index.row ();
+		beginRemoveRows ({}, r, r);
+		Locales_.removeAt (r);
+		endRemoveRows ();
+	}
+
+	void LocalesModel::MoveUp (const QModelIndex& index)
+	{
+		if (!index.isValid () || !index.row ())
+			return;
+
+		const auto r = index.row ();
+
+		beginRemoveRows ({}, r - 1, r - 1);
+		const auto& preRow = Locales_.takeAt (r - 1);
+		endRemoveRows ();
+
+		beginInsertRows ({}, r, r);
+		Locales_.insert (r, preRow);
+		endInsertRows ();
+	}
+
+	void LocalesModel::MoveDown (const QModelIndex& index)
+	{
+		if (!index.isValid () || index.row () == Locales_.size () - 1)
+			return;
+
+		const auto r = index.row ();
+		beginRemoveRows ({}, r + 1, r + 1);
+		const auto& postRow = Locales_.takeAt (r + 1);
+		endRemoveRows ();
+
+		beginInsertRows ({}, r, r);
+		Locales_.insert (r, postRow);
+		endInsertRows ();
+	}
 }
 }

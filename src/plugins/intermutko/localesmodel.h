@@ -67,6 +67,14 @@ namespace Intermutko
 		QModelIndex parent (const QModelIndex&) const override;
 		QVariant headerData (int, Qt::Orientation, int) const override;
 		QVariant data (const QModelIndex&, int) const override;
+
+		const QList<LocaleEntry>& GetEntries () const;
+		void AddLocaleEntry (const LocaleEntry&);
+		void SetLocales (const QList<LocaleEntry>&);
+		void Remove (const QModelIndex&);
+
+		void MoveUp (const QModelIndex&);
+		void MoveDown (const QModelIndex&);
 	};
 }
 }
