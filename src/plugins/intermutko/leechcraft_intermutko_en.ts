@@ -5,49 +5,52 @@
     <name>AcceptLangWidget</name>
     <message>
         <location filename="acceptlangwidget.ui" line="53"/>
+        <source>Language quality factor, controlling the preference of a given language.</source>
+        <translation>Language quality factor, controlling the preference of a given language.</translation>
+    </message>
+    <message>
+        <location filename="acceptlangwidget.ui" line="69"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="acceptlangwidget.ui" line="66"/>
+        <location filename="acceptlangwidget.ui" line="85"/>
         <source>Move up</source>
         <translation>Move up</translation>
     </message>
     <message>
-        <location filename="acceptlangwidget.ui" line="73"/>
+        <location filename="acceptlangwidget.ui" line="95"/>
         <source>Move down</source>
         <translation>Move down</translation>
     </message>
     <message>
-        <location filename="acceptlangwidget.ui" line="80"/>
+        <location filename="acceptlangwidget.ui" line="105"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
 </context>
 <context>
-    <name>LeechCraft::Intermutko</name>
+    <name>LeechCraft::Intermutko::AcceptLangWidget</name>
     <message>
-        <location filename="acceptlangwidget.cpp" line="49"/>
-        <source>Language</source>
-        <translation>Language</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.cpp" line="49"/>
-        <source>Country</source>
-        <translation>Country</translation>
-    </message>
-    <message>
-        <location filename="acceptlangwidget.cpp" line="49"/>
-        <source>Code</source>
-        <translation>Code</translation>
+        <location filename="acceptlangwidget.cpp" line="159"/>
+        <source>Do you want to add an accepted language without any country specified as a fallback?</source>
+        <translation>Do you want to add an accepted language without any country specified as a fallback?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Intermutko::Plugin</name>
     <message>
-        <location filename="intermutko.cpp" line="75"/>
+        <location filename="intermutko.cpp" line="77"/>
         <source>Provides fine-grained tuning for the Accept-Language HTTP header.</source>
         <translation>Provides fine-grained tuning for the Accept-Language HTTP header.</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="util.cpp" line="42"/>
+        <source>Any country</source>
+        <translation>Any country</translation>
     </message>
 </context>
 <context>
