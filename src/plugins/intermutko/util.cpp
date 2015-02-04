@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QComboBox>
 #include <util/util.h>
 #include "localeentry.h"
 
@@ -50,5 +51,16 @@ namespace Intermutko
 				name.left (2);
 	}
 
+	void FillLanguageCombobox (QComboBox *combo)
+	{
+		for (int i = 0; i < QLocale::LastLanguage; ++i)
+		{
+			if (i == QLocale::C)
+				continue;
+
+			combo->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
+		}
+		combo->model ()->sort (0);
+	}
 }
 }

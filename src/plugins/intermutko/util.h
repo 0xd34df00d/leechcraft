@@ -31,6 +31,8 @@
 
 #include <QLocale>
 
+class QComboBox;
+
 namespace LeechCraft
 {
 namespace Intermutko
@@ -39,5 +41,7 @@ namespace Intermutko
 
 	QString GetCountryName (QLocale::Language lang, QLocale::Country country);
 	QString GetDisplayCode (const LocaleEntry& entry);
+
+	void FillLanguageCombobox (QComboBox *combo);
 }
 }

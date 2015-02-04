@@ -55,14 +55,7 @@ namespace Intermutko
 			Ui_.Country_->addItem (QLocale::countryToString (static_cast<QLocale::Country> (i)), i);
 		Ui_.Country_->model ()->sort (0);
 
-		for (int i = 0; i < QLocale::LastLanguage; ++i)
-		{
-			if (i == QLocale::C)
-				continue;
-
-			Ui_.Language_->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
-		}
-		Ui_.Language_->model ()->sort (0);
+		FillLanguageCombobox (Ui_.Language_);
 		on_Language__currentIndexChanged (Ui_.Language_->currentIndex ());
 	}
 
