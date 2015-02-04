@@ -31,8 +31,8 @@
 #include <QStandardItemModel>
 #include <QMessageBox>
 #include <util/sll/prelude.h>
-#include <util/util.h>
 #include "xmlsettingsmanager.h"
+#include "util.h"
 
 Q_DECLARE_METATYPE (QList<QLocale>)
 
@@ -75,24 +75,9 @@ namespace Intermutko
 
 	namespace
 	{
-		QString GetDisplayCode (const LocaleEntry& entry)
-		{
-			const auto& name = Util::GetInternetLocaleName ({ entry.Language_, entry.Country_ });
-			return entry.Country_ != QLocale::AnyCountry ?
-					name :
-					name.left (2);
-		}
-
 		QString GetFullCode (const LocaleEntry& entry)
 		{
 			return GetDisplayCode (entry) + ";q=" + QString::number (entry.Q_);
-		}
-
-		QString GetCountryName (QLocale::Language lang, QLocale::Country country)
-		{
-			return country == QLocale::AnyCountry ?
-					AcceptLangWidget::tr ("Any country") :
-					QLocale {lang, country }.nativeCountryName ();
 		}
 	}
 

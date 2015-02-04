@@ -11,6 +11,7 @@ set (SRCS
 	acceptlangwidget.cpp
 	intermutko.cpp
 	localeentry.cpp
+	util.cpp
 	xmlsettingsmanager.cpp
 	)
 set (FORMS
