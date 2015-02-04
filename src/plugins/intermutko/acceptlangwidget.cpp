@@ -180,15 +180,6 @@ namespace Intermutko
 	void AcceptLangWidget::on_MoveDown__released ()
 	{
 		Model_->MoveDown (Ui_.LangsTree_->currentIndex ());
-		/*
-		const auto item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
-		if (!item || item->row () == Model_->rowCount () - 1)
-			return;
-
-		const int row = item->row ();
-		auto items = Model_->takeRow (row);
-		Model_->insertRow (row + 1, items);
-		*/
 	}
 
 	void AcceptLangWidget::on_Language__currentIndexChanged (int)
