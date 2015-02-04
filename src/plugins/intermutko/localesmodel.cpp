@@ -75,7 +75,7 @@ namespace Intermutko
 
 	QVariant LocalesModel::data (const QModelIndex& index, int role) const
 	{
-		if (role != Qt::DisplayRole)
+		if (role != Qt::DisplayRole && role != Qt::EditRole)
 			return {};
 
 		const auto& entry = Locales_.value (index.row ());
