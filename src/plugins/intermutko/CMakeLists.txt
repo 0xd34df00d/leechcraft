@@ -9,6 +9,7 @@ include_directories (
 	)
 set (SRCS
 	acceptlangwidget.cpp
+	entriesdelegate.cpp
 	intermutko.cpp
 	localeentry.cpp
 	localesmodel.cpp
