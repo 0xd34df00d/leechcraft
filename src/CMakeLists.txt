@@ -1,11 +1,15 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy (SET CMP0003 NEW)
+cmake_policy (SET CMP0042 OLD)
+
 project (leechcraft)
 #if (NOT DISABLE_RPATH_TRICKS)
 #	set (CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #	set (CMAKE_BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 #	set (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 #endif ()
+
+set (CMAKE_MACOSX_RPATH OFF)
 
 option (USE_QT5 "Enable Qt5 build" OFF)
 option (USE_CPP14 "Enable C++14 features and plugins" OFF)
