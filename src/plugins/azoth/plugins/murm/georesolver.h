@@ -32,6 +32,7 @@
 #include <functional>
 #include <QObject>
 #include <QHash>
+#include <QSet>
 
 namespace LeechCraft
 {
@@ -50,18 +51,23 @@ namespace Murm
 
 		QHash<int, QString> Countries_;
 		QHash<int, QString> Cities_;
+
+		QSet<int> PendingCountries_;
+		QSet<int> PendingCities_;
 	public:
 		GeoResolver (VkConnection*, QObject* = 0);
 
 		void CacheCountries (QList<int>);
+		void AddCountriesToCache (const QHash<int, QString>&);
 		void GetCountry (int, std::function<void (QString)>);
 		QString GetCountry (int) const;
 
 		void CacheCities (QList<int>);
+		void AddCitiesToCache (const QHash<int, QString>&);
 		void GetCity (int, std::function<void (QString)>);
 		QString GetCity (int) const;
 	private:
-		void Cache (QList<int>, QHash<int, QString>&, GeoIdType);
+		void Cache (QList<int>, QHash<int, QString>&, QSet<int>&, GeoIdType);
 		void Get (int, std::function<void (QString)>, QHash<int, QString>&, GeoIdType);
 	};
 }

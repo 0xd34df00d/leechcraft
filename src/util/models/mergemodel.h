@@ -78,19 +78,19 @@ namespace LeechCraft
 			 */
 			MergeModel (const QStringList& headers, QObject *parent = 0);
 
-			virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
-			virtual QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-			virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-			virtual Qt::ItemFlags flags (const QModelIndex&) const;
-			virtual QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-			virtual QModelIndex parent (const QModelIndex&) const;
-			virtual int rowCount (const QModelIndex& = QModelIndex ()) const;
+			int columnCount (const QModelIndex& = QModelIndex ()) const override;
+			QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+			Qt::ItemFlags flags (const QModelIndex&) const override;
+			QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const override;
+			QModelIndex parent (const QModelIndex&) const override;
+			int rowCount (const QModelIndex& = QModelIndex ()) const override;
 
 			/** @brief Returns the union of MIME types of the models.
 			 *
 			 * @return The union of all the MIME types.
 			 */
-			QStringList mimeTypes () const;
+			QStringList mimeTypes () const override;
 
 			/** @brief Returns the MIME data for the given \em indices.
 			 *
@@ -102,7 +102,7 @@ namespace LeechCraft
 			 * MIME data.
 			 * @return The MIME data.
 			 */
-			QMimeData* mimeData (const QModelIndexList& indices) const;
+			QMimeData* mimeData (const QModelIndexList& indices) const override;
 
 			/** @brief Returns the model index in the MergeModel given the
 			 * index from the source model.

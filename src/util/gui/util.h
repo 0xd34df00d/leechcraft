@@ -42,6 +42,8 @@ namespace LeechCraft
 namespace Util
 {
 	/** Additional fitting options used by FitRect() and FitRectScreen().
+	 *
+	 * @ingroup GuiUtil
 	 */
 	enum FitFlag
 	{

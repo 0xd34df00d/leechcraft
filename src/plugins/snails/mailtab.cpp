@@ -154,6 +154,20 @@ namespace Snails
 		return TabToolbar_;
 	}
 
+	QObject* MailTab::GetQObject ()
+	{
+		return this;
+	}
+
+	void MailTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		const auto settings = Ui_.MailView_->settings ();
+		if (font == QFont {})
+			settings->resetFontFamily (family);
+		else
+			settings->setFontFamily (family, font.family ());
+	}
+
 	void MailTab::FillCommonActions ()
 	{
 		const auto fetch = new QAction (tr ("Fetch new mail"), this);
@@ -226,6 +240,15 @@ namespace Snails
 		TabToolbar_->addWidget (msgMoveButton);
 
 		registerMailAction (msgMoveButton);
+
+		const auto msgMarkRead = new QAction (tr ("Mark as read"), this);
+		msgMarkRead->setProperty ("ActionIcon", "mail-mark-read");
+		connect (msgMarkRead,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleMarkMsgRead ()));
+		TabToolbar_->addAction (msgMarkRead);
+		registerMailAction (msgMarkRead);
 
 		const auto msgMarkUnread = new QAction (tr ("Mark as unread"), this);
 		msgMarkUnread->setProperty ("ActionIcon", "mail-mark-unread");
@@ -785,13 +808,20 @@ namespace Snails
 		CurrAcc_->MoveMessages (ids, folder, { folderPath });
 	}
 
+	void MailTab::handleMarkMsgRead ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		CurrAcc_->SetReadStatus (true, GetSelectedIds (), MailModel_->GetCurrentFolder ());
+	}
+
 	void MailTab::handleMarkMsgUnread ()
 	{
 		if (!CurrAcc_)
 			return;
 
-		const auto& ids = GetSelectedIds ();
-		CurrAcc_->SetReadStatus (false, ids, MailModel_->GetCurrentFolder ());
+		CurrAcc_->SetReadStatus (false, GetSelectedIds (), MailModel_->GetCurrentFolder ());
 	}
 
 	void MailTab::handleRemoveMsgs ()

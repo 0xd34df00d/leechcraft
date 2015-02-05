@@ -38,6 +38,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class WkFontsWidget;
+}
+
 namespace Snails
 {
 	class Plugin : public QObject
@@ -53,7 +58,9 @@ namespace Snails
 
 		TabClassInfo MailTabClass_;
 		TabClassInfo ComposeTabClass_;
+
 		Util::XmlSettingsDialog_ptr XSD_;
+		Util::WkFontsWidget *WkFontsWidget_;
 
 		ICoreProxy_ptr Proxy_;
 	public:

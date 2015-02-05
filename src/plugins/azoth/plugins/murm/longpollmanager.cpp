@@ -130,7 +130,9 @@ namespace Murm
 		auto req = [this, nam] (const QString& key, const VkConnection::UrlParams_t& params) -> QNetworkReply*
 		{
 			QUrl lpUrl ("https://api.vk.com/method/messages.getLongPollServer");
-			Util::UrlOperator { lpUrl } ("access_token", key);
+			Util::UrlOperator { lpUrl }
+					("access_token", key)
+					("use_ssl", "1");
 
 			VkConnection::AddParams (lpUrl, params);
 
@@ -236,7 +238,7 @@ namespace Murm
 		LPServer_ = map ["server"].toString ();
 		LPTS_ = map ["ts"].toULongLong ();
 
-		LPURLTemplate_ = QUrl ("http://" + LPServer_);
+		LPURLTemplate_ = QUrl ("https://" + LPServer_);
 		Util::UrlOperator { LPURLTemplate_ }
 				("act", "a_check")
 				("key", LPKey_)

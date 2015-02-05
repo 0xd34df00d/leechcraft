@@ -177,7 +177,7 @@ namespace Murm
 			std::function<void (qulonglong)> idSetter, Type type, const QStringList& attachments)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.send");
 
@@ -215,7 +215,7 @@ namespace Murm
 	void VkConnection::SendTyping (qulonglong to)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, to] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam, to] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.setActivity");
 				Util::UrlOperator { url }
@@ -252,7 +252,7 @@ namespace Murm
 		const auto& joined = CommaJoin (ids);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam, joined] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.markAsRead");
 				Util::UrlOperator { url }
@@ -279,23 +279,26 @@ namespace Murm
 		const auto& joined = CommaJoin (codes);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QString method;
+				QString paramName;
 				switch (type)
 				{
 				case GeoIdType::Country:
-					method = "getCountries";
+					method = "Countries";
+					paramName = "country_ids";
 					break;
 				case GeoIdType::City:
-					method = "getCities";
+					method = "Cities";
+					paramName = "city_ids";
 					break;
 				}
 
-				QUrl url ("https://api.vk.com/method/" + method);
+				QUrl url ("https://api.vk.com/method/database.get" + method + "ById");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("cids", joined);
+						(paramName, joined);
 
 				AddParams (url, params);
 
@@ -330,6 +333,9 @@ namespace Murm
 
 			const auto& contacts = userMap ["contacts"].toMap ();
 
+			const auto& countryMap = userMap ["country"].toMap ();
+			const auto& cityMap = userMap ["city"].toMap ();
+
 			return
 			{
 				userMap ["id"].toULongLong (),
@@ -349,8 +355,11 @@ namespace Murm
 				contacts ["mobile_phone"].toString (),
 
 				userMap ["timezone"].toInt (),
-				userMap ["country"].toInt (),
-				userMap ["city"].toInt (),
+
+				countryMap ["id"].toInt (),
+				countryMap ["title"].toString (),
+				cityMap ["id"].toInt (),
+				cityMap ["title"].toString (),
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
@@ -423,13 +432,18 @@ namespace Murm
 
 	void VkConnection::GetMessageInfo (qulonglong id, MessageInfoSetter_f setter)
 	{
+		GetMessageInfo (QString::number (id), setter);
+	}
+
+	void VkConnection::GetMessageInfo (const QString& idStr, MessageInfoSetter_f setter)
+	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.getById");
 				Util::UrlOperator { url }
 						("access_token", key)
-						("message_ids", QString::number (id))
+						("message_ids", idStr)
 						("photo_sizes", "1");
 
 				AddParams (url, params);
@@ -449,7 +463,7 @@ namespace Murm
 	{
 		const auto& joined = ids.join (",");
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/photos.getById");
 				Util::UrlOperator { url }
@@ -473,7 +487,7 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, joined, name, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, joined, name, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/friends.addList");
 				Util::UrlOperator { url }
@@ -498,7 +512,7 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (newContents);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, joined, list, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/friends.editList");
 				Util::UrlOperator { url }
@@ -524,7 +538,7 @@ namespace Murm
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
-		PreparedCalls_.push_back ([this, joined, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, joined, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/storage.set");
 				Util::UrlOperator { url }
@@ -548,7 +562,7 @@ namespace Murm
 	{
 		const auto& joined = CommaJoin (ids);
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.createChat");
 				Util::UrlOperator { url }
@@ -573,7 +587,7 @@ namespace Murm
 	void VkConnection::RequestChatInfo (qulonglong id)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.getChat");
 				Util::UrlOperator { url }
@@ -596,7 +610,7 @@ namespace Murm
 	void VkConnection::AddChatUser (qulonglong chat, qulonglong user)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.addChatUser");
 				Util::UrlOperator { url }
@@ -619,7 +633,7 @@ namespace Murm
 	void VkConnection::RemoveChatUser (qulonglong chat, qulonglong user)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.removeChatUser");
 				Util::UrlOperator { url }
@@ -643,7 +657,7 @@ namespace Murm
 	void VkConnection::SetChatTitle (qulonglong chat, const QString& title)
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/messages.editChat");
 				Util::UrlOperator { url }
@@ -669,7 +683,7 @@ namespace Murm
 			status = Status_.StatusString_;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/status.set");
 				Util::UrlOperator { url }
@@ -701,7 +715,7 @@ namespace Murm
 		}
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl lpUrl ("https://api.vk.com/method/users.get");
 				Util::UrlOperator { lpUrl }
@@ -717,7 +731,7 @@ namespace Murm
 						SLOT (handleGotSelfInfo ()));
 				return reply;
 			});
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl lpUrl ("https://api.vk.com/method/friends.getLists");
 				Util::UrlOperator { lpUrl } ("access_token", key);
@@ -803,6 +817,16 @@ namespace Murm
 		{
 			info.From_ -= 2000000000;
 			info.Flags_ |= MessageFlag::Chat;
+
+			if (info.Params_.contains ("fwd"))
+			{
+				GetMessageInfo (info.ID_,
+						[this, info] (const FullMessageInfo& fullInfo)
+						{
+							emit gotMessage (fullInfo, info);
+						});
+				return;
+			}
 		}
 		else
 			info.Flags_ &= ~MessageFlag::Chat;
@@ -814,7 +838,7 @@ namespace Murm
 	{
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl friendsUrl ("https://api.vk.com/method/friends.get");
 				Util::UrlOperator { friendsUrl }
@@ -829,7 +853,7 @@ namespace Murm
 				return reply;
 			});
 
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/storage.get");
 				Util::UrlOperator { url }
@@ -963,7 +987,7 @@ namespace Murm
 		{
 			auto f = PreparedCalls_.takeFirst ();
 			f.AddParam ({ "v", CurrentAPIVersion });
-			CallQueue_->Schedule ([this, f, key] () -> void
+			CallQueue_->Schedule ([this, f, key]
 					{
 						const auto reply = f (key);
 						Logger_ (IHaveConsole::PacketDirection::Out) << reply->request ().url ();
@@ -998,7 +1022,7 @@ namespace Murm
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl url ("https://api.vk.com/method/account.setOnline");
 				Util::UrlOperator { url } ("access_token", key);
@@ -1166,7 +1190,7 @@ namespace Murm
 		emit gotUsers (users);
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params) -> QNetworkReply*
+		PreparedCalls_.push_back ([this, nam] (const QString& key, const UrlParams_t& params)
 			{
 				QUrl msgUrl ("https://api.vk.com/method/messages.get");
 				Util::UrlOperator { msgUrl }
@@ -1393,10 +1417,10 @@ namespace Murm
 		}
 
 		QHash<int, QString> result;
-		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())
+		for (const auto& item : data.toMap () ["response"].toList ())
 		{
 			const auto& map = item.toMap ();
-			result [map ["cid"].toInt ()] = map ["name"].toString ();
+			result [map ["id"].toInt ()] = map ["title"].toString ();
 		}
 
 		setter (result);
@@ -1507,6 +1531,23 @@ namespace Murm
 			};
 		}
 
+		GiftInfo GiftMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["id"].toULongLong (),
+				QUrl::fromEncoded (map ["thumb_256"].toByteArray ())
+			};
+		}
+
+		StickerInfo StickerMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["id"].toString ()
+			};
+		}
+
 		PagePreview PagePreviewMap2Info (const QVariantMap& map)
 		{
 			return
@@ -1532,6 +1573,10 @@ namespace Murm
 					info.Videos_ << VideoMap2Info (attMap ["video"].toMap ());
 				else if (attMap.contains ("doc"))
 					info.Documents_ << DocMap2Info (attMap ["doc"].toMap ());
+				else if (attMap.contains ("gift"))
+					info.Gifts_ << GiftMap2Info (attMap ["gift"].toMap ());
+				else if (attMap.contains ("sticker"))
+					info.Stickers_ << StickerMap2Info (attMap ["sticker"].toMap ());
 				else if (attMap.contains ("page"))
 					info.PagesPreviews_ << PagePreviewMap2Info (attMap ["page"].toMap ());
 				else if (attMap.contains ("wall"))

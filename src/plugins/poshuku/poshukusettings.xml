@@ -164,25 +164,8 @@
 		<tab>
 			<label lang="en" value="Fonts" />
 			<groupbox>
-				<label lang="en" value="Fonts" />
-				<item type="font" property="StandardFont">
-					<label lang="en" value="Standard font:" />
-				</item>
-				<item type="font" property="FixedFont">
-					<label lang="en" value="Fixed font:" />
-				</item>
-				<item type="font" property="SerifFont">
-					<label lang="en" value="Serif font:" />
-				</item>
-				<item type="font" property="SansSerifFont">
-					<label lang="en" value="SansSerif font:" />
-				</item>
-				<item type="font" property="CursiveFont">
-					<label lang="en" value="Cursive font:" />
-				</item>
-				<item type="font" property="FantasyFont">
-					<label lang="en" value="Fantasy font:" />
-				</item>
+				<label value="Font families" />
+				<item type="customwidget" label="own" name="FontsSelector" />
 			</groupbox>
 			<groupbox>
 				<label lang="en" value="Sizes" />

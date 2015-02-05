@@ -98,7 +98,6 @@ namespace Aggregator
 		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
 		qRegisterMetaTypeStreamOperators<Feed> ("LeechCraft::Plugins::Aggregator::Feed");
-
 	}
 
 	Core& Core::Instance ()

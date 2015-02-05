@@ -84,7 +84,7 @@ namespace Azoth
 		 * @sa attentionDrawn()
 		 */
 		virtual void DrawAttention (const QString& text, const QString& variant) = 0;
-
+	protected:
 		/** @brief Notifies about attention request from this entry.
 		 *
 		 * This signal should be emitted by the entry whenever the user

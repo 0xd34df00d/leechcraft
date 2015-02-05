@@ -49,6 +49,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/xsd/wkfontswidget.h>
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
 #include "core.h"
@@ -426,27 +427,25 @@ namespace Azoth
 		setLoader ("ActivityIcons", ResourcesManager::RLTActivityIconLoader);
 		setLoader ("SystemIcons", ResourcesManager::RLTSystemIconLoader);
 
-		QList<QByteArray> iconsPropList;
-		iconsPropList << "StatusIcons"
-				<< "ClientIcon"
-				<< "AffIcons"
-				<< "MoodIcons"
-				<< "ActivityIcons"
-				<< "SystemIcons";
-		XmlSettingsManager::Instance ().RegisterObject (iconsPropList,
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"StatusIcons",
+					"ClientIcons",
+					"AffIcons",
+					"MoodIcons",
+					"ActivityIcons",
+					"SystemIcons"
+				},
 				&Core::Instance (),
 				"flushIconCaches");
 
 #ifdef ENABLE_MEDIACALLS
 		QStringList audioIns (tr ("Default input device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
+		for (const auto& info : QAudioDeviceInfo::availableDevices (QAudio::AudioInput))
 			audioIns << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("InputAudioDevice", new QStringListModel (audioIns));
 
 		QStringList audioOuts (tr ("Default output device"));
-		Q_FOREACH (const QAudioDeviceInfo& info,
-				QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
+		for (const auto& info : QAudioDeviceInfo::availableDevices (QAudio::AudioOutput))
 			audioOuts << info.deviceName ();
 		XmlSettingsDialog_->SetDataSource ("OutputAudioDevice", new QStringListModel (audioOuts));
 #endif
@@ -461,6 +460,9 @@ namespace Azoth
 				SIGNAL (accountVisibilityChanged (IAccount*)),
 				&Core::Instance (),
 				SLOT (saveAccountVisibility (IAccount*)));
+
+		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
 
 		XmlSettingsDialog_->SetCustomWidget ("ColorListEditor", new ColorListEditorWidget);
 
@@ -512,17 +514,17 @@ namespace Azoth
 				SLOT (handleSDWidget (ServiceDiscoveryWidget*)));
 
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
+				SIGNAL (addNewTab (QString, QWidget*)),
 				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
+				SIGNAL (addNewTab (QString, QWidget*)));
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
+				SIGNAL (changeTabName (QWidget*, QString)),
 				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
+				SIGNAL (changeTabName (QWidget*, QString)));
 		connect (Core::Instance ().GetChatTabsManager (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				SIGNAL (changeTabIcon (QWidget*, QIcon)),
 				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				SIGNAL (changeTabIcon (QWidget*, QIcon)));
 		connect (Core::Instance ().GetChatTabsManager (),
 				SIGNAL (removeTab (QWidget*)),
 				this,
@@ -531,6 +533,11 @@ namespace Azoth
 				SIGNAL (raiseTab (QWidget*)),
 				this,
 				SIGNAL (raiseTab (QWidget*)));
+
+		connect (Core::Instance ().GetChatTabsManager (),
+				SIGNAL (addNewTab (QString, QWidget*)),
+				this,
+				SLOT (registerTabFonts (QString, QWidget*)));
 	}
 
 	void Plugin::InitTabClasses ()
@@ -701,6 +708,12 @@ namespace Azoth
 				Qt::UniqueConnection);
 		emit addNewTab (cw->GetTitle (), cw);
 		emit raiseTab (cw);
+	}
+
+	void Plugin::registerTabFonts (const QString&, QWidget *w)
+	{
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (w))
+			FontsWidget_->RegisterSettable (iwfs);
 	}
 }
 }

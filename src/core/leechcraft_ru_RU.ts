@@ -38,25 +38,6 @@
     </message>
 </context>
 <context>
-    <name>AcceptLangWidget</name>
-    <message>
-        <source>Add</source>
-        <translation>Добавить</translation>
-    </message>
-    <message>
-        <source>Move up</source>
-        <translation>Вверх</translation>
-    </message>
-    <message>
-        <source>Move down</source>
-        <translation>Вниз</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation>Удалить</translation>
-    </message>
-</context>
-<context>
     <name>AuthenticationDialog</name>
     <message>
         <source>Authentication required</source>
@@ -312,21 +293,6 @@
     <message>
         <source>Years: %1</source>
         <translation>Годы: %1</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::AcceptLangWidget</name>
-    <message>
-        <source>Language</source>
-        <translation>Язык</translation>
-    </message>
-    <message>
-        <source>Country</source>
-        <translation>Страна</translation>
-    </message>
-    <message>
-        <source>Code</source>
-        <translation>Код</translation>
     </message>
 </context>
 <context>
@@ -895,6 +861,37 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
 </context>
 <context>
+    <name>MassFontChangeDialog</name>
+    <message>
+        <source>Change fonts</source>
+        <translation>Изменение шрифтов</translation>
+    </message>
+    <message>
+        <source>Standard font</source>
+        <translation>Стандартный шрифт</translation>
+    </message>
+    <message>
+        <source>Monospace font</source>
+        <translation>Моноширинный шрифт</translation>
+    </message>
+    <message>
+        <source>Serif font</source>
+        <translation>Шрифт с засечками</translation>
+    </message>
+    <message>
+        <source>Sans-serif font</source>
+        <translation>Шрифт без засечек</translation>
+    </message>
+    <message>
+        <source>Cursive font</source>
+        <translation>Курсивный шрифт</translation>
+    </message>
+    <message>
+        <source>Fantasy font</source>
+        <translation>Фигурный шрифт</translation>
+    </message>
+</context>
+<context>
     <name>PluginManagerDialog</name>
     <message>
         <source>Plugin Manager</source>
@@ -1392,6 +1389,37 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
 </context>
 <context>
+    <name>WkFontsWidget</name>
+    <message>
+        <source>Standard font:</source>
+        <translation>Стандартный шрифт:</translation>
+    </message>
+    <message>
+        <source>Serif font:</source>
+        <translation>Шрифт с засечками:</translation>
+    </message>
+    <message>
+        <source>Sans-serif font:</source>
+        <translation>Шрифт без засечек:</translation>
+    </message>
+    <message>
+        <source>Cursive font:</source>
+        <translation>Курсивный шрифт:</translation>
+    </message>
+    <message>
+        <source>Fantasy font:</source>
+        <translation>Фигурный шрифт:</translation>
+    </message>
+    <message>
+        <source>Change all...</source>
+        <translation>Изменить все…</translation>
+    </message>
+    <message>
+        <source>Monospace font:</source>
+        <translation>Моноширинный шрифт:</translation>
+    </message>
+</context>
+<context>
     <name>coresettings</name>
     <message>
         <source>Appearance</source>
@@ -1564,10 +1592,6 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Set startup password</source>
         <translation>Установить пароль на запуск</translation>
-    </message>
-    <message>
-        <source>Languages</source>
-        <translation>Языки</translation>
     </message>
     <message>
         <source>Enable all plugins</source>

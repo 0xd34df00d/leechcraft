@@ -27,38 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QWidget>
-#include "ui_acceptlangwidget.h"
-
-class QStandardItemModel;
+#include "fontchooserwidget.h"
 
 namespace LeechCraft
 {
-	class AcceptLangWidget : public QWidget
+namespace Util
+{
+	FontChooserWidget::FontChooserWidget (QWidget *parent)
+	: QWidget { parent }
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		Ui::AcceptLangWidget Ui_;
-		QStandardItemModel *Model_;
+		connect (Ui_.FontBox_,
+				SIGNAL (currentFontChanged (QFont)),
+				this,
+				SIGNAL (fontChanged (QFont)));
+	}
 
-		enum Roles
-		{
-			LocaleObj = Qt::UserRole + 1
-		};
-	public:
-		AcceptLangWidget (QWidget* = 0);
-	private:
-		void AddLocale (const QLocale&);
-	public slots:
-		void accept ();
-		void reject ();
-	private slots:
-		void on_Add__released ();
-		void on_Remove__released ();
-		void on_MoveUp__released ();
-		void on_MoveDown__released ();
-		void on_Language__currentIndexChanged (int);
-	};
+	QFont FontChooserWidget::GetFont () const
+	{
+		return Ui_.FontBox_->currentFont ();
+	}
+
+	void FontChooserWidget::SetFont (const QFont& font)
+	{
+		Ui_.FontBox_->setCurrentFont (font);
+	}
+}
 }

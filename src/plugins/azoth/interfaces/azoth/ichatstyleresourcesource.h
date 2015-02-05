@@ -45,7 +45,9 @@ namespace Azoth
 		 */
 		bool IsHighlightMsg_;
 
-		/** @brief Whether this message is appended in active session.
+		/** @brief Whether this message is appended in an active session.
+		 *
+		 * The active session is the session that is currently opened.
 		 */
 		bool IsActiveChat_;
 
@@ -104,11 +106,13 @@ namespace Azoth
 		 * @param[in] style The style name for which to return the
 		 * template.
 		 * @param[in] variant The style variant for which to return the
-		 * template.
+		 * template, an element of the list returned by GetVariantsForPack().
 		 * @param[in] entry The entry object for which the chat window
 		 * is being set up.
 		 * @param[in] frame The frame that's being set up.
 		 * @return The HTML template.
+		 *
+		 * @sa GetVariantsForPack()
 		 */
 		virtual QString GetHTMLTemplate (const QString& style,
 				const QString& variant, QObject *entry, QWebFrame *frame) const = 0;
@@ -139,6 +143,17 @@ namespace Azoth
 		 */
 		virtual void FrameFocused (QWebFrame *frame) = 0;
 
+		/** @brief Returns the list of variants for the \em style pack.
+		 *
+		 * Values from the returned list will be passed to the
+		 * GetHTMLTemplate() function. If the style plugin does not
+		 * support style variants, an empty list may be returned.
+		 *
+		 * @return The list of variants for \em pack, or an empty list
+		 * if not supported.
+		 *
+		 * @sa GetHTMLTemplate()
+		 */
 		virtual QStringList GetVariantsForPack (const QString& style) = 0;
 	};
 }

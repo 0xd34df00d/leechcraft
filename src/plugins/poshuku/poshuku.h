@@ -33,6 +33,7 @@
 #include <QAction>
 #include <QTranslator>
 #include <QWidget>
+#include <QWebSettings>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iwebbrowser.h>
@@ -127,6 +128,7 @@ namespace Poshuku
 		void RegisterSettings ();
 	private slots:
 		void createTabFirstTime ();
+		void handleFontChanged (QWebSettings::FontFamily, const QFont&);
 		void viewerSettingsChanged ();
 		void developerExtrasChanged ();
 		void cacheSettingsChanged ();

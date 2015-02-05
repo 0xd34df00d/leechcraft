@@ -90,7 +90,7 @@ namespace Murm
 		void ReemitGroups ();
 
 		VkMessage* FindMessage (qulonglong) const;
-		void HandleMessage (MessageInfo);
+		void HandleMessage (MessageInfo, const FullMessageInfo&);
 
 		void HandleTypingNotification ();
 

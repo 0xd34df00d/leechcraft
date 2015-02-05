@@ -69,7 +69,9 @@ namespace Murm
 		int Timezone_;
 
 		int Country_;
+		QString CountryName_;
 		int City_;
+		QString CityName_;
 
 		bool IsOnline_;
 
@@ -190,10 +192,21 @@ namespace Murm
 		QUrl Url_;
 	};
 
+	struct GiftInfo
+	{
+		qulonglong Id_;
+		QUrl Thumb_;
+	};
+
+	struct StickerInfo
+	{
+		QString Id_;
+	};
+
 	struct FullMessageInfo
 	{
-		qlonglong OwnerID_;
-		qulonglong ID_;
+		qlonglong OwnerID_ = 0;
+		qulonglong ID_ = 0;
 
 		QString Text_;
 
@@ -205,6 +218,8 @@ namespace Murm
 		QList<AudioInfo> Audios_;
 		QList<VideoInfo> Videos_;
 		QList<DocumentInfo> Documents_;
+		QList<GiftInfo> Gifts_;
+		QList<StickerInfo> Stickers_;
 		QList<PagePreview> PagesPreviews_;
 		QList<FullMessageInfo> ContainedReposts_;
 		QList<FullMessageInfo> ForwardedMessages_;

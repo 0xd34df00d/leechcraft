@@ -86,7 +86,6 @@ set (SRCS
 	winwarndialog.cpp
 	coreplugin2manager.cpp
 	dockmanager.cpp
-	acceptlangwidget.cpp
 	entitymanager.cpp
 	colorthemeengine.cpp
 	rootwindowsmanager.cpp
@@ -121,7 +120,6 @@ set (FORMS
 	aboutdialog.ui
 	wizardtypechoicepage.ui
 	settingstab.ui
-	acceptlangwidget.ui
 	)
 set (RESOURCES mainresources.qrc)
 

@@ -101,6 +101,10 @@ namespace Murm
 				this,
 				SLOT (handleMessage (MessageInfo)));
 		connect (Conn_,
+				SIGNAL (gotMessage (FullMessageInfo, MessageInfo)),
+				this,
+				SLOT (handleMessage (FullMessageInfo, MessageInfo)));
+		connect (Conn_,
 				SIGNAL (gotTypingNotification (qulonglong)),
 				this,
 				SLOT (handleTypingNotification (qulonglong)));
@@ -505,8 +509,8 @@ namespace Murm
 	{
 		decltype (PendingMessages_) pending;
 		std::swap (pending, PendingMessages_);
-		for (const auto& info : pending)
-			handleMessage (info);
+		for (const auto& pair : pending)
+			handleMessage (pair.second, pair.first);
 	}
 
 	VkEntry* VkAccount::CreateNonRosterItem (qulonglong id)
@@ -524,7 +528,8 @@ namespace Murm
 	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
 		QList<QObject*> newEntries;
-		QSet<int> newCountries;
+		QHash<int, QString> newCountries;
+		QHash<int, QString> newCities;
 		bool hadNew = false;
 		for (const auto& info : infos)
 		{
@@ -538,12 +543,14 @@ namespace Murm
 			Entries_ [info.ID_] = entry;
 			newEntries << entry;
 
-			newCountries << info.Country_;
+			newCountries [info.Country_] = info.CountryName_;
+			newCities [info.City_] = info.CityName_;
 
 			hadNew = true;
 		}
 
-		GeoResolver_->CacheCountries (newCountries.toList ());
+		GeoResolver_->AddCountriesToCache (newCountries);
+		GeoResolver_->AddCitiesToCache (newCities);
 
 		if (!newEntries.isEmpty ())
 			emit gotCLItems (newEntries);
@@ -606,6 +613,11 @@ namespace Murm
 
 	void VkAccount::handleMessage (const MessageInfo& info)
 	{
+		handleMessage ({}, info);
+	}
+
+	void VkAccount::handleMessage (const FullMessageInfo& fullInfo, const MessageInfo& info)
+	{
 		if (info.Params_.value ("source_act") == "chat_kick_user" &&
 				info.Params_.value ("source_mid").toULongLong () == SelfEntry_->GetInfo ().ID_)
 			return;
@@ -620,7 +632,10 @@ namespace Murm
 						<< from;
 
 				if (!std::any_of (PendingMessages_.begin (), PendingMessages_.end (),
-						[from] (const MessageInfo& info) { return from == info.From_; }))
+						[from] (const QPair<MessageInfo, FullMessageInfo>& info)
+						{
+							return from == info.first.From_;
+						}))
 				{
 					qDebug () << Q_FUNC_INFO
 							<< "requesting info for"
@@ -628,17 +643,17 @@ namespace Murm
 					Conn_->RequestChatInfo (from);
 				}
 
-				PendingMessages_ << info;
+				PendingMessages_.append ({ info, fullInfo });
 				return;
 			}
 
-			switch (ChatEntries_.value (from)->HandleMessage (info))
+			switch (ChatEntries_.value (from)->HandleMessage (info, fullInfo))
 			{
 			case VkChatEntry::HandleMessageResult::Accepted:
 			case VkChatEntry::HandleMessageResult::Rejected:
 				return;
 			case VkChatEntry::HandleMessageResult::UserInfoRequested:
-				PendingMessages_ << info;
+				PendingMessages_.append ({ info, fullInfo });
 				return;
 			}
 		}
@@ -650,13 +665,13 @@ namespace Murm
 						<< "message from unknown user"
 						<< from;
 
-				PendingMessages_ << info;
+				PendingMessages_.append ({ info, fullInfo });
 
 				Conn_->GetUserInfo ({ from });
 				return;
 			}
 
-			Entries_.value (from)->HandleMessage (info);
+			Entries_.value (from)->HandleMessage (info, fullInfo);
 		}
 	}
 

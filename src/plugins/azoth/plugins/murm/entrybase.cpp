@@ -98,6 +98,12 @@ namespace Murm
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
 
+		QString Gift2Replacement (const GiftInfo& info)
+		{
+			return QString ("<img src='%1' alt='' />")
+					.arg (QString::fromUtf8 (info.Thumb_.toEncoded ()));
+		}
+
 		QString Photo2Replacement (const PhotoInfo& info)
 		{
 			const auto& fullSizeStr = QString::number (info.FullSize_.width ()) +
@@ -221,6 +227,12 @@ namespace Murm
 			return result;
 		}
 
+		QString StickerId2Replacement (const QString& stickerId)
+		{
+			return QString { "<img src='https://vk.com/images/stickers/%1/256.png' alt='' />" }
+					.arg (stickerId);
+		}
+
 		struct ContentsInfo
 		{
 			QString Contents_;
@@ -286,6 +298,8 @@ namespace Murm
 					docIds << info.ID_;
 				else if (info.Type_ == "page")
 					pageIds << info.ID_;
+				else if (info.Type_ == "sticker")
+					newContents += "<br/>" + StickerId2Replacement (info.ID_);
 
 			const auto hasAdditional = !photoIds.isEmpty () ||
 					!wallIds.isEmpty () ||
@@ -328,6 +342,12 @@ namespace Murm
 			}
 
 			replacement += ProcessMessageBody (info.Text_);
+
+			for (const auto& gift : info.Gifts_)
+				replacement += "<br/>" + Gift2Replacement (gift);
+
+			for (const auto& sticker : info.Stickers_)
+				replacement += "<br/>" + StickerId2Replacement (sticker.Id_);
 
 			for (const auto& photo : info.Photos_)
 				replacement += "<br/>" + Photo2Replacement (photo);
@@ -397,8 +417,15 @@ namespace Murm
 		}
 	}
 
-	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info)
+	void EntryBase::HandleAttaches (VkMessage *msg, const MessageInfo& info, const FullMessageInfo& full)
 	{
+		if (full.ID_)
+		{
+			const auto& body = FullInfo2Replacement (full, Account_->GetCoreProxy (), false);
+			msg->SetBody (body);
+			return;
+		}
+
 		const auto& contentsInfo = ToMessageContents (info);
 
 		msg->SetBody (contentsInfo.Contents_);
@@ -418,7 +445,7 @@ namespace Murm
 			}
 
 			Account_->GetConnection ()->GetMessageInfo (id,
-					[this, safeMsg, idStr] (const FullMessageInfo& msgInfo) -> void
+					[this, safeMsg, idStr] (const FullMessageInfo& msgInfo)
 					{
 						if (!safeMsg)
 							return;
@@ -441,7 +468,7 @@ namespace Murm
 			return;
 
 		Account_->GetConnection ()->GetMessageInfo (msg->GetID (),
-				[safeMsg] (const FullMessageInfo& msgInfo) -> void
+				[safeMsg] (const FullMessageInfo& msgInfo)
 				{
 					if (!safeMsg)
 						return;

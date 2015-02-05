@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_lemon)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 find_package (Libnl REQUIRED)
 find_package (Qwt REQUIRED)
 

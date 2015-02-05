@@ -46,7 +46,6 @@
 #include "core.h"
 #include "settingstab.h"
 #include "coreplugin2manager.h"
-#include "acceptlangwidget.h"
 #include "shortcutmanager.h"
 #include "coreproxy.h"
 #include "application.h"
@@ -252,7 +251,6 @@ namespace LeechCraft
 		XmlSettingsDialog_->SetDataSource ("AppQStyle", new QStringListModel (appQStype));
 
 		XmlSettingsDialog_->SetCustomWidget ("ShortcutManager", ShortcutManager_);
-		XmlSettingsDialog_->SetCustomWidget ("AcceptLanguages", new AcceptLangWidget);
 
 		const auto& lang = XmlSettingsManager::Instance ()->property ("Language").toString ();
 		if (lang != "system")

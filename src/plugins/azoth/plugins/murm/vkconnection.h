@@ -192,6 +192,7 @@ namespace Murm
 		void GetUserInfo (const QList<qulonglong>& ids, const std::function<void (QList<UserInfo>)>&);
 
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
+		void GetMessageInfo (const QString& idStr, MessageInfoSetter_f setter);
 		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
 
 		void AddFriendList (const QString&, const QList<qulonglong>&);
@@ -276,6 +277,7 @@ namespace Murm
 		void gotUsers (const QList<UserInfo>&);
 		void gotNRIList (const QList<qulonglong>&);
 		void gotMessage (const MessageInfo&);
+		void gotMessage (const FullMessageInfo&, const MessageInfo&);
 		void gotTypingNotification (qulonglong uid);
 
 		void gotChatInfo (const ChatInfo&);

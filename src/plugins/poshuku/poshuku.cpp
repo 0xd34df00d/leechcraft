@@ -53,6 +53,7 @@
 #include <util/sys/paths.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/db/backendselector.h>
+#include <util/xsd/wkfontswidget.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
@@ -121,6 +122,13 @@ namespace Poshuku
 				"poshukusettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
+
+		const auto fontsSelector = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", fontsSelector);
+		connect (fontsSelector,
+				SIGNAL (fontChanged (QWebSettings::FontFamily, QFont)),
+				this,
+				SLOT (handleFontChanged (QWebSettings::FontFamily, QFont)));
 
 		InitConnections ();
 
@@ -448,13 +456,7 @@ namespace Poshuku
 	void Poshuku::RegisterSettings ()
 	{
 		QList<QByteArray> viewerSettings;
-		viewerSettings << "StandardFont"
-			<< "FixedFont"
-			<< "SerifFont"
-			<< "SansSerifFont"
-			<< "CursiveFont"
-			<< "FantasyFont"
-			<< "MinimumFontSize"
+		viewerSettings << "MinimumFontSize"
 			<< "DefaultFontSize"
 			<< "DefaultFixedFontSize"
 			<< "AutoLoadImages"
@@ -534,6 +536,7 @@ namespace Poshuku
 			QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
 		}
 
+#if QT_VERSION < 0x050000
 		void SetSubsts ()
 		{
 			const auto& fixedFont = XmlSettingsManager::Instance ()->
@@ -554,31 +557,32 @@ namespace Poshuku
 			setSubst ("Consolas");
 			setSubst ("Menlo");
 		}
+#endif
+	}
 
-		void SetFontSettings ()
-		{
-			const auto settings = QWebSettings::globalSettings ();
-			auto xsm = XmlSettingsManager::Instance ();
-			auto setFamily = [settings, xsm] (QWebSettings::FontFamily family, const char *prop)
-			{
-				settings->setFontFamily (family, xsm->property (prop).value<QFont> ().family ());
-			};
-			setFamily (QWebSettings::StandardFont, "StandardFont");
-			setFamily (QWebSettings::FixedFont, "FixedFont");
-			setFamily (QWebSettings::SerifFont, "SerifFont");
-			setFamily (QWebSettings::SansSerifFont, "SansSerifFont");
-			setFamily (QWebSettings::CursiveFont, "CursiveFont");
-			setFamily (QWebSettings::FantasyFont, "FantasyFont");
+	void Poshuku::handleFontChanged (QWebSettings::FontFamily family, const QFont& font)
+	{
+		QWebSettings::globalSettings ()->setFontFamily (family, font.family ());
 
 #if QT_VERSION < 0x050000
+		if (family == QWebSettings::FixedFont)
 			SetSubsts ();
 #endif
-		}
 	}
 
 	void Poshuku::viewerSettingsChanged ()
 	{
-		SetFontSettings ();
+		auto xsm = XmlSettingsManager::Instance ();
+		auto setFamily = [this, xsm] (QWebSettings::FontFamily family, const char *prop)
+		{
+			handleFontChanged (family, xsm->property (prop).value<QFont> ());
+		};
+		setFamily (QWebSettings::StandardFont, "StandardFont");
+		setFamily (QWebSettings::FixedFont, "FixedFont");
+		setFamily (QWebSettings::SerifFont, "SerifFont");
+		setFamily (QWebSettings::SansSerifFont, "SansSerifFont");
+		setFamily (QWebSettings::CursiveFont, "CursiveFont");
+		setFamily (QWebSettings::FantasyFont, "FantasyFont");
 
 		QWebSettings::globalSettings ()->setFontSize (QWebSettings::MinimumFontSize,
 				XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());

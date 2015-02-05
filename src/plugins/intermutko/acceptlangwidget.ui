@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>762</width>
+    <height>516</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,9 +48,28 @@
         </widget>
        </item>
        <item>
+        <widget class="QDoubleSpinBox" name="Q_">
+         <property name="toolTip">
+          <string>Language quality factor, controlling the preference of a given language.</string>
+         </property>
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>1.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="Add_">
          <property name="text">
           <string>Add</string>
+         </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
          </property>
         </widget>
        </item>
@@ -65,6 +84,9 @@
        <property name="text">
         <string>Move up</string>
        </property>
+       <property name="icon">
+        <iconset theme="go-up"/>
+       </property>
       </widget>
      </item>
      <item>
@@ -72,12 +94,18 @@
        <property name="text">
         <string>Move down</string>
        </property>
+       <property name="icon">
+        <iconset theme="go-down"/>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="Remove_">
        <property name="text">
         <string>Remove</string>
+       </property>
+       <property name="icon">
+        <iconset theme="list-remove"/>
        </property>
       </widget>
      </item>

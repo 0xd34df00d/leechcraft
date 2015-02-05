@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
+		<label value="Appearance" />
+		<groupbox>
+			<label value="Fonts" />
+			<item type="customwidget" label="own" name="FontsSelector" />
+		</groupbox>
+	</page>
+	<page>
 		<label value="Behavior" />
 		<tab>
 			<label value="Mail list" />

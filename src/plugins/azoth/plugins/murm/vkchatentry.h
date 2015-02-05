@@ -63,7 +63,7 @@ namespace Murm
 		VkChatEntry (const ChatInfo&, VkAccount*);
 
 		void Send (VkMessage*);
-		HandleMessageResult HandleMessage (const MessageInfo&);
+		HandleMessageResult HandleMessage (const MessageInfo&, const FullMessageInfo&);
 
 		const ChatInfo& GetInfo () const;
 		void UpdateInfo (const ChatInfo&);

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Intermutko" />
+		<item type="customwidget" name="AcceptLangWidget" label="own" />
+	</page>
+</settings>

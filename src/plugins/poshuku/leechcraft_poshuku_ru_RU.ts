@@ -513,17 +513,17 @@
         <translation>попробуйте установить модули, которые поддерживают этот протокол;</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="261"/>
+        <location filename="customwebpage.cpp" line="256"/>
         <source>Unable to send the request to %1. Please try submitting it again.</source>
         <translation>Невозможно отправить запрос к %1. Пожалуйста, попробуйте отправить форму еще раз.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="285"/>
+        <location filename="customwebpage.cpp" line="280"/>
         <source>%1 requests access to notifications.</source>
         <translation>%1 запрашивает доступ к уведомлениям.</translation>
     </message>
     <message>
-        <location filename="customwebpage.cpp" line="287"/>
+        <location filename="customwebpage.cpp" line="282"/>
         <source>%1 requests access to geolocation services.</source>
         <translation>%1 запрашивает доступ к сервисам геолокации.</translation>
     </message>
@@ -637,73 +637,73 @@
         <translation>Поиск...</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="510"/>
+        <location filename="customwebview.cpp" line="497"/>
         <source>Installed plugins</source>
         <translation>Установленные модули</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="511"/>
+        <location filename="customwebview.cpp" line="498"/>
         <source>No plugins installed</source>
         <translation>Нет установленных модулей</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="512"/>
+        <location filename="customwebview.cpp" line="499"/>
         <source>File name</source>
         <translation>Имя файла</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="513"/>
+        <location filename="customwebview.cpp" line="500"/>
         <source>MIME type</source>
         <translation>MIME-тип</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="514"/>
+        <location filename="customwebview.cpp" line="501"/>
         <source>Description</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="515"/>
+        <location filename="customwebview.cpp" line="502"/>
         <source>Suffixes</source>
         <translation>Расширения</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="516"/>
+        <location filename="customwebview.cpp" line="503"/>
         <source>Enabled</source>
         <translation>Включено</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="517"/>
+        <location filename="customwebview.cpp" line="504"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="518"/>
+        <location filename="customwebview.cpp" line="505"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="528"/>
-        <location filename="customwebview.cpp" line="530"/>
+        <location filename="customwebview.cpp" line="515"/>
+        <location filename="customwebview.cpp" line="517"/>
         <source>Welcome to LeechCraft!</source>
         <translation>Добро пожаловать в LeechCraft!</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="532"/>
+        <location filename="customwebview.cpp" line="519"/>
         <source>Welcome to LeechCraft, the integrated internet-client.&lt;br /&gt;More info is available on the &lt;a href=&apos;http://leechcraft.org&apos;&gt;project&apos;s site&lt;/a&gt;.</source>
         <translation>Добро пожаловать в LeechCraft, интегрированный интернет-клиент.&lt;br /&gt;Вы можете узнать больше на &lt;a href=&apos;http://leechcraft.org&apos;&gt;сайте проекта&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="661"/>
+        <location filename="customwebview.cpp" line="648"/>
         <source>Save pixmap</source>
         <translation>Сохранение изображения</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="663"/>
+        <location filename="customwebview.cpp" line="650"/>
         <source>PNG image (*.png);;JPG image (*.jpg);;All files (*.*)</source>
         <translation>Изображение PNG (*.png);;Изображение JPG (*.jpg);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="customwebview.cpp" line="681"/>
+        <location filename="customwebview.cpp" line="668"/>
         <source>Unable to save the image. Unable to open file for writing: %1.</source>
         <translation>Невозможно сохранить изображение. Невозможно открыть файл на запись: %1.</translation>
     </message>
@@ -805,42 +805,42 @@
 <context>
     <name>LeechCraft::Poshuku::Poshuku</name>
     <message>
-        <location filename="poshuku.cpp" line="127"/>
+        <location filename="poshuku.cpp" line="135"/>
         <source>Import XBEL...</source>
         <translation>Импортировать XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="131"/>
+        <location filename="poshuku.cpp" line="139"/>
         <source>Export XBEL...</source>
         <translation>Экспортировать в XBEL...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="135"/>
+        <location filename="poshuku.cpp" line="143"/>
         <source>Check favorites...</source>
         <translation>Проверить закладки...</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="139"/>
+        <location filename="poshuku.cpp" line="147"/>
         <source>Reload all pages</source>
         <translation>Обновить все страницы</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="154"/>
+        <location filename="poshuku.cpp" line="162"/>
         <source>Poshuku failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.</source>
         <translation>Poshuku не смог правильно инициализироваться. Проверьте логи и поговорите с разработчиками. Ну или, по крайней мере, проверьте параметры хранения и перезапустите LeechCraft.</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="219"/>
+        <location filename="poshuku.cpp" line="227"/>
         <source>Poshuku Browser</source>
         <translation>Poshuku Browser</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="224"/>
+        <location filename="poshuku.cpp" line="232"/>
         <source>Simple yet functional web browser</source>
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="574"/>
+        <location filename="poshuku.cpp" line="637"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Пожалуйста, имейте в виду, что расширения для разработчика будут правильно работать только для страниц, загруженных после включения.</translation>
     </message>
@@ -1435,83 +1435,57 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="61"/>
-        <location filename="dummy.cpp" line="62"/>
         <source>Fonts</source>
         <translation>Шрифты</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="62"/>
+        <source>Font families</source>
+        <translation>Семейства шрифтов</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="63"/>
-        <source>Standard font:</source>
-        <translation>Стандартный шрифт:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="64"/>
-        <source>Fixed font:</source>
-        <translation>Моноширинный шрифт:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="65"/>
-        <source>Serif font:</source>
-        <translation>Шрифт с засечками:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="66"/>
-        <source>SansSerif font:</source>
-        <translation>Шрифт без засечек:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="67"/>
-        <source>Cursive font:</source>
-        <translation>Курсивный шрифт:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="68"/>
-        <source>Fantasy font:</source>
-        <translation>Fantasy-шрифт:</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="69"/>
         <source>Sizes</source>
         <translation>Размеры</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="70"/>
+        <location filename="dummy.cpp" line="64"/>
         <source>Minimum font size:</source>
         <translation>Минимальный размер шрифта:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="71"/>
+        <location filename="dummy.cpp" line="65"/>
         <source>Default font size:</source>
         <translation>Размер шрифта по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="72"/>
+        <location filename="dummy.cpp" line="66"/>
         <source>Default fixed font size:</source>
         <translation>Размер фиксированного шрифта по умолчанию:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="73"/>
-        <location filename="dummy.cpp" line="74"/>
+        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Rendering</source>
         <translation>Отображение</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="75"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Antialias primitives if possible</source>
         <translation>По возможности сглаживать примитивы</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="76"/>
+        <location filename="dummy.cpp" line="70"/>
         <source>Antialias text if possible</source>
         <translation>По возможности сглаживать текст</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="77"/>
+        <location filename="dummy.cpp" line="71"/>
         <source>Smooth pixmap transform</source>
         <translation>Гладкое преобразование изображений</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="78"/>
+        <location filename="dummy.cpp" line="72"/>
         <source>High-quality antialiasing</source>
         <translation>Высококачественное сглаживание</translation>
     </message>

@@ -466,6 +466,16 @@ namespace Azoth
 			appendMessageText (data->text ());
 	}
 
+	QObject* ChatTab::GetQObject ()
+	{
+		return this;
+	}
+
+	void ChatTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		Ui_.View_->settings ()->setFontFamily (family, font.family ());
+	}
+
 	void ChatTab::ShowUsersList ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
@@ -1436,25 +1446,6 @@ namespace Azoth
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 	}
 
-	void ChatTab::handleFontSettingsChanged ()
-	{
-		QWebSettings *s = Ui_.View_->settings ();
-
-		auto font = [s] (QWebSettings::FontFamily f, const QByteArray& str)
-		{
-			const QString& family = XmlSettingsManager::Instance ()
-					.property (str).value<QFont> ().family ();
-			s->setFontFamily (f, family);
-		};
-
-		font (QWebSettings::StandardFont, "StandardFont");
-		font (QWebSettings::FixedFont, "FixedFont");
-		font (QWebSettings::SerifFont, "SerifFont");
-		font (QWebSettings::SansSerifFont, "SansSerifFont");
-		font (QWebSettings::CursiveFont, "CursiveFont");
-		font (QWebSettings::FantasyFont, "FantasyFont");
-	}
-
 	void ChatTab::handleFontSizeChanged ()
 	{
 		const int size = XmlSettingsManager::Instance ()
@@ -1817,17 +1808,6 @@ namespace Azoth
 		XmlSettingsManager::Instance ().RegisterObject ({ "FontSize", "FontZoom" },
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
-
-		QList<QByteArray> fontProps;
-		fontProps << "StandardFont"
-				<< "FixedFont"
-				<< "SerifFont"
-				<< "SansSerifFont"
-				<< "CursiveFont"
-				<< "FantasyFont";
-		XmlSettingsManager::Instance ().RegisterObject (fontProps,
-				this, "handleFontSettingsChanged");
-		handleFontSettingsChanged ();
 
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
 				this, "handleRichFormatterPosition");

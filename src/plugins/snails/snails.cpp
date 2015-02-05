@@ -30,6 +30,7 @@
 #include "snails.h"
 #include <QIcon>
 #include <util/util.h>
+#include <util/xsd/wkfontswidget.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
@@ -88,7 +89,10 @@ namespace Snails
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
-		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget ());
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+
+		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
 	}
 
 	void Plugin::SecondInit ()
@@ -132,10 +136,14 @@ namespace Snails
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "mail")
-			handleNewTab (MailTabClass_.VisibleName_, new MailTab (Proxy_, MailTabClass_, this));
+		{
+			const auto mt = new MailTab { Proxy_, MailTabClass_, this };
+			handleNewTab (MailTabClass_.VisibleName_, mt);
+			WkFontsWidget_->RegisterSettable (mt);
+		}
 		else if (tabClass == "compose")
 		{
-			auto ct = new ComposeMessageTab ();
+			auto ct = new ComposeMessageTab;
 			handleNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
 		}
 		else

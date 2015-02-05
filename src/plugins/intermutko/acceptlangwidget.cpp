@@ -28,71 +28,108 @@
  **********************************************************************/
 
 #include "acceptlangwidget.h"
-#include <QStandardItemModel>
-#include "util/util.h"
-#include "networkaccessmanager.h"
-#include "core.h"
+#include <QMessageBox>
+#include <util/sll/prelude.h>
+#include "xmlsettingsmanager.h"
+#include "localesmodel.h"
+#include "entriesdelegate.h"
+#include "util.h"
+
+Q_DECLARE_METATYPE (QList<QLocale>)
 
 namespace LeechCraft
 {
+namespace Intermutko
+{
 	AcceptLangWidget::AcceptLangWidget (QWidget *parent)
-	: QWidget (parent)
-	, Model_ (new QStandardItemModel (this))
+	: QWidget { parent }
+	, Model_ { new LocalesModel { this } }
 	{
 		Ui_.setupUi (this);
+		Ui_.LangsTree_->setItemDelegate (new EntriesDelegate);
 		Ui_.LangsTree_->setModel (Model_);
 
-		connect (Core::Instance ().GetNetworkAccessManager (),
-				SIGNAL (acceptableLanguagesChanged ()),
-				this,
-				SLOT (reject ()));
+		LoadSettings ();
+
 		reject ();
 
 		for (int i = 0; i < QLocale::LastCountry; ++i)
 			Ui_.Country_->addItem (QLocale::countryToString (static_cast<QLocale::Country> (i)), i);
 		Ui_.Country_->model ()->sort (0);
 
-		for (int i = 0; i < QLocale::LastLanguage; ++i)
-		{
-			if (i == QLocale::C)
-				continue;
-
-			Ui_.Language_->addItem (QLocale::languageToString (static_cast<QLocale::Language> (i)), i);
-		}
-		Ui_.Language_->model ()->sort (0);
+		FillLanguageCombobox (Ui_.Language_);
 		on_Language__currentIndexChanged (Ui_.Language_->currentIndex ());
 	}
 
-	void AcceptLangWidget::AddLocale (const QLocale& locale)
+	const QString& AcceptLangWidget::GetLocaleString () const
 	{
-		QList<QStandardItem*> items;
-		items << new QStandardItem (QLocale::languageToString (locale.language ()));
-		items << new QStandardItem (QLocale::countryToString (locale.country ()));
-		items << new QStandardItem (Util::GetInternetLocaleName (locale));
-		Model_->appendRow (items);
-		items.first ()->setData (locale, Roles::LocaleObj);
+		return LocaleStr_;
 	}
-	
+
+	namespace
+	{
+		QString GetFullCode (const LocaleEntry& entry)
+		{
+			return GetDisplayCode (entry) + ";q=" + QString::number (entry.Q_);
+		}
+	}
+
+	void AcceptLangWidget::AddLocale (const LocaleEntry& entry)
+	{
+		if (Model_->GetEntries ().contains (entry))
+			return;
+
+		Model_->AddLocaleEntry (entry);
+	}
+
+	void AcceptLangWidget::WriteSettings ()
+	{
+		XmlSettingsManager::Instance ().setProperty ("LocaleEntries", QVariant::fromValue (Locales_));
+	}
+
+	namespace
+	{
+		QList<LocaleEntry> BuildDefaultLocaleList ()
+		{
+			QList<LocaleEntry> result;
+
+			const QLocale defLocale;
+			result.append ({ defLocale.language (), defLocale.country (), 1 });
+			result.append ({ defLocale.language (), QLocale::AnyCountry, 0.9 });
+
+			return result;
+		}
+	}
+
+	void AcceptLangWidget::LoadSettings ()
+	{
+		const auto& localesVar = XmlSettingsManager::Instance ().property ("LocaleEntries");
+		if (!localesVar.isNull ())
+			Locales_ = localesVar.value<QList<LocaleEntry>> ();
+		else
+		{
+			Locales_ = BuildDefaultLocaleList ();
+			WriteSettings ();
+		}
+
+		RebuildLocaleStr ();
+	}
+
+	void AcceptLangWidget::RebuildLocaleStr ()
+	{
+		LocaleStr_ = QStringList { Util::Map (Locales_, &GetFullCode) }.join (", ");
+	}
+
 	void AcceptLangWidget::accept ()
 	{
-		QList<QLocale> locales;
-		for (int i = 0; i < Model_->rowCount (); ++i)
-			locales << Model_->item (i)->data (Roles::LocaleObj).toLocale ();
-
-		auto qnam = Core::Instance ().GetNetworkAccessManager ();
-		auto nam = qobject_cast<NetworkAccessManager*> (qnam);
-		nam->SetAcceptLangs (locales);
+		Locales_ = Model_->GetEntries ();
+		WriteSettings ();
+		RebuildLocaleStr ();
 	}
 
 	void AcceptLangWidget::reject ()
 	{
-		Model_->clear ();
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Language")) << tr ("Country") << tr ("Code"));
-
-		auto qnam = Core::Instance ().GetNetworkAccessManager ();
-		auto nam = qobject_cast<NetworkAccessManager*> (qnam);
-		Q_FOREACH (const QLocale& locale, nam->GetAcceptLangs ())
-			AddLocale (locale);
+		Model_->SetLocales (Locales_);
 	}
 
 	namespace
@@ -102,7 +139,7 @@ namespace LeechCraft
 		{
 			const int idx = box->currentIndex ();
 			if (idx <= 0)
-				return T ();
+				return {};
 
 			const int val = box->itemData (idx).toInt ();
 			return static_cast<T> (val);
@@ -113,37 +150,31 @@ namespace LeechCraft
 	{
 		const auto country = GetValue<QLocale::Country> (Ui_.Country_);
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		AddLocale (QLocale (lang, country));
+		const auto qval = Ui_.Q_->value ();
+		AddLocale ({ lang, country, qval });
+
+		if (!Model_->GetEntries ().contains ({ lang, QLocale::AnyCountry, qval }) &&
+				QMessageBox::question (this,
+						"LeechCraft",
+						tr ("Do you want to add an accepted language without "
+							"any country specified as a fallback?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			AddLocale ({ lang, QLocale::AnyCountry, qval });
 	}
 
 	void AcceptLangWidget::on_Remove__released ()
 	{
-		const auto& idx = Ui_.LangsTree_->currentIndex ();
-		if (!idx.isValid ())
-			return;
-
-		Model_->removeRow (idx.row ());
+		Model_->Remove (Ui_.LangsTree_->currentIndex ());
 	}
 
 	void AcceptLangWidget::on_MoveUp__released ()
 	{
-		QStandardItem *item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
-		if (!item || !item->row ())
-			return;
-
-		const int row = item->row ();
-		Model_->insertRow (row - 1, Model_->takeRow (row));
+		Model_->MoveUp (Ui_.LangsTree_->currentIndex ());
 	}
 
 	void AcceptLangWidget::on_MoveDown__released ()
 	{
-		QStandardItem *item = Model_->itemFromIndex (Ui_.LangsTree_->currentIndex ());
-		if (!item || item->row () == Model_->rowCount () - 1)
-			return;
-
-		const int row = item->row ();
-		auto items = Model_->takeRow (row);
-		Model_->insertRow (row + 1, items);
+		Model_->MoveDown (Ui_.LangsTree_->currentIndex ());
 	}
 
 	void AcceptLangWidget::on_Language__currentIndexChanged (int)
@@ -151,11 +182,7 @@ namespace LeechCraft
 		Ui_.Country_->clear ();
 
 		const auto lang = GetValue<QLocale::Language> (Ui_.Language_);
-		auto countries = QLocale::countriesForLanguage (lang);
-		if (!countries.contains (QLocale::AnyCountry))
-			countries << QLocale::AnyCountry;
-		Q_FOREACH (QLocale::Country c, countries)
-			Ui_.Country_->addItem (QLocale::countryToString (c), c);
-		Ui_.Country_->model ()->sort (0);
+		FillCountryCombobox (Ui_.Country_, lang);
 	}
+}
 }

@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/iwkfontssettable.h>
 #include "ui_mailtab.h"
 #include "account.h"
 
@@ -49,9 +50,10 @@ namespace Snails
 
 	class MailTab : public QWidget
 				  , public ITabWidget
+				  , public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IWkFontsSettable)
 
 		Ui::MailTab Ui_;
 
@@ -84,6 +86,9 @@ namespace Snails
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		QObject* GetQObject ();
+		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
 	private:
 		void FillCommonActions ();
 		void FillMailActions ();
@@ -106,6 +111,7 @@ namespace Snails
 		void handleCopyMessages (QAction*);
 		void handleMoveMultipleFolders ();
 		void handleMoveMessages (QAction*);
+		void handleMarkMsgRead ();
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
 		void handleViewHeaders ();

@@ -37,6 +37,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QToolBar>
+#include <QClipboard>
 #include <QtDebug>
 #include <interfaces/iwebbrowser.h>
 #include <util/tags/categoryselector.h>
@@ -46,6 +47,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/util.h>
 #include <interfaces/core/itagsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "itemsfiltermodel.h"
@@ -80,6 +82,7 @@ namespace Aggregator
 		QAction *ActionDeleteItem_;
 		QAction *ActionItemCommentsSubscribe_;
 		QAction *ActionItemLinkOpen_;
+		QAction *ActionItemLinkCopy_;
 
 		bool TapeMode_;
 		bool MergeMode_;
@@ -148,6 +151,7 @@ namespace Aggregator
 		Impl_->Ui_.Items_->addAction (Util::CreateSeparator (this));
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemCommentsSubscribe_);
 		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkOpen_);
+		Impl_->Ui_.Items_->addAction (Impl_->ActionItemLinkCopy_);
 		Impl_->Ui_.Items_->setContextMenuPolicy (Qt::ActionsContextMenu);
 
 		addActions ({
@@ -253,18 +257,16 @@ namespace Aggregator
 		Impl_->ChannelsFilter_ = m;
 
 		connect (m,
-				SIGNAL (rowsInserted (const QModelIndex&,
-						int, int)),
+				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
 				SLOT (invalidateMergeMode ()));
 		connect (m,
-				SIGNAL (rowsRemoved (const QModelIndex&,
-						int, int)),
+				SIGNAL (rowsRemoved (QModelIndex, int, int)),
 				this,
 				SLOT (invalidateMergeMode ()));
 	}
 
-	void ItemsWidget::RegisterShortcuts()
+	void ItemsWidget::RegisterShortcuts ()
 	{
 		auto mgr = Core::Instance ().GetShortcutManager ();
 		auto addAct = [this, mgr] (ItemsWidget::Action actId) -> void
@@ -313,6 +315,10 @@ namespace Aggregator
 			return Impl_->ActionNextUnreadItem_;
 		case Action::Delete:
 			return Impl_->ActionDeleteItem_;
+		case Action::OpenLink:
+			return Impl_->ActionItemLinkOpen_;
+		case Action::CopyLink:
+			return Impl_->ActionItemLinkCopy_;
 		case Action::MaxAction:
 			break;
 		}
@@ -614,8 +620,7 @@ namespace Aggregator
 		Impl_->ActionHideReadItems_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("HideReadItems", false).toBool ());
 
-		Impl_->ActionShowAsTape_ = new QAction (tr ("Show items as tape"),
-				this);
+		Impl_->ActionShowAsTape_ = new QAction (tr ("Show items as tape"), this);
 		Impl_->ActionShowAsTape_->setObjectName ("ActionShowAsTape_");
 		Impl_->ActionShowAsTape_->setCheckable (true);
 		Impl_->ActionShowAsTape_->setProperty ("ActionIcon", "format-list-unordered");
@@ -661,13 +666,18 @@ namespace Aggregator
 		Impl_->ActionDeleteItem_->setProperty ("ActionIcon", "remove");
 		Impl_->ActionDeleteItem_->setShortcut ({ "Delete" });
 
-		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"),
-				this);
+		Impl_->ActionItemCommentsSubscribe_ = new QAction (tr ("Subscribe to comments"), this);
 		Impl_->ActionItemCommentsSubscribe_->setObjectName ("ActionItemCommentsSubscribe_");
 
-		Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"),
-				this);
+		Impl_->ActionItemLinkOpen_ = new QAction (tr ("Open in new tab"), this);
+		Impl_->ActionItemLinkOpen_->setProperty ("ActionIcon", "internet-web-browser");
+		Impl_->ActionItemLinkOpen_->setShortcut ({ "O" });
 		Impl_->ActionItemLinkOpen_->setObjectName ("ActionItemLinkOpen_");
+
+		Impl_->ActionItemLinkCopy_ = new QAction (tr ("Copy news item link"), this);
+		Impl_->ActionItemLinkCopy_->setProperty ("ActionIcon", "edit-copy");
+		Impl_->ActionItemLinkCopy_->setShortcut ({ "C" });
+		Impl_->ActionItemLinkCopy_->setObjectName ("ActionItemLinkCopy_");
 	}
 
 	QToolBar* ItemsWidget::SetupToolBar ()
@@ -1360,22 +1370,27 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionItemCommentsSubscribe__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 			SubscribeToComments (idx);
 	}
 
 	void ItemsWidget::on_ActionItemLinkOpen__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
-		{
-			Entity e = Util::MakeEntity (QUrl (GetItem (idx)->Link_),
-					QString (),
-					FromUserInitiated | OnlyHandle);
-			QMetaObject::invokeMethod (&Core::Instance (),
-					"gotEntity",
-					Qt::QueuedConnection,
-					Q_ARG (LeechCraft::Entity, e));
-		}
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+		for (const auto& idx : GetSelected ())
+			iem->HandleEntity (Util::MakeEntity (QUrl { GetItem (idx)->Link_ },
+						{},
+						FromUserInitiated | OnlyHandle));
+	}
+
+	void ItemsWidget::on_ActionItemLinkCopy__triggered ()
+	{
+		const auto& idx = GetSelected ().value (0);
+		const auto& item = GetItem (idx);
+		if (!item)
+			return;
+
+		QApplication::clipboard ()->setText (item->Link_);
 	}
 
 	void ItemsWidget::on_CategoriesSplitter__splitterMoved ()
@@ -1448,6 +1463,7 @@ namespace Aggregator
 				Impl_->ActionMarkItemAsUnread_->setEnabled (false);
 				Impl_->ActionMarkItemAsRead_->setEnabled (false);
 				Impl_->ActionItemLinkOpen_->setEnabled (false);
+				Impl_->ActionItemLinkCopy_->setEnabled (false);
 			}
 			else
 			{
@@ -1465,6 +1481,7 @@ namespace Aggregator
 				Impl_->ActionMarkItemAsUnread_->setEnabled (true);
 				Impl_->ActionMarkItemAsRead_->setEnabled (true);
 				Impl_->ActionItemLinkOpen_->setEnabled (true);
+				Impl_->ActionItemLinkCopy_->setEnabled (true);
 			}
 		}
 	}

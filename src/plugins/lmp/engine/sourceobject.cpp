@@ -108,6 +108,7 @@ namespace LMP
 	{
 		while (!ShouldStop_.load (std::memory_order_relaxed))
 		{
+			msleep (1);
 			const auto msg = gst_bus_timed_pop (Bus_, Multiplier_ * GST_SECOND);
 			if (!msg)
 				continue;

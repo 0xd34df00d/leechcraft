@@ -49,16 +49,11 @@ namespace LeechCraft
 		Q_OBJECT
 
 		QTimer * const CookieSaveTimer_;
-		QList<QLocale> Locales_;
-		QString LocaleStr_;
 
 		Util::CustomCookieJar *CookieJar_;
 	public:
 		NetworkAccessManager (QObject* = 0);
 		virtual ~NetworkAccessManager ();
-
-		QList<QLocale> GetAcceptLangs () const;
-		void SetAcceptLangs (const QList<QLocale>&);
 	protected:
 		QNetworkReply* createRequest (Operation,
 				const QNetworkRequest&, QIODevice*);
