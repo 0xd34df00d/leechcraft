@@ -124,20 +124,14 @@ namespace Intermutko
 		switch (static_cast<Column> (idx.column ()))
 		{
 		case Column::Language:
-		{
 			entry.Language_ = static_cast<QLocale::Language> (value.toInt ());
 			return true;
-		}
 		case Column::Country:
-		{
 			entry.Country_ = static_cast<QLocale::Country> (value.toInt ());
 			return true;
-		}
 		case Column::Quality:
-		{
 			entry.Q_ = value.toDouble ();
 			return true;
-		}
 		case Column::Code:
 			return true;
 		}
