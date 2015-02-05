@@ -66,9 +66,9 @@ namespace Intermutko
 
 		using QAbstractItemModel::QAbstractItemModel;
 
-		int columnCount (const QModelIndex&) const override;
-		int rowCount (const QModelIndex&) const override;
-		QModelIndex index (int, int, const QModelIndex&) const override;
+		int columnCount (const QModelIndex& = {}) const override;
+		int rowCount (const QModelIndex& = {}) const override;
+		QModelIndex index (int, int, const QModelIndex& = {}) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		QVariant headerData (int, Qt::Orientation, int) const override;
 		QVariant data (const QModelIndex&, int) const override;
