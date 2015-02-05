@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
 cmake_policy (SET CMP0003 NEW)
-cmake_policy (SET CMP0042 OLD)
+if (${CMAKE_MAJOR_VERSION} GREATER 3 OR ${CMAKE_MAJOR_VERSION} EQUAL 3)
+	cmake_policy (SET CMP0042 OLD)
+endif ()
 
 project (leechcraft)
 #if (NOT DISABLE_RPATH_TRICKS)
