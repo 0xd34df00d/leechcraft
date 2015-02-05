@@ -378,7 +378,7 @@ namespace Util
 		ulong length = 0;
 		Guarded<uchar> data;
 		if (GetWinProp (wid, GetAtom ("WM_CLASS"), &length, data.Get ()) &&
-				QString (data.GetAs<char*> (false)) == "leechcraft")
+				QString (data.GetAs<char*> (false)).startsWith ("leechcraft"))
 			return true;
 
 		return false;
