@@ -29,6 +29,7 @@
 
 #include "localesmodel.h"
 #include <QtDebug>
+#include <util/sll/util.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -106,6 +107,45 @@ namespace Intermutko
 		if (index.column () != static_cast<int> (Column::Code))
 			result |= Qt::ItemIsEditable;
 		return result;
+	}
+
+	bool LocalesModel::setData (const QModelIndex& idx, const QVariant& value, int)
+	{
+		if (!idx.isValid ())
+			return false;
+
+		const auto dataChangedGuard = Util::MakeScopeGuard ([this, &idx]
+				{
+					emit dataChanged (index (idx.row (), 0), index (idx.row (), columnCount () - 1));
+				});
+
+		auto& entry = Locales_ [idx.row ()];
+
+		switch (static_cast<Column> (idx.column ()))
+		{
+		case Column::Language:
+		{
+			entry.Language_ = static_cast<QLocale::Language> (value.toInt ());
+			return true;
+		}
+		case Column::Country:
+		{
+			entry.Country_ = static_cast<QLocale::Country> (value.toInt ());
+			return true;
+		}
+		case Column::Quality:
+		{
+			entry.Q_ = value.toDouble ();
+			return true;
+		}
+		case Column::Code:
+			return true;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown column"
+				<< idx;
+		return false;
 	}
 
 	const QList<LocaleEntry>& LocalesModel::GetEntries () const

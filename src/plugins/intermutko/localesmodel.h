@@ -73,6 +73,7 @@ namespace Intermutko
 		QVariant headerData (int, Qt::Orientation, int) const override;
 		QVariant data (const QModelIndex&, int) const override;
 		Qt::ItemFlags flags (const QModelIndex& index) const override;
+		bool setData (const QModelIndex&, const QVariant&, int) override;
 
 		const QList<LocaleEntry>& GetEntries () const;
 		void AddLocaleEntry (const LocaleEntry&);
