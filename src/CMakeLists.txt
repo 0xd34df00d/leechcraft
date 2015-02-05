@@ -7,6 +7,8 @@ project (leechcraft)
 #	set (CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 #endif ()
 
+set (CMAKE_MACOSX_RPATH OFF)
+
 option (USE_QT5 "Enable Qt5 build" OFF)
 option (USE_CPP14 "Enable C++14 features and plugins" OFF)
 
