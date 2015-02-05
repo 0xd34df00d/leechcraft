@@ -32,6 +32,7 @@
 #include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 #include "localesmodel.h"
+#include "entriesdelegate.h"
 #include "util.h"
 
 Q_DECLARE_METATYPE (QList<QLocale>)
@@ -45,6 +46,7 @@ namespace Intermutko
 	, Model_ { new LocalesModel { this } }
 	{
 		Ui_.setupUi (this);
+		Ui_.LangsTree_->setItemDelegate (new EntriesDelegate);
 		Ui_.LangsTree_->setModel (Model_);
 
 		LoadSettings ();
