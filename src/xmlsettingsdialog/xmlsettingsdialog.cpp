@@ -319,7 +319,7 @@ namespace Util
 
 	void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 	{
-		QList<QWidget*> widgets = findChildren<QWidget*> (name);
+		const auto& widgets = findChildren<QWidget*> (name);
 		if (!widgets.size ())
 			throw std::runtime_error (qPrintable (QString ("Widget %1 not "
 							"found").arg (name)));
@@ -447,7 +447,7 @@ namespace Util
 			QScrollArea *area = new QScrollArea ();
 			if (scroll.hasAttribute ("horizontalScroll"))
 			{
-				QString attr = scroll.attribute ("horizontalScroll");
+				const auto& attr = scroll.attribute ("horizontalScroll");
 				if (attr == "on")
 					area->setHorizontalScrollBarPolicy (Qt::ScrollBarAlwaysOn);
 				else if (attr == "off")
@@ -455,7 +455,7 @@ namespace Util
 			}
 			if (scroll.hasAttribute ("verticalScroll"))
 			{
-				QString attr = scroll.attribute ("verticalScroll");
+				const auto& attr = scroll.attribute ("verticalScroll");
 				if (attr == "on")
 					area->setVerticalScrollBarPolicy (Qt::ScrollBarAlwaysOn);
 				else if (attr == "off")
@@ -544,7 +544,7 @@ namespace Util
 	QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 	{
 		QString result = "<no label>";
-		QDomElement label = item.firstChildElement ("label");
+		const auto& label = item.firstChildElement ("label");
 		if (!label.isNull ())
 			result = label.attribute ("value");
 		return QCoreApplication::translate (qPrintable (TrContext_),
@@ -673,11 +673,11 @@ namespace Util
 
 	void XmlSettingsDialog::UpdateXml (bool whole)
 	{
-		QDomNodeList nodes = Document_->elementsByTagName ("item");
+		const auto& nodes = Document_->elementsByTagName ("item");
 		if (whole)
 			for (int i = 0; i < nodes.size (); ++i)
 			{
-				QDomElement elem = nodes.at (i).toElement ();
+				auto elem = nodes.at (i).toElement ();
 				if (!elem.hasAttribute ("property"))
 					continue;
 
