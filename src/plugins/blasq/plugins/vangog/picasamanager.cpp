@@ -31,13 +31,7 @@
 #include <QNetworkRequest>
 #include <QStandardItemModel>
 #include <QtDebug>
-
-#if QT_VERSION < 0x050000
-#include <qjson/parser.h>
-#else
-#include <QJsonDocument>
-#endif
-
+#include <util/sll/parsejson.h>
 #include "picasaaccount.h"
 
 namespace LeechCraft
@@ -342,28 +336,10 @@ namespace Vangog
 
 		reply->deleteLater ();
 
-#if QT_VERSION < 0x050000
-		bool ok = false;
-		const auto& res = QJson::Parser ().parse (reply->readAll (), &ok);
-		if (!ok)
-		{
-			qWarning () << Q_FUNC_INFO << "parse error";
+		const auto& map = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
+		if (map.isEmpty ())
 			return;
-		}
-#else
-		QJsonParseError error;
-		const auto& res = QJsonDocument::fromJson (reply->readAll (), &error).toVariant ();
-		if (error.error != QJsonParseError::NoError)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "parse error"
-					<< error.offset
-					<< error.errorString ();
-			return;
-		}
-#endif
 
-		const auto& map = res.toMap ();
 		AccessToken_ = map.value ("access_token").toString ();
 		AccessTokenExpireDate_ = QDateTime::currentDateTime ().addSecs (map.value ("expires_in").toInt ());
 		qDebug () << "your access token"
