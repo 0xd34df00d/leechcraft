@@ -3,7 +3,7 @@ import org.LC.common 1.0
 
 Rectangle {
     id: rootRect
-    anchors.fill: parent
+
     focus: true
     gradient: Gradient {
         GradientStop {
