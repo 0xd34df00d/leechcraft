@@ -81,13 +81,13 @@ namespace CSTP
 				this,
 				SIGNAL (jobError (int, IDownload::Error)));
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
-				SIGNAL (error (const QString&)),
+				SIGNAL (error (QString)),
 				this,
-				SLOT (handleError (const QString&)));
+				SLOT (handleError (QString)));
 	}
 
 	void CSTP::SecondInit ()
@@ -183,9 +183,9 @@ namespace CSTP
 
 	void CSTP::handleTasksTreeSelectionCurrentRowChanged (const QModelIndex& si, const QModelIndex&)
 	{
-		QModelIndex index = Core::Instance ().GetCoreProxy ()->MapToSource (si);
+		auto index = Core::Instance ().GetCoreProxy ()->MapToSource (si);
 		if (index.model () != GetRepresentation ())
-			index = QModelIndex ();
+			index = QModelIndex {};
 		Core::Instance ().ItemSelected (index);
 	}
 
