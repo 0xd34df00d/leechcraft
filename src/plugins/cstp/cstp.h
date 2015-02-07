@@ -40,7 +40,6 @@
 
 class QTabWidget;
 class QToolBar;
-class QTranslator;
 
 namespace boost
 {
@@ -68,7 +67,6 @@ namespace CSTP
 		LC_PLUGIN_METADATA ("org.LeechCraft.CSTP")
 
 		QMenu *Plugins_;
-		std::auto_ptr<QTranslator> Translator_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		std::auto_ptr<QToolBar> Toolbar_;
 	public:

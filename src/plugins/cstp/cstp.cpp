@@ -59,7 +59,7 @@ namespace CSTP
 	void CSTP::Init (ICoreProxy_ptr coreProxy)
 	{
 		Core::Instance ().SetCoreProxy (coreProxy);
-		Translator_.reset (Util::InstallTranslator ("cstp"));
+		Util::InstallTranslator ("cstp");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -101,7 +101,6 @@ namespace CSTP
 		XmlSettingsManager::Instance ().Release ();
 		XmlSettingsDialog_.reset ();
 		Toolbar_.reset ();
-		Translator_.reset ();
 	}
 
 	QByteArray CSTP::GetUniqueID () const
