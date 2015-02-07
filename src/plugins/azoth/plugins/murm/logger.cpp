@@ -31,13 +31,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QDir>
-
-#if QT_VERSION < 0x050000
-#include <qjson/serializer.h>
-#else
-#include <QJsonDocument>
-#endif
-
+#include <util/sll/serializejson.h>
 #include <util/sys/paths.h>
 
 namespace LeechCraft
@@ -97,14 +91,7 @@ namespace Murm
 
 	void Logger::LogProxy::Write (const QVariant& json)
 	{
-#if QT_VERSION < 0x050000
-		QJson::Serializer s;
-		s.setIndentMode (QJson::IndentFull);
-		const auto& data = s.serialize (json);
-#else
-		const auto& data = QJsonDocument::fromVariant (json).toJson ();
-#endif
-		WriteImpl (data);
+		WriteImpl (Util::SerializeJson (json, false));
 	}
 
 	Logger::Logger (const QString& id, QObject *parent)
