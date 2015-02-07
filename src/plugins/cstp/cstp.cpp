@@ -56,10 +56,6 @@ namespace LeechCraft
 {
 namespace CSTP
 {
-	CSTP::~CSTP ()
-	{
-	}
-
 	void CSTP::Init (ICoreProxy_ptr coreProxy)
 	{
 		Core::Instance ().SetCoreProxy (coreProxy);

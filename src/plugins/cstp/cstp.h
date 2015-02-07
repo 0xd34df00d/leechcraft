@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_CSTP_CSTP_H
-#define PLUGINS_CSTP_CSTP_H
+#pragma once
+
 #include <memory>
 #include <QModelIndex>
 #include <interfaces/iinfo.h>
@@ -72,7 +72,6 @@ namespace CSTP
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 		std::auto_ptr<QToolBar> Toolbar_;
 	public:
-		virtual ~CSTP ();
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
@@ -111,5 +110,3 @@ namespace CSTP
 	};
 }
 }
-
-#endif
