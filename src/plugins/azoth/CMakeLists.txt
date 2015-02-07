@@ -53,15 +53,15 @@ endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
 
+set (QCA2_INCLUDE_DIR)
+set (QCA2_LIBRARIES)
+
 if (ENABLE_CRYPT)
 	find_package (QCA2)
 
 	if (NOT QCA2_FOUND)
 		set (ENABLE_CRYPT OFF)
 		message (WARNING "QCA2 is NOT found, support for PGP-signed/encrypted messages won't be built")
-
-		set (QCA2_INCLUDE_DIR "")
-		set (QCA2_LIBRARIES "")
 	endif ()
 
 	include_directories (${QCA2_INCLUDE_DIR})
