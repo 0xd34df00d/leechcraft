@@ -46,6 +46,7 @@
 #include <QDomNodeList>
 #include <QtScript>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
 #include "settingsthreadmanager.h"
@@ -686,12 +687,10 @@ namespace Util
 				UpdateSingle (name, value, elem);
 			}
 		else
-		{
-			const auto& props = HandlersManager_->GetNewValues ();
-			for (auto i = props.begin (), end = props.end (); i != end; ++i)
+			for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
 			{
 				QDomElement element;
-				const QString& name = i.key ();
+				const auto& name = pair.first;
 				for (int j = 0, size = nodes.size (); j < size; ++j)
 				{
 					const QDomElement& e = nodes.at (j).toElement ();
@@ -709,9 +708,8 @@ namespace Util
 					return;
 				}
 
-				UpdateSingle (name, i.value (), element);
+				UpdateSingle (name, pair.second, element);
 			}
-		}
 	}
 
 	void XmlSettingsDialog::UpdateSingle (const QString&,
