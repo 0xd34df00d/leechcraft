@@ -33,13 +33,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QMainWindow>
-
-#if QT_VERSION < 0x050000
-#include <qjson/parser.h>
-#else
-#include <QJsonDocument>
-#endif
-
+#include <util/sll/parsejson.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -144,28 +138,9 @@ namespace Vangog
 		const auto acc = Reply2Account_.take (reply);
 		reply->deleteLater ();
 
-		const auto data = reply->readAll ();
-
-#if QT_VERSION < 0x050000
-		bool ok = false;
-		QVariant res = QJson::Parser ().parse (data, &ok);
-		if (!ok)
+		const auto& map = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
+		if (map.isEmpty ())
 			return;
-#else
-		QJsonParseError error;
-		const auto& document = QJsonDocument::fromJson (data, &error);
-		if (error.error != QJsonParseError::NoError)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error parsing reply"
-					<< error.offset
-					<< error.errorString ();
-		}
-
-		const auto& res = document.toVariant ();
-#endif
-
-		const auto& map = res.toMap ();
 
 		if (map.contains ("error"))
 		{
