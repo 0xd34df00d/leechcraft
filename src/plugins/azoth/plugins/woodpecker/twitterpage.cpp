@@ -35,11 +35,6 @@
 #include <QInputDialog>
 #include <QCoreApplication>
 #include <QToolBar>
-
-#if QT_VERSION < 0x050000
-#include <qjson/parser.h>
-#endif
-
 #include <interfaces/core/icoreproxy.h>
 #include <util/xpc/util.h>
 #include "core.h"
