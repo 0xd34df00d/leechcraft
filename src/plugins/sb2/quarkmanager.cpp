@@ -46,7 +46,6 @@
 #include <QtDebug>
 #include <QFileInfo>
 #include <QDir>
-#include <qjson/parser.h>
 #include <util/util.h>
 #include <interfaces/iquarkcomponentprovider.h>
 #include <interfaces/core/iiconthememanager.h>
