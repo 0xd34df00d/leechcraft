@@ -10,12 +10,12 @@
     <message utf8="true">
         <location filename="aboutdialog.ui" line="76"/>
         <source>LeechCraft — a crossplatform modular internet-client, featuring plugins for a web browser, news feed reader, BitTorrent, FTP and lots of others.</source>
-        <translation type="unfinished"/>
+        <translation>LeechCraft — ein plattformübergreifender modularer Internet-Client, mit Plugins für Web-Browser, News-Feed-Reader, BitTorrent, FTP und viele andere.</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="110"/>
         <source>Authors</source>
-        <translation>Authoren</translation>
+        <translation>Autoren</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="127"/>
@@ -25,27 +25,27 @@
     <message>
         <location filename="aboutdialog.ui" line="144"/>
         <source>Appreciations</source>
-        <translation type="unfinished"/>
+        <translation>Anerkennung</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="169"/>
         <source>Licensing</source>
-        <translation>Lizenzierung</translation>
+        <translation>Lizenz</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="327"/>
         <source>Third parties</source>
-        <translation type="unfinished"/>
+        <translation>Dritte</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="350"/>
         <source>Diagnostic info</source>
-        <translation type="unfinished"/>
+        <translation>Diagnose</translation>
     </message>
     <message>
         <location filename="aboutdialog.ui" line="359"/>
         <source>Add this information to your bug reports, if any:</source>
-        <translation type="unfinished"/>
+        <translation>Bei Fehlerbericht, wenn vorhanden, folgendes hinzufügen:</translation>
     </message>
 </context>
 <context>
@@ -53,17 +53,17 @@
     <message>
         <location filename="acceptlangwidget.ui" line="53"/>
         <source>Add</source>
-        <translation type="unfinished"/>
+        <translation>Hinzufügen</translation>
     </message>
     <message>
         <location filename="acceptlangwidget.ui" line="66"/>
         <source>Move up</source>
-        <translation>Eins nach oben verschieben</translation>
+        <translation>Nach oben verschieben</translation>
     </message>
     <message>
         <location filename="acceptlangwidget.ui" line="73"/>
         <source>Move down</source>
-        <translation>Eins nach unten verschieben</translation>
+        <translation>Nach unten verschieben</translation>
     </message>
     <message>
         <location filename="acceptlangwidget.ui" line="80"/>
@@ -76,7 +76,7 @@
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
         <source>Authentication required</source>
-        <translation>Authentifizierung erfordert</translation>
+        <translation>Authentifizierung erforderlich</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="29"/>
@@ -114,22 +114,22 @@
     <message>
         <location filename="util/backendselector.ui" line="54"/>
         <source>Journal mode:</source>
-        <translation type="unfinished"/>
+        <translation>Journal-Modus:</translation>
     </message>
     <message>
         <location filename="util/backendselector.ui" line="90"/>
         <source>Temp store:</source>
-        <translation type="unfinished"/>
+        <translation>Temp Speicher</translation>
     </message>
     <message>
         <location filename="util/backendselector.ui" line="111"/>
         <source>Synchronous:</source>
-        <translation type="unfinished"/>
+        <translation>Synchron:</translation>
     </message>
     <message>
         <location filename="util/backendselector.ui" line="139"/>
         <source>VACUUM on exit</source>
-        <translation type="unfinished"/>
+        <translation>VACUUM beim Beenden</translation>
     </message>
     <message>
         <location filename="util/backendselector.ui" line="169"/>
@@ -177,12 +177,12 @@
     <message>
         <location filename="commonjobadder.ui" line="36"/>
         <source>Enter URL or file name or any other thing you believe LeechCraft can handle.</source>
-        <translation type="unfinished"/>
+        <translation>Geben Sie die URL oder den Dateinamen oder etwas anderes, was LeechCraft verarbeiten kann ein.</translation>
     </message>
     <message>
         <location filename="commonjobadder.ui" line="43"/>
         <source>Browse...</source>
-        <translation>Überblick...</translation>
+        <translation>Suchen...</translation>
     </message>
 </context>
 <context>
@@ -208,22 +208,22 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="14"/>
         <source>Choose entity handler</source>
-        <translation>Wahl der Handler-Objekt</translation>
+        <translation>Wahl der Änderung</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="20"/>
         <source>LeechCraft has detected an entity:</source>
-        <translation>LeechCraft hast ein Objekt gefunden:</translation>
+        <translation>LeechCraft hat eine Änderung festgestellt:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="34"/>
         <source>It could be downloaded by:</source>
-        <translation>Um geladen zu werden, braucht es:</translation>
+        <translation>Es kann gelade werden von:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="44"/>
         <source>It could be handled by:</source>
-        <translation>Um bearbeitet zu werden, braucht es:</translation>
+        <translation>Es kann bearbeitet werden von:</translation>
     </message>
     <message>
         <location filename="handlerchoicedialog.ui" line="56"/>
@@ -233,7 +233,7 @@
     <message>
         <location filename="handlerchoicedialog.ui" line="81"/>
         <source>Browse...</source>
-        <translation>Überblick...</translation>
+        <translation>Suchen...</translation>
     </message>
 </context>
 <context>
@@ -241,7 +241,7 @@
     <message>
         <location filename="keysequencer.ui" line="20"/>
         <source>Press key sequence</source>
-        <translation>Tastenkürzel einführen</translation>
+        <translation>Tastenfolge drücken</translation>
     </message>
     <message>
         <location filename="keysequencer.ui" line="26"/>
@@ -251,7 +251,7 @@
     <message>
         <location filename="keysequencer.ui" line="42"/>
         <source>Clear</source>
-        <translation>Saubern</translation>
+        <translation>Säubern</translation>
     </message>
 </context>
 <context>
@@ -274,12 +274,12 @@
     <message>
         <location filename="leechcraft.ui" line="112"/>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation>Strg+P</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="120"/>
         <source>Quit</source>
-        <translation>Ausgang</translation>
+        <translation>Beenden</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="123"/>
@@ -295,7 +295,7 @@
     <message>
         <location filename="leechcraft.ui" line="196"/>
         <source>Restart LeechCraft...</source>
-        <translation type="unfinished"/>
+        <translation>LeechCraft neu starten</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="142"/>
@@ -325,12 +325,12 @@
     <message>
         <location filename="leechcraft.ui" line="175"/>
         <source>Ctrl+W</source>
-        <translation>Ctrl+W</translation>
+        <translation>Strg+W</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="191"/>
         <source>Show toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Toolbar anzeigen</translation>
     </message>
     <message>
         <location filename="leechcraft.ui" line="180"/>
@@ -340,7 +340,7 @@
     <message>
         <location filename="leechcraft.ui" line="183"/>
         <source>Ctrl+T</source>
-        <translation>Ctrl+T</translation>
+        <translation>Strg+T</translation>
     </message>
 </context>
 <context>
@@ -349,12 +349,12 @@
         <location filename="aboutdialog.cpp" line="77"/>
         <location filename="aboutdialog.cpp" line="104"/>
         <source>Years: %1</source>
-        <translation type="unfinished"/>
+        <translation>Jahr: %1</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="125"/>
         <source>Lead developer and original author.</source>
-        <translation type="unfinished"/>
+        <translation>Leitender Entwickler und Orginal Autor</translation>
     </message>
     <message>
         <location filename="aboutdialog.cpp" line="133"/>
@@ -523,12 +523,12 @@
     <message>
         <location filename="acceptlangwidget.cpp" line="79"/>
         <source>Language</source>
-        <translation type="unfinished"/>
+        <translation>Sprache</translation>
     </message>
     <message>
         <location filename="acceptlangwidget.cpp" line="79"/>
         <source>Country</source>
-        <translation type="unfinished"/>
+        <translation>Land</translation>
     </message>
     <message>
         <location filename="acceptlangwidget.cpp" line="79"/>
@@ -570,7 +570,7 @@
     <message>
         <location filename="core.cpp" line="309"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
-        <translation>Kein plugin kann laden &quot;%1&quot;</translation>
+        <translation>Kein Plugin kann laden &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="core.cpp" line="459"/>
@@ -611,7 +611,7 @@
     <message>
         <location filename="core.cpp" line="815"/>
         <source>Plugin load error</source>
-        <translation type="unfinished"/>
+        <translation>Plugin lade Fehler</translation>
     </message>
 </context>
 <context>
@@ -629,7 +629,7 @@
     <message>
         <location filename="coreinstanceobject.cpp" line="232"/>
         <source>Context-dependent</source>
-        <translation type="unfinished"/>
+        <translation>Kontextabhängig</translation>
     </message>
     <message>
         <location filename="coreinstanceobject.cpp" line="277"/>
@@ -642,12 +642,12 @@
     <message>
         <location filename="xmlsettingsdialog/filepicker.cpp" line="35"/>
         <source>Browse...</source>
-        <translation>Überblick...</translation>
+        <translation>Suchen...</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/filepicker.cpp" line="80"/>
         <source>Select directory</source>
-        <translation>Verzeichnis auswählen</translation>
+        <translation>Verzeichnis wählen</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/filepicker.cpp" line="86"/>
@@ -681,12 +681,12 @@
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="59"/>
         <source>, italic</source>
-        <translation>, italic</translation>
+        <translation>, kursiv</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="61"/>
         <source>, underlined</source>
-        <translation>, underlined</translation>
+        <translation>, unterstrichen</translation>
     </message>
     <message>
         <location filename="xmlsettingsdialog/fontpicker.cpp" line="63"/>
@@ -707,7 +707,7 @@
     <message>
         <location filename="xmlsettingsdialog/itemhandlers/itemhandlercombobox.cpp" line="76"/>
         <source>More stuff...</source>
-        <translation type="unfinished"/>
+        <translation>Mehr...</translation>
     </message>
 </context>
 <context>
@@ -715,27 +715,27 @@
     <message>
         <location filename="mainwindow.cpp" line="78"/>
         <source>Startup password</source>
-        <translation type="unfinished"/>
+        <translation>Start Paßwort</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="79"/>
         <source>Enter startup password for LeechCraft:</source>
-        <translation type="unfinished"/>
+        <translation>Gebe Start Paßwort für LeechCraft ein:</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="84"/>
         <source>Sorry, incorrect password</source>
-        <translation type="unfinished"/>
+        <translation>Leider falsches Paßwort</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="96"/>
         <source>Initializing LeechCraft...</source>
-        <translation type="unfinished"/>
+        <translation>Initialisiere LeechCraft...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="121"/>
         <source>Finalizing...</source>
-        <translation type="unfinished"/>
+        <translation>Beende...</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="165"/>
@@ -769,17 +769,17 @@
     <message>
         <location filename="mainwindow.cpp" line="527"/>
         <source>Do you really want to restart?</source>
-        <translation type="unfinished"/>
+        <translation>Möchtest du neu starten?</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="543"/>
         <source>Do you really want to quit?</source>
-        <translation>Wollen Sie wirklich ausgehen?</translation>
+        <translation>Möchtest du beenden?</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="548"/>
         <source>Always</source>
-        <translation type="unfinished"/>
+        <translation>Immer</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="625"/>
@@ -789,7 +789,7 @@
     <message>
         <location filename="mainwindow.cpp" line="737"/>
         <source>%1 down, %2 up</source>
-        <translation>%1 hinauf, %2 hinunter</translation>
+        <translation>%1 runter, %2 hoch</translation>
     </message>
     <message>
         <location filename="mainwindow.cpp" line="834"/>
@@ -818,7 +818,7 @@
     <message>
         <location filename="networkaccessmanager.cpp" line="305"/>
         <source>Could not save cookies, error opening cookie file.</source>
-        <translation>Die Cookies können nicht gespeichert werden, es gibt feler mit Öffnung Cookies Datei.</translation>
+        <translation>Die Cookies können nicht gespeichert werden. Fehler beim Öffnen der Cookies Datei.</translation>
     </message>
 </context>
 <context>
@@ -826,12 +826,12 @@
     <message>
         <location filename="newtabmenumanager.cpp" line="31"/>
         <source>New tab menu</source>
-        <translation type="unfinished"/>
+        <translation>Neues Tab Menü</translation>
     </message>
     <message>
         <location filename="newtabmenumanager.cpp" line="32"/>
         <source>Additional tab menu</source>
-        <translation type="unfinished"/>
+        <translation>Zusätsliches Tab Menü</translation>
     </message>
 </context>
 <context>
@@ -844,27 +844,27 @@
     <message>
         <location filename="pluginmanager.cpp" line="54"/>
         <source>Description</source>
-        <translation type="unfinished"/>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="258"/>
         <source>The following plugins would also be disabled as the result:</source>
-        <translation type="unfinished"/>
+        <translation>Dazu werden folgende Plugins deaktiviert</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="260"/>
         <source>Are you sure you want to disable this one?</source>
-        <translation type="unfinished"/>
+        <translation>Möchtest du das wirklich deaktivieren?</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="320"/>
         <source>Initializing %1: stage one...</source>
-        <translation type="unfinished"/>
+        <translation>Initialisiere %1: Stufe eins...</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="409"/>
         <source>Initializing %1: stage two...</source>
-        <translation type="unfinished"/>
+        <translation>Initialisiere %1: Stufe zwei...</translation>
     </message>
     <message>
         <location filename="pluginmanager.cpp" line="686"/>
@@ -920,17 +920,17 @@
     <message>
         <location filename="settingstab.cpp" line="42"/>
         <source>Settings bar</source>
-        <translation type="unfinished"/>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="43"/>
         <source>Back</source>
-        <translation type="unfinished"/>
+        <translation>Zurück</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="44"/>
         <source>Apply</source>
-        <translation type="unfinished"/>
+        <translation>Bestätigen</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="45"/>
@@ -968,12 +968,12 @@
     <message>
         <location filename="settingstab.cpp" line="322"/>
         <source>Search...</source>
-        <translation type="unfinished"/>
+        <translation>Suchen...</translation>
     </message>
     <message>
         <location filename="settingstab.cpp" line="344"/>
         <source>Settings for %1</source>
-        <translation type="unfinished"/>
+        <translation>Einstellungen für %1</translation>
     </message>
 </context>
 <context>
@@ -1004,7 +1004,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="77"/>
         <source>Valid:</source>
-        <translation>Valid:</translation>
+        <translation>Gültig:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="78"/>
@@ -1014,17 +1014,17 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="78"/>
         <source>no</source>
-        <translation>Neun</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="79"/>
         <source>Effective date:</source>
-        <translation>Start Datum:</translation>
+        <translation>Gültig ab:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="81"/>
         <source>Expiry date:</source>
-        <translation>End Datum:</translation>
+        <translation>Endet am:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="83"/>
@@ -1049,7 +1049,7 @@
     <message>
         <location filename="sslerrorsdialog.cpp" line="93"/>
         <source>Issuer info</source>
-        <translation>Ausliefernden Information</translation>
+        <translation>Auslieferer Information</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="99"/>
@@ -1061,7 +1061,7 @@
         <location filename="sslerrorsdialog.cpp" line="104"/>
         <location filename="sslerrorsdialog.cpp" line="137"/>
         <source>Common name:</source>
-        <translation>General Name:</translation>
+        <translation>Algemeiner Name:</translation>
     </message>
     <message>
         <location filename="sslerrorsdialog.cpp" line="109"/>
@@ -1103,7 +1103,7 @@
     <message>
         <location filename="startupwizard.cpp" line="79"/>
         <source>Would you like to set advanced options?</source>
-        <translation type="unfinished"/>
+        <translation>Möchtest du erweiterte Optionen festlegen?</translation>
     </message>
 </context>
 <context>
@@ -1132,7 +1132,7 @@
     <message>
         <location filename="tagsviewer.cpp" line="45"/>
         <source>Enter new tag name</source>
-        <translation>Neues tag hinzufügen</translation>
+        <translation>Neuen Tag Namen eingeben</translation>
     </message>
 </context>
 <context>
@@ -1140,7 +1140,7 @@
     <message>
         <location filename="util/tags/categoryselector.cpp" line="37"/>
         <source>Tags selector</source>
-        <translation type="unfinished"/>
+        <translation>Tag auswählen</translation>
     </message>
     <message>
         <location filename="util/tags/categoryselector.cpp" line="50"/>
@@ -1158,7 +1158,7 @@
     <message>
         <location filename="util/models/flattofoldersproxymodel.cpp" line="101"/>
         <source>untagged</source>
-        <translation>Ohne tags</translation>
+        <translation>Ohne Tag</translation>
     </message>
     <message>
         <location filename="util/models/flattofoldersproxymodel.cpp" line="105"/>
@@ -1175,7 +1175,11 @@
 LeechCraft for Windows is quite experimental and unstable, some builds may use unstable versions of third-party libraries, and, moreover, LeechCraft is known to have more bugs and less features on Windows than on other, saner operating systems. That's because we have not so much developers running Windows, and most of the users use other OSes. Sorry for that, we hope you'll understand us.
 
 If you have read and really understood all these letters, click Cancel button in this dialog so that it won&apos;t pop up again next time you run LeechCraft.</source>
-        <translation type="unfinished"/>
+        <translation>Scheinbar, nutzt du Microsoft Windows.
+
+LeechCraft für Windows ist ziemlich experimentell und instabil, da wir einige Versionen von  instabilen Bibliotheken von Drittanbietern verwenden, und darüber hinaus ist LeechCraft dafür bekannt, mehr Fehler und weniger Features unter Windows als auf anderen, vernünftigeren Betriebssysteme zu haben. Das ist, weil wir kaum Entwickler mit Windows haben, und die meisten Benutzer verwenden andere Betriebssysteme. Entschuldigung dafür, wir hoffen, Sie werden uns verstehen.
+
+Wenn Sie das hier gelesen haben und diese Zeilen wirklich verstanden haben, klicken Sie auf Abbrechen in diesem Dialogfeld, so dass es beim nächsten Öffnen, nicht mehr angezeigt wird.</translation>
     </message>
 </context>
 <context>
@@ -1183,12 +1187,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="pluginmanagerdialog.ui" line="20"/>
         <source>Plugin Manager</source>
-        <translation>Modulverwaltung</translation>
+        <translation>Pluginverwaltung</translation>
     </message>
     <message>
         <location filename="pluginmanagerdialog.ui" line="33"/>
         <source>Filter plugins...</source>
-        <translation type="unfinished"/>
+        <translation>Pluginfilter...</translation>
     </message>
 </context>
 <context>
@@ -1196,7 +1200,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="util/util.cpp" line="53"/>
         <source>Too long to show</source>
-        <translation>Es ist zu lang für Vorschau</translation>
+        <translation>Es ist zu lang für eine Vorschau</translation>
     </message>
     <message>
         <location filename="util/util.cpp" line="70"/>
@@ -1242,7 +1246,7 @@ If you have read and really understood all these letters, click Cancel button in
         <location filename="util/util.cpp" line="236"/>
         <location filename="util/util.cpp" line="253"/>
         <source>Could not cd into %1</source>
-        <translation type="unfinished"/>
+        <translation>Kann zu %1 nicht wechseln</translation>
     </message>
     <message>
         <location filename="util/util.cpp" line="230"/>
@@ -1403,7 +1407,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="sslerrorsdialog.ui" line="64"/>
         <source>Remember my choice for the whole host</source>
-        <translation>Erinnrn mein Wahl für dem ganzen Host</translation>
+        <translation>Behalte mein Wahl für den ganzen Host</translation>
     </message>
 </context>
 <context>
@@ -1429,12 +1433,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="wizardtypechoicepage.ui" line="14"/>
         <source>WizardPage</source>
-        <translation type="unfinished"/>
+        <translation>Assistentenseite</translation>
     </message>
     <message>
         <location filename="wizardtypechoicepage.ui" line="17"/>
         <source>Select wizard type</source>
-        <translation type="unfinished"/>
+        <translation>Wähle Assistententyp</translation>
     </message>
     <message>
         <location filename="wizardtypechoicepage.ui" line="20"/>
@@ -1444,7 +1448,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="wizardtypechoicepage.ui" line="39"/>
         <source>Basic setup</source>
-        <translation type="unfinished"/>
+        <translation>Standard Einstellungen</translation>
     </message>
     <message>
         <location filename="wizardtypechoicepage.ui" line="49"/>
@@ -1659,13 +1663,13 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="44"/>
         <source>Tags manager</source>
-        <translation type="unfinished"/>
+        <translation>Schlagwort Manager</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="45"/>
         <location filename="dummy.cpp" line="46"/>
         <source>Network</source>
-        <translation type="unfinished"/>
+        <translation>Netzwerk</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="47"/>
@@ -1685,12 +1689,12 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="50"/>
         <source>Clear cache</source>
-        <translation type="unfinished"/>
+        <translation>Zwischenspeicher löschen</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="51"/>
         <source>Clear cookies</source>
-        <translation type="unfinished"/>
+        <translation>Cookies löschen</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="52"/>
@@ -1700,7 +1704,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="53"/>
         <source>Host:</source>
-        <translation type="unfinished"/>
+        <translation>Host:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="54"/>
@@ -1720,7 +1724,7 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="57"/>
         <source>Proxy type:</source>
-        <translation type="unfinished"/>
+        <translation>Proxy:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="58"/>
@@ -1745,27 +1749,27 @@ If you have read and really understood all these letters, click Cancel button in
     <message>
         <location filename="dummy.cpp" line="62"/>
         <source>Languages</source>
-        <translation type="unfinished"/>
+        <translation>Sprache</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="63"/>
         <source>Plugins</source>
-        <translation type="unfinished"/>
+        <translation>Plugins</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="64"/>
         <source>Plugins manager</source>
-        <translation type="unfinished"/>
+        <translation>Plugin Manager</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="65"/>
         <source>Enable all plugins</source>
-        <translation type="unfinished"/>
+        <translation>Alle Plugins aktivieern</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="66"/>
         <source>Disable all plugins</source>
-        <translation type="unfinished"/>
+        <translation>Alle Plugins deaktivieern</translation>
     </message>
 </context>
 </TS>
