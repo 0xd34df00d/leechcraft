@@ -80,7 +80,7 @@ namespace Util
 			[settable, this] { Settables_.removeAll (settable); },
 			settable->GetQObject (),
 			SIGNAL (destroyed ()),
-			settable->GetQObject ()
+			this
 		};
 
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
