@@ -186,8 +186,7 @@ namespace SeekThru
 
 	QList<QWizardPage*> SeekThru::GetWizardPages () const
 	{
-		std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
-		return wg->GetPages ();
+		return WizardGenerator {}.GetPages ();
 	}
 
 	ISyncProxy* SeekThru::SeekThru::GetSyncProxy ()
