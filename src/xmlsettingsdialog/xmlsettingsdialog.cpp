@@ -375,8 +375,7 @@ namespace Util
 
 	void XmlSettingsDialog::ParsePage (const QDomElement& page)
 	{
-		const QString& sectionTitle = GetLabel (page);
-		Titles_ << sectionTitle;
+		Titles_ << GetLabel (page);
 
 		QStringList icons;
 		if (page.hasAttribute ("icon"))
@@ -391,9 +390,9 @@ namespace Util
 		}
 		IconNames_ << icons;
 
-		QWidget *baseWidget = new QWidget;
+		const auto baseWidget = new QWidget;
 		Pages_->addWidget (baseWidget);
-		QGridLayout *lay = new QGridLayout;
+		const auto lay = new QGridLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
 		baseWidget->setLayout (lay);
 
@@ -401,7 +400,7 @@ namespace Util
 
 		bool foundExpanding = false;
 
-		Q_FOREACH (QWidget *w, baseWidget->findChildren<QWidget*> ())
+		for (const auto w : baseWidget->findChildren<QWidget*> ())
 			if (w->sizePolicy ().verticalPolicy () & QSizePolicy::ExpandFlag)
 			{
 				foundExpanding = true;
@@ -409,10 +408,8 @@ namespace Util
 			}
 
 		if (!foundExpanding)
-		{
-			QSpacerItem *verticalSpacer = new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-			lay->addItem (verticalSpacer, lay->rowCount (), 0, 1, 2);
-		}
+			lay->addItem (new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding),
+					lay->rowCount (), 0, 1, 2);
 	}
 
 	void XmlSettingsDialog::ParseEntity (const QDomElement& entity, QWidget *baseWidget)
@@ -424,27 +421,27 @@ namespace Util
 			item = item.nextSiblingElement ("item");
 		}
 
-		QDomElement gbox = entity.firstChildElement ("groupbox");
+		auto gbox = entity.firstChildElement ("groupbox");
 		while (!gbox.isNull ())
 		{
-			QGroupBox *box = new QGroupBox (GetLabel (gbox));
+			const auto box = new QGroupBox (GetLabel (gbox));
 			box->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Preferred);
-			QGridLayout *groupLayout = new QGridLayout ();
+			const auto groupLayout = new QGridLayout ();
 			groupLayout->setContentsMargins (2, 2, 2, 2);
 			box->setLayout (groupLayout);
 
 			ParseEntity (gbox, box);
 
-			QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+			const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
 			lay->addWidget (box, lay->rowCount (), 0);
 
 			gbox = gbox.nextSiblingElement ("groupbox");
 		}
 
-		QDomElement scroll = entity.firstChildElement ("scrollarea");
+		auto scroll = entity.firstChildElement ("scrollarea");
 		while (!scroll.isNull ())
 		{
-			QScrollArea *area = new QScrollArea ();
+			const auto area = new QScrollArea ();
 			if (scroll.hasAttribute ("horizontalScroll"))
 			{
 				const auto& attr = scroll.attribute ("horizontalScroll");
@@ -464,16 +461,16 @@ namespace Util
 
 			area->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-			QFrame *areaWidget = new QFrame;
+			const auto areaWidget = new QFrame;
 			areaWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-			QGridLayout *areaLayout = new QGridLayout;
+			const auto areaLayout = new QGridLayout;
 			areaWidget->setLayout (areaLayout);
 			ParseEntity (scroll, areaWidget);
 			area->setWidget (areaWidget);
 			area->setWidgetResizable (true);
 			areaWidget->show ();
 
-			QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+			const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
 			const auto thisRow = lay->rowCount ();
 			lay->addWidget (area, thisRow, 0, 1, 2);
 			lay->setRowStretch (thisRow, 1);
@@ -481,24 +478,24 @@ namespace Util
 			scroll = scroll.nextSiblingElement ("scrollarea");
 		}
 
-		QDomElement tab = entity.firstChildElement ("tab");
+		auto tab = entity.firstChildElement ("tab");
 		if (!tab.isNull ())
 		{
-			QTabWidget *tabs = new QTabWidget;
-			QGridLayout *lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
+			const auto tabs = new QTabWidget;
+			const auto lay = qobject_cast<QGridLayout*> (baseWidget->layout ());
 			lay->addWidget (tabs, lay->rowCount (), 0, 1, 2);
 			while (!tab.isNull ())
 			{
-				QWidget *page = new QWidget;
-				QGridLayout *widgetLay = new QGridLayout;
+				const auto page = new QWidget;
+				const auto widgetLay = new QGridLayout;
 				widgetLay->setContentsMargins (0, 0, 0, 0);
 				page->setLayout (widgetLay);
 				tabs->addTab (page, GetLabel (tab));
 				ParseEntity (tab, page);
 				tab = tab.nextSiblingElement ("tab");
 
-				QSpacerItem *verticalSpacer = new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
-				widgetLay->addItem (verticalSpacer, widgetLay->rowCount (), 0, 1, 1);
+				widgetLay->addItem (new QSpacerItem (0, 0, QSizePolicy::Minimum, QSizePolicy::Expanding),
+						widgetLay->rowCount (), 0, 1, 1);
 			}
 		}
 	}
@@ -527,7 +524,8 @@ namespace Util
 		{
 			QSettings settings (QCoreApplication::organizationName (),
 					QCoreApplication::applicationName ());
-			QString localeName = settings.value ("Language", "system").toString ();
+
+			auto localeName = settings.value ("Language", "system").toString ();
 
 			if (localeName == "system")
 			{
@@ -543,7 +541,7 @@ namespace Util
 
 	QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 	{
-		QString result = "<no label>";
+		QString result { "<no label>" };
 		const auto& label = item.firstChildElement ("label");
 		if (!label.isNull ())
 			result = label.attribute ("value");
@@ -567,7 +565,7 @@ namespace Util
 
 	void XmlSettingsDialog::SetTooltip (QWidget *widget, const QDomElement& from) const
 	{
-		const QString& descr = GetDescription (from);
+		const auto& descr = GetDescription (from);
 		if (!descr.isEmpty ())
 			widget->setToolTip (descr);
 	}
@@ -610,12 +608,12 @@ namespace Util
 
 	QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
 	{
-		const QString& property = item.attribute ("property");
+		const auto& property = item.attribute ("property");
 
 		QVariant value;
 		if (ignoreObject)
 		{
-			QString def = item.attribute ("default");
+			auto def = item.attribute ("default");
 			if (item.attribute ("translatable") == "true")
 				def = QCoreApplication::translate (qPrintable (TrContext_),
 						def.toUtf8 ().constData ());
@@ -623,7 +621,7 @@ namespace Util
 		}
 		else
 		{
-			const QVariant& tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
+			const auto& tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
 			if (tmpValue.isValid ())
 				return tmpValue;
 		}
@@ -634,7 +632,7 @@ namespace Util
 	QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const
 	{
 		QList<QImage> result;
-		QDomElement binary = item.firstChildElement ("binary");
+		auto binary = item.firstChildElement ("binary");
 		while (!binary.isNull ())
 		{
 			QByteArray data;
@@ -657,12 +655,12 @@ namespace Util
 			}
 			else
 			{
-				const QByteArray& base64 = binary.text ().toLatin1 ();
+				const auto& base64 = binary.text ().toLatin1 ();
 				data = QByteArray::fromBase64 (base64);
 			}
 			if (binary.attribute ("type") == "image")
 			{
-				const QImage& image = QImage::fromData (data);
+				const auto& image = QImage::fromData (data);
 				if (!image.isNull ())
 					result << image;
 			}
@@ -681,8 +679,8 @@ namespace Util
 				if (!elem.hasAttribute ("property"))
 					continue;
 
-				const QString& name = elem.attribute ("property");
-				const QVariant& value = WorkingObject_->property (name.toLatin1 ().constData ());
+				const auto& name = elem.attribute ("property");
+				const auto& value = WorkingObject_->property (name.toLatin1 ().constData ());
 
 				UpdateSingle (name, value, elem);
 			}
@@ -693,7 +691,7 @@ namespace Util
 				const auto& name = pair.first;
 				for (int j = 0, size = nodes.size (); j < size; ++j)
 				{
-					const QDomElement& e = nodes.at (j).toElement ();
+					const auto& e = nodes.at (j).toElement ();
 					if (e.isNull ())
 						continue;
 					if (e.attribute ("property") == name)
@@ -727,10 +725,9 @@ namespace Util
 	{
 		if (event->type () == QEvent::DynamicPropertyChange)
 		{
-			const QByteArray& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
+			const auto& name = static_cast<QDynamicPropertyChangeEvent*> (event)->propertyName ();
 
-			QWidget *widget = findChild<QWidget*> (name);
-			if (widget)
+			if (const auto widget = findChild<QWidget*> (name))
 				SetValue (widget, obj->property (name));
 
 			return false;
@@ -771,14 +768,13 @@ namespace Util
 
 		HandlersManager_->ClearNewValues ();
 
-		Q_FOREACH (QWidget *widget, Customs_)
+		for (const auto widget : Customs_)
 			QMetaObject::invokeMethod (widget, "reject");
 	}
 
 	void XmlSettingsDialog::handleCustomDestroyed ()
 	{
-		QWidget *widget = qobject_cast<QWidget*> (sender ());
-		Customs_.removeAll (widget);
+		Customs_.removeAll (qobject_cast<QWidget*> (sender ()));
 	}
 
 	void XmlSettingsDialog::handleMoreThisStuffRequested ()
