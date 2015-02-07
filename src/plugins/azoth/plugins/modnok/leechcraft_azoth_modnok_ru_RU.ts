@@ -109,7 +109,7 @@
     <message>
         <location filename="dummy.cpp" line="21"/>
         <source> MiB</source>
-        <translation> МиБ</translation>
+        <translation> МБ</translation>
     </message>
 </context>
 </TS>

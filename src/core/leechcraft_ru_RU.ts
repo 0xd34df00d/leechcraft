@@ -926,15 +926,15 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
     <message>
         <source> KiB</source>
-        <translation> КиБ</translation>
+        <translation> КБ</translation>
     </message>
     <message>
         <source> MiB</source>
-        <translation> МиБ</translation>
+        <translation> МБ</translation>
     </message>
     <message>
         <source> GiB</source>
-        <translation> ГиБ</translation>
+        <translation> ГБ</translation>
     </message>
     <message numerus="yes">
         <source>%n day(s), </source>
@@ -1527,7 +1527,7 @@ LeechCraft для Windows — довольно экспериментальна�
     </message>
     <message>
         <source> MB</source>
-        <translation> МиБ</translation>
+        <translation> МБ</translation>
     </message>
     <message>
         <source>Filter tracking cookies</source>

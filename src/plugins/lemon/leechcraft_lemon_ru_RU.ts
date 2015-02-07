@@ -39,7 +39,7 @@
     <message>
         <location filename="trafficdialog.cpp" line="60"/>
         <source>Traffic, KiB/s</source>
-        <translation>Трафик, КиБ/с</translation>
+        <translation>Трафик, КБ/с</translation>
     </message>
     <message>
         <location filename="trafficdialog.cpp" line="156"/>

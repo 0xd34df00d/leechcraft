@@ -727,7 +727,7 @@ IPv6 input mask</extracomment>
         <location filename="fastspeedcontrolwidget.cpp" line="102"/>
         <location filename="fastspeedcontrolwidget.cpp" line="103"/>
         <source> KiB/s</source>
-        <translation>КиБ/с</translation>
+        <translation> КБ/с</translation>
     </message>
 </context>
 <context>
@@ -992,7 +992,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="speedselectoraction.cpp" line="100"/>
         <source>%1 KiB/s</source>
-        <translation>%1 КиБ/с</translation>
+        <translation>%1 КБ/с</translation>
     </message>
 </context>
 <context>
@@ -1682,42 +1682,42 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="36"/>
         <source>32 kb</source>
-        <translation>32 КиБ</translation>
+        <translation>32 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="41"/>
         <source>64 kb</source>
-        <translation>64 КиБ</translation>
+        <translation>64 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="46"/>
         <source>128 kb</source>
-        <translation>128 КиБ</translation>
+        <translation>128 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="51"/>
         <source>256 kb</source>
-        <translation>256 КиБ</translation>
+        <translation>256 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="56"/>
         <source>512 kb</source>
-        <translation>512 КиБ</translation>
+        <translation>512 КБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="61"/>
         <source>1 mb</source>
-        <translation>1 МиБ</translation>
+        <translation>1 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="66"/>
         <source>2 mb</source>
-        <translation>2 МиБ</translation>
+        <translation>2 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="71"/>
         <source>4 mb</source>
-        <translation>4 МиБ</translation>
+        <translation>4 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="112"/>
@@ -1742,22 +1742,22 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="newtorrentthirdstep.ui" line="76"/>
         <source>8 mb</source>
-        <translation>8 МиБ</translation>
+        <translation>8 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="81"/>
         <source>16 mb</source>
-        <translation>16 МиБ</translation>
+        <translation>16 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="86"/>
         <source>32 mb</source>
-        <translation>32 МиБ</translation>
+        <translation>32 МБ</translation>
     </message>
     <message>
         <location filename="newtorrentthirdstep.ui" line="91"/>
         <source>64 mb</source>
-        <translation>64 МиБ</translation>
+        <translation>64 МБ</translation>
     </message>
 </context>
 <context>
@@ -1867,7 +1867,7 @@ IPv6 input mask</extracomment>
         <location filename="tabwidget.ui" line="313"/>
         <location filename="tabwidget.ui" line="351"/>
         <source> kb/s</source>
-        <translation> КиБ/с</translation>
+        <translation> КБ/с</translation>
     </message>
     <message>
         <location filename="tabwidget.ui" line="263"/>
@@ -2041,7 +2041,7 @@ IPv6 input mask</extracomment>
         <location filename="torrenttabwidget.ui" line="1333"/>
         <location filename="torrenttabwidget.ui" line="1371"/>
         <source> kb/s</source>
-        <translation> КиБ/с</translation>
+        <translation> КБ/с</translation>
     </message>
     <message>
         <location filename="torrenttabwidget.ui" line="149"/>

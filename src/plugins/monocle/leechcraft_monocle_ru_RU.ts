@@ -457,7 +457,7 @@
     <message>
         <location filename="dummy.cpp" line="6"/>
         <source> MiB</source>
-        <translation> МиБ</translation>
+        <translation> МБ</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
