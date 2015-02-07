@@ -316,7 +316,7 @@ namespace Monocle
 		if (!data->hasUrls ())
 			return;
 
-		const auto& url = data->urls ().first ();
+		const auto& url = data->urls ().value (0);
 		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
 			return;
 
@@ -332,7 +332,7 @@ namespace Monocle
 		if (!data->hasUrls ())
 			return;
 
-		const auto& url = data->urls ().first ();
+		const auto& url = data->urls ().value (0);
 		if (!url.isLocalFile () || !QFile::exists (url.toLocalFile ()))
 			return;
 
