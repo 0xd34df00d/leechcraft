@@ -47,6 +47,7 @@
 #include <QtScript>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include "itemhandlerfactory.h"
 #include "basesettingsmanager.h"
 #include "settingsthreadmanager.h"
@@ -808,11 +809,7 @@ namespace Util
 
 		while (auto parent = child->parentWidget ())
 		{
-			std::shared_ptr<void> nextGuard
-			{
-				nullptr,
-				[&child, parent] (void*) { child = parent; }
-			};
+			const auto nextGuard = Util::MakeScopeGuard ([&child, parent] { child = parent; });
 
 			const auto pgIdx = Pages_->indexOf (parent);
 			if (pgIdx >= 0)
