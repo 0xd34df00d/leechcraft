@@ -43,7 +43,7 @@ namespace SeekThru
 {
 	void SeekThru::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("seekthru"));
+		Util::InstallTranslator ("seekthru");
 
 		Core::Instance ().SetProxy (proxy);
 

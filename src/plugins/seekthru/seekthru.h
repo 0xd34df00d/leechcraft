@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include <QTranslator>
 #include <QStringList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
@@ -65,8 +64,7 @@ namespace SeekThru
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.SeekThru")
 
-		std::auto_ptr<QTranslator> Translator_;
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -83,7 +81,7 @@ namespace SeekThru
 		QStringList GetCategories () const;
 		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
