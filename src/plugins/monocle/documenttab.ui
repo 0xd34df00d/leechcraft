@@ -10,6 +10,9 @@
     <height>300</height>
    </rect>
   </property>
+  <property name="acceptDrops">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
    <string/>
   </property>
@@ -19,6 +22,9 @@
    </property>
    <item>
     <widget class="LeechCraft::Monocle::PagesView" name="PagesView_">
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
      <property name="renderHints">
       <set>QPainter::Antialiasing|QPainter::HighQualityAntialiasing|QPainter::SmoothPixmapTransform|QPainter::TextAntialiasing</set>
      </property>

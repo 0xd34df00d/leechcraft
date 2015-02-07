@@ -150,6 +150,9 @@ namespace Monocle
 		void CenterOn (const QPoint&);
 
 		bool eventFilter (QObject*, QEvent*);
+	protected:
+		void dragEnterEvent (QDragEnterEvent*) override;
+		void dropEvent (QDropEvent*) override;
 	private:
 		void SetupToolbarOpen ();
 		void SetupToolbarRotate ();

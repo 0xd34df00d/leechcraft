@@ -491,6 +491,16 @@ namespace Monocle
 		return false;
 	}
 
+	void DocumentTab::dragEnterEvent (QDragEnterEvent *event)
+	{
+		HandleDragEnter (event);
+	}
+
+	void DocumentTab::dropEvent (QDropEvent *event)
+	{
+		HandleDrop (event);
+	}
+
 	void DocumentTab::SetupToolbarOpen ()
 	{
 		auto open = new QAction (tr ("Open..."), this);
