@@ -94,7 +94,6 @@ namespace CSTP
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 	private:
-		template<typename T> void ApplyCore2Selection (void (Core::*) (const QModelIndex&), T);
 		void SetupToolbar ();
 	private slots:
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);

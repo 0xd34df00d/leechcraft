@@ -196,17 +196,6 @@ namespace CSTP
 		return XmlSettingsDialog_;
 	}
 
-	template<typename T>
-	void CSTP::ApplyCore2Selection (void (Core::*temp) (const QModelIndex&), T view)
-	{
-		QModelIndexList indexes = view->selectionModel ()->
-			selectedRows ();
-		std::for_each (indexes.begin (), indexes.end (),
-				boost::bind (temp,
-					&Core::Instance (),
-					_1));
-	}
-
 	void CSTP::SetupToolbar ()
 	{
 		Toolbar_.reset (new QToolBar);
