@@ -23,7 +23,7 @@ Rectangle {
 
     Keys.onEscapePressed: rootRect.closeRequested()
 
-    Keys.forwardTo: [itemsView, appsFilterInput]
+    Keys.forwardTo: [appsFilterInput]
 
     Keys.onLeftPressed: itemsView.moveCurrentIndexLeft()
     Keys.onRightPressed: itemsView.moveCurrentIndexRight()
@@ -183,7 +183,6 @@ Rectangle {
 
         model: itemsModel
 
-        focus: true
         keyNavigationWraps: true
 
         delegate: Rectangle {
