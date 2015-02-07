@@ -741,10 +741,8 @@ namespace Util
 
 	void XmlSettingsDialog::accept ()
 	{
-		const auto& props = HandlersManager_->GetNewValues ();
-		for (auto i = props.begin (), end = props.end (); i != end; ++i)
-			WorkingObject_->setProperty (i.key ().toLatin1 ().constData (),
-					i.value ());
+		for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
+			WorkingObject_->setProperty (pair.first.toLatin1 ().constData (), pair.second);
 
 		UpdateXml ();
 
@@ -756,20 +754,19 @@ namespace Util
 
 	void XmlSettingsDialog::reject ()
 	{
-		const auto& props = HandlersManager_->GetNewValues ();
-		for (auto i = props.begin (), end = props.end (); i != end; ++i)
+		for (const auto& pair : Util::Stlize (HandlersManager_->GetNewValues ()))
 		{
-			QWidget *object = findChild<QWidget*> (i.key ());
+			const auto object = findChild<QWidget*> (pair.first);
 			if (!object)
 			{
 				qWarning () << Q_FUNC_INFO
 					<< "could not find object for property"
-					<< i.key ();
+					<< pair.first;
 				continue;
 			}
 
 			SetValue (object,
-					WorkingObject_->property (i.key ().toLatin1 ().constData ()));
+					WorkingObject_->property (pair.first.toLatin1 ().constData ()));
 		}
 
 		HandlersManager_->ClearNewValues ();
