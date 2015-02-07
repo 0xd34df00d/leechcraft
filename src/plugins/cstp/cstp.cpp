@@ -67,7 +67,7 @@ namespace CSTP
 
 		SetupToolbar ();
 
-		Core::Instance ().SetToolbar (Toolbar_.get ());
+		Core::Instance ().SetToolbar (Toolbar_);
 
 		connect (&Core::Instance (),
 				SIGNAL (taskFinished (int)),
@@ -100,7 +100,6 @@ namespace CSTP
 		Core::Instance ().Release ();
 		XmlSettingsManager::Instance ().Release ();
 		XmlSettingsDialog_.reset ();
-		Toolbar_.reset ();
 	}
 
 	QByteArray CSTP::GetUniqueID () const
@@ -198,7 +197,7 @@ namespace CSTP
 
 	void CSTP::SetupToolbar ()
 	{
-		Toolbar_.reset (new QToolBar);
+		Toolbar_ = new QToolBar;
 		Toolbar_->setWindowTitle ("CSTP");
 
 		QAction *remove = Toolbar_->addAction (tr ("Remove"));

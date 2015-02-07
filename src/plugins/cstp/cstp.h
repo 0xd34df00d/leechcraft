@@ -68,7 +68,7 @@ namespace CSTP
 
 		QMenu *Plugins_;
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
-		std::auto_ptr<QToolBar> Toolbar_;
+		QToolBar *Toolbar_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
