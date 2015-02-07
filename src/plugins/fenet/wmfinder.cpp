@@ -31,7 +31,6 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QtDebug>
-#include <qjson/parser.h>
 #include <util/sys/paths.h>
 
 namespace LeechCraft
@@ -47,7 +46,7 @@ namespace Fenet
 	WMInfo WMFinder::GetInfo (const QString& filePath,
 			const QStringList& execNames, const QVariantMap& varmap) const
 	{
-		QString session = filePath;
+		auto session = filePath;
 		session.chop (5);
 		session += ".sh";
 		return
