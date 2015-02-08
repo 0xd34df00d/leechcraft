@@ -48,30 +48,31 @@ namespace Keywords
 		Util::InstallTranslator ("poshuku_keywords");
 
 		CoreProxy_ = proxy;
-		Model_.reset (new QStandardItemModel);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Keyword"))
-			<< tr ("Url"));
 
-		QSettings keywords (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_Keywords");
+		Model_ = std::make_shared<QStandardItemModel> ();
+		Model_->setHorizontalHeaderLabels ({ tr ("Keyword"), tr ("Url") });
 
-		Q_FOREACH (const QString& keyword, keywords.allKeys ())
+		QSettings keywords { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_Keywords" };
+
+		for (const auto& keyword : keywords.allKeys ())
 		{
-			const QString& url = keywords.value (keyword).toString ();
-			QStandardItem *keywordItem = new QStandardItem (keyword);
-			QStandardItem *urlItem = new QStandardItem (url);
-			QList<QStandardItem*> items;
+			const auto& url = keywords.value (keyword).toString ();
+			const QList<QStandardItem*> items
+			{
+				new QStandardItem { keyword },
+				new QStandardItem { url }
+			};
 
-			items << keywordItem << urlItem;
 			Model_->appendRow (items);
 			UpdateKeywords (keyword, url);
 		}
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
-			"poshukukeywordssettings.xml");
+				"poshukukeywordssettings.xml");
 		SettingsDialog_->SetCustomWidget ("KeywordsManagerWidget",
-			new KeywordsManagerWidget (Model_.get (), this));
+				new KeywordsManagerWidget { Model_.get (), this });
 	}
 
 	void Plugin::SecondInit ()
