@@ -973,24 +973,24 @@ namespace Poshuku
 	{
 		if (ReloadPeriodically_->isChecked ())
 		{
-			std::auto_ptr<ReloadIntervalSelector> sel (new ReloadIntervalSelector (this));
-			if (sel->exec () != QDialog::Accepted)
+			ReloadIntervalSelector sel { this };
+			if (sel.exec () != QDialog::Accepted)
 			{
 				ReloadPeriodically_->setChecked (false);
-				ReloadPeriodically_->setStatusTip (QString ());
-				ReloadPeriodically_->setToolTip (QString ());
+				ReloadPeriodically_->setStatusTip ({});
+				ReloadPeriodically_->setToolTip ({});
 				ReloadTimer_->stop ();
 				return;
 			}
 
-			QTime value = sel->GetInterval ();
-			QTime null (0, 0, 0);
-			int msecs = null.msecsTo (value);
+			const auto& value = sel.GetInterval ();
+			const QTime null { 0, 0, 0 };
+			const auto msecs = null.msecsTo (value);
 			if (msecs < 1000)
 			{
 				ReloadPeriodically_->setChecked (false);
-				ReloadPeriodically_->setStatusTip (QString ());
-				ReloadPeriodically_->setToolTip (QString ());
+				ReloadPeriodically_->setStatusTip ({});
+				ReloadPeriodically_->setToolTip ({});
 				ReloadTimer_->stop ();
 				return;
 			}
@@ -999,8 +999,8 @@ namespace Poshuku
 		}
 		else if (ReloadTimer_->isActive ())
 		{
-			ReloadPeriodically_->setStatusTip (QString ());
-			ReloadPeriodically_->setToolTip (QString ());
+			ReloadPeriodically_->setStatusTip ({});
+			ReloadPeriodically_->setToolTip ({});
 			ReloadTimer_->stop ();
 		}
 
@@ -1009,7 +1009,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleAdd2Favorites ()
 	{
-		const QString& url = WebView_->url ().toString ();
+		const auto& url = WebView_->url ().toString ();
 
 		if (Core::Instance ().IsUrlInFavourites (url))
 			Core::Instance ().GetFavoritesModel ()->removeItem (url);
