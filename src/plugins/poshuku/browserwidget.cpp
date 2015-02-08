@@ -962,10 +962,12 @@ namespace Poshuku
 	void BrowserWidget::handleURLFrameLoad (QString text)
 	{
 		const auto& proxy = std::make_shared<Util::DefaultHookProxy> ();
+		proxy->SetValue ("Text", text);
 		emit hookURLEditReturnPressed (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
 
+		proxy->FillValue ("Text", text);
 		Load (text);
 	}
 
