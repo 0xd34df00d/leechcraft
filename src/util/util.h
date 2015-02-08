@@ -266,7 +266,7 @@ namespace LeechCraft
 		}
 
 		template<typename K, typename V>
-		QMap<K, V> MakeMap (std::initializer_list<QPair<K, V>> l)
+		QMap<K, V> MakeMap (std::initializer_list<std::pair<K, V>> l)
 		{
 			QMap<K, V> result;
 			for (const auto& pair : l)
