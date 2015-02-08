@@ -959,7 +959,7 @@ namespace Poshuku
 		LinkTextItem_->raise ();
 	}
 
-	void BrowserWidget::handleURLFrameLoad (const QString& text)
+	void BrowserWidget::handleURLFrameLoad (QString text)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookURLEditReturnPressed (proxy, this);

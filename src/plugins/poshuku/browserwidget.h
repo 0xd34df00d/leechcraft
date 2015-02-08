@@ -176,7 +176,7 @@ namespace Poshuku
 	private slots:
 		void handleIconChanged ();
 		void handleStatusBarMessage (const QString&);
-		void handleURLFrameLoad (const QString&);
+		void handleURLFrameLoad (QString);
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
