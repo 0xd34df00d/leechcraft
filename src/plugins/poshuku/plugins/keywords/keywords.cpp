@@ -141,23 +141,15 @@ namespace Keywords
 			return;
 		}
 
-		if (urlEdit->text ().isEmpty ())
+		const auto& text = urlEdit->text ();
+		if (text.isEmpty () || !text.contains (' '))
 			return;
 
-		QStringList keywords = urlEdit->text ().split (" ", QString::SkipEmptyParts);
-
-		if (keywords.isEmpty())
-			return;
-
-		QString redirect = Keywords2Urls_.value (keywords.takeFirst ());
-
+		const auto& redirect = Keywords2Urls_.value (text.section (' ', 0, 0));
 		if (redirect.isEmpty ())
 			return;
 
-		while (!keywords.isEmpty ())
-			redirect = redirect.arg (keywords.takeFirst ());
-
-		urlEdit->setText (redirect);
+		urlEdit->setText (redirect.arg (text.section (' ', 1)));
 		QMetaObject::invokeMethod (urlEdit, "returnPressed", Qt::QueuedConnection);
 		proxy->CancelDefault ();
 	}
