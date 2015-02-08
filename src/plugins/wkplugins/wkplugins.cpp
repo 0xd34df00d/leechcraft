@@ -96,9 +96,6 @@ namespace WKPlugins
 
 	QObject* Plugin::createExtension (Extension ext) const
 	{
-		if (const auto& val = CreatedExtensions_.value (ext))
-			return val;
-
 		QObject *extObj = nullptr;
 		switch (ext)
 		{
@@ -111,11 +108,6 @@ namespace WKPlugins
 		default:
 			break;
 		}
-
-		if (!extObj)
-			return nullptr;
-
-		CreatedExtensions_ [ext] = extObj;
 		return extObj;
 	}
 }

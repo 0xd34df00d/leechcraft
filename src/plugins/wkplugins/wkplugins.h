@@ -50,8 +50,6 @@ namespace WKPlugins
 
 		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
-
-		mutable QMap<Extension, QPointer<QObject>> CreatedExtensions_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
