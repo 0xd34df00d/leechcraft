@@ -136,7 +136,9 @@ namespace Keywords
 		if (redirect.isEmpty ())
 			return;
 
-		proxy->SetValue ("Text", redirect.arg (text.section (' ', 1)));
+		const auto& query = text.section (' ', 1).toUtf8 ();
+		const auto& encoded = query.toPercentEncoding ();
+		proxy->SetValue ("Text", redirect.arg (QString::fromUtf8 (encoded)));
 	}
 }
 }
