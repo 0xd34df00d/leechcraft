@@ -52,7 +52,7 @@
     <item row="0" column="1">
      <widget class="QLineEdit" name="Url_">
       <property name="toolTip">
-       <string>Format specifier can be used in url e.g. keyword lf with 'http://www.last.fm/user/%1' in url will expand 'lf nobodyzzz' to http://www.last.fm/user/nobodyzzz</string>
+       <string>Format specifier &lt;em&gt;%1&lt;/em&gt; can be used in the URL, for example keyword &lt;em&gt;lf&lt;/em&gt; with &lt;em&gt;http://www.last.fm/user/%1&lt;/em&gt; as the URL will expand to &lt;em&gt;http://www.last.fm/user/nobodyzzz&lt;/em&gt; on a request like &lt;em&gt;lf nobodyzzz&lt;/em&gt;.</string>
       </property>
      </widget>
     </item>
