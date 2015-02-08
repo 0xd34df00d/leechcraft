@@ -35,6 +35,7 @@
 #include <QUrl>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
 #include "keywordsmanagerwidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -129,11 +130,7 @@ namespace Keywords
 	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 			QObject *browserWidget)
 	{
-		QLineEdit *urlEdit = 0;
-
-		QMetaObject::invokeMethod (browserWidget,
-			"getAddressBar",
-			Q_RETURN_ARG (QLineEdit*, urlEdit));
+		const auto urlEdit = qobject_cast<IBrowserWidget*> (browserWidget)->GetURLEdit ();
 
 		if (!urlEdit)
 		{
