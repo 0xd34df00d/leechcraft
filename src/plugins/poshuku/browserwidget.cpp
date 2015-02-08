@@ -961,7 +961,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleURLFrameLoad (QString text)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		const auto& proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookURLEditReturnPressed (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
