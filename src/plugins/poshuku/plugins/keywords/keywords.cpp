@@ -31,11 +31,9 @@
 #include <QApplication>
 #include <QKeyEvent>
 #include <QDebug>
-#include <QLineEdit>
 #include <QUrl>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
-#include <interfaces/poshuku/ibrowserwidget.h>
 #include "keywordsmanagerwidget.h"
 #include "xmlsettingsmanager.h"
 
@@ -127,21 +125,9 @@ namespace Keywords
 		Keywords2Urls_.remove (keyword);
 	}
 
-	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
-			QObject *browserWidget)
+	void Plugin::hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy, QObject*)
 	{
-		const auto urlEdit = qobject_cast<IBrowserWidget*> (browserWidget)->GetURLEdit ();
-
-		if (!urlEdit)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable get url edit"
-					<< "from"
-					<< browserWidget;
-			return;
-		}
-
-		const auto& text = urlEdit->text ();
+		const auto& text = proxy->GetValue ("Text").toString ();
 		if (text.isEmpty () || !text.contains (' '))
 			return;
 
@@ -149,9 +135,7 @@ namespace Keywords
 		if (redirect.isEmpty ())
 			return;
 
-		urlEdit->setText (redirect.arg (text.section (' ', 1)));
-		QMetaObject::invokeMethod (urlEdit, "returnPressed", Qt::QueuedConnection);
-		proxy->CancelDefault ();
+		proxy->SetValue ("Text", redirect.arg (text.section (' ', 1)));
 	}
 }
 }
