@@ -33,8 +33,8 @@ namespace LeechCraft
 {
 namespace Util
 {
-	DefaultHookProxy::DefaultHookProxy ()
-	: Cancelled_ (false)
+	DefaultHookProxy::DefaultHookProxy (QMap<QByteArray, QVariant> map)
+	: Name2NewVal_ { std::move (map) }
 	{
 	}
 

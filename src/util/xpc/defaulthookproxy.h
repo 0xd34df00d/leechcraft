@@ -47,14 +47,23 @@ namespace Util
 	 */
 	class UTIL_XPC_API DefaultHookProxy : public IHookProxy
 	{
-		bool Cancelled_;
+		bool Cancelled_ = false;
 		QVariant ReturnValue_;
 
 		QMap<QByteArray, QVariant> Name2NewVal_;
 	public:
 		/** @brief Creates a new hook proxy.
 		 */
-		DefaultHookProxy ();
+		DefaultHookProxy () = default;
+
+		/** @brief Creates a new hook proxy, initialized with the given values.
+		 *
+		 * @param[in] values The initial values of this proxy's parameters.
+		 *
+		 * @sa SetValue()
+		 * @sa GetValue()
+		 */
+		DefaultHookProxy (QMap<QByteArray, QVariant> values);
 
 		/** @brief Reimplemented from IHookProxy::CancelDefault().
 		 *
