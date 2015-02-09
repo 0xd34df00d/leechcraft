@@ -46,6 +46,7 @@ else ()
 	find_library (LastFM_LIBRARY
 		NAMES
 		lastfm-qt5
+		lastfm5
 		lastfm
 		PATHS
 		/usr/lib
