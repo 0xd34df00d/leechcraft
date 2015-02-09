@@ -668,20 +668,23 @@ namespace Azoth
 					MsgHistory_.prepend (text);
 				});
 
-		QString variant = Ui_.VariantBox_->count () > 1 ?
+		auto variant = Ui_.VariantBox_->count () > 1 ?
 				Ui_.VariantBox_->currentText () :
 				QString ();
 
 		const auto e = GetEntry<ICLEntry> ();
-		if (ProcessOutgoingMsg (e, text))
-			return;
 
 		auto type = e->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
-
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		proxy->SetValue ("text", text);
+		emit hookMessageSendRequested (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
+		proxy->FillValue ("text", text);
+
+		if (ProcessOutgoingMsg (e, text))
+			return;
+
 		// TODO pass type without casts
 		emit hookMessageWillCreated (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
 		if (proxy->IsCancelled ())
