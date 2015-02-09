@@ -208,7 +208,7 @@ namespace Abbrev
 		ShortcutsMgr_->HandleTab (qobject_cast<QWidget*> (chatTab));
 	}
 
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
 			QObject*, QObject *entryObj, int, QString)
 	{
 		const auto& text = proxy->GetValue ("text").toString ();

@@ -93,7 +93,7 @@ namespace Abbrev
 
 		void hookChatTabCreated (LeechCraft::IHookProxy_ptr,
 				QObject*, QObject*, QWebView*);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr,
+		void hookMessageSendRequested (LeechCraft::IHookProxy_ptr,
 				QObject*,
 				QObject*,
 				int,
