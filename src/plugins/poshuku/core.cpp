@@ -263,19 +263,19 @@ namespace Poshuku
 	QUrl Core::MakeURL (QString url)
 	{
 		if (url.isEmpty ())
-			return QUrl ();
+			return {};
 
 		url = url.trimmed ();
 		if (url == "localhost")
-			return QUrl ("http://localhost");
+			return { "http://localhost" };
 
 		if (url.startsWith ('!'))
 		{
 			HandleSearchRequest (url);
-			return QUrl ();
+			return {};
 		}
 
-		if (QHostAddress ().setAddress (url))
+		if (QHostAddress {}.setAddress (url))
 		{
 			QUrl result;
 			result.setHost (url);
@@ -286,28 +286,27 @@ namespace Poshuku
 		// If the url without percent signs and two following characters is
 		// a valid url (it should not be percent-encoded), then treat source
 		// url as percent-encoded, otherwise treat as not percent-encoded.
-		QString withoutPercent = url;
-		withoutPercent.remove (QRegExp ("%%??",
-					Qt::CaseInsensitive, QRegExp::Wildcard));
-		QUrl testUrl (withoutPercent);
+		auto withoutPercent = url;
+		withoutPercent.remove (QRegExp { "%%??", Qt::CaseInsensitive, QRegExp::Wildcard });
+		QUrl testUrl { withoutPercent };
 		QUrl result;
 		if (testUrl.toString () == withoutPercent)
 			result = QUrl::fromEncoded (url.toUtf8 ());
 		else
-			result = QUrl (url);
+			result = QUrl { url };
 
 		if (result.scheme ().isEmpty ())
 		{
 			if (!url.count (' ') && url.count ('.'))
-				result = QUrl (QString ("http://") + url);
+				result = QUrl { "http://" + url };
 			else
 			{
 				url.replace ('+', "%2B");
 				url.replace (' ', '+');
-				QString urlStr = QString ("http://www.google.com/search?q=%2"
+				auto urlStr = QString { "http://www.google.com/search?q=%2"
 						"&client=leechcraft_poshuku"
 						"&ie=utf-8"
-						"&rls=org.leechcraft:%1")
+						"&rls=org.leechcraft:%1" }
 					.arg (QLocale::system ().name ().replace ('_', '-'))
 					.arg (url);
 				result = QUrl::fromEncoded (urlStr.toUtf8 ());
