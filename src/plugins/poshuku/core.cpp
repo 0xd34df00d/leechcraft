@@ -299,6 +299,7 @@ namespace Poshuku
 			{
 				url.replace ('+', "%2B");
 				url.replace (' ', '+');
+				url = QString::fromUtf8 (url.toUtf8 ().toPercentEncoding ({ "+" }));
 				auto urlStr = QString { "http://www.google.com/search?q=%2"
 						"&client=leechcraft_poshuku"
 						"&ie=utf-8"
