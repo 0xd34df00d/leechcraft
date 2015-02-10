@@ -47,7 +47,7 @@ namespace BitTorrent
 		Q_OBJECT
 
 		Ui::TabWidget Ui_;
-		bool TorrentSelectionChanged_;
+		bool TorrentSelectionChanged_ = false;
 		Util::TagsCompleter *TagsChangeCompleter_;
 	public:
 		TabWidget (QWidget* = 0);

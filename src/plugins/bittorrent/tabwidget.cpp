@@ -52,8 +52,7 @@ namespace BitTorrent
 	using namespace Util;
 
 	TabWidget::TabWidget (QWidget *parent)
-	: QWidget (parent)
-	, TorrentSelectionChanged_ (false)
+	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
 		QFontMetrics fm = QApplication::fontMetrics ();
