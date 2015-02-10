@@ -97,7 +97,7 @@ namespace BitTorrent
 		connect (Core::Instance (),
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
-				SLOT (updateTorrentStats ()));
+				SLOT (updateTorrentStats (QModelIndex, QModelIndex)));
 
 		UpdateDashboard ();
 	}
@@ -120,6 +120,13 @@ namespace BitTorrent
 	{
 		Ui_.OverallUploadRateController_->setValue (val);
 		on_OverallUploadRateController__valueChanged (val);
+	}
+
+	void TabWidget::updateTorrentStats (const QModelIndex& from, const QModelIndex& to)
+	{
+		const auto current = Core::Instance ()->GetCurrentTorrent ();
+		if (from.row () <= current && current <= to.row ())
+			updateTorrentStats ();
 	}
 
 	void TabWidget::updateTorrentStats ()

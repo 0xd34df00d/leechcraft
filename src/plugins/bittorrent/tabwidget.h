@@ -56,6 +56,7 @@ namespace BitTorrent
 		void SetOverallDownloadRateController (int);
 		void SetOverallUploadRateController (int);
 	public slots:
+		void updateTorrentStats (const QModelIndex&, const QModelIndex&);
 		void updateTorrentStats ();
 	private:
 		void UpdateDashboard ();
