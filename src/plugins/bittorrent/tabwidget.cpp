@@ -55,7 +55,6 @@ namespace BitTorrent
 	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
-		QFontMetrics fm = QApplication::fontMetrics ();
 
 		TagsChangeCompleter_ = new TagsCompleter { Ui_.TorrentTags_ };
 		Ui_.TorrentTags_->AddSelector ();
