@@ -153,19 +153,21 @@ namespace BitTorrent
 
 	void TabWidget::UpdateTorrentControl ()
 	{
-		Ui_.TorrentDownloadRateController_->
-				setValue (Core::Instance ()->GetTorrentDownloadRate (Core::Instance ()->GetCurrentTorrent ()));
-		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->
-				GetTorrentUploadRate (Core::Instance ()->GetCurrentTorrent ()));
-		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
-				IsTorrentManaged (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
+		const auto current = Core::Instance ()->GetCurrentTorrent ();
+
+		Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (current));
+		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate (current));
+		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->IsTorrentManaged (current) ?
+					Qt::Checked :
+					Qt::Unchecked);
+
 		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
-				IsTorrentSequentialDownload (Core::Instance ()->GetCurrentTorrent ()) ? Qt::Checked : Qt::Unchecked);
+				IsTorrentSequentialDownload (current) ? Qt::Checked : Qt::Unchecked);
 
 		std::unique_ptr<TorrentInfo> i;
 		try
 		{
-			i = Core::Instance ()->GetTorrentStats (Core::Instance ()->GetCurrentTorrent ());
+			i = Core::Instance ()->GetTorrentStats (current);
 		}
 		catch (...)
 		{
@@ -175,21 +177,14 @@ namespace BitTorrent
 
 		Ui_.TorrentSettingsBox_->setEnabled (true);
 		Ui_.LabelState_->setText (i->State_);
-		Ui_.LabelDownloadRate_->
-			setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
-		Ui_.LabelUploadRate_->
-			setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
-		Ui_.LabelProgress_->
-			setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
-		Ui_.LabelWantedDownloaded_->
-			setText (Util::MakePrettySize (i->Status_.total_wanted_done));
-		Ui_.LabelWantedSize_->
-			setText (Util::MakePrettySize (i->Status_.total_wanted));
-		Ui_.LabelTotalUploaded_->
-			setText (Util::MakePrettySize (i->Status_.all_time_upload));
+		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
+		Ui_.LabelUploadRate_->setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
+		Ui_.LabelProgress_->setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
+		Ui_.LabelWantedDownloaded_->setText (Util::MakePrettySize (i->Status_.total_wanted_done));
+		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (i->Status_.total_wanted));
+		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (i->Status_.all_time_upload));
 		Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
-		Ui_.LabelName_->
-			setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
+		Ui_.LabelName_->setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
 	}
 
 	void TabWidget::on_OverallDownloadRateController__valueChanged (int val)
