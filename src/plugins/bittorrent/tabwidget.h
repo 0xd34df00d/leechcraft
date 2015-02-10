@@ -45,7 +45,7 @@ namespace BitTorrent
 
 		Ui::TabWidget Ui_;
 		bool TorrentSelectionChanged_;
-		std::auto_ptr<LeechCraft::Util::TagsCompleter> TagsChangeCompleter_;
+		Util::TagsCompleter *TagsChangeCompleter_;
 	public:
 		TabWidget (QWidget* = 0);
 
