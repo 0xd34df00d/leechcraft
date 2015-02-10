@@ -58,6 +58,7 @@
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/tags/tagscompletionmodel.h>
+#include <util/tags/tagscompleter.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -474,7 +475,7 @@ namespace BitTorrent
 	{
 		auto rootWM = Core::Instance ()->GetProxy ()->GetRootWindowsManager ();
 		AddMultipleTorrents dialog (rootWM->GetPreferredWindow ());
-		new TagsCompleter (dialog.GetEdit ());
+		new Util::TagsCompleter (dialog.GetEdit ());
 		dialog.GetEdit ()->AddSelector ();
 
 		if (dialog.exec () == QDialog::Rejected)
@@ -949,7 +950,7 @@ namespace BitTorrent
 
 	void TorrentPlugin::SetupStuff ()
 	{
-		TagsAddDiaCompleter_.reset (new TagsCompleter (AddTorrentDialog_->GetEdit ()));
+		TagsAddDiaCompleter_.reset (new Util::TagsCompleter (AddTorrentDialog_->GetEdit ()));
 		AddTorrentDialog_->GetEdit ()->AddSelector ();
 
 		auto statsUpdateTimer = new QTimer { this };
