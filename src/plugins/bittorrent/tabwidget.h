@@ -29,14 +29,17 @@
 
 #pragma once
 
-#include <memory>
 #include <QWidget>
 #include <QAction>
-#include <util/tags/tagscompleter.h>
 #include "ui_tabwidget.h"
 
 namespace LeechCraft
 {
+namespace
+{
+	class TagsCompleter;
+}
+
 namespace BitTorrent
 {
 	class TabWidget : public QWidget

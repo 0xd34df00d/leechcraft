@@ -31,6 +31,7 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <util/util.h>
+#include <util/tags/tagscompleter.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include "core.h"
