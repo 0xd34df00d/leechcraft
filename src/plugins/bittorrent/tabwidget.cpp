@@ -49,14 +49,12 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	using namespace Util;
-
 	TabWidget::TabWidget (QWidget *parent)
 	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
 
-		TagsChangeCompleter_ = new TagsCompleter { Ui_.TorrentTags_ };
+		TagsChangeCompleter_ = new Util::TagsCompleter { Ui_.TorrentTags_ };
 		Ui_.TorrentTags_->AddSelector ();
 
 		connect (Ui_.OverallDownloadRateController_,
