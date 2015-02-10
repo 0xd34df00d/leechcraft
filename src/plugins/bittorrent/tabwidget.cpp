@@ -73,14 +73,6 @@ namespace BitTorrent
 				SIGNAL (valueChanged (int)),
 				this,
 				SLOT (on_TorrentUploadRateController__valueChanged (int)));
-		connect (Ui_.TorrentManaged_,
-				SIGNAL (stateChanged (int)),
-				this,
-				SLOT (on_TorrentManaged__stateChanged (int)));
-		connect (Ui_.TorrentSequentialDownload_,
-				SIGNAL (stateChanged (int)),
-				this,
-				SLOT (on_TorrentSequentialDownload__stateChanged (int)));
 		connect (Ui_.DownloadingTorrents_,
 				SIGNAL (valueChanged (int)),
 				this,
