@@ -206,14 +206,14 @@ namespace BitTorrent
 		Core::Instance ()->SetTorrentUploadRate (val, Core::Instance ()->GetCurrentTorrent ());
 	}
 
-	void TabWidget::on_TorrentManaged__stateChanged (int state)
+	void TabWidget::on_TorrentManaged__clicked (bool managed)
 	{
-		Core::Instance ()->SetTorrentManaged (state == Qt::Checked, Core::Instance ()->GetCurrentTorrent ());
+		Core::Instance ()->SetTorrentManaged (managed, Core::Instance ()->GetCurrentTorrent ());
 	}
 
-	void TabWidget::on_TorrentSequentialDownload__stateChanged (int state)
+	void TabWidget::on_TorrentSequentialDownload__clicked (bool managed)
 	{
-		Core::Instance ()->SetTorrentSequentialDownload (state == Qt::Checked, Core::Instance ()->GetCurrentTorrent ());
+		Core::Instance ()->SetTorrentSequentialDownload (managed, Core::Instance ()->GetCurrentTorrent ());
 	}
 
 	void TabWidget::on_DownloadingTorrents__valueChanged (int newValue)

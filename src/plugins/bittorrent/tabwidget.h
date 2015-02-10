@@ -67,8 +67,8 @@ namespace BitTorrent
 		void on_OverallUploadRateController__valueChanged (int);
 		void on_TorrentDownloadRateController__valueChanged (int);
 		void on_TorrentUploadRateController__valueChanged (int);
-		void on_TorrentManaged__stateChanged (int);
-		void on_TorrentSequentialDownload__stateChanged (int);
+		void on_TorrentManaged__clicked (bool);
+		void on_TorrentSequentialDownload__clicked (bool);
 		void on_DownloadingTorrents__valueChanged (int);
 		void on_UploadingTorrents__valueChanged (int);
 		void on_TorrentTags__editingFinished ();
