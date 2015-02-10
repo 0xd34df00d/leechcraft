@@ -286,14 +286,10 @@ namespace Poshuku
 		// If the url without percent signs and two following characters is
 		// a valid url (it should not be percent-encoded), then treat source
 		// url as percent-encoded, otherwise treat as not percent-encoded.
-		auto withoutPercent = url;
-		withoutPercent.remove (QRegExp { "%%??", Qt::CaseInsensitive, QRegExp::Wildcard });
-		QUrl testUrl { withoutPercent };
-		QUrl result;
-		if (testUrl.toString () == withoutPercent)
-			result = QUrl::fromEncoded (url.toUtf8 ());
-		else
-			result = QUrl { url };
+		const auto isPercentEncoded = url.contains (QRegExp { "%??", Qt::CaseInsensitive, QRegExp::Wildcard });
+		auto result = isPercentEncoded ?
+				QUrl::fromEncoded (url.toUtf8 ()) :
+				QUrl { url };
 
 		if (result.scheme ().isEmpty ())
 		{
