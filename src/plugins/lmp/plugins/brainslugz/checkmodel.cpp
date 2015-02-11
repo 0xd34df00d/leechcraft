@@ -190,22 +190,25 @@ namespace BrainSlugz
 			item->setData (DefaultAlbumIcon_, ReleasesSubmodel::ReleaseArt);
 			model->appendRow (item);
 
-			const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
-			new Util::OneTimeRunner
+			if (AAProv_)
 			{
-				[this, item, proxy] () -> void
+				const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
+				new Util::OneTimeRunner
 				{
-					proxy->GetQObject ()->deleteLater ();
-					const auto& url = proxy->GetImageUrls ().value (0);
-					if (url.isEmpty ())
-						return;
+					[this, item, proxy]
+					{
+						proxy->GetQObject ()->deleteLater ();
+						const auto& url = proxy->GetImageUrls ().value (0);
+						if (url.isEmpty ())
+							return;
 
-					item->setData (url, ReleasesSubmodel::ReleaseArt);
-				},
-				proxy->GetQObject (),
-				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-				this
-			};
+						item->setData (url, ReleasesSubmodel::ReleaseArt);
+					},
+					proxy->GetQObject (),
+					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+					this
+				};
+			}
 		}
 
 		item->setData (releases.size (), Role::MissingCount);
