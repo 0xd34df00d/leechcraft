@@ -68,6 +68,7 @@ namespace BrainSlugz
 
 	void Checker::HandleReady ()
 	{
+		emit finished ();
 	}
 
 	namespace

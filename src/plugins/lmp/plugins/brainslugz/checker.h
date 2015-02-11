@@ -71,6 +71,8 @@ namespace BrainSlugz
 		void handleDiscoError ();
 
 		void rotateQueue ();
+	signals:
+		void finished ();
 	};
 }
 }
