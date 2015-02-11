@@ -73,6 +73,8 @@ namespace BrainSlugz
 
 		CheckModel * const Model_;
 		QAbstractItemModel * const CheckedModel_;
+
+		bool IsRunning_;
 	public:
 		CheckTab (const ILMPProxy_ptr&, const ICoreProxy_ptr&,
 				const TabClassInfo& tc, QObject *plugin);
@@ -87,6 +89,7 @@ namespace BrainSlugz
 		void on_SelectAll__released ();
 		void on_SelectNone__released ();
 		void handleStart ();
+		void handleCheckFinished ();
 	signals:
 		void removeTab (QWidget*);
 	};

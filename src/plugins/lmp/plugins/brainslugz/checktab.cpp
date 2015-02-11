@@ -192,9 +192,20 @@ namespace BrainSlugz
 
 		Model_->RemoveUnscheduled ();
 
-		new Checker { Model_, types, LmpProxy_, CoreProxy_, this };
+		const auto checker = new Checker { Model_, types, LmpProxy_, CoreProxy_, this };
+		connect (checker,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleCheckFinished ()));
 
 		CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
+
+		IsRunning_ = true;
+	}
+
+	void CheckTab::handleCheckFinished ()
+	{
+		IsRunning_ = false;
 	}
 }
 }
