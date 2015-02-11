@@ -129,24 +129,27 @@ namespace BrainSlugz
 
 			Scheduled_ << artist.ID_;
 
-			const auto proxy = BioProv_->RequestArtistBio (artist.Name_, false);
-			new Util::OneTimeRunner
+			if (BioProv_)
 			{
-				[this, artist, item, proxy] () -> void
+				const auto proxy = BioProv_->RequestArtistBio (artist.Name_, false);
+				new Util::OneTimeRunner
 				{
-					if (!Artist2Item_.contains (artist.ID_))
-						return;
+					[this, artist, item, proxy]
+					{
+						if (!Artist2Item_.contains (artist.ID_))
+							return;
 
-					const auto& url = proxy->GetArtistBio ().BasicInfo_.LargeImage_;
-					item->setData (url, Role::ArtistImage);
-				},
-				proxy->GetQObject (),
-				{
-					SIGNAL (ready ()),
-					SIGNAL (error ())
-				},
-				this
-			};
+						const auto& url = proxy->GetArtistBio ().BasicInfo_.LargeImage_;
+						item->setData (url, Role::ArtistImage);
+					},
+					proxy->GetQObject (),
+					{
+						SIGNAL (ready ()),
+						SIGNAL (error ())
+					},
+					this
+				};
+			}
 		}
 	}
 
