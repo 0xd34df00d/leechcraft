@@ -92,6 +92,7 @@ namespace BrainSlugz
 		void handleCheckFinished ();
 	signals:
 		void removeTab (QWidget*);
+		void runningStateChanged (bool);
 	};
 }
 }

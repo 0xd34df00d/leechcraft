@@ -202,11 +202,13 @@ namespace BrainSlugz
 		CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
 
 		IsRunning_ = true;
+		emit runningStateChanged (IsRunning_);
 	}
 
 	void CheckTab::handleCheckFinished ()
 	{
 		IsRunning_ = false;
+		emit runningStateChanged (IsRunning_);
 	}
 }
 }
