@@ -50,7 +50,7 @@ namespace BrainSlugz
 			GetInfo (),
 			GetIcon (),
 			0,
-			TFOpenableByRequest
+			TFOpenableByRequest | TFSingle
 		};
 	}
 
