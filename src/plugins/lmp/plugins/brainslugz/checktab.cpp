@@ -145,7 +145,8 @@ namespace BrainSlugz
 	void CheckTab::Remove ()
 	{
 		emit removeTab (this);
-		deleteLater ();
+		if (!IsRunning_)
+			deleteLater ();
 	}
 
 	QToolBar* CheckTab::GetToolBar () const
