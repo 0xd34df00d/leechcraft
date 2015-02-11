@@ -57,35 +57,6 @@ namespace BitTorrent
 		TagsChangeCompleter_ = new Util::TagsCompleter { Ui_.TorrentTags_ };
 		Ui_.TorrentTags_->AddSelector ();
 
-		connect (Ui_.OverallDownloadRateController_,
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (on_OverallDownloadRateController__valueChanged (int)));
-		connect (Ui_.OverallUploadRateController_,
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (on_OverallUploadRateController__valueChanged (int)));
-		connect (Ui_.TorrentDownloadRateController_,
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (on_TorrentDownloadRateController__valueChanged (int)));
-		connect (Ui_.TorrentUploadRateController_,
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (on_TorrentUploadRateController__valueChanged (int)));
-		connect (Ui_.DownloadingTorrents_,
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (on_DownloadingTorrents__valueChanged (int)));
-		connect (Ui_.UploadingTorrents_,
-				SIGNAL (valueChanged (int)),
-				this,
-				SLOT (on_UploadingTorrents__valueChanged (int)));
-		connect (Ui_.TorrentTags_,
-				SIGNAL (editingFinished ()),
-				this,
-				SLOT (on_TorrentTags__editingFinished ()));
-
 		connect (Core::Instance (),
 				SIGNAL (dataChanged (QModelIndex, QModelIndex)),
 				this,
