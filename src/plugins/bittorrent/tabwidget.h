@@ -53,8 +53,6 @@ namespace BitTorrent
 		TabWidget (QWidget* = 0);
 
 		void InvalidateSelection ();
-		void SetOverallDownloadRateController (int);
-		void SetOverallUploadRateController (int);
 	public slots:
 		void updateTorrentStats (const QModelIndex&, const QModelIndex&);
 		void updateTorrentStats ();

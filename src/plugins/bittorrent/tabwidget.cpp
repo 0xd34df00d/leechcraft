@@ -73,18 +73,6 @@ namespace BitTorrent
 		updateTorrentStats ();
 	}
 
-	void TabWidget::SetOverallDownloadRateController (int val)
-	{
-		Ui_.OverallDownloadRateController_->setValue (val);
-		on_OverallDownloadRateController__valueChanged (val);
-	}
-
-	void TabWidget::SetOverallUploadRateController (int val)
-	{
-		Ui_.OverallUploadRateController_->setValue (val);
-		on_OverallUploadRateController__valueChanged (val);
-	}
-
 	void TabWidget::updateTorrentStats (const QModelIndex& from, const QModelIndex& to)
 	{
 		const auto current = Core::Instance ()->GetCurrentTorrent ();
@@ -106,10 +94,8 @@ namespace BitTorrent
 	void TabWidget::UpdateOverallStats ()
 	{
 		const auto& stats = Core::Instance ()->GetOverallStats ();
-		Ui_.LabelTotalDownloadRate_->
-			setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
-		Ui_.LabelTotalUploadRate_->
-			setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
+		Ui_.LabelTotalDownloadRate_->setText (Util::MakePrettySize (stats.download_rate) + tr ("/s"));
+		Ui_.LabelTotalUploadRate_->setText (Util::MakePrettySize (stats.upload_rate) + tr ("/s"));
 	}
 
 	void TabWidget::UpdateDashboard ()
