@@ -74,6 +74,7 @@
 #include "ipfilterdialog.h"
 #include "speedselectoraction.h"
 #include "torrenttab.h"
+#include "sessionsettingsmanager.h"
 
 using LeechCraft::ActionInfo;
 using namespace LeechCraft::Util;
@@ -891,11 +892,9 @@ namespace BitTorrent
 
 	void TorrentPlugin::handleFastSpeedComboboxes ()
 	{
-		int down = DownSelectorAction_->CurrentData ();
-		TabWidget_->SetOverallDownloadRateController (down);
-
-		int up = UpSelectorAction_->CurrentData ();
-		TabWidget_->SetOverallUploadRateController (up);
+		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
+		ssm->SetOverallDownloadRate (DownSelectorAction_->CurrentData ());
+		ssm->SetOverallUploadRate (UpSelectorAction_->CurrentData ());
 	}
 
 	void TorrentPlugin::setActionsEnabled ()
