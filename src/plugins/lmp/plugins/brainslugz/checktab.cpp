@@ -162,6 +162,11 @@ namespace BrainSlugz
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleStart ()));
+
+		connect (this,
+				SIGNAL (runningStateChanged (bool)),
+				startAction,
+				SLOT (setDisabled (bool)));
 	}
 
 	void CheckTab::on_SelectAll__released ()
