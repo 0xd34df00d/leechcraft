@@ -103,13 +103,16 @@ namespace BrainSlugz
 	{
 		if (tc == CheckTC_.TabClass_)
 		{
-			auto tab = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
-			connect (tab,
-					SIGNAL (removeTab (QWidget*)),
-					this,
-					SIGNAL (removeTab (QWidget*)));
-			emit addNewTab ("BrainSlugz", tab);
-			emit raiseTab (tab);
+			if (!OpenedTab_)
+			{
+				OpenedTab_ = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
+				connect (OpenedTab_,
+						SIGNAL (removeTab (QWidget*)),
+						this,
+						SIGNAL (removeTab (QWidget*)));
+			}
+			emit addNewTab ("BrainSlugz", OpenedTab_);
+			emit raiseTab (OpenedTab_);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

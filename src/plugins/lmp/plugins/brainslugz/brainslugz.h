@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPointer>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iplugin2.h>
@@ -43,6 +44,8 @@ namespace LMP
 {
 namespace BrainSlugz
 {
+	class CheckTab;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
@@ -58,6 +61,8 @@ namespace BrainSlugz
 
 		ICoreProxy_ptr CoreProxy_;
 		ILMPProxy_ptr LmpProxy_;
+
+		QPointer<CheckTab> OpenedTab_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
