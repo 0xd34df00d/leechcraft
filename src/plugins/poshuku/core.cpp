@@ -275,7 +275,9 @@ namespace Poshuku
 			return {};
 		}
 
-		if (QHostAddress {}.setAddress (url))
+		QHostAddress haddr;
+		if (haddr.setAddress (url) &&
+				(haddr.protocol () != QAbstractSocket::IPv4Protocol || url.count ('.') == 3))
 		{
 			QUrl result;
 			result.setHost (url);
