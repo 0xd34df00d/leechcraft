@@ -40,7 +40,6 @@ namespace SB2
 #else
 	: QQuickWidget (parent)
 #endif
-	, Dim_ (32)
 	{
 		setResizeMode (SizeRootObjectToView);
 		setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Expanding);

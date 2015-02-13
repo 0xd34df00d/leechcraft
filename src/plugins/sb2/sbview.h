@@ -48,7 +48,7 @@ namespace SB2
 	{
 		Q_OBJECT
 
-		int Dim_;
+		int Dim_ = 32;
 	public:
 		SBView (QWidget* = 0);
 
