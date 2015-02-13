@@ -54,18 +54,20 @@ namespace Util
 		FlowLayout (int = -1, int = -1, int = -1);
 		virtual ~FlowLayout ();
 
-		void addItem (QLayoutItem*);
+		void addItem (QLayoutItem*) override;
+
 		int horizontalSpacing () const;
 		int verticalSpacing () const;
-		Qt::Orientations expandingDirections () const;
-		bool hasHeightForWidth () const;
-		int heightForWidth (int) const;
-		int count () const;
-		QLayoutItem* itemAt (int) const;
-		QLayoutItem* takeAt (int);
-		QSize minimumSize () const;
-		void setGeometry (const QRect&);
-		QSize sizeHint () const;
+
+		Qt::Orientations expandingDirections () const override;
+		bool hasHeightForWidth () const override;
+		int heightForWidth (int) const override;
+		int count () const override;
+		QLayoutItem* itemAt (int) const override;
+		QLayoutItem* takeAt (int) override;
+		QSize minimumSize () const override;
+		void setGeometry (const QRect&) override;
+		QSize sizeHint () const override;
 	private:
 		int DoLayout (const QRect&, bool) const;
 		int SmartSpacing (QStyle::PixelMetric) const;
