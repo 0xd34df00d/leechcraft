@@ -36,18 +36,16 @@ namespace Util
 {
 	FlowLayout::FlowLayout (QWidget *parent,
 			int margin, int hspace, int vspace)
-	: QLayout (parent)
-	, HSpace_ (hspace)
-	, VSpace_ (vspace)
+	: QLayout { parent }
+	, HSpace_ { hspace }
+	, VSpace_ { vspace }
 	{
 		setContentsMargins (margin, margin, margin, margin);
 	}
 
 	FlowLayout::FlowLayout (int margin, int hspace, int vspace)
-	: HSpace_ (hspace)
-	, VSpace_ (vspace)
+	: FlowLayout { nullptr, margin, hspace, vspace }
 	{
-		setContentsMargins (margin, margin, margin, margin);
 	}
 
 	FlowLayout::~FlowLayout ()
