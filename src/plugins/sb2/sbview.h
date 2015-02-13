@@ -49,6 +49,15 @@ namespace SB2
 		Q_OBJECT
 
 		int Dim_ = 32;
+
+#if QT_VERSION >= 0x050000
+		struct UnhoverItem
+		{
+			QQuickItem *Item_ = nullptr;
+			QPointF OldPos_ = {};
+		};
+		QList<UnhoverItem> UnhoverItems_;
+#endif
 	public:
 		SBView (QWidget* = 0);
 
@@ -56,6 +65,11 @@ namespace SB2
 
 		QSize minimumSizeHint () const;
 		QSize sizeHint () const;
+	protected:
+#if QT_VERSION >= 0x050000
+		void enterEvent (QEvent*) override;
+		void leaveEvent (QEvent*) override;
+#endif
 	};
 }
 }

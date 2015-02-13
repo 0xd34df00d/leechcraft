@@ -30,6 +30,13 @@
 #include "sbview.h"
 #include <QLayout>
 
+#if QT_VERSION >= 0x050000
+#include <QQmlEngine>
+#include <QQuickItem>
+#endif
+
+#include <util/sll/delayedexecutor.h>
+
 namespace LeechCraft
 {
 namespace SB2
@@ -64,5 +71,43 @@ namespace SB2
 	{
 		return { Dim_, Dim_ };
 	}
+
+#if QT_VERSION >= 0x050000
+	void SBView::enterEvent (QEvent*)
+	{
+		for (const auto item : UnhoverItems_)
+		{
+			QHoverEvent ev { QEvent::HoverEnter, item.OldPos_, { -1, -1 } };
+			static_cast<QObject*> (item.Item_)->event (&ev);
+		}
+
+		UnhoverItems_.clear ();
+	}
+
+	void SBView::leaveEvent (QEvent*)
+	{
+		UnhoverItems_.clear ();
+
+		for (const auto item : rootObject ()->findChildren<QQuickItem*> ())
+		{
+			const auto mo = item->metaObject ();
+			if (mo->className () != QByteArray { "QQuickMouseArea" })
+				continue;
+
+			if (!item->property ("containsMouse").toBool ())
+				continue;
+
+			const QPointF oldPos
+			{
+				item->property ("mouseX").toDouble (),
+				item->property ("mouseY").toDouble ()
+			};
+			UnhoverItems_.append ({ item, oldPos });
+
+			QHoverEvent ev { QEvent::HoverLeave, { -1, -1 }, oldPos };
+			static_cast<QObject*> (item)->event (&ev);
+		}
+	}
+#endif
 }
 }
