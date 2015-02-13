@@ -50,8 +50,7 @@ namespace Util
 
 	FlowLayout::~FlowLayout ()
 	{
-		QLayoutItem *item = 0;
-		while ((item = takeAt (0)))
+		while (const auto item = takeAt (0))
 			delete item;
 	}
 
@@ -86,7 +85,7 @@ namespace Util
 
 	int FlowLayout::heightForWidth (int width) const
 	{
-		return DoLayout (QRect (0, 0, width, 0), true);
+		return DoLayout ({ 0, 0, width, 0 }, true);
 	}
 
 	int FlowLayout::count () const
@@ -104,16 +103,16 @@ namespace Util
 		if (idx >= 0 && idx < ItemList_.size ())
 			return ItemList_.takeAt (idx);
 		else
-			return 0;
+			return nullptr;
 	}
 
 	QSize FlowLayout::minimumSize () const
 	{
 		QSize size;
-		Q_FOREACH (const QLayoutItem *item, ItemList_)
+		for (const auto item : ItemList_)
 			size = size.expandedTo (item->minimumSize ());
 
-		size += QSize (margin () * 2, margin () * 2);
+		size += QSize { margin () * 2, margin () * 2 };
 		return size;
 	}
 
@@ -133,14 +132,14 @@ namespace Util
 		int left = 0, top = 0, right = 0, bottom = 0;
 		getContentsMargins (&left, &top, &right, &bottom);
 
-		const QRect& effectiveRect = rect.adjusted (left, top, -right, -bottom);
+		const auto& effectiveRect = rect.adjusted (left, top, -right, -bottom);
 		int x = effectiveRect.x ();
 		int y = effectiveRect.y ();
 		int lineHeight = 0;
 
-		Q_FOREACH (QLayoutItem *item, ItemList_)
+		for (const auto item : ItemList_)
 		{
-			QWidget *widget = item->widget ();
+			const auto widget = item->widget ();
 
 			int spaceX = horizontalSpacing ();
 			if (spaceX == -1)
@@ -164,7 +163,7 @@ namespace Util
 			}
 
 			if (!testOnly)
-				item->setGeometry (QRect (QPoint (x, y), sizeHint));
+				item->setGeometry ({ { x, y }, sizeHint });
 
 			x = nextX;
 			lineHeight = std::max (lineHeight, sizeHint.height ());
@@ -175,12 +174,12 @@ namespace Util
 
 	int FlowLayout::SmartSpacing (QStyle::PixelMetric pm) const
 	{
-		QObject *obj = parent ();
+		const auto obj = parent ();
 		if (!obj)
 			return -1;
 		else if (obj->isWidgetType ())
 		{
-			QWidget *pw = static_cast<QWidget*> (obj);
+			const auto pw = static_cast<QWidget*> (obj);
 			return pw->style ()->pixelMetric (pm, 0, pw);
 		}
 		else
