@@ -59,18 +59,18 @@ namespace LeechCraft
 
 			void SetTagsManager (ITagsManager*);
 
-			int columnCount (const QModelIndex& = QModelIndex ()) const;
-			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-			QVariant headerData (int, Qt::Orientation, int) const;
-			Qt::ItemFlags flags (const QModelIndex&) const;
-			QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-			QModelIndex parent (const QModelIndex&) const;
-			int rowCount (const QModelIndex& = QModelIndex ()) const;
+			int columnCount (const QModelIndex& = {}) const override;
+			QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+			QVariant headerData (int, Qt::Orientation, int) const override;
+			Qt::ItemFlags flags (const QModelIndex&) const override;
+			QModelIndex index (int, int, const QModelIndex& = {}) const override;
+			QModelIndex parent (const QModelIndex&) const override;
+			int rowCount (const QModelIndex& = {}) const override;
 
-			Qt::DropActions supportedDropActions () const;
-			QStringList mimeTypes () const;
-			QMimeData* mimeData (const QModelIndexList& indexes) const;
-			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent);
+			Qt::DropActions supportedDropActions () const override;
+			QStringList mimeTypes () const override;
+			QMimeData* mimeData (const QModelIndexList& indexes) const override;
+			bool dropMimeData (const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex& parent) override;
 
 			void SetSourceModel (QAbstractItemModel*);
 			QAbstractItemModel* GetSourceModel () const;
