@@ -74,10 +74,8 @@ namespace LeechCraft
 	namespace Util
 	{
 		FlatToFoldersProxyModel::FlatToFoldersProxyModel (QObject *parent)
-		: QAbstractItemModel (parent)
-		, SourceModel_ (0)
-		, TM_ (0)
-		, Root_ (std::make_shared<FlatTreeItem> ())
+		: QAbstractItemModel { parent }
+		, Root_ { std::make_shared<FlatTreeItem> () }
 		{
 			Root_->Type_ = FlatTreeItem::TRoot;
 		}
