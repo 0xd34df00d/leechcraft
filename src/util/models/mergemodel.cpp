@@ -41,7 +41,7 @@ namespace Util
 	MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 	: QAbstractItemModel (parent)
 	, Headers_ (headers)
-	, Root_ (new ModelItem)
+	, Root_ (std::make_shared<ModelItem> ())
 	{
 	}
 
