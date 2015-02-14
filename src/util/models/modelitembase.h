@@ -149,7 +149,10 @@ namespace Util
 
 		int GetRow () const
 		{
-			return GetParent ()->GetRow (this->shared_from_this ());
+			const auto parent = GetParent ();
+			if (!parent)
+				return -1;
+			return parent->GetRow (this->shared_from_this ());
 		}
 	};
 }
