@@ -55,7 +55,7 @@ namespace Util
 			Children_.resize (row + 1);
 
 		const auto& childIdx = Model_->index (row, 0, SrcIdx_);
-		Children_ [row].reset (new ModelItem { Model_, childIdx, shared_from_this () });
+		Children_ [row] = std::make_shared<ModelItem> (Model_, childIdx, shared_from_this ());
 		return Children_.at (row).get ();
 	}
 
