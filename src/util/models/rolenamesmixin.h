@@ -36,6 +36,17 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Wraps differences between role names handling in Qt4 and
+	 * Qt5.
+	 *
+	 * Qt4 uses QAbstractItemModel::setRoleNames() to set role names for
+	 * a (non-virtual) QAbstractItemModel::roleNames() method. Qt5, on
+	 * the other hand, just suggests overriding the (virtual) roleNames()
+	 * method. This class provides an uniform interface. This class
+	 * provides an uniform interface for role names setting.
+	 *
+	 * @tparam Model The original model type to derive from.
+	 */
 	template<typename Model>
 	class RoleNamesMixin : public Model
 	{
@@ -43,8 +54,21 @@ namespace Util
 		QHash<int, QByteArray> RoleNames_;
 #endif
 	protected:
+		/** @brief Default constructor.
+		 *
+		 * Assumes the existence of a default constructor in the
+		 * \em Model type.
+		 */
 		RoleNamesMixin () = default;
 
+		/** @brief Constructs the base \em Model type with the given
+		 * \em args.
+		 *
+		 * @tparam Args The arguments of the values to pass to the
+		 * \em Model constructor.
+		 * @param[in] args The values to pass to the \em Model
+		 * constructor.
+		 */
 		template<typename... Args>
 		RoleNamesMixin (Args&&... args)
 		: Model { std::forward<Args> (args)... }
@@ -52,11 +76,26 @@ namespace Util
 		}
 
 #if QT_VERSION >= 0x050000
+		/** @brief Sets the role names to \em roleNames.
+		 *
+		 * @param[in] roleNames The mapping from role value to its name.
+		 *
+		 * @sa roleNames()
+		 */
 		void setRoleNames (const QHash<int, QByteArray>& roleNames)
 		{
 			RoleNames_ = roleNames;
 		}
 
+		/** @brief Returns the role names.
+		 *
+		 * Returns the mapping from the role value to its name that was
+		 * previously set via setRoleNames().
+		 *
+		 * @return The mapping from role value to its name.
+		 *
+		 * @sa setRoleNames()
+		 */
 		QHash<int, QByteArray> roleNames () const override
 		{
 			return RoleNames_;
