@@ -38,8 +38,8 @@ namespace Util
 {
 	class UTIL_MODELS_API ModelIterator
 	{
-		QAbstractItemModel *Model_;
-		QModelIndex Parent_;
+		QAbstractItemModel * const Model_;
+		const QModelIndex Parent_;
 
 		int Row_;
 		int Col_;
