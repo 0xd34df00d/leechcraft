@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace LeechCraft
 {
 namespace Util
@@ -66,6 +68,17 @@ namespace Util
 			void Dismiss () noexcept
 			{
 				Perform_ = false;
+			}
+
+			std::shared_ptr<void> EraseType ()
+			{
+				Dismiss ();
+#if USE_CPP14
+				return std::shared_ptr<void> { nullptr, [f = F_] (void*) { f (); } };
+#else
+				auto f = F_;
+				return std::shared_ptr<void> { nullptr, [f] (void*) { f (); } };
+#endif
 			}
 		};
 	}
