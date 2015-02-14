@@ -41,11 +41,11 @@ namespace LeechCraft
 		QList<FlatTreeItem_ptr> C_;
 		FlatTreeItem_ptr Parent_;
 
-		enum Type
+		enum class Type
 		{
-			TRoot,
-			TFolder,
-			TItem
+			Root,
+			Folder,
+			Item
 		};
 
 		Type Type_;
@@ -77,7 +77,7 @@ namespace LeechCraft
 		: QAbstractItemModel { parent }
 		, Root_ { std::make_shared<FlatTreeItem> () }
 		{
-			Root_->Type_ = FlatTreeItem::TRoot;
+			Root_->Type_ = FlatTreeItem::Type::Root;
 		}
 
 		void FlatToFoldersProxyModel::SetTagsManager (ITagsManager *tm)
@@ -97,12 +97,12 @@ namespace LeechCraft
 		QVariant FlatToFoldersProxyModel::data (const QModelIndex& index, int role) const
 		{
 			FlatTreeItem *fti = ToFlat (index);
-			if (fti->Type_ == FlatTreeItem::TItem)
+			if (fti->Type_ == FlatTreeItem::Type::Item)
 			{
 				QModelIndex source = fti->Index_;
 				return source.sibling (source.row (), index.column ()).data (role);
 			}
-			else if (fti->Type_ == FlatTreeItem::TFolder &&
+			else if (fti->Type_ == FlatTreeItem::Type::Folder &&
 					index.column () == 0)
 			{
 				if (role == Qt::DisplayRole)
@@ -137,7 +137,7 @@ namespace LeechCraft
 		Qt::ItemFlags FlatToFoldersProxyModel::flags (const QModelIndex& index) const
 		{
 			auto fti = ToFlat (index);
-			if (fti && fti->Type_ == FlatTreeItem::TItem)
+			if (fti && fti->Type_ == FlatTreeItem::Type::Item)
 				return fti->Index_.flags ();
 			else
 				return Qt::ItemIsSelectable |
@@ -158,7 +158,7 @@ namespace LeechCraft
 			else
 				fti = Root_.get ();
 
-			if (fti->Type_ == FlatTreeItem::TItem)
+			if (fti->Type_ == FlatTreeItem::Type::Item)
 				return QModelIndex ();
 			else
 				return createIndex (row, column, fti->C_.at (row).get ());
@@ -176,7 +176,7 @@ namespace LeechCraft
 			parent = fti->Parent_;
 
 			if (parent &&
-					parent->Type_ != FlatTreeItem::TRoot)
+					parent->Type_ != FlatTreeItem::Type::Root)
 				return createIndex (parent->Row (), 0, parent.get ());
 			else
 				return QModelIndex ();
@@ -215,10 +215,10 @@ namespace LeechCraft
 				auto item = static_cast<FlatTreeItem*> (index.internalPointer ());
 				switch (item->Type_)
 				{
-				case FlatTreeItem::Type::TItem:
+				case FlatTreeItem::Type::Item:
 					sourceIdxs << MapToSource (index);
 					break;
-				case FlatTreeItem::Type::TFolder:
+				case FlatTreeItem::Type::Folder:
 					for (const auto& subItem : item->C_)
 						sourceIdxs << subItem->Index_;
 					break;
@@ -243,8 +243,8 @@ namespace LeechCraft
 			{
 				switch (ptr->Type_)
 				{
-				case FlatTreeItem::Type::TFolder:
-				case FlatTreeItem::Type::TItem:
+				case FlatTreeItem::Type::Folder:
+				case FlatTreeItem::Type::Item:
 					modified.setData ("x-leechcraft/tag", ptr->Tag_.toLatin1 ());
 					break;
 				default:
@@ -318,7 +318,7 @@ namespace LeechCraft
 
 			FlatTreeItem *item = ToFlat (proxy);
 
-			if (item->Type_ != FlatTreeItem::TItem)
+			if (item->Type_ != FlatTreeItem::Type::Item)
 				return QModelIndex ();
 
 			return item->Index_;
@@ -375,7 +375,7 @@ namespace LeechCraft
 					return item;
 
 			const auto& item = std::make_shared<FlatTreeItem> ();
-			item->Type_ = FlatTreeItem::TFolder;
+			item->Type_ = FlatTreeItem::Type::Folder;
 			item->Tag_ = tag;
 			item->Parent_ = Root_;
 
@@ -424,7 +424,7 @@ namespace LeechCraft
 			FlatTreeItem_ptr folder = GetFolder (tag);
 
 			const auto& item = std::make_shared<FlatTreeItem> ();
-			item->Type_ = FlatTreeItem::TItem;
+			item->Type_ = FlatTreeItem::Type::Item;
 			item->Index_ = pidx;
 			item->Parent_ = folder;
 			item->Tag_ = tag;
