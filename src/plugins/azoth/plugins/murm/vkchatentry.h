@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QSet>
+#include <memory>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include "structures.h"
@@ -43,6 +44,7 @@ namespace Azoth
 namespace Murm
 {
 	class VkAccount;
+	class VkEntry;
 
 	class VkChatEntry : public EntryBase
 					  , public IMUCEntry
@@ -52,6 +54,8 @@ namespace Murm
 
 		ChatInfo Info_;
 		QSet<int> PendingUserInfoRequests_;
+
+		QHash<VkEntry*, std::shared_ptr<void>> EntriesGuards_;
 	public:
 		enum class HandleMessageResult
 		{

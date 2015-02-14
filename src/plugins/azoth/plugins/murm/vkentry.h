@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QImage>
 #include <QPointer>
@@ -85,8 +86,7 @@ namespace Murm
 		void SetNonRoster ();
 		bool IsNonRoster () const;
 
-		void RegisterIn (VkChatEntry*);
-		void UnregisterIn (VkChatEntry*);
+		std::shared_ptr<void> RegisterIn (VkChatEntry*);
 		void ReemitGroups ();
 
 		VkMessage* FindMessage (qulonglong) const;
