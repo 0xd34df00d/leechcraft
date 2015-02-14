@@ -40,7 +40,6 @@ namespace Util
 {
 	MergeModel::MergeModel (const QStringList& headers, QObject *parent)
 	: QAbstractItemModel (parent)
-	, DefaultAcceptsRowImpl_ (false)
 	, Headers_ (headers)
 	, Root_ (new ModelItem)
 	{

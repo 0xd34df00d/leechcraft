@@ -57,7 +57,7 @@ namespace LeechCraft
 		{
 			Q_OBJECT
 
-			mutable bool DefaultAcceptsRowImpl_;
+			mutable bool DefaultAcceptsRowImpl_ = false;
 		protected:
 			typedef QList<QPointer<QAbstractItemModel>> models_t;
 			models_t Models_;
