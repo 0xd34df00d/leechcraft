@@ -85,7 +85,7 @@ namespace Util
 
 	int ModelIterator::operator- (const ModelIterator& other) const
 	{
-		return Row_ - other.Row_;
+		return GetIncrementable () - other.GetIncrementable ();
 	}
 
 	bool ModelIterator::operator== (const ModelIterator& other) const
