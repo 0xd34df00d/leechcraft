@@ -53,8 +53,8 @@ namespace SB2
 #if QT_VERSION >= 0x050000
 		struct UnhoverItem
 		{
-			QQuickItem *Item_ = nullptr;
-			QPointF OldPos_ = {};
+			QQuickItem *Item_;
+			QPointF OldPos_;
 		};
 		QList<UnhoverItem> UnhoverItems_;
 #endif
