@@ -50,7 +50,7 @@ namespace Util
 			Cols
 		};
 	private:
-		Direction Dir_;
+		const Direction Dir_;
 	public:
 		ModelIterator (QAbstractItemModel *model, int row, int col = 0,
 				Direction dir = Direction::Rows, const QModelIndex& parent = QModelIndex ());
