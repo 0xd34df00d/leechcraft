@@ -130,5 +130,20 @@ namespace Util
 				<< "unknown direction";
 		return Row_;
 	}
+
+	int ModelIterator::GetIncrementable () const
+	{
+		switch (Dir_)
+		{
+		case Direction::Rows:
+			return Row_;
+		case Direction::Cols:
+			return Col_;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown direction";
+		return Row_;
+	}
 }
 }

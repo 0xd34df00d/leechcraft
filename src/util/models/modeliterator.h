@@ -72,6 +72,7 @@ namespace Util
 		int GetCol () const;
 	private:
 		int& GetIncrementable ();
+		int GetIncrementable () const;
 	};
 }
 }
