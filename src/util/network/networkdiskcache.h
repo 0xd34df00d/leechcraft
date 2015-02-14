@@ -79,35 +79,35 @@ namespace Util
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual qint64 cacheSize () const;
+		qint64 cacheSize () const override;
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual QIODevice* data (const QUrl& url);
+		QIODevice* data (const QUrl& url) override;
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual void insert (QIODevice *device);
+		void insert (QIODevice *device) override;
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual QNetworkCacheMetaData metaData (const QUrl& url);
+		QNetworkCacheMetaData metaData (const QUrl& url) override;
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual QIODevice* prepare (const QNetworkCacheMetaData&);
+		QIODevice* prepare (const QNetworkCacheMetaData&) override;
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual bool remove (const QUrl& url);
+		bool remove (const QUrl& url) override;
 
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual void updateMetaData (const QNetworkCacheMetaData& metaData);
+		void updateMetaData (const QNetworkCacheMetaData& metaData) override;
 	protected:
 		/** @brief Reimplemented from QNetworkDiskCache.
 		 */
-		virtual qint64 expire ();
+		qint64 expire () override;
 	};
 }
 }
