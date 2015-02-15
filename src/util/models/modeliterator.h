@@ -47,6 +47,8 @@ namespace Util
 	 * at each iterator increment). The Direction enumeration controls
 	 * the exact behavior. The exact index which is changed during
 	 * iterating is called the \em traversable.
+	 *
+	 * @ingroup ModelUtil
 	 */
 	class UTIL_MODELS_API ModelIterator
 	{

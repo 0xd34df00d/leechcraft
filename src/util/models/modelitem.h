@@ -48,6 +48,8 @@ namespace Util
 	 *
 	 * This class simplifies writing wrappers around QAbstractItemModel
 	 * classes representing the data in different means than Qt's MVC.
+	 *
+	 * @ingroup ModelUtil
 	 */
 	class UTIL_MODELS_API ModelItem final : public ModelItemBase<ModelItem>
 	{

@@ -46,6 +46,8 @@ namespace Util
 	 * provides an uniform interface for role names setting.
 	 *
 	 * @tparam Model The original model type to derive from.
+	 *
+	 * @ingroup ModelUtil
 	 */
 	template<typename Model>
 	class RoleNamesMixin : public Model

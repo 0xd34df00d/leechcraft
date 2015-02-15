@@ -62,6 +62,8 @@ namespace Util
 	 * @tparam T The type of the class derived from ModelItemBase.
 	 *
 	 * @sa ModelItem
+	 *
+	 * @ingroup ModelUtil
 	 */
 	template<typename T>
 	class ModelItemBase : public std::enable_shared_from_this<T>
