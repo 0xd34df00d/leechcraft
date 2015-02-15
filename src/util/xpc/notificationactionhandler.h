@@ -44,10 +44,10 @@ namespace Util
 	 * created via MakeNotification() or MakeAN() functions. The usage is
 	 * quite simple and best illustrated by an example:
 	 * \code
-	 * Entity e = Util::MakeNotification ("Header", "Title", PInfo_);
-	 * auto nah = new Util::NotificationActionHandler (e);
-	 * nah->AddFunction ("Open file", [fileURL] () { QDesktopServices::openUrl (fileURL); });
-	 * \endcode
+		auto e = Util::MakeNotification ("Header", "Title", PInfo_);
+		auto nah = new Util::NotificationActionHandler (e);
+		nah->AddFunction ("Open file", [fileURL] () { QDesktopServices::openUrl (fileURL); });
+	   \endcode
 	 *
 	 * The entity this handler is created upon takes ownership of the
 	 * object, so when the last instance of the entity is destroyed this
