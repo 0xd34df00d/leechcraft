@@ -40,6 +40,13 @@ namespace Util
 namespace XDG
 {
 	/** @brief A parser for XDG <code>.desktop</code> files.
+	 *
+	 * This parser does not produce any structured information. Instead,
+	 * it only returns a hash from group name to corresponding group
+	 * fields (see Result_t). A more structured representation is
+	 * provided by the Item class.
+	 *
+	 * @sa Item
 	 */
 	class DesktopParser
 	{
