@@ -41,6 +41,19 @@ struct ANFieldData;
 
 namespace Util
 {
+	/** @brief Returns the list of the standard AN fields for the given
+	 * \em category.
+	 *
+	 * @note Plugins may define their own fields for different
+	 * categories. The IANEmitter interface is used by those plugins to
+	 * communicate their custom fields to the rest of LeechCraft.
+	 *
+	 * @param[in] category The category of events to return fields for.
+	 * @return The descriptions of the standard fields used by events in
+	 * the given category.
+	 *
+	 * @sa ANFieldData
+	 */
 	UTIL_XPC_API QList<ANFieldData> GetStdANFields (const QString& category);
 }
 }
