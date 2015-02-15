@@ -61,6 +61,29 @@ namespace Util
 	 * objects implementing the IWkFontsSettable interface if the user
 	 * changes them.
 	 *
+	 * Typical usage includes creating an item of type
+	 * <code>customwidget</code> in the XML file describing the settings
+	 * and then setting an instance of the WkFontsWidget as the widget
+	 * for that item. On the C++ side this looks like:
+	 *  \code{.cpp}
+		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
+	    \endcode
+	 * assuming the <code>Util::BaseSettingsManager</code> is provided by
+	 * a singleton XmlSettingsManager class, and
+	 * <code>XmlSettingsDialog_</code> is an instance of
+	 * <code>Util::XmlSettingsDialog</code>.
+	 *
+	 * The code above also stores the WkFontsWidget as a class variable,
+	 * which may be a good idea if one wishes to use the settings
+	 * autoupdate feature. For example, assuming a class
+	 * <code>ChatTab</code> properly implements the IWkFontsSettable
+	 * interface:
+	 * \code{.cpp}
+		const auto tab = new ChatTab {};
+		FontsWidget_->RegisterSettable (tab);
+	   \endcode
+	 *
 	 * @sa IWkFontsSettable
 	 */
 	class UTIL_XSD_API WkFontsWidget : public QWidget
