@@ -52,8 +52,7 @@ namespace XDG
 				left.Categories_ == right.Categories_ &&
 				left.Command_ == right.Command_ &&
 				left.WD_ == right.WD_ &&
-				left.IconName_ == right.IconName_ &&
-				left.Icon_ == right.Icon_;
+				left.IconName_ == right.IconName_;
 	}
 
 	bool Item::IsValid () const
