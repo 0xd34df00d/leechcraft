@@ -215,9 +215,37 @@ namespace Util
 	UTIL_XPC_API QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy);
 
+	/** @brief Sets the progress values on the given \em row.
+	 *
+	 * This function first retrieves the QStandardItem object at the
+	 * position defined by JobHolderColumn::JobProgress in the passed
+	 * \em row and then sets its text to \em text and updates the
+	 * ProcessStateInfo structure under the JobHolderRole::ProcessState
+	 * role to have the given amount of \em done and \em total.
+	 *
+	 * @param[in] row The row to set data on.
+	 * @param[in] done The amount of work done.
+	 * @param[in] total The total amount of work.
+	 * @param[in] text The text that the progress-related item should
+	 * have in the \em row.
+	 *
+	 * @sa ProcessStateInfo
+	 */
 	UTIL_XPC_API void SetJobHolderProgress (const QList<QStandardItem*>& row,
 			qint64 done, qint64 total, const QString& text);
 
+	/** @brief Sets the \em done and \em total progress values on the
+	 * given \em item.
+	 *
+	 * This function updates the ProcessStateInfo structure stored under
+	 * the JobHolderRole::ProcessState role in the given \em item.
+	 *
+	 * @param[in] item The item to set data on.
+	 * @param[in] done The amount of work done.
+	 * @param[in] total The total amount of work.
+	 *
+	 * @sa ProcessStateInfo
+	 */
 	UTIL_XPC_API void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total);
 }
 }
