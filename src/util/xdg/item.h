@@ -63,7 +63,7 @@ namespace XDG
 		bool IsHidden_;
 		Type Type_;
 	public:
-		bool operator== (const Item&) const;
+		friend bool operator== (const Item&, const Item&);
 
 		bool IsValid () const;
 

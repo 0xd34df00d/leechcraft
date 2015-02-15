@@ -42,16 +42,16 @@ namespace Util
 {
 namespace XDG
 {
-	bool Item::operator== (const Item& item) const
+	bool operator== (const Item& left, const Item& right)
 	{
-		return IsHidden_ == item.IsHidden_ &&
-				Name_ == item.Name_ &&
-				GenericName_ == item.GenericName_ &&
-				Comments_ == item.Comments_ &&
-				Categories_ == item.Categories_ &&
-				Command_ == item.Command_ &&
-				WD_ == item.WD_ &&
-				IconName_ == item.IconName_;
+		return left.IsHidden_ == right.IsHidden_ &&
+				left.Name_ == right.Name_ &&
+				left.GenericName_ == right.GenericName_ &&
+				left.Comments_ == right.Comments_ &&
+				left.Categories_ == right.Categories_ &&
+				left.Command_ == right.Command_ &&
+				left.WD_ == right.WD_ &&
+				left.IconName_ == right.IconName_;
 	}
 
 	bool Item::IsValid () const
