@@ -49,20 +49,20 @@ namespace Util
 	class BaseSettingsManager;
 	class FontChooserWidget;
 
-    /** @brief A settings widget for configuring WebKit fonts.
-     *
-     * Provides a common widget for configuring QtWebKit fonts for
-     * standard WebKit font types.
-     *
-     * This widget works through LeechCraft's XML Settings Dialog system,
-     * storing the configuration in an BaseSettingsManager instance.
-     *
-     * This widget also supports automatically updating font settings for
-     * objects implementing the IWkFontsSettable interface if the user
-     * changes them.
-     *
-     * @sa IWkFontsSettable
-     */
+	/** @brief A settings widget for configuring WebKit fonts.
+	 *
+	 * Provides a common widget for configuring QtWebKit fonts for
+	 * standard WebKit font types.
+	 *
+	 * This widget works through LeechCraft's XML Settings Dialog system,
+	 * storing the configuration in an BaseSettingsManager instance.
+	 *
+	 * This widget also supports automatically updating font settings for
+	 * objects implementing the IWkFontsSettable interface if the user
+	 * changes them.
+	 *
+	 * @sa IWkFontsSettable
+	 */
 	class UTIL_XSD_API WkFontsWidget : public QWidget
 	{
 		Q_OBJECT
