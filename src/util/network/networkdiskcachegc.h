@@ -47,6 +47,8 @@ namespace Util
 	 * This GC manager class aids having multiple network disk caches at
 	 * the same path and running garbage collection periodically on them,
 	 * but only once per each path.
+	 *
+	 * @ingroup NetworkUtil
 	 */
 	class NetworkDiskCacheGC : public QObject
 	{
