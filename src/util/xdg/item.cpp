@@ -199,7 +199,7 @@ namespace XDG
 		const auto& result = Util::XDG::DesktopParser () (file.readAll ());
 		const auto& group = result ["Desktop Entry"];
 
-		Item_ptr item (new Item);
+		const auto& item = std::make_shared<Item> ();
 		item->Name_ = FirstValues (group ["Name"]);
 		item->GenericName_ = FirstValues (group ["GenericName"]);
 		item->Comments_ = FirstValues (group ["Comment"]);
