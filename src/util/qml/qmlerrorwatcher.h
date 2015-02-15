@@ -42,12 +42,26 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Utility class for logging errors from a QML view.
+	 */
 	class UTIL_QML_API QmlErrorWatcher : public QObject
 	{
 	public:
 #if QT_VERSION < 0x050000
-		QmlErrorWatcher (QDeclarativeView*);
+		/** @brief Constructs the watcher for the given \em view.
+		 *
+		 * The \em view becomes the parent of the watcher.
+		 *
+		 * @param[in] view The declarative view to watch for errors.
+		 */
+		QmlErrorWatcher (QDeclarativeView *view);
 #else
+		/** @brief Constructs the watcher for the given \em view.
+		 *
+		 * The \em view becomes the parent of the watcher.
+		 *
+		 * @param[in] view The quick view to watch for errors.
+		 */
 		QmlErrorWatcher (QQuickWidget*);
 #endif
 	};
