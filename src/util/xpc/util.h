@@ -212,6 +212,24 @@ namespace Util
 	 */
 	UTIL_XPC_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
 
+	/** @brief Returns persistent data stored under given \em key.
+	 *
+	 * The persistent data itself is stored in plugins implementing the
+	 * IPersistentStoragePlugin interface. This function uses the passed
+	 * \em proxy to get the list of those.
+	 *
+	 * If no data is found under the given \em key, a null QVariant is
+	 * returned.
+	 *
+	 * @param[in] key The key to look for.
+	 * @param[in] proxy The ICoreProxy object for getting the list of
+	 * persistent storage plugins.
+	 * @return The data stored under the given \em key as a QVariant,
+	 * or a null QVariant of no data is found (and, particularly, if no
+	 * storage plugins are available).
+	 *
+	 * @sa IPersistentStoragePlugin
+	 */
 	UTIL_XPC_API QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy);
 
