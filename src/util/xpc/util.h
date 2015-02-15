@@ -79,6 +79,7 @@ namespace Util
 	 * null, the text parameter is used.
 	 *
 	 * @sa MakeANCancel()
+	 * @sa MakeANRule()
 	 */
 	UTIL_XPC_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
@@ -86,9 +87,33 @@ namespace Util
 			int delta = 1, int count = 0,
 			const QString& fullText = QString (), const QString& extendedText = QString ());
 
+	/** @brief Creates an Entity defining an Advanced Notifications rule.
+	 *
+	 * Returns an entity describing a notifications rule triggering under
+	 * various conditions, defined by the parameters of this function.
+	 *
+	 * @param[in] title The human-readable title of the rule.
+	 * @param[in] senderID The plugin ID of the sender (must not be
+	 * empty).
+	 * @param[in] category The category of the event (must not be empty).
+	 * @param[in] types The types of events in the given \em category. If
+	 * this list is empty, every event type matches.
+	 * @param[in] flags The flags describing the notification behavior for
+	 * for this rule
+	 * @param[in] openConfiguration Whether the configuration widget for
+	 * the just created rule should be opened automatically.
+	 * @param[in] fields The list of pairs of a field ID (as in
+	 * ANFieldData::ID_) and corresponding field value as ANFieldValue.
+	 * @return The Entity object describing a notifications rule for the
+	 * passed parameters.
+	 *
+	 * @sa MakeAN()
+	 */
 	UTIL_XPC_API Entity MakeANRule (const QString& title,
-			const QString& senderID, const QString& cat, const QStringList& types,
-			AN::NotifyFlags = AN::NotifyNone,
+			const QString& senderID,
+			const QString& category,
+			const QStringList& types,
+			AN::NotifyFlags flags = AN::NotifyNone,
 			bool openConfiguration = false,
 			const QList<QPair<QString, ANFieldValue>>& fields = {});
 
