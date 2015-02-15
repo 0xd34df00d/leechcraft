@@ -49,7 +49,6 @@ namespace Util
 #endif
 	: QObject { view }
 	{
-
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[view]
