@@ -36,6 +36,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/futures.h>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -89,17 +90,14 @@ namespace Util
 		return QtConcurrent::run ([path] { return CollectSizes (path).TotalSize_; });
 	}
 
-	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path, const std::function<int ()>& sizeGetter)
+	std::shared_ptr<void> NetworkDiskCacheGC::RegisterDirectory (const QString& path,
+			const std::function<int ()>& sizeGetter)
 	{
 		auto& list = Directories_ [path];
 		list.push_front (sizeGetter);
 		const auto thisItem = list.begin ();
 
-		return std::shared_ptr<void>
-		{
-			nullptr,
-			[this, path, thisItem] (void*) { UnregisterDirectory (path, thisItem); }
-		};
+		return Util::MakeScopeGuard ([this, path, thisItem] { UnregisterDirectory (path, thisItem); }).EraseType ();
 	}
 
 	void NetworkDiskCacheGC::UnregisterDirectory (const QString& path, CacheSizeGetters_t::iterator pos)
