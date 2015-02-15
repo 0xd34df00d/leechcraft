@@ -45,13 +45,15 @@ namespace XDG
 	bool operator== (const Item& left, const Item& right)
 	{
 		return left.IsHidden_ == right.IsHidden_ &&
+				left.Type_ == right.Type_ &&
 				left.Name_ == right.Name_ &&
 				left.GenericName_ == right.GenericName_ &&
 				left.Comments_ == right.Comments_ &&
 				left.Categories_ == right.Categories_ &&
 				left.Command_ == right.Command_ &&
 				left.WD_ == right.WD_ &&
-				left.IconName_ == right.IconName_;
+				left.IconName_ == right.IconName_ &&
+				left.Icon_ == right.Icon_;
 	}
 
 	bool Item::IsValid () const
