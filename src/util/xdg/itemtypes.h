@@ -43,15 +43,37 @@ namespace Util
 {
 namespace XDG
 {
+	/** @brief Describes the various types of XDG <code>.desktop</code>
+	 * files.
+	 */
 	enum class Type
 	{
+		/** @brief Unknown type.
+		 */
 		Other,
+
+		/** @brief A shortcut to an application.
+		 */
 		Application,
+
+		/** @brief A shortcut to an URL.
+		 */
 		URL,
+
+		/** @brief A shortcut to a directory.
+		 */
 		Dir
 	};
 
-	UTIL_XDG_API QSet<QString> ToPaths (const QList<Type>&);
+	/** @brief Returns a set of typical directories with
+	 * <code>desktop</code> files of the given \em types.
+	 *
+	 * @param[in] types The types of the interesting <code>.desktop</code>
+	 * files.
+	 * @return The list of the directories where the said files typically
+	 * reside.
+	 */
+	UTIL_XDG_API QSet<QString> ToPaths (const QList<Type>& types);
 }
 }
 }
