@@ -90,7 +90,10 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		ItemShort item = CurrentItems_ [CurrentRow_];
+		auto item = CurrentItems_ [CurrentRow_];
+		if (!item.Unread_)
+			return;
+
 		item.Unread_ = false;
 		Core::Instance ().GetStorageBackend ()->UpdateItem (item);
 	}
