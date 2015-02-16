@@ -1179,13 +1179,13 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 			MarkItemReadStatus (idx, false);
 	}
 
 	void ItemsWidget::on_ActionMarkItemAsRead__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 			MarkItemReadStatus (idx, true);
 	}
 
@@ -1197,16 +1197,16 @@ namespace Aggregator
 
 		const ITagsManager::tag_id impId = "_important";
 
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 		{
-			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
-			const ItemsListModel *model =
+			const auto& mapped = Impl_->ItemLists_->mapToSource (idx);
+			const auto model =
 					static_cast<ItemsListModel*> (Impl_->ItemLists_->
 							GetModelForRow (idx.row ())->data ());
 
-			const IDType_t item = model->GetItem (mapped).ItemID_;
+			const auto item = model->GetItem (mapped).ItemID_;
 
-			QList<ITagsManager::tag_id> tags = sb->GetItemTags (item);
+			auto tags = sb->GetItemTags (item);
 			if (mark && !tags.contains (impId))
 				sb->SetItemTags (item, tags + QStringList (impId));
 			else if (!mark && tags.removeAll (impId))
@@ -1217,7 +1217,7 @@ namespace Aggregator
 	void ItemsWidget::on_ActionDeleteItem__triggered ()
 	{
 		QSet<IDType_t> ids;
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 		{
 			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
 			const ItemsListModel *model =
