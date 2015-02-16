@@ -67,8 +67,6 @@ namespace XDG
 		Item_ptr FindItem (const QString& permanentID) const;
 	public slots:
 		void update ();
-	private slots:
-		void handleScanParseFinished ();
 	signals:
 		void itemsListChanged ();
 	};

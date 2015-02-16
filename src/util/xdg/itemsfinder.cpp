@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include <util/sll/futures.h>
 #include "interfaces/core/iiconthememanager.h"
 #include "xdg.h"
 #include "item.h"
@@ -172,26 +173,18 @@ namespace XDG
 			return;
 		}
 
-		auto watcher = new QFutureWatcher<Cat2Items_t> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleScanParseFinished ()));
-		watcher->setFuture (QtConcurrent::run (FindAndParse, Types_));
-	}
+		ExecuteFuture ([this] { return QtConcurrent::run (FindAndParse, Types_); },
+				[this] (Cat2Items_t result)
+				{
+					if (result == Items_)
+						return;
 
-	void ItemsFinder::handleScanParseFinished ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<Cat2Items_t>*> (sender ());
-		auto result = watcher->result ();
-		watcher->deleteLater ();
-		if (result == Items_)
-			return;
+					Items_ = std::move (result);
+					FixIcons (Items_, Proxy_);
 
-		Items_ = std::move (result);
-		FixIcons (Items_, Proxy_);
-
-		emit itemsListChanged ();
+					emit itemsListChanged ();
+				},
+				this);
 	}
 }
 }
