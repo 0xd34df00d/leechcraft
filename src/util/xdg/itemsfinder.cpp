@@ -45,9 +45,9 @@ namespace XDG
 {
 	ItemsFinder::ItemsFinder (ICoreProxy_ptr proxy,
 			const QList<Type>& types, QObject *parent)
-	: QObject (parent)
-	, Proxy_ (proxy)
-	, Types_ (types)
+	: QObject { parent }
+	, Proxy_ { proxy }
+	, Types_ { types }
 	{
 		QTimer::singleShot (1000, this, SLOT (update ()));
 	}
@@ -72,7 +72,7 @@ namespace XDG
 				return *pos;
 		}
 
-		return Item_ptr ();
+		return {};
 	}
 
 	namespace
@@ -141,6 +141,7 @@ namespace XDG
 							<< e.what ();
 					continue;
 				}
+
 				if (!item->IsValid ())
 				{
 					qWarning () << Q_FUNC_INFO

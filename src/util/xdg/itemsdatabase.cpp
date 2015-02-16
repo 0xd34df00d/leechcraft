@@ -40,8 +40,8 @@ namespace Util
 namespace XDG
 {
 	ItemsDatabase::ItemsDatabase (ICoreProxy_ptr proxy, const QList<Type>& types, QObject *parent)
-	: ItemsFinder (proxy, types, parent)
-	, Watcher_ (new QFileSystemWatcher (this))
+	: ItemsFinder { proxy, types, parent }
+	, Watcher_ { new QFileSystemWatcher { this } }
 	{
 		Watcher_->addPaths (ToPaths (types).toList ());
 		connect (Watcher_,
