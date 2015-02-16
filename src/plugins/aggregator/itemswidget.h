@@ -108,7 +108,6 @@ namespace Aggregator
 		void SetHideRead (bool);
 		bool IsItemCurrent (int) const;
 		void Selected (const QModelIndex&);
-		void MarkItemReadStatus (const QModelIndex&, bool);
 		bool IsItemRead (int) const;
 		bool IsItemReadNotCurrent (int) const;
 		QStringList GetItemCategories (int) const;
@@ -120,6 +119,7 @@ namespace Aggregator
 		void LoadUIState ();
 		void SaveUIState ();
 	private:
+		void MarkItemReadStatus (const QModelIndex&, bool);
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (const ChannelShort&);
 		void SetupActions ();
