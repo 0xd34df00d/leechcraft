@@ -88,17 +88,17 @@ namespace Util
 		return GetIncrementable () - other.GetIncrementable ();
 	}
 
-	bool ModelIterator::operator== (const ModelIterator& other) const
+	bool operator== (const ModelIterator& left, const ModelIterator& right)
 	{
-		return Row_ == other.Row_ &&
-				Col_ == other.Col_ &&
-				Model_ == other.Model_ &&
-				Parent_ == other.Parent_;
+		return left.Row_ == right.Row_ &&
+				left.Col_ == right.Col_ &&
+				left.Model_ == right.Model_ &&
+				left.Parent_ == right.Parent_;
 	}
 
-	bool ModelIterator::operator!= (const ModelIterator& other) const
+	bool operator!= (const ModelIterator& left, const ModelIterator& right)
 	{
-		return !(*this == other);
+		return !(left == right);
 	}
 
 	QModelIndex ModelIterator::operator*() const
