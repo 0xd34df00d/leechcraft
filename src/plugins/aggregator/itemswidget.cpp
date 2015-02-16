@@ -445,13 +445,11 @@ namespace Aggregator
 	void ItemsWidget::Selected (const QModelIndex& index)
 	{
 		Impl_->LastSelectedIndex_ = index;
+
 		Impl_->SelectedChecker_->stop ();
-		int timeout = XmlSettingsManager::Instance ()->
+		const auto timeout = XmlSettingsManager::Instance ()->
 				property ("MarkAsReadTimeout").toInt () * 1000;
-		if (timeout)
-			Impl_->SelectedChecker_->start (timeout);
-		else
-			checkSelected ();
+		Impl_->SelectedChecker_->start (timeout);
 	}
 
 	void ItemsWidget::MarkItemReadStatus (const QModelIndex& idx, bool read)
