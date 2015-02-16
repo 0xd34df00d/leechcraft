@@ -81,7 +81,7 @@ namespace XDG
 		 * @param[in] right Second XDG item to check for equality.
 		 * @return Whether \em left and \em right are equal.
 		 */
-		friend bool operator== (const Item& left, const Item& right);
+		friend UTIL_XDG_API bool operator== (const Item& left, const Item& right);
 
 		/** @brief Checks whether this XDG item is valid.
 		 *
