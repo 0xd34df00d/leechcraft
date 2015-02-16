@@ -55,7 +55,7 @@ namespace XDG
 		ICoreProxy_ptr Proxy_;
 		Cat2Items_t Items_;
 
-		bool IsReady_;
+		bool IsReady_ = false;
 
 		const QList<Type> Types_;
 	public:

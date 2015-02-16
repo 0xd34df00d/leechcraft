@@ -47,7 +47,6 @@ namespace XDG
 			const QList<Type>& types, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
-	, IsReady_ (false)
 	, Types_ (types)
 	{
 		QTimer::singleShot (1000, this, SLOT (update ()));
