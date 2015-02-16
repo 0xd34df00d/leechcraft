@@ -95,13 +95,6 @@ namespace Aggregator
 		Core::Instance ().GetStorageBackend ()->UpdateItem (item);
 	}
 
-	void ItemsListModel::MarkItemReadStatus (const QModelIndex& i, bool read)
-	{
-		ItemShort is = CurrentItems_ [i.row ()];
-		is.Unread_ = !read;
-		Core::Instance ().GetStorageBackend ()->UpdateItem (is);
-	}
-
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
 	{
 		return CurrentItems_ [index.row ()];
