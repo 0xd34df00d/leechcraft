@@ -406,6 +406,7 @@ namespace Aggregator
 // Not needed now:
 #undef PROPER_NAMESPACE
 
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item_ptr);
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::Item_ptr)
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::ItemShort)
 
 #endif
