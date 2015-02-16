@@ -1139,14 +1139,12 @@ namespace Aggregator
 			Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
 	}
 
-	QModelIndexList ItemsWidget::GetSelected () const
+	QList<QPersistentModelIndex> ItemsWidget::GetSelected () const
 	{
-		QModelIndexList result;
-		Q_FOREACH (const QModelIndex& idx,
-				Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
+		QList<QPersistentModelIndex> result;
+		for (const auto& idx : Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
 		{
-			const QModelIndex& mapped = Impl_->
-					ItemsFilterModel_->mapToSource (idx);
+			const auto& mapped = Impl_->ItemsFilterModel_->mapToSource (idx);
 			if (!mapped.isValid ())
 				continue;
 

@@ -128,7 +128,7 @@ namespace Aggregator
 				QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 		QString ToHtml (const Item_ptr&);
 		void RestoreSplitter ();
-		QModelIndexList GetSelected () const;
+		QList<QPersistentModelIndex> GetSelected () const;
 	private slots:
 		void invalidateMergeMode ();
 		void on_ActionHideReadItems__triggered ();
