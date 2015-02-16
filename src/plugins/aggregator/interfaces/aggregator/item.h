@@ -41,23 +41,6 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-#ifndef Q_CC_MSVC
-	struct Enclosure;
-	struct MRSSThumbnail;
-	struct MRSSCredit;
-	struct MRSSComment;
-	struct MRSSPeerLink;
-	struct MRSSScene;
-	struct MRSSEntry;
-
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::Enclosure>&);
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::MRSSThumbnail>&);
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::MRSSCredit>&);
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::MRSSComment>&);
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::MRSSPeerLink>&);
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::MRSSScene>&);
-	QDataStream& operator>> (QDataStream&, QList<LeechCraft::Aggregator::MRSSEntry>&);
-#endif
 	struct ItemShort
 	{
 		IDType_t ItemID_;
