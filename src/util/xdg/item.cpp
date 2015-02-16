@@ -195,7 +195,7 @@ namespace XDG
 		if (!file.open (QIODevice::ReadOnly))
 			throw std::runtime_error ("Unable to open file");
 
-		const auto& result = Util::XDG::DesktopParser () (file.readAll ());
+		const auto& result = Util::XDG::DesktopParser {} (file.readAll ());
 		const auto& group = result ["Desktop Entry"];
 
 		const auto& item = std::make_shared<Item> ();
@@ -203,9 +203,9 @@ namespace XDG
 		item->GenericName_ = FirstValues (group ["GenericName"]);
 		item->Comments_ = FirstValues (group ["Comment"]);
 
-		item->Categories_ = group ["Categories"] [QString ()];
+		item->Categories_ = group ["Categories"] [{}];
 
-		auto getSingle = [&group] (const QString& name) { return group [name] [QString ()].value (0); };
+		auto getSingle = [&group] (const QString& name) { return group [name] [{}].value (0); };
 
 		item->IconName_ = getSingle ("Icon");
 
