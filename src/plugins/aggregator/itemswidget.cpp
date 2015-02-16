@@ -455,12 +455,11 @@ namespace Aggregator
 			checkSelected ();
 	}
 
-	void ItemsWidget::MarkItemReadStatus (const QModelIndex& i, bool read)
+	void ItemsWidget::MarkItemReadStatus (const QModelIndex& idx, bool read)
 	{
-		QModelIndex mapped = Impl_->ItemLists_->mapToSource (i);
-		static_cast<ItemsListModel*> (Impl_->ItemLists_->
-				GetModelForRow (i.row ())->data ())->
-						MarkItemReadStatus (mapped, read);
+		auto is = idx.data (ItemsListModel::ItemShortDescr).value<ItemShort> ();
+		is.Unread_ = !read;
+		Core::Instance ().GetStorageBackend ()->UpdateItem (is);
 	}
 
 	bool ItemsWidget::IsItemRead (int item) const
