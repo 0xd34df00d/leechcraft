@@ -437,8 +437,7 @@ namespace Aggregator
 	bool ItemsWidget::IsItemCurrent (int item) const
 	{
 		int starting = 0;
-		Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-			GetModelForRow (item, &starting);
+		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
 		return static_cast<ItemsListModel*> (i->data ())->
 			GetSelectedRow () == item - starting;
 	}
@@ -465,16 +464,14 @@ namespace Aggregator
 	bool ItemsWidget::IsItemRead (int item) const
 	{
 		int starting = 0;
-		Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-			GetModelForRow (item, &starting);
+		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
 		return static_cast<ItemsListModel*> (i->data ())->IsItemRead (item - starting);
 	}
 
 	bool ItemsWidget::IsItemReadNotCurrent (int item) const
 	{
 		int starting = 0;
-		Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-			GetModelForRow (item, &starting);
+		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
 		ItemsListModel *m = static_cast<ItemsListModel*> (i->data ());
 		return m->IsItemRead (item - starting) &&
 				m->GetSelectedRow () != item - starting;
@@ -1165,8 +1162,7 @@ namespace Aggregator
 	void ItemsWidget::on_ActionHideReadItems__triggered ()
 	{
 		bool hide = Impl_->ActionHideReadItems_->isChecked ();
-		XmlSettingsManager::Instance ()->
-			setProperty ("HideReadItems", hide);
+		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
 		SetHideRead (hide);
 	}
 
@@ -1485,21 +1481,19 @@ namespace Aggregator
 
 	void ItemsWidget::checkSelected ()
 	{
-		const QModelIndex& sourceIndex =
-				Impl_->Ui_.Items_->currentIndex ();
-		const QModelIndex& cIndex =
-				Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
+		const auto& sourceIndex = Impl_->Ui_.Items_->currentIndex ();
+		const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
 		if (cIndex != Impl_->LastSelectedIndex_)
 			return;
 
-		QModelIndex mapped = Impl_->ItemLists_->mapToSource (cIndex);
+		const auto& mapped = Impl_->ItemLists_->mapToSource (cIndex);
 		static_cast<ItemsListModel*> (Impl_->ItemLists_->
 				GetModelForRow (cIndex.row ())->data ())->Selected (mapped);
 	}
 
 	void ItemsWidget::makeCurrentItemVisible ()
 	{
-		QModelIndex item = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
+		const auto& item = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 		if (item.isValid ())
 			Impl_->Ui_.Items_->scrollTo (item);
 	}

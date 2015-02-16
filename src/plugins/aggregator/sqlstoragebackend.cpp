@@ -1583,9 +1583,8 @@ namespace Aggregator
 
 		try
 		{
-			IDType_t cid = item.ChannelID_;
-			Channel_ptr channel = GetChannel (cid,
-					FindParentFeedForChannel (cid));
+			const auto cid = item.ChannelID_;
+			const auto& channel = GetChannel (cid, FindParentFeedForChannel (cid));
 			emit itemDataUpdated (GetItem (item.ItemID_), channel);
 			emit channelDataUpdated (channel);
 		}
