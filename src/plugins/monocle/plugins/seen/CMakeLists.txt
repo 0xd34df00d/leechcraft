@@ -31,7 +31,11 @@ target_link_libraries (leechcraft_monocle_seen
 	)
 install (TARGETS leechcraft_monocle_seen DESTINATION ${LC_PLUGINS_DEST})
 if (UNIX AND NOT APPLE)
-	install (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
+	if (USE_QT5)
+		install (FILES freedesktop/leechcraft-monocle-seen-qt5.desktop DESTINATION share/applications)
+	else ()
+		install (FILES freedesktop/leechcraft-monocle-seen.desktop DESTINATION share/applications)
+	endif ()
 endif ()
 
 FindQtLibs (leechcraft_monocle_seen Core)

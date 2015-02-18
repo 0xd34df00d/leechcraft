@@ -27,7 +27,11 @@ target_link_libraries (leechcraft_monocle_postrus
 install (TARGETS leechcraft_monocle_postrus DESTINATION ${LC_PLUGINS_DEST})
 
 if (UNIX AND NOT APPLE)
-	install (FILES freedesktop/leechcraft-monocle-postrus.desktop DESTINATION share/applications)
+	if (USE_QT5)
+		install (FILES freedesktop/leechcraft-monocle-postrus-qt5.desktop DESTINATION share/applications)
+	else ()
+		install (FILES freedesktop/leechcraft-monocle-postrus.desktop DESTINATION share/applications)
+	endif ()
 endif ()
 
 FindQtLibs (leechcraft_monocle_postrus Core)
