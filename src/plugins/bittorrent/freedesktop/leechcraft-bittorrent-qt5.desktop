@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=LeechCraft BitTorrent (Qt5)
+GenericName=BitTorrent Client
+Icon=leechcraft_main
+Exec=leechcraft-qt5 -D %U
+Categories=Network;FileTransfer;P2P;Qt;
+Terminal=false
+X-StandardInstall=true
+NoDisplay=true
+MimeType=application/x-bittorrent;x-scheme-handler/magnet;
