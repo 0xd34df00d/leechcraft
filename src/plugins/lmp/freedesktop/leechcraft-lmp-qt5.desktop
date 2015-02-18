@@ -1,0 +1,26 @@
+[Desktop Entry]
+Name=LeechCraft LMP (Qt5)
+GenericName=Enqueue in LMP
+GenericName[cs]=Zařadit do fronty v LMP
+GenericName[de]=Zur LMP-Wiedergabeliste hinzufügen
+GenericName[ru]=Добавить в LMP
+GenericName[uk]=Додати до черги LMP
+GenericName[zh_CN]=加入 LMP 播放列表
+GenericName[zh_TW]=加入 LMP 播放清單
+GenericName[he]=ספח לתור של LMP
+Comment=Add file(s) to the LMP playlist
+Comment[cs]=Přidat soubor(y) do seznamu stop v LMP
+Comment[de]=Datei(en) zur LMP-Wiedergabeliste hinzufügen
+Comment[ru]=Добавить файл(ы) в очередь воспроизведения LMP
+Comment[uk]=Додати файл(и) до переліку програвання LMP
+Comment[zh_CN]=添加一个或多个文件到 LMP 播放列表
+Comment[zh_TW]=添加一個或多個檔案到 LMP 播放清單
+Comment[he]=הוסף קבצים אל רשימת הניגון של LMP
+Exec=leechcraft-qt5 -T file -A Action:AudioPlayback %F
+Icon=leechcraft_main
+Categories=AudioVideo;Player;Audio;Qt;
+MimeType=application/x-ogg;audio/mp3;audio/mpeg;audio/flac;audio/x-mp3;audio/x-mpeg;audio/x-ms-wma;audio/x-musepack;application/ogg;audio/x-vorbis+ogg;audio/x-scpls;audio/x-mpegurl;audio/x-it;audio/x-mod;audio/x-ape;application/x-cue;audio/x-ffmpeg-shorten;inode/directory;
+Type=Application
+X-KDE-StartupNotify=false
+NoDisplay=true
+Terminal=false
