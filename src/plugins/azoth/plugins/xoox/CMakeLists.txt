@@ -166,7 +166,11 @@ target_link_libraries (leechcraft_azoth_xoox
 install (TARGETS leechcraft_azoth_xoox DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothxooxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
-	install (FILES freedesktop/leechcraft-azoth-xoox.desktop DESTINATION share/applications)
+	if (USE_QT5)
+		install (FILES freedesktop/leechcraft-azoth-xoox-qt5.desktop DESTINATION share/applications)
+	else ()
+		install (FILES freedesktop/leechcraft-azoth-xoox.desktop DESTINATION share/applications)
+	endif ()
 endif ()
 
 FindQtLibs (leechcraft_azoth_xoox Concurrent Widgets Xml)
