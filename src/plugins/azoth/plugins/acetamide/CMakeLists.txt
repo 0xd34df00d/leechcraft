@@ -86,12 +86,9 @@ target_link_libraries (leechcraft_azoth_acetamide
 
 FindQtLibs (leechcraft_azoth_acetamide Network Widgets Xml)
 
-install (TARGETS leechcraft_azoth_acetamide
-		DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS}
-		DESTINATION ${LC_TRANSLATIONS_DEST})
-install (FILES azothacetamidesettings.xml
-		DESTINATION ${LC_SETTINGS_DEST})
+install (TARGETS leechcraft_azoth_acetamide DESTINATION ${LC_PLUGINS_DEST})
+install (FILES ${ACETAMIDE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
+install (FILES azothacetamidesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
 	install (FILES freedesktop/leechcraft-azoth-acetamide.desktop DESTINATION share/applications)
 endif ()
