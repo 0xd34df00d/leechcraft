@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "entrybase.h"
+#include <boost/variant.hpp>
+#include <boost/optional.hpp>
 #include <QIcon>
+#include <QXmlStreamWriter>
 #include <util/util.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/qtutil.h>
@@ -97,6 +100,73 @@ namespace Murm
 				"margin-top: 2px; margin-bottom: 0px; margin-left: 1em; margin-right: 0em; "
 				"border-width: 1px; border-style: solid; border-radius: 5px; "
 				"padding-left: 5px; padding-right: 5px; padding-top: 2px; padding-bottom: 2px;";
+
+		struct SimpleImageInfo
+		{
+			const QString Url_;
+			const QString Alt_ = {};
+
+			const boost::optional<QSize> Size_ = {};
+		};
+
+		struct LinkImageInfo
+		{
+			const QString FullUrl_;
+			const QString ThumbUrl_;
+
+			const QString Alt_;
+
+			const boost::optional<QSize> FullSize_ = {};
+			const boost::optional<QSize> ThumbSize_ = {};
+		};
+
+		using ImageInfo = boost::variant<SimpleImageInfo, LinkImageInfo>;
+
+		QString GetImageTemplate (const ImageInfo& imageInfo)
+		{
+			struct Visitor : boost::static_visitor<QString>
+			{
+				QString operator() (const SimpleImageInfo& info) const
+				{
+					QString result;
+
+					QXmlStreamWriter w { &result };
+					w.writeStartElement ("img");
+					w.writeAttribute ("src", info.Url_);
+					w.writeAttribute ("alt", info.Alt_);
+					w.writeAttribute ("title", info.Alt_);
+					w.writeEndElement ();
+
+					return result;
+				}
+
+				QString operator() (const LinkImageInfo& info) const
+				{
+					QString result;
+
+					const auto& alt = (info.Alt_.isEmpty () && info.FullSize_) ?
+							QString::number (info.FullSize_->width ()) +
+									QString::fromUtf8 ("×") +
+									QString::number (info.FullSize_->height ()) :
+							info.Alt_;
+
+					QXmlStreamWriter w { &result };
+					w.writeStartElement ("a");
+					w.writeAttribute ("href", info.FullUrl_);
+					w.writeAttribute ("target", "_blank");
+						w.writeStartElement ("img");
+						w.writeAttribute ("src", info.ThumbUrl_);
+						w.writeAttribute ("alt", alt);
+						w.writeAttribute ("title", alt);
+						w.writeEndElement ();
+					w.writeEndElement ();
+
+					return result;
+				}
+			};
+
+			return boost::apply_visitor (Visitor {}, imageInfo);
+		}
 
 		QString Gift2Replacement (const GiftInfo& info)
 		{
