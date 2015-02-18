@@ -170,27 +170,29 @@ namespace Murm
 
 		QString Gift2Replacement (const GiftInfo& info)
 		{
-			return QString ("<img src='%1' alt='' />")
-					.arg (QString::fromUtf8 (info.Thumb_.toEncoded ()));
+			return GetImageTemplate (SimpleImageInfo { info.Thumb_.toEncoded () });
 		}
 
 		QString Photo2Replacement (const PhotoInfo& info)
 		{
-			const auto& fullSizeStr = QString::number (info.FullSize_.width ()) +
-					QString::fromUtf8 ("×") +
-					QString::number (info.FullSize_.height ());
-			return QString ("<a href='%1' target='_blank'><img src='%2' width='%3' height='%4' alt='%5' /></a>")
-					.arg (info.Full_)
-					.arg (info.Thumbnail_)
-					.arg (info.ThumbnailSize_.width ())
-					.arg (info.ThumbnailSize_.height ())
-					.arg (fullSizeStr);
+			return GetImageTemplate (LinkImageInfo
+					{
+						info.Full_,
+						info.Thumbnail_,
+						{},
+						info.FullSize_,
+						info.ThumbnailSize_
+					});
 		}
 
 		QString Icon2Img (const QIcon& icon, const QString& name)
 		{
-			const auto& data = LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
-			return "<img src='" + data + "' width='16' height='16' alt='" + name + "' title='" + name + "' />";
+			return GetImageTemplate (SimpleImageInfo
+					{
+						LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ()),
+						name,
+						{ { 16, 16 } }
+					});
 		}
 
 		QString Audio2Replacement (const AudioInfo& info, const ICoreProxy_ptr& proxy)
@@ -299,8 +301,10 @@ namespace Murm
 
 		QString StickerId2Replacement (const QString& stickerId)
 		{
-			return QString { "<img src='https://vk.com/images/stickers/%1/256.png' alt='' />" }
-					.arg (stickerId);
+			return GetImageTemplate (SimpleImageInfo
+					{
+						QString { "https://vk.com/images/stickers/%1/256.png" }.arg (stickerId)
+					});
 		}
 
 		struct ContentsInfo
