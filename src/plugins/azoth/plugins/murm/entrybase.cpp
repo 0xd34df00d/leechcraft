@@ -124,7 +124,7 @@ namespace Murm
 
 		QString GetImageTemplate (const ImageInfo& imageInfo)
 		{
-			struct Visitor : boost::static_visitor<QString>
+			struct EmbedVisitor : boost::static_visitor<QString>
 			{
 				QString operator() (const SimpleImageInfo& info) const
 				{
@@ -166,6 +166,51 @@ namespace Murm
 			};
 
 			return boost::apply_visitor (Visitor {}, imageInfo);
+			struct LinkVisitor : boost::static_visitor<QString>
+			{
+				QString operator() (const SimpleImageInfo& info) const
+				{
+					QString result;
+
+					QXmlStreamWriter w { &result };
+					w.writeStartElement ("a");
+					w.writeAttribute ("href", info.Url_);
+
+					if (!info.Alt_.isEmpty ())
+						w.writeCharacters (info.Alt_);
+					else if (info.Size_)
+						w.writeCharacters (QObject::tr ("Image of size %1×%2")
+								.arg (info.Size_->width ())
+								.arg (info.Size_->height ()));
+					else
+						w.writeCharacters (QObject::tr ("Image"));
+
+					w.writeEndElement ();
+
+					return result;
+				}
+
+				QString operator() (const LinkImageInfo& info) const
+				{
+					QString result;
+
+					const auto& alt = (info.Alt_.isEmpty () && info.FullSize_) ?
+							QObject::tr ("Image of size") + " " +
+								QString::number (info.FullSize_->width ()) +
+								QString::fromUtf8 ("×") +
+								QString::number (info.FullSize_->height ()) :
+							info.Alt_;
+
+					QXmlStreamWriter w { &result };
+					w.writeStartElement ("a");
+					w.writeAttribute ("href", info.FullUrl_);
+					w.writeAttribute ("target", "_blank");
+					w.writeCharacters (alt);
+					w.writeEndElement ();
+
+					return result;
+				}
+			};
 		}
 
 		QString Gift2Replacement (const GiftInfo& info)
