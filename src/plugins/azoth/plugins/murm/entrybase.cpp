@@ -41,6 +41,7 @@
 #include "vkaccount.h"
 #include "vkmessage.h"
 #include "vkconnection.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -165,7 +166,6 @@ namespace Murm
 				}
 			};
 
-			return boost::apply_visitor (Visitor {}, imageInfo);
 			struct LinkVisitor : boost::static_visitor<QString>
 			{
 				QString operator() (const SimpleImageInfo& info) const
@@ -211,6 +211,18 @@ namespace Murm
 					return result;
 				}
 			};
+
+			const auto& showOpt = XmlSettingsManager::Instance ()
+					.property ("ShowImagesInChat").toString ();
+			if (showOpt == "Embedded")
+				return boost::apply_visitor (EmbedVisitor {}, imageInfo);
+			else if (showOpt == "Links")
+				return boost::apply_visitor (LinkVisitor {}, imageInfo);
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown show option type"
+					<< showOpt;
+			return {};
 		}
 
 		QString Gift2Replacement (const GiftInfo& info)

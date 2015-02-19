@@ -15,5 +15,17 @@
 				<label value="Require Offline permissions to avoid reauthentification on IP change" />
 			</item>
 		</groupbox>
+		<groupbox>
+			<label value="In-chat images" />
+			<item type="combobox" property="ShowImagesInChat">
+				<label value="Show images in chat:" />
+				<option name="Embedded" default="true">
+					<label value="embedded" />
+				</option>
+				<option name="Links">
+					<label value="as links" />
+				</option>
+			</item>
+		</groupbox>
 	</page>
 </settings>
