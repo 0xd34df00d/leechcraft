@@ -99,16 +99,12 @@ namespace LeechCraft
 		while (!option.isNull ())
 		{
 			const auto& images = XSD_->GetImages (option);
+			const auto& name = option.attribute ("name");
+			const auto& label = XSD_->GetLabel (option);
 			if (!images.isEmpty ())
-			{
-				const QIcon icon (QPixmap::fromImage (images.at (0)));
-				box->addItem (icon,
-						XSD_->GetLabel (option),
-						option.attribute ("name"));
-			}
+				box->addItem (QPixmap::fromImage (images.at (0)), label, name);
 			else
-				box->addItem (XSD_->GetLabel (option),
-						option.attribute ("name"));
+				box->addItem (label, name);
 
 			auto setColor = [&option, box] (const QString& attr, Qt::ItemDataRole role) -> void
 			{
