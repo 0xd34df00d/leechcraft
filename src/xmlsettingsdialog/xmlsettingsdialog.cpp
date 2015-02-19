@@ -542,7 +542,7 @@ namespace Util
 
 	QString XmlSettingsDialog::GetLabel (const QDomElement& item) const
 	{
-		QString result { "<no label>" };
+		QString result;
 		const auto& label = item.firstChildElement ("label");
 		if (!label.isNull ())
 			result = label.attribute ("value");
