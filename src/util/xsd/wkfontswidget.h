@@ -49,6 +49,43 @@ namespace Util
 	class BaseSettingsManager;
 	class FontChooserWidget;
 
+	/** @brief A settings widget for configuring WebKit fonts.
+	 *
+	 * Provides a common widget for configuring QtWebKit fonts for
+	 * standard WebKit font types.
+	 *
+	 * This widget works through LeechCraft's XML Settings Dialog system,
+	 * storing the configuration in an BaseSettingsManager instance.
+	 *
+	 * This widget also supports automatically updating font settings for
+	 * objects implementing the IWkFontsSettable interface if the user
+	 * changes them.
+	 *
+	 * Typical usage includes creating an item of type
+	 * <code>customwidget</code> in the XML file describing the settings
+	 * and then setting an instance of the WkFontsWidget as the widget
+	 * for that item. On the C++ side this looks like:
+	 *  \code{.cpp}
+		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
+	    \endcode
+	 * assuming the <code>Util::BaseSettingsManager</code> is provided by
+	 * a singleton XmlSettingsManager class, and
+	 * <code>XmlSettingsDialog_</code> is an instance of
+	 * <code>Util::XmlSettingsDialog</code>.
+	 *
+	 * The code above also stores the WkFontsWidget as a class variable,
+	 * which may be a good idea if one wishes to use the settings
+	 * autoupdate feature. For example, assuming a class
+	 * <code>ChatTab</code> properly implements the IWkFontsSettable
+	 * interface:
+	 * \code{.cpp}
+		const auto tab = new ChatTab {};
+		FontsWidget_->RegisterSettable (tab);
+	   \endcode
+	 *
+	 * @sa IWkFontsSettable
+	 */
 	class UTIL_XSD_API WkFontsWidget : public QWidget
 	{
 		Q_OBJECT
@@ -63,9 +100,22 @@ namespace Util
 
 		QList<IWkFontsSettable*> Settables_;
 	public:
-		WkFontsWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
+		/** @brief Creates the fonts settings widget.
+		 *
+		 * @param[in] bsm The settings manager to use for storing
+		 * settings.
+		 * @param[in] parent The parent widget for this widget.
+		 */
+		WkFontsWidget (Util::BaseSettingsManager *bsm, QWidget *parent = nullptr);
 
-		void RegisterSettable (IWkFontsSettable*);
+		/** @brief Registers an object to be automatically updated
+		 * whenever font settings change.
+		 *
+		 * @param[in] settable An object implementing IWkFontsSettable.
+		 *
+		 * @sa IWkFontsSettable
+		 */
+		void RegisterSettable (IWkFontsSettable *settable);
 	private:
 		void ResetFontChoosers ();
 	private slots:
@@ -74,7 +124,14 @@ namespace Util
 		void accept ();
 		void reject ();
 	signals:
-		void fontChanged (QWebSettings::FontFamily, const QFont&);
+		/** @brief Notifies the font for the given \em family has been
+		 * changed.
+		 *
+		 * @param[out] family The font family for which the \em font has
+		 * been changed.
+		 * @param[out] font The new fonr for the given \em family.
+		 */
+		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
 	};
 }
 }
