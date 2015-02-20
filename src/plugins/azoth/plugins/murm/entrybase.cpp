@@ -108,6 +108,18 @@ namespace Murm
 			const QString Alt_ = {};
 
 			const boost::optional<QSize> Size_ = {};
+
+			SimpleImageInfo (const QString& url)
+			: Url_ { url }
+			{
+			}
+
+			SimpleImageInfo (const QString& url, const QString& alt, const QSize& size)
+			: Url_ { url }
+			, Alt_ { alt }
+			, Size_ { size }
+			{
+			}
 		};
 
 		struct LinkImageInfo
@@ -248,7 +260,7 @@ namespace Murm
 					{
 						LeechCraft::Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ()),
 						name,
-						{ { 16, 16 } }
+						{ 16, 16 }
 					});
 		}
 
@@ -365,7 +377,7 @@ namespace Murm
 								.arg (stickerId)
 								.arg (stickerSize),
 						{},
-						{ { stickerSize, stickerSize } }
+						{ stickerSize, stickerSize }
 					});
 		}
 
