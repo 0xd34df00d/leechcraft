@@ -100,21 +100,21 @@ namespace Util
 
 		QList<IWkFontsSettable*> Settables_;
 	public:
-        /** @brief Creates the fonts settings widget.
-         *
-         * @param[in] bsm The settings manager to use for storing
-         * settings.
-         * @param[in] parent The parent widget for this widget.
-         */
+		/** @brief Creates the fonts settings widget.
+		 *
+		 * @param[in] bsm The settings manager to use for storing
+		 * settings.
+		 * @param[in] parent The parent widget for this widget.
+		 */
 		WkFontsWidget (Util::BaseSettingsManager *bsm, QWidget *parent = nullptr);
 
-        /** @brief Registers an object to be automatically updated
-         * whenever font settings change.
-         *
-         * @param[in] settable An object implementing IWkFontsSettable.
-         *
-         * @sa IWkFontsSettable
-         */
+		/** @brief Registers an object to be automatically updated
+		 * whenever font settings change.
+		 *
+		 * @param[in] settable An object implementing IWkFontsSettable.
+		 *
+		 * @sa IWkFontsSettable
+		 */
 		void RegisterSettable (IWkFontsSettable *settable);
 	private:
 		void ResetFontChoosers ();
@@ -124,13 +124,13 @@ namespace Util
 		void accept ();
 		void reject ();
 	signals:
-        /** @brief Notifies the font for the given \em family has been
-         * changed.
-         *
-         * @param[out] family The font family for which the \em font has
-         * been changed.
-         * @param[out] font The new fonr for the given \em family.
-         */
+		/** @brief Notifies the font for the given \em family has been
+		 * changed.
+		 *
+		 * @param[out] family The font family for which the \em font has
+		 * been changed.
+		 * @param[out] font The new fonr for the given \em family.
+		 */
 		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
 	};
 }
