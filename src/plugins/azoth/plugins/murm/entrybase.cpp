@@ -358,9 +358,14 @@ namespace Murm
 
 		QString StickerId2Replacement (const QString& stickerId)
 		{
+			const auto stickerSize = XmlSettingsManager::Instance ().property ("StickersSize").toInt ();
 			return GetImageTemplate (SimpleImageInfo
 					{
-						QString { "https://vk.com/images/stickers/%1/256.png" }.arg (stickerId)
+						QString { "https://vk.com/images/stickers/%1/%2.png" }
+								.arg (stickerId)
+								.arg (stickerSize),
+						{},
+						{ { stickerSize, stickerSize } }
 					});
 		}
 

@@ -26,6 +26,15 @@
 					<label value="as links" />
 				</option>
 			</item>
+			<item type="combobox" property="StickersSize">
+				<label value="Stickers size in pixels:" />
+				<option name="48" />
+				<option name="64" />
+				<option name="128" />
+				<option name="256" default="true" />
+				<option name="352" />
+				<option name="512" />
+			</item>
 		</groupbox>
 	</page>
 </settings>
