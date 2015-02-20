@@ -73,7 +73,7 @@ namespace Util
 			std::shared_ptr<void> EraseType ()
 			{
 				Dismiss ();
-#if USE_CPP14
+#ifdef USE_CPP14
 				return std::shared_ptr<void> { nullptr, [f = F_] (void*) { f (); } };
 #else
 				auto f = F_;

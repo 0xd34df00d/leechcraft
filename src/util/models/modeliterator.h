@@ -145,26 +145,29 @@ namespace Util
 		 */
 		int operator- (const ModelIterator& other) const;
 
-		/** @brief Checks if this iterator equals the \em other one.
+		/** @brief Checks if two iterators are equal.
 		 *
 		 * For iterators to be equal the model, parent index, row and
 		 * column should all be equal. Traversal index is \em not taken
 		 * into account.
 		 *
-		 * @param[in] other The other iterator to check the equality to.
+		 * @param[in] left First iterator to check for equality.
+		 * @param[in] right Second iterator to check for equality.
+		 * @return Whether \em left and \em right are equal.
 		 */
-		bool operator== (const ModelIterator& other) const;
+		friend UTIL_MODELS_API bool operator== (const ModelIterator& left, const ModelIterator& right);
 
-		/** @brief Checks if this iterator is not equal to the \em other
-		 * one.
+		/** @brief Checks if two iterators are not equal.
 		 *
 		 * For iterators to not be equal at least either the model, parent
 		 * index, row or column should be unequal. Traversal index is
 		 * \em not taken into account.
 		 *
-		 * @param[in] other The other iterator to check the inequality to.
+		 * @param[in] left First iterator to check for inequality.
+		 * @param[in] right Second iterator to check for inequality.
+		 * @return Whether \em left and \em right are equal.
 		 */
-		bool operator!= (const ModelIterator& other) const;
+		friend UTIL_MODELS_API bool operator!= (const ModelIterator& left, const ModelIterator& right);
 
 		/** @brief Returns the index currently pointed by the iterator.
 		 *

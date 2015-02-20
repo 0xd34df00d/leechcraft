@@ -90,16 +90,12 @@ namespace Aggregator
 		if (!index.isValid ())
 			return;
 
-		ItemShort item = CurrentItems_ [CurrentRow_];
+		auto item = CurrentItems_ [CurrentRow_];
+		if (!item.Unread_)
+			return;
+
 		item.Unread_ = false;
 		Core::Instance ().GetStorageBackend ()->UpdateItem (item);
-	}
-
-	void ItemsListModel::MarkItemReadStatus (const QModelIndex& i, bool read)
-	{
-		ItemShort is = CurrentItems_ [i.row ()];
-		is.Unread_ = !read;
-		Core::Instance ().GetStorageBackend ()->UpdateItem (is);
 	}
 
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
@@ -390,6 +386,8 @@ namespace Aggregator
 			return !CurrentItems_ [index.row ()].Unread_;
 		else if (role == ItemRole::ItemId)
 			return CurrentItems_ [index.row ()].ItemID_;
+		else if (role == ItemRole::ItemShortDescr)
+			return QVariant::fromValue (CurrentItems_ [index.row ()]);
 		else
 			return QVariant ();
 	}

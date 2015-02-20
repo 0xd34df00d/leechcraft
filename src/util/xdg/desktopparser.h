@@ -39,19 +39,41 @@ namespace Util
 {
 namespace XDG
 {
+	/** @brief A parser for XDG <code>.desktop</code> files.
+	 *
+	 * This parser does not produce any structured information. Instead,
+	 * it only returns a hash from group name to corresponding group
+	 * fields (see Result_t). A more structured representation is
+	 * provided by the Item class.
+	 *
+	 * @sa Item
+	 */
 	class DesktopParser
 	{
 	public:
-		/** Mapping from language to the list of values.
+		/** @brief Mapping from a language to the list of values for that
+		 * language.
+		 *
+		 * "No language" corresponds to a null string.
 		 */
-		typedef QHash<QString, QStringList> LangValue_t;
+		using LangValue_t = QHash<QString, QStringList>;
 
-		/** Attributes in a group with their lang -> value mappings.
+		/** @brief Mapping from a field name to the list of
+		 * language-dependent values of that field.
 		 */
-		typedef QHash<QString, LangValue_t> Group_t;
-		typedef QHash<QString, Group_t> Result_t;
+		using Group_t = QHash<QString, LangValue_t>;
 
-		UTIL_XDG_API Result_t operator() (const QByteArray&);
+		/** @brief Mapping from a group name to the group itself.
+		 */
+		using Result_t = QHash<QString, Group_t>;
+
+		/** @brief Parses the XDG \em data.
+		 *
+		 * @param[in] data The byte array containing XDG
+		 * <code>.desktop</code> file data.
+		 * @return The set of groups in the XDG data.
+		 */
+		UTIL_XDG_API Result_t operator() (const QByteArray& data);
 	};
 }
 }

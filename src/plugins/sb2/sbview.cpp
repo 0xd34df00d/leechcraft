@@ -73,7 +73,7 @@ namespace SB2
 	}
 
 #if QT_VERSION >= 0x050000
-	void SBView::enterEvent (QEvent*)
+	void SBView::enterEvent (QEvent *lev)
 	{
 		for (const auto item : UnhoverItems_)
 		{
@@ -82,9 +82,11 @@ namespace SB2
 		}
 
 		UnhoverItems_.clear ();
+
+		QQuickWidget::enterEvent (lev);
 	}
 
-	void SBView::leaveEvent (QEvent*)
+	void SBView::leaveEvent (QEvent *lev)
 	{
 		UnhoverItems_.clear ();
 
@@ -107,6 +109,8 @@ namespace SB2
 			QHoverEvent ev { QEvent::HoverLeave, { -1, -1 }, oldPos };
 			static_cast<QObject*> (item)->event (&ev);
 		}
+
+		QQuickWidget::leaveEvent (lev);
 	}
 #endif
 }

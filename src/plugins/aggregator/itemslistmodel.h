@@ -63,7 +63,6 @@ namespace Aggregator
 		const IDType_t& GetCurrentChannel () const;
 		void SetCurrentChannel (const IDType_t&);
 		void Selected (const QModelIndex&);
-		void MarkItemReadStatus (const QModelIndex&, bool);
 		const ItemShort& GetItem (const QModelIndex&) const;
 		const items_shorts_t& GetAllItems () const;
 		bool IsItemRead (int) const;

@@ -437,8 +437,7 @@ namespace Aggregator
 	bool ItemsWidget::IsItemCurrent (int item) const
 	{
 		int starting = 0;
-		Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-			GetModelForRow (item, &starting);
+		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
 		return static_cast<ItemsListModel*> (i->data ())->
 			GetSelectedRow () == item - starting;
 	}
@@ -446,36 +445,31 @@ namespace Aggregator
 	void ItemsWidget::Selected (const QModelIndex& index)
 	{
 		Impl_->LastSelectedIndex_ = index;
+
 		Impl_->SelectedChecker_->stop ();
-		int timeout = XmlSettingsManager::Instance ()->
+		const auto timeout = XmlSettingsManager::Instance ()->
 				property ("MarkAsReadTimeout").toInt () * 1000;
-		if (timeout)
-			Impl_->SelectedChecker_->start (timeout);
-		else
-			checkSelected ();
+		Impl_->SelectedChecker_->start (timeout);
 	}
 
-	void ItemsWidget::MarkItemReadStatus (const QModelIndex& i, bool read)
+	void ItemsWidget::MarkItemReadStatus (const QModelIndex& idx, bool read)
 	{
-		QModelIndex mapped = Impl_->ItemLists_->mapToSource (i);
-		static_cast<ItemsListModel*> (Impl_->ItemLists_->
-				GetModelForRow (i.row ())->data ())->
-						MarkItemReadStatus (mapped, read);
+		auto is = idx.data (ItemsListModel::ItemShortDescr).value<ItemShort> ();
+		is.Unread_ = !read;
+		Core::Instance ().GetStorageBackend ()->UpdateItem (is);
 	}
 
 	bool ItemsWidget::IsItemRead (int item) const
 	{
 		int starting = 0;
-		Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-			GetModelForRow (item, &starting);
+		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
 		return static_cast<ItemsListModel*> (i->data ())->IsItemRead (item - starting);
 	}
 
 	bool ItemsWidget::IsItemReadNotCurrent (int item) const
 	{
 		int starting = 0;
-		Util::MergeModel::const_iterator i = Impl_->ItemLists_->
-			GetModelForRow (item, &starting);
+		const auto i = Impl_->ItemLists_->GetModelForRow (item, &starting);
 		ItemsListModel *m = static_cast<ItemsListModel*> (i->data ());
 		return m->IsItemRead (item - starting) &&
 				m->GetSelectedRow () != item - starting;
@@ -1140,14 +1134,12 @@ namespace Aggregator
 			Impl_->Ui_.CategoriesSplitter_->setSizes (sizes);
 	}
 
-	QModelIndexList ItemsWidget::GetSelected () const
+	QList<QPersistentModelIndex> ItemsWidget::GetSelected () const
 	{
-		QModelIndexList result;
-		Q_FOREACH (const QModelIndex& idx,
-				Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
+		QList<QPersistentModelIndex> result;
+		for (const auto& idx : Impl_->Ui_.Items_->selectionModel ()->selectedRows ())
 		{
-			const QModelIndex& mapped = Impl_->
-					ItemsFilterModel_->mapToSource (idx);
+			const auto& mapped = Impl_->ItemsFilterModel_->mapToSource (idx);
 			if (!mapped.isValid ())
 				continue;
 
@@ -1168,8 +1160,7 @@ namespace Aggregator
 	void ItemsWidget::on_ActionHideReadItems__triggered ()
 	{
 		bool hide = Impl_->ActionHideReadItems_->isChecked ();
-		XmlSettingsManager::Instance ()->
-			setProperty ("HideReadItems", hide);
+		XmlSettingsManager::Instance ()->setProperty ("HideReadItems", hide);
 		SetHideRead (hide);
 	}
 
@@ -1180,13 +1171,13 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionMarkItemAsUnread__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 			MarkItemReadStatus (idx, false);
 	}
 
 	void ItemsWidget::on_ActionMarkItemAsRead__triggered ()
 	{
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 			MarkItemReadStatus (idx, true);
 	}
 
@@ -1198,16 +1189,16 @@ namespace Aggregator
 
 		const ITagsManager::tag_id impId = "_important";
 
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 		{
-			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
-			const ItemsListModel *model =
+			const auto& mapped = Impl_->ItemLists_->mapToSource (idx);
+			const auto model =
 					static_cast<ItemsListModel*> (Impl_->ItemLists_->
 							GetModelForRow (idx.row ())->data ());
 
-			const IDType_t item = model->GetItem (mapped).ItemID_;
+			const auto item = model->GetItem (mapped).ItemID_;
 
-			QList<ITagsManager::tag_id> tags = sb->GetItemTags (item);
+			auto tags = sb->GetItemTags (item);
 			if (mark && !tags.contains (impId))
 				sb->SetItemTags (item, tags + QStringList (impId));
 			else if (!mark && tags.removeAll (impId))
@@ -1218,7 +1209,7 @@ namespace Aggregator
 	void ItemsWidget::on_ActionDeleteItem__triggered ()
 	{
 		QSet<IDType_t> ids;
-		Q_FOREACH (const QModelIndex& idx, GetSelected ())
+		for (const auto& idx : GetSelected ())
 		{
 			const QModelIndex& mapped = Impl_->ItemLists_->mapToSource (idx);
 			const ItemsListModel *model =
@@ -1488,21 +1479,19 @@ namespace Aggregator
 
 	void ItemsWidget::checkSelected ()
 	{
-		const QModelIndex& sourceIndex =
-				Impl_->Ui_.Items_->currentIndex ();
-		const QModelIndex& cIndex =
-				Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
+		const auto& sourceIndex = Impl_->Ui_.Items_->currentIndex ();
+		const auto& cIndex = Impl_->ItemsFilterModel_->mapToSource (sourceIndex);
 		if (cIndex != Impl_->LastSelectedIndex_)
 			return;
 
-		QModelIndex mapped = Impl_->ItemLists_->mapToSource (cIndex);
+		const auto& mapped = Impl_->ItemLists_->mapToSource (cIndex);
 		static_cast<ItemsListModel*> (Impl_->ItemLists_->
 				GetModelForRow (cIndex.row ())->data ())->Selected (mapped);
 	}
 
 	void ItemsWidget::makeCurrentItemVisible ()
 	{
-		QModelIndex item = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
+		const auto& item = Impl_->Ui_.Items_->selectionModel ()->currentIndex ();
 		if (item.isValid ())
 			Impl_->Ui_.Items_->scrollTo (item);
 	}

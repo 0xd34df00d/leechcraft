@@ -42,16 +42,17 @@ namespace Util
 {
 namespace XDG
 {
-	bool Item::operator== (const Item& item) const
+	bool operator== (const Item& left, const Item& right)
 	{
-		return IsHidden_ == item.IsHidden_ &&
-				Name_ == item.Name_ &&
-				GenericName_ == item.GenericName_ &&
-				Comments_ == item.Comments_ &&
-				Categories_ == item.Categories_ &&
-				Command_ == item.Command_ &&
-				WD_ == item.WD_ &&
-				IconName_ == item.IconName_;
+		return left.IsHidden_ == right.IsHidden_ &&
+				left.Type_ == right.Type_ &&
+				left.Name_ == right.Name_ &&
+				left.GenericName_ == right.GenericName_ &&
+				left.Comments_ == right.Comments_ &&
+				left.Categories_ == right.Categories_ &&
+				left.Command_ == right.Command_ &&
+				left.WD_ == right.WD_ &&
+				left.IconName_ == right.IconName_;
 	}
 
 	bool Item::IsValid () const
@@ -194,17 +195,17 @@ namespace XDG
 		if (!file.open (QIODevice::ReadOnly))
 			throw std::runtime_error ("Unable to open file");
 
-		const auto& result = Util::XDG::DesktopParser () (file.readAll ());
+		const auto& result = Util::XDG::DesktopParser {} (file.readAll ());
 		const auto& group = result ["Desktop Entry"];
 
-		Item_ptr item (new Item);
+		const auto& item = std::make_shared<Item> ();
 		item->Name_ = FirstValues (group ["Name"]);
 		item->GenericName_ = FirstValues (group ["GenericName"]);
 		item->Comments_ = FirstValues (group ["Comment"]);
 
-		item->Categories_ = group ["Categories"] [QString ()];
+		item->Categories_ = group ["Categories"] [{}];
 
-		auto getSingle = [&group] (const QString& name) { return group [name] [QString ()].value (0); };
+		auto getSingle = [&group] (const QString& name) { return group [name] [{}].value (0); };
 
 		item->IconName_ = getSingle ("Icon");
 

@@ -108,7 +108,6 @@ namespace Aggregator
 		void SetHideRead (bool);
 		bool IsItemCurrent (int) const;
 		void Selected (const QModelIndex&);
-		void MarkItemReadStatus (const QModelIndex&, bool);
 		bool IsItemRead (int) const;
 		bool IsItemReadNotCurrent (int) const;
 		QStringList GetItemCategories (int) const;
@@ -120,6 +119,7 @@ namespace Aggregator
 		void LoadUIState ();
 		void SaveUIState ();
 	private:
+		void MarkItemReadStatus (const QModelIndex&, bool);
 		void ClearSupplementaryModels ();
 		void AddSupplementaryModelFor (const ChannelShort&);
 		void SetupActions ();
@@ -128,7 +128,7 @@ namespace Aggregator
 				QPalette::ColorGroup = QApplication::palette ().currentColorGroup ());
 		QString ToHtml (const Item_ptr&);
 		void RestoreSplitter ();
-		QModelIndexList GetSelected () const;
+		QList<QPersistentModelIndex> GetSelected () const;
 	private slots:
 		void invalidateMergeMode ();
 		void on_ActionHideReadItems__triggered ();

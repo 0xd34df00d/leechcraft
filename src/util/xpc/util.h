@@ -79,6 +79,7 @@ namespace Util
 	 * null, the text parameter is used.
 	 *
 	 * @sa MakeANCancel()
+	 * @sa MakeANRule()
 	 */
 	UTIL_XPC_API Entity MakeAN (const QString& header, const QString& text, Priority priority,
 			const QString& senderID, const QString& cat, const QString& type,
@@ -86,9 +87,33 @@ namespace Util
 			int delta = 1, int count = 0,
 			const QString& fullText = QString (), const QString& extendedText = QString ());
 
+	/** @brief Creates an Entity defining an Advanced Notifications rule.
+	 *
+	 * Returns an entity describing a notifications rule triggering under
+	 * various conditions, defined by the parameters of this function.
+	 *
+	 * @param[in] title The human-readable title of the rule.
+	 * @param[in] senderID The plugin ID of the sender (must not be
+	 * empty).
+	 * @param[in] category The category of the event (must not be empty).
+	 * @param[in] types The types of events in the given \em category. If
+	 * this list is empty, every event type matches.
+	 * @param[in] flags The flags describing the notification behavior for
+	 * for this rule
+	 * @param[in] openConfiguration Whether the configuration widget for
+	 * the just created rule should be opened automatically.
+	 * @param[in] fields The list of pairs of a field ID (as in
+	 * ANFieldData::ID_) and corresponding field value as ANFieldValue.
+	 * @return The Entity object describing a notifications rule for the
+	 * passed parameters.
+	 *
+	 * @sa MakeAN()
+	 */
 	UTIL_XPC_API Entity MakeANRule (const QString& title,
-			const QString& senderID, const QString& cat, const QStringList& types,
-			AN::NotifyFlags = AN::NotifyNone,
+			const QString& senderID,
+			const QString& category,
+			const QStringList& types,
+			AN::NotifyFlags flags = AN::NotifyNone,
 			bool openConfiguration = false,
 			const QList<QPair<QString, ANFieldValue>>& fields = {});
 
@@ -187,12 +212,58 @@ namespace Util
 	 */
 	UTIL_XPC_API Entity MakeANCancel (const QString& senderId, const QString& eventId);
 
+	/** @brief Returns persistent data stored under given \em key.
+	 *
+	 * The persistent data itself is stored in plugins implementing the
+	 * IPersistentStoragePlugin interface. This function uses the passed
+	 * \em proxy to get the list of those.
+	 *
+	 * If no data is found under the given \em key, a null QVariant is
+	 * returned.
+	 *
+	 * @param[in] key The key to look for.
+	 * @param[in] proxy The ICoreProxy object for getting the list of
+	 * persistent storage plugins.
+	 * @return The data stored under the given \em key as a QVariant,
+	 * or a null QVariant of no data is found (and, particularly, if no
+	 * storage plugins are available).
+	 *
+	 * @sa IPersistentStoragePlugin
+	 */
 	UTIL_XPC_API QVariant GetPersistentData (const QByteArray& key,
 			const ICoreProxy_ptr& proxy);
 
+	/** @brief Sets the progress values on the given \em row.
+	 *
+	 * This function first retrieves the QStandardItem object at the
+	 * position defined by JobHolderColumn::JobProgress in the passed
+	 * \em row and then sets its text to \em text and updates the
+	 * ProcessStateInfo structure under the JobHolderRole::ProcessState
+	 * role to have the given amount of \em done and \em total.
+	 *
+	 * @param[in] row The row to set data on.
+	 * @param[in] done The amount of work done.
+	 * @param[in] total The total amount of work.
+	 * @param[in] text The text that the progress-related item should
+	 * have in the \em row.
+	 *
+	 * @sa ProcessStateInfo
+	 */
 	UTIL_XPC_API void SetJobHolderProgress (const QList<QStandardItem*>& row,
 			qint64 done, qint64 total, const QString& text);
 
+	/** @brief Sets the \em done and \em total progress values on the
+	 * given \em item.
+	 *
+	 * This function updates the ProcessStateInfo structure stored under
+	 * the JobHolderRole::ProcessState role in the given \em item.
+	 *
+	 * @param[in] item The item to set data on.
+	 * @param[in] done The amount of work done.
+	 * @param[in] total The total amount of work.
+	 *
+	 * @sa ProcessStateInfo
+	 */
 	UTIL_XPC_API void SetJobHolderProgress (QStandardItem *item, qint64 done, qint64 total);
 }
 }

@@ -249,11 +249,10 @@ namespace Util
 		 * @sa InsertChild()
 		 */
 		template<typename... Args>
-		T_ptr AppendChild (Args&&... args)
+		T_ptr& AppendChild (Args&&... args)
 		{
-			const auto& newItem = std::make_shared<T> (std::forward<Args> (args)...);
-			Children_ << newItem;
-			return newItem;
+			Children_.append (std::make_shared<T> (std::forward<Args> (args)...));
+			return Children_.last ();
 		}
 
 		/** @brief Creates a new child item, inserts it at the given
@@ -271,11 +270,10 @@ namespace Util
 		 * @sa AppendChild()
 		 */
 		template<typename... Args>
-		T_ptr InsertChild (int pos, Args&&... args)
+		T_ptr& InsertChild (int pos, Args&&... args)
 		{
-			const auto& newItem = std::make_shared<T> (std::forward<Args> (args)...);
-			Children_.insert (pos, newItem);
-			return newItem;
+			Children_.insert (pos, std::make_shared<T> (std::forward<Args> (args)...));
+			return Children_ [pos];
 		}
 
 		/** @brief Returns the pointer to the parent item.

@@ -45,8 +45,17 @@ namespace XDG
 {
 	class Item;
 
-	typedef std::shared_ptr<Item> Item_ptr;
+	using Item_ptr = std::shared_ptr<Item>;
 
+	/** @brief Describes a single XDG <code>.desktop</code> entry.
+	 *
+	 * XDG entries can language-dependent fields like name, generic name
+	 * or comment. The values of these fields are obtained via GetName(),
+	 * GetGenericName() and GetComment() respectively, taking the
+	 * language code and returning either the localized field for that
+	 * language or the version of the field for the default (typically
+	 * English) language.
+	 */
 	class UTIL_XDG_API Item
 	{
 		QHash<QString, QString> Name_;
@@ -63,35 +72,200 @@ namespace XDG
 		bool IsHidden_;
 		Type Type_;
 	public:
-		bool operator== (const Item&) const;
+		/** @brief Checks whether \em left and \em right are equal.
+		 *
+		 * The icon field obtained via GetIcon() is \em not checked for
+		 * equality.
+		 *
+		 * @param[in] left First XDG item to check for equality.
+		 * @param[in] right Second XDG item to check for equality.
+		 * @return Whether \em left and \em right are equal.
+		 */
+		friend UTIL_XDG_API bool operator== (const Item& left, const Item& right);
 
+		/** @brief Checks whether this XDG item is valid.
+		 *
+		 * A valid item has name field set for at least one language.
+		 *
+		 * @return Whether this XDG item is valid.
+		 */
 		bool IsValid () const;
 
+		/** @brief Checks whether this XDG item should be hidden.
+		 *
+		 * A hidden XDG item is not presented to the user in start menus
+		 * and so on.
+		 *
+		 * @return Whether this item is hidden.
+		 */
 		bool IsHidden () const;
 
-		void Execute (ICoreProxy_ptr) const;
+		/** @brief Executes this item, if possible.
+		 *
+		 * Depending on the type of this item, execution can mean
+		 * launching an application (for Type::Application), opening a
+		 * default URL handler (for Type::URL) and so on.
+		 *
+		 * @param[in] proxy The ICoreProxy_ptr object to use if needed
+		 * during execution.
+		 */
+		void Execute (ICoreProxy_ptr proxy) const;
 
-		QString GetName (const QString&) const;
-		QString GetGenericName (const QString&) const;
-		QString GetComment (const QString&) const;
+		/** @brief Returns the name of this item.
+		 *
+		 * @param[in] language The code of the desired language for the
+		 * localized name.
+		 * @return The localized name matching the \em language, or the
+		 * default name if there is no localized one for the \em language.
+		 *
+		 * @sa GetGenericName()
+		 */
+		QString GetName (const QString& language) const;
+
+		/** @brief Returns the generic name of this item.
+		 *
+		 * @param[in] language The code of the desired language for the
+		 * localized generic name.
+		 * @return The localized generic name matching the \em language,
+		 * or the default generic name if there is no localized one for
+		 * the \em language.
+		 *
+		 * @sa GetName()
+		 */
+		QString GetGenericName (const QString& language) const;
+
+		/** @brief Returns the comment of this item.
+		 *
+		 * @param[in] language The code of the desired language for the
+		 * localized comment.
+		 * @return The localized comment matching the \em language, or
+		 * the default generic name if there is no localized one for the
+		 * \em language.
+		 */
+		QString GetComment (const QString& language) const;
+
+		/** @brief Returns the name of the icon for this item.
+		 *
+		 * Please note this is not related to the GetIcon() method which
+		 * (along with SetIcon()) is provided purely for convenience.
+		 *
+		 * @return The XDG name of this icon, or a null string if not set.
+		 *
+		 * @sa GetIcon()
+		 */
 		QString GetIconName () const;
+
+		/** @brief Returns the categories where this item belongs.
+		 *
+		 * @return The list of categories for this item.
+		 */
 		QStringList GetCategories () const;
 
+		/** @brief Returns the type of this item.
+		 *
+		 * @return The type of this item.
+		 */
 		Type GetType () const;
+
+		/** @brief Returns type type-specific command for this item.
+		 *
+		 * A command could be a name of the application for
+		 * Type::Application, an URL for Type::URL, and so on.
+		 *
+		 * @return The type-specific XDG command for this item, or a
+		 * null string if not set.
+		 *
+		 * @sa GetWorkingDirectory()
+		 */
 		QString GetCommand () const;
+
+		/** @brief Returns the working directory for command execution.
+		 *
+		 * This directory specifies the working directory where the
+		 * command returned by GetCommand() should be executed.
+		 *
+		 * @return The directory where the command associated with this
+		 * item should be executed, or a null string if not set.
+		 *
+		 * @sa GetCommand()
+		 */
 		QString GetWorkingDirectory () const;
 
+		/** @brief Returns the permanent ID of this item.
+		 *
+		 * The returned ID is language-agnostic and is suitable to, for
+		 * instance, identify the item in a favorites list.
+		 *
+		 * @return The permanent ID of this item.
+		 */
 		QString GetPermanentID () const;
 
-		void SetIcon (const QIcon&);
+		/** @brief Sets the icon associated with this item.
+		 *
+		 * The icon can be accessed later via the GetIcon() method.
+		 *
+		 * This method is not related to GetIconName() in any way and is
+		 * provided purely for convenience, for example, to associate a
+		 * loaded icon with the item.
+		 *
+		 * @param[in] icon The icon to set.
+		 *
+		 * @sa GetIcon()
+		 * @sa GetIconName()
+		 */
+		void SetIcon (const QIcon& icon);
+
+		/** @brief Returns the icon previously set by SetIcon().
+		 *
+		 * If no icon has been set previously via SetIcon(), this method
+		 * returns a null icon even if GetIconName() returns a perfectly
+		 * valid name of an existing icon.
+		 *
+		 * This method is not related to GetIconName() in any way and
+		 * (along with SetIcon()) is provided purely for convenience, for
+		 * example, to associate a loaded icon with the item.
+		 *
+		 * @return The icon previously set via SetIcon(), or a null icon
+		 * if no icon has been set.
+		 *
+		 * @sa SetIcon()
+		 * @sa GetIconName()
+		 */
 		QIcon GetIcon () const;
 
-		QDebug DebugPrint (QDebug) const;
+		/** @brief Serializes item contents to the debugging \em stream.
+		 *
+		 * This function is provided for convenience to pretty-print
+		 * contents of this item to a debugging stream.
+		 *
+		 * @param[in] stream The stream to debug-print
+		 * @return The debugging \em stream with the contents of this
+		 * item.
+		 */
+		QDebug DebugPrint (QDebug stream) const;
 
-		static Item_ptr FromDesktopFile (const QString&);
+		/** @brief Loads the XDG <code>.desktop</code> item from \em file.
+		 *
+		 * @param[in] file The file to load the item from.
+		 * @return The item loaded from \em file, or an invalid item
+		 * (with IsValid() returning <code>false</code>) if the \em file
+		 * is invalid.
+		 *
+		 * @throw std::runtime_error If \em file cannot be opened.
+		 */
+		static Item_ptr FromDesktopFile (const QString& file);
 	};
 
-	QDebug operator<< (QDebug, const Item&);
+	/** @brief Serializes \em item contents to the debugging \em stream.
+	 *
+	 * This function is provided for convenience to pretty-print
+	 * contents of \em item to a debugging stream.
+	 *
+	 * @param[in] stream The stream to debug-print
+	 * @param[in] item The XDG item to print.
+	 * @return The debugging \em stream with the contents of the \em item.
+	 */
+	QDebug operator<< (QDebug debug, const Item& item);
 }
 }
 }

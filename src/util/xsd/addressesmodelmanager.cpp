@@ -30,6 +30,7 @@
 #include "addressesmodelmanager.h"
 #include <QStandardItemModel>
 #include <QNetworkInterface>
+#include <QNetworkConfigurationManager>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
 
@@ -47,6 +48,20 @@ namespace Util
 				DataSources::DataSourceRole::FieldType);
 		Model_->horizontalHeaderItem (1)->setData (DataSources::DataFieldType::Integer,
 				DataSources::DataSourceRole::FieldType);
+
+		const auto confManager = new QNetworkConfigurationManager { this };
+		connect (confManager,
+				SIGNAL (configurationAdded (QNetworkConfiguration)),
+				this,
+				SLOT (updateAvailInterfaces ()));
+		connect (confManager,
+				SIGNAL (configurationRemoved (QNetworkConfiguration)),
+				this,
+				SLOT (updateAvailInterfaces ()));
+		connect (confManager,
+				SIGNAL (configurationChanged (QNetworkConfiguration)),
+				this,
+				SLOT (updateAvailInterfaces ()));
 
 		updateAvailInterfaces ();
 
