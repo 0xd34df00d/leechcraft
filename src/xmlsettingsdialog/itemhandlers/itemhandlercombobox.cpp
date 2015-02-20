@@ -100,7 +100,11 @@ namespace LeechCraft
 		{
 			const auto& images = XSD_->GetImages (option);
 			const auto& name = option.attribute ("name");
-			const auto& label = XSD_->GetLabel (option);
+
+			auto label = XSD_->GetLabel (option);
+			if (label.isEmpty ())
+				label = name;
+
 			if (!images.isEmpty ())
 				box->addItem (QPixmap::fromImage (images.at (0)), label, name);
 			else
