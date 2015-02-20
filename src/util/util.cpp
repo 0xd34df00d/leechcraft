@@ -47,7 +47,9 @@
 #include <QAction>
 #include <QtDebug>
 
+#if QT_VERSION < 0x050500
 Q_DECLARE_METATYPE (QList<QModelIndex>);
+#endif
 
 QString LeechCraft::Util::GetAsBase64Src (const QImage& pix)
 {
