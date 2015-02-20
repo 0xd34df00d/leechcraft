@@ -117,8 +117,8 @@ namespace Murm
 
 			const QString Alt_;
 
-			const boost::optional<QSize> FullSize_ = {};
-			const boost::optional<QSize> ThumbSize_ = {};
+			const boost::optional<QSize> FullSize_;
+			const boost::optional<QSize> ThumbSize_;
 		};
 
 		using ImageInfo = boost::variant<SimpleImageInfo, LinkImageInfo>;
