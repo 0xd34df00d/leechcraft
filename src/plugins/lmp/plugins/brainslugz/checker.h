@@ -75,6 +75,7 @@ namespace BrainSlugz
 		void rotateQueue ();
 	signals:
 		void finished ();
+		void progress (int remaining);
 	};
 }
 }

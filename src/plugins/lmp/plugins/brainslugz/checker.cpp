@@ -176,6 +176,8 @@ namespace BrainSlugz
 
 	void Checker::rotateQueue ()
 	{
+		emit progress (Artists_.size ());
+
 		if (Artists_.isEmpty ())
 		{
 			HandleReady ();
