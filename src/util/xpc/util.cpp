@@ -167,7 +167,10 @@ namespace Util
 			qint64 done, qint64 total, const QString& text)
 	{
 		const auto item = row.value (JobHolderColumn::JobProgress);
-		item->setText (text);
+		if (text.contains ("%1") && text.contains ("%2"))
+			item->setText (text.arg (done).arg (total));
+		else
+			item->setText (text);
 		SetJobHolderProgress (item, done, total);
 	}
 
