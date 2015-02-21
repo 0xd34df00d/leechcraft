@@ -109,10 +109,15 @@ namespace BrainSlugz
 			if (!OpenedTab_)
 			{
 				OpenedTab_ = new CheckTab { LmpProxy_, CoreProxy_, CheckTC_, this };
+
 				connect (OpenedTab_,
 						SIGNAL (removeTab (QWidget*)),
 						this,
 						SIGNAL (removeTab (QWidget*)));
+				connect (OpenedTab_,
+						SIGNAL (checkStarted (Checker*)),
+						ProgressModelManager_,
+						SLOT (handleCheckStarted (Checker*)));
 			}
 			emit addNewTab ("BrainSlugz", OpenedTab_);
 			emit raiseTab (OpenedTab_);
