@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "filter.h"
+#include <QDataStream>
 #include <QtDebug>
 
 namespace LeechCraft

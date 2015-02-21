@@ -30,6 +30,7 @@
 #include "xmlsettingsmanager.h"
 #include <QCoreApplication>
 #include <QColor>
+#include <QDataStream>
 
 Q_DECLARE_METATYPE (QList<QColor>);
 

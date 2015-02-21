@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "mediainfo.h"
+#include <QDataStream>
 
 namespace LeechCraft
 {

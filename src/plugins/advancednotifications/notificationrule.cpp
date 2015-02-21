@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "notificationrule.h"
+#include <QDataStream>
 #include <QStringList>
 #include <QtDebug>
 
