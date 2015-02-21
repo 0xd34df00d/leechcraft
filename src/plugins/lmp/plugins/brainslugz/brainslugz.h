@@ -45,6 +45,7 @@ namespace LMP
 namespace BrainSlugz
 {
 	class CheckTab;
+	class ProgressModelManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -63,6 +64,8 @@ namespace BrainSlugz
 		ILMPProxy_ptr LmpProxy_;
 
 		QPointer<CheckTab> OpenedTab_;
+
+		ProgressModelManager *ProgressModelManager_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

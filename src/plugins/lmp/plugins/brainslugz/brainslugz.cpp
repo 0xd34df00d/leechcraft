@@ -30,6 +30,7 @@
 #include "brainslugz.h"
 #include <util/util.h>
 #include "checktab.h"
+#include "progressmodelmanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,8 @@ namespace BrainSlugz
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("lmp_brainslugz");
+
+		ProgressModelManager_ = new ProgressModelManager { this };
 
 		CoreProxy_ = proxy;
 
