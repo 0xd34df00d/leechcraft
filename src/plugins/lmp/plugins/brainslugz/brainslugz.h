@@ -34,6 +34,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ijobholder.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
 class QWidget;
@@ -51,10 +52,11 @@ namespace BrainSlugz
 				 , public IInfo
 				 , public IHaveTabs
 				 , public IPlugin2
+				 , public IJobHolder
 				 , public ILMPPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IPlugin2 LeechCraft::LMP::ILMPPlugin)
+		Q_INTERFACES (IInfo IHaveTabs IPlugin2 IJobHolder LeechCraft::LMP::ILMPPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.BrainSlugz")
 
@@ -79,6 +81,8 @@ namespace BrainSlugz
 		void TabOpenRequested (const QByteArray&);
 
 		QSet<QByteArray> GetPluginClasses () const;
+
+		QAbstractItemModel* GetRepresentation () const;
 
 		void SetLMPProxy (ILMPProxy_ptr);
 	signals:

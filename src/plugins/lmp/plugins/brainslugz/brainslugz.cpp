@@ -97,6 +97,11 @@ namespace BrainSlugz
 		return result;
 	}
 
+	QAbstractItemModel* Plugin::GetRepresentation () const
+	{
+		return ProgressModelManager_->GetModel ();
+	}
+
 	void Plugin::SetLMPProxy (ILMPProxy_ptr proxy)
 	{
 		LmpProxy_ = proxy;
