@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "regexp.h"
+#include <QDataStream>
 #include <QtDebug>
 
 #ifdef USE_PCRE
