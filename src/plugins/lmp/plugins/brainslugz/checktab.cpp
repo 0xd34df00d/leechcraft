@@ -203,6 +203,7 @@ namespace BrainSlugz
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleCheckFinished ()));
+		emit checkStarted (checker);
 
 		CheckView_->rootContext ()->setContextProperty ("checkingState", "checking");
 

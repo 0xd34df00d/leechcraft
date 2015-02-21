@@ -50,6 +50,7 @@ namespace LMP
 namespace BrainSlugz
 {
 	class CheckModel;
+	class Checker;
 
 	class CheckTab : public QWidget
 				   , public ITabWidget
@@ -92,7 +93,9 @@ namespace BrainSlugz
 		void handleCheckFinished ();
 	signals:
 		void removeTab (QWidget*);
+
 		void runningStateChanged (bool);
+		void checkStarted (Checker*);
 	};
 }
 }
