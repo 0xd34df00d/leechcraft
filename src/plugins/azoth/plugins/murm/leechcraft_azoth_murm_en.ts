@@ -37,7 +37,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm</name>
     <message>
-        <location filename="serverhistorymanager.cpp" line="64"/>
+        <location filename="serverhistorymanager.cpp" line="67"/>
         <source>Contact</source>
         <translation>Contact</translation>
     </message>
@@ -45,42 +45,42 @@
 <context>
     <name>LeechCraft::Azoth::Murm::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="162"/>
+        <location filename="entrybase.cpp" line="308"/>
         <source>Enqueue</source>
         <translation>Enqueue</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="166"/>
+        <location filename="entrybase.cpp" line="312"/>
         <source>Play</source>
         <translation>Play</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="170"/>
+        <location filename="entrybase.cpp" line="316"/>
         <source>Download</source>
         <translation>Download</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="205"/>
+        <location filename="entrybase.cpp" line="351"/>
         <source>%1 document, size: %2</source>
         <translation>%1 document, size: %2</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="216"/>
+        <location filename="entrybase.cpp" line="362"/>
         <source>Page:</source>
         <translation>Page:</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="325"/>
+        <location filename="entrybase.cpp" line="486"/>
         <source>Forwarded message from %1</source>
         <translation>Forwarded message from %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="374"/>
+        <location filename="entrybase.cpp" line="541"/>
         <source>Posted on: %1</source>
         <translation>Posted on: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="377"/>
+        <location filename="entrybase.cpp" line="544"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n like</numerusform>
@@ -88,7 +88,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="379"/>
+        <location filename="entrybase.cpp" line="546"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n repost</numerusform>
@@ -148,12 +148,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="302"/>
+        <location filename="vkaccount.cpp" line="314"/>
         <source>me</source>
         <translation>me</translation>
     </message>
     <message>
-        <location filename="vkaccount.cpp" line="444"/>
+        <location filename="vkaccount.cpp" line="456"/>
         <source>%1 is invalid VKontake ID</source>
         <translation>%1 is invalid VKontake ID</translation>
     </message>
@@ -161,12 +161,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkChatEntry</name>
     <message>
-        <location filename="vkchatentry.cpp" line="170"/>
+        <location filename="vkchatentry.cpp" line="186"/>
         <source>Chats</source>
         <translation>Chats</translation>
     </message>
     <message>
-        <location filename="vkchatentry.cpp" line="274"/>
+        <location filename="vkchatentry.cpp" line="290"/>
         <source>Participants of %1</source>
         <translation>Participants of %1</translation>
     </message>
@@ -174,72 +174,72 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkEntry</name>
     <message>
-        <location filename="vkentry.cpp" line="109"/>
+        <location filename="vkentry.cpp" line="111"/>
         <source>%1 is now on the site again</source>
         <translation>%1 is now on the site again</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="110"/>
+        <location filename="vkentry.cpp" line="112"/>
         <source>%1 has left the site</source>
         <translation>%1 has left the site</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="411"/>
+        <location filename="vkentry.cpp" line="412"/>
         <source>Self contact</source>
         <translation>Self contact</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="414"/>
+        <location filename="vkentry.cpp" line="415"/>
         <source>Non-friends</source>
         <translation>Non-friends</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="535"/>
+        <location filename="vkentry.cpp" line="536"/>
         <source>First name</source>
         <translation>First name</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="536"/>
+        <location filename="vkentry.cpp" line="537"/>
         <source>Last name</source>
         <translation>Last name</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="537"/>
+        <location filename="vkentry.cpp" line="538"/>
         <source>Nick</source>
         <translation>Nick</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="538"/>
+        <location filename="vkentry.cpp" line="539"/>
         <source>Photo</source>
         <translation>Photo</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="539"/>
+        <location filename="vkentry.cpp" line="540"/>
         <source>Birthday</source>
         <translation>Birthday</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="540"/>
+        <location filename="vkentry.cpp" line="541"/>
         <source>Home phone</source>
         <translation>Home phone</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="541"/>
+        <location filename="vkentry.cpp" line="542"/>
         <source>Mobile phone</source>
         <translation>Mobile phone</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="542"/>
+        <location filename="vkentry.cpp" line="543"/>
         <source>Timezone</source>
         <translation>Timezone</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="543"/>
+        <location filename="vkentry.cpp" line="544"/>
         <source>City</source>
         <translation>City</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="544"/>
+        <location filename="vkentry.cpp" line="545"/>
         <source>Country</source>
         <translation>Country</translation>
     </message>
@@ -247,7 +247,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkProtocol</name>
     <message>
-        <location filename="vkprotocol.cpp" line="91"/>
+        <location filename="vkprotocol.cpp" line="97"/>
         <source>VKontakte</source>
         <translation>VKontakte</translation>
     </message>
@@ -268,6 +268,21 @@
         <location filename="mucjoinwidget.ui" line="50"/>
         <source>Users:</source>
         <translation>Users:</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="entrybase.cpp" line="194"/>
+        <location filename="entrybase.cpp" line="210"/>
+        <source>Image, %1 by %2 pixels.</source>
+        <oldsource>Image, %1 by %2 pixels</oldsource>
+        <translation>Image, %1 by %2 pixels.</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="198"/>
+        <source>Image</source>
+        <translation>Image</translation>
     </message>
 </context>
 <context>
@@ -342,39 +357,58 @@
     <name>azothmurmsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
-        <location filename="dummy.cpp" line="9"/>
         <source>Azoth Murm</source>
         <translation>Azoth Murm</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="10"/>
         <source>Appearance</source>
         <translation>Appearance</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
-        <location filename="dummy.cpp" line="11"/>
         <source>Entry name format:</source>
         <translation>Entry name format:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
-        <location filename="dummy.cpp" line="12"/>
         <source>The following variables are allowed: $name, $nick, $surname.</source>
         <translation>The following variables are allowed: $name, $nick, $surname.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
-        <location filename="dummy.cpp" line="13"/>
         <source>Connection</source>
         <translation>Connection</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <location filename="dummy.cpp" line="14"/>
         <source>Require Offline permissions to avoid reauthentification on IP change</source>
         <translation>Require Offline permissions to avoid reauthentification on IP change</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>In-chat images</source>
+        <translation>In-chat images</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Show images in chat:</source>
+        <translation>Show images in chat:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>embedded</source>
+        <translation>embedded</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>as links</source>
+        <translation>as links</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source>Stickers size in pixels:</source>
+        <translation>Stickers size in pixels:</translation>
     </message>
 </context>
 </TS>

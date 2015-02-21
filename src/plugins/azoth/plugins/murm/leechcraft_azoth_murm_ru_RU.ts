@@ -37,7 +37,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm</name>
     <message>
-        <location filename="serverhistorymanager.cpp" line="64"/>
+        <location filename="serverhistorymanager.cpp" line="67"/>
         <source>Contact</source>
         <translation>Контакт</translation>
     </message>
@@ -45,42 +45,42 @@
 <context>
     <name>LeechCraft::Azoth::Murm::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="162"/>
+        <location filename="entrybase.cpp" line="308"/>
         <source>Enqueue</source>
         <translation>Добавить в очередь</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="166"/>
+        <location filename="entrybase.cpp" line="312"/>
         <source>Play</source>
         <translation>Проиграть</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="170"/>
+        <location filename="entrybase.cpp" line="316"/>
         <source>Download</source>
         <translation>Скачать</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="205"/>
+        <location filename="entrybase.cpp" line="351"/>
         <source>%1 document, size: %2</source>
         <translation>Документ %1, размер: %2</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="216"/>
+        <location filename="entrybase.cpp" line="362"/>
         <source>Page:</source>
         <translation>Страница:</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="325"/>
+        <location filename="entrybase.cpp" line="486"/>
         <source>Forwarded message from %1</source>
         <translation>Пересланное сообщение от %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="374"/>
+        <location filename="entrybase.cpp" line="541"/>
         <source>Posted on: %1</source>
         <translation>Опубликовано: %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="377"/>
+        <location filename="entrybase.cpp" line="544"/>
         <source>%n like(s)</source>
         <translation>
             <numerusform>%n пользователю это нравится</numerusform>
@@ -89,7 +89,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="entrybase.cpp" line="379"/>
+        <location filename="entrybase.cpp" line="546"/>
         <source>%n repost(s)</source>
         <translation>
             <numerusform>%n пользователь опубликовал это у себя</numerusform>
@@ -150,12 +150,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkAccount</name>
     <message>
-        <location filename="vkaccount.cpp" line="302"/>
+        <location filename="vkaccount.cpp" line="314"/>
         <source>me</source>
         <translation>я</translation>
     </message>
     <message>
-        <location filename="vkaccount.cpp" line="444"/>
+        <location filename="vkaccount.cpp" line="456"/>
         <source>%1 is invalid VKontake ID</source>
         <translation>%1 — неправильный ID В Контакте</translation>
     </message>
@@ -163,12 +163,12 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkChatEntry</name>
     <message>
-        <location filename="vkchatentry.cpp" line="170"/>
+        <location filename="vkchatentry.cpp" line="186"/>
         <source>Chats</source>
         <translation>Чаты</translation>
     </message>
     <message>
-        <location filename="vkchatentry.cpp" line="274"/>
+        <location filename="vkchatentry.cpp" line="290"/>
         <source>Participants of %1</source>
         <translation>Участники %1</translation>
     </message>
@@ -176,72 +176,72 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkEntry</name>
     <message>
-        <location filename="vkentry.cpp" line="109"/>
+        <location filename="vkentry.cpp" line="111"/>
         <source>%1 is now on the site again</source>
         <translation>%1 снова на сайте</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="110"/>
+        <location filename="vkentry.cpp" line="112"/>
         <source>%1 has left the site</source>
         <translation>%1 покинул(а) сайт</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="411"/>
+        <location filename="vkentry.cpp" line="412"/>
         <source>Self contact</source>
         <translation>Я</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="414"/>
+        <location filename="vkentry.cpp" line="415"/>
         <source>Non-friends</source>
         <translation>Недрузья</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="535"/>
+        <location filename="vkentry.cpp" line="536"/>
         <source>First name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="536"/>
+        <location filename="vkentry.cpp" line="537"/>
         <source>Last name</source>
         <translation>Фамилия</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="537"/>
+        <location filename="vkentry.cpp" line="538"/>
         <source>Nick</source>
         <translation>Ник</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="538"/>
+        <location filename="vkentry.cpp" line="539"/>
         <source>Photo</source>
         <translation>Фото</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="539"/>
+        <location filename="vkentry.cpp" line="540"/>
         <source>Birthday</source>
         <translation>День рожденья</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="540"/>
+        <location filename="vkentry.cpp" line="541"/>
         <source>Home phone</source>
         <translation>Домашний телефон</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="541"/>
+        <location filename="vkentry.cpp" line="542"/>
         <source>Mobile phone</source>
         <translation>Мобильный телефон</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="542"/>
+        <location filename="vkentry.cpp" line="543"/>
         <source>Timezone</source>
         <translation>Временная зона</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="543"/>
+        <location filename="vkentry.cpp" line="544"/>
         <source>City</source>
         <translation>Город</translation>
     </message>
     <message>
-        <location filename="vkentry.cpp" line="544"/>
+        <location filename="vkentry.cpp" line="545"/>
         <source>Country</source>
         <translation>Страна</translation>
     </message>
@@ -249,7 +249,7 @@
 <context>
     <name>LeechCraft::Azoth::Murm::VkProtocol</name>
     <message>
-        <location filename="vkprotocol.cpp" line="91"/>
+        <location filename="vkprotocol.cpp" line="97"/>
         <source>VKontakte</source>
         <translation>В Контакте</translation>
     </message>
@@ -270,6 +270,21 @@
         <location filename="mucjoinwidget.ui" line="50"/>
         <source>Users:</source>
         <translation>Пользователи:</translation>
+    </message>
+</context>
+<context>
+    <name>QObject</name>
+    <message>
+        <location filename="entrybase.cpp" line="194"/>
+        <location filename="entrybase.cpp" line="210"/>
+        <source>Image, %1 by %2 pixels.</source>
+        <oldsource>Image, %1 by %2 pixels</oldsource>
+        <translation>Изображение, %1 на %2 пикселей.</translation>
+    </message>
+    <message>
+        <location filename="entrybase.cpp" line="198"/>
+        <source>Image</source>
+        <translation>Изображение</translation>
     </message>
 </context>
 <context>
@@ -371,6 +386,31 @@
         <location filename="dummy.cpp" line="7"/>
         <source>Require Offline permissions to avoid reauthentification on IP change</source>
         <translation>Требовать уровня доступа «offline» во избежание реаутентификации при смене IP</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>In-chat images</source>
+        <translation>Изображения в окне разговора</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Show images in chat:</source>
+        <translation>Показывать изображения в окне разговора:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>embedded</source>
+        <translation>встроенными</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
+        <source>as links</source>
+        <translation>как ссылки</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="12"/>
+        <source>Stickers size in pixels:</source>
+        <translation>Размер стикеров в пикселях:</translation>
     </message>
 </context>
 </TS>
