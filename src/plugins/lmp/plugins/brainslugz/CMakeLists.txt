@@ -13,6 +13,7 @@ set (BRAINSLUGZ_SRCS
 	checktab.cpp
 	checkmodel.cpp
 	checker.cpp
+	progressmodelmanager.cpp
 	)
 
 set (BRAINSLUGZ_FORMS
