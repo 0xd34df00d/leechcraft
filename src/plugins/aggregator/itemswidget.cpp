@@ -392,14 +392,13 @@ namespace Aggregator
 
 		ClearSupplementaryModels ();
 
-		QSet<QString> tagsSet = QSet<QString>::fromList (tags);
+		const auto& tagsSet = QSet<QString>::fromList (tags);
 
-		ChannelsModel *cm = Core::Instance ().GetRawChannelsModel ();
+		const auto cm = Core::Instance ().GetRawChannelsModel ();
 		bool added = false;
 
 		for (int i = 0, size = cm->rowCount (); i < size; ++i)
 		{
-			QModelIndex index = cm->index (i, 0);
 			const auto& index = cm->index (i, 0);
 			const auto& thisSet = index.data (RoleTags).toStringList ();
 			if (std::none_of (thisSet.begin (), thisSet.end (),
@@ -409,7 +408,7 @@ namespace Aggregator
 			ChannelShort cs;
 			try
 			{
-				cs = cm-> GetChannelForIndex (index);
+				cs = cm->GetChannelForIndex (index);
 			}
 			catch (const std::exception& e)
 			{
@@ -418,8 +417,8 @@ namespace Aggregator
 			}
 
 			/** So that first one gets assigned to the
-				* current items model.
-				*/
+			 * current items model.
+			 */
 			if (!added)
 			{
 				Impl_->CurrentItemsModel_->Reset (cs.ChannelID_);
@@ -527,14 +526,13 @@ namespace Aggregator
 
 		Impl_->LastSelectedChannel_ = si;
 
-		QModelIndex index = si;
+		auto index = si;
 		if (const auto f = Impl_->ChannelsFilter_)
 			index = f->mapToSource (index);
 
 		try
 		{
-			ChannelShort ch = Core::Instance ()
-				.GetRawChannelsModel ()->GetChannelForIndex (index);
+			const auto& ch = Core::Instance ().GetRawChannelsModel ()->GetChannelForIndex (index);
 			Impl_->CurrentItemsModel_->Reset (ch.ChannelID_);
 		}
 		catch (const std::exception&)
@@ -553,17 +551,16 @@ namespace Aggregator
 		const auto& allCategories = Core::Instance ().GetCategories (items);
 		Impl_->ItemsFilterModel_->categorySelectionChanged (allCategories);
 
-		if (allCategories.size ())
+		if (!allCategories.isEmpty ())
 		{
 			Impl_->ItemCategorySelector_->setPossibleSelections (allCategories);
-			if (XmlSettingsManager::Instance ()->
-					property ("ShowCategorySelector").toBool ())
-			Impl_->ItemCategorySelector_->show ();
+			if (XmlSettingsManager::Instance ()->property ("ShowCategorySelector").toBool ())
+				Impl_->ItemCategorySelector_->show ();
 			RestoreSplitter ();
 		}
 		else
 		{
-			Impl_->ItemCategorySelector_->setPossibleSelections (QStringList ());
+			Impl_->ItemCategorySelector_->setPossibleSelections ({});
 			Impl_->ItemCategorySelector_->hide ();
 		}
 	}
@@ -588,8 +585,7 @@ namespace Aggregator
 	{
 		while (Impl_->SupplementaryModels_.size ())
 		{
-			Impl_->ItemLists_->
-					RemoveModel (Impl_->SupplementaryModels_.at (0).get ());
+			Impl_->ItemLists_->RemoveModel (Impl_->SupplementaryModels_.at (0).get ());
 			Impl_->SupplementaryModels_.removeAt (0);
 		}
 	}
