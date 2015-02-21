@@ -191,7 +191,7 @@ namespace Murm
 					if (!info.Alt_.isEmpty ())
 						w.writeCharacters (info.Alt_);
 					else if (info.Size_)
-						w.writeCharacters (QObject::tr ("Image of size %1×%2")
+						w.writeCharacters (QObject::tr ("Image, %1 by %2 pixels.")
 								.arg (info.Size_->width ())
 								.arg (info.Size_->height ()));
 					else
@@ -207,10 +207,9 @@ namespace Murm
 					QString result;
 
 					const auto& alt = (info.Alt_.isEmpty () && info.FullSize_) ?
-							QObject::tr ("Image of size") + " " +
-								QString::number (info.FullSize_->width ()) +
-								QString::fromUtf8 ("×") +
-								QString::number (info.FullSize_->height ()) :
+							QObject::tr ("Image, %1 by %2 pixels.")
+									.arg (info.FullSize_->width ())
+									.arg (info.FullSize_->height ()) :
 							info.Alt_;
 
 					QXmlStreamWriter w { &result };
