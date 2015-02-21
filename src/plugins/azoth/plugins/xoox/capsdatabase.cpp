@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "capsdatabase.h"
+#include <QDataStream>
 #include <QFile>
 #include <QTimer>
 #include <util/util.h>
