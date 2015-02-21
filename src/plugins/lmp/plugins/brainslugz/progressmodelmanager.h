@@ -33,6 +33,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -40,15 +41,24 @@ namespace LMP
 {
 namespace BrainSlugz
 {
+	class Checker;
+
 	class ProgressModelManager : public QObject
 	{
 		Q_OBJECT
 
 		QStandardItemModel * const Model_;
+		QList<QStandardItem*> Row_;
+
+		int InitialCount_ = 0;
 	public:
 		ProgressModelManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
+	public slots:
+		void handleCheckStarted (Checker*);
+		void handleProgress (int);
+		void handleFinished ();
 	};
 }
 }

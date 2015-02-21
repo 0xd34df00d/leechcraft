@@ -29,6 +29,10 @@
 
 #include "progressmodelmanager.h"
 #include <QStandardItemModel>
+#include <QtDebug>
+#include <util/xpc/util.h>
+#include <interfaces/ijobholder.h>
+#include "checker.h"
 
 namespace LeechCraft
 {
@@ -45,6 +49,56 @@ namespace BrainSlugz
 	QAbstractItemModel* ProgressModelManager::GetModel () const
 	{
 		return Model_;
+	}
+
+	void ProgressModelManager::handleCheckStarted (Checker *checker)
+	{
+		if (!Row_.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "seems like a check is already in progress";
+			return;
+		}
+
+		InitialCount_ = checker->GetRemainingCount ();
+		const auto& label = tr ("Checking new releases of %n artist(s)...", 0, InitialCount_);
+		Row_ = QList<QStandardItem*>
+		{
+			new QStandardItem { label },
+			new QStandardItem { tr ("Checking...") },
+			new QStandardItem {}
+		};
+
+		Util::SetJobHolderProgress (Row_, 0, InitialCount_, tr ("%1 of %2"));
+
+		for (const auto item : Row_)
+		{
+			item->setEditable (false);
+			item->setData (CustomDataRoles::RoleJobHolderRow, JobHolderRow::ProcessProgress);
+		}
+
+		Model_->appendRow (Row_);
+
+		connect (checker,
+				SIGNAL (progress (int)),
+				this,
+				SLOT (handleProgress (int)));
+		connect (checker,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleFinished ()));
+	}
+
+	void ProgressModelManager::handleProgress (int remaining)
+	{
+		const auto done = InitialCount_ - remaining;
+		Util::SetJobHolderProgress (Row_, done, InitialCount_, tr ("%1 of %2"));
+	}
+
+	void ProgressModelManager::handleFinished ()
+	{
+		Model_->removeRow (0);
+		Row_.clear ();
 	}
 }
 }
