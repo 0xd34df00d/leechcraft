@@ -527,7 +527,7 @@ namespace Aggregator
 		Impl_->LastSelectedChannel_ = si;
 
 		QModelIndex index = si;
-		if (QSortFilterProxyModel *f = Impl_->ChannelsFilter_)
+		if (const auto f = Impl_->ChannelsFilter_)
 			index = f->mapToSource (index);
 
 		try

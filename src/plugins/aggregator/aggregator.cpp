@@ -946,19 +946,15 @@ namespace Aggregator
 
 	void Aggregator::currentChannelChanged ()
 	{
-		auto index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
-		if (Impl_->FlatToFolders_->GetSourceModel ())
+		const auto& index = Impl_->Ui_.Feeds_->selectionModel ()->currentIndex ();
+		const auto& mapped = Impl_->FlatToFolders_->MapToSource (index);
+		if (!mapped.isValid ())
 		{
-			auto origIndex = index;
-			index = Impl_->FlatToFolders_->MapToSource (index);
-			if (!index.isValid ())
-			{
-				QStringList tags = origIndex.data (RoleTags).toStringList ();
-				Impl_->Ui_.ItemsWidget_->SetMergeModeTags (tags);
-				return;
-			}
+			const auto& tags = index.data (RoleTags).toStringList ();
+			Impl_->Ui_.ItemsWidget_->SetMergeModeTags (tags);
 		}
-		Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (index);
+		else
+			Impl_->Ui_.ItemsWidget_->CurrentChannelChanged (mapped);
 	}
 
 	void Aggregator::handleItemsMovedToChannel (QModelIndex index)
