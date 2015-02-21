@@ -334,7 +334,7 @@ cmake_dependent_option (ENABLE_PIERRE "Build Pierre, Mac OS X integration layer"
 option (ENABLE_OTZERKALU "Build Otzerkalu, which allows one to download web sites recursively" OFF)
 
 if (USE_QT5)
-	find_package(Qt5LinguistTools QUIET)
+	find_package(Qt5LinguistTools REQUIRED)
 	# Some Qt5 versions do not define a target for lconvert, so we need to find it ourselves
 	if (Qt5LinguistTools_FOUND)
 		if (NOT TARGET Qt5::lconvert AND TARGET Qt5::lrelease)
