@@ -400,9 +400,10 @@ namespace Aggregator
 		for (int i = 0, size = cm->rowCount (); i < size; ++i)
 		{
 			QModelIndex index = cm->index (i, 0);
-			QSet<QString> thisSet = QSet<QString>::fromList (index
-					.data (RoleTags).toStringList ());
-			if (!thisSet.intersect (tagsSet).size ())
+			const auto& index = cm->index (i, 0);
+			const auto& thisSet = index.data (RoleTags).toStringList ();
+			if (std::none_of (thisSet.begin (), thisSet.end (),
+					[&tagsSet] (const QString& tag) { return tagsSet.contains (tag); }))
 				continue;
 
 			ChannelShort cs;
