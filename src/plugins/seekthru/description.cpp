@@ -30,6 +30,7 @@
 #include "description.h"
 #include <stdexcept>
 #include <type_traits>
+#include <QDataStream>
 
 #if QT_VERSION >= 0x050000
 #include <QUrlQuery>
