@@ -31,10 +31,11 @@
 
 #include <memory>
 #include <QObject>
-#include <plugin.h>
-#include <account.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iprotocol.h>
+
+typedef struct _PurpleAccount      PurpleAccount;
+typedef struct _PurplePlugin           PurplePlugin;
 
 namespace LeechCraft
 {
