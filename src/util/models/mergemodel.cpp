@@ -328,6 +328,8 @@ namespace Util
 			}
 			else
 				++r;
+
+		Models_.erase (i);
 	}
 
 	size_t MergeModel::Size () const
