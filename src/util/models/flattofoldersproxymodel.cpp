@@ -313,13 +313,16 @@ namespace LeechCraft
 
 		QModelIndex FlatToFoldersProxyModel::MapToSource (const QModelIndex& proxy) const
 		{
-			if (!proxy.isValid ())
-				return QModelIndex ();
+			if (!GetSourceModel ())
+				return {};
 
-			FlatTreeItem *item = ToFlat (proxy);
+			if (!proxy.isValid ())
+				return {};
+
+			const auto item = ToFlat (proxy);
 
 			if (item->Type_ != FlatTreeItem::Type::Item)
-				return QModelIndex ();
+				return {};
 
 			return item->Index_;
 		}
