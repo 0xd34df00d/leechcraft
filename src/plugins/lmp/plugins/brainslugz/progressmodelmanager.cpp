@@ -31,7 +31,6 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/xpc/util.h>
-#include <interfaces/ijobholder.h>
 #include "checker.h"
 
 namespace LeechCraft
@@ -71,11 +70,7 @@ namespace BrainSlugz
 
 		Util::SetJobHolderProgress (Row_, 0, InitialCount_, tr ("%1 of %2"));
 
-		for (const auto item : Row_)
-		{
-			item->setEditable (false);
-			item->setData (CustomDataRoles::RoleJobHolderRow, JobHolderRow::ProcessProgress);
-		}
+		Util::InitJobHolderRow (Row_);
 
 		Model_->appendRow (Row_);
 
