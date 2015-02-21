@@ -37,6 +37,7 @@
 #include <QSettings>
 #include <QUrl>
 #include <QCoreApplication>
+#include <QDataStream>
 #include <util/util.h>
 #include "item.h"
 
