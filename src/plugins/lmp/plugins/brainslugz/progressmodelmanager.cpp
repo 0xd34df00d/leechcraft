@@ -68,9 +68,8 @@ namespace BrainSlugz
 			new QStandardItem {}
 		};
 
-		Util::SetJobHolderProgress (Row_, 0, InitialCount_, tr ("%1 of %2"));
-
 		Util::InitJobHolderRow (Row_);
+		handleProgress (InitialCount_);
 
 		Model_->appendRow (Row_);
 
