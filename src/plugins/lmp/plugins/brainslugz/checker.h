@@ -64,6 +64,8 @@ namespace BrainSlugz
 	public:
 		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
 				const ILMPProxy_ptr&, const ICoreProxy_ptr&, QObject* = nullptr);
+
+		int GetRemainingCount () const;
 	private:
 		void HandleReady ();
 	private slots:

@@ -66,6 +66,11 @@ namespace BrainSlugz
 		rotateQueue ();
 	}
 
+	int Checker::GetRemainingCount () const
+	{
+		return Artists_.size ();
+	}
+
 	void Checker::HandleReady ()
 	{
 		emit finished ();
