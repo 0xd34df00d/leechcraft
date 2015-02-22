@@ -51,6 +51,10 @@ namespace PinTab
 				this,
 				SLOT (checkPinState (int, int)));
 		connect (proxy->GetRootWindowsManager ()->GetQObject (),
+				SIGNAL (tabIsRemoving (int, int)),
+				this,
+				SLOT (handleTabRemoving (int, int)));
+		connect (proxy->GetRootWindowsManager ()->GetQObject (),
 				SIGNAL (windowRemoved (int)),
 				this,
 				SLOT (handleWindowRemoved (int)));
@@ -266,6 +270,19 @@ namespace PinTab
 
 		if (isPinned)
 			PinTab (index, windowId);
+	}
+
+	void Plugin::handleTabRemoving (int windowId, int index)
+	{
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
+		if (!window)
+			return;
+
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
+		if (!tw)
+			return;
+
+		Window2Widget2TabData_ [window].remove (tw->Widget (index));
 	}
 
 	void Plugin::handleWindowRemoved (int index)

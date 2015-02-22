@@ -84,7 +84,10 @@ namespace PinTab
 	private slots:
 		void pinTab (int index = -1);
 		void unPinTab (int index = -1);
+
 		void checkPinState (int windowId, int index);
+		void handleTabRemoving (int windowId, int index);
+
 		void handleWindowRemoved (int index);
 	};
 }
