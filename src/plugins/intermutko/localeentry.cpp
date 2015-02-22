@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "localeentry.h"
+#include <QDataStream>
 #include <QtDebug>
 
 namespace LeechCraft
