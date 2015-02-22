@@ -29,6 +29,7 @@
 
 #include "mainwindowmenumanager.h"
 #include <QMenu>
+#include <util/sll/qtutil.h>
 #include "interfaces/iactionsexporter.h"
 #include "ui_leechcraft.h"
 #include "core.h"
@@ -96,8 +97,9 @@ namespace LeechCraft
 
 	void MainWindowMenuManager::AddMenus (const QMap<QString, QList<QAction*>>& menus)
 	{
-		for (const auto& menuName : menus.keys ())
+		for (const auto& pair : Util::Stlize (menus))
 		{
+			const auto& menuName = pair.first;
 			QMenu *toInsert = nullptr;
 			if (menuName == "view")
 				toInsert = MenuView_;
@@ -112,7 +114,7 @@ namespace LeechCraft
 						break;
 					}
 
-			const auto& actions = menus [menuName];
+			const auto& actions = pair.second;
 
 			if (toInsert)
 				toInsert->insertActions (toInsert->actions ().value (0, 0), actions);
@@ -129,15 +131,18 @@ namespace LeechCraft
 
 	void MainWindowMenuManager::RemoveMenus (const QMap<QString, QList<QAction*>>& menus)
 	{
-		for (const auto& menuName : menus.keys ())
+		for (const auto& pair : Util::Stlize (menus))
 		{
+			const auto& menuName = pair.first;
+
 			QMenu *toRemove = nullptr;
 			if (menuName == "view")
 				toRemove = MenuView_;
 			else if (menuName == "tools")
 				toRemove = MenuTools_;
 
-			const auto& actions = menus [menuName];
+			const auto& actions = pair.second;
+
 			if (toRemove)
 				for (const auto action : actions)
 					toRemove->removeAction (action);

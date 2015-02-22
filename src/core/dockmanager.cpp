@@ -33,6 +33,7 @@
 #include <QToolBar>
 #include <QMenu>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/ihavetabs.h>
 #include "tabmanager.h"
 #include "core.h"
@@ -263,9 +264,10 @@ namespace LeechCraft
 
 		QList<QDockWidget*> toShowAssoc;
 		QList<QDockWidget*> toShowUnassoc;
-		for (auto dock : Dock2Info_.keys ())
+		for (const auto& pair : Util::Stlize (Dock2Info_))
 		{
-			const auto& info = Dock2Info_ [dock];
+			const auto dock = pair.first;
+			const auto& info = pair.second;
 			const auto otherWindow = RootWM_->GetWindowIndex (info.Window_);
 			if (otherWindow != thisWindowIdx)
 				continue;
