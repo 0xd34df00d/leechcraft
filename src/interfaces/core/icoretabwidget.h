@@ -94,21 +94,6 @@ public:
 	 */
 	virtual QList<QAction*> GetPermanentActions () const = 0;
 
-	/** @brief Returns the data of the tab at position index, or a null variant
-	 * if index is out of range.
-	 *
-	 * @param[in] index tab index.
-	 * @return the data of specified tab.
-	 */
-	virtual QVariant TabData (int index) const = 0;
-
-	/** @brief Sets the data of the tab at position index to data.
-	 *
-	 * @param[in] index tab index.
-	 * @param[in] data new tab data.
-	 */
-	virtual void SetTabData (int index, QVariant data) = 0;
-
 	/** @brief Returns the text of the tab at position index,
 	 * or an empty string if index is out of range.
 	 *
