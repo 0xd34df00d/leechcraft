@@ -20,6 +20,7 @@ else ()
 	find_path (LastFM_INCLUDE_DIR
 		NAMES
 		lastfm/global.h
+		lastfm5/global.h
 		PATHS
 		/usr/include
 		/usr/local/include
