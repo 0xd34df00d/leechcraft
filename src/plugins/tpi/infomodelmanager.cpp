@@ -34,8 +34,6 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ijobholder.h>
 
-Q_DECLARE_METATYPE (QPersistentModelIndex);
-
 namespace LeechCraft
 {
 namespace TPI
