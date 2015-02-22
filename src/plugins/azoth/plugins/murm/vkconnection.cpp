@@ -1236,6 +1236,204 @@ namespace Murm
 		emit gotNRIList (ids);
 	}
 
+	namespace
+	{
+		PhotoInfo PhotoMap2Info (const QVariantMap& map)
+		{
+			QString bigSrc;
+			QSize bigSize;
+			QString thumbSrc;
+			QSize thumbSize;
+
+			QString currentBigType;
+			const QStringList bigTypes { "x", "y", "z", "w" };
+
+			for (const auto& elem : map ["sizes"].toList ())
+			{
+				const auto& eMap = elem.toMap ();
+
+				auto size = [&eMap]
+				{
+					return QSize (eMap ["width"].toInt (), eMap ["height"].toInt ());
+				};
+
+				const auto& type = eMap ["type"].toString ();
+				if (type == "m")
+				{
+					thumbSrc = eMap ["src"].toString ();
+					thumbSize = size ();
+				}
+				else if (bigTypes.indexOf (type) > bigTypes.indexOf (currentBigType))
+				{
+					currentBigType = type;
+					bigSrc = eMap ["src"].toString ();
+					bigSize = size ();
+				}
+			}
+
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["id"].toULongLong (),
+				map ["album_id"].toLongLong (),
+
+				thumbSrc,
+				thumbSize,
+				bigSrc,
+				bigSize,
+
+				map ["access_key"].toString ()
+			};
+		}
+
+		AudioInfo AudioMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["id"].toULongLong (),
+				map ["artist"].toString (),
+				map ["title"].toString (),
+				map ["duration"].toInt (),
+				map ["url"].toString ()
+			};
+		}
+
+		void HandleBasicMsgInfo (FullMessageInfo& info, const QVariantMap& wallMap)
+		{
+			info.OwnerID_ = wallMap.contains ("owner_id") ?
+					wallMap ["owner_id"].toLongLong () :
+					wallMap ["to_id"].toLongLong ();
+			info.ID_ = wallMap ["id"].toULongLong ();
+			info.Text_ = wallMap.contains ("text") ?
+					wallMap ["text"].toString () :
+					wallMap ["body"].toString ();
+			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
+			info.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
+			info.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
+		}
+
+		VideoInfo VideoMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["id"].toULongLong (),
+				map ["access_key"].toString (),
+				map ["title"].toString (),
+				map ["description"].toString (),
+				map ["duration"].toULongLong (),
+				map ["views"].toLongLong (),
+				map ["photo_320"].toString ()
+			};
+		}
+
+		DocumentInfo DocMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["owner_id"].toLongLong (),
+				map ["id"].toULongLong (),
+				map ["title"].toString (),
+				map ["ext"].toString (),
+				map ["size"].toULongLong (),
+				map ["url"].toString ()
+			};
+		}
+
+		GiftInfo GiftMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["id"].toULongLong (),
+				QUrl::fromEncoded (map ["thumb_256"].toByteArray ())
+			};
+		}
+
+		StickerInfo StickerMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["id"].toString ()
+			};
+		}
+
+		PagePreview PagePreviewMap2Info (const QVariantMap& map)
+		{
+			return
+			{
+				map ["gid"].toLongLong (),
+				map ["pid"].toULongLong (),
+				map ["title"].toString (),
+				map ["view_url"].toString ()
+			};
+		}
+
+		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments, Logger& logger)
+		{
+			const auto& attList = attachments.toList ();
+			for (const auto& attVar : attList)
+			{
+				const auto& attMap = attVar.toMap ();
+				if (attMap.contains ("photo"))
+					info.Photos_ << PhotoMap2Info (attMap ["photo"].toMap ());
+				else if (attMap.contains ("audio"))
+					info.Audios_ << AudioMap2Info (attMap ["audio"].toMap ());
+				else if (attMap.contains ("video"))
+					info.Videos_ << VideoMap2Info (attMap ["video"].toMap ());
+				else if (attMap.contains ("doc"))
+					info.Documents_ << DocMap2Info (attMap ["doc"].toMap ());
+				else if (attMap.contains ("gift"))
+					info.Gifts_ << GiftMap2Info (attMap ["gift"].toMap ());
+				else if (attMap.contains ("sticker"))
+					info.Stickers_ << StickerMap2Info (attMap ["sticker"].toMap ());
+				else if (attMap.contains ("page"))
+					info.PagesPreviews_ << PagePreviewMap2Info (attMap ["page"].toMap ());
+				else if (attMap.contains ("wall"))
+				{
+					auto wallMap = attMap ["wall"].toMap ();
+
+					FullMessageInfo repost;
+					HandleBasicMsgInfo (repost, wallMap);
+
+					if (wallMap.contains ("attachments"))
+					{
+						HandleAttachments (repost, wallMap.take ("attachments"), logger);
+						logger << "attachments left:" << wallMap;
+					}
+					if (wallMap.contains ("copy_history"))
+					{
+						auto history = wallMap.take ("copy_history");
+						for (const auto& obj : history.toList ())
+							HandleAttachments (repost, obj.toMap () ["attachments"], logger);
+					}
+
+					info.ContainedReposts_.append (repost);
+				}
+				else
+					logger << "HandleAttachments" << attMap.keys ();
+			}
+		}
+
+		FullMessageInfo GetFullMessageInfo (const QVariantMap& map, Logger& logger);
+
+		void HandleForwarded (FullMessageInfo& info, const QVariant& fwds, Logger& logger)
+		{
+			const auto& fwdList = fwds.toList ();
+			for (const auto& fwdVar : fwdList)
+				info.ForwardedMessages_ << GetFullMessageInfo (fwdVar.toMap (), logger);
+		}
+
+		FullMessageInfo GetFullMessageInfo (const QVariantMap& map, Logger& logger)
+		{
+			FullMessageInfo info;
+			HandleBasicMsgInfo (info, map);
+			HandleAttachments (info, map ["attachments"], logger);
+			HandleForwarded (info, map ["fwd_messages"], logger);
+			return info;
+		}
+	}
+
 	void VkConnection::handleGotUnreadMessages ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1426,202 +1624,6 @@ namespace Murm
 		setter (result);
 	}
 
-	namespace
-	{
-		PhotoInfo PhotoMap2Info (const QVariantMap& map)
-		{
-			QString bigSrc;
-			QSize bigSize;
-			QString thumbSrc;
-			QSize thumbSize;
-
-			QString currentBigType;
-			const QStringList bigTypes { "x", "y", "z", "w" };
-
-			for (const auto& elem : map ["sizes"].toList ())
-			{
-				const auto& eMap = elem.toMap ();
-
-				auto size = [&eMap]
-				{
-					return QSize (eMap ["width"].toInt (), eMap ["height"].toInt ());
-				};
-
-				const auto& type = eMap ["type"].toString ();
-				if (type == "m")
-				{
-					thumbSrc = eMap ["src"].toString ();
-					thumbSize = size ();
-				}
-				else if (bigTypes.indexOf (type) > bigTypes.indexOf (currentBigType))
-				{
-					currentBigType = type;
-					bigSrc = eMap ["src"].toString ();
-					bigSize = size ();
-				}
-			}
-
-			return
-			{
-				map ["owner_id"].toLongLong (),
-				map ["id"].toULongLong (),
-				map ["album_id"].toLongLong (),
-
-				thumbSrc,
-				thumbSize,
-				bigSrc,
-				bigSize,
-
-				map ["access_key"].toString ()
-			};
-		}
-
-		AudioInfo AudioMap2Info (const QVariantMap& map)
-		{
-			return
-			{
-				map ["owner_id"].toLongLong (),
-				map ["id"].toULongLong (),
-				map ["artist"].toString (),
-				map ["title"].toString (),
-				map ["duration"].toInt (),
-				map ["url"].toString ()
-			};
-		}
-
-		void HandleBasicMsgInfo (FullMessageInfo& info, const QVariantMap& wallMap)
-		{
-			info.OwnerID_ = wallMap.contains ("owner_id") ?
-					wallMap ["owner_id"].toLongLong () :
-					wallMap ["to_id"].toLongLong ();
-			info.ID_ = wallMap ["id"].toULongLong ();
-			info.Text_ = wallMap.contains ("text") ?
-					wallMap ["text"].toString () :
-					wallMap ["body"].toString ();
-			info.Likes_ = wallMap ["likes"].toMap () ["count"].toInt ();
-			info.Reposts_ = wallMap ["reposts"].toMap () ["count"].toInt ();
-			info.PostDate_ = QDateTime::fromTime_t (wallMap ["date"].toLongLong ());
-		}
-
-		VideoInfo VideoMap2Info (const QVariantMap& map)
-		{
-			return
-			{
-				map ["owner_id"].toLongLong (),
-				map ["id"].toULongLong (),
-				map ["access_key"].toString (),
-				map ["title"].toString (),
-				map ["description"].toString (),
-				map ["duration"].toULongLong (),
-				map ["views"].toLongLong (),
-				map ["photo_320"].toString ()
-			};
-		}
-
-		DocumentInfo DocMap2Info (const QVariantMap& map)
-		{
-			return
-			{
-				map ["owner_id"].toLongLong (),
-				map ["id"].toULongLong (),
-				map ["title"].toString (),
-				map ["ext"].toString (),
-				map ["size"].toULongLong (),
-				map ["url"].toString ()
-			};
-		}
-
-		GiftInfo GiftMap2Info (const QVariantMap& map)
-		{
-			return
-			{
-				map ["id"].toULongLong (),
-				QUrl::fromEncoded (map ["thumb_256"].toByteArray ())
-			};
-		}
-
-		StickerInfo StickerMap2Info (const QVariantMap& map)
-		{
-			return
-			{
-				map ["id"].toString ()
-			};
-		}
-
-		PagePreview PagePreviewMap2Info (const QVariantMap& map)
-		{
-			return
-			{
-				map ["gid"].toLongLong (),
-				map ["pid"].toULongLong (),
-				map ["title"].toString (),
-				map ["view_url"].toString ()
-			};
-		}
-
-		void HandleAttachments (FullMessageInfo& info, const QVariant& attachments, Logger& logger)
-		{
-			const auto& attList = attachments.toList ();
-			for (const auto& attVar : attList)
-			{
-				const auto& attMap = attVar.toMap ();
-				if (attMap.contains ("photo"))
-					info.Photos_ << PhotoMap2Info (attMap ["photo"].toMap ());
-				else if (attMap.contains ("audio"))
-					info.Audios_ << AudioMap2Info (attMap ["audio"].toMap ());
-				else if (attMap.contains ("video"))
-					info.Videos_ << VideoMap2Info (attMap ["video"].toMap ());
-				else if (attMap.contains ("doc"))
-					info.Documents_ << DocMap2Info (attMap ["doc"].toMap ());
-				else if (attMap.contains ("gift"))
-					info.Gifts_ << GiftMap2Info (attMap ["gift"].toMap ());
-				else if (attMap.contains ("sticker"))
-					info.Stickers_ << StickerMap2Info (attMap ["sticker"].toMap ());
-				else if (attMap.contains ("page"))
-					info.PagesPreviews_ << PagePreviewMap2Info (attMap ["page"].toMap ());
-				else if (attMap.contains ("wall"))
-				{
-					auto wallMap = attMap ["wall"].toMap ();
-
-					FullMessageInfo repost;
-					HandleBasicMsgInfo (repost, wallMap);
-
-					if (wallMap.contains ("attachments"))
-					{
-						HandleAttachments (repost, wallMap.take ("attachments"), logger);
-						logger << "attachments left:" << wallMap;
-					}
-					if (wallMap.contains ("copy_history"))
-					{
-						auto history = wallMap.take ("copy_history");
-						for (const auto& obj : history.toList ())
-							HandleAttachments (repost, obj.toMap () ["attachments"], logger);
-					}
-
-					info.ContainedReposts_.append (repost);
-				}
-				else
-					logger << "HandleAttachments" << attMap.keys ();
-			}
-		}
-
-		void HandleForwarded (FullMessageInfo& info, const QVariant& fwds, Logger& logger)
-		{
-			const auto& fwdList = fwds.toList ();
-			for (const auto& fwdVar : fwdList)
-			{
-				const auto& map = fwdVar.toMap ();
-
-				FullMessageInfo subInfo;
-				HandleBasicMsgInfo (subInfo, map);
-				HandleAttachments (subInfo, map ["attachments"], logger);
-				HandleForwarded (subInfo, map ["fwd_messages"], logger);
-
-				info.ForwardedMessages_ << subInfo;
-			}
-		}
-	}
-
 	void VkConnection::handleMessageInfoFetched ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
@@ -1651,10 +1653,7 @@ namespace Murm
 			if (item.type () != QVariant::Map)
 				continue;
 
-			const auto& map = item.toMap ();
-			HandleBasicMsgInfo (info, map);
-			HandleAttachments (info, map ["attachments"], Logger_);
-			HandleForwarded (info, map ["fwd_messages"], Logger_);
+			info = GetFullMessageInfo (item.toMap (), Logger_);
 		}
 
 		setter (info);
