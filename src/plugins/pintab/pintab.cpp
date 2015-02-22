@@ -128,7 +128,8 @@ namespace PinTab
 			return;
 		}
 
-		tw->Widget (tabIndex)->setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
+		const auto widget = tw->Widget (tabIndex);
+		widget->setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
 		++Window2Id_ [window];
 
 		auto pair = qMakePair (tw->TabText (tabIndex), tw->TabButton (tabIndex, CloseSide_));
@@ -136,9 +137,9 @@ namespace PinTab
 		tw->SetTabText (tabIndex, "");
 		tw->SetTabClosable (tabIndex, false);
 
-		Window2PinTabsIndex2TabData_ [window] [Window2Id_.value (window, 0)] = pair;
+		Window2Widget2TabData_ [window] [widget] = pair;
 
-		tw->MoveTab (tabIndex, Window2PinTabsIndex2TabData_ [window].count () - 1);
+		tw->MoveTab (tabIndex, Window2Widget2TabData_ [window].count () - 1);
 	}
 
 	void Plugin::UnPinTab (int tabIndex, int windowIndex)
@@ -163,14 +164,15 @@ namespace PinTab
 			return;
 		}
 
-		int realIndex = tw->TabData (tabIndex).toInt ();
+		const auto widget = tw->Widget (tabIndex);
+
 		tw->Widget (tabIndex)->setProperty ("SessionData/org.LeechCraft.PinTab.PinState", false);
-		auto data = Window2PinTabsIndex2TabData_ [window].take (realIndex);
+		auto data = Window2Widget2TabData_ [window].take (widget);
 
 		tw->SetTabText (tabIndex, data.first);
 		tw->SetTabClosable (tabIndex, true, data.second);
 
-		tw->MoveTab (tabIndex, Window2PinTabsIndex2TabData_.value (window).count ());
+		tw->MoveTab (tabIndex, Window2Widget2TabData_.value (window).count ());
 	}
 
 	void Plugin::hookTabContextMenuFill (LeechCraft::IHookProxy_ptr,
@@ -185,10 +187,8 @@ namespace PinTab
 
 		const auto firstAction = tw->GetPermanentActions ().value (0);
 
-		int realIndex = tw->TabData (index).toInt ();
-
-		if (Window2PinTabsIndex2TabData_.contains (window) &&
-				Window2PinTabsIndex2TabData_ [window].contains (realIndex))
+		const auto widget = tw->Widget (index);
+		if (Window2Widget2TabData_.value (window).contains (widget))
 		{
 			menu->insertAction (firstAction, UnPinTab_);
 			UnPinTab_->setProperty ("Leechcraft/PinTab/CurrentIndex", index);
@@ -205,27 +205,27 @@ namespace PinTab
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
 		if (!window)
 			return;
+
 		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
 		if (!tw)
 			return;
 
-		int realIndex = tw->TabData (index).toInt ();
-		int realNextIndex = tw->TabData (index + 1).toInt ();
-		int realPrevIndex = tw->TabData (index - 1).toInt ();
+		const auto widget = tw->Widget (index);
+		const auto nextWidget = tw->Widget (index + 1);
+		const auto prevWidget = tw->Widget (index - 1);
 
-		if (Window2PinTabsIndex2TabData_.contains (window) &&
-				Window2PinTabsIndex2TabData_ [window].contains (realNextIndex) &&
-				!Window2PinTabsIndex2TabData_ [window].contains (realIndex))
+		if (Window2Widget2TabData_.value (window).contains (nextWidget) &&
+				!Window2Widget2TabData_.value (window).contains (widget))
 		{
 			PinTab (index, windowId);
-			tw->MoveTab (Window2PinTabsIndex2TabData_[window].count () - 1, index);
+			tw->MoveTab (Window2Widget2TabData_ [window].count () - 1, index);
 		}
-		else if (Window2PinTabsIndex2TabData_ [window].contains (realIndex) &&
+		else if (Window2Widget2TabData_ [window].contains (widget) &&
 				index &&
-				!Window2PinTabsIndex2TabData_ [window].contains (realPrevIndex))
+				!Window2Widget2TabData_ [window].contains (prevWidget))
 		{
 			UnPinTab (index, windowId);
-			tw->MoveTab (Window2PinTabsIndex2TabData_ [window].count (), index);
+			tw->MoveTab (Window2Widget2TabData_ [window].count (), index);
 		}
 	}
 
@@ -234,13 +234,13 @@ namespace PinTab
 		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
 		if (!window)
 			return;
+
 		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
 		if (!tw)
 			return;
 
-		int realIndex = tw->TabData (index).toInt ();
-		if (Window2PinTabsIndex2TabData_.contains (window) &&
-				Window2PinTabsIndex2TabData_ [window].contains (realIndex))
+		const auto widget = tw->Widget (index);
+		if (Window2Widget2TabData_.value (window).contains (widget))
 			proxy->CancelDefault ();
 	}
 
@@ -275,7 +275,7 @@ namespace PinTab
 			return;
 
 		Window2Id_.remove (window);
-		Window2PinTabsIndex2TabData_.remove (window);
+		Window2Widget2TabData_.remove (window);
 	}
 }
 }

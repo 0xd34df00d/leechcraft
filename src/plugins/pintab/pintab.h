@@ -59,7 +59,7 @@ namespace PinTab
 		QMap<QMainWindow*, int> Window2Id_;
 		ICoreProxy_ptr Proxy_;
 
-		QHash<QMainWindow*, QHash<int, QPair<QString, QWidget*>>> Window2PinTabsIndex2TabData_;
+		QHash<QMainWindow*, QHash<QWidget*, QPair<QString, QWidget*>>> Window2Widget2TabData_;
 		QTabBar::ButtonPosition CloseSide_;
 	public:
 		void Init (ICoreProxy_ptr proxy);
