@@ -71,6 +71,8 @@ namespace PinTab
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
+	private:
+		void PinTab (int tabIndex, int windowIndex);
 	public slots:
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowId);

@@ -107,6 +107,40 @@ namespace PinTab
 		return result;
 	}
 
+	void Plugin::PinTab (int tabIndex, int windowIndex)
+	{
+		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowIndex);
+		if (!window)
+			return;
+		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowIndex);
+		if (!tw)
+			return;
+
+		if (tabIndex == -1)
+			tabIndex = sender ()->property ("Leechcraft/PinTab/CurrentIndex").toInt ();
+
+		if (tabIndex < 0 ||
+				tabIndex >= tw->WidgetCount ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid index "
+					<< tabIndex;
+			return;
+		}
+
+		tw->Widget (tabIndex)->setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
+		++Window2Id_ [window];
+
+		auto pair = qMakePair (tw->TabText (tabIndex), tw->TabButton (tabIndex, CloseSide_));
+		tw->SetTabData (tabIndex, Window2Id_ [window]);
+		tw->SetTabText (tabIndex, "");
+		tw->SetTabClosable (tabIndex, false);
+
+		Window2PinTabsIndex2TabData_ [window] [Window2Id_.value (window, 0)] = pair;
+
+		tw->MoveTab (tabIndex, Window2PinTabsIndex2TabData_ [window].count () - 1);
+	}
+
 	void Plugin::hookTabContextMenuFill (LeechCraft::IHookProxy_ptr,
 			QMenu *menu, int index, int windowId)
 	{
@@ -183,37 +217,7 @@ namespace PinTab
 
 	void Plugin::pinTab (int index)
 	{
-		const int windowId = Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ();
-		auto window = Proxy_->GetRootWindowsManager ()->GetMainWindow (windowId);
-		if (!window)
-			return;
-		auto tw = Proxy_->GetRootWindowsManager ()->GetTabWidget (windowId);
-		if (!tw)
-			return;
-
-		if (index == -1)
-			index = sender ()->property ("Leechcraft/PinTab/CurrentIndex").toInt ();
-
-		if (index < 0 ||
-				index >= tw->WidgetCount ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid index "
-					<< index;
-			return;
-		}
-
-		tw->Widget (index)->
-				setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
-		++Window2Id_ [window];
-		auto pair = qMakePair (tw->TabText (index),
-				tw->TabButton (index, CloseSide_));
-		tw->SetTabData (index, Window2Id_ [window]);
-		tw->SetTabText (index, "");
-		tw->SetTabClosable (index, false);
-		Window2PinTabsIndex2TabData_ [window] [Window2Id_.value (window, 0)] = pair;
-
-		tw->MoveTab (index, Window2PinTabsIndex2TabData_ [window].count () - 1);
+		PinTab (index, Proxy_->GetRootWindowsManager ()->GetPreferredWindowIndex ());
 	}
 
 	void Plugin::unPinTab (int index)
