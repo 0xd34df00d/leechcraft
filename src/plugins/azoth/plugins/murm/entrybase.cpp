@@ -476,11 +476,18 @@ namespace Murm
 			return { newContents, hasAdditional, fwdIds };
 		}
 
-		QString FullInfo2Replacement (const FullMessageInfo& info, const ICoreProxy_ptr& proxy, bool fwdMode)
+		enum class FullInfoMode
+		{
+			Normal,
+			Forward,
+			Repost
+		};
+
+		QString FullInfo2Replacement (const FullMessageInfo& info, const ICoreProxy_ptr& proxy, FullInfoMode mode)
 		{
 			QString replacement;
 
-			if (fwdMode)
+			if (mode == FullInfoMode::Forward)
 			{
 				replacement += "<div>";
 				replacement += EntryBase::tr ("Forwarded message from %1")
@@ -524,18 +531,18 @@ namespace Murm
 			for (const auto& repost : info.ContainedReposts_)
 			{
 				replacement += "<div style='" + RepostDivStyle + "'>";
-				replacement += FullInfo2Replacement (repost, proxy, false);
+				replacement += FullInfo2Replacement (repost, proxy, FullInfoMode::Repost);
 				replacement += "</div>";
 			}
 
 			for (const auto& fwd : info.ForwardedMessages_)
 			{
 				replacement += "<div style='" + RepostDivStyle + "'>";
-				replacement += FullInfo2Replacement (fwd, proxy, true);
+				replacement += FullInfo2Replacement (fwd, proxy, FullInfoMode::Forward);
 				replacement += "</div>";
 			}
 
-			if (!fwdMode)
+			if (mode == FullInfoMode::Repost)
 			{
 				replacement += "<div style='text-align:right'>";
 				replacement += EntryBase::tr ("Posted on: %1")
@@ -568,7 +575,7 @@ namespace Murm
 	{
 		if (full.ID_)
 		{
-			const auto& body = FullInfo2Replacement (full, Account_->GetCoreProxy (), false);
+			const auto& body = FullInfo2Replacement (full, Account_->GetCoreProxy (), FullInfoMode::Normal);
 			msg->SetBody (body);
 			return;
 		}
@@ -602,7 +609,7 @@ namespace Murm
 						const auto& id = "fwdstub_" + idStr;
 						auto repl = "<div style='" + RepostDivStyle + "'>";
 						repl += FullInfo2Replacement (msgInfo,
-								Account_->GetCoreProxy (), true);
+								Account_->GetCoreProxy (), FullInfoMode::Forward);
 						repl += "</div>";
 
 						PerformReplacements ({ { id, repl } }, body);
@@ -639,7 +646,7 @@ namespace Murm
 		AppendReplacements (replacements, "docstub", msgInfo.Documents_,
 				[proxy] (const DocumentInfo& info) { return Document2Replacement (info, proxy); });
 		AppendReplacements (replacements, "wallstub", msgInfo.ContainedReposts_,
-				[proxy] (const FullMessageInfo& info) { return FullInfo2Replacement (info, proxy, false); });
+				[proxy] (const FullMessageInfo& info) { return FullInfo2Replacement (info, proxy, FullInfoMode::Repost); });
 
 		auto body = msg->GetBody ();
 		PerformReplacements (replacements, body);
