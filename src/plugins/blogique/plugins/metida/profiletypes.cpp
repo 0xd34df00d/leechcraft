@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "profiletypes.h"
+#include <QDataStream>
 #include <QtDebug>
 
 namespace LeechCraft

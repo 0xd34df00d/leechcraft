@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "ljfriendentry.h"
+#include <QDataStream>
 #include <QtDebug>
 
 namespace LeechCraft

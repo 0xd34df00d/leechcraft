@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "fieldmatch.h"
+#include <QDataStream>
 #include <QtDebug>
 #include "typedmatchers.h"
 
