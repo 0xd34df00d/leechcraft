@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "transcodingparams.h"
+#include <QDataStream>
 #include <QtDebug>
 
 namespace LeechCraft

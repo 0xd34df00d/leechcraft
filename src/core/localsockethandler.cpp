@@ -30,6 +30,7 @@
 #include "localsockethandler.h"
 #include <cstdlib>
 #include <vector>
+#include <QDataStream>
 #include <QLocalSocket>
 #include <QUrl>
 #include <QFile>
