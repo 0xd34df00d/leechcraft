@@ -183,10 +183,7 @@ namespace PinTab
 		if (!tw)
 			return;
 
-		auto actions = tw->GetPermanentActions ();
-		QAction *firstAction = 0;
-		if (!actions.isEmpty ())
-			firstAction = actions.at (0);
+		const auto firstAction = tw->GetPermanentActions ().value (0);
 
 		int realIndex = tw->TabData (index).toInt ();
 
