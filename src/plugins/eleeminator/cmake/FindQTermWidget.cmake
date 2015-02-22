@@ -7,6 +7,7 @@ find_path(QTERMWIDGET_INCLUDE_DIR qtermwidget.h
 		/opt/local/include/
 	PATH_SUFFIXES
 		qtermwidget4
+		qtermwidget5
 	)
 
 if (NOT USE_QT5)
