@@ -390,7 +390,11 @@ namespace CleanWeb
 			return nullptr;
 
 		const auto frame = qobject_cast<QWebFrame*> (req.originatingObject ());
-		if (frame && frame->requestedUrl () == reqUrl)
+		const QWebPage * const page = frame ? frame->page () : nullptr;
+		if (frame &&
+				page &&
+				frame == page->mainFrame () &&
+				frame->requestedUrl () == reqUrl)
 			return nullptr;
 
 		if (!ShouldReject (req))
