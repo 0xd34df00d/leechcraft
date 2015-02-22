@@ -95,9 +95,6 @@ namespace LeechCraft
 
 		QList<QAction*> GetPermanentActions () const;
 
-		QVariant TabData (int index) const;
-		void SetTabData (int index, QVariant data);
-
 		QString TabText (int index) const;
 		void SetTabText (int index, const QString& text);
 

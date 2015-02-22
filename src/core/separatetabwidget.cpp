@@ -156,16 +156,6 @@ namespace LeechCraft
 		return result;
 	}
 
-	QVariant SeparateTabWidget::TabData (int index) const
-	{
-		return MainTabBar_->tabData (index);
-	}
-
-	void SeparateTabWidget::SetTabData (int index, QVariant data)
-	{
-		MainTabBar_->setTabData (index, data);
-	}
-
 	QString SeparateTabWidget::TabText (int index) const
 	{
 		return TabNames_.value (index);
