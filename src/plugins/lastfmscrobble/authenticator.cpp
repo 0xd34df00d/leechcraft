@@ -32,7 +32,7 @@
 #include <QCryptographicHash>
 #include <QDomDocument>
 #include <QtDebug>
-#include <lastfm/ws.h>
+#include <ws.h>
 #include <util/xpc/passutils.h>
 #include "xmlsettingsmanager.h"
 #include "codes.h"

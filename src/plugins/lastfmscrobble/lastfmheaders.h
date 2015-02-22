@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <lastfm/global.h>
-#include <lastfm/misc.h>
+#include <global.h>
+#include <misc.h>
 
 #if LASTFM_MAJOR_VERSION < 1
 
@@ -38,12 +38,12 @@
 
 #else
 
-#include <lastfm/ws.h>
-#include <lastfm/Xspf.h>
-#include <lastfm/Track.h>
-#include <lastfm/ScrobbleCache.h>
-#include <lastfm/Audioscrobbler.h>
-#include <lastfm/RadioTuner.h>
-#include <lastfm/RadioStation.h>
+#include <ws.h>
+#include <Xspf.h>
+#include <Track.h>
+#include <ScrobbleCache.h>
+#include <Audioscrobbler.h>
+#include <RadioTuner.h>
+#include <RadioStation.h>
 
 #endif

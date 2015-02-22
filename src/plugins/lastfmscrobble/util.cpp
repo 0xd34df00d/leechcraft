@@ -38,7 +38,7 @@
 #include <QUrlQuery>
 #endif
 
-#include <lastfm/ws.h>
+#include <ws.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
