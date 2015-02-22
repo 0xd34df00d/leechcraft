@@ -380,32 +380,37 @@ namespace CleanWeb
 			QNetworkAccessManager::Operation*,
 			QIODevice**)
 	{
-		QNetworkRequest req = hook->GetValue ("request").value<QNetworkRequest> ();
+		const auto& req = hook->GetValue ("request").value<QNetworkRequest> ();
 		if (!req.originatingObject ())
-			return 0;
+			return nullptr;
 
-		if (req.url ().scheme () == "data")
-			return 0;
+		const auto& reqUrl = req.url ();
+
+		if (reqUrl.scheme () == "data")
+			return nullptr;
+
+		const auto frame = qobject_cast<QWebFrame*> (req.originatingObject ());
+		if (frame && frame->requestedUrl () == reqUrl)
+			return nullptr;
 
 		if (!ShouldReject (req))
-			return 0;
+			return nullptr;
 
 		hook->CancelDefault ();
 
-		QWebFrame *frame = qobject_cast<QWebFrame*> (req.originatingObject ());
-		qDebug () << "rejecting" << frame;
+		qDebug () << "rejecting" << frame << reqUrl;
 		if (frame)
 			QMetaObject::invokeMethod (this,
 					"delayedRemoveElements",
 					Qt::QueuedConnection,
 					Q_ARG (QPointer<QWebFrame>, frame),
-					Q_ARG (QUrl, req.url ()));
+					Q_ARG (QUrl, reqUrl));
 
-		Util::CustomNetworkReply *result = new Util::CustomNetworkReply (req.url (), this);
+		const auto result = new Util::CustomNetworkReply (reqUrl, this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
 		result->SetError (QNetworkReply::ContentAccessDenied,
 				tr ("Blocked by Poshuku CleanWeb: %1")
-					.arg (req.url ().toString ()));
+					.arg (reqUrl.toString ()));
 		hook->SetReturnValue (QVariant::fromValue<QNetworkReply*> (result));
 		return result;
 	}
