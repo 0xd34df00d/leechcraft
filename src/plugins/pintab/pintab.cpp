@@ -134,10 +134,8 @@ namespace PinTab
 
 		const auto widget = tw->Widget (tabIndex);
 		widget->setProperty ("SessionData/org.LeechCraft.PinTab.PinState", true);
-		++Window2Id_ [window];
 
 		auto pair = qMakePair (tw->TabText (tabIndex), tw->TabButton (tabIndex, CloseSide_));
-		tw->SetTabData (tabIndex, Window2Id_ [window]);
 		tw->SetTabText (tabIndex, "");
 		tw->SetTabClosable (tabIndex, false);
 
@@ -291,7 +289,6 @@ namespace PinTab
 		if (!window)
 			return;
 
-		Window2Id_.remove (window);
 		Window2Widget2TabData_.remove (window);
 	}
 }

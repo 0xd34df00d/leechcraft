@@ -56,7 +56,6 @@ namespace PinTab
 		QAction *PinTab_;
 		QAction *UnPinTab_;
 
-		QMap<QMainWindow*, int> Window2Id_;
 		ICoreProxy_ptr Proxy_;
 
 		QHash<QMainWindow*, QHash<QWidget*, QPair<QString, QWidget*>>> Window2Widget2TabData_;
