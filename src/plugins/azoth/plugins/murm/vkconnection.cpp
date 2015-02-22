@@ -459,30 +459,6 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
-	void VkConnection::GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter)
-	{
-		const auto& joined = ids.join (",");
-		auto nam = Proxy_->GetNetworkAccessManager ();
-		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
-			{
-				QUrl url ("https://api.vk.com/method/photos.getById");
-				Util::UrlOperator { url }
-						("access_token", key)
-						("photos", joined);
-
-				AddParams (url, params);
-
-				auto reply = nam->get (QNetworkRequest (url));
-				Reply2PhotoSetter_ [reply] = setter;
-				connect (reply,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handlePhotoInfosFetched ()));
-				return reply;
-			});
-		AuthMgr_->GetAuthKey ();
-	}
-
 	void VkConnection::AddFriendList (const QString& name, const QList<qulonglong>& ids)
 	{
 		const auto& joined = CommaJoin (ids);
@@ -1657,37 +1633,6 @@ namespace Murm
 		}
 
 		setter (info);
-	}
-
-	void VkConnection::handlePhotoInfosFetched ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		const auto& setter = Reply2PhotoSetter_.take (reply);
-		if (!setter)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no setter";
-			return;
-		}
-
-		if (!CheckFinishedReply (reply))
-			return;
-
-		const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
-		try
-		{
-			CheckReplyData (data, reply);
-		}
-		catch (const CommandException&)
-		{
-			return;
-		}
-
-		QList<PhotoInfo> result;
-		for (const auto& item : data.toMap () ["response"].toMap () ["items"].toList ())
-			result << PhotoMap2Info (item.toMap ());
-
-		setter (result);
 	}
 
 	void VkConnection::handleScopeSettingsChanged ()

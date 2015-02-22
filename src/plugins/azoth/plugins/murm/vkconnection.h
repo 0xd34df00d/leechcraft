@@ -138,7 +138,6 @@ namespace Murm
 		LongPollManager *LPManager_;
 	public:
 		typedef std::function<void (QHash<int, QString>)> GeoSetter_f;
-		typedef std::function<void (QList<PhotoInfo>)> PhotoInfoSetter_f;
 		typedef std::function<void (FullMessageInfo)> MessageInfoSetter_f;
 	private:
 		QHash<int, std::function<void (QVariantList)>> Dispatcher_;
@@ -146,7 +145,6 @@ namespace Murm
 		QHash<QNetworkReply*, GeoSetter_f> CountryReply2Setter_;
 
 		QHash<QNetworkReply*, MessageInfoSetter_f> Reply2MessageSetter_;
-		QHash<QNetworkReply*, PhotoInfoSetter_f> Reply2PhotoSetter_;
 
 		QHash<QNetworkReply*, QString> Reply2ListName_;
 
@@ -193,7 +191,6 @@ namespace Murm
 
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetMessageInfo (const QString& idStr, MessageInfoSetter_f setter);
-		void GetPhotoInfos (const QStringList& ids, PhotoInfoSetter_f setter);
 
 		void AddFriendList (const QString&, const QList<qulonglong>&);
 		void ModifyFriendList (const ListInfo&, const QList<qulonglong>&);
