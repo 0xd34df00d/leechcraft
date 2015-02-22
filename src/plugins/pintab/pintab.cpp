@@ -220,14 +220,14 @@ namespace PinTab
 				Window2PinTabsIndex2TabData_ [window].contains (realNextIndex) &&
 				!Window2PinTabsIndex2TabData_ [window].contains (realIndex))
 		{
-			pinTab (index);
+			PinTab (index, windowId);
 			tw->MoveTab (Window2PinTabsIndex2TabData_[window].count () - 1, index);
 		}
 		else if (Window2PinTabsIndex2TabData_ [window].contains (realIndex) &&
 				index &&
 				!Window2PinTabsIndex2TabData_ [window].contains (realPrevIndex))
 		{
-			unPinTab (index);
+			UnPinTab (index, windowId);
 			tw->MoveTab (Window2PinTabsIndex2TabData_ [window].count (), index);
 		}
 	}
@@ -268,7 +268,7 @@ namespace PinTab
 				property ("SessionData/org.LeechCraft.PinTab.PinState").toBool ();
 
 		if (isPinned)
-			pinTab (index);
+			PinTab (index, windowId);
 	}
 
 	void Plugin::handleWindowRemoved (int index)
