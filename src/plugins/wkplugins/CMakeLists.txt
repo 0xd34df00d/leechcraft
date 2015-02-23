@@ -23,7 +23,7 @@ set (SRCS
 	spellcheckext.cpp
 	xmlsettingsmanager.cpp
 	)
-#CreateTrs("wkplugins" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("wkplugins" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("wkplugins" "en;ru_RU" "${SRCS}" "${FORMS}" "wkpluginssettings.xml")
 
 if (USE_QT5)
