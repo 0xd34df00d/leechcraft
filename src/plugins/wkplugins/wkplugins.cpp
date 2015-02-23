@@ -30,6 +30,7 @@
 #include "wkplugins.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "staticplugin.h"
 #include "notificationsext.h"
 #include "spellcheckext.h"
@@ -41,6 +42,8 @@ namespace WKPlugins
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("wkplugins");
+
 		Proxy_ = proxy;
 
 		XSD_.reset (new Util::XmlSettingsDialog);
