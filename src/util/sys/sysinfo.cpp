@@ -234,6 +234,8 @@ namespace SysInfo
 			return retVer ("8");
 		case 0x00b0:
 			return retVer ("8.1");
+		case 0x00c0:
+			return retVer ("10");
 		case QSysInfo::WV_NT_based:
 			return retVer ("NT-based");
 		}
