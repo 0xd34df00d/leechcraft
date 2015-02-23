@@ -15,7 +15,6 @@ add_library (leechcraft_wkplugins_qtplugin STATIC
 	${STATIC_SRCS}
 	)
 set_target_properties (leechcraft_wkplugins_qtplugin PROPERTIES COMPILE_FLAGS "-DQT_STATICPLUGIN")
-install (TARGETS leechcraft_wkplugins_qtplugin DESTINATION ${LC_PLUGINS_DEST}/lib)
 FindQtLibs (leechcraft_wkplugins_qtplugin WebKitWidgets)
 
 set (SRCS
