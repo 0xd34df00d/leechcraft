@@ -100,7 +100,7 @@ namespace Util
 	 * \code{.cpp}
 		QSettings settings { "OrgNameName", "AppName" };
 		settings.beginGroup ();
-		const auto& guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
+		const auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
 		// ...
 	   \endcode
 	 *
