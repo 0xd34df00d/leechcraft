@@ -45,6 +45,12 @@ namespace Util
 			const F F_;
 			bool Perform_ = true;
 		public:
+			ScopeGuard () noexcept
+			: F_ {}
+			, Perform_ { false }
+			{
+			}
+
 			ScopeGuard (const F& f) noexcept
 			: F_ { f }
 			{
