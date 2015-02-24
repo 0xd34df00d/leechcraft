@@ -59,7 +59,7 @@ namespace Util
 				other.Perform_ = false;
 			}
 
-			~ScopeGuard () noexcept (noexcept (F_ ()))
+			~ScopeGuard ()
 			{
 				if (Perform_)
 					F_ ();
