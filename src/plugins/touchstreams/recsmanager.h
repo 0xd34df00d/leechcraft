@@ -33,6 +33,7 @@
 #include <boost/optional.hpp>
 #include <QObject>
 #include <QPair>
+#include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 
 class QStandardItem;
@@ -59,7 +60,7 @@ namespace TouchStreams
 		const boost::optional<qlonglong> UID_;
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const QueueMgr_;
-		const std::shared_ptr<void> RequestQueueGuard_;
+		const Util::DefaultScopeGuard RequestQueueGuard_;
 
 		const ICoreProxy_ptr Proxy_;
 

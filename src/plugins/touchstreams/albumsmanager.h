@@ -33,6 +33,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
+#include <util/sll/util.h>
 
 class QStandardItem;
 
@@ -61,7 +62,7 @@ namespace TouchStreams
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
 		QList<QPair<std::function<void (QString)>, Util::QueuePriority>> RequestQueue_;
-		const std::shared_ptr<void> RequestQueueGuard_;
+		const Util::DefaultScopeGuard RequestQueueGuard_;
 
 		struct AlbumInfo
 		{
