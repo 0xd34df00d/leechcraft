@@ -83,6 +83,11 @@ namespace Util
 				Dismiss ();
 				return ScopeGuard<DefaultScopeGuardDeleter> { F_ };
 			}
+
+			operator ScopeGuard<DefaultScopeGuardDeleter>()
+			{
+				return EraseType ();
+			}
 		};
 	}
 
