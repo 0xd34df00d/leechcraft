@@ -57,8 +57,8 @@ namespace SvcAuth
 
 		const QString AccountHR_;
 
-		QNetworkAccessManager *AuthNAM_;
-		Util::CustomCookieJar *Cookies_;
+		QNetworkAccessManager * const AuthNAM_;
+		Util::CustomCookieJar * const Cookies_;
 
 		QueueManager * const Queue_;
 
@@ -72,7 +72,7 @@ namespace SvcAuth
 		QUrl URL_;
 
 		bool IsRequestScheduled_;
-		QTimer *ScheduleTimer_;
+		QTimer * const ScheduleTimer_;
 
 		bool SilentMode_ = false;
 	public:
