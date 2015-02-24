@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
 
 namespace LeechCraft
@@ -37,6 +38,8 @@ namespace Util
 {
 	namespace detail
 	{
+		using DefaultScopeGuardDeleter = std::function<void ()>;
+
 		template<typename F>
 		class ScopeGuard
 		{
@@ -82,6 +85,8 @@ namespace Util
 			}
 		};
 	}
+
+	using DefaultScopeGuard = detail::ScopeGuard<detail::DefaultScopeGuardDeleter>;
 
 	/** @brief Returns an object performing passed function on scope exit.
 	 *
