@@ -34,6 +34,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <interfaces/core/icoreproxy.h>
+#include <util/sll/util.h>
 #include "svcauthconfig.h"
 
 class QTimer;
@@ -82,7 +83,7 @@ namespace SvcAuth
 		using PrioRequestQueue_t = QList<QPair<std::function<void (QString)>, QueuePriority>>;
 		using PrioRequestQueue_ptr = PrioRequestQueue_t*;
 
-		using ScheduleGuard_t = std::shared_ptr<void>;
+		using ScheduleGuard_t = Util::DefaultScopeGuard;
 	private:
 		QList<RequestQueue_ptr> ManagedQueues_;
 		QList<PrioRequestQueue_ptr> PrioManagedQueues_;

@@ -139,8 +139,7 @@ namespace SvcAuth
 
 		ManagedQueues_ << queue;
 
-		return std::shared_ptr<void> { nullptr,
-				[this, queue] (void*) { ManagedQueues_.removeAll (queue); } };
+		return Util::MakeScopeGuard ([this, queue] { ManagedQueues_.removeAll (queue); });
 	}
 
 	auto VkAuthManager::ManageQueue (VkAuthManager::PrioRequestQueue_ptr queue) -> ScheduleGuard_t
@@ -154,8 +153,7 @@ namespace SvcAuth
 
 		PrioManagedQueues_ << queue;
 
-		return std::shared_ptr<void> { nullptr,
-				[this, queue] (void*) { PrioManagedQueues_.removeAll (queue); } };
+		return Util::MakeScopeGuard ([this, queue] { PrioManagedQueues_.removeAll (queue); });
 	}
 
 	void VkAuthManager::SetSilentMode (bool silent)
