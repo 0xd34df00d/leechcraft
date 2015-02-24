@@ -76,13 +76,13 @@ namespace SvcAuth
 
 		bool SilentMode_ = false;
 	public:
-		typedef QList<std::function<void (QString)>> RequestQueue_t;
-		typedef RequestQueue_t* RequestQueue_ptr;
+		using RequestQueue_t = QList<std::function<void (QString)>> ;
+		using RequestQueue_ptr = RequestQueue_t*;
 
-		typedef QList<QPair<std::function<void (QString)>, QueuePriority>> PrioRequestQueue_t;
-		typedef PrioRequestQueue_t* PrioRequestQueue_ptr;
+		using PrioRequestQueue_t = QList<QPair<std::function<void (QString)>, QueuePriority>>;
+		using PrioRequestQueue_ptr = PrioRequestQueue_t*;
 
-		typedef std::shared_ptr<void> ScheduleGuard_t;
+		using ScheduleGuard_t = std::shared_ptr<void>;
 	private:
 		QList<RequestQueue_ptr> ManagedQueues_;
 		QList<PrioRequestQueue_ptr> PrioManagedQueues_;
