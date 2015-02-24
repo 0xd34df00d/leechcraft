@@ -30,7 +30,6 @@
 #pragma once
 
 #include <functional>
-#include <memory>
 
 namespace LeechCraft
 {
@@ -73,15 +72,10 @@ namespace Util
 				Perform_ = false;
 			}
 
-			std::shared_ptr<void> EraseType ()
+			ScopeGuard<DefaultScopeGuardDeleter> EraseType ()
 			{
 				Dismiss ();
-#ifdef USE_CPP14
-				return std::shared_ptr<void> { nullptr, [f = F_] (void*) { f (); } };
-#else
-				auto f = F_;
-				return std::shared_ptr<void> { nullptr, [f] (void*) { f (); } };
-#endif
+				return ScopeGuard<DefaultScopeGuardDeleter> { F_ };
 			}
 		};
 	}

@@ -34,6 +34,7 @@
 #include <QObject>
 #include <QMap>
 #include <QLinkedList>
+#include <util/sll/util.h>
 
 template<typename T>
 class QFuture;
@@ -104,7 +105,7 @@ namespace Util
 		 * @return A guard object unregistering the path when it is
 		 * destroyed.
 		 */
-		std::shared_ptr<void> RegisterDirectory (const QString& path,
+		Util::DefaultScopeGuard RegisterDirectory (const QString& path,
 				const std::function<int ()>& sizeGetter);
 	private:
 		void UnregisterDirectory (const QString&, CacheSizeGetters_t::iterator);

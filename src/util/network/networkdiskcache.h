@@ -29,10 +29,10 @@
 
 #pragma once
 
-#include <memory>
 #include <QNetworkDiskCache>
 #include <QMutex>
 #include <QHash>
+#include <util/sll/util.h>
 #include "networkconfig.h"
 
 namespace LeechCraft
@@ -63,7 +63,7 @@ namespace Util
 		QHash<QIODevice*, QUrl> PendingDev2Url_;
 		QHash<QUrl, QList<QIODevice*>> PendingUrl2Devs_;
 
-		const std::shared_ptr<void> GcGuard_;
+		const Util::DefaultScopeGuard GcGuard_;
 	public:
 		/** @brief Constructs the new disk cache.
 		 *

@@ -32,7 +32,7 @@
 #include <unordered_map>
 #include <QObject>
 #include <QSet>
-#include <memory>
+#include <util/sll/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imucentry.h>
 #include "structures.h"
@@ -56,7 +56,7 @@ namespace Murm
 		ChatInfo Info_;
 		QSet<int> PendingUserInfoRequests_;
 
-		std::unordered_map<VkEntry*, std::shared_ptr<void>> EntriesGuards_;
+		std::unordered_map<VkEntry*, Util::DefaultScopeGuard> EntriesGuards_;
 	public:
 		enum class HandleMessageResult
 		{

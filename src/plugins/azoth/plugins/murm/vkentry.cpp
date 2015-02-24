@@ -31,7 +31,6 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
-#include <util/sll/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -144,7 +143,7 @@ namespace Murm
 		return IsNonRoster_;
 	}
 
-	std::shared_ptr<void> VkEntry::RegisterIn (VkChatEntry *chat)
+	Util::DefaultScopeGuard VkEntry::RegisterIn (VkChatEntry *chat)
 	{
 		if (!Chats_.contains (chat))
 		{

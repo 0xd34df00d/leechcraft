@@ -34,6 +34,7 @@
 #include <QImage>
 #include <QPointer>
 #include <QStringList>
+#include <util/sll/util.h>
 #include <interfaces/azoth/imetainfoentry.h>
 #include "structures.h"
 #include "entrybase.h"
@@ -86,7 +87,7 @@ namespace Murm
 		void SetNonRoster ();
 		bool IsNonRoster () const;
 
-		std::shared_ptr<void> RegisterIn (VkChatEntry*);
+		Util::DefaultScopeGuard RegisterIn (VkChatEntry*);
 		void ReemitGroups ();
 
 		VkMessage* FindMessage (qulonglong) const;
