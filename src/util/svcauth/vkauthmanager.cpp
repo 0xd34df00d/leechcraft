@@ -40,6 +40,7 @@
 #include <util/sll/urloperator.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -266,6 +267,9 @@ namespace SvcAuth
 	void VkAuthManager::ScheduleTrack (const QString& key)
 	{
 		if (HasTracked_)
+			return;
+
+		if (!Proxy_->GetSettingsManager ()->property ("TrackVK").toBool ())
 			return;
 
 		HasTracked_ = true;
