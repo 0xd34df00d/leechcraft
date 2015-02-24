@@ -48,7 +48,7 @@ namespace Murm
 	{
 		for (const auto& info : chatInfo.Users_)
 			if (const auto entry = acc->GetEntryOrCreate (info))
-				EntriesGuards_ [entry] = entry->RegisterIn (this);
+				EntriesGuards_.emplace (entry, entry->RegisterIn (this));
 
 		connect (acc->GetConnection (),
 				SIGNAL (gotUsers (QList<UserInfo>)),
@@ -133,13 +133,13 @@ namespace Murm
 	{
 		if (const auto entry = Account_->GetEntryOrCreate (info))
 		{
-			if (EntriesGuards_.contains (entry))
+			if (EntriesGuards_.find (entry) != EntriesGuards_.end ())
 				qWarning () << Q_FUNC_INFO
 						<< "entry for"
 						<< info.ID_
 						<< "is already added";
 			else
-				EntriesGuards_ [entry] = entry->RegisterIn (this);
+				EntriesGuards_.emplace (entry, entry->RegisterIn (this));
 		}
 	}
 
@@ -148,7 +148,11 @@ namespace Murm
 		if (id == Account_->GetSelf ()->GetInfo ().ID_)
 			emit removeEntry (this);
 		else if (const auto entry = Account_->GetEntry (id))
-			EntriesGuards_.remove (entry);
+		{
+			const auto pos = EntriesGuards_.find (entry);
+			if (pos != EntriesGuards_.end ())
+				EntriesGuards_.erase (pos);
+		}
 	}
 
 	ICLEntry::Features VkChatEntry::GetEntryFeatures () const

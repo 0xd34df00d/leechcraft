@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <unordered_map>
 #include <QObject>
 #include <QSet>
 #include <memory>
@@ -55,7 +56,7 @@ namespace Murm
 		ChatInfo Info_;
 		QSet<int> PendingUserInfoRequests_;
 
-		QHash<VkEntry*, std::shared_ptr<void>> EntriesGuards_;
+		std::unordered_map<VkEntry*, std::shared_ptr<void>> EntriesGuards_;
 	public:
 		enum class HandleMessageResult
 		{
