@@ -186,6 +186,12 @@
 					<label value="Do not track" />
 				</item>
 			</item>
+			<groupbox>
+				<label value="Services" />
+				<item type="checkbox" property="TrackVK" default="true">
+					<label value="Collect (anonymized) VKontakte application statistics" />
+				</item>
+			</groupbox>
 		</tab>
 	</page>
 	<page>
