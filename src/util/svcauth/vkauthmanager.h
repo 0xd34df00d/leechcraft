@@ -76,6 +76,8 @@ namespace SvcAuth
 		QTimer * const ScheduleTimer_;
 
 		bool SilentMode_ = false;
+
+		bool HasTracked_ = false;
 	public:
 		using RequestQueue_t = QList<std::function<void (QString)>> ;
 		using RequestQueue_ptr = RequestQueue_t*;
@@ -110,6 +112,8 @@ namespace SvcAuth
 		void RequestAuthKey ();
 		bool CheckReply (QUrl);
 		bool CheckError (const QUrl&);
+
+		void ScheduleTrack (const QString&);
 	public slots:
 		void clearAuthData ();
 		void reauth ();

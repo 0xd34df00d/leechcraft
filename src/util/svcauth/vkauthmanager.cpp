@@ -163,6 +163,8 @@ namespace SvcAuth
 
 	void VkAuthManager::InvokeQueues (const QString& token)
 	{
+		ScheduleTrack (token);
+
 		for (auto queue : PrioManagedQueues_)
 			while (!queue->isEmpty ())
 			{
@@ -259,6 +261,24 @@ namespace SvcAuth
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
 		return true;
+	}
+
+	void VkAuthManager::ScheduleTrack (const QString& key)
+	{
+		if (HasTracked_)
+			return;
+
+		HasTracked_ = true;
+
+		QUrl url { "https://api.vk.com/method/stats.trackVisitor" };
+		Util::UrlOperator { url }
+				("access_token", key);
+
+		auto reply = AuthNAM_->get (QNetworkRequest { url });
+		connect (reply,
+				SIGNAL (finished ()),
+				reply,
+				SLOT (deleteLater ()));
 	}
 
 	void VkAuthManager::clearAuthData ()
