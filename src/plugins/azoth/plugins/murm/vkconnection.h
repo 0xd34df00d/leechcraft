@@ -255,7 +255,6 @@ namespace Murm
 		void handleMessageSent ();
 		void handleCountriesFetched ();
 		void handleMessageInfoFetched ();
-		void handlePhotoInfosFetched ();
 
 		void handleScopeSettingsChanged ();
 
