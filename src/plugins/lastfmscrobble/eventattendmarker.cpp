@@ -43,7 +43,6 @@ namespace Lastfmscrobble
 	: QObject (parent)
 	, NAM_ (nam)
 	, ID_ (id)
-	, Code_ (0)
 	{
 		switch (type)
 		{
