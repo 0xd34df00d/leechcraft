@@ -1170,7 +1170,8 @@ namespace Murm
 			{
 				QUrl msgUrl ("https://api.vk.com/method/messages.get");
 				Util::UrlOperator { msgUrl }
-						("access_token", key);
+						("access_token", key)
+						("photo_sizes", "1");
 				AddParams (msgUrl, params);
 				auto reply = nam->get (QNetworkRequest (msgUrl));
 				connect (reply,
