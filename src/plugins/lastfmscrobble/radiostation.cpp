@@ -99,7 +99,7 @@ namespace Lastfmscrobble
 			throw UnsupportedType ();
 		}
 
-		Tuner_.reset (new RadioTuner (station, nam));
+		Tuner_ = std::make_shared<RadioTuner> (station,  nam);
 
 		connect (Tuner_.get (),
 				SIGNAL (error (QString)),
