@@ -89,12 +89,15 @@ namespace Azoth
 	{
 		VariantModel_->clear ();
 
-		auto source = OptionsModel_->GetSourceForOption (style);
+		if (style.isEmpty ())
+			return;
+
+		const auto source = CoreStylesModel_->GetSourceForOption (style);
 		if (!source)
 			return;
 
-		for (const QString& var : source->GetVariantsForPack (style))
-			VariantModel_->appendRow (new QStandardItem (var));
+		for (const auto& var : source->GetVariantsForPack (style))
+			VariantModel_->appendRow (new QStandardItem { var });
 	}
 
 	void ChatStyleOptionManager::handleChatStyleSelected (const QVariant& val)
