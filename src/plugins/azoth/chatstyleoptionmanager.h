@@ -44,9 +44,9 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		QByteArray OptionName_;
-		SourceTrackingModel<IChatStyleResourceSource> *OptionsModel_;
-		QStandardItemModel *VariantModel_;
+		const QByteArray OptionName_;
+		SourceTrackingModel<IChatStyleResourceSource> * const OptionsModel_;
+		QStandardItemModel * const VariantModel_;
 	public:
 		ChatStyleOptionManager (const QByteArray& optionName, QObject* = 0);
 
