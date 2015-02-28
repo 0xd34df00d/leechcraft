@@ -39,14 +39,24 @@ namespace LeechCraft
 namespace Azoth
 {
 	ChatStyleOptionManager::ChatStyleOptionManager (const QByteArray& optionName, QObject *parent)
-	: QObject (parent)
-	, OptionName_ (optionName)
-	, OptionsModel_ (Core::Instance ().GetChatStyleSourceModel ())
-	, VariantModel_ (new QStandardItemModel (this))
+	: QObject { parent }
+	, OptionName_ { optionName }
+	, CoreStylesModel_ { Core::Instance ().GetChatStyleSourceModel () }
+	, EmptyOptModel_ { new QStandardItemModel { 0, 1, this } }
+	, OptionsModel_ { new Util::MergeModel { { {} }, this } }
+	, VariantModel_ { new QStandardItemModel { this } }
 	{
 		if (!optionName.isEmpty ())
 			XmlSettingsManager::Instance ().RegisterObject (optionName, this,
 					"handleChatStyleSelected", XmlSettingsManager::EventFlag::Select);
+
+		OptionsModel_->AddModel (EmptyOptModel_);
+		OptionsModel_->AddModel (CoreStylesModel_);
+	}
+
+	void ChatStyleOptionManager::AddEmptyVariant ()
+	{
+		EmptyOptModel_->appendRow (new QStandardItem {});
 	}
 
 	QAbstractItemModel* ChatStyleOptionManager::GetStyleModel () const
@@ -64,7 +74,7 @@ namespace Azoth
 		if (OptionName_.isEmpty ())
 			return;
 
-		const QString& option = XmlSettingsManager::Instance ()
+		const auto& option = XmlSettingsManager::Instance ()
 				.property (OptionName_).toString ();
 		auto model = src->GetOptionsModel ();
 		for (int i = 0, size = model->rowCount (); i < size; ++i)
@@ -79,12 +89,15 @@ namespace Azoth
 	{
 		VariantModel_->clear ();
 
-		auto source = OptionsModel_->GetSourceForOption (style);
+		if (style.isEmpty ())
+			return;
+
+		const auto source = CoreStylesModel_->GetSourceForOption (style);
 		if (!source)
 			return;
 
-		for (const QString& var : source->GetVariantsForPack (style))
-			VariantModel_->appendRow (new QStandardItem (var));
+		for (const auto& var : source->GetVariantsForPack (style))
+			VariantModel_->appendRow (new QStandardItem { var });
 	}
 
 	void ChatStyleOptionManager::handleChatStyleSelected (const QVariant& val)

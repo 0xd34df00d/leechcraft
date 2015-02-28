@@ -52,8 +52,8 @@ namespace Mellonetray
 
 		if (TrayModel::Instance ().IsValid ())
 		{
-			Panel_.reset (new QuarkComponent);
-			Panel_->Url_ = Util::GetSysPath (Util::SysPath::QML, "mellonetray", "TrayQuark.qml");
+			Panel_ = std::make_shared<QuarkComponent> ();
+			Panel_->Url_ = Util::GetSysPathUrl (Util::SysPath::QML, "mellonetray", "TrayQuark.qml");
 			Panel_->DynamicProps_.append ({ "MT_trayModel", &TrayModel::Instance () });
 		}
 	}

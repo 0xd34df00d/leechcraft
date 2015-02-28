@@ -115,7 +115,7 @@ namespace LMP
 
 			QMetaObject::invokeMethod (SourceObj_,
 					"handleMessage",
-					Qt::BlockingQueuedConnection,
+					Qt::QueuedConnection,
 					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
 
 			if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR)

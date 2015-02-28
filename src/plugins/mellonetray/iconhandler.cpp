@@ -58,6 +58,7 @@ namespace Mellonetray
 	IconHandler::IconHandler (QQuickItem *item)
 	: QQuickItem (item)
 	{
+		setFlag (QQuickItem::ItemHasContents);
 	}
 #endif
 

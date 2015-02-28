@@ -101,20 +101,13 @@ namespace WebAccess
 	void ServerManager::reconfigureServer ()
 	{
 		const auto& addresses = AddrMgr_->GetAddresses ();
-
-		qDebug () << Q_FUNC_INFO << "starting server at" << addresses;
-		ArgcGenerator gen;
-		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
-
-		const auto& addr = addresses.value (0);
-		gen.AddParm ("--http-address", addr.first);
-		gen.AddParm ("--http-port", addr.second);
-		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
+		qDebug () << Q_FUNC_INFO << "reconfiguring server at" << addresses;
 
 		if (Server_->isRunning ())
 		{
 			try
 			{
+				qDebug () << Q_FUNC_INFO << "stopping the server...";
 				Server_->stop ();
 			}
 			catch (const std::exception& e)
@@ -124,10 +117,20 @@ namespace WebAccess
 			}
 		}
 
+		if (addresses.isEmpty ())
+			return;
+
+		ArgcGenerator gen;
+		gen.AddParm ("--docroot", "/usr/share/Wt;/favicon.ico,/resources,/style");
+
+		const auto& addr = addresses.value (0);
+		gen.AddParm ("--http-address", addr.first);
+		gen.AddParm ("--http-port", addr.second);
+		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
+
 		try
 		{
 			Server_->start ();
-
 		}
 		catch (const std::exception& e)
 		{

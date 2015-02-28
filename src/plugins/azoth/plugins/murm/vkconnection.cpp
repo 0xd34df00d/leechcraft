@@ -1170,7 +1170,8 @@ namespace Murm
 			{
 				QUrl msgUrl ("https://api.vk.com/method/messages.get");
 				Util::UrlOperator { msgUrl }
-						("access_token", key);
+						("access_token", key)
+						("photo_sizes", "1");
 				AddParams (msgUrl, params);
 				auto reply = nam->get (QNetworkRequest (msgUrl));
 				connect (reply,
@@ -1436,7 +1437,7 @@ namespace Murm
 		}
 		respList.removeFirst ();
 
-		QList<MessageInfo> infos;
+		QList<QPair<MessageInfo, FullMessageInfo>> infos;
 		for (const auto& msgMapVar : respList)
 		{
 			const auto& map = msgMapVar.toMap ();
@@ -1466,14 +1467,14 @@ namespace Murm
 				info.From_ = map ["chat_id"].toULongLong ();
 			}
 
-			infos.append (info);
+			infos.append ({ info, GetFullMessageInfo (map, Logger_) });
 		}
 
 		std::sort (infos.begin (), infos.end (),
-				[] (const MessageInfo& m1, const MessageInfo& m2)
-					{ return m1.TS_ < m2.TS_; });
-		for (const auto& info : infos)
-			emit gotMessage (info);
+				[] (const QPair<MessageInfo, FullMessageInfo>& m1, const QPair<MessageInfo, FullMessageInfo>& m2)
+					{ return m1.first.TS_ < m2.first.TS_; });
+		for (const auto& pair : infos)
+			emit gotMessage (pair.second, pair.first);
 	}
 
 	void VkConnection::handleChatCreated ()

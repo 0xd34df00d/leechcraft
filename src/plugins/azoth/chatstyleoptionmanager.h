@@ -36,6 +36,11 @@ class QStandardItemModel;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class MergeModel;
+}
+
 namespace Azoth
 {
 	class IChatStyleResourceSource;
@@ -44,11 +49,17 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		QByteArray OptionName_;
-		SourceTrackingModel<IChatStyleResourceSource> *OptionsModel_;
-		QStandardItemModel *VariantModel_;
+		const QByteArray OptionName_;
+
+		SourceTrackingModel<IChatStyleResourceSource> * const CoreStylesModel_;
+		QStandardItemModel * const EmptyOptModel_;
+		Util::MergeModel * const OptionsModel_;
+
+		QStandardItemModel * const VariantModel_;
 	public:
 		ChatStyleOptionManager (const QByteArray& optionName, QObject* = 0);
+
+		void AddEmptyVariant ();
 
 		QAbstractItemModel* GetStyleModel () const;
 		QAbstractItemModel* GetVariantModel () const;

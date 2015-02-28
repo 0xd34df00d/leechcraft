@@ -1067,12 +1067,21 @@ namespace LMP
 	{
 		auto prevPath = XmlSettingsManager::Instance ()
 				.Property ("PrevAddToPlaylistPath", QDir::homePath ()).toString ();
-		const auto& files = QFileDialog::getOpenFileNames (this,
+		auto files = QFileDialog::getOpenFileNames (this,
 				tr ("Load files"),
 				prevPath,
-				tr ("Music files (*.ogg *.flac *.mp3 *.wav);;Playlists (*.pls *.m3u *.m3u8 *.xspf);;All files (*.*)"));
+				QString { "%1 (*.ogg *.flac *.mp3 *.wav);;%2 (*.pls *.m3u *.m3u8 *.xspf);;%3 (*.*)" }
+					.arg (tr ("Music files"))
+					.arg (tr ("Playlists"))
+					.arg (tr ("All files")));
 		if (files.isEmpty ())
 			return;
+
+#if QT_VERSION < 0x050000
+		if (files.size () > 1)
+			for (auto& file : files)
+				file = QString::fromUtf8 (QByteArray::fromPercentEncoding (file.toUtf8 ()));
+#endif
 
 		prevPath = QFileInfo (files.at (0)).absoluteDir ().absolutePath ();
 		XmlSettingsManager::Instance ().setProperty ("PrevAddToPlaylistPath", prevPath);
