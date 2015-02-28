@@ -104,31 +104,15 @@ QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 	for (; strNum < 3 && size >= 1024; ++strNum, size /= 1024)
 		;
 
-	switch (strNum)
+	static QStringList units
 	{
-	case 0:
-	{
-		static const QString unit = QObject::tr (" b");
-		return QString::number (size, 'f', 1) + unit;
-	}
-	case 1:
-	{
-		static const QString unit = QObject::tr (" KiB");
-		return QString::number (size, 'f', 1) + unit;
-	}
-	case 2:
-	{
-		static const QString unit = QObject::tr (" MiB");
-		return QString::number (size, 'f', 1) + unit;
-	}
-	case 3:
-	{
-		static const QString unit = QObject::tr (" GiB");
-		return QString::number (size, 'f', 1) + unit;
-	}
-	default:
-		return "unknown";
-	}
+		QObject::tr (" b"),
+		QObject::tr (" KiB"),
+		QObject::tr (" MiB"),
+		QObject::tr (" GiB")
+	};
+
+	return QString::number (size, 'f', 1) + units.value (strNum);
 }
 
 QString LeechCraft::Util::MakeTimeFromLong (ulong time)
