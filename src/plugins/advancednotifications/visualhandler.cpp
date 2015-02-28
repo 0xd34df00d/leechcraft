@@ -70,9 +70,14 @@ namespace AdvancedNotifications
 			}
 		}
 
-		Q_FOREACH (const QString& key, e.Additional_.keys ())
+		for (auto i = e.Additional_.begin (); i !=  e.Additional_.end (); )
+		{
+			const auto& key = i.key ();
 			if (key.startsWith ("org.LC.AdvNotifications."))
-				e.Additional_.remove (key);
+				i = e.Additional_.erase (i);
+			else
+				++i;
+		}
 
 		if (e.Mime_.endsWith ("+advanced"))
 			e.Mime_.remove ("+advanced");
