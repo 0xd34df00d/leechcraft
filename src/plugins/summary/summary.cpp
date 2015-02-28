@@ -42,7 +42,7 @@ namespace Summary
 	{
 		SummaryWidget::SetParentMultiTabs (this);
 
-		Translator_.reset (Util::InstallTranslator ("summary"));
+		Util::InstallTranslator ("summary");
 
 		Core::Instance ().SetProxy (proxy);
 
@@ -95,7 +95,6 @@ namespace Summary
 	void Summary::Release ()
 	{
 		Core::Instance ().Release ();
-		Translator_.reset ();
 	}
 
 	QByteArray Summary::GetUniqueID () const

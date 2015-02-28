@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
 #include <QStringList>
 #include <QTranslator>
@@ -53,7 +52,6 @@ namespace Summary
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Summary")
 
-		std::auto_ptr<QTranslator> Translator_;
 		TabClasses_t TabClasses_;
 	public:
 		void Init (ICoreProxy_ptr);
