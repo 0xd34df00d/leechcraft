@@ -137,7 +137,8 @@ namespace LMP
 					(info.Year_ == str.toInt (&isInt) && isInt))
 					return true;
 
-				if (parent.isValid () && check (info.Title_))
+				if (parent.isValid () &&
+						(check (info.Title_) || check (info.LocalPath_)))
 					return true;
 
 				for (int i = 0, rc = sourceModel ()->rowCount (idx); i < rc; ++i)
