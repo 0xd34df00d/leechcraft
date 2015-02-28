@@ -599,6 +599,10 @@ namespace LMP
 					{
 						GST_STREAM_ERROR_TYPE_NOT_FOUND,
 						SourceError::InvalidSource
+					},
+					{
+						GST_STREAM_ERROR_DECODE,
+						SourceError::InvalidSource
 					}
 				}
 			}
