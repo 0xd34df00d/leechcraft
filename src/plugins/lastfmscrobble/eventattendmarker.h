@@ -46,7 +46,7 @@ namespace Lastfmscrobble
 
 		QNetworkAccessManager *NAM_;
 		qint64 ID_;
-		int Code_;
+		int Code_ = 0;
 	public:
 		EventAttendMarker (Authenticator*, QNetworkAccessManager*, qint64, Media::EventAttendType, QObject* = 0);
 	private slots:

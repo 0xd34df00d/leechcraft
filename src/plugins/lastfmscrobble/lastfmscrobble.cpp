@@ -193,10 +193,10 @@ namespace Lastfmscrobble
 					name;
 
 			auto nam = Proxy_->GetNetworkAccessManager ();
-			return Media::IRadioStation_ptr (new RadioStation (nam,
+			return std::make_shared<RadioStation> (nam,
 						static_cast<Media::RadioType> (type),
 						param,
-						item.data (Qt::DisplayRole).toString ()));
+						item.data (Qt::DisplayRole).toString ());
 		}
 		catch (const RadioStation::UnsupportedType&)
 		{
