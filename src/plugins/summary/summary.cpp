@@ -47,29 +47,29 @@ namespace Summary
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
-				SIGNAL (addNewTab (const QString&, QWidget*)),
+				SIGNAL (addNewTab (QString, QWidget*)),
 				this,
-				SIGNAL (addNewTab (const QString&, QWidget*)));
+				SIGNAL (addNewTab (QString, QWidget*)));
 		connect (&Core::Instance (),
 				SIGNAL (removeTab (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
 		connect (&Core::Instance (),
-				SIGNAL (changeTabName (QWidget*, const QString&)),
+				SIGNAL (changeTabName (QWidget*, QString)),
 				this,
-				SIGNAL (changeTabName (QWidget*, const QString&)));
+				SIGNAL (changeTabName (QWidget*, QString)));
 		connect (&Core::Instance (),
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)),
+				SIGNAL (changeTabIcon (QWidget*, QIcon)),
 				this,
-				SIGNAL (changeTabIcon (QWidget*, const QIcon&)));
+				SIGNAL (changeTabIcon (QWidget*, QIcon)));
 		connect (&Core::Instance (),
 				SIGNAL (changeTooltip (QWidget*, QWidget*)),
 				this,
 				SIGNAL (changeTooltip (QWidget*, QWidget*)));
 		connect (&Core::Instance (),
-				SIGNAL (statusBarChanged (QWidget*, const QString&)),
+				SIGNAL (statusBarChanged (QWidget*, QString)),
 				this,
-				SIGNAL (statusBarChanged (QWidget*, const QString&)));
+				SIGNAL (statusBarChanged (QWidget*, QString)));
 		connect (&Core::Instance (),
 				SIGNAL (raiseTab (QWidget*)),
 				this,
@@ -82,7 +82,7 @@ namespace Summary
 			GetInfo (),
 			GetIcon (),
 			50,
-			TabFeatures (TFOpenableByRequest | TFByDefault | TFSuggestOpening)
+			TFOpenableByRequest | TFByDefault | TFSuggestOpening
 		};
 		TabClasses_ << tabClass;
 	}
