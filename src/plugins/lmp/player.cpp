@@ -1533,8 +1533,9 @@ namespace LMP
 		switch (error)
 		{
 		case SourceError::MissingPlugin:
-			text = tr ("Cannot find a proper audio decoder. "
-					"You probably don't have all the codec plugins installed.");
+			text = tr ("Cannot find a proper audio decoder for file %1. "
+					"You probably don't have all the codec plugins installed.")
+					.arg (filename);
 			text += "<br/>" + sourceText;
 			if (PlayMode_ == PlayMode::Sequential)
 				nextTrack ();
