@@ -1532,6 +1532,8 @@ namespace LMP
 			text.prepend ("<br/>");
 			text.prepend (tr ("Cannot find a proper audio decoder. "
 					"You probably don't have all the codec plugins installed."));
+			if (PlayMode_ == PlayMode::Sequential)
+				nextTrack ();
 			break;
 		case SourceError::SourceNotFound:
 			text = tr ("Audio source %1 not found, playing next track...")
