@@ -29,5 +29,6 @@ target_link_libraries (leechcraft_mellonetray
 	)
 install (TARGETS leechcraft_mellonetray DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/mellonetray DESTINATION ${LC_QML_DEST})
+install (DIRECTORY share/qml5/mellonetray DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_mellonetray Quick X11Extras)
