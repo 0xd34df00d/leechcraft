@@ -54,6 +54,11 @@ namespace Azoth
 		OptionsModel_->AddModel (CoreStylesModel_);
 	}
 
+	void ChatStyleOptionManager::AddEmptyVariant ()
+	{
+		EmptyOptModel_->appendRow (new QStandardItem {});
+	}
+
 	QAbstractItemModel* ChatStyleOptionManager::GetStyleModel () const
 	{
 		return OptionsModel_;

@@ -59,6 +59,8 @@ namespace Azoth
 	public:
 		ChatStyleOptionManager (const QByteArray& optionName, QObject* = 0);
 
+		void AddEmptyVariant ();
+
 		QAbstractItemModel* GetStyleModel () const;
 		QAbstractItemModel* GetVariantModel () const;
 
