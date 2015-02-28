@@ -1526,6 +1526,10 @@ namespace LMP
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
 	{
 		QString text;
+
+		const auto& curSource = Source_->GetCurrentSource ();
+		const auto& curPath = curSource.ToUrl ().path ();
+		const auto& filename = "<em>" + QFileInfo { curPath }.fileName () + "</em>";
 		switch (error)
 		{
 		case SourceError::MissingPlugin:
@@ -1537,12 +1541,12 @@ namespace LMP
 			break;
 		case SourceError::SourceNotFound:
 			text = tr ("Audio source %1 not found, playing next track...")
-					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
+					.arg (filename);
 			nextTrack ();
 			break;
 		case SourceError::InvalidSource:
 			text = tr ("Audio source %1 is invalid, playing next track...")
-					.arg (QFileInfo (Source_->GetCurrentSource ().ToUrl ().path ()).fileName ());
+					.arg (filename);
 			nextTrack ();
 			break;
 		case SourceError::Other:
