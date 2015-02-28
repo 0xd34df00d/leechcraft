@@ -41,6 +41,7 @@
 #include <interfaces/structures.h>
 #include <util/xpc/util.h>
 #include <util/tags/categoryselector.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "channelsmodel.h"
 
@@ -418,8 +419,8 @@ namespace Aggregator
 		cursor.setPosition (topFrame->lastPosition ());
 
 		cursor.setCharFormat (origFmt);
-		Q_FOREACH (const auto& cs, info.Items_.keys ())
-			WritePDFChannel (cursor, cs, info.Items_ [cs], topFrame, baseFontSize, font);
+		for (const auto& pair : Util::Stlize (info.Items_))
+			WritePDFChannel (cursor, pair.first, pair.second, topFrame, baseFontSize, font);
 
 		QPrinter printer;
 		printer.setOutputFileName (info.File_);
