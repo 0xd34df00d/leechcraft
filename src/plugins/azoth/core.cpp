@@ -883,7 +883,7 @@ namespace Azoth
 				{
 					const auto nickEnd = pos + nick.size ();
 					if ((pos > 0 && !isGoodChar (body.at (pos - 1))) ||
-						(nickEnd + 1 < body.size () && !isGoodChar (body.at (nickEnd + 1))))
+						(nickEnd + 1 < body.size () && !isGoodChar (body.at (nickEnd))))
 					{
 						pos += nick.size ();
 						continue;
