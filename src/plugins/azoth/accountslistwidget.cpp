@@ -224,7 +224,9 @@ namespace Azoth
 		mucVariant->setText (mucPair.second);
 
 		auto chatStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
+		chatStyler->AddEmptyVariant ();
 		auto mucStyler = new ChatStyleOptionManager (QByteArray (), acc->GetQObject ());
+		mucStyler->AddEmptyVariant ();
 
 		const QList<QStandardItem*> row { show, name, style, variant, mucStyle, mucVariant };
 		for (auto item : row)
