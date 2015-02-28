@@ -1525,13 +1525,13 @@ namespace LMP
 
 	void Player::handleSourceError (const QString& sourceText, SourceError error)
 	{
-		auto text = tr ("GStreamer says: %1.").arg (sourceText);
+		QString text;
 		switch (error)
 		{
 		case SourceError::MissingPlugin:
-			text.prepend ("<br/>");
-			text.prepend (tr ("Cannot find a proper audio decoder. "
-					"You probably don't have all the codec plugins installed."));
+			text = tr ("Cannot find a proper audio decoder. "
+					"You probably don't have all the codec plugins installed.");
+			text += "<br/>" + sourceText;
 			if (PlayMode_ == PlayMode::Sequential)
 				nextTrack ();
 			break;
@@ -1546,6 +1546,7 @@ namespace LMP
 			nextTrack ();
 			break;
 		case SourceError::Other:
+			text = sourceText;
 			break;
 		}
 
