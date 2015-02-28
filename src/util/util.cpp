@@ -100,21 +100,9 @@ QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 {
 	int strNum = 0;
 	long double size = sourcesize;
-	if (size >= 1024)
-	{
-		strNum = 1;
-		size /= 1024;
-	}
-	if (size >= 1024)
-	{
-		strNum = 2;
-		size /= 1024;
-	}
-	if (size >= 1024)
-	{
-		strNum = 3;
-		size /= 1024;
-	}
+
+	for (; strNum < 3 && size >= 1024; ++strNum, size /= 1024)
+		;
 
 	switch (strNum)
 	{
