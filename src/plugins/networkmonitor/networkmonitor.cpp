@@ -46,7 +46,7 @@ namespace LeechCraft
 		{
 			void Plugin::Init (ICoreProxy_ptr proxy)
 			{
-				Translator_.reset (LeechCraft::Util::InstallTranslator ("networkmonitor"));
+				Util::InstallTranslator ("networkmonitor");
 
 				NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
 

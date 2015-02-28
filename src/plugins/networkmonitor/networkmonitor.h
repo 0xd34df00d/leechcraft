@@ -60,7 +60,6 @@ namespace LeechCraft
 				QSortFilterProxyModel *ProxyModel_;
 				QNetworkAccessManager *NetworkAccessManager_;
 				QList<QAction*> Actions_;
-				std::auto_ptr<QTranslator> Translator_;
 			public:
 				void Init (ICoreProxy_ptr);
 				void SecondInit ();

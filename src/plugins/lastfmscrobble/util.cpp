@@ -40,6 +40,8 @@
 
 #include <ws.h>
 #include <util/util.h>
+#include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -57,7 +59,7 @@ namespace Lastfmscrobble
 		str += lastfm::ws::SharedSecret;
 		const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
 
-		params << QPair<QString, QString> ("api_sig", sig);
+		params.append ({ "api_sig", sig });
 
 #if QT_VERSION < 0x050000
 		QUrl url;
@@ -82,17 +84,17 @@ namespace Lastfmscrobble
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const QMap<QString, QString>& map)
 	{
 		QList<QPair<QString, QString>> params;
-		Q_FOREACH (const auto& key, map.keys ())
-			params << qMakePair (key, map [key]);
+		for (const auto& pair : Util::Stlize (map))
+			params.append ({ pair.first, pair.second });
 		return Request (method, nam, params);
 	}
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, QList<QPair<QString, QString>> params)
 	{
 		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
-		params << QPair<QString, QString> ("method", method);
-		params << QPair<QString, QString> ("api_key", lastfm::ws::ApiKey);
-		params << QPair<QString, QString> ("sk", lastfm::ws::SessionKey);
+		params.append ({ "method", method });
+		params.append ({ "api_key", lastfm::ws::ApiKey });
+		params.append ({ "sk", lastfm::ws::SessionKey });
 
 		const auto& data = MakeCall (params);
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
