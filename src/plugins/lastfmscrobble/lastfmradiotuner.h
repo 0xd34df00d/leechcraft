@@ -29,52 +29,40 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <interfaces/media/iradiostation.h>
-#include <interfaces/media/iradiostationprovider.h>
 #include "lastfmheaders.h"
 
 class QNetworkAccessManager;
+
+namespace lastfm
+{
+	class RadioStation;
+}
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	class RadioTuner;
-
-	class RadioStation : public QObject
-					   , public Media::IRadioStation
+	class LastFmRadioTuner : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (Media::IRadioStation)
 
-		std::shared_ptr<RadioTuner> Tuner_;
-		QString RadioName_;
+		QNetworkAccessManager *NAM_;
+		QList<lastfm::Track> Queue_;
+		int NumTries_;
 	public:
-		struct UnsupportedType {};
+		LastFmRadioTuner (const lastfm::RadioStation&, QNetworkAccessManager*, QObject* = 0);
 
-		static QMap<QByteArray, QString> GetPredefinedStations ();
-
-		RadioStation (QNetworkAccessManager*,
-				Media::RadioType,
-				const QString& param,
-				const QString& visibleName);
-
-		QObject* GetQObject ();
-		void RequestNewStream ();
-		QString GetRadioName () const;
+		lastfm::Track GetNextTrack ();
 	private:
-		void EmitTrack (const lastfm::Track&);
+		void FetchMoreTracks ();
+		bool TryAgain ();
 	private slots:
-		void handleTitle (const QString&);
-		void handleError (const QString&);
-		void handleNextTrack ();
+		void handleTuned ();
+		void handleGotPlaylist ();
 	signals:
-		void gotPlaylist (const QString&, const QString&);
-		void gotNewStream (const QUrl&, const Media::AudioInfo&);
-		void gotAudioInfos (const QList<Media::AudioInfo>& infos);
-		void gotError (const QString&);
+		void error (const QString&);
+		void trackAvailable ();
 	};
 }
 }

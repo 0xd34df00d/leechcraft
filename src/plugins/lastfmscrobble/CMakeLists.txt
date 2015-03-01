@@ -23,8 +23,8 @@ set (SRCS
 	basesimilarartists.cpp
 	pendingrecommendedartists.cpp
 	util.cpp
-	radiostation.cpp
-	radiotuner.cpp
+	lastfmradiostation.cpp
+	lastfmradiotuner.cpp
 	recentreleasesfetcher.cpp
 	pendingartistbio.cpp
 	receventsfetcher.cpp

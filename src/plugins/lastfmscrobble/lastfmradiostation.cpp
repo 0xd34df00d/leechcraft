@@ -27,17 +27,17 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "radiostation.h"
+#include "lastfmradiostation.h"
 #include <QtDebug>
 #include <interfaces/media/audiostructs.h>
 #include "xmlsettingsmanager.h"
-#include "radiotuner.h"
+#include "lastfmradiotuner.h"
 
 namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	QMap<QByteArray, QString> RadioStation::GetPredefinedStations ()
+	QMap<QByteArray, QString> LastFmRadioStation::GetPredefinedStations ()
 	{
 		const auto& login = XmlSettingsManager::Instance ().property ("lastfm.login").toString ();
 
@@ -52,7 +52,7 @@ namespace Lastfmscrobble
 		return result;
 	}
 
-	RadioStation::RadioStation (QNetworkAccessManager *nam,
+	LastFmRadioStation::LastFmRadioStation (QNetworkAccessManager *nam,
 			Media::RadioType type, const QString& param, const QString& visibleName)
 	{
 		lastfm::RadioStation station;
@@ -99,7 +99,7 @@ namespace Lastfmscrobble
 			throw UnsupportedType ();
 		}
 
-		Tuner_ = std::make_shared<RadioTuner> (station,  nam);
+		Tuner_ = std::make_shared<LastFmRadioTuner> (station,  nam);
 
 		connect (Tuner_.get (),
 				SIGNAL (error (QString)),
@@ -111,12 +111,12 @@ namespace Lastfmscrobble
 				SLOT (handleNextTrack ()));
 	}
 
-	QObject* RadioStation::GetQObject ()
+	QObject* LastFmRadioStation::GetQObject ()
 	{
 		return this;
 	}
 
-	void RadioStation::RequestNewStream ()
+	void LastFmRadioStation::RequestNewStream ()
 	{
 		auto track = Tuner_->GetNextTrack ();
 		if (!track.isNull ())
@@ -131,12 +131,12 @@ namespace Lastfmscrobble
 				SLOT (handleNextTrack ()));
 	}
 
-	QString RadioStation::GetRadioName () const
+	QString LastFmRadioStation::GetRadioName () const
 	{
 		return RadioName_;
 	}
 
-	void RadioStation::EmitTrack (const lastfm::Track& track)
+	void LastFmRadioStation::EmitTrack (const lastfm::Track& track)
 	{
 		qDebug () << Q_FUNC_INFO << track.url ();
 		const Media::AudioInfo info =
@@ -153,18 +153,18 @@ namespace Lastfmscrobble
 		emit gotNewStream (track.url (), info);
 	}
 
-	void RadioStation::handleTitle (const QString& title)
+	void LastFmRadioStation::handleTitle (const QString& title)
 	{
 		qDebug () << Q_FUNC_INFO << title;
 	}
 
-	void RadioStation::handleError (const QString& error)
+	void LastFmRadioStation::handleError (const QString& error)
 	{
 		qDebug () << Q_FUNC_INFO << error;
 		emit gotError (error);
 	}
 
-	void RadioStation::handleNextTrack ()
+	void LastFmRadioStation::handleNextTrack ()
 	{
 		EmitTrack (Tuner_->GetNextTrack ());
 

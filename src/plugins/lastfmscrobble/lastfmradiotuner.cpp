@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "radiotuner.h"
+#include "lastfmradiotuner.h"
 #include <QtDebug>
 #include "util.h"
 
@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	RadioTuner::RadioTuner (const lastfm::RadioStation& station,
+	LastFmRadioTuner::LastFmRadioTuner (const lastfm::RadioStation& station,
 			QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
@@ -50,7 +50,7 @@ namespace Lastfmscrobble
 				SLOT (handleTuned ()));
 	}
 
-	lastfm::Track RadioTuner::GetNextTrack ()
+	lastfm::Track LastFmRadioTuner::GetNextTrack ()
 	{
 		lastfm::Track result;
 		if (!Queue_.isEmpty ())
@@ -60,7 +60,7 @@ namespace Lastfmscrobble
 		return result;
 	}
 
-	void RadioTuner::FetchMoreTracks ()
+	void LastFmRadioTuner::FetchMoreTracks ()
 	{
 		QList<QPair<QString, QString>> params;
 		params << QPair<QString, QString> ("rtp", "1");
@@ -71,7 +71,7 @@ namespace Lastfmscrobble
 				SLOT (handleGotPlaylist ()));
 	}
 
-	bool RadioTuner::TryAgain ()
+	bool LastFmRadioTuner::TryAgain ()
 	{
 		if (++NumTries_ > 5)
 			return false;
@@ -80,12 +80,12 @@ namespace Lastfmscrobble
 		return true;
 	}
 
-	void RadioTuner::handleTuned ()
+	void LastFmRadioTuner::handleTuned ()
 	{
 		sender ()->deleteLater ();
 	}
 
-	void RadioTuner::handleGotPlaylist ()
+	void LastFmRadioTuner::handleGotPlaylist ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();

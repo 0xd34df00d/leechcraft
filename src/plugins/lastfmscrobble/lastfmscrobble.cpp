@@ -41,7 +41,7 @@
 #include "albumartfetcher.h"
 #include "authenticator.h"
 #include "pendingrecommendedartists.h"
-#include "radiostation.h"
+#include "lastfmradiostation.h"
 #include "recentreleasesfetcher.h"
 #include "pendingartistbio.h"
 #include "receventsfetcher.h"
@@ -193,12 +193,12 @@ namespace Lastfmscrobble
 					name;
 
 			auto nam = Proxy_->GetNetworkAccessManager ();
-			return std::make_shared<RadioStation> (nam,
+			return std::make_shared<LastFmRadioStation> (nam,
 						static_cast<Media::RadioType> (type),
 						param,
 						item.data (Qt::DisplayRole).toString ());
 		}
-		catch (const RadioStation::UnsupportedType&)
+		catch (const LastFmRadioStation::UnsupportedType&)
 		{
 			return {};
 		}
