@@ -63,8 +63,10 @@ namespace PowerActions
 			switch (process->error ())
 			{
 			case QProcess::ProcessError::FailedToStart:
-				return PMUtils::tr ("pm-is-supported failed to start. "
-						"Probably pm-utils is not installed? Original message: %1.")
+				return PMUtils::tr ("%1 failed to start. "
+						"Probably %2 is not installed? Original message: %3.")
+						.arg ("pm-is-supported")
+						.arg ("pm-utils")
 						.arg (origMsg);
 			default:
 				return origMsg;
