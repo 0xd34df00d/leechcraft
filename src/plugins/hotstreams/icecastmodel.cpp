@@ -186,7 +186,7 @@ namespace HotStreams
 			switch (role)
 			{
 			case Qt::DisplayRole:
-				return tr ("Icecast");
+				return "Icecast";
 			case Media::RadioItemRole::ItemType:
 				return Media::RadioType::None;
 			default:
