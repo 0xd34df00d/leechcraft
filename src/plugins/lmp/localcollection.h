@@ -67,7 +67,6 @@ namespace LMP
 
 		LocalCollectionStorage * const Storage_;
 		LocalCollectionModel * const CollectionModel_;
-		QSortFilterProxyModel * const Sorter_;
 		LocalCollectionWatcher * const FilesWatcher_;
 
 		AlbumArtManager * const AlbumArtMgr_;
