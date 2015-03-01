@@ -41,7 +41,7 @@ namespace LMP
 {
 	CollectionsManager::CollectionsManager (QObject *parent)
 	: QObject { parent }
-	, Model_ { new Util::MergeModel { { "Column" }, this } }
+	, Model_ { new Util::MergeModel { { {} }, this } }
 	, Sorter_ { new CollectionSorterModel { this } }
 	{
 		Sorter_->setSourceModel (Model_);
