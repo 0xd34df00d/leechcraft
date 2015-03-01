@@ -119,7 +119,7 @@ namespace XDG
 				Line_ %= qi::lexeme [+(qi::char_ ("a-zA-Z0-9-"))] >>
 						-Lang_ >>
 						KeyValSep_ >>
-						LineVal_ >>
+						-LineVal_ >>
 						eol;
 
 				GroupName_ %= '[' >> qi::lexeme [+(qi::char_ ("a-zA-Z0-9 "))] >> ']';
