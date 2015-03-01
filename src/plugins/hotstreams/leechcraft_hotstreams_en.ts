@@ -2,9 +2,9 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::HotStreams::IcecastFetcher</name>
+    <name>LeechCraft::HotStreams::IcecastModel</name>
     <message>
-        <location filename="icecastfetcher.cpp" line="237"/>
+        <location filename="icecastmodel.cpp" line="243"/>
         <source>Genre: %1
 Bitrate: %2 kbps
 Type: %3</source>
@@ -16,7 +16,7 @@ Type: %3</translation>
 <context>
     <name>LeechCraft::HotStreams::Plugin</name>
     <message>
-        <location filename="hotstreams.cpp" line="146"/>
+        <location filename="hotstreams.cpp" line="142"/>
         <source>Provides some radio streams like Digitally Imported and SomaFM to other plugins.</source>
         <translation>Provides some radio streams like Digitally Imported and SomaFM to other plugins.</translation>
     </message>
