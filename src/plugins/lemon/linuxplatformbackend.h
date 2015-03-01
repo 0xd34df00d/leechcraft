@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Lemon
 {
-	class LinuxPlatformBackend final : public PlatformBackend
+	class LinuxPlatformBackend : public PlatformBackend
 	{
 		Q_OBJECT
 
