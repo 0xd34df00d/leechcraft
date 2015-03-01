@@ -1669,5 +1669,13 @@ LeechCraft для Windows — довольно экспериментальна�
         <source>Do not track</source>
         <translation>Не отслеживать</translation>
     </message>
+    <message>
+        <source>Services</source>
+        <translation>Сервисы</translation>
+    </message>
+    <message>
+        <source>Collect (anonymized) VKontakte application statistics</source>
+        <translation>Собирать (анонимную) статистику ВКонтакте</translation>
+    </message>
 </context>
 </TS>

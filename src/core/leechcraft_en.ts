@@ -336,12 +336,12 @@
         <translation>Ctrl+T</translation>
     </message>
     <message>
-        <location filename="mainwindowmenumanager.cpp" line="44"/>
+        <location filename="mainwindowmenumanager.cpp" line="45"/>
         <source>View</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="mainwindowmenumanager.cpp" line="48"/>
+        <location filename="mainwindowmenumanager.cpp" line="49"/>
         <source>Tools</source>
         <translation>Tools</translation>
     </message>
@@ -727,22 +727,22 @@
 <context>
     <name>LeechCraft::SeparateTabWidget</name>
     <message>
-        <location filename="separatetabwidget.cpp" line="358"/>
+        <location filename="separatetabwidget.cpp" line="348"/>
         <source>Move tab to</source>
         <translation>Move tab to</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="359"/>
+        <location filename="separatetabwidget.cpp" line="349"/>
         <source>New window</source>
         <translation>New window</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="373"/>
+        <location filename="separatetabwidget.cpp" line="363"/>
         <source>To window %1 (%2)</source>
         <translation>To window %1 (%2)</translation>
     </message>
     <message>
-        <location filename="separatetabwidget.cpp" line="390"/>
+        <location filename="separatetabwidget.cpp" line="380"/>
         <source>Clone tab</source>
         <translation>Clone tab</translation>
     </message>
@@ -977,12 +977,12 @@
 <context>
     <name>LeechCraft::Util</name>
     <message>
-        <location filename="../util/xsd/addressesmodelmanager.cpp" line="45"/>
+        <location filename="../util/xsd/addressesmodelmanager.cpp" line="46"/>
         <source>Host</source>
         <translation>Host</translation>
     </message>
     <message>
-        <location filename="../util/xsd/addressesmodelmanager.cpp" line="45"/>
+        <location filename="../util/xsd/addressesmodelmanager.cpp" line="46"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
@@ -1016,12 +1016,12 @@
 <context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
-        <location filename="../util/models/flattofoldersproxymodel.cpp" line="113"/>
+        <location filename="../util/models/flattofoldersproxymodel.cpp" line="111"/>
         <source>untagged</source>
         <translation>untagged</translation>
     </message>
     <message>
-        <location filename="../util/models/flattofoldersproxymodel.cpp" line="117"/>
+        <location filename="../util/models/flattofoldersproxymodel.cpp" line="115"/>
         <source>&lt;unknown tag&gt;</source>
         <translation>&lt;unknown tag&gt;</translation>
     </message>
@@ -1029,12 +1029,12 @@
 <context>
     <name>LeechCraft::Util::SvcAuth::VkAuthManager</name>
     <message>
-        <location filename="../util/svcauth/vkauthmanager.cpp" line="256"/>
+        <location filename="../util/svcauth/vkauthmanager.cpp" line="257"/>
         <source>VK.com authentication for %1 failed because of error %2. Report upstream please.</source>
         <translation>VK.com authentication for %1 failed because of error %2. Report upstream please.</translation>
     </message>
     <message>
-        <location filename="../util/svcauth/vkauthmanager.cpp" line="299"/>
+        <location filename="../util/svcauth/vkauthmanager.cpp" line="321"/>
         <source>VK.com authentication for %1</source>
         <translation>VK.com authentication for %1</translation>
     </message>
@@ -1117,47 +1117,47 @@ If you have read and really understood all these letters, click Cancel button in
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../util/util.cpp" line="63"/>
+        <location filename="../util/util.cpp" line="65"/>
         <source>Too long to show</source>
         <translation>Too long to show</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="80"/>
+        <location filename="../util/util.cpp" line="82"/>
         <source>Binary entity</source>
         <translation>Binary entity</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="83"/>
+        <location filename="../util/util.cpp" line="85"/>
         <source>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</source>
         <translation>&lt;br /&gt;&lt;br /&gt;of type &lt;code&gt;%1&lt;/code&gt;</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="90"/>
+        <location filename="../util/util.cpp" line="92"/>
         <source>&lt;br /&gt;from %1</source>
         <translation>&lt;br /&gt;from %1</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="121"/>
+        <location filename="../util/util.cpp" line="109"/>
         <source> b</source>
         <translation> b</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="126"/>
+        <location filename="../util/util.cpp" line="110"/>
         <source> KiB</source>
         <translation> KiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="131"/>
+        <location filename="../util/util.cpp" line="111"/>
         <source> MiB</source>
         <translation> MiB</translation>
     </message>
     <message>
-        <location filename="../util/util.cpp" line="136"/>
+        <location filename="../util/util.cpp" line="112"/>
         <source> GiB</source>
         <translation> GiB</translation>
     </message>
     <message numerus="yes">
-        <location filename="../util/util.cpp" line="150"/>
+        <location filename="../util/util.cpp" line="124"/>
         <source>%n day(s), </source>
         <translation>
             <numerusform>%n day, </numerusform>
@@ -2062,21 +2062,31 @@ If you have read and really understood all these letters, click Cancel button in
     </message>
     <message>
         <location filename="dummy.cpp" line="64"/>
+        <source>Services</source>
+        <translation>Services</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="65"/>
+        <source>Collect (anonymized) VKontakte application statistics</source>
+        <translation>Collect (anonymized) VKontakte application statistics</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="66"/>
         <source>Plugins</source>
         <translation>Plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="65"/>
+        <location filename="dummy.cpp" line="67"/>
         <source>Plugins manager</source>
         <translation>Plugins manager</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="66"/>
+        <location filename="dummy.cpp" line="68"/>
         <source>Enable all plugins</source>
         <translation>Enable all plugins</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="67"/>
+        <location filename="dummy.cpp" line="69"/>
         <source>Disable all plugins</source>
         <translation>Disable all plugins</translation>
     </message>
