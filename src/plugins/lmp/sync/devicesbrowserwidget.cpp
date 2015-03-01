@@ -47,6 +47,7 @@
 #include "transcodingparams.h"
 #include "unmountabledevmanager.h"
 #include "syncunmountablemanager.h"
+#include "collectionsmanager.h"
 
 typedef QMap<QString, LeechCraft::LMP::TranscodingParams> TranscodingParamsMap_t;
 Q_DECLARE_METATYPE (TranscodingParamsMap_t)
@@ -101,7 +102,7 @@ namespace LMP
 
 		Ui_.setupUi (this);
 
-		DevUploadModel_->setSourceModel (Core::Instance ().GetLocalCollection ()->GetCollectionModel ());
+		DevUploadModel_->setSourceModel (Core::Instance ().GetCollectionsManager ()->GetModel ());
 		Ui_.OurCollection_->setModel (DevUploadModel_);
 
 		auto connectManager = [this] (SyncManagerBase *manager) -> void
