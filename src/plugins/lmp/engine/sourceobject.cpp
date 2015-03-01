@@ -608,7 +608,7 @@ namespace LMP
 			}
 		};
 
-		const auto errCode = [&] () -> SourceError
+		const auto errCode = [&]
 			{
 				try
 				{
