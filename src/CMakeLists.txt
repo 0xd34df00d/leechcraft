@@ -61,6 +61,8 @@ if (UNIX OR (WIN32 AND MINGW))
 	endif ()
 endif ()
 
+set (CMAKE_AUTOMOC_MOC_OPTIONS "-Dfinal=moc_is_dumb_they_better_used_a_proper_cpp_preprocessor")
+
 include (CMakeDependentOption)
 
 if (GPTOOLS_CPU AND GPTOOLS_MEM)

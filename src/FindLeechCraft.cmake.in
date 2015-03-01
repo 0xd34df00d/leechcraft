@@ -122,6 +122,7 @@ else()
 endif()
 
 set (CMAKE_AUTOMOC TRUE)
+set (CMAKE_AUTOMOC_MOC_OPTIONS "-Dfinal=moc_is_dumb_they_better_used_a_proper_cpp_preprocessor")
 
 function (CreateTrsUpTarget PlugName Langs Sources Forms Xml)
 endfunction ()
