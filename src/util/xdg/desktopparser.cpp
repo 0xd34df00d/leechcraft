@@ -114,7 +114,7 @@ namespace XDG
 				KeyValSep_ %= *(qi::lit (' ')) >> '=' >> *(qi::lit (' '));
 
 				LineValSingle_ %= qi::lexeme [+((qi::lit ("\\;") | (qi::char_ - ';' - '\r' - '\n')))];
-				LineVal_ %= +(LineValSingle_ >> ';') | LineValSingle_;
+				LineVal_ %= ((LineValSingle_ % ';') >> -qi::lit (";")) | LineValSingle_;
 
 				Line_ %= qi::lexeme [+(qi::char_ ("a-zA-Z0-9-"))] >>
 						-Lang_ >>
