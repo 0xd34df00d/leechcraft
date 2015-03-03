@@ -78,8 +78,7 @@ namespace LMP
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleLoadFinished ()));
-		auto worker = [] () { return LocalCollectionStorage ().Load (); };
-		auto future = QtConcurrent::run (worker);
+		auto future = QtConcurrent::run ([] { return LocalCollectionStorage ().Load (); });
 		loadWatcher->setFuture (future);
 
 		auto& xsd = XmlSettingsManager::Instance ();
