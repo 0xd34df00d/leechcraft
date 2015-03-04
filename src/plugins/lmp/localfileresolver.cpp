@@ -57,6 +57,11 @@ namespace LMP
 	LocalFileResolver::LocalFileResolver (QObject *parent)
 	: QObject (parent)
 	{
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"EnableLocalTagsRecoding",
+					"TagsRecodingRegion"
+				},
+				this, "flushCache");
 	}
 
 	TagLib::FileRef LocalFileResolver::GetFileRef (const QString& file) const
