@@ -32,6 +32,8 @@
 #include <QFileInfo>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
+#include "util/lmp/gstutil.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -88,7 +90,14 @@ namespace LMP
 
 		auto audio = r.audioProperties ();
 
-		auto ftl = [] (const TagLib::String& str) { return QString::fromUtf8 (str.toCString (true)); };
+		auto& xsm = XmlSettingsManager::Instance ();
+		const auto& region = xsm.property ("EnableLocalTagsRecoding").toBool () ?
+				xsm.property ("TagsRecodingRegion").toString () :
+				QString {};
+		auto ftl = [&region] (const TagLib::String& str)
+		{
+			return GstUtil::FixEncoding (QString::fromUtf8 (str.toCString (true)), region);
+		};
 		auto genres = ftl (tag->genre ()).split ('/', QString::SkipEmptyParts);
 		std::for_each (genres.begin (), genres.end (),
 				[] (QString& genre) { genre = genre.trimmed (); });
