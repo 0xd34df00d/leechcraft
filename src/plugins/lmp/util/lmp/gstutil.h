@@ -52,7 +52,7 @@ namespace GstUtil
 
 	void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
 
-	QString FixEncoding (QByteArray str, const QString& region);
+	QString FixEncoding (const QString& str, const QString& region);
 
 	const char* GetTeePadTemplateName ();
 }
