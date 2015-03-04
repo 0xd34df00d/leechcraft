@@ -63,12 +63,12 @@ namespace GstUtil
 		void FixEncoding (QString& out, const gchar *origStr, const QString& region)
 		{
 #ifdef WITH_LIBGUESS
-			const auto& cp1252 = QTextCodec::codecForName ("CP-1252")->fromUnicode (origStr);
-			if (cp1252.isEmpty ())
+			const auto& iso88591 = QTextCodec::codecForName ("ISO-8859-1")->fromUnicode (origStr);
+			if (iso88591.isEmpty ())
 				return;
 
-			const auto encoding = libguess_determine_encoding (cp1252.constData (),
-					cp1252.size (), region.toUtf8 ().constData ());
+			const auto encoding = libguess_determine_encoding (iso88591.constData (),
+					iso88591.size (), region.toUtf8 ().constData ());
 			if (!encoding)
 				return;
 
@@ -81,7 +81,7 @@ namespace GstUtil
 				return;
 			}
 
-			const auto& proper = codec->toUnicode (cp1252.constData ());
+			const auto& proper = codec->toUnicode (iso88591.constData ());
 			if (proper.isEmpty ())
 				return;
 
