@@ -35,8 +35,8 @@
 			<item type="path" property="CoversStoragePath" default="{CACHEDIR}/lmp/covers">
 				<label value="Album art storage path:" />
 			</item>
-			<item type="groupbox" checkable="true" property="EnableTagsRecoding" default="false">
-				<label value="Enable tracks recoding" />
+			<groupbox>
+				<label value="Tags recoding" />
 				<item type="combobox" property="TagsRecodingRegion">
 					<label value="Tags region:" />
 					<option name="arabic">
@@ -73,7 +73,10 @@
 						<label value="turkish" />
 					</option>
 				</item>
-			</item>
+				<item type="checkbox" property="EnableTagsRecoding" default="false">
+					<label value="Enable stream tags recoding" />
+				</item>
+			</groupbox>
 		</tab>
 		<tab>
 			<label value="Audio" />
