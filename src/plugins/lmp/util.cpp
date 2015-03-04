@@ -70,7 +70,8 @@ namespace LMP
 			for (const auto& filter : nameFilters)
 				if (dirPath.endsWith (filter.mid (1), Qt::CaseInsensitive))
 					return { dirInfo };
-				return {};
+
+			return {};
 		}
 
 		auto filters = QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot;
