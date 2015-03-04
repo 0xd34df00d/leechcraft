@@ -35,6 +35,7 @@
 template<typename Key, typename T>
 class QMap;
 class QString;
+class QByteArray;
 
 namespace LeechCraft
 {
@@ -50,6 +51,8 @@ namespace GstUtil
 	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor);
 
 	void DebugPrintState (GstElement*, GstClockTime = 0.1 * GST_SECOND);
+
+	QString FixEncoding (QByteArray str, const QString& region);
 
 	const char* GetTeePadTemplateName ();
 }
