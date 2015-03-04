@@ -126,5 +126,11 @@ namespace LMP
 	{
 		return TaglibMutex_;
 	}
+
+	void LocalFileResolver::flushCache ()
+	{
+		QWriteLocker locker { &CacheLock_ };
+		Cache_.clear ();
+	}
 }
 }
