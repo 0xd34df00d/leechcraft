@@ -76,6 +76,9 @@
 				<item type="checkbox" property="EnableTagsRecoding" default="false">
 					<label value="Enable stream tags recoding" />
 				</item>
+				<item type="checkbox" property="EnableLocalTagsRecoding" default="false">
+					<label value="Enable local tags recoding" />
+				</item>
 			</groupbox>
 		</tab>
 		<tab>
