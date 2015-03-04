@@ -58,46 +58,44 @@ namespace GstUtil
 		gst_object_unref (pad);
 	}
 
-	namespace
+	QString FixEncoding (const QString& str, const QString& region)
 	{
-		void FixEncoding (QString& out, const gchar *origStr, const QString& region)
-		{
 #ifdef WITH_LIBGUESS
-			const auto& iso88591 = QTextCodec::codecForName ("ISO-8859-1")->fromUnicode (origStr);
-			if (iso88591.isEmpty ())
-				return;
+		const auto& iso88591 = QTextCodec::codecForName ("ISO-8859-1")->fromUnicode (str);
+		if (iso88591.isEmpty ())
+			return str;
 
-			const auto encoding = libguess_determine_encoding (iso88591.constData (),
-					iso88591.size (), region.toUtf8 ().constData ());
-			if (!encoding)
-				return;
+		const auto encoding = libguess_determine_encoding (iso88591.constData (),
+				iso88591.size (), region.toUtf8 ().constData ());
+		if (!encoding)
+			return str;
 
-			auto codec = QTextCodec::codecForName (encoding);
-			if (!codec)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no codec for encoding"
-						<< encoding;
-				return;
-			}
-
-			const auto& proper = codec->toUnicode (iso88591.constData ());
-			if (proper.isEmpty ())
-				return;
-
-			int origQCount = 0;
-			while (*origStr)
-				if (*(origStr++) == '?')
-					++origQCount;
-
-			if (origQCount >= proper.count ('?'))
-				out = proper;
-#else
-			Q_UNUSED (out);
-			Q_UNUSED (origStr);
-#endif
+		auto codec = QTextCodec::codecForName (encoding);
+		if (!codec)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no codec for encoding"
+					<< encoding;
+			return str;
 		}
 
+		const auto& proper = codec->toUnicode (iso88591.constData ());
+		if (proper.isEmpty ())
+			return str;
+
+		const auto origQCount = std::count (str.begin (), str.end (), '?');
+
+		return origQCount >= proper.count ('?') ?
+				proper :
+				str;
+#else
+		Q_UNUSED (region);
+		return str;
+#endif
+	}
+
+	namespace
+	{
 		struct TagFunctionData
 		{
 			TagMap_t& Map_;
@@ -123,7 +121,7 @@ namespace GstUtil
 				const auto recodingEnabled = !data->Region_.isEmpty ();
 				if (recodingEnabled &&
 						(tagName == "title" || tagName == "album" || tagName == "artist"))
-					FixEncoding (valList, str, data->Region_);
+					valList = FixEncoding (valList, data->Region_);
 
 				g_free (str);
 				break;
