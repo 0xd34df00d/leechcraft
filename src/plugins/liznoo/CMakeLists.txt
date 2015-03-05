@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_liznoo)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (Qwt)
 
 option (USE_LIZNOO_PMUTILS "Enable pm-utils support for suspending and hibernating" OFF)
