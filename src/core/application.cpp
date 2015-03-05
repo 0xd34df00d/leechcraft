@@ -92,6 +92,14 @@ namespace LeechCraft
 	, DefaultSystemStyleName_ (style ()->objectName ())
 	, CatchExceptions_ (true)
 	{
+		/* Workaround for
+		 * https://code.google.com/p/libproxy/issues/detail?id=197
+		 * https://bugzilla.novell.com/show_bug.cgi?id=866692
+		 */
+#if QT_VERSION >= 0x050000
+		qputenv ("PX_MODULE_PATH", {});
+#endif
+
 		Arguments_ = arguments ().mid (1);
 		bpo::options_description desc ("Allowed options");
 
