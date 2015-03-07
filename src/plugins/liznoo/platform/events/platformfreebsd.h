@@ -46,7 +46,7 @@ namespace Liznoo
 		int ACPIfd_;
 	public:
 		PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject* = 0);
-		void Stop ();
+
 		void ChangeState (PowerState);
 	private slots:
 		void update ();

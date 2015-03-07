@@ -44,19 +44,14 @@ namespace Liznoo
 
 	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer (proxy, parent)
+	, Timer_ (new QTimer (this))
 	{
-		Timer_ = new QTimer (this);
 		Timer_->start (UpdateInterval);
 		connect (Timer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (update ()));
 		ACPIfd_ = open ("/dev/acpi", O_RDONLY);
-	}
-
-	void PlatformFreeBSD::Stop ()
-	{
-		Timer_->stop ();
 	}
 
 	void PlatformFreeBSD::ChangeState (PowerState state)
