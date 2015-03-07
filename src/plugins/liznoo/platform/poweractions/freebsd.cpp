@@ -78,6 +78,30 @@ namespace PowerActions
 
 	QFuture<Platform::QueryChangeStateResult> FreeBSD::CanChangeState (Platform::State)
 	{
+		QFutureInterface<QueryChangeStateResult> iface;
+
+		if (FDGuard { "/dev/acpi", O_WRONLY })
+		{
+			const QueryChangeStateResult result { true, {} };
+			iface.reportFinished (&result);
+		}
+		else
+		{
+			const auto& msg = errno == EACCES ?
+					tr ("No permissions to write to %1. If you are in the %2 group, add "
+						"%3 to %4 and run %5 to apply the required permissions to %1.")
+						.arg ("<em>/dev/acpi</em>")
+						.arg ("<em>wheel</em>")
+						.arg ("<code>perm acpi 0664</code>")
+						.arg ("<em>/etc/devfs.conf</em>")
+						.arg ("<code>/etc/rc.d/devfs restart</code>") :
+					tr ("Unable to open %1 for writing.")
+						.arg ("<em>/dev/acpi</em>");
+			const QueryChangeStateResult result { false, msg };
+			iface.reportFinished (&result);
+		}
+
+		return iface.future ();
 	}
 
 	void FreeBSD::ChangeState (Platform::State state)
