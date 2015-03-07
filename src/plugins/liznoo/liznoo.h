@@ -56,6 +56,11 @@ namespace Liznoo
 		class Platform;
 	}
 
+	namespace Battery
+	{
+		class BatteryPlatform;
+	}
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
@@ -74,6 +79,7 @@ namespace Liznoo
 		PlatformLayer *PL_ = nullptr;
 		Screen::ScreenPlatform *SPL_ = nullptr;
 		PowerActions::Platform *PowerActPlatform_ = nullptr;
+		Battery::BatteryPlatform *BatteryPlatform_ = nullptr;
 
 		QMap<QString, QAction*> Battery2Action_;
 		QMap<QString, BatteryInfo> Battery2LastInfo_;

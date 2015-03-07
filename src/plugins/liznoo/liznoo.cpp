@@ -43,6 +43,7 @@
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
 #include "platform/screen/screenplatform.h"
+#include "platform/battery/batteryplatform.h"
 
 #if defined(Q_OS_LINUX)
 	#include "platform/events/platformupower.h"
