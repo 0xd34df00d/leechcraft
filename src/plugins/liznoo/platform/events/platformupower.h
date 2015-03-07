@@ -45,11 +45,9 @@ namespace UPower
 
 	class PlatformUPower : public PlatformLayer
 	{
-		UPower::DBusThread_ptr Thread_;
+		const UPower::DBusThread_ptr Thread_;
 	public:
 		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
-
-		void Stop ();
 	};
 }
 }

@@ -52,10 +52,5 @@ namespace Liznoo
 							SLOT (emitWokeUp ()));
 				});
 	}
-
-	void PlatformUPower::Stop ()
-	{
-		Thread_.reset ();
-	}
 }
 }
