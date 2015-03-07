@@ -35,10 +35,6 @@ namespace Liznoo
 {
 namespace PowerActions
 {
-	Platform::Platform (QObject *parent)
-	: QObject { parent }
-	{
-	}
 }
 }
 }
