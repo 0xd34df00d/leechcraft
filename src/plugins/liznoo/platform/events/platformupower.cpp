@@ -48,12 +48,7 @@ namespace Liznoo
 
 	void PlatformUPower::Stop ()
 	{
-		if (!Thread_->isRunning ())
-			return;
-
-		Thread_->quit ();
-		if (!Thread_->wait (1000))
-			Thread_->terminate ();
+		delete Thread_;
 	}
 
 	void PlatformUPower::handleThreadStarted ()

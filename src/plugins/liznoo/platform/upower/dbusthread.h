@@ -47,6 +47,7 @@ namespace UPower
 		std::weak_ptr<DBusConnector> Conn_;
 	public:
 		using QThread::QThread;
+		~DBusThread ();
 
 		std::shared_ptr<DBusConnector> GetConnector () const;
 	protected:

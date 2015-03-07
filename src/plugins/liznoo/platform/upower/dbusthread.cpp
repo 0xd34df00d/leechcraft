@@ -36,6 +36,16 @@ namespace Liznoo
 {
 namespace UPower
 {
+	DBusThread::~DBusThread ()
+	{
+		if (!isRunning ())
+			return;
+
+		quit ();
+		if (!wait (1000))
+			terminate ();
+	}
+
 	DBusConnector_ptr DBusThread::GetConnector () const
 	{
 		return Conn_.lock ();
