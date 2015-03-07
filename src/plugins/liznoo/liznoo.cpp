@@ -101,10 +101,14 @@ namespace Liznoo
 		PL_ = new PlatformMac (Proxy_, this);
 #endif
 
-		connect (PL_,
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				this,
-				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
+		if (BatteryPlatform_)
+			connect (BatteryPlatform_,
+					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+					this,
+					SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "battery backend is not available";
 
 		const auto battTimer = new QTimer { this };
 		connect (battTimer,

@@ -50,8 +50,6 @@ namespace Liznoo
 	public slots:
 		void emitGonnaSleep (int);
 		void emitWokeUp ();
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
 }
