@@ -76,7 +76,7 @@ namespace Liznoo
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		PlatformLayer *PL_ = nullptr;
+		std::shared_ptr<PlatformLayer> PL_;
 		Screen::ScreenPlatform *SPL_ = nullptr;
 		PowerActions::Platform *PowerActPlatform_ = nullptr;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;

@@ -87,7 +87,7 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		const auto dbusThread = std::make_shared<UPower::DBusThread> ();
 
-		PL_ = new PlatformUPower (dbusThread, Proxy_, this);
+		PL_ = std::make_shared<PlatformUPower> (dbusThread, Proxy_);
 		SPL_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
 
@@ -99,12 +99,12 @@ namespace Liznoo
 
 		dbusThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
-		PL_ = new PlatformWinAPI (Proxy_, this);
+		PL_ = std::make_shared<PlatformWinAPI> (Proxy_);
 #elif defined(Q_OS_FREEBSD)
-		PL_ = new PlatformFreeBSD (Proxy_, this);
+		PL_ = std::make_shared<PlatformFreeBSD> (Proxy_);
 		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
-		PL_ = new PlatformMac (Proxy_, this);
+		PL_ = std::make_shared<PlatformMac> (Proxy_);
 #endif
 
 		if (BatteryPlatform_)
