@@ -1380,7 +1380,7 @@ namespace BitTorrent
 		return ExternalAddress_;
 	}
 
-	void Core::BanPeers (const Core::BanRange_t& peers, bool block)
+	void Core::BanPeers (const BanRange_t& peers, bool block)
 	{
 		libtorrent::ip_filter filter = Session_->get_ip_filter ();
 		filter.add_rule (libtorrent::address::from_string (peers.first.toStdString ()),
@@ -1402,7 +1402,7 @@ namespace BitTorrent
 	namespace
 	{
 		template<typename Range>
-		Core::BanRange_t GetBanRange (const Range& range)
+		BanRange_t GetBanRange (const Range& range)
 		{
 			return
 			{
@@ -1412,11 +1412,11 @@ namespace BitTorrent
 		}
 	}
 
-	QMap<Core::BanRange_t, bool> Core::GetFilter () const
+	QMap<BanRange_t, bool> Core::GetFilter () const
 	{
 		const auto& both = Session_->get_ip_filter ().export_filter ();
 
-		QMap<Core::BanRange_t, bool> result;
+		QMap<BanRange_t, bool> result;
 		for (const auto& range : both.get<0> ())
 			result [GetBanRange (range)] = range.flags;
 		for (const auto& range : both.get<1> ())

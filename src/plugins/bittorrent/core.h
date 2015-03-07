@@ -81,6 +81,8 @@ namespace BitTorrent
 	class SessionSettingsManager;
 	struct NewTorrentParams;
 
+	using BanRange_t = QPair<QString, QString>;
+
 	class Core : public QAbstractItemModel
 	{
 		Q_OBJECT
@@ -328,7 +330,6 @@ namespace BitTorrent
 		void MakeTorrent (const NewTorrentParams&) const;
 		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
-		typedef QPair<QString, QString> BanRange_t;
 		void BanPeers (const BanRange_t&, bool = true);
 		void ClearFilter ();
 		QMap<BanRange_t, bool> GetFilter () const;

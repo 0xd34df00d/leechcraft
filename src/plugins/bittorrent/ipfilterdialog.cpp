@@ -59,9 +59,9 @@ namespace BitTorrent
 		on_Tree__currentItemChanged (0);
 	}
 
-	QList<QPair<Core::BanRange_t, bool>> IPFilterDialog::GetFilter () const
+	QList<QPair<BanRange_t, bool>> IPFilterDialog::GetFilter () const
 	{
-		QList<QPair<Core::BanRange_t, bool>> result;
+		QList<QPair<BanRange_t, bool>> result;
 		for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);

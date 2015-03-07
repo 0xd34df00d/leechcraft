@@ -31,12 +31,13 @@
 
 #include <QDialog>
 #include "ui_ipfilterdialog.h"
-#include "core.h"
 
 namespace LeechCraft
 {
 namespace BitTorrent
 {
+	using BanRange_t = QPair<QString, QString>;
+
 	class IPFilterDialog : public QDialog
 	{
 		Q_OBJECT
@@ -45,7 +46,7 @@ namespace BitTorrent
 	public:
 		IPFilterDialog (QWidget* = 0);
 
-		QList<QPair<Core::BanRange_t, bool>> GetFilter () const;
+		QList<QPair<BanRange_t, bool>> GetFilter () const;
 	private slots:
 		void on_Tree__currentItemChanged (QTreeWidgetItem*);
 		void on_Tree__itemClicked (QTreeWidgetItem*, int);
