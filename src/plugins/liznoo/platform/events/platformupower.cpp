@@ -59,6 +59,13 @@ namespace Liznoo
 	void PlatformUPower::handleThreadStarted ()
 	{
 		const auto& connPtr = Thread_->GetConnector ();
+		if (!connPtr)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "connector is empty!";
+			return;
+		}
+
 		const auto conn = connPtr.get ();
 
 		emit started ();
