@@ -35,13 +35,16 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace UPower
+{
 	class DBusThread;
+}
 
 	class PlatformUPower : public PlatformLayer
 	{
 		Q_OBJECT
 
-		DBusThread *Thread_;
+		UPower::DBusThread *Thread_;
 	public:
 		PlatformUPower (const ICoreProxy_ptr&, QObject* = 0);
 

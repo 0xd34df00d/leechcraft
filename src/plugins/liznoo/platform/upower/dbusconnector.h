@@ -29,27 +29,36 @@
 
 #pragma once
 
-#include <memory>
-#include <QThread>
+#include <QObject>
+#include <QDBusConnection>
+#include <interfaces/structures.h>
+#include "../../batteryinfo.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusConnector;
-
-	class DBusThread : public QThread
+namespace UPower
+{
+	class DBusConnector : public QObject
 	{
 		Q_OBJECT
 
-		std::weak_ptr<DBusConnector> Conn_;
+		QDBusConnection SB_;
 	public:
-		DBusThread (QObject* = 0);
+		DBusConnector (QObject* = 0);
+	private slots:
+		void handleGonnaSleep ();
+		void enumerateDevices ();
+		void requeryDevice (const QString&);
+	signals:
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
 
-		std::shared_ptr<DBusConnector> GetConnector () const;
-	protected:
-		void run ();
+		void gonnaSleep (int);
+		void wokeUp ();
 	};
-}
-}
 
+	using DBusConnector_ptr = std::shared_ptr<DBusConnector>;
+}
+}
+}

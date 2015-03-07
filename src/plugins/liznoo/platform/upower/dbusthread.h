@@ -27,28 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbusthread.h"
-#include "dbusconnector.h"
+#pragma once
+
+#include <memory>
+#include <QThread>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	DBusThread::DBusThread (QObject *parent)
-	: QThread (parent)
-	{
-	}
+namespace UPower
+{
+	class DBusConnector;
 
-	DBusConnector_ptr DBusThread::GetConnector () const
+	class DBusThread : public QThread
 	{
-		return Conn_.lock ();
-	}
+		Q_OBJECT
 
-	void DBusThread::run ()
-	{
-		const auto conn = std::make_shared<DBusConnector> ();
-		Conn_ = conn;
-		QThread::run ();
-	}
+		std::weak_ptr<DBusConnector> Conn_;
+	public:
+		DBusThread (QObject* = 0);
+
+		std::shared_ptr<DBusConnector> GetConnector () const;
+	protected:
+		void run ();
+	};
+}
 }
 }

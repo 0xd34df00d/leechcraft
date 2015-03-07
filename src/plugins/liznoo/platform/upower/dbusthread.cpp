@@ -27,37 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QDBusConnection>
-#include <interfaces/structures.h>
-#include "../../batteryinfo.h"
-#include "platformlayer.h"
+#include "dbusthread.h"
+#include "dbusconnector.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusConnector : public QObject
+namespace UPower
+{
+	DBusThread::DBusThread (QObject *parent)
+	: QThread (parent)
 	{
-		Q_OBJECT
+	}
 
-		QDBusConnection SB_;
-	public:
-		DBusConnector (QObject* = 0);
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+	DBusConnector_ptr DBusThread::GetConnector () const
+	{
+		return Conn_.lock ();
+	}
 
-		void gonnaSleep (int);
-		void wokeUp ();
-	};
-
-	using DBusConnector_ptr = std::shared_ptr<DBusConnector>;
+	void DBusThread::run ()
+	{
+		const auto conn = std::make_shared<DBusConnector> ();
+		Conn_ = conn;
+		QThread::run ();
+	}
 }
 }
-
+}

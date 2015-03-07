@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "platformupower.h"
-#include "dbusconnector.h"
-#include "dbusthread.h"
+#include "../upower/dbusconnector.h"
+#include "../upower/dbusthread.h"
 
 namespace LeechCraft
 {
@@ -38,7 +38,7 @@ namespace Liznoo
 	PlatformUPower::PlatformUPower (const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer (proxy, parent)
 	{
-		Thread_ = new DBusThread;
+		Thread_ = new UPower::DBusThread;
 		connect (Thread_,
 				SIGNAL (started ()),
 				this,

@@ -28,8 +28,8 @@ set (FBSD_SRCS platform/events/platformfreebsd.cpp)
 
 set (UPOWER_SRCS
 	platform/events/platformupower.cpp
-	platform/events/dbusthread.cpp
-	platform/events/dbusconnector.cpp
+	platform/upower/dbusthread.cpp
+	platform/upower/dbusconnector.cpp
 	)
 set (UPOWER_POWERACTIONS_SRCS
 	platform/poweractions/upower.cpp

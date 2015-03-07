@@ -39,6 +39,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace UPower
+{
 	DBusConnector::DBusConnector (QObject *parent)
 	: QObject (parent)
 	, SB_ (QDBusConnection::systemBus ())
@@ -149,5 +151,6 @@ namespace Liznoo
 
 		emit batteryInfoUpdated (info);
 	}
+}
 }
 }
