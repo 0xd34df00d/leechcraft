@@ -31,9 +31,8 @@
 
 #include <memory>
 #include <QTime>
-#include <libtorrent/bitfield.hpp>
-#include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/torrent_info.hpp>
+#include <libtorrent/torrent_handle.hpp>
 
 namespace LeechCraft
 {
