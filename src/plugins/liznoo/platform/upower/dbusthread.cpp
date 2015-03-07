@@ -46,6 +46,11 @@ namespace UPower
 			terminate ();
 	}
 
+	void DBusThread::ScheduleOnStart (const std::function<void (DBusConnector*)>& f)
+	{
+		StartHandlers_ << f;
+	}
+
 	DBusConnector_ptr DBusThread::GetConnector () const
 	{
 		return Conn_.lock ();
@@ -55,6 +60,10 @@ namespace UPower
 	{
 		const auto conn = std::make_shared<DBusConnector> ();
 		Conn_ = conn;
+
+		for (const auto& f : StartHandlers_)
+			f (conn.get ());
+
 		QThread::run ();
 	}
 }

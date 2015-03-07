@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QThread>
 
 namespace LeechCraft
@@ -45,9 +46,12 @@ namespace UPower
 		Q_OBJECT
 
 		std::weak_ptr<DBusConnector> Conn_;
+		QList<std::function<void (DBusConnector*)>> StartHandlers_;
 	public:
 		using QThread::QThread;
 		~DBusThread ();
+
+		void ScheduleOnStart (const std::function<void (DBusConnector*)>&);
 
 		std::shared_ptr<DBusConnector> GetConnector () const;
 	protected:
