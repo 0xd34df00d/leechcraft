@@ -24,6 +24,7 @@ set (SRCS
 	)
 
 set (FBSD_SRCS platform/events/platformfreebsd.cpp)
+
 set (UPOWER_SRCS
 	platform/events/platformupower.cpp
 	platform/events/dbusthread.cpp
@@ -39,13 +40,16 @@ if (USE_LIZNOO_PMUTILS)
 		platform/poweractions/pmutils.cpp
 		)
 endif ()
+
 set (MAC_SRCS
 	platform/events/platformmac.mm
 	)
+
 set (WIN32_SRCS
 	platform/events/platformwinapi.cpp
 	platform/events/fakeqwidgetwinapi.cpp
 	)
+
 # Default implementation using UPower
 if (APPLE)
 	set (SRCS ${SRCS} ${MAC_SRCS})
