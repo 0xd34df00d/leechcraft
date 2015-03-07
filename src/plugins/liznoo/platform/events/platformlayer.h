@@ -45,8 +45,6 @@ namespace Liznoo
 		const ICoreProxy_ptr Proxy_;
 	public:
 		PlatformLayer (const ICoreProxy_ptr&, QObject* = 0);
-
-		virtual void Stop () = 0;
 	public slots:
 		void emitGonnaSleep (int);
 		void emitWokeUp ();

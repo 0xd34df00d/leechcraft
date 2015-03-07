@@ -154,9 +154,7 @@ namespace Liznoo
 
 	void Plugin::Release ()
 	{
-		if (PL_)
-			PL_->Stop ();
-
+		PL_.reset ();
 		BatteryPlatform_.reset ();
 	}
 
