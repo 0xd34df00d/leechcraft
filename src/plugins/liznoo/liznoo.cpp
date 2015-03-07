@@ -99,9 +99,16 @@ namespace Liznoo
 #endif
 
 		connect (PL_,
-				SIGNAL (started ()),
+				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,
-				SLOT (handlePlatformStarted ()));
+				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
+
+		const auto battTimer = new QTimer { this };
+		connect (battTimer,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleUpdateHistory ()));
+		battTimer->start (3000);
 
 		Suspend_ = new QAction (tr ("Suspend"), this);
 		connect (Suspend_,
@@ -419,21 +426,6 @@ namespace Liznoo
 	{
 		auto dia = static_cast<BatteryHistoryDialog*> (sender ());
 		Battery2Dialog_.remove (Battery2Dialog_.key (dia));
-	}
-
-	void Plugin::handlePlatformStarted ()
-	{
-		connect (PL_,
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				this,
-				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
-
-		QTimer *timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleUpdateHistory ()));
-		timer->start (3000);
 	}
 
 	void Plugin::handleSuspendRequested ()

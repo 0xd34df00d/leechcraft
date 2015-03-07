@@ -108,7 +108,6 @@ namespace Liznoo
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
 		void handleBatteryDialogDestroyed ();
-		void handlePlatformStarted ();
 
 		void handleSuspendRequested ();
 		void handleHibernateRequested ();
