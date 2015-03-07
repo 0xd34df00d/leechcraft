@@ -63,6 +63,7 @@ namespace UPower
 
 		for (const auto& f : StartHandlers_)
 			f (conn.get ());
+		StartHandlers_.clear ();
 
 		QThread::run ();
 	}
