@@ -32,6 +32,7 @@
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <unistd.h>
 #include <dev/acpica/acpiio.h>
 #include <QMessageBox>
 
@@ -41,21 +42,52 @@ namespace Liznoo
 {
 namespace PowerActions
 {
+	class FDGuard
+	{
+		int FD_;
+	public:
+		FDGuard (const char *file, int mode)
+		: FD_ { open (file, mode) }
+		{
+		}
+
+		FDGuard (const FDGuard&) = delete;
+
+		FDGuard (FDGuard&& other)
+		: FD_ { other.FD_ }
+		{
+			other.FD_ = -1;
+		}
+
+		~FDGuard ()
+		{
+			if (FD_ >= 0)
+				close (FD_);
+		}
+
+		explicit operator bool () const
+		{
+			return FD_ >= 0;
+		}
+
+		operator int () const
+		{
+			return FD_;
+		}
+	};
+
 	QFuture<Platform::QueryChangeStateResult> FreeBSD::CanChangeState (Platform::State)
 	{
 	}
 
 	void FreeBSD::ChangeState (Platform::State state)
 	{
-		int fd = open ("/dev/acpi", O_WRONLY);
-		if (fd < 0 && errno == EACCES)
+		const FDGuard fd { "/dev/acpi", O_WRONLY };
+		if (!fd)
 		{
-			QMessageBox::information (NULL,
-				"LeechCraft Liznoo",
-				tr ("Looks like you don't have permission to write to /dev/acpi. "
-					"If you're in 'wheel' group, add 'perm acpi 0664' to "
-					"/etc/devfs.conf and run '/etc/rc.d/devfs restart' to apply "
-					"needed permissions to /dev/acpi."));
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open /dev/acpi for writing, errno is:"
+					<< errno;
 			return;
 		}
 
@@ -69,7 +101,7 @@ namespace PowerActions
 			sleep_state = 4;
 			break;
 		}
-		if (fd >= 0 && sleep_state > 0)
+		if (fd && sleep_state > 0)
 			ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state); // this requires root privileges by default
 	}
 }
