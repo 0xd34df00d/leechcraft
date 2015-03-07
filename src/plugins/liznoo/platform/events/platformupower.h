@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include "platformlayer.h"
 
 namespace LeechCraft
@@ -38,15 +39,17 @@ namespace Liznoo
 namespace UPower
 {
 	class DBusThread;
+
+	using DBusThread_ptr = std::shared_ptr<DBusThread>;
 }
 
 	class PlatformUPower : public PlatformLayer
 	{
 		Q_OBJECT
 
-		UPower::DBusThread *Thread_;
+		UPower::DBusThread_ptr Thread_;
 	public:
-		PlatformUPower (const ICoreProxy_ptr&, QObject* = 0);
+		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
 
 		void Stop ();
 	private slots:

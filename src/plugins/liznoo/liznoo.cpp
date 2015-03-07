@@ -47,6 +47,7 @@
 
 #if defined(Q_OS_LINUX)
 	#include "platform/events/platformupower.h"
+	#include "platform/upower/dbusthread.h"
 
 	#ifdef USE_PMUTILS
 		#include "platform/poweractions/pmutils.h"
@@ -83,7 +84,9 @@ namespace Liznoo
 		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
-		PL_ = new PlatformUPower (Proxy_, this);
+		const auto dbusThread = std::make_shared<UPower::DBusThread> ();
+
+		PL_ = new PlatformUPower (dbusThread, Proxy_, this);
 		SPL_ = new Screen::Freedesktop (this);
 
 	#ifdef USE_PMUTILS
@@ -92,6 +95,7 @@ namespace Liznoo
 		PowerActPlatform_ = new PowerActions::UPower (this);
 	#endif
 
+		dbusThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
 		PL_ = new PlatformWinAPI (Proxy_, this);
 #elif defined(Q_OS_FREEBSD)

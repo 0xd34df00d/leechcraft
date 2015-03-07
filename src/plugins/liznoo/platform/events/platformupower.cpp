@@ -35,20 +35,20 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformUPower::PlatformUPower (const ICoreProxy_ptr& proxy, QObject *parent)
-	: PlatformLayer (proxy, parent)
+	PlatformUPower::PlatformUPower (const UPower::DBusThread_ptr& thread,
+			const ICoreProxy_ptr& proxy, QObject *parent)
+	: PlatformLayer { proxy, parent }
+	, Thread_ { thread }
 	{
-		Thread_ = new UPower::DBusThread;
-		connect (Thread_,
+		connect (Thread_.get (),
 				SIGNAL (started ()),
 				this,
 				SLOT (handleThreadStarted ()));
-		Thread_->start (QThread::LowestPriority);
 	}
 
 	void PlatformUPower::Stop ()
 	{
-		delete Thread_;
+		Thread_.reset ();
 	}
 
 	void PlatformUPower::handleThreadStarted ()
