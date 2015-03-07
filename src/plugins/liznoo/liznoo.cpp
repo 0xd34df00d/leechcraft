@@ -46,8 +46,8 @@
 #include "platform/battery/batteryplatform.h"
 
 #if defined(Q_OS_LINUX)
+	#include "platform/battery/upowerplatform.h"
 	#include "platform/events/platformupower.h"
-	#include "platform/upower/dbusthread.h"
 
 	#ifdef USE_PMUTILS
 		#include "platform/poweractions/pmutils.h"
@@ -56,6 +56,7 @@
 	#endif
 
 	#include "platform/screen/freedesktop.h"
+	#include "platform/upower/dbusthread.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/events/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
@@ -88,6 +89,7 @@ namespace Liznoo
 
 		PL_ = new PlatformUPower (dbusThread, Proxy_, this);
 		SPL_ = new Screen::Freedesktop (this);
+		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
 
 	#ifdef USE_PMUTILS
 		PowerActPlatform_ = new PowerActions::PMUtils (this);
