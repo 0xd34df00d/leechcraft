@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "ipfilterdialog.h"
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "banpeersdialog.h"
 
@@ -43,13 +44,14 @@ namespace BitTorrent
 		Ui_.setupUi (this);
 
 		const auto& filter = Core::Instance ()->GetFilter ();
-		const auto& keys = filter.keys ();
-		Q_FOREACH (auto key, keys)
+		for (const auto& pair : Util::Stlize (filter))
 		{
+			const auto& key = pair.first;
+
 			const auto item = new QTreeWidgetItem (Ui_.Tree_);
 			item->setText (0, key.first);
 			item->setText (1, key.second);
-			bool block = filter [key];
+			bool block = pair.second;
 			item->setText (2, block ?
 					tr ("block") :
 					tr ("allow"));
