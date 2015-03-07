@@ -36,11 +36,6 @@ namespace Liznoo
 {
 namespace UPower
 {
-	DBusThread::DBusThread (QObject *parent)
-	: QThread (parent)
-	{
-	}
-
 	DBusConnector_ptr DBusThread::GetConnector () const
 	{
 		return Conn_.lock ();
