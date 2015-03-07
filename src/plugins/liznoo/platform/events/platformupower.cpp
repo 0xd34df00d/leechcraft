@@ -48,6 +48,7 @@ namespace Liznoo
 
 	void PlatformUPower::Stop ()
 	{
+		Thread_->quit ();
 		if (!Thread_->wait (1000))
 			Thread_->terminate ();
 	}
