@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QThread>
 
 namespace LeechCraft
@@ -41,11 +42,11 @@ namespace Liznoo
 	{
 		Q_OBJECT
 
-		DBusConnector *Conn_ = nullptr;
+		std::weak_ptr<DBusConnector> Conn_;
 	public:
 		DBusThread (QObject* = 0);
 
-		DBusConnector* GetConnector () const;
+		std::shared_ptr<DBusConnector> GetConnector () const;
 	protected:
 		void run ();
 	};

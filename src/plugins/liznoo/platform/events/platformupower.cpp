@@ -58,22 +58,25 @@ namespace Liznoo
 
 	void PlatformUPower::handleThreadStarted ()
 	{
+		const auto& connPtr = Thread_->GetConnector ();
+		const auto conn = connPtr.get ();
+
 		emit started ();
 
-		connect (Thread_->GetConnector (),
+		connect (conn,
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
-		connect (Thread_->GetConnector (),
+		connect (conn,
 				SIGNAL (gonnaSleep (int)),
 				this,
 				SLOT (emitGonnaSleep (int)));
-		connect (Thread_->GetConnector (),
+		connect (conn,
 				SIGNAL (wokeUp ()),
 				this,
 				SLOT (emitWokeUp ()));
 
-		QMetaObject::invokeMethod (Thread_->GetConnector (),
+		QMetaObject::invokeMethod (conn,
 				"enumerateDevices",
 				Qt::QueuedConnection);
 	}

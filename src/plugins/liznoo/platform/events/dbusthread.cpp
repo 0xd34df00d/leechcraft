@@ -39,17 +39,16 @@ namespace Liznoo
 	{
 	}
 
-	DBusConnector* DBusThread::GetConnector () const
+	DBusConnector_ptr DBusThread::GetConnector () const
 	{
-		return Conn_;
+		return Conn_.lock ();
 	}
 
 	void DBusThread::run ()
 	{
-		Conn_ = new DBusConnector;
+		const auto conn = std::make_shared<DBusConnector> ();
+		Conn_ = conn;
 		QThread::run ();
-		delete Conn_;
-		Conn_ = 0;
 	}
 }
 }

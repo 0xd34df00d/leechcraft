@@ -56,6 +56,8 @@ namespace Liznoo
 		void gonnaSleep (int);
 		void wokeUp ();
 	};
+
+	using DBusConnector_ptr = std::shared_ptr<DBusConnector>;
 }
 }
 
