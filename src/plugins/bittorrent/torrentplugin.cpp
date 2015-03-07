@@ -509,9 +509,9 @@ namespace BitTorrent
 			return;
 
 		Core::Instance ()->ClearFilter ();
-		QList<QPair<Core::BanRange_t, bool>> filter = dia.GetFilter ();
-		QPair<Core::BanRange_t, bool> pair;
-		Q_FOREACH (pair, filter)
+
+		const auto& filter = dia.GetFilter ();
+		for (const auto& pair : filter)
 			Core::Instance ()->BanPeers (pair.first, pair.second);
 	}
 

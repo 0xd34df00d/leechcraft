@@ -42,11 +42,11 @@ namespace BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		QMap<Core::BanRange_t, bool> filter = Core::Instance ()->GetFilter ();
-		QList<Core::BanRange_t> keys = filter.keys ();
-		Q_FOREACH (Core::BanRange_t key, keys)
+		const auto& filter = Core::Instance ()->GetFilter ();
+		const auto& keys = filter.keys ();
+		Q_FOREACH (auto key, keys)
 		{
-			QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
+			const auto item = new QTreeWidgetItem (Ui_.Tree_);
 			item->setText (0, key.first);
 			item->setText (1, key.second);
 			bool block = filter [key];
