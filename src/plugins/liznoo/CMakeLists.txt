@@ -27,6 +27,7 @@ set (SRCS
 set (FBSD_SRCS platform/events/platformfreebsd.cpp)
 
 set (UPOWER_SRCS
+	platform/battery/upowerplatform.cpp
 	platform/events/platformupower.cpp
 	platform/upower/dbusthread.cpp
 	platform/upower/dbusconnector.cpp
