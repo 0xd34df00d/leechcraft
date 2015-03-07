@@ -43,10 +43,6 @@ namespace Liznoo
 		Thread_->ScheduleOnStart ([this] (UPower::DBusConnector *conn)
 				{
 					connect (conn,
-							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-							this,
-							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
-					connect (conn,
 							SIGNAL (gonnaSleep (int)),
 							this,
 							SLOT (emitGonnaSleep (int)));
@@ -54,10 +50,6 @@ namespace Liznoo
 							SIGNAL (wokeUp ()),
 							this,
 							SLOT (emitWokeUp ()));
-
-					QMetaObject::invokeMethod (conn,
-							"enumerateDevices",
-							Qt::QueuedConnection);
 				});
 	}
 
