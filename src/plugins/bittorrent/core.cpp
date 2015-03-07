@@ -71,6 +71,7 @@
 #include <libtorrent/magnet_uri.hpp>
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/version.hpp>
+#include <libtorrent/session.hpp>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
