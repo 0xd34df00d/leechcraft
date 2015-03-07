@@ -40,45 +40,30 @@ namespace Liznoo
 	: PlatformLayer { proxy, parent }
 	, Thread_ { thread }
 	{
-		connect (Thread_.get (),
-				SIGNAL (started ()),
-				this,
-				SLOT (handleThreadStarted ()));
+		Thread_->ScheduleOnStart ([this] (UPower::DBusConnector *conn)
+				{
+					connect (conn,
+							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+							this,
+							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
+					connect (conn,
+							SIGNAL (gonnaSleep (int)),
+							this,
+							SLOT (emitGonnaSleep (int)));
+					connect (conn,
+							SIGNAL (wokeUp ()),
+							this,
+							SLOT (emitWokeUp ()));
+
+					QMetaObject::invokeMethod (conn,
+							"enumerateDevices",
+							Qt::QueuedConnection);
+				});
 	}
 
 	void PlatformUPower::Stop ()
 	{
 		Thread_.reset ();
-	}
-
-	void PlatformUPower::handleThreadStarted ()
-	{
-		const auto& connPtr = Thread_->GetConnector ();
-		if (!connPtr)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "connector is empty!";
-			return;
-		}
-
-		const auto conn = connPtr.get ();
-
-		connect (conn,
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				this,
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
-		connect (conn,
-				SIGNAL (gonnaSleep (int)),
-				this,
-				SLOT (emitGonnaSleep (int)));
-		connect (conn,
-				SIGNAL (wokeUp ()),
-				this,
-				SLOT (emitWokeUp ()));
-
-		QMetaObject::invokeMethod (conn,
-				"enumerateDevices",
-				Qt::QueuedConnection);
 	}
 }
 }

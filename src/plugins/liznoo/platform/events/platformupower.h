@@ -52,8 +52,6 @@ namespace UPower
 		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
 
 		void Stop ();
-	private slots:
-		void handleThreadStarted ();
 	};
 }
 }
