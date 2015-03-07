@@ -34,7 +34,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <QTimer>
-#include <QMessageBox>
 
 namespace LeechCraft
 {
