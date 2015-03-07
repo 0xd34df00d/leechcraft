@@ -68,8 +68,6 @@ namespace Liznoo
 
 		const auto conn = connPtr.get ();
 
-		emit started ();
-
 		connect (conn,
 				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 				this,

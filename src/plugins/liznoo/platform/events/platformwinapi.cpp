@@ -87,10 +87,6 @@ namespace Liznoo
 				SIGNAL (batteryStateChanged (int)),
 				this,
 				SLOT (handleBatteryStateChanged (int)));
-
-		QTimer::singleShot (0,
-				this,
-				SIGNAL (started ()));
 	}
 
 	void PlatformWinAPI::Stop ()

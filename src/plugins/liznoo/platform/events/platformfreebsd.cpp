@@ -52,10 +52,6 @@ namespace Liznoo
 				this,
 				SLOT (update ()));
 		ACPIfd_ = open ("/dev/acpi", O_RDONLY);
-
-		QTimer::singleShot (0,
-				this,
-				SIGNAL (started ()));
 	}
 
 	void PlatformFreeBSD::Stop ()

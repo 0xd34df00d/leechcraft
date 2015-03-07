@@ -51,7 +51,6 @@ namespace Liznoo
 		void emitGonnaSleep (int);
 		void emitWokeUp ();
 	signals:
-		void started ();
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
