@@ -24,7 +24,9 @@ set (SRCS
 	platform/screen/screenplatform.cpp
 	)
 
-set (FBSD_SRCS platform/events/platformfreebsd.cpp)
+set (FBSD_SRCS
+	platform/events/platformfreebsd.cpp
+	)
 
 set (UPOWER_SRCS
 	platform/battery/upowerplatform.cpp

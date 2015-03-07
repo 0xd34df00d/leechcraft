@@ -54,34 +54,6 @@ namespace Liznoo
 		ACPIfd_ = open ("/dev/acpi", O_RDONLY);
 	}
 
-	void PlatformFreeBSD::ChangeState (PowerState state)
-	{
-		int fd = open ("/dev/acpi", O_WRONLY);
-		if (fd < 0 && errno == EACCES)
-		{
-			QMessageBox::information (NULL,
-				"LeechCraft Liznoo",
-				tr ("Looks like you don't have permission to write to /dev/acpi. "
-					"If you're in 'wheel' group, add 'perm acpi 0664' to "
-					"/etc/devfs.conf and run '/etc/rc.d/devfs restart' to apply "
-					"needed permissions to /dev/acpi."));
-			return;
-		}
-
-		int sleep_state = -1;
-		switch (state)
-		{
-		case PowerState::Suspend:
-			sleep_state = 3;
-			break;
-		case PowerState::Hibernate:
-			sleep_state = 4;
-			break;
-		}
-		if (fd >= 0 && sleep_state > 0)
-			ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state); // this requires root privileges by default
-	}
-
 	void PlatformFreeBSD::update ()
 	{
 		int batteries = 0;
