@@ -106,7 +106,7 @@ namespace Liznoo
 #endif
 
 		if (BatteryPlatform_)
-			connect (BatteryPlatform_,
+			connect (BatteryPlatform_.get (),
 					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
 					this,
 					SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
@@ -154,6 +154,8 @@ namespace Liznoo
 	{
 		if (PL_)
 			PL_->Stop ();
+
+		BatteryPlatform_.reset ();
 	}
 
 	QString Plugin::GetName () const
