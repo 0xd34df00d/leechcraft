@@ -92,9 +92,9 @@ namespace Liznoo
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
 
 	#ifdef USE_PMUTILS
-		PowerActPlatform_ = new PowerActions::PMUtils (this);
+		PowerActPlatform_ = std::make_shared<PowerActions::PMUtils> ();
 	#else
-		PowerActPlatform_ = new PowerActions::UPower (this);
+		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
 	#endif
 
 		dbusThread->start (QThread::IdlePriority);
@@ -155,6 +155,7 @@ namespace Liznoo
 	void Plugin::Release ()
 	{
 		PL_.reset ();
+		PowerActPlatform_.reset ();
 		BatteryPlatform_.reset ();
 	}
 

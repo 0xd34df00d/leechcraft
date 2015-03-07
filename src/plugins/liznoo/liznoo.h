@@ -78,7 +78,7 @@ namespace Liznoo
 
 		std::shared_ptr<PlatformLayer> PL_;
 		Screen::ScreenPlatform *SPL_ = nullptr;
-		PowerActions::Platform *PowerActPlatform_ = nullptr;
+		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
 
 		QMap<QString, QAction*> Battery2Action_;
