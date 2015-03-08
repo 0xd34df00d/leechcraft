@@ -139,8 +139,9 @@ namespace Proto
 	Packet PacketFactory::AddContact (ContactOpFlags flags,
 			quint32 group, const QString& email, const QString& name)
 	{
-		const QByteArray& data = ToMRIM (static_cast<quint32> (flags),
-				group, email, ToMRIM16 (name), QString (" "), QString (" "), 0);
+		const QByteArray& data = ToMRIM (static_cast<quint32> (flags), group,
+				email, ToMRIM16 (name),
+				QString (""), QString (" "), 0);
 		return HalfPacket { Header (Packets::Contact, Seq_++), data };
 	}
 

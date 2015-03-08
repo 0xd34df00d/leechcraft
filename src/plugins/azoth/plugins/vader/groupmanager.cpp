@@ -76,10 +76,10 @@ namespace Vader
 			return;
 		}
 
-		const QString& group = groups.at (0);
+		const auto& group = groups.at (0);
 		if (!PendingContacts_.contains (group))
 		{
-			const quint32 seq = Conn_->AddGroup (groups.at (0), Group2ID_.size ());
+			const auto seq = Conn_->AddGroup (groups.at (0), Group2ID_.size ());
 			PendingGroups_ [seq] = group;
 		}
 
@@ -89,7 +89,7 @@ namespace Vader
 	void GroupManager::handleGotGroups (const QStringList& list)
 	{
 		int i = 0;
-		Q_FOREACH (const QString& g, list)
+		for (const auto& g : list)
 		{
 			ID2Group_ [i] = g;
 			Group2ID_ [g] = i;
@@ -102,12 +102,12 @@ namespace Vader
 		if (!PendingGroups_.contains (seq))
 			return;
 
-		const QString& group = PendingGroups_.take (seq);
+		const auto& group = PendingGroups_.take (seq);
 		Group2ID_ [group] = groupId;
 		ID2Group_ [groupId] = group;
 
-		Q_FOREACH (MRIMBuddy *buddy, PendingContacts_.take (group))
-			SetBuddyGroups (buddy, QStringList (group));
+		for (const auto buddy : PendingContacts_.take (group))
+			SetBuddyGroups (buddy, { group });
 	}
 }
 }
