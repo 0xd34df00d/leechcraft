@@ -40,6 +40,7 @@ namespace LeechCraft
 namespace Liznoo
 {
 	class FakeQWidgetWinAPI;
+
 	class PlatformWinAPI : public PlatformLayer
 	{
 		Q_OBJECT
@@ -52,9 +53,9 @@ namespace Liznoo
 	public:
 		PlatformWinAPI (const ICoreProxy_ptr&, QObject* = 0);
 	private slots:
-		void handleSchemeChanged(QString schemeName);
-		void handlePowerSourceChanged(QString powerSource);
-		void handleBatteryStateChanged(int newPercentage);
+		void handleSchemeChanged (QString schemeName);
+		void handlePowerSourceChanged (QString powerSource);
+		void handleBatteryStateChanged (int newPercentage);
 	};
 } // namespace Liznoo
 } // namespace Leechcraft
