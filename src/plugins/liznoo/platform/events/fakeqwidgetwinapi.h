@@ -34,7 +34,7 @@
 #include <QString>
 #include <windows.h>
 
-namespace LeechCraft 
+namespace LeechCraft
 {
 namespace Liznoo
 {
@@ -44,11 +44,11 @@ namespace Liznoo
 	public:
 		FakeQWidgetWinAPI (QWidget *parent = NULL);
 	protected:
-		virtual void prepareSchemeChange (PPOWERBROADCAST_SETTING setting);
-		virtual void preparePowerSourceChange (PPOWERBROADCAST_SETTING setting);
-		virtual void prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting);
+		void prepareSchemeChange (PPOWERBROADCAST_SETTING setting);
+		void preparePowerSourceChange (PPOWERBROADCAST_SETTING setting);
+		void prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting);
 
-		virtual bool winEvent (MSG *message, long *result);
+		bool winEvent (MSG *message, long *result) override;
 	signals:
 		void schemeChanged (QString schemeName);
 		void powerSourceChanged (QString powerSource);
