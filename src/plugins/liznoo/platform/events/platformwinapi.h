@@ -48,7 +48,7 @@ namespace Liznoo
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HPowerSchemeNotify_;
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HPowerSourceNotify_;
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HBatteryPowerNotify_;
-		std::unique_ptr<FakeQWidgetWinAPI> FakeWidget_;
+		std::shared_ptr<FakeQWidgetWinAPI> FakeWidget_;
 	public:
 		PlatformWinAPI (const ICoreProxy_ptr&, QObject* = 0);
 	private slots:
