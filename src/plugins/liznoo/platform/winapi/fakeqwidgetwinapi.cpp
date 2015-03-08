@@ -31,19 +31,19 @@
 #include "fakeqwidgetwinapi.h"
 #include <objbase.h>
 
-namespace LeechCraft 
+namespace LeechCraft
 {
 namespace Liznoo
 {
 	FakeQWidgetWinAPI::FakeQWidgetWinAPI (QWidget *parent)
 	: QWidget (parent)
 	{
-
+		hide ();
 	}
 
 	void FakeQWidgetWinAPI::prepareSchemeChange (PPOWERBROADCAST_SETTING setting)
 	{
-		const GUID newScheme = 
+		const GUID newScheme =
 			*reinterpret_cast<GUID*> (reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		QString scheme;
@@ -51,7 +51,7 @@ namespace Liznoo
 			scheme = tr ("Power saver");
 		else if (GUID_MIN_POWER_SAVINGS == newScheme)
 			scheme = tr ("High performance");
-		else 
+		else
 			scheme = tr ("Balanced");
 
 		emit schemeChanged (scheme);
@@ -59,7 +59,7 @@ namespace Liznoo
 
 	void FakeQWidgetWinAPI::preparePowerSourceChange (PPOWERBROADCAST_SETTING setting)
 	{
-		const int nPowerSrc = 
+		const int nPowerSrc =
 			*reinterpret_cast<int*> (reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		const QString& powerSource = nPowerSrc ? tr ("Battery") : tr ("AC");
@@ -69,7 +69,7 @@ namespace Liznoo
 
 	void FakeQWidgetWinAPI::prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting)
 	{
-		const int nPercentLeft = 
+		const int nPercentLeft =
 			*reinterpret_cast<int*> (reinterpret_cast<DWORD_PTR> (setting->Data));
 
 		emit batteryStateChanged (nPercentLeft);
@@ -78,10 +78,10 @@ namespace Liznoo
 	bool FakeQWidgetWinAPI::winEvent (MSG *message, long *result)
 	{
 		if(message->message == WM_POWERBROADCAST)
-		{	
-			if (message->wParam == PBT_POWERSETTINGCHANGE) 
+		{
+			if (message->wParam == PBT_POWERSETTINGCHANGE)
 			{
-				const PPOWERBROADCAST_SETTING rcvd_setting = 
+				const PPOWERBROADCAST_SETTING rcvd_setting =
 					reinterpret_cast<PPOWERBROADCAST_SETTING> (message->lParam);
 
 				if (sizeof (GUID) == rcvd_setting->DataLength &&
@@ -96,6 +96,6 @@ namespace Liznoo
 			}
 		}
 		return QWidget::winEvent (message, result);
-	}	
+	}
 } // namespace Liznoo
 } // namespace Leechcraft
