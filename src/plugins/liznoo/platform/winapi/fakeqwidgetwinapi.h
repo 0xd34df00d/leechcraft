@@ -38,6 +38,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace WinAPI
+{
 	class FakeQWidgetWinAPI : public QWidget
 	{
 		Q_OBJECT
@@ -54,6 +56,6 @@ namespace Liznoo
 		void powerSourceChanged (QString powerSource);
 		void batteryStateChanged (int newPercentage);
 	};
-} // namespace Liznoo
-} // namespace Leechcraft
-
+}
+}
+}

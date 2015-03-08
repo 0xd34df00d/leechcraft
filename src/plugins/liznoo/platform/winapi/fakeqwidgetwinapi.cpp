@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace WinAPI
+{
 	FakeQWidgetWinAPI::FakeQWidgetWinAPI (QWidget *parent)
 	: QWidget (parent)
 	{
@@ -97,5 +99,6 @@ namespace Liznoo
 		}
 		return QWidget::winEvent (message, result);
 	}
-} // namespace Liznoo
-} // namespace Leechcraft
+}
+}
+}

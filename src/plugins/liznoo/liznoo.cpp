@@ -101,7 +101,7 @@ namespace Liznoo
 
 		dbusThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
-		const auto widget = std::make_shared<FakeQWidgetWinAPI> ();
+		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 		PL_ = std::make_shared<PlatformWinAPI> (widget, Proxy_);
 #elif defined(Q_OS_FREEBSD)
 		PL_ = std::make_shared<PlatformFreeBSD> (Proxy_);

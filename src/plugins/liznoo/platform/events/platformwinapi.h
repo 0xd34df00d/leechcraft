@@ -39,8 +39,11 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace WinAPI
+{
 	class FakeQWidgetWinAPI;
 	using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
+}
 
 	class PlatformWinAPI : public PlatformLayer
 	{
@@ -51,9 +54,9 @@ namespace Liznoo
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HPowerSourceNotify_;
 		std::unique_ptr<HPOWERNOTIFY, HPowerNotifyDeleter> HBatteryPowerNotify_;
 
-		const FakeQWidgetWinAPI_ptr FakeWidget_;
+		const WinAPI::FakeQWidgetWinAPI_ptr FakeWidget_;
 	public:
-		PlatformWinAPI (const FakeQWidgetWinAPI_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr&, const ICoreProxy_ptr&, QObject* = 0);
 	private slots:
 		void handleSchemeChanged (QString schemeName);
 		void handlePowerSourceChanged (QString powerSource);
