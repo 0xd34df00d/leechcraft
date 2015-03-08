@@ -89,14 +89,6 @@ namespace Liznoo
 				SLOT (handleBatteryStateChanged (int)));
 	}
 
-	void PlatformWinAPI::Stop ()
-	{
-		HPowerSchemeNotify_.reset (nullptr);
-		HPowerSourceNotify_.reset (nullptr);
-		HBatteryPowerNotify_.reset (nullptr);
-		FakeWidget_.reset (nullptr);
-	}
-
 	void PlatformWinAPI::handleSchemeChanged (QString schemeName)
 	{
 		qDebug() << "New power scheme detected" << ": [" << schemeName << "]";

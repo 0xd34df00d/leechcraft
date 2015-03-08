@@ -51,7 +51,6 @@ namespace Liznoo
 		std::unique_ptr<FakeQWidgetWinAPI> FakeWidget_;
 	public:
 		PlatformWinAPI (const ICoreProxy_ptr&, QObject* = 0);
-		virtual void Stop ();
 	private slots:
 		void handleSchemeChanged(QString schemeName);
 		void handlePowerSourceChanged(QString powerSource);
