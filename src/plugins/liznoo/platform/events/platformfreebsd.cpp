@@ -64,7 +64,7 @@ namespace Liznoo
 		{
 			acpi_battery_ioctl_arg arg;
 			BatteryInfo info;
-			int units, capacity, percentage, rate, voltage, remaining_time;
+			int units = 0, capacity = 0, percentage = 0, rate = 0, voltage = 0, remaining_time = 0;
 			bool valid = false;
 			arg.unit = i;
 			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BIF, &arg) >= 0)
