@@ -52,7 +52,7 @@ set (MAC_SRCS
 
 set (WIN32_SRCS
 	platform/events/platformwinapi.cpp
-	platform/events/fakeqwidgetwinapi.cpp
+	platform/winapi/fakeqwidgetwinapi.cpp
 	)
 
 # Default implementation using UPower

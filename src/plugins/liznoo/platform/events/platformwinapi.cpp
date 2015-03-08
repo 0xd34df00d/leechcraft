@@ -30,7 +30,7 @@
 
 #include <QtGlobal>
 #include <QTimer>
-#include "fakeqwidgetwinapi.h"
+#include "../winapi/fakeqwidgetwinapi.h"
 #include "platformwinapi.h"
 
 namespace
