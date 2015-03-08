@@ -60,7 +60,6 @@ namespace WinAPI
 	private slots:
 		void handleSchemeChanged (QString schemeName);
 		void handlePowerSourceChanged (QString powerSource);
-		void handleBatteryStateChanged (int newPercentage);
 	};
 } // namespace Liznoo
 } // namespace Leechcraft

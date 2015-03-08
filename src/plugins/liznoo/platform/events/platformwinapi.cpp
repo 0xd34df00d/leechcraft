@@ -81,10 +81,6 @@ namespace Liznoo
 				SIGNAL (powerSourceChanged (QString)),
 				this,
 				SLOT (handlePowerSourceChanged (QString)));
-		connect (FakeWidget_.get (),
-				SIGNAL (batteryStateChanged (int)),
-				this,
-				SLOT (handleBatteryStateChanged (int)));
 	}
 
 	void PlatformWinAPI::handleSchemeChanged (QString schemeName)
@@ -95,25 +91,6 @@ namespace Liznoo
 	void PlatformWinAPI::handlePowerSourceChanged (QString powerSource)
 	{
 		qDebug() << "New power source detected" << ": [" << powerSource << "]";
-	}
-
-	void PlatformWinAPI::handleBatteryStateChanged (int newPercentage)
-	{
-		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
-
-		qDebug() << "New battery state detected" << ": [" << newPercentage << "]";
-
-		SYSTEM_POWER_STATUS powerStatus;
-		BOOL retCode = GetSystemPowerStatus (&powerStatus);
-
-		Q_ASSERT (retCode);
-
-		BatteryInfo info;
-
-		info.TimeToEmpty_ = powerStatus.BatteryLifeTime;
-		info.Percentage_ = newPercentage;
-
-		emit batteryInfoUpdated (info);
 	}
 } // namespace Liznoo
 } // namespace LeechCraft
