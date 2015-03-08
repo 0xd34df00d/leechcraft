@@ -64,7 +64,7 @@ namespace Liznoo
 		{
 			acpi_battery_ioctl_arg arg;
 			BatteryInfo info;
-			int units = 0, capacity = 0, percentage = 0, rate = 0, voltage = 0, remaining_time = 0;
+			int units = 0, capacity = 0, designCapacity = 0, percentage = 0, rate = 0, voltage = 0, remaining_time = 0;
 			bool valid = false;
 			arg.unit = i;
 			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BIF, &arg) >= 0)
@@ -75,7 +75,8 @@ namespace Liznoo
 								.arg (arg.bif.oeminfo);
 				info.Technology_ = arg.bif.type;
 				units = arg.bif.units;
-				capacity = arg.bif.lfcap >= 0 ? arg.bif.lfcap : arg.bif.dcap;
+				capacity = arg.bif.lfcap;
+				designCapacity = arg.bif.dcap;
 			}
 			arg.unit = i;
 			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BATTINFO, &arg) >= 0)
@@ -97,10 +98,12 @@ namespace Liznoo
 			info.Voltage_ = voltage / 1000.0;
 			info.EnergyRate_ = rate / 1000.0;
 			info.EnergyFull_ = capacity / 1000.0;
+			info.DesignEnergyFull_ = designCapacity / 1000.0;
 			if (units == ACPI_BIF_UNITS_MA)
 			{
 				info.EnergyRate_ *= info.Voltage_;
 				info.EnergyFull_ *= info.Voltage_;
+				info.DesignEnergyFull_ *= info.Voltage_;
 			}
 
 			info.Energy_ = info.EnergyFull_ * percentage / 100;
