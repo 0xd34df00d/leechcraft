@@ -128,6 +128,7 @@ namespace Vader
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
 		void handleUserStatusChanged (const Proto::ContactInfo&);
 		void handleContactAdded (quint32, quint32);
+		void handleContactAdditionError (quint32, Proto::ContactAck);
 
 		void handleGotUserInfoError (const QString&, Proto::AnketaInfoStatus);
 		void handleGotUserInfo (const QString&, const QMap<QString, QString>&);
