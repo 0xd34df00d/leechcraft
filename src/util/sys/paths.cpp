@@ -73,6 +73,9 @@ namespace Util
 			else
 				candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
 #else
+	#ifdef INSTALL_PREFIX
+			candidates << INSTALL_PREFIX "/share/leechcraft/" + suffix;
+	#endif
 			candidates << "/usr/local/share/leechcraft/" + suffix
 					<< "/usr/share/leechcraft/" + suffix;
 #endif
