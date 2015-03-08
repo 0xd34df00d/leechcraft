@@ -61,6 +61,13 @@ namespace Proto
 	QByteArray ToMRIM (const UIDL&);
 	QByteArray ToMRIM (quint32);
 	QByteArray ToMRIM (int);
+
+	template<typename Enum>
+	typename std::enable_if<std::is_enum<Enum>::value, QByteArray>::type ToMRIM (Enum e)
+	{
+		return ToMRIM (static_cast<quint32> (e));
+	}
+
 	QByteArray ToMRIM ();
 
 	template<typename T, typename... Args>
@@ -105,6 +112,14 @@ namespace Proto
 	void FromMRIM (QByteArray&, QByteArray&);
 	void FromMRIM (QByteArray&, quint32&);
 	void FromMRIM (QByteArray&);
+
+	template<typename Enum>
+	void FromMRIM (QByteArray& ba, Enum& out, typename std::enable_if<std::is_enum<Enum>::value, void>::type* = nullptr)
+	{
+		quint32 proxy = 0;
+		FromMRIM (ba, proxy);
+		out = static_cast<Enum> (proxy);
+	}
 
 	template<typename T, typename... Args>
 	void FromMRIM (QByteArray& ba, T& u, Args&... args)
