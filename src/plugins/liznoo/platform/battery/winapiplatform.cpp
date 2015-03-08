@@ -59,7 +59,7 @@ namespace Battery
 
 		BatteryInfo info;
 
-		info.TimeToEmpty_ = powerStatus.BatteryLifeTime;
+		info.TimeToEmpty_ = std::max (powerStatus.BatteryLifeTime, 0);
 		info.Percentage_ = newPercentage;
 
 		emit batteryInfoUpdated (info);
