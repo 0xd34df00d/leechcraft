@@ -49,12 +49,12 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformWinAPI::PlatformWinAPI (const ICoreProxy_ptr& proxy, QObject* parent)
+	PlatformWinAPI::PlatformWinAPI (const FakeQWidgetWinAPI_ptr& widget, const ICoreProxy_ptr& proxy, QObject* parent)
 	: PlatformLayer (proxy, parent)
 	, HPowerSchemeNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HPowerSourceNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HBatteryPowerNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
-	, FakeWidget_ (new FakeQWidgetWinAPI)
+	, FakeWidget_ (widget)
 	{
 		HWND h_wnd = FakeWidget_->winId ();
 

@@ -53,7 +53,7 @@ namespace Liznoo
 
 		const FakeQWidgetWinAPI_ptr FakeWidget_;
 	public:
-		PlatformWinAPI (const ICoreProxy_ptr&, QObject* = 0);
+		PlatformWinAPI (const FakeQWidgetWinAPI_ptr&, const ICoreProxy_ptr&, QObject* = 0);
 	private slots:
 		void handleSchemeChanged (QString schemeName);
 		void handlePowerSourceChanged (QString powerSource);
