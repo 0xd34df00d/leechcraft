@@ -788,11 +788,11 @@ namespace Proto
 
 	void Connection::ContactAdded (HalfPacket hp)
 	{
-		quint32 status = 0;
+		Proto::ContactAck status {};
 		FromMRIM (hp.Data_, status);
 
 #ifdef PROTOCOL_LOGGING
-		qDebug () << Q_FUNC_INFO << hp.Header_.Seq_ << status;
+		qDebug () << Q_FUNC_INFO << hp.Header_.Seq_ << static_cast<quint32> (status);
 #endif
 
 		if (status == Proto::ContactAck::Success)

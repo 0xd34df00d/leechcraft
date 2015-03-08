@@ -157,16 +157,16 @@ namespace Proto
 
 	Q_DECLARE_FLAGS (ContactOpFlags, ContactOpFlag);
 
-	namespace ContactAck
+	enum class ContactAck : quint16
 	{
-		const quint16 Success = 0x0000;
-		const quint16 Error = 0x0001;
-		const quint16 IntErr = 0x0002;
-		const quint16 NoSuchUser = 0x0003;
-		const quint16 InvalidInfo = 0x0004;
-		const quint16 UserExists = 0x0005;
-		const quint8 GroupLimit = 0x6;
-	}
+		Success,
+		Error,
+		IntErr,
+		NoSuchUser,
+		InvalidInfo,
+		UserExists,
+		GroupLimit
+	};
 
 	namespace MPOPSession
 	{
