@@ -50,8 +50,8 @@ namespace Proto
 
 		try
 		{
-			QByteArray tmp (Buffer_);
-			Header h (tmp);
+			QByteArray tmp { Buffer_ };
+			Header h { tmp };
 #ifdef PROTOCOL_LOGGING
 			qDebug () << h.DataLength_ << tmp.size ();
 #endif
