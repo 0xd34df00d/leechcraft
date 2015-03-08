@@ -56,6 +56,11 @@ namespace Liznoo
 		class Platform;
 	}
 
+	namespace Battery
+	{
+		class BatteryPlatform;
+	}
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveSettings
@@ -71,9 +76,10 @@ namespace Liznoo
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		PlatformLayer *PL_ = nullptr;
+		std::shared_ptr<PlatformLayer> PL_;
 		Screen::ScreenPlatform *SPL_ = nullptr;
-		PowerActions::Platform *PowerActPlatform_ = nullptr;
+		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
+		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
 
 		QMap<QString, QAction*> Battery2Action_;
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
@@ -108,7 +114,6 @@ namespace Liznoo
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
 		void handleBatteryDialogDestroyed ();
-		void handlePlatformStarted ();
 
 		void handleSuspendRequested ();
 		void handleHibernateRequested ();

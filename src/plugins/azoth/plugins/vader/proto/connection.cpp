@@ -788,15 +788,24 @@ namespace Proto
 
 	void Connection::ContactAdded (HalfPacket hp)
 	{
-		quint32 status = 0, contactId = 0;
-		FromMRIM (hp.Data_, status, contactId);
+		Proto::ContactAck status {};
+		FromMRIM (hp.Data_, status);
 
 #ifdef PROTOCOL_LOGGING
-		qDebug () << Q_FUNC_INFO << hp.Header_.Seq_ << status << contactId;
+		qDebug () << Q_FUNC_INFO << hp.Header_.Seq_ << static_cast<quint32> (status);
 #endif
 
 		if (status == Proto::ContactAck::Success)
+		{
+			quint32 contactId = 0;
+			FromMRIM (hp.Data_, contactId);
+
+#ifdef PROTOCOL_LOGGING
+			qDebug () << Q_FUNC_INFO << "contact added successfully, id:" << contactId;
+#endif
+
 			emit contactAdded (hp.Header_.Seq_, contactId);
+		}
 		else
 			emit contactAdditionError (hp.Header_.Seq_, status);
 	}

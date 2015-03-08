@@ -214,8 +214,12 @@ namespace AdiumStyles
 			if (msg->GetMessageType () != IMessage::Type::MUCMessage)
 				return msg->GetDirection ();
 
-			IMUCEntry *muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
-			ICLEntry *part = qobject_cast<ICLEntry*> (msg->OtherPart ());
+			const auto muc = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
+			const auto part = qobject_cast<ICLEntry*> (msg->OtherPart ());
+
+			if (!muc || !part)
+				return IMessage::Direction::In;
+
 			return muc->GetNick () == part->GetEntryName () ?
 					IMessage::Direction::Out :
 					IMessage::Direction::In;

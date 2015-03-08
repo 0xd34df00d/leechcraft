@@ -2,7 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_liznoo)
 include (InitLCPlugin OPTIONAL)
 
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 find_package (Qwt)
 
 option (USE_LIZNOO_PMUTILS "Enable pm-utils support for suspending and hibernating" OFF)
@@ -19,16 +18,22 @@ set (SRCS
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
 	xmlsettingsmanager.cpp
+	platform/battery/batteryplatform.cpp
 	platform/events/platformlayer.cpp
 	platform/poweractions/platform.cpp
 	platform/screen/screenplatform.cpp
 	)
 
-set (FBSD_SRCS platform/events/platformfreebsd.cpp)
+set (FBSD_SRCS
+	platform/poweractions/freebsd.cpp
+	platform/events/platformfreebsd.cpp
+	)
+
 set (UPOWER_SRCS
+	platform/battery/upowerplatform.cpp
 	platform/events/platformupower.cpp
-	platform/events/dbusthread.cpp
-	platform/events/dbusconnector.cpp
+	platform/upower/dbusthread.cpp
+	platform/upower/dbusconnector.cpp
 	)
 set (UPOWER_POWERACTIONS_SRCS
 	platform/poweractions/upower.cpp
@@ -40,13 +45,17 @@ if (USE_LIZNOO_PMUTILS)
 		platform/poweractions/pmutils.cpp
 		)
 endif ()
+
 set (MAC_SRCS
 	platform/events/platformmac.mm
 	)
+
 set (WIN32_SRCS
+	platform/battery/winapiplatform.cpp
 	platform/events/platformwinapi.cpp
-	platform/events/fakeqwidgetwinapi.cpp
+	platform/winapi/fakeqwidgetwinapi.cpp
 	)
+
 # Default implementation using UPower
 if (APPLE)
 	set (SRCS ${SRCS} ${MAC_SRCS})

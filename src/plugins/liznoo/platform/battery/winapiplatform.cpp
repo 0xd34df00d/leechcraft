@@ -27,27 +27,44 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include "platformlayer.h"
+#include "winapiplatform.h"
+#include <QtDebug>
+#include "../winapi/fakeqwidgetwinapi.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace Battery
 {
-	class DBusThread;
-
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
-}
-
-	class PlatformUPower : public PlatformLayer
+	WinAPIPlatform::WinAPIPlatform (const WinAPI::FakeQWidgetWinAPI_ptr& widget, QObject *parent)
+	: BatteryPlatform { parent }
+	, Widget_ { widget }
 	{
-		const UPower::DBusThread_ptr Thread_;
-	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
-	};
+		connect (Widget_.get (),
+				SIGNAL (batteryStateChanged (int)),
+				this,
+				SLOT (handleBatteryStateChanged (int)));
+	}
+
+	void WinAPIPlatform::handleBatteryStateChanged (int newPercentage)
+	{
+		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
+
+		qDebug () << "New battery state detected" << ": [" << newPercentage << "]";
+
+		SYSTEM_POWER_STATUS powerStatus;
+		BOOL retCode = GetSystemPowerStatus (&powerStatus);
+
+		Q_ASSERT (retCode);
+
+		BatteryInfo info;
+
+		info.TimeToEmpty_ = std::max<DWORD> (powerStatus.BatteryLifeTime, 0);
+		info.Percentage_ = newPercentage;
+
+		emit batteryInfoUpdated (info);
+	}
+}
 }
 }

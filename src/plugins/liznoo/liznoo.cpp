@@ -43,20 +43,28 @@
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
 #include "platform/screen/screenplatform.h"
+#include "platform/battery/batteryplatform.h"
 
 #if defined(Q_OS_LINUX)
+	#include "platform/battery/upowerplatform.h"
 	#include "platform/events/platformupower.h"
-	#if USE_PMUTILS
+
+	#ifdef USE_PMUTILS
 		#include "platform/poweractions/pmutils.h"
 	#else
 		#include "platform/poweractions/upower.h"
 	#endif
+
 	#include "platform/screen/freedesktop.h"
+	#include "platform/upower/dbusthread.h"
 #elif defined(Q_OS_WIN32)
+	#include "platform/battery/winapiplatform.h"
 	#include "platform/events/platformwinapi.h"
+	#include "platform/winapi/fakeqwidgetwinapi.h"
 #elif defined(Q_OS_FREEBSD)
 	#include "platform/events/platformfreebsd.h"
-	#include "platform/screen/screenplatformfreedesktop.h"
+	#include "platform/poweractions/freebsd.h"
+	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_MAC)
 	#include "platform/events/platformmac.h"
 #else
@@ -80,27 +88,47 @@ namespace Liznoo
 		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
-		PL_ = new PlatformUPower (Proxy_, this);
-		SPL_ = new Screen::Freedesktop (this);
+		const auto dbusThread = std::make_shared<UPower::DBusThread> ();
 
-#if USE_PMUTILS
-		PowerActPlatform_ = new PowerActions::PMUtils (this);
-#else
-		PowerActPlatform_ = new PowerActions::UPower (this);
-#endif
+		PL_ = std::make_shared<PlatformUPower> (dbusThread, Proxy_);
+		SPL_ = new Screen::Freedesktop (this);
+		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
+
+	#ifdef USE_PMUTILS
+		PowerActPlatform_ = std::make_shared<PowerActions::PMUtils> ();
+	#else
+		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
+	#endif
+
+		dbusThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
-		PL_ = new PlatformWinAPI (Proxy_, this);
+		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
+
+		PL_ = std::make_shared<PlatformWinAPI> (widget, Proxy_);
+		BatteryPlatform_ = std::make_shared<Battery::WinAPIPlatform> (widget);
 #elif defined(Q_OS_FREEBSD)
-		PL_ = new PlatformFreeBSD (Proxy_, this);
+		PL_ = std::make_shared<PlatformFreeBSD> (Proxy_);
+		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
 		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
-		PL_ = new PlatformMac (Proxy_, this);
+		PL_ = std::make_shared<PlatformMac> (Proxy_);
 #endif
 
-		connect (PL_,
-				SIGNAL (started ()),
+		if (BatteryPlatform_)
+			connect (BatteryPlatform_.get (),
+					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+					this,
+					SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "battery backend is not available";
+
+		const auto battTimer = new QTimer { this };
+		connect (battTimer,
+				SIGNAL (timeout ()),
 				this,
-				SLOT (handlePlatformStarted ()));
+				SLOT (handleUpdateHistory ()));
+		battTimer->start (3000);
 
 		Suspend_ = new QAction (tr ("Suspend"), this);
 		connect (Suspend_,
@@ -133,8 +161,9 @@ namespace Liznoo
 
 	void Plugin::Release ()
 	{
-		if (PL_)
-			PL_->Stop ();
+		PL_.reset ();
+		PowerActPlatform_.reset ();
+		BatteryPlatform_.reset ();
 	}
 
 	QString Plugin::GetName () const
@@ -418,21 +447,6 @@ namespace Liznoo
 	{
 		auto dia = static_cast<BatteryHistoryDialog*> (sender ());
 		Battery2Dialog_.remove (Battery2Dialog_.key (dia));
-	}
-
-	void Plugin::handlePlatformStarted ()
-	{
-		connect (PL_,
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				this,
-				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
-
-		QTimer *timer = new QTimer (this);
-		connect (timer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleUpdateHistory ()));
-		timer->start (3000);
 	}
 
 	void Plugin::handleSuspendRequested ()

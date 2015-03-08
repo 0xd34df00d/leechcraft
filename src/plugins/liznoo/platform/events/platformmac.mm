@@ -79,9 +79,6 @@ namespace Liznoo
 		CFRunLoopAddSource (CFRunLoopGetCurrent (),
 				PSEventsSource_,
 				kCFRunLoopCommonModes);
-		QTimer::singleShot (100,
-				this,
-				SIGNAL (started ()));
 
 		QTimer::singleShot (100,
 				this,

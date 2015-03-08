@@ -241,9 +241,6 @@ namespace Xoox
 			switch (Client_->xmppStreamError ())
 			{
 			case QXmppStanza::Error::NotAuthorized:
-#if QXMPP_VERSION >= 0x000803
-			case QXmppStanza::Error::BadAuth:
-#endif
 				emit serverAuthFailed ();
 				break;
 			default:

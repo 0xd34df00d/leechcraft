@@ -27,27 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include "platformlayer.h"
+#include "upowerplatform.h"
+#include "../upower/dbusthread.h"
+#include "../upower/dbusconnector.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace Battery
 {
-	class DBusThread;
-
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
-}
-
-	class PlatformUPower : public PlatformLayer
+	UPowerPlatform::UPowerPlatform (const UPower::DBusThread_ptr& thread, QObject *parent)
+	: BatteryPlatform { parent }
+	, Thread_ { thread }
 	{
-		const UPower::DBusThread_ptr Thread_;
-	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
-	};
+		Thread_->ScheduleOnStart ([this] (UPower::DBusConnector *conn)
+				{
+					connect (conn,
+							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+							this,
+							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
+					QMetaObject::invokeMethod (conn,
+							"enumerateDevices",
+							Qt::QueuedConnection);
+				});
+	}
+}
 }
 }

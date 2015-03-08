@@ -1,6 +1,5 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012       Eugene Mamin
  * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
@@ -28,32 +27,46 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "dbusthread.h"
+#include "dbusconnector.h"
 
-#include <QWidget>
-#include <QString>
-#include <windows.h>
-
-namespace LeechCraft 
+namespace LeechCraft
 {
 namespace Liznoo
 {
-	class FakeQWidgetWinAPI : public QWidget
+namespace UPower
+{
+	DBusThread::~DBusThread ()
 	{
-		Q_OBJECT
-	public:
-		FakeQWidgetWinAPI (QWidget *parent = NULL);
-	protected:
-		virtual void prepareSchemeChange (PPOWERBROADCAST_SETTING setting);
-		virtual void preparePowerSourceChange (PPOWERBROADCAST_SETTING setting);
-		virtual void prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting);
+		if (!isRunning ())
+			return;
 
-		virtual bool winEvent (MSG *message, long *result);
-	signals:
-		void schemeChanged (QString schemeName);
-		void powerSourceChanged (QString powerSource);
-		void batteryStateChanged (int newPercentage);
-	};
-} // namespace Liznoo
-} // namespace Leechcraft
+		quit ();
+		if (!wait (1000))
+			terminate ();
+	}
 
+	void DBusThread::ScheduleOnStart (const std::function<void (DBusConnector*)>& f)
+	{
+		StartHandlers_ << f;
+	}
+
+	DBusConnector_ptr DBusThread::GetConnector () const
+	{
+		return Conn_.lock ();
+	}
+
+	void DBusThread::run ()
+	{
+		const auto conn = std::make_shared<DBusConnector> ();
+		Conn_ = conn;
+
+		for (const auto& f : StartHandlers_)
+			f (conn.get ());
+		StartHandlers_.clear ();
+
+		QThread::run ();
+	}
+}
+}
+}

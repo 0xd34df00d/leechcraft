@@ -1,6 +1,7 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2012       Maxim Ignatenko
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,33 +30,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <QDBusConnection>
-#include <interfaces/structures.h>
-#include "../../batteryinfo.h"
-#include "platformlayer.h"
+#include "platform.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	class DBusConnector : public QObject
+namespace PowerActions
+{
+	class FreeBSD final : public Platform
 	{
-		Q_OBJECT
-
-		QDBusConnection SB_;
 	public:
-		DBusConnector (QObject* = 0);
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+		using Platform::Platform;
 
-		void gonnaSleep (int);
-		void wokeUp ();
+		QFuture<QueryChangeStateResult> CanChangeState (State) override;
+		void ChangeState (State) override;
 	};
 }
 }
-
+}

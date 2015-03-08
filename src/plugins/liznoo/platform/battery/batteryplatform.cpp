@@ -27,27 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include "platformlayer.h"
+#include "batteryplatform.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace Battery
 {
-	class DBusThread;
-
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
 }
-
-	class PlatformUPower : public PlatformLayer
-	{
-		const UPower::DBusThread_ptr Thread_;
-	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
-	};
 }
 }

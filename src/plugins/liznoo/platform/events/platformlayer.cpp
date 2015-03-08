@@ -43,8 +43,9 @@ namespace Liznoo
 
 	void PlatformLayer::emitGonnaSleep (int timeout)
 	{
+		qDebug () << Q_FUNC_INFO << "detected sleep in" << timeout;
 		auto e = Util::MakeEntity ("Sleeping",
-				QString (),
+				{},
 				TaskParameter::Internal,
 				"x-leechcraft/power-state-changed");
 		e.Additional_ ["TimeLeft"] = timeout;
@@ -53,8 +54,9 @@ namespace Liznoo
 
 	void PlatformLayer::emitWokeUp ()
 	{
+		qDebug () << Q_FUNC_INFO << "detected wake up";
 		const auto& e = Util::MakeEntity ("WokeUp",
-				QString (),
+				{},
 				TaskParameter::Internal,
 				"x-leechcraft/power-state-changed");
 		Proxy_->GetEntityManager ()->HandleEntity (e);

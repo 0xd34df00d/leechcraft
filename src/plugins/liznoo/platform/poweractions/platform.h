@@ -42,7 +42,7 @@ namespace PowerActions
 	{
 		Q_OBJECT
 	public:
-		Platform (QObject* = nullptr);
+		using QObject::QObject;
 
 		enum class State
 		{

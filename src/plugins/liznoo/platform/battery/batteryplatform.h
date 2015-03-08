@@ -29,25 +29,23 @@
 
 #pragma once
 
-#include <memory>
-#include "platformlayer.h"
+#include <QObject>
+#include "../../batteryinfo.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace Battery
 {
-	class DBusThread;
-
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
-}
-
-	class PlatformUPower : public PlatformLayer
+	class BatteryPlatform : public QObject
 	{
-		const UPower::DBusThread_ptr Thread_;
+		Q_OBJECT
 	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		using QObject::QObject;
+	signals:
+		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
+}
 }
 }

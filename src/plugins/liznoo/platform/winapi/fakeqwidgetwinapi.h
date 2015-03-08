@@ -1,5 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
+ * Copyright (C) 2012       Eugene Mamin
  * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
@@ -29,25 +30,32 @@
 
 #pragma once
 
-#include <memory>
-#include "platformlayer.h"
+#include <QWidget>
+#include <QString>
+#include <windows.h>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace WinAPI
 {
-	class DBusThread;
-
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
-}
-
-	class PlatformUPower : public PlatformLayer
+	class FakeQWidgetWinAPI : public QWidget
 	{
-		const UPower::DBusThread_ptr Thread_;
+		Q_OBJECT
 	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		FakeQWidgetWinAPI (QWidget *parent = NULL);
+	protected:
+		void prepareSchemeChange (PPOWERBROADCAST_SETTING setting);
+		void preparePowerSourceChange (PPOWERBROADCAST_SETTING setting);
+		void prepareBatteryStateChange (PPOWERBROADCAST_SETTING setting);
+
+		bool winEvent (MSG *message, long *result) override;
+	signals:
+		void schemeChanged (QString schemeName);
+		void powerSourceChanged (QString powerSource);
+		void batteryStateChanged (int newPercentage);
 	};
+}
 }
 }

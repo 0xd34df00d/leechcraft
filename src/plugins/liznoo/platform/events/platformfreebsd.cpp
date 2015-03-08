@@ -34,7 +34,6 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <QTimer>
-#include <QMessageBox>
 
 namespace LeechCraft
 {
@@ -44,51 +43,14 @@ namespace Liznoo
 
 	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer (proxy, parent)
+	, Timer_ (new QTimer (this))
 	{
-		Timer_ = new QTimer (this);
 		Timer_->start (UpdateInterval);
 		connect (Timer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (update ()));
 		ACPIfd_ = open ("/dev/acpi", O_RDONLY);
-
-		QTimer::singleShot (0,
-				this,
-				SIGNAL (started ()));
-	}
-
-	void PlatformFreeBSD::Stop ()
-	{
-		Timer_->stop ();
-	}
-
-	void PlatformFreeBSD::ChangeState (PowerState state)
-	{
-		int fd = open ("/dev/acpi", O_WRONLY);
-		if (fd < 0 && errno == EACCES)
-		{
-			QMessageBox::information (NULL,
-				"LeechCraft Liznoo",
-				tr ("Looks like you don't have permission to write to /dev/acpi. "
-					"If you're in 'wheel' group, add 'perm acpi 0664' to "
-					"/etc/devfs.conf and run '/etc/rc.d/devfs restart' to apply "
-					"needed permissions to /dev/acpi."));
-			return;
-		}
-
-		int sleep_state = -1;
-		switch (state)
-		{
-		case PowerState::Suspend:
-			sleep_state = 3;
-			break;
-		case PowerState::Hibernate:
-			sleep_state = 4;
-			break;
-		}
-		if (fd >= 0 && sleep_state > 0)
-			ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state); // this requires root privileges by default
 	}
 
 	void PlatformFreeBSD::update ()
@@ -102,7 +64,7 @@ namespace Liznoo
 		{
 			acpi_battery_ioctl_arg arg;
 			BatteryInfo info;
-			int units, capacity, percentage, rate, voltage, remaining_time;
+			int units = 0, capacity = 0, designCapacity = 0, percentage = 0, rate = 0, voltage = 0, remaining_time = 0;
 			bool valid = false;
 			arg.unit = i;
 			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BIF, &arg) >= 0)
@@ -113,7 +75,8 @@ namespace Liznoo
 								.arg (arg.bif.oeminfo);
 				info.Technology_ = arg.bif.type;
 				units = arg.bif.units;
-				capacity = arg.bif.lfcap >= 0 ? arg.bif.lfcap : arg.bif.dcap;
+				capacity = arg.bif.lfcap;
+				designCapacity = arg.bif.dcap;
 			}
 			arg.unit = i;
 			if (ioctl (ACPIfd_, ACPIIO_BATT_GET_BATTINFO, &arg) >= 0)
@@ -132,23 +95,18 @@ namespace Liznoo
 			}
 
 			info.Percentage_ = percentage;
-			info.Voltage_ = static_cast<double> (voltage) / 1000;
-			switch (units)
+			info.Voltage_ = voltage / 1000.0;
+			info.EnergyRate_ = rate / 1000.0;
+			info.EnergyFull_ = capacity / 1000.0;
+			info.DesignEnergyFull_ = designCapacity / 1000.0;
+			if (units == ACPI_BIF_UNITS_MA)
 			{
-			case ACPI_BIF_UNITS_MW:
-				info.EnergyRate_ = static_cast<double> (rate) / 1000;
-				info.EnergyFull_ = static_cast<double> (capacity) / 1000;
-				info.Energy_ = info.EnergyFull_ * percentage / 100;
-				break;
-			case ACPI_BIF_UNITS_MA:
-				info.EnergyRate_ = (static_cast<double> (rate) / 1000) * info.Voltage_;
-				info.EnergyFull_ = (static_cast<double> (capacity) / 1000) * info.Voltage_;
-				info.Energy_ = info.EnergyFull_ * percentage / 100;
-				break;
-			default:
-				valid = false;
-				break;
+				info.EnergyRate_ *= info.Voltage_;
+				info.EnergyFull_ *= info.Voltage_;
+				info.DesignEnergyFull_ *= info.Voltage_;
 			}
+
+			info.Energy_ = info.EnergyFull_ * percentage / 100;
 
 			if (valid)
 			{

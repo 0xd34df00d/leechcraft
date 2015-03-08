@@ -30,24 +30,30 @@
 #pragma once
 
 #include <memory>
-#include "platformlayer.h"
+#include "batteryplatform.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace WinAPI
 {
-	class DBusThread;
-
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
+	class FakeQWidgetWinAPI;
+	using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
 }
 
-	class PlatformUPower : public PlatformLayer
+namespace Battery
+{
+	class WinAPIPlatform : public BatteryPlatform
 	{
-		const UPower::DBusThread_ptr Thread_;
+		Q_OBJECT
+
+		const WinAPI::FakeQWidgetWinAPI_ptr Widget_;
 	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		WinAPIPlatform (const WinAPI::FakeQWidgetWinAPI_ptr&, QObject* = nullptr);
+	private slots:
+		void handleBatteryStateChanged (int newPercentage);
 	};
+}
 }
 }

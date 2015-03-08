@@ -68,6 +68,8 @@ namespace LMP
 		TagLib::FileRef GetFileRef (const QString&) const;
 		MediaInfo ResolveInfo (const QString&);
 		QMutex& GetMutex ();
+	private slots:
+		void flushCache ();
 	};
 }
 }

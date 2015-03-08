@@ -30,7 +30,7 @@
 
 #include <QtGlobal>
 #include <QTimer>
-#include "fakeqwidgetwinapi.h"
+#include "../winapi/fakeqwidgetwinapi.h"
 #include "platformwinapi.h"
 
 namespace
@@ -49,15 +49,13 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformWinAPI::PlatformWinAPI (const ICoreProxy_ptr& proxy, QObject* parent)
+	PlatformWinAPI::PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr& widget, const ICoreProxy_ptr& proxy, QObject* parent)
 	: PlatformLayer (proxy, parent)
 	, HPowerSchemeNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HPowerSourceNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, HBatteryPowerNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
-	, FakeWidget_ (new FakeQWidgetWinAPI)
+	, FakeWidget_ (widget)
 	{
-		FakeWidget_->hide ();
-
 		HWND h_wnd = FakeWidget_->winId ();
 
 		*HPowerSchemeNotify_ = RegisterPowerSettingNotification (h_wnd,
@@ -83,22 +81,6 @@ namespace Liznoo
 				SIGNAL (powerSourceChanged (QString)),
 				this,
 				SLOT (handlePowerSourceChanged (QString)));
-		connect (FakeWidget_.get (),
-				SIGNAL (batteryStateChanged (int)),
-				this,
-				SLOT (handleBatteryStateChanged (int)));
-
-		QTimer::singleShot (0,
-				this,
-				SIGNAL (started ()));
-	}
-
-	void PlatformWinAPI::Stop ()
-	{
-		HPowerSchemeNotify_.reset (nullptr);
-		HPowerSourceNotify_.reset (nullptr);
-		HBatteryPowerNotify_.reset (nullptr);
-		FakeWidget_.reset (nullptr);
 	}
 
 	void PlatformWinAPI::handleSchemeChanged (QString schemeName)
@@ -109,25 +91,6 @@ namespace Liznoo
 	void PlatformWinAPI::handlePowerSourceChanged (QString powerSource)
 	{
 		qDebug() << "New power source detected" << ": [" << powerSource << "]";
-	}
-
-	void PlatformWinAPI::handleBatteryStateChanged (int newPercentage)
-	{
-		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
-
-		qDebug() << "New battery state detected" << ": [" << newPercentage << "]";
-
-		SYSTEM_POWER_STATUS powerStatus;
-		BOOL retCode = GetSystemPowerStatus (&powerStatus);
-
-		Q_ASSERT (retCode);
-
-		BatteryInfo info;
-
-		info.TimeToEmpty_ = powerStatus.BatteryLifeTime;
-		info.Percentage_ = newPercentage;
-
-		emit batteryInfoUpdated (info);
 	}
 } // namespace Liznoo
 } // namespace LeechCraft

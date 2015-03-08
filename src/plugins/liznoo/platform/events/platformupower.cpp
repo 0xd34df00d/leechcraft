@@ -28,50 +28,29 @@
  **********************************************************************/
 
 #include "platformupower.h"
-#include "dbusconnector.h"
-#include "dbusthread.h"
+#include "../upower/dbusconnector.h"
+#include "../upower/dbusthread.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformUPower::PlatformUPower (const ICoreProxy_ptr& proxy, QObject *parent)
-	: PlatformLayer (proxy, parent)
+	PlatformUPower::PlatformUPower (const UPower::DBusThread_ptr& thread,
+			const ICoreProxy_ptr& proxy, QObject *parent)
+	: PlatformLayer { proxy, parent }
+	, Thread_ { thread }
 	{
-		Thread_ = new DBusThread;
-		connect (Thread_,
-				SIGNAL (started ()),
-				this,
-				SLOT (handleThreadStarted ()));
-		Thread_->start (QThread::LowestPriority);
-	}
-
-	void PlatformUPower::Stop ()
-	{
-		if (!Thread_->wait (1000))
-			Thread_->terminate ();
-	}
-
-	void PlatformUPower::handleThreadStarted ()
-	{
-		emit started ();
-
-		connect (Thread_->GetConnector (),
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
-				this,
-				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)));
-		connect (Thread_->GetConnector (),
-				SIGNAL (gonnaSleep (int)),
-				this,
-				SLOT (emitGonnaSleep (int)));
-		connect (Thread_->GetConnector (),
-				SIGNAL (wokeUp ()),
-				this,
-				SLOT (emitWokeUp ()));
-
-		QMetaObject::invokeMethod (Thread_->GetConnector (),
-				"enumerateDevices",
-				Qt::QueuedConnection);
+		Thread_->ScheduleOnStart ([this] (UPower::DBusConnector *conn)
+				{
+					connect (conn,
+							SIGNAL (gonnaSleep (int)),
+							this,
+							SLOT (emitGonnaSleep (int)));
+					connect (conn,
+							SIGNAL (wokeUp ()),
+							this,
+							SLOT (emitWokeUp ()));
+				});
 	}
 }
 }

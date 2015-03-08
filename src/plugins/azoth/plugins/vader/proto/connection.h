@@ -165,7 +165,7 @@ namespace Proto
 
 		void statusChanged (EntryStatus);
 		void contactAdded (quint32 seq, quint32 cid);
-		void contactAdditionError (quint32 seq, quint32 status);
+		void contactAdditionError (quint32 seq, Proto::ContactAck status);
 		void userStatusChanged (const Proto::ContactInfo&);
 		void gotUserTune (const QString& from, const QString& tune);
 
