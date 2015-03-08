@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "winapiplatform.h"
+#include <QtDebug>
 #include "../winapi/fakeqwidgetwinapi.h"
 
 namespace LeechCraft
@@ -59,7 +60,7 @@ namespace Battery
 
 		BatteryInfo info;
 
-		info.TimeToEmpty_ = std::max (powerStatus.BatteryLifeTime, 0);
+		info.TimeToEmpty_ = std::max<DWORD> (powerStatus.BatteryLifeTime, 0);
 		info.Percentage_ = newPercentage;
 
 		emit batteryInfoUpdated (info);
