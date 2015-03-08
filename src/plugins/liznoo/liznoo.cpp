@@ -62,7 +62,7 @@
 #elif defined(Q_OS_FREEBSD)
 	#include "platform/events/platformfreebsd.h"
 	#include "platform/poweractions/freebsd.h"
-	#include "platform/screen/screenplatformfreedesktop.h"
+	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_MAC)
 	#include "platform/events/platformmac.h"
 #else
