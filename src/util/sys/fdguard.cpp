@@ -28,78 +28,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "freebsd.h"
-#include <sys/ioctl.h>
-#include <errno.h>
+#include "fdguard.h"
+
 #include <fcntl.h>
-#include <dev/acpica/acpiio.h>
-#include <QMessageBox>
-#include <util/sys/fdguard.h>
+#include <unistd.h>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Util
 {
-namespace PowerActions
-{
-	QFuture<Platform::QueryChangeStateResult> FreeBSD::CanChangeState (Platform::State)
+	FDGuard::FDGuard (const char *file, int mode)
+	: FD_ { open (file, mode) }
 	{
-		QFutureInterface<QueryChangeStateResult> iface;
-
-		if (Util::FDGuard { "/dev/acpi", O_WRONLY })
-		{
-			const QueryChangeStateResult result { true, {} };
-			iface.reportFinished (&result);
-		}
-		else
-		{
-			const auto& msg = errno == EACCES ?
-					tr ("No permissions to write to %1. If you are in the %2 group, add "
-						"%3 to %4 and run %5 to apply the required permissions to %1.")
-						.arg ("<em>/dev/acpi</em>")
-						.arg ("<em>wheel</em>")
-						.arg ("<code>perm acpi 0664</code>")
-						.arg ("<em>/etc/devfs.conf</em>")
-						.arg ("<code>/etc/rc.d/devfs restart</code>") :
-					tr ("Unable to open %1 for writing.")
-						.arg ("<em>/dev/acpi</em>");
-			const QueryChangeStateResult result { false, msg };
-			iface.reportFinished (&result);
-		}
-
-		return iface.future ();
 	}
 
-	void FreeBSD::ChangeState (Platform::State state)
+	FDGuard::FDGuard (FDGuard && other)
+	: FD_ { other.FD_ }
 	{
-		const Util::FDGuard fd { "/dev/acpi", O_WRONLY };
-		if (!fd)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open /dev/acpi for writing, errno is:"
-					<< errno;
-			return;
-		}
-
-		int sleep_state = -1;
-		switch (state)
-		{
-		case State::Suspend:
-			sleep_state = 3;
-			break;
-		case State::Hibernate:
-			sleep_state = 4;
-			break;
-		default:
-			return;
-		}
-
-		const auto res = ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state);
-		if (res == -1)
-			qWarning () << Q_FUNC_INFO
-					<< "unable to perform ioctl, errno is:"
-					<< errno;
+		other.FD_ = -1;
 	}
-}
+
+	FDGuard::~FDGuard ()
+	{
+		if (FD_ >= 0)
+			close (FD_);
+	}
+
+	FDGuard::operator bool () const
+	{
+		return FD_ >= 0;
+	}
+
+	FDGuard::operator int () const
+	{
+		return FD_;
+	}
 }
 }
