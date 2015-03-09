@@ -30,11 +30,11 @@
 
 #include "freebsd.h"
 #include <sys/ioctl.h>
-#include <fcntl.h>
 #include <errno.h>
-#include <unistd.h>
+#include <fcntl.h>
 #include <dev/acpica/acpiio.h>
 #include <QMessageBox>
+#include <util/sys/fdguard.h>
 
 namespace LeechCraft
 {
@@ -42,45 +42,11 @@ namespace Liznoo
 {
 namespace PowerActions
 {
-	class FDGuard
-	{
-		int FD_;
-	public:
-		FDGuard (const char *file, int mode)
-		: FD_ { open (file, mode) }
-		{
-		}
-
-		FDGuard (const FDGuard&) = delete;
-
-		FDGuard (FDGuard&& other)
-		: FD_ { other.FD_ }
-		{
-			other.FD_ = -1;
-		}
-
-		~FDGuard ()
-		{
-			if (FD_ >= 0)
-				close (FD_);
-		}
-
-		explicit operator bool () const
-		{
-			return FD_ >= 0;
-		}
-
-		operator int () const
-		{
-			return FD_;
-		}
-	};
-
 	QFuture<Platform::QueryChangeStateResult> FreeBSD::CanChangeState (Platform::State)
 	{
 		QFutureInterface<QueryChangeStateResult> iface;
 
-		if (FDGuard { "/dev/acpi", O_WRONLY })
+		if (Util::FDGuard { "/dev/acpi", O_WRONLY })
 		{
 			const QueryChangeStateResult result { true, {} };
 			iface.reportFinished (&result);
@@ -106,7 +72,7 @@ namespace PowerActions
 
 	void FreeBSD::ChangeState (Platform::State state)
 	{
-		const FDGuard fd { "/dev/acpi", O_WRONLY };
+		const Util::FDGuard fd { "/dev/acpi", O_WRONLY };
 		if (!fd)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -124,9 +90,15 @@ namespace PowerActions
 		case State::Hibernate:
 			sleep_state = 4;
 			break;
+		default:
+			return;
 		}
-		if (fd && sleep_state > 0)
-			ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state); // this requires root privileges by default
+
+		const auto res = ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state);
+		if (res == -1)
+			qWarning () << Q_FUNC_INFO
+					<< "unable to perform ioctl, errno is:"
+					<< errno;
 	}
 }
 }

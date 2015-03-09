@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "ipfilterdialog.h"
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "banpeersdialog.h"
 
@@ -42,14 +43,15 @@ namespace BitTorrent
 	{
 		Ui_.setupUi (this);
 
-		QMap<Core::BanRange_t, bool> filter = Core::Instance ()->GetFilter ();
-		QList<Core::BanRange_t> keys = filter.keys ();
-		Q_FOREACH (Core::BanRange_t key, keys)
+		const auto& filter = Core::Instance ()->GetFilter ();
+		for (const auto& pair : Util::Stlize (filter))
 		{
-			QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Tree_);
+			const auto& key = pair.first;
+
+			const auto item = new QTreeWidgetItem (Ui_.Tree_);
 			item->setText (0, key.first);
 			item->setText (1, key.second);
-			bool block = filter [key];
+			bool block = pair.second;
 			item->setText (2, block ?
 					tr ("block") :
 					tr ("allow"));
@@ -59,9 +61,9 @@ namespace BitTorrent
 		on_Tree__currentItemChanged (0);
 	}
 
-	QList<QPair<Core::BanRange_t, bool>> IPFilterDialog::GetFilter () const
+	QList<QPair<BanRange_t, bool>> IPFilterDialog::GetFilter () const
 	{
-		QList<QPair<Core::BanRange_t, bool>> result;
+		QList<QPair<BanRange_t, bool>> result;
 		for (int i = 0, size = Ui_.Tree_->topLevelItemCount (); i < size; ++i)
 		{
 			QTreeWidgetItem *item = Ui_.Tree_->topLevelItem (i);

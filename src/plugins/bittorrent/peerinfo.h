@@ -33,7 +33,11 @@
 #include <memory>
 #include <QTime>
 #include <libtorrent/peer_info.hpp>
-#include <libtorrent/bitfield.hpp>
+
+namespace libtorrent
+{
+    struct peer_info;
+}
 
 namespace LeechCraft
 {

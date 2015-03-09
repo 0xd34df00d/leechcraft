@@ -28,16 +28,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "platformfreebsd.h"
-#include <QTimer>
+#include "fdguard.h"
+
+#include <fcntl.h>
+#include <unistd.h>
 
 namespace LeechCraft
 {
-namespace Liznoo
+namespace Util
 {
-	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
-	: PlatformLayer (proxy, parent)
+	FDGuard::FDGuard (const char *file, int mode)
+	: FD_ { open (file, mode) }
 	{
+	}
+
+	FDGuard::FDGuard (FDGuard&& other)
+	: FD_ { other.FD_ }
+	{
+		other.FD_ = -1;
+	}
+
+	FDGuard& FDGuard::operator= (FDGuard&& other)
+	{
+		swap (*this, other);
+
+		return *this;
+	}
+
+	FDGuard::~FDGuard ()
+	{
+		if (FD_ >= 0)
+			close (FD_);
+	}
+
+	FDGuard::operator bool () const
+	{
+		return FD_ >= 0;
+	}
+
+	FDGuard::operator int () const
+	{
+		return FD_;
+	}
+
+	void swap (FDGuard& g1, FDGuard& g2)
+	{
+		std::swap (g1.FD_, g2.FD_);
 	}
 }
 }

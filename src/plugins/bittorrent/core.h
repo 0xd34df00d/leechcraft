@@ -42,7 +42,6 @@
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/session_status.hpp>
-#include <libtorrent/session.hpp>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
 #include <util/tags/tagscompletionmodel.h>
@@ -80,6 +79,8 @@ namespace BitTorrent
 	class LiveStreamManager;
 	class SessionSettingsManager;
 	struct NewTorrentParams;
+
+	using BanRange_t = QPair<QString, QString>;
 
 	class Core : public QAbstractItemModel
 	{
@@ -328,7 +329,6 @@ namespace BitTorrent
 		void MakeTorrent (const NewTorrentParams&) const;
 		void SetExternalAddress (const QString&);
 		QString GetExternalAddress () const;
-		typedef QPair<QString, QString> BanRange_t;
 		void BanPeers (const BanRange_t&, bool = true);
 		void ClearFilter ();
 		QMap<BanRange_t, bool> GetFilter () const;

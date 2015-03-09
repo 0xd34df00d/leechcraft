@@ -31,6 +31,7 @@
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <QTimer>
+#include <libtorrent/session.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
@@ -349,7 +350,7 @@ namespace BitTorrent
 		Ui_.LabelExternalAddress_->
 			setText (Core::Instance ()->GetExternalAddress ());
 
-		libtorrent::cache_status cs = Core::Instance ()->GetCacheStats ();
+		const auto& cs = Core::Instance ()->GetCacheStats ();
 		Ui_.BlocksWritten_->setText (QString::number (cs.blocks_written));
 		Ui_.Writes_->setText (QString::number (cs.writes));
 		Ui_.WriteHitRatio_->
