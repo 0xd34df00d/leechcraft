@@ -28,16 +28,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "platformfreebsd.h"
-#include <QTimer>
+#pragma once
+
+#include "batteryplatform.h"
+
+class QTimer;
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
-	: PlatformLayer (proxy, parent)
+namespace Battery
+{
+	class FreeBSDPlatform : public BatteryPlatform
 	{
-	}
+		Q_OBJECT
+
+		QTimer * const Timer_;
+		int ACPIfd_;
+	public:
+		FreeBSDPlatform (QObject* = nullptr);
+	private slots:
+		void update ();
+	};
+}
 }
 }

@@ -25,6 +25,7 @@ set (SRCS
 	)
 
 set (FBSD_SRCS
+	platform/battery/freebsdplatform.cpp
 	platform/poweractions/freebsd.cpp
 	platform/events/platformfreebsd.cpp
 	)

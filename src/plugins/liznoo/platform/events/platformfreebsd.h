@@ -32,24 +32,14 @@
 
 #include "platformlayer.h"
 
-class QTimer;
-
 namespace LeechCraft
 {
 namespace Liznoo
 {
 	class PlatformFreeBSD : public PlatformLayer
 	{
-		Q_OBJECT
-
-		QTimer *Timer_;
-		int ACPIfd_;
 	public:
 		PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject* = 0);
-	private slots:
-		void update ();
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
 	};
 }
 }
