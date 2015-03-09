@@ -42,10 +42,17 @@ namespace Util
 	{
 	}
 
-	FDGuard::FDGuard (FDGuard && other)
+	FDGuard::FDGuard (FDGuard&& other)
 	: FD_ { other.FD_ }
 	{
 		other.FD_ = -1;
+	}
+
+	FDGuard& FDGuard::operator= (FDGuard&& other)
+	{
+		swap (*this, other);
+
+		return *this;
 	}
 
 	FDGuard::~FDGuard ()

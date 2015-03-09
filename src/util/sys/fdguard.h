@@ -43,8 +43,10 @@ namespace Util
 		FDGuard (const char *file, int mode);
 		FDGuard (const FDGuard&) = delete;
 		FDGuard (FDGuard&& other);
-
 		~FDGuard ();
+
+		FDGuard& operator= (const FDGuard&) = delete;
+		FDGuard& operator= (FDGuard&& other);
 
 		explicit operator bool () const;
 		operator int () const;
