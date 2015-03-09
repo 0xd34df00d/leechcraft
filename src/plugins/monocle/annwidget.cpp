@@ -70,8 +70,8 @@ namespace Monocle
 				SIGNAL (annotationSelected (QModelIndex)),
 				this,
 				SLOT (focusOnAnnotation (QModelIndex)));
-		connect (Ui_.AnnTree_->selectionModel (),
-				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+		connect (Ui_.AnnTree_,
+				SIGNAL (activated (QModelIndex)),
 				Mgr_,
 				SLOT (selectAnnotation (QModelIndex)));
 	}
