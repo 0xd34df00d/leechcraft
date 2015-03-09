@@ -27,70 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "packetextractor.h"
-#include <QtDebug>
-#include "exceptions.h"
-#include "headers.h"
+#pragma once
+
+#include <memory>
+#include "batteryplatform.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Liznoo
 {
-namespace Vader
+namespace WinAPI
 {
-namespace Proto
-{
-	bool PacketExtractor::MayGetPacket () const
-	{
-#ifdef PROTOCOL_LOGGING
-		qDebug () << Q_FUNC_INFO;
-#endif
-		if (Buffer_.isEmpty ())
-			return false;
-
-		try
-		{
-			QByteArray tmp { Buffer_ };
-			Header h { tmp };
-#ifdef PROTOCOL_LOGGING
-			qDebug () << h.DataLength_ << tmp.size ();
-#endif
-			if (h.DataLength_ > static_cast<quint32> (tmp.size ()))
-				return false;
-		}
-		catch (const TooShortBA&)
-		{
-			qDebug () << "too short bytearray";
-			return false;
-		}
-
-#ifdef PROTOCOL_LOGGING
-		qDebug () << "may get packet";
-#endif
-
-		return true;
-	}
-
-	HalfPacket PacketExtractor::GetPacket ()
-	{
-		Header h (Buffer_);
-		const QByteArray& data = Buffer_.left (h.DataLength_);
-		if (h.DataLength_)
-			Buffer_ = Buffer_.mid (h.DataLength_);
-		return { h, data };
-	}
-
-	void PacketExtractor::Clear ()
-	{
-		Buffer_.clear ();
-	}
-
-	PacketExtractor& PacketExtractor::operator+= (const QByteArray& ba)
-	{
-		Buffer_ += ba;
-		return *this;
-	}
+	class FakeQWidgetWinAPI;
+	using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
 }
+
+namespace Battery
+{
+	class WinAPIPlatform : public BatteryPlatform
+	{
+		Q_OBJECT
+
+		const WinAPI::FakeQWidgetWinAPI_ptr Widget_;
+	public:
+		WinAPIPlatform (const WinAPI::FakeQWidgetWinAPI_ptr&, QObject* = nullptr);
+	private slots:
+		void handleBatteryStateChanged (int newPercentage);
+	};
 }
 }
 }

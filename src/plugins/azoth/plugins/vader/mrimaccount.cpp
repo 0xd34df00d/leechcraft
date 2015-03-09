@@ -31,6 +31,7 @@
 #include <QDataStream>
 #include <QUrl>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "proto/connection.h"
 #include "proto/message.h"
@@ -106,6 +107,10 @@ namespace Vader
 				SIGNAL (contactAdded (quint32, quint32)),
 				this,
 				SLOT (handleContactAdded (quint32, quint32)));
+		connect (Conn_,
+				SIGNAL (contactAdditionError (quint32, Proto::ContactAck)),
+				this,
+				SLOT (handleContactAdditionError (quint32, Proto::ContactAck)));
 		connect (Conn_,
 				SIGNAL (gotUserTune (QString, QString)),
 				this,
@@ -499,6 +504,46 @@ namespace Vader
 
 		if (!existed)
 			Buddies_ [info.Email_]->SetGaveSubscription (false);
+	}
+
+	void MRIMAccount::handleContactAdditionError (quint32 seq, Proto::ContactAck ack)
+	{
+		qDebug () << Q_FUNC_INFO << GetAccountName () << static_cast<quint32> (ack);
+		if (!PendingAdditions_.contains (seq))
+			return;
+
+		auto reason = tr ("unknown");
+		switch (ack)
+		{
+		case Proto::ContactAck::Error:
+		case Proto::ContactAck::IntErr:
+			reason = tr ("server error");
+			break;
+		case Proto::ContactAck::NoSuchUser:
+			reason = tr ("no such user");
+			break;
+		case Proto::ContactAck::InvalidInfo:
+			reason = tr ("invalid user information");
+			break;
+		case Proto::ContactAck::UserExists:
+			reason = tr ("user exists already in contact list");
+			break;
+		case Proto::ContactAck::GroupLimit:
+			reason = tr ("group limit exceeded");
+			break;
+		case Proto::ContactAck::Success:
+			break;
+		}
+
+		const auto& info = PendingAdditions_.take (seq);
+		const auto& e = Util::MakeNotification ("Azoth Vader",
+				tr ("Unable to add contact %1: %2.")
+					.arg (info.Email_)
+					.arg (reason),
+				PCritical_);
+
+		const auto& proxy = Core::Instance ().GetCoreProxy ();
+		proxy->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleGotUserInfoError (const QString& id,

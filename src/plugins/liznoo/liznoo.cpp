@@ -58,7 +58,9 @@
 	#include "platform/screen/freedesktop.h"
 	#include "platform/upower/dbusthread.h"
 #elif defined(Q_OS_WIN32)
+	#include "platform/battery/winapiplatform.h"
 	#include "platform/events/platformwinapi.h"
+	#include "platform/winapi/fakeqwidgetwinapi.h"
 #elif defined(Q_OS_FREEBSD)
 	#include "platform/battery/freebsdplatform.h"
 	#include "platform/events/platformfreebsd.h"
@@ -101,7 +103,10 @@ namespace Liznoo
 
 		dbusThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
-		PL_ = std::make_shared<PlatformWinAPI> (Proxy_);
+		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
+
+		PL_ = std::make_shared<PlatformWinAPI> (widget, Proxy_);
+		BatteryPlatform_ = std::make_shared<Battery::WinAPIPlatform> (widget);
 #elif defined(Q_OS_FREEBSD)
 		PL_ = std::make_shared<PlatformFreeBSD> (Proxy_);
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();

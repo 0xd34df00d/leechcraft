@@ -50,7 +50,7 @@ namespace Xoox
 	: QWidget (parent)
 	, Client_ (client)
 	, BobManager_ (client->findExtension<XMPPBobManager> ())
-	, FB_ (FormBuilder (QString (), BobManager_))
+	, FB_ ({}, BobManager_)
 	, Widget_ (0)
 	, State_ (State::Idle)
 	{
@@ -61,9 +61,9 @@ namespace Xoox
 				this,
 				SLOT (handleError (QXmppClient::Error)));
 		connect (Client_,
-				SIGNAL (iqReceived (const QXmppIq&)),
+				SIGNAL (iqReceived (QXmppIq)),
 				this,
-				SLOT (handleIqReceived (const QXmppIq&)));
+				SLOT (handleIqReceived (QXmppIq)));
 	}
 
 	QString RegFormHandlerWidget::GetUser () const
@@ -93,7 +93,7 @@ namespace Xoox
 		case State::AwaitingUserInput:
 			if (!Widget_)
 				return false;
-			for (QLineEdit *edit : Widget_->findChildren<QLineEdit*> ())
+			for (const auto edit : Widget_->findChildren<QLineEdit*> ())
 				if (edit->text ().isEmpty () && edit->property ("Azoth/Xoox/IsRequired").toBool ())
 					return false;
 			return true;
@@ -122,7 +122,7 @@ namespace Xoox
 		queryElem.setAttribute ("xmlns", NsRegister);
 
 		QXmppIq iq;
-		iq.setExtensions (QXmppElementList () << queryElem);
+		iq.setExtensions ({ queryElem });
 		if (!jid.isEmpty ())
 			iq.setTo (jid);
 		Client_->sendPacket (iq);
@@ -140,7 +140,7 @@ namespace Xoox
 		switch (FormType_)
 		{
 		case FTLegacy:
-			Q_FOREACH (const QXmppElement& elem, LFB_.GetFilledChildren ())
+			for (const auto& elem : LFB_.GetFilledChildren ())
 				queryElem.appendChild (elem);
 			break;
 		case FTNew:
@@ -152,7 +152,7 @@ namespace Xoox
 			}
 			QDomDocument dom;
 			dom.setContent (arr);
-			queryElem.appendChild (QXmppElement (dom.documentElement ()));
+			queryElem.appendChild (dom.documentElement ());
 			break;
 		}
 		}
@@ -160,7 +160,7 @@ namespace Xoox
 		QXmppIq iq (QXmppIq::Set);
 		if (!ReqJID_.isEmpty ())
 			iq.setTo (ReqJID_);
-		iq.setExtensions (QXmppElementList () << queryElem);
+		iq.setExtensions ({ queryElem });
 		Client_->sendPacket (iq);
 		LastStanzaID_ = iq.id ();
 
@@ -171,11 +171,9 @@ namespace Xoox
 	{
 		auto widgets = findChildren<QWidget*> ();
 		QList<QPointer<QWidget>> pWidgets;
-		std::transform (widgets.begin (), widgets.end (), std::back_inserter (pWidgets),
-				[] (QWidget *w) { return QPointer<QWidget> (w); });
-		Q_FOREACH (auto pWidget, pWidgets)
-			if (pWidget)
-				delete pWidget;
+		std::copy (widgets.begin (), widgets.end (), std::back_inserter (pWidgets));
+		for (const auto pWidget : pWidgets)
+			delete pWidget;
 	}
 
 	void RegFormHandlerWidget::ShowMessage (const QString& msg)
@@ -203,15 +201,13 @@ namespace Xoox
 		}
 
 		QXmppElement queryElem;
-		for (const QXmppElement& elem : iq.extensions ())
-		{
+		for (const auto& elem : iq.extensions ())
 			if (elem.tagName () == "query" &&
 					elem.attribute ("xmlns") == NsRegister)
 			{
 				queryElem = elem;
 				break;
 			}
-		}
 
 		if (queryElem.isNull ())
 		{
@@ -222,7 +218,7 @@ namespace Xoox
 
 		Clear ();
 
-		const QXmppElement& formElem = queryElem.firstChildElement ("x");
+		const auto& formElem = queryElem.firstChildElement ("x");
 		if ((formElem.attribute ("xmlns") == NsRegister ||
 					formElem.attribute ("xmlns") == "jabber:x:data") &&
 				formElem.attribute ("type") == "form")
@@ -247,9 +243,9 @@ namespace Xoox
 		}
 
 		layout ()->addWidget (Widget_);
-		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ())
+		for (const auto edit : Widget_->findChildren<QLineEdit*> ())
 			connect (edit,
-					SIGNAL (textChanged (const QString&)),
+					SIGNAL (textChanged (QString)),
 					this,
 					SIGNAL (completeChanged ()));
 
@@ -272,7 +268,7 @@ namespace Xoox
 		}
 
 		QString msg;
-		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
+		for (const auto& elem : iq.extensions ())
 		{
 			if (elem.tagName () != "error")
 				continue;

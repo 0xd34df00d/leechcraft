@@ -27,70 +27,44 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "packetextractor.h"
+#include "winapiplatform.h"
 #include <QtDebug>
-#include "exceptions.h"
-#include "headers.h"
+#include "../winapi/fakeqwidgetwinapi.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Liznoo
 {
-namespace Vader
+namespace Battery
 {
-namespace Proto
-{
-	bool PacketExtractor::MayGetPacket () const
+	WinAPIPlatform::WinAPIPlatform (const WinAPI::FakeQWidgetWinAPI_ptr& widget, QObject *parent)
+	: BatteryPlatform { parent }
+	, Widget_ { widget }
 	{
-#ifdef PROTOCOL_LOGGING
-		qDebug () << Q_FUNC_INFO;
-#endif
-		if (Buffer_.isEmpty ())
-			return false;
-
-		try
-		{
-			QByteArray tmp { Buffer_ };
-			Header h { tmp };
-#ifdef PROTOCOL_LOGGING
-			qDebug () << h.DataLength_ << tmp.size ();
-#endif
-			if (h.DataLength_ > static_cast<quint32> (tmp.size ()))
-				return false;
-		}
-		catch (const TooShortBA&)
-		{
-			qDebug () << "too short bytearray";
-			return false;
-		}
-
-#ifdef PROTOCOL_LOGGING
-		qDebug () << "may get packet";
-#endif
-
-		return true;
+		connect (Widget_.get (),
+				SIGNAL (batteryStateChanged (int)),
+				this,
+				SLOT (handleBatteryStateChanged (int)));
 	}
 
-	HalfPacket PacketExtractor::GetPacket ()
+	void WinAPIPlatform::handleBatteryStateChanged (int newPercentage)
 	{
-		Header h (Buffer_);
-		const QByteArray& data = Buffer_.left (h.DataLength_);
-		if (h.DataLength_)
-			Buffer_ = Buffer_.mid (h.DataLength_);
-		return { h, data };
-	}
+		//TODO(DZhon): Rewrite using Win32_Battery WMI Class.
 
-	void PacketExtractor::Clear ()
-	{
-		Buffer_.clear ();
-	}
+		qDebug () << "New battery state detected" << ": [" << newPercentage << "]";
 
-	PacketExtractor& PacketExtractor::operator+= (const QByteArray& ba)
-	{
-		Buffer_ += ba;
-		return *this;
+		SYSTEM_POWER_STATUS powerStatus;
+		BOOL retCode = GetSystemPowerStatus (&powerStatus);
+
+		Q_ASSERT (retCode);
+
+		BatteryInfo info;
+
+		info.TimeToEmpty_ = std::max<DWORD> (powerStatus.BatteryLifeTime, 0);
+		info.Percentage_ = newPercentage;
+
+		emit batteryInfoUpdated (info);
 	}
-}
 }
 }
 }
