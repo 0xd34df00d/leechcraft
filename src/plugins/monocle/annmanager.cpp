@@ -214,6 +214,10 @@ namespace Monocle
 			return;
 
 		CenterOn (ann);
+
+		if (Annotations_.indexOf (ann) == CurrentAnn_)
+			return;
+
 		SelectAnnotation (ann);
 	}
 }
