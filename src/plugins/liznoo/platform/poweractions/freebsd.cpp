@@ -124,9 +124,11 @@ namespace PowerActions
 		case State::Hibernate:
 			sleep_state = 4;
 			break;
+		default:
+			return;
 		}
-		if (fd && sleep_state > 0)
-			ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state); // this requires root privileges by default
+
+		const auto res = ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state);
 	}
 }
 }
