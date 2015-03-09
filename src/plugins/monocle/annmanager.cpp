@@ -176,7 +176,7 @@ namespace Monocle
 
 	void AnnManager::selectPrev ()
 	{
-		if (CurrentAnn_ == -1 || Annotations_.size () < 2)
+		if (Annotations_.size () < 2)
 			return;
 
 		if (--CurrentAnn_ < 0)
@@ -191,10 +191,10 @@ namespace Monocle
 
 	void AnnManager::selectNext ()
 	{
-		if (CurrentAnn_ == -1 || Annotations_.size () < 2)
+		if (Annotations_.size () < 2)
 			return;
 
-		if (++CurrentAnn_ >= Annotations_.size ())
+		if (CurrentAnn_ == -1 || ++CurrentAnn_ >= Annotations_.size ())
 			CurrentAnn_ = 0;
 
 		const auto& ann = Annotations_.at (CurrentAnn_);
