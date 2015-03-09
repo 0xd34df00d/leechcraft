@@ -48,6 +48,8 @@ namespace Util
 
 		explicit operator bool () const;
 		operator int () const;
+
+		friend void swap (FDGuard& g1, FDGuard& g2);
 	};
 }
 }

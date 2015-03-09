@@ -63,5 +63,10 @@ namespace Util
 	{
 		return FD_;
 	}
+
+	void swap (FDGuard& g1, FDGuard& g2)
+	{
+		std::swap (g1.FD_, g2.FD_);
+	}
 }
 }
