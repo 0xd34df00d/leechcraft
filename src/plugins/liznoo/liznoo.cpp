@@ -60,6 +60,7 @@
 #elif defined(Q_OS_WIN32)
 	#include "platform/events/platformwinapi.h"
 #elif defined(Q_OS_FREEBSD)
+	#include "platform/battery/freebsdplatform.h"
 	#include "platform/events/platformfreebsd.h"
 	#include "platform/poweractions/freebsd.h"
 	#include "platform/screen/freedesktop.h"
@@ -104,6 +105,7 @@ namespace Liznoo
 #elif defined(Q_OS_FREEBSD)
 		PL_ = std::make_shared<PlatformFreeBSD> (Proxy_);
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
+		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
 		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
 		PL_ = std::make_shared<PlatformMac> (Proxy_);
