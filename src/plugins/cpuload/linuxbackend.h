@@ -43,8 +43,6 @@ namespace CpuLoad
 
 	class LinuxBackend : public Backend
 	{
-		Q_OBJECT
-
 		QVector<QMap<LoadPriority, LoadTypeInfo>> Loads_;
 
 		Cummulative_t LastCummulative_;
