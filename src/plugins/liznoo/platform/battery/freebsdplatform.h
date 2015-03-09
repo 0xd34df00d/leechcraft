@@ -30,6 +30,7 @@
 
 #pragma once
 
+#include <util/sys/fdguard.h>
 #include "batteryplatform.h"
 
 class QTimer;
@@ -45,7 +46,7 @@ namespace Battery
 		Q_OBJECT
 
 		QTimer * const Timer_;
-		int ACPIfd_;
+		const Util::FDGuard ACPIfd_;
 	public:
 		FreeBSDPlatform (QObject* = nullptr);
 	private slots:

@@ -44,9 +44,8 @@ namespace Battery
 	FreeBSDPlatform::FreeBSDPlatform (QObject *parent)
 	: BatteryPlatform { parent }
 	, Timer_ { new QTimer { this } }
+	, ACPIfd_ { "/dev/acpi", O_RDONLY }
 	{
-		ACPIfd_ = open ("/dev/acpi", O_RDONLY);
-
 		Timer_->start (10 * 1000);
 		connect (Timer_,
 				SIGNAL (timeout ()),
@@ -57,7 +56,7 @@ namespace Battery
 	void FreeBSDPlatform::update ()
 	{
 		int batteries = 0;
-		if (ACPIfd_ <= 0)
+		if (!ACPIfd_)
 			return;
 
 		ioctl (ACPIfd_, ACPIIO_BATT_GET_UNITS, &batteries);
