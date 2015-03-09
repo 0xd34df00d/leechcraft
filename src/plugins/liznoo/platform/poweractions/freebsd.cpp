@@ -129,6 +129,10 @@ namespace PowerActions
 		}
 
 		const auto res = ioctl (fd, ACPIIO_REQSLPSTATE, &sleep_state);
+		if (res == -1)
+			qWarning () << Q_FUNC_INFO
+					<< "unable to perform ioctl, errno is:"
+					<< errno;
 	}
 }
 }
