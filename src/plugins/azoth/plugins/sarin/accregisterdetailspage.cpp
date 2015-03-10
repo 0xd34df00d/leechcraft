@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "accregisterdetailspage.h"
+#include <random>
 #include <QtDebug>
 
 #if USE_NACL
