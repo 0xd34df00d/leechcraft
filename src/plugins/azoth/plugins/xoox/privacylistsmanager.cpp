@@ -357,8 +357,32 @@ namespace Xoox
 		return true;
 	}
 
+	void PrivacyListsManager::HandleListQueryError (const QXmppIq& iq)
+	{
+		const auto& error = iq.error ();
+		qWarning () << Q_FUNC_INFO
+				<< "cannot fetch lists:"
+				<< error.code ()
+				<< error.condition ()
+				<< error.text ();
+
+		auto text = tr ("Cannot fetch lists.") +
+				ClientConnectionErrorMgr::HandleErrorCondition (error.condition ());
+		if (!error.text ().isEmpty ())
+			text += " " + error.text ();
+		emit listError (text);
+	}
+
 	void PrivacyListsManager::HandleListQueryResult (const QDomElement& elem)
 	{
+		if (elem.attribute ("type") == "error")
+		{
+			QXmppIq iq;
+			iq.parse (elem);
+			HandleListQueryError (iq);
+			return;
+		}
+
 		const QDomElement& query = elem.firstChildElement ("query");
 		const QString& active = query.firstChildElement ("active").attribute ("name");
 		const QString& def = query.firstChildElement ("default").attribute ("name");
