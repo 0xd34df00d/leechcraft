@@ -77,6 +77,7 @@ namespace Xoox
 
 		void handleGotLists (const QStringList&, const QString&, const QString&);
 		void handleGotList (const PrivacyList&);
+		void handleError (const QString&);
 	};
 }
 }

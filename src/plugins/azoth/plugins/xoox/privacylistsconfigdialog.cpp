@@ -52,6 +52,11 @@ namespace Xoox
 
 		ReinitModel ();
 
+		connect (Manager_,
+				SIGNAL (listError (QString)),
+				this,
+				SLOT (handleError (QString)));
+
 		QueryLists ();
 	}
 
@@ -367,6 +372,13 @@ namespace Xoox
 
 		for (const auto& item : items)
 			Model_->appendRow (ToRow (item));
+	}
+
+	void PrivacyListsConfigDialog::handleError (const QString& text)
+	{
+		QMessageBox::critical (this,
+				"LeechCraft",
+				tr ("Error fetching lists.") + " " + text);
 	}
 }
 }
