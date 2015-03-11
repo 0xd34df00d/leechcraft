@@ -149,7 +149,7 @@ namespace Xoox
 	{
 		QDialog::accept ();
 
-		Q_FOREACH (const PrivacyList& pl, Lists_.values ())
+		for (const auto& pl : Lists_)
 			Manager_->SetList (pl);
 
 		Manager_->ActivateList (Ui_.ActiveList_->currentText (),
