@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSCONFIGDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSCONFIGDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_privacylistsconfigdialog.h"
 #include "privacylistsmanager.h"
@@ -51,7 +51,7 @@ namespace Xoox
 		Ui::PrivacyListsConfigDialog Ui_;
 		PrivacyListsManager *Manager_;
 		QMap<QString, PrivacyList> Lists_;
-		
+
 		QStandardItemModel *Model_;
 	public:
 		PrivacyListsConfigDialog (PrivacyListsManager*, QWidget* = 0);
@@ -74,11 +74,10 @@ namespace Xoox
 		void on_RemoveRule__released ();
 		void on_MoveUp__released ();
 		void on_MoveDown__released ();
+
 		void handleGotLists (const QStringList&, const QString&, const QString&);
 		void handleGotList (const PrivacyList&);
 	};
 }
 }
 }
-
-#endif

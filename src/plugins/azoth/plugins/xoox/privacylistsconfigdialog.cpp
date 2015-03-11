@@ -322,9 +322,9 @@ namespace Xoox
 			const QString& active, const QString& def)
 	{
 		disconnect (Manager_,
-				SIGNAL (gotLists (const QStringList&, const QString&, const QString&)),
+				SIGNAL (gotLists (QStringList, QString, QString)),
 				this,
-				SLOT (handleGotLists (const QStringList&, const QString&, const QString&)));
+				SLOT (handleGotLists (QStringList, QString, QString)));
 
 		Ui_.ConfigureList_->clear ();
 		Ui_.ConfigureList_->addItems (lists);
@@ -340,7 +340,7 @@ namespace Xoox
 		if (idx >= 0)
 			Ui_.DefaultList_->setCurrentIndex (idx);
 
-		Ui_.StatusLabel_->setText (QString ());
+		Ui_.StatusLabel_->setText ({});
 
 		if (!lists.isEmpty ())
 			QueryList (lists.at (0));
@@ -349,10 +349,10 @@ namespace Xoox
 	void PrivacyListsConfigDialog::handleGotList (const PrivacyList& list)
 	{
 		disconnect (Manager_,
-				SIGNAL (gotList (const PrivacyList&)),
+				SIGNAL (gotList (PrivacyList)),
 				this,
-				SLOT (handleGotList (const PrivacyList&)));
-		Ui_.StatusLabel_->setText (QString ());
+				SLOT (handleGotList (PrivacyList)));
+		Ui_.StatusLabel_->setText ({});
 
 		ReinitModel ();
 

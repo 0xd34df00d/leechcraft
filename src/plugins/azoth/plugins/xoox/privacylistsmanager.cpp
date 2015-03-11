@@ -30,6 +30,7 @@
 #include "privacylistsmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
+#include "clientconnectionerrormgr.h"
 
 namespace LeechCraft
 {
@@ -214,9 +215,9 @@ namespace Xoox
 		listElem.setAttribute ("name", Name_);
 
 		int i = 1;
-		Q_FOREACH (const PrivacyListItem& item, Items_)
+		for (const auto& item : Items_)
 		{
-			QXmppElement itemElem = item.ToXML ();
+			auto itemElem = item.ToXML ();
 			itemElem.setAttribute ("order", QString::number (i++));
 			listElem.appendChild (itemElem);
 		}
@@ -251,7 +252,7 @@ namespace Xoox
 		query.setAttribute ("xmlns", NsPrivacy);
 
 		QXmppIq iq;
-		iq.setExtensions (QXmppElementList () << query);
+		iq.setExtensions ({ query });
 
 		ID2Type_ [iq.id ()] = QTQueryLists;
 
@@ -270,7 +271,7 @@ namespace Xoox
 		query.appendChild (list);
 
 		QXmppIq iq;
-		iq.setExtensions (QXmppElementList () << query);
+		iq.setExtensions ({ query });
 
 		ID2Type_ [iq.id ()] = QTGetList;
 
@@ -290,7 +291,7 @@ namespace Xoox
 		query.appendChild (list);
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (QXmppElementList () << query);
+		iq.setExtensions ({ query });
 
 		client ()->sendPacket (iq);
 
@@ -306,7 +307,7 @@ namespace Xoox
 		query.appendChild (list.ToXML ());
 
 		QXmppIq iq (QXmppIq::Set);
-		iq.setExtensions (QXmppElementList () << query);
+		iq.setExtensions ({ query });
 
 		client ()->sendPacket (iq);
 
@@ -324,7 +325,7 @@ namespace Xoox
 
 	QStringList PrivacyListsManager::discoveryFeatures () const
 	{
-		return QStringList (NsPrivacy);
+		return { NsPrivacy };
 	}
 
 	bool PrivacyListsManager::handleStanza (const QDomElement& elem)
@@ -383,12 +384,12 @@ namespace Xoox
 			return;
 		}
 
-		const QDomElement& query = elem.firstChildElement ("query");
-		const QString& active = query.firstChildElement ("active").attribute ("name");
-		const QString& def = query.firstChildElement ("default").attribute ("name");
+		const auto& query = elem.firstChildElement ("query");
+		const auto& active = query.firstChildElement ("active").attribute ("name");
+		const auto& def = query.firstChildElement ("default").attribute ("name");
 
 		QStringList lists;
-		QDomElement listElem = query.firstChildElement ("list");
+		auto listElem = query.firstChildElement ("list");
 		while (!listElem.isNull ())
 		{
 			lists << listElem.attribute ("name");
@@ -404,7 +405,7 @@ namespace Xoox
 
 	void PrivacyListsManager::HandleList (const QDomElement& elem)
 	{
-		const QDomElement& query = elem.firstChildElement ("query");
+		const auto& query = elem.firstChildElement ("query");
 
 		PrivacyList list;
 		list.Parse (query.firstChildElement ("list"));
