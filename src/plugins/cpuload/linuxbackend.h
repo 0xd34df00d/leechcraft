@@ -41,10 +41,8 @@ namespace CpuLoad
 {
 	typedef QVector<QVector<long>> Cummulative_t;
 
-	class LinuxBackend : public Backend
+	class LinuxBackend final : public Backend
 	{
-		Q_OBJECT
-
 		QVector<QMap<LoadPriority, LoadTypeInfo>> Loads_;
 
 		Cummulative_t LastCummulative_;
