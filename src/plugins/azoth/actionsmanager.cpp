@@ -886,7 +886,7 @@ namespace Azoth
 	void ActionsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
 		auto actions = Entry2Actions_.take (entry);
-		Q_FOREACH (QAction *action, actions.values ())
+		for (auto action : actions)
 		{
 			Action2Areas_.remove (action);
 			delete action;
