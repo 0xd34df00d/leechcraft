@@ -58,9 +58,9 @@ namespace Xoox
 		Ui_.StatusLabel_->setText (tr ("Fetching names of privacy lists..."));
 
 		connect (Manager_,
-				SIGNAL (gotLists (const QStringList&, const QString&, const QString&)),
+				SIGNAL (gotLists (QStringList, QString, QString)),
 				this,
-				SLOT (handleGotLists (const QStringList&, const QString&, const QString&)));
+				SLOT (handleGotLists (QStringList, QString, QString)));
 
 		Manager_->QueryLists ();
 	}
@@ -76,9 +76,9 @@ namespace Xoox
 		Ui_.StatusLabel_->setText (tr ("Fetching list %1...").arg (list));
 
 		connect (Manager_,
-				SIGNAL (gotList (const PrivacyList&)),
+				SIGNAL (gotList (PrivacyList)),
 				this,
-				SLOT (handleGotList (const PrivacyList&)));
+				SLOT (handleGotList (PrivacyList)));
 
 		Manager_->QueryList (list);
 	}
