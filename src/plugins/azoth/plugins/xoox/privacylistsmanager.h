@@ -144,6 +144,8 @@ namespace Xoox
 		void gotLists (const QStringList&, const QString&, const QString&);
 		void gotList (const PrivacyList&);
 		void currentListFetched (const PrivacyList&);
+
+		void listError (const QString&);
 	};
 }
 }
