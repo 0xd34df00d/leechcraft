@@ -358,14 +358,14 @@ namespace Xoox
 
 		Lists_ [list.GetName ()] = list;
 
-		QList<PrivacyListItem> items = list.GetItems ();
+		auto items = list.GetItems ();
 		if (!items.isEmpty () && items.last ().GetType () == PrivacyListItem::TNone)
 		{
-			const PrivacyListItem& item = items.takeLast ();
+			const auto& item = items.takeLast ();
 			Ui_.DefaultPolicy_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ? 0 : 1);
 		}
 
-		Q_FOREACH (const PrivacyListItem& item, items)
+		for (const auto& item : items)
 			Model_->appendRow (ToRow (item));
 	}
 }
