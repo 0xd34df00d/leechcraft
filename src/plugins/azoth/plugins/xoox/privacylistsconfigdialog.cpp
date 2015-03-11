@@ -45,6 +45,8 @@ namespace Xoox
 	, Manager_ (mgr)
 	, Model_ (new QStandardItemModel (this))
 	{
+		Model_->setHorizontalHeaderLabels ({ tr ("Type"), tr ("Value"), tr ("Action"), tr ("Stanzas") });
+
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (Model_);
 
@@ -92,10 +94,8 @@ namespace Xoox
 
 	void PrivacyListsConfigDialog::ReinitModel ()
 	{
-		Model_->clear ();
-		QStringList headers (tr ("Type"));
-		headers << tr ("Value") << tr ("Action") << tr ("Stanzas");
-		Model_->setHorizontalHeaderLabels (headers);
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
 	}
 
 	QList<QStandardItem*> PrivacyListsConfigDialog::ToRow (const PrivacyListItem& item) const
