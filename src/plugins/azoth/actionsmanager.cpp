@@ -892,8 +892,8 @@ namespace Azoth
 			delete action;
 		}
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookEntryActionsRemoved (proxy, entry->GetQObject ());
+		emit hookEntryActionsRemoved (std::make_shared<Util::DefaultHookProxy> (),
+				entry->GetQObject ());
 	}
 
 	QString ActionsManager::GetReason (const QString&, const QString& text)
@@ -906,7 +906,7 @@ namespace Azoth
 	void ActionsManager::ManipulateAuth (const QString& id, const QString& text,
 			std::function<void (IAuthable*, const QString&)> func)
 	{
-		QAction *action = qobject_cast<QAction*> (sender ());
+		const auto action = qobject_cast<QAction*> (sender ());
 		if (!action)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -915,10 +915,8 @@ namespace Azoth
 			return;
 		}
 
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAuthable *authable =
-				qobject_cast<IAuthable*> (entry->GetQObject ());
+		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+		const auto authable = qobject_cast<IAuthable*> (entry->GetQObject ());
 		if (!authable)
 		{
 			qWarning () << Q_FUNC_INFO
