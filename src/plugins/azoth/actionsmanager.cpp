@@ -89,9 +89,7 @@ typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)> SingleEntryActorWManager_f;
 typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
 
-struct None
-{
-};
+struct None {};
 
 typedef boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f> EntryActor_f;
 Q_DECLARE_METATYPE (EntryActor_f);
@@ -896,43 +894,46 @@ namespace Azoth
 				entry->GetQObject ());
 	}
 
-	QString ActionsManager::GetReason (const QString&, const QString& text)
+	namespace
 	{
-		return QInputDialog::getText (0,
-					tr ("Enter reason"),
-					text);
-	}
-
-	void ActionsManager::ManipulateAuth (const QString& id, const QString& text,
-			std::function<void (IAuthable*, const QString&)> func)
-	{
-		const auto action = qobject_cast<QAction*> (sender ());
-		if (!action)
+		QString GetReason (const QString&, const QString& text)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
+			return QInputDialog::getText (0,
+						ActionsManager::tr ("Enter reason"),
+						text);
 		}
 
-		const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-		const auto authable = qobject_cast<IAuthable*> (entry->GetQObject ());
-		if (!authable)
+		void ManipulateAuth (const QString& id, const QString& text, QObject *sender,
+				std::function<void (IAuthable*, const QString&)> func)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetQObject ()
-					<< "doesn't implement IAuthable";
-			return;
-		}
-
-		QString reason;
-		if (action->property ("Azoth/WithReason").toBool ())
-		{
-			reason = GetReason (id, text.arg (entry->GetEntryName ()));
-			if (reason.isEmpty ())
+			const auto action = qobject_cast<QAction*> (sender);
+			if (!action)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< sender
+						<< "is not a QAction";
 				return;
+			}
+
+			const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+			const auto authable = qobject_cast<IAuthable*> (entry->GetQObject ());
+			if (!authable)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< entry->GetQObject ()
+						<< "doesn't implement IAuthable";
+				return;
+			}
+
+			QString reason;
+			if (action->property ("Azoth/WithReason").toBool ())
+			{
+				reason = GetReason (id, text.arg (entry->GetEntryName ()));
+				if (reason.isEmpty ())
+					return;
+			}
+			func (authable, reason);
 		}
-		func (authable, reason);
 	}
 
 	void ActionsManager::CreateActionsForEntry (ICLEntry *entry)
@@ -1456,6 +1457,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("grantauth",
 				tr ("Enter reason for granting authorization to %1:"),
+				sender (),
 				&IAuthable::ResendAuth);
 	}
 
@@ -1463,6 +1465,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("revokeauth",
 				tr ("Enter reason for revoking authorization from %1:"),
+				sender (),
 				&IAuthable::RevokeAuth);
 	}
 
@@ -1470,6 +1473,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("unsubscribe",
 				tr ("Enter reason for unsubscribing from %1:"),
+				sender (),
 				&IAuthable::Unsubscribe);
 	}
 
@@ -1477,6 +1481,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("rerequestauth",
 				tr ("Enter reason for rerequesting authorization from %1:"),
+				sender (),
 				&IAuthable::RerequestAuth);
 	}
 
