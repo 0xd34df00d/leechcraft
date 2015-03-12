@@ -1537,38 +1537,6 @@ namespace Azoth
 		boost::apply_visitor (EntryCallVisitor { entries, this }, function);
 	}
 
-	void ActionsManager::handleActionGrantAuthTriggered()
-	{
-		ManipulateAuth ("grantauth",
-				tr ("Enter reason for granting authorization to %1:"),
-				sender (),
-				&IAuthable::ResendAuth);
-	}
-
-	void ActionsManager::handleActionRevokeAuthTriggered ()
-	{
-		ManipulateAuth ("revokeauth",
-				tr ("Enter reason for revoking authorization from %1:"),
-				sender (),
-				&IAuthable::RevokeAuth);
-	}
-
-	void ActionsManager::handleActionUnsubscribeTriggered ()
-	{
-		ManipulateAuth ("unsubscribe",
-				tr ("Enter reason for unsubscribing from %1:"),
-				sender (),
-				&IAuthable::Unsubscribe);
-	}
-
-	void ActionsManager::handleActionRerequestTriggered ()
-	{
-		ManipulateAuth ("rerequestauth",
-				tr ("Enter reason for rerequesting authorization from %1:"),
-				sender (),
-				&IAuthable::RerequestAuth);
-	}
-
 	void ActionsManager::handleActionNotifyChangesState ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
