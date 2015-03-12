@@ -932,6 +932,28 @@ namespace Azoth
 		}
 	}
 
+	struct Entrifier
+	{
+		const QVariant Entry_;
+
+		Entrifier (const QVariant& entry)
+		: Entry_ { entry }
+		{
+		}
+
+		template<typename T>
+		void operator() (const T& actions)
+		{
+			for (const auto act : actions)
+			{
+				act->setProperty ("Azoth/Entry", Entry_);
+				act->setParent (Entry_.value<ICLEntry*> ()->GetQObject ());
+				if (const auto menu = act->menu ())
+					(*this) (menu->actions ());
+			}
+		}
+	};
+
 	void ActionsManager::CreateActionsForEntry (ICLEntry *entry)
 	{
 		if (!entry)
@@ -1332,28 +1354,7 @@ namespace Azoth
 		Entry2Actions_ [entry] ["sep_afterrostermodify"] = sep;
 		Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 
-		struct Entrifier
-		{
-			QVariant Entry_;
-
-			Entrifier (const QVariant& entry)
-			: Entry_ (entry)
-			{
-			}
-
-			void Do (const QList<QAction*>& actions)
-			{
-				Q_FOREACH (QAction *act, actions)
-				{
-					act->setProperty ("Azoth/Entry", Entry_);
-					act->setParent (Entry_.value<ICLEntry*> ()->GetQObject ());
-					QMenu *menu = act->menu ();
-					if (menu)
-						Do (menu->actions ());
-				}
-			}
-		} entrifier (QVariant::fromValue<ICLEntry*> (entry));
-		entrifier.Do (Entry2Actions_ [entry].values ());
+		Entrifier { QVariant::fromValue<ICLEntry*> (entry) } (Entry2Actions_ [entry]);
 	}
 
 	namespace
