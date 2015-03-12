@@ -1026,13 +1026,31 @@ namespace Azoth
 			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu;
 
-			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
-					this, SLOT (handleActionGrantAuthTriggered ()));
-			grantAuth->setProperty ("Azoth/WithReason", false);
+			const auto grantAuth = authMenu->addAction (tr ("Grant"),
+					this, SLOT (handleActoredActionTriggered ()));
+			grantAuth->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for granting authorization to %1:"),
+									entries,
+									false,
+									&IAuthable::ResendAuth);
+						}
+					}));
 
-			QAction *grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
-					this, SLOT (handleActionGrantAuthTriggered ()));
-			grantAuthReason->setProperty ("Azoth/WithReason", true);
+			const auto grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			grantAuthReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for granting authorization to %1:"),
+									entries,
+									true,
+									&IAuthable::ResendAuth);
+						}
+					}));
 
 			const auto revokeAuth = authMenu->addAction (tr ("Revoke"),
 					this, SLOT (handleActoredActionTriggered ()));
@@ -1060,21 +1078,57 @@ namespace Azoth
 						}
 					}));
 
-			QAction *unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
-					this, SLOT (handleActionUnsubscribeTriggered ()));
-			unsubscribe->setProperty ("Azoth/WithReason", false);
+			const auto unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
+					this, SLOT (handleActoredActionTriggered ()));
+			unsubscribe->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for unsubscribing from %1:"),
+									entries,
+									false,
+									&IAuthable::Unsubscribe);
+						}
+					}));
 
-			QAction *unsubscribeReason = authMenu->addAction (tr ("Unsubscribe with reason..."),
-					this, SLOT (handleActionUnsubscribeTriggered ()));
-			unsubscribeReason->setProperty ("Azoth/WithReason", true);
+			const auto unsubscribeReason = authMenu->addAction (tr ("Unsubscribe with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			unsubscribeReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for unsubscribing from %1:"),
+									entries,
+									true,
+									&IAuthable::Unsubscribe);
+						}
+					}));
 
-			QAction *rerequest = authMenu->addAction (tr ("Rerequest authentication"),
-					this, SLOT (handleActionRerequestTriggered ()));
-			rerequest->setProperty ("Azoth/WithReason", false);
+			const auto rerequest = authMenu->addAction (tr ("Rerequest authentication"),
+					this, SLOT (handleActoredActionTriggered ()));
+			rerequest->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for rerequesting authorization from %1:"),
+									entries,
+									false,
+									&IAuthable::RerequestAuth);
+						}
+					}));
 
-			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
-					this, SLOT (handleActionRerequestTriggered ()));
-			rerequestReason->setProperty ("Azoth/WithReason", true);
+			const auto rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			rerequestReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for rerequesting authorization from %1:"),
+									entries,
+									true,
+									&IAuthable::RerequestAuth);
+						}
+					}));
 		}
 
 		auto notifyMenu = new QMenu (tr ("Notify when"));
