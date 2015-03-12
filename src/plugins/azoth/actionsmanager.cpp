@@ -896,14 +896,14 @@ namespace Azoth
 
 	namespace
 	{
-		QString GetReason (const QString&, const QString& text)
+		QString GetReason (const QString& text)
 		{
 			return QInputDialog::getText (0,
 						ActionsManager::tr ("Enter reason"),
 						text);
 		}
 
-		void ManipulateAuth (const QString& id, const QString& text, QObject *sender,
+		void ManipulateAuth (const QString&, const QString& text, QObject *sender,
 				std::function<void (IAuthable*, const QString&)> func)
 		{
 			const auto action = qobject_cast<QAction*> (sender);
@@ -928,7 +928,7 @@ namespace Azoth
 			QString reason;
 			if (action->property ("Azoth/WithReason").toBool ())
 			{
-				reason = GetReason (id, text.arg (entry->GetEntryName ()));
+				reason = GetReason (text.arg (entry->GetEntryName ()));
 				if (reason.isEmpty ())
 					return;
 			}
