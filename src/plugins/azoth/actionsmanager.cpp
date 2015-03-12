@@ -930,22 +930,6 @@ namespace Azoth
 			for (const auto authable : authables)
 				func (authable, reason);
 		}
-
-		void ManipulateAuth (const QString&, const QString& text, QObject *sender,
-				std::function<void (IAuthable*, const QString&)> func)
-		{
-			const auto action = qobject_cast<QAction*> (sender);
-			if (!action)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< sender
-						<< "is not a QAction";
-				return;
-			}
-
-			const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-			ManipulateAuth (text, { entry }, action->property ("Azoth/WithReason").toBool (), func);
-		}
 	}
 
 	void ActionsManager::CreateActionsForEntry (ICLEntry *entry)
