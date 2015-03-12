@@ -43,6 +43,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/sys/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -903,26 +904,31 @@ namespace Azoth
 						text);
 		}
 
-		void ManipulateAuth (const QString& text, ICLEntry *entry, bool withReason,
+		void ManipulateAuth (const QString& text, const QList<ICLEntry*>& entries, bool withReason,
 				std::function<void (IAuthable*, const QString&)> func)
 		{
-			const auto authable = qobject_cast<IAuthable*> (entry->GetQObject ());
-			if (!authable)
+			const auto& authables = Util::Map (entries, [] (ICLEntry *entry) { return qobject_cast<IAuthable*> (entry->GetQObject ()); });
+			if (authables.isEmpty ())
 			{
 				qWarning () << Q_FUNC_INFO
-						<< entry->GetQObject ()
-						<< "doesn't implement IAuthable";
+						<< "no authables in"
+						<< entries;
 				return;
 			}
 
 			QString reason;
 			if (withReason)
 			{
-				reason = GetReason (text.arg (entry->GetEntryName ()));
+				const auto& arg = entries.size () == 1 ?
+						entries.value (0)->GetEntryName () :
+						ActionsManager::tr ("%n entry(ies)", 0, entries.size ());
+				reason = GetReason (text.arg (arg));
 				if (reason.isEmpty ())
 					return;
 			}
-			func (authable, reason);
+
+			for (const auto authable : authables)
+				func (authable, reason);
 		}
 
 		void ManipulateAuth (const QString&, const QString& text, QObject *sender,
@@ -938,7 +944,7 @@ namespace Azoth
 			}
 
 			const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-			ManipulateAuth (text, entry, action->property ("Azoth/WithReason").toBool (), func);
+			ManipulateAuth (text, { entry }, action->property ("Azoth/WithReason").toBool (), func);
 		}
 	}
 
