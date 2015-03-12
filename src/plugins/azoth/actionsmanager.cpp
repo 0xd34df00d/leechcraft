@@ -903,6 +903,28 @@ namespace Azoth
 						text);
 		}
 
+		void ManipulateAuth (const QString& text, ICLEntry *entry, bool withReason,
+				std::function<void (IAuthable*, const QString&)> func)
+		{
+			const auto authable = qobject_cast<IAuthable*> (entry->GetQObject ());
+			if (!authable)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< entry->GetQObject ()
+						<< "doesn't implement IAuthable";
+				return;
+			}
+
+			QString reason;
+			if (withReason)
+			{
+				reason = GetReason (text.arg (entry->GetEntryName ()));
+				if (reason.isEmpty ())
+					return;
+			}
+			func (authable, reason);
+		}
+
 		void ManipulateAuth (const QString&, const QString& text, QObject *sender,
 				std::function<void (IAuthable*, const QString&)> func)
 		{
@@ -916,23 +938,7 @@ namespace Azoth
 			}
 
 			const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-			const auto authable = qobject_cast<IAuthable*> (entry->GetQObject ());
-			if (!authable)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< entry->GetQObject ()
-						<< "doesn't implement IAuthable";
-				return;
-			}
-
-			QString reason;
-			if (action->property ("Azoth/WithReason").toBool ())
-			{
-				reason = GetReason (text.arg (entry->GetEntryName ()));
-				if (reason.isEmpty ())
-					return;
-			}
-			func (authable, reason);
+			ManipulateAuth (text, entry, action->property ("Azoth/WithReason").toBool (), func);
 		}
 	}
 
