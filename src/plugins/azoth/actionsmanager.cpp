@@ -1034,13 +1034,31 @@ namespace Azoth
 					this, SLOT (handleActionGrantAuthTriggered ()));
 			grantAuthReason->setProperty ("Azoth/WithReason", true);
 
-			QAction *revokeAuth = authMenu->addAction (tr ("Revoke"),
-					this, SLOT (handleActionRevokeAuthTriggered ()));
-			revokeAuth->setProperty ("Azoth/WithReason", false);
+			const auto revokeAuth = authMenu->addAction (tr ("Revoke"),
+					this, SLOT (handleActoredActionTriggered ()));
+			revokeAuth->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for revoking authorization from %1:"),
+									entries,
+									false,
+									&IAuthable::RevokeAuth);
+						}
+					}));
 
-			QAction *revokeAuthReason = authMenu->addAction (tr ("Revoke with reason..."),
-					this, SLOT (handleActionRevokeAuthTriggered ()));
-			revokeAuthReason->setProperty ("Azoth/WithReason", true);
+			const auto revokeAuthReason = authMenu->addAction (tr ("Revoke with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			revokeAuthReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for revoking authorization from %1:"),
+									entries,
+									true,
+									&IAuthable::RevokeAuth);
+						}
+					}));
 
 			QAction *unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
 					this, SLOT (handleActionUnsubscribeTriggered ()));
