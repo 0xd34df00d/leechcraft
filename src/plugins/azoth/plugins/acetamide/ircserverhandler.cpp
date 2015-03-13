@@ -288,7 +288,7 @@ namespace Acetamide
 			bool found = false;
 			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
 			{
-				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
+				const auto entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
 					continue;
 
@@ -301,10 +301,7 @@ namespace Acetamide
 				if (Nick2Entry_.contains (nick))
 					Nick2Entry_ [nick]->HandleMessage (message);
 				else
-				{
-					ServerParticipantEntry_ptr entry = GetParticipantEntry (nick);
-					entry->HandleMessage (message);
-				}
+					GetParticipantEntry (nick)->HandleMessage (message);
 			}
 		}
 	}
@@ -881,18 +878,14 @@ namespace Acetamide
 	void IrcServerHandler::SendPublicMessage (const QString& msg,
 			const QString& channel)
 	{
-		Q_FOREACH (const QString& str, msg.split ('\n'))
-			IrcParser_->PrivMsgCommand (QStringList ()
-					<< channel
-					<< str);
+		for (const auto& str : msg.split ('\n'))
+			IrcParser_->PrivMsgCommand ({ channel, str });
 	}
 
 	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
 	{
-		Q_FOREACH (const QString& str, msg->GetBody ().split ('\n'))
-			IrcParser_->PrivMsgCommand (QStringList ()
-					<< msg->GetOtherVariant ()
-					<< str);
+		for (const auto& str : msg->GetBody ().split ('\n'))
+			IrcParser_->PrivMsgCommand ({ msg->GetOtherVariant (), str });
 
 		bool found = false;
 		for (const auto entryObj : ChannelsManager_->
