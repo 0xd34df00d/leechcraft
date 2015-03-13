@@ -43,8 +43,11 @@ namespace Util
 	{
 		Container<typename std::result_of<F (T1, T2)>::type> result;
 
-		auto i1 = std::begin (c1), e1 = std::end (c1);
-		auto i2 = std::begin (c2), e2 = std::end (c2);
+		using std::begin;
+		using std::end;
+
+		auto i1 = begin (c1), e1 = end (c1);
+		auto i2 = begin (c2), e2 = end (c2);
 		for ( ; i1 != e1 && i2 != e2; ++i1, ++i2)
 			result.push_back (f (*i1, *i2));
 		return result;
@@ -68,6 +71,16 @@ namespace Util
 		for (auto t : c)
 			result.push_back (f (t));
 		return result;
+	}
+
+	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
+	auto Map (const Container<ContArgs...>& c, F f) ->
+			ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type>
+	{
+		ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type> cont;
+		for (auto&& t : c)
+			cont.push_back (f (t));
+		return cont;
 	}
 
 	template<typename F>

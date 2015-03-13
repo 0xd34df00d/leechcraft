@@ -27,71 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "prelude.h"
+#include <QtTest>
+#include <prelude.h>
 
-#include <QObject>
-#include <QHash>
-#include <QMetaType>
-#include <interfaces/core/ihookproxy.h>
-
-class QAction;
+QTEST_MAIN (LeechCraft::Util::PreludeTest)
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-	class ICLEntry;
-	class IAuthable;
-	class ServerHistoryWidget;
-
-	class ActionsManager : public QObject
+	namespace
 	{
-		Q_OBJECT
-
-		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*>> Entry2Actions_t;
-		Entry2Actions_t Entry2Actions_;
-	public:
-		enum CLEntryActionArea
+		QMap<int, QString> GetSimpleMap ()
 		{
-			CLEAATabCtxtMenu,
-			CLEAAContactListCtxtMenu,
-			CLEAAApplicationMenu,
-			CLEAAToolbar,
-			CLEAAChatCtxtMenu,
-			CLEAAMAX
-		};
-	private:
-		typedef QHash<const QAction*, QList<CLEntryActionArea>> Action2Areas_t;
-		Action2Areas_t Action2Areas_;
-	public:
-		ActionsManager (QObject* = 0);
+			QMap<int, QString> someMap;
+			someMap [0] = "aaa";
+			someMap [1] = "bbb";
+			someMap [2] = "ccc";
+			return someMap;
+		}
+	}
 
-		QList<QAction*> GetEntryActions (ICLEntry *entry);
-		QList<QAction*> CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent);
-		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
+	void PreludeTest::testMapList ()
+	{
+		QList<int> list { 1, 2, 3 };
+		const auto& otherList = Map (list, [] (int v) { return QString::number (v); });
 
-		void HandleEntryRemoved (ICLEntry*);
-	private:
-		void CreateActionsForEntry (ICLEntry*);
-		void UpdateActionsForEntry (ICLEntry*);
-	private slots:
-		void handleActoredActionTriggered ();
+		QCOMPARE (otherList, (QList<QString> { "1", "2", "3" }));
+	}
 
-		void handleActionNotifyChangesState ();
-		void handleActionNotifyBecomesOnline ();
-		void handleActionNotifyParticipantEnter ();
-	signals:
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *action,
-				QObject *entry);
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
+	void PreludeTest::testMapMap ()
+	{
+		const auto& map = GetSimpleMap ();
+		const auto& otherList = Map (map, [] (const QString& v) { return v.size (); });
 
-		void gotServerHistoryTab (ServerHistoryWidget*);
-	};
+		QCOMPARE (otherList, (QList<int> { 3, 3, 3 }));
+	}
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ActionsManager::CLEntryActionArea);

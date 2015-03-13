@@ -30,68 +30,17 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <QMetaType>
-#include <interfaces/core/ihookproxy.h>
-
-class QAction;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-	class ICLEntry;
-	class IAuthable;
-	class ServerHistoryWidget;
-
-	class ActionsManager : public QObject
+	class PreludeTest : public QObject
 	{
 		Q_OBJECT
-
-		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*>> Entry2Actions_t;
-		Entry2Actions_t Entry2Actions_;
-	public:
-		enum CLEntryActionArea
-		{
-			CLEAATabCtxtMenu,
-			CLEAAContactListCtxtMenu,
-			CLEAAApplicationMenu,
-			CLEAAToolbar,
-			CLEAAChatCtxtMenu,
-			CLEAAMAX
-		};
-	private:
-		typedef QHash<const QAction*, QList<CLEntryActionArea>> Action2Areas_t;
-		Action2Areas_t Action2Areas_;
-	public:
-		ActionsManager (QObject* = 0);
-
-		QList<QAction*> GetEntryActions (ICLEntry *entry);
-		QList<QAction*> CreateEntriesActions (QList<ICLEntry*> entries, QObject *parent);
-		QList<CLEntryActionArea> GetAreasForAction (const QAction *action) const;
-
-		void HandleEntryRemoved (ICLEntry*);
-	private:
-		void CreateActionsForEntry (ICLEntry*);
-		void UpdateActionsForEntry (ICLEntry*);
 	private slots:
-		void handleActoredActionTriggered ();
-
-		void handleActionNotifyChangesState ();
-		void handleActionNotifyBecomesOnline ();
-		void handleActionNotifyParticipantEnter ();
-	signals:
-		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *action,
-				QObject *entry);
-		void hookEntryActionsRemoved (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
-		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry);
-
-		void gotServerHistoryTab (ServerHistoryWidget*);
+		void testMapList ();
+		void testMapMap ();
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ActionsManager::CLEntryActionArea);
