@@ -197,6 +197,10 @@ QString LeechCraft::Util::GetLocaleName ()
 	if (localeName == "system")
 	{
 		localeName = QString (::getenv ("LANG")).left (5);
+
+		if (localeName == "C" || localeName.isEmpty ())
+			localeName = "en_US";
+
 		if (localeName.isEmpty () || localeName.size () != 5)
 			localeName = QLocale::system ().name ();
 		localeName = localeName.left (5);
@@ -204,8 +208,8 @@ QString LeechCraft::Util::GetLocaleName ()
 
 	if (localeName.size () == 2)
 	{
-		QLocale::Language lang = QLocale (localeName).language ();
-		QList<QLocale::Country> cs = QLocale::countriesForLanguage (lang);
+		auto lang = QLocale (localeName).language ();
+		const auto& cs = QLocale::countriesForLanguage (lang);
 		if (cs.isEmpty ())
 			localeName += "_00";
 		else

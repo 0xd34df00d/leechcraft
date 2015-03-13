@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "iconsmanager.h"
+#include <cmath>
 #include <QPainter>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
