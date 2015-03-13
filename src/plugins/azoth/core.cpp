@@ -735,7 +735,7 @@ namespace Azoth
 	{
 		ChatStylesOptionsModel_->AddSource (src);
 
-		for (auto manager : StyleOptionManagers_.values ())
+		for (const auto manager : StyleOptionManagers_)
 			manager->AddChatStyleResourceSource (src);
 	}
 
