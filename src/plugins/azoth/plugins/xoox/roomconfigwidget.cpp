@@ -143,12 +143,14 @@ namespace Xoox
 
 	void RoomConfigWidget::on_ModifyPerm__released ()
 	{
-		QStandardItem *stdItem = GetCurrentItem ();
+		const auto stdItem = GetCurrentItem ();
 		if (!stdItem)
 			return;
 
-		QStandardItem *parent = stdItem->parent ();
-		if (!Aff2Cat_.values ().contains (parent))
+		const auto parent = stdItem->parent ();
+
+		const auto aff = Aff2Cat_.key (parent);
+		if (aff == QXmppMucItem::UnspecifiedAffiliation)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "bad parent"
@@ -158,7 +160,6 @@ namespace Xoox
 			return;
 		}
 
-		const QXmppMucItem::Affiliation aff = Aff2Cat_.key (parent);
 		const QString& jid = stdItem->text ();
 
 		std::unique_ptr<AffiliationSelectorDialog> dia (new AffiliationSelectorDialog (this));
