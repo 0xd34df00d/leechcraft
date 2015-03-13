@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "groupsenddialog.h"
-#include <functional>
 #include <QStandardItemModel>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/imessage.h"
@@ -118,14 +117,15 @@ namespace Azoth
 
 	namespace
 	{
-		void MarkOnly (const QList<QStandardItem*>& items, std::function<bool (State)> f)
+		template<typename T, typename F>
+		void MarkOnly (const T& items, const F& f)
 		{
-			Q_FOREACH (QStandardItem *item, items)
+			for (const auto item : items)
 			{
-				QObject *entryObj = item->data ().value<QObject*> ();
-				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+				const auto entryObj = item->data ().template value<QObject*> ();
+				const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-				const Qt::CheckState state = f (entry->GetStatus ().State_) ?
+				const auto state = f (entry->GetStatus ().State_) ?
 						Qt::Checked :
 						Qt::Unchecked;
 				item->setCheckState (state);
@@ -135,12 +135,12 @@ namespace Azoth
 
 	void GroupSendDialog::on_OnlineButton__released ()
 	{
-		MarkOnly (Entry2Item_.values (), [] (State st) { return st != SOffline; });
+		MarkOnly (Entry2Item_, [] (State st) { return st != SOffline; });
 	}
 
 	void GroupSendDialog::on_OfflineButton__released ()
 	{
-		MarkOnly (Entry2Item_.values (), [] (State st) { return st == SOffline; });
+		MarkOnly (Entry2Item_, [] (State st) { return st == SOffline; });
 	}
 
 	void GroupSendDialog::handleEntryStatusChanged ()
