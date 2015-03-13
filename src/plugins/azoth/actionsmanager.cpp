@@ -43,6 +43,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/sys/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -89,9 +90,7 @@ typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
 typedef std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)> SingleEntryActorWManager_f;
 typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
 
-struct None
-{
-};
+struct None {};
 
 typedef boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f> EntryActor_f;
 Q_DECLARE_METATYPE (EntryActor_f);
@@ -886,55 +885,67 @@ namespace Azoth
 	void ActionsManager::HandleEntryRemoved (ICLEntry *entry)
 	{
 		auto actions = Entry2Actions_.take (entry);
-		Q_FOREACH (QAction *action, actions.values ())
+		for (auto action : actions)
 		{
 			Action2Areas_.remove (action);
 			delete action;
 		}
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookEntryActionsRemoved (proxy, entry->GetQObject ());
+		emit hookEntryActionsRemoved (std::make_shared<Util::DefaultHookProxy> (),
+				entry->GetQObject ());
 	}
 
-	QString ActionsManager::GetReason (const QString&, const QString& text)
+	namespace
 	{
-		return QInputDialog::getText (0,
-					tr ("Enter reason"),
-					text);
-	}
-
-	void ActionsManager::ManipulateAuth (const QString& id, const QString& text,
-			std::function<void (IAuthable*, const QString&)> func)
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
+		QString GetReason (const QString& text)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "is not a QAction";
-			return;
+			return QInputDialog::getText (0,
+						ActionsManager::tr ("Enter reason"),
+						text);
 		}
 
-		ICLEntry *entry = action->
-				property ("Azoth/Entry").value<ICLEntry*> ();
-		IAuthable *authable =
-				qobject_cast<IAuthable*> (entry->GetQObject ());
-		if (!authable)
+		void ManipulateAuth (const QString& text, const QList<ICLEntry*>& entries, bool withReason,
+				std::function<void (IAuthable*, const QString&)> func)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< entry->GetQObject ()
-					<< "doesn't implement IAuthable";
-			return;
-		}
-
-		QString reason;
-		if (action->property ("Azoth/WithReason").toBool ())
-		{
-			reason = GetReason (id, text.arg (entry->GetEntryName ()));
-			if (reason.isEmpty ())
+			const auto& authables = Util::Map (entries, [] (ICLEntry *entry) { return qobject_cast<IAuthable*> (entry->GetQObject ()); });
+			if (authables.isEmpty ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "no authables in"
+						<< entries;
 				return;
+			}
+
+			QString reason;
+			if (withReason)
+			{
+				const auto& arg = entries.size () == 1 ?
+						entries.value (0)->GetEntryName () :
+						ActionsManager::tr ("%n entry(ies)", 0, entries.size ());
+				reason = GetReason (text.arg (arg));
+				if (reason.isEmpty ())
+					return;
+			}
+
+			for (const auto authable : authables)
+				func (authable, reason);
 		}
-		func (authable, reason);
+
+		void ManipulateAuth (const QString&, const QString& text, QObject *sender,
+				std::function<void (IAuthable*, const QString&)> func)
+		{
+			const auto action = qobject_cast<QAction*> (sender);
+			if (!action)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< sender
+						<< "is not a QAction";
+				return;
+			}
+
+			const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
+			ManipulateAuth (text, { entry }, action->property ("Azoth/WithReason").toBool (), func);
+		}
 	}
 
 	void ActionsManager::CreateActionsForEntry (ICLEntry *entry)
@@ -1023,13 +1034,31 @@ namespace Azoth
 					this, SLOT (handleActionGrantAuthTriggered ()));
 			grantAuthReason->setProperty ("Azoth/WithReason", true);
 
-			QAction *revokeAuth = authMenu->addAction (tr ("Revoke"),
-					this, SLOT (handleActionRevokeAuthTriggered ()));
-			revokeAuth->setProperty ("Azoth/WithReason", false);
+			const auto revokeAuth = authMenu->addAction (tr ("Revoke"),
+					this, SLOT (handleActoredActionTriggered ()));
+			revokeAuth->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for revoking authorization from %1:"),
+									entries,
+									false,
+									&IAuthable::RevokeAuth);
+						}
+					}));
 
-			QAction *revokeAuthReason = authMenu->addAction (tr ("Revoke with reason..."),
-					this, SLOT (handleActionRevokeAuthTriggered ()));
-			revokeAuthReason->setProperty ("Azoth/WithReason", true);
+			const auto revokeAuthReason = authMenu->addAction (tr ("Revoke with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			revokeAuthReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for revoking authorization from %1:"),
+									entries,
+									true,
+									&IAuthable::RevokeAuth);
+						}
+					}));
 
 			QAction *unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
 					this, SLOT (handleActionUnsubscribeTriggered ()));
@@ -1458,6 +1487,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("grantauth",
 				tr ("Enter reason for granting authorization to %1:"),
+				sender (),
 				&IAuthable::ResendAuth);
 	}
 
@@ -1465,6 +1495,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("revokeauth",
 				tr ("Enter reason for revoking authorization from %1:"),
+				sender (),
 				&IAuthable::RevokeAuth);
 	}
 
@@ -1472,6 +1503,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("unsubscribe",
 				tr ("Enter reason for unsubscribing from %1:"),
+				sender (),
 				&IAuthable::Unsubscribe);
 	}
 
@@ -1479,6 +1511,7 @@ namespace Azoth
 	{
 		ManipulateAuth ("rerequestauth",
 				tr ("Enter reason for rerequesting authorization from %1:"),
+				sender (),
 				&IAuthable::RerequestAuth);
 	}
 

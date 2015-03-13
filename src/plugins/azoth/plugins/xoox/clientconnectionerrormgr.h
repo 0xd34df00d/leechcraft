@@ -68,7 +68,7 @@ namespace Xoox
 		void HandleIq (const QXmppIq&);
 		void HandleMessage (const QXmppMessage&);
 
-		QString HandleErrorCondition (const QXmppStanza::Error::Condition&);
+		static QString HandleErrorCondition (QXmppStanza::Error::Condition);
 	private:
 		void HandleError (const QXmppIq&);
 	private slots:

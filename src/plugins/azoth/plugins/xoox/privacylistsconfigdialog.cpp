@@ -45,10 +45,17 @@ namespace Xoox
 	, Manager_ (mgr)
 	, Model_ (new QStandardItemModel (this))
 	{
+		Model_->setHorizontalHeaderLabels ({ tr ("Type"), tr ("Value"), tr ("Action"), tr ("Stanzas") });
+
 		Ui_.setupUi (this);
 		Ui_.RulesTree_->setModel (Model_);
 
 		ReinitModel ();
+
+		connect (Manager_,
+				SIGNAL (listError (QString)),
+				this,
+				SLOT (handleError (QString)));
 
 		QueryLists ();
 	}
@@ -58,9 +65,9 @@ namespace Xoox
 		Ui_.StatusLabel_->setText (tr ("Fetching names of privacy lists..."));
 
 		connect (Manager_,
-				SIGNAL (gotLists (const QStringList&, const QString&, const QString&)),
+				SIGNAL (gotLists (QStringList, QString, QString)),
 				this,
-				SLOT (handleGotLists (const QStringList&, const QString&, const QString&)));
+				SLOT (handleGotLists (QStringList, QString, QString)));
 
 		Manager_->QueryLists ();
 	}
@@ -76,9 +83,9 @@ namespace Xoox
 		Ui_.StatusLabel_->setText (tr ("Fetching list %1...").arg (list));
 
 		connect (Manager_,
-				SIGNAL (gotList (const PrivacyList&)),
+				SIGNAL (gotList (PrivacyList)),
 				this,
-				SLOT (handleGotList (const PrivacyList&)));
+				SLOT (handleGotList (PrivacyList)));
 
 		Manager_->QueryList (list);
 	}
@@ -92,10 +99,8 @@ namespace Xoox
 
 	void PrivacyListsConfigDialog::ReinitModel ()
 	{
-		Model_->clear ();
-		QStringList headers (tr ("Type"));
-		headers << tr ("Value") << tr ("Action") << tr ("Stanzas");
-		Model_->setHorizontalHeaderLabels (headers);
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
 	}
 
 	QList<QStandardItem*> PrivacyListsConfigDialog::ToRow (const PrivacyListItem& item) const
@@ -149,7 +154,7 @@ namespace Xoox
 	{
 		QDialog::accept ();
 
-		Q_FOREACH (const PrivacyList& pl, Lists_.values ())
+		for (const auto& pl : Lists_)
 			Manager_->SetList (pl);
 
 		Manager_->ActivateList (Ui_.ActiveList_->currentText (),
@@ -322,9 +327,9 @@ namespace Xoox
 			const QString& active, const QString& def)
 	{
 		disconnect (Manager_,
-				SIGNAL (gotLists (const QStringList&, const QString&, const QString&)),
+				SIGNAL (gotLists (QStringList, QString, QString)),
 				this,
-				SLOT (handleGotLists (const QStringList&, const QString&, const QString&)));
+				SLOT (handleGotLists (QStringList, QString, QString)));
 
 		Ui_.ConfigureList_->clear ();
 		Ui_.ConfigureList_->addItems (lists);
@@ -340,7 +345,7 @@ namespace Xoox
 		if (idx >= 0)
 			Ui_.DefaultList_->setCurrentIndex (idx);
 
-		Ui_.StatusLabel_->setText (QString ());
+		Ui_.StatusLabel_->setText ({});
 
 		if (!lists.isEmpty ())
 			QueryList (lists.at (0));
@@ -349,24 +354,31 @@ namespace Xoox
 	void PrivacyListsConfigDialog::handleGotList (const PrivacyList& list)
 	{
 		disconnect (Manager_,
-				SIGNAL (gotList (const PrivacyList&)),
+				SIGNAL (gotList (PrivacyList)),
 				this,
-				SLOT (handleGotList (const PrivacyList&)));
-		Ui_.StatusLabel_->setText (QString ());
+				SLOT (handleGotList (PrivacyList)));
+		Ui_.StatusLabel_->setText ({});
 
 		ReinitModel ();
 
 		Lists_ [list.GetName ()] = list;
 
-		QList<PrivacyListItem> items = list.GetItems ();
+		auto items = list.GetItems ();
 		if (!items.isEmpty () && items.last ().GetType () == PrivacyListItem::TNone)
 		{
-			const PrivacyListItem& item = items.takeLast ();
+			const auto& item = items.takeLast ();
 			Ui_.DefaultPolicy_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ? 0 : 1);
 		}
 
-		Q_FOREACH (const PrivacyListItem& item, items)
+		for (const auto& item : items)
 			Model_->appendRow (ToRow (item));
+	}
+
+	void PrivacyListsConfigDialog::handleError (const QString& text)
+	{
+		QMessageBox::critical (this,
+				"LeechCraft",
+				tr ("Error fetching lists.") + " " + text);
 	}
 }
 }

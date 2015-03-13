@@ -112,7 +112,7 @@ namespace Xoox
 		Core::Instance ().SendEntity (e);
 	}
 
-	QString ClientConnectionErrorMgr::HandleErrorCondition (const QXmppStanza::Error::Condition& condition)
+	QString ClientConnectionErrorMgr::HandleErrorCondition (QXmppStanza::Error::Condition condition)
 	{
 		switch (condition)
 		{

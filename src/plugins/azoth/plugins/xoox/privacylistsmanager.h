@@ -138,12 +138,15 @@ namespace Xoox
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
 	private:
+		void HandleListQueryError (const QXmppIq&);
 		void HandleListQueryResult (const QDomElement&);
 		void HandleList (const QDomElement&);
 	signals:
 		void gotLists (const QStringList&, const QString&, const QString&);
 		void gotList (const PrivacyList&);
 		void currentListFetched (const PrivacyList&);
+
+		void listError (const QString&);
 	};
 }
 }

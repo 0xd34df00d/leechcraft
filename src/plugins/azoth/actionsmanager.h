@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <functional>
 #include <QObject>
 #include <QHash>
 #include <QMetaType>
@@ -73,9 +72,6 @@ namespace Azoth
 
 		void HandleEntryRemoved (ICLEntry*);
 	private:
-		QString GetReason (const QString& id, const QString& text);
-		void ManipulateAuth (const QString& id, const QString& text,
-				std::function<void (IAuthable*, const QString&)> func);
 		void CreateActionsForEntry (ICLEntry*);
 		void UpdateActionsForEntry (ICLEntry*);
 	private slots:
