@@ -73,6 +73,16 @@ namespace Util
 		return result;
 	}
 
+	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
+	auto Map (const Container<ContArgs...>& c, F f) ->
+			typename std::enable_if<sizeof... (ContArgs) >= 2, ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type>>::type
+	{
+		ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type> cont;
+		for (auto&& t : c)
+			cont.push_back (f (t));
+		return cont;
+	}
+
 	template<typename F>
 	QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> Map (const QStringList& c, F f)
 	{
