@@ -149,7 +149,7 @@ namespace Acetamide
 
 		result << ChannelsManager_->GetCLEntries ();
 
-		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+		for (const auto& spe : Nick2Entry_)
 			result << spe.get ();
 
 		return result;
@@ -286,7 +286,7 @@ namespace Acetamide
 			message->SetDateTime (QDateTime::currentDateTime ());
 
 			bool found = false;
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
+			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
 			{
 				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
@@ -895,8 +895,8 @@ namespace Acetamide
 					<< str);
 
 		bool found = false;
-		Q_FOREACH (QObject *entryObj, ChannelsManager_->
-				GetParticipantsByNick (msg->GetOtherVariant ()).values ())
+		for (const auto entryObj : ChannelsManager_->
+				GetParticipantsByNick (msg->GetOtherVariant ()))
 		{
 			EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 			if (!entry)
@@ -1127,15 +1127,9 @@ namespace Acetamide
 		if (Nick2Entry_.contains (nick))
 			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
 
-		Q_FOREACH (QObject *entryObj, ChannelsManager_->
-				GetParticipantsByNick (nick).values ())
-		{
-			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
-			if (!entry)
-				continue;
-
-			entry->SetPrivateChat (false);
-		}
+		for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
+			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))
+				entry->SetPrivateChat (false);
 	}
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)

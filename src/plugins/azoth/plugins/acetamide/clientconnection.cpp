@@ -258,12 +258,8 @@ namespace Acetamide
 		if (!away)
 			msg.clear ();
 
-		QList<IrcServerHandler*> handlers = ServerHandlers_.values ();
-		std::for_each (handlers.begin (), handlers.end (),
-				[msg] (decltype (handlers.front ()) handler)
-				{
-					handler->SetAway (msg);
-				});
+		for (const auto& handler : ServerHandlers_)
+			handler->SetAway (msg);
 	}
 
 	QString ClientConnection::GetStatusStringForState (State state)
