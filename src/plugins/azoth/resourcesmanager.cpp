@@ -47,7 +47,7 @@ namespace Azoth
 		ResourceLoaders_ [RLTActivityIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/activities/", this));
 		ResourceLoaders_ [RLTMoodIconLoader].reset (new Util::ResourceLoader ("azoth/iconsets/moods/", this));
 
-		for (auto rl : ResourceLoaders_.values ())
+		for (const auto& rl : ResourceLoaders_)
 		{
 			rl->AddLocalPrefix ();
 			rl->AddGlobalPrefix ();

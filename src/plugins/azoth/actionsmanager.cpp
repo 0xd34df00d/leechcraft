@@ -966,8 +966,7 @@ namespace Azoth
 		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
 
 		if (Entry2Actions_.contains (entry))
-			Q_FOREACH (const QAction *action,
-						Entry2Actions_.take (entry).values ())
+			for (const auto action : Entry2Actions_.take (entry))
 			{
 				Action2Areas_.remove (action);
 				delete action;

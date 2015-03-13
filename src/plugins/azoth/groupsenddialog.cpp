@@ -88,7 +88,7 @@ namespace Azoth
 	{
 		const auto& msg = Ui_.Message_->toPlainText ();
 
-		for (const auto item : Entry2Item_.values ())
+		for (const auto item : Entry2Item_)
 		{
 			if (item->checkState () != Qt::Checked)
 				continue;
@@ -103,15 +103,15 @@ namespace Azoth
 		Ui_.Message_->clear ();
 	}
 
-	void GroupSendDialog::on_AllButton__released()
+	void GroupSendDialog::on_AllButton__released ()
 	{
-		Q_FOREACH (QStandardItem *item, Entry2Item_.values ())
+		for (const auto item : Entry2Item_)
 			item->setCheckState (Qt::Checked);
 	}
 
-	void GroupSendDialog::on_NoneButton__released()
+	void GroupSendDialog::on_NoneButton__released ()
 	{
-		Q_FOREACH (QStandardItem *item, Entry2Item_.values ())
+		for (const auto item : Entry2Item_)
 			item->setCheckState (Qt::Unchecked);
 	}
 
