@@ -107,7 +107,8 @@ namespace Monocle
 
 		void UpdateRect (QRectF rect)
 		{
-			T::setRect (rect);
+			this->setPos (rect.topLeft ());
+			this->setRect (0, 0, rect.width (), rect.height ());
 		}
 	};
 
