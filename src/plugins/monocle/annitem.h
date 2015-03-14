@@ -102,7 +102,11 @@ namespace Monocle
 		void SetSelected (bool selected)
 		{
 			AnnBaseItem::SetSelected (selected);
-			T::setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
+
+			const auto& pen = selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
+			const auto& brush = selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
+			this->setPen (pen);
+			this->setBrush (brush);
 		}
 
 		void UpdateRect (QRectF rect)
