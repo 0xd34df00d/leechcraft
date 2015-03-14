@@ -226,9 +226,12 @@ namespace MusicZombie
 
 		for (const auto& countries : infos)
 		{
-			const auto& release = countries.contains ("US") ?
-					countries ["US"] :
-					countries.values ().first ();
+			Media::ReleaseInfo release;
+			if (countries.contains ("US"))
+				release = countries ["US"];
+			else if (!countries.isEmpty ())
+				release = countries.begin ().value ();
+
 			Releases_ << release;
 		}
 
