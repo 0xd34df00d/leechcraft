@@ -118,20 +118,18 @@ namespace Monocle
 	void HighAnnItem::UpdateRect (QRectF rect)
 	{
 		setPos (rect.topLeft ());
+
 		if (!Bounding_.width () || !Bounding_.height ())
 			return;
 
+		const auto xScale = rect.width () / Bounding_.width ();
+		const auto yScale = rect.height () / Bounding_.height ();
+		const auto xTran = - Bounding_.x () * xScale;
+		const auto yTran = - Bounding_.y () * yScale;
+		const QMatrix transform { xScale, 0, 0, yScale, xTran, yTran };
+
 		for (auto data : Polys_)
-		{
-			auto poly = data.Poly_;
-
-			const auto xScale = rect.width () / Bounding_.width ();
-			const auto yScale = rect.height () / Bounding_.height ();
-			const auto xTran = - Bounding_.x () * xScale;
-			const auto yTran = - Bounding_.y () * yScale;
-
-			data.Item_->setPolygon (poly * QMatrix { xScale, 0, 0, yScale, xTran, yTran });
-		}
+			data.Item_->setPolygon (data.Poly_ * transform);
 	}
 
 	QList<HighAnnItem::PolyData> HighAnnItem::ToPolyData (const QList<QPolygonF>& polys)
