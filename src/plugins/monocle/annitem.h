@@ -59,6 +59,9 @@ namespace Monocle
 		virtual void SetSelected (bool) = 0;
 
 		virtual void UpdateRect (QRectF rect) = 0;
+	protected:
+		QPen GetPen (bool selected) const;
+		QBrush GetBrush (bool selected) const;
 	};
 
 	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*);
@@ -103,10 +106,8 @@ namespace Monocle
 		{
 			AnnBaseItem::SetSelected (selected);
 
-			const auto& pen = selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
-			const auto& brush = selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
-			this->setPen (pen);
-			this->setBrush (brush);
+			this->setPen (this->GetPen (selected));
+			this->setBrush (this->GetBrush (selected));
 		}
 
 		void UpdateRect (QRectF rect)

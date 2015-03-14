@@ -61,6 +61,16 @@ namespace Monocle
 		IsSelected_ = selected;
 	}
 
+	QPen AnnBaseItem::GetPen (bool selected) const
+	{
+		return selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
+	}
+
+	QBrush AnnBaseItem::GetBrush (bool selected) const
+	{
+		return selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
+	}
+
 	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
 	{
 		switch (ann->GetAnnotationType ())
@@ -108,8 +118,8 @@ namespace Monocle
 	{
 		AnnBaseItem::SetSelected (selected);
 
-		const auto& pen = selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
-		const auto& brush = selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
+		const auto& pen = GetPen (selected);
+		const auto& brush = GetBrush (selected);
 		for (const auto& data : Polys_)
 		{
 			data.Item_->setPen (pen);
