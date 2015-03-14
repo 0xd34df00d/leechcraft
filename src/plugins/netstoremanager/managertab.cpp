@@ -433,9 +433,12 @@ namespace NetStoreManager
 	QList<QByteArray> ManagerTab::GetSelectedIDs () const
 	{
 		QList<QByteArray> ids;
-		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
-			if (ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray () != "netstoremanager.item_uplevel")
-				ids << ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
+		for (const auto& idx : Ui_.FilesView_->selectionModel ()->selectedRows ())
+		{
+			const auto& id = ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
+			if (id != "netstoremanager.item_uplevel")
+				ids << id;
+		}
 
 		return ids;
 	}
