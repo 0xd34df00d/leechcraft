@@ -224,9 +224,8 @@ namespace MusicZombie
 			infos [title] [elemText ("country")] = info;
 		}
 
-		for (const auto& key : infos.keys ())
+		for (const auto& countries : infos)
 		{
-			const auto& countries = infos [key];
 			const auto& release = countries.contains ("US") ?
 					countries ["US"] :
 					countries.values ().first ();
