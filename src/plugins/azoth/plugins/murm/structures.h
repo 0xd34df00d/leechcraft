@@ -48,6 +48,14 @@ namespace Murm
 		QString Name_;
 	};
 
+	struct AppInfo
+	{
+		bool IsMobile_;
+
+		QString Title_;
+		QUrl Icon25_;
+	};
+
 	struct UserInfo
 	{
 		qulonglong ID_;
