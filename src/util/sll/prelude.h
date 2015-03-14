@@ -68,7 +68,7 @@ namespace Util
 			Container<typename std::decay<typename std::result_of<F (T)>::type>::type>>::type
 	{
 		Container<typename std::decay<typename std::result_of<F (T)>::type>::type> result;
-		for (auto t : c)
+		for (auto&& t : c)
 			result.push_back (f (t));
 		return result;
 	}
