@@ -120,7 +120,7 @@ namespace Azoth
 
 	JoinConferenceDialog::~JoinConferenceDialog ()
 	{
-		qDeleteAll (Proto2Joiner_.values ());
+		qDeleteAll (Proto2Joiner_);
 	}
 
 	void JoinConferenceDialog::SetIdentifyingData (const QVariantMap& ident)

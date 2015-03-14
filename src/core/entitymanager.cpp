@@ -106,7 +106,7 @@ namespace LeechCraft
 			if (result.size () == 1)
 				return result.begin ().value ();
 
-			return Util::Concat (result.values ());
+			return Util::Concat (result);
 		}
 
 		QObjectList GetObjects (const Entity& e, int *downloaders = 0, int *handlers = 0)

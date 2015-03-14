@@ -83,14 +83,14 @@ namespace Acetamide
 	QList<QObject*> ChannelHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (ChannelParticipantEntry_ptr cpe, Nick2Entry_.values ())
+		for (const auto& cpe : Nick2Entry_)
 			result << cpe.get ();
 		return result;
 	}
 
 	ChannelParticipantEntry_ptr ChannelHandler::GetSelf ()
 	{
-		Q_FOREACH (ChannelParticipantEntry_ptr cpe, Nick2Entry_.values ())
+		for (const auto& cpe : Nick2Entry_)
 			if (cpe->GetEntryName () == CM_->GetOurNick ())
 				return cpe;
 
@@ -464,7 +464,7 @@ namespace Acetamide
 
 	void ChannelHandler::RemoveThis ()
 	{
-		Q_FOREACH (ChannelParticipantEntry_ptr entry, Nick2Entry_.values ())
+		for (const auto& entry : Nick2Entry_)
 		{
 			const bool isPrivate = entry->IsPrivateChat ();
 			const QString nick = entry->GetEntryName ();

@@ -70,7 +70,7 @@ namespace Acetamide
 	QObjectList ChannelsManager::GetCLEntries () const
 	{
 		QObjectList result;
-		Q_FOREACH (auto ich, ChannelHandlers_.values ())
+		for (const auto& ich : ChannelHandlers_)
 		{
 			result << ich->GetParticipants ();
 			result << ich->GetCLEntry ();
@@ -140,7 +140,7 @@ namespace Acetamide
 
 	void ChannelsManager::CloseAllChannels ()
 	{
-		Q_FOREACH (auto ich, ChannelHandlers_.values ())
+		for (const auto& ich : ChannelHandlers_)
 			ich->CloseChannel ();
 	}
 
@@ -157,7 +157,7 @@ namespace Acetamide
 	QHash<QString, QObject*> ChannelsManager::GetParticipantsByNick (const QString& nick) const
 	{
 		QHash<QString, QObject*> result;
-		Q_FOREACH (auto ich, ChannelHandlers_.values ())
+		for (const auto& ich : ChannelHandlers_)
 			if (ich->IsUserExists (nick))
 				result [ich->GetChannelOptions ().ChannelName_] = ich->GetParticipantEntry (nick).get ();
 		return result;
@@ -202,7 +202,7 @@ namespace Acetamide
 
 	void ChannelsManager::ChangeNickname (const QString& oldNick, const QString& newNick)
 	{
-		Q_FOREACH (auto ich, ChannelHandlers_.values ())
+		for (const auto& ich : ChannelHandlers_)
 			if (ich->IsUserExists (oldNick))
 				ich->ChangeNickname (oldNick, newNick);
 	}
@@ -212,11 +212,9 @@ namespace Acetamide
 		if (IsChannelExists (channel) &&
 				!ChannelHandlers_ [channel]->IsRosterReceived ())
 		{
-			Q_FOREACH (const QString& nick, participants)
-			{
+			for (const auto& nick : participants)
 				if (!nick.isEmpty ())
 					ChannelHandlers_ [channel]->SetChannelUser (nick);
-			}
 		}
 		else
 			ReceiveCmdAnswerMessage ("names", participants.join (" "), false);
@@ -302,7 +300,7 @@ namespace Acetamide
 
 	void ChannelsManager::CTCPReply (const QString& msg)
 	{
-		Q_FOREACH (auto ich, ChannelHandlers_.values ())
+		for (const auto& ich : ChannelHandlers_)
 			ich->HandleServiceMessage (msg,
 					IMessage::Type::ServiceMessage,
 					IMessage::SubType::Other);
@@ -310,12 +308,10 @@ namespace Acetamide
 
 	void ChannelsManager::CTCPRequestResult (const QString& msg)
 	{
-		Q_FOREACH (auto ich, ChannelHandlers_.values ())
-		{
+		for (const auto& ich : ChannelHandlers_)
 			ich->HandleServiceMessage (msg,
 					IMessage::Type::ServiceMessage,
 					IMessage::SubType::Other);
-		}
 	}
 
 	void ChannelsManager::SetBanListItem (const QString& channel,
@@ -530,14 +526,9 @@ namespace Acetamide
 
 	void ChannelsManager::SetPrivateChat (const QString& nick)
 	{
-		Q_FOREACH (QObject *entryObj, GetParticipantsByNick (nick).values ())
-		{
-			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
-			if (!entry)
-				continue;
-
-			entry->SetPrivateChat (true);
-		}
+		for (const auto entryObj : GetParticipantsByNick (nick))
+			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))
+				entry->SetPrivateChat (true);
 	}
 
 	void ChannelsManager::CreateServerParticipantEntry (QString nick)

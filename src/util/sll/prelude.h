@@ -116,6 +116,15 @@ namespace Util
 		return result;
 	}
 
+	template<template<typename...> class Container, typename... ContArgs>
+	auto Concat (const Container<ContArgs...>& containers) -> typename std::decay<decltype (*containers.begin ())>::type
+	{
+		typename std::decay<decltype (*containers.begin ())>::type result;
+		for (const auto& cont : containers)
+			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
+		return result;
+	}
+
 	template<template<typename> class Container, typename T>
 	Container<Container<T>> SplitInto (size_t numChunks, const Container<T>& container)
 	{
