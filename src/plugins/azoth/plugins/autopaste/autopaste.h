@@ -73,8 +73,6 @@ namespace Autopaste
 				QObject *entry,
 				int type,
 				QString variant);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
