@@ -127,8 +127,8 @@ namespace Monocle
 
 			const auto xScale = rect.width () / Bounding_.width ();
 			const auto yScale = rect.height () / Bounding_.height ();
-			const auto xTran = rect.x () - Bounding_.x () * xScale - rect.left ();
-			const auto yTran = rect.y () - Bounding_.y () * yScale - rect.top ();
+			const auto xTran = - Bounding_.x () * xScale;
+			const auto yTran = - Bounding_.y () * yScale;
 
 			data.Item_->setPolygon (poly * QMatrix { xScale, 0, 0, yScale, xTran, yTran });
 		}
