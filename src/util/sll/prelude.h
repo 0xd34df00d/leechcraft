@@ -33,6 +33,7 @@
 #include <iterator>
 #include <QStringList>
 #include <boost/optional.hpp>
+#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -69,7 +70,7 @@ namespace Util
 	{
 		Container<typename std::decay<typename std::result_of<F (T)>::type>::type> result;
 		for (auto&& t : c)
-			result.push_back (f (t));
+			result.push_back (Invoke (f, t));
 		return result;
 	}
 
@@ -79,7 +80,7 @@ namespace Util
 	{
 		ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type> cont;
 		for (auto&& t : c)
-			cont.push_back (f (t));
+			cont.push_back (Invoke (f, t));
 		return cont;
 	}
 
@@ -88,7 +89,7 @@ namespace Util
 	{
 		QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> result;
 		for (auto t : c)
-			result.push_back (f (t));
+			result.push_back (Invoke (f, t));
 		return result;
 	}
 
