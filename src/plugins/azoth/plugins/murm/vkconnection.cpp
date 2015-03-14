@@ -52,7 +52,7 @@ namespace Murm
 	namespace
 	{
 		const QString UserFields { "first_name,last_name,nickname,photo,photo_big,sex,"
-				"bdate,city,country,timezone,contacts,education" };
+				"bdate,city,country,timezone,contacts,education,online,online_mobile" };
 
 		QStringList GetPerms ()
 		{
@@ -321,6 +321,18 @@ namespace Murm
 
 	namespace
 	{
+		AppInfo UserMap2AppInfo (const QVariantMap& userMap)
+		{
+			const auto& appMap = userMap ["online_app"].toMap ();
+
+			return
+			{
+				userMap ["online_mobile"].toBool (),
+				appMap ["title"].toString (),
+				QUrl::fromEncoded (appMap ["icon_25"].toByteArray ())
+			};
+		}
+
 		UserInfo UserMap2Info (const QVariantMap& userMap)
 		{
 			QList<qulonglong> lists;
@@ -363,7 +375,9 @@ namespace Murm
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
-				lists
+				lists,
+
+				UserMap2AppInfo (userMap)
 			};
 		}
 

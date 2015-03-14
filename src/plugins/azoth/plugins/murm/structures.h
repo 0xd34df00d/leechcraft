@@ -84,6 +84,8 @@ namespace Murm
 		bool IsOnline_;
 
 		QList<qulonglong> Lists_;
+
+		AppInfo AppInfo_;
 	};
 
 	enum MessageFlag
