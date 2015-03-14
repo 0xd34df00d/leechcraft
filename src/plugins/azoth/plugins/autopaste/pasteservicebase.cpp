@@ -35,6 +35,7 @@
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -71,11 +72,13 @@ namespace Autopaste
 		{
 			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
 			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
+
 			const Entity& e = Util::MakeNotification (tr ("Text pasted"),
 					tr ("Your text has been pasted: %1. The URL has "
 						"been copied to the clipboard."),
 					PInfo_);
-			emit gotEntity (e);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
+
 			return;
 		}
 

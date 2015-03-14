@@ -80,8 +80,6 @@ namespace Autopaste
 		virtual void handleMetadata ();
 		virtual void handleFinished ();
 		virtual void handleError ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
