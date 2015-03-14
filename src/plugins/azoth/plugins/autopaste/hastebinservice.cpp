@@ -39,12 +39,6 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	HastebinService::HastebinService (QObject *entry, QObject *parent)
-	: PasteServiceBase (entry, parent)
-	{
-
-	}
-
 	void HastebinService::Paste (const PasteParams& params)
 	{
 		QNetworkRequest req (QString ("http://hastebin.com/documents"));

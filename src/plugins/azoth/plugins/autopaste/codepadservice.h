@@ -42,7 +42,7 @@ namespace Autopaste
 	class CodepadService final : public PasteServiceBase
 	{
 	public:
-		CodepadService (QObject *entry, QObject* = 0);
+		using PasteServiceBase::PasteServiceBase;
 
 		void Paste (const PasteParams&);
 	};

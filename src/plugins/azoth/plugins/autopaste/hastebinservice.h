@@ -40,7 +40,7 @@ namespace Autopaste
 	class HastebinService final : public PasteServiceBase
 	{
 	public:
-		HastebinService (QObject *entry, QObject* = 0);
+		using PasteServiceBase::PasteServiceBase;
 
 		void Paste (const PasteParams&);
 	protected:
