@@ -115,7 +115,7 @@ namespace Monocle
 		}
 	}
 
-	void HighAnnItem::UpdateRect (const QRectF& rect)
+	void HighAnnItem::UpdateRect (QRectF rect)
 	{
 		setPos (rect.topLeft ());
 		for (auto data : Polys_)

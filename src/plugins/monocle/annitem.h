@@ -58,7 +58,7 @@ namespace Monocle
 		bool IsSelected () const;
 		virtual void SetSelected (bool) = 0;
 
-		virtual void UpdateRect (const QRectF& rect) = 0;
+		virtual void UpdateRect (QRectF rect) = 0;
 	};
 
 	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*);
@@ -105,7 +105,7 @@ namespace Monocle
 			T::setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
 		}
 
-		void UpdateRect (const QRectF& rect)
+		void UpdateRect (QRectF rect)
 		{
 			T::setRect (rect);
 		}
@@ -132,7 +132,7 @@ namespace Monocle
 
 		void SetSelected (bool);
 
-		void UpdateRect (const QRectF& rect);
+		void UpdateRect (QRectF rect);
 	private:
 		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
 	};
