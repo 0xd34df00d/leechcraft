@@ -188,7 +188,7 @@ namespace NetStoreManager
 
 	Syncer* SyncManager::GetSyncerByLocalPath (const QString& localPath) const
 	{
-		for (auto syncer : AccountID2Syncer_.values ())
+		for (auto syncer : AccountID2Syncer_)
 			if (localPath.startsWith (syncer->GetLocalPath ()))
 				return syncer;
 

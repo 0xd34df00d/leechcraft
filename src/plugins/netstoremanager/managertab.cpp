@@ -424,7 +424,7 @@ namespace NetStoreManager
 	QList<QByteArray> ManagerTab::GetTrashedFiles () const
 	{
 		QList<QByteArray> result;
-		for (const auto& item : Id2Item_.values ())
+		for (const auto& item : Id2Item_)
 			if (item.IsTrashed_)
 				result << item.ID_;
 		return result;
@@ -467,7 +467,7 @@ namespace NetStoreManager
 	{
 		quint64 size = 0;
 		QList<StorageItem> childItems;
-		for (const auto& item : Id2Item_.values ())
+		for (const auto& item : Id2Item_)
 			if (item.ParentID_ == id)
 			{
 				if (item.IsDirectory_ &&
@@ -497,7 +497,7 @@ namespace NetStoreManager
 			TreeModel_->appendRow ({ upLevel });
 		}
 
-		for (const auto& item : Id2Item_.values ())
+		for (const auto& item : Id2Item_)
 		{
 			quint64 folderSize = 0;
 				if (item.IsDirectory_)
