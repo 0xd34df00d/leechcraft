@@ -61,22 +61,22 @@ namespace PDF
 
 		virtual ~AnnotationBase () {}
 
-		QString GetAuthor () const
+		QString GetAuthor () const override
 		{
 			return Ann_->author ();
 		}
 
-		QDateTime GetDate () const
+		QDateTime GetDate () const override
 		{
 			return Ann_->creationDate ();
 		}
 
-		QRectF GetBoundary () const
+		QRectF GetBoundary () const override
 		{
 			return Ann_->boundary ();
 		}
 
-		QString GetText () const
+		QString GetText () const override
 		{
 			return Ann_->contents ();
 		}
@@ -88,8 +88,8 @@ namespace PDF
 	public:
 		TextAnnotation (Poppler::TextAnnotation*);
 
-		AnnotationType GetAnnotationType () const;
-		bool IsInline () const;
+		AnnotationType GetAnnotationType () const override;
+		bool IsInline () const override;
 	};
 
 	class HighlightAnnotation : public AnnotationBase<IHighlightAnnotation>
@@ -98,8 +98,8 @@ namespace PDF
 	public:
 		HighlightAnnotation (Poppler::HighlightAnnotation*);
 
-		AnnotationType GetAnnotationType () const;
-		QList<QPolygonF> GetPolygons () const;
+		AnnotationType GetAnnotationType () const override;
+		QList<QPolygonF> GetPolygons () const override;
 	};
 
 	class LinkAnnotation : public AnnotationBase<ILinkAnnotation>
@@ -109,8 +109,8 @@ namespace PDF
 	public:
 		LinkAnnotation (Document*, Poppler::LinkAnnotation*);
 
-		AnnotationType GetAnnotationType () const;
-		ILink_ptr GetLink () const;
+		AnnotationType GetAnnotationType () const override;
+		ILink_ptr GetLink () const override;
 	};
 
 	class CaretAnnotation : public AnnotationBase<ICaretAnnotation>
