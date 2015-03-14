@@ -142,5 +142,11 @@ namespace Monocle
 	public:
 		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*);
 	};
+
+	class CaretAnnItem : public AnnRectGraphicsItem<QGraphicsRectItem>
+	{
+	public:
+		using AnnRectGraphicsItem<QGraphicsRectItem>::AnnRectGraphicsItem;
+	};
 }
 }
