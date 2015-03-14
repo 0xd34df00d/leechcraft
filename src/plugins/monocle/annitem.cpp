@@ -118,12 +118,12 @@ namespace Monocle
 	void HighAnnItem::UpdateRect (QRectF rect)
 	{
 		setPos (rect.topLeft ());
+		if (!Bounding_.width () || !Bounding_.height ())
+			return;
+
 		for (auto data : Polys_)
 		{
 			auto poly = data.Poly_;
-
-			if (!Bounding_.width () || !Bounding_.height ())
-				continue;
 
 			const auto xScale = rect.width () / Bounding_.width ();
 			const auto yScale = rect.height () / Bounding_.height ();
