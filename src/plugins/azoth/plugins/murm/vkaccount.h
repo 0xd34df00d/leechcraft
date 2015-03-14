@@ -59,6 +59,7 @@ namespace Murm
 	class AccountConfigDialog;
 	class ServerHistoryManager;
 	class TransferManager;
+	class AppInfoManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -82,6 +83,7 @@ namespace Murm
 		const QByteArray ID_;
 
 		PhotoStorage * const PhotoStorage_;
+		AppInfoManager * const AppInfoMgr_;
 
 		QString Name_;
 

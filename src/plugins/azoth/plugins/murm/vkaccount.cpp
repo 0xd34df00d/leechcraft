@@ -47,6 +47,7 @@
 #include "serverhistorymanager.h"
 #include "vkconnectiontunesetter.h"
 #include "transfermanager.h"
+#include "appinfomanager.h"
 
 namespace LeechCraft
 {
@@ -61,6 +62,7 @@ namespace Murm
 	, Proto_ (proto)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
+	, AppInfoMgr_ (new AppInfoManager (proxy->GetNetworkAccessManager (), this))
 	, Name_ (name)
 	, Logger_ (new Logger (ID_, this))
 	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
