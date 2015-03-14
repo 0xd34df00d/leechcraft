@@ -112,6 +112,14 @@ namespace PDF
 		AnnotationType GetAnnotationType () const;
 		ILink_ptr GetLink () const;
 	};
+
+	class CaretAnnotation : public AnnotationBase<ICaretAnnotation>
+	{
+	public:
+		CaretAnnotation (Poppler::CaretAnnotation*);
+
+		AnnotationType GetAnnotationType () const override;
+	};
 }
 }
 }
