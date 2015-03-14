@@ -31,6 +31,7 @@
 #include <QBrush>
 #include <QCursor>
 #include <QtDebug>
+#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -39,6 +40,11 @@ namespace Monocle
 	AnnBaseItem::AnnBaseItem (const IAnnotation_ptr& ann)
 	: BaseAnn_ { ann }
 	{
+		new Util::DelayedExecutor
+		{
+			[this] { SetSelected (false); },
+			0
+		};
 	}
 
 	QGraphicsItem* AnnBaseItem::GetItem ()
