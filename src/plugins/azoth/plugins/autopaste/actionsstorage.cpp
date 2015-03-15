@@ -51,7 +51,8 @@ namespace Autopaste
 			entry
 		};
 
-		const auto paste = new QAction { tr ("Paste..."), entry };
+		const auto paste = new QAction { tr ("Paste to pastebin..."), entry };
+		paste->setProperty ("ActionIcon", "edit-paste");
 		paste->setProperty ("Azoth/Autopaste/Areas", QStringList { "toolbar" });
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
