@@ -287,6 +287,8 @@ namespace Azoth
 				const QString& message = QString (),
 				const QString& variant = QString ()) const = 0;
 
+		virtual QWidget* FindOpenedChat (const QString& entryID, const QByteArray& accID) const = 0;
+
 		virtual Util::ResourceLoader* GetResourceLoader (PublicResourceLoader loader) const = 0;
 
 		virtual QIcon GetIconForState (State state) const = 0;
