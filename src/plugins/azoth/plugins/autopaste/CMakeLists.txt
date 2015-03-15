@@ -20,6 +20,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 
 set (AUTOPASTE_SRCS
+	actionsstorage.cpp
 	autopaste.cpp
 	highlight2str.cpp
 	bpasteservice.cpp
