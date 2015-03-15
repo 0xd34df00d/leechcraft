@@ -30,12 +30,14 @@
 #include "autopaste.h"
 #include <QIcon>
 #include <QMessageBox>
+#include <QTextEdit>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
 #include "xmlsettingsmanager.h"
 #include "codepadservice.h"
 #include "pastedialog.h"
@@ -54,6 +56,11 @@ namespace Autopaste
 		Proxy_ = proxy;
 
 		ActionsStorage_ = new ActionsStorage { this };
+		connect (ActionsStorage_,
+				SIGNAL (pasteRequested (QObject*)),
+				this,
+				SLOT (handlePasteRequested (QObject*)));
+
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothautopastesettings.xml");
@@ -215,6 +222,36 @@ namespace Autopaste
 		for (const auto action : actions)
 			list << QVariant::fromValue<QObject*> (action);
 		proxy->SetReturnValue (list);
+	}
+
+	void Plugin::handlePasteRequested (QObject *entryObj)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto tab = AzothProxy_->FindOpenedChat (entry->GetEntryID (),
+				entry->GetParentAccount ()->GetAccountID ());
+		if (!tab)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no tab for"
+					<< entry
+					<< entry->GetEntryID ()
+					<< entry->GetHumanReadableID ();
+			return;
+		}
+
+		QTextEdit *edit = nullptr;
+		QMetaObject::invokeMethod (tab, "getMsgEdit", Q_RETURN_ARG (QTextEdit*, edit));
+		if (!edit)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get message edit";
+			return;
+		}
+
+		PerformPaste (entry,
+				edit->toPlainText (),
+				[edit] { edit->clear (); },
+				[] {});
 	}
 }
 }

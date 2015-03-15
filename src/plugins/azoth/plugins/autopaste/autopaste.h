@@ -35,8 +35,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -93,6 +91,8 @@ namespace Autopaste
 				QObject *entry);
 		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry);
+	private slots:
+		void handlePasteRequested (QObject*);
 	};
 }
 }
