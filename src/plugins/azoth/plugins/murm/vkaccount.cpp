@@ -62,7 +62,6 @@ namespace Murm
 	, Proto_ (proto)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
 	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), ID_))
-	, AppInfoMgr_ (new AppInfoManager (proxy->GetNetworkAccessManager (), this))
 	, Name_ (name)
 	, Logger_ (new Logger (ID_, this))
 	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
@@ -71,6 +70,7 @@ namespace Murm
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	, ServHistMgr_ (new ServerHistoryManager (this))
 	, XFerMgr_ (new TransferManager (this))
+	, AppInfoMgr_ (new AppInfoManager (proxy->GetNetworkAccessManager (), Conn_, this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),

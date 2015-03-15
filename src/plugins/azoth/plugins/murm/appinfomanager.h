@@ -43,22 +43,31 @@ namespace Azoth
 {
 namespace Murm
 {
+	class VkConnection;
+
 	class AppInfoManager : public QObject
 	{
 		Q_OBJECT
 
 		QNetworkAccessManager * const NAM_;
+		VkConnection * const Conn_;
+
+		QHash<qulonglong, AppInfo> AppId2Info_;
+		QSet<qulonglong> PendingAppInfos_;
 
 		QHash<QUrl, QImage> Url2Image_;
 		QSet<QUrl> PendingUrls_;
 	public:
-		AppInfoManager (QNetworkAccessManager*, QObject* = nullptr);
+		AppInfoManager (QNetworkAccessManager*, VkConnection*, QObject* = nullptr);
 
 		void CacheAppInfo (const QList<AppInfo>&);
 
 		QImage GetAppImage (const AppInfo&) const;
+	private:
+		void CacheAppInfo (qulonglong);
+		void CacheImage (const QUrl&, qulonglong);
 	signals:
-		void gotAppImage (const AppInfo&, const QImage&);
+		void gotAppInfo (const AppInfo&);
 	};
 }
 }
