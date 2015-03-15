@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
 #include "xmlsettingsmanager.h"
@@ -142,8 +143,7 @@ namespace Autopaste
 				QCoreApplication::applicationName () + "_Azoth_Autopaste");
 		settings.beginGroup ("SavedChoices");
 		settings.beginGroup (other->GetEntryID ());
-		auto guard = std::shared_ptr<void> (nullptr,
-				[&settings] (void*) -> void
+		const auto guard = Util::MakeScopeGuard ([&settings]
 				{
 					settings.endGroup ();
 					settings.endGroup ();
