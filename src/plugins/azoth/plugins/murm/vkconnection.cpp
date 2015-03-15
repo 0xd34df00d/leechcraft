@@ -323,11 +323,21 @@ namespace Murm
 	{
 		AppInfo UserMap2AppInfo (const QVariantMap& userMap)
 		{
-			const auto& appMap = userMap ["online_app"].toMap ();
-
 			return
 			{
+				userMap ["online_app"].toULongLong (),
 				userMap ["online_mobile"].toBool (),
+				{},
+				{}
+			};
+		}
+
+		AppInfo AppMap2AppInfo (const QVariantMap& appMap)
+		{
+			return
+			{
+				appMap ["id"].toULongLong (),
+				true,
 				appMap ["title"].toString (),
 				QUrl::fromEncoded (appMap ["icon_25"].toByteArray ())
 			};
@@ -471,6 +481,38 @@ namespace Murm
 				return reply;
 			});
 		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::GetAppInfo (qulonglong appId, const std::function<void (AppInfo)>& setter)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString&, const UrlParams_t& params)
+			{
+				QUrl url { "https://api.vk.com/method/apps.get" };
+				Util::UrlOperator { url }
+					("app_id", QString::number (appId));
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest { url });
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[reply, setter]
+					{
+						reply->deleteLater ();
+
+						const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
+						if (data.isEmpty ())
+							return;
+
+						setter (AppMap2AppInfo (data ["response"].toMap ()));
+					},
+					reply,
+					SIGNAL (finished ()),
+					reply
+				};
+				return reply;
+			});
 	}
 
 	void VkConnection::AddFriendList (const QString& name, const QList<qulonglong>& ids)
