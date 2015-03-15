@@ -35,6 +35,7 @@
 #include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "codepadservice.h"
 #include "pastedialog.h"
@@ -135,6 +136,11 @@ namespace Autopaste
 			break;
 		}
 		}
+	}
+
+	void Plugin::initPlugin (QObject *obj)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
 	}
 
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,

@@ -42,6 +42,7 @@ namespace LeechCraft
 namespace Azoth
 {
 class ICLEntry;
+class IProxyObject;
 
 namespace Autopaste
 {
@@ -56,6 +57,8 @@ namespace Autopaste
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Autopaste")
 
 		ICoreProxy_ptr Proxy_;
+		IProxyObject *AzothProxy_ = nullptr;
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -73,6 +76,8 @@ namespace Autopaste
 		template<typename OkF, typename CancelF>
 		void PerformPaste (ICLEntry*, const QString&, OkF, CancelF);
 	public slots:
+		void initPlugin (QObject*);
+
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
