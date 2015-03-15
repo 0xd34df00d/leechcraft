@@ -248,8 +248,12 @@ namespace Autopaste
 			return;
 		}
 
+		const auto& text = edit->toPlainText ();
+		if (text.isEmpty ())
+			return;
+
 		PerformPaste (entry,
-				edit->toPlainText (),
+				text,
 				[edit] { edit->clear (); },
 				[] {});
 	}
