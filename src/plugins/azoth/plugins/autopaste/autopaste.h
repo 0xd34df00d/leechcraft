@@ -69,15 +69,15 @@ namespace Autopaste
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		template<typename OkF, typename CancelF>
+		void PerformPaste (ICLEntry*, const QString&, OkF, CancelF);
 	public slots:
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-	private:
-		template<typename OkF, typename CancelF>
-		void PerformPaste (ICLEntry*, const QString&, OkF, CancelF);
 	};
 }
 }

@@ -97,6 +97,46 @@ namespace Autopaste
 		return XmlSettingsDialog_;
 	}
 
+	template<typename OkF, typename CancelF>
+	void Plugin::PerformPaste (ICLEntry *other, const QString& text, OkF okCont, CancelF cancelCont)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Autopaste");
+		settings.beginGroup ("SavedChoices");
+		settings.beginGroup (other->GetEntryID ());
+		const auto guard = Util::MakeScopeGuard ([&settings]
+				{
+					settings.endGroup ();
+					settings.endGroup ();
+				});
+
+		PasteDialog dia;
+
+		dia.SetCreatorName (settings.value ("Service").toString ());
+		dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
+
+		dia.exec ();
+
+		switch (dia.GetChoice ())
+		{
+		case PasteDialog::Cancel:
+			cancelCont ();
+			break;
+		case PasteDialog::No:
+			break;
+		case PasteDialog::Yes:
+		{
+			auto service = dia.GetCreator () (other->GetQObject (), Proxy_);
+			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
+			okCont ();
+
+			settings.setValue ("Service", dia.GetCreatorName ());
+			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
+			break;
+		}
+		}
+	}
+
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 			QObject*, QObject *entry, int, QString)
 	{
@@ -146,46 +186,6 @@ namespace Autopaste
 					proxy->CancelDefault ();
 					proxy->SetValue ("PreserveMessageEdit", true);
 				});
-	}
-
-	template<typename OkF, typename CancelF>
-	void Plugin::PerformPaste (ICLEntry *other, const QString& text, OkF okCont, CancelF cancelCont)
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Autopaste");
-		settings.beginGroup ("SavedChoices");
-		settings.beginGroup (other->GetEntryID ());
-		const auto guard = Util::MakeScopeGuard ([&settings]
-				{
-					settings.endGroup ();
-					settings.endGroup ();
-				});
-
-		PasteDialog dia;
-
-		dia.SetCreatorName (settings.value ("Service").toString ());
-		dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
-
-		dia.exec ();
-
-		switch (dia.GetChoice ())
-		{
-		case PasteDialog::Cancel:
-			cancelCont ();
-			break;
-		case PasteDialog::No:
-			break;
-		case PasteDialog::Yes:
-		{
-			auto service = dia.GetCreator () (other->GetQObject (), Proxy_);
-			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
-			okCont ();
-
-			settings.setValue ("Service", dia.GetCreatorName ());
-			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
-			break;
-		}
-		}
 	}
 }
 }
