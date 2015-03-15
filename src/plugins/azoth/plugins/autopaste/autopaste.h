@@ -41,6 +41,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+
 namespace Autopaste
 {
 	class Plugin : public QObject
@@ -73,6 +75,9 @@ namespace Autopaste
 				QObject *entry,
 				int type,
 				QString variant);
+	private:
+		template<typename OkF, typename CancelF>
+		void PerformPaste (ICLEntry*, const QString&, OkF, CancelF);
 	};
 }
 }

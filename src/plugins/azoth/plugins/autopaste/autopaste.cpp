@@ -139,6 +139,18 @@ namespace Autopaste
 		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
 			return;
 
+		PerformPaste (other, text,
+				[proxy] { proxy->CancelDefault (); },
+				[proxy]
+				{
+					proxy->CancelDefault ();
+					proxy->SetValue ("PreserveMessageEdit", true);
+				});
+	}
+
+	template<typename OkF, typename CancelF>
+	void Plugin::PerformPaste (ICLEntry *other, const QString& text, OkF okCont, CancelF cancelCont)
+	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Autopaste");
 		settings.beginGroup ("SavedChoices");
@@ -159,16 +171,15 @@ namespace Autopaste
 		switch (dia.GetChoice ())
 		{
 		case PasteDialog::Cancel:
-			proxy->CancelDefault ();
-			proxy->SetValue ("PreserveMessageEdit", true);
+			cancelCont ();
 			break;
 		case PasteDialog::No:
 			break;
 		case PasteDialog::Yes:
 		{
-			auto service = dia.GetCreator () (entry, Proxy_);
+			auto service = dia.GetCreator () (other->GetQObject (), Proxy_);
 			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
-			proxy->CancelDefault ();
+			okCont ();
 
 			settings.setValue ("Service", dia.GetCreatorName ());
 			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
