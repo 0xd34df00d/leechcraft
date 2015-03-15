@@ -46,6 +46,8 @@ class IProxyObject;
 
 namespace Autopaste
 {
+	class ActionsStorage;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -60,6 +62,8 @@ namespace Autopaste
 		IProxyObject *AzothProxy_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		ActionsStorage *ActionsStorage_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -83,6 +87,12 @@ namespace Autopaste
 				QObject *entry,
 				int type,
 				QString variant);
+
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
 	};
 }
 }

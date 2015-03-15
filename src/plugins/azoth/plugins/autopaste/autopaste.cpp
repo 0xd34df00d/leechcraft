@@ -39,6 +39,7 @@
 #include "xmlsettingsmanager.h"
 #include "codepadservice.h"
 #include "pastedialog.h"
+#include "actionsstorage.h"
 
 namespace LeechCraft
 {
@@ -52,6 +53,7 @@ namespace Autopaste
 
 		Proxy_ = proxy;
 
+		ActionsStorage_ = new ActionsStorage { this };
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothautopastesettings.xml");
@@ -192,6 +194,27 @@ namespace Autopaste
 					proxy->CancelDefault ();
 					proxy->SetValue ("PreserveMessageEdit", true);
 				});
+	}
+
+	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy, QObject *action, QObject*)
+	{
+		const auto& ours = ActionsStorage_->GetActionAreas (action);
+		if (ours.isEmpty ())
+			return;
+
+		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
+	}
+
+	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
+	{
+		const auto& actions = ActionsStorage_->GetEntryActions (entry);
+		if (actions.isEmpty ())
+			return;
+
+		auto list = proxy->GetReturnValue ().toList ();
+		for (const auto action : actions)
+			list << QVariant::fromValue<QObject*> (action);
+		proxy->SetReturnValue (list);
 	}
 }
 }
