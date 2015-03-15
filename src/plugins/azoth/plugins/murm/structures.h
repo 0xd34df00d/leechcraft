@@ -50,6 +50,8 @@ namespace Murm
 
 	struct AppInfo
 	{
+		qulonglong AppId_;
+
 		bool IsMobile_;
 
 		QString Title_;
@@ -58,7 +60,8 @@ namespace Murm
 
 	inline bool operator== (const AppInfo& left, const AppInfo& right)
 	{
-		return left.IsMobile_ == right.IsMobile_ &&
+		return left.AppId_ == right.AppId_ &&
+				left.IsMobile_ == right.IsMobile_ &&
 				left.Title_ == right.Title_ &&
 				left.Icon25_ == right.Icon25_;
 	}
