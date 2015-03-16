@@ -93,10 +93,10 @@ namespace Monocle
 		AnnManager *AnnManager_ = nullptr;
 		LinksManager *LinksManager_ = nullptr;
 
-		QDockWidget *DockWidget_;
-		TOCWidget *TOCWidget_;
-		BookmarksWidget *BMWidget_;
-		ThumbsWidget *ThumbsWidget_;
+		QDockWidget *DockWidget_ = nullptr;
+		TOCWidget *TOCWidget_ = nullptr;
+		BookmarksWidget *BMWidget_ = nullptr;
+		ThumbsWidget *ThumbsWidget_ = nullptr;
 		AnnWidget *AnnWidget_ = nullptr;
 		SearchTabWidget *SearchTabWidget_ = nullptr;
 		QTreeView *OptContentsWidget_ = nullptr;
