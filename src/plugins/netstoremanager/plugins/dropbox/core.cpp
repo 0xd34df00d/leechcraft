@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <util/xpc/util.h>
 #include <QFileInfo>
 #include <QUrl>
 
@@ -38,8 +37,9 @@
 #include <QStandardPaths>
 #endif
 
-#include <util/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include <util/util.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {
@@ -71,78 +71,6 @@ namespace DBox
 	{
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
-
-	void Core::DelegateEntity (const LeechCraft::Entity& e,
-			const QString& targetPath, bool openAfterDownload)
-	{
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
-		{
-			Entity notif = Util::MakeNotification (tr ("Import error"),
-					tr ("Could not find plugin to download %1.")
-							.arg (e.Entity_.toString ()),
-					PCritical_);
-			notif.Additional_ ["UntilUserSees"] = true;
-			emit gotEntity (notif);
-			return;
-		}
-		Id2SavePath_ [id] = targetPath;
-		Id2OpenAfterDownloadState_ [id] = openAfterDownload;
-		HandleProvider (pr, id);
-	}
-
-	void Core::HandleProvider (QObject *provider, int id)
-	{
-		if (Downloaders_.contains (provider))
-			return;
-
-		Downloaders_ << provider;
-		connect (provider,
-				SIGNAL (jobFinished (int)),
-				this,
-				SLOT (handleJobFinished (int)));
-		connect (provider,
-				SIGNAL (jobRemoved (int)),
-				this,
-				SLOT (handleJobRemoved (int)));
-		connect (provider,
-				SIGNAL (jobError (int, IDownload::Error)),
-				this,
-				SLOT (handleJobError (int, IDownload::Error)));
-
-		Id2Downloader_ [id] = provider;
-	}
-
-	void Core::handleJobFinished (int id)
-	{
-		QString path = Id2SavePath_.take (id);
-		Id2Downloader_.remove (id);
-
-		if (Id2OpenAfterDownloadState_.contains (id) &&
-				Id2OpenAfterDownloadState_ [id])
-		{
-			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (path),
-					QString (), OnlyHandle | FromUserInitiated));
-			Id2OpenAfterDownloadState_.remove (id);
-		}
-	}
-
-	void Core::handleJobRemoved (int id)
-	{
-		Id2Downloader_.remove (id);
-		Id2SavePath_.remove (id);
-		Id2OpenAfterDownloadState_.remove (id);
-	}
-
-	void Core::handleJobError (int id, IDownload::Error)
-	{
-		Id2Downloader_.remove (id);
-		Id2SavePath_.remove (id);
-		Id2OpenAfterDownloadState_.remove (id);
-	}
-
 }
 }
 }

@@ -114,8 +114,7 @@ namespace DBox
 
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
-		void Download (const QString& id, const QString& filePath,
-				TaskParameters tp, bool open = false);
+		QUrl GenerateDownloadUrl (const QString& id);
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();
@@ -129,8 +128,6 @@ namespace DBox
 		void RequestUpload (const QString& filePath, const QString& parent);
 		void RequestChunkUpload (const QString& filePath, const QString& parent,
 				const QString& uploadId = QString (), quint64 offset = 0);
-		void DownloadFile (const QString& id, const QString& filePath,
-				TaskParameters tp, bool open = false);
 
 		void ParseError (const QVariantMap& map);
 
