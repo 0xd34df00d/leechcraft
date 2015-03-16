@@ -1078,6 +1078,10 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (updateItem ()));
 
 		if (qobject_cast<IMUCEntry*> (clEntry->GetQObject ()))
 		{
