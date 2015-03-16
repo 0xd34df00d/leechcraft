@@ -77,6 +77,10 @@ namespace Azoth
 				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
 				SLOT (invalidateClientsIconCache ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (invalidateClientsIconCache ()));
 	}
 
 	void ResourcesManager::HandleRemoved (ICLEntry *entry)
