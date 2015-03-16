@@ -45,8 +45,8 @@ namespace Autopaste
 {
 	PasteServiceBase::PasteServiceBase (QObject *entry, const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
-	, Entry_ (entry)
 	, Proxy_ (proxy)
+	, Entry_ (entry)
 	{
 	}
 
