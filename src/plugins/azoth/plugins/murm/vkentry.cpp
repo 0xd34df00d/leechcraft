@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -504,7 +505,27 @@ namespace Murm
 
 	QMap<QString, QVariant> VkEntry::GetClientInfo (const QString&) const
 	{
-		return {};
+		if (!Info_.IsOnline_)
+			return {};
+
+		QString name;
+		QImage image;
+
+		const auto& app = Info_.AppInfo_;
+		if (!app.IsMobile_ && app.Title_.isEmpty ())
+			name = tr ("Website");
+		else if (app.Title_.isEmpty ())
+			name = tr ("Mobile device");
+		else
+		{
+			name = app.Title_;
+			image = AppImage_;
+		}
+
+		return Util::MakeMap<QString, QVariant> ({
+				{ "client_name", name },
+				{ "client_image", image }
+			});
 	}
 
 	void VkEntry::MarkMsgsRead ()
