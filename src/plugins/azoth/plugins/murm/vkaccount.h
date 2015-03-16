@@ -210,6 +210,8 @@ namespace Murm
 
 		void handleConfigDialogAccepted ();
 
+		void handleAppInfo (const AppInfo&);
+
 		void emitUpdateAcc ();
 	signals:
 		void accountRenamed (const QString&);

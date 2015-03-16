@@ -33,6 +33,7 @@
 #include <QIcon>
 #include <QtDebug>
 #include <util/svcauth/vkcaptchadialog.h>
+#include <util/sll/prelude.h>
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
@@ -142,6 +143,11 @@ namespace Murm
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
+
+		connect (AppInfoMgr_,
+				SIGNAL (gotAppInfo (AppInfo)),
+				this,
+				SLOT (handleAppInfo (AppInfo)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -529,6 +535,8 @@ namespace Murm
 
 	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
+		AppInfoMgr_->CacheAppInfo (Util::Map (infos, &UserInfo::AppInfo_));
+
 		QList<QObject*> newEntries;
 		QHash<int, QString> newCountries;
 		QHash<int, QString> newCities;
@@ -537,7 +545,13 @@ namespace Murm
 		{
 			if (Entries_.contains (info.ID_))
 			{
-				Entries_ [info.ID_]->UpdateInfo (info);
+				const auto entry = Entries_ [info.ID_];
+				entry->UpdateInfo (info);
+
+				const auto& img = AppInfoMgr_->GetAppImage (info.AppInfo_);
+				if (!img.isNull ())
+					entry->UpdateAppImage (img);
+
 				continue;
 			}
 
@@ -813,6 +827,16 @@ namespace Murm
 		}
 
 		ChatEntries_ [chat]->HandleRemoved (id);
+	}
+
+	void VkAccount::handleAppInfo (const AppInfo& info)
+	{
+		for (const auto entry : Entries_)
+			if (entry->GetInfo ().AppInfo_.AppId_ == info.AppId_)
+			{
+				entry->UpdateAppInfo (info);
+				entry->UpdateAppImage (AppInfoMgr_->GetAppImage (info));
+			}
 	}
 
 	void VkAccount::emitUpdateAcc ()
