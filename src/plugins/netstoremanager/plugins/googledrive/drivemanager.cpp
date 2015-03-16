@@ -132,8 +132,8 @@ namespace GoogleDrive
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, open] (const QString& filename, const QUrl& url)
-			{ DownloadFile (filename, filepath, url, tp, open); };
+		DownloadsQueue_ << [this, filepath, tp, open] (const QUrl& url)
+			{ DownloadFile (filepath, url, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -458,7 +458,7 @@ namespace GoogleDrive
 				SLOT (handleItemRenamed ()));
 	}
 
-	void DriveManager::DownloadFile (const QString& filename, const QString& filePath,
+	void DriveManager::DownloadFile (const QString& filePath,
 			const QUrl& url, TaskParameters tp, bool open)
 	{
 		QString savePath;
@@ -468,16 +468,12 @@ namespace GoogleDrive
 #else
 			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
 #endif
-					"/" + QFileInfo (filename).fileName ();
-		else if (!filePath.isEmpty ())
-			savePath = filePath + '/' + filename;
+					"/" + filePath;
+		else
+			savePath = filePath;
 
 		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filename);
-		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
-				.arg (fi.baseName ())
-				.arg (QDateTime::currentDateTime ().toTime_t ())
-				.arg (fi.completeSuffix ());
+		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
 		open ?
 				Core::Instance ().DelegateEntity (e, savePath, open) :
 				Core::Instance ().SendEntity (e);
@@ -1082,8 +1078,8 @@ namespace GoogleDrive
 
 		if (!map.contains ("error"))
 		{
-			DriveItem it = CreateDriveItem (res);
-			if (it.DownloadUrl_.isEmpty ())
+			QUrl url = map ["downloadUrl"].toUrl ();
+			if (url.isEmpty ())
 			{
 				QMessageBox::warning (Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetPreferredWindow (),
 						"LeechCraft",
@@ -1093,10 +1089,10 @@ namespace GoogleDrive
 			}
 
 			if (!access_token.isEmpty ())
-				Util::UrlOperator { it.DownloadUrl_ } ("access_token", access_token);
+				Util::UrlOperator { url } ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
-				DownloadsQueue_.dequeue () (it.Name_, it.DownloadUrl_);
+				DownloadsQueue_.dequeue () (url);
 			return;
 		}
 

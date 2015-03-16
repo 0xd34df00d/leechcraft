@@ -247,7 +247,7 @@ namespace NetStoreManager
 			AccountsBox_->addItem (stP->GetStorageIcon (),
 					acc->GetAccountName (),
 					QVariant::fromValue<IStorageAccount*> (acc));
-
+			
 			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
 			{
 				connect (acc->GetQObject (),
@@ -737,7 +737,11 @@ namespace NetStoreManager
 				DoNotNotifyUser |
 				DoNotSaveInHistory |
 				FromUserInitiated;
-		acc->Download (GetCurrentID (), {}, tp, true);
+		QModelIndex idx = Ui_.FilesView_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::CName);
+		idx = ProxyModel_->mapToSource (idx);
+		acc->Download (idx.data (ListingRole::ID).toByteArray (),
+				idx.data ().toString (), tp, true);
 	}
 
 	void ManagerTab::flCopy ()
@@ -874,12 +878,16 @@ namespace NetStoreManager
 			return;
 
 		const auto& rows = Ui_.FilesView_->selectionModel ()->selectedRows ();
-		if (rows.size () <= 1)
+		if (rows.size () < 1)
+			return;
+		
+		if (rows.size () == 1)
 		{
-			acc->Download (GetCurrentID (),
-					{},
-					OnlyDownload | FromUserInitiated,
-					false);
+			auto idx = rows.at (0);
+			idx = idx.sibling (idx.row (), Columns::CName);
+			idx = ProxyModel_->mapToSource (idx);
+			acc->Download (idx.data (ListingRole::ID).toByteArray (),
+				idx.data ().toString (), OnlyDownload | FromUserInitiated, false);
 			return;
 		}
 
@@ -896,10 +904,11 @@ namespace NetStoreManager
 		for (auto row : rows)
 		{
 			row = row.sibling (row.row (), Columns::CName);
+			row = ProxyModel_->mapToSource (row);
 			acc->Download (row.data (ListingRole::ID).toByteArray (),
-					dir,
-					OnlyDownload | FromUserInitiated | AutoAccept,
-					false);
+				dir + "/" + row.data ().toString (),
+				OnlyDownload | FromUserInitiated | AutoAccept,
+				false);
 		}
 	}
 

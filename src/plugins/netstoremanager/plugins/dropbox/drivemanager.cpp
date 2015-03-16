@@ -390,20 +390,18 @@ namespace DBox
 #else
 			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
 #endif
-					"/" + QFileInfo (filePath).fileName ();
+					"/" + filePath;
+		else
+			savePath = filePath;
 
 		QUrl url (QString ("https://api-content.dropbox.com/1/files/%1/%2?access_token=%3")
 				.arg ("dropbox")
 				.arg (id)
 				.arg (Account_->GetAccessToken ()));
 		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filePath);
-		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
-				.arg (fi.baseName ())
-				.arg (QDateTime::currentDateTime ().toTime_t ())
-				.arg (fi.completeSuffix ());
+		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
 		open ?
-			Core::Instance ().DelegateEntity (e, filePath, open) :
+			Core::Instance ().DelegateEntity (e, savePath, open) :
 			Core::Instance ().SendEntity (e);
 	}
 
