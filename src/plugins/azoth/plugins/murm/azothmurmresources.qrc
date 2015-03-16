@@ -6,6 +6,7 @@
     <file>resources/images/iphone.svg</file>
     <file>resources/images/ipad.svg</file>
     <file>resources/images/winphone.svg</file>
+    <file>resources/images/mobile.svg</file>
   </qresource>
 </RCC>
 
