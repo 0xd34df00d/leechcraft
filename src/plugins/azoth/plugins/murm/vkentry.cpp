@@ -495,24 +495,32 @@ namespace Murm
 		return {};
 	}
 
+	namespace
+	{
+		QImage GetAppImage (const AppInfo& app, const QImage& appImage, VkAccount *acc)
+		{
+			if (app.Title_.isEmpty ())
+				return acc->GetParentProtocol ()->GetProtocolIcon ().pixmap (24, 24).toImage ();
+
+			return appImage;
+		}
+	}
+
 	QMap<QString, QVariant> VkEntry::GetClientInfo (const QString&) const
 	{
 		if (!Info_.IsOnline_)
 			return {};
 
 		QString name;
-		QImage image;
 
 		const auto& app = Info_.AppInfo_;
+		const auto& image = GetAppImage (app, AppImage_, Account_);
 		if (!app.IsMobile_ && app.Title_.isEmpty ())
 			name = tr ("Website");
 		else if (app.Title_.isEmpty ())
 			name = tr ("Mobile device");
 		else
-		{
 			name = app.Title_;
-			image = AppImage_;
-		}
 
 		return Util::MakeMap<QString, QVariant> ({
 				{ "client_name", name },
