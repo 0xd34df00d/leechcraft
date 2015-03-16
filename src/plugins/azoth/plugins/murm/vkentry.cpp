@@ -500,7 +500,15 @@ namespace Murm
 		QImage GetAppImage (const AppInfo& app, const QImage& appImage, VkAccount *acc)
 		{
 			if (app.Title_.isEmpty ())
-				return acc->GetParentProtocol ()->GetProtocolIcon ().pixmap (24, 24).toImage ();
+			{
+				if (app.IsMobile_)
+				{
+					static QImage mobile { "lcicons:/azoth/murm/resources/images/mobile.svg" };
+					return mobile;
+				}
+				else
+					return acc->GetParentProtocol ()->GetProtocolIcon ().pixmap (24, 24).toImage ();
+			}
 			else if (app.Title_ == "Android")
 			{
 				static QImage android { "lcicons:/azoth/murm/resources/images/android.svg" };
