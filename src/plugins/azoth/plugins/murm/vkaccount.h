@@ -83,7 +83,6 @@ namespace Murm
 		const QByteArray ID_;
 
 		PhotoStorage * const PhotoStorage_;
-		AppInfoManager * const AppInfoMgr_;
 
 		QString Name_;
 
@@ -97,6 +96,8 @@ namespace Murm
 		ServerHistoryManager * const ServHistMgr_;
 
 		TransferManager * const XFerMgr_;
+
+		AppInfoManager * const AppInfoMgr_;
 
 		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
