@@ -105,7 +105,8 @@ namespace Murm
 					return;
 				}
 
-				const auto& img = QImage::fromData (reply->readAll ());
+				const auto& img = QImage::fromData (reply->readAll ())
+						.scaled (24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 				Url2Image_ [url] = img;
 
 				emit gotAppInfo (AppId2Info_ [id]);
