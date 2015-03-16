@@ -501,6 +501,26 @@ namespace Murm
 		{
 			if (app.Title_.isEmpty ())
 				return acc->GetParentProtocol ()->GetProtocolIcon ().pixmap (24, 24).toImage ();
+			else if (app.Title_ == "Android")
+			{
+				static QImage android { "lcicons:/azoth/murm/resources/images/android.svg" };
+				return android;
+			}
+			else if (app.Title_ == "iPhone")
+			{
+				static QImage iphone { "lcicons:/azoth/murm/resources/images/iphone.svg" };
+				return iphone;
+			}
+			else if (app.Title_ == "iPad")
+			{
+				static QImage ipad { "lcicons:/azoth/murm/resources/images/ipad.svg" };
+				return ipad;
+			}
+			else if (app.Title_ == "Windows Phone")
+			{
+				static QImage winphone { "lcicons:/azoth/murm/resources/images/winphone.svg" };
+				return winphone;
+			}
 
 			return appImage;
 		}
