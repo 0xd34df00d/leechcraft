@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QObject>
 #include <QHash>
 #include <QList>
 
