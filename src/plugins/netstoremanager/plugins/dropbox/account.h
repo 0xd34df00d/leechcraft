@@ -127,6 +127,9 @@ namespace DBox
 		void gotChanges (const QList<Change>& changes);
 
 		void gotNewItem (const StorageItem& item, const QByteArray& parentId);
+		
+		void downloadFile (const QUrl& url, const QString& filePath,
+			TaskParameters tp, bool open);
 	};
 }
 }
