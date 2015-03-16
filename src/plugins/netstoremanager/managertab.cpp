@@ -612,7 +612,7 @@ namespace NetStoreManager
 		}
 
 		AppendAccount (acc);
-		
+
 		if (AccountsBox_->count () == 1)
 			ShowAccountActions (true);
 	}
@@ -892,7 +892,9 @@ namespace NetStoreManager
 			idx = idx.sibling (idx.row (), Columns::CName);
 			idx = ProxyModel_->mapToSource (idx);
 			acc->Download (idx.data (ListingRole::ID).toByteArray (),
-				idx.data ().toString (), OnlyDownload | FromUserInitiated, false);
+					idx.data ().toString (),
+					OnlyDownload | FromUserInitiated,
+					false);
 			return;
 		}
 
@@ -911,9 +913,9 @@ namespace NetStoreManager
 			row = row.sibling (row.row (), Columns::CName);
 			row = ProxyModel_->mapToSource (row);
 			acc->Download (row.data (ListingRole::ID).toByteArray (),
-				dir + "/" + row.data ().toString (),
-				OnlyDownload | FromUserInitiated | AutoAccept,
-				false);
+					dir + "/" + row.data ().toString (),
+					OnlyDownload | FromUserInitiated | AutoAccept,
+					false);
 		}
 	}
 

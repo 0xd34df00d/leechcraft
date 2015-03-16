@@ -66,7 +66,7 @@ namespace GoogleDrive
 		Entity e = Util::MakeEntity (url,
 				QString (),
 				FromUserInitiated | OnlyHandle);
-		Core::Instance().SendEntity (e);
+		Core::Instance ().SendEntity (e);
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		InputDialog_ = new QInputDialog (rootWM->GetPreferredWindow (), Qt::Widget);
