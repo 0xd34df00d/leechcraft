@@ -160,15 +160,24 @@ namespace Azoth
 					.property ("ClientIcons").toString () + '/';
 		for (const auto& variant : entry->Variants ())
 		{
-			const auto& type = entry->GetClientInfo (variant) ["client_type"].toString ();
+			const auto& info = entry->GetClientInfo (variant);
+			if (info.contains ("client_image"))
+			{
+				const auto& image = info ["client_image"].value<QImage> ();
+				result [variant] = QIcon (QPixmap::fromImage (image));
+			}
+			else
+			{
+				const auto& type = info ["client_type"].toString ();
 
-			const auto& filename = pack + type;
+				const auto& filename = pack + type;
 
-			auto pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
-			if (pixmap.isNull ())
-				pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (pack + "unknown");
+				auto pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (filename);
+				if (pixmap.isNull ())
+					pixmap = ResourceLoaders_ [RLTClientIconLoader]->LoadPixmap (pack + "unknown");
 
-			result [variant] = QIcon (pixmap);
+				result [variant] = QIcon (pixmap);
+			}
 		}
 
 		EntryClientIconCache_ [entry] = result;
