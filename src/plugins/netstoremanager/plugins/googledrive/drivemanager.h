@@ -201,9 +201,6 @@ namespace GoogleDrive
 		void RequestRenameItem (const QString& id,
 				const QString& name,  const QString& key);
 
-		void DownloadFile (const QString& filePath, const QUrl& url,
-				TaskParameters tp, bool open);
-
 		void FindSyncableItems (const QStringList& paths,
 				const QString& baseDir, const QList<DriveItem>& items);
 

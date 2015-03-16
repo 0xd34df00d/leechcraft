@@ -80,6 +80,8 @@ namespace GoogleDrive
 				const QByteArray& id = QByteArray ());
 		void Download (const QByteArray& id, const QString& filepath,
 				TaskParameters tp, bool open);
+		void DownloadFile (const QUrl& url, const QString& filepath,
+				TaskParameters tp, bool open = false);
 
 		ListingOps GetListingOps () const;
 		HashAlgorithm GetCheckSumAlgorithm () const;

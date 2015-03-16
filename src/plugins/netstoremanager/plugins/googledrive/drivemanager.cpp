@@ -133,7 +133,7 @@ namespace GoogleDrive
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
 		DownloadsQueue_ << [this, filepath, tp, open] (const QUrl& url)
-			{ DownloadFile (filepath, url, tp, open); };
+			{ Account_->DownloadFile (url, filepath, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -456,27 +456,6 @@ namespace GoogleDrive
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleItemRenamed ()));
-	}
-
-	void DriveManager::DownloadFile (const QString& filePath,
-			const QUrl& url, TaskParameters tp, bool open)
-	{
-		QString savePath;
-		if (open)
-#if QT_VERSION < 0x050000
-			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-#else
-			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
-#endif
-					"/" + filePath;
-		else
-			savePath = filePath;
-
-		auto e = Util::MakeEntity (url, savePath, tp);
-		e.Additional_ ["Filename"] = QFileInfo (filePath).fileName ();
-		open ?
-				Core::Instance ().DelegateEntity (e, savePath, open) :
-				Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::FindSyncableItems (const QStringList&,

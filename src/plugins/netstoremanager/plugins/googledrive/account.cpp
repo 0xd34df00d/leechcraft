@@ -133,6 +133,12 @@ namespace GoogleDrive
 		DriveManager_->Download (id, filepath, tp, open);
 	}
 
+	void Account::DownloadFile (const QUrl& url, const QString& filepath,
+			TaskParameters tp, bool open)
+	{
+		emit downloadFile (url, filepath, tp, open);
+	}
+
 	ListingOps Account::GetListingOps () const
 	{
 		return ListingOp::Delete | ListingOp::TrashSupporting | ListingOp::DirectorySupport;
