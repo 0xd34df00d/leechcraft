@@ -166,6 +166,13 @@ namespace PDF
 		return page->text (rect);
 	}
 
+	QAbstractItemModel* Document::GetOptContentModel ()
+	{
+		return PDocument_->hasOptionalContent () ?
+				PDocument_->optionalContentModel () :
+				nullptr;
+	}
+
 	IPendingFontInfoRequest* Document::RequestFontInfos () const
 	{
 		return new PendingFontInfoRequest (PDocument_);

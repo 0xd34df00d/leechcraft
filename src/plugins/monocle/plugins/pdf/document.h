@@ -41,6 +41,7 @@
 #include <interfaces/monocle/isearchabledocument.h>
 #include <interfaces/monocle/isaveabledocument.h>
 #include <interfaces/monocle/isupportpainting.h>
+#include <interfaces/monocle/ihaveoptionalcontent.h>
 
 namespace Poppler
 {
@@ -59,6 +60,7 @@ namespace PDF
 				   , public IDocument
 				   , public IHaveTOC
 				   , public IHaveTextContent
+				   , public IHaveOptionalContent
 				   , public IHaveFontInfo
 				   , public ISupportAnnotations
 				   , public ISupportForms
@@ -70,6 +72,7 @@ namespace PDF
 		Q_INTERFACES (LeechCraft::Monocle::IDocument
 				LeechCraft::Monocle::IHaveTOC
 				LeechCraft::Monocle::IHaveTextContent
+				LeechCraft::Monocle::IHaveOptionalContent
 				LeechCraft::Monocle::IHaveFontInfo
 				LeechCraft::Monocle::ISupportAnnotations
 				LeechCraft::Monocle::ISupportForms
@@ -98,6 +101,8 @@ namespace PDF
 		TOCEntryLevel_t GetTOC ();
 
 		QString GetTextContent (int, const QRect&);
+
+		QAbstractItemModel* GetOptContentModel ();
 
 		IPendingFontInfoRequest* RequestFontInfos () const;
 
