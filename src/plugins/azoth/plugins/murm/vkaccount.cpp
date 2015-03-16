@@ -548,10 +548,6 @@ namespace Murm
 				const auto entry = Entries_ [info.ID_];
 				entry->UpdateInfo (info);
 
-				const auto& img = AppInfoMgr_->GetAppImage (info.AppInfo_);
-				if (!img.isNull ())
-					entry->UpdateAppImage (img);
-
 				continue;
 			}
 
@@ -833,10 +829,7 @@ namespace Murm
 	{
 		for (const auto entry : Entries_)
 			if (entry->GetInfo ().AppInfo_.AppId_ == info.AppId_)
-			{
-				entry->UpdateAppInfo (info);
-				entry->UpdateAppImage (AppInfoMgr_->GetAppImage (info));
-			}
+				entry->UpdateAppInfo (info, AppInfoMgr_->GetAppImage (info));
 	}
 
 	void VkAccount::emitUpdateAcc ()

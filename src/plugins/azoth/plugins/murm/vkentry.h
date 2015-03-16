@@ -83,8 +83,7 @@ namespace Murm
 		void UpdateInfo (const UserInfo&, bool spontaneous = true);
 		const UserInfo& GetInfo () const;
 
-		void UpdateAppInfo (const AppInfo&);
-		void UpdateAppImage (const QImage&);
+		void UpdateAppInfo (const AppInfo&, const QImage&);
 
 		void Send (VkMessage*);
 

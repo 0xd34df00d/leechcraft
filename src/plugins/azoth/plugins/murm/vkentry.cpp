@@ -122,20 +122,12 @@ namespace Murm
 		return Info_;
 	}
 
-	void VkEntry::UpdateAppInfo (const AppInfo& info)
+	void VkEntry::UpdateAppInfo (const AppInfo& info, const QImage& image)
 	{
-		if (Info_.AppInfo_ == info)
+		if (Info_.AppInfo_ == info && image == AppImage_)
 			return;
 
 		Info_.AppInfo_ = info;
-		emit entryGenerallyChanged ();
-	}
-
-	void VkEntry::UpdateAppImage (const QImage& image)
-	{
-		if (image == AppImage_)
-			return;
-
 		AppImage_ = image;
 		emit entryGenerallyChanged ();
 	}
