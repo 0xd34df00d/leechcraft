@@ -121,6 +121,24 @@ namespace Murm
 		return Info_;
 	}
 
+	void VkEntry::UpdateAppInfo (const AppInfo& info)
+	{
+		if (Info_.AppInfo_ == info)
+			return;
+
+		Info_.AppInfo_ = info;
+		emit entryGenerallyChanged ();
+	}
+
+	void VkEntry::UpdateAppImage (const QImage& image)
+	{
+		if (image == AppImage_)
+			return;
+
+		AppImage_ = image;
+		emit entryGenerallyChanged ();
+	}
+
 	void VkEntry::Send (VkMessage *msg)
 	{
 		Account_->Send (GetInfo ().ID_, VkConnection::Type::Dialog, msg);
