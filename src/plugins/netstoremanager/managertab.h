@@ -53,6 +53,7 @@ namespace NetStoreManager
 	class FilesProxyModel;
 	class FilesTreeModel;
 	class FilesListModel;
+	class DownManager;
 
 	enum Columns
 	{
@@ -119,6 +120,9 @@ namespace NetStoreManager
 		QByteArray LastParentID_;
 
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
+
+		DownManager *DownManager_;
+
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);
 
@@ -128,6 +132,7 @@ namespace NetStoreManager
 		QToolBar* GetToolBar () const;
 	private:
 		void FillToolbar ();
+		void AppendAccount (IStorageAccount *acc);
 		void ShowAccountActions (bool show);
 		IStorageAccount* GetCurrentAccount () const;
 

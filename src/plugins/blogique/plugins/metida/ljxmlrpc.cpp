@@ -696,7 +696,7 @@ namespace Metida
 		element.appendChild (GetSimpleMemberElement ("min", "int",
 				QString::number (event.DateTime_.time ().minute ()), document));
 		element.appendChild (GetSimpleMemberElement ("usejournal", "string",
-				Account_->GetOurLogin (), document));
+				event.UseJournal_, document));
 
 		auto propsStruct = GetComplexMemberElement ("props", "struct", document);
 		element.appendChild (propsStruct.first);
