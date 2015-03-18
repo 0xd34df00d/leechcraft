@@ -69,7 +69,7 @@ namespace Monocle
 
 	QPen AnnBaseItem::GetPen (bool selected) const
 	{
-		return selected ? QPen { QColor { 255, 234, 0, 128 }, 2 } : Qt::NoPen;
+		return selected ? QPen { QColor { 255, 93, 0 }, 2 } : Qt::NoPen;
 	}
 
 	QBrush AnnBaseItem::GetBrush (bool selected) const

@@ -51,6 +51,8 @@ namespace Poshuku
 	: QLineEdit (parent)
 	, IsCompleting_ (false)
 	{
+		setPlaceholderText ("about:blank");
+
 		QCompleter *completer = new QCompleter (this);
 		completer->setModel (Core::Instance ().GetURLCompletionModel ());
 		completer->setCompletionRole (URLCompletionModel::RoleURL);
