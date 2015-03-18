@@ -121,7 +121,7 @@ namespace NetStoreManager
 
 		QHash<IStorageAccount*, QHash<QByteArray, bool>> Account2ItemExpandState_;
 
-		DownManager *DownManager_;
+		DownManager * const DownManager_;
 
 	public:
 		ManagerTab (const TabClassInfo&, AccountsManager*, ICoreProxy_ptr, QObject*);

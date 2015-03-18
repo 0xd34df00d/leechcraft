@@ -46,7 +46,7 @@ namespace NetStoreManager
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
+		const ICoreProxy_ptr Proxy_;
 		QObjectList Downloaders_;
 		QMap<int, QObject*> Id2Downloader_;
 		QMap<int, QString> Id2SavePath_;
@@ -55,8 +55,8 @@ namespace NetStoreManager
 	public:
 		DownManager (ICoreProxy_ptr proxy, QObject *parent = 0);
 	private:
-		void SendEntity (const LeechCraft::Entity& e);
-		void DelegateEntity (const LeechCraft::Entity& e,
+		void SendEntity (const Entity& e);
+		void DelegateEntity (const Entity& e,
 			const QString& targetPath, bool openAfterDownload);
 		void HandleProvider (QObject *provider, int id);
 

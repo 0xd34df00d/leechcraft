@@ -40,7 +40,7 @@ namespace LeechCraft
 namespace NetStoreManager
 {
 	DownManager::DownManager (ICoreProxy_ptr proxy, QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	, Proxy_ (proxy)
 	{
 	}
@@ -56,11 +56,10 @@ namespace NetStoreManager
 		auto res = Proxy_->GetEntityManager ()->DelegateEntity (e);
 		if (res.ID_ == -1)
 		{
-			Entity notif = Util::MakeNotification (tr ("Import error"),
-					tr ("Could not find plugin to download %1.")
-							.arg (e.Entity_.toString ()),
-					PCritical_);
-			notif.Additional_ ["UntilUserSees"] = true;
+			auto notif = Util::MakeNotification (tr ("Import error"),
+				tr ("Could not find plugin to download %1.")
+						.arg (e.Entity_.toString ()),
+				PCritical_);
 			SendEntity (notif);
 			return;
 		}
@@ -72,6 +71,8 @@ namespace NetStoreManager
 
 	void DownManager::HandleProvider (QObject* provider, int id)
 	{
+		Id2Downloader_ [id] = provider;
+
 		if (Downloaders_.contains (provider))
 			return;
 
@@ -89,7 +90,6 @@ namespace NetStoreManager
 				this,
 				SLOT (handleJobError (int, IDownload::Error)));
 
-		Id2Downloader_ [id] = provider;
 	}
 
 	void DownManager::handleDownloadRequest (const QUrl& url,

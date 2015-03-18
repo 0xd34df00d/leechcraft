@@ -28,17 +28,7 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QUrl>
-#include <QFileInfo>
-
-#if QT_VERSION < 0x050000
-#include <QDesktopServices>
-#else
-#include <QStandardPaths>
-#endif
-
 #include <interfaces/core/ientitymanager.h>
-#include <util/xpc/util.h>
 
 namespace LeechCraft
 {

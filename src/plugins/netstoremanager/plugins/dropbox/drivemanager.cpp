@@ -370,7 +370,7 @@ namespace DBox
 				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
-	QUrl DriveManager::GenerateDownloadUrl (const QString& id)
+	QUrl DriveManager::GenerateDownloadUrl (const QString& id) const
 	{
 		return QUrl (QString ("https://api-content.dropbox.com/1/files/%1/%2?access_token=%3")
 				.arg ("dropbox")

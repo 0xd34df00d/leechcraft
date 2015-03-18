@@ -114,7 +114,7 @@ namespace DBox
 
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
-		QUrl GenerateDownloadUrl (const QString& id);
+		QUrl GenerateDownloadUrl (const QString& id) const;
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();

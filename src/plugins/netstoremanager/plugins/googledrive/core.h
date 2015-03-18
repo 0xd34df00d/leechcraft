@@ -32,7 +32,6 @@
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
-#include <interfaces/idownload.h>
 
 namespace LeechCraft
 {

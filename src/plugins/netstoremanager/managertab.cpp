@@ -311,29 +311,29 @@ namespace NetStoreManager
 				SIGNAL (downloadFile (QUrl, QString, TaskParameters, bool)),
 				DownManager_,
 				SLOT (handleDownloadRequest (QUrl, QString, TaskParameters, bool)));
-		if (acc->GetAccountFeatures () & AccountFeature::FileListings)
-		{
-			connect (acc->GetQObject (),
-					SIGNAL (gotListing (QList<StorageItem>)),
-					this,
-					SLOT (handleGotListing (QList<StorageItem>)));
-			connect (acc->GetQObject (),
-					SIGNAL (listingUpdated (QByteArray)),
-					this,
-					SLOT (handleListingUpdated (QByteArray)));
-			connect (acc->GetQObject (),
-					SIGNAL (gotNewItem (StorageItem, QByteArray)),
-					this,
-					SLOT (handleGotNewItem (StorageItem, QByteArray)));
-			connect (acc->GetQObject (),
-					SIGNAL (gotFileUrl (QUrl, QByteArray)),
-					this,
-					SLOT (handleGotFileUrl (QUrl, QByteArray)));
-			connect (acc->GetQObject (),
-					SIGNAL (gotChanges (QList<Change>)),
-					this,
-					SLOT (handleGotChanges (QList<Change>)));
-		}
+		if (! (acc->GetAccountFeatures () & AccountFeature::FileListings))
+			return;
+
+		connect (acc->GetQObject (),
+				SIGNAL (gotListing (QList<StorageItem>)),
+				this,
+				SLOT (handleGotListing (QList<StorageItem>)));
+		connect (acc->GetQObject (),
+				SIGNAL (listingUpdated (QByteArray)),
+				this,
+				SLOT (handleListingUpdated (QByteArray)));
+		connect (acc->GetQObject (),
+				SIGNAL (gotNewItem (StorageItem, QByteArray)),
+				this,
+				SLOT (handleGotNewItem (StorageItem, QByteArray)));
+		connect (acc->GetQObject (),
+				SIGNAL (gotFileUrl (QUrl, QByteArray)),
+				this,
+				SLOT (handleGotFileUrl (QUrl, QByteArray)));
+		connect (acc->GetQObject (),
+				SIGNAL (gotChanges (QList<Change>)),
+				this,
+				SLOT (handleGotChanges (QList<Change>)));
 	}
 
 	void ManagerTab::ShowAccountActions (bool show)
@@ -742,7 +742,7 @@ namespace NetStoreManager
 				DoNotNotifyUser |
 				DoNotSaveInHistory |
 				FromUserInitiated;
-		QModelIndex idx = Ui_.FilesView_->currentIndex ();
+		auto idx = Ui_.FilesView_->currentIndex ();
 		idx = idx.sibling (idx.row (), Columns::CName);
 		idx = ProxyModel_->mapToSource (idx);
 		acc->Download (idx.data (ListingRole::ID).toByteArray (),
