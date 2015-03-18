@@ -132,8 +132,8 @@ namespace GoogleDrive
 		if (id.isEmpty ())
 			return;
 		ApiCallQueue_ << [this, id] (const QString& key) { RequestFileInfo (id, key); };
-		DownloadsQueue_ << [this, filepath, tp, open] (const QString& filename, const QUrl& url)
-			{ DownloadFile (filename, filepath, url, tp, open); };
+		DownloadsQueue_ << [this, filepath, tp, open] (const QUrl& url)
+			{ Account_->DownloadFile (url, filepath, tp, open); };
 		RequestAccessToken ();
 	}
 
@@ -456,31 +456,6 @@ namespace GoogleDrive
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleItemRenamed ()));
-	}
-
-	void DriveManager::DownloadFile (const QString& filename, const QString& filePath,
-			const QUrl& url, TaskParameters tp, bool open)
-	{
-		QString savePath;
-		if (open)
-#if QT_VERSION < 0x050000
-			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-#else
-			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
-#endif
-					"/" + QFileInfo (filename).fileName ();
-		else if (!filePath.isEmpty ())
-			savePath = filePath + '/' + filename;
-
-		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filename);
-		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
-				.arg (fi.baseName ())
-				.arg (QDateTime::currentDateTime ().toTime_t ())
-				.arg (fi.completeSuffix ());
-		open ?
-				Core::Instance ().DelegateEntity (e, savePath, open) :
-				Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::FindSyncableItems (const QStringList&,
@@ -1082,8 +1057,8 @@ namespace GoogleDrive
 
 		if (!map.contains ("error"))
 		{
-			DriveItem it = CreateDriveItem (res);
-			if (it.DownloadUrl_.isEmpty ())
+			QUrl url = map ["downloadUrl"].toUrl ();
+			if (url.isEmpty ())
 			{
 				QMessageBox::warning (Core::Instance ().GetProxy ()->GetRootWindowsManager ()->GetPreferredWindow (),
 						"LeechCraft",
@@ -1093,10 +1068,10 @@ namespace GoogleDrive
 			}
 
 			if (!access_token.isEmpty ())
-				Util::UrlOperator { it.DownloadUrl_ } ("access_token", access_token);
+				Util::UrlOperator { url } ("access_token", access_token);
 
 			if (!DownloadsQueue_.isEmpty ())
-				DownloadsQueue_.dequeue () (it.Name_, it.DownloadUrl_);
+				DownloadsQueue_.dequeue () (url);
 			return;
 		}
 

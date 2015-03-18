@@ -255,6 +255,7 @@ namespace Metida
 		LJEvent Entry2LJEvent (const Entry& entry)
 		{
 			LJEvent ljEvent;
+			ljEvent.UseJournal_ = entry.Target_;
 			ljEvent.ItemID_ = entry.EntryId_;
 			ljEvent.Event_ = ToLJTags (entry.Content_);
 			ljEvent.DateTime_ = entry.Date_;
