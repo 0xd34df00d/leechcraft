@@ -67,6 +67,7 @@
 	#include "platform/poweractions/freebsd.h"
 	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_MAC)
+	#include "platform/battery/macplatform.h"
 	#include "platform/events/platformmac.h"
 #else
 	#pragma message ("Unsupported system")
@@ -113,6 +114,7 @@ namespace Liznoo
 		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
 		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
+		BatteryPlatform_ = std::make_shared<Battery::MacPlatform> ();
 		PL_ = std::make_shared<PlatformMac> (Proxy_);
 #endif
 
