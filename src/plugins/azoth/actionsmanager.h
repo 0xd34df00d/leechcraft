@@ -77,11 +77,6 @@ namespace Azoth
 	private slots:
 		void handleActoredActionTriggered ();
 
-		void handleActionGrantAuthTriggered ();
-		void handleActionRevokeAuthTriggered ();
-		void handleActionUnsubscribeTriggered ();
-		void handleActionRerequestTriggered ();
-
 		void handleActionNotifyChangesState ();
 		void handleActionNotifyBecomesOnline ();
 		void handleActionNotifyParticipantEnter ();

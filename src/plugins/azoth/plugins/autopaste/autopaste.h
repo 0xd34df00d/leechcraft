@@ -35,14 +35,17 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+class IProxyObject;
+
 namespace Autopaste
 {
+	class ActionsStorage;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -54,7 +57,11 @@ namespace Autopaste
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Autopaste")
 
 		ICoreProxy_ptr Proxy_;
+		IProxyObject *AzothProxy_ = nullptr;
+
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		ActionsStorage *ActionsStorage_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -67,14 +74,25 @@ namespace Autopaste
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+	private:
+		template<typename OkF, typename CancelF>
+		void PerformPaste (ICLEntry*, const QString&, OkF, CancelF);
 	public slots:
+		void initPlugin (QObject*);
+
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,
 				QString variant);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+
+		void hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *action,
+				QObject *entry);
+		void hookEntryActionsRequested (LeechCraft::IHookProxy_ptr proxy,
+				QObject *entry);
+	private slots:
+		void handlePasteRequested (QObject*);
 	};
 }
 }

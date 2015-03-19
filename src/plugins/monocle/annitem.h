@@ -58,7 +58,10 @@ namespace Monocle
 		bool IsSelected () const;
 		virtual void SetSelected (bool) = 0;
 
-		virtual void UpdateRect (const QRectF& rect) = 0;
+		virtual void UpdateRect (QRectF rect) = 0;
+	protected:
+		QPen GetPen (bool selected) const;
+		QBrush GetBrush (bool selected) const;
 	};
 
 	AnnBaseItem* MakeItem (const IAnnotation_ptr&, QGraphicsItem*);
@@ -102,12 +105,15 @@ namespace Monocle
 		void SetSelected (bool selected)
 		{
 			AnnBaseItem::SetSelected (selected);
-			T::setPen (selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen);
+
+			this->setPen (this->GetPen (selected));
+			this->setBrush (this->GetBrush (selected));
 		}
 
-		void UpdateRect (const QRectF& rect)
+		void UpdateRect (QRectF rect)
 		{
-			T::setRect (rect);
+			this->setPos (rect.topLeft ());
+			this->setRect (0, 0, rect.width (), rect.height ());
 		}
 	};
 
@@ -132,7 +138,7 @@ namespace Monocle
 
 		void SetSelected (bool);
 
-		void UpdateRect (const QRectF& rect);
+		void UpdateRect (QRectF rect);
 	private:
 		static QList<PolyData> ToPolyData (const QList<QPolygonF>&);
 	};
@@ -141,6 +147,12 @@ namespace Monocle
 	{
 	public:
 		LinkAnnItem (const ILinkAnnotation_ptr&, QGraphicsItem*);
+	};
+
+	class CaretAnnItem : public AnnRectGraphicsItem<QGraphicsRectItem>
+	{
+	public:
+		using AnnRectGraphicsItem<QGraphicsRectItem>::AnnRectGraphicsItem;
 	};
 }
 }

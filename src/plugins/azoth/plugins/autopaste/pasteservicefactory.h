@@ -33,6 +33,7 @@
 #include <QList>
 #include <QIcon>
 #include <QString>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -45,7 +46,7 @@ namespace Autopaste
 	class PasteServiceFactory
 	{
 	public:
-		typedef std::function<PasteServiceBase* (QObject*)> Creator_f;
+		typedef std::function<PasteServiceBase* (QObject*, ICoreProxy_ptr)> Creator_f;
 		struct PasteInfo
 		{
 			QString Name_;

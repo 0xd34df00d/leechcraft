@@ -52,7 +52,7 @@ namespace Murm
 	namespace
 	{
 		const QString UserFields { "first_name,last_name,nickname,photo,photo_big,sex,"
-				"bdate,city,country,timezone,contacts,education" };
+				"bdate,city,country,timezone,contacts,education,online,online_mobile" };
 
 		QStringList GetPerms ()
 		{
@@ -321,6 +321,28 @@ namespace Murm
 
 	namespace
 	{
+		AppInfo UserMap2AppInfo (const QVariantMap& userMap)
+		{
+			return
+			{
+				userMap ["online_app"].toULongLong (),
+				userMap ["online_mobile"].toBool (),
+				{},
+				{}
+			};
+		}
+
+		AppInfo AppMap2AppInfo (const QVariantMap& appMap)
+		{
+			return
+			{
+				appMap ["id"].toULongLong (),
+				true,
+				appMap ["title"].toString (),
+				QUrl::fromEncoded (appMap ["icon_25"].toByteArray ())
+			};
+		}
+
 		UserInfo UserMap2Info (const QVariantMap& userMap)
 		{
 			QList<qulonglong> lists;
@@ -363,7 +385,9 @@ namespace Murm
 
 				static_cast<bool> (userMap ["online"].toULongLong ()),
 
-				lists
+				lists,
+
+				UserMap2AppInfo (userMap)
 			};
 		}
 
@@ -457,6 +481,38 @@ namespace Murm
 				return reply;
 			});
 		AuthMgr_->GetAuthKey ();
+	}
+
+	void VkConnection::GetAppInfo (qulonglong appId, const std::function<void (AppInfo)>& setter)
+	{
+		auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString&, const UrlParams_t& params)
+			{
+				QUrl url { "https://api.vk.com/method/apps.get" };
+				Util::UrlOperator { url }
+					("app_id", QString::number (appId));
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest { url });
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[reply, setter]
+					{
+						reply->deleteLater ();
+
+						const auto& data = Util::ParseJson (reply, Q_FUNC_INFO).toMap ();
+						if (data.isEmpty ())
+							return;
+
+						setter (AppMap2AppInfo (data ["response"].toMap ()));
+					},
+					reply,
+					SIGNAL (finished ()),
+					reply
+				};
+				return reply;
+			});
 	}
 
 	void VkConnection::AddFriendList (const QString& name, const QList<qulonglong>& ids)

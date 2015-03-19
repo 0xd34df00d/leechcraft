@@ -735,7 +735,7 @@ namespace Azoth
 	{
 		ChatStylesOptionsModel_->AddSource (src);
 
-		for (auto manager : StyleOptionManagers_.values ())
+		for (const auto manager : StyleOptionManagers_)
 			manager->AddChatStyleResourceSource (src);
 	}
 
@@ -1078,6 +1078,10 @@ namespace Azoth
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
+		connect (clEntry->GetQObject (),
+				SIGNAL (entryGenerallyChanged ()),
+				this,
+				SLOT (updateItem ()));
 
 		if (qobject_cast<IMUCEntry*> (clEntry->GetQObject ()))
 		{

@@ -39,6 +39,7 @@
 #include "ui_documenttab.h"
 
 class QDockWidget;
+class QTreeView;
 
 namespace LeechCraft
 {
@@ -92,12 +93,13 @@ namespace Monocle
 		AnnManager *AnnManager_ = nullptr;
 		LinksManager *LinksManager_ = nullptr;
 
-		QDockWidget *DockWidget_;
-		TOCWidget *TOCWidget_;
-		BookmarksWidget *BMWidget_;
-		ThumbsWidget *ThumbsWidget_;
+		QDockWidget *DockWidget_ = nullptr;
+		TOCWidget *TOCWidget_ = nullptr;
+		BookmarksWidget *BMWidget_ = nullptr;
+		ThumbsWidget *ThumbsWidget_ = nullptr;
 		AnnWidget *AnnWidget_ = nullptr;
 		SearchTabWidget *SearchTabWidget_ = nullptr;
+		QTreeView *OptContentsWidget_ = nullptr;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;

@@ -540,7 +540,7 @@ namespace Xoox
 	QList<QObject*> RoomHandler::GetParticipants () const
 	{
 		QList<QObject*> result;
-		Q_FOREACH (RoomParticipantEntry_ptr rpe, Nick2Entry_.values ())
+		for (const auto& rpe : Nick2Entry_)
 			result << rpe.get ();
 		return result;
 	}

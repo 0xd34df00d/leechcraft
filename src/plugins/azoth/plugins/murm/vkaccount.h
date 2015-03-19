@@ -59,6 +59,7 @@ namespace Murm
 	class AccountConfigDialog;
 	class ServerHistoryManager;
 	class TransferManager;
+	class AppInfoManager;
 
 	class VkAccount : public QObject
 					, public IAccount
@@ -95,6 +96,8 @@ namespace Murm
 		ServerHistoryManager * const ServHistMgr_;
 
 		TransferManager * const XFerMgr_;
+
+		AppInfoManager * const AppInfoMgr_;
 
 		VkEntry *SelfEntry_ = nullptr;
 		QHash<qulonglong, VkEntry*> Entries_;
@@ -206,6 +209,8 @@ namespace Murm
 		void handleCaptchaEntered (const QString&, const QString&);
 
 		void handleConfigDialogAccepted ();
+
+		void handleAppInfo (const AppInfo&);
 
 		void emitUpdateAcc ();
 	signals:

@@ -930,23 +930,29 @@ namespace Azoth
 			for (const auto authable : authables)
 				func (authable, reason);
 		}
-
-		void ManipulateAuth (const QString&, const QString& text, QObject *sender,
-				std::function<void (IAuthable*, const QString&)> func)
-		{
-			const auto action = qobject_cast<QAction*> (sender);
-			if (!action)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< sender
-						<< "is not a QAction";
-				return;
-			}
-
-			const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ();
-			ManipulateAuth (text, { entry }, action->property ("Azoth/WithReason").toBool (), func);
-		}
 	}
+
+	struct Entrifier
+	{
+		const QVariant Entry_;
+
+		Entrifier (const QVariant& entry)
+		: Entry_ { entry }
+		{
+		}
+
+		template<typename T>
+		void operator() (const T& actions)
+		{
+			for (const auto act : actions)
+			{
+				act->setProperty ("Azoth/Entry", Entry_);
+				act->setParent (Entry_.value<ICLEntry*> ()->GetQObject ());
+				if (const auto menu = act->menu ())
+					(*this) (menu->actions ());
+			}
+		}
+	};
 
 	void ActionsManager::CreateActionsForEntry (ICLEntry *entry)
 	{
@@ -960,8 +966,7 @@ namespace Azoth
 		IAdvancedCLEntry *advEntry = qobject_cast<IAdvancedCLEntry*> (entry->GetQObject ());
 
 		if (Entry2Actions_.contains (entry))
-			Q_FOREACH (const QAction *action,
-						Entry2Actions_.take (entry).values ())
+			for (const auto action : Entry2Actions_.take (entry))
 			{
 				Action2Areas_.remove (action);
 				delete action;
@@ -1026,13 +1031,31 @@ namespace Azoth
 			Action2Areas_ [authMenu->menuAction ()] << CLEAAContactListCtxtMenu
 					<< CLEAATabCtxtMenu;
 
-			QAction *grantAuth = authMenu->addAction (tr ("Grant"),
-					this, SLOT (handleActionGrantAuthTriggered ()));
-			grantAuth->setProperty ("Azoth/WithReason", false);
+			const auto grantAuth = authMenu->addAction (tr ("Grant"),
+					this, SLOT (handleActoredActionTriggered ()));
+			grantAuth->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for granting authorization to %1:"),
+									entries,
+									false,
+									&IAuthable::ResendAuth);
+						}
+					}));
 
-			QAction *grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
-					this, SLOT (handleActionGrantAuthTriggered ()));
-			grantAuthReason->setProperty ("Azoth/WithReason", true);
+			const auto grantAuthReason = authMenu->addAction (tr ("Grant with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			grantAuthReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for granting authorization to %1:"),
+									entries,
+									true,
+									&IAuthable::ResendAuth);
+						}
+					}));
 
 			const auto revokeAuth = authMenu->addAction (tr ("Revoke"),
 					this, SLOT (handleActoredActionTriggered ()));
@@ -1060,21 +1083,57 @@ namespace Azoth
 						}
 					}));
 
-			QAction *unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
-					this, SLOT (handleActionUnsubscribeTriggered ()));
-			unsubscribe->setProperty ("Azoth/WithReason", false);
+			const auto unsubscribe = authMenu->addAction (tr ("Unsubscribe"),
+					this, SLOT (handleActoredActionTriggered ()));
+			unsubscribe->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for unsubscribing from %1:"),
+									entries,
+									false,
+									&IAuthable::Unsubscribe);
+						}
+					}));
 
-			QAction *unsubscribeReason = authMenu->addAction (tr ("Unsubscribe with reason..."),
-					this, SLOT (handleActionUnsubscribeTriggered ()));
-			unsubscribeReason->setProperty ("Azoth/WithReason", true);
+			const auto unsubscribeReason = authMenu->addAction (tr ("Unsubscribe with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			unsubscribeReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for unsubscribing from %1:"),
+									entries,
+									true,
+									&IAuthable::Unsubscribe);
+						}
+					}));
 
-			QAction *rerequest = authMenu->addAction (tr ("Rerequest authentication"),
-					this, SLOT (handleActionRerequestTriggered ()));
-			rerequest->setProperty ("Azoth/WithReason", false);
+			const auto rerequest = authMenu->addAction (tr ("Rerequest authentication"),
+					this, SLOT (handleActoredActionTriggered ()));
+			rerequest->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for rerequesting authorization from %1:"),
+									entries,
+									false,
+									&IAuthable::RerequestAuth);
+						}
+					}));
 
-			QAction *rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
-					this, SLOT (handleActionRerequestTriggered ()));
-			rerequestReason->setProperty ("Azoth/WithReason", true);
+			const auto rerequestReason = authMenu->addAction (tr ("Rerequest authentication with reason..."),
+					this, SLOT (handleActoredActionTriggered ()));
+			rerequestReason->setProperty ("Azoth/EntryActor",
+					QVariant::fromValue<EntryActor_f> ({
+						[] (const QList<ICLEntry*>& entries)
+						{
+							ManipulateAuth (tr ("Enter reason for rerequesting authorization from %1:"),
+									entries,
+									true,
+									&IAuthable::RerequestAuth);
+						}
+					}));
 		}
 
 		auto notifyMenu = new QMenu (tr ("Notify when"));
@@ -1294,28 +1353,7 @@ namespace Azoth
 		Entry2Actions_ [entry] ["sep_afterrostermodify"] = sep;
 		Action2Areas_ [sep] << CLEAAContactListCtxtMenu;
 
-		struct Entrifier
-		{
-			QVariant Entry_;
-
-			Entrifier (const QVariant& entry)
-			: Entry_ (entry)
-			{
-			}
-
-			void Do (const QList<QAction*>& actions)
-			{
-				Q_FOREACH (QAction *act, actions)
-				{
-					act->setProperty ("Azoth/Entry", Entry_);
-					act->setParent (Entry_.value<ICLEntry*> ()->GetQObject ());
-					QMenu *menu = act->menu ();
-					if (menu)
-						Do (menu->actions ());
-				}
-			}
-		} entrifier (QVariant::fromValue<ICLEntry*> (entry));
-		entrifier.Do (Entry2Actions_ [entry].values ());
+		Entrifier { QVariant::fromValue<ICLEntry*> (entry) } (Entry2Actions_ [entry]);
 	}
 
 	namespace
@@ -1481,38 +1519,6 @@ namespace Azoth
 		}
 
 		boost::apply_visitor (EntryCallVisitor { entries, this }, function);
-	}
-
-	void ActionsManager::handleActionGrantAuthTriggered()
-	{
-		ManipulateAuth ("grantauth",
-				tr ("Enter reason for granting authorization to %1:"),
-				sender (),
-				&IAuthable::ResendAuth);
-	}
-
-	void ActionsManager::handleActionRevokeAuthTriggered ()
-	{
-		ManipulateAuth ("revokeauth",
-				tr ("Enter reason for revoking authorization from %1:"),
-				sender (),
-				&IAuthable::RevokeAuth);
-	}
-
-	void ActionsManager::handleActionUnsubscribeTriggered ()
-	{
-		ManipulateAuth ("unsubscribe",
-				tr ("Enter reason for unsubscribing from %1:"),
-				sender (),
-				&IAuthable::Unsubscribe);
-	}
-
-	void ActionsManager::handleActionRerequestTriggered ()
-	{
-		ManipulateAuth ("rerequestauth",
-				tr ("Enter reason for rerequesting authorization from %1:"),
-				sender (),
-				&IAuthable::RerequestAuth);
 	}
 
 	void ActionsManager::handleActionNotifyChangesState ()

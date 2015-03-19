@@ -305,6 +305,12 @@ namespace Azoth
 		chat->selectVariant (variant);
 	}
 
+	QWidget* ProxyObject::FindOpenedChat (const QString& entryID, const QByteArray&) const
+	{
+		const auto mgr = Core::Instance ().GetChatTabsManager ();
+		return mgr->GetChatTab (entryID);
+	}
+
 	Util::ResourceLoader* ProxyObject::GetResourceLoader (IProxyObject::PublicResourceLoader loader) const
 	{
 		switch (loader)

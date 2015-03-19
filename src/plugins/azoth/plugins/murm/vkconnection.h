@@ -192,6 +192,8 @@ namespace Murm
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetMessageInfo (const QString& idStr, MessageInfoSetter_f setter);
 
+		void GetAppInfo (qulonglong appId, const std::function<void (AppInfo)>& setter);
+
 		void AddFriendList (const QString&, const QList<qulonglong>&);
 		void ModifyFriendList (const ListInfo&, const QList<qulonglong>&);
 

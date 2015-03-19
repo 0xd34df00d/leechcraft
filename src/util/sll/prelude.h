@@ -33,6 +33,7 @@
 #include <iterator>
 #include <QStringList>
 #include <boost/optional.hpp>
+#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -43,8 +44,11 @@ namespace Util
 	{
 		Container<typename std::result_of<F (T1, T2)>::type> result;
 
-		auto i1 = std::begin (c1), e1 = std::end (c1);
-		auto i2 = std::begin (c2), e2 = std::end (c2);
+		using std::begin;
+		using std::end;
+
+		auto i1 = begin (c1), e1 = end (c1);
+		auto i2 = begin (c2), e2 = end (c2);
 		for ( ; i1 != e1 && i2 != e2; ++i1, ++i2)
 			result.push_back (f (*i1, *i2));
 		return result;
@@ -65,9 +69,19 @@ namespace Util
 			Container<typename std::decay<typename std::result_of<F (T)>::type>::type>>::type
 	{
 		Container<typename std::decay<typename std::result_of<F (T)>::type>::type> result;
-		for (auto t : c)
-			result.push_back (f (t));
+		for (auto&& t : c)
+			result.push_back (Invoke (f, t));
 		return result;
+	}
+
+	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
+	auto Map (const Container<ContArgs...>& c, F f) ->
+			ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type>
+	{
+		ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type> cont;
+		for (auto&& t : c)
+			cont.push_back (Invoke (f, t));
+		return cont;
 	}
 
 	template<typename F>
@@ -75,7 +89,7 @@ namespace Util
 	{
 		QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> result;
 		for (auto t : c)
-			result.push_back (f (t));
+			result.push_back (Invoke (f, t));
 		return result;
 	}
 
@@ -98,6 +112,15 @@ namespace Util
 	Container<T> Concat (const Container<Container<T>>& containers)
 	{
 		Container<T> result;
+		for (const auto& cont : containers)
+			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
+		return result;
+	}
+
+	template<template<typename...> class Container, typename... ContArgs>
+	auto Concat (const Container<ContArgs...>& containers) -> typename std::decay<decltype (*containers.begin ())>::type
+	{
+		typename std::decay<decltype (*containers.begin ())>::type result;
 		for (const auto& cont : containers)
 			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
 		return result;

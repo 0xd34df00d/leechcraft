@@ -55,6 +55,8 @@ namespace PDF
 			else
 				return std::make_shared<LinkAnnotation> (doc, dynamic_cast<Poppler::LinkAnnotation*> (ann));
 #endif
+		case Poppler::Annotation::SubType::ACaret:
+			return std::make_shared<CaretAnnotation> (dynamic_cast<Poppler::CaretAnnotation*> (ann));
 		default:
 			break;
 		}
@@ -121,6 +123,16 @@ namespace PDF
 	ILink_ptr LinkAnnotation::GetLink () const
 	{
 		return Link_;
+	}
+
+	CaretAnnotation::CaretAnnotation (Poppler::CaretAnnotation *ann)
+	: AnnotationBase { ann }
+	{
+	}
+
+	AnnotationType CaretAnnotation::GetAnnotationType () const
+	{
+		return AnnotationType::Caret;
 	}
 }
 }

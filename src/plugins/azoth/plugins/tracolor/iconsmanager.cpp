@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "iconsmanager.h"
+#include <cmath>
 #include <QPainter>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
@@ -65,7 +66,7 @@ namespace Tracolor
 		if (!IconsCache_.contains (entryId))
 			RegenCache (entryId);
 
-		return Util::Map (IconsCache_.value (entryId).values (),
+		return Util::Map (IconsCache_.value (entryId),
 				[] (const IconsCacheEntry& item) { return item.Icon_; });
 	}
 

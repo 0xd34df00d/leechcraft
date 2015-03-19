@@ -30,6 +30,7 @@
 #include "baseemoticonssource.h"
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -59,16 +60,21 @@ namespace NativeEmoticons
 	{
 		QHash<QImage, QString> result;
 
-		const auto& hash = ParseFile (pack);
-		const auto& uniqueImgs = hash.values ().toSet ();
-		for (const auto& imgPath : uniqueImgs)
+		QSet<QString> knownPaths;
+		for (const auto& pair : Util::Stlize (ParseFile (pack)))
 		{
-			const auto& fullPath = EmoLoader_->GetIconPath (pack + "/" + imgPath);
-			const auto& img = QImage { fullPath };
+			const auto& path = pair.second;
+			if (knownPaths.contains (path))
+				continue;
+
+			knownPaths << path;
+
+			const auto& fullPath = EmoLoader_->GetIconPath (pack + "/" + path);
+			const QImage img { fullPath };
 			if (img.isNull ())
 			{
 				qWarning () << Q_FUNC_INFO
-						<< imgPath
+						<< path
 						<< "in pack"
 						<< pack
 						<< "is null, got path:"
@@ -76,7 +82,7 @@ namespace NativeEmoticons
 				continue;
 			}
 
-			result [img] = hash.key (imgPath);
+			result [img] = pair.first;
 		}
 
 		return result;

@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QtDebug>
 #include <QTimer>
+#include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -119,6 +120,16 @@ namespace Murm
 	const UserInfo& VkEntry::GetInfo () const
 	{
 		return Info_;
+	}
+
+	void VkEntry::UpdateAppInfo (const AppInfo& info, const QImage& image)
+	{
+		if (Info_.AppInfo_ == info && image == AppImage_)
+			return;
+
+		Info_.AppInfo_ = info;
+		AppImage_ = image;
+		emit entryGenerallyChanged ();
 	}
 
 	void VkEntry::Send (VkMessage *msg)
@@ -484,9 +495,65 @@ namespace Murm
 		return {};
 	}
 
+	namespace
+	{
+		QImage GetAppImage (const AppInfo& app, const QImage& appImage, VkAccount *acc)
+		{
+			if (app.Title_.isEmpty ())
+			{
+				if (app.IsMobile_)
+				{
+					static QImage mobile { "lcicons:/azoth/murm/resources/images/mobile.svg" };
+					return mobile;
+				}
+				else
+					return acc->GetParentProtocol ()->GetProtocolIcon ().pixmap (24, 24).toImage ();
+			}
+			else if (app.Title_ == "Android")
+			{
+				static QImage android { "lcicons:/azoth/murm/resources/images/android.svg" };
+				return android;
+			}
+			else if (app.Title_ == "iPhone")
+			{
+				static QImage iphone { "lcicons:/azoth/murm/resources/images/iphone.svg" };
+				return iphone;
+			}
+			else if (app.Title_ == "iPad")
+			{
+				static QImage ipad { "lcicons:/azoth/murm/resources/images/ipad.svg" };
+				return ipad;
+			}
+			else if (app.Title_ == "Windows Phone")
+			{
+				static QImage winphone { "lcicons:/azoth/murm/resources/images/winphone.svg" };
+				return winphone;
+			}
+
+			return appImage;
+		}
+	}
+
 	QMap<QString, QVariant> VkEntry::GetClientInfo (const QString&) const
 	{
-		return {};
+		if (!Info_.IsOnline_)
+			return {};
+
+		QString name;
+
+		const auto& app = Info_.AppInfo_;
+		const auto& image = GetAppImage (app, AppImage_, Account_);
+		if (!app.IsMobile_ && app.Title_.isEmpty ())
+			name = tr ("Website");
+		else if (app.Title_.isEmpty ())
+			name = tr ("Mobile device");
+		else
+			name = app.Title_;
+
+		return Util::MakeMap<QString, QVariant> ({
+				{ "client_name", name },
+				{ "client_image", image }
+			});
 	}
 
 	void VkEntry::MarkMsgsRead ()

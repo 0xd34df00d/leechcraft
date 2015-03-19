@@ -149,7 +149,7 @@ namespace Acetamide
 
 		result << ChannelsManager_->GetCLEntries ();
 
-		Q_FOREACH (ServerParticipantEntry_ptr spe, Nick2Entry_.values ())
+		for (const auto& spe : Nick2Entry_)
 			result << spe.get ();
 
 		return result;
@@ -286,9 +286,9 @@ namespace Acetamide
 			message->SetDateTime (QDateTime::currentDateTime ());
 
 			bool found = false;
-			Q_FOREACH (QObject *entryObj, ChannelsManager_->GetParticipantsByNick (nick).values ())
+			for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
 			{
-				EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
+				const auto entry = qobject_cast<EntryBase*> (entryObj);
 				if (!entry)
 					continue;
 
@@ -301,10 +301,7 @@ namespace Acetamide
 				if (Nick2Entry_.contains (nick))
 					Nick2Entry_ [nick]->HandleMessage (message);
 				else
-				{
-					ServerParticipantEntry_ptr entry = GetParticipantEntry (nick);
-					entry->HandleMessage (message);
-				}
+					GetParticipantEntry (nick)->HandleMessage (message);
 			}
 		}
 	}
@@ -881,22 +878,18 @@ namespace Acetamide
 	void IrcServerHandler::SendPublicMessage (const QString& msg,
 			const QString& channel)
 	{
-		Q_FOREACH (const QString& str, msg.split ('\n'))
-			IrcParser_->PrivMsgCommand (QStringList ()
-					<< channel
-					<< str);
+		for (const auto& str : msg.split ('\n'))
+			IrcParser_->PrivMsgCommand ({ channel, str });
 	}
 
 	void IrcServerHandler::SendPrivateMessage (IrcMessage* msg)
 	{
-		Q_FOREACH (const QString& str, msg->GetBody ().split ('\n'))
-			IrcParser_->PrivMsgCommand (QStringList ()
-					<< msg->GetOtherVariant ()
-					<< str);
+		for (const auto& str : msg->GetBody ().split ('\n'))
+			IrcParser_->PrivMsgCommand ({ msg->GetOtherVariant (), str });
 
 		bool found = false;
-		Q_FOREACH (QObject *entryObj, ChannelsManager_->
-				GetParticipantsByNick (msg->GetOtherVariant ()).values ())
+		for (const auto entryObj : ChannelsManager_->
+				GetParticipantsByNick (msg->GetOtherVariant ()))
 		{
 			EntryBase *entry = qobject_cast<EntryBase*> (entryObj);
 			if (!entry)
@@ -1127,15 +1120,9 @@ namespace Acetamide
 		if (Nick2Entry_.contains (nick))
 			Account_->handleEntryRemoved (Nick2Entry_.take (nick).get ());
 
-		Q_FOREACH (QObject *entryObj, ChannelsManager_->
-				GetParticipantsByNick (nick).values ())
-		{
-			IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (entryObj);
-			if (!entry)
-				continue;
-
-			entry->SetPrivateChat (false);
-		}
+		for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (nick))
+			if (const auto entry = qobject_cast<IrcParticipantEntry*> (entryObj))
+				entry->SetPrivateChat (false);
 	}
 
 	void IrcServerHandler::CreateServerParticipantEntry (QString nick)

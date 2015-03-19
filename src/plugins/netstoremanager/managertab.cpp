@@ -48,6 +48,7 @@
 #include "filestreemodel.h"
 #include "xmlsettingsmanager.h"
 #include "filesproxymodel.h"
+#include "downmanager.h"
 
 namespace LeechCraft
 {
@@ -63,6 +64,7 @@ namespace NetStoreManager
 	, ProxyModel_ (new FilesProxyModel (this))
 	, TreeModel_ (new FilesTreeModel (this))
 	, AccountsBox_ (0)
+	, DownManager_ (new DownManager (proxy, this))
 	{
 		Ui_.setupUi (this);
 
@@ -242,36 +244,7 @@ namespace NetStoreManager
 		AccountsBox_ = new QComboBox (this);
 		AccountsBox_->setSizeAdjustPolicy (QComboBox::AdjustToContents);
 		Q_FOREACH (auto acc, AM_->GetAccounts ())
-		{
-			auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
-			AccountsBox_->addItem (stP->GetStorageIcon (),
-					acc->GetAccountName (),
-					QVariant::fromValue<IStorageAccount*> (acc));
-
-			if (acc->GetAccountFeatures () & AccountFeature::FileListings)
-			{
-				connect (acc->GetQObject (),
-						SIGNAL (gotListing (QList<StorageItem>)),
-						this,
-						SLOT (handleGotListing (QList<StorageItem>)));
-				connect (acc->GetQObject (),
-						SIGNAL (listingUpdated (QByteArray)),
-						this,
-						SLOT (handleListingUpdated (QByteArray)));
-				connect (acc->GetQObject (),
-						SIGNAL (gotNewItem (StorageItem, QByteArray)),
-						this,
-						SLOT (handleGotNewItem (StorageItem, QByteArray)));
-				connect (acc->GetQObject (),
-						SIGNAL (gotFileUrl (QUrl, QByteArray)),
-						this,
-						SLOT (handleGotFileUrl (QUrl, QByteArray)));
-				connect (acc->GetQObject (),
-						SIGNAL (gotChanges (QList<Change>)),
-						this,
-						SLOT (handleGotChanges (QList<Change>)));
-			}
-		}
+			AppendAccount (acc);
 
 		ToolBar_->addWidget (AccountsBox_);
 
@@ -326,6 +299,41 @@ namespace NetStoreManager
 			}
 
 		handleCurrentIndexChanged (j);
+	}
+
+	void ManagerTab::AppendAccount (IStorageAccount *acc)
+	{
+		auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
+		AccountsBox_->addItem (stP->GetStorageIcon (),
+				acc->GetAccountName (),
+				QVariant::fromValue<IStorageAccount*> (acc));
+		connect (acc->GetQObject (),
+				SIGNAL (downloadFile (QUrl, QString, TaskParameters, bool)),
+				DownManager_,
+				SLOT (handleDownloadRequest (QUrl, QString, TaskParameters, bool)));
+		if (! (acc->GetAccountFeatures () & AccountFeature::FileListings))
+			return;
+
+		connect (acc->GetQObject (),
+				SIGNAL (gotListing (QList<StorageItem>)),
+				this,
+				SLOT (handleGotListing (QList<StorageItem>)));
+		connect (acc->GetQObject (),
+				SIGNAL (listingUpdated (QByteArray)),
+				this,
+				SLOT (handleListingUpdated (QByteArray)));
+		connect (acc->GetQObject (),
+				SIGNAL (gotNewItem (StorageItem, QByteArray)),
+				this,
+				SLOT (handleGotNewItem (StorageItem, QByteArray)));
+		connect (acc->GetQObject (),
+				SIGNAL (gotFileUrl (QUrl, QByteArray)),
+				this,
+				SLOT (handleGotFileUrl (QUrl, QByteArray)));
+		connect (acc->GetQObject (),
+				SIGNAL (gotChanges (QList<Change>)),
+				this,
+				SLOT (handleGotChanges (QList<Change>)));
 	}
 
 	void ManagerTab::ShowAccountActions (bool show)
@@ -424,7 +432,7 @@ namespace NetStoreManager
 	QList<QByteArray> ManagerTab::GetTrashedFiles () const
 	{
 		QList<QByteArray> result;
-		for (const auto& item : Id2Item_.values ())
+		for (const auto& item : Id2Item_)
 			if (item.IsTrashed_)
 				result << item.ID_;
 		return result;
@@ -433,9 +441,12 @@ namespace NetStoreManager
 	QList<QByteArray> ManagerTab::GetSelectedIDs () const
 	{
 		QList<QByteArray> ids;
-		Q_FOREACH (const auto& idx, Ui_.FilesView_->selectionModel ()->selectedRows ())
-			if (ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray () != "netstoremanager.item_uplevel")
-				ids << ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
+		for (const auto& idx : Ui_.FilesView_->selectionModel ()->selectedRows ())
+		{
+			const auto& id = ProxyModel_->mapToSource (idx).data (ListingRole::ID).toByteArray ();
+			if (id != "netstoremanager.item_uplevel")
+				ids << id;
+		}
 
 		return ids;
 	}
@@ -467,7 +478,7 @@ namespace NetStoreManager
 	{
 		quint64 size = 0;
 		QList<StorageItem> childItems;
-		for (const auto& item : Id2Item_.values ())
+		for (const auto& item : Id2Item_)
 			if (item.ParentID_ == id)
 			{
 				if (item.IsDirectory_ &&
@@ -497,7 +508,7 @@ namespace NetStoreManager
 			TreeModel_->appendRow ({ upLevel });
 		}
 
-		for (const auto& item : Id2Item_.values ())
+		for (const auto& item : Id2Item_)
 		{
 			quint64 folderSize = 0;
 				if (item.IsDirectory_)
@@ -600,10 +611,7 @@ namespace NetStoreManager
 			return;
 		}
 
-		auto stP = qobject_cast<IStoragePlugin*> (acc->GetParentPlugin ());
-		AccountsBox_->addItem (stP->GetStorageIcon (),
-				acc->GetAccountName (),
-				QVariant::fromValue<IStorageAccount*> (acc));
+		AppendAccount (acc);
 
 		if (AccountsBox_->count () == 1)
 			ShowAccountActions (true);
@@ -734,7 +742,11 @@ namespace NetStoreManager
 				DoNotNotifyUser |
 				DoNotSaveInHistory |
 				FromUserInitiated;
-		acc->Download (GetCurrentID (), {}, tp, true);
+		auto idx = Ui_.FilesView_->currentIndex ();
+		idx = idx.sibling (idx.row (), Columns::CName);
+		idx = ProxyModel_->mapToSource (idx);
+		acc->Download (idx.data (ListingRole::ID).toByteArray (),
+				idx.data ().toString (), tp, true);
 	}
 
 	void ManagerTab::flCopy ()
@@ -871,10 +883,16 @@ namespace NetStoreManager
 			return;
 
 		const auto& rows = Ui_.FilesView_->selectionModel ()->selectedRows ();
-		if (rows.size () <= 1)
+		if (rows.size () < 1)
+			return;
+
+		if (rows.size () == 1)
 		{
-			acc->Download (GetCurrentID (),
-					{},
+			auto idx = rows.at (0);
+			idx = idx.sibling (idx.row (), Columns::CName);
+			idx = ProxyModel_->mapToSource (idx);
+			acc->Download (idx.data (ListingRole::ID).toByteArray (),
+					idx.data ().toString (),
 					OnlyDownload | FromUserInitiated,
 					false);
 			return;
@@ -893,8 +911,9 @@ namespace NetStoreManager
 		for (auto row : rows)
 		{
 			row = row.sibling (row.row (), Columns::CName);
+			row = ProxyModel_->mapToSource (row);
 			acc->Download (row.data (ListingRole::ID).toByteArray (),
-					dir,
+					dir + "/" + row.data ().toString (),
 					OnlyDownload | FromUserInitiated | AutoAccept,
 					false);
 		}

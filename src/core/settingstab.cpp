@@ -479,13 +479,13 @@ namespace LeechCraft
 
 	void SettingsTab::handleApply ()
 	{
-		Q_FOREACH (const auto& pair, Item2Page_.values ())
+		for (const auto& pair : Item2Page_)
 			pair.first->GetSettingsDialog ()->accept ();
 	}
 
 	void SettingsTab::handleCancel ()
 	{
-		Q_FOREACH (const auto& pair, Item2Page_.values ())
+		for (const auto& pair : Item2Page_)
 			pair.first->GetSettingsDialog ()->reject ();
 	}
 

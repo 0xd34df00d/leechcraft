@@ -394,7 +394,7 @@ namespace Xoox
 
 	QXmppDataForm FormBuilder::GetForm ()
 	{
-		Q_FOREACH (FieldHandler_ptr handler, Type2Handler_.values ())
+		for (const auto& handler : Type2Handler_)
 			handler->Save ();
 		return Form_;
 	}
@@ -403,11 +403,11 @@ namespace Xoox
 	{
 		QString GetFieldVal (const QXmppDataForm& form, const QString& name)
 		{
-			Q_FOREACH (const QXmppDataForm::Field& field, form.fields ())
+			for (const auto& field : form.fields ())
 				if (field.key () == name)
 					return field.value ().toString ();
 
-			return QString ();
+			return {};
 		}
 	}
 
