@@ -93,7 +93,7 @@ namespace KnowHow
 
 	void TipDialog::ShowForIdx (int idx)
 	{
-		const QString& tip = GetTipByID (idx);
+		auto tip = GetTipByID (idx);
 		if (tip.isEmpty () && !idx)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -107,6 +107,8 @@ namespace KnowHow
 		}
 
 		XmlSettingsManager::Instance ().setProperty ("StdTipIndex", idx);
+
+		tip.replace ('\n', "<br/>");
 		Ui_.TipEdit_->setHtml (tip);
 	}
 
