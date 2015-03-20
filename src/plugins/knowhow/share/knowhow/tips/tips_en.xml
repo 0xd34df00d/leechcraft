@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tips>
 	<tip id="0">
-		You can stop IM spammers from bugging you with the help of the Azoth Herbicide plugin. Just open &lt;em>Settings&lt;/em> → &lt;em>Azoth Herbicide&lt;/em> and enable the plugin.&lt;br/>&lt;br/>
+		You can stop IM spammers from bugging you with the help of the Azoth Herbicide plugin. Just open &lt;em>Settings&lt;/em> → &lt;em>Azoth Herbicide&lt;/em> and enable the plugin.
 
 		You can either use one of the predefined questions or set your own.
 	</tip>
 	<tip id="1">
-		You can invite others to the conferences or channels you are participating in. Just click on the conference's tab and select "Invite...". Alternatively, you can click on the conference in the Azoth roster.&lt;br/>&lt;br/>
+		You can invite others to the conferences or channels you are participating in. Just click on the conference's tab and select "Invite...". Alternatively, you can click on the conference in the Azoth roster.
 
 		Of course, this feature requires some support from the exact protocol implementation, so it may be unavailable with some protocol plugins.
 	</tip>
 	<tip id="2">
-		You can make screenshots of LeechCraft window and upload them to an imagebin with three mouse clicks. Right-click a tab or an empty space on the tabbar and select "Make a screenshot...".&lt;br/>&lt;br/>
+		You can make screenshots of LeechCraft window and upload them to an imagebin with three mouse clicks. Right-click a tab or an empty space on the tabbar and select "Make a screenshot...".
 	</tip>
 	<tip id="3">
-		You can pin any tab you want. Just right-click the tab and select "Pin". The tab would become title-less and move to the left.&lt;br/>&lt;br/>
+		You can pin any tab you want. Just right-click the tab and select "Pin". The tab would become title-less and move to the left.
 
 		If you already have some pinned tabs, pinning one more tab is even easier: just move it past the rightest of the pinned tabs. Unpinning could be done the same way: just drag a pinned tab past the first unpinned tab.
 	</tip>
 	<tip id="4">
-		You don't have to use tabbar to navigate between tabs. Just hit &lt;em>Ctrl+Alt+L&lt;/em>, and the list of tabs would pop-up. Currently active tab would be focused. You can move the focus by cursor arrows and select another tab by hitting &lt;em>Space&lt;/em>.&lt;br/>&lt;br/>
+		You don't have to use tabbar to navigate between tabs. Just hit &lt;em>Ctrl+Alt+L&lt;/em>, and the list of tabs would pop-up. Currently active tab would be focused. You can move the focus by cursor arrows and select another tab by hitting &lt;em>Space&lt;/em>.
 
 		Two more hints: hitting &lt;em>Esc&lt;/em> just closes the list, and typing first few letters of the tab title move focus to it.
 
