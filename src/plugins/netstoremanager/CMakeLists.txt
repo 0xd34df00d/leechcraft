@@ -36,6 +36,7 @@ set (SRCS
 	directorywidget.cpp
 	fileswatcherbase.cpp
 	utils.cpp
+	downmanager.cpp
 	)
 
 set (FORMS

@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2010-2012  Oleg Linkin
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,32 +29,23 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/structures.h>
+#include "batteryplatform.h"
+#include <IOKit/pwr_mgt/IOPMLib.h>
 
 namespace LeechCraft
 {
-namespace NetStoreManager
+namespace Liznoo
 {
-namespace GoogleDrive
+namespace Battery
 {
-	class Core : public QObject
+	class MacPlatform : public BatteryPlatform
 	{
-		Q_OBJECT
-		Q_DISABLE_COPY (Core)
-
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
-
+		CFRunLoopSourceRef PSEventsSource_;
 	public:
-		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr proxy);
-		ICoreProxy_ptr GetProxy () const;
-
-		void SendEntity (const LeechCraft::Entity& e);
+		MacPlatform ();
+		~MacPlatform ();
+	private:
+		void HandlePowerSourcesChanged ();
 	};
 }
 }
