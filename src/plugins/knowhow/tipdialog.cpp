@@ -143,7 +143,7 @@ namespace KnowHow
 		if (idx < 0)
 			return;
 
-		ShowForIdx (0);
+		ShowForIdx (idx);
 	}
 
 	void TipDialog::on_DontShow__stateChanged ()
