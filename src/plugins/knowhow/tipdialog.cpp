@@ -114,19 +114,17 @@ namespace KnowHow
 
 	QString TipDialog::GetTipByID (int idx)
 	{
-		const QString& numIdx = QString::number (idx);
+		const auto& tips = Doc_->firstChildElement ().elementsByTagName ("tip");
+		const auto count = tips.count ();
 
-		QDomElement elem = Doc_->firstChildElement ().firstChildElement ("tip");
-		while (!elem.isNull ())
-		{
-			if (elem.attribute ("id") == numIdx)
-				break;
+		auto tipIdx = idx % count;
+		if (tipIdx < 0)
+			tipIdx += count;
 
-			elem = elem.nextSiblingElement ("tip");
-		}
+		const auto& elem = tips.at (tipIdx).toElement ();
 
 		if (elem.isNull ())
-			return QString ();
+			return {};
 
 		return elem.text ().trimmed ();
 	}
