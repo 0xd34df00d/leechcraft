@@ -136,13 +136,10 @@ namespace KnowHow
 		ShowForIdx (idx);
 	}
 
-	void TipDialog::on_Backward__released()
+	void TipDialog::on_Backward__released ()
 	{
 		const int idx = XmlSettingsManager::Instance ()
 				.Property ("StdTipIndex", 1).toInt () - 1;
-		if (idx < 0)
-			return;
-
 		ShowForIdx (idx);
 	}
 
