@@ -107,7 +107,7 @@ namespace KnowHow
 		}
 
 		XmlSettingsManager::Instance ().setProperty ("StdTipIndex", idx);
-		Ui_.TipEdit_->setText (tip);
+		Ui_.TipEdit_->setHtml (tip);
 	}
 
 	QString TipDialog::GetTipByID (int idx)
