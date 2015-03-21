@@ -763,6 +763,15 @@ namespace Xoox
 		return { 0, Qt::DisplayRole, Qt::AscendingOrder };
 	}
 
+	bool GlooxAccount::SupportsBlacklists () const
+	{
+		return false;
+	}
+
+	void GlooxAccount::SuggestToBlacklist (const QList<QObject*>&)
+	{
+	}
+
 #ifdef ENABLE_CRYPT
 	void GlooxAccount::SetPrivateKey (const QCA::PGPKey& key)
 	{
