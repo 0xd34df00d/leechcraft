@@ -702,7 +702,7 @@ namespace Azoth
 			CreateActionsForEntry (entry);
 		UpdateActionsForEntry (entry);
 
-		const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
+		const auto& id2action = Entry2Actions_ [entry];
 		QList<QAction*> result;
 
 		auto setter = [&result, &id2action, this] (decltype (BeforeRolesNames) pairs) -> void
