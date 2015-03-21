@@ -245,6 +245,11 @@ namespace Xoox
 		Items_ = items;
 	}
 
+	PrivacyListsManager::PrivacyListsManager (ClientConnection *conn)
+	: Conn_ { conn }
+	{
+	}
+
 	void PrivacyListsManager::QueryLists ()
 	{
 		QXmppElement query;

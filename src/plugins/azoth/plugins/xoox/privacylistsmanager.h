@@ -108,9 +108,13 @@ namespace Xoox
 		void SetItems (const QList<PrivacyListItem>&);
 	};
 
+	class ClientConnection;
+
 	class PrivacyListsManager : public QXmppClientExtension
 	{
 		Q_OBJECT
+
+		ClientConnection * const Conn_;
 
 		enum QueryType
 		{
@@ -122,6 +126,8 @@ namespace Xoox
 		QString CurrentName_;
 		PrivacyList CurrentList_;
 	public:
+		PrivacyListsManager (ClientConnection*);
+
 		enum ListType
 		{
 			LTActive,

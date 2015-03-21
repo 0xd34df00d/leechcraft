@@ -121,7 +121,7 @@ namespace Xoox
 	, CallManager_ (new QXmppCallManager)
 #endif
 	, PubSubManager_ (new PubSubManager)
-	, PrivacyListsManager_ (new PrivacyListsManager)
+	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, LastActivityManager_ (new LastActivityManager)
