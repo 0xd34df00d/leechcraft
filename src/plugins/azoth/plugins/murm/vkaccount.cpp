@@ -621,6 +621,8 @@ namespace Murm
 		auto info = entry->GetInfo ();
 		info.IsOnline_ = isOnline;
 		entry->UpdateInfo (info);
+
+		entry->UpdateAppInfo ({}, {});
 	}
 
 	void VkAccount::handleMessage (const MessageInfo& info)
