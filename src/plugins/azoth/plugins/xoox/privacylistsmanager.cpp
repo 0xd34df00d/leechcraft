@@ -31,6 +31,8 @@
 #include <QDomElement>
 #include <QXmppClient.h>
 #include "clientconnectionerrormgr.h"
+#include "clientconnection.h"
+#include "serverinfostorage.h"
 
 namespace LeechCraft
 {
@@ -248,6 +250,15 @@ namespace Xoox
 	PrivacyListsManager::PrivacyListsManager (ClientConnection *conn)
 	: Conn_ { conn }
 	{
+	}
+
+	bool PrivacyListsManager::IsSupported () const
+	{
+		const auto serverStorage = Conn_->GetServerInfoStorage ();
+		if (!serverStorage->HasServerFeatures ())
+			return true;
+
+		return serverStorage->GetServerFeatures ().contains (NsPrivacy);
 	}
 
 	void PrivacyListsManager::QueryLists ()

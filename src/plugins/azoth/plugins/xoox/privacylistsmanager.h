@@ -134,6 +134,8 @@ namespace Xoox
 			LTDefault
 		};
 
+		bool IsSupported () const;
+
 		void QueryLists ();
 		void QueryList (const QString&);
 		void ActivateList (const QString&, ListType = LTActive);
