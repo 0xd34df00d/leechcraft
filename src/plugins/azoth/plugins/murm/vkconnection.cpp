@@ -454,6 +454,52 @@ namespace Murm
 		AuthMgr_->GetAuthKey ();
 	}
 
+	void VkConnection::RequestUserAppId (qulonglong id)
+	{
+		const auto nam = Proxy_->GetNetworkAccessManager ();
+		PreparedCalls_.push_back ([=] (const QString& key, const UrlParams_t& params)
+			{
+				QUrl url ("https://api.vk.com/method/users.get");
+				Util::UrlOperator { url }
+						("access_token", key)
+						("user_ids", QString::number (id))
+						("fields", { "online,online_mobile" });
+
+				AddParams (url, params);
+
+				auto reply = nam->get (QNetworkRequest { url });
+				new Util::SlotClosure<Util::DeleteLaterPolicy>
+				{
+					[this, reply, id]
+					{
+						if (!CheckFinishedReply (reply))
+							return;
+
+						const auto& data = Util::ParseJson (reply, Q_FUNC_INFO);
+						Logger_ << "got users app data" << data;
+						try
+						{
+							CheckReplyData (data, reply);
+						}
+						catch (const CommandException&)
+						{
+							return;
+						}
+
+						const auto& users = data.toMap () ["response"].toList ();
+						const auto appId = users.value (0).toMap () ["online_app"].toULongLong ();
+						const auto appMobile = users.value (0).toMap () ["online_mobile"].toBool ();
+						emit gotUserAppInfoStub (id, { appId, appMobile, {}, {} });
+					},
+					reply,
+					SIGNAL (finished ()),
+					reply
+				};
+				return reply;
+			});
+		AuthMgr_->GetAuthKey ();
+	}
+
 	void VkConnection::GetMessageInfo (qulonglong id, MessageInfoSetter_f setter)
 	{
 		GetMessageInfo (QString::number (id), setter);
