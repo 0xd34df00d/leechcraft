@@ -63,9 +63,14 @@ namespace Murm
 	void AppInfoManager::CacheAppInfo (qulonglong appId)
 	{
 		if (!appId ||
-				PendingAppInfos_.contains (appId) ||
-				AppId2Info_.contains (appId))
+				PendingAppInfos_.contains (appId))
 			return;
+
+		if (AppId2Info_.contains (appId))
+		{
+			emit gotAppInfo (AppId2Info_.value (appId));
+			return;
+		}
 
 		PendingAppInfos_ << appId;
 
