@@ -642,17 +642,13 @@ namespace Murm
 			return;
 		}
 
+		const auto entry = Entries_.value (id);
+
 		const auto appId = appInfo.AppId_;
-		if (AppInfoMgr_->HasAppInfo (appId))
-		{
-			const auto& info = AppInfoMgr_->GetAppInfo (appId);
-			Entries_.value (id)->UpdateAppInfo (info, AppInfoMgr_->GetAppImage (info));
-		}
-		else
-		{
-			Entries_.value (id)->UpdateAppInfo (appInfo, {});
-			AppInfoMgr_->CacheAppInfo ({ appInfo });
-		}
+		AppInfoMgr_->PerformWithAppInfo (appId,
+				[this, entry] (const AppInfo& info)
+					{ entry->UpdateAppInfo (info, AppInfoMgr_->GetAppImage (info)); },
+				[this, entry, appInfo] { entry->UpdateAppInfo (appInfo, {}); });
 	}
 
 	void VkAccount::handleMessage (const MessageInfo& info)
