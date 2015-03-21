@@ -42,6 +42,7 @@
 
 #include <poppler-form.h>
 #include <poppler-version.h>
+#include <util/sll/util.h>
 #include "links.h"
 #include "fields.h"
 #include "annotations.h"
@@ -228,12 +229,12 @@ namespace PDF
 	void Document::PaintPage (QPainter *painter, int num, double xScale, double yScale)
 	{
 		const auto backend = PDocument_->renderBackend ();
-		std::shared_ptr<void> guard;
+		Util::DefaultScopeGuard guard;
 		if (backend != Poppler::Document::ArthurBackend)
 		{
 			PDocument_->setRenderBackend (Poppler::Document::ArthurBackend);
-			guard.reset (static_cast<void*> (nullptr),
-					[this, backend] (void*) { PDocument_->setRenderBackend (backend); });
+			guard = Util::MakeScopeGuard ([this, backend]
+					{ PDocument_->setRenderBackend (backend); });
 		}
 
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
