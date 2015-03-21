@@ -765,7 +765,10 @@ namespace Xoox
 
 	bool GlooxAccount::SupportsBlacklists () const
 	{
-		return false;
+		if (!ClientConnection_)
+			return false;
+
+		return ClientConnection_->GetPrivacyListsManager ()->IsSupported ();
 	}
 
 	void GlooxAccount::SuggestToBlacklist (const QList<QObject*>&)
