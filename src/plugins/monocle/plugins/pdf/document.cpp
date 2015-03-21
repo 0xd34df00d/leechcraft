@@ -210,13 +210,13 @@ namespace PDF
 			switch (field->type ())
 			{
 			case Poppler::FormField::FormText:
-				fields << IFormField_ptr (new FormFieldText (field));
+				fields << std::make_shared<FormFieldText> (field);
 				break;
 			case Poppler::FormField::FormChoice:
-				fields << IFormField_ptr (new FormFieldChoice (field));
+				fields << std::make_shared<FormFieldChoice> (field);
 				break;
 			case Poppler::FormField::FormButton:
-				fields << IFormField_ptr (new FormFieldButton (field, this));
+				fields << std::make_shared<FormFieldButton> (field, this);
 				break;
 			default:
 				break;
