@@ -488,8 +488,8 @@ namespace Murm
 
 						const auto& users = data.toMap () ["response"].toList ();
 						const auto appId = users.value (0).toMap () ["online_app"].toULongLong ();
-						const auto appMobile = users.value (0).toMap () ["online_mobile"].toBool ();
-						emit gotUserAppInfoStub (id, { appId, appMobile, {}, {} });
+						const auto isMobile = users.value (0).toMap () ["online_mobile"].toBool ();
+						emit gotUserAppInfoStub (id, { appId, isMobile, {}, {} });
 					},
 					reply,
 					SIGNAL (finished ()),
