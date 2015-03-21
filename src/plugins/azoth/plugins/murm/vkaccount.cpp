@@ -627,6 +627,9 @@ namespace Murm
 		entry->UpdateInfo (info);
 
 		entry->UpdateAppInfo ({}, {});
+
+		if (isOnline)
+			Conn_->RequestUserAppId (id);
 	}
 
 	void VkAccount::handleUserAppInfoStub (qulonglong id, const AppInfo& appInfo)
