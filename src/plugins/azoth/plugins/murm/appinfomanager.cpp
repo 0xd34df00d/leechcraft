@@ -78,6 +78,7 @@ namespace Murm
 				[this, appId] (const AppInfo& info)
 				{
 					AppId2Info_ [info.AppId_] = info;
+					PendingAppInfos_.remove (appId);
 
 					if (info.Icon25_.isValid ())
 						CacheImage (info.Icon25_, info.AppId_);
