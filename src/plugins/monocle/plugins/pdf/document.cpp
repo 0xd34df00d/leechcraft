@@ -141,8 +141,8 @@ namespace PDF
 		if (!page)
 			return result;
 
-		Q_FOREACH (auto link, page->links ())
-			result << ILink_ptr (new Link (this, link));
+		for (const auto link : page->links ())
+			result << std::make_shared<Link> (this, link);
 
 		return result;
 	}
