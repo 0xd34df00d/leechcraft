@@ -59,6 +59,20 @@ namespace Murm
 		return AppId2Info_.value (appId);
 	}
 
+	void AppInfoManager::PerformWithAppInfo (qulonglong appId,
+			const std::function<void (AppInfo)>& contFound,
+			const std::function<void ()>& contNotFound)
+	{
+		const auto pos = AppId2Info_.find (appId);
+		if (pos == AppId2Info_.end ())
+		{
+			contNotFound ();
+			CacheAppInfo (appId);
+		}
+		else
+			contFound (*pos);
+	}
+
 	void AppInfoManager::CacheAppInfo (const QList<AppInfo>& infos)
 	{
 		for (const auto& info : infos)

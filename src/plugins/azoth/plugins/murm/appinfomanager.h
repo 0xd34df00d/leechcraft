@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QHash>
 #include <QSet>
 #include <QUrl>
@@ -62,6 +63,10 @@ namespace Murm
 
 		bool HasAppInfo (qulonglong) const;
 		AppInfo GetAppInfo (qulonglong) const;
+
+		void PerformWithAppInfo (qulonglong,
+				const std::function<void (AppInfo)>&, const std::function<void ()>&);
+
 		void CacheAppInfo (const QList<AppInfo>&);
 
 		QImage GetAppImage (const AppInfo&) const;
