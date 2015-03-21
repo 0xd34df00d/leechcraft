@@ -98,6 +98,10 @@ namespace Murm
 				SIGNAL (userStateChanged (qulonglong, bool)),
 				this,
 				SLOT (handleUserState (qulonglong, bool)));
+		connect (Conn_,
+				SIGNAL (gotUserAppInfoStub (qulonglong, AppInfo)),
+				this,
+				SLOT (handleUserAppInfoStub (qulonglong, AppInfo)));
 
 		connect (Conn_,
 				SIGNAL (gotMessage (MessageInfo)),
@@ -623,6 +627,21 @@ namespace Murm
 		entry->UpdateInfo (info);
 
 		entry->UpdateAppInfo ({}, {});
+	}
+
+	void VkAccount::handleUserAppInfoStub (qulonglong id, const AppInfo& appInfo)
+	{
+		if (!Entries_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown user"
+					<< id;
+			return;
+		}
+
+		Entries_.value (id)->UpdateAppInfo (appInfo, {});
+
+		AppInfoMgr_->CacheAppInfo ({ appInfo });
 	}
 
 	void VkAccount::handleMessage (const MessageInfo& info)
