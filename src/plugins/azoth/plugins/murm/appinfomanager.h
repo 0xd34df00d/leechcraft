@@ -60,6 +60,8 @@ namespace Murm
 	public:
 		AppInfoManager (QNetworkAccessManager*, VkConnection*, QObject* = nullptr);
 
+		bool HasAppInfo (qulonglong) const;
+		AppInfo GetAppInfo (qulonglong) const;
 		void CacheAppInfo (const QList<AppInfo>&);
 
 		QImage GetAppImage (const AppInfo&) const;

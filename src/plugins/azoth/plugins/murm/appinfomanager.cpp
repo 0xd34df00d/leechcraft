@@ -49,6 +49,16 @@ namespace Murm
 	{
 	}
 
+	bool AppInfoManager::HasAppInfo (qulonglong appId) const
+	{
+		return AppId2Info_.contains (appId);
+	}
+
+	AppInfo AppInfoManager::GetAppInfo (qulonglong appId) const
+	{
+		return AppId2Info_.value (appId);
+	}
+
 	void AppInfoManager::CacheAppInfo (const QList<AppInfo>& infos)
 	{
 		for (const auto& info : infos)
