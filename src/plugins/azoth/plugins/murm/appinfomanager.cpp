@@ -121,6 +121,8 @@ namespace Murm
 					return;
 				}
 
+				PendingUrls_.remove (url);
+
 				const auto& img = QImage::fromData (reply->readAll ())
 						.scaled (24, 24, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 				Url2Image_ [url] = img;
