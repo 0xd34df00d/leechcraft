@@ -61,6 +61,8 @@ namespace Xoox
 		void AddListToBoxes (const QString&);
 		void ReinitModel ();
 		QList<QStandardItem*> ToRow (const PrivacyListItem&) const;
+
+		void HandleGotList (const PrivacyList&);
 	public slots:
 		void accept () override;
 		void reject () override;
@@ -76,7 +78,6 @@ namespace Xoox
 		void on_MoveDown__released ();
 
 		void handleGotLists (const QStringList&, const QString&, const QString&);
-		void handleGotList (const PrivacyList&);
 		void handleError (const QString&);
 	};
 }

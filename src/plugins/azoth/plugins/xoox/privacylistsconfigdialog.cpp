@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QStandardItemModel>
+#include <util/sll/functional.h>
 #include "privacylistsitemdialog.h"
 
 namespace LeechCraft
@@ -78,18 +79,17 @@ namespace Xoox
 	{
 		if (Lists_.contains (list))
 		{
-			handleGotList (Lists_ [list]);
+			HandleGotList (Lists_ [list]);
 			return;
 		}
 
 		Ui_.StatusLabel_->setText (tr ("Fetching list %1...").arg (list));
 
-		connect (Manager_,
-				SIGNAL (gotList (PrivacyList)),
-				this,
-				SLOT (handleGotList (PrivacyList)));
-
-		Manager_->QueryList (list);
+		Manager_->QueryList (list,
+				{
+					[] (const QXmppIq&) { qWarning () << Q_FUNC_INFO << "unable to fetch list"; },
+					Util::BindMemFn (&PrivacyListsConfigDialog::HandleGotList, this)
+				});
 	}
 
 	void PrivacyListsConfigDialog::AddListToBoxes (const QString& listName)
@@ -347,12 +347,8 @@ namespace Xoox
 			QueryList (lists.at (0));
 	}
 
-	void PrivacyListsConfigDialog::handleGotList (const PrivacyList& list)
+	void PrivacyListsConfigDialog::HandleGotList (const PrivacyList& list)
 	{
-		disconnect (Manager_,
-				SIGNAL (gotList (PrivacyList)),
-				this,
-				SLOT (handleGotList (PrivacyList)));
 		Ui_.StatusLabel_->setText ({});
 
 		ReinitModel ();
