@@ -50,6 +50,9 @@ namespace Xoox
 		const ClientConnection_ptr Conn_;
 	public:
 		AddToBlockedRunner (const QStringList& ids, const ClientConnection_ptr&, QObject* = nullptr);
+	private:
+		void HandleGotLists (const QStringList&, const QString&, const QString&);
+		void AddToList (const QString&, bool);
 	};
 }
 }

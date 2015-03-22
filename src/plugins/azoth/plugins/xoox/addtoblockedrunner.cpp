@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "addtoblockedrunner.h"
+#include <util/sll/functional.h>
 #include "clientconnection.h"
 #include "privacylistsmanager.h"
 
@@ -42,6 +43,32 @@ namespace Xoox
 	: QObject { parent }
 	, Ids_ { ids }
 	, Conn_ { conn }
+	{
+		Conn_->GetPrivacyListsManager ()->QueryLists ({
+				[this] (const QXmppIq&) { deleteLater (); },
+				Util::BindMemFn (&AddToBlockedRunner::HandleGotLists, this)
+			});
+	}
+
+	void AddToBlockedRunner::HandleGotLists (const QStringList&,
+			const QString& active, const QString& def)
+	{
+		bool activate = false;
+		QString listName;
+		if (!active.isEmpty ())
+			listName = active;
+		else if (!def.isEmpty ())
+			listName = def;
+		else
+		{
+			listName = "default";
+			activate = true;
+		}
+
+		AddToList (listName, activate);
+	}
+
+	void AddToBlockedRunner::AddToList (const QString& listName, bool activate)
 	{
 	}
 }
