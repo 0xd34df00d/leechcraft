@@ -49,10 +49,10 @@ namespace Xoox
 		Q_OBJECT
 
 		Ui::PrivacyListsConfigDialog Ui_;
-		PrivacyListsManager *Manager_;
+		PrivacyListsManager * const Manager_;
 		QMap<QString, PrivacyList> Lists_;
 
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 	public:
 		PrivacyListsConfigDialog (PrivacyListsManager*, QWidget* = 0);
 	private:
