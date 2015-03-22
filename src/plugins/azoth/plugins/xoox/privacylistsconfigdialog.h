@@ -62,8 +62,8 @@ namespace Xoox
 		void ReinitModel ();
 		QList<QStandardItem*> ToRow (const PrivacyListItem&) const;
 	public slots:
-		void accept ();
-		void reject ();
+		void accept () override;
+		void reject () override;
 	private slots:
 		void on_ConfigureList__activated (int);
 		void on_AddButton__released ();
