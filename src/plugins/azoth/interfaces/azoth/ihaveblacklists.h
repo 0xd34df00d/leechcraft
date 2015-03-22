@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ICLEntry;
+
 	class IHaveBlacklists
 	{
 	protected:
@@ -42,7 +44,7 @@ namespace Azoth
 	public:
 		virtual bool SupportsBlacklists () const = 0;
 
-		virtual void SuggestToBlacklist (const QList<QObject*>&) = 0;
+		virtual void SuggestToBlacklist (const QList<ICLEntry*>&) = 0;
 	};
 }
 }

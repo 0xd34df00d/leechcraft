@@ -242,7 +242,7 @@ namespace Xoox
 
 		// IHaveBlacklists
 		bool SupportsBlacklists () const;
-		void SuggestToBlacklist (const QList<QObject*>&);
+		void SuggestToBlacklist (const QList<ICLEntry*>&);
 
 #ifdef ENABLE_CRYPT
 		// ISupportPGP

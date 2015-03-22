@@ -771,7 +771,7 @@ namespace Xoox
 		return ClientConnection_->GetPrivacyListsManager ()->IsSupported ();
 	}
 
-	void GlooxAccount::SuggestToBlacklist (const QList<QObject*>&)
+	void GlooxAccount::SuggestToBlacklist (const QList<ICLEntry*>& entries)
 	{
 	}
 
