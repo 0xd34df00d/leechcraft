@@ -488,22 +488,22 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="455"/>
+        <location filename="clientconnection.cpp" line="456"/>
         <source>This room is already joined.</source>
         <translation>Вы уже в этой комнате.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="922"/>
+        <location filename="clientconnection.cpp" line="921"/>
         <source>Data form from %1</source>
         <translation>Форма от %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="925"/>
+        <location filename="clientconnection.cpp" line="924"/>
         <source>You have received dataform from %1:</source>
         <translation>Вы получили форму от %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1008"/>
+        <location filename="clientconnection.cpp" line="1007"/>
         <source>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</source>
         <translation>Использование сервиса juick.com не рекомендуется. Рассмотрите возможность миграции на более адекватные альтернативы вроде point.im.</translation>
     </message>
@@ -646,12 +646,12 @@
         <translation>ошибка при соединении: </translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="245"/>
+        <location filename="clientconnectionerrormgr.cpp" line="251"/>
         <source>no error.</source>
         <translation>нет ошибки.</translation>
     </message>
     <message>
-        <location filename="clientconnectionerrormgr.cpp" line="261"/>
+        <location filename="clientconnectionerrormgr.cpp" line="267"/>
         <source>Account %1:</source>
         <translation>Аккаунт %1:</translation>
     </message>
@@ -682,124 +682,124 @@
         <translation>Невозможно просматривать информацию в оффлайне</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="325"/>
+        <location filename="entrybase.cpp" line="328"/>
         <source>Photo</source>
         <translation>Фото</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="327"/>
+        <location filename="entrybase.cpp" line="330"/>
         <source>Real name</source>
         <translation>Настоящее имя</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="328"/>
+        <location filename="entrybase.cpp" line="331"/>
         <source>Birthday</source>
         <translation>День рожденья</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="330"/>
+        <location filename="entrybase.cpp" line="333"/>
         <source>About</source>
         <translation>О себе</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="340"/>
-        <location filename="entrybase.cpp" line="360"/>
-        <location filename="entrybase.cpp" line="387"/>
+        <location filename="entrybase.cpp" line="343"/>
+        <location filename="entrybase.cpp" line="363"/>
+        <location filename="entrybase.cpp" line="390"/>
         <source>preferred</source>
         <translation>предпочтительно</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="342"/>
-        <location filename="entrybase.cpp" line="362"/>
-        <location filename="entrybase.cpp" line="381"/>
+        <location filename="entrybase.cpp" line="345"/>
+        <location filename="entrybase.cpp" line="365"/>
+        <location filename="entrybase.cpp" line="384"/>
         <source>home</source>
         <translation>домашний</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="344"/>
-        <location filename="entrybase.cpp" line="364"/>
-        <location filename="entrybase.cpp" line="383"/>
+        <location filename="entrybase.cpp" line="347"/>
+        <location filename="entrybase.cpp" line="367"/>
+        <location filename="entrybase.cpp" line="386"/>
         <source>work</source>
         <translation>рабочий</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="346"/>
+        <location filename="entrybase.cpp" line="349"/>
         <source>cell</source>
         <translation>мобильный</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="348"/>
+        <location filename="entrybase.cpp" line="351"/>
         <source>Phone</source>
         <translation>Телефон</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="385"/>
+        <location filename="entrybase.cpp" line="388"/>
         <source>postal</source>
         <translation>почтовый код</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="396"/>
+        <location filename="entrybase.cpp" line="399"/>
         <source>Country: %1</source>
         <translation>Страна: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="397"/>
+        <location filename="entrybase.cpp" line="400"/>
         <source>Region: %1</source>
         <translation>Регион: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="398"/>
+        <location filename="entrybase.cpp" line="401"/>
         <source>Locality: %1</source>
         <comment>User&apos;s locality</comment>
         <translation>Местоположение: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="399"/>
+        <location filename="entrybase.cpp" line="402"/>
         <source>Street: %1</source>
         <translation>Улица: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="400"/>
+        <location filename="entrybase.cpp" line="403"/>
         <source>Postal code: %1</source>
         <translation>Почтовый код: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="402"/>
+        <location filename="entrybase.cpp" line="405"/>
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="407"/>
+        <location filename="entrybase.cpp" line="410"/>
         <source>Organization</source>
         <translation>Организация</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="408"/>
+        <location filename="entrybase.cpp" line="411"/>
         <source>Organization unit</source>
         <translation>Подразделение</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="409"/>
+        <location filename="entrybase.cpp" line="412"/>
         <source>Job title</source>
         <translation>Должность</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="410"/>
+        <location filename="entrybase.cpp" line="413"/>
         <source>Job role</source>
         <translation>Роль</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="700"/>
+        <location filename="entrybase.cpp" line="703"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="1050"/>
+        <location filename="entrybase.cpp" line="1057"/>
         <source>Select resource</source>
         <translation>Выберите ресурс</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="1051"/>
+        <location filename="entrybase.cpp" line="1058"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Выберите ресурс, которым хотите командовать</translation>
     </message>
@@ -846,42 +846,57 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="96"/>
+        <location filename="glooxaccount.cpp" line="98"/>
         <source>Self VCard...</source>
         <translation>Собственный VCard...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="97"/>
+        <location filename="glooxaccount.cpp" line="99"/>
         <source>Privacy lists...</source>
         <translation>Списки приватности...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="98"/>
+        <location filename="glooxaccount.cpp" line="100"/>
         <source>Enable message carbons</source>
         <translation>Включить копирование сообщений</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="106"/>
+        <location filename="glooxaccount.cpp" line="108"/>
         <source>Deliver messages from conversations on other resources to this resource as well.</source>
         <translation>Копировать на этот ресурс все сообщения из разговоров на других ресурсах.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="492"/>
+        <location filename="glooxaccount.cpp" line="494"/>
         <source>Why would you call yourself?</source>
         <translation>Почему вы хотите позвонить себе?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="818"/>
+        <location filename="glooxaccount.cpp" line="786"/>
+        <source>By full JID</source>
+        <translation>По полному JID</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="786"/>
+        <source>By domain</source>
+        <translation>По домену</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="789"/>
+        <source>Select block type:</source>
+        <translation>Выберите тип блокировки:</translation>
+    </message>
+    <message>
+        <location filename="glooxaccount.cpp" line="865"/>
         <source>Unable to enable encryption for entry %1: no key has been set.</source>
         <translation>Невозможно включить шифрование для контакта %1: не задан ключ.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="827"/>
+        <location filename="glooxaccount.cpp" line="874"/>
         <source>Unable to change encryption state for %1.</source>
         <translation>Невозможно изменить состояние шифрования для %1.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="855"/>
+        <location filename="glooxaccount.cpp" line="902"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
         <translation>Невозможно присоединиться к тому, что уже добавлено в контакт-лист. Вы желаете удалить %1 из ростера и попробовать снова?</translation>
     </message>
@@ -1066,104 +1081,109 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::PrivacyListsConfigDialog</name>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="58"/>
+        <location filename="privacylistsconfigdialog.cpp" line="69"/>
         <source>Fetching names of privacy lists...</source>
         <translation>Получение имен списков приватности...</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="76"/>
+        <location filename="privacylistsconfigdialog.cpp" line="87"/>
         <source>Fetching list %1...</source>
         <translation>Получение списка %1...</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="96"/>
+        <location filename="privacylistsconfigdialog.cpp" line="50"/>
         <source>Type</source>
         <translation>Тип</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="97"/>
+        <location filename="privacylistsconfigdialog.cpp" line="50"/>
         <source>Value</source>
         <translation>Значение</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="97"/>
+        <location filename="privacylistsconfigdialog.cpp" line="50"/>
         <source>Action</source>
         <translation>Действие</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="97"/>
+        <location filename="privacylistsconfigdialog.cpp" line="50"/>
         <source>Stanzas</source>
         <translation>Станзы</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="108"/>
+        <location filename="privacylistsconfigdialog.cpp" line="116"/>
         <source>None</source>
         <translation>Ничего</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="111"/>
+        <location filename="privacylistsconfigdialog.cpp" line="119"/>
         <source>JID</source>
         <translation>JID</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="114"/>
+        <location filename="privacylistsconfigdialog.cpp" line="122"/>
         <source>Subscription</source>
         <translation>Подписка</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="117"/>
+        <location filename="privacylistsconfigdialog.cpp" line="125"/>
         <source>Group</source>
         <translation>Группа</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="123"/>
+        <location filename="privacylistsconfigdialog.cpp" line="131"/>
         <source>Allow</source>
         <translation>Разрешить</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="124"/>
+        <location filename="privacylistsconfigdialog.cpp" line="132"/>
         <source>Deny</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="130"/>
+        <location filename="privacylistsconfigdialog.cpp" line="138"/>
         <source>All</source>
         <translation>Всё</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="134"/>
+        <location filename="privacylistsconfigdialog.cpp" line="142"/>
         <source>Messages</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="136"/>
+        <location filename="privacylistsconfigdialog.cpp" line="144"/>
         <source>Incoming presences</source>
         <translation>Входящие статусы</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="138"/>
+        <location filename="privacylistsconfigdialog.cpp" line="146"/>
         <source>Outgoing presences</source>
         <translation>Исходящие статусы</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="140"/>
+        <location filename="privacylistsconfigdialog.cpp" line="148"/>
         <source>IQ</source>
         <translation>IQ</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="179"/>
+        <location filename="privacylistsconfigdialog.cpp" line="183"/>
         <source>Please enter the name of the new list</source>
         <translation>Пожалуйста, введите имя нового списка</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="204"/>
+        <location filename="privacylistsconfigdialog.cpp" line="210"/>
         <source>Unable to delete a list that is currently active or selected as default one.</source>
         <translation>Невозможно удалить список, являющийся активным либо списком по умолчанию.</translation>
     </message>
     <message>
-        <location filename="privacylistsconfigdialog.cpp" line="211"/>
+        <location filename="privacylistsconfigdialog.cpp" line="217"/>
         <source>This list would be immediately and permanently deleted. Are you sure?</source>
         <translation>Этот список будет сразу и необратимо удален. Вы уверены?</translation>
+    </message>
+    <message>
+        <location filename="privacylistsconfigdialog.cpp" line="374"/>
+        <source>Error fetching lists.</source>
+        <translation>Ошибка получения списков.</translation>
     </message>
 </context>
 <context>
@@ -1190,6 +1210,14 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::Xoox::PrivacyListsManager</name>
+    <message>
+        <location filename="privacylistsmanager.cpp" line="409"/>
+        <source>Cannot fetch lists.</source>
+        <translation>Невозможно получить списки приватности.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Xoox::RegFormHandlerWidget</name>
     <message>
         <location filename="regformhandlerwidget.cpp" line="110"/>
@@ -1197,52 +1225,52 @@
         <translation>Соединение с %1...</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="201"/>
+        <location filename="regformhandlerwidget.cpp" line="199"/>
         <source>Server error: %1.</source>
         <translation>Ошибка сервера: %1.</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="219"/>
+        <location filename="regformhandlerwidget.cpp" line="215"/>
         <source>Service unavailable</source>
         <translation>Сервис недоступен</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="281"/>
+        <location filename="regformhandlerwidget.cpp" line="277"/>
         <source>data conflict</source>
         <translation>конфликт данных</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="283"/>
+        <location filename="regformhandlerwidget.cpp" line="279"/>
         <source>data is not acceptable</source>
         <translation>данные неприемлемы</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="285"/>
+        <location filename="regformhandlerwidget.cpp" line="281"/>
         <source>general error:</source>
         <translation>общая ошибка:</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="289"/>
+        <location filename="regformhandlerwidget.cpp" line="285"/>
         <source>general registration error</source>
         <translation>общая ошибка регистрации</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="299"/>
+        <location filename="regformhandlerwidget.cpp" line="295"/>
         <source>Socket error:</source>
         <translation>Ошибка сокета:</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="302"/>
+        <location filename="regformhandlerwidget.cpp" line="298"/>
         <source>Keep alive error.</source>
         <translation>Ошибка keep-alive.</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="305"/>
+        <location filename="regformhandlerwidget.cpp" line="301"/>
         <source>XMPP error:</source>
         <translation>Ошибка XMPP:</translation>
     </message>
     <message>
-        <location filename="regformhandlerwidget.cpp" line="308"/>
+        <location filename="regformhandlerwidget.cpp" line="304"/>
         <source>No error.</source>
         <translation>Нет ошибки.</translation>
     </message>
@@ -1863,37 +1891,37 @@
         <translation>Действие:</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="75"/>
+        <location filename="privacylistsitemdialog.ui" line="78"/>
         <source>Allow</source>
         <translation>Разрешить</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="80"/>
+        <location filename="privacylistsitemdialog.ui" line="83"/>
         <source>Deny</source>
         <translation>Запретить</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="88"/>
+        <location filename="privacylistsitemdialog.ui" line="91"/>
         <source>Stanza types</source>
         <translation>Станзы</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="94"/>
+        <location filename="privacylistsitemdialog.ui" line="97"/>
         <source>Message</source>
         <translation>Сообщения</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="101"/>
+        <location filename="privacylistsitemdialog.ui" line="107"/>
         <source>Incoming presence</source>
         <translation>Входящие статусы</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="108"/>
+        <location filename="privacylistsitemdialog.ui" line="117"/>
         <source>Outgoing presence</source>
         <translation>Исходящие статусы</translation>
     </message>
     <message>
-        <location filename="privacylistsitemdialog.ui" line="115"/>
+        <location filename="privacylistsitemdialog.ui" line="127"/>
         <source>IQ</source>
         <translation>IQ</translation>
     </message>
