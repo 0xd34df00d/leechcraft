@@ -232,11 +232,11 @@ namespace Xoox
 		if (listName.isEmpty ())
 			return;
 
-		const PrivacyListItem::Action action = idx == 0 ?
+		const auto action = idx == 0 ?
 				PrivacyListItem::AAllow :
 				PrivacyListItem::ADeny;
 
-		QList<PrivacyListItem> items = Lists_ [listName].GetItems ();
+		auto items = Lists_ [listName].GetItems ();
 		if (!items.isEmpty () &&
 				items.last ().GetType () == PrivacyListItem::TNone)
 			items.removeLast ();
@@ -330,9 +330,9 @@ namespace Xoox
 		Ui_.ConfigureList_->clear ();
 		Ui_.ConfigureList_->addItems (lists);
 		Ui_.ActiveList_->clear ();
-		Ui_.ActiveList_->addItems (QStringList (QString ()) + lists);
+		Ui_.ActiveList_->addItems (QStringList { {} } + lists);
 		Ui_.DefaultList_->clear ();
-		Ui_.DefaultList_->addItems (QStringList (QString ()) + lists);
+		Ui_.DefaultList_->addItems (QStringList { {} } + lists);
 
 		int idx = Ui_.ActiveList_->findText (active);
 		if (idx >= 0)
