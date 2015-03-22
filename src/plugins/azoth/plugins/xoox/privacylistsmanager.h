@@ -127,8 +127,10 @@ namespace Xoox
 
 	public:
 		using QueryListsCont_f = Util::EitherCont<void (QXmppIq), void (QStringList, QString, QString)>;
+		using QueryListCont_f = Util::EitherCont<void (QXmppIq), void (PrivacyList)>;
 	private:
 		QMap<QString, QueryListsCont_f> QueryLists2Handler_;
+		QMap<QString, QueryListCont_f> QueryList2Handler_;
 
 		QString CurrentName_;
 		PrivacyList CurrentList_;
@@ -147,6 +149,8 @@ namespace Xoox
 		void QueryLists (const QueryListsCont_f&);
 
 		void QueryList (const QString&);
+		void QueryList (const QString&, const QueryListCont_f&);
+
 		void ActivateList (const QString&, ListType = LTActive);
 		void SetList (const PrivacyList&);
 

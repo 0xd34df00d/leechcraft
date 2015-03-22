@@ -289,6 +289,15 @@ namespace Xoox
 
 	void PrivacyListsManager::QueryList (const QString& name)
 	{
+		QueryList (name,
+				{
+					[] (const QXmppIq&) {},
+					Util::BindMemFn (&PrivacyListsManager::gotList, this)
+				});
+	}
+
+	void PrivacyListsManager::QueryList (const QString& name, const QueryListCont_f& cont)
+	{
 		QXmppElement list;
 		list.setTagName ("list");
 		list.setAttribute ("name", name);
@@ -301,7 +310,9 @@ namespace Xoox
 		QXmppIq iq;
 		iq.setExtensions ({ query });
 
-		ID2Type_ [iq.id ()] = QTGetList;
+		const auto& id = iq.id ();
+		ID2Type_ [id] = QTGetList;
+		QueryList2Handler_ [id] = cont;
 
 		client ()->sendPacket (iq);
 	}
@@ -447,7 +458,7 @@ namespace Xoox
 			currentListFetched (list);
 		}
 
-		emit gotList (list);
+		QueryList2Handler_.take (elem.attribute ("id")).Right (list);
 	}
 }
 }
