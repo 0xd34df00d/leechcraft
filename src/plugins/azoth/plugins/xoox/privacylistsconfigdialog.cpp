@@ -58,6 +58,8 @@ namespace Xoox
 				SLOT (handleError (QString)));
 
 		QueryLists ();
+
+		setAttribute (Qt::WA_DeleteOnClose);
 	}
 
 	void PrivacyListsConfigDialog::QueryLists ()
@@ -161,15 +163,11 @@ namespace Xoox
 				PrivacyListsManager::LTActive);
 		Manager_->ActivateList (Ui_.DefaultList_->currentText (),
 				PrivacyListsManager::LTDefault);
-
-		deleteLater ();
 	}
 
 	void PrivacyListsConfigDialog::reject ()
 	{
 		QDialog::reject ();
-
-		deleteLater ();
 	}
 
 	void PrivacyListsConfigDialog::on_ConfigureList__activated (int idx)
