@@ -29,8 +29,6 @@
 
 #pragma once
 
-#include <functional>
-
 namespace LeechCraft
 {
 namespace Util
