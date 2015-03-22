@@ -191,6 +191,8 @@ namespace Xoox
 		Ui_.ConfigureList_->blockSignals (true);
 		Ui_.ConfigureList_->setCurrentIndex (Ui_.ConfigureList_->findText (listName));
 		Ui_.ConfigureList_->blockSignals (false);
+
+		on_DefaultPolicy__currentIndexChanged (Ui_.DefaultList_->currentIndex ());
 	}
 
 	void PrivacyListsConfigDialog::on_RemoveButton__released ()
@@ -238,13 +240,9 @@ namespace Xoox
 		if (!items.isEmpty () &&
 				items.last ().GetType () == PrivacyListItem::TNone)
 			items.removeLast ();
-		if (action == PrivacyListItem::ADeny)
-		{
-			PrivacyListItem item;
-			item.SetType (PrivacyListItem::TNone);
-			item.SetAction (action);
-			items << item;
-		}
+
+		items.append ({ {}, PrivacyListItem::TNone, action });
+
 		Lists_ [listName].SetItems (items);
 	}
 
