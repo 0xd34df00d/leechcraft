@@ -31,6 +31,7 @@
 
 #include <type_traits>
 #include <iterator>
+#include <QPair>
 #include <QStringList>
 #include <boost/optional.hpp>
 #include "oldcppkludges.h"
