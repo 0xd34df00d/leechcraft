@@ -30,6 +30,8 @@
 #include "privacylistsmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include "clientconnectionerrormgr.h"
 #include "clientconnection.h"
 #include "serverinfostorage.h"
@@ -263,6 +265,14 @@ namespace Xoox
 
 	void PrivacyListsManager::QueryLists ()
 	{
+		QueryLists ({
+				[this] (const QXmppIq& iq) { HandleListQueryError (iq); },
+				Util::BindMemFn (&PrivacyListsManager::gotLists, this)
+			});
+	}
+
+	void PrivacyListsManager::QueryLists (const QueryListsCont_f& cont)
+	{
 		QXmppElement query;
 		query.setTagName ("query");
 		query.setAttribute ("xmlns", NsPrivacy);
@@ -270,7 +280,9 @@ namespace Xoox
 		QXmppIq iq;
 		iq.setExtensions ({ query });
 
-		ID2Type_ [iq.id ()] = QTQueryLists;
+		const auto& id = iq.id ();
+		ID2Type_ [id] = QTQueryLists;
+		QueryLists2Handler_ [id] = cont;
 
 		client ()->sendPacket (iq);
 	}
@@ -392,11 +404,15 @@ namespace Xoox
 
 	void PrivacyListsManager::HandleListQueryResult (const QDomElement& elem)
 	{
+		const auto& id = elem.attribute ("id");
+
+		const auto& handler = QueryLists2Handler_.take (id);
+
 		if (elem.attribute ("type") == "error")
 		{
 			QXmppIq iq;
 			iq.parse (elem);
-			HandleListQueryError (iq);
+			handler.Left (iq);
 			return;
 		}
 
@@ -413,10 +429,9 @@ namespace Xoox
 		}
 
 		CurrentName_ = active.isEmpty () ? def : active;;
-
-		emit gotLists (lists, active, def);
-
 		QueryList (CurrentName_);
+
+		handler.Right (lists, active, def);
 	}
 
 	void PrivacyListsManager::HandleList (const QDomElement& elem)

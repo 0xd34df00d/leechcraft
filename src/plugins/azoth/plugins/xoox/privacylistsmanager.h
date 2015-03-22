@@ -27,9 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSMANAGER_H
+#pragma once
+
+#include <functional>
 #include <QXmppClientExtension.h>
+#include <util/sll/eithercont.h>
 
 namespace LeechCraft
 {
@@ -123,6 +125,11 @@ namespace Xoox
 		};
 		QMap<QString, QueryType> ID2Type_;
 
+	public:
+		using QueryListsCont_f = Util::EitherCont<void (QXmppIq), void (QStringList, QString, QString)>;
+	private:
+		QMap<QString, QueryListsCont_f> QueryLists2Handler_;
+
 		QString CurrentName_;
 		PrivacyList CurrentList_;
 	public:
@@ -137,6 +144,8 @@ namespace Xoox
 		bool IsSupported () const;
 
 		void QueryLists ();
+		void QueryLists (const QueryListsCont_f&);
+
 		void QueryList (const QString&);
 		void ActivateList (const QString&, ListType = LTActive);
 		void SetList (const PrivacyList&);
@@ -150,7 +159,7 @@ namespace Xoox
 		void HandleListQueryResult (const QDomElement&);
 		void HandleList (const QDomElement&);
 	signals:
-		void gotLists (const QStringList&, const QString&, const QString&);
+		void gotLists (const QStringList& lists, const QString& active, const QString& def);
 		void gotList (const PrivacyList&);
 		void currentListFetched (const PrivacyList&);
 
@@ -159,5 +168,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
