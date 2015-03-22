@@ -1059,7 +1059,7 @@ namespace Xoox
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 
-		Core::Instance ().saveRoster ();
+		Core::Instance ().ScheduleSaveRoster (5000);
 	}
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
