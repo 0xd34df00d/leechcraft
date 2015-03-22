@@ -29,14 +29,26 @@
 
 #pragma once
 
+#ifndef USE_CPP14
+#include <functional>
+#endif
+
 namespace LeechCraft
 {
 namespace Util
 {
+#ifdef USE_CPP14
 	template<typename R, typename T, typename... Args>
 	auto BindMemFn (R (T::*fn) (Args...), T *c)
 	{
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
+#else
+	template<typename R, typename T, typename... Args>
+	std::function<R (Args)> BindMemFn (R (T::*fn) (Args...), T *c)
+	{
+		return [fn, c] (Args... args) { return (c->*fn) (args...); };
+	}
+#endif
 }
 }
