@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QStandardItemModel>
+#include <QtDebug>
 #include <util/sll/functional.h>
 #include "privacylistsitemdialog.h"
 
