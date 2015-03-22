@@ -42,6 +42,8 @@ namespace Xoox
 	class ClientConnection;
 	using ClientConnection_ptr = std::shared_ptr<ClientConnection>;
 
+	class PrivacyList;
+
 	class AddToBlockedRunner : public QObject
 	{
 		Q_OBJECT
@@ -52,7 +54,8 @@ namespace Xoox
 		AddToBlockedRunner (const QStringList& ids, const ClientConnection_ptr&, QObject* = nullptr);
 	private:
 		void HandleGotLists (const QStringList&, const QString&, const QString&);
-		void AddToList (const QString&, bool);
+		void FetchList (const QString&, bool);
+		void AddToList (const QString&, const PrivacyList&, bool);
 	};
 }
 }

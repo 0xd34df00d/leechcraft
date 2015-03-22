@@ -29,6 +29,8 @@
 
 #include "addtoblockedrunner.h"
 #include <util/sll/functional.h>
+#include <util/sll/prelude.h>
+#include <util/sll/util.h>
 #include "clientconnection.h"
 #include "privacylistsmanager.h"
 
@@ -45,9 +47,9 @@ namespace Xoox
 	, Conn_ { conn }
 	{
 		Conn_->GetPrivacyListsManager ()->QueryLists ({
-				[this] (const QXmppIq&) { deleteLater (); },
-				Util::BindMemFn (&AddToBlockedRunner::HandleGotLists, this)
-			});
+					[this] (const QXmppIq&) { deleteLater (); },
+					Util::BindMemFn (&AddToBlockedRunner::HandleGotLists, this)
+				});
 	}
 
 	void AddToBlockedRunner::HandleGotLists (const QStringList&,
@@ -65,11 +67,49 @@ namespace Xoox
 			activate = true;
 		}
 
-		AddToList (listName, activate);
+		FetchList (listName, activate);
 	}
 
-	void AddToBlockedRunner::AddToList (const QString& listName, bool activate)
+	void AddToBlockedRunner::FetchList (const QString& listName, bool activate)
 	{
+		Conn_->GetPrivacyListsManager ()->QueryList (listName,
+				{
+					[=] (const QXmppIq&) { AddToList (listName, {}, activate); },
+					[=] (const PrivacyList& list) { AddToList (listName, list, activate); }
+				});
+	}
+
+	void AddToBlockedRunner::AddToList (const QString& name, const PrivacyList& oldList, bool activate)
+	{
+		const auto deleteGuard = Util::MakeScopeGuard ([this] { deleteLater (); });
+		auto list = oldList;
+		if (list.GetName ().isEmpty ())
+			list.SetName (name);
+
+		auto items = list.GetItems ();
+
+		const auto& presentIds = QSet<QString>::fromList (Util::Map (items,
+					std::mem_fn (&PrivacyListItem::GetValue)));
+
+		bool modified = false;
+		for (const auto& id : Ids_)
+		{
+			if (presentIds.contains (id))
+				continue;
+
+			items.prepend ({ id, PrivacyListItem::TJid });
+			modified = true;
+		}
+
+		if (!modified)
+			return;
+
+		list.SetItems (items);
+
+		const auto plm = Conn_->GetPrivacyListsManager ();
+		plm->SetList (list);
+		if (activate)
+			plm->ActivateList (list.GetName (), PrivacyListsManager::LTDefault);
 	}
 }
 }
