@@ -45,7 +45,7 @@ namespace Util
 	}
 #else
 	template<typename R, typename T, typename... Args>
-	std::function<R (Args)> BindMemFn (R (T::*fn) (Args...), T *c)
+	std::function<R (Args...)> BindMemFn (R (T::*fn) (Args...), T *c)
 	{
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
