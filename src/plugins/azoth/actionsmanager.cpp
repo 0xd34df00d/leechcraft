@@ -61,6 +61,7 @@
 #include "interfaces/azoth/ihavedirectedstatus.h"
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "interfaces/azoth/ihaveblacklists.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
@@ -1134,6 +1135,18 @@ namespace Azoth
 									&IAuthable::RerequestAuth);
 						}
 					}));
+
+			if (const auto ihb = qobject_cast<IHaveBlacklists*> (acc->GetQObject ()))
+				if (ihb->SupportsBlacklists ())
+				{
+					const auto block = authMenu->addAction (tr ("Block..."),
+							this, SLOT (handleActoredActionTriggered ()));
+					block->setProperty ("Azoth/EntryActor",
+							QVariant::fromValue<EntryActor_f> ({
+								[ihb] (const QList<ICLEntry*>& entries)
+									{ ihb->SuggestToBlacklist (entries); }
+							}));
+				}
 		}
 
 		auto notifyMenu = new QMenu (tr ("Notify when"));
