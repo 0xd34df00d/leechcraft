@@ -35,6 +35,7 @@
 #include <QXmppCallManager.h>
 #include <QXmppMucManager.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -73,6 +74,7 @@
 #include "lastactivitymanager.h"
 #include "roomhandler.h"
 #include "clientconnectionerrormgr.h"
+#include "addtoblockedrunner.h"
 
 namespace LeechCraft
 {
@@ -773,6 +775,39 @@ namespace Xoox
 
 	void GlooxAccount::SuggestToBlacklist (const QList<ICLEntry*>& entries)
 	{
+		if (!ClientConnection_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no client connection is instantiated";
+			return;
+		}
+
+		bool ok = false;
+		const QStringList variants { tr ("By full JID"), tr ("By domain") };
+		const auto& selected = QInputDialog::getItem (nullptr,
+				"LeechCraft",
+				tr ("Select block type:"),
+				variants,
+				0,
+				false,
+				&ok);
+		if (!ok)
+			return;
+
+		QStringList allJids { Util::Map (entries, [] (ICLEntry *entry) { return entry->GetHumanReadableID (); }) };
+		if (variants.indexOf (selected) == 1)
+			allJids = Util::Map (allJids,
+					[] (const QString& jid)
+					{
+						QString bare;
+						ClientConnection::Split (jid, &bare, nullptr);
+						return bare.section ('@', 1);
+					});
+
+		allJids.sort ();
+		allJids.erase (std::unique (allJids.begin (), allJids.end ()), allJids.end ());
+
+		new AddToBlockedRunner { allJids, ClientConnection_, this };
 	}
 
 #ifdef ENABLE_CRYPT
