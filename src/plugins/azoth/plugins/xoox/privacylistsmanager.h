@@ -106,7 +106,7 @@ namespace Xoox
 		QString GetName () const;
 		void SetName (const QString&);
 
-		QList<PrivacyListItem> GetItems () const;
+		const QList<PrivacyListItem>& GetItems () const;
 		void SetItems (const QList<PrivacyListItem>&);
 	};
 

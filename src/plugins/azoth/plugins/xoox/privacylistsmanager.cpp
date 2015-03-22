@@ -239,7 +239,7 @@ namespace Xoox
 		Name_ = name;
 	}
 
-	QList<PrivacyListItem> PrivacyList::GetItems () const
+	const QList<PrivacyListItem>& PrivacyList::GetItems () const
 	{
 		return Items_;
 	}
