@@ -48,7 +48,7 @@ namespace Autopaste
 			[this, entry] { Entry2Actions_.remove (entry); },
 			entry,
 			SIGNAL (destroyed ()),
-			entry
+			this
 		};
 
 		const auto paste = new QAction { tr ("Paste to pastebin..."), entry };
