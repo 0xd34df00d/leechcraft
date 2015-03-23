@@ -56,7 +56,7 @@ namespace Liznoo
 	, HBatteryPowerNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
 	, FakeWidget_ (widget)
 	{
-		HWND h_wnd = FakeWidget_->winId ();
+		HWND h_wnd = reinterpret_cast<HWND> (FakeWidget_->winId ());
 
 		*HPowerSchemeNotify_ = RegisterPowerSettingNotification (h_wnd,
 			&GUID_POWERSCHEME_PERSONALITY, DEVICE_NOTIFY_WINDOW_HANDLE);
