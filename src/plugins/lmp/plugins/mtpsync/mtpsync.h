@@ -128,8 +128,6 @@ namespace MTPSync
 
 		void handleRowsInserted (const QModelIndex&, int, int);
 		void handleRowsRemoved (const QModelIndex&, int, int);
-
-		void clearCaches ();
 	signals:
 		void availableDevicesChanged ();
 		void uploadProgress (qint64, qint64);
