@@ -168,10 +168,6 @@ namespace Azoth
 				this,
 				SLOT (handleItemChanged (QStandardItem*)));
 
-#ifdef ENABLE_CRYPT
-		Ui_.PGP_->setEnabled (true);
-#endif
-
 		const auto& fm = fontMetrics ();
 
 		connect (&Core::Instance (),
@@ -187,6 +183,12 @@ namespace Azoth
 			addAccount (acc);
 
 		Ui_.Accounts_->setModel (AccModel_);
+
+		connect (Ui_.Accounts_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (handleAccountSelected (QModelIndex)));
+		handleAccountSelected ({});
 
 		Ui_.Accounts_->setColumnWidth (0, 32);
 		Ui_.Accounts_->setColumnWidth (1, fm.width ("Some typical very long account name"));
@@ -324,6 +326,23 @@ namespace Azoth
 		const auto row = index.row ();
 		for (auto col : { Column::ChatStyle, Column::ChatVariant, Column::MUCStyle, Column::MUCVariant })
 			AccModel_->item (row, col)->setText ({});
+	}
+
+	void AccountsListWidget::handleAccountSelected (const QModelIndex& index)
+	{
+		const auto isValid = index.isValid ();
+
+		const auto items
+		{
+			Ui_.Delete_,
+			Ui_.Modify_,
+			Ui_.ResetStyles_,
+#ifdef ENABLE_CRYPT
+			Ui_.PGP_
+#endif
+		};
+		for (const auto item : items)
+			item->setEnabled (isValid);
 	}
 
 	void AccountsListWidget::handleItemChanged (QStandardItem *item)

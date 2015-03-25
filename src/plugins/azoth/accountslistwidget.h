@@ -70,11 +70,15 @@ namespace Azoth
 		AccountsListWidget (QWidget* = 0);
 	private slots:
 		void addAccount (IAccount*);
+
 		void on_Add__released ();
+
 		void on_Modify__released ();
 		void on_PGP__released ();
 		void on_Delete__released ();
 		void on_ResetStyles__released ();
+
+		void handleAccountSelected (const QModelIndex&);
 
 		void handleItemChanged (QStandardItem*);
 
