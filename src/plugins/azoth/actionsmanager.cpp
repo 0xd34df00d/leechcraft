@@ -716,14 +716,15 @@ namespace Azoth
 					continue;
 
 				if (pair.second.which ())
-				{
 					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+
+				if (!action->property ("Azoth/EntryActor").isNull ())
 					connect (action,
 							SIGNAL (triggered ()),
 							this,
 							SLOT (handleActoredActionTriggered ()),
 							Qt::UniqueConnection);
-				}
+
 				result << action;
 			}
 		};
