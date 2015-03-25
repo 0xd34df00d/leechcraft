@@ -1150,6 +1150,7 @@ namespace Azoth
 			if (ihb->SupportsBlacklists ())
 			{
 				const auto block = new QAction (tr ("Blacklist..."), entry->GetQObject ());
+				block->setProperty ("ActionIcon", "im-ban-user");
 				Entry2Actions_ [entry] ["block"] = block;
 				Action2Areas_ [block] << CLEAAContactListCtxtMenu;
 				block->setProperty ("Azoth/EntryActor",
