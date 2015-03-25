@@ -832,7 +832,11 @@ namespace Azoth
 					continue;
 
 				const auto refAction = Entry2Actions_ [entries.first ()] [name];
-				if (!pair.second.which () && !refAction->isSeparator () && !refAction->menu ())
+				const auto& refActorVar = refAction->property ("Azoth/EntryActor");
+				if (refActorVar.isNull () &&
+						!pair.second.which () &&
+						!refAction->isSeparator () &&
+						!refAction->menu ())
 					continue;
 
 				auto action = new QAction (refAction->text (), parent);
