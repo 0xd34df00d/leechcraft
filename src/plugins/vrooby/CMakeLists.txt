@@ -19,7 +19,7 @@ QtAddResources (RCCS ${RESOURCES})
 CreateTrs ("vrooby" "en;ru_RU" COMPILED_TRANSLATIONS)
 
 cmake_dependent_option (ENABLE_VROOBY_UDISKS "Enable UDisks backend for Vrooby" ON "NOT WIN32" OFF)
-cmake_dependent_option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" OFF "NOT WIN32" OFF)
+cmake_dependent_option (ENABLE_VROOBY_UDISKS2 "Enable UDisks2 backend for Vrooby" ON "NOT WIN32" OFF)
 
 if (ENABLE_VROOBY_UDISKS)
 	add_subdirectory (backends/udisks)
