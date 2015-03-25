@@ -844,7 +844,10 @@ namespace Azoth
 				{
 					action->setSeparator (refAction->isSeparator ());
 					action->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
-					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+					action->setProperty ("Azoth/EntryActor",
+							refActorVar.isNull () ?
+									QVariant::fromValue (pair.second) :
+									refActorVar);
 					action->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
 					action->setProperty ("ReferenceAction", QVariant::fromValue<QObject*> (refAction));
 					connect (action,
