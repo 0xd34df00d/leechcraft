@@ -1149,7 +1149,7 @@ namespace Azoth
 		if (const auto ihb = qobject_cast<IHaveBlacklists*> (acc->GetQObject ()))
 			if (ihb->SupportsBlacklists ())
 			{
-				const auto block = new QAction (tr ("Block..."), entry->GetQObject ());
+				const auto block = new QAction (tr ("Blacklist..."), entry->GetQObject ());
 				Entry2Actions_ [entry] ["block"] = block;
 				Action2Areas_ [block] << CLEAAContactListCtxtMenu;
 				block->setProperty ("Azoth/EntryActor",
