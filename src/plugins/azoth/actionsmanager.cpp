@@ -623,6 +623,7 @@ namespace Azoth
 			{ "remove", SingleEntryActor_f (Remove) },
 			{ "sep_afterrostermodify", {} },
 			{ "directedpresence", MultiEntryActor_f (SendDirectedStatus) },
+			{ "block", {} },
 			{ "authorization", {} },
 			{ "notifywhen", {} }
 		};
@@ -1143,19 +1144,20 @@ namespace Azoth
 									&IAuthable::RerequestAuth);
 						}
 					}));
-
-			if (const auto ihb = qobject_cast<IHaveBlacklists*> (acc->GetQObject ()))
-				if (ihb->SupportsBlacklists ())
-				{
-					const auto block = authMenu->addAction (tr ("Block..."),
-							this, SLOT (handleActoredActionTriggered ()));
-					block->setProperty ("Azoth/EntryActor",
-							QVariant::fromValue<EntryActor_f> ({
-								[ihb] (const QList<ICLEntry*>& entries)
-									{ ihb->SuggestToBlacklist (entries); }
-							}));
-				}
 		}
+
+		if (const auto ihb = qobject_cast<IHaveBlacklists*> (acc->GetQObject ()))
+			if (ihb->SupportsBlacklists ())
+			{
+				const auto block = new QAction (tr ("Block..."), entry->GetQObject ());
+				Entry2Actions_ [entry] ["block"] = block;
+				Action2Areas_ [block] << CLEAAContactListCtxtMenu;
+				block->setProperty ("Azoth/EntryActor",
+						QVariant::fromValue<EntryActor_f> ({
+							[ihb] (const QList<ICLEntry*>& entries)
+								{ ihb->SuggestToBlacklist (entries); }
+						}));
+			}
 
 		auto notifyMenu = new QMenu (tr ("Notify when"));
 		Entry2Actions_ [entry] ["notifywhen"] = notifyMenu->menuAction ();
