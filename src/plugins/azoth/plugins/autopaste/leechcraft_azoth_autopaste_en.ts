@@ -2,14 +2,22 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
+    <name>LeechCraft::Azoth::Autopaste::ActionsStorage</name>
+    <message>
+        <location filename="actionsstorage.cpp" line="54"/>
+        <source>Paste to pastebin...</source>
+        <translation>Paste to pastebin...</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Azoth::Autopaste::PasteServiceBase</name>
     <message>
-        <location filename="pasteservicebase.cpp" line="73"/>
+        <location filename="pasteservicebase.cpp" line="76"/>
         <source>Text pasted</source>
         <translation>Text pasted</translation>
     </message>
     <message>
-        <location filename="pasteservicebase.cpp" line="74"/>
+        <location filename="pasteservicebase.cpp" line="77"/>
         <source>Your text has been pasted: %1. The URL has been copied to the clipboard.</source>
         <translation>Your text has been pasted: %1. The URL has been copied to the clipboard.</translation>
     </message>
@@ -17,7 +25,7 @@
 <context>
     <name>LeechCraft::Azoth::Autopaste::Plugin</name>
     <message>
-        <location filename="autopaste.cpp" line="78"/>
+        <location filename="autopaste.cpp" line="89"/>
         <source>Detects long messages and suggests pasting them to a pastebin.</source>
         <translation>Detects long messages and suggests pasting them to a pastebin.</translation>
     </message>
