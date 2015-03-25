@@ -93,7 +93,7 @@ namespace Azoth
 		return (general + ' ' + specific).trimmed ().replace (' ', '_');
 	}
 
-	void InitiateAccountAddition(QWidget *parent)
+	void InitiateAccountAddition (QWidget *parent)
 	{
 		QWizard *wizard = new QWizard (parent);
 		wizard->setAttribute (Qt::WA_DeleteOnClose);

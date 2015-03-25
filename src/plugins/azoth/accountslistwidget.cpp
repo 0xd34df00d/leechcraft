@@ -183,7 +183,7 @@ namespace Azoth
 				this,
 				SLOT (handleAccountRemoved (IAccount*)));
 
-		for (IAccount *acc : Core::Instance ().GetAccounts ())
+		for (const auto acc : Core::Instance ().GetAccounts ())
 			addAccount (acc);
 
 		Ui_.Accounts_->setModel (AccModel_);
@@ -339,7 +339,7 @@ namespace Azoth
 			acc->SetShownInRoster (item->checkState () == Qt::Checked);
 
 			if (!acc->IsShownInRoster () && acc->GetState ().State_ != SOffline)
-				acc->ChangeState (EntryStatus (SOffline, QString ()));
+				acc->ChangeState ({ SOffline, {} });
 
 			emit accountVisibilityChanged (acc);
 
