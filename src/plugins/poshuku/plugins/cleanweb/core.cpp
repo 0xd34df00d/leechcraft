@@ -622,6 +622,9 @@ namespace CleanWeb
 	 */
 	bool Core::ShouldReject (const QNetworkRequest& req) const
 	{
+		if (!XmlSettingsManager::Instance ()->property ("EnableFiltering").toBool ())
+			return false;
+
 		if (!req.hasRawHeader ("referer"))
 			return false;
 
