@@ -59,6 +59,7 @@
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
@@ -774,7 +775,7 @@ namespace CleanWeb
 		{
 			QString str = tr ("The subscription %1 was successfully added.")
 					.arg (subscrName);
-			emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 					str, PInfo_));
 		}
 		return result;
@@ -797,24 +798,23 @@ namespace CleanWeb
 					NotPersistent |
 					DoNotAnnounceEntity);
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto iem = Proxy_->GetEntityManager ();
+		const auto& result = iem->DelegateEntity (e);
+		if (!result.Handler_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to delegate"
 					<< subscrName
-					<< url.toString ().toUtf8 ();
+					<< url.toString ();
 
 			const auto& str = tr ("The subscription %1 wasn't delegated.")
 					.arg (subscrName);
-			emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+			iem->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 					str, PCritical_));
 			return false;
 		}
 
-		HandleProvider (pr);
+		HandleProvider (result.Handler_);
 		PendingJob pj
 		{
 			path,
@@ -822,7 +822,7 @@ namespace CleanWeb
 			subscrName,
 			url
 		};
-		PendingJobs_ [id] = pj;
+		PendingJobs_ [result.ID_] = pj;
 		return true;
 	}
 

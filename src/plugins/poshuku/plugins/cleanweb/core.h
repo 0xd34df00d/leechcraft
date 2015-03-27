@@ -192,10 +192,6 @@ namespace CleanWeb
 		void handleFrameDestroyed ();
 
 		void regenFilterCaches ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
