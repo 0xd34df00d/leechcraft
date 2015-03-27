@@ -512,8 +512,8 @@ namespace Xoox
 		const auto pos = std::find_if (items.begin (), items.end (),
 				[&jid] (const PrivacyListItem& item)
 				{
-					return item.GetType () == PrivacyListItem::TJid &&
-							item.GetAction () == PrivacyListItem::ADeny &&
+					return item.GetType () == PrivacyListItem::Type::Jid &&
+							item.GetAction () == PrivacyListItem::Action::Deny &&
 							item.GetValue () == jid;
 				});
 		BlockContact_->setChecked (pos != items.end ());
@@ -529,14 +529,14 @@ namespace Xoox
 		auto items = current.GetItems ();
 		for (const auto& item : items)
 		{
-			if (item.GetType () != PrivacyListItem::TJid)
+			if (item.GetType () != PrivacyListItem::Type::Jid)
 				continue;
 
 			if (item.GetValue () != jid)
 				continue;
 
-			if ((item.GetAction () == PrivacyListItem::AAllow && !add) ||
-				(item.GetAction () == PrivacyListItem::ADeny && add))
+			if ((item.GetAction () == PrivacyListItem::Action::Allow && !add) ||
+				(item.GetAction () == PrivacyListItem::Action::Deny && add))
 				return;
 
 			if (!add)
@@ -546,7 +546,7 @@ namespace Xoox
 			}
 		}
 		if (add)
-			items.append (PrivacyListItem (jid, PrivacyListItem::TJid));
+			items.append ({ jid, PrivacyListItem::Type::Jid });
 
 		if (items.size () == current.GetItems ().size ())
 			return;

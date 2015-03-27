@@ -97,7 +97,7 @@ namespace Xoox
 			if (presentIds.contains (id))
 				continue;
 
-			items.prepend ({ id, PrivacyListItem::TJid });
+			items.prepend ({ id, PrivacyListItem::Type::Jid });
 			modified = true;
 		}
 
@@ -109,7 +109,7 @@ namespace Xoox
 		const auto plm = Conn_->GetPrivacyListsManager ();
 		plm->SetList (list);
 		if (activate)
-			plm->ActivateList (list.GetName (), PrivacyListsManager::LTDefault);
+			plm->ActivateList (list.GetName (), PrivacyListsManager::ListType::Default);
 	}
 }
 }

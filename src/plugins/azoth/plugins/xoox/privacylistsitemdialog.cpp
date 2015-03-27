@@ -52,19 +52,19 @@ namespace Xoox
 			result.SetValue (Ui_.Value_->currentText ());
 
 		result.SetAction (Ui_.Action_->currentIndex () == ANAllow ?
-					PrivacyListItem::AAllow :
-					PrivacyListItem::ADeny);
+					PrivacyListItem::Action::Allow :
+					PrivacyListItem::Action::Deny);
 
 		switch (Ui_.Type_->currentIndex ())
 		{
 		case TNJID:
-			result.SetType (PrivacyListItem::TJid);
+			result.SetType (PrivacyListItem::Type::Jid);
 			break;
 		case TNGroup:
-			result.SetType (PrivacyListItem::TGroup);
+			result.SetType (PrivacyListItem::Type::Group);
 			break;
 		case TNSubscription:
-			result.SetType (PrivacyListItem::TSubscription);
+			result.SetType (PrivacyListItem::Type::Subscription);
 			break;
 		}
 
@@ -88,23 +88,23 @@ namespace Xoox
 
 	void PrivacyListsItemDialog::SetItem (const PrivacyListItem& item)
 	{
-		Ui_.Action_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ?
+		Ui_.Action_->setCurrentIndex (item.GetAction () == PrivacyListItem::Action::Allow ?
 					ANAllow :
 					ANDeny);
 
 		TypeNum index = TNJID;
 		switch (item.GetType ())
 		{
-		case PrivacyListItem::TJid:
+		case PrivacyListItem::Type::Jid:
 			index = TNJID;
 			break;
-		case PrivacyListItem::TGroup:
+		case PrivacyListItem::Type::Group:
 			index = TNGroup;
 			break;
-		case PrivacyListItem::TSubscription:
+		case PrivacyListItem::Type::Subscription:
 			index = TNSubscription;
 			break;
-		case PrivacyListItem::TNone:
+		case PrivacyListItem::Type::None:
 			break;
 		}
 		Ui_.Type_->setCurrentIndex (index);

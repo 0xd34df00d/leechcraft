@@ -112,22 +112,22 @@ namespace Xoox
 
 		switch (item.GetType ())
 		{
-		case PrivacyListItem::TNone:
+		case PrivacyListItem::Type::None:
 			modelItems << new QStandardItem (tr ("None"));
 			break;
-		case PrivacyListItem::TJid:
+		case PrivacyListItem::Type::Jid:
 			modelItems << new QStandardItem (tr ("JID"));
 			break;
-		case PrivacyListItem::TSubscription:
+		case PrivacyListItem::Type::Subscription:
 			modelItems << new QStandardItem (tr ("Subscription"));
 			break;
-		case PrivacyListItem::TGroup:
+		case PrivacyListItem::Type::Group:
 			modelItems << new QStandardItem (tr ("Group"));
 			break;
 		}
 
 		modelItems << new QStandardItem (item.GetValue ());
-		modelItems << new QStandardItem (item.GetAction () == PrivacyListItem::AAllow ?
+		modelItems << new QStandardItem (item.GetAction () == PrivacyListItem::Action::Allow ?
 					tr ("Allow") :
 					tr ("Deny"));
 
@@ -161,9 +161,9 @@ namespace Xoox
 			Manager_->SetList (pl);
 
 		Manager_->ActivateList (Ui_.ActiveList_->currentText (),
-				PrivacyListsManager::LTActive);
+				PrivacyListsManager::ListType::Active);
 		Manager_->ActivateList (Ui_.DefaultList_->currentText (),
-				PrivacyListsManager::LTDefault);
+				PrivacyListsManager::ListType::Default);
 	}
 
 	void PrivacyListsConfigDialog::reject ()
@@ -234,15 +234,15 @@ namespace Xoox
 			return;
 
 		const auto action = idx == 0 ?
-				PrivacyListItem::AAllow :
-				PrivacyListItem::ADeny;
+				PrivacyListItem::Action::Allow :
+				PrivacyListItem::Action::Deny;
 
 		auto items = Lists_ [listName].GetItems ();
 		if (!items.isEmpty () &&
-				items.last ().GetType () == PrivacyListItem::TNone)
+				items.last ().GetType () == PrivacyListItem::Type::None)
 			items.removeLast ();
 
-		items.append ({ {}, PrivacyListItem::TNone, action });
+		items.append ({ {}, PrivacyListItem::Type::None, action });
 
 		Lists_ [listName].SetItems (items);
 	}
@@ -357,10 +357,11 @@ namespace Xoox
 		Lists_ [list.GetName ()] = list;
 
 		auto items = list.GetItems ();
-		if (!items.isEmpty () && items.last ().GetType () == PrivacyListItem::TNone)
+		if (!items.isEmpty () && items.last ().GetType () == PrivacyListItem::Type::None)
 		{
 			const auto& item = items.takeLast ();
-			Ui_.DefaultPolicy_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ? 0 : 1);
+			const auto idx = item.GetAction () == PrivacyListItem::Action::Allow ? 0 : 1;
+			Ui_.DefaultPolicy_->setCurrentIndex (idx);
 		}
 
 		for (const auto& item : items)

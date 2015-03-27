@@ -42,18 +42,18 @@ namespace Xoox
 	class PrivacyListItem
 	{
 	public:
-		enum Type
+		enum class Type
 		{
-			TNone,
-			TJid,
-			TGroup,
-			TSubscription
+			None,
+			Jid,
+			Group,
+			Subscription
 		};
 
-		enum Action
+		enum class Action
 		{
-			AAllow,
-			ADeny
+			Allow,
+			Deny
 		};
 
 		enum StanzaType
@@ -73,7 +73,7 @@ namespace Xoox
 		Action Action_;
 		StanzaTypes Stanzas_;
 	public:
-		PrivacyListItem (const QString& = QString (), Type = TNone, Action = ADeny);
+		PrivacyListItem (const QString& = {}, Type = Type::None, Action = Action::Deny);
 
 		void Parse (const QDomElement&);
 		QXmppElement ToXML () const;
@@ -118,13 +118,12 @@ namespace Xoox
 
 		ClientConnection * const Conn_;
 
-		enum QueryType
+		enum class QueryType
 		{
-			QTQueryLists,
-			QTGetList
+			QueryLists,
+			GetList
 		};
 		QMap<QString, QueryType> ID2Type_;
-
 	public:
 		using QueryListsCont_f = Util::EitherCont<void (QXmppIq), void (QStringList, QString, QString)>;
 		using QueryListCont_f = Util::EitherCont<void (QXmppIq), void (PrivacyList)>;
@@ -137,10 +136,10 @@ namespace Xoox
 	public:
 		PrivacyListsManager (ClientConnection*);
 
-		enum ListType
+		enum class ListType
 		{
-			LTActive,
-			LTDefault
+			Active,
+			Default
 		};
 
 		bool IsSupported () const;
@@ -151,7 +150,7 @@ namespace Xoox
 		void QueryList (const QString&);
 		void QueryList (const QString&, const QueryListCont_f&);
 
-		void ActivateList (const QString&, ListType = LTActive);
+		void ActivateList (const QString&, ListType = ListType::Active);
 		void SetList (const PrivacyList&);
 
 		const PrivacyList& GetCurrentList () const;
