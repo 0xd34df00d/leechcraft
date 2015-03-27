@@ -782,21 +782,20 @@ namespace CleanWeb
 
 	bool Core::Load (const QUrl& url, const QString& subscrName)
 	{
-		QDir home = QDir::home ();
+		auto home = QDir::home ();
 		home.cd (".leechcraft");
 		home.cd ("cleanweb");
 
-		QString name = QFileInfo (url.path ()).fileName ();
-		QString path = home.absoluteFilePath (name);
+		const auto& name = QFileInfo (url.path ()).fileName ();
+		const auto& path = home.absoluteFilePath (name);
 
-		LeechCraft::Entity e =
-			LeechCraft::Util::MakeEntity (url,
+		const auto& e = Util::MakeEntity (url,
 				path,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		int id = -1;
 		QObject *pr;
@@ -804,10 +803,11 @@ namespace CleanWeb
 		if (id == -1)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "unable to delegate"
-				<< subscrName
-				<< url.toString ().toUtf8 ();
-			QString str = tr ("The subscription %1 wasn't delegated.")
+					<< "unable to delegate"
+					<< subscrName
+					<< url.toString ().toUtf8 ();
+
+			const auto& str = tr ("The subscription %1 wasn't delegated.")
 					.arg (subscrName);
 			emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
 					str, PCritical_));
@@ -815,7 +815,7 @@ namespace CleanWeb
 		}
 
 		HandleProvider (pr);
-		PendingJob pj =
+		PendingJob pj
 		{
 			path,
 			name,
