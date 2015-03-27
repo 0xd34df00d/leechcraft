@@ -384,7 +384,7 @@ namespace Xoox
 		if (!ID2Type_.contains (elem.attribute ("id")))
 			return false;
 
-		switch (ID2Type_ [elem.attribute ("id")])
+		switch (ID2Type_.take (elem.attribute ("id")))
 		{
 		case QTQueryLists:
 			HandleListQueryResult (elem);
