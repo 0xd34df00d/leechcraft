@@ -639,7 +639,11 @@ namespace CleanWeb
 		FilterOption::MatchObjects objs = FilterOption::MatchObject::All;
 		if (!acceptList.isEmpty ())
 		{
+#ifdef USE_CPP14
+			auto find = [&acceptList] (const auto& f)
+#else
 			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
+#endif
 			{
 				return std::any_of (acceptList.begin (), acceptList.end (), f);
 			};
