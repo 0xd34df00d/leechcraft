@@ -641,7 +641,7 @@ namespace CleanWeb
 		{
 			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
 			{
-				return std::find_if (acceptList.begin (), acceptList.end (), f) != acceptList.end ();
+				return std::any_of (acceptList.begin (), acceptList.end (), f);
 			};
 
 			if (find ([] (const QByteArray& arr) { return arr.startsWith ("image/"); }))
