@@ -927,10 +927,10 @@ namespace CleanWeb
 				property ("Autoupdate").toBool ())
 			return;
 
-		QDateTime current = QDateTime::currentDateTime ();
+		const auto& current = QDateTime::currentDateTime ();
 		int days = XmlSettingsManager::Instance ()->
 			property ("UpdateInterval").toInt ();
-		Q_FOREACH (Filter f, Filters_)
+		for (const auto& f : Filters_)
 			if (f.SD_.LastDateTime_.daysTo (current) > days)
 				Load (f.SD_.URL_, f.SD_.Name_);
 	}
@@ -941,7 +941,7 @@ namespace CleanWeb
 			return;
 
 		PendingJob pj = PendingJobs_ [id];
-		SubscriptionData sd =
+		SubscriptionData sd
 		{
 			pj.URL_,
 			pj.Subscr_,
@@ -1127,7 +1127,7 @@ namespace CleanWeb
 		ExceptionsCache_.clear ();
 		FilterItemsCache_.clear ();
 
-		QList<Filter> allFilters = Filters_;
+		auto allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
 
 		int exceptionsCount = 0;
