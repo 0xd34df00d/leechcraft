@@ -203,17 +203,13 @@ namespace CleanWeb
 		const auto& infos = home.entryInfoList (QDir::Files | QDir::Readable);
 		const auto& paths = Util::Map (infos, std::mem_fn (&QFileInfo::absoluteFilePath));
 
-		if (!paths.isEmpty ())
-		{
-			auto watcher = new QFutureWatcher<QList<Filter>> ();
-			connect (watcher,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleParsed ()));
-			const auto& future = QtConcurrent::run (ParseToFilters, paths);
-			watcher->setFuture (future);
-		}
-
+		auto watcher = new QFutureWatcher<QList<Filter>> ();
+		connect (watcher,
+				SIGNAL (finished ()),
+				this,
+				SLOT (handleParsed ()));
+		const auto& future = QtConcurrent::run (ParseToFilters, paths);
+		watcher->setFuture (future);
 		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
 
 		connect (UserFilters_,
