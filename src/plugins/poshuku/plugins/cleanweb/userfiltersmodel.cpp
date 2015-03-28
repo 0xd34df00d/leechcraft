@@ -56,12 +56,12 @@ namespace CleanWeb
 	, Proxy_ { proxy }
 	, Headers_ { tr ("Filter"), tr ("Policy"), tr ("Type"), tr ("Case sensitive"), tr ("Domains") }
 	{
-		ReadSettings ();
-
 		qRegisterMetaType<FilterItem> ("LeechCraft::Poshuku::CleanWeb::FilterItem");
 		qRegisterMetaType<QList<FilterItem>> ("QList<LeechCraft::Poshuku::CleanWeb::FilterItem>");
 		qRegisterMetaTypeStreamOperators<FilterItem> ("LeechCraft::Poshuku::CleanWeb::FilterItem");
 		qRegisterMetaTypeStreamOperators<QList<FilterItem>> ("QList<LeechCraft::Poshuku::CleanWeb::FilterItem>");
+
+		ReadSettings ();
 	}
 
 	int UserFiltersModel::columnCount (const QModelIndex&) const
