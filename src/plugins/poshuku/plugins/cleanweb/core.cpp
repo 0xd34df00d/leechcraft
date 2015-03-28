@@ -60,6 +60,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
@@ -69,7 +70,6 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QWebFrame*);
-Q_DECLARE_METATYPE (QPointer<QWebFrame>);
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
 
 namespace LeechCraft
@@ -183,7 +183,6 @@ namespace CleanWeb
 	, Proxy_ { proxy }
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
-		qRegisterMetaType<QPointer<QWebFrame>> ("QPointer<QWebFrame>");
 
 		try
 		{
@@ -343,10 +342,12 @@ namespace CleanWeb
 
 	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
 	{
-		QMetaObject::invokeMethod (this,
-				"handleFrameLayout",
-				Qt::QueuedConnection,
-				Q_ARG (QPointer<QWebFrame>, QPointer<QWebFrame> (frame)));
+		QPointer<QWebFrame> safeFrame { frame };
+		new Util::DelayedExecutor
+		{
+			[this, safeFrame] { handleFrameLayout (safeFrame); },
+			0
+		};
 	}
 
 	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
@@ -378,11 +379,14 @@ namespace CleanWeb
 
 		qDebug () << "rejecting" << frame << reqUrl;
 		if (frame)
-			QMetaObject::invokeMethod (this,
-					"delayedRemoveElements",
-					Qt::QueuedConnection,
-					Q_ARG (QPointer<QWebFrame>, frame),
-					Q_ARG (QUrl, reqUrl));
+		{
+			QPointer<QWebFrame> safeFrame { frame };
+			new Util::DelayedExecutor
+			{
+				[this, safeFrame, reqUrl] { DelayedRemoveElements (safeFrame, reqUrl); },
+				0
+			};
+		}
 
 		const auto result = new Util::CustomNetworkReply (reqUrl, this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
@@ -409,16 +413,18 @@ namespace CleanWeb
 		auto url = error->url;
 		proxy->CancelDefault ();
 		proxy->SetReturnValue (true);
-		QMetaObject::invokeMethod (this,
-				"delayedRemoveElements",
-				Qt::QueuedConnection,
-				Q_ARG (QPointer<QWebFrame>, page->mainFrame ()),
-				Q_ARG (QUrl, url));
+
+		const QPointer<QWebFrame> safeFrame { page->mainFrame () };
+		new Util::DelayedExecutor
+		{
+			[this, safeFrame, url] { DelayedRemoveElements (safeFrame, url); },
+			0
+		};
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
 			QWebView *view, QMenu *menu,
-			LeechCraft::Poshuku::WebViewCtxMenuStage stage)
+			WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
 		if (stage == WVSAfterImage &&
@@ -1008,11 +1014,10 @@ namespace CleanWeb
 		auto watcher = dynamic_cast<QFutureWatcher<HidingWorkerResult>*> (sender ());
 		watcher->deleteLater ();
 
-		hideElementsChunk (watcher->result ());
-
+		HideElementsChunk (watcher->result ());
 	}
 
-	void Core::hideElementsChunk (HidingWorkerResult result)
+	void Core::HideElementsChunk (HidingWorkerResult result)
 	{
 		if (!result.Frame_)
 			return;
@@ -1037,10 +1042,11 @@ namespace CleanWeb
 		}
 
 		if (result.CurrentPos_ < result.Selectors_.size ())
-			QMetaObject::invokeMethod (this,
-					"hideElementsChunk",
-					Qt::QueuedConnection,
-					Q_ARG (HidingWorkerResult, result));
+			new Util::DelayedExecutor
+			{
+				[this, result] { HideElementsChunk (result); },
+				0
+			};
 	}
 
 	namespace
@@ -1065,7 +1071,7 @@ namespace CleanWeb
 		}
 	}
 
-	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
+	void Core::DelayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
 	{
 		if (!frame)
 			return;

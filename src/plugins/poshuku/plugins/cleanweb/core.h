@@ -177,6 +177,9 @@ namespace CleanWeb
 		void WriteSettings ();
 		void ReadSettings ();
 		bool AssignSD (const SubscriptionData&);
+
+		void HideElementsChunk (HidingWorkerResult);
+		void DelayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
 	private slots:
 		void handleParsed ();
 		void update ();
@@ -184,9 +187,9 @@ namespace CleanWeb
 		void handleJobError (int, IDownload::Error);
 		void handleFrameLayout (QPointer<QWebFrame>);
 		void hidingElementsFound ();
-		void hideElementsChunk (HidingWorkerResult);
-		void delayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
+
 		void moreDelayedRemoveElements ();
+
 		void handleFrameDestroyed ();
 
 		void regenFilterCaches ();
