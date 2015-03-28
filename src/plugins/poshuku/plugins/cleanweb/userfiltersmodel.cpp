@@ -51,9 +51,9 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	UserFiltersModel::UserFiltersModel (QObject *parent)
+	UserFiltersModel::UserFiltersModel (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QAbstractItemModel { parent }
-	, Proxy_ { {} }
+	, Proxy_ { proxy }
 	{
 		ReadSettings ();
 		Headers_ << tr ("Filter")

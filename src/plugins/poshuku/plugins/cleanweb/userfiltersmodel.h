@@ -50,7 +50,7 @@ namespace CleanWeb
 		Filter Filter_;
 		QStringList Headers_;
 	public:
-		UserFiltersModel (QObject* = 0);
+		UserFiltersModel (const ICoreProxy_ptr&, QObject* = 0);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
 		QVariant data (const QModelIndex&, int) const;

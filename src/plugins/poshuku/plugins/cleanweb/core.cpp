@@ -181,7 +181,7 @@ namespace CleanWeb
 	Core::Core (const ICoreProxy_ptr& proxy)
 	: FlashOnClickPlugin_ (0)
 	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
-	, UserFilters_ (new UserFiltersModel (this))
+	, UserFilters_ (new UserFiltersModel (proxy, this))
 	, Proxy_ (proxy)
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
