@@ -178,10 +178,11 @@ namespace CleanWeb
 		}
 	};
 
-	Core::Core ()
+	Core::Core (const ICoreProxy_ptr& proxy)
 	: FlashOnClickPlugin_ (0)
 	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
 	, UserFilters_ (new UserFiltersModel (this))
+	, Proxy_ (proxy)
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
 		qRegisterMetaType<QPointer<QWebFrame>> ("QPointer<QWebFrame>");
@@ -231,23 +232,6 @@ namespace CleanWeb
 				SIGNAL (filtersChanged ()),
 				this,
 				SLOT (regenFilterCaches ()));
-	}
-
-	Core& Core::Instance ()
-	{
-		static Core core;
-		return core;
-	}
-
-	void Core::Release ()
-	{
-		delete FlashOnClickWhitelist_;
-		delete FlashOnClickPlugin_;
-	}
-
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const

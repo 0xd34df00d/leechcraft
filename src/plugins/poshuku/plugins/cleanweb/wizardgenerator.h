@@ -39,11 +39,12 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	class WizardGenerator
-	{
-	public:
-		QList<QWizardPage*> GetPages ();
-	};
+class Core;
+
+namespace WizardGenerator
+{
+	QList<QWizardPage*> GetPages (Core*);
+}
 }
 }
 }

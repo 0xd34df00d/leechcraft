@@ -40,6 +40,7 @@
 #include <qwebelement.h>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "ruleoptiondialog.h"
 #include "lineparser.h"
 #include "core.h"
@@ -52,6 +53,7 @@ namespace CleanWeb
 {
 	UserFiltersModel::UserFiltersModel (QObject *parent)
 	: QAbstractItemModel { parent }
+	, Proxy_ { {} }
 	{
 		ReadSettings ();
 		Headers_ << tr ("Filter")
@@ -260,7 +262,7 @@ namespace CleanWeb
 
 		emit filtersChanged ();
 
-		emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 				tr ("Imported %1 user filters (%2 parsed successfully).")
 					.arg (p.GetSuccess ())
 					.arg (p.GetTotal ()),

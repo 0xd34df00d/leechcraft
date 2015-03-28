@@ -57,25 +57,24 @@ namespace CleanWeb
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");
 
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+		Core_ = std::make_shared<Core> (proxy);
+
+		connect (Core_.get (),
+				SIGNAL (delegateEntity (LeechCraft::Entity,
 						int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+				SIGNAL (delegateEntity (LeechCraft::Entity,
 						int*, QObject**)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+		connect (Core_.get (),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
-		Core::Instance ().SetProxy (proxy);
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
-				new SubscriptionsManager ());
-		SettingsDialog_->SetCustomWidget ("UserFilters",
-				new UserFilters ());
+				new SubscriptionsManager (Core_.get ()));
+		SettingsDialog_->SetCustomWidget ("UserFilters", new UserFilters (Core_.get ()));
 		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
-				Core::Instance ().GetFlashOnClickWhitelist ());
+				Core_->GetFlashOnClickWhitelist ());
 	}
 
 	void CleanWeb::SecondInit ()
@@ -133,20 +132,19 @@ namespace CleanWeb
 
 	EntityTestHandleResult CleanWeb::CouldHandle (const Entity& e) const
 	{
-		return Core::Instance ().CouldHandle (e) ?
+		return Core_->CouldHandle (e) ?
 				EntityTestHandleResult (EntityTestHandleResult::PIdeal) :
 				EntityTestHandleResult ();
 	}
 
 	void CleanWeb::Handle (Entity e)
 	{
-		Core::Instance ().Handle (e);
+		Core_->Handle (e);
 	}
 
 	QList<QWizardPage*> CleanWeb::GetWizardPages () const
 	{
-		std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
-		return wg->GetPages ();
+		return WizardGenerator::GetPages (Core_.get ());
 	}
 
 	QSet<QByteArray> CleanWeb::GetPluginClasses () const
@@ -157,15 +155,14 @@ namespace CleanWeb
 		return result;
 	}
 
-	void CleanWeb::hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-			QList<LeechCraft::Poshuku::IWebPlugin*>& plugins)
+	void CleanWeb::hookWebPluginFactoryReload (IHookProxy_ptr, QList<IWebPlugin*>& plugins)
 	{
-		plugins << Core::Instance ().GetFlashOnClick ();
+		plugins << Core_->GetFlashOnClick ();
 	}
 
 	void CleanWeb::hookInitialLayoutCompleted (IHookProxy_ptr, QWebPage *page, QWebFrame *frame)
 	{
-		Core::Instance ().HandleInitialLayout (page, frame);
+		Core_->HandleInitialLayout (page, frame);
 	}
 
 	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
@@ -173,7 +170,7 @@ namespace CleanWeb
 			QNetworkAccessManager::Operation *op,
 			QIODevice **dev)
 	{
-		Core::Instance ().Hook (proxy, manager, op, dev);
+		Core_->Hook (proxy, manager, op, dev);
 	}
 
 	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
@@ -182,7 +179,7 @@ namespace CleanWeb
 			const QWebPage::ExtensionOption *opt,
 			QWebPage::ExtensionReturn *ret)
 	{
-		Core::Instance ().HandleExtension (proxy, page, ext, opt, ret);
+		Core_->HandleExtension (proxy, page, ext, opt, ret);
 	}
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
@@ -192,7 +189,7 @@ namespace CleanWeb
 			QMenu *menu,
 			WebViewCtxMenuStage stage)
 	{
-		Core::Instance ().HandleContextMenu (r, view, menu, stage);
+		Core_->HandleContextMenu (r, view, menu, stage);
 	}
 }
 }

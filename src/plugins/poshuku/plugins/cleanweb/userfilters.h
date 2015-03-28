@@ -38,13 +38,16 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+	class Core;
+
 	class UserFilters : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::UserFilters Ui_;
+		Core * const Core_;
 	public:
-		UserFilters (QWidget* = 0);
+		UserFilters (Core*, QWidget* = 0);
 	private slots:
 		void on_Add__released ();
 		void on_Modify__released ();

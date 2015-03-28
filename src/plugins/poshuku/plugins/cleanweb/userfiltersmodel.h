@@ -31,6 +31,7 @@
 
 #include <QAbstractItemModel>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "filter.h"
 
 namespace LeechCraft
@@ -45,6 +46,7 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		Filter Filter_;
 		QStringList Headers_;
 	public:
@@ -71,8 +73,6 @@ namespace CleanWeb
 	private slots:
 		void blockImage ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void filtersChanged ();
 	};
 }

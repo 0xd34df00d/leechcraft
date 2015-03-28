@@ -44,12 +44,12 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	UserFilters::UserFilters (QWidget *parent)
+	UserFilters::UserFilters (Core *core, QWidget *parent)
 	: QWidget { parent }
+	, Core_ { core }
 	{
 		Ui_.setupUi (this);
-		Ui_.View_->setModel (Core::Instance ()
-				.GetUserFiltersModel ());
+		Ui_.View_->setModel (Core_->GetUserFiltersModel ());
 
 		QShortcut *sh = new QShortcut (Qt::Key_Delete, Ui_.View_);
 		connect (sh,
@@ -61,7 +61,7 @@ namespace CleanWeb
 
 	void UserFilters::on_Add__released ()
 	{
-		Core::Instance ().GetUserFiltersModel ()->InitiateAdd ();
+		Core_->GetUserFiltersModel ()->InitiateAdd ();
 	}
 
 	void UserFilters::on_Modify__released ()
@@ -70,8 +70,7 @@ namespace CleanWeb
 		if (!current.isValid ())
 			return;
 
-		Core::Instance ()
-			.GetUserFiltersModel ()->Modify (current.row ());
+		Core_->GetUserFiltersModel ()->Modify (current.row ());
 	}
 
 	void UserFilters::on_Remove__released ()
@@ -80,16 +79,15 @@ namespace CleanWeb
 		if (!current.isValid ())
 			return;
 
-		Core::Instance ()
-			.GetUserFiltersModel ()->Remove (current.row ());
+		Core_->GetUserFiltersModel ()->Remove (current.row ());
 	}
 
 	namespace
 	{
-		void AddMulti (const QString& str)
+		void AddMulti (UserFiltersModel *model, const QString& str)
 		{
 			const auto& list = str.split ("\n", QString::SkipEmptyParts);
-			Core::Instance ().GetUserFiltersModel ()->AddMultiFilters (list);
+			model->AddMultiFilters (list);
 		}
 	}
 
@@ -117,7 +115,7 @@ namespace CleanWeb
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		AddMulti (edit->toPlainText ());
+		AddMulti (Core_->GetUserFiltersModel (), edit->toPlainText ());
 	}
 
 	void UserFilters::on_Load__released ()
@@ -143,7 +141,7 @@ namespace CleanWeb
 			return;
 		}
 
-		AddMulti (file.readAll ());
+		AddMulti (Core_->GetUserFiltersModel (), file.readAll ());
 	}
 }
 }

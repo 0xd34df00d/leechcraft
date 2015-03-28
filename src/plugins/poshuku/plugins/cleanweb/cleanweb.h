@@ -55,6 +55,8 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+	class Core;
+
 	class CleanWeb : public QObject
 					, public IInfo
 					, public IHaveSettings
@@ -66,6 +68,8 @@ namespace CleanWeb
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
+
+		std::shared_ptr<Core> Core_;
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:

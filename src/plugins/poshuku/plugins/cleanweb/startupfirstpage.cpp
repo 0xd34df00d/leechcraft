@@ -44,8 +44,9 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	StartupFirstPage::StartupFirstPage (QWidget *parent)
-	: QWizardPage (parent)
+	StartupFirstPage::StartupFirstPage (Core *core, QWidget *parent)
+	: QWizardPage { parent }
+	, Core_ { core }
 	{
 		Ui_.setupUi (this);
 	}
@@ -86,7 +87,7 @@ namespace CleanWeb
 			}
 
 		for (const auto& url : urlsToAdd)
-			Core::Instance ().Add (url);
+			Core_->Add (url);
 	}
 }
 }

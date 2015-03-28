@@ -68,8 +68,8 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
-		FlashOnClickPlugin *FlashOnClickPlugin_;
-		FlashOnClickWhitelist *FlashOnClickWhitelist_;
+		FlashOnClickPlugin *FlashOnClickPlugin_;  // TODO delete
+		FlashOnClickWhitelist *FlashOnClickWhitelist_;  // TODO delete
 		UserFiltersModel *UserFilters_;
 
 		QList<Filter> Filters_;
@@ -91,14 +91,10 @@ namespace CleanWeb
 
 		QHash<QWebFrame*, QList<QUrl>> MoreDelayedURLs_;
 
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
+		const ICoreProxy_ptr Proxy_;
 	public:
-		static Core& Instance ();
-		void Release ();
+		Core (const ICoreProxy_ptr&);
 
-		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
