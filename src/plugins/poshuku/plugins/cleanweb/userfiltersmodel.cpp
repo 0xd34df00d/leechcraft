@@ -113,10 +113,10 @@ namespace CleanWeb
 					const auto& options = item->Option_;
 
 					QStringList result;
-					Q_FOREACH (QString domain, options.Domains_)
-						result += domain.prepend ("+");
-					Q_FOREACH (QString domain, options.NotDomains_)
-						result += domain.prepend ("-");
+					for (const auto& domain : options.Domains_)
+						result += "+" + domain;
+					for (const auto& domain : options.NotDomains_)
+						result += "-" + domain;
 					return result.join ("; ");
 				}
 			default:

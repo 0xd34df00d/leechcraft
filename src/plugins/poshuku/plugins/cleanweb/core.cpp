@@ -59,6 +59,7 @@
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
@@ -162,10 +163,7 @@ namespace CleanWeb
 				QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
 				if (rawLines.size ())
 					rawLines.removeAt (0);
-				QStringList lines;
-				std::transform (rawLines.begin (), rawLines.end (),
-						std::back_inserter (lines),
-						[] (const QString& t) { return t.trimmed (); });
+				const auto& lines = Util::Map (rawLines, std::mem_fn (&QString::trimmed));
 
 				Filter f;
 				std::for_each (lines.begin (), lines.end (), LineParser (&f));
@@ -204,9 +202,8 @@ namespace CleanWeb
 		home.cd ("cleanweb");
 
 		const auto& infos = home.entryInfoList (QDir::Files | QDir::Readable);
-		QStringList paths;
-		for (const auto info : infos)
-			paths << info.absoluteFilePath ();
+		const auto& paths = Util::Map (infos, std::mem_fn (&QFileInfo::absoluteFilePath));
+
 		if (!paths.isEmpty ())
 		{
 			auto watcher = new QFutureWatcher<QList<Filter>> ();
