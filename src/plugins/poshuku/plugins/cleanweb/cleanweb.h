@@ -68,7 +68,6 @@ namespace CleanWeb
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
 
 		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-		std::auto_ptr<QTranslator> Translator_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

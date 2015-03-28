@@ -51,7 +51,7 @@ namespace CleanWeb
 {
 	void CleanWeb::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (LeechCraft::Util::InstallTranslator ("poshuku_cleanweb"));
+		Util::InstallTranslator ("poshuku_cleanweb");
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
