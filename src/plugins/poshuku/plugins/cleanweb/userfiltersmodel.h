@@ -47,8 +47,9 @@ namespace CleanWeb
 		Q_OBJECT
 
 		const ICoreProxy_ptr Proxy_;
+		const QStringList Headers_;
+
 		Filter Filter_;
-		QStringList Headers_;
 	public:
 		UserFiltersModel (const ICoreProxy_ptr&, QObject* = 0);
 

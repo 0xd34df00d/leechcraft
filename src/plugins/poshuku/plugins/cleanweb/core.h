@@ -78,7 +78,8 @@ namespace CleanWeb
 		QList<QList<FilterItem_ptr>> FilterItemsCache_;
 
 		QObjectList Downloaders_;
-		QStringList HeaderLabels_;
+
+		const QStringList HeaderLabels_;
 
 		struct PendingJob
 		{

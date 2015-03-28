@@ -54,13 +54,9 @@ namespace CleanWeb
 	UserFiltersModel::UserFiltersModel (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QAbstractItemModel { parent }
 	, Proxy_ { proxy }
+	, Headers_ { tr ("Filter"), tr ("Policy"), tr ("Type"), tr ("Case sensitive"), tr ("Domains") }
 	{
 		ReadSettings ();
-		Headers_ << tr ("Filter")
-			<< tr ("Policy")
-			<< tr ("Type")
-			<< tr ("Case sensitive")
-			<< tr ("Domains");
 
 		qRegisterMetaType<FilterItem> ("LeechCraft::Poshuku::CleanWeb::FilterItem");
 		qRegisterMetaType<QList<FilterItem>> ("QList<LeechCraft::Poshuku::CleanWeb::FilterItem>");

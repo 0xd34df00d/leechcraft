@@ -183,13 +183,11 @@ namespace CleanWeb
 	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
 	, UserFilters_ (new UserFiltersModel (proxy, this))
 	, Proxy_ (proxy)
+	, HeaderLabels_ { tr ("Name"), tr ("Last updated"), tr ("URL") }
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
 		qRegisterMetaType<QPointer<QWebFrame>> ("QPointer<QWebFrame>");
 
-		HeaderLabels_ << tr ("Name")
-			<< tr ("Last updated")
-			<< tr ("URL");
 		try
 		{
 			Util::CreateIfNotExists ("cleanweb");
