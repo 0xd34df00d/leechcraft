@@ -45,7 +45,7 @@ namespace Poshuku
 namespace CleanWeb
 {
 	UserFilters::UserFilters (QWidget *parent)
-	: QWidget (parent)
+	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->setModel (Core::Instance ()
