@@ -72,7 +72,8 @@ namespace CleanWeb
 
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 				new SubscriptionsManager (Core_.get ()));
-		SettingsDialog_->SetCustomWidget ("UserFilters", new UserFilters (Core_.get ()));
+		SettingsDialog_->SetCustomWidget ("UserFilters",
+				new UserFilters (Core_->GetUserFiltersModel ()));
 		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
 				Core_->GetFlashOnClickWhitelist ());
 	}
