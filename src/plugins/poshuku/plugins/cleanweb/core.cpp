@@ -215,11 +215,6 @@ namespace CleanWeb
 			watcher->setFuture (future);
 		}
 
-		connect (UserFilters_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
 		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
 
 		connect (UserFilters_,

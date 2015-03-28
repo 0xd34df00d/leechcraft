@@ -59,17 +59,6 @@ namespace CleanWeb
 
 		Core_ = std::make_shared<Core> (proxy);
 
-		connect (Core_.get (),
-				SIGNAL (delegateEntity (LeechCraft::Entity,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity,
-						int*, QObject**)));
-		connect (Core_.get (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 				new SubscriptionsManager (Core_.get ()));
 		SettingsDialog_->SetCustomWidget ("UserFilters",
