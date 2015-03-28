@@ -44,7 +44,7 @@ namespace Poshuku
 namespace CleanWeb
 {
 	SubscriptionsManager::SubscriptionsManager (QWidget *parent)
-	: QWidget (parent)
+	: QWidget { parent }
 	{
 		Ui_.setupUi (this);
 		Ui_.Subscriptions_->setModel (Core::Instance ().GetModel ());

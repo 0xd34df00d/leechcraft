@@ -51,7 +51,7 @@ namespace Poshuku
 namespace CleanWeb
 {
 	UserFiltersModel::UserFiltersModel (QObject *parent)
-	: QAbstractItemModel (parent)
+	: QAbstractItemModel { parent }
 	{
 		ReadSettings ();
 		Headers_ << tr ("Filter")

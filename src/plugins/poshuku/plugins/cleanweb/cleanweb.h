@@ -67,7 +67,7 @@ namespace CleanWeb
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
 
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
