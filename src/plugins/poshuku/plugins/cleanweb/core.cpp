@@ -177,7 +177,7 @@ namespace CleanWeb
 	};
 
 	Core::Core (const ICoreProxy_ptr& proxy)
-	: FlashOnClickWhitelist_ { std::make_shared<FlashOnClickWhitelist> () }
+	: FlashOnClickWhitelist_ { new FlashOnClickWhitelist }
 	, UserFilters_ { new UserFiltersModel { proxy, this } }
 	, HeaderLabels_ { tr ("Name"), tr ("Last updated"), tr ("URL") }
 	, Proxy_ { proxy }
@@ -447,7 +447,7 @@ namespace CleanWeb
 
 	FlashOnClickWhitelist* Core::GetFlashOnClickWhitelist ()
 	{
-		return FlashOnClickWhitelist_.get ();
+		return FlashOnClickWhitelist_;
 	}
 
 	namespace
