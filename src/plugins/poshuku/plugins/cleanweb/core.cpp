@@ -1159,9 +1159,9 @@ namespace CleanWeb
 		}
 
 		if (!lastItemsChunk.isEmpty ())
-			ExceptionsCache_ << lastItemsChunk;
+			FilterItemsCache_ << lastItemsChunk;
 		if (!lastExceptionsChunk.isEmpty ())
-			FilterItemsCache_ << lastExceptionsChunk;
+			ExceptionsCache_ << lastExceptionsChunk;
 	}
 }
 }
