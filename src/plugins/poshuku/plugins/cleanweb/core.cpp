@@ -179,11 +179,10 @@ namespace CleanWeb
 	};
 
 	Core::Core (const ICoreProxy_ptr& proxy)
-	: FlashOnClickPlugin_ (0)
-	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
-	, UserFilters_ (new UserFiltersModel (proxy, this))
-	, Proxy_ (proxy)
+	: FlashOnClickWhitelist_ { std::make_shared<FlashOnClickWhitelist> () }
+	, UserFilters_ { new UserFiltersModel { proxy, this } }
 	, HeaderLabels_ { tr ("Name"), tr ("Last updated"), tr ("URL") }
+	, Proxy_ { proxy }
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
 		qRegisterMetaType<QPointer<QWebFrame>> ("QPointer<QWebFrame>");
@@ -449,13 +448,14 @@ namespace CleanWeb
 	FlashOnClickPlugin* Core::GetFlashOnClick ()
 	{
 		if (!FlashOnClickPlugin_)
-			FlashOnClickPlugin_ = new FlashOnClickPlugin (this);
-		return FlashOnClickPlugin_;
+			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (this);
+
+		return FlashOnClickPlugin_.get ();
 	}
 
 	FlashOnClickWhitelist* Core::GetFlashOnClickWhitelist ()
 	{
-		return FlashOnClickWhitelist_;
+		return FlashOnClickWhitelist_.get ();
 	}
 
 	namespace

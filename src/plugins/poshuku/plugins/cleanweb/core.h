@@ -68,8 +68,8 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
-		FlashOnClickPlugin *FlashOnClickPlugin_;  // TODO delete
-		FlashOnClickWhitelist *FlashOnClickWhitelist_;  // TODO delete
+		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
+		std::shared_ptr<FlashOnClickWhitelist> FlashOnClickWhitelist_;
 		UserFiltersModel *UserFilters_;
 
 		QList<Filter> Filters_;
