@@ -1133,15 +1133,17 @@ namespace CleanWeb
 		for (const Filter& filter : allFilters)
 		{
 			for (const auto& item : filter.Exceptions_)
-				if (item->Option_.HideSelector_.isEmpty ())
+			{
+				if (!item->Option_.HideSelector_.isEmpty ())
+					continue;
+
+				lastExceptionsChunk << item;
+				if (lastExceptionsChunk.size () >= exChunkSize)
 				{
-					lastExceptionsChunk << item;
-					if (lastExceptionsChunk.size () >= exChunkSize)
-					{
-						ExceptionsCache_ << lastExceptionsChunk;
-						lastExceptionsChunk.clear ();
-					}
+					ExceptionsCache_ << lastExceptionsChunk;
+					lastExceptionsChunk.clear ();
 				}
+			}
 
 			for (const auto& item : filter.Filters_)
 			{
