@@ -709,13 +709,12 @@ namespace CleanWeb
 		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 		Filters_ << f;
 		endInsertRows ();
-
-		regenFilterCaches ();
 	}
 
 	void Core::Parse (const QString& filePath)
 	{
 		AddFilter (ParseToFilters ({ filePath }).first ());
+		regenFilterCaches ();
 	}
 
 	bool Core::Add (const QUrl& subscrUrl)
@@ -894,6 +893,8 @@ namespace CleanWeb
 
 		for (const auto& f : result)
 			AddFilter (f);
+
+		regenFilterCaches ();
 
 		ReadSettings ();
 
