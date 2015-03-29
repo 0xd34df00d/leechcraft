@@ -70,7 +70,6 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QWebFrame*);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
 
 namespace LeechCraft
 {
@@ -210,7 +209,6 @@ namespace CleanWeb
 				SLOT (handleParsed ()));
 		const auto& future = QtConcurrent::run (ParseToFilters, paths);
 		watcher->setFuture (future);
-		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
 
 		connect (UserFilters_,
 				SIGNAL (filtersChanged ()),
