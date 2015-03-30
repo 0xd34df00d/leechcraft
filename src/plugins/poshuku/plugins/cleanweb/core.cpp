@@ -339,7 +339,7 @@ namespace CleanWeb
 		QPointer<QWebFrame> safeFrame { frame };
 		new Util::DelayedExecutor
 		{
-			[this, safeFrame] { handleFrameLayout (safeFrame); },
+			[this, safeFrame] { HandleFrameLayout (safeFrame, false); },
 			0
 		};
 	}
@@ -947,7 +947,7 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
-	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
+	void Core::HandleFrameLayout (QPointer<QWebFrame> frame, bool asLoad)
 	{
 		if (!frame)
 			return;
@@ -991,13 +991,15 @@ namespace CleanWeb
 						return { frame, 0, sels };
 					}));
 
+		auto worker = [this, frame]
+		{
+			for (auto childFrame : frame->childFrames ())
+				HandleFrameLayout (childFrame, true);
+		};
+
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, frame] () -> void
-			{
-				for (auto childFrame : frame->childFrames ())
-					handleFrameLayout (childFrame);
-			},
+			worker,
 			frame,
 			SIGNAL (loadFinished (bool)),
 			frame

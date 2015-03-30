@@ -180,12 +180,12 @@ namespace CleanWeb
 
 		void HideElementsChunk (HidingWorkerResult);
 		void DelayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
+		void HandleFrameLayout (QPointer<QWebFrame>, bool asLoad);
 	private slots:
 		void handleParsed ();
 		void update ();
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
-		void handleFrameLayout (QPointer<QWebFrame>);
 		void hidingElementsFound ();
 
 		void moreDelayedRemoveElements ();
