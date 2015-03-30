@@ -997,13 +997,16 @@ namespace CleanWeb
 				HandleFrameLayout (childFrame, true);
 		};
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			worker,
-			frame,
-			SIGNAL (loadFinished (bool)),
-			frame
-		};
+		if (asLoad)
+			worker ();
+		else
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				worker,
+				frame,
+				SIGNAL (loadFinished (bool)),
+				frame
+			};
 	}
 
 	void Core::hidingElementsFound ()
