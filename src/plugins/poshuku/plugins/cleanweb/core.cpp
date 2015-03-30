@@ -997,9 +997,9 @@ namespace CleanWeb
 				HandleFrameLayout (childFrame, true);
 		};
 
-		if (asLoad)
-			worker ();
-		else
+		worker ();
+
+		if (!asLoad)
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
 				worker,
