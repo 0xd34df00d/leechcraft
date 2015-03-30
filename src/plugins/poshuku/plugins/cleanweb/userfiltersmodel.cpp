@@ -181,8 +181,7 @@ namespace CleanWeb
 		fo.MatchType_ = dia.GetType ();
 		fo.Domains_ = dia.GetDomains ();
 		fo.NotDomains_ = dia.GetNotDomains ();
-		const FilterItem_ptr item (new FilterItem
-				{
+		const auto item = std::make_shared<FilterItem> (FilterItem {
 					itemRx,
 					dia.GetString ().toUtf8 (),
 					fo
@@ -284,7 +283,7 @@ namespace CleanWeb
 		auto readItems = [&settings] (const QString& name, QList<FilterItem_ptr>& to) -> void
 		{
 			for (const auto& item : settings.value (name).value<QList<FilterItem>> ())
-				to << FilterItem_ptr (new FilterItem (item));
+				to << std::make_shared<FilterItem> (item);
 		};
 		readItems ("ExceptionItems", Filter_.Exceptions_);
 		readItems ("FilterItems", Filter_.Filters_);
