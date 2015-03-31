@@ -82,11 +82,11 @@ namespace CleanWeb
 
 	void FlashOnClickWhitelist::on_Modify__released ()
 	{
-		QModelIndex index = Ui_.WhitelistTree_->currentIndex ();
+		const auto& index = Ui_.WhitelistTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		QString str = Model_->itemFromIndex (index)->text ();
+		const auto& str = Model_->itemFromIndex (index)->text ();
 		AddImpl (str, index);
 	}
 
@@ -97,7 +97,16 @@ namespace CleanWeb
 			return;
 
 		Model_->removeRow (index.row ());
+	}
+
+	void FlashOnClickWhitelist::accept ()
+	{
 		SaveSettings ();
+	}
+
+	void FlashOnClickWhitelist::reject ()
+	{
+		ReadSettings ();
 	}
 
 	void FlashOnClickWhitelist::AddImpl (QString str, const QModelIndex& old)
@@ -125,7 +134,6 @@ namespace CleanWeb
 		}
 
 		Model_->appendRow (new QStandardItem (str));
-		SaveSettings ();
 	}
 
 	void FlashOnClickWhitelist::ReadSettings ()
