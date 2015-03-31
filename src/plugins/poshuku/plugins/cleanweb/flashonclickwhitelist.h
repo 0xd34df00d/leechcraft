@@ -59,6 +59,8 @@ namespace CleanWeb
 		void on_Remove__released ();
 	private:
 		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
+
+		void ReadSettings ();
 		void SaveSettings ();
 	};
 }

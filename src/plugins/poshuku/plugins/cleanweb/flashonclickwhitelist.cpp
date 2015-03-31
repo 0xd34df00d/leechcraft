@@ -48,18 +48,7 @@ namespace CleanWeb
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Whitelist") });
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_CleanWeb");
-		settings.beginGroup ("FlashOnClick");
-		int size = settings.beginReadArray ("Whitelist");
-		for (int i = 0; i < size; ++i)
-		{
-			settings.setArrayIndex (i);
-			Model_->appendRow (new QStandardItem (settings
-						.value ("Exception").toString ()));
-		}
-		settings.endArray ();
-		settings.endGroup ();
+		ReadSettings ();
 
 		Ui_.setupUi (this);
 		Ui_.WhitelistTree_->setModel (Model_);
@@ -137,6 +126,24 @@ namespace CleanWeb
 
 		Model_->appendRow (new QStandardItem (str));
 		SaveSettings ();
+	}
+
+	void FlashOnClickWhitelist::ReadSettings ()
+	{
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_CleanWeb");
+		settings.beginGroup ("FlashOnClick");
+		int size = settings.beginReadArray ("Whitelist");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			Model_->appendRow (new QStandardItem (settings.value ("Exception").toString ()));
+		}
+		settings.endArray ();
+		settings.endGroup ();
 	}
 
 	void FlashOnClickWhitelist::SaveSettings ()
