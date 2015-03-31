@@ -952,6 +952,9 @@ namespace CleanWeb
 		if (!frame)
 			return;
 
+		if (!XmlSettingsManager::Instance ()->property ("EnableElementHiding").toBool ())
+			return;
+
 		const QUrl& frameUrl = frame->url ().isEmpty () ?
 				frame->baseUrl () :
 				frame->url ();

@@ -11,6 +11,9 @@
 			<item type="checkbox" property="EnableFiltering" default="true">
 				<label value="Enable filtering" />
 			</item>
+			<item type="checkbox" property="EnableElementHiding" default="true">
+				<label value="Enable element hiding" />
+			</item>
 		</tab>
 		<tab>
 			<label value="User rules" />
