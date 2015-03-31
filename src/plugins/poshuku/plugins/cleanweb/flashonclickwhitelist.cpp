@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "flashonclickwhitelist.h"
+#include <algorithm>
 #include <QCoreApplication>
 #include <QStandardItemModel>
 #include <QSettings>
@@ -45,7 +46,7 @@ namespace CleanWeb
 	: QWidget (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Whitelist")));
+		Model_->setHorizontalHeaderLabels ({ tr ("Whitelist") });
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb");
@@ -74,13 +75,10 @@ namespace CleanWeb
 
 	bool FlashOnClickWhitelist::Matches (const QString& str) const
 	{
-		Q_FOREACH (QString white, GetWhitelist ())
-		{
-			if (str.indexOf (white) >= 0 ||
-					str.indexOf (QRegExp (white)) >= 0)
-				return true;
-		}
-		return false;
+		const auto& whitelist = GetWhitelist ();
+		return std::any_of (whitelist.begin (), whitelist.end (),
+				[&str] (const QString& white)
+					{ return str.indexOf (white) >= 0 || str.indexOf (QRegExp { white }) >= 0; });
 	}
 
 	void FlashOnClickWhitelist::Add (const QString& str)
