@@ -274,7 +274,7 @@ namespace CleanWeb
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
 
-		auto readItems = [&settings] (const QString& name, QList<FilterItem_ptr>& to) -> void
+		auto readItems = [&settings] (const QString& name, QList<FilterItem_ptr>& to)
 		{
 			for (const auto& item : settings.value (name).value<QList<FilterItem>> ())
 				to << std::make_shared<FilterItem> (item);
@@ -289,7 +289,7 @@ namespace CleanWeb
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
 		settings.clear ();
 
-		auto writeItems = [&settings] (const QString& name, const QList<FilterItem_ptr>& from) -> void
+		auto writeItems = [&settings] (const QString& name, const QList<FilterItem_ptr>& from)
 		{
 			QList<FilterItem> saved;
 			saved.reserve (from.size ());
