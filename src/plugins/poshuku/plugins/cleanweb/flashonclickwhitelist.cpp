@@ -105,11 +105,11 @@ namespace CleanWeb
 
 	void FlashOnClickWhitelist::on_Remove__released ()
 	{
-		QModelIndex index = Ui_.WhitelistTree_->currentIndex ();
+		const auto& index = Ui_.WhitelistTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		qDeleteAll (Model_->takeRow (index.row ()));
+		Model_->removeRow (index.row ());
 		SaveSettings ();
 	}
 
@@ -127,7 +127,7 @@ namespace CleanWeb
 			return;
 
 		if (old.isValid ())
-			qDeleteAll (Model_->takeRow (old.row ()));
+			Model_->removeRow (old.row ());
 
 		if (Matches (str))
 		{
