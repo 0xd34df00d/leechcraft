@@ -70,7 +70,7 @@ namespace CleanWeb
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
 		void ReadSettings ();
-		void WriteSettings () const;
+		void WriteSettings ();
 	private slots:
 		void blockImage ();
 	signals:

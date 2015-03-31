@@ -195,8 +195,6 @@ namespace CleanWeb
 
 		WriteSettings ();
 
-		emit filtersChanged ();
-
 		return !dia.IsException ();
 	}
 
@@ -237,8 +235,6 @@ namespace CleanWeb
 			Filter_.Filters_.removeAt (pos);
 		endRemoveRows ();
 		WriteSettings ();
-
-		emit filtersChanged ();
 	}
 
 	void UserFiltersModel::AddMultiFilters (QStringList lines)
@@ -254,8 +250,6 @@ namespace CleanWeb
 			return;
 
 		WriteSettings ();
-
-		emit filtersChanged ();
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 				tr ("Imported %1 user filters (%2 parsed successfully).")
@@ -289,7 +283,7 @@ namespace CleanWeb
 		readItems ("FilterItems", Filter_.Filters_);
 	}
 
-	void UserFiltersModel::WriteSettings () const
+	void UserFiltersModel::WriteSettings ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
@@ -305,6 +299,8 @@ namespace CleanWeb
 		};
 		writeItems ("ExceptionItems", Filter_.Exceptions_);
 		writeItems ("FilterItems", Filter_.Filters_);
+
+		emit filtersChanged ();
 	}
 
 	void UserFiltersModel::blockImage ()
