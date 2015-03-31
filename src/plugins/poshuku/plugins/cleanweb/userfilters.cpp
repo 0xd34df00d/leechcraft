@@ -143,6 +143,16 @@ namespace CleanWeb
 
 		AddMulti (Model_, file.readAll ());
 	}
+
+	void UserFilters::accept ()
+	{
+		Model_->WriteSettings ();
+	}
+
+	void UserFilters::reject ()
+	{
+		Model_->ReadSettings ();
+	}
 }
 }
 }

@@ -193,8 +193,6 @@ namespace CleanWeb
 		container << item;
 		endInsertRows ();
 
-		WriteSettings ();
-
 		return !dia.IsException ();
 	}
 
@@ -234,7 +232,6 @@ namespace CleanWeb
 		else
 			Filter_.Filters_.removeAt (pos);
 		endRemoveRows ();
-		WriteSettings ();
 	}
 
 	void UserFiltersModel::AddMultiFilters (QStringList lines)
@@ -248,8 +245,6 @@ namespace CleanWeb
 
 		if (p.GetSuccess () <= 0)
 			return;
-
-		WriteSettings ();
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 				tr ("Imported %1 user filters (%2 parsed successfully).")

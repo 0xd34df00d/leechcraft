@@ -54,6 +54,9 @@ namespace CleanWeb
 		void on_Remove__released ();
 		void on_Paste__released ();
 		void on_Load__released ();
+
+		void accept ();
+		void reject ();
 	};
 }
 }
