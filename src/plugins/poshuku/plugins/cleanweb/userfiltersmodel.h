@@ -66,11 +66,12 @@ namespace CleanWeb
 		void Remove (int);
 
 		void AddMultiFilters (QStringList);
+
+		void ReadSettings ();
+		void WriteSettings ();
 	private:
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
-		void ReadSettings ();
-		void WriteSettings ();
 	private slots:
 		void blockImage ();
 	signals:
