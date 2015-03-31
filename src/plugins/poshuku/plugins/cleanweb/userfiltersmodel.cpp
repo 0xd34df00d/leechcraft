@@ -271,6 +271,11 @@ namespace CleanWeb
 
 	void UserFiltersModel::ReadSettings ()
 	{
+		beginResetModel ();
+
+		Filter_.Exceptions_.clear ();
+		Filter_.Filters_.clear ();
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
 
@@ -281,6 +286,8 @@ namespace CleanWeb
 		};
 		readItems ("ExceptionItems", Filter_.Exceptions_);
 		readItems ("FilterItems", Filter_.Filters_);
+
+		endResetModel ();
 	}
 
 	void UserFiltersModel::WriteSettings ()
