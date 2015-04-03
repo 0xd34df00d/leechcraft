@@ -27,6 +27,9 @@
        <property name="text">
         <string>Add proxy</string>
        </property>
+       <property name="icon">
+        <iconset theme="list-add"/>
+       </property>
       </widget>
      </item>
      <item>
@@ -36,6 +39,9 @@
        </property>
        <property name="text">
         <string>Edit proxy</string>
+       </property>
+       <property name="icon">
+        <iconset theme="configure"/>
        </property>
       </widget>
      </item>
@@ -47,12 +53,28 @@
        <property name="text">
         <string>Remove proxy</string>
        </property>
+       <property name="icon">
+        <iconset theme="list-remove"/>
+       </property>
       </widget>
      </item>
      <item>
       <widget class="Line" name="line">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="EditUrlsButton_">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>Edit URLs</string>
+       </property>
+       <property name="icon">
+        <iconset theme="internet-web-browser"/>
        </property>
       </widget>
      </item>
@@ -64,15 +86,8 @@
        <property name="text">
         <string>Edit scripts</string>
        </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="EditUrlsButton_">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Edit URLs</string>
+       <property name="icon">
+        <iconset theme="preferences-plugin-script"/>
        </property>
       </widget>
      </item>
