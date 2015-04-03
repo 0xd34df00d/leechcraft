@@ -50,7 +50,13 @@ namespace Util
 		const EitherCont<void (IDownload::Error), void ()> Cont_;
 
 		int JobId_ = -1;
+
+		DefaultScopeGuard FileRemoveGuard_ = {};
 	public:
+		DownloadHandler (const QUrl& url,
+				IEntityManager *iem,
+				const EitherCont<void (IDownload::Error), void (QByteArray)>&,
+				QObject *parent = nullptr);
 		DownloadHandler (const Entity& e,
 				IEntityManager *iem,
 				const EitherCont<void (IDownload::Error), void ()>&,
