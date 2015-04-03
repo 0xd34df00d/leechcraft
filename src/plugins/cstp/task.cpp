@@ -61,7 +61,6 @@ namespace CSTP
 	, URL_ (url)
 	, Timer_ (new QTimer (this))
 	, Referer_ (params ["Referer"].toUrl ())
-	, Params_ (params)
 	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
 				.value ("Operation", QNetworkAccessManager::GetOperation).toInt ()))
 	, Headers_ (params.value ("HttpHeaders").toMap ())
@@ -152,8 +151,7 @@ namespace CSTP
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
-						<< "unsupported operation"
-						<< Params_ ["Operation"];
+						<< "unsupported operation";
 				handleError ();
 				return;
 			}

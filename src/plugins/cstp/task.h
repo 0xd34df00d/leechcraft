@@ -64,7 +64,6 @@ namespace CSTP
 		bool CanChangeName_ = true;
 
 		QUrl Referer_;
-		const QVariantMap Params_;
 
 		const QNetworkAccessManager::Operation Operation_;
 
