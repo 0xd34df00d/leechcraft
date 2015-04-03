@@ -35,7 +35,7 @@
         <bool>false</bool>
        </property>
        <property name="text">
-        <string>Update proxy</string>
+        <string>Edit proxy</string>
        </property>
       </widget>
      </item>
