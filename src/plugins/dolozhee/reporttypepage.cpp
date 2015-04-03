@@ -118,20 +118,8 @@ namespace Dolozhee
 		return static_cast<Priority> (Ui_.PriorityBox_->currentIndex ());
 	}
 
-	void ReportTypePage::handleCategoriesFinished ()
+	void ReportTypePage::ParseCategories (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid reply"
-					<< sender ();
-			return;
-		}
-
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -163,6 +151,22 @@ namespace Dolozhee
 
 			Ui_.CatCombo_->addItem (name, id);
 		}
+	}
+
+	void ReportTypePage::handleCategoriesFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid reply"
+					<< sender ();
+			return;
+		}
+
+		reply->deleteLater ();
+
+		ParseCategories (reply->readAll ());
 	}
 }
 }

@@ -66,6 +66,8 @@ namespace Dolozhee
 		int GetCategoryID () const;
 		QString GetCategoryName () const;
 		Priority GetPriority () const;
+	private:
+		void ParseCategories (const QByteArray&);
 	private slots:
 		void handleCategoriesFinished ();
 	};
