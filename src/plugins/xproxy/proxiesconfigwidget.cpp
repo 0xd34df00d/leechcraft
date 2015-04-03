@@ -71,11 +71,12 @@ namespace XProxy
 
 		QList<QStandardItem*> Proxy2Row (const Proxy& proxy)
 		{
-			QList<QStandardItem*> row;
-			row << new QStandardItem (ProxyType2Str (proxy.Type_));
-			row << new QStandardItem (proxy.Host_ + ":" + QString::number (proxy.Port_));
-			row << new QStandardItem (proxy.User_);
-			return row;
+			return
+			{
+				new QStandardItem { ProxyType2Str (proxy.Type_) },
+				new QStandardItem { proxy.Host_ + ":" + QString::number (proxy.Port_) },
+				new QStandardItem { proxy.User_ }
+			};
 		}
 	}
 
