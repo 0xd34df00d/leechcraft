@@ -128,6 +128,17 @@ namespace XProxy
 		Ui_.RemoveProxyButton_->setEnabled (idx.isValid ());
 		Ui_.EditUrlsButton_->setEnabled (idx.isValid ());
 		Ui_.EditListsButton_->setEnabled (idx.isValid ());
+
+		if (idx.isValid ())
+		{
+			Ui_.MoveUpButton_->setEnabled (idx.row () > 0);
+			Ui_.MoveDownButton_->setEnabled (idx.row () + 1 < Model_->rowCount ());
+		}
+		else
+		{
+			Ui_.MoveUpButton_->setEnabled (false);
+			Ui_.MoveDownButton_->setEnabled (false);
+		}
 	}
 
 	void ProxiesConfigWidget::on_AddProxyButton__released ()
