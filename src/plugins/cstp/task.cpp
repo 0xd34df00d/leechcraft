@@ -592,8 +592,9 @@ namespace CSTP
 
 	void Task::handleError ()
 	{
-		Cleanup ();
 		emit done (true);
+
+		Cleanup ();
 	}
 }
 }
