@@ -65,6 +65,8 @@ namespace XProxy
 		QList<UrlListScript*> GetScripts (const Proxy&) const;
 		void SetScripts (const Proxy&, const QList<UrlListScript*>&);
 
+		void Swap (int, int);
+
 		void LoadSettings ();
 		void SaveSettings () const;
 	private:

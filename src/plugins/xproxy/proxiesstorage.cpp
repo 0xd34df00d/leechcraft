@@ -166,6 +166,12 @@ namespace XProxy
 			script->SetEnabled (true);
 	}
 
+	void ProxiesStorage::Swap (int row1, int row2)
+	{
+		using std::swap;
+		swap (Proxies_ [row1], Proxies_ [row2]);
+	}
+
 	void ProxiesStorage::LoadSettings ()
 	{
 		Proxies_.clear ();
