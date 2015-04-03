@@ -63,6 +63,7 @@ namespace CSTP
 	, Params_ (params)
 	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
 				.value ("Operation", QNetworkAccessManager::GetOperation).toInt ()))
+	, UploadData_ (params.value ("UploadData").toByteArray ())
 	{
 		StartTime_.start ();
 
@@ -135,7 +136,7 @@ namespace CSTP
 				break;
 			case QNetworkAccessManager::PostOperation:
 				req.setHeader (QNetworkRequest::ContentTypeHeader, ContentType_);
-				Reply_.reset (nam->post (req, QByteArray {}));
+				Reply_.reset (nam->post (req, UploadData_));
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO

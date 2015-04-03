@@ -67,6 +67,7 @@ namespace CSTP
 
 		const QNetworkAccessManager::Operation Operation_;
 		const QByteArray ContentType_ = "application/x-www-form-urlencoded";
+		const QByteArray UploadData_ = {};
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
