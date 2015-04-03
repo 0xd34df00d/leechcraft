@@ -85,6 +85,7 @@ namespace CSTP
 	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
+	, ContentType_ { reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray () }
 	{
 		StartTime_.start ();
 
@@ -142,7 +143,7 @@ namespace CSTP
 				Reply_.reset (nam->get (req));
 				break;
 			case QNetworkAccessManager::PostOperation:
-				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+				req.setHeader (QNetworkRequest::ContentTypeHeader, ContentType_);
 				Reply_.reset (nam->post (req, QByteArray {}));
 				break;
 			default:

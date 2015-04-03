@@ -64,6 +64,7 @@ namespace CSTP
 
 		QUrl Referer_;
 		const QVariantMap Params_;
+		const QByteArray ContentType_ = "application/x-www-form-urlencoded";
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
