@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWizardPage>
+#include <interfaces/core/icoreproxy.h>
 #include "ui_reporttypepage.h"
 
 namespace LeechCraft
@@ -39,6 +40,8 @@ namespace Dolozhee
 	class ReportTypePage : public QWizardPage
 	{
 		Q_OBJECT
+
+		const ICoreProxy_ptr Proxy_;
 
 		Ui::ReportTypePage Ui_;
 	public:
@@ -55,7 +58,7 @@ namespace Dolozhee
 			High
 		};
 
-		ReportTypePage (QWidget* = 0);
+		ReportTypePage (const ICoreProxy_ptr&, QWidget* = 0);
 
 		int nextId () const;
 		void initializePage ();

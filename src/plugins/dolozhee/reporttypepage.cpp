@@ -40,8 +40,9 @@ namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ReportTypePage::ReportTypePage (QWidget *parent)
-	: QWizardPage (parent)
+	ReportTypePage::ReportTypePage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: QWizardPage { parent }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 		Ui_.CatCombo_->addItem (QString ());

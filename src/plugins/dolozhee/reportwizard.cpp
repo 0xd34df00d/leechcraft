@@ -51,7 +51,7 @@ namespace Dolozhee
 	, Proxy_ (proxy)
 	, NAM_ (new QNetworkAccessManager (this))
 	, ChooseUser_ (new ChooseUserPage (proxy))
-	, ReportType_ (new ReportTypePage)
+	, ReportType_ (new ReportTypePage (proxy))
 	, BugReportPage_ (new BugReportPage (proxy))
 	, FRPage_ (new FeatureRequestPage)
 	, FilePage_ (new FileAttachPage)
