@@ -38,6 +38,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -63,6 +64,7 @@ namespace CSTP
 	, Params_ (params)
 	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
 				.value ("Operation", QNetworkAccessManager::GetOperation).toInt ()))
+	, Headers_ (params.value ("HttpHeaders").toMap ())
 	, UploadData_ (params.value ("UploadData").toByteArray ())
 	{
 		StartTime_.start ();
@@ -77,7 +79,15 @@ namespace CSTP
 	: Reply_ (reply, &LateDelete)
 	, Timer_ (new QTimer (this))
 	, Operation_ (reply->operation ())
-	, ContentType_ { reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray () }
+	, Headers_
+	{
+		Util::MakeMap<QString, QVariant> ({
+				{
+					"Content-Type",
+					reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray ()
+				}
+		})
+	}
 	{
 		StartTime_.start ();
 
@@ -129,13 +139,15 @@ namespace CSTP
 
 			auto nam = Core::Instance ().GetNetworkAccessManager ();
 
+			for (const auto& pair : Util::Stlize (Headers_))
+				req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
+
 			switch (Operation_)
 			{
 			case QNetworkAccessManager::GetOperation:
 				Reply_.reset (nam->get (req));
 				break;
 			case QNetworkAccessManager::PostOperation:
-				req.setHeader (QNetworkRequest::ContentTypeHeader, ContentType_);
 				Reply_.reset (nam->post (req, UploadData_));
 				break;
 			default:

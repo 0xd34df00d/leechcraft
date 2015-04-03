@@ -36,6 +36,7 @@
 #include <QNetworkReply>
 #include <QStringList>
 #include <interfaces/structures.h>
+#include <util/util.h>
 
 class QAuthenticator;
 class QNetworkProxy;
@@ -66,7 +67,11 @@ namespace CSTP
 		const QVariantMap Params_;
 
 		const QNetworkAccessManager::Operation Operation_;
-		const QByteArray ContentType_ = "application/x-www-form-urlencoded";
+
+		const QVariantMap Headers_ = Util::MakeMap<QString, QVariant> ({
+				{ "Content-Type", "application/x-www-form-urlencoded" }
+			});
+
 		const QByteArray UploadData_ = {};
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
