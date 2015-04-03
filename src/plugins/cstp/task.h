@@ -54,13 +54,13 @@ namespace CSTP
 		std::unique_ptr<QNetworkReply, std::function<void (QNetworkReply*)>> Reply_;
 		QUrl URL_;
 		QTime StartTime_;
-		qint64 Done_, Total_, FileSizeAtStart_;
-		double Speed_;
+		qint64 Done_ = -1, Total_ = 0, FileSizeAtStart_ = -1;
+		double Speed_ = 0;
 		QList<QByteArray> RedirectHistory_;
 		std::shared_ptr<QFile> To_;
-		int UpdateCounter_;
+		int UpdateCounter_ = 0;
 		QTimer *Timer_;
-		bool CanChangeName_;
+		bool CanChangeName_ = true;
 
 		QUrl Referer_;
 		const QVariantMap Params_;

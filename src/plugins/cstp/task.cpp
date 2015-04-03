@@ -58,13 +58,7 @@ namespace CSTP
 	Task::Task (const QUrl& url, const QVariantMap& params)
 	: Reply_ (nullptr, &LateDelete)
 	, URL_ (url)
-	, Done_ (-1)
-	, Total_ (0)
-	, FileSizeAtStart_ (-1)
-	, Speed_ (0)
-	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
-	, CanChangeName_ (true)
 	, Referer_ (params ["Referer"].toUrl ())
 	, Params_ (params)
 	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
@@ -80,13 +74,7 @@ namespace CSTP
 
 	Task::Task (QNetworkReply *reply)
 	: Reply_ (reply, &LateDelete)
-	, Done_ (-1)
-	, Total_ (0)
-	, FileSizeAtStart_ (-1)
-	, Speed_ (0)
-	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
-	, CanChangeName_ (true)
 	, Operation_ (reply->operation ())
 	, ContentType_ { reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray () }
 	{
