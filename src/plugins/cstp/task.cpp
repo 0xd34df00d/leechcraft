@@ -40,6 +40,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -587,13 +588,13 @@ namespace CSTP
 						<< To_->fileName ()
 						<< To_->errorString ();
 
-				QString errString = tr ("Error writing to file %1: %2")
+				const auto& errString = tr ("Error writing to file %1: %2")
 						.arg (To_->fileName ())
 						.arg (To_->errorString ());
-				Entity e = Util::MakeNotification ("LeechCraft CSTP",
+				const auto& e = Util::MakeNotification ("LeechCraft CSTP",
 						errString,
 						PCritical_);
-				emit gotEntity (e);
+				Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 				emit done (true);
 			}
 		}

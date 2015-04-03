@@ -109,7 +109,6 @@ namespace CSTP
 		void handleFinished ();
 		void handleError ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
 		void updateInterface ();
 		void done (bool);
 	};

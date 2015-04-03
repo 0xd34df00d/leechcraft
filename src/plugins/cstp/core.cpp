@@ -770,10 +770,6 @@ namespace CSTP
 
 			QByteArray data = settings.value ("Task").toByteArray ();
 			td.Task_.reset (new Task ());
-			connect (td.Task_.get (),
-					SIGNAL (gotEntity (const LeechCraft::Entity&)),
-					this,
-					SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			try
 			{
 				td.Task_->Deserialize (data);
