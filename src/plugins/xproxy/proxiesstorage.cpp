@@ -108,9 +108,13 @@ namespace XProxy
 		return result;
 	}
 
-	void ProxiesStorage::AddProxy (const Proxy&)
+	void ProxiesStorage::AddProxy (const Proxy& proxy)
 	{
-		// TODO add the proxy
+		DoOnProxiesList (proxy,
+				{
+					[this, &proxy] { Proxies_.append ({ proxy, {} }); },
+					[] (auto) {}
+				});
 	}
 
 	void ProxiesStorage::UpdateProxy (const Proxy& oldProxy, const Proxy& newProxy)
