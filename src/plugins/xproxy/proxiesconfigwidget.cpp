@@ -157,6 +157,9 @@ namespace XProxy
 			return;
 
 		const auto& proxy = dia.GetProxy ();
+		if (proxy == oldProxy)
+			return;
+
 		Proxies_ [row] = proxy;
 		Model_->removeRow (row);
 		Model_->insertRow (row, Proxy2Row (proxy));
