@@ -305,9 +305,20 @@ namespace CSTP
 
 	void Task::HandleMetadataRedirection ()
 	{
-		QByteArray newUrl = Reply_->rawHeader ("Location");
+		const auto& newUrl = Reply_->rawHeader ("Location");
 		if (!newUrl.size ())
 			return;
+
+		const auto code = Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+		if (code > 399 || code < 300)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "there is a redirection URL, but the status code is not 3xx:"
+					<< newUrl
+					<< code
+					<< Reply_->attribute (QNetworkRequest::HttpReasonPhraseAttribute);
+			return;
+		}
 
 		if (!QUrl (newUrl).isValid ())
 		{
