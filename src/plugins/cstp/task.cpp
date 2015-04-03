@@ -67,6 +67,8 @@ namespace CSTP
 	, CanChangeName_ (true)
 	, Referer_ (params ["Referer"].toUrl ())
 	, Params_ (params)
+	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
+				.value ("Operation", QNetworkAccessManager::GetOperation).toInt ()))
 	{
 		StartTime_.start ();
 
@@ -85,6 +87,7 @@ namespace CSTP
 	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
 	, CanChangeName_ (true)
+	, Operation_ (reply->operation ())
 	, ContentType_ { reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray () }
 	{
 		StartTime_.start ();
@@ -137,7 +140,7 @@ namespace CSTP
 
 			auto nam = Core::Instance ().GetNetworkAccessManager ();
 
-			switch (Params_.value ("Operation", QNetworkAccessManager::GetOperation).toInt ())
+			switch (Operation_)
 			{
 			case QNetworkAccessManager::GetOperation:
 				Reply_.reset (nam->get (req));
