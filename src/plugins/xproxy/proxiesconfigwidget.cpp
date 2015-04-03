@@ -197,10 +197,21 @@ namespace XProxy
 			return;
 
 		Model_->insertRow (row, Model_->takeRow (row - 1));
+		Storage_->Swap (row, row - 1);
+
+		handleItemSelected (Ui_.ProxiesList_->currentIndex ());
 	}
 
 	void ProxiesConfigWidget::on_MoveDownButton__released ()
 	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row + 1 >= Model_->rowCount ())
+			return;
+
+		Model_->insertRow (row, Model_->takeRow (row + 1));
+		Storage_->Swap (row, row + 1);
+
+		handleItemSelected (Ui_.ProxiesList_->currentIndex ());
 	}
 
 	void ProxiesConfigWidget::on_EditUrlsButton__released ()
