@@ -43,6 +43,7 @@
 #include <QToolBar>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/idownload.h>
@@ -666,7 +667,7 @@ namespace CSTP
 							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 									QString (),
 									LeechCraft::FromUserInitiated);
-							emit gotEntity (e);
+							CoreProxy_->GetEntityManager ()->HandleEntity (e);
 						});
 				nah->AddFunction (tr ("Open externally"),
 						[filename] ()
@@ -681,7 +682,7 @@ namespace CSTP
 						});
 			}
 
-			emit gotEntity (e);
+			CoreProxy_->GetEntityManager ()->HandleEntity (e);
 		}
 
 		if (!err)
@@ -697,7 +698,7 @@ namespace CSTP
 						{},
 						tp);
 				e.Additional_ [" Tags"] = tags;
-				emit gotEntity (e);
+				CoreProxy_->GetEntityManager ()->HandleEntity (e);
 			}
 		}
 		else
