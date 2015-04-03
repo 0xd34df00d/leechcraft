@@ -161,8 +161,10 @@ namespace XProxy
 			return;
 
 		Proxies_ [row] = proxy;
-		Model_->removeRow (row);
-		Model_->insertRow (row, Proxy2Row (proxy));
+
+		const auto& newRow = Proxy2Row (proxy);
+		for (int i = 0; i < newRow.size (); ++i)
+			Model_->setItem (row, i, newRow.at (i));
 
 		Storage_->UpdateProxy (oldProxy, proxy);
 	}
