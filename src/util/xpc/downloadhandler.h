@@ -54,9 +54,16 @@ namespace Util
 		DefaultScopeGuard FileRemoveGuard_ = {};
 	public:
 		DownloadHandler (const QUrl& url,
+				const QVariantMap& additional,
 				IEntityManager *iem,
 				const EitherCont<void (IDownload::Error), void (QByteArray)>&,
 				QObject *parent = nullptr);
+
+		DownloadHandler (const QUrl& url,
+				IEntityManager *iem,
+				const EitherCont<void (IDownload::Error), void (QByteArray)>&,
+				QObject *parent = nullptr);
+
 		DownloadHandler (const Entity& e,
 				IEntityManager *iem,
 				const EitherCont<void (IDownload::Error), void ()>&,

@@ -40,17 +40,23 @@ namespace LeechCraft
 namespace Util
 {
 	DownloadHandler::DownloadHandler (const QUrl& url,
+			const QVariantMap& additional,
 			IEntityManager *iem,
 			const EitherCont<void (IDownload::Error), void (QByteArray)>& cont,
 			QObject *parent)
 	: DownloadHandler
 	{
-		MakeEntity (url,
-				GetTemporaryName (),
-				TaskParameter::DoNotSaveInHistory |
-				TaskParameter::Internal |
-				TaskParameter::DoNotNotifyUser |
-				TaskParameter::NotPersistent),
+		[&]
+		{
+			auto e = MakeEntity (url,
+					GetTemporaryName (),
+					TaskParameter::DoNotSaveInHistory |
+					TaskParameter::Internal |
+					TaskParameter::DoNotNotifyUser |
+					TaskParameter::NotPersistent);
+			e.Additional_ = additional;
+			return e;
+		} (),
 		iem,
 		{
 			[cont] (IDownload::Error error) { cont.Left (error); },
@@ -71,6 +77,14 @@ namespace Util
 	}
 	{
 		FileRemoveGuard_ = MakeScopeGuard ([this] { QFile::remove (E_.Location_); });
+	}
+
+	DownloadHandler::DownloadHandler (const QUrl& url,
+			IEntityManager *iem,
+			const EitherCont<void (IDownload::Error), void (QByteArray)>& cont,
+			QObject *parent)
+	: DownloadHandler { url, {}, iem, cont, parent }
+	{
 	}
 
 	DownloadHandler::DownloadHandler (const Entity& e,
