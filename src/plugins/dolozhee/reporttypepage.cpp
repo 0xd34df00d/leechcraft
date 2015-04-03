@@ -34,6 +34,8 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/xpc/downloadhandler.h>
+#include <util/sll/functional.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
@@ -69,14 +71,22 @@ namespace Dolozhee
 		if (Ui_.CatCombo_->count () > 1)
 			return;
 
-		auto rw = static_cast<ReportWizard*> (wizard ());
-		QNetworkRequest req (QUrl ("http://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories"));
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/xml");
-		auto reply = rw->GetNAM ()->get (req);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleCategoriesFinished ()));
+		try
+		{
+			const QUrl url { "http://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
+			new Util::DownloadHandler (url,
+					Proxy_->GetEntityManager (),
+					{
+						[] (IDownload::Error) {},
+						Util::BindMemFn (&ReportTypePage::ParseCategories, this)
+					},
+					this);
+		}
+		catch (const std::exception& e)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void ReportTypePage::ForceReportType (Type type)
