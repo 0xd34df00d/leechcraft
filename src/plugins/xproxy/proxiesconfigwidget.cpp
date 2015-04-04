@@ -35,6 +35,7 @@
 #include "editurlsdialog.h"
 #include "editlistsdialog.h"
 #include "scriptsmanager.h"
+#include "proxyconfigdialog.h"
 #include "proxiesstorage.h"
 
 namespace LeechCraft
@@ -70,11 +71,12 @@ namespace XProxy
 
 		QList<QStandardItem*> Proxy2Row (const Proxy& proxy)
 		{
-			QList<QStandardItem*> row;
-			row << new QStandardItem (ProxyType2Str (proxy.Type_));
-			row << new QStandardItem (proxy.Host_ + ":" + QString::number (proxy.Port_));
-			row << new QStandardItem (proxy.User_);
-			return row;
+			return
+			{
+				new QStandardItem { ProxyType2Str (proxy.Type_) },
+				new QStandardItem { proxy.Host_ + ":" + QString::number (proxy.Port_) },
+				new QStandardItem { proxy.User_ }
+			};
 		}
 	}
 
@@ -104,38 +106,6 @@ namespace XProxy
 		reject ();
 	}
 
-	Proxy ProxiesConfigWidget::EntryFromUI () const
-	{
-		auto type = QNetworkProxy::ProxyType::NoProxy;
-		switch (Ui_.ProxyType_->currentIndex ())
-		{
-		case 0:
-			type = QNetworkProxy::ProxyType::Socks5Proxy;
-			break;
-		case 1:
-			type = QNetworkProxy::ProxyType::HttpProxy;
-			break;
-		case 2:
-			type = QNetworkProxy::ProxyType::HttpCachingProxy;
-			break;
-		case 3:
-			type = QNetworkProxy::ProxyType::FtpCachingProxy;
-			break;
-		case 4:
-			type = QNetworkProxy::ProxyType::NoProxy;
-			break;
-		}
-
-		return
-		{
-			type,
-			Ui_.ProxyHost_->text (),
-			Ui_.ProxyPort_->value (),
-			Ui_.ProxyUser_->text (),
-			Ui_.ProxyPassword_->text ()
-		};
-	}
-
 	void ProxiesConfigWidget::accept ()
 	{
 		Storage_->SaveSettings ();
@@ -160,39 +130,25 @@ namespace XProxy
 		Ui_.EditUrlsButton_->setEnabled (idx.isValid ());
 		Ui_.EditListsButton_->setEnabled (idx.isValid ());
 
-		const auto& proxy = Proxies_.value (idx.row ());
-		Ui_.ProxyHost_->setText (proxy.Host_);
-		Ui_.ProxyPort_->setValue (proxy.Port_);
-		Ui_.ProxyUser_->setText (proxy.User_);
-		Ui_.ProxyPassword_->setText (proxy.Pass_);
-		switch (proxy.Type_)
+		if (idx.isValid ())
 		{
-		case QNetworkProxy::ProxyType::Socks5Proxy:
-			Ui_.ProxyType_->setCurrentIndex (0);
-			break;
-		case QNetworkProxy::ProxyType::HttpProxy:
-			Ui_.ProxyType_->setCurrentIndex (1);
-			break;
-		case QNetworkProxy::ProxyType::HttpCachingProxy:
-			Ui_.ProxyType_->setCurrentIndex (2);
-			break;
-		case QNetworkProxy::ProxyType::FtpCachingProxy:
-			Ui_.ProxyType_->setCurrentIndex (3);
-			break;
-		case QNetworkProxy::ProxyType::NoProxy:
-			Ui_.ProxyType_->setCurrentIndex (4);
-			break;
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown proxy type"
-					<< proxy.Type_;
-			break;
+			Ui_.MoveUpButton_->setEnabled (idx.row () > 0);
+			Ui_.MoveDownButton_->setEnabled (idx.row () + 1 < Model_->rowCount ());
+		}
+		else
+		{
+			Ui_.MoveUpButton_->setEnabled (false);
+			Ui_.MoveDownButton_->setEnabled (false);
 		}
 	}
 
 	void ProxiesConfigWidget::on_AddProxyButton__released ()
 	{
-		const auto& proxy = EntryFromUI ();
+		ProxyConfigDialog dia { this };
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& proxy = dia.GetProxy ();
 		Proxies_ << proxy;
 		Model_->appendRow (Proxy2Row (proxy));
 
@@ -207,10 +163,20 @@ namespace XProxy
 
 		const auto oldProxy = Proxies_.at (row);
 
-		const auto& proxy = EntryFromUI ();
+		ProxyConfigDialog dia { this };
+		dia.SetProxy (oldProxy);
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const auto& proxy = dia.GetProxy ();
+		if (proxy == oldProxy)
+			return;
+
 		Proxies_ [row] = proxy;
-		Model_->removeRow (row);
-		Model_->insertRow (row, Proxy2Row (proxy));
+
+		const auto& newRow = Proxy2Row (proxy);
+		for (int i = 0; i < newRow.size (); ++i)
+			Model_->setItem (row, i, newRow.at (i));
 
 		Storage_->UpdateProxy (oldProxy, proxy);
 	}
@@ -223,6 +189,30 @@ namespace XProxy
 
 		Model_->removeRow (row);
 		Storage_->RemoveProxy (Proxies_.takeAt (row));
+	}
+
+	void ProxiesConfigWidget::on_MoveUpButton__released ()
+	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row <= 0)
+			return;
+
+		Model_->insertRow (row, Model_->takeRow (row - 1));
+		Storage_->Swap (row, row - 1);
+
+		handleItemSelected (Ui_.ProxiesList_->currentIndex ());
+	}
+
+	void ProxiesConfigWidget::on_MoveDownButton__released ()
+	{
+		const int row = Ui_.ProxiesList_->currentIndex ().row ();
+		if (row + 1 >= Model_->rowCount ())
+			return;
+
+		Model_->insertRow (row, Model_->takeRow (row + 1));
+		Storage_->Swap (row, row + 1);
+
+		handleItemSelected (Ui_.ProxiesList_->currentIndex ());
 	}
 
 	void ProxiesConfigWidget::on_EditUrlsButton__released ()

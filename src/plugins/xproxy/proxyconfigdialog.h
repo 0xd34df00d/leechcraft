@@ -29,26 +29,25 @@
 
 #pragma once
 
+#include <QDialog>
+#include "ui_proxyconfigdialog.h"
+
 namespace LeechCraft
 {
-namespace Util
+namespace XProxy
 {
-	template<typename F, typename... Args>
-	auto Invoke (F&& f, Args&&... args) -> decltype (std::forward<F> (f) (std::forward<Args> (args)...))
-	{
-		return std::forward<F> (f) (std::forward<Args> (args)...);
-	}
+	struct Proxy;
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype (obj.*mem)
+	class ProxyConfigDialog : public QDialog
 	{
-		return obj.*mem;
-	}
+		Q_OBJECT
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype ((obj.*mem) ())
-	{
-		return (obj.*mem) ();
-	}
+		Ui::ProxyConfigDialog Ui_;
+	public:
+		ProxyConfigDialog (QWidget*);
+
+		Proxy GetProxy () const;
+		void SetProxy (const Proxy&);
+	};
 }
 }

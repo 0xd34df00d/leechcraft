@@ -41,6 +41,9 @@ namespace Util
 	private slots:
 		void testMapList ();
 		void testMapMap ();
+
+		void testMapMember ();
+		void testMapMemberFunction ();
 	};
 }
 }

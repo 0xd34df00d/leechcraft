@@ -32,15 +32,18 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <util/xpc/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sll/functional.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/idownload.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
 #include "xmlgenerator.h"
 #include "fileattachpage.h"
-#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -68,8 +71,6 @@ namespace Dolozhee
 	{
 		auto wiz = qobject_cast<ReportWizard*> (wizard ());
 
-		Ui_.UploadProgress_->hide ();
-
 		if (!PendingFiles_.isEmpty ())
 		{
 			CurrentUpload_ = PendingFiles_.takeFirst ();
@@ -77,23 +78,36 @@ namespace Dolozhee
 			if (!file.open (QIODevice::ReadOnly))
 				return UploadPending ();
 
-			auto reply = wiz->PostRequest ("/uploads.xml",
-					file.readAll (), "application/octet-stream");
-			connect (reply,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleUploadReplyFinished ()));
-			Ui_.Status_->setText (tr ("Sending %1...")
-					.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
+			const auto& filename = QFileInfo { CurrentUpload_.Name_ }.fileName ();
 
-			connect (reply,
-					SIGNAL (uploadProgress (qint64, qint64)),
-					this,
-					SLOT (handleUploadProgress (qint64)));
-			Ui_.UploadProgress_->setMaximum (file.size ());
-			Ui_.UploadProgress_->show ();
+			try
+			{
+				wiz->PostRequest ("/uploads.xml",
+						file.readAll (),
+						"application/octet-stream",
+						{
+							[this, filename] (IDownload::Error)
+							{
+								QMessageBox::critical (this,
+										"LeechCraft",
+										tr ("Unable to upload %1.")
+											.arg ("<em>" + filename + "</em>"));
+							},
+							Util::BindMemFn (&FinalPage::HandleUploadReplyData, this)
+						});
 
-			return;
+				Ui_.Status_->setText (tr ("Sending %1...")
+						.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
+
+				return;
+			}
+			catch (const std::exception& e)
+			{
+				QMessageBox::critical (this,
+						"LeechCraft",
+						tr ("Unable to upload %1, could not initiate uploading process.")
+							.arg ("<em>" + filename + "</em>"));
+			}
 		}
 
 		Util::MimeDetector detector;
@@ -120,25 +134,17 @@ namespace Dolozhee
 
 		const auto& data = XMLGenerator ().CreateIssue (title, desc,
 				category, type, typePage->GetPriority (), UploadedFiles_);
-		auto reply = wiz->PostRequest ("/issues.xml", data);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
+		wiz->PostRequest ("/issues.xml",
+				data,
+				"application/xml",
+				{
+					[this] (IDownload::Error) { ShowRegrets (); },
+					Util::BindMemFn (&FinalPage::HandleReportPostedData, this)
+				});
 	}
 
-	void FinalPage::handleUploadProgress (qint64 done)
+	void FinalPage::HandleUploadReplyData (const QByteArray& replyData)
 	{
-		Ui_.UploadProgress_->setValue (done);
-	}
-
-	void FinalPage::handleUploadReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& replyData = reply->readAll ();
-
 		QDomDocument doc;
 		if (!doc.setContent (replyData))
 		{
@@ -158,24 +164,21 @@ namespace Dolozhee
 		UploadPending ();
 	}
 
-	void FinalPage::handleReplyFinished ()
+	void FinalPage::HandleReportPostedData (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-		QString text;
-
 		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
+		if (!doc.setContent (data))
 		{
-			text = tr ("I'm very sorry to say that, but seems like "
-					"we're unable to handle your report at the time :(");
-			Ui_.Status_->setText (text);
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse"
+					<< data;
+			ShowRegrets ();
 			return;
 		}
 
 		auto root = doc.documentElement ();
 		const auto& id = root.firstChildElement ("id").text ();
-		text = tr ("Report has been sent successfully. Thanks for your time!");
+		auto text = tr ("Report has been sent successfully. Thanks for your time!");
 		if (!id.isEmpty ())
 		{
 			text += "<br />";
@@ -185,6 +188,34 @@ namespace Dolozhee
 						" <a href='http://dev.leechcraft.org/issues/%1.atom'>Atom</a>.").arg (id);
 		}
 		Ui_.Status_->setText (text);
+	}
+
+	void FinalPage::ShowRegrets()
+	{
+		const auto& text = tr ("I'm very sorry to say that, but seems like "
+				"we're unable to handle your report at the time :(");
+		Ui_.Status_->setText (text);
+	}
+
+	void FinalPage::handleUploadProgress (qint64 done)
+	{
+		Ui_.UploadProgress_->setValue (done);
+	}
+
+	void FinalPage::handleUploadReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		HandleUploadReplyData (reply->readAll ());
+	}
+
+	void FinalPage::handleReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		HandleReportPostedData (reply->readAll ());
 	}
 
 	void FinalPage::on_Status__linkActivated (const QString& linkStr)

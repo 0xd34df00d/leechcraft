@@ -27,28 +27,80 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
+#include "proxyconfigdialog.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
-namespace Util
+namespace XProxy
 {
-	template<typename F, typename... Args>
-	auto Invoke (F&& f, Args&&... args) -> decltype (std::forward<F> (f) (std::forward<Args> (args)...))
+	ProxyConfigDialog::ProxyConfigDialog (QWidget *parent)
+	: QDialog { parent }
 	{
-		return std::forward<F> (f) (std::forward<Args> (args)...);
+		Ui_.setupUi (this);
 	}
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype (obj.*mem)
+	Proxy ProxyConfigDialog::GetProxy () const
 	{
-		return obj.*mem;
+		auto type = QNetworkProxy::ProxyType::NoProxy;
+		switch (Ui_.ProxyType_->currentIndex ())
+		{
+		case 0:
+			type = QNetworkProxy::ProxyType::Socks5Proxy;
+			break;
+		case 1:
+			type = QNetworkProxy::ProxyType::HttpProxy;
+			break;
+		case 2:
+			type = QNetworkProxy::ProxyType::HttpCachingProxy;
+			break;
+		case 3:
+			type = QNetworkProxy::ProxyType::FtpCachingProxy;
+			break;
+		case 4:
+			type = QNetworkProxy::ProxyType::NoProxy;
+			break;
+		}
+
+		return
+		{
+			type,
+			Ui_.ProxyHost_->text (),
+			Ui_.ProxyPort_->value (),
+			Ui_.ProxyUser_->text (),
+			Ui_.ProxyPassword_->text ()
+		};
 	}
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype ((obj.*mem) ())
+	void ProxyConfigDialog::SetProxy (const Proxy& proxy)
 	{
-		return (obj.*mem) ();
+		Ui_.ProxyHost_->setText (proxy.Host_);
+		Ui_.ProxyPort_->setValue (proxy.Port_);
+		Ui_.ProxyUser_->setText (proxy.User_);
+		Ui_.ProxyPassword_->setText (proxy.Pass_);
+		switch (proxy.Type_)
+		{
+		case QNetworkProxy::ProxyType::Socks5Proxy:
+			Ui_.ProxyType_->setCurrentIndex (0);
+			break;
+		case QNetworkProxy::ProxyType::HttpProxy:
+			Ui_.ProxyType_->setCurrentIndex (1);
+			break;
+		case QNetworkProxy::ProxyType::HttpCachingProxy:
+			Ui_.ProxyType_->setCurrentIndex (2);
+			break;
+		case QNetworkProxy::ProxyType::FtpCachingProxy:
+			Ui_.ProxyType_->setCurrentIndex (3);
+			break;
+		case QNetworkProxy::ProxyType::NoProxy:
+			Ui_.ProxyType_->setCurrentIndex (4);
+			break;
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unknown proxy type"
+					<< proxy.Type_;
+			break;
+		}
 	}
 }
 }

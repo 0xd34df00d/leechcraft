@@ -32,6 +32,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
+#include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
@@ -98,7 +99,7 @@ namespace CleanWeb
 		dia.setWindowTitle (tr ("Paste rules"));
 		dia.resize (600, 400);
 		dia.setLayout (new QVBoxLayout ());
-		dia.layout ()->addWidget (new QLineEdit (tr ("Paste your custom rules here:")));
+		dia.layout ()->addWidget (new QLabel (tr ("Paste your custom rules here:")));
 		dia.layout ()->addWidget (edit);
 		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dia.layout ()->addWidget (box);
@@ -141,6 +142,16 @@ namespace CleanWeb
 		}
 
 		AddMulti (Model_, file.readAll ());
+	}
+
+	void UserFilters::accept ()
+	{
+		Model_->WriteSettings ();
+	}
+
+	void UserFilters::reject ()
+	{
+		Model_->ReadSettings ();
 	}
 }
 }

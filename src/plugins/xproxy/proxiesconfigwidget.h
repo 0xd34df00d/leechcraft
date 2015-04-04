@@ -55,8 +55,6 @@ namespace XProxy
 		QList<Proxy> Proxies_;
 	public:
 		ProxiesConfigWidget (ProxiesStorage*, ScriptsManager*, QWidget* = 0);
-	private:
-		Proxy EntryFromUI () const;
 	public slots:
 		void accept ();
 		void reject ();
@@ -66,6 +64,8 @@ namespace XProxy
 		void on_AddProxyButton__released ();
 		void on_UpdateProxyButton__released ();
 		void on_RemoveProxyButton__released ();
+		void on_MoveUpButton__released ();
+		void on_MoveDownButton__released ();
 
 		void on_EditUrlsButton__released ();
 		void on_EditListsButton__released ();

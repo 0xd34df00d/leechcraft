@@ -31,6 +31,7 @@
 
 #include <QWizard>
 #include <interfaces/core/icoreproxy.h>
+#include <util/xpc/downloadhandler.h>
 
 class QAuthenticator;
 class QNetworkReply;
@@ -78,8 +79,8 @@ namespace Dolozhee
 
 		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
 
-		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&, const QByteArray& = "application/xml");
+		void PostRequest (const QString&, const QByteArray&, const QByteArray&,
+				const Util::DownloadHandler::DataHandler_t&);
 
 		ChooseUserPage* GetChooseUserPage () const;
 		ReportTypePage* GetReportTypePage () const;

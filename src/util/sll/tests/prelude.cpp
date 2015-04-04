@@ -64,5 +64,37 @@ namespace Util
 
 		QCOMPARE (otherList, (QList<int> { 3, 3, 3 }));
 	}
+
+	void PreludeTest::testMapMember ()
+	{
+		struct Test
+		{
+			int m_a;
+			int m_b;
+		};
+
+		const QList<Test> tests { { 1, 2 }, { 2, 4 }, { 3, 6 } };
+		const auto& ints = Map (tests, &Test::m_a);
+
+		QCOMPARE (ints, (QList<int> { 1, 2, 3 }));
+	}
+
+	void PreludeTest::testMapMemberFunction ()
+	{
+		struct Test
+		{
+			int m_a;
+
+			int GetA () const
+			{
+				return m_a;
+			}
+		};
+
+		const QList<Test> tests { { 1 }, { 2 }, { 3 } };
+		const auto& ints = Map (tests, &Test::GetA);
+
+		QCOMPARE (ints, (QList<int> { 1, 2, 3 }));
+	}
 }
 }

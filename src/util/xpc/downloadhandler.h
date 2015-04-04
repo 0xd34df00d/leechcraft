@@ -29,26 +29,48 @@
 
 #pragma once
 
+#include <QObject>
+#include <util/sll/eithercont.h>
+#include <interfaces/idownload.h>
+#include <interfaces/structures.h>
+#include "xpcconfig.h"
+
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Util
 {
-	template<typename F, typename... Args>
-	auto Invoke (F&& f, Args&&... args) -> decltype (std::forward<F> (f) (std::forward<Args> (args)...))
+	class UTIL_XPC_API DownloadHandler : public QObject
 	{
-		return std::forward<F> (f) (std::forward<Args> (args)...);
-	}
+		Q_OBJECT
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype (obj.*mem)
-	{
-		return obj.*mem;
-	}
+		const Entity E_;
+		const EitherCont<void (IDownload::Error), void ()> Cont_;
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype ((obj.*mem) ())
-	{
-		return (obj.*mem) ();
-	}
+		int JobId_ = -1;
+	public:
+		using DataHandler_t = EitherCont<void (IDownload::Error), void (QByteArray)>;
+		using EntityHandler_t = EitherCont<void (IDownload::Error), void ()>;
+
+		DownloadHandler (const QUrl& url,
+				const QVariantMap& additional,
+				IEntityManager *iem,
+				const DataHandler_t&,
+				QObject *parent = nullptr);
+
+		DownloadHandler (const QUrl& url,
+				IEntityManager *iem,
+				const DataHandler_t&,
+				QObject *parent = nullptr);
+
+		DownloadHandler (const Entity& e,
+				IEntityManager *iem,
+				const EntityHandler_t&,
+				QObject *parent = nullptr);
+	private slots:
+		void handleFinished (int);
+		void handleError (int, IDownload::Error);
+	};
 }
 }

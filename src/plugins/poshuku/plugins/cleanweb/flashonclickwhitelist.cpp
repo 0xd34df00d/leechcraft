@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "flashonclickwhitelist.h"
+#include <algorithm>
 #include <QCoreApplication>
 #include <QStandardItemModel>
 #include <QSettings>
@@ -45,20 +46,9 @@ namespace CleanWeb
 	: QWidget (parent)
 	, Model_ (new QStandardItemModel (this))
 	{
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Whitelist")));
+		Model_->setHorizontalHeaderLabels ({ tr ("Whitelist") });
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_CleanWeb");
-		settings.beginGroup ("FlashOnClick");
-		int size = settings.beginReadArray ("Whitelist");
-		for (int i = 0; i < size; ++i)
-		{
-			settings.setArrayIndex (i);
-			Model_->appendRow (new QStandardItem (settings
-						.value ("Exception").toString ()));
-		}
-		settings.endArray ();
-		settings.endGroup ();
+		ReadSettings ();
 
 		Ui_.setupUi (this);
 		Ui_.WhitelistTree_->setModel (Model_);
@@ -74,13 +64,10 @@ namespace CleanWeb
 
 	bool FlashOnClickWhitelist::Matches (const QString& str) const
 	{
-		Q_FOREACH (QString white, GetWhitelist ())
-		{
-			if (str.indexOf (white) >= 0 ||
-					str.indexOf (QRegExp (white)) >= 0)
-				return true;
-		}
-		return false;
+		const auto& whitelist = GetWhitelist ();
+		return std::any_of (whitelist.begin (), whitelist.end (),
+				[&str] (const QString& white)
+					{ return str.indexOf (white) >= 0 || str.indexOf (QRegExp { white }) >= 0; });
 	}
 
 	void FlashOnClickWhitelist::Add (const QString& str)
@@ -95,22 +82,31 @@ namespace CleanWeb
 
 	void FlashOnClickWhitelist::on_Modify__released ()
 	{
-		QModelIndex index = Ui_.WhitelistTree_->currentIndex ();
+		const auto& index = Ui_.WhitelistTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		QString str = Model_->itemFromIndex (index)->text ();
+		const auto& str = Model_->itemFromIndex (index)->text ();
 		AddImpl (str, index);
 	}
 
 	void FlashOnClickWhitelist::on_Remove__released ()
 	{
-		QModelIndex index = Ui_.WhitelistTree_->currentIndex ();
+		const auto& index = Ui_.WhitelistTree_->currentIndex ();
 		if (!index.isValid ())
 			return;
 
-		qDeleteAll (Model_->takeRow (index.row ()));
+		Model_->removeRow (index.row ());
+	}
+
+	void FlashOnClickWhitelist::accept ()
+	{
 		SaveSettings ();
+	}
+
+	void FlashOnClickWhitelist::reject ()
+	{
+		ReadSettings ();
 	}
 
 	void FlashOnClickWhitelist::AddImpl (QString str, const QModelIndex& old)
@@ -127,7 +123,7 @@ namespace CleanWeb
 			return;
 
 		if (old.isValid ())
-			qDeleteAll (Model_->takeRow (old.row ()));
+			Model_->removeRow (old.row ());
 
 		if (Matches (str))
 		{
@@ -138,7 +134,24 @@ namespace CleanWeb
 		}
 
 		Model_->appendRow (new QStandardItem (str));
-		SaveSettings ();
+	}
+
+	void FlashOnClickWhitelist::ReadSettings ()
+	{
+		if (const auto rc = Model_->rowCount ())
+			Model_->removeRows (0, rc);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_CleanWeb");
+		settings.beginGroup ("FlashOnClick");
+		int size = settings.beginReadArray ("Whitelist");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+			Model_->appendRow (new QStandardItem (settings.value ("Exception").toString ()));
+		}
+		settings.endArray ();
+		settings.endGroup ();
 	}
 
 	void FlashOnClickWhitelist::SaveSettings ()

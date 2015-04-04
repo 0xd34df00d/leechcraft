@@ -7,6 +7,7 @@ set (XPC_SRCS
 	stddatafiltermenucreator.cpp
 	util.cpp
 	anutil.cpp
+	downloadhandler.cpp
 	)
 
 foreach (SRC ${XPC_SRCS})

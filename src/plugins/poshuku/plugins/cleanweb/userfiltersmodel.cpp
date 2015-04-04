@@ -181,8 +181,7 @@ namespace CleanWeb
 		fo.MatchType_ = dia.GetType ();
 		fo.Domains_ = dia.GetDomains ();
 		fo.NotDomains_ = dia.GetNotDomains ();
-		const FilterItem_ptr item (new FilterItem
-				{
+		const auto item = std::make_shared<FilterItem> (FilterItem {
 					itemRx,
 					dia.GetString ().toUtf8 (),
 					fo
@@ -193,10 +192,6 @@ namespace CleanWeb
 		beginInsertRows (QModelIndex (), size, size);
 		container << item;
 		endInsertRows ();
-
-		WriteSettings ();
-
-		emit filtersChanged ();
 
 		return !dia.IsException ();
 	}
@@ -237,9 +232,6 @@ namespace CleanWeb
 		else
 			Filter_.Filters_.removeAt (pos);
 		endRemoveRows ();
-		WriteSettings ();
-
-		emit filtersChanged ();
 	}
 
 	void UserFiltersModel::AddMultiFilters (QStringList lines)
@@ -253,10 +245,6 @@ namespace CleanWeb
 
 		if (p.GetSuccess () <= 0)
 			return;
-
-		WriteSettings ();
-
-		emit filtersChanged ();
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 				tr ("Imported %1 user filters (%2 parsed successfully).")
@@ -278,25 +266,32 @@ namespace CleanWeb
 
 	void UserFiltersModel::ReadSettings ()
 	{
+		beginResetModel ();
+
+		Filter_.Exceptions_.clear ();
+		Filter_.Filters_.clear ();
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
 
-		auto readItems = [&settings] (const QString& name, QList<FilterItem_ptr>& to) -> void
+		auto readItems = [&settings] (const QString& name, QList<FilterItem_ptr>& to)
 		{
 			for (const auto& item : settings.value (name).value<QList<FilterItem>> ())
-				to << FilterItem_ptr (new FilterItem (item));
+				to << std::make_shared<FilterItem> (item);
 		};
 		readItems ("ExceptionItems", Filter_.Exceptions_);
 		readItems ("FilterItems", Filter_.Filters_);
+
+		endResetModel ();
 	}
 
-	void UserFiltersModel::WriteSettings () const
+	void UserFiltersModel::WriteSettings ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_CleanWeb_Subscr");
 		settings.clear ();
 
-		auto writeItems = [&settings] (const QString& name, const QList<FilterItem_ptr>& from) -> void
+		auto writeItems = [&settings] (const QString& name, const QList<FilterItem_ptr>& from)
 		{
 			QList<FilterItem> saved;
 			saved.reserve (from.size ());
@@ -306,6 +301,8 @@ namespace CleanWeb
 		};
 		writeItems ("ExceptionItems", Filter_.Exceptions_);
 		writeItems ("FilterItems", Filter_.Filters_);
+
+		emit filtersChanged ();
 	}
 
 	void UserFiltersModel::blockImage ()

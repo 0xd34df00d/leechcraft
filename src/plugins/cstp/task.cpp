@@ -38,7 +38,11 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/xpc/util.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -53,20 +57,33 @@ namespace CSTP
 			if (rep)
 				rep->deleteLater ();
 		}
+
+		QVariantMap Augment (QVariantMap map, const QList<QPair<QString, QVariant>>& pairs)
+		{
+			if (pairs.isEmpty ())
+				return map;
+
+			QStringList keys { Util::Map (map.keys (), &QString::toLower) };
+			for (const auto& pair : pairs)
+				if (!keys.contains (pair.first, Qt::CaseInsensitive))
+					map [pair.first] = pair.second;
+
+			return map;
+		}
 	}
 
 	Task::Task (const QUrl& url, const QVariantMap& params)
 	: Reply_ (nullptr, &LateDelete)
 	, URL_ (url)
-	, Done_ (-1)
-	, Total_ (0)
-	, FileSizeAtStart_ (-1)
-	, Speed_ (0)
-	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
-	, CanChangeName_ (true)
 	, Referer_ (params ["Referer"].toUrl ())
-	, Params_ (params)
+	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
+				.value ("Operation", QNetworkAccessManager::GetOperation).toInt ()))
+	, Headers_ (Augment (params.value ("HttpHeaders").toMap (),
+			{
+				{ "Content-Type", "application/x-www-form-urlencoded" }
+			}))
+	, UploadData_ (params.value ("UploadData").toByteArray ())
 	{
 		StartTime_.start ();
 
@@ -78,13 +95,17 @@ namespace CSTP
 
 	Task::Task (QNetworkReply *reply)
 	: Reply_ (reply, &LateDelete)
-	, Done_ (-1)
-	, Total_ (0)
-	, FileSizeAtStart_ (-1)
-	, Speed_ (0)
-	, UpdateCounter_ (0)
 	, Timer_ (new QTimer (this))
-	, CanChangeName_ (true)
+	, Operation_ (reply->operation ())
+	, Headers_
+	{
+		Util::MakeMap<QString, QVariant> ({
+				{
+					"Content-Type",
+					reply->request ().header (QNetworkRequest::ContentTypeHeader).toByteArray ()
+				}
+		})
+	}
 	{
 		StartTime_.start ();
 
@@ -136,19 +157,20 @@ namespace CSTP
 
 			auto nam = Core::Instance ().GetNetworkAccessManager ();
 
-			switch (Params_.value ("Operation", QNetworkAccessManager::GetOperation).toInt ())
+			for (const auto& pair : Util::Stlize (Headers_))
+				req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
+
+			switch (Operation_)
 			{
 			case QNetworkAccessManager::GetOperation:
 				Reply_.reset (nam->get (req));
 				break;
 			case QNetworkAccessManager::PostOperation:
-				req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-				Reply_.reset (nam->post (req, QByteArray {}));
+				Reply_.reset (nam->post (req, UploadData_));
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
-						<< "unsupported operation"
-						<< Params_ ["Operation"];
+						<< "unsupported operation";
 				handleError ();
 				return;
 			}
@@ -313,9 +335,20 @@ namespace CSTP
 
 	void Task::HandleMetadataRedirection ()
 	{
-		QByteArray newUrl = Reply_->rawHeader ("Location");
+		const auto& newUrl = Reply_->rawHeader ("Location");
 		if (!newUrl.size ())
 			return;
+
+		const auto code = Reply_->attribute (QNetworkRequest::HttpStatusCodeAttribute).toInt ();
+		if (code > 399 || code < 300)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "there is a redirection URL, but the status code is not 3xx:"
+					<< newUrl
+					<< code
+					<< Reply_->attribute (QNetworkRequest::HttpReasonPhraseAttribute);
+			return;
+		}
 
 		if (!QUrl (newUrl).isValid ())
 		{
@@ -573,13 +606,13 @@ namespace CSTP
 						<< To_->fileName ()
 						<< To_->errorString ();
 
-				QString errString = tr ("Error writing to file %1: %2")
+				const auto& errString = tr ("Error writing to file %1: %2")
 						.arg (To_->fileName ())
 						.arg (To_->errorString ());
-				Entity e = Util::MakeNotification ("LeechCraft CSTP",
+				const auto& e = Util::MakeNotification ("LeechCraft CSTP",
 						errString,
 						PCritical_);
-				emit gotEntity (e);
+				Core::Instance ().GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 				emit done (true);
 			}
 		}
@@ -600,8 +633,9 @@ namespace CSTP
 
 	void Task::handleError ()
 	{
-		Cleanup ();
 		emit done (true);
+
+		Cleanup ();
 	}
 }
 }

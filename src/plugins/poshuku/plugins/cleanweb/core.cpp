@@ -70,7 +70,6 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QWebFrame*);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
 
 namespace LeechCraft
 {
@@ -210,7 +209,6 @@ namespace CleanWeb
 				SLOT (handleParsed ()));
 		const auto& future = QtConcurrent::run (ParseToFilters, paths);
 		watcher->setFuture (future);
-		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
 
 		connect (UserFilters_,
 				SIGNAL (filtersChanged ()),
@@ -341,7 +339,7 @@ namespace CleanWeb
 		QPointer<QWebFrame> safeFrame { frame };
 		new Util::DelayedExecutor
 		{
-			[this, safeFrame] { handleFrameLayout (safeFrame); },
+			[this, safeFrame] { HandleFrameLayout (safeFrame, false); },
 			0
 		};
 	}
@@ -711,13 +709,12 @@ namespace CleanWeb
 		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 		Filters_ << f;
 		endInsertRows ();
-
-		regenFilterCaches ();
 	}
 
 	void Core::Parse (const QString& filePath)
 	{
 		AddFilter (ParseToFilters ({ filePath }).first ());
+		regenFilterCaches ();
 	}
 
 	bool Core::Add (const QUrl& subscrUrl)
@@ -897,6 +894,8 @@ namespace CleanWeb
 		for (const auto& f : result)
 			AddFilter (f);
 
+		regenFilterCaches ();
+
 		ReadSettings ();
 
 		QTimer::singleShot (0,
@@ -948,9 +947,12 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
-	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
+	void Core::HandleFrameLayout (QPointer<QWebFrame> frame, bool asLoad)
 	{
 		if (!frame)
+			return;
+
+		if (!XmlSettingsManager::Instance ()->property ("EnableElementHiding").toBool ())
 			return;
 
 		const QUrl& frameUrl = frame->url ().isEmpty () ?
@@ -992,17 +994,22 @@ namespace CleanWeb
 						return { frame, 0, sels };
 					}));
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		auto worker = [this, frame]
 		{
-			[this, frame] () -> void
-			{
-				for (auto childFrame : frame->childFrames ())
-					handleFrameLayout (childFrame);
-			},
-			frame,
-			SIGNAL (loadFinished (bool)),
-			frame
+			for (auto childFrame : frame->childFrames ())
+				HandleFrameLayout (childFrame, true);
 		};
+
+		worker ();
+
+		if (!asLoad)
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				worker,
+				frame,
+				SIGNAL (loadFinished (bool)),
+				frame
+			};
 	}
 
 	void Core::hidingElementsFound ()
@@ -1134,15 +1141,17 @@ namespace CleanWeb
 		for (const Filter& filter : allFilters)
 		{
 			for (const auto& item : filter.Exceptions_)
-				if (item->Option_.HideSelector_.isEmpty ())
+			{
+				if (!item->Option_.HideSelector_.isEmpty ())
+					continue;
+
+				lastExceptionsChunk << item;
+				if (lastExceptionsChunk.size () >= exChunkSize)
 				{
-					lastExceptionsChunk << item;
-					if (lastExceptionsChunk.size () >= exChunkSize)
-					{
-						ExceptionsCache_ << lastExceptionsChunk;
-						lastExceptionsChunk.clear ();
-					}
+					ExceptionsCache_ << lastExceptionsChunk;
+					lastExceptionsChunk.clear ();
 				}
+			}
 
 			for (const auto& item : filter.Filters_)
 			{
