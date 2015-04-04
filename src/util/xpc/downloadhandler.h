@@ -50,20 +50,23 @@ namespace Util
 
 		int JobId_ = -1;
 	public:
+		using DataHandler_t = EitherCont<void (IDownload::Error), void (QByteArray)>;
+		using EntityHandler_t = EitherCont<void (IDownload::Error), void ()>;
+
 		DownloadHandler (const QUrl& url,
 				const QVariantMap& additional,
 				IEntityManager *iem,
-				const EitherCont<void (IDownload::Error), void (QByteArray)>&,
+				const DataHandler_t&,
 				QObject *parent = nullptr);
 
 		DownloadHandler (const QUrl& url,
 				IEntityManager *iem,
-				const EitherCont<void (IDownload::Error), void (QByteArray)>&,
+				const DataHandler_t&,
 				QObject *parent = nullptr);
 
 		DownloadHandler (const Entity& e,
 				IEntityManager *iem,
-				const EitherCont<void (IDownload::Error), void ()>&,
+				const EntityHandler_t&,
 				QObject *parent = nullptr);
 	private slots:
 		void handleFinished (int);

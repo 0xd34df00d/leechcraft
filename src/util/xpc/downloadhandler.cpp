@@ -43,7 +43,7 @@ namespace Util
 	DownloadHandler::DownloadHandler (const QUrl& url,
 			const QVariantMap& additional,
 			IEntityManager *iem,
-			const EitherCont<void (IDownload::Error), void (QByteArray)>& cont,
+			const DataHandler_t& cont,
 			QObject *parent)
 	: DownloadHandler
 	{
@@ -82,7 +82,7 @@ namespace Util
 
 	DownloadHandler::DownloadHandler (const QUrl& url,
 			IEntityManager *iem,
-			const EitherCont<void (IDownload::Error), void (QByteArray)>& cont,
+			const DataHandler_t& cont,
 			QObject *parent)
 	: DownloadHandler { url, {}, iem, cont, parent }
 	{
@@ -90,7 +90,7 @@ namespace Util
 
 	DownloadHandler::DownloadHandler (const Entity& e,
 			IEntityManager *iem,
-			const EitherCont<void (IDownload::Error), void ()>& cont,
+			const EntityHandler_t& cont,
 			QObject *parent)
 	: QObject { parent }
 	, E_ { e }
