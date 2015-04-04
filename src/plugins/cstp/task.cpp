@@ -39,6 +39,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -56,6 +57,19 @@ namespace CSTP
 			if (rep)
 				rep->deleteLater ();
 		}
+
+		QVariantMap Augment (QVariantMap map, const QList<QPair<QString, QVariant>>& pairs)
+		{
+			if (pairs.isEmpty ())
+				return map;
+
+			QStringList keys { Util::Map (map.keys (), &QString::toLower) };
+			for (const auto& pair : pairs)
+				if (!keys.contains (pair.first, Qt::CaseInsensitive))
+					map [pair.first] = pair.second;
+
+			return map;
+		}
 	}
 
 	Task::Task (const QUrl& url, const QVariantMap& params)
@@ -65,7 +79,10 @@ namespace CSTP
 	, Referer_ (params ["Referer"].toUrl ())
 	, Operation_ (static_cast<QNetworkAccessManager::Operation> (params
 				.value ("Operation", QNetworkAccessManager::GetOperation).toInt ()))
-	, Headers_ (params.value ("HttpHeaders").toMap ())
+	, Headers_ (Augment (params.value ("HttpHeaders").toMap (),
+			{
+				{ "Content-Type", "application/x-www-form-urlencoded" }
+			}))
 	, UploadData_ (params.value ("UploadData").toByteArray ())
 	{
 		StartTime_.start ();
