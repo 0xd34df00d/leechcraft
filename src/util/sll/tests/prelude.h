@@ -43,6 +43,7 @@ namespace Util
 		void testMapMap ();
 
 		void testMapMember ();
+		void testMapMemberFunction ();
 	};
 }
 }
