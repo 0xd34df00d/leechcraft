@@ -34,13 +34,13 @@ namespace LeechCraft
 namespace Util
 {
 	template<typename F, typename... Args>
-	typename std::result_of<F (Args...)>::type Invoke (F&& f, Args&&... args)
+	auto Invoke (F&& f, Args&&... args) -> decltype (std::forward<F> (f) (std::forward<Args> (args)...))
 	{
 		return std::forward<F> (f) (std::forward<Args> (args)...);
 	}
 
 	template<typename Base, typename Real, typename Res>
-	Res Invoke (Res Base::* mem, Real&& obj)
+	auto Invoke (Res Base::* mem, Real&& obj) -> decltype (obj.*mem)
 	{
 		return obj.*mem;
 	}
