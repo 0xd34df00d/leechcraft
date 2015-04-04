@@ -33,6 +33,9 @@
 #include <QAuthenticator>
 #include <QtDebug>
 #include <QMessageBox>
+#include <util/xpc/util.h>
+#include <util/xpc/downloadhandler.h>
+#include <util/util.h>
 #include "chooseuserpage.h"
 #include "userstatuspage.h"
 #include "reporttypepage.h"
@@ -76,21 +79,29 @@ namespace Dolozhee
 				SLOT (handleAuthenticationRequired (QNetworkReply*, QAuthenticator*)));
 	}
 
-	QNetworkAccessManager* ReportWizard::GetNAM () const
+	void ReportWizard::PostRequest (const QString& address,
+			const QByteArray& data, const QByteArray& contentType,
+			const Util::DownloadHandler::DataHandler_t& handler)
 	{
-		return NAM_;
-	}
-
-	QNetworkReply* ReportWizard::PostRequest (const QString& address,
-			const QByteArray& data, const QByteArray& contentType)
-	{
-		QNetworkRequest req ("http://dev.leechcraft.org" + address);
-		req.setHeader (QNetworkRequest::ContentTypeHeader, contentType);
-
 		const auto& user = ChooseUser_->GetLogin ().toUtf8 ();
 		const auto& pass = ChooseUser_->GetPassword ().toUtf8 ();
-		req.setRawHeader ("Authorization", "Basic " + (user + ':' + pass).toBase64 ());
-		return NAM_->post (req, data);
+
+		QVariantMap additional;
+		additional ["HttpHeaders"] = Util::MakeMap<QString, QVariant> ({
+					{ "Content-Type", contentType },
+					{ "Authorization", "Basic " + (user + ':' + pass).toBase64 () }
+				});
+		additional ["UploadData"] = data;
+		additional ["Operation"] = static_cast<int> (QNetworkAccessManager::PostOperation);
+
+		new Util::DownloadHandler
+		{
+			QUrl { "http://dev.leechcraft.org" + address },
+			additional,
+			Proxy_->GetEntityManager (),
+			handler,
+			this
+		};
 	}
 
 	ChooseUserPage* ReportWizard::GetChooseUserPage () const

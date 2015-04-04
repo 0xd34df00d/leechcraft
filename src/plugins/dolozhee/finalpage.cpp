@@ -32,15 +32,18 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <util/xpc/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sll/functional.h>
+#include <interfaces/core/ientitymanager.h>
+#include <interfaces/idownload.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
 #include "featurerequestpage.h"
 #include "xmlgenerator.h"
 #include "fileattachpage.h"
-#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -68,8 +71,6 @@ namespace Dolozhee
 	{
 		auto wiz = qobject_cast<ReportWizard*> (wizard ());
 
-		Ui_.UploadProgress_->hide ();
-
 		if (!PendingFiles_.isEmpty ())
 		{
 			CurrentUpload_ = PendingFiles_.takeFirst ();
@@ -77,23 +78,36 @@ namespace Dolozhee
 			if (!file.open (QIODevice::ReadOnly))
 				return UploadPending ();
 
-			auto reply = wiz->PostRequest ("/uploads.xml",
-					file.readAll (), "application/octet-stream");
-			connect (reply,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleUploadReplyFinished ()));
-			Ui_.Status_->setText (tr ("Sending %1...")
-					.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
+			const auto& filename = QFileInfo { CurrentUpload_.Name_ }.fileName ();
 
-			connect (reply,
-					SIGNAL (uploadProgress (qint64, qint64)),
-					this,
-					SLOT (handleUploadProgress (qint64)));
-			Ui_.UploadProgress_->setMaximum (file.size ());
-			Ui_.UploadProgress_->show ();
+			try
+			{
+				wiz->PostRequest ("/uploads.xml",
+						file.readAll (),
+						"application/octet-stream",
+						{
+							[this, filename] (IDownload::Error)
+							{
+								QMessageBox::critical (this,
+										"LeechCraft",
+										tr ("Unable to upload %1.")
+											.arg ("<em>" + filename + "</em>"));
+							},
+							Util::BindMemFn (&FinalPage::HandleUploadReplyData, this)
+						});
 
-			return;
+				Ui_.Status_->setText (tr ("Sending %1...")
+						.arg ("<em>" + QFileInfo (CurrentUpload_.Name_).fileName () + "</em>"));
+
+				return;
+			}
+			catch (const std::exception& e)
+			{
+				QMessageBox::critical (this,
+						"LeechCraft",
+						tr ("Unable to upload %1, could not initiate uploading process.")
+							.arg ("<em>" + filename + "</em>"));
+			}
 		}
 
 		Util::MimeDetector detector;
@@ -120,11 +134,13 @@ namespace Dolozhee
 
 		const auto& data = XMLGenerator ().CreateIssue (title, desc,
 				category, type, typePage->GetPriority (), UploadedFiles_);
-		auto reply = wiz->PostRequest ("/issues.xml", data);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleReplyFinished ()));
+		wiz->PostRequest ("/issues.xml",
+				data,
+				"application/xml",
+				{
+					[this] (IDownload::Error) { ShowRegrets (); },
+					Util::BindMemFn (&FinalPage::HandleReportPostedData, this)
+				});
 	}
 
 	void FinalPage::HandleUploadReplyData (const QByteArray& replyData)
