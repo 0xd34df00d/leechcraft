@@ -29,6 +29,7 @@
 
 #include "downloadhandler.h"
 #include <QFile>
+#include <util/sll/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/idownload.h>
@@ -63,6 +64,7 @@ namespace Util
 			[this, cont]
 			{
 				QFile file { E_.Location_ };
+				const auto fileGuard = MakeScopeGuard ([&file] { file.remove (); });
 				if (!file.open (QIODevice::ReadOnly))
 				{
 					cont.Left (IDownload::ELocalError);
@@ -76,7 +78,6 @@ namespace Util
 		parent
 	}
 	{
-		FileRemoveGuard_ = MakeScopeGuard ([this] { QFile::remove (E_.Location_); });
 	}
 
 	DownloadHandler::DownloadHandler (const QUrl& url,

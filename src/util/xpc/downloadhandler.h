@@ -31,7 +31,6 @@
 
 #include <QObject>
 #include <util/sll/eithercont.h>
-#include <util/sll/util.h>
 #include <interfaces/idownload.h>
 #include <interfaces/structures.h>
 #include "xpcconfig.h"
@@ -50,8 +49,6 @@ namespace Util
 		const EitherCont<void (IDownload::Error), void ()> Cont_;
 
 		int JobId_ = -1;
-
-		DefaultScopeGuard FileRemoveGuard_ = {};
 	public:
 		DownloadHandler (const QUrl& url,
 				const QVariantMap& additional,
