@@ -29,6 +29,7 @@
 
 #include "userstatuspage.h"
 #include <QNetworkAccessManager>
+#include <QtDebug>
 #include "reportwizard.h"
 #include "chooseuserpage.h"
 #include "xmlgenerator.h"
@@ -61,9 +62,7 @@ namespace Dolozhee
 
 		const auto& data = XMLGenerator ().RegisterUser (login, pass,
 				page->GetEmail (), page->GetFirstName (), page->GetLastName ());
-		auto wiz = qobject_cast<ReportWizard*> (wizard ());
-		auto reply = wiz->PostRequest ("/users.xml", data);
-		Q_UNUSED (reply);
+		qWarning () << Q_FUNC_INFO << "unimplemented yet" << data;
 	}
 }
 }
