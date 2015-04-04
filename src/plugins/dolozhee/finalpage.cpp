@@ -148,6 +148,39 @@ namespace Dolozhee
 		UploadPending ();
 	}
 
+	void FinalPage::HandleReportPostedData (const QByteArray& data)
+	{
+		QDomDocument doc;
+		if (!doc.setContent (data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot parse"
+					<< data;
+			ShowRegrets ();
+			return;
+		}
+
+		auto root = doc.documentElement ();
+		const auto& id = root.firstChildElement ("id").text ();
+		auto text = tr ("Report has been sent successfully. Thanks for your time!");
+		if (!id.isEmpty ())
+		{
+			text += "<br />";
+			text += (tr ("Your issue number is %1. You can view it here:") +
+						" <a href='http://dev.leechcraft.org/issues/%1'>#%1</a>.<br/>" +
+						tr ("You can also track it via an Atom feed reader:") +
+						" <a href='http://dev.leechcraft.org/issues/%1.atom'>Atom</a>.").arg (id);
+		}
+		Ui_.Status_->setText (text);
+	}
+
+	void FinalPage::ShowRegrets()
+	{
+		const auto& text = tr ("I'm very sorry to say that, but seems like "
+				"we're unable to handle your report at the time :(");
+		Ui_.Status_->setText (text);
+	}
+
 	void FinalPage::handleUploadProgress (qint64 done)
 	{
 		Ui_.UploadProgress_->setValue (done);
@@ -165,29 +198,8 @@ namespace Dolozhee
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		reply->deleteLater ();
-		QString text;
 
-		QDomDocument doc;
-		if (!doc.setContent (reply->readAll ()))
-		{
-			text = tr ("I'm very sorry to say that, but seems like "
-					"we're unable to handle your report at the time :(");
-			Ui_.Status_->setText (text);
-			return;
-		}
-
-		auto root = doc.documentElement ();
-		const auto& id = root.firstChildElement ("id").text ();
-		text = tr ("Report has been sent successfully. Thanks for your time!");
-		if (!id.isEmpty ())
-		{
-			text += "<br />";
-			text += (tr ("Your issue number is %1. You can view it here:") +
-						" <a href='http://dev.leechcraft.org/issues/%1'>#%1</a>.<br/>" +
-						tr ("You can also track it via an Atom feed reader:") +
-						" <a href='http://dev.leechcraft.org/issues/%1.atom'>Atom</a>.").arg (id);
-		}
-		Ui_.Status_->setText (text);
+		HandleReportPostedData (reply->readAll ());
 	}
 
 	void FinalPage::on_Status__linkActivated (const QString& linkStr)
