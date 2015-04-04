@@ -127,18 +127,8 @@ namespace Dolozhee
 				SLOT (handleReplyFinished ()));
 	}
 
-	void FinalPage::handleUploadProgress (qint64 done)
+	void FinalPage::HandleUploadReplyData (const QByteArray& replyData)
 	{
-		Ui_.UploadProgress_->setValue (done);
-	}
-
-	void FinalPage::handleUploadReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& replyData = reply->readAll ();
-
 		QDomDocument doc;
 		if (!doc.setContent (replyData))
 		{
@@ -156,6 +146,19 @@ namespace Dolozhee
 		UploadedFiles_ << CurrentUpload_;
 
 		UploadPending ();
+	}
+
+	void FinalPage::handleUploadProgress (qint64 done)
+	{
+		Ui_.UploadProgress_->setValue (done);
+	}
+
+	void FinalPage::handleUploadReplyFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		reply->deleteLater ();
+
+		HandleUploadReplyData (reply->readAll ());
 	}
 
 	void FinalPage::handleReplyFinished ()

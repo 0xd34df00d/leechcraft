@@ -57,6 +57,8 @@ namespace Dolozhee
 		void initializePage ();
 	private:
 		void UploadPending ();
+
+		void HandleUploadReplyData (const QByteArray&);
 	private slots:
 		void handleUploadProgress (qint64);
 		void handleUploadReplyFinished ();
