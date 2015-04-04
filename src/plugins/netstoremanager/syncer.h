@@ -30,7 +30,11 @@
 #pragma once
 
 #include <functional>
+
+#ifndef Q_MOC_RUN
 #include <boost/bimap.hpp>
+#endif
+
 #include <QObject>
 #include <QQueue>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
