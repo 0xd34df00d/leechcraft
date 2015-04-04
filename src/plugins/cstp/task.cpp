@@ -39,6 +39,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
+#include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
