@@ -64,9 +64,6 @@ namespace Dolozhee
 		void ShowRegrets ();
 	private slots:
 		void handleUploadProgress (qint64);
-		void handleUploadReplyFinished ();
-
-		void handleReplyFinished ();
 
 		void on_Status__linkActivated (const QString&);
 	};

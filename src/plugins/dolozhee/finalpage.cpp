@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "finalpage.h"
-#include <QNetworkReply>
 #include <QtDebug>
 #include <QDomDocument>
 #include <QFileInfo>
@@ -200,22 +199,6 @@ namespace Dolozhee
 	void FinalPage::handleUploadProgress (qint64 done)
 	{
 		Ui_.UploadProgress_->setValue (done);
-	}
-
-	void FinalPage::handleUploadReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		HandleUploadReplyData (reply->readAll ());
-	}
-
-	void FinalPage::handleReplyFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		HandleReportPostedData (reply->readAll ());
 	}
 
 	void FinalPage::on_Status__linkActivated (const QString& linkStr)
