@@ -662,7 +662,7 @@ namespace CSTP
 			if (!err)
 			{
 				auto nah = new Util::NotificationActionHandler (e);
-				nah->AddFunction (tr ("Handle..."), [this, filename] ()
+				nah->AddFunction (tr ("Handle..."), [this, filename]
 						{
 							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 									QString (),
@@ -670,12 +670,12 @@ namespace CSTP
 							CoreProxy_->GetEntityManager ()->HandleEntity (e);
 						});
 				nah->AddFunction (tr ("Open externally"),
-						[filename] ()
+						[filename]
 						{
 							QDesktopServices::openUrl (QUrl::fromLocalFile (filename));
 						});
 				nah->AddFunction (tr ("Show folder"),
-						[filename] () -> void
+						[filename]
 						{
 							const auto& dirPath = QFileInfo (filename).absolutePath ();
 							QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
