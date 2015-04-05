@@ -29,8 +29,6 @@
 
 #include "reportwizard.h"
 #include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QAuthenticator>
 #include <QtDebug>
 #include <QMessageBox>
 #include <util/xpc/util.h>
@@ -52,7 +50,6 @@ namespace Dolozhee
 	ReportWizard::ReportWizard (ICoreProxy_ptr proxy, QWidget *parent)
 	: QWizard (parent)
 	, Proxy_ (proxy)
-	, NAM_ (new QNetworkAccessManager (this))
 	, ChooseUser_ (new ChooseUserPage (proxy))
 	, ReportType_ (new ReportTypePage (proxy))
 	, BugReportPage_ (new BugReportPage (proxy))
@@ -72,11 +69,6 @@ namespace Dolozhee
 		setPage (PageID::FilePage, FilePage_);
 		auto final = new FinalPage (proxy);
 		setPage (PageID::Final, final);
-
-		connect (NAM_,
-				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),
-				this,
-				SLOT (handleAuthenticationRequired (QNetworkReply*, QAuthenticator*)));
 	}
 
 	void ReportWizard::PostRequest (const QString& address,
@@ -127,13 +119,6 @@ namespace Dolozhee
 	FileAttachPage* ReportWizard::GetFilePage () const
 	{
 		return FilePage_;
-	}
-
-	void ReportWizard::handleAuthenticationRequired (QNetworkReply*, QAuthenticator*)
-	{
-		qDebug () << Q_FUNC_INFO << FirstAuth_;
-		QMessageBox::warning (this, "Dolozhee", tr ("Invalid credentials"));
-		restart ();
 	}
 }
 }

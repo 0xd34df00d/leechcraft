@@ -33,10 +33,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <util/xpc/downloadhandler.h>
 
-class QAuthenticator;
-class QNetworkReply;
-class QNetworkAccessManager;
-
 namespace LeechCraft
 {
 struct Entity;
@@ -56,7 +52,6 @@ namespace Dolozhee
 
 		ICoreProxy_ptr Proxy_;
 
-		QNetworkAccessManager *NAM_;
 		ChooseUserPage *ChooseUser_;
 		ReportTypePage *ReportType_;
 		BugReportPage *BugReportPage_;
@@ -87,8 +82,6 @@ namespace Dolozhee
 		BugReportPage* GetBugReportPage () const;
 		FeatureRequestPage* GetFRPage () const;
 		FileAttachPage* GetFilePage () const;
-	private slots:
-		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
 	};
 }
 }
