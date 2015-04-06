@@ -65,7 +65,7 @@ namespace SecMan
 				return "Map { " + subvars.join ("; ") + " }";
 			}
 			else
-				return QString ("unsupported datatype %1 (%2) (%3)")
+				return QString ("unsupported datatype %1 (%2) (%3), loading the matching plugin may help")
 						.arg (var.typeName ())
 						.arg (var.userType ())
 						.arg (var.toString ());
