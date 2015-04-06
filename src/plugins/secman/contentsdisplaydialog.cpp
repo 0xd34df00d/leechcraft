@@ -77,6 +77,8 @@ namespace SecMan
 	, ContentsModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
+
+		ContentsModel_->setHorizontalHeaderLabels ({ tr ("Key index"), tr ("Value") });
 		Ui_.ContentsTree_->setModel (ContentsModel_);
 
 		/*
