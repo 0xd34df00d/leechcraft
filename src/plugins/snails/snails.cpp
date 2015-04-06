@@ -120,10 +120,11 @@ namespace Snails
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << MailTabClass_;
-		result << ComposeTabClass_;
-		return result;
+		return
+		{
+			MailTabClass_,
+			ComposeTabClass_
+		};
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)

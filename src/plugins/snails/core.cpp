@@ -41,12 +41,12 @@
 
 #include <util/sys/resourceloader.h>
 #include <util/sll/delayedexecutor.h>
+#include <interfaces/core/ientitymanager.h>
 #include "message.h"
 #include "storage.h"
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
 #include "composemessagetab.h"
-#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
