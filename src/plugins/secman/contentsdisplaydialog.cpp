@@ -81,12 +81,14 @@ namespace SecMan
 		ContentsModel_->setHorizontalHeaderLabels ({ tr ("Key index"), tr ("Value") });
 		Ui_.ContentsTree_->setModel (ContentsModel_);
 
-		auto makePair = [] (const QString& leftText, const QString& rightText) -> QList<QStandardItem*>
+		auto makePair = [] (const QString& leftText, const QString& rightText)
 		{
-			QList<QStandardItem*> result;
-			result << new QStandardItem (leftText)
-				<< new QStandardItem (rightText);
-			for (auto item : result)
+			const QList<QStandardItem*> result
+			{
+				new QStandardItem { leftText },
+				new QStandardItem { rightText }
+			};
+			for (const auto item : result)
 				item->setEditable (false);
 			return result;
 		};
@@ -101,7 +103,7 @@ namespace SecMan
 			for (const auto& key : isp->ListKeys ())
 			{
 				const auto& valList = isp->Load (key);
-				const auto& keyPair = makePair (QString::fromUtf8 (key), QString ());
+				const auto& keyPair = makePair (QString::fromUtf8 (key), {});
 				pluginItems.first ()->appendRow (keyPair);
 				int valIndex = 0;
 				for (const auto& valVar : valList.toList ())
