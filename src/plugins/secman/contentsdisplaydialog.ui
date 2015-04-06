@@ -15,11 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTreeView" name="ContentsTree_">
-     <property name="headerHidden">
-      <bool>true</bool>
-     </property>
-    </widget>
+    <widget class="QTreeView" name="ContentsTree_"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
