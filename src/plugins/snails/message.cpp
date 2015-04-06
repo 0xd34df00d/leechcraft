@@ -265,7 +265,8 @@ namespace Snails
 			qDebug () << static_cast<int> (key)
 					<< Addresses_ [key];
 		qDebug () << Attachments_.size () << "attachments";
-		Q_FOREACH (const auto& att, Attachments_)
+
+		for (const auto& att : Attachments_)
 			att.Dump ();
 	}
 
