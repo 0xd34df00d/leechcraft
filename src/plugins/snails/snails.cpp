@@ -74,14 +74,6 @@ namespace Snails
 		Core::Instance ().SetProxy (proxy);
 
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)));
-		connect (&Core::Instance (),
 				SIGNAL (gotTab (QString, QWidget*)),
 				this,
 				SLOT (handleNewTab (QString, QWidget*)));

@@ -46,6 +46,7 @@
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
 #include "composemessagetab.h"
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -115,7 +116,7 @@ namespace Snails
 
 	void Core::SendEntity (const Entity& e)
 	{
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	QAbstractItemModel* Core::GetAccountsModel () const

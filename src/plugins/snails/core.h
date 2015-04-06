@@ -91,9 +91,6 @@ namespace Snails
 	private slots:
 		void saveAccounts () const;
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-
 		void gotTab (const QString&, QWidget*);
 	};
 }
