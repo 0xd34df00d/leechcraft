@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QObject>
 #include <QHash>
 #include "message.h"
@@ -145,7 +146,7 @@ namespace Snails
 		QByteArray Serialize () const;
 		void Deserialize (const QByteArray&);
 
-		void OpenConfigDialog ();
+		void OpenConfigDialog (const std::function<void ()>& onAccepted = {});
 
 		bool IsNull () const;
 

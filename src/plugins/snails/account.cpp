@@ -287,7 +287,7 @@ namespace Snails
 		}
 	}
 
-	void Account::OpenConfigDialog ()
+	void Account::OpenConfigDialog (const std::function<void ()>& onAccepted)
 	{
 		AccountConfigDialog dia;
 
@@ -381,6 +381,9 @@ namespace Snails
 		}
 
 		emit accountChanged ();
+
+		if (onAccepted)
+			onAccepted ();
 	}
 
 	bool Account::IsNull () const

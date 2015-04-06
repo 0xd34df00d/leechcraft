@@ -48,12 +48,11 @@ namespace Snails
 	{
 		const auto acc = std::make_shared<Account> ();
 
-		acc->OpenConfigDialog ();
-
-		if (acc->IsNull ())
-			return;
-
-		AccsMgr_->AddAccount (acc);
+		acc->OpenConfigDialog ([acc, this]
+				{
+					if (!acc->IsNull ())
+						AccsMgr_->AddAccount (acc);
+				});
 	}
 
 	void AccountsListWidget::on_ModifyButton__released ()
