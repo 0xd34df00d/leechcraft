@@ -81,7 +81,6 @@ namespace SecMan
 		ContentsModel_->setHorizontalHeaderLabels ({ tr ("Key index"), tr ("Value") });
 		Ui_.ContentsTree_->setModel (ContentsModel_);
 
-		/*
 		auto makePair = [] (const QString& leftText, const QString& rightText) -> QList<QStandardItem*>
 		{
 			QList<QStandardItem*> result;
@@ -105,7 +104,7 @@ namespace SecMan
 				const auto& keyPair = makePair (QString::fromUtf8 (key), QString ());
 				pluginItems.first ()->appendRow (keyPair);
 				int valIndex = 0;
-				for (const auto& valVar : valList)
+				for (const auto& valVar : valList.toList ())
 				{
 					const auto& str = Unserialize (valVar);
 					keyPair.first ()->appendRow (makePair (QString::number (++valIndex), str));
@@ -114,7 +113,6 @@ namespace SecMan
 
 			ContentsModel_->appendRow (pluginItems);
 		}
-		*/
 
 		Ui_.ContentsTree_->expandAll ();
 	}
