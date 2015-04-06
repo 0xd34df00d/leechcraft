@@ -32,6 +32,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include "accountfoldermanager.h"
 
 namespace LeechCraft
@@ -75,9 +76,11 @@ namespace Snails
 	{
 		Accounts_ << account;
 
-		QList<QStandardItem*> row;
-		row << new QStandardItem (account->GetName ());
-		row << new QStandardItem (account->GetServer ());
+		const QList<QStandardItem*> row
+		{
+			new QStandardItem { account->GetName () },
+			new QStandardItem { account->GetServer () }
+		};
 		AccountsModel_->appendRow (row);
 
 		/* TODO
@@ -98,9 +101,9 @@ namespace Snails
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Snails_Accounts");
-		Q_FOREACH (const QVariant& var, settings.value ("Accounts").toList ())
+		for (const auto& var : settings.value ("Accounts").toList ())
 		{
-			Account_ptr acc (new Account);
+			const auto acc = std::make_shared<Account> ();
 			try
 			{
 				acc->Deserialize (var.toByteArray ());
@@ -118,9 +121,8 @@ namespace Snails
 
 	void AccountsManager::saveAccounts () const
 	{
-		QList<QVariant> serialized;
-		Q_FOREACH (Account_ptr acc, Accounts_)
-			serialized << acc->Serialize ();
+		const auto& serialized = Util::Map (Accounts_,
+				[] (const Account_ptr& acc) -> QVariant { return acc->Serialize (); });
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Snails_Accounts");
