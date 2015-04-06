@@ -35,14 +35,15 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ComposeMessageTabFactory::ComposeMessageTabFactory (QObject *parent)
+	ComposeMessageTabFactory::ComposeMessageTabFactory (const AccountsManager *accsMgr, QObject *parent)
 	: QObject { parent }
+	, AccsMgr_ { accsMgr }
 	{
 	}
 
 	ComposeMessageTab* ComposeMessageTabFactory::MakeTab () const
 	{
-		return new ComposeMessageTab;
+		return new ComposeMessageTab { AccsMgr_ };
 	}
 
 	void ComposeMessageTabFactory::PrepareReplyTab (const Message_ptr& message, const Account_ptr& account)

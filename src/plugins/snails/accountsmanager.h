@@ -30,69 +30,35 @@
 #pragma once
 
 #include <QObject>
-#include <QModelIndex>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ijobholder.h>
+#include "account.h"
+
+class QAbstractItemModel;
+class QStandardItemModel;
+class QModelIndex;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class WkFontsWidget;
-}
-
 namespace Snails
 {
-	class AccountsManager;
-	class ComposeMessageTabFactory;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveTabs
-				 , public IHaveSettings
-				 , public IJobHolder
+	class AccountsManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Snails")
-
-		TabClassInfo MailTabClass_;
-		TabClassInfo ComposeTabClass_;
-
-		Util::XmlSettingsDialog_ptr XSD_;
-		Util::WkFontsWidget *WkFontsWidget_;
-
-		AccountsManager *AccsMgr_;
-		ComposeMessageTabFactory *ComposeTabFactory_;
-
-		ICoreProxy_ptr Proxy_;
+		QStandardItemModel * const AccountsModel_;
+		QList<Account_ptr> Accounts_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		AccountsManager (QObject* = nullptr);
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
+		QAbstractItemModel* GetAccountsModel () const;
+		QList<Account_ptr> GetAccounts () const;
+		Account_ptr GetAccount (const QModelIndex&) const;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QAbstractItemModel* GetRepresentation () const;
+		void AddAccount (Account_ptr);
+	private:
+		void AddAccountImpl (Account_ptr);
+		void LoadAccounts ();
 	private slots:
-		void handleNewTab (const QString& name, QWidget*);
-	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void saveAccounts () const;
 	};
 }
 }

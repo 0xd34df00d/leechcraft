@@ -39,6 +39,7 @@
 #include "core.h"
 #include "progressmanager.h"
 #include "composemessagetab.h"
+#include "accountsmanager.h"
 #include "composemessagetabfactory.h"
 
 namespace LeechCraft
@@ -75,7 +76,8 @@ namespace Snails
 
 		Core::Instance ().SetProxy (proxy);
 
-		ComposeTabFactory_ = new ComposeMessageTabFactory;
+		AccsMgr_ = new AccountsManager;
+		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_ };
 
 		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
@@ -85,7 +87,7 @@ namespace Snails
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
-		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget { AccsMgr_ });
 
 		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
@@ -134,7 +136,7 @@ namespace Snails
 	{
 		if (tabClass == "mail")
 		{
-			const auto mt = new MailTab { Proxy_, ComposeTabFactory_, MailTabClass_, this };
+			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, MailTabClass_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
 			WkFontsWidget_->RegisterSettable (mt);
 		}

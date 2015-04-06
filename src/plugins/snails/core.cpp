@@ -28,8 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QStandardItemModel>
-#include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
 
@@ -40,7 +38,6 @@
 #endif
 
 #include <util/sys/resourceloader.h>
-#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "message.h"
 #include "storage.h"
@@ -53,8 +50,7 @@ namespace LeechCraft
 namespace Snails
 {
 	Core::Core ()
-	: AccountsModel_ { new QStandardItemModel }
-	, Storage_ { new Storage { this } }
+	: Storage_ { new Storage { this } }
 	, ProgressManager_ { new ProgressManager { this } }
 	, MsgView_ { new Util::ResourceLoader { "snails/msgview" } }
 	{
@@ -83,14 +79,6 @@ namespace Snails
 		qRegisterMetaTypeStreamOperators<AttDescr> ();
 		qRegisterMetaTypeStreamOperators<Folder> ();
 		qRegisterMetaTypeStreamOperators<QList<Folder>> ();
-
-		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server") });
-
-		new Util::DelayedExecutor
-		{
-			[this] { LoadAccounts (); },
-			0
-		};
 	}
 
 	Core& Core::Instance ()
@@ -119,24 +107,6 @@ namespace Snails
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
-	QAbstractItemModel* Core::GetAccountsModel () const
-	{
-		return AccountsModel_;
-	}
-
-	QList<Account_ptr> Core::GetAccounts () const
-	{
-		return Accounts_;
-	}
-
-	Account_ptr Core::GetAccount (const QModelIndex& index) const
-	{
-		if (!index.isValid ())
-			return Account_ptr ();
-
-		return Accounts_ [index.row ()];
-	}
-
 	Storage* Core::GetStorage () const
 	{
 		return Storage_;
@@ -154,67 +124,6 @@ namespace Snails
 			return {};
 
 		return QString::fromUtf8 (dev->readAll ());
-	}
-
-	void Core::AddAccount (Account_ptr account)
-	{
-		AddAccountImpl (account);
-
-		saveAccounts ();
-	}
-
-	void Core::AddAccountImpl (Account_ptr account)
-	{
-		Accounts_ << account;
-
-		QList<QStandardItem*> row;
-		row << new QStandardItem (account->GetName ());
-		row << new QStandardItem (account->GetServer ());
-		AccountsModel_->appendRow (row);
-
-		ProgressManager_->AddAccount (account.get ());
-
-		connect (account.get (),
-				SIGNAL (accountChanged ()),
-				this,
-				SLOT (saveAccounts ()));
-		connect (account->GetFolderManager (),
-				SIGNAL (foldersUpdated ()),
-				this,
-				SLOT (saveAccounts ()));
-	}
-
-	void Core::LoadAccounts ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Snails_Accounts");
-		Q_FOREACH (const QVariant& var, settings.value ("Accounts").toList ())
-		{
-			Account_ptr acc (new Account);
-			try
-			{
-				acc->Deserialize (var.toByteArray ());
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to deserialize account, sorry :("
-						<< e.what ();
-				continue;
-			}
-			AddAccountImpl (acc);
-		}
-	}
-
-	void Core::saveAccounts () const
-	{
-		QList<QVariant> serialized;
-		Q_FOREACH (Account_ptr acc, Accounts_)
-			serialized << acc->Serialize ();
-
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Snails_Accounts");
-		settings.setValue ("Accounts", serialized);
 	}
 }
 }

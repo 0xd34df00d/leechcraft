@@ -55,16 +55,20 @@
 #include "messagelisteditormanager.h"
 #include "mailtabreadmarker.h"
 #include "composemessagetabfactory.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	MailTab::MailTab (const ICoreProxy_ptr& proxy, ComposeMessageTabFactory *cmpMsgTabFactory,
+	MailTab::MailTab (const ICoreProxy_ptr& proxy,
+			const AccountsManager *accsMgr,
+			ComposeMessageTabFactory *cmpMsgTabFactory,
 			const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
 	, ComposeMessageTabFactory_ (cmpMsgTabFactory)
+	, AccsMgr_ (accsMgr)
 	, TabToolbar_ (new QToolBar)
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
@@ -104,7 +108,7 @@ namespace Snails
 					}
 				});
 
-		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
+		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
 		MailSortFilterModel_->setSortRole (MailModel::MailRole::Sort);
@@ -558,7 +562,7 @@ namespace Snails
 			rebuildOpsToFolders ();
 		}
 
-		CurrAcc_ = Core::Instance ().GetAccount (idx);
+		CurrAcc_ = AccsMgr_->GetAccount (idx);
 		if (!CurrAcc_)
 			return;
 
@@ -894,7 +898,7 @@ namespace Snails
 
 	void MailTab::handleFetchNewMail ()
 	{
-		for (const auto acc : Core::Instance ().GetAccounts ())
+		for (const auto acc : AccsMgr_->GetAccounts ())
 			acc->Synchronize ();
 	}
 

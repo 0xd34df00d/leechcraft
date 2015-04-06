@@ -37,6 +37,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class ComposeMessageTab;
+	class AccountsManager;
 
 	class Message;
 	class Account;
@@ -46,8 +47,10 @@ namespace Snails
 	class ComposeMessageTabFactory : public QObject
 	{
 		Q_OBJECT
+
+		const AccountsManager * const AccsMgr_;
 	public:
-		ComposeMessageTabFactory (QObject* = nullptr);
+		ComposeMessageTabFactory (const AccountsManager*, QObject* = nullptr);
 
 		ComposeMessageTab* MakeTab () const;
 		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);

@@ -53,6 +53,7 @@
 #include "texteditoradaptor.h"
 #include "concurrentexceptions.h"
 #include "xmlsettingsmanager.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -71,8 +72,9 @@ namespace Snails
 		S_TabClassInfo_ = info;
 	}
 
-	ComposeMessageTab::ComposeMessageTab (QWidget *parent)
+	ComposeMessageTab::ComposeMessageTab (const AccountsManager *accsMgr, QWidget *parent)
 	: QWidget (parent)
+	, AccsMgr_ (accsMgr)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
 	{
 		Ui_.setupUi (this);
@@ -198,7 +200,7 @@ namespace Snails
 
 		AccountsMenu_ = new QMenu (tr ("Accounts"));
 		auto accsGroup = new QActionGroup (this);
-		for (const auto& account : Core::Instance ().GetAccounts ())
+		for (const auto& account : AccsMgr_->GetAccounts ())
 		{
 			QAction *act = new QAction (account->GetName (), this);
 			accsGroup->addAction (act);

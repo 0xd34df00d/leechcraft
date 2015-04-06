@@ -29,18 +29,19 @@
 
 #include "accountslistwidget.h"
 #include "account.h"
-#include "core.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	AccountsListWidget::AccountsListWidget (QWidget *parent)
-	: QWidget (parent)
+	AccountsListWidget::AccountsListWidget (AccountsManager *accsMgr, QWidget *parent)
+	: QWidget { parent }
+	, AccsMgr_ { accsMgr }
 	{
 		Ui_.setupUi (this);
 
-		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
+		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
 	}
 
 	void AccountsListWidget::on_AddButton__released ()
@@ -52,7 +53,7 @@ namespace Snails
 		if (acc->IsNull ())
 			return;
 
-		Core::Instance ().AddAccount (acc);
+		AccsMgr_->AddAccount (acc);
 	}
 
 	void AccountsListWidget::on_ModifyButton__released ()
@@ -61,7 +62,7 @@ namespace Snails
 		if (!current.isValid ())
 			return;
 
-		Account_ptr acc = Core::Instance ().GetAccount (current);
+		Account_ptr acc = AccsMgr_->GetAccount (current);
 		if (!acc)
 			return;
 

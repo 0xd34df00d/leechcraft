@@ -39,6 +39,7 @@
 #include "core.h"
 #include "message.h"
 #include "vmimeconversions.h"
+#include "account.h"
 
 namespace LeechCraft
 {
