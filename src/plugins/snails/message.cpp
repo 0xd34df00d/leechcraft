@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <QBuffer>
+#include <util/sll/qtutil.h>
 #include "lazyvmimeheader.h"
 
 namespace LeechCraft
@@ -261,9 +262,11 @@ namespace Snails
 				<< HTMLBody_
 				<< InReplyTo_
 				<< References_;
-		Q_FOREACH (const auto key, Addresses_.keys ())
-			qDebug () << static_cast<int> (key)
-					<< Addresses_ [key];
+
+		for (const auto& pair : Util::Stlize (Addresses_))
+			qDebug () << static_cast<int> (pair.first)
+					<< pair.second;
+
 		qDebug () << Attachments_.size () << "attachments";
 
 		for (const auto& att : Attachments_)
