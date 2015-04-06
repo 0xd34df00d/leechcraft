@@ -65,10 +65,18 @@ namespace SecMan
 				return "Map { " + subvars.join ("; ") + " }";
 			}
 			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unsupported data type"
+						<< var
+						<< var.typeName ()
+						<< var.userType ()
+						<< var.toString ();
 				return QString ("unsupported datatype %1 (%2) (%3), loading the matching plugin may help")
 						.arg (var.typeName ())
 						.arg (var.userType ())
 						.arg (var.toString ());
+			}
 		}
 	}
 
