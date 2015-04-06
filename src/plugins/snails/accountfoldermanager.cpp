@@ -29,6 +29,7 @@
 
 #include "accountfoldermanager.h"
 #include <stdexcept>
+#include <util/sll/qtutil.h>
 #include "common.h"
 
 namespace LeechCraft
@@ -93,8 +94,8 @@ namespace Snails
 		QByteArray result;
 
 		QHash<QStringList, int> flags;
-		for (const auto key : Folder2Flags_.keys ())
-			flags [key] = Folder2Flags_ [key];
+		for (const auto& pair : Util::Stlize (Folder2Flags_))
+			flags [pair.first] = pair.second;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
 		out << static_cast<quint8> (1);
@@ -126,8 +127,8 @@ namespace Snails
 					}),
 				Folders_.end ());
 
-		for (const auto key : flags.keys ())
-			Folder2Flags_ [key] = static_cast<FolderFlags> (flags [key]);
+		for (const auto& pair : Util::Stlize (flags))
+			Folder2Flags_ [pair.first] = static_cast<FolderFlags> (pair.second);
 	}
 }
 }
