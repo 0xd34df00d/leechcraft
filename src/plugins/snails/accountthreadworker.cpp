@@ -991,12 +991,6 @@ namespace Snails
 			data->extract (adapter,
 					MkPgListener (tr ("Fetching attachment %1...").arg (attName)));
 
-			const auto& e = Util::MakeNotification ("Snails",
-					tr ("Attachment %1 fetched successfully.")
-						.arg (attName),
-					PInfo_);
-			emit gotEntity (e);
-
 			break;
 		}
 	}

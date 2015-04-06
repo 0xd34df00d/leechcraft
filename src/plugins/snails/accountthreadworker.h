@@ -115,7 +115,6 @@ namespace Snails
 		void sendMessage (const LeechCraft::Snails::Message_ptr&);
 	signals:
 		void error (const QString&);
-		void gotEntity (const LeechCraft::Entity&);
 		void gotProgressListener (ProgressListener_g_ptr);
 
 		void gotMsgHeaders (QList<Message_ptr>, QStringList);

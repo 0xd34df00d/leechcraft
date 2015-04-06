@@ -111,11 +111,6 @@ namespace Snails
 				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
 				A_,
 				SLOT (handleFolderSyncFinished (QStringList, QByteArray)));
-
-		connect (W_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 }
 }
