@@ -27,69 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
-#include "account.h"
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QModelIndex;
+#include "composemessagetabfactory.h"
+#include "composemessagetab.h"
+#include "core.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class ResourceLoader;
-}
-
 namespace Snails
 {
-	class Storage;
-	class ProgressManager;
-
-	class Core : public QObject
+	ComposeMessageTabFactory::ComposeMessageTabFactory (QObject *parent)
+	: QObject { parent }
 	{
-		Q_OBJECT
+	}
 
-		ICoreProxy_ptr Proxy_;
+	ComposeMessageTab* ComposeMessageTabFactory::MakeTab () const
+	{
+		return new ComposeMessageTab;
+	}
 
-		QStandardItemModel * const AccountsModel_;
-		QList<Account_ptr> Accounts_;
+	void ComposeMessageTabFactory::PrepareReplyTab (const Message_ptr& message, const Account_ptr& account)
+	{
+		const auto cmt = MakeTab ();
 
-		Storage * const Storage_;
-		ProgressManager * const ProgressManager_;
+		cmt->SelectAccount (account);
+		cmt->PrepareReply (message);
 
-		std::shared_ptr<Util::ResourceLoader> MsgView_;
-
-		Core ();
-	public:
-		static Core& Instance ();
-		void Release ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-		void SendEntity (const Entity&);
-
-		QAbstractItemModel* GetAccountsModel () const;
-		QList<Account_ptr> GetAccounts () const;
-		Account_ptr GetAccount (const QModelIndex&) const;
-
-		Storage* GetStorage () const;
-		ProgressManager* GetProgressManager () const;
-
-		QString GetMsgViewTemplate () const;
-
-		void AddAccount (Account_ptr);
-	private:
-		void AddAccountImpl (Account_ptr);
-		void LoadAccounts ();
-	private slots:
-		void saveAccounts () const;
-	signals:
-		void gotTab (const QString&, QWidget*);
-	};
+		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
+	}
 }
 }

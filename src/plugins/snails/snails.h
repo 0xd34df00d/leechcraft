@@ -45,6 +45,8 @@ namespace Util
 
 namespace Snails
 {
+	class ComposeMessageTabFactory;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
@@ -61,6 +63,8 @@ namespace Snails
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		Util::WkFontsWidget *WkFontsWidget_;
+
+		ComposeMessageTabFactory *ComposeTabFactory_;
 
 		ICoreProxy_ptr Proxy_;
 	public:

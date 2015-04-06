@@ -39,6 +39,7 @@
 #include "core.h"
 #include "progressmanager.h"
 #include "composemessagetab.h"
+#include "composemessagetabfactory.h"
 
 namespace LeechCraft
 {
@@ -74,7 +75,9 @@ namespace Snails
 
 		Core::Instance ().SetProxy (proxy);
 
-		connect (&Core::Instance (),
+		ComposeTabFactory_ = new ComposeMessageTabFactory;
+
+		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
 				this,
 				SLOT (handleNewTab (QString, QWidget*)));
@@ -131,13 +134,13 @@ namespace Snails
 	{
 		if (tabClass == "mail")
 		{
-			const auto mt = new MailTab { Proxy_, MailTabClass_, this };
+			const auto mt = new MailTab { Proxy_, ComposeTabFactory_, MailTabClass_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
 			WkFontsWidget_->RegisterSettable (mt);
 		}
 		else if (tabClass == "compose")
 		{
-			auto ct = new ComposeMessageTab;
+			const auto ct = ComposeTabFactory_->MakeTab ();
 			handleNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
 		}
 		else

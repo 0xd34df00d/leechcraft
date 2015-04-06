@@ -29,65 +29,28 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
-#include <interfaces/structures.h>
-#include <interfaces/core/icoreproxy.h>
-#include "account.h"
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QModelIndex;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class ResourceLoader;
-}
-
 namespace Snails
 {
-	class Storage;
-	class ProgressManager;
+	class ComposeMessageTab;
 
-	class Core : public QObject
+	class Message;
+	class Account;
+	using Message_ptr = std::shared_ptr<Message>;
+	using Account_ptr = std::shared_ptr<Account>;
+
+	class ComposeMessageTabFactory : public QObject
 	{
 		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-
-		QStandardItemModel * const AccountsModel_;
-		QList<Account_ptr> Accounts_;
-
-		Storage * const Storage_;
-		ProgressManager * const ProgressManager_;
-
-		std::shared_ptr<Util::ResourceLoader> MsgView_;
-
-		Core ();
 	public:
-		static Core& Instance ();
-		void Release ();
+		ComposeMessageTabFactory (QObject* = nullptr);
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetProxy () const;
-		void SendEntity (const Entity&);
-
-		QAbstractItemModel* GetAccountsModel () const;
-		QList<Account_ptr> GetAccounts () const;
-		Account_ptr GetAccount (const QModelIndex&) const;
-
-		Storage* GetStorage () const;
-		ProgressManager* GetProgressManager () const;
-
-		QString GetMsgViewTemplate () const;
-
-		void AddAccount (Account_ptr);
-	private:
-		void AddAccountImpl (Account_ptr);
-		void LoadAccounts ();
-	private slots:
-		void saveAccounts () const;
+		ComposeMessageTab* MakeTab () const;
+		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
 	signals:
 		void gotTab (const QString&, QWidget*);
 	};

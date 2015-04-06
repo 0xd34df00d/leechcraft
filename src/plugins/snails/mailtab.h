@@ -47,6 +47,7 @@ namespace Snails
 {
 	class MessageListEditorManager;
 	class MailTabReadMarker;
+	class ComposeMessageTabFactory;
 
 	class MailTab : public QWidget
 				  , public ITabWidget
@@ -58,6 +59,7 @@ namespace Snails
 		Ui::MailTab Ui_;
 
 		const ICoreProxy_ptr Proxy_;
+		ComposeMessageTabFactory * const ComposeMessageTabFactory_;
 
 		QToolBar * const TabToolbar_;
 		QToolBar * const MsgToolbar_;
@@ -80,7 +82,8 @@ namespace Snails
 
 		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 	public:
-		MailTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*, QWidget* = 0);
+		MailTab (const ICoreProxy_ptr&, ComposeMessageTabFactory*,
+				const TabClassInfo&, QObject*, QWidget* = 0);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

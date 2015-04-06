@@ -54,14 +54,17 @@
 #include "mailmodelsmanager.h"
 #include "messagelisteditormanager.h"
 #include "mailtabreadmarker.h"
+#include "composemessagetabfactory.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	MailTab::MailTab (const ICoreProxy_ptr& proxy, const TabClassInfo& tc, QObject *pmt, QWidget *parent)
+	MailTab::MailTab (const ICoreProxy_ptr& proxy, ComposeMessageTabFactory *cmpMsgTabFactory,
+			const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
+	, ComposeMessageTabFactory_ (cmpMsgTabFactory)
 	, TabToolbar_ (new QToolBar)
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
@@ -696,7 +699,7 @@ namespace Snails
 		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
-		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+		ComposeMessageTabFactory_->PrepareReplyTab (CurrMsg_, CurrAcc_);
 	}
 
 	namespace
