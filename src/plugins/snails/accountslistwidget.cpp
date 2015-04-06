@@ -46,7 +46,7 @@ namespace Snails
 
 	void AccountsListWidget::on_AddButton__released ()
 	{
-		Account_ptr acc (new Account);
+		const auto acc = std::make_shared<Account> ();
 
 		acc->OpenConfigDialog ();
 
@@ -58,11 +58,11 @@ namespace Snails
 
 	void AccountsListWidget::on_ModifyButton__released ()
 	{
-		const QModelIndex& current = Ui_.AccountsTree_->currentIndex ();
+		const auto& current = Ui_.AccountsTree_->currentIndex ();
 		if (!current.isValid ())
 			return;
 
-		Account_ptr acc = AccsMgr_->GetAccount (current);
+		const auto& acc = AccsMgr_->GetAccount (current);
 		if (!acc)
 			return;
 
