@@ -32,6 +32,7 @@
 #include <util/util.h>
 #include <util/xsd/wkfontswidget.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
 #include "accountslistwidget.h"
@@ -63,7 +64,7 @@ namespace Snails
 			"compose",
 			tr ("Compose mail"),
 			tr ("Allows one to compose outgoing mail messages."),
-			{},
+			proxy->GetIconThemeManager ()->GetIcon ("mail-message-new"),
 			60,
 			TFOpenableByRequest
 		};
