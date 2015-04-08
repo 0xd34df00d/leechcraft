@@ -927,7 +927,7 @@ namespace Poshuku
 						.arg (form.attribute ("id"))
 						.arg (form.attribute ("name"));
 
-				for (const auto child : form.findAll ("input"))
+				for (auto child : form.findAll ("input"))
 				{
 					QString elemType = child.attribute ("type");
 					if (elemType == "hidden" ||
