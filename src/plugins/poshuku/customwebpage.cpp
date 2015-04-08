@@ -914,8 +914,7 @@ namespace Poshuku
 			QMap<ElementData, QWebElement> ed2element;
 
 			QUrl pageUrl = frame->url ();
-			QWebElementCollection forms = frame->findAllElements ("form");
-			Q_FOREACH (const QWebElement& form, forms)
+			for (const auto& form : frame->findAllElements ("form"))
 			{
 				QUrl relUrl = QUrl::fromEncoded (form.attribute ("action").toUtf8 ());
 				QUrl actionUrl = pageUrl.resolved (relUrl);
@@ -928,8 +927,7 @@ namespace Poshuku
 						.arg (form.attribute ("id"))
 						.arg (form.attribute ("name"));
 
-				QWebElementCollection children = form.findAll ("input");
-				Q_FOREACH (QWebElement child, children)
+				for (const auto child : form.findAll ("input"))
 				{
 					QString elemType = child.attribute ("type");
 					if (elemType == "hidden" ||
@@ -944,7 +942,7 @@ namespace Poshuku
 							(reqUrl.isValid () && value.isEmpty ()))
 						continue;
 
-					ElementData ed =
+					ElementData ed
 					{
 						pageUrl,
 						formId,
@@ -958,7 +956,7 @@ namespace Poshuku
 				}
 			}
 
-			return qMakePair (formsData, ed2element);
+			return { formsData, ed2element };
 		}
 	};
 
@@ -970,13 +968,10 @@ namespace Poshuku
 
 		QUrl pageUrl = frame->url ();
 		// Check if this should be emitted at all
-		if (Core::Instance ().GetStorageBackend ()->
-				GetFormsIgnored (pageUrl.toString ()))
+		if (Core::Instance ().GetStorageBackend ()->GetFormsIgnored (pageUrl.toString ()))
 			return;
 
-		PageFormsData_t formsData =
-				HarvestForms (frame ? frame : mainFrame (),
-						request.url ()).first;
+		const auto& formsData = HarvestForms (frame ? frame : mainFrame (), request.url ()).first;
 
 		if (!CheckData (formsData, frame, request))
 			return;
