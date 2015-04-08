@@ -56,6 +56,7 @@
 #include <QMainWindow>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/xpc/introspectable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -90,6 +91,8 @@ namespace Poshuku
 		qRegisterMetaTypeStreamOperators<ElementData> ("LeechCraft::Poshuku::ElementData");
 		qRegisterMetaType<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
 		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
+
+		Util::Introspectable::Instance ().Register<ElementData> (&ElementData::ToVariantMap);
 
 		TabClass_.TabClass_ = "Poshuku";
 		TabClass_.VisibleName_ = tr ("Poshuku");
