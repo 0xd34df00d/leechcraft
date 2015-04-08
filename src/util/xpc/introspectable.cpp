@@ -44,6 +44,8 @@ namespace Util
 	QVariantMap Introspectable::operator() (const QVariant& variant) const
 	{
 		const auto type = variant.type ();
+		if (!variant.isValid ())
+			throw std::runtime_error ("Invalid variant.");
 
 		if (type < QMetaType::User)
 			return Util::MakeMap<QString, QVariant> ({ { "data", variant } });
