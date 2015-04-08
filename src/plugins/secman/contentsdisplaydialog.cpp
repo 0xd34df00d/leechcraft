@@ -30,6 +30,7 @@
 #include "contentsdisplaydialog.h"
 #include <QStandardItemModel>
 #include <util/sll/qtutil.h>
+#include <util/xpc/introspectable.h>
 #include <interfaces/iinfo.h>
 #include "interfaces/secman/istorageplugin.h"
 #include "core.h"
@@ -66,6 +67,16 @@ namespace SecMan
 			}
 			else
 			{
+				try
+				{
+					return Unserialize (Util::Introspectable::Instance () (var));
+				}
+				catch (const std::exception& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< e.what ();
+				}
+
 				qWarning () << Q_FUNC_INFO
 						<< "unsupported data type"
 						<< var
