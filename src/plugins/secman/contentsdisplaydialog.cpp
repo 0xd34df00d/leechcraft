@@ -81,8 +81,8 @@ namespace SecMan
 	}
 
 	ContentsDisplayDialog::ContentsDisplayDialog (QWidget *parent)
-	: QDialog (parent)
-	, ContentsModel_ (new QStandardItemModel (this))
+	: QDialog { parent }
+	, ContentsModel_ { new QStandardItemModel { this } }
 	{
 		Ui_.setupUi (this);
 
