@@ -8,6 +8,7 @@ set (XPC_SRCS
 	util.cpp
 	anutil.cpp
 	downloadhandler.cpp
+	introspectable.cpp
 	)
 
 foreach (SRC ${XPC_SRCS})
