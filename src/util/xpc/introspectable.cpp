@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "introspectable.h"
-#include <boost/lexical_cast.hpp>
+#include <string>
 #include <util/util.h>
 
 namespace LeechCraft
@@ -58,7 +58,7 @@ namespace Util
 				<< "unregistered type"
 				<< type
 				<< variant;
-		throw std::runtime_error ("Unregistered type: " + boost::lexical_cast<std::string> (type));
+		throw std::runtime_error ("Unregistered type: " + std::to_string (type));
 	}
 }
 }
