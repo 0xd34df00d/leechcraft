@@ -33,6 +33,7 @@
 #include <QHash>
 #include <QMetaType>
 #include <QVariantMap>
+#include <util/sll/oldcppkludges.h>
 #include "xpcconfig.h"
 
 namespace LeechCraft
@@ -52,11 +53,17 @@ namespace Util
 
 		static Introspectable& Instance ();
 
-		template<typename T>
-		void Register (const Introspect_f& intro)
+		template<typename T, typename U>
+		auto Register (const U& intro) -> typename std::enable_if<std::is_same<QVariantMap, decltype (Invoke (intro, std::declval<QVariant> ()))>::value, void>::type
 		{
 			const auto id = qMetaTypeId<T> ();
 			Intros_ [id] = intro;
+		}
+
+		template<typename T, typename U>
+		auto Register (const U& intro) -> typename std::enable_if<std::is_same<QVariantMap, decltype (Invoke (intro, std::declval<T> ()))>::value, void>::type
+		{
+			Register<T> ([intro] (const QVariant& var) { return Invoke (intro, var.value<T> ()); });
 		}
 
 		template<typename T>
