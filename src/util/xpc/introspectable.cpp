@@ -44,7 +44,7 @@ namespace Util
 	QVariantMap Introspectable::operator() (const QVariant& variant) const
 	{
 		if (!variant.isValid ())
-			throw std::runtime_error ("Invalid variant.");
+			throw std::runtime_error { "Invalid variant." };
 
 		const auto type = variant.userType ();
 
@@ -58,7 +58,7 @@ namespace Util
 				<< "unregistered type"
 				<< type
 				<< variant;
-		throw std::runtime_error ("Unregistered type: " + std::to_string (type));
+		throw std::runtime_error { "Unregistered type: " + std::to_string (type) };
 	}
 }
 }
