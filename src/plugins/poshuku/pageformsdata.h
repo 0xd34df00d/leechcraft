@@ -47,6 +47,8 @@ namespace Poshuku
 		QString Name_;
 		QString Type_;
 		QString Value_;
+
+		QVariantMap ToVariantMap () const;
 	};
 
 	bool operator== (const ElementData&, const ElementData&);
