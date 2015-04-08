@@ -41,8 +41,10 @@ namespace Util
 		return inst;
 	}
 
-	QVariantMap Introspectable::operator() (int type, const QVariant& variant) const
+	QVariantMap Introspectable::operator() (const QVariant& variant) const
 	{
+		const auto type = variant.type ();
+
 		if (type < QMetaType::User)
 			return Util::MakeMap<QString, QVariant> ({ { "data", variant } });
 

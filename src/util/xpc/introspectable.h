@@ -69,10 +69,10 @@ namespace Util
 		template<typename T>
 		QVariantMap operator() (const T& t) const
 		{
-			return (*this) (qMetaTypeId<T> (), QVariant::fromValue<T> (t));
+			return (*this) (QVariant::fromValue<T> (t));
 		}
 
-		QVariantMap operator() (int type, const QVariant&) const;
+		QVariantMap operator() (const QVariant&) const;
 	};
 }
 }
