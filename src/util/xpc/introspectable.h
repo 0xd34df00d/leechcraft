@@ -54,14 +54,14 @@ namespace Util
 		static Introspectable& Instance ();
 
 		template<typename T, typename U>
-		auto Register (const U& intro) -> typename std::enable_if<std::is_same<QVariantMap, decltype (Invoke (intro, std::declval<QVariant> ()))>::value, void>::type
+		void Register (const U& intro, typename std::enable_if<std::is_same<QVariantMap, decltype (Invoke (intro, std::declval<QVariant> ()))>::value, void>::type* = nullptr)
 		{
 			const auto id = qMetaTypeId<T> ();
 			Intros_ [id] = intro;
 		}
 
 		template<typename T, typename U>
-		auto Register (const U& intro) -> typename std::enable_if<std::is_same<QVariantMap, decltype (Invoke (intro, std::declval<T> ()))>::value, void>::type
+		void Register (const U& intro, typename std::enable_if<std::is_same<QVariantMap, decltype (Invoke (intro, std::declval<T> ()))>::value, void>::type* = nullptr)
 		{
 			Register<T> ([intro] (const QVariant& var) { return Invoke (intro, var.value<T> ()); });
 		}
