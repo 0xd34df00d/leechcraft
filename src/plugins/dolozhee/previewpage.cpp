@@ -29,6 +29,7 @@
 
 #include "previewpage.h"
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include "reportwizard.h"
 #include "reporttypepage.h"
 #include "bugreportpage.h"
@@ -107,11 +108,7 @@ namespace Dolozhee
 		for (const auto& section : sections)
 			preview += QString ("<strong>%1:</strong><br/>%2<br/><br/>")
 					.arg (section.first)
-#if QT_VERSION < 0x050000
-					.arg (Qt::escape (section.second));
-#else
-					.arg (section.second.toHtmlEscaped ());
-#endif
+					.arg (Util::Escape (section.second));
 		preview += "<strong>Attached files:</strong><br/>" + wiz->GetFilePage ()->GetFiles ().join ("<br/>");
 
 		preview.remove ("\r");
