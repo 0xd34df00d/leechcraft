@@ -141,12 +141,12 @@ namespace Monocle
 
 	std::shared_ptr<QTextDocument> AnnTreeDelegate::GetDoc (const QModelIndex& index, int width) const
 	{
-		auto text = new QTextDocument;
+		auto text = std::make_shared<QTextDocument> ();
 		text->setTextWidth (width);
 		text->setDocumentMargin (DocMargin);
 		text->setDefaultStyleSheet ("* { color: black; }");
 		text->setHtml (GetText (index));
-		return std::shared_ptr<QTextDocument> { text };
+		return text;
 	}
 
 	QString AnnTreeDelegate::GetText (const QModelIndex& index) const
