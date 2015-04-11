@@ -34,6 +34,7 @@
 #include <QTextDocument>
 #include <QApplication>
 #include <QResizeEvent>
+#include <util/sll/qtutil.h>
 #include "annmanager.h"
 
 namespace LeechCraft
@@ -159,11 +160,7 @@ namespace Monocle
 					.arg (ann->GetAuthor ())
 					.arg (tr ("Date"))
 					.arg (ann->GetDate ().toString (Qt::DefaultLocaleShortDate)) +
-#if QT_VERSION < 0x050000
-				Qt::escape (ann->GetText ()) +
-#else
-				ann->GetText ().toHtmlEscaped () +
-#endif
+				Util::Escape (ann->GetText ()) +
 				"</body></html>";
 	}
 }
