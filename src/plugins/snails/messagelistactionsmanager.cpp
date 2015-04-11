@@ -239,7 +239,7 @@ namespace Snails
 				if (part.startsWith ('<'))
 					part = part.mid (1, part.size () - 2);
 
-				const auto& ascii = part.toAscii ();
+				const auto& ascii = part.toLatin1 ();
 
 				if (ascii.startsWith ("mailto:"))
 				{
