@@ -294,6 +294,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream str (&result, QIODevice::WriteOnly);
+		str.setVersion (QDataStream::Qt_4_8);
 		str << static_cast<quint8> (1)
 			<< FolderID_
 			<< MessageID_
@@ -328,6 +329,7 @@ namespace Snails
 	void Message::Deserialize (const QByteArray& data)
 	{
 		QDataStream str (data);
+		str.setVersion (QDataStream::Qt_4_8);
 		quint8 version = 0;
 		str >> version;
 		if (version != 1)
