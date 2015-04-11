@@ -5,6 +5,7 @@ set (SLL_SRCS
 	regexp.cpp
 	slotclosure.cpp
 	urloperator.cpp
+	qtutil.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
