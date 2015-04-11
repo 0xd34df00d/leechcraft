@@ -42,6 +42,7 @@
 #include <QFutureWatcher>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -176,13 +177,7 @@ namespace Snails
 		const auto quoteEndMarker = "</span>";
 
 		for (auto& str : plainSplit)
-			str = quoteStartMarker +
-#if QT_VERSION < 0x050000
-					Qt::escape (str) +
-#else
-					str.toHtmlEscaped () +
-#endif
-					quoteEndMarker;
+			str = quoteStartMarker + Util::Escape (str) + quoteEndMarker;
 
 		auto htmlBody = plainSplit.join ("<br/>");
 		editor->SetContents (htmlBody, ContentType::HTML);

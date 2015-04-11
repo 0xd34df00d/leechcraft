@@ -39,6 +39,7 @@
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -500,11 +501,7 @@ namespace Snails
 				auto lines = body.split ('\n');
 				for (auto& line : lines)
 				{
-#if QT_VERSION < 0x050000
-					const auto& escaped = Qt::escape (line);
-#else
-					const auto& escaped = line.toHtmlEscaped ();
-#endif
+					const auto& escaped = Util::Escape (line);
 					if (line.startsWith ('>'))
 						line = "<span class='replyPart'>" + escaped + "</span>";
 					else
