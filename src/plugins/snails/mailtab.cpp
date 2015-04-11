@@ -569,6 +569,10 @@ namespace Snails
 				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
 				ReadMarker_.get (),
 				SLOT (handleWillMoveMessages (QList<QByteArray>, QStringList)));
+		connect (this,
+				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
+				this,
+				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
 
 		connect (CurrAcc_.get (),
 				SIGNAL (messageBodyFetched (Message_ptr)),
@@ -867,6 +871,23 @@ namespace Snails
 			widget->setWindowTitle (tr ("Headers for \"%1\"").arg (msg->GetSubject ()));
 			widget->show ();
 		}
+	}
+
+	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		const auto selModel = Ui_.MailTree_->selectionModel ();
+		if (!selModel)
+			return;
+
+		if (folder != MailModel_->GetCurrentFolder ())
+			return;
+
+		const auto& curIdx = Ui_.MailTree_->currentIndex ();
+		const auto& currentId = curIdx.data (MailModel::MailRole::ID).toByteArray ();
+		if (!ids.contains (currentId))
+			return;
+
+		selModel->clear ();
 	}
 
 	void MailTab::handleAttachment ()

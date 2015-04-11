@@ -121,6 +121,8 @@ namespace Snails
 		void handleRemoveMsgs ();
 		void handleViewHeaders ();
 
+		void deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder);
+
 		void handleAttachment ();
 		void handleAttachment (const QByteArray&, const QStringList&, const QString&);
 		void handleFetchNewMail ();
