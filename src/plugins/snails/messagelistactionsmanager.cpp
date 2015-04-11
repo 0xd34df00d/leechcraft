@@ -36,6 +36,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/futures.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/urlaccessor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "message.h"
@@ -297,7 +298,7 @@ namespace Snails
 				const auto& msg = std::make_shared<Message> ();
 				msg->SetAddress (Message::Address::To, { {}, url.path () });
 
-				const auto& subjQuery = url.queryItemValue ("subject");
+				const auto& subjQuery = Util::UrlAccessor { url } ["subject"];
 				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
 
 				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
