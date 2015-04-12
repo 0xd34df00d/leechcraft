@@ -36,6 +36,7 @@
 #include "guiconfig.h"
 
 class QWidget;
+class QWindow;
 
 namespace LeechCraft
 {
@@ -88,6 +89,10 @@ namespace Util
 		 * @param[in] widget The widget to fit.
 		 */
 		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
+
+#if QT_VERSION >= 0x050000
+		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWindow *window);
+#endif
 
 		/** @brief Listens for resize events and refits the widget.
 		 */

@@ -29,6 +29,11 @@
 
 #include "autoresizemixin.h"
 #include <QWidget>
+
+#if QT_VERSION >= 0x050000
+#include <QWindow>
+#endif
+
 #include <QResizeEvent>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -45,8 +50,19 @@ namespace Util
 	{
 		view->installEventFilter (this);
 		Refit (view->size ());
-
 	}
+
+#if QT_VERSION >= 0x050000
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWindow *window)
+	: QObject (window)
+	, OrigPoint_ (point)
+	, Mover_ ([window] (const QPoint& pos) { window->setPosition (pos); })
+	, Rect_ (size)
+	{
+		window->installEventFilter (this);
+		Refit (window->size ());
+	}
+#endif
 
 	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
 	{
