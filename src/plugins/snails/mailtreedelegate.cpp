@@ -50,9 +50,10 @@ namespace Snails
 			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
 		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
+		const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
 
 		QStyleOptionViewItemV4 item { stockItem };
-		if (!isRead)
+		if (!isRead && isEnabled)
 			item.font.setBold (true);
 		QStyledItemDelegate::paint (painter, item, index);
 	}
