@@ -62,7 +62,7 @@ namespace SB2
 	: QQuickWidget (parent)
 #endif
 	{
-		new Util::AutoResizeMixin (orig, [viewMgr] () { return viewMgr->GetFreeCoords (); }, this);
+		new Util::AutoResizeMixin (orig, [viewMgr] { return viewMgr->GetFreeCoords (); }, this);
 
 		if (!params.take ("keepOnFocusLeave").toBool ())
 			new Util::UnhoverDeleteMixin (this, SLOT (beforeDelete ()));
