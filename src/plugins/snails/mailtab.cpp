@@ -887,6 +887,8 @@ namespace Snails
 		if (!ids.contains (currentId))
 			return;
 
+		MailModel_->MarkUnavailable (ids);
+
 		selModel->clear ();
 	}
 
