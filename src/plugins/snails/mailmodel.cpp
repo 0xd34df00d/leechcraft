@@ -48,6 +48,8 @@ namespace Snails
 
 		QSet<QByteArray> UnreadChildren_;
 
+		bool IsAvailable_ = true;
+
 		int Row () const
 		{
 			const auto& parent = Parent_.lock ();
@@ -204,6 +206,11 @@ namespace Snails
 		auto flags = QAbstractItemModel::flags (index);
 		if (index.column () == static_cast<int> (Column::Subject))
 			flags |= Qt::ItemIsEditable;
+
+		const auto structItem = static_cast<TreeNode*> (index.internalPointer ());
+		if (!structItem->IsAvailable_)
+			flags &= ~Qt::ItemIsEnabled;
+
 		return flags;
 	}
 
