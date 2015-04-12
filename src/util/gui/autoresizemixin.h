@@ -62,6 +62,8 @@ namespace Util
 	 * via a functor returning the rectangle. The functor is invoked each
 	 * time the widget is to be refit.
 	 *
+	 * This class also supports Qt5's QWindow objects.
+	 *
 	 * @ingroup GuiUtil
 	 */
 	class AutoResizeMixin : public QObject
@@ -91,6 +93,18 @@ namespace Util
 		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
 
 #if QT_VERSION >= 0x050000
+		/** @brief Constructs the resize mixin.
+		 *
+		 * This function constructs the resize mixin managing the given
+		 * \em window, trying to fit it inside the \em rect, preferably
+		 * with a corner of the \em window sticking near the \em point.
+		 *
+		 * @param[in] point The point near which the \em window should be
+		 * shown.
+		 * @param[in] rect The functor returning the rectangle into which
+		 * the \em window should be fitted.
+		 * @param[in] window The widget to fit.
+		 */
 		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWindow *window);
 #endif
 
