@@ -35,6 +35,7 @@ QtObject {
                 tooltip.x = pos.x;
                 tooltip.y = pos.y;
                 tooltip.show();
+                quarkProxy.registerAutoresize(Qt.point(global.x, global.y), tooltip);
                 setter(tooltip);
             });
 
