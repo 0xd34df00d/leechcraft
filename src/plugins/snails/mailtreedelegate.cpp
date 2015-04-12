@@ -55,6 +55,8 @@ namespace Snails
 		QStyleOptionViewItemV4 item { stockItem };
 		if (!isRead && isEnabled)
 			item.font.setBold (true);
+		else if (!isEnabled)
+			item.font.setStrikeOut (true);
 		QStyledItemDelegate::paint (painter, item, index);
 	}
 
