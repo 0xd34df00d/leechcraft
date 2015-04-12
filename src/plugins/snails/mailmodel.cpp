@@ -380,6 +380,19 @@ namespace Snails
 		return true;
 	}
 
+	void MailModel::MarkUnavailable (const QList<QByteArray>& ids)
+	{
+		for (const auto& id : ids)
+			for (const auto& node : FolderId2Nodes_.value (id))
+			{
+				if (node->IsAvailable_ == false)
+					continue;
+
+				node->IsAvailable_ = false;
+				EmitRowChanged (node);
+			}
+	}
+
 	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
 	{
 		QList<TreeNode_ptr> nodes;

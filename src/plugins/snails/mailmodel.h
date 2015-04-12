@@ -104,6 +104,8 @@ namespace Snails
 
 		bool Update (const Message_ptr&);
 		bool Remove (const QByteArray&);
+
+		void MarkUnavailable (const QList<QByteArray>&);
 	private:
 		void UpdateParentReadCount (const QByteArray&, bool);
 
