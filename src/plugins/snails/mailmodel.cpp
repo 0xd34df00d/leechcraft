@@ -488,23 +488,18 @@ namespace Snails
 
 	QList<QModelIndex> MailModel::GetIndexes (const QByteArray& folderId, int column) const
 	{
-		QList<QModelIndex> result;
-		for (const auto& node : FolderId2Nodes_.value (folderId))
-			result << createIndex (node->Row (), column, node.get ());
-		return result;
+		return Util::Map (FolderId2Nodes_.value (folderId),
+				[this, column] (const auto& node) { return GetIndex (node, column); });
 	}
 
 	QList<QList<QModelIndex>> MailModel::GetIndexes (const QByteArray& folderId, const QList<int>& columns) const
 	{
-		QList<QList<QModelIndex>> result;
-		for (const auto& node : FolderId2Nodes_.value (folderId))
-		{
-			QList<QModelIndex> subresult;
-			for (const auto column : columns)
-				subresult << createIndex (node->Row (), column, node.get ());
-			result << subresult;
-		}
-		return result;
+		return Util::Map (FolderId2Nodes_.value (folderId),
+				[this, &columns] (const auto& node)
+				{
+					return Util::Map (columns,
+							[this, &node] (auto column) { return GetIndex (node, column); });
+				});
 	}
 
 	Message_ptr MailModel::GetMessageByFolderId (const QByteArray& id) const
