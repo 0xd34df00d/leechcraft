@@ -66,11 +66,12 @@ namespace Util
 	class AutoResizeMixin : public QObject
 	{
 		const QPoint OrigPoint_;
-		QWidget * const View_;
+
+		const std::function<void (QPoint)> Mover_;
 	public:
 		/** @brief A function type used to get the rect to fit widget in.
 		 */
-		typedef std::function<QRect ()> RectGetter_f;
+		using RectGetter_f = std::function<QRect ()>;
 	private:
 		const RectGetter_f Rect_;
 	public:

@@ -40,12 +40,12 @@ namespace Util
 	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
 	: QObject (view)
 	, OrigPoint_ (point)
-	, View_ (view)
+	, Mover_ ([view] (const QPoint& pos) { view->move (pos); })
 	, Rect_ (size)
 	{
-		View_->installEventFilter (this);
+		view->installEventFilter (this);
+		Refit (view->size ());
 
-		Refit (View_->size ());
 	}
 
 	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
@@ -60,8 +60,7 @@ namespace Util
 
 	void AutoResizeMixin::Refit (const QSize& size)
 	{
-		const auto& pos = FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap);
-		View_->move (pos);
+		Mover_ (FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap));
 	}
 }
 }
