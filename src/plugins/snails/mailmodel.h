@@ -108,6 +108,7 @@ namespace Snails
 		void RemoveNode (const TreeNode_ptr&);
 		bool AppendStructured (const Message_ptr&);
 
+		QModelIndex GetIndex (const TreeNode_ptr& node, int column) const;
 		QList<QModelIndex> GetIndexes (const QByteArray& folderId, int column) const;
 		QList<QList<QModelIndex>> GetIndexes (const QByteArray& folderId, const QList<int>& columns) const;
 		Message_ptr GetMessageByFolderId (const QByteArray&) const;

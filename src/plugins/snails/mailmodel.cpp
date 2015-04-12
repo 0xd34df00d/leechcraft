@@ -481,6 +481,11 @@ namespace Snails
 		return !indexes.isEmpty ();
 	}
 
+	QModelIndex MailModel::GetIndex (const TreeNode_ptr& node, int column) const
+	{
+		return createIndex (node->Row (), column, node.get ());
+	}
+
 	QList<QModelIndex> MailModel::GetIndexes (const QByteArray& folderId, int column) const
 	{
 		QList<QModelIndex> result;
