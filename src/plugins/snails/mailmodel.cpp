@@ -186,13 +186,10 @@ namespace Snails
 			else
 				return Util::MakePrettySize (msg->GetSize ());
 		case Column::UnreadChildren:
-		{
-			const auto unread = structItem->UnreadChildren_.size ();
-			if (unread)
+			if (const auto unread = structItem->UnreadChildren_.size ())
 				return unread;
 
 			return role == Sort ? 0 : QString::fromUtf8 ("·");
-		}
 		case Column::StatusIcon:
 		case Column::AttachIcon:
 			break;
