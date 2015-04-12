@@ -30,6 +30,7 @@
 #include "mailmodel.h"
 #include <QIcon>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "messagelistactionsmanager.h"
@@ -479,6 +480,12 @@ namespace Snails
 			UpdateParentReadCount (msg->GetFolderID (), true);
 
 		return !indexes.isEmpty ();
+	}
+
+	void MailModel::EmitRowChanged (const TreeNode_ptr& node)
+	{
+		emit dataChanged (GetIndex (node, 0),
+				GetIndex (node, static_cast<int> (Column::MaxNext)));
 	}
 
 	QModelIndex MailModel::GetIndex (const TreeNode_ptr& node, int column) const
