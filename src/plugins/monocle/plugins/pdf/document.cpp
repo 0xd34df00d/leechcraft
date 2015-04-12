@@ -254,7 +254,7 @@ namespace PDF
 		if (cs != Qt::CaseSensitive)
 			searchFlags |= Poppler::Page::SearchFlag::IgnoreCase;
 	#else
-		const auto popplerFlags = cs == Qt::CaseSensitive ?
+		const auto searchFlags = cs == Qt::CaseSensitive ?
 						Poppler::Page::CaseSensitive :
 						Poppler::Page::CaseInsensitive;
 	#endif
