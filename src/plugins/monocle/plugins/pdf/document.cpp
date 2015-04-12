@@ -249,9 +249,15 @@ namespace PDF
 		typedef QMap<int, QList<QRectF>> Result_t;
 		Result_t result;
 #if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
-		const auto popplerCS = cs == Qt::CaseSensitive ?
+	#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 31
+		Poppler::Page::SearchFlags searchFlags;
+		if (cs != Qt::CaseSensitive)
+			searchFlags |= Poppler::Page::SearchFlag::IgnoreCase;
+	#else
+		const auto popplerFlags = cs == Qt::CaseSensitive ?
 						Poppler::Page::CaseSensitive :
 						Poppler::Page::CaseInsensitive;
+	#endif
 
 		const auto numPages = PDocument_->numPages ();
 
@@ -260,13 +266,13 @@ namespace PDF
 
 		std::vector<std::thread> threads;
 
-		auto worker = [&resVec, &popplerCS, &text, this] (int start, int count)
+		auto worker = [&resVec, &searchFlags, &text, this] (int start, int count)
 		{
 			std::unique_ptr<Poppler::Document> doc (Poppler::Document::load (DocURL_.toLocalFile ()));
 			for (auto i = start, end = start + count; i < end; ++i)
 			{
 				std::unique_ptr<Poppler::Page> p (doc->page (i));
-				resVec [i] = p->search (text, popplerCS);
+				resVec [i] = p->search (text, searchFlags);
 			}
 		};
 		const auto threadCount = QThread::idealThreadCount ();
