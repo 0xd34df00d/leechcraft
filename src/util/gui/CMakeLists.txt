@@ -41,7 +41,7 @@ target_link_libraries (leechcraft-util-gui${LC_LIBSUFFIX}
 	leechcraft-util-shortcuts${LC_LIBSUFFIX}
 	leechcraft-util-sll${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-util-gui${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-gui${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-gui${LC_LIBSUFFIX} Network WebKitWidgets Widgets)
