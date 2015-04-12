@@ -135,6 +135,25 @@ namespace SB2
 				Util::FitRectScreen (src, size, flags);
 	}
 
+	void QuarkProxy::registerAutoresize (const QPoint& src, const QVariant& var)
+	{
+#if QT_VERSION < 0x050000
+		Q_UNUSED (src)
+		Q_UNUSED (var)
+		qWarning () << Q_FUNC_INFO
+				<< "this function should not be called in Qt4 mode";
+#else
+		const auto win = var.value<QWindow*> ();
+		if (!win)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no window";
+			return;
+		}
+		new Util::AutoResizeMixin (src, [this] { return Manager_->GetFreeCoords (); }, win);
+#endif
+	}
+
 	void QuarkProxy::panelMoveRequested (const QString& position)
 	{
 		Qt::ToolBarArea area = Qt::BottomToolBarArea;
