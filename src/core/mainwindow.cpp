@@ -132,8 +132,6 @@ void LeechCraft::MainWindow::Init ()
 		IsShown_ = false;
 		hide ();
 	}
-
-	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
 	QTimer::singleShot (700,
 			this,
