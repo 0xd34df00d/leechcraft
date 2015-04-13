@@ -117,17 +117,6 @@ void LeechCraft::MainWindow::Init ()
 			this,
 			SLOT (handleRestoreActionAdded (QAction*)));
 
-	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
-	{
-		show ();
-		activateWindow ();
-		raise ();
-	}
-	else
-	{
-		IsShown_ = false;
-		hide ();
-	}
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
 	QTimer::singleShot (700,
 			this,
@@ -329,7 +318,6 @@ void LeechCraft::MainWindow::ReadSettings ()
 		resize (settings.value ("size", QSize  (1150, 800)).toSize ());
 		move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
 		WasMaximized_ = settings.value ("maximized").toBool ();
-		WasMaximized_ ? showMaximized () : showNormal ();
 		settings.endGroup ();
 	}
 

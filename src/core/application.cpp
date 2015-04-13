@@ -546,7 +546,9 @@ namespace LeechCraft
 
 		handleLoadProgress (tr ("Finalizing..."));
 
-		Splash_->finish (rwm->GetMainWindow (0));
+		const auto win = rwm->GetMainWindow (0);
+		win->showFirstTime ();
+		Splash_->finish (win);
 	}
 
 	void Application::handleQuit ()
