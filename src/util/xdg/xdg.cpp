@@ -44,13 +44,13 @@ namespace XDG
 
 	QPixmap GetAppPixmap (const QString& name)
 	{
-		const auto prefixes
+		const auto prefixes =
 		{
 			"/usr/share/pixmaps/",
 			"/usr/local/share/pixmaps/"
 		};
 
-		const auto sizes { "192", "128", "96", "72", "64", "48", "36", "32" };
+		const auto sizes = { "192", "128", "96", "72", "64", "48", "36", "32" };
 		const QStringList themes
 		{
 			"/usr/local/share/icons/hicolor/",
