@@ -575,6 +575,22 @@ void LeechCraft::MainWindow::showMain ()
 	raise ();
 }
 
+void MainWindow::showFirstTime ()
+{
+	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
+	{
+		WasMaximized_ ? showMaximized () : showNormal ();
+		activateWindow ();
+		raise ();
+	}
+	else
+	{
+		IsShown_ = false;
+		hide ();
+	}
+
+}
+
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
 {
 	switch (reason)

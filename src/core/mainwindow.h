@@ -109,6 +109,7 @@ namespace LeechCraft
 		void catchError (QString);
 		void showHideMain ();
 		void showMain ();
+		void showFirstTime ();
 
 		void handleQuit ();
 	protected:
