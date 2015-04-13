@@ -232,14 +232,9 @@ namespace LeechCraft
 				SLOT (handleQuit ()));
 
 		Splash_ = new QSplashScreen (QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen);
-		Splash_->show ();
 		Splash_->setUpdatesEnabled (true);
-		Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
-
-		connect (Core::Instance ().GetPluginManager (),
-				SIGNAL (loadProgress (const QString&)),
-				this,
-				SLOT (handleLoadProgress (const QString&)));
+		Splash_->show ();
+		Splash_->repaint ();
 
 		QTimer::singleShot (0,
 				this,
@@ -538,6 +533,13 @@ namespace LeechCraft
 
 	void Application::finishInit ()
 	{
+		handleLoadProgress (tr ("Initializing LeechCraft..."));
+
+		connect (Core::Instance ().GetPluginManager (),
+				SIGNAL (loadProgress (const QString&)),
+				this,
+				SLOT (handleLoadProgress (const QString&)));
+
 		auto rwm = Core::Instance ().GetRootWindowsManager ();
 		rwm->Initialize ();
 		Core::Instance ().DelayedInit ();
