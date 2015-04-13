@@ -544,7 +544,7 @@ namespace LeechCraft
 		rwm->Initialize ();
 		Core::Instance ().DelayedInit ();
 
-		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+		handleLoadProgress (tr ("Finalizing..."));
 
 		Splash_->finish (rwm->GetMainWindow (0));
 	}
