@@ -621,6 +621,7 @@ namespace LeechCraft
 	void Application::handleLoadProgress (const QString& str)
 	{
 		Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+		Splash_->repaint ();
 	}
 
 	void Application::checkStillRunning ()
