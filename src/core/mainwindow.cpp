@@ -105,8 +105,6 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 
 void LeechCraft::MainWindow::Init ()
 {
-	setUpdatesEnabled (false);
-
 	hide ();
 
 	Core::Instance ().GetCoreInstanceObject ()->
@@ -118,8 +116,6 @@ void LeechCraft::MainWindow::Init ()
 			SIGNAL (restoreTabActionAdded (QAction*)),
 			this,
 			SLOT (handleRestoreActionAdded (QAction*)));
-
-	setUpdatesEnabled (true);
 
 	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
 	{
