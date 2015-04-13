@@ -236,7 +236,7 @@ namespace LeechCraft
 		Splash_->show ();
 		Splash_->repaint ();
 
-		QTimer::singleShot (0,
+		QTimer::singleShot (50,
 				this,
 				SLOT (finishInit ()));
 	}
