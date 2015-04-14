@@ -98,7 +98,7 @@ namespace Azoth
 					<< "is obviously alive, but Core doesn't know about it."
 					<< "Will wait for re-appearing.";
 
-			EnqueueRestoreInfos ({ { id } });
+			EnqueueRestoreInfos ({ { id, {}, {}, {} } });
 
 			return nullptr;
 		}
