@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <type_traits>
+
 namespace LeechCraft
 {
 namespace Util
@@ -40,7 +42,8 @@ namespace Util
 	}
 
 	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype (obj.*mem)
+	auto Invoke (Res Base::* mem, Real&& obj,
+			typename std::enable_if<!std::is_function<decltype (mem)>::value>::type* = nullptr) -> decltype (obj.*mem)
 	{
 		return obj.*mem;
 	}
