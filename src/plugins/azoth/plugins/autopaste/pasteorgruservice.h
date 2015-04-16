@@ -42,7 +42,7 @@ namespace Autopaste
 	public:
 		using PasteServiceBase::PasteServiceBase;
 
-		void Paste (const PasteParams&);
+		void Paste (const PasteParams&) override;
 	protected:
 		void handleFinished () override;
 	};
