@@ -332,7 +332,7 @@ namespace Azoth
 	{
 		const auto isValid = index.isValid ();
 
-		const auto items
+		const auto items =
 		{
 			Ui_.Delete_,
 			Ui_.Modify_,
