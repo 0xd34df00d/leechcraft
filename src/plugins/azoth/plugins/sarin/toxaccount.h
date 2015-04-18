@@ -154,7 +154,7 @@ namespace Sarin
 
 		void threadChanged (const std::shared_ptr<ToxThread>&);
 
-		void called (QObject*);
+		void called (QObject*) override;
 	};
 }
 }
