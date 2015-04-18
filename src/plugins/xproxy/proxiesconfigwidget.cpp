@@ -30,6 +30,7 @@
 #include "proxiesconfigwidget.h"
 #include <QStandardItemModel>
 #include <QSettings>
+#include <QMessageBox>
 #include <util/sll/slotclosure.h>
 #include "proxiesstorage.h"
 #include "editurlsdialog.h"
@@ -149,6 +150,14 @@ namespace XProxy
 			return;
 
 		const auto& proxy = dia.GetProxy ();
+		if (Proxies_.contains (proxy))
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("The specified proxy already exists."));
+			return;
+		}
+
 		Proxies_ << proxy;
 		Model_->appendRow (Proxy2Row (proxy));
 
