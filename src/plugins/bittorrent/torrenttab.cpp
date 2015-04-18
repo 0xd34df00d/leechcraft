@@ -349,7 +349,7 @@ namespace BitTorrent
 
 	void TorrentTab::setActionsEnabled ()
 	{
-		const auto& actions
+		const auto& actions =
 		{
 			Resume_, Stop_, MakeMagnetLink_, RemoveTorrent_,
 			MoveUp_, MoveDown_, MoveToTop_, MoveToBottom_,
