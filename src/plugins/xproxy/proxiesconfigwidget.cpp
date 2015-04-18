@@ -145,17 +145,24 @@ namespace XProxy
 
 	void ProxiesConfigWidget::on_AddProxyButton__released ()
 	{
-		ProxyConfigDialog dia { this };
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		Proxy proxy;
 
-		const auto& proxy = dia.GetProxy ();
-		if (Proxies_.contains (proxy))
+		ProxyConfigDialog dia { this };
+		while (true)
 		{
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("The specified proxy already exists."));
-			return;
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			proxy = dia.GetProxy ();
+			if (Proxies_.contains (proxy))
+			{
+				if (QMessageBox::question (this,
+							"LeechCraft",
+							tr ("The specified proxy already exists. "
+								"Do you want to change the parameters of the new one?"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+			}
 		}
 
 		Proxies_ << proxy;
