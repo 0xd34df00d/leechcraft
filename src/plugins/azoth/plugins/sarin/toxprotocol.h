@@ -65,9 +65,9 @@ namespace Sarin
 		QIcon GetProtocolIcon () const override;
 		QByteArray GetProtocolID () const override;
 
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options);
-		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets);
-		void RemoveAccount (QObject* account);
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions options) override;
+		void RegisterAccount (const QString& name, const QList<QWidget*>& widgets) override;
+		void RemoveAccount (QObject* account) override;
 
 		const ICoreProxy_ptr& GetCoreProxy () const;
 	private:

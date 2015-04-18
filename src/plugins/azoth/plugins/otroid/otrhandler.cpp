@@ -510,7 +510,7 @@ namespace OTRoid
 		auto list = proxy->GetReturnValue ().toList ();
 
 		const auto& actionsStruct = Entry2Action_.value (entry);
-		const auto actions
+		const auto actions =
 		{
 			actionsStruct.ToggleOtr_.get (),
 			actionsStruct.ToggleOtrCtx_.get (),

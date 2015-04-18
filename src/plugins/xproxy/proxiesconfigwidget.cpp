@@ -30,6 +30,7 @@
 #include "proxiesconfigwidget.h"
 #include <QStandardItemModel>
 #include <QSettings>
+#include <QMessageBox>
 #include <util/sll/slotclosure.h>
 #include "proxiesstorage.h"
 #include "editurlsdialog.h"
@@ -144,11 +145,35 @@ namespace XProxy
 
 	void ProxiesConfigWidget::on_AddProxyButton__released ()
 	{
-		ProxyConfigDialog dia { this };
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		Proxy proxy;
 
-		const auto& proxy = dia.GetProxy ();
+		ProxyConfigDialog dia { this };
+		int counter = 0;
+		while (true)
+		{
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			proxy = dia.GetProxy ();
+			if (!Proxies_.contains (proxy))
+				break;
+
+			if (++counter == 5)
+			{
+				QMessageBox::critical (this,
+						"HAL 9000",
+						"I'm sorry Dave, I'm afraid I can't do that");
+				return;
+			}
+
+			if (QMessageBox::question (this,
+						"LeechCraft",
+						tr ("The specified proxy already exists. "
+							"Do you want to change the parameters of the new one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+		}
+
 		Proxies_ << proxy;
 		Model_->appendRow (Proxy2Row (proxy));
 
@@ -163,14 +188,29 @@ namespace XProxy
 
 		const auto oldProxy = Proxies_.at (row);
 
+		Proxy proxy;
 		ProxyConfigDialog dia { this };
 		dia.SetProxy (oldProxy);
-		if (dia.exec () != QDialog::Accepted)
-			return;
 
-		const auto& proxy = dia.GetProxy ();
-		if (proxy == oldProxy)
-			return;
+		while (true)
+		{
+			if (dia.exec () != QDialog::Accepted)
+				return;
+
+			proxy = dia.GetProxy ();
+			if (proxy == oldProxy)
+				return;
+
+			if (!Proxies_.contains (proxy))
+				break;
+
+			if (QMessageBox::question (this,
+						"LeechCraft",
+						tr ("The specified proxy already exists. "
+							"Do you want to change the parameters of the new one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
+		}
 
 		Proxies_ [row] = proxy;
 

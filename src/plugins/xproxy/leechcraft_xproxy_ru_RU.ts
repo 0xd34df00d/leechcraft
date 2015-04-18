@@ -132,39 +132,45 @@
 <context>
     <name>LeechCraft::XProxy::ProxiesConfigWidget</name>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="58"/>
+        <location filename="proxiesconfigwidget.cpp" line="59"/>
         <source>caching HTTP</source>
         <translation>кеширующий HTTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="61"/>
+        <location filename="proxiesconfigwidget.cpp" line="62"/>
         <source>caching FTP</source>
         <translation>кеширующий FTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="64"/>
+        <location filename="proxiesconfigwidget.cpp" line="65"/>
         <source>no proxy</source>
         <translation>без прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="67"/>
+        <location filename="proxiesconfigwidget.cpp" line="68"/>
         <source>other type</source>
         <translation>другой тип</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="100"/>
+        <location filename="proxiesconfigwidget.cpp" line="101"/>
         <source>Proxy type</source>
         <translation>Тип прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="101"/>
+        <location filename="proxiesconfigwidget.cpp" line="102"/>
         <source>Proxy target</source>
         <translation>Прокси</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="102"/>
+        <location filename="proxiesconfigwidget.cpp" line="103"/>
         <source>User</source>
         <translation>Пользователь</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.cpp" line="171"/>
+        <location filename="proxiesconfigwidget.cpp" line="209"/>
+        <source>The specified proxy already exists. Do you want to change the parameters of the new one?</source>
+        <translation>Прокси с указанными параметрами уже существует. Вы хотите изменить параметры добавляемого вами?</translation>
     </message>
 </context>
 <context>

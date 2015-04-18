@@ -35,6 +35,7 @@
 #include <QXmppMucManager.h>
 #include <QXmppClient.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/util.h>
 #include <util/xpc/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -741,6 +742,15 @@ namespace Xoox
 							Q_ARG (QString, item.reason ())));
 		else
 			MakeLeaveMessage (pres, nick);
+
+		const auto checkRejoin = Util::MakeScopeGuard ([this]
+				{
+					if (Nick2Entry_.isEmpty () ||
+							std::all_of (Nick2Entry_.begin (), Nick2Entry_.end (),
+									[] (const RoomParticipantEntry_ptr& entry)
+										{ return entry->GetStatus ({}).State_ == SOffline; }))
+						new Util::DelayedExecutor { [this] { Join (); }, 5000 };
+				});
 
 		if (us)
 		{
