@@ -148,6 +148,7 @@ namespace XProxy
 		Proxy proxy;
 
 		ProxyConfigDialog dia { this };
+		int counter = 0;
 		while (true)
 		{
 			if (dia.exec () != QDialog::Accepted)
@@ -156,6 +157,14 @@ namespace XProxy
 			proxy = dia.GetProxy ();
 			if (Proxies_.contains (proxy))
 			{
+				if (++counter == 5)
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							"I'm sorry Dave, I'm afraid I can't do that");
+					return;
+				}
+
 				if (QMessageBox::question (this,
 							"LeechCraft",
 							tr ("The specified proxy already exists. "
