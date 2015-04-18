@@ -50,6 +50,7 @@
 #include <util/sys/resourceloader.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/prelude.h>
+#include <util/sll/util.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
@@ -881,20 +882,18 @@ namespace Azoth
 				int pos = 0;
 				while ((pos = body.indexOf (nick, pos)) >= 0)
 				{
+					const auto posG = Util::MakeScopeGuard ([&pos, &nick] { pos += nick.size (); });
 					const auto nickEnd = pos + nick.size ();
 					if ((pos > 0 && !isGoodChar (body.at (pos - 1))) ||
 						(nickEnd + 1 < body.size () && !isGoodChar (body.at (nickEnd))))
-					{
-						pos += nick.size ();
 						continue;
-					}
 
 					const auto& startStr = "<span style='color: " + nickColor + "'>";
 					const QString endStr { "</span>" };
 					body.insert (nickEnd, endStr);
 					body.insert (pos, startStr);
 
-					pos += nick.size () + startStr.size () + endStr.size ();
+					pos += startStr.size () + endStr.size ();
 				}
 			}
 		}
