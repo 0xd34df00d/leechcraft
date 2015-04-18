@@ -850,12 +850,13 @@ namespace Azoth
 		bool IsInsideTag (const QString& body, int pos)
 		{
 			const auto prevOpen = body.lastIndexOf ('<', pos - 1);
-			const auto prevClose = body.lastIndexOf ('>', pos - 1);
-			const auto nextOpen = body.indexOf ('<', pos + 1);
 			const auto nextClose = body.indexOf ('>', pos + 1);
 
 			if (prevOpen == -1 || nextClose == -1)
 				return false;
+
+			const auto prevClose = body.lastIndexOf ('>', pos - 1);
+			const auto nextOpen = body.indexOf ('<', pos + 1);
 
 			return prevClose < prevOpen || nextClose < nextOpen;
 		}
