@@ -847,6 +847,19 @@ namespace Azoth
 
 	namespace
 	{
+		bool IsInsideTag (const QString& body, int pos)
+		{
+			const auto prevOpen = body.lastIndexOf ('<', pos - 1);
+			const auto prevClose = body.lastIndexOf ('>', pos - 1);
+			const auto nextOpen = body.indexOf ('<', pos + 1);
+			const auto nextClose = body.indexOf ('>', pos + 1);
+
+			if (prevOpen == -1 || nextClose == -1)
+				return false;
+
+			return prevClose < prevOpen || nextClose < nextOpen;
+		}
+
 		void HighlightNicks (QString& body, IMessage *msg, const QList<QColor>& colors)
 		{
 			const auto entry = qobject_cast<IMUCEntry*> (msg->ParentCLEntry ());
@@ -883,6 +896,10 @@ namespace Azoth
 				while ((pos = body.indexOf (nick, pos)) >= 0)
 				{
 					const auto posG = Util::MakeScopeGuard ([&pos, &nick] { pos += nick.size (); });
+
+					if (IsInsideTag (body, pos))
+						continue;
+
 					const auto nickEnd = pos + nick.size ();
 					if ((pos > 0 && !isGoodChar (body.at (pos - 1))) ||
 						(nickEnd + 1 < body.size () && !isGoodChar (body.at (nickEnd))))
