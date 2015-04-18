@@ -155,23 +155,23 @@ namespace XProxy
 				return;
 
 			proxy = dia.GetProxy ();
-			if (Proxies_.contains (proxy))
-			{
-				if (++counter == 5)
-				{
-					QMessageBox::critical (this,
-							"HAL 9000",
-							"I'm sorry Dave, I'm afraid I can't do that");
-					return;
-				}
+			if (!Proxies_.contains (proxy))
+				break;
 
-				if (QMessageBox::question (this,
-							"LeechCraft",
-							tr ("The specified proxy already exists. "
-								"Do you want to change the parameters of the new one?"),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+			if (++counter == 5)
+			{
+				QMessageBox::critical (this,
+						"HAL 9000",
+						"I'm sorry Dave, I'm afraid I can't do that");
 				return;
 			}
+
+			if (QMessageBox::question (this,
+						"LeechCraft",
+						tr ("The specified proxy already exists. "
+							"Do you want to change the parameters of the new one?"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+				return;
 		}
 
 		Proxies_ << proxy;
