@@ -66,20 +66,19 @@ namespace Util
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, typename std::result_of<F (T)>::type>::value,
-			Container<typename std::decay<typename std::result_of<F (T)>::type>::type>>::type
+	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value,
+			Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>::type
 	{
-		Container<typename std::decay<typename std::result_of<F (T)>::type>::type> result;
+		Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type> result;
 		for (auto&& t : c)
 			result.push_back (Invoke (f, t));
 		return result;
 	}
 
 	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) ->
-			ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type>
+	auto Map (const Container<ContArgs...>& c, F f) -> ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>
 	{
-		ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type> cont;
+		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
 		for (auto&& t : c)
 			cont.push_back (Invoke (f, t));
 		return cont;
