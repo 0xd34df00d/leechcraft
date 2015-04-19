@@ -52,8 +52,6 @@ namespace Aggregator
 {
 namespace BodyFetch
 {
-	const int CacheValidity = 20;
-
 	WorkerObject::WorkerObject (QObject *parent)
 	: QObject (parent)
 	, Inst_ (0)
