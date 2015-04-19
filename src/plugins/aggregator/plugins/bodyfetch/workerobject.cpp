@@ -40,6 +40,7 @@
 #include <interfaces/iscriptloader.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/util.h>
 
 uint qHash (IScript_ptr script)
 {
@@ -310,25 +311,6 @@ namespace BodyFetch
 				QString::fromUtf8 (rawContents);
 	}
 
-	namespace
-	{
-		struct ProcessingGuard
-		{
-			bool *P_;
-
-			ProcessingGuard (bool *p)
-			: P_ (p)
-			{
-				*P_ = true;
-			}
-
-			~ProcessingGuard ()
-			{
-				*P_ = false;
-			}
-		};
-	}
-
 	void WorkerObject::ScheduleRechecking ()
 	{
 		if (RecheckScheduled_)
@@ -350,7 +332,8 @@ namespace BodyFetch
 			return;
 		}
 
-		ProcessingGuard pg (&IsProcessing_);
+		IsProcessing_ = true;
+		const auto pg = Util::MakeScopeGuard ([this] { IsProcessing_ = false; });
 
 		IScript_ptr script = URL2Script_.take (url);
 		if (!script)
