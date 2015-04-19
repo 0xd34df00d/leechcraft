@@ -99,7 +99,7 @@ namespace Util
 	typename std::enable_if<std::is_same<void, typename std::result_of<F (T)>::type>::value, void>::type Map (const Container<T>& c, F f)
 	{
 		for (auto t : c)
-			f (t);
+			Invoke (f, t);
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
