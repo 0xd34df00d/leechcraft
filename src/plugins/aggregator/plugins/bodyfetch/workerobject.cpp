@@ -41,6 +41,7 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/util.h>
+#include <util/sll/prelude.h>
 
 uint qHash (IScript_ptr script)
 {
@@ -193,13 +194,9 @@ namespace BodyFetch
 	{
 		QStringList GetReplacements (IScript_ptr script, const QString& method)
 		{
-			const QVariant& var = script->InvokeMethod (method, QVariantList ());
-
-			QStringList result;
-			Q_FOREACH (const QVariant& varItem, var.toList ())
-				result << varItem.toString ();
-
-			result.removeAll (QString ());
+			const auto& var = script->InvokeMethod (method, {});
+			auto result = QStringList { Util::Map (var.toList (), &QVariant::toString) };
+			result.removeAll ({});
 			result.removeDuplicates ();
 
 			return result;
