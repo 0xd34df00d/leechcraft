@@ -60,7 +60,7 @@ namespace BodyFetch
 	, RecheckScheduled_ (false)
 	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
 	{
-		QTimer *timer = new QTimer;
+		QTimer *timer = new QTimer { this };
 		connect (timer,
 				SIGNAL (timeout ()),
 				this,
