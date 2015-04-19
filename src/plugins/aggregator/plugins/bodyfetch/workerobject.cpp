@@ -102,13 +102,13 @@ namespace BodyFetch
 
 		QHash<QString, IScript_ptr> channel2script;
 
-		Q_FOREACH (const QVariant& item, items)
+		for (const auto& item : items)
 		{
-			const QVariantMap& map = item.toMap ();
+			const auto& map = item.toMap ();
 
-			const QString& channelLinkStr = map ["ChannelLink"].toString ();
+			const auto& channelLinkStr = map ["ChannelLink"].toString ();
 
-			IScript_ptr script = channel2script.value (channelLinkStr);
+			auto script = channel2script.value (channelLinkStr);
 			if (!script)
 			{
 				script = GetScriptForChannel (channelLinkStr);
@@ -117,17 +117,19 @@ namespace BodyFetch
 				channel2script [channelLinkStr] = script;
 			}
 
-			QVariantList args;
-			args << map ["ItemLink"];
-			args << map ["ItemCommentsPageLink"];
-			args << map ["ItemDescription"];
-			QString fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
+			const QVariantList args
+			{
+				map ["ItemLink"],
+				map ["ItemCommentsPageLink"],
+				map ["ItemDescription"]
+			};
+			auto fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
 			if (fetchStr.isEmpty ())
 				fetchStr = map ["ItemLink"].toString ();
 
 			qDebug () << Q_FUNC_INFO << fetchStr << "using" << ChannelLink2ScriptID_ [channelLinkStr];
 
-			const QUrl& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
+			const auto& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
 			URL2Script_ [url] = script;
 			URL2ItemID_ [url] = map ["ItemID"].value<quint64> ();
 			emit downloadRequested (url);
@@ -144,7 +146,7 @@ namespace BodyFetch
 		{
 			script = Inst_->LoadScript (ChannelLink2ScriptID_ [channel]);
 			if (!script ||
-					!script->InvokeMethod ("CanHandle", QVariantList () << channel).toBool ())
+					!script->InvokeMethod ("CanHandle", { channel }).toBool ())
 			{
 				ChannelLink2ScriptID_.remove (channel);
 				script.reset ();
@@ -153,11 +155,11 @@ namespace BodyFetch
 
 		if (!ChannelLink2ScriptID_.contains (channel))
 		{
-			const QString& scriptId = FindScriptForChannel (channel);
+			const auto& scriptId = FindScriptForChannel (channel);
 			if (scriptId.isEmpty ())
 			{
-				CachedScripts_ [channel] = IScript_ptr ();
-				return IScript_ptr ();
+				CachedScripts_ [channel] = {};
+				return {};
 			}
 
 			ChannelLink2ScriptID_ [channel] = scriptId;
@@ -166,8 +168,8 @@ namespace BodyFetch
 		if (ChannelLink2ScriptID_ [channel].isEmpty ())
 		{
 			ChannelLink2ScriptID_.remove (channel);
-			CachedScripts_ [channel] = IScript_ptr ();
-			return IScript_ptr ();
+			CachedScripts_ [channel] = {};
+			return {};
 		}
 
 		if (!script)
@@ -180,10 +182,10 @@ namespace BodyFetch
 
 	QString WorkerObject::FindScriptForChannel (const QString& link)
 	{
-		Q_FOREACH (const QString& id, EnumeratedCache_)
+		for (const auto& id : EnumeratedCache_)
 		{
-			IScript_ptr script (Inst_->LoadScript (id));
-			if (script->InvokeMethod ("CanHandle", QVariantList () << link).toBool ())
+			const auto& script = Inst_->LoadScript (id);
+			if (script->InvokeMethod ("CanHandle", { link }).toBool ())
 				return id;
 		}
 
@@ -198,7 +200,6 @@ namespace BodyFetch
 			auto result = QStringList { Util::Map (var.toList (), &QVariant::toString) };
 			result.removeAll ({});
 			result.removeDuplicates ();
-
 			return result;
 		}
 
@@ -210,11 +211,10 @@ namespace BodyFetch
 		{
 			QString result;
 
-			Q_FOREACH (const QString& sel, selectors)
+			for (const auto& sel : selectors)
 			{
-				QWebElementCollection col = frame->findAllElements (sel);
-				for (int i = 0, size = std::min (amount, col.count ());
-						i < size; ++i)
+				const auto& col = frame->findAllElements (sel);
+				for (int i = 0, size = std::min (amount, col.count ()); i < size; ++i)
 					result += func (col.at (i)).simplified ();
 
 				qApp->processEvents ();
@@ -235,7 +235,7 @@ namespace BodyFetch
 		if (firstTagOut.isEmpty () &&
 				allTagsOut.isEmpty () &&
 				firstTagIn.isEmpty ())
-			return script->InvokeMethod ("Strip", QVariantList () << contents).toString ();
+			return script->InvokeMethod ("Strip", { contents }).toString ();
 
 		QWebPage page;
 		page.settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
@@ -290,10 +290,9 @@ namespace BodyFetch
 			{
 				const int end = rawContents.indexOf (sep, begin + 1);
 
-				const QByteArray& enca = rawContents.mid (begin + 1, end - begin - 1);
+				const auto& enca = rawContents.mid (begin + 1, end - begin - 1);
 				qDebug () << "detected encoding" << enca;
-				QTextCodec *codec = QTextCodec::codecForName (enca);
-				if (codec)
+				if (const auto codec = QTextCodec::codecForName (enca))
 					return codec->toUnicode (rawContents);
 				else
 					qWarning () << Q_FUNC_INFO
@@ -302,7 +301,7 @@ namespace BodyFetch
 			}
 		}
 
-		QTextCodec *codec = QTextCodec::codecForHtml (rawContents, 0);
+		const auto codec = QTextCodec::codecForHtml (rawContents, 0);
 		return codec ?
 				codec->toUnicode (rawContents) :
 				QString::fromUtf8 (rawContents);
@@ -324,7 +323,7 @@ namespace BodyFetch
 	{
 		if (IsProcessing_)
 		{
-			FetchedQueue_ << qMakePair (url, filename);
+			FetchedQueue_.append ({ url, filename });
 			ScheduleRechecking ();
 			return;
 		}
@@ -350,12 +349,12 @@ namespace BodyFetch
 			return;
 		}
 
-		const QByteArray& rawContents = file.readAll ();
+		const auto& rawContents = file.readAll ();
 		qApp->processEvents ();
-		const QString& contents = Recode (rawContents);
+		const auto& contents = Recode (rawContents);
 		file.close ();
 		file.remove ();
-		const QString& result = Parse (contents, script);
+		const auto& result = Parse (contents, script);
 
 		if (result.isEmpty ())
 		{
@@ -382,7 +381,7 @@ namespace BodyFetch
 		if (IsProcessing_)
 			ScheduleRechecking ();
 
-		const QPair<QUrl, QString>& item = FetchedQueue_.takeFirst ();
+		const auto& item = FetchedQueue_.takeFirst ();
 		handleDownloadFinished (item.first, item.second);
 	}
 
@@ -392,7 +391,7 @@ namespace BodyFetch
 			return;
 
 		if (!IsProcessing_)
-			ProcessItems (QVariantList () << Items_.takeFirst ());
+			ProcessItems ({ Items_.takeFirst () });
 
 		if (!Items_.isEmpty ())
 			QTimer::singleShot (400,
