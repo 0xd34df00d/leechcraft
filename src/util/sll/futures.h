@@ -112,7 +112,7 @@ namespace Util
 		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
 				"The passed functor should return a QFuture.");
 
-		using RetType_t = typename detail::UnwrapFutureType<typename std::result_of<Executor (Args...)>::type>::type;
+		using RetType_t = detail::UnwrapFutureType_t<decltype (f (args...))>;
 		const auto watcher = new QFutureWatcher<RetType_t> { parent };
 
 		new SlotClosure<DeleteLaterPolicy>
