@@ -197,7 +197,7 @@ namespace BodyFetch
 		QStringList GetReplacements (IScript_ptr script, const QString& method)
 		{
 			const auto& var = script->InvokeMethod (method, {});
-			auto result = QStringList { Util::Map (var.toList (), &QVariant::toString) };
+			auto result = Util::Map (var.toList (), &QVariant::toString);
 			result.removeAll ({});
 			result.removeDuplicates ();
 			return result;
