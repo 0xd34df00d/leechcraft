@@ -54,7 +54,7 @@ namespace Util
 		QList<int> list { 1, 2, 3 };
 		const auto& otherList = Map (list, [] (int v) { return QString::number (v); });
 
-		QCOMPARE (otherList, (QList<QString> { "1", "2", "3" }));
+		QCOMPARE (otherList, (QStringList { "1", "2", "3" }));
 	}
 
 	void PreludeTest::testMapMap ()
