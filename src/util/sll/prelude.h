@@ -74,6 +74,12 @@ namespace Util
 	template<typename T>
 	using WrapType_t = typename WrapType<T>::type;
 
+	template<>
+	struct WrapType<QList<QString>>
+	{
+		using type = QStringList;
+	};
+
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value,
 			WrapType_t<Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>>::type
