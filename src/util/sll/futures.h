@@ -50,6 +50,9 @@ namespace Util
 		};
 
 		template<typename T>
+		using UnwrapFutureType_t = typename UnwrapFutureType<T>::type;
+
+		template<typename T>
 		struct IsFuture
 		{
 			constexpr static bool Result_ = false;
