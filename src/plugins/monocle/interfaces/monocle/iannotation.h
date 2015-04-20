@@ -65,6 +65,8 @@ namespace Monocle
 		Link,
 
 		/** @brief A caret pointing to some text inserted.
+		 *
+		 * The corresponding interface is ICaretAnnotation.
 		 */
 		Caret,
 
@@ -191,6 +193,8 @@ namespace Monocle
 		virtual ILink_ptr GetLink () const = 0;
 	};
 
+	/** @brief The interface for ::AnnotationType::Caret annotations.
+	 */
 	class ICaretAnnotation : public IAnnotation
 	{
 	public:

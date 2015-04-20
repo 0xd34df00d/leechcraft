@@ -35,11 +35,23 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	/** @brief Interface for documents that can toggle showing some of
+	 * their contents.
+	 *
+	 * The list of togglable contents is returned via the
+	 * GetOptContentModel(), returning a model whose items can be checked
+	 * or unchecked (and, possibly, edited).
+	 */
 	class IHaveOptionalContent
 	{
 	public:
 		virtual ~IHaveOptionalContent () {}
 
+		/** @brief Returns the optional contents model for the document.
+		 *
+		 * @return The contents model, or a nullptr if no optional
+		 * content is present in this document.
+		 */
 		virtual QAbstractItemModel* GetOptContentModel () = 0;
 	};
 }

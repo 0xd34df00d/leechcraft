@@ -166,7 +166,8 @@ namespace Monocle
 		 * \code
 			auto size = GetPageSize (page);
 			size.rwidth () *= xScale;
-			size.rheight () *= yscale;\endcode
+			size.rheight () *= yscale;
+		   \endcode
 		 *
 		 * @param[in] page The index of the page to render.
 		 * @param[in] xScale The scale of the <em>x</em> axis.
