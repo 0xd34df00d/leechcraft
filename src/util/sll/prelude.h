@@ -65,9 +65,18 @@ namespace Util
 					{ return { t1, t2}; });
 	}
 
+	template<typename T>
+	struct WrapType
+	{
+		using type = T;
+	};
+
+	template<typename T>
+	using WrapType_t = typename WrapType<T>::type;
+
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value,
-			Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>::type
+			WrapType_t<Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>>::type
 	{
 		Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type> result;
 		for (auto&& t : c)
@@ -76,7 +85,7 @@ namespace Util
 	}
 
 	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) -> ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>
+	auto Map (const Container<ContArgs...>& c, F f) -> WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>
 	{
 		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
 		for (auto&& t : c)
