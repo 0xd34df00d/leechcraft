@@ -112,6 +112,8 @@ namespace Util
 		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
 				"The passed functor should return a QFuture.");
 
+		// Don't replace result_of with decltype, this triggers a gcc bug leading to segfault:
+		// http://leechcraft.org:8080/job/leechcraft/=debian_unstable/1998/console
 		using RetType_t = detail::UnwrapFutureType_t<typename std::result_of<Executor (Args...)>::type>;
 		const auto watcher = new QFutureWatcher<RetType_t> { parent };
 
