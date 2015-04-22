@@ -340,20 +340,22 @@ namespace BodyFetch
 			return;
 		}
 
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
+		const auto file = std::make_shared<QFile> (filename);
+		if (!file->open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to open file";
-			file.remove ();
+					<< "unable to open file"
+					<< filename
+					<< file->errorString ();
+			file->remove ();
 			return;
 		}
 
-		const auto& rawContents = file.readAll ();
+		const auto& rawContents = file->readAll ();
 		qApp->processEvents ();
 		const auto& contents = Recode (rawContents);
-		file.close ();
-		file.remove ();
+		file->close ();
+		file->remove ();
 		const auto& result = Parse (contents, script);
 
 		if (result.isEmpty ())
