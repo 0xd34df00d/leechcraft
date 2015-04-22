@@ -15,7 +15,7 @@ if (ENABLE_UTIL_TESTS)
 		add_executable (${_fullExecName} WIN32 ${_cppFile})
 		add_test (${_testName} ${_fullExecName})
 		FindQtLibs (${_fullExecName} Test)
-		add_dependencies (${_fullExecName} ${_depLib})
+		target_link_libraries (${_fullExecName} ${_depLib})
 	endfunction ()
 endif ()
 
