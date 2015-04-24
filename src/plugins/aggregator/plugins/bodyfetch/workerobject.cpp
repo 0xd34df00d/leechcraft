@@ -42,6 +42,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/futures.h>
 
 uint qHash (IScript_ptr script)
 {
@@ -216,8 +217,6 @@ namespace BodyFetch
 				const auto& col = frame->findAllElements (sel);
 				for (int i = 0, size = std::min (amount, col.count ()); i < size; ++i)
 					result += func (col.at (i)).simplified ();
-
-				qApp->processEvents ();
 			}
 
 			return result;
@@ -230,8 +229,6 @@ namespace BodyFetch
 		const QStringList& allTagsOut = GetReplacements (script, "KeepAllTags");
 		const QStringList& firstTagIn = GetReplacements (script, "KeepFirstTagInnerXml");
 
-		qApp->processEvents ();
-
 		if (firstTagOut.isEmpty () &&
 				allTagsOut.isEmpty () &&
 				firstTagIn.isEmpty ())
@@ -243,8 +240,6 @@ namespace BodyFetch
 		page.settings ()->setAttribute (QWebSettings::AutoLoadImages, false);
 		page.settings ()->setAttribute (QWebSettings::PluginsEnabled, false);
 		page.mainFrame ()->setHtml (contents);
-
-		qApp->processEvents ();
 
 		QString result;
 		result += ParseWithSelectors (page.mainFrame (),
@@ -331,7 +326,7 @@ namespace BodyFetch
 		IsProcessing_ = true;
 		const auto pg = Util::MakeScopeGuard ([this] { IsProcessing_ = false; });
 
-		IScript_ptr script = URL2Script_.take (url);
+		const auto& script = URL2Script_.take (url);
 		if (!script)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -351,26 +346,33 @@ namespace BodyFetch
 			return;
 		}
 
-		const auto& rawContents = file->readAll ();
-		qApp->processEvents ();
-		const auto& contents = Recode (rawContents);
-		file->close ();
-		file->remove ();
-		const auto& result = Parse (contents, script);
+		Util::Sequence (this,
+					[this, file]
+					{
+						return QtConcurrent::run ([this, file]
+								{
+									const auto& contents = file->readAll ();
+									file->close ();
+									file->remove ();
+									return Recode (contents);
+								});
+					})
+				.Then ([this, url, script] (const QString& contents)
+					{
+						const auto& result = Parse (contents, script);
+						if (result.isEmpty ())
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "empty result for"
+									<< url;
+							return;
+						}
 
-		if (result.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty result for"
-					<< url;
-			return;
-		}
-
-		const quint64 id = URL2ItemID_.take (url);
-		qApp->processEvents ();
-		WriteFile (result, id);
-		qApp->processEvents ();
-		emit newBodyFetched (id);
+						const quint64 id = URL2ItemID_.take (url);
+						WriteFile (result, id);
+						emit newBodyFetched (id);
+						qDebug () << Q_FUNC_INFO << "done!" << url;
+					});
 	}
 
 	void WorkerObject::recheckFinished ()
