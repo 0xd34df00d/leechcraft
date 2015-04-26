@@ -30,10 +30,12 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include <interfaces/devices/deviceroles.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
 
 namespace LeechCraft
 {
@@ -49,6 +51,7 @@ namespace LMP
 		QObjectList Managers_;
 
 		QStandardItemModel * const DevListModel_;
+		QHash<QObject*, QHash<QByteArray, QStandardItem*>> Items_;
 
 		enum Roles
 		{

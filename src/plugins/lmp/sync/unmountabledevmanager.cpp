@@ -29,6 +29,7 @@
 
 #include "unmountabledevmanager.h"
 #include <QStandardItemModel>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "../interfaces/lmp/iunmountablesync.h"
@@ -89,11 +90,12 @@ namespace LMP
 
 	void UnmountableDevManager::rebuildAvailableDevices ()
 	{
-		if (const auto rc = DevListModel_->rowCount ())
-			DevListModel_->removeRows (0, rc);
+		auto items = Items_;
 
 		for (auto mgrObj : Managers_)
 		{
+			auto& mgrDevices = items [mgrObj];
+
 			auto mgr = qobject_cast<IUnmountableSync*> (mgrObj);
 			for (const auto& device : mgr->AvailableDevices ())
 			{
@@ -101,13 +103,28 @@ namespace LMP
 				if (device.BatteryCharge_ >= 0)
 					name += " (" + tr ("%1% charged").arg (device.BatteryCharge_) + ")";
 
-				auto item = new QStandardItem (name);
+				if (const auto item = mgrDevices.take (device.ID_))
+				{
+					item->setText (name);
+					continue;
+				}
+
+				auto item = new QStandardItem { name };
 				item->setData (QVariant::fromValue (mgrObj), Roles::ManagerObj);
 				item->setData (device.ID_, CommonDevRole::DevPersistentID);
 				item->setData (QVariant::fromValue (device), Roles::DeviceInfo);
 				DevListModel_->appendRow (item);
+
+				Items_ [mgrObj] [device.ID_] = item;
 			}
 		}
+
+		for (const auto& mgrPair : Util::Stlize (items))
+			for (const auto& pair : Util::Stlize (mgrPair.second))
+			{
+				Items_ [mgrPair.first].remove (pair.first);
+				DevListModel_->removeRow (pair.second->row ());
+			}
 	}
 }
 }
