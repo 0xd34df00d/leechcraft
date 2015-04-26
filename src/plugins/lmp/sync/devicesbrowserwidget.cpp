@@ -214,8 +214,7 @@ namespace LMP
 		QList<ISyncPlugin*> FindSuitables (const QString& mountPath)
 		{
 			QList<ISyncPlugin*> suitables;
-			auto syncers = Core::Instance ().GetSyncPlugins ();
-			Q_FOREACH (auto syncer, syncers)
+			for (auto syncer : Core::Instance ().GetSyncPlugins ())
 			{
 				auto isp = qobject_cast<ISyncPlugin*> (syncer);
 				if (isp->CouldSync (mountPath) != SyncConfLevel::None)
