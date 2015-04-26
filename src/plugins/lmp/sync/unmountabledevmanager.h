@@ -46,8 +46,9 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		QStandardItemModel *DevListModel_;
 		QObjectList Managers_;
+
+		QStandardItemModel * const DevListModel_;
 
 		enum Roles
 		{
