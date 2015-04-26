@@ -35,6 +35,7 @@
 #include <util/models/flattenfiltermodel.h>
 #include <util/models/mergemodel.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
@@ -251,12 +252,10 @@ namespace LMP
 			CurrentSyncer_ = suitables.value (items.indexOf (name));
 		}
 
-		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
-		QStringList paths;
-		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().toList (),
 				[] (const QModelIndex& idx)
 					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
-		paths.removeAll (QString ());
+		paths.removeAll ({});
 
 		Ui_.UploadLog_->clear ();
 
@@ -270,12 +269,10 @@ namespace LMP
 		Merger_->GetModelForRow (idx, &starting);
 		idx -= starting;
 
-		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
-		QStringList paths;
-		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().toList (),
 				[] (const QModelIndex& idx)
 					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
-		paths.removeAll (QString ());
+		paths.removeAll ({});
 
 		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));
 		const auto& info = UnmountableMgr_->GetDeviceInfo (idx);
