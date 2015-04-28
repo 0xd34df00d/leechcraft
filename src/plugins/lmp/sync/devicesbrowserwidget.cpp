@@ -237,9 +237,7 @@ namespace LMP
 			CurrentSyncer_ = suitables.value (0);
 		else
 		{
-			QStringList items;
-			for (ISyncPlugin *plugin : suitables)
-				items << plugin->GetSyncSystemName ();
+			auto items = Util::Map (suitables, &ISyncPlugin::GetSyncSystemName);
 
 			const auto& name = QInputDialog::getItem (this,
 					tr ("Select syncer"),
