@@ -80,13 +80,28 @@ namespace Util
 		using type = QStringList;
 	};
 
+	namespace detail
+	{
+		template<typename Res, typename T>
+		void Append (Res& result, T&& val, decltype (result.push_back (std::forward<T> (val)))* = nullptr)
+		{
+			result.push_back (std::forward<T> (val));
+		}
+
+		template<typename Res, typename T>
+		void Append (Res& result, T&& val, decltype (result.insert (std::forward<T> (val)))* = nullptr)
+		{
+			result.insert (std::forward<T> (val));
+		}
+	}
+
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value,
 			WrapType_t<Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>>::type
 	{
 		Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type> result;
 		for (auto&& t : c)
-			result.push_back (Invoke (f, t));
+			detail::Append (result, Invoke (f, t));
 		return result;
 	}
 
