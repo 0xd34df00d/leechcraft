@@ -110,7 +110,7 @@ namespace Util
 	{
 		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
 		for (auto&& t : c)
-			cont.push_back (Invoke (f, t));
+			detail::Append (cont, Invoke (f, t));
 		return cont;
 	}
 
