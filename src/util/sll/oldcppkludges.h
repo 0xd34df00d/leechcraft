@@ -53,5 +53,11 @@ namespace Util
 	{
 		return (obj.*mem) ();
 	}
+
+	template<typename Base, typename Real, typename Res>
+	auto Invoke (Res Base::* mem, Real&& obj) -> decltype ((obj->*mem) ())
+	{
+		return (obj->*mem) ();
+	}
 }
 }
