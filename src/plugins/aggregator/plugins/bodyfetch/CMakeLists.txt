@@ -20,4 +20,4 @@ target_link_libraries (leechcraft_aggregator_bodyfetch
 install (TARGETS leechcraft_aggregator_bodyfetch DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/scripts DESTINATION ${LC_SHARE_DEST})
 
-FindQtLibs (leechcraft_aggregator_bodyfetch WebKitWidgets)
+FindQtLibs (leechcraft_aggregator_bodyfetch Concurrent WebKitWidgets)
