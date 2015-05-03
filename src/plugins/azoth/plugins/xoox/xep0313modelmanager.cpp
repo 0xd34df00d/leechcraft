@@ -94,18 +94,18 @@ namespace Xoox
 	void Xep0313ModelManager::handleGotCLItems (const QList<QObject*>& items)
 	{
 		PerformWithEntries (items,
-				[this] (ICLEntry *entry) -> void
+				[this] (ICLEntry *entry)
 				{
 					const auto& jid = entry->GetHumanReadableID ();
 					if (Jid2Item_.contains (jid))
 						return;
 
-					QList<QStandardItem*> row
+					const QList<QStandardItem*> row
 					{
 						new QStandardItem (entry->GetEntryName ()),
 						new QStandardItem (jid)
 					};
-					for (auto item : row)
+					for (const auto item : row)
 					{
 						item->setEditable (false);
 						item->setData (QVariant::fromValue (entry->GetQObject ()),
