@@ -329,7 +329,7 @@ namespace Azoth
 			const bool shareGroups = dia.ShouldSuggestGroups ();
 
 			const auto& items = Util::Map (dia.GetSelectedEntries (),
-					[shareGroups] (ICLEntry *entry) -> RIEXItem
+					[shareGroups] (ICLEntry *toShare) -> RIEXItem
 					{
 						return
 						{
