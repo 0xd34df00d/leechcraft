@@ -94,13 +94,13 @@ namespace OTRoid
 
 			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-			QList<QStandardItem*> result
+			const QList<QStandardItem*> result
 			{
 				new QStandardItem { entry->GetEntryName () },
 				new QStandardItem { entry->GetHumanReadableID () },
 				new QStandardItem { "0" }
 			};
-			for (auto item : result)
+			for (const auto item : result)
 			{
 				item->setEditable (false);
 				item->setData (FPManager::TypeEntry, FPManager::RoleType);
