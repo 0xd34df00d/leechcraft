@@ -138,7 +138,7 @@ namespace Acetamide
 			ChannelHandlers_ [chnnl]->CloseChannel ();
 	}
 
-	void ChannelsManager::CloseAllChannels ()
+	void ChannelsManager::CloseAllChannels () const
 	{
 		for (const auto& ich : ChannelHandlers_)
 			ich->CloseChannel ();
