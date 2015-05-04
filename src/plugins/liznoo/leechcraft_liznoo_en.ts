@@ -50,192 +50,202 @@
     </message>
 </context>
 <context>
+    <name>FreeBSD</name>
+    <message>
+        <location filename="platform/poweractions/freebsd.cpp" line="57"/>
+        <source>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</source>
+        <translation>No permissions to write to %1. If you are in the %2 group, add %3 to %4 and run %5 to apply the required permissions to %1.</translation>
+    </message>
+    <message>
+        <location filename="platform/poweractions/freebsd.cpp" line="64"/>
+        <source>Unable to open %1 for writing.</source>
+        <translation>Unable to open %1 for writing.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="51"/>
-        <source>Percentage</source>
-        <translation>Percentage</translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="52"/>
-        <source>Energy rate</source>
-        <translation>Energy rate</translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="53"/>
-        <source>Temperature</source>
-        <translation>Temperature</translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="62"/>
-        <source>Percent</source>
-        <translation>Percent</translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="63"/>
-        <source>Energy rate, W</source>
-        <translation>Energy rate, W</translation>
-    </message>
-    <message>
-        <location filename="batteryhistorydialog.cpp" line="155"/>
+        <location filename="batteryhistorydialog.cpp" line="183"/>
         <source>(discharging)</source>
         <translation>(discharging)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="163"/>
+        <location filename="batteryhistorydialog.cpp" line="191"/>
         <source>(charging)</source>
         <translation>(charging)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="187"/>
+        <location filename="batteryhistorydialog.cpp" line="215"/>
         <source>%1 V</source>
         <translation>%1 V</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="198"/>
-        <location filename="batteryhistorydialog.cpp" line="199"/>
-        <location filename="batteryhistorydialog.cpp" line="200"/>
+        <location filename="batteryhistorydialog.cpp" line="226"/>
+        <location filename="batteryhistorydialog.cpp" line="227"/>
+        <location filename="batteryhistorydialog.cpp" line="228"/>
         <source>%1 mAh</source>
         <translation>%1 mAh</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="205"/>
+        <location filename="batteryhistorydialog.cpp" line="233"/>
         <source>awesome</source>
         <translation>awesome</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="207"/>
+        <location filename="batteryhistorydialog.cpp" line="235"/>
         <source>good</source>
         <translation>good</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="209"/>
+        <location filename="batteryhistorydialog.cpp" line="237"/>
         <source>degraded</source>
         <translation>degraded</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="211"/>
+        <location filename="batteryhistorydialog.cpp" line="239"/>
         <source>bad</source>
         <translation>bad</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="212"/>
+        <location filename="batteryhistorydialog.cpp" line="240"/>
         <source>%1% (%2)</source>
         <translation>%1% (%2)</translation>
     </message>
-</context>
-<context>
-    <name>LeechCraft::Liznoo::FakeQWidgetWinAPI</name>
     <message>
-        <location filename="platform/events/fakeqwidgetwinapi.cpp" line="51"/>
-        <source>Power saver</source>
-        <translation>Power saver</translation>
+        <location filename="batteryhistorydialog.cpp" line="258"/>
+        <source>Percentage</source>
+        <translation>Percentage</translation>
     </message>
     <message>
-        <location filename="platform/events/fakeqwidgetwinapi.cpp" line="53"/>
-        <source>High performance</source>
-        <translation>High performance</translation>
+        <location filename="batteryhistorydialog.cpp" line="259"/>
+        <source>Energy rate</source>
+        <translation>Energy rate</translation>
     </message>
     <message>
-        <location filename="platform/events/fakeqwidgetwinapi.cpp" line="55"/>
-        <source>Balanced</source>
-        <translation>Balanced</translation>
+        <location filename="batteryhistorydialog.cpp" line="260"/>
+        <source>Temperature</source>
+        <translation>Temperature</translation>
     </message>
     <message>
-        <location filename="platform/events/fakeqwidgetwinapi.cpp" line="65"/>
-        <source>Battery</source>
-        <translation>Battery</translation>
+        <location filename="batteryhistorydialog.cpp" line="261"/>
+        <source>Charge, %</source>
+        <translation>Charge, %</translation>
     </message>
     <message>
-        <location filename="platform/events/fakeqwidgetwinapi.cpp" line="65"/>
-        <source>AC</source>
-        <translation>AC</translation>
+        <location filename="batteryhistorydialog.cpp" line="262"/>
+        <source>Energy rate, W</source>
+        <translation>Energy rate, W</translation>
     </message>
-</context>
-<context>
-    <name>LeechCraft::Liznoo::PlatformFreeBSD</name>
     <message>
-        <location filename="platform/events/platformfreebsd.cpp" line="73"/>
-        <source>Looks like you don&apos;t have permission to write to /dev/acpi. If you&apos;re in &apos;wheel&apos; group, add &apos;perm acpi 0664&apos; to /etc/devfs.conf and run &apos;/etc/rc.d/devfs restart&apos; to apply needed permissions to /dev/acpi.</source>
-        <translation>Looks like you don&apos;t have permission to write to /dev/acpi. If you&apos;re in &apos;wheel&apos; group, add &apos;perm acpi 0664&apos; to /etc/devfs.conf and run &apos;/etc/rc.d/devfs restart&apos; to apply needed permissions to /dev/acpi.</translation>
+        <location filename="batteryhistorydialog.cpp" line="263"/>
+        <source>Time, s</source>
+        <translation>Time, s</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="105"/>
+        <location filename="liznoo.cpp" line="138"/>
         <source>Suspend</source>
         <translation>Suspend</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="112"/>
+        <location filename="liznoo.cpp" line="145"/>
         <source>Hibernate</source>
         <translation>Hibernate</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="147"/>
+        <location filename="liznoo.cpp" line="181"/>
         <source>UPower/WinAPI-based power manager.</source>
         <translation>UPower/WinAPI-based power manager.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="241"/>
+        <location filename="liznoo.cpp" line="275"/>
         <source>(charging)</source>
         <translation>(charging)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="243"/>
+        <location filename="liznoo.cpp" line="277"/>
         <source>(discharging)</source>
         <translation>(discharging)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="247"/>
+        <location filename="liznoo.cpp" line="281"/>
         <source>Battery</source>
         <translation>Battery</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="258"/>
+        <location filename="liznoo.cpp" line="292"/>
         <source>Battery technology: %1</source>
         <translation>Battery technology: %1</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="264"/>
+        <location filename="liznoo.cpp" line="298"/>
         <source>Energy rate: %1 W</source>
         <translation>Energy rate: %1 W</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="270"/>
+        <location filename="liznoo.cpp" line="304"/>
         <source>Remaining energy: %1 Wh</source>
         <translation>Remaining energy: %1 Wh</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="276"/>
+        <location filename="liznoo.cpp" line="310"/>
         <source>Full energy capacity: %1 Wh</source>
         <translation>Full energy capacity: %1 Wh</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="306"/>
+        <location filename="liznoo.cpp" line="340"/>
         <source>Battery charge level is below %1.</source>
         <translation>Battery charge level is below %1.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="319"/>
+        <location filename="liznoo.cpp" line="353"/>
         <source>The device started charging.</source>
         <translation>The device started charging.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="323"/>
+        <location filename="liznoo.cpp" line="357"/>
         <source>The device started discharging.</source>
         <translation>The device started discharging.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="341"/>
+        <location filename="liznoo.cpp" line="375"/>
         <source>Cannot change state.</source>
         <translation>Cannot change state.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="355"/>
+        <location filename="liznoo.cpp" line="389"/>
         <source>Battery status</source>
         <translation>Battery status</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Liznoo::WinAPI::FakeQWidgetWinAPI</name>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="54"/>
+        <source>Power saver</source>
+        <translation>Power saver</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="56"/>
+        <source>High performance</source>
+        <translation>High performance</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="58"/>
+        <source>Balanced</source>
+        <translation>Balanced</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="68"/>
+        <source>Battery</source>
+        <translation>Battery</translation>
+    </message>
+    <message>
+        <location filename="platform/winapi/fakeqwidgetwinapi.cpp" line="68"/>
+        <source>AC</source>
+        <translation>AC</translation>
     </message>
 </context>
 <context>
