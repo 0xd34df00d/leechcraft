@@ -55,6 +55,8 @@ namespace Liznoo
 		BatteryHistoryDialog (int size, double multiplier, QWidget* = 0);
 
 		void UpdateHistory (const QLinkedList<BatteryHistory>&, const BatteryInfo&);
+	private:
+		void InitNames ();
 	};
 }
 }

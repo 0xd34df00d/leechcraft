@@ -49,9 +49,9 @@ namespace Liznoo
 {
 	BatteryHistoryDialog::BatteryHistoryDialog (int histSize, double multiplier, QWidget *parent)
 	: QDialog { parent }
-	, Percent_ { new QwtPlotCurve { tr ("Percentage") } }
-	, Energy_ { new QwtPlotCurve { tr ("Energy rate") } }
-	, Temperature_ { new QwtPlotCurve { tr ("Temperature") } }
+	, Percent_ { new QwtPlotCurve }
+	, Energy_ { new QwtPlotCurve }
+	, Temperature_ { new QwtPlotCurve }
 	, TimeMultiplier_ { multiplier }
 	{
 		Ui_.setupUi (this);
@@ -61,9 +61,8 @@ namespace Liznoo
 		Ui_.PercentPlot_->setAxisScale (QwtPlot::xBottom, 0, histSize * multiplier);
 		Ui_.PercentPlot_->setAxisScale (QwtPlot::yLeft, 0, 100);
 		Ui_.PercentPlot_->enableAxis (QwtPlot::yRight);
-		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Charge, %"));
-		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yRight, tr ("Energy rate, W"));
-		Ui_.PercentPlot_->setAxisTitle (QwtPlot::xBottom, tr ("Time, s"));
+
+		InitNames ();
 
 		auto setColor = [this] (QColor color, QwtPlot::Axis axis)
 		{
@@ -248,6 +247,16 @@ namespace Liznoo
 		Ui_.Health_->setVisible (energyAvailable);
 
 		Ui_.PercentageLabel_->setText (QString::number (info.Percentage_) + "% " + chargeStateStr);
+	}
+
+	void BatteryHistoryDialog::InitNames ()
+	{
+		Percent_->setTitle (tr ("Percentage"));
+		Energy_->setTitle (tr ("Energy rate"));
+		Temperature_->setTitle (tr ("Temperature"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Charge, %"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yRight, tr ("Energy rate, W"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::xBottom, tr ("Time, s"));
 	}
 }
 }
