@@ -68,11 +68,17 @@ namespace Liznoo
 			const auto widget = Ui_.PercentPlot_->axisWidget (axis);
 			auto palette = widget->palette ();
 
-			const auto& prevColor = palette.color (QPalette::ColorRole::Text);
-			color.setRedF ((color.redF () + prevColor.redF ()) / 2);
-			color.setGreenF ((color.greenF () + prevColor.greenF ()) / 2);
-			color.setBlueF ((color.blueF () + prevColor.blueF ()) / 2);
-			palette.setColor (QPalette::ColorRole::Text, color);
+			auto setColor = [&] (QPalette::ColorRole role)
+			{
+				const auto& prevColor = palette.color (role);
+				color.setRedF ((color.redF () + prevColor.redF ()) / 2);
+				color.setGreenF ((color.greenF () + prevColor.greenF ()) / 2);
+				color.setBlueF ((color.blueF () + prevColor.blueF ()) / 2);
+				palette.setColor (role, color);
+			};
+
+			setColor (QPalette::ColorRole::Text);
+			setColor (QPalette::ColorRole::WindowText);
 
 			widget->setPalette (palette);
 		};
