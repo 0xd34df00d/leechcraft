@@ -63,6 +63,7 @@ namespace Liznoo
 		Ui_.PercentPlot_->enableAxis (QwtPlot::yRight);
 		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Charge, %"));
 		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yRight, tr ("Energy rate, W"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::xBottom, tr ("Time, s"));
 
 		auto setColor = [this] (QColor color, QwtPlot::Axis axis)
 		{
