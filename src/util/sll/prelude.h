@@ -116,7 +116,7 @@ namespace Util
 	}
 
 	template<template<typename...> class Container, typename F, typename... ContArgs>
-	auto Map (Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	auto Map (Container<ContArgs...> c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
