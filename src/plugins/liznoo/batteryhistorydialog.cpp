@@ -58,7 +58,7 @@ namespace Liznoo
 
 		Ui_.PercentPlot_->setAxisAutoScale (QwtPlot::xBottom, false);
 		Ui_.PercentPlot_->setAxisAutoScale (QwtPlot::yLeft, false);
-		Ui_.PercentPlot_->setAxisScale (QwtPlot::xBottom, 0, histSize);
+		Ui_.PercentPlot_->setAxisScale (QwtPlot::xBottom, 0, histSize * multiplier);
 		Ui_.PercentPlot_->setAxisScale (QwtPlot::yLeft, 0, 100);
 		Ui_.PercentPlot_->enableAxis (QwtPlot::yRight);
 		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Charge, %"));
@@ -156,7 +156,7 @@ namespace Liznoo
 					temperature [i] = bh.Temperature_ - 273.15;
 					setTemperature = bh.Temperature_ || setTemperature;
 
-					xdata [i] = i;
+					xdata [i] = i * TimeMultiplier_;
 					++i;
 				});
 		Percent_->setSamples (xdata, percents);
