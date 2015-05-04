@@ -95,22 +95,21 @@ namespace Util
 		}
 
 		template<typename T, typename F>
-		constexpr bool IsInvokableWithConstImpl (const F& f, decltype (f (std::declval<const T&> ()))*)
+		constexpr bool IsInvokableWithConstImpl (typename std::result_of<F (const T&)>::type*)
 		{
 			return true;
 		}
 
 		template<typename T, typename F>
-		constexpr bool IsInvokableWithConstImpl (const F&, ...)
+		constexpr bool IsInvokableWithConstImpl (...)
 		{
-			static_assert (std::is_enum<F>::value, "foo");
 			return false;
 		}
 
 		template<typename T, typename F>
-		constexpr bool IsInvokableWithConst (const F& f)
+		constexpr bool IsInvokableWithConst ()
 		{
-			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (f, 0);
+			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (0);
 		}
 	}
 
