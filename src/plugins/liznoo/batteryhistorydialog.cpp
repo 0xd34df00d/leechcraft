@@ -34,6 +34,7 @@
 #include <qwt_curve_fitter.h>
 #include <qwt_legend.h>
 #include <qwt_dyngrid_layout.h>
+#include <qwt_scale_widget.h>
 
 #if QWT_VERSION >= 0x060100
 #include <qwt_plot_legenditem.h>
@@ -59,11 +60,26 @@ namespace Liznoo
 		Ui_.PercentPlot_->setAxisScale (QwtPlot::xBottom, 0, histSize);
 		Ui_.PercentPlot_->setAxisScale (QwtPlot::yLeft, 0, 100);
 		Ui_.PercentPlot_->enableAxis (QwtPlot::yRight);
-		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Percent"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Charge, %"));
 		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yRight, tr ("Energy rate, W"));
+
+		auto setColor = [this] (QColor color, QwtPlot::Axis axis)
+		{
+			const auto widget = Ui_.PercentPlot_->axisWidget (axis);
+			auto palette = widget->palette ();
+
+			const auto& prevColor = palette.color (QPalette::ColorRole::Text);
+			color.setRedF ((color.redF () + prevColor.redF ()) / 2);
+			color.setGreenF ((color.greenF () + prevColor.greenF ()) / 2);
+			color.setBlueF ((color.blueF () + prevColor.blueF ()) / 2);
+			palette.setColor (QPalette::ColorRole::Text, color);
+
+			widget->setPalette (palette);
+		};
 
 		QColor percentColor (Qt::blue);
 		Percent_->setPen (QPen (percentColor));
+		setColor (percentColor, QwtPlot::yLeft);
 		percentColor.setAlpha (20);
 		Percent_->setBrush (percentColor);
 
@@ -72,6 +88,7 @@ namespace Liznoo
 
 		QColor energyColor (Qt::red);
 		Energy_->setPen (QPen (energyColor));
+		setColor (energyColor, QwtPlot::yRight);
 		energyColor.setAlpha (20);
 		Energy_->setBrush (energyColor);
 
