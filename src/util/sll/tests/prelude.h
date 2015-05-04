@@ -43,7 +43,11 @@ namespace Util
 		void testInvokableWithNonConst ();
 
 		void testMapList ();
+
 		void testMapMap ();
+		void testMapMapMutatingVoid ();
+		void testMapMapNonMutatingVoid ();
+		void testMapMapNonMutatingVoidConst ();
 
 		void testMapMember ();
 		void testMapMemberFunction ();
