@@ -93,6 +93,25 @@ namespace Util
 		{
 			result.insert (std::forward<T> (val));
 		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConstImpl (const F& f, decltype (f (std::declval<const T&> ()))*)
+		{
+			return true;
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConstImpl (const F&, ...)
+		{
+			static_assert (std::is_enum<F>::value, "foo");
+			return false;
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConst (const F& f)
+		{
+			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (f, 0);
+		}
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
