@@ -171,7 +171,7 @@ namespace LeechCraft
 			return;
 		}
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		const auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookTabSetText (proxy, index,
 				Core::Instance ().GetRootWindowsManager ()->GetWindowIndex (Window_));
 		if (proxy->IsCancelled ())
