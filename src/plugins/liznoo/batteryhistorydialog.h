@@ -49,8 +49,10 @@ namespace Liznoo
 		QwtPlotCurve *Percent_;
 		QwtPlotCurve *Energy_;
 		QwtPlotCurve *Temperature_;
+
+		const double TimeMultiplier_;
 	public:
-		BatteryHistoryDialog (int, QWidget* = 0);
+		BatteryHistoryDialog (int size, double multiplier, QWidget* = 0);
 
 		void UpdateHistory (const QLinkedList<BatteryHistory>&, const BatteryInfo&);
 	};

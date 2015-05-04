@@ -47,11 +47,12 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	BatteryHistoryDialog::BatteryHistoryDialog (int histSize, QWidget *parent)
-	: QDialog (parent)
-	, Percent_ (new QwtPlotCurve (tr ("Percentage")))
-	, Energy_ (new QwtPlotCurve (tr ("Energy rate")))
-	, Temperature_ (new QwtPlotCurve (tr ("Temperature")))
+	BatteryHistoryDialog::BatteryHistoryDialog (int histSize, double multiplier, QWidget *parent)
+	: QDialog { parent }
+	, Percent_ { new QwtPlotCurve { tr ("Percentage") } }
+	, Energy_ { new QwtPlotCurve { tr ("Energy rate") } }
+	, Temperature_ { new QwtPlotCurve { tr ("Temperature") } }
+	, TimeMultiplier_ { multiplier }
 	{
 		Ui_.setupUi (this);
 

@@ -435,7 +435,7 @@ namespace Liznoo
 			return;
 		}
 
-		auto dialog = new BatteryHistoryDialog (HistSize);
+		auto dialog = new BatteryHistoryDialog (HistSize, UpdateMsecs / 1000.);
 		dialog->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		Battery2Dialog_ [id] = dialog;
