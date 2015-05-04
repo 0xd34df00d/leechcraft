@@ -78,6 +78,7 @@ namespace LeechCraft
 namespace Liznoo
 {
 	const int HistSize = 300;
+	const auto UpdateMsecs = 3000;
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -132,7 +133,7 @@ namespace Liznoo
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleUpdateHistory ()));
-		battTimer->start (3000);
+		battTimer->start (UpdateMsecs);
 
 		Suspend_ = new QAction (tr ("Suspend"), this);
 		connect (Suspend_,
