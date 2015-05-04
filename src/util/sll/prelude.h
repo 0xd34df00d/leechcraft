@@ -140,6 +140,13 @@ namespace Util
 			Invoke (f, t);
 	}
 
+	template<template<typename...> class Container, typename F, typename... ContArgs>
+	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	{
+		auto copy = c;
+		Map (copy, f);
+	}
+
 #ifndef USE_CPP14
 	template<typename F>
 	QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> Map (const QStringList& c, F f)
