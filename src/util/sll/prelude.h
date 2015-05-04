@@ -106,7 +106,8 @@ namespace Util
 	}
 
 	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) -> WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>
+	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
 	{
 		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
 		for (auto&& t : c)
