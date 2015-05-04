@@ -297,7 +297,9 @@ namespace Util
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
 		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
-		plot.resize (rect.size ());
+
+		if (plot.size () != rect.size ())
+			plot.resize (rect.size ());
 
 		auto setPaletteColor = [&plot] (const QColor& color, QPalette::ColorRole role)
 		{
