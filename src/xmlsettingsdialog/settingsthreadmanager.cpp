@@ -36,8 +36,8 @@
 namespace LeechCraft
 {
 	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ (new QThread (this))
-	, Worker_ (new SettingsThread)
+	: Thread_ { new QThread { this } }
+	, Worker_ { std::make_shared<SettingsThread> () }
 	{
 		Thread_->start (QThread::IdlePriority);
 		Worker_->moveToThread (Thread_);
@@ -45,7 +45,6 @@ namespace LeechCraft
 
 	SettingsThreadManager::~SettingsThreadManager ()
 	{
-		delete Worker_;
 		Thread_->quit ();
 
 		if (Thread_->isRunning () && !Thread_->wait (1000))
