@@ -87,7 +87,7 @@ namespace Liznoo
 		QColor percentColor (Qt::blue);
 		Percent_->setPen (QPen (percentColor));
 		setColor (percentColor, QwtPlot::yLeft);
-		percentColor.setAlpha (20);
+		percentColor.setAlpha (40);
 		Percent_->setBrush (percentColor);
 
 		Percent_->setRenderHint (QwtPlotItem::RenderAntialiased);
@@ -96,7 +96,7 @@ namespace Liznoo
 		QColor energyColor (Qt::red);
 		Energy_->setPen (QPen (energyColor));
 		setColor (energyColor, QwtPlot::yRight);
-		energyColor.setAlpha (20);
+		energyColor.setAlpha (40);
 		Energy_->setBrush (energyColor);
 
 		Energy_->setRenderHint (QwtPlotItem::RenderAntialiased);
