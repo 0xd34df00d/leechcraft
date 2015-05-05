@@ -47,7 +47,7 @@ namespace LeechCraft
 	{
 		Thread_->quit ();
 
-		if (Thread_->isRunning () && !Thread_->wait (1000))
+		if (Thread_->isRunning () && !Thread_->wait (10000))
 			Thread_->terminate ();
 	}
 
