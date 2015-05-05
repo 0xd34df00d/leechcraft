@@ -59,7 +59,5 @@ namespace Util
 
 		void Add (Util::BaseSettingsManager*,
 				const QString& name, const QVariant& value);
-
-		void Flush (Util::BaseSettingsManager*);
 	};
 }
