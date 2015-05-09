@@ -441,10 +441,13 @@ namespace Snails
 				msg->SetAddresses (type, addrs);
 			}
 			else
+			{
+				const auto fieldPtr = field.get ();
 				qWarning () << "no"
 						<< static_cast<int> (type)
 						<< "data: cannot cast to mailbox list"
-						<< typeid (*field).name ();
+						<< typeid (*fieldPtr).name ();
+			}
 		};
 
 		try
