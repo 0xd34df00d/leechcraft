@@ -70,10 +70,12 @@ namespace Snails
 				this,
 				SLOT (handleProgress (size_t, size_t)));
 
-		QList<QStandardItem*> row;
-		row << new QStandardItem (pl->GetContext ());
-		row << new QStandardItem (tr ("Running..."));
-		row << new QStandardItem (QString (""));
+		const QList<QStandardItem*> row
+		{
+			new QStandardItem { pl->GetContext () },
+			new QStandardItem { tr ("Running") },
+			new QStandardItem { {} }
+		};
 		Model_->appendRow (row);
 
 		Listener2Row_ [pl] = row.last ();
