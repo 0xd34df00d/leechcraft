@@ -76,6 +76,8 @@ namespace Snails
 			new QStandardItem { tr ("Running") },
 			new QStandardItem { {} }
 		};
+		for (const auto item : row)
+			item->setEditable (false);
 		Model_->appendRow (row);
 
 		Listener2Row_ [pl] = row.last ();
