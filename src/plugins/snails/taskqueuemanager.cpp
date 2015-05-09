@@ -32,6 +32,8 @@
 #include "accountthreadworker.h"
 #include "concurrentexceptions.h"
 
+Q_DECLARE_METATYPE (QList<QByteArray>)
+
 namespace LeechCraft
 {
 namespace Snails
@@ -67,8 +69,71 @@ namespace Snails
 				left.Args_ == right.Args_;
 	}
 
+	namespace
+	{
+		TaskQueueManager::MaybeMergeResult MergeSetReadStatus (const QList<TaskQueueItem>& list,
+				const TaskQueueItem& item)
+		{
+			if (item.Method_ != "setReadStatus")
+				return {};
+
+			const auto& thisItems = item.Args_.value (1).GetAs<QList<QByteArray>> ();
+
+			if (thisItems.size () > 1)
+				return {};
+
+			const auto& thisItem = thisItems.value (0);
+
+			boost::optional<ValuedMetaArgument> readStatusArg;
+
+			for (int i = 0; i < list.size (); ++i)
+			{
+				const auto& existing = list.at (i);
+				if (existing.Method_ != item.Method_)
+					continue;
+
+				if (existing.Args_.value (2) != item.Args_.value (2))
+					continue;
+
+				const auto& existingIds = existing.Args_.value (1).GetAs<QList<QByteArray>> ();
+				if (!existingIds.contains (thisItem))
+					continue;
+
+				readStatusArg = existing.Args_.value (0);
+			}
+
+			if (readStatusArg)
+			{
+				if (readStatusArg == item.Args_.value (1))
+					return TaskQueueManager::MergeResult {};
+				else
+					return {};
+			}
+
+			for (int i = 0; i < list.size (); ++i)
+			{
+				const auto& existing = list.at (i);
+				if (existing.Method_ != item.Method_ ||
+						existing.Args_.value (0) != item.Args_.value (0))
+					continue;
+
+				auto args = existing.Args_;
+				args [1] = args.value (1).GetAs<QList<QByteArray>> () << thisItem;
+
+				return TaskQueueManager::MergeResult
+				{
+					{},
+					{ { i, args } }
+				};
+			}
+
+			return {};
+		}
+	}
+
 	QList<TaskQueueManager::TaskMerger> TaskQueueManager::Mergers_
 	{
+		&MergeSetReadStatus
 	};
 
 	TaskQueueManager::TaskQueueManager (AccountThreadWorker *worker)
