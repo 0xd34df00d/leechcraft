@@ -186,10 +186,6 @@ namespace LMP
 			return;
 
 		const auto proxy = aaProv->RequestAlbumArt (info);
-		connect (proxy->GetQObject (),
-				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-				this,
-				SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
 			[this, proxy]
