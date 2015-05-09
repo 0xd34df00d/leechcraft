@@ -30,6 +30,7 @@
 #include "progressmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/xpc/util.h>
 #include "account.h"
 
 namespace LeechCraft
@@ -78,6 +79,9 @@ namespace Snails
 		};
 		for (const auto item : row)
 			item->setEditable (false);
+
+		Util::InitJobHolderRow (row);
+
 		Model_->appendRow (row);
 
 		Listener2Row_ [pl] = row.last ();
@@ -97,6 +101,8 @@ namespace Snails
 		auto item = Listener2Row_.value (sender ());
 		if (!item)
 			return;
+
+		Util::SetJobHolderProgress (item, done, total);
 
 		item->setText (QString ("%1/%2").arg (done).arg (total));
 	}
