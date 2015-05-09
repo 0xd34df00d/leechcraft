@@ -77,7 +77,9 @@ namespace Snails
 			if (item.Method_ != "setReadStatus")
 				return {};
 
-			const auto& thisItems = item.Args_.value (1).GetAs<QList<QByteArray>> ();
+			using SetReadStatus = AccountThreadWorker::Args::SetReadStatus;
+
+			const auto& thisItems = item.Args_ [SetReadStatus::Ids].GetAs<QList<QByteArray>> ();
 
 			if (thisItems.size () > 1)
 				return {};
@@ -92,19 +94,19 @@ namespace Snails
 				if (existing.Method_ != item.Method_)
 					continue;
 
-				if (existing.Args_.value (2) != item.Args_.value (2))
+				if (existing.Args_ [SetReadStatus::Folder] != item.Args_ [SetReadStatus::Folder])
 					continue;
 
-				const auto& existingIds = existing.Args_.value (1).GetAs<QList<QByteArray>> ();
+				const auto& existingIds = existing.Args_ [SetReadStatus::Ids].GetAs<QList<QByteArray>> ();
 				if (!existingIds.contains (thisItem))
 					continue;
 
-				readStatusArg = existing.Args_.value (0);
+				readStatusArg = existing.Args_ [SetReadStatus::Read];
 			}
 
 			if (readStatusArg)
 			{
-				if (readStatusArg == item.Args_.value (1))
+				if (readStatusArg == item.Args_ [SetReadStatus::Read])
 					return TaskQueueManager::MergeResult {};
 				else
 					return {};
@@ -114,11 +116,11 @@ namespace Snails
 			{
 				const auto& existing = list.at (i);
 				if (existing.Method_ != item.Method_ ||
-						existing.Args_.value (0) != item.Args_.value (0))
+						existing.Args_ [SetReadStatus::Read] != item.Args_ [SetReadStatus::Read])
 					continue;
 
 				auto args = existing.Args_;
-				args [1] = args.value (1).GetAs<QList<QByteArray>> () << thisItem;
+				args [SetReadStatus::Ids] = args [SetReadStatus::Ids].GetAs<QList<QByteArray>> () << thisItem;
 
 				return TaskQueueManager::MergeResult
 				{
