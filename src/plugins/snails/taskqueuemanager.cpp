@@ -67,6 +67,10 @@ namespace Snails
 				left.Args_ == right.Args_;
 	}
 
+	QList<TaskQueueManager::TaskMerger> TaskQueueManager::Mergers_
+	{
+	};
+
 	TaskQueueManager::TaskQueueManager (AccountThreadWorker *worker)
 	: ATW_ { worker }
 	{
@@ -75,6 +79,11 @@ namespace Snails
 				this,
 				SLOT (rotateTaskQueue ()),
 				Qt::QueuedConnection);
+	}
+
+	void TaskQueueManager::RegisterTaskMerger (const TaskMerger& merger)
+	{
+		Mergers_ << merger;
 	}
 
 	void TaskQueueManager::AddTasks (QList<TaskQueueItem> items)

@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <functional>
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QString>
 #include <QMutex>
@@ -81,7 +83,19 @@ namespace Snails
 		mutable QMutex ItemsMutex_;
 		QList<TaskQueueItem> Items_;
 	public:
+		struct MergeResult
+		{
+			QList<int> ToRemove_;
+			QList<QPair<int, QList<ValuedMetaArgument>>> ToUpdate_;
+		};
+		using MaybeMergeResult = boost::optional<MergeResult>;
+		using TaskMerger = std::function<MaybeMergeResult (QList<TaskQueueItem>, TaskQueueItem)>;
+	private:
+		static QList<TaskMerger> Mergers_;
+	public:
 		TaskQueueManager (AccountThreadWorker*);
+
+		static void RegisterTaskMerger (const TaskMerger&);
 
 		void AddTasks (QList<TaskQueueItem>);
 		bool HasItems () const;
