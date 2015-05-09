@@ -106,6 +106,8 @@ namespace Snails
 
 		void DebugPrint (QDebug&) const;
 	};
+
+	bool operator!= (const ValuedMetaArgument&, const ValuedMetaArgument&);
 }
 }
 
