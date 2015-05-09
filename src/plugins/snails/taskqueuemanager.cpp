@@ -157,8 +157,19 @@ namespace Snails
 				const TaskQueueItem& newItem, const QList<TaskQueueManager::TaskMerger>& mergers)
 		{
 			for (const auto& merger : mergers)
-				if (const auto result = merger (items, newItem))
-					return result;
+			{
+				try
+				{
+					if (const auto result = merger (items, newItem))
+						return result;
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to execute merger:"
+							<< e.what ();
+				}
+			}
 
 			return {};
 		}
