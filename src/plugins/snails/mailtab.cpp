@@ -830,6 +830,7 @@ namespace Snails
 			return;
 
 		CurrAcc_->SetReadStatus (false, GetSelectedIds (), MailModel_->GetCurrentFolder ());
+		ReadMarker_->SetCurrentMessage ({});
 	}
 
 	void MailTab::handleRemoveMsgs ()
