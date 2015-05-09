@@ -82,6 +82,7 @@ namespace LMP
 	private:
 		QStandardItem* FindAlbumItem (const QString&) const;
 
+		bool QueryReleaseImageLocal (const Media::AlbumInfo&) const;
 		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);
 		void SetAlbumImage (const QString&, const QUrl&) const;
 	private slots:

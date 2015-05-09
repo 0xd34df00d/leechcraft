@@ -60,6 +60,7 @@
 #include "util.h"
 #include "previewhandler.h"
 #include "stdartistactionsmanager.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -160,8 +161,30 @@ namespace LMP
 		return 0;
 	}
 
+	bool BioViewManager::QueryReleaseImageLocal (const Media::AlbumInfo& info) const
+	{
+		const auto coll = Core::Instance ().GetLocalCollection ();
+		const auto albumId = coll->FindAlbum (info.Artist_, info.Album_);
+		if (albumId == -1)
+			return false;
+
+		const auto& album = coll->GetAlbum (albumId);
+		if (!album)
+			return false;
+
+		const auto& path = album->CoverPath_;
+		if (path.isEmpty () || !QFile::exists (path))
+			return false;
+
+		SetAlbumImage (info.Album_, QUrl::fromLocalFile (path));
+		return true;
+	}
+
 	void BioViewManager::QueryReleaseImage (Media::IAlbumArtProvider *aaProv, const Media::AlbumInfo& info)
 	{
+		if (QueryReleaseImageLocal (info))
+			return;
+
 		const auto proxy = aaProv->RequestAlbumArt (info);
 		connect (proxy->GetQObject (),
 				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
