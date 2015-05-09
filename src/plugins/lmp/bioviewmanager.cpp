@@ -50,6 +50,7 @@
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -204,9 +205,7 @@ namespace LMP
 			item->setData (MakeTrackListTooltip (release.TrackInfos_),
 					DiscoModel::Roles::AlbumTrackListTooltip);
 
-			auto tracks = std::accumulate (release.TrackInfos_.begin (), release.TrackInfos_.end (),
-					decltype (release.TrackInfos_.value (0)) ());
-			Album2Tracks_ << tracks;
+			Album2Tracks_ << Util::Concat (release.TrackInfos_);
 
 			DiscoModel_->appendRow (item);
 
