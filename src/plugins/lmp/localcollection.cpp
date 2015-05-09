@@ -271,7 +271,7 @@ namespace LMP
 	int LocalCollection::FindArtist (const QString& artist) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
-				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
+				[&artist] (decltype (Artists_.front ()) item) { return !QString::compare (item.Name_, artist, Qt::CaseInsensitive); });
 		return artistPos == Artists_.end () ?
 			-1 :
 			artistPos->ID_;
@@ -280,7 +280,7 @@ namespace LMP
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
-				[&artist] (decltype (Artists_.front ()) item) { return item.Name_ == artist; });
+				[&artist] (decltype (Artists_.front ()) item) { return !QString::compare (item.Name_, artist, Qt::CaseInsensitive); });
 		if (artistPos == Artists_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -292,7 +292,7 @@ namespace LMP
 
 		const auto& albums = artistPos->Albums_;
 		auto albumPos = std::find_if (albums.begin (), albums.end (),
-				[&album] (decltype (albums.front ()) item) { return item->Name_ == album; });
+				[&album] (decltype (albums.front ()) item) { return !QString::compare (item->Name_, album, Qt::CaseInsensitive); });
 		if (albumPos == albums.end ())
 		{
 			qWarning () << Q_FUNC_INFO
