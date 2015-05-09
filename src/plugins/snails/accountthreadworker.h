@@ -79,6 +79,19 @@ namespace Snails
 		};
 	public:
 		AccountThreadWorker (bool, Account*);
+
+		struct Args
+		{
+			struct SetReadStatus
+			{
+				enum
+				{
+					Read,
+					Ids,
+					Folder
+				};
+			};
+		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
