@@ -83,7 +83,7 @@ namespace LMP
 		QStandardItem* FindAlbumItem (const QString&) const;
 
 		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);
-		void SetAlbumImage (const QString&, const QUrl&);
+		void SetAlbumImage (const QString&, const QUrl&) const;
 	private slots:
 		void handleBioReady ();
 		void handleDiscographyReady ();

@@ -187,7 +187,7 @@ namespace LMP
 		};
 	}
 
-	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img)
+	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const
 	{
 		auto item = FindAlbumItem (album);
 		if (!item)
