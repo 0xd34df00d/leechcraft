@@ -118,6 +118,12 @@ namespace Snails
 									{ return item.ID_ == other.ID_; }))
 					continue;
 
+				if (const auto& mergeCandidate = FindMergeCandidate (Items_, item, Mergers_))
+				{
+					Merge (*mergeCandidate);
+					continue;
+				}
+
 				const auto pos = std::lower_bound (Items_.begin (), Items_.end (),
 						item,
 						[] (const TaskQueueItem& left, const TaskQueueItem& right)
@@ -143,6 +149,17 @@ namespace Snails
 	{
 		QMutexLocker locker { &ItemsMutex_ };
 		return Items_.isEmpty () ? TaskQueueItem {} : Items_.takeLast ();
+	}
+
+	void TaskQueueManager::Merge (MergeResult merge)
+	{
+		for (const auto& pair : merge.ToUpdate_)
+			Items_ [pair.first].Args_ = pair.second;
+
+		std::sort (merge.ToRemove_.begin (), merge.ToRemove_.end ());
+		std::reverse (merge.ToRemove_.begin (), merge.ToRemove_.end ());
+		for (const auto index : merge.ToRemove_)
+			Items_.removeAt (index);
 	}
 
 	template<typename Ex>
