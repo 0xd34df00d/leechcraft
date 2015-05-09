@@ -86,6 +86,19 @@ namespace Snails
 		Mergers_ << merger;
 	}
 
+	namespace
+	{
+		TaskQueueManager::MaybeMergeResult FindMergeCandidate (const QList<TaskQueueItem>& items,
+				const TaskQueueItem& newItem, const QList<TaskQueueManager::TaskMerger>& mergers)
+		{
+			for (const auto& merger : mergers)
+				if (const auto result = merger (items, newItem))
+					return result;
+
+			return {};
+		}
+	}
+
 	void TaskQueueManager::AddTasks (QList<TaskQueueItem> items)
 	{
 		bool shouldRotateQueue = false;
