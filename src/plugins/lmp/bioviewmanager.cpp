@@ -160,6 +160,33 @@ namespace LMP
 		return 0;
 	}
 
+	void BioViewManager::QueryReleaseImage (Media::IAlbumArtProvider *aaProv, const Media::AlbumInfo& info)
+	{
+		const auto proxy = aaProv->RequestAlbumArt (info);
+		connect (proxy->GetQObject (),
+				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+				this,
+				SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, proxy]
+			{
+				const auto proxyObj = proxy->GetQObject ();
+				proxyObj->deleteLater ();
+
+				const auto& info = proxy->GetAlbumInfo ();
+				const auto& images = proxy->GetImageUrls ();
+				if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
+					return;
+
+				SetAlbumImage (info.Album_, images.first ());
+			},
+			proxy->GetQObject (),
+			SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+			this
+		};
+	}
+
 	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img)
 	{
 		auto item = FindAlbumItem (album);
@@ -209,29 +236,7 @@ namespace LMP
 
 			DiscoModel_->appendRow (item);
 
-			const auto proxy = aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
-			connect (proxy->GetQObject (),
-					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-					this,
-					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				[this, proxy] () -> void
-				{
-					const auto proxyObj = proxy->GetQObject ();
-					proxyObj->deleteLater ();
-
-					const auto& info = proxy->GetAlbumInfo ();
-					const auto& images = proxy->GetImageUrls ();
-					if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
-						return;
-
-					SetAlbumImage (info.Album_, images.first ());
-				},
-				proxy->GetQObject (),
-				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-				this
-			};
+			QueryReleaseImage (aaProv, { CurrentArtist_, release.Name_ });
 		}
 	}
 

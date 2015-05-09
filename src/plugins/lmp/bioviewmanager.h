@@ -45,6 +45,7 @@ class QStandardItem;
 namespace Media
 {
 	class IArtistBioFetcher;
+	class IAlbumArtProvider;
 	struct AlbumInfo;
 }
 
@@ -80,6 +81,8 @@ namespace LMP
 		void Request (Media::IArtistBioFetcher*, const QString&);
 	private:
 		QStandardItem* FindAlbumItem (const QString&) const;
+
+		void QueryReleaseImage (Media::IAlbumArtProvider*, const Media::AlbumInfo&);
 		void SetAlbumImage (const QString&, const QUrl&);
 	private slots:
 		void handleBioReady ();
