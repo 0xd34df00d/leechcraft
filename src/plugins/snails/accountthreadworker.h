@@ -41,6 +41,8 @@
 #include "message.h"
 #include "account.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Snails
@@ -58,6 +60,8 @@ namespace Snails
 		Q_OBJECT
 
 		Account * const A_;
+
+		QTimer * const NoopTimer_;
 
 		const bool IsListening_;
 
@@ -99,6 +103,8 @@ namespace Snails
 
 		void sendNoop ();
 	public slots:
+		void setNoopTimeout (int);
+
 		void flushSockets ();
 
 		void synchronize (const QList<QStringList>&, const QByteArray& last);

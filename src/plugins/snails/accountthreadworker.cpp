@@ -151,6 +151,7 @@ namespace Snails
 
 	AccountThreadWorker::AccountThreadWorker (bool isListening, Account *parent)
 	: A_ (parent)
+	, NoopTimer_ (new QTimer (this))
 	, IsListening_ (isListening)
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (new vmime::net::session ())
@@ -173,12 +174,11 @@ namespace Snails
 					this,
 					SLOT (handleMessagesChanged (QStringList, QList<int>)));
 
-		auto noopTimer = new QTimer { this };
-		connect (noopTimer,
+		connect (NoopTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (sendNoop ()));
-		noopTimer->start (60 * 1000);
+		NoopTimer_->start (60 * 1000);
 	}
 
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
@@ -881,6 +881,16 @@ namespace Snails
 	{
 		if (CachedStore_)
 			CachedStore_->noop ();
+	}
+
+	void AccountThreadWorker::setNoopTimeout (int timeout)
+	{
+		NoopTimer_->stop ();
+
+		if (timeout > NoopTimer_->interval ())
+			sendNoop ();
+
+		NoopTimer_->start (timeout);
 	}
 
 	void AccountThreadWorker::flushSockets ()
