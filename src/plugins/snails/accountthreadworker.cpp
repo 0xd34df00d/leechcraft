@@ -154,7 +154,7 @@ namespace Snails
 	, NoopTimer_ (new QTimer (this))
 	, IsListening_ (isListening)
 	, ChangeListener_ (new MessageChangeListener (this))
-	, Session_ (new vmime::net::session ())
+	, Session_ (vmime::make_shared<vmime::net::session> ())
 	, CachedFolders_ (2)
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
