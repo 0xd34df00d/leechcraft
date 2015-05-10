@@ -35,11 +35,15 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class Account;
+
 	class AccountLogger : public QObject
 	{
 		Q_OBJECT
+
+		Account * const Acc_;
 	public:
-		using QObject::QObject;
+		AccountLogger (Account*);
 
 		void Log (const QString& context, int connId, const QString& msg);
 	private slots:

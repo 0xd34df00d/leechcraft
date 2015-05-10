@@ -29,11 +29,18 @@
 
 #include "accountlogger.h"
 #include <QtDebug>
+#include "account.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
+	AccountLogger::AccountLogger (Account *acc)
+	: QObject { acc }
+	, Acc_ { acc }
+	{
+	}
+
 	void AccountLogger::Log (const QString& context, int connId, const QString& msg)
 	{
 		const auto& str = QString { "[%1] [%2]: %3" }
