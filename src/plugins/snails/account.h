@@ -49,6 +49,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class AccountLogger;
 	class AccountThread;
 	class AccountThreadWorker;
 	class AccountFolderManager;
@@ -62,6 +63,7 @@ namespace Snails
 		Q_OBJECT
 
 		friend class AccountThreadWorker;
+		AccountLogger * const Logger_;
 		AccountThread * const Thread_;
 		AccountThread * const MessageFetchThread_;
 		QMutex * const AccMutex_;
@@ -126,6 +128,8 @@ namespace Snails
 		QByteArray GetID () const;
 		QString GetName () const;
 		QString GetServer () const;
+
+		AccountLogger* GetLogger () const;
 
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;

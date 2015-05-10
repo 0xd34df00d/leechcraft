@@ -47,6 +47,7 @@
 #include "taskqueuemanager.h"
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
+#include "accountlogger.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -57,6 +58,7 @@ namespace Snails
 {
 	Account::Account (QObject *parent)
 	: QObject (parent)
+	, Logger_ (new AccountLogger (this))
 	, Thread_ (new AccountThread (true, this))
 	, MessageFetchThread_ (new AccountThread (false, this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
@@ -90,6 +92,11 @@ namespace Snails
 	QString Account::GetServer () const
 	{
 		return InHost_ + ':' + QString::number (InPort_);
+	}
+
+	AccountLogger* Account::GetLogger () const
+	{
+		return Logger_;
 	}
 
 	AccountFolderManager* Account::GetFolderManager () const
