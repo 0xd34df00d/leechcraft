@@ -15,10 +15,14 @@ set (SRCS
 	structures.cpp
 	)
 
+set (PLATFORM_LIBS)
 if (APPLE)
 	set (SRCS ${SRCS} macbackend.mm)
 elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
 	set (SRCS ${SRCS} linuxbackend.cpp)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
+	set (SRCS ${SRCS} freebsdbackend.cpp)
+	set (PLATFORM_LIBS kvm)
 else ()
 	message (STATUS "CpuLoad: unsupported platform")
 endif ()
@@ -36,6 +40,7 @@ add_library (leechcraft_cpuload SHARED
 target_link_libraries (leechcraft_cpuload
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
+	${PLATFORM_LIBS}
 	)
 install (TARGETS leechcraft_cpuload DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/cpuload DESTINATION ${LC_QML_DEST})
