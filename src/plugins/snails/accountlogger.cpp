@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "accountlogger.h"
+#include <QFile>
 #include <QtDebug>
+#include <QDir>
+#include <util/sys/paths.h>
 #include "account.h"
 
 namespace LeechCraft
@@ -56,7 +59,30 @@ namespace Snails
 
 	void AccountLogger::addLog (const QString& log)
 	{
-		qDebug () << Q_FUNC_INFO << log;
+		if (!Acc_->ShouldLogToFile ())
+			return;
+
+		if (!File_)
+		{
+			const auto& path = Util::CreateIfNotExists ("snails/logs")
+					.filePath (Acc_->GetName () + ".log");
+			File_ = std::make_shared<QFile> (path);
+			if (!File_->open (QIODevice::WriteOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open"
+						<< path
+						<< "for writing, error:"
+						<< File_->errorString ();
+				return;
+			}
+		}
+
+		if (File_->isOpen ())
+		{
+			File_->write (log.toUtf8 () + "\n");
+			File_->flush ();
+		}
 	}
 }
 }

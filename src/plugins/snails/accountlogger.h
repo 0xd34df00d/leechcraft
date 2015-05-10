@@ -29,7 +29,10 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
+
+class QFile;
 
 namespace LeechCraft
 {
@@ -42,6 +45,7 @@ namespace Snails
 		Q_OBJECT
 
 		Account * const Acc_;
+		std::shared_ptr<QFile> File_;
 	public:
 		AccountLogger (Account*);
 
