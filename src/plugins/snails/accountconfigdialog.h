@@ -103,6 +103,9 @@ namespace Snails
 
 		QStringList GetOutFolder () const;
 		void SetOutFolder (const QStringList&);
+
+		int GetKeepAliveInterval () const;
+		void SetKeepAliveInterval (int);
 	private slots:
 		void resetInPort ();
 		void rebuildFoldersToSyncLine ();
