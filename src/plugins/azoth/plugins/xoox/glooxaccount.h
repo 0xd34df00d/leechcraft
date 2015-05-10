@@ -52,6 +52,7 @@
 #include <interfaces/azoth/iregmanagedaccount.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include <interfaces/azoth/isupportlastactivity.h>
+#include <interfaces/azoth/ihaveblacklists.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
@@ -102,6 +103,7 @@ namespace Xoox
 					   , public ISupportLastActivity
 					   , public IRegManagedAccount
 					   , public IHaveServerHistory
+					   , public IHaveBlacklists
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -122,6 +124,7 @@ namespace Xoox
 				LeechCraft::Azoth::ISupportLastActivity
 				LeechCraft::Azoth::IRegManagedAccount
 				LeechCraft::Azoth::IHaveServerHistory
+				LeechCraft::Azoth::IHaveBlacklists
 			)
 
 #ifdef ENABLE_MEDIACALLS
@@ -236,6 +239,10 @@ namespace Xoox
 		QAbstractItemModel* GetServerContactsModel () const;
 		void FetchServerHistory (const QModelIndex&, const QByteArray&, int);
 		DefaultSortParams GetSortParams () const;
+
+		// IHaveBlacklists
+		bool SupportsBlacklists () const;
+		void SuggestToBlacklist (const QList<ICLEntry*>&);
 
 #ifdef ENABLE_CRYPT
 		// ISupportPGP

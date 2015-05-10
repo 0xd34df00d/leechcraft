@@ -49,6 +49,7 @@
 #include <QScrollBar>
 #include <QShortcut>
 #include <QWidgetAction>
+#include <QTreeView>
 #include <QUrl>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -67,6 +68,7 @@
 #include "interfaces/monocle/isearchabledocument.h"
 #include "interfaces/monocle/isupportpainting.h"
 #include "interfaces/monocle/iknowfileextensions.h"
+#include "interfaces/monocle/ihaveoptionalcontent.h"
 #include "core.h"
 #include "pagegraphicsitem.h"
 #include "filewatcher.h"
@@ -118,6 +120,7 @@ namespace Monocle
 	, TOCWidget_ (new TOCWidget ())
 	, BMWidget_ (new BookmarksWidget (this))
 	, ThumbsWidget_ (new ThumbsWidget ())
+	, OptContentsWidget_ (new QTreeView)
 	, MouseMode_ (MouseMode::Move)
 	, SaveStateScheduled_ (false)
 	, Onload_ ({ -1, 0, 0 })
@@ -164,6 +167,8 @@ namespace Monocle
 				mgr->GetIcon ("view-pim-notes"), tr ("Annotations"));
 		dockTabWidget->addTab (SearchTabWidget_,
 				mgr->GetIcon ("edit-find"), tr ("Search"));
+		dockTabWidget->addTab (OptContentsWidget_,
+				mgr->GetIcon ("configure"), tr ("Optional contents"));
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
@@ -927,6 +932,11 @@ namespace Monocle
 		BMWidget_->HandleDoc (CurrentDoc_);
 		ThumbsWidget_->HandleDoc (CurrentDoc_);
 		SearchTabWidget_->HandleDoc (CurrentDoc_);
+
+		if (const auto ihoc = qobject_cast<IHaveOptionalContent*> (docObj))
+			OptContentsWidget_->setModel (ihoc->GetOptContentModel ());
+		else
+			OptContentsWidget_->setModel (nullptr);
 
 		FindAction_->setEnabled (qobject_cast<ISearchableDocument*> (docObj));
 

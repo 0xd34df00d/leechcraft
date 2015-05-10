@@ -28,10 +28,22 @@
  **********************************************************************/
 
 #include "settingsthread.h"
+
+#ifndef Q_OS_WIN32
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/file.h>
+#include <fcntl.h>
+#include <unistd.h>
+#endif
+
 #include <QMutexLocker>
+#include <QFile>
 #include <QTimer>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include "basesettingsmanager.h"
 
 namespace LeechCraft
@@ -53,18 +65,89 @@ namespace LeechCraft
 		Pendings_ [bsm].push_back ({ name, value });
 	}
 
-	void SettingsThread::Flush (Util::BaseSettingsManager *bsm)
+	namespace
 	{
+		class FlushRAII
 		{
-			QMutexLocker l { &Mutex_ };
-			if (!Pendings_.contains (bsm))
-				return;
-		}
+			Util::DefaultScopeGuard SyncGuard_;
+		public:
+			FlushRAII (const QString& name)
+			{
+#ifndef Q_OS_WIN32
+				const auto fd = open (name.toUtf8 ().constData (), O_WRONLY | O_APPEND);
+				const auto closeGuard = Util::MakeScopeGuard ([fd] { close (fd); });
 
-		QMetaObject::invokeMethod (this,
-				"flushSync",
-				Qt::BlockingQueuedConnection,
-				Q_ARG (Util::BaseSettingsManager*, bsm));
+				struct flock fl;
+				fl.l_whence = SEEK_SET;
+				fl.l_start = 0;
+				fl.l_len = 0;
+				fl.l_type = F_WRLCK;
+				if (fcntl (fd, F_SETLKW, &fl))
+					throw std::runtime_error
+					{
+						QString { "cannot lock the settings file %1: %2 (%3)" }
+								.arg (name)
+								.arg (strerror (errno))
+								.arg (errno)
+								.toStdString ()
+					};
+
+				const auto& backup = name + ".bak";
+#if 0
+				if (rename (name.toUtf8 ().constData (), backup.toUtf8 ().constData ()))
+					throw std::runtime_error
+					{
+						QString { "cannot rename %1 to %2: %3 (%4)" }
+								.arg (name)
+								.arg (backup)
+								.arg (strerror (errno))
+								.arg (errno)
+								.toStdString ()
+					};
+#else
+				QFile nameFile { name };
+				if (!nameFile.copy (backup))
+					throw std::runtime_error
+					{
+						QString { "cannot copy %1 to %2: %3 (%4)" }
+								.arg (name)
+								.arg (backup)
+								.arg (nameFile.errorString ())
+								.arg (nameFile.error ())
+								.toStdString ()
+					};
+#endif
+
+				SyncGuard_ = Util::MakeScopeGuard ([name, backup]
+						{
+							const auto fd = open (name.toUtf8 ().constData (), O_WRONLY | O_APPEND);
+							if (fd == -1)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "cannot open(2) settings file"
+										<< name
+										<< "; error:"
+										<< strerror (errno);
+								return;
+							}
+
+							if (fsync (fd))
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "cannot fsync(2) backup file"
+										<< name
+										<< "; error:"
+										<< strerror (errno);
+								return;
+							}
+
+							if (!QFile::remove (backup))
+								qWarning () << Q_FUNC_INFO
+										<< "oops! cannot remove backup";
+						});
+#endif
+			}
+		};
 	}
 
 	void SettingsThread::saveScheduled ()
@@ -83,14 +166,5 @@ namespace LeechCraft
 			for (const auto& p : pair.second)
 				s->setValue (p.first, p.second);
 		}
-	}
-
-	void SettingsThread::flushSync (Util::BaseSettingsManager *bsm)
-	{
-		const auto settings = bsm->GetSettings ();
-
-		QMutexLocker l { &Mutex_ };
-		for (const auto& p : Pendings_.take (bsm))
-			settings->setValue (p.first, p.second);
 	}
 }

@@ -93,7 +93,7 @@ namespace KnowHow
 
 	void TipDialog::ShowForIdx (int idx)
 	{
-		const QString& tip = GetTipByID (idx);
+		auto tip = GetTipByID (idx);
 		if (tip.isEmpty () && !idx)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -107,24 +107,24 @@ namespace KnowHow
 		}
 
 		XmlSettingsManager::Instance ().setProperty ("StdTipIndex", idx);
-		Ui_.TipEdit_->setText (tip);
+
+		tip.replace ('\n', "<br/>");
+		Ui_.TipEdit_->setHtml (tip);
 	}
 
 	QString TipDialog::GetTipByID (int idx)
 	{
-		const QString& numIdx = QString::number (idx);
+		const auto& tips = Doc_->firstChildElement ().elementsByTagName ("tip");
+		const auto count = tips.count ();
 
-		QDomElement elem = Doc_->firstChildElement ().firstChildElement ("tip");
-		while (!elem.isNull ())
-		{
-			if (elem.attribute ("id") == numIdx)
-				break;
+		auto tipIdx = idx % count;
+		if (tipIdx < 0)
+			tipIdx += count;
 
-			elem = elem.nextSiblingElement ("tip");
-		}
+		const auto& elem = tips.at (tipIdx).toElement ();
 
 		if (elem.isNull ())
-			return QString ();
+			return {};
 
 		return elem.text ().trimmed ();
 	}
@@ -136,14 +136,11 @@ namespace KnowHow
 		ShowForIdx (idx);
 	}
 
-	void TipDialog::on_Backward__released()
+	void TipDialog::on_Backward__released ()
 	{
 		const int idx = XmlSettingsManager::Instance ()
 				.Property ("StdTipIndex", 1).toInt () - 1;
-		if (idx < 0)
-			return;
-
-		ShowForIdx (0);
+		ShowForIdx (idx);
 	}
 
 	void TipDialog::on_DontShow__stateChanged ()

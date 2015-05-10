@@ -88,16 +88,16 @@ namespace HttStream
 				const QByteArray& instanceId, IPath *path);
 		~HttpStreamFilter ();
 
-		QByteArray GetEffectId () const;
-		QByteArray GetInstanceId () const;
-		IFilterConfigurator* GetConfigurator () const;
+		QByteArray GetEffectId () const override;
+		QByteArray GetInstanceId () const override;
+		IFilterConfigurator* GetConfigurator () const override;
 
 		void SetQuality (double);
 		void SetAddress (const QString&, int);
 
 		void HandleRemoved (int, int);
 	protected:
-		GstElement* GetElement () const;
+		GstElement* GetElement () const override;
 		void PostAdd (IPath*) override;
 	private:
 		void CreatePad ();

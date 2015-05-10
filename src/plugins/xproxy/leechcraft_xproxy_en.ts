@@ -132,102 +132,122 @@
 <context>
     <name>LeechCraft::XProxy::ProxiesConfigWidget</name>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="57"/>
+        <location filename="proxiesconfigwidget.cpp" line="59"/>
         <source>caching HTTP</source>
         <translation>caching HTTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="60"/>
+        <location filename="proxiesconfigwidget.cpp" line="62"/>
         <source>caching FTP</source>
         <translation>caching FTP</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="63"/>
+        <location filename="proxiesconfigwidget.cpp" line="65"/>
         <source>no proxy</source>
         <translation>no proxy</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="66"/>
+        <location filename="proxiesconfigwidget.cpp" line="68"/>
         <source>other type</source>
         <translation>other type</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="98"/>
+        <location filename="proxiesconfigwidget.cpp" line="101"/>
         <source>Proxy type</source>
         <translation>Proxy type</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="99"/>
+        <location filename="proxiesconfigwidget.cpp" line="102"/>
         <source>Proxy target</source>
         <translation>Proxy target</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.cpp" line="100"/>
+        <location filename="proxiesconfigwidget.cpp" line="103"/>
         <source>User</source>
         <translation>User</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.cpp" line="171"/>
+        <location filename="proxiesconfigwidget.cpp" line="209"/>
+        <source>The specified proxy already exists. Do you want to change the parameters of the new one?</source>
+        <translation>The specified proxy already exists. Do you want to change the parameters of the new one?</translation>
     </message>
 </context>
 <context>
     <name>ProxiesConfigWidget</name>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="79"/>
-        <source>Host:</source>
-        <translation>Host:</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="92"/>
-        <source>Port:</source>
-        <translation>Port:</translation>
-    </message>
-    <message>
         <location filename="proxiesconfigwidget.ui" line="28"/>
-        <source>Proxy</source>
-        <translation>Proxy</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="40"/>
-        <source>Type:</source>
-        <translation>Type:</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="71"/>
-        <source>None</source>
-        <translation>None</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="102"/>
-        <source>User:</source>
-        <translation>User:</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="115"/>
-        <source>Password:</source>
-        <translation>Password:</translation>
-    </message>
-    <message>
-        <location filename="proxiesconfigwidget.ui" line="148"/>
         <source>Add proxy</source>
+        <oldsource>Proxy</oldsource>
         <translation>Add proxy</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="158"/>
-        <source>Update proxy</source>
-        <translation>Update proxy</translation>
+        <location filename="proxiesconfigwidget.ui" line="41"/>
+        <source>Edit proxy</source>
+        <translation>Edit proxy</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="168"/>
+        <location filename="proxiesconfigwidget.ui" line="54"/>
         <source>Remove proxy</source>
         <translation>Remove proxy</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="178"/>
+        <location filename="proxiesconfigwidget.ui" line="74"/>
+        <source>Move up</source>
+        <translation>Move up</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.ui" line="87"/>
+        <source>Move down</source>
+        <translation>Move down</translation>
+    </message>
+    <message>
+        <location filename="proxiesconfigwidget.ui" line="107"/>
         <source>Edit URLs</source>
         <translation>Edit URLs</translation>
     </message>
     <message>
-        <location filename="proxiesconfigwidget.ui" line="188"/>
+        <location filename="proxiesconfigwidget.ui" line="120"/>
         <source>Edit scripts</source>
         <translation>Edit scripts</translation>
+    </message>
+</context>
+<context>
+    <name>ProxyConfigDialog</name>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="14"/>
+        <source>Proxy</source>
+        <translation>Proxy</translation>
+    </message>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="20"/>
+        <source>Type:</source>
+        <translation>Type:</translation>
+    </message>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="51"/>
+        <source>None</source>
+        <translation>None</translation>
+    </message>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="59"/>
+        <source>Host:</source>
+        <translation>Host:</translation>
+    </message>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="72"/>
+        <source>Port:</source>
+        <translation>Port:</translation>
+    </message>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="95"/>
+        <source>User:</source>
+        <translation>User:</translation>
+    </message>
+    <message>
+        <location filename="proxyconfigdialog.ui" line="108"/>
+        <source>Password:</source>
+        <translation>Password:</translation>
     </message>
 </context>
 <context>

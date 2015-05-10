@@ -79,6 +79,19 @@ namespace Snails
 		};
 	public:
 		AccountThreadWorker (bool, Account*);
+
+		struct Args
+		{
+			struct SetReadStatus
+			{
+				enum
+				{
+					Read,
+					Ids,
+					Folder
+				};
+			};
+		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
@@ -115,7 +128,6 @@ namespace Snails
 		void sendMessage (const LeechCraft::Snails::Message_ptr&);
 	signals:
 		void error (const QString&);
-		void gotEntity (const LeechCraft::Entity&);
 		void gotProgressListener (ProgressListener_g_ptr);
 
 		void gotMsgHeaders (QList<Message_ptr>, QStringList);

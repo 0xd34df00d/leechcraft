@@ -212,7 +212,7 @@ namespace LeechCraft
 		return pos == Windows_.end () ? -1 : std::distance (Windows_.begin (), pos);
 	}
 
-	QMainWindow* RootWindowsManager::GetMainWindow (int index) const
+	MainWindow* RootWindowsManager::GetMainWindow (int index) const
 	{
 		return Windows_ [index].Window_;
 	}

@@ -29,6 +29,11 @@
 
 #include "autoresizemixin.h"
 #include <QWidget>
+
+#if QT_VERSION >= 0x050000
+#include <QWindow>
+#endif
+
 #include <QResizeEvent>
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
@@ -40,13 +45,24 @@ namespace Util
 	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWidget *view)
 	: QObject (view)
 	, OrigPoint_ (point)
-	, View_ (view)
+	, Mover_ ([view] (const QPoint& pos) { view->move (pos); })
 	, Rect_ (size)
 	{
-		View_->installEventFilter (this);
-
-		Refit (View_->size ());
+		view->installEventFilter (this);
+		Refit (view->size ());
 	}
+
+#if QT_VERSION >= 0x050000
+	AutoResizeMixin::AutoResizeMixin (const QPoint& point, RectGetter_f size, QWindow *window)
+	: QObject (window)
+	, OrigPoint_ (point)
+	, Mover_ ([window] (const QPoint& pos) { window->setPosition (pos); })
+	, Rect_ (size)
+	{
+		window->installEventFilter (this);
+		Refit (window->size ());
+	}
+#endif
 
 	bool AutoResizeMixin::eventFilter (QObject*, QEvent *event)
 	{
@@ -60,8 +76,7 @@ namespace Util
 
 	void AutoResizeMixin::Refit (const QSize& size)
 	{
-		const auto& pos = FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap);
-		View_->move (pos);
+		Mover_ (FitRect (OrigPoint_, size, Rect_ (), Util::FitFlag::NoOverlap));
 	}
 }
 }

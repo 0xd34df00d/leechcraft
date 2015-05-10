@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <util/sll/eithercont.h>
 #include "structures.h"
 
 namespace LeechCraft
@@ -43,7 +44,8 @@ namespace XProxy
 	class ProxiesStorage : public QObject
 	{
 		const ScriptsManager * const ScriptsMgr_;
-		QMap<Proxy, QList<ReqTarget>> Proxies_;
+
+		QList<QPair<Proxy, QList<ReqTarget>>> Proxies_;
 		QMap<Proxy, QList<UrlListScript*>> Scripts_;
 	public:
 		ProxiesStorage (const ScriptsManager*, QObject* = nullptr);
@@ -63,8 +65,20 @@ namespace XProxy
 		QList<UrlListScript*> GetScripts (const Proxy&) const;
 		void SetScripts (const Proxy&, const QList<UrlListScript*>&);
 
+		void Swap (int, int);
+
 		void LoadSettings ();
 		void SaveSettings () const;
+	private:
+		void EraseFromProxiesList (const Proxy&);
+
+		template<typename R = void>
+		R DoOnProxiesList (const Proxy&,
+				const Util::EitherCont<R (), R (decltype (Proxies_.begin ()))>&);
+
+		template<typename R = void>
+		R DoOnProxiesList (const Proxy&,
+				const Util::EitherCont<R (), R (decltype (Proxies_.constBegin ()))>&) const;
 	};
 }
 }

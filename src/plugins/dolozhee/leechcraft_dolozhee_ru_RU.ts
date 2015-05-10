@@ -183,27 +183,37 @@
 <context>
     <name>LeechCraft::Dolozhee::FinalPage</name>
     <message>
-        <location filename="finalpage.cpp" line="86"/>
+        <location filename="finalpage.cpp" line="98"/>
         <source>Sending %1...</source>
         <translation>Отправка %1...</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="170"/>
+        <location filename="finalpage.cpp" line="194"/>
         <source>I&apos;m very sorry to say that, but seems like we&apos;re unable to handle your report at the time :(</source>
         <translation>Очень жаль это говорить, но похоже, что мы в настоящее время не можем обработать ваше сообщение :(</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="178"/>
+        <location filename="finalpage.cpp" line="180"/>
         <source>Report has been sent successfully. Thanks for your time!</source>
         <translation>Сообщение успешно отправлено. Спасибо за ваше время!</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="182"/>
+        <location filename="finalpage.cpp" line="92"/>
+        <source>Unable to upload %1.</source>
+        <translation>Невозможно загрузить %1.</translation>
+    </message>
+    <message>
+        <location filename="finalpage.cpp" line="107"/>
+        <source>Unable to upload %1, could not initiate uploading process.</source>
+        <translation>Невозможно загрузить %1, не удалось начать процесс загрузки.</translation>
+    </message>
+    <message>
+        <location filename="finalpage.cpp" line="184"/>
         <source>Your issue number is %1. You can view it here:</source>
         <translation>Номер вашего тикета — %1. Вы можете посмотреть его здесь:</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="184"/>
+        <location filename="finalpage.cpp" line="186"/>
         <source>You can also track it via an Atom feed reader:</source>
         <translation>Вы также можете отслеживать судьбу сообщения при помощи Atom-ленты:</translation>
     </message>
@@ -246,16 +256,11 @@
         <source>Issue reporter</source>
         <translation>Подготовка сообщения о проблеме</translation>
     </message>
-    <message>
-        <location filename="reportwizard.cpp" line="124"/>
-        <source>Invalid credentials</source>
-        <translation>Неправильные данные</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Dolozhee::UserStatusPage</name>
     <message>
-        <location filename="userstatuspage.cpp" line="60"/>
+        <location filename="userstatuspage.cpp" line="61"/>
         <source>Registering %1...</source>
         <translation>Регистрация %1...</translation>
     </message>

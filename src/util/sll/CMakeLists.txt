@@ -5,6 +5,8 @@ set (SLL_SRCS
 	regexp.cpp
 	slotclosure.cpp
 	urloperator.cpp
+	qtutil.cpp
+	urlaccessor.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
@@ -42,6 +44,7 @@ FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
-	AddUtilTest (sll_prelude tests/prelude.cpp UtilSllPreludeTest leechcraft-util-prelude${LC_LIBSUFFIX})
+	AddUtilTest (sll_futures tests/futures.cpp UtilSllFuturesTest leechcraft-util-sll${LC_LIBSUFFIX})
+	AddUtilTest (sll_prelude tests/prelude.cpp UtilSllPreludeTest leechcraft-util-sll${LC_LIBSUFFIX})
 	AddUtilTest (sll_stlize tests/stlize.cpp UtilSllStlizeTest leechcraft-util-sll${LC_LIBSUFFIX})
 endif ()

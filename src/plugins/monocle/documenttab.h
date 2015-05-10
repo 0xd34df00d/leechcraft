@@ -39,6 +39,7 @@
 #include "ui_documenttab.h"
 
 class QDockWidget;
+class QTreeView;
 
 namespace LeechCraft
 {
@@ -92,12 +93,13 @@ namespace Monocle
 		AnnManager *AnnManager_ = nullptr;
 		LinksManager *LinksManager_ = nullptr;
 
-		QDockWidget *DockWidget_;
-		TOCWidget *TOCWidget_;
-		BookmarksWidget *BMWidget_;
-		ThumbsWidget *ThumbsWidget_;
+		QDockWidget *DockWidget_ = nullptr;
+		TOCWidget *TOCWidget_ = nullptr;
+		BookmarksWidget *BMWidget_ = nullptr;
+		ThumbsWidget *ThumbsWidget_ = nullptr;
 		AnnWidget *AnnWidget_ = nullptr;
 		SearchTabWidget *SearchTabWidget_ = nullptr;
+		QTreeView *OptContentsWidget_ = nullptr;
 
 		IDocument_ptr CurrentDoc_;
 		QString CurrentDocPath_;
@@ -123,18 +125,18 @@ namespace Monocle
 	public:
 		DocumentTab (const TabClassInfo&, QObject*);
 
-		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs ();
-		void Remove ();
-		QToolBar* GetToolBar () const;
+		TabClassInfo GetTabClassInfo () const override;
+		QObject* ParentMultiTabs () override;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
 
-		QString GetTabRecoverName () const;
-		QIcon GetTabRecoverIcon () const;
-		QByteArray GetTabRecoverData () const;
+		QString GetTabRecoverName () const override;
+		QIcon GetTabRecoverIcon () const override;
+		QByteArray GetTabRecoverData () const override;
 
-		void FillMimeData (QMimeData*);
-		void HandleDragEnter (QDragMoveEvent*);
-		void HandleDrop (QDropEvent*);
+		void FillMimeData (QMimeData*) override;
+		void HandleDragEnter (QDragMoveEvent*) override;
+		void HandleDrop (QDropEvent*) override;
 
 		void RecoverState (const QByteArray&);
 
@@ -225,7 +227,7 @@ namespace Monocle
 		void changeTabName (QWidget*, const QString&);
 		void removeTab (QWidget*);
 
-		void tabRecoverDataChanged ();
+		void tabRecoverDataChanged () override;
 
 		void fileLoaded (const QString&);
 

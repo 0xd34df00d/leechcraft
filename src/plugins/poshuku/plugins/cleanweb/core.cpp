@@ -59,6 +59,9 @@
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
@@ -67,8 +70,6 @@
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QWebFrame*);
-Q_DECLARE_METATYPE (QPointer<QWebFrame>);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::HidingWorkerResult);
 
 namespace LeechCraft
 {
@@ -161,10 +162,7 @@ namespace CleanWeb
 				QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
 				if (rawLines.size ())
 					rawLines.removeAt (0);
-				QStringList lines;
-				std::transform (rawLines.begin (), rawLines.end (),
-						std::back_inserter (lines),
-						[] (const QString& t) { return t.trimmed (); });
+				const auto& lines = Util::Map (rawLines, std::mem_fn (&QString::trimmed));
 
 				Filter f;
 				std::for_each (lines.begin (), lines.end (), LineParser (&f));
@@ -177,17 +175,14 @@ namespace CleanWeb
 		}
 	};
 
-	Core::Core ()
-	: FlashOnClickPlugin_ (0)
-	, FlashOnClickWhitelist_ (new FlashOnClickWhitelist ())
-	, UserFilters_ (new UserFiltersModel (this))
+	Core::Core (const ICoreProxy_ptr& proxy)
+	: FlashOnClickWhitelist_ { new FlashOnClickWhitelist }
+	, UserFilters_ { new UserFiltersModel { proxy, this } }
+	, HeaderLabels_ { tr ("Name"), tr ("Last updated"), tr ("URL") }
+	, Proxy_ { proxy }
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
-		qRegisterMetaType<QPointer<QWebFrame>> ("QPointer<QWebFrame>");
 
-		HeaderLabels_ << tr ("Name")
-			<< tr ("Last updated")
-			<< tr ("URL");
 		try
 		{
 			Util::CreateIfNotExists ("cleanweb");
@@ -205,48 +200,20 @@ namespace CleanWeb
 		home.cd ("cleanweb");
 
 		const auto& infos = home.entryInfoList (QDir::Files | QDir::Readable);
-		QStringList paths;
-		for (const auto info : infos)
-			paths << info.absoluteFilePath ();
-		if (!paths.isEmpty ())
-		{
-			auto watcher = new QFutureWatcher<QList<Filter>> ();
-			connect (watcher,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleParsed ()));
-			const auto& future = QtConcurrent::run (ParseToFilters, paths);
-			watcher->setFuture (future);
-		}
+		const auto& paths = Util::Map (infos, std::mem_fn (&QFileInfo::absoluteFilePath));
 
-		connect (UserFilters_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
+		auto watcher = new QFutureWatcher<QList<Filter>> ();
+		connect (watcher,
+				SIGNAL (finished ()),
 				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
-		qRegisterMetaType<HidingWorkerResult> ("HidingWorkerResult");
+				SLOT (handleParsed ()));
+		const auto& future = QtConcurrent::run (ParseToFilters, paths);
+		watcher->setFuture (future);
 
 		connect (UserFilters_,
 				SIGNAL (filtersChanged ()),
 				this,
 				SLOT (regenFilterCaches ()));
-	}
-
-	Core& Core::Instance ()
-	{
-		static Core core;
-		return core;
-	}
-
-	void Core::Release ()
-	{
-		delete FlashOnClickWhitelist_;
-		delete FlashOnClickPlugin_;
-	}
-
-	void Core::SetProxy (ICoreProxy_ptr proxy)
-	{
-		Proxy_ = proxy;
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -369,10 +336,12 @@ namespace CleanWeb
 
 	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
 	{
-		QMetaObject::invokeMethod (this,
-				"handleFrameLayout",
-				Qt::QueuedConnection,
-				Q_ARG (QPointer<QWebFrame>, QPointer<QWebFrame> (frame)));
+		QPointer<QWebFrame> safeFrame { frame };
+		new Util::DelayedExecutor
+		{
+			[this, safeFrame] { HandleFrameLayout (safeFrame, false); },
+			0
+		};
 	}
 
 	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
@@ -404,11 +373,14 @@ namespace CleanWeb
 
 		qDebug () << "rejecting" << frame << reqUrl;
 		if (frame)
-			QMetaObject::invokeMethod (this,
-					"delayedRemoveElements",
-					Qt::QueuedConnection,
-					Q_ARG (QPointer<QWebFrame>, frame),
-					Q_ARG (QUrl, reqUrl));
+		{
+			QPointer<QWebFrame> safeFrame { frame };
+			new Util::DelayedExecutor
+			{
+				[this, safeFrame, reqUrl] { DelayedRemoveElements (safeFrame, reqUrl); },
+				0
+			};
+		}
 
 		const auto result = new Util::CustomNetworkReply (reqUrl, this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
@@ -435,16 +407,18 @@ namespace CleanWeb
 		auto url = error->url;
 		proxy->CancelDefault ();
 		proxy->SetReturnValue (true);
-		QMetaObject::invokeMethod (this,
-				"delayedRemoveElements",
-				Qt::QueuedConnection,
-				Q_ARG (QPointer<QWebFrame>, page->mainFrame ()),
-				Q_ARG (QUrl, url));
+
+		const QPointer<QWebFrame> safeFrame { page->mainFrame () };
+		new Util::DelayedExecutor
+		{
+			[this, safeFrame, url] { DelayedRemoveElements (safeFrame, url); },
+			0
+		};
 	}
 
 	void Core::HandleContextMenu (const QWebHitTestResult& r,
 			QWebView *view, QMenu *menu,
-			LeechCraft::Poshuku::WebViewCtxMenuStage stage)
+			WebViewCtxMenuStage stage)
 	{
 		QUrl iurl = r.imageUrl ();
 		if (stage == WVSAfterImage &&
@@ -466,8 +440,9 @@ namespace CleanWeb
 	FlashOnClickPlugin* Core::GetFlashOnClick ()
 	{
 		if (!FlashOnClickPlugin_)
-			FlashOnClickPlugin_ = new FlashOnClickPlugin (this);
-		return FlashOnClickPlugin_;
+			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (this);
+
+		return FlashOnClickPlugin_.get ();
 	}
 
 	FlashOnClickWhitelist* Core::GetFlashOnClickWhitelist ()
@@ -622,6 +597,9 @@ namespace CleanWeb
 	 */
 	bool Core::ShouldReject (const QNetworkRequest& req) const
 	{
+		if (!XmlSettingsManager::Instance ()->property ("EnableFiltering").toBool ())
+			return false;
+
 		if (!req.hasRawHeader ("referer"))
 			return false;
 
@@ -636,9 +614,13 @@ namespace CleanWeb
 		FilterOption::MatchObjects objs = FilterOption::MatchObject::All;
 		if (!acceptList.isEmpty ())
 		{
+#ifdef USE_CPP14
+			auto find = [&acceptList] (const auto& f)
+#else
 			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
+#endif
 			{
-				return std::find_if (acceptList.begin (), acceptList.end (), f) != acceptList.end ();
+				return std::any_of (acceptList.begin (), acceptList.end (), f);
 			};
 
 			if (find ([] (const QByteArray& arr) { return arr.startsWith ("image/"); }))
@@ -727,13 +709,12 @@ namespace CleanWeb
 		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
 		Filters_ << f;
 		endInsertRows ();
-
-		regenFilterCaches ();
 	}
 
 	void Core::Parse (const QString& filePath)
 	{
 		AddFilter (ParseToFilters ({ filePath }).first ());
+		regenFilterCaches ();
 	}
 
 	bool Core::Add (const QUrl& subscrUrl)
@@ -767,7 +748,7 @@ namespace CleanWeb
 		{
 			QString str = tr ("The subscription %1 was successfully added.")
 					.arg (subscrName);
-			emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 					str, PInfo_));
 		}
 		return result;
@@ -775,47 +756,46 @@ namespace CleanWeb
 
 	bool Core::Load (const QUrl& url, const QString& subscrName)
 	{
-		QDir home = QDir::home ();
+		auto home = QDir::home ();
 		home.cd (".leechcraft");
 		home.cd ("cleanweb");
 
-		QString name = QFileInfo (url.path ()).fileName ();
-		QString path = home.absoluteFilePath (name);
+		const auto& name = QFileInfo (url.path ()).fileName ();
+		const auto& path = home.absoluteFilePath (name);
 
-		LeechCraft::Entity e =
-			LeechCraft::Util::MakeEntity (url,
+		const auto& e = Util::MakeEntity (url,
 				path,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto iem = Proxy_->GetEntityManager ();
+		const auto& result = iem->DelegateEntity (e);
+		if (!result.Handler_)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "unable to delegate"
-				<< subscrName
-				<< url.toString ().toUtf8 ();
-			QString str = tr ("The subscription %1 wasn't delegated.")
+					<< "unable to delegate"
+					<< subscrName
+					<< url.toString ();
+
+			const auto& str = tr ("The subscription %1 wasn't delegated.")
 					.arg (subscrName);
-			emit gotEntity (Util::MakeNotification ("Poshuku CleanWeb",
+			iem->HandleEntity (Util::MakeNotification ("Poshuku CleanWeb",
 					str, PCritical_));
 			return false;
 		}
 
-		HandleProvider (pr);
-		PendingJob pj =
+		HandleProvider (result.Handler_);
+		PendingJob pj
 		{
 			path,
 			name,
 			subscrName,
 			url
 		};
-		PendingJobs_ [id] = pj;
+		PendingJobs_ [result.ID_] = pj;
 		return true;
 	}
 
@@ -914,6 +894,8 @@ namespace CleanWeb
 		for (const auto& f : result)
 			AddFilter (f);
 
+		regenFilterCaches ();
+
 		ReadSettings ();
 
 		QTimer::singleShot (0,
@@ -927,10 +909,10 @@ namespace CleanWeb
 				property ("Autoupdate").toBool ())
 			return;
 
-		QDateTime current = QDateTime::currentDateTime ();
+		const auto& current = QDateTime::currentDateTime ();
 		int days = XmlSettingsManager::Instance ()->
 			property ("UpdateInterval").toInt ();
-		Q_FOREACH (Filter f, Filters_)
+		for (const auto& f : Filters_)
 			if (f.SD_.LastDateTime_.daysTo (current) > days)
 				Load (f.SD_.URL_, f.SD_.Name_);
 	}
@@ -941,7 +923,7 @@ namespace CleanWeb
 			return;
 
 		PendingJob pj = PendingJobs_ [id];
-		SubscriptionData sd =
+		SubscriptionData sd
 		{
 			pj.URL_,
 			pj.Subscr_,
@@ -965,9 +947,12 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
-	void Core::handleFrameLayout (QPointer<QWebFrame> frame)
+	void Core::HandleFrameLayout (QPointer<QWebFrame> frame, bool asLoad)
 	{
 		if (!frame)
+			return;
+
+		if (!XmlSettingsManager::Instance ()->property ("EnableElementHiding").toBool ())
 			return;
 
 		const QUrl& frameUrl = frame->url ().isEmpty () ?
@@ -1009,17 +994,22 @@ namespace CleanWeb
 						return { frame, 0, sels };
 					}));
 
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		auto worker = [this, frame]
 		{
-			[this, frame] () -> void
-			{
-				for (auto childFrame : frame->childFrames ())
-					handleFrameLayout (childFrame);
-			},
-			frame,
-			SIGNAL (loadFinished (bool)),
-			frame
+			for (auto childFrame : frame->childFrames ())
+				HandleFrameLayout (childFrame, true);
 		};
+
+		worker ();
+
+		if (!asLoad)
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				worker,
+				frame,
+				SIGNAL (loadFinished (bool)),
+				frame
+			};
 	}
 
 	void Core::hidingElementsFound ()
@@ -1027,11 +1017,10 @@ namespace CleanWeb
 		auto watcher = dynamic_cast<QFutureWatcher<HidingWorkerResult>*> (sender ());
 		watcher->deleteLater ();
 
-		hideElementsChunk (watcher->result ());
-
+		HideElementsChunk (watcher->result ());
 	}
 
-	void Core::hideElementsChunk (HidingWorkerResult result)
+	void Core::HideElementsChunk (HidingWorkerResult result)
 	{
 		if (!result.Frame_)
 			return;
@@ -1056,10 +1045,11 @@ namespace CleanWeb
 		}
 
 		if (result.CurrentPos_ < result.Selectors_.size ())
-			QMetaObject::invokeMethod (this,
-					"hideElementsChunk",
-					Qt::QueuedConnection,
-					Q_ARG (HidingWorkerResult, result));
+			new Util::DelayedExecutor
+			{
+				[this, result] { HideElementsChunk (result); },
+				0
+			};
 	}
 
 	namespace
@@ -1084,7 +1074,7 @@ namespace CleanWeb
 		}
 	}
 
-	void Core::delayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
+	void Core::DelayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
 	{
 		if (!frame)
 			return;
@@ -1127,7 +1117,7 @@ namespace CleanWeb
 		ExceptionsCache_.clear ();
 		FilterItemsCache_.clear ();
 
-		QList<Filter> allFilters = Filters_;
+		auto allFilters = Filters_;
 		allFilters << UserFilters_->GetFilter ();
 
 		int exceptionsCount = 0;
@@ -1151,15 +1141,17 @@ namespace CleanWeb
 		for (const Filter& filter : allFilters)
 		{
 			for (const auto& item : filter.Exceptions_)
-				if (item->Option_.HideSelector_.isEmpty ())
+			{
+				if (!item->Option_.HideSelector_.isEmpty ())
+					continue;
+
+				lastExceptionsChunk << item;
+				if (lastExceptionsChunk.size () >= exChunkSize)
 				{
-					lastExceptionsChunk << item;
-					if (lastExceptionsChunk.size () >= exChunkSize)
-					{
-						ExceptionsCache_ << lastExceptionsChunk;
-						lastExceptionsChunk.clear ();
-					}
+					ExceptionsCache_ << lastExceptionsChunk;
+					lastExceptionsChunk.clear ();
 				}
+			}
 
 			for (const auto& item : filter.Filters_)
 			{
@@ -1176,9 +1168,9 @@ namespace CleanWeb
 		}
 
 		if (!lastItemsChunk.isEmpty ())
-			ExceptionsCache_ << lastItemsChunk;
+			FilterItemsCache_ << lastItemsChunk;
 		if (!lastExceptionsChunk.isEmpty ())
-			FilterItemsCache_ << lastExceptionsChunk;
+			ExceptionsCache_ << lastExceptionsChunk;
 	}
 }
 }

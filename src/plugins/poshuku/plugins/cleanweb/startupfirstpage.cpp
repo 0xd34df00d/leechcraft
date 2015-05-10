@@ -44,8 +44,9 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	StartupFirstPage::StartupFirstPage (QWidget *parent)
-	: QWizardPage (parent)
+	StartupFirstPage::StartupFirstPage (Core *core, QWidget *parent)
+	: QWizardPage { parent }
+	, Core_ { core }
 	{
 		Ui_.setupUi (this);
 	}
@@ -63,11 +64,11 @@ namespace CleanWeb
 		QList<QUrl> GetChildUrls (QWidget *w)
 		{
 			QList<QUrl> result;
-			Q_FOREACH (QCheckBox *cb, w->findChildren<QCheckBox*> ())
+			for (const auto cb : w->findChildren<QCheckBox*> ())
 				if (cb->isChecked ())
 					result << cb->property ("ListURL").value<QUrl> ();
 
-			Q_FOREACH (QRadioButton *but, w->findChildren<QRadioButton*> ())
+			for (const auto but : w->findChildren<QRadioButton*> ())
 				if (but->isChecked ())
 					result << but->property ("ListURL").value<QUrl> ();
 			return result;
@@ -78,17 +79,15 @@ namespace CleanWeb
 	{
 		QList<QUrl> urlsToAdd;
 
-		Q_FOREACH (QGroupBox *box, findChildren<QGroupBox*> ())
+		for (const auto box : findChildren<QGroupBox*> ())
 			if (box->isChecked ())
 			{
 				urlsToAdd << box->property ("ListURL").value<QUrl> ();
 				urlsToAdd << GetChildUrls (box);
 			}
 
-		qDebug () << urlsToAdd;
-
-		Q_FOREACH (const QUrl& url, urlsToAdd)
-			Core::Instance ().Add (url);
+		for (const auto& url : urlsToAdd)
+			Core_->Add (url);
 	}
 }
 }

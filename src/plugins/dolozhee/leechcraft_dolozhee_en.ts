@@ -183,27 +183,37 @@
 <context>
     <name>LeechCraft::Dolozhee::FinalPage</name>
     <message>
-        <location filename="finalpage.cpp" line="86"/>
+        <location filename="finalpage.cpp" line="98"/>
         <source>Sending %1...</source>
         <translation>Sending %1...</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="170"/>
+        <location filename="finalpage.cpp" line="194"/>
         <source>I&apos;m very sorry to say that, but seems like we&apos;re unable to handle your report at the time :(</source>
         <translation>I&apos;m very sorry to say that, but seems like we&apos;re unable to handle your report at the time :(</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="178"/>
+        <location filename="finalpage.cpp" line="180"/>
         <source>Report has been sent successfully. Thanks for your time!</source>
         <translation>Report has been sent successfully. Thanks for your time!</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="182"/>
+        <location filename="finalpage.cpp" line="92"/>
+        <source>Unable to upload %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finalpage.cpp" line="107"/>
+        <source>Unable to upload %1, could not initiate uploading process.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="finalpage.cpp" line="184"/>
         <source>Your issue number is %1. You can view it here:</source>
         <translation>Your issue number is %1. You can view it here:</translation>
     </message>
     <message>
-        <location filename="finalpage.cpp" line="184"/>
+        <location filename="finalpage.cpp" line="186"/>
         <source>You can also track it via an Atom feed reader:</source>
         <translation>You can also track it via an Atom feed reader:</translation>
     </message>
@@ -246,16 +256,11 @@
         <source>Issue reporter</source>
         <translation>Issue reporter</translation>
     </message>
-    <message>
-        <location filename="reportwizard.cpp" line="124"/>
-        <source>Invalid credentials</source>
-        <translation>Invalid credentials</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Dolozhee::UserStatusPage</name>
     <message>
-        <location filename="userstatuspage.cpp" line="60"/>
+        <location filename="userstatuspage.cpp" line="61"/>
         <source>Registering %1...</source>
         <translation>Registering %1...</translation>
     </message>

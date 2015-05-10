@@ -32,6 +32,7 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
+#include <QLabel>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QShortcut>
@@ -44,12 +45,12 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	UserFilters::UserFilters (QWidget *parent)
-	: QWidget (parent)
+	UserFilters::UserFilters (UserFiltersModel *model, QWidget *parent)
+	: QWidget { parent }
+	, Model_ { model }
 	{
 		Ui_.setupUi (this);
-		Ui_.View_->setModel (Core::Instance ()
-				.GetUserFiltersModel ());
+		Ui_.View_->setModel (model);
 
 		QShortcut *sh = new QShortcut (Qt::Key_Delete, Ui_.View_);
 		connect (sh,
@@ -61,35 +62,32 @@ namespace CleanWeb
 
 	void UserFilters::on_Add__released ()
 	{
-		Core::Instance ().GetUserFiltersModel ()->InitiateAdd ();
+		Model_->InitiateAdd ();
 	}
 
 	void UserFilters::on_Modify__released ()
 	{
-		QModelIndex current = Ui_.View_->currentIndex ();
+		const auto& current = Ui_.View_->currentIndex ();
 		if (!current.isValid ())
 			return;
 
-		Core::Instance ()
-			.GetUserFiltersModel ()->Modify (current.row ());
+		Model_->Modify (current.row ());
 	}
 
 	void UserFilters::on_Remove__released ()
 	{
-		QModelIndex current = Ui_.View_->currentIndex ();
+		const auto& current = Ui_.View_->currentIndex ();
 		if (!current.isValid ())
 			return;
 
-		Core::Instance ()
-			.GetUserFiltersModel ()->Remove (current.row ());
+		Model_->Remove (current.row ());
 	}
 
 	namespace
 	{
-		void AddMulti (const QString& str)
+		void AddMulti (UserFiltersModel *model, const QString& str)
 		{
-			const auto& list = str.split ("\n", QString::SkipEmptyParts);
-			Core::Instance ().GetUserFiltersModel ()->AddMultiFilters (list);
+			model->AddMultiFilters (str.split ("\n", QString::SkipEmptyParts));
 		}
 	}
 
@@ -101,7 +99,7 @@ namespace CleanWeb
 		dia.setWindowTitle (tr ("Paste rules"));
 		dia.resize (600, 400);
 		dia.setLayout (new QVBoxLayout ());
-		dia.layout ()->addWidget (new QLineEdit (tr ("Paste your custom rules here:")));
+		dia.layout ()->addWidget (new QLabel (tr ("Paste your custom rules here:")));
 		dia.layout ()->addWidget (edit);
 		auto box = new QDialogButtonBox (QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 		dia.layout ()->addWidget (box);
@@ -117,7 +115,7 @@ namespace CleanWeb
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		AddMulti (edit->toPlainText ());
+		AddMulti (Model_, edit->toPlainText ());
 	}
 
 	void UserFilters::on_Load__released ()
@@ -143,7 +141,17 @@ namespace CleanWeb
 			return;
 		}
 
-		AddMulti (file.readAll ());
+		AddMulti (Model_, file.readAll ());
+	}
+
+	void UserFilters::accept ()
+	{
+		Model_->WriteSettings ();
+	}
+
+	void UserFilters::reject ()
+	{
+		Model_->ReadSettings ();
 	}
 }
 }

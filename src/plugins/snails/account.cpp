@@ -35,6 +35,7 @@
 #include <QMutex>
 #include <QStandardItemModel>
 #include <util/xpc/util.h>
+#include <util/sll/slotclosure.h>
 #include <util/xpc/passutils.h>
 #include "core.h"
 #include "accountconfigdialog.h"
@@ -287,100 +288,110 @@ namespace Snails
 		}
 	}
 
-	void Account::OpenConfigDialog ()
+	void Account::OpenConfigDialog (const std::function<void ()>& onAccepted)
 	{
-		AccountConfigDialog dia;
+		auto dia = new AccountConfigDialog;
+		dia->setAttribute (Qt::WA_DeleteOnClose);
 
 		{
 			QMutexLocker l (GetMutex ());
-			dia.SetName (AccName_);
-			dia.SetUserName (UserName_);
-			dia.SetUserEmail (UserEmail_);
-			dia.SetLogin (Login_);
-			dia.SetUseSASL (UseSASL_);
-			dia.SetSASLRequired (SASLRequired_);
+			dia->SetName (AccName_);
+			dia->SetUserName (UserName_);
+			dia->SetUserEmail (UserEmail_);
+			dia->SetLogin (Login_);
+			dia->SetUseSASL (UseSASL_);
+			dia->SetSASLRequired (SASLRequired_);
 
 			if (UseSSL_)
-				dia.SetInSecurity (SecurityType::SSL);
+				dia->SetInSecurity (SecurityType::SSL);
 			else if (UseTLS_)
-				dia.SetInSecurity (SecurityType::TLS);
+				dia->SetInSecurity (SecurityType::TLS);
 			else
-				dia.SetInSecurity (SecurityType::No);
+				dia->SetInSecurity (SecurityType::No);
 
-			dia.SetInSecurityRequired (InSecurityRequired_);
+			dia->SetInSecurityRequired (InSecurityRequired_);
 
-			dia.SetOutSecurity (OutSecurity_);
-			dia.SetOutSecurityRequired (OutSecurityRequired_);
+			dia->SetOutSecurity (OutSecurity_);
+			dia->SetOutSecurityRequired (OutSecurityRequired_);
 
-			dia.SetSMTPAuth (SMTPNeedsAuth_);
-			dia.SetInHost (InHost_);
-			dia.SetInPort (InPort_);
-			dia.SetOutHost (OutHost_);
-			dia.SetOutPort (OutPort_);
-			dia.SetOutLogin (OutLogin_);
-			dia.SetOutType (OutType_);
+			dia->SetSMTPAuth (SMTPNeedsAuth_);
+			dia->SetInHost (InHost_);
+			dia->SetInPort (InPort_);
+			dia->SetOutHost (OutHost_);
+			dia->SetOutPort (OutPort_);
+			dia->SetOutLogin (OutLogin_);
+			dia->SetOutType (OutType_);
 
 			const auto& folders = FolderManager_->GetFoldersPaths ();
-			dia.SetAllFolders (folders);
+			dia->SetAllFolders (folders);
 			const auto& toSync = FolderManager_->GetSyncFolders ();
 			for (const auto& folder : folders)
 			{
 				const auto flags = FolderManager_->GetFolderFlags (folder);
 				if (flags & AccountFolderManager::FolderOutgoing)
-					dia.SetOutFolder (folder);
+					dia->SetOutFolder (folder);
 			}
-			dia.SetFoldersToSync (toSync);
+			dia->SetFoldersToSync (toSync);
 		}
 
-		if (dia.exec () != QDialog::Accepted)
-			return;
+		dia->open ();
 
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			QMutexLocker l (GetMutex ());
-			AccName_ = dia.GetName ();
-			UserName_ = dia.GetUserName ();
-			UserEmail_ = dia.GetUserEmail ();
-			Login_ = dia.GetLogin ();
-			UseSASL_ = dia.GetUseSASL ();
-			SASLRequired_ = dia.GetSASLRequired ();
-
-			UseSSL_ = false;
-			UseTLS_ = false;
-			switch (dia.GetInSecurity ())
+			[this, onAccepted, dia]
 			{
-			case SecurityType::SSL:
-				UseSSL_ = true;
-				break;
-			case SecurityType::TLS:
-				UseTLS_ = true;
-				break;
-			case SecurityType::No:
-				break;
-			}
+				QMutexLocker l (GetMutex ());
+				AccName_ = dia->GetName ();
+				UserName_ = dia->GetUserName ();
+				UserEmail_ = dia->GetUserEmail ();
+				Login_ = dia->GetLogin ();
+				UseSASL_ = dia->GetUseSASL ();
+				SASLRequired_ = dia->GetSASLRequired ();
 
-			InSecurityRequired_ = dia.GetInSecurityRequired ();
+				UseSSL_ = false;
+				UseTLS_ = false;
+				switch (dia->GetInSecurity ())
+				{
+				case SecurityType::SSL:
+					UseSSL_ = true;
+					break;
+				case SecurityType::TLS:
+					UseTLS_ = true;
+					break;
+				case SecurityType::No:
+					break;
+				}
 
-			OutSecurity_ = dia.GetOutSecurity ();
-			OutSecurityRequired_ = dia.GetOutSecurityRequired ();
+				InSecurityRequired_ = dia->GetInSecurityRequired ();
 
-			SMTPNeedsAuth_ = dia.GetSMTPAuth ();
-			InHost_ = dia.GetInHost ();
-			InPort_ = dia.GetInPort ();
-			OutHost_ = dia.GetOutHost ();
-			OutPort_ = dia.GetOutPort ();
-			OutLogin_ = dia.GetOutLogin ();
-			OutType_ = dia.GetOutType ();
+				OutSecurity_ = dia->GetOutSecurity ();
+				OutSecurityRequired_ = dia->GetOutSecurityRequired ();
 
-			FolderManager_->ClearFolderFlags ();
-			const auto& out = dia.GetOutFolder ();
-			if (!out.isEmpty ())
-				FolderManager_->AppendFolderFlags (out, AccountFolderManager::FolderOutgoing);
+				SMTPNeedsAuth_ = dia->GetSMTPAuth ();
+				InHost_ = dia->GetInHost ();
+				InPort_ = dia->GetInPort ();
+				OutHost_ = dia->GetOutHost ();
+				OutPort_ = dia->GetOutPort ();
+				OutLogin_ = dia->GetOutLogin ();
+				OutType_ = dia->GetOutType ();
 
-			for (const auto& sync : dia.GetFoldersToSync ())
-				FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
-		}
+				FolderManager_->ClearFolderFlags ();
+				const auto& out = dia->GetOutFolder ();
+				if (!out.isEmpty ())
+					FolderManager_->AppendFolderFlags (out, AccountFolderManager::FolderOutgoing);
 
-		emit accountChanged ();
+				for (const auto& sync : dia->GetFoldersToSync ())
+					FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
+
+				emit accountChanged ();
+
+				if (onAccepted)
+					onAccepted ();
+			},
+			dia,
+			SIGNAL (accepted ()),
+			dia
+		};
 	}
 
 	bool Account::IsNull () const

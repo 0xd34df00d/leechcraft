@@ -43,7 +43,7 @@ namespace Summary
 
 		QVariant data (const QModelIndex&, int) const override;
 	protected:
-		QStringList GetTagsForIndex (int) const;
+		QStringList GetTagsForIndex (int) const override;
 	};
 }
 }

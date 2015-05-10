@@ -44,9 +44,9 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	FlashPlaceHolder::FlashPlaceHolder (const QUrl& url,
-			QWidget *parent)
+	FlashPlaceHolder::FlashPlaceHolder (const QUrl& url, Core *core, QWidget *parent)
 	: QWidget (parent)
+	, Core_ (core)
 	, URL_ (url)
 	, Swapping_ (false)
 	{
@@ -187,10 +187,8 @@ namespace CleanWeb
 		QString host = URL_.host ();
 		addHost->setData (URL_.host ());
 
-		addUrl->setEnabled (!Core::Instance ()
-				.GetFlashOnClickWhitelist ()->Matches (url));
-		addHost->setEnabled (!Core::Instance ()
-				.GetFlashOnClickWhitelist ()->Matches (host));
+		addUrl->setEnabled (!Core_->GetFlashOnClickWhitelist ()->Matches (url));
+		addHost->setEnabled (!Core_->GetFlashOnClickWhitelist ()->Matches (host));
 
 		menu.addSeparator ();
 		menu.addAction (tr ("Hide"),
@@ -212,8 +210,7 @@ namespace CleanWeb
 			return;
 		}
 
-		Core::Instance ().GetFlashOnClickWhitelist ()->
-			Add (action->data ().toString ());
+		Core_->GetFlashOnClickWhitelist ()->Add (action->data ().toString ());
 	}
 }
 }

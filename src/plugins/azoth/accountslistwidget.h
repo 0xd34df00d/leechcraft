@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
-#define PLUGINS_AZOTH_ACCOUNTSLISTWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <QHash>
 #include "ui_accountslistwidget.h"
@@ -47,9 +47,8 @@ namespace Azoth
 		Q_OBJECT
 
 		Ui::AccountsListWidget Ui_;
-		QStandardItemModel *AccModel_;
+		QStandardItemModel * const AccModel_;
 		QHash<IAccount*, QStandardItem*> Account2Item_;
-
 	public:
 		enum Role
 		{
@@ -71,11 +70,15 @@ namespace Azoth
 		AccountsListWidget (QWidget* = 0);
 	private slots:
 		void addAccount (IAccount*);
+
 		void on_Add__released ();
+
 		void on_Modify__released ();
 		void on_PGP__released ();
 		void on_Delete__released ();
 		void on_ResetStyles__released ();
+
+		void handleAccountSelected (const QModelIndex&);
 
 		void handleItemChanged (QStandardItem*);
 
@@ -85,5 +88,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

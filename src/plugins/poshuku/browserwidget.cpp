@@ -71,6 +71,7 @@
 #include <QXmlStreamWriter>
 #include <QMimeData>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -1376,11 +1377,7 @@ namespace Poshuku
 			w.writeStartElement ("html");
 				w.writeStartElement ("head");
 					w.writeTextElement ("title",
-#if QT_VERSION < 0x050000
-							Qt::escape (WebView_->url ().toString ()));
-#else
-							WebView_->url ().toString ().toHtmlEscaped ());
-#endif
+							Util::Escape (WebView_->url ().toString ()));
 				w.writeEndElement ();
 				w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
@@ -1481,11 +1478,7 @@ namespace Poshuku
 		QString text;
 		Priority prio = PInfo_;
 
-#if QT_VERSION < 0x050000
-		const auto& escapedTitle = Qt::escape (WebView_->title ());
-#else
-		const auto& escapedTitle = WebView_->title ().toHtmlEscaped ();
-#endif
+		const auto& escapedTitle = Util::Escape (WebView_->title ());
 		if (ok)
 			text = tr ("Page load finished: %1")
 				.arg (escapedTitle);

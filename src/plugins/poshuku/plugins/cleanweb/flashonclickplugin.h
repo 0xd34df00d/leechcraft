@@ -38,14 +38,18 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+	class Core;
+
 	class FlashOnClickPlugin : public QObject
-								, public IWebPlugin
+							 , public IWebPlugin
 	{
 		Q_OBJECT
 
 		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
+
+		Core * const Core_;
 	public:
-		FlashOnClickPlugin (QObject* = 0);
+		FlashOnClickPlugin (Core*, QObject* = 0);
 
 		QWebPluginFactory::Plugin Plugin (bool) const;
 		QWidget* Create (const QString&,

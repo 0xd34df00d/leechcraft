@@ -49,10 +49,10 @@ namespace Xoox
 		Q_OBJECT
 
 		Ui::PrivacyListsConfigDialog Ui_;
-		PrivacyListsManager *Manager_;
+		PrivacyListsManager * const Manager_;
 		QMap<QString, PrivacyList> Lists_;
 
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 	public:
 		PrivacyListsConfigDialog (PrivacyListsManager*, QWidget* = 0);
 	private:
@@ -61,9 +61,11 @@ namespace Xoox
 		void AddListToBoxes (const QString&);
 		void ReinitModel ();
 		QList<QStandardItem*> ToRow (const PrivacyListItem&) const;
+
+		void HandleGotList (const PrivacyList&);
 	public slots:
-		void accept ();
-		void reject ();
+		void accept () override;
+		void reject () override;
 	private slots:
 		void on_ConfigureList__activated (int);
 		void on_AddButton__released ();
@@ -76,7 +78,6 @@ namespace Xoox
 		void on_MoveDown__released ();
 
 		void handleGotLists (const QStringList&, const QString&, const QString&);
-		void handleGotList (const PrivacyList&);
 		void handleError (const QString&);
 	};
 }

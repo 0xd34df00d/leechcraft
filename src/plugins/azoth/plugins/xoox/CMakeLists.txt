@@ -106,6 +106,7 @@ set (XOOX_SRCS
 	pendingversionquery.cpp
 	pendinglastactivityrequest.cpp
 	discomanagerwrapper.cpp
+	addtoblockedrunner.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui

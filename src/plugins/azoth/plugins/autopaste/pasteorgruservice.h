@@ -40,9 +40,9 @@ namespace Autopaste
 	class PasteOrgRuService final : public PasteServiceBase
 	{
 	public:
-		PasteOrgRuService (QObject *entry, QObject* = 0);
+		using PasteServiceBase::PasteServiceBase;
 
-		void Paste (const PasteParams&);
+		void Paste (const PasteParams&) override;
 	protected:
 		void handleFinished () override;
 	};

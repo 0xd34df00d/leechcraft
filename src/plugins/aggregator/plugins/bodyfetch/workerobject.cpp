@@ -40,6 +40,9 @@
 #include <interfaces/iscriptloader.h>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/util.h>
+#include <util/sll/prelude.h>
+#include <util/sll/futures.h>
 
 uint qHash (IScript_ptr script)
 {
@@ -52,8 +55,6 @@ namespace Aggregator
 {
 namespace BodyFetch
 {
-	const int CacheValidity = 20;
-
 	WorkerObject::WorkerObject (QObject *parent)
 	: QObject (parent)
 	, Inst_ (0)
@@ -61,7 +62,7 @@ namespace BodyFetch
 	, RecheckScheduled_ (false)
 	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
 	{
-		QTimer *timer = new QTimer;
+		QTimer *timer = new QTimer { this };
 		connect (timer,
 				SIGNAL (timeout ()),
 				this,
@@ -102,13 +103,13 @@ namespace BodyFetch
 
 		QHash<QString, IScript_ptr> channel2script;
 
-		Q_FOREACH (const QVariant& item, items)
+		for (const auto& item : items)
 		{
-			const QVariantMap& map = item.toMap ();
+			const auto& map = item.toMap ();
 
-			const QString& channelLinkStr = map ["ChannelLink"].toString ();
+			const auto& channelLinkStr = map ["ChannelLink"].toString ();
 
-			IScript_ptr script = channel2script.value (channelLinkStr);
+			auto script = channel2script.value (channelLinkStr);
 			if (!script)
 			{
 				script = GetScriptForChannel (channelLinkStr);
@@ -117,17 +118,19 @@ namespace BodyFetch
 				channel2script [channelLinkStr] = script;
 			}
 
-			QVariantList args;
-			args << map ["ItemLink"];
-			args << map ["ItemCommentsPageLink"];
-			args << map ["ItemDescription"];
-			QString fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
+			const QVariantList args
+			{
+				map ["ItemLink"],
+				map ["ItemCommentsPageLink"],
+				map ["ItemDescription"]
+			};
+			auto fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
 			if (fetchStr.isEmpty ())
 				fetchStr = map ["ItemLink"].toString ();
 
 			qDebug () << Q_FUNC_INFO << fetchStr << "using" << ChannelLink2ScriptID_ [channelLinkStr];
 
-			const QUrl& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
+			const auto& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
 			URL2Script_ [url] = script;
 			URL2ItemID_ [url] = map ["ItemID"].value<quint64> ();
 			emit downloadRequested (url);
@@ -144,7 +147,7 @@ namespace BodyFetch
 		{
 			script = Inst_->LoadScript (ChannelLink2ScriptID_ [channel]);
 			if (!script ||
-					!script->InvokeMethod ("CanHandle", QVariantList () << channel).toBool ())
+					!script->InvokeMethod ("CanHandle", { channel }).toBool ())
 			{
 				ChannelLink2ScriptID_.remove (channel);
 				script.reset ();
@@ -153,11 +156,11 @@ namespace BodyFetch
 
 		if (!ChannelLink2ScriptID_.contains (channel))
 		{
-			const QString& scriptId = FindScriptForChannel (channel);
+			const auto& scriptId = FindScriptForChannel (channel);
 			if (scriptId.isEmpty ())
 			{
-				CachedScripts_ [channel] = IScript_ptr ();
-				return IScript_ptr ();
+				CachedScripts_ [channel] = {};
+				return {};
 			}
 
 			ChannelLink2ScriptID_ [channel] = scriptId;
@@ -166,8 +169,8 @@ namespace BodyFetch
 		if (ChannelLink2ScriptID_ [channel].isEmpty ())
 		{
 			ChannelLink2ScriptID_.remove (channel);
-			CachedScripts_ [channel] = IScript_ptr ();
-			return IScript_ptr ();
+			CachedScripts_ [channel] = {};
+			return {};
 		}
 
 		if (!script)
@@ -180,10 +183,10 @@ namespace BodyFetch
 
 	QString WorkerObject::FindScriptForChannel (const QString& link)
 	{
-		Q_FOREACH (const QString& id, EnumeratedCache_)
+		for (const auto& id : EnumeratedCache_)
 		{
-			IScript_ptr script (Inst_->LoadScript (id));
-			if (script->InvokeMethod ("CanHandle", QVariantList () << link).toBool ())
+			const auto& script = Inst_->LoadScript (id);
+			if (script->InvokeMethod ("CanHandle", { link }).toBool ())
 				return id;
 		}
 
@@ -194,15 +197,10 @@ namespace BodyFetch
 	{
 		QStringList GetReplacements (IScript_ptr script, const QString& method)
 		{
-			const QVariant& var = script->InvokeMethod (method, QVariantList ());
-
-			QStringList result;
-			Q_FOREACH (const QVariant& varItem, var.toList ())
-				result << varItem.toString ();
-
-			result.removeAll (QString ());
+			const auto& var = script->InvokeMethod (method, {});
+			auto result = Util::Map (var.toList (), &QVariant::toString);
+			result.removeAll ({});
 			result.removeDuplicates ();
-
 			return result;
 		}
 
@@ -214,14 +212,11 @@ namespace BodyFetch
 		{
 			QString result;
 
-			Q_FOREACH (const QString& sel, selectors)
+			for (const auto& sel : selectors)
 			{
-				QWebElementCollection col = frame->findAllElements (sel);
-				for (int i = 0, size = std::min (amount, col.count ());
-						i < size; ++i)
+				const auto& col = frame->findAllElements (sel);
+				for (int i = 0, size = std::min (amount, col.count ()); i < size; ++i)
 					result += func (col.at (i)).simplified ();
-
-				qApp->processEvents ();
 			}
 
 			return result;
@@ -234,12 +229,10 @@ namespace BodyFetch
 		const QStringList& allTagsOut = GetReplacements (script, "KeepAllTags");
 		const QStringList& firstTagIn = GetReplacements (script, "KeepFirstTagInnerXml");
 
-		qApp->processEvents ();
-
 		if (firstTagOut.isEmpty () &&
 				allTagsOut.isEmpty () &&
 				firstTagIn.isEmpty ())
-			return script->InvokeMethod ("Strip", QVariantList () << contents).toString ();
+			return script->InvokeMethod ("Strip", { contents }).toString ();
 
 		QWebPage page;
 		page.settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, false);
@@ -247,8 +240,6 @@ namespace BodyFetch
 		page.settings ()->setAttribute (QWebSettings::AutoLoadImages, false);
 		page.settings ()->setAttribute (QWebSettings::PluginsEnabled, false);
 		page.mainFrame ()->setHtml (contents);
-
-		qApp->processEvents ();
 
 		QString result;
 		result += ParseWithSelectors (page.mainFrame (),
@@ -294,10 +285,9 @@ namespace BodyFetch
 			{
 				const int end = rawContents.indexOf (sep, begin + 1);
 
-				const QByteArray& enca = rawContents.mid (begin + 1, end - begin - 1);
+				const auto& enca = rawContents.mid (begin + 1, end - begin - 1);
 				qDebug () << "detected encoding" << enca;
-				QTextCodec *codec = QTextCodec::codecForName (enca);
-				if (codec)
+				if (const auto codec = QTextCodec::codecForName (enca))
 					return codec->toUnicode (rawContents);
 				else
 					qWarning () << Q_FUNC_INFO
@@ -306,29 +296,10 @@ namespace BodyFetch
 			}
 		}
 
-		QTextCodec *codec = QTextCodec::codecForHtml (rawContents, 0);
+		const auto codec = QTextCodec::codecForHtml (rawContents, 0);
 		return codec ?
 				codec->toUnicode (rawContents) :
 				QString::fromUtf8 (rawContents);
-	}
-
-	namespace
-	{
-		struct ProcessingGuard
-		{
-			bool *P_;
-
-			ProcessingGuard (bool *p)
-			: P_ (p)
-			{
-				*P_ = true;
-			}
-
-			~ProcessingGuard ()
-			{
-				*P_ = false;
-			}
-		};
 	}
 
 	void WorkerObject::ScheduleRechecking ()
@@ -347,14 +318,15 @@ namespace BodyFetch
 	{
 		if (IsProcessing_)
 		{
-			FetchedQueue_ << qMakePair (url, filename);
+			FetchedQueue_.append ({ url, filename });
 			ScheduleRechecking ();
 			return;
 		}
 
-		ProcessingGuard pg (&IsProcessing_);
+		IsProcessing_ = true;
+		const auto pg = Util::MakeScopeGuard ([this] { IsProcessing_ = false; });
 
-		IScript_ptr script = URL2Script_.take (url);
+		const auto& script = URL2Script_.take (url);
 		if (!script)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -363,35 +335,44 @@ namespace BodyFetch
 			return;
 		}
 
-		QFile file (filename);
-		if (!file.open (QIODevice::ReadOnly))
+		const auto file = std::make_shared<QFile> (filename);
+		if (!file->open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to open file";
-			file.remove ();
+					<< "unable to open file"
+					<< filename
+					<< file->errorString ();
+			file->remove ();
 			return;
 		}
 
-		const QByteArray& rawContents = file.readAll ();
-		qApp->processEvents ();
-		const QString& contents = Recode (rawContents);
-		file.close ();
-		file.remove ();
-		const QString& result = Parse (contents, script);
+		Util::Sequence (this,
+					[this, file]
+					{
+						return QtConcurrent::run ([this, file]
+								{
+									const auto& contents = file->readAll ();
+									file->close ();
+									file->remove ();
+									return Recode (contents);
+								});
+					})
+				.Then ([this, url, script] (const QString& contents)
+					{
+						const auto& result = Parse (contents, script);
+						if (result.isEmpty ())
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "empty result for"
+									<< url;
+							return;
+						}
 
-		if (result.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty result for"
-					<< url;
-			return;
-		}
-
-		const quint64 id = URL2ItemID_.take (url);
-		qApp->processEvents ();
-		WriteFile (result, id);
-		qApp->processEvents ();
-		emit newBodyFetched (id);
+						const quint64 id = URL2ItemID_.take (url);
+						WriteFile (result, id);
+						emit newBodyFetched (id);
+						qDebug () << Q_FUNC_INFO << "done!" << url;
+					});
 	}
 
 	void WorkerObject::recheckFinished ()
@@ -404,7 +385,7 @@ namespace BodyFetch
 		if (IsProcessing_)
 			ScheduleRechecking ();
 
-		const QPair<QUrl, QString>& item = FetchedQueue_.takeFirst ();
+		const auto& item = FetchedQueue_.takeFirst ();
 		handleDownloadFinished (item.first, item.second);
 	}
 
@@ -414,7 +395,7 @@ namespace BodyFetch
 			return;
 
 		if (!IsProcessing_)
-			ProcessItems (QVariantList () << Items_.takeFirst ());
+			ProcessItems ({ Items_.takeFirst () });
 
 		if (!Items_.isEmpty ())
 			QTimer::singleShot (400,

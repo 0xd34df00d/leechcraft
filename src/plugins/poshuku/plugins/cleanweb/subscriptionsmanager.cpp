@@ -43,11 +43,12 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	SubscriptionsManager::SubscriptionsManager (QWidget *parent)
-	: QWidget (parent)
+	SubscriptionsManager::SubscriptionsManager (Core *core, QWidget *parent)
+	: QWidget { parent }
+	, Core_ { core }
 	{
 		Ui_.setupUi (this);
-		Ui_.Subscriptions_->setModel (Core::Instance ().GetModel ());
+		Ui_.Subscriptions_->setModel (core->GetModel ());
 	}
 
 	void SubscriptionsManager::on_RemoveButton__released ()
@@ -56,7 +57,7 @@ namespace CleanWeb
 		if (!current.isValid ())
 			return;
 
-		Core::Instance ().Remove (current);
+		Core_->Remove (current);
 	}
 
 	void SubscriptionsManager::AddCustom (const QString& title, const QString& urlStr)
@@ -87,7 +88,7 @@ namespace CleanWeb
 				return;
 			}
 
-			if (Core::Instance ().Exists (title))
+			if (Core_->Exists (title))
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
@@ -96,7 +97,7 @@ namespace CleanWeb
 				return;
 			}
 
-			if (Core::Instance ().Exists (locationUrl))
+			if (Core_->Exists (locationUrl))
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
@@ -114,7 +115,7 @@ namespace CleanWeb
 			return;
 		}
 
-		Core::Instance ().Load (locationUrl, title);
+		Core_->Load (locationUrl, title);
 	}
 
 	void SubscriptionsManager::on_AddButton__released ()
@@ -132,7 +133,7 @@ namespace CleanWeb
 
 		const auto& urls = subscriptionAdd.GetAdditionalSubscriptions ();
 		for (const auto& url : urls)
-			Core::Instance ().Add (url);
+			Core_->Add (url);
 	}
 }
 }

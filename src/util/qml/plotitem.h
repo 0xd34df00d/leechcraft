@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <functional>
 #include <QtGlobal>
 #if QT_VERSION < 0x050000
@@ -115,6 +116,8 @@ namespace Util
 
 		int XExtent_ = 0;
 		int YExtent_ = 0;
+
+		std::shared_ptr<QwtPlot> Plot_;
 	public:
 #if QT_VERSION < 0x050000
 		PlotItem (QDeclarativeItem* = 0);

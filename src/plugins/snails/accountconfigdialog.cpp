@@ -222,7 +222,7 @@ namespace Snails
 
 	void AccountConfigDialog::SetAllFolders (const QList<QStringList>& folders)
 	{
-		Q_FOREACH (const auto& f, folders)
+		for (const auto& f : folders)
 		{
 			const auto& name = f.join ("/");
 			Ui_.OutgoingFolder_->addItem (name, f);
@@ -241,7 +241,7 @@ namespace Snails
 	QList<QStringList> AccountConfigDialog::GetFoldersToSync () const
 	{
 		QList<QStringList> result;
-		Q_FOREACH (const auto& action, Ui_.BrowseToSync_->menu ()->actions ())
+		for (const auto& action : Ui_.BrowseToSync_->menu ()->actions ())
 			if (action->isChecked ())
 				result << action->data ().toStringList ();
 
@@ -250,7 +250,7 @@ namespace Snails
 
 	void AccountConfigDialog::SetFoldersToSync (const QList<QStringList>& folders)
 	{
-		Q_FOREACH (const auto& action, Ui_.BrowseToSync_->menu ()->actions ())
+		for (const auto& action : Ui_.BrowseToSync_->menu ()->actions ())
 		{
 			const auto& folder = action->data ().toStringList ();
 			action->setChecked (folders.contains (folder));

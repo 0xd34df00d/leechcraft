@@ -33,6 +33,7 @@
 #include <QIcon>
 #include <QtDebug>
 #include <util/svcauth/vkcaptchadialog.h>
+#include <util/sll/prelude.h>
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
@@ -47,6 +48,7 @@
 #include "serverhistorymanager.h"
 #include "vkconnectiontunesetter.h"
 #include "transfermanager.h"
+#include "appinfomanager.h"
 
 namespace LeechCraft
 {
@@ -69,6 +71,7 @@ namespace Murm
 	, GeoResolver_ (new GeoResolver (Conn_, this))
 	, ServHistMgr_ (new ServerHistoryManager (this))
 	, XFerMgr_ (new TransferManager (this))
+	, AppInfoMgr_ (new AppInfoManager (proxy->GetNetworkAccessManager (), Conn_, this))
 	{
 		connect (Conn_,
 				SIGNAL (cookiesChanged ()),
@@ -95,6 +98,10 @@ namespace Murm
 				SIGNAL (userStateChanged (qulonglong, bool)),
 				this,
 				SLOT (handleUserState (qulonglong, bool)));
+		connect (Conn_,
+				SIGNAL (gotUserAppInfoStub (qulonglong, AppInfo)),
+				this,
+				SLOT (handleUserAppInfoStub (qulonglong, AppInfo)));
 
 		connect (Conn_,
 				SIGNAL (gotMessage (MessageInfo)),
@@ -140,6 +147,11 @@ namespace Murm
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)),
 				this,
 				SIGNAL (serverHistoryFetched (QModelIndex, QByteArray, SrvHistMessages_t)));
+
+		connect (AppInfoMgr_,
+				SIGNAL (gotAppInfo (AppInfo)),
+				this,
+				SLOT (handleAppInfo (AppInfo)));
 	}
 
 	QByteArray VkAccount::Serialize () const
@@ -527,6 +539,8 @@ namespace Murm
 
 	bool VkAccount::CreateUsers (const QList<UserInfo>& infos)
 	{
+		AppInfoMgr_->CacheAppInfo (Util::Map (infos, &UserInfo::AppInfo_));
+
 		QList<QObject*> newEntries;
 		QHash<int, QString> newCountries;
 		QHash<int, QString> newCities;
@@ -535,7 +549,9 @@ namespace Murm
 		{
 			if (Entries_.contains (info.ID_))
 			{
-				Entries_ [info.ID_]->UpdateInfo (info);
+				const auto entry = Entries_ [info.ID_];
+				entry->UpdateInfo (info);
+
 				continue;
 			}
 
@@ -609,6 +625,30 @@ namespace Murm
 		auto info = entry->GetInfo ();
 		info.IsOnline_ = isOnline;
 		entry->UpdateInfo (info);
+
+		entry->UpdateAppInfo ({}, {});
+
+		if (isOnline)
+			Conn_->RequestUserAppId (id);
+	}
+
+	void VkAccount::handleUserAppInfoStub (qulonglong id, const AppInfo& appInfo)
+	{
+		if (!Entries_.contains (id))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown user"
+					<< id;
+			return;
+		}
+
+		const auto entry = Entries_.value (id);
+
+		const auto appId = appInfo.AppId_;
+		AppInfoMgr_->PerformWithAppInfo (appId,
+				[this, entry] (const AppInfo& info)
+					{ entry->UpdateAppInfo (info, AppInfoMgr_->GetAppImage (info)); },
+				[this, entry, appInfo] { entry->UpdateAppInfo (appInfo, {}); });
 	}
 
 	void VkAccount::handleMessage (const MessageInfo& info)
@@ -811,6 +851,13 @@ namespace Murm
 		}
 
 		ChatEntries_ [chat]->HandleRemoved (id);
+	}
+
+	void VkAccount::handleAppInfo (const AppInfo& info)
+	{
+		for (const auto entry : Entries_)
+			if (entry->GetInfo ().AppInfo_.AppId_ == info.AppId_)
+				entry->UpdateAppInfo (info, AppInfoMgr_->GetAppImage (info));
 	}
 
 	void VkAccount::emitUpdateAcc ()

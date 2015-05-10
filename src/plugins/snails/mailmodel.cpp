@@ -30,6 +30,7 @@
 #include "mailmodel.h"
 #include <QIcon>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "messagelistactionsmanager.h"
@@ -46,6 +47,8 @@ namespace Snails
 		QList<TreeNode_ptr> Children_;
 
 		QSet<QByteArray> UnreadChildren_;
+
+		bool IsAvailable_ = true;
 
 		int Row () const
 		{
@@ -183,13 +186,10 @@ namespace Snails
 			else
 				return Util::MakePrettySize (msg->GetSize ());
 		case Column::UnreadChildren:
-		{
-			const auto unread = structItem->UnreadChildren_.size ();
-			if (unread)
+			if (const auto unread = structItem->UnreadChildren_.size ())
 				return unread;
 
 			return role == Sort ? 0 : QString::fromUtf8 ("·");
-		}
 		case Column::StatusIcon:
 		case Column::AttachIcon:
 			break;
@@ -203,6 +203,11 @@ namespace Snails
 		auto flags = QAbstractItemModel::flags (index);
 		if (index.column () == static_cast<int> (Column::Subject))
 			flags |= Qt::ItemIsEditable;
+
+		const auto structItem = static_cast<TreeNode*> (index.internalPointer ());
+		if (!structItem->IsAvailable_)
+			flags &= ~Qt::ItemIsEnabled;
+
 		return flags;
 	}
 
@@ -372,6 +377,19 @@ namespace Snails
 		return true;
 	}
 
+	void MailModel::MarkUnavailable (const QList<QByteArray>& ids)
+	{
+		for (const auto& id : ids)
+			for (const auto& node : FolderId2Nodes_.value (id))
+			{
+				if (node->IsAvailable_ == false)
+					continue;
+
+				node->IsAvailable_ = false;
+				EmitRowChanged (node);
+			}
+	}
+
 	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
 	{
 		QList<TreeNode_ptr> nodes;
@@ -481,25 +499,31 @@ namespace Snails
 		return !indexes.isEmpty ();
 	}
 
+	void MailModel::EmitRowChanged (const TreeNode_ptr& node)
+	{
+		emit dataChanged (GetIndex (node, 0),
+				GetIndex (node, static_cast<int> (Column::MaxNext)));
+	}
+
+	QModelIndex MailModel::GetIndex (const TreeNode_ptr& node, int column) const
+	{
+		return createIndex (node->Row (), column, node.get ());
+	}
+
 	QList<QModelIndex> MailModel::GetIndexes (const QByteArray& folderId, int column) const
 	{
-		QList<QModelIndex> result;
-		for (const auto& node : FolderId2Nodes_.value (folderId))
-			result << createIndex (node->Row (), column, node.get ());
-		return result;
+		return Util::Map (FolderId2Nodes_.value (folderId),
+				[this, column] (const auto& node) { return GetIndex (node, column); });
 	}
 
 	QList<QList<QModelIndex>> MailModel::GetIndexes (const QByteArray& folderId, const QList<int>& columns) const
 	{
-		QList<QList<QModelIndex>> result;
-		for (const auto& node : FolderId2Nodes_.value (folderId))
-		{
-			QList<QModelIndex> subresult;
-			for (const auto column : columns)
-				subresult << createIndex (node->Row (), column, node.get ());
-			result << subresult;
-		}
-		return result;
+		return Util::Map (FolderId2Nodes_.value (folderId),
+				[this, &columns] (const auto& node)
+				{
+					return Util::Map (columns,
+							[this, &node] (auto column) { return GetIndex (node, column); });
+				});
 	}
 
 	Message_ptr MailModel::GetMessageByFolderId (const QByteArray& id) const

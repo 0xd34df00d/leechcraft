@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <QBuffer>
+#include <util/sll/qtutil.h>
 #include "lazyvmimeheader.h"
 
 namespace LeechCraft
@@ -261,11 +262,14 @@ namespace Snails
 				<< HTMLBody_
 				<< InReplyTo_
 				<< References_;
-		Q_FOREACH (const auto key, Addresses_.keys ())
-			qDebug () << static_cast<int> (key)
-					<< Addresses_ [key];
+
+		for (const auto& pair : Util::Stlize (Addresses_))
+			qDebug () << static_cast<int> (pair.first)
+					<< pair.second;
+
 		qDebug () << Attachments_.size () << "attachments";
-		Q_FOREACH (const auto& att, Attachments_)
+
+		for (const auto& att : Attachments_)
 			att.Dump ();
 	}
 
@@ -290,6 +294,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream str (&result, QIODevice::WriteOnly);
+		str.setVersion (QDataStream::Qt_4_8);
 		str << static_cast<quint8> (1)
 			<< FolderID_
 			<< MessageID_
@@ -324,6 +329,7 @@ namespace Snails
 	void Message::Deserialize (const QByteArray& data)
 	{
 		QDataStream str (data);
+		str.setVersion (QDataStream::Qt_4_8);
 		quint8 version = 0;
 		str >> version;
 		if (version != 1)

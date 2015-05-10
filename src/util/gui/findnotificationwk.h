@@ -79,7 +79,7 @@ namespace Util
 	private:
 		void ClearFindResults ();
 	protected:
-		void handleNext (const QString& text, FindFlags flags);
+		void handleNext (const QString& text, FindFlags flags) override;
 		void reject () override;
 	};
 }

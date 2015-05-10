@@ -30,11 +30,23 @@
 #include "pageformsdata.h"
 #include <QDataStream>
 #include <QtDebug>
+#include <util/util.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+	QVariantMap ElementData::ToVariantMap () const
+	{
+		return Util::MakeMap<QString, QVariant> ({
+				{ "PageURL", PageURL_ },
+				{ "FormID", FormID_ },
+				{ "Name", Name_ },
+				{ "Type", Type_ },
+				{ "Value", Value_ }
+			});
+	}
+
 	bool operator== (const ElementData& left, const ElementData& right)
 	{
 		return left.PageURL_ == right.PageURL_ &&

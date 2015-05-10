@@ -1,32 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings>
 	<page>
-		<label lang="en" value="General" />
+		<label value="General" />
 		<tab>
-			<label lang="en" value="Updates" />
-			<item type="groupbox" checkable="true" state="on" property="Autoupdate">
-				<label lang="en" value="Update subscriptions" />
-				<item type="spinbox" property="UpdateInterval" minimum="1" maximum="65535" default="5">
-					<label lang="en" value="Update interval:" />
-				</item>
-			</item>
+			<label value="General" />
 			<item type="checkbox" property="EnableJIT" default="true">
 				<label value="Enable JIT for regexps" />
 				<tooltip>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/>Disable this if you want to lower memory footprint.</tooltip>
 			</item>
+			<item type="checkbox" property="EnableFiltering" default="true">
+				<label value="Enable filtering" />
+			</item>
+			<item type="checkbox" property="EnableElementHiding" default="true">
+				<label value="Enable element hiding" />
+			</item>
 		</tab>
 		<tab>
-			<label lang="en" value="User rules" />
+			<label value="User rules" />
 			<item type="customwidget" name="UserFilters" label="own" />
 		</tab>
 		<tab>
-			<label lang="en" value="Subscriptions" />
+			<label value="Subscriptions" />
+			<item type="groupbox" checkable="true" state="on" property="Autoupdate">
+				<label value="Update subscriptions" />
+				<item type="spinbox" property="UpdateInterval" minimum="1" maximum="65535" default="5">
+					<label value="Update interval:" />
+					<suffix value=" days" />
+				</item>
+			</item>
 			<item type="customwidget" name="SubscriptionsManager" label="own" />
 		</tab>
 		<tab>
-			<label lang="en" value="FlashOnClick" />
+			<label value="FlashOnClick" />
 			<item type="groupbox" checkable="true" default="false" property="EnableFlashOnClick">
-				<label lang="en" value="Enable FlashOnClick" />
+				<label value="Enable FlashOnClick" />
 				<item type="customwidget" name="FlashOnClickWhitelist" label="own" />
 			</item>
 		</tab>

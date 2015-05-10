@@ -31,8 +31,10 @@
 
 #include <type_traits>
 #include <iterator>
+#include <QPair>
 #include <QStringList>
 #include <boost/optional.hpp>
+#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -63,40 +65,104 @@ namespace Util
 					{ return { t1, t2}; });
 	}
 
-	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, typename std::result_of<F (T)>::type>::value,
-			Container<typename std::decay<typename std::result_of<F (T)>::type>::type>>::type
+	template<typename T>
+	struct WrapType
 	{
-		Container<typename std::decay<typename std::result_of<F (T)>::type>::type> result;
-		for (auto t : c)
-			result.push_back (f (t));
+		using type = T;
+	};
+
+	template<typename T>
+	using WrapType_t = typename WrapType<T>::type;
+
+	template<>
+	struct WrapType<QList<QString>>
+	{
+		using type = QStringList;
+	};
+
+	namespace detail
+	{
+		template<typename Res, typename T>
+		void Append (Res& result, T&& val, decltype (result.push_back (std::forward<T> (val)))* = nullptr)
+		{
+			result.push_back (std::forward<T> (val));
+		}
+
+		template<typename Res, typename T>
+		void Append (Res& result, T&& val, decltype (result.insert (std::forward<T> (val)))* = nullptr)
+		{
+			result.insert (std::forward<T> (val));
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConstImpl (typename std::result_of<F (const T&)>::type*)
+		{
+			return true;
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConstImpl (...)
+		{
+			return false;
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConst ()
+		{
+			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (0);
+		}
+	}
+
+	template<typename T, template<typename U> class Container, typename F>
+	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value,
+			WrapType_t<Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>>::type
+	{
+		Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type> result;
+		for (auto&& t : c)
+			detail::Append (result, Invoke (f, t));
 		return result;
 	}
 
 	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) ->
-			ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type>
+	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
 	{
-		ResultCont<typename std::decay<typename std::result_of<F (decltype (*c.begin ()))>::type>::type> cont;
+		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
 		for (auto&& t : c)
-			cont.push_back (f (t));
+			detail::Append (cont, Invoke (f, t));
 		return cont;
 	}
 
+	template<template<typename...> class Container, typename F, typename... ContArgs>
+	auto Map (Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	{
+		for (auto&& t : c)
+			Invoke (f, t);
+	}
+
+	template<template<typename...> class Container, typename F, typename... ContArgs>
+	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	{
+		auto copy = c;
+		Map (copy, f);
+	}
+
+#ifndef USE_CPP14
 	template<typename F>
 	QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> Map (const QStringList& c, F f)
 	{
 		QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> result;
-		for (auto t : c)
-			result.push_back (f (t));
+		for (auto&& t : c)
+			result.push_back (Invoke (f, t));
 		return result;
 	}
+#endif
 
 	template<typename T, template<typename U> class Container, typename F>
-	typename std::enable_if<std::is_same<void, typename std::result_of<F (T)>::type>::value, void>::type Map (const Container<T>& c, F f)
+	auto Map (const Container<T>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>::type
 	{
-		for (auto t : c)
-			f (t);
+		for (auto&& t : c)
+			Invoke (f, t);
 	}
 
 	template<typename T, template<typename U> class Container, typename F>

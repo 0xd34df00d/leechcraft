@@ -121,7 +121,7 @@ namespace Xoox
 	, CallManager_ (new QXmppCallManager)
 #endif
 	, PubSubManager_ (new PubSubManager)
-	, PrivacyListsManager_ (new PrivacyListsManager)
+	, PrivacyListsManager_ (new PrivacyListsManager (this))
 	, AdHocCommandManager_ (new AdHocCommandManager (this))
 	, AnnotationsManager_ (0)
 	, LastActivityManager_ (new LastActivityManager)
@@ -1059,7 +1059,7 @@ namespace Xoox
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
 
-		Core::Instance ().saveRoster ();
+		Core::Instance ().ScheduleSaveRoster (5000);
 	}
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)

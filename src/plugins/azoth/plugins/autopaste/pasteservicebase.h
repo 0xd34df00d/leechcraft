@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <interfaces/core/icoreproxy.h>
 
 class QNetworkAccessManager;
 class QNetworkReply;
@@ -59,6 +60,7 @@ namespace Autopaste
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		QPointer<QObject> Entry_;
 	public:
 		struct PasteParams
@@ -68,7 +70,7 @@ namespace Autopaste
 			Highlight High_;
 		};
 
-		PasteServiceBase (QObject *entry, QObject* = 0);
+		PasteServiceBase (QObject *entry, const ICoreProxy_ptr&, QObject* = 0);
 
 		virtual void Paste (const PasteParams&) = 0;
 	protected:
@@ -78,8 +80,6 @@ namespace Autopaste
 		virtual void handleMetadata ();
 		virtual void handleFinished ();
 		virtual void handleError ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

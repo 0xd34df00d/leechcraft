@@ -164,7 +164,6 @@ namespace CSTP
 		void taskFinished (int);
 		void taskRemoved (int);
 		void taskError (int, IDownload::Error);
-		void gotEntity (const LeechCraft::Entity&);
 		void error (const QString&);
 		void fileExists (boost::logic::tribool*);
 	};

@@ -51,9 +51,7 @@ namespace Util
 		~SettingsThread ();
 
 		void Save (Util::BaseSettingsManager*, QString, QVariant);
-		void Flush (Util::BaseSettingsManager*);
 	private slots:
 		void saveScheduled ();
-		void flushSync (Util::BaseSettingsManager*);
 	};
 }

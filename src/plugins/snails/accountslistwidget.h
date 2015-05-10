@@ -36,13 +36,16 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class AccountsManager;
+
 	class AccountsListWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::AccountsListWidget Ui_;
+		AccountsManager * const AccsMgr_;
 	public:
-		AccountsListWidget (QWidget* = 0);
+		AccountsListWidget (AccountsManager*, QWidget* = 0);
 	private slots:
 		void on_AddButton__released ();
 		void on_ModifyButton__released ();

@@ -27,9 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PRIVACYLISTSMANAGER_H
+#pragma once
+
+#include <functional>
 #include <QXmppClientExtension.h>
+#include <util/sll/eithercont.h>
 
 namespace LeechCraft
 {
@@ -40,18 +42,18 @@ namespace Xoox
 	class PrivacyListItem
 	{
 	public:
-		enum Type
+		enum class Type
 		{
-			TNone,
-			TJid,
-			TGroup,
-			TSubscription
+			None,
+			Jid,
+			Group,
+			Subscription
 		};
 
-		enum Action
+		enum class Action
 		{
-			AAllow,
-			ADeny
+			Allow,
+			Deny
 		};
 
 		enum StanzaType
@@ -71,7 +73,7 @@ namespace Xoox
 		Action Action_;
 		StanzaTypes Stanzas_;
 	public:
-		PrivacyListItem (const QString& = QString (), Type = TNone, Action = ADeny);
+		PrivacyListItem (const QString& = {}, Type = Type::None, Action = Action::Deny);
 
 		void Parse (const QDomElement&);
 		QXmppElement ToXML () const;
@@ -104,33 +106,51 @@ namespace Xoox
 		QString GetName () const;
 		void SetName (const QString&);
 
-		QList<PrivacyListItem> GetItems () const;
+		const QList<PrivacyListItem>& GetItems () const;
 		void SetItems (const QList<PrivacyListItem>&);
 	};
+
+	class ClientConnection;
 
 	class PrivacyListsManager : public QXmppClientExtension
 	{
 		Q_OBJECT
 
-		enum QueryType
+		ClientConnection * const Conn_;
+
+		enum class QueryType
 		{
-			QTQueryLists,
-			QTGetList
+			QueryLists,
+			GetList
 		};
 		QMap<QString, QueryType> ID2Type_;
+	public:
+		using QueryListsCont_f = Util::EitherCont<void (QXmppIq), void (QStringList, QString, QString)>;
+		using QueryListCont_f = Util::EitherCont<void (QXmppIq), void (PrivacyList)>;
+	private:
+		QMap<QString, QueryListsCont_f> QueryLists2Handler_;
+		QMap<QString, QueryListCont_f> QueryList2Handler_;
 
 		QString CurrentName_;
 		PrivacyList CurrentList_;
 	public:
-		enum ListType
+		PrivacyListsManager (ClientConnection*);
+
+		enum class ListType
 		{
-			LTActive,
-			LTDefault
+			Active,
+			Default
 		};
 
+		bool IsSupported () const;
+
 		void QueryLists ();
+		void QueryLists (const QueryListsCont_f&);
+
 		void QueryList (const QString&);
-		void ActivateList (const QString&, ListType = LTActive);
+		void QueryList (const QString&, const QueryListCont_f&);
+
+		void ActivateList (const QString&, ListType = ListType::Active);
 		void SetList (const PrivacyList&);
 
 		const PrivacyList& GetCurrentList () const;
@@ -142,7 +162,7 @@ namespace Xoox
 		void HandleListQueryResult (const QDomElement&);
 		void HandleList (const QDomElement&);
 	signals:
-		void gotLists (const QStringList&, const QString&, const QString&);
+		void gotLists (const QStringList& lists, const QString& active, const QString& def);
 		void gotList (const PrivacyList&);
 		void currentListFetched (const PrivacyList&);
 
@@ -151,5 +171,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

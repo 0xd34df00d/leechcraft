@@ -1,7 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2014  Georg Rudoy
- * Copyright (C) 2012       Maxim Ignatenko
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -44,16 +43,12 @@ namespace Liznoo
 		IONotificationPortRef NotifyPortRef_;
 		io_object_t NotifierObject_;
 		io_connect_t Port_;
-
-		CFRunLoopSourceRef PSEventsSource_;
 	public:
 		PlatformMac (const ICoreProxy_ptr& proxy, QObject* = 0);
 		~PlatformMac ();
 
 		void Stop ();
 		void IOCallback (io_service_t, natural_t, void*);
-	public slots:
-		void powerSourcesChanged ();
 	};
 }
 }

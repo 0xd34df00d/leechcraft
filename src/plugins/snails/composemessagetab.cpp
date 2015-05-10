@@ -42,6 +42,7 @@
 #include <QFutureWatcher>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -53,6 +54,7 @@
 #include "texteditoradaptor.h"
 #include "concurrentexceptions.h"
 #include "xmlsettingsmanager.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
@@ -71,8 +73,9 @@ namespace Snails
 		S_TabClassInfo_ = info;
 	}
 
-	ComposeMessageTab::ComposeMessageTab (QWidget *parent)
+	ComposeMessageTab::ComposeMessageTab (const AccountsManager *accsMgr, QWidget *parent)
 	: QWidget (parent)
+	, AccsMgr_ (accsMgr)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
 	{
 		Ui_.setupUi (this);
@@ -174,13 +177,7 @@ namespace Snails
 		const auto quoteEndMarker = "</span>";
 
 		for (auto& str : plainSplit)
-			str = quoteStartMarker +
-#if QT_VERSION < 0x050000
-					Qt::escape (str) +
-#else
-					str.toHtmlEscaped () +
-#endif
-					quoteEndMarker;
+			str = quoteStartMarker + Util::Escape (str) + quoteEndMarker;
 
 		auto htmlBody = plainSplit.join ("<br/>");
 		editor->SetContents (htmlBody, ContentType::HTML);
@@ -198,7 +195,7 @@ namespace Snails
 
 		AccountsMenu_ = new QMenu (tr ("Accounts"));
 		auto accsGroup = new QActionGroup (this);
-		for (const auto& account : Core::Instance ().GetAccounts ())
+		for (const auto& account : AccsMgr_->GetAccounts ())
 		{
 			QAction *act = new QAction (account->GetName (), this);
 			accsGroup->addAction (act);

@@ -43,8 +43,9 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	FlashOnClickPlugin::FlashOnClickPlugin (QObject *parent)
-	: QObject (parent)
+	FlashOnClickPlugin::FlashOnClickPlugin (Core *core, QObject *parent)
+	: QObject { parent }
+	, Core_ { core }
 	{
 	}
 
@@ -71,16 +72,15 @@ namespace CleanWeb
 				property ("EnableFlashOnClick").toBool ())
 			return 0;
 
-		if (Core::Instance ().GetFlashOnClickWhitelist ()->
-				Matches (url.toString ()))
+		if (Core_->GetFlashOnClickWhitelist ()->Matches (url.toString ()))
 			return 0;
 
-		Q_FOREACH (IFlashOverrider* plugin, Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ())
+		const auto ipm = Core_->GetProxy ()->GetPluginsManager ();
+		for (const auto plugin : ipm->GetAllCastableTo<IFlashOverrider*> ())
 			if (plugin->WouldOverrideFlash (url))
 				return 0;
 
-		return new FlashPlaceHolder (url);
+		return new FlashPlaceHolder (url, Core_);
 	}
 }
 }

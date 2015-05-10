@@ -39,12 +39,6 @@ namespace Azoth
 {
 namespace Autopaste
 {
-	PasteOrgRuService::PasteOrgRuService (QObject *entry, QObject *parent)
-	: PasteServiceBase (entry, parent)
-	{
-
-	}
-
 	void PasteOrgRuService::Paste (const PasteParams& params)
 	{
 		QNetworkRequest req (QString ("http://paste.org.ru:2/"));
@@ -58,7 +52,7 @@ namespace Autopaste
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
 		const auto& bytes = reply->readAll ();
 		sender ()->deleteLater ();
-		
+
 		QRegExp rx("a href='(/\\?[A-Za-z0-9]+)'");
 		if (rx.indexIn (bytes) == -1)
 		{

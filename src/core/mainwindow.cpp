@@ -105,8 +105,6 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 
 void LeechCraft::MainWindow::Init ()
 {
-	setUpdatesEnabled (false);
-
 	hide ();
 
 	Core::Instance ().GetCoreInstanceObject ()->
@@ -119,21 +117,6 @@ void LeechCraft::MainWindow::Init ()
 			this,
 			SLOT (handleRestoreActionAdded (QAction*)));
 
-	setUpdatesEnabled (true);
-
-	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
-	{
-		show ();
-		activateWindow ();
-		raise ();
-	}
-	else
-	{
-		IsShown_ = false;
-		hide ();
-	}
-
-	WasMaximized_ = isMaximized ();
 	Ui_.ActionFullscreenMode_->setChecked (isFullScreen ());
 	QTimer::singleShot (700,
 			this,
@@ -335,7 +318,6 @@ void LeechCraft::MainWindow::ReadSettings ()
 		resize (settings.value ("size", QSize  (1150, 800)).toSize ());
 		move   (settings.value ("pos",  QPoint (10, 10)).toPoint ());
 		WasMaximized_ = settings.value ("maximized").toBool ();
-		WasMaximized_ ? showMaximized () : showNormal ();
 		settings.endGroup ();
 	}
 
@@ -579,6 +561,22 @@ void LeechCraft::MainWindow::showMain ()
 	show ();
 	activateWindow ();
 	raise ();
+}
+
+void MainWindow::showFirstTime ()
+{
+	if (!qobject_cast<Application*> (qApp)->GetVarMap ().count ("minimized"))
+	{
+		WasMaximized_ ? showMaximized () : showNormal ();
+		activateWindow ();
+		raise ();
+	}
+	else
+	{
+		IsShown_ = false;
+		hide ();
+	}
+
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)

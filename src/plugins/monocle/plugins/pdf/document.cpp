@@ -42,6 +42,7 @@
 
 #include <poppler-form.h>
 #include <poppler-version.h>
+#include <util/sll/util.h>
 #include "links.h"
 #include "fields.h"
 #include "annotations.h"
@@ -141,8 +142,8 @@ namespace PDF
 		if (!page)
 			return result;
 
-		Q_FOREACH (auto link, page->links ())
-			result << ILink_ptr (new Link (this, link));
+		for (const auto link : page->links ())
+			result << std::make_shared<Link> (this, link);
 
 		return result;
 	}
@@ -164,6 +165,13 @@ namespace PDF
 			return QString ();
 
 		return page->text (rect);
+	}
+
+	QAbstractItemModel* Document::GetOptContentModel ()
+	{
+		return PDocument_->hasOptionalContent () ?
+				PDocument_->optionalContentModel () :
+				nullptr;
 	}
 
 	IPendingFontInfoRequest* Document::RequestFontInfos () const
@@ -203,13 +211,13 @@ namespace PDF
 			switch (field->type ())
 			{
 			case Poppler::FormField::FormText:
-				fields << IFormField_ptr (new FormFieldText (field));
+				fields << std::make_shared<FormFieldText> (field);
 				break;
 			case Poppler::FormField::FormChoice:
-				fields << IFormField_ptr (new FormFieldChoice (field));
+				fields << std::make_shared<FormFieldChoice> (field);
 				break;
 			case Poppler::FormField::FormButton:
-				fields << IFormField_ptr (new FormFieldButton (field, this));
+				fields << std::make_shared<FormFieldButton> (field, this);
 				break;
 			default:
 				break;
@@ -221,12 +229,12 @@ namespace PDF
 	void Document::PaintPage (QPainter *painter, int num, double xScale, double yScale)
 	{
 		const auto backend = PDocument_->renderBackend ();
-		std::shared_ptr<void> guard;
+		Util::DefaultScopeGuard guard;
 		if (backend != Poppler::Document::ArthurBackend)
 		{
 			PDocument_->setRenderBackend (Poppler::Document::ArthurBackend);
-			guard.reset (static_cast<void*> (nullptr),
-					[this, backend] (void*) { PDocument_->setRenderBackend (backend); });
+			guard = Util::MakeScopeGuard ([this, backend]
+					{ PDocument_->setRenderBackend (backend); });
 		}
 
 		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
@@ -241,9 +249,15 @@ namespace PDF
 		typedef QMap<int, QList<QRectF>> Result_t;
 		Result_t result;
 #if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 22
-		const auto popplerCS = cs == Qt::CaseSensitive ?
+	#if POPPLER_VERSION_MAJOR > 0 || POPPLER_VERSION_MINOR >= 31
+		Poppler::Page::SearchFlags searchFlags;
+		if (cs != Qt::CaseSensitive)
+			searchFlags |= Poppler::Page::SearchFlag::IgnoreCase;
+	#else
+		const auto searchFlags = cs == Qt::CaseSensitive ?
 						Poppler::Page::CaseSensitive :
 						Poppler::Page::CaseInsensitive;
+	#endif
 
 		const auto numPages = PDocument_->numPages ();
 
@@ -252,13 +266,13 @@ namespace PDF
 
 		std::vector<std::thread> threads;
 
-		auto worker = [&resVec, &popplerCS, &text, this] (int start, int count)
+		auto worker = [&resVec, &searchFlags, &text, this] (int start, int count)
 		{
 			std::unique_ptr<Poppler::Document> doc (Poppler::Document::load (DocURL_.toLocalFile ()));
 			for (auto i = start, end = start + count; i < end; ++i)
 			{
 				std::unique_ptr<Poppler::Page> p (doc->page (i));
-				resVec [i] = p->search (text, popplerCS);
+				resVec [i] = p->search (text, searchFlags);
 			}
 		};
 		const auto threadCount = QThread::idealThreadCount ();

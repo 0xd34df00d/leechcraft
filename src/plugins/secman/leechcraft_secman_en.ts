@@ -10,16 +10,28 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Plugins::SecMan::Plugin</name>
+    <name>LeechCraft::SecMan::ContentsDisplayDialog</name>
     <message>
-        <location filename="secman.cpp" line="49"/>
+        <location filename="contentsdisplaydialog.cpp" line="89"/>
+        <source>Key index</source>
+        <translation>Key index</translation>
+    </message>
+    <message>
+        <location filename="contentsdisplaydialog.cpp" line="89"/>
+        <source>Value</source>
+        <translation>Value</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SecMan::Plugin</name>
+    <message>
+        <location filename="secman.cpp" line="48"/>
         <source>Display storages&apos; contents</source>
         <translation>Display storages&apos; contents</translation>
     </message>
     <message>
-        <location filename="secman.cpp" line="78"/>
+        <location filename="secman.cpp" line="77"/>
         <source>Secure data storage for other LeechCraft modules.</source>
-        <oldsource>Security and personal data manager for LeechCraft</oldsource>
         <translation>Secure data storage for other LeechCraft modules.</translation>
     </message>
 </context>

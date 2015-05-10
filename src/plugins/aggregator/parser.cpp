@@ -728,12 +728,12 @@ namespace Aggregator
 						curl.reset (celem.attribute ("url"));
 				}
 			}
-			boost::optional<int> raverage;
-			boost::optional<int> rcount;
-			boost::optional<int> rmin;
-			boost::optional<int> rmax;
-			boost::optional<int> views;
-			boost::optional<int> favs;
+			boost::optional<int> raverage {};
+			boost::optional<int> rcount {};
+			boost::optional<int> rmin {};
+			boost::optional<int> rmax {};
+			boost::optional<int> views {};
+			boost::optional<int> favs {};
 			boost::optional<QString> tags;
 			{
 				QList<QDomNode> comms = GetDirectChildrenNS (element, Parser::MediaRSS_,

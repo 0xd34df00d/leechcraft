@@ -41,15 +41,24 @@ namespace Azoth
 {
 namespace Autopaste
 {
+	namespace
+	{
+		template<typename T>
+		T* Creator (QObject *entry, const ICoreProxy_ptr& proxy)
+		{
+			return new T { entry, proxy };
+		}
+	}
+
 	PasteServiceFactory::PasteServiceFactory ()
 	{
-		Infos_.push_back ({ "bpaste.net", QIcon (), [] (QObject *entry) { return new BPasteService (entry); } });
-		Infos_.push_back ({ "codepad.org", QIcon (), [] (QObject *entry) { return new CodepadService (entry); } });
-		Infos_.push_back ({ "paste.org.ru", QIcon (), [] (QObject *entry) { return new PasteOrgRuService (entry); } });
-		Infos_.push_back ({ "pound-python.org", QIcon (), [] (QObject *entry) { return new PoundPythonService (entry); } });
+		Infos_.push_back ({ "bpaste.net", QIcon (), &Creator<BPasteService> });
+		Infos_.push_back ({ "codepad.org", QIcon (), &Creator<CodepadService> });
+		Infos_.push_back ({ "paste.org.ru", QIcon (), &Creator<CodepadService> });
+		Infos_.push_back ({ "pound-python.org", QIcon (), &Creator<PoundPythonService> });
 
 #ifdef WITH_JSON
-		Infos_.push_back ({ "hastebin.com", QIcon (), [] (QObject *entry) { return new HastebinService (entry); } });
+		Infos_.push_back ({ "hastebin.com", QIcon (), &Creator<HastebinService> });
 #endif
 	}
 

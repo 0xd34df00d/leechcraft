@@ -31,10 +31,7 @@
 
 #include <QWizard>
 #include <interfaces/core/icoreproxy.h>
-
-class QAuthenticator;
-class QNetworkReply;
-class QNetworkAccessManager;
+#include <util/xpc/downloadhandler.h>
 
 namespace LeechCraft
 {
@@ -55,7 +52,6 @@ namespace Dolozhee
 
 		ICoreProxy_ptr Proxy_;
 
-		QNetworkAccessManager *NAM_;
 		ChooseUserPage *ChooseUser_;
 		ReportTypePage *ReportType_;
 		BugReportPage *BugReportPage_;
@@ -78,16 +74,14 @@ namespace Dolozhee
 
 		ReportWizard (ICoreProxy_ptr, QWidget* = 0);
 
-		QNetworkAccessManager* GetNAM () const;
-		QNetworkReply* PostRequest (const QString&, const QByteArray&, const QByteArray& = "application/xml");
+		void PostRequest (const QString&, const QByteArray&, const QByteArray&,
+				const Util::DownloadHandler::DataHandler_t&);
 
 		ChooseUserPage* GetChooseUserPage () const;
 		ReportTypePage* GetReportTypePage () const;
 		BugReportPage* GetBugReportPage () const;
 		FeatureRequestPage* GetFRPage () const;
 		FileAttachPage* GetFilePage () const;
-	private slots:
-		void handleAuthenticationRequired (QNetworkReply*, QAuthenticator*);
 	};
 }
 }

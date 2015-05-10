@@ -232,16 +232,11 @@ namespace LeechCraft
 				SLOT (handleQuit ()));
 
 		Splash_ = new QSplashScreen (QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen);
-		Splash_->show ();
 		Splash_->setUpdatesEnabled (true);
-		Splash_->showMessage (tr ("Initializing LeechCraft..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+		Splash_->show ();
+		Splash_->repaint ();
 
-		connect (Core::Instance ().GetPluginManager (),
-				SIGNAL (loadProgress (const QString&)),
-				this,
-				SLOT (handleLoadProgress (const QString&)));
-
-		QTimer::singleShot (0,
+		QTimer::singleShot (50,
 				this,
 				SLOT (finishInit ()));
 	}
@@ -538,13 +533,22 @@ namespace LeechCraft
 
 	void Application::finishInit ()
 	{
+		handleLoadProgress (tr ("Initializing LeechCraft..."));
+
+		connect (Core::Instance ().GetPluginManager (),
+				SIGNAL (loadProgress (const QString&)),
+				this,
+				SLOT (handleLoadProgress (const QString&)));
+
 		auto rwm = Core::Instance ().GetRootWindowsManager ();
 		rwm->Initialize ();
 		Core::Instance ().DelayedInit ();
 
-		Splash_->showMessage (tr ("Finalizing..."), Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+		handleLoadProgress (tr ("Finalizing..."));
 
-		Splash_->finish (rwm->GetMainWindow (0));
+		const auto win = rwm->GetMainWindow (0);
+		win->showFirstTime ();
+		Splash_->finish (win);
 	}
 
 	void Application::handleQuit ()
@@ -619,6 +623,7 @@ namespace LeechCraft
 	void Application::handleLoadProgress (const QString& str)
 	{
 		Splash_->showMessage (str, Qt::AlignLeft | Qt::AlignBottom, QColor ("#FF3000"));
+		Splash_->repaint ();
 	}
 
 	void Application::checkStillRunning ()

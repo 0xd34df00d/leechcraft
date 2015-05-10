@@ -67,6 +67,7 @@
 	#include "platform/poweractions/freebsd.h"
 	#include "platform/screen/freedesktop.h"
 #elif defined(Q_OS_MAC)
+	#include "platform/battery/macplatform.h"
 	#include "platform/events/platformmac.h"
 #else
 	#pragma message ("Unsupported system")
@@ -77,6 +78,7 @@ namespace LeechCraft
 namespace Liznoo
 {
 	const int HistSize = 300;
+	const auto UpdateMsecs = 3000;
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -113,6 +115,7 @@ namespace Liznoo
 		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
 		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
+		BatteryPlatform_ = std::make_shared<Battery::MacPlatform> ();
 		PL_ = std::make_shared<PlatformMac> (Proxy_);
 #endif
 
@@ -130,7 +133,7 @@ namespace Liznoo
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleUpdateHistory ()));
-		battTimer->start (3000);
+		battTimer->start (UpdateMsecs);
 
 		Suspend_ = new QAction (tr ("Suspend"), this);
 		connect (Suspend_,
@@ -432,7 +435,7 @@ namespace Liznoo
 			return;
 		}
 
-		auto dialog = new BatteryHistoryDialog (HistSize);
+		auto dialog = new BatteryHistoryDialog (HistSize, UpdateMsecs / 1000.);
 		dialog->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		Battery2Dialog_ [id] = dialog;

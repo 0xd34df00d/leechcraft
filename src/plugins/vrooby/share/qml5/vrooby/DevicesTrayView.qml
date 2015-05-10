@@ -4,7 +4,6 @@ import QtQuick.Controls 1.2
 
 Rectangle {
     id: rootRect
-    anchors.fill: parent
     smooth: true
     radius: 5
 

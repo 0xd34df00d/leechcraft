@@ -39,6 +39,7 @@
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -54,14 +55,21 @@
 #include "mailmodelsmanager.h"
 #include "messagelisteditormanager.h"
 #include "mailtabreadmarker.h"
+#include "composemessagetabfactory.h"
+#include "accountsmanager.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	MailTab::MailTab (const ICoreProxy_ptr& proxy, const TabClassInfo& tc, QObject *pmt, QWidget *parent)
+	MailTab::MailTab (const ICoreProxy_ptr& proxy,
+			const AccountsManager *accsMgr,
+			ComposeMessageTabFactory *cmpMsgTabFactory,
+			const TabClassInfo& tc, QObject *pmt, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
+	, ComposeMessageTabFactory_ (cmpMsgTabFactory)
+	, AccsMgr_ (accsMgr)
 	, TabToolbar_ (new QToolBar)
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
@@ -101,7 +109,7 @@ namespace Snails
 					}
 				});
 
-		Ui_.AccountsTree_->setModel (Core::Instance ().GetAccountsModel ());
+		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
 		MailSortFilterModel_->setSortRole (MailModel::MailRole::Sort);
@@ -493,11 +501,7 @@ namespace Snails
 				auto lines = body.split ('\n');
 				for (auto& line : lines)
 				{
-#if QT_VERSION < 0x050000
-					const auto& escaped = Qt::escape (line);
-#else
-					const auto& escaped = line.toHtmlEscaped ();
-#endif
+					const auto& escaped = Util::Escape (line);
 					if (line.startsWith ('>'))
 						line = "<span class='replyPart'>" + escaped + "</span>";
 					else
@@ -555,7 +559,7 @@ namespace Snails
 			rebuildOpsToFolders ();
 		}
 
-		CurrAcc_ = Core::Instance ().GetAccount (idx);
+		CurrAcc_ = AccsMgr_->GetAccount (idx);
 		if (!CurrAcc_)
 			return;
 
@@ -565,6 +569,10 @@ namespace Snails
 				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
 				ReadMarker_.get (),
 				SLOT (handleWillMoveMessages (QList<QByteArray>, QStringList)));
+		connect (this,
+				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
+				this,
+				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
 
 		connect (CurrAcc_.get (),
 				SIGNAL (messageBodyFetched (Message_ptr)),
@@ -696,7 +704,7 @@ namespace Snails
 		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
-		Core::Instance ().PrepareReplyTab (CurrMsg_, CurrAcc_);
+		ComposeMessageTabFactory_->PrepareReplyTab (CurrMsg_, CurrAcc_);
 	}
 
 	namespace
@@ -822,6 +830,7 @@ namespace Snails
 			return;
 
 		CurrAcc_->SetReadStatus (false, GetSelectedIds (), MailModel_->GetCurrentFolder ());
+		ReadMarker_->SetCurrentMessage ({});
 	}
 
 	void MailTab::handleRemoveMsgs ()
@@ -865,6 +874,25 @@ namespace Snails
 		}
 	}
 
+	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		const auto selModel = Ui_.MailTree_->selectionModel ();
+		if (!selModel)
+			return;
+
+		if (folder != MailModel_->GetCurrentFolder ())
+			return;
+
+		const auto& curIdx = Ui_.MailTree_->currentIndex ();
+		const auto& currentId = curIdx.data (MailModel::MailRole::ID).toByteArray ();
+		if (!ids.contains (currentId))
+			return;
+
+		MailModel_->MarkUnavailable (ids);
+
+		selModel->clear ();
+	}
+
 	void MailTab::handleAttachment ()
 	{
 		if (!CurrAcc_)
@@ -891,7 +919,7 @@ namespace Snails
 
 	void MailTab::handleFetchNewMail ()
 	{
-		for (const auto acc : Core::Instance ().GetAccounts ())
+		for (const auto acc : AccsMgr_->GetAccounts ())
 			acc->Synchronize ();
 	}
 

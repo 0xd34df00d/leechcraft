@@ -286,15 +286,22 @@ namespace Util
 		const auto& rect = contentsBoundingRect ().toRect ();
 #endif
 
-		QwtPlot plot;
-		plot.setFrameShape (QFrame::NoFrame);
+		if (!Plot_)
+		{
+			Plot_ = std::make_shared<QwtPlot> ();
+			Plot_->setFrameShape (QFrame::NoFrame);
+		}
+
+		auto& plot = *Plot_;
 		plot.enableAxis (QwtPlot::yLeft, LeftAxisEnabled_);
 		plot.enableAxis (QwtPlot::xBottom, BottomAxisEnabled_);
 		plot.setAxisTitle (QwtPlot::yLeft, LeftAxisTitle_);
 		plot.setAxisTitle (QwtPlot::xBottom, BottomAxisTitle_);
-		plot.resize (rect.size ());
 
-		auto setPaletteColor = [&plot] (const QColor& color, QPalette::ColorRole role) -> void
+		if (plot.size () != rect.size ())
+			plot.resize (rect.size ());
+
+		auto setPaletteColor = [&plot] (const QColor& color, QPalette::ColorRole role)
 		{
 			if (!color.isValid ())
 				return;

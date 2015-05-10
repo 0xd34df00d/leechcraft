@@ -70,6 +70,8 @@ namespace Murm
 
 		QImage Avatar_;
 
+		QImage AppImage_;
+
 		QPointer<VCardDialog> VCardDialog_;
 
 		QStringList Groups_;
@@ -80,6 +82,8 @@ namespace Murm
 
 		void UpdateInfo (const UserInfo&, bool spontaneous = true);
 		const UserInfo& GetInfo () const;
+
+		void UpdateAppInfo (const AppInfo&, const QImage&);
 
 		void Send (VkMessage*);
 

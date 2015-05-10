@@ -48,6 +48,24 @@ namespace Murm
 		QString Name_;
 	};
 
+	struct AppInfo
+	{
+		qulonglong AppId_;
+
+		bool IsMobile_;
+
+		QString Title_;
+		QUrl Icon25_;
+	};
+
+	inline bool operator== (const AppInfo& left, const AppInfo& right)
+	{
+		return left.AppId_ == right.AppId_ &&
+				left.IsMobile_ == right.IsMobile_ &&
+				left.Title_ == right.Title_ &&
+				left.Icon25_ == right.Icon25_;
+	}
+
 	struct UserInfo
 	{
 		qulonglong ID_;
@@ -76,6 +94,8 @@ namespace Murm
 		bool IsOnline_;
 
 		QList<qulonglong> Lists_;
+
+		AppInfo AppInfo_;
 	};
 
 	enum MessageFlag

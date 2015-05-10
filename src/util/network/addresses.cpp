@@ -38,7 +38,7 @@ namespace Util
 	AddrList_t GetLocalAddresses (int defaultPort)
 	{
 		AddrList_t defaultAddrs;
-		const auto locals
+		const auto locals =
 		{
 			QHostAddress::parseSubnet ("10.0.0.0/8"),
 			QHostAddress::parseSubnet ("172.16.0.0/12"),

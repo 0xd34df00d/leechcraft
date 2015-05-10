@@ -371,7 +371,7 @@ namespace XooxUtil
 				QXmppPresence::Available;
 
 		QXmppPresence pres (presType);
-		if (state != SOffline)
+		if (state != SOffline && state <= SInvisible)
 			pres.setAvailableStatusType (static_cast<QXmppPresence::AvailableStatusType> (state - 1));
 		pres.setStatusText (text);
 		pres.setPriority (prio);

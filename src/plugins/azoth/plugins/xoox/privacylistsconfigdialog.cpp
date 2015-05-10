@@ -32,6 +32,8 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QStandardItemModel>
+#include <QtDebug>
+#include <util/sll/functional.h>
 #include "privacylistsitemdialog.h"
 
 namespace LeechCraft
@@ -58,6 +60,8 @@ namespace Xoox
 				SLOT (handleError (QString)));
 
 		QueryLists ();
+
+		setAttribute (Qt::WA_DeleteOnClose);
 	}
 
 	void PrivacyListsConfigDialog::QueryLists ()
@@ -76,18 +80,17 @@ namespace Xoox
 	{
 		if (Lists_.contains (list))
 		{
-			handleGotList (Lists_ [list]);
+			HandleGotList (Lists_ [list]);
 			return;
 		}
 
 		Ui_.StatusLabel_->setText (tr ("Fetching list %1...").arg (list));
 
-		connect (Manager_,
-				SIGNAL (gotList (PrivacyList)),
-				this,
-				SLOT (handleGotList (PrivacyList)));
-
-		Manager_->QueryList (list);
+		Manager_->QueryList (list,
+				{
+					[] (const QXmppIq&) { qWarning () << Q_FUNC_INFO << "unable to fetch list"; },
+					Util::BindMemFn (&PrivacyListsConfigDialog::HandleGotList, this)
+				});
 	}
 
 	void PrivacyListsConfigDialog::AddListToBoxes (const QString& listName)
@@ -109,22 +112,22 @@ namespace Xoox
 
 		switch (item.GetType ())
 		{
-		case PrivacyListItem::TNone:
+		case PrivacyListItem::Type::None:
 			modelItems << new QStandardItem (tr ("None"));
 			break;
-		case PrivacyListItem::TJid:
+		case PrivacyListItem::Type::Jid:
 			modelItems << new QStandardItem (tr ("JID"));
 			break;
-		case PrivacyListItem::TSubscription:
+		case PrivacyListItem::Type::Subscription:
 			modelItems << new QStandardItem (tr ("Subscription"));
 			break;
-		case PrivacyListItem::TGroup:
+		case PrivacyListItem::Type::Group:
 			modelItems << new QStandardItem (tr ("Group"));
 			break;
 		}
 
 		modelItems << new QStandardItem (item.GetValue ());
-		modelItems << new QStandardItem (item.GetAction () == PrivacyListItem::AAllow ?
+		modelItems << new QStandardItem (item.GetAction () == PrivacyListItem::Action::Allow ?
 					tr ("Allow") :
 					tr ("Deny"));
 
@@ -158,18 +161,14 @@ namespace Xoox
 			Manager_->SetList (pl);
 
 		Manager_->ActivateList (Ui_.ActiveList_->currentText (),
-				PrivacyListsManager::LTActive);
+				PrivacyListsManager::ListType::Active);
 		Manager_->ActivateList (Ui_.DefaultList_->currentText (),
-				PrivacyListsManager::LTDefault);
-
-		deleteLater ();
+				PrivacyListsManager::ListType::Default);
 	}
 
 	void PrivacyListsConfigDialog::reject ()
 	{
 		QDialog::reject ();
-
-		deleteLater ();
 	}
 
 	void PrivacyListsConfigDialog::on_ConfigureList__activated (int idx)
@@ -193,6 +192,8 @@ namespace Xoox
 		Ui_.ConfigureList_->blockSignals (true);
 		Ui_.ConfigureList_->setCurrentIndex (Ui_.ConfigureList_->findText (listName));
 		Ui_.ConfigureList_->blockSignals (false);
+
+		on_DefaultPolicy__currentIndexChanged (Ui_.DefaultList_->currentIndex ());
 	}
 
 	void PrivacyListsConfigDialog::on_RemoveButton__released ()
@@ -232,21 +233,17 @@ namespace Xoox
 		if (listName.isEmpty ())
 			return;
 
-		const PrivacyListItem::Action action = idx == 0 ?
-				PrivacyListItem::AAllow :
-				PrivacyListItem::ADeny;
+		const auto action = idx == 0 ?
+				PrivacyListItem::Action::Allow :
+				PrivacyListItem::Action::Deny;
 
-		QList<PrivacyListItem> items = Lists_ [listName].GetItems ();
+		auto items = Lists_ [listName].GetItems ();
 		if (!items.isEmpty () &&
-				items.last ().GetType () == PrivacyListItem::TNone)
+				items.last ().GetType () == PrivacyListItem::Type::None)
 			items.removeLast ();
-		if (action == PrivacyListItem::ADeny)
-		{
-			PrivacyListItem item;
-			item.SetType (PrivacyListItem::TNone);
-			item.SetAction (action);
-			items << item;
-		}
+
+		items.append ({ {}, PrivacyListItem::Type::None, action });
+
 		Lists_ [listName].SetItems (items);
 	}
 
@@ -334,9 +331,9 @@ namespace Xoox
 		Ui_.ConfigureList_->clear ();
 		Ui_.ConfigureList_->addItems (lists);
 		Ui_.ActiveList_->clear ();
-		Ui_.ActiveList_->addItems (QStringList (QString ()) + lists);
+		Ui_.ActiveList_->addItems (QStringList { {} } + lists);
 		Ui_.DefaultList_->clear ();
-		Ui_.DefaultList_->addItems (QStringList (QString ()) + lists);
+		Ui_.DefaultList_->addItems (QStringList { {} } + lists);
 
 		int idx = Ui_.ActiveList_->findText (active);
 		if (idx >= 0)
@@ -351,12 +348,8 @@ namespace Xoox
 			QueryList (lists.at (0));
 	}
 
-	void PrivacyListsConfigDialog::handleGotList (const PrivacyList& list)
+	void PrivacyListsConfigDialog::HandleGotList (const PrivacyList& list)
 	{
-		disconnect (Manager_,
-				SIGNAL (gotList (PrivacyList)),
-				this,
-				SLOT (handleGotList (PrivacyList)));
 		Ui_.StatusLabel_->setText ({});
 
 		ReinitModel ();
@@ -364,10 +357,11 @@ namespace Xoox
 		Lists_ [list.GetName ()] = list;
 
 		auto items = list.GetItems ();
-		if (!items.isEmpty () && items.last ().GetType () == PrivacyListItem::TNone)
+		if (!items.isEmpty () && items.last ().GetType () == PrivacyListItem::Type::None)
 		{
 			const auto& item = items.takeLast ();
-			Ui_.DefaultPolicy_->setCurrentIndex (item.GetAction () == PrivacyListItem::AAllow ? 0 : 1);
+			const auto idx = item.GetAction () == PrivacyListItem::Action::Allow ? 0 : 1;
+			Ui_.DefaultPolicy_->setCurrentIndex (idx);
 		}
 
 		for (const auto& item : items)

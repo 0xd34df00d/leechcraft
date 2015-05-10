@@ -35,6 +35,7 @@
 #include <util/models/flattenfiltermodel.h>
 #include <util/models/mergemodel.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <interfaces/devices/iremovabledevmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/isyncplugin.h>
@@ -214,8 +215,7 @@ namespace LMP
 		QList<ISyncPlugin*> FindSuitables (const QString& mountPath)
 		{
 			QList<ISyncPlugin*> suitables;
-			auto syncers = Core::Instance ().GetSyncPlugins ();
-			Q_FOREACH (auto syncer, syncers)
+			for (auto syncer : Core::Instance ().GetSyncPlugins ())
 			{
 				auto isp = qobject_cast<ISyncPlugin*> (syncer);
 				if (isp->CouldSync (mountPath) != SyncConfLevel::None)
@@ -237,9 +237,7 @@ namespace LMP
 			CurrentSyncer_ = suitables.value (0);
 		else
 		{
-			QStringList items;
-			for (ISyncPlugin *plugin : suitables)
-				items << plugin->GetSyncSystemName ();
+			auto items = Util::Map (suitables, &ISyncPlugin::GetSyncSystemName);
 
 			const auto& name = QInputDialog::getItem (this,
 					tr ("Select syncer"),
@@ -252,12 +250,10 @@ namespace LMP
 			CurrentSyncer_ = suitables.value (items.indexOf (name));
 		}
 
-		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
-		QStringList paths;
-		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().toList (),
 				[] (const QModelIndex& idx)
 					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
-		paths.removeAll (QString ());
+		paths.removeAll ({});
 
 		Ui_.UploadLog_->clear ();
 
@@ -271,12 +267,10 @@ namespace LMP
 		Merger_->GetModelForRow (idx, &starting);
 		idx -= starting;
 
-		const auto& selected = DevUploadModel_->GetSelectedIndexes ();
-		QStringList paths;
-		std::transform (selected.begin (), selected.end (), std::back_inserter (paths),
+		auto paths = Util::Map (DevUploadModel_->GetSelectedIndexes ().toList (),
 				[] (const QModelIndex& idx)
 					{ return idx.data (LocalCollectionModel::Role::TrackPath).toString (); });
-		paths.removeAll (QString ());
+		paths.removeAll ({});
 
 		auto syncer = qobject_cast<IUnmountableSync*> (UnmountableMgr_->GetDeviceManager (idx));
 		const auto& info = UnmountableMgr_->GetDeviceInfo (idx);

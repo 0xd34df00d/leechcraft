@@ -61,6 +61,7 @@
 #include "interfaces/azoth/ihavedirectedstatus.h"
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
+#include "interfaces/azoth/ihaveblacklists.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
@@ -327,19 +328,17 @@ namespace Azoth
 
 			const bool shareGroups = dia.ShouldSuggestGroups ();
 
-			QList<RIEXItem> items;
-			for (const auto toShare : dia.GetSelectedEntries ())
-			{
-				RIEXItem item
-				{
-					RIEXItem::AAdd,
-					toShare->GetHumanReadableID (),
-					toShare->GetEntryName (),
-					shareGroups ? toShare->Groups () : QStringList ()
-				};
-				items << item;
-			}
-
+			const auto& items = Util::Map (dia.GetSelectedEntries (),
+					[shareGroups] (ICLEntry *toShare) -> RIEXItem
+					{
+						return
+						{
+							RIEXItem::AAdd,
+							toShare->GetHumanReadableID (),
+							toShare->GetEntryName (),
+							shareGroups ? toShare->Groups () : QStringList ()
+						};
+					});
 			riex->SuggestItems (items, entry->GetQObject (), dia.GetShareMessage ());
 		}
 
@@ -622,6 +621,7 @@ namespace Azoth
 			{ "remove", SingleEntryActor_f (Remove) },
 			{ "sep_afterrostermodify", {} },
 			{ "directedpresence", MultiEntryActor_f (SendDirectedStatus) },
+			{ "block", {} },
 			{ "authorization", {} },
 			{ "notifywhen", {} }
 		};
@@ -702,7 +702,7 @@ namespace Azoth
 			CreateActionsForEntry (entry);
 		UpdateActionsForEntry (entry);
 
-		const QHash<QByteArray, QAction*>& id2action = Entry2Actions_ [entry];
+		const auto& id2action = Entry2Actions_ [entry];
 		QList<QAction*> result;
 
 		auto setter = [&result, &id2action, this] (decltype (BeforeRolesNames) pairs) -> void
@@ -715,14 +715,15 @@ namespace Azoth
 					continue;
 
 				if (pair.second.which ())
-				{
 					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+
+				if (!action->property ("Azoth/EntryActor").isNull ())
 					connect (action,
 							SIGNAL (triggered ()),
 							this,
 							SLOT (handleActoredActionTriggered ()),
 							Qt::UniqueConnection);
-				}
+
 				result << action;
 			}
 		};
@@ -830,7 +831,11 @@ namespace Azoth
 					continue;
 
 				const auto refAction = Entry2Actions_ [entries.first ()] [name];
-				if (!pair.second.which () && !refAction->isSeparator () && !refAction->menu ())
+				const auto& refActorVar = refAction->property ("Azoth/EntryActor");
+				if (refActorVar.isNull () &&
+						!pair.second.which () &&
+						!refAction->isSeparator () &&
+						!refAction->menu ())
 					continue;
 
 				auto action = new QAction (refAction->text (), parent);
@@ -838,7 +843,10 @@ namespace Azoth
 				{
 					action->setSeparator (refAction->isSeparator ());
 					action->setProperty ("Azoth/Entries", QVariant::fromValue (entries));
-					action->setProperty ("Azoth/EntryActor", QVariant::fromValue (pair.second));
+					action->setProperty ("Azoth/EntryActor",
+							refActorVar.isNull () ?
+									QVariant::fromValue (pair.second) :
+									refActorVar);
 					action->setProperty ("ActionIcon", refAction->property ("ActionIcon"));
 					action->setProperty ("ReferenceAction", QVariant::fromValue<QObject*> (refAction));
 					connect (action,
@@ -1135,6 +1143,20 @@ namespace Azoth
 						}
 					}));
 		}
+
+		if (const auto ihb = qobject_cast<IHaveBlacklists*> (acc->GetQObject ()))
+			if (ihb->SupportsBlacklists ())
+			{
+				const auto block = new QAction (tr ("Blacklist..."), entry->GetQObject ());
+				block->setProperty ("ActionIcon", "im-ban-user");
+				Entry2Actions_ [entry] ["block"] = block;
+				Action2Areas_ [block] << CLEAAContactListCtxtMenu;
+				block->setProperty ("Azoth/EntryActor",
+						QVariant::fromValue<EntryActor_f> ({
+							[ihb] (const QList<ICLEntry*>& entries)
+								{ ihb->SuggestToBlacklist (entries); }
+						}));
+			}
 
 		auto notifyMenu = new QMenu (tr ("Notify when"));
 		Entry2Actions_ [entry] ["notifywhen"] = notifyMenu->menuAction ();

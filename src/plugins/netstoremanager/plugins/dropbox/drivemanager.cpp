@@ -121,16 +121,6 @@ namespace DBox
 			ApiCallQueue_ << [this, filePath, parent] () { RequestChunkUpload (filePath, parent); };
 	}
 
-	void DriveManager::Download (const QString& id, const QString& filepath,
-			TaskParameters tp, bool open)
-	{
-		if (id.isEmpty ())
-			return;
-		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id, filepath, tp, open] ()
-				{ DownloadFile (id, filepath, tp, open); };
-	}
-
 	std::shared_ptr<void> DriveManager::MakeRunnerGuard ()
 	{
 		const bool shouldRun = ApiCallQueue_.isEmpty ();
@@ -380,31 +370,12 @@ namespace DBox
 				SLOT (handleUploadProgress (qint64, qint64)));
 	}
 
-	void DriveManager::DownloadFile (const QString& id, const QString& filePath,
-			TaskParameters tp, bool open)
+	QUrl DriveManager::GenerateDownloadUrl (const QString& id) const
 	{
-		QString savePath;
-		if (open)
-#if QT_VERSION < 0x050000
-			savePath = QDesktopServices::storageLocation (QDesktopServices::TempLocation) +
-#else
-			savePath = QStandardPaths::writableLocation (QStandardPaths::TempLocation) +
-#endif
-					"/" + QFileInfo (filePath).fileName ();
-
-		QUrl url (QString ("https://api-content.dropbox.com/1/files/%1/%2?access_token=%3")
+		return QUrl (QString ("https://api-content.dropbox.com/1/files/%1/%2?access_token=%3")
 				.arg ("dropbox")
 				.arg (id)
 				.arg (Account_->GetAccessToken ()));
-		auto e = Util::MakeEntity (url, savePath, tp);
-		QFileInfo fi (filePath);
-		e.Additional_ ["Filename"] = QString ("%1_%2.%3")
-				.arg (fi.baseName ())
-				.arg (QDateTime::currentDateTime ().toTime_t ())
-				.arg (fi.completeSuffix ());
-		open ?
-			Core::Instance ().DelegateEntity (e, filePath, open) :
-			Core::Instance ().SendEntity (e);
 	}
 
 	void DriveManager::ParseError (const QVariantMap& map)

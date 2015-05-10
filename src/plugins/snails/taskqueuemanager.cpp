@@ -32,6 +32,8 @@
 #include "accountthreadworker.h"
 #include "concurrentexceptions.h"
 
+Q_DECLARE_METATYPE (QList<QByteArray>)
+
 namespace LeechCraft
 {
 namespace Snails
@@ -67,6 +69,75 @@ namespace Snails
 				left.Args_ == right.Args_;
 	}
 
+	namespace
+	{
+		TaskQueueManager::MaybeMergeResult MergeSetReadStatus (const QList<TaskQueueItem>& list,
+				const TaskQueueItem& item)
+		{
+			if (item.Method_ != "setReadStatus")
+				return {};
+
+			using SetReadStatus = AccountThreadWorker::Args::SetReadStatus;
+
+			const auto& thisItems = item.Args_ [SetReadStatus::Ids].GetAs<QList<QByteArray>> ();
+
+			if (thisItems.size () > 1)
+				return {};
+
+			const auto& thisItem = thisItems.value (0);
+
+			boost::optional<ValuedMetaArgument> readStatusArg;
+
+			for (int i = 0; i < list.size (); ++i)
+			{
+				const auto& existing = list.at (i);
+				if (existing.Method_ != item.Method_)
+					continue;
+
+				if (existing.Args_ [SetReadStatus::Folder] != item.Args_ [SetReadStatus::Folder])
+					continue;
+
+				const auto& existingIds = existing.Args_ [SetReadStatus::Ids].GetAs<QList<QByteArray>> ();
+				if (!existingIds.contains (thisItem))
+					continue;
+
+				readStatusArg = existing.Args_ [SetReadStatus::Read];
+			}
+
+			if (readStatusArg)
+			{
+				if (readStatusArg == item.Args_ [SetReadStatus::Read])
+					return TaskQueueManager::MergeResult {};
+				else
+					return {};
+			}
+
+			for (int i = 0; i < list.size (); ++i)
+			{
+				const auto& existing = list.at (i);
+				if (existing.Method_ != item.Method_ ||
+						existing.Args_ [SetReadStatus::Read] != item.Args_ [SetReadStatus::Read])
+					continue;
+
+				auto args = existing.Args_;
+				args [SetReadStatus::Ids] = args [SetReadStatus::Ids].GetAs<QList<QByteArray>> () << thisItem;
+
+				return TaskQueueManager::MergeResult
+				{
+					{},
+					{ { i, args } }
+				};
+			}
+
+			return {};
+		}
+	}
+
+	QList<TaskQueueManager::TaskMerger> TaskQueueManager::Mergers_
+	{
+		&MergeSetReadStatus
+	};
+
 	TaskQueueManager::TaskQueueManager (AccountThreadWorker *worker)
 	: ATW_ { worker }
 	{
@@ -75,6 +146,35 @@ namespace Snails
 				this,
 				SLOT (rotateTaskQueue ()),
 				Qt::QueuedConnection);
+	}
+
+	void TaskQueueManager::RegisterTaskMerger (const TaskMerger& merger)
+	{
+		Mergers_ << merger;
+	}
+
+	namespace
+	{
+		TaskQueueManager::MaybeMergeResult FindMergeCandidate (const QList<TaskQueueItem>& items,
+				const TaskQueueItem& newItem, const QList<TaskQueueManager::TaskMerger>& mergers)
+		{
+			for (const auto& merger : mergers)
+			{
+				try
+				{
+					if (const auto result = merger (items, newItem))
+						return result;
+				}
+				catch (const std::runtime_error& e)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to execute merger:"
+							<< e.what ();
+				}
+			}
+
+			return {};
+		}
 	}
 
 	void TaskQueueManager::AddTasks (QList<TaskQueueItem> items)
@@ -95,6 +195,12 @@ namespace Snails
 								[&item] (const TaskQueueItem& other)
 									{ return item.ID_ == other.ID_; }))
 					continue;
+
+				if (const auto& mergeCandidate = FindMergeCandidate (Items_, item, Mergers_))
+				{
+					Merge (*mergeCandidate);
+					continue;
+				}
 
 				const auto pos = std::lower_bound (Items_.begin (), Items_.end (),
 						item,
@@ -121,6 +227,17 @@ namespace Snails
 	{
 		QMutexLocker locker { &ItemsMutex_ };
 		return Items_.isEmpty () ? TaskQueueItem {} : Items_.takeLast ();
+	}
+
+	void TaskQueueManager::Merge (MergeResult merge)
+	{
+		for (const auto& pair : merge.ToUpdate_)
+			Items_ [pair.first].Args_ = pair.second;
+
+		std::sort (merge.ToRemove_.begin (), merge.ToRemove_.end ());
+		std::reverse (merge.ToRemove_.begin (), merge.ToRemove_.end ());
+		for (const auto index : merge.ToRemove_)
+			Items_.removeAt (index);
 	}
 
 	template<typename Ex>

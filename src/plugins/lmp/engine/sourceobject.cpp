@@ -837,6 +837,8 @@ namespace LMP
 			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
 			break;
+		case GST_MESSAGE_RESET_TIME:
+			break;
 #endif
 		default:
 			qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);

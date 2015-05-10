@@ -104,19 +104,20 @@ namespace LeechCraft
 
 		MainWindowMenuManager* GetMenuManager () const;
 
-		QMenu* createPopupMenu ();
+		QMenu* createPopupMenu () override;
 	public slots:
 		void catchError (QString);
 		void showHideMain ();
 		void showMain ();
+		void showFirstTime ();
 
 		void handleQuit ();
 	protected:
-		virtual void closeEvent (QCloseEvent*);
-		virtual void keyPressEvent (QKeyEvent*);
+		void closeEvent (QCloseEvent*) override;
+		void keyPressEvent (QKeyEvent*) override;
 
-		virtual void dragEnterEvent (QDragEnterEvent*);
-		virtual void dropEvent (QDropEvent*);
+		void dragEnterEvent (QDragEnterEvent*) override;
+		void dropEvent (QDropEvent*) override;
 	private:
 		void InitializeInterface ();
 		void SetStatusBar ();

@@ -43,6 +43,7 @@
 #include <QToolBar>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/ijobholder.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/idownload.h>
@@ -661,27 +662,27 @@ namespace CSTP
 			if (!err)
 			{
 				auto nah = new Util::NotificationActionHandler (e);
-				nah->AddFunction (tr ("Handle..."), [this, filename] ()
+				nah->AddFunction (tr ("Handle..."), [this, filename]
 						{
 							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
 									QString (),
 									LeechCraft::FromUserInitiated);
-							emit gotEntity (e);
+							CoreProxy_->GetEntityManager ()->HandleEntity (e);
 						});
 				nah->AddFunction (tr ("Open externally"),
-						[filename] ()
+						[filename]
 						{
 							QDesktopServices::openUrl (QUrl::fromLocalFile (filename));
 						});
 				nah->AddFunction (tr ("Show folder"),
-						[filename] () -> void
+						[filename]
 						{
 							const auto& dirPath = QFileInfo (filename).absolutePath ();
 							QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
 						});
 			}
 
-			emit gotEntity (e);
+			CoreProxy_->GetEntityManager ()->HandleEntity (e);
 		}
 
 		if (!err)
@@ -697,7 +698,7 @@ namespace CSTP
 						{},
 						tp);
 				e.Additional_ [" Tags"] = tags;
-				emit gotEntity (e);
+				CoreProxy_->GetEntityManager ()->HandleEntity (e);
 			}
 		}
 		else
@@ -770,10 +771,6 @@ namespace CSTP
 
 			QByteArray data = settings.value ("Task").toByteArray ();
 			td.Task_.reset (new Task ());
-			connect (td.Task_.get (),
-					SIGNAL (gotEntity (const LeechCraft::Entity&)),
-					this,
-					SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			try
 			{
 				td.Task_->Deserialize (data);

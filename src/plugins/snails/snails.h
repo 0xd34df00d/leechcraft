@@ -45,6 +45,9 @@ namespace Util
 
 namespace Snails
 {
+	class AccountsManager;
+	class ComposeMessageTabFactory;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
@@ -61,6 +64,9 @@ namespace Snails
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		Util::WkFontsWidget *WkFontsWidget_;
+
+		AccountsManager *AccsMgr_;
+		ComposeMessageTabFactory *ComposeTabFactory_;
 
 		ICoreProxy_ptr Proxy_;
 	public:
@@ -87,9 +93,6 @@ namespace Snails
 		void changeTabIcon (QWidget*, const QIcon&);
 		void statusBarChanged (QWidget*, const QString&);
 		void raiseTab (QWidget*);
-
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }

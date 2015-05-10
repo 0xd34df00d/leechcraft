@@ -171,13 +171,15 @@ namespace LeechCraft
 			return;
 		}
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		const auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookTabSetText (proxy, index,
 				Core::Instance ().GetRootWindowsManager ()->GetWindowIndex (Window_));
 		if (proxy->IsCancelled ())
 			return;
 
-		MainTabBar_->setTabText (index, text);
+		auto escaped = text;
+		escaped.replace ("&", "&&");
+		MainTabBar_->setTabText (index, escaped);
 		MainTabBar_->setTabToolTip (index, text);
 		if (!text.isEmpty ())
 			TabNames_ [index] = text;

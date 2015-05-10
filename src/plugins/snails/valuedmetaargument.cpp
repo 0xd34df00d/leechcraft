@@ -58,6 +58,11 @@ namespace Snails
 		debug << " }";
 		debug = debug.space ();
 	}
+
+	bool operator!= (const ValuedMetaArgument& arg1, const ValuedMetaArgument& arg2)
+	{
+		return !(arg1 == arg2);
+	}
 }
 }
 

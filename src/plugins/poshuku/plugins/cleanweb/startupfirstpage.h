@@ -39,13 +39,17 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+	class Core;
+
 	class StartupFirstPage : public QWizardPage
 	{
 		Q_OBJECT
 
 		Ui::StartupFirstPageWidget Ui_;
+
+		Core * const Core_;
 	public:
-		StartupFirstPage (QWidget* = 0);
+		StartupFirstPage (Core *core, QWidget* = 0);
 
 		void initializePage ();
 	private slots:

@@ -31,6 +31,7 @@
 
 #include <QAbstractItemModel>
 #include <interfaces/structures.h>
+#include <interfaces/core/icoreproxy.h>
 #include "filter.h"
 
 namespace LeechCraft
@@ -45,10 +46,12 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
+		const QStringList Headers_;
+
 		Filter Filter_;
-		QStringList Headers_;
 	public:
-		UserFiltersModel (QObject* = 0);
+		UserFiltersModel (const ICoreProxy_ptr&, QObject* = 0);
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
 		QVariant data (const QModelIndex&, int) const;
@@ -63,16 +66,15 @@ namespace CleanWeb
 		void Remove (int);
 
 		void AddMultiFilters (QStringList);
+
+		void ReadSettings ();
+		void WriteSettings ();
 	private:
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
-		void ReadSettings ();
-		void WriteSettings () const;
 	private slots:
 		void blockImage ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void filtersChanged ();
 	};
 }

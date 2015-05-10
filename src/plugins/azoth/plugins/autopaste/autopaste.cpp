@@ -30,13 +30,18 @@
 #include "autopaste.h"
 #include <QIcon>
 #include <QMessageBox>
+#include <QTextEdit>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/azoth/iaccount.h>
 #include "xmlsettingsmanager.h"
 #include "codepadservice.h"
 #include "pastedialog.h"
+#include "actionsstorage.h"
 
 namespace LeechCraft
 {
@@ -49,6 +54,12 @@ namespace Autopaste
 		Util::InstallTranslator ("azoth_autopaste");
 
 		Proxy_ = proxy;
+
+		ActionsStorage_ = new ActionsStorage { this };
+		connect (ActionsStorage_,
+				SIGNAL (pasteRequested (QObject*)),
+				this,
+				SLOT (handlePasteRequested (QObject*)));
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog);
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
@@ -96,6 +107,51 @@ namespace Autopaste
 		return XmlSettingsDialog_;
 	}
 
+	template<typename OkF, typename CancelF>
+	void Plugin::PerformPaste (ICLEntry *other, const QString& text, OkF okCont, CancelF cancelCont)
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Autopaste");
+		settings.beginGroup ("SavedChoices");
+		settings.beginGroup (other->GetEntryID ());
+		const auto guard = Util::MakeScopeGuard ([&settings]
+				{
+					settings.endGroup ();
+					settings.endGroup ();
+				});
+
+		PasteDialog dia;
+
+		dia.SetCreatorName (settings.value ("Service").toString ());
+		dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
+
+		dia.exec ();
+
+		switch (dia.GetChoice ())
+		{
+		case PasteDialog::Cancel:
+			cancelCont ();
+			break;
+		case PasteDialog::No:
+			break;
+		case PasteDialog::Yes:
+		{
+			auto service = dia.GetCreator () (other->GetQObject (), Proxy_);
+			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
+			okCont ();
+
+			settings.setValue ("Service", dia.GetCreatorName ());
+			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
+			break;
+		}
+		}
+	}
+
+	void Plugin::initPlugin (QObject *obj)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
+	}
+
 	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 			QObject*, QObject *entry, int, QString)
 	{
@@ -138,43 +194,68 @@ namespace Autopaste
 		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
 			return;
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Autopaste");
-		settings.beginGroup ("SavedChoices");
-		settings.beginGroup (other->GetEntryID ());
-		auto guard = std::shared_ptr<void> (nullptr,
-				[&settings] (void*) -> void
+		PerformPaste (other, text,
+				[proxy] { proxy->CancelDefault (); },
+				[proxy]
 				{
-					settings.endGroup ();
-					settings.endGroup ();
+					proxy->CancelDefault ();
+					proxy->SetValue ("PreserveMessageEdit", true);
 				});
+	}
 
-		PasteDialog dia;
+	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy, QObject *action, QObject*)
+	{
+		const auto& ours = ActionsStorage_->GetActionAreas (action);
+		if (ours.isEmpty ())
+			return;
 
-		dia.SetCreatorName (settings.value ("Service").toString ());
-		dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
+		proxy->SetReturnValue (proxy->GetReturnValue ().toStringList () + ours);
+	}
 
-		dia.exec ();
+	void Plugin::hookEntryActionsRequested (IHookProxy_ptr proxy, QObject *entry)
+	{
+		const auto& actions = ActionsStorage_->GetEntryActions (entry);
+		if (actions.isEmpty ())
+			return;
 
-		switch (dia.GetChoice ())
+		auto list = proxy->GetReturnValue ().toList ();
+		for (const auto action : actions)
+			list << QVariant::fromValue<QObject*> (action);
+		proxy->SetReturnValue (list);
+	}
+
+	void Plugin::handlePasteRequested (QObject *entryObj)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto tab = AzothProxy_->FindOpenedChat (entry->GetEntryID (),
+				entry->GetParentAccount ()->GetAccountID ());
+		if (!tab)
 		{
-		case PasteDialog::Cancel:
-			proxy->CancelDefault ();
-			proxy->SetValue ("PreserveMessageEdit", true);
-			break;
-		case PasteDialog::No:
-			break;
-		case PasteDialog::Yes:
-		{
-			auto service = dia.GetCreator () (entry);
-			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
-			proxy->CancelDefault ();
+			qWarning () << Q_FUNC_INFO
+					<< "no tab for"
+					<< entry
+					<< entry->GetEntryID ()
+					<< entry->GetHumanReadableID ();
+			return;
+		}
 
-			settings.setValue ("Service", dia.GetCreatorName ());
-			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
-			break;
+		QTextEdit *edit = nullptr;
+		QMetaObject::invokeMethod (tab, "getMsgEdit", Q_RETURN_ARG (QTextEdit*, edit));
+		if (!edit)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot get message edit";
+			return;
 		}
-		}
+
+		const auto& text = edit->toPlainText ();
+		if (text.isEmpty ())
+			return;
+
+		PerformPaste (entry,
+				text,
+				[edit] { edit->clear (); },
+				[] {});
 	}
 }
 }

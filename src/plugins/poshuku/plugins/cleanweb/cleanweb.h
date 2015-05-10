@@ -55,6 +55,8 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+	class Core;
+
 	class CleanWeb : public QObject
 					, public IInfo
 					, public IHaveSettings
@@ -67,8 +69,9 @@ namespace CleanWeb
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
 
-		std::shared_ptr<Util::XmlSettingsDialog> SettingsDialog_;
-		std::auto_ptr<QTranslator> Translator_;
+		std::shared_ptr<Core> Core_;
+
+		Util::XmlSettingsDialog_ptr SettingsDialog_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -110,10 +113,6 @@ namespace CleanWeb
 				QContextMenuEvent*,
 				const QWebHitTestResult&, QMenu*,
 				WebViewCtxMenuStage);
-	signals:
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

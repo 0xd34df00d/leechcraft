@@ -71,6 +71,7 @@ namespace SB2
 		QRect getWinRect ();
 
 		QPoint fitRect (const QPoint& src, const QSize& size, const QRect& rect, bool canOverlap);
+		void registerAutoresize (const QPoint&, const QVariant&);
 
 		void panelMoveRequested (const QString&);
 

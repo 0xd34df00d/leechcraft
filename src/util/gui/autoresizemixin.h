@@ -36,6 +36,7 @@
 #include "guiconfig.h"
 
 class QWidget;
+class QWindow;
 
 namespace LeechCraft
 {
@@ -61,16 +62,19 @@ namespace Util
 	 * via a functor returning the rectangle. The functor is invoked each
 	 * time the widget is to be refit.
 	 *
+	 * This class also supports Qt5's QWindow objects.
+	 *
 	 * @ingroup GuiUtil
 	 */
 	class AutoResizeMixin : public QObject
 	{
 		const QPoint OrigPoint_;
-		QWidget * const View_;
+
+		const std::function<void (QPoint)> Mover_;
 	public:
 		/** @brief A function type used to get the rect to fit widget in.
 		 */
-		typedef std::function<QRect ()> RectGetter_f;
+		using RectGetter_f = std::function<QRect ()>;
 	private:
 		const RectGetter_f Rect_;
 	public:
@@ -87,6 +91,22 @@ namespace Util
 		 * @param[in] widget The widget to fit.
 		 */
 		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWidget *widget);
+
+#if QT_VERSION >= 0x050000
+		/** @brief Constructs the resize mixin.
+		 *
+		 * This function constructs the resize mixin managing the given
+		 * \em window, trying to fit it inside the \em rect, preferably
+		 * with a corner of the \em window sticking near the \em point.
+		 *
+		 * @param[in] point The point near which the \em window should be
+		 * shown.
+		 * @param[in] rect The functor returning the rectangle into which
+		 * the \em window should be fitted.
+		 * @param[in] window The widget to fit.
+		 */
+		UTIL_GUI_API AutoResizeMixin (const QPoint& point, RectGetter_f rect, QWindow *window);
+#endif
 
 		/** @brief Listens for resize events and refits the widget.
 		 */

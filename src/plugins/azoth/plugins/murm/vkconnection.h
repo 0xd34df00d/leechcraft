@@ -189,8 +189,12 @@ namespace Murm
 		void GetUserInfo (const QList<qulonglong>& ids);
 		void GetUserInfo (const QList<qulonglong>& ids, const std::function<void (QList<UserInfo>)>&);
 
+		void RequestUserAppId (qulonglong id);
+
 		void GetMessageInfo (qulonglong id, MessageInfoSetter_f setter);
 		void GetMessageInfo (const QString& idStr, MessageInfoSetter_f setter);
+
+		void GetAppInfo (qulonglong appId, const std::function<void (AppInfo)>& setter);
 
 		void AddFriendList (const QString&, const QList<qulonglong>&);
 		void ModifyFriendList (const ListInfo&, const QList<qulonglong>&);
@@ -280,6 +284,8 @@ namespace Murm
 		void chatUserRemoved (qulonglong, qulonglong);
 
 		void userStateChanged (qulonglong uid, bool online);
+
+		void gotUserAppInfoStub (qulonglong uid, const AppInfo& appInfo);
 
 		void mucChanged (qulonglong);
 

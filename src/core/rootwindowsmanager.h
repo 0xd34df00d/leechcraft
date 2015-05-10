@@ -32,12 +32,12 @@
 #include <functional>
 #include <QObject>
 #include <interfaces/core/irootwindowsmanager.h>
+#include "mainwindow.h"
 
 class QIcon;
 
 namespace LeechCraft
 {
-	class MainWindow;
 	class TabManager;
 	class MWProxy;
 
@@ -78,7 +78,7 @@ namespace LeechCraft
 		int GetWindowIndex (QMainWindow*) const;
 
 		IMWProxy* GetMWProxy (int) const;
-		QMainWindow* GetMainWindow (int) const;
+		MainWindow* GetMainWindow (int) const;
 		ICoreTabWidget* GetTabWidget (int) const;
 	private:
 		MainWindow* CreateWindow (int screen, bool primary);

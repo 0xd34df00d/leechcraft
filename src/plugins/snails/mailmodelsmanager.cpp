@@ -79,9 +79,16 @@ namespace Snails
 
 		const auto storage = Core::Instance ().GetStorage ();
 		const auto& ids = storage->LoadIDs (Acc_, path);
-		const auto& messages = storage->LoadMessages (Acc_, path, ids);
 
-		mailModel->Append (messages);
+		try
+		{
+			mailModel->Append (storage->LoadMessages (Acc_, path, ids));
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 
 		Acc_->Synchronize (path, ids.isEmpty () ? QByteArray {} : ids.last ());
 	}

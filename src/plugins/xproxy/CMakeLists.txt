@@ -12,6 +12,7 @@ set (SRCS
 	proxyfactory.cpp
 	xmlsettingsmanager.cpp
 	proxiesconfigwidget.cpp
+	proxyconfigdialog.cpp
 	proxiesstorage.cpp
 	structures.cpp
 	editurlsdialog.cpp
@@ -22,6 +23,7 @@ set (SRCS
 	)
 set (FORMS
 	proxiesconfigwidget.ui
+	proxyconfigdialog.ui
 	editurlsdialog.ui
 	editurldialog.ui
 	editlistsdialog.ui

@@ -30,6 +30,7 @@
 #include "prelude.h"
 #include <QtTest>
 #include <prelude.h>
+#include <util/util.h>
 
 QTEST_MAIN (LeechCraft::Util::PreludeTest)
 
@@ -37,6 +38,26 @@ namespace LeechCraft
 {
 namespace Util
 {
+	void PreludeTest::testInvokableWithConst ()
+	{
+		const auto lambda = [] (const QString&) {};
+		static_assert (detail::IsInvokableWithConst<QString, decltype (lambda)> (), "The lambda should be invokable with const T&");
+		static_assert (detail::IsInvokableWithConst<QString&, decltype (lambda)> (), "The lambda should be invokable with const T&");
+		static_assert (detail::IsInvokableWithConst<const QString&, decltype (lambda)> (), "The lambda should be invokable with const T&");
+		static_assert (detail::IsInvokableWithConst<QString&&, decltype (lambda)> (), "The lambda should be invokable with const T&");
+		QCOMPARE (true, true);
+	}
+
+	void PreludeTest::testInvokableWithNonConst ()
+	{
+		const auto lambda = [] (QString&) {};
+		static_assert (!detail::IsInvokableWithConst<QString, decltype (lambda)> (), "The lambda should not be invokable with const T&");
+		static_assert (!detail::IsInvokableWithConst<QString&, decltype (lambda)> (), "The lambda should not be invokable with const T&");
+		static_assert (!detail::IsInvokableWithConst<const QString&, decltype (lambda)> (), "The lambda should not be invokable with const T&");
+		static_assert (!detail::IsInvokableWithConst<QString&&, decltype (lambda)> (), "The lambda should not be invokable with const T&");
+		QCOMPARE (true, true);
+	}
+
 	namespace
 	{
 		QMap<int, QString> GetSimpleMap ()
@@ -54,7 +75,7 @@ namespace Util
 		QList<int> list { 1, 2, 3 };
 		const auto& otherList = Map (list, [] (int v) { return QString::number (v); });
 
-		QCOMPARE (otherList, (QList<QString> { "1", "2", "3" }));
+		QCOMPARE (otherList, (QStringList { "1", "2", "3" }));
 	}
 
 	void PreludeTest::testMapMap ()
@@ -63,6 +84,100 @@ namespace Util
 		const auto& otherList = Map (map, [] (const QString& v) { return v.size (); });
 
 		QCOMPARE (otherList, (QList<int> { 3, 3, 3 }));
+	}
+
+	void PreludeTest::testMapMapMutatingVoid ()
+	{
+		auto map = GetSimpleMap ();
+		Map (map, [] (QString& v) { v += v [0]; });
+
+		QCOMPARE (map, (Util::MakeMap<int, QString> ({ { 0, "aaaa" }, { 1, "bbbb" }, { 2, "cccc" }})));
+	}
+
+#if 0
+	namespace
+	{
+		template<typename F>
+		constexpr bool FailsImpl (typename std::result_of<F (void*)>::type*)
+		{
+			return false;
+		}
+
+		template<typename F>
+		constexpr bool FailsImpl (...)
+		{
+			return true;
+		}
+
+		template<typename F>
+		constexpr bool Fails ()
+		{
+			return FailsImpl<F> (0);
+		}
+	}
+
+	void PreludeTest::testMapMapMutatingVoidConst ()
+	{
+		// TODO postponed until some later C++ version where SFINAE is transitive enough
+		// to produce a soft error in FailsImpl() overload above.
+		auto lambda = [] (const auto&)
+			{
+				const auto& map = GetSimpleMap ();
+				Map (map, [] (QString& v) { v += "a"; });
+			};
+		static_assert (Fails<decltype (lambda)> (),
+			"the code should fail");
+
+		QCOMPARE (true, true);
+	}
+#endif
+
+	void PreludeTest::testMapMapNonMutatingVoid ()
+	{
+		auto map = GetSimpleMap ();
+		Map (map, [] (const QString&) {});
+
+		QCOMPARE (map, GetSimpleMap ());
+	}
+
+	void PreludeTest::testMapMapNonMutatingVoidConst ()
+	{
+		const auto& map = GetSimpleMap ();
+		Map (map, [] (const QString&) {});
+
+		QCOMPARE (map, GetSimpleMap ());
+	}
+
+	void PreludeTest::testMapMember ()
+	{
+		struct Test
+		{
+			int m_a;
+			int m_b;
+		};
+
+		const QList<Test> tests { { 1, 2 }, { 2, 4 }, { 3, 6 } };
+		const auto& ints = Map (tests, &Test::m_a);
+
+		QCOMPARE (ints, (QList<int> { 1, 2, 3 }));
+	}
+
+	void PreludeTest::testMapMemberFunction ()
+	{
+		struct Test
+		{
+			int m_a;
+
+			int GetA () const
+			{
+				return m_a;
+			}
+		};
+
+		const QList<Test> tests { { 1 }, { 2 }, { 3 } };
+		const auto& ints = Map (tests, &Test::GetA);
+
+		QCOMPARE (ints, (QList<int> { 1, 2, 3 }));
 	}
 }
 }

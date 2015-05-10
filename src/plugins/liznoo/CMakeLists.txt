@@ -48,6 +48,7 @@ if (USE_LIZNOO_PMUTILS)
 endif ()
 
 set (MAC_SRCS
+	platform/battery/macplatform.mm
 	platform/events/platformmac.mm
 	)
 

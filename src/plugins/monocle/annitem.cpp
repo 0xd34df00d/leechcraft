@@ -31,6 +31,7 @@
 #include <QBrush>
 #include <QCursor>
 #include <QtDebug>
+#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -39,6 +40,11 @@ namespace Monocle
 	AnnBaseItem::AnnBaseItem (const IAnnotation_ptr& ann)
 	: BaseAnn_ { ann }
 	{
+		new Util::DelayedExecutor
+		{
+			[this] { SetSelected (false); },
+			0
+		};
 	}
 
 	QGraphicsItem* AnnBaseItem::GetItem ()
@@ -61,6 +67,16 @@ namespace Monocle
 		IsSelected_ = selected;
 	}
 
+	QPen AnnBaseItem::GetPen (bool selected) const
+	{
+		return selected ? QPen { QColor { 255, 93, 0 }, 2 } : Qt::NoPen;
+	}
+
+	QBrush AnnBaseItem::GetBrush (bool selected) const
+	{
+		return QBrush { selected ? QColor { 255, 213, 0, 64 } : QColor { 255, 213, 0, 32 } };
+	}
+
 	AnnBaseItem* MakeItem (const IAnnotation_ptr& ann, QGraphicsItem *parent)
 	{
 		switch (ann->GetAnnotationType ())
@@ -71,6 +87,8 @@ namespace Monocle
 			return new HighAnnItem (std::dynamic_pointer_cast<IHighlightAnnotation> (ann), parent);
 		case AnnotationType::Link:
 			return new LinkAnnItem (std::dynamic_pointer_cast<ILinkAnnotation> (ann), parent);
+		case AnnotationType::Caret:
+			return new CaretAnnItem (std::dynamic_pointer_cast<ICaretAnnotation> (ann), parent);
 		case AnnotationType::Other:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown annotation type with contents"
@@ -106,8 +124,8 @@ namespace Monocle
 	{
 		AnnBaseItem::SetSelected (selected);
 
-		const auto& pen = selected ? QPen { QColor { 255, 234, 0 }, 2 } : Qt::NoPen;
-		const auto& brush = selected ? QBrush { QColor { 255, 213, 0, 64 } } : QBrush {};
+		const auto& pen = GetPen (selected);
+		const auto& brush = GetBrush (selected);
 		for (const auto& data : Polys_)
 		{
 			data.Item_->setPen (pen);
@@ -115,23 +133,21 @@ namespace Monocle
 		}
 	}
 
-	void HighAnnItem::UpdateRect (const QRectF& rect)
+	void HighAnnItem::UpdateRect (QRectF rect)
 	{
 		setPos (rect.topLeft ());
+
+		if (!Bounding_.width () || !Bounding_.height ())
+			return;
+
+		const auto xScale = rect.width () / Bounding_.width ();
+		const auto yScale = rect.height () / Bounding_.height ();
+		const auto xTran = - Bounding_.x () * xScale;
+		const auto yTran = - Bounding_.y () * yScale;
+		const QMatrix transform { xScale, 0, 0, yScale, xTran, yTran };
+
 		for (auto data : Polys_)
-		{
-			auto poly = data.Poly_;
-
-			if (!Bounding_.width () || !Bounding_.height ())
-				continue;
-
-			const auto xScale = rect.width () / Bounding_.width ();
-			const auto yScale = rect.height () / Bounding_.height ();
-			const auto xTran = rect.x () - Bounding_.x () * xScale - rect.left ();
-			const auto yTran = rect.y () - Bounding_.y () * yScale - rect.top ();
-
-			data.Item_->setPolygon (poly * QMatrix { xScale, 0, 0, yScale, xTran, yTran });
-		}
+			data.Item_->setPolygon (data.Poly_ * transform);
 	}
 
 	QList<HighAnnItem::PolyData> HighAnnItem::ToPolyData (const QList<QPolygonF>& polys)

@@ -81,10 +81,6 @@ namespace CSTP
 				this,
 				SIGNAL (jobError (int, IDownload::Error)));
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
 				SIGNAL (error (QString)),
 				this,
 				SLOT (handleError (QString)));

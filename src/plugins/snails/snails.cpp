@@ -32,12 +32,15 @@
 #include <util/util.h>
 #include <util/xsd/wkfontswidget.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "mailtab.h"
 #include "xmlsettingsmanager.h"
 #include "accountslistwidget.h"
 #include "core.h"
 #include "progressmanager.h"
 #include "composemessagetab.h"
+#include "accountsmanager.h"
+#include "composemessagetabfactory.h"
 
 namespace LeechCraft
 {
@@ -63,7 +66,7 @@ namespace Snails
 			"compose",
 			tr ("Compose mail"),
 			tr ("Allows one to compose outgoing mail messages."),
-			{},
+			proxy->GetIconThemeManager ()->GetIcon ("mail-message-new"),
 			60,
 			TFOpenableByRequest
 		};
@@ -73,15 +76,10 @@ namespace Snails
 
 		Core::Instance ().SetProxy (proxy);
 
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity,int*,QObject**)));
-		connect (&Core::Instance (),
+		AccsMgr_ = new AccountsManager;
+		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_ };
+
+		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
 				this,
 				SLOT (handleNewTab (QString, QWidget*)));
@@ -89,7 +87,7 @@ namespace Snails
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
-		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget);
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget { AccsMgr_ });
 
 		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
@@ -127,23 +125,24 @@ namespace Snails
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << MailTabClass_;
-		result << ComposeTabClass_;
-		return result;
+		return
+		{
+			MailTabClass_,
+			ComposeTabClass_
+		};
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
 	{
 		if (tabClass == "mail")
 		{
-			const auto mt = new MailTab { Proxy_, MailTabClass_, this };
+			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, MailTabClass_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
 			WkFontsWidget_->RegisterSettable (mt);
 		}
 		else if (tabClass == "compose")
 		{
-			auto ct = new ComposeMessageTab;
+			const auto ct = ComposeTabFactory_->MakeTab ();
 			handleNewTab (ct->GetTabClassInfo ().VisibleName_, ct);
 		}
 		else

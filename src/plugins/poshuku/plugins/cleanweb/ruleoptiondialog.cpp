@@ -98,7 +98,15 @@ namespace CleanWeb
 
 	void RuleOptionDialog::SetType (FilterOption::MatchType mt)
 	{
-		Ui_.Wildcard_->setChecked (mt == FilterOption::MTWildcard);
+		switch (mt)
+		{
+		case FilterOption::MTRegexp:
+			Ui_.Regexp_->setChecked (true);
+			break;
+		default:
+			Ui_.Wildcard_->setChecked (true);
+			break;
+		}
 	}
 
 	Qt::CaseSensitivity RuleOptionDialog::GetCase () const

@@ -28,6 +28,49 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Poshuku::CleanWeb</name>
+    <message>
+        <location filename="core.cpp" line="181"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="181"/>
+        <source>Last updated</source>
+        <translation>Последнее обновление</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="181"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="58"/>
+        <source>Filter</source>
+        <translation>Фильтр</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="58"/>
+        <source>Policy</source>
+        <translation>Действие</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="58"/>
+        <source>Type</source>
+        <translation>Тип</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="58"/>
+        <source>Case sensitive</source>
+        <translation>Учитывать регистр</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="58"/>
+        <source>Domains</source>
+        <translation>Домены</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
         <location filename="cleanweb.cpp" line="90"/>
@@ -38,37 +81,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="127"/>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="128"/>
-        <source>Last updated</source>
-        <translation>Последнее обновление</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="129"/>
-        <source>URL</source>
-        <translation>URL</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="358"/>
+        <location filename="core.cpp" line="388"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Заблокировано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="395"/>
+        <location filename="core.cpp" line="427"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="666"/>
+        <location filename="core.cpp" line="749"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="701"/>
+        <location filename="core.cpp" line="783"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
     </message>
@@ -76,22 +104,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="37"/>
+        <location filename="flashonclickwhitelist.cpp" line="48"/>
         <source>Whitelist</source>
         <translation>Белый список</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="109"/>
+        <location filename="flashonclickwhitelist.cpp" line="120"/>
         <source>Add URL to whitelist</source>
         <translation>Добавить URL в белый список</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="110"/>
+        <location filename="flashonclickwhitelist.cpp" line="121"/>
         <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
         <translation>Введите URL для добавления в белый список FlashOnClick</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="125"/>
+        <location filename="flashonclickwhitelist.cpp" line="136"/>
         <source>This URL is already matched by another whitelist entry.</source>
         <translation>Этот URL уже соответствует другой записи в белом списке.</translation>
     </message>
@@ -99,22 +127,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="162"/>
+        <location filename="flashplaceholder.cpp" line="173"/>
         <source>Load</source>
         <translation>Загрузить</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="168"/>
+        <location filename="flashplaceholder.cpp" line="179"/>
         <source>Add URL to whitelist...</source>
         <translation>Добавить URL в белый список...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="173"/>
+        <location filename="flashplaceholder.cpp" line="184"/>
         <source>Add host to whitelist...</source>
         <translation>Добавить хост в белый список...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="185"/>
+        <location filename="flashplaceholder.cpp" line="194"/>
         <source>Hide</source>
         <translation>Скрыть</translation>
     </message>
@@ -122,13 +150,13 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::RuleOptionDialog</name>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="140"/>
-        <location filename="ruleoptiondialog.cpp" line="166"/>
+        <location filename="ruleoptiondialog.cpp" line="159"/>
+        <location filename="ruleoptiondialog.cpp" line="185"/>
         <source>Enter domain</source>
         <translation>Введите домен</translation>
     </message>
     <message>
-        <location filename="ruleoptiondialog.cpp" line="191"/>
+        <location filename="ruleoptiondialog.cpp" line="210"/>
         <source>Are you sure you want to remove %1?</source>
         <translation>Вы уверены, что хотите удалить %1?</translation>
     </message>
@@ -136,17 +164,17 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::SubscriptionAddDialog</name>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="86"/>
+        <location filename="subscriptionadddialog.cpp" line="98"/>
         <source>Name</source>
         <translation>Имя</translation>
     </message>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="87"/>
+        <location filename="subscriptionadddialog.cpp" line="99"/>
         <source>Purpose</source>
         <translation>Описание</translation>
     </message>
     <message>
-        <location filename="subscriptionadddialog.cpp" line="88"/>
+        <location filename="subscriptionadddialog.cpp" line="100"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
@@ -154,26 +182,26 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManager</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="63"/>
-        <location filename="subscriptionsmanager.cpp" line="72"/>
-        <location filename="subscriptionsmanager.cpp" line="81"/>
-        <location filename="subscriptionsmanager.cpp" line="90"/>
+        <location filename="subscriptionsmanager.cpp" line="85"/>
+        <location filename="subscriptionsmanager.cpp" line="94"/>
+        <location filename="subscriptionsmanager.cpp" line="103"/>
+        <location filename="subscriptionsmanager.cpp" line="112"/>
         <source>Error adding subscription</source>
         <translation>Ошибка добавления подписки</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="64"/>
+        <location filename="subscriptionsmanager.cpp" line="86"/>
         <source>Can&apos;t add subscription without a title.</source>
         <translation>Невозможно добавить подписку без названия.</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="73"/>
-        <location filename="subscriptionsmanager.cpp" line="82"/>
+        <location filename="subscriptionsmanager.cpp" line="95"/>
+        <location filename="subscriptionsmanager.cpp" line="104"/>
         <source>Subscription with such title allready exists.</source>
         <translation>Подписка с таким названием уже существует.</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="91"/>
+        <location filename="subscriptionsmanager.cpp" line="113"/>
         <source>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</source>
         <translation>Неправильный URL.&lt;br /&gt;Правильный формат URL: abp://subscribe/?location=URL</translation>
     </message>
@@ -181,25 +209,25 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFilters</name>
     <message>
-        <location filename="userfilters.cpp" line="90"/>
+        <location filename="userfilters.cpp" line="99"/>
         <source>Paste rules</source>
         <oldsource>Paste filters</oldsource>
         <translation>Вставить правила</translation>
     </message>
     <message>
-        <location filename="userfilters.cpp" line="93"/>
+        <location filename="userfilters.cpp" line="102"/>
         <source>Paste your custom rules here:</source>
         <oldsource>Paste your filter strings here:</oldsource>
         <translation>Вставьте сюда строки с вашими правилами:</translation>
     </message>
     <message>
-        <location filename="userfilters.cpp" line="115"/>
+        <location filename="userfilters.cpp" line="124"/>
         <source>Load rules</source>
         <oldsource>Load filters</oldsource>
         <translation>Загрузить правила</translation>
     </message>
     <message>
-        <location filename="userfilters.cpp" line="129"/>
+        <location filename="userfilters.cpp" line="138"/>
         <source>Error opening file %1: %2.</source>
         <translation>Невозможно открыть файл %1: %2.</translation>
     </message>
@@ -207,72 +235,47 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="46"/>
-        <source>Filter</source>
-        <translation>Фильтр</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="47"/>
-        <source>Policy</source>
-        <translation>Действие</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="48"/>
-        <source>Type</source>
-        <translation>Тип</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="49"/>
-        <source>Case sensitive</source>
-        <translation>Учитывать регистр</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="50"/>
-        <source>Domains</source>
-        <translation>Домены</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="85"/>
+        <location filename="userfiltersmodel.cpp" line="95"/>
         <source>Allowed</source>
         <translation>Разрешить</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="86"/>
+        <location filename="userfiltersmodel.cpp" line="96"/>
         <source>Blocked</source>
         <translation>Блокировать</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="94"/>
+        <location filename="userfiltersmodel.cpp" line="104"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="96"/>
+        <location filename="userfiltersmodel.cpp" line="106"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="100"/>
+        <location filename="userfiltersmodel.cpp" line="110"/>
         <source>True</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="101"/>
+        <location filename="userfiltersmodel.cpp" line="111"/>
         <source>False</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="157"/>
+        <location filename="userfiltersmodel.cpp" line="167"/>
         <source>Add a filter</source>
         <translation>Добавить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="212"/>
+        <location filename="userfiltersmodel.cpp" line="220"/>
         <source>Modify filter</source>
         <translation>Изменить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="250"/>
+        <location filename="userfiltersmodel.cpp" line="261"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Импортировано %1 пользовательских правил (%2 успешно разобрано).</translation>
     </message>
@@ -496,34 +499,34 @@ p, li { white-space: pre-wrap; }
     <name>poshukucleanwebsettings</name>
     <message>
         <location filename="dummy.cpp" line="2"/>
+        <location filename="dummy.cpp" line="3"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="3"/>
-        <source>Updates</source>
-        <translation>Обновление</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="10"/>
         <source>Update subscriptions</source>
         <translation>Обновлять подписки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="11"/>
         <source>Update interval:</source>
         <translation>Интервал обновления:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="4"/>
         <source>Enable JIT for regexps</source>
         <translation>Включить JIT для регулярных выражений</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/&gt;Disable this if you want to lower memory footprint.</source>
+        <translation>Эта опция контролирует использование JIT-компиляции регулярных выражений в случае, если CleanWeb собран с PCRE 8.20 или новее. JIT ускоряет обработку правил ценой увеличенного потребления памяти. Ускорение составляет от 25% до 50%, в зависимости от страницы, при этом тратится примерно 2.1 КБ памяти на каждое регулярное выражение.&lt;br/&gt;Отключите эту опцию, если вы желаете уменьшить используемый объём памяти.</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="7"/>
-        <source>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&amp;lt;br/&amp;gt;Disable this if you want to lower memory footprint.</source>
-        <oldsource>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses additional â2.1 KiB of RAM per regular expression.&amp;lt;br/&amp;gt;Disable this if you want to lower memory footprint.</oldsource>
-        <translation>Эта опция контролирует использование Just-In-Time-компиляции для регулярных выражений, если CleanWeb был собран с PCRE 8.20 и выше. JIT ускоряет проверку правил ценой увеличения использования памяти. Выигрыш составляет где-то между 25% и 50% в зависимости от страницы, но на каждое регулярное выражение потребляется примерно 2.1 КБ памяти.&lt;br /&gt;Отключите это, если вы хотите снизить использование памяти.</translation>
+        <source>Enable element hiding</source>
+        <translation>Включить сокрытие элементов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
@@ -537,12 +540,17 @@ p, li { white-space: pre-wrap; }
         <translation>Подписки</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="12"/>
+        <source> days</source>
+        <translation> дней</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="13"/>
         <source>FlashOnClick</source>
         <translation>FlashOnClick</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>Enable FlashOnClick</source>
         <translation>Включить FlashOnClick</translation>
     </message>

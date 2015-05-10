@@ -34,14 +34,17 @@
 #include <QNetworkAccessManager>
 #include <QDomDocument>
 #include <QtDebug>
+#include <util/xpc/downloadhandler.h>
+#include <util/sll/functional.h>
 #include "reportwizard.h"
 
 namespace LeechCraft
 {
 namespace Dolozhee
 {
-	ReportTypePage::ReportTypePage (QWidget *parent)
-	: QWizardPage (parent)
+	ReportTypePage::ReportTypePage (const ICoreProxy_ptr& proxy, QWidget *parent)
+	: QWizardPage { parent }
+	, Proxy_ { proxy }
 	{
 		Ui_.setupUi (this);
 		Ui_.CatCombo_->addItem (QString ());
@@ -68,14 +71,22 @@ namespace Dolozhee
 		if (Ui_.CatCombo_->count () > 1)
 			return;
 
-		auto rw = static_cast<ReportWizard*> (wizard ());
-		QNetworkRequest req (QUrl ("http://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories"));
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/xml");
-		auto reply = rw->GetNAM ()->get (req);
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleCategoriesFinished ()));
+		try
+		{
+			const QUrl url { "http://dev.leechcraft.org/projects/leechcraft.xml?include=issue_categories" };
+			new Util::DownloadHandler (url,
+					Proxy_->GetEntityManager (),
+					{
+						[] (IDownload::Error) {},
+						Util::BindMemFn (&ReportTypePage::ParseCategories, this)
+					},
+					this);
+		}
+		catch (const std::exception& e)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void ReportTypePage::ForceReportType (Type type)
@@ -118,20 +129,8 @@ namespace Dolozhee
 		return static_cast<Priority> (Ui_.PriorityBox_->currentIndex ());
 	}
 
-	void ReportTypePage::handleCategoriesFinished ()
+	void ReportTypePage::ParseCategories (const QByteArray& data)
 	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "invalid reply"
-					<< sender ();
-			return;
-		}
-
-		reply->deleteLater ();
-
-		const auto& data = reply->readAll ();
 		QDomDocument doc;
 		if (!doc.setContent (data))
 		{
@@ -163,6 +162,22 @@ namespace Dolozhee
 
 			Ui_.CatCombo_->addItem (name, id);
 		}
+	}
+
+	void ReportTypePage::handleCategoriesFinished ()
+	{
+		auto reply = qobject_cast<QNetworkReply*> (sender ());
+		if (!reply)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid reply"
+					<< sender ();
+			return;
+		}
+
+		reply->deleteLater ();
+
+		ParseCategories (reply->readAll ());
 	}
 }
 }

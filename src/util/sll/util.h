@@ -42,7 +42,7 @@ namespace Util
 		template<typename F>
 		class ScopeGuard
 		{
-			const F F_;
+			F F_;
 			bool Perform_ = true;
 		public:
 			ScopeGuard () noexcept
@@ -58,7 +58,14 @@ namespace Util
 
 			ScopeGuard (const ScopeGuard&) = delete;
 			ScopeGuard& operator= (const ScopeGuard&) = delete;
-			ScopeGuard& operator= (ScopeGuard&&) = delete;
+
+			ScopeGuard& operator= (ScopeGuard&& other)
+			{
+				F_ = other.F_;
+				Perform_ = other.Perform_;
+				other.Perform_ = false;
+				return *this;
+			}
 
 			ScopeGuard (ScopeGuard&& other) noexcept
 			: F_ { other.F_ }

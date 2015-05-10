@@ -68,7 +68,8 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
-		FlashOnClickPlugin *FlashOnClickPlugin_;
+		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
+
 		FlashOnClickWhitelist *FlashOnClickWhitelist_;
 		UserFiltersModel *UserFilters_;
 
@@ -78,7 +79,8 @@ namespace CleanWeb
 		QList<QList<FilterItem_ptr>> FilterItemsCache_;
 
 		QObjectList Downloaders_;
-		QStringList HeaderLabels_;
+
+		const QStringList HeaderLabels_;
 
 		struct PendingJob
 		{
@@ -91,14 +93,10 @@ namespace CleanWeb
 
 		QHash<QWebFrame*, QList<QUrl>> MoreDelayedURLs_;
 
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
+		const ICoreProxy_ptr Proxy_;
 	public:
-		static Core& Instance ();
-		void Release ();
+		Core (const ICoreProxy_ptr&);
 
-		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
 		int columnCount (const QModelIndex& = QModelIndex ()) const;
@@ -179,23 +177,22 @@ namespace CleanWeb
 		void WriteSettings ();
 		void ReadSettings ();
 		bool AssignSD (const SubscriptionData&);
+
+		void HideElementsChunk (HidingWorkerResult);
+		void DelayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
+		void HandleFrameLayout (QPointer<QWebFrame>, bool asLoad);
 	private slots:
 		void handleParsed ();
 		void update ();
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
-		void handleFrameLayout (QPointer<QWebFrame>);
 		void hidingElementsFound ();
-		void hideElementsChunk (HidingWorkerResult);
-		void delayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
+
 		void moreDelayedRemoveElements ();
+
 		void handleFrameDestroyed ();
 
 		void regenFilterCaches ();
-	signals:
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

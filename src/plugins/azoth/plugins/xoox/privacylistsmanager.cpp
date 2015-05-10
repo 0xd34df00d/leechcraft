@@ -30,7 +30,11 @@
 #include "privacylistsmanager.h"
 #include <QDomElement>
 #include <QXmppClient.h>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include "clientconnectionerrormgr.h"
+#include "clientconnection.h"
+#include "serverinfostorage.h"
 
 namespace LeechCraft
 {
@@ -53,18 +57,18 @@ namespace Xoox
 	{
 		const QString& type = itemElem.attribute ("type");
 		if (type == "jid")
-			Type_ = TJid;
+			Type_ = Type::Jid;
 		else if (type == "subscription")
-			Type_ = TSubscription;
+			Type_ = Type::Subscription;
 		else if (type == "group")
-			Type_ = TGroup;
+			Type_ = Type::Group;
 		else
-			Type_ = TNone;
+			Type_ = Type::None;
 
 		Value_ = itemElem.attribute ("value");
 		Action_ = itemElem.attribute ("action") == "deny" ?
-				ADeny :
-				AAllow;
+				Action::Deny :
+				Action::Allow;
 
 		Stanzas_ = STNone;
 		if (!itemElem.firstChildElement ("message").isNull ())
@@ -87,20 +91,20 @@ namespace Xoox
 
 		switch (Type_)
 		{
-		case TJid:
+		case Type::Jid:
 			item.setAttribute ("type", "jid");
 			break;
-		case TSubscription:
+		case Type::Subscription:
 			item.setAttribute ("type", "subscription");
 			break;
-		case TGroup:
+		case Type::Group:
 			item.setAttribute ("type", "group");
 			break;
-		case TNone:
+		case Type::None:
 			break;
 		}
 
-		item.setAttribute ("action", Action_ == ADeny ? "deny" : "allow");
+		item.setAttribute ("action", Action_ == Action::Deny ? "deny" : "allow");
 
 		if (!Value_.isEmpty ())
 			item.setAttribute ("value", Value_);
@@ -235,7 +239,7 @@ namespace Xoox
 		Name_ = name;
 	}
 
-	QList<PrivacyListItem> PrivacyList::GetItems () const
+	const QList<PrivacyListItem>& PrivacyList::GetItems () const
 	{
 		return Items_;
 	}
@@ -245,7 +249,29 @@ namespace Xoox
 		Items_ = items;
 	}
 
+	PrivacyListsManager::PrivacyListsManager (ClientConnection *conn)
+	: Conn_ { conn }
+	{
+	}
+
+	bool PrivacyListsManager::IsSupported () const
+	{
+		const auto serverStorage = Conn_->GetServerInfoStorage ();
+		if (!serverStorage->HasServerFeatures ())
+			return true;
+
+		return serverStorage->GetServerFeatures ().contains (NsPrivacy);
+	}
+
 	void PrivacyListsManager::QueryLists ()
+	{
+		QueryLists ({
+				[this] (const QXmppIq& iq) { HandleListQueryError (iq); },
+				Util::BindMemFn (&PrivacyListsManager::gotLists, this)
+			});
+	}
+
+	void PrivacyListsManager::QueryLists (const QueryListsCont_f& cont)
 	{
 		QXmppElement query;
 		query.setTagName ("query");
@@ -254,12 +280,23 @@ namespace Xoox
 		QXmppIq iq;
 		iq.setExtensions ({ query });
 
-		ID2Type_ [iq.id ()] = QTQueryLists;
+		const auto& id = iq.id ();
+		ID2Type_ [id] = QueryType::QueryLists;
+		QueryLists2Handler_ [id] = cont;
 
 		client ()->sendPacket (iq);
 	}
 
 	void PrivacyListsManager::QueryList (const QString& name)
+	{
+		QueryList (name,
+				{
+					[] (const QXmppIq&) {},
+					Util::BindMemFn (&PrivacyListsManager::gotList, this)
+				});
+	}
+
+	void PrivacyListsManager::QueryList (const QString& name, const QueryListCont_f& cont)
 	{
 		QXmppElement list;
 		list.setTagName ("list");
@@ -273,7 +310,9 @@ namespace Xoox
 		QXmppIq iq;
 		iq.setExtensions ({ query });
 
-		ID2Type_ [iq.id ()] = QTGetList;
+		const auto& id = iq.id ();
+		ID2Type_ [id] = QueryType::GetList;
+		QueryList2Handler_ [id] = cont;
 
 		client ()->sendPacket (iq);
 	}
@@ -281,7 +320,7 @@ namespace Xoox
 	void PrivacyListsManager::ActivateList (const QString& name, ListType type)
 	{
 		QXmppElement list;
-		list.setTagName (type == LTActive ? "active" : "default");
+		list.setTagName (type == ListType::Active ? "active" : "default");
 		if (!name.isEmpty ())
 			list.setAttribute ("name", name);
 
@@ -345,12 +384,12 @@ namespace Xoox
 		if (!ID2Type_.contains (elem.attribute ("id")))
 			return false;
 
-		switch (ID2Type_ [elem.attribute ("id")])
+		switch (ID2Type_.take (elem.attribute ("id")))
 		{
-		case QTQueryLists:
+		case QueryType::QueryLists:
 			HandleListQueryResult (elem);
 			break;
-		case QTGetList:
+		case QueryType::GetList:
 			HandleList (elem);
 			break;
 		}
@@ -376,11 +415,15 @@ namespace Xoox
 
 	void PrivacyListsManager::HandleListQueryResult (const QDomElement& elem)
 	{
+		const auto& id = elem.attribute ("id");
+
+		const auto& handler = QueryLists2Handler_.take (id);
+
 		if (elem.attribute ("type") == "error")
 		{
 			QXmppIq iq;
 			iq.parse (elem);
-			HandleListQueryError (iq);
+			handler.Left (iq);
 			return;
 		}
 
@@ -397,10 +440,9 @@ namespace Xoox
 		}
 
 		CurrentName_ = active.isEmpty () ? def : active;;
-
-		emit gotLists (lists, active, def);
-
 		QueryList (CurrentName_);
+
+		handler.Right (lists, active, def);
 	}
 
 	void PrivacyListsManager::HandleList (const QDomElement& elem)
@@ -416,7 +458,7 @@ namespace Xoox
 			currentListFetched (list);
 		}
 
-		emit gotList (list);
+		QueryList2Handler_.take (elem.attribute ("id")).Right (list);
 	}
 }
 }

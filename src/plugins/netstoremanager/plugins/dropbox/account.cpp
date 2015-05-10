@@ -124,7 +124,8 @@ namespace DBox
 		if (id.isEmpty ())
 			return;
 
-		DriveManager_->Download (id, filepath, tp, open);
+		const auto& url = DriveManager_->GenerateDownloadUrl (id);
+		emit downloadFile (url, filepath, tp, open);
 	}
 
 	ListingOps Account::GetListingOps () const
