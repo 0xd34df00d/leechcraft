@@ -94,6 +94,11 @@ namespace Snails
 		return InHost_ + ':' + QString::number (InPort_);
 	}
 
+	bool Account::ShouldLogToFile () const
+	{
+		return LogToFile_;
+	}
+
 	AccountLogger* Account::GetLogger () const
 	{
 		return Logger_;
