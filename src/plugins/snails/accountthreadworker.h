@@ -79,19 +79,6 @@ namespace Snails
 		};
 	public:
 		AccountThreadWorker (bool, Account*);
-
-		struct Args
-		{
-			struct SetReadStatus
-			{
-				enum
-				{
-					Read,
-					Ids,
-					Folder
-				};
-			};
-		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
@@ -126,6 +113,24 @@ namespace Snails
 		void deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void sendMessage (const LeechCraft::Snails::Message_ptr&);
+	public:
+		struct Args
+		{
+			struct SetReadStatus
+			{
+				enum Args
+				{
+					Read,
+					Ids,
+					Folder
+				};
+
+				using ArgTypes = std::tuple<bool, QList<QByteArray>, QStringList>;
+				using Function = decltype (&AccountThreadWorker::setReadStatus);
+			};
+
+			using Known = std::tuple<SetReadStatus>;
+		};
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);
