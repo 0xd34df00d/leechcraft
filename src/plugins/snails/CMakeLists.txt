@@ -54,6 +54,7 @@ set (SRCS
 	composemessagetabfactory.cpp
 	accountsmanager.cpp
 	accountlogger.cpp
+	tracerfactory.cpp
 	tracer.cpp
 	)
 set (FORMS
