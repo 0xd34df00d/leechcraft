@@ -99,6 +99,8 @@ namespace Snails
 		int OutPort_;
 
 		QString OutLogin_;
+
+		int KeepAliveInterval_ = 90 * 1000;
 	public:
 		enum class Direction
 		{

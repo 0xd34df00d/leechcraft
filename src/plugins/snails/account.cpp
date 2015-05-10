@@ -65,6 +65,9 @@ namespace Snails
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
 	{
+		Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+		MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+
 		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
 
@@ -215,7 +218,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (1);
+		out << static_cast<quint8> (2);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -235,7 +238,8 @@ namespace Snails
 			<< static_cast<quint8> (OutType_)
 			<< UserName_
 			<< UserEmail_
-			<< FolderManager_->Serialize ();
+			<< FolderManager_->Serialize ()
+			<< KeepAliveInterval_;
 
 		return result;
 	}
@@ -246,7 +250,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version != 1)
+		if (version < 1 || version > 2)
 			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
 		quint8 outType = 0;
@@ -285,6 +289,9 @@ namespace Snails
 			FolderManager_->Deserialize (fstate);
 
 			handleFoldersUpdated ();
+
+			if (version >= 2)
+				in >> KeepAliveInterval_;
 		}
 	}
 
@@ -321,6 +328,8 @@ namespace Snails
 			dia->SetOutPort (OutPort_);
 			dia->SetOutLogin (OutLogin_);
 			dia->SetOutType (OutType_);
+
+			dia->SetKeepAliveInterval (KeepAliveInterval_);
 
 			const auto& folders = FolderManager_->GetFoldersPaths ();
 			dia->SetAllFolders (folders);
@@ -374,6 +383,13 @@ namespace Snails
 				OutPort_ = dia->GetOutPort ();
 				OutLogin_ = dia->GetOutLogin ();
 				OutType_ = dia->GetOutType ();
+
+				if (KeepAliveInterval_ != dia->GetKeepAliveInterval ())
+				{
+					KeepAliveInterval_ = dia->GetKeepAliveInterval ();
+					Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+					MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+				}
 
 				FolderManager_->ClearFolderFlags ();
 				const auto& out = dia->GetOutFolder ();
