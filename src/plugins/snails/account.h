@@ -103,6 +103,8 @@ namespace Snails
 		QString OutLogin_;
 
 		int KeepAliveInterval_ = 90 * 1000;
+
+		bool LogToFile_ = true;
 	public:
 		enum class Direction
 		{

@@ -225,7 +225,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (2);
+		out << static_cast<quint8> (3);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -246,7 +246,8 @@ namespace Snails
 			<< UserName_
 			<< UserEmail_
 			<< FolderManager_->Serialize ()
-			<< KeepAliveInterval_;
+			<< KeepAliveInterval_
+			<< LogToFile_;
 
 		return result;
 	}
@@ -257,7 +258,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 2)
+		if (version < 1 || version > 3)
 			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
 		quint8 outType = 0;
@@ -299,6 +300,9 @@ namespace Snails
 
 			if (version >= 2)
 				in >> KeepAliveInterval_;
+
+			if (version >= 3)
+				in >> LogToFile_;
 		}
 	}
 
@@ -337,6 +341,7 @@ namespace Snails
 			dia->SetOutType (OutType_);
 
 			dia->SetKeepAliveInterval (KeepAliveInterval_);
+			dia->SetLogConnectionsToFile (LogToFile_);
 
 			const auto& folders = FolderManager_->GetFoldersPaths ();
 			dia->SetAllFolders (folders);
@@ -397,6 +402,8 @@ namespace Snails
 					Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
 					MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
 				}
+
+				LogToFile_ = dia->GetLogConnectionsToFile ();
 
 				FolderManager_->ClearFolderFlags ();
 				const auto& out = dia->GetOutFolder ();
