@@ -64,6 +64,7 @@
 #include "common.h"
 #include "messagechangelistener.h"
 #include "folder.h"
+#include "tracerfactory.h"
 
 namespace LeechCraft
 {
@@ -196,6 +197,7 @@ namespace Snails
 				Q_ARG (QString*, &url));
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
+		st->setTracerFactory (vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ()));
 		st->setCertificateVerifier (CertVerifier_);
 		st->setAuthenticator (InAuth_);
 
