@@ -247,7 +247,7 @@ namespace Snails
 		in >> version;
 
 		if (version != 1)
-			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
+			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
 		quint8 outType = 0;
 		qint8 type = 0;
