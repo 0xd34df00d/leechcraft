@@ -65,6 +65,8 @@ namespace Snails
 
 		const bool IsListening_;
 
+		const QString ThreadName_;
+
 		MessageChangeListener * const ChangeListener_;
 
 		vmime::shared_ptr<vmime::net::session> Session_;
@@ -82,7 +84,7 @@ namespace Snails
 			NoChange
 		};
 	public:
-		AccountThreadWorker (bool, Account*);
+		AccountThreadWorker (bool, const QString&, Account*);
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();

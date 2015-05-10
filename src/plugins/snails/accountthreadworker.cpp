@@ -149,10 +149,12 @@ namespace Snails
 		};
 	}
 
-	AccountThreadWorker::AccountThreadWorker (bool isListening, Account *parent)
+	AccountThreadWorker::AccountThreadWorker (bool isListening,
+			const QString& threadName, Account *parent)
 	: A_ (parent)
 	, NoopTimer_ (new QTimer (this))
 	, IsListening_ (isListening)
+	, ThreadName_ (threadName)
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (vmime::make_shared<vmime::net::session> ())
 	, CachedFolders_ (2)
