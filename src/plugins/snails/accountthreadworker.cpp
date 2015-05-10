@@ -29,6 +29,9 @@
 
 #include "accountthreadworker.h"
 #include <algorithm>
+#include <boost/fusion/algorithm/iteration/for_each.hpp>
+#include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/adapted/std_tuple.hpp>
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
@@ -114,6 +117,36 @@ namespace Snails
 
 			return pass.toUtf8 ().constData ();
 		}
+
+		template<typename Function, typename... Types>
+		std::result_of_t<Function (AccountThreadWorker*, Types...)>* InvokeWith (const std::tuple<Types...>&, int)
+		{
+			return nullptr;
+		}
+
+		template<typename T>
+		struct AlwaysFalse : public std::false_type {};
+
+		template<typename Function, typename... Types>
+		void* InvokeWith (const std::tuple<Types...>&, ...)
+		{
+			static_assert (AlwaysFalse<Function>::value, "Check your function signature and arguments.");
+			return nullptr;
+		}
+
+		struct ArgChecker
+		{
+			ArgChecker ()
+			{
+				boost::fusion::for_each (AccountThreadWorker::Args::Known {}, *this);
+			}
+
+			template<typename T>
+			void operator() (const T&) const
+			{
+				InvokeWith<typename T::Function> (typename T::ArgTypes {}, 0);
+			}
+		};
 	}
 
 	AccountThreadWorker::AccountThreadWorker (bool isListening, Account *parent)
