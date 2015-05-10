@@ -360,7 +360,7 @@ namespace Snails
 			dia->SetFoldersToSync (toSync);
 		}
 
-		dia->open ();
+		dia->show ();
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
