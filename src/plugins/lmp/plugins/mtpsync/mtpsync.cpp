@@ -485,6 +485,7 @@ namespace MTPSync
 			LIBMTP_Get_Storage (device, LIBMTP_STORAGE_SORTBY_MAXSPACE);
 			auto storage = device->storage;
 
+			qDebug () << Q_FUNC_INFO << "initial storage:" << storage;
 			QList<UnmountablePartition> result;
 			while (storage)
 			{
@@ -497,6 +498,8 @@ namespace MTPSync
 				};
 				result << part;
 				storage = storage->next;
+
+				qDebug () << Q_FUNC_INFO << "next storage:" << storage;
 			}
 
 			return result;
@@ -507,7 +510,6 @@ namespace MTPSync
 			const auto& devName = QString::fromUtf8 (LIBMTP_Get_Manufacturername (device)) + " " +
 					QString::fromUtf8 (LIBMTP_Get_Modelname (device)) + " " +
 					LIBMTP_Get_Friendlyname (device);
-
 
 			int battPercentage = -1;
 			uint8_t maxBattLevel = 0, curBattLevel = 0;
@@ -535,6 +537,7 @@ namespace MTPSync
 			LIBMTP_raw_device_t *rawDevices;
 			int numRawDevices = 0;
 			LIBMTP_Detect_Raw_Devices (&rawDevices, &numRawDevices);
+			qDebug () << Q_FUNC_INFO << "detected" << numRawDevices << "devices";
 			for (int i = 0; i < numRawDevices; ++i)
 			{
 				auto device = LIBMTP_Open_Raw_Device (&rawDevices [i]);
@@ -549,7 +552,7 @@ namespace MTPSync
 				LIBMTP_Release_Device (device);
 			}
 			free (rawDevices);
-			qDebug () << "done";
+			qDebug () << Q_FUNC_INFO << "done";
 
 			return infos;
 		}
