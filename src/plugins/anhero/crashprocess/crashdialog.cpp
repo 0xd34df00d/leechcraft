@@ -198,7 +198,7 @@ namespace CrashProcess
 
 		SetFormat ();
 
-		GdbLauncher_.reset (new GDBLauncher (Info_.PID_, Info_.Path_));
+		GdbLauncher_ = std::make_shared<GDBLauncher> (Info_.PID_, Info_.Path_);
 		connect (GdbLauncher_.get (),
 				SIGNAL (gotOutput (QString)),
 				this,
