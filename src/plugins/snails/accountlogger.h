@@ -33,6 +33,7 @@
 #include <QObject>
 
 class QFile;
+class QDateTime;
 
 namespace LeechCraft
 {
