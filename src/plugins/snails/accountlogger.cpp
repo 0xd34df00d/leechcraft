@@ -29,6 +29,7 @@
 
 #include "accountlogger.h"
 #include <QFile>
+#include <QDateTime>
 #include <QtDebug>
 #include <QDir>
 #include <util/sys/paths.h>
