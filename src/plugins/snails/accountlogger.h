@@ -52,6 +52,9 @@ namespace Snails
 		void Log (const QString& context, int connId, const QString& msg);
 	private slots:
 		void writeLog (const QString&);
+	signals:
+		void gotLog (const QDateTime& time, const QString& context,
+				int connId, const QString& msg);
 	};
 }
 }

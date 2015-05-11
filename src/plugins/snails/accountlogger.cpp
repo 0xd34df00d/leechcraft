@@ -47,8 +47,9 @@ namespace Snails
 
 	void AccountLogger::Log (const QString& context, int connId, const QString& msg)
 	{
+		const auto& now = QDateTime::currentDateTime ();
 		const auto& str = QString { "[%1] [%2] [%3]: %4" }
-				.arg (QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz"))
+				.arg (now.toString ("dd.MM.yyyy HH:mm:ss.zzz"))
 				.arg (context)
 				.arg (connId)
 				.arg (msg);
@@ -57,6 +58,8 @@ namespace Snails
 				"writeLog",
 				Qt::QueuedConnection,
 				Q_ARG (QString, str));
+
+		emit gotLog (now, context, connId, msg);
 	}
 
 	void AccountLogger::writeLog (const QString& log)
