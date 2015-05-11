@@ -51,7 +51,7 @@ namespace Snails
 
 		void Log (const QString& context, int connId, const QString& msg);
 	private slots:
-		void addLog (const QString&);
+		void writeLog (const QString&);
 	};
 }
 }

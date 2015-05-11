@@ -54,12 +54,12 @@ namespace Snails
 				.arg (msg);
 
 		QMetaObject::invokeMethod (this,
-				"addLog",
+				"writeLog",
 				Qt::QueuedConnection,
 				Q_ARG (QString, str));
 	}
 
-	void AccountLogger::addLog (const QString& log)
+	void AccountLogger::writeLog (const QString& log)
 	{
 		if (!Acc_->ShouldLogToFile ())
 			return;
