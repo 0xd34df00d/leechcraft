@@ -46,7 +46,8 @@ namespace Snails
 
 	void AccountLogger::Log (const QString& context, int connId, const QString& msg)
 	{
-		const auto& str = QString { "[%1] [%2]: %3" }
+		const auto& str = QString { "[%1] [%2] [%3]: %4" }
+				.arg (QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz"))
 				.arg (context)
 				.arg (connId)
 				.arg (msg);
