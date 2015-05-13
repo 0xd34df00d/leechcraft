@@ -108,6 +108,10 @@ namespace CrashProcess
 	void GDBLauncher::consumeStdout ()
 	{
 		const auto& str = Proc_->readAllStandardOutput ().trimmed ();
+
+		if (!str.isEmpty () && std::all_of (str.begin (), str.end (), [] (const QChar& c) { return c == '.'; }))
+			return;
+
 		emit gotOutput (str);
 	}
 }
