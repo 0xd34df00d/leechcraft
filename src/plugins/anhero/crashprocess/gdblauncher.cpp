@@ -44,7 +44,7 @@ namespace CrashProcess
 	: QObject (parent)
 	, Proc_ (new QProcess (this))
 	{
-		auto tmpFile = new QTemporaryFile ();
+		auto tmpFile = new QTemporaryFile { this };
 		if (!tmpFile->open ())
 			throw std::runtime_error ("cannot open GDB temp file");
 
