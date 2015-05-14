@@ -34,10 +34,10 @@
 #include <QClipboard>
 #include <QProcess>
 #include <QtDebug>
-#include <QTimer>
 #include <util/util.h>
 #include <util/sys/sysinfo.h>
 #include <util/sys/paths.h>
+#include <util/sll/delayedexecutor.h>
 #include "appinfo.h"
 #include "gdblauncher.h"
 #include "highlighter.h"
@@ -149,9 +149,11 @@ namespace CrashProcess
 
 	void CrashDialog::handleFinished (int code, QProcess::ExitStatus)
 	{
-		QTimer::singleShot (0,
-				this,
-				SLOT (clearGdb ()));
+		new Util::DelayedExecutor
+		{
+			[this] { GdbLauncher_.reset (); },
+			0
+		};
 
 		Ui_.TraceDisplay_->append ("\n\nGDB exited with code " + QString::number (code));
 		SetInteractionAllowed (true);
@@ -185,11 +187,6 @@ namespace CrashProcess
 				.arg (code)
 				.arg (error)
 				.arg (errorStr));
-	}
-
-	void CrashDialog::clearGdb ()
-	{
-		GdbLauncher_.reset ();
 	}
 
 	void CrashDialog::reload ()
