@@ -50,6 +50,9 @@ namespace CrashProcess
 		~GDBLauncher ();
 	private slots:
 		void handleError ();
+
+		void feedInitialCommands ();
+
 		void consumeStdout ();
 	signals:
 		void gotOutput (const QString&);

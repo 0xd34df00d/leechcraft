@@ -30,7 +30,6 @@
 #include "gdblauncher.h"
 #include <stdexcept>
 #include <QProcess>
-#include <QTemporaryFile>
 #include <QTextStream>
 #include <QtDebug>
 
@@ -44,25 +43,19 @@ namespace CrashProcess
 	: QObject (parent)
 	, Proc_ (new QProcess (this))
 	{
-		auto tmpFile = new QTemporaryFile { this };
-		if (!tmpFile->open ())
-			throw std::runtime_error ("cannot open GDB temp file");
-
-		QTextStream stream (tmpFile);
-		stream << "thread\n"
-				<< "thread apply all bt";
-
 		Proc_->start ("gdb",
 				{
 					"-nw",
 					"-n",
-					"-batch",
-					"-x",
-					tmpFile->fileName (),
+					"-q",
 					"-p",
 					QString::number (pid),
 					path
 				});
+		connect (Proc_,
+				SIGNAL (started ()),
+				this,
+				SLOT (feedInitialCommands ()));
 		connect (Proc_,
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
@@ -103,6 +96,13 @@ namespace CrashProcess
 				Proc_->exitCode (),
 				Proc_->error (),
 				Proc_->errorString ());
+	}
+
+	void GDBLauncher::feedInitialCommands ()
+	{
+		Proc_->write ("thread\n");
+		Proc_->write ("thread apply all bt\n");
+		Proc_->write ("q\n");
 	}
 
 	void GDBLauncher::consumeStdout ()
