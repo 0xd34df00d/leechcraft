@@ -108,8 +108,6 @@ namespace CrashProcess
 	void GDBLauncher::consumeStdout ()
 	{
 		auto strs = Proc_->readAllStandardOutput ().trimmed ().split ('\n');
-
-
 		strs.erase (std::remove_if (strs.begin (), strs.end (),
 					[] (const QString& str)
 					{
@@ -117,6 +115,36 @@ namespace CrashProcess
 								std::all_of (str.begin (), str.end (), [] (const QChar& c) { return c == '.'; });
 					}),
 				strs.end ());
+
+		enum class LineState
+		{
+			StackFrame,
+			Other
+		} state = LineState::Other;
+
+		for (auto i = strs.begin (); i != strs.end (); )
+		{
+			const auto& str = *i;
+
+			if (state == LineState::StackFrame &&
+				str.startsWith (' ') && str.size () > 1)
+			{
+				auto& prevStr = *std::prev (i);
+				if (!prevStr.endsWith ('('))
+					prevStr += ' ';
+				prevStr += str.trimmed ();
+
+				i = strs.erase (i);
+			}
+			else
+			{
+				state = str.startsWith ('#') ?
+						LineState::StackFrame :
+						LineState::Other;
+				*i = i->trimmed ();
+				++i;
+			}
+		}
 
 		for (const auto& str : strs)
 			emit gotOutput (str);
