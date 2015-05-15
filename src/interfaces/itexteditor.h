@@ -56,17 +56,45 @@ namespace LeechCraft
 		PlainText
 	};
 
-	/** Enumeration for some standard editor actions.
+	/** @brief Enumeration for some standard editor actions.
+	 *
+	 * The corresponding actions may be retrieved via
+	 * ITextEditor::GetEditorAction().
+	 *
+	 * @sa ITextEditor::GetEditorAction().
 	 */
 	enum class EditorAction
 	{
+		/** @brief Open "Find" dialog.
+		 */
 		Find,
+
+		/** @brief Open "Replace" dialog.
+		 */
 		Replace,
+
+		/** @brief Toggle the boldness of the selected text's font.
+		 */
 		Bold,
+
+		/** @brief Toggle the italicness of the selected text's font.
+		 */
 		Italic,
+
+		/** @brief Toggle underlining of the selected text's font.
+		 */
 		Underline,
+
+		/** @brief Open the dialog for inserting a hyperlink.
+		 */
 		InsertLink,
+
+		/** @brief Open the dialog for inserting an image.
+		 */
 		InsertImage,
+
+		/** @brief Toggle between WYSIWYG and source view, if applicable.
+		 */
 		ToggleView
 	};
 }
