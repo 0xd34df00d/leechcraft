@@ -46,31 +46,29 @@ namespace Util
 	 * Using the tooltip is pretty easy.
 	 * First of all register tooltip in your widget:
 	 * \code{.cpp}
-	 * qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
-	 * \endcode
+		qmlRegisterType<Util::ToolTipItem> ("org.LC.common", 1, 0, "ToolTip");
+	   \endcode
 	 *
 	 * Then in yout qml import this widget:
 	 * \code{.qml}
-	 * import org.LC.common 1.0
-	 * \endcode
+		import org.LC.common 1.0
+	   \endcode
 	 *
 	 * And now you can use tooltip:
 	 * \code{.qml}
-	 * Rectangle {
-	 *		anchors.fill: parent
-	 *
-	 *		MouseArea
-	 *		{
-	 *			anchors.fill: subjectText
-	 *			hoverEnabled: true
-	 *			ToolTip
-	 *			{
-	 *				anchors.fill: parent
-	 *				text: "tooltip text"
-	 *			}
-	 *		}
-	 *	}
-	 * \endcode
+		Rectangle {
+			anchors.fill: parent
+
+			MouseArea {
+				anchors.fill: subjectText
+				hoverEnabled: true
+				ToolTip {
+					anchors.fill: parent
+					text: "tooltip text"
+				}
+			}
+		}
+	   \endcode
 	 */
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API ToolTipItem : public QDeclarativeItem
