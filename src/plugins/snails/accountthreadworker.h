@@ -41,6 +41,8 @@
 #include "message.h"
 #include "account.h"
 
+class QTimer;
+
 namespace LeechCraft
 {
 namespace Snails
@@ -59,7 +61,11 @@ namespace Snails
 
 		Account * const A_;
 
+		QTimer * const NoopTimer_;
+
 		const bool IsListening_;
+
+		const QString ThreadName_;
 
 		MessageChangeListener * const ChangeListener_;
 
@@ -78,7 +84,7 @@ namespace Snails
 			NoChange
 		};
 	public:
-		AccountThreadWorker (bool, Account*);
+		AccountThreadWorker (bool, const QString&, Account*);
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
@@ -99,6 +105,8 @@ namespace Snails
 
 		void sendNoop ();
 	public slots:
+		void setNoopTimeout (int);
+
 		void flushSockets ();
 
 		void synchronize (const QList<QStringList>&, const QByteArray& last);
@@ -113,6 +121,24 @@ namespace Snails
 		void deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void sendMessage (const LeechCraft::Snails::Message_ptr&);
+	public:
+		struct Args
+		{
+			struct SetReadStatus
+			{
+				enum Args
+				{
+					Read,
+					Ids,
+					Folder
+				};
+
+				using ArgTypes = std::tuple<bool, QList<QByteArray>, QStringList>;
+				using Function = decltype (&AccountThreadWorker::setReadStatus);
+			};
+
+			using Known = std::tuple<SetReadStatus>;
+		};
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);

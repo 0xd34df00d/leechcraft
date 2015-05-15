@@ -49,6 +49,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class AccountLogger;
 	class AccountThread;
 	class AccountThreadWorker;
 	class AccountFolderManager;
@@ -62,6 +63,7 @@ namespace Snails
 		Q_OBJECT
 
 		friend class AccountThreadWorker;
+		AccountLogger * const Logger_;
 		AccountThread * const Thread_;
 		AccountThread * const MessageFetchThread_;
 		QMutex * const AccMutex_;
@@ -99,6 +101,10 @@ namespace Snails
 		int OutPort_;
 
 		QString OutLogin_;
+
+		int KeepAliveInterval_ = 90 * 1000;
+
+		bool LogToFile_ = true;
 	public:
 		enum class Direction
 		{
@@ -124,6 +130,9 @@ namespace Snails
 		QByteArray GetID () const;
 		QString GetName () const;
 		QString GetServer () const;
+
+		bool ShouldLogToFile () const;
+		AccountLogger* GetLogger () const;
 
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;

@@ -34,6 +34,7 @@
 #include <qwt_curve_fitter.h>
 #include <qwt_legend.h>
 #include <qwt_dyngrid_layout.h>
+#include <qwt_scale_widget.h>
 
 #if QWT_VERSION >= 0x060100
 #include <qwt_plot_legenditem.h>
@@ -46,25 +47,47 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	BatteryHistoryDialog::BatteryHistoryDialog (int histSize, QWidget *parent)
-	: QDialog (parent)
-	, Percent_ (new QwtPlotCurve (tr ("Percentage")))
-	, Energy_ (new QwtPlotCurve (tr ("Energy rate")))
-	, Temperature_ (new QwtPlotCurve (tr ("Temperature")))
+	BatteryHistoryDialog::BatteryHistoryDialog (int histSize, double multiplier, QWidget *parent)
+	: QDialog { parent }
+	, Percent_ { new QwtPlotCurve }
+	, Energy_ { new QwtPlotCurve }
+	, Temperature_ { new QwtPlotCurve }
+	, TimeMultiplier_ { multiplier }
 	{
 		Ui_.setupUi (this);
 
 		Ui_.PercentPlot_->setAxisAutoScale (QwtPlot::xBottom, false);
 		Ui_.PercentPlot_->setAxisAutoScale (QwtPlot::yLeft, false);
-		Ui_.PercentPlot_->setAxisScale (QwtPlot::xBottom, 0, histSize);
+		Ui_.PercentPlot_->setAxisScale (QwtPlot::xBottom, 0, histSize * multiplier);
 		Ui_.PercentPlot_->setAxisScale (QwtPlot::yLeft, 0, 100);
 		Ui_.PercentPlot_->enableAxis (QwtPlot::yRight);
-		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Percent"));
-		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yRight, tr ("Energy rate, W"));
+
+		InitNames ();
+
+		auto setColor = [this] (QColor color, QwtPlot::Axis axis)
+		{
+			const auto widget = Ui_.PercentPlot_->axisWidget (axis);
+			auto palette = widget->palette ();
+
+			auto setColor = [&] (QPalette::ColorRole role)
+			{
+				const auto& prevColor = palette.color (role);
+				color.setRedF ((color.redF () + prevColor.redF ()) / 2);
+				color.setGreenF ((color.greenF () + prevColor.greenF ()) / 2);
+				color.setBlueF ((color.blueF () + prevColor.blueF ()) / 2);
+				palette.setColor (role, color);
+			};
+
+			setColor (QPalette::ColorRole::Text);
+			setColor (QPalette::ColorRole::WindowText);
+
+			widget->setPalette (palette);
+		};
 
 		QColor percentColor (Qt::blue);
 		Percent_->setPen (QPen (percentColor));
-		percentColor.setAlpha (20);
+		setColor (percentColor, QwtPlot::yLeft);
+		percentColor.setAlpha (40);
 		Percent_->setBrush (percentColor);
 
 		Percent_->setRenderHint (QwtPlotItem::RenderAntialiased);
@@ -72,7 +95,8 @@ namespace Liznoo
 
 		QColor energyColor (Qt::red);
 		Energy_->setPen (QPen (energyColor));
-		energyColor.setAlpha (20);
+		setColor (energyColor, QwtPlot::yRight);
+		energyColor.setAlpha (40);
 		Energy_->setBrush (energyColor);
 
 		Energy_->setRenderHint (QwtPlotItem::RenderAntialiased);
@@ -132,7 +156,7 @@ namespace Liznoo
 					temperature [i] = bh.Temperature_ - 273.15;
 					setTemperature = bh.Temperature_ || setTemperature;
 
-					xdata [i] = i;
+					xdata [i] = i * TimeMultiplier_;
 					++i;
 				});
 		Percent_->setSamples (xdata, percents);
@@ -223,6 +247,16 @@ namespace Liznoo
 		Ui_.Health_->setVisible (energyAvailable);
 
 		Ui_.PercentageLabel_->setText (QString::number (info.Percentage_) + "% " + chargeStateStr);
+	}
+
+	void BatteryHistoryDialog::InitNames ()
+	{
+		Percent_->setTitle (tr ("Percentage"));
+		Energy_->setTitle (tr ("Energy rate"));
+		Temperature_->setTitle (tr ("Temperature"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Charge, %"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::yRight, tr ("Energy rate, W"));
+		Ui_.PercentPlot_->setAxisTitle (QwtPlot::xBottom, tr ("Time, s"));
 	}
 }
 }

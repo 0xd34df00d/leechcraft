@@ -78,6 +78,7 @@ namespace LeechCraft
 namespace Liznoo
 {
 	const int HistSize = 300;
+	const auto UpdateMsecs = 3000;
 
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
@@ -132,7 +133,7 @@ namespace Liznoo
 				SIGNAL (timeout ()),
 				this,
 				SLOT (handleUpdateHistory ()));
-		battTimer->start (3000);
+		battTimer->start (UpdateMsecs);
 
 		Suspend_ = new QAction (tr ("Suspend"), this);
 		connect (Suspend_,
@@ -434,7 +435,7 @@ namespace Liznoo
 			return;
 		}
 
-		auto dialog = new BatteryHistoryDialog (HistSize);
+		auto dialog = new BatteryHistoryDialog (HistSize, UpdateMsecs / 1000.);
 		dialog->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 		Battery2Dialog_ [id] = dialog;

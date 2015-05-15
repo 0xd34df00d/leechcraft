@@ -27,39 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsthreadmanager.h"
-#include <QMetaObject>
-#include <QThread>
-#include "settingsthread.h"
-#include "basesettingsmanager.h"
+#pragma once
+
+#include <QString>
+#include <vmime/net/tracer.hpp>
 
 namespace LeechCraft
 {
-	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ { new QThread { this } }
-	, Worker_ { std::make_shared<SettingsThread> () }
-	{
-		Thread_->start (QThread::IdlePriority);
-		Worker_->moveToThread (Thread_);
-	}
+namespace Snails
+{
+	class AccountLogger;
 
-	SettingsThreadManager::~SettingsThreadManager ()
+	class TracerFactory : public vmime::net::tracerFactory
 	{
-		Thread_->quit ();
+		AccountLogger * const AccLogger_;
+		const QString Context_;
+	public:
+		TracerFactory (const QString&, AccountLogger*);
 
-		if (Thread_->isRunning () && !Thread_->wait (10000))
-			Thread_->terminate ();
-	}
-
-	SettingsThreadManager& SettingsThreadManager::Instance ()
-	{
-		static SettingsThreadManager stm;
-		return stm;
-	}
-
-	void SettingsThreadManager::Add (Util::BaseSettingsManager *bsm,
-			const QString& name, const QVariant& value)
-	{
-		Worker_->Save (bsm, name, value);
-	}
+		vmime::shared_ptr<vmime::net::tracer> create (vmime::shared_ptr<vmime::net::service>, const int) override;
+	};
+}
 }

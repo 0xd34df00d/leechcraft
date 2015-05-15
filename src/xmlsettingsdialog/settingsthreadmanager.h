@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 
 namespace LeechCraft
@@ -45,7 +46,7 @@ namespace Util
 		Q_OBJECT
 
 		QThread * const Thread_;
-		SettingsThread * const Worker_;
+		const std::shared_ptr<SettingsThread> Worker_;
 
 		SettingsThreadManager ();
 	public:
@@ -58,7 +59,5 @@ namespace Util
 
 		void Add (Util::BaseSettingsManager*,
 				const QString& name, const QVariant& value);
-
-		void Flush (Util::BaseSettingsManager*);
 	};
 }

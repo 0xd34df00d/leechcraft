@@ -30,6 +30,8 @@
 #include "progressmanager.h"
 #include <QStandardItemModel>
 #include <QtDebug>
+#include <util/sll/slotclosure.h>
+#include <util/xpc/util.h>
 #include "account.h"
 
 namespace LeechCraft
@@ -62,30 +64,36 @@ namespace Snails
 			return;
 
 		connect (pl,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handlePLDestroyed (QObject*)));
-		connect (pl,
 				SIGNAL (progress (size_t, size_t)),
 				this,
 				SLOT (handleProgress (size_t, size_t)));
 
-		QList<QStandardItem*> row;
-		row << new QStandardItem (pl->GetContext ());
-		row << new QStandardItem (tr ("Running..."));
-		row << new QStandardItem (QString (""));
+		const QList<QStandardItem*> row
+		{
+			new QStandardItem { pl->GetContext () },
+			new QStandardItem { tr ("Running") },
+			new QStandardItem { {} }
+		};
+		for (const auto item : row)
+			item->setEditable (false);
+
+		Util::InitJobHolderRow (row);
+
 		Model_->appendRow (row);
 
 		Listener2Row_ [pl] = row.last ();
-	}
 
-	void ProgressManager::handlePLDestroyed (QObject *obj)
-	{
-		QStandardItem *item = Listener2Row_.take (obj);
-		if (!item)
-			return;
-
-		Model_->removeRow (item->row ());
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, pl]
+			{
+				const auto item = Listener2Row_.take (pl);
+				Model_->removeRow (item->row ());
+			},
+			pl,
+			SIGNAL (destroyed (QObject*)),
+			this
+		};
 	}
 
 	void ProgressManager::handleProgress (size_t done, size_t total)
@@ -93,6 +101,8 @@ namespace Snails
 		auto item = Listener2Row_.value (sender ());
 		if (!item)
 			return;
+
+		Util::SetJobHolderProgress (item, done, total);
 
 		item->setText (QString ("%1/%2").arg (done).arg (total));
 	}

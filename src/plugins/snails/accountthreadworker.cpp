@@ -29,6 +29,9 @@
 
 #include "accountthreadworker.h"
 #include <algorithm>
+#include <boost/fusion/algorithm/iteration/for_each.hpp>
+#include <boost/fusion/include/for_each.hpp>
+#include <boost/fusion/adapted/std_tuple.hpp>
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
@@ -61,6 +64,7 @@
 #include "common.h"
 #include "messagechangelistener.h"
 #include "folder.h"
+#include "tracerfactory.h"
 
 namespace LeechCraft
 {
@@ -114,13 +118,46 @@ namespace Snails
 
 			return pass.toUtf8 ().constData ();
 		}
+
+		template<typename Function, typename... Types>
+		std::result_of_t<Function (AccountThreadWorker*, Types...)>* InvokeWith (const std::tuple<Types...>&, int)
+		{
+			return nullptr;
+		}
+
+		template<typename T>
+		struct AlwaysFalse : public std::false_type {};
+
+		template<typename Function, typename... Types>
+		void* InvokeWith (const std::tuple<Types...>&, ...)
+		{
+			static_assert (AlwaysFalse<Function>::value, "Check your function signature and arguments.");
+			return nullptr;
+		}
+
+		struct ArgChecker
+		{
+			ArgChecker ()
+			{
+				boost::fusion::for_each (AccountThreadWorker::Args::Known {}, *this);
+			}
+
+			template<typename T>
+			void operator() (const T&) const
+			{
+				InvokeWith<typename T::Function> (typename T::ArgTypes {}, 0);
+			}
+		};
 	}
 
-	AccountThreadWorker::AccountThreadWorker (bool isListening, Account *parent)
+	AccountThreadWorker::AccountThreadWorker (bool isListening,
+			const QString& threadName, Account *parent)
 	: A_ (parent)
+	, NoopTimer_ (new QTimer (this))
 	, IsListening_ (isListening)
+	, ThreadName_ (threadName)
 	, ChangeListener_ (new MessageChangeListener (this))
-	, Session_ (new vmime::net::session ())
+	, Session_ (vmime::make_shared<vmime::net::session> ())
 	, CachedFolders_ (2)
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
@@ -140,12 +177,11 @@ namespace Snails
 					this,
 					SLOT (handleMessagesChanged (QStringList, QList<int>)));
 
-		auto noopTimer = new QTimer { this };
-		connect (noopTimer,
+		connect (NoopTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (sendNoop ()));
-		noopTimer->start (60 * 1000);
+		NoopTimer_->start (60 * 1000);
 	}
 
 	vmime::shared_ptr<vmime::net::store> AccountThreadWorker::MakeStore ()
@@ -161,6 +197,7 @@ namespace Snails
 				Q_ARG (QString*, &url));
 
 		auto st = Session_->getStore (vmime::utility::url (url.toUtf8 ().constData ()));
+		st->setTracerFactory (vmime::make_shared<TracerFactory> (ThreadName_, A_->GetLogger ()));
 		st->setCertificateVerifier (CertVerifier_);
 		st->setAuthenticator (InAuth_);
 
@@ -441,10 +478,13 @@ namespace Snails
 				msg->SetAddresses (type, addrs);
 			}
 			else
+			{
+				const auto fieldPtr = field.get ();
 				qWarning () << "no"
 						<< static_cast<int> (type)
 						<< "data: cannot cast to mailbox list"
-						<< typeid (*field).name ();
+						<< typeid (*fieldPtr).name ();
+			}
 		};
 
 		try
@@ -845,6 +885,16 @@ namespace Snails
 	{
 		if (CachedStore_)
 			CachedStore_->noop ();
+	}
+
+	void AccountThreadWorker::setNoopTimeout (int timeout)
+	{
+		NoopTimer_->stop ();
+
+		if (timeout > NoopTimer_->interval ())
+			sendNoop ();
+
+		NoopTimer_->start (timeout);
 	}
 
 	void AccountThreadWorker::flushSockets ()

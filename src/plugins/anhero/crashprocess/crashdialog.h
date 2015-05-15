@@ -66,7 +66,6 @@ namespace CrashProcess
 		void appendTrace (const QString&);
 		void handleFinished (int, QProcess::ExitStatus);
 		void handleError (QProcess::ExitStatus, int, QProcess::ProcessError, const QString&);
-		void clearGdb ();
 
 		void reload ();
 

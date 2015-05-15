@@ -90,6 +90,11 @@ namespace Snails
 			{
 				out << T_;
 			}
+
+			const T& Unwrap () const
+			{
+				return T_;
+			}
 		};
 	public:
 		ValuedMetaArgument () = default;
@@ -105,7 +110,26 @@ namespace Snails
 		bool operator== (const ValuedMetaArgument& other) const;
 
 		void DebugPrint (QDebug&) const;
+
+		template<typename T>
+		T GetAs () const
+		{
+			const auto concrete = dynamic_cast<Holder<T>*> (Holder_.get ());
+			if (!concrete)
+			{
+				const auto& holdee = *Holder_;
+				const auto& str = std::string { "Unexpected type, holder type: " } +
+						typeid (holdee).name () +
+						"; requested: " +
+						typeid (T).name ();
+				throw std::runtime_error { str };
+			}
+
+			return concrete->Unwrap ();
+		}
 	};
+
+	bool operator!= (const ValuedMetaArgument&, const ValuedMetaArgument&);
 }
 }
 

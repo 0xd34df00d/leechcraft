@@ -47,6 +47,7 @@ namespace Snails
 
 		Account * const A_;
 		const bool IsListening_;
+		const QString Name_;
 
 		AccountThreadWorker *W_;
 
@@ -54,7 +55,7 @@ namespace Snails
 		QList<TaskQueueItem> PendingQueue_;
 		TaskQueueManager *QueueManager_ = nullptr;
 	public:
-		AccountThread (bool isListening, Account*);
+		AccountThread (bool isListening, const QString& name, Account *acc);
 
 		QFuture<void> AddTask (const TaskQueueItem&);
 	protected:

@@ -44,12 +44,15 @@ namespace CrashProcess
 	{
 		Q_OBJECT
 
-		QProcess *Proc_;
+		QProcess * const Proc_;
 	public:
 		GDBLauncher (quint64 pid, const QString& path, QObject* = 0);
 		~GDBLauncher ();
 	private slots:
 		void handleError ();
+
+		void feedInitialCommands ();
+
 		void consumeStdout ();
 	signals:
 		void gotOutput (const QString&);

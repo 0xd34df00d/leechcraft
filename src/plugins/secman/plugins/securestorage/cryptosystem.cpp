@@ -87,7 +87,6 @@ namespace SecureStorage
 		outPtr += outLength;
 		// output last block & cleanup
 		EVP_EncryptFinal (&cipherCtx, outPtr, &outLength);
-		outPtr += outLength;
 
 		// compute hmac
 		HMAC_CTX hmacCtx;
@@ -130,7 +129,6 @@ namespace SecureStorage
 		outPtr += outLength;
 		// output last block & cleanup
 		EVP_DecryptFinal (&cipherCtx, outPtr, &outLength);
-		outPtr += outLength;
 
 		// compute hmac
 		unsigned char hmac [HMACLength];

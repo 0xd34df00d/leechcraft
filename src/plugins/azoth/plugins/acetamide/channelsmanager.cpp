@@ -29,6 +29,7 @@
 
 #include "channelsmanager.h"
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include "xmlsettingsmanager.h"
 #include "ircserverhandler.h"
 #include "channelhandler.h"
@@ -138,10 +139,10 @@ namespace Acetamide
 			ChannelHandlers_ [chnnl]->CloseChannel ();
 	}
 
-	void ChannelsManager::CloseAllChannels ()
+	void ChannelsManager::CloseAllChannels () const
 	{
-		for (const auto& ich : ChannelHandlers_)
-			ich->CloseChannel ();
+		Util::Map (ChannelHandlers_,
+				[] (const std::shared_ptr<ChannelHandler>& ich) { ich->CloseChannel (); });
 	}
 
 	void ChannelsManager::UnregisterChannel (ChannelHandler *ich)

@@ -80,23 +80,71 @@ namespace Util
 		using type = QStringList;
 	};
 
+	namespace detail
+	{
+		template<typename Res, typename T>
+		void Append (Res& result, T&& val, decltype (result.push_back (std::forward<T> (val)))* = nullptr)
+		{
+			result.push_back (std::forward<T> (val));
+		}
+
+		template<typename Res, typename T>
+		void Append (Res& result, T&& val, decltype (result.insert (std::forward<T> (val)))* = nullptr)
+		{
+			result.insert (std::forward<T> (val));
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConstImpl (typename std::result_of<F (const T&)>::type*)
+		{
+			return true;
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConstImpl (...)
+		{
+			return false;
+		}
+
+		template<typename T, typename F>
+		constexpr bool IsInvokableWithConst ()
+		{
+			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (0);
+		}
+	}
+
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value,
 			WrapType_t<Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type>>>::type
 	{
 		Container<typename std::decay<decltype (Invoke (f, std::declval<T> ()))>::type> result;
 		for (auto&& t : c)
-			result.push_back (Invoke (f, t));
+			detail::Append (result, Invoke (f, t));
 		return result;
 	}
 
 	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) -> WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>
+	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
 	{
 		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
 		for (auto&& t : c)
-			cont.push_back (Invoke (f, t));
+			detail::Append (cont, Invoke (f, t));
 		return cont;
+	}
+
+	template<template<typename...> class Container, typename F, typename... ContArgs>
+	auto Map (Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	{
+		for (auto&& t : c)
+			Invoke (f, t);
+	}
+
+	template<template<typename...> class Container, typename F, typename... ContArgs>
+	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	{
+		auto copy = c;
+		Map (copy, f);
 	}
 
 #ifndef USE_CPP14

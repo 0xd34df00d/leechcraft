@@ -27,39 +27,35 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsthreadmanager.h"
-#include <QMetaObject>
-#include <QThread>
-#include "settingsthread.h"
-#include "basesettingsmanager.h"
+#pragma once
+
+#include <memory>
+#include <QObject>
+
+class QFile;
+class QDateTime;
 
 namespace LeechCraft
 {
-	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ { new QThread { this } }
-	, Worker_ { std::make_shared<SettingsThread> () }
-	{
-		Thread_->start (QThread::IdlePriority);
-		Worker_->moveToThread (Thread_);
-	}
+namespace Snails
+{
+	class Account;
 
-	SettingsThreadManager::~SettingsThreadManager ()
+	class AccountLogger : public QObject
 	{
-		Thread_->quit ();
+		Q_OBJECT
 
-		if (Thread_->isRunning () && !Thread_->wait (10000))
-			Thread_->terminate ();
-	}
+		Account * const Acc_;
+		std::shared_ptr<QFile> File_;
+	public:
+		AccountLogger (Account*);
 
-	SettingsThreadManager& SettingsThreadManager::Instance ()
-	{
-		static SettingsThreadManager stm;
-		return stm;
-	}
-
-	void SettingsThreadManager::Add (Util::BaseSettingsManager *bsm,
-			const QString& name, const QVariant& value)
-	{
-		Worker_->Save (bsm, name, value);
-	}
+		void Log (const QString& context, int connId, const QString& msg);
+	private slots:
+		void writeLog (const QString&);
+	signals:
+		void gotLog (const QDateTime& time, const QString& context,
+				int connId, const QString& msg);
+	};
+}
 }

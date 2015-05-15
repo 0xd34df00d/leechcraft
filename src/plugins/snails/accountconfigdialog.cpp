@@ -273,6 +273,26 @@ namespace Snails
 		Ui_.OutgoingFolder_->setCurrentIndex (-1);
 	}
 
+	int AccountConfigDialog::GetKeepAliveInterval () const
+	{
+		return Ui_.KeepAliveInterval_->value () * 1000;
+	}
+
+	void AccountConfigDialog::SetKeepAliveInterval (int interval)
+	{
+		Ui_.KeepAliveInterval_->setValue (interval / 1000);
+	}
+
+	bool AccountConfigDialog::GetLogConnectionsToFile () const
+	{
+		return Ui_.LogConnectionsToFile_->checkState () == Qt::Checked;
+	}
+
+	void AccountConfigDialog::SetLogConnectionsToFile (bool log)
+	{
+		Ui_.LogConnectionsToFile_->setCheckState (log ? Qt::Checked : Qt::Unchecked);
+	}
+
 	void AccountConfigDialog::resetInPort ()
 	{
 		const QList<int> values { 465, 993, 143 };

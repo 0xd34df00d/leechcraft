@@ -30,6 +30,8 @@
 #pragma once
 
 #include <type_traits>
+#include <functional>
+#include <memory>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include "slotclosure.h"
@@ -112,7 +114,9 @@ namespace Util
 		static_assert (detail::IsFuture<decltype (f (args...))>::Result_,
 				"The passed functor should return a QFuture.");
 
-		using RetType_t = typename detail::UnwrapFutureType<typename std::result_of<Executor (Args...)>::type>::type;
+		// Don't replace result_of with decltype, this triggers a gcc bug leading to segfault:
+		// http://leechcraft.org:8080/job/leechcraft/=debian_unstable/1998/console
+		using RetType_t = detail::UnwrapFutureType_t<typename std::result_of<Executor (Args...)>::type>;
 		const auto watcher = new QFutureWatcher<RetType_t> { parent };
 
 		new SlotClosure<DeleteLaterPolicy>
@@ -125,6 +129,119 @@ namespace Util
 
 		watcher->setFuture (f (args...));
 	}
-}
-}
 
+	namespace detail
+	{
+		template<typename Executor, typename... Args>
+		class Sequencer : public QObject
+		{
+		public:
+			using FutureType_t = typename std::result_of<Executor (Args...)>::type;
+			using RetType_t = UnwrapFutureType_t<FutureType_t>;
+		private:
+			const std::function<FutureType_t ()> Functor_;
+			QFutureWatcher<RetType_t> BaseWatcher_;
+			QObject *LastWatcher_ = &BaseWatcher_;
+		public:
+			Sequencer (Executor f, Args... args, QObject *parent)
+			: QObject { parent }
+			, Functor_ { [f, args...] { return f (args...); } }
+			, BaseWatcher_ { this }
+			{
+			}
+
+			void Start ()
+			{
+				BaseWatcher_.setFuture (Functor_ ());
+			}
+
+			template<typename RetT, typename ArgT>
+			void Then (const std::function<QFuture<RetT> (ArgT)>& cont)
+			{
+				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
+				if (!last)
+					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+
+				const auto watcher = new QFutureWatcher<RetT> { this };
+				LastWatcher_ = watcher;
+
+				new SlotClosure<DeleteLaterPolicy>
+				{
+					[this, last, watcher, cont]
+					{
+						if (last != &BaseWatcher_)
+							last->deleteLater ();
+						watcher->setFuture (cont (last->result ()));
+					},
+					last,
+					SIGNAL (finished ()),
+					last
+				};
+			}
+
+			template<typename T>
+			void Then (const std::function<void (T)>& cont)
+			{
+				const auto last = dynamic_cast<QFutureWatcher<T>*> (LastWatcher_);
+				if (!last)
+					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+
+				new SlotClosure<DeleteLaterPolicy>
+				{
+					[last, cont, this]
+					{
+						cont (last->result ());
+						deleteLater ();
+					},
+					LastWatcher_,
+					SIGNAL (finished ()),
+					LastWatcher_
+				};
+			}
+		};
+
+		template<typename Ret, typename E0, typename... A0>
+		class SequenceProxy
+		{
+			std::shared_ptr<void> ExecuteGuard_;
+			Sequencer<E0, A0...> * const Seq_;
+
+			SequenceProxy (const std::shared_ptr<void>& guard, Sequencer<E0, A0...> *seq)
+			: ExecuteGuard_ { guard }
+			, Seq_ { seq }
+			{
+			}
+		public:
+			using Ret_t = Ret;
+
+			SequenceProxy (Sequencer<E0, A0...> *seq)
+			: ExecuteGuard_ { nullptr, [seq] (void*) { seq->Start (); } }
+			, Seq_ { seq }
+			{
+			}
+
+			SequenceProxy (const SequenceProxy&) = default;
+			SequenceProxy (SequenceProxy&&) = default;
+
+			template<typename F>
+			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, E0, A0...>
+			{
+				Seq_->template Then<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Ret> (f);
+				return { ExecuteGuard_, Seq_ };
+			}
+
+			template<typename F>
+			auto Then (const F& f) -> typename std::enable_if<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>::type
+			{
+				Seq_->template Then<Ret> (f);
+			}
+		};
+	}
+
+	template<typename Executor, typename... Args>
+	detail::SequenceProxy<typename detail::Sequencer<Executor, Args...>::RetType_t, Executor, Args...> Sequence (QObject *parent, Executor f, Args... args)
+	{
+		return { new detail::Sequencer<Executor, Args...> { f, args..., parent } };
+	}
+}
+}

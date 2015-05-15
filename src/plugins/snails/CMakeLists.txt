@@ -53,6 +53,9 @@ set (SRCS
 	mailtabreadmarker.cpp
 	composemessagetabfactory.cpp
 	accountsmanager.cpp
+	accountlogger.cpp
+	tracerfactory.cpp
+	tracer.cpp
 	)
 set (FORMS
 	mailtab.ui

@@ -27,39 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsthreadmanager.h"
-#include <QMetaObject>
-#include <QThread>
-#include "settingsthread.h"
-#include "basesettingsmanager.h"
+#include "freebsdbackend.h"
+#include <memory>
+#include <fcntl.h>
+#include <kvm.h>
+#include <sys/param.h>
+#include <sys/pcpu.h>
+#include <sys/sysctl.h>
+#include <QtDebug>
 
 namespace LeechCraft
 {
-	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ { new QThread { this } }
-	, Worker_ { std::make_shared<SettingsThread> () }
+namespace CpuLoad
+{
+	void FreeBSDBackend::Update ()
 	{
-		Thread_->start (QThread::IdlePriority);
-		Worker_->moveToThread (Thread_);
+		const auto kvm = kvm_open (nullptr, nullptr, nullptr, O_RDONLY, "LeechCraft CpuLoad"); // TODO proper error reporting
+		if (!kvm)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to open kernel memory";
+			return;
+		}
+
+		const auto cpuCount = kvm_getncpus (kvm);
+		for (int i = 0; i < cpuCount; ++i)
+		{
+			std::unique_ptr<void, decltype (&free)> rawPcpu { kvm_getpcpu (kvm, i), &free };
+			auto pcp = static_cast<pcpu*> (rawPcpu.get ());
+		}
+
+		kvm_close (kvm);
 	}
 
-	SettingsThreadManager::~SettingsThreadManager ()
+	int FreeBSDBackend::GetCpuCount () const
 	{
-		Thread_->quit ();
-
-		if (Thread_->isRunning () && !Thread_->wait (10000))
-			Thread_->terminate ();
+		return 0;
 	}
 
-	SettingsThreadManager& SettingsThreadManager::Instance ()
+	QMap<LoadPriority, LoadTypeInfo> FreeBSDBackend::GetLoads (int cpu) const
 	{
-		static SettingsThreadManager stm;
-		return stm;
+		return {};
 	}
-
-	void SettingsThreadManager::Add (Util::BaseSettingsManager *bsm,
-			const QString& name, const QVariant& value)
-	{
-		Worker_->Save (bsm, name, value);
-	}
+}
 }

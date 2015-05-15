@@ -75,7 +75,7 @@ namespace Sysnotify
 
 	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
-		return EntityTestHandleResult { Manager_->CouldNotify (e) ?
+		return EntityTestHandleResult { Manager_.get () && Manager_->CouldNotify (e) ?
 					EntityTestHandleResult::PHigh :
 					EntityTestHandleResult::PNone };
 	}

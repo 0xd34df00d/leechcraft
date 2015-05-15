@@ -30,7 +30,6 @@
 #include "gdblauncher.h"
 #include <stdexcept>
 #include <QProcess>
-#include <QTemporaryFile>
 #include <QTextStream>
 #include <QtDebug>
 
@@ -44,25 +43,19 @@ namespace CrashProcess
 	: QObject (parent)
 	, Proc_ (new QProcess (this))
 	{
-		auto tmpFile = new QTemporaryFile ();
-		if (!tmpFile->open ())
-			throw std::runtime_error ("cannot open GDB temp file");
-
-		QTextStream stream (tmpFile);
-		stream << "thread\n"
-				<< "thread apply all bt";
-
 		Proc_->start ("gdb",
 				{
 					"-nw",
 					"-n",
-					"-batch",
-					"-x",
-					tmpFile->fileName (),
+					"-q",
 					"-p",
 					QString::number (pid),
 					path
 				});
+		connect (Proc_,
+				SIGNAL (started ()),
+				this,
+				SLOT (feedInitialCommands ()));
 		connect (Proc_,
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
@@ -105,10 +98,56 @@ namespace CrashProcess
 				Proc_->errorString ());
 	}
 
+	void GDBLauncher::feedInitialCommands ()
+	{
+		Proc_->write ("thread\n");
+		Proc_->write ("thread apply all bt\n");
+		Proc_->write ("q\n");
+	}
+
 	void GDBLauncher::consumeStdout ()
 	{
-		const auto& str = Proc_->readAllStandardOutput ().trimmed ();
-		emit gotOutput (str);
+		auto strs = Proc_->readAllStandardOutput ().trimmed ().split ('\n');
+		strs.erase (std::remove_if (strs.begin (), strs.end (),
+					[] (const QString& str)
+					{
+						return !str.isEmpty () &&
+								std::all_of (str.begin (), str.end (), [] (const QChar& c) { return c == '.'; });
+					}),
+				strs.end ());
+
+		enum class LineState
+		{
+			StackFrame,
+			Other
+		} state = LineState::Other;
+
+		for (auto i = strs.begin (); i != strs.end (); )
+		{
+			const auto& str = *i;
+
+			if (state == LineState::StackFrame &&
+				str.startsWith (' ') && str.size () > 1)
+			{
+				auto& prevStr = *std::prev (i);
+				if (!prevStr.endsWith ('('))
+					prevStr += ' ';
+				prevStr += str.trimmed ();
+
+				i = strs.erase (i);
+			}
+			else
+			{
+				state = str.startsWith ('#') ?
+						LineState::StackFrame :
+						LineState::Other;
+				*i = i->trimmed ();
+				++i;
+			}
+		}
+
+		for (const auto& str : strs)
+			emit gotOutput (str);
 	}
 }
 }

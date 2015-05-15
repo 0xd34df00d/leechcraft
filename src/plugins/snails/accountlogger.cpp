@@ -27,39 +27,67 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsthreadmanager.h"
-#include <QMetaObject>
-#include <QThread>
-#include "settingsthread.h"
-#include "basesettingsmanager.h"
+#include "accountlogger.h"
+#include <QFile>
+#include <QDateTime>
+#include <QtDebug>
+#include <QDir>
+#include <util/sys/paths.h>
+#include "account.h"
 
 namespace LeechCraft
 {
-	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ { new QThread { this } }
-	, Worker_ { std::make_shared<SettingsThread> () }
+namespace Snails
+{
+	AccountLogger::AccountLogger (Account *acc)
+	: QObject { acc }
+	, Acc_ { acc }
 	{
-		Thread_->start (QThread::IdlePriority);
-		Worker_->moveToThread (Thread_);
 	}
 
-	SettingsThreadManager::~SettingsThreadManager ()
+	void AccountLogger::Log (const QString& context, int connId, const QString& msg)
 	{
-		Thread_->quit ();
+		const auto& now = QDateTime::currentDateTime ();
+		const auto& str = QString { "[%1] [%2] [%3]: %4" }
+				.arg (now.toString ("dd.MM.yyyy HH:mm:ss.zzz"))
+				.arg (context)
+				.arg (connId)
+				.arg (msg);
 
-		if (Thread_->isRunning () && !Thread_->wait (10000))
-			Thread_->terminate ();
+		QMetaObject::invokeMethod (this,
+				"writeLog",
+				Qt::QueuedConnection,
+				Q_ARG (QString, str));
+
+		emit gotLog (now, context, connId, msg);
 	}
 
-	SettingsThreadManager& SettingsThreadManager::Instance ()
+	void AccountLogger::writeLog (const QString& log)
 	{
-		static SettingsThreadManager stm;
-		return stm;
-	}
+		if (!Acc_->ShouldLogToFile ())
+			return;
 
-	void SettingsThreadManager::Add (Util::BaseSettingsManager *bsm,
-			const QString& name, const QVariant& value)
-	{
-		Worker_->Save (bsm, name, value);
+		if (!File_)
+		{
+			const auto& path = Util::CreateIfNotExists ("snails/logs")
+					.filePath (Acc_->GetName () + ".log");
+			File_ = std::make_shared<QFile> (path);
+			if (!File_->open (QIODevice::WriteOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open"
+						<< path
+						<< "for writing, error:"
+						<< File_->errorString ();
+				return;
+			}
+		}
+
+		if (File_->isOpen ())
+		{
+			File_->write (log.toUtf8 () + "\n");
+			File_->flush ();
+		}
 	}
+}
 }

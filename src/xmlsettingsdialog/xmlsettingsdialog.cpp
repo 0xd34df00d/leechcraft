@@ -69,8 +69,6 @@ namespace Util
 
 	XmlSettingsDialog::~XmlSettingsDialog ()
 	{
-		if (WorkingObject_)
-			SettingsThreadManager::Instance ().Flush (WorkingObject_);
 	}
 
 	void XmlSettingsDialog::RegisterObject (BaseSettingsManager *obj, const QString& basename)

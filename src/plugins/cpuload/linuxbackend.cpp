@@ -132,7 +132,7 @@ namespace CpuLoad
 
 	int LinuxBackend::GetCpuCount () const
 	{
-		return Loads_.size ();
+		return LastCummulative_.size ();
 	}
 
 	QMap<LoadPriority, LoadTypeInfo> LinuxBackend::GetLoads (int cpu) const

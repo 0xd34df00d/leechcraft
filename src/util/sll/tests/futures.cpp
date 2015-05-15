@@ -27,39 +27,51 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsthreadmanager.h"
-#include <QMetaObject>
-#include <QThread>
-#include "settingsthread.h"
-#include "basesettingsmanager.h"
+#include "futures.h"
+#include <thread>
+#include <chrono>
+#include <QEventLoop>
+#include <QtTest>
+#include <futures.h>
+
+QTEST_MAIN (LeechCraft::Util::FuturesTest)
 
 namespace LeechCraft
 {
-	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ { new QThread { this } }
-	, Worker_ { std::make_shared<SettingsThread> () }
+namespace Util
+{
+	namespace
 	{
-		Thread_->start (QThread::IdlePriority);
-		Worker_->moveToThread (Thread_);
+		auto MkWaiter ()
+		{
+			return [] (int msecs)
+			{
+				return QtConcurrent::run ([msecs]
+						{
+							std::this_thread::sleep_for (std::chrono::milliseconds (msecs));
+							return msecs * 2;
+						});
+			};
+		}
 	}
 
-	SettingsThreadManager::~SettingsThreadManager ()
+	void FuturesTest::testSequencer ()
 	{
-		Thread_->quit ();
+		QEventLoop loop;
+		int res = 0;
+		Sequence (nullptr, MkWaiter (), 50)
+			.Then (MkWaiter ())
+			.Then (MkWaiter ())
+			.Then (MkWaiter ())
+			.Then ([&loop, &res] (int cnt)
+					{
+						res = cnt;
+						loop.quit ();
+					});
 
-		if (Thread_->isRunning () && !Thread_->wait (10000))
-			Thread_->terminate ();
-	}
+		loop.exec ();
 
-	SettingsThreadManager& SettingsThreadManager::Instance ()
-	{
-		static SettingsThreadManager stm;
-		return stm;
+		QCOMPARE (res, 800);
 	}
-
-	void SettingsThreadManager::Add (Util::BaseSettingsManager *bsm,
-			const QString& name, const QVariant& value)
-	{
-		Worker_->Save (bsm, name, value);
-	}
+}
 }

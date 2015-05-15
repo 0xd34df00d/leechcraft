@@ -47,6 +47,7 @@
 #include "taskqueuemanager.h"
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
+#include "accountlogger.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -57,14 +58,18 @@ namespace Snails
 {
 	Account::Account (QObject *parent)
 	: QObject (parent)
-	, Thread_ (new AccountThread (true, this))
-	, MessageFetchThread_ (new AccountThread (false, this))
+	, Logger_ (new AccountLogger (this))
+	, Thread_ (new AccountThread (true, "OpThread", this))
+	, MessageFetchThread_ (new AccountThread (false, "MessageFetchThread", this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
 	{
+		Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+		MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+
 		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
 
@@ -87,6 +92,16 @@ namespace Snails
 	QString Account::GetServer () const
 	{
 		return InHost_ + ':' + QString::number (InPort_);
+	}
+
+	bool Account::ShouldLogToFile () const
+	{
+		return LogToFile_;
+	}
+
+	AccountLogger* Account::GetLogger () const
+	{
+		return Logger_;
 	}
 
 	AccountFolderManager* Account::GetFolderManager () const
@@ -215,7 +230,7 @@ namespace Snails
 		QByteArray result;
 
 		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (1);
+		out << static_cast<quint8> (3);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -235,7 +250,9 @@ namespace Snails
 			<< static_cast<quint8> (OutType_)
 			<< UserName_
 			<< UserEmail_
-			<< FolderManager_->Serialize ();
+			<< FolderManager_->Serialize ()
+			<< KeepAliveInterval_
+			<< LogToFile_;
 
 		return result;
 	}
@@ -246,8 +263,8 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version != 1)
-			throw std::runtime_error (qPrintable ("Unknown version " + QString::number (version)));
+		if (version < 1 || version > 3)
+			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
 		quint8 outType = 0;
 		qint8 type = 0;
@@ -285,6 +302,12 @@ namespace Snails
 			FolderManager_->Deserialize (fstate);
 
 			handleFoldersUpdated ();
+
+			if (version >= 2)
+				in >> KeepAliveInterval_;
+
+			if (version >= 3)
+				in >> LogToFile_;
 		}
 	}
 
@@ -322,6 +345,9 @@ namespace Snails
 			dia->SetOutLogin (OutLogin_);
 			dia->SetOutType (OutType_);
 
+			dia->SetKeepAliveInterval (KeepAliveInterval_);
+			dia->SetLogConnectionsToFile (LogToFile_);
+
 			const auto& folders = FolderManager_->GetFoldersPaths ();
 			dia->SetAllFolders (folders);
 			const auto& toSync = FolderManager_->GetSyncFolders ();
@@ -334,7 +360,7 @@ namespace Snails
 			dia->SetFoldersToSync (toSync);
 		}
 
-		dia->open ();
+		dia->show ();
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
@@ -374,6 +400,15 @@ namespace Snails
 				OutPort_ = dia->GetOutPort ();
 				OutLogin_ = dia->GetOutLogin ();
 				OutType_ = dia->GetOutType ();
+
+				if (KeepAliveInterval_ != dia->GetKeepAliveInterval ())
+				{
+					KeepAliveInterval_ = dia->GetKeepAliveInterval ();
+					Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+					MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+				}
+
+				LogToFile_ = dia->GetLogConnectionsToFile ();
 
 				FolderManager_->ClearFolderFlags ();
 				const auto& out = dia->GetOutFolder ();

@@ -50,6 +50,7 @@
 #include <util/sys/paths.h>
 #include <util/models/rolenamesmixin.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/media/idiscographyprovider.h>
 #include <interfaces/media/ialbumartprovider.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -59,6 +60,7 @@
 #include "util.h"
 #include "previewhandler.h"
 #include "stdartistactionsmanager.h"
+#include "localcollection.h"
 
 namespace LeechCraft
 {
@@ -159,7 +161,52 @@ namespace LMP
 		return 0;
 	}
 
-	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img)
+	bool BioViewManager::QueryReleaseImageLocal (const Media::AlbumInfo& info) const
+	{
+		const auto coll = Core::Instance ().GetLocalCollection ();
+		const auto albumId = coll->FindAlbum (info.Artist_, info.Album_);
+		if (albumId == -1)
+			return false;
+
+		const auto& album = coll->GetAlbum (albumId);
+		if (!album)
+			return false;
+
+		const auto& path = album->CoverPath_;
+		if (path.isEmpty () || !QFile::exists (path))
+			return false;
+
+		SetAlbumImage (info.Album_, QUrl::fromLocalFile (path));
+		return true;
+	}
+
+	void BioViewManager::QueryReleaseImage (Media::IAlbumArtProvider *aaProv, const Media::AlbumInfo& info)
+	{
+		if (QueryReleaseImageLocal (info))
+			return;
+
+		const auto proxy = aaProv->RequestAlbumArt (info);
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, proxy]
+			{
+				const auto proxyObj = proxy->GetQObject ();
+				proxyObj->deleteLater ();
+
+				const auto& info = proxy->GetAlbumInfo ();
+				const auto& images = proxy->GetImageUrls ();
+				if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
+					return;
+
+				SetAlbumImage (info.Album_, images.first ());
+			},
+			proxy->GetQObject (),
+			SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
+			this
+		};
+	}
+
+	void BioViewManager::SetAlbumImage (const QString& album, const QUrl& img) const
 	{
 		auto item = FindAlbumItem (album);
 		if (!item)
@@ -204,35 +251,11 @@ namespace LMP
 			item->setData (MakeTrackListTooltip (release.TrackInfos_),
 					DiscoModel::Roles::AlbumTrackListTooltip);
 
-			auto tracks = std::accumulate (release.TrackInfos_.begin (), release.TrackInfos_.end (),
-					decltype (release.TrackInfos_.value (0)) ());
-			Album2Tracks_ << tracks;
+			Album2Tracks_ << Util::Concat (release.TrackInfos_);
 
 			DiscoModel_->appendRow (item);
 
-			const auto proxy = aaProv->RequestAlbumArt ({ CurrentArtist_, release.Name_ });
-			connect (proxy->GetQObject (),
-					SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-					this,
-					SLOT (handleAlbumArt (Media::AlbumInfo, QList<QUrl>)));
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				[this, proxy] () -> void
-				{
-					const auto proxyObj = proxy->GetQObject ();
-					proxyObj->deleteLater ();
-
-					const auto& info = proxy->GetAlbumInfo ();
-					const auto& images = proxy->GetImageUrls ();
-					if (info.Artist_ != CurrentArtist_ || images.isEmpty ())
-						return;
-
-					SetAlbumImage (info.Album_, images.first ());
-				},
-				proxy->GetQObject (),
-				SIGNAL (urlsReady (Media::AlbumInfo, QList<QUrl>)),
-				this
-			};
+			QueryReleaseImage (aaProv, { CurrentArtist_, release.Name_ });
 		}
 	}
 

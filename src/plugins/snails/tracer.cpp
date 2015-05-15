@@ -27,39 +27,48 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsthreadmanager.h"
-#include <QMetaObject>
-#include <QThread>
-#include "settingsthread.h"
-#include "basesettingsmanager.h"
+#include "tracer.h"
+#include "accountlogger.h"
 
 namespace LeechCraft
 {
-	SettingsThreadManager::SettingsThreadManager ()
-	: Thread_ { new QThread { this } }
-	, Worker_ { std::make_shared<SettingsThread> () }
+namespace Snails
+{
+	Tracer::Tracer (const QString& context, int connId, AccountLogger *logger)
+	: AccLogger_ { logger }
+	, Context_ { context }
+	, ConnId_ { connId }
 	{
-		Thread_->start (QThread::IdlePriority);
-		Worker_->moveToThread (Thread_);
 	}
 
-	SettingsThreadManager::~SettingsThreadManager ()
+	void Tracer::traceReceiveBytes (const vmime::size_t count, const vmime::string& state)
 	{
-		Thread_->quit ();
-
-		if (Thread_->isRunning () && !Thread_->wait (10000))
-			Thread_->terminate ();
+		AccLogger_->Log (Context_, ConnId_,
+				QString { "received %1 bytes in state %2" }
+					.arg (count)
+					.arg (state.empty () ? "<null>" : state.c_str ()));
 	}
 
-	SettingsThreadManager& SettingsThreadManager::Instance ()
+	void Tracer::traceSendBytes (const vmime::size_t count, const vmime::string& state)
 	{
-		static SettingsThreadManager stm;
-		return stm;
+		AccLogger_->Log (Context_, ConnId_,
+				QString { "sent %1 bytes in state %2" }
+					.arg (count)
+					.arg (state.empty () ? "<null>" : state.c_str ()));
 	}
 
-	void SettingsThreadManager::Add (Util::BaseSettingsManager *bsm,
-			const QString& name, const QVariant& value)
+	void Tracer::traceReceive (const vmime::string& line)
 	{
-		Worker_->Save (bsm, name, value);
+		AccLogger_->Log (Context_, ConnId_,
+				QString { "received:\n%1" }
+					.arg (line.c_str ()));
 	}
+
+	void Tracer::traceSend (const vmime::string& line)
+	{
+		AccLogger_->Log (Context_, ConnId_,
+				QString { "sent:\n%1" }
+					.arg (line.c_str ()));
+	}
+}
 }
