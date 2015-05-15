@@ -34,14 +34,32 @@
 
 class QFont;
 
+/** @brief Interface to aid WebKit-view-containing tabs to expose the view
+ * fonts configuration to the user.
+ *
+ * The tabs implementing this interface should just be registered with an
+ * instance of LeechCraft::Util::WkFontsWidget, which will take care of
+ * the rest.
+ *
+ * @sa ITabWidget
+ */
 class Q_DECL_EXPORT IWkFontsSettable
 {
 protected:
 	virtual ~IWkFontsSettable () = default;
 public:
+	/** @brief Returns this tab as a QObject.
+	 *
+	 * @return This tab as a QObject.
+	 */
 	virtual QObject* GetQObject () = 0;
 
-	virtual void SetFontFamily (QWebSettings::FontFamily, const QFont&) = 0;
+	/** @brief Sets the \em font for the given font \em family.
+	 *
+	 * @param[in] family The font family to change.
+	 * @param[in] font The font to set for the font family.
+	 */
+	virtual void SetFontFamily (QWebSettings::FontFamily family, const QFont& font) = 0;
 };
 
 Q_DECLARE_INTERFACE (IWkFontsSettable, "org.LeechCraft.IWkFontsSettable/1.0");
