@@ -128,7 +128,7 @@ namespace LeechCraft
 		 */
 		qlonglong Total_ = 0;
 
-		/** @brief The flags of the task as it was original added to the
+		/** @brief The flags of the task as it was originally added to the
 		 * downloader, if relevant.
 		 *
 		 * This field only makes sense if the relevant process is a
