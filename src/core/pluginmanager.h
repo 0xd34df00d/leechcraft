@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QAbstractItemModel>
 #include <QMap>
@@ -162,7 +162,4 @@ namespace LeechCraft
 		void pluginInjected (QObject*);
 		void loadProgress (const QString&);
 	};
-};
-
-#endif
-
+}
