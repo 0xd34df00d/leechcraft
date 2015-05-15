@@ -42,7 +42,6 @@ namespace Util
 	ToolTipItem::ToolTipItem (QQuickItem *parent)
 	: QQuickItem (parent)
 #endif
-	, ContainsMouse_ (false)
 	{
 		setAcceptHoverEvents (true);
 		connect (&ShowTimer_,

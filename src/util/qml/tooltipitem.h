@@ -84,13 +84,12 @@ namespace Util
 
 		QTimer ShowTimer_;
 		QString Text_;
-		bool ContainsMouse_;
-
+		bool ContainsMouse_ = false;
 	public:
 #if QT_VERSION < 0x050000
-		ToolTipItem (QDeclarativeItem *parent = 0);
+		ToolTipItem (QDeclarativeItem *parent = nullptr);
 #else
-		ToolTipItem (QQuickItem *parent = 0);
+		ToolTipItem (QQuickItem *parent = nullptr);
 #endif
 
 		void SetText (const QString& text);
