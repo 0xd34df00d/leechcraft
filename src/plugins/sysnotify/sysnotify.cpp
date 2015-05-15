@@ -41,7 +41,7 @@ namespace Sysnotify
 	{
 		Util::InstallTranslator ("sysnotify");
 
-		Manager_ = std::make_shared<NotificationManager> (this);
+		Manager_ = std::make_shared<NotificationManager> ();
 	}
 
 	void Plugin::SecondInit ()
