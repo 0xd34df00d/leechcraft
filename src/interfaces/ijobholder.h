@@ -105,10 +105,16 @@ namespace LeechCraft
 
 	/** @brief State of a single process represented in a IJobHolder model.
 	 *
-	 * This structure should be returned by the model for the
-	 * JobHolderRole::ProcessState role if the value of the
-	 * CustomDataRoles::RoleJobHolderRow role is
-	 * JobHolderRow::DownloadProgress or JobHolderRow::ProcessProgress.
+	 * This structure describes the a process represented by a row in an
+	 * IJobHolder model and should be returned via the
+	 * JobHolderRole::ProcessState role.
+	 *
+	 * The value of the CustomDataRoles::RoleJobHolderRow role should be
+	 * either JobHolderRow::DownloadProgress or
+	 * JobHolderRow::ProcessProgress.
+	 *
+	 * @sa IJobHolder
+	 * @sa JobHolderRow
 	 */
 	struct ProcessStateInfo
 	{
