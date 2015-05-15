@@ -271,7 +271,7 @@ public:
 				elem.removeAttribute ("user");
 				elem.appendChild (elem.ownerDocument ().createTextNode (user));
 			}
-		 * \endcode
+		   \endcode
 		 */
 		std::function<void (QDomElement&)> ToKnown_;
 
@@ -297,7 +297,7 @@ public:
 				while (!childNodes.isEmpty ())
 					elem.removeChild (childNodes.at (0));
 			}
-		 * \endcode
+		   \endcode
 		 *
 		 * One can leave this function unset, in this case the tag will
 		 * marked as non-modifyable.
@@ -341,7 +341,7 @@ public:
 		auto action = editor->AddInlineTagInserter ("span", params);
 		action->setText ("Name of your action");
 		// further customize the action
-	 * \endcode
+	   \endcode
 	 *
 	 * @param[in] tagName The name of the tag to be inserted.
 	 * @param[in] params The parameters of the tag.
