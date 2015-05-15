@@ -170,8 +170,8 @@ public:
 	/** @brief Checks if there is a tab similar to the one defined by \em data.
 	 *
 	 * The \em data is guaranteed to be obtained from a tab belonging
-	 * to the plugin being queried. That is, no checks for the tab
-	 * belonging to the plugin should be made.
+	 * to the plugin being queried. That is, there is no need to perform any
+	 * checks for the tab to be belonging to the plugin.
 	 *
 	 * @param[in] data The tab recover data previously obtained from
 	 * IRecoverableTab::GetTabRecoverData()
