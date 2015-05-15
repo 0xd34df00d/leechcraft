@@ -234,13 +234,13 @@ public:
 		 * <code>&lt;lj user="$username"/></code>:
 		 *
 		 * \code
-		 * [] (QDomElement& elem) -> void
-		 * {
-		 * 	const auto& user = elem.attribute ("user");
-		 * 	elem.setTagName ("strong");
-		 * 	elem.removeAttribute ("user");
-		 * 	elem.appendChild (elem.ownerDocument ().createTextNode (user));
-		 * }
+			[] (QDomElement& elem)
+			{
+				const auto& user = elem.attribute ("user");
+				elem.setTagName ("strong");
+				elem.removeAttribute ("user");
+				elem.appendChild (elem.ownerDocument ().createTextNode (user));
+			}
 		 * \endcode
 		 */
 		std::function<void (QDomElement&)> ToKnown_;
@@ -257,16 +257,16 @@ public:
 		 * CustomTag::ToKnown_:
 		 *
 		 * \code
-		 * [] (QDomElement& elem) -> void
-		 * {
-		 * 	const auto& user = elem.text ();
-		 * 	elem.setTagName ("lj");
-		 * 	elem.setAttribute ("user", user);
-		 *
-		 * 	const auto& childNodes = elem.childNodes ();
-		 * 	while (!childNodes.isEmpty ())
-		 * 		elem.removeChild (childNodes.at (0));
-		 * }
+			[] (QDomElement& elem)
+			{
+				const auto& user = elem.text ();
+				elem.setTagName ("lj");
+				elem.setAttribute ("user", user);
+
+				const auto& childNodes = elem.childNodes ();
+				while (!childNodes.isEmpty ())
+					elem.removeChild (childNodes.at (0));
+			}
 		 * \endcode
 		 *
 		 * One can leave this function unset, in this case the tag will
@@ -305,12 +305,12 @@ public:
 	 * <code>&lt;span style="font-weight: bold" id="sometext">...&lt;/span></code>
 	 * one should call this function like this:
 	 * \code
-	 * QVariantMap params;
-	 * params ["style"] = "font-weight: bold";
-	 * params ["id"] = "sometext";
-	 * auto action = editor->AddInlineTagInserter ("span", params);
-	 * action->setText ("Name of your action");
-	 * // further customize the action
+		QVariantMap params;
+		params ["style"] = "font-weight: bold";
+		params ["id"] = "sometext";
+		auto action = editor->AddInlineTagInserter ("span", params);
+		action->setText ("Name of your action");
+		// further customize the action
 	 * \endcode
 	 *
 	 * @param[in] tagName The name of the tag to be inserted.
