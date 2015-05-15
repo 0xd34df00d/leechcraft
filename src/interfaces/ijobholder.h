@@ -144,21 +144,59 @@ namespace LeechCraft
 		 */
 		TaskParameters Params_ = {};
 
+		/** @brief Describes the state of the process.
+		 */
 		enum class State
 		{
+			/** @brief Unknown state.
+			 */
 			Unknown,
+
+			/** @brief The process is running just fine.
+			 */
 			Running,
+
+			/** @brief The process is paused.
+			 */
 			Paused,
+
+			/** @brief There was an error completing the process.
+			 */
 			Error
 		} State_ = State::Unknown;
 
+		/** @brief Default-constructs a process description.
+		 */
 		ProcessStateInfo () = default;
 
+		/** @brief Constructs the description with the given values.
+		 *
+		 * @param[in] done The value for the Done_ variable.
+		 * @param[in] total The value for the Total_ variable.
+		 * @param[in] params The value for the Params_ variable.
+		 *
+		 * @sa Done_
+		 * @sa Total_
+		 * @sa Params_
+		 */
 		ProcessStateInfo (qlonglong done, qlonglong total, TaskParameters params)
 		: ProcessStateInfo { done, total, params, State::Unknown }
 		{
 		}
 
+		/** @brief Constructs the description with the given values
+		 * and state.
+		 *
+		 * @param[in] done The value for the Done_ variable.
+		 * @param[in] total The value for the Total_ variable.
+		 * @param[in] params The value for the Params_ variable.
+		 * @param[in] state The value for the State_ variable.
+		 *
+		 * @sa Done_
+		 * @sa Total_
+		 * @sa Params_
+		 * @sa State_
+		 */
 		ProcessStateInfo (qlonglong done, qlonglong total, TaskParameters params, State state)
 		: Done_ { done }
 		, Total_ { total }
