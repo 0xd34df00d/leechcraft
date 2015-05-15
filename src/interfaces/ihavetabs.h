@@ -157,6 +157,15 @@ class QAction;
 
 /** @brief This interface defines methods that should be implemented in
  * widgets added to the main tab widget.
+ *
+ * A tab may also implement the following interfaces:
+ * - IRecoverableTab if it makes sense to store the tab in tab session
+ *   snapshots and IWk
+ * - IWkFontSettable if the tab has a QtWebKit view and wishes to support
+ *   configuring the fonts used in the view by the user.
+ *
+ * @sa IRecoverableTab
+ * @sa IWkFontSettable
  */
 class Q_DECL_EXPORT ITabWidget
 {
