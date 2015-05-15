@@ -162,7 +162,7 @@ public:
 	/** @brief Returns a standard editor action.
 	 *
 	 * Returns the given standard editor action or null if no such action
-	 * is available. Ownership is <em>not</em> passed to the caller.
+	 * is available. Ownership is \em not passed to the caller.
 	 *
 	 * @param[in] action The standard action to return.
 	 * @return The action or null if not available.
@@ -172,8 +172,8 @@ public:
 	/** @brief Adds a custom action to the editor toolbar, if any.
 	 *
 	 * This function adds a custom action to the editor toolbar, if the
-	 * widget has any. Ownershit is <em>not</em> passed to the editor.
-	 * The action can be later removed by RemoveAction().
+	 * widget has any. Ownershit is \em not passed to the editor. The
+	 * action can be later removed by RemoveAction().
 	 *
 	 * @param[in] action The custom action to add.
 	 *
@@ -181,6 +181,8 @@ public:
 	 */
 	virtual void AppendAction (QAction *action) = 0;
 
+	/** @brief Appens an empty separator action to the editor toolbar.
+	 */
 	virtual void AppendSeparator () = 0;
 
 	/** @brief Removes a custom action from the editor.
