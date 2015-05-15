@@ -46,7 +46,7 @@ public:
 	virtual void Set (const QByteArray& key, const QVariant& value) = 0;
 };
 
-typedef std::shared_ptr<IPersistentStorage> IPersistentStorage_ptr;
+using IPersistentStorage_ptr = std::shared_ptr<IPersistentStorage>;
 
 class IPersistentStoragePlugin
 {
