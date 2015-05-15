@@ -61,7 +61,7 @@ namespace LeechCraft
 	 * The corresponding actions may be retrieved via
 	 * ITextEditor::GetEditorAction().
 	 *
-	 * @sa ITextEditor::GetEditorAction().
+	 * @sa ITextEditor::GetEditorAction()
 	 */
 	enum class EditorAction
 	{
