@@ -264,6 +264,9 @@ namespace CSTP
 		QDataStream in (&data, QIODevice::ReadOnly);
 		int version = 0;
 		in >> version;
+		if (version < 1 || version > 2)
+			throw std::runtime_error ("Unknown version");
+
 		if (version >= 1)
 		{
 			in >> URL_
@@ -274,9 +277,6 @@ namespace CSTP
 		}
 		if (version >= 2)
 			in >> CanChangeName_;
-
-		if (version < 1 || version > 2)
-			throw std::runtime_error ("Unknown version");
 	}
 
 	double Task::GetSpeed () const
