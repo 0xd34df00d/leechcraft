@@ -199,11 +199,8 @@ namespace CSTP
 				handleError ();
 				return;
 			}
-			else
-			{
-				if (handleReadyRead ())
-					return;
-			}
+			else if (handleReadyRead ())
+				return;
 		}
 
 		if (!Timer_->isActive ())
