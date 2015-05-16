@@ -264,14 +264,12 @@ namespace CSTP
 		if (version < 1 || version > 2)
 			throw std::runtime_error ("Unknown version");
 
-		if (version >= 1)
-		{
-			in >> URL_
-				>> StartTime_
-				>> Done_
-				>> Total_
-				>> Speed_;
-		}
+		in >> URL_
+			>> StartTime_
+			>> Done_
+			>> Total_
+			>> Speed_;
+
 		if (version >= 2)
 			in >> CanChangeName_;
 	}
