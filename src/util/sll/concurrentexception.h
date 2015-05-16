@@ -67,26 +67,5 @@ namespace Util
 			return T::what ();
 		}
 	};
-
-	template<typename T>
-	class ExceptionWrapperBase
-	{
-		const T BaseEx_;
-	public:
-		ExceptionWrapperBase (const T& t)
-		: BaseEx_ { t }
-		{
-		}
-
-		ExceptionWrapperBase (T&& t)
-		: BaseEx_ { std::move (t) }
-		{
-		}
-
-		const char* what () const noexcept
-		{
-			return BaseEx_.what ();
-		}
-	};
 }
 }
