@@ -770,7 +770,7 @@ namespace CSTP
 			TaskDescr td;
 
 			QByteArray data = settings.value ("Task").toByteArray ();
-			td.Task_.reset (new Task ());
+			td.Task_ = std::make_shared<Task> ();
 			try
 			{
 				td.Task_->Deserialize (data);
@@ -790,8 +790,7 @@ namespace CSTP
 					this,
 					SLOT (updateInterface ()));
 
-			QString filename = settings.value ("Filename").toString ();
-			td.File_.reset (new QFile (filename));
+			td.File_ = std::make_shared<QFile> (settings.value ("Filename").toString ());
 
 			td.Comment_ = settings.value ("Comment").toString ();
 			td.ErrorFlag_ = settings.value ("ErrorFlag").toBool ();
