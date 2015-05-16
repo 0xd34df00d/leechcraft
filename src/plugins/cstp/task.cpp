@@ -126,7 +126,7 @@ namespace CSTP
 		FileSizeAtStart_ = tof->size ();
 		To_ = tof;
 
-		if (!Reply_.get ())
+		if (!Reply_)
 		{
 			if (URL_.scheme () == "file")
 			{
@@ -234,7 +234,7 @@ namespace CSTP
 
 	void Task::Stop ()
 	{
-		if (Reply_.get ())
+		if (Reply_)
 			Reply_->abort ();
 	}
 
@@ -296,7 +296,7 @@ namespace CSTP
 
 	QString Task::GetState () const
 	{
-		if (!Reply_.get ())
+		if (!Reply_)
 			return tr ("Stopped");
 		else if (Done_ == Total_)
 			return tr ("Finished");
@@ -306,7 +306,7 @@ namespace CSTP
 
 	QString Task::GetURL () const
 	{
-		return Reply_.get () ? Reply_->url ().toString () : URL_.toString ();
+		return Reply_ ? Reply_->url ().toString () : URL_.toString ();
 	}
 
 	int Task::GetTimeFromStart () const
@@ -316,12 +316,12 @@ namespace CSTP
 
 	bool Task::IsRunning () const
 	{
-		return Reply_.get () && !URL_.isEmpty ();
+		return Reply_ && !URL_.isEmpty ();
 	}
 
 	QString Task::GetErrorString () const
 	{
-		return Reply_.get () ? Reply_->errorString () : tr ("Task isn't initialized properly");
+		return Reply_ ? Reply_->errorString () : tr ("Task isn't initialized properly");
 	}
 
 	void Task::Reset ()
@@ -586,7 +586,7 @@ namespace CSTP
 
 	bool Task::handleReadyRead ()
 	{
-		if (Reply_.get ())
+		if (Reply_)
 		{
 			quint64 avail = Reply_->bytesAvailable ();
 			quint64 res = To_->write (Reply_->readAll ());
