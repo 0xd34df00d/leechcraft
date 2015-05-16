@@ -94,8 +94,6 @@ namespace CSTP
 		void RecalculateSpeed ();
 		void HandleMetadataRedirection ();
 		void HandleMetadataFilename ();
-
-		void Cleanup ();
 	private slots:
 		void handleDataTransferProgress (qint64, qint64);
 		void redirectedConstruction (const QByteArray&);

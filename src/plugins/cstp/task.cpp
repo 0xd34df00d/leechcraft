@@ -491,11 +491,6 @@ namespace CSTP
 		}
 	}
 
-	void Task::Cleanup ()
-	{
-		Core::Instance ().RemoveFinishedReply (Reply_.get ());
-	}
-
 	void Task::handleDataTransferProgress (qint64 done, qint64 total)
 	{
 		Done_ = done;
@@ -624,14 +619,12 @@ namespace CSTP
 
 	void Task::handleFinished ()
 	{
-		Cleanup ();
 		emit done (false);
 	}
 
 	void Task::handleError ()
 	{
 		emit done (true);
-		Cleanup ();
 	}
 }
 }
