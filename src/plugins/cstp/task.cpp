@@ -115,6 +115,12 @@ namespace CSTP
 				SIGNAL (updateInterface ()));
 	}
 
+	Task::~Task ()
+	{
+		if (Reply_)
+			Core::Instance ().RemoveFinishedReply (Reply_.get ());
+	}
+
 	void Task::Start (const std::shared_ptr<QFile>& tof)
 	{
 		FileSizeAtStart_ = tof->size ();

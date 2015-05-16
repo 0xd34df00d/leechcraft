@@ -72,6 +72,7 @@ namespace CSTP
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
+		~Task ();
 
 		void Start (const std::shared_ptr<QFile>&);
 		void Stop ();
