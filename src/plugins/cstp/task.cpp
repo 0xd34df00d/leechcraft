@@ -136,16 +136,14 @@ namespace CSTP
 				return;
 			}
 
-			QString ua = XmlSettingsManager::Instance ()
-				.property ("UserUserAgent").toString ();
+			auto ua = XmlSettingsManager::Instance ().property ("UserUserAgent").toString ();
 			if (ua.isEmpty ())
-				ua = XmlSettingsManager::Instance ()
-					.property ("PredefinedUserAgent").toString ();
+				ua = XmlSettingsManager::Instance ().property ("PredefinedUserAgent").toString ();
 
 			if (ua == "%leechcraft%")
 				ua = "LeechCraft.CSTP/" + Core::Instance ().GetCoreProxy ()->GetVersion ();
 
-			QNetworkRequest req (URL_);
+			QNetworkRequest req { URL_ };
 			if (tof->size ())
 				req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
 			req.setRawHeader ("User-Agent", ua.toLatin1 ());
@@ -161,11 +159,10 @@ namespace CSTP
 
 			StartTime_.restart ();
 
-			auto nam = Core::Instance ().GetNetworkAccessManager ();
-
 			for (const auto& pair : Util::Stlize (Headers_))
 				req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
 
+			auto nam = Core::Instance ().GetNetworkAccessManager ();
 			switch (Operation_)
 			{
 			case QNetworkAccessManager::GetOperation:
@@ -185,8 +182,7 @@ namespace CSTP
 		{
 			handleMetaDataChanged ();
 
-			qint64 contentLength = Reply_->
-				header (QNetworkRequest::ContentLengthHeader).toInt ();
+			qint64 contentLength = Reply_->header (QNetworkRequest::ContentLengthHeader).toInt ();
 			if (contentLength &&
 					Reply_->bytesAvailable () == contentLength)
 			{
@@ -206,7 +202,7 @@ namespace CSTP
 		if (!Timer_->isActive ())
 			Timer_->start (3000);
 
-		Reply_->setParent (0);
+		Reply_->setParent (nullptr);
 		connect (Reply_.get (),
 				SIGNAL (downloadProgress (qint64, qint64)),
 				this,
@@ -351,7 +347,7 @@ namespace CSTP
 			return;
 		}
 
-		if (!QUrl (newUrl).isValid ())
+		if (!QUrl { newUrl }.isValid ())
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "invalid redirect URL"
@@ -388,13 +384,13 @@ namespace CSTP
 	{
 		QString GetFilenameAscii (const QString& contdis)
 		{
-			const QByteArray start = "filename=\"";
+			const QByteArray start { "filename=\"" };
 			int startPos = contdis.indexOf (start) + start.size ();
 			bool ignoreNextQuote = false;
 			QString result;
 			while (startPos < contdis.size ())
 			{
-				QChar cur = contdis.at (startPos++);
+				const auto cur = contdis.at (startPos++);
 				if (cur == '\\')
 					ignoreNextQuote = true;
 				else if (cur == '"' &&
@@ -466,7 +462,7 @@ namespace CSTP
 			return;
 		}
 
-		QIODevice::OpenMode om = To_->openMode ();
+		const auto openMode = To_->openMode ();
 		To_->close ();
 
 		if (!To_->rename (path))
@@ -476,13 +472,13 @@ namespace CSTP
 				<< path
 				<< To_->errorString ();
 		}
-		if (!To_->open (om))
+		if (!To_->open (openMode))
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "failed to re-open the renamed file"
 				<< path;
 			To_->rename (oldPath);
-			To_->open (om);
+			To_->open (openMode);
 		}
 	}
 
@@ -521,9 +517,9 @@ namespace CSTP
 
 	void Task::handleLocalTransfer ()
 	{
-		QString localFile = URL_.toLocalFile ();
+		const auto& localFile = URL_.toLocalFile ();
 		qDebug () << "LOCAL FILE" << localFile << To_->fileName ();
-		QFileInfo fi (localFile);
+		QFileInfo fi { localFile };
 		if (!fi.isFile ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -535,8 +531,8 @@ namespace CSTP
 			return;
 		}
 
-		QString destination = To_->fileName ();
-		QFile file (localFile);
+		const auto& destination = To_->fileName ();
+		QFile file { localFile };
 		To_->close ();
 		if (!To_->remove () ||
 				!file.copy (destination))
@@ -566,7 +562,7 @@ namespace CSTP
 			}
 
 			const int chunkSize = 10 * 1024 * 1024;
-			QByteArray chunk = file.read (chunkSize);
+			auto chunk = file.read (chunkSize);
 			while (chunk.size ())
 			{
 				To_->write (chunk);
@@ -585,8 +581,8 @@ namespace CSTP
 		{
 			quint64 avail = Reply_->bytesAvailable ();
 			quint64 res = To_->write (Reply_->readAll ());
-			if ((static_cast<quint64> (-1) == res) ||
-					(res != avail))
+			if (static_cast<quint64> (-1) == res ||
+					res != avail)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "Error writing to file:"
