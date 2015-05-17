@@ -218,5 +218,29 @@ namespace Util
 		{
 		}
 	};
+
+	class ChoiceDeletePolicy
+	{
+	public:
+		enum class Delete
+		{
+			No,
+			Yes
+		};
+	protected:
+		virtual ~ChoiceDeletePolicy () {}
+
+		using Signature_t = Delete ();
+
+		void Invoke (const std::function<Signature_t>& f)
+		{
+			if (f () == Delete::Yes)
+				dynamic_cast<SlotClosureBase*> (this)->deleteLater ();
+		}
+
+		void Fired ()
+		{
+		}
+	};
 }
 }
