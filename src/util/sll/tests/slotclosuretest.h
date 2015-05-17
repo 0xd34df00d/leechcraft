@@ -35,6 +35,15 @@ namespace LeechCraft
 {
 namespace Util
 {
+	class DummyObject : public QObject
+	{
+		Q_OBJECT
+	public:
+		void EmitSignal ();
+	signals:
+		void someSignal ();
+	};
+
 	class SlotClosureTest : public QObject
 	{
 		Q_OBJECT

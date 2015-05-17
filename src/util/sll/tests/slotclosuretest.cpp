@@ -37,6 +37,11 @@ namespace LeechCraft
 {
 namespace Util
 {
+	void DummyObject::EmitSignal ()
+	{
+		emit someSignal ();
+	}
+
 	void SlotClosureTest::testDeleteLater ()
 	{
 	}
