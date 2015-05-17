@@ -183,6 +183,16 @@ namespace LeechCraft
 
 		bool GetPreparedObjectList (Entity& e, QObject *desired, QObjectList& handlers, bool handling)
 		{
+			const auto pm = Core::Instance ().GetPluginManager ();
+			if (pm->GetInitStage () != PluginManager::InitStage::Complete)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "got an entity handle request before initialization is complete:"
+						<< e.Entity_;
+				qWarning () << e.Additional_;
+				return false;
+			}
+
 			int numDownloaders = 0, numHandlers = 0;
 			if (desired)
 				handlers << desired;
