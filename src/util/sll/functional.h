@@ -37,6 +37,18 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Binds an instance of an object to its member function.
+	 *
+	 * @param[in] fn The member function of class T.
+	 * @param[in] c The instance of class T to bind to the member
+	 * function \em fn.
+	 * @return A functor callable with all arguments of \em fn but the
+	 * object itself.
+	 * @tparam R The return type of the function.
+	 * @tparam T The type of the object.
+	 * @tparam Args The arguments to the function, besides the object
+	 * itself.
+	 */
 #ifdef USE_CPP14
 	template<typename R, typename T, typename... Args>
 	auto BindMemFn (R (T::*fn) (Args...), T *c)
