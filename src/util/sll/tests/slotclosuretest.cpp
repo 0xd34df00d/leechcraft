@@ -44,6 +44,30 @@ namespace Util
 
 	void SlotClosureTest::testDeleteLater ()
 	{
+		DummyObject obj;
+
+		bool hasRun = false;
+		const auto closure = new SlotClosure<DeleteLaterPolicy>
+		{
+			[&hasRun]
+			{
+				hasRun = true;
+			},
+			&obj,
+			SIGNAL (someSignal ()),
+			nullptr
+		};
+
+		obj.EmitSignal ();
+
+		const QPointer<QObject> closurePtr { closure };
+
+		QCOMPARE (hasRun, true);
+		QCOMPARE (closurePtr.isNull (), false);
+
+		QCoreApplication::sendPostedEvents (nullptr, QEvent::DeferredDelete);
+
+		QCOMPARE (closurePtr.isNull (), true);
 	}
 }
 }
