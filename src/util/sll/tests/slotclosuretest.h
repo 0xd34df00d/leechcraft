@@ -50,6 +50,7 @@ namespace Util
 	private slots:
 		void testDeleteLater ();
 		void testNoDelete ();
+		void testChoiceDelete ();
 	};
 }
 }

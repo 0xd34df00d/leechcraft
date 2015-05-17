@@ -97,5 +97,41 @@ namespace Util
 
 		QCOMPARE (closurePtr.isNull (), false);
 	}
+
+	void SlotClosureTest::testChoiceDelete ()
+	{
+		DummyObject obj;
+
+		bool hasRun = false;
+		const auto closure = new SlotClosure<ChoiceDeletePolicy>
+		{
+			[&hasRun]
+			{
+				if (hasRun)
+					return ChoiceDeletePolicy::Delete::Yes;
+
+				hasRun = true;
+				return ChoiceDeletePolicy::Delete::No;
+			},
+			&obj,
+			SIGNAL (someSignal ()),
+			nullptr
+		};
+		const QPointer<QObject> closurePtr { closure };
+
+		obj.EmitSignal ();
+
+		QCOMPARE (hasRun, true);
+		QCOMPARE (closurePtr.isNull (), false);
+
+		QCoreApplication::sendPostedEvents (nullptr, QEvent::DeferredDelete);
+
+		QCOMPARE (closurePtr.isNull (), false);
+
+		obj.EmitSignal ();
+		QCoreApplication::sendPostedEvents (nullptr, QEvent::DeferredDelete);
+
+		QCOMPARE (closurePtr.isNull (), true);
+	}
 }
 }
