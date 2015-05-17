@@ -69,5 +69,33 @@ namespace Util
 
 		QCOMPARE (closurePtr.isNull (), true);
 	}
+
+	void SlotClosureTest::testNoDelete ()
+	{
+		DummyObject obj;
+
+		bool hasRun = false;
+		const auto closure = new SlotClosure<NoDeletePolicy>
+		{
+			[&hasRun]
+			{
+				hasRun = true;
+			},
+			&obj,
+			SIGNAL (someSignal ()),
+			nullptr
+		};
+
+		obj.EmitSignal ();
+
+		const QPointer<QObject> closurePtr { closure };
+
+		QCOMPARE (hasRun, true);
+		QCOMPARE (closurePtr.isNull (), false);
+
+		QCoreApplication::sendPostedEvents (nullptr, QEvent::DeferredDelete);
+
+		QCOMPARE (closurePtr.isNull (), false);
+	}
 }
 }

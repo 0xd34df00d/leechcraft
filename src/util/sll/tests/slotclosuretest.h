@@ -49,6 +49,7 @@ namespace Util
 		Q_OBJECT
 	private slots:
 		void testDeleteLater ();
+		void testNoDelete ();
 	};
 }
 }
