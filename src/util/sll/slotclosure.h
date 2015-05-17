@@ -101,7 +101,7 @@ namespace Util
 					  , public FireDestrPolicy
 	{
 	public:
-		using FunType_t = std::function<typename FireDestrPolicy::SignatureType>;
+		using FunType_t = std::function<typename FireDestrPolicy::Signature_t>;
 	private:
 		FunType_t Func_;
 	public:
@@ -188,7 +188,7 @@ namespace Util
 	class BasicDeletePolicy
 	{
 	protected:
-		using SignatureType = void ();
+		using Signature_t = void ();
 
 		void Invoke (const std::function<void ()>& f)
 		{
