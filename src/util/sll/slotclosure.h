@@ -100,7 +100,10 @@ namespace Util
 	class SlotClosure : public SlotClosureBase
 					  , public FireDestrPolicy
 	{
-		std::function<void ()> Func_;
+	public:
+		using FunType_t = std::function<typename FireDestrPolicy::SignatureType>;
+	private:
+		FunType_t Func_;
 	public:
 		/** @brief Constructs a SlotClosure running a given \em func with
 		 * the given \em parent as a QObject.
@@ -120,7 +123,7 @@ namespace Util
 		 * fired.
 		 * @param[in] parent The parent object of this SlotClosure.
 		 */
-		SlotClosure (const std::function<void ()>& func, QObject *parent)
+		SlotClosure (const FunType_t& func, QObject *parent)
 		: SlotClosureBase { parent }
 		, Func_ { func }
 		{
@@ -135,7 +138,7 @@ namespace Util
 		 * @param[in] signal The signal that should trigger the \em func.
 		 * @param[in] parent The parent object of this SlotClosure.
 		 */
-		SlotClosure (const std::function<void ()>& func,
+		SlotClosure (const FunType_t& func,
 				QObject *sender,
 				const char *signal,
 				QObject *parent)
@@ -158,7 +161,7 @@ namespace Util
 		 * the \em func.
 		 * @param[in] parent The parent object of this SlotClosure.
 		 */
-		SlotClosure (const std::function<void ()>& func,
+		SlotClosure (const FunType_t& func,
 				QObject *sender,
 				const std::initializer_list<const char*>& signalsList,
 				QObject *parent)
@@ -176,7 +179,7 @@ namespace Util
 		 */
 		void run () override
 		{
-			Func_ ();
+			FireDestrPolicy::Invoke (Func_);
 
 			this->Fired ();
 		}
@@ -185,6 +188,13 @@ namespace Util
 	class BasicDeletePolicy
 	{
 	protected:
+		using SignatureType = void ();
+
+		void Invoke (const std::function<void ()>& f)
+		{
+			f ();
+		}
+
 		virtual ~BasicDeletePolicy () = default;
 	};
 
