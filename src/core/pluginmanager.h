@@ -175,5 +175,7 @@ namespace LeechCraft
 	signals:
 		void pluginInjected (QObject*);
 		void loadProgress (const QString&);
+
+		void initStageChanged (PluginManager::InitStage);
 	};
 }

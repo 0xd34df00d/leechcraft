@@ -719,7 +719,11 @@ namespace LeechCraft
 
 	void PluginManager::SetInitStage (PluginManager::InitStage stage)
 	{
+		if (InitStage_ == stage)
+			return;
+
 		InitStage_ = stage;
+		emit initStageChanged (stage);
 	}
 
 	QStringList PluginManager::FindPluginsPaths () const
