@@ -263,6 +263,9 @@ namespace LeechCraft
 
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
+		if (!CheckInitStage (e, desired, &EntityManager::DelegateEntity))
+			return { 0, 0 };
+
 		e.Parameters_ |= OnlyDownload;
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, false);
@@ -287,6 +290,9 @@ namespace LeechCraft
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
 	{
+		if (!CheckInitStage (e, desired, &EntityManager::HandleEntity))
+			return false;
+
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, true);
 		if (!foundOk || handlers.isEmpty ())
