@@ -145,9 +145,9 @@ namespace Util
 	 * @tparam FireDestrPolicy Controls how the object should be
 	 * destroyed in response to the watched signal.
 	 */
-	template<template<typename T> class FireDestrPolicy>
+	template<typename FireDestrPolicy>
 	class SlotClosure : public SlotClosureBase
-					  , public FireDestrPolicy<SlotClosureBase>
+					  , public FireDestrPolicy
 	{
 	public:
 		/** @brief Inherits all constructors of SlotClosureBase.
@@ -165,7 +165,6 @@ namespace Util
 
 	/** @brief Deletes a SlotClosure object after its signal has fired.
 	 */
-	template<typename T>
 	class DeleteLaterPolicy
 	{
 	public:
@@ -173,13 +172,12 @@ namespace Util
 	protected:
 		void Fired ()
 		{
-			dynamic_cast<T*> (this)->deleteLater ();
+			dynamic_cast<SlotClosureBase*> (this)->deleteLater ();
 		}
 	};
 
 	/** @brief Does not delete a SlotClosure object.
 	 */
-	template<typename>
 	class NoDeletePolicy
 	{
 	protected:
