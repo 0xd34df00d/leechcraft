@@ -182,12 +182,16 @@ namespace Util
 		}
 	};
 
+	class BasicDeletePolicy
+	{
+	protected:
+		virtual ~BasicDeletePolicy () = default;
+	};
+
 	/** @brief Deletes a SlotClosure object after its signal has fired.
 	 */
-	class DeleteLaterPolicy
+	class DeleteLaterPolicy : public BasicDeletePolicy
 	{
-	public:
-		virtual ~DeleteLaterPolicy () {}
 	protected:
 		void Fired ()
 		{
@@ -197,7 +201,7 @@ namespace Util
 
 	/** @brief Does not delete a SlotClosure object.
 	 */
-	class NoDeletePolicy
+	class NoDeletePolicy : public BasicDeletePolicy
 	{
 	protected:
 		void Fired ()
