@@ -240,6 +240,34 @@ namespace LeechCraft
 
 			return true;
 		}
+
+		template<typename F>
+		bool CheckInitStage (const Entity& e, QObject *desired, F cont)
+		{
+			const auto pm = Core::Instance ().GetPluginManager ();
+			if (pm->GetInitStage () != PluginManager::InitStage::BeforeFirst)
+				return true;
+
+			qWarning () << Q_FUNC_INFO
+					<< "got an entity handle request before first init is complete:"
+					<< e.Entity_;
+			qWarning () << e.Additional_;
+			new Util::SlotClosure<Util::ChoiceDeletePolicy>
+			{
+				[=]
+				{
+					if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+						return Util::ChoiceDeletePolicy::Delete::No;
+
+					(EntityManager {}.*cont) (e, desired);
+					return Util::ChoiceDeletePolicy::Delete::Yes;
+				},
+				pm,
+				SIGNAL (initStageChanged (PluginManager::InitStage)),
+				pm
+			};
+			return false;
+		}
 	}
 
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
