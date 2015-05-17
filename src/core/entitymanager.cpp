@@ -34,6 +34,7 @@
 #include <QUrl>
 #include "util/util.h"
 #include "util/sll/prelude.h"
+#include "util/sll/slotclosure.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -183,16 +184,6 @@ namespace LeechCraft
 
 		bool GetPreparedObjectList (Entity& e, QObject *desired, QObjectList& handlers, bool handling)
 		{
-			const auto pm = Core::Instance ().GetPluginManager ();
-			if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "got an entity handle request before first init is complete:"
-						<< e.Entity_;
-				qWarning () << e.Additional_;
-				return false;
-			}
-
 			int numDownloaders = 0, numHandlers = 0;
 			if (desired)
 				handlers << desired;
