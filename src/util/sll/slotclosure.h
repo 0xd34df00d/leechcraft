@@ -42,57 +42,8 @@ namespace Util
 	class UTIL_SLL_API SlotClosureBase : public QObject
 	{
 		Q_OBJECT
-
-		std::function<void ()> Func_;
 	public:
-		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject.
-		 *
-		 * This constructor does not automatically connect to any signals.
-		 * Thus, all interesting signals should be manually connected to
-		 * the construct object's <code>run()</code> slot:
-		 * \code{.cpp}
-			const auto closure = new SlotClosure<DeleteLaterPolicy> { someFunc, parent };
-			connect (object,
-					SIGNAL (triggered ()),
-					closure,
-					SLOT (run ()));
-		   \endcode
-		 *
-		 * @param[in] func The function to run when a connected signal is
-		 * fired.
-		 * @param[in] parent The parent object of this SlotClosure.
-		 */
-		SlotClosureBase (const std::function<void ()>& func, QObject *parent);
-
-		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject on the given \em signal.
-		 *
-		 * @param[in] func The function to run when a matching signal is
-		 * fired.
-		 * @param[in] sender The sender of the signal to connect to.
-		 * @param[in] signal The signal that should trigger the \em func.
-		 * @param[in] parent The parent object of this SlotClosure.
-		 */
-		SlotClosureBase (const std::function<void ()>& func,
-				QObject *sender,
-				const char *signal,
-				QObject *parent);
-
-		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject on the given \em signalsList.
-		 *
-		 * @param[in] func The function to run when a matching signal is
-		 * fired.
-		 * @param[in] sender The sender of the signal to connect to.
-		 * @param[in] signalsList The list of signals, any of which triggers
-		 * the \em func.
-		 * @param[in] parent The parent object of this SlotClosure.
-		 */
-		SlotClosureBase (const std::function<void ()>& func,
-				QObject *sender,
-				const std::initializer_list<const char*>& signalsList,
-				QObject *parent);
+		using QObject::QObject;
 
 		virtual ~SlotClosureBase () = default;
 	public slots:
@@ -149,16 +100,84 @@ namespace Util
 	class SlotClosure : public SlotClosureBase
 					  , public FireDestrPolicy
 	{
+		std::function<void ()> Func_;
 	public:
-		/** @brief Inherits all constructors of SlotClosureBase.
+		/** @brief Constructs a SlotClosure running a given \em func with
+		 * the given \em parent as a QObject.
+		 *
+		 * This constructor does not automatically connect to any signals.
+		 * Thus, all interesting signals should be manually connected to
+		 * the construct object's <code>run()</code> slot:
+		 * \code{.cpp}
+			const auto closure = new SlotClosure<DeleteLaterPolicy> { someFunc, parent };
+			connect (object,
+					SIGNAL (triggered ()),
+					closure,
+					SLOT (run ()));
+		   \endcode
+		 *
+		 * @param[in] func The function to run when a connected signal is
+		 * fired.
+		 * @param[in] parent The parent object of this SlotClosure.
 		 */
-		using SlotClosureBase::SlotClosureBase;
-	public:
+		SlotClosure (const std::function<void ()>& func, QObject *parent)
+		: SlotClosureBase { parent }
+		, Func_ { func }
+		{
+		}
+
+		/** @brief Constructs a SlotClosure running a given \em func with
+		 * the given \em parent as a QObject on the given \em signal.
+		 *
+		 * @param[in] func The function to run when a matching signal is
+		 * fired.
+		 * @param[in] sender The sender of the signal to connect to.
+		 * @param[in] signal The signal that should trigger the \em func.
+		 * @param[in] parent The parent object of this SlotClosure.
+		 */
+		SlotClosure (const std::function<void ()>& func,
+				QObject *sender,
+				const char *signal,
+				QObject *parent)
+		: SlotClosureBase { parent }
+		, Func_ { func }
+		{
+			connect (sender,
+					signal,
+					this,
+					SLOT (run ()));
+		}
+
+		/** @brief Constructs a SlotClosure running a given \em func with
+		 * the given \em parent as a QObject on the given \em signalsList.
+		 *
+		 * @param[in] func The function to run when a matching signal is
+		 * fired.
+		 * @param[in] sender The sender of the signal to connect to.
+		 * @param[in] signalsList The list of signals, any of which triggers
+		 * the \em func.
+		 * @param[in] parent The parent object of this SlotClosure.
+		 */
+		SlotClosure (const std::function<void ()>& func,
+				QObject *sender,
+				const std::initializer_list<const char*>& signalsList,
+				QObject *parent)
+		: SlotClosureBase { parent }
+		, Func_ { func }
+		{
+			for (const auto signal : signalsList)
+				connect (sender,
+						signal,
+						this,
+						SLOT (run ()));
+		}
+
 		/** @brief Triggers the function and invokes the destroy policy.
 		 */
 		void run () override
 		{
-			SlotClosureBase::run ();
+			Func_ ();
+
 			this->Fired ();
 		}
 	};
