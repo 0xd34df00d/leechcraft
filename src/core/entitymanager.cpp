@@ -259,6 +259,10 @@ namespace LeechCraft
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
+		const auto pm = Core::Instance ().GetPluginManager ();
+		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+			return false;
+
 		return !GetObjects (e).isEmpty ();
 	}
 
