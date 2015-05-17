@@ -190,7 +190,7 @@ namespace Util
 	protected:
 		using Signature_t = void ();
 
-		void Invoke (const std::function<void ()>& f)
+		void Invoke (const std::function<Signature_t>& f)
 		{
 			f ();
 		}
