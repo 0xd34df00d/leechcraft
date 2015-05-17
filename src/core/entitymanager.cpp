@@ -264,19 +264,19 @@ namespace LeechCraft
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
 		if (!CheckInitStage (e, desired, &EntityManager::DelegateEntity))
-			return { 0, 0 };
+			return {};
 
 		e.Parameters_ |= OnlyDownload;
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, false);
 		if (!foundOk)
-			return { 0, 0 };
+			return {};
 
 		for (auto obj : handlers)
 			if (auto idl = qobject_cast<IDownload*> (obj))
 				return { obj, idl->AddJob (e) };
 
-		return { 0, 0 };
+		return {};
 	}
 
 	bool EntityManager::CouldHandle (const Entity& e)
