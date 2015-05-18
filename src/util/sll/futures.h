@@ -200,6 +200,8 @@ namespace Util
 			}
 		};
 
+		/** @brief A proxy object allowing type-checked sequencing of actions.
+		 */
 		template<typename Ret, typename E0, typename... A0>
 		class SequenceProxy
 		{
@@ -238,6 +240,18 @@ namespace Util
 		};
 	}
 
+	/** @brief Creates a sequencer that allows chaining multiple futures.
+	 *
+	 * This function creates a sequencer object that would call the
+	 * given executor \em f with the given \em args and pass the result
+	 * of its execution to any functor chained via the
+	 * detail::SequenceProxy::Then() method, and so on.
+	 *
+	 * The sequencer object invokes the executor \em f after the last
+	 * instance of this sequencer is destroyed.
+	 *
+	 * @sa detail::SequenceProxy
+	 */
 	template<typename Executor, typename... Args>
 	detail::SequenceProxy<typename detail::Sequencer<Executor, Args...>::RetType_t, Executor, Args...> Sequence (QObject *parent, Executor f, Args... args)
 	{
