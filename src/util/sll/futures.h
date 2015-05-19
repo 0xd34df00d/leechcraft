@@ -244,9 +244,15 @@ namespace Util
 	 *
 	 * This function creates a sequencer object that calls the given
 	 * executor \em f with the given \em args, which must return a
-	 * <code>QFuture<T></code> (or throw an exception) or void. The
-	 * concrete object will be unwrapped <code>QFuture<T></code> and
-	 * passed to the chained function, if any, and so on.
+	 * <code>QFuture<T></code> (or throw an exception) or
+	 * <code>void</code>. The concrete object will be unwrapped from the
+	 * <code>QFuture<T></code> and passed to the chained function, if any,
+	 * and so on. The functors may also return <code>QFuture<void></code>,
+	 * in which case the next action is expected to be invokable without
+	 * any arguments.
+	 *
+	 * If a functor returns <code>void</code>, no further chaining is
+	 * possible.
 	 *
 	 * The functions are chained via the detail::SequenceProxy::Then()
 	 * method.
