@@ -242,13 +242,33 @@ namespace Util
 
 	/** @brief Creates a sequencer that allows chaining multiple futures.
 	 *
-	 * This function creates a sequencer object that would call the
-	 * given executor \em f with the given \em args and pass the result
-	 * of its execution to any functor chained via the
-	 * detail::SequenceProxy::Then() method, and so on.
+	 * This function creates a sequencer object that calls the given
+	 * executor \em f with the given \em args, which must return a
+	 * <code>QFuture<T></code> (or throw an exception) or void. The
+	 * concrete object will be unwrapped <code>QFuture<T></code> and
+	 * passed to the chained function, if any, and so on.
 	 *
-	 * The sequencer object invokes the executor \em f after the last
-	 * instance of this sequencer is destroyed.
+	 * The functions are chained via the detail::SequenceProxy::Then()
+	 * method.
+	 *
+	 * The sequencer object is reference-counted internally, and it
+	 * invokes the executor \em f after the last instance of this
+	 * sequencer is destroyed.
+	 *
+	 * A \em parent QObject controls the lifetime of the sequencer: as
+	 * soon as it is destroyed, the sequencer is destroyed as well, and
+	 * all pending actions are cancelled (note, the currently executing
+	 * action will still continue to execute). This parameter is optional
+	 * and may be <code>nullptr</code>.
+	 *
+	 * @param[in] parent The parent object of the sequencer (may be
+	 * <code>nullptr</code>.
+	 * @param[in] f The executor to run when chaining is finished.
+	 * @param[in] args The arguments to pass to \em f.
+	 * @return The sequencer object.
+	 * @tparam Executor The type of the executor object.
+	 * @tparam Args The types of the arguments for the \em Executor, if
+	 * any.
 	 *
 	 * @sa detail::SequenceProxy
 	 */
