@@ -200,7 +200,21 @@ namespace Util
 			}
 		};
 
-		/** @brief A proxy object allowing type-checked sequencing of actions.
+		/** @brief A proxy object allowing type-checked sequencing of
+		 * actions and responsible for starting the initial action.
+		 *
+		 * SequenceProxy manages a Sequencer object, which itself is
+		 * directly responsible for walking the chain of sequenced
+		 * actions.
+		 *
+		 * Internally, objects of this class are reference-counted. As
+		 * soon as the last instance is destroyed, the initial action is
+		 * started.
+		 *
+		 * @tparam Ret The type \em T that <code>QFuture<T></code>
+		 * returned by the last chained executor is specialized with.
+		 * @tparam E0 The type of the first executor.
+		 * @tparam A0 The types of the arguments to the executor \em E0.
 		 */
 		template<typename Ret, typename E0, typename... A0>
 		class SequenceProxy
@@ -216,15 +230,45 @@ namespace Util
 		public:
 			using Ret_t = Ret;
 
-			SequenceProxy (Sequencer<E0, A0...> *seq)
-			: ExecuteGuard_ { nullptr, [seq] (void*) { seq->Start (); } }
-			, Seq_ { seq }
+			/** @brief Constructs a sequencer proxy managing the given
+			 * \em sequencer.
+			 *
+			 * @param[in] sequencer The sequencer to manage.
+			 */
+			SequenceProxy (Sequencer<E0, A0...> *sequencer)
+			: ExecuteGuard_ { nullptr, [sequencer] (void*) { sequencer->Start (); } }
+			, Seq_ { sequencer }
 			{
 			}
 
-			SequenceProxy (const SequenceProxy&) = default;
-			SequenceProxy (SequenceProxy&&) = default;
+			/** @brief Copy-constructs from \em proxy.
+			 *
+			 * @param[in] proxy The proxy object to share the managed
+			 * sequencer with.
+			 */
+			SequenceProxy (const SequenceProxy& proxy) = default;
 
+			/** @brief Move-constructs from \em proxy.
+			 *
+			 * @param[in] proxy The proxy object from which the sequencer
+			 * should be borrowed.
+			 */
+			SequenceProxy (SequenceProxy&& proxy) = default;
+
+			/** @brief Adds the functor \em f to the chain of actions.
+			 *
+			 * The functor \em f should return <code>QFuture<T0></code>
+			 * when called with a value of type \em Ret. That is, the
+			 * expression <code>f (std::declval<Ret> ())</code> should be
+			 * well-formed, and, moreover, its return type should be
+			 * <code>QFuture<T0><code> for some T0.
+			 *
+			 * @param[in] f The functor to chain.
+			 * @return An object of type
+			 * <code>SequencerProxy<T0, E0, A0></code> ready for chaining
+			 * new functions.
+			 * @tparam F The type of the functor to chain.
+			 */
 			template<typename F>
 			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, E0, A0...>
 			{
@@ -232,6 +276,16 @@ namespace Util
 				return { ExecuteGuard_, Seq_ };
 			}
 
+			/** @brief Adds the funtor \em f to the chain of actions and
+			 * closes the chain.
+			 *
+			 * The function \em f should return <code>void</code> when
+			 * called with a value of type \em Ret. No more functors may
+			 * be chained after adding
+			 *
+			 * @param[in] f The functor to chain.
+			 * @tparam F The type of the functor to chain.
+			 */
 			template<typename F>
 			auto Then (const F& f) -> typename std::enable_if<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>::type
 			{
