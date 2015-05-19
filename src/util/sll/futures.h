@@ -209,7 +209,10 @@ namespace Util
 			{
 				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
 				if (!last)
+				{
+					deleteLater ();
 					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+				}
 
 				const auto watcher = new QFutureWatcher<RetT> { this };
 				LastWatcher_ = watcher;
@@ -253,7 +256,10 @@ namespace Util
 			{
 				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
 				if (!last)
+				{
+					deleteLater ();
 					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+				}
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
