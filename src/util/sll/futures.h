@@ -132,17 +132,41 @@ namespace Util
 
 	namespace detail
 	{
+		/** @brief Incapsulates the sequencing logic of asynchronous
+		 * actions.
+		 *
+		 * The objects of this class are expected to be created on heap.
+		 * They will delete themselves automatically after the chain is
+		 * walked (or an exception is thrown).
+		 *
+		 * @tparam Executor The type of the initial functor in the async
+		 * call chain.
+		 * @tparam Args The types of the arguments that should be passed
+		 * to the \em Executor.
+		 */
 		template<typename Executor, typename... Args>
 		class Sequencer : public QObject
 		{
 		public:
+			/** @brief The result of calling \em Executor with \em Args.
+			 */
 			using FutureType_t = typename std::result_of<Executor (Args...)>::type;
+
+			/** @brief The type instantinating the QFuture returned by the
+			 * \em Executor.
+			 */
 			using RetType_t = UnwrapFutureType_t<FutureType_t>;
 		private:
 			const std::function<FutureType_t ()> Functor_;
 			QFutureWatcher<RetType_t> BaseWatcher_;
 			QObject *LastWatcher_ = &BaseWatcher_;
 		public:
+			/** @brief Constructs the sequencer.
+			 *
+			 * @param[in] f The first action in the chain.
+			 * @param[in] args The arguments to the action.
+			 * @param[in] parent The parent object for the sequencer.
+			 */
 			Sequencer (Executor f, Args... args, QObject *parent)
 			: QObject { parent }
 			, Functor_ { [f, args...] { return f (args...); } }
@@ -150,13 +174,38 @@ namespace Util
 			{
 			}
 
+			/** @brief Starts the first action in the chain.
+			 *
+			 * All the actions should be chained before calling this
+			 * method to avoid a race condition.
+			 */
 			void Start ()
 			{
 				BaseWatcher_.setFuture (Functor_ ());
 			}
 
+			/** @brief Chains the given asynchronous action.
+			 *
+			 * The \em action is a functor callable with a single
+			 * parameter of type \em ArgT and returning a value of type
+			 * <code>QFuture<RetT></code> for some \em RetT.
+			 *
+			 * The parameter type \em ArgT should match exactly the
+			 * "unwrapped" \em RetT for the previous call of Then() (or
+			 * RetType_t if this is the second action in the asynchronous
+			 * chain). Otherwise, an exception will be thrown at runtime.
+			 *
+			 * @note The SequenceProxy class takes care of compile-time
+			 * type-checking of arguments and return types.
+			 *
+			 * @param[in] action The action to add to the sequence chain.
+			 * @tparam RetT The type instantiating the return type
+			 * <code>QFuture<RetT></code> of the \em action.
+			 * @tparam ArgT The type of the argument passed to the
+			 * \em action.
+			 */
 			template<typename RetT, typename ArgT>
-			void Then (const std::function<QFuture<RetT> (ArgT)>& cont)
+			void Then (const std::function<QFuture<RetT> (ArgT)>& action)
 			{
 				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
 				if (!last)
@@ -167,11 +216,11 @@ namespace Util
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[this, last, watcher, cont]
+					[this, last, watcher, action]
 					{
 						if (last != &BaseWatcher_)
 							last->deleteLater ();
-						watcher->setFuture (cont (last->result ()));
+						watcher->setFuture (action (last->result ()));
 					},
 					last,
 					SIGNAL (finished ()),
@@ -179,18 +228,38 @@ namespace Util
 				};
 			}
 
-			template<typename T>
-			void Then (const std::function<void (T)>& cont)
+			/** @brief Chains the given asynchronous action and closes the
+			 * chain.
+			 *
+			 * The \em action is a functor callable with a single
+			 * parameter of type \em ArgT and returning <code>void</code>.
+			 *
+			 * No more functors may be chained after adding a
+			 * <code>void</code>-returning functor.
+			 *
+			 * The parameter type \em ArgT should match exactly the
+			 * "unwrapped" \em RetT for the previous call of Then() (or
+			 * RetType_t if this is the second action in the asynchronous
+			 * chain). Otherwise, an exception will be thrown at runtime.
+			 *
+			 * @note The SequenceProxy class takes care of compile-time
+			 * type-checking of arguments and return types.
+			 *
+			 * @tparam ArgT The type of the argument passed to the
+			 * \em action.
+			 */
+			template<typename ArgT>
+			void Then (const std::function<void (ArgT)>& action)
 			{
-				const auto last = dynamic_cast<QFutureWatcher<T>*> (LastWatcher_);
+				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
 				if (!last)
 					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[last, cont, this]
+					[last, action, this]
 					{
-						cont (last->result ());
+						action (last->result ());
 						deleteLater ();
 					},
 					LastWatcher_,
@@ -280,8 +349,10 @@ namespace Util
 			 * closes the chain.
 			 *
 			 * The function \em f should return <code>void</code> when
-			 * called with a value of type \em Ret. No more functors may
-			 * be chained after adding
+			 * called with a value of type \em Ret.
+			 *
+			 * No more functors may be chained after adding a
+			 * <code>void</code>-returning functor.
 			 *
 			 * @param[in] f The functor to chain.
 			 * @tparam F The type of the functor to chain.
