@@ -261,6 +261,35 @@ namespace Util
 	 * action will still continue to execute). This parameter is optional
 	 * and may be <code>nullptr</code>.
 	 *
+	 * A sample usage may look like:
+	 * \code
+		Util::Sequence (this,
+					[this, &]
+					{
+						return QtConcurrent::run ([this, &]
+								{
+									const auto& contents = file->readAll ();
+									file->close ();
+									file->remove ();
+									return DoSomethingWith (contents);
+								});
+					})
+				.Then ([this, url, script] (const QString& contents)
+					{
+						const auto& result = Parse (contents);
+						if (result.isEmpty ())
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "empty result for"
+									<< url;
+							return;
+						}
+
+						const auto id = DoSomethingSynchronouslyWith (result);
+						emit gotResult (id);
+					});
+	   \endcode
+	 *
 	 * @param[in] parent The parent object of the sequencer (may be
 	 * <code>nullptr</code>.
 	 * @param[in] f The executor to run when chaining is finished.
