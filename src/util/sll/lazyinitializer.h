@@ -36,6 +36,16 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Provides lazy initialization on first access to an object.
+	 *
+	 * If the lazy initializer is unevaluated, the initialization functor
+	 * passed to the constructor will be called first time the object
+	 * inside this initializer is accessed.
+	 *
+	 * @tparam Source The source object used for initialization of the
+	 * object.
+	 * @tparam Object The type of the object which should be initialized.
+	 */
 	template<typename Source, typename Object>
 	class LazyInitializer
 	{
@@ -46,6 +56,17 @@ namespace Util
 		std::function<Object (Source)> Initializer_;
 		std::function<void (Source&)> ClearSource_;
 	public:
+		/** @brief Constructs an unevaluated lazy initializer.
+		 *
+		 * @param[in] source The source object from which the \em Object
+		 * should be initialized.
+		 * @param[in] initializer The initialization function that returns
+		 * an \em Object when called with \em Source.
+		 * @param[in] clear The function for clearing the source after
+		 * initialization to free up resources. Default function just
+		 * assigns a default-constructed \em Source.
+		 * @tparam Init The type of the \em initializer.
+		 */
 		template<typename Init>
 		LazyInitializer (const Source& source,
 				const Init& initializer,
@@ -56,11 +77,20 @@ namespace Util
 		{
 		}
 
+		/** @brief Constructs an evaluated initializer from the \em object.
+		 *
+		 * @param[in] object The object used to initialize the stored one.
+		 */
 		LazyInitializer (const Object& object)
 		: Object_ { object }
 		{
 		}
 
+		/** @brief Assigns an object to this lazy (making it evaluated)
+		 * initializer and clears the source.
+		 *
+		 * @param[in] object The object to set this lazy initializer to.
+		 */
 		LazyInitializer& operator= (const Object& object)
 		{
 			Object_ = object;
@@ -68,12 +98,17 @@ namespace Util
 			return *this;
 		}
 
+		/** @brief Conversion operator to \em Object, forcing object
+		 * construction.
+		 */
 		operator Object ()
 		{
 			CheckInit ();
 			return *Object_;
 		}
 
+		/** @brief Indirection operator, forcing object construction.
+		 */
 		Object& operator-> ()
 		{
 			CheckInit ();
