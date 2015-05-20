@@ -283,7 +283,13 @@ namespace LeechCraft
 	{
 		const auto pm = Core::Instance ().GetPluginManager ();
 		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called before first initialization stage is complete with"
+					<< e.Entity_;
+			qWarning () << e.Additional_;
 			return false;
+		}
 
 		return !GetObjects (e).isEmpty ();
 	}
@@ -323,7 +329,13 @@ namespace LeechCraft
 	{
 		const auto pm = Core::Instance ().GetPluginManager ();
 		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called before first initialization stage is complete with"
+					<< e.Entity_;
+			qWarning () << e.Additional_;
 			return {};
+		}
 
 		return GetObjects (e);
 	}
