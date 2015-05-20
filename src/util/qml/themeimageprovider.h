@@ -45,32 +45,32 @@ namespace Util
 	 * Its usage is as simple as following. First, you should add it to
 	 * a QDeclarativeEngine in C++, for example:
 	 * \code
-	 * QDeclarativeView *view; // some QML view
-	 * auto engine = view->engine ();
-	 * engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
-	 * \endcode
+		QDeclarativeView *view; // some QML view
+		auto engine = view->engine ();
+		engine->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
+	   \endcode
 	 * Here proxy is the plugin proxy passed to IInfo::Init() method of
 	 * your plugin.
 	 *
 	 * Then in QML:
 	 * \code
-	 * Image {
-	 *     source: "image://ThemeIcons/edit-delete" + / + width
-	 * }
-	 * \endcode
+		Image {
+			source: "image://ThemeIcons/edit-delete" + / + width
+		}
+	   \endcode
 	 * Or if there is no need in scaling:
 	 * \code
-	 * Image {
-	 *     source: "image://ThemeIcons/edit-delete"
-	 * }
-	 * \endcode
+		Image {
+			source: "image://ThemeIcons/edit-delete"
+		}
+	  \endcode
 	 *
 	 * One could also use this with ActionButtons:
 	 * \code
-	 * ActionButton {
-	 *     actionIconURL: "image://ThemeIcons/edit-delete"
-	 * }
-	 * \endcode
+		ActionButton {
+			actionIconURL: "image://ThemeIcons/edit-delete"
+		}
+	   \endcode
 	 * In this case there is no need to add width parameter manually,
 	 * ActionButton will take care of it.
 	 */
@@ -90,7 +90,7 @@ namespace Util
 		 * Reimplemented from WidthIconProvider::GetIcon().
 		 *
 		 * @param[in] path The icon path, like
-		 * <code>QStringList ("edit-delete")</code>.
+		 * <code>QStringList { "edit-delete" }</code>.
 		 * @return The icon from the current iconset at the given path,
 		 * or an empty icon otherwise.
 		 */

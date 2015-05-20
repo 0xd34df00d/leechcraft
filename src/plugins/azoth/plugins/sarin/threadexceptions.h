@@ -40,7 +40,7 @@ namespace Azoth
 {
 namespace Sarin
 {
-	using ToxException = Util::ConcurrentException<Util::ExceptionWrapperBase<std::exception>>;
+	using ToxException = Util::ConcurrentException<Util::NewType<std::exception, NewTypeTag>>;
 
 	class TextExceptionBase
 	{

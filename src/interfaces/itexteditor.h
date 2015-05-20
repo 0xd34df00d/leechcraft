@@ -56,17 +56,45 @@ namespace LeechCraft
 		PlainText
 	};
 
-	/** Enumeration for some standard editor actions.
+	/** @brief Enumeration for some standard editor actions.
+	 *
+	 * The corresponding actions may be retrieved via
+	 * ITextEditor::GetEditorAction().
+	 *
+	 * @sa ITextEditor::GetEditorAction()
 	 */
 	enum class EditorAction
 	{
+		/** @brief Open "Find" dialog.
+		 */
 		Find,
+
+		/** @brief Open "Replace" dialog.
+		 */
 		Replace,
+
+		/** @brief Toggle the boldness of the selected text's font.
+		 */
 		Bold,
+
+		/** @brief Toggle the italicness of the selected text's font.
+		 */
 		Italic,
+
+		/** @brief Toggle underlining of the selected text's font.
+		 */
 		Underline,
+
+		/** @brief Open the dialog for inserting a hyperlink.
+		 */
 		InsertLink,
+
+		/** @brief Open the dialog for inserting an image.
+		 */
 		InsertImage,
+
+		/** @brief Toggle between WYSIWYG and source view, if applicable.
+		 */
 		ToggleView
 	};
 }
@@ -134,7 +162,7 @@ public:
 	/** @brief Returns a standard editor action.
 	 *
 	 * Returns the given standard editor action or null if no such action
-	 * is available. Ownership is <em>not</em> passed to the caller.
+	 * is available. Ownership is \em not passed to the caller.
 	 *
 	 * @param[in] action The standard action to return.
 	 * @return The action or null if not available.
@@ -144,8 +172,8 @@ public:
 	/** @brief Adds a custom action to the editor toolbar, if any.
 	 *
 	 * This function adds a custom action to the editor toolbar, if the
-	 * widget has any. Ownershit is <em>not</em> passed to the editor.
-	 * The action can be later removed by RemoveAction().
+	 * widget has any. Ownershit is \em not passed to the editor. The
+	 * action can be later removed by RemoveAction().
 	 *
 	 * @param[in] action The custom action to add.
 	 *
@@ -153,6 +181,8 @@ public:
 	 */
 	virtual void AppendAction (QAction *action) = 0;
 
+	/** @brief Appens an empty separator action to the editor toolbar.
+	 */
 	virtual void AppendSeparator () = 0;
 
 	/** @brief Removes a custom action from the editor.
@@ -234,14 +264,14 @@ public:
 		 * <code>&lt;lj user="$username"/></code>:
 		 *
 		 * \code
-		 * [] (QDomElement& elem) -> void
-		 * {
-		 * 	const auto& user = elem.attribute ("user");
-		 * 	elem.setTagName ("strong");
-		 * 	elem.removeAttribute ("user");
-		 * 	elem.appendChild (elem.ownerDocument ().createTextNode (user));
-		 * }
-		 * \endcode
+			[] (QDomElement& elem)
+			{
+				const auto& user = elem.attribute ("user");
+				elem.setTagName ("strong");
+				elem.removeAttribute ("user");
+				elem.appendChild (elem.ownerDocument ().createTextNode (user));
+			}
+		   \endcode
 		 */
 		std::function<void (QDomElement&)> ToKnown_;
 
@@ -257,17 +287,17 @@ public:
 		 * CustomTag::ToKnown_:
 		 *
 		 * \code
-		 * [] (QDomElement& elem) -> void
-		 * {
-		 * 	const auto& user = elem.text ();
-		 * 	elem.setTagName ("lj");
-		 * 	elem.setAttribute ("user", user);
-		 *
-		 * 	const auto& childNodes = elem.childNodes ();
-		 * 	while (!childNodes.isEmpty ())
-		 * 		elem.removeChild (childNodes.at (0));
-		 * }
-		 * \endcode
+			[] (QDomElement& elem)
+			{
+				const auto& user = elem.text ();
+				elem.setTagName ("lj");
+				elem.setAttribute ("user", user);
+
+				const auto& childNodes = elem.childNodes ();
+				while (!childNodes.isEmpty ())
+					elem.removeChild (childNodes.at (0));
+			}
+		   \endcode
 		 *
 		 * One can leave this function unset, in this case the tag will
 		 * marked as non-modifyable.
@@ -305,13 +335,13 @@ public:
 	 * <code>&lt;span style="font-weight: bold" id="sometext">...&lt;/span></code>
 	 * one should call this function like this:
 	 * \code
-	 * QVariantMap params;
-	 * params ["style"] = "font-weight: bold";
-	 * params ["id"] = "sometext";
-	 * auto action = editor->AddInlineTagInserter ("span", params);
-	 * action->setText ("Name of your action");
-	 * // further customize the action
-	 * \endcode
+		QVariantMap params;
+		params ["style"] = "font-weight: bold";
+		params ["id"] = "sometext";
+		auto action = editor->AddInlineTagInserter ("span", params);
+		action->setText ("Name of your action");
+		// further customize the action
+	   \endcode
 	 *
 	 * @param[in] tagName The name of the tag to be inserted.
 	 * @param[in] params The parameters of the tag.

@@ -37,18 +37,49 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A model suitable to be used with UnhideListViewBase.
+	 *
+	 * This model just defines some roles used in various "unhide" lists
+	 * and exposes them to QML.
+	 */
 	class UTIL_QML_API UnhideListModel : public RoleNamesMixin<QStandardItemModel>
 	{
 	public:
+		/** @brief Various unhide roles to be set by the rows of this
+		 * model.
+		 */
 		enum Roles
 		{
+			/** @brief The unique ID of the item represented by this row.
+			 *
+			 * Exposed under the name \em itemClass to QML.
+			 */
 			ItemClass = Qt::UserRole + 1,
+
+			/** @brief The name of the item represented by this row
+			 *
+			 * Exposed under the name \em itemName to QML.
+			 */
 			ItemName,
+
+			/** @brief The description of the item represented by this row.
+			 *
+			 * Exposed under the name \em itemDescr to QML.
+			 */
 			ItemDescription,
+
+			/** @brief The URL of the icon represented by this row.
+			 *
+			 * Exposed under the name \em itemIcon to QML.
+			 */
 			ItemIcon
 		};
 
-		UnhideListModel (QObject*);
+		/** @brief Constructs the model with the given \em parent.
+		 *
+		 * @param[in] parent The parent object of this model.
+		 */
+		UnhideListModel (QObject *parent);
 	};
 }
 }

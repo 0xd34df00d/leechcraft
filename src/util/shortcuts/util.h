@@ -43,10 +43,36 @@ namespace LeechCraft
 {
 namespace Util
 {
-	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>&,
-			const std::function<void ()>&, QWidget *parent);
+	/** @brief Makes \em func invokable with shortcuts in \em seq.
+	 *
+	 * This function creates one QShortcut object per each key sequence in
+	 * \em seqs and calls \em func when one of the shortcuts is activated.
+	 *
+	 * If \em seqs is empty, this function does nothing.
+	 *
+	 * @param[in] seqs The list of key sequences to handle.
+	 * @param[in] func The function to invoke when one of key sequences in
+	 * \em seqs is activated.
+	 * @param[in] parent The parent object for the shortcuts.
+	 */
+	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>& seqs,
+			const std::function<void ()>& func, QWidget *parent);
 
-	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>&,
+	/** @brief Makes \em metamethod invokable with shortcuts in \em seq.
+	 *
+	 * This function creates one QShortcut object per each key sequence in
+	 * \em seqs and calls \em metamethod of the given \em object when one
+	 * of the shortcuts is activated.
+	 *
+	 * If \em seqs is empty, this function does nothing.
+	 *
+	 * @param[in] seqs The list of key sequences to handle.
+	 * @param[in] object The object whose metamethod should be invoked.
+	 * @param[in] metamethod The metamethod to invoke when one of key
+	 * sequences in \em seqs is activated.
+	 * @param[in] parent The parent object for the shortcuts.
+	 */
+	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>& seqs,
 			QObject *object, const char *metamethod, QWidget *parent);
 }
 }

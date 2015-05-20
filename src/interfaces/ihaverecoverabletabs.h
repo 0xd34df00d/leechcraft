@@ -170,18 +170,42 @@ public:
 	/** @brief Checks if there is a tab similar to the one defined by \em data.
 	 *
 	 * The \em data is guaranteed to be obtained from a tab belonging
-	 * to the plugin being queried. That is, no checks for the tab
-	 * belonging to the plugin should be made.
+	 * to the plugin being queried. That is, there is no need to perform any
+	 * checks for the tab to be belonging to the plugin.
+	 *
+	 * A standard implementation is provided for the convenience in the
+	 * form of the StandardSimilarImpl() function.
 	 *
 	 * @param[in] data The tab recover data previously obtained from
 	 * IRecoverableTab::GetTabRecoverData()
 	 * @param[in] existing The list of existing tabs, provided for convenience.
 	 * @return Whether the tab similar to the one defined by \em data
 	 * exists already.
+	 *
+	 * @sa StandardSimilarImpl()
 	 */
 	virtual bool HasSimilarTab (const QByteArray& data,
 			const QList<QByteArray>& existing) const = 0;
 protected:
+	/** @brief A standard implementation of the HasSimilarTab() function.
+	 *
+	 * This function is suitable for calling from HasSimilarTab() given
+	 * an additional functor \em f, which should return some equality
+	 * comparable type. If <code>f(data)</code> is equal to
+	 * <code>f(e)</code> for some \em e in \em existing, then this
+	 * function returns \em true.
+	 *
+	 * @tparam T The type of the functor \em f.
+	 *
+	 * @param[in] data The tab recover data previously obtained from
+	 * IRecoverableTab::GetTabRecoverData()
+	 * @param[in] existing The list of existing tabs, provided for convenience.
+	 * @param[in] f A functor returning some equality comparable type.
+	 * @return Whether the tab similar to the one defined by \em data
+	 * exists already.
+	 *
+	 * @sa HasSimilarTab()
+	 */
 	template<typename T>
 	static bool StandardSimilarImpl (const QByteArray& data,
 			const QList<QByteArray>& existing, const T& f)

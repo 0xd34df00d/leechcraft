@@ -35,6 +35,17 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief A concurrent exception that plays nicely with Qt.
+	 *
+	 * This class can be used to make some third-party exception type
+	 * compatible with the QtConcurrent framework, which requires all
+	 * exceptions to be derived from a Qt's base exception class.
+	 *
+	 * This class wraps differences between Qt4's QtConcurrent::Exception
+	 * and Qt5's QException and provides an uniform interface.
+	 *
+	 * @tparam T The base type of the exception.
+	 */
 	template<typename T>
 #if QT_VERSION < 0x050000
 	class ConcurrentException : public QtConcurrent::Exception
@@ -44,48 +55,49 @@ namespace Util
 							  , public T
 	{
 	public:
+		/** @brief Default-constructs the exception object.
+		 */
 		ConcurrentException () = default;
 
+		/** @brief Constructs the exception object with the given
+		 * \em args.
+		 *
+		 * @param[in] args The argments to pass to the constructor of the
+		 * base exception \em T.
+		 * @tparam Args The types of the arguments of the constructor of
+		 * \em T.
+		 */
 		template<typename... Args>
 		ConcurrentException (Args&&... args)
 		: T { std::forward<Args...> (args...) }
 		{
 		}
 
+		/** @brief Rethrows an exception of exactly this type and state.
+		 *
+		 * @throws ConcurrentException<T>
+		 */
 		void raise () const override
 		{
 			throw ConcurrentException<T> { *this };
 		}
 
+		/** @brief Constructs a copy of this object.
+		 *
+		 * @return The copy of this object.
+		 */
 		ConcurrentException<T>* clone () const override
 		{
 			return new ConcurrentException<T> { *this };
 		}
 
+		/** @brief Overrides base pure virtual.
+		 *
+		 * Calls <code>T::what()</code>.
+		 */
 		const char* what () const noexcept override
 		{
 			return T::what ();
-		}
-	};
-
-	template<typename T>
-	class ExceptionWrapperBase
-	{
-		const T BaseEx_;
-	public:
-		ExceptionWrapperBase (const T& t)
-		: BaseEx_ { t }
-		{
-		}
-
-		ExceptionWrapperBase (T&& t)
-		: BaseEx_ { std::move (t) }
-		{
-		}
-
-		const char* what () const noexcept
-		{
-			return BaseEx_.what ();
 		}
 	};
 }

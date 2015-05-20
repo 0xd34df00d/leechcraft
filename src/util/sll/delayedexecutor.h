@@ -50,7 +50,7 @@ namespace Util
 	 *	\code
 		new Util::DelayedExecutor
 		{
-			[] ()
+			[]
 			{
 				// body of some lambda
 			},
@@ -59,11 +59,11 @@ namespace Util
 		\endcode
 	 * or
 	 *	\code
-	   new Util::DelayedExecutor
-	   {
-		   someCallable,
-		   interval
-	   };
+		new Util::DelayedExecutor
+		{
+			someCallable,
+			interval
+		};
 	   \endcode
 	 */
 	class UTIL_SLL_API DelayedExecutor : QObject

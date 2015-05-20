@@ -72,6 +72,7 @@ namespace CSTP
 	public:
 		explicit Task (const QUrl& url = QUrl (), const QVariantMap& params = QVariantMap ());
 		explicit Task (QNetworkReply*);
+		~Task ();
 
 		void Start (const std::shared_ptr<QFile>&);
 		void Stop ();
@@ -93,8 +94,6 @@ namespace CSTP
 		void RecalculateSpeed ();
 		void HandleMetadataRedirection ();
 		void HandleMetadataFilename ();
-
-		void Cleanup ();
 	private slots:
 		void handleDataTransferProgress (qint64, qint64);
 		void redirectedConstruction (const QByteArray&);

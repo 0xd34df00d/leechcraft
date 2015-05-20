@@ -115,12 +115,18 @@ namespace CSTP
 				SIGNAL (updateInterface ()));
 	}
 
+	Task::~Task ()
+	{
+		if (Reply_)
+			Core::Instance ().RemoveFinishedReply (Reply_.get ());
+	}
+
 	void Task::Start (const std::shared_ptr<QFile>& tof)
 	{
 		FileSizeAtStart_ = tof->size ();
 		To_ = tof;
 
-		if (!Reply_.get ())
+		if (!Reply_)
 		{
 			if (URL_.scheme () == "file")
 			{
@@ -130,16 +136,14 @@ namespace CSTP
 				return;
 			}
 
-			QString ua = XmlSettingsManager::Instance ()
-				.property ("UserUserAgent").toString ();
+			auto ua = XmlSettingsManager::Instance ().property ("UserUserAgent").toString ();
 			if (ua.isEmpty ())
-				ua = XmlSettingsManager::Instance ()
-					.property ("PredefinedUserAgent").toString ();
+				ua = XmlSettingsManager::Instance ().property ("PredefinedUserAgent").toString ();
 
 			if (ua == "%leechcraft%")
 				ua = "LeechCraft.CSTP/" + Core::Instance ().GetCoreProxy ()->GetVersion ();
 
-			QNetworkRequest req (URL_);
+			QNetworkRequest req { URL_ };
 			if (tof->size ())
 				req.setRawHeader ("Range", QString ("bytes=%1-").arg (tof->size ()).toLatin1 ());
 			req.setRawHeader ("User-Agent", ua.toLatin1 ());
@@ -155,11 +159,10 @@ namespace CSTP
 
 			StartTime_.restart ();
 
-			auto nam = Core::Instance ().GetNetworkAccessManager ();
-
 			for (const auto& pair : Util::Stlize (Headers_))
 				req.setRawHeader (pair.first.toLatin1 (), pair.second.toByteArray ());
 
+			auto nam = Core::Instance ().GetNetworkAccessManager ();
 			switch (Operation_)
 			{
 			case QNetworkAccessManager::GetOperation:
@@ -179,8 +182,7 @@ namespace CSTP
 		{
 			handleMetaDataChanged ();
 
-			qint64 contentLength = Reply_->
-				header (QNetworkRequest::ContentLengthHeader).toInt ();
+			qint64 contentLength = Reply_->header (QNetworkRequest::ContentLengthHeader).toInt ();
 			if (contentLength &&
 					Reply_->bytesAvailable () == contentLength)
 			{
@@ -193,17 +195,14 @@ namespace CSTP
 				handleError ();
 				return;
 			}
-			else
-			{
-				if (handleReadyRead ())
-					return;
-			}
+			else if (handleReadyRead ())
+				return;
 		}
 
 		if (!Timer_->isActive ())
 			Timer_->start (3000);
 
-		Reply_->setParent (0);
+		Reply_->setParent (nullptr);
 		connect (Reply_.get (),
 				SIGNAL (downloadProgress (qint64, qint64)),
 				this,
@@ -228,7 +227,7 @@ namespace CSTP
 
 	void Task::Stop ()
 	{
-		if (Reply_.get ())
+		if (Reply_)
 			Reply_->abort ();
 	}
 
@@ -258,19 +257,17 @@ namespace CSTP
 		QDataStream in (&data, QIODevice::ReadOnly);
 		int version = 0;
 		in >> version;
-		if (version >= 1)
-		{
-			in >> URL_
-				>> StartTime_
-				>> Done_
-				>> Total_
-				>> Speed_;
-		}
-		if (version >= 2)
-			in >> CanChangeName_;
-
 		if (version < 1 || version > 2)
 			throw std::runtime_error ("Unknown version");
+
+		in >> URL_
+			>> StartTime_
+			>> Done_
+			>> Total_
+			>> Speed_;
+
+		if (version >= 2)
+			in >> CanChangeName_;
 	}
 
 	double Task::GetSpeed () const
@@ -290,7 +287,7 @@ namespace CSTP
 
 	QString Task::GetState () const
 	{
-		if (!Reply_.get ())
+		if (!Reply_)
 			return tr ("Stopped");
 		else if (Done_ == Total_)
 			return tr ("Finished");
@@ -300,7 +297,7 @@ namespace CSTP
 
 	QString Task::GetURL () const
 	{
-		return Reply_.get () ? Reply_->url ().toString () : URL_.toString ();
+		return Reply_ ? Reply_->url ().toString () : URL_.toString ();
 	}
 
 	int Task::GetTimeFromStart () const
@@ -310,12 +307,12 @@ namespace CSTP
 
 	bool Task::IsRunning () const
 	{
-		return Reply_.get () && !URL_.isEmpty ();
+		return Reply_ && !URL_.isEmpty ();
 	}
 
 	QString Task::GetErrorString () const
 	{
-		return Reply_.get () ? Reply_->errorString () : tr ("Task isn't initialized properly");
+		return Reply_ ? Reply_->errorString () : tr ("Task isn't initialized properly");
 	}
 
 	void Task::Reset ()
@@ -350,7 +347,7 @@ namespace CSTP
 			return;
 		}
 
-		if (!QUrl (newUrl).isValid ())
+		if (!QUrl { newUrl }.isValid ())
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "invalid redirect URL"
@@ -387,13 +384,13 @@ namespace CSTP
 	{
 		QString GetFilenameAscii (const QString& contdis)
 		{
-			const QByteArray start = "filename=\"";
+			const QByteArray start { "filename=\"" };
 			int startPos = contdis.indexOf (start) + start.size ();
 			bool ignoreNextQuote = false;
 			QString result;
 			while (startPos < contdis.size ())
 			{
-				QChar cur = contdis.at (startPos++);
+				const auto cur = contdis.at (startPos++);
 				if (cur == '\\')
 					ignoreNextQuote = true;
 				else if (cur == '"' &&
@@ -465,7 +462,7 @@ namespace CSTP
 			return;
 		}
 
-		QIODevice::OpenMode om = To_->openMode ();
+		const auto openMode = To_->openMode ();
 		To_->close ();
 
 		if (!To_->rename (path))
@@ -475,28 +472,14 @@ namespace CSTP
 				<< path
 				<< To_->errorString ();
 		}
-		if (!To_->open (om))
+		if (!To_->open (openMode))
 		{
 			qWarning () << Q_FUNC_INFO
 				<< "failed to re-open the renamed file"
 				<< path;
 			To_->rename (oldPath);
-			To_->open (om);
+			To_->open (openMode);
 		}
-	}
-
-	void Task::Cleanup ()
-	{
-		if (!Reply_)
-			return;
-
-		Core::Instance ().RemoveFinishedReply (Reply_.get ());
-
-		disconnect (Reply_.get (),
-				0,
-				this,
-				0);
-		Reply_.reset ();
 	}
 
 	void Task::handleDataTransferProgress (qint64 done, qint64 total)
@@ -534,9 +517,9 @@ namespace CSTP
 
 	void Task::handleLocalTransfer ()
 	{
-		QString localFile = URL_.toLocalFile ();
+		const auto& localFile = URL_.toLocalFile ();
 		qDebug () << "LOCAL FILE" << localFile << To_->fileName ();
-		QFileInfo fi (localFile);
+		QFileInfo fi { localFile };
 		if (!fi.isFile ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -548,8 +531,8 @@ namespace CSTP
 			return;
 		}
 
-		QString destination = To_->fileName ();
-		QFile file (localFile);
+		const auto& destination = To_->fileName ();
+		QFile file { localFile };
 		To_->close ();
 		if (!To_->remove () ||
 				!file.copy (destination))
@@ -579,7 +562,7 @@ namespace CSTP
 			}
 
 			const int chunkSize = 10 * 1024 * 1024;
-			QByteArray chunk = file.read (chunkSize);
+			auto chunk = file.read (chunkSize);
 			while (chunk.size ())
 			{
 				To_->write (chunk);
@@ -594,12 +577,12 @@ namespace CSTP
 
 	bool Task::handleReadyRead ()
 	{
-		if (Reply_.get ())
+		if (Reply_)
 		{
 			quint64 avail = Reply_->bytesAvailable ();
 			quint64 res = To_->write (Reply_->readAll ());
-			if ((static_cast<quint64> (-1) == res) ||
-					(res != avail))
+			if (static_cast<quint64> (-1) == res ||
+					res != avail)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "Error writing to file:"
@@ -627,15 +610,12 @@ namespace CSTP
 
 	void Task::handleFinished ()
 	{
-		Cleanup ();
 		emit done (false);
 	}
 
 	void Task::handleError ()
 	{
 		emit done (true);
-
-		Cleanup ();
 	}
 }
 }

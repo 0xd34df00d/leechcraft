@@ -91,7 +91,10 @@ namespace Util
 		 */
 		enum FindFlag
 		{
+			/** Default search flags: case-insensitive forward search.
+			 */
 			FindNoFlags = 0x0,
+
 			/** Search should be performed case sensitively.
 			 */
 			FindCaseSensitively = 0x1,

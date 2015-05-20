@@ -132,17 +132,41 @@ namespace Util
 
 	namespace detail
 	{
+		/** @brief Incapsulates the sequencing logic of asynchronous
+		 * actions.
+		 *
+		 * The objects of this class are expected to be created on heap.
+		 * They will delete themselves automatically after the chain is
+		 * walked (or an exception is thrown).
+		 *
+		 * @tparam Executor The type of the initial functor in the async
+		 * call chain.
+		 * @tparam Args The types of the arguments that should be passed
+		 * to the \em Executor.
+		 */
 		template<typename Executor, typename... Args>
 		class Sequencer : public QObject
 		{
 		public:
+			/** @brief The result of calling \em Executor with \em Args.
+			 */
 			using FutureType_t = typename std::result_of<Executor (Args...)>::type;
+
+			/** @brief The type instantinating the QFuture returned by the
+			 * \em Executor.
+			 */
 			using RetType_t = UnwrapFutureType_t<FutureType_t>;
 		private:
 			const std::function<FutureType_t ()> Functor_;
 			QFutureWatcher<RetType_t> BaseWatcher_;
 			QObject *LastWatcher_ = &BaseWatcher_;
 		public:
+			/** @brief Constructs the sequencer.
+			 *
+			 * @param[in] f The first action in the chain.
+			 * @param[in] args The arguments to the action.
+			 * @param[in] parent The parent object for the sequencer.
+			 */
 			Sequencer (Executor f, Args... args, QObject *parent)
 			: QObject { parent }
 			, Functor_ { [f, args...] { return f (args...); } }
@@ -150,28 +174,56 @@ namespace Util
 			{
 			}
 
+			/** @brief Starts the first action in the chain.
+			 *
+			 * All the actions should be chained before calling this
+			 * method to avoid a race condition.
+			 */
 			void Start ()
 			{
 				BaseWatcher_.setFuture (Functor_ ());
 			}
 
+			/** @brief Chains the given asynchronous action.
+			 *
+			 * The \em action is a functor callable with a single
+			 * parameter of type \em ArgT and returning a value of type
+			 * <code>QFuture<RetT></code> for some \em RetT.
+			 *
+			 * The parameter type \em ArgT should match exactly the
+			 * "unwrapped" \em RetT for the previous call of Then() (or
+			 * RetType_t if this is the second action in the asynchronous
+			 * chain). Otherwise, an exception will be thrown at runtime.
+			 *
+			 * @note The SequenceProxy class takes care of compile-time
+			 * type-checking of arguments and return types.
+			 *
+			 * @param[in] action The action to add to the sequence chain.
+			 * @tparam RetT The type instantiating the return type
+			 * <code>QFuture<RetT></code> of the \em action.
+			 * @tparam ArgT The type of the argument passed to the
+			 * \em action.
+			 */
 			template<typename RetT, typename ArgT>
-			void Then (const std::function<QFuture<RetT> (ArgT)>& cont)
+			void Then (const std::function<QFuture<RetT> (ArgT)>& action)
 			{
 				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
 				if (!last)
+				{
+					deleteLater ();
 					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+				}
 
 				const auto watcher = new QFutureWatcher<RetT> { this };
 				LastWatcher_ = watcher;
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[this, last, watcher, cont]
+					[this, last, watcher, action]
 					{
 						if (last != &BaseWatcher_)
 							last->deleteLater ();
-						watcher->setFuture (cont (last->result ()));
+						watcher->setFuture (action (last->result ()));
 					},
 					last,
 					SIGNAL (finished ()),
@@ -179,18 +231,41 @@ namespace Util
 				};
 			}
 
-			template<typename T>
-			void Then (const std::function<void (T)>& cont)
+			/** @brief Chains the given asynchronous action and closes the
+			 * chain.
+			 *
+			 * The \em action is a functor callable with a single
+			 * parameter of type \em ArgT and returning <code>void</code>.
+			 *
+			 * No more functors may be chained after adding a
+			 * <code>void</code>-returning functor.
+			 *
+			 * The parameter type \em ArgT should match exactly the
+			 * "unwrapped" \em RetT for the previous call of Then() (or
+			 * RetType_t if this is the second action in the asynchronous
+			 * chain). Otherwise, an exception will be thrown at runtime.
+			 *
+			 * @note The SequenceProxy class takes care of compile-time
+			 * type-checking of arguments and return types.
+			 *
+			 * @tparam ArgT The type of the argument passed to the
+			 * \em action.
+			 */
+			template<typename ArgT>
+			void Then (const std::function<void (ArgT)>& action)
 			{
-				const auto last = dynamic_cast<QFutureWatcher<T>*> (LastWatcher_);
+				const auto last = dynamic_cast<QFutureWatcher<ArgT>*> (LastWatcher_);
 				if (!last)
+				{
+					deleteLater ();
 					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+				}
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[last, cont, this]
+					[last, action, this]
 					{
-						cont (last->result ());
+						action (last->result ());
 						deleteLater ();
 					},
 					LastWatcher_,
@@ -200,6 +275,22 @@ namespace Util
 			}
 		};
 
+		/** @brief A proxy object allowing type-checked sequencing of
+		 * actions and responsible for starting the initial action.
+		 *
+		 * SequenceProxy manages a Sequencer object, which itself is
+		 * directly responsible for walking the chain of sequenced
+		 * actions.
+		 *
+		 * Internally, objects of this class are reference-counted. As
+		 * soon as the last instance is destroyed, the initial action is
+		 * started.
+		 *
+		 * @tparam Ret The type \em T that <code>QFuture<T></code>
+		 * returned by the last chained executor is specialized with.
+		 * @tparam E0 The type of the first executor.
+		 * @tparam A0 The types of the arguments to the executor \em E0.
+		 */
 		template<typename Ret, typename E0, typename... A0>
 		class SequenceProxy
 		{
@@ -214,15 +305,45 @@ namespace Util
 		public:
 			using Ret_t = Ret;
 
-			SequenceProxy (Sequencer<E0, A0...> *seq)
-			: ExecuteGuard_ { nullptr, [seq] (void*) { seq->Start (); } }
-			, Seq_ { seq }
+			/** @brief Constructs a sequencer proxy managing the given
+			 * \em sequencer.
+			 *
+			 * @param[in] sequencer The sequencer to manage.
+			 */
+			SequenceProxy (Sequencer<E0, A0...> *sequencer)
+			: ExecuteGuard_ { nullptr, [sequencer] (void*) { sequencer->Start (); } }
+			, Seq_ { sequencer }
 			{
 			}
 
-			SequenceProxy (const SequenceProxy&) = default;
-			SequenceProxy (SequenceProxy&&) = default;
+			/** @brief Copy-constructs from \em proxy.
+			 *
+			 * @param[in] proxy The proxy object to share the managed
+			 * sequencer with.
+			 */
+			SequenceProxy (const SequenceProxy& proxy) = default;
 
+			/** @brief Move-constructs from \em proxy.
+			 *
+			 * @param[in] proxy The proxy object from which the sequencer
+			 * should be borrowed.
+			 */
+			SequenceProxy (SequenceProxy&& proxy) = default;
+
+			/** @brief Adds the functor \em f to the chain of actions.
+			 *
+			 * The functor \em f should return <code>QFuture<T0></code>
+			 * when called with a value of type \em Ret. That is, the
+			 * expression <code>f (std::declval<Ret> ())</code> should be
+			 * well-formed, and, moreover, its return type should be
+			 * <code>QFuture<T0><code> for some T0.
+			 *
+			 * @param[in] f The functor to chain.
+			 * @return An object of type
+			 * <code>SequencerProxy<T0, E0, A0></code> ready for chaining
+			 * new functions.
+			 * @tparam F The type of the functor to chain.
+			 */
 			template<typename F>
 			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, E0, A0...>
 			{
@@ -230,6 +351,18 @@ namespace Util
 				return { ExecuteGuard_, Seq_ };
 			}
 
+			/** @brief Adds the funtor \em f to the chain of actions and
+			 * closes the chain.
+			 *
+			 * The function \em f should return <code>void</code> when
+			 * called with a value of type \em Ret.
+			 *
+			 * No more functors may be chained after adding a
+			 * <code>void</code>-returning functor.
+			 *
+			 * @param[in] f The functor to chain.
+			 * @tparam F The type of the functor to chain.
+			 */
 			template<typename F>
 			auto Then (const F& f) -> typename std::enable_if<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>::type
 			{
@@ -238,6 +371,73 @@ namespace Util
 		};
 	}
 
+	/** @brief Creates a sequencer that allows chaining multiple futures.
+	 *
+	 * This function creates a sequencer object that calls the given
+	 * executor \em f with the given \em args, which must return a
+	 * <code>QFuture<T></code> (or throw an exception) or
+	 * <code>void</code>. The concrete object will be unwrapped from the
+	 * <code>QFuture<T></code> and passed to the chained function, if any,
+	 * and so on. The functors may also return <code>QFuture<void></code>,
+	 * in which case the next action is expected to be invokable without
+	 * any arguments.
+	 *
+	 * If a functor returns <code>void</code>, no further chaining is
+	 * possible.
+	 *
+	 * The functions are chained via the detail::SequenceProxy::Then()
+	 * method.
+	 *
+	 * The sequencer object is reference-counted internally, and it
+	 * invokes the executor \em f after the last instance of this
+	 * sequencer is destroyed.
+	 *
+	 * A \em parent QObject controls the lifetime of the sequencer: as
+	 * soon as it is destroyed, the sequencer is destroyed as well, and
+	 * all pending actions are cancelled (note, the currently executing
+	 * action will still continue to execute). This parameter is optional
+	 * and may be <code>nullptr</code>.
+	 *
+	 * A sample usage may look like:
+	 * \code
+		Util::Sequence (this,
+					[this, &]
+					{
+						return QtConcurrent::run ([this, &]
+								{
+									const auto& contents = file->readAll ();
+									file->close ();
+									file->remove ();
+									return DoSomethingWith (contents);
+								});
+					})
+				.Then ([this, url, script] (const QString& contents)
+					{
+						const auto& result = Parse (contents);
+						if (result.isEmpty ())
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "empty result for"
+									<< url;
+							return;
+						}
+
+						const auto id = DoSomethingSynchronouslyWith (result);
+						emit gotResult (id);
+					});
+	   \endcode
+	 *
+	 * @param[in] parent The parent object of the sequencer (may be
+	 * <code>nullptr</code>.
+	 * @param[in] f The executor to run when chaining is finished.
+	 * @param[in] args The arguments to pass to \em f.
+	 * @return The sequencer object.
+	 * @tparam Executor The type of the executor object.
+	 * @tparam Args The types of the arguments for the \em Executor, if
+	 * any.
+	 *
+	 * @sa detail::SequenceProxy
+	 */
 	template<typename Executor, typename... Args>
 	detail::SequenceProxy<typename detail::Sequencer<Executor, Args...>::RetType_t, Executor, Args...> Sequence (QObject *parent, Executor f, Args... args)
 	{
