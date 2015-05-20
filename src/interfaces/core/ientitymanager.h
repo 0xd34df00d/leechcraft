@@ -63,6 +63,14 @@ public:
 		 * plugin.
 		 */
 		int ID_ = 0;
+
+		DelegationResult () = default;
+
+		DelegationResult (QObject *handler, int id)
+		: Handler_ { handler }
+		, ID_ { id }
+		{
+		}
 	};
 
 	virtual ~IEntityManager () {}
