@@ -321,6 +321,10 @@ namespace LeechCraft
 
 	QList<QObject*> EntityManager::GetPossibleHandlers (const Entity& e)
 	{
+		const auto pm = Core::Instance ().GetPluginManager ();
+		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+			return {};
+
 		return GetObjects (e);
 	}
 }
