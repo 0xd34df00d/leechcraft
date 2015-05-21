@@ -57,6 +57,11 @@ namespace Util
 	{
 	public:
 		using T::T;
+
+		NewType (const T& t)
+		: T { t }
+		{
+		}
 	};
 
 	namespace detail
