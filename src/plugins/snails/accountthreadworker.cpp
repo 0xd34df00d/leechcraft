@@ -162,7 +162,7 @@ namespace Snails
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
-		std::vector<boost::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
+		std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
 		for (const auto& sysCert : QSslSocket::systemCaCertificates ())
 		{
 			const auto& der = sysCert.toDer ();
