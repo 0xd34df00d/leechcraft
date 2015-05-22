@@ -95,7 +95,7 @@ namespace Snails
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[handler = actInfo.Handler_, msg] { handler (msg); },
+				[msg, handler = actInfo.Handler_] { handler (msg); },
 				action,
 				SIGNAL (triggered ()),
 				action
