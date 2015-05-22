@@ -27,64 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sysnotify.h"
-#include <QIcon>
-#include <util/util.h>
-#include <interfaces/entitytesthandleresult.h>
-#include "notificationmanager.h"
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace Sysnotify
+namespace Util
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	class DummyObject : public QObject
 	{
-		Util::InstallTranslator ("sysnotify");
+		Q_OBJECT
+	public:
+		void EmitSignal ();
+	signals:
+		void someSignal ();
+	};
 
-		Manager_ = std::make_shared<NotificationManager> ();
-	}
-
-	void Plugin::SecondInit ()
+	class SlotClosureTest : public QObject
 	{
-	}
-
-	QByteArray Plugin::GetUniqueID () const
-	{
-		return "org.LeechCraft.Sysnotify";
-	}
-
-	void Plugin::Release ()
-	{
-		Manager_.reset ();
-	}
-
-	QString Plugin::GetName () const
-	{
-		return "Sysnotify";
-	}
-
-	QString Plugin::GetInfo () const
-	{
-		return tr ("Notifies about LeechCraft events via Desktop Notifications.");
-	}
-
-	QIcon Plugin::GetIcon () const
-	{
-		return QIcon ();
-	}
-
-	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
-	{
-		return EntityTestHandleResult { Manager_.get () && Manager_->CouldNotify (e) ?
-					EntityTestHandleResult::PHigh :
-					EntityTestHandleResult::PNone };
-	}
-
-	void Plugin::Handle (Entity e)
-	{
-		Manager_->HandleNotification (e);
-	}
+		Q_OBJECT
+	private slots:
+		void testDeleteLater ();
+		void testNoDelete ();
+		void testChoiceDelete ();
+	};
 }
 }
-
-LC_EXPORT_PLUGIN (leechcraft_sysnotify, LeechCraft::Sysnotify::Plugin);

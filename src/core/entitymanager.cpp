@@ -34,6 +34,7 @@
 #include <QUrl>
 #include "util/util.h"
 #include "util/sll/prelude.h"
+#include "util/sll/slotclosure.h"
 #include "interfaces/structures.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -230,30 +231,74 @@ namespace LeechCraft
 
 			return true;
 		}
+
+		template<typename F>
+		bool CheckInitStage (const Entity& e, QObject *desired, F cont)
+		{
+			const auto pm = Core::Instance ().GetPluginManager ();
+			if (pm->GetInitStage () != PluginManager::InitStage::BeforeFirst)
+				return true;
+
+			qWarning () << Q_FUNC_INFO
+					<< "got an entity handle request before first init is complete:"
+					<< e.Entity_;
+			qWarning () << e.Additional_;
+			new Util::SlotClosure<Util::ChoiceDeletePolicy>
+			{
+				[=]
+				{
+					if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+						return Util::ChoiceDeletePolicy::Delete::No;
+
+					(EntityManager {}.*cont) (e, desired);
+					return Util::ChoiceDeletePolicy::Delete::Yes;
+				},
+				pm,
+				SIGNAL (initStageChanged (PluginManager::InitStage)),
+				pm
+			};
+			return false;
+		}
 	}
 
 	IEntityManager::DelegationResult EntityManager::DelegateEntity (Entity e, QObject *desired)
 	{
+		if (!CheckInitStage (e, desired, &EntityManager::DelegateEntity))
+			return {};
+
 		e.Parameters_ |= OnlyDownload;
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, false);
 		if (!foundOk)
-			return { 0, 0 };
+			return {};
 
 		for (auto obj : handlers)
 			if (auto idl = qobject_cast<IDownload*> (obj))
 				return { obj, idl->AddJob (e) };
 
-		return { 0, 0 };
+		return {};
 	}
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
+		const auto pm = Core::Instance ().GetPluginManager ();
+		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called before first initialization stage is complete with"
+					<< e.Entity_;
+			qWarning () << e.Additional_;
+			return false;
+		}
+
 		return !GetObjects (e).isEmpty ();
 	}
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
 	{
+		if (!CheckInitStage (e, desired, &EntityManager::HandleEntity))
+			return false;
+
 		QObjectList handlers;
 		const bool foundOk = GetPreparedObjectList (e, desired, handlers, true);
 		if (!foundOk || handlers.isEmpty ())
@@ -282,6 +327,16 @@ namespace LeechCraft
 
 	QList<QObject*> EntityManager::GetPossibleHandlers (const Entity& e)
 	{
+		const auto pm = Core::Instance ().GetPluginManager ();
+		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "called before first initialization stage is complete with"
+					<< e.Entity_;
+			qWarning () << e.Additional_;
+			return {};
+		}
+
 		return GetObjects (e);
 	}
 }

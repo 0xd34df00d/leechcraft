@@ -430,6 +430,8 @@ namespace LeechCraft
 
 		const auto& failed = FirstInitAll ();
 
+		SetInitStage (InitStage::BeforeSecond);
+
 		for (const auto obj : ordered)
 			Core::Instance ().Setup (obj);
 
@@ -465,8 +467,12 @@ namespace LeechCraft
 			}
 		}
 
+		SetInitStage (InitStage::PostSecond);
+
 		for (const auto plugin : GetAllPlugins ())
 			Core::Instance ().PostSecondInit (plugin);
+
+		SetInitStage (InitStage::Complete);
 
 		TryUnload (failed);
 	}
@@ -704,6 +710,20 @@ namespace LeechCraft
 	const QStringList& PluginManager::GetPluginLoadErrors () const
 	{
 		return PluginLoadErrors_;
+	}
+
+	PluginManager::InitStage PluginManager::GetInitStage () const
+	{
+		return InitStage_;
+	}
+
+	void PluginManager::SetInitStage (PluginManager::InitStage stage)
+	{
+		if (InitStage_ == stage)
+			return;
+
+		InitStage_ = stage;
+		emit initStageChanged (stage);
 	}
 
 	QStringList PluginManager::FindPluginsPaths () const

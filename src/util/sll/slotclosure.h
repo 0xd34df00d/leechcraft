@@ -42,57 +42,8 @@ namespace Util
 	class UTIL_SLL_API SlotClosureBase : public QObject
 	{
 		Q_OBJECT
-
-		std::function<void ()> Func_;
 	public:
-		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject.
-		 *
-		 * This constructor does not automatically connect to any signals.
-		 * Thus, all interesting signals should be manually connected to
-		 * the construct object's <code>run()</code> slot:
-		 * \code{.cpp}
-			const auto closure = new SlotClosure<DeleteLaterPolicy> { someFunc, parent };
-			connect (object,
-					SIGNAL (triggered ()),
-					closure,
-					SLOT (run ()));
-		   \endcode
-		 *
-		 * @param[in] func The function to run when a connected signal is
-		 * fired.
-		 * @param[in] parent The parent object of this SlotClosure.
-		 */
-		SlotClosureBase (const std::function<void ()>& func, QObject *parent);
-
-		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject on the given \em signal.
-		 *
-		 * @param[in] func The function to run when a matching signal is
-		 * fired.
-		 * @param[in] sender The sender of the signal to connect to.
-		 * @param[in] signal The signal that should trigger the \em func.
-		 * @param[in] parent The parent object of this SlotClosure.
-		 */
-		SlotClosureBase (const std::function<void ()>& func,
-				QObject *sender,
-				const char *signal,
-				QObject *parent);
-
-		/** @brief Constructs a SlotClosure running a given \em func with
-		 * the given \em parent as a QObject on the given \em signalsList.
-		 *
-		 * @param[in] func The function to run when a matching signal is
-		 * fired.
-		 * @param[in] sender The sender of the signal to connect to.
-		 * @param[in] signalsList The list of signals, any of which triggers
-		 * the \em func.
-		 * @param[in] parent The parent object of this SlotClosure.
-		 */
-		SlotClosureBase (const std::function<void ()>& func,
-				QObject *sender,
-				const std::initializer_list<const char*>& signalsList,
-				QObject *parent);
+		using QObject::QObject;
 
 		virtual ~SlotClosureBase () = default;
 	public slots:
@@ -145,44 +96,148 @@ namespace Util
 	 * @tparam FireDestrPolicy Controls how the object should be
 	 * destroyed in response to the watched signal.
 	 */
-	template<template<typename T> class FireDestrPolicy>
+	template<typename FireDestrPolicy>
 	class SlotClosure : public SlotClosureBase
-					  , public FireDestrPolicy<SlotClosureBase>
+					  , public FireDestrPolicy
 	{
 	public:
-		/** @brief Inherits all constructors of SlotClosureBase.
-		 */
-		using SlotClosureBase::SlotClosureBase;
+		using FunType_t = std::function<typename FireDestrPolicy::Signature_t>;
+	private:
+		FunType_t Func_;
 	public:
+		/** @brief Constructs a SlotClosure running a given \em func with
+		 * the given \em parent as a QObject.
+		 *
+		 * This constructor does not automatically connect to any signals.
+		 * Thus, all interesting signals should be manually connected to
+		 * the construct object's <code>run()</code> slot:
+		 * \code{.cpp}
+			const auto closure = new SlotClosure<DeleteLaterPolicy> { someFunc, parent };
+			connect (object,
+					SIGNAL (triggered ()),
+					closure,
+					SLOT (run ()));
+		   \endcode
+		 *
+		 * @param[in] func The function to run when a connected signal is
+		 * fired.
+		 * @param[in] parent The parent object of this SlotClosure.
+		 */
+		SlotClosure (const FunType_t& func, QObject *parent)
+		: SlotClosureBase { parent }
+		, Func_ { func }
+		{
+		}
+
+		/** @brief Constructs a SlotClosure running a given \em func with
+		 * the given \em parent as a QObject on the given \em signal.
+		 *
+		 * @param[in] func The function to run when a matching signal is
+		 * fired.
+		 * @param[in] sender The sender of the signal to connect to.
+		 * @param[in] signal The signal that should trigger the \em func.
+		 * @param[in] parent The parent object of this SlotClosure.
+		 */
+		SlotClosure (const FunType_t& func,
+				QObject *sender,
+				const char *signal,
+				QObject *parent)
+		: SlotClosureBase { parent }
+		, Func_ { func }
+		{
+			connect (sender,
+					signal,
+					this,
+					SLOT (run ()));
+		}
+
+		/** @brief Constructs a SlotClosure running a given \em func with
+		 * the given \em parent as a QObject on the given \em signalsList.
+		 *
+		 * @param[in] func The function to run when a matching signal is
+		 * fired.
+		 * @param[in] sender The sender of the signal to connect to.
+		 * @param[in] signalsList The list of signals, any of which triggers
+		 * the \em func.
+		 * @param[in] parent The parent object of this SlotClosure.
+		 */
+		SlotClosure (const FunType_t& func,
+				QObject *sender,
+				const std::initializer_list<const char*>& signalsList,
+				QObject *parent)
+		: SlotClosureBase { parent }
+		, Func_ { func }
+		{
+			for (const auto signal : signalsList)
+				connect (sender,
+						signal,
+						this,
+						SLOT (run ()));
+		}
+
 		/** @brief Triggers the function and invokes the destroy policy.
 		 */
 		void run () override
 		{
-			SlotClosureBase::run ();
+			FireDestrPolicy::Invoke (Func_);
+
 			this->Fired ();
 		}
 	};
 
+	class BasicDeletePolicy
+	{
+	protected:
+		using Signature_t = void ();
+
+		void Invoke (const std::function<Signature_t>& f)
+		{
+			f ();
+		}
+
+		virtual ~BasicDeletePolicy () = default;
+	};
+
 	/** @brief Deletes a SlotClosure object after its signal has fired.
 	 */
-	template<typename T>
-	class DeleteLaterPolicy
+	class DeleteLaterPolicy : public BasicDeletePolicy
 	{
-	public:
-		virtual ~DeleteLaterPolicy () {}
 	protected:
 		void Fired ()
 		{
-			dynamic_cast<T*> (this)->deleteLater ();
+			dynamic_cast<SlotClosureBase*> (this)->deleteLater ();
 		}
 	};
 
 	/** @brief Does not delete a SlotClosure object.
 	 */
-	template<typename>
-	class NoDeletePolicy
+	class NoDeletePolicy : public BasicDeletePolicy
 	{
 	protected:
+		void Fired ()
+		{
+		}
+	};
+
+	class ChoiceDeletePolicy
+	{
+	public:
+		enum class Delete
+		{
+			No,
+			Yes
+		};
+	protected:
+		virtual ~ChoiceDeletePolicy () {}
+
+		using Signature_t = Delete ();
+
+		void Invoke (const std::function<Signature_t>& f)
+		{
+			if (f () == Delete::Yes)
+				dynamic_cast<SlotClosureBase*> (this)->deleteLater ();
+		}
+
 		void Fired ()
 		{
 		}

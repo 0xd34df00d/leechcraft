@@ -112,7 +112,8 @@ namespace CrashProcess
 					[] (const QString& str)
 					{
 						return !str.isEmpty () &&
-								std::all_of (str.begin (), str.end (), [] (const QChar& c) { return c == '.'; });
+								std::all_of (str.begin (), str.end (),
+										[] (const QChar& c) { return c == '.'; });
 					}),
 				strs.end ());
 

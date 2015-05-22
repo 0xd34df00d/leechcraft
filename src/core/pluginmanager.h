@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINMANAGER_H
-#define PLUGINMANAGER_H
+#pragma once
+
 #include <memory>
 #include <QAbstractItemModel>
 #include <QMap>
@@ -83,6 +83,16 @@ namespace LeechCraft
 			PluginFilename
 		};
 
+		enum class InitStage
+		{
+			BeforeFirst,
+			BeforeSecond,
+			PostSecond,
+			Complete
+		};
+	private:
+		InitStage InitStage_ = InitStage::BeforeFirst;
+	public:
 		typedef PluginsContainer_t::size_type Size_t;
 		PluginManager (const QStringList& pluginPaths, QObject *parent = 0);
 
@@ -122,7 +132,11 @@ namespace LeechCraft
 		QObject* GetProvider (const QString&) const;
 
 		const QStringList& GetPluginLoadErrors () const;
+
+		InitStage GetInitStage () const;
 	private:
+		void SetInitStage (InitStage);
+
 		QStringList FindPluginsPaths () const;
 		void FindPlugins ();
 		void ScanPlugins (const QStringList&);
@@ -161,8 +175,7 @@ namespace LeechCraft
 	signals:
 		void pluginInjected (QObject*);
 		void loadProgress (const QString&);
+
+		void initStageChanged (PluginManager::InitStage);
 	};
-};
-
-#endif
-
+}

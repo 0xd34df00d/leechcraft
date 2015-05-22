@@ -57,12 +57,20 @@ public:
 		 *
 		 * If no object handles the entity, this is a nullptr.
 		 */
-		QObject *Handler_;
+		QObject *Handler_ = nullptr;
 
 		/** The internal ID of the delegated entity local to the handling
 		 * plugin.
 		 */
-		int ID_;
+		int ID_ = 0;
+
+		DelegationResult () = default;
+
+		DelegationResult (QObject *handler, int id)
+		: Handler_ { handler }
+		, ID_ { id }
+		{
+		}
 	};
 
 	virtual ~IEntityManager () {}
