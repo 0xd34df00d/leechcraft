@@ -344,7 +344,7 @@ namespace Snails
 			EnumParts (structure);
 		}
 
-		void MessageStructHandler::HandlePart (const boost::shared_ptr<vmime::net::messagePart>& part)
+		void MessageStructHandler::HandlePart (const vmime::shared_ptr<vmime::net::messagePart>& part)
 		{
 			const auto& type = part->getType ();
 
