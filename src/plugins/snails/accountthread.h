@@ -31,6 +31,7 @@
 
 #include <QThread>
 #include <QFuture>
+#include <vmime/security/cert/X509Certificate.hpp>
 #include "taskqueuemanager.h"
 
 namespace LeechCraft
@@ -41,6 +42,8 @@ namespace Snails
 	class AccountThreadWorker;
 	class TaskQueueManager;
 
+	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
+
 	class AccountThread : public QThread
 	{
 		Q_OBJECT
@@ -48,6 +51,7 @@ namespace Snails
 		Account * const A_;
 		const bool IsListening_;
 		const QString Name_;
+		const CertList_t Certs_;
 
 		AccountThreadWorker *W_;
 
@@ -55,7 +59,8 @@ namespace Snails
 		QList<TaskQueueItem> PendingQueue_;
 		TaskQueueManager *QueueManager_ = nullptr;
 	public:
-		AccountThread (bool isListening, const QString& name, Account *acc);
+		AccountThread (bool isListening, const QString& name,
+				const CertList_t& certs, Account *acc);
 
 		QFuture<void> AddTask (const TaskQueueItem&);
 	protected:

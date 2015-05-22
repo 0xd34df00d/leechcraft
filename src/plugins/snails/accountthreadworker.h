@@ -52,8 +52,9 @@ namespace Snails
 
 	struct Folder;
 
-	typedef std::vector<vmime::shared_ptr<vmime::net::message>> MessageVector_t;
-	typedef vmime::shared_ptr<vmime::net::folder> VmimeFolder_ptr;
+	using MessageVector_t = std::vector<vmime::shared_ptr<vmime::net::message>>;
+	using VmimeFolder_ptr = vmime::shared_ptr<vmime::net::folder>;
+	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
 
 	class AccountThreadWorker : public QObject
 	{
@@ -84,7 +85,7 @@ namespace Snails
 			NoChange
 		};
 	public:
-		AccountThreadWorker (bool, const QString&, Account*);
+		AccountThreadWorker (bool, const QString&, const CertList_t&, Account*);
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
