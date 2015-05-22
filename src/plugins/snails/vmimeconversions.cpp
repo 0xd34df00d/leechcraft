@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	QStringList GetFolderPath (const boost::shared_ptr<vmime::net::folder>& folder)
+	QStringList GetFolderPath (const vmime::shared_ptr<vmime::net::folder>& folder)
 	{
 		QStringList pathList;
 		const auto& path = folder->getFullPath ();
