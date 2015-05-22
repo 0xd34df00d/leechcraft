@@ -718,7 +718,7 @@ namespace LeechCraft
 			const QStringList nameFilters { "*leechcraft_*" };
 #endif
 			result += Util::Map (QDir { path }.entryInfoList (nameFilters, QDir::Files),
-					[] (const QFileInfo& info) { return info.canonicalFilePath (); });
+					&QFileInfo::canonicalFilePath);
 		};
 
 #ifdef Q_OS_WIN32
