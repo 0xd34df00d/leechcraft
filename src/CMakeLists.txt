@@ -84,9 +84,9 @@ if (GPTOOLS_CPU_AND_MEM)
 	set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -ltcmalloc_and_profiler")
 endif ()
 
-option (APPLE_UNBUNDLE "Don't adjust for bundle structure on Mac OS X" OFF)
+option (USE_UNIX_LAYOUT "Install LeechCraft with a UNIX layout on OS X" OFF)
 
-if (UNIX AND (NOT APPLE OR APPLE_UNBUNDLE))
+if (UNIX AND (NOT APPLE OR USE_UNIX_LAYOUT))
 	if (NOT LIBDIR)
 		set (LIBDIR "lib${LIB_SUFFIX}")
 	endif ()
