@@ -76,7 +76,7 @@ Rectangle {
             height: width
             actionIconURL: "image://ThemeIcons/go-previous"
 
-            onTriggered: artistImagesView.decrementCurrentIndex()
+            onTriggered: artistImagesView.moveCurrentIndexLeft()
         }
 
         ActionButton {
@@ -88,7 +88,7 @@ Rectangle {
             height: width
             actionIconURL: "image://ThemeIcons/go-next"
 
-            onTriggered: artistImagesView.incrementCurrentIndex()
+            onTriggered: artistImagesView.moveCurrentIndexRight()
         }
 
         ProgressBar {
@@ -291,19 +291,23 @@ Rectangle {
             }
         }
 
-        ListView {
+        GridView {
             id: artistImagesView
             z: 3
+
+            anchors.leftMargin: 5
+            anchors.left: artistImageThumb.right
+            anchors.rightMargin: 5
             anchors.right: parent.right
-            anchors.top: artistNameLabel.bottom
+            anchors.top: flickableBioText.bottom
+            anchors.topMargin: 5
             anchors.bottom: parent.bottom
-            width: Math.min(192, Math.max(rootRect.width / 8, 64))
 
             model: artistImagesModel
 
+            cellWidth: cellHeight
+            cellHeight: Math.min(128, Math.max(height / 3, 64))
             clip: true
-
-            spacing: 3
 
             keyNavigationWraps: true
 
@@ -313,8 +317,8 @@ Rectangle {
                 id: delegateItem
                 source: thumbURL
 
-                width: artistImagesView.width
-                height: sourceSize.width > 0 ? Math.min(width, sourceSize.height * width / sourceSize.width) : width
+                height: artistImagesView.cellHeight
+                width: sourceSize.height > 0 ? Math.min(height, sourceSize.width * height / sourceSize.height) : height
                 fillMode: Image.PreserveAspectFit
 
                 cache: false
@@ -370,9 +374,9 @@ Rectangle {
             anchors.leftMargin: 5
             anchors.left: artistImageThumb.right
             anchors.rightMargin: 5
-            anchors.right: artistImagesView.left
+            anchors.right: parent.right
             anchors.top: artistNameLabel.bottom
-            anchors.bottom: parent.bottom
+            height: Math.min(parent.height / 3, contentHeight)
 
             contentWidth: width
             contentHeight: shortDescLabel.height + 16
