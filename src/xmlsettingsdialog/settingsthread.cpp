@@ -44,6 +44,7 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
+#include <util/sys/fdguard.h>
 #include "basesettingsmanager.h"
 
 namespace LeechCraft
@@ -74,8 +75,7 @@ namespace LeechCraft
 			FlushRAII (const QString& name)
 			{
 #ifndef Q_OS_WIN32
-				const auto fd = open (name.toUtf8 ().constData (), O_WRONLY | O_APPEND);
-				const auto closeGuard = Util::MakeScopeGuard ([fd] { close (fd); });
+				const Util::FDGuard fd { name.toUtf8 ().constData (), O_WRONLY | O_APPEND };
 
 				struct flock fl;
 				fl.l_whence = SEEK_SET;
@@ -120,8 +120,8 @@ namespace LeechCraft
 
 				SyncGuard_ = Util::MakeScopeGuard ([name, backup]
 						{
-							const auto fd = open (name.toUtf8 ().constData (), O_WRONLY | O_APPEND);
-							if (fd == -1)
+							const Util::FDGuard fd { name.toUtf8 ().constData (), O_WRONLY | O_APPEND };
+							if (!fd)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "cannot open(2) settings file"
