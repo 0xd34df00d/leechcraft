@@ -350,15 +350,18 @@ namespace Metacontacts
 				++i;
 		}
 
-		for (const auto& keyValPair : Util::Stlize (Variant2RealVariant_))
+		for (auto i = Variant2RealVariant_.begin (); i != Variant2RealVariant_.end (); )
 		{
-			const auto& var = keyValPair.first;
-			const auto& pair = keyValPair.second;
+			const auto& var = i.key ();
+			const auto& pair = i.value ();
+
 			if (pair.first == entryObj)
 			{
-				Variant2RealVariant_.remove (var);
 				emit statusChanged ({ SOffline, QString () }, var);
+				i = Variant2RealVariant_.erase (i);
 			}
+			else
+				++i;
 		}
 
 		emit availableVariantsChanged (Variants ());
