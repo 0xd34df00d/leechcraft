@@ -76,7 +76,11 @@ Rectangle {
             }
 
             onAreaExited: closeTooltip()
-            onReleased: closeOnExit = false
+
+            onReleased: {
+                closeOnExit = !closeOnExit;
+                closeTooltip();
+            }
 
             hoverEnabled: true
         }
