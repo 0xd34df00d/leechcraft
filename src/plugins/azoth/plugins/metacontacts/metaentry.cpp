@@ -339,8 +339,7 @@ namespace Metacontacts
 
 	void MetaEntry::PerformRemoval (QObject *entryObj)
 	{
-		auto i = Messages_.begin ();
-		while (i < Messages_.end ())
+		for (auto i = Messages_.begin (); i != Messages_.end (); )
 		{
 			const auto metaMsg = dynamic_cast<MetaMessage*> (*i);
 			const auto origMsg = metaMsg->GetOriginalMessage ();
