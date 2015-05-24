@@ -50,6 +50,9 @@ Rectangle {
             hoverInTimeout: commonHoverInTimeout
 
             onHoverInTimedOut: {
+                if (tooltip != null)
+                    return;
+
                 commonJS.openWindow(rootRect,
                         {
                             "loadModel": CpuLoad_model,
