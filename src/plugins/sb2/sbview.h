@@ -63,8 +63,8 @@ namespace SB2
 
 		void SetDimensions (int);
 
-		QSize minimumSizeHint () const;
-		QSize sizeHint () const;
+		QSize minimumSizeHint () const override;
+		QSize sizeHint () const override;
 	protected:
 #if QT_VERSION >= 0x050000
 		void enterEvent (QEvent*) override;
