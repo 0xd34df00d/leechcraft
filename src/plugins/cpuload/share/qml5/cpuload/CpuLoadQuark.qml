@@ -65,13 +65,14 @@ Rectangle {
                         function(t) { tooltip = t; });
             }
 
-            onAreaExited: {
+            function closeTooltip() {
                 if (tooltip != null && closeOnExit) {
                     tooltip.destroy();
                     tooltip = null;
                 }
             }
 
+            onAreaExited: closeTooltip()
             onReleased: closeOnExit = false
 
             hoverEnabled: true
