@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "accountconfigdialog.h"
+#include <numeric>
 #include <QMenu>
 
 namespace LeechCraft

@@ -24,7 +24,7 @@ target_link_libraries (leechcraft_pierre
 	)
 install (TARGETS leechcraft_pierre DESTINATION ${LC_PLUGINS_DEST})
 
-if (NOT APPLE_UNBUNDLE)
+if (NOT USE_UNIX_LAYOUT)
 	install (DIRECTORY data/ DESTINATION ${LC_BINDIR}/..)
 endif ()
 

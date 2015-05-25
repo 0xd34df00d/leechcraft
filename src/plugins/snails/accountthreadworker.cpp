@@ -35,9 +35,9 @@
 #include <QMutexLocker>
 #include <QUrl>
 #include <QFile>
-#include <QSslSocket>
 #include <QtDebug>
 #include <QTimer>
+#include <QCryptographicHash>
 #include <vmime/security/defaultAuthenticator.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
@@ -151,7 +151,7 @@ namespace Snails
 	}
 
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
-			const QString& threadName, Account *parent)
+			const QString& threadName, const CertList_t& certs, Account *parent)
 	: A_ (parent)
 	, NoopTimer_ (new QTimer (this))
 	, IsListening_ (isListening)
@@ -162,14 +162,7 @@ namespace Snails
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
-		std::vector<boost::shared_ptr<vmime::security::cert::X509Certificate>> vCerts;
-		for (const auto& sysCert : QSslSocket::systemCaCertificates ())
-		{
-			const auto& der = sysCert.toDer ();
-			const auto bytes = reinterpret_cast<const vmime::byte_t*> (der.constData ());
-			vCerts.push_back (vmime::security::cert::X509Certificate::import (bytes, der.size ()));
-		}
-		CertVerifier_->setX509RootCAs (vCerts);
+		CertVerifier_->setX509RootCAs (certs);
 
 		if (IsListening_)
 			connect (ChangeListener_,
@@ -344,7 +337,7 @@ namespace Snails
 			EnumParts (structure);
 		}
 
-		void MessageStructHandler::HandlePart (const boost::shared_ptr<vmime::net::messagePart>& part)
+		void MessageStructHandler::HandlePart (const vmime::shared_ptr<vmime::net::messagePart>& part)
 		{
 			const auto& type = part->getType ();
 

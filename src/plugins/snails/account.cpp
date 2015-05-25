@@ -34,6 +34,7 @@
 #include <QInputDialog>
 #include <QMutex>
 #include <QStandardItemModel>
+#include <QSslSocket>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/xpc/passutils.h>
@@ -56,11 +57,26 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	namespace
+	{
+		CertList_t GetCerts ()
+		{
+			std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> certs;
+			for (const auto& sysCert : QSslSocket::systemCaCertificates ())
+			{
+				const auto& der = sysCert.toDer ();
+				const auto bytes = reinterpret_cast<const vmime::byte_t*> (der.constData ());
+				certs.push_back (vmime::security::cert::X509Certificate::import (bytes, der.size ()));
+			}
+			return certs;
+		}
+	}
+
 	Account::Account (QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
-	, Thread_ (new AccountThread (true, "OpThread", this))
-	, MessageFetchThread_ (new AccountThread (false, "MessageFetchThread", this))
+	, Thread_ (new AccountThread (true, "OpThread", GetCerts (), this))
+	, MessageFetchThread_ (new AccountThread (false, "MessageFetchThread", GetCerts (), this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, FolderManager_ (new AccountFolderManager (this))
