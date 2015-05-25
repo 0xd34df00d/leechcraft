@@ -141,8 +141,8 @@ namespace LeechCraft
  * their state via that interface and save that information.
  *
  * After restarting LeechCraft (or when requesting reopening a recently
- * closed tab), the RecoverTabs method will be called by a tab
- * session manager plugin to recover the needed tabs.
+ * closed tab), the RecoverTabs() method will be called by a tab session
+ * manager plugin to recover the needed tabs.
  *
  * @sa IRecoverableTab, LeechCraft::TabRecoverInfo, IHaveTabs
  */
