@@ -29,7 +29,10 @@
 
 #pragma once
 
+#ifndef Q_MOC_RUN
 #include <boost/bimap.hpp>
+#endif
+
 #include <QObject>
 #include <QStringList>
 #include <QMultiMap>
