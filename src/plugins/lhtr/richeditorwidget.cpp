@@ -430,7 +430,7 @@ namespace LHTR
 
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
-		auto expanded = ExpandCustomTags (html);
+		auto expanded = ExpandCustomTags (html, ExpandMode::PartialHTML);
 
 		expanded.replace ('\n', "\\n");
 		expanded.replace ('\'', "\\'");
