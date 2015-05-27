@@ -645,7 +645,7 @@ namespace LHTR
 
 	namespace
 	{
-		void TryFixHTML (QString& html)
+		void TryFixHTML (QString& html, bool prependDoctype)
 		{
 #ifdef WITH_HTMLTIDY
 			TidyBuffer output {};
@@ -700,7 +700,7 @@ namespace LHTR
 			html = QString::fromUtf8 (reinterpret_cast<char*> (output.bp));
 #endif
 
-			if (!html.startsWith ("<!DOCTYPE "))
+			if (prependDoctype && !html.startsWith ("<!DOCTYPE "))
 			{
 				html.prepend ("	\"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
 				html.prepend ("<!DOCTYPE html PUBLIC");
@@ -710,7 +710,7 @@ namespace LHTR
 
 	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
 	{
-		TryFixHTML (html);
+		TryFixHTML (html, mode == ExpandMode::FullHTML);
 		html.remove ('\n');
 
 		QDomDocument doc;
