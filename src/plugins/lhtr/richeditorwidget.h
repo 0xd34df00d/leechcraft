@@ -99,7 +99,12 @@ namespace LHTR
 
 		void OpenFindReplace (bool findOnly);
 
-		QString ExpandCustomTags (QString) const;
+		enum class ExpandMode
+		{
+			FullHTML,
+			PartialHTML
+		};
+		QString ExpandCustomTags (QString, ExpandMode = ExpandMode::FullHTML) const;
 		QString RevertCustomTags () const;
 
 		void SyncHTMLToView () const;

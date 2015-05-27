@@ -708,7 +708,7 @@ namespace LHTR
 		}
 	}
 
-	QString RichEditorWidget::ExpandCustomTags (QString html) const
+	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
 	{
 		TryFixHTML (html);
 		html.remove ('\n');
