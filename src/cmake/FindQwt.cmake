@@ -12,6 +12,7 @@ find_path (QWT_INCLUDE_DIRS
 	/usr/include/qwt-qt4
 	/usr/include/qwt6
 	/usr/include/qwt
+	/usr/include/qt5/qwt
 	/usr/local/lib/qwt.framework/Headers
 )
 
@@ -25,7 +26,7 @@ if (NOT USE_QT5)
 	)
 else ()
 	find_library (QWT_LIBRARIES
-		NAMES qwt6-qt5
+		NAMES qwt6-qt5 qwt-qt5
 		PATHS
 		/usr/local/lib
 		/usr/lib
