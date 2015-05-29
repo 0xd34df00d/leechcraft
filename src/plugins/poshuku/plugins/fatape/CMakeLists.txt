@@ -33,4 +33,4 @@ target_link_libraries (leechcraft_poshuku_fatape
 install (TARGETS leechcraft_poshuku_fatape DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukufatapesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_poshuku_fatape Widgets)
+FindQtLibs (leechcraft_poshuku_fatape Widgets WebKitWidgets)

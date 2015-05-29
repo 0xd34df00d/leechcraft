@@ -46,4 +46,4 @@ target_link_libraries (leechcraft_poshuku_cleanweb
 install (TARGETS leechcraft_poshuku_cleanweb DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukucleanwebsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_poshuku_cleanweb Concurrent Widgets)
+FindQtLibs (leechcraft_poshuku_cleanweb Concurrent Widgets WebKitWidgets Xml)

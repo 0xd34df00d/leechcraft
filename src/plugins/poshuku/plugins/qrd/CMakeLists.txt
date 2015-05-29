@@ -27,4 +27,4 @@ target_link_libraries (leechcraft_poshuku_qrd
 install (TARGETS leechcraft_poshuku_qrd DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES poshukuqrdsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_poshuku_qrd Core)
+FindQtLibs (leechcraft_poshuku_qrd Core WebKitWidgets)
