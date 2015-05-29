@@ -41,4 +41,4 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_poshuku_onlinebookmarks_readitlater Widgets)
+FindQtLibs (leechcraft_poshuku_onlinebookmarks_readitlater Widgets Network)
