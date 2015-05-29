@@ -40,7 +40,7 @@ target_link_libraries (leechcraft_azoth_mucommands
 	)
 install (TARGETS leechcraft_azoth_mucommands DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_azoth_mucommands Core Xml)
+FindQtLibs (leechcraft_azoth_mucommands Core Xml Widgets)
 
 if (ENABLE_AZOTH_MUCOMMANDS_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})

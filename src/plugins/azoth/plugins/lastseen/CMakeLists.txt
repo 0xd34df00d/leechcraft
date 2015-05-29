@@ -29,4 +29,4 @@ target_link_libraries (leechcraft_azoth_lastseen
 	)
 install (TARGETS leechcraft_azoth_lastseen DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_azoth_lastseen Concurrent)
+FindQtLibs (leechcraft_azoth_lastseen Concurrent Widgets)
