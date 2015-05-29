@@ -30,4 +30,4 @@ install (TARGETS leechcraft_azoth_birthdaynotifier DESTINATION ${LC_PLUGINS_DEST
 install (FILES azothbirthdaynotifiersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${BIRTHDAYNOTIFIER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
-FindQtLibs (leechcraft_azoth_birthdaynotifier Core)
+FindQtLibs (leechcraft_azoth_birthdaynotifier Core Widgets)

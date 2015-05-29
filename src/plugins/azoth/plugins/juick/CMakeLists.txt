@@ -28,4 +28,4 @@ target_link_libraries (leechcraft_azoth_juick
 	)
 install (TARGETS leechcraft_azoth_juick DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_azoth_juick Core)
+FindQtLibs (leechcraft_azoth_juick Core Widgets)

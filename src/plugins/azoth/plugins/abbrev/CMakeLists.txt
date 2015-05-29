@@ -26,4 +26,4 @@ target_link_libraries (leechcraft_azoth_abbrev
 	)
 install (TARGETS leechcraft_azoth_abbrev DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_azoth_abbrev Core)
+FindQtLibs (leechcraft_azoth_abbrev Core Widgets)

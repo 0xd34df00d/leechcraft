@@ -29,4 +29,4 @@ target_link_libraries (leechcraft_azoth_shx
 install (TARGETS leechcraft_azoth_shx DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothshxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_shx Core)
+FindQtLibs (leechcraft_azoth_shx Core Widgets)
