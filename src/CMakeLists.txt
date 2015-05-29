@@ -860,7 +860,14 @@ if (NOT DEFINED LEECHCRAFT_VERSION)
 endif ()
 
 configure_file (config.h.in config.h)
-configure_file (FindLeechCraft.cmake.in FindLeechCraft.cmake @ONLY)
+
+if (USE_QT5)
+	configure_file (FindLeechCraft.cmake.in FindLeechCraft-qt5.cmake @ONLY)
+	install (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft-qt5.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
+else ()
+	configure_file (FindLeechCraft.cmake.in FindLeechCraft.cmake @ONLY)
+	install (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
+endif ()
 
 add_subdirectory (core)
 
@@ -887,7 +894,6 @@ install (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmls
 install (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-install (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
 install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 
 install (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
