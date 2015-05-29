@@ -24,4 +24,4 @@ target_link_libraries (leechcraft_poshuku_dcac
 install (TARGETS leechcraft_poshuku_dcac DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukudcacsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_poshuku_dcac Widgets)
+FindQtLibs (leechcraft_poshuku_dcac Widgets WebKitWidgets)

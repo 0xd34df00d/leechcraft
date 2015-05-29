@@ -20,4 +20,4 @@ target_link_libraries (leechcraft_poshuku_autosearch
 	)
 install (TARGETS leechcraft_poshuku_autosearch DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_poshuku_autosearch Core)
+FindQtLibs (leechcraft_poshuku_autosearch Core Network Xml Widgets)

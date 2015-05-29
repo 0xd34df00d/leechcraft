@@ -25,4 +25,4 @@ target_link_libraries (leechcraft_poshuku_speeddial
 install (TARGETS leechcraft_poshuku_speeddial DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukuspeeddialsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_poshuku_speeddial Concurrent)
+FindQtLibs (leechcraft_poshuku_speeddial Concurrent Widgets WebKitWidgets)

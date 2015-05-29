@@ -21,4 +21,4 @@ target_link_libraries (leechcraft_poshuku_filescheme
 	)
 install (TARGETS leechcraft_poshuku_filescheme DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_poshuku_filescheme Network)
+FindQtLibs (leechcraft_poshuku_filescheme Network Widgets)

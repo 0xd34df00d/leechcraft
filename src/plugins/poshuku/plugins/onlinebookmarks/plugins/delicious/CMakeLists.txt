@@ -34,4 +34,4 @@ target_link_libraries (leechcraft_poshuku_onlinebookmarks_delicious
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_delicious DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_poshuku_onlinebookmarks_delicious Widgets)
+FindQtLibs (leechcraft_poshuku_onlinebookmarks_delicious Widgets Network)
