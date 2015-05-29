@@ -28,4 +28,4 @@ install (TARGETS leechcraft_azoth_modnok DESTINATION ${LC_PLUGINS_DEST})
 install (PROGRAMS lc_azoth_modnok_latexconvert.sh DESTINATION ${LC_SHARE_DEST}/azoth)
 install (FILES azothmodnoksettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_modnok Core)
+FindQtLibs (leechcraft_azoth_modnok Core Widgets)

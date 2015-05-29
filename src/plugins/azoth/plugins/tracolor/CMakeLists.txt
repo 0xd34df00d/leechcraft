@@ -32,5 +32,5 @@ target_link_libraries (leechcraft_azoth_tracolor
 install (TARGETS leechcraft_azoth_tracolor DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothtracolorsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_tracolor Core)
+FindQtLibs (leechcraft_azoth_tracolor Core Widgets)
 

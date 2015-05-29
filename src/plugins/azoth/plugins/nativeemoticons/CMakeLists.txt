@@ -33,4 +33,4 @@ target_link_libraries (leechcraft_azoth_nativeemoticons
 install (TARGETS leechcraft_azoth_nativeemoticons DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
 
-FindQtLibs (leechcraft_azoth_nativeemoticons Xml)
+FindQtLibs (leechcraft_azoth_nativeemoticons Xml Widgets)

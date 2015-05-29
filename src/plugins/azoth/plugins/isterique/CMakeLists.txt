@@ -29,4 +29,4 @@ target_link_libraries (leechcraft_azoth_isterique
 install (TARGETS leechcraft_azoth_isterique DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothisteriquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_isterique Core)
+FindQtLibs (leechcraft_azoth_isterique Core Widgets)

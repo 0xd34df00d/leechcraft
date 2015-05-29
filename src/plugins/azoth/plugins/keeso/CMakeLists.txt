@@ -24,4 +24,4 @@ target_link_libraries (leechcraft_azoth_keeso
 	)
 install (TARGETS leechcraft_azoth_keeso DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_azoth_keeso Core)
+FindQtLibs (leechcraft_azoth_keeso Core Widgets)

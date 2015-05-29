@@ -27,4 +27,4 @@ target_link_libraries (leechcraft_azoth_hili
 install (TARGETS leechcraft_azoth_hili DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothhilisettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_hili Core)
+FindQtLibs (leechcraft_azoth_hili Core Widgets)
