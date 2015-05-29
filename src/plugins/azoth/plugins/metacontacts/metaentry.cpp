@@ -479,8 +479,8 @@ namespace Metacontacts
 
 	void MetaEntry::checkRemovedCLItems (const QList<QObject*>& objs)
 	{
-		QList<QObject*> leave = AvailableRealEntries_;
-		Q_FOREACH (QObject *obj, objs)
+		auto leave = AvailableRealEntries_;
+		for (const auto obj : objs)
 			leave.removeAll (obj);
 
 		if (leave.size () != AvailableRealEntries_.size ())
