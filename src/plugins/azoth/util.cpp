@@ -32,6 +32,7 @@
 #include <QString>
 #include <QWizard>
 #include <QList>
+#include <QMessageBox>
 #include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
@@ -234,6 +235,28 @@ namespace Azoth
 			participantsList << part->GetEntryName ();
 		}
 		return participantsList;
+	}
+
+	void RemoveAccount (IAccount *acc)
+	{
+		if (QMessageBox::question (nullptr,
+					"LeechCraft",
+					QObject::tr ("Are you sure you want to remove the account %1?")
+						.arg (acc->GetAccountName ()),
+					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+			return;
+
+		auto protoObj = acc->GetParentProtocol ();
+		auto proto = qobject_cast<IProtocol*> (protoObj);
+		if (!proto)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "parent protocol for"
+					<< acc->GetAccountID ()
+					<< "doesn't implement IProtocol";
+			return;
+		}
+		proto->RemoveAccount (acc->GetQObject ());
 	}
 }
 }

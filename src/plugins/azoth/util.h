@@ -61,5 +61,7 @@ namespace Azoth
 	QString GetNickColor (const QString& nick, const QList<QColor>& colors);
 
 	QStringList GetMucParticipants (const QString& entryId);
+
+	void RemoveAccount (IAccount*);
 }
 }

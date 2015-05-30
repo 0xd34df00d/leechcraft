@@ -66,6 +66,7 @@
 #include "xmlsettingsmanager.h"
 #include "serverhistorywidget.h"
 #include "resourcesmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -669,28 +670,7 @@ namespace Azoth
 
 	void AccountActionsManager::handleAccountRemove ()
 	{
-		IAccount *acc = GetAccountFromSender (sender (), Q_FUNC_INFO);
-		if (!acc)
-			return;
-
-		if (QMessageBox::question (nullptr,
-					"LeechCraft",
-					tr ("Are you sure you want to remove the account %1?")
-						.arg ("<em>" + acc->GetAccountName () + "</em>"),
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
-
-		auto protoObj = acc->GetParentProtocol ();
-		auto proto = qobject_cast<IProtocol*> (protoObj);
-		if (!proto)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "parent protocol for"
-					<< acc->GetAccountID ()
-					<< "doesn't implement IProtocol";
-			return;
-		}
-		proto->RemoveAccount (acc->GetQObject ());
+		RemoveAccount (GetAccountFromSender (sender (), Q_FUNC_INFO));
 	}
 
 	void AccountActionsManager::consoleRemoved (QWidget *w)

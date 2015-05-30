@@ -295,26 +295,7 @@ namespace Azoth
 		if (!index.isValid ())
 			return;
 
-		auto acc = index.data (Role::AccObj).value<IAccount*> ();
-
-		if (QMessageBox::question (this,
-					"LeechCraft",
-					tr ("Are you sure you want to remove the account %1?")
-						.arg (acc->GetAccountName ()),
-					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-			return;
-
-		auto protoObj = acc->GetParentProtocol ();
-		auto proto = qobject_cast<IProtocol*> (protoObj);
-		if (!proto)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "parent protocol for"
-					<< acc->GetAccountID ()
-					<< "doesn't implement IProtocol";
-			return;
-		}
-		proto->RemoveAccount (acc->GetQObject ());
+		RemoveAccount (index.data (Role::AccObj).value<IAccount*> ());
 	}
 
 	void AccountsListWidget::on_ResetStyles__released ()
