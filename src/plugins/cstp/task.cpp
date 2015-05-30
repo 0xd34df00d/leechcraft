@@ -384,7 +384,7 @@ namespace CSTP
 	{
 		QString GetFilenameAscii (const QString& contdis)
 		{
-			const QByteArray start { "filename=\"" };
+			const QByteArray start { "filename=" };
 			int startPos = contdis.indexOf (start) + start.size ();
 			bool ignoreNextQuote = false;
 			QString result;
@@ -442,8 +442,7 @@ namespace CSTP
 
 		const auto& contdis = Reply_->rawHeader ("Content-Disposition");
 		qDebug () << Q_FUNC_INFO << contdis;
-		if (!contdis.size () ||
-				!contdis.contains ("filename=\""))
+		if (!contdis.contains ("filename="))
 			return;
 
 		const auto& result = GetFilename (contdis);
