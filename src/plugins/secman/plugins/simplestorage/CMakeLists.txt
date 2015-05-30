@@ -18,4 +18,4 @@ target_link_libraries (leechcraft_secman_simplestorage
 	)
 install (TARGETS leechcraft_secman_simplestorage DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_secman_simplestorage Core)
+FindQtLibs (leechcraft_secman_simplestorage Core Widgets)
