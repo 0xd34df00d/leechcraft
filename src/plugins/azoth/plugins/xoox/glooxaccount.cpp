@@ -75,6 +75,7 @@
 #include "roomhandler.h"
 #include "clientconnectionerrormgr.h"
 #include "addtoblockedrunner.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -690,8 +691,6 @@ namespace Xoox
 		if (newPass.isEmpty ())
 			return;
 
-		const QString nsRegister = "jabber:iq:register";
-
 		const auto& jid = SettingsHolder_->GetJID ();
 		const auto aPos = jid.indexOf ('@');
 
@@ -705,7 +704,7 @@ namespace Xoox
 
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
-		queryElem.setAttribute ("xmlns", nsRegister);
+		queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
 		queryElem.appendChild (userElem);
 		queryElem.appendChild (passElem);
 
