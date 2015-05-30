@@ -44,8 +44,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const QString NsRegister = "jabber:iq:register";
-
 	RegFormHandlerWidget::RegFormHandlerWidget (QXmppClient *client, QWidget *parent)
 	: QWidget (parent)
 	, Client_ (client)
@@ -119,7 +117,7 @@ namespace Xoox
 
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
-		queryElem.setAttribute ("xmlns", NsRegister);
+		queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
 
 		QXmppIq iq;
 		iq.setExtensions ({ queryElem });
@@ -135,7 +133,7 @@ namespace Xoox
 	{
 		QXmppElement queryElem;
 		queryElem.setTagName ("query");
-		queryElem.setAttribute ("xmlns", NsRegister);
+		queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
 
 		switch (FormType_)
 		{
@@ -203,7 +201,7 @@ namespace Xoox
 		QXmppElement queryElem;
 		for (const auto& elem : iq.extensions ())
 			if (elem.tagName () == "query" &&
-					elem.attribute ("xmlns") == NsRegister)
+					elem.attribute ("xmlns") == XooxUtil::NsRegister)
 			{
 				queryElem = elem;
 				break;
@@ -219,7 +217,7 @@ namespace Xoox
 		Clear ();
 
 		const auto& formElem = queryElem.firstChildElement ("x");
-		if ((formElem.attribute ("xmlns") == NsRegister ||
+		if ((formElem.attribute ("xmlns") == XooxUtil::NsRegister ||
 					formElem.attribute ("xmlns") == "jabber:x:data") &&
 				formElem.attribute ("type") == "form")
 		{

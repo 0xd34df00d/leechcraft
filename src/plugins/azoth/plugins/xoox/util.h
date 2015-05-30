@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_UTIL_H
+#pragma once
+
 #include <QString>
 #include <QXmppMucIq.h>
 #include <interfaces/azoth/azothcommon.h>
@@ -44,11 +44,15 @@ namespace LeechCraft
 namespace Azoth
 {
 struct EntryStatus;
+
 namespace Xoox
 {
 class EntryBase;
+
 namespace XooxUtil
 {
+	extern const QString NsRegister;
+
 	QString RoleToString (const QXmppMucItem::Role&);
 	QString AffiliationToString (const QXmppMucItem::Affiliation&);
 
@@ -72,5 +76,3 @@ namespace XooxUtil
 }
 }
 }
-
-#endif

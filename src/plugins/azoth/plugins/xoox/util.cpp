@@ -51,6 +51,8 @@ namespace Xoox
 {
 namespace XooxUtil
 {
+	const QString NsRegister { "jabber:iq:register" };
+
 	QString RoleToString (const QXmppMucItem::Role& role)
 	{
 		switch (role)
