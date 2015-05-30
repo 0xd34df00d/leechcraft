@@ -724,6 +724,24 @@ namespace Xoox
 				});
 	}
 
+	namespace
+	{
+		QXmppIq MakeDeregisterIq ()
+		{
+			QXmppElement removeElem;
+			removeElem.setTagName ("remove");
+
+			QXmppElement queryElem;
+			queryElem.setTagName ("query");
+			queryElem.setAttribute ("xmlns", XooxUtil::NsRegister);
+			queryElem.appendChild (removeElem);
+
+			QXmppIq iq { QXmppIq::Set };
+			iq.setExtensions ({ queryElem });
+			return iq;
+		}
+	}
+
 	void GlooxAccount::DeregisterAccount ()
 	{
 	}
