@@ -50,6 +50,8 @@ namespace Azoth
 		virtual bool SupportsFeature (Feature) const = 0;
 
 		virtual void UpdateServerPassword (const QString& newPass) = 0;
+
+		virtual void DeregisterAccount () = 0;
 	protected:
 		virtual void serverPasswordUpdated (const QString&) = 0;
 	};

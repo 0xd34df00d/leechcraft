@@ -725,6 +725,10 @@ namespace Xoox
 				});
 	}
 
+	void GlooxAccount::DeregisterAccount ()
+	{
+	}
+
 	bool GlooxAccount::HasFeature (ServerHistoryFeature feature) const
 	{
 		auto infoStorage = ClientConnection_->GetServerInfoStorage ();

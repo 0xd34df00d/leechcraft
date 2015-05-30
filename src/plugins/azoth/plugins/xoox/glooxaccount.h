@@ -232,6 +232,7 @@ namespace Xoox
 		// IRegManagedAccount
 		bool SupportsFeature (Feature) const;
 		void UpdateServerPassword (const QString& newPass);
+		void DeregisterAccount ();
 
 		// IHaveServerHistory
 		bool HasFeature (ServerHistoryFeature) const;
