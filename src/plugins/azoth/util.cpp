@@ -239,6 +239,9 @@ namespace Azoth
 
 	void RemoveAccount (IAccount *acc)
 	{
+		if (!acc)
+			return;
+
 		if (QMessageBox::question (nullptr,
 					"LeechCraft",
 					QObject::tr ("Are you sure you want to remove the account %1?")
