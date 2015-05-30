@@ -429,6 +429,8 @@ namespace CSTP
 			auto result = GetFilenameUtf8 (contdis);
 			if (result.isEmpty ())
 				result = GetFilenameAscii (contdis);
+			if (result.startsWith ('"') && result.endsWith ('"'))
+				result = result.mid (result.size () - 2);
 			return result;
 		}
 	}
