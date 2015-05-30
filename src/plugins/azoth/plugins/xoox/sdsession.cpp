@@ -138,7 +138,7 @@ namespace Xoox
 			result << QPair<QByteArray, QString> ("view-vcard", tr ("View VCard..."));
 		if (!info.JID_.isEmpty ())
 			result << QPair<QByteArray, QString> ("add-to-roster", tr ("Add to roster..."));
-		if (info.Caps_.contains ("jabber:iq:register"))
+		if (info.Caps_.contains (XooxUtil::NsRegister))
 			result << QPair<QByteArray, QString> ("register", tr ("Register..."));
 		if (info.Caps_.contains ("http://jabber.org/protocol/commands"))
 			result << QPair<QByteArray, QString> ("execute-ad-hoc", tr ("Execute..."));
@@ -399,7 +399,7 @@ namespace Xoox
 		iq.setTo (jid);
 		QXmppElement elem;
 		elem.setTagName ("query");
-		elem.setAttribute ("xmlns", "jabber:iq:register");
+		elem.setAttribute ("xmlns", XooxUtil::NsRegister);
 		iq.setExtensions (QXmppElementList () << elem);
 
 		QPointer<SDSession> safeThis (this);
@@ -442,7 +442,7 @@ namespace Xoox
 		Q_FOREACH (const QXmppElement& elem, iq.extensions ())
 		{
 			if (elem.tagName () != "query" ||
-					elem.attribute ("xmlns") != "jabber:iq:register")
+					elem.attribute ("xmlns") != XooxUtil::NsRegister)
 				continue;
 
 			QXmppElement x = elem.firstChildElement ("x");
@@ -476,7 +476,7 @@ namespace Xoox
 		regIq.setTo (iq.from ());
 		QXmppElement elem;
 		elem.setTagName ("query");
-		elem.setAttribute ("xmlns", "jabber:iq:register");
+		elem.setAttribute ("xmlns", XooxUtil::NsRegister);
 		elem.appendChild (XooxUtil::Form2XmppElem (form));
 
 		regIq.setExtensions (QXmppElementList () << elem);
