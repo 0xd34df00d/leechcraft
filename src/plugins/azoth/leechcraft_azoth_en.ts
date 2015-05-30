@@ -444,12 +444,12 @@
 <context>
     <name>LeechCraft::Azoth</name>
     <message>
-        <location filename="core.cpp" line="208"/>
+        <location filename="core.cpp" line="209"/>
         <source>Smile pack</source>
         <translation>Smile pack</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="209"/>
+        <location filename="core.cpp" line="210"/>
         <source>Chat style</source>
         <translation>Chat style</translation>
     </message>
@@ -558,134 +558,129 @@
 <context>
     <name>LeechCraft::Azoth::AccountActionsManager</name>
     <message>
-        <location filename="accountactionsmanager.cpp" line="79"/>
+        <location filename="accountactionsmanager.cpp" line="80"/>
         <source>Join conference...</source>
         <translation>Join conference...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="80"/>
+        <location filename="accountactionsmanager.cpp" line="81"/>
         <source>Manage bookmarks...</source>
         <translation>Manage bookmarks...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="81"/>
+        <location filename="accountactionsmanager.cpp" line="82"/>
         <source>Add contact...</source>
         <translation>Add contact...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="82"/>
+        <location filename="accountactionsmanager.cpp" line="83"/>
         <source>Chat with non-CL contact</source>
         <translation>Chat with non-CL contact</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="83"/>
+        <location filename="accountactionsmanager.cpp" line="84"/>
         <source>Open server history...</source>
         <translation>Open server history...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="84"/>
+        <location filename="accountactionsmanager.cpp" line="85"/>
         <source>Configure server history...</source>
         <translation>Configure server history...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="85"/>
+        <location filename="accountactionsmanager.cpp" line="86"/>
         <source>View microblogs...</source>
         <translation>View microblogs...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="86"/>
+        <location filename="accountactionsmanager.cpp" line="87"/>
         <source>Set activity...</source>
         <translation>Set activity...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="87"/>
+        <location filename="accountactionsmanager.cpp" line="88"/>
         <source>Set mood...</source>
         <translation>Set mood...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="88"/>
+        <location filename="accountactionsmanager.cpp" line="89"/>
         <source>Set location...</source>
         <translation>Set location...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="89"/>
+        <location filename="accountactionsmanager.cpp" line="90"/>
         <source>Service discovery...</source>
         <translation>Service discovery...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="90"/>
+        <location filename="accountactionsmanager.cpp" line="91"/>
         <source>Console...</source>
         <translation>Console...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="91"/>
+        <location filename="accountactionsmanager.cpp" line="92"/>
         <source>Update server password...</source>
         <translation>Update server password...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="92"/>
+        <location filename="accountactionsmanager.cpp" line="93"/>
         <source>Rename...</source>
         <translation>Rename...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="93"/>
+        <location filename="accountactionsmanager.cpp" line="94"/>
         <source>Modify...</source>
         <translation>Modify...</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="94"/>
+        <location filename="accountactionsmanager.cpp" line="95"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="103"/>
+        <location filename="accountactionsmanager.cpp" line="104"/>
         <source>Updates the account&apos;s password on the server</source>
         <translation>Updates the account&apos;s password on the server</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="308"/>
+        <location filename="accountactionsmanager.cpp" line="309"/>
         <source>Join bookmarked conference</source>
         <translation>Join bookmarked conference</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="474"/>
+        <location filename="accountactionsmanager.cpp" line="475"/>
         <source>Open chat with non-roster contact</source>
         <translation>Open chat with non-roster contact</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="475"/>
+        <location filename="accountactionsmanager.cpp" line="476"/>
         <source>Enter ID of the contact you wish to open chat with:</source>
         <translation>Enter ID of the contact you wish to open chat with:</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="489"/>
+        <location filename="accountactionsmanager.cpp" line="490"/>
         <source>Error opening chat: %1</source>
         <translation>Error opening chat: %1</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="631"/>
+        <location filename="accountactionsmanager.cpp" line="632"/>
         <source>Change password</source>
         <translation>Change password</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="632"/>
+        <location filename="accountactionsmanager.cpp" line="633"/>
         <source>Enter new password for account %1 (the password will be updated on server):</source>
         <translation>Enter new password for account %1 (the password will be updated on server):</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="650"/>
+        <location filename="accountactionsmanager.cpp" line="651"/>
         <source>Rename account</source>
         <translation>Rename account</translation>
     </message>
     <message>
-        <location filename="accountactionsmanager.cpp" line="651"/>
+        <location filename="accountactionsmanager.cpp" line="652"/>
         <source>Enter new name for account %1:</source>
         <translation>Enter new name for account %1:</translation>
-    </message>
-    <message>
-        <location filename="accountactionsmanager.cpp" line="678"/>
-        <source>Are you sure you want to remove the account %1?</source>
-        <translation>Are you sure you want to remove the account %1?</translation>
     </message>
 </context>
 <context>
@@ -721,250 +716,258 @@
         <translation>MUC variant</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="271"/>
+        <location filename="accountslistwidget.cpp" line="275"/>
         <source>The account %1 doesn&apos;t support encryption.</source>
         <translation>The account %1 doesn&apos;t support encryption.</translation>
     </message>
     <message>
-        <location filename="accountslistwidget.cpp" line="276"/>
+        <location filename="accountslistwidget.cpp" line="280"/>
         <source>Please select new PGP key for the account %1.</source>
         <translation>Please select new PGP key for the account %1.</translation>
-    </message>
-    <message>
-        <location filename="accountslistwidget.cpp" line="298"/>
-        <source>Are you sure you want to remove the account %1?</source>
-        <translation>Are you sure you want to remove the account %1?</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::ActionsManager</name>
     <message>
-        <location filename="actionsmanager.cpp" line="902"/>
+        <location filename="actionsmanager.cpp" line="911"/>
         <source>Enter reason</source>
         <translation>Enter reason</translation>
     </message>
+    <message numerus="yes">
+        <location filename="actionsmanager.cpp" line="932"/>
+        <source>%n entry(ies)</source>
+        <translation>
+            <numerusform>%n entry</numerusform>
+            <numerusform>%n entries</numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="actionsmanager.cpp" line="959"/>
+        <location filename="actionsmanager.cpp" line="983"/>
         <source>Open chat</source>
         <translation>Open chat</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="966"/>
+        <location filename="actionsmanager.cpp" line="990"/>
         <source>Copy full entry ID</source>
         <translation>Copy full entry ID</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="973"/>
+        <location filename="actionsmanager.cpp" line="997"/>
         <source>Draw attention...</source>
         <translation>Draw attention...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="982"/>
+        <location filename="actionsmanager.cpp" line="1006"/>
         <source>Send file...</source>
         <translation>Send file...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="989"/>
+        <location filename="actionsmanager.cpp" line="1013"/>
         <source>Rename</source>
         <translation>Rename</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="997"/>
+        <location filename="actionsmanager.cpp" line="1021"/>
         <source>Change groups...</source>
         <translation>Change groups...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1005"/>
+        <location filename="actionsmanager.cpp" line="1029"/>
         <source>Send directed status...</source>
         <translation>Send directed status...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1013"/>
+        <location filename="actionsmanager.cpp" line="1037"/>
         <source>Authorization</source>
         <translation>Authorization</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1018"/>
+        <location filename="actionsmanager.cpp" line="1042"/>
         <source>Grant</source>
         <translation>Grant</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1022"/>
+        <location filename="actionsmanager.cpp" line="1055"/>
         <source>Grant with reason...</source>
         <translation>Grant with reason...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1026"/>
+        <location filename="actionsmanager.cpp" line="1068"/>
         <source>Revoke</source>
         <translation>Revoke</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1030"/>
+        <location filename="actionsmanager.cpp" line="1081"/>
         <source>Revoke with reason...</source>
         <translation>Revoke with reason...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1034"/>
+        <location filename="actionsmanager.cpp" line="1094"/>
         <source>Unsubscribe</source>
         <translation>Unsubscribe</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1038"/>
+        <location filename="actionsmanager.cpp" line="1107"/>
         <source>Unsubscribe with reason...</source>
         <translation>Unsubscribe with reason...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1042"/>
+        <location filename="actionsmanager.cpp" line="1120"/>
         <source>Rerequest authentication</source>
         <translation>Rerequest authentication</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1046"/>
+        <location filename="actionsmanager.cpp" line="1133"/>
         <source>Rerequest authentication with reason...</source>
         <translation>Rerequest authentication with reason...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1051"/>
+        <location filename="actionsmanager.cpp" line="1150"/>
+        <source>Blacklist...</source>
+        <translation>Blacklist...</translation>
+    </message>
+    <message>
+        <location filename="actionsmanager.cpp" line="1161"/>
         <source>Notify when</source>
         <translation>Notify when</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1057"/>
+        <location filename="actionsmanager.cpp" line="1167"/>
         <source>changes state</source>
         <translation>changes state</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1059"/>
+        <location filename="actionsmanager.cpp" line="1169"/>
         <source>becomes online</source>
         <translation>becomes online</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1063"/>
+        <location filename="actionsmanager.cpp" line="1173"/>
         <source>participant enters the room...</source>
         <translation>participant enters the room...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1069"/>
+        <location filename="actionsmanager.cpp" line="1179"/>
         <source>Open server history...</source>
         <translation>Open server history...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1070"/>
+        <location filename="actionsmanager.cpp" line="1180"/>
         <source>View server history log with this contact</source>
         <translation>View server history log with this contact</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1079"/>
+        <location filename="actionsmanager.cpp" line="1189"/>
         <source>Manage PGP keys...</source>
         <translation>Manage PGP keys...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1088"/>
+        <location filename="actionsmanager.cpp" line="1198"/>
         <source>Share contacts...</source>
         <translation>Share contacts...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1095"/>
+        <location filename="actionsmanager.cpp" line="1205"/>
         <source>Invite to a MUC...</source>
         <translation>Invite to a MUC...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1099"/>
+        <location filename="actionsmanager.cpp" line="1209"/>
         <source>Save avatar...</source>
         <translation>Save avatar...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1103"/>
+        <location filename="actionsmanager.cpp" line="1213"/>
         <source>VCard</source>
         <translation>VCard</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1157"/>
+        <location filename="actionsmanager.cpp" line="1267"/>
         <source>Advanced...</source>
         <translation>Advanced...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1499"/>
+        <location filename="actionsmanager.cpp" line="1560"/>
         <source>Notify when %1 changes state</source>
         <translation>Notify when %1 changes state</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1528"/>
+        <location filename="actionsmanager.cpp" line="1589"/>
         <source>Notify when %1 becomes online</source>
         <translation>Notify when %1 becomes online</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1563"/>
+        <location filename="actionsmanager.cpp" line="1624"/>
         <source>Enter the nick of the participant to alert for:</source>
         <translation>Enter the nick of the participant to alert for:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1570"/>
+        <location filename="actionsmanager.cpp" line="1631"/>
         <source>Notify when %1 joins %2</source>
         <translation>Notify when %1 joins %2</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1171"/>
+        <location filename="actionsmanager.cpp" line="1281"/>
         <source>Add to contact list...</source>
         <translation>Add to contact list...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="657"/>
+        <location filename="actionsmanager.cpp" line="656"/>
         <source>Save avatar</source>
         <translation>Save avatar</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1178"/>
+        <location filename="actionsmanager.cpp" line="1288"/>
         <source>Copy ID</source>
         <translation>Copy ID</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1194"/>
+        <location filename="actionsmanager.cpp" line="1304"/>
         <source>Change nickname...</source>
         <translation>Change nickname…</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1201"/>
+        <location filename="actionsmanager.cpp" line="1311"/>
         <source>Invite...</source>
         <translation>Invite...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1207"/>
+        <location filename="actionsmanager.cpp" line="1317"/>
         <source>Leave</source>
         <translation>Leave</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1215"/>
+        <location filename="actionsmanager.cpp" line="1325"/>
         <source>Reconnect</source>
         <translation>Reconnect</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1221"/>
+        <location filename="actionsmanager.cpp" line="1331"/>
         <source>Add to bookmarks</source>
         <translation>Add to bookmarks</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1227"/>
+        <location filename="actionsmanager.cpp" line="1337"/>
         <source>MUC users...</source>
         <translation>MUC users...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1236"/>
+        <location filename="actionsmanager.cpp" line="1346"/>
         <source>Configure MUC...</source>
         <translation>Configure MUC...</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1245"/>
+        <location filename="actionsmanager.cpp" line="1355"/>
         <source>Authorize</source>
         <translation>Authorize</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1249"/>
+        <location filename="actionsmanager.cpp" line="1359"/>
         <source>Deny authorization</source>
         <translation>Deny authorization</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1255"/>
+        <location filename="actionsmanager.cpp" line="1365"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
@@ -994,32 +997,36 @@
         <translation>Select variant to send directed status to:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="354"/>
+        <location filename="actionsmanager.cpp" line="352"/>
         <source>Enter new nickname:</source>
         <translation>Enter new nickname:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1158"/>
+        <location filename="actionsmanager.cpp" line="1268"/>
         <source>Allows one to set advanced fields like reason or global flag</source>
         <translation>Allows one to set advanced fields like reason or global flag</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1460"/>
+        <location filename="actionsmanager.cpp" line="1048"/>
+        <location filename="actionsmanager.cpp" line="1061"/>
         <source>Enter reason for granting authorization to %1:</source>
         <translation>Enter reason for granting authorization to %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1467"/>
+        <location filename="actionsmanager.cpp" line="1074"/>
+        <location filename="actionsmanager.cpp" line="1087"/>
         <source>Enter reason for revoking authorization from %1:</source>
         <translation>Enter reason for revoking authorization from %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1474"/>
+        <location filename="actionsmanager.cpp" line="1100"/>
+        <location filename="actionsmanager.cpp" line="1113"/>
         <source>Enter reason for unsubscribing from %1:</source>
         <translation>Enter reason for unsubscribing from %1:</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="1481"/>
+        <location filename="actionsmanager.cpp" line="1126"/>
+        <location filename="actionsmanager.cpp" line="1139"/>
         <source>Enter reason for rerequesting authorization from %1:</source>
         <translation>Enter reason for rerequesting authorization from %1:</translation>
     </message>
@@ -1034,12 +1041,12 @@
         <translation>Please select the key for %1 (%2).</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="505"/>
+        <location filename="actionsmanager.cpp" line="503"/>
         <source>Room configuration</source>
         <translation>Room configuration</translation>
     </message>
     <message>
-        <location filename="actionsmanager.cpp" line="571"/>
+        <location filename="actionsmanager.cpp" line="569"/>
         <source>Failed to change %1 for %2 in %3 due to insufficient permissions.</source>
         <translation>Failed to change %1 for %2 in %3 due to insufficient permissions.</translation>
     </message>
@@ -1820,22 +1827,22 @@
 <context>
     <name>LeechCraft::Azoth::Core</name>
     <message>
-        <location filename="core.cpp" line="1032"/>
+        <location filename="core.cpp" line="1049"/>
         <source>Unauthorized users</source>
         <translation>Unauthorized users</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1141"/>
+        <location filename="core.cpp" line="1162"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="508"/>
+        <location filename="core.cpp" line="509"/>
         <source>Please select account to handle URI %1</source>
         <translation>Please select account to handle URI %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1038"/>
+        <location filename="core.cpp" line="1055"/>
         <source>Contacts</source>
         <translation>Contacts</translation>
     </message>
@@ -1860,117 +1867,117 @@
         <translation>from</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1320"/>
+        <location filename="core.cpp" line="1341"/>
         <source>Client went to sleep</source>
         <translation>Client went to sleep</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1426"/>
+        <location filename="core.cpp" line="1447"/>
         <source>Non-human-readable ID of the sender (protocol-specific).</source>
         <translation>Non-human-readable ID of the sender (protocol-specific).</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1413"/>
+        <location filename="core.cpp" line="1434"/>
         <source>Message body</source>
         <translation>Message body</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1414"/>
+        <location filename="core.cpp" line="1435"/>
         <source>Original human-readable message body.</source>
         <translation>Original human-readable message body.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1419"/>
+        <location filename="core.cpp" line="1440"/>
         <source>Sender name</source>
         <translation>Sender name</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1420"/>
+        <location filename="core.cpp" line="1441"/>
         <source>Human-readable name of the sender of the message.</source>
         <translation>Human-readable name of the sender of the message.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1425"/>
+        <location filename="core.cpp" line="1446"/>
         <source>Sender ID</source>
         <translation>Sender ID</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1431"/>
+        <location filename="core.cpp" line="1452"/>
         <source>Sender&apos;s parent entry name</source>
         <translation>Sender&apos;s parent entry name</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1432"/>
+        <location filename="core.cpp" line="1453"/>
         <source>Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant.</source>
         <translation>Human-readable name of the parent entry of the sender of the message, like MUC name for a chat participant.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1437"/>
+        <location filename="core.cpp" line="1458"/>
         <source>Sender&apos;s parent ID</source>
         <translation>Sender&apos;s parent ID</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1438"/>
+        <location filename="core.cpp" line="1459"/>
         <source>Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant.</source>
         <translation>Non-human-readable ID of the parent entry of the sender of the message, like MUC name for a chat participant.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1443"/>
+        <location filename="core.cpp" line="1464"/>
         <source>Sender groups</source>
         <translation>Sender groups</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1444"/>
+        <location filename="core.cpp" line="1465"/>
         <source>Groups to which the sender belongs.</source>
         <translation>Groups to which the sender belongs.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1449"/>
+        <location filename="core.cpp" line="1470"/>
         <source>New status</source>
         <translation>New status</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1450"/>
+        <location filename="core.cpp" line="1471"/>
         <source>The new status string of the contact.</source>
         <translation>The new status string of the contact.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2038"/>
+        <location filename="core.cpp" line="2059"/>
         <source>Nickname conflict</source>
         <translation>Nickname conflict</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2039"/>
+        <location filename="core.cpp" line="2060"/>
         <source>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</source>
         <translation>You have specified a nickname for %1 that&apos;s already used. Would you like to try to join with another nick?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2048"/>
+        <location filename="core.cpp" line="2069"/>
         <source>Enter new nick</source>
         <translation>Enter new nick</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2049"/>
+        <location filename="core.cpp" line="2070"/>
         <source>Enter new nick for joining %1 (%2 is already used):</source>
         <translation>Enter new nick for joining %1 (%2 is already used):</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2075"/>
+        <location filename="core.cpp" line="2096"/>
         <source>You have been kicked from %1. Do you want to rejoin?</source>
         <translation>You have been kicked from %1. Do you want to rejoin?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2077"/>
+        <location filename="core.cpp" line="2098"/>
         <source>You have been kicked from %1: %2. Do you want to rejoin?</source>
         <translation>You have been kicked from %1: %2. Do you want to rejoin?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2100"/>
+        <location filename="core.cpp" line="2121"/>
         <source>You have been banned from %1.</source>
         <translation>You have been banned from %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="2102"/>
+        <location filename="core.cpp" line="2123"/>
         <source>You have been banned from %1: %2.</source>
         <translation>You have been banned from %1: %2.</translation>
     </message>
@@ -2121,12 +2128,12 @@
 <context>
     <name>LeechCraft::Azoth::GroupSendDialog</name>
     <message>
-        <location filename="groupsenddialog.cpp" line="47"/>
+        <location filename="groupsenddialog.cpp" line="46"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="groupsenddialog.cpp" line="47"/>
+        <location filename="groupsenddialog.cpp" line="46"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
@@ -3592,9 +3599,19 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="100"/>
+        <location filename="util.cpp" line="102"/>
         <source>Add account</source>
         <translation>Add account</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="248"/>
+        <source>Are you sure you want to remove the account %1?</source>
+        <translation>Are you sure you want to remove the account %1?</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="257"/>
+        <source>Do you also want to remove %1 from the server?</source>
+        <translation>Do you also want to remove %1 from the server?</translation>
     </message>
 </context>
 <context>
