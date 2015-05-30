@@ -40,6 +40,7 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iregmanagedaccount.h"
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 #include "chattabsmanager.h"
@@ -248,6 +249,18 @@ namespace Azoth
 						.arg (acc->GetAccountName ()),
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
+
+		if (const auto irm = qobject_cast<IRegManagedAccount*> (acc->GetQObject ()))
+			if (irm->SupportsFeature (IRegManagedAccount::Feature::DeregisterAcc) &&
+					QMessageBox::question (nullptr,
+							"LeechCraft",
+							QObject::tr ("Do you also want to remove %1 from the server?")
+								.arg (acc->GetAccountName ()),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+			{
+				irm->DeregisterAccount ();
+				return;
+			}
 
 		auto protoObj = acc->GetParentProtocol ();
 		auto proto = qobject_cast<IProtocol*> (protoObj);
