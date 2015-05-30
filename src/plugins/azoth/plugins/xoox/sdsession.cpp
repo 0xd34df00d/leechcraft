@@ -129,8 +129,8 @@ namespace Xoox
 
 		auto idHasCat = [&info] (const QString& name)
 		{
-			return std::find_if (info.Identities_.begin (), info.Identities_.end (),
-					[&name] (decltype (*info.Identities_.begin ()) id) { return id.category () == name; }) != info.Identities_.end ();
+			return std::any_of (info.Identities_.begin (), info.Identities_.end (),
+					[&name] (decltype (*info.Identities_.begin ()) id) { return id.category () == name; });
 		};
 
 		if (info.Caps_.contains ("vcard-temp") &&
