@@ -36,6 +36,7 @@
 #include <QXmppMucManager.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -744,6 +745,49 @@ namespace Xoox
 
 	void GlooxAccount::DeregisterAccount ()
 	{
+		const auto worker = [this]
+		{
+			ClientConnection_->SendPacketWCallback (MakeDeregisterIq (),
+					[this] (const QXmppIq& reply)
+					{
+						if (reply.type () == QXmppIq::Result)
+							ParentProtocol_->RemoveAccount (this);
+						else
+							qWarning () << Q_FUNC_INFO
+									<< "unable to cancel the registration:"
+									<< reply.type ();
+					});
+		};
+
+		if (GetState ().State_ != SOffline)
+		{
+			worker ();
+			return;
+		}
+
+		ChangeState ({ SOnline, {} });
+		new Util::SlotClosure<Util::ChoiceDeletePolicy>
+		{
+			[this, worker]
+			{
+				switch (GetState ().State_)
+				{
+				case SOffline:
+				case SError:
+				case SConnecting:
+					return Util::ChoiceDeletePolicy::Delete::No;
+				default:
+					break;
+				}
+
+				worker ();
+
+				return Util::ChoiceDeletePolicy::Delete::Yes;
+			},
+			this,
+			SIGNAL (statusChanged (EntryStatus)),
+			this
+		};
 	}
 
 	bool GlooxAccount::HasFeature (ServerHistoryFeature feature) const
