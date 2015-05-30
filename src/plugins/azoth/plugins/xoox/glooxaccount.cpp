@@ -678,7 +678,7 @@ namespace Xoox
 		switch (f)
 		{
 		case Feature::UpdatePass:
-		case Feature::RemoveAcc:
+		case Feature::DeregisterAcc:
 			return true;
 		}
 

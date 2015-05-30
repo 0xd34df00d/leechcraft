@@ -44,7 +44,7 @@ namespace Azoth
 		enum class Feature
 		{
 			UpdatePass,
-			RemoveAcc
+			DeregisterAcc
 		};
 
 		virtual bool SupportsFeature (Feature) const = 0;
