@@ -50,7 +50,7 @@ namespace HotSensors
 	{
 		Util::InstallTranslator ("hotsensors");
 
-		HistoryMgr_ = std::make_shared<HistoryManager> ();
+		HistoryMgr_ = std::make_unique<HistoryManager> ();
 
 #ifdef Q_OS_LINUX
 		SensorsMgr_ = std::make_shared<LmSensorsBackend> ();
@@ -64,7 +64,7 @@ namespace HotSensors
 					HistoryMgr_.get (),
 					SLOT (handleReadings (Readings_t)));
 
-		PlotMgr_ = std::make_shared<PlotManager> (proxy);
+		PlotMgr_ = std::make_unique<PlotManager> (proxy);
 		connect (HistoryMgr_.get (),
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),
