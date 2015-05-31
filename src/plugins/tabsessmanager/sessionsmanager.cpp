@@ -202,6 +202,18 @@ namespace TabSessManager
 					<< GetSessionProps (tab)
 					<< windowIndex;
 		}
+
+		void WriteSingleTab (QDataStream& str, int windowIndex,
+				QObject *tab, const TabClassInfo& tc, IInfo *plugin)
+		{
+			qDebug () << Q_FUNC_INFO;
+			str << plugin->GetUniqueID ()
+					<< tc.TabClass_
+					<< tc.VisibleName_
+					<< tc.Icon_.pixmap (32, 32)
+					<< GetSessionProps (tab)
+					<< windowIndex;
+		}
 	}
 
 	QByteArray SessionsManager::GetCurrentSession () const
