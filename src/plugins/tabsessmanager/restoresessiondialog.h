@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_TABSESSMANAGER_RESTORESESSIONDIALOG_H
-#define PLUGINS_TABSESSMANAGER_RESTORESESSIONDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include "ui_restoresessiondialog.h"
 #include "recinfo.h"
@@ -45,8 +45,8 @@ namespace TabSessManager
 	public:
 		RestoreSessionDialog (QWidget* = 0);
 
-		void SetPages (const QHash<QObject*, QList<RecInfo>>&);
-		QHash<QObject*, QList<RecInfo>> GetPages () const;
+		void SetTabs (const QHash<QObject*, QList<RecInfo>>&);
+		QHash<QObject*, QList<RecInfo>> GetTabs () const;
 	private:
 		void CheckAll (Qt::CheckState);
 	private slots:
@@ -55,5 +55,3 @@ namespace TabSessManager
 	};
 }
 }
-
-#endif

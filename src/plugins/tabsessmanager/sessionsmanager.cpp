@@ -129,7 +129,7 @@ namespace TabSessManager
 				return;
 
 			RestoreSessionDialog dia;
-			dia.SetPages (tabs);
+			dia.SetTabs (tabs);
 
 			if (dia.exec () != QDialog::Accepted)
 			{
@@ -137,7 +137,7 @@ namespace TabSessManager
 				return;
 			}
 
-			tabs = dia.GetPages ();
+			tabs = dia.GetTabs ();
 		}
 
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)

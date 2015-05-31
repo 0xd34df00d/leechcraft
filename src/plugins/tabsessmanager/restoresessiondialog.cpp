@@ -40,7 +40,7 @@ namespace TabSessManager
 		Ui_.setupUi (this);
 	}
 
-	void RestoreSessionDialog::SetPages (const QHash<QObject*, QList<RecInfo>>& pages)
+	void RestoreSessionDialog::SetTabs (const QHash<QObject*, QList<RecInfo>>& pages)
 	{
 		Q_FOREACH (QObject *obj, pages.keys ())
 		{
@@ -67,7 +67,7 @@ namespace TabSessManager
 		}
 	}
 
-	QHash<QObject*, QList<RecInfo>> RestoreSessionDialog::GetPages () const
+	QHash<QObject*, QList<RecInfo>> RestoreSessionDialog::GetTabs () const
 	{
 		QHash<QObject*, QList<RecInfo>> result;
 
