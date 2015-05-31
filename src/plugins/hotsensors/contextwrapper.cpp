@@ -73,8 +73,8 @@ namespace HotSensors
 		}
 	};
 
-	ContextWrapper::ContextWrapper (PlotManager *manager, ICoreProxy_ptr proxy)
-	: QObject (manager)
+	ContextWrapper::ContextWrapper (PlotManager *manager, ICoreProxy_ptr proxy, QObject *parent)
+	: QObject (parent)
 	, Proxy_ (proxy)
 	, Filter_ (new SensorsFilterModel (this))
 	{

@@ -57,7 +57,7 @@ namespace HotSensors
 		SensorsFilterModel *Filter_;
 		QPointer<Util::UnhideListViewBase> CurrentList_;
 	public:
-		ContextWrapper (PlotManager*, ICoreProxy_ptr);
+		ContextWrapper (PlotManager*, ICoreProxy_ptr, QObject* = nullptr);
 	private:
 		QStringList LoadHiddenNames () const;
 		void SaveHiddenNames (const QStringList&) const;
