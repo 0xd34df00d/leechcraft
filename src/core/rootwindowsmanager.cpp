@@ -136,6 +136,11 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetPreferredWindowIndex () const
 	{
+		const auto& hookProxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookGetPreferredWindowIndex (hookProxy);
+		if (hookProxy->IsCancelled ())
+			return hookProxy->GetReturnValue ().toInt ();
+
 		const auto active = QApplication::activeWindow ();
 		if (!active)
 			return 0;
@@ -169,6 +174,11 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetPreferredWindowIndex (const QByteArray& tc) const
 	{
+		const auto& hookProxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookGetPreferredWindowIndex (hookProxy, tc);
+		if (hookProxy->IsCancelled ())
+			return hookProxy->GetReturnValue ().toInt ();
+
 		const auto& winMode = XmlSettingsManager::Instance ()->
 				property ("WindowSelectionMode").toString ();
 		if (winMode == "current")

@@ -80,6 +80,9 @@ namespace LeechCraft
 
 		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
 				const QWidget *widget);
+		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
+				const QByteArray& tabClass);
+		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy);
 
 		void hookTrayIconCreated (LeechCraft::IHookProxy_ptr,
 				QSystemTrayIcon*);

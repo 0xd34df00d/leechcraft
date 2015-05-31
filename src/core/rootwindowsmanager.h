@@ -104,5 +104,7 @@ namespace LeechCraft
 
 		void hookTabAdding (LeechCraft::IHookProxy_ptr, QWidget*);
 		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr, const QWidget*) const;
+		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr, const QByteArray&) const;
+		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr) const;
 	};
 }
