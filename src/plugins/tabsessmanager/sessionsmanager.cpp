@@ -142,18 +142,10 @@ namespace TabSessManager
 
 		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
 		{
-			QList<QPair<IHaveRecoverableTabs*, RecInfo>> ordered;
+			QList<QPair<QObject*, RecInfo>> ordered;
 			for (auto i = tabs.begin (); i != tabs.end (); ++i)
-			{
-				const auto plugin = i.key ();
-
-				auto ihrt = qobject_cast<IHaveRecoverableTabs*> (plugin);
-				if (!ihrt)
-					continue;
-
 				for (const auto& info : i.value ())
-					ordered << qMakePair (ihrt, info);
-			}
+					ordered.append ({ i.key (), info });
 
 #ifdef USE_CPP14
 			std::sort (ordered.begin (), ordered.end (),
@@ -169,7 +161,8 @@ namespace TabSessManager
 			{
 				auto props = pair.second.Props_;
 				props.append ({ "SessionData/RootWindowIndex", pair.second.WindowID_ });
-				pair.first->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
+				if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
+					ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
 			}
 		}
 	}
