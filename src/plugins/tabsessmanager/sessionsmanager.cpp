@@ -187,7 +187,8 @@ namespace TabSessManager
 
 	namespace
 	{
-		void WriteRecoverableTab (QDataStream& str, int windowIndex, QObject *tab, IRecoverableTab *rec, IInfo *plugin)
+		void WriteRecoverableTab (QDataStream& str, int windowIndex,
+				QObject *tab, IRecoverableTab *rec, IInfo *plugin)
 		{
 			const auto& data = rec->GetTabRecoverData ();
 			if (data.isEmpty ())
@@ -214,6 +215,11 @@ namespace TabSessManager
 					<< GetSessionProps (tab)
 					<< windowIndex;
 		}
+
+		bool IsGoodSingleTC (const TabClassInfo& tc)
+		{
+			return tc.Features_ & TabFeature::TFSingle && tc.Features_ & TabFeature::TFOpenableByRequest;
+		}
 	}
 
 	QByteArray SessionsManager::GetCurrentSession () const
@@ -236,6 +242,12 @@ namespace TabSessManager
 
 				if (const auto rec = qobject_cast<IRecoverableTab*> (tab))
 					WriteRecoverableTab (str, windowIndex, tab, rec, plugin);
+				else
+				{
+					const auto& tc = tw->GetTabClassInfo ();
+					if (IsGoodSingleTC (tc))
+						WriteSingleTab (str, windowIndex, tab, tc, plugin);
+				}
 			}
 
 			++windowIndex;
