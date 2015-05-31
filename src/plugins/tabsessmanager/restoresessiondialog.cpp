@@ -71,14 +71,12 @@ namespace TabSessManager
 	{
 		QHash<QObject*, QList<RecInfo>> result;
 
-		for (int i = 0, size = Ui_.Tabs_->topLevelItemCount ();
-				i < size; ++i)
+		for (int i = 0, size = Ui_.Tabs_->topLevelItemCount (); i < size; ++i)
 		{
-			auto parent = Ui_.Tabs_->topLevelItem (i);
+			const auto parent = Ui_.Tabs_->topLevelItem (i);
 
 			QList<RecInfo> infos;
-			for (int j = 0, jsize = parent->childCount ();
-				j < jsize; ++j)
+			for (int j = 0, jsize = parent->childCount (); j < jsize; ++j)
 			{
 				auto child = parent->child (j);
 
