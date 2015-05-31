@@ -48,7 +48,6 @@ namespace HotSensors
 		const ICoreProxy_ptr Proxy_;
 
 		QStandardItemModel * const Model_;
-		int UpdateCounter_;
 	public:
 		PlotManager (ICoreProxy_ptr, QObject* = 0);
 

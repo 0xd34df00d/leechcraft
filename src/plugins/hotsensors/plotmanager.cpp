@@ -48,7 +48,6 @@ namespace HotSensors
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Model_ (new SensorsGraphModel (this))
-	, UpdateCounter_ (0)
 	{
 	}
 
@@ -105,8 +104,6 @@ namespace HotSensors
 
 		for (auto item : existing)
 			Model_->removeRow (item->row ());
-
-		++UpdateCounter_;
 
 		if (!items.isEmpty ())
 			Model_->invisibleRootItem ()->appendRows (items);
