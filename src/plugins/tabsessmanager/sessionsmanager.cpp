@@ -163,6 +163,8 @@ namespace TabSessManager
 				props.append ({ "SessionData/RootWindowIndex", pair.second.WindowID_ });
 				if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
 					ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
+				else if (const auto iht = qobject_cast<IHaveTabs*> (pair.first))
+					iht->TabOpenRequested (pair.second.Data_);
 			}
 		}
 	}
