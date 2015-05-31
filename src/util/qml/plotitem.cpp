@@ -97,6 +97,21 @@ namespace Util
 		for (const auto& set : variant.toList ())
 		{
 			const auto& map = set.toMap ();
+
+			const auto& colorVar = map ["color"];
+			const auto& pointsVar = map ["points"];
+
+			if (!colorVar.canConvert<QString> () ||
+				!pointsVar.canConvert<QList<QPointF>> ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid map"
+						<< map;
+				qWarning () << Q_FUNC_INFO
+						<< "ignoring this point";
+				continue;
+			}
+
 			Multipoints_.append ({
 					map ["color"].toString (),
 					map ["points"].value<QList<QPointF>> ()
