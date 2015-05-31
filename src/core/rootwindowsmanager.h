@@ -103,5 +103,6 @@ namespace LeechCraft
 		void tabMoved (int, int, int);
 
 		void hookTabAdding (LeechCraft::IHookProxy_ptr, QWidget*);
+		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr, const QWidget*) const;
 	};
 }
