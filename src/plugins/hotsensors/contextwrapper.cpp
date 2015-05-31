@@ -73,13 +73,13 @@ namespace HotSensors
 		}
 	};
 
-	ContextWrapper::ContextWrapper (PlotManager *manager, ICoreProxy_ptr proxy, QObject *parent)
+	ContextWrapper::ContextWrapper (QAbstractItemModel *model, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, Filter_ (new SensorsFilterModel (this))
 	{
 		Filter_->setDynamicSortFilter (true);
-		Filter_->SetSourceWithRoles (manager->GetModel ());
+		Filter_->SetSourceWithRoles (model);
 	}
 
 	QStringList ContextWrapper::LoadHiddenNames () const

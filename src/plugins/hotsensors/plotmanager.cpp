@@ -59,7 +59,7 @@ namespace HotSensors
 
 	QObject* PlotManager::CreateContextWrapper ()
 	{
-		return new ContextWrapper (this, Proxy_);
+		return new ContextWrapper { GetModel (), Proxy_ };
 	}
 
 	void PlotManager::handleHistoryUpdated (const ReadingsHistory_t& history)
