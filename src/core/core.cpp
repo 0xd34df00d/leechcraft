@@ -99,6 +99,7 @@ namespace LeechCraft
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (DM_);
+		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (RootWindowsManager_.get ());
 
 		connect (RootWindowsManager_.get (),
 				SIGNAL (tabIsMoving (int, int, int)),

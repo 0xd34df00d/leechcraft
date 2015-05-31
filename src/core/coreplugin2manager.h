@@ -68,6 +68,8 @@ namespace LeechCraft
 		void hookTabContextMenuFill (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu, int index, int windowId);
 
+		void hookTabAdding (LeechCraft::IHookProxy_ptr proxy,
+				QWidget *tabWidget);
 		void hookTabFinishedMoving (LeechCraft::IHookProxy_ptr proxy,
 				int index, int windowId);
 		void hookTabSetText (LeechCraft::IHookProxy_ptr proxy,
