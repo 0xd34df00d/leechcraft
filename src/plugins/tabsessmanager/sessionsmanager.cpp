@@ -55,7 +55,7 @@ namespace TabSessManager
 	, Proxy_ { proxy }
 	{
 		const auto& roots = Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IHaveRecoverableTabs*> ();
+				GetAllCastableRoots<IHaveTabs*> ();
 		for (const auto root : roots)
 			connect (root,
 					SIGNAL (addNewTab (QString, QWidget*)),
@@ -404,8 +404,9 @@ namespace TabSessManager
 		if (HasTab (widget))
 			return;
 
-		auto rootWM = Proxy_->GetRootWindowsManager ();
-		auto windowIndex = rootWM->GetWindowForTab (qobject_cast<ITabWidget*> (widget));
+		const auto rootWM = Proxy_->GetRootWindowsManager ();
+		const auto itw = qobject_cast<ITabWidget*> (widget);
+		const auto windowIndex = rootWM->GetWindowForTab (itw);
 
 		if (windowIndex < 0 || windowIndex >= Tabs_.size ())
 		{
@@ -417,18 +418,19 @@ namespace TabSessManager
 
 		Tabs_ [windowIndex] << widget;
 
-		auto tab = qobject_cast<IRecoverableTab*> (widget);
-		if (!tab)
+		const auto irt = qobject_cast<IRecoverableTab*> (widget);
+		if (!irt && !IsGoodSingleTC (itw->GetTabClassInfo ()))
 			return;
 
-		connect (widget,
-				SIGNAL (tabRecoverDataChanged ()),
-				this,
-				SLOT (handleTabRecoverDataChanged ()));
+		if (irt)
+			connect (widget,
+					SIGNAL (tabRecoverDataChanged ()),
+					this,
+					SLOT (handleTabRecoverDataChanged ()));
 
 		widget->installEventFilter (this);
 
-		if (!tab->GetTabRecoverData ().isEmpty ())
+		if (!irt || !irt->GetTabRecoverData ().isEmpty ())
 			handleTabRecoverDataChanged ();
 
 		const auto& posProp = widget->property ("TabSessManager/Position");
