@@ -50,12 +50,12 @@ namespace HotSensors
 	{
 		Util::InstallTranslator ("hotsensors");
 
-		HistoryMgr_.reset (new HistoryManager (this));
+		HistoryMgr_ = std::make_shared<HistoryManager> ();
 
 #ifdef Q_OS_LINUX
-		SensorsMgr_.reset (new LmSensorsBackend (this));
+		SensorsMgr_ = std::make_shared<LmSensorsBackend> ();
 #elif defined (Q_OS_MAC)
-		SensorsMgr_.reset (new MacOsBackend (this));
+		SensorsMgr_ = std::Make_shared<MacOsBackend> ();
 #endif
 
 		if (SensorsMgr_)
@@ -64,7 +64,7 @@ namespace HotSensors
 					HistoryMgr_.get (),
 					SLOT (handleReadings (Readings_t)));
 
-		PlotMgr_.reset (new PlotManager (proxy, this));
+		PlotMgr_ = std::make_shared<PlotManager> (proxy);
 		connect (HistoryMgr_.get (),
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),
