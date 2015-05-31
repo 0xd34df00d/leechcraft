@@ -305,6 +305,9 @@ namespace Util
 		{
 			Plot_ = std::make_shared<QwtPlot> ();
 			Plot_->setFrameShape (QFrame::NoFrame);
+			Plot_->setFrameShadow (QFrame::Plain);
+			Plot_->setLineWidth (0);
+			Plot_->setMidLineWidth (0);
 		}
 
 		auto& plot = *Plot_;
