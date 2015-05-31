@@ -59,7 +59,7 @@ namespace HotSensors
 #ifdef Q_OS_LINUX
 		SensorsMgr_ = std::make_shared<LmSensorsBackend> ();
 #elif defined (Q_OS_MAC)
-		SensorsMgr_ = std::Make_shared<MacOsBackend> ();
+		SensorsMgr_ = std::make_shared<MacOsBackend> ();
 #endif
 
 		if (SensorsMgr_)
