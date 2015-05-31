@@ -192,6 +192,25 @@ namespace TabSessManager
 		return false;
 	}
 
+	namespace
+	{
+		void WriteRecoverableTab (QDataStream& str, int windowIndex, QObject *tab, IRecoverableTab *rec, IInfo *plugin)
+		{
+			const auto& data = rec->GetTabRecoverData ();
+			if (data.isEmpty ())
+				return;
+
+			const QIcon forRecover { rec->GetTabRecoverIcon ().pixmap (32, 32) };
+
+			str << plugin->GetUniqueID ()
+					<< data
+					<< rec->GetTabRecoverName ()
+					<< forRecover
+					<< GetSessionProps (tab)
+					<< windowIndex;
+		}
+	}
+
 	QByteArray SessionsManager::GetCurrentSession () const
 	{
 		QByteArray result;
@@ -202,10 +221,6 @@ namespace TabSessManager
 		{
 			for (auto tab : list)
 			{
-				auto rec = qobject_cast<IRecoverableTab*> (tab);
-				if (!rec)
-					continue;
-
 				auto tw = qobject_cast<ITabWidget*> (tab);
 				if (!tw)
 					continue;
@@ -214,18 +229,8 @@ namespace TabSessManager
 				if (!plugin)
 					continue;
 
-				const auto& data = rec->GetTabRecoverData ();
-				if (data.isEmpty ())
-					continue;
-
-				const QIcon forRecover { rec->GetTabRecoverIcon ().pixmap (32, 32) };
-
-				str << plugin->GetUniqueID ()
-						<< data
-						<< rec->GetTabRecoverName ()
-						<< forRecover
-						<< GetSessionProps (tab)
-						<< windowIndex;
+				if (const auto rec = qobject_cast<IRecoverableTab*> (tab))
+					WriteRecoverableTab (str, windowIndex, tab, rec, plugin);
 			}
 
 			++windowIndex;
