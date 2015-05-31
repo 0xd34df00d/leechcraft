@@ -101,5 +101,7 @@ namespace LeechCraft
 		void tabIsRemoving (int, int);
 		void tabIsMoving (int, int, int);
 		void tabMoved (int, int, int);
+
+		void hookTabAdding (LeechCraft::IHookProxy_ptr, QWidget*);
 	};
 }
