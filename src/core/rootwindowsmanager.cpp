@@ -149,12 +149,17 @@ namespace LeechCraft
 
 	int RootWindowsManager::GetPreferredWindowIndex (const ITabWidget *itw) const
 	{
-		const auto obj = dynamic_cast<const QObject*> (itw);
+		const auto widget = dynamic_cast<const QWidget*> (itw);
 
-		if (obj->dynamicPropertyNames ().contains ("SessionData/RootWindowIndex"))
+		const auto& hookProxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookGetPreferredWindowIndex (hookProxy, widget);
+		if (hookProxy->IsCancelled ())
+			return hookProxy->GetReturnValue ().toInt ();
+
+		if (widget->dynamicPropertyNames ().contains ("SessionData/RootWindowIndex"))
 		{
 			bool ok = false;
-			const auto value = obj->property ("SessionData/RootWindowIndex").toInt (&ok);
+			const auto value = widget->property ("SessionData/RootWindowIndex").toInt (&ok);
 			if (ok)
 				return value;
 		}
