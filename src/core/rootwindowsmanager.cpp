@@ -31,6 +31,7 @@
 #include <iterator>
 #include <algorithm>
 #include <QDesktopWidget>
+#include <util/xpc/defaulthookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "core.h"
 #include "mainwindow.h"
@@ -320,6 +321,11 @@ namespace LeechCraft
 		auto itw = qobject_cast<ITabWidget*> (w);
 
 		if (GetWindowForTab (itw) != -1)
+			return;
+
+		const auto& hookProxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookTabAdding (hookProxy, w);
+		if (hookProxy->IsCancelled ())
 			return;
 
 		int winIdx = GetPreferredWindowIndex (itw);
