@@ -48,7 +48,7 @@ namespace TabSessManager
 			const auto obj = pair.first;
 			const auto ii = qobject_cast<IInfo*> (obj);
 
-			auto parent = new QTreeWidgetItem (QStringList (ii->GetName ()));
+			auto parent = new QTreeWidgetItem ({ ii->GetName () });
 			parent->setIcon (0, ii->GetIcon ());
 			parent->setData (0, Qt::UserRole,
 					QVariant::fromValue<QObject*> (obj));
@@ -59,7 +59,7 @@ namespace TabSessManager
 				const auto& name = info.Name_.isEmpty () ?
 						'<' + tr ("no name") + '>' :
 						info.Name_;
-				auto item = new QTreeWidgetItem (QStringList (name));
+				auto item = new QTreeWidgetItem ({ name });
 				item->setIcon (0, info.Icon_);
 				item->setCheckState (0, Qt::Checked);
 				item->setData (0, Qt::UserRole, QVariant::fromValue (info));
