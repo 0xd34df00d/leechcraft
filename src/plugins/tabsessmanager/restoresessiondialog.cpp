@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "restoresessiondialog.h"
+#include <util/sll/qtutil.h>
 #include <interfaces/iinfo.h>
 
 namespace LeechCraft
@@ -42,16 +43,18 @@ namespace TabSessManager
 
 	void RestoreSessionDialog::SetTabs (const QHash<QObject*, QList<RecInfo>>& pages)
 	{
-		Q_FOREACH (QObject *obj, pages.keys ())
+		for (const auto pair : Util::Stlize (pages))
 		{
-			IInfo *ii = qobject_cast<IInfo*> (obj);
+			const auto obj = pair.first;
+			const auto ii = qobject_cast<IInfo*> (obj);
+
 			auto parent = new QTreeWidgetItem (QStringList (ii->GetName ()));
 			parent->setIcon (0, ii->GetIcon ());
 			parent->setData (0, Qt::UserRole,
 					QVariant::fromValue<QObject*> (obj));
 			Ui_.Tabs_->addTopLevelItem (parent);
 
-			Q_FOREACH (const RecInfo& info, pages [obj])
+			for (const auto& info : pair.second)
 			{
 				const auto& name = info.Name_.isEmpty () ?
 						'<' + tr ("no name") + '>' :
