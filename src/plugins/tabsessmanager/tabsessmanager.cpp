@@ -37,14 +37,10 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
-#include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/ihavetabs.h>
-#include "recinfo.h"
 #include "sessionmenumanager.h"
 #include "sessionsmanager.h"
-#include "util.h"
 #include "unclosemanager.h"
 
 namespace LeechCraft
