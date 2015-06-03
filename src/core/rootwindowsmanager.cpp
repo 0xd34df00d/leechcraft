@@ -299,7 +299,7 @@ namespace LeechCraft
 
 	void RootWindowsManager::moveTabToNewWindow ()
 	{
-		CreateWindow (-1, false);
+		MakeMainWindow ();
 
 		MoveTab (sender ()->property ("TabIndex").toInt (),
 				sender ()->property ("FromWindowIndex").toInt (),
@@ -355,12 +355,12 @@ namespace LeechCraft
 
 		if (winIdx == -1)
 		{
-			CreateWindow (-1, false);
+			MakeMainWindow ();
 			winIdx = Windows_.size () - 1;
 		}
 
 		while (winIdx >= Windows_.size ())
-			CreateWindow (-1, false);
+			MakeMainWindow ();
 
 		const auto& tc = itw->GetTabClassInfo ().TabClass_;
 		Windows_ [winIdx].Window_->setWindowRole (tc);
