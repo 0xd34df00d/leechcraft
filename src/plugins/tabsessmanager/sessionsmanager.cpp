@@ -152,6 +152,11 @@ namespace TabSessManager
 
 	void SessionsManager::HandleTabAdding (QWidget *widget)
 	{
+		if (TabsPropsQueue_.empty ())
+			return;
+
+		for (const auto& pair : TabsPropsQueue_.takeFirst ())
+			widget->setProperty (pair.first, pair.second);
 	}
 
 	bool SessionsManager::HasTab (QObject *tab)
@@ -265,9 +270,9 @@ namespace TabSessManager
 		for (const auto& pair : ordered)
 		{
 			PreferredWindowsQueue_ << pair.second.WindowID_;
-			const auto& props = pair.second.Props_;
+			TabsPropsQueue_ << pair.second.Props_;
 			if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
-				ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
+				ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, {} } });
 			else if (const auto iht = qobject_cast<IHaveTabs*> (pair.first))
 				iht->TabOpenRequested (pair.second.Data_);
 		}
