@@ -147,17 +147,14 @@ namespace TabSessManager
 
 		auto data = UncloseAct2Data_.take (action);
 		if (UncloseMenu_->defaultAction () == action)
-		{
-			auto nextAct = UncloseMenu_->actions ().value (1);
-			if (nextAct)
+			if (const auto nextAct = UncloseMenu_->actions ().value (1))
 			{
 				UncloseMenu_->setDefaultAction (nextAct);
 				nextAct->setShortcut (QString ("Ctrl+Shift+T"));
 			}
-		}
 		UncloseMenu_->removeAction (action);
 
-		qobject_cast<IHaveRecoverableTabs*> (data.Plugin_)->RecoverTabs (QList<TabRecoverInfo> () << data.RecInfo_);
+		qobject_cast<IHaveRecoverableTabs*> (data.Plugin_)->RecoverTabs ({ data.RecInfo_ });
 	}
 }
 }
