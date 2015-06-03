@@ -53,30 +53,38 @@ namespace TabSessManager
 
 	void UncloseManager::HandleRemoveTab (QWidget *widget)
 	{
-		auto tab = qobject_cast<ITabWidget*> (widget);
+		const auto tab = qobject_cast<ITabWidget*> (widget);
 		if (!tab)
 			return;
 
-		auto recTab = qobject_cast<IRecoverableTab*> (widget);
-		if (!recTab)
-			return;
+		if (const auto recTab = qobject_cast<IRecoverableTab*> (widget))
+			HandleRemoveRecoverableTab (widget, recTab);
+	}
 
-		const auto& recoverData = recTab->GetTabRecoverData ();
-		if (recoverData.isEmpty ())
-			return;
+	struct UncloseManager::RemoveTabParams
+	{
+		QByteArray RecoverData_;
+		QString TabName_;
+		QIcon TabIcon_;
+		QWidget *Widget_;
+		const char *Slot_;
+	};
 
+	void UncloseManager::GenericRemoveTab (const RemoveTabParams& params)
+	{
+		const auto tab = qobject_cast<ITabWidget*> (params.Widget_);
 		TabUncloseInfo info
 		{
 			{
-				recoverData,
-				GetSessionProps (widget)
+				params.RecoverData_,
+				GetSessionProps (params.Widget_)
 			},
 			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
 		};
 
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto winIdx = rootWM->GetWindowForTab (tab);
-		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (widget);
+		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
 		info.RecInfo_.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		const auto pos = std::find_if (UncloseAct2Data_.begin (), UncloseAct2Data_.end (),
@@ -90,20 +98,35 @@ namespace TabSessManager
 		}
 
 		const auto& fm = UncloseMenu_->fontMetrics ();
-		const QString& elided = fm.elidedText (recTab->GetTabRecoverName (), Qt::ElideMiddle, 300);
-		QAction *action = new QAction (recTab->GetTabRecoverIcon (), elided, this);
+		const QString& elided = fm.elidedText (params.TabName_, Qt::ElideMiddle, 300);
+		QAction *action = new QAction (params.TabIcon_, elided, this);
 		UncloseAct2Data_ [action] = info;
 
 		connect (action,
 				SIGNAL (triggered ()),
 				this,
-				SLOT (handleUnclose ()));
+				params.Slot_);
 
 		if (UncloseMenu_->defaultAction ())
 			UncloseMenu_->defaultAction ()->setShortcut (QKeySequence ());
 		UncloseMenu_->insertAction (UncloseMenu_->actions ().value (0), action);
 		UncloseMenu_->setDefaultAction (action);
 		action->setShortcut (QString ("Ctrl+Shift+T"));
+	}
+
+	void UncloseManager::HandleRemoveRecoverableTab (QWidget *widget, IRecoverableTab *recTab)
+	{
+		const auto& recoverData = recTab->GetTabRecoverData ();
+		if (recoverData.isEmpty ())
+			return;
+
+		GenericRemoveTab ({
+				recoverData,
+				recTab->GetTabRecoverName (),
+				recTab->GetTabRecoverIcon (),
+				widget,
+				SLOT (handleUnclose ())
+			});
 	}
 
 	void UncloseManager::handleUnclose ()

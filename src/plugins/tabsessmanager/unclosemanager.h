@@ -36,6 +36,7 @@
 
 class QMenu;
 class QAction;
+class ITabWidget;
 
 namespace LeechCraft
 {
@@ -54,6 +55,8 @@ namespace TabSessManager
 		};
 		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
 
+		struct RemoveTabParams;
+
 		QMenu * const UncloseMenu_;
 	public:
 		UncloseManager (const ICoreProxy_ptr&, QObject* = nullptr);
@@ -61,6 +64,9 @@ namespace TabSessManager
 		QAction* GetMenuAction () const;
 
 		void HandleRemoveTab (QWidget*);
+	private:
+		void GenericRemoveTab (const RemoveTabParams&);
+		void HandleRemoveRecoverableTab (QWidget*, IRecoverableTab*);
 	private slots:
 		void handleUnclose ();
 	};
