@@ -51,7 +51,7 @@ namespace TabSessManager
 		struct TabUncloseInfo
 		{
 			TabRecoverInfo RecInfo_;
-			IHaveRecoverableTabs *Plugin_;
+			QObject *Plugin_;
 		};
 		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
 

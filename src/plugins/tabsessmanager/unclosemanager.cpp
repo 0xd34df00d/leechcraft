@@ -79,7 +79,7 @@ namespace TabSessManager
 				params.RecoverData_,
 				GetSessionProps (params.Widget_)
 			},
-			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
+			tab->ParentMultiTabs ()
 		};
 
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
@@ -157,7 +157,7 @@ namespace TabSessManager
 		}
 		UncloseMenu_->removeAction (action);
 
-		data.Plugin_->RecoverTabs (QList<TabRecoverInfo> () << data.RecInfo_);
+		qobject_cast<IHaveRecoverableTabs*> (data.Plugin_)->RecoverTabs (QList<TabRecoverInfo> () << data.RecInfo_);
 	}
 }
 }
