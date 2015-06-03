@@ -156,6 +156,11 @@ namespace TabSessManager
 		SessionsMgr_->handleRemoveTab (widget);
 	}
 
+	void Plugin::hookTabAdding (IHookProxy_ptr, QWidget *widget)
+	{
+		SessionsMgr_->HandleTabAdding (widget);
+	}
+
 	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
 	{
 		SessionsMgr_->HandlePreferredWindowIndex (proxy, widget);

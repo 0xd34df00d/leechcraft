@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QPair>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ihookproxy.h>
 
@@ -51,12 +52,14 @@ namespace TabSessManager
 		QList<QList<QObject*>> Tabs_;
 
 		QList<int> PreferredWindowsQueue_;
+		QList<QList<QPair<QByteArray, QVariant>>> TabsPropsQueue_;
 	public:
 		SessionsManager (const ICoreProxy_ptr&, QObject* = nullptr);
 
 		QStringList GetCustomSessions () const;
 
 		void HandlePreferredWindowIndex (const IHookProxy_ptr&, const QWidget*);
+		void HandleTabAdding (QWidget*);
 
 		bool HasTab (QObject*);
 	protected:

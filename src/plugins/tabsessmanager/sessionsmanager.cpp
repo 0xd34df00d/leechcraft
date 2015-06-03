@@ -150,6 +150,10 @@ namespace TabSessManager
 		proxy->CancelDefault ();
 	}
 
+	void SessionsManager::HandleTabAdding (QWidget *widget)
+	{
+	}
+
 	bool SessionsManager::HasTab (QObject *tab)
 	{
 		return std::any_of (Tabs_.begin (), Tabs_.end (),
