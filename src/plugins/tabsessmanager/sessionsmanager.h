@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
+	struct RecInfo;
+
 	class SessionsManager : public QObject
 	{
 		Q_OBJECT
@@ -46,6 +48,8 @@ namespace TabSessManager
 		bool IsRecovering_ = true;
 
 		QList<QList<QObject*>> Tabs_;
+
+		QList<int> PreferredWindowsQueue_;
 	public:
 		SessionsManager (const ICoreProxy_ptr&, QObject* = nullptr);
 
@@ -56,6 +60,7 @@ namespace TabSessManager
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		QByteArray GetCurrentSession () const;
+		void OpenTabs (const QHash<QObject*, QList<RecInfo>>&);
 	public slots:
 		void recover ();
 		void handleTabRecoverDataChanged ();

@@ -139,34 +139,6 @@ namespace TabSessManager
 
 			tabs = dia.GetTabs ();
 		}
-
-		void OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
-		{
-			QList<QPair<QObject*, RecInfo>> ordered;
-			for (auto i = tabs.begin (); i != tabs.end (); ++i)
-				for (const auto& info : i.value ())
-					ordered.append ({ i.key (), info });
-
-#ifdef USE_CPP14
-			std::sort (ordered.begin (), ordered.end (),
-					[] (const auto& left, const auto& right)
-						{ return left.second.Order_ < right.second.Order_; });
-#else
-			std::sort (ordered.begin (), ordered.end (),
-					[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
-						{ return left.second.Order_ < right.second.Order_; });
-#endif
-
-			for (const auto& pair : ordered)
-			{
-				auto props = pair.second.Props_;
-				props.append ({ "SessionData/RootWindowIndex", pair.second.WindowID_ });
-				if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
-					ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
-				else if (const auto iht = qobject_cast<IHaveTabs*> (pair.first))
-					iht->TabOpenRequested (pair.second.Data_);
-			}
-		}
 	}
 
 	bool SessionsManager::HasTab (QObject *tab)
@@ -256,6 +228,34 @@ namespace TabSessManager
 		}
 
 		return result;
+	}
+
+	void SessionsManager::OpenTabs (const QHash<QObject*, QList<RecInfo>>& tabs)
+	{
+		QList<QPair<QObject*, RecInfo>> ordered;
+		for (auto i = tabs.begin (); i != tabs.end (); ++i)
+			for (const auto& info : i.value ())
+				ordered.append ({ i.key (), info });
+
+#ifdef USE_CPP14
+		std::sort (ordered.begin (), ordered.end (),
+				[] (const auto& left, const auto& right)
+					{ return left.second.Order_ < right.second.Order_; });
+#else
+		std::sort (ordered.begin (), ordered.end (),
+				[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
+					{ return left.second.Order_ < right.second.Order_; });
+#endif
+
+		for (const auto& pair : ordered)
+		{
+			PreferredWindowsQueue_ << pair.second.WindowID_;
+			const auto& props = pair.second.Props_;
+			if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
+				ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, props } });
+			else if (const auto iht = qobject_cast<IHaveTabs*> (pair.first))
+				iht->TabOpenRequested (pair.second.Data_);
+		}
 	}
 
 	void SessionsManager::recover ()
