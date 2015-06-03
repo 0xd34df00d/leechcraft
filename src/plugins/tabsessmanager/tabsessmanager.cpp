@@ -136,7 +136,7 @@ namespace TabSessManager
 		case ActionsEmbedPlace::ToolsMenu:
 			return
 			{
-				SessionMenuMgr_->GetSessionsMenu ()->menuAction (),
+				SessionMenuMgr_->GetSessionsAction (),
 				UncloseMenu_->menuAction ()
 			};
 		case ActionsEmbedPlace::CommonContextMenu:

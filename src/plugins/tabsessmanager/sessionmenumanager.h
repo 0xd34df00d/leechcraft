@@ -34,6 +34,7 @@
 #include <QHash>
 
 class QMenu;
+class QAction;
 
 namespace LeechCraft
 {
@@ -49,7 +50,7 @@ namespace TabSessManager
 	public:
 		SessionMenuManager (QObject* = nullptr);
 
-		QMenu* GetSessionsMenu () const;
+		QAction* GetSessionsAction () const;
 	private:
 		void DeleteSession (const QString&);
 	public slots:

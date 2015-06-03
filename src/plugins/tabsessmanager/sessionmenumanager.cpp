@@ -50,9 +50,9 @@ namespace TabSessManager
 		SessMgrMenu_->addSeparator ();
 	}
 
-	QMenu* SessionMenuManager::GetSessionsMenu () const
+	QAction* SessionMenuManager::GetSessionsAction () const
 	{
-		return SessMgrMenu_;
+		return SessMgrMenu_->menuAction ();
 	}
 
 	void SessionMenuManager::DeleteSession (const QString& name)
