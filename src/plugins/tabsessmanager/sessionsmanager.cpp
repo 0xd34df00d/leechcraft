@@ -141,6 +141,15 @@ namespace TabSessManager
 		}
 	}
 
+	void SessionsManager::HandlePreferredWindowIndex (const IHookProxy_ptr& proxy, const QWidget*)
+	{
+		if (PreferredWindowsQueue_.empty ())
+			return;
+
+		proxy->SetReturnValue (PreferredWindowsQueue_.takeFirst ());
+		proxy->CancelDefault ();
+	}
+
 	bool SessionsManager::HasTab (QObject *tab)
 	{
 		return std::any_of (Tabs_.begin (), Tabs_.end (),
@@ -202,8 +211,10 @@ namespace TabSessManager
 		QDataStream str (&result, QIODevice::WriteOnly);
 
 		int windowIndex = 0;
+		qDebug () << Q_FUNC_INFO << Tabs_.size ();
 		for (const auto& list : Tabs_)
 		{
+			qDebug () << windowIndex << list.size ();
 			for (auto tab : list)
 			{
 				auto tw = qobject_cast<ITabWidget*> (tab);
@@ -291,6 +302,7 @@ namespace TabSessManager
 
 	void SessionsManager::saveDefaultSession ()
 	{
+		qDebug () << Q_FUNC_INFO;
 		IsScheduled_ = false;
 
 		const auto& result = GetCurrentSession ();

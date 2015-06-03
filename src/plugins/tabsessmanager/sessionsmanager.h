@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
@@ -54,6 +55,8 @@ namespace TabSessManager
 		SessionsManager (const ICoreProxy_ptr&, QObject* = nullptr);
 
 		QStringList GetCustomSessions () const;
+
+		void HandlePreferredWindowIndex (const IHookProxy_ptr&, const QWidget*);
 
 		bool HasTab (QObject*);
 	protected:
