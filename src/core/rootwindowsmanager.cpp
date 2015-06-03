@@ -163,14 +163,6 @@ namespace LeechCraft
 		if (hookProxy->IsCancelled ())
 			return hookProxy->GetReturnValue ().toInt ();
 
-		if (widget->dynamicPropertyNames ().contains ("SessionData/RootWindowIndex"))
-		{
-			bool ok = false;
-			const auto value = widget->property ("SessionData/RootWindowIndex").toInt (&ok);
-			if (ok)
-				return value;
-		}
-
 		return GetPreferredWindowIndex (itw->GetTabClassInfo ().TabClass_);
 	}
 
