@@ -207,11 +207,6 @@ namespace TabSessManager
 					<< GetSessionProps (tab)
 					<< windowIndex;
 		}
-
-		bool IsGoodSingleTC (const TabClassInfo& tc)
-		{
-			return tc.Features_ & TabFeature::TFSingle && tc.Features_ & TabFeature::TFOpenableByRequest;
-		}
 	}
 
 	QByteArray SessionsManager::GetCurrentSession () const

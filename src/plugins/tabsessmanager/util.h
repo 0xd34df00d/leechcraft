@@ -39,10 +39,14 @@ struct QPair;
 template<typename T>
 class QList;
 
+struct TabClassInfo;
+
 namespace LeechCraft
 {
 namespace TabSessManager
 {
 	QList<QPair<QByteArray, QVariant>> GetSessionProps (QObject*);
+
+	bool IsGoodSingleTC (const TabClassInfo&);
 }
 }

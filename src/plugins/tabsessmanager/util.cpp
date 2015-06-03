@@ -32,6 +32,7 @@
 #include <QList>
 #include <QPair>
 #include <QVariant>
+#include <interfaces/ihavetabs.h>
 
 namespace LeechCraft
 {
@@ -48,6 +49,11 @@ namespace TabSessManager
 			props.append ({ propName, tab->property (propName) });
 		}
 		return props;
+	}
+
+	bool IsGoodSingleTC (const TabClassInfo& tc)
+	{
+		return tc.Features_ & TabFeature::TFSingle && tc.Features_ & TabFeature::TFOpenableByRequest;
 	}
 }
 }
