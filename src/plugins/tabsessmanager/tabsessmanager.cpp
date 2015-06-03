@@ -156,6 +156,11 @@ namespace TabSessManager
 		SessionsMgr_->handleRemoveTab (widget);
 	}
 
+	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
+	{
+		SessionsMgr_->HandlePreferredWindowIndex (proxy, widget);
+	}
+
 	void Plugin::handleRemoveTab (QWidget *widget)
 	{
 		auto tab = qobject_cast<ITabWidget*> (widget);

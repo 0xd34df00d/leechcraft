@@ -82,6 +82,8 @@ namespace TabSessManager
 		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
 				int index,
 				int windowId);
+		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
+				const QWidget *widget) const;
 	private slots:
 		void handleRemoveTab (QWidget*);
 		void handleUnclose ();
