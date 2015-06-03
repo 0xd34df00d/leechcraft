@@ -33,7 +33,6 @@
 #include <QTimer>
 #include <QSettings>
 #include <QApplication>
-#include <QMenu>
 #include <QtDebug>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
@@ -46,6 +45,7 @@
 #include "sessionmenumanager.h"
 #include "sessionsmanager.h"
 #include "util.h"
+#include "unclosemanager.h"
 
 namespace LeechCraft
 {
@@ -55,7 +55,7 @@ namespace TabSessManager
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
-		UncloseMenu_ = new QMenu (tr ("Unclose tabs"));
+		UncloseMgr_ = new UncloseManager { proxy };
 
 		SessionsMgr_ = new SessionsManager { proxy };
 
@@ -137,10 +137,10 @@ namespace TabSessManager
 			return
 			{
 				SessionMenuMgr_->GetSessionsAction (),
-				UncloseMenu_->menuAction ()
+				UncloseMgr_->GetMenuAction ()
 			};
 		case ActionsEmbedPlace::CommonContextMenu:
-			return { UncloseMenu_->menuAction () };
+			return { UncloseMgr_->GetMenuAction () };
 		default:
 			return {};
 		}
@@ -152,7 +152,7 @@ namespace TabSessManager
 		const auto tabWidget = rootWM->GetTabWidget (windowId);
 		const auto widget = tabWidget->Widget (index);
 
-		handleRemoveTab (widget);
+		UncloseMgr_->HandleRemoveTab (widget);
 		SessionsMgr_->handleRemoveTab (widget);
 	}
 
@@ -164,92 +164,6 @@ namespace TabSessManager
 	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
 	{
 		SessionsMgr_->HandlePreferredWindowIndex (proxy, widget);
-	}
-
-	void Plugin::handleRemoveTab (QWidget *widget)
-	{
-		auto tab = qobject_cast<ITabWidget*> (widget);
-		if (!tab)
-			return;
-
-		auto recTab = qobject_cast<IRecoverableTab*> (widget);
-		if (!recTab)
-			return;
-
-		const auto& recoverData = recTab->GetTabRecoverData ();
-		if (recoverData.isEmpty ())
-			return;
-
-		TabUncloseInfo info
-		{
-			{
-				recoverData,
-				GetSessionProps (widget)
-			},
-			qobject_cast<IHaveRecoverableTabs*> (tab->ParentMultiTabs ())
-		};
-
-		const auto rootWM = Proxy_->GetRootWindowsManager ();
-		const auto winIdx = rootWM->GetWindowForTab (tab);
-		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (widget);
-		info.RecInfo_.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
-
-		const auto pos = std::find_if (UncloseAct2Data_.begin (), UncloseAct2Data_.end (),
-				[&info] (const TabUncloseInfo& that) { return that.RecInfo_.Data_ == info.RecInfo_.Data_; });
-		if (pos != UncloseAct2Data_.end ())
-		{
-			auto act = pos.key ();
-			UncloseMenu_->removeAction (act);
-			UncloseAct2Data_.erase (pos);
-			delete act;
-		}
-
-		const auto& fm = UncloseMenu_->fontMetrics ();
-		const QString& elided = fm.elidedText (recTab->GetTabRecoverName (), Qt::ElideMiddle, 300);
-		QAction *action = new QAction (recTab->GetTabRecoverIcon (), elided, this);
-		UncloseAct2Data_ [action] = info;
-
-		connect (action,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleUnclose ()));
-
-		if (UncloseMenu_->defaultAction ())
-			UncloseMenu_->defaultAction ()->setShortcut (QKeySequence ());
-		UncloseMenu_->insertAction (UncloseMenu_->actions ().value (0), action);
-		UncloseMenu_->setDefaultAction (action);
-		action->setShortcut (QString ("Ctrl+Shift+T"));
-	}
-
-	void Plugin::handleUnclose ()
-	{
-		auto action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not an action:"
-					<< sender ();
-			return;
-		}
-
-		if (!UncloseAct2Data_.contains (action))
-			return;
-
-		action->deleteLater ();
-
-		auto data = UncloseAct2Data_.take (action);
-		if (UncloseMenu_->defaultAction () == action)
-		{
-			auto nextAct = UncloseMenu_->actions ().value (1);
-			if (nextAct)
-			{
-				UncloseMenu_->setDefaultAction (nextAct);
-				nextAct->setShortcut (QString ("Ctrl+Shift+T"));
-			}
-		}
-		UncloseMenu_->removeAction (action);
-
-		data.Plugin_->RecoverTabs (QList<TabRecoverInfo> () << data.RecInfo_);
 	}
 }
 }

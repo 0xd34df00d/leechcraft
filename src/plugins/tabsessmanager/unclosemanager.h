@@ -30,57 +30,39 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/iactionsexporter.h>
-#include <interfaces/core/ihookproxy.h>
+#include <QHash>
+#include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/core/icoreproxy.h>
+
+class QMenu;
+class QAction;
 
 namespace LeechCraft
 {
 namespace TabSessManager
 {
-	class SessionMenuManager;
-	class SessionsManager;
-	class UncloseManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IActionsExporter
+	class UncloseManager : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IActionsExporter)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
+		const ICoreProxy_ptr Proxy_;
 
-		ICoreProxy_ptr Proxy_;
+		struct TabUncloseInfo
+		{
+			TabRecoverInfo RecInfo_;
+			IHaveRecoverableTabs *Plugin_;
+		};
+		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
 
-		UncloseManager *UncloseMgr_;
-
-		SessionsManager *SessionsMgr_;
-		SessionMenuManager *SessionMenuMgr_;
+		QMenu * const UncloseMenu_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		UncloseManager (const ICoreProxy_ptr&, QObject* = nullptr);
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QAction* GetMenuAction () const;
 
-		QList<QAction*> GetActions (ActionsEmbedPlace) const;
-	public slots:
-		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
-				int index,
-				int windowId);
-		void hookTabAdding (LeechCraft::IHookProxy_ptr proxy,
-				QWidget *widget);
-		void hookGetPreferredWindowIndex (LeechCraft::IHookProxy_ptr proxy,
-				const QWidget *widget) const;
-	signals:
-		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
+		void HandleRemoveTab (QWidget*);
+	private slots:
+		void handleUnclose ();
 	};
 }
 }

@@ -14,6 +14,7 @@ set (SRCS
 	sessionmenumanager.cpp
 	sessionsmanager.cpp
 	util.cpp
+	unclosemanager.cpp
 	)
 set (FORMS
 	restoresessiondialog.ui
