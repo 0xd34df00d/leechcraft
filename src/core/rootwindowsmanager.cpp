@@ -86,7 +86,9 @@ namespace LeechCraft
 
 	MainWindow* RootWindowsManager::MakeMainWindow ()
 	{
-		return CreateWindow (-1, false);
+		const auto win = CreateWindow (-1, false);
+		win->show ();
+		return win;
 	}
 
 	TabManager* RootWindowsManager::GetTabManager (MainWindow *win) const
