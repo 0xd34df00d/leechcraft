@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/core/icoreproxy.h>
 
@@ -53,7 +52,6 @@ namespace TabSessManager
 			TabRecoverInfo RecInfo_;
 			QObject *Plugin_;
 		};
-		QHash<QAction*, TabUncloseInfo> UncloseAct2Data_;
 
 		struct RemoveTabParams;
 

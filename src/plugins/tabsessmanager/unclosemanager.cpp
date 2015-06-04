@@ -90,20 +90,18 @@ namespace TabSessManager
 		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
 		info.RecInfo_.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
-		const auto pos = std::find_if (UncloseAct2Data_.begin (), UncloseAct2Data_.end (),
-				[&info] (const TabUncloseInfo& that) { return that.RecInfo_.Data_ == info.RecInfo_.Data_; });
-		if (pos != UncloseAct2Data_.end ())
-		{
-			auto act = pos.key ();
-			UncloseMenu_->removeAction (act);
-			UncloseAct2Data_.erase (pos);
-			delete act;
-		}
+		for (const auto& action : UncloseMenu_->actions ())
+			if (action->property ("RecData") == params.RecoverData_)
+			{
+				UncloseMenu_->removeAction (action);
+				action->deleteLater ();
+				break;
+			}
 
 		const auto& fm = UncloseMenu_->fontMetrics ();
-		const QString& elided = fm.elidedText (params.TabName_, Qt::ElideMiddle, 300);
-		QAction *action = new QAction (params.TabIcon_, elided, this);
-		UncloseAct2Data_ [action] = info;
+		const auto& elided = fm.elidedText (params.TabName_, Qt::ElideMiddle, 300);
+		const auto action = new QAction { params.TabIcon_, elided, this };
+		action->setProperty ("RecData", params.RecoverData_);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
@@ -112,7 +110,6 @@ namespace TabSessManager
 			{
 				action->deleteLater ();
 
-				auto data = UncloseAct2Data_.take (action);
 				if (UncloseMenu_->defaultAction () == action)
 					if (const auto nextAct = UncloseMenu_->actions ().value (1))
 					{
