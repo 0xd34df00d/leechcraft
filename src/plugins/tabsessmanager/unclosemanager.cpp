@@ -61,6 +61,8 @@ namespace TabSessManager
 
 		if (const auto recTab = qobject_cast<IRecoverableTab*> (widget))
 			HandleRemoveRecoverableTab (widget, recTab);
+		else if (IsGoodSingleTC (tab->GetTabClassInfo ()))
+			HandleRemoveSingleTab (widget, tab);
 	}
 
 	struct UncloseManager::RemoveTabParams
@@ -145,6 +147,21 @@ namespace TabSessManager
 				[] (QObject *plugin, const TabRecoverInfo& info)
 				{
 					qobject_cast<IHaveRecoverableTabs*> (plugin)->RecoverTabs ({ info });
+				}
+			});
+	}
+
+	void UncloseManager::HandleRemoveSingleTab (QWidget *widget, ITabWidget *tab)
+	{
+		const auto& tc = tab->GetTabClassInfo ();
+		GenericRemoveTab ({
+				tc.TabClass_,
+				tc.VisibleName_,
+				tc.Icon_,
+				widget,
+				[] (QObject *plugin, const TabRecoverInfo& info)
+				{
+					qobject_cast<IHaveTabs*> (plugin)->TabOpenRequested (info.Data_);
 				}
 			});
 	}
