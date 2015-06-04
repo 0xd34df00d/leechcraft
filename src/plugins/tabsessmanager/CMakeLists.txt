@@ -13,6 +13,7 @@ set (SRCS
 	recinfo.cpp
 	sessionmenumanager.cpp
 	sessionsmanager.cpp
+	tabspropsmanager.cpp
 	util.cpp
 	unclosemanager.cpp
 	)
