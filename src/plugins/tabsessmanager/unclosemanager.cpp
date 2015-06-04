@@ -28,8 +28,10 @@
  **********************************************************************/
 
 #include "unclosemanager.h"
+#include <functional>
 #include <QMenu>
 #include <QtDebug>
+#include <util/sll/slotclosure.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
@@ -67,7 +69,8 @@ namespace TabSessManager
 		QString TabName_;
 		QIcon TabIcon_;
 		QWidget *Widget_;
-		const char *Slot_;
+
+		std::function<void (QObject*, TabRecoverInfo)> Uncloser_;
 	};
 
 	void UncloseManager::GenericRemoveTab (const RemoveTabParams& params)
@@ -102,10 +105,28 @@ namespace TabSessManager
 		QAction *action = new QAction (params.TabIcon_, elided, this);
 		UncloseAct2Data_ [action] = info;
 
-		connect (action,
-				SIGNAL (triggered ()),
-				this,
-				params.Slot_);
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			// C++14: pass only params.Uncloser_ instead of whole Params_
+			[info, params, action, this]
+			{
+				action->deleteLater ();
+
+				auto data = UncloseAct2Data_.take (action);
+				if (UncloseMenu_->defaultAction () == action)
+					if (const auto nextAct = UncloseMenu_->actions ().value (1))
+					{
+						UncloseMenu_->setDefaultAction (nextAct);
+						nextAct->setShortcut (QString ("Ctrl+Shift+T"));
+					}
+				UncloseMenu_->removeAction (action);
+
+				params.Uncloser_ (info.Plugin_, info.RecInfo_);
+			},
+			action,
+			SIGNAL (triggered ()),
+			action
+		};
 
 		if (UncloseMenu_->defaultAction ())
 			UncloseMenu_->defaultAction ()->setShortcut (QKeySequence ());
@@ -125,36 +146,11 @@ namespace TabSessManager
 				recTab->GetTabRecoverName (),
 				recTab->GetTabRecoverIcon (),
 				widget,
-				SLOT (handleUnclose ())
+				[] (QObject *plugin, const TabRecoverInfo& info)
+				{
+					qobject_cast<IHaveRecoverableTabs*> (plugin)->RecoverTabs ({ info });
+				}
 			});
-	}
-
-	void UncloseManager::handleUnclose ()
-	{
-		auto action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not an action:"
-					<< sender ();
-			return;
-		}
-
-		if (!UncloseAct2Data_.contains (action))
-			return;
-
-		action->deleteLater ();
-
-		auto data = UncloseAct2Data_.take (action);
-		if (UncloseMenu_->defaultAction () == action)
-			if (const auto nextAct = UncloseMenu_->actions ().value (1))
-			{
-				UncloseMenu_->setDefaultAction (nextAct);
-				nextAct->setShortcut (QString ("Ctrl+Shift+T"));
-			}
-		UncloseMenu_->removeAction (action);
-
-		qobject_cast<IHaveRecoverableTabs*> (data.Plugin_)->RecoverTabs ({ data.RecInfo_ });
 	}
 }
 }

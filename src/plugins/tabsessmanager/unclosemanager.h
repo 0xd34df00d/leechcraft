@@ -67,8 +67,6 @@ namespace TabSessManager
 	private:
 		void GenericRemoveTab (const RemoveTabParams&);
 		void HandleRemoveRecoverableTab (QWidget*, IRecoverableTab*);
-	private slots:
-		void handleUnclose ();
 	};
 }
 }
