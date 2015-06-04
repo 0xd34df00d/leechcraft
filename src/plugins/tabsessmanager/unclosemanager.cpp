@@ -75,20 +75,18 @@ namespace TabSessManager
 
 	void UncloseManager::GenericRemoveTab (const RemoveTabParams& params)
 	{
-		const auto tab = qobject_cast<ITabWidget*> (params.Widget_);
-		TabUncloseInfo info
+		TabRecoverInfo info
 		{
-			{
-				params.RecoverData_,
-				GetSessionProps (params.Widget_)
-			},
-			tab->ParentMultiTabs ()
+			params.RecoverData_,
+			GetSessionProps (params.Widget_)
 		};
+
+		const auto tab = qobject_cast<ITabWidget*> (params.Widget_);
 
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto winIdx = rootWM->GetWindowForTab (tab);
 		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
-		info.RecInfo_.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
+		info.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		for (const auto& action : UncloseMenu_->actions ())
 			if (action->property ("RecData") == params.RecoverData_)
@@ -103,10 +101,11 @@ namespace TabSessManager
 		const auto action = new QAction { params.TabIcon_, elided, this };
 		action->setProperty ("RecData", params.RecoverData_);
 
+		const auto plugin = tab->ParentMultiTabs ();
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
 			// C++14: pass only params.Uncloser_ instead of whole Params_
-			[info, params, action, this]
+			[info, plugin, params, action, this]
 			{
 				action->deleteLater ();
 
@@ -118,7 +117,7 @@ namespace TabSessManager
 					}
 				UncloseMenu_->removeAction (action);
 
-				params.Uncloser_ (info.Plugin_, info.RecInfo_);
+				params.Uncloser_ (plugin, info);
 			},
 			action,
 			SIGNAL (triggered ()),

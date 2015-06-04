@@ -45,16 +45,9 @@ namespace TabSessManager
 	{
 		Q_OBJECT
 
-		const ICoreProxy_ptr Proxy_;
-
-		struct TabUncloseInfo
-		{
-			TabRecoverInfo RecInfo_;
-			QObject *Plugin_;
-		};
-
 		struct RemoveTabParams;
 
+		const ICoreProxy_ptr Proxy_;
 		QMenu * const UncloseMenu_;
 	public:
 		UncloseManager (const ICoreProxy_ptr&, QObject* = nullptr);
