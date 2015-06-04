@@ -42,6 +42,7 @@
 #include "sessionmenumanager.h"
 #include "sessionsmanager.h"
 #include "unclosemanager.h"
+#include "tabspropsmanager.h"
 
 namespace LeechCraft
 {
@@ -51,9 +52,11 @@ namespace TabSessManager
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
+		TabsPropsMgr_ = std::make_shared<TabsPropsManager> ();
+
 		UncloseMgr_ = new UncloseManager { proxy };
 
-		SessionsMgr_ = new SessionsManager { proxy };
+		SessionsMgr_ = new SessionsManager { proxy, TabsPropsMgr_.get () };
 
 		SessionMenuMgr_ = new SessionMenuManager;
 		connect (SessionMenuMgr_,
@@ -154,12 +157,12 @@ namespace TabSessManager
 
 	void Plugin::hookTabAdding (IHookProxy_ptr, QWidget *widget)
 	{
-		SessionsMgr_->HandleTabAdding (widget);
+		TabsPropsMgr_->HandleTabAdding (widget);
 	}
 
 	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
 	{
-		SessionsMgr_->HandlePreferredWindowIndex (proxy, widget);
+		TabsPropsMgr_->HandlePreferredWindowIndex (proxy, widget);
 	}
 }
 }

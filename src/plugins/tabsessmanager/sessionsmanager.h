@@ -32,13 +32,13 @@
 #include <QObject>
 #include <QPair>
 #include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
 {
 namespace TabSessManager
 {
 	struct RecInfo;
+	class TabsPropsManager;
 
 	class SessionsManager : public QObject
 	{
@@ -46,20 +46,16 @@ namespace TabSessManager
 
 		const ICoreProxy_ptr Proxy_;
 
+		TabsPropsManager * const TabsPropsMgr_;
+
 		bool IsScheduled_ = false;
 		bool IsRecovering_ = true;
 
 		QList<QList<QObject*>> Tabs_;
-
-		QList<int> PreferredWindowsQueue_;
-		QList<QList<QPair<QByteArray, QVariant>>> TabsPropsQueue_;
 	public:
-		SessionsManager (const ICoreProxy_ptr&, QObject* = nullptr);
+		SessionsManager (const ICoreProxy_ptr&, TabsPropsManager*,  QObject* = nullptr);
 
 		QStringList GetCustomSessions () const;
-
-		void HandlePreferredWindowIndex (const IHookProxy_ptr&, const QWidget*);
-		void HandleTabAdding (QWidget*);
 
 		bool HasTab (QObject*);
 	protected:

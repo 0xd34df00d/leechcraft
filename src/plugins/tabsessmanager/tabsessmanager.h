@@ -42,6 +42,7 @@ namespace TabSessManager
 	class SessionMenuManager;
 	class SessionsManager;
 	class UncloseManager;
+	class TabsPropsManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -54,6 +55,8 @@ namespace TabSessManager
 		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
 
 		ICoreProxy_ptr Proxy_;
+
+		std::shared_ptr<TabsPropsManager> TabsPropsMgr_;
 
 		UncloseManager *UncloseMgr_;
 

@@ -45,14 +45,17 @@
 #include "recinfo.h"
 #include "restoresessiondialog.h"
 #include "util.h"
+#include "tabspropsmanager.h"
 
 namespace LeechCraft
 {
 namespace TabSessManager
 {
-	SessionsManager::SessionsManager (const ICoreProxy_ptr& proxy, QObject *parent)
+	SessionsManager::SessionsManager (const ICoreProxy_ptr& proxy,
+			TabsPropsManager *tpm, QObject *parent)
 	: QObject { parent }
 	, Proxy_ { proxy }
+	, TabsPropsMgr_ { tpm }
 	{
 		const auto& roots = Proxy_->GetPluginsManager ()->
 				GetAllCastableRoots<IHaveTabs*> ();
@@ -139,24 +142,6 @@ namespace TabSessManager
 
 			tabs = dia.GetTabs ();
 		}
-	}
-
-	void SessionsManager::HandlePreferredWindowIndex (const IHookProxy_ptr& proxy, const QWidget*)
-	{
-		if (PreferredWindowsQueue_.empty ())
-			return;
-
-		proxy->SetReturnValue (PreferredWindowsQueue_.takeFirst ());
-		proxy->CancelDefault ();
-	}
-
-	void SessionsManager::HandleTabAdding (QWidget *widget)
-	{
-		if (TabsPropsQueue_.empty ())
-			return;
-
-		for (const auto& pair : TabsPropsQueue_.takeFirst ())
-			widget->setProperty (pair.first, pair.second);
 	}
 
 	bool SessionsManager::HasTab (QObject *tab)
@@ -264,8 +249,8 @@ namespace TabSessManager
 
 		for (const auto& pair : ordered)
 		{
-			PreferredWindowsQueue_ << pair.second.WindowID_;
-			TabsPropsQueue_ << pair.second.Props_;
+			TabsPropsMgr_->AppendWindow (pair.second.WindowID_);
+			TabsPropsMgr_->AppendProps (pair.second.Props_);
 			if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
 				ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, {} } });
 			else if (const auto iht = qobject_cast<IHaveTabs*> (pair.first))
