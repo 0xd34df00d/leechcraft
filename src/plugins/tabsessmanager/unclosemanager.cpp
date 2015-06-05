@@ -90,6 +90,7 @@ namespace TabSessManager
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto winIdx = rootWM->GetWindowForTab (tab);
 		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
+		info.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		for (const auto& action : UncloseMenu_->actions ())
 			if (action->property ("RecData") == params.RecoverData_)
