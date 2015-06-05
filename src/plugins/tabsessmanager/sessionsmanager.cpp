@@ -394,7 +394,7 @@ namespace TabSessManager
 	void SessionsManager::handleRemoveTab (QWidget *widget)
 	{
 		for (auto& list : Tabs_)
-			list.removeAll (widget);
+			list.removeOne (widget);
 		handleTabRecoverDataChanged ();
 	}
 
