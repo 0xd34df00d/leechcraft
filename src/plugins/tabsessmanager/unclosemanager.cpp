@@ -121,6 +121,7 @@ namespace TabSessManager
 					}
 				UncloseMenu_->removeAction (action);
 
+				TabsPropsMgr_->AppendProps (info.DynProperties_);
 				params.Uncloser_ (plugin, info);
 			},
 			action,
