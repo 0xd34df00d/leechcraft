@@ -13,16 +13,16 @@
         <source>Save current session...</source>
         <translation>Save current session...</translation>
     </message>
+    <message>
+        <location filename="unclosemanager.cpp" line="49"/>
+        <source>Unclose tabs</source>
+        <translation>Unclose tabs</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::TabSessManager::Plugin</name>
     <message>
-        <location filename="tabsessmanager.cpp" line="58"/>
-        <source>Unclose tabs</source>
-        <translation>Unclose tabs</translation>
-    </message>
-    <message>
-        <location filename="tabsessmanager.cpp" line="117"/>
+        <location filename="tabsessmanager.cpp" line="116"/>
         <source>Manages sessions of tabs in LeechCraft.</source>
         <translation>Manages sessions of tabs in LeechCraft.</translation>
     </message>
@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::TabSessManager::RestoreSessionDialog</name>
     <message>
-        <location filename="restoresessiondialog.cpp" line="57"/>
+        <location filename="restoresessiondialog.cpp" line="60"/>
         <source>no name</source>
         <translation>no name</translation>
     </message>
@@ -71,12 +71,12 @@
 <context>
     <name>LeechCraft::TabSessManager::SessionsManager</name>
     <message>
-        <location filename="sessionsmanager.cpp" line="277"/>
+        <location filename="sessionsmanager.cpp" line="308"/>
         <source>Custom session</source>
         <translation>Custom session</translation>
     </message>
     <message>
-        <location filename="sessionsmanager.cpp" line="278"/>
+        <location filename="sessionsmanager.cpp" line="309"/>
         <source>Enter the name of the session:</source>
         <translation>Enter the name of the session:</translation>
     </message>
