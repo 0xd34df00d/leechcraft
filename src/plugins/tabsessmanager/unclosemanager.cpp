@@ -109,7 +109,7 @@ namespace TabSessManager
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
 			// C++14: pass only params.Uncloser_ instead of whole Params_
-			[info, plugin, params, action, tabIdx, this]
+			[info, plugin, params, action, winIdx, this]
 			{
 				action->deleteLater ();
 
@@ -122,7 +122,7 @@ namespace TabSessManager
 				UncloseMenu_->removeAction (action);
 
 				TabsPropsMgr_->AppendProps (info.DynProperties_);
-				TabsPropsMgr_->AppendWindow (tabIdx);
+				TabsPropsMgr_->AppendWindow (winIdx);
 				params.Uncloser_ (plugin, info);
 			},
 			action,
