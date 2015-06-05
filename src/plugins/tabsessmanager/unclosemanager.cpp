@@ -35,15 +35,17 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include <interfaces/core/icoretabwidget.h>
+#include "tabspropsmanager.h"
 #include "util.h"
 
 namespace LeechCraft
 {
 namespace TabSessManager
 {
-	UncloseManager::UncloseManager (const ICoreProxy_ptr& proxy, QObject *parent)
+	UncloseManager::UncloseManager (const ICoreProxy_ptr& proxy, TabsPropsManager *tpm, QObject *parent)
 	: QObject { parent }
 	, Proxy_ { proxy }
+	, TabsPropsMgr_ { tpm }
 	, UncloseMenu_ { new QMenu { tr ("Unclose tabs") } }
 	{
 	}

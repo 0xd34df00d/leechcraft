@@ -54,7 +54,7 @@ namespace TabSessManager
 
 		TabsPropsMgr_ = std::make_shared<TabsPropsManager> ();
 
-		UncloseMgr_ = new UncloseManager { proxy };
+		UncloseMgr_ = new UncloseManager { proxy, TabsPropsMgr_.get () };
 
 		SessionsMgr_ = new SessionsManager { proxy, TabsPropsMgr_.get () };
 

@@ -41,6 +41,8 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
+	class TabsPropsManager;
+
 	class UncloseManager : public QObject
 	{
 		Q_OBJECT
@@ -48,9 +50,12 @@ namespace TabSessManager
 		struct RemoveTabParams;
 
 		const ICoreProxy_ptr Proxy_;
+
+		TabsPropsManager * const TabsPropsMgr_;
+
 		QMenu * const UncloseMenu_;
 	public:
-		UncloseManager (const ICoreProxy_ptr&, QObject* = nullptr);
+		UncloseManager (const ICoreProxy_ptr&, TabsPropsManager*, QObject* = nullptr);
 
 		QAction* GetMenuAction () const;
 
