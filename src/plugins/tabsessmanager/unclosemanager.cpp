@@ -90,7 +90,6 @@ namespace TabSessManager
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto winIdx = rootWM->GetWindowForTab (tab);
 		const auto tabIdx = rootWM->GetTabWidget (winIdx)->IndexOf (params.Widget_);
-		info.DynProperties_.append ({ "TabSessManager/Position", tabIdx });
 
 		for (const auto& action : UncloseMenu_->actions ())
 			if (action->property ("RecData") == params.RecoverData_)
@@ -109,7 +108,7 @@ namespace TabSessManager
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
 			// C++14: pass only params.Uncloser_ instead of whole Params_
-			[info, plugin, params, action, this]
+			[info, plugin, params, action, tabIdx, this]
 			{
 				action->deleteLater ();
 
@@ -122,6 +121,7 @@ namespace TabSessManager
 				UncloseMenu_->removeAction (action);
 
 				TabsPropsMgr_->AppendProps (info.DynProperties_);
+				TabsPropsMgr_->AppendWindow (tabIdx);
 				params.Uncloser_ (plugin, info);
 			},
 			action,
