@@ -40,7 +40,7 @@ namespace Azoth
 namespace Xoox
 {
 	Xep0313ReqIq::Xep0313ReqIq (const QString& jid, const QString& startId, int count, Direction dir)
-	: QXmppIq { QXmppIq::Get }
+	: QXmppIq { QXmppIq::Set }
 	, JID_ { jid }
 	, ItemId_ { startId }
 	, Count_ { count }
