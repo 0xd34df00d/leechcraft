@@ -45,18 +45,20 @@ namespace Azoth
 	{
 		ContactsModel_->setHorizontalHeaderLabels (QStringList (tr ("Name")) << tr ("ID"));
 
-		Q_FOREACH (QObject *entryObj, entries)
+		for (const auto entryObj : entries)
 		{
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 			if (!entry)
 				continue;
 
-			QList<QStandardItem*> row;
-			row << new QStandardItem (entry->GetEntryName ());
-			row << new QStandardItem (entry->GetHumanReadableID ());
+			QList<QStandardItem*> row
+			{
+				new QStandardItem { entry->GetEntryName () },
+				new QStandardItem { entry->GetHumanReadableID () }
+			};
 			row.first ()->setIcon (ResourcesManager::Instance ()
 						.GetIconForState (entry->GetStatus ().State_));
-			row.first ()->setData (QVariant::fromValue<QObject*> (entryObj));
+			row.first ()->setData (QVariant::fromValue (entryObj));
 			row.first ()->setCheckable (true);
 			row.first ()->setCheckState (Qt::Checked);
 
@@ -93,8 +95,8 @@ namespace Azoth
 			if (item->checkState () != Qt::Checked)
 				continue;
 
-			QObject *entryObj = item->data ().value<QObject*> ();
-			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+			const auto entryObj = item->data ().value<QObject*> ();
+			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
 			entry->CreateMessage (IMessage::Type::ChatMessage, {}, msg)->Send ();
 			Core::Instance ().IncreaseUnreadCount (entry, -1);
