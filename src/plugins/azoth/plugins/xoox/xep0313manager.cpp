@@ -87,6 +87,12 @@ namespace Xoox
 				return true;
 			}
 
+			const auto& fin = element.firstChildElement ("fin");
+			if (fin.namespaceURI () == NsMam)
+			{
+				HandleHistoryQueryFinished (fin);
+				return true;
+			}
 		}
 
 		return false;
@@ -163,9 +169,9 @@ namespace Xoox
 		LastId2Jid_ [id] = otherJid;
 	}
 
-	void Xep0313Manager::HandleHistoryQueryFinished (const QDomElement& iqElem)
+	void Xep0313Manager::HandleHistoryQueryFinished (const QDomElement& finElem)
 	{
-		const auto& setElem = iqElem.firstChildElement ("query").firstChildElement ("set");
+		const auto& setElem = finElem.firstChildElement ("set");
 
 		QXmppResultSetReply resultSet;
 		resultSet.parse (setElem);
