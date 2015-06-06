@@ -43,7 +43,7 @@ namespace Azoth
 		Q_OBJECT
 	public:
 		MsgSender (ICLEntry *e, IMessage::Type type,
-				QString variant, QString text, QString richText);
+				QString text, QString variant, QString richText);
 	signals:
 		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,

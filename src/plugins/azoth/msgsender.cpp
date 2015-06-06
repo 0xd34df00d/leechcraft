@@ -38,7 +38,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	MsgSender::MsgSender (ICLEntry *e, IMessage::Type type, QString variant, QString text, QString richText)
+	MsgSender::MsgSender (ICLEntry *e, IMessage::Type type, QString text, QString variant, QString richText)
 	{
 		deleteLater ();
 

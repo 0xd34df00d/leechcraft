@@ -697,7 +697,7 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		new MsgSender { e, type, variant, text, richText };
+		new MsgSender { e, type, text, variant, richText };
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()
