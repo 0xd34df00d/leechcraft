@@ -697,11 +697,7 @@ namespace Azoth
 		// TODO pass type without casts
 		emit hookMessageWillCreated (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
 		if (proxy->IsCancelled ())
-		{
-			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
-				clear = false;
 			return;
-		}
 
 		int intType = static_cast<int> (type);
 		proxy->FillValue ("type", intType);
@@ -726,11 +722,7 @@ namespace Azoth
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookMessageCreated (proxy, this, msg->GetQObject ());
 		if (proxy->IsCancelled ())
-		{
-			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
-				clear = false;
 			return;
-		}
 
 		msg->Send ();
 	}
