@@ -100,6 +100,7 @@
 #include "corecommandsmanager.h"
 #include "resourcesmanager.h"
 #include "msgeditautocompleter.h"
+#include "msgsender.h"
 
 namespace LeechCraft
 {
@@ -696,37 +697,7 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		// TODO pass type without casts
-		emit hookMessageWillCreated (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
-		if (proxy->IsCancelled ())
-			return;
-
-		int intType = static_cast<int> (type);
-		proxy->FillValue ("type", intType);
-		type = static_cast<IMessage::Type> (intType);
-		proxy->FillValue ("variant", variant);
-		proxy->FillValue ("text", text);
-
-		const auto msg = e->CreateMessage (type, variant, text);
-		if (!msg)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to create message to"
-					<< e->GetEntryID ();
-			return;
-		}
-		const auto richMsg = qobject_cast<IRichTextMessage*> (msg->GetQObject ());
-		if (richMsg &&
-				!richText.isEmpty () &&
-				ToggleRichText_->isChecked ())
-			richMsg->SetRichBody (richText);
-
-		proxy = std::make_shared<Util::DefaultHookProxy> ();
-		emit hookMessageCreated (proxy, this, msg->GetQObject ());
-		if (proxy->IsCancelled ())
-			return;
-
-		msg->Send ();
+		new MsgSender { e, type, variant, text, richText };
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()
