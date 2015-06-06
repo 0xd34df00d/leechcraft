@@ -677,7 +677,8 @@ namespace Azoth
 		auto type = e->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		proxy->SetValue ("text", text);
 		emit hookMessageSendRequested (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
 		proxy->FillValue ("text", text);
@@ -714,7 +715,7 @@ namespace Azoth
 				ToggleRichText_->isChecked ())
 			richMsg->SetRichBody (richText);
 
-		proxy.reset (new Util::DefaultHookProxy ());
+		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookMessageCreated (proxy, this, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 		{
