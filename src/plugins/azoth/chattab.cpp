@@ -681,6 +681,14 @@ namespace Azoth
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		proxy->SetValue ("text", text);
 		emit hookMessageSendRequested (proxy, this, e->GetQObject (), static_cast<int> (type), variant);
+
+		if (proxy->IsCancelled ())
+		{
+			if (proxy->GetValue ("PreserveMessageEdit").toBool ())
+				clear = false;
+			return;
+		}
+
 		proxy->FillValue ("text", text);
 
 		if (ProcessOutgoingMsg (e, text))
