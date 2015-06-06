@@ -100,6 +100,7 @@ set (XOOX_SRCS
 	xep0313prefsdialog.cpp
 	xep0313modelmanager.cpp
 	xep0313reqiq.cpp
+	xep0334utils.cpp
 	carbonsmanager.cpp
 	pingmanager.cpp
 	pingreplyobject.cpp
