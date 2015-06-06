@@ -47,8 +47,8 @@ namespace TabSessManager
 		QList<TabsProps_t> TabsPropsQueue_;
 		QList<int> PreferredWindowsQueue_;
 	public:
-		Util::DefaultScopeGuard AppendProps (const TabsProps_t&);
-		Util::DefaultScopeGuard AppendWindow (int);
+		Q_REQUIRED_RESULT Util::DefaultScopeGuard AppendProps (const TabsProps_t&);
+		Q_REQUIRED_RESULT Util::DefaultScopeGuard AppendWindow (int);
 
 		void HandlePreferredWindowIndex (const IHookProxy_ptr&, const QWidget*);
 		void HandleTabAdding (QWidget*);
