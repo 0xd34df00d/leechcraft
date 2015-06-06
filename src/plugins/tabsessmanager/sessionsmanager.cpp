@@ -420,7 +420,11 @@ namespace TabSessManager
 		if (windowIndex < 0 || windowIndex >= Tabs_.size ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unknown window index for"
+					<< "unknown window index"
+					<< windowIndex
+					<< "of"
+					<< Tabs_.size ()
+					<< "for"
 					<< widget;
 			return;
 		}
