@@ -34,14 +34,32 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
-	void TabsPropsManager::AppendProps (const TabsProps_t& props)
+	namespace
 	{
-		TabsPropsQueue_ << props;
+		template<typename T>
+		Util::DefaultScopeGuard MakePropsGuard (QList<T>& list)
+		{
+			const auto size = list.size ();
+			return Util::MakeScopeGuard ([size, &list]
+					{
+						if (list.size () > size)
+							list.erase (list.begin () + size, list.end ());
+					});
+		}
 	}
 
-	void TabsPropsManager::AppendWindow (int window)
+	Util::DefaultScopeGuard TabsPropsManager::AppendProps (const TabsProps_t& props)
 	{
+		auto guard = MakePropsGuard (TabsPropsQueue_);
+		TabsPropsQueue_ << props;
+		return guard;
+	}
+
+	Util::DefaultScopeGuard TabsPropsManager::AppendWindow (int window)
+	{
+		auto guard = MakePropsGuard (PreferredWindowsQueue_);
 		PreferredWindowsQueue_ << window;
+		return guard;
 	}
 
 	void TabsPropsManager::HandlePreferredWindowIndex (const IHookProxy_ptr& proxy, const QWidget*)

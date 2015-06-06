@@ -246,8 +246,8 @@ namespace TabSessManager
 
 		for (const auto& pair : ordered)
 		{
-			TabsPropsMgr_->AppendWindow (pair.second.WindowID_);
-			TabsPropsMgr_->AppendProps (pair.second.Props_);
+			const auto winGuard = TabsPropsMgr_->AppendWindow (pair.second.WindowID_);
+			const auto propsGuard = TabsPropsMgr_->AppendProps (pair.second.Props_);
 			if (const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first))
 				ihrt->RecoverTabs ({ TabRecoverInfo { pair.second.Data_, {} } });
 			else if (const auto iht = qobject_cast<IHaveTabs*> (pair.first))

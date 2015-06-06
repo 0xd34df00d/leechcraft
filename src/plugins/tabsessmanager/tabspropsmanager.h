@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QVariant>
+#include <util/sll/util.h>
 #include <interfaces/core/ihookproxy.h>
 
 class QWidget;
@@ -46,8 +47,8 @@ namespace TabSessManager
 		QList<TabsProps_t> TabsPropsQueue_;
 		QList<int> PreferredWindowsQueue_;
 	public:
-		void AppendProps (const TabsProps_t&);
-		void AppendWindow (int);
+		Util::DefaultScopeGuard AppendProps (const TabsProps_t&);
+		Util::DefaultScopeGuard AppendWindow (int);
 
 		void HandlePreferredWindowIndex (const IHookProxy_ptr&, const QWidget*);
 		void HandleTabAdding (QWidget*);

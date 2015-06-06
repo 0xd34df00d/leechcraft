@@ -121,8 +121,8 @@ namespace TabSessManager
 					}
 				UncloseMenu_->removeAction (action);
 
-				TabsPropsMgr_->AppendProps (info.DynProperties_);
-				TabsPropsMgr_->AppendWindow (winIdx);
+				const auto propsGuard = TabsPropsMgr_->AppendProps (info.DynProperties_);
+				const auto winGuard = TabsPropsMgr_->AppendWindow (winIdx);
 				params.Uncloser_ (plugin, info);
 			},
 			action,
