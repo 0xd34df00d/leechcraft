@@ -128,19 +128,6 @@ namespace Xoox
 		client ()->sendPacket (iq);
 	}
 
-	bool Xep0313Manager::CheckMessage (const QXmppMessage& msg)
-	{
-		for (const auto& extension : msg.extensions ())
-			if (extension.tagName () == "result" &&
-					extension.attribute ("xmlns") == NsMam)
-			{
-				HandleMessage (extension);
-				return true;
-			}
-
-		return false;
-	}
-
 	void Xep0313Manager::HandleMessage (const QXmppElement& resultExt)
 	{
 		const auto& id = resultExt.attribute ("id");

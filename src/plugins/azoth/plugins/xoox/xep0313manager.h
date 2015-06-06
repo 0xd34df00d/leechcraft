@@ -59,7 +59,6 @@ namespace Xoox
 		void SetPrefs (const Xep0313PrefIq&);
 
 		void RequestHistory (const QString& jid, QString baseId, int count);
-		bool CheckMessage (const QXmppMessage& msg);
 	private:
 		void HandleMessage (const QXmppElement&);
 		void HandleHistoryQueryFinished (const QDomElement&);

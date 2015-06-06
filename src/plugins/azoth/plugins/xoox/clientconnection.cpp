@@ -1183,8 +1183,7 @@ namespace Xoox
 			HandleRIEX (msg.from (), AwaitingRIEXItems_.take (msg.from ()), msg.body ());
 			return;
 		}
-		else if (Xep0313Manager_->CheckMessage (msg) ||
-				CarbonsManager_->CheckMessage (msg))
+		else if (CarbonsManager_->CheckMessage (msg))
 			return;
 		else if (RoomHandlers_.contains (jid))
 			RoomHandlers_ [jid]->HandleMessage (msg, resource);
