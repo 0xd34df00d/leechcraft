@@ -760,8 +760,7 @@ namespace Xoox
 
 		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
-		if (msgObj->IsOTRMessage () &&
-				CarbonsManager_->IsEnabled ())
+		if (msgObj->IsOTRMessage ())
 			CarbonsManager_->ExcludeMessage (msg);
 
 		Client_->sendPacket (msg);
