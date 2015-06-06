@@ -62,7 +62,9 @@ namespace Xoox
 
 	bool Xep0313Manager::handleStanza (const QDomElement& element)
 	{
-		if (element.tagName () == "iq")
+		const auto& tagName = element.tagName ();
+
+		if (tagName == "iq")
 		{
 			if (element.firstChildElement ("prefs").namespaceURI () == NsMam)
 			{
@@ -75,6 +77,16 @@ namespace Xoox
 				HandleHistoryQueryFinished (element);
 				return true;
 			}
+		}
+		else if (tagName == "message")
+		{
+			const auto& res = element.firstChildElement ("result");
+			if (res.namespaceURI () == NsMam)
+			{
+				HandleMessage (res);
+				return true;
+			}
+
 		}
 
 		return false;
