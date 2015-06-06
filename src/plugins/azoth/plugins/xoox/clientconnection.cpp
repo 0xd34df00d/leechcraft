@@ -95,6 +95,7 @@
 #include "xep0313manager.h"
 #include "carbonsmanager.h"
 #include "pingmanager.h"
+#include "xep0334utils.h"
 
 namespace LeechCraft
 {
@@ -761,7 +762,12 @@ namespace Xoox
 		CryptHandler_->ProcessOutgoing (msg, msgObj);
 
 		if (msgObj->IsOTRMessage ())
+		{
 			CarbonsManager_->ExcludeMessage (msg);
+			Xep0334::SetHint (msg, Xep0334::MessageHint::NoCopies);
+			Xep0334::SetHint (msg, Xep0334::MessageHint::NoPermStorage);
+			Xep0334::SetHint (msg, Xep0334::MessageHint::NoStorage);
+		}
 
 		Client_->sendPacket (msg);
 	}
