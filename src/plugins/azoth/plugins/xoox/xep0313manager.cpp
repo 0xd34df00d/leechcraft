@@ -43,7 +43,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const QString NsMam = "urn:xmpp:mam:tmp";
+	const QString NsMam = "urn:xmpp:mam:0";
 
 	bool Xep0313Manager::Supports0313 (const QStringList& features)
 	{
