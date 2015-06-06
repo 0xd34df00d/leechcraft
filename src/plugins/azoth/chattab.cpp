@@ -651,7 +651,9 @@ namespace Azoth
 		if (text.isEmpty ())
 			return;
 
-		const QString& richText = MsgFormatter_->GetNormalizedRichText ();
+		const auto& richText = ToggleRichText_->isChecked () ?
+				MsgFormatter_->GetNormalizedRichText () :
+				QString {};
 
 		SetChatPartState (CPSActive);
 

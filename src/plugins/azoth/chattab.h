@@ -278,14 +278,6 @@ namespace Azoth
 				QObject *entry,
 				int type,
 				QString variant);
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *entry,
-				int type,
-				QString variant);
-		void hookMessageCreated (LeechCraft::IHookProxy_ptr proxy,
-				QObject *chatTab,
-				QObject *message);
 		void hookThemeReloaded (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QWebView *view,
