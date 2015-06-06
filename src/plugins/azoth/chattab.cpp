@@ -56,6 +56,7 @@
 #include <util/gui/util.h>
 #include <util/gui/findnotificationwk.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -655,8 +656,7 @@ namespace Azoth
 		SetChatPartState (CPSActive);
 
 		bool clear = true;
-		auto clearGuard = std::shared_ptr<void> (nullptr,
-				[&clear, &text, this] (void*) -> void
+		auto clearGuard = Util::MakeScopeGuard ([&clear, &text, this]
 				{
 					if (!clear)
 						return;
