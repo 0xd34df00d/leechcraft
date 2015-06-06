@@ -31,6 +31,7 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <QXmppResultSet.h>
+#include <util/sll/util.h>
 #include "xep0313manager.h"
 
 namespace LeechCraft
@@ -53,7 +54,13 @@ namespace Xoox
 		QXmppIq::parseElementFromChild (element);
 
 		const auto& queryElem = element.firstChildElement ("query");
-		JID_ = queryElem.firstChildElement ("with").text ();
+
+		QXmppDataForm form;
+		form.parse (queryElem.firstChildElement ("x"));
+		if (!form.isNull ())
+			for (const auto& field : form.fields ())
+				if (field.key () == "with")
+					JID_ = field.value ().toString ();
 
 		QXmppResultSetQuery q;
 		q.parse (queryElem.firstChildElement ("set"));
@@ -78,10 +85,27 @@ namespace Xoox
 		QXmppIq::toXmlElementFromChild (writer);
 
 		writer->writeStartElement ("query");
+		const auto endGuard = Util::MakeScopeGuard ([writer] { writer->writeEndElement (); });
+
 		writer->writeAttribute ("xmlns", Xep0313Manager::GetNsUri ());
 
+		if (JID_.isEmpty () && !Count_ && ItemId_.isEmpty ())
+			return;
+
 		if (!JID_.isEmpty ())
-			writer->writeTextElement ("with", JID_);
+		{
+			QXmppDataForm::Field formTypeField { QXmppDataForm::Field::HiddenField };
+			formTypeField.setKey ("FORM_TYPE");
+			formTypeField.setValue (Xep0313Manager::GetNsUri ());
+
+			QXmppDataForm::Field jidField { QXmppDataForm::Field::JidSingleField };
+			jidField.setKey ("with");
+			jidField.setValue (JID_);
+
+			QXmppDataForm form { QXmppDataForm::Form };
+			form.setFields ({ formTypeField, jidField });
+			form.toXml (writer);
+		}
 
 		if (Count_ > 0 || !ItemId_.isEmpty ())
 		{
@@ -104,8 +128,6 @@ namespace Xoox
 			}
 			q.toXml (writer);
 		}
-
-		writer->writeEndElement ();
 	}
 }
 }
