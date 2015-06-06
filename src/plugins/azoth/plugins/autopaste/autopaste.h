@@ -80,7 +80,7 @@ namespace Autopaste
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+		void hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
 				QObject *chatTab,
 				QObject *entry,
 				int type,

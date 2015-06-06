@@ -152,7 +152,7 @@ namespace Autopaste
 		AzothProxy_ = qobject_cast<IProxyObject*> (obj);
 	}
 
-	void Plugin::hookMessageWillCreated (LeechCraft::IHookProxy_ptr proxy,
+	void Plugin::hookMessageSendRequested (LeechCraft::IHookProxy_ptr proxy,
 			QObject*, QObject *entry, int, QString)
 	{
 		ICLEntry *other = qobject_cast<ICLEntry*> (entry);
