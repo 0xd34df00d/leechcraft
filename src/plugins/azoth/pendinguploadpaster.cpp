@@ -30,6 +30,7 @@
 #include "pendinguploadpaster.h"
 #include <QUrl>
 #include "interfaces/azoth/iclentry.h"
+#include "msgsender.h"
 
 namespace LeechCraft
 {
@@ -56,7 +57,7 @@ namespace Azoth
 		const auto msgType = Entry_->GetEntryType () == ICLEntry::EntryType::MUC ?
 					IMessage::Type::MUCMessage :
 					IMessage::Type::ChatMessage;
-		Entry_->CreateMessage (msgType, EntryVariant_, url.toEncoded ())->Send ();
+		new MsgSender { Entry_, msgType, url.toEncoded (), EntryVariant_ };
 		deleteLater ();
 	}
 }
