@@ -163,7 +163,8 @@ namespace Xoox
 		QXmppResultSetReply resultSet;
 		resultSet.parse (setElem);
 
-		if (!LastId2Jid_.contains (resultSet.last ()))
+		if (!resultSet.last ().isEmpty () &&
+				!LastId2Jid_.contains (resultSet.last ()))
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown `last`"
