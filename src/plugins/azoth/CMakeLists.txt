@@ -153,6 +153,7 @@ set (SRCS
 	notificationsmanager.cpp
 	msgeditautocompleter.cpp
 	bookmarkeditdialog.cpp
+	msgsender.cpp
 	)
 set (FORMS
 	mainwidget.ui
