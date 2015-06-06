@@ -48,6 +48,7 @@
 #include "chattab.h"
 #include "transferjobmanager.h"
 #include "dndutil.h"
+#include "msgsender.h"
 
 namespace LeechCraft
 {
@@ -115,28 +116,22 @@ namespace Azoth
 			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
-			auto msg = entry->CreateMessage (msgType,
-					chatTab->GetSelectedVariant (),
-					ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it."));
 
-			if (const auto richMsg = qobject_cast<IRichTextMessage*> (msg->GetQObject ()))
+			QString asBase;
+			if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
 			{
-				QString asBase;
-				if (entry->GetEntryType () == ICLEntry::EntryType::MUC)
-				{
-					QBuffer buf;
-					buf.open (QIODevice::ReadWrite);
-					image.save (&buf, "JPG", 60);
-					asBase = QString ("data:image/png;base64,%1")
-							.arg (QString (buf.buffer ().toBase64 ()));
-				}
-				else
-					asBase = Util::GetAsBase64Src (image);
-				const auto& body = "<img src='" + asBase + "'/>";
-				richMsg->SetRichBody (body);
+				QBuffer buf;
+				buf.open (QIODevice::ReadWrite);
+				image.save (&buf, "JPG", 60);
+				asBase = QString ("data:image/png;base64,%1")
+						.arg (QString (buf.buffer ().toBase64 ()));
 			}
+			else
+				asBase = Util::GetAsBase64Src (image);
+			const auto& body = "<img src='" + asBase + "'/>";
+			const auto& msg = ContactDropFilter::tr ("This message contains inline image, enable XHTML-IM to view it.");
 
-			msg->Send ();
+			new MsgSender { entry, msgType, msg, chatTab->GetSelectedVariant (), body };
 		}
 
 		void SendLink (const QUrl& url, const QString& entryId, ChatTab *chatTab)
@@ -148,10 +143,7 @@ namespace Azoth
 			const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 						IMessage::Type::MUCMessage :
 						IMessage::Type::ChatMessage;
-			const auto msg = entry->CreateMessage (msgType,
-					chatTab->GetSelectedVariant (),
-					url.toEncoded ());
-			msg->Send ();
+			new MsgSender { entry, msgType, url.toEncoded (), chatTab->GetSelectedVariant () };
 		}
 	}
 
@@ -196,7 +188,7 @@ namespace Azoth
 							const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
 										IMessage::Type::MUCMessage :
 										IMessage::Type::ChatMessage;
-							entry->CreateMessage (msgType, variant, url.toString ())->Send ();
+							new MsgSender { entry, msgType, url.toString (), variant };
 						});
 				functions.append ([thisEnt, obj]
 						{
