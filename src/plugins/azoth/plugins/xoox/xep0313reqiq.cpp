@@ -83,12 +83,12 @@ namespace Xoox
 		if (!JID_.isEmpty ())
 			writer->writeTextElement ("with", JID_);
 
-		if (Count_ > 0 || !ItemId_.isNull ())
+		if (Count_ > 0 || !ItemId_.isEmpty ())
 		{
 			QXmppResultSetQuery q;
 			if (Count_ > 0)
 				q.setMax (Count_);
-			if (!ItemId_.isNull ())
+			if (!ItemId_.isEmpty ())
 			{
 				switch (Dir_)
 				{
