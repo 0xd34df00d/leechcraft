@@ -32,6 +32,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/irichtextmessage.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,8 @@ namespace Azoth
 	MsgSender::MsgSender (ICLEntry *e, IMessage::Type type, QString variant, QString text, QString richText)
 	{
 		deleteLater ();
+
+		Core::Instance ().RegisterHookable (this);
 
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 
