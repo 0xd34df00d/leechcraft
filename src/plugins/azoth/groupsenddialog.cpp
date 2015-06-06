@@ -33,6 +33,7 @@
 #include "interfaces/azoth/imessage.h"
 #include "core.h"
 #include "resourcesmanager.h"
+#include "msgsender.h"
 
 namespace LeechCraft
 {
@@ -98,7 +99,7 @@ namespace Azoth
 			const auto entryObj = item->data ().value<QObject*> ();
 			const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-			entry->CreateMessage (IMessage::Type::ChatMessage, {}, msg)->Send ();
+			new MsgSender { entry, IMessage::Type::ChatMessage, msg };
 			Core::Instance ().IncreaseUnreadCount (entry, -1);
 		}
 
