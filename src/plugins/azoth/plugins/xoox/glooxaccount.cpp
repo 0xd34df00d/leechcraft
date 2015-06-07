@@ -751,7 +751,10 @@ namespace Xoox
 					[this] (const QXmppIq& reply)
 					{
 						if (reply.type () == QXmppIq::Result)
+						{
 							ParentProtocol_->RemoveAccount (this);
+							ChangeState ({ SOffline, {} });
+						}
 						else
 							qWarning () << Q_FUNC_INFO
 									<< "unable to cancel the registration:"
