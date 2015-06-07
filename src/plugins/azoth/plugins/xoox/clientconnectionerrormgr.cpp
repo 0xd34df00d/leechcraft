@@ -216,8 +216,15 @@ namespace Xoox
 				error == QXmppClient::SocketError)
 		{
 			qDebug () << Q_FUNC_INFO
-					<< "killing stale error";
+					<< "killing stale error"
+					<< Client_->isConnected ();
+
+			if (IsDisconnecting_)
+				return;
+
+			IsDisconnecting_ = true;
 			Client_->disconnectFromServer ();
+			IsDisconnecting_ = false;
 			return;
 		}
 

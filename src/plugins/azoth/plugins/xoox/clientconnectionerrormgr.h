@@ -55,6 +55,8 @@ namespace Xoox
 		QSet<QString> WhitelistedErrors_;
 
 		int SocketErrorAccumulator_;
+
+		bool IsDisconnecting_ = false;
 	public:
 		using ErrorHandler_f = std::function<bool (QXmppIq)>;
 	private:
