@@ -5,6 +5,7 @@ set (NETWORK_SRCS
 	networkdiskcache.cpp
 	networkdiskcachegc.cpp
 	socketerrorstrings.cpp
+	sslerror2treeitem.cpp
 	)
 
 foreach (SRC ${NETWORK_SRCS})
