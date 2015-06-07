@@ -132,6 +132,10 @@ namespace Poshuku
 				SIGNAL (navigateRequested (QUrl)),
 				sslWatcher,
 				SLOT (resetStats ()));
+		connect (WebView_,
+				SIGNAL (urlChanged (QUrl)),
+				sslWatcher,
+				SLOT (resetStats ()));
 
 		WebInspector_ = new QWebInspector;
 		WebInspector_->setPage (WebView_->page ());
