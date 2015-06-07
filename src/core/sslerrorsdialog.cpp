@@ -29,6 +29,7 @@
 
 #include "sslerrorsdialog.h"
 #include <QDateTime>
+#include <util/network/sslerror2treeitem.h>
 
 namespace LeechCraft
 {
@@ -58,107 +59,6 @@ SslErrorsDialog::RememberChoice SslErrorsDialog::GetRememberChoice () const
 
 void SslErrorsDialog::PopulateTree (const QSslError& error)
 {
-	QTreeWidgetItem *item = new QTreeWidgetItem (Ui_.Errors_,
-			QStringList ("Error:") << error.errorString ());
-
-	QSslCertificate cer = error.certificate ();
-	if (cer.isNull ())
-	{
-		new QTreeWidgetItem (item,
-				QStringList (tr ("Certificate")) <<
-					tr ("(No certificate available for this error)"));
-		return;
-	}
-
-	new QTreeWidgetItem (item, QStringList (tr ("Valid:")) <<
-#if QT_VERSION < 0x050000
-				(cer.isValid () ? tr ("yes") : tr ("no")));
-#else
-				(!cer.isBlacklisted () ? tr ("yes") : tr ("no")));
-#endif
-	new QTreeWidgetItem (item, QStringList (tr ("Effective date:")) <<
-				cer.effectiveDate ().toString ());
-	new QTreeWidgetItem (item, QStringList (tr ("Expiry date:")) <<
-				cer.expiryDate ().toString ());
-	new QTreeWidgetItem (item, QStringList (tr ("Version:")) <<
-				cer.version ());
-	new QTreeWidgetItem (item, QStringList (tr ("Serial number:")) <<
-				cer.serialNumber ());
-	new QTreeWidgetItem (item, QStringList (tr ("MD5 digest:")) <<
-				cer.digest ().toHex ());
-	new QTreeWidgetItem (item, QStringList (tr ("SHA1 digest:")) <<
-				cer.digest (QCryptographicHash::Sha1).toHex ());
-
-	QTreeWidgetItem *issuer = new QTreeWidgetItem (item,
-			QStringList (tr ("Issuer info")));
-
-	QString tmpString;
-#if QT_VERSION >= 0x050000
-	auto cvt = [] (const QStringList& list) { return list.join ("; "); };
-#else
-	auto cvt = [] (const QString& str) { return str; };
-#endif
-	tmpString = cvt (cer.issuerInfo (QSslCertificate::Organization));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (issuer,
-				QStringList (tr ("Organization:")) << tmpString);
-
-	tmpString = cvt (cer.issuerInfo (QSslCertificate::CommonName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (issuer,
-				QStringList (tr ("Common name:")) << tmpString);
-
-	tmpString = cvt (cer.issuerInfo (QSslCertificate::LocalityName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (issuer,
-				QStringList (tr ("Locality:")) << tmpString);
-
-	tmpString = cvt (cer.issuerInfo (QSslCertificate::OrganizationalUnitName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (issuer,
-				QStringList (tr ("Organizational unit name:")) << tmpString);
-
-	tmpString = cvt (cer.issuerInfo (QSslCertificate::CountryName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (issuer,
-				QStringList (tr ("Country name:")) << tmpString);
-
-	tmpString = cvt (cer.issuerInfo (QSslCertificate::StateOrProvinceName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (issuer,
-				QStringList (tr ("State or province name:")) << tmpString);
-
-	QTreeWidgetItem *subject = new QTreeWidgetItem (item,
-			QStringList (tr ("Subject info")));
-
-	tmpString = cvt (cer.subjectInfo (QSslCertificate::Organization));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (subject,
-				QStringList (tr ("Organization:")) << tmpString);
-
-	tmpString = cvt (cer.subjectInfo (QSslCertificate::CommonName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (subject,
-				QStringList (tr ("Common name:")) << tmpString);
-
-	tmpString = cvt (cer.subjectInfo (QSslCertificate::LocalityName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (subject,
-				QStringList (tr ("Locality:")) << tmpString);
-
-	tmpString = cvt (cer.subjectInfo (QSslCertificate::OrganizationalUnitName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (subject,
-				QStringList (tr ("Organizational unit name:")) << tmpString);
-
-	tmpString = cvt (cer.subjectInfo (QSslCertificate::CountryName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (subject,
-				QStringList (tr ("Country name:")) << tmpString);
-
-	tmpString = cvt (cer.subjectInfo (QSslCertificate::StateOrProvinceName));
-	if (!tmpString.isEmpty ())
-		new QTreeWidgetItem (subject,
-				QStringList (tr ("State or province name:")) << tmpString);
+	Ui_.Errors_->addTopLevelItem (Util::SslError2TreeItem (error));
 }
 }
