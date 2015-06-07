@@ -84,6 +84,11 @@ namespace Poshuku
 		return NonSslResources_;
 	}
 
+	QMap<QUrl, QList<QSslError>> WebPageSslWatcher::GetErrSslUrls () const
+	{
+		return ErrSslResources_;
+	}
+
 	void WebPageSslWatcher::handleReplyFinished ()
 	{
 		const auto reply = qobject_cast<QNetworkReply*> (sender ());

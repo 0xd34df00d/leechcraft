@@ -68,6 +68,7 @@ namespace Poshuku
 		const QSslConfiguration& GetPageConfiguration () const;
 
 		QList<QUrl> GetNonSslUrls () const;
+		QMap<QUrl, QList<QSslError>> GetErrSslUrls () const;
 	public slots:
 		void resetStats ();
 	private slots:
