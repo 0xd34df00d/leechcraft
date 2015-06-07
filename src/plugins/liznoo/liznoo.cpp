@@ -32,6 +32,7 @@
 #include <limits>
 #include <QIcon>
 #include <QAction>
+#include <QMessageBox>
 #include <QTimer>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -470,6 +471,11 @@ namespace Liznoo
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "platform backend unavailable";
+
+			QMessageBox::critical (nullptr,
+					"LeechCraft",
+					tr ("No platform backend is set, unable to send test power events."));
+
 			return;
 		}
 
