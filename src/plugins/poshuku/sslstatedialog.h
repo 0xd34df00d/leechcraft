@@ -33,6 +33,8 @@
 #include <QSslCertificate>
 #include "ui_sslstatedialog.h"
 
+class QSslError;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -50,6 +52,7 @@ namespace Poshuku
 		SslStateDialog (const WebPageSslWatcher*, QWidget* = 0);
 	private:
 		void FillNonSsl (const QList<QUrl>&);
+		void FillErrors (const QMap<QUrl, QList<QSslError>>&);
 	private slots:
 		void on_CertChainBox__currentIndexChanged (int);
 	};

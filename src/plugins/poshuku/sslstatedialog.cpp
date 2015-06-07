@@ -29,6 +29,9 @@
 
 #include "sslstatedialog.h"
 #include <util/sys/extensionsdata.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
+#include <util/network/sslerror2treeitem.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "webpagesslwatcher.h"
@@ -65,6 +68,7 @@ namespace Poshuku
 		}
 
 		FillNonSsl (watcher->GetNonSslUrls ());
+		FillErrors (watcher->GetErrSslUrls ());
 
 		if (!iconName.isEmpty ())
 		{
@@ -115,6 +119,30 @@ namespace Poshuku
 
 		for (const auto& url : nonSsl)
 			Ui_.InsecureList_->addTopLevelItem (MakeUrlItem (url));
+	}
+
+	void SslStateDialog::FillErrors (const QMap<QUrl, QList<QSslError>>& errors)
+	{
+		if (errors.isEmpty ())
+		{
+			const auto errorsIdx = Ui_.TabWidget_->indexOf (Ui_.ErrorsTab_);
+			Ui_.TabWidget_->removeTab (errorsIdx);
+			return;
+		}
+
+		for (const auto& pair : Util::Stlize (errors))
+		{
+			const auto urlItem = MakeUrlItem (pair.first);
+			urlItem->setText (1, {});
+			urlItem->addChildren (Util::Map (pair.second, &Util::SslError2TreeItem));
+			Ui_.ErrorsList_->addTopLevelItem (urlItem);
+
+			urlItem->setFirstColumnSpanned (true);
+		}
+
+		Ui_.ErrorsList_->expandAll ();
+		Ui_.ErrorsList_->resizeColumnToContents (0);
+		Ui_.ErrorsList_->resizeColumnToContents (1);
 	}
 
 	void SslStateDialog::on_CertChainBox__currentIndexChanged (int index)
