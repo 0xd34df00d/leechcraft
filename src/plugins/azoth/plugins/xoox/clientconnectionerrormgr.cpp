@@ -212,8 +212,7 @@ namespace Xoox
 
 	void ClientConnectionErrorMgr::handleError (QXmppClient::Error error)
 	{
-		if (ClientConn_->GetLastState ().State_ == SOffline &&
-				error == QXmppClient::SocketError)
+		if (ClientConn_->GetLastState ().State_ == SOffline)
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "killing stale error in disconnected state"
