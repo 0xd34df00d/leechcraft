@@ -39,38 +39,37 @@ namespace Util
 {
 	QTreeWidgetItem* SslError2TreeItem (const QSslError& error)
 	{
-		QTreeWidgetItem *item = new QTreeWidgetItem (QStringList ("Error:") << error.errorString ());
+		const auto item = new QTreeWidgetItem { { "Error:", error.errorString () } };
 
-		QSslCertificate cer = error.certificate ();
+		const auto& cer = error.certificate ();
 		if (cer.isNull ())
 		{
-			new QTreeWidgetItem (item,
-					QStringList (QObject::tr ("Certificate")) <<
-						QObject::tr ("(No certificate available for this error)"));
+			new QTreeWidgetItem
+			{
+				item,
+				{ QObject::tr ("Certificate"), QObject::tr ("(No certificate available for this error)") }
+			};
 			return item;
 		}
 
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("Valid:")) <<
+		new QTreeWidgetItem
+		{
+			item,
+			{
+				QObject::tr ("Valid:"),
 	#if QT_VERSION < 0x050000
-					(cer.isValid () ? QObject::tr ("yes") : QObject::tr ("no")));
+				cer.isValid () ? QObject::tr ("yes") : QObject::tr ("no")
 	#else
-					(!cer.isBlacklisted () ? QObject::tr ("yes") : QObject::tr ("no")));
+				!cer.isBlacklisted () ? QObject::tr ("yes") : QObject::tr ("no")
 	#endif
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("Effective date:")) <<
-					cer.effectiveDate ().toString ());
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("Expiry date:")) <<
-					cer.expiryDate ().toString ());
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("Version:")) <<
-					cer.version ());
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("Serial number:")) <<
-					cer.serialNumber ());
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("MD5 digest:")) <<
-					cer.digest ().toHex ());
-		new QTreeWidgetItem (item, QStringList (QObject::tr ("SHA1 digest:")) <<
-					cer.digest (QCryptographicHash::Sha1).toHex ());
-
-		QTreeWidgetItem *issuer = new QTreeWidgetItem (item,
-				QStringList (QObject::tr ("Issuer info")));
+			}
+		};
+		new QTreeWidgetItem { item, { QObject::tr ("Effective date:"), cer.effectiveDate ().toString () } };
+		new QTreeWidgetItem { item, { QObject::tr ("Expiry date:"), cer.expiryDate ().toString () } };
+		new QTreeWidgetItem { item, { QObject::tr ("Version:"), cer.version () } };
+		new QTreeWidgetItem { item, { QObject::tr ("Serial number:"), cer.serialNumber () } };
+		new QTreeWidgetItem { item, { QObject::tr ("MD5 digest:"), cer.digest ().toHex () } };
+		new QTreeWidgetItem { item, { QObject::tr ("SHA1 digest:"), cer.digest (QCryptographicHash::Sha1).toHex () } };
 
 		QString tmpString;
 	#if QT_VERSION >= 0x050000
@@ -78,68 +77,38 @@ namespace Util
 	#else
 		auto cvt = [] (const QString& str) { return str; };
 	#endif
-		tmpString = cvt (cer.issuerInfo (QSslCertificate::Organization));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (issuer,
-					QStringList (QObject::tr ("Organization:")) << tmpString);
 
-		tmpString = cvt (cer.issuerInfo (QSslCertificate::CommonName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (issuer,
-					QStringList (QObject::tr ("Common name:")) << tmpString);
+		const auto issuer = new QTreeWidgetItem { item, { QObject::tr ("Issuer info") } };
+		auto mkIssuerItem = [&cvt, &cer, issuer] (const QString& name,
+				QSslCertificate::SubjectInfo field)
+		{
+			const auto& value = cvt (cer.issuerInfo (field));
+			if (!value.isEmpty ())
+				new QTreeWidgetItem { issuer, { name, value } };
+		};
 
-		tmpString = cvt (cer.issuerInfo (QSslCertificate::LocalityName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (issuer,
-					QStringList (QObject::tr ("Locality:")) << tmpString);
+		mkIssuerItem (QObject::tr ("Organization:"), QSslCertificate::Organization);
+		mkIssuerItem (QObject::tr ("Common name:"), QSslCertificate::CommonName);
+		mkIssuerItem (QObject::tr ("Locality:"), QSslCertificate::LocalityName);
+		mkIssuerItem (QObject::tr ("Organizational unit name:"), QSslCertificate::OrganizationalUnitName);
+		mkIssuerItem (QObject::tr ("Country name:"), QSslCertificate::CountryName);
+		mkIssuerItem (QObject::tr ("State or province name:"), QSslCertificate::StateOrProvinceName);
 
-		tmpString = cvt (cer.issuerInfo (QSslCertificate::OrganizationalUnitName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (issuer,
-					QStringList (QObject::tr ("Organizational unit name:")) << tmpString);
+		const auto subject = new QTreeWidgetItem { item, { QObject::tr ("Subject info") } };
+		auto mkSubjectItem = [&cvt, &cer, subject] (const QString& name,
+				QSslCertificate::SubjectInfo field)
+		{
+			const auto& value = cvt (cer.subjectInfo (field));
+			if (!value.isEmpty ())
+				new QTreeWidgetItem { subject, { name, value } };
+		};
 
-		tmpString = cvt (cer.issuerInfo (QSslCertificate::CountryName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (issuer,
-					QStringList (QObject::tr ("Country name:")) << tmpString);
-
-		tmpString = cvt (cer.issuerInfo (QSslCertificate::StateOrProvinceName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (issuer,
-					QStringList (QObject::tr ("State or province name:")) << tmpString);
-
-		QTreeWidgetItem *subject = new QTreeWidgetItem (item,
-				QStringList (QObject::tr ("Subject info")));
-
-		tmpString = cvt (cer.subjectInfo (QSslCertificate::Organization));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (subject,
-					QStringList (QObject::tr ("Organization:")) << tmpString);
-
-		tmpString = cvt (cer.subjectInfo (QSslCertificate::CommonName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (subject,
-					QStringList (QObject::tr ("Common name:")) << tmpString);
-
-		tmpString = cvt (cer.subjectInfo (QSslCertificate::LocalityName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (subject,
-					QStringList (QObject::tr ("Locality:")) << tmpString);
-
-		tmpString = cvt (cer.subjectInfo (QSslCertificate::OrganizationalUnitName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (subject,
-					QStringList (QObject::tr ("Organizational unit name:")) << tmpString);
-
-		tmpString = cvt (cer.subjectInfo (QSslCertificate::CountryName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (subject,
-					QStringList (QObject::tr ("Country name:")) << tmpString);
-
-		tmpString = cvt (cer.subjectInfo (QSslCertificate::StateOrProvinceName));
-		if (!tmpString.isEmpty ())
-			new QTreeWidgetItem (subject,
-					QStringList (QObject::tr ("State or province name:")) << tmpString);
+		mkSubjectItem (QObject::tr ("Organization:"), QSslCertificate::Organization);
+		mkSubjectItem (QObject::tr ("Common name:"), QSslCertificate::CommonName);
+		mkSubjectItem (QObject::tr ("Locality:"), QSslCertificate::LocalityName);
+		mkSubjectItem (QObject::tr ("Organizational unit name:"), QSslCertificate::OrganizationalUnitName);
+		mkSubjectItem (QObject::tr ("Country name:"), QSslCertificate::CountryName);
+		mkSubjectItem (QObject::tr ("State or province name:"), QSslCertificate::StateOrProvinceName);
 
 		return item;
 	}
