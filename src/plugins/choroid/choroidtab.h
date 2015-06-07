@@ -85,7 +85,7 @@ namespace Choroid
 			ILRFileSize
 		};
 
-		std::function<bool (const QFileInfo&, const QFileInfo&)> CurrentSorter_;
+		std::function<bool (QFileInfo, QFileInfo)> CurrentSorter_;
 	public:
 		ChoroidTab (const TabClassInfo&, ICoreProxy_ptr, QObject*);
 		~ChoroidTab ();

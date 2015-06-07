@@ -37,6 +37,7 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QMenu>
+#include <QFileInfo>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
 #include <util/util.h>
