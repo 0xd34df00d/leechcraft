@@ -98,9 +98,6 @@ namespace Poshuku
 		if (isCached && !connEncrypted)
 			return;
 
-		if (PendingErrors_.remove (reply))
-			ErrSslResources_ << url;
-
 		const auto& sslConfig = reply->sslConfiguration ();
 		if (sslConfig.peerCertificate ().isNull ())
 			NonSslResources_ << url;
@@ -121,9 +118,10 @@ namespace Poshuku
 		emit sslStateChanged (this);
 	}
 
-	void WebPageSslWatcher::handleSslErrors (const QList<QSslError>&)
+	void WebPageSslWatcher::handleSslErrors (const QList<QSslError>& errors)
 	{
-		PendingErrors_ << qobject_cast<QNetworkReply*> (sender ());
+		const auto reply = qobject_cast<QNetworkReply*> (sender ());
+		ErrSslResources_ [reply->url ()] += errors;
 	}
 
 	namespace

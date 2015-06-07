@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <QSet>
+#include <QMap>
 #include <QNetworkAccessManager>
 #include <QSslConfiguration>
 #include <QWebPage>
@@ -49,10 +49,8 @@ namespace Poshuku
 		QWebPage * const Page_;
 
 		QList<QUrl> SslResources_;
-		QList<QUrl> ErrSslResources_;
 		QList<QUrl> NonSslResources_;
-
-		QSet<QNetworkReply*> PendingErrors_;
+		QMap<QUrl, QList<QSslError>> ErrSslResources_;
 
 		QSslConfiguration PageConfig_;
 	public:
