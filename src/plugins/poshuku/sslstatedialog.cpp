@@ -91,6 +91,19 @@ namespace Poshuku
 		}
 	}
 
+	namespace
+	{
+		QTreeWidgetItem* MakeUrlItem (const QUrl& url)
+		{
+			auto item = new QTreeWidgetItem { { url.toString () } };
+
+			const auto& urlExt = url.path ().section ('.', -1, -1);
+			item->setIcon (0, Util::ExtensionsData::Instance ().GetExtIcon (urlExt));
+
+			return item;
+		}
+	}
+
 	void SslStateDialog::FillNonSsl (const QList<QUrl>& nonSsl)
 	{
 		if (nonSsl.isEmpty ())
@@ -101,14 +114,7 @@ namespace Poshuku
 		}
 
 		for (const auto& url : nonSsl)
-		{
-			auto item = new QTreeWidgetItem ({ url.toString () });
-
-			const auto& urlExt = url.path ().section ('.', -1, -1);
-			item->setIcon (0, Util::ExtensionsData::Instance ().GetExtIcon (urlExt));
-
-			Ui_.InsecureList_->addTopLevelItem (item);
-		}
+			Ui_.InsecureList_->addTopLevelItem (MakeUrlItem (url));
 	}
 
 	void SslStateDialog::on_CertChainBox__currentIndexChanged (int index)
