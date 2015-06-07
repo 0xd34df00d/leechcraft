@@ -48,6 +48,8 @@ namespace Poshuku
 		QList<QSslCertificate> Certs_;
 	public:
 		SslStateDialog (const WebPageSslWatcher*, QWidget* = 0);
+	private:
+		void FillNonSsl (const QList<QUrl>&);
 	private slots:
 		void on_CertChainBox__currentIndexChanged (int);
 	};

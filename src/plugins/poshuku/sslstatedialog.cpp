@@ -45,7 +45,6 @@ namespace Poshuku
 
 		QString iconName;
 		QString title;
-		bool hasInsecure = false;
 		switch (watcher->GetPageState ())
 		{
 		case WebPageSslWatcher::State::NoSsl:
@@ -56,7 +55,6 @@ namespace Poshuku
 			title = tr ("Some SSL errors where encountered.");
 			break;
 		case WebPageSslWatcher::State::UnencryptedElems:
-			hasInsecure = true;
 			iconName = "security-medium";
 			title = tr ("Some elements were loaded via unencrypted connection.");
 			break;
@@ -66,21 +64,7 @@ namespace Poshuku
 			break;
 		}
 
-		if (!hasInsecure)
-		{
-			const auto insecureIdx = Ui_.TabWidget_->indexOf (Ui_.InsecureTab_);
-			Ui_.TabWidget_->removeTab (insecureIdx);
-		}
-		else
-			for (const auto& url : watcher->GetNonSslUrls ())
-			{
-				auto item = new QTreeWidgetItem ({ url.toString () });
-
-				const auto& urlExt = url.path ().section ('.', -1, -1);
-				item->setIcon (0, Util::ExtensionsData::Instance ().GetExtIcon (urlExt));
-
-				Ui_.InsecureList_->addTopLevelItem (item);
-			}
+		FillNonSsl (watcher->GetNonSslUrls ());
 
 		if (!iconName.isEmpty ())
 		{
@@ -104,6 +88,26 @@ namespace Poshuku
 #else
 			Ui_.CertChainBox_->addItem (name.join ("; "));
 #endif
+		}
+	}
+
+	void SslStateDialog::FillNonSsl (const QList<QUrl>& nonSsl)
+	{
+		if (nonSsl.isEmpty ())
+		{
+			const auto insecureIdx = Ui_.TabWidget_->indexOf (Ui_.InsecureTab_);
+			Ui_.TabWidget_->removeTab (insecureIdx);
+			return;
+		}
+
+		for (const auto& url : nonSsl)
+		{
+			auto item = new QTreeWidgetItem ({ url.toString () });
+
+			const auto& urlExt = url.path ().section ('.', -1, -1);
+			item->setIcon (0, Util::ExtensionsData::Instance ().GetExtIcon (urlExt));
+
+			Ui_.InsecureList_->addTopLevelItem (item);
 		}
 	}
 
