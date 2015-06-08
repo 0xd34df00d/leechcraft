@@ -182,22 +182,22 @@
         <translation>Внешние ссылки</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.cpp" line="52"/>
+        <location filename="sslstatedialog.cpp" line="54"/>
         <source>SSL encryption is not used.</source>
         <translation>Шифрование SSL не используется.</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.cpp" line="56"/>
+        <location filename="sslstatedialog.cpp" line="58"/>
         <source>Some SSL errors where encountered.</source>
         <translation>Встречены некоторые ошибки SSL.</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.cpp" line="61"/>
+        <location filename="sslstatedialog.cpp" line="62"/>
         <source>Some elements were loaded via unencrypted connection.</source>
         <translation>Некоторые элементы были загружены через небезопасное соединение.</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.cpp" line="65"/>
+        <location filename="sslstatedialog.cpp" line="66"/>
         <source>Everything is secure!</source>
         <translation>Всё безопасно!</translation>
     </message>
@@ -205,178 +205,178 @@
 <context>
     <name>LeechCraft::Poshuku::BrowserWidget</name>
     <message>
-        <location filename="browserwidget.cpp" line="121"/>
+        <location filename="browserwidget.cpp" line="122"/>
         <source>Bookmarks</source>
         <translation>Закладки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="122"/>
+        <location filename="browserwidget.cpp" line="123"/>
         <source>History</source>
         <translation>История</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="190"/>
+        <location filename="browserwidget.cpp" line="195"/>
         <source>Reload periodically</source>
         <translation>Периодически обновлять страницу</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="194"/>
+        <location filename="browserwidget.cpp" line="199"/>
         <source>Notify when finished loading</source>
         <translation>Уведомить о завершении загрузки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="200"/>
+        <location filename="browserwidget.cpp" line="205"/>
         <source>Bookmark...</source>
         <translation>Добавить в закладки...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="209"/>
+        <location filename="browserwidget.cpp" line="214"/>
         <source>Find...</source>
         <translation>Найти...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="214"/>
+        <location filename="browserwidget.cpp" line="219"/>
         <source>Print...</source>
         <translation>Печать...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="219"/>
+        <location filename="browserwidget.cpp" line="224"/>
         <source>Print with preview...</source>
         <translation>Печать с предпросмотром...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="224"/>
+        <location filename="browserwidget.cpp" line="229"/>
         <source>Take page&apos;s screenshot...</source>
         <translation>Сделать снимок страницы...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="229"/>
+        <location filename="browserwidget.cpp" line="234"/>
         <source>View sources...</source>
         <translation>Посмотреть исходники...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="234"/>
+        <location filename="browserwidget.cpp" line="239"/>
         <source>Save page...</source>
         <translation>Сохранить страницу...</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="240"/>
+        <location filename="browserwidget.cpp" line="245"/>
         <source>Zoom in</source>
         <translation>Увеличить</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="244"/>
+        <location filename="browserwidget.cpp" line="249"/>
         <source>Zoom out</source>
         <translation>Уменьшить</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="248"/>
+        <location filename="browserwidget.cpp" line="253"/>
         <source>Reset zoom</source>
         <translation>Сбросить масштаб</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="252"/>
+        <location filename="browserwidget.cpp" line="257"/>
         <source>Open history</source>
         <translation>Открыть историю</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="258"/>
+        <location filename="browserwidget.cpp" line="263"/>
         <source>Open bookmarks</source>
         <translation>Открыть закладки</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="255"/>
+        <location filename="browserwidget.cpp" line="260"/>
         <source>Ctrl+H</source>
         <oldsource>Ctrl+b</oldsource>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="317"/>
+        <location filename="browserwidget.cpp" line="322"/>
         <source>Change encoding</source>
         <translation>Изменить кодировку</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="711"/>
+        <location filename="browserwidget.cpp" line="716"/>
         <source>Ctrl+D</source>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="712"/>
+        <location filename="browserwidget.cpp" line="717"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="713"/>
+        <location filename="browserwidget.cpp" line="718"/>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="715"/>
+        <location filename="browserwidget.cpp" line="720"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="718"/>
+        <location filename="browserwidget.cpp" line="723"/>
         <source>Ctrl+0</source>
         <translation>Ctrl+0</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="719"/>
+        <location filename="browserwidget.cpp" line="724"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="720"/>
+        <location filename="browserwidget.cpp" line="725"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="721"/>
+        <location filename="browserwidget.cpp" line="726"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="238"/>
+        <location filename="browserwidget.cpp" line="243"/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="261"/>
+        <location filename="browserwidget.cpp" line="266"/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="892"/>
+        <location filename="browserwidget.cpp" line="897"/>
         <source>Print web page</source>
         <translation>Печать веб-страницы</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="905"/>
+        <location filename="browserwidget.cpp" line="910"/>
         <source>Reloading once in %1</source>
         <translation>Перезагружается раз в %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1488"/>
+        <location filename="browserwidget.cpp" line="1487"/>
         <source>Page load finished: %1</source>
         <translation>Загрузка страницы завершена: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1492"/>
+        <location filename="browserwidget.cpp" line="1491"/>
         <source>Page load failed: %1</source>
         <translation>Ошибка загрузка страницы: %1</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1499"/>
+        <location filename="browserwidget.cpp" line="1498"/>
         <source>Open</source>
         <translation>Открыть</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1523"/>
+        <location filename="browserwidget.cpp" line="1522"/>
         <source>Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="browserwidget.cpp" line="1572"/>
+        <location filename="browserwidget.cpp" line="1571"/>
         <source>No title</source>
         <translation>Без названия</translation>
     </message>
@@ -392,43 +392,43 @@
 <context>
     <name>LeechCraft::Poshuku::Core</name>
     <message>
-        <location filename="core.cpp" line="95"/>
+        <location filename="core.cpp" line="98"/>
         <source>Poshuku</source>
         <translation>Poshuku</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="96"/>
+        <location filename="core.cpp" line="99"/>
         <source>The Poshuku web browser</source>
         <translation>Веб-браузер Poshuku</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="139"/>
+        <location filename="core.cpp" line="142"/>
         <source>Poshuku: general storage initialization error.</source>
         <translation>Poshuku: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="604"/>
+        <location filename="core.cpp" line="605"/>
         <source>Select XBEL file</source>
         <translation>Выбор файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="606"/>
-        <location filename="core.cpp" line="648"/>
+        <location filename="core.cpp" line="607"/>
+        <location filename="core.cpp" line="649"/>
         <source>XBEL files (*.xbel);;All files (*.*)</source>
         <translation>Файлы XBEL (*.xbel);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="621"/>
+        <location filename="core.cpp" line="622"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Не удалось открыть файл %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="646"/>
+        <location filename="core.cpp" line="647"/>
         <source>Save XBEL file</source>
         <translation>Сохранение файла XBEL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="666"/>
+        <location filename="core.cpp" line="667"/>
         <source>Could not open file %1 for writing.</source>
         <translation>Не удалось открыть файл %1 на запись.</translation>
     </message>
@@ -840,7 +840,7 @@
         <translation>Простой, но в то же время функциональный веб-браузер</translation>
     </message>
     <message>
-        <location filename="poshuku.cpp" line="637"/>
+        <location filename="poshuku.cpp" line="639"/>
         <source>Please note that Developer Extras would work correctly only for pages that are loaded after enabling.</source>
         <translation>Пожалуйста, имейте в виду, что расширения для разработчика будут правильно работать только для страниц, загруженных после включения.</translation>
     </message>
@@ -848,7 +848,7 @@
 <context>
     <name>LeechCraft::Poshuku::ProgressLineEdit</name>
     <message>
-        <location filename="progresslineedit.cpp" line="223"/>
+        <location filename="progresslineedit.cpp" line="225"/>
         <source>Paste and go</source>
         <translation>Вставить и перейти</translation>
     </message>
@@ -1072,84 +1072,89 @@
         <translation>Состояние SSL</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="41"/>
+        <location filename="sslstatedialog.ui" line="55"/>
         <source>Certificate information</source>
         <translation>Информация о сертификате</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="47"/>
+        <location filename="sslstatedialog.ui" line="61"/>
         <source>Certificate:</source>
         <translation>Сертификат:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="72"/>
+        <location filename="sslstatedialog.ui" line="86"/>
         <source>Common name:</source>
         <translation>Имя:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="85"/>
+        <location filename="sslstatedialog.ui" line="99"/>
         <source>Organization:</source>
         <translation>Организация:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="113"/>
+        <location filename="sslstatedialog.ui" line="127"/>
         <source>Subject</source>
         <translation>Выдано</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="120"/>
+        <location filename="sslstatedialog.ui" line="134"/>
         <source>Issuer</source>
         <translation>Выдавший</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="134"/>
+        <location filename="sslstatedialog.ui" line="148"/>
         <source>Unit:</source>
         <translation>Подразделение:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="141"/>
+        <location filename="sslstatedialog.ui" line="155"/>
         <source>Country:</source>
         <translation>Страна:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="148"/>
+        <location filename="sslstatedialog.ui" line="162"/>
         <source>State:</source>
         <translation>Штат:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="155"/>
+        <location filename="sslstatedialog.ui" line="169"/>
         <source>City:</source>
         <translation>Город:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="213"/>
+        <location filename="sslstatedialog.ui" line="227"/>
         <source>Serial number:</source>
         <translation>Серийный номер:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="227"/>
+        <location filename="sslstatedialog.ui" line="241"/>
         <source>SHA1:</source>
         <translation>SHA1:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="234"/>
+        <location filename="sslstatedialog.ui" line="248"/>
         <source>MD5:</source>
         <translation>MD5:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="262"/>
+        <location filename="sslstatedialog.ui" line="276"/>
         <source>Start date:</source>
         <translation>Начало действия:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="269"/>
+        <location filename="sslstatedialog.ui" line="283"/>
         <source>End date:</source>
         <translation>Окончание действия:</translation>
     </message>
     <message>
-        <location filename="sslstatedialog.ui" line="291"/>
+        <location filename="sslstatedialog.ui" line="305"/>
         <source>Insecure elements</source>
         <translation>Небезопасные элементы</translation>
+    </message>
+    <message>
+        <location filename="sslstatedialog.ui" line="327"/>
+        <source>SSL errors</source>
+        <translation>Ошибки SSL</translation>
     </message>
 </context>
 <context>
