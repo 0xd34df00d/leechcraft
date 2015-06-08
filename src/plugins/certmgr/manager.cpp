@@ -45,14 +45,14 @@ namespace CertMgr
 	, LocalCertsModel_ { new CertsModel { this } }
 	{
 		const auto& systems = QSslSocket::systemCaCertificates ();
-		QSet<QByteArray> serializedCerts;
+		QSet<QByteArray> existing;
 		for (const auto& cert : systems)
 		{
 			const auto& pem = cert.toPem ();
-			if (serializedCerts.contains (pem))
+			if (existing.contains (pem))
 				continue;
 
-			serializedCerts << pem;
+			existing << pem;
 			Defaults_ << cert;
 		}
 
