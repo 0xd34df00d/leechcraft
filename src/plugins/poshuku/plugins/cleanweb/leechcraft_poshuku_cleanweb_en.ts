@@ -28,49 +28,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb</name>
-    <message>
-        <location filename="core.cpp" line="181"/>
-        <source>Name</source>
-        <translation>Name</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="181"/>
-        <source>Last updated</source>
-        <translation>Last updated</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="181"/>
-        <source>URL</source>
-        <translation>URL</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Filter</source>
-        <translation>Filter</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Policy</source>
-        <translation>Policy</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Type</source>
-        <translation>Type</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Case sensitive</source>
-        <translation>Case sensitive</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Domains</source>
-        <translation>Domains</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
         <location filename="cleanweb.cpp" line="90"/>
@@ -81,22 +38,37 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="388"/>
+        <location filename="core.cpp" line="179"/>
+        <source>Name</source>
+        <translation>Name</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="179"/>
+        <source>Last updated</source>
+        <translation>Last updated</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="179"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="393"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Blocked by Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="427"/>
+        <location filename="core.cpp" line="432"/>
         <source>Block image...</source>
         <translation>Block image...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="740"/>
+        <location filename="core.cpp" line="745"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>The subscription %1 was successfully added.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="774"/>
+        <location filename="core.cpp" line="779"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>The subscription %1 wasn&apos;t delegated.</translation>
     </message>
@@ -235,47 +207,72 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="95"/>
+        <location filename="userfiltersmodel.cpp" line="61"/>
+        <source>Filter</source>
+        <translation>Filter</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="62"/>
+        <source>Policy</source>
+        <translation>Policy</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="63"/>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="64"/>
+        <source>Case sensitive</source>
+        <translation>Case sensitive</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="65"/>
+        <source>Domains</source>
+        <translation>Domains</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="110"/>
         <source>Allowed</source>
         <translation>Allowed</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="96"/>
+        <location filename="userfiltersmodel.cpp" line="111"/>
         <source>Blocked</source>
         <translation>Blocked</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="104"/>
+        <location filename="userfiltersmodel.cpp" line="119"/>
         <source>Wildcard</source>
         <translation>Wildcard</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="106"/>
+        <location filename="userfiltersmodel.cpp" line="121"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="110"/>
+        <location filename="userfiltersmodel.cpp" line="125"/>
         <source>True</source>
         <translation>True</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="111"/>
+        <location filename="userfiltersmodel.cpp" line="126"/>
         <source>False</source>
         <translation>False</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="167"/>
+        <location filename="userfiltersmodel.cpp" line="182"/>
         <source>Add a filter</source>
         <translation>Add a filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="216"/>
+        <location filename="userfiltersmodel.cpp" line="231"/>
         <source>Modify filter</source>
         <translation>Modify filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="250"/>
+        <location filename="userfiltersmodel.cpp" line="265"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Imported %1 user filters (%2 parsed successfully).</translation>
     </message>

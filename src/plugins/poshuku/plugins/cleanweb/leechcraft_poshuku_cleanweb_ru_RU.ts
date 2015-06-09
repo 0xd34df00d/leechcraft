@@ -28,49 +28,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb</name>
-    <message>
-        <location filename="core.cpp" line="181"/>
-        <source>Name</source>
-        <translation>Имя</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="181"/>
-        <source>Last updated</source>
-        <translation>Последнее обновление</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="181"/>
-        <source>URL</source>
-        <translation>URL</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Filter</source>
-        <translation>Фильтр</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Policy</source>
-        <translation>Действие</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Type</source>
-        <translation>Тип</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Case sensitive</source>
-        <translation>Учитывать регистр</translation>
-    </message>
-    <message>
-        <location filename="userfiltersmodel.cpp" line="58"/>
-        <source>Domains</source>
-        <translation>Домены</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
         <location filename="cleanweb.cpp" line="90"/>
@@ -81,22 +38,37 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="388"/>
+        <location filename="core.cpp" line="179"/>
+        <source>Name</source>
+        <translation>Имя</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="179"/>
+        <source>Last updated</source>
+        <translation>Последнее обновление</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="179"/>
+        <source>URL</source>
+        <translation>URL</translation>
+    </message>
+    <message>
+        <location filename="core.cpp" line="393"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Заблокировано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="427"/>
+        <location filename="core.cpp" line="432"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="740"/>
+        <location filename="core.cpp" line="745"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="774"/>
+        <location filename="core.cpp" line="779"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
     </message>
@@ -235,47 +207,72 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="95"/>
+        <location filename="userfiltersmodel.cpp" line="61"/>
+        <source>Filter</source>
+        <translation>Фильтр</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="62"/>
+        <source>Policy</source>
+        <translation>Действие</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="63"/>
+        <source>Type</source>
+        <translation>Тип</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="64"/>
+        <source>Case sensitive</source>
+        <translation>Учитывать регистр</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="65"/>
+        <source>Domains</source>
+        <translation>Домены</translation>
+    </message>
+    <message>
+        <location filename="userfiltersmodel.cpp" line="110"/>
         <source>Allowed</source>
         <translation>Разрешить</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="96"/>
+        <location filename="userfiltersmodel.cpp" line="111"/>
         <source>Blocked</source>
         <translation>Блокировать</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="104"/>
+        <location filename="userfiltersmodel.cpp" line="119"/>
         <source>Wildcard</source>
         <translation>Маска</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="106"/>
+        <location filename="userfiltersmodel.cpp" line="121"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="110"/>
+        <location filename="userfiltersmodel.cpp" line="125"/>
         <source>True</source>
         <translation>Да</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="111"/>
+        <location filename="userfiltersmodel.cpp" line="126"/>
         <source>False</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="167"/>
+        <location filename="userfiltersmodel.cpp" line="182"/>
         <source>Add a filter</source>
         <translation>Добавить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="216"/>
+        <location filename="userfiltersmodel.cpp" line="231"/>
         <source>Modify filter</source>
         <translation>Изменить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="250"/>
+        <location filename="userfiltersmodel.cpp" line="265"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Импортировано %1 пользовательских правил (%2 успешно разобрано).</translation>
     </message>
@@ -500,75 +497,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
-        <location filename="dummy.cpp" line="16"/>
-        <location filename="dummy.cpp" line="17"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
-        <location filename="dummy.cpp" line="24"/>
         <source>Update subscriptions</source>
         <translation>Обновлять подписки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
-        <location filename="dummy.cpp" line="25"/>
         <source>Update interval:</source>
         <translation>Интервал обновления:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
-        <location filename="dummy.cpp" line="18"/>
         <source>Enable JIT for regexps</source>
         <translation>Включить JIT для регулярных выражений</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
-        <location filename="dummy.cpp" line="19"/>
         <source>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/&gt;Disable this if you want to lower memory footprint.</source>
         <translation>Эта опция контролирует использование JIT-компиляции регулярных выражений в случае, если CleanWeb собран с PCRE 8.20 или новее. JIT ускоряет обработку правил ценой увеличенного потребления памяти. Ускорение составляет от 25% до 50%, в зависимости от страницы, при этом тратится примерно 2.1 КБ памяти на каждое регулярное выражение.&lt;br/&gt;Отключите эту опцию, если вы желаете уменьшить используемый объём памяти.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
-        <location filename="dummy.cpp" line="20"/>
         <source>Enable filtering</source>
         <translation>Включить фильтрацию</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
-        <location filename="dummy.cpp" line="21"/>
         <source>Enable element hiding</source>
         <translation>Включить сокрытие элементов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
-        <location filename="dummy.cpp" line="22"/>
         <source>User rules</source>
         <oldsource>User filters</oldsource>
         <translation>Пользовательские правила</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
-        <location filename="dummy.cpp" line="23"/>
         <source>Subscriptions</source>
         <translation>Подписки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
-        <location filename="dummy.cpp" line="26"/>
         <source> days</source>
         <translation> дней</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
-        <location filename="dummy.cpp" line="27"/>
         <source>FlashOnClick</source>
         <translation>FlashOnClick</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
-        <location filename="dummy.cpp" line="28"/>
         <source>Enable FlashOnClick</source>
         <translation>Включить FlashOnClick</translation>
     </message>
