@@ -91,12 +91,12 @@
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="749"/>
+        <location filename="core.cpp" line="740"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="783"/>
+        <location filename="core.cpp" line="774"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
     </message>
@@ -104,22 +104,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="48"/>
+        <location filename="flashonclickwhitelist.cpp" line="49"/>
         <source>Whitelist</source>
         <translation>Белый список</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="120"/>
+        <location filename="flashonclickwhitelist.cpp" line="116"/>
         <source>Add URL to whitelist</source>
         <translation>Добавить URL в белый список</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="121"/>
+        <location filename="flashonclickwhitelist.cpp" line="117"/>
         <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
         <translation>Введите URL для добавления в белый список FlashOnClick</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="136"/>
+        <location filename="flashonclickwhitelist.cpp" line="132"/>
         <source>This URL is already matched by another whitelist entry.</source>
         <translation>Этот URL уже соответствует другой записи в белом списке.</translation>
     </message>
@@ -270,12 +270,12 @@
         <translation>Добавить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="220"/>
+        <location filename="userfiltersmodel.cpp" line="216"/>
         <source>Modify filter</source>
         <translation>Изменить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="261"/>
+        <location filename="userfiltersmodel.cpp" line="250"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Импортировано %1 пользовательских правил (%2 успешно разобрано).</translation>
     </message>
@@ -500,57 +500,75 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="dummy.cpp" line="2"/>
         <location filename="dummy.cpp" line="3"/>
+        <location filename="dummy.cpp" line="16"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>General</source>
         <translation>Общие</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="10"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Update subscriptions</source>
         <translation>Обновлять подписки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Update interval:</source>
         <translation>Интервал обновления:</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="4"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Enable JIT for regexps</source>
         <translation>Включить JIT для регулярных выражений</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="5"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/&gt;Disable this if you want to lower memory footprint.</source>
         <translation>Эта опция контролирует использование JIT-компиляции регулярных выражений в случае, если CleanWeb собран с PCRE 8.20 или новее. JIT ускоряет обработку правил ценой увеличенного потребления памяти. Ускорение составляет от 25% до 50%, в зависимости от страницы, при этом тратится примерно 2.1 КБ памяти на каждое регулярное выражение.&lt;br/&gt;Отключите эту опцию, если вы желаете уменьшить используемый объём памяти.</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="6"/>
+        <location filename="dummy.cpp" line="20"/>
+        <source>Enable filtering</source>
+        <translation>Включить фильтрацию</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Enable element hiding</source>
         <translation>Включить сокрытие элементов</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>User rules</source>
         <oldsource>User filters</oldsource>
         <translation>Пользовательские правила</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Subscriptions</source>
         <translation>Подписки</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="26"/>
         <source> days</source>
         <translation> дней</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>FlashOnClick</source>
         <translation>FlashOnClick</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Enable FlashOnClick</source>
         <translation>Включить FlashOnClick</translation>
     </message>

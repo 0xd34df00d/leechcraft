@@ -91,12 +91,12 @@
         <translation>Block image...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="749"/>
+        <location filename="core.cpp" line="740"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>The subscription %1 was successfully added.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="783"/>
+        <location filename="core.cpp" line="774"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>The subscription %1 wasn&apos;t delegated.</translation>
     </message>
@@ -104,22 +104,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="48"/>
+        <location filename="flashonclickwhitelist.cpp" line="49"/>
         <source>Whitelist</source>
         <translation>Whitelist</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="120"/>
+        <location filename="flashonclickwhitelist.cpp" line="116"/>
         <source>Add URL to whitelist</source>
         <translation>Add URL to whitelist</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="121"/>
+        <location filename="flashonclickwhitelist.cpp" line="117"/>
         <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
         <translation>Please enter the URL to add to the FlashOnClick&apos;s whitelist</translation>
     </message>
     <message>
-        <location filename="flashonclickwhitelist.cpp" line="136"/>
+        <location filename="flashonclickwhitelist.cpp" line="132"/>
         <source>This URL is already matched by another whitelist entry.</source>
         <translation>This URL is already matched by another whitelist entry.</translation>
     </message>
@@ -270,12 +270,12 @@
         <translation>Add a filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="220"/>
+        <location filename="userfiltersmodel.cpp" line="216"/>
         <source>Modify filter</source>
         <translation>Modify filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="261"/>
+        <location filename="userfiltersmodel.cpp" line="250"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Imported %1 user filters (%2 parsed successfully).</translation>
     </message>
@@ -522,6 +522,11 @@ p, li { white-space: pre-wrap; }
         <location filename="dummy.cpp" line="5"/>
         <source>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/&gt;Disable this if you want to lower memory footprint.</source>
         <translation>This option controls the usage of Just-In-Time compilation for regular expressions if CleanWeb was built with PCRE 8.20 and upper. JIT speeds up rules matching at the cost of higher memory usage. The speedup is somewhere between 25% and 50% depending on page being loaded, but this option uses about 2.1 KiB of RAM per regular expression.&lt;br/&gt;Disable this if you want to lower memory footprint.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Enable filtering</source>
+        <translation>Enable filtering</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="7"/>
