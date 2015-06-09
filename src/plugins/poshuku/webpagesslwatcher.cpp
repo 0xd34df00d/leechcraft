@@ -102,7 +102,10 @@ namespace Poshuku
 
 		const auto& sslConfig = reply->sslConfiguration ();
 		if (sslConfig.peerCertificate ().isNull ())
-			NonSslResources_ << url;
+		{
+			if (!reply->attribute (QNetworkRequest::HttpStatusCodeAttribute).isNull ())
+				NonSslResources_ << url;
+		}
 		else
 		{
 			SslResources_ << url;
