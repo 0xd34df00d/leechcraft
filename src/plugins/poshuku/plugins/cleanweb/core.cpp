@@ -526,26 +526,16 @@ namespace CleanWeb
 					return false;
 			}
 
-			if (!opt.NotDomains_.isEmpty ())
-			{
-				for (const auto& notDomain : opt.NotDomains_)
-					if (domain.endsWith (notDomain, opt.Case_))
-						return false;
-			}
+			if (std::any_of (opt.NotDomains_.begin (), opt.NotDomains_.end (),
+						[&domain, &opt] (const QString& notDomain)
+							{ return domain.endsWith (notDomain, opt.Case_); }))
+				return false;
 
-			if (!opt.Domains_.isEmpty ())
-			{
-				bool shouldFurther = false;
-				for (const auto& doDomain : opt.Domains_)
-					if (domain.endsWith (doDomain, opt.Case_))
-					{
-						shouldFurther = true;
-						break;
-					}
-
-				if (!shouldFurther)
-					return false;
-			}
+			if (!opt.Domains_.isEmpty () &&
+					std::none_of (opt.Domains_.begin (), opt.Domains_.end (),
+							[&domain, &opt] (const QString& doDomain)
+								{ return domain.endsWith (doDomain, opt.Case_); }))
+				return false;
 
 			switch (opt.MatchType_)
 			{
