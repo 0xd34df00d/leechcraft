@@ -173,12 +173,17 @@ namespace CleanWeb
 			}
 			return result;
 		}
-	};
+
+		QStringList MakeHeaders ()
+		{
+			return { Core::tr ("Name"), Core::tr ("Last updated"), Core::tr ("URL") };
+		}
+	}
 
 	Core::Core (const ICoreProxy_ptr& proxy)
 	: FlashOnClickWhitelist_ { new FlashOnClickWhitelist }
 	, UserFilters_ { new UserFiltersModel { proxy, this } }
-	, HeaderLabels_ { tr ("Name"), tr ("Last updated"), tr ("URL") }
+	, HeaderLabels_ { MakeHeaders () }
 	, Proxy_ { proxy }
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
