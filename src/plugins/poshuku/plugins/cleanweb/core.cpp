@@ -631,6 +631,8 @@ namespace CleanWeb
 				objs |= FilterOption::MatchObject::CSS;
 		}
 
+		const QUrl referer { req.rawHeader ("Referer") };
+
 		const QUrl& url = req.url ();
 		const QString& urlStr = url.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
@@ -638,8 +640,7 @@ namespace CleanWeb
 		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
 		const QString& domain = url.host ();
-		const auto& domainUtf8 = domain.toUtf8 ();
-		const bool isForeign = !req.rawHeader ("Referer").contains (domainUtf8);
+		const bool isForeign = !url.host ().endsWith (referer.host ());
 
 		auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks) -> bool
 			{
