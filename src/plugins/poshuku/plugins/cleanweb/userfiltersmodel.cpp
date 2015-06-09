@@ -52,10 +52,25 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
+	namespace
+	{
+		QStringList MakeHeaders ()
+		{
+			return
+			{
+				UserFiltersModel::tr ("Filter"),
+				UserFiltersModel::tr ("Policy"),
+				UserFiltersModel::tr ("Type"),
+				UserFiltersModel::tr ("Case sensitive"),
+				UserFiltersModel::tr ("Domains")
+			};
+		}
+	}
+
 	UserFiltersModel::UserFiltersModel (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QAbstractItemModel { parent }
 	, Proxy_ { proxy }
-	, Headers_ { tr ("Filter"), tr ("Policy"), tr ("Type"), tr ("Case sensitive"), tr ("Domains") }
+	, Headers_ { MakeHeaders () }
 	{
 		qRegisterMetaType<FilterItem> ("LeechCraft::Poshuku::CleanWeb::FilterItem");
 		qRegisterMetaType<QList<FilterItem>> ("QList<LeechCraft::Poshuku::CleanWeb::FilterItem>");
