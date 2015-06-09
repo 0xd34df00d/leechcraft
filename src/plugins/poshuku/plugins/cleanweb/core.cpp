@@ -639,7 +639,7 @@ namespace CleanWeb
 		const QString& cinUrlStr = urlStr.toLower ();
 		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
-		const QString& domain = url.host ();
+		const QString& domain = referer.host ();
 		const bool isForeign = !url.host ().endsWith (referer.host ());
 
 		auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks) -> bool
