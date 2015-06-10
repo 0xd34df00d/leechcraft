@@ -136,7 +136,7 @@ namespace CleanWeb
 			SaveSettings ();
 		}
 
-		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
+		beginInsertRows ({}, Filters_.size (), Filters_.size ());
 		Filters_ << filter;
 		endInsertRows ();
 	}
@@ -153,6 +153,26 @@ namespace CleanWeb
 
 	void SubscriptionsModel::RemoveFilter (const QString& filename)
 	{
+		const auto pos = FindFilename (Filters_, filename);
+		if (pos == Filters_.end ())
+			return;
+
+		RemoveFilter (std::distance (Filters_.begin (), pos));
+	}
+
+	void SubscriptionsModel::RemoveFilter (const QModelIndex& index)
+	{
+		RemoveFilter (index.row ());
+	}
+
+	const QList<Filter>& SubscriptionsModel::GetAllFilters () const
+	{
+		return Filters_;
+	}
+
+	void SubscriptionsModel::RemoveFilter (int pos)
+	{
+		const auto& filename = Filters_.at (pos).SD_.Filename_;
 		auto path = Util::CreateIfNotExists ("cleanweb");
 		if (!path.exists (filename))
 			qWarning () << Q_FUNC_INFO
@@ -167,27 +187,11 @@ namespace CleanWeb
 					<< "in"
 					<< path.path ();
 
-		const auto pos = FindFilename (Filters_, filename);
-		if (pos == Filters_.end ())
-			return;
-
-		const auto dist = std::distance (Filters_.begin (), pos);
-		beginRemoveRows ({}, dist, dist);
-		Filters_.erase (pos);
+		beginRemoveRows ({}, pos, pos);
+		Filters_.removeAt (pos);
 		endRemoveRows ();
 
 		SaveSettings ();
-	}
-
-	void SubscriptionsModel::RemoveFilter (const QModelIndex& index)
-	{
-		// TODO refactor common parts out
-		RemoveFilter (Filters_.at (index.row ()).SD_.Filename_);
-	}
-
-	const QList<Filter>& SubscriptionsModel::GetAllFilters () const
-	{
-		return Filters_;
 	}
 
 	void SubscriptionsModel::SaveSettings () const

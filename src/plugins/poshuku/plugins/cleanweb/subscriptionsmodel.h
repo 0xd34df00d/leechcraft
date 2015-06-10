@@ -66,6 +66,8 @@ namespace CleanWeb
 
 		const QList<Filter>& GetAllFilters () const;
 	private:
+		void RemoveFilter (int);
+
 		void SaveSettings () const;
 		void LoadSettings ();
 		bool AssignSD (const SubscriptionData&);
