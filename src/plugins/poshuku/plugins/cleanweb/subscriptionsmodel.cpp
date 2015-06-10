@@ -167,15 +167,17 @@ namespace CleanWeb
 		if (pos != Filters_.end ())
 		{
 			int row = std::distance (Filters_.begin (), pos);
-			beginRemoveRows (QModelIndex (), row, row);
-			Filters_.erase (pos);
-			endRemoveRows ();
-			SaveSettings ();
+			*pos = filter;
+			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
+		}
+		else
+		{
+			beginInsertRows ({}, Filters_.size (), Filters_.size ());
+			Filters_ << filter;
+			endInsertRows ();
 		}
 
-		beginInsertRows ({}, Filters_.size (), Filters_.size ());
-		Filters_ << filter;
-		endInsertRows ();
+		SaveSettings ();
 	}
 
 	void SubscriptionsModel::RemoveFilter (int pos)
