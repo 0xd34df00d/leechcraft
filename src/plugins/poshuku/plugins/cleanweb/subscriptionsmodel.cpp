@@ -32,6 +32,7 @@
 #include <QSettings>
 #include <QDir>
 #include <QtDebug>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -152,11 +153,19 @@ namespace CleanWeb
 
 	void SubscriptionsModel::RemoveFilter (const QString& filename)
 	{
-		// TODO use Util paths.
-		QDir home = QDir::home ();
-		home.cd (".leechcraft");
-		home.cd ("cleanweb");
-		home.remove (filename);
+		auto path = Util::CreateIfNotExists ("cleanweb");
+		if (!path.exists (filename))
+			qWarning () << Q_FUNC_INFO
+					<< "no file"
+					<< filename
+					<< "in"
+					<< path.path ();
+		else if (!path.remove (filename))
+			qWarning () << Q_FUNC_INFO
+					<< "unable to remove"
+					<< filename
+					<< "in"
+					<< path.path ();
 
 		const auto pos = FindFilename (Filters_, filename);
 		if (pos == Filters_.end ())

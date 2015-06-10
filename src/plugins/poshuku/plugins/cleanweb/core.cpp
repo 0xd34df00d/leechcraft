@@ -184,23 +184,8 @@ namespace CleanWeb
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
 
-		try
-		{
-			Util::CreateIfNotExists ("cleanweb");
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "failed to create the directory"
-				<< e.what ();
-			return;
-		}
-
-		QDir home = QDir::home ();
-		home.cd (".leechcraft");
-		home.cd ("cleanweb");
-
-		const auto& infos = home.entryInfoList (QDir::Files | QDir::Readable);
+		const auto& path = Util::CreateIfNotExists ("cleanweb");
+		const auto& infos = path.entryInfoList (QDir::Files | QDir::Readable);
 		const auto& paths = Util::Map (infos, std::mem_fn (&QFileInfo::absoluteFilePath));
 
 		auto watcher = new QFutureWatcher<QList<Filter>> ();
@@ -665,12 +650,8 @@ namespace CleanWeb
 
 	bool Core::Load (const QUrl& url, const QString& subscrName)
 	{
-		auto home = QDir::home ();
-		home.cd (".leechcraft");
-		home.cd ("cleanweb");
-
 		const auto& name = QFileInfo (url.path ()).fileName ();
-		const auto& path = home.absoluteFilePath (name);
+		const auto& path = Util::CreateIfNotExists ("cleanweb").absoluteFilePath (name);
 
 		const auto& e = Util::MakeEntity (url,
 				path,
