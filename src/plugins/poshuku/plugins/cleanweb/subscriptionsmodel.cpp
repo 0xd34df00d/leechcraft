@@ -119,26 +119,14 @@ namespace CleanWeb
 	{
 		qDebug () << Q_FUNC_INFO << "adding" << filters.size () << "filters";
 		for (const auto& f : filters)
-			AddFilter (f);
+			AddImpl (f);
 
 		LoadSettings ();
 	}
 
 	void SubscriptionsModel::AddFilter (const Filter& filter)
 	{
-		const auto pos = FindFilename (Filters_, filter.SD_.Filename_);
-		if (pos != Filters_.end ())
-		{
-			int row = std::distance (Filters_.begin (), pos);
-			beginRemoveRows (QModelIndex (), row, row);
-			Filters_.erase (pos);
-			endRemoveRows ();
-			SaveSettings ();
-		}
-
-		beginInsertRows ({}, Filters_.size (), Filters_.size ());
-		Filters_ << filter;
-		endInsertRows ();
+		AddImpl (filter);
 	}
 
 	void SubscriptionsModel::SetSubData (const SubscriptionData& sd)
@@ -168,6 +156,23 @@ namespace CleanWeb
 	const QList<Filter>& SubscriptionsModel::GetAllFilters () const
 	{
 		return Filters_;
+	}
+
+	void SubscriptionsModel::AddImpl (const Filter& filter)
+	{
+		const auto pos = FindFilename (Filters_, filter.SD_.Filename_);
+		if (pos != Filters_.end ())
+		{
+			int row = std::distance (Filters_.begin (), pos);
+			beginRemoveRows (QModelIndex (), row, row);
+			Filters_.erase (pos);
+			endRemoveRows ();
+			SaveSettings ();
+		}
+
+		beginInsertRows ({}, Filters_.size (), Filters_.size ());
+		Filters_ << filter;
+		endInsertRows ();
 	}
 
 	void SubscriptionsModel::RemoveFilter (int pos)

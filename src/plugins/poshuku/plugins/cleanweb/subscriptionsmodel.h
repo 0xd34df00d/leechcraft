@@ -66,6 +66,7 @@ namespace CleanWeb
 
 		const QList<Filter>& GetAllFilters () const;
 	private:
+		void AddImpl (const Filter&);
 		void RemoveFilter (int);
 
 		void SaveSettings () const;
