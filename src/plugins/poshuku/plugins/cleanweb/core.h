@@ -55,7 +55,7 @@ namespace CleanWeb
 	class FlashOnClickPlugin;
 	class FlashOnClickWhitelist;
 	class UserFiltersModel;
-
+	class SubscriptionsModel;
 
 	struct HidingWorkerResult
 	{
@@ -64,7 +64,7 @@ namespace CleanWeb
 		QStringList Selectors_;
 	};
 
-	class Core : public QAbstractItemModel
+	class Core : public QObject
 	{
 		Q_OBJECT
 
@@ -72,6 +72,7 @@ namespace CleanWeb
 
 		FlashOnClickWhitelist *FlashOnClickWhitelist_;
 		UserFiltersModel *UserFilters_;
+		SubscriptionsModel * const SubsModel_;
 
 		QList<Filter> Filters_;
 
@@ -79,8 +80,6 @@ namespace CleanWeb
 		QList<QList<FilterItem_ptr>> FilterItemsCache_;
 
 		QObjectList Downloaders_;
-
-		const QStringList HeaderLabels_;
 
 		struct PendingJob
 		{
@@ -95,21 +94,12 @@ namespace CleanWeb
 
 		const ICoreProxy_ptr Proxy_;
 	public:
-		Core (const ICoreProxy_ptr&);
+		Core (SubscriptionsModel*, const ICoreProxy_ptr&);
 
 		ICoreProxy_ptr GetProxy () const;
 
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int) const;
-		QVariant headerData (int, Qt::Orientation, int) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex ()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
-
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
-		QAbstractItemModel* GetModel ();
-		void Remove (const QModelIndex&);
 
 		void HandleInitialLayout (QWebPage*, QWebFrame*);
 		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
@@ -167,16 +157,7 @@ namespace CleanWeb
 	private:
 		void HandleProvider (QObject*);
 
-		void AddFilter (const Filter&);
 		void Parse (const QString&);
-
-		/** Removes the subscription at
-		 * ~/.leechcraft/cleanweb/filename.
-		 */
-		void Remove (const QString& filename);
-		void WriteSettings ();
-		void ReadSettings ();
-		bool AssignSD (const SubscriptionData&);
 
 		void HideElementsChunk (HidingWorkerResult);
 		void DelayedRemoveElements (QPointer<QWebFrame>, const QUrl&);

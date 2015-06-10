@@ -39,15 +39,18 @@ namespace Poshuku
 namespace CleanWeb
 {
 	class Core;
+	class SubscriptionsModel;
 
 	class SubscriptionsManagerWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::SubscriptionsManagerWidget Ui_;
+
 		Core * const Core_;
+		SubscriptionsModel * const Model_;
 	public:
-		SubscriptionsManagerWidget (Core*, QWidget* = 0);
+		SubscriptionsManagerWidget (Core*, SubscriptionsModel*, QWidget* = 0);
 	private:
 		void AddCustom (const QString&, const QString&);
 	private slots:

@@ -67,6 +67,7 @@
 #include "flashonclickwhitelist.h"
 #include "userfiltersmodel.h"
 #include "lineparser.h"
+#include "subscriptionsmodel.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
 Q_DECLARE_METATYPE (QWebFrame*);
@@ -173,17 +174,12 @@ namespace CleanWeb
 			}
 			return result;
 		}
-
-		QStringList MakeHeaders ()
-		{
-			return { Core::tr ("Name"), Core::tr ("Last updated"), Core::tr ("URL") };
-		}
 	}
 
-	Core::Core (const ICoreProxy_ptr& proxy)
+	Core::Core (SubscriptionsModel *model, const ICoreProxy_ptr& proxy)
 	: FlashOnClickWhitelist_ { new FlashOnClickWhitelist }
 	, UserFilters_ { new UserFiltersModel { proxy, this } }
-	, HeaderLabels_ { MakeHeaders () }
+	, SubsModel_ { model }
 	, Proxy_ { proxy }
 	{
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
@@ -226,58 +222,6 @@ namespace CleanWeb
 		return Proxy_;
 	}
 
-	int Core::columnCount (const QModelIndex&) const
-	{
-		return HeaderLabels_.size ();
-	}
-
-	QVariant Core::data (const QModelIndex& index, int role) const
-	{
-		if (!index.isValid () ||
-				role != Qt::DisplayRole)
-			return QVariant ();
-
-		int row = index.row ();
-		switch (index.column ())
-		{
-		case 0:
-			return Filters_.at (row).SD_.Name_;
-		case 1:
-			return Filters_.at (row).SD_.LastDateTime_;
-		case 2:
-			return Filters_.at (row).SD_.URL_.toString ();
-		default:
-			return QVariant ();
-		}
-	}
-
-	QVariant Core::headerData (int section, Qt::Orientation orient, int role) const
-	{
-		if (orient != Qt::Horizontal ||
-				role != Qt::DisplayRole)
-			return QVariant ();
-
-		return HeaderLabels_.at (section);
-	}
-
-	QModelIndex Core::index (int row, int column, const QModelIndex& parent) const
-	{
-		if (!hasIndex (row, column, parent))
-			return QModelIndex ();
-
-		return createIndex (row, column);
-	}
-
-	QModelIndex Core::parent (const QModelIndex&) const
-	{
-		return QModelIndex ();
-	}
-
-	int Core::rowCount (const QModelIndex& index) const
-	{
-		return index.isValid () ? 0 : Filters_.size ();
-	}
-
 	bool Core::CouldHandle (const Entity& e) const
 	{
 		QUrl url = e.Entity_.toUrl ();
@@ -316,19 +260,6 @@ namespace CleanWeb
 		QUrl subscrUrl = subscr.Entity_.toUrl ();
 
 		Add (subscrUrl);
-	}
-
-	QAbstractItemModel* Core::GetModel ()
-	{
-		return this;
-	}
-
-	void Core::Remove (const QModelIndex& index)
-	{
-		if (!index.isValid ())
-			return;
-
-		Remove (Filters_ [index.row ()].SD_.Filename_);
 	}
 
 	namespace
@@ -689,27 +620,9 @@ namespace CleanWeb
 				SLOT (handleJobError (int, IDownload::Error)));
 	}
 
-	void Core::AddFilter (const Filter& f)
-	{
-		const auto pos = std::find_if (Filters_.begin (), Filters_.end (),
-				FilterFinder<FTFilename_> (f.SD_.Filename_));
-		if (pos != Filters_.end ())
-		{
-			int row = std::distance (Filters_.begin (), pos);
-			beginRemoveRows (QModelIndex (), row, row);
-			Filters_.erase (pos);
-			endRemoveRows ();
-			WriteSettings ();
-		}
-
-		beginInsertRows (QModelIndex (), Filters_.size (), Filters_.size ());
-		Filters_ << f;
-		endInsertRows ();
-	}
-
 	void Core::Parse (const QString& filePath)
 	{
-		AddFilter (ParseToFilters ({ filePath }).first ());
+		SubsModel_->AddFilter (ParseToFilters ({ filePath }).first ());
 		regenFilterCaches ();
 	}
 
@@ -795,104 +708,14 @@ namespace CleanWeb
 		return true;
 	}
 
-	void Core::Remove (const QString& fileName)
-	{
-		QDir home = QDir::home ();
-		home.cd (".leechcraft");
-		home.cd ("cleanweb");
-		home.remove (fileName);
-
-		QList<Filter>::iterator pos = std::find_if (Filters_.begin (), Filters_.end (),
-				FilterFinder<FTFilename_> (fileName));
-		if (pos != Filters_.end ())
-		{
-			int row = std::distance (Filters_.begin (), pos);
-			beginRemoveRows (QModelIndex (), row, row);
-			Filters_.erase (pos);
-			endRemoveRows ();
-			WriteSettings ();
-		}
-		else
-			qWarning () << Q_FUNC_INFO
-				<< "could not find filter for name"
-				<< fileName;
-	}
-
-	void Core::WriteSettings ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_CleanWeb");
-		settings.beginWriteArray ("Subscriptions");
-		settings.remove ("");
-
-		int i = 0;
-		Q_FOREACH (Filter f, Filters_)
-		{
-			settings.setArrayIndex (i++);
-			settings.setValue ("URL", f.SD_.URL_);
-			settings.setValue ("name", f.SD_.Name_);
-			settings.setValue ("fileName", f.SD_.Filename_);
-			settings.setValue ("lastDateTime", f.SD_.LastDateTime_);
-		}
-
-		settings.endArray ();
-	}
-
-	void Core::ReadSettings ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_CleanWeb");
-		int size = settings.beginReadArray ("Subscriptions");
-
-		for (int i = 0; i < size; ++i)
-		{
-			settings.setArrayIndex (i);
-			SubscriptionData sd =
-			{
-				settings.value ("URL").toUrl (),
-				settings.value ("name").toString (),
-				settings.value ("fileName").toString (),
-				settings.value ("lastDateTime").toDateTime ()
-			};
-			if (!AssignSD (sd))
-				qWarning () << Q_FUNC_INFO
-					<< "could not find filter for name"
-					<< sd.Filename_;
-		}
-
-		settings.endArray ();
-	}
-
-	bool Core::AssignSD (const SubscriptionData& sd)
-	{
-		QList<Filter>::iterator pos =
-			std::find_if (Filters_.begin (), Filters_.end (),
-				FilterFinder<FTFilename_> (sd.Filename_));
-		if (pos != Filters_.end ())
-		{
-			pos->SD_ = sd;
-			int row = std::distance (Filters_.begin (), pos);
-			emit dataChanged (index (row, 0), index (row, columnCount () - 1));
-			return true;
-		}
-		else
-			return false;
-	}
-
 	void Core::handleParsed ()
 	{
 		auto watcher = dynamic_cast<QFutureWatcher<QList<Filter>>*> (sender ());
 		watcher->deleteLater ();
 
-		const auto& result = watcher->result ();
-		qDebug () << Q_FUNC_INFO << "adding" << result.size () << "filters";
-
-		for (const auto& f : result)
-			AddFilter (f);
+		SubsModel_->SetInitialFilters (watcher->result ());
 
 		regenFilterCaches ();
-
-		ReadSettings ();
 
 		QTimer::singleShot (0,
 				this,
@@ -928,11 +751,7 @@ namespace CleanWeb
 		};
 		Parse (pj.FullName_);
 		PendingJobs_.remove (id);
-		if (!AssignSD (sd))
-			qWarning () << Q_FUNC_INFO
-				<< "could not find filter for name"
-				<< sd.Filename_;
-		WriteSettings ();
+		SubsModel_->SetSubData (sd);
 	}
 
 	void Core::handleJobError (int id, IDownload::Error)

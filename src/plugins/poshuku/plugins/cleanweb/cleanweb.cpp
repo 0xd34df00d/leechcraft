@@ -42,6 +42,7 @@
 #include "flashonclickwhitelist.h"
 #include "userfilters.h"
 #include "wizardgenerator.h"
+#include "subscriptionsmodel.h"
 
 namespace LeechCraft
 {
@@ -57,10 +58,11 @@ namespace CleanWeb
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");
 
-		Core_ = std::make_shared<Core> (proxy);
+		const auto model = new SubscriptionsModel { this };
+		Core_ = std::make_shared<Core> (model, proxy);
 
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
-				new SubscriptionsManagerWidget (Core_.get ()));
+				new SubscriptionsManagerWidget (Core_.get (), model));
 		SettingsDialog_->SetCustomWidget ("UserFilters",
 				new UserFilters (Core_->GetUserFiltersModel ()));
 		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",

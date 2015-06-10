@@ -35,6 +35,7 @@
 #endif
 
 #include "core.h"
+#include "subscriptionsmodel.h"
 #include "subscriptionadddialog.h"
 
 namespace LeechCraft
@@ -43,21 +44,23 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	SubscriptionsManagerWidget::SubscriptionsManagerWidget (Core *core, QWidget *parent)
+	SubscriptionsManagerWidget::SubscriptionsManagerWidget (Core *core,
+			SubscriptionsModel *model, QWidget *parent)
 	: QWidget { parent }
 	, Core_ { core }
+	, Model_ { model }
 	{
 		Ui_.setupUi (this);
-		Ui_.Subscriptions_->setModel (core->GetModel ());
+		Ui_.Subscriptions_->setModel (model);
 	}
 
 	void SubscriptionsManagerWidget::on_RemoveButton__released ()
 	{
-		QModelIndex current = Ui_.Subscriptions_->currentIndex ();
+		const auto& current = Ui_.Subscriptions_->currentIndex ();
 		if (!current.isValid ())
 			return;
 
-		Core_->Remove (current);
+		Model_->RemoveFilter (current);
 	}
 
 	void SubscriptionsManagerWidget::AddCustom (const QString& title, const QString& urlStr)
