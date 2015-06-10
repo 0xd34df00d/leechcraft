@@ -92,7 +92,7 @@ namespace CleanWeb
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
-						tr ("Subscription with such title allready exists."),
+						tr ("Subscription with such title already exists."),
 						QMessageBox::Ok);
 				return;
 			}
@@ -101,7 +101,7 @@ namespace CleanWeb
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
-						tr ("Subscription with such title allready exists."),
+						tr ("Subscription with such title already exists."),
 						QMessageBox::Ok);
 				return;
 			}
