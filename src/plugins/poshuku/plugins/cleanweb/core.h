@@ -71,7 +71,7 @@ namespace CleanWeb
 		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
 
 		FlashOnClickWhitelist *FlashOnClickWhitelist_;
-		UserFiltersModel *UserFilters_;
+		UserFiltersModel * const UserFilters_;
 		SubscriptionsModel * const SubsModel_;
 
 		QList<QList<FilterItem_ptr>> ExceptionsCache_;
@@ -92,7 +92,7 @@ namespace CleanWeb
 
 		const ICoreProxy_ptr Proxy_;
 	public:
-		Core (SubscriptionsModel*, const ICoreProxy_ptr&);
+		Core (SubscriptionsModel*, UserFiltersModel*, const ICoreProxy_ptr&);
 
 		ICoreProxy_ptr GetProxy () const;
 
@@ -115,7 +115,6 @@ namespace CleanWeb
 
 		bool ShouldReject (const QNetworkRequest&) const;
 
-		UserFiltersModel* GetUserFiltersModel () const;
 		FlashOnClickPlugin* GetFlashOnClick ();
 		FlashOnClickWhitelist* GetFlashOnClickWhitelist ();
 

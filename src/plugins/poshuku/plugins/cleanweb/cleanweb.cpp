@@ -43,6 +43,7 @@
 #include "userfilters.h"
 #include "wizardgenerator.h"
 #include "subscriptionsmodel.h"
+#include "userfiltersmodel.h"
 
 namespace LeechCraft
 {
@@ -59,12 +60,13 @@ namespace CleanWeb
 				"poshukucleanwebsettings.xml");
 
 		const auto model = new SubscriptionsModel { this };
-		Core_ = std::make_shared<Core> (model, proxy);
+		const auto ufm = new UserFiltersModel { proxy, this };
+		Core_ = std::make_shared<Core> (model, ufm, proxy);
 
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 				new SubscriptionsManagerWidget (Core_.get (), model));
 		SettingsDialog_->SetCustomWidget ("UserFilters",
-				new UserFilters (Core_->GetUserFiltersModel ()));
+				new UserFilters (ufm));
 		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",
 				Core_->GetFlashOnClickWhitelist ());
 	}

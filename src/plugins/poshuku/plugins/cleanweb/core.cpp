@@ -176,14 +176,18 @@ namespace CleanWeb
 		}
 	}
 
-	Core::Core (SubscriptionsModel *model, const ICoreProxy_ptr& proxy)
+	Core::Core (SubscriptionsModel *model, UserFiltersModel *ufm, const ICoreProxy_ptr& proxy)
 	: FlashOnClickWhitelist_ { new FlashOnClickWhitelist }
-	, UserFilters_ { new UserFiltersModel { proxy, this } }
+	, UserFilters_ { ufm }
 	, SubsModel_ { model }
 	, Proxy_ { proxy }
 	{
 		connect (SubsModel_,
 				SIGNAL (filtersListChanged ()),
+				this,
+				SLOT (regenFilterCaches ()));
+		connect (UserFilters_,
+				SIGNAL (filtersChanged ()),
 				this,
 				SLOT (regenFilterCaches ()));
 
@@ -200,11 +204,6 @@ namespace CleanWeb
 				SLOT (handleParsed ()));
 		const auto& future = QtConcurrent::run (ParseToFilters, paths);
 		watcher->setFuture (future);
-
-		connect (UserFilters_,
-				SIGNAL (filtersChanged ()),
-				this,
-				SLOT (regenFilterCaches ()));
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -329,11 +328,6 @@ namespace CleanWeb
 			action->setProperty ("CleanWeb/URL", iurl);
 			action->setProperty ("CleanWeb/View", QVariant::fromValue<QObject*> (view));
 		}
-	}
-
-	UserFiltersModel* Core::GetUserFiltersModel () const
-	{
-		return UserFilters_;
 	}
 
 	FlashOnClickPlugin* Core::GetFlashOnClick ()
