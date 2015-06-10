@@ -74,8 +74,6 @@ namespace CleanWeb
 		UserFiltersModel *UserFilters_;
 		SubscriptionsModel * const SubsModel_;
 
-		QList<Filter> Filters_;
-
 		QList<QList<FilterItem_ptr>> ExceptionsCache_;
 		QList<QList<FilterItem_ptr>> FilterItemsCache_;
 

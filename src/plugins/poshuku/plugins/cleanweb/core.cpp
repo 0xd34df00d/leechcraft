@@ -684,7 +684,7 @@ namespace CleanWeb
 		const auto& current = QDateTime::currentDateTime ();
 		int days = XmlSettingsManager::Instance ()->
 			property ("UpdateInterval").toInt ();
-		for (const auto& f : Filters_)
+		for (const auto& f : SubsModel_->GetAllFilters ())
 			if (f.SD_.LastDateTime_.daysTo (current) > days)
 				Load (f.SD_.URL_, f.SD_.Name_);
 	}
@@ -734,7 +734,7 @@ namespace CleanWeb
 
 		const QString& domain = frameUrl.host ();
 
-		QList<Filter> allFilters = Filters_;
+		auto allFilters = SubsModel_->GetAllFilters ();
 		allFilters << UserFilters_->GetFilter ();
 
 		auto watcher = new QFutureWatcher<HidingWorkerResult> (this);
@@ -885,7 +885,7 @@ namespace CleanWeb
 		ExceptionsCache_.clear ();
 		FilterItemsCache_.clear ();
 
-		auto allFilters = Filters_;
+		auto allFilters = SubsModel_->GetAllFilters ();
 		allFilters << UserFilters_->GetFilter ();
 
 		int exceptionsCount = 0;
