@@ -182,6 +182,11 @@ namespace CleanWeb
 	, SubsModel_ { model }
 	, Proxy_ { proxy }
 	{
+		connect (SubsModel_,
+				SIGNAL (filtersListChanged ()),
+				this,
+				SLOT (regenFilterCaches ()));
+
 		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
 
 		const auto& path = Util::CreateIfNotExists ("cleanweb");
@@ -608,7 +613,6 @@ namespace CleanWeb
 	void Core::Parse (const QString& filePath)
 	{
 		SubsModel_->AddFilter (ParseToFilters ({ filePath }).first ());
-		regenFilterCaches ();
 	}
 
 	bool Core::Add (const QUrl& subscrUrl)
@@ -695,8 +699,6 @@ namespace CleanWeb
 		watcher->deleteLater ();
 
 		SubsModel_->SetInitialFilters (watcher->result ());
-
-		regenFilterCaches ();
 
 		QTimer::singleShot (0,
 				this,
