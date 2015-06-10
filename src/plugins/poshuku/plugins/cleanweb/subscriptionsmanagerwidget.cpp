@@ -91,7 +91,7 @@ namespace CleanWeb
 				return;
 			}
 
-			if (Core_->Exists (title))
+			if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.Name_; }))
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
@@ -100,7 +100,7 @@ namespace CleanWeb
 				return;
 			}
 
-			if (Core_->Exists (locationUrl))
+			if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.URL_; }))
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
