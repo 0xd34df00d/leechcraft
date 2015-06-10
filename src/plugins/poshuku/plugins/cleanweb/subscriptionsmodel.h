@@ -64,6 +64,13 @@ namespace CleanWeb
 		void RemoveFilter (const QString& filename);
 		void RemoveFilter (const QModelIndex&);
 
+		template<typename T, typename F>
+		bool HasFilter (T val, F g) const
+		{
+			return std::any_of (Filters_.begin (), Filters_.end (),
+					[&val, &g] (const Filter& f) { return g (f) == val; });
+		}
+
 		const QList<Filter>& GetAllFilters () const;
 	private:
 		void AddImpl (const Filter&);
