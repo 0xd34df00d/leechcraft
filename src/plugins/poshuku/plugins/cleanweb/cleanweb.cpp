@@ -37,7 +37,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "subscriptionsmanager.h"
+#include "subscriptionsmanagerwidget.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
 #include "userfilters.h"
@@ -60,7 +60,7 @@ namespace CleanWeb
 		Core_ = std::make_shared<Core> (proxy);
 
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
-				new SubscriptionsManager (Core_.get ()));
+				new SubscriptionsManagerWidget (Core_.get ()));
 		SettingsDialog_->SetCustomWidget ("UserFilters",
 				new UserFilters (Core_->GetUserFiltersModel ()));
 		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist",

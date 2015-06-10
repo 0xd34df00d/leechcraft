@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "subscriptionsmanager.h"
+#include "subscriptionsmanagerwidget.h"
 #include <QMessageBox>
 
 #if QT_VERSION >= 0x050000
@@ -43,7 +43,7 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	SubscriptionsManager::SubscriptionsManager (Core *core, QWidget *parent)
+	SubscriptionsManagerWidget::SubscriptionsManagerWidget (Core *core, QWidget *parent)
 	: QWidget { parent }
 	, Core_ { core }
 	{
@@ -51,7 +51,7 @@ namespace CleanWeb
 		Ui_.Subscriptions_->setModel (core->GetModel ());
 	}
 
-	void SubscriptionsManager::on_RemoveButton__released ()
+	void SubscriptionsManagerWidget::on_RemoveButton__released ()
 	{
 		QModelIndex current = Ui_.Subscriptions_->currentIndex ();
 		if (!current.isValid ())
@@ -60,7 +60,7 @@ namespace CleanWeb
 		Core_->Remove (current);
 	}
 
-	void SubscriptionsManager::AddCustom (const QString& title, const QString& urlStr)
+	void SubscriptionsManagerWidget::AddCustom (const QString& title, const QString& urlStr)
 	{
 		QUrl url (urlStr);
 		QUrl locationUrl;
@@ -118,7 +118,7 @@ namespace CleanWeb
 		Core_->Load (locationUrl, title);
 	}
 
-	void SubscriptionsManager::on_AddButton__released ()
+	void SubscriptionsManagerWidget::on_AddButton__released ()
 	{
 		SubscriptionAddDialog subscriptionAdd (this);
 

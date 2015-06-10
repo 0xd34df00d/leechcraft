@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SubscriptionsManager</class>
- <widget class="QWidget" name="SubscriptionsManager">
+ <class>SubscriptionsManagerWidget</class>
+ <widget class="QWidget" name="SubscriptionsManagerWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

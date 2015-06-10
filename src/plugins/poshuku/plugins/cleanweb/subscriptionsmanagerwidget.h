@@ -30,7 +30,7 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_subscriptionsmanager.h"
+#include "ui_subscriptionsmanagerwidget.h"
 
 namespace LeechCraft
 {
@@ -40,14 +40,14 @@ namespace CleanWeb
 {
 	class Core;
 
-	class SubscriptionsManager : public QWidget
+	class SubscriptionsManagerWidget : public QWidget
 	{
 		Q_OBJECT
 
-		Ui::SubscriptionsManager Ui_;
+		Ui::SubscriptionsManagerWidget Ui_;
 		Core * const Core_;
 	public:
-		SubscriptionsManager (Core*, QWidget* = 0);
+		SubscriptionsManagerWidget (Core*, QWidget* = 0);
 	private:
 		void AddCustom (const QString&, const QString&);
 	private slots:
