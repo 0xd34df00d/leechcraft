@@ -622,9 +622,6 @@ namespace CleanWeb
 		const auto& subscrName = QUrlQuery { subscrUrl }.queryItemValue ("title");
 #endif
 
-		if (Exists (subscrName) || Exists (url))
-			return false;
-
 		qDebug () << "adding" << url << "as" << subscrName;
 		bool result = Load (url, subscrName);
 		if (result)
