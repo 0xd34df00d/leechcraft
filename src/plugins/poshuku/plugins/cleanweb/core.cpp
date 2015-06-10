@@ -214,23 +214,8 @@ namespace CleanWeb
 
 	bool Core::CouldHandle (const Entity& e) const
 	{
-		QUrl url = e.Entity_.toUrl ();
-		if (url.scheme () == "abp" &&
-				url.path () == "subscribe")
-		{
-#if QT_VERSION < 0x050000
-			const auto& name = url.queryItemValue ("title");
-#else
-			const auto& name = QUrlQuery { url }.queryItemValue ("title");
-#endif
-			if (std::find_if (Filters_.begin (), Filters_.end (),
-						FilterFinder<FTName_> (name)) == Filters_.end ())
-				return true;
-			else
-				return false;
-		}
-		else
-			return false;
+		const auto& url = e.Entity_.toUrl ();
+		return url.scheme () == "abp" && url.path () == "subscribe";
 	}
 
 	bool Core::Exists (const QString& subscrName) const
