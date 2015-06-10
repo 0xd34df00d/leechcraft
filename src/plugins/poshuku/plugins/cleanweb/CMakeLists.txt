@@ -16,6 +16,7 @@ set (CLEANWEB_SRCS
 	startupfirstpage.cpp
 	subscriptionadddialog.cpp
 	lineparser.cpp
+	subscriptionsmodel.cpp
 	)
 set (CLEANWEB_FORMS
 	subscriptionsmanagerwidget.ui
