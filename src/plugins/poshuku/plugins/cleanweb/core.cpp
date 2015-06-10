@@ -218,18 +218,6 @@ namespace CleanWeb
 		return url.scheme () == "abp" && url.path () == "subscribe";
 	}
 
-	bool Core::Exists (const QString& subscrName) const
-	{
-		return std::find_if (Filters_.begin (), Filters_.end (),
-				FilterFinder<FTName_> (subscrName)) != Filters_.end ();
-	}
-
-	bool Core::Exists (const QUrl& url) const
-	{
-		return std::find_if (Filters_.begin (), Filters_.end (),
-				FilterFinder<FTUrl_> (url)) != Filters_.end ();
-	}
-
 	void Core::Handle (Entity subscr)
 	{
 		QUrl subscrUrl = subscr.Entity_.toUrl ();

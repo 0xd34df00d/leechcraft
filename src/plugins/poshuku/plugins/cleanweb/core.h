@@ -121,9 +121,6 @@ namespace CleanWeb
 		FlashOnClickPlugin* GetFlashOnClick ();
 		FlashOnClickWhitelist* GetFlashOnClickWhitelist ();
 
-		bool Exists (const QUrl& url) const;
-		bool Exists (const QString& name) const;
-
 		/** Parses the abp:-schemed url, gets subscription
 		 * name and real url from there and adds it via Load().
 		 *
