@@ -72,6 +72,8 @@ namespace CleanWeb
 		void SaveSettings () const;
 		void LoadSettings ();
 		bool AssignSD (const SubscriptionData&);
+	signals:
+		void filtersListChanged ();
 	};
 }
 }

@@ -122,11 +122,14 @@ namespace CleanWeb
 			AddImpl (f);
 
 		LoadSettings ();
+
+		emit filtersListChanged ();
 	}
 
 	void SubscriptionsModel::AddFilter (const Filter& filter)
 	{
 		AddImpl (filter);
+		emit filtersListChanged ();
 	}
 
 	void SubscriptionsModel::SetSubData (const SubscriptionData& sd)
@@ -197,6 +200,8 @@ namespace CleanWeb
 		endRemoveRows ();
 
 		SaveSettings ();
+
+		emit filtersListChanged ();
 	}
 
 	void SubscriptionsModel::SaveSettings () const
