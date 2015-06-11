@@ -35,7 +35,6 @@
 #include <QCursor>
 #include <QtDebug>
 #include <qwebelement.h>
-#include "core.h"
 #include "flashonclickwhitelist.h"
 
 namespace LeechCraft
@@ -44,9 +43,9 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	FlashPlaceHolder::FlashPlaceHolder (const QUrl& url, Core *core, QWidget *parent)
+	FlashPlaceHolder::FlashPlaceHolder (const QUrl& url, FlashOnClickWhitelist *wl, QWidget *parent)
 	: QWidget (parent)
-	, Core_ (core)
+	, WL_ (wl)
 	, URL_ (url)
 	, Swapping_ (false)
 	{
@@ -187,8 +186,8 @@ namespace CleanWeb
 		QString host = URL_.host ();
 		addHost->setData (URL_.host ());
 
-		addUrl->setEnabled (!Core_->GetFlashOnClickWhitelist ()->Matches (url));
-		addHost->setEnabled (!Core_->GetFlashOnClickWhitelist ()->Matches (host));
+		addUrl->setEnabled (!WL_->Matches (url));
+		addHost->setEnabled (!WL_->Matches (host));
 
 		menu.addSeparator ();
 		menu.addAction (tr ("Hide"),
@@ -210,7 +209,7 @@ namespace CleanWeb
 			return;
 		}
 
-		Core_->GetFlashOnClickWhitelist ()->Add (action->data ().toString ());
+		WL_->Add (action->data ().toString ());
 	}
 }
 }

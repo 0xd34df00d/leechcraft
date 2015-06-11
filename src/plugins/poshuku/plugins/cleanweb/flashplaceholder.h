@@ -39,20 +39,21 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	class Core;
+	class FlashOnClickWhitelist;
 
 	class FlashPlaceHolder : public QWidget
 	{
 		Q_OBJECT
 		Q_PROPERTY (bool swapping READ IsSwapping)
 
-		Core * const Core_;
+		FlashOnClickWhitelist * const WL_;
 
 		Ui::FlashPlaceHolder Ui_;
 		QUrl URL_;
 		bool Swapping_;
 	public:
-		FlashPlaceHolder (const QUrl&, Core*, QWidget* = 0);
+		FlashPlaceHolder (const QUrl&, FlashOnClickWhitelist*, QWidget* = 0);
+
 		bool IsSwapping () const;
 	private slots:
 		void handleLoadFlash ();

@@ -80,7 +80,7 @@ namespace CleanWeb
 			if (plugin->WouldOverrideFlash (url))
 				return 0;
 
-		return new FlashPlaceHolder (url, Core_);
+		return new FlashPlaceHolder (url, Core_->GetFlashOnClickWhitelist ());
 	}
 }
 }
