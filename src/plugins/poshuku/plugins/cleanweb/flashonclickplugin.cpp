@@ -32,9 +32,8 @@
 #include <interfaces/poshuku/iflashoverrider.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include "flashplaceholder.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
+#include "flashplaceholder.h"
 #include "flashonclickwhitelist.h"
 
 namespace LeechCraft
@@ -43,9 +42,11 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	FlashOnClickPlugin::FlashOnClickPlugin (Core *core, QObject *parent)
+	FlashOnClickPlugin::FlashOnClickPlugin (const ICoreProxy_ptr& proxy,
+			FlashOnClickWhitelist *wl, QObject *parent)
 	: QObject { parent }
-	, Core_ { core }
+	, Proxy_ { proxy }
+	, WL_ { wl }
 	{
 	}
 
@@ -72,15 +73,15 @@ namespace CleanWeb
 				property ("EnableFlashOnClick").toBool ())
 			return 0;
 
-		if (Core_->GetFlashOnClickWhitelist ()->Matches (url.toString ()))
+		if (WL_->Matches (url.toString ()))
 			return 0;
 
-		const auto ipm = Core_->GetProxy ()->GetPluginsManager ();
+		const auto ipm = Proxy_->GetPluginsManager ();
 		for (const auto plugin : ipm->GetAllCastableTo<IFlashOverrider*> ())
 			if (plugin->WouldOverrideFlash (url))
 				return 0;
 
-		return new FlashPlaceHolder (url, Core_->GetFlashOnClickWhitelist ());
+		return new FlashPlaceHolder (url, WL_);
 	}
 }
 }

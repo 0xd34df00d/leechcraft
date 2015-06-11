@@ -333,7 +333,7 @@ namespace CleanWeb
 	FlashOnClickPlugin* Core::GetFlashOnClick ()
 	{
 		if (!FlashOnClickPlugin_)
-			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (this);
+			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (Proxy_, FlashOnClickWhitelist_);
 
 		return FlashOnClickPlugin_.get ();
 	}

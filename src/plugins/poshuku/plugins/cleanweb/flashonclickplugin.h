@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iwebplugin.h>
 
 namespace LeechCraft
@@ -38,18 +39,19 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	class Core;
+	class FlashOnClickWhitelist;
 
 	class FlashOnClickPlugin : public QObject
 							 , public IWebPlugin
 	{
 		Q_OBJECT
-
 		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
 
-		Core * const Core_;
+		const ICoreProxy_ptr Proxy_;
+		FlashOnClickWhitelist * const WL_;
 	public:
-		FlashOnClickPlugin (Core*, QObject* = 0);
+		FlashOnClickPlugin (const ICoreProxy_ptr&,
+				FlashOnClickWhitelist*, QObject* = nullptr);
 
 		QWebPluginFactory::Plugin Plugin (bool) const;
 		QWidget* Create (const QString&,
