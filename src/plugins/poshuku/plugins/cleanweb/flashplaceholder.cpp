@@ -103,7 +103,7 @@ namespace CleanWeb
 			auto elements = docElement.findAll (selector.arg ("object")) +
 					docElement.findAll (selector.arg ("embed"));
 
-			Q_FOREACH (QWebElement element, elements)
+			for (auto element : elements)
 			{
 				if (!element.evaluateJavaScript ("this.swapping").toBool ())
 					continue;
