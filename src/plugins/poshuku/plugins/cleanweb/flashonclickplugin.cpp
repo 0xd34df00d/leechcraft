@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "flashonclickplugin.h"
+#include <algorithm>
 #include <QDebug>
 #include <interfaces/poshuku/iflashoverrider.h>
 #include <interfaces/core/icoreproxy.h>
@@ -76,10 +77,10 @@ namespace CleanWeb
 		if (WL_->Matches (url.toString ()))
 			return nullptr;
 
-		const auto ipm = Proxy_->GetPluginsManager ();
-		for (const auto plugin : ipm->GetAllCastableTo<IFlashOverrider*> ())
-			if (plugin->WouldOverrideFlash (url))
-				return nullptr;
+		const auto& overs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ();
+		if (std::any_of (overs.begin (), overs.end (),
+					[&url] (IFlashOverrider *plugin) { return plugin->WouldOverrideFlash (url); }))
+			return nullptr;
 
 		return new FlashPlaceHolder { url, WL_ };
 	}
