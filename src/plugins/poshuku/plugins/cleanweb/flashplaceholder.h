@@ -50,7 +50,7 @@ namespace CleanWeb
 
 		Ui::FlashPlaceHolder Ui_;
 		QUrl URL_;
-		bool Swapping_;
+		bool Swapping_ = false;
 	public:
 		FlashPlaceHolder (const QUrl&, FlashOnClickWhitelist*, QWidget* = 0);
 

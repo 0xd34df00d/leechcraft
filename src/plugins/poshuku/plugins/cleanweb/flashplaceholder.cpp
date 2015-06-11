@@ -47,7 +47,6 @@ namespace CleanWeb
 	: QWidget (parent)
 	, WL_ (wl)
 	, URL_ (url)
-	, Swapping_ (false)
 	{
 		Ui_.setupUi (this);
 		setToolTip (url.toString ());
