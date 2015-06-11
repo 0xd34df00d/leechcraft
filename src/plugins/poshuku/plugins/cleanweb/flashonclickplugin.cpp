@@ -71,17 +71,17 @@ namespace CleanWeb
 	{
 		if (!XmlSettingsManager::Instance ()->
 				property ("EnableFlashOnClick").toBool ())
-			return 0;
+			return nullptr;
 
 		if (WL_->Matches (url.toString ()))
-			return 0;
+			return nullptr;
 
 		const auto ipm = Proxy_->GetPluginsManager ();
 		for (const auto plugin : ipm->GetAllCastableTo<IFlashOverrider*> ())
 			if (plugin->WouldOverrideFlash (url))
-				return 0;
+				return nullptr;
 
-		return new FlashPlaceHolder (url, WL_);
+		return new FlashPlaceHolder { url, WL_ };
 	}
 }
 }
