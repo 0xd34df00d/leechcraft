@@ -29,9 +29,12 @@
 
 #pragma once
 
+#include <functional>
 #include <QWidget>
 #include <QUrl>
 #include "ui_flashplaceholder.h"
+
+class QWebElement;
 
 namespace LeechCraft
 {
@@ -55,6 +58,8 @@ namespace CleanWeb
 		FlashPlaceHolder (const QUrl&, FlashOnClickWhitelist*, QWidget* = 0);
 
 		bool IsSwapping () const;
+	private:
+		void PerformWithElements (const std::function<void (QWebElement)>&);
 	private slots:
 		void handleLoadFlash ();
 		void handleHideFlash ();

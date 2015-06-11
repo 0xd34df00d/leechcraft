@@ -73,46 +73,43 @@ namespace CleanWeb
 		return Swapping_;
 	}
 
-	void FlashPlaceHolder::handleLoadFlash ()
+	void FlashPlaceHolder::PerformWithElements (const std::function<void (QWebElement)>& function)
 	{
 		QWidget *parent = parentWidget ();
-		QWebView *view = 0;
+		QWebView *view = nullptr;
 		while (parent)
 		{
 			if ((view = qobject_cast<QWebView*> (parent)))
 				break;
+
 			parent = parent->parentWidget ();
 		}
 		if (!view)
 			return;
 
-		QString selector = "%1[type=\"application/x-shockwave-flash\"]";
-		QString mime = "application/futuresplash";
+		const QString selector { "%1[type=\"application/x-shockwave-flash\"]" };
 
 		hide ();
 
 		Swapping_ = true;
 
-		QList<QWebFrame*> frames;
-		frames.append (view->page ()->mainFrame ());
+		QList<QWebFrame*> frames { view->page ()->mainFrame () };
 
 		while (!frames.isEmpty ())
 		{
-			QWebFrame *frame = frames.takeFirst ();
-			QWebElement docElement = frame->documentElement ();
+			const auto frame = frames.takeFirst ();
+			auto docElement = frame->documentElement ();
 
-			QWebElementCollection elements;
-			elements.append (docElement.findAll (selector.arg ("object")));
-			elements.append (docElement.findAll (selector.arg ("embed")));
+			auto elements = docElement.findAll (selector.arg ("object")) +
+					docElement.findAll (selector.arg ("embed"));
 
 			Q_FOREACH (QWebElement element, elements)
 			{
 				if (!element.evaluateJavaScript ("this.swapping").toBool ())
 					continue;
 
-				QWebElement substitute = element.clone ();
-				substitute.setAttribute ("type", mime);
-				element.replace (substitute);
+				function (element);
+				break;
 			}
 
 			frames += frame->childFrames();
@@ -120,49 +117,22 @@ namespace CleanWeb
 		Swapping_ = false;
 	}
 
+	void FlashPlaceHolder::handleLoadFlash ()
+	{
+		PerformWithElements ([] (QWebElement element)
+				{
+					auto substitute = element.clone ();
+					substitute.setAttribute ("type", "application/futuresplash");
+					element.replace (substitute);
+				});
+	}
+
 	void FlashPlaceHolder::handleHideFlash ()
 	{
-		QWidget *parent = parentWidget ();
-		QWebView *view = 0;
-		while (parent)
-		{
-			if ((view = qobject_cast<QWebView*> (parent)))
-				break;
-			parent = parent->parentWidget ();
-		}
-		if (!view)
-			return;
-
-		QString selector = "%1[type=\"application/x-shockwave-flash\"]";
-
-		hide ();
-
-		Swapping_ = true;
-
-		QList<QWebFrame*> frames;
-		frames.append (view->page ()->mainFrame ());
-
-		while (!frames.isEmpty ())
-		{
-			QWebFrame *frame = frames.takeFirst ();
-			QWebElement docElement = frame->documentElement ();
-
-			QWebElementCollection elements;
-			elements.append (docElement.findAll (selector.arg ("object")));
-			elements.append (docElement.findAll (selector.arg ("embed")));
-
-			Q_FOREACH (QWebElement element, elements)
-			{
-				if (!element.evaluateJavaScript ("this.swapping").toBool ())
-					continue;
-
-				element.removeFromDocument ();
-				break;
-			}
-
-			frames += frame->childFrames();
-		}
-		Swapping_ = false;
+		PerformWithElements ([] (QWebElement element)
+				{
+					element.removeFromDocument ();
+				});
 	}
 
 	void FlashPlaceHolder::handleContextMenu ()
