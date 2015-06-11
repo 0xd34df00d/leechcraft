@@ -52,8 +52,6 @@ namespace Poshuku
 {
 namespace CleanWeb
 {
-	class FlashOnClickPlugin;
-	class FlashOnClickWhitelist;
 	class UserFiltersModel;
 	class SubscriptionsModel;
 
@@ -68,9 +66,6 @@ namespace CleanWeb
 	{
 		Q_OBJECT
 
-		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
-
-		FlashOnClickWhitelist *FlashOnClickWhitelist_;
 		UserFiltersModel * const UserFilters_;
 		SubscriptionsModel * const SubsModel_;
 
@@ -114,9 +109,6 @@ namespace CleanWeb
 				WebViewCtxMenuStage);
 
 		bool ShouldReject (const QNetworkRequest&) const;
-
-		FlashOnClickPlugin* GetFlashOnClick ();
-		FlashOnClickWhitelist* GetFlashOnClickWhitelist ();
 
 		/** Parses the abp:-schemed url, gets subscription
 		 * name and real url from there and adds it via Load().

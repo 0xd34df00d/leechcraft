@@ -63,8 +63,6 @@
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
-#include "flashonclickplugin.h"
-#include "flashonclickwhitelist.h"
 #include "userfiltersmodel.h"
 #include "lineparser.h"
 #include "subscriptionsmodel.h"
@@ -177,8 +175,7 @@ namespace CleanWeb
 	}
 
 	Core::Core (SubscriptionsModel *model, UserFiltersModel *ufm, const ICoreProxy_ptr& proxy)
-	: FlashOnClickWhitelist_ { new FlashOnClickWhitelist }
-	, UserFilters_ { ufm }
+	: UserFilters_ { ufm }
 	, SubsModel_ { model }
 	, Proxy_ { proxy }
 	{
@@ -328,19 +325,6 @@ namespace CleanWeb
 			action->setProperty ("CleanWeb/URL", iurl);
 			action->setProperty ("CleanWeb/View", QVariant::fromValue<QObject*> (view));
 		}
-	}
-
-	FlashOnClickPlugin* Core::GetFlashOnClick ()
-	{
-		if (!FlashOnClickPlugin_)
-			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (Proxy_, FlashOnClickWhitelist_);
-
-		return FlashOnClickPlugin_.get ();
-	}
-
-	FlashOnClickWhitelist* Core::GetFlashOnClickWhitelist ()
-	{
-		return FlashOnClickWhitelist_;
 	}
 
 	namespace

@@ -56,6 +56,8 @@ namespace Poshuku
 namespace CleanWeb
 {
 	class Core;
+	class FlashOnClickPlugin;
+	class FlashOnClickWhitelist;
 
 	class CleanWeb : public QObject
 					, public IInfo
@@ -68,6 +70,11 @@ namespace CleanWeb
 		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
+
+		ICoreProxy_ptr Proxy_;
+
+		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
+		FlashOnClickWhitelist *FlashOnClickWhitelist_;
 
 		std::shared_ptr<Core> Core_;
 
