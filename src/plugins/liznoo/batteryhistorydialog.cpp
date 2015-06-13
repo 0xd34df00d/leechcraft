@@ -246,6 +246,12 @@ namespace Liznoo
 		Ui_.HealthLabel_->setVisible (energyAvailable);
 		Ui_.Health_->setVisible (energyAvailable);
 
+		const bool hasCyclesCount = info.CyclesCount_ > 0;
+		Ui_.CyclesCount_->setVisible (hasCyclesCount);
+		Ui_.CyclesCountLabel_->setVisible (hasCyclesCount);
+		if (hasCyclesCount)
+			Ui_.CyclesCount_->setText (QString::number (info.CyclesCount_));
+
 		Ui_.PercentageLabel_->setText (QString::number (info.Percentage_) + "% " + chargeStateStr);
 	}
 
