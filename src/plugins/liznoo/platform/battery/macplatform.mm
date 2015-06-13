@@ -170,6 +170,7 @@ namespace Battery
 		const auto defCapacity = GetNum<int> (properties, @kIOPMPSCurrentCapacityKey, 0) / 100.;
 		const auto wattage = defVoltage * defAmperage;
 		const auto temperature = GetNum<int> (properties, @kIOPMPSBatteryTemperatureKey, 0) / 10.;
+		const auto cyclesCount = GetNum<int> (properties, @kIOPMPSCycleCountKey, 0);
 
 		for (CFIndex i = 0; i < CFArrayGetCount (sourcesList.get ()); ++i)
 		{
@@ -180,6 +181,7 @@ namespace Battery
 
 			const auto thisVoltage = GetNum<int> (dict, @kIOPSVoltageKey, 0) / 1000.;
 			const auto thisWattage = GetBool (dict, @kIOPSIsChargedKey, false) ? 0 : wattage;
+			const auto thisCyclesCount = GetNum<int> (dict, @kIOPMPSCycleCountKey, 0);
 
 			const BatteryInfo bi =
 			{
@@ -198,7 +200,9 @@ namespace Battery
 
 				QString (),
 
-				temperature
+				temperature,
+
+				thisCyclesCount ? thisCyclesCount : cyclesCount
 			};
 
 			emit batteryInfoUpdated (bi);
