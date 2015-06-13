@@ -669,85 +669,6 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::SslErrorsDialog</name>
-    <message>
-        <source>Certificate</source>
-        <translation>Сертификат</translation>
-    </message>
-    <message>
-        <source>(No certificate available for this error)</source>
-        <translation>(Ошибка, не связанная с сертификатом)</translation>
-    </message>
-    <message>
-        <source>Valid:</source>
-        <translation>Действителен:</translation>
-    </message>
-    <message>
-        <source>yes</source>
-        <translation>да</translation>
-    </message>
-    <message>
-        <source>no</source>
-        <translation>нет</translation>
-    </message>
-    <message>
-        <source>Effective date:</source>
-        <translation>Доступен с:</translation>
-    </message>
-    <message>
-        <source>Expiry date:</source>
-        <translation>Годен до:</translation>
-    </message>
-    <message>
-        <source>Version:</source>
-        <translation>Версия:</translation>
-    </message>
-    <message>
-        <source>Serial number:</source>
-        <translation>Серийный номер:</translation>
-    </message>
-    <message>
-        <source>MD5 digest:</source>
-        <translation>MD5:</translation>
-    </message>
-    <message>
-        <source>SHA1 digest:</source>
-        <translation>SHA1:</translation>
-    </message>
-    <message>
-        <source>Issuer info</source>
-        <translation>Выдан</translation>
-    </message>
-    <message>
-        <source>Organization:</source>
-        <translation>Организация:</translation>
-    </message>
-    <message>
-        <source>Common name:</source>
-        <translation>Общее имя:</translation>
-    </message>
-    <message>
-        <source>Locality:</source>
-        <translation>Положение:</translation>
-    </message>
-    <message>
-        <source>Organizational unit name:</source>
-        <translation>Подразделение организации:</translation>
-    </message>
-    <message>
-        <source>Country name:</source>
-        <translation>Страна:</translation>
-    </message>
-    <message>
-        <source>State or province name:</source>
-        <translation>Регион:</translation>
-    </message>
-    <message>
-        <source>Subject info</source>
-        <translation>Тема</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::StartupWizard</name>
     <message>
         <source>Startup wizard</source>
@@ -1283,6 +1204,82 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Contact&apos;s location changed</source>
         <translation>Изменилось местоположение контакта</translation>
+    </message>
+    <message>
+        <source>Certificate</source>
+        <translation>Сертификат</translation>
+    </message>
+    <message>
+        <source>(No certificate available for this error)</source>
+        <translation>(Ошибка, не связанная с сертификатом)</translation>
+    </message>
+    <message>
+        <source>Valid:</source>
+        <translation>Действителен:</translation>
+    </message>
+    <message>
+        <source>yes</source>
+        <translation>да</translation>
+    </message>
+    <message>
+        <source>no</source>
+        <translation>нет</translation>
+    </message>
+    <message>
+        <source>Effective date:</source>
+        <translation>Доступен с:</translation>
+    </message>
+    <message>
+        <source>Expiry date:</source>
+        <translation>Годен до:</translation>
+    </message>
+    <message>
+        <source>Version:</source>
+        <translation>Версия:</translation>
+    </message>
+    <message>
+        <source>Serial number:</source>
+        <translation>Серийный номер:</translation>
+    </message>
+    <message>
+        <source>MD5 digest:</source>
+        <translation>MD5:</translation>
+    </message>
+    <message>
+        <source>SHA1 digest:</source>
+        <translation>SHA1:</translation>
+    </message>
+    <message>
+        <source>Issuer info</source>
+        <translation>Выдан</translation>
+    </message>
+    <message>
+        <source>Organization:</source>
+        <translation>Организация:</translation>
+    </message>
+    <message>
+        <source>Common name:</source>
+        <translation>Общее имя:</translation>
+    </message>
+    <message>
+        <source>Locality:</source>
+        <translation>Положение:</translation>
+    </message>
+    <message>
+        <source>Organizational unit name:</source>
+        <translation>Подразделение организации:</translation>
+    </message>
+    <message>
+        <source>Country name:</source>
+        <translation>Страна:</translation>
+    </message>
+    <message>
+        <source>State or province name:</source>
+        <translation>Регион:</translation>
+    </message>
+    <message>
+        <source>Subject info</source>
+        <translation>Тема</translation>
     </message>
 </context>
 <context>
