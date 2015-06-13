@@ -46,7 +46,8 @@ namespace Liznoo
 				<< EnergyFull_
 				<< EnergyRate_
 				<< Technology_
-				<< Temperature_;
+				<< Temperature_
+				<< CyclesCount_;
 	}
 }
 }
