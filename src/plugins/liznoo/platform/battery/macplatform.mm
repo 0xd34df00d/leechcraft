@@ -183,7 +183,7 @@ namespace Battery
 			const auto thisWattage = GetBool (dict, @kIOPSIsChargedKey, false) ? 0 : wattage;
 			const auto thisCyclesCount = GetNum<int> (dict, @kIOPMPSCycleCountKey, 0);
 
-			const BatteryInfo bi =
+			const BatteryInfo bi
 			{
 				GetString (dict, @kIOPSHardwareSerialNumberKey, QString ()),
 
