@@ -58,6 +58,8 @@ namespace Liznoo
 
 		double Temperature_;
 
+		int CyclesCount_;
+
 		void Dump ();
 	};
 }
