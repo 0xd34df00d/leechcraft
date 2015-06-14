@@ -890,6 +890,10 @@ namespace BitTorrent
 		dia->show ();
 	}
 
+	void TorrentPlugin::on_OpenInTorrentTab__triggered ()
+	{
+	}
+
 	void TorrentPlugin::handleFastSpeedComboboxes ()
 	{
 		const auto ssm = Core::Instance ()->GetSessionSettingsManager ();
@@ -1153,6 +1157,13 @@ namespace BitTorrent
 				this,
 				SLOT (on_MakeMagnetLink__triggered ()));
 
+		OpenInTorrentTab_.reset (new QAction (tr ("Open in torrent tab"), Toolbar_.get ()));
+		OpenInTorrentTab_->setIcon (TabTC_.Icon_);
+		connect (OpenInTorrentTab_.get (),
+				SIGNAL (triggered ()),
+				this,
+				SLOT (on_OpenInTorrentTab__triggered ()));
+
 		Toolbar_->addAction (OpenTorrent_.get ());
 		Toolbar_->addAction (RemoveTorrent_.get ());
 		Toolbar_->addSeparator ();
@@ -1169,6 +1180,8 @@ namespace BitTorrent
 		Toolbar_->addAction (MoveFiles_.get ());
 		Toolbar_->addAction (ChangeTrackers_.get ());
 		Toolbar_->addAction (MakeMagnetLink_.get ());
+		Toolbar_->addSeparator ();
+		Toolbar_->addAction (OpenInTorrentTab_.get ());
 		Toolbar_->addSeparator ();
 		DownSelectorAction_ = new SpeedSelectorAction ("Down", this);
 		DownSelectorAction_->handleSpeedsChanged ();
@@ -1199,6 +1212,8 @@ namespace BitTorrent
 		contextMenu->addAction (MoveFiles_.get ());
 		contextMenu->addAction (ChangeTrackers_.get ());
 		contextMenu->addAction (MakeMagnetLink_.get ());
+		contextMenu->addSeparator ();
+		contextMenu->addAction (OpenInTorrentTab_.get ());
 		Core::Instance ()->SetMenu (contextMenu);
 	}
 }

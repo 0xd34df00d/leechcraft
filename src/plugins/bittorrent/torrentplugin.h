@@ -118,7 +118,8 @@ namespace BitTorrent
 			IPFilter_,
 			MoveFiles_,
 			ChangeTrackers_,
-			MakeMagnetLink_;
+			MakeMagnetLink_,
+			OpenInTorrentTab_;
 
 		SpeedSelectorAction *DownSelectorAction_,
 				*UpSelectorAction_;
@@ -221,6 +222,7 @@ namespace BitTorrent
 		void on_ChangeTrackers__triggered ();
 		void on_MoveFiles__triggered ();
 		void on_MakeMagnetLink__triggered ();
+		void on_OpenInTorrentTab__triggered ();
 		void handleFastSpeedComboboxes ();
 		void setActionsEnabled ();
 		void showError (QString);
