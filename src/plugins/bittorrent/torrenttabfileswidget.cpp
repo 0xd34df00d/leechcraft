@@ -264,9 +264,9 @@ namespace BitTorrent
 
 				new Util::SlotClosure<Util::DeleteLaterPolicy>
 				{
-					[this, prio, openable]
+					[this, prio, priorityRoots]
 					{
-						for (const auto& idx : openable)
+						for (const auto& idx : priorityRoots)
 							ProxyModel_->setData (idx, prio);
 					},
 					act,
