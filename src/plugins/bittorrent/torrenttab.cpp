@@ -321,6 +321,12 @@ namespace BitTorrent
 		return Toolbar_;
 	}
 
+	void TorrentTab::SetCurrentTorrent (int row)
+	{
+		const auto& srcIdx = Core::Instance ()->index (row, 0);
+		Ui_.TorrentsView_->setCurrentIndex (ViewFilter_->mapFromSource (srcIdx));
+	}
+
 	int TorrentTab::GetCurrentTorrent () const
 	{
 		return ViewFilter_->mapToSource (Ui_.TorrentsView_->currentIndex ()).row ();

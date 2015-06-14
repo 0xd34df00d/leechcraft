@@ -75,6 +75,8 @@ namespace BitTorrent
 		QObject* ParentMultiTabs ();
 		QToolBar* GetToolBar () const;
 		void Remove ();
+
+		void SetCurrentTorrent (int);
 	private:
 		int GetCurrentTorrent () const;
 		QList<int> GetSelectedRows () const;
