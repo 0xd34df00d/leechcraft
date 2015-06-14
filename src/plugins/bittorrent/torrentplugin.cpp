@@ -118,10 +118,6 @@ namespace BitTorrent
 	{
 		InstallTranslator ("bittorrent");
 		Core::Instance ()->SetProxy (proxy);
-		SetupCore ();
-		SetupStuff ();
-
-		setActionsEnabled ();
 
 		TabTC_ =
 		{
@@ -132,6 +128,12 @@ namespace BitTorrent
 			10,
 			TFSingle | TFOpenableByRequest | TFSuggestOpening
 		};
+
+		SetupCore ();
+		SetupStuff ();
+
+		setActionsEnabled ();
+
 		TorrentTab_ = new TorrentTab (TabTC_, this);
 		connect (TorrentTab_,
 				SIGNAL (removeTab (QWidget*)),
