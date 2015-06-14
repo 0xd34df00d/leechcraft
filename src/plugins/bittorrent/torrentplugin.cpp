@@ -892,6 +892,12 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_OpenInTorrentTab__triggered ()
 	{
+		const auto torrent = Core::Instance ()->GetCurrentTorrent ();
+		if (torrent == -1)
+			return;
+
+		TorrentTab_->SetCurrentTorrent (torrent);
+		TabOpenRequested (TabTC_.TabClass_);
 	}
 
 	void TorrentPlugin::handleFastSpeedComboboxes ()
