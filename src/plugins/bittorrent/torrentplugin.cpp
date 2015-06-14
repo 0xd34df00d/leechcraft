@@ -412,8 +412,7 @@ namespace BitTorrent
 
 	QList<QWizardPage*> TorrentPlugin::GetWizardPages () const
 	{
-		std::auto_ptr<WizardGenerator> wg (new WizardGenerator);
-		return wg->GetPages ();
+		return WizardGenerator {}.GetPages ();
 	}
 
 	QList<QAction*> TorrentPlugin::GetActions (ActionsEmbedPlace place) const
