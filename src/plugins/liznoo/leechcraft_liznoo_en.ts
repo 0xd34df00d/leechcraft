@@ -9,44 +9,49 @@
         <translation>Battery history</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="53"/>
+        <location filename="batteryhistorydialog.ui" line="62"/>
         <source>Percentage:</source>
         <translation>Percentage:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="67"/>
+        <location filename="batteryhistorydialog.ui" line="76"/>
         <source>Remaining time:</source>
         <translation>Remaining time:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="81"/>
+        <location filename="batteryhistorydialog.ui" line="90"/>
         <source>Voltage:</source>
         <translation>Voltage:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="95"/>
+        <location filename="batteryhistorydialog.ui" line="104"/>
         <source>Temperature:</source>
         <translation>Temperature:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="109"/>
+        <location filename="batteryhistorydialog.ui" line="118"/>
         <source>Capacity:</source>
         <translation>Capacity:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="123"/>
+        <location filename="batteryhistorydialog.ui" line="132"/>
         <source>Design capacity:</source>
         <translation>Design capacity:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="137"/>
+        <location filename="batteryhistorydialog.ui" line="146"/>
         <source>Last full capacity:</source>
         <translation>Last full capacity:</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.ui" line="151"/>
+        <location filename="batteryhistorydialog.ui" line="160"/>
         <source>Health:</source>
         <translation>Health:</translation>
+    </message>
+    <message>
+        <location filename="batteryhistorydialog.ui" line="174"/>
+        <source>Cycles count:</source>
+        <translation>Cycles count:</translation>
     </message>
 </context>
 <context>
@@ -65,79 +70,79 @@
 <context>
     <name>LeechCraft::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="183"/>
+        <location filename="batteryhistorydialog.cpp" line="179"/>
         <source>(discharging)</source>
         <translation>(discharging)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="191"/>
+        <location filename="batteryhistorydialog.cpp" line="187"/>
         <source>(charging)</source>
         <translation>(charging)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="215"/>
+        <location filename="batteryhistorydialog.cpp" line="211"/>
         <source>%1 V</source>
         <translation>%1 V</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="226"/>
-        <location filename="batteryhistorydialog.cpp" line="227"/>
-        <location filename="batteryhistorydialog.cpp" line="228"/>
+        <location filename="batteryhistorydialog.cpp" line="222"/>
+        <location filename="batteryhistorydialog.cpp" line="223"/>
+        <location filename="batteryhistorydialog.cpp" line="224"/>
         <source>%1 mAh</source>
         <translation>%1 mAh</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="233"/>
+        <location filename="batteryhistorydialog.cpp" line="229"/>
         <source>awesome</source>
         <translation>awesome</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="235"/>
+        <location filename="batteryhistorydialog.cpp" line="231"/>
         <source>good</source>
         <translation>good</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="237"/>
+        <location filename="batteryhistorydialog.cpp" line="233"/>
         <source>degraded</source>
         <translation>degraded</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="239"/>
+        <location filename="batteryhistorydialog.cpp" line="235"/>
         <source>bad</source>
         <translation>bad</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="240"/>
+        <location filename="batteryhistorydialog.cpp" line="236"/>
         <source>%1% (%2)</source>
         <translation>%1% (%2)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="258"/>
+        <location filename="batteryhistorydialog.cpp" line="260"/>
         <source>Percentage</source>
         <translation>Percentage</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="259"/>
+        <location filename="batteryhistorydialog.cpp" line="261"/>
         <source>Energy rate</source>
         <translation>Energy rate</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="260"/>
+        <location filename="batteryhistorydialog.cpp" line="262"/>
         <source>Temperature</source>
         <translation>Temperature</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="261"/>
+        <location filename="batteryhistorydialog.cpp" line="263"/>
         <source>Charge, %</source>
         <translation>Charge, %</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="262"/>
+        <location filename="batteryhistorydialog.cpp" line="264"/>
         <source>Energy rate, W</source>
         <translation>Energy rate, W</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="263"/>
+        <location filename="batteryhistorydialog.cpp" line="265"/>
         <source>Time, s</source>
         <translation>Time, s</translation>
     </message>
@@ -145,79 +150,84 @@
 <context>
     <name>LeechCraft::Liznoo::Plugin</name>
     <message>
-        <location filename="liznoo.cpp" line="138"/>
+        <location filename="liznoo.cpp" line="139"/>
         <source>Suspend</source>
         <translation>Suspend</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="145"/>
+        <location filename="liznoo.cpp" line="146"/>
         <source>Hibernate</source>
         <translation>Hibernate</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="181"/>
+        <location filename="liznoo.cpp" line="182"/>
         <source>UPower/WinAPI-based power manager.</source>
         <translation>UPower/WinAPI-based power manager.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="275"/>
+        <location filename="liznoo.cpp" line="276"/>
         <source>(charging)</source>
         <translation>(charging)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="277"/>
+        <location filename="liznoo.cpp" line="278"/>
         <source>(discharging)</source>
         <translation>(discharging)</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="281"/>
+        <location filename="liznoo.cpp" line="282"/>
         <source>Battery</source>
         <translation>Battery</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="292"/>
+        <location filename="liznoo.cpp" line="293"/>
         <source>Battery technology: %1</source>
         <translation>Battery technology: %1</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="298"/>
+        <location filename="liznoo.cpp" line="299"/>
         <source>Energy rate: %1 W</source>
         <translation>Energy rate: %1 W</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="304"/>
+        <location filename="liznoo.cpp" line="305"/>
         <source>Remaining energy: %1 Wh</source>
         <translation>Remaining energy: %1 Wh</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="310"/>
+        <location filename="liznoo.cpp" line="311"/>
         <source>Full energy capacity: %1 Wh</source>
         <translation>Full energy capacity: %1 Wh</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="340"/>
+        <location filename="liznoo.cpp" line="341"/>
         <source>Battery charge level is below %1.</source>
         <translation>Battery charge level is below %1.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="353"/>
+        <location filename="liznoo.cpp" line="354"/>
         <source>The device started charging.</source>
         <translation>The device started charging.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="357"/>
+        <location filename="liznoo.cpp" line="358"/>
         <source>The device started discharging.</source>
         <translation>The device started discharging.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="375"/>
+        <location filename="liznoo.cpp" line="376"/>
         <source>Cannot change state.</source>
         <translation>Cannot change state.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="389"/>
+        <location filename="liznoo.cpp" line="390"/>
         <source>Battery status</source>
         <translation>Battery status</translation>
+    </message>
+    <message>
+        <location filename="liznoo.cpp" line="477"/>
+        <source>No platform backend is set, unable to send test power events.</source>
+        <translation>No platform backend is set, unable to send test power events.</translation>
     </message>
 </context>
 <context>
