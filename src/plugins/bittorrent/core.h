@@ -164,24 +164,24 @@ namespace BitTorrent
 
 		NotifyManager *NotifyManager_;
 
-		libtorrent::session *Session_;
+		libtorrent::session *Session_ = nullptr;
 		SessionSettingsManager *SessionSettingsMgr_ = nullptr;
 
 		typedef QList<TorrentStruct> HandleDict_t;
 		HandleDict_t Handles_;
 		QList<QString> Headers_;
-		mutable int CurrentTorrent_;
+		mutable int CurrentTorrent_ = -1;
 		std::shared_ptr<QTimer> FinishedTimer_, WarningWatchdog_;
 		std::shared_ptr<LiveStreamManager> LiveStreamManager_;
 		QString ExternalAddress_;
-		bool SaveScheduled_;
-		QToolBar *Toolbar_;
-		QWidget *TabWidget_;
+		bool SaveScheduled_ = false;
+		QToolBar *Toolbar_ = nullptr;
+		QWidget *TabWidget_ = nullptr;
 		ICoreProxy_ptr Proxy_;
-		QMenu *Menu_;
-		Util::ShortcutManager *ShortcutMgr_;
+		QMenu *Menu_ = nullptr;
+		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
-		const QIcon TorrentIcon_;
+		const QIcon TorrentIcon_ { "lcicons:/resources/images/bittorrent.svg" };
 
 		Core ();
 	public:

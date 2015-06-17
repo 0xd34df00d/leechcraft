@@ -128,17 +128,9 @@ namespace BitTorrent
 
 	Core::Core ()
 	: NotifyManager_ (new NotifyManager (this))
-	, Session_ (0)
-	, CurrentTorrent_ (-1)
 	, FinishedTimer_ (new QTimer ())
 	, WarningWatchdog_ (new QTimer ())
 	, LiveStreamManager_ (new LiveStreamManager ())
-	, SaveScheduled_ (false)
-	, Toolbar_ (0)
-	, TabWidget_ (0)
-	, Menu_ (0)
-	, ShortcutMgr_ (0)
-	, TorrentIcon_ ("lcicons:/resources/images/bittorrent.svg")
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
