@@ -34,6 +34,11 @@
 
 class QStandardItemModel;
 
+namespace Media
+{
+	struct ArtistImage;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -68,6 +73,8 @@ namespace LMP
 		QString GetArtistInfo () const;
 		QUrl GetArtistPageURL () const;
 		QObject* GetArtistImagesModel () const;
+	private:
+		void SetOtherImages (const QList<Media::ArtistImage>&);
 	signals:
 		void artistNameChanged (const QString&);
 		void artistImageURLChanged (const QUrl&);

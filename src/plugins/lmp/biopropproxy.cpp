@@ -89,19 +89,8 @@ namespace LMP
 
 		if (auto rc = ArtistImages_->rowCount ())
 			ArtistImages_->removeRows (0, rc);
-		QList<QStandardItem*> rows;
-		for (const auto& imageItem : bio.OtherImages_)
-		{
-			auto item = new QStandardItem ();
-			item->setData (imageItem.Thumb_, ArtistImagesModel::Role::ThumbURL);
-			item->setData (imageItem.Full_, ArtistImagesModel::Role::FullURL);
-			item->setData (imageItem.Title_, ArtistImagesModel::Role::Title);
-			item->setData (imageItem.Author_, ArtistImagesModel::Role::Author);
-			item->setData (imageItem.Date_, ArtistImagesModel::Role::Date);
-			rows << item;
-		}
-		if (!rows.isEmpty ())
-			ArtistImages_->invisibleRootItem ()->appendRows (rows);
+
+		SetOtherImages (bio.OtherImages_);
 
 		emit artistNameChanged (GetArtistName ());
 		emit artistImageURLChanged (GetArtistImageURL ());
@@ -144,6 +133,23 @@ namespace LMP
 	QObject* BioPropProxy::GetArtistImagesModel () const
 	{
 		return ArtistImages_;
+	}
+
+	void BioPropProxy::SetOtherImages (const QList<Media::ArtistImage>& images)
+	{
+		QList<QStandardItem*> rows;
+		for (const auto& imageItem : images)
+		{
+			auto item = new QStandardItem ();
+			item->setData (imageItem.Thumb_, ArtistImagesModel::Role::ThumbURL);
+			item->setData (imageItem.Full_, ArtistImagesModel::Role::FullURL);
+			item->setData (imageItem.Title_, ArtistImagesModel::Role::Title);
+			item->setData (imageItem.Author_, ArtistImagesModel::Role::Author);
+			item->setData (imageItem.Date_, ArtistImagesModel::Role::Date);
+			rows << item;
+		}
+		if (!rows.isEmpty ())
+			ArtistImages_->invisibleRootItem ()->appendRows (rows);
 	}
 }
 }
