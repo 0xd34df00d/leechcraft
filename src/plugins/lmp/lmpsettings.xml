@@ -11,6 +11,9 @@
 		<item type="checkbox" property="AutocenterCurrentTrack" default="true">
 			<label value="Automatically center on current track" />
 		</item>
+		<item type="checkbox" property="FetchArtistBioPhotos" default="true">
+			<label value="Fetch artist biography photos" />
+		</item>
 		<item type="lineedit" property="SingleTrackDisplayMask" default="$artist - $album - $title">
 			<label value="Format for single tracks in playlist:" />
 			<tooltip>The following variables are allowed: &lt;em>$artist&lt;/em>, &lt;em>$year&lt;/em>, &lt;em>$album&lt;/em>, &lt;em>$trackNumber&lt;/em>, &lt;em>$title&lt;/em>.</tooltip>

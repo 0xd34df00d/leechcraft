@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QtDebug>
 #include <util/models/rolenamesmixin.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -137,6 +138,9 @@ namespace LMP
 
 	void BioPropProxy::SetOtherImages (const QList<Media::ArtistImage>& images)
 	{
+		if (!XmlSettingsManager::Instance ().property ("FetchArtistBioPhotos").toBool ())
+			return;
+
 		QList<QStandardItem*> rows;
 		for (const auto& imageItem : images)
 		{
