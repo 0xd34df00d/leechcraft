@@ -67,6 +67,7 @@ set (SRCS
 	addtorrentfilesmodel.cpp
 	torrenttabfileswidget.cpp
 	sessionsettingsmanager.cpp
+	cachedstatuskeeper.cpp
 	)
 
 set (FORMS
