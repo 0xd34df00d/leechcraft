@@ -78,6 +78,7 @@ namespace BitTorrent
 	class RepresentationModel;
 	class LiveStreamManager;
 	class SessionSettingsManager;
+	class CachedStatusKeeper;
 	struct NewTorrentParams;
 
 	using BanRange_t = QPair<QString, QString>;
@@ -144,8 +145,6 @@ namespace BitTorrent
 		};
 
 		friend struct SimpleDispatcher;
-
-		mutable QMap<libtorrent::torrent_handle, libtorrent::torrent_status> Handle2Status_;
 	public:
 		struct PerTrackerStats
 		{
@@ -161,6 +160,8 @@ namespace BitTorrent
 			PerTrackerAccumulator (pertrackerstats_t&);
 			int operator() (int, const Core::TorrentStruct& str);
 		};
+
+		CachedStatusKeeper * const StatusKeeper_;
 
 		NotifyManager *NotifyManager_;
 
@@ -350,8 +351,6 @@ namespace BitTorrent
 	private:
 		HandleDict_t::iterator FindHandle (const libtorrent::torrent_handle&);
 		HandleDict_t::const_iterator FindHandle (const libtorrent::torrent_handle&) const;
-
-		libtorrent::torrent_status GetCachedStatus (const libtorrent::torrent_handle&) const;
 
 		void MoveToTop (int);
 		void MoveToBottom (int);

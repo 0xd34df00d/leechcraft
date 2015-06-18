@@ -92,6 +92,7 @@
 #include "torrentmaker.h"
 #include "notifymanager.h"
 #include "sessionsettingsmanager.h"
+#include "cachedstatuskeeper.h"
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
@@ -127,10 +128,11 @@ namespace BitTorrent
 	}
 
 	Core::Core ()
-	: NotifyManager_ (new NotifyManager (this))
-	, FinishedTimer_ (new QTimer ())
-	, WarningWatchdog_ (new QTimer ())
-	, LiveStreamManager_ (new LiveStreamManager ())
+	: StatusKeeper_ { new CachedStatusKeeper { this } }
+	, NotifyManager_ { new NotifyManager { this } }
+	, FinishedTimer_ { new QTimer }
+	, WarningWatchdog_ { new QTimer }
+	, LiveStreamManager_ { new LiveStreamManager }
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
@@ -492,7 +494,7 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
-		const auto& status = GetCachedStatus (h);
+		const auto& status = StatusKeeper_->GetStatus (h);
 
 		switch (role)
 		{
@@ -1313,7 +1315,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return GetCachedStatus (Handles_.at (idx).Handle_).auto_managed;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).auto_managed;
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1330,7 +1332,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return GetCachedStatus (Handles_.at (idx).Handle_).sequential_download;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).sequential_download;
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1346,7 +1348,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return GetCachedStatus (Handles_.at (idx).Handle_).super_seeding;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).super_seeding;
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)
@@ -1507,10 +1509,8 @@ namespace BitTorrent
 	{
 		for (const auto& status : statuses)
 		{
-			const auto handle = status.handle;
-			Handle2Status_ [handle] = status;
-
-			const auto pos = FindHandle (handle);
+			StatusKeeper_->HandleStatusUpdatePosted (status);
+			const auto pos = FindHandle (status.handle);
 			if (pos == Handles_.end ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -1661,16 +1661,6 @@ namespace BitTorrent
 	{
 		return std::find_if (Handles_.begin (), Handles_.end (),
 				[&h] (const TorrentStruct& ts) { return ts.Handle_ == h; });
-	}
-
-	libtorrent::torrent_status Core::GetCachedStatus (const libtorrent::torrent_handle& handle) const
-	{
-		if (Handle2Status_.contains (handle))
-			return Handle2Status_ [handle];
-
-		const auto& status = handle.status (0);
-		Handle2Status_ [handle] = status;
-		return status;
 	}
 
 	void Core::MoveToTop (int row)
