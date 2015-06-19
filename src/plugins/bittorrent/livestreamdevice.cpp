@@ -143,7 +143,7 @@ namespace BitTorrent
 			Handle_.prioritize_pieces (prios);
 
 			IsReady_ = true;
-			emit ready ();
+			emit ready (this);
 		}
 	}
 

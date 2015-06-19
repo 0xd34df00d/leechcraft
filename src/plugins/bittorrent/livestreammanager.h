@@ -53,7 +53,7 @@ namespace BitTorrent
 		bool IsEnabledOn (const libtorrent::torrent_handle&);
 		void PieceRead (const libtorrent::read_piece_alert&);
 	private slots:
-		void handleDeviceReady ();
+		void handleDeviceReady (LiveStreamDevice*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

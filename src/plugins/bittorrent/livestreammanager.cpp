@@ -41,9 +41,9 @@ namespace BitTorrent
 			const auto lsd = new LiveStreamDevice { handle, this };
 			Handle2Device_ [handle] = lsd;
 			connect (lsd,
-					SIGNAL (ready ()),
+					SIGNAL (ready (LiveStreamDevice*)),
 					this,
-					SLOT (handleDeviceReady ()));
+					SLOT (handleDeviceReady (LiveStreamDevice*)));
 			lsd->CheckReady ();
 		}
 	}
@@ -68,17 +68,8 @@ namespace BitTorrent
 		Handle2Device_ [handle]->PieceRead (a);
 	}
 
-	void LiveStreamManager::handleDeviceReady ()
+	void LiveStreamManager::handleDeviceReady (LiveStreamDevice *lsd)
 	{
-		LiveStreamDevice *lsd = qobject_cast<LiveStreamDevice*> (sender ());
-		if (!lsd)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender() is not a LiveStreamDevice"
-					<< sender ();
-			return;
-		}
-
 		Entity e;
 		e.Entity_ = QVariant::fromValue<QIODevice*> (lsd);
 		e.Parameters_ = FromUserInitiated;

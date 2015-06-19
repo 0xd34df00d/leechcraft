@@ -73,7 +73,7 @@ namespace BitTorrent
 	private slots:
 		void reschedule ();
 	signals:
-		void ready ();
+		void ready (LiveStreamDevice*);
 	};
 }
 }
