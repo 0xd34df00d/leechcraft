@@ -414,6 +414,11 @@ namespace BitTorrent
 		return tfm;
 	}
 
+	CachedStatusKeeper* Core::GetCachedStatusKeeper () const
+	{
+		return StatusKeeper_;
+	}
+
 	int Core::columnCount (const QModelIndex&) const
 	{
 		return Headers_.size ();

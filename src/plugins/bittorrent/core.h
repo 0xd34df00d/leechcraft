@@ -233,6 +233,7 @@ namespace BitTorrent
 		PeersModel* GetPeersModel (int);
 		QAbstractItemModel* GetWebSeedsModel (int);
 		TorrentFilesModel* GetTorrentFilesModel (int);
+		CachedStatusKeeper* GetCachedStatusKeeper () const;
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
