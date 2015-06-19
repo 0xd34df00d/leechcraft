@@ -34,11 +34,11 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	void LiveStreamManager::EnableOn (libtorrent::torrent_handle handle)
+	void LiveStreamManager::EnableOn (const libtorrent::torrent_handle& handle)
 	{
 		if (!Handle2Device_.contains (handle))
 		{
-			LiveStreamDevice *lsd = new LiveStreamDevice (handle, this);
+			const auto lsd = new LiveStreamDevice { handle, this };
 			Handle2Device_ [handle] = lsd;
 			connect (lsd,
 					SIGNAL (ready ()),
@@ -48,21 +48,20 @@ namespace BitTorrent
 		}
 	}
 
-	bool LiveStreamManager::IsEnabledOn (libtorrent::torrent_handle handle)
+	bool LiveStreamManager::IsEnabledOn (const libtorrent::torrent_handle& handle)
 	{
 		return Handle2Device_.contains (handle);
 	}
 
 	void LiveStreamManager::PieceRead (const libtorrent::read_piece_alert& a)
 	{
-		libtorrent::torrent_handle handle =
-			a.handle;
+		const auto& handle = a.handle;
 
 		if (!Handle2Device_.contains (handle))
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "Handle2Device_ doesn't contain handle"
-				<< Handle2Device_.size ();
+					<< "Handle2Device_ doesn't contain handle"
+					<< Handle2Device_.size ();
 			return;
 		}
 
@@ -75,8 +74,8 @@ namespace BitTorrent
 		if (!lsd)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "sender() is not a LiveStreamDevice"
-				<< sender ();
+					<< "sender() is not a LiveStreamDevice"
+					<< sender ();
 			return;
 		}
 

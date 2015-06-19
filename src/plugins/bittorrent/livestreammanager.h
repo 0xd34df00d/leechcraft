@@ -49,8 +49,8 @@ namespace BitTorrent
 	public:
 		using QObject::QObject;
 
-		void EnableOn (libtorrent::torrent_handle);
-		bool IsEnabledOn (libtorrent::torrent_handle);
+		void EnableOn (const libtorrent::torrent_handle&);
+		bool IsEnabledOn (const libtorrent::torrent_handle&);
 		void PieceRead (const libtorrent::read_piece_alert&);
 	private slots:
 		void handleDeviceReady ();
