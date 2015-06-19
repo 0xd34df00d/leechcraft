@@ -38,9 +38,6 @@ namespace BitTorrent
 	{
 		if (!Handle2Device_.contains (handle))
 		{
-			qDebug () << Q_FUNC_INFO
-				<< "on"
-				<< QString::fromUtf8 (handle.save_path ().c_str ());
 			LiveStreamDevice *lsd = new LiveStreamDevice (handle, this);
 			Handle2Device_ [handle] = lsd;
 			connect (lsd,
