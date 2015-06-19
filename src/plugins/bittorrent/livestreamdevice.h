@@ -43,13 +43,13 @@ namespace BitTorrent
 		Q_OBJECT
 
 		libtorrent::torrent_handle Handle_;
-		int NumPieces_;
-		int LastIndex_;
+		const int NumPieces_;
+		int LastIndex_ = 0;
 		// Which piece would be read next.
-		int ReadPos_;
+		int ReadPos_ = 0;
 		// Offset in the next piece pointed by ReadPos_;
-		int Offset_;
-		bool IsReady_;
+		int Offset_ = 0;
+		bool IsReady_ = 0;
 		QFile File_;
 	public:
 		LiveStreamDevice (const libtorrent::torrent_handle&,

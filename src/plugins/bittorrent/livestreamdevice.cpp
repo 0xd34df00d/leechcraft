@@ -39,9 +39,6 @@ namespace BitTorrent
 	: QIODevice (parent)
 	, Handle_ (h)
 	, NumPieces_ (h.get_torrent_info ().num_pieces ())
-	, ReadPos_ (0)
-	, Offset_ (0)
-	, IsReady_ (false)
 	{
 		boost::filesystem::path tpath = h.save_path ();
 		boost::filesystem::path fpath = h.get_torrent_info ().file_at (0).path;
