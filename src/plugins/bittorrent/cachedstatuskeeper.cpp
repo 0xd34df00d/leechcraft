@@ -40,9 +40,9 @@ namespace BitTorrent
 			const auto& item = Handle2Status_ [handle];
 			if ((item.ReqFlags_ & flags) == flags)
 				return item.Status_;
+			else
+				flags |= item.ReqFlags_;
 		}
-
-		flags |= Handle2Status_.value (handle).ReqFlags_;
 
 		const auto& status = handle.status (flags);
 		Handle2Status_ [handle] = { status, flags };
