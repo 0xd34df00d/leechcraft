@@ -47,7 +47,7 @@ namespace BitTorrent
 
 		QMap<libtorrent::torrent_handle, LiveStreamDevice*> Handle2Device_;
 	public:
-		LiveStreamManager (QObject* = 0);
+		using QObject::QObject;
 
 		void EnableOn (libtorrent::torrent_handle);
 		bool IsEnabledOn (libtorrent::torrent_handle);
