@@ -380,7 +380,7 @@ namespace BitTorrent
 	{
 		const auto& handle = Core::Instance ()->GetTorrentHandle (Index_);
 #if LIBTORRENT_VERSION_NUM >= 10000
-		const auto& base = Core::Instance ()->GetCachedStatusKeeper ()->
+		const auto& base = Core::Instance ()->GetStatusKeeper ()->
 				GetStatus (handle, libtorrent::torrent_handle::query_save_path).save_path;
 #else
 		const auto& base = handle.save_path ();

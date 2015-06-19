@@ -414,7 +414,7 @@ namespace BitTorrent
 		return tfm;
 	}
 
-	CachedStatusKeeper* Core::GetCachedStatusKeeper () const
+	CachedStatusKeeper* Core::GetStatusKeeper () const
 	{
 		return StatusKeeper_;
 	}
