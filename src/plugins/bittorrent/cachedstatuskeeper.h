@@ -39,7 +39,13 @@ namespace BitTorrent
 {
 	class CachedStatusKeeper : public QObject
 	{
-		QMap<libtorrent::torrent_handle, libtorrent::torrent_status> Handle2Status_;
+		struct CachedItem
+		{
+			libtorrent::torrent_status Status_;
+			uint32_t ReqFlags_;
+		};
+
+		QMap<libtorrent::torrent_handle, CachedItem> Handle2Status_;
 	public:
 		using QObject::QObject;
 

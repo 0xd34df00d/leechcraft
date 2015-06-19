@@ -36,16 +36,16 @@ namespace BitTorrent
 	libtorrent::torrent_status CachedStatusKeeper::GetStatus (const libtorrent::torrent_handle& handle)
 	{
 		if (Handle2Status_.contains (handle))
-			return Handle2Status_ [handle];
+			return Handle2Status_ [handle].Status_;
 
 		const auto& status = handle.status (0);
-		Handle2Status_ [handle] = status;
+		Handle2Status_ [handle] = { status, 0 };
 		return status;
 	}
 
 	void CachedStatusKeeper::HandleStatusUpdatePosted (const libtorrent::torrent_status& status)
 	{
-		Handle2Status_ [status.handle] = status;
+		Handle2Status_ [status.handle] = { status, 0xffffffff };
 	}
 }
 }
