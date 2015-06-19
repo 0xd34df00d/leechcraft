@@ -49,7 +49,7 @@ namespace BitTorrent
 	public:
 		using QObject::QObject;
 
-		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&);
+		libtorrent::torrent_status GetStatus (const libtorrent::torrent_handle&, uint32_t flags);
 		void HandleStatusUpdatePosted (const libtorrent::torrent_status&);
 	};
 }

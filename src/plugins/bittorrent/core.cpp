@@ -494,7 +494,7 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
-		const auto& status = StatusKeeper_->GetStatus (h);
+		const auto& status = StatusKeeper_->GetStatus (h, 0);
 
 		switch (role)
 		{
@@ -1315,7 +1315,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).auto_managed;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_, 0).auto_managed;
 	};
 
 	void Core::SetTorrentManaged (bool man, int idx)
@@ -1332,7 +1332,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).sequential_download;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_, 0).sequential_download;
 	}
 
 	void Core::SetTorrentSequentialDownload (bool seq, int idx)
@@ -1348,7 +1348,7 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return false;
 
-		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_).super_seeding;
+		return StatusKeeper_->GetStatus (Handles_.at (idx).Handle_, 0).super_seeding;
 	}
 
 	void Core::SetTorrentSuperSeeding (bool sup, int idx)

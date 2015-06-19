@@ -33,13 +33,19 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	libtorrent::torrent_status CachedStatusKeeper::GetStatus (const libtorrent::torrent_handle& handle)
+	libtorrent::torrent_status CachedStatusKeeper::GetStatus (const libtorrent::torrent_handle& handle, uint32_t flags)
 	{
 		if (Handle2Status_.contains (handle))
-			return Handle2Status_ [handle].Status_;
+		{
+			const auto& item = Handle2Status_ [handle];
+			if ((item.ReqFlags_ & flags) == flags)
+				return item.Status_;
+		}
 
-		const auto& status = handle.status (0);
-		Handle2Status_ [handle] = { status, 0 };
+		flags |= Handle2Status_.value (handle).ReqFlags_;
+
+		const auto& status = handle.status (flags);
+		Handle2Status_ [handle] = { status, flags };
 		return status;
 	}
 
