@@ -1895,6 +1895,8 @@ namespace BitTorrent
 	void Core::HandleSingleFinished (int i)
 	{
 		TorrentStruct torrent = Handles_.at (i);
+		const auto& status = StatusKeeper_->GetStatus (torrent.Handle_,
+				libtorrent::torrent_handle::query_save_path);
 		const auto& info = torrent.Handle_.get_torrent_info ();
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
@@ -1914,8 +1916,7 @@ namespace BitTorrent
 				QStringList (name));
 
 #if LIBTORRENT_VERSION_NUM >= 10000
-		const auto& savePath = StatusKeeper_->GetStatus (torrent.Handle_,
-					libtorrent::torrent_handle::query_save_path).save_path;
+		const auto& savePath = status.save_path;
 #else
 		const auto& savePath = torrent.Handle_.save_path ();
 #endif
