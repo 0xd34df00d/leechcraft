@@ -81,7 +81,7 @@ namespace BitTorrent
 	qint64 LiveStreamDevice::bytesAvailable () const
 	{
 		qint64 result = 0;
-		const libtorrent::bitfield& pieces = Handle_.status ().pieces;
+		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
 		qDebug () << Q_FUNC_INFO << Offset_ << ReadPos_ << pieces [ReadPos_];
 		for (int i = ReadPos_; pieces [i]; ++i)
 		{
@@ -139,7 +139,7 @@ namespace BitTorrent
 
 	qint64 LiveStreamDevice::size () const
 	{
-		return Handle_.status ().total_wanted;
+		return StatusKeeper_->GetStatus (Handle_, 0).total_wanted;
 	}
 
 	void LiveStreamDevice::PieceRead (const libtorrent::read_piece_alert&)
@@ -151,7 +151,7 @@ namespace BitTorrent
 
 	void LiveStreamDevice::CheckReady ()
 	{
-		const libtorrent::bitfield& pieces = Handle_.status ().pieces;
+		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
 		if (!IsReady_ &&
 				pieces [0] &&
 				pieces [NumPieces_ - 1])
@@ -198,7 +198,7 @@ namespace BitTorrent
 	void LiveStreamDevice::CheckNextChunk ()
 	{
 		bool hasMoreData = false;
-		const libtorrent::bitfield& pieces = Handle_.status ().pieces;
+		const auto& pieces = StatusKeeper_->GetStatus (Handle_, th::query_pieces).pieces;
 		for (int i = ReadPos_ + 1;
 				i < NumPieces_ && pieces [i];
 				++i, hasMoreData = true);
@@ -211,9 +211,9 @@ namespace BitTorrent
 	{
 		Core::Instance ()->queryLibtorrentForWarnings ();
 
-		const libtorrent::bitfield& pieces = Handle_.status ().pieces;
-
-		int speed = Handle_.status ().download_payload_rate;
+		const auto& status = StatusKeeper_->GetStatus (Handle_, th::query_pieces);
+		const auto& pieces = status.pieces;
+		int speed = status.download_payload_rate;
 		int size = TI_.piece_length ();
 		const int time = speed ?
 			static_cast<double> (size) / speed * 1000 :
