@@ -38,11 +38,15 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
+	class CachedStatusKeeper;
+
 	class LiveStreamDevice : public QIODevice
 	{
 		Q_OBJECT
 
-		libtorrent::torrent_handle Handle_;
+		CachedStatusKeeper * const StatusKeeper_;
+
+		const libtorrent::torrent_handle Handle_;
 		const int NumPieces_;
 		int LastIndex_ = 0;
 		// Which piece would be read next.
@@ -52,8 +56,7 @@ namespace BitTorrent
 		bool IsReady_ = 0;
 		QFile File_;
 	public:
-		LiveStreamDevice (const libtorrent::torrent_handle&,
-				QObject* = 0);
+		LiveStreamDevice (const libtorrent::torrent_handle&, CachedStatusKeeper*, QObject* = nullptr);
 
 		virtual qint64 bytesAvailable () const;
 		virtual bool isSequential () const;

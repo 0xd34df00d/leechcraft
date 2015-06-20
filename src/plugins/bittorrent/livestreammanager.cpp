@@ -44,7 +44,7 @@ namespace BitTorrent
 	{
 		if (!Handle2Device_.contains (handle))
 		{
-			const auto lsd = new LiveStreamDevice { handle, this };
+			const auto lsd = new LiveStreamDevice { handle, StatusKeeper_, this };
 			Handle2Device_ [handle] = lsd;
 			connect (lsd,
 					SIGNAL (ready (LiveStreamDevice*)),

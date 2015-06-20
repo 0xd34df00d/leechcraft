@@ -29,14 +29,17 @@
 
 #include "livestreamdevice.h"
 #include <QtDebug>
+#include "cachedstatuskeeper.h"
 #include "core.h"
 
 namespace LeechCraft
 {
 namespace BitTorrent
 {
-	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h, QObject *parent)
+	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h,
+			CachedStatusKeeper *keeper, QObject *parent)
 	: QIODevice (parent)
+	, StatusKeeper_ (keeper)
 	, Handle_ (h)
 	, NumPieces_ (h.get_torrent_info ().num_pieces ())
 	{
