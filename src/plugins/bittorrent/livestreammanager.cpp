@@ -34,6 +34,12 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
+	LiveStreamManager::LiveStreamManager (CachedStatusKeeper *keeper, QObject *parent)
+	: QObject { parent }
+	, StatusKeeper_ { keeper }
+	{
+	}
+
 	void LiveStreamManager::EnableOn (const libtorrent::torrent_handle& handle)
 	{
 		if (!Handle2Device_.contains (handle))

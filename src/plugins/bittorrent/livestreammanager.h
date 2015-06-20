@@ -40,14 +40,16 @@ namespace LeechCraft
 namespace BitTorrent
 {
 	class LiveStreamDevice;
+	class CachedStatusKeeper;
 
 	class LiveStreamManager : public QObject
 	{
 		Q_OBJECT
 
+		CachedStatusKeeper * const StatusKeeper_;
 		QMap<libtorrent::torrent_handle, LiveStreamDevice*> Handle2Device_;
 	public:
-		using QObject::QObject;
+		LiveStreamManager (CachedStatusKeeper*, QObject* = nullptr);
 
 		void EnableOn (const libtorrent::torrent_handle&);
 		bool IsEnabledOn (const libtorrent::torrent_handle&);

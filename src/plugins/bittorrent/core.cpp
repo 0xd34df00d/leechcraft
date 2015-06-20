@@ -132,7 +132,7 @@ namespace BitTorrent
 	, NotifyManager_ { new NotifyManager { this } }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
-	, LiveStreamManager_ { new LiveStreamManager }
+	, LiveStreamManager_ { new LiveStreamManager { StatusKeeper_ } }
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
