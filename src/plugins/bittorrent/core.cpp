@@ -1043,7 +1043,12 @@ namespace BitTorrent
 		handle.auto_managed (autoManaged);
 
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
+#if LIBTORRENT_VERSION_NUM >= 10000
+		auto torrentFileName = QString::fromStdString (handle
+					.status (libtorrent::torrent_handle::query_name).name);
+#else
 		QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
+#endif
 		if (!torrentFileName.endsWith (".torrent"))
 			torrentFileName.append (".torrent");
 
