@@ -537,7 +537,11 @@ namespace BitTorrent
 			case ColumnID:
 				return row + 1;
 			case ColumnName:
+#if LIBTORRENT_VERSION_NUM >= 10000
+				return QString::fromStdString (status.name);
+#else
 				return QString::fromUtf8 (h.name ().c_str ());
+#endif
 			case ColumnState:
 				return status.paused ?
 						-1 :
@@ -575,7 +579,11 @@ namespace BitTorrent
 			case ColumnID:
 				return row + 1;
 			case ColumnName:
+#if LIBTORRENT_VERSION_NUM >= 10000
+				return QString::fromStdString (status.name);
+#else
 				return QString::fromUtf8 (h.name ().c_str ());
+#endif
 			case ColumnState:
 				return GetStringForStatus (status);
 			{
@@ -675,7 +683,12 @@ namespace BitTorrent
 		case Qt::ToolTipRole:
 		{
 			QString result;
-			result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
+#if LIBTORRENT_VERSION_NUM >= 10000
+			const auto& name = QString::fromStdString (status.name);
+#else
+			const auto& name = QString::fromUtf8 (h.name ().c_str ());
+#endif
+			result += tr ("Name:") + " " + name + "\n";
 			result += tr ("Destination:") + " " +
 #if LIBTORRENT_VERSION_NUM >= 10000
 				QString::fromStdString (status.save_path) + "\n";
@@ -1457,8 +1470,12 @@ namespace BitTorrent
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "not saving erroneous torrent:"
+#if LIBTORRENT_VERSION_NUM >= 10000
+					<< StatusKeeper_->GetStatus (a.handle, libtorrent::torrent_handle::query_name)
+							.name.c_str ();
+#else
 					<< a.handle.name ().c_str ();
-
+#endif
 			return;
 		}
 
@@ -1553,7 +1570,12 @@ namespace BitTorrent
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown torrent handle"
-					<< QString::fromUtf8 (h.name ().c_str ());
+#if LIBTORRENT_VERSION_NUM >= 10000
+					<< StatusKeeper_->GetStatus (h, libtorrent::torrent_handle::query_name)
+							.name.c_str ();
+#else
+					<< h.name ().c_str ();
+#endif
 			return;
 		}
 
