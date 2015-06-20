@@ -1899,7 +1899,7 @@ namespace BitTorrent
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
 				torrent.Handle_.status (libtorrent::torrent_handle::query_pieces).num_pieces !=
-					torrent.Handle_.get_torrent_info ().num_pieces ())
+					info.num_pieces ())
 			return;
 
 		QString name = QString::fromUtf8 (info.name ().c_str ());
