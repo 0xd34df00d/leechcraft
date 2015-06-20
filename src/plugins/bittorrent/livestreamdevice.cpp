@@ -48,6 +48,8 @@ namespace BitTorrent
 #endif
 	{
 		boost::filesystem::path tpath = h.save_path ();
+		if (!status.torrent_file)
+			throw std::runtime_error { tr ("No metadata is available yet.").toStdString () };
 		boost::filesystem::path fpath = h.get_torrent_info ().file_at (0).path;
 		boost::filesystem::path abspath = tpath / fpath;
 		File_.setFileName (QString::fromUtf8 (abspath.string ().c_str ()));
