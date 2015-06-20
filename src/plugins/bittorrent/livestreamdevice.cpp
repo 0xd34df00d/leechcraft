@@ -38,33 +38,25 @@ namespace BitTorrent
 {
 	using th = libtorrent::torrent_handle;
 
-	namespace detail
-	{
-		LiveStreamDeviceBase::LiveStreamDeviceBase (const libtorrent::torrent_handle& h, CachedStatusKeeper *keeper)
-#if LIBTORRENT_VERSION_NUM >= 10000
-		: TI_
-		{
-			[&]
-			{
-				const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file;
-				if (!tf)
-					throw std::runtime_error { LiveStreamDevice::tr ("No metadata is available yet.").toStdString () };
-				return *tf;
-			} ()
-		}
-#else
-		: TI_ { h.get_torrent_info () }
-#endif
-		{
-		}
-	}
-
 	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h,
 			CachedStatusKeeper *keeper, QObject *parent)
 	: QIODevice (parent)
-	, detail::LiveStreamDeviceBase (h, keeper)
 	, StatusKeeper_ (keeper)
 	, Handle_ (h)
+#if LIBTORRENT_VERSION_NUM >= 10000
+	, TI_
+	{
+		[&]
+		{
+			const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file;
+			if (!tf)
+				throw std::runtime_error { LiveStreamDevice::tr ("No metadata is available yet.").toStdString () };
+			return *tf;
+		} ()
+	}
+#else
+	, TI_ { h.get_torrent_info () }
+#endif
 	{
 #if LIBTORRENT_VERSION_NUM >= 10000
 		boost::filesystem::path tpath = keeper->GetStatus (h, th::query_save_path).save_path;
