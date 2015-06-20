@@ -44,7 +44,18 @@ namespace BitTorrent
 	{
 		if (!Handle2Device_.contains (handle))
 		{
-			const auto lsd = new LiveStreamDevice { handle, StatusKeeper_, this };
+			LiveStreamDevice *lsd = nullptr;
+			try
+			{
+				lsd = new LiveStreamDevice { handle, StatusKeeper_, this };
+			}
+			catch (const std::runtime_error& e)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< e.what ();
+				return;
+			}
+
 			Handle2Device_ [handle] = lsd;
 			connect (lsd,
 					SIGNAL (ready (LiveStreamDevice*)),

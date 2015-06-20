@@ -53,9 +53,12 @@ namespace BitTorrent
 		File_.setFileName (QString::fromUtf8 (abspath.string ().c_str ()));
 
 		if (!QIODevice::open (QIODevice::ReadOnly | QIODevice::Unbuffered))
+		{
 			qWarning () << Q_FUNC_INFO
-				<< "could not open internal IO device"
-				<< QIODevice::errorString ();
+					<< "could not open internal IO device"
+					<< QIODevice::errorString ();
+			throw std::runtime_error { QIODevice::errorString ().toStdString () };
+		}
 
 		reschedule ();
 	}
