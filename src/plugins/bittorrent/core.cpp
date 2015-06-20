@@ -822,13 +822,13 @@ namespace BitTorrent
 		const auto& handle = Handles_.at (idx).Handle_;
 
 		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
+		result->Status_ = StatusKeeper_->GetStatus (handle, 0xffffffff);
 #if LIBTORRENT_VERSION_NUM >= 10000
 		if (const auto info = handle.torrent_file ())
 			result->Info_.reset (new libtorrent::torrent_info (*info));
 #else
 		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
 #endif
-		result->Status_ = handle.status ();
 		result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
 		result->State_ = GetStringForStatus (result->Status_);
 
