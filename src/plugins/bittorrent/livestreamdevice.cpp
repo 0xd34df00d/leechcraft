@@ -41,7 +41,11 @@ namespace BitTorrent
 	: QIODevice (parent)
 	, StatusKeeper_ (keeper)
 	, Handle_ (h)
+#if LIBTORRENT_VERSION_NUM >= 10000
+	, NumPieces_ (keeper->GetStatus (h, libtorrent::torrent_handle::query_pieces).num_pieces)
+#else
 	, NumPieces_ (h.get_torrent_info ().num_pieces ())
+#endif
 	{
 		boost::filesystem::path tpath = h.save_path ();
 		boost::filesystem::path fpath = h.get_torrent_info ().file_at (0).path;
