@@ -40,14 +40,27 @@ namespace BitTorrent
 {
 	class CachedStatusKeeper;
 
+	namespace detail
+	{
+		class LiveStreamDeviceBase
+		{
+		protected:
+			const libtorrent::torrent_info TI_;
+			const int NumPieces_ = TI_.num_pieces ();
+
+			LiveStreamDeviceBase (const libtorrent::torrent_handle&, CachedStatusKeeper*);
+		};
+	}
+
 	class LiveStreamDevice : public QIODevice
+						   , private detail::LiveStreamDeviceBase
 	{
 		Q_OBJECT
 
 		CachedStatusKeeper * const StatusKeeper_;
 
 		const libtorrent::torrent_handle Handle_;
-		const int NumPieces_;
+
 		int LastIndex_ = 0;
 		// Which piece would be read next.
 		int ReadPos_ = 0;

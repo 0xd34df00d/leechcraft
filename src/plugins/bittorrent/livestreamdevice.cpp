@@ -36,21 +36,42 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
+	using th = libtorrent::torrent_handle;
+
+	namespace detail
+	{
+		LiveStreamDeviceBase::LiveStreamDeviceBase (const libtorrent::torrent_handle& h, CachedStatusKeeper *keeper)
+#if LIBTORRENT_VERSION_NUM >= 10000
+		: TI_
+		{
+			[&]
+			{
+				const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file;
+				if (!tf)
+					throw std::runtime_error { LiveStreamDevice::tr ("No metadata is available yet.").toStdString () };
+				return *tf;
+			} ()
+		}
+#else
+		: TI_ { h.get_torrent_info () }
+#endif
+		{
+		}
+	}
+
 	LiveStreamDevice::LiveStreamDevice (const libtorrent::torrent_handle& h,
 			CachedStatusKeeper *keeper, QObject *parent)
 	: QIODevice (parent)
+	, detail::LiveStreamDeviceBase (h, keeper)
 	, StatusKeeper_ (keeper)
 	, Handle_ (h)
-#if LIBTORRENT_VERSION_NUM >= 10000
-	, NumPieces_ (keeper->GetStatus (h, libtorrent::torrent_handle::query_pieces).num_pieces)
-#else
-	, NumPieces_ (h.get_torrent_info ().num_pieces ())
-#endif
 	{
+#if LIBTORRENT_VERSION_NUM >= 10000
+		boost::filesystem::path tpath = keeper->GetStatus (h, th::query_save_path).save_path;
+#else
 		boost::filesystem::path tpath = h.save_path ();
-		if (!status.torrent_file)
-			throw std::runtime_error { tr ("No metadata is available yet.").toStdString () };
-		boost::filesystem::path fpath = h.get_torrent_info ().file_at (0).path;
+#endif
+		boost::filesystem::path fpath = TI_.file_at (0).path;
 		boost::filesystem::path abspath = tpath / fpath;
 		File_.setFileName (QString::fromUtf8 (abspath.string ().c_str ()));
 
@@ -68,12 +89,11 @@ namespace BitTorrent
 	qint64 LiveStreamDevice::bytesAvailable () const
 	{
 		qint64 result = 0;
-		const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();;
 		const libtorrent::bitfield& pieces = Handle_.status ().pieces;
 		qDebug () << Q_FUNC_INFO << Offset_ << ReadPos_ << pieces [ReadPos_];
 		for (int i = ReadPos_; pieces [i]; ++i)
 		{
-			result += ti.piece_size (i);
+			result += TI_.piece_size (i);
 			qDebug () << "added:" << result;
 		}
 		result -= Offset_;
@@ -101,9 +121,8 @@ namespace BitTorrent
 	qint64 LiveStreamDevice::pos () const
 	{
 		qint64 result = 0;
-		const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();;
 		for (int i = 0; i < ReadPos_; ++i)
-			result += ti.piece_size (i);
+			result += TI_.piece_size (i);
 		result += Offset_;
 		return result;
 	}
@@ -113,12 +132,9 @@ namespace BitTorrent
 		QIODevice::seek (pos);
 		qDebug () << Q_FUNC_INFO << pos;
 
-		const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();
-
 		int i = 0;
-		while (pos >= ti.piece_size (i))
-			pos -= ti.piece_size (i++);
-
+		while (pos >= TI_.piece_size (i))
+			pos -= TI_.piece_size (i++);
 		ReadPos_ = i;
 		Offset_ = pos;
 
@@ -158,7 +174,6 @@ namespace BitTorrent
 
 	qint64 LiveStreamDevice::readData (char *data, qint64 max)
 	{
-		const libtorrent::torrent_info& ti = Handle_.get_torrent_info ();
 		if (!File_.open (QIODevice::ReadOnly))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -175,8 +190,8 @@ namespace BitTorrent
 		qDebug () << Q_FUNC_INFO << result << Offset_ << ReadPos_ << max << ba;
 
 		Offset_ += result;
-		while (Offset_ >= ti.piece_size (ReadPos_))
-			Offset_ -= ti.piece_size (ReadPos_++);
+		while (Offset_ >= TI_.piece_size (ReadPos_))
+			Offset_ -= TI_.piece_size (ReadPos_++);
 
 		qDebug () << Offset_ << ReadPos_ << bytesAvailable ();
 
@@ -207,7 +222,7 @@ namespace BitTorrent
 		const libtorrent::bitfield& pieces = Handle_.status ().pieces;
 
 		int speed = Handle_.status ().download_payload_rate;
-		int size = Handle_.get_torrent_info ().piece_length ();
+		int size = TI_.piece_length ();
 		const int time = speed ?
 			static_cast<double> (size) / speed * 1000 :
 			60000;
