@@ -2186,7 +2186,7 @@ namespace BitTorrent
 		void operator() (const libtorrent::save_resume_data_failed_alert& a) const
 		{
 			const auto& text = QObject::tr ("Saving resume data failed for torrent:<br />%1<br />%2")
-					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PWarning_));
 		}
@@ -2195,7 +2195,7 @@ namespace BitTorrent
 		{
 			const auto& text = QObject::tr ("Storage for torrent:<br />%1"
 						"<br />moved successfully to:<br />%2")
-					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.path.c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PInfo_));
 		}
@@ -2203,7 +2203,7 @@ namespace BitTorrent
 		void operator() (const libtorrent::storage_moved_failed_alert& a) const
 		{
 			const auto& text = QObject::tr ("Storage move failure:<br />%2<br />for torrent:<br />%1")
-					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
@@ -2222,7 +2222,7 @@ namespace BitTorrent
 		{
 			const auto& text = QObject::tr ("File rename failed for torrent:<br />%1<br />"
 						"file %2, error:<br />%3")
-					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (GetTorrentName (a.handle))
 					.arg (QString::number (a.index))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
@@ -2231,7 +2231,7 @@ namespace BitTorrent
 		void operator() (const libtorrent::torrent_delete_failed_alert& a) const
 		{
 			const auto& text = QObject::tr ("Failed to delete torrent:<br />%1<br />error:<br />%2")
-					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
@@ -2304,7 +2304,7 @@ namespace BitTorrent
 		{
 			const auto& text = QObject::tr ("File error for torrent:<br />%1<br />"
 						"file:<br />%2<br />error:<br />%3")
-					.arg (QString::fromUtf8 (a.handle.name ().c_str ()))
+					.arg (GetTorrentName (a.handle))
 					.arg (QString::fromUtf8 (a.file.c_str ()))
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
@@ -2313,6 +2313,17 @@ namespace BitTorrent
 		void operator() (const libtorrent::torrent_error_alert& a) const
 		{
 			Core::Instance ()->UpdateStatus ({ a.handle.status () });
+		}
+	private:
+		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
+		{
+#if LIBTORRENT_VERSION_NUM >= 10000
+			const auto& status = Core::Instance ()->GetStatusKeeper ()->
+					GetStatus (handle, libtorrent::torrent_handle::query_name);
+			return QString::fromStdString (status.name);
+#else
+			return QString::fromStdString (return handle.name ());
+#endif
 		}
 	};
 
