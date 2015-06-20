@@ -499,7 +499,9 @@ namespace BitTorrent
 			return QVariant ();
 
 		const auto& h = Handles_.at (row).Handle_;
-		const auto& status = StatusKeeper_->GetStatus (h, 0);
+		const auto& status = StatusKeeper_->GetStatus (h,
+				libtorrent::torrent_handle::query_name |
+				libtorrent::torrent_handle::query_save_path);
 
 		switch (role)
 		{
@@ -675,7 +677,11 @@ namespace BitTorrent
 			QString result;
 			result += tr ("Name:") + " " + QString::fromUtf8 (h.name ().c_str ()) + "\n";
 			result += tr ("Destination:") + " " +
+#if LIBTORRENT_VERSION_NUM >= 10000
+				QString::fromStdString (status.save_path) + "\n";
+#else
 				QString::fromUtf8 (h.save_path ().c_str ()) + "\n";
+#endif
 			result += tr ("Progress:") + " " +
 				QString (tr ("%1% (%2 of %3)")
 						.arg (status.progress * 100, 0, 'f', 2)
@@ -826,10 +832,11 @@ namespace BitTorrent
 #if LIBTORRENT_VERSION_NUM >= 10000
 		if (const auto info = handle.torrent_file ())
 			result->Info_.reset (new libtorrent::torrent_info (*info));
+		result->Destination_ = QString::fromStdString (result->Status_.save_path);
 #else
 		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
-#endif
 		result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
+#endif
 		result->State_ = GetStringForStatus (result->Status_);
 
 		if (!result->Status_.error.empty ())
@@ -1297,8 +1304,14 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return QString ();
 
+#if LIBTORRENT_VERSION_NUM >= 10000
+		const auto& handle = Handles_.at (idx).Handle_;
+		const auto& path = StatusKeeper_->GetStatus (handle,
+					libtorrent::torrent_handle::query_save_path).save_path;
+#else
 		const auto& path = Handles_.at (idx).Handle_.save_path ();
-		return QString::fromUtf8 (path.c_str ());
+#endif
+		return QString::fromStdString (path);
 	}
 
 	bool Core::MoveTorrentFiles (const QString& newDir, int idx)
@@ -1878,7 +1891,12 @@ namespace BitTorrent
 				"org.LC.Plugins.BitTorrent.DLFinished/" + name,
 				QStringList (name));
 
+#if LIBTORRENT_VERSION_NUM >= 10000
+		const auto& savePath = StatusKeeper_->GetStatus (torrent.Handle_,
+					libtorrent::torrent_handle::query_save_path).save_path;
+#else
 		const auto& savePath = torrent.Handle_.save_path ();
+#endif
 		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
 
 		auto nah = new Util::NotificationActionHandler (notifyE);
@@ -2030,8 +2048,14 @@ namespace BitTorrent
 					if (handle.need_save_resume_data ())
 						handle.save_resume_data ();
 
+#if LIBTORRENT_VERSION_NUM >= 10000
+					const auto& savePath = StatusKeeper_->GetStatus (handle,
+								libtorrent::torrent_handle::query_save_path).save_path;
+#else
+					const auto& savePath = torrent.Handle_.save_path ();
+#endif
 					settings.setValue ("SavePath",
-							QString::fromUtf8 (handle.save_path ().c_str ()));
+							QString::fromUtf8 (savePath.c_str ()));
 					settings.setValue ("Filename",
 							Handles_.at (i).TorrentFileName_);
 					settings.setValue ("Tags",
