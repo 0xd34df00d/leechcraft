@@ -793,7 +793,7 @@ namespace BitTorrent
 		QFile file (filename);
 		if (!file.open (QIODevice::ReadOnly))
 		{
-			emit error (tr ("Could not open file %1 for read: %2")
+			ShowError (tr ("Could not open file %1 for read: %2")
 					.arg (filename).arg (file.errorString ()));
 			return libtorrent::torrent_info (libtorrent::sha1_hash ());
 		}
@@ -1006,7 +1006,7 @@ namespace BitTorrent
 	{
 		if (!QFileInfo (filename).exists () || !QFileInfo (filename).isReadable ())
 		{
-			emit error (tr ("File %1 doesn't exist or could not be read").arg (filename));
+			ShowError (tr ("File %1 doesn't exist or could not be read").arg (filename));
 			return -1;
 		}
 
@@ -1036,7 +1036,7 @@ namespace BitTorrent
 		}
 		catch (const std::runtime_error&)
 		{
-			emit error (tr ("Runtime error"));
+			ShowError (tr ("Runtime error"));
 			return -1;
 		}
 
@@ -1152,7 +1152,7 @@ namespace BitTorrent
 		catch (const libtorrent::libtorrent_exception& e)
 		{
 			HandleLibtorrentException (e);
-			emit error (tr ("Torrent %1 could not be reannounced at the "
+			ShowError (tr ("Torrent %1 could not be reannounced at the "
 						"moment, try again later.").arg (pos));
 		}
 	}
@@ -1753,7 +1753,7 @@ namespace BitTorrent
 			QFile torrent (QDir::homePath () + "/.leechcraft/bittorrent/" + filename);
 			if (!torrent.open (QIODevice::ReadOnly))
 			{
-				emit error (tr ("Could not open saved torrent %1 for read.").arg (filename));
+				ShowError (tr ("Could not open saved torrent %1 for read.").arg (filename));
 				continue;
 			}
 			QByteArray data = torrent.readAll ();
@@ -1846,7 +1846,7 @@ namespace BitTorrent
 		boost::system::error_code ec;
 		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
 		{
-			emit error (tr ("Bad bencoding in saved torrent data: %1")
+			ShowError (tr ("Bad bencoding in saved torrent data: %1")
 						.arg (QString::fromUtf8 (ec.message ().c_str ())));
 			return false;
 		}
@@ -2037,13 +2037,19 @@ namespace BitTorrent
 
 	void Core::HandleLibtorrentException (const libtorrent::libtorrent_exception& e)
 	{
-		emit error (tr ("Error code %1 of category:<blockquote>%2</blockquote>"
+		ShowError (tr ("Error code %1 of category:<blockquote>%2</blockquote>"
 					"error message:<blockquote>%3</blockquote>"
 					"raw exception message:<blockquote>%4</blockquote>")
 				.arg (e.error ().value ())
 				.arg (e.error ().category ().name ())
 				.arg (QString::fromUtf8 (e.error ().message ().c_str ()))
 				.arg (e.what ()));
+	}
+
+	void Core::ShowError (const QString& msg)
+	{
+		const auto& e = Util::MakeNotification ("BitTorrent", msg, PCritical_);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Core::writeSettings ()
@@ -2053,7 +2059,7 @@ namespace BitTorrent
 		if (!home.exists (".leechcraft/bittorrent"))
 			if (!home.mkdir (".leechcraft/bittorrent"))
 			{
-				emit error (QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft/bittorrent"))
+				ShowError (QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft/bittorrent"))
 						.arg (QDir::toNativeSeparators (QDir::homePath ())));
 				return;
 			}
@@ -2087,7 +2093,7 @@ namespace BitTorrent
 						"/.leechcraft/bittorrent/" +
 						Handles_.at (i).TorrentFileName_);
 				if (!file_info.open (QIODevice::WriteOnly))
-					emit error (QString ("Cannot write settings! "
+					ShowError (QString ("Cannot write settings! "
 								"Cannot open file %1 for write!")
 							.arg (Handles_.at (i).TorrentFileName_));
 				else

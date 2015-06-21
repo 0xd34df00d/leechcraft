@@ -380,6 +380,8 @@ namespace BitTorrent
 		void UpdateTagsImpl (const QStringList& tags, int torrent);
 		void ScheduleSave ();
 		void HandleLibtorrentException (const libtorrent::libtorrent_exception&);
+
+		void ShowError (const QString&);
 	private slots:
 		void writeSettings ();
 		void checkFinished ();
