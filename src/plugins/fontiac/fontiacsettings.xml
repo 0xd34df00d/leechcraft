@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Fontiac" />
+		<item type="dataview" name="SubstitutionsView" />
+	</page>
+</settings>

@@ -22,5 +22,6 @@ target_link_libraries (leechcraft_fontiac
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_fontiac DESTINATION ${LC_PLUGINS_DEST})
+install (FILES fontiacsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_fontiac Core)
