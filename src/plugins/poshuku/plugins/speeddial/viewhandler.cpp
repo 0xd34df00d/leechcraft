@@ -36,9 +36,12 @@
 #include <QWebFrame>
 #include <QWebElement>
 #include <QXmlStreamWriter>
+#include <QLineEdit>
+#include <util/util.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
-#include <util/util.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
 #include "imagecache.h"
 #include "xmlsettingsmanager.h"
 #include "customsitesmanager.h"
@@ -235,7 +238,18 @@ namespace SpeedDial
 
 		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
 
-		QMetaObject::invokeMethod (BrowserWidget_, "focusLineEdit", Qt::QueuedConnection);
+		const auto ibw = qobject_cast<IBrowserWidget*> (BrowserWidget_);
+		new Util::DelayedExecutor
+		{
+			[ibw]
+			{
+				const auto edit = ibw->GetURLEdit ();
+				const auto& text = edit->text ();
+				if (text == "about:blank" || text.isEmpty ())
+					edit->setFocus (Qt::OtherFocusReason);
+			},
+			0
+		};
 	}
 
 	void ViewHandler::WriteTable (QXmlStreamWriter& w, const TopList_t& items,
