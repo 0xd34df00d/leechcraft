@@ -40,6 +40,7 @@
 #include <qwt_plot_grid.h>
 #include <qwt_scale_draw.h>
 #include <qwt_text_label.h>
+#include <qwt_plot_canvas.h>
 #include <util.h>
 
 Q_DECLARE_METATYPE (QList<QPointF>)
@@ -308,6 +309,9 @@ namespace Util
 			Plot_->setFrameShadow (QFrame::Plain);
 			Plot_->setLineWidth (0);
 			Plot_->setMidLineWidth (0);
+
+			if (const auto canvas = qobject_cast<QwtPlotCanvas*> (Plot_->canvas ()))
+				canvas->setBorderRadius (0);
 		}
 
 		auto& plot = *Plot_;
