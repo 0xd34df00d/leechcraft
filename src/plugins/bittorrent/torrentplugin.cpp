@@ -852,10 +852,12 @@ namespace BitTorrent
 		TrackersChanger changer (rootWM->GetPreferredWindow ());
 		changer.SetTrackers (allTrackers);
 
-		if (changer.exec () == QDialog::Accepted)
-			Q_FOREACH (QModelIndex si, sis)
-				Core::Instance ()->SetTrackers (changer.GetTrackers (),
-						Core::Instance ()->GetProxy ()->MapToSource (si).row ());
+		if (changer.exec () != QDialog::Accepted)
+			return;
+
+		const auto& trackers = changer.GetTrackers ();
+		for (const auto& si : sis)
+			Core::Instance ()->SetTrackers (trackers, Proxy_->MapToSource (si).row ());
 	}
 
 	void TorrentPlugin::on_MoveFiles__triggered ()
