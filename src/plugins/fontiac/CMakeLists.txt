@@ -1,0 +1,25 @@
+cmake_minimum_required (VERSION 2.8)
+project (leechcraft_fontiac)
+include (InitLCPlugin OPTIONAL)
+
+include_directories (
+	${CMAKE_CURRENT_BINARY_DIR}
+	${Boost_INCLUDE_DIR}
+	${LEECHCRAFT_INCLUDE_DIR}
+	)
+set (SRCS
+	fontiac.cpp
+	)
+#CreateTrs("fontiac" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("fontiac" "en;ru_RU" "${SRCS}" "${FORMS}" "")
+
+add_library (leechcraft_fontiac SHARED
+	${COMPILED_TRANSLATIONS}
+	${SRCS}
+	)
+target_link_libraries (leechcraft_fontiac
+	${LEECHCRAFT_LIBRARIES}
+	)
+install (TARGETS leechcraft_fontiac DESTINATION ${LC_PLUGINS_DEST})
+
+FindQtLibs (leechcraft_fontiac Core)

@@ -278,6 +278,7 @@ option (ENABLE_DLNIWE "Build DLNiwe, the DLNA server plugin" OFF)
 option (ENABLE_DOLOZHEE "Build Dolozhee, the feature request and bug reporter" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_ELEEMINATOR "Build Leeminal, embedded LeechCraft terminal emulator" ${WITH_PLUGINS} "NOT WIN32" OFF)
 cmake_dependent_option (ENABLE_FENET "Build Fenet, WM control plugin" ${WITH_PLUGINS} "NOT WIN32 AND NOT APPLE" OFF)
+option (ENABLE_FONTIAC "Build Fontiac for configurable font substitutions" ${WITH_PLUGINS})
 option (ENABLE_GACTS "Build Global Actions provider plugin" ${WITH_PLUGINS})
 option (ENABLE_HARBINGER "Build Harbinger, the collections manager" ${WITH_PLUGINS})
 cmake_dependent_option (ENABLE_HOTSENSORS "Build HotSensors, temperature sensors quark" ${WITH_PLUGINS} "NOT WIN32" OFF)
@@ -730,6 +731,10 @@ endif ()
 
 if (ENABLE_FENET)
 	add_subdirectory (plugins/fenet)
+endif ()
+
+if (ENABLE_FONTIAC)
+	add_subdirectory (plugins/fontiac)
 endif ()
 
 if (ENABLE_GACTS)
