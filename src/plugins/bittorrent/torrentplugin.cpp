@@ -947,10 +947,6 @@ namespace BitTorrent
 				this,
 				SLOT (showError (QString)));
 		connect (Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (Core::Instance (),
 				SIGNAL (taskFinished (int)),
 				this,
 				SIGNAL (jobFinished (int)));
