@@ -1951,7 +1951,7 @@ namespace BitTorrent
 		auto nah = new Util::NotificationActionHandler (notifyE);
 		if (info.files ().num_files () == 1)
 		{
-			const auto& path = QByteArray ((savePath + '/' + info.files ().at (0).path).c_str ());
+			const QByteArray path { (savePath + '/' + info.files ().at (0).path).c_str () };
 			nah->AddFunction (tr ("Open..."), [this, path] ()
 					{
 						auto e = Util::MakeEntity (QUrl::fromLocalFile (path),
@@ -1961,7 +1961,7 @@ namespace BitTorrent
 					});
 		}
 		nah->AddFunction (tr ("Show folder"),
-				[savePathStr] () -> void
+				[savePathStr]
 				{
 					const auto& dirPath = QFileInfo (savePathStr).absolutePath ();
 					QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
