@@ -1670,7 +1670,16 @@ namespace BitTorrent
 
 		QList<FileInfo> result;
 		const auto& handle = Handles_.at (idx).Handle_;
+#if LIBTORRENT_VERSION_NUM >= 10000
+		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
+					libtorrent::torrent_handle::query_torrent_file).torrent_file;
+		if (!infoPtr)
+			return {};
+
+		const auto& info = *infoPtr;
+#else
 		const auto& info = handle.get_torrent_info ();
+#endif
 		std::vector<libtorrent::size_type> prbytes;
 
 		int flags = 0;
@@ -1796,7 +1805,14 @@ namespace BitTorrent
 
 			if (priorities.empty ())
 			{
-				priorities.resize (handle.get_torrent_info ().num_files ());
+#if LIBTORRENT_VERSION_NUM >= 10000
+				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
+							libtorrent::torrent_handle::query_torrent_file).torrent_file;
+				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
+#else
+				const auto numFiles = handle.get_torrent_info ().num_files ();
+#endif
+				priorities.resize (numFiles);
 				std::fill (priorities.begin (), priorities.end (), 1);
 			}
 
