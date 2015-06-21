@@ -58,8 +58,6 @@ namespace BitTorrent
 		void PieceRead (const libtorrent::read_piece_alert&);
 	private slots:
 		void handleDeviceReady (LiveStreamDevice*);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

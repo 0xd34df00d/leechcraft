@@ -135,11 +135,6 @@ namespace BitTorrent
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
-
-		connect (LiveStreamManager_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 	}
 
 	void Core::SetWidgets (QToolBar *tool, QWidget *tab)
