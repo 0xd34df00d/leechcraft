@@ -84,6 +84,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -2145,15 +2146,13 @@ namespace BitTorrent
 
 		settings.beginWriteArray ("IPFilter");
 		settings.remove ("");
-		QMap<BanRange_t, bool> filter = GetFilter ();
-		QList<BanRange_t> keys = filter.keys ();
 		int i = 0;
-		Q_FOREACH (BanRange_t key, keys)
+		for (const auto& pair : Util::Stlize (GetFilter ()))
 		{
 			settings.setArrayIndex (i++);
-			settings.setValue ("First", key.first);
-			settings.setValue ("Last", key.second);
-			settings.setValue ("Block", filter [key]);
+			settings.setValue ("First", pair.first.first);
+			settings.setValue ("Last", pair.first.second);
+			settings.setValue ("Block", pair.second);
 		}
 		settings.endArray ();
 		settings.endGroup ();
