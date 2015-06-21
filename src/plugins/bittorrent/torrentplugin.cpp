@@ -116,6 +116,8 @@ namespace BitTorrent
 
 	void TorrentPlugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		InstallTranslator ("bittorrent");
 		Core::Instance ()->SetProxy (proxy);
 

@@ -97,6 +97,8 @@ namespace BitTorrent
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.BitTorrent")
 
+		ICoreProxy_ptr Proxy_;
+
 		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::auto_ptr<AddTorrent> AddTorrentDialog_;
 		bool TorrentSelectionChanged_;
