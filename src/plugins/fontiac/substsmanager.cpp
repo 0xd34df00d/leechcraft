@@ -29,6 +29,7 @@
 
 #include "substsmanager.h"
 #include <QStandardItemModel>
+#include <xmlsettingsdialog/datasourceroles.h>
 
 namespace LeechCraft
 {
@@ -49,6 +50,10 @@ namespace Fontiac
 	void SubstsManager::InitHeader ()
 	{
 		Model_->setHorizontalHeaderLabels ({ tr ("Font family"), tr ("Substitution") });
+		Model_->horizontalHeaderItem (0)->setData (DataSources::DataFieldType::String,
+				DataSources::DataSourceRole::FieldType);
+		Model_->horizontalHeaderItem (1)->setData (DataSources::DataFieldType::Font,
+				DataSources::DataSourceRole::FieldType);
 	}
 }
 }
