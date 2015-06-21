@@ -1897,14 +1897,30 @@ namespace BitTorrent
 		TorrentStruct torrent = Handles_.at (i);
 		const auto& status = StatusKeeper_->GetStatus (torrent.Handle_,
 				libtorrent::torrent_handle::query_pieces |
+				libtorrent::torrent_handle::query_torrent_file |
+				libtorrent::torrent_handle::query_name |
 				libtorrent::torrent_handle::query_save_path);
+
+#if LIBTORRENT_VERSION_NUM >= 10000
+		const auto& name = QString::fromStdString (status.name);
+
+		if (!status.torrent_file)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "torrent"
+					<< name
+					<< "has finished, but we don't have its info";
+			return;
+		}
+		const auto& info = *status.torrent_file;
+#else
 		const auto& info = torrent.Handle_.get_torrent_info ();
+		const auto& name = QString::fromUtf8 (info.name ().c_str ());
+#endif
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
 				status.num_pieces != info.num_pieces ())
 			return;
-
-		QString name = QString::fromUtf8 (info.name ().c_str ());
 
 		auto notifyE = Util::MakeAN ("BitTorrent",
 				tr ("Torrent finished: %1").arg (name),
