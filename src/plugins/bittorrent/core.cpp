@@ -132,7 +132,6 @@ namespace BitTorrent
 	, NotifyManager_ { new NotifyManager { this } }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
-	, LiveStreamManager_ { new LiveStreamManager { StatusKeeper_ } }
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
@@ -284,6 +283,7 @@ namespace BitTorrent
 	{
 		Proxy_ = proxy;
 		ShortcutMgr_ = new ShortcutManager (proxy, this);
+		LiveStreamManager_ = std::make_shared<LiveStreamManager> (StatusKeeper_, proxy);
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const

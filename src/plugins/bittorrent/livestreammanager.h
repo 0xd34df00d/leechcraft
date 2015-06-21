@@ -33,6 +33,7 @@
 #include <QList>
 #include <libtorrent/torrent_handle.hpp>
 #include <libtorrent/alert_types.hpp>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/structures.h>
 
 namespace LeechCraft
@@ -46,10 +47,11 @@ namespace BitTorrent
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		CachedStatusKeeper * const StatusKeeper_;
 		QMap<libtorrent::torrent_handle, LiveStreamDevice*> Handle2Device_;
 	public:
-		LiveStreamManager (CachedStatusKeeper*, QObject* = nullptr);
+		LiveStreamManager (CachedStatusKeeper*, const ICoreProxy_ptr&, QObject* = nullptr);
 
 		void EnableOn (const libtorrent::torrent_handle&);
 		bool IsEnabledOn (const libtorrent::torrent_handle&);

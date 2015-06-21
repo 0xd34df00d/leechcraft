@@ -34,8 +34,10 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	LiveStreamManager::LiveStreamManager (CachedStatusKeeper *keeper, QObject *parent)
+	LiveStreamManager::LiveStreamManager (CachedStatusKeeper *keeper,
+			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
+	, Proxy_ { proxy }
 	, StatusKeeper_ { keeper }
 	{
 	}
