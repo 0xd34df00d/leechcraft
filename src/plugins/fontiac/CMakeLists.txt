@@ -9,6 +9,7 @@ include_directories (
 	)
 set (SRCS
 	fontiac.cpp
+	substsmanager.cpp
 	xmlsettingsmanager.cpp
 	)
 #CreateTrs("fontiac" "en;ru_RU" COMPILED_TRANSLATIONS)
