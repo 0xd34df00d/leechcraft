@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "livestreammanager.h"
+#include <interfaces/core/ientitymanager.h>
 #include "livestreamdevice.h"
 
 namespace LeechCraft
@@ -93,7 +94,7 @@ namespace BitTorrent
 		e.Entity_ = QVariant::fromValue<QIODevice*> (lsd);
 		e.Parameters_ = FromUserInitiated;
 		e.Mime_ = "x-leechcraft/media-qiodevice";
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
