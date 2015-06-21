@@ -35,6 +35,7 @@
 #include <QLabel>
 #include <QDialogButtonBox>
 #include <QComboBox>
+#include <QFontComboBox>
 #include <QtDebug>
 #include "../widgets/dataviewwidget.h"
 #include "../filepicker.h"
@@ -172,6 +173,8 @@ namespace LeechCraft
 			}
 			case DataSources::DataFieldType::Color:
 				return new ColorPicker;
+			case DataSources::DataFieldType::Font:
+				return new QFontComboBox;
 			}
 
 			qWarning () << Q_FUNC_INFO
@@ -200,6 +203,9 @@ namespace LeechCraft
 			case DataSources::DataFieldType::Color:
 				qobject_cast<ColorPicker*> (editor)->SetCurrentColor (var.value<QColor> ());
 				break;
+			case DataSources::DataFieldType::Font:
+				qobject_cast<QFontComboBox*> (editor)->setCurrentFont (var.value<QFont> ());
+				break;
 			case DataSources::DataFieldType::None:
 				break;
 			}
@@ -225,6 +231,8 @@ namespace LeechCraft
 			}
 			case DataSources::DataFieldType::Color:
 				return qobject_cast<ColorPicker*> (editor)->GetCurrentColor ();
+			case DataSources::DataFieldType::Font:
+				return qobject_cast<QFontComboBox*> (editor)->currentFont ();
 			}
 
 			qWarning () << Q_FUNC_INFO

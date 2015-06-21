@@ -50,7 +50,8 @@ namespace LeechCraft
 			LocalPath,
 			Integer,
 			Enum,
-			Color
+			Color,
+			Font
 		};
 	}
 }
