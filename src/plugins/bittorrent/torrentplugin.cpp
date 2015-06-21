@@ -57,6 +57,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/tags/tagscompleter.h>
 #include <util/util.h>
@@ -872,10 +873,12 @@ namespace BitTorrent
 
 		if (!Core::Instance ()->MoveTorrentFiles (newDir, Core::Instance ()->GetCurrentTorrent ()))
 		{
-			QString text = tr ("Failed to move torrent's files from %1 to %2")
+			const auto& msg = tr ("Failed to move torrent's files from %1 to %2")
 					.arg (oldDir)
 					.arg (newDir);
-			emit gotEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
+
+			const auto& e = Util::MakeNotification ("BitTorrent", msg, PCritical_);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
 	}
 
