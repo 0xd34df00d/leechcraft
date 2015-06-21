@@ -327,11 +327,10 @@ namespace BitTorrent
 							XmlSettingsManager::Instance ()->
 								property ("NotifyAboutTooBig").toBool ())
 					{
-						const QString text = tr ("Rejecting file %1 because it's "
+						const auto& msg = tr ("Rejecting file %1 because it's "
 								"bigger than current auto limit.").arg (str);
-						emit const_cast<Core*> (this)->
-								gotEntity (Util::MakeNotification ("BitTorrent",
-										text, PWarning_));
+						const auto& entity = Util::MakeNotification ("BitTorrent", msg, PWarning_);
+						Proxy_->GetEntityManager ()->HandleEntity (entity);
 					}
 					return EntityTestHandleResult ();
 				}
