@@ -1217,12 +1217,10 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return;
 
-		Handles_.at (idx).Handle_.connect_peer (
-					libtorrent::tcp::endpoint (
-						libtorrent::address::from_string (ip.toStdString ()),
-						port
-						)
-					);
+		Handles_.at (idx).Handle_.connect_peer (libtorrent::tcp::endpoint {
+					libtorrent::address::from_string (ip.toStdString ()),
+					port
+				});
 	}
 
 	void Core::AddWebSeed (const QString& ws, bool url, int idx)
