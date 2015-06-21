@@ -29,6 +29,8 @@
 
 #include "fontiac.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -36,6 +38,8 @@ namespace Fontiac
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fontiacsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -64,6 +68,11 @@ namespace Fontiac
 	QIcon Plugin::GetIcon () const
 	{
 		return QIcon ();
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }
