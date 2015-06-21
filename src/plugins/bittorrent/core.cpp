@@ -1896,12 +1896,12 @@ namespace BitTorrent
 	{
 		TorrentStruct torrent = Handles_.at (i);
 		const auto& status = StatusKeeper_->GetStatus (torrent.Handle_,
+				libtorrent::torrent_handle::query_pieces |
 				libtorrent::torrent_handle::query_save_path);
 		const auto& info = torrent.Handle_.get_torrent_info ();
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
-				torrent.Handle_.status (libtorrent::torrent_handle::query_pieces).num_pieces !=
-					info.num_pieces ())
+				status.num_pieces != info.num_pieces ())
 			return;
 
 		QString name = QString::fromUtf8 (info.name ().c_str ());
