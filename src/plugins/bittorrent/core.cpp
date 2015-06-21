@@ -1948,16 +1948,18 @@ namespace BitTorrent
 #endif
 		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
 
+		const auto iem = Proxy_->GetEntityManager ();
+
 		auto nah = new Util::NotificationActionHandler (notifyE);
 		if (info.files ().num_files () == 1)
 		{
 			const QByteArray path { (savePath + '/' + info.files ().at (0).path).c_str () };
-			nah->AddFunction (tr ("Open..."), [this, path] ()
+			nah->AddFunction (tr ("Open..."),
+					[iem, path]
 					{
-						auto e = Util::MakeEntity (QUrl::fromLocalFile (path),
-								QString (),
-								LeechCraft::FromUserInitiated);
-						emit gotEntity (e);
+						iem->HandleEntity (Util::MakeEntity (QUrl::fromLocalFile (path),
+								{},
+								FromUserInitiated));
 					});
 		}
 		nah->AddFunction (tr ("Show folder"),
@@ -1966,7 +1968,7 @@ namespace BitTorrent
 					const auto& dirPath = QFileInfo (savePathStr).absolutePath ();
 					QDesktopServices::openUrl (QUrl::fromLocalFile (dirPath));
 				});
-		emit gotEntity (notifyE);
+		iem->HandleEntity (notifyE);
 
 		auto localeCodec = QTextCodec::codecForLocale ();
 		Entity e;
@@ -1980,7 +1982,7 @@ namespace BitTorrent
 			const auto& entry = info.file_at (i);
 			const auto& path = QByteArray ((savePath + '/' + entry.path).c_str ());
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
-			emit gotEntity (e);
+			iem->HandleEntity (e);
 		}
 
 		emit taskFinished (torrent.ID_);
