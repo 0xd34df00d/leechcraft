@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "substsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,8 +39,11 @@ namespace Fontiac
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		const auto substsManager = new SubstsManager;
+
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "fontiacsettings.xml");
+		XSD_->SetDataSource ("SubstitutionsView", substsManager->GetModel ());
 	}
 
 	void Plugin::SecondInit ()
