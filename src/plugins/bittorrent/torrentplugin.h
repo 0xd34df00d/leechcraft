@@ -233,7 +233,6 @@ namespace BitTorrent
 		void SetupStuff ();
 		void SetupActions ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
 		void jobFinished (int);
 		void jobRemoved (int);
 
