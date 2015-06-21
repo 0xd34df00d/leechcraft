@@ -924,11 +924,6 @@ namespace BitTorrent
 		ForceReannounce_->setEnabled (isValid);
 	}
 
-	void TorrentPlugin::showError (QString e)
-	{
-		emit gotEntity (Util::MakeNotification ("BitTorrent", e, PCritical_));
-	}
-
 	void TorrentPlugin::SetupCore ()
 	{
 		XmlSettingsDialog_.reset (new XmlSettingsDialog ());
@@ -942,10 +937,6 @@ namespace BitTorrent
 		TorrentSelectionChanged_ = true;
 
 		AddTorrentDialog_.reset (new AddTorrent);
-		connect (Core::Instance (),
-				SIGNAL (error (QString)),
-				this,
-				SLOT (showError (QString)));
 		connect (Core::Instance (),
 				SIGNAL (taskFinished (int)),
 				this,

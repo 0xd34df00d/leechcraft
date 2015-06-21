@@ -390,7 +390,6 @@ namespace BitTorrent
 		void queryLibtorrentForWarnings ();
 		void updateRows ();
 	signals:
-		void error (QString) const;
 		void addToHistory (const QString&, const QString&, quint64,
 				const QDateTime&, const QStringList&);
 		void taskFinished (int);

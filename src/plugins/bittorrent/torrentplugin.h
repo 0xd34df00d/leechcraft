@@ -227,7 +227,6 @@ namespace BitTorrent
 		void on_OpenInTorrentTab__triggered ();
 		void handleFastSpeedComboboxes ();
 		void setActionsEnabled ();
-		void showError (QString);
 		void handleTasksTreeSelectionCurrentRowChanged (const QModelIndex&, const QModelIndex&);
 	private:
 		void SetupCore ();
