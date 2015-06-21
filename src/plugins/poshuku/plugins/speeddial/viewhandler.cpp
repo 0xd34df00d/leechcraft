@@ -245,6 +245,9 @@ namespace SpeedDial
 			{
 				const auto edit = ibw->GetURLEdit ();
 				const auto& text = edit->text ();
+				if (text == "about:blank")
+					edit->clear ();
+
 				if (text == "about:blank" || text.isEmpty ())
 					edit->setFocus (Qt::OtherFocusReason);
 			},
