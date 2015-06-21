@@ -1212,7 +1212,7 @@ namespace BitTorrent
 			return -1;
 	}
 
-	void Core::AddPeer (const QString& ip, int port, int idx)
+	void Core::AddPeer (const QString& ip, unsigned short port, int idx)
 	{
 		if (!CheckValidity (idx))
 			return;

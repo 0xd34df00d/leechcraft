@@ -306,7 +306,7 @@ namespace BitTorrent
 		void SetTorrentUploadRate (int, int);
 		int GetTorrentDownloadRate (int) const;
 		int GetTorrentUploadRate (int) const;
-		void AddPeer (const QString&, int, int);
+		void AddPeer (const QString&, unsigned short, int);
 		void AddWebSeed (const QString&, bool, int);
 		void RemoveWebSeed (const QString&, bool, int);
 		void SetFilePriority (int, int, int);
