@@ -30,7 +30,6 @@
 #include "livestreamdevice.h"
 #include <QtDebug>
 #include "cachedstatuskeeper.h"
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -208,8 +207,6 @@ namespace BitTorrent
 
 	void LiveStreamDevice::reschedule ()
 	{
-		Core::Instance ()->queryLibtorrentForWarnings ();
-
 		const auto& status = StatusKeeper_->GetStatus (Handle_, th::query_pieces);
 		const auto& pieces = status.pieces;
 		int speed = status.download_payload_rate;
