@@ -2,6 +2,6 @@
 <settings>
 	<page>
 		<label value="Fontiac" />
-		<item type="dataview" name="SubstitutionsView" />
+		<item type="dataview" property="SubstitutionsView" />
 	</page>
 </settings>
