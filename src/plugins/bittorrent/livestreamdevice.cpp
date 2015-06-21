@@ -59,13 +59,12 @@ namespace BitTorrent
 #endif
 	{
 #if LIBTORRENT_VERSION_NUM >= 10000
-		boost::filesystem::path tpath = keeper->GetStatus (h, th::query_save_path).save_path;
+		const auto& tpath = keeper->GetStatus (h, th::query_save_path).save_path;
 #else
-		boost::filesystem::path tpath = h.save_path ();
+		const auto& tpath = h.save_path ();
 #endif
-		boost::filesystem::path fpath = TI_.file_at (0).path;
-		boost::filesystem::path abspath = tpath / fpath;
-		File_.setFileName (QString::fromUtf8 (abspath.string ().c_str ()));
+		const auto& fpath = TI_.file_at (0).path;
+		File_.setFileName (QString::fromStdString (tpath + '/' + fpath));
 
 		if (!QIODevice::open (QIODevice::ReadOnly | QIODevice::Unbuffered))
 		{
