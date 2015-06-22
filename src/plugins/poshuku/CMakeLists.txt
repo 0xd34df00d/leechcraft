@@ -69,6 +69,7 @@ set (SRCS
 	webpagesslwatcher.cpp
 	sslstatedialog.cpp
 	featurepermnotification.cpp
+	zoomer.cpp
 	)
 set (FORMS
 	browserwidget.ui
