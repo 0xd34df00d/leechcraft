@@ -47,7 +47,6 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		QList<qreal> Zooms_;
 		BrowserWidget *Browser_;
 		QString PreviousEncoding_;
 		QTimer *ScrollTimer_;
@@ -77,18 +76,11 @@ namespace Poshuku
 		QString URLToProperString (const QUrl& url);
 	protected:
 		virtual void mousePressEvent (QMouseEvent*);
-		virtual void wheelEvent (QWheelEvent*);
 		virtual void contextMenuEvent (QContextMenuEvent*);
 		virtual void keyReleaseEvent (QKeyEvent*);
 	private:
-		int LevelForZoom (qreal) const;
-		void SetZoom (qreal);
 		void NavigatePlugins ();
 		void NavigateHome ();
-	public slots:
-		void zoomIn ();
-		void zoomOut ();
-		void zoomReset ();
 	private slots:
 		void remakeURL (const QUrl&);
 		void handleLoadFinished (bool);

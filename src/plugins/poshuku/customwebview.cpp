@@ -67,21 +67,6 @@ namespace Poshuku
 	, ScrollDelta_ (0)
 	, AccumulatedScrollShift_ (0)
 	{
-		Zooms_ << 0.3
-			<< 0.5
-			<< 0.67
-			<< 0.8
-			<< 0.9
-			<< 1
-			<< 1.1
-			<< 1.2
-			<< 1.33
-			<< 1.5
-			<< 1.7
-			<< 2
-			<< 2.4
-			<< 3;
-
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
 #if QT_VERSION < 0x050000
@@ -247,19 +232,6 @@ namespace Poshuku
 		}
 
 		QWebView::mousePressEvent (e);
-	}
-
-	void CustomWebView::wheelEvent (QWheelEvent *e)
-	{
-		if (e->modifiers () & Qt::ControlModifier)
-		{
-			int degrees = e->delta () / 8;
-			qreal delta = static_cast<qreal> (degrees) / 150;
-			SetZoom (zoomFactor () + delta);
-			e->accept ();
-		}
-		else
-			QWebView::wheelEvent (e);
 	}
 
 	namespace
@@ -460,35 +432,6 @@ namespace Poshuku
 			QWebView::keyReleaseEvent (event);
 	}
 
-	int CustomWebView::LevelForZoom (qreal zoom) const
-	{
-		int i = Zooms_.indexOf (zoom);
-
-		if (i >= 0)
-			return i;
-
-		for (i = 0; i < Zooms_.size (); ++i)
-			if (zoom <= Zooms_ [i])
-				break;
-
-		if (i == Zooms_.size ())
-			return i - 1;
-
-		if (i == 0)
-			return i;
-
-		if (zoom - Zooms_ [i - 1] > Zooms_ [i] - zoom)
-			return i;
-		else
-			return i - 1;
-	}
-
-	void CustomWebView::SetZoom (qreal zoom)
-	{
-		setZoomFactor (zoom);
-		emit zoomChanged ();
-	}
-
 	void CustomWebView::NavigatePlugins ()
 	{
 		QFile pef (":/resources/html/pluginsenum.html");
@@ -529,27 +472,6 @@ namespace Poshuku
 				QByteArray ("data:image/png;base64,") + iconBuffer.buffer ().toBase64 ());
 
 		setHtml (data);
-	}
-
-	void CustomWebView::zoomIn ()
-	{
-		int i = LevelForZoom (zoomFactor ());
-
-		if (i < Zooms_.size () - 1)
-			SetZoom (Zooms_ [i + 1]);
-	}
-
-	void CustomWebView::zoomOut ()
-	{
-		int i = LevelForZoom (zoomFactor ());
-
-		if (i > 0)
-			SetZoom (Zooms_ [i - 1]);
-	}
-
-	void CustomWebView::zoomReset ()
-	{
-		SetZoom (1);
 	}
 
 	void CustomWebView::remakeURL (const QUrl& url)
