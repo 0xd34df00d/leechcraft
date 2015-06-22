@@ -385,18 +385,7 @@ namespace Poshuku
 		};
 		fullZoomer->InstallScrollFilter (WebView_,
 				[] (QWheelEvent *ev) { return ev->modifiers () == Qt::ControlModifier; });
-		connect (ZoomIn_,
-				SIGNAL (triggered ()),
-				fullZoomer,
-				SLOT (zoomIn ()));
-		connect (ZoomOut_,
-				SIGNAL (triggered ()),
-				fullZoomer,
-				SLOT (zoomOut ()));
-		connect (ZoomReset_,
-				SIGNAL (triggered ()),
-				fullZoomer,
-				SLOT (zoomReset ()));
+		fullZoomer->SetActionsTriple (ZoomIn_, ZoomOut_, ZoomReset_);
 
 		connect (Ui_.URLFrame_,
 				SIGNAL (load (const QString&)),
