@@ -255,6 +255,13 @@ namespace Poshuku
 				this);
 		ZoomReset_->setProperty ("ActionIcon", "zoom-original");
 
+		TextZoomIn_ = new QAction (tr ("Zoom text in"),
+				this);
+		TextZoomOut_ = new QAction (tr ("Zoom text out"),
+				this);
+		TextZoomReset_ = new QAction (tr ("Reset text zoom"),
+				this);
+
 		HistoryAction_ = new QAction (tr ("Open history"),
 				this);
 		HistoryAction_->setCheckable (true);
@@ -308,6 +315,10 @@ namespace Poshuku
 			WindowMenus_ [view] << ZoomIn_;
 			WindowMenus_ [view] << ZoomOut_;
 			WindowMenus_ [view] << ZoomReset_;
+			WindowMenus_ [view] << Util::CreateSeparator (this);
+			WindowMenus_ [view] << TextZoomIn_;
+			WindowMenus_ [view] << TextZoomOut_;
+			WindowMenus_ [view] << TextZoomReset_;
 			WindowMenus_ [view] << Util::CreateSeparator (this);
 		}
 		proxy.reset (new Util::DefaultHookProxy ());
@@ -386,6 +397,19 @@ namespace Poshuku
 		fullZoomer->InstallScrollFilter (WebView_,
 				[] (QWheelEvent *ev) { return ev->modifiers () == Qt::ControlModifier; });
 		fullZoomer->SetActionsTriple (ZoomIn_, ZoomOut_, ZoomReset_);
+
+		const auto textZoomer = new Zoomer
+		{
+			[this] { return WebView_->textSizeMultiplier (); },
+			[this] (qreal f) { WebView_->setTextSizeMultiplier (f); },
+			this
+		};
+		textZoomer->InstallScrollFilter (WebView_,
+				[] (QWheelEvent *ev)
+				{
+					return ev->modifiers () == (Qt::ControlModifier | Qt::ShiftModifier);
+				});
+		textZoomer->SetActionsTriple (TextZoomIn_, TextZoomOut_, TextZoomReset_);
 
 		connect (Ui_.URLFrame_,
 				SIGNAL (load (const QString&)),
@@ -552,6 +576,9 @@ namespace Poshuku
 		ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
 		ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
 		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
+		TextZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomIn_"));
+		TextZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomOut_"));
+		TextZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomReset_"));
 
 		if (Own_)
 		{
@@ -696,6 +723,9 @@ namespace Poshuku
 				(ZoomIn_)
 				(ZoomOut_)
 				(ZoomReset_)
+				(TextZoomIn_)
+				(TextZoomOut_)
+				(TextZoomReset_)
 				(Cut_)
 				(Copy_)
 				(Paste_)
@@ -720,6 +750,9 @@ namespace Poshuku
 		_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
 		_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
 		_L (ZoomReset_, tr ("Ctrl+0"));
+		_L (TextZoomIn_, Qt::CTRL + Qt::SHIFT + Qt::Key_Plus);
+		_L (TextZoomOut_, Qt::CTRL + Qt::SHIFT + Qt::Key_Minus);
+		_L (TextZoomReset_, tr ("Ctrl+Shift+0"));
 		_L (Cut_, tr ("Ctrl+X"));
 		_L (Copy_, tr ("Ctrl+C"));
 		_L (Paste_, tr ("Ctrl+V"));
