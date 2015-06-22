@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "zoomer.h"
+#include <QWheelEvent>
 
 namespace LeechCraft
 {
@@ -40,6 +41,41 @@ namespace Poshuku
 	, Getter_ { getter }
 	, Setter_ { setter }
 	{
+	}
+
+	void Zoomer::InstallScrollFilter (QObject *obj, const std::function<bool (QWheelEvent*)>& cond)
+	{
+		class ScrollEF : public QObject
+		{
+			const std::function<bool (QWheelEvent*)> Cond_;
+			Zoomer * const Zoomer_;
+		public:
+			ScrollEF (const std::function<bool (QWheelEvent*)>& cond,
+					Zoomer *zoomer, QObject *parent = nullptr)
+			: QObject { parent }
+			, Cond_ { cond }
+			, Zoomer_ { zoomer }
+			{
+			}
+
+			bool eventFilter (QObject*, QEvent *event) override
+			{
+				if (event->type () != QEvent::Wheel)
+					return false;
+
+				const auto we = static_cast<QWheelEvent*> (event);
+				if (!Cond_ (we))
+					return false;
+
+				qreal degrees = we->delta () / 8;
+				qreal delta = degrees / 150;
+				Zoomer_->Setter_ (Zoomer_->Getter_ () + delta);
+
+				return true;
+			}
+		};
+
+		obj->installEventFilter (new ScrollEF { cond, this, obj });
 	}
 
 	int Zoomer::LevelForZoom (qreal zoom) const
