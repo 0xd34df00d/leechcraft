@@ -33,6 +33,7 @@
 #include <QObject>
 
 class QWheelEvent;
+class QAction;
 
 namespace LeechCraft
 {
@@ -55,6 +56,7 @@ namespace Poshuku
 				QObject*,
 				const QList<qreal>& = { 0.3, 0.5, 0.67, 0.8, 0.9, 1, 1.1, 1.2, 1.33, 1.5, 1.7, 2, 2.4, 3 });
 
+		void SetActionsTriple (QAction *in, QAction *out, QAction *reset);
 		void InstallScrollFilter (QObject*, const std::function<bool (QWheelEvent*)>&);
 	private:
 		int LevelForZoom (qreal) const;

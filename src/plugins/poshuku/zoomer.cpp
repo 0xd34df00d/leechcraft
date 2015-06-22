@@ -29,6 +29,7 @@
 
 #include "zoomer.h"
 #include <QWheelEvent>
+#include <QAction>
 
 namespace LeechCraft
 {
@@ -41,6 +42,22 @@ namespace Poshuku
 	, Getter_ { getter }
 	, Setter_ { setter }
 	{
+	}
+
+	void Zoomer::SetActionsTriple (QAction *in, QAction *out, QAction *reset)
+	{
+		connect (in,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (zoomIn ()));
+		connect (out,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (zoomOut ()));
+		connect (reset,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (zoomReset ()));
 	}
 
 	void Zoomer::InstallScrollFilter (QObject *obj, const std::function<bool (QWheelEvent*)>& cond)
