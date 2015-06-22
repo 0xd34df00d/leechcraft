@@ -495,8 +495,12 @@ namespace BitTorrent
 
 		const auto& h = Handles_.at (row).Handle_;
 		const auto& status = StatusKeeper_->GetStatus (h,
+#if LIBTORRENT_VERSION_NUM >= 10000
 				libtorrent::torrent_handle::query_name |
 				libtorrent::torrent_handle::query_save_path);
+#else
+				0);
+#endif
 
 		switch (role)
 		{
@@ -1905,10 +1909,12 @@ namespace BitTorrent
 	{
 		TorrentStruct torrent = Handles_.at (i);
 		const auto& status = StatusKeeper_->GetStatus (torrent.Handle_,
-				libtorrent::torrent_handle::query_pieces |
+#if LIBTORRENT_VERSION_NUM >= 10000
+				libtorrent::torrent_handle::query_save_path |
 				libtorrent::torrent_handle::query_torrent_file |
 				libtorrent::torrent_handle::query_name |
-				libtorrent::torrent_handle::query_save_path);
+#endif
+				libtorrent::torrent_handle::query_pieces);
 
 #if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& name = QString::fromStdString (status.name);
