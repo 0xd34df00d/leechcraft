@@ -92,6 +92,7 @@
 #include "customwebview.h"
 #include "urleditbuttonsmanager.h"
 #include "webpagesslwatcher.h"
+#include "zoomer.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -375,17 +376,19 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleSavePage ()));
+
+		const auto fullZoomer = new Zoomer { [this] { return WebView_->zoomFactor (); }, [this] (qreal f) { WebView_->setZoomFactor (f); }, this };
 		connect (ZoomIn_,
 				SIGNAL (triggered ()),
-				WebView_,
+				fullZoomer,
 				SLOT (zoomIn ()));
 		connect (ZoomOut_,
 				SIGNAL (triggered ()),
-				WebView_,
+				fullZoomer,
 				SLOT (zoomOut ()));
 		connect (ZoomReset_,
 				SIGNAL (triggered ()),
-				WebView_,
+				fullZoomer,
 				SLOT (zoomReset ()));
 
 		connect (Ui_.URLFrame_,
