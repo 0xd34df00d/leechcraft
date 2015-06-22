@@ -29,6 +29,9 @@
 
 #include "substsmanager.h"
 #include <QStandardItemModel>
+#include <QSettings>
+#include <QtDebug>
+#include <QCoreApplication>
 #include <xmlsettingsdialog/datasourceroles.h>
 
 namespace LeechCraft
@@ -40,6 +43,7 @@ namespace Fontiac
 	, Model_ { new QStandardItemModel { this } }
 	{
 		InitHeader ();
+		LoadSettings ();
 	}
 
 	QAbstractItemModel* SubstsManager::GetModel () const
@@ -54,6 +58,47 @@ namespace Fontiac
 				DataSources::DataSourceRole::FieldType);
 		Model_->horizontalHeaderItem (1)->setData (DataSources::DataFieldType::Font,
 				DataSources::DataSourceRole::FieldType);
+	}
+
+	void SubstsManager::LoadSettings ()
+	{
+		QSettings settings
+		{
+			QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Fontiac"
+		};
+
+		int size = settings.beginReadArray ("Substs");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+
+			const auto& family = settings.value ("Family").toString ();
+			const auto& subst = settings.value ("Subst").toString ();
+
+			AddItem (family, subst, { subst });
+		}
+		settings.endArray ();
+	}
+
+	void SubstsManager::SaveSettings () const
+	{
+		QSettings settings
+		{
+			QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Fontiac"
+		};
+
+		settings.beginWriteArray ("Substs");
+		for (int i = 0; i < Substitutes_.size (); ++i)
+		{
+			settings.setArrayIndex (i);
+
+			const auto& pair = Substitutes_.at (i);
+			settings.setValue ("Family", pair.first);
+			settings.setValue ("Subst", pair.second);
+		}
+		settings.endArray ();
 	}
 
 	void SubstsManager::AddItem (const QString& family, const QString& subst, const QFont& font)

@@ -55,6 +55,9 @@ namespace Fontiac
 	private:
 		void InitHeader ();
 
+		void LoadSettings ();
+		void SaveSettings () const;
+
 		void AddItem (const QString&, const QString&, const QFont&);
 	};
 }
