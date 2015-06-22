@@ -377,7 +377,14 @@ namespace Poshuku
 				this,
 				SLOT (handleSavePage ()));
 
-		const auto fullZoomer = new Zoomer { [this] { return WebView_->zoomFactor (); }, [this] (qreal f) { WebView_->setZoomFactor (f); }, this };
+		const auto fullZoomer = new Zoomer
+		{
+			[this] { return WebView_->zoomFactor (); },
+			[this] (qreal f) { WebView_->setZoomFactor (f); },
+			this
+		};
+		fullZoomer->InstallScrollFilter (WebView_,
+				[] (QWheelEvent *ev) { return ev->modifiers () == Qt::ControlModifier; });
 		connect (ZoomIn_,
 				SIGNAL (triggered ()),
 				fullZoomer,
