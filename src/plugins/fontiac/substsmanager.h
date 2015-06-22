@@ -30,9 +30,12 @@
 #pragma once
 
 #include <QObject>
+#include <QList>
+#include <QPair>
 
 class QStandardItemModel;
 class QAbstractItemModel;
+class QFont;
 
 namespace LeechCraft
 {
@@ -43,12 +46,16 @@ namespace Fontiac
 		Q_OBJECT
 
 		QStandardItemModel * const Model_;
+
+		QList<QPair<QString, QString>> Substitutes_;
 	public:
 		SubstsManager (QObject *parent = nullptr);
 
 		QAbstractItemModel* GetModel () const;
 	private:
 		void InitHeader ();
+
+		void AddItem (const QString&, const QString&, const QFont&);
 	};
 }
 }

@@ -55,5 +55,32 @@ namespace Fontiac
 		Model_->horizontalHeaderItem (1)->setData (DataSources::DataFieldType::Font,
 				DataSources::DataSourceRole::FieldType);
 	}
+
+	void SubstsManager::AddItem (const QString& family, const QString& subst, const QFont& font)
+	{
+		if (family.isEmpty () || subst.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty data";
+			return;
+		}
+
+		if (Substitutes_.contains ({ family, subst }))
+			return;
+
+		Substitutes_.append ({ family, subst });
+		QFont::insertSubstitution (family, subst);
+
+		QList<QStandardItem*> row
+		{
+			new QStandardItem { family },
+			new QStandardItem { subst }
+		};
+		for (const auto item : row)
+			item->setEditable (false);
+		row.value (0)->setFont ({ family });
+		row.value (1)->setFont (font);
+		Model_->appendRow (row);
+	}
 }
 }
