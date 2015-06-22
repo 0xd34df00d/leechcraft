@@ -2114,7 +2114,7 @@ namespace BitTorrent
 					const auto& savePath = StatusKeeper_->GetStatus (handle,
 								libtorrent::torrent_handle::query_save_path).save_path;
 #else
-					const auto& savePath = torrent.Handle_.save_path ();
+					const auto& savePath = Handles_.at (i).Handle_.save_path ();
 #endif
 					settings.setValue ("SavePath",
 							QString::fromUtf8 (savePath.c_str ()));
@@ -2382,7 +2382,7 @@ namespace BitTorrent
 					GetStatus (handle, libtorrent::torrent_handle::query_name);
 			return QString::fromStdString (status.name);
 #else
-			return QString::fromStdString (return handle.name ());
+			return QString::fromStdString (handle.name ());
 #endif
 		}
 	};
