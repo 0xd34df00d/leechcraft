@@ -32,6 +32,8 @@
 #include <QObject>
 #include <QList>
 #include <QPair>
+#include <QVariantList>
+#include <QModelIndexList>
 
 class QStandardItemModel;
 class QAbstractItemModel;
@@ -59,6 +61,8 @@ namespace Fontiac
 		void SaveSettings () const;
 
 		void AddItem (const QString&, const QString&, const QFont&);
+	private slots:
+		void addRequested (const QString&, const QVariantList& datas);
 	};
 }
 }

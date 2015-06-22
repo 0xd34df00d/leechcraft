@@ -127,5 +127,15 @@ namespace Fontiac
 		row.value (1)->setFont (font);
 		Model_->appendRow (row);
 	}
+
+	void SubstsManager::addRequested (const QString&, const QVariantList& datas)
+	{
+		const auto& family = datas.value (0).toString ().trimmed ();
+		const auto& font = datas.value (1).value<QFont> ();
+		const auto& subst = font.family ().trimmed ();
+		AddItem (family, subst, font);
+
+		SaveSettings ();
+	}
 }
 }
