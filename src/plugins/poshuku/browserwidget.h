@@ -85,9 +85,15 @@ namespace Poshuku
 		QAction *ViewSources_;
 		QAction *SavePage_;
 		QAction *ContentsEditable_;
+
 		QAction *ZoomIn_;
 		QAction *ZoomOut_;
 		QAction *ZoomReset_;
+
+		QAction *TextZoomIn_;
+		QAction *TextZoomOut_;
+		QAction *TextZoomReset_;
+
 		QAction *Cut_;
 		QAction *Copy_;
 		QAction *Paste_;
