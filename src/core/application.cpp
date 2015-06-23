@@ -90,7 +90,6 @@ namespace LeechCraft
 	Application::Application (int& argc, char **argv)
 	: QApplication (argc, argv)
 	, DefaultSystemStyleName_ (style ()->objectName ())
-	, CatchExceptions_ (true)
 	{
 		/* Workaround for
 		 * https://code.google.com/p/libproxy/issues/detail?id=197

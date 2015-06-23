@@ -53,7 +53,7 @@ namespace LeechCraft
 		QString PreviousLangName_;
 
 		boost::program_options::variables_map VarMap_;
-		bool CatchExceptions_;
+		bool CatchExceptions_ = true;
 
 		QSplashScreen *Splash_;
 	public:
