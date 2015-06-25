@@ -49,11 +49,18 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <QTextCodec>
+
 #if QT_VERSION < 0x050000
 #include <QtDeclarative>
 #else
 #include <QtQml>
 #endif
+
+#ifdef Q_OS_MAC
+#include <QProxyStyle>
+#include <QStyleFactory>
+#endif
+
 #include <interfaces/isyncable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <util/util.h>
@@ -73,11 +80,6 @@
 #include "coreinstanceobject.h"
 #include "rootwindowsmanager.h"
 #include "config.h"
-
-#ifdef Q_OS_MAC
-#include <QProxyStyle>
-#include <QStyleFactory>
-#endif
 
 #ifdef Q_OS_WIN32
 #include "winwarndialog.h"
@@ -202,7 +204,7 @@ namespace LeechCraft
 			QDir dir (applicationDirPath ());
 			dir.cdUp ();
 			dir.cd ("PlugIns");
-			QApplication::setLibraryPaths (QStringList (dir.absolutePath ()));
+			QApplication::setLibraryPaths ({ dir.absolutePath () });
 		}
 #endif
 
