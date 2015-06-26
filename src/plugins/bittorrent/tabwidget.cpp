@@ -140,7 +140,7 @@ namespace BitTorrent
 		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (i->Status_.total_wanted));
 		Ui_.LabelTotalUploaded_->setText (Util::MakePrettySize (i->Status_.all_time_upload));
 		Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
-		Ui_.LabelName_->setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
+		Ui_.LabelName_->setText (QString::fromStdString (i->Status_.name));
 	}
 
 	void TabWidget::on_OverallDownloadRateController__valueChanged (int val)
