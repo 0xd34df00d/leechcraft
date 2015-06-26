@@ -410,6 +410,9 @@ namespace BitTorrent
 			return;
 		}
 
+		if (!i->Info_)
+			i->Info_.reset (new libtorrent::torrent_info { libtorrent::lazy_entry {} });
+
 		Ui_.TorrentControlTab_->setEnabled (true);
 		Ui_.LabelState_->setText (i->State_);
 		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
