@@ -390,10 +390,8 @@ namespace BitTorrent
 
 	void TorrentTabWidget::UpdateTorrentControl ()
 	{
-		Ui_.TorrentDownloadRateController_->
-			setValue (Core::Instance ()->GetTorrentDownloadRate (Index_));
-		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->
-				GetTorrentUploadRate (Index_));
+		Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (Index_));
+		Ui_.TorrentUploadRateController_->setValue (Core::Instance ()->GetTorrentUploadRate (Index_));
 		Ui_.TorrentManaged_->setCheckState (Core::Instance ()->
 				IsTorrentManaged (Index_) ? Qt::Checked : Qt::Unchecked);
 		Ui_.TorrentSequentialDownload_->setCheckState (Core::Instance ()->
@@ -414,122 +412,81 @@ namespace BitTorrent
 
 		Ui_.TorrentControlTab_->setEnabled (true);
 		Ui_.LabelState_->setText (i->State_);
-		Ui_.LabelDownloadRate_->
-			setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
-		Ui_.LabelUploadRate_->
-			setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
-		Ui_.LabelNextAnnounce_->
-			setText (QTime (i->Status_.next_announce.hours (),
-						i->Status_.next_announce.minutes (),
-						i->Status_.next_announce.seconds ()).toString ());
-		Ui_.LabelProgress_->
-			setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
-		Ui_.LabelDownloaded_->
-			setText (Util::MakePrettySize (i->Status_.total_download));
-		Ui_.LabelUploaded_->
-			setText (Util::MakePrettySize (i->Status_.total_upload));
-		Ui_.LabelWantedDownloaded_->
-			setText (Util::MakePrettySize (i->Status_.total_wanted_done));
-		Ui_.LabelDownloadedTotal_->
-			setText (Util::MakePrettySize (i->Status_.all_time_download));
-		Ui_.LabelUploadedTotal_->
-			setText (Util::MakePrettySize (i->Status_.all_time_upload));
+		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
+		Ui_.LabelUploadRate_->setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
+		Ui_.LabelNextAnnounce_->setText (QTime {
+					i->Status_.next_announce.hours (),
+					i->Status_.next_announce.minutes (),
+					i->Status_.next_announce.seconds ()
+				}.toString ());
+		Ui_.LabelProgress_->setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
+		Ui_.LabelDownloaded_->setText (Util::MakePrettySize (i->Status_.total_download));
+		Ui_.LabelUploaded_->setText (Util::MakePrettySize (i->Status_.total_upload));
+		Ui_.LabelWantedDownloaded_->setText (Util::MakePrettySize (i->Status_.total_wanted_done));
+		Ui_.LabelDownloadedTotal_->setText (Util::MakePrettySize (i->Status_.all_time_download));
+		Ui_.LabelUploadedTotal_->setText (Util::MakePrettySize (i->Status_.all_time_upload));
 		if (i->Status_.all_time_download)
-			Ui_.LabelTorrentOverallRating_->
-				setText (QString::number (i->Status_.all_time_upload /
+			Ui_.LabelTorrentOverallRating_->setText (QString::number (i->Status_.all_time_upload /
 							static_cast<double> (i->Status_.all_time_download), 'g', 4));
 		else
-			Ui_.LabelTorrentOverallRating_->
-				setText (QString::fromUtf8 ("\u221E"));
-		Ui_.LabelActiveTime_->
-			setText (Util::MakeTimeFromLong (i->Status_.active_time));
-		Ui_.LabelSeedingTime_->
-			setText (Util::MakeTimeFromLong (i->Status_.seeding_time));
-		Ui_.LabelSeedRank_->
-			setText (QString::number (i->Status_.seed_rank));
+			Ui_.LabelTorrentOverallRating_->setText (QString::fromUtf8 ("\u221E"));
+		Ui_.LabelActiveTime_->setText (Util::MakeTimeFromLong (i->Status_.active_time));
+		Ui_.LabelSeedingTime_->setText (Util::MakeTimeFromLong (i->Status_.seeding_time));
+		Ui_.LabelSeedRank_->setText (QString::number (i->Status_.seed_rank));
 		if (i->Status_.last_scrape >= 0)
-			Ui_.LabelLastScrape_->
-				setText (Util::MakeTimeFromLong (i->Status_.last_scrape));
+			Ui_.LabelLastScrape_->setText (Util::MakeTimeFromLong (i->Status_.last_scrape));
 		else
-			Ui_.LabelLastScrape_->
-				setText (tr ("Wasn't yet"));
-		Ui_.LabelTotalSize_->
-			setText (Util::MakePrettySize (i->Info_->total_size ()));
-		Ui_.LabelWantedSize_->
-			setText (Util::MakePrettySize (i->Status_.total_wanted));
+			Ui_.LabelLastScrape_->setText (tr ("Wasn't yet"));
+		Ui_.LabelTotalSize_->setText (Util::MakePrettySize (i->Info_->total_size ()));
+		Ui_.LabelWantedSize_->setText (Util::MakePrettySize (i->Status_.total_wanted));
 		if (i->Status_.total_payload_download)
-			Ui_.LabelTorrentRating_->
-				setText (QString::number (i->Status_.total_payload_upload /
+			Ui_.LabelTorrentRating_->setText (QString::number (i->Status_.total_payload_upload /
 							static_cast<double> (i->Status_.total_payload_download), 'g', 4));
 		else
-			Ui_.LabelTorrentRating_->
-				setText (QString::fromUtf8 ("\u221E"));
+			Ui_.LabelTorrentRating_->setText (QString::fromUtf8 ("\u221E"));
 		Ui_.PiecesWidget_->setPieceMap (i->Status_.pieces);
-		Ui_.LabelTracker_->
-			setText (QString::fromStdString (i->Status_.current_tracker));
-		Ui_.LabelDestination_->
-			setText (QString ("<a href='%1'>%1</a>")
+		Ui_.LabelTracker_->setText (QString::fromStdString (i->Status_.current_tracker));
+		Ui_.LabelDestination_->setText (QString ("<a href='%1'>%1</a>")
 					.arg (i->Destination_));
-		Ui_.LabelName_->
-			setText (QString::fromUtf8 (i->Info_->name ().c_str ()));
-		Ui_.LabelCreator_->
-			setText (QString::fromUtf8 (i->Info_->creator ().c_str ()));
+		Ui_.LabelName_->setText (QString::fromStdString (i->Info_->name ()));
+		Ui_.LabelCreator_->setText (QString::fromStdString (i->Info_->creator ()));
 
-		QString commentString = QString::fromUtf8 (i->Info_->comment ().c_str ());
+		const auto& commentString = QString::fromStdString (i->Info_->comment ());
 		if (QUrl::fromEncoded (commentString.toUtf8 ()).isValid ())
 			Ui_.LabelComment_->setText (QString ("<a href='%1'>%1</a>")
 					.arg (commentString));
 		else
 			Ui_.LabelComment_->setText (commentString);
 
-		Ui_.LabelPrivate_->
-			setText (i->Info_->priv () ?
+		Ui_.LabelPrivate_->setText (i->Info_->priv () ?
 					tr ("Yes") :
 					tr ("No"));
-		Ui_.LabelDHTNodesCount_->
-			setText (QString::number (i->Info_->nodes ().size ()));
-		Ui_.LabelFailed_->
-			setText (Util::MakePrettySize (i->Status_.total_failed_bytes));
-		Ui_.LabelConnectedPeers_->
-			setText (QString::number (i->Status_.num_peers));
-		Ui_.LabelConnectedSeeds_->
-			setText (QString::number (i->Status_.num_seeds));
-		Ui_.LabelAnnounceInterval_->
-			setText (QTime (i->Status_.announce_interval.hours (),
-						i->Status_.announce_interval.minutes (),
-						i->Status_.announce_interval.seconds ()).toString ());
-		Ui_.LabelTotalPieces_->
-			setText (QString::number (i->Info_->num_pieces ()));
-		Ui_.LabelDownloadedPieces_->
-			setText (QString::number (i->Status_.num_pieces));
-		Ui_.LabelPieceSize_->
-			setText (Util::MakePrettySize (i->Info_->piece_length ()));
-		Ui_.LabelBlockSize_->
-			setText (Util::MakePrettySize (i->Status_.block_size));
-		Ui_.LabelDistributedCopies_->
-			setText (i->Status_.distributed_copies == -1 ?
-				tr ("Not tracking") :
-				QString::number (i->Status_.distributed_copies));
-		Ui_.LabelRedundantData_->
-			setText (Util::MakePrettySize (i->Status_.total_redundant_bytes));
-		Ui_.LabelPeersInList_->
-			setText (QString::number (i->Status_.list_peers));
-		Ui_.LabelSeedsInList_->
-			setText (QString::number (i->Status_.list_seeds));
-		Ui_.LabelPeersInSwarm_->
-			setText ((i->Status_.num_incomplete == -1 ?
+		Ui_.LabelDHTNodesCount_->setText (QString::number (i->Info_->nodes ().size ()));
+		Ui_.LabelFailed_->setText (Util::MakePrettySize (i->Status_.total_failed_bytes));
+		Ui_.LabelConnectedPeers_->setText (QString::number (i->Status_.num_peers));
+		Ui_.LabelConnectedSeeds_->setText (QString::number (i->Status_.num_seeds));
+		Ui_.LabelAnnounceInterval_->setText (QTime (i->Status_.announce_interval.hours (),
+					i->Status_.announce_interval.minutes (),
+					i->Status_.announce_interval.seconds ()).toString ());
+		Ui_.LabelTotalPieces_->setText (QString::number (i->Info_->num_pieces ()));
+		Ui_.LabelDownloadedPieces_->setText (QString::number (i->Status_.num_pieces));
+		Ui_.LabelPieceSize_->setText (Util::MakePrettySize (i->Info_->piece_length ()));
+		Ui_.LabelBlockSize_->setText (Util::MakePrettySize (i->Status_.block_size));
+		Ui_.LabelDistributedCopies_->setText (i->Status_.distributed_copies == -1 ?
+					tr ("Not tracking") :
+					QString::number (i->Status_.distributed_copies));
+		Ui_.LabelRedundantData_->setText (Util::MakePrettySize (i->Status_.total_redundant_bytes));
+		Ui_.LabelPeersInList_->setText (QString::number (i->Status_.list_peers));
+		Ui_.LabelSeedsInList_->setText (QString::number (i->Status_.list_seeds));
+		Ui_.LabelPeersInSwarm_->setText ((i->Status_.num_incomplete == -1 ?
 					tr ("Unknown") :
 					QString::number (i->Status_.num_incomplete)));
-		Ui_.LabelSeedsInSwarm_->
-			setText ((i->Status_.num_complete == -1 ?
+		Ui_.LabelSeedsInSwarm_->setText ((i->Status_.num_complete == -1 ?
 					tr ("Unknown") :
 					QString::number (i->Status_.num_complete)));
-		Ui_.LabelConnectCandidates_->
-			setText (QString::number (i->Status_.connect_candidates));
-		Ui_.LabelUpBandwidthQueue_->
-			setText (QString::number (i->Status_.up_bandwidth_queue));
-		Ui_.LabelDownBandwidthQueue_->
-			setText (QString::number (i->Status_.down_bandwidth_queue));
+		Ui_.LabelConnectCandidates_->setText (QString::number (i->Status_.connect_candidates));
+		Ui_.LabelUpBandwidthQueue_->setText (QString::number (i->Status_.up_bandwidth_queue));
+		Ui_.LabelDownBandwidthQueue_->setText (QString::number (i->Status_.down_bandwidth_queue));
 	}
 
 	void TorrentTabWidget::on_OverallDownloadRateController__valueChanged (int val)
