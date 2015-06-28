@@ -328,12 +328,18 @@ namespace Liznoo
 		};
 
 		auto checkPerc = [] (const BatteryInfo& b, const QByteArray& prop)
-			{ return b.Percentage_ <= XmlSettingsManager::Instance ()->property (prop).toInt (); };
+		{
+			if (XmlSettingsManager::Instance ()->property ("NotifyOn" + prop).toBool ())
+				return false;
+
+			return b.Percentage_ <= XmlSettingsManager::Instance ()->
+					property (prop + "Level").toInt ();
+		};
 
 		const bool isExtremeLow = check ([checkPerc] (const BatteryInfo& b)
-				{ return checkPerc (b, "NotifyOnExtremeLowPower"); });
+				{ return checkPerc (b, "ExtremeLowPower"); });
 		const bool isLow = check ([checkPerc] (const BatteryInfo& b)
-				{ return checkPerc (b, "NotifyOnLowPower"); });
+				{ return checkPerc (b, "LowPower"); });
 
 		const auto iem = Proxy_->GetEntityManager ();
 		if (isExtremeLow || isLow)
