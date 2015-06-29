@@ -47,12 +47,14 @@ namespace AdvancedNotifications
 	GeneralHandler::GeneralHandler (ICoreProxy_ptr proxy)
 	: Proxy_ (proxy)
 	{
-		QList<ConcreteHandlerBase_ptr> coreHandlers;
-		coreHandlers << ConcreteHandlerBase_ptr (new SystemTrayHandler);
-		coreHandlers << ConcreteHandlerBase_ptr (new VisualHandler);
-		coreHandlers << ConcreteHandlerBase_ptr (new AudioHandler);
-		coreHandlers << ConcreteHandlerBase_ptr (new CmdRunHandler);
-		coreHandlers << ConcreteHandlerBase_ptr (new WMUrgentHandler);
+		const QList<ConcreteHandlerBase_ptr> coreHandlers
+		{
+			std::make_shared<SystemTrayHandler> (),
+			std::make_shared<VisualHandler> (),
+			std::make_shared<AudioHandler> (),
+			std::make_shared<CmdRunHandler> (),
+			std::make_shared<WMUrgentHandler> ()
+		};
 
 		for (const auto& handler : coreHandlers)
 		{
