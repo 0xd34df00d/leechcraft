@@ -504,7 +504,7 @@ void MainWindow::handleShowTrayIconChanged ()
 	const bool isVisible = XmlSettingsManager::Instance ()->
 			property ("ShowTrayIcon").toBool ();
 
-	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	const auto& proxy = std::make_shared<Util::DefaultHookProxy> ();
 	emit hookTrayIconVisibilityChanged (proxy, TrayIcon_, isVisible);
 	if (proxy->IsCancelled ())
 		return;
@@ -687,7 +687,7 @@ void LeechCraft::MainWindow::FillTray ()
 			this,
 			SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 
-	emit hookTrayIconCreated (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), TrayIcon_);
+	emit hookTrayIconCreated (std::make_shared<Util::DefaultHookProxy> (), TrayIcon_);
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowTrayIcon",
 			this, "handleShowTrayIconChanged");
 }
