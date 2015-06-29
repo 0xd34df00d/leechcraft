@@ -114,7 +114,7 @@ namespace AdvancedNotifications
 
 	QIcon GeneralHandler::GetIconForCategory (const QString& cat) const
 	{
-		const QString& name = Cat2IconName_.value (cat, "general");
+		const QString& name = Cat2IconName_.value (cat, "dialog-information");
 		return Proxy_->GetIconThemeManager ()->GetIcon (name);
 	}
 }
