@@ -71,6 +71,7 @@ namespace AdvancedNotifications
 		Cat2IconName_ [AN::CatGeneric] = "preferences-desktop-notification-bell";
 		Cat2IconName_ [AN::CatPackageManager] = "system-software-update";
 		Cat2IconName_ [AN::CatMediaPlayer] = "applications-multimedia";
+		Cat2IconName_ [AN::CatTerminal] = "utilities-terminal";
 	}
 
 	void GeneralHandler::RegisterHandler (const INotificationHandler_ptr& handler)
