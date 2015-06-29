@@ -690,7 +690,6 @@ void LeechCraft::MainWindow::FillTray ()
 	emit hookTrayIconCreated (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy), TrayIcon_);
 	XmlSettingsManager::Instance ()->RegisterObject ("ShowTrayIcon",
 			this, "handleShowTrayIconChanged");
-	handleShowTrayIconChanged ();
 }
 
 void LeechCraft::MainWindow::FillToolMenu ()
