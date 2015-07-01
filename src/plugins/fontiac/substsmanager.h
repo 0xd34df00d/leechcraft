@@ -63,6 +63,7 @@ namespace Fontiac
 		void AddItem (const QString&, const QString&, const QFont&);
 	private slots:
 		void addRequested (const QString&, const QVariantList& datas);
+		void removeRequested (const QString&, const QModelIndexList& rows);
 	};
 }
 }

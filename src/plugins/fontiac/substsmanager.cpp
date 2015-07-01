@@ -137,5 +137,21 @@ namespace Fontiac
 
 		SaveSettings ();
 	}
+
+	void SubstsManager::removeRequested (const QString&, const QModelIndexList& rows)
+	{
+		for (const auto& idx : rows)
+		{
+			const auto row = idx.row ();
+			if (row < 0 || row >= Substitutes_.size ())
+				continue;
+
+			const auto& family = Substitutes_.at (row).first;
+			QFont::removeSubstitution (family);
+			Model_->removeRow (row);
+		}
+
+		SaveSettings ();
+	}
 }
 }
