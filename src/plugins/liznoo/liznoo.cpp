@@ -329,7 +329,7 @@ namespace Liznoo
 
 		auto checkPerc = [] (const BatteryInfo& b, const QByteArray& prop)
 		{
-			if (XmlSettingsManager::Instance ()->property ("NotifyOn" + prop).toBool ())
+			if (!XmlSettingsManager::Instance ()->property ("NotifyOn" + prop).toBool ())
 				return false;
 
 			return b.Percentage_ <= XmlSettingsManager::Instance ()->
