@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Fontiac
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		const auto substsManager = new SubstsManager;
 
