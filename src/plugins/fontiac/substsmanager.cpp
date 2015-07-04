@@ -147,7 +147,11 @@ namespace Fontiac
 				continue;
 
 			const auto& family = Substitutes_.at (row).first;
+#if QT_VERSION >= 0x050000
+			QFont::removeSubstitutions (family);
+#else
 			QFont::removeSubstitution (family);
+#endif
 			Model_->removeRow (row);
 		}
 
