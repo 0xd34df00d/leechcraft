@@ -88,13 +88,12 @@ namespace FatApe
 
 		QStringList filter ("*.user.js");
 
-		Q_FOREACH (const QString& script, scriptsDir.entryList (filter, QDir::Files))
-			UserScripts_.append (UserScript (scriptsDir.absoluteFilePath (script)));
+		for (const auto& script : scriptsDir.entryList (filter, QDir::Files))
+			UserScripts_.append (scriptsDir.absoluteFilePath (script));
 
-		Model_.reset (new QStandardItemModel);
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
-				<< tr ("Description"));
-		Q_FOREACH (const UserScript& script, UserScripts_)
+		Model_ = std::make_shared<QStandardItemModel> ();
+		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Description") });
+		for (const auto& script : UserScripts_)
 			AddScriptToManager (script);
 
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
@@ -234,9 +233,7 @@ namespace FatApe
 		description->setToolTip (scriptDesc);
 		description->setData (script.IsEnabled (), EnabledRole);
 
-		QList<QStandardItem*> items;
-		items << name << description;
-		Model_->appendRow (items);
+		Model_->appendRow ({ name, description });
 	}
 }
 }

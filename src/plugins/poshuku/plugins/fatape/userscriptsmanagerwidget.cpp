@@ -52,7 +52,7 @@ namespace FatApe
 
 	void UserScriptsManagerWidget::on_Edit__released ()
 	{
-		const QModelIndex& selected = Ui_.Items_->currentIndex ();
+		const auto& selected = Ui_.Items_->currentIndex ();
 
 		if (selected.isValid ())
 			Plugin_->EditScript (selected.row ());
@@ -89,7 +89,7 @@ namespace FatApe
 
 	void UserScriptsManagerWidget::on_Remove__released ()
 	{
-		const QModelIndex& selected = Ui_.Items_->currentIndex ();
+		const auto& selected = Ui_.Items_->currentIndex ();
 
 		if (selected.isValid ())
 		{
