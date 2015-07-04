@@ -31,7 +31,6 @@
 
 #include <QObject>
 #include <QList>
-#include <QStandardItemModel>
 #include <QNetworkRequest>
 #include <QWebPage>
 #include <interfaces/iinfo.h>
@@ -40,6 +39,8 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 #include "userscript.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
@@ -74,6 +75,7 @@ namespace FatApe
 		QIcon GetIcon () const;
 		QSet<QByteArray> GetPluginClasses () const;
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
 		void EditScript (int scriptIndex);
 		void DeleteScript (int scriptIndex);
 		void SetScriptEnabled(int scriptIndex, bool value);
