@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QCoreApplication>
 #include <xmlsettingsdialog/datasourceroles.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -153,6 +154,14 @@ namespace Fontiac
 			QFont::removeSubstitution (family);
 #endif
 			Model_->removeRow (row);
+
+			const auto& remaining = Util::Filter (Substitutes_,
+					[&family] (const auto& pair) { return pair.first == family; });
+			if (remaining.isEmpty ())
+				continue;
+
+			QFont::insertSubstitutions (family,
+					Util::Map (remaining, [] (const auto& pair) { return pair.second; }));
 		}
 
 		SaveSettings ();
