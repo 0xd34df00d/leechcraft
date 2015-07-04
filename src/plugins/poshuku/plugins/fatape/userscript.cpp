@@ -219,7 +219,6 @@ namespace FatApe
 		return Enabled_;
 	}
 
-
 	void UserScript::SetEnabled (bool value)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -229,7 +228,6 @@ namespace FatApe
 			.arg (qHash (Namespace ()))
 			.arg (qHash (Name ())), !value);
 		Enabled_ = value;
-
 	}
 
 	void UserScript::Delete ()
