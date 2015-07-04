@@ -30,12 +30,18 @@
          <property name="text">
           <string>Edit</string>
          </property>
+         <property name="ActionIcon" stdset="0">
+          <string>configure</string>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="Remove_">
          <property name="text">
           <string>Remove</string>
+         </property>
+         <property name="ActionIcon" stdset="0">
+          <string>list-remove</string>
          </property>
         </widget>
        </item>
