@@ -78,7 +78,8 @@ namespace FatApe
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		CoreProxy_ = proxy;
-		Translator_.reset (Util::InstallTranslator ("poshuku_fatape"));
+
+		Util::InstallTranslator ("poshuku_fatape");
 
 		QDir scriptsDir (Util::CreateIfNotExists ("data/poshuku/fatape/scripts"));
 

@@ -41,8 +41,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Poshuku
@@ -59,7 +57,6 @@ namespace FatApe
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FatApe")
 
-		std::shared_ptr<QTranslator> Translator_;
 		QList<UserScript> UserScripts_;
 		IProxyObject *Proxy_;
 		ICoreProxy_ptr CoreProxy_;
