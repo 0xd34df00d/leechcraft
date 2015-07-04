@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPT_H
+#pragma once
+
 #include <QMultiMap>
 #include <QReadWriteLock>
 #include <QRegExp>
@@ -72,5 +72,3 @@ namespace FatApe
 }
 }
 }
-
-#endif

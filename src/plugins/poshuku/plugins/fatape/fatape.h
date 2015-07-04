@@ -27,9 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_FATAPE_H
-#include "userscript.h"
+#pragma once
+
 #include <QObject>
 #include <QList>
 #include <QStandardItemModel>
@@ -40,6 +39,7 @@
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
+#include "userscript.h"
 
 namespace LeechCraft
 {
@@ -91,5 +91,3 @@ namespace FatApe
 }
 }
 }
-
-#endif

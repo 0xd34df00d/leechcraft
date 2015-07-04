@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
-#define PLUGINS_POSHUKU_PLUGINS_FATAPE_USERSCRIPTSMANAGER_H
+#pragma once
+
 #include <QStandardItemModel>
 #include <QList>
 #include <QWidget>
@@ -63,5 +63,3 @@ namespace FatApe
 }
 }
 }
-
-#endif
