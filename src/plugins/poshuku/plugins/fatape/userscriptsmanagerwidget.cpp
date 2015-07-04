@@ -44,10 +44,6 @@ namespace FatApe
 	{
 		Ui_.setupUi (this);
 		Ui_.Items_->setModel (model);
-		connect (Ui_.Items_->selectionModel (),
-				SIGNAL (currentChanged (const QModelIndex&, const QModelIndex&)),
-				this,
-				SLOT (currentItemChanged (const QModelIndex&, const QModelIndex&)));
 	}
 
 	void UserScriptsManagerWidget::on_Edit__released ()
@@ -56,35 +52,6 @@ namespace FatApe
 
 		if (selected.isValid ())
 			Plugin_->EditScript (selected.row ());
-	}
-
-	void UserScriptsManagerWidget::on_Disable__released ()
-	{
-		const QModelIndex& selected = Ui_.Items_->currentIndex ();
-
-		if (!selected.isValid ())
-			return;
-
-		QStandardItemModel *model = qobject_cast<QStandardItemModel*> (Ui_.Items_->model ());
-
-
-		if (!model)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unable cast "
-				<< Ui_.Items_->model ()
-				<< "to QStandardItemModel";
-			return;
-		}
-
-		bool enabled = selected.data (EnabledRole).toBool ();
-
-		Plugin_->SetScriptEnabled (selected.row (), !enabled);
-
-		for (int column = 0; column < model->columnCount (); column++)
-			model->item (selected.row (), column)->setData (!enabled, EnabledRole);
-
-		Ui_.Disable_->setText (!enabled ? tr ("Disable") : tr ("Enable"));
 	}
 
 	void UserScriptsManagerWidget::on_Remove__released ()
@@ -96,16 +63,6 @@ namespace FatApe
 			Ui_.Items_->model ()->removeRow (selected.row ());
 			Plugin_->DeleteScript (selected.row ());
 		}
-	}
-
-	void UserScriptsManagerWidget::currentItemChanged (const QModelIndex& current,
-			const QModelIndex& previous)
-	{
-		bool currentEnabled = current.data (EnabledRole).toBool ();
-		bool previousEnabled = previous.data (EnabledRole).toBool ();
-
-		if ((previous.isValid () && currentEnabled != previousEnabled) || !previous.isValid ())
-			Ui_.Disable_->setText (currentEnabled ? tr ("Disable") : tr ("Enable"));
 	}
 }
 }

@@ -40,11 +40,8 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	enum CustomRoles
-	{
-		EnabledRole = Qt::UserRole + 0xdead
-	};
 	class Plugin;
+
 	class UserScriptsManagerWidget : public QWidget
 	{
 		Q_OBJECT
@@ -58,7 +55,6 @@ namespace FatApe
 		void on_Edit__released ();
 		void on_Disable__released ();
 		void on_Remove__released ();
-		void currentItemChanged (const QModelIndex& current, const QModelIndex& previous);
 	};
 }
 }

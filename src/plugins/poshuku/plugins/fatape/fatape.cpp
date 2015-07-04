@@ -234,11 +234,9 @@ namespace FatApe
 		name->setCheckState (script.IsEnabled () ? Qt::Checked : Qt::Unchecked);
 		name->setEditable (false);
 		name->setCheckable (true);
-		name->setData (script.IsEnabled (), EnabledRole);
 		description->setEditable (false);
 		WrapText (scriptDesc);
 		description->setToolTip (scriptDesc);
-		description->setData (script.IsEnabled (), EnabledRole);
 
 		Model_->appendRow ({ name, description });
 	}
