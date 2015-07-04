@@ -35,6 +35,9 @@ namespace LeechCraft
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
+		Ui_.Add_->setProperty ("ActionIcon", "list-add");
+		Ui_.Modify_->setProperty ("ActionIcon", "configure");
+		Ui_.Remove_->setProperty ("ActionIcon", "list-remove");
 
 		setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
