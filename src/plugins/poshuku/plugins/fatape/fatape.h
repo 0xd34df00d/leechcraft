@@ -40,6 +40,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include "userscript.h"
 
+class QStandardItem;
 class QStandardItemModel;
 
 namespace LeechCraft
@@ -89,6 +90,8 @@ namespace FatApe
 				QNetworkRequest request,
 				QWebPage::NavigationType type);
 		void initPlugin (QObject *proxy);
+	private slots:
+		void handleItemChanged (QStandardItem*);
 	};
 }
 }

@@ -96,6 +96,11 @@ namespace FatApe
 		for (const auto& script : UserScripts_)
 			AddScriptToManager (script);
 
+		connect (Model_.get (),
+				SIGNAL (itemChanged (QStandardItem*)),
+				this,
+				SLOT (handleItemChanged (QStandardItem*)));
+
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukufatapesettings.xml");
@@ -236,6 +241,17 @@ namespace FatApe
 		description->setData (script.IsEnabled (), EnabledRole);
 
 		Model_->appendRow ({ name, description });
+	}
+
+	void Plugin::handleItemChanged (QStandardItem *item)
+	{
+		if (item->column ())
+			return;
+
+		auto& script = UserScripts_ [item->row ()];
+		const auto shouldEnable = item->checkState () == Qt::Checked;
+		if (shouldEnable != script.IsEnabled ())
+			script.SetEnabled (shouldEnable);
 	}
 }
 }
