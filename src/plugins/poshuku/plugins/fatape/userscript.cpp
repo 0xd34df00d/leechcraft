@@ -235,16 +235,20 @@ namespace FatApe
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_FatApe");
 
+		const auto& nsHash = qHash (Namespace ());
+		const auto& name = Name ();
+
 		settings.remove (QString ("storage/%1/%2")
-				.arg (qHash (Namespace ()))
-				.arg (Name ()));
+				.arg (nsHash)
+				.arg (name));
 		settings.remove (QString ("resources/%1/%2")
-				.arg (qHash (Namespace ()))
-				.arg (Name ()));
+				.arg (nsHash)
+				.arg (name));
 		settings.remove (QString ("disabled/%1%2")
-				.arg (qHash (Namespace ()))
-				.arg (Name ()));
-		Q_FOREACH (const QString& resource, Metadata_.values ("resource"))
+				.arg (nsHash)
+				.arg (name));
+
+		for (const auto& resource : Metadata_.values ("resource"))
 			QFile::remove (GetResourcePath (resource.mid (0, resource.indexOf (" "))));
 		QFile::remove (ScriptPath_);
 	}
