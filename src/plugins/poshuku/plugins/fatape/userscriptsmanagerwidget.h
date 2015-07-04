@@ -50,8 +50,8 @@ namespace FatApe
 		Q_OBJECT
 
 		Ui::UserScriptsManagerWidget Ui_;
-		QStandardItemModel *Model_;
-		Plugin *Plugin_;
+		QStandardItemModel * const Model_;
+		Plugin * const Plugin_;
 	public:
 		UserScriptsManagerWidget (QStandardItemModel *model, Plugin *plugin);
 	public slots:
