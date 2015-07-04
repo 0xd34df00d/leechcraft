@@ -12,7 +12,7 @@ set (SRCS
 	substsmanager.cpp
 	xmlsettingsmanager.cpp
 	)
-#CreateTrs("fontiac" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("fontiac" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("fontiac" "en;ru_RU" "${SRCS}" "${FORMS}" "fontiacsettings.xml")
 
 add_library (leechcraft_fontiac SHARED
