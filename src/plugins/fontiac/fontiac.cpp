@@ -30,6 +30,7 @@
 #include "fontiac.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "substsmanager.h"
 
@@ -39,6 +40,8 @@ namespace Fontiac
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		Util::InstallTranslator ("fontiac");
+
 		const auto substsManager = new SubstsManager;
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
