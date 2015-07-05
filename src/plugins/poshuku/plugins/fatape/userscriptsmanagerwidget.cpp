@@ -64,7 +64,10 @@ namespace FatApe
 			Plugin_->DeleteScript (selected.row ());
 		}
 	}
-}
-}
-}
 
+	void UserScriptsManagerWidget::on_Create__released ()
+	{
+	}
+}
+}
+}

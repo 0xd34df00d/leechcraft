@@ -54,6 +54,7 @@ namespace FatApe
 	public slots:
 		void on_Edit__released ();
 		void on_Remove__released ();
+		void on_Create__released ();
 	};
 }
 }
