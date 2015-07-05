@@ -144,7 +144,6 @@ namespace FatApe
 			return;
 		}
 
-		QTextStream content { &script };
 		const auto& gmLayerId = QString { "Greasemonkey%1%2" }
 				.arg (qHash (Namespace ()))
 				.arg (qHash (Name ()));
@@ -160,7 +159,7 @@ namespace FatApe
 			"var GM_log = function(){console.log.apply(console, arguments)};"
 			"%2})()" }
 				.arg (gmLayerId)
-				.arg (content.readAll ());
+				.arg (QString::fromUtf8 (script.readAll ()));
 
 		frame->addToJavaScriptWindowObject (gmLayerId, new GreaseMonkey { frame, proxy, *this });
 		frame->evaluateJavaScript (toInject);
