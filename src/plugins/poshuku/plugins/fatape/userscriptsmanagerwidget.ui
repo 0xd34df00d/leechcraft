@@ -31,7 +31,7 @@
           <string>Edit</string>
          </property>
          <property name="ActionIcon" stdset="0">
-          <string>configure</string>
+          <string notr="true">configure</string>
          </property>
         </widget>
        </item>
@@ -41,7 +41,7 @@
           <string>Remove</string>
          </property>
          <property name="ActionIcon" stdset="0">
-          <string>list-remove</string>
+          <string notr="true">list-remove</string>
          </property>
         </widget>
        </item>
@@ -58,7 +58,7 @@
           <string>Create...</string>
          </property>
          <property name="ActionIcon" stdset="0">
-          <string>document-new</string>
+          <string notr="true">document-new</string>
          </property>
         </widget>
        </item>
