@@ -62,8 +62,8 @@ namespace FatApe
 	const QString MetadataEnd = "// ==/UserScript==";
 
 	UserScript::UserScript (const QString& scriptPath)
-	: ScriptPath_ (scriptPath)
-	, MetadataRX_ ("//\\s+@(\\S*)\\s+(.*)", Qt::CaseInsensitive)
+	: ScriptPath_ { scriptPath }
+	, MetadataRX_ { "//\\s+@(\\S*)\\s+(.*)", Qt::CaseInsensitive }
 	{
 		ParseMetadata ();
 		if (!Metadata_.count ("include"))
@@ -77,7 +77,7 @@ namespace FatApe
 
 	void UserScript::ParseMetadata ()
 	{
-		QFile script (ScriptPath_);
+		QFile script { ScriptPath_ };
 
 		if (!script.open (QFile::ReadOnly))
 		{
@@ -89,7 +89,7 @@ namespace FatApe
 			return;
 		}
 
-		QTextStream content (&script);
+		QTextStream content { &script };
 		QString line;
 
 		content.setCodec (QTextCodec::codecForName ("UTF-8"));
@@ -188,14 +188,14 @@ namespace FatApe
 				.mid (resourceName.length ())
 				.trimmed ();
 		const QUrl resourceUrl { resource };
-		const auto& resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
+		const auto& resourceFile = QFileInfo { resourceUrl.path () }.fileName ();
 		if (resourceFile.isEmpty ())
 			return {};
 
 		return QFileInfo
 		{
 			Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
-			QString ("%1%2_%3")
+			QString { "%1%2_%3" }
 					.arg (qHash (Namespace ()))
 					.arg (qHash (Name ()))
 					.arg (resourceFile)
@@ -214,7 +214,7 @@ namespace FatApe
 
 	void UserScript::SetEnabled (bool value)
 	{
-		const auto& propName = QString ("disabled/%1%2")
+		const auto& propName = QString { "disabled/%1%2" }
 				.arg (qHash (Namespace ()))
 				.arg (qHash (Name ()))
 				.toLatin1 ();
@@ -224,19 +224,19 @@ namespace FatApe
 
 	void UserScript::Delete ()
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_FatApe");
+		QSettings settings { QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Poshuku_FatApe" };
 
 		const auto& nsHash = qHash (Namespace ());
 		const auto& name = Name ();
 
-		settings.remove (QString ("storage/%1/%2")
+		settings.remove (QString { "storage/%1/%2" }
 				.arg (nsHash)
 				.arg (name));
-		settings.remove (QString ("resources/%1/%2")
+		settings.remove (QString { "resources/%1/%2" }
 				.arg (nsHash)
 				.arg (name));
-		settings.remove (QString ("disabled/%1%2")
+		settings.remove (QString { "disabled/%1%2" }
 				.arg (nsHash)
 				.arg (name));
 
