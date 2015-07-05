@@ -50,6 +50,7 @@
 #include <util/sll/prelude.h>
 #include "greasemonkey.h"
 #include "resourcedownloadhandler.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -68,12 +69,10 @@ namespace FatApe
 		if (!Metadata_.count ("include"))
 			Metadata_.insert ("include", "*");
 
-		QSettings settings(QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_FatApe");
-
-		Enabled_ = !settings.value (QString("disabled/%1%2")
+		const auto& propName = QString ("disabled/%1%2")
 				.arg (qHash (Namespace ()))
-				.arg (qHash (Name ())), false).toBool ();;
+				.arg (qHash (Name ()));
+		Enabled_ = XmlSettingsManager::Instance ()->Property (propName, false).toBool ();
 	}
 
 	UserScript::UserScript (const UserScript& script)
@@ -224,12 +223,11 @@ namespace FatApe
 
 	void UserScript::SetEnabled (bool value)
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-			QCoreApplication::applicationName () + "_Poshuku_FatApe");
-
-		settings.setValue (QString ("disabled/%1%2")
-			.arg (qHash (Namespace ()))
-			.arg (qHash (Name ())), !value);
+		const auto& propName = QString ("disabled/%1%2")
+				.arg (qHash (Namespace ()))
+				.arg (qHash (Name ()))
+				.toLatin1 ();
+		XmlSettingsManager::Instance ()->setProperty (propName, !value);
 		Enabled_ = value;
 	}
 
