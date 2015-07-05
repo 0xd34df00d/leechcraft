@@ -48,8 +48,8 @@
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include "greasemonkey.h"
-#include "resourcedownloadhandler.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -287,10 +287,36 @@ namespace FatApe
 		const auto& resourceUrl = resource.mid (resource.indexOf (" ") + 1);
 		const QNetworkRequest resourceRequest { QUrl { resourceUrl } };
 		const auto reply = networkManager->get (resourceRequest);
-		QObject::connect (reply,
-				SIGNAL (finished ()),
-				new ResourceDownloadHandler (resourceName, this, reply),
-				SLOT (handleFinished ()));
+
+		const auto& propName = QString { "resources/%1/%2/%3" }
+				.arg (qHash (Namespace ()))
+				.arg (Name ())
+				.arg (resourceName);
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[reply, propName, path = GetResourcePath (resourceName)]
+			{
+				reply->deleteLater ();
+
+				QFile resource { path };
+				if (!resource.open (QFile::WriteOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to save resource"
+							<< path
+							<< "from"
+							<< reply->url ().toString ();
+					return;
+				}
+				resource.write (reply->readAll ());
+
+				XmlSettingsManager::Instance ()->setProperty (propName.toLatin1 (),
+						reply->header (QNetworkRequest::ContentTypeHeader));
+			},
+			reply,
+			SIGNAL (finished ()),
+			reply
+		};
 	}
 
 	void UserScript::DownloadRequired (const QString&,
