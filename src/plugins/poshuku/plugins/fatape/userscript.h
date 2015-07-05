@@ -49,7 +49,7 @@ namespace FatApe
 		bool Enabled_;
 	public:
 		UserScript (const QString& scriptPath);
-		UserScript (const UserScript& script);
+
 		bool MatchToPage (const QString& pageUrl) const;
 		void Inject (QWebFrame *frame, IProxyObject *proxy) const;
 		QString Name () const;

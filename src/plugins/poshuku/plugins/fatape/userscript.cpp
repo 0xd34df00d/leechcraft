@@ -75,14 +75,6 @@ namespace FatApe
 		Enabled_ = XmlSettingsManager::Instance ()->Property (propName, false).toBool ();
 	}
 
-	UserScript::UserScript (const UserScript& script)
-	: MetadataRX_ ("//\\s+@(\\S*)\\s+(.*)", Qt::CaseInsensitive)
-	{
-		ScriptPath_ = script.ScriptPath_;
-		Metadata_ = script.Metadata_;
-		Enabled_ = script.Enabled_;
-	}
-
 	void UserScript::ParseMetadata ()
 	{
 		QFile script (ScriptPath_);
