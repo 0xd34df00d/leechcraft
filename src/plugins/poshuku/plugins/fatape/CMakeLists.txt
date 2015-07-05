@@ -6,8 +6,9 @@ set (FATAPE_SRCS
 	greasemonkey.cpp
 	xmlsettingsmanager.cpp
 	userscript.cpp
-	userscriptsmanagerwidget.cpp
+	userscriptcreator.cpp
 	userscriptinstallerdialog.cpp
+	userscriptsmanagerwidget.cpp
 	)
 set (FATAPE_FORMS
 	createscriptdialog.ui
