@@ -90,8 +90,8 @@ namespace FatApe
 
 		Model_ = std::make_shared<QStandardItemModel> ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Description") });
-		for (const auto& script : scriptsDir.entryList (filter, QDir::Files))
-			AddScriptToManager (script);
+		for (const auto& scriptPath : scriptsDir.entryInfoList (filter, QDir::Files))
+			AddScriptToManager (UserScript { scriptPath.filePath () });
 
 		connect (Model_.get (),
 				SIGNAL (itemChanged (QStandardItem*)),
