@@ -274,11 +274,10 @@ namespace FatApe
 		if (!ScriptPath_.startsWith (temp))
 			return;
 
-		QFile tempScript (ScriptPath_);
 		QFileInfo installPath (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/"),
 				QFileInfo(ScriptPath_).fileName ());
 
-		tempScript.copy (installPath.absoluteFilePath ());
+		QFile::copy (ScriptPath_, installPath.absoluteFilePath ());
 		ScriptPath_ = installPath.absoluteFilePath ();
 		Q_FOREACH (const QString& resource, Metadata_.values ("resource"))
 			DownloadResource (resource, networkManager);
