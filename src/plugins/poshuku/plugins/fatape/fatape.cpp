@@ -221,7 +221,7 @@ namespace FatApe
 		proxy->CancelDefault ();
 	}
 
-	void Plugin::AddScriptToManager (const UserScript& script)
+	int Plugin::AddScriptToManager (const UserScript& script)
 	{
 		UserScripts_ << script;
 
@@ -237,6 +237,8 @@ namespace FatApe
 		description->setToolTip (scriptDesc);
 
 		Model_->appendRow ({ name, description });
+
+		return UserScripts_.size () - 1;
 	}
 
 	void Plugin::handleItemChanged (QStandardItem *item)

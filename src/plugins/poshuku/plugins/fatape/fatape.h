@@ -67,7 +67,6 @@ namespace FatApe
 	public:
 		void Init (ICoreProxy_ptr);
 
-		void AddScriptToManager (const UserScript& script);
 		void SecondInit ();
 		void Release ();
 		QByteArray GetUniqueID () const;
@@ -80,6 +79,7 @@ namespace FatApe
 		void EditScript (int scriptIndex);
 		void DeleteScript (int scriptIndex);
 		void SetScriptEnabled(int scriptIndex, bool value);
+		int AddScriptToManager (const UserScript& script);
 	public slots:
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
