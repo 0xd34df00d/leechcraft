@@ -31,6 +31,7 @@
 #include <QDebug>
 #include <QStandardItemModel>
 #include "fatape.h"
+#include "userscriptcreator.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,7 @@ namespace FatApe
 
 	void UserScriptsManagerWidget::on_Create__released ()
 	{
+		new UserScriptCreator { Plugin_, this };
 	}
 }
 }
