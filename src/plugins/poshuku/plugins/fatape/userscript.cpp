@@ -72,7 +72,7 @@ namespace FatApe
 		const auto& propName = QString ("disabled/%1%2")
 				.arg (qHash (Namespace ()))
 				.arg (qHash (Name ()));
-		Enabled_ = XmlSettingsManager::Instance ()->Property (propName, false).toBool ();
+		Enabled_ = !XmlSettingsManager::Instance ()->Property (propName, false).toBool ();
 	}
 
 	void UserScript::ParseMetadata ()
