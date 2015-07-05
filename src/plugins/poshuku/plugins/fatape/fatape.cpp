@@ -88,12 +88,9 @@ namespace FatApe
 
 		QStringList filter ("*.user.js");
 
-		for (const auto& script : scriptsDir.entryList (filter, QDir::Files))
-			UserScripts_.append (scriptsDir.absoluteFilePath (script));
-
 		Model_ = std::make_shared<QStandardItemModel> ();
 		Model_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Description") });
-		for (const auto& script : UserScripts_)
+		for (const auto& script : scriptsDir.entryList (filter, QDir::Files))
 			AddScriptToManager (script);
 
 		connect (Model_.get (),
@@ -205,10 +202,12 @@ namespace FatApe
 		switch (installer.exec ())
 		{
 		case UserScriptInstallerDialog::Install:
-			UserScripts_.append (UserScript (installer.TempScriptPath ()));
-			UserScripts_.last ().Install (CoreProxy_->GetNetworkAccessManager ());
-			AddScriptToManager (UserScripts_.last ());
+		{
+			UserScript script { installer.TempScriptPath () };
+			script.Install (CoreProxy_->GetNetworkAccessManager ());
+			AddScriptToManager (script);
 			break;
+		}
 		case UserScriptInstallerDialog::ShowSource:
 			Proxy_->OpenInNewTab (QUrl::fromLocalFile (installer.TempScriptPath ()));
 			break;
@@ -224,6 +223,8 @@ namespace FatApe
 
 	void Plugin::AddScriptToManager (const UserScript& script)
 	{
+		UserScripts_ << script;
+
 		QString scriptDesc = script.Description ();
 		QStandardItem* name = new QStandardItem (script.Name ());
 		QStandardItem* description = new QStandardItem (scriptDesc);
