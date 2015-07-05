@@ -584,41 +584,44 @@ namespace Poshuku
 		setFamily (QWebSettings::CursiveFont, "CursiveFont");
 		setFamily (QWebSettings::FantasyFont, "FantasyFont");
 
-		QWebSettings::globalSettings ()->setFontSize (QWebSettings::MinimumFontSize,
-				XmlSettingsManager::Instance ()->property ("MinimumFontSize").toInt ());
-		QWebSettings::globalSettings ()->setFontSize (QWebSettings::DefaultFontSize,
-				XmlSettingsManager::Instance ()->property ("DefaultFontSize").toInt ());
-		QWebSettings::globalSettings ()->setFontSize (QWebSettings::DefaultFixedFontSize,
-				XmlSettingsManager::Instance ()->property ("DefaultFixedFontSize").toInt ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::AutoLoadImages,
-				XmlSettingsManager::Instance ()->property ("AutoLoadImages").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::DnsPrefetchEnabled,
-				XmlSettingsManager::Instance ()->property ("DNSPrefetchEnabled").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptEnabled,
-				XmlSettingsManager::Instance ()->property ("AllowJavascript").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavaEnabled,
-				XmlSettingsManager::Instance ()->property ("AllowJava").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::PluginsEnabled,
-				XmlSettingsManager::Instance ()->property ("AllowPlugins").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanOpenWindows,
-				XmlSettingsManager::Instance ()->property ("JavascriptCanOpenWindows").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
-				XmlSettingsManager::Instance ()->property ("JavascriptCanAccessClipboard").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::OfflineStorageDatabaseEnabled,
-				XmlSettingsManager::Instance ()->property ("OfflineStorageDB").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::OfflineWebApplicationCacheEnabled,
-				XmlSettingsManager::Instance ()->property ("OfflineWebApplicationCache").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::LocalStorageEnabled,
-				XmlSettingsManager::Instance ()->property ("LocalStorageDB").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::XSSAuditingEnabled,
-				XmlSettingsManager::Instance ()->property ("EnableXSSAuditing").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
-				XmlSettingsManager::Instance ()->property ("EnableHyperlinkAuditing").toBool ());
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::WebGLEnabled,
-				XmlSettingsManager::Instance ()->property ("EnableWebGL").toBool ());
+		auto global = QWebSettings::globalSettings ();
+		auto xsm = XmlSettingsManager::Instance ();
+
+		global->setFontSize (QWebSettings::MinimumFontSize,
+				xsm->property ("MinimumFontSize").toInt ());
+		global->setFontSize (QWebSettings::DefaultFontSize,
+				xsm->property ("DefaultFontSize").toInt ());
+		global->setFontSize (QWebSettings::DefaultFixedFontSize,
+				xsm->property ("DefaultFixedFontSize").toInt ());
+		global->setAttribute (QWebSettings::AutoLoadImages,
+				xsm->property ("AutoLoadImages").toBool ());
+		global->setAttribute (QWebSettings::DnsPrefetchEnabled,
+				xsm->property ("DNSPrefetchEnabled").toBool ());
+		global->setAttribute (QWebSettings::JavascriptEnabled,
+				xsm->property ("AllowJavascript").toBool ());
+		global->setAttribute (QWebSettings::JavaEnabled,
+				xsm->property ("AllowJava").toBool ());
+		global->setAttribute (QWebSettings::PluginsEnabled,
+				xsm->property ("AllowPlugins").toBool ());
+		global->setAttribute (QWebSettings::JavascriptCanOpenWindows,
+				xsm->property ("JavascriptCanOpenWindows").toBool ());
+		global->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
+				xsm->property ("JavascriptCanAccessClipboard").toBool ());
+		global->setAttribute (QWebSettings::OfflineStorageDatabaseEnabled,
+				xsm->property ("OfflineStorageDB").toBool ());
+		global->setAttribute (QWebSettings::OfflineWebApplicationCacheEnabled,
+				xsm->property ("OfflineWebApplicationCache").toBool ());
+		global->setAttribute (QWebSettings::LocalStorageEnabled,
+				xsm->property ("LocalStorageDB").toBool ());
+		global->setAttribute (QWebSettings::XSSAuditingEnabled,
+				xsm->property ("EnableXSSAuditing").toBool ());
+		global->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
+				xsm->property ("EnableHyperlinkAuditing").toBool ());
+		global->setAttribute (QWebSettings::WebGLEnabled,
+				xsm->property ("EnableWebGL").toBool ());
 #if QT_VERSION >= 0x050000
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::ScrollAnimatorEnabled,
-				XmlSettingsManager::Instance ()->property ("EnableSmoothScrolling").toBool ());
+		global->setAttribute (QWebSettings::ScrollAnimatorEnabled,
+				xsm->property ("EnableSmoothScrolling").toBool ());
 #endif
 
 		SetUserStylesheet ();
