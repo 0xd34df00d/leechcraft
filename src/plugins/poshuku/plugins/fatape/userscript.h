@@ -48,7 +48,7 @@ namespace FatApe
 		QMultiMap<QString, QString> Metadata_;
 		bool Enabled_;
 	public:
-		UserScript (const QString& scriptPath);
+		explicit UserScript (const QString& scriptPath);
 
 		bool MatchToPage (const QString& pageUrl) const;
 		void Inject (QWebFrame *frame, IProxyObject *proxy) const;
