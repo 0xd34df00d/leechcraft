@@ -176,12 +176,12 @@ namespace FatApe
 		const UserScript& script = UserScripts_.at (scriptIndex);
 		QSettings settings (QCoreApplication::organizationName (),
 			QCoreApplication::applicationName () + "_Poshuku_FatApe");
-		const QString& editor = settings.value ("editor").toString ();
+		const auto& editor = settings.value ("editor").toString ();
 
-		if (editor.isEmpty ())
-			return;
-
-		QProcess::execute (editor, QStringList (script.Path ()));
+		if (!editor.isEmpty ())
+			QProcess::execute (editor, { script.Path () });
+		else
+			QDesktopServices::openUrl (QUrl::fromLocalFile (script.Path ()));
 	}
 
 	void Plugin::DeleteScript (int scriptIndex)
