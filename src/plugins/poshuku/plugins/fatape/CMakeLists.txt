@@ -1,14 +1,16 @@
 include_directories (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
 set (FATAPE_SRCS
+	createscriptdialog.cpp
 	fatape.cpp
-	userscript.cpp
 	greasemonkey.cpp
 	xmlsettingsmanager.cpp
+	userscript.cpp
 	userscriptsmanagerwidget.cpp
 	userscriptinstallerdialog.cpp
 	)
 set (FATAPE_FORMS
+	createscriptdialog.ui
 	userscriptsmanagerwidget.ui
 	userscriptinstallerdialog.ui
 	)
