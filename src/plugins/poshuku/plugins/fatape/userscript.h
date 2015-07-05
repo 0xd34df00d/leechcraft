@@ -61,7 +61,10 @@ namespace FatApe
 		QStringList Exclude () const;
 		bool IsEnabled () const;
 		void SetEnabled (bool value);
+
+		bool Install ();
 		void Install (QNetworkAccessManager *networkManager);
+
 		void Delete ();
 	private:
 		void ParseMetadata ();

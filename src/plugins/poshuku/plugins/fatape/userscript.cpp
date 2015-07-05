@@ -255,7 +255,7 @@ namespace FatApe
 		return Metadata_.values ("exclude");
 	}
 
-	void UserScript::Install (QNetworkAccessManager *networkManager)
+	bool UserScript::Install ()
 	{
 #if QT_VERSION < 0x050000
 		const auto& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
@@ -264,7 +264,7 @@ namespace FatApe
 #endif
 
 		if (!ScriptPath_.startsWith (temp))
-			return;
+			return false;
 
 		QFileInfo installPath
 		{
@@ -274,6 +274,14 @@ namespace FatApe
 
 		QFile::copy (ScriptPath_, installPath.absoluteFilePath ());
 		ScriptPath_ = installPath.absoluteFilePath ();
+		return true;
+	}
+
+	void UserScript::Install (QNetworkAccessManager *networkManager)
+	{
+		if (!Install ())
+			return;
+
 		for (const auto& resource : Metadata_.values ("resource"))
 			DownloadResource (resource, networkManager);
 		for (const auto& required : Metadata_.values ("require"))
