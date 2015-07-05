@@ -66,6 +66,82 @@ namespace FatApe
 
 		Dia_->show ();
 	}
+
+	namespace
+	{
+		std::shared_ptr<QFile> CreateFile (const QString& scriptName, QWidget *parent)
+		{
+#if QT_VERSION < 0x050000
+			const auto& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+#else
+			const auto& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
+#endif
+
+			auto filename = scriptName;
+			while (true)
+			{
+				const auto& fullPath = temp + '/' + filename + ".user.js";
+				auto file = std::make_shared<QFile> (fullPath);
+				if (file->open (QIODevice::WriteOnly))
+					return file;
+
+				if (QMessageBox::question (parent,
+							"LeechCraft",
+							UserScriptCreator::tr ("Unable to create file %1: %2. Do you want to try again changing the file name?")
+								.arg ("<em>" + fullPath + "</em>")
+								.arg (file->errorString ()),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+					return {};
+
+				filename = QInputDialog::getText (parent,
+						"LeechCraft",
+						UserScriptCreator::tr ("Enter new filename for the user script %1:")
+							.arg ("<em>" + scriptName + "</em>"),
+						QLineEdit::Normal,
+						filename);
+				if (filename.isEmpty ())
+					return {};
+			}
+		}
+	}
+
+	QString UserScriptCreator::GenerateFile () const
+	{
+		const auto& file = CreateFile (Dia_->GetName (), ParentWidget_);
+		if (!file)
+			return {};
+
+		const QStringList lines
+		{
+			"// ==UserScript==",
+			"// @name           " + Dia_->GetName (),
+			"// @namespace      " + Dia_->GetNamespace (),
+			"// @description    " + Dia_->GetDescription (),
+			"// @author         " + Dia_->GetAuthor (),
+			"// ==/UserScript==",
+			"(function() {",
+			"})();"
+		};
+
+		for (const auto& line : lines)
+		{
+			file->write (line.toUtf8 ());
+			file->write ("\n");
+		}
+
+		return file->fileName ();
+	}
+
+	void UserScriptCreator::handleAccepted ()
+	{
+		const auto& path = GenerateFile ();
+		if (path.isEmpty ())
+			return;
+
+		UserScript script { path };
+		script.Install ();
+		Plugin_->EditScript (Plugin_->AddScriptToManager (script));
+	}
 }
 }
 }

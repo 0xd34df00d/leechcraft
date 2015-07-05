@@ -52,6 +52,10 @@ namespace FatApe
 		const std::shared_ptr<CreateScriptDialog> Dia_;
 	public:
 		UserScriptCreator (Plugin*, QWidget* = nullptr);
+	private:
+		QString GenerateFile () const;
+	private slots:
+		void handleAccepted ();
 	};
 }
 }
