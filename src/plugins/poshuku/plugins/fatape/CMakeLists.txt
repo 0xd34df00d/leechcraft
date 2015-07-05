@@ -7,7 +7,6 @@ set (FATAPE_SRCS
 	xmlsettingsmanager.cpp
 	userscriptsmanagerwidget.cpp
 	userscriptinstallerdialog.cpp
-	resourcedownloadhandler.cpp
 	)
 set (FATAPE_FORMS
 	userscriptsmanagerwidget.ui
