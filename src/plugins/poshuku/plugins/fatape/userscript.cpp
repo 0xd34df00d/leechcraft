@@ -47,6 +47,7 @@
 
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/prelude.h>
 #include "greasemonkey.h"
 #include "resourcedownloadhandler.h"
 
@@ -107,18 +108,18 @@ namespace FatApe
 		while ((line = content.readLine ()) != MetadataEnd && !content.atEnd ())
 		{
 			MetadataRX_.indexIn (line);
-			QString key (MetadataRX_.cap (1).trimmed ());
-			QString value (MetadataRX_.cap (2).trimmed ());
-
+			const auto& key = MetadataRX_.cap (1).trimmed ();
+			const auto& value = MetadataRX_.cap (2).trimmed ();
 			Metadata_.insert (key, value);
 		}
 	}
 
 	void UserScript::BuildPatternsList (QList<QRegExp>& list, bool include) const
 	{
-		Q_FOREACH (const QString& pattern,
-				Metadata_.values (include ? "include" : "exclude"))
-			list.append (QRegExp (pattern, Qt::CaseInsensitive, QRegExp::Wildcard));
+		const QString key { include ? "include" : "exclude" };
+		list = Util::Map (Metadata_.values (key),
+				[] (const QString& pattern)
+					{ return QRegExp { pattern, Qt::CaseInsensitive, QRegExp::Wildcard }; });
 	}
 
 	bool UserScript::MatchToPage (const QString& pageUrl) const
@@ -140,7 +141,7 @@ namespace FatApe
 		if (!Enabled_)
 			return;
 
-		QFile script (ScriptPath_);
+		QFile script { ScriptPath_ };
 
 		if (!script.open (QFile::ReadOnly))
 		{
@@ -152,11 +153,11 @@ namespace FatApe
 			return;
 		}
 
-		QTextStream content (&script);
-		QString gmLayerId = QString ("Greasemonkey%1%2")
+		QTextStream content { &script };
+		const auto& gmLayerId = QString { "Greasemonkey%1%2" }
 				.arg (qHash (Namespace ()))
 				.arg (qHash (Name ()));
-		QString toInject = QString ("(function (){"
+		const auto& toInject = QString { "(function (){"
 			"var GM_addStyle = %1.addStyle;"
 			"var GM_deleteValue = %1.deleteValue;"
 			"var GM_getValue = %1.getValue;"
@@ -166,12 +167,11 @@ namespace FatApe
 			"var GM_getResourceText = %1.getResourceText;"
 			"var GM_getResourceURL = %1.getResourceURL;"
 			"var GM_log = function(){console.log.apply(console, arguments)};"
-			"%2})()")
+			"%2})()" }
 				.arg (gmLayerId)
 				.arg (content.readAll ());
 
-		frame->addToJavaScriptWindowObject (gmLayerId,
-				new GreaseMonkey (frame, proxy, *this));
+		frame->addToJavaScriptWindowObject (gmLayerId, new GreaseMonkey { frame, proxy, *this });
 		frame->evaluateJavaScript (toInject);
 	}
 
@@ -192,24 +192,27 @@ namespace FatApe
 
 	QString UserScript::GetResourcePath (const QString& resourceName) const
 	{
-		const QString& resource = QStringList (Metadata_.values ("resource"))
-				.filter (QRegExp (QString ("%1\\s.*").arg (resourceName)))
+		const auto& resource = QStringList { Metadata_.values ("resource") }
+				.filter (QRegExp { QString ("%1\\s.*").arg (resourceName) })
 				.value (0)
 				.mid (resourceName.length ())
 				.trimmed ();
-		QUrl resourceUrl (resource);
-		const QString& resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
+		const QUrl resourceUrl { resource };
+		const auto& resourceFile = QFileInfo (resourceUrl.path ()).fileName ();
+		if (resourceFile.isEmpty ())
+			return {};
 
-		return resourceFile.isEmpty () ?
-			QString () :
-			QFileInfo (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
-				QString ("%1%2_%3")
+		return QFileInfo
+		{
+			Util::CreateIfNotExists ("data/poshuku/fatape/scripts/resources"),
+			QString ("%1%2_%3")
 					.arg (qHash (Namespace ()))
 					.arg (qHash (Name ()))
-					.arg (resourceFile)).absoluteFilePath ();
+					.arg (resourceFile)
+		}.absoluteFilePath ();
 	}
 
-	QString UserScript::Path() const
+	QString UserScript::Path () const
 	{
 		return ScriptPath_;
 	}
@@ -258,7 +261,7 @@ namespace FatApe
 		return Metadata_.values ("include");
 	}
 
-	QStringList UserScript::Exclude() const
+	QStringList UserScript::Exclude () const
 	{
 		return Metadata_.values ("exclude");
 	}
@@ -266,34 +269,35 @@ namespace FatApe
 	void UserScript::Install (QNetworkAccessManager *networkManager)
 	{
 #if QT_VERSION < 0x050000
-		const QString& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
+		const auto& temp = QDesktopServices::storageLocation (QDesktopServices::TempLocation);
 #else
-		const QString& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
+		const auto& temp = QStandardPaths::writableLocation (QStandardPaths::TempLocation);
 #endif
 
 		if (!ScriptPath_.startsWith (temp))
 			return;
 
-		QFileInfo installPath (Util::CreateIfNotExists ("data/poshuku/fatape/scripts/"),
-				QFileInfo(ScriptPath_).fileName ());
+		QFileInfo installPath
+		{
+			Util::CreateIfNotExists ("data/poshuku/fatape/scripts/"),
+			QFileInfo { ScriptPath_ }.fileName ()
+		};
 
 		QFile::copy (ScriptPath_, installPath.absoluteFilePath ());
 		ScriptPath_ = installPath.absoluteFilePath ();
-		Q_FOREACH (const QString& resource, Metadata_.values ("resource"))
+		for (const auto& resource : Metadata_.values ("resource"))
 			DownloadResource (resource, networkManager);
-		Q_FOREACH (const QString& required, Metadata_.values ("require"))
+		for (const auto& required : Metadata_.values ("require"))
 			DownloadRequired (required, networkManager);
 	}
 
 	void UserScript::DownloadResource (const QString& resource,
 			QNetworkAccessManager *networkManager)
 	{
-		const QString& resourceName = resource.mid (0, resource.indexOf (" "));
-		const QString& resourceUrl = resource.mid (resource.indexOf (" ") + 1);
-		QNetworkRequest resourceRequest;
-
-		resourceRequest.setUrl (QUrl (resourceUrl));
-		QNetworkReply *reply = networkManager->get (resourceRequest);
+		const auto& resourceName = resource.mid (0, resource.indexOf (" "));
+		const auto& resourceUrl = resource.mid (resource.indexOf (" ") + 1);
+		const QNetworkRequest resourceRequest { QUrl { resourceUrl } };
+		const auto reply = networkManager->get (resourceRequest);
 		QObject::connect (reply,
 				SIGNAL (finished ()),
 				new ResourceDownloadHandler (resourceName, this, reply),
