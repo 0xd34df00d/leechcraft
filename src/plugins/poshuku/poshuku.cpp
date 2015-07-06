@@ -585,7 +585,6 @@ namespace Poshuku
 		setFamily (QWebSettings::FantasyFont, "FantasyFont");
 
 		auto global = QWebSettings::globalSettings ();
-		auto xsm = XmlSettingsManager::Instance ();
 
 		global->setFontSize (QWebSettings::MinimumFontSize,
 				xsm->property ("MinimumFontSize").toInt ());
