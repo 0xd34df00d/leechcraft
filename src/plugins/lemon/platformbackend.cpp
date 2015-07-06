@@ -33,9 +33,5 @@ namespace LeechCraft
 {
 namespace Lemon
 {
-	PlatformBackend::PlatformBackend (QObject *parent)
-	: QObject (parent)
-	{
-	}
 }
 }

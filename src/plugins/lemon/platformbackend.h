@@ -40,7 +40,7 @@ namespace Lemon
 	{
 		Q_OBJECT
 	public:
-		PlatformBackend (QObject* = 0);
+		using QObject::QObject;
 
 		struct CurrentTrafficState
 		{
