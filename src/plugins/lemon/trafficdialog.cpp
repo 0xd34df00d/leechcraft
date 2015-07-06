@@ -57,8 +57,10 @@ namespace Lemon
 		setWindowTitle (tr ("Traffic for %1").arg (name));
 
 		Ui_.TrafficPlot_->setAutoReplot (false);
+		Ui_.TrafficPlot_->enableAxis (QwtPlot::yRight);
 		Ui_.TrafficPlot_->setAxisScale (QwtPlot::xBottom, 0, manager->GetBacktrackSize ());
-		Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Traffic, KiB/s"));
+		Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Download, KiB/s"));
+		Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yRight, tr ("Upload, KiB/s"));
 
 		QColor downColor (Qt::blue);
 		DownTraffic_->setPen (QPen (downColor));
@@ -74,6 +76,7 @@ namespace Lemon
 
 		UpTraffic_->setRenderHint (QwtPlotItem::RenderAntialiased);
 		UpTraffic_->attach (Ui_.TrafficPlot_);
+		UpTraffic_->setYAxis (QwtPlot::yRight);
 
 		downColor.setAlpha (100);
 		DownAvg_->setPen (QPen (downColor, 2, Qt::DotLine));
@@ -86,6 +89,7 @@ namespace Lemon
 		UpAvg_->setBrush (Qt::transparent);
 		UpAvg_->setRenderHint (QwtPlotItem::RenderAntialiased, false);
 		UpAvg_->attach (Ui_.TrafficPlot_);
+		UpAvg_->setYAxis (QwtPlot::yRight);
 
 		auto grid = new QwtPlotGrid;
 		grid->enableYMin (true);
