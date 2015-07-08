@@ -33,10 +33,14 @@
 #include <qwt_plot_grid.h>
 #include <qwt_legend.h>
 #include <qwt_dyngrid_layout.h>
+#include <qwt_scale_widget.h>
+
 #if QWT_VERSION >= 0x060100
 #include <qwt_plot_legenditem.h>
 #endif
+
 #include <util/util.h>
+#include <util/gui/util.h>
 #include "trafficmanager.h"
 #include "xmlsettingsmanager.h"
 
@@ -58,6 +62,9 @@ namespace Lemon
 
 		const bool splitAxes = XmlSettingsManager::Instance ().property ("SplitAxes").toBool ();
 
+		QColor downColor { Qt::blue };
+		QColor upColor { Qt::red };
+
 		Ui_.TrafficPlot_->setAutoReplot (false);
 		Ui_.TrafficPlot_->setAxisScale (QwtPlot::xBottom, 0, manager->GetBacktrackSize ());
 		if (splitAxes)
@@ -65,18 +72,19 @@ namespace Lemon
 			Ui_.TrafficPlot_->enableAxis (QwtPlot::yRight);
 			Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Download, KiB/s"));
 			Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yRight, tr ("Upload, KiB/s"));
+
+			Util::TintPalette (Ui_.TrafficPlot_->axisWidget (QwtPlot::yLeft), downColor);
+			Util::TintPalette (Ui_.TrafficPlot_->axisWidget (QwtPlot::yRight), upColor);
 		}
 		else
 			Ui_.TrafficPlot_->setAxisTitle (QwtPlot::yLeft, tr ("Traffic, KiB/s"));
 
-		QColor downColor (Qt::blue);
 		DownTraffic_->setPen (QPen (downColor));
 		downColor.setAlpha (20);
 		DownTraffic_->setBrush (downColor);
 		DownTraffic_->setRenderHint (QwtPlotItem::RenderAntialiased);
 		DownTraffic_->attach (Ui_.TrafficPlot_);
 
-		QColor upColor (Qt::red);
 		UpTraffic_->setPen (QPen (upColor));
 		upColor.setAlpha (20);
 		UpTraffic_->setBrush (upColor);
