@@ -41,6 +41,7 @@
 #endif
 
 #include <util/util.h>
+#include <util/gui/util.h>
 #include "batteryinfo.h"
 
 namespace LeechCraft
@@ -71,11 +72,7 @@ namespace Liznoo
 
 			auto setColor = [&] (QPalette::ColorRole role)
 			{
-				const auto& prevColor = palette.color (role);
-				color.setRedF ((color.redF () + prevColor.redF ()) / 2);
-				color.setGreenF ((color.greenF () + prevColor.greenF ()) / 2);
-				color.setBlueF ((color.blueF () + prevColor.blueF ()) / 2);
-				palette.setColor (role, color);
+				palette.setColor (role, Util::TintColors (palette.color (role), color));
 			};
 
 			setColor (QPalette::ColorRole::Text);
