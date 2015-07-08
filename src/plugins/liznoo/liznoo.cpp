@@ -346,7 +346,7 @@ namespace Liznoo
 			iem->HandleEntity (Util::MakeNotification ("Liznoo",
 						tr ("Battery charge level is below %1%.")
 							.arg (static_cast<int> (info.Percentage_)),
-						isLow ? PWarning_ : PCritical_));
+						isLow ? PInfo_ : PWarning_));
 
 		if (XmlSettingsManager::Instance ()->property ("NotifyOnPowerTransitions").toBool ())
 		{
