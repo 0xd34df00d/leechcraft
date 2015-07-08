@@ -5,5 +5,8 @@
 		<item type="checkbox" property="EnableSmoothing" default="true">
 			<label value="Enable graph smoothing" />
 		</item>
+		<item type="checkbox" property="SplitAxes" default="true">
+			<label value="Split download and upload axes" />
+		</item>
 	</page>
 </settings>
