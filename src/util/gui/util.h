@@ -36,6 +36,7 @@ class QSize;
 class QRect;
 class QPixmap;
 class QLabel;
+class QColor;
 
 namespace LeechCraft
 {
@@ -137,6 +138,8 @@ namespace Util
 	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
+
+	UTIL_GUI_API QColor TintColors (const QColor& c1, const QColor& c2, double alpha = 0.5);
 }
 }
 

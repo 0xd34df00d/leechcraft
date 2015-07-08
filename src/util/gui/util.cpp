@@ -136,5 +136,14 @@ namespace Util
 		label->move (pos);
 		return label;
 	}
+
+	QColor TintColors (const QColor& c1, const QColor& c2, double alpha)
+	{
+		QColor color;
+		color.setRedF (alpha * c1.redF () + (1 - alpha) * c2.redF ());
+		color.setGreenF (alpha * c1.greenF () + (1 - alpha) * c2.greenF ());
+		color.setBlueF (alpha * c1.blueF () + (1 - alpha) * c2.blueF ());
+		return color;
+	}
 }
 }
