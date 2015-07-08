@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QPoint>
+#include <QPalette>
 #include "guiconfig.h"
 
 class QSize;
@@ -37,6 +38,7 @@ class QRect;
 class QPixmap;
 class QLabel;
 class QColor;
+class QWidget;
 
 namespace LeechCraft
 {
@@ -140,6 +142,11 @@ namespace Util
 	UTIL_GUI_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
 
 	UTIL_GUI_API QColor TintColors (const QColor& c1, const QColor& c2, double alpha = 0.5);
+
+	UTIL_GUI_API void TintPalette (QWidget *widget,
+			const QColor& color,
+			double alpha = 0.5,
+			const QList<QPalette::ColorRole>& roles = { QPalette::ColorRole::Text, QPalette::ColorRole::WindowText });
 }
 }
 

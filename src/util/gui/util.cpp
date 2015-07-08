@@ -145,5 +145,13 @@ namespace Util
 		color.setBlueF (alpha * c1.blueF () + (1 - alpha) * c2.blueF ());
 		return color;
 	}
+
+	void TintPalette (QWidget *widget, const QColor& color, double alpha, const QList<QPalette::ColorRole>& roles)
+	{
+		auto palette = widget->palette ();
+		for (auto role : roles)
+			palette.setColor (role, TintColors (palette.color (role), color, alpha));
+		widget->setPalette (palette);
+	}
 }
 }
