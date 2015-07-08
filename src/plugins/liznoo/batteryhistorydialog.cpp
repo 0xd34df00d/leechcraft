@@ -65,25 +65,9 @@ namespace Liznoo
 
 		InitNames ();
 
-		auto setColor = [this] (QColor color, QwtPlot::Axis axis)
-		{
-			const auto widget = Ui_.PercentPlot_->axisWidget (axis);
-			auto palette = widget->palette ();
-
-			auto setColor = [&] (QPalette::ColorRole role)
-			{
-				palette.setColor (role, Util::TintColors (palette.color (role), color));
-			};
-
-			setColor (QPalette::ColorRole::Text);
-			setColor (QPalette::ColorRole::WindowText);
-
-			widget->setPalette (palette);
-		};
-
 		QColor percentColor (Qt::blue);
 		Percent_->setPen (QPen (percentColor));
-		setColor (percentColor, QwtPlot::yLeft);
+		Util::TintPalette (Ui_.PercentPlot_->axisWidget (QwtPlot::yLeft), percentColor);
 		percentColor.setAlpha (40);
 		Percent_->setBrush (percentColor);
 
@@ -92,7 +76,7 @@ namespace Liznoo
 
 		QColor energyColor (Qt::red);
 		Energy_->setPen (QPen (energyColor));
-		setColor (energyColor, QwtPlot::yRight);
+		Util::TintPalette (Ui_.PercentPlot_->axisWidget (QwtPlot::yRight), energyColor);
 		energyColor.setAlpha (40);
 		Energy_->setBrush (energyColor);
 
