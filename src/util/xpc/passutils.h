@@ -39,6 +39,9 @@ namespace LeechCraft
 {
 namespace Util
 {
+	template<typename, typename>
+	class EitherCont;
+
 	/** @brief Returns password for the key, possibly asking the user.
 	 *
 	 * This function returns password for the given \em keyName and using
@@ -77,6 +80,13 @@ namespace Util
 	UTIL_XPC_API QString GetPassword (const QString& keyName,
 			const QString& dialogText,
 			const ICoreProxy_ptr& proxy,
+			bool useStore = true);
+
+	UTIL_XPC_API void GetPassword (const QString& keyName,
+			const QString& dialogText,
+			const ICoreProxy_ptr& proxy,
+			const EitherCont<void (), void (QString)>& cont,
+			QObject *depender = nullptr,
 			bool useStore = true);
 
 	/** @brief Saves the password to be retrieved later via GetPassword().

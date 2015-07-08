@@ -32,10 +32,12 @@
 #include <QObject>
 #include <QInputDialog>
 #include <util/xpc/util.h>
-#include "interfaces/structures.h"
+#include <interfaces/structures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/ipersistentstorageplugin.h>
+#include <util/sll/eithercont.h>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -91,6 +93,55 @@ namespace Util
 		if (!result.isNull ())
 			SavePassword (result, key, proxy);
 		return result;
+	}
+
+	void GetPassword (const QString& key, const QString& diaText,
+			const ICoreProxy_ptr& proxy,
+			const EitherCont<void (), void (QString)>& cont,
+			QObject *depender,
+			bool useStored)
+	{
+		if (useStored)
+		{
+			const auto& result = GetPasswordHelper (key.toUtf8 (), proxy);
+			if (!result.isNull ())
+			{
+				cont.Right (result);
+				return;
+			}
+		}
+
+		const auto dialog = new QInputDialog;
+		dialog->setInputMode (QInputDialog::TextInput);
+		dialog->setWindowTitle ("LeechCraft");
+		dialog->setLabelText (diaText);
+		dialog->setTextEchoMode (QLineEdit::Password);
+		dialog->setAttribute (Qt::WA_DeleteOnClose);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[dialog, cont]
+			{
+				const auto& value = dialog->textValue ();
+				if (value.isEmpty ())
+					cont.Left ();
+				else
+					cont.Right (value);
+			},
+			dialog,
+			SIGNAL (accepted ()),
+			dialog
+		};
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[cont] { cont.Left (); },
+			dialog,
+			SIGNAL (rejected ()),
+			dialog
+		};
+
+		dialog->show ();
 	}
 
 	void SavePassword (const QString& password, const QString& key,
