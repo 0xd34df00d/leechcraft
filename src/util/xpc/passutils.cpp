@@ -84,7 +84,7 @@ namespace Util
 				return result;
 		}
 
-		QString result = QInputDialog::getText (0,
+		const auto& result = QInputDialog::getText (nullptr,
 				"LeechCraft",
 				diaText,
 				QLineEdit::Password);
