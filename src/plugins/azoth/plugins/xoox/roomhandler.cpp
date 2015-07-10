@@ -36,6 +36,7 @@
 #include <QXmppClient.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/util.h>
+#include <util/sll/eithercont.h>
 #include <util/xpc/passutils.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -304,20 +305,20 @@ namespace Xoox
 	{
 		const auto& text = tr ("This room is password-protected. Please enter the "
 				"password required to join this room.");
-		const QString& pass = Util::GetPassword (GetPassKey (),
+		Util::GetPassword (GetPassKey (),
 				text,
 				Core::Instance ().GetProxy (),
+				{
+					[this] { Leave ({}); },
+					[this] (const QString& pass)
+					{
+						HadRequestedPassword_ = true;
+						Room_->setPassword (pass);
+						Join ();
+					}
+				},
+				this,
 				!HadRequestedPassword_);
-		if (pass.isEmpty ())
-		{
-			Leave (QString ());
-			return;
-		}
-
-		HadRequestedPassword_ = true;
-
-		Room_->setPassword (pass);
-		Join ();
 	}
 
 	QString RoomHandler::GetPassKey () const
