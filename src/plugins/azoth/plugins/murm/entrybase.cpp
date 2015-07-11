@@ -148,6 +148,13 @@ namespace Murm
 					w.writeAttribute ("src", info.Url_);
 					w.writeAttribute ("alt", info.Alt_);
 					w.writeAttribute ("title", info.Alt_);
+
+					if (info.Size_)
+					{
+						w.writeAttribute ("width", QString::number (info.Size_->width ()));
+						w.writeAttribute ("height", QString::number (info.Size_->height ()));
+					}
+
 					w.writeEndElement ();
 
 					return result;
