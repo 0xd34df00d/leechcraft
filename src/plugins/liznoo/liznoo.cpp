@@ -344,7 +344,7 @@ namespace Liznoo
 		const auto iem = Proxy_->GetEntityManager ();
 		if (isExtremeLow || isLow)
 			iem->HandleEntity (Util::MakeNotification ("Liznoo",
-						tr ("Battery charge level is below %1%.")
+						tr ("Battery charge level is %1%.")
 							.arg (static_cast<int> (info.Percentage_)),
 						isLow ? PInfo_ : PWarning_));
 
