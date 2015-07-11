@@ -171,6 +171,19 @@ namespace Fontiac
 
 	void SubstsManager::modifyRequested (const QString&, int row, const QVariantList& datas)
 	{
+		const DatasParseResult parsed { datas };
+		Model_->item (row, 0)->setText (parsed.Family_);
+		Model_->item (row, 0)->setFont ({ parsed.Family_ });
+		Model_->item (row, 1)->setText (parsed.Subst_);
+		Model_->item (row, 1)->setFont ({ parsed.Font_ });
+
+		const auto& oldFamily = Substitutes_.at (row).first;
+		Substitutes_.at (row).first = parsed.Family_;
+		Substitutes_.at (row).second = parsed.Subst_;
+
+		RebuildSubsts (parsed.Family_);
+		if (oldFamily != parsed.Family_)
+			RebuildSubsts (oldFamily);
 	}
 
 	void SubstsManager::removeRequested (const QString&, const QModelIndexList& rows)
