@@ -317,6 +317,11 @@ namespace Snails
 
 			item.Promise_->reportException (AuthorizationException { respStr });
 		}
+		catch (const vmime::exceptions::invalid_response& e)
+		{
+			if (Retry (item, e, recLevel))
+				return;
+		}
 		catch (const vmime::exceptions::operation_timed_out& e)
 		{
 			if (Retry (item, e, recLevel))
