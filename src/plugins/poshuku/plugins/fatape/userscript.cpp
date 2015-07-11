@@ -300,9 +300,10 @@ namespace FatApe
 				.arg (qHash (Namespace ()))
 				.arg (Name ())
 				.arg (resourceName);
+		const auto& path = GetResourcePath (resourceName);
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[reply, propName, path = GetResourcePath (resourceName)]
+			[reply, propName, path]
 			{
 				reply->deleteLater ();
 
