@@ -40,6 +40,8 @@ namespace Liznoo
 	{
 	public:
 		PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject* = 0);
+
+		bool IsAvailable () const override;
 	};
 }
 }

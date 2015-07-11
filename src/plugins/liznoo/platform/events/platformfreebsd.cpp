@@ -39,5 +39,10 @@ namespace Liznoo
 	: PlatformLayer (proxy, parent)
 	{
 	}
+
+	bool PlatformFreeBSD::IsAvailable () const
+	{
+		return false;
+	}
 }
 }
