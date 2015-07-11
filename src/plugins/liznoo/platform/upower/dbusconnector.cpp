@@ -74,18 +74,21 @@ namespace UPower
 				"DeviceChanged",
 				this,
 				SLOT (requeryDevice (const QString&)));
-		SB_.connect ("org.freedesktop.UPower",
+
+		const auto sleepConnected = SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
 				"org.freedesktop.UPower",
 				"Sleeping",
 				this,
 				SLOT (handleGonnaSleep ()));
-		SB_.connect ("org.freedesktop.UPower",
+		const auto resumeConnected = SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
 				"org.freedesktop.UPower",
 				"Resuming",
 				this,
 				SIGNAL (wokeUp ()));
+
+		PowerEventsAvailable_ = sleepConnected && resumeConnected;
 	}
 
 	void DBusConnector::handleGonnaSleep ()

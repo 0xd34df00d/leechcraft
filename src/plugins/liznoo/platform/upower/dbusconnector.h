@@ -45,6 +45,7 @@ namespace UPower
 		Q_OBJECT
 
 		QDBusConnection SB_;
+		bool PowerEventsAvailable_ = false;
 	public:
 		DBusConnector (QObject* = 0);
 	private slots:
