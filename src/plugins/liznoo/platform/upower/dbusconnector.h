@@ -48,6 +48,8 @@ namespace UPower
 		bool PowerEventsAvailable_ = false;
 	public:
 		DBusConnector (QObject* = 0);
+
+		bool ArePowerEventsAvailable () const;
 	private slots:
 		void handleGonnaSleep ();
 		void enumerateDevices ();

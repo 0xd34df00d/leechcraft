@@ -91,6 +91,11 @@ namespace UPower
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
 	}
 
+	bool DBusConnector::ArePowerEventsAvailable () const
+	{
+		return PowerEventsAvailable_;
+	}
+
 	void DBusConnector::handleGonnaSleep ()
 	{
 		emit gonnaSleep (1000);
