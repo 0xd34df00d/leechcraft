@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	PlatformUPower::PlatformUPower (const UPower::DBusThread_ptr& thread,
 			const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer { proxy, parent }
@@ -57,5 +59,6 @@ namespace Liznoo
 	{
 		return true;
 	}
+}
 }
 }

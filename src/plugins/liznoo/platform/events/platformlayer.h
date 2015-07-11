@@ -38,6 +38,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	class PlatformLayer : public QObject
 	{
 		Q_OBJECT
@@ -51,5 +53,6 @@ namespace Liznoo
 		void emitGonnaSleep (int);
 		void emitWokeUp ();
 	};
+}
 }
 }

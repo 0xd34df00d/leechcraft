@@ -49,6 +49,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	PlatformWinAPI::PlatformWinAPI (const WinAPI::FakeQWidgetWinAPI_ptr& widget, const ICoreProxy_ptr& proxy, QObject* parent)
 	: PlatformLayer (proxy, parent)
 	, HPowerSchemeNotify_ (new HPOWERNOTIFY, aHPowerNotifyDeleter)
@@ -92,5 +94,6 @@ namespace Liznoo
 	{
 		qDebug() << "New power source detected" << ": [" << powerSource << "]";
 	}
+}
 } // namespace Liznoo
 } // namespace LeechCraft

@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer (proxy, parent)
 	{
@@ -44,5 +46,6 @@ namespace Liznoo
 	{
 		return false;
 	}
+}
 }
 }

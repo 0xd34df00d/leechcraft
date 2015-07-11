@@ -94,7 +94,7 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		const auto dbusThread = std::make_shared<UPower::DBusThread> ();
 
-		PL_ = std::make_shared<PlatformUPower> (dbusThread, Proxy_);
+		PL_ = std::make_shared<Events::PlatformUPower> (dbusThread, Proxy_);
 		SPL_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
 
@@ -108,16 +108,16 @@ namespace Liznoo
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
-		PL_ = std::make_shared<PlatformWinAPI> (widget, Proxy_);
+		PL_ = std::make_shared<Events::PlatformWinAPI> (widget, Proxy_);
 		BatteryPlatform_ = std::make_shared<Battery::WinAPIPlatform> (widget);
 #elif defined(Q_OS_FREEBSD)
-		PL_ = std::make_shared<PlatformFreeBSD> (Proxy_);
+		PL_ = std::make_shared<Events::PlatformFreeBSD> (Proxy_);
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
 		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
 		SPL_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
 		BatteryPlatform_ = std::make_shared<Battery::MacPlatform> ();
-		PL_ = std::make_shared<PlatformMac> (Proxy_);
+		PL_ = std::make_shared<Events::PlatformMac> (Proxy_);
 #endif
 
 		if (BatteryPlatform_)

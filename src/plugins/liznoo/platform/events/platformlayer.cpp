@@ -35,6 +35,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	PlatformLayer::PlatformLayer (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
 	, Proxy_ { proxy }
@@ -61,5 +63,6 @@ namespace Liznoo
 				"x-leechcraft/power-state-changed");
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
+}
 }
 }

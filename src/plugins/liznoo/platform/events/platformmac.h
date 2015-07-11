@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	class PlatformMac : public PlatformLayer
 	{
 		Q_OBJECT
@@ -50,5 +52,6 @@ namespace Liznoo
 		void Stop ();
 		void IOCallback (io_service_t, natural_t, void*);
 	};
+}
 }
 }

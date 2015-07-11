@@ -46,6 +46,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	namespace
 	{
 		void IOCallbackProxy (void *refCon, io_service_t service, natural_t messageType, void *messageArgument)
@@ -107,5 +109,6 @@ namespace Liznoo
 			break;
 		}
 	}
+}
 }
 }

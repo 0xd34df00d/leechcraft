@@ -39,11 +39,13 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace WinAPI
+namespace Events
 {
-	class FakeQWidgetWinAPI;
-	using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
-}
+	namespace WinAPI
+	{
+		class FakeQWidgetWinAPI;
+		using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
+	}
 
 	class PlatformWinAPI : public PlatformLayer
 	{
@@ -61,5 +63,6 @@ namespace WinAPI
 		void handleSchemeChanged (QString schemeName);
 		void handlePowerSourceChanged (QString powerSource);
 	};
+}
 } // namespace Liznoo
 } // namespace Leechcraft

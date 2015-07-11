@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace Events
+{
 	class PlatformFreeBSD : public PlatformLayer
 	{
 	public:
@@ -43,5 +45,6 @@ namespace Liznoo
 
 		bool IsAvailable () const override;
 	};
+}
 }
 }

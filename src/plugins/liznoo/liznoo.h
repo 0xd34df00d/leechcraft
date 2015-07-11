@@ -44,7 +44,11 @@ namespace LeechCraft
 namespace Liznoo
 {
 	class BatteryHistoryDialog;
-	class PlatformLayer;
+
+	namespace Events
+	{
+		class PlatformLayer;
+	}
 
 	namespace Screen
 	{
@@ -76,7 +80,7 @@ namespace Liznoo
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		std::shared_ptr<PlatformLayer> PL_;
+		std::shared_ptr<Events::PlatformLayer> PL_;
 		Screen::ScreenPlatform *SPL_ = nullptr;
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;

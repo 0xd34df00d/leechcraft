@@ -43,6 +43,8 @@ namespace UPower
 	using DBusThread_ptr = std::shared_ptr<DBusThread>;
 }
 
+namespace Events
+{
 	class PlatformUPower : public PlatformLayer
 	{
 		const UPower::DBusThread_ptr Thread_;
@@ -51,5 +53,6 @@ namespace UPower
 
 		bool IsAvailable () const override;
 	};
+}
 }
 }
