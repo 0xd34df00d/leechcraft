@@ -65,6 +65,7 @@ namespace Fontiac
 		void RebuildSubsts (const QString&);
 	private slots:
 		void addRequested (const QString&, const QVariantList& datas);
+		void modifyRequested (const QString&, int row, const QVariantList& datas);
 		void removeRequested (const QString&, const QModelIndexList& rows);
 	};
 }

@@ -169,6 +169,10 @@ namespace Fontiac
 		SaveSettings ();
 	}
 
+	void SubstsManager::modifyRequested (const QString&, int row, const QVariantList& datas)
+	{
+	}
+
 	void SubstsManager::removeRequested (const QString&, const QModelIndexList& rows)
 	{
 		for (const auto& idx : rows)
