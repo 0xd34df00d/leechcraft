@@ -129,6 +129,15 @@ namespace Fontiac
 		Model_->appendRow (row);
 	}
 
+	void SubstsManager::RebuildSubsts (const QString& family)
+	{
+		const auto& remaining = Util::Filter (Substitutes_,
+				[&family] (const auto& pair) { return pair.first == family; });
+		if (!remaining.isEmpty ())
+			QFont::insertSubstitutions (family,
+					Util::Map (remaining, [] (const auto& pair) { return pair.second; }));
+	}
+
 	void SubstsManager::addRequested (const QString&, const QVariantList& datas)
 	{
 		const auto& family = datas.value (0).toString ().trimmed ();
@@ -155,13 +164,7 @@ namespace Fontiac
 #endif
 			Model_->removeRow (row);
 
-			const auto& remaining = Util::Filter (Substitutes_,
-					[&family] (const auto& pair) { return pair.first == family; });
-			if (remaining.isEmpty ())
-				continue;
-
-			QFont::insertSubstitutions (family,
-					Util::Map (remaining, [] (const auto& pair) { return pair.second; }));
+			RebuildSubsts (family);
 		}
 
 		SaveSettings ();
