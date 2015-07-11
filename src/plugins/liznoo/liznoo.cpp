@@ -58,6 +58,7 @@
 
 	#include "platform/screen/freedesktop.h"
 	#include "platform/upower/dbusthread.h"
+	#include "platform/upower/dbusconnector.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/battery/winapiplatform.h"
 	#include "platform/events/platformwinapi.h"
@@ -103,6 +104,13 @@ namespace Liznoo
 	#else
 		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
 	#endif
+
+		dbusThread->ScheduleOnStart ([] (UPower::DBusConnector *conn)
+				{
+					if (!conn->ArePowerEventsAvailable ())
+						qWarning () << Q_FUNC_INFO
+								<< "power events are not available";
+				});
 
 		dbusThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
