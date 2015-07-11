@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "taskqueuemanager.h"
+#include <thread>
 #include <QMutexLocker>
 #include "accountthreadworker.h"
 #include "concurrentexceptions.h"
@@ -258,10 +259,16 @@ namespace Snails
 		}
 		else
 		{
+			const auto timeout = recLevel * 3000 + 1000;
 			qWarning () << Q_FUNC_INFO
 					<< "retrying for the"
 					<< recLevel
-					<< "time";
+					<< "time after waiting for"
+					<< timeout
+					<< "seconds";
+
+			std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+
 			ATW_->flushSockets ();
 			HandleItem (item, ++recLevel);
 			return true;
