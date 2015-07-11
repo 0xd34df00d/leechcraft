@@ -171,13 +171,15 @@ namespace Fontiac
 			if (row < 0 || row >= Substitutes_.size ())
 				continue;
 
+			Model_->removeRow (row);
+
 			const auto& family = Substitutes_.at (row).first;
 #if QT_VERSION >= 0x050000
 			QFont::removeSubstitutions (family);
 #else
 			QFont::removeSubstitution (family);
 #endif
-			Model_->removeRow (row);
+			Substitutes_.removeAt (family);
 
 			RebuildSubsts (family);
 		}
