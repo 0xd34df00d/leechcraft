@@ -135,6 +135,15 @@ namespace Murm
 
 		using ImageInfo = boost::variant<SimpleImageInfo, LinkImageInfo>;
 
+		void WriteImgDims (QXmlStreamWriter& w, const boost::optional<QSize>& size)
+		{
+			if (!size)
+				return;
+
+			w.writeAttribute ("width", QString::number (size->width ()));
+			w.writeAttribute ("height", QString::number (size->height ()));
+		}
+
 		QString GetImageTemplate (const ImageInfo& imageInfo)
 		{
 			struct EmbedVisitor : boost::static_visitor<QString>
@@ -148,13 +157,7 @@ namespace Murm
 					w.writeAttribute ("src", info.Url_);
 					w.writeAttribute ("alt", info.Alt_);
 					w.writeAttribute ("title", info.Alt_);
-
-					if (info.Size_)
-					{
-						w.writeAttribute ("width", QString::number (info.Size_->width ()));
-						w.writeAttribute ("height", QString::number (info.Size_->height ()));
-					}
-
+					WriteImgDims (w, info.Size_);
 					w.writeEndElement ();
 
 					return result;
@@ -178,11 +181,7 @@ namespace Murm
 						w.writeAttribute ("src", info.ThumbUrl_);
 						w.writeAttribute ("alt", alt);
 						w.writeAttribute ("title", alt);
-						if (info.ThumbSize_)
-						{
-							w.writeAttribute ("width", QString::number (info.ThumbSize_->width ()));
-							w.writeAttribute ("height", QString::number (info.ThumbSize_->height ()));
-						}
+						WriteImgDims (w, info.ThumbSize_);
 						w.writeEndElement ();
 					w.writeEndElement ();
 
