@@ -201,8 +201,9 @@
     </message>
     <message>
         <location filename="liznoo.cpp" line="347"/>
-        <source>Battery charge level is below %1%.</source>
-        <translation>Battery charge level is below %1%.</translation>
+        <source>Battery charge level is %1%.</source>
+        <oldsource>Battery charge level is below %1%.</oldsource>
+        <translation>Battery charge level is %1%.</translation>
     </message>
     <message>
         <location filename="liznoo.cpp" line="360"/>
