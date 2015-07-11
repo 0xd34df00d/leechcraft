@@ -36,8 +36,8 @@ namespace LeechCraft
 namespace Liznoo
 {
 	PlatformLayer::PlatformLayer (const ICoreProxy_ptr& proxy, QObject *parent)
-	: QObject (parent)
-	, Proxy_ (proxy)
+	: QObject { parent }
+	, Proxy_ { proxy }
 	{
 	}
 
