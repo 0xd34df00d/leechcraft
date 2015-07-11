@@ -178,8 +178,8 @@ namespace Fontiac
 		Model_->item (row, 1)->setFont ({ parsed.Font_ });
 
 		const auto& oldFamily = Substitutes_.at (row).first;
-		Substitutes_.at (row).first = parsed.Family_;
-		Substitutes_.at (row).second = parsed.Subst_;
+		Substitutes_ [row].first = parsed.Family_;
+		Substitutes_ [row].second = parsed.Subst_;
 
 		RebuildSubsts (parsed.Family_);
 		if (oldFamily != parsed.Family_)
