@@ -118,6 +118,12 @@ namespace Util
 		dialog->setTextEchoMode (QLineEdit::Password);
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 
+		if (depender)
+			QObject::connect (depender,
+					SIGNAL (destroyed ()),
+					dialog,
+					SLOT (deleteLater ()));
+
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
 			[dialog, cont]
