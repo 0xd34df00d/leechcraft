@@ -258,7 +258,8 @@ namespace Snails
 		}
 		else
 		{
-			qWarning () << "reconnecting for the"
+			qWarning () << Q_FUNC_INFO
+					<< "retrying for the"
 					<< recLevel
 					<< "time";
 			ATW_->flushSockets ();
