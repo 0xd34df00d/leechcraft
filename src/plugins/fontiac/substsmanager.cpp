@@ -179,7 +179,7 @@ namespace Fontiac
 #else
 			QFont::removeSubstitution (family);
 #endif
-			Substitutes_.removeAt (family);
+			Substitutes_.removeAt (row);
 
 			RebuildSubsts (family);
 		}
