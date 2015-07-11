@@ -48,6 +48,8 @@ namespace UPower
 		const UPower::DBusThread_ptr Thread_;
 	public:
 		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+
+		bool IsAvailable () const override;
 	};
 }
 }

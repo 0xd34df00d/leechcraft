@@ -52,5 +52,10 @@ namespace Liznoo
 							SLOT (emitWokeUp ()));
 				});
 	}
+
+	bool PlatformUPower::IsAvailable () const
+	{
+		return true;
+	}
 }
 }
