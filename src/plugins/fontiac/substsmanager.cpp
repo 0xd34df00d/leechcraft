@@ -138,12 +138,27 @@ namespace Fontiac
 					Util::Map (remaining, [] (const auto& pair) { return pair.second; }));
 	}
 
+	namespace
+	{
+		struct DatasParseResult
+		{
+			QString Family_;
+			QFont Font_;
+			QString Subst_;
+
+			DatasParseResult (const QVariantList& datas)
+			: Family_ { datas.value (0).toString ().trimmed () }
+			, Font_ { datas.value (1).value<QFont> () }
+			, Subst_ { Font_.family ().trimmed ()}
+			{
+			}
+		};
+	}
+
 	void SubstsManager::addRequested (const QString&, const QVariantList& datas)
 	{
-		const auto& family = datas.value (0).toString ().trimmed ();
-		const auto& font = datas.value (1).value<QFont> ();
-		const auto& subst = font.family ().trimmed ();
-		AddItem (family, subst, font);
+		const DatasParseResult parsed { datas };
+		AddItem (parsed.Family_, parsed.Subst_, parsed.Font_);
 
 		SaveSettings ();
 	}
