@@ -184,6 +184,8 @@ namespace Fontiac
 		RebuildSubsts (parsed.Family_);
 		if (oldFamily != parsed.Family_)
 			RebuildSubsts (oldFamily);
+
+		SaveSettings ();
 	}
 
 	void SubstsManager::removeRequested (const QString&, const QModelIndexList& rows)
