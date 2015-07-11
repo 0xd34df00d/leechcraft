@@ -178,6 +178,11 @@ namespace Murm
 						w.writeAttribute ("src", info.ThumbUrl_);
 						w.writeAttribute ("alt", alt);
 						w.writeAttribute ("title", alt);
+						if (info.ThumbSize_)
+						{
+							w.writeAttribute ("width", QString::number (info.ThumbSize_->width ()));
+							w.writeAttribute ("height", QString::number (info.ThumbSize_->height ()));
+						}
 						w.writeEndElement ();
 					w.writeEndElement ();
 
