@@ -70,79 +70,79 @@
 <context>
     <name>LeechCraft::Liznoo::BatteryHistoryDialog</name>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="179"/>
+        <location filename="batteryhistorydialog.cpp" line="160"/>
         <source>(discharging)</source>
         <translation>(разряжается)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="187"/>
+        <location filename="batteryhistorydialog.cpp" line="168"/>
         <source>(charging)</source>
         <translation>(заряжается)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="211"/>
+        <location filename="batteryhistorydialog.cpp" line="192"/>
         <source>%1 V</source>
         <translation>%1 В</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="222"/>
-        <location filename="batteryhistorydialog.cpp" line="223"/>
-        <location filename="batteryhistorydialog.cpp" line="224"/>
+        <location filename="batteryhistorydialog.cpp" line="203"/>
+        <location filename="batteryhistorydialog.cpp" line="204"/>
+        <location filename="batteryhistorydialog.cpp" line="205"/>
         <source>%1 mAh</source>
         <translation>%1 мА</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="229"/>
+        <location filename="batteryhistorydialog.cpp" line="210"/>
         <source>awesome</source>
         <translation>здорово</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="231"/>
+        <location filename="batteryhistorydialog.cpp" line="212"/>
         <source>good</source>
         <translation>хорошо</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="233"/>
+        <location filename="batteryhistorydialog.cpp" line="214"/>
         <source>degraded</source>
         <translation>деградирует</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="235"/>
+        <location filename="batteryhistorydialog.cpp" line="216"/>
         <source>bad</source>
         <translation>плохо</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="236"/>
+        <location filename="batteryhistorydialog.cpp" line="217"/>
         <source>%1% (%2)</source>
         <translation>%1% (%2)</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="260"/>
+        <location filename="batteryhistorydialog.cpp" line="241"/>
         <source>Percentage</source>
         <translation>Процент заряда</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="261"/>
+        <location filename="batteryhistorydialog.cpp" line="242"/>
         <source>Energy rate</source>
         <translation>Мощность</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="262"/>
+        <location filename="batteryhistorydialog.cpp" line="243"/>
         <source>Temperature</source>
         <translation>Температура</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="263"/>
+        <location filename="batteryhistorydialog.cpp" line="244"/>
         <source>Charge, %</source>
         <translation>Заряд, %</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="264"/>
+        <location filename="batteryhistorydialog.cpp" line="245"/>
         <source>Energy rate, W</source>
         <translation>Мощность заряда/разряда, Вт</translation>
     </message>
     <message>
-        <location filename="batteryhistorydialog.cpp" line="265"/>
+        <location filename="batteryhistorydialog.cpp" line="246"/>
         <source>Time, s</source>
         <translation>Время, с</translation>
     </message>
@@ -200,32 +200,32 @@
         <translation>Полная емкость: %1 Вт·ч</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="341"/>
-        <source>Battery charge level is below %1.</source>
-        <translation>Заряд батареи ниже %1.</translation>
+        <location filename="liznoo.cpp" line="347"/>
+        <source>Battery charge level is below %1%.</source>
+        <translation>Заряд батареи ниже %1%.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="354"/>
+        <location filename="liznoo.cpp" line="360"/>
         <source>The device started charging.</source>
         <translation>Устройство начало заряжаться.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="358"/>
+        <location filename="liznoo.cpp" line="364"/>
         <source>The device started discharging.</source>
         <translation>Устройство начало разряжаться.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="376"/>
+        <location filename="liznoo.cpp" line="382"/>
         <source>Cannot change state.</source>
         <translation>Невозможно изменить состояние.</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="390"/>
+        <location filename="liznoo.cpp" line="396"/>
         <source>Battery status</source>
         <translation>Статус батареи</translation>
     </message>
     <message>
-        <location filename="liznoo.cpp" line="477"/>
+        <location filename="liznoo.cpp" line="483"/>
         <source>No platform backend is set, unable to send test power events.</source>
         <translation>Нет доступного модуля работы с платформой, невозможно проверить события управления энергией.</translation>
     </message>
