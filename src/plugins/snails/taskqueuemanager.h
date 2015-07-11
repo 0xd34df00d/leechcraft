@@ -104,7 +104,7 @@ namespace Snails
 		void Merge (MergeResult);
 
 		template<typename Ex>
-		bool HandleReconnect (const TaskQueueItem&, const Ex& ex, int recLevel);
+		bool Retry (const TaskQueueItem&, const Ex& ex, int recLevel);
 
 		void HandleItem (const TaskQueueItem&, int recLevel = 0);
 	private slots:

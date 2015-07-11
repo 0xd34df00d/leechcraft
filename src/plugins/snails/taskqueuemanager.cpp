@@ -241,7 +241,7 @@ namespace Snails
 	}
 
 	template<typename Ex>
-	bool TaskQueueManager::HandleReconnect (const TaskQueueItem& item, const Ex& ex, int recLevel)
+	bool TaskQueueManager::Retry (const TaskQueueItem& item, const Ex& ex, int recLevel)
 	{
 		qWarning () << Q_FUNC_INFO
 				<< "error while calling"
@@ -329,12 +329,12 @@ namespace Snails
 		}
 		catch (const vmime::exceptions::not_connected& e)
 		{
-			if (HandleReconnect (item, e, recLevel))
+			if (Retry (item, e, recLevel))
 				return;
 		}
 		catch (const vmime::exceptions::socket_exception& e)
 		{
-			if (HandleReconnect (item, e, recLevel))
+			if (Retry (item, e, recLevel))
 				return;
 		}
 		catch (const std::exception& e)
