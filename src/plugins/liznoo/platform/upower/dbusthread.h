@@ -43,8 +43,6 @@ namespace UPower
 
 	class DBusThread : public QThread
 	{
-		Q_OBJECT
-
 		std::weak_ptr<DBusConnector> Conn_;
 		QList<std::function<void (DBusConnector*)>> StartHandlers_;
 	public:
