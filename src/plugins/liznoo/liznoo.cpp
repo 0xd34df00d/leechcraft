@@ -95,7 +95,7 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		const auto dbusThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
-		PL_ = std::make_shared<Events::PlatformUPowerLike<UPower::UPowerConnector>> (dbusThread, Proxy_);
+		PL_ = Events::MakeUPowerLike (dbusThread, Proxy_);
 		SPL_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
 

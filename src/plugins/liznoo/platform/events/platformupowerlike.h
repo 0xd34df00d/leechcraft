@@ -69,6 +69,12 @@ namespace Events
 			return true;
 		}
 	};
+
+	template<typename ConnT>
+	std::shared_ptr<PlatformUPowerLike<ConnT>> MakeUPowerLike (const std::shared_ptr<DBusThread<ConnT>>& thread, const ICoreProxy_ptr& proxy)
+	{
+		return std::make_shared<PlatformUPowerLike<ConnT>> (thread, proxy);
+	}
 }
 }
 }
