@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbusconnector.h"
+#include "upowerconnector.h"
 #include <QTimer>
 #include <QDBusInterface>
 #include <QDBusReply>

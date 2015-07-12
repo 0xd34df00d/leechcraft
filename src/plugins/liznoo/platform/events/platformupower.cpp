@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "platformupower.h"
-#include "../upower/dbusconnector.h"
+#include "../upower/upowerconnector.h"
 #include "../common/dbusthread.h"
 
 namespace LeechCraft

@@ -33,7 +33,7 @@ set (FBSD_SRCS
 set (UPOWER_SRCS
 	platform/battery/upowerplatform.cpp
 	platform/events/platformupower.cpp
-	platform/upower/dbusconnector.cpp
+	platform/upower/upowerconnector.cpp
 	)
 set (UPOWER_POWERACTIONS_SRCS
 	platform/poweractions/upower.cpp
