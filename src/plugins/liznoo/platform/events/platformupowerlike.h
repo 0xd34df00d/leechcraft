@@ -48,11 +48,12 @@ namespace UPower
 
 namespace Events
 {
-	class PlatformUPower : public PlatformLayer
+	class PlatformUPowerLike : public PlatformLayer
 	{
 		const UPower::UPowerThread_ptr Thread_;
 	public:
-		PlatformUPower (const UPower::UPowerThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		PlatformUPowerLike (const UPower::UPowerThread_ptr&,
+				const ICoreProxy_ptr&, QObject* = nullptr);
 
 		bool IsAvailable () const override;
 	};

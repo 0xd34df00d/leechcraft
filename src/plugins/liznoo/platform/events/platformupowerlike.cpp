@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "platformupower.h"
+#include "platformupowerlike.h"
 #include "../upower/upowerconnector.h"
 #include "../common/dbusthread.h"
 
@@ -37,7 +37,7 @@ namespace Liznoo
 {
 namespace Events
 {
-	PlatformUPower::PlatformUPower (const UPower::UPowerThread_ptr& thread,
+	PlatformUPowerLike::PlatformUPowerLike (const UPower::UPowerThread_ptr& thread,
 			const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer { proxy, parent }
 	, Thread_ { thread }
@@ -55,7 +55,7 @@ namespace Events
 				});
 	}
 
-	bool PlatformUPower::IsAvailable () const
+	bool PlatformUPowerLike::IsAvailable () const
 	{
 		return true;
 	}

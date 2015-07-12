@@ -48,7 +48,7 @@
 
 #if defined(Q_OS_LINUX)
 	#include "platform/battery/upowerplatform.h"
-	#include "platform/events/platformupower.h"
+	#include "platform/events/platformupowerlike.h"
 
 	#ifdef USE_PMUTILS
 		#include "platform/poweractions/pmutils.h"
@@ -95,7 +95,7 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		const auto dbusThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
-		PL_ = std::make_shared<Events::PlatformUPower> (dbusThread, Proxy_);
+		PL_ = std::make_shared<Events::PlatformUPowerLike> (dbusThread, Proxy_);
 		SPL_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
 

@@ -30,13 +30,16 @@ set (FBSD_SRCS
 	platform/events/platformfreebsd.cpp
 	)
 
+set (LINUX_SRCS
+	platform/events/platformupowerlike.cpp
+	)
+
 set (LOGIND_SRCS
 	platform/logind/logindconnector.cpp
 	)
 
 set (UPOWER_SRCS
 	platform/battery/upowerplatform.cpp
-	platform/events/platformupower.cpp
 	platform/upower/upowerconnector.cpp
 	)
 set (UPOWER_POWERACTIONS_SRCS
@@ -75,6 +78,7 @@ elseif (NOT WIN32)
 	else ()
 		set (SRCS
 			${SRCS}
+			${LINUX_SRCS}
 			${UPOWER_SRCS}
 			${LOGIND_SRCS}
 			${UPOWER_POWERACTIONS_SRCS}
