@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <functional>
 #include <memory>
+#include <QFutureInterface>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include "slotclosure.h"
@@ -40,6 +41,21 @@ namespace LeechCraft
 {
 namespace Util
 {
+	template<typename R, typename F, typename... Args>
+	typename std::enable_if<!std::is_same<R, void>::value, void>::type
+		ReportFutureResult (QFutureInterface<R>& iface, const F& f, Args... args)
+	{
+		auto result = f (args...);
+		iface.reportFinished (&result);
+	}
+
+	template<typename F, typename... Args>
+	void ReportFutureResult (QFutureInterface<void>& iface, F& f, Args... args)
+	{
+		f (args...);
+		iface.reportFinished ();
+	}
+
 	namespace detail
 	{
 		template<typename T>
