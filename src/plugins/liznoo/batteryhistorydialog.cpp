@@ -122,25 +122,29 @@ namespace Liznoo
 	void BatteryHistoryDialog::UpdateHistory (const QLinkedList<BatteryHistory>& hist, const BatteryInfo& info)
 	{
 		QVector<double> xdata (hist.size ());
-		QVector<double> percents (hist.size ());
 		QVector<double> energy (hist.size ());
 		QVector<double> temperature (hist.size ());
+		QVector<QPointF> percents;
 
 		bool setTemperature = false;
 		int i = 0;
-		std::for_each (hist.begin (), hist.end (),
-				[&] (const BatteryHistory& bh) -> void
-				{
-					percents [i] = bh.Percentage_;
-					energy [i] = bh.EnergyRate_;
+		for (const auto& bh : hist)
+		{
+			if (percents.isEmpty () ||
+					percents.last ().y () != bh.Percentage_ ||
+					i == hist.size () - 1)
+				percents.append ({ static_cast<qreal> (i * TimeMultiplier_), static_cast<qreal> (bh.Percentage_) });
 
-					temperature [i] = bh.Temperature_ - 273.15;
-					setTemperature = bh.Temperature_ || setTemperature;
+			energy [i] = bh.EnergyRate_;
 
-					xdata [i] = i * TimeMultiplier_;
-					++i;
-				});
-		Percent_->setSamples (xdata, percents);
+			temperature [i] = bh.Temperature_ - 273.15;
+			setTemperature = bh.Temperature_ || setTemperature;
+
+			xdata [i] = i * TimeMultiplier_;
+			++i;
+		}
+
+		Percent_->setSamples (percents);
 		Energy_->setSamples (xdata, energy);
 		if (setTemperature)
 		{
