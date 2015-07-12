@@ -57,7 +57,7 @@
 	#endif
 
 	#include "platform/screen/freedesktop.h"
-	#include "platform/upower/dbusthread.h"
+	#include "platform/common/dbusthread.h"
 	#include "platform/upower/dbusconnector.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/battery/winapiplatform.h"
