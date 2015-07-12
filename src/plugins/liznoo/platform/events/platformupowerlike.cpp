@@ -29,7 +29,6 @@
 
 #include "platformupowerlike.h"
 #include "../upower/upowerconnector.h"
-#include "../common/dbusthread.h"
 
 namespace LeechCraft
 {
@@ -37,28 +36,6 @@ namespace Liznoo
 {
 namespace Events
 {
-	PlatformUPowerLike::PlatformUPowerLike (const UPower::UPowerThread_ptr& thread,
-			const ICoreProxy_ptr& proxy, QObject *parent)
-	: PlatformLayer { proxy, parent }
-	, Thread_ { thread }
-	{
-		Thread_->ScheduleOnStart ([this] (UPower::UPowerConnector *conn)
-				{
-					connect (conn,
-							SIGNAL (gonnaSleep (int)),
-							this,
-							SLOT (emitGonnaSleep (int)));
-					connect (conn,
-							SIGNAL (wokeUp ()),
-							this,
-							SLOT (emitWokeUp ()));
-				});
-	}
-
-	bool PlatformUPowerLike::IsAvailable () const
-	{
-		return true;
-	}
 }
 }
 }

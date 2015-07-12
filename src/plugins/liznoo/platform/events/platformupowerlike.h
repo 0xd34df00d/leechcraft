@@ -31,31 +31,43 @@
 
 #include <memory>
 #include "platformlayer.h"
+#include "../common/dbusthread.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-template<typename>
-class DBusThread;
-
-namespace UPower
-{
-	class UPowerConnector;
-
-	using UPowerThread_ptr = std::shared_ptr<DBusThread<UPowerConnector>>;
-}
-
 namespace Events
 {
+	template<typename ConnT>
 	class PlatformUPowerLike : public PlatformLayer
 	{
-		const UPower::UPowerThread_ptr Thread_;
-	public:
-		PlatformUPowerLike (const UPower::UPowerThread_ptr&,
-				const ICoreProxy_ptr&, QObject* = nullptr);
+		using DBusThread_ptr = std::shared_ptr<DBusThread<ConnT>>;
 
-		bool IsAvailable () const override;
+		const DBusThread_ptr Thread_;
+	public:
+		PlatformUPowerLike (const DBusThread_ptr& thread,
+				const ICoreProxy_ptr& proxy, QObject *parent = nullptr)
+		: PlatformLayer { proxy, parent }
+		, Thread_ { thread }
+		{
+			Thread_->ScheduleOnStart ([this] (ConnT *conn)
+					{
+						connect (conn,
+								SIGNAL (gonnaSleep (int)),
+								this,
+								SLOT (emitGonnaSleep (int)));
+						connect (conn,
+								SIGNAL (wokeUp ()),
+								this,
+								SLOT (emitWokeUp ()));
+					});
+		}
+
+		bool IsAvailable () const override
+		{
+			return true;
+		}
 	};
 }
 }
