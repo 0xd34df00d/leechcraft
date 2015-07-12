@@ -31,7 +31,6 @@ set (FBSD_SRCS
 	)
 
 set (LINUX_SRCS
-	platform/events/platformupowerlike.cpp
 	)
 
 set (LOGIND_SRCS
