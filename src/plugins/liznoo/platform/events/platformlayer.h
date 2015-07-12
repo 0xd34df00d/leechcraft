@@ -29,7 +29,10 @@
 
 #pragma once
 
+#include <functional>
+#include <boost/optional.hpp>
 #include <QObject>
+#include <QList>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include "../../batteryinfo.h"
@@ -43,12 +46,17 @@ namespace Events
 	class PlatformLayer : public QObject
 	{
 		Q_OBJECT
+
+		boost::optional<bool> IsAvailable_;
+		QList<std::function<void (bool)>> AvailSubscribers_;
 	protected:
 		const ICoreProxy_ptr Proxy_;
 	public:
 		PlatformLayer (const ICoreProxy_ptr&, QObject* = nullptr);
 
-		virtual bool IsAvailable () const = 0;
+		void SubscribeAvailable (const std::function<void (bool)>&);
+	protected:
+		void SetAvailable (bool);
 	public slots:
 		void emitGonnaSleep (int);
 		void emitWokeUp ();

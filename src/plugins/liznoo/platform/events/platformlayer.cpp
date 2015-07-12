@@ -43,6 +43,24 @@ namespace Events
 	{
 	}
 
+	void PlatformLayer::SubscribeAvailable (const std::function<void (bool)>& f)
+	{
+		if (IsAvailable_)
+			f (*IsAvailable_);
+		else
+			AvailSubscribers_ << f;
+	}
+
+	void PlatformLayer::SetAvailable (bool avail)
+	{
+		IsAvailable_ = avail;
+
+		for (const auto& f : AvailSubscribers_)
+			f (avail);
+
+		AvailSubscribers_.clear ();
+	}
+
 	void PlatformLayer::emitGonnaSleep (int timeout)
 	{
 		qDebug () << Q_FUNC_INFO << "detected sleep in" << timeout;

@@ -71,6 +71,8 @@ namespace Events
 		CFRunLoopAddSource (CFRunLoopGetCurrent (),
 				IONotificationPortGetRunLoopSource (NotifyPortRef_),
 				kCFRunLoopCommonModes);
+
+		SetAvailalble (true);
 	}
 
 	PlatformMac::~PlatformMac ()

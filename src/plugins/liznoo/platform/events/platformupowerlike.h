@@ -63,11 +63,6 @@ namespace Events
 								SLOT (emitWokeUp ()));
 					});
 		}
-
-		bool IsAvailable () const override
-		{
-			return true;
-		}
 	};
 
 	template<typename ConnT>
