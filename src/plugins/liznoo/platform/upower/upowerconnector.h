@@ -29,9 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QDBusConnection>
-#include <interfaces/structures.h>
 #include "../../batteryinfo.h"
 
 namespace LeechCraft
