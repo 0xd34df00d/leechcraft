@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "dbusthread.h"
-#include "dbusconnector.h"
 
 namespace LeechCraft
 {
@@ -36,37 +35,6 @@ namespace Liznoo
 {
 namespace UPower
 {
-	DBusThread::~DBusThread ()
-	{
-		if (!isRunning ())
-			return;
-
-		quit ();
-		if (!wait (1000))
-			terminate ();
-	}
-
-	void DBusThread::ScheduleOnStart (const std::function<void (DBusConnector*)>& f)
-	{
-		StartHandlers_ << f;
-	}
-
-	DBusConnector_ptr DBusThread::GetConnector () const
-	{
-		return Conn_.lock ();
-	}
-
-	void DBusThread::run ()
-	{
-		const auto conn = std::make_shared<DBusConnector> ();
-		Conn_ = conn;
-
-		for (const auto& f : StartHandlers_)
-			f (conn.get ());
-		StartHandlers_.clear ();
-
-		QThread::run ();
-	}
 }
 }
 }

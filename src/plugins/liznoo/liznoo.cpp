@@ -93,7 +93,7 @@ namespace Liznoo
 		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
-		const auto dbusThread = std::make_shared<UPower::DBusThread> ();
+		const auto dbusThread = std::make_shared<UPower::DBusThread<UPower::DBusConnector>> ();
 
 		PL_ = std::make_shared<Events::PlatformUPower> (dbusThread, Proxy_);
 		SPL_ = new Screen::Freedesktop (this);

@@ -38,9 +38,11 @@ namespace Liznoo
 {
 namespace UPower
 {
+	template<typename>
 	class DBusThread;
+	class DBusConnector;
 
-	using DBusThread_ptr = std::shared_ptr<DBusThread>;
+	using DBusThread_ptr = std::shared_ptr<DBusThread<DBusConnector>>;
 }
 
 namespace Events

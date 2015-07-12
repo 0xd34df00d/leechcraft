@@ -39,21 +39,45 @@ namespace Liznoo
 {
 namespace UPower
 {
-	class DBusConnector;
-
+	template<typename ConnT>
 	class DBusThread : public QThread
 	{
-		std::weak_ptr<DBusConnector> Conn_;
-		QList<std::function<void (DBusConnector*)>> StartHandlers_;
+		std::weak_ptr<ConnT> Conn_;
+		QList<std::function<void (ConnT*)>> StartHandlers_;
 	public:
 		using QThread::QThread;
-		~DBusThread ();
 
-		void ScheduleOnStart (const std::function<void (DBusConnector*)>&);
+		~DBusThread ()
+		{
+			if (!isRunning ())
+				return;
 
-		std::shared_ptr<DBusConnector> GetConnector () const;
+			quit ();
+			if (!wait (1000))
+				terminate ();
+		}
+
+		void ScheduleOnStart (const std::function<void (ConnT*)>& f)
+		{
+			StartHandlers_ << f;
+		}
+
+		std::shared_ptr<ConnT> GetConnector () const
+		{
+			return Conn_.lock ();
+		}
 	protected:
-		void run ();
+		void run ()
+		{
+			const auto conn = std::make_shared<ConnT> ();
+			Conn_ = conn;
+
+			for (const auto& f : StartHandlers_)
+				f (conn.get ());
+			StartHandlers_.clear ();
+
+			QThread::run ();
+		}
 	};
 }
 }

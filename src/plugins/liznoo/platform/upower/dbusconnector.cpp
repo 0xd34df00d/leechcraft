@@ -67,13 +67,13 @@ namespace UPower
 				"org.freedesktop.UPower",
 				"DeviceAdded",
 				this,
-				SLOT (requeryDevice (const QString&)));
+				SLOT (requeryDevice (QString)));
 		SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
 				"org.freedesktop.UPower",
 				"DeviceChanged",
 				this,
-				SLOT (requeryDevice (const QString&)));
+				SLOT (requeryDevice (QString)));
 
 		const auto sleepConnected = SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
