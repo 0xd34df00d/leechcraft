@@ -37,8 +37,6 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
-{
 	template<typename ConnT>
 	class DBusThread : public QThread
 	{
@@ -79,6 +77,5 @@ namespace UPower
 			QThread::run ();
 		}
 	};
-}
 }
 }

@@ -93,7 +93,7 @@ namespace Liznoo
 		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
-		const auto dbusThread = std::make_shared<UPower::DBusThread<UPower::DBusConnector>> ();
+		const auto dbusThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
 		PL_ = std::make_shared<Events::PlatformUPower> (dbusThread, Proxy_);
 		SPL_ = new Screen::Freedesktop (this);
@@ -105,7 +105,7 @@ namespace Liznoo
 		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
 	#endif
 
-		dbusThread->ScheduleOnStart ([] (UPower::DBusConnector *conn)
+		dbusThread->ScheduleOnStart ([] (UPower::UPowerConnector *conn)
 				{
 					if (!conn->ArePowerEventsAvailable ())
 						qWarning () << Q_FUNC_INFO

@@ -37,12 +37,12 @@ namespace Liznoo
 {
 namespace Events
 {
-	PlatformUPower::PlatformUPower (const UPower::DBusThread_ptr& thread,
+	PlatformUPower::PlatformUPower (const UPower::UPowerThread_ptr& thread,
 			const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer { proxy, parent }
 	, Thread_ { thread }
 	{
-		Thread_->ScheduleOnStart ([this] (UPower::DBusConnector *conn)
+		Thread_->ScheduleOnStart ([this] (UPower::UPowerConnector *conn)
 				{
 					connect (conn,
 							SIGNAL (gonnaSleep (int)),

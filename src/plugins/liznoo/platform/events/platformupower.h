@@ -36,22 +36,23 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+template<typename>
+class DBusThread;
+
 namespace UPower
 {
-	template<typename>
-	class DBusThread;
-	class DBusConnector;
+	class UPowerConnector;
 
-	using DBusThread_ptr = std::shared_ptr<DBusThread<DBusConnector>>;
+	using UPowerThread_ptr = std::shared_ptr<DBusThread<UPowerConnector>>;
 }
 
 namespace Events
 {
 	class PlatformUPower : public PlatformLayer
 	{
-		const UPower::DBusThread_ptr Thread_;
+		const UPower::UPowerThread_ptr Thread_;
 	public:
-		PlatformUPower (const UPower::DBusThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
+		PlatformUPower (const UPower::UPowerThread_ptr&, const ICoreProxy_ptr&, QObject* = 0);
 
 		bool IsAvailable () const override;
 	};

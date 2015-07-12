@@ -40,14 +40,14 @@ namespace Liznoo
 {
 namespace UPower
 {
-	class DBusConnector : public QObject
+	class UPowerConnector : public QObject
 	{
 		Q_OBJECT
 
 		QDBusConnection SB_;
 		bool PowerEventsAvailable_ = false;
 	public:
-		DBusConnector (QObject* = 0);
+		UPowerConnector (QObject* = 0);
 
 		bool ArePowerEventsAvailable () const;
 	private slots:
@@ -61,7 +61,7 @@ namespace UPower
 		void wokeUp ();
 	};
 
-	using DBusConnector_ptr = std::shared_ptr<DBusConnector>;
+	using UPowerConnector_ptr = std::shared_ptr<UPowerConnector>;
 }
 }
 }

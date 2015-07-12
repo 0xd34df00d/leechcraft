@@ -37,11 +37,11 @@ namespace Liznoo
 {
 namespace Battery
 {
-	UPowerPlatform::UPowerPlatform (const UPower::DBusThread_ptr& thread, QObject *parent)
+	UPowerPlatform::UPowerPlatform (const UPower::UPowerThread_ptr& thread, QObject *parent)
 	: BatteryPlatform { parent }
 	, Thread_ { thread }
 	{
-		Thread_->ScheduleOnStart ([this] (UPower::DBusConnector *conn)
+		Thread_->ScheduleOnStart ([this] (UPower::UPowerConnector *conn)
 				{
 					connect (conn,
 							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),

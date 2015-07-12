@@ -41,7 +41,7 @@ namespace Liznoo
 {
 namespace UPower
 {
-	DBusConnector::DBusConnector (QObject *parent)
+	UPowerConnector::UPowerConnector (QObject *parent)
 	: QObject (parent)
 	, SB_ (QDBusConnection::systemBus ())
 	{
@@ -91,17 +91,17 @@ namespace UPower
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
 	}
 
-	bool DBusConnector::ArePowerEventsAvailable () const
+	bool UPowerConnector::ArePowerEventsAvailable () const
 	{
 		return PowerEventsAvailable_;
 	}
 
-	void DBusConnector::handleGonnaSleep ()
+	void UPowerConnector::handleGonnaSleep ()
 	{
 		emit gonnaSleep (1000);
 	}
 
-	void DBusConnector::enumerateDevices ()
+	void UPowerConnector::enumerateDevices ()
 	{
 		QDBusInterface face ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
@@ -135,7 +135,7 @@ namespace UPower
 		}
 	}
 
-	void DBusConnector::requeryDevice (const QString& id)
+	void UPowerConnector::requeryDevice (const QString& id)
 	{
 		QDBusInterface face ("org.freedesktop.UPower",
 				id,

@@ -36,22 +36,23 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+template<typename>
+class DBusThread;
+
 namespace UPower
 {
-	template<typename>
-	class DBusThread;
-	class DBusConnector;
+	class UPowerConnector;
 
-	using DBusThread_ptr = std::shared_ptr<DBusThread<DBusConnector>>;
+	using UPowerThread_ptr = std::shared_ptr<DBusThread<UPowerConnector>>;
 }
 
 namespace Battery
 {
 	class UPowerPlatform : public BatteryPlatform
 	{
-		const UPower::DBusThread_ptr Thread_;
+		const UPower::UPowerThread_ptr Thread_;
 	public:
-		UPowerPlatform (const UPower::DBusThread_ptr&, QObject* = nullptr);
+		UPowerPlatform (const UPower::UPowerThread_ptr&, QObject* = nullptr);
 	};
 }
 }
