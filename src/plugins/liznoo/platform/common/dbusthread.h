@@ -77,5 +77,8 @@ namespace Liznoo
 			QThread::run ();
 		}
 	};
+
+	template<typename ConnT>
+	using DBusThread_ptr = std::shared_ptr<DBusThread<ConnT>>;
 }
 }
