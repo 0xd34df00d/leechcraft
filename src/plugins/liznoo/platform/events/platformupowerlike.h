@@ -71,7 +71,10 @@ namespace Events
 	};
 
 	template<typename ConnT>
-	std::shared_ptr<PlatformUPowerLike<ConnT>> MakeUPowerLike (const std::shared_ptr<DBusThread<ConnT>>& thread, const ICoreProxy_ptr& proxy)
+	using PlatformUPowerLike_ptr = std::shared_ptr<PlatformUPowerLike<ConnT>>;
+
+	template<typename ConnT>
+	PlatformUPowerLike_ptr<ConnT> MakeUPowerLike (const DBusThread_ptr<ConnT>& thread, const ICoreProxy_ptr& proxy)
 	{
 		return std::make_shared<PlatformUPowerLike<ConnT>> (thread, proxy);
 	}
