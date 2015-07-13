@@ -97,6 +97,12 @@ namespace Sarin
 
 	template<typename T>
 	using CommandCodeException = Util::ConcurrentException<CommandCodeExceptionBase<T>>;
+
+	template<typename T>
+	CommandCodeException<T> MakeCommandCodeException (const QByteArray& msg, T error)
+	{
+		return { msg, error };
+	}
 }
 }
 }
