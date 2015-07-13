@@ -109,7 +109,7 @@ namespace Sarin
 				return false;
 			}
 
-			int toxStatus = TOX_USER_STATUS_NONE;
+			TOX_USER_STATUS toxStatus = TOX_USER_STATUS_NONE;
 			switch (status.State_)
 			{
 			case SAway:
@@ -123,12 +123,7 @@ namespace Sarin
 				break;
 			}
 
-			if (tox_set_user_status (tox, toxStatus) < 0)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to set state";
-				return false;
-			}
+			tox_self_set_status (tox, toxStatus);
 
 			return true;
 		}
