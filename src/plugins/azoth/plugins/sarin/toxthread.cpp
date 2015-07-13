@@ -226,17 +226,20 @@ namespace Sarin
 					}
 
 					const auto& msgUtf8 = msg.toUtf8 ();
-					const auto addResult = tox_add_friend (tox,
+
+					TOX_ERR_FRIEND_ADD error {};
+					const auto addResult = tox_friend_add (tox,
 							reinterpret_cast<const uint8_t*> (toxId.constData ()),
 							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
-							msgUtf8.size ());
+							msgUtf8.size (),
+							&error);
 
-					if (addResult < 0)
+					if (addResult == UINT32_MAX)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to add friend:"
-								<< addResult;
-						return ToxFAError2ThreadError (addResult);
+								<< error;
+						return ToxFAError2ThreadError (error);
 					}
 
 					SaveState ();
