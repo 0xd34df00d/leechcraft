@@ -38,7 +38,7 @@ namespace Azoth
 {
 namespace Sarin
 {
-	qint32 GetFriendId (Tox* tox, const QByteArray& pubkey)
+	qint32 GetFriendId (const Tox *tox, const QByteArray& pubkey)
 	{
 		const auto& binPkey = QByteArray::fromHex (pubkey);
 		TOX_ERR_FRIEND_BY_PUBLIC_KEY error {};
@@ -56,7 +56,7 @@ namespace Sarin
 		return res;
 	}
 
-	QByteArray GetFriendId (Tox *tox, int32_t friendId)
+	QByteArray GetFriendId (const Tox *tox, int32_t friendId)
 	{
 		std::array<uint8_t, TOX_PUBLIC_KEY_SIZE> clientId;
 		TOX_ERR_FRIEND_GET_PUBLIC_KEY error {};

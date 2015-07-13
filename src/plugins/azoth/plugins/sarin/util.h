@@ -40,8 +40,8 @@ namespace Azoth
 {
 namespace Sarin
 {
-	qint32 GetFriendId (Tox *tox, const QByteArray& pubkey);
-	QByteArray GetFriendId (Tox *tox, int32_t friendId);
+	qint32 GetFriendId (const Tox *tox, const QByteArray& pubkey);
+	QByteArray GetFriendId (const Tox *tox, int32_t friendId);
 
 	template<size_t Size>
 	QByteArray ToxId2HR (const uint8_t *address)
