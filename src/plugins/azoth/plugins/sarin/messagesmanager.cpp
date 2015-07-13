@@ -117,6 +117,14 @@ namespace Sarin
 							msgUtf8.size (),
 							&error);
 
+					if (error != TOX_ERR_FRIEND_SEND_MESSAGE_OK)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to send message"
+								<< error;
+						throw MakeCommandCodeException ("tox_friend_send_message", error);
+					}
+
 					return { id, privkey, msg };
 				}));
 	}
