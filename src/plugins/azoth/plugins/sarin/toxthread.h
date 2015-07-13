@@ -37,6 +37,7 @@
 #include <QMutex>
 #include <QFuture>
 #include <interfaces/azoth/iclentry.h>
+#include <util/sll/futures.h>
 #include "threadexceptions.h"
 #include "toxaccountconfiguration.h"
 
@@ -49,25 +50,6 @@ namespace Azoth
 namespace Sarin
 {
 	class CallManager;
-
-	namespace detail
-	{
-		template<typename R, typename F>
-		void ReportResult (QFutureInterface<R>& iface, const F& f, Tox *tox,
-				typename std::enable_if<!std::is_same<R, void>::value, void>::type* = nullptr)
-		{
-			auto result = f (tox);
-			iface.reportFinished (&result);
-		}
-
-
-		template<typename F>
-		void ReportResult (QFutureInterface<void>& iface, F& f, Tox *tox)
-		{
-			f (tox);
-			iface.reportFinished ();
-		}
-	}
 
 	class ToxThread : public QThread
 	{
@@ -139,7 +121,7 @@ namespace Sarin
 					{
 						try
 						{
-							detail::ReportResult (iface, func, tox);
+							Util::ReportFutureResult (iface, func, tox);
 						}
 #if QT_VERSION < 0x050000
 						catch (const QtConcurrent::Exception& e)
