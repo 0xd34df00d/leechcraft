@@ -30,8 +30,12 @@
 #pragma once
 
 #include <memory>
+#include <type_traits>
 #include <functional>
 #include <QThread>
+#include <QFuture>
+#include <QFutureInterface>
+#include <util/sll/futures.h>
 
 namespace LeechCraft
 {
@@ -41,6 +45,7 @@ namespace Liznoo
 	class DBusThread : public QThread
 	{
 		std::weak_ptr<ConnT> Conn_;
+
 		QList<std::function<void (ConnT*)>> StartHandlers_;
 	public:
 		using QThread::QThread;
@@ -55,9 +60,20 @@ namespace Liznoo
 				terminate ();
 		}
 
-		void ScheduleOnStart (const std::function<void (ConnT*)>& f)
+		template<typename F>
+		QFuture<typename std::result_of<F (ConnT*)>::type> ScheduleOnStart (const F& f)
 		{
-			StartHandlers_ << f;
+			QFutureInterface<typename std::result_of<F (ConnT*)>::type> iface;
+			iface.reportStarted ();
+
+			auto handler = [f, iface] (ConnT *conn) mutable
+			{
+				Util::ReportFutureResult (iface, f, conn);
+			};
+
+			StartHandlers_ << handler;
+
+			return iface.future ();
 		}
 
 		std::shared_ptr<ConnT> GetConnector () const
