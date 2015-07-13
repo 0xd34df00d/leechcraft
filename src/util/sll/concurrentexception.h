@@ -69,7 +69,7 @@ namespace Util
 		 */
 		template<typename... Args>
 		ConcurrentException (Args&&... args)
-		: T { std::forward<Args...> (args...) }
+		: T { std::forward<Args> (args)... }
 		{
 		}
 
