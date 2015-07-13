@@ -109,15 +109,15 @@ namespace Sarin
 				return false;
 			}
 
-			int toxStatus = TOX_USERSTATUS_NONE;
+			int toxStatus = TOX_USER_STATUS_NONE;
 			switch (status.State_)
 			{
 			case SAway:
 			case SXA:
-				toxStatus = TOX_USERSTATUS_AWAY;
+				toxStatus = TOX_USER_STATUS_AWAY;
 				break;
 			case SDND:
-				toxStatus = TOX_USERSTATUS_BUSY;
+				toxStatus = TOX_USER_STATUS_BUSY;
 				break;
 			default:
 				break;
