@@ -213,8 +213,8 @@ namespace Sarin
 							Q_ARG (QString, msg));
 				},
 				this);
-		tox_callback_read_receipt (tox,
-				[] (Tox*, int32_t, uint32_t msgId, void *udata)
+		tox_callback_friend_read_receipt (tox,
+				[] (Tox*, uint32_t, uint32_t msgId, void *udata)
 				{
 					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
 							"handleReadReceipt",
