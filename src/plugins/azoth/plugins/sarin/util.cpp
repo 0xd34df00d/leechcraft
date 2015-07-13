@@ -29,6 +29,7 @@
 
 #include "util.h"
 #include <QByteArray>
+#include <QtDebug>
 #include <tox/tox.h>
 
 namespace LeechCraft
@@ -40,14 +41,35 @@ namespace Sarin
 	qint32 GetFriendId (Tox* tox, const QByteArray& pubkey)
 	{
 		const auto& binPkey = QByteArray::fromHex (pubkey);
-		return tox_get_friend_number (tox, reinterpret_cast<const uint8_t*> (binPkey.constData ()));
+		TOX_ERR_FRIEND_BY_PUBLIC_KEY error {};
+
+		const auto res = tox_friend_by_public_key (tox, reinterpret_cast<const uint8_t*> (binPkey.constData ()), &error);
+		if (res == UINT32_MAX)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to get friend by public key"
+					<< pubkey
+					<< error;
+			return -1;
+		}
+
+		return res;
 	}
 
 	QByteArray GetFriendId (Tox *tox, int32_t friendId)
 	{
-		std::array<uint8_t, TOX_CLIENT_ID_SIZE> clientId;
-		if (tox_get_client_id (tox, friendId, clientId.data ()) == -1)
-			throw std::runtime_error ("Cannot get friend's pubkey.");
+		std::array<uint8_t, TOX_PUBLIC_KEY_SIZE> clientId;
+		TOX_ERR_FRIEND_GET_PUBLIC_KEY error {};
+
+		if (!tox_friend_get_public_key (tox, friendId, clientId.data (), &error))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to get friend's public key"
+					<< friendId
+					<< error;
+			throw std::runtime_error { "Cannot get friend's pubkey." };
+		}
+
 		return ToxId2HR (clientId);
 	}
 }
