@@ -37,9 +37,9 @@ namespace Azoth
 {
 namespace Sarin
 {
-	qint32 GetFriendId (Tox* tox, const QByteArray& privkey)
+	qint32 GetFriendId (Tox* tox, const QByteArray& pubkey)
 	{
-		const auto& binPkey = QByteArray::fromHex (privkey);
+		const auto& binPkey = QByteArray::fromHex (pubkey);
 		return tox_get_friend_number (tox, reinterpret_cast<const uint8_t*> (binPkey.constData ()));
 	}
 
