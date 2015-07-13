@@ -109,10 +109,13 @@ namespace Sarin
 					}
 
 					const auto& msgUtf8 = body.toUtf8 ();
-					const auto id = tox_send_message (tox,
+					TOX_ERR_FRIEND_SEND_MESSAGE error {};
+					const auto id = tox_friend_send_message (tox,
 							friendNum,
+							TOX_MESSAGE_TYPE_NORMAL,
 							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
-							msgUtf8.size ());
+							msgUtf8.size (),
+							&error);
 
 					return { id, privkey, msg };
 				}));
