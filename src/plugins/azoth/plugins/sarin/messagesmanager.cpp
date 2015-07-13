@@ -203,7 +203,7 @@ namespace Sarin
 	void MessagesManager::handleToxCreated (Tox *tox)
 	{
 		tox_callback_friend_message (tox,
-				[] (Tox*, int32_t friendId, const uint8_t *msgData, uint16_t, void *udata)
+				[] (Tox*, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t, void *udata)
 				{
 					const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (msgData));
 
