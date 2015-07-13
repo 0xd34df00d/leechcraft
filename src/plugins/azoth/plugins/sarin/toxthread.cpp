@@ -178,25 +178,24 @@ namespace Sarin
 
 	namespace
 	{
-		ToxThread::AddFriendResult ToxFAError2ThreadError (int32_t addResult)
+		ToxThread::AddFriendResult ToxFAError2ThreadError (TOX_ERR_FRIEND_ADD addResult)
 		{
 			switch (addResult)
 			{
-			case TOX_FAERR_TOOLONG:
+			case TOX_ERR_FRIEND_ADD_TOO_LONG:
 				return ToxThread::AddFriendResult::TooLong;
-			case TOX_FAERR_NOMESSAGE:
+			case TOX_ERR_FRIEND_ADD_NO_MESSAGE:
 				return ToxThread::AddFriendResult::NoMessage;
-			case TOX_FAERR_OWNKEY:
+			case TOX_ERR_FRIEND_ADD_OWN_KEY:
 				return ToxThread::AddFriendResult::OwnKey;
-			case TOX_FAERR_ALREADYSENT:
+			case TOX_ERR_FRIEND_ADD_ALREADY_SENT:
 				return ToxThread::AddFriendResult::AlreadySent;
-			case TOX_FAERR_BADCHECKSUM:
+			case TOX_ERR_FRIEND_ADD_BAD_CHECKSUM:
 				return ToxThread::AddFriendResult::BadChecksum;
-			case TOX_FAERR_SETNEWNOSPAM:
+			case TOX_ERR_FRIEND_ADD_SET_NEW_NOSPAM:
 				return ToxThread::AddFriendResult::NoSpam;
-			case TOX_FAERR_NOMEM:
+			case TOX_ERR_FRIEND_ADD_MALLOC:
 				return ToxThread::AddFriendResult::NoMem;
-			case TOX_FAERR_UNKNOWN:
 			default:
 				return ToxThread::AddFriendResult::Unknown;
 			}
