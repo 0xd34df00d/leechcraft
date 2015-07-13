@@ -71,6 +71,32 @@ namespace Sarin
 	using FramePrepareException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
 	using FrameSendException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
 	using CallAnswerException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
+
+	template<typename T>
+	class CommandCodeExceptionBase
+	{
+		const T Code_;
+		const QByteArray Msg_;
+	public:
+		CommandCodeExceptionBase (const QByteArray& cmd, T code)
+		: Code_ { code }
+		, Msg_ { "Error executing command " + cmd + ": " + QByteArray::number (code) }
+		{
+		}
+
+		const char* what () const noexcept
+		{
+			return Msg_.constData ();
+		}
+
+		T GetCode () const noexcept
+		{
+			return Code_;
+		}
+	};
+
+	template<typename T>
+	using CommandCodeException = Util::ConcurrentException<CommandCodeExceptionBase<T>>;
 }
 }
 }
