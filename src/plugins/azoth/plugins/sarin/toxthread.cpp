@@ -93,10 +93,16 @@ namespace Sarin
 			const auto res = DoTox (status.StatusString_,
 					[tox] (auto bytes, auto size)
 					{
-						return tox_set_status_message (tox, bytes, size);
+						TOX_ERR_SET_INFO error {};
+						const bool res = tox_self_set_status_message (tox, bytes, size, &error);
+						if (!res)
+							qWarning () << Q_FUNC_INFO
+									<< "unable to set status"
+									<< error;
+						return res;
 					});
 
-			if (res < 0)
+			if (!res)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to set status message";
