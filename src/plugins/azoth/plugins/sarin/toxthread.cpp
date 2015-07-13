@@ -77,15 +77,14 @@ namespace Sarin
 		{
 			switch (toxStatus)
 			{
-			case TOX_USERSTATUS_AWAY:
+			case TOX_USER_STATUS_AWAY:
 				return State::SAway;
-			case TOX_USERSTATUS_BUSY:
+			case TOX_USER_STATUS_BUSY:
 				return State::SDND;
-			case TOX_USERSTATUS_INVALID:
-				return State::SInvalid;
-			case TOX_USERSTATUS_NONE:
-			default:
+			case TOX_USER_STATUS_NONE:
 				return State::SOnline;
+			default:
+				return State::SInvalid;
 			}
 		}
 
