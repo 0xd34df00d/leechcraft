@@ -33,6 +33,7 @@
 #include <util/sll/delayedexecutor.h>
 #include "toxthread.h"
 #include "util.h"
+#include "threadexceptions.h"
 
 namespace LeechCraft
 {
@@ -86,6 +87,9 @@ namespace Sarin
 								reinterpret_cast<const uint8_t*> (name.constData ()),
 								name.size (),
 								&error);
+						if (result == UINT32_MAX)
+							throw MakeCommandCodeException ("tox_file_send", &error);
+
 						return result;
 					});
 		};
