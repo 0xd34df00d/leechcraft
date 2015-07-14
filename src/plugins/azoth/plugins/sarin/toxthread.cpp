@@ -166,7 +166,7 @@ namespace Sarin
 		QByteArray GetToxAddress (Tox *tox)
 		{
 			std::array<uint8_t, TOX_ADDRESS_SIZE> address;
-			tox_get_address (tox, address.data ());
+			tox_self_get_address (tox, address.data ());
 			return ToxId2HR (address);
 		}
 	}
