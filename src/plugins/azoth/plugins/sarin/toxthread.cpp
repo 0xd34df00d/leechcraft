@@ -257,13 +257,15 @@ namespace Sarin
 					if (toxId.size () != TOX_ADDRESS_SIZE)
 						return;
 
-					const auto addResult = tox_add_friend_norequest (tox,
-							reinterpret_cast<const uint8_t*> (toxId.constData ()));
+					TOX_ERR_FRIEND_ADD error {};
+					const auto addResult = tox_friend_add_norequest (tox,
+							reinterpret_cast<const uint8_t*> (toxId.constData ()), &error);
 
-					if (addResult < 0)
+					if (addResult == UINT32_MAX)
 					{
 						qDebug () << Q_FUNC_INFO
-								<< "unable to add friend";
+								<< "unable to add friend"
+								<< error;
 						return;
 					}
 
