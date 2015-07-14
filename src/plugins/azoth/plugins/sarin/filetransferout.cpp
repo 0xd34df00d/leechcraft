@@ -76,15 +76,21 @@ namespace Sarin
 					{
 						const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
 						FriendNum_ = GetFriendId (tox, PubKey_);
-						return tox_new_file_sender (tox,
+
+						TOX_ERR_FILE_SEND error {};
+						const auto result = tox_file_send (tox,
 								FriendNum_,
+								TOX_FILE_KIND_DATA,
 								static_cast<uint64_t> (Filesize_),
+								nullptr,
 								reinterpret_cast<const uint8_t*> (name.constData ()),
-								name.size ());
+								name.size (),
+								&error);
+						return result;
 					});
 		};
 		Util::ExecuteFuture (sendScheduler,
-				[this] (int filenum)
+				[this] (uint32_t filenum)
 				{
 					if (filenum >= 0)
 						return;
