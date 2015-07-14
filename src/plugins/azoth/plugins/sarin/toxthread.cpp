@@ -316,7 +316,15 @@ namespace Sarin
 		{
 			TOX_ERR_FRIEND_QUERY stErr {};
 			if (tox_friend_get_connection_status (tox, id, &stErr) == TOX_CONNECTION_NONE)
+			{
+				if (stErr != TOX_ERR_FRIEND_QUERY_OK)
+					qWarning () << Q_FUNC_INFO
+							<< "error querying friend connection status:"
+							<< stErr
+							<< ", but we'll return Offline anyway";
+
 				return { SOffline, {} };
+			}
 
 			QString statusStr;
 			const auto statusMsgSize = tox_friend_get_status_message_size (tox, id, &stErr);
@@ -331,9 +339,15 @@ namespace Sarin
 							<< stErr;
 			}
 
+			const auto status = tox_friend_get_status (tox, id, &stErr);
+			if (stErr != TOX_ERR_FRIEND_QUERY_OK)
+				qWarning () << Q_FUNC_INFO
+						<< "error querying friend status:"
+						<< stErr;
+
 			return
 				{
-					ToxStatus2State (tox_friend_get_status (tox, id, &stErr)),
+					ToxStatus2State (status),
 					statusStr
 				};
 		}
