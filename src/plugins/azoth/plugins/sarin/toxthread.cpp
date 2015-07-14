@@ -165,7 +165,7 @@ namespace Sarin
 	{
 		QByteArray GetToxAddress (Tox *tox)
 		{
-			std::array<uint8_t, TOX_FRIEND_ADDRESS_SIZE> address;
+			std::array<uint8_t, TOX_ADDRESS_SIZE> address;
 			tox_get_address (tox, address.data ());
 			return ToxId2HR (address);
 		}
@@ -218,7 +218,7 @@ namespace Sarin
 
 		return ScheduleFunction ([toxId, msg, this] (Tox *tox)
 				{
-					if (toxId.size () != TOX_FRIEND_ADDRESS_SIZE)
+					if (toxId.size () != TOX_ADDRESS_SIZE)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "invalid Tox ID";
@@ -254,7 +254,7 @@ namespace Sarin
 		toxId = Hex2Bin (toxId);
 		ScheduleFunction ([toxId, this] (Tox *tox)
 				{
-					if (toxId.size () != TOX_FRIEND_ADDRESS_SIZE)
+					if (toxId.size () != TOX_ADDRESS_SIZE)
 						return;
 
 					const auto addResult = tox_add_friend_norequest (tox,
