@@ -411,7 +411,14 @@ namespace Sarin
 								<< pkey;
 						return;
 					}
-					tox_set_user_is_typing (tox, num, isTyping);
+
+					TOX_ERR_SET_TYPING error {};
+					if (!tox_self_set_typing (tox, num, isTyping, &error))
+						qWarning () << Q_FUNC_INFO
+								<< "cannot set typing state to"
+								<< isTyping
+								<< "because of error"
+								<< error;
 				});
 	}
 
