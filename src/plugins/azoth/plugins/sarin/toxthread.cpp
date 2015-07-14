@@ -285,11 +285,13 @@ namespace Sarin
 						return;
 					}
 
-					if (tox_del_friend (tox, friendNum) < 0)
+					TOX_ERR_FRIEND_DELETE error {};
+					if (!tox_friend_delete (tox, friendNum, &error))
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to delete friend"
-								<< origId;
+								<< origId
+								<< error;
 						return;
 					}
 
