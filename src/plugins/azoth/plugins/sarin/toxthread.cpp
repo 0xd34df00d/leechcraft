@@ -314,20 +314,26 @@ namespace Sarin
 	{
 		EntryStatus GetFriendStatus (Tox *tox, qint32 id)
 		{
-			if (!tox_get_friend_connection_status (tox, id))
+			TOX_ERR_FRIEND_QUERY stErr {};
+			if (tox_friend_get_connection_status (tox, id, &stErr) == TOX_CONNECTION_NONE)
 				return { SOffline, {} };
 
 			QString statusStr;
-			const auto statusMsgSize = tox_get_status_message_size (tox, id);
-			if (statusMsgSize > 0)
+			const auto statusMsgSize = tox_friend_get_status_message_size (tox, id, &stErr);
+			if (statusMsgSize != SIZE_MAX)
 			{
 				std::unique_ptr<uint8_t []> statusMsg { new uint8_t [statusMsgSize] };
-				tox_get_status_message (tox, id, statusMsg.get (), statusMsgSize);
-				statusStr = QString::fromUtf8 (reinterpret_cast<char*> (statusMsg.get ()), statusMsgSize);
+				if (tox_friend_get_status_message (tox, id, statusMsg.get (), &stErr))
+					statusStr = QString::fromUtf8 (reinterpret_cast<char*> (statusMsg.get ()), statusMsgSize);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "unable to get status text with error"
+							<< stErr;
 			}
+
 			return
 				{
-					ToxStatus2State (tox_get_user_status (tox, id)),
+					ToxStatus2State (tox_friend_get_status (tox, id, &stErr)),
 					statusStr
 				};
 		}
