@@ -472,7 +472,12 @@ namespace Sarin
 		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
 		DoTox (Name_,
-				[this] (const uint8_t *bytes, uint16_t size) { tox_set_name (Tox_.get (), bytes, size); });
+				[this] (const uint8_t *bytes, uint16_t size)
+				{
+					TOX_ERR_SET_INFO error {};
+					if (!tox_self_set_name (Tox_.get (), bytes, size, &error))
+						throw MakeCommandCodeException ("tox_self_set_name", error);
+				});
 
 		SetToxStatus (Tox_.get (), Status_);
 
