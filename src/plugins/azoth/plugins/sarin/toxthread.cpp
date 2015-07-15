@@ -453,9 +453,15 @@ namespace Sarin
 		{
 			Config_.AllowIPv6_,
 			!Config_.AllowUDP_,
-			!Config_.ProxyHost_.isEmpty (),
-			{ 0 },
-			static_cast<uint16_t> (Config_.ProxyPort_)
+			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
+			nullptr,
+			static_cast<uint16_t> (Config_.ProxyPort_),
+			0,			// TODO
+			0,			// TODO
+			0,			// TODO
+			ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
+			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
+			static_cast<size_t> (ToxState_.size ())
 		};
 		if (!Config_.ProxyHost_.isEmpty ())
 		{
