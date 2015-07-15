@@ -86,7 +86,11 @@ namespace Sarin
 		}
 
 		Thread_->ScheduleFunction ([this] (Tox *tox)
-				{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_ACCEPT, nullptr, 0); });
+				{
+					TOX_ERR_FILE_CONTROL error {};
+					if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME, &error))
+						throw MakeCommandCodeException ("tox_file_control", &error);
+				});
 	}
 
 	void FileTransferIn::Abort ()
