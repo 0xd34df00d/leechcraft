@@ -400,13 +400,13 @@ namespace Sarin
 
 	void ToxThread::LoadFriends ()
 	{
-		auto count = tox_count_friendlist (Tox_.get ());
+		const auto count = tox_self_get_friend_list_size (Tox_.get ());
 		qDebug () << Q_FUNC_INFO << count;
 		if (count <= 0)
 			return;
 
-		std::unique_ptr<int32_t []> friendList { new int32_t [count] };
-		count = tox_get_friendlist (Tox_.get (), friendList.get (), count);
+		std::unique_ptr<uint32_t []> friendList { new uint32_t [count] };
+		tox_self_get_friend_list (Tox_.get (), friendList.get ());
 
 		for (uint32_t i = 0; i < count; ++i)
 			emit gotFriend (friendList [i]);
