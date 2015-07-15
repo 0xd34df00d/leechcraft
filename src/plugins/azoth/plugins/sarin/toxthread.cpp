@@ -468,7 +468,7 @@ namespace Sarin
 		SetToxStatus (Tox_.get (), Status_);
 
 		tox_callback_friend_request (Tox_.get (),
-				[] (Tox*, const uint8_t *pkey, const uint8_t *data, uint16_t size, void *udata)
+				[] (Tox*, const uint8_t *pkey, const uint8_t *data, size_t size, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->HandleFriendRequest (pkey, data, size);
 				},
