@@ -384,12 +384,12 @@ namespace Sarin
 
 	void ToxThread::SaveState ()
 	{
-		const auto size = tox_size (Tox_.get ());
+		const auto size = tox_get_savedata_size (Tox_.get ());
 		if (!size)
 			return;
 
 		QByteArray newState { static_cast<int> (size), 0 };
-		tox_save (Tox_.get (), reinterpret_cast<uint8_t*> (newState.data ()));
+		tox_get_savedata (Tox_.get (), reinterpret_cast<uint8_t*> (newState.data ()));
 
 		if (newState == ToxState_)
 			return;
