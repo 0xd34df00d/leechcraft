@@ -479,8 +479,8 @@ namespace Sarin
 					static_cast<ToxThread*> (udata)->HandleNameChange (id, name, len + 1);
 				},
 				this);
-		tox_callback_user_status (Tox_.get (),
-				[] (Tox*, int32_t friendId, uint8_t, void *udata)
+		tox_callback_friend_status (Tox_.get (),
+				[] (Tox*, uint32_t friendId, TOX_USER_STATUS, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
 				},
