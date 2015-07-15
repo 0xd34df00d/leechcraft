@@ -94,12 +94,9 @@ namespace Sarin
 					});
 		};
 		Util::ExecuteFuture (sendScheduler,
-				[this] (uint32_t filenum)
+				[this] (uint32_t)
 				{
-					if (filenum >= 0)
-						return;
-					qWarning () << Q_FUNC_INFO
-							<< "unable to send file";
+					// TODO
 				},
 				this);
 
