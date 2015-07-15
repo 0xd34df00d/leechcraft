@@ -463,6 +463,12 @@ namespace Sarin
 			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
 			static_cast<size_t> (ToxState_.size ())
 		};
+
+		TOX_ERR_NEW creationError {};
+		Tox_ = std::shared_ptr<Tox> { tox_new (&opts, &creationError), &tox_kill };
+		if (!Tox_ || creationError != TOX_ERR_NEW_OK)
+			throw MakeCommandCodeException ("tox_new", creationError);
+
 		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
 		DoTox (Name_,
