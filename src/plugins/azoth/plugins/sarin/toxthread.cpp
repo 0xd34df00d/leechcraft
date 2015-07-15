@@ -516,20 +516,6 @@ namespace Sarin
 
 		emit toxCreated (Tox_.get ());
 
-		if (!ToxState_.isEmpty ())
-		{
-			const auto res = tox_load (Tox_.get (),
-					reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
-					ToxState_.size ());
-			if (!res)
-			{
-				qDebug () << "successfully loaded Tox state";
-				LoadFriends ();
-			}
-			else
-				qWarning () << "failed to load Tox state";
-		}
-
 		qDebug () << "gonna bootstrap..." << Tox_.get ();
 		const auto pubkey = Hex2Bin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
 		tox_bootstrap_from_address (Tox_.get (),
