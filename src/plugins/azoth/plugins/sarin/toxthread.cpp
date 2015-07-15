@@ -473,8 +473,8 @@ namespace Sarin
 					static_cast<ToxThread*> (udata)->HandleFriendRequest (pkey, data, size);
 				},
 				this);
-		tox_callback_name_change (Tox_.get (),
-				[] (Tox*, int32_t id, const uint8_t *name, uint16_t len, void *udata)
+		tox_callback_friend_name (Tox_.get (),
+				[] (Tox*, uint32_t id, const uint8_t *name, size_t len, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->HandleNameChange (id, name, len + 1);
 				},
