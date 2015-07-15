@@ -414,12 +414,12 @@ namespace Sarin
 
 	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, uint16_t size)
 	{
-		const auto& toxId = ToxId2HR<TOX_FRIEND_ADDRESS_SIZE> (pkey);
-		const auto& pubkey = ToxId2HR<TOX_CLIENT_ID_SIZE> (pkey);
+		const auto& pubkey = ToxId2HR<TOX_PUBLIC_KEY_SIZE> (pkey);
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
-		qDebug () << Q_FUNC_INFO << toxId << pubkey << msg;
+		qDebug () << Q_FUNC_INFO << pubkey << msg;
 
-		emit gotFriendRequest (toxId, pubkey, msg);
+		// FIXME check if first parameter is needed.
+		emit gotFriendRequest ({}, pubkey, msg);
 	}
 
 	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t)
