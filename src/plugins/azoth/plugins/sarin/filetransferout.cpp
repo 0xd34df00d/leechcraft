@@ -193,7 +193,9 @@ namespace Sarin
 		{
 			return Thread_->ScheduleFunction ([this] (Tox *tox)
 					{
-						return tox_file_send_control (tox, FriendNum_, 0, FileNum_, TOX_FILECONTROL_ACCEPT, nullptr, 0);
+						TOX_ERR_FILE_CONTROL error {};
+						if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME, &error))
+							throw MakeCommandCodeException ("tox_file_control", error);
 					});
 		};
 		Util::ExecuteFuture (finishSheduler,
