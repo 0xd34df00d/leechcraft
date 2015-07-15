@@ -89,7 +89,7 @@ namespace Sarin
 				{
 					TOX_ERR_FILE_CONTROL error {};
 					if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME, &error))
-						throw MakeCommandCodeException ("tox_file_control", &error);
+						throw MakeCommandCodeException ("tox_file_control", error);
 				});
 	}
 

@@ -88,7 +88,7 @@ namespace Sarin
 								name.size (),
 								&error);
 						if (result == UINT32_MAX)
-							throw MakeCommandCodeException ("tox_file_send", &error);
+							throw MakeCommandCodeException ("tox_file_send", error);
 
 						return result;
 					});
