@@ -366,7 +366,8 @@ namespace Sarin
 					char name [TOX_MAX_NAME_LENGTH] = { 0 };
 
 					TOX_ERR_FRIEND_QUERY error {};
-					tox_friend_get_name (tox, id, reinterpret_cast<uint8_t*> (name), &error);
+					if (!tox_friend_get_name (tox, id, reinterpret_cast<uint8_t*> (name), &error))
+						throw MakeCommandCodeException ("tox_friend_get_name", error);
 
 					result.Name_ = QString::fromUtf8 (name);
 					result.Status_ = GetFriendStatus (tox, id);
