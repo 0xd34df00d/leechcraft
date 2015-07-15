@@ -454,7 +454,7 @@ namespace Sarin
 			Config_.AllowIPv6_,
 			!Config_.AllowUDP_,
 			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
-			nullptr,
+			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
 			static_cast<uint16_t> (Config_.ProxyPort_),
 			0,			// TODO
 			0,			// TODO
@@ -463,13 +463,6 @@ namespace Sarin
 			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
 			static_cast<size_t> (ToxState_.size ())
 		};
-		if (!Config_.ProxyHost_.isEmpty ())
-		{
-			const auto size = sizeof (opts.proxy_address) / sizeof (opts.proxy_address [0]);
-			std::strncpy (opts.proxy_address, Config_.ProxyHost_.toUtf8 ().constData (), size);
-			opts.proxy_address [size - 1] = 0;
-		}
-		Tox_ = std::shared_ptr<Tox> { tox_new (&opts), &tox_kill };
 		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
 		DoTox (Name_,
