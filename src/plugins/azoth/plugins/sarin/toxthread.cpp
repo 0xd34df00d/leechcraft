@@ -364,7 +364,10 @@ namespace Sarin
 					result.Pubkey_ = GetFriendId (tox, id);
 
 					char name [TOX_MAX_NAME_LENGTH] = { 0 };
-					tox_get_name (tox, id, reinterpret_cast<uint8_t*> (name));
+
+					TOX_ERR_FRIEND_QUERY error {};
+					tox_friend_get_name (tox, id, reinterpret_cast<uint8_t*> (name), &error);
+
 					result.Name_ = QString::fromUtf8 (name);
 					result.Status_ = GetFriendStatus (tox, id);
 
