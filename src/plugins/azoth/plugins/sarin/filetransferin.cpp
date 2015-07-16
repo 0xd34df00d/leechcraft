@@ -98,7 +98,8 @@ namespace Sarin
 		Thread_->ScheduleFunction ([this] (Tox *tox)
 				{
 					TOX_ERR_FILE_CONTROL error {};
-					tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL, &error);
+					if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL, &error))
+						throw MakeCommandCodeException ("tox_file_control", error);
 				});
 	}
 
