@@ -535,8 +535,8 @@ namespace Sarin
 		QEventLoop evLoop;
 		while (!ShouldStop_)
 		{
-			tox_do (Tox_.get ());
-			auto next = tox_do_interval (Tox_.get ());
+			tox_iterate (Tox_.get ());
+			auto next = tox_iteration_interval (Tox_.get ());
 
 			if (!wasConnected && tox_isconnected (Tox_.get ()))
 			{
