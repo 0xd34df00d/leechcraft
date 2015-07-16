@@ -532,13 +532,14 @@ namespace Sarin
 
 		bool wasConnected = false;
 
+		// TODO handle tox_callback_self_connection_status()
 		QEventLoop evLoop;
 		while (!ShouldStop_)
 		{
 			tox_iterate (Tox_.get ());
 			auto next = tox_iteration_interval (Tox_.get ());
 
-			if (!wasConnected && tox_isconnected (Tox_.get ()))
+			if (!wasConnected && tox_self_get_connection_status (Tox_.get ()) != TOX_CONNECTION_NONE)
 			{
 				wasConnected = true;
 				qDebug () << "connected! tox id is" << GetToxAddress (Tox_.get ());
