@@ -439,7 +439,7 @@ namespace Sarin
 		emit friendStatusChanged (id, status);
 	}
 
-	void ToxThread::HandleTypingChange (int32_t friendId, uint8_t isTyping)
+	void ToxThread::HandleTypingChange (int32_t friendId, bool isTyping)
 	{
 		const auto& id = GetFriendId (Tox_.get (), friendId);
 		emit friendTypingChanged (id, isTyping);

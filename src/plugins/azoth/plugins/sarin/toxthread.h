@@ -150,7 +150,7 @@ namespace Sarin
 		void HandleFriendRequest (const uint8_t*, const uint8_t*, uint16_t);
 		void HandleNameChange (int32_t, const uint8_t*, uint16_t);
 		void UpdateFriendStatus (int32_t);
-		void HandleTypingChange (int32_t, uint8_t);
+		void HandleTypingChange (int32_t, bool);
 	protected:
 		virtual void run ();
 	signals:
