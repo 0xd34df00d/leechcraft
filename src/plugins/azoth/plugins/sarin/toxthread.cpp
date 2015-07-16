@@ -511,8 +511,8 @@ namespace Sarin
 					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
 				},
 				this);
-		tox_callback_typing_change (Tox_.get (),
-				[] (Tox*, int32_t friendId, uint8_t isTyping, void *udata)
+		tox_callback_friend_typing (Tox_.get (),
+				[] (Tox*, uint32_t friendId, bool isTyping, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->HandleTypingChange (friendId, isTyping);
 				},
