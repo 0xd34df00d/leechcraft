@@ -96,7 +96,10 @@ namespace Sarin
 	void FileTransferIn::Abort ()
 	{
 		Thread_->ScheduleFunction ([this] (Tox *tox)
-				{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_KILL, nullptr, 0); });
+				{
+					TOX_ERR_FILE_CONTROL error {};
+					tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_CANCEL, &error);
+				});
 	}
 
 	void FileTransferIn::handleData (qint32 friendNum, qint8 fileNum, const QByteArray& data)
