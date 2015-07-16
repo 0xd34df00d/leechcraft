@@ -93,14 +93,10 @@ namespace Sarin
 
 	void FileTransferManager::handleToxCreated (Tox *tox)
 	{
-		tox_callback_file_control (tox,
-				[] (Tox*, int32_t friendNum,
-						uint8_t, uint8_t filenum, uint8_t type,
-						const uint8_t *rawData, uint16_t len, void *udata)
+		tox_callback_file_recv_control (tox,
+				[] (Tox*, uint32_t frnd, uint32_t file, TOX_FILE_CONTROL type, void *udata)
 				{
-					const QByteArray data { reinterpret_cast<const char*> (rawData), len };
-					static_cast<FileTransferManager*> (udata)->
-							gotFileControl (friendNum, filenum, type, data);
+					static_cast<FileTransferManager*> (udata)->gotFileControl (frnd, file, type);
 				},
 				this);
 		tox_callback_file_send_request (tox,
