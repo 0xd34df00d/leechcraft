@@ -505,8 +505,8 @@ namespace Sarin
 					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
 				},
 				this);
-		tox_callback_connection_status (Tox_.get (),
-				[] (Tox*, int32_t friendId, uint8_t, void *udata)
+		tox_callback_friend_connection_status (Tox_.get (),
+				[] (Tox*, uint32_t friendId, TOX_CONNECTION, void *udata)
 				{
 					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
 				},
