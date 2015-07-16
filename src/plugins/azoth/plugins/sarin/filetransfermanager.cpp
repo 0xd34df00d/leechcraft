@@ -80,9 +80,9 @@ namespace Sarin
 
 		const auto transfer = new FileTransferOut { id, contact->GetPubKey (), name, toxThread };
 		connect (this,
-				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
+				SIGNAL (gotFileControl (qint32, qint32, int)),
 				transfer,
-				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+				SLOT (handleFileControl (qint32, qint32, int)));
 		return transfer;
 	}
 
@@ -159,9 +159,9 @@ namespace Sarin
 		};
 
 		connect (this,
-				SIGNAL (gotFileControl (qint32, qint8, qint8, QByteArray)),
+				SIGNAL (gotFileControl (qint32, qint32, int)),
 				transfer,
-				SLOT (handleFileControl (qint32, qint8, qint8, QByteArray)));
+				SLOT (handleFileControl (qint32, qint32, int)));
 		connect (this,
 				SIGNAL (gotData (qint32, qint8, QByteArray)),
 				transfer,

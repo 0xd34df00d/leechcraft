@@ -69,7 +69,7 @@ namespace Sarin
 		void Abort () override;
 	private slots:
 		void handleData (qint32, qint8, const QByteArray&);
-		void handleFileControl (qint32, qint8, qint8, const QByteArray&);
+		void handleFileControl (qint32, qint32, int);
 	};
 }
 }

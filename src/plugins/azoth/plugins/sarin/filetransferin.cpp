@@ -112,8 +112,7 @@ namespace Sarin
 		emit transferProgress (File_->pos (), Filesize_);
 	}
 
-	void FileTransferIn::handleFileControl (qint32 friendNum,
-			qint8 fileNum, qint8 type, const QByteArray&)
+	void FileTransferIn::handleFileControl (qint32 friendNum, qint32 fileNum, int type)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;

@@ -278,8 +278,7 @@ namespace Sarin
 		}
 	}
 
-	void FileTransferOut::handleFileControl (qint32 friendNum,
-			qint8 fileNum, qint8 type, const QByteArray& data)
+	void FileTransferOut::handleFileControl (qint32 friendNum, qint32 fileNum, int type)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
@@ -312,7 +311,8 @@ namespace Sarin
 				HandlePause ();
 				break;
 			case TOX_FILECONTROL_RESUME_BROKEN:
-				HandleResumeBroken (data);
+				// FIXME
+				HandleResumeBroken ({});
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO

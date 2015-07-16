@@ -65,7 +65,7 @@ namespace Sarin
 	signals:
 		void fileOffered (QObject*) override;
 
-		void gotFileControl (qint32, qint8, qint8, const QByteArray&);
+		void gotFileControl (qint32, qint32, int);
 		void gotData (qint32, qint8, const QByteArray&);
 
 		// Internal signal to route file info requests from Tox thread to main thread.
