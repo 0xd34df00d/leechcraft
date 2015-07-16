@@ -523,11 +523,12 @@ namespace Sarin
 		qDebug () << "gonna bootstrap..." << Tox_.get ();
 		const auto pubkey = Hex2Bin ("F404ABAA1C99A9D37D61AB54898F56793E1DEF8BD46B1038B9D822E8460FAB67");
 		TOX_ERR_BOOTSTRAP bsError {};
-		tox_bootstrap (Tox_.get (),
-				"192.210.149.121",
-				static_cast<uint16_t> (33445),
-				reinterpret_cast<const uint8_t*> (pubkey.constData ()),
-				&bsError);
+		if (!tox_bootstrap (Tox_.get (),
+					"192.210.149.121",
+					static_cast<uint16_t> (33445),
+					reinterpret_cast<const uint8_t*> (pubkey.constData ()),
+					&bsError))
+			throw MakeCommandCodeException ("tox_bootstrap", bsError);
 
 		bool wasConnected = false;
 
