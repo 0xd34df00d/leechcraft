@@ -103,7 +103,7 @@ namespace Sarin
 				});
 	}
 
-	void FileTransferIn::handleData (qint32 friendNum, qint8 fileNum, const QByteArray& data)
+	void FileTransferIn::handleData (qint32 friendNum, quint32 fileNum, const QByteArray& data)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
