@@ -111,13 +111,18 @@ namespace Sarin
 							GetFriendId (tox, friendNum), filenum, filesize, name);
 				},
 				this);
-		tox_callback_file_data (tox,
+		// TODO handle position and conditions.
+		tox_callback_file_recv_chunk (tox,
 				[] (Tox*,
-						int32_t friendNum, uint8_t fileNum,
-						const uint8_t *rawData, const uint16_t rawSize,
+						uint32_t friendNum, uint32_t fileNum, uint64_t position,
+						const uint8_t *rawData, size_t rawSize,
 						void *udata)
 				{
-					const QByteArray data { reinterpret_cast<const char*> (rawData), rawSize };
+					const QByteArray data
+					{
+						reinterpret_cast<const char*> (rawData),
+						static_cast<int> (rawSize)
+					};
 					static_cast<FileTransferManager*> (udata)->gotData (friendNum, fileNum, data);
 				},
 				this);
