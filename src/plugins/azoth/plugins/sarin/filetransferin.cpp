@@ -119,12 +119,14 @@ namespace Sarin
 
 		switch (type)
 		{
-		case TOX_FILECONTROL_FINISHED:
+			/* Not sure if it should be done now.
+		case TOX_FILE_CONTROL_RESUME:
 			Thread_->ScheduleFunction ([this] (Tox *tox)
 					{ tox_file_send_control (tox, FriendNum_, 1, FileNum_, TOX_FILECONTROL_FINISHED, nullptr, 0); });
 			emit stateChanged (TSFinished);
 			break;
-		case TOX_FILECONTROL_KILL:
+			*/
+		case TOX_FILE_CONTROL_CANCEL:
 			emit errorAppeared (TEAborted, tr ("Remote party aborted the transfer."));
 			emit stateChanged (TSFinished);
 			break;
