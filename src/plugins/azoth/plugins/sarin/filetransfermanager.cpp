@@ -159,9 +159,9 @@ namespace Sarin
 				transfer,
 				SLOT (handleFileControl (qint32, qint32, int)));
 		connect (this,
-				SIGNAL (gotData (qint32, qint8, QByteArray)),
+				SIGNAL (gotData (qint32, quint32, QByteArray)),
 				transfer,
-				SLOT (handleData (qint32, qint8, QByteArray)));
+				SLOT (handleData (qint32, quint32, QByteArray)));
 
 		emit fileOffered (transfer);
 	}
