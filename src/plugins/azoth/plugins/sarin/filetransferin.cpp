@@ -40,8 +40,8 @@ namespace Sarin
 {
 	FileTransferIn::FileTransferIn (const QString& azothId,
 			const QByteArray& pubkey,
-			int friendNum,
-			int fileNum,
+			qint32 friendNum,
+			quint32 fileNum,
 			qint64 filesize,
 			const QString& offeredName,
 			const std::shared_ptr<ToxThread>& thread,

@@ -44,8 +44,8 @@ namespace Sarin
 	{
 		Q_OBJECT
 
-		const int FriendNum_;
-		const int FileNum_;
+		const qint32 FriendNum_;
+		const quint32 FileNum_;
 
 		QString Filename_;
 		const qint64 Filesize_;
@@ -54,8 +54,8 @@ namespace Sarin
 	public:
 		FileTransferIn (const QString& azothId,
 				const QByteArray& pubkey,
-				int friendNum,
-				int fileNum,
+				qint32 friendNum,
+				quint32 fileNum,
 				qint64 fileSize,
 				const QString& offeredName,
 				const std::shared_ptr<ToxThread>& thread,
