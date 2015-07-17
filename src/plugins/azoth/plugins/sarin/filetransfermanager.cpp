@@ -99,10 +99,10 @@ namespace Sarin
 					static_cast<FileTransferManager*> (udata)->gotFileControl (frnd, file, type);
 				},
 				this);
-		tox_callback_file_send_request (tox,
-				[] (Tox *tox, int32_t friendNum,
-						uint8_t filenum, uint64_t filesize,
-						const uint8_t *rawFilename, uint16_t filenameLength,
+		tox_callback_file_recv (tox,
+				[] (Tox *tox, uint32_t friendNum,
+						uint32_t filenum, uint32_t kind, uint64_t filesize,
+						const uint8_t *rawFilename, size_t filenameLength,
 						void *udata)
 				{
 					const auto filenameStr = reinterpret_cast<const char*> (rawFilename);
