@@ -48,9 +48,9 @@ namespace Sarin
 	, Acc_ { acc }
 	{
 		connect (this,
-				SIGNAL (requested (int32_t, QByteArray, uint8_t, uint64_t, QString)),
+				SIGNAL (requested (int32_t, QByteArray, uint32_t, uint64_t, QString)),
 				this,
-				SLOT (handleRequest (int32_t, QByteArray, uint8_t, uint64_t, QString)));
+				SLOT (handleRequest (int32_t, QByteArray, uint32_t, uint64_t, QString)));
 	}
 
 	bool FileTransferManager::IsAvailable () const
@@ -124,7 +124,7 @@ namespace Sarin
 	}
 
 	void FileTransferManager::handleRequest (int32_t friendNum,
-			const QByteArray& pkey, uint8_t filenum, uint64_t size, const QString& name)
+			const QByteArray& pkey, uint32_t filenum, uint64_t size, const QString& name)
 	{
 		const auto toxThread = ToxThread_.lock ();
 		if (!toxThread)
