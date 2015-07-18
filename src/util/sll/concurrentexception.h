@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QFuture>
 
 namespace LeechCraft
@@ -40,6 +41,8 @@ namespace Util
 #else
 	using QtException_t = QException;
 #endif
+
+	using QtException_ptr = std::shared_ptr<QtConcurrent::Exception>;
 
 	/** @brief A concurrent exception that plays nicely with Qt.
 	 *
