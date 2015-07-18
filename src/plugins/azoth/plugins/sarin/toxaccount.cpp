@@ -447,6 +447,11 @@ namespace Sarin
 				SLOT (handleRemovedFriend (QByteArray)));
 
 		connect (Thread_.get (),
+				SIGNAL (fatalException (LeechCraft::Util::QtException_ptr)),
+				this,
+				SLOT (handleThreadFatalException (LeechCraft::Util::QtException_ptr)));
+
+		connect (Thread_.get (),
 				SIGNAL (toxCreated (Tox*)),
 				this,
 				SLOT (handleThreadReady ()));
@@ -646,6 +651,14 @@ namespace Sarin
 		const auto contact = Contacts_.value (pubkey);
 		const auto msg = new ChatMessage { body, IMessage::Direction::In, contact };
 		msg->Store ();
+	}
+
+	void ToxAccount::handleThreadFatalException (const Util::QtException_ptr& e)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< e->what ();
+
+		emit statusChanged ({ SError, e->what () });
 	}
 }
 }

@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <util/sll/concurrentexception.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"
@@ -137,6 +138,8 @@ namespace Sarin
 		void handleFriendTypingChanged (const QByteArray&, bool);
 
 		void handleInMessage (const QByteArray&, const QString&);
+
+		void handleThreadFatalException (const LeechCraft::Util::QtException_ptr&);
 	signals:
 		void accountRenamed (const QString&) override;
 		void authorizationRequested (QObject*, const QString&) override;
