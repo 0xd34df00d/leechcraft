@@ -99,6 +99,24 @@ namespace Util
 				rh ();
 			}
 		};
+
+		template<typename ResultHandler, typename RetType, typename = typename std::result_of<ResultHandler (RetType)>::type>
+		constexpr bool IsCompatible (int)
+		{
+			return true;
+		}
+
+		template<typename ResultHandler, typename RetType>
+		constexpr bool IsCompatible (float)
+		{
+			return false;
+		}
+
+		template<typename ResultHandler, typename RetType>
+		constexpr bool IsCompatible ()
+		{
+			return IsCompatible<ResultHandler, RetType> (0);
+		}
 	}
 
 	/** @brief Runs a QFuture-returning function and feeding the future
