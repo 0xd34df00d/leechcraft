@@ -172,6 +172,8 @@ namespace Sarin
 		void friendStatusChanged (const QByteArray& pubkey, const EntryStatus& status);
 
 		void friendTypingChanged (const QByteArray& pubkey, bool isTyping);
+
+		void fatalException (const LeechCraft::Util::QtException_ptr&);
 	};
 }
 }
