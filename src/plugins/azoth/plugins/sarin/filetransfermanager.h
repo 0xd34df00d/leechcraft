@@ -67,6 +67,7 @@ namespace Sarin
 
 		void gotFileControl (qint32, qint32, int);
 		void gotData (qint32, quint32, const QByteArray&);
+		void gotChunkRequest (qint32 friendNum, qint32 fileNum, uint64_t position, size_t length);
 
 		// Internal signal to route file info requests from Tox thread to main thread.
 		void requested (int32_t, const QByteArray&, uint32_t, uint64_t, const QString&);

@@ -83,6 +83,10 @@ namespace Sarin
 				SIGNAL (gotFileControl (qint32, qint32, int)),
 				transfer,
 				SLOT (handleFileControl (qint32, qint32, int)));
+		connect (this,
+				SIGNAL (gotChunkRequest (qint32, qint32, uint64_t, size_t)),
+				transfer,
+				SLOT (handleChunkRequested (qint32, qint32, uint64_t, size_t)));
 		return transfer;
 	}
 
