@@ -107,3 +107,5 @@ namespace Util
 	};
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Util::QtException_ptr)
