@@ -254,7 +254,7 @@ namespace Sarin
 		toxId = Hex2Bin (toxId);
 		ScheduleFunction ([toxId, this] (Tox *tox)
 				{
-					if (toxId.size () != TOX_ADDRESS_SIZE)
+					if (toxId.size () != TOX_PUBLIC_KEY_SIZE)
 						return;
 
 					TOX_ERR_FRIEND_ADD error {};
