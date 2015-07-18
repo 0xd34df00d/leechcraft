@@ -42,7 +42,7 @@ namespace Util
 	using QtException_t = QException;
 #endif
 
-	using QtException_ptr = std::shared_ptr<QtConcurrent::Exception>;
+	using QtException_ptr = std::shared_ptr<QtException_t>;
 
 	/** @brief A concurrent exception that plays nicely with Qt.
 	 *
