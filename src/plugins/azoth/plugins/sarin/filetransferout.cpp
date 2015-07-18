@@ -273,6 +273,43 @@ namespace Sarin
 			break;
 		}
 	}
+
+	void FileTransferOut::handleChunkRequested (qint32 friendNum, qint32 fileNum, uint64_t offset, size_t length)
+	{
+		if (friendNum != FriendNum_ || fileNum != FileNum_)
+			return;
+
+		if (static_cast<uint64_t> (File_.pos ()) != offset)
+			if (!File_.seek (offset))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot seek to"
+						<< offset
+						<< "while at pos"
+						<< File_.pos ();
+				return;
+			}
+
+		const auto& data = File_.read (length);
+		if (static_cast<size_t> (data.size ()) != length)
+			qWarning () << Q_FUNC_INFO
+					<< "could not read"
+					<< length
+					<< "bytes, reading"
+					<< data.size ()
+					<< "instead";
+
+		Thread_->ScheduleFunction ([data, friendNum, fileNum, offset] (Tox *tox)
+				{
+					TOX_ERR_FILE_SEND_CHUNK error {};
+					const auto dataPtr = reinterpret_cast<const uint8_t*> (data.constData ());
+					if (!tox_file_send_chunk (tox, friendNum, fileNum,
+								offset, dataPtr, data.size (), &error))
+						qWarning () << Q_FUNC_INFO
+								<< "unable to send file chunk:"
+								<< error;
+				});
+	}
 }
 }
 }
