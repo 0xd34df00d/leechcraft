@@ -101,13 +101,25 @@ namespace Util
 		};
 
 		template<typename ResultHandler, typename RetType, typename = typename std::result_of<ResultHandler (RetType)>::type>
-		constexpr bool IsCompatible (int)
+		constexpr bool IsCompatibleImpl (int)
 		{
 			return true;
 		}
 
-		template<typename ResultHandler, typename RetType>
-		constexpr bool IsCompatible (float)
+		template<typename, typename>
+		constexpr bool IsCompatibleImpl (float)
+		{
+			return false;
+		}
+
+		template<typename ResultHandler, typename = typename std::result_of<ResultHandler ()>::type>
+		constexpr bool IsCompatibleImplVoid (int)
+		{
+			return true;
+		}
+
+		template<typename>
+		constexpr bool IsCompatibleImplVoid (float)
 		{
 			return false;
 		}
@@ -115,7 +127,9 @@ namespace Util
 		template<typename ResultHandler, typename RetType>
 		constexpr bool IsCompatible ()
 		{
-			return IsCompatible<ResultHandler, RetType> (0);
+			return std::is_same<void, RetType>::value ?
+					IsCompatibleImplVoid<ResultHandler> (0) :
+					IsCompatibleImpl<ResultHandler, RetType> (0);
 		}
 	}
 
