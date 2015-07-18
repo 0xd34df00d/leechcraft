@@ -54,16 +54,11 @@ namespace Sarin
 
 		QString PublicName_;
 
-		QString FriendId_;
-
 		EntryStatus Status_;
 	public:
 		ToxContact (const QByteArray& pubkey, ToxAccount *account);
 
 		const QByteArray& GetPubKey () const;
-
-		QString GetFriendId () const;
-		void SetFriendId (const QString&);
 
 		QObject* GetQObject () override;
 		IAccount* GetParentAccount () const override;
