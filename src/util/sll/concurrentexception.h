@@ -35,6 +35,12 @@ namespace LeechCraft
 {
 namespace Util
 {
+#if QT_VERSION < 0x050000
+	using QtException_t = QtConcurrent::Exception;
+#else
+	using QtException_t = QException;
+#endif
+
 	/** @brief A concurrent exception that plays nicely with Qt.
 	 *
 	 * This class can be used to make some third-party exception type
@@ -47,11 +53,7 @@ namespace Util
 	 * @tparam T The base type of the exception.
 	 */
 	template<typename T>
-#if QT_VERSION < 0x050000
-	class ConcurrentException : public QtConcurrent::Exception
-#else
-	class ConcurrentException : public QException
-#endif
+	class ConcurrentException : public QtException_t
 							  , public T
 	{
 	public:
