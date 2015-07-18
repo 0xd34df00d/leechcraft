@@ -130,6 +130,15 @@ namespace Sarin
 					static_cast<FileTransferManager*> (udata)->gotData (friendNum, fileNum, data);
 				},
 				this);
+		tox_callback_file_chunk_request (tox,
+				[] (Tox*, uint32_t friendNum, uint32_t fileNum,
+						uint64_t position, size_t length,
+						void *udata)
+				{
+					static_cast<FileTransferManager*> (udata)->
+							gotChunkRequest (friendNum, fileNum, position, length);
+				},
+				this);
 	}
 
 	void FileTransferManager::handleRequest (int32_t friendNum,
