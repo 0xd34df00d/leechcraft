@@ -67,6 +67,7 @@
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/qml/tooltipitem.h>
+#include <util/sll/concurrentexception.h>
 
 #ifdef WITH_QWT
 #include <util/qml/plotitem.h>
@@ -178,6 +179,7 @@ namespace LeechCraft
 		qRegisterMetaType<QModelIndex> ("QModelIndex");
 		qRegisterMetaType<QModelIndex*> ("QModelIndexStar");
 		qRegisterMetaType<TagsManager::TagsDictionary_t> ("LeechCraft::TagsManager::TagsDictionary_t");
+		qRegisterMetaType<Util::QtException_ptr> ("LeechCraft::Util::QtException_ptr");
 		qRegisterMetaType<Entity> ("LeechCraft::Entity");
 		qRegisterMetaType<Entity> ("Entity");
 		qRegisterMetaType<IHookProxy_ptr> ("LeechCraft::IHookProxy_ptr");
