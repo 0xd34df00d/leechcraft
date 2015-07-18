@@ -451,7 +451,7 @@ namespace Sarin
 		Tox_Options opts
 		{
 			Config_.AllowIPv6_,
-			!Config_.AllowUDP_,
+			Config_.AllowUDP_,
 			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
 			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
 			static_cast<uint16_t> (Config_.ProxyPort_),
