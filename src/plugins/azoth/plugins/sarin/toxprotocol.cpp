@@ -124,7 +124,7 @@ namespace Sarin
 
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Saren_Accounts" };
+				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
 		settings.remove (account->GetAccountID ());
 
 		Accounts_.removeOne (account);
@@ -140,7 +140,7 @@ namespace Sarin
 	{
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Saren_Accounts" };
+				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
 
 		for (const auto& key : settings.childKeys ())
 		{
@@ -171,7 +171,7 @@ namespace Sarin
 	{
 		QSettings settings { QSettings::IniFormat, QSettings::UserScope,
 				QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Saren_Accounts" };
+				QCoreApplication::applicationName () + "_Azoth_Sarin_Accounts" };
 		settings.setValue (account->GetAccountID (), account->Serialize ());
 	}
 }
