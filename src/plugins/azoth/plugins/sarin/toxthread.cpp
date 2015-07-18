@@ -448,6 +448,8 @@ namespace Sarin
 	{
 		qDebug () << Q_FUNC_INFO;
 
+		emit statusChanged ({ SConnecting, {} });
+
 		Tox_Options opts
 		{
 			Config_.AllowIPv6_,
