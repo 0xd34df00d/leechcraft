@@ -484,12 +484,8 @@ namespace Sarin
 				this);
 	}
 
-	void ToxThread::run ()
+	void ToxThread::RunTox ()
 	{
-		qDebug () << Q_FUNC_INFO;
-
-		emit statusChanged ({ SConnecting, {} });
-
 		Tox_Options opts
 		{
 			Config_.AllowIPv6_,
@@ -580,6 +576,24 @@ namespace Sarin
 		}
 
 		SaveState ();
+	}
+
+	void ToxThread::run ()
+	{
+		qDebug () << Q_FUNC_INFO;
+
+		emit statusChanged ({ SConnecting, {} });
+
+		try
+		{
+			RunTox ();
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got standard exception:"
+					<< e.what ();
+		}
 	}
 }
 }

@@ -153,6 +153,7 @@ namespace Sarin
 		void HandleTypingChange (int32_t, bool);
 
 		void SetCallbacks ();
+		void RunTox ();
 	protected:
 		virtual void run ();
 	signals:
