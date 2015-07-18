@@ -151,6 +151,8 @@ namespace Sarin
 		void HandleNameChange (int32_t, const uint8_t*, uint16_t);
 		void UpdateFriendStatus (int32_t);
 		void HandleTypingChange (int32_t, bool);
+
+		void SetCallbacks ();
 	protected:
 		virtual void run ();
 	signals:

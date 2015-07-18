@@ -444,44 +444,8 @@ namespace Sarin
 		emit friendTypingChanged (id, isTyping);
 	}
 
-	void ToxThread::run ()
+	void ToxThread::SetCallbacks ()
 	{
-		qDebug () << Q_FUNC_INFO;
-
-		emit statusChanged ({ SConnecting, {} });
-
-		Tox_Options opts
-		{
-			Config_.AllowIPv6_,
-			Config_.AllowUDP_,
-			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
-			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
-			static_cast<uint16_t> (Config_.ProxyPort_),
-			0,			// TODO
-			0,			// TODO
-			0,			// TODO
-			ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
-			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
-			static_cast<size_t> (ToxState_.size ())
-		};
-
-		TOX_ERR_NEW creationError {};
-		Tox_ = std::shared_ptr<Tox> { tox_new (&opts, &creationError), &tox_kill };
-		if (!Tox_ || creationError != TOX_ERR_NEW_OK)
-			throw MakeCommandCodeException ("tox_new", creationError);
-
-		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
-
-		DoTox (Name_,
-				[this] (const uint8_t *bytes, uint16_t size)
-				{
-					TOX_ERR_SET_INFO error {};
-					if (!tox_self_set_name (Tox_.get (), bytes, size, &error))
-						throw MakeCommandCodeException ("tox_self_set_name", error);
-				});
-
-		SetToxStatus (Tox_.get (), Status_);
-
 		tox_callback_friend_request (Tox_.get (),
 				[] (Tox*, const uint8_t *pkey, const uint8_t *data, size_t size, void *udata)
 				{
@@ -518,6 +482,47 @@ namespace Sarin
 					static_cast<ToxThread*> (udata)->HandleTypingChange (friendId, isTyping);
 				},
 				this);
+	}
+
+	void ToxThread::run ()
+	{
+		qDebug () << Q_FUNC_INFO;
+
+		emit statusChanged ({ SConnecting, {} });
+
+		Tox_Options opts
+		{
+			Config_.AllowIPv6_,
+			Config_.AllowUDP_,
+			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
+			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
+			static_cast<uint16_t> (Config_.ProxyPort_),
+			0,			// TODO
+			0,			// TODO
+			0,			// TODO
+			ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
+			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
+			static_cast<size_t> (ToxState_.size ())
+		};
+
+		TOX_ERR_NEW creationError {};
+		Tox_ = std::shared_ptr<Tox> { tox_new (&opts, &creationError), &tox_kill };
+		if (!Tox_ || creationError != TOX_ERR_NEW_OK)
+			throw MakeCommandCodeException ("tox_new", creationError);
+
+		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
+
+		DoTox (Name_,
+				[this] (const uint8_t *bytes, uint16_t size)
+				{
+					TOX_ERR_SET_INFO error {};
+					if (!tox_self_set_name (Tox_.get (), bytes, size, &error))
+						throw MakeCommandCodeException ("tox_self_set_name", error);
+				});
+
+		SetCallbacks ();
+
+		SetToxStatus (Tox_.get (), Status_);
 
 		emit toxCreated (Tox_.get ());
 
