@@ -134,7 +134,7 @@ Rectangle {
 
                 minimumValue: 0
                 maximumValue: 100
-                value: usedPercentage
+                value: Math.max(usedPercentage, 0)
 
                 height: 13
 
