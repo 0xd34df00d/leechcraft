@@ -132,8 +132,6 @@ namespace Sarin
 	void FileTransferOut::HandleAccept ()
 	{
 		State_ = State::Transferring;
-		TransferChunk ();
-
 		emit stateChanged (TSTransfer);
 	}
 
@@ -155,7 +153,6 @@ namespace Sarin
 	{
 		TransferAllowed_ = true;
 		State_ = State::Transferring;
-		TransferChunk ();
 	}
 
 	void FileTransferOut::HandleResumeBroken (const QByteArray& data)
@@ -204,7 +201,6 @@ namespace Sarin
 					if (!sendRes)
 					{
 						emit stateChanged (TSFinished);
-						TransferChunk ();
 						return;
 					}
 
@@ -214,68 +210,6 @@ namespace Sarin
 					emit stateChanged (TSFinished);
 				},
 				this);
-	}
-
-	void FileTransferOut::TransferChunk ()
-	{
-		if (!TransferAllowed_)
-			return;
-
-		if (!File_.atEnd ())
-		{
-			const auto sendScheduler = [this]
-			{
-				return Thread_->ScheduleFunction ([this] (Tox *tox)
-						{
-							const int chunkSize = tox_file_data_size (tox, FriendNum_);
-							const auto& data = File_.read (chunkSize);
-							return tox_file_send_data (tox, FriendNum_, FileNum_,
-									reinterpret_cast<const uint8_t*> (data.constData ()), data.size ());
-						});
-			};
-			Util::ExecuteFuture (sendScheduler,
-					[this] (int sendRes)
-					{
-						if (!sendRes)
-						{
-							emit transferProgress (File_.pos (), File_.size ());
-							TransferChunk ();
-							return;
-						}
-
-						qWarning () << Q_FUNC_INFO
-								<< "error sending the file"
-								<< sendRes;
-						emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
-						emit stateChanged (TSFinished);
-					},
-					this);
-		}
-		else
-		{
-			const auto finishSheduler = [this]
-			{
-				return Thread_->ScheduleFunction ([this] (Tox *tox)
-						{
-							return tox_file_send_control (tox, FriendNum_, 0, FileNum_, TOX_FILECONTROL_FINISHED, nullptr, 0);
-						});
-			};
-			Util::ExecuteFuture (finishSheduler,
-					[this] (int sendRes)
-					{
-						if (!sendRes)
-						{
-							emit stateChanged (TSFinished);
-							return;
-						}
-
-						qWarning () << Q_FUNC_INFO
-								<< "error finalizing the file transfer";
-						emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
-						emit stateChanged (TSFinished);
-					},
-					this);
-		}
 	}
 
 	void FileTransferOut::handleFileControl (qint32 friendNum, qint32 fileNum, int type)
