@@ -588,6 +588,13 @@ namespace Sarin
 		{
 			RunTox ();
 		}
+		catch (const Util::QtException_t& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got concurrent exception:"
+					<< e.what ();
+			emit fatalException (Util::QtException_ptr { e.clone () });
+		}
 		catch (const std::exception& e)
 		{
 			qWarning () << Q_FUNC_INFO
