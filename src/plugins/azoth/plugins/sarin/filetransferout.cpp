@@ -155,63 +155,6 @@ namespace Sarin
 		State_ = State::Transferring;
 	}
 
-	void FileTransferOut::HandleResumeBroken (const QByteArray& data)
-	{
-		if (data.size () < 8)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "insufficient data to get the 64-bit position value:"
-					<< data.toHex ();
-			return;
-		}
-
-		const uint64_t pos = *reinterpret_cast<const uint64_t*> (data.constData ());
-		qDebug () << Q_FUNC_INFO
-				<< "would resume broken transfer starting from position"
-				<< pos
-				<< "of"
-				<< File_.size ()
-				<< "; current pos:"
-				<< File_.pos ();
-
-		if (!File_.seek (pos))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to seek to"
-					<< pos
-					<< "of"
-					<< File_.size ()
-					<< "; error:"
-					<< File_.errorString ();
-			return;
-		}
-
-		const auto finishSheduler = [this]
-		{
-			return Thread_->ScheduleFunction ([this] (Tox *tox)
-					{
-						TOX_ERR_FILE_CONTROL error {};
-						if (!tox_file_control (tox, FriendNum_, FileNum_, TOX_FILE_CONTROL_RESUME, &error))
-							throw MakeCommandCodeException ("tox_file_control", error);
-					});
-		};
-		Util::ExecuteFuture (finishSheduler,
-				[this] (int sendRes)
-				{
-					if (!sendRes)
-					{
-						emit stateChanged (TSFinished);
-						return;
-					}
-
-					qWarning () << Q_FUNC_INFO
-							<< "error finalizing the file transfer";
-					emit errorAppeared (TEProtocolError, tr ("Error transferring another chunk."));
-					emit stateChanged (TSFinished);
-				},
-				this);
-	}
-
 	void FileTransferOut::handleFileControl (qint32 friendNum, qint32 fileNum, int type)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
@@ -222,10 +165,10 @@ namespace Sarin
 		case State::Waiting:
 			switch (type)
 			{
-			case TOX_FILECONTROL_ACCEPT:
+			case TOX_FILE_CONTROL_RESUME:
 				HandleAccept ();
 				break;
-			case TOX_FILECONTROL_KILL:
+			case TOX_FILE_CONTROL_CANCEL:
 				HandleKill ();
 				break;
 			default:
@@ -238,15 +181,11 @@ namespace Sarin
 		case State::Transferring:
 			switch (type)
 			{
-			case TOX_FILECONTROL_KILL:
+			case TOX_FILE_CONTROL_CANCEL:
 				HandleKill ();
 				break;
-			case TOX_FILECONTROL_PAUSE:
+			case TOX_FILE_CONTROL_PAUSE:
 				HandlePause ();
-				break;
-			case TOX_FILECONTROL_RESUME_BROKEN:
-				// FIXME
-				HandleResumeBroken ({});
 				break;
 			default:
 				qWarning () << Q_FUNC_INFO
@@ -258,10 +197,10 @@ namespace Sarin
 		case State::Paused:
 			switch (type)
 			{
-			case TOX_FILECONTROL_ACCEPT:
+			case TOX_FILE_CONTROL_RESUME:
 				HandleResume ();
 				break;
-			case TOX_FILECONTROL_KILL:
+			case TOX_FILE_CONTROL_CANCEL:
 				HandleKill ();
 				break;
 			default:
