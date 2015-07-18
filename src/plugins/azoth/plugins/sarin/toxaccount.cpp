@@ -422,9 +422,9 @@ namespace Sarin
 				this,
 				SLOT (handleToxStateChanged (QByteArray)));
 		connect (Thread_.get (),
-				SIGNAL (gotFriendRequest (QByteArray, QByteArray, QString)),
+				SIGNAL (gotFriendRequest (QByteArray, QString)),
 				this,
-				SLOT (handleGotFriendRequest (QByteArray, QByteArray, QString)));
+				SLOT (handleGotFriendRequest (QByteArray, QString)));
 		connect (Thread_.get (),
 				SIGNAL (gotFriend (qint32)),
 				this,
@@ -573,13 +573,10 @@ namespace Sarin
 		watcher->setFuture (Thread_->ResolveFriend (id));
 	}
 
-	void ToxAccount::handleGotFriendRequest (const QByteArray& friendId, const QByteArray& pubkey, const QString& msg)
+	void ToxAccount::handleGotFriendRequest (const QByteArray& pubkey, const QString& msg)
 	{
 		if (!Contacts_.contains (pubkey))
 			InitEntry (pubkey);
-
-		const auto contact = Contacts_.value (pubkey);
-		contact->SetFriendId (friendId);
 
 		emit authorizationRequested (Contacts_.value (pubkey), msg.trimmed ());
 	}

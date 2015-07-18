@@ -418,8 +418,7 @@ namespace Sarin
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
 		qDebug () << Q_FUNC_INFO << pubkey << msg;
 
-		// FIXME check if first parameter is needed.
-		emit gotFriendRequest ({}, pubkey, msg);
+		emit gotFriendRequest (pubkey, msg);
 	}
 
 	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t)
