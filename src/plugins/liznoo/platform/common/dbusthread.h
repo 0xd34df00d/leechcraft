@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <atomic>
 #include <type_traits>
 #include <functional>
 #include <QThread>
@@ -59,6 +60,8 @@ namespace Liznoo
 	class DBusThread : public QThread
 	{
 		std::weak_ptr<ConnT> Conn_;
+
+		std::atomic_bool IsConnInitialized_ { false };
 
 		QMutex SHMutex_;
 		QList<std::function<void (ConnT*)>> StartHandlers_;
@@ -104,6 +107,8 @@ namespace Liznoo
 			const auto conn = std::make_shared<ConnT> ();
 			Conn_ = conn;
 
+
+			IsConnInitialized_ = true;
 			RunHandlers ();
 
 			QThread::run ();
