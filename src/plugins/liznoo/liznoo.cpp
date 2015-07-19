@@ -40,6 +40,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/futures.h>
+#include <util/sll/delayedexecutor.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
@@ -105,6 +106,7 @@ namespace Liznoo
 
 					qDebug () << Q_FUNC_INFO
 							<< "UPower events backend is not available, trying logind...";
+					Util::DelayDestruction (PL_);
 					PL_ = Events::MakeUPowerLike (logindThread, Proxy_);
 				});
 
