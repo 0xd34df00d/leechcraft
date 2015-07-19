@@ -29,6 +29,7 @@
 
 #include "logindconnector.h"
 #include <QDBusInterface>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -64,6 +65,8 @@ namespace Logind
 				"LeechCraft",
 				tr ("Preparing LeechCraft for going to sleep..."),
 				"delay");
+		qDebug () << value;
+		qDebug () << value.arguments ().value (0);
 	}
 
 	void LogindConnector::handlePreparing (bool goingDown)
