@@ -43,6 +43,18 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+	namespace detail
+	{
+		class StartHandlersRotatorBase : public QObject
+		{
+			Q_OBJECT
+		public:
+			using QObject::QObject;
+		public slots:
+			virtual void rotate () = 0;
+		};
+	}
+
 	template<typename ConnT>
 	class DBusThread : public QThread
 	{

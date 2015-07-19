@@ -31,6 +31,7 @@ set (FBSD_SRCS
 	)
 
 set (LINUX_SRCS
+	platform/common/dbusthread.cpp
 	)
 
 set (LOGIND_SRCS
