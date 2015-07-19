@@ -59,6 +59,7 @@
 	#include "platform/screen/freedesktop.h"
 	#include "platform/common/dbusthread.h"
 	#include "platform/upower/upowerconnector.h"
+	#include "platform/logind/logindconnector.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/battery/winapiplatform.h"
 	#include "platform/events/platformwinapi.h"
@@ -94,8 +95,18 @@ namespace Liznoo
 
 #if defined(Q_OS_LINUX)
 		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
+		const auto logindThread = std::make_shared<DBusThread<Logind::LogindConnector>> ();
 
 		PL_ = Events::MakeUPowerLike (upowerThread, Proxy_);
+		PL_->SubscribeAvailable ([this, logindThread] (bool avail)
+				{
+					if (avail)
+						return;
+
+					qDebug () << Q_FUNC_INFO
+							<< "UPower events backend is not available, trying logind...";
+					PL_ = Events::MakeUPowerLike (logindThread, Proxy_);
+				});
 
 		SPL_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (upowerThread);
@@ -107,6 +118,7 @@ namespace Liznoo
 	#endif
 
 		upowerThread->start (QThread::IdlePriority);
+		logindThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
