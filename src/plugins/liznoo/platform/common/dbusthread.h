@@ -92,6 +92,13 @@ namespace Liznoo
 			const auto conn = std::make_shared<ConnT> ();
 			Conn_ = conn;
 
+			RunHandlers (conn);
+
+			QThread::run ();
+		}
+	private:
+		void RunHandlers (const std::shared_ptr<ConnT>& conn)
+		{
 			decltype (StartHandlers_) handlers;
 			{
 				QMutexLocker locker { &SHMutex_ };
@@ -99,9 +106,6 @@ namespace Liznoo
 			}
 			for (const auto& f : handlers)
 				f (conn.get ());
-			handlers.clear ();
-
-			QThread::run ();
 		}
 	};
 
