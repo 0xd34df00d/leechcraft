@@ -31,6 +31,8 @@
 #include <QDBusInterface>
 #include <QtDebug>
 
+#include <unistd.h>
+
 namespace LeechCraft
 {
 namespace Liznoo
@@ -55,7 +57,7 @@ namespace Logind
 
 	void LogindConnector::Inhibit ()
 	{
-		const auto value = QDBusInterface
+		const auto& value = QDBusInterface
 		{
 			"org.freedesktop.login1",
 			"/org/freedesktop/login1",
@@ -66,7 +68,12 @@ namespace Logind
 				tr ("Preparing LeechCraft for going to sleep..."),
 				"delay");
 		qDebug () << value;
-		qDebug () << value.arguments ().value (0);
+
+		const auto fdVar = value.arguments ().value (0);
+		qDebug () << fdVar;
+
+		if (fdVar.canConvert<int> ())
+			close (fdVar.toInt ());
 	}
 
 	void LogindConnector::handlePreparing (bool goingDown)
