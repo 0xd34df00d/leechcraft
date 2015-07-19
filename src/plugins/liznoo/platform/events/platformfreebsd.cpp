@@ -40,7 +40,7 @@ namespace Events
 	PlatformFreeBSD::PlatformFreeBSD (const ICoreProxy_ptr& proxy, QObject *parent)
 	: PlatformLayer (proxy, parent)
 	{
-		SetAvailable (false);
+		setAvailable (false);
 	}
 }
 }
