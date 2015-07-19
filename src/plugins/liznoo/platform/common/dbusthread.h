@@ -87,7 +87,7 @@ namespace Liznoo
 			return Conn_.lock ();
 		}
 	protected:
-		void run ()
+		void run () override
 		{
 			const auto conn = std::make_shared<ConnT> ();
 			Conn_ = conn;
