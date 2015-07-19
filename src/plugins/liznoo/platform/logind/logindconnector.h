@@ -50,6 +50,8 @@ namespace Logind
 		LogindConnector (QObject* = nullptr);
 
 		bool ArePowerEventsAvailable () const;
+	private:
+		void Inhibit ();
 	private slots:
 		void handlePreparing (bool);
 	signals:

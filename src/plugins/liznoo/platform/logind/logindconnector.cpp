@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "logindconnector.h"
+#include <QDBusInterface>
 
 namespace LeechCraft
 {
@@ -49,6 +50,20 @@ namespace Logind
 	bool LogindConnector::ArePowerEventsAvailable () const
 	{
 		return PowerEventsAvailable_;
+	}
+
+	void LogindConnector::Inhibit ()
+	{
+		const auto value = QDBusInterface
+		{
+			"org.freedesktop.login1",
+			"/org/freedesktop/login1",
+			"org.freedesktop.login1.Manager"
+		}.call ("Inhibit",
+				"shutdown:sleep",
+				"LeechCraft",
+				tr ("Preparing LeechCraft for going to sleep..."),
+				"delay");
 	}
 
 	void LogindConnector::handlePreparing (bool goingDown)
