@@ -93,11 +93,12 @@ namespace Liznoo
 		XSD_->RegisterObject (XmlSettingsManager::Instance (), "liznoosettings.xml");
 
 #if defined(Q_OS_LINUX)
-		const auto dbusThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
+		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
-		PL_ = Events::MakeUPowerLike (dbusThread, Proxy_);
+		PL_ = Events::MakeUPowerLike (upowerThread, Proxy_);
+
 		SPL_ = new Screen::Freedesktop (this);
-		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (dbusThread);
+		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (upowerThread);
 
 	#ifdef USE_PMUTILS
 		PowerActPlatform_ = std::make_shared<PowerActions::PMUtils> ();
@@ -105,14 +106,14 @@ namespace Liznoo
 		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
 	#endif
 
-		dbusThread->ScheduleOnStart ([] (UPower::UPowerConnector *conn)
+		upowerThread->ScheduleOnStart ([] (UPower::UPowerConnector *conn)
 				{
 					if (!conn->ArePowerEventsAvailable ())
 						qWarning () << Q_FUNC_INFO
 								<< "power events are not available";
 				});
 
-		dbusThread->start (QThread::IdlePriority);
+		upowerThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
