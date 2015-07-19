@@ -69,7 +69,10 @@ namespace Logind
 	void LogindConnector::handlePreparing (bool goingDown)
 	{
 		if (goingDown)
+		{
+			Inhibit ();
 			emit gonnaSleep (5000);
+		}
 		else
 			emit wokeUp ();
 	}
