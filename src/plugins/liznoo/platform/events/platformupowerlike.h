@@ -61,6 +61,11 @@ namespace Events
 								SIGNAL (wokeUp ()),
 								this,
 								SLOT (emitWokeUp ()));
+
+						QMetaObject::invokeMethod (this,
+								"setAvailable",
+								 Qt::QueuedConnection,
+								 Q_ARG (bool, conn->ArePowerEventsAvailable ()));
 					});
 		}
 	};
