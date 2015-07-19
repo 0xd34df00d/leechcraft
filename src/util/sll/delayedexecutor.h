@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <functional>
 #include <QObject>
 #include "sllconfig.h"
@@ -93,6 +94,12 @@ namespace Util
 	inline void ExecuteLater (const DelayedExecutor::Actor_f& actor, int delay = 0)
 	{
 		new DelayedExecutor { actor, delay };
+	}
+
+	template<typename F>
+	void DelayDestruction (const std::shared_ptr<F>& obj)
+	{
+		ExecuteLater ([obj] {});
 	}
 }
 }
