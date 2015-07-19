@@ -35,6 +35,7 @@
 #include <functional>
 #include <QThread>
 #include <QFuture>
+#include <QTimer>
 #include <QMutex>
 #include <QMutexLocker>
 #include <QFutureInterface>
@@ -65,6 +66,23 @@ namespace Liznoo
 
 		QMutex SHMutex_;
 		QList<std::function<void (ConnT*)>> StartHandlers_;
+
+		class Rotator : public detail::StartHandlersRotatorBase
+		{
+			DBusThread<ConnT> * const Thread_;
+		public:
+			Rotator (DBusThread<ConnT> *thread)
+			: Thread_ { thread }
+			{
+			}
+
+			void rotate () override
+			{
+				Thread_->RunHandlers ();
+			}
+		};
+
+		std::unique_ptr<Rotator> Rotator_;
 	public:
 		using QThread::QThread;
 
@@ -94,6 +112,9 @@ namespace Liznoo
 				StartHandlers_ << handler;
 			}
 
+			if (IsConnInitialized_)
+				QTimer::singleShot (0, Rotator_.get (), SLOT (rotate ()));
+
 			return iface.future ();
 		}
 
@@ -107,6 +128,7 @@ namespace Liznoo
 			const auto conn = std::make_shared<ConnT> ();
 			Conn_ = conn;
 
+			Rotator_.reset (new Rotator { this });
 
 			IsConnInitialized_ = true;
 			RunHandlers ();
