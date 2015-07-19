@@ -106,13 +106,6 @@ namespace Liznoo
 		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
 	#endif
 
-		upowerThread->ScheduleOnStart ([] (UPower::UPowerConnector *conn)
-				{
-					if (!conn->ArePowerEventsAvailable ())
-						qWarning () << Q_FUNC_INFO
-								<< "power events are not available";
-				});
-
 		upowerThread->start (QThread::IdlePriority);
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
