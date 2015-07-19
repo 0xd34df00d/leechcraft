@@ -34,6 +34,8 @@
 #include <functional>
 #include <QThread>
 #include <QFuture>
+#include <QMutex>
+#include <QMutexLocker>
 #include <QFutureInterface>
 #include <util/sll/futures.h>
 
@@ -46,6 +48,7 @@ namespace Liznoo
 	{
 		std::weak_ptr<ConnT> Conn_;
 
+		QMutex SHMutex_;
 		QList<std::function<void (ConnT*)>> StartHandlers_;
 	public:
 		using QThread::QThread;
@@ -71,7 +74,10 @@ namespace Liznoo
 				Util::ReportFutureResult (iface, f, conn);
 			};
 
-			StartHandlers_ << handler;
+			{
+				QMutexLocker locker { &SHMutex_ };
+				StartHandlers_ << handler;
+			}
 
 			return iface.future ();
 		}
@@ -86,9 +92,14 @@ namespace Liznoo
 			const auto conn = std::make_shared<ConnT> ();
 			Conn_ = conn;
 
-			for (const auto& f : StartHandlers_)
+			decltype (StartHandlers_) handlers;
+			{
+				QMutexLocker locker { &SHMutex_ };
+				handlers.swap (StartHandlers_);
+			}
+			for (const auto& f : handlers)
 				f (conn.get ());
-			StartHandlers_.clear ();
+			handlers.clear ();
 
 			QThread::run ();
 		}
