@@ -48,7 +48,7 @@ namespace Sarin
 	{
 		qRegisterMetaType<int32_t> ("int32_t");
 		qRegisterMetaType<uint8_t> ("uint8_t");
-		qRegisterMetaType<uint8_t> ("uint64_t");
+		qRegisterMetaType<uint64_t> ("uint64_t");
 
 		LoadAccounts ();
 	}
