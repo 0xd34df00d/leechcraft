@@ -43,7 +43,8 @@ namespace Logind
 	{
 		Q_OBJECT
 
-		QDBusConnection SB_ = QDBusConnection::systemBus ();
+		QDBusConnection SB_ = QDBusConnection::connectToBus (QDBusConnection::SystemBus,
+				"LeechCraft.Liznoo.Logind.LogindConnector");
 		bool PowerEventsAvailable_ = false;
 	public:
 		LogindConnector (QObject* = nullptr);
