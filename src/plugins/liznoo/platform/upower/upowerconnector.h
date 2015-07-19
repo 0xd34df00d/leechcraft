@@ -44,7 +44,8 @@ namespace UPower
 	{
 		Q_OBJECT
 
-		QDBusConnection SB_;
+		QDBusConnection SB_ = QDBusConnection::connectToBus (QDBusConnection::SystemBus,
+				"LeechCraft.Liznoo.UPower.UPowerConnector");
 		bool PowerEventsAvailable_ = false;
 	public:
 		UPowerConnector (QObject* = 0);

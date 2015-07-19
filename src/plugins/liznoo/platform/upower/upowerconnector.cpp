@@ -43,7 +43,6 @@ namespace UPower
 {
 	UPowerConnector::UPowerConnector (QObject *parent)
 	: QObject (parent)
-	, SB_ (QDBusConnection::systemBus ())
 	{
 		auto iface = SB_.interface ();
 		auto checkRunning = [&iface]
