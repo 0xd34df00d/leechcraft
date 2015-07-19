@@ -51,7 +51,7 @@ namespace Events
 			AvailSubscribers_ << f;
 	}
 
-	void PlatformLayer::SetAvailable (bool avail)
+	void PlatformLayer::setAvailable (bool avail)
 	{
 		IsAvailable_ = avail;
 

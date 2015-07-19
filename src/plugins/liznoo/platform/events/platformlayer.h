@@ -55,8 +55,8 @@ namespace Events
 		PlatformLayer (const ICoreProxy_ptr&, QObject* = nullptr);
 
 		void SubscribeAvailable (const std::function<void (bool)>&);
-	protected:
-		void SetAvailable (bool);
+	protected slots:
+		void setAvailable (bool);
 	public slots:
 		void emitGonnaSleep (int);
 		void emitWokeUp ();
