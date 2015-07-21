@@ -75,18 +75,18 @@ namespace LMP
 	{
 		class PlaylistTreeEventFilter : public QObject
 		{
-			Player *Player_;
-			QTreeView *View_;
-			QSortFilterProxyModel *PlaylistFilter_;
+			Player * const Player_;
+			const QTreeView * const View_;
+			const QSortFilterProxyModel * const PlaylistFilter_;
 		public:
 			PlaylistTreeEventFilter (Player* player,
 					QTreeView *view,
 					QSortFilterProxyModel *filter,
-					QObject *parent = 0)
-			: QObject (parent)
-			, Player_ (player)
-			, View_ (view)
-			, PlaylistFilter_ (filter)
+					QObject *parent = nullptr)
+			: QObject { parent }
+			, Player_ { player }
+			, View_ { view }
+			, PlaylistFilter_ { filter }
 			{
 			}
 
