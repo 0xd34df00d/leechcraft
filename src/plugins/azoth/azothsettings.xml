@@ -347,6 +347,10 @@
 			<item type="spinbox" property="ShowLastNMessages" default="10" minimum="0" maximum="50">
 				<label value="Load at most messages from history:" />
 			</item>
+			<item type="spinbox" property="ChatClearGraceTime" default="1" minimum="0" maximum="10">
+				<label value="On chat window clearing, keep the messages arrived during the last" />
+				<suffix value=" s" />
+			</item>
 		</tab>
 	</page>
 	<page>

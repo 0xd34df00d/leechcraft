@@ -853,7 +853,10 @@ namespace Azoth
 
 		ScrollbackPos_ = 0;
 
-		entry->PurgeMessages (QDateTime::currentDateTime ().addSecs (-1));
+		const auto grace = XmlSettingsManager::Instance ()
+				.property ("ChatClearGraceTime").toInt ();
+		const auto& upTo = grace ? QDateTime::currentDateTime ().addSecs (-grace) : QDateTime {};
+		entry->PurgeMessages (upTo);
 
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
