@@ -852,7 +852,9 @@ namespace Azoth
 			return;
 
 		ScrollbackPos_ = 0;
-		entry->PurgeMessages (QDateTime ());
+
+		entry->PurgeMessages (QDateTime::currentDateTime ().addSecs (-1));
+
 		qDeleteAll (HistoryMessages_);
 		HistoryMessages_.clear ();
 		qDeleteAll (CoreMessages_);
