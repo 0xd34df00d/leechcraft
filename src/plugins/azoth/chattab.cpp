@@ -910,15 +910,13 @@ namespace Azoth
 		if (selected.isEmpty ())
 			return;
 
-		QStringList split = selected.split ('\n');
-		for (int i = 0; i < split.size (); ++i)
-			split [i].prepend ("> ");
+		auto split = selected.split ('\n');
+		for (auto& item : split)
+			item.prepend ("> ");
+		split.push_back ({});
 
-		split << QString ();
-
-		const QString& toInsert = split.join ("\n");
-		QTextCursor cur = Ui_.MsgEdit_->textCursor ();
-		cur.insertText (toInsert);
+		const auto& toInsert = split.join ("\n");
+		Ui_.MsgEdit_->textCursor ().insertText (toInsert);
 	}
 
 	void ChatTab::handleOpenLastLink ()
