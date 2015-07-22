@@ -99,8 +99,8 @@ namespace Xtazy
 	}
 
 	MPRISSource::MPRISSource (QObject *parent)
-	: TuneSourceBase (parent)
-	, SB_ (QDBusConnection::sessionBus ())
+	: TuneSourceBase { "MPRIS", parent }
+	, SB_ { QDBusConnection::sessionBus () }
 	{
 		setObjectName ("MPRISSource");
 

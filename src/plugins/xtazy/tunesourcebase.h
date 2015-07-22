@@ -44,8 +44,10 @@ namespace Xtazy
 	class TuneSourceBase : public QObject
 	{
 		Q_OBJECT
+
+		const QString SourceName_;
 	public:
-		TuneSourceBase (QObject* = 0);
+		TuneSourceBase (const QString&, QObject* = nullptr);
 	protected:
 		void EmitChange (const Media::AudioInfo&);
 

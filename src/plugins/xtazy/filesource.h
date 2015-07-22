@@ -42,7 +42,7 @@ namespace Xtazy
 
 		QFileSystemWatcher Watcher_;
 	public:
-		FileSource (QObject* = 0);
+		FileSource (QObject* = nullptr);
 	private slots:
 		void handleFileChanged (const QString&);
 		void handleFilePathChanged ();

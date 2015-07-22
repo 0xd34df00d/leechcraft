@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace Xtazy
 {
 	LCSource::LCSource (QObject *parent)
-	: TuneSourceBase (parent)
+	: TuneSourceBase { "LC", parent }
 	{
 		setObjectName ("LCSource");
 	}

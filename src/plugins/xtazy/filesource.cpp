@@ -38,7 +38,7 @@ namespace LeechCraft
 namespace Xtazy
 {
 	FileSource::FileSource (QObject *parent)
-	: TuneSourceBase (parent)
+	: TuneSourceBase { "File", parent }
 	{
 		setObjectName ("FileSource");
 		connect (&Watcher_,

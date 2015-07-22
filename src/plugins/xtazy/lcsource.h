@@ -39,7 +39,7 @@ namespace Xtazy
 	{
 		Q_OBJECT
 	public:
-		LCSource (QObject* = 0);
+		LCSource (QObject* = nullptr);
 
 		void NowPlaying (const Media::AudioInfo& audio);
 		void Stopped ();
