@@ -50,8 +50,9 @@ namespace Xtazy
 	{
 		Q_OBJECT
 
-		QStringList Players_;
 		QDBusConnection SB_;
+		QStringList Players_;
+
 		Media::AudioInfo Tune_;
 	public:
 		MPRISSource (QObject* = nullptr);
