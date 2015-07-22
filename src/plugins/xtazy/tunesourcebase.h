@@ -45,11 +45,11 @@ namespace Xtazy
 	{
 		Q_OBJECT
 
-		const QString SourceName_;
+		const QByteArray SourceName_;
 	public:
-		TuneSourceBase (const QString&, QObject* = nullptr);
+		TuneSourceBase (const QByteArray&, QObject* = nullptr);
 
-		const QString& GetSourceName () const;
+		const QByteArray& GetSourceName () const;
 	protected:
 		void EmitChange (const Media::AudioInfo&);
 

@@ -34,13 +34,13 @@ namespace LeechCraft
 {
 namespace Xtazy
 {
-	TuneSourceBase::TuneSourceBase (const QString& sourceName, QObject *parent)
+	TuneSourceBase::TuneSourceBase (const QByteArray& sourceName, QObject *parent)
 	: QObject { parent }
 	, SourceName_ { sourceName }
 	{
 	}
 
-	const QString& TuneSourceBase::GetSourceName () const
+	const QByteArray& TuneSourceBase::GetSourceName () const
 	{
 		return SourceName_;
 	}
