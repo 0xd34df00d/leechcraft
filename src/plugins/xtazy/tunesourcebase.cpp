@@ -40,6 +40,11 @@ namespace Xtazy
 	{
 	}
 
+	const QString& TuneSourceBase::GetSourceName () const
+	{
+		return SourceName_;
+	}
+
 	void TuneSourceBase::EmitChange (const Media::AudioInfo& info)
 	{
 		emit tuneInfoChanged (info, this);
