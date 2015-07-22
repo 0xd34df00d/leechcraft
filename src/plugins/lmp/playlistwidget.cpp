@@ -78,6 +78,8 @@ namespace LMP
 			Player * const Player_;
 			const QTreeView * const View_;
 			const QSortFilterProxyModel * const PlaylistFilter_;
+
+			bool HadPress_ = false;
 		public:
 			PlaylistTreeEventFilter (Player* player,
 					QTreeView *view,
@@ -92,20 +94,33 @@ namespace LMP
 
 			bool eventFilter (QObject*, QEvent *e)
 			{
-				if (e->type () != QEvent::KeyRelease)
+				const auto type = e->type ();
+				if (type != QEvent::KeyRelease &&
+						type != QEvent::KeyPress)
 					return false;
 
 				auto keyEvent = static_cast<QKeyEvent*> (e);
 
 				const auto key = keyEvent->key ();
-				if (key == Qt::Key_Enter ||
+				const bool isSuitable = key == Qt::Key_Enter ||
 						key == Qt::Key_Return ||
-						(key == Qt::Key_Space && keyEvent->modifiers () == Qt::NoModifier))
+						(key == Qt::Key_Space && keyEvent->modifiers () == Qt::NoModifier);
+				if (!isSuitable)
+					return false;
+
+				if (type == QEvent::KeyPress)
 				{
-					Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
-					return true;
+					HadPress_ = true;
+					return false;
 				}
-				return false;
+
+				if (!HadPress_)
+					return false;
+
+				HadPress_ = false;
+
+				Player_->play (PlaylistFilter_->mapToSource (View_->currentIndex ()));
+				return true;
 			}
 		};
 
