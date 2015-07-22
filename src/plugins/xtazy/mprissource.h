@@ -55,7 +55,6 @@ namespace Xtazy
 		Media::AudioInfo Tune_;
 	public:
 		MPRISSource (QObject* = 0);
-		virtual ~MPRISSource ();
 	private:
 		void ConnectToBus (const QString&);
 		void DisconnectFromBus (const QString&);

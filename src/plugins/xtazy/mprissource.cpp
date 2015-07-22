@@ -118,19 +118,6 @@ namespace Xtazy
 				SLOT (checkMPRISService (QString, QString, QString)));
 	}
 
-	MPRISSource::~MPRISSource ()
-	{
-		Q_FOREACH (const QString& player, Players_)
-			DisconnectFromBus (player);
-
-		SB_.disconnect ("org.freedesktop.DBus",
-				"/org/freedesktop/DBus",
-				"org.freedesktop.DBus",
-				"NameOwnerChanged",
-				this,
-				SLOT (checkMPRISService (QString, QString, QString)));
-	}
-
 	void MPRISSource::ConnectToBus (const QString& service)
 	{
 		switch (GetVersion (service))
