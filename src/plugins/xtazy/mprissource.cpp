@@ -31,6 +31,8 @@
 #include <QDBusConnectionInterface>
 #include <QDBusMetaType>
 #include <QtDebug>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 
 namespace LeechCraft
 {
@@ -107,8 +109,7 @@ namespace Xtazy
 		Players_ = SB_.interface ()->registeredServiceNames ()
 				.value ().filter (MPRISPrefix);
 
-		Q_FOREACH (const QString& player, Players_)
-			ConnectToBus (player);
+		Util::Map (Players_, Util::BindMemFn (&MPRISSource::ConnectToBus, this));
 
 		SB_.connect ("org.freedesktop.DBus",
 				"/org/freedesktop/DBus",
