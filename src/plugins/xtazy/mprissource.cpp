@@ -122,28 +122,28 @@ namespace Xtazy
 	{
 		switch (GetVersion (service))
 		{
-			case MV1:
-				SB_.connect (service,
-						"/Player",
-						"org.freedesktop.MediaPlayer",
-						"StatusChange",
-						"(iiii)",
-						this,
-						SLOT (handlePlayerStatusChange (PlayerStatus)));
-				SB_.connect (service,
-						"/Player",
-						"org.freedesktop.MediaPlayer",
-						"TrackChange",
-						"a{sv}",
-						this,
-						SLOT (handleTrackChange (QVariantMap)));
-			case MV2:
-				SB_.connect (service,
-						"/org/mpris/MediaPlayer2",
-						"org.freedesktop.DBus.Properties",
-						"PropertiesChanged",
-						this,
-						SLOT (handlePropertyChange (QDBusMessage)));
+		case MV1:
+			SB_.connect (service,
+					"/Player",
+					"org.freedesktop.MediaPlayer",
+					"StatusChange",
+					"(iiii)",
+					this,
+					SLOT (handlePlayerStatusChange (PlayerStatus)));
+			SB_.connect (service,
+					"/Player",
+					"org.freedesktop.MediaPlayer",
+					"TrackChange",
+					"a{sv}",
+					this,
+					SLOT (handleTrackChange (QVariantMap)));
+		case MV2:
+			SB_.connect (service,
+					"/org/mpris/MediaPlayer2",
+					"org.freedesktop.DBus.Properties",
+					"PropertiesChanged",
+					this,
+					SLOT (handlePropertyChange (QDBusMessage)));
 		}
 	}
 
@@ -151,28 +151,28 @@ namespace Xtazy
 	{
 		switch (GetVersion (service))
 		{
-			case MV1:
-				SB_.disconnect (service,
-						"/Player",
-						"org.freedesktop.MediaPlayer",
-						"StatusChange",
-						"(iiii)",
-						this,
-						SLOT (handlePlayerStatusChange (PlayerStatus)));
-				SB_.disconnect (service,
-						"/Player",
-						"org.freedesktop.MediaPlayer",
-						"TrackChange",
-						"a{sv}",
-						this,
-						SLOT (handleTrackChange (QVariantMap)));
-			case MV2:
-				SB_.disconnect (service,
-						"/org/mpris/MediaPlayer2",
-						"org.freedesktop.DBus.Properties",
-						"PropertiesChanged",
-						this,
-						SLOT (handlePropertyChange (QDBusMessage)));
+		case MV1:
+			SB_.disconnect (service,
+					"/Player",
+					"org.freedesktop.MediaPlayer",
+					"StatusChange",
+					"(iiii)",
+					this,
+					SLOT (handlePlayerStatusChange (PlayerStatus)));
+			SB_.disconnect (service,
+					"/Player",
+					"org.freedesktop.MediaPlayer",
+					"TrackChange",
+					"a{sv}",
+					this,
+					SLOT (handleTrackChange (QVariantMap)));
+		case MV2:
+			SB_.disconnect (service,
+					"/org/mpris/MediaPlayer2",
+					"org.freedesktop.DBus.Properties",
+					"PropertiesChanged",
+					this,
+					SLOT (handlePropertyChange (QDBusMessage)));
 		}
 	}
 
