@@ -131,6 +131,10 @@ namespace Xtazy
 		if (info == Previous_)
 			return;
 
+		const auto& propName = "Enable" + base->GetSourceName () + "Source";
+		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
+			return;
+
 		Previous_ = info;
 		emit currentSongChanged (info);
 	}
