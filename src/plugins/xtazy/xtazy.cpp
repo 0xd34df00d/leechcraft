@@ -65,7 +65,7 @@ namespace Xtazy
 			connect (base,
 					SIGNAL (tuneInfoChanged (Media::AudioInfo, TuneSourceBase*)),
 					this,
-					SLOT (publish (Media::AudioInfo)));
+					SLOT (publish (Media::AudioInfo, TuneSourceBase*)));
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -126,7 +126,7 @@ namespace Xtazy
 		return Previous_;
 	}
 
-	void Plugin::publish (const Media::AudioInfo& info)
+	void Plugin::publish (const Media::AudioInfo& info, TuneSourceBase *base)
 	{
 		if (info == Previous_)
 			return;

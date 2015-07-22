@@ -81,7 +81,7 @@ namespace Xtazy
 
 		Media::AudioInfo GetCurrentSong () const;
 	private slots:
-		void publish (const Media::AudioInfo&);
+		void publish (const Media::AudioInfo&, TuneSourceBase*);
 	signals:
 		void currentSongChanged (const Media::AudioInfo&);
 	};
