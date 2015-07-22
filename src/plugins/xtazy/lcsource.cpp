@@ -37,7 +37,6 @@ namespace Xtazy
 	LCSource::LCSource (QObject *parent)
 	: TuneSourceBase { "LC", parent }
 	{
-		setObjectName ("LCSource");
 	}
 
 	void LCSource::NowPlaying (const Media::AudioInfo& audio)

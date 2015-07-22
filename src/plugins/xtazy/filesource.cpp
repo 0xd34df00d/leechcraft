@@ -40,7 +40,6 @@ namespace Xtazy
 	FileSource::FileSource (QObject *parent)
 	: TuneSourceBase { "File", parent }
 	{
-		setObjectName ("FileSource");
 		connect (&Watcher_,
 				SIGNAL (fileChanged (const QString&)),
 				this,

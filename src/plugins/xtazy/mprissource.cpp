@@ -103,8 +103,6 @@ namespace Xtazy
 	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SessionBus, "org.LeechCraft.Xtazy") }
 	, Players_ { SB_.interface ()->registeredServiceNames ().value ().filter (MPRISPrefix) }
 	{
-		setObjectName ("MPRISSource");
-
 		qDBusRegisterMetaType<PlayerStatus> ();
 
 		Util::Map (Players_, Util::BindMemFn (&MPRISSource::ConnectToBus, this));
