@@ -42,12 +42,12 @@ namespace Xtazy
 
 	void LCSource::NowPlaying (const Media::AudioInfo& audio)
 	{
-		emit tuneInfoChanged (audio);
+		EmitChange (audio);
 	}
 
 	void LCSource::Stopped ()
 	{
-		emit tuneInfoChanged (Media::AudioInfo ());
+		EmitChange (Media::AudioInfo ());
 	}
 }
 }

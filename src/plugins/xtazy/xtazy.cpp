@@ -63,7 +63,7 @@ namespace Xtazy
 	{
 		for (auto base : TuneSources_)
 			connect (base,
-					SIGNAL (tuneInfoChanged (Media::AudioInfo)),
+					SIGNAL (tuneInfoChanged (Media::AudioInfo, TuneSourceBase*)),
 					this,
 					SLOT (publish (Media::AudioInfo)));
 	}

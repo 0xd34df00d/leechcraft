@@ -58,14 +58,14 @@ namespace Xtazy
 		if (!file.exists () ||
 				!file.open (QIODevice::ReadOnly))
 		{
-			emit tuneInfoChanged (Media::AudioInfo ());
+			EmitChange ({});
 			return;
 		}
 
 		const QString& data = QString::fromUtf8 (file.readAll ());
 		if (data.isEmpty ())
 		{
-			emit tuneInfoChanged (Media::AudioInfo ());
+			EmitChange ({});
 			return;
 		}
 
@@ -82,7 +82,7 @@ namespace Xtazy
 			result [key.toLower ()] = val;
 		}
 
-		emit tuneInfoChanged (FromMPRISMap (result));
+		EmitChange (FromMPRISMap (result));
 	}
 
 	void FileSource::handleFilePathChanged ()

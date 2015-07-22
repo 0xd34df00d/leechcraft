@@ -47,9 +47,11 @@ namespace Xtazy
 	public:
 		TuneSourceBase (QObject* = 0);
 	protected:
+		void EmitChange (const Media::AudioInfo&);
+
 		Media::AudioInfo FromMPRISMap (const QVariantMap&);
 	signals:
-		void tuneInfoChanged (const Media::AudioInfo&);
+		void tuneInfoChanged (const Media::AudioInfo&, TuneSourceBase*);
 	};
 }
 }

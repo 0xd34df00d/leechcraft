@@ -39,6 +39,11 @@ namespace Xtazy
 	{
 	}
 
+	void TuneSourceBase::EmitChange (const Media::AudioInfo& info)
+	{
+		emit tuneInfoChanged (info, this);
+	}
+
 	Media::AudioInfo TuneSourceBase::FromMPRISMap (const QVariantMap& map)
 	{
 		return

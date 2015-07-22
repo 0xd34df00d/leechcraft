@@ -207,7 +207,7 @@ namespace Xtazy
 			{
 				Tune_ = tune;
 				if (!Tune_.Title_.isEmpty ())
-					emit tuneInfoChanged (Tune_);
+					EmitChange (Tune_);
 			}
 		}
 
@@ -224,12 +224,12 @@ namespace Xtazy
 	{
 		if (ps.PlayStatus_ != PSPlaying)
 		{
-			emit tuneInfoChanged (Media::AudioInfo ());
+			EmitChange ({});
 			if (ps.PlayStatus_ == PSStopped)
 				Tune_ = Media::AudioInfo ();
 		}
 		else if (!Tune_.Title_.isEmpty ())
-			emit tuneInfoChanged (Tune_);
+			EmitChange (Tune_);
 	}
 
 	void MPRISSource::handleTrackChange (const QVariantMap& map)
@@ -247,7 +247,7 @@ namespace Xtazy
 
 		Tune_ = tune;
 		if (!Tune_.Title_.isEmpty ())
-			emit tuneInfoChanged (Tune_);
+			EmitChange (Tune_);
 	}
 
 	void MPRISSource::checkMPRISService (QString name,
