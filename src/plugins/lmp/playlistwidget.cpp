@@ -108,6 +108,10 @@ namespace LMP
 				if (!isSuitable)
 					return false;
 
+				if (keyEvent->isAutoRepeat () ||
+						keyEvent->count () > 1)
+					return false;
+
 				if (type == QEvent::KeyPress)
 				{
 					HadPress_ = true;
