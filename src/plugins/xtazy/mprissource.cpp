@@ -100,7 +100,7 @@ namespace Xtazy
 
 	MPRISSource::MPRISSource (QObject *parent)
 	: TuneSourceBase { "MPRIS", parent }
-	, SB_ { QDBusConnection::sessionBus () }
+	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SessionBus, "org.LeechCraft.Xtazy") }
 	{
 		setObjectName ("MPRISSource");
 
