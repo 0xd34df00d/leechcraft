@@ -157,6 +157,13 @@ namespace Util
 			result.push_back (Invoke (f, t));
 		return result;
 	}
+
+	template<typename F>
+	auto Map (const QStringList& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, QString {}))>::value>::type
+	{
+		for (auto&& t : c)
+			Invoke (f, t);
+	}
 #endif
 
 	template<typename T, template<typename U> class Container, typename F>
