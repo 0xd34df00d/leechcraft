@@ -149,7 +149,8 @@ namespace Util
 
 #ifndef USE_CPP14
 	template<typename F>
-	WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>> Map (const QStringList& c, F f)
+	auto Map (const QStringList& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, QString {}))>::value,
+			WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>>>::type
 	{
 		WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>> result;
 		for (auto&& t : c)
