@@ -149,9 +149,9 @@ namespace Util
 
 #ifndef USE_CPP14
 	template<typename F>
-	QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> Map (const QStringList& c, F f)
+	WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>> Map (const QStringList& c, F f)
 	{
-		QList<typename std::decay<typename std::result_of<F (QString)>::type>::type> result;
+		WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>> result;
 		for (auto&& t : c)
 			result.push_back (Invoke (f, t));
 		return result;
