@@ -134,6 +134,7 @@ namespace Xtazy
 					"a{sv}",
 					this,
 					SLOT (handleTrackChange (QVariantMap)));
+			break;
 		case MV2:
 			SB_.connect (service,
 					"/org/mpris/MediaPlayer2",
@@ -141,6 +142,7 @@ namespace Xtazy
 					"PropertiesChanged",
 					this,
 					SLOT (handlePropertyChange (QDBusMessage)));
+			break;
 		}
 	}
 
@@ -163,6 +165,7 @@ namespace Xtazy
 					"a{sv}",
 					this,
 					SLOT (handleTrackChange (QVariantMap)));
+			break;
 		case MV2:
 			SB_.disconnect (service,
 					"/org/mpris/MediaPlayer2",
@@ -170,6 +173,7 @@ namespace Xtazy
 					"PropertiesChanged",
 					this,
 					SLOT (handlePropertyChange (QDBusMessage)));
+			break;
 		}
 	}
 
