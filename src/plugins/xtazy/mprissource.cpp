@@ -42,7 +42,7 @@ namespace Xtazy
 
 	enum MPRISVersion
 	{
-		MV1 = 1,
+		MV1,
 		MV2
 	};
 
@@ -58,7 +58,7 @@ namespace Xtazy
 
 	enum PlayStatus
 	{
-		PSPlaying = 0,
+		PSPlaying,
 		PSPaused,
 		PSStopped
 	};
