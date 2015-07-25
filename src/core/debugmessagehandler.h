@@ -34,6 +34,15 @@
 
 namespace DebugHandler
 {
+	enum DebugWriteFlag
+	{
+		DWFNone = 0x00,
+		DWFBacktrace = 0x01,
+		DWFNoFileLog = 0x02
+	};
+
+	Q_DECLARE_FLAGS (DebugWriteFlags, DebugWriteFlag)
+
 	/** Simple debug message handler. Writes the message of type type
 	 * to the logs. The logs are contained in ~/.leechcraft and have
 	 * following names for different message types:
