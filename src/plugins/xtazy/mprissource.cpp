@@ -65,7 +65,7 @@ namespace Xtazy
 
 	struct PlayerStatus
 	{
-		int PlayStatus_;
+		PlayStatus PlayStatus_;
 		int PlayOrder_;
 		int PlayRepeat_;
 		int StopOnce_;
@@ -95,7 +95,7 @@ namespace Xtazy
 	QDBusArgument& operator<< (QDBusArgument& arg, const PlayerStatus& ps)
 	{
 		arg.beginStructure ();
-		arg << ps.PlayStatus_
+		arg << static_cast<int> (ps.PlayStatus_)
 			<< ps.PlayOrder_
 			<< ps.PlayRepeat_
 			<< ps.StopOnce_;
@@ -106,10 +106,15 @@ namespace Xtazy
 	const QDBusArgument& operator>> (const QDBusArgument& arg, PlayerStatus& ps)
 	{
 		arg.beginStructure ();
-		arg >> ps.PlayStatus_
+
+		int rawPS = 0;
+		arg >> rawPS
 			>> ps.PlayOrder_
 			>> ps.PlayRepeat_
 			>> ps.StopOnce_;
+
+		ps.PlayStatus_ = static_cast<PlayStatus> (rawPS);
+
 		arg.endStructure ();
 		return arg;
 	}
