@@ -443,7 +443,7 @@ namespace LeechCraft
 	}
 
 #if QT_VERSION >= 0x050000
-	#define qInstallMsgHandler(x) qInstallMessageHandler([] (QtMsgType type, const QMessageLogContext&, const QString& msg) { x (type, msg.toUtf8 ().constData ()); })
+	#define qInstallMsgHandler(x) qInstallMessageHandler([] (QtMsgType type, const QMessageLogContext&, const QString& msg) { (x) (type, msg.toUtf8 ().constData ()); })
 #endif
 
 	void Application::ParseCommandLine ()
