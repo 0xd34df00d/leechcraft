@@ -40,10 +40,10 @@ namespace Xtazy
 {
 	const QString MPRISPrefix = "org.mpris";
 
-	enum MPRISVersion
+	enum class MPRISVersion
 	{
-		MV1,
-		MV2
+		V1,
+		V2
 	};
 
 	namespace
@@ -51,16 +51,16 @@ namespace Xtazy
 		MPRISVersion GetVersion (const QString& service)
 		{
 			return service.contains ("MediaPlayer2") ?
-					MV1 :
-					MV2;
+					MPRISVersion::V1 :
+					MPRISVersion::V2;
 		}
 	}
 
-	enum PlayStatus
+	enum class PlayStatus
 	{
-		PSPlaying,
-		PSPaused,
-		PSStopped
+		Playing,
+		Paused,
+		Stopped
 	};
 
 	struct PlayerStatus
@@ -84,11 +84,11 @@ namespace Xtazy
 		PlayStatus GetMPRIS2PlayStatus (const QString& status)
 		{
 			if (status == "Playing")
-				return PSPlaying;
+				return PlayStatus::Playing;
 			else if (status == "Paused")
-				return PSPaused;
+				return PlayStatus::Paused;
 			else
-				return PSStopped;
+				return PlayStatus::Stopped;
 		}
 	}
 
@@ -140,7 +140,7 @@ namespace Xtazy
 	{
 		switch (GetVersion (service))
 		{
-		case MV1:
+		case MPRISVersion::V1:
 			SB_.connect (service,
 					"/Player",
 					"org.freedesktop.MediaPlayer",
@@ -156,7 +156,7 @@ namespace Xtazy
 					this,
 					SLOT (handleTrackChange (QVariantMap)));
 			break;
-		case MV2:
+		case MPRISVersion::V2:
 			SB_.connect (service,
 					"/org/mpris/MediaPlayer2",
 					"org.freedesktop.DBus.Properties",
@@ -171,7 +171,7 @@ namespace Xtazy
 	{
 		switch (GetVersion (service))
 		{
-		case MV1:
+		case MPRISVersion::V1:
 			SB_.disconnect (service,
 					"/Player",
 					"org.freedesktop.MediaPlayer",
@@ -187,7 +187,7 @@ namespace Xtazy
 					this,
 					SLOT (handleTrackChange (QVariantMap)));
 			break;
-		case MV2:
+		case MPRISVersion::V2:
 			SB_.disconnect (service,
 					"/org/mpris/MediaPlayer2",
 					"org.freedesktop.DBus.Properties",
@@ -243,11 +243,11 @@ namespace Xtazy
 
 	void MPRISSource::handlePlayerStatusChange (const PlayerStatus& ps)
 	{
-		if (ps.PlayStatus_ != PSPlaying)
+		if (ps.PlayStatus_ != PlayStatus::Playing)
 		{
 			EmitChange ({});
-			if (ps.PlayStatus_ == PSStopped)
-				Tune_ = Media::AudioInfo ();
+			if (ps.PlayStatus_ == PlayStatus::Stopped)
+				Tune_ = {};
 		}
 		else if (!Tune_.Title_.isEmpty ())
 			EmitChange (Tune_);
