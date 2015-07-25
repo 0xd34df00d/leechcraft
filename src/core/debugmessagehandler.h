@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QtGlobal>
-#include <QMutex>
 
 namespace DebugHandler
 {

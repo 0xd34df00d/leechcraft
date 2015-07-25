@@ -33,9 +33,12 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
+
 #ifdef _GNU_SOURCE
 #include <execinfo.h>
 #endif
+
+#include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
 #include <QDateTime>
