@@ -66,11 +66,30 @@ namespace
 		return "unknown.log";
 	}
 
+	std::string GetColorCode (QtMsgType type)
+	{
+		switch (type)
+		{
+		case QtDebugMsg:
+			return "\x1b[32m";
+		case QtWarningMsg:
+			return "\x1b[33m";
+		case QtCriticalMsg:
+			return "\x1b[31m";
+		case QtFatalMsg:
+			return "\x1b[35m";
+		}
+
+		return {};
+	}
+
 	std::shared_ptr<std::ostream> GetOstream (QtMsgType type, DebugHandler::DebugWriteFlags flags)
 	{
 		if (flags & DebugHandler::DWFNoFileLog)
 		{
 			auto& stream = type == QtDebugMsg ? std::cout : std::cerr;
+
+			stream << GetColorCode (type);
 			switch (type)
 			{
 			case QtDebugMsg:
@@ -86,6 +105,7 @@ namespace
 				stream << "[FTL] (yay, really `faster than light`!) ";
 				break;
 			}
+			stream << "\x1b[0m";
 
 			return { &stream, [] (std::ostream*) {} };
 		}
