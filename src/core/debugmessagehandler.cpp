@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "debugmessagehandler.h"
+#include <memory>
 #include <fstream>
+#include <iostream>
 #include <iomanip>
 #include <cstdlib>
 #ifdef _GNU_SOURCE
@@ -59,6 +61,18 @@ namespace
 
 		return "unknown.log";
 	}
+
+	std::shared_ptr<std::ostream> GetOstream (QtMsgType type, DebugHandler::DebugWriteFlags flags)
+	{
+		if (flags & DebugHandler::DWFNoFileLog)
+			return std::shared_ptr<std::ostream> (&(type == QtDebugMsg ? std::cout : std::cerr), [] (std::ostream*) {});
+
+		const QString name = QDir::homePath () + "/.leechcraft/" + GetFilename (type);
+
+		auto ostr = std::make_shared<std::ofstream> ();
+		ostr->open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
+		return ostr;
+	}
 }
 
 namespace DebugHandler
@@ -74,13 +88,11 @@ namespace DebugHandler
 		if (!strcmp (message, "QObject::startTimer: QTimer can only be used with threads started with QThread"))
 			return;
 #endif
-		const QString name = QDir::homePath () + "/.leechcraft/" + GetFilename (type);
 
 		G_DbgMutex.lock ();
 
-		std::ofstream ostr;
-		ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
-		ostr << "["
+		const auto& ostr = GetOstream (type, flags);
+		*ostr << "["
 				<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
 				<< "] ["
 				<< QThread::currentThread ()
@@ -100,10 +112,10 @@ namespace DebugHandler
 			size_t size = backtrace (array, maxSize);
 			char **strings = backtrace_symbols (array, size);
 
-			ostr << "Backtrace of " << size << " frames:" << std::endl;
+			*ostr << "Backtrace of " << size << " frames:" << std::endl;
 
 			for (size_t i = 0; i < size; ++i)
-				ostr << i << "\t" << strings [i] << std::endl;
+				*ostr << i << "\t" << strings [i] << std::endl;
 
 			std::free (strings);
 		}
