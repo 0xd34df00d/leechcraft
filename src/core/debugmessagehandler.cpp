@@ -69,7 +69,7 @@ namespace
 	std::shared_ptr<std::ostream> GetOstream (QtMsgType type, DebugHandler::DebugWriteFlags flags)
 	{
 		if (flags & DebugHandler::DWFNoFileLog)
-			return std::shared_ptr<std::ostream> (&(type == QtDebugMsg ? std::cout : std::cerr), [] (std::ostream*) {});
+			return { &(type == QtDebugMsg ? std::cout : std::cerr), [] (std::ostream*) {} };
 
 		const QString name = QDir::homePath () + "/.leechcraft/" + GetFilename (type);
 
