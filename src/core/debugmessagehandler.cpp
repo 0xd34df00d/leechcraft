@@ -109,7 +109,6 @@ namespace DebugHandler
 		}
 #endif
 
-		ostr.close ();
 		G_DbgMutex.unlock ();
 	}
 }
