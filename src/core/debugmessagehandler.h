@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef DEBUGMESSAGEHANDLER_H
-#define DEBUGMESSAGEHANDLER_H
+#pragma once
+
 #include <QtGlobal>
 #include <QMutex>
 
@@ -60,7 +60,4 @@ namespace DebugHandler
 	 * @sa simple
 	 */
 	void backtraced (QtMsgType type, const char *message);
-};
-
-#endif
-
+}

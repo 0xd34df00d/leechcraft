@@ -78,16 +78,16 @@ namespace
 		std::ofstream ostr;
 		ostr.open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
 		ostr << "["
-			 << QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-			 << "] ["
-			 << QThread::currentThread ()
-			 << "] ["
-			 << std::setfill ('0')
-			 << std::setw (3)
-			 << Counter++
-			 << "] "
-			 << message
-			 << std::endl;
+				<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
+				<< "] ["
+				<< QThread::currentThread ()
+				<< "] ["
+				<< std::setfill ('0')
+				<< std::setw (3)
+				<< Counter++
+				<< "] "
+				<< message
+				<< std::endl;
 
 #ifdef _GNU_SOURCE
 		if (type != QtDebugMsg && bt)
@@ -109,7 +109,7 @@ namespace
 		ostr.close ();
 		G_DbgMutex.unlock ();
 	}
-};
+}
 
 void DebugHandler::simple (QtMsgType type, const char *message)
 {
