@@ -444,14 +444,17 @@ namespace LeechCraft
 
 	void Application::ParseCommandLine ()
 	{
+		const bool isNoLog = VarMap_.count ("nolog");
+		const bool isBt = VarMap_.count ("bt");
+
 #if QT_VERSION < 0x050000
-		if (VarMap_.count ("nolog"))
+		if (isNoLog)
 		{
-			qInstallMsgHandler (0);
+			qInstallMsgHandler (nullptr);
 			return;
 		}
 
-		if (VarMap_.count ("bt"))
+		if (isBt)
 			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
 					{
 						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace);
@@ -462,13 +465,13 @@ namespace LeechCraft
 						DebugHandler::Write (type, msg, DebugHandler::DWFNone);
 					});
 #else
-		if (VarMap_.count ("nolog"))
+		if (isNoLog)
 		{
 			qInstallMessageHandler (0);
 			return;
 		}
 
-		if (VarMap_.count ("bt"))
+		if (isBt)
 			qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext&, const QString& msg)
 					{
 						DebugHandler::backtraced (type, msg.toUtf8 ().constData ());
