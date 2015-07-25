@@ -36,6 +36,7 @@
 #ifdef _GNU_SOURCE
 #include <execinfo.h>
 #endif
+#include <QMutexLocker>
 #include <QThread>
 #include <QDateTime>
 #include <QDir>
@@ -89,7 +90,7 @@ namespace DebugHandler
 			return;
 #endif
 
-		G_DbgMutex.lock ();
+		QMutexLocker locker { &G_DbgMutex };
 
 		const auto& ostr = GetOstream (type, flags);
 		*ostr << "["
@@ -120,7 +121,5 @@ namespace DebugHandler
 			std::free (strings);
 		}
 #endif
-
-		G_DbgMutex.unlock ();
 	}
 }
