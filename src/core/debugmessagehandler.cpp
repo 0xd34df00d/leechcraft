@@ -69,7 +69,26 @@ namespace
 	std::shared_ptr<std::ostream> GetOstream (QtMsgType type, DebugHandler::DebugWriteFlags flags)
 	{
 		if (flags & DebugHandler::DWFNoFileLog)
-			return { &(type == QtDebugMsg ? std::cout : std::cerr), [] (std::ostream*) {} };
+		{
+			auto& stream = type == QtDebugMsg ? std::cout : std::cerr;
+			switch (type)
+			{
+			case QtDebugMsg:
+				stream << "[DBG] ";
+				break;
+			case QtWarningMsg:
+				stream << "[WRN] ";
+				break;
+			case QtCriticalMsg:
+				stream << "[CRT] ";
+				break;
+			case QtFatalMsg:
+				stream << "[FTL] (yay, really `faster than light`!) ";
+				break;
+			}
+
+			return { &stream, [] (std::ostream*) {} };
+		}
 
 		const QString name = QDir::homePath () + "/.leechcraft/" + GetFilename (type);
 
