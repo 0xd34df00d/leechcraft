@@ -43,6 +43,8 @@ namespace DebugHandler
 
 	Q_DECLARE_FLAGS (DebugWriteFlags, DebugWriteFlag)
 
+	void Write (QtMsgType type, const char *message, DebugWriteFlags flags);
+
 	/** Simple debug message handler. Writes the message of type type
 	 * to the logs. The logs are contained in ~/.leechcraft and have
 	 * following names for different message types:
