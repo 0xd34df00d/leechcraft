@@ -113,13 +113,3 @@ namespace DebugHandler
 		G_DbgMutex.unlock ();
 	}
 }
-
-void DebugHandler::simple (QtMsgType type, const char *message)
-{
-	Write (type, message, DWFNone);
-}
-
-void DebugHandler::backtraced (QtMsgType type, const char *message)
-{
-	Write (type, message, DWFBacktrace);
-}
