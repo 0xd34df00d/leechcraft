@@ -62,7 +62,7 @@ namespace Xtazy
 		Media::AudioInfo GetTuneMV2 (const QVariantMap&);
 	private slots:
 		void handlePropertyChange (const QDBusMessage&);
-		void handlePlayerStatusChange (PlayerStatus);
+		void handlePlayerStatusChange (const PlayerStatus&);
 		void handleTrackChange (const QVariantMap&);
 		void checkMPRISService (QString, QString, QString);
 	};

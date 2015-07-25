@@ -220,7 +220,7 @@ namespace Xtazy
 		}
 	}
 
-	void MPRISSource::handlePlayerStatusChange (PlayerStatus ps)
+	void MPRISSource::handlePlayerStatusChange (const PlayerStatus& ps)
 	{
 		if (ps.PlayStatus_ != PSPlaying)
 		{
