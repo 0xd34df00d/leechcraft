@@ -452,9 +452,15 @@ namespace LeechCraft
 		}
 
 		if (VarMap_.count ("bt"))
-			qInstallMsgHandler (DebugHandler::backtraced);
+			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
+					{
+						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace);
+					});
 		else
-			qInstallMsgHandler (DebugHandler::simple);
+			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
+					{
+						DebugHandler::Write (type, msg, DebugHandler::DWFNone);
+					});
 #else
 		if (VarMap_.count ("nolog"))
 		{
