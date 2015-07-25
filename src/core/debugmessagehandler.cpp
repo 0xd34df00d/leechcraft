@@ -74,7 +74,7 @@ namespace
 		const QString name = QDir::homePath () + "/.leechcraft/" + GetFilename (type);
 
 		auto ostr = std::make_shared<std::ofstream> ();
-		ostr->open (QDir::toNativeSeparators (name).toStdString ().c_str (), std::ios::app);
+		ostr->open (QDir::toNativeSeparators (name).toStdString (), std::ios::app);
 		return ostr;
 	}
 }
