@@ -63,6 +63,22 @@ namespace Xtazy
 		PSStopped
 	};
 
+	struct PlayerStatus
+	{
+		int PlayStatus_;
+		int PlayOrder_;
+		int PlayRepeat_;
+		int StopOnce_;
+	};
+}
+}
+
+Q_DECLARE_METATYPE (LeechCraft::Xtazy::PlayerStatus);
+
+namespace LeechCraft
+{
+namespace Xtazy
+{
 	namespace
 	{
 		PlayStatus GetMPRIS2PlayStatus (const QString& status)

@@ -38,13 +38,7 @@ namespace LeechCraft
 {
 namespace Xtazy
 {
-	struct PlayerStatus
-	{
-		int PlayStatus_;
-		int PlayOrder_;
-		int PlayRepeat_;
-		int StopOnce_;
-	};
+	struct PlayerStatus;
 
 	class MPRISSource : public TuneSourceBase
 	{
@@ -68,5 +62,3 @@ namespace Xtazy
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Xtazy::PlayerStatus);
