@@ -116,6 +116,21 @@ namespace
 		ostr->open (QDir::toNativeSeparators (name).toStdString (), std::ios::app);
 		return ostr;
 	}
+
+	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
+	{
+		const int maxSize = 100;
+		void *array [maxSize];
+		size_t size = backtrace (array, maxSize);
+		char **strings = backtrace_symbols (array, size);
+
+		*ostr << "Backtrace of " << size << " frames:" << std::endl;
+
+		for (size_t i = 0; i < size; ++i)
+			*ostr << i << "\t" << strings [i] << std::endl;
+
+		std::free (strings);
+	}
 }
 
 namespace DebugHandler
@@ -149,19 +164,7 @@ namespace DebugHandler
 
 #ifdef _GNU_SOURCE
 		if (type != QtDebugMsg && (flags & DWFBacktrace))
-		{
-			const int maxSize = 100;
-			void *array [maxSize];
-			size_t size = backtrace (array, maxSize);
-			char **strings = backtrace_symbols (array, size);
-
-			*ostr << "Backtrace of " << size << " frames:" << std::endl;
-
-			for (size_t i = 0; i < size; ++i)
-				*ostr << i << "\t" << strings [i] << std::endl;
-
-			std::free (strings);
-		}
+			PrintBacktrace (ostr);
 #endif
 	}
 }
