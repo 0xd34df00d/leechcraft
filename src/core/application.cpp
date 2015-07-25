@@ -442,12 +442,15 @@ namespace LeechCraft
 		}
 	}
 
+#if QT_VERSION >= 0x050000
+	#define qInstallMsgHandler(x) qInstallMessageHandler([] (QtMsgType type, const QMessageLogContext&, const QString& msg) { x (type, msg.toUtf8 ().constData ()); })
+#endif
+
 	void Application::ParseCommandLine ()
 	{
 		const bool isNoLog = VarMap_.count ("nolog");
 		const bool isBt = VarMap_.count ("bt");
 
-#if QT_VERSION < 0x050000
 		if (isNoLog && isBt)
 			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
 					{
@@ -468,24 +471,6 @@ namespace LeechCraft
 					{
 						DebugHandler::Write (type, msg, DebugHandler::DWFNone);
 					});
-#else
-		if (isNoLog)
-		{
-			qInstallMessageHandler (0);
-			return;
-		}
-
-		if (isBt)
-			qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext&, const QString& msg)
-					{
-						DebugHandler::backtraced (type, msg.toUtf8 ().constData ());
-					});
-		else
-			qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext&, const QString& msg)
-					{
-						DebugHandler::simple (type, msg.toUtf8 ().constData ());
-					});
-#endif
 
 		QDir lcDir = QDir::home ();
 		lcDir.cd (".leechcraft");
@@ -493,6 +478,10 @@ namespace LeechCraft
 		Rotate (lcDir, "debug.log");
 		Rotate (lcDir, "warning.log");
 	}
+
+#if QT_VERSION >= 0x050000
+	#undef qInstallMsgHandler
+#endif
 
 	void Application::InitPluginsIconset ()
 	{
