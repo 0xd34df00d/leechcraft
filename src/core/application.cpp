@@ -448,16 +448,20 @@ namespace LeechCraft
 		const bool isBt = VarMap_.count ("bt");
 
 #if QT_VERSION < 0x050000
-		if (isNoLog)
-		{
-			qInstallMsgHandler (nullptr);
-			return;
-		}
-
-		if (isBt)
+		if (isNoLog && isBt)
+			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
+					{
+						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace | DebugHandler::DWFNoFileLog);
+					});
+		else if (isBt)
 			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
 					{
 						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace);
+					});
+		else if (isNoLog)
+			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
+					{
+						DebugHandler::Write (type, msg, DebugHandler::DWFNoFileLog);
 					});
 		else
 			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
