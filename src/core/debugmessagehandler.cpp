@@ -59,8 +59,11 @@ namespace
 
 		return "unknown.log";
 	}
+}
 
-	void Write (QtMsgType type, const char *message, bool bt)
+namespace DebugHandler
+{
+	void Write (QtMsgType type, const char *message, DebugWriteFlags flags)
 	{
 #if !defined (Q_OS_WIN32)
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
@@ -90,7 +93,7 @@ namespace
 				<< std::endl;
 
 #ifdef _GNU_SOURCE
-		if (type != QtDebugMsg && bt)
+		if (type != QtDebugMsg && (flags & DWFBacktrace))
 		{
 			const int maxSize = 100;
 			void *array [maxSize];
@@ -113,10 +116,10 @@ namespace
 
 void DebugHandler::simple (QtMsgType type, const char *message)
 {
-	Write (type, message, false);
+	Write (type, message, DWFNone);
 }
 
 void DebugHandler::backtraced (QtMsgType type, const char *message)
 {
-	Write (type, message, true);
+	Write (type, message, DWFBacktrace);
 }
