@@ -216,14 +216,13 @@ namespace Xtazy
 
 	void MPRISSource::handlePropertyChange (const QDBusMessage& msg)
 	{
-		QDBusArgument arg = msg.arguments ().at (1).value<QDBusArgument> ();
-		const QVariantMap& map = qdbus_cast<QVariantMap> (arg);
+		const auto& arg = msg.arguments ().at (1).value<QDBusArgument> ();
+		const auto& map = qdbus_cast<QVariantMap> (arg);
 
-		QVariant v = map.value ("Metadata");
+		auto v = map.value ("Metadata");
 		if (v.isValid ())
 		{
-			arg = v.value<QDBusArgument> ();
-			const auto& tune = GetTuneMV2 (qdbus_cast<QVariantMap> (arg));
+			const auto& tune = GetTuneMV2 (qdbus_cast<QVariantMap> (v.value<QDBusArgument> ()));
 			if (tune != Tune_)
 			{
 				Tune_ = tune;
