@@ -58,8 +58,6 @@ namespace LMP
 
 		Player *Player_ = nullptr;
 
-		bool ExpandAllScheduled_ = false;
-
 		QAction *ActionRemoveSelected_ = nullptr;
 
 		QAction *ActionStopAfterSelected_ = nullptr;

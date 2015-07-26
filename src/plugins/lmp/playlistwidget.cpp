@@ -761,7 +761,6 @@ namespace LMP
 
 	void PlaylistWidget::expandAll ()
 	{
-		ExpandAllScheduled_ = false;
 		Ui_.Playlist_->expandAll ();
 		checkSelections ();
 	}
