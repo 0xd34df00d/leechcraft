@@ -38,6 +38,8 @@
 #include <execinfo.h>
 #endif
 
+#include <unistd.h>
+
 #include <QMutex>
 #include <QMutexLocker>
 #include <QThread>
@@ -66,8 +68,17 @@ namespace
 		return "unknown.log";
 	}
 
+	bool SupportsColors ()
+	{
+		static const auto supportsColors = isatty (fileno (stdout));
+		return supportsColors;
+	}
+
 	std::string GetColorCode (QtMsgType type)
 	{
+		if (!SupportsColors ())
+			return {};
+
 		switch (type)
 		{
 		case QtDebugMsg:
@@ -105,7 +116,8 @@ namespace
 				stream << "[FTL] (yay, really `faster than light`!) ";
 				break;
 			}
-			stream << "\x1b[0m";
+			if (SupportsColors ())
+				stream << "\x1b[0m";
 
 			return { &stream, [] (std::ostream*) {} };
 		}
