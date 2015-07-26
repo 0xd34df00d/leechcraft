@@ -248,6 +248,8 @@ namespace LMP
 		void aboutToStopInternally ();
 
 		void shouldClearFiltering ();
+
+		void playlistRestored ();
 	};
 }
 }

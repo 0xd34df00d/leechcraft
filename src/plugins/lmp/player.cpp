@@ -1330,6 +1330,8 @@ namespace LMP
 	{
 		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		Enqueue (staticMgr->GetOnLoadPlaylist ());
+
+		emit playlistRestored ();
 	}
 
 	void Player::handleStationError (const QString& error)
