@@ -184,7 +184,7 @@ namespace LMP
 	private:
 		MediaInfo GetMediaInfo (const AudioSource&) const;
 		MediaInfo GetPhononMediaInfo () const;
-		void AddToPlaylistModel (QList<AudioSource>, bool);
+		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);
 
 		bool HandleCurrentStop (const AudioSource&);
 

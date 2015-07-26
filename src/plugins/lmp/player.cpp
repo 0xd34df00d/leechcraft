@@ -232,7 +232,7 @@ namespace LMP
 	{
 		Sorter_.Criteria_ = criteria;
 
-		AddToPlaylistModel ({}, true);
+		AddToPlaylistModel ({}, true, false);
 
 		XmlSettingsManager::Instance ().setProperty ("SortingCriteria", SaveCriteria (criteria));
 	}
@@ -314,7 +314,7 @@ namespace LMP
 				break;
 			}
 
-		AddToPlaylistModel (parsedSources.ToSources (), flags & EnqueueSort);
+		AddToPlaylistModel (parsedSources.ToSources (), flags & EnqueueSort, flags & EnqueueReplace);
 	}
 
 	QList<AudioSource> Player::GetQueue () const
@@ -762,7 +762,7 @@ namespace LMP
 		}
 	}
 
-	void Player::AddToPlaylistModel (QList<AudioSource> sources, bool sort)
+	void Player::AddToPlaylistModel (QList<AudioSource> sources, bool sort, bool clear)
 	{
 		if (!CurrentQueue_.isEmpty ())
 		{
