@@ -183,6 +183,8 @@ namespace LMP
 					SIGNAL (collectionReady ()),
 					this,
 					SLOT (restorePlaylist ()));
+
+		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
 	}
 
 	void Player::InitWithOtherPlugins ()
@@ -771,8 +773,6 @@ namespace LMP
 			Enqueue (CurrentQueue_ + sources, flags);
 			return;
 		}
-
-		PlaylistModel_->setHorizontalHeaderLabels (QStringList (tr ("Playlist")));
 
 		emit playerAvailable (false);
 
