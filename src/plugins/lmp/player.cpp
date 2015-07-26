@@ -286,14 +286,6 @@ namespace LMP
 		if (CurrentQueue_.isEmpty ())
 			emit shouldClearFiltering ();
 
-		if (flags & EnqueueReplace)
-		{
-			PlaylistModel_->clear ();
-			Items_.clear ();
-			AlbumRoots_.clear ();
-			CurrentQueue_.clear ();
-		}
-
 		Playlist parsedSources;
 		for (const auto& path : sources)
 			parsedSources += FileToSource (path);
@@ -770,7 +762,7 @@ namespace LMP
 
 	void Player::AddToPlaylistModel (QList<AudioSource> sources, bool sort, bool clear)
 	{
-		if (!CurrentQueue_.isEmpty ())
+		if (!CurrentQueue_.isEmpty () && !clear)
 		{
 			EnqueueFlags flags { EnqueueReplace };
 			if (sort)
@@ -1195,7 +1187,15 @@ namespace LMP
 
 		CurrentQueue_.clear ();
 
+		if (result.ShouldClear_)
+		{
+			PlaylistModel_->clear ();
+			Items_.clear ();
+			AlbumRoots_.clear ();
+		}
+
 		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
+
 		PlaylistModel_->blockSignals (true);
 
 		QString prevAlbumRoot;
