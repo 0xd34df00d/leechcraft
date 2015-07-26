@@ -173,12 +173,6 @@ namespace LMP
 	, PlaylistToolbar_ (new QToolBar ())
 	, PlaylistFilter_ (new TreeFilterModel (this))
 	, UndoStack_ (new QUndoStack (this))
-	, Player_ (0)
-	, ExpandAllScheduled_ (false)
-	, ActionRemoveSelected_ (0)
-	, ActionStopAfterSelected_ (0)
-	, ActionShowTrackProps_ (0)
-	, ActionShowAlbumArt_ (0)
 	{
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 

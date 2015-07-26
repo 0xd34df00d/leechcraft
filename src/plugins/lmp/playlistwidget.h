@@ -50,38 +50,38 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::PlaylistWidget Ui_;
-		QToolBar *PlaylistToolbar_;
-		QActionGroup *PlayModesGroup_;
-		QSortFilterProxyModel *PlaylistFilter_;
+		QToolBar * const PlaylistToolbar_;
+		QActionGroup *PlayModesGroup_ = nullptr;
+		QSortFilterProxyModel * const PlaylistFilter_;
 
-		QUndoStack *UndoStack_;
+		QUndoStack * const UndoStack_;
 
-		Player *Player_;
+		Player *Player_ = nullptr;
 
-		bool ExpandAllScheduled_;
+		bool ExpandAllScheduled_ = false;
 
-		QAction *ActionRemoveSelected_;
+		QAction *ActionRemoveSelected_ = nullptr;
 
-		QAction *ActionStopAfterSelected_;
-		QAction *ActionAddToOneShot_;
-		QAction *ActionRemoveFromOneShot_;
-		QAction *ActionMoveOneShotUp_;
-		QAction *ActionMoveOneShotDown_;
+		QAction *ActionStopAfterSelected_ = nullptr;
+		QAction *ActionAddToOneShot_ = nullptr;
+		QAction *ActionRemoveFromOneShot_ = nullptr;
+		QAction *ActionMoveOneShotUp_ = nullptr;
+		QAction *ActionMoveOneShotDown_ = nullptr;
 
-		QAction *ActionShowTrackProps_;
-		QAction *ActionShowAlbumArt_;
-		QAction *ActionMoveTop_;
-		QAction *ActionMoveUp_;
-		QAction *ActionMoveDown_;
-		QAction *ActionMoveBottom_;
+		QAction *ActionShowTrackProps_ = nullptr;
+		QAction *ActionShowAlbumArt_ = nullptr;
+		QAction *ActionMoveTop_ = nullptr;
+		QAction *ActionMoveUp_ = nullptr;
+		QAction *ActionMoveDown_ = nullptr;
+		QAction *ActionMoveBottom_ = nullptr;
 
-		QMenu *TrackActions_;
-		QMenu *ExistingTrackActions_;
+		QMenu *TrackActions_ = nullptr;
+		QMenu *ExistingTrackActions_ = nullptr;
 
-		QAction *MoveUpButtonAction_;
-		QAction *MoveDownButtonAction_;
+		QAction *MoveUpButtonAction_ = nullptr;
+		QAction *MoveDownButtonAction_ = nullptr;
 
-		QAction *ActionToggleSearch_;
+		QAction *ActionToggleSearch_ = nullptr;
 
 		QList<AudioSource> NextResetSelect_;
 	public:
