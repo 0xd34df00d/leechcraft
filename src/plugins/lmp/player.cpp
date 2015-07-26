@@ -1192,7 +1192,8 @@ namespace LMP
 
 		if (result.ShouldClear_)
 		{
-			PlaylistModel_->clear ();
+			if (const auto rc = PlaylistModel_->rowCount ())
+				PlaylistModel_->removeRows (0, rc);
 			Items_.clear ();
 			AlbumRoots_.clear ();
 		}
