@@ -218,7 +218,6 @@ namespace LMP
 		void shufflePlaylist ();
 	private slots:
 		void handleSorted ();
-		void continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);
 
 		void restorePlaylist ();
 		void handleStationError (const QString&);
