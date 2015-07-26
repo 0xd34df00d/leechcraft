@@ -107,7 +107,6 @@ namespace LMP
 
 		void play (const QModelIndex&);
 		void expand (const QModelIndex&);
-		void scheduleExpandAll ();
 		void expandAll ();
 		void checkSelections ();
 

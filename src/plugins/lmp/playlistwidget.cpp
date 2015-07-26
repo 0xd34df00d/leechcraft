@@ -191,12 +191,12 @@ namespace LMP
 		connect (PlaylistFilter_,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
-				SLOT (scheduleExpandAll ()),
+				SLOT (expandAll ()),
 				Qt::QueuedConnection);
 		connect (PlaylistFilter_,
 				SIGNAL (modelReset ()),
 				this,
-				SLOT (scheduleExpandAll ()),
+				SLOT (expandAll ()),
 				Qt::QueuedConnection);
 		connect (PlaylistFilter_,
 				SIGNAL (modelReset ()),
@@ -749,17 +749,6 @@ namespace LMP
 	void PlaylistWidget::expand (const QModelIndex& index)
 	{
 		Ui_.Playlist_->expand (PlaylistFilter_->mapFromSource (index));
-	}
-
-	void PlaylistWidget::scheduleExpandAll ()
-	{
-		if (ExpandAllScheduled_)
-			return;
-
-		ExpandAllScheduled_ = true;
-		QTimer::singleShot (10,
-				this,
-				SLOT (expandAll ()));
 	}
 
 	void PlaylistWidget::expandAll ()
