@@ -1123,7 +1123,9 @@ namespace LMP
 	{
 		UnsetRadio ();
 
-		PlaylistModel_->clear ();
+		if (const auto rc = PlaylistModel_->rowCount ())
+			PlaylistModel_->removeRows (0, rc);
+
 		Items_.clear ();
 		AlbumRoots_.clear ();
 		CurrentQueue_.clear ();
