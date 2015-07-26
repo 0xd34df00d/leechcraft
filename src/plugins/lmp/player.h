@@ -203,6 +203,8 @@ namespace LMP
 		AudioSource GetNextSource (const AudioSource&);
 
 		void MarkAsCurrent (QStandardItem*);
+
+		void ContinueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();

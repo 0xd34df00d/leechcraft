@@ -1175,7 +1175,7 @@ namespace LMP
 		}
 	}
 
-	void Player::continueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
+	void Player::ContinueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
 	{
 		CurrentQueue_.clear ();
 
