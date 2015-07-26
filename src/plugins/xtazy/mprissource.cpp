@@ -276,9 +276,6 @@ namespace Xtazy
 		if (!name.startsWith (MPRISPrefix))
 			return;
 
-		if (name.contains ("LMP_"))
-			return;
-
 		const int playerIdx = Players_.indexOf (name);
 		if (playerIdx == -1)
 		{
