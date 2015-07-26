@@ -1188,14 +1188,14 @@ namespace LMP
 
 		CurrentQueue_.clear ();
 
+		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
+
 		if (result.ShouldClear_)
 		{
 			PlaylistModel_->clear ();
 			Items_.clear ();
 			AlbumRoots_.clear ();
 		}
-
-		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
 
 		PlaylistModel_->blockSignals (true);
 
