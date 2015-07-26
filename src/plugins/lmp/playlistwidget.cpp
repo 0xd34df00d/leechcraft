@@ -227,9 +227,8 @@ namespace LMP
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
 
-		const auto playModel = Player_->GetPlaylistModel ();
-		PlaylistFilter_->setSourceModel (playModel);
-
+		const auto model = Player_->GetPlaylistModel ();
+		PlaylistFilter_->setSourceModel (model);
 
 		Ui_.Playlist_->setModel (PlaylistFilter_);
 		Ui_.Playlist_->expandAll ();
@@ -248,7 +247,6 @@ namespace LMP
 		InitViewActions ();
 		InitToolbarActions ();
 
-		auto model = Player_->GetPlaylistModel ();
 		connect (model,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
