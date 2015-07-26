@@ -287,9 +287,8 @@ namespace LMP
 		}
 
 		Playlist parsedSources;
-		std::for_each (sources.begin (), sources.end (),
-				[&parsedSources] (decltype (sources.front ()) path)
-					{ parsedSources += FileToSource (path); });
+		for (const auto& path : sources)
+			parsedSources += FileToSource (path);
 
 		for (auto i = parsedSources.begin (); i != parsedSources.end (); )
 		{
