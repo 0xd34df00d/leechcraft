@@ -290,13 +290,14 @@ namespace LMP
 		for (const auto& path : sources)
 			parsedSources += FileToSource (path);
 
-		for (auto i = parsedSources.begin (); i != parsedSources.end (); )
-		{
-			if (Items_.contains (i->Source_))
-				i = parsedSources.erase (i);
-			else
-				++i;
-		}
+		if (!(flags & EnqueueReplace))
+			for (auto i = parsedSources.begin (); i != parsedSources.end (); )
+			{
+				if (Items_.contains (i->Source_))
+					i = parsedSources.erase (i);
+				else
+					++i;
+			}
 
 		const auto curSrcPos = std::find_if (parsedSources.begin (), parsedSources.end (),
 				[] (const PlaylistItem& item) { return item.Additional_ ["Current"].toBool (); });
