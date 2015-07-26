@@ -117,6 +117,8 @@ namespace LMP
 		return left.LocalPath_ < right.LocalPath_;
 	}
 
+	using ResolveResult_t = QList<QPair<AudioSource, MediaInfo>>;
+
 	Player::Player (QObject *parent)
 	: QObject (parent)
 	, PlaylistModel_ (new PlaylistModel (this))
@@ -728,15 +730,15 @@ namespace LMP
 			return { source, info };
 		}
 
-		QList<QPair<AudioSource, MediaInfo>> PairResolveAll (const QList<AudioSource>& sources)
+		ResolveResult_t PairResolveAll (const QList<AudioSource>& sources)
 		{
-			QList<QPair<AudioSource, MediaInfo>> result;
+			ResolveResult_t result;
 			std::transform (sources.begin (), sources.end (), std::back_inserter (result), PairResolve);
 			return result;
 		}
 
 		template<typename T>
-		QList<QPair<AudioSource, MediaInfo>> PairResolveSort (const QList<AudioSource>& sources, T sorter, bool sort)
+		ResolveResult_t PairResolveSort (const QList<AudioSource>& sources, T sorter, bool sort)
 		{
 			auto result = PairResolveAll (sources);
 
