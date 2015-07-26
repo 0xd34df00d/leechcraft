@@ -116,6 +116,8 @@ namespace LMP
 		void handleStdSort ();
 		void handleCustomSort ();
 
+		void savePlayScrollPosition ();
+
 		void removeSelectedSongs ();
 
 		void setStopAfterSelected ();

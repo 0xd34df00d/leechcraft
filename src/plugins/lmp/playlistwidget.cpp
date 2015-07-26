@@ -43,10 +43,13 @@
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QPainter>
+#include <QScrollBar>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -220,7 +223,14 @@ namespace LMP
 				this,
 				SLOT (handleSongChanged (MediaInfo)));
 
-		PlaylistFilter_->setSourceModel (Player_->GetPlaylistModel ());
+		const auto playModel = Player_->GetPlaylistModel ();
+		PlaylistFilter_->setSourceModel (playModel);
+
+		connect (playModel,
+				SIGNAL (modelAboutToBeReset ()),
+				this,
+				SLOT (savePlayScrollPosition ()));
+
 		Ui_.Playlist_->setModel (PlaylistFilter_);
 		Ui_.Playlist_->expandAll ();
 
@@ -814,6 +824,26 @@ namespace LMP
 
 		if (newCriteria != current)
 			Player_->SetSortingCriteria (newCriteria);
+	}
+
+	void PlaylistWidget::savePlayScrollPosition ()
+	{
+		const auto bar = Ui_.Playlist_->verticalScrollBar ();
+		if (!bar)
+			return;
+
+		const auto val = bar->value ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[bar, val]
+			{
+				Util::ExecuteLater ([=] { bar->setValue (std::min (val, bar->maximum ())); });
+			},
+			PlaylistFilter_,
+			SIGNAL (modelReset ()),
+			this
+		};
 	}
 
 	void PlaylistWidget::removeSelectedSongs ()
