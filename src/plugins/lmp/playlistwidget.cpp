@@ -50,6 +50,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -789,10 +790,8 @@ namespace LMP
 	void PlaylistWidget::handleStdSort ()
 	{
 		const auto& intVars = sender ()->property ("SortInts").toList ();
-		QList<SortingCriteria> criteria;
-		std::transform (intVars.begin (), intVars.end (), std::back_inserter (criteria),
-				[] (decltype (intVars.front ()) var)
-					{ return static_cast<SortingCriteria> (var.toInt ()); });
+		const auto& criteria = Util::Map (intVars,
+				[] (const QVariant& var) { return static_cast<SortingCriteria> (var.toInt ()); });
 		Player_->SetSortingCriteria (criteria);
 
 		EnableMoveButtons (criteria.isEmpty ());
