@@ -206,6 +206,10 @@ namespace LMP
 				this,
 				SLOT (checkSelections ()),
 				Qt::QueuedConnection);
+		connect (PlaylistFilter_,
+				SIGNAL (modelAboutToBeReset ()),
+				this,
+				SLOT (savePlayScrollPosition ()));
 
 		Core::Instance ().GetHookInterconnector ()->RegisterHookable (this);
 	}
@@ -226,10 +230,6 @@ namespace LMP
 		const auto playModel = Player_->GetPlaylistModel ();
 		PlaylistFilter_->setSourceModel (playModel);
 
-		connect (playModel,
-				SIGNAL (modelAboutToBeReset ()),
-				this,
-				SLOT (savePlayScrollPosition ()));
 
 		Ui_.Playlist_->setModel (PlaylistFilter_);
 		Ui_.Playlist_->expandAll ();
