@@ -107,6 +107,8 @@ namespace LMP
 	private:
 		PlayMode PlayMode_;
 
+		struct ResolveJobResult;
+
 		struct Sorter
 		{
 			QList<SortingCriteria> Criteria_;
@@ -204,7 +206,7 @@ namespace LMP
 
 		void MarkAsCurrent (QStandardItem*);
 
-		void ContinueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>&);
+		void ContinueAfterSorted (const ResolveJobResult&);
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();

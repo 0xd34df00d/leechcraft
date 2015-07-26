@@ -119,6 +119,12 @@ namespace LMP
 
 	using ResolveResult_t = QList<QPair<AudioSource, MediaInfo>>;
 
+	struct Player::ResolveJobResult
+	{
+		ResolveResult_t Resolved_;
+		bool ShouldClear_;
+	};
+
 	Player::Player (QObject *parent)
 	: QObject (parent)
 	, PlaylistModel_ (new PlaylistModel (this))
@@ -777,13 +783,19 @@ namespace LMP
 
 		emit playerAvailable (false);
 
-		auto watcher = new QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>> ();
+		auto watcher = new QFutureWatcher<ResolveJobResult> ();
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleSorted ()));
-		watcher->setFuture (QtConcurrent::run ([this, sources, sort]
-					{ return PairResolveSort (sources, Sorter_, sort); }));
+		watcher->setFuture (QtConcurrent::run ([=]
+				{
+					return ResolveJobResult
+					{
+						PairResolveSort (sources, Sorter_, sort),
+						clear
+					};
+				}));
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
@@ -1146,8 +1158,8 @@ namespace LMP
 
 	void Player::handleSorted ()
 	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<QPair<AudioSource, MediaInfo>>>*> (sender ());
-		continueAfterSorted (watcher->result ());
+		auto watcher = dynamic_cast<QFutureWatcher<ResolveJobResult>*> (sender ());
+		ContinueAfterSorted (watcher->result ());
 		emit playerAvailable (true);
 	}
 
@@ -1177,8 +1189,10 @@ namespace LMP
 		}
 	}
 
-	void Player::ContinueAfterSorted (const QList<QPair<AudioSource, MediaInfo>>& sources)
+	void Player::ContinueAfterSorted (const ResolveJobResult& result)
 	{
+		const auto& sources = result.Resolved_;
+
 		CurrentQueue_.clear ();
 
 		QMetaObject::invokeMethod (PlaylistModel_, "modelAboutToBeReset");
