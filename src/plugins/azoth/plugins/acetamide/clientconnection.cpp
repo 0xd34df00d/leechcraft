@@ -70,6 +70,14 @@ namespace Acetamide
 		return ServerHandlers_.values ();
 	}
 
+	namespace
+	{
+		QString GetServerKey (const ServerOptions& server)
+		{
+			return server.ServerName_ + ":" + QString::number (server.ServerPort_);
+		}
+	}
+
 	bool ClientConnection::IsServerExists (const QString& key)
 	{
 		return ServerHandlers_.contains (key);
@@ -77,8 +85,7 @@ namespace Acetamide
 
 	void ClientConnection::JoinServer (const ServerOptions& server)
 	{
-		QString serverId = server.ServerName_ + ":" +
-				QString::number (server.ServerPort_);
+		const auto& serverId = GetServerKey (server);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 		emit gotRosterItems (QList<QObject*> () << ish->GetCLEntry ());
