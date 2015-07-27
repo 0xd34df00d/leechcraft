@@ -205,9 +205,14 @@ namespace Acetamide
 		return bookmarks;
 	}
 
-	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& id) const
+	IrcServerHandler* ClientConnection::GetIrcServerHandler (const ServerOptions& server) const
 	{
-		return ServerHandlers_ [id];
+		return GetIrcServerHandler (GetServerKey (server));
+	}
+
+	IrcServerHandler* ClientConnection::GetIrcServerHandler (const QString& serverId) const
+	{
+		return ServerHandlers_ [serverId];
 	}
 
 	void ClientConnection::DisconnectFromAll ()

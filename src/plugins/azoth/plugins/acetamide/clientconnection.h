@@ -76,6 +76,7 @@ namespace Acetamide
 		void SetBookmarks (const QList<IrcBookmark>&);
 		QList<IrcBookmark> GetBookmarks () const;
 
+		IrcServerHandler* GetIrcServerHandler (const ServerOptions&) const;
 		IrcServerHandler* GetIrcServerHandler (const QString&) const;
 
 		void DisconnectFromAll ();

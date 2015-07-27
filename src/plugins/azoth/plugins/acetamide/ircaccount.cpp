@@ -232,13 +232,11 @@ namespace Acetamide
 		if (channel.ChannelName_.isEmpty ())
 			channel.ChannelName_ = DefaultChannel_;
 
-		QString serverId = server.ServerName_ + ":" +
-				QString::number (server.ServerPort_);
 		if (!ClientConnection_->IsServerExists (server))
 		{
 			ClientConnection_->JoinServer (server);
 			if (!onlyServer)
-				ClientConnection_->GetIrcServerHandler (serverId)->
+				ClientConnection_->GetIrcServerHandler (server)->
 						Add2ChannelsQueue (channel);
 		}
 		else if (!onlyServer)
