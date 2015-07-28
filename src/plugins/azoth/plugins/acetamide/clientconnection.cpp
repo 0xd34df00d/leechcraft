@@ -78,7 +78,7 @@ namespace Acetamide
 		}
 	}
 
-	bool ClientConnection::IsServerExists (const ServerOptions& server)
+	bool ClientConnection::IsServerExists (const ServerOptions& server) const
 	{
 		return ServerHandlers_.contains (GetServerKey (server));
 	}
