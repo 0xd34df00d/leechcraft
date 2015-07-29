@@ -88,7 +88,7 @@ namespace Acetamide
 		const auto& serverId = GetServerKey (server);
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
-		emit gotRosterItems (QList<QObject*> () << ish->GetCLEntry ());
+		emit gotRosterItems ({ ish->GetCLEntry () });
 		connect (ish,
 				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),
 				this,
