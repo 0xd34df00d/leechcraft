@@ -299,7 +299,7 @@ namespace Acetamide
 		entry->DisconnectFromServer ();
 		entry->deleteLater ();
 
-		if (!ServerHandlers_.count ())
+		if (ServerHandlers_.isEmpty ())
 			Account_->SetState (EntryStatus (SOffline,
 					QString ()));
 	}
