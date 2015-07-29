@@ -86,6 +86,14 @@ namespace Acetamide
 	void ClientConnection::JoinServer (const ServerOptions& server)
 	{
 		const auto& serverId = GetServerKey (server);
+		if (ServerHandlers_.contains (serverId))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "server"
+					<< serverId
+					<< "is already present";
+			return;
+		}
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
 		emit gotRosterItems ({ ish->GetCLEntry () });
