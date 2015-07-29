@@ -114,8 +114,7 @@ namespace Acetamide
 	void  ClientConnection::JoinChannel (const ServerOptions& server,
 			const ChannelOptions& channel)
 	{
-		QString serverId = server.ServerName_ + ":" +
-				QString::number (server.ServerPort_);
+		const auto& serverId = GetServerKey (server);
 		QString channelId = channel.ChannelName_ + "@" +
 				channel.ServerName_;
 
