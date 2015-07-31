@@ -108,6 +108,7 @@ set (SRCS
 	radiocustomstreams.cpp
 	radiocustomstation.cpp
 	radiocustomdialog.cpp
+	radiopilesmanager.cpp
 	stdartistactionsmanager.cpp
 	notificationplayer.cpp
 	effectsmanager.cpp

@@ -27,71 +27,43 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
-#include <interfaces/media/iradiostation.h>
-
-class QAbstractItemModel;
-class QStandardItemModel;
-class QStandardItem;
-class QModelIndex;
-class QTimer;
-class QUrl;
-
-namespace Media
-{
-	class IRadioStationProvider;
-	struct AudioInfo;
-}
+#include "radiopilesmanager.h"
+#include <QStandardItemModel>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/iaudiopile.h>
+#include <interfaces/media/iradiostationprovider.h>
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class MergeModel;
-}
-
 namespace LMP
 {
-	class Player;
-
-	class RadioManager : public QObject
+	enum RadioWidgetRole
 	{
-		Q_OBJECT
-
-		Util::MergeModel * const MergeModel_;
-		QHash<const QAbstractItemModel*, Media::IRadioStationProvider*> Model2Prov_;
-
-		QTimer *AutoRefreshTimer_;
-	public:
-		RadioManager (QObject* = 0);
-
-		void InitProviders ();
-
-		QAbstractItemModel* GetModel () const;
-
-		void Refresh (const QModelIndex&);
-		void AddUrl (const QModelIndex&, const QUrl&, const QString&);
-		void RemoveUrl (const QModelIndex&);
-		void Handle (const QModelIndex&, Player*);
-
-		void HandleWokeUp ();
-
-		QList<Media::AudioInfo> GetSources (const QModelIndex&) const;
-
-		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
-	private:
-		void InitProvider (QObject*);
-		void HandlePile (QObject*);
-
-		template<typename T>
-		void WithSourceProv (const QModelIndex&, T) const;
-	public slots:
-		void refreshAll ();
-	private slots:
-		void handleRefreshSettingsChanged ();
+		PileObject = Media::RadioItemRole::MaxRadioRole + 1
 	};
+
+	RadioPilesManager::RadioPilesManager (const IPluginsManager *pm, QObject *parent)
+	: QObject { parent }
+	, PilesModel_ { new QStandardItemModel { this } }
+	{
+		auto pileObjs = pm->GetAllCastableRoots<Media::IAudioPile*> ();
+		for (auto pileObj : pileObjs)
+		{
+			auto pile = qobject_cast<Media::IAudioPile*> (pileObj);
+
+			auto item = new QStandardItem (tr ("Search in %1")
+					.arg (pile->GetServiceName ()));
+			item->setIcon (pile->GetServiceIcon ());
+			item->setEditable (false);
+			item->setData (QVariant::fromValue (pileObj), RadioWidgetRole::PileObject);
+
+			PilesModel_->appendRow (item);
+		}
+	}
+
+	QAbstractItemModel* RadioPilesManager::GetModel () const
+	{
+		return PilesModel_;
+	}
 }
 }

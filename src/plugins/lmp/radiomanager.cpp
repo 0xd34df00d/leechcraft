@@ -44,6 +44,7 @@
 #include "previewhandler.h"
 #include "xmlsettingsmanager.h"
 #include "radiocustomstreams.h"
+#include "radiopilesmanager.h"
 
 namespace LeechCraft
 {
@@ -138,7 +139,6 @@ namespace LMP
 	RadioManager::RadioManager (QObject *parent)
 	: QObject { parent }
 	, MergeModel_ { new RadioModel { { "Station" }, this } }
-	, PilesModel_ { new QStandardItemModel { this } }
 	, AutoRefreshTimer_ { new QTimer { this } }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ({ "AutoRefreshRadios",
@@ -150,28 +150,16 @@ namespace LMP
 				SIGNAL (timeout ()),
 				this,
 				SLOT (refreshAll ()));
-
-		MergeModel_->AddModel (PilesModel_);
 	}
 
 	void RadioManager::InitProviders ()
 	{
-		InitProvider (new RadioCustomStreams (this));
-
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-		auto pileObjs = pm->GetAllCastableRoots<Media::IAudioPile*> ();
-		for (auto pileObj : pileObjs)
-		{
-			auto pile = qobject_cast<Media::IAudioPile*> (pileObj);
 
-			auto item = new QStandardItem (tr ("Search in %1")
-					.arg (pile->GetServiceName ()));
-			item->setIcon (pile->GetServiceIcon ());
-			item->setEditable (false);
-			item->setData (QVariant::fromValue (pileObj), RadioWidgetRole::PileObject);
+		const auto rpm = new RadioPilesManager { pm, this };
+		MergeModel_->AddModel (rpm->GetModel ());
 
-			PilesModel_->appendRow (item);
-		}
+		InitProvider (new RadioCustomStreams (this));
 
 		auto providerObjs = pm->GetAllCastableRoots<Media::IRadioStationProvider*> ();
 		for (auto provObj : providerObjs)

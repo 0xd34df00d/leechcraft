@@ -30,68 +30,22 @@
 #pragma once
 
 #include <QObject>
-#include <QHash>
-#include <interfaces/media/iradiostation.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
-class QStandardItem;
-class QModelIndex;
-class QTimer;
-class QUrl;
-
-namespace Media
-{
-	class IRadioStationProvider;
-	struct AudioInfo;
-}
+class IPluginsManager;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class MergeModel;
-}
-
 namespace LMP
 {
-	class Player;
-
-	class RadioManager : public QObject
+	class RadioPilesManager : public QObject
 	{
-		Q_OBJECT
-
-		Util::MergeModel * const MergeModel_;
-		QHash<const QAbstractItemModel*, Media::IRadioStationProvider*> Model2Prov_;
-
-		QTimer *AutoRefreshTimer_;
+		QStandardItemModel * const PilesModel_;
 	public:
-		RadioManager (QObject* = 0);
-
-		void InitProviders ();
+		RadioPilesManager (const IPluginsManager*, QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
-
-		void Refresh (const QModelIndex&);
-		void AddUrl (const QModelIndex&, const QUrl&, const QString&);
-		void RemoveUrl (const QModelIndex&);
-		void Handle (const QModelIndex&, Player*);
-
-		void HandleWokeUp ();
-
-		QList<Media::AudioInfo> GetSources (const QModelIndex&) const;
-
-		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
-	private:
-		void InitProvider (QObject*);
-		void HandlePile (QObject*);
-
-		template<typename T>
-		void WithSourceProv (const QModelIndex&, T) const;
-	public slots:
-		void refreshAll ();
-	private slots:
-		void handleRefreshSettingsChanged ();
 	};
 }
 }
