@@ -101,7 +101,7 @@ namespace TouchStreams
 	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
-		AlbumsRootItem_->setEditable (false);
+		InitRootItem ();
 
 		HandleAlbums (albums);
 		HandleTracks (tracks);
