@@ -124,12 +124,14 @@ namespace TouchStreams
 
 	QStandardItem* AlbumsManager::RefreshItems (const QList<QStandardItem*>& items)
 	{
-		for (auto item : items)
-			while (item)
+		for (const auto item : items)
+		{
+			auto parent = item;
+			while (parent)
 			{
-				if (AlbumsRootItem_ != item)
+				if (AlbumsRootItem_ != parent)
 				{
-					item = item->parent ();
+					parent = parent->parent ();
 					continue;
 				}
 
@@ -139,6 +141,7 @@ namespace TouchStreams
 				refetchAlbums ();
 				return item;
 			}
+		}
 
 		return nullptr;
 	}
