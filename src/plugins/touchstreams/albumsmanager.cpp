@@ -79,10 +79,7 @@ namespace TouchStreams
 	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
-		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
-		AlbumsRootItem_->setIcon (vkIcon);
-		AlbumsRootItem_->setEditable (false);
-		AlbumsRootItem_->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
+		InitRootItem ();
 
 		QTimer::singleShot (1000,
 				this,
@@ -143,6 +140,14 @@ namespace TouchStreams
 			}
 
 		return nullptr;
+	}
+
+	void AlbumsManager::InitRootItem ()
+	{
+		static QIcon vkIcon { ":/touchstreams/resources/images/vk.svg" };
+		AlbumsRootItem_->setIcon (vkIcon);
+		AlbumsRootItem_->setEditable (false);
+		AlbumsRootItem_->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 	}
 
 	bool AlbumsManager::HandleAlbums (const QVariant& albumsListVar)

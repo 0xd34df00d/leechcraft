@@ -90,6 +90,8 @@ namespace TouchStreams
 
 		QStandardItem* RefreshItems (const QList<QStandardItem*>&);
 	private:
+		void InitRootItem ();
+
 		bool HandleAlbums (const QVariant&);
 		bool HandleTracks (const QVariant&);
 	public slots:
