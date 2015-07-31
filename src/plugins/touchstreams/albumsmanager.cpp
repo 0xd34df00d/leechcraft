@@ -127,16 +127,17 @@ namespace TouchStreams
 		for (auto item : items)
 			while (item)
 			{
-				if (AlbumsRootItem_ == item)
+				if (AlbumsRootItem_ != item)
 				{
-					if (auto rc = AlbumsRootItem_->rowCount ())
-						AlbumsRootItem_->removeRows (0, rc);
-					Albums_.clear ();
-					refetchAlbums ();
-					return item;
+					item = item->parent ();
+					continue;
 				}
 
-				item = item->parent ();
+				if (auto rc = AlbumsRootItem_->rowCount ())
+					AlbumsRootItem_->removeRows (0, rc);
+				Albums_.clear ();
+				refetchAlbums ();
+				return item;
 			}
 
 		return nullptr;
