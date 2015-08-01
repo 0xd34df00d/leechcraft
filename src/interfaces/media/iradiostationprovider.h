@@ -41,6 +41,8 @@ namespace Media
 	class IRadioStation;
 	typedef std::shared_ptr<IRadioStation> IRadioStation_ptr;
 
+	using ActionFunctor_f = boost::variant<std::function<void (QModelIndex)>, std::function<void ()>>;
+
 	/** @brief Describes the type of a radio station.
 	 *
 	 * @sa IRadioStationProvider
