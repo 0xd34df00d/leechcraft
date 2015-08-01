@@ -84,7 +84,6 @@ namespace LMP
 		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
 	private:
 		void InitProvider (QObject*);
-		void HandlePile (QObject*);
 
 		template<typename T>
 		void WithSourceProv (const QModelIndex&, T) const;

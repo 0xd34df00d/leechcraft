@@ -36,7 +36,6 @@
 #include <util/models/dndactionsmixin.h>
 #include <util/models/mergemodel.h>
 #include <interfaces/media/iradiostationprovider.h>
-#include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
@@ -52,11 +51,6 @@ namespace LMP
 {
 	namespace
 	{
-		enum RadioWidgetRole
-		{
-			PileObject = Media::RadioItemRole::MaxRadioRole + 1
-		};
-
 		namespace
 		{
 			template<typename T>
@@ -173,8 +167,7 @@ namespace LMP
 
 	void RadioManager::Refresh (const QModelIndex& index)
 	{
-		if (index.data (RadioWidgetRole::PileObject).value<QObject*> ())
-			return;
+		// TODO check if the index is refreshable.
 
 		WithSourceProv (index,
 				[] (Media::IRadioStationProvider *prov, const QModelIndex& srcIdx)
@@ -258,8 +251,6 @@ namespace LMP
 
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
 	{
-		if (const auto pileObj = index.data (RadioWidgetRole::PileObject).value<QObject*> ())
-			return HandlePile (pileObj);
 		const auto& funcVar = index.data (Media::RadioItemRole::ActionFunctor);
 		if (funcVar.isValid ())
 		{
@@ -396,21 +387,6 @@ namespace LMP
 			MergeModel_->AddModel (model);
 			Model2Prov_ [model] = prov;
 		}
-	}
-
-	void RadioManager::HandlePile (QObject *pileObj)
-	{
-		const auto& query = QInputDialog::getText (0,
-				tr ("Audio search"),
-				tr ("Enter the string to search for:"));
-		if (query.isEmpty ())
-			return;
-
-		Media::AudioSearchRequest req;
-		req.FreeForm_ = query;
-
-		const auto pending = qobject_cast<Media::IAudioPile*> (pileObj)->Search (req);
-		Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
 	}
 
 	template<typename T>
