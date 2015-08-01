@@ -233,10 +233,39 @@ namespace LMP
 				});
 	}
 
+	namespace
+	{
+		class ActionFunctorVisitor : public boost::static_visitor<void>
+		{
+			const QModelIndex Index_;
+		public:
+			ActionFunctorVisitor (const QModelIndex& index)
+			: Index_ { index }
+			{
+			}
+
+			void operator() (const std::function<void ()>& func) const
+			{
+				func ();
+			}
+
+			void operator() (const std::function<void (QModelIndex)>& func) const
+			{
+				func (Index_);
+			}
+		};
+	}
+
 	void RadioManager::Handle (const QModelIndex& index, Player *player)
 	{
 		if (const auto pileObj = index.data (RadioWidgetRole::PileObject).value<QObject*> ())
 			return HandlePile (pileObj);
+		const auto& funcVar = index.data (Media::RadioItemRole::ActionFunctor);
+		if (funcVar.isValid ())
+		{
+			auto function = funcVar.value<Media::ActionFunctor_f> ();
+			return boost::apply_visitor (ActionFunctorVisitor { index }, function);
+		}
 
 		QString param;
 
