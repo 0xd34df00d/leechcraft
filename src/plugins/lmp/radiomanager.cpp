@@ -390,8 +390,9 @@ namespace LMP
 		}
 	}
 
-	template<typename T>
-	void RadioManager::WithSourceProv (const QModelIndex& mapped, T f) const
+	template<typename F>
+	Util::ResultOf_t<F (Media::IRadioStationProvider*, QModelIndex)>
+		RadioManager::WithSourceProv (const QModelIndex& mapped, F f) const
 	{
 		const auto& src = MergeModel_->mapToSource (mapped);
 		const auto prov = Model2Prov_.value (src.model ());
@@ -404,7 +405,7 @@ namespace LMP
 			return;
 		}
 
-		f (prov, src);
+		return f (prov, src);
 	}
 
 	void RadioManager::refreshAll ()

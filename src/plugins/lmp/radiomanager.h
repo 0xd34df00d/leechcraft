@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QHash>
 #include <interfaces/media/iradiostation.h>
+#include <util/sll/oldcppkludges.h>
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -85,8 +86,9 @@ namespace LMP
 	private:
 		void InitProvider (QObject*);
 
-		template<typename T>
-		void WithSourceProv (const QModelIndex&, T) const;
+		template<typename F>
+		Util::ResultOf_t<F (Media::IRadioStationProvider*, QModelIndex)>
+			WithSourceProv (const QModelIndex&, F) const;
 	public slots:
 		void refreshAll ();
 	private slots:
