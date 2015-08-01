@@ -394,18 +394,16 @@ namespace LMP
 	Util::ResultOf_t<F (Media::IRadioStationProvider*, QModelIndex)>
 		RadioManager::WithSourceProv (const QModelIndex& mapped, F f) const
 	{
-		const auto& src = MergeModel_->mapToSource (mapped);
-		const auto prov = Model2Prov_.value (src.model ());
-		if (!prov)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown provider for"
-					<< mapped
-					<< mapped.data ();
-			return;
-		}
-
-		return f (prov, src);
+		return WithSourceProv (mapped,
+				f,
+				[&mapped] (const QModelIndex&)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unknown provider for"
+							<< mapped
+							<< mapped.data ();
+					return;
+				});
 	}
 
 	template<typename Succ, typename Fail>
