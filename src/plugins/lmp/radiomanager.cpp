@@ -166,7 +166,10 @@ namespace LMP
 
 	void RadioManager::Refresh (const QModelIndex& index)
 	{
-		// TODO check if the index is refreshable.
+		if (!WithSourceProv (index,
+					[] (Media::IRadioStationProvider*, const QModelIndex&) { return true; },
+					[] (const QModelIndex&) { return false; }))
+			return;
 
 		WithSourceProv (index,
 				[] (Media::IRadioStationProvider *prov, const QModelIndex& srcIdx)
