@@ -30,6 +30,8 @@
 #pragma once
 
 #include <memory>
+#include <functional>
+#include <boost/variant.hpp>
 #include <QMap>
 #include <QMetaType>
 #include <QtPlugin>
