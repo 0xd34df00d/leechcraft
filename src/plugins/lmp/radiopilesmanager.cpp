@@ -40,8 +40,10 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	RadioPilesManager::RadioPilesManager (const IPluginsManager *pm, QObject *parent)
+	RadioPilesManager::RadioPilesManager (const IPluginsManager *pm,
+			PreviewHandler *handler, QObject *parent)
 	: QObject { parent }
+	, PreviewHandler_ { handler }
 	, PilesModel_ { new QStandardItemModel { this } }
 	{
 		FillModel (pm);
