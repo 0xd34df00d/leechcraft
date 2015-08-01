@@ -46,8 +46,17 @@ namespace LMP
 	: QObject { parent }
 	, PilesModel_ { new QStandardItemModel { this } }
 	{
-		auto pileObjs = pm->GetAllCastableRoots<Media::IAudioPile*> ();
-		for (auto pileObj : pileObjs)
+		FillModel (pm);
+	}
+
+	QAbstractItemModel* RadioPilesManager::GetModel () const
+	{
+		return PilesModel_;
+	}
+
+	void RadioPilesManager::FillModel (const IPluginsManager *pm)
+	{
+		for (auto pileObj : pm->GetAllCastableRoots<Media::IAudioPile*> ())
 		{
 			auto pile = qobject_cast<Media::IAudioPile*> (pileObj);
 
@@ -59,11 +68,6 @@ namespace LMP
 
 			PilesModel_->appendRow (item);
 		}
-	}
-
-	QAbstractItemModel* RadioPilesManager::GetModel () const
-	{
-		return PilesModel_;
 	}
 }
 }

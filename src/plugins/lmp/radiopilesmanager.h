@@ -46,6 +46,8 @@ namespace LMP
 		RadioPilesManager (const IPluginsManager*, QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
+	private:
+		void FillModel (const IPluginsManager*);
 	};
 }
 }
