@@ -40,11 +40,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	enum RadioWidgetRole
-	{
-		PileObject = Media::RadioItemRole::MaxRadioRole + 1
-	};
-
 	RadioPilesManager::RadioPilesManager (const IPluginsManager *pm, QObject *parent)
 	: QObject { parent }
 	, PilesModel_ { new QStandardItemModel { this } }
@@ -89,7 +84,6 @@ namespace LMP
 			const auto function = [pile] { HandlePile (pile); };
 			item->setData (QVariant::fromValue<Media::ActionFunctor_f> (function),
 					Media::RadioItemRole::ActionFunctor);
-			item->setData (QVariant::fromValue (pileObj), RadioWidgetRole::PileObject);
 
 			PilesModel_->appendRow (item);
 		}
