@@ -56,7 +56,7 @@ namespace LMP
 
 	namespace
 	{
-		void HandlePile (Media::IAudioPile *pile)
+		void HandlePile (Media::IAudioPile *pile, PreviewHandler *previewHandler)
 		{
 			const auto& query = QInputDialog::getText (nullptr,
 					RadioPilesManager::tr ("Audio search"),
@@ -68,7 +68,7 @@ namespace LMP
 			req.FreeForm_ = query;
 
 			const auto pending = pile->Search (req);
-			Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
+			previewHandler->HandlePending (pending);
 		}
 	}
 
@@ -83,7 +83,7 @@ namespace LMP
 			item->setIcon (pile->GetServiceIcon ());
 			item->setEditable (false);
 
-			const auto function = [pile] { HandlePile (pile); };
+			const auto function = [pile, this] { HandlePile (pile, PreviewHandler_); };
 			item->setData (QVariant::fromValue<Media::ActionFunctor_f> (function),
 					Media::RadioItemRole::ActionFunctor);
 
