@@ -147,6 +147,10 @@ namespace Media
 		 */
 		TracksInfos,
 
+		/** @brief The callable functor for RadioAction.
+		 */
+		ActionFunctor,
+
 		/** @brief Maximum role.
 		 */
 		MaxRadioRole
