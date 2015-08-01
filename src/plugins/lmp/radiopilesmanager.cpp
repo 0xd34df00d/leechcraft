@@ -29,9 +29,12 @@
 
 #include "radiopilesmanager.h"
 #include <QStandardItemModel>
+#include <QInputDialog>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include "core.h"
+#include "previewhandler.h"
 
 namespace LeechCraft
 {
@@ -54,6 +57,24 @@ namespace LMP
 		return PilesModel_;
 	}
 
+	namespace
+	{
+		void HandlePile (Media::IAudioPile *pile)
+		{
+			const auto& query = QInputDialog::getText (0,
+					RadioPilesManager::tr ("Audio search"),
+					RadioPilesManager::tr ("Enter the string to search for:"));
+			if (query.isEmpty ())
+				return;
+
+			Media::AudioSearchRequest req;
+			req.FreeForm_ = query;
+
+			const auto pending = pile->Search (req);
+			Core::Instance ().GetPreviewHandler ()->HandlePending (pending);
+		}
+	}
+
 	void RadioPilesManager::FillModel (const IPluginsManager *pm)
 	{
 		for (auto pileObj : pm->GetAllCastableRoots<Media::IAudioPile*> ())
@@ -64,6 +85,10 @@ namespace LMP
 					.arg (pile->GetServiceName ()));
 			item->setIcon (pile->GetServiceIcon ());
 			item->setEditable (false);
+
+			const auto function = [pile] { HandlePile (pile); };
+			item->setData (QVariant::fromValue<Media::ActionFunctor_f> (function),
+					Media::RadioItemRole::ActionFunctor);
 			item->setData (QVariant::fromValue (pileObj), RadioWidgetRole::PileObject);
 
 			PilesModel_->appendRow (item);
