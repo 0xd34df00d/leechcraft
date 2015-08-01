@@ -260,7 +260,9 @@ namespace LMP
 
 		QString param;
 
-		switch (static_cast<Media::RadioType> (index.data (Media::RadioItemRole::ItemType).toInt ()))
+		const auto rawType = index.data (Media::RadioItemRole::ItemType).toInt ();
+		const auto type = static_cast<Media::RadioType> (rawType);
+		switch (type)
 		{
 		case Media::RadioType::None:
 			return;
