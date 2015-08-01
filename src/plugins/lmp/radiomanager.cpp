@@ -408,6 +408,18 @@ namespace LMP
 		return f (prov, src);
 	}
 
+	template<typename Succ, typename Fail>
+	Util::ResultOf_t<Succ (Media::IRadioStationProvider*, QModelIndex)>
+		RadioManager::WithSourceProv (const QModelIndex& mapped, Succ succ, Fail fail) const
+	{
+		const auto& src = MergeModel_->mapToSource (mapped);
+		const auto prov = Model2Prov_.value (src.model ());
+		if (!prov)
+			return fail (src);
+
+		return succ (prov, src);
+	}
+
 	void RadioManager::refreshAll ()
 	{
 		for (auto prov : Model2Prov_)

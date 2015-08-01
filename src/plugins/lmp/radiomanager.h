@@ -89,6 +89,10 @@ namespace LMP
 		template<typename F>
 		Util::ResultOf_t<F (Media::IRadioStationProvider*, QModelIndex)>
 			WithSourceProv (const QModelIndex&, F) const;
+
+		template<typename Succ, typename Fail>
+		Util::ResultOf_t<Succ (Media::IRadioStationProvider*, QModelIndex)>
+			WithSourceProv (const QModelIndex&, Succ, Fail) const;
 	public slots:
 		void refreshAll ();
 	private slots:
