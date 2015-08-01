@@ -33,7 +33,6 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
-#include "core.h"
 #include "previewhandler.h"
 
 namespace LeechCraft

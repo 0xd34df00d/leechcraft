@@ -40,7 +40,6 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
 #include "player.h"
-#include "previewhandler.h"
 #include "xmlsettingsmanager.h"
 #include "radiocustomstreams.h"
 #include "radiopilesmanager.h"
