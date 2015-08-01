@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QMap>
+#include <QMetaType>
 #include <QtPlugin>
 
 class QModelIndex;
@@ -199,5 +200,7 @@ namespace Media
 		virtual void RefreshItems (const QList<QModelIndex>&) = 0;
 	};
 }
+
+Q_DECLARE_METATYPE (Media::ActionFunctor_f)
 
 Q_DECLARE_INTERFACE (Media::IRadioStationProvider, "org.LeechCraft.Media.IRadioStationProvider/1.0");
