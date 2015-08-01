@@ -59,5 +59,8 @@ namespace Util
 	{
 		return (obj->*mem) ();
 	}
+
+	template<typename T>
+	using ResultOf_t = typename std::result_of<T>::type;
 }
 }
