@@ -94,6 +94,9 @@ namespace Media
 		/** @brief A predefined list of single tracks, not a stream.
 		 *
 		 * Items of this type should provide RadioItemRole::TracksInfos.
+		 *
+		 * If the item's track list is just an aggregation of the tracks
+		 * in its child items, consider using TracksRoot instead.
 		 */
 		TracksList,
 
@@ -104,6 +107,9 @@ namespace Media
 		SingleTrack,
 
 		/** @brief A root for a list of SingleTrack or TracksList items.
+		 *
+		 * When this item is selected by the user, the tracks of its child
+		 * items would be collected recursively.
 		 */
 		TracksRoot,
 
