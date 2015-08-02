@@ -212,6 +212,20 @@ namespace LMP
 		return mask;
 	}
 
+	QString PerformSubstitutionsPlaylist (const MediaInfo& info)
+	{
+		auto text = XmlSettingsManager::Instance ()
+				.property ("SingleTrackDisplayMask").toString ();
+
+		text = PerformSubstitutions (text, info).simplified ();
+		text.replace ("- -", "-");
+		if (text.startsWith ("- "))
+			text = text.mid (2);
+		if (text.endsWith (" -"))
+			text.chop (2);
+		return text;
+	}
+
 	bool ShouldRememberProvs ()
 	{
 		return XmlSettingsManager::Instance ().property ("RememberUsedProviders").toBool ();
