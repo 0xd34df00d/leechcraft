@@ -35,6 +35,11 @@ class QAbstractItemModel;
 class QStandardItemModel;
 class IPluginsManager;
 
+namespace Media
+{
+	class IAudioPile;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -51,6 +56,7 @@ namespace LMP
 		QAbstractItemModel* GetModel () const;
 	private:
 		void FillModel (const IPluginsManager*);
+		void HandlePile (Media::IAudioPile*);
 	};
 }
 }

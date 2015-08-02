@@ -53,24 +53,6 @@ namespace LMP
 		return PilesModel_;
 	}
 
-	namespace
-	{
-		void HandlePile (Media::IAudioPile *pile, PreviewHandler *previewHandler)
-		{
-			const auto& query = QInputDialog::getText (nullptr,
-					RadioPilesManager::tr ("Audio search"),
-					RadioPilesManager::tr ("Enter the string to search for:"));
-			if (query.isEmpty ())
-				return;
-
-			Media::AudioSearchRequest req;
-			req.FreeForm_ = query;
-
-			const auto pending = pile->Search (req);
-			previewHandler->HandlePending (pending);
-		}
-	}
-
 	void RadioPilesManager::FillModel (const IPluginsManager *pm)
 	{
 		for (auto pileObj : pm->GetAllCastableRoots<Media::IAudioPile*> ())
@@ -82,12 +64,27 @@ namespace LMP
 			item->setIcon (pile->GetServiceIcon ());
 			item->setEditable (false);
 
-			const auto function = [pile, this] { HandlePile (pile, PreviewHandler_); };
+			const auto function = [pile, this] { HandlePile (pile); };
 			item->setData (QVariant::fromValue<Media::ActionFunctor_f> (function),
 					Media::RadioItemRole::ActionFunctor);
 
 			PilesModel_->appendRow (item);
 		}
+	}
+
+	void RadioPilesManager::HandlePile (Media::IAudioPile *pile)
+	{
+		const auto& query = QInputDialog::getText (nullptr,
+				RadioPilesManager::tr ("Audio search"),
+				RadioPilesManager::tr ("Enter the string to search for:"));
+		if (query.isEmpty ())
+			return;
+
+		Media::AudioSearchRequest req;
+		req.FreeForm_ = query;
+
+		const auto pending = pile->Search (req);
+		PreviewHandler_->HandlePending (pending);
 	}
 }
 }
