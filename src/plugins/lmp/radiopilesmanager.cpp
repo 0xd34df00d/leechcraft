@@ -64,7 +64,7 @@ namespace LMP
 			item->setIcon (pile->GetServiceIcon ());
 			item->setEditable (false);
 
-			const auto function = [pile, this] { HandlePile (pile); };
+			const auto function = [item, pile, this] { HandlePile (item, pile); };
 			item->setData (QVariant::fromValue<Media::ActionFunctor_f> (function),
 					Media::RadioItemRole::ActionFunctor);
 
@@ -72,7 +72,7 @@ namespace LMP
 		}
 	}
 
-	void RadioPilesManager::HandlePile (Media::IAudioPile *pile)
+	void RadioPilesManager::HandlePile (QStandardItem *item, Media::IAudioPile *pile)
 	{
 		const auto& query = QInputDialog::getText (nullptr,
 				RadioPilesManager::tr ("Audio search"),

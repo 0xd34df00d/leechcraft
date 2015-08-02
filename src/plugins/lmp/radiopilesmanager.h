@@ -33,6 +33,7 @@
 
 class QAbstractItemModel;
 class QStandardItemModel;
+class QStandardItem;
 class IPluginsManager;
 
 namespace Media
@@ -56,7 +57,7 @@ namespace LMP
 		QAbstractItemModel* GetModel () const;
 	private:
 		void FillModel (const IPluginsManager*);
-		void HandlePile (Media::IAudioPile*);
+		void HandlePile (QStandardItem*, Media::IAudioPile*);
 	};
 }
 }
