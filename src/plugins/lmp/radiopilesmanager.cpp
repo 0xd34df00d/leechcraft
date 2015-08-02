@@ -118,7 +118,6 @@ namespace LMP
 			SIGNAL (finished ()),
 			pendingObj
 		};
-		PreviewHandler_->HandlePending (pending);
 	}
 }
 }
