@@ -122,6 +122,7 @@ namespace LMP
 		req.FreeForm_ = query;
 
 		const auto searchItem = new QStandardItem { query };
+		searchItem->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
 		searchItem->setEditable (false);
 		item->appendRow (searchItem);
 
