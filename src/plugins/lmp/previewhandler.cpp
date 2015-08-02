@@ -189,12 +189,7 @@ namespace LMP
 				continue;
 			urls.insert (res.Source_);
 
-			const PreviewCharacteristicInfo checkInfo
-			{
-				res.Info_.Album_.toLower ().trimmed (),
-				res.Info_.Title_.toLower ().trimmed (),
-				res.Info_.Length_
-			};
+			const PreviewCharacteristicInfo checkInfo { res.Info_ };
 			if (infos.contains (checkInfo))
 				continue;
 			infos << checkInfo;
