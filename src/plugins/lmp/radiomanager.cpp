@@ -35,6 +35,7 @@
 #include <QtDebug>
 #include <util/models/dndactionsmixin.h>
 #include <util/models/mergemodel.h>
+#include <util/sll/dropargs.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -167,8 +168,8 @@ namespace LMP
 	void RadioManager::Refresh (const QModelIndex& index)
 	{
 		if (!WithSourceProv (index,
-					[] (Media::IRadioStationProvider*, const QModelIndex&) { return true; },
-					[] (const QModelIndex&) { return false; }))
+					Util::DropArgs ([] { return true; }),
+					Util::DropArgs ([] { return false; })))
 			return;
 
 		WithSourceProv (index,
