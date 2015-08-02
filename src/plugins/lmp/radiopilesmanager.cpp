@@ -83,6 +83,10 @@ namespace LMP
 		Media::AudioSearchRequest req;
 		req.FreeForm_ = query;
 
+		const auto searchItem = new QStandardItem { query };
+		searchItem->setEditable (false);
+		item->appendRow (searchItem);
+
 		const auto pending = pile->Search (req);
 		PreviewHandler_->HandlePending (pending);
 	}
