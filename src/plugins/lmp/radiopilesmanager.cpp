@@ -75,8 +75,8 @@ namespace LMP
 	void RadioPilesManager::HandlePile (QStandardItem *item, Media::IAudioPile *pile)
 	{
 		const auto& query = QInputDialog::getText (nullptr,
-				RadioPilesManager::tr ("Audio search"),
-				RadioPilesManager::tr ("Enter the string to search for:"));
+				tr ("Audio search"),
+				tr ("Enter the string to search for:"));
 		if (query.isEmpty ())
 			return;
 
