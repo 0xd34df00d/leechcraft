@@ -149,7 +149,7 @@ namespace LMP
 	{
 		auto pm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 
-		const auto rpm = new RadioPilesManager { pm, Core::Instance ().GetPreviewHandler (), this };
+		const auto rpm = new RadioPilesManager { pm, this };
 		MergeModel_->AddModel (rpm->GetModel ());
 
 		InitProvider (new RadioCustomStreams (this));

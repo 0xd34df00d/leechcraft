@@ -35,17 +35,14 @@
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
-#include "previewhandler.h"
 #include "previewcharacteristicinfo.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	RadioPilesManager::RadioPilesManager (const IPluginsManager *pm,
-			PreviewHandler *handler, QObject *parent)
+	RadioPilesManager::RadioPilesManager (const IPluginsManager *pm, QObject *parent)
 	: QObject { parent }
-	, PreviewHandler_ { handler }
 	, PilesModel_ { new QStandardItemModel { this } }
 	{
 		FillModel (pm);

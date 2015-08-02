@@ -45,14 +45,11 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class PreviewHandler;
-
 	class RadioPilesManager : public QObject
 	{
-		PreviewHandler * const PreviewHandler_;
 		QStandardItemModel * const PilesModel_;
 	public:
-		RadioPilesManager (const IPluginsManager*, PreviewHandler*, QObject* = nullptr);
+		RadioPilesManager (const IPluginsManager*, QObject* = nullptr);
 
 		QAbstractItemModel* GetModel () const;
 	private:
