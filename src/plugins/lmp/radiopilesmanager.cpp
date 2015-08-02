@@ -112,7 +112,7 @@ namespace LMP
 		{
 			[pending, searchItem] { AddResults (pending->GetResults (), searchItem); },
 			pendingObj,
-			SIGNAL (finished ()),
+			SIGNAL (ready ()),
 			pendingObj
 		};
 	}
