@@ -123,6 +123,7 @@ set (SRCS
 	diaginfocollector.cpp
 	npstateupdater.cpp
 	nptooltiphook.cpp
+	previewcharacteristicinfo.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
