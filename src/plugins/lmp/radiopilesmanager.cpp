@@ -76,6 +76,35 @@ namespace LMP
 	{
 		void AddResults (const QList<Media::IPendingAudioSearch::Result>& results, QStandardItem *item)
 		{
+			const auto& queryText = item->text ();
+			item->setText (RadioPilesManager::tr ("%1 (%n result(s))", 0, results.size ())
+						.arg (queryText));
+
+			QSet<QUrl> urls;
+			QSet<PreviewCharacteristicInfo> infos;
+			for (const auto& res : results)
+			{
+				if (urls.contains (res.Source_))
+					continue;
+				urls.insert (res.Source_);
+
+				const PreviewCharacteristicInfo checkInfo { res.Info_ };
+				if (infos.contains (checkInfo))
+					continue;
+				infos << checkInfo;
+
+				auto info = res.Info_;
+				info.Other_ ["URL"] = res.Source_;
+
+				const auto resItem = new QStandardItem { res.Info_.Artist_ + " - " + res.Info_.Title_ };
+				resItem->setEditable (false);
+				resItem->setData ({}, Media::RadioItemRole::ItemType);
+				resItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
+				resItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
+						Media::RadioItemRole::TracksInfos);
+				item->appendRow (resItem);
+			}
+		}
 	}
 
 	void RadioPilesManager::HandlePile (QStandardItem *item, Media::IAudioPile *pile)
