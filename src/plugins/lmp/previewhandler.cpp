@@ -34,6 +34,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "player.h"
 #include "core.h"
+#include "previewcharacteristicinfo.h"
 
 namespace LeechCraft
 {
@@ -175,42 +176,20 @@ namespace LMP
 		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
-	namespace
-	{
-		struct SamenessCheckInfo
-		{
-			QString Artist_;
-			QString Title_;
-			qint32 Length_;
-		};
-
-		bool operator== (const SamenessCheckInfo& i1, const SamenessCheckInfo& i2)
-		{
-			return i1.Artist_ == i2.Artist_ &&
-					i1.Title_ == i2.Title_ &&
-					i1.Length_ == i2.Length_;
-		}
-
-		uint qHash (const SamenessCheckInfo& info)
-		{
-			return qHash (info.Artist_ + '|' + info.Title_ + '|' + QString::number (info.Length_));
-		}
-	}
-
 	void PreviewHandler::handlePendingReady ()
 	{
 		auto pending = qobject_cast<Media::IPendingAudioSearch*> (sender ());
 
 		QList<AudioSource> sources;
 		QSet<QUrl> urls;
-		QSet<SamenessCheckInfo> infos;
+		QSet<PreviewCharacteristicInfo> infos;
 		for (const auto& res : pending->GetResults ())
 		{
 			if (urls.contains (res.Source_))
 				continue;
 			urls.insert (res.Source_);
 
-			const SamenessCheckInfo checkInfo
+			const PreviewCharacteristicInfo checkInfo
 			{
 				res.Info_.Album_.toLower ().trimmed (),
 				res.Info_.Title_.toLower ().trimmed (),
