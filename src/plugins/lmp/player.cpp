@@ -1162,24 +1162,10 @@ namespace LMP
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
 		{
-			QString text;
-			if (!info.IsUseless ())
-			{
-				text = XmlSettingsManager::Instance ()
-						.property ("SingleTrackDisplayMask").toString ();
-
-				text = PerformSubstitutions (text, info).simplified ();
-				text.replace ("- -", "-");
-				if (text.startsWith ("- "))
-					text = text.mid (2);
-				if (text.endsWith (" -"))
-					text.chop (2);
-			}
-			else
-				text = QFileInfo (info.LocalPath_).fileName ();
-
+			const auto& text = !info.IsUseless () ?
+					PerformSubstitutionsPlaylist (info) :
+					QFileInfo (info.LocalPath_).fileName ();
 			item->setText (text);
-
 			item->setData (QVariant::fromValue (info), Player::Role::Info);
 		}
 	}
