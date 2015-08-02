@@ -71,12 +71,6 @@ namespace Util
 		return {};
 	}
 
-	template<template<typename...> class List, typename... Args1, typename... Args2>
-	constexpr List<Args1..., Args2...> Concat (List<Args1...>, List<Args2...>)
-	{
-		return {};
-	}
-
 	template<template<typename...> class List>
 	constexpr List<> Reverse (List<>)
 	{
