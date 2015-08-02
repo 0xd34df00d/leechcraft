@@ -36,6 +36,8 @@
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include "previewcharacteristicinfo.h"
+#include "mediainfo.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -96,7 +98,8 @@ namespace LMP
 				auto info = res.Info_;
 				info.Other_ ["URL"] = res.Source_;
 
-				const auto resItem = new QStandardItem { res.Info_.Artist_ + " - " + res.Info_.Title_ };
+				const auto& name = PerformSubstitutionsPlaylist (MediaInfo::FromAudioInfo (info));
+				const auto resItem = new QStandardItem { name };
 				resItem->setEditable (false);
 				resItem->setData ({}, Media::RadioItemRole::ItemType);
 				resItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
