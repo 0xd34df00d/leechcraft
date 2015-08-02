@@ -62,5 +62,8 @@ namespace Util
 
 	template<typename T>
 	using ResultOf_t = typename std::result_of<T>::type;
+
+	template<bool B, class T = void>
+	using EnableIf_t = typename std::enable_if<B, T>::type;
 }
 }
