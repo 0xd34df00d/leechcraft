@@ -31,6 +31,11 @@
 
 #include <QString>
 
+namespace Media
+{
+	struct AudioInfo;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -40,6 +45,8 @@ namespace LMP
 		QString Artist_;
 		QString Title_;
 		qint32 Length_;
+
+		PreviewCharacteristicInfo (const Media::AudioInfo&);
 	};
 
 	bool operator== (const PreviewCharacteristicInfo&, const PreviewCharacteristicInfo&);

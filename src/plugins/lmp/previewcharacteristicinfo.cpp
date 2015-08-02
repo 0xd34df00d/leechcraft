@@ -29,11 +29,19 @@
 
 #include "previewcharacteristicinfo.h"
 #include <QHash>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
 namespace LMP
 {
+	PreviewCharacteristicInfo::PreviewCharacteristicInfo (const Media::AudioInfo& info)
+	: Artist_ { info.Album_.toLower ().trimmed () }
+	, Title_ { info.Title_.toLower ().trimmed () }
+	, Length_ { info.Length_ }
+	{
+	}
+
 	bool operator== (const PreviewCharacteristicInfo& i1, const PreviewCharacteristicInfo& i2)
 	{
 		return i1.Artist_ == i2.Artist_ &&
