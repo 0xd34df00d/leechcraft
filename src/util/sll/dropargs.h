@@ -101,7 +101,7 @@ namespace Util
 			F F_;
 		public:
 			Dropper (const F& f)
-			: F_ { f }
+			: F_ (f)
 			{
 			}
 
