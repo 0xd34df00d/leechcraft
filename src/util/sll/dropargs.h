@@ -116,7 +116,7 @@ namespace Util
 			template<typename... InvokableArgs, typename... Rest>
 			auto Invoke (Typelist<InvokableArgs...>, Typelist<Rest...>, Dumbify<InvokableArgs>... args, Dumbify<Rest>...) -> ResultOf_t<F (InvokableArgs...)>
 			{
-				return F_ (args...);
+				return F_ (std::forward<InvokableArgs> (args)...);
 			}
 		};
 	}
