@@ -56,7 +56,7 @@ namespace Util
 		template<typename F, template<typename...> class List, typename... Args>
 		constexpr auto GetInvokablePartImpl (float, List<Args...> list) -> typename InvokableType<F, decltype (Reverse (Tail (Reverse (list))))>::RetType_t
 		{
-			return GetInvokablePartImpl<F> (0, Reverse (Tail (Reverse (list))));
+			return {};
 		}
 
 		template<typename F, template<typename...> class List, typename...Args>
@@ -68,7 +68,7 @@ namespace Util
 		template<typename F, typename... Args>
 		constexpr auto GetInvokablePart () -> decltype (GetInvokablePartImpl<F> (0, Typelist<Args...> {}))
 		{
-			return GetInvokablePartImpl<F> (0, Typelist<Args...> {});
+			return {};
 		}
 
 		template<template<typename...> class List, typename... Args>
