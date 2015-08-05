@@ -59,10 +59,10 @@ namespace Util
 			return {};
 		}
 
-		template<typename F, template<typename...> class List, typename...Args>
-		struct InvokableType<F, List<Args...>>
+		template<typename F, typename List>
+		struct InvokableType
 		{
-			using RetType_t = decltype (GetInvokablePartImpl<F> (0, List<Args...> {}));
+			using RetType_t = decltype (GetInvokablePartImpl<F> (0, List {}));
 		};
 
 		template<typename F, typename... Args>
