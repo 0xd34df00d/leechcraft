@@ -472,7 +472,7 @@ namespace Krigstask
 			xcb_free_pixmap (conn, backing);
 			xcb_composite_unredirect_window (conn, wid, XCB_COMPOSITE_REDIRECT_AUTOMATIC);
 
-			return {};
+			return image;
 		}
 /*
 		void CreatePicture (xcb_pixmap_t pixmap, int depth)
