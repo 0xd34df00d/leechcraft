@@ -91,12 +91,15 @@ namespace Poshuku
 			Pending_ << rep;
 		}
 
-		if (Pending_.size ())
+		if (Pending_.isEmpty ())
 		{
-			ProgressDialog_->setRange (0, Pending_.size ());
-			ProgressDialog_->setValue (0);
-			ProgressDialog_->show ();
+			deleteLater ();
+			return;
 		}
+
+		ProgressDialog_->setRange (0, Pending_.size ());
+		ProgressDialog_->setValue (0);
+		ProgressDialog_->show ();
 	}
 
 	namespace
@@ -156,7 +159,7 @@ namespace Poshuku
 
 		ProgressDialog_->setValue (ProgressDialog_->value () + 1);
 
-		if (!Pending_.size ())
+		if (Pending_.isEmpty ())
 		{
 			ProgressDialog_->setValue (ProgressDialog_->value () + 1);
 
@@ -225,6 +228,8 @@ namespace Poshuku
 					message);
 
 			ProgressDialog_->reset ();
+
+			deleteLater ();
 		}
 	}
 
