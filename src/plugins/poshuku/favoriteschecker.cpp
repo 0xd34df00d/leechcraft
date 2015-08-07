@@ -236,6 +236,7 @@ namespace Poshuku
 	void FavoritesChecker::handleCanceled ()
 	{
 		qDeleteAll (Pending_);
+		deleteLater ();
 		Pending_.clear ();
 		Results_.clear ();
 		Items_.clear ();
