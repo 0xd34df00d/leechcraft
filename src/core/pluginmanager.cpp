@@ -906,19 +906,23 @@ namespace LeechCraft
 				<< Checks::TryLoad
 				<< Checks::APILevel;
 
-		auto thrCheck = [checks] (Loaders::IPluginLoader_ptr loader) -> boost::optional<Checks::Fail>
+		const bool shouldDump = qgetenv ("LC_DUMP_SOCHECKS") == "1";
+
+		auto thrCheck = [shouldDump, checks] (Loaders::IPluginLoader_ptr loader) -> boost::optional<Checks::Fail>
 		{
+			if (shouldDump)
+				qDebug () << loader->GetFileName () << ": beginning checks";
 			for (const auto& check : checks)
 				try
 				{
 					check (loader);
-					{
-					}
 				}
 				catch (const Checks::Fail& f)
 				{
 					return f;
 				}
+			if (shouldDump)
+				qDebug () << loader->GetFileName () << ": done checks";
 
 			return {};
 		};
