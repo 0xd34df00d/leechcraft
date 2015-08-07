@@ -40,7 +40,7 @@ target_link_libraries (leechcraft-util-sll${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-util-sll${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
 install (TARGETS leechcraft-util-sll${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core)
+FindQtLibs (leechcraft-util-sll${LC_LIBSUFFIX} Core Concurrent)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
