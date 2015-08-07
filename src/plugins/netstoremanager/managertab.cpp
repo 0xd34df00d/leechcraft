@@ -505,7 +505,7 @@ namespace NetStoreManager
 			upLevel->setData ("netstoremanager.item_uplevel", ListingRole::ID);
 			upLevel->setData (parentId, ListingRole::ParentID);
 			upLevel->setEditable (false);
-			TreeModel_->appendRow ({ upLevel });
+			TreeModel_->appendRow (upLevel);
 		}
 
 		for (const auto& item : Id2Item_)
