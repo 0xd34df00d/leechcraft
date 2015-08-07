@@ -29,6 +29,7 @@
 
 #include "accountfoldermanager.h"
 #include <stdexcept>
+#include <QDataStream>
 #include <util/sll/qtutil.h>
 #include "common.h"
 

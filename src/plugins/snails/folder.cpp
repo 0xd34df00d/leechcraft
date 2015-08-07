@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "folder.h"
+#include <QDataStream>
 
 namespace LeechCraft
 {

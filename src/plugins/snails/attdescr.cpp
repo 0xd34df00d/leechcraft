@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "attdescr.h"
+#include <QDataStream>
 #include <QtDebug>
 #include "vmimeconversions.h"
 

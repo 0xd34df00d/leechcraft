@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <QtDebug>
 #include <QBuffer>
+#include <QDataStream>
 #include <util/sll/qtutil.h>
 #include "lazyvmimeheader.h"
 

@@ -35,6 +35,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDataStream>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <util/db/dblock.h>
