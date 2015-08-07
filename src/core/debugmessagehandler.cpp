@@ -57,6 +57,10 @@ namespace
 		{
 		case QtDebugMsg:
 			return "debug.log";
+#if QT_VERSION >= 0x050500
+		case QtInfoMsg:
+			return "info.log";
+#endif
 		case QtWarningMsg:
 			return "warning.log";
 		case QtCriticalMsg:
@@ -82,6 +86,9 @@ namespace
 		switch (type)
 		{
 		case QtDebugMsg:
+#if QT_VERSION >= 0x050500
+		case QtInfoMsg:
+#endif
 			return "\x1b[32m";
 		case QtWarningMsg:
 			return "\x1b[33m";
@@ -106,6 +113,11 @@ namespace
 			case QtDebugMsg:
 				stream << "[DBG] ";
 				break;
+#if QT_VERSION >= 0x050500
+			case QtInfoMsg:
+				stream << "[INF] ";
+				break;
+#endif
 			case QtWarningMsg:
 				stream << "[WRN] ";
 				break;
