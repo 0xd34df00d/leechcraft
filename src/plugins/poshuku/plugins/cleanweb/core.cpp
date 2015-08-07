@@ -158,8 +158,8 @@ namespace CleanWeb
 				}
 
 				const auto& data = QString::fromUtf8 (file.readAll ());
-				QStringList rawLines = data.split ('\n', QString::SkipEmptyParts);
-				if (rawLines.size ())
+				auto rawLines = data.split ('\n', QString::SkipEmptyParts);
+				if (!rawLines.isEmpty ())
 					rawLines.removeAt (0);
 				const auto& lines = Util::Map (rawLines, std::mem_fn (&QString::trimmed));
 
