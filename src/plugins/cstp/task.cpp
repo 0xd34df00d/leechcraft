@@ -40,6 +40,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qstringwrappers.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -63,7 +64,7 @@ namespace CSTP
 			if (pairs.isEmpty ())
 				return map;
 
-			QStringList keys { Util::Map (map.keys (), &QString::toLower) };
+			QStringList keys { Util::Map (map.keys (), Util::QStringToLower {}) };
 			for (const auto& pair : pairs)
 				if (!keys.contains (pair.first, Qt::CaseInsensitive))
 					map [pair.first] = pair.second;
