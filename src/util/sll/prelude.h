@@ -111,6 +111,18 @@ namespace Util
 		{
 			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (0);
 		}
+
+		template<template<typename> class Cont, typename T>
+		constexpr bool IsSimpleContainer ()
+		{
+			return true;
+		}
+
+		template<typename C>
+		constexpr bool IsSimpleContainer ()
+		{
+			return false;
+		}
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
