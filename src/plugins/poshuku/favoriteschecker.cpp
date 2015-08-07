@@ -237,9 +237,6 @@ namespace Poshuku
 	{
 		qDeleteAll (Pending_);
 		deleteLater ();
-		Pending_.clear ();
-		Results_.clear ();
-		Items_.clear ();
 	}
 }
 }
