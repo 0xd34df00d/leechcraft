@@ -161,7 +161,7 @@ namespace CleanWeb
 				auto rawLines = data.split ('\n', QString::SkipEmptyParts);
 				if (!rawLines.isEmpty ())
 					rawLines.removeAt (0);
-				const auto& lines = Util::Map (rawLines, std::mem_fn (&QString::trimmed));
+				const auto& lines = Util::Map (rawLines, &QString::trimmed);
 
 				Filter f;
 				std::for_each (lines.begin (), lines.end (), LineParser (&f));
@@ -192,7 +192,7 @@ namespace CleanWeb
 
 		const auto& path = Util::CreateIfNotExists ("cleanweb");
 		const auto& infos = path.entryInfoList (QDir::Files | QDir::Readable);
-		const auto& paths = Util::Map (infos, std::mem_fn (&QFileInfo::absoluteFilePath));
+		const auto& paths = Util::Map (infos, &QFileInfo::absoluteFilePath);
 
 		auto watcher = new QFutureWatcher<QList<Filter>> ();
 		connect (watcher,

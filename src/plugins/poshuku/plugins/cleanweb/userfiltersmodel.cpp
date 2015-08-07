@@ -251,7 +251,7 @@ namespace CleanWeb
 
 	void UserFiltersModel::AddMultiFilters (QStringList lines)
 	{
-		lines = Util::Map (lines, std::mem_fn (&QString::trimmed));
+		lines = Util::Map (lines, &QString::trimmed);
 
 		beginResetModel ();
 		auto p = std::for_each (lines.begin (), lines.end (),
