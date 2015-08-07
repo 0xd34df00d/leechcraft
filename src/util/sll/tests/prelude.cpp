@@ -30,6 +30,7 @@
 #include "prelude.h"
 #include <QtTest>
 #include <prelude.h>
+#include <qtutil.h>
 #include <util/util.h>
 
 QTEST_MAIN (LeechCraft::Util::PreludeTest)
@@ -146,6 +147,14 @@ namespace Util
 		Map (map, [] (const QString&) {});
 
 		QCOMPARE (map, GetSimpleMap ());
+	}
+
+	void PreludeTest::testMapMapStlized ()
+	{
+		const auto& map = GetSimpleMap ();
+		const auto& list = Map (Stlize (map), [] (const std::pair<int, QString>& pair) { return pair.second; });
+
+		QCOMPARE (list, QStringList { map.values () });
 	}
 
 	void PreludeTest::testMapMember ()
