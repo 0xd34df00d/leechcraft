@@ -30,7 +30,7 @@
 #include "audiocall.h"
 #include <QFuture>
 #include <QFutureWatcher>
-#include <plusadic/curry.h>
+#include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/futures.h>
 #include "threadexceptions.h"
@@ -198,7 +198,7 @@ namespace Sarin
 
 		qDebug () << Q_FUNC_INFO;
 		Util::ExecuteFuture ([this, callIdx] { return CallMgr_->QueryCodec (callIdx); },
-				plusadic::curry (&AudioCall::MoveToActiveState) (this),
+				Util::BindMemFn (&AudioCall::MoveToActiveState, this),
 				this);
 	}
 }
