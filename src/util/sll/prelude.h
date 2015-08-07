@@ -135,8 +135,8 @@ namespace Util
 		return result;
 	}
 
-	template<template<typename...> class Container, typename F, template<typename> class ResultCont = QList, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+	template<typename Container, typename F, template<typename> class ResultCont = QList>
+	auto Map (const Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
 			WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
 	{
 		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
@@ -145,15 +145,15 @@ namespace Util
 		return cont;
 	}
 
-	template<template<typename...> class Container, typename F, typename... ContArgs>
-	auto Map (Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	template<typename Container, typename F>
+	auto Map (Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
 	}
 
-	template<template<typename...> class Container, typename F, typename... ContArgs>
-	auto Map (const Container<ContArgs...>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	template<typename Container, typename F, typename... ContArgs>
+	auto Map (const Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
 	{
 		auto copy = c;
 		Map (copy, f);
