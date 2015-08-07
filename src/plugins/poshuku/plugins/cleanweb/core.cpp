@@ -61,6 +61,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/qstringwrappers.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "userfiltersmodel.h"
@@ -161,7 +162,7 @@ namespace CleanWeb
 				auto rawLines = data.split ('\n', QString::SkipEmptyParts);
 				if (!rawLines.isEmpty ())
 					rawLines.removeAt (0);
-				const auto& lines = Util::Map (rawLines, &QString::trimmed);
+				const auto& lines = Util::Map (rawLines, Util::QStringTrimmed {});
 
 				Filter f;
 				std::for_each (lines.begin (), lines.end (), LineParser (&f));

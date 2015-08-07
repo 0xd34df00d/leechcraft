@@ -41,6 +41,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qstringwrappers.h>
 #include <interfaces/core/ientitymanager.h>
 #include "ruleoptiondialog.h"
 #include "lineparser.h"
@@ -251,7 +252,7 @@ namespace CleanWeb
 
 	void UserFiltersModel::AddMultiFilters (QStringList lines)
 	{
-		lines = Util::Map (lines, &QString::trimmed);
+		lines = Util::Map (lines, Util::QStringTrimmed {});
 
 		beginResetModel ();
 		auto p = std::for_each (lines.begin (), lines.end (),
