@@ -130,6 +130,79 @@ namespace Poshuku
 		}
 	}
 
+	void FavoritesChecker::HandleAllDone ()
+	{
+		ProgressDialog_->setValue (ProgressDialog_->value () + 1);
+
+		int accessible = 0,
+			serverStuff = 0;
+		QStringList unaccessibleList;
+		QStringList redirectsList;
+
+		QMap<QString, QString> result;
+
+		Q_FOREACH (QUrl key, Results_.keys ())
+		{
+			QString mres;
+			Result res = Results_ [key];
+			if (res.Error_ != QNetworkReply::NoError)
+			{
+				unaccessibleList << key.toString ();
+				mres = res.ErrorString_;
+			}
+			else if (res.StatusCode_ < 200 ||
+					res.StatusCode_ > 399)
+			{
+				++serverStuff;
+				mres = QString ("HTTP %1")
+					.arg (res.StatusCode_);
+			}
+			else
+			{
+				++accessible;
+				mres = tr ("HTTP %1")
+					.arg (res.StatusCode_);
+				if (res.Length_)
+					mres += tr ("<br />Length: %1")
+						.arg (res.Length_);
+				if (res.LastModified_.isValid ())
+					mres += tr ("<br />Last-modified: %1")
+						.arg (res.LastModified_.toString ());
+
+				if (res.RedirectURL_.isValid ())
+				{
+					redirectsList << key.toString ();
+					mres += tr ("<br />Redirects to %1")
+						.arg (res.RedirectURL_.toString ());
+				}
+			}
+
+			result [key.toString ()] = mres;
+		}
+
+		Model_->SetCheckResults (result);
+
+		QString message = tr ("%1 favorites total.<br />"
+				"%2 favorites are accessible.<br />"
+				"%3"
+				"%4 are not correctly returned by the remote server.<br />"
+				"%5")
+			.arg (accessible + unaccessibleList.size () + serverStuff)
+			.arg (accessible)
+			.arg (BuildMessage (unaccessibleList, "unaccessible", 10))
+			.arg (serverStuff)
+			.arg (BuildMessage (redirectsList, "redirected", 10));
+
+		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
+		QMessageBox::information (rootWM->GetPreferredWindow (),
+				"LeechCraft",
+				message);
+
+		ProgressDialog_->reset ();
+
+		deleteLater ();
+	}
+
 	void FavoritesChecker::handleFinished ()
 	{
 		QNetworkReply *rep = qobject_cast<QNetworkReply*> (sender ());
@@ -160,77 +233,7 @@ namespace Poshuku
 		ProgressDialog_->setValue (ProgressDialog_->value () + 1);
 
 		if (Pending_.isEmpty ())
-		{
-			ProgressDialog_->setValue (ProgressDialog_->value () + 1);
-
-			int accessible = 0,
-				serverStuff = 0;
-			QStringList unaccessibleList;
-			QStringList redirectsList;
-
-			QMap<QString, QString> result;
-
-			Q_FOREACH (QUrl key, Results_.keys ())
-			{
-				QString mres;
-				Result res = Results_ [key];
-				if (res.Error_ != QNetworkReply::NoError)
-				{
-					unaccessibleList << key.toString ();
-					mres = res.ErrorString_;
-				}
-				else if (res.StatusCode_ < 200 ||
-						res.StatusCode_ > 399)
-				{
-					++serverStuff;
-					mres = QString ("HTTP %1")
-						.arg (res.StatusCode_);
-				}
-				else
-				{
-					++accessible;
-					mres = tr ("HTTP %1")
-						.arg (res.StatusCode_);
-					if (res.Length_)
-						mres += tr ("<br />Length: %1")
-							.arg (res.Length_);
-					if (res.LastModified_.isValid ())
-						mres += tr ("<br />Last-modified: %1")
-							.arg (res.LastModified_.toString ());
-
-					if (res.RedirectURL_.isValid ())
-					{
-						redirectsList << key.toString ();
-						mres += tr ("<br />Redirects to %1")
-							.arg (res.RedirectURL_.toString ());
-					}
-				}
-
-				result [key.toString ()] = mres;
-			}
-
-			Model_->SetCheckResults (result);
-
-			QString message = tr ("%1 favorites total.<br />"
-					"%2 favorites are accessible.<br />"
-					"%3"
-					"%4 are not correctly returned by the remote server.<br />"
-					"%5")
-				.arg (accessible + unaccessibleList.size () + serverStuff)
-				.arg (accessible)
-				.arg (BuildMessage (unaccessibleList, "unaccessible", 10))
-				.arg (serverStuff)
-				.arg (BuildMessage (redirectsList, "redirected", 10));
-
-			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-			QMessageBox::information (rootWM->GetPreferredWindow (),
-					"LeechCraft",
-					message);
-
-			ProgressDialog_->reset ();
-
-			deleteLater ();
-		}
+			HandleAllDone ();
 	}
 
 	void FavoritesChecker::handleCanceled ()

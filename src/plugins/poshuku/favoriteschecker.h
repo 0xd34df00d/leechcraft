@@ -67,6 +67,8 @@ namespace Poshuku
 		FavoritesChecker (QObject* = 0);
 
 		void Check ();
+	private:
+		void HandleAllDone ();
 	private slots:
 		void handleFinished ();
 		void handleCanceled ();
