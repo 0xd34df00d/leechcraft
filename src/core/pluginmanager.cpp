@@ -35,6 +35,7 @@
 #include <QDir>
 #include <QStringList>
 #include <QtDebug>
+#include <QElapsedTimer>
 #include <QtConcurrentMap>
 #include <QMessageBox>
 #include <QMainWindow>
@@ -910,8 +911,13 @@ namespace LeechCraft
 
 		auto thrCheck = [shouldDump, checks] (Loaders::IPluginLoader_ptr loader) -> boost::optional<Checks::Fail>
 		{
+			QElapsedTimer timer;
 			if (shouldDump)
+			{
+				timer.start ();
 				qDebug () << loader->GetFileName () << ": beginning checks";
+			}
+
 			for (const auto& check : checks)
 				try
 				{
@@ -922,7 +928,12 @@ namespace LeechCraft
 					return f;
 				}
 			if (shouldDump)
-				qDebug () << loader->GetFileName () << ": done checks";
+			{
+				qDebug () << loader->GetFileName ()
+						<< ": done checks in"
+						<< timer.elapsed ()
+						<< "ms";
+			}
 
 			return {};
 		};
