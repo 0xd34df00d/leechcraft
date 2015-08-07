@@ -84,11 +84,11 @@ namespace Mellonetray
 
 		bool IsValid () const;
 
-		int columnCount (const QModelIndex& parent = QModelIndex()) const;
-		int rowCount (const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex& child) const;
-		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
+		int columnCount (const QModelIndex& parent = QModelIndex()) const override;
+		int rowCount (const QModelIndex& parent = QModelIndex()) const override;
+		QModelIndex index (int row, int column, const QModelIndex& parent = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex& child) const override;
+		QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
 #if QT_VERSION < 0x050000
 		bool Filter (XEvent*);
