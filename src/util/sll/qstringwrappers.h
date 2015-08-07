@@ -52,5 +52,23 @@ namespace Util
 			return std::move (s).trimmed ();
 		}
 	};
+
+	struct QStringToLower
+	{
+		QString operator() (const QString& s) const
+		{
+			return s.toLower ();
+		}
+
+		QString operator() (QString&& s) const
+		{
+			return s.toLower ();
+		}
+
+		QString operator() (QString& s) const
+		{
+			return std::move (s).toLower ();
+		}
+	};
 }
 }
