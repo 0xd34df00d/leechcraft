@@ -62,7 +62,6 @@ namespace Poshuku
 {
 	class CustomWebView;
 	class BrowserWidget;
-	class FavoritesChecker;
 	class WebPluginFactory;
 
 	class Core : public QObject
@@ -83,8 +82,6 @@ namespace Poshuku
 		IShortcutProxy *ShortcutProxy_;
 
 		ICoreProxy_ptr Proxy_;
-
-		FavoritesChecker *FavoritesChecker_;
 
 		bool Initialized_;
 

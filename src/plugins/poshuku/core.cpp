@@ -81,7 +81,6 @@ namespace Poshuku
 	: NetworkAccessManager_ (0)
 	, WebPluginFactory_ (0)
 	, ShortcutProxy_ (0)
-	, FavoritesChecker_ (0)
 	, Initialized_ (false)
 	{
 		qRegisterMetaType<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
@@ -169,8 +168,6 @@ namespace Poshuku
 				SIGNAL (removed (const FavoritesModel::FavoritesItem&)),
 				FavoritesModel_.get (),
 				SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
-
-		FavoritesChecker_ = new FavoritesChecker (this);
 
 		Initialized_ = true;
 	}
@@ -430,7 +427,8 @@ namespace Poshuku
 
 	void Core::CheckFavorites ()
 	{
-		FavoritesChecker_->Check ();
+		const auto checker = new FavoritesChecker (this);
+		checker->Check ();
 	}
 
 	void Core::ReloadAll ()
