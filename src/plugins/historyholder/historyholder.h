@@ -42,6 +42,8 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
+	class HistoryDB;
+
 	class Plugin : public QObject
 					, public IInfo
 					, public IFinder
@@ -52,6 +54,8 @@ namespace HistoryHolder
 		Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.HistoryHolder")
+
+		std::shared_ptr<HistoryDB> DB_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

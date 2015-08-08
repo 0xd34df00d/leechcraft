@@ -33,6 +33,7 @@
 #include "historyentry.h"
 #include "core.h"
 #include "findproxy.h"
+#include "historydb.h"
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace HistoryHolder
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+
+		DB_ = std::make_shared<HistoryDB> ();
 	}
 
 	void Plugin::SecondInit ()
