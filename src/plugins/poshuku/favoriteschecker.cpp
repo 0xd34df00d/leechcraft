@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QFontMetrics>
 #include <QMainWindow>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
@@ -141,10 +142,12 @@ namespace Poshuku
 
 		QMap<QString, QString> result;
 
-		Q_FOREACH (QUrl key, Results_.keys ())
+		for (const auto& pair : Util::Stlize (Results_))
 		{
+			const auto& key = pair.first;
+			const auto& res = pair.second;
+
 			QString mres;
-			Result res = Results_ [key];
 			if (res.Error_ != QNetworkReply::NoError)
 			{
 				unaccessibleList << key.toString ();
