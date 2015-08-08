@@ -45,7 +45,7 @@ namespace HistoryHolder
 
 		Request R_;
 	public:
-		FindProxy (const LeechCraft::Request&);
+		FindProxy (QAbstractItemModel*, const LeechCraft::Request&);
 		QAbstractItemModel* GetModel ();
 		QByteArray GetUniqueSearchID () const;
 		QStringList GetCategories () const;

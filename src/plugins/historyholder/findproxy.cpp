@@ -28,16 +28,16 @@
  **********************************************************************/
 
 #include "findproxy.h"
-#include "core.h"
+#include <interfaces/structures.h>
 
 namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	FindProxy::FindProxy (const Request& r)
+	FindProxy::FindProxy (QAbstractItemModel *model, const Request& r)
 	: R_ (r)
 	{
-		setSourceModel (&Core::Instance ());
+		setSourceModel (model);
 		setDynamicSortFilter (true);
 
 		setFilterCaseSensitivity (r.CaseSensitive_ ?

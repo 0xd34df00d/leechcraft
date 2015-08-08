@@ -90,7 +90,7 @@ namespace HistoryHolder
 	QList<IFindProxy_ptr> Plugin::GetProxy (const LeechCraft::Request& r)
 	{
 		QList<IFindProxy_ptr> result;
-		result << IFindProxy_ptr (new FindProxy (r));
+		result << IFindProxy_ptr (new FindProxy (&Core::Instance (), r));
 		return result;
 	}
 
