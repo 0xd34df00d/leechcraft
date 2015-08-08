@@ -64,7 +64,8 @@ namespace CSTP
 			if (pairs.isEmpty ())
 				return map;
 
-			QStringList keys { Util::Map (map.keys (), Util::QStringToLower {}) };
+			const auto& keys = Util::Map (Util::Stlize (map),
+					[] (const std::pair<QString, QVariant>& p) { return std::move (p.first).trimmed (); });
 			for (const auto& pair : pairs)
 				if (!keys.contains (pair.first, Qt::CaseInsensitive))
 					map [pair.first] = pair.second;
