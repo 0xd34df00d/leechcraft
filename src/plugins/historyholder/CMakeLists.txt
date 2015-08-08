@@ -11,6 +11,7 @@ set (SRCS
 	historyholder.cpp
 	findproxy.cpp
 	core.cpp
+	historydb.cpp
 	historyentry.cpp
 	)
 set (RESOURCES historyholderresources.qrc)
