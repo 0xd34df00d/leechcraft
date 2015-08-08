@@ -89,9 +89,7 @@ namespace HistoryHolder
 
 	QList<IFindProxy_ptr> Plugin::GetProxy (const LeechCraft::Request& r)
 	{
-		QList<IFindProxy_ptr> result;
-		result << IFindProxy_ptr (new FindProxy (&Core::Instance (), r));
-		return result;
+		return { std::make_shared<FindProxy> (&Core::Instance (), r) };
 	}
 
 	EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
