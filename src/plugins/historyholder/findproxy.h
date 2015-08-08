@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	class FindProxy : public LeechCraft::Util::TagsFilterModel
+	class FindProxy : public Util::TagsFilterModel
 					, public IFindProxy
 	{
 		Q_OBJECT
@@ -45,7 +45,7 @@ namespace HistoryHolder
 
 		const Request R_;
 	public:
-		FindProxy (QAbstractItemModel*, const LeechCraft::Request&);
+		FindProxy (QAbstractItemModel*, const Request&);
 		QAbstractItemModel* GetModel ();
 		QByteArray GetUniqueSearchID () const;
 		QStringList GetCategories () const;

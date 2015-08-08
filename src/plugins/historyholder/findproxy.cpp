@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace HistoryHolder
 {
 	FindProxy::FindProxy (QAbstractItemModel *model, const Request& r)
-	: R_ (r)
+	: R_ { r }
 	{
 		setSourceModel (model);
 		setDynamicSortFilter (true);
@@ -45,17 +45,17 @@ namespace HistoryHolder
 
 		switch (r.Type_)
 		{
-			case Request::RTWildcard:
-				setFilterWildcard (r.String_);
-				break;
-			case Request::RTRegexp:
-				setFilterRegExp (r.String_);
-				break;
-			default:
-				setFilterFixedString (r.String_);
-				if (r.Type_ == Request::RTTag)
-					setTagsMode (true);
-				break;
+		case Request::RTWildcard:
+			setFilterWildcard (r.String_);
+			break;
+		case Request::RTRegexp:
+			setFilterRegExp (r.String_);
+			break;
+		default:
+			setFilterFixedString (r.String_);
+			if (r.Type_ == Request::RTTag)
+				setTagsMode (true);
+			break;
 		}
 	}
 
@@ -66,7 +66,7 @@ namespace HistoryHolder
 
 	QByteArray FindProxy::GetUniqueSearchID () const
 	{
-		return QString ("org.LeechCraft.HistoryHolder.%1.%2")
+		return QString { "org.LeechCraft.HistoryHolder.%1.%2" }
 				.arg (R_.Type_)
 				.arg (R_.String_)
 				.toUtf8 ();
@@ -74,7 +74,7 @@ namespace HistoryHolder
 
 	QStringList FindProxy::GetCategories () const
 	{
-		return QStringList (R_.Category_);
+		return { R_.Category_ };
 	}
 
 	QStringList FindProxy::GetTagsForIndex (int row) const
