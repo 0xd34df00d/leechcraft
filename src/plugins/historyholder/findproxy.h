@@ -43,7 +43,7 @@ namespace HistoryHolder
 		Q_OBJECT
 		Q_INTERFACES (IFindProxy)
 
-		Request R_;
+		const Request R_;
 	public:
 		FindProxy (QAbstractItemModel*, const LeechCraft::Request&);
 		QAbstractItemModel* GetModel ();
