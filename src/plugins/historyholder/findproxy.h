@@ -27,35 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_HISTORYHOLDER_FINDPROXY_H
-#define PLUGINS_HISTORYHOLDER_FINDPROXY_H
+#pragma once
+
 #include <QObject>
 #include <util/tags/tagsfiltermodel.h>
 #include <interfaces/ifinder.h>
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace HistoryHolder
+{
+	class FindProxy : public LeechCraft::Util::TagsFilterModel
+					, public IFindProxy
 	{
-		namespace HistoryHolder
-		{
-			class FindProxy : public LeechCraft::Util::TagsFilterModel
-							, public IFindProxy
-			{
-				Q_OBJECT
-				Q_INTERFACES (IFindProxy)
+		Q_OBJECT
+		Q_INTERFACES (IFindProxy)
 
-				Request R_;
-			public:
-				FindProxy (const LeechCraft::Request&);
-				QAbstractItemModel* GetModel ();
-				QByteArray GetUniqueSearchID () const;
-				QStringList GetCategories () const;
-			protected:
-				QStringList GetTagsForIndex (int) const;
-			};
-		};
+		Request R_;
+	public:
+		FindProxy (const LeechCraft::Request&);
+		QAbstractItemModel* GetModel ();
+		QByteArray GetUniqueSearchID () const;
+		QStringList GetCategories () const;
+	protected:
+		QStringList GetTagsForIndex (int) const;
 	};
-};
-
-#endif
+}
+}

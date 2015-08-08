@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_HISTORYHOLDER_CORE_H
-#define PLUGINS_HISTORYHOLDER_CORE_H
+#pragma once
+
 #include <memory>
 #include <QAbstractItemModel>
 #include <QDateTime>
@@ -40,68 +40,62 @@ class QToolBar;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace HistoryHolder
+{
+	class Core : public QAbstractItemModel
 	{
-		namespace HistoryHolder
+		Q_OBJECT
+
+		Core ();
+
+	public:
+		struct HistoryEntry
 		{
-			class Core : public QAbstractItemModel
-			{
-				Q_OBJECT
-
-				Core ();
-
-			public:
-				struct HistoryEntry
-				{
-					LeechCraft::Entity Entity_;
-					QDateTime DateTime_;
-				};
-			private:
-				typedef QList<HistoryEntry> History_t;
-				History_t History_;
-				QStringList Headers_;
-				std::shared_ptr<QToolBar> ToolBar_;
-				ICoreProxy_ptr CoreProxy_;
-				QAction *Remove_;
-
-				bool WriteScheduled_;
-				bool WritePending_ = false;
-
-				enum Shortcuts
-				{
-					SRemove
-				};
-			public:
-				static Core& Instance ();
-				void Release ();
-				void SetCoreProxy (ICoreProxy_ptr);
-				ICoreProxy_ptr GetCoreProxy () const;
-				void Handle (const LeechCraft::Entity&);
-
-				void SetShortcut (const QString&, const QKeySequences_t&);
-				QMap<QString, ActionInfo> GetActionInfo () const;
-
-				int columnCount (const QModelIndex&) const;
-				QVariant data (const QModelIndex&, int) const;
-				QVariant headerData (int, Qt::Orientation, int) const;
-				QModelIndex index (int, int, const QModelIndex&) const;
-				QModelIndex parent (const QModelIndex&) const;
-				int rowCount (const QModelIndex&) const;
-			public slots:
-				void handleTasksTreeActivated (const QModelIndex&);
-			private:
-				void ScheduleWrite ();
-			private slots:
-				void writeSettings ();
-				void remove ();
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-			};
+			LeechCraft::Entity Entity_;
+			QDateTime DateTime_;
 		};
+	private:
+		typedef QList<HistoryEntry> History_t;
+		History_t History_;
+		QStringList Headers_;
+		std::shared_ptr<QToolBar> ToolBar_;
+		ICoreProxy_ptr CoreProxy_;
+		QAction *Remove_;
+
+		bool WriteScheduled_;
+		bool WritePending_ = false;
+
+		enum Shortcuts
+		{
+			SRemove
+		};
+	public:
+		static Core& Instance ();
+		void Release ();
+		void SetCoreProxy (ICoreProxy_ptr);
+		ICoreProxy_ptr GetCoreProxy () const;
+		void Handle (const LeechCraft::Entity&);
+
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
+
+		int columnCount (const QModelIndex&) const;
+		QVariant data (const QModelIndex&, int) const;
+		QVariant headerData (int, Qt::Orientation, int) const;
+		QModelIndex index (int, int, const QModelIndex&) const;
+		QModelIndex parent (const QModelIndex&) const;
+		int rowCount (const QModelIndex&) const;
+	public slots:
+		void handleTasksTreeActivated (const QModelIndex&);
+	private:
+		void ScheduleWrite ();
+	private slots:
+		void writeSettings ();
+		void remove ();
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
 	};
-};
+}
+}
 
-Q_DECLARE_METATYPE (LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry);
-
-#endif
-
+Q_DECLARE_METATYPE (LeechCraft::HistoryHolder::Core::HistoryEntry);

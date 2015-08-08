@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_HISTORYHOLDER_HISTORYHOLDER_H
-#define PLUGINS_HISTORYHOLDER_HISTORYHOLDER_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iinfo.h>
@@ -40,47 +40,41 @@ class QModelIndex;
 
 namespace LeechCraft
 {
-	namespace Plugins
+namespace HistoryHolder
+{
+	class Plugin : public QObject
+					, public IInfo
+					, public IFinder
+					, public IEntityHandler
+					, public IHaveShortcuts
 	{
-		namespace HistoryHolder
-		{
-			class Plugin : public QObject
-						 , public IInfo
-						 , public IFinder
-						 , public IEntityHandler
-						 , public IHaveShortcuts
-			{
-				Q_OBJECT
-				Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
+		Q_OBJECT
+		Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
 
-				LC_PLUGIN_METADATA ("org.LeechCraft.HistoryHolder")
-			public:
-				void Init (ICoreProxy_ptr);
-				void SecondInit ();
-				void Release ();
-				QByteArray GetUniqueID () const;
-				QString GetName () const;
-				QString GetInfo () const;
-				QIcon GetIcon () const;
-				QStringList Provides () const;
+		LC_PLUGIN_METADATA ("org.LeechCraft.HistoryHolder")
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		void Release ();
+		QByteArray GetUniqueID () const;
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+		QStringList Provides () const;
 
-				QStringList GetCategories () const;
-				QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
+		QStringList GetCategories () const;
+		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
 
-				EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-				void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
+		void Handle (LeechCraft::Entity);
 
-				void SetShortcut (const QString&, const QKeySequences_t&);
-				QMap<QString, ActionInfo> GetActionInfo () const;
-			public slots:
-				void handleTasksTreeActivated (const QModelIndex&);
-			signals:
-				void gotEntity (const LeechCraft::Entity&);
-				void categoriesChanged (const QStringList&, const QStringList&);
-			};
-		};
+		void SetShortcut (const QString&, const QKeySequences_t&);
+		QMap<QString, ActionInfo> GetActionInfo () const;
+	public slots:
+		void handleTasksTreeActivated (const QModelIndex&);
+	signals:
+		void gotEntity (const LeechCraft::Entity&);
+		void categoriesChanged (const QStringList&, const QStringList&);
 	};
-};
-
-#endif
-
+}
+}

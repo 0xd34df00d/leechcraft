@@ -30,56 +30,57 @@
 #include "findproxy.h"
 #include "core.h"
 
-using namespace LeechCraft;
-using namespace LeechCraft::Util;
-using namespace LeechCraft::Plugins::HistoryHolder;
-
-FindProxy::FindProxy (const Request& r)
-: R_ (r)
+namespace LeechCraft
 {
-	setSourceModel (&Core::Instance ());
-	setDynamicSortFilter (true);
-
-	setFilterCaseSensitivity (r.CaseSensitive_ ?
-			Qt::CaseSensitive : Qt::CaseInsensitive);
-
-	switch (r.Type_)
+namespace HistoryHolder
+{
+	FindProxy::FindProxy (const Request& r)
+	: R_ (r)
 	{
-		case Request::RTWildcard:
-			setFilterWildcard (r.String_);
-			break;
-		case Request::RTRegexp:
-			setFilterRegExp (r.String_);
-			break;
-		default:
-			setFilterFixedString (r.String_);
-			if (r.Type_ == Request::RTTag)
-				setTagsMode (true);
-			break;
+		setSourceModel (&Core::Instance ());
+		setDynamicSortFilter (true);
+
+		setFilterCaseSensitivity (r.CaseSensitive_ ?
+				Qt::CaseSensitive : Qt::CaseInsensitive);
+
+		switch (r.Type_)
+		{
+			case Request::RTWildcard:
+				setFilterWildcard (r.String_);
+				break;
+			case Request::RTRegexp:
+				setFilterRegExp (r.String_);
+				break;
+			default:
+				setFilterFixedString (r.String_);
+				if (r.Type_ == Request::RTTag)
+					setTagsMode (true);
+				break;
+		}
+	}
+
+	QAbstractItemModel* FindProxy::GetModel ()
+	{
+		return this;
+	}
+
+	QByteArray FindProxy::GetUniqueSearchID () const
+	{
+		return QString ("org.LeechCraft.HistoryHolder.%1.%2")
+				.arg (R_.Type_)
+				.arg (R_.String_)
+				.toUtf8 ();
+	}
+
+	QStringList FindProxy::GetCategories () const
+	{
+		return QStringList (R_.Category_);
+	}
+
+	QStringList FindProxy::GetTagsForIndex (int row) const
+	{
+		return sourceModel ()->data (sourceModel ()->
+				index (row, 0), RoleTags).toStringList ();
 	}
 }
-
-QAbstractItemModel* FindProxy::GetModel ()
-{
-	return this;
 }
-
-QByteArray FindProxy::GetUniqueSearchID () const
-{
-	return QString ("org.LeechCraft.HistoryHolder.%1.%2")
-			.arg (R_.Type_)
-			.arg (R_.String_)
-			.toUtf8 ();
-}
-
-QStringList FindProxy::GetCategories () const
-{
-	return QStringList (R_.Category_);
-}
-
-QStringList FindProxy::GetTagsForIndex (int row) const
-{
-	return sourceModel ()->data (sourceModel ()->
-			index (row, 0), RoleTags).toStringList ();
-}
-
