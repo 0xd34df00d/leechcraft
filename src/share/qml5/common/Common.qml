@@ -19,6 +19,15 @@ QtObject {
         quarkProxy.showTextTooltip(absPoint.x, absPoint.y, text);
     }
 
+    function closeTooltip(tooltip, setter) {
+        if (!tooltip)
+            return;
+
+        tooltip.close();
+        tooltip.destroy();
+        setter(null);
+    }
+
     function openWindow(item, params, path, old, setter) {
         if (old)
             old.destroy();
