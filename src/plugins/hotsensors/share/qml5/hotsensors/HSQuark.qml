@@ -77,6 +77,8 @@ Rectangle {
                 Common { id: opener }
 
                 onEntered: {
+                    opener.closeTooltip(tooltip, function() {});
+
                     var params = {
                         "colorProxy": colorProxy,
                         "maxTemp": maxTemp,
