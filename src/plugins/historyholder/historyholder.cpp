@@ -30,9 +30,9 @@
 #include "historyholder.h"
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
+#include "historyentry.h"
 #include "core.h"
 #include "findproxy.h"
-
 
 namespace LeechCraft
 {
@@ -40,6 +40,9 @@ namespace HistoryHolder
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		qRegisterMetaType<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
+		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
+
 		Core::Instance ().SetCoreProxy (proxy);
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (const LeechCraft::Entity&)),

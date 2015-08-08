@@ -11,6 +11,7 @@ set (SRCS
 	historyholder.cpp
 	findproxy.cpp
 	core.cpp
+	historyentry.cpp
 	)
 set (RESOURCES historyholderresources.qrc)
 CreateTrs ("historyholder" "ar;de;en;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRANSLATIONS)

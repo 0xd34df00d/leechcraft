@@ -27,65 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QAbstractItemModel>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihaveshortcuts.h>
 #include "historyentry.h"
-
-class QToolBar;
+#include <QDataStream>
+#include <util/structuresops.h>
 
 namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	class Core : public QAbstractItemModel
+	QDataStream& operator<< (QDataStream& out, const HistoryEntry& e)
 	{
-		Q_OBJECT
+		quint16 version = 1;
+		out << version;
 
-		Core ();
+		out << e.Entity_
+			<< e.DateTime_;
 
-		typedef QList<HistoryEntry> History_t;
-		History_t History_;
-		QStringList Headers_;
-		std::shared_ptr<QToolBar> ToolBar_;
-		ICoreProxy_ptr CoreProxy_;
-		QAction *Remove_;
+		return out;
+	}
 
-		bool WriteScheduled_;
-		bool WritePending_ = false;
-
-		enum Shortcuts
+	QDataStream& operator>> (QDataStream& in, HistoryEntry& e)
+	{
+		quint16 version;
+		in >> version;
+		if (version == 1)
 		{
-			SRemove
-		};
-	public:
-		static Core& Instance ();
-		void Release ();
-		void SetCoreProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
-		void Handle (const LeechCraft::Entity&);
-
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo () const;
-
-		int columnCount (const QModelIndex&) const;
-		QVariant data (const QModelIndex&, int) const;
-		QVariant headerData (int, Qt::Orientation, int) const;
-		QModelIndex index (int, int, const QModelIndex&) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex&) const;
-	public slots:
-		void handleTasksTreeActivated (const QModelIndex&);
-	private:
-		void ScheduleWrite ();
-	private slots:
-		void writeSettings ();
-		void remove ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
-	};
+			in >> e.Entity_
+				>> e.DateTime_;
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		}
+		return in;
+	}
 }
 }

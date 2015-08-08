@@ -41,7 +41,6 @@
 #include <QTimer>
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
-#include <util/structuresops.h>
 #include <util/util.h>
 #include <util/sll/onetimerunner.h>
 #include <interfaces/core/icoreproxy.h>
@@ -54,35 +53,6 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	QDataStream& operator<< (QDataStream& out, const Core::HistoryEntry& e)
-	{
-		quint16 version = 1;
-		out << version;
-
-		out << e.Entity_
-			<< e.DateTime_;
-
-		return out;
-	}
-
-	QDataStream& operator>> (QDataStream& in, Core::HistoryEntry& e)
-	{
-		quint16 version;
-		in >> version;
-		if (version == 1)
-		{
-			in >> e.Entity_
-				>> e.DateTime_;
-		}
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "unknown version"
-				<< version;
-		}
-		return in;
-	}
-
 	Core::Core ()
 	: ToolBar_ (new QToolBar)
 	, WriteScheduled_ (false)
@@ -90,9 +60,6 @@ namespace HistoryHolder
 		Headers_ << tr ("Entity/location")
 				<< tr ("Date")
 				<< tr ("Tags");
-
-		qRegisterMetaType<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
-		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_HistoryHolder");
