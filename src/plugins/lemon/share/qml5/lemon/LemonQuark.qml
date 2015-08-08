@@ -45,13 +45,7 @@ Rectangle {
                     };
                     opener.openWindow(indicatorButton, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
                 }
-                onHoverLeft: {
-                    if (tooltip) {
-                        tooltip.close();
-                        tooltip.destroy();
-                        tooltip = null;
-                    }
-                }
+                onHoverLeft: opener.closeTooltip(tooltip, function(t) { tooltip = t; })
 
                 Rectangle {
                     anchors.left: parent.left
