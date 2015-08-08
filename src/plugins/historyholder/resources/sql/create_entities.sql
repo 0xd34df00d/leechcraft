@@ -1,0 +1,5 @@
+CREATE TABLE Entities (
+		EntityId INTEGER PRIMARY KEY,
+		EntryId INTEGER REFERENCES History,
+		Entity BLOB NOT NULL
+	);
