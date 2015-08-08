@@ -53,6 +53,6 @@ Rectangle {
             };
             commonJS.openWindow(rootRect, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
         }
-        onExited: if (tooltip != null) tooltip.destroy()
+        onExited: commonJS.closeTooltip(tooltip, function(t) { tooltip = t; })
     }
 }
