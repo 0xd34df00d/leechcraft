@@ -1,0 +1,5 @@
+CREATE TABLE TagsMapping (
+		MappingId INTEGER PRIMARY KEY,
+		TagId INTEGER REFERENCES Tags,
+		EntryId INTEGER REFERENCES History
+	);

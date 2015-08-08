@@ -5,5 +5,7 @@
   <qresource prefix="/historyholder/">
 	<file>resources/sql/create_history.sql</file>
 	<file>resources/sql/create_entities.sql</file>
+	<file>resources/sql/create_tags.sql</file>
+	<file>resources/sql/create_tags_mapping.sql</file>
   </qresource>
 </RCC>
