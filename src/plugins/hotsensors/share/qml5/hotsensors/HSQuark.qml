@@ -87,7 +87,7 @@ Rectangle {
                     };
                     opener.openWindow(delegateItem, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
                 }
-                onExited: { tooltip.destroy(); tooltip = null; }
+                onExited: opener.closeTooltip(tooltip, function(t) { tooltip = t; })
             }
 
             ActionButton {
