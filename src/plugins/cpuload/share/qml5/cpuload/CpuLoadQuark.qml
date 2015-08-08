@@ -69,10 +69,8 @@ Rectangle {
             }
 
             function closeTooltip() {
-                if (tooltip != null && closeOnExit) {
-                    tooltip.destroy();
-                    tooltip = null;
-                }
+                if (closeOnExit)
+                    commonJS.closeTooltip(tooltip, function(t) { tooltip = t; });
             }
 
             onAreaExited: closeTooltip()
