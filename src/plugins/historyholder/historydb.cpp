@@ -61,6 +61,7 @@ namespace HistoryHolder
 		Util::DBLock::Execute (query);
 
 		InitTables ();
+		InitQueries ();
 
 		LoadTags ();
 	}
@@ -106,6 +107,21 @@ namespace HistoryHolder
 					<< e.what ();
 			throw;
 		}
+	}
+
+	void HistoryDB::InitQueries ()
+	{
+		InsertHistory_ = QSqlQuery { DB_ };
+		InsertHistory_.prepare (LoadQuery ("insert_history"));
+
+		InsertTags_ = QSqlQuery { DB_ };
+		InsertTags_.prepare (LoadQuery ("insert_tags"));
+
+		InsertTagsMapping_ = QSqlQuery { DB_ };
+		InsertTagsMapping_.prepare (LoadQuery ("insert_tags_mapping"));
+
+		InsertEntity_ = QSqlQuery { DB_ };
+		InsertEntity_.prepare (LoadQuery ("insert_entity"));
 	}
 
 	void HistoryDB::LoadTags ()
