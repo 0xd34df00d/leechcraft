@@ -37,6 +37,7 @@
 #include <QTextCodec>
 #include <QCoreApplication>
 #include <QUrl>
+#include <QElapsedTimer>
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
