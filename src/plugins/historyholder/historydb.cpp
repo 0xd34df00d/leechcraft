@@ -70,9 +70,9 @@ namespace HistoryHolder
 			throw std::runtime_error { "Cannot create database" };
 		}
 
-		QSqlQuery query { DB_ };
-		query.prepare ("PRAGMA foreign_keys = ON;");
-		Util::DBLock::Execute (query);
+		RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
+		RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		InitTables ();
 		InitQueries ();
