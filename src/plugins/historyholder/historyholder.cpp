@@ -125,4 +125,4 @@ namespace HistoryHolder
 }
 }
 
-LC_EXPORT_PLUGIN (leechcraft_historyholder, Leechcraft::HistoryHolder::Plugin);
+LC_EXPORT_PLUGIN (leechcraft_historyholder, LeechCraft::HistoryHolder::Plugin);
