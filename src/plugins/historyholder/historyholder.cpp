@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "historyentry.h"
 #include "core.h"
 #include "findproxy.h"
@@ -51,7 +52,8 @@ namespace HistoryHolder
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
-		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager ());
+		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager (),
+				proxy->GetPluginsManager ()->CreateLoadProgressReporter (this));
 	}
 
 	void Plugin::SecondInit ()

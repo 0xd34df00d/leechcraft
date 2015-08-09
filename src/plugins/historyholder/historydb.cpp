@@ -57,7 +57,7 @@ namespace HistoryHolder
 		}
 	}
 
-	HistoryDB::HistoryDB (ITagsManager *tm, QObject *parent)
+	HistoryDB::HistoryDB (ITagsManager *tm, const ILoadProgressReporter_ptr& reporter, QObject *parent)
 	: QObject { parent }
 	, TM_ { tm }
 	{

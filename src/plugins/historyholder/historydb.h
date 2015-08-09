@@ -33,6 +33,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QMap>
+#include <interfaces/core/iloadprogressreporter.h>
 
 class QDateTime;
 class ITagsManager;
@@ -56,7 +57,7 @@ namespace HistoryHolder
 
 		QMap<QString, int> Tags_;
 	public:
-		HistoryDB (ITagsManager*, QObject* = nullptr);
+		HistoryDB (ITagsManager*, const ILoadProgressReporter_ptr&, QObject* = nullptr);
 	private:
 		void InitTables ();
 		void InitQueries ();
