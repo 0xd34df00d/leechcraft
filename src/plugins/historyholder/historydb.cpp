@@ -87,7 +87,17 @@ namespace HistoryHolder
 	std::shared_ptr<QAbstractItemModel> HistoryDB::CreateModel () const
 	{
 		auto model = std::make_shared<QSqlQueryModel> ();
+
 		model->setQuery (SelectHistory_);
+
+		/* The following roles should also be handled by the model:
+		 *
+		 * RoleTags
+		 * RoleControls
+		 * RoleHash
+		 * RoleMime
+		 */
+
 		return model;
 	}
 
