@@ -281,6 +281,9 @@ namespace HistoryHolder
 
 		const auto& process = reporter->InitiateProcess (tr ("Migrating downloads history..."), 0, size);
 
+		QElapsedTimer timer;
+		timer.start ();
+
 		for (int i = 0; i < size; ++i)
 		{
 			settings.setArrayIndex (i);
@@ -291,6 +294,13 @@ namespace HistoryHolder
 			process->ReportValue (i);
 		}
 		settings.endArray ();
+
+		qDebug () << Q_FUNC_INFO
+				<< "done in"
+				<< timer.elapsed ()
+				<< "ms for"
+				<< size
+				<< "entries";
 	}
 }
 }
