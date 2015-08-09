@@ -80,20 +80,20 @@ namespace HistoryHolder
 
 	QStringList Plugin::Provides () const
 	{
-		return QStringList ("history");
+		return { "history" };
 	}
 
 	QStringList Plugin::GetCategories () const
 	{
-		return QStringList ("history");
+		return { "history" };
 	}
 
-	QList<IFindProxy_ptr> Plugin::GetProxy (const LeechCraft::Request& r)
+	QList<IFindProxy_ptr> Plugin::GetProxy (const Request& r)
 	{
 		return { std::make_shared<FindProxy> (DB_->CreateModel (), r) };
 	}
 
-	EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
+	EntityTestHandleResult Plugin::CouldHandle (const Entity& e) const
 	{
 		DB_->Add (e);
 		return {};
