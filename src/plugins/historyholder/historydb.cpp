@@ -79,7 +79,7 @@ namespace HistoryHolder
 
 		LoadTags ();
 
-		Migrate ();
+		Migrate (reporter);
 	}
 
 	namespace
@@ -267,7 +267,7 @@ namespace HistoryHolder
 		}
 	}
 
-	void HistoryDB::Migrate ()
+	void HistoryDB::Migrate (const ILoadProgressReporter_ptr& reporter)
 	{
 		QSettings settings
 		{
@@ -275,12 +275,16 @@ namespace HistoryHolder
 			QCoreApplication::applicationName () + "_HistoryHolder"
 		};
 		int size = settings.beginReadArray ("History");
+		const auto& process = reporter->InitiateProcess (tr ("Migrating downloads history..."), 0, size);
+
 		for (int i = 0; i < size; ++i)
 		{
 			settings.setArrayIndex (i);
 
 			const auto& entity = settings.value ("Item").value<HistoryEntry> ();
 			Add (entity.Entity_, entity.DateTime_);
+
+			process->ReportValue (i);
 		}
 		settings.endArray ();
 	}

@@ -67,7 +67,7 @@ namespace HistoryHolder
 		QList<int> AddTags (const QStringList&);
 		void AssociateTags (int, const QList<int>&);
 
-		void Migrate ();
+		void Migrate (const ILoadProgressReporter_ptr&);
 	};
 }
 }
