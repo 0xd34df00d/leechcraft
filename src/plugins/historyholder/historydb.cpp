@@ -61,6 +61,8 @@ namespace HistoryHolder
 		Util::DBLock::Execute (query);
 
 		InitTables ();
+
+		LoadTags ();
 	}
 
 	namespace
@@ -103,6 +105,20 @@ namespace HistoryHolder
 					<< "unable to initialize queries:"
 					<< e.what ();
 			throw;
+		}
+	}
+
+	void HistoryDB::LoadTags ()
+	{
+		QSqlQuery query { DB_ };
+		query.prepare (LoadQuery ("select_tags"));
+		Util::DBLock::Execute (query);
+
+		while (query.next ())
+		{
+			const auto id = query.value (0).toInt ();
+			const auto& lcId = query.value (1).toString ();
+			Tags_ [lcId] = id;
 		}
 	}
 }
