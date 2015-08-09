@@ -102,15 +102,6 @@ namespace HistoryHolder
 	void Plugin::Handle (LeechCraft::Entity)
 	{
 	}
-
-	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
-	{
-	}
-
-	QMap<QString, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
-	{
-		return {};
-	}
 }
 }
 

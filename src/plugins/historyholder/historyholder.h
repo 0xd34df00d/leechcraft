@@ -34,7 +34,6 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/ifinder.h>
 #include <interfaces/ientityhandler.h>
-#include <interfaces/ihaveshortcuts.h>
 
 class QModelIndex;
 
@@ -48,10 +47,9 @@ namespace HistoryHolder
 					, public IInfo
 					, public IFinder
 					, public IEntityHandler
-					, public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IFinder IEntityHandler IHaveShortcuts)
+		Q_INTERFACES (IInfo IFinder IEntityHandler)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.HistoryHolder")
 
@@ -71,9 +69,6 @@ namespace HistoryHolder
 
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
-
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void categoriesChanged (const QStringList&, const QStringList&);
