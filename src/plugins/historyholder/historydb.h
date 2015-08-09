@@ -58,6 +58,8 @@ namespace HistoryHolder
 		QMap<QString, int> Tags_;
 	public:
 		HistoryDB (ITagsManager*, const ILoadProgressReporter_ptr&, QObject* = nullptr);
+
+		void Add (const Entity&);
 	private:
 		void InitTables ();
 		void InitQueries ();

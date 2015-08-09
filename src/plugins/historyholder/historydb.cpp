@@ -82,6 +82,11 @@ namespace HistoryHolder
 		Migrate (reporter);
 	}
 
+	void HistoryDB::Add (const Entity& entity)
+	{
+		Add (entity, QDateTime::currentDateTime ());
+	}
+
 	namespace
 	{
 		QString LoadQuery (const QString& filename)
