@@ -275,6 +275,9 @@ namespace HistoryHolder
 			QCoreApplication::applicationName () + "_HistoryHolder"
 		};
 		int size = settings.beginReadArray ("History");
+		if (!size)
+			return;
+
 		const auto& process = reporter->InitiateProcess (tr ("Migrating downloads history..."), 0, size);
 
 		for (int i = 0; i < size; ++i)
