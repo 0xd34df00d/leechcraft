@@ -93,6 +93,11 @@ namespace HistoryHolder
 
 	void HistoryDB::Add (const Entity& entity)
 	{
+		if (entity.Parameters_ & LeechCraft::DoNotSaveInHistory ||
+				entity.Parameters_ & LeechCraft::Internal ||
+				!(entity.Parameters_ & LeechCraft::IsDownloaded))
+			return;
+
 		Add (entity, QDateTime::currentDateTime ());
 	}
 
