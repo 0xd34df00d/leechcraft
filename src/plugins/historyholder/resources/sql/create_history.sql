@@ -1,5 +1,5 @@
 CREATE TABLE History (
 		EntryId INTEGER PRIMARY KEY,
-		HumanReadablePart TEXT NOT NULL,
+		Title TEXT NOT NULL,
 		TS TIMESTAMP NOT NULL
 	);
