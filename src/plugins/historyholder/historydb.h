@@ -65,6 +65,8 @@ namespace HistoryHolder
 		void Add (const Entity&, const QDateTime&);
 		QList<int> AddTags (const QStringList&);
 		void AssociateTags (int, const QList<int>&);
+
+		void Migrate ();
 	};
 }
 }

@@ -68,6 +68,8 @@ namespace HistoryHolder
 		InitQueries ();
 
 		LoadTags ();
+
+		Migrate ();
 	}
 
 	namespace
@@ -253,6 +255,24 @@ namespace HistoryHolder
 			InsertTagsMapping_.bindValue (":entryId", historyId);
 			Util::DBLock::Execute (InsertTagsMapping_);
 		}
+	}
+
+	void HistoryDB::Migrate ()
+	{
+		QSettings settings
+		{
+			QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_HistoryHolder"
+		};
+		int size = settings.beginReadArray ("History");
+		for (int i = 0; i < size; ++i)
+		{
+			settings.setArrayIndex (i);
+
+			const auto& entity = settings.value ("Item").value<HistoryEntry> ();
+			Add (entity.Entity_, entity.DateTime_);
+		}
+		settings.endArray ();
 	}
 }
 }
