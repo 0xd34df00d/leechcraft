@@ -35,7 +35,7 @@ namespace LeechCraft
 namespace HistoryHolder
 {
 	FindProxy::FindProxy (QAbstractItemModel *model, const Request& r)
-	: R_ { r }
+	: R_ (r)
 	{
 		setSourceModel (model);
 		setDynamicSortFilter (true);
