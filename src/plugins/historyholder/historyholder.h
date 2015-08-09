@@ -74,8 +74,6 @@ namespace HistoryHolder
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;
-	public slots:
-		void handleTasksTreeActivated (const QModelIndex&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void categoriesChanged (const QStringList&, const QStringList&);

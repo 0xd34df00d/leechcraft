@@ -33,7 +33,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "historyentry.h"
-#include "core.h"
 #include "findproxy.h"
 #include "historydb.h"
 
@@ -46,12 +45,6 @@ namespace HistoryHolder
 		qRegisterMetaType<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
 		qRegisterMetaTypeStreamOperators<HistoryEntry> ("LeechCraft::Plugins::HistoryHolder::Core::HistoryEntry");
 
-		Core::Instance ().SetCoreProxy (proxy);
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
 		DB_ = std::make_shared<HistoryDB> (proxy->GetTagsManager (),
 				proxy->GetPluginsManager ()->CreateLoadProgressReporter (this));
 	}
@@ -62,7 +55,6 @@ namespace HistoryHolder
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().Release ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -113,17 +105,11 @@ namespace HistoryHolder
 
 	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& seqs)
 	{
-		Core::Instance ().SetShortcut (id, seqs);
 	}
 
 	QMap<QString, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
 	{
-		return Core::Instance ().GetActionInfo ();
-	}
-
-	void Plugin::handleTasksTreeActivated (const QModelIndex& index)
-	{
-		Core::Instance ().handleTasksTreeActivated (index);
+		return {};
 	}
 }
 }
