@@ -47,6 +47,16 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
+	namespace
+	{
+		void RunTextQuery (QSqlDatabase& db, const QString& text)
+		{
+			QSqlQuery query { db };
+			query.prepare (text);
+			Util::DBLock::Execute (query);
+		}
+	}
+
 	HistoryDB::HistoryDB (ITagsManager *tm, QObject *parent)
 	: QObject { parent }
 	, TM_ { tm }
