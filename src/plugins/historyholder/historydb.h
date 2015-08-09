@@ -55,6 +55,8 @@ namespace HistoryHolder
 		QSqlQuery InsertTagsMapping_;
 		QSqlQuery InsertEntity_;
 
+		QSqlQuery SelectHistory_;
+
 		QMap<QString, int> Tags_;
 	public:
 		HistoryDB (ITagsManager*, const ILoadProgressReporter_ptr&, QObject* = nullptr);

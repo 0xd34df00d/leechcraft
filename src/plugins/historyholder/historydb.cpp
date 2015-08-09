@@ -144,6 +144,9 @@ namespace HistoryHolder
 
 		InsertEntity_ = QSqlQuery { DB_ };
 		InsertEntity_.prepare (LoadQuery ("insert_entity"));
+
+		SelectHistory_ = QSqlQuery { DB_ };
+		SelectHistory_.prepare (LoadQuery ("select_history"));
 	}
 
 	void HistoryDB::LoadTags ()
