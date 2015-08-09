@@ -31,9 +31,13 @@
 #include <QFile>
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QDataStream>
 #include <QDir>
 #include <QSettings>
+#include <QTextCodec>
 #include <QCoreApplication>
+#include <QUrl>
+#include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
 #include <interfaces/core/itagsmanager.h>
@@ -140,6 +144,33 @@ namespace HistoryHolder
 
 	namespace
 	{
+		QString GetTitle (const Entity& e)
+		{
+			QString stren;
+			if (e.Additional_.contains ("UserVisibleName") &&
+					e.Additional_ ["UserVisibleName"].canConvert<QString> ())
+				stren = e.Additional_ ["UserVisibleName"].toString ();
+			else if (e.Entity_.canConvert<QUrl> ())
+				stren = e.Entity_.toUrl ().toString ();
+			else if (e.Entity_.canConvert<QByteArray> ())
+			{
+				const auto& entity = e.Entity_.toByteArray ();
+				if (entity.size () < 250)
+					stren = QTextCodec::codecForName ("UTF-8")->toUnicode (entity);
+			}
+			else
+				stren = HistoryDB::tr ("Binary data");
+
+			if (!e.Location_.isEmpty ())
+			{
+				stren += " (";
+				stren += e.Location_;
+				stren += ")";
+			}
+
+			return stren;
+		}
+
 		template<typename T = int>
 		T GetLastId (const QSqlQuery& query)
 		{
@@ -157,6 +188,37 @@ namespace HistoryHolder
 
 			return lastVar.value<T> ();
 		}
+
+		QByteArray SerializeEntity (const Entity& e)
+		{
+			QByteArray result;
+
+			QDataStream ostr { &result, QIODevice::ReadWrite };
+			ostr << e;
+
+			return result;
+		}
+	}
+
+	void HistoryDB::Add (const Entity& entity, const QDateTime& ts)
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+
+		InsertHistory_.bindValue (":title", GetTitle (entity));
+		InsertHistory_.bindValue (":ts", ts);
+		Util::DBLock::Execute (InsertHistory_);
+
+		const auto& historyId = GetLastId (InsertHistory_);
+
+		const auto& tags = entity.Additional_ [" Tags"].toStringList ();
+		if (!tags.isEmpty ())
+			AssociateTags (historyId, AddTags (tags));
+
+		InsertEntity_.bindValue (":entryId", historyId);
+		InsertEntity_.bindValue (":entity", SerializeEntity (entity));
+
+		lock.Good ();
 	}
 
 	QList<int> HistoryDB::AddTags (const QStringList& tags)
@@ -181,6 +243,16 @@ namespace HistoryHolder
 		}
 
 		return result;
+	}
+
+	void HistoryDB::AssociateTags (int historyId, const QList<int>& tags)
+	{
+		for (const auto tag : tags)
+		{
+			InsertTagsMapping_.bindValue (":tagId", tag);
+			InsertTagsMapping_.bindValue (":entryId", historyId);
+			Util::DBLock::Execute (InsertTagsMapping_);
+		}
 	}
 }
 }

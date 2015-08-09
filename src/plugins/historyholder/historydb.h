@@ -33,10 +33,14 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QMap>
+
+class QDateTime;
 class ITagsManager;
 
 namespace LeechCraft
 {
+struct Entity;
+
 namespace HistoryHolder
 {
 	class HistoryDB : public QObject
@@ -57,7 +61,10 @@ namespace HistoryHolder
 		void InitTables ();
 		void InitQueries ();
 		void LoadTags ();
+
+		void Add (const Entity&, const QDateTime&);
 		QList<int> AddTags (const QStringList&);
+		void AssociateTags (int, const QList<int>&);
 	};
 }
 }
