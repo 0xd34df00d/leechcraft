@@ -50,6 +50,7 @@ namespace HistoryHolder
 	private:
 		void InitTables ();
 		void LoadTags ();
+		QList<int> AddTags (const QStringList&);
 	};
 }
 }

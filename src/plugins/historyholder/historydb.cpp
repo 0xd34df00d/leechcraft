@@ -142,5 +142,29 @@ namespace HistoryHolder
 			return lastVar.value<T> ();
 		}
 	}
+
+	QList<int> HistoryDB::AddTags (const QStringList& tags)
+	{
+		QList<int> result;
+
+		for (const auto& tag : tags)
+		{
+			if (Tags_.contains (tag))
+			{
+				result << Tags_.value (tag);
+				continue;
+			}
+
+			InsertTags_.bindValue (":lcid", tag);
+			InsertTags_.bindValue (":text", TM_->GetTag (tag));
+			Util::DBLock::Execute (InsertTags_);
+
+			const auto id = GetLastId (InsertTags_);
+			Tags_ [tag] = id;
+			result << id;
+		}
+
+		return result;
+	}
 }
 }
