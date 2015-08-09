@@ -27,10 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_CORE_IPLUGINSMANAGER_H
-#define INTERFACES_CORE_IPLUGINSMANAGER_H
+#pragma once
+
+#include <memory>
 #include <QStringList>
 #include <QObjectList>
+
+class ILoadProgressReporter;
+using ILoadProgressReporter_ptr = std::shared_ptr<ILoadProgressReporter>;
 
 /** @brief This interface is used to represent LeechCraft's global
  * plugin manager.
@@ -186,8 +190,8 @@ public:
 	 * @param[in] plugin The plugin for which to open the settings page.
 	 */
 	virtual void OpenSettings (QObject *plugin) = 0;
+
+	virtual ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject *thisPlugin) = 0;
 };
 
 Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
-
-#endif

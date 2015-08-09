@@ -129,6 +129,8 @@ namespace LeechCraft
 
 		void OpenSettings (QObject*);
 
+		ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject*);
+
 		QObject* GetProvider (const QString&) const;
 
 		const QStringList& GetPluginLoadErrors () const;

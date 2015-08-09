@@ -57,13 +57,13 @@
 #include "coreinstanceobject.h"
 #include "shortcutmanager.h"
 #include "application.h"
+#include "loadprogressreporter.h"
+#include "settingstab.h"
 #include "loaders/sopluginloader.h"
 
 #ifdef WITH_DBUS_LOADERS
 #include "loaders/dbuspluginloader.h"
 #endif
-
-#include "settingstab.h"
 
 namespace LeechCraft
 {
@@ -701,6 +701,11 @@ namespace LeechCraft
 		instObj->TabOpenRequested (id);
 	}
 
+	ILoadProgressReporter_ptr PluginManager::CreateLoadProgressReporter (QObject*)
+	{
+		return std::make_shared<LoadProgressReporter> ();
+	}
+
 	QObject* PluginManager::GetProvider (const QString& feature) const
 	{
 		if (!FeatureProviders_.contains (feature))
@@ -1153,4 +1158,3 @@ namespace LeechCraft
 		return result;
 	}
 }
-
