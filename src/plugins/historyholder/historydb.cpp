@@ -36,14 +36,16 @@
 #include <QCoreApplication>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
+#include <interfaces/core/itagsmanager.h>
 #include "historyentry.h"
 
 namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	HistoryDB::HistoryDB (QObject *parent)
+	HistoryDB::HistoryDB (ITagsManager *tm, QObject *parent)
 	: QObject { parent }
+	, TM_ { tm }
 	{
 		DB_.setDatabaseName (Util::CreateIfNotExists ("historyholder").filePath ("history.db"));
 		if (!DB_.open ())

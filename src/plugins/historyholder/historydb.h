@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QSqlDatabase>
+class ITagsManager;
 
 namespace LeechCraft
 {
@@ -38,9 +39,11 @@ namespace HistoryHolder
 {
 	class HistoryDB : public QObject
 	{
+		ITagsManager * const TM_;
+
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.HistoryHolder");
 	public:
-		HistoryDB (QObject* = nullptr);
+		HistoryDB (ITagsManager*, QObject* = nullptr);
 	private:
 		void InitTables ();
 	};
