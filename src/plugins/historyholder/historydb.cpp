@@ -37,6 +37,7 @@
 #include <QTextCodec>
 #include <QCoreApplication>
 #include <QUrl>
+#include <QSqlQueryModel>
 #include <QElapsedTimer>
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
@@ -81,6 +82,13 @@ namespace HistoryHolder
 		LoadTags ();
 
 		Migrate (reporter);
+	}
+
+	std::shared_ptr<QAbstractItemModel> HistoryDB::CreateModel () const
+	{
+		auto model = std::make_shared<QSqlQueryModel> ();
+		model->setQuery (SelectHistory_);
+		return model;
 	}
 
 	void HistoryDB::Add (const Entity& entity)

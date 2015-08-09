@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -36,6 +37,8 @@
 #include <interfaces/core/iloadprogressreporter.h>
 
 class QDateTime;
+class QAbstractItemModel;
+
 class ITagsManager;
 
 namespace LeechCraft
@@ -60,6 +63,8 @@ namespace HistoryHolder
 		QMap<QString, int> Tags_;
 	public:
 		HistoryDB (ITagsManager*, const ILoadProgressReporter_ptr&, QObject* = nullptr);
+
+		std::shared_ptr<QAbstractItemModel> CreateModel () const;
 
 		void Add (const Entity&);
 	private:
