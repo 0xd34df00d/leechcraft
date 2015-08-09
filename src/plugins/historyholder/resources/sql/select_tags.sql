@@ -1,0 +1,1 @@
+SELECT TagId, TagLCId FROM Tags;

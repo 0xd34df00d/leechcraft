@@ -7,5 +7,6 @@
 	<file>resources/sql/create_entities.sql</file>
 	<file>resources/sql/create_tags.sql</file>
 	<file>resources/sql/create_tags_mapping.sql</file>
+	<file>resources/sql/select_tags.sql</file>
   </qresource>
 </RCC>
