@@ -94,6 +94,7 @@ set (SRCS
 	sslerrorshandler.cpp
 	loadprocess.cpp
 	loadprogressreporter.cpp
+	splashscreen.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	)

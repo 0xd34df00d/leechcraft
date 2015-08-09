@@ -80,6 +80,7 @@
 #include "core.h"
 #include "coreinstanceobject.h"
 #include "rootwindowsmanager.h"
+#include "splashscreen.h"
 #include "config.h"
 
 #ifdef Q_OS_WIN32
@@ -234,7 +235,7 @@ namespace LeechCraft
 				this,
 				SLOT (handleQuit ()));
 
-		Splash_ = new QSplashScreen (QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen);
+		Splash_ = new SplashScreen { QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen };
 		Splash_->setUpdatesEnabled (true);
 		Splash_->show ();
 		Splash_->repaint ();
@@ -325,6 +326,11 @@ namespace LeechCraft
 #else
 		return templ.arg (getuid ());
 #endif
+	}
+
+	SplashScreen* Application::GetSplashScreen () const
+	{
+		return Splash_;
 	}
 
 	void Application::InitiateRestart ()

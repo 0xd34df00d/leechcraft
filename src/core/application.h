@@ -35,10 +35,10 @@
 #include <QApplication>
 #include <QStringList>
 
-class QSplashScreen;
-
 namespace LeechCraft
 {
+	class SplashScreen;
+
 	/** Manages the main application-level behavior of LeechCraft like
 	 * single-instance feature, communication with Session Manager,
 	 * restarting, parsing command line and such.
@@ -55,7 +55,7 @@ namespace LeechCraft
 		boost::program_options::variables_map VarMap_;
 		bool CatchExceptions_ = true;
 
-		QSplashScreen *Splash_;
+		SplashScreen *Splash_ = nullptr;
 	public:
 		enum Errors
 		{
@@ -93,6 +93,13 @@ namespace LeechCraft
 		 * @return String with the socket name.
 		 */
 		static QString GetSocketName ();
+
+		/** Returns the splash screen during LeechCraft startup.
+		 *
+		 * After finishInit() is invoked, the return value of this
+		 * function is undefined.
+		 */
+		SplashScreen* GetSplashScreen () const;
 
 		/** Performs restart: starts a detached copy with '-restart'
 		 * switch and calls qApp->quit().
