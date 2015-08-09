@@ -223,9 +223,10 @@ namespace HistoryHolder
 
 		const auto& historyId = GetLastId (InsertHistory_);
 
-		const auto& tags = entity.Additional_ [" Tags"].toStringList ();
-		if (!tags.isEmpty ())
-			AssociateTags (historyId, AddTags (tags));
+		auto tags = entity.Additional_ [" Tags"].toStringList ();
+		if (tags.isEmpty ())
+			tags.push_back ({});
+		AssociateTags (historyId, AddTags (tags));
 
 		InsertEntity_.bindValue (":entryId", historyId);
 		InsertEntity_.bindValue (":entity", SerializeEntity (entity));
