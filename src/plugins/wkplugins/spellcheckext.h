@@ -55,12 +55,12 @@ namespace WKPlugins
 		void learnWord (const QString& word) override;
 		void ignoreWordInSpellDocument (const QString& word) override;
 		void checkSpellingOfString (const QString& word, int *misspellingLocation, int *misspellingLength) override;
-		QString autoCorrectSuggestionForMisspelledWord (const QString& word);
-		void guessesForWord (const QString& word, const QString& context, QStringList& guesses);
+		QString autoCorrectSuggestionForMisspelledWord (const QString& word) override;
+		void guessesForWord (const QString& word, const QString& context, QStringList& guesses) override;
 
-		bool isGrammarCheckingEnabled ();
-		void toggleGrammarChecking ();
-		void checkGrammarOfString (const QString&, QList<GrammarDetail>&, int* badGrammarLocation, int* badGrammarLength);
+		bool isGrammarCheckingEnabled () override;
+		void toggleGrammarChecking () override;
+		void checkGrammarOfString (const QString&, QList<GrammarDetail>&, int* badGrammarLocation, int* badGrammarLength) override;
 	};
 }
 }
