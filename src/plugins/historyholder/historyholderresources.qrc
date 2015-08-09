@@ -12,5 +12,6 @@
 	<file>resources/sql/insert_tags.sql</file>
 	<file>resources/sql/insert_tags_mapping.sql</file>
 	<file>resources/sql/select_tags.sql</file>
+	<file>resources/sql/select_history.sql</file>
   </qresource>
 </RCC>
