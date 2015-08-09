@@ -34,10 +34,11 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	FindProxy::FindProxy (QAbstractItemModel *model, const Request& r)
-	: R_ (r)
+	FindProxy::FindProxy (const QAbstractItemModel_ptr& model, const Request& r)
+	: Src_ { model }
+	, R_ (r)
 	{
-		setSourceModel (model);
+		setSourceModel (model.get ());
 		setDynamicSortFilter (true);
 
 		setFilterCaseSensitivity (r.CaseSensitive_ ?

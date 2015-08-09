@@ -29,9 +29,12 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <util/tags/tagsfiltermodel.h>
 #include <interfaces/ifinder.h>
+
+using QAbstractItemModel_ptr = std::shared_ptr<QAbstractItemModel>;
 
 namespace LeechCraft
 {
@@ -43,9 +46,11 @@ namespace HistoryHolder
 		Q_OBJECT
 		Q_INTERFACES (IFindProxy)
 
+		const QAbstractItemModel_ptr Src_;
 		const Request R_;
 	public:
-		FindProxy (QAbstractItemModel*, const Request&);
+		FindProxy (const QAbstractItemModel_ptr&, const Request&);
+
 		QAbstractItemModel* GetModel ();
 		QByteArray GetUniqueSearchID () const;
 		QStringList GetCategories () const;
