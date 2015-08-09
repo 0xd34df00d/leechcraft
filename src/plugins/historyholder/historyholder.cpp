@@ -103,8 +103,8 @@ namespace HistoryHolder
 
 	EntityTestHandleResult Plugin::CouldHandle (const LeechCraft::Entity& e) const
 	{
-		Core::Instance ().Handle (e);
-		return EntityTestHandleResult ();
+		DB_->Add (e);
+		return {};
 	}
 
 	void Plugin::Handle (LeechCraft::Entity)
