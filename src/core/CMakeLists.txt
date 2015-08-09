@@ -92,6 +92,8 @@ set (SRCS
 	docktoolbarmanager.cpp
 	mainwindowmenumanager.cpp
 	sslerrorshandler.cpp
+	loadprocess.cpp
+	loadprogressreporter.cpp
 	loaders/ipluginloader.cpp
 	loaders/sopluginloader.cpp
 	)
