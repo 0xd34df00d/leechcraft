@@ -36,8 +36,12 @@ namespace LeechCraft
 {
 	ILoadProcess_ptr LoadProgressReporter::InitiateProcess (const QString& title, int min, int max)
 	{
+		const auto splash = static_cast<Application*> (qApp)->GetSplashScreen ();
+		if (!splash)
+			return {};
+
 		const auto& process = std::make_shared<LoadProcess> (title, min, max);
-		static_cast<Application*> (qApp)->GetSplashScreen ()->RegisterLoadProcess (process.get ());
+		splash->RegisterLoadProcess (process.get ());
 		return process;
 	}
 }
