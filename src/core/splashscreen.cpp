@@ -28,7 +28,25 @@
  **********************************************************************/
 
 #include "splashscreen.h"
+#include <util/sll/slotclosure.h>
+#include "loadprocess.h"
 
 namespace LeechCraft
 {
+	void SplashScreen::RegisterLoadProcess (LoadProcess *proc)
+	{
+		Processes_ << proc;
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, proc]
+			{
+				Processes_.removeOne (proc);
+				repaint ();
+			},
+			proc,
+			SIGNAL (destroyed (QObject*)),
+			this
+		};
+	}
 }

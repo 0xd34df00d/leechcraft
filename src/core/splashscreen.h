@@ -33,9 +33,14 @@
 
 namespace LeechCraft
 {
+	class LoadProcess;
+
 	class SplashScreen : public QSplashScreen
 	{
+		QList<LoadProcess*> Processes_;
 	public:
 		using QSplashScreen::QSplashScreen;
+
+		void RegisterLoadProcess (LoadProcess*);
 	};
 }
