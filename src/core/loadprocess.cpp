@@ -65,7 +65,6 @@ namespace LeechCraft
 			return;
 
 		Value_ = value;
-		LastReport_.start ();
 
 		if (LastReport_.elapsed () * 60 > 1000)
 		{
