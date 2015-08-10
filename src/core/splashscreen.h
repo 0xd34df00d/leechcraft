@@ -42,5 +42,7 @@ namespace LeechCraft
 		using QSplashScreen::QSplashScreen;
 
 		void RegisterLoadProcess (LoadProcess*);
+	protected:
+		void drawContents (QPainter*) override;
 	};
 }
