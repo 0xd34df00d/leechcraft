@@ -70,7 +70,6 @@ namespace HistoryHolder
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
 		void categoriesChanged (const QStringList&, const QStringList&);
 	};
 }
