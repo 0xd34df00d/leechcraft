@@ -309,7 +309,10 @@ namespace HistoryHolder
 		};
 		int size = settings.beginReadArray ("History");
 		if (!size)
+		{
+			settings.endArray ();
 			return;
+		}
 
 		const auto& process = reporter->InitiateProcess (tr ("Migrating downloads history..."), 0, size);
 
