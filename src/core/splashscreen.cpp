@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "splashscreen.h"
+#include <QStyle>
+#include <QStyleOptionProgressBarV2>
 #include <util/sll/slotclosure.h>
 #include "loadprocess.h"
 
@@ -36,6 +38,12 @@ namespace LeechCraft
 	void SplashScreen::RegisterLoadProcess (LoadProcess *proc)
 	{
 		Processes_ << proc;
+		repaint ();
+
+		connect (proc,
+				SIGNAL (changed ()),
+				this,
+				SLOT (repaint ()));
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
