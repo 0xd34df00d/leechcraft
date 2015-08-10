@@ -28,12 +28,16 @@
  **********************************************************************/
 
 #include "loadprogressreporter.h"
+#include "application.h"
 #include "loadprocess.h"
+#include "splashscreen.h"
 
 namespace LeechCraft
 {
 	ILoadProcess_ptr LoadProgressReporter::InitiateProcess (const QString& title, int min, int max)
 	{
-		return std::make_shared<LoadProcess> (title, min, max);
+		const auto& process = std::make_shared<LoadProcess> (title, min, max);
+		static_cast<Application*> (qApp)->GetSplashScreen ()->RegisterLoadProcess (process.get ());
+		return process;
 	}
 }
