@@ -40,6 +40,6 @@ namespace LeechCraft
 	public:
 		LoadProcess (const QString&, int, int);
 
-		void ReportValue (int value);
+		void ReportValue (int value) override;
 	};
 }
