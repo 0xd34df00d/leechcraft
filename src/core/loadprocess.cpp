@@ -32,10 +32,38 @@
 namespace LeechCraft
 {
 	LoadProcess::LoadProcess (const QString& title, int min, int max)
+	: Title_ { title }
+	, Min_ { min }
+	, Max_ { max }
 	{
+	}
+
+	const QString& LoadProcess::GetTitle () const
+	{
+		return Title_;
+	}
+
+	int LoadProcess::GetMin () const
+	{
+		return Min_;
+	}
+
+	int LoadProcess::GetMax () const
+	{
+		return Max_;
+	}
+
+	int LoadProcess::GetValue () const
+	{
+		return Value_;
 	}
 
 	void LoadProcess::ReportValue (int value)
 	{
+		if (Value_ == value)
+			return;
+
+		Value_ = value;
+		LastReport_.start ();
 	}
 }

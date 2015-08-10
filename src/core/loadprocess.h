@@ -37,9 +37,22 @@ namespace LeechCraft
 	class LoadProcess : public QObject
 					  , public ILoadProcess
 	{
+		Q_OBJECT
+
+		const QString Title_;
+		const int Min_;
+		const int Max_;
+		int Value_ = 0;
 	public:
 		LoadProcess (const QString&, int, int);
 
+		const QString& GetTitle () const;
+		int GetMin () const;
+		int GetMax () const;
+		int GetValue () const;
+
 		void ReportValue (int value) override;
+	signals:
+		void changed ();
 	};
 }
