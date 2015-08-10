@@ -27,29 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QElapsedTimer>
 #include "loadprocessbase.h"
 
 namespace LeechCraft
 {
-	class LoadProcess : public LoadProcessBase
-	{
-		const QString Title_;
-		const int Min_;
-		const int Max_;
-		int Value_ = 0;
-
-		QElapsedTimer LastReport_;
-	public:
-		LoadProcess (const QString&, int, int);
-
-		QString GetTitle () const override;
-		int GetMin () const override;
-		int GetMax () const override;
-		int GetValue () const override;
-
-		void ReportValue (int value) override;
-	};
 }

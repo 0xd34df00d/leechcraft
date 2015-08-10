@@ -93,6 +93,7 @@ set (SRCS
 	mainwindowmenumanager.cpp
 	sslerrorshandler.cpp
 	loadprocess.cpp
+	loadprocessbase.cpp
 	loadprogressreporter.cpp
 	splashscreen.cpp
 	loaders/ipluginloader.cpp

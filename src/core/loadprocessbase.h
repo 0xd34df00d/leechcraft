@@ -29,27 +29,21 @@
 
 #pragma once
 
-#include <QElapsedTimer>
-#include "loadprocessbase.h"
+#include <QObject>
+#include <interfaces/core/iloadprogressreporter.h>
 
 namespace LeechCraft
 {
-	class LoadProcess : public LoadProcessBase
+	class LoadProcessBase : public QObject
+						  , public ILoadProcess
 	{
-		const QString Title_;
-		const int Min_;
-		const int Max_;
-		int Value_ = 0;
-
-		QElapsedTimer LastReport_;
+		Q_OBJECT
 	public:
-		LoadProcess (const QString&, int, int);
-
-		QString GetTitle () const override;
-		int GetMin () const override;
-		int GetMax () const override;
-		int GetValue () const override;
-
-		void ReportValue (int value) override;
+		virtual QString GetTitle () const = 0;
+		virtual int GetMin () const = 0;
+		virtual int GetMax () const = 0;
+		virtual int GetValue () const = 0;
+	signals:
+		void changed ();
 	};
 }

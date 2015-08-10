@@ -39,7 +39,7 @@ namespace LeechCraft
 		LastReport_.start ();
 	}
 
-	const QString& LoadProcess::GetTitle () const
+	QString LoadProcess::GetTitle () const
 	{
 		return Title_;
 	}
