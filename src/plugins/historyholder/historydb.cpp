@@ -322,7 +322,7 @@ namespace HistoryHolder
 
 			for (int i = 0; i < size; ++i)
 			{
-				settings.setArrayIndex (i);
+				settings.setArrayIndex (size - i - 1);
 
 				const auto& var = settings.value ("Item");
 				if (var.isValid ())
