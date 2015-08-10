@@ -316,14 +316,21 @@ namespace HistoryHolder
 		QElapsedTimer timer;
 		timer.start ();
 
-		for (int i = 0; i < size; ++i)
 		{
-			settings.setArrayIndex (i);
+			Util::DBLock lock { DB_ };
+			lock.Init ();
 
-			const auto& entity = settings.value ("Item").value<HistoryEntry> ();
-			Add (entity.Entity_, entity.DateTime_);
+			for (int i = 0; i < size; ++i)
+			{
+				settings.setArrayIndex (i);
 
-			process->ReportValue (i);
+				const auto& entity = settings.value ("Item").value<HistoryEntry> ();
+				Add (entity.Entity_, entity.DateTime_);
+
+				process->ReportValue (i);
+			}
+
+			lock.Good ();
 		}
 		settings.endArray ();
 
