@@ -31,11 +31,11 @@
 #include <QStyle>
 #include <QStyleOptionProgressBarV2>
 #include <util/sll/slotclosure.h>
-#include "loadprocess.h"
+#include "loadprocessbase.h"
 
 namespace LeechCraft
 {
-	void SplashScreen::RegisterLoadProcess (LoadProcess *proc)
+	void SplashScreen::RegisterLoadProcess (LoadProcessBase *proc)
 	{
 		Processes_ << proc;
 		repaint ();
@@ -64,7 +64,7 @@ namespace LeechCraft
 
 		const auto margin = 10;
 		int ypos = margin;
-		const auto height = 20;
+		const auto height = 1.3 * fontMetrics ().height ();
 		for (const auto proc : Processes_)
 		{
 			QStyleOptionProgressBarV2 opt;
@@ -77,7 +77,7 @@ namespace LeechCraft
 
 			auto& p = opt.palette;
 			p.setColor (QPalette::Base, Qt::transparent);
-			p.setColor (QPalette::Window, "#FF3B00");
+			p.setColor (QPalette::Window, Qt::transparent);
 			p.setColor (QPalette::Highlight, "#FF3B00");
 			p.setColor (QPalette::Text, "#FF3B00");
 			p.setColor (QPalette::HighlightedText, "#1B181F");

@@ -33,15 +33,15 @@
 
 namespace LeechCraft
 {
-	class LoadProcess;
+	class LoadProcessBase;
 
 	class SplashScreen : public QSplashScreen
 	{
-		QList<LoadProcess*> Processes_;
+		QList<LoadProcessBase*> Processes_;
 	public:
 		using QSplashScreen::QSplashScreen;
 
-		void RegisterLoadProcess (LoadProcess*);
+		void RegisterLoadProcess (LoadProcessBase*);
 	protected:
 		void drawContents (QPainter*) override;
 	};
