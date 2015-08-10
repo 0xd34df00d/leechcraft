@@ -336,6 +336,7 @@ namespace HistoryHolder
 
 			lock.Good ();
 		}
+
 		settings.endArray ();
 
 		qDebug () << Q_FUNC_INFO
@@ -344,6 +345,11 @@ namespace HistoryHolder
 				<< "ms for"
 				<< size
 				<< "entries";
+
+		settings.remove ("History");
+
+		qDebug () << Q_FUNC_INFO
+				<< "removed history from QSettings";
 	}
 }
 }
