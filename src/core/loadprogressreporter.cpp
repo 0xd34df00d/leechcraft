@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "loadprogressreporter.h"
+#include <QtDebug>
 #include "application.h"
 #include "loadprocess.h"
 #include "splashscreen.h"
@@ -37,11 +38,15 @@ namespace LeechCraft
 	ILoadProcess_ptr LoadProgressReporter::InitiateProcess (const QString& title, int min, int max)
 	{
 		const auto splash = static_cast<Application*> (qApp)->GetSplashScreen ();
-		if (!splash)
-			return {};
 
 		const auto& process = std::make_shared<LoadProcess> (title, min, max);
-		splash->RegisterLoadProcess (process.get ());
+
+		if (splash)
+			splash->RegisterLoadProcess (process.get ());
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "no splash screen already";
+
 		return process;
 	}
 }
