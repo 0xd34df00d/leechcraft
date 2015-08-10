@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QElapsedTimer>
 #include <QObject>
 #include <interfaces/core/iloadprogressreporter.h>
 
@@ -43,6 +44,8 @@ namespace LeechCraft
 		const int Min_;
 		const int Max_;
 		int Value_ = 0;
+
+		QElapsedTimer LastReport_;
 	public:
 		LoadProcess (const QString&, int, int);
 

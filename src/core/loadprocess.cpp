@@ -36,6 +36,7 @@ namespace LeechCraft
 	, Min_ { min }
 	, Max_ { max }
 	{
+		LastReport_.start ();
 	}
 
 	const QString& LoadProcess::GetTitle () const
@@ -65,5 +66,11 @@ namespace LeechCraft
 
 		Value_ = value;
 		LastReport_.start ();
+
+		if (LastReport_.elapsed () * 60 > 1000)
+		{
+			emit changed ();
+			LastReport_.start ();
+		}
 	}
 }
