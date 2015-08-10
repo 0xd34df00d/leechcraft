@@ -324,8 +324,12 @@ namespace HistoryHolder
 			{
 				settings.setArrayIndex (i);
 
-				const auto& entity = settings.value ("Item").value<HistoryEntry> ();
-				Add (entity.Entity_, entity.DateTime_);
+				const auto& var = settings.value ("Item");
+				if (var.isValid ())
+				{
+					const auto& entity = var.value<HistoryEntry> ();
+					Add (entity.Entity_, entity.DateTime_);
+				}
 
 				process->ReportValue (i);
 			}
