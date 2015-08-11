@@ -42,6 +42,7 @@
 #include <util/util.h>
 #include <util/exceptions.h>
 #include <util/sll/prelude.h>
+#include <util/sll/util.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ipluginready.h>
@@ -395,8 +396,7 @@ namespace LeechCraft
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
 		settings.beginGroup ("Plugins");
-		std::shared_ptr<void> groupGuard (nullptr,
-				[&settings] (void*) { settings.endGroup (); });
+		const auto guard = Util::MakeScopeGuard ([&settings] { settings.endGroup (); });
 
 		for (const auto obj : ordered)
 		{
