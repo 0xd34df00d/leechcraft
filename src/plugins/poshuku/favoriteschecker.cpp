@@ -59,7 +59,7 @@ namespace Poshuku
 	{
 		Items_ = Model_->GetItems ();
 
-		Q_FOREACH (FavoritesModel::FavoritesItem item, Items_)
+		for (const auto& item : Items_)
 		{
 			QUrl url = QUrl (item.URL_);
 			QNetworkRequest req (url);
