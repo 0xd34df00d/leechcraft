@@ -61,6 +61,7 @@
 #include "settingstab.h"
 #include "loaders/sopluginloader.h"
 #include "loadprocessbase.h"
+#include "splashscreen.h"
 
 #ifdef WITH_DBUS_LOADERS
 #include "loaders/dbuspluginloader.h"
@@ -389,7 +390,7 @@ namespace LeechCraft
 		}
 	};
 
-	QObject* PluginManager::TryFirstInit (QObjectList ordered)
+	QObject* PluginManager::TryFirstInit (QObjectList ordered, PluginLoadProcess *proc)
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "-pg");
@@ -431,6 +432,8 @@ namespace LeechCraft
 						<< "caught unknown exception";
 				return obj;
 			}
+
+			proc->Increment ();
 		}
 
 		return 0;
@@ -482,7 +485,14 @@ namespace LeechCraft
 					qDebug () << val->Unload ();
 				}
 
-		const auto& failed = FirstInitAll ();
+		const auto fstInitProc =
+				std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: first stage..."),
+						ordered.size ());
+		const auto sndInitProc =
+				std::make_shared<PluginLoadProcess> (tr ("Plugins initialization: second stage..."),
+						ordered.size ());
+
+		const auto& failed = FirstInitAll (fstInitProc.get ());
 
 		SetInitStage (InitStage::BeforeSecond);
 
@@ -502,9 +512,12 @@ namespace LeechCraft
 					provider->AddPlugin (ip2);
 		}
 
+		sndInitProc->SetCount (ordered.size ());
+
 		for (const auto obj : ordered)
 		{
 			const auto ii = qobject_cast<IInfo*> (obj);
+			sndInitProc->Increment ();
 			try
 			{
 				emit loadProgress (tr ("Initializing %1: stage two...").arg (ii->GetName ()));
@@ -1099,14 +1112,14 @@ namespace LeechCraft
 		}
 	}
 
-	QObjectList PluginManager::FirstInitAll ()
+	QObjectList PluginManager::FirstInitAll (PluginLoadProcess *proc)
 	{
 		QObjectList ordered = PluginTreeBuilder_->GetResult ();
 		QObjectList initialized;
 		QObjectList failedList;
 
 		QObject *failed = 0;
-		while ((failed = TryFirstInit (ordered)))
+		while ((failed = TryFirstInit (ordered, proc)))
 		{
 			CacheValid_ = false;
 
@@ -1127,6 +1140,8 @@ namespace LeechCraft
 			ordered = PluginTreeBuilder_->GetResult ();
 			Q_FOREACH (QObject *obj, initialized)
 				ordered.removeAll (obj);
+
+			proc->SetCount (ordered.size () + initialized.size ());
 		}
 
 		return failedList;

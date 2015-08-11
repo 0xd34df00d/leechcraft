@@ -158,14 +158,14 @@ namespace LeechCraft
 		/** Tries to perform IInfo::Init() on all plugins. Returns the
 		 * list of plugins that failed.
 		 */
-		QList<QObject*> FirstInitAll ();
+		QList<QObject*> FirstInitAll (PluginLoadProcess*);
 
 		/** Tries to perform IInfo::Init() on plugins and returns the
 		 * first plugin that has failed to initialize. This function
 		 * stops initializing plugins upon first failure. If all plugins
 		 * were initialized successfully, this function returns NULL.
 		 */
-		QObject* TryFirstInit (QObjectList);
+		QObject* TryFirstInit (QObjectList, PluginLoadProcess*);
 
 		/** Plainly tries to find a corresponding QPluginLoader and
 		 * unload the corresponding library.
