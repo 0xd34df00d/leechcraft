@@ -61,10 +61,10 @@ namespace LeechCraft
 		 */
 		class DBLock
 		{
-			QSqlDatabase &Database_;
+			QSqlDatabase& Database_;
 
-			bool Good_;
-			bool Initialized_;
+			bool Good_ = false;
+			bool Initialized_ = false;
 
 			static QMutex LockedMutex_;
 			static QSet<QString> LockedBases_;
@@ -82,6 +82,7 @@ namespace LeechCraft
 			 * guarded.
 			 */
 			UTIL_DB_API DBLock (QSqlDatabase& database);
+
 			/** @brief Destructor.
 			 *
 			 * Ends the transaction if the lock is in a correct state. If Good()
@@ -97,6 +98,7 @@ namespace LeechCraft
 			 * @throw std::runtime_error
 			 */
 			UTIL_DB_API void Init ();
+
 			/** @brief Notifies the lock about successful higher-level
 			 * operations.
 			 *

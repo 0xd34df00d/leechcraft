@@ -41,8 +41,6 @@ QMutex LeechCraft::Util::DBLock::LockedMutex_;
 
 LeechCraft::Util::DBLock::DBLock (QSqlDatabase& database)
 : Database_ (database)
-, Good_ (false)
-, Initialized_ (false)
 {
 }
 
