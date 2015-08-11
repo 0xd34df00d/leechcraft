@@ -57,18 +57,6 @@ namespace Poshuku
 
 	void FavoritesChecker::Check ()
 	{
-		if (Pending_.size ())
-		{
-			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-			QMessageBox::critical (rootWM->GetPreferredWindow (),
-					"LeechCraft",
-					tr ("Already checking links, please wait..."));
-			return;
-		}
-
-		Pending_.clear ();
-		Results_.clear ();
-
 		Items_ = Model_->GetItems ();
 
 		Q_FOREACH (FavoritesModel::FavoritesItem item, Items_)
