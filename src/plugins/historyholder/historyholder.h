@@ -65,10 +65,10 @@ namespace HistoryHolder
 		QStringList Provides () const;
 
 		QStringList GetCategories () const;
-		QList<IFindProxy_ptr> GetProxy (const LeechCraft::Request&);
+		QList<IFindProxy_ptr> GetProxy (const Request&);
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 	signals:
 		void categoriesChanged (const QStringList&, const QStringList&);
 	};
