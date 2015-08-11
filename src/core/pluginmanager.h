@@ -75,6 +75,8 @@ namespace LeechCraft
 
 		mutable bool CacheValid_;
 		mutable QObjectList SortedCache_;
+
+		class PluginLoadProcess;
 	public:
 		enum Roles
 		{

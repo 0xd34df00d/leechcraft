@@ -60,6 +60,7 @@
 #include "loadprogressreporter.h"
 #include "settingstab.h"
 #include "loaders/sopluginloader.h"
+#include "loadprocessbase.h"
 
 #ifdef WITH_DBUS_LOADERS
 #include "loaders/dbuspluginloader.h"
@@ -335,6 +336,58 @@ namespace LeechCraft
 	{
 		return AvailablePlugins_.size ();
 	}
+
+	class PluginManager::PluginLoadProcess : public LoadProcessBase
+	{
+		const QString Title_;
+		int Count_;
+		int Value_ = 0;
+	public:
+		PluginLoadProcess (const QString& title, int count)
+		: Title_ { title }
+		, Count_ { count }
+		{
+			static_cast<Application*> (qApp)->GetSplashScreen ()->RegisterLoadProcess (this);
+		}
+
+		QString GetTitle () const override
+		{
+			return Title_;
+		}
+
+		int GetMin () const override
+		{
+			return 0;
+		}
+
+		int GetMax () const override
+		{
+			return Count_;
+		}
+
+		int GetValue () const override
+		{
+			return Value_;
+		}
+
+		void ReportValue (int value) override
+		{
+			Value_ = value;
+			emit changed ();
+		}
+
+		void SetCount (int count)
+		{
+			Count_ = count;
+			emit changed ();
+		}
+
+		void Increment ()
+		{
+			++Value_;
+			emit changed ();
+		}
+	};
 
 	QObject* PluginManager::TryFirstInit (QObjectList ordered)
 	{
