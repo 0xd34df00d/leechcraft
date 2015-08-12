@@ -40,6 +40,7 @@ set (XOOX_SRCS
 	roomconfigwidget.cpp
 	capsmanager.cpp
 	capsdatabase.cpp
+	capsstorageondisk.cpp
 	sdsession.cpp
 	sdmodel.cpp
 	affiliationselectordialog.cpp
