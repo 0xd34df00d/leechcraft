@@ -42,6 +42,7 @@
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <interfaces/core/itagsmanager.h>
 #include "historyentry.h"
 
@@ -49,16 +50,6 @@ namespace LeechCraft
 {
 namespace HistoryHolder
 {
-	namespace
-	{
-		void RunTextQuery (QSqlDatabase& db, const QString& text)
-		{
-			QSqlQuery query { db };
-			query.prepare (text);
-			Util::DBLock::Execute (query);
-		}
-	}
-
 	HistoryDB::HistoryDB (ITagsManager *tm, const ILoadProgressReporter_ptr& reporter, QObject *parent)
 	: QObject { parent }
 	, TM_ { tm }
@@ -72,9 +63,9 @@ namespace HistoryHolder
 			throw std::runtime_error { "Cannot create database" };
 		}
 
-		RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
-		RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
-		RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+		Util::RunTextQuery (DB_, "PRAGMA foreign_keys = ON;");
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		InitTables ();
 		InitQueries ();
