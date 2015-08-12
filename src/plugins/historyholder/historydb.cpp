@@ -206,24 +206,6 @@ namespace HistoryHolder
 			return stren;
 		}
 
-		template<typename T = int>
-		T GetLastId (const QSqlQuery& query)
-		{
-			const auto& lastVar = query.lastInsertId ();
-			if (lastVar.isNull ())
-				throw std::runtime_error { "No last ID has been reported." };
-
-			if (!lastVar.canConvert<T> ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot convert"
-						<< lastVar;
-				throw std::runtime_error { "Cannot convert last ID." };
-			}
-
-			return lastVar.value<T> ();
-		}
-
 		QByteArray SerializeEntity (const Entity& e)
 		{
 			QByteArray result;
@@ -244,7 +226,7 @@ namespace HistoryHolder
 		InsertHistory_.bindValue (":ts", ts);
 		Util::DBLock::Execute (InsertHistory_);
 
-		const auto& historyId = GetLastId (InsertHistory_);
+		const auto& historyId = Util::GetLastId (InsertHistory_);
 
 		auto tags = entity.Additional_ [" Tags"].toStringList ();
 		if (tags.isEmpty ())
@@ -273,7 +255,7 @@ namespace HistoryHolder
 			InsertTags_.bindValue (":text", TM_->GetTag (tag));
 			Util::DBLock::Execute (InsertTags_);
 
-			const auto id = GetLastId (InsertTags_);
+			const auto id = Util::GetLastId (InsertTags_);
 			Tags_ [tag] = id;
 			result << id;
 		}
