@@ -2,6 +2,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR})
 set (DB_SRCS
 	backendselector.cpp
 	dblock.cpp
+	util.cpp
 	)
 set (DB_FORMS
 	backendselector.ui
