@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "util.h"
+#include <QFile>
 #include <QSqlQuery>
 #include "dblock.h"
 
@@ -40,6 +41,27 @@ namespace Util
 		QSqlQuery query { db };
 		query.prepare (text);
 		DBLock::Execute (query);
+	}
+
+	QString LoadQuery (const QString& pluginName, const QString& filename)
+	{
+		QFile file { ":/" + pluginName + "/resources/sql/" + filename + ".sql" };
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< file.fileName ()
+					<< file.errorString ();
+			throw std::runtime_error { "Cannot open query file" };
+		}
+
+		return QString::fromUtf8 (file.readAll ());
+	}
+
+	void RunQuery (QSqlDatabase& db, const QString& pluginName, const QString& filename)
+	{
+		QSqlQuery query { db };
+		query.prepare (LoadQuery (pluginName, filename));
+		Util::DBLock::Execute (query);
 	}
 }
 }
