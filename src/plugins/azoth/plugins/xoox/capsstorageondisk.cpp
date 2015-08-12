@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "capsstorageondisk.h"
+#include <QDir>
+#include <QSqlError>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
