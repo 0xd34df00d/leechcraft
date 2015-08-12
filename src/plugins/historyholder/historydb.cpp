@@ -102,30 +102,6 @@ namespace HistoryHolder
 		Add (entity, QDateTime::currentDateTime ());
 	}
 
-	namespace
-	{
-		QString LoadQuery (const QString& filename)
-		{
-			QFile file { ":/historyholder/resources/sql/" + filename + ".sql" };
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< file.fileName ()
-						<< file.errorString ();
-				throw std::runtime_error { "Cannot open query file" };
-			}
-
-			return QString::fromUtf8 (file.readAll ());
-		}
-
-		void RunQuery (QSqlDatabase& db, const QString& filename)
-		{
-			QSqlQuery query { db };
-			query.prepare (LoadQuery (filename));
-			Util::DBLock::Execute (query);
-		}
-	}
-
 	void HistoryDB::InitTables ()
 	{
 		if (DB_.tables ().contains ("History"))
@@ -134,7 +110,7 @@ namespace HistoryHolder
 		try
 		{
 			for (const auto table : QStringList { "history", "entities", "tags", "tags_mapping" })
-				RunQuery (DB_, "create_" + table);
+				Util::RunQuery (DB_, "historyholder", "create_" + table);
 		}
 		catch (const std::exception& e)
 		{
@@ -147,26 +123,28 @@ namespace HistoryHolder
 
 	void HistoryDB::InitQueries ()
 	{
+		auto loadQuery = std::bind (&Util::LoadQuery, "historyholder", std::placeholders::_1);
+
 		InsertHistory_ = QSqlQuery { DB_ };
-		InsertHistory_.prepare (LoadQuery ("insert_history"));
+		InsertHistory_.prepare (loadQuery ("insert_history"));
 
 		InsertTags_ = QSqlQuery { DB_ };
-		InsertTags_.prepare (LoadQuery ("insert_tags"));
+		InsertTags_.prepare (loadQuery ("insert_tags"));
 
 		InsertTagsMapping_ = QSqlQuery { DB_ };
-		InsertTagsMapping_.prepare (LoadQuery ("insert_tags_mapping"));
+		InsertTagsMapping_.prepare (loadQuery ("insert_tags_mapping"));
 
 		InsertEntity_ = QSqlQuery { DB_ };
-		InsertEntity_.prepare (LoadQuery ("insert_entity"));
+		InsertEntity_.prepare (loadQuery ("insert_entity"));
 
 		SelectHistory_ = QSqlQuery { DB_ };
-		SelectHistory_.prepare (LoadQuery ("select_history"));
+		SelectHistory_.prepare (loadQuery ("select_history"));
 	}
 
 	void HistoryDB::LoadTags ()
 	{
 		QSqlQuery query { DB_ };
-		query.prepare (LoadQuery ("select_tags"));
+		query.prepare (Util::LoadQuery ("historyholder", "select_tags"));
 		Util::DBLock::Execute (query);
 
 		while (query.next ())
