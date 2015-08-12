@@ -175,7 +175,7 @@ if (UNIX AND NOT APPLE)
 	endif ()
 endif ()
 
-FindQtLibs (leechcraft_azoth_xoox Concurrent Widgets Xml)
+FindQtLibs (leechcraft_azoth_xoox Concurrent Sql Widgets Xml)
 
 if (ENABLE_MEDIACALLS)
 	FindQtLibs (leechcraft_azoth_xoox Multimedia)
