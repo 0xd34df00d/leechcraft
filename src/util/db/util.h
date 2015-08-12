@@ -29,6 +29,9 @@
 
 #pragma once
 
+#include <QVariant>
+#include <QSqlQuery>
+#include <QtDebug>
 #include "dbconfig.h"
 
 class QSqlDatabase;
@@ -39,5 +42,23 @@ namespace LeechCraft
 namespace Util
 {
 	UTIL_DB_API void RunTextQuery (QSqlDatabase& db, const QString& text);
+
+	template<typename T = int>
+	T GetLastId (const QSqlQuery& query)
+	{
+		const auto& lastVar = query.lastInsertId ();
+		if (lastVar.isNull ())
+			throw std::runtime_error { "No last ID has been reported." };
+
+		if (!lastVar.canConvert<T> ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot convert"
+					<< lastVar;
+			throw std::runtime_error { "Cannot convert last ID." };
+		}
+
+		return lastVar.value<T> ();
+	}
 }
 }
