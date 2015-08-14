@@ -56,6 +56,7 @@ namespace Xoox
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		InitTables ();
+		InitQueries ();
 	}
 
 	void CapsStorageOnDisk::InitTables ()
@@ -65,6 +66,15 @@ namespace Xoox
 
 		Util::RunQuery (DB_, "azoth/xoox", "create_features");
 		Util::RunQuery (DB_, "azoth/xoox", "create_identities");
+	}
+
+	void CapsStorageOnDisk::InitQueries ()
+	{
+		InsertFeature_ = QSqlQuery { DB_ };
+		InsertFeature_.prepare (Util::LoadQuery ("azoth/xoox", "insert_feature"));
+
+		InsertIdentity_ = QSqlQuery { DB_ };
+		InsertIdentity_.prepare (Util::LoadQuery ("azoth/xoox", "insert_identity"));
 	}
 }
 }

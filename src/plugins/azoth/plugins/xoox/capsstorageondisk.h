@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 
 namespace LeechCraft
 {
@@ -41,10 +42,14 @@ namespace Xoox
 	class CapsStorageOnDisk : public QObject
 	{
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.Caps");
+
+		QSqlQuery InsertFeature_;
+		QSqlQuery InsertIdentity_;
 	public:
 		CapsStorageOnDisk (QObject* = nullptr);
 	private:
 		void InitTables ();
+		void InitQueries ();
 	};
 }
 }
