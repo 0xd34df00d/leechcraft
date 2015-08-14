@@ -54,6 +54,17 @@ namespace Xoox
 
 		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		InitTables ();
+	}
+
+	void CapsStorageOnDisk::InitTables ()
+	{
+		if (DB_.tables ().contains ("Features"))
+			return;
+
+		Util::RunQuery (DB_, "azoth/xoox", "create_features");
+		Util::RunQuery (DB_, "azoth/xoox", "create_identities");
 	}
 }
 }
