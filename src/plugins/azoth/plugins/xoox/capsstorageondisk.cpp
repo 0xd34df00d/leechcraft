@@ -43,7 +43,7 @@ namespace Xoox
 	CapsStorageOnDisk::CapsStorageOnDisk (QObject *parent)
 	: QObject { parent }
 	{
-		DB_.setDatabaseName (Util::CreateIfNotExists ("historyholder").filePath ("history.db"));
+		DB_.setDatabaseName (Util::CreateIfNotExists ("azoth/xoox").filePath ("caps2.db"));
 		if (!DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO
