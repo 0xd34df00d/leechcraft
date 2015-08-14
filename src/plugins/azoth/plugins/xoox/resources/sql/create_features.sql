@@ -1,4 +1,4 @@
 CREATE TABLE Features (
-	Ver VARCHAR(28) NOT NULL,
+	Ver TEXT NOT NULL,
 	Feature TEXT
 );

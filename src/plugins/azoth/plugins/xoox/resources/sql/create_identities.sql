@@ -1,5 +1,5 @@
 CREATE TABLE Identities (
-	Ver VARCHAR(28) NOT NULL,
+	Ver TEXT NOT NULL,
 	Category TEXT,
 	Language TEXT,
 	Name TEXT,
