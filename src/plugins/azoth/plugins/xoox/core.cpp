@@ -135,15 +135,6 @@ namespace Xoox
 				SLOT (saveRoster ()));
 	}
 
-	namespace
-	{
-		struct EntryData
-		{
-			QByteArray ID_;
-			QString Name_;
-		};
-	}
-
 	void Core::LoadRoster ()
 	{
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
