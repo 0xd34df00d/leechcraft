@@ -61,7 +61,7 @@ namespace Xoox
 		QList<GlooxAccount*> Accounts_;
 		QObject *ProxyObject_;
 	public:
-		GlooxProtocol (QObject*);
+		GlooxProtocol (QObject* = nullptr);
 		virtual ~GlooxProtocol ();
 
 		void Prepare ();
