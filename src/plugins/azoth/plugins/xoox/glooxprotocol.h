@@ -41,6 +41,8 @@ struct Entity;
 
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Xoox
 {
 	class GlooxAccount;
@@ -59,15 +61,15 @@ namespace Xoox
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
-		QObject *ProxyObject_;
+		IProxyObject *ProxyObject_;
 	public:
 		GlooxProtocol (QObject* = nullptr);
 		virtual ~GlooxProtocol ();
 
 		void Prepare ();
 
-		QObject* GetProxyObject () const;
-		void SetProxyObject (QObject*);
+		IProxyObject* GetProxyObject () const;
+		void SetProxyObject (IProxyObject*);
 
 		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;

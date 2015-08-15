@@ -75,12 +75,12 @@ namespace Xoox
 		RestoreAccounts ();
 	}
 
-	QObject* GlooxProtocol::GetProxyObject () const
+	IProxyObject* GlooxProtocol::GetProxyObject () const
 	{
 		return ProxyObject_;
 	}
 
-	void GlooxProtocol::SetProxyObject (QObject *po)
+	void GlooxProtocol::SetProxyObject (IProxyObject *po)
 	{
 		ProxyObject_ = po;
 	}
@@ -174,13 +174,13 @@ namespace Xoox
 		if (isNewAcc)
 		{
 			if (const auto second = qobject_cast<InBandAccountRegSecondPage*> (widgets.value (1)))
-				qobject_cast<IProxyObject*> (ProxyObject_)->SetPassword (second->GetPassword (), account);
+				ProxyObject_->SetPassword (second->GetPassword (), account);
 		}
 		else
 		{
 			const auto& pass = w->GetPassword ();
 			if (!pass.isNull ())
-				qobject_cast<IProxyObject*> (ProxyObject_)->SetPassword (pass, account);
+				ProxyObject_->SetPassword (pass, account);
 		}
 
 		Accounts_ << account;
@@ -344,8 +344,7 @@ namespace Xoox
 			}
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			Core::Instance ().GetPluginProxy ()->OpenChat (entry->GetEntryID (),
-					acc->GetAccountID (), body, variant);
+			ProxyObject_->OpenChat (entry->GetEntryID (), acc->GetAccountID (), body, variant);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

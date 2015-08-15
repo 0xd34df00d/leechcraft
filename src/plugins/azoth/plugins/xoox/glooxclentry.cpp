@@ -53,14 +53,12 @@ namespace Azoth
 {
 namespace Xoox
 {
-	void Save (OfflineDataSource_ptr ods, QXmlStreamWriter *w)
+	void Save (OfflineDataSource_ptr ods, QXmlStreamWriter *w, IProxyObject *proxy)
 	{
 		w->writeStartElement ("entry");
 			w->writeTextElement ("id", ods->ID_.toUtf8 ().toPercentEncoding ("@"));
 			w->writeTextElement ("name", ods->Name_);
-			w->writeTextElement ("authstatus",
-					Core::Instance ().GetPluginProxy ()->
-						AuthStatusToString (ods->AuthStatus_));
+			w->writeTextElement ("authstatus", proxy->AuthStatusToString (ods->AuthStatus_));
 
 			w->writeStartElement ("groups");
 			Q_FOREACH (const QString& group, ods->Groups_)
@@ -76,7 +74,7 @@ namespace Xoox
 		w->writeEndElement ();
 	}
 
-	void Load (OfflineDataSource_ptr ods, const QDomElement& entry)
+	void Load (OfflineDataSource_ptr ods, const QDomElement& entry, IProxyObject *proxy)
 	{
 		const QByteArray& entryID = QByteArray::fromPercentEncoding (entry
 					.firstChildElement ("id").text ().toLatin1 ());
@@ -101,8 +99,10 @@ namespace Xoox
 		ods->Name_ = name;
 		ods->ID_ = QString::fromUtf8 (entryID.constData ());
 		ods->Groups_ = groups;
-		ods->AuthStatus_ = Core::Instance ().GetPluginProxy ()->
-				AuthStatusFromString (entry.firstChildElement ("authstatus").text ());
+
+		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
+		ods->AuthStatus_ = proxy->AuthStatusFromString (authStatusText);
+
 		ods->VCardIq_.parse (vcardDoc.documentElement ());
 	}
 

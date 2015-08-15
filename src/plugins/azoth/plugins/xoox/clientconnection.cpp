@@ -216,7 +216,8 @@ namespace Xoox
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
-		Client_->addExtension (new AdHocCommandServer (this));
+		Client_->addExtension (new AdHocCommandServer (this,
+					account->GetParentProtocol ()->GetProxyObject ()));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
 		Client_->addExtension (PingManager_);
@@ -1347,7 +1348,7 @@ namespace Xoox
 			return;
 
 		auto proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
+		if (!proto->GetProxyObject ()->IsAutojoinAllowed ())
 			return;
 
 		const auto& it = JoinQueue_.takeFirst ();

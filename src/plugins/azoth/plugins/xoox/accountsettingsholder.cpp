@@ -207,7 +207,7 @@ namespace Xoox
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isNull ())
-			Core::Instance ().GetPluginProxy ()->SetPassword (pass, Account_);
+			Account_->GetParentProtocol ()->GetProxyObject ()->SetPassword (pass, Account_);
 
 		SetKAParams (qMakePair (w->GetKAInterval (), w->GetKATimeout ()));
 
