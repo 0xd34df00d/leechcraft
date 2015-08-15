@@ -32,8 +32,11 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QDir>
 #include <QtDebug>
+#include <QXmppLogger.h>
 #include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -59,6 +62,10 @@ namespace Xoox
 	, ParentProtocolPlugin_ (parent)
 	, ProxyObject_ (0)
 	{
+		const auto logger = QXmppLogger::getLogger ();
+		logger->setLoggingType (QXmppLogger::FileLogging);
+		logger->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
+		logger->setMessageTypes (QXmppLogger::AnyMessage);
 	}
 
 	GlooxProtocol::~GlooxProtocol ()

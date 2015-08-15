@@ -52,9 +52,6 @@ namespace Xoox
 	: CapsDB_ (new CapsDatabase (this))
 	, Avatars_ (new AvatarsStorage (this))
 	{
-		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
-		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
-		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::AnyMessage);
 	}
 
 	Core& Core::Instance ()
