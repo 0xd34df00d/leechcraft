@@ -51,10 +51,16 @@ namespace Xoox
 		LoadRoster ();
 
 		for (const auto account : Proto_->GetRegisteredAccounts ())
+		{
 			connect (account,
 					SIGNAL (gotCLItems (QList<QObject*>)),
 					this,
 					SLOT (handleItemsAdded (QList<QObject*>)));
+			connect (account,
+					SIGNAL (rosterSaveRequested ()),
+					this,
+					SLOT (scheduleSaveRoster ()));
+		}
 	}
 
 	void RosterSaver::LoadRoster ()
@@ -198,18 +204,15 @@ namespace Xoox
 
 	void RosterSaver::handleItemsAdded (const QList<QObject*>& items)
 	{
-		bool shouldSave = false;
-		for (auto clEntry : items)
-		{
-			auto entry = qobject_cast<GlooxCLEntry*> (clEntry);
-			if (!entry ||
-					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-				continue;
-
-			shouldSave = true;
-		}
-
-		if (shouldSave)
+		if (std::any_of (items.begin (), items.end (), [] (QObject *clEntry)
+				{
+					if (const auto entry = qobject_cast<GlooxCLEntry*> (clEntry))
+					{
+						const auto lng = entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity;
+						return lng == ICLEntry::FPermanentEntry;
+					}
+					return false;
+				}))
 			scheduleSaveRoster (5000);
 	}
 }
