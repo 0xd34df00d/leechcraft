@@ -128,7 +128,7 @@ namespace Xoox
 	, LastActivityManager_ (new LastActivityManager)
 	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
-	, RIEXManager_ (new RIEXManager (Core::Instance ().GetCapsDatabase ()))
+	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager)
@@ -140,8 +140,8 @@ namespace Xoox
 	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
-	, CapsManager_ (new CapsManager (DiscoveryManager_,
-			this, Core::Instance ().GetCapsDatabase ()))
+	, CapsManager_ (new CapsManager (DiscoveryManager_, this,
+			account->GetParentProtocol ()->GetCapsDatabase ()))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)

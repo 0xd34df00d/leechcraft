@@ -165,16 +165,18 @@ namespace Xoox
 
 	namespace
 	{
-		bool CheckPartFeature (EntryBase *base, const QString& variant)
+		bool CheckPartFeature (EntryBase *base, const QString& variant, CapsDatabase *capsDB)
 		{
 			return XooxUtil::CheckUserFeature (base,
-					variant, "http://jabber.org/protocol/chatstates");
+					variant,
+					"http://jabber.org/protocol/chatstates",
+					capsDB);
 		}
 	}
 
 	void EntryBase::SetChatPartState (ChatPartState state, const QString& variant)
 	{
-		if (!CheckPartFeature (this, variant))
+		if (!CheckPartFeature (this, variant, Account_->GetParentProtocol ()->GetCapsDatabase ()))
 			return;
 
 		QXmppMessage msg;

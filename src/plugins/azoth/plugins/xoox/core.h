@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CORE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CORE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
@@ -43,7 +43,6 @@ namespace Xoox
 {
 	class GlooxProtocol;
 	class GlooxCLEntry;
-	class CapsDatabase;
 	class AvatarsStorage;
 
 	class Core : public QObject
@@ -52,7 +51,6 @@ namespace Xoox
 
 		ICoreProxy_ptr Proxy_;
 
-		CapsDatabase *CapsDB_;
 		AvatarsStorage *Avatars_;
 
 		Core ();
@@ -64,7 +62,6 @@ namespace Xoox
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
 
-		CapsDatabase* GetCapsDatabase () const;
 		AvatarsStorage* GetAvatarsStorage () const;
 
 		void SendEntity (const Entity&);
@@ -75,5 +72,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

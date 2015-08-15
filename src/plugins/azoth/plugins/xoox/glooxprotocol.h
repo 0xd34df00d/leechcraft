@@ -46,6 +46,7 @@ class IProxyObject;
 namespace Xoox
 {
 	class GlooxAccount;
+	class CapsDatabase;
 
 	class GlooxProtocol : public QObject
 						, public IProtocol
@@ -61,15 +62,19 @@ namespace Xoox
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
-		IProxyObject *ProxyObject_;
+
+		CapsDatabase *CapsDB_;
+		IProxyObject *ProxyObject_ = nullptr;
 	public:
-		GlooxProtocol (QObject* = nullptr);
+		GlooxProtocol (CapsDatabase*, QObject* = nullptr);
 		virtual ~GlooxProtocol ();
 
 		void Prepare ();
 
 		IProxyObject* GetProxyObject () const;
 		void SetProxyObject (IProxyObject*);
+
+		CapsDatabase* GetCapsDatabase () const;
 
 		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;

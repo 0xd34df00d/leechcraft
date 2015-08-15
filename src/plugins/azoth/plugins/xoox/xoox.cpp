@@ -37,6 +37,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "rostersaver.h"
+#include "capsdatabase.h"
 
 namespace LeechCraft
 {
@@ -62,7 +63,7 @@ namespace Xoox
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
-		GlooxProtocol_ = std::make_shared<GlooxProtocol> ();
+		GlooxProtocol_ = std::make_shared<GlooxProtocol> (new CapsDatabase);
 	}
 
 	void Plugin::SecondInit ()

@@ -36,10 +36,6 @@
 #include <QXmppLogger.h>
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
-#include "glooxprotocol.h"
-#include "glooxclentry.h"
-#include "glooxaccount.h"
-#include "capsdatabase.h"
 #include "avatarsstorage.h"
 
 namespace LeechCraft
@@ -49,8 +45,7 @@ namespace Azoth
 namespace Xoox
 {
 	Core::Core ()
-	: CapsDB_ (new CapsDatabase (this))
-	, Avatars_ (new AvatarsStorage (this))
+	: Avatars_ (new AvatarsStorage (this))
 	{
 	}
 
@@ -72,11 +67,6 @@ namespace Xoox
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
-	}
-
-	CapsDatabase* Core::GetCapsDatabase () const
-	{
-		return CapsDB_;
 	}
 
 	AvatarsStorage* Core::GetAvatarsStorage () const

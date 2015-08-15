@@ -37,11 +37,11 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QDataStream>
+#include <QtDebug>
 #include <QXmppPresence.h>
 #include <QXmppUtils.h>
 #include <QXmppGlobal.h>
 #include "entrybase.h"
-#include "core.h"
 #include "capsdatabase.h"
 
 QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
@@ -348,7 +348,8 @@ namespace XooxUtil
 		return result;
 	}
 
-	bool CheckUserFeature (EntryBase *base, const QString& variant, const QString& feature)
+	bool CheckUserFeature (EntryBase *base, const QString& variant,
+			const QString& feature, const CapsDatabase *capsDB)
 	{
 		if (variant.isEmpty ())
 			return true;
@@ -357,7 +358,7 @@ namespace XooxUtil
 		if (ver.isEmpty ())
 			return true;
 
-		const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+		const auto& feats = capsDB->Get (ver);
 		if (feats.isEmpty ())
 			return true;
 

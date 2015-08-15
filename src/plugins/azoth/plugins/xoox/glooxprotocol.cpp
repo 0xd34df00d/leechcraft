@@ -57,10 +57,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	GlooxProtocol::GlooxProtocol (QObject *parent)
-	: QObject (parent)
-	, ParentProtocolPlugin_ (parent)
-	, ProxyObject_ (0)
+	GlooxProtocol::GlooxProtocol (CapsDatabase *capsDB, QObject *parent)
+	: QObject { parent }
+	, ParentProtocolPlugin_ { parent }
+	, CapsDB_ { capsDB }
 	{
 		const auto logger = QXmppLogger::getLogger ();
 		logger->setLoggingType (QXmppLogger::FileLogging);
@@ -90,6 +90,11 @@ namespace Xoox
 	void GlooxProtocol::SetProxyObject (IProxyObject *po)
 	{
 		ProxyObject_ = po;
+	}
+
+	CapsDatabase* GlooxProtocol::GetCapsDatabase () const
+	{
+		return CapsDB_;
 	}
 
 	QObject* GlooxProtocol::GetQObject ()

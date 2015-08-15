@@ -54,6 +54,7 @@ struct EntryStatus;
 namespace Xoox
 {
 class EntryBase;
+class CapsDatabase;
 
 namespace XooxUtil
 {
@@ -71,7 +72,7 @@ namespace XooxUtil
 	bool RunFormDialog (QWidget*);
 
 	bool CheckUserFeature (EntryBase *entry,
-			const QString& variant, const QString& feature);
+			const QString& variant, const QString& feature, const CapsDatabase *capsDB);
 
 	QXmppMessage Forwarded2Message (const QXmppElement& wrapper);
 
