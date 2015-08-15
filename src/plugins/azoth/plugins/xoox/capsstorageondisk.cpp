@@ -69,6 +69,8 @@ namespace Xoox
 
 		InitTables ();
 		InitQueries ();
+
+		Migrate ();
 	}
 
 	namespace
