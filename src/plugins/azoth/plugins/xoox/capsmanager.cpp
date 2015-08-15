@@ -39,11 +39,12 @@ namespace Azoth
 {
 namespace Xoox
 {
-	CapsManager::CapsManager (QXmppDiscoveryManager *mgr, ClientConnection *connection)
+	CapsManager::CapsManager (QXmppDiscoveryManager *mgr,
+			ClientConnection *connection, CapsDatabase *db)
 	: QObject (connection)
 	, Connection_ (connection)
 	, DiscoMgr_ (mgr)
-	, DB_ (Core::Instance ().GetCapsDatabase ())
+	, DB_ (db)
 	{
 		Caps2String_ ["http://etherx.jabber.org/streams"] = "stream";
 		Caps2String_ ["urn:ietf:params:xml:ns:xmpp-tls"] = "TLS";

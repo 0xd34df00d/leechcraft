@@ -140,7 +140,8 @@ namespace Xoox
 	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
-	, CapsManager_ (new CapsManager (DiscoveryManager_, this))
+	, CapsManager_ (new CapsManager (DiscoveryManager_,
+			this, Core::Instance ().GetCapsDatabase ()))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
