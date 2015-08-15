@@ -61,6 +61,8 @@ namespace Xoox
 	private:
 		void InitTables ();
 		void InitQueries ();
+
+		void Migrate ();
 	};
 }
 }
