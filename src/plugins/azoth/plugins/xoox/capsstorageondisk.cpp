@@ -64,8 +64,13 @@ namespace Xoox
 		if (DB_.tables ().contains ("Features"))
 			return;
 
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+
 		Util::RunQuery (DB_, "azoth/xoox", "create_features");
 		Util::RunQuery (DB_, "azoth/xoox", "create_identities");
+
+		lock.Good ();
 	}
 
 	void CapsStorageOnDisk::InitQueries ()
