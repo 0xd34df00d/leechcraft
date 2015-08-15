@@ -1,7 +1,7 @@
-INSERT INTO Features (
+INSERT OR IGNORE INTO Features (
 	Ver,
-	Feature
+	Features
 ) VALUES (
 	:ver,
-	:feature
+	:features
 );
