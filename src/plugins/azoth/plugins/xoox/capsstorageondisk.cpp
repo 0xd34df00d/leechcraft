@@ -96,9 +96,9 @@ namespace Xoox
 		{
 			InsertIdentity_.bindValue (":ver", ver);
 			InsertIdentity_.bindValue (":category", id.category ());
-			InsertIdentity_.bindValue (":language", id.category ());
-			InsertIdentity_.bindValue (":name", id.category ());
-			InsertIdentity_.bindValue (":type", id.category ());
+			InsertIdentity_.bindValue (":language", id.language ());
+			InsertIdentity_.bindValue (":name", id.name ());
+			InsertIdentity_.bindValue (":type", id.type ());
 			Util::DBLock::Execute (InsertIdentity_);
 		}
 
