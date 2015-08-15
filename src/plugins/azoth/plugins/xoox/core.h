@@ -51,7 +51,6 @@ namespace Xoox
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		bool SaveRosterScheduled_;
 
 		CapsDatabase *CapsDB_;
 		AvatarsStorage *Avatars_;
@@ -69,14 +68,6 @@ namespace Xoox
 		AvatarsStorage* GetAvatarsStorage () const;
 
 		void SendEntity (const Entity&);
-
-		void ScheduleSaveRoster (int = 2000);
-	private:
-		void LoadRoster ();
-	public slots:
-		void saveRoster ();
-	private slots:
-		void handleItemsAdded (const QList<QObject*>&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
