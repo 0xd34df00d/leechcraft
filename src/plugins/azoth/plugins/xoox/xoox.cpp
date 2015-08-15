@@ -32,6 +32,8 @@
 #include <QTranslator>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/azoth/iproxyobject.h>
+#include "glooxprotocol.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
 
@@ -58,16 +60,19 @@ namespace Xoox
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
+
+		GlooxProtocol_ = std::make_shared<GlooxProtocol> ();
 	}
 
 	void Plugin::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
+		GlooxProtocol_->SetProxyObject (PluginProxy_);
+		GlooxProtocol_->Prepare ();
 	}
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().Release ();
+		GlooxProtocol_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -110,12 +115,12 @@ namespace Xoox
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return Core::Instance ().GetProtocols ();
+		return { GlooxProtocol_.get () };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
-		Core::Instance ().SetPluginProxy (proxy);
+		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
 }
 }

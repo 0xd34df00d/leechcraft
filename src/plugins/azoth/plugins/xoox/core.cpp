@@ -36,7 +36,6 @@
 #include <QXmppLogger.h>
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
-#include <interfaces/azoth/iproxyobject.h>
 #include "glooxprotocol.h"
 #include "glooxclentry.h"
 #include "glooxaccount.h"
@@ -50,15 +49,13 @@ namespace Azoth
 namespace Xoox
 {
 	Core::Core ()
-	: PluginProxy_ (0)
-	, SaveRosterScheduled_ (false)
+	: SaveRosterScheduled_ (false)
 	, CapsDB_ (new CapsDatabase (this))
 	, Avatars_ (new AvatarsStorage (this))
 	{
 		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
 		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
 		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::AnyMessage);
-		GlooxProtocol_.reset (new GlooxProtocol (this));
 	}
 
 	Core& Core::Instance ()
@@ -69,34 +66,14 @@ namespace Xoox
 
 	void Core::SecondInit ()
 	{
-		GlooxProtocol_->SetProxyObject (PluginProxy_);
-		GlooxProtocol_->Prepare ();
+		/*
 		LoadRoster ();
 		for (const auto account : GlooxProtocol_->GetRegisteredAccounts ())
 			connect (account,
 					SIGNAL (gotCLItems (QList<QObject*>)),
 					this,
 					SLOT (handleItemsAdded (QList<QObject*>)));
-	}
-
-	void Core::Release ()
-	{
-		GlooxProtocol_.reset ();
-	}
-
-	QList<QObject*> Core::GetProtocols () const
-	{
-		return { GlooxProtocol_.get () };
-	}
-
-	void Core::SetPluginProxy (QObject *proxy)
-	{
-		PluginProxy_ = proxy;
-	}
-
-	IProxyObject* Core::GetPluginProxy () const
-	{
-		return qobject_cast<IProxyObject*> (PluginProxy_);
+					*/
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -137,6 +114,7 @@ namespace Xoox
 
 	void Core::LoadRoster ()
 	{
+		/*
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
 					.absoluteFilePath ("roster.xml"));
 		if (!rosterFile.exists ())
@@ -220,10 +198,12 @@ namespace Xoox
 
 			account = account.nextSiblingElement ("account");
 		}
+		*/
 	}
 
 	void Core::saveRoster ()
 	{
+		/*
 		SaveRosterScheduled_ = false;
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
 					.absoluteFilePath ("roster.xml"));
@@ -262,6 +242,7 @@ namespace Xoox
 		}
 		w.writeEndElement ();
 		w.writeEndDocument ();
+		*/
 	}
 
 	void Core::handleItemsAdded (const QList<QObject*>& items)
