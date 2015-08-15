@@ -33,43 +33,9 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include "util.h"
 
 Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
-
-QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
-{
-	out << static_cast<quint8> (1)
-		<< id.category ()
-		<< id.language ()
-		<< id.name ()
-		<< id.type ();
-	return out;
-}
-
-QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
-{
-	quint8 version = 0;
-	in >> version;
-	if (version != 1)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "unknown version"
-				<< version;
-		return in;
-	}
-
-	QString category, language, name, type;
-	in >> category
-		>> language
-		>> name
-		>> type;
-	id.setCategory (category);
-	id.setLanguage (language);
-	id.setName (name);
-	id.setType (type);
-
-	return in;
-}
 
 namespace LeechCraft
 {

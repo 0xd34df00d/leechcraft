@@ -31,13 +31,19 @@
 
 #include <QString>
 #include <QXmppMucIq.h>
+#include <QXmppDiscoveryIq.h>
 #include <interfaces/azoth/azothcommon.h>
 
-class QXmppMessage;
 class QDomElement;
 class QWidget;
+class QDataStream;
+
+class QXmppMessage;
 class QXmppDataForm;
 class QXmppPresence;
+
+QDataStream& operator<< (QDataStream&, const QXmppDiscoveryIq::Identity&);
+QDataStream& operator>> (QDataStream&, QXmppDiscoveryIq::Identity&);
 
 namespace LeechCraft
 {
