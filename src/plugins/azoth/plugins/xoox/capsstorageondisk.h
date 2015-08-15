@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -51,6 +52,9 @@ namespace Xoox
 		mutable QSqlQuery SelectIdentities_;
 	public:
 		CapsStorageOnDisk (QObject* = nullptr);
+
+		boost::optional<QStringList> GetFeatures (const QString&) const;
+		boost::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QString&) const;
 
 		void AddFeatures (const QString&, const QStringList&);
 		void AddIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);

@@ -32,6 +32,7 @@
 #include <QDataStream>
 #include <QSqlError>
 #include <QXmppDiscoveryIq.h>
+#include <util/sll/util.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
@@ -72,6 +73,50 @@ namespace Xoox
 
 			return result;
 		}
+
+		QStringList DeserializeFeatures (const QByteArray& data)
+		{
+			QStringList result;
+
+			QDataStream str { data };
+			str >> result;
+
+			return result;
+		}
+	}
+
+	boost::optional<QStringList> CapsStorageOnDisk::GetFeatures (const QString& ver) const
+	{
+		SelectFeatures_.bindValue (":ver", ver);
+		Util::DBLock::Execute (SelectFeatures_);
+
+		const auto finish = Util::MakeScopeGuard ([this] { SelectFeatures_.finish (); });
+
+		if (!SelectFeatures_.next ())
+			return {};
+		else
+			return DeserializeFeatures (SelectFeatures_.value (0).toByteArray ());
+	}
+
+	boost::optional<QList<QXmppDiscoveryIq::Identity>> CapsStorageOnDisk::GetIdentities (const QString& ver) const
+	{
+		SelectIdentities_.bindValue (":ver", ver);
+		Util::DBLock::Execute (SelectIdentities_);
+
+		QList<QXmppDiscoveryIq::Identity> result;
+		while (SelectIdentities_.next ())
+		{
+			QXmppDiscoveryIq::Identity id;
+			id.setCategory (SelectIdentities_.value (0).toString ());
+			id.setLanguage (SelectIdentities_.value (1).toString ());
+			id.setName (SelectIdentities_.value (2).toString ());
+			id.setType (SelectIdentities_.value (3).toString ());
+			result << id;
+		}
+
+		SelectIdentities_.finish ();
+
+		return result;
 	}
 
 	void CapsStorageOnDisk::AddFeatures (const QString& ver, const QStringList& features)
