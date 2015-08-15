@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QXmppDiscoveryIq.h>
 
 namespace LeechCraft
 {
@@ -47,6 +48,9 @@ namespace Xoox
 		QSqlQuery InsertIdentity_;
 	public:
 		CapsStorageOnDisk (QObject* = nullptr);
+
+		void AddFeatures (const QString&, const QStringList&);
+		void AddIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);
 	private:
 		void InitTables ();
 		void InitQueries ();

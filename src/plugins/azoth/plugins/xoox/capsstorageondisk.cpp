@@ -29,7 +29,9 @@
 
 #include "capsstorageondisk.h"
 #include <QDir>
+#include <QDataStream>
 #include <QSqlError>
+#include <QXmppDiscoveryIq.h>
 #include <util/sys/paths.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
@@ -57,6 +59,50 @@ namespace Xoox
 
 		InitTables ();
 		InitQueries ();
+	}
+
+	namespace
+	{
+		QByteArray SerializeFeatures (const QStringList& features)
+		{
+			QByteArray result;
+
+			QDataStream str { &result, QIODevice::WriteOnly };
+			str << features;
+
+			return result;
+		}
+	}
+
+	void CapsStorageOnDisk::AddFeatures (const QString& ver, const QStringList& features)
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+
+		InsertFeature_.bindValue (":ver", ver);
+		InsertFeature_.bindValue (":features", SerializeFeatures (features));
+		Util::DBLock::Execute (InsertFeature_);
+
+		lock.Good ();
+	}
+
+	void CapsStorageOnDisk::AddIdentities (const QString& ver,
+			const QList<QXmppDiscoveryIq::Identity>& identities)
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+
+		for (const auto& id : identities)
+		{
+			InsertIdentity_.bindValue (":ver", ver);
+			InsertIdentity_.bindValue (":category", id.category ());
+			InsertIdentity_.bindValue (":language", id.category ());
+			InsertIdentity_.bindValue (":name", id.category ());
+			InsertIdentity_.bindValue (":type", id.category ());
+			Util::DBLock::Execute (InsertIdentity_);
+		}
+
+		lock.Good ();
 	}
 
 	void CapsStorageOnDisk::InitTables ()
