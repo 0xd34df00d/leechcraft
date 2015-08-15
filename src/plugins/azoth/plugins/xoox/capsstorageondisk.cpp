@@ -85,7 +85,7 @@ namespace Xoox
 		}
 	}
 
-	boost::optional<QStringList> CapsStorageOnDisk::GetFeatures (const QString& ver) const
+	boost::optional<QStringList> CapsStorageOnDisk::GetFeatures (const QByteArray& ver) const
 	{
 		SelectFeatures_.bindValue (":ver", ver);
 		Util::DBLock::Execute (SelectFeatures_);
@@ -98,7 +98,7 @@ namespace Xoox
 			return DeserializeFeatures (SelectFeatures_.value (0).toByteArray ());
 	}
 
-	boost::optional<QList<QXmppDiscoveryIq::Identity>> CapsStorageOnDisk::GetIdentities (const QString& ver) const
+	boost::optional<QList<QXmppDiscoveryIq::Identity>> CapsStorageOnDisk::GetIdentities (const QByteArray& ver) const
 	{
 		SelectIdentities_.bindValue (":ver", ver);
 		Util::DBLock::Execute (SelectIdentities_);
@@ -119,7 +119,7 @@ namespace Xoox
 		return result;
 	}
 
-	void CapsStorageOnDisk::AddFeatures (const QString& ver, const QStringList& features)
+	void CapsStorageOnDisk::AddFeatures (const QByteArray& ver, const QStringList& features)
 	{
 		Util::DBLock lock { DB_ };
 		lock.Init ();
@@ -131,7 +131,7 @@ namespace Xoox
 		lock.Good ();
 	}
 
-	void CapsStorageOnDisk::AddIdentities (const QString& ver,
+	void CapsStorageOnDisk::AddIdentities (const QByteArray& ver,
 			const QList<QXmppDiscoveryIq::Identity>& identities)
 	{
 		Util::DBLock lock { DB_ };

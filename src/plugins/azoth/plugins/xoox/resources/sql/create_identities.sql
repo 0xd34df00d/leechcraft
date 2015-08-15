@@ -1,5 +1,5 @@
 CREATE TABLE Identities (
-	Ver TEXT NOT NULL,
+	Ver BLOB NOT NULL,
 	Category TEXT,
 	Language TEXT,
 	Name TEXT,

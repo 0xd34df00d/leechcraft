@@ -53,11 +53,11 @@ namespace Xoox
 	public:
 		CapsStorageOnDisk (QObject* = nullptr);
 
-		boost::optional<QStringList> GetFeatures (const QString&) const;
-		boost::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QString&) const;
+		boost::optional<QStringList> GetFeatures (const QByteArray&) const;
+		boost::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QByteArray&) const;
 
-		void AddFeatures (const QString&, const QStringList&);
-		void AddIdentities (const QString&, const QList<QXmppDiscoveryIq::Identity>&);
+		void AddFeatures (const QByteArray&, const QStringList&);
+		void AddIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
 	private:
 		void InitTables ();
 		void InitQueries ();

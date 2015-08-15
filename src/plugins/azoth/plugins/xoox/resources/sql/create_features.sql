@@ -1,4 +1,4 @@
 CREATE TABLE Features (
-	Ver TEXT PRIMARY KEY,
+	Ver BLOB PRIMARY KEY,
 	Features BLOB
 );
