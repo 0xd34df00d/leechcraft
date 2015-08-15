@@ -1059,8 +1059,6 @@ namespace Xoox
 		const auto entry = JID2CLEntry_.take (bareJid);
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
-
-		Core::Instance ().ScheduleSaveRoster (5000);
 	}
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
