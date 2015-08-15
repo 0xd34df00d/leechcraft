@@ -126,6 +126,12 @@ namespace Xoox
 
 		InsertIdentity_ = QSqlQuery { DB_ };
 		InsertIdentity_.prepare (Util::LoadQuery ("azoth/xoox", "insert_identity"));
+
+		SelectFeatures_ = QSqlQuery { DB_ };
+		SelectFeatures_.prepare (Util::LoadQuery ("azoth/xoox", "select_features"));
+
+		SelectIdentities_ = QSqlQuery { DB_ };
+		SelectIdentities_.prepare (Util::LoadQuery ("azoth/xoox", "select_identities"));
 	}
 }
 }

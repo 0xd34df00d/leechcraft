@@ -46,6 +46,9 @@ namespace Xoox
 
 		QSqlQuery InsertFeatures_;
 		QSqlQuery InsertIdentity_;
+
+		mutable QSqlQuery SelectFeatures_;
+		mutable QSqlQuery SelectIdentities_;
 	public:
 		CapsStorageOnDisk (QObject* = nullptr);
 
