@@ -57,6 +57,7 @@
 #include <interfaces/azoth/isupportpgp.h>
 #endif
 #include "glooxclentry.h"
+#include "glooxprotocol.h"
 
 class QXmppCall;
 
@@ -162,7 +163,7 @@ namespace Xoox
 
 		// IAccount
 		QObject* GetQObject ();
-		QObject* GetParentProtocol () const;
+		GlooxProtocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;

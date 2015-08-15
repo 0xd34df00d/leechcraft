@@ -233,7 +233,7 @@ namespace Xoox
 		return this;
 	}
 
-	QObject* GlooxAccount::GetParentProtocol () const
+	GlooxProtocol* GlooxAccount::GetParentProtocol () const
 	{
 		return ParentProtocol_;
 	}
