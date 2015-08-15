@@ -44,7 +44,7 @@ namespace Xoox
 	{
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.Caps");
 
-		QSqlQuery InsertFeature_;
+		QSqlQuery InsertFeatures_;
 		QSqlQuery InsertIdentity_;
 	public:
 		CapsStorageOnDisk (QObject* = nullptr);

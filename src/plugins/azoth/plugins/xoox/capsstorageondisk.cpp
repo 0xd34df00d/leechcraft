@@ -79,9 +79,9 @@ namespace Xoox
 		Util::DBLock lock { DB_ };
 		lock.Init ();
 
-		InsertFeature_.bindValue (":ver", ver);
-		InsertFeature_.bindValue (":features", SerializeFeatures (features));
-		Util::DBLock::Execute (InsertFeature_);
+		InsertFeatures_.bindValue (":ver", ver);
+		InsertFeatures_.bindValue (":features", SerializeFeatures (features));
+		Util::DBLock::Execute (InsertFeatures_);
 
 		lock.Good ();
 	}
@@ -121,8 +121,8 @@ namespace Xoox
 
 	void CapsStorageOnDisk::InitQueries ()
 	{
-		InsertFeature_ = QSqlQuery { DB_ };
-		InsertFeature_.prepare (Util::LoadQuery ("azoth/xoox", "insert_feature"));
+		InsertFeatures_ = QSqlQuery { DB_ };
+		InsertFeatures_.prepare (Util::LoadQuery ("azoth/xoox", "insert_feature"));
 
 		InsertIdentity_ = QSqlQuery { DB_ };
 		InsertIdentity_.prepare (Util::LoadQuery ("azoth/xoox", "insert_identity"));
