@@ -36,6 +36,7 @@
 #include "glooxprotocol.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "rostersaver.h"
 
 namespace LeechCraft
 {
@@ -68,6 +69,8 @@ namespace Xoox
 	{
 		GlooxProtocol_->SetProxyObject (PluginProxy_);
 		GlooxProtocol_->Prepare ();
+
+		new RosterSaver { GlooxProtocol_.get (), PluginProxy_, GlooxProtocol_.get () };
 	}
 
 	void Plugin::Release ()
