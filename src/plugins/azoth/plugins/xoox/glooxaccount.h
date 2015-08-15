@@ -269,6 +269,8 @@ namespace Xoox
 
 		void CreateSDForResource (const QString&);
 
+		void RequestRosterSave ();
+
 		QByteArray Serialize () const;
 		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
 
@@ -331,6 +333,8 @@ namespace Xoox
 		void signatureVerified (QObject*, bool);
 		void encryptionStateChanged (QObject*, bool);
 #endif
+
+		void rosterSaveRequested ();
 
 		void accountSettingsChanged ();
 	};
