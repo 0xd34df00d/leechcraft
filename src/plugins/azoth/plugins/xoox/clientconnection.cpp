@@ -128,7 +128,7 @@ namespace Xoox
 	, LastActivityManager_ (new LastActivityManager)
 	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
-	, RIEXManager_ (new RIEXManager)
+	, RIEXManager_ (new RIEXManager (Core::Instance ().GetCapsDatabase ()))
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager)
