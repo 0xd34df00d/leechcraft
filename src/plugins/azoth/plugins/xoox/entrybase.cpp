@@ -749,7 +749,7 @@ namespace Xoox
 
 		if (!initial &&
 				GetEntryType () == ICLEntry::EntryType::Chat)
-			Core::Instance ().ScheduleSaveRoster (10000);
+			Account_->RequestRosterSave ();
 
 		emit vcardUpdated ();
 	}
