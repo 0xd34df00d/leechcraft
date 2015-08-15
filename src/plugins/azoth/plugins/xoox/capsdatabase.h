@@ -40,26 +40,26 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class CapsStorageOnDisk;
+
 	class CapsDatabase : public QObject
 	{
-		Q_OBJECT
+		mutable QHash<QByteArray, QStringList> Ver2Features_;
+		mutable QHash<QByteArray, QList<QXmppDiscoveryIq::Identity>> Ver2Identities_;
 
-		QHash<QByteArray, QStringList> Ver2Features_;
-		QHash<QByteArray, QList<QXmppDiscoveryIq::Identity>> Ver2Identities_;
-		mutable bool SaveScheduled_;
+		CapsStorageOnDisk * const Storage_;
 	public:
 		CapsDatabase (QObject* = 0);
 
 		bool Contains (const QByteArray&) const;
+
 		QStringList Get (const QByteArray&) const;
 		void Set (const QByteArray&, const QStringList&);
+
 		QList<QXmppDiscoveryIq::Identity> GetIdentities (const QByteArray&) const;
 		void SetIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
-	private slots:
-		void save () const;
 	private:
-		void ScheduleSave ();
-		void Load ();
+		bool Preload (const QByteArray&) const;
 	};
 }
 }
