@@ -140,7 +140,6 @@ namespace Xoox
 	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
-	, ProxyObject_ (0)
 	, CapsManager_ (new CapsManager (DiscoveryManager_, this))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
@@ -175,10 +174,6 @@ namespace Xoox
 
 		LastState_.State_ = SOffline;
 		handlePriorityChanged (Settings_->GetPriority ());
-
-		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
-					GetParentProtocol ())->GetProxyObject ();
-		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
