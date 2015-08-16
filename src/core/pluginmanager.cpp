@@ -383,12 +383,6 @@ namespace LeechCraft
 			Count_ = count;
 			emit changed ();
 		}
-
-		void Increment ()
-		{
-			++Value_;
-			emit changed ();
-		}
 	};
 
 	QObject* PluginManager::TryFirstInit (QObjectList ordered, PluginLoadProcess *proc)
@@ -433,7 +427,7 @@ namespace LeechCraft
 				return obj;
 			}
 
-			proc->Increment ();
+			++*proc;
 		}
 
 		return 0;
@@ -516,8 +510,8 @@ namespace LeechCraft
 
 		for (const auto obj : ordered)
 		{
+			++*sndInitProc;
 			const auto ii = qobject_cast<IInfo*> (obj);
-			sndInitProc->Increment ();
 			try
 			{
 				emit loadProgress (tr ("Initializing %1: stage two...").arg (ii->GetName ()));
