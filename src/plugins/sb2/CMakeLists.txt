@@ -49,7 +49,7 @@ set (FORMS
 	panelsettingsdialog.ui
 	)
 
-if (WITH_X11 AND NOT USE_QT5)
+if (WITH_X11)
 	find_package (X11)
 
 	if (X11_FOUND)
