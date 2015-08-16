@@ -41,9 +41,9 @@ namespace Azoth
 {
 namespace Xoox
 {
-	CapsDatabase::CapsDatabase (QObject *parent)
+	CapsDatabase::CapsDatabase (const ILoadProgressReporter_ptr& lpr, QObject *parent)
 	: QObject { parent }
-	, Storage_ { new CapsStorageOnDisk { this } }
+	, Storage_ { new CapsStorageOnDisk { lpr, this } }
 	{
 	}
 

@@ -49,7 +49,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	CapsStorageOnDisk::CapsStorageOnDisk (QObject *parent)
+	CapsStorageOnDisk::CapsStorageOnDisk (const ILoadProgressReporter_ptr& lpr, QObject *parent)
 	: QObject { parent }
 	{
 		qRegisterMetaType<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
@@ -70,7 +70,7 @@ namespace Xoox
 		InitTables ();
 		InitQueries ();
 
-		Migrate ();
+		Migrate (lpr);
 	}
 
 	namespace
@@ -190,7 +190,7 @@ namespace Xoox
 		SelectIdentities_.prepare (Util::LoadQuery ("azoth/xoox", "select_identities"));
 	}
 
-	void CapsStorageOnDisk::Migrate ()
+	void CapsStorageOnDisk::Migrate (const ILoadProgressReporter_ptr& lpr)
 	{
 		QFile file { Util::CreateIfNotExists ("azoth/xoox").filePath ("caps_s.db") };
 		if (!file.exists ())

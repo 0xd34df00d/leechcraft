@@ -33,6 +33,7 @@
 #include <QHash>
 #include <QStringList>
 #include <QXmppDiscoveryIq.h>
+#include <interfaces/core/iloadprogressreporter.h>
 
 namespace LeechCraft
 {
@@ -49,7 +50,7 @@ namespace Xoox
 
 		CapsStorageOnDisk * const Storage_;
 	public:
-		CapsDatabase (QObject* = 0);
+		CapsDatabase (const ILoadProgressReporter_ptr&, QObject* = 0);
 
 		bool Contains (const QByteArray&) const;
 

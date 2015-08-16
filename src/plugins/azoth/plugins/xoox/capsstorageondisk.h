@@ -34,6 +34,7 @@
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QXmppDiscoveryIq.h>
+#include <interfaces/core/iloadprogressreporter.h>
 
 namespace LeechCraft
 {
@@ -51,7 +52,7 @@ namespace Xoox
 		mutable QSqlQuery SelectFeatures_;
 		mutable QSqlQuery SelectIdentities_;
 	public:
-		CapsStorageOnDisk (QObject* = nullptr);
+		CapsStorageOnDisk (const ILoadProgressReporter_ptr&, QObject* = nullptr);
 
 		boost::optional<QStringList> GetFeatures (const QByteArray&) const;
 		boost::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QByteArray&) const;
@@ -62,7 +63,7 @@ namespace Xoox
 		void InitTables ();
 		void InitQueries ();
 
-		void Migrate ();
+		void Migrate (const ILoadProgressReporter_ptr&);
 	};
 }
 }

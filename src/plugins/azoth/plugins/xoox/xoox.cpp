@@ -33,6 +33,7 @@
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "glooxprotocol.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -63,7 +64,9 @@ namespace Xoox
 				this,
 				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 
-		GlooxProtocol_ = std::make_shared<GlooxProtocol> (new CapsDatabase);
+		const auto& progRep = proxy->GetPluginsManager ()->CreateLoadProgressReporter (this);
+		const auto capsDB = new CapsDatabase { progRep };
+		GlooxProtocol_ = std::make_shared<GlooxProtocol> (capsDB);
 	}
 
 	void Plugin::SecondInit ()
