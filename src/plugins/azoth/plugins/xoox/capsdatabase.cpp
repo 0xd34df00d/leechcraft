@@ -33,43 +33,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/sys/paths.h>
-
-Q_DECLARE_METATYPE (QXmppDiscoveryIq::Identity);
-
-QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
-{
-	out << static_cast<quint8> (1)
-		<< id.category ()
-		<< id.language ()
-		<< id.name ()
-		<< id.type ();
-	return out;
-}
-
-QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
-{
-	quint8 version = 0;
-	in >> version;
-	if (version != 1)
-	{
-		qWarning () << Q_FUNC_INFO
-				<< "unknown version"
-				<< version;
-		return in;
-	}
-
-	QString category, language, name, type;
-	in >> category
-		>> language
-		>> name
-		>> type;
-	id.setCategory (category);
-	id.setLanguage (language);
-	id.setName (name);
-	id.setType (type);
-
-	return in;
-}
+#include "capsstorageondisk.h"
 
 namespace LeechCraft
 {
@@ -77,34 +41,39 @@ namespace Azoth
 {
 namespace Xoox
 {
-	CapsDatabase::CapsDatabase (QObject *parent)
-	: QObject (parent)
-	, SaveScheduled_ (false)
+	CapsDatabase::CapsDatabase (const ILoadProgressReporter_ptr& lpr, QObject *parent)
+	: QObject { parent }
+	, Storage_ { new CapsStorageOnDisk { lpr, this } }
 	{
-		qRegisterMetaType<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
-		qRegisterMetaTypeStreamOperators<QXmppDiscoveryIq::Identity> ("QXmppDiscoveryIq::Identity");
-		Load ();
 	}
 
 	bool CapsDatabase::Contains (const QByteArray& hash) const
 	{
-		return Ver2Features_.contains (hash) &&
-				Ver2Identities_.contains (hash);
+		if (Ver2Features_.contains (hash) && Ver2Identities_.contains (hash))
+			return true;
+
+		return Preload (hash);
 	}
 
 	QStringList CapsDatabase::Get (const QByteArray& hash) const
 	{
+		if (!Ver2Features_.contains (hash))
+			Preload (hash);
+
 		return Ver2Features_ [hash];
 	}
 
 	void CapsDatabase::Set (const QByteArray& hash, const QStringList& features)
 	{
 		Ver2Features_ [hash] = features;
-		ScheduleSave ();
+		Storage_->AddFeatures (hash, features);
 	}
 
 	QList<QXmppDiscoveryIq::Identity> CapsDatabase::GetIdentities (const QByteArray& hash) const
 	{
+		if (!Ver2Identities_.contains (hash))
+			Preload (hash);
+
 		return Ver2Identities_ [hash];
 	}
 
@@ -112,67 +81,19 @@ namespace Xoox
 			const QList<QXmppDiscoveryIq::Identity>& ids)
 	{
 		Ver2Identities_ [hash] = ids;
-		ScheduleSave ();
+		Storage_->AddIdentities (hash, ids);
 	}
 
-	void CapsDatabase::save () const
+	bool CapsDatabase::Preload (const QByteArray& hash) const
 	{
-		QDir dir = Util::CreateIfNotExists ("azoth/xoox");
-		QFile file (dir.filePath ("caps_s.db"));
-		if (!file.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< file.fileName ()
-					<< "for writing:"
-					<< file.errorString ();
-			return;
-		}
+		const auto& features = Storage_->GetFeatures (hash);
+		const auto& identities = Storage_->GetIdentities (hash);
+		if (!features || !identities)
+			return false;
 
-		QDataStream stream (&file);
-		stream << static_cast<quint8> (2)
-				<< Ver2Features_
-				<< Ver2Identities_;
-
-		SaveScheduled_ = false;
-	}
-
-	void CapsDatabase::ScheduleSave ()
-	{
-		if (SaveScheduled_)
-			return;
-
-		SaveScheduled_ = true;
-		QTimer::singleShot (10000,
-				this,
-				SLOT (save ()));
-	}
-
-	void CapsDatabase::Load ()
-	{
-		QDir dir = Util::CreateIfNotExists ("azoth/xoox");
-		QFile file (dir.filePath ("caps_s.db"));
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< file.fileName ()
-					<< "for reading:"
-					<< file.errorString ();
-			return;
-		}
-
-		QDataStream stream (&file);
-		quint8 ver = 0;
-		stream >> ver;
-		if (ver < 1 || ver > 2)
-			qWarning () << Q_FUNC_INFO
-					<< "unknown storage version"
-					<< ver;
-		if (ver >= 1)
-			stream >> Ver2Features_;
-		if (ver >= 2)
-			stream >> Ver2Identities_;
+		Ver2Features_ [hash] = *features;
+		Ver2Identities_ [hash] = *identities;
+		return true;
 	}
 }
 }

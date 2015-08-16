@@ -128,7 +128,7 @@ namespace Xoox
 	, LastActivityManager_ (new LastActivityManager)
 	, JabberSearchManager_ (new JabberSearchManager)
 	, UserAvatarManager_ (0)
-	, RIEXManager_ (new RIEXManager)
+	, RIEXManager_ (new RIEXManager (account->GetParentProtocol ()->GetCapsDatabase ()))
 	, MsgArchivingManager_ (new MsgArchivingManager (this))
 	, SDManager_ (new SDManager (this))
 	, Xep0313Manager_ (new Xep0313Manager)
@@ -140,8 +140,8 @@ namespace Xoox
 	, DiscoManagerWrapper_ (new DiscoManagerWrapper (DiscoveryManager_, this))
 	, OurJID_ (Settings_->GetFullJID ())
 	, SelfContact_ (new SelfContact (OurJID_, account))
-	, ProxyObject_ (0)
-	, CapsManager_ (new CapsManager (DiscoveryManager_, this))
+	, CapsManager_ (new CapsManager (DiscoveryManager_, this,
+			account->GetParentProtocol ()->GetCapsDatabase ()))
 	, ServerInfoStorage_ (new ServerInfoStorage (this, Settings_))
 	, IsConnected_ (false)
 	, FirstTimeConnect_ (true)
@@ -175,10 +175,6 @@ namespace Xoox
 
 		LastState_.State_ = SOffline;
 		handlePriorityChanged (Settings_->GetPriority ());
-
-		QObject *proxyObj = qobject_cast<GlooxProtocol*> (account->
-					GetParentProtocol ())->GetProxyObject ();
-		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
@@ -221,7 +217,8 @@ namespace Xoox
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
-		Client_->addExtension (new AdHocCommandServer (this));
+		Client_->addExtension (new AdHocCommandServer (this,
+					account->GetParentProtocol ()->GetProxyObject ()));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
 		Client_->addExtension (PingManager_);
@@ -1063,8 +1060,6 @@ namespace Xoox
 		const auto entry = JID2CLEntry_.take (bareJid);
 		emit rosterItemRemoved (entry);
 		entry->deleteLater ();
-
-		Core::Instance ().ScheduleSaveRoster (5000);
 	}
 
 	void ClientConnection::handleVCardReceived (const QXmppVCardIq& vcard)
@@ -1352,7 +1347,7 @@ namespace Xoox
 			return;
 
 		auto proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		if (!qobject_cast<IProxyObject*> (proto->GetProxyObject ())->IsAutojoinAllowed ())
+		if (!proto->GetProxyObject ()->IsAutojoinAllowed ())
 			return;
 
 		const auto& it = JoinQueue_.takeFirst ();

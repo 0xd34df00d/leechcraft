@@ -43,6 +43,8 @@ namespace LeechCraft
 		virtual int GetMin () const = 0;
 		virtual int GetMax () const = 0;
 		virtual int GetValue () const = 0;
+
+		void operator++ () override;
 	signals:
 		void changed ();
 	};

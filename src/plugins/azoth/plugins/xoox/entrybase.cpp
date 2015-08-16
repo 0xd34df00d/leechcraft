@@ -165,16 +165,18 @@ namespace Xoox
 
 	namespace
 	{
-		bool CheckPartFeature (EntryBase *base, const QString& variant)
+		bool CheckPartFeature (EntryBase *base, const QString& variant, CapsDatabase *capsDB)
 		{
 			return XooxUtil::CheckUserFeature (base,
-					variant, "http://jabber.org/protocol/chatstates");
+					variant,
+					"http://jabber.org/protocol/chatstates",
+					capsDB);
 		}
 	}
 
 	void EntryBase::SetChatPartState (ChatPartState state, const QString& variant)
 	{
-		if (!CheckPartFeature (this, variant))
+		if (!CheckPartFeature (this, variant, Account_->GetParentProtocol ()->GetCapsDatabase ()))
 			return;
 
 		QXmppMessage msg;
@@ -278,7 +280,7 @@ namespace Xoox
 		HasUnreadMsgs_ = false;
 		UnreadMessages_.clear ();
 
-		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
+		Account_->GetParentProtocol ()->GetProxyObject ()->MarkMessagesAsRead (this);
 	}
 
 	void EntryBase::ChatTabClosed ()
@@ -536,8 +538,7 @@ namespace Xoox
 			UnreadMessages_ << msg;
 		}
 
-		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		const auto proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
+		const auto proxy = Account_->GetParentProtocol ()->GetProxyObject ();
 		proxy->GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
@@ -691,16 +692,15 @@ namespace Xoox
 				Account_->GetClientConnection ().get ());
 		message->SetMessageSubType (IMessage::SubType::ParticipantStatusChange);
 
-		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-		const QString& state = proxy->StateToString (status.State_);
+		const auto proxy = Account_->GetParentProtocol ()->GetProxyObject ();
+		const auto& state = proxy->StateToString (status.State_);
 
-		const QString& nick = GetEntryName () + '/' + variant;
+		const auto& nick = GetEntryName () + '/' + variant;
 		message->setProperty ("Azoth/Nick", nick);
 		message->setProperty ("Azoth/TargetState", state);
 		message->setProperty ("Azoth/StatusText", status.StatusString_);
 
-		QString msg = tr ("%1 is now %2 (%3)")
+		const auto& msg = tr ("%1 is now %2 (%3)")
 				.arg (nick)
 				.arg (state)
 				.arg (status.StatusString_);
@@ -751,7 +751,7 @@ namespace Xoox
 
 		if (!initial &&
 				GetEntryType () == ICLEntry::EntryType::Chat)
-			Core::Instance ().ScheduleSaveRoster (10000);
+			Account_->RequestRosterSave ();
 
 		emit vcardUpdated ();
 	}

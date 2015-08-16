@@ -63,8 +63,6 @@ struct Entity;
 
 namespace Azoth
 {
-class IProxyObject;
-
 namespace Xoox
 {
 	class GlooxAccount;
@@ -151,7 +149,6 @@ namespace Xoox
 
 		SelfContact *SelfContact_;
 
-		IProxyObject *ProxyObject_;
 		CapsManager *CapsManager_;
 
 		ServerInfoStorage *ServerInfoStorage_;

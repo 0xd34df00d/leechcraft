@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_RIEXMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_RIEXMANAGER_H
+#pragma once
+
 #include <QXmppClientExtension.h>
 
 namespace LeechCraft
@@ -38,10 +38,13 @@ namespace Azoth
 namespace Xoox
 {
 	class EntryBase;
+	class CapsDatabase;
 
 	class RIEXManager : public QXmppClientExtension
 	{
 		Q_OBJECT
+
+		const CapsDatabase * const CapsDB_;
 	public:
 		class Item
 		{
@@ -75,6 +78,8 @@ namespace Xoox
 			void SetGroups (QStringList);
 		};
 
+		RIEXManager (const CapsDatabase*);
+
 		QStringList discoveryFeatures () const;
 		bool handleStanza (const QDomElement&);
 
@@ -86,5 +91,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

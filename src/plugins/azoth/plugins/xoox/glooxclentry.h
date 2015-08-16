@@ -43,6 +43,7 @@ namespace LeechCraft
 namespace Azoth
 {
 class IAccount;
+class IProxyObject;
 
 namespace Xoox
 {
@@ -59,8 +60,8 @@ namespace Xoox
 	};
 	typedef std::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 
-	void Save (OfflineDataSource_ptr, QXmlStreamWriter*);
-	void Load (OfflineDataSource_ptr, const QDomElement&);
+	void Save (OfflineDataSource_ptr, QXmlStreamWriter*, IProxyObject*);
+	void Load (OfflineDataSource_ptr, const QDomElement&, IProxyObject*);
 
 	class GlooxCLEntry : public EntryBase
 					   , public IAuthable

@@ -36,11 +36,6 @@
 #include <QXmppLogger.h>
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
-#include <interfaces/azoth/iproxyobject.h>
-#include "glooxprotocol.h"
-#include "glooxclentry.h"
-#include "glooxaccount.h"
-#include "capsdatabase.h"
 #include "avatarsstorage.h"
 
 namespace LeechCraft
@@ -50,15 +45,8 @@ namespace Azoth
 namespace Xoox
 {
 	Core::Core ()
-	: PluginProxy_ (0)
-	, SaveRosterScheduled_ (false)
-	, CapsDB_ (new CapsDatabase (this))
-	, Avatars_ (new AvatarsStorage (this))
+	: Avatars_ (new AvatarsStorage (this))
 	{
-		QXmppLogger::getLogger ()->setLoggingType (QXmppLogger::FileLogging);
-		QXmppLogger::getLogger ()->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
-		QXmppLogger::getLogger ()->setMessageTypes (QXmppLogger::AnyMessage);
-		GlooxProtocol_.reset (new GlooxProtocol (this));
 	}
 
 	Core& Core::Instance ()
@@ -69,34 +57,6 @@ namespace Xoox
 
 	void Core::SecondInit ()
 	{
-		GlooxProtocol_->SetProxyObject (PluginProxy_);
-		GlooxProtocol_->Prepare ();
-		LoadRoster ();
-		for (const auto account : GlooxProtocol_->GetRegisteredAccounts ())
-			connect (account,
-					SIGNAL (gotCLItems (QList<QObject*>)),
-					this,
-					SLOT (handleItemsAdded (QList<QObject*>)));
-	}
-
-	void Core::Release ()
-	{
-		GlooxProtocol_.reset ();
-	}
-
-	QList<QObject*> Core::GetProtocols () const
-	{
-		return { GlooxProtocol_.get () };
-	}
-
-	void Core::SetPluginProxy (QObject *proxy)
-	{
-		PluginProxy_ = proxy;
-	}
-
-	IProxyObject* Core::GetPluginProxy () const
-	{
-		return qobject_cast<IProxyObject*> (PluginProxy_);
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -109,11 +69,6 @@ namespace Xoox
 		return Proxy_;
 	}
 
-	CapsDatabase* Core::GetCapsDatabase () const
-	{
-		return CapsDB_;
-	}
-
 	AvatarsStorage* Core::GetAvatarsStorage () const
 	{
 		return Avatars_;
@@ -122,172 +77,6 @@ namespace Xoox
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
-	}
-
-	void Core::ScheduleSaveRoster (int hint)
-	{
-		if (SaveRosterScheduled_)
-			return;
-
-		SaveRosterScheduled_ = true;
-		QTimer::singleShot (hint,
-				this,
-				SLOT (saveRoster ()));
-	}
-
-	namespace
-	{
-		struct EntryData
-		{
-			QByteArray ID_;
-			QString Name_;
-		};
-	}
-
-	void Core::LoadRoster ()
-	{
-		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
-					.absoluteFilePath ("roster.xml"));
-		if (!rosterFile.exists ())
-			return;
-		if (!rosterFile.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open roster file"
-					<< rosterFile.fileName ()
-					<< rosterFile.errorString ();
-			return;
-		}
-
-		QDomDocument doc;
-		QString errStr;
-		int errLine = 0;
-		int errCol = 0;
-		if (!doc.setContent (&rosterFile, &errStr, &errLine, &errCol))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< errStr
-					<< errLine
-					<< ":"
-					<< errCol;
-			return;
-		}
-
-		QDomElement root = doc.firstChildElement ("roster");
-		if (root.attribute ("formatversion") != "1")
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown format version"
-					<< root.attribute ("formatversion");
-			return;
-		}
-
-		QMap<QByteArray, GlooxAccount*> id2account;
-		for (const auto accObj : GlooxProtocol_->GetRegisteredAccounts ())
-		{
-			const auto acc = qobject_cast<GlooxAccount*> (accObj);
-			id2account [acc->GetAccountID ()] = acc;
-		}
-
-		auto account = root.firstChildElement ("account");
-		while (!account.isNull ())
-		{
-			const auto& id = account.firstChildElement ("id").text ().toUtf8 ();
-			if (id.isEmpty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "empty ID";
-				continue;
-			}
-
-			if (!id2account.contains (id))
-			{
-				account = account.nextSiblingElement ("account");
-				continue;
-			}
-
-			auto entry = account
-					.firstChildElement ("entries")
-					.firstChildElement ("entry");
-			while (!entry.isNull ())
-			{
-				const auto& entryID = QByteArray::fromPercentEncoding (entry
-								.firstChildElement ("id").text ().toLatin1 ());
-
-				if (entryID.isEmpty ())
-					qWarning () << Q_FUNC_INFO
-							<< "entry ID is empty";
-				else
-				{
-					const auto ods = std::make_shared<OfflineDataSource> ();
-					Load (ods, entry);
-
-					id2account [id]->CreateFromODS (ods);
-				}
-				entry = entry.nextSiblingElement ("entry");
-			}
-
-			account = account.nextSiblingElement ("account");
-		}
-	}
-
-	void Core::saveRoster ()
-	{
-		SaveRosterScheduled_ = false;
-		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
-					.absoluteFilePath ("roster.xml"));
-		if (!rosterFile.open (QIODevice::WriteOnly | QIODevice::Truncate))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to open file"
-					<< rosterFile.fileName ()
-					<< rosterFile.errorString ();
-			return;
-		}
-
-		QXmlStreamWriter w (&rosterFile);
-		w.setAutoFormatting (true);
-		w.setAutoFormattingIndent (2);
-		w.writeStartDocument ();
-		w.writeStartElement ("roster");
-		w.writeAttribute ("formatversion", "1");
-		for (auto accObj : GlooxProtocol_->GetRegisteredAccounts ())
-		{
-			auto acc = qobject_cast<IAccount*> (accObj);
-			w.writeStartElement ("account");
-				w.writeTextElement ("id", acc->GetAccountID ());
-				w.writeStartElement ("entries");
-				for (auto entryObj : acc->GetCLEntries ())
-				{
-					const auto entry = qobject_cast<GlooxCLEntry*> (entryObj);
-					if (!entry ||
-							(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-						continue;
-
-					Save (entry->ToOfflineDataSource (), &w);
-				}
-				w.writeEndElement ();
-			w.writeEndElement ();
-		}
-		w.writeEndElement ();
-		w.writeEndDocument ();
-	}
-
-	void Core::handleItemsAdded (const QList<QObject*>& items)
-	{
-		bool shouldSave = false;
-		for (auto clEntry : items)
-		{
-			auto entry = qobject_cast<GlooxCLEntry*> (clEntry);
-			if (!entry ||
-					(entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) != ICLEntry::FPermanentEntry)
-				continue;
-
-			shouldSave = true;
-		}
-
-		if (shouldSave)
-			ScheduleSaveRoster (5000);
 	}
 }
 }

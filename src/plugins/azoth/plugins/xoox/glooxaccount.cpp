@@ -233,7 +233,7 @@ namespace Xoox
 		return this;
 	}
 
-	QObject* GlooxAccount::GetParentProtocol () const
+	GlooxProtocol* GlooxAccount::GetParentProtocol () const
 	{
 		return ParentProtocol_;
 	}
@@ -720,7 +720,7 @@ namespace Xoox
 						return;
 
 					emit serverPasswordUpdated (newPass);
-					Core::Instance ().GetPluginProxy ()->SetPassword (newPass, this);
+					ParentProtocol_->GetProxyObject ()->SetPassword (newPass, this);
 					ClientConnection_->SetPassword (newPass);
 				});
 	}
@@ -1034,6 +1034,11 @@ namespace Xoox
 		emit gotSDSession (sd);
 	}
 
+	void GlooxAccount::RequestRosterSave ()
+	{
+		emit rosterSaveRequested ();
+	}
+
 	QByteArray GlooxAccount::Serialize () const
 	{
 		quint16 version = 9;
@@ -1083,9 +1088,7 @@ namespace Xoox
 
 	QString GlooxAccount::GetPassword (bool authfailure)
 	{
-		IProxyObject *proxy =
-			qobject_cast<IProxyObject*> (ParentProtocol_->GetProxyObject ());
-		return proxy->GetAccountPassword (this, !authfailure);
+		return ParentProtocol_->GetProxyObject ()->GetAccountPassword (this, !authfailure);
 	}
 
 	void GlooxAccount::regenAccountIcon (const QString& jid)

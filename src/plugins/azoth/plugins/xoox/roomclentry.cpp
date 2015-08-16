@@ -229,7 +229,7 @@ namespace Xoox
 
 	void RoomCLEntry::MarkMsgsRead ()
 	{
-		Core::Instance ().GetPluginProxy ()->MarkMessagesAsRead (this);
+		Account_->GetParentProtocol ()->GetProxyObject ()->MarkMessagesAsRead (this);
 	}
 
 	void RoomCLEntry::ChatTabClosed ()
@@ -583,9 +583,8 @@ namespace Xoox
 
 	void RoomCLEntry::HandleMessage (RoomPublicMessage *msg)
 	{
-		const auto proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		const auto proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-		proxy->GetFormatterProxy ().PreprocessMessage (msg);
+		Account_->GetParentProtocol ()->GetProxyObject ()->
+				GetFormatterProxy ().PreprocessMessage (msg);
 
 		AllMessages_ << msg;
 		emit gotMessage (msg);

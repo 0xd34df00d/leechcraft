@@ -31,4 +31,8 @@
 
 namespace LeechCraft
 {
+	void LoadProcessBase::operator++ ()
+	{
+		ReportValue (GetValue () + 1);
+	}
 }

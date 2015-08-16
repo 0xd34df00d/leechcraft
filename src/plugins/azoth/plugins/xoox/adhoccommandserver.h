@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_ADHOCCOMMANDSERVER_H
+#pragma once
+
 #include <functional>
 #include <QSet>
 #include <QXmppClientExtension.h>
@@ -41,6 +41,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Xoox
 {
 	class ClientConnection;
@@ -49,7 +51,8 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		ClientConnection *Conn_;
+		ClientConnection * const Conn_;
+		IProxyObject * const Proxy_;
 
 		QMap<QString, QXmppDiscoveryIq::Item> XEP0146Items_;
 
@@ -61,7 +64,7 @@ namespace Xoox
 
 		QMap<QString, QStringList> PendingSessions_;
 	public:
-		AdHocCommandServer (ClientConnection*);
+		AdHocCommandServer (ClientConnection*, IProxyObject*);
 
 		bool handleStanza (const QDomElement&);
 	private:
@@ -85,5 +88,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

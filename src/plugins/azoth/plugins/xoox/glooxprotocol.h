@@ -41,9 +41,12 @@ struct Entity;
 
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Xoox
 {
 	class GlooxAccount;
+	class CapsDatabase;
 
 	class GlooxProtocol : public QObject
 						, public IProtocol
@@ -59,15 +62,19 @@ namespace Xoox
 
 		QObject *ParentProtocolPlugin_;
 		QList<GlooxAccount*> Accounts_;
-		QObject *ProxyObject_;
+
+		CapsDatabase *CapsDB_;
+		IProxyObject *ProxyObject_ = nullptr;
 	public:
-		GlooxProtocol (QObject*);
+		GlooxProtocol (CapsDatabase*, QObject* = nullptr);
 		virtual ~GlooxProtocol ();
 
 		void Prepare ();
 
-		QObject* GetProxyObject () const;
-		void SetProxyObject (QObject*);
+		IProxyObject* GetProxyObject () const;
+		void SetProxyObject (IProxyObject*);
+
+		CapsDatabase* GetCapsDatabase () const;
 
 		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;

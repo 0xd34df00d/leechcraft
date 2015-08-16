@@ -36,12 +36,48 @@
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
+#include <QDataStream>
+#include <QtDebug>
 #include <QXmppPresence.h>
 #include <QXmppUtils.h>
 #include <QXmppGlobal.h>
 #include "entrybase.h"
-#include "core.h"
 #include "capsdatabase.h"
+
+QDataStream& operator<< (QDataStream& out, const QXmppDiscoveryIq::Identity& id)
+{
+	out << static_cast<quint8> (1)
+		<< id.category ()
+		<< id.language ()
+		<< id.name ()
+		<< id.type ();
+	return out;
+}
+
+QDataStream& operator>> (QDataStream& in, QXmppDiscoveryIq::Identity& id)
+{
+	quint8 version = 0;
+	in >> version;
+	if (version != 1)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< "unknown version"
+				<< version;
+		return in;
+	}
+
+	QString category, language, name, type;
+	in >> category
+		>> language
+		>> name
+		>> type;
+	id.setCategory (category);
+	id.setLanguage (language);
+	id.setName (name);
+	id.setType (type);
+
+	return in;
+}
 
 namespace LeechCraft
 {
@@ -312,7 +348,8 @@ namespace XooxUtil
 		return result;
 	}
 
-	bool CheckUserFeature (EntryBase *base, const QString& variant, const QString& feature)
+	bool CheckUserFeature (EntryBase *base, const QString& variant,
+			const QString& feature, const CapsDatabase *capsDB)
 	{
 		if (variant.isEmpty ())
 			return true;
@@ -321,7 +358,7 @@ namespace XooxUtil
 		if (ver.isEmpty ())
 			return true;
 
-		const QStringList& feats = Core::Instance ().GetCapsDatabase ()->Get (ver);
+		const auto& feats = capsDB->Get (ver);
 		if (feats.isEmpty ())
 			return true;
 

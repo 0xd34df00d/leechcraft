@@ -188,11 +188,9 @@ namespace Xoox
 
 	void RoomHandler::MakeStatusChangedMessage (const QXmppPresence& pres, const QString& nick)
 	{
-		GlooxProtocol *proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		IProxyObject *proxy = qobject_cast<IProxyObject*> (proto->GetProxyObject ());
-
-		const QString& state = proxy->StateToString (static_cast<State> (pres.availableStatusType () + 1));
-		QString msg = tr ("%1 changed status to %2 (%3)")
+		const auto proxy = Account_->GetParentProtocol ()->GetProxyObject ();
+		const auto& state = proxy->StateToString (static_cast<State> (pres.availableStatusType () + 1));
+		const auto& msg = tr ("%1 changed status to %2 (%3)")
 				.arg (nick)
 				.arg (state)
 				.arg (pres.statusText ());

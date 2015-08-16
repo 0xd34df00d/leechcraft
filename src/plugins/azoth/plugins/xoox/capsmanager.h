@@ -52,7 +52,7 @@ namespace Xoox
 		CapsDatabase *DB_;
 		QHash<QString, QString> Caps2String_;
 	public:
-		CapsManager (QXmppDiscoveryManager*, ClientConnection*);
+		CapsManager (QXmppDiscoveryManager*, ClientConnection*, CapsDatabase*);
 
 		void FetchCaps (const QString&, const QByteArray&);
 		QStringList GetRawCaps (const QByteArray&) const;

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_XOOX_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_XOOX_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
@@ -42,8 +42,12 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Xoox
 {
+	class GlooxProtocol;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -56,6 +60,10 @@ namespace Xoox
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Xoox")
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		IProxyObject *PluginProxy_;
+
+		std::shared_ptr<GlooxProtocol> GlooxProtocol_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -82,6 +90,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
-

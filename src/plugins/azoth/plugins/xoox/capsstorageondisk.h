@@ -29,8 +29,12 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QXmppDiscoveryIq.h>
+#include <interfaces/core/iloadprogressreporter.h>
 
 namespace LeechCraft
 {
@@ -41,8 +45,25 @@ namespace Xoox
 	class CapsStorageOnDisk : public QObject
 	{
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.Caps");
+
+		QSqlQuery InsertFeatures_;
+		QSqlQuery InsertIdentity_;
+
+		mutable QSqlQuery SelectFeatures_;
+		mutable QSqlQuery SelectIdentities_;
 	public:
-		CapsStorageOnDisk (QObject* = nullptr);
+		CapsStorageOnDisk (const ILoadProgressReporter_ptr&, QObject* = nullptr);
+
+		boost::optional<QStringList> GetFeatures (const QByteArray&) const;
+		boost::optional<QList<QXmppDiscoveryIq::Identity>> GetIdentities (const QByteArray&) const;
+
+		void AddFeatures (const QByteArray&, const QStringList&);
+		void AddIdentities (const QByteArray&, const QList<QXmppDiscoveryIq::Identity>&);
+	private:
+		void InitTables ();
+		void InitQueries ();
+
+		void Migrate (const ILoadProgressReporter_ptr&);
 	};
 }
 }

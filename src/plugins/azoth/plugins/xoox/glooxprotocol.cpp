@@ -32,8 +32,11 @@
 #include <QMainWindow>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QDir>
 #include <QtDebug>
+#include <QXmppLogger.h>
 #include <util/xpc/util.h>
+#include <util/sys/paths.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "glooxaccount.h"
@@ -54,11 +57,15 @@ namespace Azoth
 {
 namespace Xoox
 {
-	GlooxProtocol::GlooxProtocol (QObject *parent)
-	: QObject (parent)
-	, ParentProtocolPlugin_ (parent)
-	, ProxyObject_ (0)
+	GlooxProtocol::GlooxProtocol (CapsDatabase *capsDB, QObject *parent)
+	: QObject { parent }
+	, ParentProtocolPlugin_ { parent }
+	, CapsDB_ { capsDB }
 	{
+		const auto logger = QXmppLogger::getLogger ();
+		logger->setLoggingType (QXmppLogger::FileLogging);
+		logger->setLogFilePath (Util::CreateIfNotExists ("azoth").filePath ("qxmpp.log"));
+		logger->setMessageTypes (QXmppLogger::AnyMessage);
 	}
 
 	GlooxProtocol::~GlooxProtocol ()
@@ -75,14 +82,19 @@ namespace Xoox
 		RestoreAccounts ();
 	}
 
-	QObject* GlooxProtocol::GetProxyObject () const
+	IProxyObject* GlooxProtocol::GetProxyObject () const
 	{
 		return ProxyObject_;
 	}
 
-	void GlooxProtocol::SetProxyObject (QObject *po)
+	void GlooxProtocol::SetProxyObject (IProxyObject *po)
 	{
 		ProxyObject_ = po;
+	}
+
+	CapsDatabase* GlooxProtocol::GetCapsDatabase () const
+	{
+		return CapsDB_;
 	}
 
 	QObject* GlooxProtocol::GetQObject ()
@@ -174,13 +186,13 @@ namespace Xoox
 		if (isNewAcc)
 		{
 			if (const auto second = qobject_cast<InBandAccountRegSecondPage*> (widgets.value (1)))
-				qobject_cast<IProxyObject*> (ProxyObject_)->SetPassword (second->GetPassword (), account);
+				ProxyObject_->SetPassword (second->GetPassword (), account);
 		}
 		else
 		{
 			const auto& pass = w->GetPassword ();
 			if (!pass.isNull ())
-				qobject_cast<IProxyObject*> (ProxyObject_)->SetPassword (pass, account);
+				ProxyObject_->SetPassword (pass, account);
 		}
 
 		Accounts_ << account;
@@ -344,8 +356,7 @@ namespace Xoox
 			}
 			ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 
-			Core::Instance ().GetPluginProxy ()->OpenChat (entry->GetEntryID (),
-					acc->GetAccountID (), body, variant);
+			ProxyObject_->OpenChat (entry->GetEntryID (), acc->GetAccountID (), body, variant);
 		}
 		else
 			qWarning () << Q_FUNC_INFO

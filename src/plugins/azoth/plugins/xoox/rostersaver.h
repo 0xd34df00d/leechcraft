@@ -29,57 +29,37 @@
 
 #pragma once
 
-#include <QString>
-#include <QXmppMucIq.h>
-#include <QXmppDiscoveryIq.h>
-#include <interfaces/azoth/azothcommon.h>
-
-class QDomElement;
-class QWidget;
-class QDataStream;
-
-class QXmppMessage;
-class QXmppDataForm;
-class QXmppPresence;
-
-QDataStream& operator<< (QDataStream&, const QXmppDiscoveryIq::Identity&);
-QDataStream& operator>> (QDataStream&, QXmppDiscoveryIq::Identity&);
+#include <QObject>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-struct EntryStatus;
+class IProxyObject;
 
 namespace Xoox
 {
-class EntryBase;
-class CapsDatabase;
+	class GlooxProtocol;
 
-namespace XooxUtil
-{
-	extern const QString NsRegister;
+	class RosterSaver : public QObject
+	{
+		Q_OBJECT
 
-	QString RoleToString (const QXmppMucItem::Role&);
-	QString AffiliationToString (const QXmppMucItem::Affiliation&);
+		GlooxProtocol * const Proto_;
+		IProxyObject * const Proxy_;
 
-	QString GetClientIDName (const QString&);
-	QString GetClientHRName (const QString&);
+		bool SaveRosterScheduled_ = false;
+	public:
+		RosterSaver (GlooxProtocol*, IProxyObject*, QObject* = nullptr);
+	private:
+		void LoadRoster ();
 
-	QDomElement XmppElem2DomElem (const QXmppElement&);
-	QXmppElement Form2XmppElem (const QXmppDataForm&);
+	private slots:
+		void scheduleSaveRoster (int = 2000);
 
-	bool RunFormDialog (QWidget*);
-
-	bool CheckUserFeature (EntryBase *entry,
-			const QString& variant, const QString& feature, const CapsDatabase *capsDB);
-
-	QXmppMessage Forwarded2Message (const QXmppElement& wrapper);
-
-	EntryStatus PresenceToStatus (const QXmppPresence& pres);
-
-	QXmppPresence StatusToPresence (State, const QString&, int);
-}
+		void saveRoster ();
+		void handleItemsAdded (const QList<QObject*>&);
+	};
 }
 }
 }

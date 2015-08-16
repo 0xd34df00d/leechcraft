@@ -31,7 +31,6 @@
 #include <QDomElement>
 #include <QXmppClient.h>
 #include <QXmppMessage.h>
-#include "core.h"
 #include "capsdatabase.h"
 #include "entrybase.h"
 
@@ -95,6 +94,11 @@ namespace Xoox
 	void RIEXManager::Item::SetGroups (QStringList groups)
 	{
 		Groups_ = groups;
+	}
+
+	RIEXManager::RIEXManager (const CapsDatabase *db)
+	: CapsDB_ { db }
+	{
 	}
 
 	QStringList RIEXManager::discoveryFeatures () const
@@ -189,11 +193,10 @@ namespace Xoox
 
 		QString suppRes;
 
-		CapsDatabase *db = Core::Instance ().GetCapsDatabase ();
 		Q_FOREACH (const QString& variant, to->Variants ())
 		{
 			const QByteArray& ver = to->GetVariantVerString (variant);
-			const QStringList& features = db->Get (ver);
+			const QStringList& features = CapsDB_->Get (ver);
 			if (features.contains (NsRIEX))
 			{
 				suppRes = variant;

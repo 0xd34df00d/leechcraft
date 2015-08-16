@@ -53,8 +53,9 @@ namespace Xoox
 
 	const QString NodeAddTask = "http://leechcraft.org/plugins-azoth-xoox#add-task";
 
-	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn)
-	: Conn_ (conn)
+	AdHocCommandServer::AdHocCommandServer (ClientConnection *conn, IProxyObject *proxy)
+	: Conn_ { conn }
+	, Proxy_ { proxy }
 	{
 		const QString& jid = Conn_->GetOurJID ();
 
@@ -271,10 +272,9 @@ namespace Xoox
 		QString option;
 		QList<QPair<QString, QString>> options;
 		QPair<State, QString> pair;
-		IProxyObject *proxy = Core::Instance ().GetPluginProxy ();
 		Q_FOREACH (pair, rawOpts)
 		{
-			options << qMakePair (proxy->StateToString (pair.first), pair.second);
+			options << qMakePair (Proxy_->StateToString (pair.first), pair.second);
 			if (pair.first == state.State_)
 				option = pair.second;
 		}
