@@ -718,7 +718,19 @@ namespace Util
 
 	void XWrapper::MoveWindowToDesktop (Window wid, int num)
 	{
+#if QT_VERSION < 0x050000
 		SendMessage (wid, GetAtom ("_NET_WM_DESKTOP"), num);
+#else
+		unsigned long data = num;
+		XChangeProperty (QX11Info::display (),
+					wid,
+					GetAtom ("_NET_WM_DESKTOP"),
+					XA_CARDINAL,
+					32,
+					PropModeReplace,
+					reinterpret_cast<unsigned char*> (&data),
+					1);
+#endif
 	}
 
 	QRect XWrapper::GetAvailableGeometry (int screen)
