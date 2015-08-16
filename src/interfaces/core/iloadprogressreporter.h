@@ -38,6 +38,8 @@ public:
 	virtual ~ILoadProcess () {}
 
 	virtual void ReportValue (int value) = 0;
+
+	virtual void operator++ () = 0;
 };
 
 using ILoadProcess_ptr = std::shared_ptr<ILoadProcess>;
