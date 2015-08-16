@@ -54,6 +54,8 @@ if (WITH_X11)
 
 	if (X11_FOUND)
 		add_definitions (-DWITH_X11)
+	else ()
+		message (WARNING "Could NOT find X11 for SB2")
 	endif ()
 endif ()
 
