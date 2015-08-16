@@ -223,6 +223,9 @@ namespace Xoox
 		if (ver >= 2)
 			stream >> identities;
 
+		const auto& proc = lpr->InitiateProcess (tr ("Migrating capabilities database..."),
+				0, features.size () + identities.size ());
+
 		QElapsedTimer timer;
 		timer.start ();
 
@@ -230,10 +233,16 @@ namespace Xoox
 		lock.Init ();
 
 		for (const auto& pair : Util::Stlize (features))
+		{
 			AddFeatures (pair.first, pair.second);
+			++*proc;
+		}
 
 		for (const auto& pair : Util::Stlize (identities))
+		{
 			AddIdentities (pair.first, pair.second);
+			++*proc;
+		}
 
 		lock.Good ();
 
