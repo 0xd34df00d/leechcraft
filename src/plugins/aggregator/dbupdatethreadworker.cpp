@@ -282,7 +282,13 @@ namespace Aggregator
 				if (const auto& ourItemID = GetFirst<IDType_t> ({
 							[&] { return SB_->FindItem (item->Title_, item->Link_, ourChannel->ChannelID_); },
 							[&] { return SB_->FindItemByLink (item->Link_, ourChannel->ChannelID_); },
-							[&] { return SB_->FindItemByTitle (item->Title_, ourChannel->ChannelID_); }
+							[&]
+							{
+								if (!item->Link_.isEmpty ())
+									return {};
+
+								return SB_->FindItemByTitle (item->Title_, ourChannel->ChannelID_);
+							}
 						}))
 				{
 					const auto& ourItem = SB_->GetItem (*ourItemID);
