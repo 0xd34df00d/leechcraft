@@ -173,7 +173,11 @@ namespace Util
 
 		new SlotClosure<DeleteLaterPolicy>
 		{
-			[watcher, rh] { detail::HandlerInvoker<RetType_t, ResultHandler> {} (rh, watcher); },
+			[watcher, rh]
+			{
+				watcher->deleteLater ();
+				detail::HandlerInvoker<RetType_t, ResultHandler> {} (rh, watcher);
+			},
 			watcher,
 			SIGNAL (finished ()),
 			watcher
