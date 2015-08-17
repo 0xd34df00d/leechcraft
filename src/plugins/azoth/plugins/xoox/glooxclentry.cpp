@@ -163,7 +163,7 @@ namespace Xoox
 		if (ODS_)
 			return ODS_;
 
-		OfflineDataSource_ptr ods (new OfflineDataSource);
+		const auto ods = std::make_shared<OfflineDataSource> ();
 		ods->ID_ = GetEntryID ();
 		ods->Name_ = GetEntryName ();
 		ods->Groups_ = Groups ();
