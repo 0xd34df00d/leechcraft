@@ -57,6 +57,10 @@ namespace Xoox
 					this,
 					SLOT (checkItemsInvalidation (QList<QObject*>)));
 			connect (account,
+					SIGNAL (removedCLItems (QList<QObject*>)),
+					this,
+					SLOT (checkItemsInvalidation (QList<QObject*>)));
+			connect (account,
 					SIGNAL (rosterSaveRequested ()),
 					this,
 					SLOT (scheduleSaveRoster ()));
