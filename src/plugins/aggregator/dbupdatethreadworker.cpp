@@ -285,7 +285,7 @@ namespace Aggregator
 							[&]
 							{
 								if (!item->Link_.isEmpty ())
-									return {};
+									return boost::optional<IDType_t> {};
 
 								return SB_->FindItemByTitle (item->Title_, ourChannel->ChannelID_);
 							}
