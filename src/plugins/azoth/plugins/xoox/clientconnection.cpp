@@ -1346,8 +1346,7 @@ namespace Xoox
 		if (JoinQueue_.isEmpty ())
 			return;
 
-		auto proto = qobject_cast<GlooxProtocol*> (Account_->GetParentProtocol ());
-		if (!proto->GetProxyObject ()->IsAutojoinAllowed ())
+		if (!Account_->GetParentProtocol ()->GetProxyObject ()->IsAutojoinAllowed ())
 			return;
 
 		const auto& it = JoinQueue_.takeFirst ();
