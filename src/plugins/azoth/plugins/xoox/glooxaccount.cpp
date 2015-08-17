@@ -1054,7 +1054,7 @@ namespace Xoox
 		return result;
 	}
 
-	GlooxAccount* GlooxAccount::Deserialize (const QByteArray& data, QObject *parent)
+	GlooxAccount* GlooxAccount::Deserialize (const QByteArray& data, GlooxProtocol *proto)
 	{
 		quint16 version = 0;
 

@@ -272,7 +272,7 @@ namespace Xoox
 		void RequestRosterSave ();
 
 		QByteArray Serialize () const;
-		static GlooxAccount* Deserialize (const QByteArray&, QObject*);
+		static GlooxAccount* Deserialize (const QByteArray&, GlooxProtocol*);
 
 		GlooxMessage* CreateMessage (IMessage::Type,
 				const QString&, const QString&,
