@@ -89,9 +89,7 @@ namespace Xoox
 	, Account_ (parent)
 	, Commands_ (new QAction (tr ("Commands..."), this))
 	, DetectNick_ (new QAction (tr ("Detect nick"), this))
-	, StdSep_ (LeechCraft::Util::CreateSeparator (this))
-	, HasUnreadMsgs_ (false)
-	, HasBlindlyRequestedVCard_ (false)
+	, StdSep_ (Util::CreateSeparator (this))
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),

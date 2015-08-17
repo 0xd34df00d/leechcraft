@@ -138,8 +138,8 @@ namespace Xoox
 		QMap<QString, EntityTimeInfo> Variant2SecsDiff_;
 		QDateTime LastEntityTimeRequest_;
 
-		bool HasUnreadMsgs_;
-		bool HasBlindlyRequestedVCard_;
+		bool HasUnreadMsgs_ = false;
+		bool HasBlindlyRequestedVCard_ = false;
 	public:
 		EntryBase (GlooxAccount* = 0);
 		virtual ~EntryBase ();
