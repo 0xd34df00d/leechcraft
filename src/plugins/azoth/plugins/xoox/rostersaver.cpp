@@ -55,7 +55,7 @@ namespace Xoox
 			connect (account,
 					SIGNAL (gotCLItems (QList<QObject*>)),
 					this,
-					SLOT (handleItemsAdded (QList<QObject*>)));
+					SLOT (checkItemsInvalidation (QList<QObject*>)));
 			connect (account,
 					SIGNAL (rosterSaveRequested ()),
 					this,
@@ -202,7 +202,7 @@ namespace Xoox
 		w.writeEndDocument ();
 	}
 
-	void RosterSaver::handleItemsAdded (const QList<QObject*>& items)
+	void RosterSaver::checkItemsInvalidation (const QList<QObject*>& items)
 	{
 		if (std::any_of (items.begin (), items.end (), [] (QObject *clEntry)
 				{
