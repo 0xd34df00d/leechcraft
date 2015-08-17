@@ -58,6 +58,8 @@ namespace Xoox
 		void scheduleSaveRoster (int = 2000);
 
 		void saveRoster ();
+
+		void handleAccount (QObject*);
 		void checkItemsInvalidation (const QList<QObject*>&);
 	};
 }

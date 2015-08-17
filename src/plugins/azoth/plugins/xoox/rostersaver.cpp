@@ -51,20 +51,7 @@ namespace Xoox
 		LoadRoster ();
 
 		for (const auto account : Proto_->GetRegisteredAccounts ())
-		{
-			connect (account,
-					SIGNAL (gotCLItems (QList<QObject*>)),
-					this,
-					SLOT (checkItemsInvalidation (QList<QObject*>)));
-			connect (account,
-					SIGNAL (removedCLItems (QList<QObject*>)),
-					this,
-					SLOT (checkItemsInvalidation (QList<QObject*>)));
-			connect (account,
-					SIGNAL (rosterSaveRequested ()),
-					this,
-					SLOT (scheduleSaveRoster ()));
-		}
+			handleAccount (account);
 	}
 
 	void RosterSaver::LoadRoster ()
@@ -204,6 +191,22 @@ namespace Xoox
 		}
 		w.writeEndElement ();
 		w.writeEndDocument ();
+	}
+
+	void RosterSaver::handleAccount (QObject *account)
+	{
+		connect (account,
+				SIGNAL (gotCLItems (QList<QObject*>)),
+				this,
+				SLOT (checkItemsInvalidation (QList<QObject*>)));
+		connect (account,
+				SIGNAL (removedCLItems (QList<QObject*>)),
+				this,
+				SLOT (checkItemsInvalidation (QList<QObject*>)));
+		connect (account,
+				SIGNAL (rosterSaveRequested ()),
+				this,
+				SLOT (scheduleSaveRoster ()));
 	}
 
 	void RosterSaver::checkItemsInvalidation (const QList<QObject*>& items)
