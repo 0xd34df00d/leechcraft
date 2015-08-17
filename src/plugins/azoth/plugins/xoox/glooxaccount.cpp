@@ -92,10 +92,11 @@ namespace Xoox
 	}
 
 	GlooxAccount::GlooxAccount (const QString& name,
+			GlooxProtocol *proto,
 			QObject *parent)
 	: QObject (parent)
 	, Name_ (name)
-	, ParentProtocol_ (qobject_cast<GlooxProtocol*> (parent))
+	, ParentProtocol_ (proto)
 	, SettingsHolder_ (new AccountSettingsHolder (this))
 	, SelfVCardAction_ (new QAction (tr ("Self VCard..."), this))
 	, PrivacyDialogAction_ (new QAction (tr ("Privacy lists..."), this))
@@ -1071,7 +1072,7 @@ namespace Xoox
 
 		QString name;
 		in >> name;
-		GlooxAccount *result = new GlooxAccount (name, parent);
+		GlooxAccount *result = new GlooxAccount (name, proto, proto);
 		result->GetSettings ()->Deserialize (in, version);
 		result->Init ();
 

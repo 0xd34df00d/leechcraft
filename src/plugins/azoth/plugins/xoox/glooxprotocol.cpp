@@ -180,7 +180,7 @@ namespace Xoox
 			return;
 		}
 
-		GlooxAccount *account = new GlooxAccount (name, this);
+		GlooxAccount *account = new GlooxAccount (name, this, this);
 		account->GetSettings ()->FillSettings (w);
 
 		if (isNewAcc)
@@ -401,7 +401,7 @@ namespace Xoox
 		w.SetPort (info ["Port"].toInt ());
 		w.SetNick (info ["Nick"].toString ());
 
-		GlooxAccount *account = new GlooxAccount (name, this);
+		GlooxAccount *account = new GlooxAccount (name, this, this);
 		account->GetSettings ()->FillSettings (&w);
 
 		Accounts_ << account;

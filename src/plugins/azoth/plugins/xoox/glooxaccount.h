@@ -154,7 +154,7 @@ namespace Xoox
 
 		Xep0313ModelManager * const Xep0313ModelMgr_;
 	public:
-		GlooxAccount (const QString&, QObject*);
+		GlooxAccount (const QString&, GlooxProtocol*, QObject*);
 
 		void Init ();
 		void Release ();
