@@ -52,6 +52,11 @@ namespace Xoox
 
 		for (const auto account : Proto_->GetRegisteredAccounts ())
 			handleAccount (account);
+
+		connect (Proto_,
+				SIGNAL (accountAdded (QObject*)),
+				this,
+				SLOT (handleAccount (QObject*)));
 	}
 
 	void RosterSaver::LoadRoster ()
