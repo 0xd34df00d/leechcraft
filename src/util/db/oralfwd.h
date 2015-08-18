@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <memory>
+
 namespace LeechCraft
 {
 namespace Util
@@ -37,6 +39,9 @@ namespace oral
 {
 	template<typename T>
 	struct ObjectInfo;
+
+	template<typename T>
+	using ObjectInfo_ptr = std::shared_ptr<ObjectInfo<T>>;
 }
 }
 }
