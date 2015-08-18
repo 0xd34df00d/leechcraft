@@ -1068,6 +1068,12 @@ namespace oral
 
 		return info;
 	}
+
+	template<typename T>
+	std::shared_ptr<ObjectInfo<T>> AdaptPtr (const QSqlDatabase& db)
+	{
+		return std::make_shared<ObjectInfo<T>> (Adapt<T> (db));
+	}
 }
 }
 }
