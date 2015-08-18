@@ -32,7 +32,34 @@
 #include <QSqlError>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/db/oral.h>
 #include <util/sys/paths.h>
+
+using VCardRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::Record;
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace Xoox
+{
+	struct VCardStorageOnDisk::Record
+	{
+		Util::oral::PKey<QString> JID_;
+		QString VCardIq_;
+
+		static QString ClassName ()
+		{
+			return "VCards";
+		}
+	};
+}
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (VCardRecord,
+		(decltype (VCardRecord::JID_), JID_)
+		(decltype (VCardRecord::VCardIq_), VCardIq_))
 
 namespace LeechCraft
 {
@@ -55,6 +82,8 @@ namespace Xoox
 		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
+		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
+
 		InitTables ();
 	}
 
@@ -63,7 +92,7 @@ namespace Xoox
 		if (DB_.tables ().contains ("VCards"))
 			return;
 
-		Util::RunQuery (DB_, "azoth/xoox", "create_vcards");
+		Util::RunTextQuery (DB_, AdaptedRecord_->CreateTable_);
 	}
 }
 }

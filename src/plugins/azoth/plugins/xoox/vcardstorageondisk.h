@@ -31,6 +31,8 @@
 
 #include <QObject>
 #include <QSqlDatabase>
+#include <util/db/oraltypes.h>
+#include <util/db/oralfwd.h>
 
 namespace LeechCraft
 {
@@ -40,7 +42,11 @@ namespace Xoox
 {
 	class VCardStorageOnDisk : public QObject
 	{
+	public:
+		struct Record;
+	private:
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.VCards");
+		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
 	private:
