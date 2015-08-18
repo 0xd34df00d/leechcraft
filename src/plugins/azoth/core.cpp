@@ -1060,7 +1060,7 @@ namespace Azoth
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryBegin (proxy, clEntry->GetQObject ());
 		if (proxy->IsCancelled ())
 			return;
@@ -1152,7 +1152,7 @@ namespace Azoth
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetQObject ());
 		ChatTabsManager_->SetChatEnabled (id, true);
 
-		proxy.reset (new Util::DefaultHookProxy);
+		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryEnd (proxy, clEntry->GetQObject ());
 	}
 
