@@ -54,6 +54,16 @@ namespace Xoox
 
 		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		InitTables ();
+	}
+
+	void VCardStorageOnDisk::InitTables ()
+	{
+		if (DB_.tables ().contains ("VCards"))
+			return;
+
+		Util::RunQuery (DB_, "azoth/xoox", "create_vcards");
 	}
 }
 }

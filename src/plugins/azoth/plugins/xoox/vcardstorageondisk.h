@@ -43,6 +43,8 @@ namespace Xoox
 		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.VCards");
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
+	private:
+		void InitTables ();
 	};
 }
 }
