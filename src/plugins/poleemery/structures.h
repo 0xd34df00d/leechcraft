@@ -30,8 +30,6 @@
 #pragma once
 
 #include <memory>
-#include <boost/fusion/adapted/struct/adapt_struct.hpp>
-#include <boost/fusion/include/adapt_struct.hpp>
 #include <QStringList>
 #include <QDateTime>
 #include <QMetaType>

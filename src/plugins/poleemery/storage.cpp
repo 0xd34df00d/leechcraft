@@ -29,7 +29,6 @@
 
 #include "storage.h"
 #include <stdexcept>
-#include <boost/fusion/container/generation/make_vector.hpp>
 #include <QDir>
 #include <QSqlError>
 #include <QSqlQuery>

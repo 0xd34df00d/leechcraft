@@ -39,6 +39,7 @@
 #include <boost/fusion/include/vector.hpp>
 #include <boost/fusion/include/transform.hpp>
 #include <boost/fusion/include/zip.hpp>
+#include <boost/fusion/container/generation/make_vector.hpp>
 #include <boost/variant/variant.hpp>
 #include <QStringList>
 #include <QDateTime>
