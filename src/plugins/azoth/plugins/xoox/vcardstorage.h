@@ -37,8 +37,11 @@ namespace Azoth
 {
 namespace Xoox
 {
+	class VCardStorageOnDisk;
+
 	class VCardStorage : public QObject
 	{
+		VCardStorageOnDisk * const DB_;
 	public:
 		VCardStorage (QObject* = nullptr);
 	};

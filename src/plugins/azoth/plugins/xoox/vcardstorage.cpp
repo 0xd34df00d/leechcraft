@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "vcardstorage.h"
+#include "vcardstorageondisk.h"
 
 namespace LeechCraft
 {
@@ -37,6 +38,7 @@ namespace Xoox
 {
 	VCardStorage::VCardStorage (QObject *parent)
 	: QObject { parent }
+	, DB_ { new VCardStorageOnDisk { this } }
 	{
 	}
 }
