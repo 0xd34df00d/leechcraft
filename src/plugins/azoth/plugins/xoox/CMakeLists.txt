@@ -110,6 +110,7 @@ set (XOOX_SRCS
 	discomanagerwrapper.cpp
 	addtoblockedrunner.cpp
 	rostersaver.cpp
+	vcardstorage.cpp
 	vcardstorageondisk.cpp
 	)
 set (XOOX_FORMS
