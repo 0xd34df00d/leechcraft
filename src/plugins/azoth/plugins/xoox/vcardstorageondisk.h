@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSqlDatabase>
 
 namespace LeechCraft
 {
@@ -39,6 +40,7 @@ namespace Xoox
 {
 	class VCardStorageOnDisk : public QObject
 	{
+		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.VCards");
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
 	};

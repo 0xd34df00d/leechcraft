@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "vcardstorageondisk.h"
+#include <QDir>
+#include <QSqlError>
+#include <util/db/dblock.h>
+#include <util/db/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -38,6 +43,17 @@ namespace Xoox
 	VCardStorageOnDisk::VCardStorageOnDisk (QObject *parent)
 	: QObject { parent }
 	{
+		DB_.setDatabaseName (Util::CreateIfNotExists ("azoth/xoox").filePath ("vcards.db"));
+		if (!DB_.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open the database";
+			Util::DBLock::DumpError (DB_.lastError ());
+			throw std::runtime_error { "Cannot create database" };
+		}
+
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 	}
 }
 }
