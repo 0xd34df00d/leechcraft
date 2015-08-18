@@ -182,18 +182,6 @@ namespace oral
 		}
 	};
 
-	namespace detail
-	{
-		struct Types
-		{
-			template<typename T>
-			QStringList operator() (const QStringList& init, const T&) const
-			{
-				return init + QStringList { Type2Name<T> () () };
-			}
-		};
-	}
-
 	template<typename T>
 	struct ToVariant
 	{
@@ -229,23 +217,6 @@ namespace oral
 			return static_cast<typename References<Seq, Idx>::value_type> (t);
 		}
 	};
-
-	namespace detail
-	{
-		struct Inserter
-		{
-			const bool BindPrimaryKey_;
-			QSqlQuery_ptr Q_;
-
-			template<typename T>
-			QStringList operator() (QStringList bounds, const T& t) const
-			{
-				if (BindPrimaryKey_ || !IsPKey<T>::value)
-					Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
-				return bounds;
-			}
-		};
-	}
 
 	template<typename T>
 	struct FromVariant
@@ -287,6 +258,29 @@ namespace oral
 
 	namespace detail
 	{
+		struct Types
+		{
+			template<typename T>
+			QStringList operator() (const QStringList& init, const T&) const
+			{
+				return init + QStringList { Type2Name<T> () () };
+			}
+		};
+
+		struct Inserter
+		{
+			const bool BindPrimaryKey_;
+			QSqlQuery_ptr Q_;
+
+			template<typename T>
+			QStringList operator() (QStringList bounds, const T& t) const
+			{
+				if (BindPrimaryKey_ || !IsPKey<T>::value)
+					Q_->bindValue (bounds.takeFirst (), ToVariant<T> {} (t));
+				return bounds;
+			}
+		};
+
 		struct Selector
 		{
 			QSqlQuery_ptr Q_;
