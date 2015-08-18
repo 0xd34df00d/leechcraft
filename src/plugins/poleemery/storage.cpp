@@ -35,23 +35,68 @@
 #include <QSqlQuery>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/db/oral.h>
 #include <util/sys/paths.h>
-#include "oral.h"
 
 namespace LeechCraft
 {
+namespace Util
+{
+namespace oral
+{
+	template<>
+	struct Type2Name<Poleemery::AccType>
+	{
+		QString operator() () const { return "TEXT"; }
+	};
+
+	template<>
+	struct ToVariant<Poleemery::AccType>
+	{
+		QVariant operator() (const Poleemery::AccType& type) const
+		{
+			switch (type)
+			{
+			case Poleemery::AccType::BankAccount:
+				return "BankAccount";
+			case Poleemery::AccType::Cash:
+				return "Cash";
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< static_cast<int> (type);
+			return {};
+		}
+	};
+
+	template<>
+	struct FromVariant<Poleemery::AccType>
+	{
+		Poleemery::AccType operator() (const QVariant& var) const
+		{
+			const auto& str = var.toString ();
+			if (str == "BankAccount")
+				return Poleemery::AccType::BankAccount;
+			else
+				return Poleemery::AccType::Cash;
+		}
+	};
+}
+}
+
 namespace Poleemery
 {
 	struct StorageImpl
 	{
 		QSqlDatabase DB_;
 
-		oral::ObjectInfo<Account> AccountInfo_;
-		oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
-		oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
-		oral::ObjectInfo<Category> CategoryInfo_;
-		oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
-		oral::ObjectInfo<Rate> RateInfo_;
+		Util::oral::ObjectInfo<Account> AccountInfo_;
+		Util::oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
+		Util::oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
+		Util::oral::ObjectInfo<Category> CategoryInfo_;
+		Util::oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
+		Util::oral::ObjectInfo<Rate> RateInfo_;
 
 		QHash<QString, Category> CatCache_;
 		QHash<int, Category> CatIDCache_;
@@ -88,7 +133,7 @@ namespace Poleemery
 		{
 			return Impl_->AccountInfo_.DoSelectAll_ ();
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -102,7 +147,7 @@ namespace Poleemery
 		{
 			Impl_->AccountInfo_.DoInsert_ (acc);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -116,7 +161,7 @@ namespace Poleemery
 		{
 			Impl_->AccountInfo_.DoUpdate_ (acc);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -130,7 +175,7 @@ namespace Poleemery
 		{
 			Impl_->AccountInfo_.DoDelete_ (acc);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -144,7 +189,7 @@ namespace Poleemery
 		{
 			return HandleNaked (Impl_->NakedExpenseEntryInfo_.DoSelectAll_ ());
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -158,7 +203,7 @@ namespace Poleemery
 		{
 			return HandleNaked (Impl_->NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -176,7 +221,7 @@ namespace Poleemery
 			Impl_->NakedExpenseEntryInfo_.DoInsert_ (entry);
 			AddNewCategories (entry, entry.Categories_);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -213,7 +258,7 @@ namespace Poleemery
 		{
 			Impl_->NakedExpenseEntryInfo_.DoDelete_ (entry);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -227,7 +272,7 @@ namespace Poleemery
 		{
 			return Impl_->ReceiptEntryInfo_.DoSelectAll_ ();
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -241,7 +286,7 @@ namespace Poleemery
 		{
 			return Impl_->ReceiptEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (account));
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -255,7 +300,7 @@ namespace Poleemery
 		{
 			Impl_->ReceiptEntryInfo_.DoInsert_ (entry);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -279,7 +324,7 @@ namespace Poleemery
 		{
 			return Impl_->RateInfo_.DoSelectAll_ ();
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -291,9 +336,9 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (start < oral::ph::_2 && oral::ph::_2 < end);
+			return Impl_->RateInfo_.DoSelectByFields_ (start < Util::oral::ph::_2 && Util::oral::ph::_2 < end);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -305,9 +350,9 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (oral::ph::_1 == code);
+			return Impl_->RateInfo_.DoSelectByFields_ (Util::oral::ph::_1 == code);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -319,9 +364,9 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (oral::ph::_1 == code && start < oral::ph::_2 && oral::ph::_2 < end);
+			return Impl_->RateInfo_.DoSelectByFields_ (Util::oral::ph::_1 == code && start < Util::oral::ph::_2 && Util::oral::ph::_2 < end);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -335,7 +380,7 @@ namespace Poleemery
 		{
 			Impl_->RateInfo_.DoInsert_ (rate);
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -392,7 +437,7 @@ namespace Poleemery
 				entries << entry;
 			}
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());
@@ -402,57 +447,14 @@ namespace Poleemery
 		return entries;
 	}
 
-
-	namespace oral
-	{
-		template<>
-		struct Type2Name<AccType>
-		{
-			QString operator() () const { return "TEXT"; }
-		};
-
-		template<>
-		struct ToVariant<AccType>
-		{
-			QVariant operator() (const AccType& type) const
-			{
-				switch (type)
-				{
-				case AccType::BankAccount:
-					return "BankAccount";
-				case AccType::Cash:
-					return "Cash";
-				}
-
-				qWarning () << Q_FUNC_INFO
-						<< "unknown type"
-						<< static_cast<int> (type);
-				return {};
-			}
-		};
-
-		template<>
-		struct FromVariant<AccType>
-		{
-			AccType operator() (const QVariant& var) const
-			{
-				const auto& str = var.toString ();
-				if (str == "BankAccount")
-					return AccType::BankAccount;
-				else
-					return AccType::Cash;
-			}
-		};
-	}
-
 	void Storage::InitializeTables ()
 	{
-		Impl_->AccountInfo_ = oral::Adapt<Account> (Impl_->DB_);
-		Impl_->NakedExpenseEntryInfo_ = oral::Adapt<NakedExpenseEntry> (Impl_->DB_);
-		Impl_->ReceiptEntryInfo_ = oral::Adapt<ReceiptEntry> (Impl_->DB_);
-		Impl_->CategoryInfo_ = oral::Adapt<Category> (Impl_->DB_);
-		Impl_->CategoryLinkInfo_ = oral::Adapt<CategoryLink> (Impl_->DB_);
-		Impl_->RateInfo_ = oral::Adapt<Rate> (Impl_->DB_);
+		Impl_->AccountInfo_ = Util::oral::Adapt<Account> (Impl_->DB_);
+		Impl_->NakedExpenseEntryInfo_ = Util::oral::Adapt<NakedExpenseEntry> (Impl_->DB_);
+		Impl_->ReceiptEntryInfo_ = Util::oral::Adapt<ReceiptEntry> (Impl_->DB_);
+		Impl_->CategoryInfo_ = Util::oral::Adapt<Category> (Impl_->DB_);
+		Impl_->CategoryLinkInfo_ = Util::oral::Adapt<CategoryLink> (Impl_->DB_);
+		Impl_->RateInfo_ = Util::oral::Adapt<Rate> (Impl_->DB_);
 
 		const auto& tables = Impl_->DB_.tables ();
 
@@ -498,7 +500,7 @@ namespace Poleemery
 				Impl_->CatIDCache_ [cat.ID_] = cat;
 			}
 		}
-		catch (const oral::QueryException& e)
+		catch (const Util::oral::QueryException& e)
 		{
 			qWarning () << Q_FUNC_INFO;
 			Util::DBLock::DumpError (e.GetQuery ());

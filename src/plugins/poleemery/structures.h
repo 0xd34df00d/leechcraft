@@ -36,7 +36,7 @@
 #include <QDateTime>
 #include <QMetaType>
 #include <QHash>
-#include "oraltypes.h"
+#include <util/db/oraltypes.h>
 
 namespace LeechCraft
 {
@@ -52,7 +52,7 @@ namespace Poleemery
 
 	struct Account
 	{
-		oral::PKey<int> ID_;
+		Util::oral::PKey<int> ID_;
 		AccType Type_;
 		QString Name_;
 		QString Currency_;
@@ -85,8 +85,8 @@ namespace Poleemery
 
 	struct EntryBase
 	{
-		oral::PKey<int> ID_;
-		oral::References<Account, 0> AccountID_;
+		Util::oral::PKey<int> ID_;
+		Util::oral::References<Account, 0> AccountID_;
 
 		/** This actually price.
 		 */
@@ -156,8 +156,8 @@ namespace Poleemery
 {
 	struct Category
 	{
-		oral::PKey<int> ID_;
-		oral::Unique<QString> Name_;
+		Util::oral::PKey<int> ID_;
+		Util::oral::Unique<QString> Name_;
 
 		Category ();
 		explicit Category (const QString&);
@@ -177,9 +177,9 @@ namespace Poleemery
 {
 	struct CategoryLink
 	{
-		oral::PKey<int> ID_;
-		oral::References<Category, 0> Category_;
-		oral::References<NakedExpenseEntry, 0> Entry_;
+		Util::oral::PKey<int> ID_;
+		Util::oral::References<Category, 0> Category_;
+		Util::oral::References<NakedExpenseEntry, 0> Entry_;
 
 		CategoryLink ();
 		CategoryLink (const Category&, const NakedExpenseEntry&);
@@ -224,7 +224,7 @@ namespace Poleemery
 {
 	struct Rate
 	{
-		oral::PKey<int> ID_;
+		Util::oral::PKey<int> ID_;
 
 		QString Code_;
 		QDateTime SnapshotTime_;

@@ -53,7 +53,7 @@ typedef std::shared_ptr<QSqlQuery> QSqlQuery_ptr;
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Util
 {
 namespace oral
 {

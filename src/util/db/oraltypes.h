@@ -36,7 +36,7 @@
 
 namespace LeechCraft
 {
-namespace Poleemery
+namespace Util
 {
 namespace oral
 {
