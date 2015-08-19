@@ -49,10 +49,7 @@ namespace oral
 
 		T Val_;
 
-		PKey ()
-		: Val_ ()
-		{
-		}
+		PKey () = default;
 
 		PKey (T val)
 		: Val_ (val)
@@ -78,10 +75,7 @@ namespace oral
 
 		T Val_;
 
-		Unique ()
-		: Val_ ()
-		{
-		}
+		Unique () = default;
 
 		Unique (T val)
 		: Val_ (val)
@@ -118,10 +112,7 @@ namespace oral
 		typedef typename member_type::value_type value_type;
 		value_type Val_;
 
-		References ()
-		: Val_ ()
-		{
-		}
+		References () = default;
 
 		References (value_type t)
 		: Val_ (t)
