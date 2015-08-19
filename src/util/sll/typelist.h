@@ -82,5 +82,32 @@ namespace Util
 	{
 		return {};
 	}
+
+	namespace detail
+	{
+		template<typename Type, template<typename...> class List, typename... Tail>
+		constexpr bool HasTypeImpl (List<Type, Tail...>, int)
+		{
+			return true;
+		}
+
+		template<typename, template<typename...> class List>
+		constexpr bool HasTypeImpl (List<>, float)
+		{
+			return false;
+		}
+
+		template<typename Type, template<typename...> class List, typename Head, typename... Tail>
+		constexpr bool HasTypeImpl (List<Head, Tail...>, float)
+		{
+			return HasTypeImpl<Type> (List<Tail...> {}, 0);
+		}
+	}
+
+	template<typename Type, template<typename...> class List, typename... Args>
+	constexpr bool HasType (List<Args...> list)
+	{
+		return detail::HasTypeImpl (list, 0);
+	}
 }
 }
