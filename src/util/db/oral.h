@@ -366,7 +366,8 @@ namespace oral
 			const auto& insert = "INSERT INTO " + data.Table_ +
 					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
 					QStringList { data.BoundFields_ }.join (", ") + ");";
-			QSqlQuery_ptr insertQuery (new QSqlQuery (data.DB_));
+
+			const auto insertQuery = std::make_shared<QSqlQuery> (data.DB_);
 			insertQuery->prepare (insert);
 
 			auto inserter = MakeInserter<T> (data, insertQuery, false);
@@ -402,7 +403,7 @@ namespace oral
 					" SET " + QStringList { statements }.join (", ") +
 					" WHERE " + fieldName + " = " + boundName + ";";
 
-			QSqlQuery_ptr updateQuery (new QSqlQuery (data.DB_));
+			const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
 			updateQuery->prepare (update);
 
 			return { updateQuery, MakeInserter<T> (data, updateQuery, true) };
@@ -417,7 +418,7 @@ namespace oral
 			const auto& del = "DELETE FROM " + data.Table_ +
 					" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
 
-			QSqlQuery_ptr deleteQuery (new QSqlQuery (data.DB_));
+			const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
 			deleteQuery->prepare (del);
 
 			auto deleter = [deleteQuery, boundName] (const T& t)
@@ -453,7 +454,7 @@ namespace oral
 		QPair<QSqlQuery_ptr, std::function<QList<T> ()>> AdaptSelectAll (const CachedFieldsData& data)
 		{
 			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") + " FROM " + data.Table_ + ";";
-			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
 			selectQuery->prepare (selectAll);
 			auto selector = [selectQuery] () { return PerformSelect<T> (selectQuery); };
 			return { selectQuery, selector };
@@ -753,7 +754,7 @@ namespace oral
 			public:
 				ByFieldsSelector (const ByFieldsWrapper<T>& w)
 				: Cached_ (w.Cached_)
-				, Query_ (new QSqlQuery (w.Cached_.DB_))
+				, Query_ (std::make_shared<QSqlQuery> (w.Cached_.DB_))
 				{
 					QStringList whereClauses;
 					for (const auto& pair : SelectFields<Fields...> {} (Cached_))
@@ -789,7 +790,7 @@ namespace oral
 						" WHERE " + tree.ToSql (state) + ";";
 				qDebug () << selectAll << state.BoundMembers_;
 
-				QSqlQuery_ptr query (new QSqlQuery (Cached_.DB_));
+				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
 				query->prepare (selectAll);
 				for (auto i = state.BoundMembers_.begin (), end = state.BoundMembers_.end (); i != end; ++i)
 					query->bindValue (i.key (), *i);
@@ -904,7 +905,7 @@ namespace oral
 					" FROM " + data.Table_ +
 					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
 					";";
-			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
 			selectQuery->prepare (selectAll);
 
 			info.SelectByFKeys_ = selectQuery;
@@ -930,7 +931,7 @@ namespace oral
 						" FROM " + Data_.Table_ +
 						" WHERE " + GetFieldName<OrigObj, OrigIdx::value>::value () + " = " + boundName +
 						";";
-				QSqlQuery_ptr selectQuery (new QSqlQuery (Data_.DB_));
+				const auto selectQuery = std::make_shared<QSqlQuery> (Data_.DB_);
 				selectQuery->prepare (query);
 
 				typename WrapAsFunc<RefObj, T>::type inserter = [selectQuery, boundName] (const RefObj& obj) -> QList<T>
@@ -954,7 +955,7 @@ namespace oral
 					" FROM " + data.Table_ +
 					(statements.isEmpty () ? "" : " WHERE ") + statements.join (" AND ") +
 					";";
-			QSqlQuery_ptr selectQuery (new QSqlQuery (data.DB_));
+			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
 			selectQuery->prepare (selectAll);
 
 			info.SelectByFKeys_ = selectQuery;
