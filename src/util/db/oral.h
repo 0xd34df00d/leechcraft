@@ -85,10 +85,32 @@ namespace oral
 
 	namespace detail
 	{
+		template<typename T>
+		QString MorphFieldNameImpl (const QString& str, int, decltype (&T::FieldNameMorpher)* = nullptr)
+		{
+			return T::FieldNameMorpher (str);
+		}
+
+		template<typename T>
+		QString MorphFieldNameImpl (const QString& str, float)
+		{
+			return str;
+		}
+
+		template<typename T>
+		QString MorphFieldName (const QString& str)
+		{
+			return MorphFieldNameImpl<T> (str, 0);
+		}
+
 		template<typename Seq, int Idx>
 		struct GetFieldName
 		{
-			static QString value () { return boost::fusion::extension::struct_member_name<Seq, Idx>::call (); }
+			static QString value ()
+			{
+				const QString rawName { boost::fusion::extension::struct_member_name<Seq, Idx>::call () };
+				return MorphFieldName<Seq> (rawName);
+			}
 		};
 
 		template<typename S, typename N>
