@@ -371,10 +371,9 @@ namespace oral
 			insertQuery->prepare (insert);
 
 			auto inserter = MakeInserter<T> (data, insertQuery, false);
-			auto insertUpdater = [inserter, insertQuery] (T& t)
+			auto insertUpdater = [index, inserter, insertQuery] (T& t)
 			{
 				inserter (t);
-				constexpr auto index = FindPKey<T>::result_type::value;
 				boost::fusion::at_c<index> (t) = FromVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (insertQuery->lastInsertId ());
 			};
 			return
