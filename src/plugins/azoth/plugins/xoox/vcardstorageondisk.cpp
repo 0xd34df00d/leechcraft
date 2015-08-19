@@ -35,8 +35,6 @@
 #include <util/db/oral.h>
 #include <util/sys/paths.h>
 
-using VCardRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::Record;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -61,6 +59,8 @@ namespace Xoox
 }
 }
 }
+
+using VCardRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::Record;
 
 BOOST_FUSION_ADAPT_STRUCT (VCardRecord,
 		(decltype (VCardRecord::JID_), JID_)
