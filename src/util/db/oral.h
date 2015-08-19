@@ -50,7 +50,7 @@
 #include <util/sll/prelude.h>
 #include "oraltypes.h"
 
-typedef std::shared_ptr<QSqlQuery> QSqlQuery_ptr;
+using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
 
 namespace LeechCraft
 {
@@ -270,7 +270,7 @@ namespace oral
 	template<typename Seq, int Idx>
 	struct FromVariant<References<Seq, Idx>>
 	{
-		typedef typename References<Seq, Idx>::value_type value_type;
+		using value_type = typename References<Seq, Idx>::value_type;
 
 		value_type operator() (const QVariant& var) const
 		{
@@ -338,7 +338,7 @@ namespace oral
 		template<typename T>
 		struct Lazy
 		{
-			typedef T type;
+			using type = T;
 		};
 
 		template<typename Seq, typename MemberIdx = boost::mpl::int_<0>>
@@ -347,12 +347,12 @@ namespace oral
 			static_assert ((boost::fusion::result_of::size<Seq>::value) != (MemberIdx::value),
 					"Primary key not found");
 
-			typedef typename boost::fusion::result_of::at<Seq, MemberIdx>::type item_type;
-			typedef typename std::conditional<
+			using item_type = typename boost::fusion::result_of::at<Seq, MemberIdx>::type;
+			using result_type = typename std::conditional<
 						IsPKey<typename std::decay<item_type>::type>::value,
 						Lazy<MemberIdx>,
 						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>>>
-					>::type::type result_type;
+					>::type::type;
 		};
 
 		template<typename T>
@@ -481,14 +481,14 @@ namespace oral
 		struct FieldsUnpacker
 		{
 			static const int Head = HeadT;
-			typedef FieldsUnpacker<TailT...> Tail_t;
+			using Tail_t = FieldsUnpacker<TailT...>;
 		};
 
 		template<int HeadT>
 		struct FieldsUnpacker<HeadT>
 		{
 			static const int Head = HeadT;
-			typedef std::false_type Tail_t;
+			using Tail_t = std::false_type;
 		};
 
 		template<typename FieldsUnpacker, typename HeadArg, typename... TailArgs>
@@ -811,35 +811,35 @@ namespace oral
 		template<typename To, typename OrigSeq, typename OrigIdx, typename T>
 		struct FieldAppender
 		{
-			typedef To value_type;
+			using value_type = To;
 		};
 
 		template<typename To, typename OrigSeq, typename OrigIdx, typename RefSeq, int RefIdx>
 		struct FieldAppender<To, OrigSeq, OrigIdx, References<RefSeq, RefIdx>>
 		{
-			typedef typename boost::fusion::result_of::as_vector<
+			using value_type = typename boost::fusion::result_of::as_vector<
 					typename boost::fusion::result_of::push_front<
 						To,
 						FieldInfo<OrigSeq, OrigIdx, RefSeq, boost::mpl::int_<RefIdx>>
 					>::type
-				>::type value_type;
+				>::type;
 		};
 
 		template<typename Seq, typename MemberIdx>
 		struct CollectRefs_
 		{
-			typedef typename FieldAppender<
+			using type_list = typename FieldAppender<
 					typename CollectRefs_<Seq, typename boost::mpl::next<MemberIdx>::type>::type_list,
 					Seq,
 					MemberIdx,
 					typename std::decay<typename boost::fusion::result_of::at<Seq, MemberIdx>::type>::type
-				>::value_type type_list;
+				>::value_type;
 		};
 
 		template<typename Seq>
 		struct CollectRefs_<Seq, typename boost::fusion::result_of::size<Seq>::type>
 		{
-			typedef boost::fusion::vector<> type_list;
+			using type_list = boost::fusion::vector<>;
 		};
 
 		template<typename Seq>
@@ -863,7 +863,7 @@ namespace oral
 		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
 		struct ExtrObj<FieldInfo<OrigSeq, OrigIdx, RefSeq, MemberIdx>>
 		{
-			typedef RefSeq type;
+			using type = RefSeq;
 		};
 
 		struct SingleBind
@@ -881,9 +881,9 @@ namespace oral
 		template<typename T, typename RefSeq>
 		struct MakeBinder
 		{
-			typedef typename boost::mpl::transform<RefSeq, ExtrObj<boost::mpl::_1>> transform_view;
-			typedef typename transform_view::type objects_view;
-			typedef typename boost::fusion::result_of::as_vector<objects_view>::type objects_vector;
+			using transform_view = typename boost::mpl::transform<RefSeq, ExtrObj<boost::mpl::_1>>;
+			using objects_view = typename transform_view::type;
+			using objects_vector = typename boost::fusion::result_of::as_vector<objects_view>::type;
 
 			QSqlQuery_ptr Q_;
 
@@ -897,7 +897,7 @@ namespace oral
 		template<typename T, typename ObjInfo>
 		typename std::enable_if<CollectRefs<T>::type_list::size::value == 1>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
-			typedef typename CollectRefs<T>::type_list references_list;
+			using references_list = typename CollectRefs<T>::type_list;
 			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
 
 			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
@@ -914,7 +914,7 @@ namespace oral
 		template<typename T, typename Ret>
 		struct WrapAsFunc
 		{
-			typedef std::function<QList<Ret> (T)> type;
+			using type = std::function<QList<Ret> (T)>;
 		};
 
 		template<typename T>
@@ -947,7 +947,7 @@ namespace oral
 		template<typename T, typename ObjInfo>
 		typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2>::type AdaptSelectRef (const CachedFieldsData& data, ObjInfo& info)
 		{
-			typedef typename CollectRefs<T>::type_list references_list;
+			using references_list = typename CollectRefs<T>::type_list;
 			const auto& statements = boost::fusion::fold (references_list {}, QStringList {}, Ref2Select {});
 
 			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") +
@@ -994,11 +994,11 @@ namespace oral
 		template<typename T>
 		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2, void>::type>
 		{
-			typedef typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector objects_vector;
+			using objects_vector = typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector;
 			QSqlQuery_ptr SelectByFKeys_;
 			std::function<QList<T> (objects_vector)> SelectByFKeysActor_;
 
-			typedef typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type transform_view;
+			using transform_view = typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type;
 			typename boost::fusion::result_of::as_vector<transform_view>::type SingleFKeySelectors_;
 		};
 	}
