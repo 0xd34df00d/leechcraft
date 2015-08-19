@@ -1,4 +1,0 @@
-CREATE TABLE VCards (
-	JID TEXT PRIMARY KEY,
-	VCardText TEXT
-);
