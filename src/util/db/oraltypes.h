@@ -45,7 +45,7 @@ namespace oral
 	template<typename T>
 	struct PKey
 	{
-		typedef T value_type;
+		using value_type = T;
 
 		T Val_;
 
@@ -71,7 +71,7 @@ namespace oral
 	template<typename T>
 	struct Unique
 	{
-		typedef T value_type;
+		using value_type = T;
 
 		T Val_;
 
@@ -106,10 +106,10 @@ namespace oral
 	template<typename Seq, int Idx>
 	struct References
 	{
-		typedef typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type member_type;
+		using member_type = typename std::decay<typename boost::fusion::result_of::at_c<Seq, Idx>::type>::type;
 		static_assert (detail::IsPKey<member_type>::value, "References<> element must refer to a PKey<> element");
 
-		typedef typename member_type::value_type value_type;
+		using value_type = typename member_type::value_type;
 		value_type Val_;
 
 		References () = default;
