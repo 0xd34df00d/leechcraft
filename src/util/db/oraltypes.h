@@ -52,7 +52,7 @@ namespace oral
 		PKey () = default;
 
 		PKey (T val)
-		: Val_ (val)
+		: Val_ { val }
 		{
 		}
 
@@ -78,7 +78,7 @@ namespace oral
 		Unique () = default;
 
 		Unique (T val)
-		: Val_ (val)
+		: Val_ { val }
 		{
 		}
 
@@ -115,7 +115,7 @@ namespace oral
 		References () = default;
 
 		References (value_type t)
-		: Val_ (t)
+		: Val_ { t }
 		{
 		}
 
