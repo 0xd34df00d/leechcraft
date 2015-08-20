@@ -293,6 +293,10 @@ namespace oral
 
 		struct Inserter
 		{
+			/** Whether the PKey values should be bound.
+			 *
+			 * The NoAutogen tag is not considered.
+			 */
 			const bool BindPrimaryKey_;
 			QSqlQuery_ptr Q_;
 
@@ -378,8 +382,15 @@ namespace oral
 			return HasAutogenPKeyImpl<Seq> (0);
 		}
 
-		template<typename T>
-		QPair<QSqlQuery_ptr, std::function<void (T&)>> AdaptInsert (CachedFieldsData data)
+		template<typename Seq>
+		using InsertFunction_f = typename std::conditional<
+				HasAutogenPKey<Seq> (),
+				std::function<void (Seq&)>,
+				std::function<void (const Seq&)>
+			>::type;
+
+		template<typename T, typename = EnableIf_t<HasAutogenPKey<T> ()>>
+		QPair<QSqlQuery_ptr, InsertFunction_f<T>> AdaptInsert (CachedFieldsData data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
@@ -403,6 +414,22 @@ namespace oral
 			{
 				insertQuery,
 				insertUpdater
+			};
+		}
+
+		template<typename T, typename = EnableIf_t<!HasAutogenPKey<T> ()>>
+		QPair<QSqlQuery_ptr, InsertFunction_f<T>> AdaptInsert (const CachedFieldsData& data)
+		{
+			const auto& insert = "INSERT INTO " + data.Table_ +
+					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
+					QStringList { data.BoundFields_ }.join (", ") + ");";
+
+			const auto insertQuery = std::make_shared<QSqlQuery> (data.DB_);
+			insertQuery->prepare (insert);
+			return
+			{
+				insertQuery,
+				MakeInserter<T> (data, insertQuery, true)
 			};
 		}
 
@@ -1033,7 +1060,7 @@ namespace oral
 		std::function<QList<T> ()> DoSelectAll_;
 
 		QSqlQuery_ptr QueryInsertOne_;
-		std::function<void (T&)> DoInsert_;
+		detail::InsertFunction_f<T> DoInsert_;
 
 		QSqlQuery_ptr QueryUpdate_;
 		std::function<void (T)> DoUpdate_;
