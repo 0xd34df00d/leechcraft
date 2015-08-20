@@ -374,7 +374,7 @@ namespace oral
 			auto insertUpdater = [index, inserter, insertQuery] (T& t)
 			{
 				inserter (t);
-				boost::fusion::at_c<index> (t) = FromVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (insertQuery->lastInsertId ());
+				boost::fusion::at_c<index> (t) = FromVariant<typename boost::fusion::result_of::value_at_c<T, index>::type> {} (insertQuery->lastInsertId ());
 			};
 			return
 			{
@@ -424,7 +424,7 @@ namespace oral
 			{
 				constexpr auto index = FindPKey<T>::result_type::value;
 				deleteQuery->bindValue (boundName,
-						ToVariant<typename std::decay<typename boost::fusion::result_of::at_c<T, index>::type>::type> {} (boost::fusion::at_c<index> (t)));
+						ToVariant<typename boost::fusion::result_of::value_at_c<T, index>::type> {} (boost::fusion::at_c<index> (t)));
 				if (!deleteQuery->exec ())
 					throw QueryException ("delete query execution failed", deleteQuery);
 			};
