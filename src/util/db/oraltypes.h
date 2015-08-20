@@ -42,6 +42,8 @@ namespace Util
 {
 namespace oral
 {
+	struct NoAutogen;
+
 	template<typename T, typename... Tags>
 	struct PKey
 	{
