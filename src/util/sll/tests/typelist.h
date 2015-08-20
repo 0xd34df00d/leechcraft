@@ -39,6 +39,8 @@ namespace Util
 	{
 		Q_OBJECT
 	private slots:
+		void testHasTypeTrue ();
+		void testHasTypeFalse ();
 	};
 }
 }

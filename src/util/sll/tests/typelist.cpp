@@ -37,5 +37,22 @@ namespace LeechCraft
 {
 namespace Util
 {
+	namespace
+	{
+		template<bool b>
+		using bool_constant = std::integral_constant<bool, b>;
+	}
+
+	void TypelistTest::testHasTypeTrue ()
+	{
+		using value = bool_constant<HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Foo> {})>;
+		QCOMPARE (value::value, true);
+	}
+
+	void TypelistTest::testHasTypeFalse ()
+	{
+		using value = bool_constant<HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Qux> {})>;
+		QCOMPARE (value::value, false);
+	}
 }
 }
