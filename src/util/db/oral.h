@@ -355,6 +355,9 @@ namespace oral
 					>::type::type;
 		};
 
+		template<typename Seq, int Idx>
+		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
+
 		template<typename T>
 		QPair<QSqlQuery_ptr, std::function<void (T&)>> AdaptInsert (CachedFieldsData data)
 		{
@@ -374,7 +377,7 @@ namespace oral
 			auto insertUpdater = [index, inserter, insertQuery] (T& t)
 			{
 				inserter (t);
-				boost::fusion::at_c<index> (t) = FromVariant<typename boost::fusion::result_of::value_at_c<T, index>::type> {} (insertQuery->lastInsertId ());
+				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<T, index>> {} (insertQuery->lastInsertId ());
 			};
 			return
 			{
@@ -424,7 +427,7 @@ namespace oral
 			{
 				constexpr auto index = FindPKey<T>::result_type::value;
 				deleteQuery->bindValue (boundName,
-						ToVariant<typename boost::fusion::result_of::value_at_c<T, index>::type> {} (boost::fusion::at_c<index> (t)));
+						ToVariant<ValueAtC_t<T, index>> {} (boost::fusion::at_c<index> (t)));
 				if (!deleteQuery->exec ())
 					throw QueryException ("delete query execution failed", deleteQuery);
 			};
