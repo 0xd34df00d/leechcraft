@@ -107,7 +107,7 @@ namespace Util
 	template<typename Type, template<typename...> class List, typename... Args>
 	constexpr bool HasType (List<Args...> list)
 	{
-		return detail::HasTypeImpl (list, 0);
+		return detail::HasTypeImpl<Type> (list, 0);
 	}
 }
 }
