@@ -65,5 +65,8 @@ namespace Util
 
 	template<bool B, class T = void>
 	using EnableIf_t = typename std::enable_if<B, T>::type;
+
+	template<typename T>
+	using Decay_t = typename std::decay<T>::type;
 }
 }
