@@ -48,6 +48,8 @@
 #include <QVariant>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/typelist.h>
+#include <util/sll/oldcppkludges.h>
 #include "oraltypes.h"
 
 using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
@@ -357,6 +359,24 @@ namespace oral
 
 		template<typename Seq, int Idx>
 		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
+
+		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
+		constexpr bool HasAutogenPKeyImpl (int)
+		{
+			return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, Idx>> {});
+		}
+
+		template<typename>
+		constexpr bool HasAutogenPKeyImpl (float)
+		{
+			return false;
+		}
+
+		template<typename Seq>
+		constexpr bool HasAutogenPKey ()
+		{
+			return HasAutogenPKeyImpl<Seq> (0);
+		}
 
 		template<typename T>
 		QPair<QSqlQuery_ptr, std::function<void (T&)>> AdaptInsert (CachedFieldsData data)
