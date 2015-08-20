@@ -182,14 +182,14 @@ namespace oral
 		QString operator() () const { return Type2Name<T> () () + " UNIQUE"; }
 	};
 
-	template<typename T>
-	struct Type2Name<PKey<T>>
+	template<typename T, typename... Tags>
+	struct Type2Name<PKey<T, Tags...>>
 	{
 		QString operator() () const { return Type2Name<T> () () + " PRIMARY KEY"; }
 	};
 
-	template<>
-	struct Type2Name<PKey<int>>
+	template<typename... Tags>
+	struct Type2Name<PKey<int, Tags...>>
 	{
 		QString operator() () const { return Type2Name<int> () () + " PRIMARY KEY AUTOINCREMENT"; }
 	};
@@ -222,12 +222,12 @@ namespace oral
 		}
 	};
 
-	template<typename T>
-	struct ToVariant<PKey<T>>
+	template<typename T, typename... Tags>
+	struct ToVariant<PKey<T, Tags...>>
 	{
-		QVariant operator() (const PKey<T>& t) const
+		QVariant operator() (const PKey<T, Tags...>& t) const
 		{
-			return static_cast<typename PKey<T>::value_type> (t);
+			return static_cast<typename PKey<T, Tags...>::value_type> (t);
 		}
 	};
 
@@ -258,8 +258,8 @@ namespace oral
 		}
 	};
 
-	template<typename T>
-	struct FromVariant<PKey<T>>
+	template<typename T, typename... Tags>
+	struct FromVariant<PKey<T, Tags...>>
 	{
 		T operator() (const QVariant& var) const
 		{

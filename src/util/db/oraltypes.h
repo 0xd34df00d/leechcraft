@@ -42,7 +42,7 @@ namespace Util
 {
 namespace oral
 {
-	template<typename T>
+	template<typename T, typename... Tags>
 	struct PKey
 	{
 		using value_type = T;
@@ -99,8 +99,8 @@ namespace oral
 		template<typename T>
 		struct IsPKey : std::false_type {};
 
-		template<typename U>
-		struct IsPKey<PKey<U>> : std::true_type {};
+		template<typename U, typename... Tags>
+		struct IsPKey<PKey<U, Tags...>> : std::true_type {};
 	}
 
 	template<typename Seq, int Idx>
@@ -119,8 +119,8 @@ namespace oral
 		{
 		}
 
-		template<typename T>
-		References (const PKey<T>& key)
+		template<typename T, typename... Tags>
+		References (const PKey<T, Tags...>& key)
 		: Val_ (static_cast<T> (key))
 		{
 		}
@@ -131,8 +131,8 @@ namespace oral
 			return *this;
 		}
 
-		template<typename T>
-		References& operator= (const PKey<T>& key)
+		template<typename T, typename... Tags>
+		References& operator= (const PKey<T, Tags...>& key)
 		{
 			Val_ = key;
 			return *this;
