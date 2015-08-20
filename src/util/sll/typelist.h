@@ -109,5 +109,17 @@ namespace Util
 	{
 		return detail::HasTypeImpl<Type> (list, 0);
 	}
+
+	template<typename T>
+	struct AsTypelist;
+
+	template<template<typename...> class OtherList, typename... Args>
+	struct AsTypelist<OtherList<Args...>>
+	{
+		using Result_t = Typelist<Args...>;
+	};
+
+	template<typename T>
+	using AsTypelist_t = typename AsTypelist<T>::Result_t;
 }
 }
