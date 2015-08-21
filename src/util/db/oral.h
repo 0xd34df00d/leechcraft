@@ -405,7 +405,7 @@ namespace oral
 			insertQuery->prepare (insert);
 
 			auto inserter = MakeInserter<T> (data, insertQuery, false);
-			auto insertUpdater = [index, inserter, insertQuery] (T& t)
+			auto insertUpdater = [=] (T& t)
 			{
 				inserter (t);
 				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<T, index>> {} (insertQuery->lastInsertId ());
