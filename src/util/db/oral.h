@@ -392,7 +392,7 @@ namespace oral
 		template<typename T, typename = EnableIf_t<HasAutogenPKey<T> ()>>
 		QPair<QSqlQuery_ptr, InsertFunction_f<T>> AdaptInsert (CachedFieldsData data)
 		{
-			const auto index = FindPKey<T>::result_type::value;
+			constexpr auto index = FindPKey<T>::result_type::value;
 
 			data.Fields_.removeAt (index);
 			data.BoundFields_.removeAt (index);
