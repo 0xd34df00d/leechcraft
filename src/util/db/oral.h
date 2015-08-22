@@ -671,6 +671,37 @@ namespace oral
 			QVariantMap BoundMembers_;
 		};
 
+		template<typename Seq, typename L, typename R>
+		constexpr bool AreComparableTypesImpl (int,
+				decltype (std::declval<typename L::template ValueType_t<Seq>> () == std::declval<typename R::template ValueType_t<Seq>> ())* = nullptr)
+		{
+			return true;
+		}
+
+		template<typename Seq, typename L, typename R>
+		constexpr bool AreComparableTypesImpl (float)
+		{
+			return false;
+		}
+
+		template<typename Seq, typename L, typename R>
+		constexpr bool AreComparableTypes ()
+		{
+			return AreComparableTypesImpl<Seq, L, R> (0);
+		}
+
+		template<ExprType Type, typename Seq, typename L, typename R, typename = void>
+		struct RelationalTypesChecker : std::true_type {};
+
+		template<typename Seq, typename L, typename R, typename = void>
+		struct RelationalTypesCheckerBase : std::false_type {};
+
+		template<typename Seq, typename L, typename R>
+		struct RelationalTypesCheckerBase<Seq, L, R, EnableIf_t<AreComparableTypes<Seq, L, R> ()>> : std::true_type {};
+
+		template<ExprType Type, typename Seq, typename L, typename R>
+		struct RelationalTypesChecker<Type, Seq, L, R, EnableIf_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
+
 		template<ExprType Type, typename L = void, typename R = void>
 		class ExprTree
 		{
