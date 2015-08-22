@@ -992,7 +992,7 @@ namespace oral
 				auto inserter = [selectQuery, boundName] (const RefObj& obj)
 				{
 					selectQuery->bindValue (boundName,
-							ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefObj, RefIdx>::type>::type> {} (boost::fusion::at<RefIdx> (obj)));
+							ToVariant<ValueAt_t<RefObj, RefIdx>> {} (boost::fusion::at<RefIdx> (obj)));
 					return PerformSelect<T> (selectQuery);
 				};
 
