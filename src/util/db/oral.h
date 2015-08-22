@@ -1135,8 +1135,7 @@ namespace oral
 		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _2 { 2 };
 	}
 
-	template<typename Seq>
-	struct sph
+	namespace sph
 	{
 		template<int Idx>
 		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>>;
