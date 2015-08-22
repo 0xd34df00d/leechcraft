@@ -717,6 +717,9 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>& state) const
 			{
+				static_assert (RelationalTypesChecker<Type, T, L, R>::value,
+						"Incompatible types passed to a relational operator.");
+
 				return Left_.ToSql (state) + " " + TypeToSql (Type) + " " + Right_.ToSql (state);
 			}
 		};
