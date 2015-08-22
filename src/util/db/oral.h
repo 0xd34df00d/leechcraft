@@ -47,6 +47,7 @@
 #include <QSqlQuery>
 #include <QVariant>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/sll/typelist.h>
 #include <util/sll/oldcppkludges.h>
@@ -854,8 +855,8 @@ namespace oral
 
 				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
 				query->prepare (selectAll);
-				for (auto i = state.BoundMembers_.begin (), end = state.BoundMembers_.end (); i != end; ++i)
-					query->bindValue (i.key (), *i);
+				for (const auto& pair : Stlize (state.BoundMembers_))
+					query->bindValue (pair.first, pair.second);
 				return PerformSelect<T> (query);
 			}
 		};
