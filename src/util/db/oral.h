@@ -654,6 +654,16 @@ namespace oral
 			return IsCompatible<T1, T2>::value || IsCompatible<T2, T1>::value;
 		}
 
+		constexpr bool IsRelational (ExprType type)
+		{
+			return type == ExprType::Greater ||
+					type == ExprType::Less ||
+					type == ExprType::Equal ||
+					type == ExprType::Geq ||
+					type == ExprType::Leq ||
+					type == ExprType::Neq;
+		}
+
 		template<typename T>
 		struct ToSqlState
 		{
