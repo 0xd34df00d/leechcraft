@@ -347,25 +347,24 @@ namespace oral
 			using type = T;
 		};
 
+		template<typename Seq, int Idx>
+		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
+
+		template<typename Seq, typename Idx>
+		using ValueAt_t = typename boost::fusion::result_of::value_at<Seq, Idx>::type;
+
 		template<typename Seq, typename MemberIdx = boost::mpl::int_<0>>
 		struct FindPKey
 		{
 			static_assert ((boost::fusion::result_of::size<Seq>::value) != (MemberIdx::value),
 					"Primary key not found");
 
-			using item_type = typename boost::fusion::result_of::at<Seq, MemberIdx>::type;
 			using result_type = typename std::conditional<
-						IsPKey<typename std::decay<item_type>::type>::value,
+						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
 						Lazy<MemberIdx>,
 						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>>>
 					>::type::type;
 		};
-
-		template<typename Seq, int Idx>
-		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
-
-		template<typename Seq, typename Idx>
-		using ValueAt_t = typename boost::fusion::result_of::value_at<Seq, Idx>::type;
 
 		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
 		constexpr bool HasAutogenPKeyImpl (int)
