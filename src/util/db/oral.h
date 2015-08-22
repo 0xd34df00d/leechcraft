@@ -983,7 +983,7 @@ namespace oral
 				const auto selectQuery = std::make_shared<QSqlQuery> (Data_.DB_);
 				selectQuery->prepare (query);
 
-				typename WrapAsFunc<RefObj, T>::type inserter = [selectQuery, boundName] (const RefObj& obj) -> QList<T>
+				auto inserter = [selectQuery, boundName] (const RefObj& obj)
 				{
 					selectQuery->bindValue (boundName,
 							ToVariant<typename std::decay<typename boost::fusion::result_of::at<RefObj, RefIdx>::type>::type> {} (boost::fusion::at<RefIdx> (obj)));
