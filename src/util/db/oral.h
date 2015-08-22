@@ -996,7 +996,7 @@ namespace oral
 					return PerformSelect<T> (selectQuery);
 				};
 
-				return boost::fusion::push_back (vec, inserter);
+				return boost::fusion::push_back (vec, WrapAsFunc_t<RefObj, T> { inserter });
 			}
 		};
 
