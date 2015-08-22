@@ -704,8 +704,6 @@ namespace oral
 		template<>
 		class ExprTree<ExprType::LeafPlaceholder, void, void>
 		{
-			static const ExprType Type_ = ExprType::LeafPlaceholder;
-
 			int Index_;
 		public:
 			ExprTree (int idx)
@@ -734,8 +732,6 @@ namespace oral
 		template<typename T>
 		class ExprTree<ExprType::LeafData, T, void>
 		{
-			static const ExprType Type_ = ExprType::LeafData;
-
 			T Data_;
 		public:
 			ExprTree (const T& t)
