@@ -1000,7 +1000,6 @@ namespace oral
 			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
 			selectQuery->prepare (selectAll);
 
-			info.SelectByFKeys_ = selectQuery;
 			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
 		}
 
@@ -1053,7 +1052,6 @@ namespace oral
 			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
 			selectQuery->prepare (selectAll);
 
-			info.SelectByFKeys_ = selectQuery;
 			info.SelectByFKeysActor_ = MakeBinder<T, references_list> { selectQuery };
 
 			auto singleSelectors = boost::fusion::fold (references_list {}, boost::fusion::vector<> {}, MakeSingleBinder<T> { data });
@@ -1083,7 +1081,6 @@ namespace oral
 		template<typename T>
 		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value == 1, void>::type>
 		{
-			QSqlQuery_ptr SelectByFKeys_;
 			std::function<QList<T> (typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector)> SelectByFKeysActor_;
 		};
 
@@ -1091,7 +1088,6 @@ namespace oral
 		struct ObjectInfoFKeysHelper<T, typename std::enable_if<CollectRefs<T>::type_list::size::value >= 2, void>::type>
 		{
 			using objects_vector = typename MakeBinder<T, typename CollectRefs<T>::type_list>::objects_vector;
-			QSqlQuery_ptr SelectByFKeys_;
 			std::function<QList<T> (objects_vector)> SelectByFKeysActor_;
 
 			using transform_view = typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type;
@@ -1102,16 +1098,9 @@ namespace oral
 	template<typename T>
 	struct ObjectInfo : detail::ObjectInfoFKeysHelper<T>
 	{
-		QSqlQuery_ptr QuerySelectAll_;
 		std::function<QList<T> ()> DoSelectAll_;
-
-		QSqlQuery_ptr QueryInsertOne_;
 		detail::InsertFunction_f<T> DoInsert_;
-
-		QSqlQuery_ptr QueryUpdate_;
 		std::function<void (T)> DoUpdate_;
-
-		QSqlQuery_ptr QueryDelete_;
 		std::function<void (T)> DoDelete_;
 
 		detail::ByFieldsWrapper<T> DoSelectByFields_;
@@ -1122,19 +1111,15 @@ namespace oral
 		{
 		}
 
-		ObjectInfo (decltype (QuerySelectAll_) sel, decltype (DoSelectAll_) doSel,
-				decltype (QueryInsertOne_) insert, decltype (DoInsert_) doIns,
-				decltype (QueryUpdate_) update, decltype (DoUpdate_) doUpdate,
-				decltype (QueryDelete_) del, decltype (DoDelete_) doDelete,
+		ObjectInfo (decltype (DoSelectAll_) doSel,
+				decltype (DoInsert_) doIns,
+				decltype (DoUpdate_) doUpdate,
+				decltype (DoDelete_) doDelete,
 				decltype (DoSelectByFields_) byFields,
 				decltype (CreateTable_) createTable)
-		: QuerySelectAll_ (sel)
-		, DoSelectAll_ (doSel)
-		, QueryInsertOne_ (insert)
+		: DoSelectAll_ (doSel)
 		, DoInsert_ (doIns)
-		, QueryUpdate_ (update)
 		, DoUpdate_ (doUpdate)
-		, QueryDelete_ (del)
 		, DoDelete_ (doDelete)
 		, DoSelectByFields_ (byFields)
 		, CreateTable_ (createTable)
@@ -1178,10 +1163,10 @@ namespace oral
 
 		ObjectInfo<T> info
 		{
-			selectPair.first, selectPair.second,
-			insertPair.first, insertPair.second,
-			updatePair.first, updatePair.second,
-			deletePair.first, deletePair.second,
+			selectPair.second,
+			insertPair.second,
+			updatePair.second,
+			deletePair.second,
 			byVal,
 			createTable
 		};
