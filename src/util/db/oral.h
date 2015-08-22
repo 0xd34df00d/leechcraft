@@ -32,6 +32,7 @@
 #include <stdexcept>
 #include <type_traits>
 #include <memory>
+#include <boost/config.hpp>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
 #include <boost/fusion/include/filter_if.hpp>
@@ -1149,6 +1150,11 @@ namespace oral
 		static constexpr pos<0> _0 = {};
 		static constexpr pos<1> _1 = {};
 		static constexpr pos<2> _2 = {};
+
+#ifndef BOOST_NO_CXX14_VARIABLE_TEMPLATES
+		template<int Idx>
+		static constexpr pos<Idx> _ = {};
+#endif
 	};
 
 	template<typename T>
