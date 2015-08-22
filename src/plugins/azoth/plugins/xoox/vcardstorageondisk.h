@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
 #include <util/db/oraltypes.h>
@@ -51,6 +52,7 @@ namespace Xoox
 		VCardStorageOnDisk (QObject* = nullptr);
 
 		void SetVCard (const QString& jid, const QString& vcard);
+		boost::optional<QString> GetVCard (const QString& jid) const;
 	private:
 		void InitTables ();
 	};
