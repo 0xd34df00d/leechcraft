@@ -72,7 +72,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	namespace ph = Util::oral::ph;
+	namespace sph = Util::oral::sph;
 
 	VCardStorageOnDisk::VCardStorageOnDisk (QObject *parent)
 	: QObject { parent }
@@ -109,7 +109,7 @@ namespace Xoox
 
 	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
 	{
-		const auto& result = AdaptedRecord_->DoSelectByFields_ (ph::_0 == jid);
+		const auto& result = AdaptedRecord_->DoSelectByFields_ (sph::_0 == jid);
 		if (result.isEmpty ())
 			return {};
 
