@@ -573,6 +573,7 @@ namespace oral
 		enum class ExprType
 		{
 			LeafPlaceholder,
+			LeafStaticPlaceholder,
 			LeafData,
 
 			Greater,
@@ -608,6 +609,7 @@ namespace oral
 				return "OR";
 
 			case ExprType::LeafPlaceholder:
+			case ExprType::LeafStaticPlaceholder:
 			case ExprType::LeafData:
 				return "invalid type";
 			}
@@ -625,6 +627,9 @@ namespace oral
 		struct IsLeaf<ExprType::LeafPlaceholder> : std::true_type {};
 
 		template<>
+		struct IsLeaf<ExprType::LeafStaticPlaceholder> : std::true_type {};
+
+		template<>
 		struct IsLeaf<ExprType::LeafData> : std::true_type {};
 
 		template<ExprType Type1, ExprType Type2>
@@ -638,6 +643,9 @@ namespace oral
 
 		template<ExprType Type>
 		struct IsCompatible<Type, ExprType::LeafPlaceholder> : std::true_type {};
+
+		template<ExprType Type>
+		struct IsCompatible<Type, ExprType::LeafStaticPlaceholder> : std::true_type {};
 
 		template<ExprType Type>
 		struct IsCompatible<Type, ExprType::LeafData> : std::true_type {};
@@ -679,6 +687,17 @@ namespace oral
 			QString ToSql (ToSqlState<T>& state) const
 			{
 				return Left_.ToSql (state) + " " + TypeToSql (Type_) + " " + Right_.ToSql (state);
+			}
+		};
+
+		template<typename Seq, int Idx>
+		class ExprTree<ExprType::LeafStaticPlaceholder, Seq, boost::mpl::int_<Idx>>
+		{
+		public:
+			template<typename T>
+			QString ToSql (ToSqlState<T>&) const
+			{
+				return detail::GetFieldsNames<T> {} ().at (Idx);
 			}
 		};
 
