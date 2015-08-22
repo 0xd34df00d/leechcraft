@@ -331,11 +331,13 @@ namespace Poleemery
 		}
 	}
 
+	namespace sph = Util::oral::sph;
+
 	QList<Rate> Storage::GetRates (const QDateTime& start, const QDateTime& end)
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (start < Util::oral::ph::_2 && Util::oral::ph::_2 < end);
+			return Impl_->RateInfo_.DoSelectByFields_ (start < sph::_2 && sph::_2 < end);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -349,7 +351,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (Util::oral::ph::_1 == code);
+			return Impl_->RateInfo_.DoSelectByFields_ (sph::_1 == code);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -363,7 +365,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (Util::oral::ph::_1 == code && start < Util::oral::ph::_2 && Util::oral::ph::_2 < end);
+			return Impl_->RateInfo_.DoSelectByFields_ (sph::_1 == code && start < sph::_2 && sph::_2 < end);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
