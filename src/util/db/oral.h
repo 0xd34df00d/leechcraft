@@ -394,7 +394,7 @@ namespace oral
 			>::type;
 
 		template<typename T, typename = EnableIf_t<HasAutogenPKey<T> ()>>
-		QPair<QSqlQuery_ptr, InsertFunction_f<T>> AdaptInsert (CachedFieldsData data)
+		InsertFunction_f<T> AdaptInsert (CachedFieldsData data)
 		{
 			constexpr auto index = FindPKey<T>::result_type::value;
 
@@ -409,20 +409,15 @@ namespace oral
 			insertQuery->prepare (insert);
 
 			auto inserter = MakeInserter<T> (data, insertQuery, false);
-			auto insertUpdater = [=] (T& t)
+			return [=] (T& t)
 			{
 				inserter (t);
 				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<T, index>> {} (insertQuery->lastInsertId ());
 			};
-			return
-			{
-				insertQuery,
-				insertUpdater
-			};
 		}
 
 		template<typename T, typename = EnableIf_t<!HasAutogenPKey<T> ()>>
-		QPair<QSqlQuery_ptr, InsertFunction_f<T>> AdaptInsert (const CachedFieldsData& data)
+		InsertFunction_f<T> AdaptInsert (const CachedFieldsData& data)
 		{
 			const auto& insert = "INSERT INTO " + data.Table_ +
 					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
@@ -430,15 +425,11 @@ namespace oral
 
 			const auto insertQuery = std::make_shared<QSqlQuery> (data.DB_);
 			insertQuery->prepare (insert);
-			return
-			{
-				insertQuery,
-				MakeInserter<T> (data, insertQuery, true)
-			};
+			return MakeInserter<T> (data, insertQuery, true);
 		}
 
 		template<typename T>
-		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptUpdate (const CachedFieldsData& data)
+		std::function<void (T)> AdaptUpdate (const CachedFieldsData& data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
@@ -458,12 +449,11 @@ namespace oral
 
 			const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
 			updateQuery->prepare (update);
-
-			return { updateQuery, MakeInserter<T> (data, updateQuery, true) };
+			return MakeInserter<T> (data, updateQuery, true);
 		}
 
 		template<typename T>
-		QPair<QSqlQuery_ptr, std::function<void (T)>> AdaptDelete (CachedFieldsData data)
+		std::function<void (T)> AdaptDelete (CachedFieldsData data)
 		{
 			const auto index = FindPKey<T>::result_type::value;
 
@@ -474,7 +464,7 @@ namespace oral
 			const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
 			deleteQuery->prepare (del);
 
-			auto deleter = [deleteQuery, boundName] (const T& t)
+			return [deleteQuery, boundName] (const T& t)
 			{
 				constexpr auto index = FindPKey<T>::result_type::value;
 				deleteQuery->bindValue (boundName,
@@ -482,8 +472,6 @@ namespace oral
 				if (!deleteQuery->exec ())
 					throw QueryException ("delete query execution failed", deleteQuery);
 			};
-
-			return { deleteQuery, deleter };
 		}
 
 		template<typename T>
@@ -504,13 +492,12 @@ namespace oral
 		}
 
 		template<typename T>
-		QPair<QSqlQuery_ptr, std::function<QList<T> ()>> AdaptSelectAll (const CachedFieldsData& data)
+		std::function<QList<T> ()> AdaptSelectAll (const CachedFieldsData& data)
 		{
 			const auto& selectAll = "SELECT " + QStringList { data.Fields_ }.join (", ") + " FROM " + data.Table_ + ";";
 			const auto selectQuery = std::make_shared<QSqlQuery> (data.DB_);
 			selectQuery->prepare (selectAll);
-			auto selector = [selectQuery] () { return PerformSelect<T> (selectQuery); };
-			return { selectQuery, selector };
+			return [selectQuery] { return PerformSelect<T> (selectQuery); };
 		}
 
 		template<int Field, int... Fields>
@@ -1153,20 +1140,20 @@ namespace oral
 		const auto& table = T::ClassName ();
 
 		const detail::CachedFieldsData cachedData { table, db, fields, boundFields };
-		const auto& selectPair = detail::AdaptSelectAll<T> (cachedData);
-		const auto& insertPair = detail::AdaptInsert<T> (cachedData);
-		const auto& updatePair = detail::AdaptUpdate<T> (cachedData);
-		const auto& deletePair = detail::AdaptDelete<T> (cachedData);
+		const auto& selectr = detail::AdaptSelectAll<T> (cachedData);
+		const auto& insertr = detail::AdaptInsert<T> (cachedData);
+		const auto& updater = detail::AdaptUpdate<T> (cachedData);
+		const auto& deleter = detail::AdaptDelete<T> (cachedData);
 		const auto& createTable = detail::AdaptCreateTable<T> (cachedData);
 
 		const auto& byVal = detail::AdaptSelectFields<T> (cachedData);
 
 		ObjectInfo<T> info
 		{
-			selectPair.second,
-			insertPair.second,
-			updatePair.second,
-			deletePair.second,
+			selectr,
+			insertr,
+			updater,
+			deleter,
 			byVal,
 			createTable
 		};
