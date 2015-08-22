@@ -68,6 +68,11 @@ namespace oral
 		{
 			return Val_;
 		}
+
+		const value_type& operator* () const
+		{
+			return Val_;
+		}
 	};
 
 	template<typename T>
@@ -91,6 +96,11 @@ namespace oral
 		}
 
 		operator value_type () const
+		{
+			return Val_;
+		}
+
+		const value_type& operator* () const
 		{
 			return Val_;
 		}
@@ -141,6 +151,11 @@ namespace oral
 		}
 
 		operator value_type () const
+		{
+			return Val_;
+		}
+
+		const value_type& operator* () const
 		{
 			return Val_;
 		}
