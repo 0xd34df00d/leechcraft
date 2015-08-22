@@ -1150,6 +1150,8 @@ namespace oral
 		static constexpr pos<0> _0 = {};
 		static constexpr pos<1> _1 = {};
 		static constexpr pos<2> _2 = {};
+		static constexpr pos<3> _3 = {};
+		static constexpr pos<4> _4 = {};
 
 #ifndef BOOST_NO_CXX14_VARIABLE_TEMPLATES
 		template<int Idx>
