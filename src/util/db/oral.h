@@ -572,7 +572,6 @@ namespace oral
 
 		enum class ExprType
 		{
-			LeafPlaceholder,
 			LeafStaticPlaceholder,
 			LeafData,
 
@@ -608,7 +607,6 @@ namespace oral
 			case ExprType::Or:
 				return "OR";
 
-			case ExprType::LeafPlaceholder:
 			case ExprType::LeafStaticPlaceholder:
 			case ExprType::LeafData:
 				return "invalid type";
@@ -624,9 +622,6 @@ namespace oral
 		struct IsLeaf : std::false_type {};
 
 		template<>
-		struct IsLeaf<ExprType::LeafPlaceholder> : std::true_type {};
-
-		template<>
 		struct IsLeaf<ExprType::LeafStaticPlaceholder> : std::true_type {};
 
 		template<>
@@ -640,9 +635,6 @@ namespace oral
 
 		template<ExprType Type>
 		struct IsCompatible<Type, ExprType::Or> : std::true_type {};
-
-		template<ExprType Type>
-		struct IsCompatible<Type, ExprType::LeafPlaceholder> : std::true_type {};
 
 		template<ExprType Type>
 		struct IsCompatible<Type, ExprType::LeafStaticPlaceholder> : std::true_type {};
@@ -697,34 +689,6 @@ namespace oral
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
 				return detail::GetFieldsNames<T> {} ().at (Idx);
-			}
-		};
-
-		template<>
-		class ExprTree<ExprType::LeafPlaceholder, void, void>
-		{
-			int Index_;
-		public:
-			ExprTree (int idx)
-			: Index_ (idx)
-			{
-			}
-
-			template<typename T>
-			QString ToSql (ToSqlState<T>&) const
-			{
-				const auto& names = detail::GetFieldsNames<T> {} ();
-				if (Index_ >= names.size ())
-				{
-					const auto& idxStr = std::to_string (Index_);
-					const auto& namesStr = std::to_string (names.size ());
-					throw std::out_of_range
-					{
-						"Index " + idxStr + " is out of range for names count " + namesStr
-					};
-				}
-
-				return names.at (Index_);
 			}
 		};
 
@@ -1126,13 +1090,6 @@ namespace oral
 		{
 		}
 	};
-
-	namespace ph
-	{
-		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _0 { 0 };
-		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _1 { 1 };
-		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _2 { 2 };
-	}
 
 	namespace sph
 	{
