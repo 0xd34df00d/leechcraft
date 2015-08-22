@@ -967,13 +967,16 @@ namespace oral
 			using type = std::function<QList<Ret> (T)>;
 		};
 
+		template<typename T, typename Ret>
+		using WrapAsFunc_t = typename WrapAsFunc<T, Ret>::type;
+
 		template<typename T>
 		struct MakeSingleBinder
 		{
 			const CachedFieldsData Data_;
 
 			template<typename Vec, typename OrigObj, typename OrigIdx, typename RefObj, typename RefIdx>
-			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&) -> decltype (boost::fusion::push_back (vec, typename WrapAsFunc<RefObj, T>::type {}))
+			auto operator() (Vec vec, const FieldInfo<OrigObj, OrigIdx, RefObj, RefIdx>&) -> decltype (boost::fusion::push_back (vec, WrapAsFunc_t<RefObj, T> {}))
 			{
 				const auto& boundName = GetBoundName<OrigObj, OrigIdx::value>::value ();
 				const auto& query = "SELECT " + QStringList { Data_.Fields_ }.join (", ") +
