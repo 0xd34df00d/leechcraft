@@ -690,8 +690,8 @@ namespace oral
 			}
 		};
 
-		template<typename Seq, int Idx>
-		class ExprTree<ExprType::LeafStaticPlaceholder, Seq, boost::mpl::int_<Idx>>
+		template<int Idx>
+		class ExprTree<ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>, void>
 		{
 		public:
 			template<typename T>
@@ -1139,7 +1139,7 @@ namespace oral
 	struct sph
 	{
 		template<int Idx>
-		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, Seq, boost::mpl::int_<Idx>>;
+		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>>;
 
 		static constexpr pos<0> _0 = {};
 		static constexpr pos<1> _1 = {};
