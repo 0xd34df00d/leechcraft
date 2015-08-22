@@ -672,8 +672,6 @@ namespace oral
 		template<ExprType Type, typename L = void, typename R = void>
 		class ExprTree
 		{
-			static const ExprType Type_ = Type;
-
 			L Left_;
 			R Right_;
 		public:
@@ -686,7 +684,7 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>& state) const
 			{
-				return Left_.ToSql (state) + " " + TypeToSql (Type_) + " " + Right_.ToSql (state);
+				return Left_.ToSql (state) + " " + TypeToSql (Type) + " " + Right_.ToSql (state);
 			}
 		};
 
