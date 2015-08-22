@@ -1135,6 +1135,17 @@ namespace oral
 		static const detail::ExprTree<detail::ExprType::LeafPlaceholder> _2 { 2 };
 	}
 
+	template<typename Seq>
+	struct sph
+	{
+		template<int Idx>
+		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, Seq, boost::mpl::int_<Idx>>;
+
+		static constexpr pos<0> _0 = {};
+		static constexpr pos<1> _1 = {};
+		static constexpr pos<2> _2 = {};
+	};
+
 	template<typename T>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
