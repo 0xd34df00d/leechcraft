@@ -99,6 +99,11 @@ namespace Xoox
 
 		Util::RunTextQuery (DB_, AdaptedRecord_->CreateTable_);
 	}
+
+	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
+	{
+		AdaptedRecord_->DoInsert_ ({ jid, vcard });
+	}
 }
 }
 }

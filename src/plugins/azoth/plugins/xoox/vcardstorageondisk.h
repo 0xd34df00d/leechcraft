@@ -49,6 +49,8 @@ namespace Xoox
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
+
+		void SetVCard (const QString& jid, const QString& vcard);
 	private:
 		void InitTables ();
 	};
