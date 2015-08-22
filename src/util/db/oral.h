@@ -364,6 +364,9 @@ namespace oral
 		template<typename Seq, int Idx>
 		using ValueAtC_t = typename boost::fusion::result_of::value_at_c<Seq, Idx>::type;
 
+		template<typename Seq, typename Idx>
+		using ValueAt_t = typename boost::fusion::result_of::value_at<Seq, Idx>::type;
+
 		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
 		constexpr bool HasAutogenPKeyImpl (int)
 		{
