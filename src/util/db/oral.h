@@ -685,6 +685,9 @@ namespace oral
 		{
 		public:
 			template<typename T>
+			using ValueType_t = ValueAtC_t<T, Idx>;
+
+			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
 				static_assert (Idx < boost::fusion::result_of::size<T>::type::value, "Index out of bounds.");
@@ -697,6 +700,9 @@ namespace oral
 		{
 			T Data_;
 		public:
+			template<typename>
+			using ValueType_t = T;
+
 			ExprTree (const T& t)
 			: Data_ (t)
 			{
