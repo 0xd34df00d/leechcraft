@@ -696,7 +696,18 @@ namespace oral
 			template<typename T>
 			QString ToSql (ToSqlState<T>&) const
 			{
-				return detail::GetFieldsNames<T> () ().at (Index_);
+				const auto& names = detail::GetFieldsNames<T> {} ();
+				if (Index_ >= names.size ())
+				{
+					const auto& idxStr = std::to_string (Index_);
+					const auto& namesStr = std::to_string (names.size ());
+					throw std::out_of_range
+					{
+						"Index " + idxStr + " is out of range for names count " + namesStr
+					};
+				}
+
+				return names.at (Index_);
 			}
 		};
 
