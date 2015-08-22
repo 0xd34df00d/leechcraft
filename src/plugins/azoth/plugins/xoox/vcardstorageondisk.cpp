@@ -43,7 +43,7 @@ namespace Xoox
 {
 	struct VCardStorageOnDisk::Record
 	{
-		Util::oral::PKey<QString> JID_;
+		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QString VCardIq_;
 
 		static QString ClassName ()
