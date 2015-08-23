@@ -1115,7 +1115,7 @@ namespace oral
 	struct ObjectInfo : detail::ObjectInfoFKeysHelper<T>
 	{
 		std::function<QList<T> ()> DoSelectAll_;
-		detail::InsertFunction_f<T> DoInsert_;
+		detail::AdaptInsert<T> DoInsert_;
 		std::function<void (T)> DoUpdate_;
 		std::function<void (T)> DoDelete_;
 
