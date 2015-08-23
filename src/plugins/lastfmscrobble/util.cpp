@@ -64,7 +64,7 @@ namespace Lastfmscrobble
 			params.append ({ "api_sig", sig });
 		}
 
-		QByteArray MakeCall (QList<QPair<QString, QString>> params)
+		QByteArray Params2PostData (QList<QPair<QString, QString>> params)
 		{
 			AppendSig (params);
 
@@ -103,8 +103,7 @@ namespace Lastfmscrobble
 		params.append ({ "api_key", lastfm::ws::ApiKey });
 		params.append ({ "sk", lastfm::ws::SessionKey });
 
-
-		const auto& data = MakeCall (params);
+		const auto& data = Params2PostData (params);
 
 		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
