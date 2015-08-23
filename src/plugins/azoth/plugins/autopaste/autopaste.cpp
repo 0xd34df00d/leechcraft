@@ -120,6 +120,9 @@ namespace Autopaste
 					settings.endGroup ();
 				});
 
+		if (settings.value ("DontSuggest").toBool ())
+			return;
+
 		PasteDialog dia;
 
 		dia.SetCreatorName (settings.value ("Service").toString ());
@@ -133,13 +136,38 @@ namespace Autopaste
 			cancelCont ();
 			break;
 		case PasteDialog::No:
+		{
+			if (!settings.value ("DontDisable").toBool ())
+			{
+				const auto nextRejectionCount = settings.value ("RejectionCount", 0).toInt () + 1;
+				settings.setValue ("RejectionCount", nextRejectionCount);
+
+				const auto threshold = 5;
+				if (nextRejectionCount == threshold)
+				{
+					if (QMessageBox::question (nullptr,
+							"LeechCraft",
+							tr ("Do you want to disable autopasting for this contact (%1)?")
+								.arg ("<em>" + other->GetEntryName () + "</em>"),
+							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+					{
+						settings.setValue ("DontSuggest", true);
+						settings.setValue ("NameAtCancel", other->GetEntryName ());
+					}
+					else
+						settings.setValue ("DontDisable", true);
+				}
+			}
+
 			break;
+		}
 		case PasteDialog::Yes:
 		{
 			auto service = dia.GetCreator () (other->GetQObject (), Proxy_);
 			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
 			okCont ();
 
+			settings.setValue ("RejectionCount", 0);
 			settings.setValue ("Service", dia.GetCreatorName ());
 			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
 			break;
