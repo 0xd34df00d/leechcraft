@@ -50,7 +50,7 @@ namespace Lastfmscrobble
 {
 	namespace
 	{
-		QByteArray MakeCall (QList<QPair<QString, QString>> params)
+		void AppendSig (QList<QPair<QString, QString>>& params)
 		{
 			std::sort (params.begin (), params.end (),
 					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
@@ -62,6 +62,11 @@ namespace Lastfmscrobble
 			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
 
 			params.append ({ "api_sig", sig });
+		}
+
+		QByteArray MakeCall (QList<QPair<QString, QString>> params)
+		{
+			AppendSig (params);
 
 #if QT_VERSION < 0x050000
 			QUrl url;
