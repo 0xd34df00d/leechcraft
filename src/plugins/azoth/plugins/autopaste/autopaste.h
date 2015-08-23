@@ -74,9 +74,6 @@ namespace Autopaste
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	private:
-		template<typename OkF, typename CancelF>
-		void PerformPaste (ICLEntry*, const QString&, OkF, CancelF);
 	public slots:
 		void initPlugin (QObject*);
 

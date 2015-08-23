@@ -107,71 +107,126 @@ namespace Autopaste
 		return XmlSettingsDialog_;
 	}
 
-	template<typename OkF, typename CancelF>
-	void Plugin::PerformPaste (ICLEntry *other, const QString& text, OkF okCont, CancelF cancelCont)
+	namespace
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Autopaste");
-		settings.beginGroup ("SavedChoices");
-		settings.beginGroup (other->GetEntryID ());
-		const auto guard = Util::MakeScopeGuard ([&settings]
-				{
-					settings.endGroup ();
-					settings.endGroup ();
-				});
-
-		if (settings.value ("DontSuggest").toBool ())
-			return;
-
-		PasteDialog dia;
-
-		dia.SetCreatorName (settings.value ("Service").toString ());
-		dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
-
-		dia.exec ();
-
-		switch (dia.GetChoice ())
+		class IUserChoiceHandler
 		{
-		case PasteDialog::Cancel:
-			cancelCont ();
-			break;
-		case PasteDialog::No:
+		public:
+			virtual bool ShouldAsk (QSettings&) const = 0;
+			virtual void Rejected (QSettings&) = 0;
+			virtual void Accepted (QSettings&) = 0;
+		};
+
+		using IUserChoiceHandler_ptr = std::shared_ptr<IUserChoiceHandler>;
+
+		class NoOpChoiceHandler final : public IUserChoiceHandler
 		{
-			if (!settings.value ("DontDisable").toBool ())
+		public:
+			bool ShouldAsk (QSettings&) const override
 			{
+				return true;
+			}
+
+			void Rejected (QSettings&) override
+			{
+			}
+
+			void Accepted (QSettings&) override
+			{
+			}
+		};
+
+		class CountingUserChoiceHandler final : public IUserChoiceHandler
+		{
+			const ICLEntry * const Entry_;
+		public:
+			CountingUserChoiceHandler (const ICLEntry *entry)
+			: Entry_ { entry }
+			{
+			}
+
+			bool ShouldAsk (QSettings& settings) const override
+			{
+				return !settings.value ("DontSuggest").toBool ();
+			}
+
+			void Rejected (QSettings& settings) override
+			{
+				if (settings.value ("DontDisable").toBool ())
+					return;
+
 				const auto nextRejectionCount = settings.value ("RejectionCount", 0).toInt () + 1;
 				settings.setValue ("RejectionCount", nextRejectionCount);
 
 				const auto threshold = 5;
-				if (nextRejectionCount == threshold)
+				if (nextRejectionCount != threshold)
+					return;
+
+				if (QMessageBox::question (nullptr,
+						"LeechCraft",
+						Plugin::tr ("Do you want to disable autopasting for this contact (%1)?")
+							.arg ("<em>" + Entry_->GetEntryName () + "</em>"),
+						QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
 				{
-					if (QMessageBox::question (nullptr,
-							"LeechCraft",
-							tr ("Do you want to disable autopasting for this contact (%1)?")
-								.arg ("<em>" + other->GetEntryName () + "</em>"),
-							QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-					{
-						settings.setValue ("DontSuggest", true);
-						settings.setValue ("NameAtCancel", other->GetEntryName ());
-					}
-					else
-						settings.setValue ("DontDisable", true);
+					settings.setValue ("DontSuggest", true);
+					settings.setValue ("NameAtCancel", Entry_->GetEntryName ());
 				}
+				else
+					settings.setValue ("DontDisable", true);
 			}
 
-			break;
-		}
-		case PasteDialog::Yes:
-		{
-			auto service = dia.GetCreator () (other->GetQObject (), Proxy_);
-			service->Paste ({ Proxy_->GetNetworkAccessManager (), text, dia.GetHighlight () });
-			okCont ();
+			void Accepted (QSettings& settings) override
+			{
+				settings.setValue ("RejectionCount", 0);
+			}
+		};
 
-			settings.setValue ("RejectionCount", 0);
-			settings.setValue ("Service", dia.GetCreatorName ());
-			settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
-			break;
-		}
+		template<typename OkF, typename CancelF>
+		void PerformPaste (ICLEntry *other, const QString& text,
+				const ICoreProxy_ptr& proxy, const IUserChoiceHandler_ptr& handler,
+				OkF okCont, CancelF cancelCont)
+		{
+			QSettings settings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth_Autopaste");
+			settings.beginGroup ("SavedChoices");
+			settings.beginGroup (other->GetEntryID ());
+			const auto guard = Util::MakeScopeGuard ([&settings]
+					{
+						settings.endGroup ();
+						settings.endGroup ();
+					});
+
+			if (!handler->ShouldAsk (settings))
+				return;
+
+			PasteDialog dia;
+
+			dia.SetCreatorName (settings.value ("Service").toString ());
+			dia.SetHighlight (static_cast<Highlight> (settings.value ("Highlight").toInt ()));
+
+			dia.exec ();
+
+			switch (dia.GetChoice ())
+			{
+			case PasteDialog::Cancel:
+				cancelCont ();
+				break;
+			case PasteDialog::No:
+				handler->Rejected (settings);
+				break;
+			case PasteDialog::Yes:
+			{
+				auto service = dia.GetCreator () (other->GetQObject (), proxy);
+				service->Paste ({ proxy->GetNetworkAccessManager (), text, dia.GetHighlight () });
+				okCont ();
+
+				handler->Accepted (settings);
+
+				settings.setValue ("Service", dia.GetCreatorName ());
+				settings.setValue ("Highlight", static_cast<int> (dia.GetHighlight ()));
+				break;
+			}
+			}
 		}
 	}
 
@@ -222,7 +277,7 @@ namespace Autopaste
 		if (!XmlSettingsManager::Instance ().property (propName).toBool ())
 			return;
 
-		PerformPaste (other, text,
+		PerformPaste (other, text, Proxy_, std::make_shared<CountingUserChoiceHandler> (other),
 				[proxy] { proxy->CancelDefault (); },
 				[proxy]
 				{
@@ -280,8 +335,7 @@ namespace Autopaste
 		if (text.isEmpty ())
 			return;
 
-		PerformPaste (entry,
-				text,
+		PerformPaste (entry, text, Proxy_, std::make_shared<NoOpChoiceHandler> (),
 				[edit] { edit->clear (); },
 				[] {});
 	}
