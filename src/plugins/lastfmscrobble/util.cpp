@@ -80,6 +80,16 @@ namespace Lastfmscrobble
 			return query.toString (QUrl::FullyEncoded).toUtf8 ();
 #endif
 		}
+
+		QNetworkReply* MakePostRequest (QNetworkAccessManager *nam, const QList<QPair<QString, QString>>& params)
+		{
+			const auto& data = Params2PostData (params);
+
+			QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
+			req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
+			req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
+			return nam->post (req, data);
+		}
 	}
 
 	void AddLanguageParam (QMap<QString, QString>& params)
@@ -103,12 +113,7 @@ namespace Lastfmscrobble
 		params.append ({ "api_key", lastfm::ws::ApiKey });
 		params.append ({ "sk", lastfm::ws::SessionKey });
 
-		const auto& data = Params2PostData (params);
-
-		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
-		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
-		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
-		return nam->post (req, data);
+		return MakePostRequest (nam, params);
 	}
 
 	Media::ArtistInfo GetArtistInfo (const QDomElement& artist)
