@@ -50,7 +50,7 @@ namespace Lastfmscrobble
 {
 	namespace
 	{
-		void AppendSig (QList<QPair<QString, QString>>& params)
+		void AppendSig (ParamsList_t& params)
 		{
 			std::sort (params.begin (), params.end (),
 					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
@@ -64,7 +64,7 @@ namespace Lastfmscrobble
 			params.append ({ "api_sig", sig });
 		}
 
-		QByteArray Params2PostData (QList<QPair<QString, QString>> params)
+		QByteArray Params2PostData (ParamsList_t params)
 		{
 			AppendSig (params);
 
@@ -81,7 +81,7 @@ namespace Lastfmscrobble
 #endif
 		}
 
-		QNetworkReply* MakePostRequest (QNetworkAccessManager *nam, const QList<QPair<QString, QString>>& params)
+		QNetworkReply* MakePostRequest (QNetworkAccessManager *nam, const ParamsList_t& params)
 		{
 			const auto& data = Params2PostData (params);
 
@@ -99,15 +99,15 @@ namespace Lastfmscrobble
 		params ["lang"] = ourLang.isEmpty () ? Util::GetLanguage () : ourLang;
 	}
 
-	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const QMap<QString, QString>& map)
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, const ParamsMap_t& map)
 	{
-		QList<QPair<QString, QString>> params;
+		ParamsList_t params;
 		for (const auto& pair : Util::Stlize (map))
 			params.append ({ pair.first, pair.second });
 		return Request (method, nam, params);
 	}
 
-	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, QList<QPair<QString, QString>> params)
+	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, ParamsList_t params)
 	{
 		params.append ({ "method", method });
 		params.append ({ "api_key", lastfm::ws::ApiKey });

@@ -44,12 +44,15 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	void AddLanguageParam (QMap<QString, QString>& params);
+	using ParamsMap_t = QMap<QString, QString>;
+	using ParamsList_t = QList<QPair<QString, QString>>;
+
+	void AddLanguageParam (ParamsMap_t& params);
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
-			const QMap<QString, QString>& params);
+			const ParamsMap_t& params);
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam,
-			QList<QPair<QString, QString>> params = QList<QPair<QString, QString>> ());
+			ParamsList_t params = {});
 
 	Media::ArtistInfo GetArtistInfo (const QDomElement& artist);
 
