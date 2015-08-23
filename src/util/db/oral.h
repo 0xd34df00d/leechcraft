@@ -52,6 +52,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/typelist.h>
 #include <util/sll/oldcppkludges.h>
+#include <util/db/dblock.h>
 #include "oraltypes.h"
 
 using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
@@ -339,7 +340,10 @@ namespace oral
 			{
 				boost::fusion::fold<T, QStringList, Inserter> (t, data.BoundFields_, Inserter { bindPrimaryKey, insertQuery });
 				if (!insertQuery->exec ())
+				{
+					DBLock::DumpError (*insertQuery);
 					throw QueryException ("insert query execution failed", insertQuery);
+				}
 			};
 		}
 
