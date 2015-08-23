@@ -1196,7 +1196,10 @@ namespace oral
 	}
 
 	template<typename T>
-	std::shared_ptr<ObjectInfo<T>> AdaptPtr (const QSqlDatabase& db)
+	using ObjectInfo_ptr = std::shared_ptr<ObjectInfo<T>>;
+
+	template<typename T>
+	ObjectInfo_ptr<T> AdaptPtr (const QSqlDatabase& db)
 	{
 		return std::make_shared<ObjectInfo<T>> (Adapt<T> (db));
 	}
