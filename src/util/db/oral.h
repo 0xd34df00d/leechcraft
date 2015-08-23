@@ -53,6 +53,7 @@
 #include <util/sll/typelist.h>
 #include <util/sll/oldcppkludges.h>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include "oraltypes.h"
 
 using QSqlQuery_ptr = std::shared_ptr<QSqlQuery>;
@@ -397,40 +398,64 @@ namespace oral
 				std::function<void (const Seq&)>
 			>::type;
 
-		template<typename T, typename = EnableIf_t<HasAutogenPKey<T> ()>>
-		InsertFunction_f<T> AdaptInsert (CachedFieldsData data)
+		template<typename Seq>
+		struct AdaptInsert
 		{
-			constexpr auto index = FindPKey<T>::result_type::value;
+			const CachedFieldsData Data_;
+			const QString Insert_;
+			const QSqlQuery_ptr InsertQuery_;
 
-			data.Fields_.removeAt (index);
-			data.BoundFields_.removeAt (index);
+			struct PrivateTag {};
 
-			const auto& insert = "INSERT INTO " + data.Table_ +
+			AdaptInsert (const CachedFieldsData& data, const PrivateTag&)
+			: Data_ (data)
+			, Insert_ ("INSERT INTO " + data.Table_ +
 					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
-					QStringList { data.BoundFields_ }.join (", ") + ");";
-
-			const auto insertQuery = std::make_shared<QSqlQuery> (data.DB_);
-			insertQuery->prepare (insert);
-
-			auto inserter = MakeInserter<T> (data, insertQuery, false);
-			return [=] (T& t)
+					QStringList { data.BoundFields_ }.join (", ") + ");")
+			, InsertQuery_ (std::make_shared<QSqlQuery> (data.DB_))
 			{
-				inserter (t);
-				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<T, index>> {} (insertQuery->lastInsertId ());
-			};
-		}
+				InsertQuery_->prepare (Insert_);
+			}
+		public:
+			template<bool Autogen = HasAutogenPKey<Seq> ()>
+			AdaptInsert (CachedFieldsData data, EnableIf_t<Autogen>* = nullptr)
+			: AdaptInsert
+			{
+				{
+					[data] () mutable
+					{
+						constexpr auto index = FindPKey<Seq>::result_type::value;
+						data.Fields_.removeAt (index);
+						data.BoundFields_.removeAt (index);
+						return data;
+					} ()
+				},
+				PrivateTag {}
+			}
+			{
+			}
 
-		template<typename T, typename = EnableIf_t<!HasAutogenPKey<T> ()>>
-		InsertFunction_f<T> AdaptInsert (const CachedFieldsData& data)
-		{
-			const auto& insert = "INSERT INTO " + data.Table_ +
-					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
-					QStringList { data.BoundFields_ }.join (", ") + ");";
+			template<bool Autogen = HasAutogenPKey<Seq> ()>
+			AdaptInsert (const CachedFieldsData& data, EnableIf_t<!Autogen>* = nullptr)
+			: AdaptInsert { data, PrivateTag {} }
+			{
+			}
 
-			const auto insertQuery = std::make_shared<QSqlQuery> (data.DB_);
-			insertQuery->prepare (insert);
-			return MakeInserter<T> (data, insertQuery, true);
-		}
+			template<bool Autogen = HasAutogenPKey<Seq> ()>
+			EnableIf_t<Autogen> operator() (Seq& t) const
+			{
+				MakeInserter<Seq> (Data_, InsertQuery_, false) (t);
+
+				constexpr auto index = FindPKey<Seq>::result_type::value;
+				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<Seq, index>> {} (InsertQuery_->lastInsertId ());
+			}
+
+			template<bool Autogen = HasAutogenPKey<Seq> ()>
+			EnableIf_t<!Autogen> operator() (const Seq& t) const
+			{
+				MakeInserter<Seq> (Data_, InsertQuery_, true) (t);
+			}
+		};
 
 		template<typename T>
 		std::function<void (T)> AdaptUpdate (const CachedFieldsData& data)
