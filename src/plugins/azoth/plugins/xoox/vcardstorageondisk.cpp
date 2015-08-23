@@ -95,7 +95,7 @@ namespace Xoox
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
 	{
-		AdaptedRecord_->DoInsert_ ({ jid, vcard });
+		AdaptedRecord_->DoInsert_ ({ jid, vcard }, Util::oral::InsertAction::Replace);
 	}
 
 	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
