@@ -1123,10 +1123,6 @@ namespace oral
 
 		QString CreateTable_;
 
-		ObjectInfo ()
-		{
-		}
-
 		ObjectInfo (decltype (DoSelectAll_) doSel,
 				decltype (DoInsert_) doIns,
 				decltype (DoUpdate_) doUpdate,
