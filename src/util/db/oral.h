@@ -392,13 +392,6 @@ namespace oral
 		}
 
 		template<typename Seq>
-		using InsertFunction_f = typename std::conditional<
-				HasAutogenPKey<Seq> (),
-				std::function<void (Seq&)>,
-				std::function<void (const Seq&)>
-			>::type;
-
-		template<typename Seq>
 		struct AdaptInsert
 		{
 			const CachedFieldsData Data_;
