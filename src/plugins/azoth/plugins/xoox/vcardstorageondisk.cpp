@@ -91,15 +91,6 @@ namespace Xoox
 
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 
-		InitTables ();
-	}
-
-	void VCardStorageOnDisk::InitTables ()
-	{
-		if (DB_.tables ().contains ("VCards"))
-			return;
-
-		Util::RunTextQuery (DB_, AdaptedRecord_->CreateTable_);
 	}
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)

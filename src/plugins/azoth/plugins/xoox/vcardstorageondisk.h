@@ -53,8 +53,6 @@ namespace Xoox
 
 		void SetVCard (const QString& jid, const QString& vcard);
 		boost::optional<QString> GetVCard (const QString& jid) const;
-	private:
-		void InitTables ();
 	};
 }
 }
