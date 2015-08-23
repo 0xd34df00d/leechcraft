@@ -704,7 +704,8 @@ namespace oral
 		template<typename Seq, typename L, typename R>
 		constexpr bool AreComparableTypes ()
 		{
-			return AreComparableTypesImpl<Seq, L, R> (0);
+			return AreComparableTypesImpl<Seq, L, R> (0) ||
+					AreComparableTypesImpl<Seq, R, L> (0);
 		}
 
 		template<ExprType Type, typename Seq, typename L, typename R, typename = void>
