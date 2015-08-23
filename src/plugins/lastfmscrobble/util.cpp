@@ -81,14 +81,37 @@ namespace Lastfmscrobble
 #endif
 		}
 
+		void AppendParams2Url (ParamsList_t params, QUrl& url)
+		{
+			AppendSig (params);
+
+#if QT_VERSION < 0x050000
+			for (const auto& pair : params)
+				url.addQueryItem (pair.first, pair.second);
+#else
+			QUrlQuery query;
+			for (const auto& pair : params)
+				query.addQueryItem (pair.first, pair.second);
+			url.setQuery (query);
+#endif
+		}
+
 		QNetworkReply* MakePostRequest (QNetworkAccessManager *nam, const ParamsList_t& params)
 		{
 			const auto& data = Params2PostData (params);
 
-			QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
+			QNetworkRequest req { QUrl { "http://ws.audioscrobbler.com/2.0/" } };
 			req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 			req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 			return nam->post (req, data);
+		}
+
+		QNetworkReply* MakeGetRequest (QNetworkAccessManager *nam, const ParamsList_t& params)
+		{
+			QUrl url { "http://ws.audioscrobbler.com/2.0/" };
+			AppendParams2Url (params, url);
+
+			return nam->get (QNetworkRequest { url });
 		}
 	}
 
