@@ -456,39 +456,11 @@ namespace Poleemery
 		Impl_->CategoryInfo_ = Util::oral::Adapt<Category> (Impl_->DB_);
 		Impl_->CategoryLinkInfo_ = Util::oral::Adapt<CategoryLink> (Impl_->DB_);
 		Impl_->RateInfo_ = Util::oral::Adapt<Rate> (Impl_->DB_);
-
-		const auto& tables = Impl_->DB_.tables ();
-
-		QMap<QString, QString> queryCreates;
-		queryCreates [Account::ClassName ()] = Impl_->AccountInfo_.CreateTable_;
-		queryCreates [NakedExpenseEntry::ClassName ()] = Impl_->NakedExpenseEntryInfo_.CreateTable_;
-		queryCreates [ReceiptEntry::ClassName ()] = Impl_->ReceiptEntryInfo_.CreateTable_;
-		queryCreates [Category::ClassName ()] = Impl_->CategoryInfo_.CreateTable_;
-		queryCreates [CategoryLink::ClassName ()] = Impl_->CategoryLinkInfo_.CreateTable_;
-		queryCreates [Rate::ClassName ()] = Impl_->RateInfo_.CreateTable_;
-
 		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
 
-		QSqlQuery query (Impl_->DB_);
-
-		bool tablesCreated = false;
-		for (const auto& key : queryCreates.keys ())
-			if (!tables.contains (key))
-			{
-				tablesCreated = true;
-				if (!query.exec (queryCreates [key]))
-					{
-						Util::DBLock::DumpError (query);
-						throw std::runtime_error ("cannot create tables");
-					}
-			}
 
 		lock.Good ();
-
-		// Otherwise queries created by oral::Adapt() don't work.
-		if (tablesCreated)
-			InitializeTables ();
 	}
 
 	void Storage::LoadCategories ()
