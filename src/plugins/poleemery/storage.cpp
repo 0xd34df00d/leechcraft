@@ -90,12 +90,12 @@ namespace Poleemery
 	{
 		QSqlDatabase DB_;
 
-		Util::oral::ObjectInfo<Account> AccountInfo_;
-		Util::oral::ObjectInfo<NakedExpenseEntry> NakedExpenseEntryInfo_;
-		Util::oral::ObjectInfo<ReceiptEntry> ReceiptEntryInfo_;
-		Util::oral::ObjectInfo<Category> CategoryInfo_;
-		Util::oral::ObjectInfo<CategoryLink> CategoryLinkInfo_;
-		Util::oral::ObjectInfo<Rate> RateInfo_;
+		Util::oral::ObjectInfo_ptr<Account> AccountInfo_;
+		Util::oral::ObjectInfo_ptr<NakedExpenseEntry> NakedExpenseEntryInfo_;
+		Util::oral::ObjectInfo_ptr<ReceiptEntry> ReceiptEntryInfo_;
+		Util::oral::ObjectInfo_ptr<Category> CategoryInfo_;
+		Util::oral::ObjectInfo_ptr<CategoryLink> CategoryLinkInfo_;
+		Util::oral::ObjectInfo_ptr<Rate> RateInfo_;
 
 		QHash<QString, Category> CatCache_;
 		QHash<int, Category> CatIDCache_;
@@ -130,7 +130,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->AccountInfo_.DoSelectAll_ ();
+			return Impl_->AccountInfo_->DoSelectAll_ ();
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -144,7 +144,7 @@ namespace Poleemery
 	{
 		try
 		{
-			Impl_->AccountInfo_.DoInsert_ (acc);
+			Impl_->AccountInfo_->DoInsert_ (acc);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -158,7 +158,7 @@ namespace Poleemery
 	{
 		try
 		{
-			Impl_->AccountInfo_.DoUpdate_ (acc);
+			Impl_->AccountInfo_->DoUpdate_ (acc);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -172,7 +172,7 @@ namespace Poleemery
 	{
 		try
 		{
-			Impl_->AccountInfo_.DoDelete_ (acc);
+			Impl_->AccountInfo_->DoDelete_ (acc);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -186,7 +186,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return HandleNaked (Impl_->NakedExpenseEntryInfo_.DoSelectAll_ ());
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_->DoSelectAll_ ());
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -200,7 +200,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return HandleNaked (Impl_->NakedExpenseEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
+			return HandleNaked (Impl_->NakedExpenseEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (parent)));
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -217,7 +217,7 @@ namespace Poleemery
 
 		try
 		{
-			Impl_->NakedExpenseEntryInfo_.DoInsert_ (entry);
+			Impl_->NakedExpenseEntryInfo_->DoInsert_ (entry);
 			AddNewCategories (entry, entry.Categories_);
 		}
 		catch (const Util::oral::QueryException& e)
@@ -235,14 +235,14 @@ namespace Poleemery
 		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
 
-		Impl_->NakedExpenseEntryInfo_.DoUpdate_ (entry);
+		Impl_->NakedExpenseEntryInfo_->DoUpdate_ (entry);
 
 		auto nowCats = entry.Categories_;
 
-		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_.SingleFKeySelectors_) (entry))
+		for (const auto& cat : boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (entry))
 		{
 			if (!nowCats.removeAll (Impl_->CatIDCache_.value (cat.Category_).Name_))
-				Impl_->CategoryLinkInfo_.DoDelete_ (cat);
+				Impl_->CategoryLinkInfo_->DoDelete_ (cat);
 		}
 
 		if (!nowCats.isEmpty ())
@@ -255,7 +255,7 @@ namespace Poleemery
 	{
 		try
 		{
-			Impl_->NakedExpenseEntryInfo_.DoDelete_ (entry);
+			Impl_->NakedExpenseEntryInfo_->DoDelete_ (entry);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -269,7 +269,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->ReceiptEntryInfo_.DoSelectAll_ ();
+			return Impl_->ReceiptEntryInfo_->DoSelectAll_ ();
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -283,7 +283,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->ReceiptEntryInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (account));
+			return Impl_->ReceiptEntryInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (account));
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -297,7 +297,7 @@ namespace Poleemery
 	{
 		try
 		{
-			Impl_->ReceiptEntryInfo_.DoInsert_ (entry);
+			Impl_->ReceiptEntryInfo_->DoInsert_ (entry);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -309,19 +309,19 @@ namespace Poleemery
 
 	void Storage::UpdateReceiptEntry (const ReceiptEntry& entry)
 	{
-		Impl_->ReceiptEntryInfo_.DoUpdate_ (entry);
+		Impl_->ReceiptEntryInfo_->DoUpdate_ (entry);
 	}
 
 	void Storage::DeleteReceiptEntry (const ReceiptEntry& entry)
 	{
-		Impl_->ReceiptEntryInfo_.DoDelete_ (entry);
+		Impl_->ReceiptEntryInfo_->DoDelete_ (entry);
 	}
 
 	QList<Rate> Storage::GetRates ()
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectAll_ ();
+			return Impl_->RateInfo_->DoSelectAll_ ();
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -337,7 +337,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (start < sph::_2 && sph::_2 < end);
+			return Impl_->RateInfo_->DoSelectByFields_ (start < sph::_2 && sph::_2 < end);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -351,7 +351,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (sph::_1 == code);
+			return Impl_->RateInfo_->DoSelectByFields_ (sph::_1 == code);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -365,7 +365,7 @@ namespace Poleemery
 	{
 		try
 		{
-			return Impl_->RateInfo_.DoSelectByFields_ (sph::_1 == code && start < sph::_2 && sph::_2 < end);
+			return Impl_->RateInfo_->DoSelectByFields_ (sph::_1 == code && start < sph::_2 && sph::_2 < end);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -379,7 +379,7 @@ namespace Poleemery
 	{
 		try
 		{
-			Impl_->RateInfo_.DoInsert_ (rate);
+			Impl_->RateInfo_->DoInsert_ (rate);
 		}
 		catch (const Util::oral::QueryException& e)
 		{
@@ -392,7 +392,7 @@ namespace Poleemery
 	Category Storage::AddCategory (const QString& name)
 	{
 		Category cat { name };
-		Impl_->CategoryInfo_.DoInsert_ (cat);
+		Impl_->CategoryInfo_->DoInsert_ (cat);
 		Impl_->CatCache_ [name] = cat;
 		Impl_->CatIDCache_ [cat.ID_] = cat;
 		return cat;
@@ -411,14 +411,14 @@ namespace Poleemery
 	void Storage::LinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
 	{
 		CategoryLink link (category, entry);
-		Impl_->CategoryLinkInfo_.DoInsert_ (link);
+		Impl_->CategoryLinkInfo_->DoInsert_ (link);
 	}
 
 	void Storage::UnlinkEntry2Cat (const ExpenseEntry& entry, const Category& category)
 	{
-		const auto& link = Impl_->CategoryLinkInfo_.SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
+		const auto& link = Impl_->CategoryLinkInfo_->SelectByFKeysActor_ (boost::fusion::make_vector (category, entry));
 		if (!link.isEmpty ())
-			Impl_->CategoryLinkInfo_.DoDelete_ (link.first ());
+			Impl_->CategoryLinkInfo_->DoDelete_ (link.first ());
 	}
 
 	QList<ExpenseEntry> Storage::HandleNaked (const QList<NakedExpenseEntry>& nakedItems)
@@ -431,7 +431,7 @@ namespace Poleemery
 			{
 				ExpenseEntry entry { naked };
 
-				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_.SingleFKeySelectors_) (naked);
+				const auto& cats = boost::fusion::at_c<1> (Impl_->CategoryLinkInfo_->SingleFKeySelectors_) (naked);
 				for (const auto& cat : cats)
 					entry.Categories_ << Impl_->CatIDCache_ [cat.Category_].Name_;
 
@@ -450,15 +450,15 @@ namespace Poleemery
 
 	void Storage::InitializeTables ()
 	{
-		Impl_->AccountInfo_ = Util::oral::Adapt<Account> (Impl_->DB_);
-		Impl_->NakedExpenseEntryInfo_ = Util::oral::Adapt<NakedExpenseEntry> (Impl_->DB_);
-		Impl_->ReceiptEntryInfo_ = Util::oral::Adapt<ReceiptEntry> (Impl_->DB_);
-		Impl_->CategoryInfo_ = Util::oral::Adapt<Category> (Impl_->DB_);
-		Impl_->CategoryLinkInfo_ = Util::oral::Adapt<CategoryLink> (Impl_->DB_);
-		Impl_->RateInfo_ = Util::oral::Adapt<Rate> (Impl_->DB_);
 		Util::DBLock lock (Impl_->DB_);
 		lock.Init ();
 
+		Impl_->AccountInfo_ = Util::oral::AdaptPtr<Account> (Impl_->DB_);
+		Impl_->NakedExpenseEntryInfo_ = Util::oral::AdaptPtr<NakedExpenseEntry> (Impl_->DB_);
+		Impl_->ReceiptEntryInfo_ = Util::oral::AdaptPtr<ReceiptEntry> (Impl_->DB_);
+		Impl_->CategoryInfo_ = Util::oral::AdaptPtr<Category> (Impl_->DB_);
+		Impl_->CategoryLinkInfo_ = Util::oral::AdaptPtr<CategoryLink> (Impl_->DB_);
+		Impl_->RateInfo_ = Util::oral::AdaptPtr<Rate> (Impl_->DB_);
 
 		lock.Good ();
 	}
@@ -467,7 +467,7 @@ namespace Poleemery
 	{
 		try
 		{
-			for (const auto& cat : Impl_->CategoryInfo_.DoSelectAll_ ())
+			for (const auto& cat : Impl_->CategoryInfo_->DoSelectAll_ ())
 			{
 				Impl_->CatCache_ [cat.Name_] = cat;
 				Impl_->CatIDCache_ [cat.ID_] = cat;
