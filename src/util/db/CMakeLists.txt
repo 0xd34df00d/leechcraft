@@ -31,7 +31,7 @@ add_library (leechcraft-util-db${LC_LIBSUFFIX} SHARED
 target_link_libraries (leechcraft-util-db${LC_LIBSUFFIX}
 	leechcraft-xsd${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-db${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-util-db${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-db${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Sql Widgets)
