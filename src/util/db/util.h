@@ -41,11 +41,11 @@ namespace LeechCraft
 {
 namespace Util
 {
-	UTIL_DB_API void RunTextQuery (QSqlDatabase& db, const QString& text);
+	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
 
 	UTIL_DB_API QString LoadQuery (const QString& pluginName, const QString& filename);
 
-	UTIL_DB_API void RunQuery (QSqlDatabase& db, const QString& pluginName, const QString& filename);
+	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& pluginName, const QString& filename);
 
 	template<typename T = int>
 	T GetLastId (const QSqlQuery& query)

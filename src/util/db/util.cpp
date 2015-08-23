@@ -36,7 +36,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	void RunTextQuery (QSqlDatabase& db, const QString& text)
+	void RunTextQuery (const QSqlDatabase& db, const QString& text)
 	{
 		QSqlQuery query { db };
 		query.prepare (text);
@@ -57,7 +57,7 @@ namespace Util
 		return QString::fromUtf8 (file.readAll ());
 	}
 
-	void RunQuery (QSqlDatabase& db, const QString& pluginName, const QString& filename)
+	void RunQuery (const QSqlDatabase& db, const QString& pluginName, const QString& filename)
 	{
 		QSqlQuery query { db };
 		query.prepare (LoadQuery (pluginName, filename));
