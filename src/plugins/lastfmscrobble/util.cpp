@@ -136,7 +136,9 @@ namespace Lastfmscrobble
 		params.append ({ "api_key", lastfm::ws::ApiKey });
 		params.append ({ "sk", lastfm::ws::SessionKey });
 
-		return MakePostRequest (nam, params);
+		return XmlSettingsManager::Instance ().property ("UseGetRequests").toBool () ?
+				MakeGetRequest (nam, params) :
+				MakePostRequest (nam, params);
 	}
 
 	Media::ArtistInfo GetArtistInfo (const QDomElement& artist)

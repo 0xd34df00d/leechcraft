@@ -14,6 +14,10 @@
 				<label value="Language to fetch info in:" />
 				<tooltip>The two-letter ISO code of the language (like "en" or "ru"), or empty to use system default language.</tooltip>
 			</item>
+			<item type="checkbox" property="UseGetRequests">
+				<label value="Use HTTP GET instead of HTTP POST" />
+				<tooltip>This may help if Last.FM service is experiencing issues.</tooltip>
+			</item>
 		</groupbox>
 	</page>
 </settings>
