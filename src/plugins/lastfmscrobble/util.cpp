@@ -70,7 +70,7 @@ namespace Lastfmscrobble
 		QUrlQuery query;
 		for (const auto& pair : params)
 			query.addQueryItem (pair.first, pair.second);
-		return query.toString (QUrl::QUrl::FullyEncoded).toUtf8 ();
+		return query.toString (QUrl::FullyEncoded).toUtf8 ();
 #endif
 	}
 
@@ -91,12 +91,14 @@ namespace Lastfmscrobble
 
 	QNetworkReply* Request (const QString& method, QNetworkAccessManager *nam, QList<QPair<QString, QString>> params)
 	{
-		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
 		params.append ({ "method", method });
 		params.append ({ "api_key", lastfm::ws::ApiKey });
 		params.append ({ "sk", lastfm::ws::SessionKey });
 
+
 		const auto& data = MakeCall (params);
+
+		QNetworkRequest req (QUrl ("http://ws.audioscrobbler.com/2.0/"));
 		req.setHeader (QNetworkRequest::ContentLengthHeader, data.size ());
 		req.setHeader (QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
 		return nam->post (req, data);
