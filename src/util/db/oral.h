@@ -284,6 +284,13 @@ namespace oral
 		}
 	};
 
+	enum class InsertAction
+	{
+		Default,
+		Ignore,
+		Replace
+	};
+
 	namespace detail
 	{
 		struct Types
@@ -391,23 +398,38 @@ namespace oral
 			return HasAutogenPKeyImpl<Seq> (0);
 		}
 
+		QString GetInsertPrefix (InsertAction action)
+		{
+			switch (action)
+			{
+			case InsertAction::Default:
+				return "INSERT";
+			case InsertAction::Ignore:
+				return "INSERT OR IGNORE";
+			case InsertAction::Replace:
+				return "INSERT OR REPLACE";
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown action"
+					<< static_cast<int> (action);
+			return "INSERT";
+		}
+
 		template<typename Seq>
 		struct AdaptInsert
 		{
 			const CachedFieldsData Data_;
-			const QString Insert_;
-			const QSqlQuery_ptr InsertQuery_;
+			const QString InsertSuffix_;
 
 			struct PrivateTag {};
 
 			AdaptInsert (const CachedFieldsData& data, const PrivateTag&)
 			: Data_ (data)
-			, Insert_ ("INSERT INTO " + data.Table_ +
+			, InsertSuffix_ (" INTO " + data.Table_ +
 					" (" + QStringList { data.Fields_ }.join (", ") + ") VALUES (" +
 					QStringList { data.BoundFields_ }.join (", ") + ");")
-			, InsertQuery_ (std::make_shared<QSqlQuery> (data.DB_))
 			{
-				InsertQuery_->prepare (Insert_);
 			}
 		public:
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
@@ -435,18 +457,22 @@ namespace oral
 			}
 
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			EnableIf_t<Autogen> operator() (Seq& t) const
+			EnableIf_t<Autogen> operator() (Seq& t, InsertAction action = InsertAction::Default) const
 			{
-				MakeInserter<Seq> (Data_, InsertQuery_, false) (t);
+				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
+				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+				MakeInserter<Seq> (Data_, query, false) (t);
 
 				constexpr auto index = FindPKey<Seq>::result_type::value;
-				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<Seq, index>> {} (InsertQuery_->lastInsertId ());
+				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
 			}
 
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			EnableIf_t<!Autogen> operator() (const Seq& t) const
+			EnableIf_t<!Autogen> operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
-				MakeInserter<Seq> (Data_, InsertQuery_, true) (t);
+				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
+				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+				MakeInserter<Seq> (Data_, query, true) (t);
 			}
 		};
 
