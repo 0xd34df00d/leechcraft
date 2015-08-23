@@ -104,7 +104,7 @@ namespace Xoox
 		if (result.isEmpty ())
 			return {};
 
-		return *result.front ().JID_;
+		return result.front ().VCardIq_;
 	}
 }
 }
