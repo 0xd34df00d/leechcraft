@@ -48,30 +48,33 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	QByteArray MakeCall (QList<QPair<QString, QString>> params)
+	namespace
 	{
-		std::sort (params.begin (), params.end (),
-				[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
-					{ return left.first < right.first; });
-		auto str = std::accumulate (params.begin (), params.end (), QString (),
-				[] (const QString& str, decltype (params.front ()) pair)
-					{ return str + pair.first + pair.second; });
-		str += lastfm::ws::SharedSecret;
-		const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
+		QByteArray MakeCall (QList<QPair<QString, QString>> params)
+		{
+			std::sort (params.begin (), params.end (),
+					[] (decltype (*params.constEnd ()) left, decltype (*params.constEnd ()) right)
+						{ return left.first < right.first; });
+			auto str = std::accumulate (params.begin (), params.end (), QString (),
+					[] (const QString& str, decltype (params.front ()) pair)
+						{ return str + pair.first + pair.second; });
+			str += lastfm::ws::SharedSecret;
+			const auto& sig = QCryptographicHash::hash (str.toUtf8 (), QCryptographicHash::Md5).toHex ();
 
-		params.append ({ "api_sig", sig });
+			params.append ({ "api_sig", sig });
 
 #if QT_VERSION < 0x050000
-		QUrl url;
-		for (const auto& pair : params)
-			url.addQueryItem (pair.first, pair.second);
-		return url.encodedQuery ();
+			QUrl url;
+			for (const auto& pair : params)
+				url.addQueryItem (pair.first, pair.second);
+			return url.encodedQuery ();
 #else
-		QUrlQuery query;
-		for (const auto& pair : params)
-			query.addQueryItem (pair.first, pair.second);
-		return query.toString (QUrl::FullyEncoded).toUtf8 ();
+			QUrlQuery query;
+			for (const auto& pair : params)
+				query.addQueryItem (pair.first, pair.second);
+			return query.toString (QUrl::FullyEncoded).toUtf8 ();
 #endif
+		}
 	}
 
 	void AddLanguageParam (QMap<QString, QString>& params)
