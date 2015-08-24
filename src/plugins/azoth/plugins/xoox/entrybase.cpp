@@ -739,12 +739,13 @@ namespace Xoox
 #endif
 
 		VCardIq_ = vcard;
-		VCardPhotoHash_ = VCardIq_.photo ().isEmpty () ?
+		const auto& photo = vcard.photo ();
+		VCardPhotoHash_ = photo.isEmpty () ?
 				QByteArray () :
-				QCryptographicHash::hash (VCardIq_.photo (), QCryptographicHash::Sha1);
+				QCryptographicHash::hash (photo, QCryptographicHash::Sha1);
 
-		if (!vcard.photo ().isEmpty ())
-			SetAvatar (vcard.photo ());
+		if (!photo.isEmpty ())
+			SetAvatar (photo);
 
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
