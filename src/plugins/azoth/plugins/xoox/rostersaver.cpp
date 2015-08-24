@@ -43,10 +43,12 @@ namespace Azoth
 {
 namespace Xoox
 {
-	RosterSaver::RosterSaver (GlooxProtocol *proto, IProxyObject *proxy, QObject *parent)
+	RosterSaver::RosterSaver (GlooxProtocol *proto,
+			IProxyObject *proxy, VCardStorage *storage, QObject *parent)
 	: QObject { parent }
 	, Proto_ { proto }
 	, Proxy_ { proxy }
+	, VCardStorage_ { storage }
 	{
 		LoadRoster ();
 

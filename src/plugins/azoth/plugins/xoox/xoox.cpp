@@ -77,7 +77,13 @@ namespace Xoox
 		GlooxProtocol_->SetProxyObject (PluginProxy_);
 		GlooxProtocol_->Prepare ();
 
-		new RosterSaver { GlooxProtocol_.get (), PluginProxy_, GlooxProtocol_.get () };
+		new RosterSaver
+		{
+			GlooxProtocol_.get (),
+			PluginProxy_,
+			VCardStorage_.get (),
+			GlooxProtocol_.get ()
+		};
 	}
 
 	void Plugin::Release ()

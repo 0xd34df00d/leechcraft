@@ -40,6 +40,7 @@ class IProxyObject;
 namespace Xoox
 {
 	class GlooxProtocol;
+	class VCardStorage;
 
 	class RosterSaver : public QObject
 	{
@@ -47,10 +48,11 @@ namespace Xoox
 
 		GlooxProtocol * const Proto_;
 		IProxyObject * const Proxy_;
+		VCardStorage * const VCardStorage_;
 
 		bool SaveRosterScheduled_ = false;
 	public:
-		RosterSaver (GlooxProtocol*, IProxyObject*, QObject* = nullptr);
+		RosterSaver (GlooxProtocol*, IProxyObject*, VCardStorage*, QObject* = nullptr);
 	private:
 		void LoadRoster ();
 
