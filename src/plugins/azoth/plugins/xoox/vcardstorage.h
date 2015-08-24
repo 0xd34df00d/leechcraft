@@ -48,6 +48,8 @@ namespace Xoox
 		VCardStorage (QObject* = nullptr);
 
 		void SetVCard (const QString& jid, const QString& vcard);
+		void SetVCard (const QString& jid, const QXmppVCardIq& vcard);
+
 		boost::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
 	};
 }

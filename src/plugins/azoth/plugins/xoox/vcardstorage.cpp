@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "vcardstorage.h"
+#include <QXmlStreamWriter>
 #include <QtDebug>
 #include "vcardstorageondisk.h"
 
@@ -46,6 +47,15 @@ namespace Xoox
 	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
 	{
 		DB_->SetVCard (jid, vcard);
+	}
+
+	void VCardStorage::SetVCard (const QString& jid, const QXmppVCardIq& vcard)
+	{
+		QString serialized;
+		QXmlStreamWriter writer { &serialized };
+		vcard.toXml (&writer);
+
+		SetVCard (jid, serialized);
 	}
 
 	boost::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
