@@ -47,6 +47,7 @@ class IProxyObject;
 namespace Xoox
 {
 	class GlooxProtocol;
+	class VCardStorage;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -62,6 +63,8 @@ namespace Xoox
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		IProxyObject *PluginProxy_;
+
+		std::shared_ptr<VCardStorage> VCardStorage_;
 
 		std::shared_ptr<GlooxProtocol> GlooxProtocol_;
 	public:

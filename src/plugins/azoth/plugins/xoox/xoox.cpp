@@ -39,6 +39,7 @@
 #include "xmlsettingsmanager.h"
 #include "rostersaver.h"
 #include "capsdatabase.h"
+#include "vcardstorage.h"
 
 namespace LeechCraft
 {
@@ -66,6 +67,8 @@ namespace Xoox
 
 		const auto& progRep = proxy->GetPluginsManager ()->CreateLoadProgressReporter (this);
 		const auto capsDB = new CapsDatabase { progRep };
+
+		VCardStorage_ = std::make_shared<VCardStorage> ();
 		GlooxProtocol_ = std::make_shared<GlooxProtocol> (capsDB);
 	}
 
