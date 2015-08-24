@@ -57,10 +57,11 @@ namespace Azoth
 {
 namespace Xoox
 {
-	GlooxProtocol::GlooxProtocol (CapsDatabase *capsDB, QObject *parent)
+	GlooxProtocol::GlooxProtocol (CapsDatabase *capsDB, VCardStorage *storage, QObject *parent)
 	: QObject { parent }
 	, ParentProtocolPlugin_ { parent }
 	, CapsDB_ { capsDB }
+	, VCardStorage_ { storage }
 	{
 		const auto logger = QXmppLogger::getLogger ();
 		logger->setLoggingType (QXmppLogger::FileLogging);

@@ -69,7 +69,8 @@ namespace Xoox
 		const auto capsDB = new CapsDatabase { progRep };
 
 		VCardStorage_ = std::make_shared<VCardStorage> ();
-		GlooxProtocol_ = std::make_shared<GlooxProtocol> (capsDB);
+
+		GlooxProtocol_ = std::make_shared<GlooxProtocol> (capsDB, VCardStorage_.get ());
 	}
 
 	void Plugin::SecondInit ()

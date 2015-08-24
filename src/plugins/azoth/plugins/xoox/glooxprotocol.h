@@ -47,6 +47,7 @@ namespace Xoox
 {
 	class GlooxAccount;
 	class CapsDatabase;
+	class VCardStorage;
 
 	class GlooxProtocol : public QObject
 						, public IProtocol
@@ -64,9 +65,10 @@ namespace Xoox
 		QList<GlooxAccount*> Accounts_;
 
 		CapsDatabase *CapsDB_;
+		VCardStorage *VCardStorage_;
 		IProxyObject *ProxyObject_ = nullptr;
 	public:
-		GlooxProtocol (CapsDatabase*, QObject* = nullptr);
+		GlooxProtocol (CapsDatabase*, VCardStorage*, QObject* = nullptr);
 		virtual ~GlooxProtocol ();
 
 		void Prepare ();
