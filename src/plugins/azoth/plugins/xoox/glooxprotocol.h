@@ -77,6 +77,7 @@ namespace Xoox
 		void SetProxyObject (IProxyObject*);
 
 		CapsDatabase* GetCapsDatabase () const;
+		VCardStorage* GetVCardStorage () const;
 
 		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;

@@ -98,6 +98,11 @@ namespace Xoox
 		return CapsDB_;
 	}
 
+	VCardStorage* GlooxProtocol::GetVCardStorage () const
+	{
+		return VCardStorage_;
+	}
+
 	QObject* GlooxProtocol::GetQObject ()
 	{
 		return this;
