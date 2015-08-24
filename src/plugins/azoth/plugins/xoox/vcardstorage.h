@@ -31,6 +31,7 @@
 
 #include <boost/optional.hpp>
 #include <QObject>
+#include <QXmppVCardIq.h>
 
 namespace LeechCraft
 {
@@ -47,7 +48,7 @@ namespace Xoox
 		VCardStorage (QObject* = nullptr);
 
 		void SetVCard (const QString& jid, const QString& vcard);
-		boost::optional<QString> GetVCard (const QString& jid) const;
+		boost::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
 	};
 }
 }

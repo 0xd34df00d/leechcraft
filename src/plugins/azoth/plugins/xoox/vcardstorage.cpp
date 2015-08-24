@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "vcardstorage.h"
+#include <QtDebug>
 #include "vcardstorageondisk.h"
 
 namespace LeechCraft
@@ -47,9 +48,24 @@ namespace Xoox
 		DB_->SetVCard (jid, vcard);
 	}
 
-	boost::optional<QString> VCardStorage::GetVCard (const QString& jid) const
+	boost::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
 	{
-		return DB_->GetVCard (jid);
+		const auto res = DB_->GetVCard (jid);
+		if (!res)
+			return {};
+
+		QDomDocument vcardDoc;
+		if (!vcardDoc.setContent (*res))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse"
+					<< *res;
+			return {};
+		}
+
+		QXmppVCardIq vcard;
+		vcard.parse (vcardDoc.documentElement ());
+		return vcard;
 	}
 }
 }
