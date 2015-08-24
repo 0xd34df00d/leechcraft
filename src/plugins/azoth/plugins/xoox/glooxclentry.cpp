@@ -109,7 +109,6 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
 	: EntryBase (parent)
 	, BareJID_ (jid)
-	, AuthRequested_ (false)
 	{
 		Initialize ();
 	}
@@ -117,7 +116,6 @@ namespace Xoox
 	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
 	, ODS_ (ods)
-	, AuthRequested_ (false)
 	{
 		const QString& pre = Account_->GetAccountID () + '_';
 		if (ods->ID_.startsWith (pre))

@@ -82,7 +82,7 @@ namespace Xoox
 		};
 		QList<MessageQueueItem> MessageQueue_;
 
-		bool AuthRequested_;
+		bool AuthRequested_ = false;
 
 		mutable QList<QAction*> GWActions_;
 		QAction *BlockContact_;
