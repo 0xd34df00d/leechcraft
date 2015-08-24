@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 
 namespace LeechCraft
@@ -44,6 +45,9 @@ namespace Xoox
 		VCardStorageOnDisk * const DB_;
 	public:
 		VCardStorage (QObject* = nullptr);
+
+		void SetVCard (const QString& jid, const QString& vcard);
+		boost::optional<QString> GetVCard (const QString& jid) const;
 	};
 }
 }

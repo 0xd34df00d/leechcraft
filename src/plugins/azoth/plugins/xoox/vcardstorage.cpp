@@ -41,6 +41,16 @@ namespace Xoox
 	, DB_ { new VCardStorageOnDisk { this } }
 	{
 	}
+
+	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
+	{
+		DB_->SetVCard (jid, vcard);
+	}
+
+	boost::optional<QString> VCardStorage::GetVCard (const QString& jid) const
+	{
+		return DB_->GetVCard (jid);
+	}
 }
 }
 }
