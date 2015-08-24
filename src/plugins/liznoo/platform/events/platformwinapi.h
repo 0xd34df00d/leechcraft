@@ -39,14 +39,14 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+namespace WinAPI
+{
+    class FakeQWidgetWinAPI;
+    using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
+}
+
 namespace Events
 {
-	namespace WinAPI
-	{
-		class FakeQWidgetWinAPI;
-		using FakeQWidgetWinAPI_ptr = std::shared_ptr<FakeQWidgetWinAPI>;
-	}
-
 	class PlatformWinAPI : public PlatformLayer
 	{
 		Q_OBJECT
