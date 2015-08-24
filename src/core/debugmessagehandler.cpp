@@ -143,6 +143,7 @@ namespace
 
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
 	{
+#ifdef _GNU_SOURCE
 		const int maxSize = 100;
 		void *array [maxSize];
 		size_t size = backtrace (array, maxSize);
@@ -154,6 +155,7 @@ namespace
 			*ostr << i << "\t" << strings [i] << std::endl;
 
 		std::free (strings);
+#endif
 	}
 }
 
