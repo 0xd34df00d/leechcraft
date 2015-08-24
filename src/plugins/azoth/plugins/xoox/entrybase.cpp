@@ -229,7 +229,7 @@ namespace Xoox
 		if (!VCardDialog_)
 		{
 			VCardDialog_ = new VCardDialog (this);
-			VCardDialog_->UpdateInfo (VCardIq_);
+			VCardDialog_->UpdateInfo (GetVCard ());
 		}
 
 		QPointer<VCardDialog> ptr (VCardDialog_);
@@ -309,7 +309,7 @@ namespace Xoox
 		switch (field)
 		{
 		case DataField::BirthDate:
-			return VCardIq_.birthday ();
+			return GetVCard ().birthday ();
 		}
 
 		qWarning () << Q_FUNC_INFO
@@ -323,17 +323,19 @@ namespace Xoox
 	{
 		Account_->GetClientConnection ()->FetchVCard (GetJID ());
 
+		const auto vcard = GetVCard ();
+
 		QList<QPair<QString, QVariant>> result
 		{
-			{ tr ("Photo"), QImage::fromData (VCardIq_.photo ()) },
-			{ "JID", VCardIq_.from () },
-			{ tr ("Real name"), VCardIq_.fullName () },
-			{ tr ("Birthday"), VCardIq_.birthday () },
-			{ "URL", VCardIq_.url () },
-			{ tr ("About"), VCardIq_.description () }
+			{ tr ("Photo"), QImage::fromData (vcard.photo ()) },
+			{ "JID", vcard.from () },
+			{ tr ("Real name"), vcard.fullName () },
+			{ tr ("Birthday"), vcard.birthday () },
+			{ "URL", vcard.url () },
+			{ tr ("About"), vcard.description () }
 		};
 
-		for (const auto& phone : VCardIq_.phones ())
+		for (const auto& phone : vcard.phones ())
 		{
 			if (phone.number ().isEmpty ())
 				continue;
@@ -353,7 +355,7 @@ namespace Xoox
 						phone.number () + " (" + attrs.join (", ") + ")" });
 		}
 
-		for (const auto& email : VCardIq_.emails ())
+		for (const auto& email : vcard.emails ())
 		{
 			if (email.address ().isEmpty ())
 				continue;
@@ -373,7 +375,7 @@ namespace Xoox
 						email.address () + " (" + attrs.join (", ") + ")" });
 		}
 
-		for (const auto& address : VCardIq_.addresses ())
+		for (const auto& address : vcard.addresses ())
 		{
 			if ((address.country () + address.locality () + address.postcode () +
 					address.region () + address.street ()).isEmpty ())
@@ -406,7 +408,7 @@ namespace Xoox
 		}
 
 #if QXMPP_VERSION >= 0x000800
-		const auto& orgInfo = VCardIq_.organization ();
+		const auto& orgInfo = vcard.organization ();
 		result.append ({ tr ("Organization"), orgInfo.organization () });
 		result.append ({ tr ("Organization unit"), orgInfo.unit () });
 		result.append ({ tr ("Job title"), orgInfo.title () });
