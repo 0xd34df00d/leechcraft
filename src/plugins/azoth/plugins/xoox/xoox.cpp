@@ -82,7 +82,6 @@ namespace Xoox
 		{
 			GlooxProtocol_.get (),
 			PluginProxy_,
-			VCardStorage_.get (),
 			GlooxProtocol_.get ()
 		};
 	}
