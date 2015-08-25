@@ -77,6 +77,21 @@ namespace Xoox
 
 	namespace
 	{
+		QString GetBareJID (const QString& entryId, GlooxAccount * const acc)
+		{
+			const auto& pre = acc->GetAccountID () + '_';
+			if (!entryId.startsWith (pre))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "entry ID doesn't start with"
+						<< pre
+						<< entryId;
+				return entryId;
+			}
+
+			return entryId.mid (pre.size ());
+		}
+
 		void LoadVCard (const QDomElement& vcardElem, const QString& entryId, VCardStorage *storage)
 		{
 			if (vcardElem.isNull ())
@@ -131,22 +146,9 @@ namespace Xoox
 
 	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
 	: EntryBase (parent)
+	, BareJID_ (GetBareJID (ods->ID_, parent))
 	, ODS_ (ods)
 	{
-		const QString& pre = Account_->GetAccountID () + '_';
-		if (ods->ID_.startsWith (pre))
-			BareJID_ = ods->ID_.mid (pre.size ());
-		else
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "ODS's ID doesn't start with"
-					<< pre
-					<< ods->ID_;
-			BareJID_ = ods->ID_;
-		}
-
-		SetVCard (ods->VCardIq_, true);
-
 		Initialize ();
 	}
 
