@@ -57,7 +57,6 @@ namespace Xoox
 		QString Name_;
 		QStringList Groups_;
 		AuthStatus AuthStatus_;
-		QXmppVCardIq VCardIq_;
 	};
 	typedef std::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 

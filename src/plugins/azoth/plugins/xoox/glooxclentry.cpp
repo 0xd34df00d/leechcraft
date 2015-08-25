@@ -105,10 +105,6 @@ namespace Xoox
 					.firstChildElement ("id").text ().toLatin1 ());
 		const QString& name = entry.firstChildElement ("name").text ();
 
-		const auto& vcardData = entry.firstChildElement ("vcard").text ().toLatin1 ();
-		QDomDocument vcardDoc;
-		vcardDoc.setContent (QByteArray::fromBase64 (vcardData));
-
 		QStringList groups;
 		QDomElement group = entry
 				.firstChildElement ("groups")
@@ -128,7 +124,6 @@ namespace Xoox
 		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
 		ods->AuthStatus_ = proxy->AuthStatusFromString (authStatusText);
 
-		ods->VCardIq_.parse (vcardDoc.documentElement ());
 		LoadVCard (entry.firstChildElement ("vcard"), entryID,
 				acc, acc->GetParentProtocol ()->GetVCardStorage ());
 	}
@@ -180,7 +175,6 @@ namespace Xoox
 		ods->Name_ = GetEntryName ();
 		ods->Groups_ = Groups ();
 		ods->AuthStatus_ = GetAuthStatus ();
-		ods->VCardIq_ = GetVCard ();
 
 		return ods;
 	}
