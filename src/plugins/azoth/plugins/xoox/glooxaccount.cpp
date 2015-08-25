@@ -241,7 +241,7 @@ namespace Xoox
 
 	IAccount::AccountFeatures GlooxAccount::GetAccountFeatures () const
 	{
-		return FRenamable | FSupportsXA | FMUCsSupportFileTransfers;
+		return FRenamable | FSupportsXA | FMUCsSupportFileTransfers | FCanViewContactsInfoInOffline;
 	}
 
 	QList<QObject*> GlooxAccount::GetCLEntries ()
