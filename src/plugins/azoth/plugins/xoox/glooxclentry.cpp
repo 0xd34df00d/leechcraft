@@ -98,7 +98,8 @@ namespace Xoox
 			if (vcardElem.isNull ())
 				return;
 
-			storage->SetVCard (GetBareJID (entryId, acc), vcardElem.text ());
+			storage->SetVCard (GetBareJID (entryId, acc),
+					QByteArray::fromBase64 (vcardElem.text ().toLatin1 ()));
 		}
 	}
 
