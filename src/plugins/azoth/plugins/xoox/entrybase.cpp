@@ -77,6 +77,7 @@
 #include "pingreplyobject.h"
 #include "pendingversionquery.h"
 #include "discomanagerwrapper.h"
+#include "vcardstorage.h"
 
 namespace LeechCraft
 {
@@ -728,17 +729,12 @@ namespace Xoox
 
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
-		return VCardIq_;
+		const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
+		return storage->GetVCard (GetHumanReadableID ()).get_value_or ({});
 	}
 
-	void EntryBase::SetVCard (const QXmppVCardIq& vcard, bool initial)
+	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
-#if QXMPP_VERSION >= 0x000801
-		if (vcard == VCardIq_)
-			return;
-#endif
-
-		VCardIq_ = vcard;
 		const auto& photo = vcard.photo ();
 		VCardPhotoHash_ = photo.isEmpty () ?
 				QByteArray () :
@@ -750,9 +746,8 @@ namespace Xoox
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		if (!initial &&
-				GetEntryType () == ICLEntry::EntryType::Chat)
-			Account_->RequestRosterSave ();
+		Account_->GetParentProtocol ()->GetVCardStorage ()->
+				SetVCard (GetHumanReadableID (), vcard);
 
 		emit vcardUpdated ();
 	}

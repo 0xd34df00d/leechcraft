@@ -116,7 +116,6 @@ namespace Xoox
 		QMap<QString, GeolocationInfo_t> Location_;
 
 		QImage Avatar_;
-		QXmppVCardIq VCardIq_;
 		QPointer<VCardDialog> VCardDialog_;
 
 		QByteArray VCardPhotoHash_;
@@ -201,7 +200,7 @@ namespace Xoox
 		void SetAvatar (const QByteArray&);
 		void SetAvatar (const QImage&);
 		QXmppVCardIq GetVCard () const;
-		void SetVCard (const QXmppVCardIq&, bool initial = false);
+		void SetVCard (const QXmppVCardIq&);
 
 		bool HasUnreadMsgs () const;
 		QList<GlooxMessage*> GetUnreadMessages () const;
