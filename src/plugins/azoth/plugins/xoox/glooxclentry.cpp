@@ -65,13 +65,6 @@ namespace Xoox
 			Q_FOREACH (const QString& group, ods->Groups_)
 				w->writeTextElement ("group", group);
 			w->writeEndElement ();
-
-			QByteArray vcardData;
-			{
-				QXmlStreamWriter vcardWriter (&vcardData);
-				ods->VCardIq_.toXml (&vcardWriter);
-			}
-			w->writeTextElement ("vcard", vcardData.toBase64 ());
 		w->writeEndElement ();
 	}
 
