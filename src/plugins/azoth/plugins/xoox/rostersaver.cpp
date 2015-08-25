@@ -135,10 +135,12 @@ namespace Xoox
 							<< "entry ID is empty";
 				else
 				{
-					const auto ods = std::make_shared<OfflineDataSource> ();
-					Load (ods, entry, Proxy_, VCardStorage_);
+					const auto acc = id2account [id];
 
-					id2account [id]->CreateFromODS (ods);
+					const auto ods = std::make_shared<OfflineDataSource> ();
+					Load (ods, entry, Proxy_, acc);
+
+					acc->CreateFromODS (ods);
 				}
 				entry = entry.nextSiblingElement ("entry");
 			}
@@ -161,6 +163,8 @@ namespace Xoox
 	void RosterSaver::saveRoster ()
 	{
 		SaveRosterScheduled_ = false;
+		return;
+
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
 					.absoluteFilePath ("roster.xml"));
 		if (!rosterFile.open (QIODevice::WriteOnly | QIODevice::Truncate))

@@ -92,7 +92,8 @@ namespace Xoox
 			return entryId.mid (pre.size ());
 		}
 
-		void LoadVCard (const QDomElement& vcardElem, const QString& entryId, VCardStorage *storage)
+		void LoadVCard (const QDomElement& vcardElem,
+				const QString& entryId, GlooxAccount * const acc, VCardStorage *storage)
 		{
 			if (vcardElem.isNull ())
 				return;
@@ -104,7 +105,7 @@ namespace Xoox
 	void Load (OfflineDataSource_ptr ods,
 			const QDomElement& entry,
 			IProxyObject *proxy,
-			VCardStorage *storage)
+			GlooxAccount * const acc)
 	{
 		const QByteArray& entryID = QByteArray::fromPercentEncoding (entry
 					.firstChildElement ("id").text ().toLatin1 ());
@@ -133,8 +134,9 @@ namespace Xoox
 		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
 		ods->AuthStatus_ = proxy->AuthStatusFromString (authStatusText);
 
-		LoadVCard (entry.firstChildElement ("vcard"), entryID, storage);
 		ods->VCardIq_.parse (vcardDoc.documentElement ());
+		LoadVCard (entry.firstChildElement ("vcard"), entryID,
+				acc, acc->GetParentProtocol ()->GetVCardStorage ());
 	}
 
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)

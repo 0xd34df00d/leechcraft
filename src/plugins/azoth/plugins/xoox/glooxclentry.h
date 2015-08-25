@@ -62,7 +62,7 @@ namespace Xoox
 	typedef std::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 
 	void Save (OfflineDataSource_ptr, QXmlStreamWriter*, IProxyObject*);
-	void Load (OfflineDataSource_ptr, const QDomElement&, IProxyObject*, VCardStorage*);
+	void Load (OfflineDataSource_ptr, const QDomElement&, IProxyObject*, GlooxAccount* const);
 
 	class GlooxCLEntry : public EntryBase
 					   , public IAuthable
