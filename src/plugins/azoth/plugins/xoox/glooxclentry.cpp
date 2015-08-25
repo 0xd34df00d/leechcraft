@@ -46,6 +46,7 @@
 #include "gwoptionsdialog.h"
 #include "privacylistsmanager.h"
 #include "glooxmessage.h"
+#include "vcardstorage.h"
 
 namespace LeechCraft
 {
@@ -74,7 +75,21 @@ namespace Xoox
 		w->writeEndElement ();
 	}
 
-	void Load (OfflineDataSource_ptr ods, const QDomElement& entry, IProxyObject *proxy)
+	namespace
+	{
+		void LoadVCard (const QDomElement& vcardElem, const QString& entryId, VCardStorage *storage)
+		{
+			if (vcardElem.isNull ())
+				return;
+
+			storage->SetVCard (entryId, vcardElem.text ());
+		}
+	}
+
+	void Load (OfflineDataSource_ptr ods,
+			const QDomElement& entry,
+			IProxyObject *proxy,
+			VCardStorage *storage)
 	{
 		const QByteArray& entryID = QByteArray::fromPercentEncoding (entry
 					.firstChildElement ("id").text ().toLatin1 ());
@@ -103,6 +118,7 @@ namespace Xoox
 		const auto& authStatusText = entry.firstChildElement ("authstatus").text ();
 		ods->AuthStatus_ = proxy->AuthStatusFromString (authStatusText);
 
+		LoadVCard (entry.firstChildElement ("vcard"), entryID, storage);
 		ods->VCardIq_.parse (vcardDoc.documentElement ());
 	}
 

@@ -49,6 +49,7 @@ namespace Xoox
 {
 	class GlooxAccount;
 	class PrivacyList;
+	class VCardStorage;
 
 	struct OfflineDataSource
 	{
@@ -61,7 +62,7 @@ namespace Xoox
 	typedef std::shared_ptr<OfflineDataSource> OfflineDataSource_ptr;
 
 	void Save (OfflineDataSource_ptr, QXmlStreamWriter*, IProxyObject*);
-	void Load (OfflineDataSource_ptr, const QDomElement&, IProxyObject*);
+	void Load (OfflineDataSource_ptr, const QDomElement&, IProxyObject*, VCardStorage*);
 
 	class GlooxCLEntry : public EntryBase
 					   , public IAuthable

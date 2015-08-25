@@ -136,7 +136,7 @@ namespace Xoox
 				else
 				{
 					const auto ods = std::make_shared<OfflineDataSource> ();
-					Load (ods, entry, Proxy_);
+					Load (ods, entry, Proxy_, VCardStorage_);
 
 					id2account [id]->CreateFromODS (ods);
 				}
