@@ -216,6 +216,13 @@ namespace Xoox
 
 	void EntryBase::ShowInfo ()
 	{
+		if (!VCardDialog_)
+		{
+			VCardDialog_ = new VCardDialog (this);
+			VCardDialog_->UpdateInfo (GetVCard ());
+		}
+		VCardDialog_->show ();
+
 		if (Account_->GetState ().State_ == SOffline)
 		{
 			Entity e = LeechCraft::Util::MakeNotification ("Azoth",
@@ -226,12 +233,6 @@ namespace Xoox
 			return;
 		}
 
-		if (!VCardDialog_)
-		{
-			VCardDialog_ = new VCardDialog (this);
-			VCardDialog_->UpdateInfo (GetVCard ());
-		}
-
 		QPointer<VCardDialog> ptr (VCardDialog_);
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
 				[ptr] (const QXmppVCardIq& iq)
@@ -240,7 +241,6 @@ namespace Xoox
 						ptr->UpdateInfo (iq);
 				},
 				true);
-		VCardDialog_->show ();
 	}
 
 	QMap<QString, QVariant> EntryBase::GetClientInfo (const QString& var) const
