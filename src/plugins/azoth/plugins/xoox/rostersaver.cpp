@@ -161,7 +161,6 @@ namespace Xoox
 	void RosterSaver::saveRoster ()
 	{
 		SaveRosterScheduled_ = false;
-		return;
 
 		QFile rosterFile (Util::CreateIfNotExists ("azoth/xoox")
 					.absoluteFilePath ("roster.xml"));
