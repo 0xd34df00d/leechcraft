@@ -233,7 +233,7 @@ namespace Xoox
 			return;
 		}
 
-		QPointer<VCardDialog> ptr (VCardDialog_);
+		const auto& ptr = VCardDialog_;
 		Account_->GetClientConnection ()->FetchVCard (GetJID (),
 				[ptr] (const QXmppVCardIq& iq)
 				{
