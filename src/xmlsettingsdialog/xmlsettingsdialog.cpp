@@ -165,6 +165,11 @@ namespace Util
 		return WorkingObject_;
 	}
 
+	QWidget* XmlSettingsDialog::GetWidget () const
+	{
+		return this;
+	}
+
 	QString XmlSettingsDialog::GetXml () const
 	{
 		return Document_->toString ();

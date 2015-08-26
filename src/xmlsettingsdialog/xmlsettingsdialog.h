@@ -84,6 +84,8 @@ namespace Util
 		XMLSETTINGSMANAGER_API void RegisterObject (BaseSettingsManager*, const QString&);
 		XMLSETTINGSMANAGER_API BaseSettingsManager* GetManagerObject () const;
 
+		XMLSETTINGSMANAGER_API QWidget* GetWidget () const;
+
 		/** @brief Returns the current XML.
 		 *
 		 * Returns the XML with the default settings set to current
