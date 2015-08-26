@@ -72,7 +72,7 @@ namespace LeechCraft
 			QLabel *label = new QLabel (XSD_->GetLabel (item));
 			label->setWordWrap (false);
 
-			WidgetType *box = new WidgetType (XSD_);
+			WidgetType *box = new WidgetType (XSD_->GetWidget ());
 			XSD_->SetTooltip (box, item);
 			box->setObjectName (item.attribute ("property"));
 

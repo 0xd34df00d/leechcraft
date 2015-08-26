@@ -49,7 +49,7 @@ namespace LeechCraft
 	void ItemHandlerPushButton::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QPushButton *button = new QPushButton (XSD_);
+		QPushButton *button = new QPushButton (XSD_->GetWidget ());
 		button->setObjectName (item.attribute ("name"));
 		button->setText (XSD_->GetLabel (item));
 		lay->addWidget (button, lay->rowCount (), 0, 1, 2);

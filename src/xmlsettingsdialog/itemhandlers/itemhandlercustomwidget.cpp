@@ -49,7 +49,7 @@ namespace LeechCraft
 	void ItemHandlerCustomWidget::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		QWidget *widget = new QWidget (XSD_);
+		QWidget *widget = new QWidget (XSD_->GetWidget ());
 		widget->setObjectName (item.attribute ("name"));
 		QVBoxLayout *layout = new QVBoxLayout ();
 		layout->setContentsMargins (0, 0, 0, 0);

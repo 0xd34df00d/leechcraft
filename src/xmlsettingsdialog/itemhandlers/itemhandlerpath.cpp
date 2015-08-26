@@ -70,7 +70,7 @@ namespace LeechCraft
 		else if (item.attribute ("pickerType") == "saveFileName")
 			type = FilePicker::Type::SaveFileName;
 
-		FilePicker *picker = new FilePicker (type, XSD_);
+		FilePicker *picker = new FilePicker (type, XSD_->GetWidget ());
 		const QVariant& value = XSD_->GetValue (item);
 		picker->SetText (value.toString ());
 		picker->setObjectName (item.attribute ("property"));

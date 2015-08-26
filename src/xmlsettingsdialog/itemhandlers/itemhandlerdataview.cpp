@@ -58,7 +58,7 @@ namespace LeechCraft
 	void ItemHandlerDataView::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		DataViewWidget *view = new DataViewWidget (XSD_);
+		DataViewWidget *view = new DataViewWidget (XSD_->GetWidget ());
 		connect (view,
 				SIGNAL (addRequested ()),
 				this,
@@ -276,7 +276,7 @@ namespace LeechCraft
 	{
 		const auto& infos = GetColumnInfos (model);
 
-		QDialog dia (XSD_);
+		QDialog dia (XSD_->GetWidget ());
 		QGridLayout *lay = new QGridLayout ();
 		dia.setLayout (lay);
 

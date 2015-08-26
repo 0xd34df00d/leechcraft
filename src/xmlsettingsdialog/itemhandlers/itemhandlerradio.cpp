@@ -53,7 +53,7 @@ namespace LeechCraft
 	void ItemHandlerRadio::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
-		RadioGroup *group = new RadioGroup (XSD_);
+		RadioGroup *group = new RadioGroup (XSD_->GetWidget ());
 		group->setObjectName (item.attribute ("property"));
 
 		QStringList searchTerms;

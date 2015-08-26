@@ -59,7 +59,7 @@ namespace LeechCraft
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 
 		QHBoxLayout *hboxLay = new QHBoxLayout;
-		QComboBox *box = new QComboBox (XSD_);
+		QComboBox *box = new QComboBox (XSD_->GetWidget ());
 
 		hboxLay->addWidget (box);
 

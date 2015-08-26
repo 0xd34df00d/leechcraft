@@ -56,7 +56,7 @@ namespace LeechCraft
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 
-		QTreeView *tree = new QTreeView (XSD_);
+		QTreeView *tree = new QTreeView (XSD_->GetWidget ());
 		tree->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		QString prop = item.attribute ("property");

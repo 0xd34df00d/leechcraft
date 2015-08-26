@@ -56,7 +56,7 @@ namespace LeechCraft
 		QLabel *label = new QLabel (labelString);
 		label->setWordWrap (false);
 
-		FontPicker *picker = new FontPicker (labelString, XSD_);
+		FontPicker *picker = new FontPicker (labelString, XSD_->GetWidget ());
 		picker->setObjectName (item.attribute ("property"));
 		picker->SetCurrentFont (XSD_->GetValue (item).value<QFont> ());
 

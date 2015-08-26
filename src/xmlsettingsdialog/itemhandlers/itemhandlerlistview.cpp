@@ -55,7 +55,7 @@ namespace LeechCraft
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 
-		QListView *list = new QListView (XSD_);
+		QListView *list = new QListView (XSD_->GetWidget ());
 
 		const QString& prop = item.attribute ("property");
 		list->setObjectName (prop);
