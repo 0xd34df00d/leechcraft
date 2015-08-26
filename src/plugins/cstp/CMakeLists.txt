@@ -37,4 +37,4 @@ target_link_libraries (leechcraft_cstp
 install (TARGETS leechcraft_cstp DESTINATION ${LC_PLUGINS_DEST})
 install (FILES cstpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_cstp Network)
+FindQtLibs (leechcraft_cstp Gui Network)
