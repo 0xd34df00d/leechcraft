@@ -90,7 +90,6 @@ namespace Xoox
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
-
 	}
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
