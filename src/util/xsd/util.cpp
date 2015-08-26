@@ -43,7 +43,7 @@ namespace Util
 
 		auto xsd = new Util::XmlSettingsDialog;
 		xsd->RegisterObject (bsm, filename);
-		lay->addWidget (xsd);
+		lay->addWidget (xsd->GetWidget ());
 
 		auto bbox = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
 		lay->addWidget (bbox);
