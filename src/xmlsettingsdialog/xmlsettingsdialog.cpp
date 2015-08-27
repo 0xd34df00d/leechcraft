@@ -323,7 +323,7 @@ namespace Util
 
 	void XmlSettingsDialog::SetCustomWidget (const QString& name, QWidget *widget)
 	{
-		const auto& widgets = findChildren<QWidget*> (name);
+		const auto& widgets = Widget_->findChildren<QWidget*> (name);
 		if (!widgets.size ())
 			throw std::runtime_error (qPrintable (QString ("Widget %1 not "
 							"found").arg (name)));
