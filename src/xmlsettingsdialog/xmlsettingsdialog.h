@@ -30,12 +30,13 @@
 #pragma once
 
 #include <memory>
-#include <QWidget>
+#include <QObject>
 #include <QString>
 #include <QMap>
 #include <QVariant>
 #include "xsdconfig.h"
 
+class QWidget;
 class QStackedWidget;
 class QListWidget;
 class QPushButton;
@@ -52,9 +53,11 @@ namespace Util
 {
 	class BaseSettingsManager;
 
-	class XmlSettingsDialog : public QWidget
+	class XmlSettingsDialog : public QObject
 	{
 		Q_OBJECT
+
+		QWidget * const Widget_;
 
 		QStackedWidget * const Pages_;
 

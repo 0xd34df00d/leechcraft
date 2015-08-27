@@ -57,14 +57,15 @@ namespace LeechCraft
 namespace Util
 {
 	XmlSettingsDialog::XmlSettingsDialog ()
-	: Pages_ { new QStackedWidget { this } }
+	: Widget_ { new QWidget }
+	, Pages_ { new QStackedWidget { Widget_ } }
 	, Document_ { std::make_shared<QDomDocument> () }
 	, HandlersManager_ { new ItemHandlerFactory { this } }
 	{
-		const auto mainLay = new QHBoxLayout (this);
+		const auto mainLay = new QHBoxLayout (Widget_);
 		mainLay->setContentsMargins (0, 0, 0, 0);
 		mainLay->addWidget (Pages_);
-		setLayout (mainLay);
+		Widget_->setLayout (mainLay);
 	}
 
 	XmlSettingsDialog::~XmlSettingsDialog ()
@@ -167,7 +168,7 @@ namespace Util
 
 	QWidget* XmlSettingsDialog::GetWidget () const
 	{
-		return this;
+		return Widget_;
 	}
 
 	QString XmlSettingsDialog::GetXml () const
@@ -737,7 +738,7 @@ namespace Util
 			return false;
 		}
 		else
-			return QWidget::eventFilter (obj, event);
+			return QObject::eventFilter (obj, event);
 	}
 
 	void XmlSettingsDialog::accept ()
