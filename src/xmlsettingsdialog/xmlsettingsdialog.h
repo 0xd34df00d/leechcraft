@@ -31,7 +31,7 @@
 
 #include <memory>
 #include <QObject>
-#include <QString>
+#include <QStringList>
 #include <QMap>
 #include <QVariant>
 #include "xsdconfig.h"
