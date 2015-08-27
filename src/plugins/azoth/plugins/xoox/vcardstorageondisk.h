@@ -46,7 +46,7 @@ namespace Xoox
 	public:
 		struct Record;
 	private:
-		QSqlDatabase DB_ = QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.VCards");
+		QSqlDatabase DB_;
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);

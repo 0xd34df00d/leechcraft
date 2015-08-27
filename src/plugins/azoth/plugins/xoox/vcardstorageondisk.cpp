@@ -76,6 +76,7 @@ namespace Xoox
 
 	VCardStorageOnDisk::VCardStorageOnDisk (QObject *parent)
 	: QObject { parent }
+	, DB_ { QSqlDatabase::addDatabase ("QSQLITE", "org.LeechCraft.Azoth.Xoox.VCards") }
 	{
 		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth/xoox");
 		DB_.setDatabaseName (cacheDir.filePath ("vcards.db"));
