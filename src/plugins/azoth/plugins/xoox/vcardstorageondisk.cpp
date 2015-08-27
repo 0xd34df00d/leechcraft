@@ -77,7 +77,8 @@ namespace Xoox
 	VCardStorageOnDisk::VCardStorageOnDisk (QObject *parent)
 	: QObject { parent }
 	{
-		DB_.setDatabaseName (Util::CreateIfNotExists ("azoth/xoox").filePath ("vcards.db"));
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth/xoox");
+		DB_.setDatabaseName (cacheDir.filePath ("vcards.db"));
 		if (!DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO
