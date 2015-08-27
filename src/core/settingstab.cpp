@@ -363,9 +363,9 @@ namespace LeechCraft
 		Ui_.SectionName_->setText (tr ("Settings for %1")
 				.arg (ii->GetName ()));
 
-		auto sd = ihs->GetSettingsDialog ();
-		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
-		sd->show ();
+		auto w = ihs->GetSettingsDialog ()->GetWidget ();
+		Ui_.DialogContents_->layout ()->addWidget (w);
+		w->show ();
 
 		FillPages (obj, false);
 
@@ -504,7 +504,9 @@ namespace LeechCraft
 			item->widget ()->hide ();
 			delete item;
 		}
-		Ui_.DialogContents_->layout ()->addWidget (sd.get ());
-		sd->show ();
+
+		const auto w = sd->GetWidget ();
+		Ui_.DialogContents_->layout ()->addWidget (w);
+		w->show ();
 	}
 }
