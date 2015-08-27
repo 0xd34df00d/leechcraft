@@ -48,7 +48,7 @@ namespace SB2
 			rowItem->setEditable (false);
 			ItemsModel_->appendRow (rowItem);
 
-			Ui_.SettingsStack_->addWidget (item.XSD_);
+			Ui_.SettingsStack_->addWidget (item.XSD_->GetWidget ());
 		}
 
 		Ui_.ItemsView_->setModel (ItemsModel_);
@@ -63,8 +63,9 @@ namespace SB2
 	{
 		for (const auto& item : Items_)
 		{
-			Ui_.SettingsStack_->removeWidget (item.XSD_);
-			item.XSD_->setParent (nullptr);
+			const auto w = item.XSD_->GetWidget ();
+			Ui_.SettingsStack_->removeWidget (w);
+			w->setParent (nullptr);
 		}
 	}
 
