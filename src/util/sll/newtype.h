@@ -81,6 +81,17 @@ namespace Util
 			return hash;
 		}
 	}
+#else
+	namespace detail
+	{
+		template<typename T>
+		constexpr size_t NewTypeHash (T)
+		{
+			static_assert (std::is_same<T, struct Foo>::value,
+					"Sorry, no NewTypeHash, seems like your compiler doesn't support relaxed constexpr.");
+			return 0;
+		}
+	}
 #endif
 }
 }
