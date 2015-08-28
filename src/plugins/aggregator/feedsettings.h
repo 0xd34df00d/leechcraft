@@ -45,7 +45,7 @@ namespace Aggregator
 		Q_OBJECT
 
 		Ui::FeedSettings Ui_;
-		std::auto_ptr<LeechCraft::Util::TagsCompleter> ChannelTagsCompleter_;
+		std::unique_ptr<Util::TagsCompleter> ChannelTagsCompleter_;
 		QModelIndex Index_;
 		IDType_t SettingsID_;
 	public:
