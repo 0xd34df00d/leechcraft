@@ -83,7 +83,6 @@ namespace Poshuku
 		QAction *CheckFavorites_;
 		QAction *ReloadAll_;
 
-		std::auto_ptr<QTranslator> Translator_;
 		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
 	public:
 		virtual ~Poshuku ();

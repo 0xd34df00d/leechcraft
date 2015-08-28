@@ -73,7 +73,7 @@ namespace Poshuku
 
 	void Poshuku::Init (ICoreProxy_ptr coreProxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("poshuku"));
+		Util::InstallTranslator ("poshuku");
 
 		BrowserWidget::SetParentMultiTabs (this);
 		Core::Instance ().setParent (this);
