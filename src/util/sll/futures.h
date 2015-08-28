@@ -35,6 +35,7 @@
 #include <QFutureInterface>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include "concurrentexception.h"
 #include "slotclosure.h"
 
 namespace LeechCraft
@@ -45,14 +46,39 @@ namespace Util
 	typename std::enable_if<!std::is_same<R, void>::value, void>::type
 		ReportFutureResult (QFutureInterface<R>& iface, const F& f, Args... args)
 	{
-		auto result = f (args...);
-		iface.reportFinished (&result);
+		try
+		{
+			auto result = f (args...);
+			iface.reportFinished (&result);
+		}
+		catch (const QtException_t& e)
+		{
+			iface.reportException (e);
+			iface.reportFinished ();
+		}
+		catch (const std::exception& e)
+		{
+			iface.reportException (ConcurrentStdException { e });
+			iface.reportFinished ();
+		}
 	}
 
 	template<typename F, typename... Args>
 	void ReportFutureResult (QFutureInterface<void>& iface, F& f, Args... args)
 	{
-		f (args...);
+		try
+		{
+			f (args...);
+		}
+		catch (const QtException_t& e)
+		{
+			iface.reportException (e);
+		}
+		catch (const std::exception& e)
+		{
+			iface.reportException (ConcurrentStdException { e });
+		}
+
 		iface.reportFinished ();
 	}
 
