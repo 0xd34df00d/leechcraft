@@ -119,24 +119,7 @@ namespace Sarin
 			iface.reportStarted ();
 			ScheduleFunctionImpl ([iface, func] (Tox *tox) mutable
 					{
-						try
-						{
-							Util::ReportFutureResult (iface, func, tox);
-						}
-#if QT_VERSION < 0x050000
-						catch (const QtConcurrent::Exception& e)
-#else
-						catch (const QException& e)
-#endif
-						{
-							iface.reportException (e);
-							iface.reportFinished ();
-						}
-						catch (const std::exception& e)
-						{
-							iface.reportException (ToxException { e });
-							iface.reportFinished ();
-						}
+						Util::ReportFutureResult (iface, func, tox);
 					});
 			return iface.future ();
 		}
