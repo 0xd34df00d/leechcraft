@@ -32,7 +32,6 @@
 #include <QObject>
 #include <QFuture>
 #include <util/sll/concurrentexception.h>
-#include <util/sll/newtype.h>
 
 namespace LeechCraft
 {
@@ -40,7 +39,7 @@ namespace Azoth
 {
 namespace Sarin
 {
-	using ToxException = Util::ConcurrentException<Util::NewType<std::exception, NewTypeTag>>;
+	using ToxException = Util::ConcurrentStdException;
 
 	class TextExceptionBase
 	{
