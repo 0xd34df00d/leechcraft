@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QFuture>
+#include <util/sll/newtype.h>
 
 namespace LeechCraft
 {
@@ -105,6 +106,8 @@ namespace Util
 			return T::what ();
 		}
 	};
+
+	using ConcurrentStdException = Util::ConcurrentException<Util::NewType<std::exception, NewTypeTag>>;
 }
 }
 
