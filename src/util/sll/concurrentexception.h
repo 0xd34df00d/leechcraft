@@ -107,7 +107,7 @@ namespace Util
 		}
 	};
 
-	using ConcurrentStdException = Util::ConcurrentException<Util::NewType<std::exception, NewTypeTag>>;
+	using ConcurrentStdException = Util::ConcurrentException<Util::NewType<std::exception, 0, __LINE__>>;
 }
 }
 
