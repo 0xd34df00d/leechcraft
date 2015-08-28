@@ -64,6 +64,7 @@ namespace Util
 		}
 	};
 
+#if __cpp_constexpr >= 201304
 	namespace detail
 	{
 		constexpr size_t NewTypeHash (const char *str)
@@ -80,6 +81,7 @@ namespace Util
 			return hash;
 		}
 	}
+#endif
 }
 }
 
