@@ -26,6 +26,6 @@ target_link_libraries (leechcraft_anhero
 	)
 install (TARGETS leechcraft_anhero DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_anhero Core)
+FindQtLibs (leechcraft_anhero Core Gui)
 
 add_subdirectory(crashprocess)
