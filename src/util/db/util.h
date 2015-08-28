@@ -64,5 +64,7 @@ namespace Util
 
 		return lastVar.value<T> ();
 	}
+
+	UTIL_DB_API QString GenConnectionName (const QString& base);
 }
 }

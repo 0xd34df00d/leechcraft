@@ -30,6 +30,8 @@
 #include "util.h"
 #include <QFile>
 #include <QSqlQuery>
+#include <QThread>
+#include <util/util.h>
 #include "dblock.h"
 
 namespace LeechCraft
@@ -62,6 +64,13 @@ namespace Util
 		QSqlQuery query { db };
 		query.prepare (LoadQuery (pluginName, filename));
 		Util::DBLock::Execute (query);
+	}
+
+	QString GenConnectionName (const QString& base)
+	{
+		return (base + ".%1_%2")
+				.arg (qrand ())
+				.arg (Handle2Num (QThread::currentThreadId ()));
 	}
 }
 }
