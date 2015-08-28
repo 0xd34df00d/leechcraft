@@ -89,11 +89,11 @@ namespace Aggregator
 
 		QSortFilterProxyModel *ChannelsFilter_;
 
-		std::auto_ptr<ItemsListModel> CurrentItemsModel_;
+		std::unique_ptr<ItemsListModel> CurrentItemsModel_;
 		QList<std::shared_ptr<ItemsListModel>> SupplementaryModels_;
-		std::auto_ptr<Util::MergeModel> ItemLists_;
-		std::auto_ptr<ItemsFilterModel> ItemsFilterModel_;
-		std::auto_ptr<CategorySelector> ItemCategorySelector_;
+		std::unique_ptr<Util::MergeModel> ItemLists_;
+		std::unique_ptr<ItemsFilterModel> ItemsFilterModel_;
+		std::unique_ptr<CategorySelector> ItemCategorySelector_;
 
 		QTimer *SelectedChecker_;
 		QModelIndex LastSelectedIndex_;
