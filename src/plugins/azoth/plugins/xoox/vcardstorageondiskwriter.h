@@ -40,7 +40,7 @@ namespace Xoox
 {
 	class VCardStorageOnDisk;
 
-	class VCardStorageOnDiskWriter : public Util::WorkerThreadBase
+	class VCardStorageOnDiskWriter final : public Util::WorkerThreadBase
 	{
 		std::unique_ptr<VCardStorageOnDisk> Storage_;
 	public:
