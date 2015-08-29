@@ -29,14 +29,8 @@
 
 #pragma once
 
-#include <functional>
 #include <memory>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QFutureInterface>
-#include <QFuture>
-#include <QThread>
-#include <util/sll/futures.h>
+#include <util/sll/workerthreadbase.h>
 
 namespace LeechCraft
 {
@@ -46,49 +40,17 @@ namespace Xoox
 {
 	class VCardStorageOnDisk;
 
-	class VCardStorageOnDiskWriter : public QThread
+	class VCardStorageOnDiskWriter : public Util::WorkerThreadBase
 	{
-		Q_OBJECT
-
-		QMutex FunctionsMutex_;
-		QList<std::function<void ()>> Functions_;
-
 		std::unique_ptr<VCardStorageOnDisk> Storage_;
 	public:
-		using QThread::QThread;
+		using Util::WorkerThreadBase::WorkerThreadBase;
 		~VCardStorageOnDiskWriter ();
 
 		QFuture<void> SetVCard (const QString&, const QString&);
 	protected:
-		void run () override;
-	private:
-		void Initialize ();
-		void Cleanup ();
-
-		void RotateFuncs ();
-
-		template<typename F>
-		QFuture<Util::ResultOf_t<F ()>> ScheduleImpl (const F& func)
-		{
-			QFutureInterface<decltype (func ())> iface;
-			iface.reportStarted ();
-
-			auto reporting = [func, iface] () mutable
-			{
-				Util::ReportFutureResult (iface, func);
-			};
-
-			{
-				QMutexLocker locker { &FunctionsMutex_ };
-				Functions_ << reporting;
-			}
-
-			emit rotateFuncs ();
-
-			return iface.future ();
-		}
-	signals:
-		void rotateFuncs ();
+		void Initialize () override;
+		void Cleanup () override;
 	};
 }
 }

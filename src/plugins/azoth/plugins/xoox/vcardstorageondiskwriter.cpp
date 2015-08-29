@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "vcardstorageondiskwriter.h"
-#include <util/sll/slotclosure.h>
 #include "vcardstorageondisk.h"
 
 namespace LeechCraft
@@ -46,23 +45,6 @@ namespace Xoox
 		return ScheduleImpl ([=] { Storage_->SetVCard (jid, vcard); });
 	}
 
-	void VCardStorageOnDiskWriter::run ()
-	{
-		Util::SlotClosure<Util::NoDeletePolicy> rotator
-		{
-			[this] { RotateFuncs (); },
-			this,
-			SIGNAL (rotateFuncs ()),
-			nullptr
-		};
-
-		Initialize ();
-
-		QThread::run ();
-
-		Cleanup ();
-	}
-
 	void VCardStorageOnDiskWriter::Initialize ()
 	{
 		Storage_.reset (new VCardStorageOnDisk);
@@ -71,21 +53,6 @@ namespace Xoox
 	void VCardStorageOnDiskWriter::Cleanup ()
 	{
 		Storage_.reset ();
-	}
-
-	void VCardStorageOnDiskWriter::RotateFuncs ()
-	{
-		decltype (Functions_) funcs;
-
-		{
-			QMutexLocker locker { &FunctionsMutex_ };
-
-			using std::swap;
-			swap (funcs, Functions_);
-		}
-
-		for (const auto& func : funcs)
-			func ();
 	}
 }
 }
