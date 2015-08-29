@@ -32,6 +32,7 @@
 #include <memory>
 #include <boost/optional.hpp>
 #include <QObject>
+#include <QCache>
 #include <QXmppVCardIq.h>
 
 namespace LeechCraft
@@ -49,6 +50,8 @@ namespace Xoox
 		const std::shared_ptr<VCardStorageOnDiskWriter> Writer_;
 
 		QMap<QString, QString> Pending_;
+
+		mutable QCache<QString, QXmppVCardIq> VCardCache_;
 	public:
 		VCardStorage (QObject* = nullptr);
 

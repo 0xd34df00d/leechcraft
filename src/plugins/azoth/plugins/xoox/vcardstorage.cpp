@@ -53,6 +53,7 @@ namespace Xoox
 			delete writer;
 		}
 	}
+	, VCardCache_ { 1024 * 1024 }
 	{
 		Writer_->start (QThread::IdlePriority);
 	}
@@ -77,6 +78,9 @@ namespace Xoox
 
 	boost::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
 	{
+		if (const auto vcard = VCardCache_.object (jid))
+			return *vcard;
+
 		const auto res = GetVCardString (jid);
 		if (!res)
 			return {};
@@ -92,6 +96,9 @@ namespace Xoox
 
 		QXmppVCardIq vcard;
 		vcard.parse (vcardDoc.documentElement ());
+
+		VCardCache_.insert (jid, new QXmppVCardIq { vcard }, res->size ());
+
 		return vcard;
 	}
 
