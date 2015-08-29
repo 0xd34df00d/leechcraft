@@ -53,7 +53,7 @@ namespace Xoox
 			[this] { RotateFuncs (); },
 			this,
 			SIGNAL (rotateFuncs ()),
-			this
+			nullptr
 		};
 
 		connect (this,
