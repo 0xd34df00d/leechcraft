@@ -37,13 +37,14 @@
 #include <QtConcurrentRun>
 #include "concurrentexception.h"
 #include "slotclosure.h"
+#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
 	template<typename R, typename F, typename... Args>
-	typename std::enable_if<!std::is_same<R, void>::value, void>::type
+	EnableIf_t<!std::is_same<R, void>::value, void>
 		ReportFutureResult (QFutureInterface<R>& iface, const F& f, Args... args)
 	{
 		try
@@ -126,7 +127,7 @@ namespace Util
 			}
 		};
 
-		template<typename ResultHandler, typename RetType, typename = typename std::result_of<ResultHandler (RetType)>::type>
+		template<typename ResultHandler, typename RetType, typename = ResultOf_t<ResultHandler (RetType)>>
 		constexpr bool IsCompatibleImpl (int)
 		{
 			return true;
@@ -138,7 +139,7 @@ namespace Util
 			return false;
 		}
 
-		template<typename ResultHandler, typename = typename std::result_of<ResultHandler ()>::type>
+		template<typename ResultHandler, typename = ResultOf_t<ResultHandler ()>>
 		constexpr bool IsCompatibleImplVoid (int)
 		{
 			return true;
@@ -232,7 +233,7 @@ namespace Util
 		public:
 			/** @brief The result of calling \em Executor with \em Args.
 			 */
-			using FutureType_t = typename std::result_of<Executor (Args...)>::type;
+			using FutureType_t = ResultOf_t<Executor (Args...)>;
 
 			/** @brief The type instantinating the QFuture returned by the
 			 * \em Executor.
@@ -446,7 +447,7 @@ namespace Util
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (const F& f) -> typename std::enable_if<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>::type
+			auto Then (const F& f) -> EnableIf_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
 			{
 				Seq_->template Then<Ret> (f);
 			}
