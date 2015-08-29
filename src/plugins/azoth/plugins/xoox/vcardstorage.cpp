@@ -30,6 +30,7 @@
 #include "vcardstorage.h"
 #include <QXmlStreamWriter>
 #include <QtDebug>
+#include <util/sll/futures.h>
 #include "vcardstorageondisk.h"
 #include "vcardstorageondiskwriter.h"
 
@@ -53,11 +54,16 @@ namespace Xoox
 		}
 	}
 	{
+		Writer_->start (QThread::IdlePriority);
 	}
 
 	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
 	{
-		DB_->SetVCard (jid, vcard);
+		Pending_ [jid] = vcard;
+
+		Util::Sequence (this,
+					[this, jid, vcard] { return Writer_->SetVCard (jid, vcard); })
+				.Then ([this, jid] { Pending_.remove (jid); });
 	}
 
 	void VCardStorage::SetVCard (const QString& jid, const QXmppVCardIq& vcard)
@@ -91,6 +97,9 @@ namespace Xoox
 
 	boost::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
 	{
+		if (Pending_.contains (jid))
+			return Pending_.value (jid);
+
 		return DB_->GetVCard (jid);
 	}
 }
