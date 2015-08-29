@@ -220,6 +220,7 @@ namespace Xoox
 		if (!VCardDialog_)
 		{
 			VCardDialog_ = new VCardDialog (this);
+			VCardDialog_->setAttribute (Qt::WA_DeleteOnClose);
 			VCardDialog_->UpdateInfo (GetVCard ());
 		}
 		VCardDialog_->show ();
