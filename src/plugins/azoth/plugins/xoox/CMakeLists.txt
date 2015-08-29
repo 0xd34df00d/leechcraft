@@ -112,6 +112,7 @@ set (XOOX_SRCS
 	rostersaver.cpp
 	vcardstorage.cpp
 	vcardstorageondisk.cpp
+	vcardstorageondiskwriter.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
