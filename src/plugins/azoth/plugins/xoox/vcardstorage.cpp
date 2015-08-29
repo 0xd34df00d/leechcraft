@@ -60,7 +60,7 @@ namespace Xoox
 
 	boost::optional<QXmppVCardIq> VCardStorage::GetVCard (const QString& jid) const
 	{
-		const auto res = DB_->GetVCard (jid);
+		const auto res = GetVCardString (jid);
 		if (!res)
 			return {};
 
@@ -76,6 +76,11 @@ namespace Xoox
 		QXmppVCardIq vcard;
 		vcard.parse (vcardDoc.documentElement ());
 		return vcard;
+	}
+
+	boost::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
+	{
+		return DB_->GetVCard (jid);
 	}
 }
 }

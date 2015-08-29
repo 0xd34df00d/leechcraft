@@ -51,6 +51,8 @@ namespace Xoox
 		void SetVCard (const QString& jid, const QXmppVCardIq& vcard);
 
 		boost::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
+	private:
+		boost::optional<QString> GetVCardString (const QString& jid) const;
 	};
 }
 }
