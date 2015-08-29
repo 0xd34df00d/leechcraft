@@ -356,6 +356,28 @@ namespace Util
 					LastWatcher_
 				};
 			}
+
+			void Then (const std::function<void ()>& action)
+			{
+				const auto last = dynamic_cast<QFutureWatcher<void>*> (LastWatcher_);
+				if (!last)
+				{
+					deleteLater ();
+					throw std::runtime_error { std::string { "invalid type in " } + Q_FUNC_INFO };
+				}
+
+				new SlotClosure<DeleteLaterPolicy>
+				{
+					[last, action, this]
+					{
+						action ();
+						deleteLater ();
+					},
+					LastWatcher_,
+					SIGNAL (finished ()),
+					LastWatcher_
+				};
+			}
 		};
 
 		/** @brief A proxy object allowing type-checked sequencing of
@@ -450,6 +472,12 @@ namespace Util
 			auto Then (const F& f) -> EnableIf_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
 			{
 				Seq_->template Then<Ret> (f);
+			}
+
+			template<typename F>
+			auto Then (const F& f) -> EnableIf_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
+			{
+				Seq_->Then (std::function<void ()> { f });
 			}
 		};
 	}
