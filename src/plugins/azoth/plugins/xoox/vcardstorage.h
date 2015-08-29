@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <boost/optional.hpp>
 #include <QObject>
 #include <QXmppVCardIq.h>
@@ -40,10 +41,12 @@ namespace Azoth
 namespace Xoox
 {
 	class VCardStorageOnDisk;
+	class VCardStorageOnDiskWriter;
 
 	class VCardStorage : public QObject
 	{
 		VCardStorageOnDisk * const DB_;
+		const std::shared_ptr<VCardStorageOnDiskWriter> Writer_;
 	public:
 		VCardStorage (QObject* = nullptr);
 

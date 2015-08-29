@@ -31,6 +31,7 @@
 #include <QXmlStreamWriter>
 #include <QtDebug>
 #include "vcardstorageondisk.h"
+#include "vcardstorageondiskwriter.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,16 @@ namespace Xoox
 	VCardStorage::VCardStorage (QObject *parent)
 	: QObject { parent }
 	, DB_ { new VCardStorageOnDisk { this } }
+	, Writer_
+	{
+		new VCardStorageOnDiskWriter,
+		[] (VCardStorageOnDiskWriter *writer)
+		{
+			writer->quit ();
+			writer->wait (5000);
+			delete writer;
+		}
+	}
 	{
 	}
 
