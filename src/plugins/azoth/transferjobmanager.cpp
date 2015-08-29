@@ -560,6 +560,9 @@ namespace Azoth
 		if (!Object2Progress_.contains (sender ()))
 			return;
 
+		if (total <= 0)
+			return;
+
 		auto progress = Object2Progress_ [sender ()];
 		progress->setText (tr ("%1 of %2 (%3%).")
 					.arg (Util::MakePrettySize (done))
