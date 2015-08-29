@@ -56,11 +56,6 @@ namespace Xoox
 			nullptr
 		};
 
-		connect (this,
-				SIGNAL (rotateFuncs ()),
-				this,
-				SLOT (handleRotateFuncs ()),
-				Qt::QueuedConnection);
 		Initialize ();
 
 		QThread::run ();
