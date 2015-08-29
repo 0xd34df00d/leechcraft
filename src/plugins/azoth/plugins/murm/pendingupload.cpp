@@ -154,7 +154,17 @@ namespace Murm
 				QString ("form-data; name=\"file\"; filename=\"%1\"")
 					.arg (QFileInfo { Path_ }.fileName ()));
 		const auto file = new QFile { Path_ };
-		file->open (QIODevice::ReadOnly);
+		if (!file->open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open file"
+					<< file->fileName ()
+					<< file->errorString ();
+			emit errorAppeared (TEFileAccessError, file->errorString ());
+			emit stateChanged (TSFinished);
+			return;
+		}
+
 		filePart.setBodyDevice (file);
 		file->setParent (multipart);
 		multipart->append (filePart);
