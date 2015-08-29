@@ -68,7 +68,7 @@ namespace Xoox
 		void RotateFuncs ();
 
 		template<typename F>
-		auto ScheduleImpl (const F& func)
+		QFuture<Util::ResultOf_t<F ()>> ScheduleImpl (const F& func)
 		{
 			QFutureInterface<decltype (func ())> iface;
 			iface.reportStarted ();
