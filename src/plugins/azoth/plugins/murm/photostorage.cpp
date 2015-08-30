@@ -72,7 +72,7 @@ namespace Murm
 			reply->deleteLater ();
 
 			const auto& image = QImage::fromData (data);
-			iface.reportResult (&image);
+			iface.reportFinished (&image);
 
 			QFile file { filename };
 			if (!file.open (QIODevice::WriteOnly))
