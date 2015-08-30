@@ -102,7 +102,7 @@ namespace LMP
 		for (const auto& track : AlbumsQueue_.takeFirst ()->Tracks_)
 			paths << track.FilePath_;
 
-		CurrentAnalyser_.reset (new RgAnalyser { paths });
+		CurrentAnalyser_ = std::make_shared<RgAnalyser> (paths);
 		connect (CurrentAnalyser_.get (),
 				SIGNAL (finished ()),
 				this,
