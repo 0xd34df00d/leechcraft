@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <util/sll/workerthreadbase.h>
+#include <util/threads/workerthreadbase.h>
 
 namespace LeechCraft
 {
