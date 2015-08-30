@@ -479,6 +479,12 @@ namespace Util
 			{
 				Seq_->Then (std::function<void ()> { f });
 			}
+
+			template<typename F>
+			auto operator>> (const F& f) -> decltype (Then (f))
+			{
+				return Then (f);
+			}
 		};
 	}
 
