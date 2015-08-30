@@ -51,6 +51,7 @@ set (LEECHCRAFT_UTIL_LIBRARIES
 	leechcraft-util-svcauth${LC_LIBSUFFIX}
 	leechcraft-util-sys${LC_LIBSUFFIX}
 	leechcraft-util-tags${LC_LIBSUFFIX}
+	leechcraft-util-threads${LC_LIBSUFFIX}
 	leechcraft-util-xdg${LC_LIBSUFFIX}
 	leechcraft-util-xpc${LC_LIBSUFFIX}
 	leechcraft-util-xsd${LC_LIBSUFFIX}
