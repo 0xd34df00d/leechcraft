@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "vcarddialog.h"
+#include <QFuture>
 #include <util/xpc/util.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "structures.h"
 #include "photostorage.h"
@@ -87,29 +89,21 @@ namespace Murm
 
 		if (!info.BigPhoto_.isValid ())
 			return;
-		const auto& image = storage->GetImage (info.BigPhoto_);
-		if (image.isNull ())
-			connect (storage,
-					SIGNAL (gotImage (QUrl)),
-					this,
-					SLOT (handleImage (QUrl)));
-		else
-			Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image)
-					.scaled (Ui_.PhotoLabel_->size (),
-							Qt::KeepAspectRatio,
-							Qt::SmoothTransformation));
-	}
 
-	void VCardDialog::handleImage (const QUrl& url)
-	{
-		if (url != Info_.BigPhoto_)
-			return;
-
-		const auto& image = Storage_->GetImage (url);
-		Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image)
-				.scaled (Ui_.PhotoLabel_->size (),
-						Qt::KeepAspectRatio,
-						Qt::SmoothTransformation));
+		Util::Sequence (this, [storage, info] { return storage->GetImage (info.BigPhoto_); }) >>
+				[this] (const QImage& image)
+				{
+					return QtConcurrent::run ([this, image]
+							{
+								return image.scaled (Ui_.PhotoLabel_->size (),
+										Qt::KeepAspectRatio,
+										Qt::SmoothTransformation);
+							});
+				} >>
+				[this] (const QImage& image)
+				{
+					Ui_.PhotoLabel_->setPixmap (QPixmap::fromImage (image));
+				};
 	}
 
 	void VCardDialog::on_OpenVKPage__released ()

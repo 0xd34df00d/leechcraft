@@ -32,6 +32,7 @@
 #include <QtDebug>
 #include <QTimer>
 #include <util/util.h>
+#include <util/threads/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -68,13 +69,13 @@ namespace Murm
 				this,
 				SLOT (sendTyping ()));
 
-		auto storage = account->GetPhotoStorage ();
-		Avatar_ = storage->GetImage (Info_.Photo_);
-		if (Avatar_.isNull () && Info_.Photo_.isValid ())
-			connect (storage,
-					SIGNAL (gotImage (QUrl)),
-					this,
-					SLOT (handleGotStorageImage (QUrl)));
+		Util::Sequence (this,
+				[account, info] { return account->GetPhotoStorage ()->GetImage (info.Photo_); }) >>
+				[this] (const QImage& image)
+				{
+					Avatar_ = image;
+					emit avatarChanged (Avatar_);
+				};
 
 		auto gm = account->GetGroupsManager ();
 		for (const auto& id : info.Lists_)
@@ -620,20 +621,6 @@ namespace Murm
 	void VkEntry::sendTyping ()
 	{
 		Account_->GetConnection ()->SendTyping (Info_.ID_);
-	}
-
-	void VkEntry::handleGotStorageImage (const QUrl& url)
-	{
-		if (url != Info_.Photo_)
-			return;
-
-		disconnect (sender (),
-				0,
-				this,
-				0);
-
-		Avatar_ = Account_->GetPhotoStorage ()->GetImage (url);
-		emit avatarChanged (Avatar_);
 	}
 
 	void VkEntry::handleEntryNameFormat ()

@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QDir>
 #include <QHash>
+#include <QFuture>
 
 class QImage;
 class QUrl;
@@ -51,21 +52,15 @@ namespace Murm
 {
 	class PhotoStorage : public QObject
 	{
-		Q_OBJECT
-
 		QNetworkAccessManager * const NAM_;
-		LeechCraft::Util::QueueManager * const FetchQueue_;
+		Util::QueueManager * const FetchQueue_;
 		QDir StorageDir_;
 
-		QHash<QUrl, QNetworkReply*> Pending_;
+		QHash<QUrl, QFuture<QImage>> Pending_;
 	public:
 		PhotoStorage (QNetworkAccessManager*, const QString&, QObject* = 0);
 
-		QImage GetImage (const QUrl&);
-	private slots:
-		void handleReply ();
-	signals:
-		void gotImage (const QUrl&);
+		QFuture<QImage> GetImage (const QUrl&);
 	};
 }
 }

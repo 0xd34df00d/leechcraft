@@ -123,8 +123,6 @@ namespace Murm
 		void handleTypingTimeout ();
 		void sendTyping ();
 
-		void handleGotStorageImage (const QUrl&);
-
 		void handleEntryNameFormat ();
 	signals:
 		void vcardUpdated ();

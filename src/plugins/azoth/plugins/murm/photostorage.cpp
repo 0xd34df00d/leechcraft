@@ -33,8 +33,11 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QFuture>
+#include <QFutureInterface>
 #include <QtDebug>
 #include <util/sll/queuemanager.h>
+#include <util/sll/slotclosure.h>
 #include <util/sys/paths.h>
 
 namespace LeechCraft
@@ -60,62 +63,75 @@ namespace Murm
 			result.replace (':', '_');
 			return result;
 		}
-	}
 
-	QImage PhotoStorage::GetImage (const QUrl& url)
-	{
-		if (!url.isValid ())
-			return {};
-
-		const auto& filename = Url2Filename (url);
-		if (StorageDir_.exists (filename))
+		void HandleReplyFinished (QNetworkReply *reply,
+				const QString& filename, QFutureInterface<QImage> iface)
 		{
-			QImage image (StorageDir_.absoluteFilePath (filename));
-			if (!image.isNull ())
-				return image;
-		}
+			const auto& data = reply->readAll ();
 
-		if (Pending_.contains (url))
-			return {};
+			reply->deleteLater ();
 
-		FetchQueue_->Schedule ([this, url]
-				{
-					const auto& reply = NAM_->get (QNetworkRequest (url));
-					Pending_ [url] = reply;
-					connect (reply,
-							SIGNAL (finished ()),
-							this,
-							SLOT (handleReply ()));
-				});
-		return {};
-	}
+			const auto& image = QImage::fromData (data);
+			iface.reportResult (&image);
 
-	void PhotoStorage::handleReply ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-
-		const auto& url = reply->request ().url ();
-		Pending_.remove (url);
-
-		const auto& filename = Url2Filename (url);
-
-		{
-			QFile file (StorageDir_.absoluteFilePath (filename));
+			QFile file { filename };
 			if (!file.open (QIODevice::WriteOnly))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "error opening file for"
-						<< url
+						<< reply->request ().url ()
 						<< filename
 						<< file.errorString ();
 				return;
 			}
 
-			file.write (reply->readAll ());
+			file.write (data);
+		}
+	}
+
+	QFuture<QImage> PhotoStorage::GetImage (const QUrl& url)
+	{
+		QFutureInterface<QImage> iface;
+		iface.reportStarted ();
+
+		const auto& filename = Url2Filename (url);
+		if (StorageDir_.exists (filename))
+		{
+			QImage image { StorageDir_.absoluteFilePath (filename) };
+			if (!image.isNull ())
+			{
+				iface.reportFinished (&image);
+				return iface.future ();
+			}
 		}
 
-		emit gotImage (url);
+		if (Pending_.contains (url))
+			return Pending_.value (url);
+
+		const auto& future = iface.future ();
+		Pending_ [url] = future;
+		FetchQueue_->Schedule ([=] () mutable
+				{
+					const auto& reply = NAM_->get (QNetworkRequest (url));
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						[=]
+						{
+							Pending_.remove (url);
+							HandleReplyFinished (reply,
+									StorageDir_.absoluteFilePath (filename),
+									iface);
+						},
+						reply,
+						SIGNAL (finished ()),
+						reply
+					};
+					connect (reply,
+							SIGNAL (finished ()),
+							this,
+							SLOT (handleReply ()));
+				});
+		return future;
 	}
 }
 }
