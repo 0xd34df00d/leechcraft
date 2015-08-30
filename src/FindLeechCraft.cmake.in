@@ -76,6 +76,7 @@ find_library(_LEECHCRAFT_UTIL_SLL NAMES leechcraft-util-sll@LC_LIBSUFFIX@)
 find_library(_LEECHCRAFT_UTIL_SVCAUTH NAMES leechcraft-util-svcauth@LC_LIBSUFFIX@)
 find_library(_LEECHCRAFT_UTIL_SYS NAMES leechcraft-util-sys@LC_LIBSUFFIX@)
 find_library(_LEECHCRAFT_UTIL_TAGS NAMES leechcraft-util-tags@LC_LIBSUFFIX@)
+find_library(_LEECHCRAFT_UTIL_THREADS NAMES leechcraft-util-threads@LC_LIBSUFFIX@)
 find_library(_LEECHCRAFT_UTIL_XDG NAMES leechcraft-util-xdg@LC_LIBSUFFIX@)
 find_library(_LEECHCRAFT_UTIL_XPC NAMES leechcraft-util-xpc@LC_LIBSUFFIX@)
 find_library(_LEECHCRAFT_UTIL_XSD NAMES leechcraft-util-xsd@LC_LIBSUFFIX@)
@@ -99,6 +100,7 @@ set (LEECHCRAFT_LIBRARIES
 	${_LEECHCRAFT_UTIL_SVCAUTH}
 	${_LEECHCRAFT_UTIL_SYS}
 	${_LEECHCRAFT_UTIL_TAGS}
+	${_LEECHCRAFT_UTIL_THREADS}
 	${_LEECHCRAFT_UTIL_X11}
 	${_LEECHCRAFT_UTIL_XDG}
 	${_LEECHCRAFT_UTIL_XPC}
