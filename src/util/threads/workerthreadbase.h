@@ -36,14 +36,14 @@
 #include <QFutureInterface>
 #include <QFuture>
 #include <QList>
-#include "sllconfig.h"
-#include "futures.h"
+#include <util/sll/futures.h>
+#include "threadsconfig.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class UTIL_SLL_API WorkerThreadBase : public QThread
+	class UTIL_THREADS_API WorkerThreadBase : public QThread
 	{
 		Q_OBJECT
 

@@ -1,4 +1,5 @@
 set (THREADS_SRCS
+	workerthreadbase.cpp
 	)
 
 foreach (SRC ${THREADS_SRCS})

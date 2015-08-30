@@ -7,7 +7,6 @@ set (SLL_SRCS
 	urloperator.cpp
 	qtutil.cpp
 	urlaccessor.cpp
-	workerthreadbase.cpp
 	)
 
 option (WITH_PCRE "Use PCRE regular expression engine for instead of Qt's one (recommended since QRegExps are slow)." ON)
