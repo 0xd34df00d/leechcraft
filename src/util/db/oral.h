@@ -32,7 +32,6 @@
 #include <stdexcept>
 #include <type_traits>
 #include <memory>
-#include <boost/config.hpp>
 #include <boost/fusion/include/for_each.hpp>
 #include <boost/fusion/include/fold.hpp>
 #include <boost/fusion/include/filter_if.hpp>
