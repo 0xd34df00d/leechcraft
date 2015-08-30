@@ -29,7 +29,7 @@
 
 #include "anhero.h"
 #include <QIcon>
-#include <QApplication>
+#include <QCoreApplication>
 #include <signal.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -165,7 +165,7 @@ namespace AnHero
 	{
 		Util::InstallTranslator ("anhero");
 
-		auto args = QApplication::arguments ();
+		auto args = QCoreApplication::arguments ();
 		if (args.contains ("-noanhero"))
 			return;
 
