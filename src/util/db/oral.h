@@ -1170,7 +1170,7 @@ namespace oral
 		static constexpr pos<3> _3 = {};
 		static constexpr pos<4> _4 = {};
 
-#ifndef BOOST_NO_CXX14_VARIABLE_TEMPLATES
+#if __cpp_variable_templates >= 201304
 		template<int Idx>
 		static constexpr pos<Idx> _ = {};
 #endif
