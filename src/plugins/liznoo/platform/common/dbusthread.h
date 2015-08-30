@@ -39,7 +39,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QFutureInterface>
-#include <util/sll/futures.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {

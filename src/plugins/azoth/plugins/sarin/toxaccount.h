@@ -31,7 +31,7 @@
 
 #include <memory>
 #include <QObject>
-#include <util/sll/concurrentexception.h>
+#include <util/threads/concurrentexception.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/isupportmediacalls.h>
 #include "toxaccountconfiguration.h"

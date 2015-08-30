@@ -34,7 +34,7 @@
 #include <QtDebug>
 #include <vmime/messageIdSequence.hpp>
 #include <util/xpc/util.h>
-#include <util/sll/futures.h>
+#include <util/threads/futures.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/urlaccessor.h>
 #include <interfaces/core/ientitymanager.h>

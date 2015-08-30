@@ -35,9 +35,9 @@
 #include <QFutureInterface>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include <util/sll/oldcppkludges.h>
+#include <util/sll/slotclosure.h>
 #include "concurrentexception.h"
-#include "slotclosure.h"
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {

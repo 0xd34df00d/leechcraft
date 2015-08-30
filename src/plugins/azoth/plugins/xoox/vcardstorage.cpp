@@ -30,7 +30,7 @@
 #include "vcardstorage.h"
 #include <QXmlStreamWriter>
 #include <QtDebug>
-#include <util/sll/futures.h>
+#include <util/threads/futures.h>
 #include "vcardstorageondisk.h"
 #include "vcardstorageondiskwriter.h"
 

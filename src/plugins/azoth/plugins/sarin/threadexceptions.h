@@ -31,7 +31,7 @@
 
 #include <QObject>
 #include <QFuture>
-#include <util/sll/concurrentexception.h>
+#include <util/threads/concurrentexception.h>
 
 namespace LeechCraft
 {

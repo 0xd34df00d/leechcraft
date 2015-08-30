@@ -39,7 +39,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/sll/futures.h>
+#include <util/threads/futures.h>
 #include <util/sll/delayedexecutor.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"

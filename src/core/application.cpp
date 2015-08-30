@@ -67,7 +67,7 @@
 #include <util/structuresops.h>
 #include <util/sys/paths.h>
 #include <util/qml/tooltipitem.h>
-#include <util/sll/concurrentexception.h>
+#include <util/threads/concurrentexception.h>
 
 #ifdef WITH_QWT
 #include <util/qml/plotitem.h>

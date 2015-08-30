@@ -35,8 +35,8 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <util/sll/futures.h>
 #include <util/sll/util.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {

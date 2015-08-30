@@ -36,7 +36,7 @@
 #include <QFutureInterface>
 #include <QFuture>
 #include <QList>
-#include <util/sll/futures.h>
+#include "futures.h"
 #include "threadsconfig.h"
 
 namespace LeechCraft

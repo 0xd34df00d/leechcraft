@@ -47,7 +47,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/delayedexecutor.h>
-#include <util/sll/futures.h>
+#include <util/threads/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxmessage.h"

@@ -33,7 +33,7 @@
 #include <QFuture>
 #include <QMutexLocker>
 #include <util/sys/paths.h>
-#include <util/sll/futures.h>
+#include <util/threads/futures.h>
 #include "networkdiskcachegc.h"
 
 namespace LeechCraft
