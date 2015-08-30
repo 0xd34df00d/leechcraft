@@ -83,7 +83,6 @@ namespace LMP
 		RgAnalyser (const QStringList&, QObject* = nullptr);
 		~RgAnalyser ();
 
-		bool IsFinished () const;
 		const AlbumRgResult& GetResult () const;
 	private:
 		void CheckFinish ();
