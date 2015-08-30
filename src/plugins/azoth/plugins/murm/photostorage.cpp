@@ -126,10 +126,6 @@ namespace Murm
 						SIGNAL (finished ()),
 						reply
 					};
-					connect (reply,
-							SIGNAL (finished ()),
-							this,
-							SLOT (handleReply ()));
 				});
 		return future;
 	}
