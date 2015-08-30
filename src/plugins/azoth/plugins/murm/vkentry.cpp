@@ -613,6 +613,11 @@ namespace Murm
 		};
 	}
 
+	QFuture<QImage> VkEntry::RefreshAvatar ()
+	{
+		return Account_->GetPhotoStorage ()->GetImage (Info_.Photo_);
+	}
+
 	void VkEntry::handleTypingTimeout ()
 	{
 		emit chatPartStateChanged (CPSPaused, "");

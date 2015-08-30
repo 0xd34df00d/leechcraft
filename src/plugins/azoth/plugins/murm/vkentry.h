@@ -36,6 +36,7 @@
 #include <QStringList>
 #include <util/sll/util.h>
 #include <interfaces/azoth/imetainfoentry.h>
+#include <interfaces/azoth/ihaveavatars.h>
 #include "structures.h"
 #include "entrybase.h"
 
@@ -55,9 +56,10 @@ namespace Murm
 
 	class VkEntry : public EntryBase
 				  , public IMetaInfoEntry
+				  , public IHaveAvatars
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Azoth::IMetaInfoEntry)
+		Q_INTERFACES (LeechCraft::Azoth::IMetaInfoEntry LeechCraft::Azoth::IHaveAvatars)
 
 		UserInfo Info_;
 
@@ -119,6 +121,8 @@ namespace Murm
 
 		QVariant GetMetaInfo (DataField) const;
 		QList<QPair<QString, QVariant>> GetVCardRepresentation () const;
+
+		QFuture<QImage> RefreshAvatar ();
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();
