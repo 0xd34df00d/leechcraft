@@ -147,6 +147,8 @@ namespace LMP
 		PopThread_->Stop ();
 		PopThread_->wait (2000);
 
+		gst_element_set_state (Pipeline_, GST_STATE_NULL);
+
 		gst_object_unref (Pipeline_);
 	}
 
