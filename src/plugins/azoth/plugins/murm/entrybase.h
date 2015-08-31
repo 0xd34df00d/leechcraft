@@ -62,29 +62,29 @@ namespace Murm
 		virtual void Send (VkMessage*) = 0;
 		void Store (VkMessage*);
 
-		QObject* GetQObject ();
-		IAccount* GetParentAccount () const;
+		QObject* GetQObject () override;
+		IAccount* GetParentAccount () const override;
 
-		IMessage* CreateMessage (IMessage::Type type, const QString& variant, const QString& body);
-		QList<IMessage*> GetAllMessages () const;
-		void PurgeMessages (const QDateTime& before);
+		IMessage* CreateMessage (IMessage::Type type, const QString& variant, const QString& body) override;
+		QList<IMessage*> GetAllMessages () const override;
+		void PurgeMessages (const QDateTime& before) override;
 	protected:
 		void HandleAttaches (VkMessage*, const MessageInfo&, const FullMessageInfo&);
 	private:
 		void HandleFullMessageInfo (const FullMessageInfo&, VkMessage*);
 		void PerformReplacements (QList<QPair<QString, QString>>, QString&);
 	signals:
-		void gotMessage (QObject*);
-		void statusChanged (const EntryStatus&, const QString&);
-		void availableVariantsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
-		void nameChanged (const QString&);
-		void groupsChanged (const QStringList&);
-		void chatPartStateChanged (const ChatPartState&, const QString&);
-		void permsChanged ();
-		void entryGenerallyChanged ();
+		void gotMessage (QObject*) override;
+		void statusChanged (const EntryStatus&, const QString&) override;
+		void availableVariantsChanged (const QStringList&) override;
+		void avatarChanged (const QImage&) override;
+		void nameChanged (const QString&) override;
+		void groupsChanged (const QStringList&) override;
+		void chatPartStateChanged (const ChatPartState&, const QString&) override;
+		void permsChanged () override;
+		void entryGenerallyChanged () override;
 
-		void performJS (const QString&);
+		void performJS (const QString&) override;
 	};
 }
 }

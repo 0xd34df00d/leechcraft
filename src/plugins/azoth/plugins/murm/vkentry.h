@@ -87,7 +87,7 @@ namespace Murm
 
 		void UpdateAppInfo (const AppInfo&, const QImage&);
 
-		void Send (VkMessage*);
+		void Send (VkMessage*) override;
 
 		void SetSelf ();
 		void SetNonRoster ();
@@ -101,26 +101,26 @@ namespace Murm
 
 		void HandleTypingNotification ();
 
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString& name);
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList& groups);
-		QStringList Variants () const;
-		void SetChatPartState (ChatPartState state, const QString& variant);
-		EntryStatus GetStatus (const QString& variant = QString ()) const;
-		QImage GetAvatar () const;
-		void ShowInfo ();
-		QList<QAction*> GetActions () const;
-		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		void MarkMsgsRead ();
-		void ChatTabClosed ();
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString& name) override;
+		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList& groups) override;
+		QStringList Variants () const override;
+		void SetChatPartState (ChatPartState state, const QString& variant) override;
+		EntryStatus GetStatus (const QString& variant = QString ()) const override;
+		QImage GetAvatar () const override;
+		void ShowInfo () override;
+		QList<QAction*> GetActions () const override;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
+		void MarkMsgsRead () override;
+		void ChatTabClosed () override;
 
-		QVariant GetMetaInfo (DataField) const;
-		QList<QPair<QString, QVariant>> GetVCardRepresentation () const;
+		QVariant GetMetaInfo (DataField) const override;
+		QList<QPair<QString, QVariant>> GetVCardRepresentation () const override;
 
 		QFuture<QImage> RefreshAvatar ();
 	private slots:
@@ -129,7 +129,7 @@ namespace Murm
 
 		void handleEntryNameFormat ();
 	signals:
-		void vcardUpdated ();
+		void vcardUpdated () override;
 	};
 }
 }

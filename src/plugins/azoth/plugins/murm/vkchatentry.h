@@ -67,7 +67,7 @@ namespace Murm
 
 		VkChatEntry (const ChatInfo&, VkAccount*);
 
-		void Send (VkMessage*);
+		void Send (VkMessage*) override;
 		HandleMessageResult HandleMessage (const MessageInfo&, const FullMessageInfo&);
 
 		const ChatInfo& GetInfo () const;
@@ -76,46 +76,46 @@ namespace Murm
 		void HandleAdded (const UserInfo&);
 		void HandleRemoved (qulonglong);
 
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString& name);
-		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList& groups);
-		QStringList Variants () const;
-		void SetChatPartState (ChatPartState state, const QString& variant);
-		EntryStatus GetStatus (const QString& variant = QString ()) const;
-		QImage GetAvatar () const;
-		void ShowInfo ();
-		QList<QAction*> GetActions () const;
-		QMap<QString, QVariant> GetClientInfo (const QString&) const;
-		void MarkMsgsRead ();
-		void ChatTabClosed ();
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString& name) override;
+		QString GetEntryID () const override;
+		QString GetHumanReadableID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList& groups) override;
+		QStringList Variants () const override;
+		void SetChatPartState (ChatPartState state, const QString& variant) override;
+		EntryStatus GetStatus (const QString& variant = QString ()) const override;
+		QImage GetAvatar () const override;
+		void ShowInfo () override;
+		QList<QAction*> GetActions () const override;
+		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
+		void MarkMsgsRead () override;
+		void ChatTabClosed () override;
 
-		MUCFeatures GetMUCFeatures () const;
-		QString GetMUCSubject () const;
-		bool CanChangeSubject () const;
-		void SetMUCSubject (const QString& subject);
-		QList<QObject*> GetParticipants ();
-		bool IsAutojoined () const;
-		void Join ();
-		void Leave (const QString&);
-		QString GetNick () const;
-		void SetNick (const QString&);
-		QString GetGroupName () const;
-		QString GetRealID (QObject*) const;
-		QVariantMap GetIdentifyingData () const;
-		void InviteToMUC (const QString& userId, const QString& msg);
+		MUCFeatures GetMUCFeatures () const override;
+		QString GetMUCSubject () const override;
+		bool CanChangeSubject () const override;
+		void SetMUCSubject (const QString& subject) override;
+		QList<QObject*> GetParticipants () override;
+		bool IsAutojoined () const override;
+		void Join () override;
+		void Leave (const QString&) override;
+		QString GetNick () const override;
+		void SetNick (const QString&) override;
+		QString GetGroupName () const override;
+		QString GetRealID (QObject*) const override;
+		QVariantMap GetIdentifyingData () const override;
+		void InviteToMUC (const QString& userId, const QString& msg) override;
 	private slots:
 		void handleGotUsers (const QList<UserInfo>&);
 	signals:
-		void gotNewParticipants (const QList<QObject*>& parts);
-		void mucSubjectChanged (const QString& newSubj);
-		void nicknameConflict (const QString& usedNick);
-		void beenKicked (const QString& reason);
-		void beenBanned (const QString& reason);
+		void gotNewParticipants (const QList<QObject*>& parts) override;
+		void mucSubjectChanged (const QString& newSubj) override;
+		void nicknameConflict (const QString& usedNick) override;
+		void beenKicked (const QString& reason) override;
+		void beenBanned (const QString& reason) override;
 
 		void removeEntry (VkChatEntry*);
 	};
