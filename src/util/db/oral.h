@@ -1109,9 +1109,9 @@ namespace oral
 		{
 			const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
 
-			auto statements = Util::ZipWith (types, data.Fields_,
-					[] (const QString& type, const QString& field) -> QString { return field + " " + type; });
-			return "CREATE TABLE " + data.Table_ +  " (" + QStringList { statements }.join (", ") + ");";
+			const auto& statements = Util::ZipWith (types, data.Fields_,
+					[] (const QString& type, const QString& field) { return field + " " + type; });
+			return "CREATE TABLE " + data.Table_ +  " (" + statements.join (", ") + ");";
 		}
 
 		template<typename T, typename Enable = void>
