@@ -32,7 +32,6 @@
 #include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
-#include <util/db/oraltypes.h>
 #include <util/db/oralfwd.h>
 
 namespace LeechCraft
