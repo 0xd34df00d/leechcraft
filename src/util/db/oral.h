@@ -1164,9 +1164,19 @@ namespace oral
 		{
 			const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
 
+			const auto& constraints = GetConstraintsStringList<ConstraintsType<T>> {} (data);
+			const auto& constraintsStr = constraints.isEmpty () ?
+					QString {} :
+					(", " + constraints.join (", "));
+
 			const auto& statements = Util::ZipWith (types, data.Fields_,
 					[] (const QString& type, const QString& field) { return field + " " + type; });
-			return "CREATE TABLE " + data.Table_ +  " (" + statements.join (", ") + ");";
+			return "CREATE TABLE " +
+					data.Table_ +
+					" (" +
+					statements.join (", ") +
+					constraintsStr +
+					");";
 		}
 
 		template<typename T, typename Enable = void>
