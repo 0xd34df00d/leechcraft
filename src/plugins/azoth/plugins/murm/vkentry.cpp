@@ -626,6 +626,12 @@ namespace Murm
 		case Size::Full:
 			return true;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown size"
+				<< static_cast<int> (size);
+
+		return false;
 	}
 
 	void VkEntry::handleTypingTimeout ()
