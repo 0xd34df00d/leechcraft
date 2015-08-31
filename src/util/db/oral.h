@@ -1111,6 +1111,21 @@ namespace oral
 		}
 
 		template<typename T>
+		typename T::Constraints GetConstraintsTypeImpl (int, typename T::Constraints* = nullptr)
+		{
+			return {};
+		}
+
+		template<typename T>
+		Constraints<> GetConstraintsTypeImpl (float)
+		{
+			return {};
+		}
+
+		template<typename T>
+		using ConstraintsType = decltype (GetConstraintsTypeImpl<T> (0));
+
+		template<typename T>
 		QString AdaptCreateTable (const CachedFieldsData& data)
 		{
 			const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
