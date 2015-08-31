@@ -88,6 +88,12 @@ namespace oral
 		}
 	};
 
+	template<int... Fields>
+	struct UniqueSubset;
+
+	template<typename... Args>
+	using Constraints = Typelist<Args...>;
+
 	namespace detail
 	{
 		template<typename T>
