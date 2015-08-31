@@ -28,6 +28,35 @@
  **********************************************************************/
 
 #include "avatarsstorageondisk.h"
+#include "interfaces/azoth/ihaveavatars.h"
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+	struct AvatarsStorageOnDisk::Record
+	{
+		Util::oral::PKey<int> ID_;
+
+		QByteArray EntryID_;
+		IHaveAvatars::Size Size_;
+		QByteArray ImageData_;
+
+		static QByteArray ClassName ()
+		{
+			return "Record";
+		}
+	};
+}
+}
+
+using AvatarRecord = LeechCraft::Azoth::AvatarsStorageOnDisk::Record;
+
+BOOST_FUSION_ADAPT_STRUCT (AvatarRecord,
+		(decltype (AvatarRecord::ID_), ID_)
+		(decltype (AvatarRecord::EntryID_), EntryID_)
+		(decltype (AvatarRecord::Size_), Size_)
+		(decltype (AvatarRecord::ImageData_), ImageData_))
 
 namespace LeechCraft
 {
