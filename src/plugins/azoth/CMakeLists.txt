@@ -154,6 +154,7 @@ set (SRCS
 	msgeditautocompleter.cpp
 	bookmarkeditdialog.cpp
 	msgsender.cpp
+	avatarsstorageondisk.cpp
 	)
 set (FORMS
 	mainwidget.ui
