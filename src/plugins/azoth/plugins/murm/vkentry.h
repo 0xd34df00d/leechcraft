@@ -122,7 +122,8 @@ namespace Murm
 		QVariant GetMetaInfo (DataField) const override;
 		QList<QPair<QString, QVariant>> GetVCardRepresentation () const override;
 
-		QFuture<QImage> RefreshAvatar ();
+		QFuture<QImage> RefreshAvatar (Size) override;
+		bool SupportsSize (Size) const override;
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();

@@ -613,9 +613,19 @@ namespace Murm
 		};
 	}
 
-	QFuture<QImage> VkEntry::RefreshAvatar ()
+	QFuture<QImage> VkEntry::RefreshAvatar (Size)
 	{
 		return Account_->GetPhotoStorage ()->GetImage (Info_.Photo_);
+	}
+
+	bool VkEntry::SupportsSize (Size size) const
+	{
+		switch (size)
+		{
+		case Size::Thumbnail:
+		case Size::Full:
+			return true;
+		}
 	}
 
 	void VkEntry::handleTypingTimeout ()

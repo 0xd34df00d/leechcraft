@@ -42,7 +42,15 @@ namespace Azoth
 	protected:
 		virtual ~IHaveAvatars () {}
 	public:
-		virtual QFuture<QImage> RefreshAvatar () = 0;
+		enum class Size
+		{
+			Full,
+			Thumbnail
+		};
+
+		virtual QFuture<QImage> RefreshAvatar (Size) = 0;
+
+		virtual bool SupportsSize (Size) const = 0;
 	};
 }
 }
