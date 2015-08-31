@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "avatarsstorageondisk.h"
+#include <util/db/oral.h>
 #include "interfaces/azoth/ihaveavatars.h"
 
 namespace LeechCraft
@@ -60,6 +61,36 @@ BOOST_FUSION_ADAPT_STRUCT (AvatarRecord,
 
 namespace LeechCraft
 {
+namespace Util
+{
+namespace oral
+{
+	template<>
+	struct Type2Name<Azoth::IHaveAvatars::Size>
+	{
+		QString operator() () const { return Type2Name<int> {} (); }
+	};
+
+	template<>
+	struct ToVariant<Azoth::IHaveAvatars::Size>
+	{
+		QVariant operator() (Azoth::IHaveAvatars::Size size) const
+		{
+			return static_cast<int> (size);
+		}
+	};
+
+	template<>
+	struct FromVariant<Azoth::IHaveAvatars::Size>
+	{
+		Azoth::IHaveAvatars::Size operator() (const QVariant& var) const
+		{
+			return static_cast<Azoth::IHaveAvatars::Size> (var.toInt ());
+		}
+	};
+}
+}
+
 namespace Azoth
 {
 	AvatarsStorageOnDisk::AvatarsStorageOnDisk (QObject *parent)
