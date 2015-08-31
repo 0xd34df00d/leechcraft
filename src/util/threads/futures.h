@@ -481,7 +481,7 @@ namespace Util
 			}
 
 			template<typename F>
-			auto operator>> (const F& f) -> decltype (Then (f))
+			auto operator>> (const F& f) -> decltype (this->Then (f))
 			{
 				return Then (f);
 			}
