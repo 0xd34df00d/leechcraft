@@ -225,7 +225,7 @@ install (FILES azothsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY share/azoth DESTINATION ${LC_SHARE_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 
-FindQtLibs (leechcraft_azoth Network Sql WebKitWidgets Widgets Xml)
+FindQtLibs (leechcraft_azoth Concurrent Network Sql WebKitWidgets Widgets Xml)
 if (NOT WIN32)
 	FindQtLibs (leechcraft_azoth DBus)
 endif ()
