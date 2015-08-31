@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "avatarsstorageondisk.h"
+#include <QDir>
+#include <QSqlError>
+#include <util/db/util.h>
 #include <util/db/oral.h>
+#include <util/sys/paths.h>
 #include "interfaces/azoth/ihaveavatars.h"
 
 namespace LeechCraft
@@ -95,7 +99,23 @@ namespace Azoth
 {
 	AvatarsStorageOnDisk::AvatarsStorageOnDisk (QObject *parent)
 	: QObject { parent }
+	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
+				Util::GenConnectionName ("org.LeechCraft.Azoth.Xoox.VCards")) }
 	{
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth");
+		DB_.setDatabaseName (cacheDir.filePath ("avatars.db"));
+		if (!DB_.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open the database";
+			Util::DBLock::DumpError (DB_.lastError ());
+			throw std::runtime_error { "Cannot create database" };
+		}
+
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 }
 }
