@@ -176,6 +176,12 @@ namespace oral
 	};
 
 	template<>
+	struct Type2Name<QByteArray>
+	{
+		QString operator() () const { return "BLOB"; }
+	};
+
+	template<>
 	struct Type2Name<QDateTime>
 	{
 		QString operator() () const { return "DATETIME"; }
