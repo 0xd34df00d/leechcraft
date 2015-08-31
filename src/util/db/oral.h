@@ -1126,6 +1126,18 @@ namespace oral
 		using ConstraintsType = decltype (GetConstraintsTypeImpl<T> (0));
 
 		template<typename T>
+		struct ConstraintToString;
+
+		template<int... Fields>
+		struct ConstraintToString<UniqueSubset<Fields...>>
+		{
+			QString operator() (const CachedFieldsData& data) const
+			{
+				return "UNIQUE (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
+			}
+		};
+
+		template<typename T>
 		QString AdaptCreateTable (const CachedFieldsData& data)
 		{
 			const QList<QString> types = boost::fusion::fold (T {}, QStringList {}, Types {});
