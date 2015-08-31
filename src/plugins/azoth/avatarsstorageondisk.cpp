@@ -51,6 +51,11 @@ namespace Azoth
 		{
 			return "Record";
 		}
+
+		static QString FieldNameMorpher (const QString& str)
+		{
+			return str.left (str.size () - 1);
+		}
 	};
 }
 }
