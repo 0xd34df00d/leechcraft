@@ -33,10 +33,6 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	AvatarsStorageThread::~AvatarsStorageThread ()
-	{
-	}
-
 	void AvatarsStorageThread::Initialize ()
 	{
 		Storage_.reset (new AvatarsStorageOnDisk);

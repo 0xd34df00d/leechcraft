@@ -45,7 +45,6 @@ namespace Azoth
 		std::unique_ptr<AvatarsStorageOnDisk> Storage_;
 	public:
 		using Util::WorkerThreadBase::WorkerThreadBase;
-		~AvatarsStorageThread ();
 	protected:
 		void Initialize () override;
 		void Cleanup () override;
