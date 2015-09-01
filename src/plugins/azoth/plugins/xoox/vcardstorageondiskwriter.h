@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <util/threads/workerthreadbase.h>
+#include "vcardstorageondisk.h"
 
 namespace LeechCraft
 {
