@@ -49,9 +49,9 @@ namespace Azoth
 	public:
 		AvatarsStorageOnDisk (QObject* = nullptr);
 
-		void SetAvatar (const QByteArray& entryId,
+		void SetAvatar (const QString& entryId,
 				IHaveAvatars::Size size, const QByteArray& imageData) const;
-		boost::optional<QByteArray> GetAvatar (const QByteArray& entryId,
+		boost::optional<QByteArray> GetAvatar (const QString& entryId,
 				IHaveAvatars::Size size) const;
 	};
 }

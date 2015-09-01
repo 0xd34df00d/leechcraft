@@ -129,19 +129,19 @@ namespace Azoth
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
-	void AvatarsStorageOnDisk::SetAvatar (const QByteArray& entryId,
+	void AvatarsStorageOnDisk::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& imageData) const
 	{
-		Record rec { {}, entryId, size, imageData };
+		Record rec { {}, entryId.toUtf8 (), size, imageData };
 		AdaptedRecord_->DoInsert_ (rec, Util::oral::InsertAction::Replace);
 	}
 
-	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QByteArray& entryId,
+	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,
 			IHaveAvatars::Size size) const
 	{
 		namespace sph = Util::oral::sph;
 
-		const auto& result = AdaptedRecord_->DoSelectByFields_ (sph::_1 == entryId && sph::_2 == size);
+		const auto& result = AdaptedRecord_->DoSelectByFields_ (sph::_1 == entryId.toUtf8 () && sph::_2 == size);
 		if (result.isEmpty ())
 			return {};
 
