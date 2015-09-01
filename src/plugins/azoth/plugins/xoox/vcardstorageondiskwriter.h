@@ -46,7 +46,6 @@ namespace Xoox
 		std::unique_ptr<VCardStorageOnDisk> Storage_;
 	public:
 		using Util::WorkerThreadBase::WorkerThreadBase;
-		~VCardStorageOnDiskWriter ();
 
 		QFuture<void> SetVCard (const QString&, const QString&);
 	protected:

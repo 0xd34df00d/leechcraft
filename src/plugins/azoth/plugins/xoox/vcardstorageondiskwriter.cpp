@@ -36,10 +36,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	VCardStorageOnDiskWriter::~VCardStorageOnDiskWriter ()
-	{
-	}
-
 	QFuture<void> VCardStorageOnDiskWriter::SetVCard (const QString& jid, const QString& vcard)
 	{
 		return ScheduleImpl ([=] { Storage_->SetVCard (jid, vcard); });
