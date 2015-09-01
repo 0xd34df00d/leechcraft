@@ -81,7 +81,10 @@ namespace oral
 	template<>
 	struct Type2Name<Azoth::IHaveAvatars::Size>
 	{
-		QString operator() () const { return Type2Name<int> {} (); }
+		QString operator() () const
+		{
+			return Type2Name<int> {} ();
+		}
 	};
 
 	template<>
