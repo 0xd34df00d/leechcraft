@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
+#include "interfaces/azoth/ihaveavatars.h"
 
 namespace LeechCraft
 {
@@ -42,6 +44,9 @@ namespace Azoth
 		AvatarsStorageOnDisk * const DiskStorage_;
 	public:
 		AvatarsStorage (QObject* = nullptr);
+
+		void SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
+		boost::optional<QByteArray> GetAvatar (const QString&, IHaveAvatars::Size);
 	};
 }
 }

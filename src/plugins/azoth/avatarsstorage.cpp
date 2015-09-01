@@ -39,5 +39,16 @@ namespace Azoth
 	, DiskStorage_ { new AvatarsStorageOnDisk { this } }
 	{
 	}
+
+	void AvatarsStorage::SetAvatar (const QString& entryId,
+			IHaveAvatars::Size size, const QByteArray& data)
+	{
+		DiskStorage_->SetAvatar (entryId, size, data);
+	}
+
+	boost::optional<QByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
+	{
+		return DiskStorage_->GetAvatar (entryId, size);
+	}
 }
 }
