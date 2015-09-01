@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "avatarsstoragethread.h"
-#include "avatarsstorageondisk.h"
 
 namespace LeechCraft
 {

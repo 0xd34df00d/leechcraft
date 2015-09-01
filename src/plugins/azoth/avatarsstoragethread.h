@@ -32,6 +32,7 @@
 #include <boost/optional.hpp>
 #include <util/threads/workerthreadbase.h>
 #include "interfaces/azoth/ihaveavatars.h"
+#include "avatarsstorageondisk.h"
 
 namespace LeechCraft
 {
