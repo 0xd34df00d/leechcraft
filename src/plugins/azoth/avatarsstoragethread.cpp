@@ -33,6 +33,17 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	QFuture<void> AvatarsStorageThread::SetAvatar (const QString& entryId,
+			IHaveAvatars::Size size, const QByteArray& imageData)
+	{
+		return ScheduleImpl ([=] { Storage_->SetAvatar (entryId, size, imageData); });
+	}
+
+	QFuture<boost::optional<QByteArray>> AvatarsStorageThread::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
+	{
+		return ScheduleImpl ([=] { return Storage_->GetAvatar (entryId, size); });
+	}
+
 	void AvatarsStorageThread::Initialize ()
 	{
 		Storage_.reset (new AvatarsStorageOnDisk);

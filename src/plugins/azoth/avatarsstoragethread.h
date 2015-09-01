@@ -45,6 +45,11 @@ namespace Azoth
 		std::unique_ptr<AvatarsStorageOnDisk> Storage_;
 	public:
 		using Util::WorkerThreadBase::WorkerThreadBase;
+
+		QFuture<void> SetAvatar (const QString& entryId,
+				IHaveAvatars::Size size, const QByteArray& imageData);
+		QFuture<boost::optional<QByteArray>> GetAvatar (const QString& entryId,
+				IHaveAvatars::Size size);
 	protected:
 		void Initialize () override;
 		void Cleanup () override;
