@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "avatarsstorage.h"
+#include <QBuffer>
+#include <QtDebug>
 #include "avatarsstorageondisk.h"
+#include "interfaces/azoth/iclentry.h"
 
 namespace LeechCraft
 {
@@ -40,10 +43,39 @@ namespace Azoth
 	{
 	}
 
+	void AvatarsStorage::SetAvatar (const ICLEntry *entry,
+			IHaveAvatars::Size size, const QImage& image)
+	{
+		QByteArray data;
+		QBuffer buffer { &data };
+		image.save (&buffer, "PNG", 0);
+
+		SetAvatar (entry->GetEntryID (), size, data);
+	}
+
 	void AvatarsStorage::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& data)
 	{
 		DiskStorage_->SetAvatar (entryId, size, data);
+	}
+
+	boost::optional<QImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
+	{
+		const auto& data = GetAvatar (entry->GetEntryID (), size);
+		if (!data)
+			return {};
+
+		QImage image;
+		if (!image.loadFromData (*data))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to load image from data for"
+					<< entry->GetEntryID ()
+					<< entry->GetHumanReadableID ();
+			return {};
+		}
+
+		return image;
 	}
 
 	boost::optional<QByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)

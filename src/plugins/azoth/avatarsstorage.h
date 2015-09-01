@@ -37,6 +37,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class ICLEntry;
 	class AvatarsStorageOnDisk;
 
 	class AvatarsStorage : public QObject
@@ -45,7 +46,9 @@ namespace Azoth
 	public:
 		AvatarsStorage (QObject* = nullptr);
 
+		void SetAvatar (const ICLEntry*, IHaveAvatars::Size, const QImage&);
 		void SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
+		boost::optional<QImage> GetAvatar (const ICLEntry*, IHaveAvatars::Size);
 		boost::optional<QByteArray> GetAvatar (const QString&, IHaveAvatars::Size);
 	};
 }
