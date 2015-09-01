@@ -156,6 +156,7 @@ set (SRCS
 	msgsender.cpp
 	avatarsstorage.cpp
 	avatarsstorageondisk.cpp
+	avatarsstoragethread.cpp
 	)
 set (FORMS
 	mainwidget.ui
