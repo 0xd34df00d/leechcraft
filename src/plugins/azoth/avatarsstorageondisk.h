@@ -29,9 +29,11 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
 #include <util/db/oralfwd.h>
+#include "interfaces/azoth/ihaveavatars.h"
 
 namespace LeechCraft
 {
@@ -46,6 +48,11 @@ namespace Azoth
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		AvatarsStorageOnDisk (QObject* = nullptr);
+
+		void SetAvatar (const QByteArray& entryId,
+				IHaveAvatars::Size size, const QByteArray& imageData) const;
+		boost::optional<QByteArray> GetAvatar (const QByteArray& entryId,
+				IHaveAvatars::Size size) const;
 	};
 }
 }

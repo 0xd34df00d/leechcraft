@@ -33,7 +33,6 @@
 #include <util/db/util.h>
 #include <util/db/oral.h>
 #include <util/sys/paths.h>
-#include "interfaces/azoth/ihaveavatars.h"
 
 namespace LeechCraft
 {
@@ -128,6 +127,25 @@ namespace Azoth
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
+	}
+
+	void AvatarsStorageOnDisk::SetAvatar (const QByteArray& entryId,
+			IHaveAvatars::Size size, const QByteArray& imageData) const
+	{
+		Record rec { {}, entryId, size, imageData };
+		AdaptedRecord_->DoInsert_ (rec, Util::oral::InsertAction::Replace);
+	}
+
+	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QByteArray& entryId,
+			IHaveAvatars::Size size) const
+	{
+		namespace sph = Util::oral::sph;
+
+		const auto& result = AdaptedRecord_->DoSelectByFields_ (sph::_1 == entryId && sph::_2 == size);
+		if (result.isEmpty ())
+			return {};
+
+		return result.value (0).ImageData_;
 	}
 }
 }
