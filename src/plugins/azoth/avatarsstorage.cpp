@@ -62,7 +62,7 @@ namespace Azoth
 
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
-		return Util::Sequence (this, [=] { return GetAvatar (entry->GetEntryID (), size); }).Then (
+		return Util::Sequence (this, [=] { return GetAvatar (entry->GetEntryID (), size); }) >>
 				[=] (const boost::optional<QByteArray>& data)
 				{
 					if (!data)
@@ -85,7 +85,7 @@ namespace Azoth
 
 								return image;
 							});
-				});
+				};
 	}
 
 	QFuture<MaybeByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
