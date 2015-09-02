@@ -33,23 +33,29 @@
 #include <QObject>
 #include "interfaces/azoth/ihaveavatars.h"
 
+template<typename>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Azoth
 {
 	class ICLEntry;
-	class AvatarsStorageOnDisk;
+	class AvatarsStorageThread;
+
+	using MaybeImage = boost::optional<QImage>;
+	using MaybeByteArray = boost::optional<QByteArray>;
 
 	class AvatarsStorage : public QObject
 	{
-		AvatarsStorageOnDisk * const DiskStorage_;
+		AvatarsStorageThread * const StorageThread_;
 	public:
 		AvatarsStorage (QObject* = nullptr);
 
-		void SetAvatar (const ICLEntry*, IHaveAvatars::Size, const QImage&);
-		void SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
-		boost::optional<QImage> GetAvatar (const ICLEntry*, IHaveAvatars::Size);
-		boost::optional<QByteArray> GetAvatar (const QString&, IHaveAvatars::Size);
+		QFuture<void> SetAvatar (const ICLEntry*, IHaveAvatars::Size, const QImage&);
+		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
+		QFuture<MaybeImage> GetAvatar (const ICLEntry*, IHaveAvatars::Size);
+		QFuture<MaybeByteArray> GetAvatar (const QString&, IHaveAvatars::Size);
 	};
 }
 }

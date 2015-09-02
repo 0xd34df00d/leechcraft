@@ -30,7 +30,8 @@
 #include "avatarsstorage.h"
 #include <QBuffer>
 #include <QtDebug>
-#include "avatarsstorageondisk.h"
+#include <util/threads/futures.h>
+#include "avatarsstoragethread.h"
 #include "interfaces/azoth/iclentry.h"
 
 namespace LeechCraft
@@ -39,48 +40,57 @@ namespace Azoth
 {
 	AvatarsStorage::AvatarsStorage (QObject *parent)
 	: QObject { parent }
-	, DiskStorage_ { new AvatarsStorageOnDisk { this } }
+	, StorageThread_ { new AvatarsStorageThread { this } }
 	{
 	}
 
-	void AvatarsStorage::SetAvatar (const ICLEntry *entry,
+	QFuture<void> AvatarsStorage::SetAvatar (const ICLEntry *entry,
 			IHaveAvatars::Size size, const QImage& image)
 	{
 		QByteArray data;
 		QBuffer buffer { &data };
 		image.save (&buffer, "PNG", 0);
 
-		SetAvatar (entry->GetEntryID (), size, data);
+		return SetAvatar (entry->GetEntryID (), size, data);
 	}
 
-	void AvatarsStorage::SetAvatar (const QString& entryId,
+	QFuture<void> AvatarsStorage::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& data)
 	{
-		DiskStorage_->SetAvatar (entryId, size, data);
+		return StorageThread_->SetAvatar (entryId, size, data);
 	}
 
-	boost::optional<QImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
+	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
-		const auto& data = GetAvatar (entry->GetEntryID (), size);
-		if (!data)
-			return {};
+		return Util::Sequence (this, [=] { return GetAvatar (entry->GetEntryID (), size); }).Then (
+				[=] (const boost::optional<QByteArray>& data)
+				{
+					if (!data)
+						return Util::MakeReadyFuture<MaybeImage> ({});
 
-		QImage image;
-		if (!image.loadFromData (*data))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to load image from data for"
-					<< entry->GetEntryID ()
-					<< entry->GetHumanReadableID ();
-			return {};
-		}
+					return QtConcurrent::run ([=] () -> MaybeImage
+							{
+								if (!data)
+									return {};
 
-		return image;
+								QImage image;
+								if (!image.loadFromData (*data))
+								{
+									qWarning () << Q_FUNC_INFO
+											<< "unable to load image from data for"
+											<< entry->GetEntryID ()
+											<< entry->GetHumanReadableID ();
+									return {};
+								}
+
+								return image;
+							});
+				});
 	}
 
-	boost::optional<QByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
+	QFuture<MaybeByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
 	{
-		return DiskStorage_->GetAvatar (entryId, size);
+		return StorageThread_->GetAvatar (entryId, size);
 	}
 }
 }
