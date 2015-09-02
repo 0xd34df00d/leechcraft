@@ -856,12 +856,8 @@ namespace oral
 		template<typename T>
 		class ByFieldsWrapper
 		{
-			CachedFieldsData Cached_;
+			const CachedFieldsData Cached_;
 		public:
-			ByFieldsWrapper ()
-			{
-			}
-
 			ByFieldsWrapper (const CachedFieldsData& data)
 			: Cached_ (data)
 			{
