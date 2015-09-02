@@ -885,34 +885,6 @@ namespace oral
 			{
 			}
 
-			template<int... Fields>
-			class ByFieldsSelector
-			{
-				const CachedFieldsData Cached_;
-				QSqlQuery_ptr Query_;
-			public:
-				ByFieldsSelector (const ByFieldsWrapper<T>& w)
-				: Cached_ (w.Cached_)
-				, Query_ (std::make_shared<QSqlQuery> (w.Cached_.DB_))
-				{
-					QStringList whereClauses;
-					for (const auto& pair : SelectFields<Fields...> {} (Cached_))
-						whereClauses << pair.first + " = " + pair.second;
-
-					auto selectAll = "SELECT " + QStringList { Cached_.Fields_ }.join (", ") +
-							" FROM " + Cached_.Table_ +
-							" WHERE " + whereClauses.join (" AND ") + ";";
-					Query_->prepare (selectAll);
-				}
-
-				template<typename... Args>
-				QList<T> operator() (Args... args) const
-				{
-					ValueBinder<FieldsUnpacker<Fields...>, Args...> { Query_, Cached_.BoundFields_ } (args...);
-					return PerformSelect<T> (Query_);
-				}
-			};
-
 			template<ExprType Type, typename L, typename R>
 			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
 			{
