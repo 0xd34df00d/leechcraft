@@ -485,6 +485,11 @@ namespace Util
 			{
 				return Then (f);
 			}
+
+			operator QFuture<Ret> () const
+			{
+				return {};
+			}
 		};
 	}
 
