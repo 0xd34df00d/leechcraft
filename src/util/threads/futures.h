@@ -560,5 +560,14 @@ namespace Util
 	{
 		return { new detail::Sequencer<Executor, Args...> { f, args..., parent } };
 	}
+
+	template<typename T>
+	QFuture<T> MakeReadyFuture (const T& t)
+	{
+		QFutureInterface<T> iface;
+		iface.reportStarted ();
+		iface.reportFinished (&t);
+		return iface.future ();
+	}
 }
 }
