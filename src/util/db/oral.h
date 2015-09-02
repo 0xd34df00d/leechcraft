@@ -913,12 +913,6 @@ namespace oral
 				}
 			};
 
-			template<int... Fields>
-			ByFieldsSelector<Fields...> Prepare ()
-			{
-				return { *this };
-			}
-
 			template<ExprType Type, typename L, typename R>
 			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
 			{
