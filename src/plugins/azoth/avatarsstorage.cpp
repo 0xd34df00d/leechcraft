@@ -70,9 +70,6 @@ namespace Azoth
 
 					return QtConcurrent::run ([=] () -> MaybeImage
 							{
-								if (!data)
-									return {};
-
 								QImage image;
 								if (!image.loadFromData (*data))
 								{
