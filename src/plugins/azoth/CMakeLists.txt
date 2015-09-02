@@ -154,6 +154,7 @@ set (SRCS
 	msgeditautocompleter.cpp
 	bookmarkeditdialog.cpp
 	msgsender.cpp
+	avatarsmanager.cpp
 	avatarsstorage.cpp
 	avatarsstorageondisk.cpp
 	avatarsstoragethread.cpp
