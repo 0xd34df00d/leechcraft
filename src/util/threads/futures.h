@@ -399,6 +399,9 @@ namespace Util
 		template<typename Ret, typename E0, typename... A0>
 		class SequenceProxy
 		{
+			template<typename, typename, typename...>
+			friend class SequenceProxy;
+
 			std::shared_ptr<void> ExecuteGuard_;
 			Sequencer<E0, A0...> * const Seq_;
 
