@@ -63,7 +63,7 @@ namespace Azoth
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
 		return Util::Sequence (this, [=] { return GetAvatar (entry->GetEntryID (), size); }) >>
-				[=] (const boost::optional<QByteArray>& data)
+				[=] (const MaybeByteArray& data)
 				{
 					if (!data)
 						return Util::MakeReadyFuture<MaybeImage> ({});
