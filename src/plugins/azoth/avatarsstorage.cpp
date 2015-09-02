@@ -62,7 +62,10 @@ namespace Azoth
 
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
-		return Util::Sequence (this, [=] { return GetAvatar (entry->GetEntryID (), size); }) >>
+		const auto& entryId = entry->GetEntryID ();
+		const auto& hrId = entry->GetHumanReadableID ();
+
+		return Util::Sequence (this, [=] { return GetAvatar (entryId, size); }) >>
 				[=] (const MaybeByteArray& data)
 				{
 					if (!data)
@@ -75,8 +78,8 @@ namespace Azoth
 								{
 									qWarning () << Q_FUNC_INFO
 											<< "unable to load image from data for"
-											<< entry->GetEntryID ()
-											<< entry->GetHumanReadableID ();
+											<< entryId
+											<< hrId;
 									return {};
 								}
 
