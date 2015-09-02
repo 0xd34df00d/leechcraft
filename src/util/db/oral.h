@@ -559,24 +559,6 @@ namespace oral
 			return [selectQuery] { return PerformSelect<T> (selectQuery); };
 		}
 
-		template<int Field, int... Fields>
-		struct SelectFields
-		{
-			QList<QPair<QString, QString>> operator() (const CachedFieldsData& data) const
-			{
-				return QPair<QString, QString> { data.Fields_.at (Field), data.BoundFields_.at (Field) } + SelectFields<Fields...> {} (data);
-			}
-		};
-
-		template<int Field>
-		struct SelectFields<Field>
-		{
-			QList<QPair<QString, QString>> operator() (const CachedFieldsData& data) const
-			{
-				return { { data.Fields_.at (Field), data.BoundFields_.at (Field) } };
-			}
-		};
-
 		template<int HeadT, int... TailT>
 		struct FieldsUnpacker
 		{
