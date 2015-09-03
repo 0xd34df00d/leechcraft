@@ -900,6 +900,31 @@ namespace oral
 		};
 
 		template<typename T>
+		class DeleteByFieldsWrapper
+		{
+			const CachedFieldsData Cached_;
+		public:
+			DeleteByFieldsWrapper (const CachedFieldsData& data)
+			: Cached_ (data)
+			{
+			}
+
+			template<ExprType Type, typename L, typename R>
+			void operator() (const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& treeResult = HandleExprTree<T> (tree);
+
+				const auto& selectAll = "DELETE FROM " + Cached_.Table_ +
+						" WHERE " + treeResult.first + ";";
+
+				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
+				query->prepare (selectAll);
+				treeResult.second (query);
+				query->exec ();
+			}
+		};
+
+		template<typename T>
 		SelectByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
 		{
 			return { data };
