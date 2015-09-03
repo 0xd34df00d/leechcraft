@@ -53,6 +53,7 @@ namespace Azoth
 				IHaveAvatars::Size size, const QByteArray& imageData) const;
 		boost::optional<QByteArray> GetAvatar (const QString& entryId,
 				IHaveAvatars::Size size) const;
+		void DeleteAvatars (const QString& entryId) const;
 	};
 }
 }

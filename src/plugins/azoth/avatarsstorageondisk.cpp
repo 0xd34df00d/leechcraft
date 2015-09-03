@@ -108,6 +108,8 @@ namespace oral
 
 namespace Azoth
 {
+	namespace sph = Util::oral::sph;
+
 	AvatarsStorageOnDisk::AvatarsStorageOnDisk (QObject *parent)
 	: QObject { parent }
 	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
@@ -139,13 +141,16 @@ namespace Azoth
 	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,
 			IHaveAvatars::Size size) const
 	{
-		namespace sph = Util::oral::sph;
-
 		const auto& result = AdaptedRecord_->DoSelectByFields_ (sph::_1 == entryId.toUtf8 () && sph::_2 == size);
 		if (result.isEmpty ())
 			return {};
 
 		return result.value (0).ImageData_;
+	}
+
+	void AvatarsStorageOnDisk::DeleteAvatars (const QString& entryId) const
+	{
+		AdaptedRecord_->DoDeleteByFields_ (sph::_1 == entryId.toUtf8 ());
 	}
 }
 }
