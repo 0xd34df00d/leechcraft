@@ -81,6 +81,30 @@ namespace Azoth
 				return data;
 			}
 		};
+
+		struct ToImage : boost::static_visitor<QImage>
+		{
+			QImage operator() (const QImage& image) const
+			{
+				return image;
+			}
+
+			QImage operator() (const QByteArray& array) const
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "cache semimiss";
+
+				QImage image;
+				if (!image.loadFromData (array))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to load image";
+					return {};
+				}
+
+				return image;
+			}
+		};
 	}
 
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
