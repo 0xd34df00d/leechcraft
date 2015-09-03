@@ -30,7 +30,9 @@
 #pragma once
 
 #include <boost/optional.hpp>
+#include <boost/variant.hpp>
 #include <QObject>
+#include <QCache>
 #include "interfaces/azoth/ihaveavatars.h"
 
 template<typename>
@@ -49,6 +51,9 @@ namespace Azoth
 	class AvatarsStorage : public QObject
 	{
 		AvatarsStorageThread * const StorageThread_;
+
+		using CacheValue_t = boost::variant<QByteArray, QImage>;
+		QCache<QString, CacheValue_t> Cache_;
 	public:
 		AvatarsStorage (QObject* = nullptr);
 
