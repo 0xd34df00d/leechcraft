@@ -60,6 +60,29 @@ namespace Azoth
 		return StorageThread_->SetAvatar (entryId, size, data);
 	}
 
+	namespace
+	{
+		struct ToByteArray : boost::static_visitor<QByteArray>
+		{
+			QByteArray operator() (const QByteArray& array) const
+			{
+				return array;
+			}
+
+			QByteArray operator() (const QImage& image) const
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "cache semimiss";
+
+				QByteArray data;
+				QBuffer buffer { &data };
+				image.save (&buffer, "PNG", 0);
+
+				return data;
+			}
+		};
+	}
+
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
 		const auto& entryId = entry->GetEntryID ();
