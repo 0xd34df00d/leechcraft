@@ -45,6 +45,17 @@ namespace Azoth
 	{
 	}
 
+	namespace
+	{
+		int GetImageCost (const QImage& image)
+		{
+			if (image.isNull ())
+				return 1;
+
+			return image.width () * image.height () * image.depth () / 8;
+		}
+	}
+
 	QFuture<void> AvatarsStorage::SetAvatar (const ICLEntry *entry,
 			IHaveAvatars::Size size, const QImage& image)
 	{
@@ -54,7 +65,7 @@ namespace Azoth
 
 		const auto& entryId = entry->GetEntryID ();
 
-		Cache_.insert (entryId, new CacheValue_t { image }, data.size ());
+		Cache_.insert (entryId, new CacheValue_t { image }, GetImageCost (image));
 
 		return StorageThread_->SetAvatar (entryId, size, data);
 	}
