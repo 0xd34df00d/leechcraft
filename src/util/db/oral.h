@@ -930,6 +930,12 @@ namespace oral
 			return { data };
 		}
 
+		template<typename T>
+		DeleteByFieldsWrapper<T> AdaptDeleteFields (const CachedFieldsData& data)
+		{
+			return { data };
+		}
+
 		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
 		struct FieldInfo
 		{
@@ -1197,6 +1203,7 @@ namespace oral
 		std::function<void (T)> DoDelete_;
 
 		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
+		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
 
 		QString CreateTable_;
 
@@ -1204,13 +1211,15 @@ namespace oral
 				decltype (DoInsert_) doIns,
 				decltype (DoUpdate_) doUpdate,
 				decltype (DoDelete_) doDelete,
-				decltype (DoSelectByFields_) byFields,
+				decltype (DoSelectByFields_) selectByFields,
+				decltype (DoDeleteByFields_) deleteByFields,
 				decltype (CreateTable_) createTable)
 		: DoSelectAll_ (doSel)
 		, DoInsert_ (doIns)
 		, DoUpdate_ (doUpdate)
 		, DoDelete_ (doDelete)
-		, DoSelectByFields_ (byFields)
+		, DoSelectByFields_ (selectByFields)
+		, DoDeleteByFields_ (deleteByFields)
 		, CreateTable_ (createTable)
 		{
 		}
@@ -1251,7 +1260,8 @@ namespace oral
 		const auto& updater = detail::AdaptUpdate<T> (cachedData);
 		const auto& deleter = detail::AdaptDelete<T> (cachedData);
 
-		const auto& byVal = detail::AdaptSelectFields<T> (cachedData);
+		const auto& selectByVal = detail::AdaptSelectFields<T> (cachedData);
+		const auto& deleteByVal = detail::AdaptDeleteFields<T> (cachedData);
 
 		ObjectInfo<T> info
 		{
@@ -1259,7 +1269,8 @@ namespace oral
 			insertr,
 			updater,
 			deleter,
-			byVal,
+			selectByVal,
+			deleteByVal,
 			createTable
 		};
 
