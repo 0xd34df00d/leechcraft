@@ -854,11 +854,11 @@ namespace oral
 		}
 
 		template<typename T>
-		class ByFieldsWrapper
+		class SelectByFieldsWrapper
 		{
 			const CachedFieldsData Cached_;
 		public:
-			ByFieldsWrapper (const CachedFieldsData& data)
+			SelectByFieldsWrapper (const CachedFieldsData& data)
 			: Cached_ (data)
 			{
 			}
@@ -882,9 +882,9 @@ namespace oral
 		};
 
 		template<typename T>
-		ByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
+		SelectByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
 		{
-			return ByFieldsWrapper<T> (data);
+			return { data };
 		}
 
 		template<typename OrigSeq, typename OrigIdx, typename RefSeq, typename MemberIdx>
@@ -1153,7 +1153,7 @@ namespace oral
 		std::function<void (T)> DoUpdate_;
 		std::function<void (T)> DoDelete_;
 
-		detail::ByFieldsWrapper<T> DoSelectByFields_;
+		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
 
 		QString CreateTable_;
 
