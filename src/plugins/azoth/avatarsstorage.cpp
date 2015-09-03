@@ -41,6 +41,7 @@ namespace Azoth
 	AvatarsStorage::AvatarsStorage (QObject *parent)
 	: QObject { parent }
 	, StorageThread_ { new AvatarsStorageThread { this } }
+	, Cache_ { 5 * 1024 * 1024 }
 	{
 	}
 
@@ -51,12 +52,18 @@ namespace Azoth
 		QBuffer buffer { &data };
 		image.save (&buffer, "PNG", 0);
 
-		return SetAvatar (entry->GetEntryID (), size, data);
+		const auto& entryId = entry->GetEntryID ();
+
+		Cache_.insert (entryId, new CacheValue_t { image }, data.size ());
+
+		return StorageThread_->SetAvatar (entryId, size, data);
 	}
 
 	QFuture<void> AvatarsStorage::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& data)
 	{
+		Cache_.insert (entryId, new CacheValue_t { data }, data.size ());
+
 		return StorageThread_->SetAvatar (entryId, size, data);
 	}
 
@@ -110,9 +117,12 @@ namespace Azoth
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
 		const auto& entryId = entry->GetEntryID ();
+		if (const auto value = Cache_ [entryId])
+			return Util::MakeReadyFuture<MaybeImage> (boost::apply_visitor (ToImage {}, *value));
+
 		const auto& hrId = entry->GetHumanReadableID ();
 
-		return Util::Sequence (this, [=] { return GetAvatar (entryId, size); }) >>
+		return Util::Sequence (this, [=] { return StorageThread_->GetAvatar (entryId, size); }) >>
 				[=] (const MaybeByteArray& data)
 				{
 					if (!data)
@@ -137,12 +147,17 @@ namespace Azoth
 
 	QFuture<MaybeByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
 	{
+		if (const auto value = Cache_ [entryId])
+			return Util::MakeReadyFuture<MaybeByteArray> (boost::apply_visitor (ToByteArray {}, *value));
+
 		return StorageThread_->GetAvatar (entryId, size);
 	}
 
-	QFuture<void> AvatarsStorage::DeleteAvatars (const QString& entry)
+	QFuture<void> AvatarsStorage::DeleteAvatars (const QString& entryId)
 	{
-		return StorageThread_->DeleteAvatars (entry);
+		Cache_.remove (entryId);
+
+		return StorageThread_->DeleteAvatars (entryId);
 	}
 }
 }
