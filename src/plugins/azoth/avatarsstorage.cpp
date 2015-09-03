@@ -92,5 +92,10 @@ namespace Azoth
 	{
 		return StorageThread_->GetAvatar (entryId, size);
 	}
+
+	QFuture<void> AvatarsStorage::DeleteAvatars (const QString& entry)
+	{
+		return StorageThread_->DeleteAvatars (entry);
+	}
 }
 }

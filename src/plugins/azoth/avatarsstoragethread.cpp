@@ -44,6 +44,11 @@ namespace Azoth
 		return ScheduleImpl ([=] { return Storage_->GetAvatar (entryId, size); });
 	}
 
+	QFuture<void> AvatarsStorageThread::DeleteAvatars (const QString& entryId)
+	{
+		return ScheduleImpl ([=] { Storage_->DeleteAvatars (entryId); });
+	}
+
 	void AvatarsStorageThread::Initialize ()
 	{
 		Storage_.reset (new AvatarsStorageOnDisk);

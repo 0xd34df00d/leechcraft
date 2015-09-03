@@ -50,6 +50,7 @@ namespace Azoth
 				IHaveAvatars::Size size, const QByteArray& imageData);
 		QFuture<boost::optional<QByteArray>> GetAvatar (const QString& entryId,
 				IHaveAvatars::Size size);
+		QFuture<void> DeleteAvatars (const QString& entryId);
 	protected:
 		void Initialize () override;
 		void Cleanup () override;
