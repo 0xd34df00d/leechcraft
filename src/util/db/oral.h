@@ -853,6 +853,26 @@ namespace oral
 			return ExprTree<ExprType::LeafData, L> { left } && right;
 		}
 
+		template<typename Seq, ExprType Type, typename L, typename R>
+		QPair<QString, std::function<void (QSqlQuery_ptr)>> HandleExprTree (const ExprTree<Type, L, R>& tree)
+		{
+			ToSqlState<Seq> state { 0, {} };
+
+			const auto& sql = tree.ToSql (state);
+
+			qDebug () << sql << state.BoundMembers_;
+
+			return
+			{
+				sql,
+				[state] (const QSqlQuery_ptr& query)
+				{
+					for (const auto& pair : Stlize (state.BoundMembers_))
+						query->bindValue (pair.first, pair.second);
+				}
+			};
+		}
+
 		template<typename T>
 		class SelectByFieldsWrapper
 		{
@@ -866,17 +886,15 @@ namespace oral
 			template<ExprType Type, typename L, typename R>
 			QList<T> operator() (const ExprTree<Type, L, R>& tree) const
 			{
-				ToSqlState<T> state { 0, {} };
+				const auto& treeResult = HandleExprTree<T> (tree);
 
 				auto selectAll = "SELECT " + QStringList { Cached_.Fields_ }.join (", ") +
 						" FROM " + Cached_.Table_ +
-						" WHERE " + tree.ToSql (state) + ";";
-				qDebug () << selectAll << state.BoundMembers_;
+						" WHERE " + treeResult.first + ";";
 
 				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
 				query->prepare (selectAll);
-				for (const auto& pair : Stlize (state.BoundMembers_))
-					query->bindValue (pair.first, pair.second);
+				treeResult.second (query);
 				return PerformSelect<T> (query);
 			}
 		};
