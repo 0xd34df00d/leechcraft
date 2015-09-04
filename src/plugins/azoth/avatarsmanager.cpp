@@ -59,7 +59,27 @@ namespace Azoth
 			const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
 			if (!iha)
 				continue;
+
+			connect (entryObj,
+					SIGNAL (avatarChanged (QObject*)),
+					this,
+					SLOT (invalidateAvatar (QObject*)));
 		}
+	}
+
+	void AvatarsManager::invalidateAvatar (QObject *that)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (that);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "object is not an entry:"
+					<< sender ()
+					<< that;
+			return;
+		}
+
+		Storage_->DeleteAvatars (entry->GetEntryID ());
 	}
 }
 }

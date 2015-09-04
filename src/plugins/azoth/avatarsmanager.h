@@ -46,7 +46,9 @@ namespace Azoth
 		AvatarsManager (QObject* = nullptr);
 	public slots:
 		void handleAccount (QObject*);
+	private slots:
 		void handleEntries (const QList<QObject*>&);
+		void invalidateAvatar (QObject*);
 	};
 }
 }
