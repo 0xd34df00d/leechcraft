@@ -123,6 +123,7 @@ namespace Murm
 		QList<QPair<QString, QVariant>> GetVCardRepresentation () const override;
 
 		QFuture<QImage> RefreshAvatar (Size) override;
+		bool HasAvatar () const override;
 		bool SupportsSize (Size) const override;
 	private slots:
 		void handleTypingTimeout ();

@@ -627,6 +627,12 @@ namespace Murm
 		return {};
 	}
 
+	bool VkEntry::HasAvatar () const
+	{
+		return Info_.Photo_.isValid () ||
+				Info_.BigPhoto_.isValid ();
+	}
+
 	bool VkEntry::SupportsSize (Size size) const
 	{
 		switch (size)
