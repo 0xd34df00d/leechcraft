@@ -129,7 +129,14 @@ namespace Azoth
 	{
 		const auto& entryId = entry->GetEntryID ();
 		if (const auto value = Cache_ [entryId])
-			return Util::MakeReadyFuture<MaybeImage> (boost::apply_visitor (ToImage {}, *value));
+		{
+			const auto& image = boost::apply_visitor (ToImage {}, *value);
+			CacheValue_t convertedValue { image };
+			if (convertedValue.which () != value->which ())
+				Cache_.insert (entryId, new CacheValue_t { std::move (convertedValue) }, GetImageCost (image));
+
+			return Util::MakeReadyFuture<MaybeImage> (image);
+		}
 
 		const auto& hrId = entry->GetHumanReadableID ();
 
