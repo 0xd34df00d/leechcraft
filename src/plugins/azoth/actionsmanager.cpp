@@ -103,8 +103,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	ActionsManager::ActionsManager (QObject *parent)
-	: QObject (parent)
+	ActionsManager::ActionsManager (AvatarsManager *am, QObject *parent)
+	: QObject { parent }
+	, AvatarsManager_ { am }
 	{
 	}
 

@@ -205,7 +205,7 @@ namespace Azoth
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
 	, AvatarsManager_ (new AvatarsManager (this))
-	, ActionsManager_ (new ActionsManager (this))
+	, ActionsManager_ (new ActionsManager (AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> ({ tr ("Smile pack") }))
