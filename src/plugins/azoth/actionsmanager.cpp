@@ -610,7 +610,7 @@ namespace Azoth
 		const ActionsVector_t BeforeRolesNames_;
 		const ActionsVector_t AfterRolesNames_;
 
-		ActionsVectors ()
+		ActionsVectors (AvatarsManager *am)
 		: BeforeRolesNames_
 		{
 			{
@@ -702,7 +702,7 @@ namespace Azoth
 	ActionsManager::ActionsManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
-	, ActionsVectors_ { std::make_shared<ActionsVectors> () }
+	, ActionsVectors_ { std::make_shared<ActionsVectors> (am) }
 	{
 	}
 
