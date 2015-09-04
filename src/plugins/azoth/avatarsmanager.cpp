@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "avatarsmanager.h"
+#include <util/threads/futures.h>
 #include "interfaces/azoth/iaccount.h"
-#include "interfaces/azoth/ihaveavatars.h"
 #include "avatarsstorage.h"
 
 namespace LeechCraft
@@ -40,6 +40,28 @@ namespace Azoth
 	: QObject { parent }
 	, Storage_ { new AvatarsStorage { this } }
 	{
+	}
+
+	QFuture<QImage> AvatarsManager::GetAvatar (QObject *entryObj, IHaveAvatars::Size size)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
+		if (!iha)
+			return Util::MakeReadyFuture (entry->GetAvatar ());
+
+		return Util::Sequence (this, [=] { return Storage_->GetAvatar (entry, size); }) >>
+				[=] (const MaybeImage& image)
+				{
+					if (image)
+						return Util::MakeReadyFuture (*image);
+
+					const auto& refreshFuture = iha->RefreshAvatar (size);
+
+					Util::Sequence (this, [=] { return refreshFuture; }) >>
+							[=] (const QImage& img) { Storage_->SetAvatar (entry, size, img); };
+
+					return refreshFuture;
+				};
 	}
 
 	void AvatarsManager::handleAccount (QObject *accObj)

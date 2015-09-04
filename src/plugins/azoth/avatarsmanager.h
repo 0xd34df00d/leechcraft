@@ -30,6 +30,10 @@
 #pragma once
 
 #include <QObject>
+#include "interfaces/azoth/ihaveavatars.h"
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -44,6 +48,8 @@ namespace Azoth
 		AvatarsStorage * const Storage_;
 	public:
 		AvatarsManager (QObject* = nullptr);
+
+		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size);
 	public slots:
 		void handleAccount (QObject*);
 	private slots:
