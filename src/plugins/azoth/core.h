@@ -83,6 +83,7 @@ namespace Azoth
 	class CLTooltipManager;
 	class CoreCommandsManager;
 	class NotificationsManager;
+	class AvatarsManager;
 
 	class Core : public QObject
 	{
@@ -109,6 +110,7 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
+		AvatarsManager * const AvatarsManager_;
 		ActionsManager *ActionsManager_;
 
 		typedef QHash<QString, QObject*> ID2Entry_t;

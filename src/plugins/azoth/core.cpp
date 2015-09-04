@@ -97,6 +97,7 @@
 #include "corecommandsmanager.h"
 #include "resourcesmanager.h"
 #include "notificationsmanager.h"
+#include "avatarsmanager.h"
 
 Q_DECLARE_METATYPE (QPointer<QObject>);
 
@@ -203,6 +204,7 @@ namespace Azoth
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
+	, AvatarsManager_ (new AvatarsManager (this))
 	, ActionsManager_ (new ActionsManager (this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
@@ -1557,6 +1559,8 @@ namespace Azoth
 
 	void Core::addAccount (QObject *accObject)
 	{
+		AvatarsManager_->handleAccount (accObject);
+
 		IAccount *account = qobject_cast<IAccount*> (accObject);
 		if (!account)
 		{
