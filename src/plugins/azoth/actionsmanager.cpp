@@ -86,29 +86,24 @@
 #include "advancedpermchangedialog.h"
 #include "proxyobject.h"
 #include "serverhistorywidget.h"
+#include "avatarsmanager.h"
 
-typedef std::function<void (LeechCraft::Azoth::ICLEntry*)> SingleEntryActor_f;
-typedef std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)> SingleEntryActorWManager_f;
-typedef std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> MultiEntryActor_f;
+using SingleEntryActor_f = std::function<void (LeechCraft::Azoth::ICLEntry*)> ;
+using SingleEntryActorWManager_f = std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)>;
+using MultiEntryActor_f = std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> ;
 
 struct None {};
 
-typedef boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f> EntryActor_f;
+using EntryActor_f = boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
 Q_DECLARE_METATYPE (EntryActor_f);
 
-typedef QList<LeechCraft::Azoth::ICLEntry*> EntriesList_t;
+using EntriesList_t = QList<LeechCraft::Azoth::ICLEntry*>;
 Q_DECLARE_METATYPE (EntriesList_t);
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	ActionsManager::ActionsManager (AvatarsManager *am, QObject *parent)
-	: QObject { parent }
-	, AvatarsManager_ { am }
-	{
-	}
-
 	namespace
 	{
 		void DrawAttention (ICLEntry *entry)
@@ -606,8 +601,17 @@ namespace Azoth
 
 			ChangePermMulti (action, entries, text, isGlobal);
 		}
+	}
 
-		const std::vector<std::pair<QByteArray, EntryActor_f>> BeforeRolesNames
+	using ActionsVector_t = QList<QPair<QByteArray, EntryActor_f>>;
+
+	struct ActionsManager::ActionsVectors
+	{
+		const ActionsVector_t BeforeRolesNames_;
+		const ActionsVector_t AfterRolesNames_;
+
+		ActionsVectors ()
+		: BeforeRolesNames_
 		{
 			{
 				"openchat",
@@ -625,9 +629,8 @@ namespace Azoth
 			{ "block", {} },
 			{ "authorization", {} },
 			{ "notifywhen", {} }
-		};
-
-		const std::vector<std::pair<QByteArray, EntryActor_f>> AfterRolesNames
+		}
+		, AfterRolesNames_
 		{
 			{ "sep_afterroles", {} },
 			{ "add_contact", SingleEntryActor_f (AddContactFromMUC) },
@@ -691,7 +694,16 @@ namespace Azoth
 			{ "leave", SingleEntryActor_f (Leave) },
 			{ "authorize", SingleEntryActor_f (AuthorizeEntry) },
 			{ "denyauth", SingleEntryActor_f (DenyAuthForEntry) }
-		};
+		}
+		{
+		}
+	};
+
+	ActionsManager::ActionsManager (AvatarsManager *am, QObject *parent)
+	: QObject { parent }
+	, AvatarsManager_ { am }
+	, ActionsVectors_ { std::make_shared<ActionsVectors> () }
+	{
 	}
 
 	QList<QAction*> ActionsManager::GetEntryActions (ICLEntry *entry)
@@ -706,7 +718,7 @@ namespace Azoth
 		const auto& id2action = Entry2Actions_ [entry];
 		QList<QAction*> result;
 
-		auto setter = [&result, &id2action, this] (decltype (BeforeRolesNames) pairs) -> void
+		auto setter = [&result, &id2action, this] (const ActionsVector_t& pairs)
 		{
 			for (auto pair : pairs)
 			{
@@ -729,13 +741,13 @@ namespace Azoth
 			}
 		};
 
-		setter (BeforeRolesNames);
+		setter (ActionsVectors_->BeforeRolesNames_);
 
 		if (auto perms = qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()))
 			for (const auto& permClass : perms->GetPossiblePerms ().keys ())
 				result << id2action.value (permClass);
 
-		setter (AfterRolesNames);
+		setter (ActionsVectors_->AfterRolesNames_);
 
 		result << entry->GetActions ();
 
@@ -821,7 +833,7 @@ namespace Azoth
 		}
 
 		QList<QAction*> result;
-		auto setter = [&result, &entries, parent, this] (decltype (BeforeRolesNames) pairs) -> void
+		auto setter = [&result, &entries, parent, this] (const ActionsVector_t pairs) -> void
 		{
 			for (auto pair : pairs)
 			{
@@ -861,13 +873,13 @@ namespace Azoth
 			}
 		};
 
-		setter (BeforeRolesNames);
+		setter (ActionsVectors_->BeforeRolesNames_);
 
 		if (const auto perms = qobject_cast<IMUCPerms*> (entries.front ()->GetParentCLEntryObject ()))
 			if (std::all_of (entries.begin (), entries.end (), [perms] (ICLEntry *e)
 					{ return perms == qobject_cast<IMUCPerms*> (e->GetParentCLEntryObject ()); }))
 			{
-				std::remove_cv<decltype (BeforeRolesNames)>::type permPairs;
+				ActionsVector_t permPairs;
 				const auto& id2action = Entry2Actions_ [entries.first ()];
 				for (const auto& permClass : perms->GetPossiblePerms ().keys ())
 				{
@@ -879,7 +891,7 @@ namespace Azoth
 				setter (permPairs);
 			}
 
-		setter (AfterRolesNames);
+		setter (ActionsVectors_->AfterRolesNames_);
 
 		Core::Instance ().GetProxy ()->GetIconThemeManager ()->UpdateIconset (result);
 

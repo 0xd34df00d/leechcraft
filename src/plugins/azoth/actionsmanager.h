@@ -53,6 +53,9 @@ namespace Azoth
 
 		typedef QHash<const ICLEntry*, QHash<QByteArray, QAction*>> Entry2Actions_t;
 		Entry2Actions_t Entry2Actions_;
+
+		struct ActionsVectors;
+		std::shared_ptr<ActionsVectors> ActionsVectors_;
 	public:
 		enum CLEntryActionArea
 		{
