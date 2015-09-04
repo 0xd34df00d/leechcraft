@@ -129,8 +129,11 @@ namespace Murm
 		void sendTyping ();
 
 		void handleEntryNameFormat ();
+	protected:
+		using EntryBase::avatarChanged;
 	signals:
 		void vcardUpdated () override;
+		void avatarChanged (QObject*) override;
 	};
 }
 }

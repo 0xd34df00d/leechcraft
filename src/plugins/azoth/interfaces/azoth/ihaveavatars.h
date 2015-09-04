@@ -51,6 +51,8 @@ namespace Azoth
 		virtual QFuture<QImage> RefreshAvatar (Size) = 0;
 
 		virtual bool SupportsSize (Size) const = 0;
+	protected:
+		virtual void avatarChanged (QObject*) = 0;
 	};
 }
 }
