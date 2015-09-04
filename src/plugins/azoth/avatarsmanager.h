@@ -50,6 +50,7 @@ namespace Azoth
 		AvatarsManager (QObject* = nullptr);
 
 		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size);
+		bool HasAvatar (QObject*) const;
 	public slots:
 		void handleAccount (QObject*);
 	private slots:

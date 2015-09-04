@@ -64,6 +64,14 @@ namespace Azoth
 				};
 	}
 
+	bool AvatarsManager::HasAvatar (QObject *entryObj) const
+	{
+		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
+		return iha ?
+				iha->HasAvatar () :
+				!qobject_cast<ICLEntry*> (entryObj)->GetAvatar ().isNull ();
+	}
+
 	void AvatarsManager::handleAccount (QObject *accObj)
 	{
 		connect (accObj,
