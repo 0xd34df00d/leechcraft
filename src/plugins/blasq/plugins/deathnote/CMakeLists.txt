@@ -43,4 +43,4 @@ target_link_libraries (leechcraft_blasq_deathnote
 
 install (TARGETS leechcraft_blasq_deathnote DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_blasq_deathnote Network Widgets Xml XmlPatterns)
+FindQtLibs (leechcraft_blasq_deathnote Gui Network Widgets Xml XmlPatterns)

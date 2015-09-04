@@ -51,4 +51,4 @@ target_link_libraries (leechcraft_blasq_vangog
 	)
 install (TARGETS leechcraft_blasq_vangog DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_blasq_vangog Network Widgets Xml)
+FindQtLibs (leechcraft_blasq_vangog Gui Network Widgets Xml)

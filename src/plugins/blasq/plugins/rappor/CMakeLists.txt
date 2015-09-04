@@ -47,4 +47,4 @@ target_link_libraries (leechcraft_blasq_rappor
 	)
 install (TARGETS leechcraft_blasq_rappor DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_blasq_rappor Network Widgets Xml)
+FindQtLibs (leechcraft_blasq_rappor Gui Network Widgets Xml)

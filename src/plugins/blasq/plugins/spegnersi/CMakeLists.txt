@@ -34,4 +34,4 @@ target_link_libraries (leechcraft_blasq_spegnersi
 	)
 install (TARGETS leechcraft_blasq_spegnersi DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_blasq_spegnersi Network Xml)
+FindQtLibs (leechcraft_blasq_spegnersi Gui Network Xml)
