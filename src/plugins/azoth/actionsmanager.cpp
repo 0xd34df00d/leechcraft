@@ -45,6 +45,7 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/sys/util.h>
+#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -650,22 +651,26 @@ namespace Azoth
 					})
 			},
 			{ "inviteToMuc", SingleEntryActor_f (InviteToMuc) },
-			{ "saveAvatar", SingleEntryActor_f ([] (ICLEntry *e)
+			{ "saveAvatar", SingleEntryActor_f ([am] (ICLEntry *e)
 					{
-						const auto& image = e->GetAvatar ();
-						if (image.isNull ())
-							return;
+						const auto entryObj = e->GetQObject ();
+						Util::Sequence (entryObj, [=] { return am->GetAvatar (entryObj, IHaveAvatars::Size::Full); }) >>
+								[] (const QImage& image)
+								{
+									if (image.isNull ())
+										return;
 
-						auto filename = QFileDialog::getSaveFileName (nullptr,
-								ActionsManager::tr ("Save avatar"));
-						if (filename.isEmpty ())
-							return;
+									auto filename = QFileDialog::getSaveFileName (nullptr,
+											ActionsManager::tr ("Save avatar"));
+									if (filename.isEmpty ())
+										return;
 
-						const auto& supported = Util::HasSupportedImageExtension (filename);
-						if (!supported)
-							filename += ".png";
+									const auto& supported = Util::HasSupportedImageExtension (filename);
+									if (!supported)
+										filename += ".png";
 
-						image.save (filename);
+									image.save (filename);
+								};
 					}) },
 			{ "vcard", SingleEntryActor_f ([] (ICLEntry *e) { e->ShowInfo (); }) },
 			{ "sep_beforemuc", {} },
@@ -1423,7 +1428,7 @@ namespace Azoth
 					isOnline;
 			Entry2Actions_ [entry] ["vcard"]->setEnabled (enableVCard);
 
-			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (!entry->GetAvatar ().isNull ());
+			Entry2Actions_ [entry] ["saveAvatar"]->setEnabled (AvatarsManager_->HasAvatar (entry->GetQObject ()));
 
 			const auto& allEntries = account->GetCLEntries ();
 			const auto hasMucs = std::any_of (allEntries.begin (), allEntries.end (),
