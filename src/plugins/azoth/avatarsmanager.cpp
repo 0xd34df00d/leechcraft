@@ -29,6 +29,7 @@
 
 #include "avatarsmanager.h"
 #include <util/threads/futures.h>
+#include <util/sll/util.h>
 #include "interfaces/azoth/iaccount.h"
 #include "avatarsstorage.h"
 
@@ -75,6 +76,14 @@ namespace Azoth
 		return iha ?
 				iha->HasAvatar () :
 				!qobject_cast<ICLEntry*> (entryObj)->GetAvatar ().isNull ();
+	}
+
+	Util::DefaultScopeGuard AvatarsManager::Subscribe (QObject *obj, const AvatarHandler_f& handler)
+	{
+		const auto id = ++SubscriptionID_;
+		Subscriptions_ [obj] [id] = handler;
+
+		return Util::MakeScopeGuard ([=] { Subscriptions_ [obj].remove (id); });
 	}
 
 	void AvatarsManager::handleAccount (QObject *accObj)

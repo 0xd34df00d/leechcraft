@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QHash>
+#include <util/sll/util.h>
 #include "interfaces/azoth/ihaveavatars.h"
 
 template<typename>
@@ -50,10 +52,17 @@ namespace Azoth
 
 		QHash<QObject*, QFuture<QImage>> PendingRequests_;
 	public:
+		using AvatarHandler_f = std::function<void (QImage)>;
+	private:
+		uint64_t SubscriptionID_ = 0;
+		QHash<QObject*, QHash<uint64_t, AvatarHandler_f>> Subscriptions_;
+	public:
 		AvatarsManager (QObject* = nullptr);
 
 		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size);
 		bool HasAvatar (QObject*) const;
+
+		Util::DefaultScopeGuard Subscribe (QObject*, const AvatarHandler_f&);
 	public slots:
 		void handleAccount (QObject*);
 	private slots:
