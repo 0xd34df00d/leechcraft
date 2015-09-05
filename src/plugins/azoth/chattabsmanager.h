@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTABSMANAGER_H
-#define PLUGINS_AZOTH_CHATTABSMANAGER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QPersistentModelIndex>
@@ -41,10 +41,13 @@ namespace LeechCraft
 namespace Azoth
 {
 	class ICLEntry;
+	class AvatarsManager;
 
 	class ChatTabsManager : public QObject
 	{
 		Q_OBJECT
+
+		AvatarsManager * const AvatarsManager_;
 
 		QSet<QString> StyleParams_;
 		QHash<QString, ChatTab_ptr> Entry2Tab_;
@@ -62,7 +65,7 @@ namespace Azoth
 	private:
 		QHash<QString, RestoreChatInfo> RestoreInfo_;
 	public:
-		ChatTabsManager (QObject* = 0);
+		ChatTabsManager (AvatarsManager*, QObject* = nullptr);
 
 		QWidget* OpenChat (const QModelIndex&);
 		ChatTab* OpenChat (const ICLEntry*, bool fromUser,
@@ -111,5 +114,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

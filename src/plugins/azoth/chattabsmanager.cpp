@@ -37,8 +37,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	ChatTabsManager::ChatTabsManager(QObject *parent)
-	: QObject (parent)
+	ChatTabsManager::ChatTabsManager (AvatarsManager *am, QObject *parent)
+	: QObject { parent }
+	, AvatarsManager_ { am }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");

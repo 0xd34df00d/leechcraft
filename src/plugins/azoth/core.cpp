@@ -203,7 +203,7 @@ namespace Azoth
 	, AvatarsManager_ (new AvatarsManager (this))
 	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
-	, ChatTabsManager_ (new ChatTabsManager (this))
+	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
 	, ActionsManager_ (new ActionsManager (AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
