@@ -61,6 +61,7 @@ namespace Azoth
 	class ITransferManager;
 	class ContactDropFilter;
 	class MsgFormatterWidget;
+	class AvatarsManager;
 
 	class ChatTab : public QWidget
 				  , public ITabWidget
@@ -74,6 +75,8 @@ namespace Azoth
 		static QObject *S_ParentMultiTabs_;
 		static TabClassInfo S_ChatTabClass_;
 		static TabClassInfo S_MUCTabClass_;
+
+		AvatarsManager * const AvatarsManager_;
 
 		Ui::ChatTab Ui_;
 		std::unique_ptr<QToolBar> TabToolbar_;
@@ -124,7 +127,7 @@ namespace Azoth
 		static const TabClassInfo& GetChatTabClassInfo ();
 		static const TabClassInfo& GetMUCTabClassInfo ();
 
-		ChatTab (const QString&, QWidget* = 0);
+		ChatTab (const QString&, AvatarsManager*, QWidget* = 0);
 		~ChatTab ();
 
 		/** Prepare (or update after it has been changed) the theme.

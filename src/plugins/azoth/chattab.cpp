@@ -162,9 +162,9 @@ namespace Azoth
 		}
 	};
 
-	ChatTab::ChatTab (const QString& entryId,
-			QWidget *parent)
+	ChatTab::ChatTab (const QString& entryId, AvatarsManager *am, QWidget *parent)
 	: QWidget (parent)
+	, AvatarsManager_ (am)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
 	, EntryID_ (entryId)

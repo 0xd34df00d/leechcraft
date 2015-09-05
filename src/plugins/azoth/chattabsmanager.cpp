@@ -106,7 +106,7 @@ namespace Azoth
 
 		EverOpened_ << id;
 
-		QPointer<ChatTab> tab (new ChatTab (id));
+		QPointer<ChatTab> tab (new ChatTab (id, AvatarsManager_));
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
