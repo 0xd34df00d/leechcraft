@@ -169,6 +169,8 @@ namespace Azoth
 
 		QString ReformatTitle ();
 
+		void ReinitEntry ();
+
 		bool eventFilter (QObject*, QEvent*);
 	public slots:
 		void prepareMessageText (const QString&);
@@ -230,7 +232,6 @@ namespace Azoth
 		template<typename T>
 		T* GetEntry () const;
 		void BuildBasicActions ();
-		void InitEntry ();
 		void CheckMUC ();
 		void HandleMUC ();
 

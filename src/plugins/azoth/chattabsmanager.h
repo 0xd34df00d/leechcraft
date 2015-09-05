@@ -84,7 +84,6 @@ namespace Azoth
 		void HandleEntryRemoved (ICLEntry*);
 		void HandleInMessage (IMessage*);
 
-		void SetChatEnabled (const QString&, bool);
 		void ChatMadeCurrent (ChatTab*);
 
 		void EnqueueRestoreInfos (const QList<RestoreChatInfo>&);

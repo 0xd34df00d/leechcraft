@@ -238,7 +238,7 @@ namespace Azoth
 				autoNum)
 			RequestLogs (autoNum);
 
-		InitEntry ();
+		ReinitEntry ();
 		CheckMUC ();
 		InitExtraActions ();
 		InitMsgEdit ();
@@ -1532,7 +1532,7 @@ namespace Azoth
 		sm->RegisterShortcut ("org.LeechCraft.Azoth.OpenLastLink", openLinkInfo, shortcut);
 	}
 
-	void ChatTab::InitEntry ()
+	void ChatTab::ReinitEntry ()
 	{
 		auto obj = GetEntry<QObject> ();
 		connect (obj,

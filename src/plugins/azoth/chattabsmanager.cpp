@@ -187,11 +187,9 @@ namespace Azoth
 		if (!Entry2Tab_.contains (id))
 			return;
 
-		connect (obj,
-				SIGNAL (gotMessage (QObject*)),
-				Entry2Tab_ [id],
-				SLOT (handleEntryMessage (QObject*)),
-				Qt::UniqueConnection);
+		const auto tab = Entry2Tab_ [id];
+		tab->SetEnabled (true);
+		tab->ReinitEntry ();
 	}
 
 	void ChatTabsManager::HandleEntryAdded (ICLEntry *entry)
@@ -210,14 +208,15 @@ namespace Azoth
 		if (!Entry2Tab_.contains (entry->GetEntryID ()))
 			return;
 
-		SetChatEnabled (entry->GetEntryID (), false);
+		const auto tab = Entry2Tab_ [entry->GetEntryID ()];
+		tab->SetEnabled (false);
 		disconnect (entry->GetQObject (),
 				0,
 				this,
 				0);
 		disconnect (entry->GetQObject (),
 				0,
-				Entry2Tab_ [entry->GetEntryID ()],
+				tab,
 				0);
 	}
 
@@ -234,14 +233,6 @@ namespace Azoth
 			if (!Entry2Tab_.contains (entry->GetEntryID ()))
 				OpenChat (entry, false);
 		}
-	}
-
-	void ChatTabsManager::SetChatEnabled (const QString& id, bool enabled)
-	{
-		if (!Entry2Tab_.contains (id))
-			return;
-
-		Entry2Tab_ [id]->SetEnabled (enabled);
 	}
 
 	void ChatTabsManager::ChatMadeCurrent (ChatTab *curTab)

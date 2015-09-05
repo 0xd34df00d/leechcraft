@@ -1152,7 +1152,6 @@ namespace Azoth
 		TooltipManager_->AddEntry (clEntry);
 
 		ChatTabsManager_->UpdateEntryMapping (id, clEntry->GetQObject ());
-		ChatTabsManager_->SetChatEnabled (id, true);
 
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingCLEntryEnd (proxy, clEntry->GetQObject ());
