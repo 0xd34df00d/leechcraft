@@ -110,6 +110,8 @@ namespace Azoth
 		}
 
 		Storage_->DeleteAvatars (entry->GetEntryID ());
+
+		emit avatarInvalidated (that);
 	}
 }
 }
