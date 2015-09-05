@@ -78,10 +78,10 @@ namespace Azoth
 		Ui::ChatTab Ui_;
 		std::unique_ptr<QToolBar> TabToolbar_;
 		QTextBrowser *MUCEventLog_;
-		QAction *ToggleRichText_;
-		QAction *Call_;
+		QAction *ToggleRichText_ = nullptr;
+		QAction *Call_ = nullptr;
 #ifdef ENABLE_CRYPT
-		QAction *EnableEncryption_;
+		QAction *EnableEncryption_ = nullptr;
 #endif
 
 		QString EntryID_;
@@ -89,33 +89,33 @@ namespace Azoth
 		QColor BgColor_;
 
 		QList<QString> MsgHistory_;
-		int CurrentHistoryPosition_;
+		int CurrentHistoryPosition_ = -1;
 
-		bool HadHighlight_;
-		int NumUnreadMsgs_;
-		int ScrollbackPos_;
+		bool HadHighlight_ = false;
+		int NumUnreadMsgs_ = 0;
+		int ScrollbackPos_ = 0;
 
 		QList<IMessage*> HistoryMessages_;
 		QDateTime LastDateTime_;
 		QList<CoreMessage*> CoreMessages_;
 
 		QIcon TabIcon_;
-		bool IsMUC_;
-		int PreviousTextHeight_;
+		bool IsMUC_ = false;
+		int PreviousTextHeight_ = 0;
 
 		ContactDropFilter *CDF_;
-		MsgFormatterWidget *MsgFormatter_;
+		MsgFormatterWidget *MsgFormatter_ = nullptr;
 
 		ITransferManager *XferManager_;
 
 		QTimer *TypeTimer_;
 
-		ChatPartState PreviousState_;
+		ChatPartState PreviousState_ = CPSNone;
 		QString LastLink_;
 
 		Util::FindNotificationWk *ChatFinder_;
 
-		bool IsCurrent_;
+		bool IsCurrent_ = false;
 	public:
 		static void SetParentMultiTabs (QObject*);
 		static void SetChatTabClassInfo (const TabClassInfo&);

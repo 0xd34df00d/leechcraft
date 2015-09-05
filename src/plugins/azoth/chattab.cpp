@@ -167,24 +167,11 @@ namespace Azoth
 	: QWidget (parent)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
 	, MUCEventLog_ (new QTextBrowser ())
-	, ToggleRichText_ (0)
-	, Call_ (0)
-#ifdef ENABLE_CRYPT
-	, EnableEncryption_ (0)
-#endif
 	, EntryID_ (entryId)
 	, BgColor_ (QApplication::palette ().color (QPalette::Base))
-	, CurrentHistoryPosition_ (-1)
-	, HadHighlight_ (false)
 	, NumUnreadMsgs_ (Core::Instance ().GetUnreadCount (GetEntry<ICLEntry> ()))
-	, ScrollbackPos_ (0)
-	, IsMUC_ (false)
-	, PreviousTextHeight_ (0)
 	, CDF_ (new ContactDropFilter (entryId, this))
-	, MsgFormatter_ (0)
 	, TypeTimer_ (new QTimer (this))
-	, PreviousState_ (CPSNone)
-	, IsCurrent_ (false)
 	{
 		Ui_.setupUi (this);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
