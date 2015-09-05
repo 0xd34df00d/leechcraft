@@ -200,11 +200,11 @@ namespace Azoth
 
 	Core::Core ()
 	: Proxy_ (nullptr)
+	, AvatarsManager_ (new AvatarsManager (this))
 	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, AvatarsManager_ (new AvatarsManager (this))
 	, ActionsManager_ (new ActionsManager (AvatarsManager_, this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))

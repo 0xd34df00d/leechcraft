@@ -96,6 +96,7 @@ namespace Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
+		AvatarsManager * const AvatarsManager_;
 		CLTooltipManager * const TooltipManager_;
 		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;
@@ -110,7 +111,6 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t Entry2Items_;
 
-		AvatarsManager * const AvatarsManager_;
 		ActionsManager *ActionsManager_;
 
 		typedef QHash<QString, QObject*> ID2Entry_t;
