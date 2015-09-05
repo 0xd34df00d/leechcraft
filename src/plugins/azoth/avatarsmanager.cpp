@@ -55,7 +55,7 @@ namespace Azoth
 					if (image)
 						return Util::MakeReadyFuture (*image);
 
-					const auto& refreshFuture = iha->RefreshAvatar (size);
+					auto refreshFuture = iha->RefreshAvatar (size);
 
 					Util::Sequence (this, [=] { return refreshFuture; }) >>
 							[=] (const QImage& img) { Storage_->SetAvatar (entry, size, img); };
