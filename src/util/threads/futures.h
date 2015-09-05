@@ -86,12 +86,17 @@ namespace Util
 	namespace detail
 	{
 		template<typename T>
-		struct UnwrapFutureType;
+		struct UnwrapFutureTypeBase {};
 
 		template<typename T>
-		struct UnwrapFutureType<QFuture<T>>
+		struct UnwrapFutureTypeBase<QFuture<T>>
 		{
-			typedef T type;
+			using type = T;
+		};
+
+		template<typename T>
+		struct UnwrapFutureType : UnwrapFutureTypeBase<Decay_t<T>>
+		{
 		};
 
 		template<typename T>
