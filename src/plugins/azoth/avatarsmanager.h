@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include "interfaces/azoth/ihaveavatars.h"
 
 template<typename>
@@ -46,6 +47,8 @@ namespace Azoth
 		Q_OBJECT
 
 		AvatarsStorage * const Storage_;
+
+		QHash<QObject*, QFuture<QImage>> PendingRequests_;
 	public:
 		AvatarsManager (QObject* = nullptr);
 

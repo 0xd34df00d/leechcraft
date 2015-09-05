@@ -49,7 +49,10 @@ namespace Azoth
 		if (!iha)
 			return Util::MakeReadyFuture (entry->GetAvatar ());
 
-		return Util::Sequence (this, [=] { return Storage_->GetAvatar (entry, size); }) >>
+		if (PendingRequests_.contains (entryObj))
+			return PendingRequests_.value (entryObj);
+
+		const auto& future = Util::Sequence (this, [=] { return Storage_->GetAvatar (entry, size); }) >>
 				[=] (const MaybeImage& image)
 				{
 					if (image)
@@ -62,6 +65,8 @@ namespace Azoth
 
 					return refreshFuture;
 				};
+		PendingRequests_ [entryObj] = future;
+		return future;
 	}
 
 	bool AvatarsManager::HasAvatar (QObject *entryObj) const
