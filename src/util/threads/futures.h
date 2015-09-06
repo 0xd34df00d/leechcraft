@@ -462,6 +462,9 @@ namespace Util
 			template<typename F>
 			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future>
 			{
+				if (ThisFuture_)
+					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
+
 				Seq_->template Then<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Ret> (f);
 				return { ExecuteGuard_, Seq_ };
 			}
@@ -481,12 +484,18 @@ namespace Util
 			template<typename F>
 			auto Then (const F& f) -> EnableIf_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
 			{
+				if (ThisFuture_)
+					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
+
 				Seq_->template Then<Ret> (f);
 			}
 
 			template<typename F>
 			auto Then (const F& f) -> EnableIf_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
 			{
+				if (ThisFuture_)
+					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
+
 				Seq_->Then (std::function<void ()> { f });
 			}
 
