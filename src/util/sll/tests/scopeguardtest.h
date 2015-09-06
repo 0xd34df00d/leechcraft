@@ -40,6 +40,7 @@ namespace Util
 		Q_OBJECT
 	private slots:
 		void testBasicGuard ();
+		void testAssignmentGuard ();
 	};
 }
 }

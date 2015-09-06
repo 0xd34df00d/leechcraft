@@ -47,5 +47,19 @@ namespace Util
 
 		QCOMPARE (triggered, true);
 	}
+
+	void ScopeGuardTest::testAssignmentGuard ()
+	{
+		bool first = false;
+		bool second = false;
+
+		{
+			DefaultScopeGuard guard = MakeScopeGuard ([&first] { first = true; });
+			guard = MakeScopeGuard ([&second] { second = true; });
+		}
+
+		QCOMPARE (first, true);
+		QCOMPARE (second, true);
+	}
 }
 }
