@@ -77,6 +77,8 @@ namespace Azoth
 	signals:
 		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry) const;
+
+		void rebuiltTooltip ();
 	};
 }
 }
