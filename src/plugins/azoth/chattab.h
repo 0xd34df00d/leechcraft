@@ -27,12 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_CHATTAB_H
-#define PLUGINS_AZOTH_CHATTAB_H
+#pragma once
+
 #include <QWidget>
 #include <QPointer>
 #include <QPersistentModelIndex>
 #include <QDateTime>
+#include <util/sll/util.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
@@ -119,6 +120,10 @@ namespace Azoth
 		Util::FindNotificationWk *ChatFinder_;
 
 		bool IsCurrent_ = false;
+
+		QImage LastAvatar_;
+
+		Util::DefaultScopeGuard AvatarChangeSubscription_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 		static void SetChatTabClassInfo (const TabClassInfo&);
@@ -209,7 +214,6 @@ namespace Azoth
 		void handleOfferActionTriggered ();
 		void handleEntryMessage (QObject*);
 		void handleVariantsChanged (QStringList);
-		void handleAvatarChanged (const QImage&);
 		void handleNameChanged (const QString& name);
 		void handleStatusChanged (const EntryStatus&, const QString&);
 		void handleChatPartStateChanged (const ChatPartState&, const QString&);
@@ -232,6 +236,7 @@ namespace Azoth
 		template<typename T>
 		T* GetEntry () const;
 		void BuildBasicActions ();
+		void ReinitAvatar ();
 		void CheckMUC ();
 		void HandleMUC ();
 
@@ -291,5 +296,3 @@ namespace Azoth
 	typedef QPointer<ChatTab> ChatTab_ptr;
 }
 }
-
-#endif

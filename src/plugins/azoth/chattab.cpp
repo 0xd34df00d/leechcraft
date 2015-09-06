@@ -57,6 +57,7 @@
 #include <util/gui/findnotificationwk.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
@@ -101,6 +102,7 @@
 #include "resourcesmanager.h"
 #include "msgeditautocompleter.h"
 #include "msgsender.h"
+#include "avatarsmanager.h"
 
 namespace LeechCraft
 {
@@ -412,11 +414,9 @@ namespace Azoth
 
 	QIcon ChatTab::GetTabRecoverIcon () const
 	{
-		auto entry = GetEntry<ICLEntry> ();
-		const auto& avatar = entry ? entry->GetAvatar () : QImage ();
-		return avatar.isNull () ?
+		return LastAvatar_.isNull () ?
 				GetTabClassInfo ().Icon_ :
-				QPixmap::fromImage (avatar);
+				QPixmap::fromImage (LastAvatar_);
 	}
 
 	void ChatTab::FillMimeData (QMimeData *data)
@@ -1102,19 +1102,6 @@ namespace Azoth
 			handleStatusChanged (EntryStatus (), QString ());
 	}
 
-	void ChatTab::handleAvatarChanged (const QImage& avatar)
-	{
-		const QPixmap& px = QPixmap::fromImage (avatar);
-		if (!px.isNull ())
-		{
-			const QPixmap& scaled = px.scaled (QSize (18, 18), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			Ui_.AvatarLabel_->setPixmap (scaled);
-			Ui_.AvatarLabel_->resize (scaled.size ());
-			Ui_.AvatarLabel_->setMaximumSize (scaled.size ());
-		}
-		Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
-	}
-
 	void ChatTab::handleNameChanged (const QString& name)
 	{
 		emit changeTabName (this, name);
@@ -1548,17 +1535,12 @@ namespace Azoth
 				this,
 				SLOT (handleVariantsChanged (QStringList)));
 		connect (obj,
-				SIGNAL (avatarChanged (const QImage&)),
-				this,
-				SLOT (handleAvatarChanged (const QImage&)));
-		connect (obj,
 				SIGNAL (nameChanged (QString)),
 				this,
 				SLOT (handleNameChanged (QString)));
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
 		handleVariantsChanged (e->Variants ());
-		handleAvatarChanged (e->GetAvatar ());
 
 		QString infoText = e->GetEntryName ();
 		if (e->GetHumanReadableID () != infoText)
@@ -1573,6 +1555,34 @@ namespace Azoth
 					SIGNAL (performJS (QString)),
 					this,
 					SLOT (performJS (QString)));
+
+		ReinitAvatar ();
+	}
+
+	void ChatTab::ReinitAvatar ()
+	{
+		const auto obj = GetEntry<QObject> ();
+
+		auto avatarSetter = [this] (QImage avatar)
+		{
+			LastAvatar_ = avatar;
+
+			Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
+			const QPixmap& px = QPixmap::fromImage (avatar);
+			if (px.isNull ())
+				return;
+
+			const auto& scaled = px.scaled ({ 18, 18 },
+					Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			Ui_.AvatarLabel_->setPixmap (scaled);
+			Ui_.AvatarLabel_->resize (scaled.size ());
+			Ui_.AvatarLabel_->setMaximumSize (scaled.size ());
+		};
+		AvatarChangeSubscription_ = AvatarsManager_->Subscribe (obj,
+				IHaveAvatars::Size::Thumbnail, avatarSetter);
+
+		Util::Sequence (this,
+				AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >> avatarSetter;
 	}
 
 	void ChatTab::CheckMUC ()
