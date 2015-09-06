@@ -58,6 +58,12 @@ namespace Azoth
 				this,
 				SLOT (search ()));
 
+		const QIcon defaultAvatarIcon
+		{
+			QPixmap::fromImage (ResourcesManager::Instance ()
+					.GetDefaultAvatar (Ui_.AccountBox_->iconSize ().width ()))
+		};
+
 		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
 		{
 			QObject *accObj = acc->GetQObject ();
@@ -75,13 +81,7 @@ namespace Azoth
 			if (icon.isNull () && self)
 				icon = self->GetAccountIcon ();
 			if (icon.isNull ())
-			{
-				const QString& name = XmlSettingsManager::Instance ()
-						.property ("SystemIcons").toString () + "/default_avatar";
-				const auto rl = ResourcesManager::Instance ()
-						.GetResourceLoader (ResourcesManager::RLTSystemIconLoader);
-				icon = QIcon (rl->GetIconPath (name));
-			}
+				icon = defaultAvatarIcon;
 
 			Ui_.AccountBox_->blockSignals (true);
 			Ui_.AccountBox_->addItem (icon, acc->GetAccountName (),
