@@ -61,6 +61,9 @@ namespace Util
 
 			ScopeGuard& operator= (ScopeGuard&& other)
 			{
+				if (Perform_)
+					F_ ();
+
 				F_ = other.F_;
 				Perform_ = other.Perform_;
 				other.Perform_ = false;
