@@ -59,7 +59,7 @@ namespace Azoth
 		if (PendingRequests_.contains (entryObj))
 			return PendingRequests_.value (entryObj);
 
-		const auto& future = Util::Sequence (this, Storage_->GetAvatar (entry, size)) >>
+		auto future = Util::Sequence (this, Storage_->GetAvatar (entry, size)) >>
 				[=] (const MaybeImage& image)
 				{
 					if (image)
