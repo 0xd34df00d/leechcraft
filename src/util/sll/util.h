@@ -94,7 +94,7 @@ namespace Util
 				return ScopeGuard<DefaultScopeGuardDeleter> { F_ };
 			}
 
-			operator ScopeGuard<DefaultScopeGuardDeleter>()
+			operator ScopeGuard<DefaultScopeGuardDeleter> ()
 			{
 				return EraseType ();
 			}
