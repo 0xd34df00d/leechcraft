@@ -73,5 +73,26 @@ namespace Util
 
 		QCOMPARE (res, 800);
 	}
+
+	void FuturesTest::testHeterogeneousTypes ()
+	{
+		struct Bar {};
+		struct Baz {};
+
+		QEventLoop loop;
+		bool executed = false;
+		Sequence (nullptr, MkWaiter () (50)) >>
+				[] (int) { return MakeReadyFuture<Bar> ({}); } >>
+				[] (Bar) { return MakeReadyFuture<Baz> ({}); } >>
+				[&executed, &loop] (Baz)
+				{
+					executed = true;
+					loop.quit ();
+				};
+
+		loop.exec ();
+
+		QCOMPARE (executed, true);
+	}
 }
 }
