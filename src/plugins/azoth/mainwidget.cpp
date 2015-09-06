@@ -36,10 +36,12 @@
 #include <QInputDialog>
 #include <QToolBar>
 #include <QShortcut>
+#include <QToolTip>
 #include <QTimer>
 #include <util/util.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "interfaces/azoth/iclentry.h"
@@ -194,6 +196,20 @@ namespace Azoth
 					Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("system-users")
 				},
 				listShortcut);
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this]
+			{
+				const auto& pos = QCursor::pos ();
+				const auto widget = Ui_.CLTree_->viewport ();
+				QHelpEvent event { QEvent::ToolTip, widget->mapFromGlobal (pos), pos };
+				QCoreApplication::sendEvent (widget, &event);
+			},
+			Core::Instance ().GetCLModel (),
+			SIGNAL (rebuiltTooltip ()),
+			this
+		};
 	}
 
 	QList<QAction*> MainWidget::GetMenuActions ()
