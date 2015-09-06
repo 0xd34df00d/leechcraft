@@ -43,6 +43,7 @@ namespace Azoth
 	, StorageThread_ { new AvatarsStorageThread { this } }
 	, Cache_ { 5 * 1024 * 1024 }
 	{
+		StorageThread_->start (QThread::IdlePriority);
 	}
 
 	namespace
