@@ -305,7 +305,7 @@ namespace Util
 				{
 					[this, last, watcher, action]
 					{
-						if (last != &BaseWatcher_)
+						if (static_cast<QObject*> (last) != &BaseWatcher_)
 							last->deleteLater ();
 						watcher->setFuture (action (last->result ()));
 					},
