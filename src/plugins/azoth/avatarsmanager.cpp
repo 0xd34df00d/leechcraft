@@ -37,6 +37,11 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	uint qHash (IHaveAvatars::Size size)
+	{
+		return static_cast<uint> (size);
+	}
+
 	AvatarsManager::AvatarsManager (QObject *parent)
 	: QObject { parent }
 	, Storage_ { new AvatarsStorage { this } }
@@ -78,12 +83,13 @@ namespace Azoth
 				!qobject_cast<ICLEntry*> (entryObj)->GetAvatar ().isNull ();
 	}
 
-	Util::DefaultScopeGuard AvatarsManager::Subscribe (QObject *obj, const AvatarHandler_f& handler)
+	Util::DefaultScopeGuard AvatarsManager::Subscribe (QObject *obj,
+			IHaveAvatars::Size size, const AvatarHandler_f& handler)
 	{
 		const auto id = ++SubscriptionID_;
-		Subscriptions_ [obj] [id] = handler;
+		Subscriptions_ [obj] [size] [id] = handler;
 
-		return Util::MakeScopeGuard ([=] { Subscriptions_ [obj].remove (id); });
+		return Util::MakeScopeGuard ([=] { Subscriptions_ [obj] [size].remove (id); });
 	}
 
 	void AvatarsManager::handleAccount (QObject *accObj)

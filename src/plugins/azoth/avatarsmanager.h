@@ -55,14 +55,14 @@ namespace Azoth
 		using AvatarHandler_f = std::function<void (QImage)>;
 	private:
 		uint64_t SubscriptionID_ = 0;
-		QHash<QObject*, QHash<uint64_t, AvatarHandler_f>> Subscriptions_;
+		QHash<QObject*, QHash<IHaveAvatars::Size, QHash<uint64_t, AvatarHandler_f>>> Subscriptions_;
 	public:
 		AvatarsManager (QObject* = nullptr);
 
 		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size);
 		bool HasAvatar (QObject*) const;
 
-		Util::DefaultScopeGuard Subscribe (QObject*, const AvatarHandler_f&);
+		Util::DefaultScopeGuard Subscribe (QObject*, IHaveAvatars::Size, const AvatarHandler_f&);
 	public slots:
 		void handleAccount (QObject*);
 	private slots:
