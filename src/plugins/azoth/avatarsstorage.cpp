@@ -140,7 +140,7 @@ namespace Azoth
 
 		const auto& hrId = entry->GetHumanReadableID ();
 
-		return Util::Sequence (this, [=] { return StorageThread_->GetAvatar (entryId, size); }) >>
+		return Util::Sequence (this, StorageThread_->GetAvatar (entryId, size)) >>
 				[=] (const MaybeByteArray& data)
 				{
 					if (!data)
