@@ -63,6 +63,8 @@ namespace Azoth
 		bool HasAvatar (QObject*) const;
 
 		Util::DefaultScopeGuard Subscribe (QObject*, IHaveAvatars::Size, const AvatarHandler_f&);
+	private:
+		void HandleSubscriptions (QObject*);
 	public slots:
 		void handleAccount (QObject*);
 	private slots:

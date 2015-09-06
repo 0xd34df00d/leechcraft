@@ -30,6 +30,7 @@
 #include "avatarsmanager.h"
 #include <util/threads/futures.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include "interfaces/azoth/iaccount.h"
 #include "avatarsstorage.h"
 
@@ -92,6 +93,24 @@ namespace Azoth
 		return Util::MakeScopeGuard ([=] { Subscriptions_ [obj] [size].remove (id); });
 	}
 
+	void AvatarsManager::HandleSubscriptions (QObject *entry)
+	{
+		for (const auto& pair : Util::Stlize (Subscriptions_.value (entry)))
+		{
+			if (pair.second.isEmpty ())
+				continue;
+
+			const auto& handlers = pair.second;
+			Util::Sequence (this, GetAvatar (entry, pair.first)) >>
+					[handlers] (const boost::optional<QImage>& image)
+					{
+						const auto& realImg = image.get_value_or ({});
+						for (const auto& handler : handlers)
+							handler (realImg);
+					};
+		}
+	}
+
 	void AvatarsManager::handleAccount (QObject *accObj)
 	{
 		connect (accObj,
@@ -132,6 +151,8 @@ namespace Azoth
 		Storage_->DeleteAvatars (entry->GetEntryID ());
 
 		emit avatarInvalidated (that);
+
+		HandleSubscriptions (that);
 	}
 }
 }
