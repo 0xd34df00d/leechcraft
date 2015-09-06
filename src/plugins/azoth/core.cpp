@@ -51,6 +51,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
+#include <util/threads/futures.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
@@ -1280,16 +1281,26 @@ namespace Azoth
 				 Entry2SmoothAvatarCache_ [entry].height () == size))
 			return Entry2SmoothAvatarCache_ [entry];
 
-		QImage avatar = entry ? entry->GetAvatar () : QImage ();
-		if (avatar.isNull () || !avatar.width ())
-			avatar = ResourcesManager::Instance ().GetDefaultAvatar (size);
+		if (!entry)
+			return {};
 
-		const QImage& scaled = avatar.isNull () ?
-				QImage () :
-				avatar.scaled (size, size,
-						Qt::KeepAspectRatio, Qt::SmoothTransformation);
-		Entry2SmoothAvatarCache_ [entry] = scaled;
-		return scaled;
+		const auto obj = entry->GetQObject ();
+		Util::Sequence (this, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
+				[=] (QImage avatar)
+				{
+					if (avatar.isNull () || !avatar.width ())
+						avatar = ResourcesManager::Instance ().GetDefaultAvatar (size);
+
+					avatar = avatar.isNull () ?
+							QImage {} :
+							avatar.scaled ({ size, size },
+									Qt::KeepAspectRatio, Qt::SmoothTransformation);
+					Entry2SmoothAvatarCache_ [entry] = avatar;
+
+					UpdateItem (obj);
+				};
+
+		return ResourcesManager::Instance ().GetDefaultAvatar (size);
 	}
 
 	ActionsManager* Core::GetActionsManager () const
