@@ -493,9 +493,15 @@ namespace Util
 				return Then (f);
 			}
 
-			operator QFuture<Ret> () const
+			operator QFuture<Ret> ()
 			{
-				return {};
+				QFutureInterface<Ret> iface;
+				iface.reportStarted ();
+
+				Then ([iface] (const Ret& ret)
+						{ QFutureInterface<Ret> { iface }.reportFinished (&ret); });
+
+				return iface.future ();
 			}
 		};
 	}
