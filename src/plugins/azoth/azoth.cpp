@@ -217,7 +217,7 @@ namespace Azoth
 			handleSDWidget (new ServiceDiscoveryWidget);
 		else if (tabClass == "Search")
 		{
-			SearchWidget *search = new SearchWidget;
+			SearchWidget *search = new SearchWidget { Core::Instance ().GetAvatarsManager () };
 			connect (search,
 					SIGNAL (removeTab (QWidget*)),
 					this,

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_SEARCHWIDGET_H
-#define PLUGINS_AZOTH_SEARCHWIDGET_H
+#pragma once
+
 #include <memory>
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
@@ -40,6 +40,7 @@ namespace Azoth
 {
 	class IHaveSearch;
 	class ISearchSession;
+	class AvatarsManager;
 
 	class SearchWidget : public QWidget
 					   , public ITabWidget
@@ -49,12 +50,14 @@ namespace Azoth
 
 		static QObject *S_ParentMultiTabs_;
 
+		AvatarsManager * const AvatarsManager_;
+
 		Ui::SearchWidget Ui_;
 		std::shared_ptr<ISearchSession> CurrentSess_;
 	public:
 		static void SetParentMultiTabs (QObject*);
 
-		SearchWidget (QWidget* = 0);
+		SearchWidget (AvatarsManager*, QWidget* = 0);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
@@ -70,5 +73,3 @@ namespace Azoth
 	};
 }
 }
-
-#endif

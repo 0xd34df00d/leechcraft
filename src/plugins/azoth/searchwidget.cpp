@@ -36,6 +36,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
+#include "avatarsmanager.h"
 
 namespace LeechCraft
 {
@@ -48,8 +49,9 @@ namespace Azoth
 		S_ParentMultiTabs_ = parent;
 	}
 
-	SearchWidget::SearchWidget (QWidget *parent)
-	: QWidget (parent)
+	SearchWidget::SearchWidget (AvatarsManager *am, QWidget *parent)
+	: QWidget { parent }
+	, AvatarsManager_ { am }
 	{
 		Ui_.setupUi (this);
 
