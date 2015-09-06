@@ -576,6 +576,12 @@ namespace Util
 	}
 
 	template<typename T>
+	detail::SequenceProxy<detail::SequencerRetType_t<QFuture<T>>, QFuture<T>> Sequence (QObject *parent, const QFuture<T>& future)
+	{
+		return { new detail::Sequencer<QFuture<T>> { future, parent } };
+	}
+
+	template<typename T>
 	QFuture<T> MakeReadyFuture (const T& t)
 	{
 		QFutureInterface<T> iface;
