@@ -232,20 +232,16 @@ namespace Util
 		 * @tparam Args The types of the arguments that should be passed
 		 * to the \em Executor.
 		 */
-		template<typename Executor, typename... Args>
+		template<typename Future>
 		class Sequencer : public QObject
 		{
 		public:
-			/** @brief The result of calling \em Executor with \em Args.
-			 */
-			using FutureType_t = ResultOf_t<Executor (Args...)>;
-
 			/** @brief The type instantinating the QFuture returned by the
 			 * \em Executor.
 			 */
-			using RetType_t = UnwrapFutureType_t<FutureType_t>;
+			using RetType_t = UnwrapFutureType_t<Future>;
 		private:
-			const std::function<FutureType_t ()> Functor_;
+			Future Future_;
 			QFutureWatcher<RetType_t> BaseWatcher_;
 			QObject *LastWatcher_ = &BaseWatcher_;
 		public:
@@ -255,9 +251,9 @@ namespace Util
 			 * @param[in] args The arguments to the action.
 			 * @param[in] parent The parent object for the sequencer.
 			 */
-			Sequencer (Executor f, Args... args, QObject *parent)
+			Sequencer (const Future& future, QObject *parent)
 			: QObject { parent }
-			, Functor_ { [f, args...] { return f (args...); } }
+			, Future_ { future }
 			, BaseWatcher_ { this }
 			{
 			}
@@ -269,7 +265,7 @@ namespace Util
 			 */
 			void Start ()
 			{
-				BaseWatcher_.setFuture (Functor_ ());
+				BaseWatcher_.setFuture (Future_);
 			}
 
 			/** @brief Chains the given asynchronous action.
@@ -385,6 +381,9 @@ namespace Util
 			}
 		};
 
+		template<typename T>
+		using SequencerRetType_t = typename Sequencer<T>::RetType_t;
+
 		/** @brief A proxy object allowing type-checked sequencing of
 		 * actions and responsible for starting the initial action.
 		 *
@@ -401,16 +400,16 @@ namespace Util
 		 * @tparam E0 The type of the first executor.
 		 * @tparam A0 The types of the arguments to the executor \em E0.
 		 */
-		template<typename Ret, typename E0, typename... A0>
+		template<typename Ret, typename Future>
 		class SequenceProxy
 		{
-			template<typename, typename, typename...>
+			template<typename, typename>
 			friend class SequenceProxy;
 
 			std::shared_ptr<void> ExecuteGuard_;
-			Sequencer<E0, A0...> * const Seq_;
+			Sequencer<Future> * const Seq_;
 
-			SequenceProxy (const std::shared_ptr<void>& guard, Sequencer<E0, A0...> *seq)
+			SequenceProxy (const std::shared_ptr<void>& guard, Sequencer<Future> *seq)
 			: ExecuteGuard_ { guard }
 			, Seq_ { seq }
 			{
@@ -423,7 +422,7 @@ namespace Util
 			 *
 			 * @param[in] sequencer The sequencer to manage.
 			 */
-			SequenceProxy (Sequencer<E0, A0...> *sequencer)
+			SequenceProxy (Sequencer<Future> *sequencer)
 			: ExecuteGuard_ { nullptr, [sequencer] (void*) { sequencer->Start (); } }
 			, Seq_ { sequencer }
 			{
@@ -458,7 +457,7 @@ namespace Util
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, E0, A0...>
+			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future>
 			{
 				Seq_->template Then<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Ret> (f);
 				return { ExecuteGuard_, Seq_ };
@@ -569,9 +568,11 @@ namespace Util
 	 * @sa detail::SequenceProxy
 	 */
 	template<typename Executor, typename... Args>
-	detail::SequenceProxy<typename detail::Sequencer<Executor, Args...>::RetType_t, Executor, Args...> Sequence (QObject *parent, Executor f, Args... args)
+	detail::SequenceProxy<detail::SequencerRetType_t<ResultOf_t<Executor (Args...)>>,
+			ResultOf_t<Executor (Args...)>>
+		Sequence (QObject *parent, Executor f, Args... args)
 	{
-		return { new detail::Sequencer<Executor, Args...> { f, args..., parent } };
+		return { new detail::Sequencer<ResultOf_t<Executor (Args...)>> { f (args...), parent } };
 	}
 
 	template<typename T>
