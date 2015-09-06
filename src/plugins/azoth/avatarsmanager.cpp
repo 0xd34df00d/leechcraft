@@ -105,12 +105,12 @@ namespace Azoth
 			if (pair.second.isEmpty ())
 				continue;
 
-			const auto& handlers = pair.second;
+			const auto size = pair.first;
 			Util::Sequence (this, GetAvatar (entry, pair.first)) >>
-					[handlers] (const boost::optional<QImage>& image)
+					[this, size, entry] (const boost::optional<QImage>& image)
 					{
 						const auto& realImg = image.get_value_or ({});
-						for (const auto& handler : handlers)
+						for (const auto& handler : Subscriptions_.value (entry).value (size))
 							handler (realImg);
 					};
 		}
