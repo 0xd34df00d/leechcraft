@@ -46,6 +46,7 @@
 #include "mooddialog.h"
 #include "proxyobject.h"
 #include "resourcesmanager.h"
+#include "avatarsmanager.h"
 
 namespace LeechCraft
 {
@@ -63,8 +64,9 @@ namespace Azoth
 		}
 	}
 
-	CLTooltipManager::CLTooltipManager (Entry2Items_t& items)
-	: Entry2Items_ (items)
+	CLTooltipManager::CLTooltipManager (AvatarsManager *am, Entry2Items_t& items)
+	: AvatarsManager_ { am }
+	, Entry2Items_ (items)
 	, Avatar2TooltipSrcCache_ { 2 * 1024 * 1024 }
 	{
 	}

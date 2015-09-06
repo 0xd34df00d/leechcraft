@@ -201,7 +201,7 @@ namespace Azoth
 	Core::Core ()
 	: Proxy_ (nullptr)
 	, AvatarsManager_ (new AvatarsManager (this))
-	, TooltipManager_ (new CLTooltipManager (Entry2Items_))
+	, TooltipManager_ (new CLTooltipManager (AvatarsManager_, Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
 	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_, this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))

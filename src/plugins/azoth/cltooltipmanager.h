@@ -47,10 +47,13 @@ namespace Azoth
 	class IProxyObject;
 	class ICLEntry;
 	struct EntryStatus;
+	class AvatarsManager;
 
 	class CLTooltipManager : public QObject
 	{
 		Q_OBJECT
+
+		AvatarsManager * const AvatarsManager_;
 
 		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t& Entry2Items_;
@@ -59,7 +62,7 @@ namespace Azoth
 
 		QSet<ICLEntry*> DirtyTooltips_;
 	public:
-		CLTooltipManager (Entry2Items_t&);
+		CLTooltipManager (AvatarsManager*, Entry2Items_t&);
 
 		static QString Status2Str (const EntryStatus& status, IProxyObject *obj);
 
