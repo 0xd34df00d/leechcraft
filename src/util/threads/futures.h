@@ -433,7 +433,7 @@ namespace Util
 			 * @param[in] proxy The proxy object to share the managed
 			 * sequencer with.
 			 */
-			SequenceProxy (const SequenceProxy& proxy) = default;
+			SequenceProxy (const SequenceProxy& proxy) = delete;
 
 			/** @brief Move-constructs from \em proxy.
 			 *
