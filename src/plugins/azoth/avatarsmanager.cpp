@@ -59,7 +59,7 @@ namespace Azoth
 		if (PendingRequests_.contains (entryObj))
 			return PendingRequests_.value (entryObj);
 
-		const auto& future = Util::Sequence (this, [=] { return Storage_->GetAvatar (entry, size); }) >>
+		const auto& future = Util::Sequence (this, Storage_->GetAvatar (entry, size)) >>
 				[=] (const MaybeImage& image)
 				{
 					if (image)
@@ -67,10 +67,15 @@ namespace Azoth
 
 					auto refreshFuture = iha->RefreshAvatar (size);
 
-					Util::Sequence (this, [=] { return refreshFuture; }) >>
+					Util::Sequence (this, refreshFuture) >>
 							[=] (const QImage& img) { Storage_->SetAvatar (entry, size, img); };
 
 					return refreshFuture;
+				} >>
+				[=] (const QImage& image)
+				{
+					PendingRequests_.remove (entryObj);
+					return Util::MakeReadyFuture (image);
 				};
 		PendingRequests_ [entryObj] = future;
 		return future;
