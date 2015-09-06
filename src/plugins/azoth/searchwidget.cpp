@@ -30,6 +30,7 @@
 #include "searchwidget.h"
 #include <QTimer>
 #include <util/sys/resourceloader.h>
+#include <util/threads/futures.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihavesearch.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
@@ -66,30 +67,41 @@ namespace Azoth
 					.GetDefaultAvatar (Ui_.AccountBox_->iconSize ().width ()))
 		};
 
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		for (const auto acc : Core::Instance ().GetAccounts ())
 		{
-			QObject *accObj = acc->GetQObject ();
-			IHaveSearch *search = qobject_cast<IHaveSearch*> (accObj);
+			const auto accObj = acc->GetQObject ();
+			const auto search = qobject_cast<IHaveSearch*> (accObj);
 			if (!search)
 				continue;
 
-			IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (accObj);
-			ICLEntry *selfEntry = self ?
-					qobject_cast<ICLEntry*> (self->GetSelfContact ()) :
-					0;
-			QIcon icon;
-			if (selfEntry)
-				icon = QPixmap::fromImage (selfEntry->GetAvatar ());
-			if (icon.isNull () && self)
-				icon = self->GetAccountIcon ();
-			if (icon.isNull ())
-				icon = defaultAvatarIcon;
+			const auto self = qobject_cast<IExtSelfInfoAccount*> (accObj);
+
+			const auto idx = Ui_.AccountBox_->count ();
+			auto iconSetter = [this, self, idx] (const QImage& image)
+			{
+				QIcon icon { QPixmap::fromImage (image) };
+				if (icon.isNull () && self)
+					icon = self->GetAccountIcon ();
+				if (!icon.isNull ())
+					Ui_.AccountBox_->setItemIcon (idx, icon);
+			};
 
 			Ui_.AccountBox_->blockSignals (true);
-			Ui_.AccountBox_->addItem (icon, acc->GetAccountName (),
+			Ui_.AccountBox_->addItem (defaultAvatarIcon,
+					acc->GetAccountName (),
 					QVariant::fromValue<QObject*> (accObj));
 			Ui_.AccountBox_->blockSignals (false);
+
+			if (auto selfEntry = self ? self->GetSelfContact () : nullptr)
+				Util::Sequence (this,
+						AvatarsManager_->GetAvatar (selfEntry, IHaveAvatars::Size::Thumbnail)) >>
+						iconSetter;
+			else
+				iconSetter ({});
 		}
+
+		Ui_.AccountBox_->blockSignals (true);
+		Ui_.AccountBox_->blockSignals (false);
 	}
 
 	TabClassInfo SearchWidget::GetTabClassInfo () const
