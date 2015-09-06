@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <functional>
 #include <memory>
+#include <boost/optional.hpp>
 #include <QFutureInterface>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
@@ -409,6 +410,8 @@ namespace Util
 			std::shared_ptr<void> ExecuteGuard_;
 			Sequencer<Future> * const Seq_;
 
+			boost::optional<QFuture<Ret>> ThisFuture_;
+
 			SequenceProxy (const std::shared_ptr<void>& guard, Sequencer<Future> *seq)
 			: ExecuteGuard_ { guard }
 			, Seq_ { seq }
@@ -495,13 +498,18 @@ namespace Util
 
 			operator QFuture<Ret> ()
 			{
+				if (ThisFuture_)
+					return *ThisFuture_;
+
 				QFutureInterface<Ret> iface;
 				iface.reportStarted ();
 
 				Then ([iface] (const Ret& ret)
 						{ QFutureInterface<Ret> { iface }.reportFinished (&ret); });
 
-				return iface.future ();
+				const auto& future = iface.future ();
+				ThisFuture_ = future;
+				return future;
 			}
 		};
 	}
