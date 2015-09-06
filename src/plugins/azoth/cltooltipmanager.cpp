@@ -30,7 +30,9 @@
 #include "cltooltipmanager.h"
 #include <QTextDocument>
 #include <QStandardItem>
+#include <QToolTip>
 #include <util/util.h>
+#include <util/threads/futures.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
@@ -235,17 +237,26 @@ namespace Azoth
 
 	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry)
 	{
+		return MakeTooltipString (entry, {});
+	}
+
+	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry, QImage avatar)
+	{
 		QString tip = "<table border='0'><tr><td>";
 
 		const auto& icons = ResourcesManager::Instance ().GetClientIconForEntry (entry);
+
+		bool shouldScheduleAvatarFetch = false;
 
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			const int avatarSize = 75;
 
-			auto avatar = entry->GetAvatar ();
 			if (avatar.isNull ())
+			{
 				avatar = ResourcesManager::Instance ().GetDefaultAvatar (avatarSize);
+				shouldScheduleAvatarFetch = true;
+			}
 
 			QString data;
 			if (auto dataPtr = Avatar2TooltipSrcCache_ [avatar])
@@ -388,6 +399,24 @@ namespace Azoth
 		cleanupBR ();
 
 		tip += "</td></tr></table>";
+
+		if (shouldScheduleAvatarFetch)
+		{
+			const auto& obj = entry->GetQObject ();
+			Util::Sequence (this, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Full)) >>
+					[this, entry, tip] (const QImage& avatar)
+					{
+						if (avatar.isNull ())
+							return;
+
+						const auto& newTip = MakeTooltipString (entry, avatar);
+						for (auto item : Entry2Items_.value (entry))
+							item->setToolTip (newTip);
+
+						if (QToolTip::isVisible () && QToolTip::text () == tip)
+							emit rebuiltTooltip ();
+					};
+		}
 
 		return tip;
 	}

@@ -72,6 +72,8 @@ namespace Azoth
 		QString MakeTooltipString (ICLEntry*);
 
 		void RebuildTooltip (ICLEntry *entry);
+	private:
+		QString MakeTooltipString (ICLEntry*, QImage);
 	private slots:
 		void remakeTooltipForSender ();
 	signals:
