@@ -356,6 +356,11 @@ namespace Azoth
 		return UnreadQueueManager_.get ();
 	}
 
+	AvatarsManager* Core::GetAvatarsManager () const
+	{
+		return AvatarsManager_;
+	}
+
 	void Core::AddPlugin (QObject *plugin)
 	{
 		IPlugin2 *plugin2 = qobject_cast<IPlugin2*> (plugin);

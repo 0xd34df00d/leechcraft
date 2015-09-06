@@ -183,6 +183,7 @@ namespace Azoth
 		CustomStatusesManager* GetCustomStatusesManager () const;
 		CustomChatStyleManager* GetCustomChatStyleManager () const;
 		UnreadQueueManager* GetUnreadQueueManager () const;
+		AvatarsManager* GetAvatarsManager () const;
 
 		void AddPlugin (QObject*);
 		void RegisterHookable (QObject*);
