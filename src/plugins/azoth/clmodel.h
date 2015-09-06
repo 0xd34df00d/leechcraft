@@ -65,6 +65,7 @@ namespace Azoth
 	signals:
 		void hookDnDEntry2Entry (LeechCraft::IHookProxy_ptr,
 				QObject*, QObject*);
+		void rebuiltTooltip ();
 	};
 }
 }

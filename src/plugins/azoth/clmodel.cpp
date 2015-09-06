@@ -49,6 +49,10 @@ namespace Azoth
 	: QStandardItemModel { parent }
 	, TooltipManager_ { manager }
 	{
+		connect (manager,
+				SIGNAL (rebuiltTooltip ()),
+				this,
+				SIGNAL (rebuiltTooltip ()));
 	}
 
 	QVariant CLModel::data (const QModelIndex& index, int role) const
