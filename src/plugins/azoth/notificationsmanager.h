@@ -42,6 +42,7 @@ namespace Azoth
 	class IMessage;
 	class ICLEntry;
 	class IAccount;
+	class AvatarsManager;
 	struct EntryStatus;
 
 	class NotificationsManager : public QObject
@@ -49,11 +50,12 @@ namespace Azoth
 		Q_OBJECT
 
 		IEntityManager * const EntityMgr_;
+		AvatarsManager * const AvatarsMgr_;
 		QHash<ICLEntry*, int> UnreadCounts_;
 
 		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
 	public:
-		NotificationsManager (IEntityManager*, QObject* = nullptr);
+		NotificationsManager (IEntityManager*, AvatarsManager*, QObject* = nullptr);
 
 		void AddAccount (QObject*);
 		void RemoveAccount (QObject*);

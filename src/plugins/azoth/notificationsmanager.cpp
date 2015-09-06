@@ -58,14 +58,16 @@
 #include "proxyobject.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
+#include "avatarsmanager.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	NotificationsManager::NotificationsManager (IEntityManager *manager, QObject *parent)
+	NotificationsManager::NotificationsManager (IEntityManager *manager, AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, EntityMgr_ { manager }
+	, AvatarsMgr_ { am }
 	{
 	}
 

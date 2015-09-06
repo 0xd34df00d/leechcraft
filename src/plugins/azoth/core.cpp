@@ -289,7 +289,7 @@ namespace Azoth
 		ShortcutManager_.reset (new Util::ShortcutManager (proxy));
 		CustomStatusesManager_.reset (new CustomStatusesManager);
 
-		NotificationsManager_.reset (new NotificationsManager (proxy->GetEntityManager ()));
+		NotificationsManager_.reset (new NotificationsManager (proxy->GetEntityManager (), AvatarsManager_));
 		PluginManager_->RegisterHookable (NotificationsManager_.get ());
 		connect (UnreadQueueManager_.get (),
 				SIGNAL (messagesCleared (QObject*)),
