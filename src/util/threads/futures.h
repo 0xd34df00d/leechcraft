@@ -460,7 +460,7 @@ namespace Util
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (const F& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future>
+			auto Then (F&& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future>
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
@@ -482,7 +482,7 @@ namespace Util
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (const F& f) -> EnableIf_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
+			auto Then (F&& f) -> EnableIf_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
@@ -491,7 +491,7 @@ namespace Util
 			}
 
 			template<typename F>
-			auto Then (const F& f) -> EnableIf_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
+			auto Then (F&& f) -> EnableIf_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
@@ -500,9 +500,9 @@ namespace Util
 			}
 
 			template<typename F>
-			auto operator>> (const F& f) -> decltype (this->Then (f))
+			auto operator>> (F&& f) -> decltype (this->Then (std::forward<F> (f)))
 			{
-				return Then (f);
+				return Then (std::forward<F> (f));
 			}
 
 			operator QFuture<Ret> ()
