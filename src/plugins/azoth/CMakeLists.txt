@@ -108,7 +108,6 @@ set (SRCS
 	util.cpp
 	simpledialog.cpp
 	servicediscoverywidget.cpp
-	eventsnotifier.cpp
 	zoomeventfilter.cpp
 	drawattentiondialog.cpp
 	consolewidget.cpp
