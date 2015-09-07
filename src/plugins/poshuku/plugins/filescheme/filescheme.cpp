@@ -75,25 +75,6 @@ namespace FileScheme
 		return icon;
 	}
 
-	QStringList FileScheme::Provides () const
-	{
-		return QStringList ("file://");
-	}
-
-	QStringList FileScheme::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList FileScheme::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void FileScheme::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QSet<QByteArray> FileScheme::GetPluginClasses () const
 	{
 		QSet<QByteArray> result;
