@@ -52,7 +52,7 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	void BuildNotification (Entity& e, ICLEntry *other, const QString& id)
+	void BuildNotification (AvatarsManager*, Entity& e, ICLEntry *other, const QString& id)
 	{
 		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (other->GetAvatar ());
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";

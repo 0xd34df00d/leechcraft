@@ -415,7 +415,7 @@ namespace Azoth
 			return;
 		}
 
-		BuildNotification (e, entry);
+		BuildNotification (AvatarsMgr_, e, entry);
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
 				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
 		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), job->GetName () };

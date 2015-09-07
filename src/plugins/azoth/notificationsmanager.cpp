@@ -237,7 +237,7 @@ namespace Azoth
 		auto entry = msg->GetMessageType () == IMessage::Type::MUCMessage ?
 				parentCL :
 				other;
-		BuildNotification (e, entry);
+		BuildNotification (AvatarsMgr_, e, entry);
 
 		const auto count = ++UnreadCounts_ [entry];
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
@@ -300,7 +300,7 @@ namespace Azoth
 					.arg (msg);
 
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-		BuildNotification (e, entry, "Event");
+		BuildNotification (AvatarsMgr_, e, entry, "Event");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
@@ -361,7 +361,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry, "StatusChangeEvent");
+		BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -510,7 +510,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry, "TuneChangeEvent");
+		BuildNotification (AvatarsMgr_, e, entry, "TuneChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -557,7 +557,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry, "ActivityChangeEvent");
+		BuildNotification (AvatarsMgr_, e, entry, "ActivityChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -595,7 +595,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry, "MoodChangeEvent");
+		BuildNotification (AvatarsMgr_, e, entry, "MoodChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -682,7 +682,7 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (e, entry, "LocationChangeEvent");
+		BuildNotification (AvatarsMgr_, e, entry, "LocationChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventLocationChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -718,7 +718,7 @@ namespace Azoth
 					.arg (text);
 
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-		BuildNotification (e, entry, "AttentionDrawnBy");
+		BuildNotification (AvatarsMgr_, e, entry, "AttentionDrawnBy");
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
@@ -758,7 +758,7 @@ namespace Azoth
 					.arg (msg);
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
 
-		BuildNotification (e, entry, "AuthRequestFrom");
+		BuildNotification (AvatarsMgr_, e, entry, "AuthRequestFrom");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;

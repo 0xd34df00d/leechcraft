@@ -46,8 +46,9 @@ namespace Azoth
 {
 	class ICLEntry;
 	class IAccount;
+	class AvatarsManager;
 
-	void BuildNotification (Entity&, ICLEntry*, const QString& id = {});
+	void BuildNotification (AvatarsManager*, Entity&, ICLEntry*, const QString& id = {});
 	QString GetActivityIconName (const QString&, const QString&);
 
 	void InitiateAccountAddition (QWidget *parent = 0);
