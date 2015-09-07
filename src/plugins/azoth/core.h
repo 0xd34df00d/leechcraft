@@ -71,7 +71,6 @@ namespace Azoth
 	class ProxyObject;
 	class TransferJobManager;
 	class CallManager;
-	class EventsNotifier;
 	class ActionsManager;
 	class ImportManager;
 	class CLModel;
@@ -130,7 +129,6 @@ namespace Azoth
 		std::shared_ptr<ProxyObject> PluginProxyObject_;
 		std::shared_ptr<TransferJobManager> XferJobManager_;
 		std::shared_ptr<CallManager> CallManager_;
-		std::shared_ptr<EventsNotifier> EventsNotifier_;
 		std::shared_ptr<ImportManager> ImportManager_;
 		std::shared_ptr<UnreadQueueManager> UnreadQueueManager_;
 		QMap<QByteArray, std::shared_ptr<ChatStyleOptionManager>> StyleOptionManagers_;

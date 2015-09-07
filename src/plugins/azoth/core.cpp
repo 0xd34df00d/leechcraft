@@ -80,7 +80,6 @@
 #include "transferjobmanager.h"
 #include "accounthandlerchooserdialog.h"
 #include "util.h"
-#include "eventsnotifier.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
 #include "callmanager.h"
@@ -215,7 +214,6 @@ namespace Azoth
 	, PluginProxyObject_ (new ProxyObject)
 	, XferJobManager_ (new TransferJobManager { AvatarsManager_ })
 	, CallManager_ (new CallManager)
-	, EventsNotifier_ (new EventsNotifier)
 	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
@@ -230,13 +228,9 @@ namespace Azoth
 				SIGNAL (jobNoLongerOffered (QObject*)),
 				this,
 				SLOT (handleJobDeoffered (QObject*)));
-		connect (EventsNotifier_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 		connect (ChatTabsManager_,
 				SIGNAL (entryMadeCurrent (QObject*)),
-				EventsNotifier_.get (),
+				NotificationsManager_.get (),
 				SLOT (handleEntryMadeCurrent (QObject*)));
 		connect (ChatTabsManager_,
 				SIGNAL (entryMadeCurrent (QObject*)),
@@ -1129,8 +1123,6 @@ namespace Azoth
 #ifdef ENABLE_CRYPT
 		CryptoManager::Instance ().AddEntry (clEntry);
 #endif
-
-		EventsNotifier_->RegisterEntry (clEntry);
 
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = clEntry->GetQObject ();
