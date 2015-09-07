@@ -50,7 +50,7 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		QStandardItemModel *SummaryModel_;
+		QStandardItemModel * const SummaryModel_;
 
 		enum ModelRoles
 		{
@@ -65,7 +65,7 @@ namespace Azoth
 		QHash<ITransferJob*, QString> Job2SavePath_;
 
 		QModelIndex Selected_;
-		QToolBar *ReprBar_;
+		QToolBar * const ReprBar_;
 	public:
 		TransferJobManager (QObject* = 0);
 

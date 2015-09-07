@@ -54,9 +54,9 @@ namespace LeechCraft
 namespace Azoth
 {
 	TransferJobManager::TransferJobManager (QObject *parent)
-	: QObject (parent)
-	, SummaryModel_ (new QStandardItemModel (this))
-	, ReprBar_ (new QToolBar)
+	: QObject { parent }
+	, SummaryModel_ { new QStandardItemModel { this } }
+	, ReprBar_ { new QToolBar }
 	{
 		QAction *abort = new QAction (tr ("Abort"), this);
 		abort->setProperty ("ActionIcon", "process-stop");
