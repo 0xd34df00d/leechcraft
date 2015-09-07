@@ -40,6 +40,7 @@
 #include <util/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/util.h>
+#include <util/threads/futures.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
@@ -415,24 +416,27 @@ namespace Azoth
 			return;
 		}
 
-		BuildNotification (AvatarsMgr_, e, entry);
-		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
-				"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
-		e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), job->GetName () };
-		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
-		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file: %1")
-					.arg (job->GetComment ().isEmpty () ?
-							job->GetName () :
-							job->GetComment ());
+		Util::Sequence (jobObj, BuildNotification (AvatarsMgr_, e, entry)) >>
+				[this, entry, job, jobObj] (Entity e)
+				{
+					e.Additional_ ["org.LC.AdvNotifications.EventID"] =
+							"org.LC.Plugins.Azoth.IncomingFileFrom/" + entry->GetEntryID () + "/" + job->GetName ();
+					e.Additional_ ["org.LC.AdvNotifications.VisualPath"] = QStringList { entry->GetEntryName (), job->GetName () };
+					e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
+					e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Incoming file: %1")
+								.arg (job->GetComment ().isEmpty () ?
+										job->GetName () :
+										job->GetComment ());
 
-		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
+					e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMIncFile;
 
-		auto nh = new Util::NotificationActionHandler { e, this };
-		nh->AddFunction (tr ("Accept"), [this, jobObj] () { AcceptJob (jobObj, {}); });
-		nh->AddFunction (tr ("Deny"), [this, jobObj] () { DenyJob (jobObj); });
-		nh->AddDependentObject (jobObj);
+					auto nh = new Util::NotificationActionHandler { e };
+					nh->AddFunction (tr ("Accept"), [this, jobObj] { AcceptJob (jobObj, {}); });
+					nh->AddFunction (tr ("Deny"), [this, jobObj] { DenyJob (jobObj); });
+					nh->AddDependentObject (jobObj);
 
-		Core::Instance ().SendEntity (e);
+					Core::Instance ().SendEntity (e);
+				};
 	}
 
 	namespace

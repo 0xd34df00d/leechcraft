@@ -31,8 +31,11 @@
 
 #include <QColor>
 
-template<typename T>
+template<typename>
 class QList;
+
+template<typename>
+class QFuture;
 
 class QString;
 class QWidget;
@@ -48,7 +51,8 @@ namespace Azoth
 	class IAccount;
 	class AvatarsManager;
 
-	void BuildNotification (AvatarsManager*, Entity&, ICLEntry*, const QString& id = {});
+	Q_REQUIRED_RESULT QFuture<Entity> BuildNotification (AvatarsManager*,
+			Entity, ICLEntry*, const QString& id = {}, ICLEntry* = nullptr);
 	QString GetActivityIconName (const QString&, const QString&);
 
 	void InitiateAccountAddition (QWidget *parent = 0);

@@ -33,6 +33,7 @@
 #include <QWizard>
 #include <QList>
 #include <QMessageBox>
+#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/structures.h>
@@ -45,6 +46,7 @@
 #include "core.h"
 #include "chattabsmanager.h"
 #include "xmlsettingsmanager.h"
+#include "avatarsmanager.h"
 
 Q_DECLARE_METATYPE (QList<QColor>);
 
@@ -52,9 +54,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	void BuildNotification (AvatarsManager*, Entity& e, ICLEntry *other, const QString& id)
+	QFuture<Entity> BuildNotification (AvatarsManager *avatarsMgr,
+			Entity e, ICLEntry *other, const QString& id, ICLEntry *avatarSource)
 	{
-		e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (other->GetAvatar ());
 		e.Additional_ ["org.LC.AdvNotifications.SenderID"] = "org.LeechCraft.Azoth";
 		e.Additional_ ["org.LC.AdvNotifications.EventCategory"] = AN::CatIM;
 		e.Additional_ ["org.LC.AdvNotifications.EventID"] =
@@ -88,6 +90,17 @@ namespace Azoth
 			e.Additional_ ["org.LC.Plugins.Azoth.ParentSourceID"] = parent->GetEntryID ();
 			e.Additional_ ["org.LC.Plugins.Azoth.ParentSourceName"] = parent->GetEntryName ();
 		}
+
+		if (!avatarSource)
+			avatarSource = other;
+
+		return Util::Sequence (nullptr,
+				avatarsMgr->GetAvatar (avatarSource->GetQObject (), IHaveAvatars::Size::Thumbnail)) >>
+				[e] (const QImage& image) mutable
+				{
+					e.Additional_ ["NotificationPixmap"] = QVariant::fromValue<QImage> (image);
+					return Util::MakeReadyFuture (e);
+				};
 	}
 
 	QString GetActivityIconName (const QString& general, const QString& specific)

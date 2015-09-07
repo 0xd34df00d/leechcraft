@@ -29,6 +29,7 @@
 
 #include "notificationsmanager.h"
 #include <QMainWindow>
+#include <util/threads/futures.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/defaulthookproxy.h>
@@ -237,7 +238,6 @@ namespace Azoth
 		auto entry = msg->GetMessageType () == IMessage::Type::MUCMessage ?
 				parentCL :
 				other;
-		BuildNotification (AvatarsMgr_, e, entry);
 
 		const auto count = ++UnreadCounts_ [entry];
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage)
@@ -246,7 +246,6 @@ namespace Azoth
 			e.Additional_ ["org.LC.AdvNotifications.EventType"] = isHighlightMsg ?
 					AN::TypeIMMUCHighlight :
 					AN::TypeIMMUCMsg;
-			e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (other->GetAvatar ());
 
 			if (isHighlightMsg)
 				e.Additional_ ["org.LC.AdvNotifications.FullText"] =
@@ -274,7 +273,8 @@ namespace Azoth
 				[parentCL] { Core::Instance ().GetChatTabsManager ()->OpenChat (parentCL, true); });
 		nh->AddDependentObject (parentCL->GetQObject ());
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, {}, other)) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	void NotificationsManager::NotifyWithReason (QObject *entryObj, const QString& msg,
@@ -300,13 +300,13 @@ namespace Azoth
 					.arg (msg);
 
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-		BuildNotification (AvatarsMgr_, e, entry, "Event");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = eventType;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "Event")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	namespace
@@ -361,7 +361,6 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMStatusChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -371,7 +370,8 @@ namespace Azoth
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = entrySt.StatusString_;
 		e.Additional_ ["org.LC.Plugins.Azoth.NewStatus"] = status;
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "StatusChangeEvent")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 
@@ -510,7 +510,6 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (AvatarsMgr_, e, entry, "TuneChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventTuneChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -523,7 +522,8 @@ namespace Azoth
 		e.Additional_ [AN::Field::MediaTitle] = info.Title_;
 		e.Additional_ [AN::Field::MediaLength] = info.Length_;
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "TuneChangeEvent")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	namespace
@@ -557,7 +557,6 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (AvatarsMgr_, e, entry, "ActivityChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventActivityChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -568,7 +567,8 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMActivitySpecific] = info.Specific_;
 		e.Additional_ [AN::Field::IMActivityText] = info.Text_;
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "ActivityChangeEvent")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	namespace
@@ -595,7 +595,6 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (AvatarsMgr_, e, entry, "MoodChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventMoodChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -605,7 +604,8 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMMoodGeneral] = info.Mood_;
 		e.Additional_ [AN::Field::IMMoodText] = info.Text_;
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "MoodChangeEvent")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	namespace
@@ -682,7 +682,6 @@ namespace Azoth
 		auto e = Util::MakeNotification ("LeechCraft", text, PInfo_);
 		e.Mime_ += "+advanced";
 
-		BuildNotification (AvatarsMgr_, e, entry, "LocationChangeEvent");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMEventLocationChange;
 
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = text;
@@ -692,7 +691,8 @@ namespace Azoth
 		e.Additional_ [AN::Field::IMLocationLongitude] = info.Lon_;
 		e.Additional_ [AN::Field::IMLocationLatitude] = info.Lat_;
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "LocationChangeEvent")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	void NotificationsManager::handleAttentionDrawn (const QString& text, const QString&)
@@ -718,7 +718,6 @@ namespace Azoth
 					.arg (text);
 
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-		BuildNotification (AvatarsMgr_, e, entry, "AttentionDrawnBy");
 		e.Additional_ ["org.LC.AdvNotifications.DeltaCount"] = 1;
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMAttention;
 		e.Additional_ ["org.LC.AdvNotifications.ExtendedText"] = tr ("Attention requested");
@@ -726,12 +725,16 @@ namespace Azoth
 				.arg (entry->GetEntryName ());
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = text;
 
-		const auto nh = new Util::NotificationActionHandler { e, this };
+		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),
-				[entry, this] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
+				[entry, this]
+				{
+					Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
+				});
 		nh->AddDependentObject (entry->GetQObject ());
 
-		EntityMgr_->HandleEntity (e);
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "AttentionDrawnBy")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	void NotificationsManager::handleAuthorizationRequested (QObject *entryObj, const QString& msg)
@@ -757,19 +760,19 @@ namespace Azoth
 					.arg (entry->GetEntryName ())
 					.arg (msg);
 		auto e = Util::MakeNotification ("Azoth", str, PInfo_);
-
-		BuildNotification (AvatarsMgr_, e, entry, "AuthRequestFrom");
 		e.Additional_ ["org.LC.AdvNotifications.EventType"] = AN::TypeIMSubscrRequest;
 		e.Additional_ ["org.LC.AdvNotifications.FullText"] = str;
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
-		const auto nh = new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Authorize"), [this, entry] () { AuthorizeEntry (entry); });
-		nh->AddFunction (tr ("Deny"), [this, entry] () { DenyAuthForEntry (entry); });
-		nh->AddFunction (tr ("View info"), [entry] () { entry->ShowInfo (); });
+		const auto nh = new Util::NotificationActionHandler { e };
+		nh->AddFunction (tr ("Authorize"), [this, entry] { AuthorizeEntry (entry); });
+		nh->AddFunction (tr ("Deny"), [this, entry] { DenyAuthForEntry (entry); });
+		nh->AddFunction (tr ("View info"), [entry] { entry->ShowInfo (); });
 		nh->AddDependentObject (entry->GetQObject ());
-		EntityMgr_->HandleEntity (e);
+
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "AuthRequestFrom")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	namespace
