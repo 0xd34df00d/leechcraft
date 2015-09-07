@@ -857,23 +857,25 @@ namespace Azoth
 
 		const auto& type = XmlSettingsManager::Instance ()
 				.property ("NotifyIncomingComposing").toString ();
-		if (type == "all" ||
-			(type == "opened" &&
+		if (type != "all" &&
+			!(type == "opened" &&
 				Core::Instance ().GetChatTabsManager ()->IsOpenedChat (id)))
-		{
-			ShouldNotifyNextTyping_ [id] = false;
+			return;
 
-			auto e = Util::MakeNotification ("Azoth",
-					tr ("%1 started composing a message to you.")
-						.arg (entry->GetEntryName ()),
-					PInfo_);
-			e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (entry->GetAvatar ());
-			const auto nh = new Util::NotificationActionHandler { e };
-			nh->AddFunction (tr ("Open chat"),
-					[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
-			nh->AddDependentObject (entry->GetQObject ());
-			EntityMgr_->HandleEntity (e);
-		}
+		ShouldNotifyNextTyping_ [id] = false;
+
+		auto e = Util::MakeNotification ("Azoth",
+				tr ("%1 started composing a message to you.")
+					.arg (entry->GetEntryName ()),
+				PInfo_);
+
+		const auto nh = new Util::NotificationActionHandler { e };
+		nh->AddFunction (tr ("Open chat"),
+				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
+		nh->AddDependentObject (entry->GetQObject ());
+
+		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "Typing")) >>
+				[this] (const Entity& e) { EntityMgr_->HandleEntity (e); };
 	}
 
 	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)
