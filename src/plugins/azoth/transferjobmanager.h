@@ -45,10 +45,13 @@ namespace LeechCraft
 namespace Azoth
 {
 	class ICLEntry;
+	class AvatarsManager;
 
 	class TransferJobManager : public QObject
 	{
 		Q_OBJECT
+
+		AvatarsManager * const AvatarsMgr_;
 
 		QStandardItemModel * const SummaryModel_;
 
@@ -67,7 +70,7 @@ namespace Azoth
 		QModelIndex Selected_;
 		QToolBar * const ReprBar_;
 	public:
-		TransferJobManager (QObject* = 0);
+		TransferJobManager (AvatarsManager*, QObject* = nullptr);
 
 		void AddAccountManager (QObject*);
 		QObjectList GetPendingIncomingJobsFor (const QString&);

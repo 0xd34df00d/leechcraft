@@ -46,6 +46,7 @@
 #include "xmlsettingsmanager.h"
 #include "util.h"
 #include "filesenddialog.h"
+#include "avatarsmanager.h"
 
 Q_DECLARE_METATYPE (QToolBar*)
 
@@ -53,8 +54,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	TransferJobManager::TransferJobManager (QObject *parent)
+	TransferJobManager::TransferJobManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
+	, AvatarsMgr_ { am }
 	, SummaryModel_ { new QStandardItemModel { this } }
 	, ReprBar_ { new QToolBar }
 	{

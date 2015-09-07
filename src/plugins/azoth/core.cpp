@@ -213,7 +213,7 @@ namespace Azoth
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> ({ tr ("Chat style") }))
 	, PluginManager_ (new PluginManager)
 	, PluginProxyObject_ (new ProxyObject)
-	, XferJobManager_ (new TransferJobManager)
+	, XferJobManager_ (new TransferJobManager { AvatarsManager_ })
 	, CallManager_ (new CallManager)
 	, EventsNotifier_ (new EventsNotifier)
 	, ImportManager_ (new ImportManager)
