@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FILESCHEME_FILESCHEME_H
-#define PLUGINS_POSHUKU_PLUGINS_FILESCHEME_FILESCHEME_H
-#include <memory>
+#pragma once
+
 #include <QObject>
-#include <QTranslator>
 #include <QNetworkAccessManager>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -74,5 +72,3 @@ namespace FileScheme
 }
 }
 }
-
-#endif
