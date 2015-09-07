@@ -124,6 +124,10 @@ namespace Azoth
 				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
 				SLOT (handleStatusChanged (EntryStatus, QString)));
+		connect (entryObj,
+				SIGNAL (chatPartStateChanged (ChatPartState, QString)),
+				this,
+				SLOT (handleChatPartStateChanged (ChatPartState, QString)));
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
@@ -831,6 +835,59 @@ namespace Azoth
 		nh->AddDependentObject (acc->GetQObject ());
 
 		EntityMgr_->HandleEntity (e);
+	}
+
+	void NotificationsManager::handleChatPartStateChanged (ChatPartState state, const QString&)
+	{
+		if (state != CPSComposing)
+			return;
+
+		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< sender ()
+					<< "doesn't implement ICLentry";
+			return;
+		}
+
+		const auto& id = entry->GetEntryID ();
+		if (!ShouldNotifyNextTyping_.value (id, true))
+			return;
+
+		const auto& type = XmlSettingsManager::Instance ()
+				.property ("NotifyIncomingComposing").toString ();
+		if (type == "all" ||
+			(type == "opened" &&
+				Core::Instance ().GetChatTabsManager ()->IsOpenedChat (id)))
+		{
+			ShouldNotifyNextTyping_ [id] = false;
+
+			auto e = Util::MakeNotification ("Azoth",
+					tr ("%1 started composing a message to you.")
+						.arg (entry->GetEntryName ()),
+					PInfo_);
+			e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (entry->GetAvatar ());
+			const auto nh = new Util::NotificationActionHandler { e };
+			nh->AddFunction (tr ("Open chat"),
+					[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
+			nh->AddDependentObject (entry->GetQObject ());
+			EntityMgr_->HandleEntity (e);
+		}
+	}
+
+	void NotificationsManager::handleEntryMadeCurrent (QObject *entryObj)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "doesn't implement ICLEntry";
+			return;
+		}
+
+		ShouldNotifyNextTyping_ [entry->GetEntryID ()] = true;
 	}
 }
 }

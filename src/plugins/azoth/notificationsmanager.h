@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QVariantMap>
 #include <interfaces/core/ihookproxy.h>
+#include "interfaces/azoth/azothcommon.h"
 
 class IEntityManager;
 
@@ -54,6 +55,8 @@ namespace Azoth
 		QHash<ICLEntry*, int> UnreadCounts_;
 
 		QHash<IAccount*, QDateTime> LastAccountStatusChange_;
+
+		QHash<QString, bool> ShouldNotifyNextTyping_;
 	public:
 		NotificationsManager (IEntityManager*, AvatarsManager*, QObject* = nullptr);
 
@@ -90,6 +93,10 @@ namespace Azoth
 		void handleAuthorizationRequested (QObject*, const QString&);
 
 		void handleMUCInvitation (const QVariantMap&, const QString&, const QString&);
+
+		void handleChatPartStateChanged (ChatPartState, const QString&);
+
+		void handleEntryMadeCurrent (QObject*);
 	signals:
 		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,

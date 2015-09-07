@@ -45,67 +45,6 @@ namespace Azoth
 
 	void EventsNotifier::RegisterEntry (ICLEntry *entry)
 	{
-		QObject *entryObj = entry->GetQObject ();
-
-		connect (entryObj,
-				SIGNAL (chatPartStateChanged (const ChatPartState&, const QString&)),
-				this,
-				SLOT (handleChatPartStateChanged (const ChatPartState&, const QString&)));
-	}
-
-	void EventsNotifier::handleChatPartStateChanged (const ChatPartState& state,
-			const QString&)
-	{
-		if (state != CPSComposing)
-			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "doesn't implement ICLentry";
-			return;
-		}
-
-		const QString& id = entry->GetEntryID ();
-		if (!ShouldNotifyNext_.value (id, true))
-			return;
-
-		const QString& type = XmlSettingsManager::Instance ()
-				.property ("NotifyIncomingComposing").toString ();
-		if (type == "all" ||
-			(type == "opened" &&
-				Core::Instance ().GetChatTabsManager ()->IsOpenedChat (id)))
-		{
-			ShouldNotifyNext_ [id] = false;
-
-			Entity e = Util::MakeNotification ("Azoth",
-					tr ("%1 started composing a message to you.")
-						.arg (entry->GetEntryName ()),
-					PInfo_);
-			e.Additional_ ["NotificationPixmap"] = QVariant::fromValue (entry->GetAvatar ());
-			Util::NotificationActionHandler *nh =
-					new Util::NotificationActionHandler (e, this);
-			nh->AddFunction (tr ("Open chat"),
-					[entry] () { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
-			nh->AddDependentObject (entry->GetQObject ());
-			emit gotEntity (e);
-		}
-	}
-
-	void EventsNotifier::handleEntryMadeCurrent (QObject *entryObj)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "doesn't implement ICLEntry";
-			return;
-		}
-
-		ShouldNotifyNext_ [entry->GetEntryID ()] = true;
 	}
 }
 }

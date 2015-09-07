@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_EVENTSNOTIFIER_H
-#define PLUGINS_AZOTH_EVENTSNOTIFIER_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/structures.h>
 #include <interfaces/azoth/iclentry.h>
@@ -42,19 +42,12 @@ namespace Azoth
 	class EventsNotifier : public QObject
 	{
 		Q_OBJECT
-		
-		QMap<QString, bool> ShouldNotifyNext_;
 	public:
 		EventsNotifier (QObject* = 0);
-		
+
 		void RegisterEntry (ICLEntry*);
-	private slots:
-		void handleChatPartStateChanged (const ChatPartState&, const QString&);
-		void handleEntryMadeCurrent (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif
