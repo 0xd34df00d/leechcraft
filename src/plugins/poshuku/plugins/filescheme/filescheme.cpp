@@ -43,7 +43,7 @@ namespace FileScheme
 {
 	void FileScheme::Init (ICoreProxy_ptr)
 	{
-		Translator_.reset (Util::InstallTranslator ("poshuku_filescheme"));
+		Util::InstallTranslator ("poshuku_filescheme");
 	}
 
 	void FileScheme::SecondInit ()
