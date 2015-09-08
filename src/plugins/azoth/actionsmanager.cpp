@@ -654,7 +654,7 @@ namespace Azoth
 			{ "saveAvatar", SingleEntryActor_f ([am] (ICLEntry *e)
 					{
 						const auto entryObj = e->GetQObject ();
-						Util::Sequence (entryObj, [=] { return am->GetAvatar (entryObj, IHaveAvatars::Size::Full); }) >>
+						Util::Sequence (entryObj, am->GetAvatar (entryObj, IHaveAvatars::Size::Full)) >>
 								[] (const QImage& image)
 								{
 									if (image.isNull ())
