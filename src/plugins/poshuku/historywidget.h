@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_HISTORYWIDGET_H
-#define PLUGINS_POSHUKU_HISTORYWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include <util/tags/tagscompleter.h>
 #include "ui_historywidget.h"
@@ -53,5 +53,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

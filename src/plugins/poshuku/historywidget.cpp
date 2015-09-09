@@ -48,7 +48,7 @@ namespace Poshuku
 		Ui_.HistoryView_->setModel (HistoryFilterModel_);
 
 		connect (Ui_.HistoryFilterLine_,
-				SIGNAL (textChanged (const QString&)),
+				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (updateHistoryFilter ()));
 		connect (Ui_.HistoryFilterType_,
@@ -60,8 +60,8 @@ namespace Poshuku
 				this,
 				SLOT (updateHistoryFilter ()));
 
-		QHeaderView *itemsHeader = Ui_.HistoryView_->header ();
-		QFontMetrics fm = fontMetrics ();
+		const auto itemsHeader = Ui_.HistoryView_->header ();
+		const auto& fm = fontMetrics ();
 		itemsHeader->resizeSection (0,
 				fm.width ("Average site title can be very big, it's also the "
 					"most important part, so it's priority is the biggest."));
@@ -76,32 +76,32 @@ namespace Poshuku
 		if (!index.parent ().isValid ())
 			return;
 
-		Core::Instance ().NewURL (index.sibling (index.row (),
-					HistoryModel::ColumnURL).data ().toString ());
+		const auto& url = index.sibling (index.row (), HistoryModel::ColumnURL).data ().toString ();
+		Core::Instance ().NewURL (url);
 	}
-	
+
 	void HistoryWidget::updateHistoryFilter ()
 	{
-		int section = Ui_.HistoryFilterType_->currentIndex ();
-		QString text = Ui_.HistoryFilterLine_->text ();
-	
+		const int section = Ui_.HistoryFilterType_->currentIndex ();
+		const auto& text = Ui_.HistoryFilterLine_->text ();
+
 		switch (section)
 		{
-			case 1:
-				HistoryFilterModel_->setFilterWildcard (text);
-				break;
-			case 2:
-				HistoryFilterModel_->setFilterRegExp (text);
-				break;
-			default:
-				HistoryFilterModel_->setFilterFixedString (text);
-				break;
+		case 1:
+			HistoryFilterModel_->setFilterWildcard (text);
+			break;
+		case 2:
+			HistoryFilterModel_->setFilterRegExp (text);
+			break;
+		default:
+			HistoryFilterModel_->setFilterFixedString (text);
+			break;
 		}
-	
-		HistoryFilterModel_->
-			setFilterCaseSensitivity ((Ui_.HistoryFilterCaseSensitivity_->
-						checkState () == Qt::Checked) ? Qt::CaseSensitive :
-					Qt::CaseInsensitive);
+
+		const auto cs = Ui_.HistoryFilterCaseSensitivity_->checkState () == Qt::Checked ?
+				Qt::CaseSensitive :
+				Qt::CaseInsensitive;
+		HistoryFilterModel_->setFilterCaseSensitivity (cs);
 	}
 }
 }
