@@ -280,7 +280,7 @@ namespace Util
 		{
 			return t ();
 		}
-	} Apply;
+	} const Apply {};
 #endif
 }
 }
