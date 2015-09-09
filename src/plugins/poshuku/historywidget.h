@@ -43,7 +43,7 @@ namespace Poshuku
 		Q_OBJECT
 
 		Ui::HistoryWidget Ui_;
-		std::auto_ptr<HistoryFilterModel> HistoryFilterModel_;
+		HistoryFilterModel * const HistoryFilterModel_;
 	public:
 		HistoryWidget (QWidget* = 0);
 	private slots:

@@ -37,15 +37,15 @@ namespace LeechCraft
 namespace Poshuku
 {
 	HistoryWidget::HistoryWidget (QWidget *parent)
-	: QWidget (parent)
+	: QWidget { parent }
+	, HistoryFilterModel_ { new HistoryFilterModel { this } }
 	{
 		Ui_.setupUi (this);
 
-		HistoryFilterModel_.reset (new HistoryFilterModel (this));
 		HistoryFilterModel_->setSourceModel (Core::Instance ().GetHistoryModel ());
 		HistoryFilterModel_->setDynamicSortFilter (true);
-		Ui_.HistoryView_->setModel (HistoryFilterModel_.get ());
-	
+		Ui_.HistoryView_->setModel (HistoryFilterModel_);
+
 		connect (Ui_.HistoryFilterLine_,
 				SIGNAL (textChanged (const QString&)),
 				this,
