@@ -31,6 +31,7 @@
 #include <QDateTime>
 #include "core.h"
 #include "historymodel.h"
+#include "historyfiltermodel.h"
 
 namespace LeechCraft
 {

@@ -32,12 +32,13 @@
 #include <QWidget>
 #include <util/tags/tagscompleter.h>
 #include "ui_historywidget.h"
-#include "historyfiltermodel.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+	class HistoryFilterModel;
+
 	class HistoryWidget : public QWidget
 	{
 		Q_OBJECT
