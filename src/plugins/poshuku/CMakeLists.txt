@@ -63,7 +63,7 @@ set (SRCS
 	bookmarkswidget.cpp
 	historywidget.cpp
 	urlframe.cpp
-	importentityhandler.cpp
+	importentity.cpp
 	platformplugin.cpp
 	urleditbuttonsmanager.cpp
 	webpagesslwatcher.cpp
