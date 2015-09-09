@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_CORE_H
-#define PLUGINS_POSHUKU_CORE_H
+#pragma once
+
 #include <memory>
 #include <vector>
 #include <QObject>
@@ -71,10 +71,11 @@ namespace Poshuku
 		typedef std::vector<BrowserWidget*> widgets_t;
 		widgets_t Widgets_;
 
-		std::auto_ptr<FavoritesModel> FavoritesModel_;
-		std::auto_ptr<HistoryModel> HistoryModel_;
-		std::auto_ptr<URLCompletionModel> URLCompletionModel_;
-		std::auto_ptr<PluginManager> PluginManager_;
+		PluginManager  * const PluginManager_;
+		URLCompletionModel  * const URLCompletionModel_;
+		HistoryModel  * const HistoryModel_;
+		FavoritesModel * const FavoritesModel_;
+
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		QNetworkAccessManager *NetworkAccessManager_;
 		WebPluginFactory *WebPluginFactory_;
@@ -200,5 +201,3 @@ namespace Poshuku
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Poshuku::Core::UncloseData);
-
-#endif

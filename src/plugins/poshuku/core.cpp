@@ -78,7 +78,11 @@ namespace Poshuku
 	using LeechCraft::Util::TagsCompletionModel;
 
 	Core::Core ()
-	: NetworkAccessManager_ (0)
+	: PluginManager_ (new PluginManager (this))
+	, URLCompletionModel_ (new URLCompletionModel (this))
+	, HistoryModel_ (new HistoryModel (this))
+	, FavoritesModel_ (new FavoritesModel (this))
+	, NetworkAccessManager_ (0)
 	, WebPluginFactory_ (0)
 	, ShortcutProxy_ (0)
 	, Initialized_ (false)
@@ -100,11 +104,9 @@ namespace Poshuku
 		TabClass_.Priority_ = 80;
 		TabClass_.Features_ = TFOpenableByRequest | TFSuggestOpening;
 
-		PluginManager_.reset (new PluginManager (this));
 		PluginManager_->RegisterHookable (this);
-
-		URLCompletionModel_.reset (new URLCompletionModel (this));
-		PluginManager_->RegisterHookable (URLCompletionModel_.get ());
+		PluginManager_->RegisterHookable (URLCompletionModel_);
+		PluginManager_->RegisterHookable (HistoryModel_);
 
 		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 	}
@@ -142,31 +144,27 @@ namespace Poshuku
 			throw;
 		}
 
-		HistoryModel_.reset (new HistoryModel (this));
 		connect (StorageBackend_.get (),
 				SIGNAL (added (const HistoryItem&)),
-				HistoryModel_.get (),
+				HistoryModel_,
 				SLOT (handleItemAdded (const HistoryItem&)));
-
-		PluginManager_->RegisterHookable (HistoryModel_.get ());
 
 		connect (StorageBackend_.get (),
 				SIGNAL (added (const HistoryItem&)),
-				URLCompletionModel_.get (),
+				URLCompletionModel_,
 				SLOT (handleItemAdded (const HistoryItem&)));
 
-		FavoritesModel_.reset (new FavoritesModel (this));
 		connect (StorageBackend_.get (),
 				SIGNAL (added (const FavoritesModel::FavoritesItem&)),
-				FavoritesModel_.get (),
+				FavoritesModel_,
 				SLOT (handleItemAdded (const FavoritesModel::FavoritesItem&)));
 		connect (StorageBackend_.get (),
 				SIGNAL (updated (const FavoritesModel::FavoritesItem&)),
-				FavoritesModel_.get (),
+				FavoritesModel_,
 				SLOT (handleItemUpdated (const FavoritesModel::FavoritesItem&)));
 		connect (StorageBackend_.get (),
 				SIGNAL (removed (const FavoritesModel::FavoritesItem&)),
-				FavoritesModel_.get (),
+				FavoritesModel_,
 				SLOT (handleItemRemoved (const FavoritesModel::FavoritesItem&)));
 
 		Initialized_ = true;
@@ -182,8 +180,6 @@ namespace Poshuku
 		while (Widgets_.begin () != Widgets_.end ())
 			delete *Widgets_.begin ();
 
-		HistoryModel_.reset ();
-		FavoritesModel_.reset ();
 		StorageBackend_.reset ();
 
 		XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
@@ -230,7 +226,7 @@ namespace Poshuku
 	void Core::Handle (Entity e)
 	{
 		if (e.Mime_ == "x-leechcraft/browser-import-data")
-			ImportEntity (e, HistoryModel_.get (), FavoritesModel_.get (),
+			ImportEntity (e, HistoryModel_, FavoritesModel_,
 					Proxy_->GetRootWindowsManager ());
 		else if (e.Entity_.canConvert<QUrl> ())
 		{
@@ -438,17 +434,17 @@ namespace Poshuku
 
 	FavoritesModel* Core::GetFavoritesModel () const
 	{
-		return FavoritesModel_.get ();
+		return FavoritesModel_;
 	}
 
 	HistoryModel* Core::GetHistoryModel () const
 	{
-		return HistoryModel_.get ();
+		return HistoryModel_;
 	}
 
 	URLCompletionModel* Core::GetURLCompletionModel () const
 	{
-		return URLCompletionModel_.get ();
+		return URLCompletionModel_;
 	}
 
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
@@ -463,7 +459,7 @@ namespace Poshuku
 
 	PluginManager* Core::GetPluginManager () const
 	{
-		return PluginManager_.get ();
+		return PluginManager_;
 	}
 
 	void Core::SetShortcut (const QString& name, const QKeySequences_t& shortcut)
