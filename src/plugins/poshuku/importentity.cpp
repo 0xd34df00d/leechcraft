@@ -45,54 +45,63 @@ namespace Poshuku
 		void ImportHistory (const QVariantList& history,
 				HistoryModel *historyModel, IRootWindowsManager *rootWM)
 		{
-			if (history.size ())
+			if (history.isEmpty ())
+				return;
+
+			QProgressDialog progressDia
 			{
-				QProgressDialog progressDia (QObject::tr ("Importing history..."),
-						QObject::tr ("Abort"),
-						0, history.size (),
-						rootWM->GetPreferredWindow ());
-				qDebug () << "History:" << history.size ();
-				Q_FOREACH (const QVariant& hRowVar, history)
-				{
-					QMap<QString, QVariant> hRow = hRowVar.toMap ();
-					QString title = hRow ["Title"].toString ();
-					QString url = hRow ["URL"].toString ();
-					QDateTime date = hRow ["DateTime"].toDateTime ();
+				QObject::tr ("Importing history..."),
+				QObject::tr ("Abort"),
+				0,
+				history.size (),
+				rootWM->GetPreferredWindow ()
+			};
+			qDebug () << Q_FUNC_INFO << history.size ();
+			for (const QVariant& hRowVar : history)
+			{
+				const auto& hRow = hRowVar.toMap ();
+				const auto& title = hRow ["Title"].toString ();
+				const auto& url = hRow ["URL"].toString ();
+				const auto& date = hRow ["DateTime"].toDateTime ();
 
-					if (!date.isValid ())
-						qWarning () << "skipping entity with invalid date" << title << url;
-					else
-						historyModel->addItem (title, url, date);
+				if (!date.isValid ())
+					qWarning () << "skipping entity with invalid date" << title << url;
+				else
+					historyModel->addItem (title, url, date);
 
-					progressDia.setValue (progressDia.value () + 1);
-					if (progressDia.wasCanceled ())
-						break;
-				}
+				progressDia.setValue (progressDia.value () + 1);
+				if (progressDia.wasCanceled ())
+					break;
 			}
 		}
 
 		void ImportBookmarks (const QVariantList& bookmarks,
 				FavoritesModel *favoritesModel, IRootWindowsManager *rootWM)
 		{
-			if (bookmarks.size ())
-			{
-				QProgressDialog progressDia (QObject::tr ("Importing bookmarks..."),
-						QObject::tr ("Abort"),
-						0, bookmarks.size (),
-						rootWM->GetPreferredWindow ());
-				qDebug () << "Bookmarks" << bookmarks.size ();
-				Q_FOREACH (const QVariant& hBMVar, bookmarks)
-				{
-					QMap<QString, QVariant> hBM = hBMVar.toMap ();
-					QString title = hBM ["Title"].toString ();
-					QString url = hBM ["URL"].toString ();
-					QStringList tags = hBM ["Tags"].toStringList ();
+			if (bookmarks.isEmpty ())
+				return;
 
-					favoritesModel->addItem (title, url, tags);
-					progressDia.setValue (progressDia.value () + 1);
-					if (progressDia.wasCanceled ())
-						break;
-				}
+			QProgressDialog progressDia
+			{
+				QObject::tr ("Importing bookmarks..."),
+				QObject::tr ("Abort"),
+				0,
+				bookmarks.size (),
+				rootWM->GetPreferredWindow ()
+			};
+			qDebug () << "Bookmarks" << bookmarks.size ();
+			for (const auto& hBMVar : bookmarks)
+			{
+				const auto& hBM = hBMVar.toMap ();
+				const auto& title = hBM ["Title"].toString ();
+				const auto& url = hBM ["URL"].toString ();
+				const auto& tags = hBM ["Tags"].toStringList ();
+
+				favoritesModel->addItem (title, url, tags);
+
+				progressDia.setValue (progressDia.value () + 1);
+				if (progressDia.wasCanceled ())
+					break;
 			}
 		}
 	}
