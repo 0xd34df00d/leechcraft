@@ -40,56 +40,68 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+	namespace
+	{
+		void ImportHistory (const QVariantList& history,
+				HistoryModel *historyModel, IRootWindowsManager *rootWM)
+		{
+			if (history.size ())
+			{
+				QProgressDialog progressDia (QObject::tr ("Importing history..."),
+						QObject::tr ("Abort"),
+						0, history.size (),
+						rootWM->GetPreferredWindow ());
+				qDebug () << "History:" << history.size ();
+				Q_FOREACH (const QVariant& hRowVar, history)
+				{
+					QMap<QString, QVariant> hRow = hRowVar.toMap ();
+					QString title = hRow ["Title"].toString ();
+					QString url = hRow ["URL"].toString ();
+					QDateTime date = hRow ["DateTime"].toDateTime ();
+
+					if (!date.isValid ())
+						qWarning () << "skipping entity with invalid date" << title << url;
+					else
+						historyModel->addItem (title, url, date);
+
+					progressDia.setValue (progressDia.value () + 1);
+					if (progressDia.wasCanceled ())
+						break;
+				}
+			}
+		}
+
+		void ImportBookmarks (const QVariantList& bookmarks,
+				FavoritesModel *favoritesModel, IRootWindowsManager *rootWM)
+		{
+			if (bookmarks.size ())
+			{
+				QProgressDialog progressDia (QObject::tr ("Importing bookmarks..."),
+						QObject::tr ("Abort"),
+						0, bookmarks.size (),
+						rootWM->GetPreferredWindow ());
+				qDebug () << "Bookmarks" << bookmarks.size ();
+				Q_FOREACH (const QVariant& hBMVar, bookmarks)
+				{
+					QMap<QString, QVariant> hBM = hBMVar.toMap ();
+					QString title = hBM ["Title"].toString ();
+					QString url = hBM ["URL"].toString ();
+					QStringList tags = hBM ["Tags"].toStringList ();
+
+					favoritesModel->addItem (title, url, tags);
+					progressDia.setValue (progressDia.value () + 1);
+					if (progressDia.wasCanceled ())
+						break;
+				}
+			}
+		}
+	}
+
 	void ImportEntity (const Entity& e,
 			HistoryModel *historyModel, FavoritesModel *favoritesModel, IRootWindowsManager *rootWM)
 	{
-		QList<QVariant> history = e.Additional_ ["BrowserHistory"].toList ();
-		if (history.size ())
-		{
-			QProgressDialog progressDia (QObject::tr ("Importing history..."),
-					QObject::tr ("Abort"),
-					0, history.size (),
-					rootWM->GetPreferredWindow ());
-			qDebug () << "History:" << history.size ();
-			Q_FOREACH (const QVariant& hRowVar, history)
-			{
-				QMap<QString, QVariant> hRow = hRowVar.toMap ();
-				QString title = hRow ["Title"].toString ();
-				QString url = hRow ["URL"].toString ();
-				QDateTime date = hRow ["DateTime"].toDateTime ();
-
-				if (!date.isValid ())
-					qWarning () << "skipping entity with invalid date" << title << url;
-				else
-					historyModel->addItem (title, url, date);
-
-				progressDia.setValue (progressDia.value () + 1);
-				if (progressDia.wasCanceled ())
-					break;
-			}
-		}
-
-		QList<QVariant> bookmarks = e.Additional_ ["BrowserBookmarks"].toList ();
-		if (bookmarks.size ())
-		{
-			QProgressDialog progressDia (QObject::tr ("Importing bookmarks..."),
-					QObject::tr ("Abort"),
-					0, bookmarks.size (),
-					rootWM->GetPreferredWindow ());
-			qDebug () << "Bookmarks" << bookmarks.size ();
-			Q_FOREACH (const QVariant& hBMVar, bookmarks)
-			{
-				QMap<QString, QVariant> hBM = hBMVar.toMap ();
-				QString title = hBM ["Title"].toString ();
-				QString url = hBM ["URL"].toString ();
-				QStringList tags = hBM ["Tags"].toStringList ();
-
-				favoritesModel->addItem (title, url, tags);
-				progressDia.setValue (progressDia.value () + 1);
-				if (progressDia.wasCanceled ())
-					break;
-			}
-		}
+		ImportHistory (e.Additional_ ["BrowserHistory"].toList (), historyModel, rootWM);
+		ImportBookmarks (e.Additional_ ["BrowserBookmarks"].toList (), favoritesModel, rootWM);
 	}
 }
 }
