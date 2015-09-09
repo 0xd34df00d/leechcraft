@@ -65,10 +65,6 @@ namespace Poshuku
 				RegisterHookable (this);
 	}
 
-	FavoritesModel::~FavoritesModel ()
-	{
-	}
-
 	int FavoritesModel::columnCount (const QModelIndex&) const
 	{
 		return ItemHeaders_.size ();
