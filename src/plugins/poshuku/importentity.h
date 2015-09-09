@@ -29,12 +29,18 @@
 
 #pragma once
 
+class IRootWindowsManager;
+
 namespace LeechCraft
 {
 struct Entity;
 
 namespace Poshuku
 {
-	void ImportEntity (const Entity&);
+	class HistoryModel;
+	class FavoritesModel;
+
+	void ImportEntity (const Entity&,
+			HistoryModel*, FavoritesModel*, IRootWindowsManager*);
 }
 }

@@ -33,25 +33,23 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
-#include "core.h"
+#include "historymodel.h"
+#include "favoritesmodel.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	void ImportEntity (const Entity& e)
+	void ImportEntity (const Entity& e,
+			HistoryModel *historyModel, FavoritesModel *favoritesModel, IRootWindowsManager *rootWM)
 	{
-		qDebug () << Q_FUNC_INFO;
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-
 		QList<QVariant> history = e.Additional_ ["BrowserHistory"].toList ();
 		if (history.size ())
 		{
 			QProgressDialog progressDia (QObject::tr ("Importing history..."),
-					QObject::tr ("Abort history import"),
+					QObject::tr ("Abort"),
 					0, history.size (),
 					rootWM->GetPreferredWindow ());
-			int cur = 0;
 			qDebug () << "History:" << history.size ();
 			Q_FOREACH (const QVariant& hRowVar, history)
 			{
@@ -63,9 +61,9 @@ namespace Poshuku
 				if (!date.isValid ())
 					qWarning () << "skipping entity with invalid date" << title << url;
 				else
-					Core::Instance ().GetHistoryModel ()->addItem (title, url, date);
+					historyModel->addItem (title, url, date);
 
-				progressDia.setValue (++cur);
+				progressDia.setValue (progressDia.value () + 1);
 				if (progressDia.wasCanceled ())
 					break;
 			}
@@ -75,10 +73,9 @@ namespace Poshuku
 		if (bookmarks.size ())
 		{
 			QProgressDialog progressDia (QObject::tr ("Importing bookmarks..."),
-					QObject::tr ("Abort bookmarks import"),
+					QObject::tr ("Abort"),
 					0, bookmarks.size (),
 					rootWM->GetPreferredWindow ());
-			int cur = 0;
 			qDebug () << "Bookmarks" << bookmarks.size ();
 			Q_FOREACH (const QVariant& hBMVar, bookmarks)
 			{
@@ -87,8 +84,8 @@ namespace Poshuku
 				QString url = hBM ["URL"].toString ();
 				QStringList tags = hBM ["Tags"].toStringList ();
 
-				Core::Instance ().GetFavoritesModel ()->addItem (title, url, tags);
-				progressDia.setValue (++cur);
+				favoritesModel->addItem (title, url, tags);
+				progressDia.setValue (progressDia.value () + 1);
 				if (progressDia.wasCanceled ())
 					break;
 			}
