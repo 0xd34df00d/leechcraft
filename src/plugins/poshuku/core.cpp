@@ -107,6 +107,7 @@ namespace Poshuku
 		PluginManager_->RegisterHookable (this);
 		PluginManager_->RegisterHookable (URLCompletionModel_);
 		PluginManager_->RegisterHookable (HistoryModel_);
+		PluginManager_->RegisterHookable (FavoritesModel_);
 
 		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 	}

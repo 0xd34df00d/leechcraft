@@ -60,9 +60,6 @@ namespace Poshuku
 			<< tr ("URL")
 			<< tr ("Tags");
 		QTimer::singleShot (0, this, SLOT (loadData ()));
-
-		Core::Instance ().GetPluginManager ()->
-				RegisterHookable (this);
 	}
 
 	int FavoritesModel::columnCount (const QModelIndex&) const
