@@ -230,10 +230,7 @@ namespace Poshuku
 	void Core::Handle (Entity e)
 	{
 		if (e.Mime_ == "x-leechcraft/browser-import-data")
-		{
-			std::auto_ptr<ImportEntityHandler> eh (new ImportEntityHandler (this));
-			eh->Import (e);
-		}
+			ImportEntityHandler {}.Import (e);
 		else if (e.Entity_.canConvert<QUrl> ())
 		{
 			QUrl url = e.Entity_.toUrl ();
