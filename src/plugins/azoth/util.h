@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QColor>
+#include "interfaces/azoth/azothcommon.h"
 
 template<typename>
 class QList;
@@ -68,5 +69,7 @@ namespace Azoth
 	QStringList GetMucParticipants (const QString& entryId);
 
 	void RemoveAccount (IAccount*);
+
+	QString StateToString (State);
 }
 }

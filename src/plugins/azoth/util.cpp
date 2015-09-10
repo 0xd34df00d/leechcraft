@@ -287,5 +287,26 @@ namespace Azoth
 		}
 		proto->RemoveAccount (acc->GetQObject ());
 	}
+
+	QString StateToString (State st)
+	{
+		switch (st)
+		{
+		case SOnline:
+			return Core::tr ("Online");
+		case SChat:
+			return Core::tr ("Free to chat");
+		case SAway:
+			return Core::tr ("Away");
+		case SDND:
+			return Core::tr ("Do not disturb");
+		case SXA:
+			return Core::tr ("Not available");
+		case SOffline:
+			return Core::tr ("Offline");
+		default:
+			return Core::tr ("Error");
+		}
+	}
 }
 }

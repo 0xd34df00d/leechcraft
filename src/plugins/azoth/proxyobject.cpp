@@ -225,23 +225,7 @@ namespace Azoth
 
 	QString ProxyObject::StateToString (State st) const
 	{
-		switch (st)
-		{
-		case SOnline:
-			return Core::tr ("Online");
-		case SChat:
-			return Core::tr ("Free to chat");
-		case SAway:
-			return Core::tr ("Away");
-		case SDND:
-			return Core::tr ("Do not disturb");
-		case SXA:
-			return Core::tr ("Not available");
-		case SOffline:
-			return Core::tr ("Offline");
-		default:
-			return Core::tr ("Error");
-		}
+		return Azoth::StateToString (st);
 	}
 
 	QString ProxyObject::AuthStatusToString (AuthStatus status) const
