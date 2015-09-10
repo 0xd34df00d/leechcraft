@@ -211,7 +211,7 @@ namespace Azoth
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> ({ tr ("Smile pack") }))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> ({ tr ("Chat style") }))
 	, PluginManager_ (new PluginManager)
-	, PluginProxyObject_ (new ProxyObject)
+	, PluginProxyObject_ (new ProxyObject (AvatarsManager_))
 	, XferJobManager_ (new TransferJobManager { AvatarsManager_ })
 	, CallManager_ (new CallManager)
 	, ImportManager_ (new ImportManager)

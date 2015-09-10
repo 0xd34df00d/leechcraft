@@ -359,6 +359,8 @@ namespace Azoth
 		virtual QObject* GetFirstUnreadMessage (QObject *entryObj) const = 0;
 
 		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
+
+		virtual IAvatarsManager* GetAvatarsManager () = 0;
 	};
 }
 }

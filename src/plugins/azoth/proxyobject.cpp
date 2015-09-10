@@ -29,9 +29,6 @@
 
 #include "proxyobject.h"
 #include <algorithm>
-#ifdef USE_BOOST_LOCALE
-#include <boost/locale.hpp>
-#endif
 #include <QInputDialog>
 #include <QtDebug>
 #include <util/xpc/util.h>
@@ -185,8 +182,9 @@ namespace Azoth
 		return result;
 	}
 
-	ProxyObject::ProxyObject (QObject* parent)
+	ProxyObject::ProxyObject (IAvatarsManager *am, QObject* parent)
 	: QObject (parent)
+	, AvatarsManager_ (am)
 	{
 		SerializedStr2AuthStatus_ ["None"] = ASNone;
 		SerializedStr2AuthStatus_ ["To"] = ASTo;
@@ -390,6 +388,11 @@ namespace Azoth
 	IFormatterProxyObject& ProxyObject::GetFormatterProxy ()
 	{
 		return Formatter_;
+	}
+
+	IAvatarsManager* ProxyObject::GetAvatarsManager ()
+	{
+		return AvatarsManager_;
 	}
 }
 }

@@ -66,8 +66,9 @@ namespace Azoth
 		QHash<QString, AuthStatus> SerializedStr2AuthStatus_;
 
 		FormatterProxyObject Formatter_;
+		IAvatarsManager * const AvatarsManager_;
 	public:
-		ProxyObject (QObject* = 0);
+		ProxyObject (IAvatarsManager*, QObject* = nullptr);
 	public slots:
 		QObject* GetSettingsManager () override;
 		void SetPassword (const QString&, QObject*) override;
@@ -102,6 +103,7 @@ namespace Azoth
 		QObject* GetFirstUnreadMessage (QObject *entryObj) const override;
 
 		IFormatterProxyObject& GetFormatterProxy () override;
+		IAvatarsManager* GetAvatarsManager() override;
 	};
 }
 }
