@@ -71,5 +71,6 @@ namespace Azoth
 	void RemoveAccount (IAccount*);
 
 	QString StateToString (State);
+	QString PrettyPrintDateTime (const QDateTime&);
 }
 }
