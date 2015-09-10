@@ -32,8 +32,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "core.h"
-#include "proxyobject.h"
 #include "chattabsmanager.h"
+#include "coremessage.h"
 
 namespace LeechCraft
 {
@@ -63,12 +63,15 @@ namespace Azoth
 					.arg ("<code>/help command</code>");
 
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
-					QDateTime::currentDateTime (),
-					IMessage::Type::ServiceMessage,
-					IMessage::Direction::In,
-					entryObj,
-					entryObj);
+			const auto msgObj = new CoreMessage
+			{
+				body,
+				QDateTime::currentDateTime (),
+				IMessage::Type::ServiceMessage,
+				IMessage::Direction::In,
+				entryObj,
+				entryObj
+			};
 			const auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Store ();
 
@@ -227,12 +230,15 @@ namespace Azoth
 				message += "<br/>" + MDParser { cmd.Help_ } ();
 
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = ProxyObject {}.CreateCoreMessage (message,
-					QDateTime::currentDateTime (),
-					IMessage::Type::ServiceMessage,
-					IMessage::Direction::In,
-					entryObj,
-					entryObj);
+			const auto msgObj = new CoreMessage
+			{
+				message,
+				QDateTime::currentDateTime (),
+				IMessage::Type::ServiceMessage,
+				IMessage::Direction::In,
+				entryObj,
+				entryObj
+			};
 			const auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Store ();
 
@@ -256,12 +262,15 @@ namespace Azoth
 					.arg ("<code>" + name + "</code>");
 
 			const auto entryObj = entry->GetQObject ();
-			const auto msgObj = ProxyObject {}.CreateCoreMessage (body,
-					QDateTime::currentDateTime (),
-					IMessage::Type::ServiceMessage,
-					IMessage::Direction::In,
-					entryObj,
-					entryObj);
+			const auto msgObj = new CoreMessage
+			{
+				body,
+				QDateTime::currentDateTime (),
+				IMessage::Type::ServiceMessage,
+				IMessage::Direction::In,
+				entryObj,
+				entryObj
+			};
 			const auto msg = qobject_cast<IMessage*> (msgObj);
 			msg->Store ();
 
