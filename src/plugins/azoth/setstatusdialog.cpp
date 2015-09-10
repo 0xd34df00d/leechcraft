@@ -31,8 +31,8 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "customstatusesmanager.h"
-#include "proxyobject.h"
 #include "resourcesmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -98,7 +98,7 @@ namespace Azoth
 		for (const auto& custom : customs)
 		{
 			const auto state = custom.State_;
-			const auto& name = custom.Name_ + " (" + ProxyObject ().StateToString (state) + ")";
+			const auto& name = custom.Name_ + " (" + StateToString (state) + ")";
 			Ui_.StatusBox_->addItem (ResourcesManager::Instance ().GetIconForState (state), name);
 
 			const auto pos = Ui_.StatusBox_->count () - 1;

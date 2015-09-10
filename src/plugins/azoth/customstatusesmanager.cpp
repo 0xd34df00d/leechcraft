@@ -34,9 +34,9 @@
 #include <util/util.h>
 #include "interfaces/azoth/azothcommon.h"
 #include "core.h"
-#include "proxyobject.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -58,7 +58,7 @@ namespace Azoth
 		auto append = [&values] (State state)
 		{
 			values << Util::MakeMap<QString, QVariant> ({
-					{ "Name", ProxyObject ().StateToString (state) },
+					{ "Name", StateToString (state) },
 					{ "Icon", ResourcesManager::Instance ().GetIconForState (state) },
 					{ "ID", QVariant::fromValue (state) }
 				});
@@ -128,12 +128,10 @@ namespace Azoth
 
 	void CustomStatusesManager::Add (const CustomStatus& state, int after)
 	{
-		ProxyObject proxy;
-
 		QList<QStandardItem*> row;
 		row << new QStandardItem (state.Name_);
 		row << new QStandardItem (ResourcesManager::Instance ().GetIconForState (state.State_),
-				proxy.StateToString (state.State_));
+				StateToString (state.State_));
 		row << new QStandardItem (state.Text_);
 		row.at (1)->setData (static_cast<int> (state.State_));
 

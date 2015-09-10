@@ -358,7 +358,7 @@ namespace Azoth
 				extAcc->GetSelfContact () == entry->GetQObject ())
 			return;
 
-		const auto& status = ProxyObject {}.StateToString (entrySt.State_);
+		const auto& status = StateToString (entrySt.State_);
 
 		const auto& text = GetStatusChangeText (entry, entrySt, variant, status);
 
