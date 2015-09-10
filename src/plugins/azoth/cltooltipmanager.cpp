@@ -73,18 +73,21 @@ namespace Azoth
 	{
 	}
 
-	QString CLTooltipManager::Status2Str (const EntryStatus& status)
+	namespace
 	{
-		auto result = "<table><tr><td valign='middle'>" + StateToString (status.State_);
-		const QString& statusString = Escape (status.StatusString_);
-		if (!statusString.isEmpty ())
-			result += " (" + statusString + ")";
+		QString Status2Str (const EntryStatus& status)
+		{
+			auto result = "<table><tr><td valign='middle'>" + StateToString (status.State_);
+			const QString& statusString = Escape (status.StatusString_);
+			if (!statusString.isEmpty ())
+				result += " (" + statusString + ")";
 
-		const auto& icon = ResourcesManager::Instance ().GetIconForState (status.State_);
-		const auto& data = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
-		result += "&nbsp;&nbsp;&nbsp;</td><td><img src='" + data + "' /></td></tr></table>";
+			const auto& icon = ResourcesManager::Instance ().GetIconForState (status.State_);
+			const auto& data = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
+			result += "&nbsp;&nbsp;&nbsp;</td><td><img src='" + data + "' /></td></tr></table>";
 
-		return result;
+			return result;
+		}
 	}
 
 	void CLTooltipManager::AddEntry (ICLEntry *clEntry)
