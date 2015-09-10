@@ -32,9 +32,13 @@
 #include <boost/optional.hpp>
 #include <QString>
 #include "azothcommon.h"
+#include "ihaveavatars.h"
 
 class QObject;
 class QWebFrame;
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -131,6 +135,14 @@ namespace Azoth
 		virtual void FormatLinks (QString& body) = 0;
 
 		virtual QStringList FindLinks (const QString&) = 0;
+	};
+
+	class IAvatarsManager
+	{
+	protected:
+		virtual ~IAvatarsManager () {}
+	public:
+		virtual QFuture<QImage> GetAvatar (QObject *entryObj, IHaveAvatars::Size size) = 0;
 	};
 
 	class IProxyObject
