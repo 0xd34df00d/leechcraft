@@ -69,4 +69,4 @@ target_link_libraries (leechcraft_blogique_metida
 install (TARGETS leechcraft_blogique_metida DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blogiquemetidasettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_blogique_metida Network Widgets Xml XmlPatterns)
+FindQtLibs (leechcraft_blogique_metida Network Sql Widgets Xml XmlPatterns)
