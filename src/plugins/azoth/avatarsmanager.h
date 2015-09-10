@@ -34,6 +34,7 @@
 #include <QHash>
 #include <util/sll/util.h>
 #include "interfaces/azoth/ihaveavatars.h"
+#include "interfaces/azoth/iproxyobject.h"
 
 template<typename>
 class QFuture;
@@ -45,6 +46,7 @@ namespace Azoth
 	class AvatarsStorage;
 
 	class AvatarsManager : public QObject
+						 , public IAvatarsManager
 	{
 		Q_OBJECT
 
@@ -59,7 +61,7 @@ namespace Azoth
 	public:
 		AvatarsManager (QObject* = nullptr);
 
-		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size);
+		QFuture<QImage> GetAvatar (QObject*, IHaveAvatars::Size) override;
 		bool HasAvatar (QObject*) const;
 
 		Util::DefaultScopeGuard Subscribe (QObject*, IHaveAvatars::Size, const AvatarHandler_f&);
