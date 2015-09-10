@@ -64,7 +64,7 @@ namespace Azoth
 	public:
 		CLTooltipManager (AvatarsManager*, Entry2Items_t&);
 
-		static QString Status2Str (const EntryStatus& status, IProxyObject *obj);
+		static QString Status2Str (const EntryStatus& status);
 
 		void AddEntry (ICLEntry*);
 		void RemoveEntry (ICLEntry*);

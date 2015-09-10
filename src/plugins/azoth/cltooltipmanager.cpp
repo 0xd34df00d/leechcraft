@@ -49,6 +49,7 @@
 #include "proxyobject.h"
 #include "resourcesmanager.h"
 #include "avatarsmanager.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -73,9 +74,9 @@ namespace Azoth
 	{
 	}
 
-	QString CLTooltipManager::Status2Str (const EntryStatus& status, IProxyObject *obj)
+	QString CLTooltipManager::Status2Str (const EntryStatus& status)
 	{
-		auto result = "<table><tr><td valign='middle'>" + obj->StateToString (status.State_);
+		auto result = "<table><tr><td valign='middle'>" + StateToString (status.State_);
 		const QString& statusString = Escape (status.StatusString_);
 		if (!statusString.isEmpty ())
 			result += " (" + statusString + ")";
@@ -280,7 +281,7 @@ namespace Azoth
 
 		tip += "<strong>" + Escape (entry->GetEntryName ()) + "</strong>";
 		tip += "&nbsp;(<em>" + Escape (entry->GetHumanReadableID ()) + "</em>)";
-		tip += Status2Str (entry->GetStatus (), Core::Instance ().GetPluginProxy ());
+		tip += Status2Str (entry->GetStatus ());
 		if (entry->GetEntryType () != ICLEntry::EntryType::PrivateChat)
 		{
 			tip += "<br />";
@@ -333,7 +334,7 @@ namespace Azoth
 				tip += "</strong>";
 			}
 			if (!variant.isEmpty () || variants.size () > 1)
-				tip += Status2Str (entry->GetStatus (variant), Core::Instance ().GetPluginProxy ());
+				tip += Status2Str (entry->GetStatus (variant));
 
 			QString clientIconString;
 			if (!icons.value (variant).isNull ())
