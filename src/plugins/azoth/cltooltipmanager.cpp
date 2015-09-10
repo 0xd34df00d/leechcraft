@@ -46,7 +46,6 @@
 #include "core.h"
 #include "activitydialog.h"
 #include "mooddialog.h"
-#include "proxyobject.h"
 #include "resourcesmanager.h"
 #include "avatarsmanager.h"
 #include "util.h"
@@ -378,7 +377,7 @@ namespace Azoth
 			if (info.contains ("client_time"))
 			{
 				const auto& datetime = info.value ("client_time").toDateTime ();
-				const auto& dateStr = ProxyObject {}.PrettyPrintDateTime (datetime);
+				const auto& dateStr = PrettyPrintDateTime (datetime);
 				tip += "<br />" + tr ("Client time:") + ' ' + dateStr;
 			}
 
