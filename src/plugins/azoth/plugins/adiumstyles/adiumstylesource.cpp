@@ -194,11 +194,11 @@ namespace AdiumStyles
 
 		auto insensitive = [&prefix] (const QString& name)
 		{
-			return QStringList (prefix + name) << (prefix + name.toLower ());
+			return QStringList { prefix + name, prefix + name.toLower () };
 		};
 		Util::QIODevice_ptr header = StylesLoader_->Load (insensitive ("Header.html"));
 		Util::QIODevice_ptr footer = StylesLoader_->Load (insensitive ("Footer.html"));
-		Util::QIODevice_ptr css = StylesLoader_->Load (QStringList (prefix + "main.css"));
+		Util::QIODevice_ptr css = StylesLoader_->Load ({ prefix + "main.css" });
 		Util::QIODevice_ptr tmpl = StylesLoader_->Load (insensitive ("Template.html"));
 
 		if ((header && !header->open (QIODevice::ReadOnly)) ||
