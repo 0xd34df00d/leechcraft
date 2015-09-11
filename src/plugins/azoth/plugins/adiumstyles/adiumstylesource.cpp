@@ -584,7 +584,7 @@ namespace AdiumStyles
 				if (image.isNull ())
 					image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
 				if (image.isNull ())
-					image = GetDefaultAvatar ();
+					image = Proxy_->GetDefaultAvatar ();
 				if (image.isNull ())
 					qWarning () << Q_FUNC_INFO
 							<< "image is still null, though tried"
@@ -690,14 +690,6 @@ namespace AdiumStyles
 	QString AdiumStyleSource::GetMessageID (QObject *msgObj)
 	{
 		return QString::number (reinterpret_cast<uintptr_t> (msgObj));
-	}
-
-	QImage AdiumStyleSource::GetDefaultAvatar () const
-	{
-		const QString& defAvatarName = Proxy_->GetSettingsManager ()->
-				property ("SystemIcons").toString () + "/default_avatar";
-		auto sysLdr = Proxy_->GetResourceLoader (IProxyObject::PRLSystemIcons);
-		return sysLdr->LoadPixmap (defAvatarName).toImage ();
 	}
 
 	PListParser_ptr AdiumStyleSource::GetPListParser (const QString& pack) const

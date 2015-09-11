@@ -94,7 +94,6 @@ namespace AdiumStyles
 		QString ParseMsgTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		QString GetMessageID (QObject*);
-		QImage GetDefaultAvatar () const;
 		PListParser_ptr GetPListParser (const QString&) const;
 	private slots:
 		void handleMessageDelivered ();
