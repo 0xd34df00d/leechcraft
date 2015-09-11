@@ -193,10 +193,15 @@ namespace Azoth
 		const auto& name = XmlSettingsManager::Instance ()
 				.property ("SystemIcons").toString () + "/default_avatar";
 		const auto& image = ResourceLoaders_ [RLTSystemIconLoader]->LoadPixmap (name).toImage ();
-		return image.isNull () ?
-				QImage () :
-				image.scaled (size, size,
-						Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+		if (image.isNull ())
+			return {};
+
+		if (size == -1)
+			return image;
+
+		return image.scaled (size, size,
+				Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	}
 
 	void ResourcesManager::invalidateClientsIconCache (QObject *passedObj)
