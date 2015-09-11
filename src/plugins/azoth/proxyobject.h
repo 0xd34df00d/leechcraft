@@ -98,6 +98,8 @@ namespace Azoth
 		boost::optional<CustomStatus> FindCustomStatus (const QString&) const override;
 		QStringList GetCustomStatusNames () const override;
 
+		QImage GetDefaultAvatar (int) const override;
+
 		void RedrawItem (QObject*) const override;
 
 		QObject* GetFirstUnreadMessage (QObject *entryObj) const override;

@@ -358,6 +358,8 @@ namespace Azoth
 
 		virtual QObject* GetFirstUnreadMessage (QObject *entryObj) const = 0;
 
+		virtual QImage GetDefaultAvatar (int size = -1) const = 0;
+
 		virtual IFormatterProxyObject& GetFormatterProxy () = 0;
 
 		virtual IAvatarsManager* GetAvatarsManager () = 0;

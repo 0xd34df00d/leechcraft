@@ -375,6 +375,11 @@ namespace Azoth
 		return result;
 	}
 
+	QImage ProxyObject::GetDefaultAvatar (int size) const
+	{
+		return ResourcesManager::Instance ().GetDefaultAvatar (size);
+	}
+
 	void ProxyObject::RedrawItem (QObject *entryObj) const
 	{
 		Core::Instance ().UpdateItem (entryObj);
