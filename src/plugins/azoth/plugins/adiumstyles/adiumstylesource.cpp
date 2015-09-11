@@ -106,6 +106,59 @@ namespace AdiumStyles
 			rx.setMinimal (true);
 			str.replace (rx, "<div\\1></div>");
 		}
+
+		void FormatTime (QString& templ, const QString& elem, const QDateTime& dt)
+		{
+			QStringMatcher timeMatcher ("%" + elem + "{");
+			int pos = 0;
+			while ((pos = timeMatcher.indexIn (templ, pos)) != -1)
+			{
+				const auto start = pos;
+				pos += timeMatcher.pattern ().size ();
+				const auto end = templ.indexOf ('}', pos);
+				if (end == -1)
+					break;
+
+				const auto& formatStr = templ.mid (pos, end - pos);
+				const auto& formatted = dt.toString (formatStr);
+				templ.replace (start, end - start + 2, formatted);
+			}
+		}
+
+		void ParseGlobalTemplate (QString& result, ICLEntry *entry, IProxyObject *proxyObject)
+		{
+			auto acc = entry->GetParentAccount ();
+			auto extSelf = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
+
+			ICLEntry *selfEntry = extSelf ?
+					qobject_cast<ICLEntry*> (extSelf->GetSelfContact ()) :
+					0;
+
+			result.replace ("%chatName%", entry->GetEntryName ());
+			result.replace ("%sourceName%", acc->GetOurNick ());
+			result.replace ("%destinationName%", entry->GetHumanReadableID ());
+			result.replace ("%destinationDisplayName%", entry->GetEntryName ());
+
+			const QImage& defAvatar = proxyObject->GetDefaultAvatar ();
+
+			auto safeIconReplace = [&result] (const QString& pattern,
+					QImage px, const QImage& def)
+			{
+				if (result.contains (pattern))
+					result.replace (pattern, Util::GetAsBase64Src (px.isNull () ? def : px));
+			};
+
+			safeIconReplace ("%incomingIconPath%",
+					entry->GetAvatar (), defAvatar);
+			safeIconReplace ("%outgoingIconPath%",
+					selfEntry ? selfEntry->GetAvatar () : defAvatar, defAvatar);
+
+			const auto& now = QDateTime::currentDateTime ();
+			result.replace ("%timeOpened%",
+					now.time ().toString (Qt::SystemLocaleLongDate));
+			result.replace ("%dateOpened%", now.date ().toString (Qt::SystemLocaleLongDate));
+			FormatTime (result, "timeOpened", now);
+		}
 	}
 
 	QString AdiumStyleSource::GetHTMLTemplate (const QString& srcPack,
@@ -196,7 +249,7 @@ namespace AdiumStyles
 			return result;
 		}
 
-		ParseGlobalTemplate (result, entry);
+		ParseGlobalTemplate (result, entry, Proxy_);
 		FixSelfClosing (result);
 
 		auto colors = StylesLoader_->Load (insensitive ("Incoming/SenderColors.txt"));
@@ -430,62 +483,6 @@ namespace AdiumStyles
 			pos += rpls [i].length ();
 			i++;
 		}
-	}
-
-	namespace
-	{
-		void FormatTime (QString& templ, const QString& elem, const QDateTime& dt)
-		{
-			QStringMatcher timeMatcher ("%" + elem + "{");
-			int pos = 0;
-			while ((pos = timeMatcher.indexIn (templ, pos)) != -1)
-			{
-				const auto start = pos;
-				pos += timeMatcher.pattern ().size ();
-				const auto end = templ.indexOf ('}', pos);
-				if (end == -1)
-					break;
-
-				const auto& formatStr = templ.mid (pos, end - pos);
-				const auto& formatted = dt.toString (formatStr);
-				templ.replace (start, end - start + 2, formatted);
-			}
-		}
-	}
-
-	void AdiumStyleSource::ParseGlobalTemplate (QString& result, ICLEntry *entry) const
-	{
-		auto acc = entry->GetParentAccount ();
-		auto extSelf = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
-
-		ICLEntry *selfEntry = extSelf ?
-				qobject_cast<ICLEntry*> (extSelf->GetSelfContact ()) :
-				0;
-
-		result.replace ("%chatName%", entry->GetEntryName ());
-		result.replace ("%sourceName%", acc->GetOurNick ());
-		result.replace ("%destinationName%", entry->GetHumanReadableID ());
-		result.replace ("%destinationDisplayName%", entry->GetEntryName ());
-
-		const QImage& defAvatar = GetDefaultAvatar ();
-
-		auto safeIconReplace = [&result] (const QString& pattern,
-				QImage px, const QImage& def)
-		{
-			if (result.contains (pattern))
-				result.replace (pattern, Util::GetAsBase64Src (px.isNull () ? def : px));
-		};
-
-		safeIconReplace ("%incomingIconPath%",
-				entry->GetAvatar (), defAvatar);
-		safeIconReplace ("%outgoingIconPath%",
-				selfEntry ? selfEntry->GetAvatar () : defAvatar, defAvatar);
-
-		const auto& now = QDateTime::currentDateTime ();
-		result.replace ("%timeOpened%",
-				now.time ().toString (Qt::SystemLocaleLongDate));
-		result.replace ("%dateOpened%", now.date ().toString (Qt::SystemLocaleLongDate));
-		FormatTime (result, "timeOpened", now);
 	}
 
 	QString AdiumStyleSource::ParseMsgTemplate (QString templ, const QString& base,

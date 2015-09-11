@@ -90,7 +90,6 @@ namespace AdiumStyles
 		QStringList GetVariantsForPack (const QString&);
 	private:
 		void PercentTemplate (QString&, const QMap<QString, QString>&) const;
-		void ParseGlobalTemplate (QString& templ, ICLEntry*) const;
 		QString ParseMsgTemplate (QString templ, const QString& path,
 				QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		QString GetMessageID (QObject*);
