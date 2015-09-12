@@ -42,6 +42,13 @@ namespace Murm
 				left.Title_ == right.Title_ &&
 				left.Icon25_ == right.Icon25_;
 	}
+
+	UserInfo UserInfo::FromID (qulonglong id)
+	{
+		UserInfo info {};
+		info.ID_ = id;
+		return info;
+	}
 }
 }
 }

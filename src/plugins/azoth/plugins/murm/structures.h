@@ -90,6 +90,8 @@ namespace Murm
 		QList<qulonglong> Lists_;
 
 		AppInfo AppInfo_;
+
+		static UserInfo FromID (qulonglong);
 	};
 
 	enum MessageFlag
