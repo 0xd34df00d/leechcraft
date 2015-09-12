@@ -164,7 +164,7 @@ namespace Azoth
 		}
 	};
 
-	ChatTab::ChatTab (const QString& entryId, AvatarsManager *am, QWidget *parent)
+	ChatTab::ChatTab (const QString& entryId, AvatarsManager *am, QNetworkAccessManager *nam, QWidget *parent)
 	: QWidget (parent)
 	, AvatarsManager_ (am)
 	, TabToolbar_ (new QToolBar (tr ("Azoth chat window"), this))
@@ -176,6 +176,7 @@ namespace Azoth
 	, TypeTimer_ (new QTimer (this))
 	{
 		Ui_.setupUi (this);
+		Ui_.View_->page ()->setNetworkAccessManager (nam);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
 		MUCEventLog_->installEventFilter (this);

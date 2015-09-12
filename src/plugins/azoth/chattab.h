@@ -43,6 +43,7 @@
 #include "ui_chattab.h"
 
 class QTextBrowser;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -132,7 +133,7 @@ namespace Azoth
 		static const TabClassInfo& GetChatTabClassInfo ();
 		static const TabClassInfo& GetMUCTabClassInfo ();
 
-		ChatTab (const QString&, AvatarsManager*, QWidget* = 0);
+		ChatTab (const QString&, AvatarsManager*, QNetworkAccessManager*, QWidget* = nullptr);
 		~ChatTab ();
 
 		/** Prepare (or update after it has been changed) the theme.
