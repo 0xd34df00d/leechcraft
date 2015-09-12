@@ -92,6 +92,8 @@ namespace Xoox
 	, Commands_ (new QAction (tr ("Commands..."), this))
 	, DetectNick_ (new QAction (tr ("Detect nick"), this))
 	, StdSep_ (Util::CreateSeparator (this))
+	, VCardPhotoHash_ (parent->GetParentProtocol ()->GetVCardStorage ()->
+				GetVCardPhotoHash (humanReadableId).get_value_or ({}))
 	{
 		connect (this,
 				SIGNAL (locationChanged (const QString&, QObject*)),
