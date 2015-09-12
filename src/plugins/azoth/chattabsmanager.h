@@ -78,7 +78,7 @@ namespace Azoth
 		ChatTab* GetActiveChatTab () const;
 		ChatTab* GetChatTab (const QString& entryId) const;
 
-		void UpdateEntryMapping (const QString&, QObject*);
+		void UpdateEntryMapping (const QString&);
 
 		void HandleEntryAdded (ICLEntry*);
 		void HandleEntryRemoved (ICLEntry*);

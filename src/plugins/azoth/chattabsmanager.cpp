@@ -182,7 +182,7 @@ namespace Azoth
 		return Entry2Tab_ [entryId];
 	}
 
-	void ChatTabsManager::UpdateEntryMapping (const QString& id, QObject *obj)
+	void ChatTabsManager::UpdateEntryMapping (const QString& id)
 	{
 		if (!Entry2Tab_.contains (id))
 			return;
