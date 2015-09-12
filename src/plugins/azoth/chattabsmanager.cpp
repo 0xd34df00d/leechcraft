@@ -32,6 +32,7 @@
 #include "interfaces/azoth/iclentry.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
+#include "chattabnetworkaccessmanager.h"
 
 namespace LeechCraft
 {
@@ -40,6 +41,7 @@ namespace Azoth
 	ChatTabsManager::ChatTabsManager (AvatarsManager *am, QObject *parent)
 	: QObject { parent }
 	, AvatarsManager_ { am }
+	, NAM_ { new ChatTabNetworkAccessManager { am, this } }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("CustomMUCStyle",
 				this, "chatWindowStyleChanged");

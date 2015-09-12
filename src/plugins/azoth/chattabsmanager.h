@@ -42,12 +42,14 @@ namespace Azoth
 {
 	class ICLEntry;
 	class AvatarsManager;
+	class ChatTabNetworkAccessManager;
 
 	class ChatTabsManager : public QObject
 	{
 		Q_OBJECT
 
 		AvatarsManager * const AvatarsManager_;
+		ChatTabNetworkAccessManager * const NAM_;
 
 		QSet<QString> StyleParams_;
 		QHash<QString, ChatTab_ptr> Entry2Tab_;
