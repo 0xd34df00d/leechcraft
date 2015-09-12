@@ -57,8 +57,6 @@ namespace AdiumStyles
 	, StylesLoader_ (new Util::ResourceLoader ("azoth/styles/adium/", this))
 	, Proxy_ (proxy)
 	, PackProxyModel_ (new PackProxyModel (StylesLoader_, this))
-	, AvatarsCache_ (10 * 1024 * 1024)
-	, OurAvatarsCache_ (1024 * 1024)
 	{
 		StylesLoader_->AddGlobalPrefix ();
 		StylesLoader_->AddLocalPrefix ();
