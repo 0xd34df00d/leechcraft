@@ -35,6 +35,13 @@ namespace Azoth
 {
 namespace Murm
 {
+	bool operator== (const AppInfo& left, const AppInfo& right)
+	{
+		return left.AppId_ == right.AppId_ &&
+				left.IsMobile_ == right.IsMobile_ &&
+				left.Title_ == right.Title_ &&
+				left.Icon25_ == right.Icon25_;
+	}
 }
 }
 }
