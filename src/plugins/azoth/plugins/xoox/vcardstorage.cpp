@@ -101,6 +101,22 @@ namespace Xoox
 		return vcard;
 	}
 
+	void VCardStorage::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
+	{
+		PendingHashes_ [jid] = hash;
+
+		Util::Sequence (this, Writer_->SetVCardPhotoHash (jid, hash)) >>
+				[this, jid] { PendingHashes_.remove (jid); };
+	}
+
+	boost::optional<QByteArray> VCardStorage::GetVCardPhotoHash (const QString& jid) const
+	{
+		if (PendingHashes_.contains (jid))
+			return PendingHashes_.value (jid);
+
+		return DB_->GetVCardPhotoHash (jid);
+	}
+
 	boost::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
 	{
 		if (PendingVCards_.contains (jid))

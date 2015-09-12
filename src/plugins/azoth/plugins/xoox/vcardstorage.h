@@ -50,6 +50,7 @@ namespace Xoox
 		const std::shared_ptr<VCardStorageOnDiskWriter> Writer_;
 
 		QMap<QString, QString> PendingVCards_;
+		QMap<QString, QByteArray> PendingHashes_;
 
 		mutable QCache<QString, QXmppVCardIq> VCardCache_;
 	public:
@@ -59,6 +60,9 @@ namespace Xoox
 		void SetVCard (const QString& jid, const QXmppVCardIq& vcard);
 
 		boost::optional<QXmppVCardIq> GetVCard (const QString& jid) const;
+
+		void SetVCardPhotoHash (const QString& jid, const QByteArray& hash);
+		boost::optional<QByteArray> GetVCardPhotoHash (const QString& jid) const;
 	private:
 		boost::optional<QString> GetVCardString (const QString& jid) const;
 	};
