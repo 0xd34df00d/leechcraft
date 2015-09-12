@@ -230,10 +230,6 @@ namespace Azoth
 				SLOT (handleJobDeoffered (QObject*)));
 		connect (ChatTabsManager_,
 				SIGNAL (entryMadeCurrent (QObject*)),
-				NotificationsManager_.get (),
-				SLOT (handleEntryMadeCurrent (QObject*)));
-		connect (ChatTabsManager_,
-				SIGNAL (entryMadeCurrent (QObject*)),
 				UnreadQueueManager_.get (),
 				SLOT (clearMessagesForEntry (QObject*)));
 
@@ -289,6 +285,11 @@ namespace Azoth
 				SIGNAL (messagesCleared (QObject*)),
 				NotificationsManager_.get (),
 				SLOT (handleClearUnreadMsgCount (QObject*)));
+
+		connect (ChatTabsManager_,
+				SIGNAL (entryMadeCurrent (QObject*)),
+				NotificationsManager_.get (),
+				SLOT (handleEntryMadeCurrent (QObject*)));
 
 		auto addSOM = [this] (const QByteArray& option)
 		{
