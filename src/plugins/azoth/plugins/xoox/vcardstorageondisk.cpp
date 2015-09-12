@@ -56,15 +56,36 @@ namespace Xoox
 			return str.left (str.size () - 1);
 		}
 	};
+
+	struct VCardStorageOnDisk::PhotoHashRecord
+	{
+		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
+		QByteArray Hash_;
+
+		static QString ClassName ()
+		{
+			return "PhotoHashes";
+		}
+
+		static QString FieldNameMorpher (const QString& str)
+		{
+			return str.left (str.size () - 1);
+		}
+	};
 }
 }
 }
 
 using VCardRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::VCardRecord;
+using PhotoHashRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::PhotoHashRecord;
 
 BOOST_FUSION_ADAPT_STRUCT (VCardRecord,
 		(decltype (VCardRecord::JID_), JID_)
 		(decltype (VCardRecord::VCardIq_), VCardIq_))
+
+BOOST_FUSION_ADAPT_STRUCT (PhotoHashRecord,
+		(decltype (PhotoHashRecord::JID_), JID_)
+		(decltype (PhotoHashRecord::Hash_), Hash_))
 
 namespace LeechCraft
 {

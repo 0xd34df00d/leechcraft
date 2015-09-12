@@ -44,9 +44,12 @@ namespace Xoox
 	{
 	public:
 		struct VCardRecord;
+		struct PhotoHashRecord;
 	private:
 		QSqlDatabase DB_;
+
 		Util::oral::ObjectInfo_ptr<VCardRecord> AdaptedVCards_;
+		Util::oral::ObjectInfo_ptr<PhotoHashRecord> AdaptedPhotoHashes_;
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
 
