@@ -650,7 +650,7 @@ namespace Murm
 
 				AddParams (url, params);
 
-				const auto& infos = Util::Map (ids, [] (qulonglong id) { return UserInfo { id }; });
+				const auto& infos = Util::Map (ids, &UserInfo::FromID);
 				auto reply = nam->get (QNetworkRequest (url));
 				Reply2ChatInfo_ [reply] = { 0, title, infos };
 				connect (reply,
