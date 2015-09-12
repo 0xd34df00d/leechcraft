@@ -100,6 +100,9 @@ namespace Azoth
 
 			Buffer_.open (QIODevice::ReadOnly);
 
+			setHeader (QNetworkRequest::ContentLengthHeader, Buffer_.bytesAvailable ());
+			emit downloadProgress (Buffer_.size (), Buffer_.size ());
+
 			emit readyRead ();
 		}
 	}
