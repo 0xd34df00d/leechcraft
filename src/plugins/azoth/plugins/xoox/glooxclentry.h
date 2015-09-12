@@ -68,8 +68,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAuthable)
-
-		const QString BareJID_;
 	private:
 		OfflineDataSource_ptr ODS_;
 
@@ -109,7 +107,6 @@ namespace Xoox
 		/** Entry ID for GlooxCLEntry is its jid.
 		 */
 		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;

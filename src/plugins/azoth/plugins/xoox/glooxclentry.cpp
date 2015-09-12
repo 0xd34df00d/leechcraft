@@ -129,15 +129,13 @@ namespace Xoox
 	}
 
 	GlooxCLEntry::GlooxCLEntry (const QString& jid, GlooxAccount *parent)
-	: EntryBase (parent)
-	, BareJID_ (jid)
+	: EntryBase (jid, parent)
 	{
 		Initialize ();
 	}
 
 	GlooxCLEntry::GlooxCLEntry (OfflineDataSource_ptr ods, GlooxAccount *parent)
-	: EntryBase (parent)
-	, BareJID_ (GetBareJID (ods->ID_, parent))
+	: EntryBase (GetBareJID (ods->ID_, parent), parent)
 	, ODS_ (ods)
 	{
 		Initialize ();
@@ -211,7 +209,7 @@ namespace Xoox
 	QXmppRosterIq::Item GlooxCLEntry::GetRI () const
 	{
 		return Account_->GetClientConnection ()->GetClient ()->
-				rosterManager ().getRosterEntry (BareJID_);
+				rosterManager ().getRosterEntry (HumanReadableId_);
 	}
 
 	IAccount* GlooxCLEntry::GetParentAccount () const
@@ -245,7 +243,7 @@ namespace Xoox
 
 		QString name = GetRI ().name ();
 		if (name.isEmpty ())
-			return BareJID_;
+			return HumanReadableId_;
 		return name;
 	}
 
@@ -266,12 +264,7 @@ namespace Xoox
 		if (ODS_)
 			return ODS_->ID_;
 
-		return Account_->GetAccountID () + '_' + BareJID_;
-	}
-
-	QString GlooxCLEntry::GetHumanReadableID() const
-	{
-		return BareJID_;
+		return Account_->GetAccountID () + '_' + HumanReadableId_;
 	}
 
 	QStringList GlooxCLEntry::Groups () const
@@ -302,7 +295,7 @@ namespace Xoox
 		if (!ODS_)
 		{
 			const auto& presences = Account_->GetClientConnection ()->GetClient ()->
-							rosterManager ().getAllPresencesForBareJid (BareJID_);
+							rosterManager ().getAllPresencesForBareJid (HumanReadableId_);
 			if (presences.size () == 1)
 				result << presences.begin ().key ();
 			else
@@ -471,7 +464,7 @@ namespace Xoox
 
 	QString GlooxCLEntry::GetJID () const
 	{
-		return BareJID_;
+		return HumanReadableId_;
 	}
 
 	void GlooxCLEntry::SetAuthRequested (bool auth)

@@ -105,6 +105,8 @@ namespace Xoox
 	protected:
 		GlooxAccount *Account_;
 
+		const QString HumanReadableId_;
+
 		QList<GlooxMessage*> AllMessages_;
 		QList<GlooxMessage*> UnreadMessages_;
 		QMap<QString, EntryStatus> CurrentStatus_;
@@ -140,7 +142,7 @@ namespace Xoox
 		bool HasUnreadMsgs_ = false;
 		bool HasBlindlyRequestedVCard_ = false;
 	public:
-		EntryBase (GlooxAccount* = 0);
+		EntryBase (const QString& humanReadableId, GlooxAccount* = nullptr);
 		virtual ~EntryBase ();
 
 		// ICLEntry
@@ -151,6 +153,7 @@ namespace Xoox
 		EntryStatus GetStatus (const QString&) const;
 		virtual QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
+		QString GetHumanReadableID () const final;
 		void ShowInfo ();
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
 		void MarkMsgsRead ();

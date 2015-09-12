@@ -53,7 +53,6 @@ namespace Xoox
 
 		QString Nick_;
 		RoomHandler *RoomHandler_;
-		const QString ID_;
 
 		QXmppMucItem::Affiliation Affiliation_;
 		QXmppMucItem::Role Role_;
@@ -67,7 +66,6 @@ namespace Xoox
 		QString GetEntryName () const;
 		void SetEntryName (const QString&);
 		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;

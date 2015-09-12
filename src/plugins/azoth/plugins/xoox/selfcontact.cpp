@@ -42,7 +42,7 @@ namespace Azoth
 namespace Xoox
 {
 	SelfContact::SelfContact (const QString& fullJid, GlooxAccount *acc)
-	: EntryBase (acc)
+	: EntryBase (acc->GetSettings ()->GetJID (), acc)
 	{
 		UpdateJID (fullJid);
 
@@ -81,11 +81,6 @@ namespace Xoox
 	QString SelfContact::GetEntryID () const
 	{
 		return Account_->GetAccountID () + '_' + ".self";
-	}
-
-	QString SelfContact::GetHumanReadableID () const
-	{
-		return Account_->GetSettings ()->GetJID ();
 	}
 
 	QStringList SelfContact::Groups () const

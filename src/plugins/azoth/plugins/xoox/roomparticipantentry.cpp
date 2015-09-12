@@ -47,10 +47,9 @@ namespace Xoox
 {
 	RoomParticipantEntry::RoomParticipantEntry (const QString& nick,
 			RoomHandler *rh, GlooxAccount *account)
-	: EntryBase (account)
+	: EntryBase (rh->GetRoomJID () + "/" + nick, account)
 	, Nick_ (nick)
 	, RoomHandler_ (rh)
-	, ID_ (rh->GetRoomJID () + "/" + nick)
 	, Affiliation_ (QXmppMucItem::UnspecifiedAffiliation)
 	, Role_ (QXmppMucItem::UnspecifiedRole)
 	{
@@ -89,12 +88,7 @@ namespace Xoox
 
 	QString RoomParticipantEntry::GetEntryID () const
 	{
-		return Account_->GetAccountID () + '_' + ID_;
-	}
-
-	QString RoomParticipantEntry::GetHumanReadableID () const
-	{
-		return ID_;
+		return Account_->GetAccountID () + '_' + HumanReadableId_;
 	}
 
 	QStringList RoomParticipantEntry::Groups () const

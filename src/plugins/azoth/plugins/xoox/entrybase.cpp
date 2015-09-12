@@ -85,9 +85,10 @@ namespace Azoth
 {
 namespace Xoox
 {
-	EntryBase::EntryBase (GlooxAccount *parent)
+	EntryBase::EntryBase (const QString& humanReadableId, GlooxAccount *parent)
 	: QObject (parent)
 	, Account_ (parent)
+	, HumanReadableId_ (humanReadableId)
 	, Commands_ (new QAction (tr ("Commands..."), this))
 	, DetectNick_ (new QAction (tr ("Detect nick"), this))
 	, StdSep_ (Util::CreateSeparator (this))
@@ -213,6 +214,11 @@ namespace Xoox
 	QImage EntryBase::GetAvatar () const
 	{
 		return Avatar_;
+	}
+
+	QString EntryBase::GetHumanReadableID () const
+	{
+		return HumanReadableId_;
 	}
 
 	void EntryBase::ShowInfo ()

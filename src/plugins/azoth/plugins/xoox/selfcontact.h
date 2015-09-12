@@ -54,7 +54,6 @@ namespace Xoox
 		QString GetEntryName () const;
 		void SetEntryName (const QString&);
 		QString GetEntryID () const;
-		QString GetHumanReadableID () const;
 		QStringList Groups () const;
 		void SetGroups (const QStringList&);
 		QStringList Variants () const;
