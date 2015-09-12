@@ -114,6 +114,7 @@ namespace Xoox
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		AdaptedVCards_ = Util::oral::AdaptPtr<VCardRecord> (DB_);
+		AdaptedPhotoHashes_ = Util::oral::AdaptPtr<PhotoHashRecord> (DB_);
 	}
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
@@ -128,6 +129,20 @@ namespace Xoox
 			return {};
 
 		return result.front ().VCardIq_;
+	}
+
+	void VCardStorageOnDisk::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
+	{
+		AdaptedPhotoHashes_->DoInsert_ ({ jid, hash }, Util::oral::InsertAction::Replace);
+	}
+
+	boost::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
+	{
+		const auto& result = AdaptedPhotoHashes_->DoSelectByFields_ (sph::_0 == jid);
+		if (result.isEmpty ())
+			return {};
+
+		return result.front ().Hash_;
 	}
 }
 }
