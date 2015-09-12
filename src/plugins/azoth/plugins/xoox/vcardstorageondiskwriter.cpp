@@ -41,6 +41,12 @@ namespace Xoox
 		return ScheduleImpl ([=] { Storage_->SetVCard (jid, vcard); });
 	}
 
+	QFuture<void> VCardStorageOnDiskWriter::SetVCardPhotoHash (const QString& jid,
+			const QByteArray& hash)
+	{
+		return ScheduleImpl ([=] { Storage_->SetVCardPhotoHash (jid, hash); });
+	}
+
 	void VCardStorageOnDiskWriter::Initialize ()
 	{
 		Storage_.reset (new VCardStorageOnDisk);

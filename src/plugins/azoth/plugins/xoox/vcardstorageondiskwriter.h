@@ -48,6 +48,7 @@ namespace Xoox
 		using Util::WorkerThreadBase::WorkerThreadBase;
 
 		QFuture<void> SetVCard (const QString&, const QString&);
+		QFuture<void> SetVCardPhotoHash (const QString&, const QByteArray&);
 	protected:
 		void Initialize () override;
 		void Cleanup () override;
