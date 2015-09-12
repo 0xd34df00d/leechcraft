@@ -61,6 +61,12 @@ namespace Azoth
 		{
 			open (QIODevice::ReadOnly);
 
+			setHeader (QNetworkRequest::ContentTypeHeader, QByteArray { "image/png" });
+			setAttribute (QNetworkRequest::HttpStatusCodeAttribute, 200);
+			setAttribute (QNetworkRequest::HttpReasonPhraseAttribute, QByteArray { "OK" });
+
+			Util::ExecuteLater ([this] { emit metaDataChanged (); });
+
 			const auto& entryIdPath = req.url ().path ().section ('/', 1, 1);
 			const auto& entryId = QString::fromUtf8 (QByteArray::fromBase64 (entryIdPath.toLatin1 ()));
 
