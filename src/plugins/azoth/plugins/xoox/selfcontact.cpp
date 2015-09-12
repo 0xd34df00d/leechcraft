@@ -43,7 +43,6 @@ namespace Xoox
 {
 	SelfContact::SelfContact (const QString& fullJid, GlooxAccount *acc)
 	: EntryBase (acc)
-	, FullJID_ (fullJid)
 	{
 		UpdateJID (fullJid);
 

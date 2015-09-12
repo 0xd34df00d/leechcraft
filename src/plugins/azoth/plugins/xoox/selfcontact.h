@@ -41,7 +41,6 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		QString FullJID_;
 		QString BareJID_;
 		QString Resource_;
 
