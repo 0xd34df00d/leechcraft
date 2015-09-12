@@ -49,7 +49,7 @@ namespace Xoox
 		VCardStorageOnDisk * const DB_;
 		const std::shared_ptr<VCardStorageOnDiskWriter> Writer_;
 
-		QMap<QString, QString> Pending_;
+		QMap<QString, QString> PendingVCards_;
 
 		mutable QCache<QString, QXmppVCardIq> VCardCache_;
 	public:

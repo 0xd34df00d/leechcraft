@@ -60,11 +60,11 @@ namespace Xoox
 
 	void VCardStorage::SetVCard (const QString& jid, const QString& vcard)
 	{
-		Pending_ [jid] = vcard;
+		PendingVCards_ [jid] = vcard;
 
 		Util::Sequence (this,
 					[this, jid, vcard] { return Writer_->SetVCard (jid, vcard); })
-				.Then ([this, jid] { Pending_.remove (jid); });
+				.Then ([this, jid] { PendingVCards_.remove (jid); });
 	}
 
 	void VCardStorage::SetVCard (const QString& jid, const QXmppVCardIq& vcard)
@@ -104,8 +104,8 @@ namespace Xoox
 
 	boost::optional<QString> VCardStorage::GetVCardString (const QString& jid) const
 	{
-		if (Pending_.contains (jid))
-			return Pending_.value (jid);
+		if (PendingVCards_.contains (jid))
+			return PendingVCards_.value (jid);
 
 		return DB_->GetVCard (jid);
 	}
