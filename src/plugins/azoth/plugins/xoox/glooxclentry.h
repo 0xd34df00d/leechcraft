@@ -69,7 +69,7 @@ namespace Xoox
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAuthable)
 
-		QString BareJID_;
+		const QString BareJID_;
 	private:
 		OfflineDataSource_ptr ODS_;
 
