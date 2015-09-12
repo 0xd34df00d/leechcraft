@@ -42,6 +42,8 @@ namespace Azoth
 		AvatarsManager * const AvatarsMgr_;
 	public:
 		ChatTabNetworkAccessManager (AvatarsManager*, QObject* = nullptr);
+	protected:
+		QNetworkReply* createRequest (Operation, const QNetworkRequest&, QIODevice*) override;
 	};
 }
 }

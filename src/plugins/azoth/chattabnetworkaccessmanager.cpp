@@ -109,5 +109,15 @@ namespace Azoth
 	, AvatarsMgr_ { am }
 	{
 	}
+
+	QNetworkReply* ChatTabNetworkAccessManager::createRequest (Operation op,
+			const QNetworkRequest& request, QIODevice *outgoingData)
+	{
+		const auto& url = request.url ();
+		if (url.scheme () == "azoth" && url.host () == "avatar")
+			return new AvatarReply { request, AvatarsMgr_ };
+
+		return QNetworkAccessManager::createRequest (op, request, outgoingData);
+	}
 }
 }
