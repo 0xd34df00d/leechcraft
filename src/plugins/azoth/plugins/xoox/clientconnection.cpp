@@ -1074,6 +1074,9 @@ namespace Xoox
 		for (const auto& f : VCardFetchCallbacks_.take (jid))
 			f (vcard);
 
+		for (const auto& f : VCardFetchCallbacks_.take (vcard.from ()))
+			f (vcard);
+
 		if (JID2CLEntry_.contains (jid))
 			JID2CLEntry_ [jid]->SetVCard (vcard);
 		else if (RoomHandlers_.contains (jid))
