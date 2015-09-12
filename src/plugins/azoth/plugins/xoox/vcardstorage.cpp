@@ -62,9 +62,8 @@ namespace Xoox
 	{
 		PendingVCards_ [jid] = vcard;
 
-		Util::Sequence (this,
-					[this, jid, vcard] { return Writer_->SetVCard (jid, vcard); })
-				.Then ([this, jid] { PendingVCards_.remove (jid); });
+		Util::Sequence (this, Writer_->SetVCard (jid, vcard)) >>
+				[this, jid] { PendingVCards_.remove (jid); };
 	}
 
 	void VCardStorage::SetVCard (const QString& jid, const QXmppVCardIq& vcard)
