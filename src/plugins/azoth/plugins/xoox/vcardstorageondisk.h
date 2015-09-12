@@ -43,10 +43,10 @@ namespace Xoox
 	class VCardStorageOnDisk : public QObject
 	{
 	public:
-		struct Record;
+		struct VCardRecord;
 	private:
 		QSqlDatabase DB_;
-		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
+		Util::oral::ObjectInfo_ptr<VCardRecord> AdaptedVCards_;
 	public:
 		VCardStorageOnDisk (QObject* = nullptr);
 

@@ -41,7 +41,7 @@ namespace Azoth
 {
 namespace Xoox
 {
-	struct VCardStorageOnDisk::Record
+	struct VCardStorageOnDisk::VCardRecord
 	{
 		Util::oral::PKey<QString, Util::oral::NoAutogen> JID_;
 		QString VCardIq_;
@@ -60,7 +60,7 @@ namespace Xoox
 }
 }
 
-using VCardRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::Record;
+using VCardRecord = LeechCraft::Azoth::Xoox::VCardStorageOnDisk::VCardRecord;
 
 BOOST_FUSION_ADAPT_STRUCT (VCardRecord,
 		(decltype (VCardRecord::JID_), JID_)
@@ -92,17 +92,17 @@ namespace Xoox
 		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
-		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
+		AdaptedVCards_ = Util::oral::AdaptPtr<VCardRecord> (DB_);
 	}
 
 	void VCardStorageOnDisk::SetVCard (const QString& jid, const QString& vcard)
 	{
-		AdaptedRecord_->DoInsert_ ({ jid, vcard }, Util::oral::InsertAction::Replace);
+		AdaptedVCards_->DoInsert_ ({ jid, vcard }, Util::oral::InsertAction::Replace);
 	}
 
 	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
 	{
-		const auto& result = AdaptedRecord_->DoSelectByFields_ (sph::_0 == jid);
+		const auto& result = AdaptedVCards_->DoSelectByFields_ (sph::_0 == jid);
 		if (result.isEmpty ())
 			return {};
 
