@@ -125,6 +125,12 @@ namespace AdiumStyles
 			}
 		}
 
+		void ReplaceIcon (QString& result, const QString& pattern, const QString& entryId)
+		{
+			if (result.contains (pattern))
+				result.replace (pattern, "azoth://avatar/" + entryId.toUtf8 ().toBase64 ());
+		}
+
 		void ParseGlobalTemplate (QString& result, ICLEntry *entry, IProxyObject *proxyObject)
 		{
 			auto acc = entry->GetParentAccount ();
@@ -139,19 +145,8 @@ namespace AdiumStyles
 			result.replace ("%destinationName%", entry->GetHumanReadableID ());
 			result.replace ("%destinationDisplayName%", entry->GetEntryName ());
 
-			const QImage& defAvatar = proxyObject->GetDefaultAvatar ();
-
-			auto safeIconReplace = [&result] (const QString& pattern,
-					QImage px, const QImage& def)
-			{
-				if (result.contains (pattern))
-					result.replace (pattern, Util::GetAsBase64Src (px.isNull () ? def : px));
-			};
-
-			safeIconReplace ("%incomingIconPath%",
-					entry->GetAvatar (), defAvatar);
-			safeIconReplace ("%outgoingIconPath%",
-					selfEntry ? selfEntry->GetAvatar () : defAvatar, defAvatar);
+			ReplaceIcon (result, "%incomingIconPath%", entry->GetEntryID ());
+			ReplaceIcon (result, "%outgoingIconPath%", selfEntry ? selfEntry->GetEntryID () : "");
 
 			const auto& now = QDateTime::currentDateTime ();
 			result.replace ("%timeOpened%",
@@ -249,13 +244,13 @@ namespace AdiumStyles
 			return result;
 		}
 
-		ParseGlobalTemplate (result, entry, Proxy_);
-		FixSelfClosing (result);
-
 		auto colors = StylesLoader_->Load (insensitive ("Incoming/SenderColors.txt"));
 		if (colors && colors->open (QIODevice::ReadOnly))
-			Q_FOREACH (const auto& colorName, QString::fromUtf8 (colors->readAll ()).split (":"))
+			for (const auto& colorName : QString::fromUtf8 (colors->readAll ()).split (":"))
 				Coloring2Colors_ ["hash"] << QColor (colorName);
+
+		ParseGlobalTemplate (result, entry, Proxy_);
+		FixSelfClosing (result);
 
 		return result;
 	}
@@ -485,6 +480,35 @@ namespace AdiumStyles
 		}
 	}
 
+	void AdiumStyleSource::SubstituteUserIcon (QString& templ,
+			const QString& base, bool in, ICLEntry *other, IAccount *acc)
+	{
+		const auto iha = qobject_cast<IHaveAvatars*> (other->GetQObject ());
+		if (in && iha && iha->HasAvatar ())
+		{
+			ReplaceIcon (templ, "%userIconPath", other->GetEntryID ());
+			return;
+		}
+
+		QImage image;
+		if (!in && acc)
+		{
+			if (const auto self = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ()))
+				image = self->GetSelfAvatar ();
+		}
+
+		if (image.isNull ())
+			image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
+		if (image.isNull ())
+			image = Proxy_->GetDefaultAvatar ();
+		if (image.isNull ())
+			qWarning () << Q_FUNC_INFO
+					<< "image is still null, though tried"
+					<< base + "buddy_icon.png";
+
+		templ.replace ("%userIconPath%", Util::GetAsBase64Src (image));
+	}
+
 	QString AdiumStyleSource::ParseMsgTemplate (QString templ, const QString& base,
 			QWebFrame*, QObject *msgObj, const ChatMsgAppendInfo& info)
 	{
@@ -560,41 +584,7 @@ namespace AdiumStyles
 
 		// %userIconPath%
 		if (templ.contains ("%userIconPath%"))
-		{
-			QString base64;
-			if (in && AvatarsCache_.contains (other->GetEntryID ()))
-				base64 = *AvatarsCache_ [other->GetEntryID ()];
-			else if (!in && OurAvatarsCache_.contains (acc))
-				base64 = *OurAvatarsCache_ [acc];
-			else
-			{
-				QImage image;
-				if (in)
-					image = other->GetAvatar ();
-				else if (acc)
-				{
-					IExtSelfInfoAccount *self = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
-					if (self)
-						image = self->GetSelfAvatar ();
-				}
-
-				if (image.isNull ())
-					image = QImage (StylesLoader_->GetPath (QStringList (base + "buddy_icon.png")));
-				if (image.isNull ())
-					image = Proxy_->GetDefaultAvatar ();
-				if (image.isNull ())
-					qWarning () << Q_FUNC_INFO
-							<< "image is still null, though tried"
-							<< base + "buddy_icon.png";
-
-				base64 = Util::GetAsBase64Src (image);
-				if (in)
-					AvatarsCache_.insert (other->GetEntryID (), new QString (base64), base64.size ());
-				else if (acc && !image.isNull ())
-					OurAvatarsCache_.insert (acc, new QString (base64), base64.size ());
-			}
-			templ.replace ("%userIconPath%", base64);
-		}
+			SubstituteUserIcon (templ, base, in, other, acc);
 
 		// %senderScreenName%
 		templ.replace ("%senderScreenName%",
