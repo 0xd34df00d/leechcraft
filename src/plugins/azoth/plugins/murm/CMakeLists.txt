@@ -38,6 +38,7 @@ set (MURM_SRCS
 	pendingupload.cpp
 	util.cpp
 	appinfomanager.cpp
+	structures.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
