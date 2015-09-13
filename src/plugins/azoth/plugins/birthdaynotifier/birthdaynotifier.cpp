@@ -35,6 +35,7 @@
 #include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/an/constants.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iaccount.h>
@@ -133,11 +134,13 @@ namespace BirthdayNotifier
 		e.Additional_ ["org.LC.AdvNotifications.Count"] = 1;
 
 		const auto avatarsMgr = AzothProxy_->GetAvatarsManager ();
+
+		const auto iem = Proxy_->GetEntityManager ();
 		Util::Sequence (this, avatarsMgr->GetAvatar (entry->GetQObject (), IHaveAvatars::Size::Thumbnail)) >>
-				[this, e] (const QImage& image) mutable
+				[iem, e] (const QImage& image) mutable
 				{
 					e.Additional_ ["NotificationPixmap"] = QPixmap::fromImage (image);
-					emit gotEntity (e);
+					iem->HandleEntity (e);
 				};
 	}
 

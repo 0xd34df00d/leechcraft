@@ -80,8 +80,6 @@ namespace BirthdayNotifier
 	private slots:
 		void checkDates ();
 		void notifyNTimesPerDaySettingsChanged ();
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
