@@ -48,23 +48,23 @@ namespace Xoox
 	public:
 		SelfContact (const QString&, GlooxAccount*);
 
-		IAccount* GetParentAccount () const;
-		Features GetEntryFeatures () const;
-		EntryType GetEntryType () const;
-		QString GetEntryName () const;
-		void SetEntryName (const QString&);
-		QString GetEntryID () const;
-		QStringList Groups () const;
-		void SetGroups (const QStringList&);
-		QStringList Variants () const;
-		EntryStatus GetStatus (const QString&) const;
+		IAccount* GetParentAccount () const override;
+		Features GetEntryFeatures () const override;
+		EntryType GetEntryType () const override;
+		QString GetEntryName () const override;
+		void SetEntryName (const QString&) override;
+		QString GetEntryID () const override;
+		QStringList Groups () const override;
+		void SetGroups (const QStringList&) override;
+		QStringList Variants () const override;
+		EntryStatus GetStatus (const QString&) const override;
 		IMessage* CreateMessage (IMessage::Type,
-				const QString&, const QString&);
-		QList<QAction*> GetActions () const;
+				const QString&, const QString&) override;
+		QList<QAction*> GetActions () const override;
 
 		void UpdatePriority (const QString&, int);
 		void RemoveVariant (const QString&, bool);
-		QString GetJID () const;
+		QString GetJID () const override;
 		void UpdateJID (const QString&);
 	private slots:
 		void handleSelfVCardUpdated ();
