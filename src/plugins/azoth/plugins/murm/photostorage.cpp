@@ -50,22 +50,12 @@ namespace Murm
 	: QObject (parent)
 	, NAM_ (nam)
 	, FetchQueue_ (new Util::QueueManager (100, this))
-	, StorageDir_ (Util::CreateIfNotExists ("azoth/murm/photo/" + subpath))
 	{
 	}
 
 	namespace
 	{
-		QString Url2Filename (const QUrl& url)
-		{
-			auto result = url.toString ();
-			result.replace ('/', '_');
-			result.replace (':', '_');
-			return result;
-		}
-
-		void HandleReplyFinished (QNetworkReply *reply,
-				const QString& filename, QFutureInterface<QImage> iface)
+		void HandleReplyFinished (QNetworkReply *reply, QFutureInterface<QImage> iface)
 		{
 			const auto& data = reply->readAll ();
 
@@ -73,19 +63,6 @@ namespace Murm
 
 			const auto& image = QImage::fromData (data);
 			iface.reportFinished (&image);
-
-			QFile file { filename };
-			if (!file.open (QIODevice::WriteOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error opening file for"
-						<< reply->request ().url ()
-						<< filename
-						<< file.errorString ();
-				return;
-			}
-
-			file.write (data);
 		}
 	}
 
@@ -93,17 +70,6 @@ namespace Murm
 	{
 		QFutureInterface<QImage> iface;
 		iface.reportStarted ();
-
-		const auto& filename = Url2Filename (url);
-		if (StorageDir_.exists (filename))
-		{
-			QImage image { StorageDir_.absoluteFilePath (filename) };
-			if (!image.isNull ())
-			{
-				iface.reportFinished (&image);
-				return iface.future ();
-			}
-		}
 
 		if (Pending_.contains (url))
 			return Pending_.value (url);
@@ -118,9 +84,7 @@ namespace Murm
 						[=]
 						{
 							Pending_.remove (url);
-							HandleReplyFinished (reply,
-									StorageDir_.absoluteFilePath (filename),
-									iface);
+							HandleReplyFinished (reply, iface);
 						},
 						reply,
 						SIGNAL (finished ()),

@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include <QDir>
 #include <QHash>
 #include <QFuture>
 
@@ -54,7 +53,6 @@ namespace Murm
 	{
 		QNetworkAccessManager * const NAM_;
 		Util::QueueManager * const FetchQueue_;
-		QDir StorageDir_;
 
 		QHash<QUrl, QFuture<QImage>> Pending_;
 	public:
