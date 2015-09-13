@@ -41,7 +41,6 @@
 #include "mrimmessage.h"
 #include "core.h"
 #include "groupmanager.h"
-#include "selfavatarfetcher.h"
 #include "vaderutil.h"
 #include "xmlsettingsmanager.h"
 
@@ -57,7 +56,6 @@ namespace Vader
 	, Name_ (name)
 	, Conn_ (new Proto::Connection (this))
 	, GM_ (new GroupManager (this))
-	, AvatarFetcher_ (new SelfAvatarFetcher (this))
 	{
 		connect (Conn_,
 				SIGNAL (authenticationError (QString)),
@@ -144,11 +142,6 @@ namespace Vader
 				.GetCoreProxy ()->GetVersion ();
 		Conn_->SetUA (ua);
 
-		connect (AvatarFetcher_,
-				SIGNAL (gotImage (QImage)),
-				this,
-				SLOT (updateSelfAvatar (QImage)));
-
 		XmlSettingsManager::Instance ().RegisterObject ("ShowSupportContact",
 				this, "handleShowTechSupport");
 	}
@@ -156,8 +149,6 @@ namespace Vader
 	void MRIMAccount::FillConfig (MRIMAccountConfigWidget *w)
 	{
 		Login_ = w->GetLogin ();
-
-		AvatarFetcher_->Restart (Login_);
 
 		const QString& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
@@ -400,8 +391,6 @@ namespace Vader
 		MRIMAccount *result = new MRIMAccount (name, proto);
 		str >> result->Login_;
 
-		result->AvatarFetcher_->Restart (result->Login_);
-
 		return result;
 	}
 
@@ -423,11 +412,6 @@ namespace Vader
 			emit gotCLItems (QList<QObject*> () << buddy);
 
 		return buddy;
-	}
-
-	void MRIMAccount::updateSelfAvatar (const QImage& avatar)
-	{
-		SelfAvatar_ = avatar;
 	}
 
 	void MRIMAccount::handleAuthError (const QString& errorString)

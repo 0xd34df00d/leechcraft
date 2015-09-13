@@ -53,7 +53,6 @@ namespace Vader
 	class MRIMAccountConfigWidget;
 	class MRIMBuddy;
 	class GroupManager;
-	class SelfAvatarFetcher;
 
 	class MRIMAccount : public QObject
 					  , public IAccount
@@ -71,15 +70,12 @@ namespace Vader
 
 		Proto::Connection *Conn_;
 		GroupManager *GM_;
-		SelfAvatarFetcher *AvatarFetcher_;
 
 		EntryStatus Status_;
 		QHash<QString, MRIMBuddy*> Buddies_;
 		QHash<quint32, Proto::ContactInfo> PendingAdditions_;
 
 		QList<QAction*> Actions_;
-
-		QImage SelfAvatar_;
 	public:
 		MRIMAccount (const QString&, MRIMProtocol*);
 
@@ -120,8 +116,6 @@ namespace Vader
 	private:
 		MRIMBuddy* GetBuddy (const Proto::ContactInfo&);
 	private slots:
-		void updateSelfAvatar (const QImage&);
-
 		void handleAuthError (const QString&);
 
 		void handleGotContacts (const QList<Proto::ContactInfo>&);
