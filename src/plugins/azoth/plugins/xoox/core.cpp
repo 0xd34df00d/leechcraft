@@ -36,7 +36,6 @@
 #include <QXmppLogger.h>
 #include <util/sys/paths.h>
 #include <interfaces/azoth/iaccount.h>
-#include "avatarsstorage.h"
 
 namespace LeechCraft
 {
@@ -45,7 +44,6 @@ namespace Azoth
 namespace Xoox
 {
 	Core::Core ()
-	: Avatars_ (new AvatarsStorage (this))
 	{
 	}
 
@@ -67,11 +65,6 @@ namespace Xoox
 	ICoreProxy_ptr Core::GetProxy () const
 	{
 		return Proxy_;
-	}
-
-	AvatarsStorage* Core::GetAvatarsStorage () const
-	{
-		return Avatars_;
 	}
 
 	void Core::SendEntity (const Entity& e)

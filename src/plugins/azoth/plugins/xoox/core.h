@@ -43,15 +43,12 @@ namespace Xoox
 {
 	class GlooxProtocol;
 	class GlooxCLEntry;
-	class AvatarsStorage;
 
 	class Core : public QObject
 	{
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-
-		AvatarsStorage *Avatars_;
 
 		Core ();
 	public:
@@ -61,8 +58,6 @@ namespace Xoox
 
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
-
-		AvatarsStorage* GetAvatarsStorage () const;
 
 		void SendEntity (const Entity&);
 	signals:
