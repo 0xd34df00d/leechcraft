@@ -202,8 +202,8 @@ namespace Vader
 	QList<QObject*> MRIMAccount::GetCLEntries ()
 	{
 		QList<QObject*> result;
-		Q_FOREACH (auto b, Buddies_.values ())
-			result << b;
+		result.reserve (Buddies_.size ());
+		std::copy (Buddies_.begin (), Buddies_.end (), std::back_inserter (result));
 		return result;
 	}
 
