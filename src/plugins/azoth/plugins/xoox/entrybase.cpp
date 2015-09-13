@@ -108,37 +108,6 @@ namespace Xoox
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleDetectNick ()));
-
-		QPointer<EntryBase> guard { this };
-		new Util::DelayedExecutor
-		{
-			[guard, this]
-			{
-				if (!guard)
-					return;
-
-				const auto id = GetEntryID ().toUtf8 ().toHex ();
-				Util::ExecuteFuture ([id]
-						{
-							return QtConcurrent::run ([id]
-									{
-										return Core::Instance ().GetAvatarsStorage ()->GetAvatar (id);
-									});
-						},
-						[this, guard] (const QImage& newAvatar)
-						{
-							if (!guard)
-								return;
-
-							if (newAvatar.isNull ())
-								return;
-
-							Avatar_ = std::move (newAvatar);
-							emit avatarChanged (Avatar_);
-						},
-						this);
-			}
-		};
 	}
 
 	EntryBase::~EntryBase ()
@@ -215,7 +184,7 @@ namespace Xoox
 
 	QImage EntryBase::GetAvatar () const
 	{
-		return Avatar_;
+		return {};
 	}
 
 	QString EntryBase::GetHumanReadableID () const
@@ -462,6 +431,49 @@ namespace Xoox
 
 	void EntryBase::RequestLastPosts (int)
 	{
+	}
+
+	namespace
+	{
+		QByteArray GetVCardPhotoHash (const QXmppVCardIq& vcard)
+		{
+			const auto& photo = vcard.photo ();
+			return photo.isEmpty () ?
+					QByteArray {} :
+					QCryptographicHash::hash (photo, QCryptographicHash::Sha1);
+		}
+	}
+
+	QFuture<QImage> EntryBase::RefreshAvatar (Size)
+	{
+		const auto maybeVCard = Account_->GetParentProtocol ()->
+				GetVCardStorage ()->GetVCard (GetHumanReadableID ());
+		if (maybeVCard && VCardPhotoHash_ == GetVCardPhotoHash (*maybeVCard))
+			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
+
+		QFutureInterface<QImage> iface;
+		iface.reportStarted ();
+		Account_->GetClientConnection ()->FetchVCard (GetJID (),
+				[iface] (const QXmppVCardIq& iq) mutable
+				{
+					const auto& photo = iq.photo ();
+					const auto image = photo.isEmpty () ?
+							QImage {} :
+							QImage::fromData (photo);
+					iface.reportFinished (&image);
+				});
+
+		return iface.future ();
+	}
+
+	bool EntryBase::HasAvatar () const
+	{
+		return !VCardPhotoHash_.isEmpty ();
+	}
+
+	bool EntryBase::SupportsSize (Size size) const
+	{
+		return size == Size::Full;
 	}
 
 	Media::AudioInfo EntryBase::GetUserTune (const QString& variant) const
@@ -718,24 +730,6 @@ namespace Xoox
 		HandleMessage (message);
 	}
 
-	void EntryBase::SetAvatar (const QByteArray& data)
-	{
-		if (data.isEmpty ())
-			SetAvatar (QImage ());
-		else
-			SetAvatar (QImage::fromData (data));
-	}
-
-	void EntryBase::SetAvatar (const QImage& avatar)
-	{
-		Avatar_ = avatar;
-
-		const auto id = GetEntryID ().toUtf8 ().toHex ();
-		Core::Instance ().GetAvatarsStorage ()->StoreAvatar (Avatar_, id);
-
-		emit avatarChanged (Avatar_);
-	}
-
 	QXmppVCardIq EntryBase::GetVCard () const
 	{
 		const auto storage = Account_->GetParentProtocol ()->GetVCardStorage ();
@@ -744,21 +738,20 @@ namespace Xoox
 
 	void EntryBase::SetVCard (const QXmppVCardIq& vcard)
 	{
-		const auto& photo = vcard.photo ();
-		VCardPhotoHash_ = photo.isEmpty () ?
-				QByteArray () :
-				QCryptographicHash::hash (photo, QCryptographicHash::Sha1);
-
-		if (!photo.isEmpty ())
-			SetAvatar (photo);
-
 		if (VCardDialog_)
 			VCardDialog_->UpdateInfo (vcard);
 
-		Account_->GetParentProtocol ()->GetVCardStorage ()->
-				SetVCard (GetHumanReadableID (), vcard);
+		Account_->GetParentProtocol ()->GetVCardStorage ()->SetVCard (GetHumanReadableID (), vcard);
 
 		emit vcardUpdated ();
+
+		const auto& newPhotoHash = GetVCardPhotoHash (vcard);
+		if (newPhotoHash != VCardPhotoHash_)
+		{
+			VCardPhotoHash_ = newPhotoHash;
+			WriteDownPhotoHash ();
+			emit avatarChanged (this);
+		}
 	}
 
 	bool EntryBase::HasUnreadMsgs () const
@@ -953,27 +946,31 @@ namespace Xoox
 		if (!conn->GetInfoReqPolicyManager ()->IsRequestAllowed (InfoRequest::VCard, this))
 			return;
 
-		auto fetchVCard = [this, conn]
-		{
-			QPointer<EntryBase> ptr (this);
-			conn->FetchVCard (GetJID (),
-					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
-		};
-
 		const auto& vcardUpdate = pres.vCardUpdateType ();
 		if (vcardUpdate == QXmppPresence::VCardUpdateNoPhoto)
 		{
-			if (!Avatar_.isNull ())
-				SetAvatar (QImage {});
+			if (!VCardPhotoHash_.isEmpty ())
+			{
+				VCardPhotoHash_.clear ();
+				WriteDownPhotoHash ();
+				emit avatarChanged (this);
+			}
 		}
 		else if (vcardUpdate == QXmppPresence::VCardUpdateValidPhoto)
 		{
 			if (pres.photoHash () != VCardPhotoHash_)
-				fetchVCard ();
+			{
+				VCardPhotoHash_ = pres.photoHash ();
+				WriteDownPhotoHash ();
+				emit avatarChanged (this);
+			}
 		}
 		else if (pres.type () == QXmppPresence::Available && !HasBlindlyRequestedVCard_)
 		{
-			fetchVCard ();
+			// TODO check if this branch is needed
+			QPointer<EntryBase> ptr (this);
+			conn->FetchVCard (GetJID (),
+					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
 			HasBlindlyRequestedVCard_ = true;
 		}
 	}
@@ -1005,6 +1002,12 @@ namespace Xoox
 		name = name.trimmed ();
 		if (!name.isEmpty ())
 			SetEntryName (name);
+	}
+
+	void EntryBase::WriteDownPhotoHash () const
+	{
+		const auto vcardStorage = Account_->GetParentProtocol ()->GetVCardStorage ();
+		vcardStorage->SetVCardPhotoHash (GetHumanReadableID (), VCardPhotoHash_);
 	}
 
 	void EntryBase::handleTimeReceived (const QXmppEntityTimeIq& iq)

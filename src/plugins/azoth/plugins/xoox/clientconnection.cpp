@@ -1282,7 +1282,8 @@ namespace Xoox
 		if (!JID2CLEntry_.contains (from))
 			return;
 
-		JID2CLEntry_ [from]->SetAvatar (image);
+		// TODO
+		//JID2CLEntry_ [from]->SetAvatar (image);
 	}
 
 	void ClientConnection::handleMessageDelivered (const QString&, const QString& msgId)

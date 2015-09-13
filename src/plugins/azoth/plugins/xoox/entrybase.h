@@ -50,6 +50,7 @@
 #include <interfaces/azoth/ihavecontacttune.h>
 #include <interfaces/azoth/ihavecontactmood.h>
 #include <interfaces/azoth/ihavecontactactivity.h>
+#include <interfaces/azoth/ihaveavatars.h>
 
 class QXmppPresence;
 class QXmppVersionIq;
@@ -83,6 +84,7 @@ namespace Xoox
 					, public IMetaInfoEntry
 					, public IHaveDirectedStatus
 					, public ISupportMicroblogs
+					, public IHaveAvatars
 					, public IHaveContactTune
 					, public IHaveContactMood
 					, public IHaveContactActivity
@@ -96,6 +98,7 @@ namespace Xoox
 				LeechCraft::Azoth::IMetaInfoEntry
 				LeechCraft::Azoth::IHaveDirectedStatus
 				LeechCraft::Azoth::ISupportMicroblogs
+				LeechCraft::Azoth::IHaveAvatars
 				LeechCraft::Azoth::IHaveContactTune
 				LeechCraft::Azoth::IHaveContactMood
 				LeechCraft::Azoth::IHaveContactActivity
@@ -117,7 +120,6 @@ namespace Xoox
 
 		QMap<QString, GeolocationInfo_t> Location_;
 
-		QImage Avatar_;
 		QPointer<VCardDialog> VCardDialog_;
 
 		QByteArray VCardPhotoHash_;
@@ -151,7 +153,7 @@ namespace Xoox
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
-		virtual QList<QAction*> GetActions () const;
+		QList<QAction*> GetActions () const;
 		QImage GetAvatar () const;
 		QString GetHumanReadableID () const final;
 		void ShowInfo ();
@@ -173,6 +175,11 @@ namespace Xoox
 
 		// ISupportMicroblogs
 		void RequestLastPosts (int);
+
+		// IHaveAvatars
+		QFuture<QImage> RefreshAvatar (Size);
+		bool HasAvatar () const;
+		bool SupportsSize (Size) const;
 
 		// IHaveContactTune
 		Media::AudioInfo GetUserTune (const QString&) const;
@@ -200,8 +207,6 @@ namespace Xoox
 		void HandleAttentionMessage (const QXmppMessage&);
 		void UpdateChatState (QXmppMessage::State, const QString&);
 		void SetStatus (const EntryStatus&, const QString&, const QXmppPresence&);
-		void SetAvatar (const QByteArray&);
-		void SetAvatar (const QImage&);
 		QXmppVCardIq GetVCard () const;
 		void SetVCard (const QXmppVCardIq&);
 
@@ -224,6 +229,8 @@ namespace Xoox
 
 		void CheckVCardUpdate (const QXmppPresence&);
 		void SetNickFromVCard (const QXmppVCardIq&);
+
+		void WriteDownPhotoHash () const;
 	private slots:
 		void handleTimeReceived (const QXmppEntityTimeIq&);
 
@@ -256,6 +263,8 @@ namespace Xoox
 		void vcardUpdated ();
 
 		void entityTimeUpdated ();
+
+		void avatarChanged (QObject*);
 	};
 }
 }

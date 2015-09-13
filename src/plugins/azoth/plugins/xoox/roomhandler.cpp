@@ -128,7 +128,6 @@ namespace Xoox
 			return;
 		}
 
-		Nick2Entry_ [nick]->SetAvatar (card.photo ());
 		Nick2Entry_ [nick]->SetVCard (card);
 	}
 
