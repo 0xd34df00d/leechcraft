@@ -166,7 +166,6 @@ namespace Murm
 		void PublishTune (const QMap<QString, QVariant>& tuneData);
 
 		QObject* GetSelfContact () const;
-		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
 
 		PacketFormat GetPacketFormat () const;

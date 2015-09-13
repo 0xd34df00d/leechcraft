@@ -437,12 +437,6 @@ namespace Murm
 		return SelfEntry_;
 	}
 
-	QImage VkAccount::GetSelfAvatar () const
-	{
-		// TODO
-		return {};
-	}
-
 	QIcon VkAccount::GetAccountIcon () const
 	{
 		return {};
