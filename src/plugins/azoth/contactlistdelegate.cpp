@@ -166,8 +166,12 @@ namespace Azoth
 		const int iconSize = r.height () - 2 * CPadding;
 
 		QImage avatarImg;
-		if (extAcc)
-			avatarImg = extAcc->GetSelfAvatar ();
+		if (extAcc && extAcc->GetSelfContact ())
+		{
+			const auto selfEntry = qobject_cast<ICLEntry*> (extAcc->GetSelfContact ());
+			avatarImg = Core::Instance ().GetAvatar (selfEntry, iconSize);
+		}
+
 		if (avatarImg.isNull ())
 			avatarImg = ResourcesManager::Instance ().GetDefaultAvatar (iconSize);
 		else
