@@ -113,7 +113,6 @@ namespace Vader
 
 		// IExtSelfInfoAccount
 		QObject* GetSelfContact () const;
-		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
 
 		QByteArray Serialize () const;

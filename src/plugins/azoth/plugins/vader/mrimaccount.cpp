@@ -366,11 +366,6 @@ namespace Vader
 		return 0;
 	}
 
-	QImage MRIMAccount::GetSelfAvatar () const
-	{
-		return SelfAvatar_;
-	}
-
 	QIcon MRIMAccount::GetAccountIcon () const
 	{
 		return QIcon ();
