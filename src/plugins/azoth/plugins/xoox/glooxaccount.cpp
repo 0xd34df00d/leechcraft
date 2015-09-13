@@ -385,14 +385,6 @@ namespace Xoox
 				0;
 	}
 
-	QImage GlooxAccount::GetSelfAvatar () const
-	{
-		auto self = GetSelfContact ();
-		return self ?
-				qobject_cast<SelfContact*> (self)->GetAvatar () :
-				QImage ();
-	}
-
 	QObject* GlooxAccount::CreateSDSession ()
 	{
 		return new SDSession (this);
