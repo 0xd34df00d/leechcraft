@@ -62,15 +62,6 @@ namespace Azoth
 		 */
 		virtual QObject* GetSelfContact () const = 0;
 
-		/** @brief Returns the avatar of this account.
-		 *
-		 * The returned avatar is typically used to represent the user
-		 * of the account in contact list or in chat windows.
-		 *
-		 * @return The avatar of this account.
-		 */
-		virtual QImage GetSelfAvatar () const = 0;
-
 		/** @brief Returns the icon of this account.
 		 *
 		 * The returned icon is used to distinguish this account from
