@@ -142,7 +142,6 @@ namespace Xoox
 		QDateTime LastEntityTimeRequest_;
 
 		bool HasUnreadMsgs_ = false;
-		bool HasBlindlyRequestedVCard_ = false;
 	public:
 		EntryBase (const QString& humanReadableId, GlooxAccount* = nullptr);
 		virtual ~EntryBase ();

@@ -965,14 +965,6 @@ namespace Xoox
 				emit avatarChanged (this);
 			}
 		}
-		else if (pres.type () == QXmppPresence::Available && !HasBlindlyRequestedVCard_)
-		{
-			// TODO check if this branch is needed
-			QPointer<EntryBase> ptr (this);
-			conn->FetchVCard (GetJID (),
-					[ptr] (const QXmppVCardIq& iq) { if (ptr) ptr->SetVCard (iq); });
-			HasBlindlyRequestedVCard_ = true;
-		}
 	}
 
 	void EntryBase::SetNickFromVCard (const QXmppVCardIq& vcard)
