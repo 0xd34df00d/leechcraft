@@ -55,8 +55,6 @@ namespace Vader
 	: QObject (acc)
 	, A_ (acc)
 	, Info_ (info)
-	, IsAuthorized_ (true)
-	, GaveSubscription_ (true)
 	, UpdateNumber_ (new QAction (tr ("Update phone number..."), this))
 	, SendSMS_ (new QAction (tr ("Send SMS..."), this))
 	, AvatarFetcher_ (new SelfAvatarFetcher (this))

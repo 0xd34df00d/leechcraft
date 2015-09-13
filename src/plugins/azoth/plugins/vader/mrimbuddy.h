@@ -65,8 +65,8 @@ namespace Vader
 
 		EntryStatus Status_;
 		QList<MRIMMessage*> AllMessages_;
-		bool IsAuthorized_;
-		bool GaveSubscription_;
+		bool IsAuthorized_ = true;
+		bool GaveSubscription_ = true;
 
 		QVariantMap ClientInfo_;
 
