@@ -75,7 +75,6 @@ set (XOOX_SRCS
 	useravatarmetadata.cpp
 	sdmanager.cpp
 	msgarchivingmanager.cpp
-	avatarsstorage.cpp
 	xep0232handler.cpp
 	pepmicroblog.cpp
 	vcardlisteditdialog.cpp
