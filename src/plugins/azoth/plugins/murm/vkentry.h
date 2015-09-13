@@ -70,8 +70,6 @@ namespace Murm
 		bool IsNonRoster_ = false;
 		bool HasUnread_ = false;
 
-		QImage Avatar_;
-
 		QImage AppImage_;
 
 		QPointer<VCardDialog> VCardDialog_;

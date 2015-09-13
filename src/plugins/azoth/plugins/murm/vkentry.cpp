@@ -32,7 +32,6 @@
 #include <QtDebug>
 #include <QTimer>
 #include <util/util.h>
-#include <util/threads/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
@@ -68,14 +67,6 @@ namespace Murm
 				SIGNAL (timeout ()),
 				this,
 				SLOT (sendTyping ()));
-
-		Util::Sequence (this,
-				[account, info] { return account->GetPhotoStorage ()->GetImage (info.Photo_); }) >>
-				[this] (const QImage& image)
-				{
-					Avatar_ = image;
-					emit avatarChanged (Avatar_);
-				};
 
 		auto gm = account->GetGroupsManager ();
 		for (const auto& id : info.Lists_)
@@ -478,7 +469,7 @@ namespace Murm
 
 	QImage VkEntry::GetAvatar () const
 	{
-		return Avatar_;
+		return {};
 	}
 
 	void VkEntry::ShowInfo ()
