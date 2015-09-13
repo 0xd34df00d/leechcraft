@@ -55,6 +55,8 @@ namespace BirthdayNotifier
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.BirthdayNotifier")
 
+		ICoreProxy_ptr Proxy_;
+
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		QTimer *CheckTimer_;

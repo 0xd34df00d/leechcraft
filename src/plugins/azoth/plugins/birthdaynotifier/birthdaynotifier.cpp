@@ -48,8 +48,10 @@ namespace Azoth
 {
 namespace BirthdayNotifier
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("azoth_birthdaynotifier");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
