@@ -251,11 +251,6 @@ namespace Astrality
 		return 0;
 	}
 
-	QImage AccountWrapper::GetSelfAvatar () const
-	{
-		return QImage::fromData (A_->avatar ().avatarData);
-	}
-
 	QIcon AccountWrapper::GetAccountIcon () const
 	{
 		return QIcon::fromTheme (A_->iconName ());

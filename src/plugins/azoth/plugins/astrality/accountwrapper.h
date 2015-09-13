@@ -89,7 +89,6 @@ namespace Astrality
 
 		// IExtSelfInfoAccount
 		QObject* GetSelfContact () const;
-		QImage GetSelfAvatar () const;
 		QIcon GetAccountIcon () const;
 
 		Tp::ContactMessengerPtr GetMessenger (const QString&);
