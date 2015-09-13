@@ -84,6 +84,7 @@ namespace Xoox
 			QString resource;
 			ClientConnection::Split (from, &bare, &resource);
 
+			/* TODO redo checks
 			ICLEntry *entry = qobject_cast<ICLEntry*> (Conn_->GetCLEntry (bare, resource));
 			if (entry && !entry->GetAvatar ().isNull ())
 			{
@@ -91,6 +92,7 @@ namespace Xoox
 				if (mdEvent->GetID () == md.GetID ())
 					return;
 			}
+			*/
 
 			if (mdEvent->GetURL ().isValid ())
 			{
