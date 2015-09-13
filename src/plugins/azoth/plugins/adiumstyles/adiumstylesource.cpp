@@ -491,8 +491,10 @@ namespace AdiumStyles
 		QImage image;
 		if (!in && acc)
 		{
-			if (const auto self = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ()))
-				image = self->GetSelfAvatar ();
+			const auto self = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
+			if (const auto selfEntry = self ? self->GetSelfContact () : nullptr)
+				ReplaceIcon (templ, "%userIconPath%",
+						qobject_cast<ICLEntry*> (selfEntry)->GetEntryID ());
 		}
 
 		if (image.isNull ())
