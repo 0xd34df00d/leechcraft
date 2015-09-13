@@ -46,7 +46,7 @@ namespace Azoth
 {
 namespace Murm
 {
-	PhotoStorage::PhotoStorage (QNetworkAccessManager *nam, const QString& subpath, QObject *parent)
+	PhotoStorage::PhotoStorage (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
 	, FetchQueue_ (new Util::QueueManager (100, this))

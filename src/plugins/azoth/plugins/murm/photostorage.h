@@ -56,7 +56,7 @@ namespace Murm
 
 		QHash<QUrl, QFuture<QImage>> Pending_;
 	public:
-		PhotoStorage (QNetworkAccessManager*, const QString&, QObject* = 0);
+		PhotoStorage (QNetworkAccessManager*, QObject* = 0);
 
 		QFuture<QImage> GetImage (const QUrl&);
 	};
