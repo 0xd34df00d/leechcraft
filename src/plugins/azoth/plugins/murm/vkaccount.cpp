@@ -62,7 +62,7 @@ namespace Murm
 	, CoreProxy_ (proxy)
 	, Proto_ (proto)
 	, ID_ (id.isEmpty () ? QUuid::createUuid ().toByteArray () : id)
-	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager ()))
+	, PhotoStorage_ (new PhotoStorage (proxy->GetNetworkAccessManager (), this))
 	, Name_ (name)
 	, Logger_ (new Logger (ID_, this))
 	, Conn_ (new VkConnection (name, cookies, proxy, *Logger_))
