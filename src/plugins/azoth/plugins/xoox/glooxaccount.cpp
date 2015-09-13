@@ -77,6 +77,7 @@
 #include "clientconnectionerrormgr.h"
 #include "addtoblockedrunner.h"
 #include "util.h"
+#include "selfcontact.h"
 
 namespace LeechCraft
 {
@@ -388,7 +389,7 @@ namespace Xoox
 	{
 		auto self = GetSelfContact ();
 		return self ?
-				qobject_cast<ICLEntry*> (self)->GetAvatar () :
+				qobject_cast<SelfContact*> (self)->GetAvatar () :
 				QImage ();
 	}
 
