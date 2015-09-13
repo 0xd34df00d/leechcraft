@@ -182,11 +182,6 @@ namespace Xoox
 		return additional + Actions_;
 	}
 
-	QImage EntryBase::GetAvatar () const
-	{
-		return {};
-	}
-
 	QString EntryBase::GetHumanReadableID () const
 	{
 		return HumanReadableId_;
