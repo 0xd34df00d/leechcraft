@@ -77,7 +77,6 @@ namespace Murm
 		void gotMessage (QObject*) override;
 		void statusChanged (const EntryStatus&, const QString&) override;
 		void availableVariantsChanged (const QStringList&) override;
-		void avatarChanged (const QImage&) override;
 		void nameChanged (const QString&) override;
 		void groupsChanged (const QStringList&) override;
 		void chatPartStateChanged (const ChatPartState&, const QString&) override;

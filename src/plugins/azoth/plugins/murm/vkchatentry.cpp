@@ -209,11 +209,6 @@ namespace Murm
 		return { SOnline, {} };
 	}
 
-	QImage VkChatEntry::GetAvatar () const
-	{
-		return {};
-	}
-
 	void VkChatEntry::ShowInfo ()
 	{
 	}

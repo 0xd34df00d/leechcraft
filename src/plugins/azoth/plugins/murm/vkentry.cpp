@@ -467,11 +467,6 @@ namespace Murm
 		return { Info_.IsOnline_ || IsSelf_ ? SOnline : SOffline, {} };
 	}
 
-	QImage VkEntry::GetAvatar () const
-	{
-		return {};
-	}
-
 	void VkEntry::ShowInfo ()
 	{
 		if (VCardDialog_)

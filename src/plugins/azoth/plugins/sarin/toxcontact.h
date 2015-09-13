@@ -81,7 +81,6 @@ namespace Sarin
 		void SetChatPartState (ChatPartState, const QString&) override;
 
 		EntryStatus GetStatus (const QString&) const override;
-		QImage GetAvatar () const override;
 		void ShowInfo () override;
 		QList<QAction*> GetActions () const override;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
@@ -98,7 +97,6 @@ namespace Sarin
 		void gotMessage (QObject*) override;
 		void statusChanged (const EntryStatus&, const QString&) override;
 		void availableVariantsChanged (const QStringList&) override;
-		void avatarChanged (const QImage&) override;
 		void nameChanged (const QString&) override;
 		void groupsChanged (const QStringList&) override;
 		void chatPartStateChanged (const ChatPartState&, const QString&) override;

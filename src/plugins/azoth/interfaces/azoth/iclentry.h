@@ -401,12 +401,6 @@ namespace Azoth
 		 */
 		virtual EntryStatus GetStatus (const QString& variant = QString ()) const = 0;
 
-		/** @brief Returns the avatar of this item.
-		 *
-		 * @return The image with the avatar.
-		 */
-		virtual QImage GetAvatar () const = 0;
-
 		/** @brief Requests the entry to show dialog with info about it.
 		 */
 		virtual void ShowInfo () = 0;
@@ -491,13 +485,6 @@ namespace Azoth
 		 * returned by GetVariants().
 		 */
 		virtual void availableVariantsChanged (const QStringList& newVars) = 0;
-
-		/** @brief This signal should be emitted whenever the avatar of
-		 * this item is changed.
-		 *
-		 * @note This function is expected to be a signal in subclasses.
-		 */
-		virtual void avatarChanged (const QImage&) = 0;
 
 		/** @brief This signal should be emitted whenever the entry
 		 * changes name.

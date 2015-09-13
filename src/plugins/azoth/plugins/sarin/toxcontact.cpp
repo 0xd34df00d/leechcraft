@@ -144,11 +144,6 @@ namespace Sarin
 		return Status_;
 	}
 
-	QImage ToxContact::GetAvatar () const
-	{
-		return {};
-	}
-
 	void ToxContact::ShowInfo ()
 	{
 	}

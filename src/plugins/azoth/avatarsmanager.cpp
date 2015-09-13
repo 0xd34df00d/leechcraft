@@ -33,6 +33,7 @@
 #include <util/sll/qtutil.h>
 #include "interfaces/azoth/iaccount.h"
 #include "avatarsstorage.h"
+#include "resourcesmanager.h"
 
 namespace LeechCraft
 {
@@ -49,12 +50,34 @@ namespace Azoth
 	{
 	}
 
+	namespace
+	{
+		int Size2Dim (IHaveAvatars::Size size)
+		{
+			switch (size)
+			{
+			case IHaveAvatars::Size::Full:
+				return 256;
+			case IHaveAvatars::Size::Thumbnail:
+				return 64;
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown size"
+					<< static_cast<int> (size);
+			return 256;
+		}
+	}
+
 	QFuture<QImage> AvatarsManager::GetAvatar (QObject *entryObj, IHaveAvatars::Size size)
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
 		if (!iha)
-			return Util::MakeReadyFuture (entry->GetAvatar ());
+		{
+			const auto& image = ResourcesManager::Instance ().GetDefaultAvatar (Size2Dim (size));
+			return Util::MakeReadyFuture (image);
+		}
 
 		if (PendingRequests_.contains (entryObj))
 			return PendingRequests_.value (entryObj);
@@ -86,7 +109,7 @@ namespace Azoth
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
 		return iha ?
 				iha->HasAvatar () :
-				!qobject_cast<ICLEntry*> (entryObj)->GetAvatar ().isNull ();
+				false;
 	}
 
 	Util::DefaultScopeGuard AvatarsManager::Subscribe (QObject *obj,

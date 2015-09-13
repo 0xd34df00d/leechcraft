@@ -87,7 +87,6 @@ namespace Murm
 		QStringList Variants () const override;
 		void SetChatPartState (ChatPartState state, const QString& variant) override;
 		EntryStatus GetStatus (const QString& variant = QString ()) const override;
-		QImage GetAvatar () const override;
 		void ShowInfo () override;
 		QList<QAction*> GetActions () const override;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
