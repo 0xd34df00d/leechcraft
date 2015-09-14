@@ -94,61 +94,63 @@ namespace Azoth
 	{
 		DirtyTooltips_ << clEntry;
 
-		connect (clEntry->GetQObject (),
+		const auto entryObj = clEntry->GetQObject ();
+
+		connect (entryObj,
 				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
 				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
 				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (entryGenerallyChanged ()),
 				this,
 				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (nameChanged (const QString&)),
 				this,
 				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (groupsChanged (const QStringList&)),
 				this,
 				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (avatarChanged (const QImage&)),
 				this,
 				SLOT (remakeTooltipForSender ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (permsChanged ()),
 				this,
 				SLOT (remakeTooltipForSender ()));
 
-		if (qobject_cast<IAdvancedCLEntry*> (clEntry->GetQObject ()))
+		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
-			connect (clEntry->GetQObject (),
+			connect (entryObj,
 					SIGNAL (attentionDrawn (const QString&, const QString&)),
 					this,
 					SLOT (remakeTooltipForSender ()));
-			connect (clEntry->GetQObject (),
+			connect (entryObj,
 					SIGNAL (locationChanged (const QString&)),
 					this,
 					SLOT (remakeTooltipForSender ()));
 		}
 
-		if (qobject_cast<IHaveContactTune*> (clEntry->GetQObject ()))
-			connect (clEntry->GetQObject (),
+		if (qobject_cast<IHaveContactTune*> (entryObj))
+			connect (entryObj,
 					SIGNAL (tuneChanged (QString)),
 					this,
 					SLOT (remakeTooltipForSender ()));
 
-		if (qobject_cast<IHaveContactMood*> (clEntry->GetQObject ()))
-			connect (clEntry->GetQObject (),
+		if (qobject_cast<IHaveContactMood*> (entryObj))
+			connect (entryObj,
 					SIGNAL (moodChanged (QString)),
 					this,
 					SLOT (remakeTooltipForSender ()));
 
-		if (qobject_cast<IHaveContactActivity*> (clEntry->GetQObject ()))
-			connect (clEntry->GetQObject (),
+		if (qobject_cast<IHaveContactActivity*> (entryObj))
+			connect (entryObj,
 					SIGNAL (activityChanged (const QString&)),
 					this,
 					SLOT (remakeTooltipForSender ()));
