@@ -117,13 +117,15 @@ namespace Azoth
 				this,
 				SLOT (remakeTooltipForSender ()));
 		connect (entryObj,
-				SIGNAL (avatarChanged (const QImage&)),
-				this,
-				SLOT (remakeTooltipForSender ()));
-		connect (entryObj,
 				SIGNAL (permsChanged ()),
 				this,
 				SLOT (remakeTooltipForSender ()));
+
+		if (qobject_cast<IHaveAvatars*> (entryObj))
+			connect (entryObj,
+					SIGNAL (avatarChanged (QObject*)),
+					this,
+					SLOT (remakeTooltipForSender ()));
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{

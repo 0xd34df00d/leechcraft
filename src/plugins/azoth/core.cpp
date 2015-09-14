@@ -1097,10 +1097,6 @@ namespace Azoth
 				this,
 				SLOT (handleEntryPermsChanged ()));
 		connect (entryObj,
-				SIGNAL (avatarChanged (QObject*)),
-				this,
-				SLOT (invalidateSmoothAvatarCache ()));
-		connect (entryObj,
 				SIGNAL (entryGenerallyChanged ()),
 				this,
 				SLOT (updateItem ()));
@@ -1120,6 +1116,12 @@ namespace Azoth
 					this,
 					SLOT (handleBeenBanned (const QString&)));
 		}
+
+		if (qobject_cast<IHaveAvatars*> (entryObj))
+			connect (entryObj,
+					SIGNAL (avatarChanged (QObject*)),
+					this,
+					SLOT (invalidateSmoothAvatarCache (QObject*)));
 
 		NotificationsManager_->AddCLEntry (entryObj);
 
@@ -2246,9 +2248,9 @@ namespace Azoth
 		RIEX::HandleRIEXItemsSuggested (items, from, message);
 	}
 
-	void Core::invalidateSmoothAvatarCache ()
+	void Core::invalidateSmoothAvatarCache (QObject *entryObj)
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (sender ());
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO

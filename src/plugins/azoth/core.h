@@ -461,7 +461,7 @@ namespace Azoth
 
 		void handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString);
 
-		void invalidateSmoothAvatarCache ();
+		void invalidateSmoothAvatarCache (QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
