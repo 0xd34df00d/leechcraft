@@ -1063,70 +1063,72 @@ namespace Azoth
 	void Core::AddCLEntry (ICLEntry *clEntry,
 			QStandardItem *accItem)
 	{
+		const auto entryObj = clEntry->GetQObject ();
+
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
-		emit hookAddingCLEntryBegin (proxy, clEntry->GetQObject ());
+		emit hookAddingCLEntryBegin (proxy, entryObj);
 		if (proxy->IsCancelled ())
 			return;
 
 		ResourcesManager::Instance ().HandleEntry (clEntry);
 
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
 				SLOT (handleStatusChanged (EntryStatus, QString)));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
 				SLOT (handleVariantsChanged ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (gotMessage (QObject*)),
 				this,
 				SLOT (handleEntryGotMessage (QObject*)));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (nameChanged (const QString&)),
 				this,
 				SLOT (handleEntryNameChanged (const QString&)));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (groupsChanged (const QStringList&)),
 				this,
 				SLOT (handleEntryGroupsChanged (const QStringList&)));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (permsChanged ()),
 				this,
 				SLOT (handleEntryPermsChanged ()));
-		connect (clEntry->GetQObject (),
-				SIGNAL (avatarChanged (const QImage&)),
+		connect (entryObj,
+				SIGNAL (avatarChanged (QObject*)),
 				this,
 				SLOT (invalidateSmoothAvatarCache ()));
-		connect (clEntry->GetQObject (),
+		connect (entryObj,
 				SIGNAL (entryGenerallyChanged ()),
 				this,
 				SLOT (updateItem ()));
 
-		if (qobject_cast<IMUCEntry*> (clEntry->GetQObject ()))
+		if (qobject_cast<IMUCEntry*> (entryObj))
 		{
-			connect (clEntry->GetQObject (),
+			connect (entryObj,
 					SIGNAL (nicknameConflict (const QString&)),
 					this,
 					SLOT (handleNicknameConflict (const QString&)));
-			connect (clEntry->GetQObject (),
+			connect (entryObj,
 					SIGNAL (beenKicked (const QString&)),
 					this,
 					SLOT (handleBeenKicked (const QString&)));
-			connect (clEntry->GetQObject (),
+			connect (entryObj,
 					SIGNAL (beenBanned (const QString&)),
 					this,
 					SLOT (handleBeenBanned (const QString&)));
 		}
 
-		NotificationsManager_->AddCLEntry (clEntry->GetQObject ());
+		NotificationsManager_->AddCLEntry (entryObj);
 
 #ifdef ENABLE_CRYPT
 		CryptoManager::Instance ().AddEntry (clEntry);
 #endif
 
 		const QString& id = clEntry->GetEntryID ();
-		ID2Entry_ [id] = clEntry->GetQObject ();
+		ID2Entry_ [id] = entryObj;
 
 		const QStringList& groups = GetDisplayGroups (clEntry);
 		{
@@ -1153,7 +1155,7 @@ namespace Azoth
 		ChatTabsManager_->UpdateEntryMapping (id);
 
 		proxy = std::make_shared<Util::DefaultHookProxy> ();
-		emit hookAddingCLEntryEnd (proxy, clEntry->GetQObject ());
+		emit hookAddingCLEntryEnd (proxy, entryObj);
 	}
 
 	QList<QStandardItem*> Core::GetCategoriesItems (QStringList cats, QStandardItem *account)
