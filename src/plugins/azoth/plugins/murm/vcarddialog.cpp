@@ -52,42 +52,42 @@ namespace Murm
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose);
 
-		Ui_.FirstName_->setText (info.FirstName_);
-		Ui_.LastName_->setText (info.LastName_);
-		Ui_.Nickname_->setText (info.Nick_);
+		Ui_.FirstName_->setText (Info_.FirstName_);
+		Ui_.LastName_->setText (Info_.LastName_);
+		Ui_.Nickname_->setText (Info_.Nick_);
 
-		Ui_.Birthday_->setDate (info.Birthday_);
-		Ui_.Birthday_->setDisplayFormat (info.Birthday_.year () != 1800 ? "dd MMMM yyyy" : "dd MMMM");
+		Ui_.Birthday_->setDate (Info_.Birthday_);
+		Ui_.Birthday_->setDisplayFormat (Info_.Birthday_.year () != 1800 ? "dd MMMM yyyy" : "dd MMMM");
 
-		if (info.Gender_)
-			Ui_.Gender_->setText (info.Gender_ == 1 ? tr ("female") : tr ("male"));
+		if (Info_.Gender_)
+			Ui_.Gender_->setText (Info_.Gender_ == 1 ? tr ("female") : tr ("male"));
 
-		Ui_.HomePhone_->setText (info.HomePhone_);
-		Ui_.MobilePhone_->setText (info.MobilePhone_);
+		Ui_.HomePhone_->setText (Info_.HomePhone_);
+		Ui_.MobilePhone_->setText (Info_.MobilePhone_);
 
-		auto timezoneText = QString::number (info.Timezone_) + " GMT";
-		if (info.Timezone_ > 0)
+		auto timezoneText = QString::number (Info_.Timezone_) + " GMT";
+		if (Info_.Timezone_ > 0)
 			timezoneText.prepend ('+');
 		Ui_.Timezone_->setText (timezoneText);
 
 		QPointer<VCardDialog> safeThis (this);
 
-		if (info.Country_ > 0)
-			geo->GetCountry (info.Country_,
+		if (Info_.Country_ > 0)
+			geo->GetCountry (Info_.Country_,
 					[safeThis, this] (const QString& country)
 					{
 						if (safeThis)
 							Ui_.Country_->setText (country);
 					});
-		if (info.City_ > 0)
-			geo->GetCity (info.City_,
+		if (Info_.City_ > 0)
+			geo->GetCity (Info_.City_,
 					[safeThis, this] (const QString& country)
 					{
 						if (safeThis)
 							Ui_.City_->setText (country);
 					});
 
-		if (!info.BigPhoto_.isValid ())
+		if (!Info_.BigPhoto_.isValid ())
 			return;
 
 		Util::Sequence (this, storage->GetImage (info.BigPhoto_)) >>
