@@ -430,7 +430,7 @@ namespace Xoox
 
 	namespace
 	{
-		QByteArray GetVCardPhotoHash (const QXmppVCardIq& vcard)
+		QByteArray ComputeVCardPhotoHash (const QXmppVCardIq& vcard)
 		{
 			const auto& photo = vcard.photo ();
 			return photo.isEmpty () ?
@@ -443,7 +443,7 @@ namespace Xoox
 	{
 		const auto maybeVCard = Account_->GetParentProtocol ()->
 				GetVCardStorage ()->GetVCard (GetHumanReadableID ());
-		if (maybeVCard && VCardPhotoHash_ == GetVCardPhotoHash (*maybeVCard))
+		if (maybeVCard && VCardPhotoHash_ == ComputeVCardPhotoHash (*maybeVCard))
 			return Util::MakeReadyFuture (QImage::fromData (maybeVCard->photo ()));
 
 		QFutureInterface<QImage> iface;
@@ -745,7 +745,7 @@ namespace Xoox
 
 		emit vcardUpdated ();
 
-		const auto& newPhotoHash = GetVCardPhotoHash (vcard);
+		const auto& newPhotoHash = ComputeVCardPhotoHash (vcard);
 		if (newPhotoHash != VCardPhotoHash_)
 		{
 			VCardPhotoHash_ = newPhotoHash;
