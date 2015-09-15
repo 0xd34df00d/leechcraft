@@ -197,6 +197,8 @@ namespace Xoox
 		// IHaveQueriableVersion
 		QObject* QueryVersion (const QString& variant);
 
+		const QByteArray& GetVCardPhotoHash () const;
+
 		virtual QString GetJID () const = 0;
 
 		void HandlePresence (const QXmppPresence&, const QString&);

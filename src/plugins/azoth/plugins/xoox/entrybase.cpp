@@ -539,6 +539,11 @@ namespace Xoox
 		return new PendingVersionQuery { vm, jid, this };
 	}
 
+	const QByteArray& EntryBase::GetVCardPhotoHash () const
+	{
+		return VCardPhotoHash_;
+	}
+
 	void EntryBase::HandlePresence (const QXmppPresence& pres, const QString& resource)
 	{
 		SetClientInfo (resource, pres);
