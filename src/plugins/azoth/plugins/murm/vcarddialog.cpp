@@ -81,10 +81,10 @@ namespace Murm
 					});
 		if (Info_.City_ > 0)
 			geo->GetCity (Info_.City_,
-					[safeThis, this] (const QString& country)
+					[safeThis, this] (const QString& city)
 					{
 						if (safeThis)
-							Ui_.City_->setText (country);
+							Ui_.City_->setText (city);
 					});
 
 		if (!Info_.BigPhoto_.isValid ())
