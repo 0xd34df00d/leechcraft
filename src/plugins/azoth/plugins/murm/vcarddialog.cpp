@@ -90,7 +90,7 @@ namespace Murm
 		if (!info.BigPhoto_.isValid ())
 			return;
 
-		Util::Sequence (this, [storage, info] { return storage->GetImage (info.BigPhoto_); }) >>
+		Util::Sequence (this, storage->GetImage (info.BigPhoto_)) >>
 				[this] (const QImage& image)
 				{
 					return QtConcurrent::run ([this, image]
