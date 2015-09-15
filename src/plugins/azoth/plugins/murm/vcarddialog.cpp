@@ -32,9 +32,10 @@
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "structures.h"
-#include "photostorage.h"
 #include "georesolver.h"
+#include "vkentry.h"
 
 namespace LeechCraft
 {
@@ -42,12 +43,11 @@ namespace Azoth
 {
 namespace Murm
 {
-	VCardDialog::VCardDialog (const UserInfo& info, PhotoStorage *storage,
+	VCardDialog::VCardDialog (VkEntry *entry, IAvatarsManager *avatarsMgr,
 			GeoResolver *geo, ICoreProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
 	, Proxy_ (proxy)
-	, Info_ (info)
-	, Storage_ (storage)
+	, Info_ (entry->GetInfo ())
 	{
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose);
@@ -90,7 +90,7 @@ namespace Murm
 		if (!Info_.BigPhoto_.isValid ())
 			return;
 
-		Util::Sequence (this, storage->GetImage (info.BigPhoto_)) >>
+		Util::Sequence (this, avatarsMgr->GetAvatar (entry, IHaveAvatars::Size::Full)) >>
 				[this] (const QImage& image)
 				{
 					return QtConcurrent::run ([this, image]

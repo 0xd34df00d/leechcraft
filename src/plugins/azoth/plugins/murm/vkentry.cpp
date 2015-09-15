@@ -472,8 +472,10 @@ namespace Murm
 		if (VCardDialog_)
 			return;
 
-		VCardDialog_ = new VCardDialog (Info_, Account_->GetPhotoStorage (),
-				Account_->GetGeoResolver (), Account_->GetCoreProxy ());
+		VCardDialog_ = new VCardDialog (this,
+				Account_->GetParentProtocol ()->GetAzothProxy ()->GetAvatarsManager (),
+				Account_->GetGeoResolver (),
+				Account_->GetCoreProxy ());
 		VCardDialog_->show ();
 	}
 

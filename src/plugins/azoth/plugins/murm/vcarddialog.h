@@ -38,8 +38,11 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IAvatarsManager;
+
 namespace Murm
 {
+	class VkEntry;
 	class GeoResolver;
 	class PhotoStorage;
 
@@ -52,9 +55,8 @@ namespace Murm
 		const ICoreProxy_ptr Proxy_;
 
 		const UserInfo Info_;
-		PhotoStorage * const Storage_;
 	public:
-		VCardDialog (const UserInfo&, PhotoStorage*, GeoResolver*, ICoreProxy_ptr, QWidget* = 0);
+		VCardDialog (VkEntry*, IAvatarsManager*, GeoResolver*, ICoreProxy_ptr, QWidget* = 0);
 	private slots:
 		void on_OpenVKPage__released ();
 	};
