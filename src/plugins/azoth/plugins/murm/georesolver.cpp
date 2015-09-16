@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "georesolver.h"
+#include <QFuture>
+#include <QFutureInterface>
 #include <util/sll/qtutil.h>
 #include "vkconnection.h"
 
@@ -53,9 +55,12 @@ namespace Murm
 		Countries_.unite (countries);
 	}
 
-	void GeoResolver::GetCountry (int code, std::function<void (QString)> setter)
+	QFuture<QString> GeoResolver::RequestCountry (int code)
 	{
-		Get (code, setter, Countries_, GeoIdType::Country);
+		QFutureInterface<QString> iface;
+		iface.reportStarted ();
+		Get (code, {}, Countries_, GeoIdType::Country);
+		return iface.future ();
 	}
 
 	QString GeoResolver::GetCountry (int code) const
@@ -73,9 +78,12 @@ namespace Murm
 		Cities_.unite (cities);
 	}
 
-	void GeoResolver::GetCity (int code, std::function<void (QString)> setter)
+	QFuture<QString> GeoResolver::RequestCity (int code)
 	{
-		Get (code, setter, Cities_, GeoIdType::City);
+		QFutureInterface<QString> iface;
+		iface.reportStarted ();
+		Get (code, {}, Cities_, GeoIdType::City);
+		return iface.future ();
 	}
 
 	QString GeoResolver::GetCity (int code) const

@@ -34,6 +34,9 @@
 #include <QHash>
 #include <QSet>
 
+template<typename>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -59,12 +62,12 @@ namespace Murm
 
 		void CacheCountries (QList<int>);
 		void AddCountriesToCache (const QHash<int, QString>&);
-		void GetCountry (int, std::function<void (QString)>);
+		QFuture<QString> RequestCountry (int);
 		QString GetCountry (int) const;
 
 		void CacheCities (QList<int>);
 		void AddCitiesToCache (const QHash<int, QString>&);
-		void GetCity (int, std::function<void (QString)>);
+		QFuture<QString> RequestCity (int);
 		QString GetCity (int) const;
 	private:
 		void Cache (QList<int>, QHash<int, QString>&, QSet<int>&, GeoIdType);

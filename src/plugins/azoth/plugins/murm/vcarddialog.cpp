@@ -31,6 +31,7 @@
 #include <QFuture>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
+#include <util/sll/functional.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "structures.h"
@@ -73,19 +74,11 @@ namespace Murm
 		QPointer<VCardDialog> safeThis (this);
 
 		if (Info_.Country_ > 0)
-			geo->GetCountry (Info_.Country_,
-					[safeThis, this] (const QString& country)
-					{
-						if (safeThis)
-							Ui_.Country_->setText (country);
-					});
+			Util::Sequence (this, geo->RequestCountry (Info_.Country_)) >>
+					Util::BindMemFn (&QLineEdit::setText, Ui_.Country_);
 		if (Info_.City_ > 0)
-			geo->GetCity (Info_.City_,
-					[safeThis, this] (const QString& city)
-					{
-						if (safeThis)
-							Ui_.City_->setText (city);
-					});
+			Util::Sequence (this, geo->RequestCity (Info_.City_)) >>
+					Util::BindMemFn (&QLineEdit::setText, Ui_.City_);
 
 		if (!Info_.BigPhoto_.isValid ())
 			return;
