@@ -215,11 +215,6 @@ namespace Metacontacts
 		return ActWithVariant<EntryStatus, ICLEntry*> (f, variant);
 	}
 
-	QImage MetaEntry::GetAvatar () const
-	{
-		return QImage ();
-	}
-
 	void MetaEntry::ShowInfo ()
 	{
 	}

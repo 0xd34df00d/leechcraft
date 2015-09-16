@@ -92,7 +92,6 @@ namespace Metacontacts
 		void PurgeMessages (const QDateTime&);
 		void SetChatPartState (ChatPartState, const QString&);
 		EntryStatus GetStatus (const QString&) const;
-		QImage GetAvatar () const;
 		void ShowInfo ();
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const;
@@ -130,7 +129,6 @@ namespace Metacontacts
 		void availableVariantsChanged (const QStringList&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
 		void permsChanged ();
 		void entryGenerallyChanged ();
