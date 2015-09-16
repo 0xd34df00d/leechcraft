@@ -77,7 +77,6 @@ namespace VelvetBird
 		void PurgeMessages (const QDateTime& before);
 		void SetChatPartState (ChatPartState state, const QString& variant);
 		EntryStatus GetStatus (const QString& variant = QString ()) const;
-		QImage GetAvatar () const;
 		void ShowInfo ();
 		QList<QAction*> GetActions () const;
 		QMap<QString, QVariant> GetClientInfo (const QString& variant) const;
@@ -95,7 +94,6 @@ namespace VelvetBird
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);

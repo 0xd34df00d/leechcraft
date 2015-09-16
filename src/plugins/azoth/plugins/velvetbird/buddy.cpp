@@ -145,11 +145,6 @@ namespace VelvetBird
 		return Status_;
 	}
 
-	QImage Buddy::GetAvatar () const
-	{
-		return QImage ();
-	}
-
 	void Buddy::ShowInfo ()
 	{
 	}
