@@ -87,11 +87,6 @@ namespace Acetamide
 		return Actions_;
 	}
 
-	QImage EntryBase::GetAvatar () const
-	{
-		return QImage ();
-	}
-
 	void EntryBase::ShowInfo ()
 	{
 		IrcParticipantEntry *entry = qobject_cast<IrcParticipantEntry*> (this);
