@@ -228,11 +228,6 @@ namespace Acetamide
 		return EntryStatus (SOnline, QString ());
 	}
 
-	QImage ChannelCLEntry::GetAvatar () const
-	{
-		return QImage ();
-	}
-
 	void ChannelCLEntry::ShowInfo ()
 	{
 	}

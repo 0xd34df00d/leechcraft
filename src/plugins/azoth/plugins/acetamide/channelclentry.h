@@ -98,7 +98,6 @@ namespace Acetamide
 		QString GetRealID (QObject*) const;
 
 		EntryStatus GetStatus (const QString& variant = QString ()) const;
-		QImage GetAvatar () const;
 		void ShowInfo ();
 
 		// IMUCEntry
@@ -165,7 +164,6 @@ namespace Acetamide
 		void gotMessage (QObject*);
 		void statusChanged (const EntryStatus&, const QString&);
 		void availableVariantsChanged (const QStringList&);
-		void avatarChanged (const QImage&);
 		void nameChanged (const QString&);
 		void groupsChanged (const QStringList&);
 		void chatPartStateChanged (const ChatPartState&, const QString&);
