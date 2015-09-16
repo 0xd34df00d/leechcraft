@@ -202,11 +202,6 @@ namespace Zheet
 		return Status_;
 	}
 
-	QImage MSNBuddyEntry::GetAvatar () const
-	{
-		return QImage ();
-	}
-
 	void MSNBuddyEntry::ShowInfo ()
 	{
 	}
