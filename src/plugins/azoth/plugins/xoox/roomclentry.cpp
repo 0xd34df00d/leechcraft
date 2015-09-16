@@ -213,11 +213,6 @@ namespace Xoox
 		return result;
 	}
 
-	QImage RoomCLEntry::GetAvatar () const
-	{
-		return QImage ();
-	}
-
 	void RoomCLEntry::ShowInfo ()
 	{
 	}
