@@ -31,6 +31,7 @@
 #include <QFuture>
 #include <QFutureInterface>
 #include <util/sll/qtutil.h>
+#include <util/threads/futures.h>
 #include "vkconnection.h"
 
 namespace LeechCraft
@@ -57,10 +58,7 @@ namespace Murm
 
 	QFuture<QString> GeoResolver::RequestCountry (int code)
 	{
-		QFutureInterface<QString> iface;
-		iface.reportStarted ();
-		Get (code, {}, Countries_, GeoIdType::Country);
-		return iface.future ();
+		return Get (code, Countries_, GeoIdType::Country);
 	}
 
 	QString GeoResolver::GetCountry (int code) const
@@ -80,10 +78,7 @@ namespace Murm
 
 	QFuture<QString> GeoResolver::RequestCity (int code)
 	{
-		QFutureInterface<QString> iface;
-		iface.reportStarted ();
-		Get (code, {}, Cities_, GeoIdType::City);
-		return iface.future ();
+		return Get (code, Cities_, GeoIdType::City);
 	}
 
 	QString GeoResolver::GetCity (int code) const
@@ -116,22 +111,24 @@ namespace Murm
 				type);
 	}
 
-	void GeoResolver::Get (int code, std::function<void (QString)> setter,
+	QFuture<QString> GeoResolver::Get (int code,
 			QHash<int, QString>& hash, GeoIdType type)
 	{
 		if (hash.contains (code))
-		{
-			setter (hash [code]);
-			return;
-		}
+			return Util::MakeReadyFuture (hash [code]);
 
+		QFutureInterface<QString> iface;
+		iface.reportStarted ();
 		Conn_->RequestGeoIds ({ code },
-				[&hash, setter, code] (const QHash<int, QString>& result)
+				[&hash, code, iface] (const QHash<int, QString>& result) mutable
 				{
 					hash.unite (result);
-					setter (result [code]);
+
+					const auto& value = result [code];
+					iface.reportFinished (&value);
 				},
 				type);
+		return iface.future ();
 	}
 }
 }

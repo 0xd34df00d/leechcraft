@@ -71,7 +71,7 @@ namespace Murm
 		QString GetCity (int) const;
 	private:
 		void Cache (QList<int>, QHash<int, QString>&, QSet<int>&, GeoIdType);
-		void Get (int, std::function<void (QString)>, QHash<int, QString>&, GeoIdType);
+		QFuture<QString> Get (int, QHash<int, QString>&, GeoIdType);
 	};
 }
 }
