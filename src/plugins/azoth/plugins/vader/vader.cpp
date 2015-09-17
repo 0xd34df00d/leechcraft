@@ -54,7 +54,8 @@ namespace Vader
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothvadersettings.xml");
 
 		Core::Instance ().SetCoreProxy (proxy);
-		Core::Instance ().GetProtocol ()->setParent (this);
+
+		Proto_ = new MRIMProtocol { this };
 
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
@@ -64,12 +65,12 @@ namespace Vader
 
 	void Plugin::SecondInit ()
 	{
-		Core::Instance ().GetProtocol ()->Init ();
+		Proto_->Init ();
 	}
 
 	void Plugin::Release ()
 	{
-		Core::Instance ().GetProtocol ()->Release ();
+		Proto_->Release ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -112,7 +113,7 @@ namespace Vader
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return QList<QObject*> () << Core::Instance ().GetProtocol ();
+		return { Proto_ };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

@@ -43,6 +43,8 @@ namespace Azoth
 {
 namespace Vader
 {
+	class MRIMProtocol;
+
 	class Plugin : public QObject
 					, public IInfo
 					, public IHaveSettings
@@ -57,6 +59,8 @@ namespace Vader
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		QMap<QObject*, QList<QAction*>> EntryServices_;
+
+		MRIMProtocol *Proto_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

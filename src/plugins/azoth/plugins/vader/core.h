@@ -42,13 +42,10 @@ class IProxyObject;
 
 namespace Vader
 {
-	class MRIMProtocol;
-
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		MRIMProtocol *Proto_;
 		IProxyObject *Proxy_;
 		ICoreProxy_ptr CoreProxy_;
 
@@ -61,8 +58,6 @@ namespace Vader
 
 		void SetCoreProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetCoreProxy () const;
-
-		MRIMProtocol* GetProtocol () const;
 
 		void SendEntity (const LeechCraft::Entity&);
 	signals:

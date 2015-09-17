@@ -38,8 +38,7 @@ namespace Azoth
 namespace Vader
 {
 	Core::Core ()
-	: Proto_ (new MRIMProtocol ())
-	, Proxy_ (0)
+	: Proxy_ (0)
 	{
 	}
 
@@ -69,11 +68,6 @@ namespace Vader
 		return CoreProxy_;
 	}
 
-	MRIMProtocol* Core::GetProtocol () const
-	{
-		return Proto_;
-	}
-	
 	void Core::SendEntity (const Entity& e)
 	{
 		emit gotEntity (e);
