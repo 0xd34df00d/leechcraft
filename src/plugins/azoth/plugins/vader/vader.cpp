@@ -55,8 +55,6 @@ namespace Vader
 
 		Core::Instance ().SetCoreProxy (proxy);
 
-		Proto_ = new MRIMProtocol { this };
-
 		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
@@ -65,6 +63,7 @@ namespace Vader
 
 	void Plugin::SecondInit ()
 	{
+		Proto_ = std::make_shared<MRIMProtocol> ();
 		Proto_->Init ();
 	}
 
@@ -113,7 +112,7 @@ namespace Vader
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return { Proto_ };
+		return { Proto_.get () };
 	}
 
 	void Plugin::initPlugin (QObject *proxy)

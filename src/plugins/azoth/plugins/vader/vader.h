@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/iplugin2.h>
@@ -60,7 +61,7 @@ namespace Vader
 
 		QMap<QObject*, QList<QAction*>> EntryServices_;
 
-		MRIMProtocol *Proto_;
+		std::shared_ptr<MRIMProtocol> Proto_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
