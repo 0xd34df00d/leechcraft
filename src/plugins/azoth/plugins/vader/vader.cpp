@@ -64,12 +64,11 @@ namespace Vader
 	void Plugin::SecondInit ()
 	{
 		Proto_ = std::make_shared<MRIMProtocol> ();
-		Proto_->Init ();
 	}
 
 	void Plugin::Release ()
 	{
-		Proto_->Release ();
+		Proto_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

@@ -43,16 +43,12 @@ namespace Vader
 	MRIMProtocol::MRIMProtocol (QObject *parent)
 	: QObject (parent)
 	{
-	}
-
-	void MRIMProtocol::Init ()
-	{
 		RestoreAccounts ();
 	}
 
-	void MRIMProtocol::Release ()
+	MRIMProtocol::~MRIMProtocol ()
 	{
-		Q_FOREACH (auto acc, Accounts_)
+		for (auto acc : Accounts_)
 			emit accountRemoved (acc);
 	}
 

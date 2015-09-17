@@ -48,10 +48,8 @@ namespace Vader
 
 		QList<MRIMAccount*> Accounts_;
 	public:
-		MRIMProtocol (QObject* = 0);
-
-		void Init ();
-		void Release ();
+		MRIMProtocol (QObject* = nullptr);
+		~MRIMProtocol ();
 
 		QObject* GetQObject ();
 		ProtocolFeatures GetFeatures () const;
