@@ -75,7 +75,7 @@ namespace Vader
 		QAction *UpdateNumber_;
 		QAction *SendSMS_;
 
-		SelfAvatarFetcher *AvatarFetcher_;
+		SelfAvatarFetcher * const AvatarFetcher_;
 
 		Media::AudioInfo TuneInfo_;
 	public:

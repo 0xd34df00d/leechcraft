@@ -88,7 +88,7 @@ namespace Vader
 
 	void MRIMBuddy::HandleAttention (const QString& msg)
 	{
-		emit attentionDrawn (msg, QString ());
+		emit attentionDrawn (msg, {});
 	}
 
 	void MRIMBuddy::HandleTune (const QString& tune)
@@ -112,7 +112,7 @@ namespace Vader
 
 	void MRIMBuddy::HandleCPS (ChatPartState cps)
 	{
-		emit chatPartStateChanged (cps, QString ());
+		emit chatPartStateChanged (cps, {});
 	}
 
 	void MRIMBuddy::SetGroup (const QString& group)
@@ -131,7 +131,7 @@ namespace Vader
 		if (!IsAuthorized_)
 			SetGroup (tr ("Unauthorized"));
 		else
-			SetGroup (QString ());
+			SetGroup ({});
 	}
 
 	bool MRIMBuddy::IsAuthorized () const
