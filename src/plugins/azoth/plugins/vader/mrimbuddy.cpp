@@ -217,7 +217,8 @@ namespace Vader
 		VCardDialog *dia = new VCardDialog ();
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->SetInfo (values);
-		dia->SetAvatar (GetAvatar ());
+		// TODO
+		// dia->SetAvatar (GetAvatar ());
 		dia->show ();
 	}
 
@@ -327,11 +328,6 @@ namespace Vader
 		return Status_;
 	}
 
-	QImage MRIMBuddy::GetAvatar () const
-	{
-		return Avatar_;
-	}
-
 	void MRIMBuddy::ShowInfo ()
 	{
 		A_->RequestInfo (GetHumanReadableID ());
@@ -400,8 +396,6 @@ namespace Vader
 
 	void MRIMBuddy::updateAvatar (const QImage& image)
 	{
-		Avatar_ = image;
-		emit avatarChanged (Avatar_);
 	}
 
 	void MRIMBuddy::handleUpdateNumber ()
