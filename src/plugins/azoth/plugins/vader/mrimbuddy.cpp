@@ -62,7 +62,7 @@ namespace Vader
 	{
 		new SelfAvatarFetcher
 		{
-			Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager (),
+			acc->GetParentProtocol ()->GetCoreProxy ()->GetNetworkAccessManager (),
 			this
 		}
 	}

@@ -44,16 +44,6 @@ namespace Vader
 		static Core c;
 		return c;
 	}
-
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-	{
-		CoreProxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetCoreProxy () const
-	{
-		return CoreProxy_;
-	}
 }
 }
 }

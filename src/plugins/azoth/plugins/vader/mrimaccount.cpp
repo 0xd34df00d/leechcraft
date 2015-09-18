@@ -137,9 +137,7 @@ namespace Vader
 		Actions_ << mb;
 		Actions_ << VaderUtil::GetBuddyServices (this, SLOT (handleServices ()));
 
-		const QString& ua = "LeechCraft Azoth " + Core::Instance ()
-				.GetCoreProxy ()->GetVersion ();
-		Conn_->SetUA (ua);
+		Conn_->SetUA ("LeechCraft Azoth " + Proto_->GetCoreProxy ()->GetVersion ());
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowSupportContact",
 				this, "handleShowTechSupport");
@@ -519,9 +517,7 @@ namespace Vader
 					.arg (info.Email_)
 					.arg (reason),
 				PCritical_);
-
-		const auto& proxy = Core::Instance ().GetCoreProxy ();
-		proxy->GetEntityManager ()->HandleEntity (e);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleGotUserInfoError (const QString& id,

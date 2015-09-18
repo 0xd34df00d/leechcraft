@@ -49,9 +49,6 @@ namespace Vader
 		Core ();
 	public:
 		static Core& Instance ();
-
-		void SetCoreProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
