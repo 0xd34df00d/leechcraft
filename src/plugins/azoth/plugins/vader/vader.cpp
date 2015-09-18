@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "mrimprotocol.h"
 #include "mrimbuddy.h"
@@ -146,15 +147,16 @@ namespace Vader
 
 	void Plugin::entryServiceRequested ()
 	{
-		const QString& url = sender ()->property ("URL").toString ();
-		QObject *buddyObj = sender ()->property ("Azoth/Vader/Entry").value<QObject*> ();
-		MRIMBuddy *buddy = qobject_cast<MRIMBuddy*> (buddyObj);
-		const QString& subst = VaderUtil::SubstituteNameDomain (url,
+		const auto& url = sender ()->property ("URL").toString ();
+		const auto buddyObj = sender ()->property ("Azoth/Vader/Entry").value<QObject*> ();
+		const auto buddy = qobject_cast<MRIMBuddy*> (buddyObj);
+		const auto& subst = VaderUtil::SubstituteNameDomain (url,
 				buddy->GetHumanReadableID ());
-		const Entity& e = Util::MakeEntity (QUrl (subst),
-				QString (),
+		const auto& e = Util::MakeEntity (QUrl (subst),
+				{},
 				OnlyHandle | FromUserInitiated);
-		emit gotEntity (e);
+
+		CoreProxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
