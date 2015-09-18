@@ -33,7 +33,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
-#include "core.h"
 
 namespace LeechCraft
 {

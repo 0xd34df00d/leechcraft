@@ -33,6 +33,7 @@
 #include <QAction>
 #include <QInputDialog>
 #include <util/xpc/util.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/azothutil.h>
 #include "proto/headers.h"
@@ -42,7 +43,6 @@
 #include "vaderutil.h"
 #include "groupmanager.h"
 #include "smsdialog.h"
-#include "core.h"
 #include "selfavatarfetcher.h"
 #include "vcarddialog.h"
 
@@ -228,6 +228,8 @@ namespace Vader
 		// TODO
 		// dia->SetAvatar (GetAvatar ());
 		dia->show ();
+
+		//Util::Sequencer (dia, A_->GetParentProtocol ());
 	}
 
 	qint64 MRIMBuddy::GetID () const

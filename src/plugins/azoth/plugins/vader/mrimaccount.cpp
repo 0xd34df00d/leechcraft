@@ -38,7 +38,6 @@
 #include "mrimaccountconfigwidget.h"
 #include "mrimbuddy.h"
 #include "mrimmessage.h"
-#include "core.h"
 #include "groupmanager.h"
 #include "vaderutil.h"
 #include "xmlsettingsmanager.h"
