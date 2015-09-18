@@ -33,6 +33,7 @@
 #include <QAction>
 #include <QInputDialog>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/azothutil.h>
 #include "proto/headers.h"
 #include "proto/connection.h"
@@ -445,7 +446,8 @@ namespace Vader
 		if (!SentSMS_.contains (seq))
 			return;
 
-		Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+		const auto iem = A_->GetParentProtocol ()->GetCoreProxy ()->GetEntityManager ();
+		iem->HandleEntity (Util::MakeNotification ("Azoth",
 					tr ("SMS has been sent to %1.")
 						.arg (SentSMS_.take (seq)),
 				PInfo_));
@@ -456,7 +458,8 @@ namespace Vader
 		if (!SentSMS_.contains (seq))
 			return;
 
-		Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+		const auto iem = A_->GetParentProtocol ()->GetCoreProxy ()->GetEntityManager ();
+		iem->HandleEntity (Util::MakeNotification ("Azoth",
 					tr ("Failed to send SMS to %1: bad parameters.")
 						.arg (SentSMS_.take (seq)),
 				PCritical_));
@@ -467,7 +470,8 @@ namespace Vader
 		if (!SentSMS_.contains (seq))
 			return;
 
-		Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
+		const auto iem = A_->GetParentProtocol ()->GetCoreProxy ()->GetEntityManager ();
+		iem->HandleEntity (Util::MakeNotification ("Azoth",
 					tr ("Failed to send SMS to %1: service unavailable.")
 						.arg (SentSMS_.take (seq)),
 				PCritical_));

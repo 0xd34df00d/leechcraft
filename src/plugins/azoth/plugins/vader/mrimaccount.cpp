@@ -420,7 +420,7 @@ namespace Vader
 					.arg ("<em>" + GetAccountName () + "</em>")
 					.arg ("<em>" + errorString + "</em>"),
 				PCritical_);
-		Core::Instance ().SendEntity (e);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleGotContacts (const QList<Proto::ContactInfo>& contacts)
@@ -549,7 +549,7 @@ namespace Vader
 					.arg (id)
 					.arg (error),
 				PCritical_);
-		Core::Instance ().SendEntity (e);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleGotUserInfo (const QString& from,
@@ -696,7 +696,7 @@ namespace Vader
 					.arg (from)
 					.arg (subj),
 				PInfo_);
-		Core::Instance ().SendEntity (e);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleGotPOPKey (const QString& key)
@@ -708,7 +708,7 @@ namespace Vader
 		const Entity& e = Util::MakeEntity (QUrl (str),
 				QString (),
 				OnlyHandle | FromUserInitiated);
-		Core::Instance ().SendEntity (e);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleOpenMailbox ()
@@ -724,7 +724,7 @@ namespace Vader
 		const Entity& e = Util::MakeEntity (QUrl (subst),
 				QString (),
 				OnlyHandle | FromUserInitiated);
-		Core::Instance ().SendEntity (e);
+		Proto_->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void MRIMAccount::handleShowTechSupport ()
