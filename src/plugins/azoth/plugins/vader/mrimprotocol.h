@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Vader
 {
 	class MRIMAccount;
@@ -46,9 +48,11 @@ namespace Vader
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
+		IProxyObject * const AzothProxy_;
+
 		QList<MRIMAccount*> Accounts_;
 	public:
-		MRIMProtocol (QObject* = nullptr);
+		MRIMProtocol (IProxyObject*, QObject* = nullptr);
 		~MRIMProtocol ();
 
 		QObject* GetQObject ();

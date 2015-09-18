@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "core.h"
 #include "mrimprotocol.h"
 #include "mrimbuddy.h"
@@ -116,7 +117,7 @@ namespace Vader
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetProxy (proxy);
-		Proto_ = std::make_shared<MRIMProtocol> ();
+		Proto_ = std::make_shared<MRIMProtocol> (qobject_cast<IProxyObject*> (proxy));
 	}
 
 	void Plugin::hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr,

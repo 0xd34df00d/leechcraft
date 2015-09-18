@@ -40,8 +40,9 @@ namespace Azoth
 {
 namespace Vader
 {
-	MRIMProtocol::MRIMProtocol (QObject *parent)
-	: QObject (parent)
+	MRIMProtocol::MRIMProtocol (IProxyObject *azothProxy, QObject *parent)
+	: QObject { parent }
+	, AzothProxy_ { azothProxy }
 	{
 		RestoreAccounts ();
 	}
