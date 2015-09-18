@@ -52,8 +52,6 @@ namespace Vader
 
 		void SetCoreProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetCoreProxy () const;
-
-		void SendEntity (const LeechCraft::Entity&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};

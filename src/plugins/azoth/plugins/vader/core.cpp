@@ -54,11 +54,6 @@ namespace Vader
 	{
 		return CoreProxy_;
 	}
-
-	void Core::SendEntity (const Entity& e)
-	{
-		emit gotEntity (e);
-	}
 }
 }
 }
