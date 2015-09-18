@@ -35,7 +35,6 @@
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include "core.h"
 #include "mrimprotocol.h"
 #include "mrimbuddy.h"
 #include "vaderutil.h"
@@ -55,13 +54,6 @@ namespace Vader
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothvadersettings.xml");
 
 		CoreProxy_ = proxy;
-
-		Core::Instance ().SetCoreProxy (proxy);
-
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
 	}
 
 	void Plugin::SecondInit ()
