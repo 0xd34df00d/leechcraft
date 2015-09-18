@@ -53,6 +53,11 @@ namespace Vader
 			emit accountRemoved (acc);
 	}
 
+	IProxyObject* MRIMProtocol::GetAzothProxy () const
+	{
+		return AzothProxy_;
+	}
+
 	QObject* MRIMProtocol::GetQObject ()
 	{
 		return this;

@@ -55,6 +55,8 @@ namespace Vader
 		MRIMProtocol (IProxyObject*, QObject* = nullptr);
 		~MRIMProtocol ();
 
+		IProxyObject* GetAzothProxy () const;
+
 		QObject* GetQObject () override;
 		ProtocolFeatures GetFeatures () const override;
 		QList<QObject*> GetRegisteredAccounts () override;
