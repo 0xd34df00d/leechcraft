@@ -35,7 +35,6 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "proto/connection.h"
 #include "proto/message.h"
-#include "mrimprotocol.h"
 #include "mrimaccountconfigwidget.h"
 #include "mrimbuddy.h"
 #include "mrimmessage.h"
@@ -180,7 +179,7 @@ namespace Vader
 		return this;
 	}
 
-	QObject* MRIMAccount::GetParentProtocol () const
+	MRIMProtocol* MRIMAccount::GetParentProtocol () const
 	{
 		return Proto_;
 	}

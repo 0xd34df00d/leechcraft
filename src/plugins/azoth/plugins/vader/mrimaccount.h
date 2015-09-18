@@ -36,6 +36,7 @@
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include "proto/contactinfo.h"
 #include "proto/headers.h"
+#include "mrimprotocol.h"
 
 namespace LeechCraft
 {
@@ -49,7 +50,6 @@ namespace Vader
 		struct Message;
 	}
 
-	class MRIMProtocol;
 	class MRIMAccountConfigWidget;
 	class MRIMBuddy;
 	class GroupManager;
@@ -87,7 +87,7 @@ namespace Vader
 
 		// IAccount
 		QObject* GetQObject ();
-		QObject* GetParentProtocol () const;
+		MRIMProtocol* GetParentProtocol () const;
 		AccountFeatures GetAccountFeatures () const;
 		QList<QObject*> GetCLEntries ();
 		QString GetAccountName () const;
