@@ -64,6 +64,8 @@ namespace Vader
 
 	void Plugin::SecondInit ()
 	{
+		Proto_ = std::make_shared<MRIMProtocol> (AzothProxy_);
+		emit gotNewProtocols ({ Proto_.get () });
 	}
 
 	void Plugin::Release ()
@@ -111,13 +113,15 @@ namespace Vader
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return { Proto_.get () };
+		if (Proto_)
+			return { Proto_.get () };
+		else
+			return {};
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
-		Core::Instance ().SetProxy (proxy);
-		Proto_ = std::make_shared<MRIMProtocol> (qobject_cast<IProxyObject*> (proxy));
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
 	}
 
 	void Plugin::hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr,

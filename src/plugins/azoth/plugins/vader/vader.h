@@ -42,6 +42,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace Vader
 {
 	class MRIMProtocol;
@@ -62,6 +64,8 @@ namespace Vader
 		QMap<QObject*, QList<QAction*>> EntryServices_;
 
 		std::shared_ptr<MRIMProtocol> Proto_;
+
+		IProxyObject *AzothProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
