@@ -58,7 +58,14 @@ namespace Vader
 	, Info_ (info)
 	, UpdateNumber_ (new QAction (tr ("Update phone number..."), this))
 	, SendSMS_ (new QAction (tr ("Send SMS..."), this))
-	, AvatarFetcher_ (new SelfAvatarFetcher (this))
+	, AvatarFetcher_
+	{
+		new SelfAvatarFetcher
+		{
+			Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager (),
+			this
+		}
+	}
 	{
 		Status_.State_ = VaderUtil::StatusID2State (info.StatusID_);
 

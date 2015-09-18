@@ -35,6 +35,7 @@
 
 class QTimer;
 class QUrl;
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
@@ -46,14 +47,16 @@ namespace Vader
 	{
 		Q_OBJECT
 
-		QTimer *Timer_;
+		QNetworkAccessManager * const NAM_;
+
+		QTimer * const Timer_;
 
 		QString Name_;
 		QString Domain_;
 
 		QDateTime PreviousDateTime_;
 	public:
-		SelfAvatarFetcher (QObject* = 0);
+		SelfAvatarFetcher (QNetworkAccessManager*, QObject* = 0);
 
 		void Restart (const QString&);
 	private:

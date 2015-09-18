@@ -41,9 +41,10 @@ namespace Azoth
 {
 namespace Vader
 {
-	SelfAvatarFetcher::SelfAvatarFetcher (QObject *parent)
-	: QObject (parent)
-	, Timer_ (new QTimer (this))
+	SelfAvatarFetcher::SelfAvatarFetcher (QNetworkAccessManager *nam, QObject *parent)
+	: QObject { parent }
+	, NAM_ { nam }
+	, Timer_ { new QTimer { this } }
 	{
 		connect (Timer_,
 				SIGNAL (timeout ()),
@@ -78,8 +79,7 @@ namespace Vader
 
 	void SelfAvatarFetcher::refetch ()
 	{
-		auto nam = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-		QNetworkReply *reply = nam->head (QNetworkRequest (GetReqURL ()));
+		const auto reply = NAM_->head (QNetworkRequest (GetReqURL ()));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -105,8 +105,7 @@ namespace Vader
 
 		PreviousDateTime_ = dt;
 
-		auto nam = Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ();
-		QNetworkReply *getReply = nam->get (QNetworkRequest (GetReqURL ()));
+		const auto getReply = NAM_->get (QNetworkRequest (GetReqURL ()));
 		connect (getReply,
 				SIGNAL (finished ()),
 				this,
