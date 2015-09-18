@@ -153,7 +153,7 @@ namespace Vader
 				buddy->GetHumanReadableID ());
 		const Entity& e = Util::MakeEntity (QUrl (subst),
 				QString (),
-				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
+				OnlyHandle | FromUserInitiated);
 		emit gotEntity (e);
 	}
 }
