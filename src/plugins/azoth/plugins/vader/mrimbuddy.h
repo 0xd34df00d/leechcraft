@@ -36,6 +36,7 @@
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iadvancedclentry.h>
 #include <interfaces/azoth/ihavecontacttune.h>
+#include <interfaces/azoth/ihaveavatars.h>
 #include "mrimaccount.h"
 #include "proto/contactinfo.h"
 

@@ -32,10 +32,12 @@
 #include <QImage>
 #include <QAction>
 #include <QInputDialog>
+#include <util/sll/functional.h>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "proto/headers.h"
 #include "proto/connection.h"
 #include "mrimaccount.h"
@@ -225,11 +227,12 @@ namespace Vader
 		VCardDialog *dia = new VCardDialog ();
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->SetInfo (values);
-		// TODO
-		// dia->SetAvatar (GetAvatar ());
-		dia->show ();
 
-		//Util::Sequencer (dia, A_->GetParentProtocol ());
+		const auto am = A_->GetParentProtocol ()->GetAzothProxy ()->GetAvatarsManager ();
+		Util::Sequence (dia, am->GetAvatar (this, IHaveAvatars::Size::Full)) >>
+				Util::BindMemFn (&VCardDialog::SetAvatar, dia);
+
+		dia->show ();
 	}
 
 	qint64 MRIMBuddy::GetID () const
