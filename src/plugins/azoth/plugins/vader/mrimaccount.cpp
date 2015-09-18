@@ -708,7 +708,7 @@ namespace Vader
 				.arg (key);
 		const Entity& e = Util::MakeEntity (QUrl (str),
 				QString (),
-				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
+				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 
@@ -724,7 +724,7 @@ namespace Vader
 		qDebug () << Q_FUNC_INFO << subst << url << Login_;
 		const Entity& e = Util::MakeEntity (QUrl (subst),
 				QString (),
-				static_cast<LeechCraft::TaskParameters> (OnlyHandle | FromUserInitiated));
+				OnlyHandle | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 

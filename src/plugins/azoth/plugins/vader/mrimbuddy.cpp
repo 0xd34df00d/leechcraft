@@ -445,7 +445,7 @@ namespace Vader
 		if (!SentSMS_.contains (seq))
 			return;
 
-		Core::Instance ().SendEntity (LeechCraft::Util::MakeNotification ("Azoth",
+		Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 					tr ("SMS has been sent to %1.")
 						.arg (SentSMS_.take (seq)),
 				PInfo_));
@@ -456,7 +456,7 @@ namespace Vader
 		if (!SentSMS_.contains (seq))
 			return;
 
-		Core::Instance ().SendEntity (LeechCraft::Util::MakeNotification ("Azoth",
+		Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 					tr ("Failed to send SMS to %1: bad parameters.")
 						.arg (SentSMS_.take (seq)),
 				PCritical_));
@@ -467,7 +467,7 @@ namespace Vader
 		if (!SentSMS_.contains (seq))
 			return;
 
-		Core::Instance ().SendEntity (LeechCraft::Util::MakeNotification ("Azoth",
+		Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 					tr ("Failed to send SMS to %1: service unavailable.")
 						.arg (SentSMS_.take (seq)),
 				PCritical_));
