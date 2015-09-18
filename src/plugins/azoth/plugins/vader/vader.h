@@ -92,7 +92,6 @@ namespace Vader
 				QObject *entry);
 		void entryServiceRequested ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
 		void gotNewProtocols (const QList<QObject*>&);
 	};
 }
