@@ -55,23 +55,23 @@ namespace Vader
 		MRIMProtocol (IProxyObject*, QObject* = nullptr);
 		~MRIMProtocol ();
 
-		QObject* GetQObject ();
-		ProtocolFeatures GetFeatures () const;
-		QList<QObject*> GetRegisteredAccounts ();
-		QObject* GetParentProtocolPlugin () const;
-		QString GetProtocolName () const;
-		QIcon GetProtocolIcon () const;
-		QByteArray GetProtocolID () const;
-		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions);
-		void RegisterAccount (const QString&, const QList<QWidget*>&);
-		void RemoveAccount (QObject*);
+		QObject* GetQObject () override;
+		ProtocolFeatures GetFeatures () const override;
+		QList<QObject*> GetRegisteredAccounts () override;
+		QObject* GetParentProtocolPlugin () const override;
+		QString GetProtocolName () const override;
+		QIcon GetProtocolIcon () const override;
+		QByteArray GetProtocolID () const override;
+		QList<QWidget*> GetAccountRegistrationWidgets (AccountAddOptions) override;
+		void RegisterAccount (const QString&, const QList<QWidget*>&) override;
+		void RemoveAccount (QObject*) override;
 	private:
 		void RestoreAccounts ();
 	private slots:
 		void saveAccounts ();
 	signals:
-		void accountAdded (QObject*);
-		void accountRemoved (QObject*);
+		void accountAdded (QObject*) override;
+		void accountRemoved (QObject*) override;
 	};
 }
 }
