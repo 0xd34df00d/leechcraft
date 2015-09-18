@@ -54,6 +54,8 @@ namespace Vader
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothvadersettings.xml");
 
+		CoreProxy_ = proxy;
+
 		Core::Instance ().SetCoreProxy (proxy);
 
 		connect (&Core::Instance (),
@@ -64,7 +66,7 @@ namespace Vader
 
 	void Plugin::SecondInit ()
 	{
-		Proto_ = std::make_shared<MRIMProtocol> (AzothProxy_);
+		Proto_ = std::make_shared<MRIMProtocol> (AzothProxy_, CoreProxy_);
 		emit gotNewProtocols ({ Proto_.get () });
 	}
 

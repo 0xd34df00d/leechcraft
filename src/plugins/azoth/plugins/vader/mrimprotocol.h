@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/azoth/iprotocol.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -49,13 +50,15 @@ namespace Vader
 		Q_INTERFACES (LeechCraft::Azoth::IProtocol)
 
 		IProxyObject * const AzothProxy_;
+		const ICoreProxy_ptr CoreProxy_;
 
 		QList<MRIMAccount*> Accounts_;
 	public:
-		MRIMProtocol (IProxyObject*, QObject* = nullptr);
+		MRIMProtocol (IProxyObject*, const ICoreProxy_ptr&, QObject* = nullptr);
 		~MRIMProtocol ();
 
 		IProxyObject* GetAzothProxy () const;
+		const ICoreProxy_ptr& GetCoreProxy () const;
 
 		QObject* GetQObject () override;
 		ProtocolFeatures GetFeatures () const override;

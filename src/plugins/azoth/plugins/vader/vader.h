@@ -59,6 +59,7 @@ namespace Vader
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Vader")
 
+		ICoreProxy_ptr CoreProxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		QMap<QObject*, QList<QAction*>> EntryServices_;
