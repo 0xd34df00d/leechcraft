@@ -63,7 +63,6 @@ namespace Vader
 
 	void Plugin::SecondInit ()
 	{
-		Proto_ = std::make_shared<MRIMProtocol> ();
 	}
 
 	void Plugin::Release ()
@@ -117,6 +116,7 @@ namespace Vader
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		Core::Instance ().SetProxy (proxy);
+		Proto_ = std::make_shared<MRIMProtocol> ();
 	}
 
 	void Plugin::hookEntryActionAreasRequested (LeechCraft::IHookProxy_ptr,
