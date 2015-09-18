@@ -19,7 +19,6 @@ include_directories (${AZOTH_INCLUDE_DIR}
 
 set (VADER_SRCS
 	vader.cpp
-	core.cpp
 	mrimprotocol.cpp
 	mrimaccount.cpp
 	mrimaccountconfigwidget.cpp
