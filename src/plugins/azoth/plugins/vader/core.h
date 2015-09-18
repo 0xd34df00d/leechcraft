@@ -38,23 +38,17 @@ struct Entity;
 
 namespace Azoth
 {
-class IProxyObject;
-
 namespace Vader
 {
 	class Core : public QObject
 	{
 		Q_OBJECT
 
-		IProxyObject *Proxy_;
 		ICoreProxy_ptr CoreProxy_;
 
 		Core ();
 	public:
 		static Core& Instance ();
-
-		void SetProxy (QObject*);
-		IProxyObject* GetProxy () const;
 
 		void SetCoreProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetCoreProxy () const;

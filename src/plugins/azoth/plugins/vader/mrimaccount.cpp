@@ -150,9 +150,9 @@ namespace Vader
 	{
 		Login_ = w->GetLogin ();
 
-		const QString& pass = w->GetPassword ();
+		const auto& pass = w->GetPassword ();
 		if (!pass.isEmpty ())
-			Core::Instance ().GetProxy ()->SetPassword (pass, this);
+			Proto_->GetAzothProxy ()->SetPassword (pass, this);
 	}
 
 	Proto::Connection* MRIMAccount::GetConnection () const
@@ -238,7 +238,7 @@ namespace Vader
 	{
 		if (!Conn_->IsConnected ())
 		{
-			const QString& pass = Core::Instance ().GetProxy ()->GetAccountPassword (this);
+			const auto& pass = Proto_->GetAzothProxy ()->GetAccountPassword (this);
 			Conn_->SetCredentials (Login_, pass);
 		}
 

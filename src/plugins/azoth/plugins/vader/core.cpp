@@ -28,8 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <interfaces/azoth/iproxyobject.h>
-#include "mrimprotocol.h"
 
 namespace LeechCraft
 {
@@ -38,7 +36,6 @@ namespace Azoth
 namespace Vader
 {
 	Core::Core ()
-	: Proxy_ (0)
 	{
 	}
 
@@ -48,16 +45,6 @@ namespace Vader
 		return c;
 	}
 
-	void Core::SetProxy (QObject *proxy)
-	{
-		Proxy_ = qobject_cast<IProxyObject*> (proxy);
-	}
-
-	IProxyObject* Core::GetProxy() const
-	{
-		return Proxy_;
-	}
-	
 	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
 	{
 		CoreProxy_ = proxy;
