@@ -55,11 +55,11 @@ namespace Vader
 
 		struct Urls
 		{
-			const QUrl SmallUrl_;
-			const QUrl BigUrl_;
-		} const Urls_;
+			QUrl SmallUrl_;
+			QUrl BigUrl_;
 
-		friend Urls MakeUrls (const QString&);
+			Urls (const QString&);
+		} const Urls_;
 
 		QDateTime PreviousDateTime_;
 	public:

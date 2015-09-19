@@ -40,7 +40,7 @@ namespace Azoth
 {
 namespace Vader
 {
-	SelfAvatarFetcher::Urls MakeUrls (const QString& full)
+	SelfAvatarFetcher::Urls::Urls (const QString& full)
 	{
 		auto split = full.split ('@', QString::SkipEmptyParts);
 		if (split.size () != 2)
@@ -48,7 +48,7 @@ namespace Vader
 			qWarning () << Q_FUNC_INFO
 					<< "invalid full address"
 					<< full;
-			return {};
+			return;
 		}
 
 		auto& name = split [0];
@@ -58,11 +58,8 @@ namespace Vader
 
 		const auto& base = "http://obraz.foto.mail.ru/" + domain + "/" + name + "/_mrimavatar";
 
-		return
-		{
-			base + "small",
-			base + "big"
-		};
+		SmallUrl_ = base + "small";
+		BigUrl_ = base + "big";
 	}
 
 	SelfAvatarFetcher::SelfAvatarFetcher (QNetworkAccessManager *nam,
@@ -71,7 +68,7 @@ namespace Vader
 	, NAM_ { nam }
 	, Timer_ { new QTimer { this } }
 	, FullAddress_ { full }
-	, Urls_ { MakeUrls (full) }
+	, Urls_ { full }
 	{
 		connect (Timer_,
 				SIGNAL (timeout ()),
