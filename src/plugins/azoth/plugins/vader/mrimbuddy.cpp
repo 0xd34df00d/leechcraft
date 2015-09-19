@@ -65,6 +65,7 @@ namespace Vader
 		new SelfAvatarFetcher
 		{
 			acc->GetParentProtocol ()->GetCoreProxy ()->GetNetworkAccessManager (),
+			info.Email_,
 			this
 		}
 	}
@@ -85,7 +86,6 @@ namespace Vader
 				SIGNAL (gotImage (QImage)),
 				this,
 				SLOT (updateAvatar (QImage)));
-		AvatarFetcher_->Restart (info.Email_);
 
 		UpdateClientVersion ();
 	}

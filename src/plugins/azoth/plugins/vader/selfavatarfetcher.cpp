@@ -40,7 +40,8 @@ namespace Azoth
 {
 namespace Vader
 {
-	SelfAvatarFetcher::SelfAvatarFetcher (QNetworkAccessManager *nam, QObject *parent)
+	SelfAvatarFetcher::SelfAvatarFetcher (QNetworkAccessManager *nam,
+			const QString& full, QObject *parent)
 	: QObject { parent }
 	, NAM_ { nam }
 	, Timer_ { new QTimer { this } }
@@ -50,20 +51,14 @@ namespace Vader
 				this,
 				SLOT (refetch ()));
 		Timer_->setInterval (120 * 60 * 1000);
-	}
+		Timer_->start ();
 
-	void SelfAvatarFetcher::Restart (const QString& full)
-	{
-		const QStringList& split = full.split ('@', QString::SkipEmptyParts);
+		const auto& split = full.split ('@', QString::SkipEmptyParts);
 
 		Name_ = split.value (0);
 		Domain_ = split.value (1);
 		if (Domain_.endsWith (".ru"))
 			Domain_.chop (3);
-
-		if (Timer_->isActive ())
-			Timer_->stop ();
-		Timer_->start ();
 
 		QTimer::singleShot (2000,
 				this,

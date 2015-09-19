@@ -56,9 +56,7 @@ namespace Vader
 
 		QDateTime PreviousDateTime_;
 	public:
-		SelfAvatarFetcher (QNetworkAccessManager*, QObject* = 0);
-
-		void Restart (const QString&);
+		SelfAvatarFetcher (QNetworkAccessManager*, const QString&, QObject* = nullptr);
 	private:
 		QUrl GetReqURL () const;
 	private slots:
