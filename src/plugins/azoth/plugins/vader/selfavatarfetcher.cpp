@@ -114,6 +114,8 @@ namespace Vader
 
 		AvatarsTimestampStorage {}.SetTimestamp (FullAddress_, dt);
 
+		emit avatarChanged ();
+
 		const auto getReply = NAM_->get (QNetworkRequest (Urls_.SmallUrl_));
 		connect (getReply,
 				SIGNAL (finished ()),
