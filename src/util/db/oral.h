@@ -1243,7 +1243,7 @@ namespace oral
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
 		const QList<QString> fields = detail::GetFieldsNames<T> {} ();
-		const QList<QString> boundFields = Util::Map (fields, [] (const QString& str) -> QString { return ':' + str; });
+		const QList<QString> boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
 
 		const auto& table = T::ClassName ();
 
