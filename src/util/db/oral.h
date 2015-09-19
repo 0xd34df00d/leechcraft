@@ -48,6 +48,7 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QVariant>
+#include <QDateTime>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
@@ -192,7 +193,7 @@ namespace oral
 	template<>
 	struct Type2Name<QDateTime>
 	{
-		QString operator() () const { return "DATETIME"; }
+		QString operator() () const { return "TEXT"; }
 	};
 
 	template<typename T>
@@ -232,6 +233,15 @@ namespace oral
 		}
 	};
 
+	template<>
+	struct ToVariant<QDateTime>
+	{
+		QVariant operator() (const QDateTime& t) const
+		{
+			return t.toString (Qt::ISODate);
+		}
+	};
+
 	template<typename T>
 	struct ToVariant<Unique<T>>
 	{
@@ -265,6 +275,15 @@ namespace oral
 		T operator() (const QVariant& var) const
 		{
 			return var.value<T> ();
+		}
+	};
+
+	template<>
+	struct FromVariant<QDateTime>
+	{
+		QDateTime operator() (const QVariant& var) const
+		{
+			return QDateTime::fromString (var.toString (), Qt::ISODate);
 		}
 	};
 
