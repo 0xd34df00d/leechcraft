@@ -3,6 +3,7 @@ set (DB_SRCS
 	backendselector.cpp
 	dblock.cpp
 	util.cpp
+	closingdb.cpp
 	)
 set (DB_FORMS
 	backendselector.ui
