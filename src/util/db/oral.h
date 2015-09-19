@@ -982,6 +982,16 @@ namespace oral
 
 				return result.value (0);
 			}
+
+			template<int Idx, ExprType Type, typename L, typename R>
+			boost::optional<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx> p, const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& result = Select_ (p, tree);
+				if (result.isEmpty ())
+					return {};
+
+				return result.value (0);
+			}
 		};
 
 		template<typename T>
