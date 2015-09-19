@@ -57,7 +57,7 @@ namespace Azoth
 	public:
 		AvatarsStorage (QObject* = nullptr);
 
-		QFuture<void> SetAvatar (const ICLEntry*, IHaveAvatars::Size, const QImage&);
+		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QImage&);
 		QFuture<void> SetAvatar (const QString&, IHaveAvatars::Size, const QByteArray&);
 		QFuture<MaybeImage> GetAvatar (const ICLEntry*, IHaveAvatars::Size);
 		QFuture<MaybeByteArray> GetAvatar (const QString&, IHaveAvatars::Size);

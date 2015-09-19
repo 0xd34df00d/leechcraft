@@ -57,14 +57,12 @@ namespace Azoth
 		}
 	}
 
-	QFuture<void> AvatarsStorage::SetAvatar (const ICLEntry *entry,
+	QFuture<void> AvatarsStorage::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QImage& image)
 	{
 		QByteArray data;
 		QBuffer buffer { &data };
 		image.save (&buffer, "PNG", 0);
-
-		const auto& entryId = entry->GetEntryID ();
 
 		Cache_.insert (entryId, new CacheValue_t { image }, GetImageCost (image));
 
