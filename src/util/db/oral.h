@@ -45,6 +45,7 @@
 #include <QDateTime>
 #include <QPair>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVariant>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
@@ -1247,7 +1248,7 @@ namespace oral
 		const auto& table = T::ClassName ();
 
 		const detail::CachedFieldsData cachedData { table, db, fields, boundFields };
-		if (!db.tables ().contains (table))
+		if (db.record (table).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
 		const auto& selectr = detail::AdaptSelectAll<T> (cachedData);
