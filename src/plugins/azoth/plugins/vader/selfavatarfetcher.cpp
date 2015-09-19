@@ -70,6 +70,7 @@ namespace Vader
 	, Timer_ { new QTimer { this } }
 	, FullAddress_ { full }
 	, Urls_ { full }
+	, PreviousDateTime_ { AvatarsTimestampStorage {}.GetTimestamp (full).get_value_or ({}) }
 	{
 		connect (Timer_,
 				SIGNAL (timeout ()),
