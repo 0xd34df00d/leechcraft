@@ -1247,9 +1247,8 @@ namespace oral
 		const auto& table = T::ClassName ();
 
 		const detail::CachedFieldsData cachedData { table, db, fields, boundFields };
-		const auto& createTable = detail::AdaptCreateTable<T> (cachedData);
 		if (!db.tables ().contains (table))
-			RunTextQuery (db, createTable);
+			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
 		const auto& selectr = detail::AdaptSelectAll<T> (cachedData);
 		const auto& insertr = detail::AdaptInsert<T> (cachedData);
