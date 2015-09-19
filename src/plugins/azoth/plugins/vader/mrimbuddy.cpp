@@ -82,6 +82,14 @@ namespace Vader
 				this,
 				SLOT (handleSendSMS ()));
 
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { emit avatarChanged (this); },
+			AvatarFetcher_,
+			SIGNAL (avatarChanged ()),
+			this
+		};
+
 		connect (AvatarFetcher_,
 				SIGNAL (gotImage (QImage)),
 				this,

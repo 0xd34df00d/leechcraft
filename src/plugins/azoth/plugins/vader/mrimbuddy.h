@@ -170,6 +170,8 @@ namespace Vader
 		void activityChanged (const QString&);
 		void tuneChanged (const QString&);
 		void locationChanged (const QString&);
+
+		void avatarChanged (QObject*);
 	};
 }
 }
