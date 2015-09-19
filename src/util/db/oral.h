@@ -862,8 +862,6 @@ namespace oral
 
 			const auto& sql = tree.ToSql (state);
 
-			qDebug () << sql << state.BoundMembers_;
-
 			return
 			{
 				sql,
