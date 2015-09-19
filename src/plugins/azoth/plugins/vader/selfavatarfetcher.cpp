@@ -45,6 +45,13 @@ namespace Vader
 		QUrl GetSmallUrl (const QString& full)
 		{
 			auto split = full.split ('@', QString::SkipEmptyParts);
+			if (split.size () != 2)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "invalid full address"
+						<< full;
+				return {};
+			}
 
 			auto& name = split [0];
 			auto& domain = split [1];
