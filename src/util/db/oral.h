@@ -1205,22 +1205,18 @@ namespace oral
 		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
 		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
 
-		QString CreateTable_;
-
 		ObjectInfo (decltype (DoSelectAll_) doSel,
 				decltype (DoInsert_) doIns,
 				decltype (DoUpdate_) doUpdate,
 				decltype (DoDelete_) doDelete,
 				decltype (DoSelectByFields_) selectByFields,
-				decltype (DoDeleteByFields_) deleteByFields,
-				decltype (CreateTable_) createTable)
+				decltype (DoDeleteByFields_) deleteByFields)
 		: DoSelectAll_ (doSel)
 		, DoInsert_ (doIns)
 		, DoUpdate_ (doUpdate)
 		, DoDelete_ (doDelete)
 		, DoSelectByFields_ (selectByFields)
 		, DoDeleteByFields_ (deleteByFields)
-		, CreateTable_ (createTable)
 		{
 		}
 	};
@@ -1270,8 +1266,7 @@ namespace oral
 			updater,
 			deleter,
 			selectByVal,
-			deleteByVal,
-			createTable
+			deleteByVal
 		};
 
 		detail::AdaptSelectRef<T> (cachedData, info);
