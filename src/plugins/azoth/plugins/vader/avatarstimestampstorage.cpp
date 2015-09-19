@@ -87,6 +87,18 @@ namespace Vader
 
 		Adapted_ = Util::oral::AdaptPtr<AvatarTimestamp> (DB_);
 	}
+
+	boost::optional<QDateTime> AvatarsTimestampStorage::GetTimestamp (const QString& email)
+	{
+		namespace sph = Util::oral::sph;
+
+		return Adapted_->DoSelectOneByFields_ (sph::_1, sph::_0 == email);
+	}
+
+	void AvatarsTimestampStorage::SetTimestamp (const QString& full, const QDateTime& dt)
+	{
+		Adapted_->DoInsert_ ({ full, dt }, Util::oral::InsertAction::Replace);
+	}
 }
 }
 }

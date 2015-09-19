@@ -29,9 +29,12 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QSqlDatabase>
 #include <util/db/oralfwd.h>
 #include <util/db/closingdb.h>
+
+class QDateTime;
 
 namespace LeechCraft
 {
@@ -49,6 +52,9 @@ namespace Vader
 		Util::oral::ObjectInfo_ptr<AvatarTimestamp> Adapted_;
 	public:
 		AvatarsTimestampStorage ();
+
+		boost::optional<QDateTime> GetTimestamp (const QString&);
+		void SetTimestamp (const QString&, const QDateTime&);
 	};
 }
 }
