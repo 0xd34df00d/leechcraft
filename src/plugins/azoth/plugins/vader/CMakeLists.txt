@@ -67,4 +67,4 @@ target_link_libraries (leechcraft_azoth_vader
 install (TARGETS leechcraft_azoth_vader DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothvadersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_vader Network Widgets)
+FindQtLibs (leechcraft_azoth_vader Network Sql Widgets)
