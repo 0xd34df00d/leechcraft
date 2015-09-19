@@ -40,26 +40,29 @@ namespace Azoth
 {
 namespace Vader
 {
-	namespace
+	SelfAvatarFetcher::Urls MakeUrls (const QString& full)
 	{
-		QUrl GetSmallUrl (const QString& full)
+		auto split = full.split ('@', QString::SkipEmptyParts);
+		if (split.size () != 2)
 		{
-			auto split = full.split ('@', QString::SkipEmptyParts);
-			if (split.size () != 2)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "invalid full address"
-						<< full;
-				return {};
-			}
-
-			auto& name = split [0];
-			auto& domain = split [1];
-			if (domain.endsWith (".ru"))
-				domain.chop (3);
-
-			return "http://obraz.foto.mail.ru/" + domain + "/" + name + "/_mrimavatarsmall";
+			qWarning () << Q_FUNC_INFO
+					<< "invalid full address"
+					<< full;
+			return {};
 		}
+
+		auto& name = split [0];
+		auto& domain = split [1];
+		if (domain.endsWith (".ru"))
+			domain.chop (3);
+
+		const auto& base = "http://obraz.foto.mail.ru/" + domain + "/" + name + "/_mrimavatar";
+
+		return
+		{
+			base + "small",
+			base + "big"
+		};
 	}
 
 	SelfAvatarFetcher::SelfAvatarFetcher (QNetworkAccessManager *nam,
@@ -68,7 +71,7 @@ namespace Vader
 	, NAM_ { nam }
 	, Timer_ { new QTimer { this } }
 	, FullAddress_ { full }
-	, SmallUrl_ { GetSmallUrl (full) }
+	, Urls_ { MakeUrls (full) }
 	{
 		connect (Timer_,
 				SIGNAL (timeout ()),
@@ -85,7 +88,7 @@ namespace Vader
 
 	void SelfAvatarFetcher::refetch ()
 	{
-		const auto reply = NAM_->head (QNetworkRequest (SmallUrl_));
+		const auto reply = NAM_->head (QNetworkRequest (Urls_.SmallUrl_));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -110,7 +113,7 @@ namespace Vader
 
 		PreviousDateTime_ = dt;
 
-		const auto getReply = NAM_->get (QNetworkRequest (SmallUrl_));
+		const auto getReply = NAM_->get (QNetworkRequest (Urls_.SmallUrl_));
 		connect (getReply,
 				SIGNAL (finished ()),
 				this,

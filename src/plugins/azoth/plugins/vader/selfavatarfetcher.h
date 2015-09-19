@@ -52,7 +52,14 @@ namespace Vader
 		QTimer * const Timer_;
 
 		const QString FullAddress_;
-		const QUrl SmallUrl_;
+
+		struct Urls
+		{
+			const QUrl SmallUrl_;
+			const QUrl BigUrl_;
+		} const Urls_;
+
+		friend Urls MakeUrls (const QString&);
 
 		QDateTime PreviousDateTime_;
 	public:
