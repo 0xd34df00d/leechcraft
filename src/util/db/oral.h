@@ -936,6 +936,31 @@ namespace oral
 				treeResult.second (query);
 				return PerformSelect<T> (query);
 			}
+
+			template<int Idx, ExprType Type, typename L, typename R>
+			QList<ValueAtC_t<T, Idx>> operator() (sph::pos<Idx>, const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& treeResult = HandleExprTree<T> (tree);
+
+				const auto& selectOne = "SELECT " + Cached_.Fields_.value (Idx) +
+						" FROM " + Cached_.Table_ +
+						" WHERE " + treeResult.first + ";";
+
+				const auto query = std::make_shared<QSqlQuery> (Cached_.DB_);
+				query->prepare (selectOne);
+				treeResult.second (query);
+
+				if (!query->exec ())
+					throw QueryException ("fetch query execution failed", query);
+
+				using Type_t = ValueAtC_t<T, Idx>;
+
+				QList<Type_t> result;
+				while (query->next ())
+					result << FromVariant<Type_t> {} (query->value (0));
+				query->finish ();
+				return result;
+			}
 		};
 
 		template<typename T>
