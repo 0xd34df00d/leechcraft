@@ -33,6 +33,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include "avatarstimestampstorage.h"
 
 namespace LeechCraft
 {
@@ -109,6 +110,8 @@ namespace Vader
 			return;
 
 		PreviousDateTime_ = dt;
+
+		AvatarsTimestampStorage {}.SetTimestamp (FullAddress_, dt);
 
 		const auto getReply = NAM_->get (QNetworkRequest (Urls_.SmallUrl_));
 		connect (getReply,
