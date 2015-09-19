@@ -30,6 +30,7 @@ set (VADER_SRCS
 	selfavatarfetcher.cpp
 	xmlsettingsmanager.cpp
 	vcarddialog.cpp
+	avatarstimestampstorage.cpp
 	proto/headers.cpp
 	proto/conversions.cpp
 	proto/connection.cpp
