@@ -874,7 +874,27 @@ namespace oral
 				}
 			};
 		}
+	}
 
+	namespace sph
+	{
+		template<int Idx>
+		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>>;
+
+		static constexpr pos<0> _0 = {};
+		static constexpr pos<1> _1 = {};
+		static constexpr pos<2> _2 = {};
+		static constexpr pos<3> _3 = {};
+		static constexpr pos<4> _4 = {};
+
+#if __cpp_variable_templates >= 201304
+		template<int Idx>
+		static constexpr pos<Idx> _ = {};
+#endif
+	};
+
+	namespace detail
+	{
 		template<typename T>
 		class SelectByFieldsWrapper
 		{
@@ -1251,23 +1271,6 @@ namespace oral
 		, DoDeleteByFields_ (deleteByFields)
 		{
 		}
-	};
-
-	namespace sph
-	{
-		template<int Idx>
-		using pos = detail::ExprTree<detail::ExprType::LeafStaticPlaceholder, boost::mpl::int_<Idx>>;
-
-		static constexpr pos<0> _0 = {};
-		static constexpr pos<1> _1 = {};
-		static constexpr pos<2> _2 = {};
-		static constexpr pos<3> _3 = {};
-		static constexpr pos<4> _4 = {};
-
-#if __cpp_variable_templates >= 201304
-		template<int Idx>
-		static constexpr pos<Idx> _ = {};
-#endif
 	};
 
 	template<typename T>
