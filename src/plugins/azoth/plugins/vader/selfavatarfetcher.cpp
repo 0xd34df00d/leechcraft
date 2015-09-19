@@ -85,6 +85,11 @@ namespace Vader
 				SLOT (refetch ()));
 	}
 
+	bool SelfAvatarFetcher::IsValid () const
+	{
+		return Urls_.SmallUrl_.isValid ();
+	}
+
 	void SelfAvatarFetcher::refetch ()
 	{
 		const auto reply = NAM_->head (QNetworkRequest (Urls_.SmallUrl_));
