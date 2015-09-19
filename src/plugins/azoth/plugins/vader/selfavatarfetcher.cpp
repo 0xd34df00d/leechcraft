@@ -40,11 +40,28 @@ namespace Azoth
 {
 namespace Vader
 {
+	namespace
+	{
+		QUrl GetSmallUrl (const QString& full)
+		{
+			auto split = full.split ('@', QString::SkipEmptyParts);
+
+			auto& name = split [0];
+			auto& domain = split [1];
+			if (domain.endsWith (".ru"))
+				domain.chop (3);
+
+			return "http://obraz.foto.mail.ru/" + domain + "/" + name + "/_mrimavatarsmall";
+		}
+	}
+
 	SelfAvatarFetcher::SelfAvatarFetcher (QNetworkAccessManager *nam,
 			const QString& full, QObject *parent)
 	: QObject { parent }
 	, NAM_ { nam }
 	, Timer_ { new QTimer { this } }
+	, FullAddress_ { full }
+	, SmallUrl_ { GetSmallUrl (full) }
 	{
 		connect (Timer_,
 				SIGNAL (timeout ()),
@@ -53,27 +70,15 @@ namespace Vader
 		Timer_->setInterval (120 * 60 * 1000);
 		Timer_->start ();
 
-		const auto& split = full.split ('@', QString::SkipEmptyParts);
-
-		Name_ = split.value (0);
-		Domain_ = split.value (1);
-		if (Domain_.endsWith (".ru"))
-			Domain_.chop (3);
 
 		QTimer::singleShot (2000,
 				this,
 				SLOT (refetch ()));
 	}
 
-	QUrl SelfAvatarFetcher::GetReqURL () const
-	{
-		QString urlStr = "http://obraz.foto.mail.ru/" + Domain_ + "/" + Name_ + "/_mrimavatarsmall";
-		return QUrl (urlStr);
-	}
-
 	void SelfAvatarFetcher::refetch ()
 	{
-		const auto reply = NAM_->head (QNetworkRequest (GetReqURL ()));
+		const auto reply = NAM_->head (QNetworkRequest (SmallUrl_));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -88,8 +93,7 @@ namespace Vader
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "avatar not found for"
-					<< Name_
-					<< Domain_;
+					<< FullAddress_;
 			return;
 		}
 
@@ -99,7 +103,7 @@ namespace Vader
 
 		PreviousDateTime_ = dt;
 
-		const auto getReply = NAM_->get (QNetworkRequest (GetReqURL ()));
+		const auto getReply = NAM_->get (QNetworkRequest (SmallUrl_));
 		connect (getReply,
 				SIGNAL (finished ()),
 				this,

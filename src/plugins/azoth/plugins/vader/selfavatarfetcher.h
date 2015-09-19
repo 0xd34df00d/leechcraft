@@ -32,9 +32,9 @@
 #include <QObject>
 #include <QImage>
 #include <QDateTime>
+#include <QUrl>
 
 class QTimer;
-class QUrl;
 class QNetworkAccessManager;
 
 namespace LeechCraft
@@ -51,8 +51,8 @@ namespace Vader
 
 		QTimer * const Timer_;
 
-		QString Name_;
-		QString Domain_;
+		const QString FullAddress_;
+		const QUrl SmallUrl_;
 
 		QDateTime PreviousDateTime_;
 	public:
