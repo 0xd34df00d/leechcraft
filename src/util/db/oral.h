@@ -41,6 +41,7 @@
 #include <boost/fusion/include/zip.hpp>
 #include <boost/fusion/container/generation/make_vector.hpp>
 #include <boost/variant/variant.hpp>
+#include <boost/optional.hpp>
 #include <QStringList>
 #include <QDateTime>
 #include <QPair>
@@ -901,6 +902,27 @@ namespace oral
 		};
 
 		template<typename T>
+		class SelectOneByFieldsWrapper
+		{
+			const SelectByFieldsWrapper<T> Select_;
+		public:
+			SelectOneByFieldsWrapper (const CachedFieldsData& data)
+			: Select_ { data }
+			{
+			}
+
+			template<ExprType Type, typename L, typename R>
+			boost::optional<T> operator() (const ExprTree<Type, L, R>& tree) const
+			{
+				const auto& result = Select_ (tree);
+				if (result.isEmpty ())
+					return {};
+
+				return result.value (0);
+			}
+		};
+
+		template<typename T>
 		class DeleteByFieldsWrapper
 		{
 			const CachedFieldsData Cached_;
@@ -927,6 +949,12 @@ namespace oral
 
 		template<typename T>
 		SelectByFieldsWrapper<T> AdaptSelectFields (const CachedFieldsData& data)
+		{
+			return { data };
+		}
+
+		template<typename T>
+		SelectOneByFieldsWrapper<T> AdaptSelectOneFields (const CachedFieldsData& data)
 		{
 			return { data };
 		}
@@ -1204,6 +1232,7 @@ namespace oral
 		std::function<void (T)> DoDelete_;
 
 		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
+		detail::SelectOneByFieldsWrapper<T> DoSelectOneByFields_;
 		detail::DeleteByFieldsWrapper<T> DoDeleteByFields_;
 
 		ObjectInfo (decltype (DoSelectAll_) doSel,
@@ -1211,12 +1240,14 @@ namespace oral
 				decltype (DoUpdate_) doUpdate,
 				decltype (DoDelete_) doDelete,
 				decltype (DoSelectByFields_) selectByFields,
+				decltype (DoSelectOneByFields_) selectOneByFields,
 				decltype (DoDeleteByFields_) deleteByFields)
 		: DoSelectAll_ (doSel)
 		, DoInsert_ (doIns)
 		, DoUpdate_ (doUpdate)
 		, DoDelete_ (doDelete)
 		, DoSelectByFields_ (selectByFields)
+		, DoSelectOneByFields_ (selectOneByFields)
 		, DoDeleteByFields_ (deleteByFields)
 		{
 		}
@@ -1257,6 +1288,7 @@ namespace oral
 		const auto& deleter = detail::AdaptDelete<T> (cachedData);
 
 		const auto& selectByVal = detail::AdaptSelectFields<T> (cachedData);
+		const auto& selectOneByVal = detail::AdaptSelectOneFields<T> (cachedData);
 		const auto& deleteByVal = detail::AdaptDeleteFields<T> (cachedData);
 
 		ObjectInfo<T> info
@@ -1266,6 +1298,7 @@ namespace oral
 			updater,
 			deleter,
 			selectByVal,
+			selectOneByVal,
 			deleteByVal
 		};
 
