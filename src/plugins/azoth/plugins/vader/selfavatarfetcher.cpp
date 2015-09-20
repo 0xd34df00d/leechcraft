@@ -33,6 +33,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <util/threads/futures.h>
 #include "avatarstimestampstorage.h"
 
 namespace LeechCraft
@@ -79,7 +80,6 @@ namespace Vader
 		Timer_->setInterval (120 * 60 * 1000);
 		Timer_->start ();
 
-
 		QTimer::singleShot (2000,
 				this,
 				SLOT (refetch ()));
@@ -88,6 +88,49 @@ namespace Vader
 	bool SelfAvatarFetcher::IsValid () const
 	{
 		return Urls_.SmallUrl_.isValid ();
+	}
+
+	QFuture<QImage> SelfAvatarFetcher::FetchAvatar (IHaveAvatars::Size size) const
+	{
+		QUrl url;
+		switch (size)
+		{
+		case IHaveAvatars::Size::Thumbnail:
+			url = Urls_.SmallUrl_;
+			break;
+		case IHaveAvatars::Size::Full:
+			url = Urls_.BigUrl_;
+			break;
+		}
+
+		if (!url.isValid ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid URL for"
+					<< static_cast<int> (size)
+					<< FullAddress_;
+			return Util::MakeReadyFuture<QImage> ({});
+		}
+
+		QFutureInterface<QImage> iface;
+		iface.reportStarted ();
+
+		const auto reply = NAM_->get (QNetworkRequest { url });
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[iface, reply] () mutable
+			{
+				reply->deleteLater ();
+
+				const auto& image = QImage::fromData (reply->readAll ());
+				iface.reportFinished (&image);
+			},
+			reply,
+			SIGNAL (finished ()),
+			reply
+		};
+
+		return iface.future ();
 	}
 
 	void SelfAvatarFetcher::refetch ()

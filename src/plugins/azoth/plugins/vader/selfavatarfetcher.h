@@ -33,6 +33,7 @@
 #include <QImage>
 #include <QDateTime>
 #include <QUrl>
+#include <interfaces/azoth/ihaveavatars.h>
 
 class QTimer;
 class QNetworkAccessManager;
@@ -66,6 +67,8 @@ namespace Vader
 		SelfAvatarFetcher (QNetworkAccessManager*, const QString&, QObject* = nullptr);
 
 		bool IsValid () const;
+
+		QFuture<QImage> FetchAvatar (IHaveAvatars::Size) const;
 	private slots:
 		void refetch ();
 		void handleHeadFinished ();
