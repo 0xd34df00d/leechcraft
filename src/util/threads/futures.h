@@ -596,6 +596,17 @@ namespace Util
 		return { new detail::Sequencer<QFuture<T>> { future, parent } };
 	}
 
+	/** @brief Creates a ready future holding the given value.
+	 *
+	 * This function creates a ready future containing the value \em t.
+	 * That is, calling <code>QFuture<T>::get()</code> on the returned
+	 * future will not block.
+	 *
+	 * @param[in] t The value to keep in the future.
+	 * @return The ready future with the value \em t.
+	 *
+	 * @tparam T The type of the value in the future.
+	 */
 	template<typename T>
 	QFuture<T> MakeReadyFuture (const T& t)
 	{
