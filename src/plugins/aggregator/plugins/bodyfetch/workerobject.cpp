@@ -353,23 +353,23 @@ namespace BodyFetch
 						file->close ();
 						file->remove ();
 						return Recode (contents);
-					}))
-				.Then ([this, url, script] (const QString& contents)
+					})) >>
+				[this, url, script] (const QString& contents)
+				{
+					const auto& result = Parse (contents, script);
+					if (result.isEmpty ())
 					{
-						const auto& result = Parse (contents, script);
-						if (result.isEmpty ())
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "empty result for"
-									<< url;
-							return;
-						}
+						qWarning () << Q_FUNC_INFO
+								<< "empty result for"
+								<< url;
+						return;
+					}
 
-						const quint64 id = URL2ItemID_.take (url);
-						WriteFile (result, id);
-						emit newBodyFetched (id);
-						qDebug () << Q_FUNC_INFO << "done!" << url;
-					});
+					const quint64 id = URL2ItemID_.take (url);
+					WriteFile (result, id);
+					emit newBodyFetched (id);
+					qDebug () << Q_FUNC_INFO << "done!" << url;
+				};
 	}
 
 	void WorkerObject::recheckFinished ()
