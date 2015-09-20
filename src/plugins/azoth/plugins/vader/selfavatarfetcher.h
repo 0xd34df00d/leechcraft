@@ -69,7 +69,6 @@ namespace Vader
 	private slots:
 		void refetch ();
 		void handleHeadFinished ();
-		void handleGetFinished ();
 	signals:
 		void gotImage (const QImage&);
 		void avatarChanged ();

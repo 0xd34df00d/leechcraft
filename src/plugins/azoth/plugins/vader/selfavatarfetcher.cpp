@@ -120,20 +120,6 @@ namespace Vader
 		AvatarsTimestampStorage {}.SetTimestamp (FullAddress_, dt);
 
 		emit avatarChanged ();
-
-		const auto getReply = NAM_->get (QNetworkRequest (Urls_.SmallUrl_));
-		connect (getReply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGetFinished ()));
-	}
-
-	void SelfAvatarFetcher::handleGetFinished ()
-	{
-		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		reply->deleteLater ();
-		const QImage& image = QImage::fromData (reply->readAll ());
-		emit gotImage (image);
 	}
 }
 }
