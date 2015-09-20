@@ -73,6 +73,9 @@ namespace Vader
 	, Urls_ { full }
 	, PreviousDateTime_ { AvatarsTimestampStorage {}.GetTimestamp (full).get_value_or ({}) }
 	{
+		if (!IsValid ())
+			return;
+
 		connect (Timer_,
 				SIGNAL (timeout ()),
 				this,
