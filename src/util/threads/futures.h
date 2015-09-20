@@ -590,14 +590,6 @@ namespace Util
 	 *
 	 * @sa detail::SequenceProxy
 	 */
-	template<typename Executor, typename... Args>
-	detail::SequenceProxy<detail::SequencerRetType_t<ResultOf_t<Executor (Args...)>>,
-			ResultOf_t<Executor (Args...)>>
-		Sequence (QObject *parent, Executor f, Args... args)
-	{
-		return { new detail::Sequencer<ResultOf_t<Executor (Args...)>> { f (args...), parent } };
-	}
-
 	template<typename T>
 	detail::SequenceProxy<detail::SequencerRetType_t<QFuture<T>>, QFuture<T>> Sequence (QObject *parent, const QFuture<T>& future)
 	{
