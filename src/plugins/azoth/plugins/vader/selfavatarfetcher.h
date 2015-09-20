@@ -73,7 +73,6 @@ namespace Vader
 		void refetch ();
 		void handleHeadFinished ();
 	signals:
-		void gotImage (const QImage&);
 		void avatarChanged ();
 	};
 }
