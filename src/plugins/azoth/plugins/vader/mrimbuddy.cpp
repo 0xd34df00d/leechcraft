@@ -90,11 +90,6 @@ namespace Vader
 			this
 		};
 
-		connect (AvatarFetcher_,
-				SIGNAL (gotImage (QImage)),
-				this,
-				SLOT (updateAvatar (QImage)));
-
 		UpdateClientVersion ();
 	}
 
@@ -438,10 +433,6 @@ namespace Vader
 
 			defClient ();
 		}
-	}
-
-	void MRIMBuddy::updateAvatar (const QImage& image)
-	{
 	}
 
 	void MRIMBuddy::handleUpdateNumber ()

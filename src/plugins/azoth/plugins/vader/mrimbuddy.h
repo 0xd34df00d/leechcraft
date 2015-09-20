@@ -154,8 +154,6 @@ namespace Vader
 	private:
 		void UpdateClientVersion ();
 	private slots:
-		void updateAvatar (const QImage&);
-
 		void handleUpdateNumber ();
 		void handleSendSMS ();
 
