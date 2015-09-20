@@ -303,18 +303,6 @@ namespace Graffiti
 			return;
 		}
 
-		auto makeFilename = [&cue] (const Track& track) -> QString
-		{
-			auto filename = QString::number (track.Index_);
-			if (!cue.Performer_.isEmpty ())
-				filename += " - " + cue.Performer_;
-			if (!cue.Album_.isEmpty ())
-				filename += " - " + cue.Album_;
-			if (!track.Title_.isEmpty ())
-				filename += " - " + track.Title_;
-			return filename += ".flac";
-		};
-
 		for (const auto& file : cue.Files_)
 		{
 			const QDir dir { Dir_ };
@@ -327,6 +315,22 @@ namespace Graffiti
 				emit error (tr ("No such file %1.").arg (file.Filename_));
 				continue;
 			}
+
+			auto makeFilename = [&cue, &file] (const Track& track)
+			{
+				auto filename = QString { "%1" }
+						.arg (track.Index_,
+								std::floor (std::log10 (file.Tracks_.size ())) + 1,
+								10,
+								QChar { '0' });
+				if (!cue.Performer_.isEmpty ())
+					filename += " - " + cue.Performer_;
+				if (!cue.Album_.isEmpty ())
+					filename += " - " + cue.Album_;
+				if (!track.Title_.isEmpty ())
+					filename += " - " + track.Title_;
+				return filename += ".flac";
+			};
 
 			for (const auto& track : file.Tracks_)
 				SplitQueue_.append ({
