@@ -364,9 +364,10 @@ namespace Graffiti
 
 		auto makeTime = [] (const QTime& time)
 		{
-			return QString ("%1:%2.%3")
+			return QString ("%1:%2%3%4")
 					.arg (time.hour () * 60 + time.minute ())
 					.arg (time.second ())
+					.arg (QLocale::system ().decimalPoint ())
 					.arg (time.msec () / 10);
 		};
 
