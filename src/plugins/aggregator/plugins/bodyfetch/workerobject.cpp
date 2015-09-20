@@ -347,16 +347,13 @@ namespace BodyFetch
 		}
 
 		Util::Sequence (this,
-					[this, file]
+					QtConcurrent::run ([this, file]
 					{
-						return QtConcurrent::run ([this, file]
-								{
-									const auto& contents = file->readAll ();
-									file->close ();
-									file->remove ();
-									return Recode (contents);
-								});
-					})
+						const auto& contents = file->readAll ();
+						file->close ();
+						file->remove ();
+						return Recode (contents);
+					}))
 				.Then ([this, url, script] (const QString& contents)
 					{
 						const auto& result = Parse (contents, script);
