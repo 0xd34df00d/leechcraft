@@ -356,7 +356,7 @@ namespace Vader
 
 	QList<QAction*> MRIMBuddy::GetActions () const
 	{
-		return QList<QAction*> () << UpdateNumber_ << SendSMS_;
+		return { UpdateNumber_, SendSMS_ };
 	}
 
 	QMap<QString, QVariant> MRIMBuddy::GetClientInfo (const QString&) const
