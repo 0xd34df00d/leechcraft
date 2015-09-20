@@ -52,11 +52,13 @@ namespace Vader
 
 	class MRIMBuddy : public QObject
 					, public ICLEntry
+					, public IHaveAvatars
 					, public IHaveContactTune
 					, public IAdvancedCLEntry
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::ICLEntry
+				LeechCraft::Azoth::IHaveAvatars
 				LeechCraft::Azoth::IHaveContactTune
 				LeechCraft::Azoth::IAdvancedCLEntry)
 
@@ -144,6 +146,11 @@ namespace Vader
 		// IAdvancedCLEntry
 		AdvancedFeatures GetAdvancedFeatures () const;
 		void DrawAttention (const QString&, const QString&);
+
+		// IHaveAvatars
+		QFuture<QImage> RefreshAvatar (Size);
+		bool HasAvatar () const;
+		bool SupportsSize (Size) const;
 	private:
 		void UpdateClientVersion ();
 	private slots:

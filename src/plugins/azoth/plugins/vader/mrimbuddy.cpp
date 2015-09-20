@@ -387,6 +387,31 @@ namespace Vader
 		A_->GetConnection ()->SendAttention (GetHumanReadableID (), text);
 	}
 
+	QFuture<QImage> MRIMBuddy::RefreshAvatar (Size size)
+	{
+		return AvatarFetcher_->FetchAvatar (size);
+	}
+
+	bool MRIMBuddy::HasAvatar () const
+	{
+		return AvatarFetcher_->IsValid ();
+	}
+
+	bool MRIMBuddy::SupportsSize (Size size) const
+	{
+		switch (size)
+		{
+		case Size::Full:
+		case Size::Thumbnail:
+			return true;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown size"
+				<< static_cast<int> (size);
+		return false;
+	}
+
 	void MRIMBuddy::UpdateClientVersion ()
 	{
 		auto defClient = [this] ()
