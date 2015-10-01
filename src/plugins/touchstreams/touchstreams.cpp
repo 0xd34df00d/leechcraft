@@ -32,6 +32,7 @@
 #include <QStandardItem>
 #include <util/sll/queuemanager.h>
 #include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -156,8 +157,7 @@ namespace TouchStreams
 	{
 		const auto& items = indices.isEmpty () ?
 				Model_->findItems ({}) :
-				Util::Map (indices, [this] (const QModelIndex& index)
-						{ return Model_->itemFromIndex (index); });
+				Util::Map (indices, Util::BindMemFn (&QStandardItemModel::itemFromIndex, Model_));
 
 		AlbumsMgr_->RefreshItems (items);
 		FriendsMgr_->RefreshItems (items);
