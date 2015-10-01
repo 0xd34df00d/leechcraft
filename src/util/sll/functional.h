@@ -55,9 +55,21 @@ namespace Util
 	{
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
+
+	template<typename R, typename T, typename... Args>
+	auto BindMemFn (R (T::*fn) (Args...) const, const T *c)
+	{
+		return [fn, c] (Args... args) { return (c->*fn) (args...); };
+	}
 #else
 	template<typename R, typename T, typename... Args>
 	std::function<R (Args...)> BindMemFn (R (T::*fn) (Args...), T *c)
+	{
+		return [fn, c] (Args... args) { return (c->*fn) (args...); };
+	}
+
+	template<typename R, typename T, typename... Args>
+	std::function<R (Args...)> BindMemFn (R (T::*fn) (Args...) const, const T *c)
 	{
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
