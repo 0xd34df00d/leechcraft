@@ -180,7 +180,8 @@ namespace Xoox
 
 		qDebug () << Q_FUNC_INFO << resultSet.first () << resultSet.last () << messages.size ();
 
-		if (messages.first ().TS_ > messages.last ().TS_)
+		if (!messages.isEmpty () &&
+				messages.first ().TS_ > messages.last ().TS_)
 			std::reverse (messages.begin (), messages.end ());
 		emit serverHistoryFetched (jid, resultSet.last (), messages);
 	}
