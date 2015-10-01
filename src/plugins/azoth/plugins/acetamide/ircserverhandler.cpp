@@ -160,7 +160,7 @@ namespace Acetamide
 		return ChannelsManager_->GetChannelHandler (channel);
 	}
 
-	QList<std::shared_ptr<ChannelHandler>> IrcServerHandler::GetChannelHandlers () const
+	QList<ChannelHandler*> IrcServerHandler::GetChannelHandlers () const
 	{
 		return ChannelsManager_->GetChannels ();
 	}

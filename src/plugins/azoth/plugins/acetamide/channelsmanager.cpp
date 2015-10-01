@@ -85,9 +85,9 @@ namespace Acetamide
 		return ChannelHandlers_.value (channel.toLower ()).get ();
 	}
 
-	QList<std::shared_ptr<ChannelHandler>> ChannelsManager::GetChannels () const
+	QList<ChannelHandler*> ChannelsManager::GetChannels () const
 	{
-		return ChannelHandlers_.values ();
+		return Util::Map (ChannelHandlers_, &std::shared_ptr<ChannelHandler>::get);
 	}
 
 	bool ChannelsManager::IsChannelExists (const QString& channel) const

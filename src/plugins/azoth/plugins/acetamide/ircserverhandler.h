@@ -100,7 +100,7 @@ namespace Acetamide
 		QObjectList GetCLEntries () const;
 
 		ChannelHandler* GetChannelHandler (const QString& channel);
-		QList<std::shared_ptr<ChannelHandler>> GetChannelHandlers () const;
+		QList<ChannelHandler*> GetChannelHandlers () const;
 
 		IrcMessage* CreateMessage (IMessage::Type type,
 				const QString& variant, const QString& body);

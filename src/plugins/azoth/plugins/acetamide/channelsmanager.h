@@ -71,7 +71,7 @@ namespace Acetamide
 		QObjectList GetCLEntries () const;
 
 		ChannelHandler* GetChannelHandler (const QString& channel);
-		QList<std::shared_ptr<ChannelHandler>> GetChannels () const;
+		QList<ChannelHandler*> GetChannels () const;
 
 		bool IsChannelExists (const QString& channel) const;
 
