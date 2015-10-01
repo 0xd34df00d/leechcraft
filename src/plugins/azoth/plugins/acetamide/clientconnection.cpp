@@ -29,6 +29,7 @@
 
 #include "clientconnection.h"
 #include <QTextCodec>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -336,12 +337,8 @@ namespace Acetamide
 
 		const auto& serverOpts = ish->GetServerOptions ();
 
-		QList<ChannelOptions> activeChannels;
-		const auto& channelHandlers = ish->GetChannelHandlers ();
-		std::transform (channelHandlers.begin (), channelHandlers.end (),
-				std::back_inserter (activeChannels),
-				[] (decltype (channelHandlers.first ()) handler)
-					{ return handler->GetChannelOptions (); });
+		const auto& activeChannels = Util::Map (ish->GetChannelHandlers (),
+				&ChannelHandler::GetChannelOptions);
 
 		JoinServer (serverOpts);
 		for (const auto& co : activeChannels)
