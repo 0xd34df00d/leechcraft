@@ -1278,10 +1278,17 @@ namespace Azoth
 
 	QImage Core::GetAvatar (ICLEntry *entry, int size)
 	{
-		if (Entry2SmoothAvatarCache_.contains (entry) &&
-				(Entry2SmoothAvatarCache_ [entry].width () >= size ||
-				 Entry2SmoothAvatarCache_ [entry].height () >= size))
-			return Entry2SmoothAvatarCache_ [entry];
+		if (Entry2SmoothAvatarCache_.contains (entry))
+		{
+			const auto& cand = Entry2SmoothAvatarCache_ [entry];
+			if (cand.width () == size ||
+				cand.height () == size)
+				return cand;
+
+			if (cand.width () >= size ||
+				cand.height () >= size)
+				return cand.scaled ({ size, size }, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+		}
 
 		if (!entry)
 			return {};
