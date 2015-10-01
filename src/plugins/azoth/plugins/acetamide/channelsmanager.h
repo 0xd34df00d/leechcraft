@@ -48,13 +48,15 @@ namespace Acetamide
 	class ChannelHandler;
 	class IrcAccount;
 
+	using ChannelHandler_ptr = std::shared_ptr<ChannelHandler>;
+
 	class ChannelsManager : public QObject
 	{
 		Q_OBJECT
 
 		IrcServerHandler *ISH_;
 
-		QHash<QString, std::shared_ptr<ChannelHandler>> ChannelHandlers_;
+		QHash<QString, ChannelHandler_ptr> ChannelHandlers_;
 		QSet<ChannelOptions> ChannelsQueue_;
 
 		QString LastActiveChannel_;

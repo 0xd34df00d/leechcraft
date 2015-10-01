@@ -87,7 +87,7 @@ namespace Acetamide
 
 	QList<ChannelHandler*> ChannelsManager::GetChannels () const
 	{
-		return Util::Map (ChannelHandlers_, &std::shared_ptr<ChannelHandler>::get);
+		return Util::Map (ChannelHandlers_, &ChannelHandler_ptr::get);
 	}
 
 	bool ChannelsManager::IsChannelExists (const QString& channel) const
@@ -142,7 +142,7 @@ namespace Acetamide
 	void ChannelsManager::CloseAllChannels () const
 	{
 		Util::Map (ChannelHandlers_,
-				[] (const std::shared_ptr<ChannelHandler>& ich) { ich->CloseChannel (); });
+				[] (const ChannelHandler_ptr& ich) { ich->CloseChannel (); });
 	}
 
 	void ChannelsManager::UnregisterChannel (ChannelHandler *ich)
