@@ -560,16 +560,13 @@ namespace Acetamide
 
 	void ChannelsManager::SetChannelUrl (const QString& channel, const QString& url)
 	{
-		const std::shared_ptr<ChannelHandler> handler = ChannelHandlers_ [channel.toLower ()];
-		if (!handler)
-			return;
-
-		handler->SetUrl (url);
+		if (const auto& handler = ChannelHandlers_ [channel.toLower ()])
+			handler->SetUrl (url);
 	}
 
 	void ChannelsManager::SetTopicWhoTime (const QString& channel, const QString& who, quint64 time)
 	{
-		const std::shared_ptr<ChannelHandler> handler = ChannelHandlers_ [channel.toLower ()];
+		const auto& handler = ChannelHandlers_ [channel.toLower ()];
 		if (!handler)
 			return;
 
