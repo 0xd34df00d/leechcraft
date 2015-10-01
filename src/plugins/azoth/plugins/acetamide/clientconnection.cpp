@@ -334,6 +334,8 @@ namespace Acetamide
 				PCritical_);
 		Core::Instance ().SendEntity (e);
 
+		const auto& serverOpts = ish->GetServerOptions ();
+
 		QList<ChannelOptions> activeChannels;
 		const auto& channelHandlers = ish->GetChannelHandlers ();
 		std::transform (channelHandlers.begin (), channelHandlers.end (),
@@ -341,9 +343,9 @@ namespace Acetamide
 				[] (decltype (channelHandlers.first ()) handler)
 					{ return handler->GetChannelOptions (); });
 
-		JoinServer (ish->GetServerOptions ());
+		JoinServer (serverOpts);
 		for (const auto& co : activeChannels)
-			JoinChannel (ish->GetServerOptions (), co);
+			JoinChannel (serverOpts, co);
 	}
 
 	void ClientConnection::handleLog (IMessage::Direction type, const QString& msg)
