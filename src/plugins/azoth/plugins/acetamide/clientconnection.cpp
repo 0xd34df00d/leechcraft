@@ -341,6 +341,7 @@ namespace Acetamide
 				[] (decltype (channelHandlers.first ()) handler)
 					{ return handler->GetChannelOptions (); });
 
+		JoinServer (ish->GetServerOptions ());
 		for (const auto& co : activeChannels)
 			JoinChannel (ish->GetServerOptions (), co);
 	}
