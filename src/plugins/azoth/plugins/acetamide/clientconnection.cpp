@@ -119,7 +119,7 @@ namespace Acetamide
 		ish->ConnectToServer ();
 	}
 
-	void  ClientConnection::JoinChannel (const ServerOptions& server,
+	void ClientConnection::JoinChannel (const ServerOptions& server,
 			const ChannelOptions& channel)
 	{
 		const auto& serverId = GetServerKey (server);
