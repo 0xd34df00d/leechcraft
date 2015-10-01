@@ -28,4 +28,4 @@ target_link_libraries (leechcraft_devmon
 	)
 install (TARGETS leechcraft_devmon DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_devmon Core)
+FindQtLibs (leechcraft_devmon Core Gui)
