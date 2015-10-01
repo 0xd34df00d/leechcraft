@@ -30,4 +30,4 @@ target_link_libraries (leechcraft_deadlyrics
 	)
 install (TARGETS leechcraft_deadlyrics DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_deadlyrics Network Xml)
+FindQtLibs (leechcraft_deadlyrics Gui Network Xml)
