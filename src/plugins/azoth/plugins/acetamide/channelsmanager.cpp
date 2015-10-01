@@ -117,7 +117,7 @@ namespace Acetamide
 
 	bool ChannelsManager::AddChannel (const ChannelOptions& options)
 	{
-		std::shared_ptr<ChannelHandler> ch (new ChannelHandler (options, this));
+		const auto ch = std::make_shared<ChannelHandler> (options, this);
 		ChannelHandlers_ [options.ChannelName_.toLower ()] = ch;
 
 		ChannelCLEntry *ichEntry = ch->GetCLEntry ();
