@@ -37,4 +37,4 @@ target_link_libraries (leechcraft_dbusmanager
 install (TARGETS leechcraft_dbusmanager DESTINATION ${LC_PLUGINS_DEST})
 install (FILES dbusmanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_dbusmanager DBus)
+FindQtLibs (leechcraft_dbusmanager DBus Gui)
