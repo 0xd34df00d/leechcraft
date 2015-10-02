@@ -124,8 +124,10 @@ namespace Acetamide
 			const ChannelOptions& channel)
 	{
 		const auto& serverId = GetServerKey (server);
-		QString channelId = channel.ChannelName_ + "@" +
-				channel.ServerName_;
+		const auto& channelId = channel.ChannelName_ + "@" + channel.ServerName_;
+
+		if (!ServerHandlers_.contains (serverId))
+			JoinServer (server);
 
 		if (ServerHandlers_ [serverId]->IsChannelExists (channelId))
 		{
