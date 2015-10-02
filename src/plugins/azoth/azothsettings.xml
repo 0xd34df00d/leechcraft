@@ -352,6 +352,13 @@
 				<suffix value=" s" />
 			</item>
 		</tab>
+		<tab>
+			<label value="Caching" />
+			<item type="spinbox" property="AvatarsCacheSize" default="5" minimum="0" maximum="100">
+				<label value="In-memory avatars cache size:" />
+				<suffix value=" MiB" />
+			</item>
+		</tab>
 	</page>
 	<page>
 		<label value="Statuses" />
