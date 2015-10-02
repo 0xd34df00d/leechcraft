@@ -79,8 +79,9 @@ namespace Azoth
 			return Util::MakeReadyFuture (image);
 		}
 
-		if (PendingRequests_.contains (entryObj))
-			return PendingRequests_.value (entryObj);
+		const auto& sizes = PendingRequests_.value (entryObj);
+		if (sizes.contains (size))
+			return sizes.value (size);
 
 		const auto entryId = entry->GetEntryID ();
 		auto future = Util::Sequence (this, Storage_->GetAvatar (entry, size)) >>
@@ -98,10 +99,15 @@ namespace Azoth
 				} >>
 				[=] (const QImage& image)
 				{
-					PendingRequests_.remove (entryObj);
+					auto& sizes = PendingRequests_ [entryObj];
+
+					sizes.remove (size);
+					if (sizes.isEmpty ())
+						PendingRequests_.remove (entryObj);
+
 					return Util::MakeReadyFuture (image);
 				};
-		PendingRequests_ [entryObj] = future;
+		PendingRequests_ [entryObj] [size] = future;
 		return future;
 	}
 

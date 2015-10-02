@@ -52,7 +52,7 @@ namespace Azoth
 
 		AvatarsStorage * const Storage_;
 
-		QHash<QObject*, QFuture<QImage>> PendingRequests_;
+		QHash<QObject*, QHash<IHaveAvatars::Size, QFuture<QImage>>> PendingRequests_;
 	public:
 		using AvatarHandler_f = std::function<void (QImage)>;
 	private:
