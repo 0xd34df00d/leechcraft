@@ -64,6 +64,8 @@ namespace Azoth
 		QFuture<MaybeByteArray> GetAvatar (const QString&, IHaveAvatars::Size);
 
 		QFuture<void> DeleteAvatars (const QString&);
+
+		void SetCacheSize (int mibs);
 	};
 }
 }

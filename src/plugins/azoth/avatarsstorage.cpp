@@ -178,5 +178,10 @@ namespace Azoth
 
 		return StorageThread_->DeleteAvatars (entryId);
 	}
+
+	void AvatarsStorage::SetCacheSize (int mibs)
+	{
+		Cache_.setMaxCost (mibs * 1024 * 1024);
+	}
 }
 }
