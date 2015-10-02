@@ -446,11 +446,10 @@ namespace AdiumStyles
 		const QString& suff = origName + "/Contents/Resources/Variants/";
 		const QString& path = StylesLoader_->GetPath (QStringList (suff));
 		if (!path.isEmpty ())
-			Q_FOREACH (const QString& variant, QDir (path).entryList (QStringList ("*.css")))
+			Q_FOREACH (auto variant, QDir (path).entryList (QStringList ("*.css")))
 			{
-				QString hrVar = variant;
-				hrVar.chop (4);
-				result << hrVar;
+				variant.chop (4);
+				result << variant;
 			}
 
 		return result;
