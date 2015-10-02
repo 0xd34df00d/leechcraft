@@ -56,6 +56,11 @@ namespace Azoth
 	protected:
 		virtual void avatarChanged (QObject*) = 0;
 	};
+
+	inline uint qHash (IHaveAvatars::Size size)
+	{
+		return static_cast<uint> (size);
+	}
 }
 }
 

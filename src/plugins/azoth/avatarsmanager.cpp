@@ -39,11 +39,6 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	uint qHash (IHaveAvatars::Size size)
-	{
-		return static_cast<uint> (size);
-	}
-
 	AvatarsManager::AvatarsManager (QObject *parent)
 	: QObject { parent }
 	, Storage_ { new AvatarsStorage { this } }
