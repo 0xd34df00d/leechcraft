@@ -72,6 +72,8 @@ namespace Azoth
 	private slots:
 		void handleEntries (const QList<QObject*>&);
 		void invalidateAvatar (QObject*);
+
+		void handleCacheSizeChanged ();
 	signals:
 		void avatarInvalidated (QObject*);
 	};

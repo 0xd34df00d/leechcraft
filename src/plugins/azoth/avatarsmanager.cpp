@@ -34,6 +34,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "avatarsstorage.h"
 #include "resourcesmanager.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -43,6 +44,9 @@ namespace Azoth
 	: QObject { parent }
 	, Storage_ { new AvatarsStorage { this } }
 	{
+		handleCacheSizeChanged ();
+		XmlSettingsManager::Instance ().RegisterObject ("AvatarsCacheSize",
+				this, "handleCacheSizeChanged");
 	}
 
 	namespace
@@ -183,6 +187,12 @@ namespace Azoth
 		emit avatarInvalidated (that);
 
 		HandleSubscriptions (that);
+	}
+
+	void AvatarsManager::handleCacheSizeChanged ()
+	{
+		Storage_->SetCacheSize (XmlSettingsManager::Instance ()
+				.property ("AvatarsCacheSize").toInt ());
 	}
 }
 }
