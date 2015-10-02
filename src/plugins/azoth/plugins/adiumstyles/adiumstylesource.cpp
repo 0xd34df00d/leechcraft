@@ -439,12 +439,12 @@ namespace AdiumStyles
 	{
 		QStringList result;
 
-		const QString& origName = PackProxyModel_->GetOrigName (pack);
-		if (!StylesLoader_->GetPath (QStringList (origName + "/Contents/Resources/main.css")).isEmpty ())
+		const auto& origName = PackProxyModel_->GetOrigName (pack);
+		if (!StylesLoader_->GetPath ({ origName + "/Contents/Resources/main.css" }).isEmpty ())
 			result << "";
 
-		const QString& suff = origName + "/Contents/Resources/Variants/";
-		const QString& path = StylesLoader_->GetPath (QStringList (suff));
+		const auto& suff = origName + "/Contents/Resources/Variants/";
+		const auto& path = StylesLoader_->GetPath ({ suff });
 		if (!path.isEmpty ())
 			for (auto&& variant : QDir { path }.entryList ({ "*.css" }))
 			{
