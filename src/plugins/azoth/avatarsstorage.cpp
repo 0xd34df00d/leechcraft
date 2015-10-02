@@ -64,7 +64,7 @@ namespace Azoth
 		QBuffer buffer { &data };
 		image.save (&buffer, "PNG", 0);
 
-		Cache_.insert (entryId, new CacheValue_t { image }, GetImageCost (image));
+		Cache_.insert ({ entryId, size }, new CacheValue_t { image }, GetImageCost (image));
 
 		return StorageThread_->SetAvatar (entryId, size, data);
 	}
@@ -72,7 +72,7 @@ namespace Azoth
 	QFuture<void> AvatarsStorage::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& data)
 	{
-		Cache_.insert (entryId, new CacheValue_t { data }, data.size ());
+		Cache_.insert ({ entryId, size }, new CacheValue_t { data }, data.size ());
 
 		return StorageThread_->SetAvatar (entryId, size, data);
 	}
@@ -127,12 +127,12 @@ namespace Azoth
 	QFuture<MaybeImage> AvatarsStorage::GetAvatar (const ICLEntry *entry, IHaveAvatars::Size size)
 	{
 		const auto& entryId = entry->GetEntryID ();
-		if (const auto value = Cache_ [entryId])
+		if (const auto value = Cache_ [{ entryId, size }])
 		{
 			const auto& image = boost::apply_visitor (ToImage {}, *value);
 			CacheValue_t convertedValue { image };
 			if (convertedValue.which () != value->which ())
-				Cache_.insert (entryId, new CacheValue_t { std::move (convertedValue) }, GetImageCost (image));
+				Cache_.insert ({ entryId, size }, new CacheValue_t { std::move (convertedValue) }, GetImageCost (image));
 
 			return Util::MakeReadyFuture<MaybeImage> (image);
 		}
@@ -164,7 +164,7 @@ namespace Azoth
 
 	QFuture<MaybeByteArray> AvatarsStorage::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
 	{
-		if (const auto value = Cache_ [entryId])
+		if (const auto value = Cache_ [{ entryId, size }])
 			return Util::MakeReadyFuture<MaybeByteArray> (boost::apply_visitor (ToByteArray {}, *value));
 
 		return StorageThread_->GetAvatar (entryId, size);
@@ -172,7 +172,9 @@ namespace Azoth
 
 	QFuture<void> AvatarsStorage::DeleteAvatars (const QString& entryId)
 	{
-		Cache_.remove (entryId);
+		for (const auto& key : Cache_.keys ())
+			if (key.first == entryId)
+				Cache_.remove (key);
 
 		return StorageThread_->DeleteAvatars (entryId);
 	}
