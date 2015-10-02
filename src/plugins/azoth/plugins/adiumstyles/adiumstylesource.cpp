@@ -129,7 +129,7 @@ namespace AdiumStyles
 				result.replace (pattern, "azoth://avatar/" + entryId.toUtf8 ().toBase64 ());
 		}
 
-		void ParseGlobalTemplate (QString& result, ICLEntry *entry, IProxyObject *proxyObject)
+		void ParseGlobalTemplate (QString& result, ICLEntry *entry)
 		{
 			auto acc = entry->GetParentAccount ();
 			auto extSelf = qobject_cast<IExtSelfInfoAccount*> (acc->GetQObject ());
@@ -247,7 +247,7 @@ namespace AdiumStyles
 			for (const auto& colorName : QString::fromUtf8 (colors->readAll ()).split (":"))
 				Coloring2Colors_ ["hash"] << QColor (colorName);
 
-		ParseGlobalTemplate (result, entry, Proxy_);
+		ParseGlobalTemplate (result, entry);
 		FixSelfClosing (result);
 
 		return result;
