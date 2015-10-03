@@ -74,7 +74,7 @@ namespace TouchStreams
 				("access_token", key)
 				("q", Query_.FreeForm_);
 
-		Queue_->Schedule ([this, url] () -> void
+		Queue_->Schedule ([this, url]
 			{
 				auto reply = Proxy_->GetNetworkAccessManager ()->get (QNetworkRequest (url));
 				connect (reply,
