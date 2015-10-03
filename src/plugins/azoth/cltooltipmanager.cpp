@@ -301,7 +301,7 @@ namespace Azoth
 				qobject_cast<IMUCPerms*> (entry->GetParentCLEntryObject ()),
 				entry);
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		const auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		proxy->SetValue ("tooltip", tip);
 		emit hookTooltipBeforeVariants (proxy, entry->GetQObject ());
 		proxy->FillValue ("tooltip", tip);
