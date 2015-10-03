@@ -251,6 +251,12 @@ namespace Azoth
 		return MakeTooltipString (entry, {});
 	}
 
+	namespace
+	{
+		const auto AvatarSize = 75;
+		const auto MinAvatarSize = 32;
+	}
+
 	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry, QImage avatar)
 	{
 		QString tip = "<table border='0'><tr><td>";
@@ -261,11 +267,9 @@ namespace Azoth
 
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
-			const int avatarSize = 75;
-
 			if (avatar.isNull ())
 			{
-				avatar = ResourcesManager::Instance ().GetDefaultAvatar (avatarSize);
+				avatar = ResourcesManager::Instance ().GetDefaultAvatar (AvatarSize);
 				shouldScheduleAvatarFetch = true;
 			}
 
@@ -274,12 +278,11 @@ namespace Azoth
 				data = *dataPtr;
 			else
 			{
-				const int minAvatarSize = 32;
 
-				if (std::max (avatar.width (), avatar.height ()) > avatarSize)
-					avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
-				else if (std::max (avatar.width (), avatar.height ()) < minAvatarSize)
-					avatar = avatar.scaled (minAvatarSize, minAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+				if (std::max (avatar.width (), avatar.height ()) > AvatarSize)
+					avatar = avatar.scaled (AvatarSize, AvatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
+				else if (std::max (avatar.width (), avatar.height ()) < MinAvatarSize)
+					avatar = avatar.scaled (MinAvatarSize, MinAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
 				data = Util::GetAsBase64Src (avatar);
 				Avatar2TooltipSrcCache_.insert (avatar, new QString (data), data.size ());
