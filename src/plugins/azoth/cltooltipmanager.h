@@ -74,6 +74,7 @@ namespace Azoth
 		QString MakeTooltipString (ICLEntry*, QString);
 	private slots:
 		void remakeTooltipForSender ();
+		void handleAvatarChanged (QObject*);
 	signals:
 		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry) const;

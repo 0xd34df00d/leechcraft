@@ -471,5 +471,11 @@ namespace Azoth
 
 		DirtyTooltips_ << entry;
 	}
+
+	void CLTooltipManager::handleAvatarChanged (QObject *entryObj)
+	{
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		Avatar2TooltipSrcCache_.remove (entry);
+	}
 }
 }
