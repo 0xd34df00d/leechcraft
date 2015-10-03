@@ -128,7 +128,8 @@ namespace Azoth
 			connect (entryObj,
 					SIGNAL (avatarChanged (QObject*)),
 					this,
-					SLOT (remakeTooltipForSender ()));
+					SLOT (handleAvatarChanged (QObject*)),
+					Qt::UniqueConnection);
 
 		if (qobject_cast<IAdvancedCLEntry*> (entryObj))
 		{
@@ -248,14 +249,6 @@ namespace Azoth
 
 	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry)
 	{
-		const auto entryObj = entry->GetQObject ();
-		if (qobject_cast<IHaveAvatars*> (entryObj))
-			connect (entryObj,
-					SIGNAL (avatarChanged (QObject*)),
-					this,
-					SLOT (handleAvatarChanged (QObject*)),
-					Qt::UniqueConnection);
-
 		const auto maybeAvatar = Avatar2TooltipSrcCache_ [entry];
 		return MakeTooltipString (entry, maybeAvatar ? *maybeAvatar : QString {});
 	}
