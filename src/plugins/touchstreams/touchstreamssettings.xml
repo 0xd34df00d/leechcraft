@@ -5,5 +5,8 @@
 		<item type="checkbox" property="RequestFriendsData" default="false">
 			<label value="Request friends' audio tracks" />
 		</item>
+		<item type="spinbox" property="SearchResultsCount" default="50" minimum="10" maximum="300">
+			<label value="Search results count:" />
+		</item>
 	</page>
 </settings>
