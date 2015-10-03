@@ -58,7 +58,7 @@ namespace Azoth
 		typedef QHash<ICLEntry*, QList<QStandardItem*>> Entry2Items_t;
 		Entry2Items_t& Entry2Items_;
 
-		QCache<QImage, QString> Avatar2TooltipSrcCache_;
+		QCache<ICLEntry*, QString> Avatar2TooltipSrcCache_;
 
 		QSet<ICLEntry*> DirtyTooltips_;
 	public:
@@ -71,7 +71,7 @@ namespace Azoth
 
 		void RebuildTooltip (ICLEntry *entry);
 	private:
-		QString MakeTooltipString (ICLEntry*, QImage);
+		QString MakeTooltipString (ICLEntry*, QString);
 	private slots:
 		void remakeTooltipForSender ();
 	signals:

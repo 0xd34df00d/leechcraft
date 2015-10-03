@@ -248,7 +248,8 @@ namespace Azoth
 
 	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry)
 	{
-		return MakeTooltipString (entry, {});
+		const auto maybeAvatar = Avatar2TooltipSrcCache_ [entry];
+		return MakeTooltipString (entry, maybeAvatar ? *maybeAvatar : QString {});
 	}
 
 	namespace
@@ -257,7 +258,7 @@ namespace Azoth
 		const auto MinAvatarSize = 32;
 	}
 
-	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry, QImage avatar)
+	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry, QString avatarStr)
 	{
 		QString tip = "<table border='0'><tr><td>";
 
@@ -267,28 +268,14 @@ namespace Azoth
 
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
-			if (avatar.isNull ())
+			if (avatarStr.isNull ())
 			{
-				avatar = ResourcesManager::Instance ().GetDefaultAvatar (AvatarSize);
+				avatarStr = Util::GetAsBase64Src (ResourcesManager::Instance ().GetDefaultAvatar (AvatarSize));
 				shouldScheduleAvatarFetch = true;
+				Avatar2TooltipSrcCache_.insert (entry, new QString { avatarStr }, avatarStr.size ());
 			}
 
-			QString data;
-			if (auto dataPtr = Avatar2TooltipSrcCache_ [avatar])
-				data = *dataPtr;
-			else
-			{
-
-				if (std::max (avatar.width (), avatar.height ()) > AvatarSize)
-					avatar = avatar.scaled (AvatarSize, AvatarSize, Qt::KeepAspectRatio, Qt::FastTransformation);
-				else if (std::max (avatar.width (), avatar.height ()) < MinAvatarSize)
-					avatar = avatar.scaled (MinAvatarSize, MinAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-
-				data = Util::GetAsBase64Src (avatar);
-				Avatar2TooltipSrcCache_.insert (avatar, new QString (data), data.size ());
-			}
-
-			tip += "<img src='" + data + "' />";
+			tip += "<img src='" + avatarStr + "' />";
 			tip += "</td><td>";
 		}
 
@@ -418,12 +405,20 @@ namespace Azoth
 		{
 			const auto& obj = entry->GetQObject ();
 			Util::Sequence (this, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Full)) >>
-					[this, entry, tip] (const QImage& avatar)
+					[this, entry, tip] (QImage avatar)
 					{
 						if (avatar.isNull ())
 							return;
 
-						const auto& newTip = MakeTooltipString (entry, avatar);
+						if (std::max (avatar.width (), avatar.height ()) > AvatarSize)
+							avatar = avatar.scaled (AvatarSize, AvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+						else if (std::max (avatar.width (), avatar.height ()) < MinAvatarSize)
+							avatar = avatar.scaled (MinAvatarSize, MinAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+
+						const auto& data = Util::GetAsBase64Src (avatar);
+						Avatar2TooltipSrcCache_.insert (entry, new QString { data }, data.size ());
+
+						const auto& newTip = MakeTooltipString (entry, data);
 						for (auto item : Entry2Items_.value (entry))
 							item->setToolTip (newTip);
 
