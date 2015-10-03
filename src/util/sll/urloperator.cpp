@@ -69,6 +69,11 @@ namespace Util
 		return (*this) (key, QString::fromUtf8 (value));
 	}
 
+	UrlOperator& UrlOperator::operator() (const QString& key, const char *value)
+	{
+		return (*this) (key, QString::fromLatin1 (value));
+	}
+
 	UrlOperator& UrlOperator::operator() (const QString& key, int value)
 	{
 		return (*this) (key, QString::number (value));

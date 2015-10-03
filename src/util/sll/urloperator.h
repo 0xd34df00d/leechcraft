@@ -114,6 +114,8 @@ namespace Util
 
 		UrlOperator& operator() (const QString& key, const QByteArray& value);
 
+		UrlOperator& operator() (const QString& key, const char *value);
+
 		UrlOperator& operator() (const QString& key, int value);
 
 		/** @brief Returns the first query parameter under the \em key.
