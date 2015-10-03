@@ -37,6 +37,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
 #include <util/svcauth/vkauthmanager.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -72,7 +73,8 @@ namespace TouchStreams
 		QUrl url ("https://api.vk.com/method/audio.search");
 		Util::UrlOperator { url }
 				("access_token", key)
-				("q", Query_.FreeForm_);
+				("q", Query_.FreeForm_)
+				("count", XmlSettingsManager::Instance ().property ("SearchResultsCount").toInt ());
 
 		Queue_->Schedule ([this, url]
 			{
