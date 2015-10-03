@@ -463,7 +463,7 @@ namespace Murm
 				Util::UrlOperator { url }
 						("access_token", key)
 						("user_ids", QString::number (id))
-						("fields", { "online,online_mobile" });
+						("fields", "online,online_mobile");
 
 				AddParams (url, params);
 
