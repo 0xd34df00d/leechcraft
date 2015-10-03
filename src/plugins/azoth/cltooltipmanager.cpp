@@ -33,6 +33,8 @@
 #include <QToolTip>
 #include <util/util.h>
 #include <util/threads/futures.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/media/audiostructs.h>
@@ -229,14 +231,15 @@ namespace Azoth
 
 			tip += "<hr />";
 			const auto& perms = mucPerms->GetPerms (entry->GetQObject ());
-			for (const auto& permClass : perms.keys ())
+			for (const auto& pair : Util::Stlize (perms))
 			{
+				const auto& permClass = pair.first;
+
 				tip += mucPerms->GetUserString (permClass);
 				tip += ": ";
 
-				QStringList users;
-				for (const auto& perm : perms [permClass])
-					users << mucPerms->GetUserString (perm);
+				const auto& users = Util::Map (pair.second,
+						Util::BindMemFn (&IMUCPerms::GetUserString, mucPerms));
 				tip += users.join ("; ");
 				tip += "<br />";
 			}
