@@ -33,6 +33,7 @@
 #include <QToolTip>
 #include <util/util.h>
 #include <util/threads/futures.h>
+#include <util/sll/qtutil.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/azoth/iclentry.h>
@@ -398,8 +399,8 @@ namespace Azoth
 			if (info.contains ("custom_user_visible_map"))
 			{
 				const auto& map = info ["custom_user_visible_map"].toMap ();
-				for (const auto& key : map.keys ())
-					tip += "<br />" + key + ": " + Escape (map [key].toString ()) + "<br />";
+				for (const auto& pair : Util::Stlize (map))
+					tip += "<br />" + pair.first + ": " + Escape (pair.second.toString ()) + "<br />";
 			}
 		}
 
