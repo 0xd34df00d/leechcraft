@@ -410,9 +410,10 @@ namespace Azoth
 						if (avatar.isNull ())
 							return;
 
-						if (std::max (avatar.width (), avatar.height ()) > AvatarSize)
+						const auto maxDim = std::max (avatar.width (), avatar.height ());
+						if (maxDim > AvatarSize)
 							avatar = avatar.scaled (AvatarSize, AvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-						else if (std::max (avatar.width (), avatar.height ()) < MinAvatarSize)
+						else if (maxDim < MinAvatarSize)
 							avatar = avatar.scaled (MinAvatarSize, MinAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
 						const auto& data = Util::GetAsBase64Src (avatar);
