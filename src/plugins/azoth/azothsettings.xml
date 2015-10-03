@@ -358,6 +358,10 @@
 				<label value="In-memory avatars cache size:" />
 				<suffix value=" MiB" />
 			</item>
+			<item type="spinbox" property="CLToolTipsAvatarsCacheSize" default="2" minimum="0" maximum="100">
+				<label value="In-memory contact list-specific avatars cache size:" />
+				<suffix value=" MiB" />
+			</item>
 		</tab>
 	</page>
 	<page>
