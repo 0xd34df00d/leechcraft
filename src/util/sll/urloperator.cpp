@@ -64,6 +64,11 @@ namespace Util
 		return *this;
 	}
 
+	UrlOperator& UrlOperator::operator() (const QString& key, int value)
+	{
+		return (*this) (key, QString::number (value));
+	}
+
 	UrlOperator& UrlOperator::operator-= (const QString& key)
 	{
 #if QT_VERSION < 0x050000
