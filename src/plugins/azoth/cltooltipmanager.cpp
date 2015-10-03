@@ -52,6 +52,7 @@
 #include "resourcesmanager.h"
 #include "avatarsmanager.h"
 #include "util.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -74,6 +75,9 @@ namespace Azoth
 	, Entry2Items_ (items)
 	, Avatar2TooltipSrcCache_ { 2 * 1024 * 1024 }
 	{
+		handleCacheSizeChanged ();
+		XmlSettingsManager::Instance ().RegisterObject ("CLToolTipsAvatarsCacheSize",
+				this, "handleCacheSizeChanged");
 	}
 
 	namespace
@@ -478,6 +482,13 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		DirtyTooltips_ << entry;
 		Avatar2TooltipSrcCache_.remove (entry);
+	}
+
+	void CLTooltipManager::handleCacheSizeChanged ()
+	{
+		const auto mibs = XmlSettingsManager::Instance ()
+				.property ("CLToolTipsAvatarsCacheSize").toInt ();
+		Avatar2TooltipSrcCache_.setMaxCost (mibs * 1024 * 1024);
 	}
 }
 }

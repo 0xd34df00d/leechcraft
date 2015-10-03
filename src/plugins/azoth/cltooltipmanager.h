@@ -75,6 +75,8 @@ namespace Azoth
 	private slots:
 		void remakeTooltipForSender ();
 		void handleAvatarChanged (QObject*);
+
+		void handleCacheSizeChanged ();
 	signals:
 		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry) const;
