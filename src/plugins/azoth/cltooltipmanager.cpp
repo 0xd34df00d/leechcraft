@@ -254,7 +254,7 @@ namespace Azoth
 
 	namespace
 	{
-		const auto AvatarSize = 75;
+		const auto AvatarSize = 300;
 		const auto MinAvatarSize = 32;
 	}
 
