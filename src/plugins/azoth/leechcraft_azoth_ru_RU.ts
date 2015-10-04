@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AcceptRIEXDialog</name>
     <message>
@@ -4292,8 +4292,9 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="129"/>
-        <source>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format.</source>
-        <translation>Эта опция контролирует размер кеша в памяти для аватарок контактов. Установка слишком малого значения приведёт к более частому обращению к диску для подгрузки аватарок из постоянного хранилища и немного увеличит расход CPU на декодирование подгружаемых изображений.</translation>
+        <source>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format. Network traffic consumption is not affected by this option.</source>
+        <oldsource>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format.</oldsource>
+        <translation>Эта опция контролирует размер кеша в памяти для аватарок контактов. Установка слишком малого значения приведёт к более частому обращению к диску для подгрузки аватарок из постоянного хранилища и немного увеличит расход CPU на декодирование подгружаемых изображений. Потребление сетевого трафика не изменится.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="130"/>
@@ -4308,8 +4309,9 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="132"/>
-        <source>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64.</source>
-        <translation>Аватарки во всплывающих подсказках к записям в контакт-листе должны быть сконвертированы в текстовое представление (а именно, base64) перед тем, как они могут быть показаны. Эта опция контролирует размер кеша текстового представления в памяти. Слишком малый размер кеша потратит больше процессора на конвертацию изображений в PNG и затем в base64.</translation>
+        <source>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64. Network traffic consumption is not affected by this option.</source>
+        <oldsource>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64.</oldsource>
+        <translation>Аватарки во всплывающих подсказках к записям в контакт-листе должны быть сконвертированы в текстовое представление (а именно, base64) перед тем, как они могут быть показаны. Эта опция контролирует размер кеша текстового представления в памяти. Слишком малый размер кеша потратит больше процессора на конвертацию изображений в PNG и затем в base64. Потребление сетевого трафика не изменится.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="134"/>

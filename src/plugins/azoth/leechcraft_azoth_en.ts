@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>AcceptRIEXDialog</name>
     <message>
@@ -4284,8 +4284,9 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="129"/>
-        <source>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format.</source>
-        <translation>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format.</translation>
+        <source>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format. Network traffic consumption is not affected by this option.</source>
+        <oldsource>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format.</oldsource>
+        <translation>This option controls the in-memory cache for the contacts avatars. Setting this option to a too low value will lead to more frequent disk IO for loading the avatars from the persistent storage and will slightly increase the CPU usage for decoding the loaded image files into an in-memory format. Network traffic consumption is not affected by this option.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="130"/>
@@ -4300,8 +4301,9 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="132"/>
-        <source>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64.</source>
-        <translation>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64.</translation>
+        <source>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64. Network traffic consumption is not affected by this option.</source>
+        <oldsource>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64.</oldsource>
+        <translation>Avatars in the tooltips of contact list entries need to be converted to a textual representation (base64, that is) before they are shown. This option controls the cache size for these textual representations. Setting this option to a too low value will burn more CPU cycles on converting the images to PNG and then to base64. Network traffic consumption is not affected by this option.</translation>
     </message>
     <message>
         <location filename="dummy.cpp" line="134"/>
