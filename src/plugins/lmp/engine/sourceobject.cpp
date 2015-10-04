@@ -612,18 +612,6 @@ namespace LMP
 			}
 		};
 
-		const auto errCode = [&]
-			{
-				try
-				{
-					return errMap.at (domain).at (code);
-				}
-				catch (const std::out_of_range&)
-				{
-					return SourceError::Other;
-				}
-			} ();
-
 		if (!IsDrainingMsgs_)
 		{
 			qDebug () << Q_FUNC_INFO << "draining bus";
@@ -635,6 +623,18 @@ namespace LMP
 			IsDrainingMsgs_ = false;
 			BusDrainWC_.wakeAll ();
 		}
+
+		const auto errCode = [&]
+			{
+				try
+				{
+					return errMap.at (domain).at (code);
+				}
+				catch (const std::out_of_range&)
+				{
+					return SourceError::Other;
+				}
+			} ();
 
 		if (!IsDrainingMsgs_)
 			emit error (msgStr, errCode);
