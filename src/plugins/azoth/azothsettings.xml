@@ -104,6 +104,10 @@
 				<label value="Distance between contacts in roster:" />
 				<suffix value=" px" />
 			</item>
+			<item type="spinbox" property="CLAvatarsSize" default="300" minimum="32" maximum="600">
+				<label value="Avatars size in tooltips:" />
+				<suffix value=" px" />
+			</item>
 		</tab>
 		<tab>
 			<label value="Chat windows" />
