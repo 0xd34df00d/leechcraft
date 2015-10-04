@@ -78,6 +78,9 @@ namespace Azoth
 		handleCacheSizeChanged ();
 		XmlSettingsManager::Instance ().RegisterObject ("CLToolTipsAvatarsCacheSize",
 				this, "handleCacheSizeChanged");
+
+		XmlSettingsManager::Instance ().RegisterObject ("CLAvatarsSize",
+				this, "handleAvatarsSizeChanged");
 	}
 
 	namespace
@@ -490,6 +493,14 @@ namespace Azoth
 		const auto mibs = XmlSettingsManager::Instance ()
 				.property ("CLToolTipsAvatarsCacheSize").toInt ();
 		Avatar2TooltipSrcCache_.setMaxCost (mibs * 1024 * 1024);
+	}
+
+	void CLTooltipManager::handleAvatarsSizeChanged ()
+	{
+		Avatar2TooltipSrcCache_.clear ();
+
+		for (const auto& pair : Util::Stlize (Entry2Items_))
+			DirtyTooltips_ << pair.first;
 	}
 }
 }

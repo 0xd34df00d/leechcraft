@@ -77,6 +77,7 @@ namespace Azoth
 		void handleAvatarChanged (QObject*);
 
 		void handleCacheSizeChanged ();
+		void handleAvatarsSizeChanged ();
 	signals:
 		void hookTooltipBeforeVariants (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry) const;
