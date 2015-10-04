@@ -259,7 +259,6 @@ namespace Azoth
 
 	namespace
 	{
-		const auto AvatarSize = 300;
 		const auto MinAvatarSize = 32;
 	}
 
@@ -271,11 +270,13 @@ namespace Azoth
 
 		bool shouldScheduleAvatarFetch = false;
 
+		const auto avatarSize = XmlSettingsManager::Instance ().property ("CLAvatarsSize").toInt ();
+
 		if (entry->GetEntryType () != ICLEntry::EntryType::MUC)
 		{
 			if (avatarStr.isNull ())
 			{
-				avatarStr = Util::GetAsBase64Src (ResourcesManager::Instance ().GetDefaultAvatar (AvatarSize));
+				avatarStr = Util::GetAsBase64Src (ResourcesManager::Instance ().GetDefaultAvatar (avatarSize));
 				shouldScheduleAvatarFetch = true;
 				Avatar2TooltipSrcCache_.insert (entry, new QString { avatarStr }, avatarStr.size ());
 			}
@@ -410,14 +411,14 @@ namespace Azoth
 		{
 			const auto& obj = entry->GetQObject ();
 			Util::Sequence (this, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Full)) >>
-					[this, entry, tip] (QImage avatar)
+					[this, entry, tip, avatarSize] (QImage avatar)
 					{
 						if (avatar.isNull ())
 							return;
 
 						const auto maxDim = std::max (avatar.width (), avatar.height ());
-						if (maxDim > AvatarSize)
-							avatar = avatar.scaled (AvatarSize, AvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+						if (maxDim > avatarSize)
+							avatar = avatar.scaled (avatarSize, avatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 						else if (maxDim < MinAvatarSize)
 							avatar = avatar.scaled (MinAvatarSize, MinAvatarSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
