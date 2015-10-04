@@ -238,6 +238,21 @@
         <translation>Error showing properties for %1: %2.</translation>
     </message>
     <message>
+        <location filename="audiopropswidget.cpp" line="145"/>
+        <source>Bitrate</source>
+        <translation>Bitrate</translation>
+    </message>
+    <message>
+        <location filename="audiopropswidget.cpp" line="146"/>
+        <source>Channels</source>
+        <translation>Channels</translation>
+    </message>
+    <message>
+        <location filename="audiopropswidget.cpp" line="147"/>
+        <source>Sample rate</source>
+        <translation>Sample rate</translation>
+    </message>
+    <message>
         <location filename="audiopropswidget.cpp" line="169"/>
         <source>File type</source>
         <translation>File type</translation>
@@ -692,27 +707,27 @@
         <translation>%1 by %2 is now %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1226"/>
+        <location filename="player.cpp" line="1212"/>
         <source>Stream</source>
         <translation>Stream</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1340"/>
+        <location filename="player.cpp" line="1326"/>
         <source>Radio station error: %1.</source>
         <translation>Radio station error: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1557"/>
+        <location filename="player.cpp" line="1543"/>
         <source>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1565"/>
+        <location filename="player.cpp" line="1551"/>
         <source>Audio source %1 not found, playing next track...</source>
         <translation>Audio source %1 not found, playing next track...</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1570"/>
+        <location filename="player.cpp" line="1556"/>
         <source>Audio source %1 is invalid, playing next track...</source>
         <translation>Audio source %1 is invalid, playing next track...</translation>
     </message>
@@ -1179,7 +1194,7 @@
 <context>
     <name>LeechCraft::LMP::PreviewHandler</name>
     <message numerus="yes">
-        <location filename="previewhandler.cpp" line="170"/>
+        <location filename="previewhandler.cpp" line="171"/>
         <source>Not all tracks were fetched for album %1 by %2: %n track(s) weren&apos;t found.</source>
         <translation>
             <numerusform>Not all tracks were fetched for album %1 by %2: %n track weren&apos;t found.</numerusform>
@@ -1234,22 +1249,22 @@
 <context>
     <name>LeechCraft::LMP::RadioManager</name>
     <message>
-        <location filename="radiomanager.cpp" line="404"/>
+        <location filename="radiomanager.cpp" line="278"/>
         <source>Similar artists radio</source>
         <translation>Similar artists radio</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="405"/>
+        <location filename="radiomanager.cpp" line="279"/>
         <source>Enter artist name for which to tune the similar artists radio station:</source>
         <translation>Enter artist name for which to tune the similar artists radio station:</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="411"/>
+        <location filename="radiomanager.cpp" line="285"/>
         <source>Global tag radio</source>
         <translation>Global tag radio</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="412"/>
+        <location filename="radiomanager.cpp" line="286"/>
         <source>Enter global tag name:</source>
         <translation>Enter global tag name:</translation>
     </message>
@@ -1264,17 +1279,18 @@
     <message numerus="yes">
         <location filename="radiopilesmanager.cpp" line="82"/>
         <source>%1 (%n result(s))</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1 (%n result)</numerusform>
+            <numerusform>%1 (%n results)</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="radiopilesmanager.cpp" line="93"/>
+        <location filename="radiopilesmanager.cpp" line="116"/>
         <source>Audio search</source>
         <translation>Audio search</translation>
     </message>
     <message>
-        <location filename="radiopilesmanager.cpp" line="94"/>
+        <location filename="radiopilesmanager.cpp" line="117"/>
         <source>Enter the string to search for:</source>
         <translation>Enter the string to search for:</translation>
     </message>
@@ -1543,12 +1559,12 @@
         <translation>Album art</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="230"/>
+        <location filename="util.cpp" line="244"/>
         <source>CD %1:</source>
         <translation>CD %1:</translation>
     </message>
     <message numerus="yes">
-        <location filename="util.cpp" line="289"/>
+        <location filename="util.cpp" line="303"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n day ago</numerusform>
@@ -1819,6 +1835,11 @@
         <translation>General</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>Tags recoding</source>
+        <translation>Tags recoding</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Tags region:</source>
         <translation>Tags region:</translation>
@@ -1895,8 +1916,8 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
-        <source>Exponent in volume change formula (Î± in P = x^Î±):</source>
-        <oldsource>Exponent in volume change formula (Î± in P = x^Î±)</oldsource>
+        <source>Exponent in volume change formula (α in P = x^α):</source>
+        <oldsource>Exponent in volume change formula (Î± in P = x^Î±):</oldsource>
         <translation>Exponent in volume change formula (α in P = x^α):</translation>
     </message>
     <message>

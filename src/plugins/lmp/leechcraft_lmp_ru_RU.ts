@@ -238,6 +238,21 @@
         <translation>Ошибка отображения свойств для %1: %2.</translation>
     </message>
     <message>
+        <location filename="audiopropswidget.cpp" line="145"/>
+        <source>Bitrate</source>
+        <translation>Битрейт</translation>
+    </message>
+    <message>
+        <location filename="audiopropswidget.cpp" line="146"/>
+        <source>Channels</source>
+        <translation>Каналы</translation>
+    </message>
+    <message>
+        <location filename="audiopropswidget.cpp" line="147"/>
+        <source>Sample rate</source>
+        <translation>Частота дискретизации</translation>
+    </message>
+    <message>
         <location filename="audiopropswidget.cpp" line="169"/>
         <source>File type</source>
         <translation>Тип файла</translation>
@@ -700,27 +715,27 @@
         <translation>%1 от %2 теперь %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1226"/>
+        <location filename="player.cpp" line="1212"/>
         <source>Stream</source>
         <translation>Поток</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1340"/>
+        <location filename="player.cpp" line="1326"/>
         <source>Radio station error: %1.</source>
         <translation>Ошибка радиостанции: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1557"/>
+        <location filename="player.cpp" line="1543"/>
         <source>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Невозможно найти декодер для файла %1. Возможно, у вас нет всех необходимых кодеков.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1565"/>
+        <location filename="player.cpp" line="1551"/>
         <source>Audio source %1 not found, playing next track...</source>
         <translation>Аудиоисточник %1 не найден, играем следующий трек…</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1570"/>
+        <location filename="player.cpp" line="1556"/>
         <source>Audio source %1 is invalid, playing next track...</source>
         <translation>Аудиоисточник %1 некорректен, пробуем следующий…</translation>
     </message>
@@ -1190,7 +1205,7 @@
 <context>
     <name>LeechCraft::LMP::PreviewHandler</name>
     <message numerus="yes">
-        <location filename="previewhandler.cpp" line="170"/>
+        <location filename="previewhandler.cpp" line="171"/>
         <source>Not all tracks were fetched for album %1 by %2: %n track(s) weren&apos;t found.</source>
         <translation>
             <numerusform>Не удалось найти %n трек с альбома %2 — %1.</numerusform>
@@ -1246,22 +1261,22 @@
 <context>
     <name>LeechCraft::LMP::RadioManager</name>
     <message>
-        <location filename="radiomanager.cpp" line="404"/>
+        <location filename="radiomanager.cpp" line="278"/>
         <source>Similar artists radio</source>
         <translation>Радио похожих исполнителей</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="405"/>
+        <location filename="radiomanager.cpp" line="279"/>
         <source>Enter artist name for which to tune the similar artists radio station:</source>
         <translation>Введите имя исполнителя, на которого нужно настроить радио похожих:</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="411"/>
+        <location filename="radiomanager.cpp" line="285"/>
         <source>Global tag radio</source>
         <translation>Радио тега</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="412"/>
+        <location filename="radiomanager.cpp" line="286"/>
         <source>Enter global tag name:</source>
         <translation>Введите имя тега:</translation>
     </message>
@@ -1276,17 +1291,19 @@
     <message numerus="yes">
         <location filename="radiopilesmanager.cpp" line="82"/>
         <source>%1 (%n result(s))</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1 (%n результат)</numerusform>
+            <numerusform>%1 (%n результата)</numerusform>
+            <numerusform>%1 (%n результатов)</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="radiopilesmanager.cpp" line="93"/>
+        <location filename="radiopilesmanager.cpp" line="116"/>
         <source>Audio search</source>
         <translation>Поиск аудио</translation>
     </message>
     <message>
-        <location filename="radiopilesmanager.cpp" line="94"/>
+        <location filename="radiopilesmanager.cpp" line="117"/>
         <source>Enter the string to search for:</source>
         <translation>Введите строку для поиска:</translation>
     </message>
@@ -1556,12 +1573,12 @@
         <translation>Обложка альбома</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="230"/>
+        <location filename="util.cpp" line="244"/>
         <source>CD %1:</source>
         <translation>Диск %1:</translation>
     </message>
     <message numerus="yes">
-        <location filename="util.cpp" line="289"/>
+        <location filename="util.cpp" line="303"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n день назад</numerusform>
@@ -1833,6 +1850,11 @@
         <translation>Общее</translation>
     </message>
     <message>
+        <location filename="dummy.cpp" line="16"/>
+        <source>Tags recoding</source>
+        <translation>Перекодирование тегов</translation>
+    </message>
+    <message>
         <location filename="dummy.cpp" line="17"/>
         <source>Tags region:</source>
         <translation>Регион:</translation>
@@ -1909,8 +1931,8 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="32"/>
-        <source>Exponent in volume change formula (Î± in P = x^Î±):</source>
-        <oldsource>Exponent in volume change formula (Î± in P = x^Î±)</oldsource>
+        <source>Exponent in volume change formula (α in P = x^α):</source>
+        <oldsource>Exponent in volume change formula (Î± in P = x^Î±):</oldsource>
         <translation>Экспонента в формуле изменения звука (α в P = x^α):</translation>
     </message>
     <message>
