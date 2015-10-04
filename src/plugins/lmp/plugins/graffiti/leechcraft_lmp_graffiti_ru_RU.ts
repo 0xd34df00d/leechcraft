@@ -4,27 +4,32 @@
 <context>
     <name>GraffitiTab</name>
     <message>
-        <location filename="graffititab.ui" line="61"/>
+        <location filename="graffititab.ui" line="65"/>
         <source>Artist:</source>
         <translation>Исполнитель:</translation>
     </message>
     <message>
-        <location filename="graffititab.ui" line="77"/>
+        <location filename="graffititab.ui" line="89"/>
         <source>Album:</source>
         <translation>Альбом:</translation>
     </message>
     <message>
-        <location filename="graffititab.ui" line="84"/>
+        <location filename="graffititab.ui" line="138"/>
         <source>Title:</source>
         <translation>Название:</translation>
     </message>
     <message>
-        <location filename="graffititab.ui" line="91"/>
+        <location filename="graffititab.ui" line="180"/>
+        <source>Track:</source>
+        <translation>Номер трека:</translation>
+    </message>
+    <message>
+        <location filename="graffititab.ui" line="110"/>
         <source>Year:</source>
         <translation>Год:</translation>
     </message>
     <message>
-        <location filename="graffititab.ui" line="108"/>
+        <location filename="graffititab.ui" line="159"/>
         <source>Genre:</source>
         <translation>Жанр:</translation>
     </message>
@@ -32,17 +37,17 @@
 <context>
     <name>LeechCraft::LMP::Graffiti::CueSplitter</name>
     <message>
-        <location filename="cuesplitter.cpp" line="261"/>
+        <location filename="cuesplitter.cpp" line="301"/>
         <source>Cue file is invalid</source>
         <translation>Cue-файл невалиден</translation>
     </message>
     <message>
-        <location filename="cuesplitter.cpp" line="286"/>
+        <location filename="cuesplitter.cpp" line="315"/>
         <source>No such file %1.</source>
         <translation>Нет такого файла %1.</translation>
     </message>
     <message>
-        <location filename="cuesplitter.cpp" line="381"/>
+        <location filename="cuesplitter.cpp" line="427"/>
         <source>Failed to start recoder: %1.</source>
         <translation>Невозможно запустить перекодировщик: %1.</translation>
     </message>
@@ -73,37 +78,37 @@
 <context>
     <name>LeechCraft::LMP::Graffiti::GraffitiTab</name>
     <message>
-        <location filename="graffititab.cpp" line="159"/>
+        <location filename="graffititab.cpp" line="136"/>
         <source>Scanning path %1...</source>
         <translation>Сканирование пути %1…</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="217"/>
+        <location filename="graffititab.cpp" line="250"/>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="222"/>
+        <location filename="graffititab.cpp" line="255"/>
         <source>Revert</source>
         <translation>Отменить</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="228"/>
+        <location filename="graffititab.cpp" line="261"/>
         <source>Rename files</source>
         <translation>Переименовать файлы</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="234"/>
+        <location filename="graffititab.cpp" line="267"/>
         <source>Fetch tags</source>
         <translation>Получить теги</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="238"/>
+        <location filename="graffititab.cpp" line="271"/>
         <source>Split CUE...</source>
         <translation>Разделить CUE…</translation>
     </message>
     <message numerus="yes">
-        <location filename="graffititab.cpp" line="327"/>
+        <location filename="graffititab.cpp" line="405"/>
         <source>Do you really want to accept changes to %n file(s)?</source>
         <translation>
             <numerusform>Вы действительно хотите сохранить изменения в %n файле?</numerusform>
@@ -112,7 +117,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="graffititab.cpp" line="369"/>
+        <location filename="graffititab.cpp" line="448"/>
         <source>Do you really want to revert changes to %n file(s)?</source>
         <translation>
             <numerusform>Вы действительно хотите откатить %n файл?</numerusform>
@@ -121,22 +126,22 @@
         </translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="390"/>
+        <location filename="graffititab.cpp" line="469"/>
         <source>You have unsaved files with changed tags. Do you want to save or discard those changes?</source>
         <translation>Есть файлы с несохраненными тегами. Вы хотите сохранить или отменить эти изменения?</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="461"/>
+        <location filename="graffititab.cpp" line="540"/>
         <source>No cue sheets are available in this directory.</source>
         <translation>Нет доступных CUE-файлов в этой директории.</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="470"/>
+        <location filename="graffititab.cpp" line="549"/>
         <source>Select cue sheet to use for splitting:</source>
         <translation>Выберите CUE-файл для разделения:</translation>
     </message>
     <message>
-        <location filename="graffititab.cpp" line="607"/>
+        <location filename="graffititab.cpp" line="696"/>
         <source>Finished splitting CUE file</source>
         <translation>Разделение CUE-файла закончено</translation>
     </message>
@@ -144,26 +149,31 @@
 <context>
     <name>LeechCraft::LMP::Graffiti::Plugin</name>
     <message>
-        <location filename="graffiti.cpp" line="81"/>
+        <location filename="graffiti.cpp" line="82"/>
         <source>Allows one to manipulate audio files tags.</source>
         <translation>Позволяет управлять аудиотегами.</translation>
+    </message>
+    <message>
+        <location filename="graffiti.cpp" line="157"/>
+        <source>Edit tags...</source>
+        <translation>Редактировать теги...</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::LMP::Graffiti::ProgressManager</name>
     <message>
-        <location filename="progressmanager.cpp" line="57"/>
+        <location filename="progressmanager.cpp" line="58"/>
         <source>Fetching tags...</source>
         <translation>Получение тегов…</translation>
     </message>
     <message>
-        <location filename="progressmanager.cpp" line="58"/>
+        <location filename="progressmanager.cpp" line="59"/>
         <source>Fetching...</source>
         <translation>Получение…</translation>
     </message>
     <message>
-        <location filename="progressmanager.cpp" line="85"/>
-        <location filename="progressmanager.cpp" line="131"/>
+        <location filename="progressmanager.cpp" line="86"/>
+        <location filename="progressmanager.cpp" line="129"/>
         <source>%1 of %2</source>
         <translation>%1 из %2</translation>
     </message>
