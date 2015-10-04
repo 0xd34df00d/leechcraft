@@ -1552,6 +1552,11 @@ namespace LMP
 					.arg (filename);
 			nextTrack ();
 			break;
+		case SourceError::CannotOpenSource:
+			text = tr ("Cannot open source %1, playing next track...")
+					.arg (filename);
+			nextTrack ();
+			break;
 		case SourceError::InvalidSource:
 			text = tr ("Audio source %1 is invalid, playing next track...")
 					.arg (filename);
