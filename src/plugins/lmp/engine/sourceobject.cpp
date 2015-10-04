@@ -590,6 +590,10 @@ namespace LMP
 					{
 						GST_RESOURCE_ERROR_NOT_FOUND,
 						SourceError::SourceNotFound
+					},
+					{
+						GST_RESOURCE_ERROR_OPEN_READ,
+						SourceError::CannotOpenSource
 					}
 				}
 			},
