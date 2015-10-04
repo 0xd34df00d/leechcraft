@@ -54,13 +54,6 @@ namespace LMP
 
 	void RecommendationsWidget::InitializeProviders ()
 	{
-		const auto& lastProv = ShouldRememberProvs () ?
-				XmlSettingsManager::Instance ()
-					.Property ("LastUsedRecsProvider", QString ()).toString () :
-				QString ();
-
-		bool lastFound = false;
-
 		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
 				GetAllCastableRoots<Media::IRecommendedArtists*> ();
 		for (auto root : roots)
@@ -69,22 +62,15 @@ namespace LMP
 			if (!scrob)
 				continue;
 
-			Ui_.RecProvider_->addItem (qobject_cast<IInfo*> (root)->GetIcon (),
-					scrob->GetServiceName ());
 			ProvRoots_ << root;
 			Providers_ << qobject_cast<Media::IRecommendedArtists*> (root);
 
-			if (scrob->GetServiceName () == lastProv)
-			{
-				const int idx = Providers_.size () - 1;
-				Ui_.RecProvider_->setCurrentIndex (idx);
-				on_RecProvider__activated (idx);
-				lastFound = true;
-			}
+			const auto pending = qobject_cast<Media::IRecommendedArtists*> (root)->RequestRecommended (10);
+			connect (pending->GetQObject (),
+					SIGNAL (ready ()),
+					this,
+					SLOT (handleGotRecs ()));
 		}
-
-		if (!lastFound)
-			Ui_.RecProvider_->setCurrentIndex (-1);
 	}
 
 	void RecommendationsWidget::handleGotRecs ()
@@ -100,22 +86,6 @@ namespace LMP
 		const auto& similars = pending->GetSimilar ();
 
 		RecView_->SetSimilarArtists (similars);
-	}
-
-	void RecommendationsWidget::on_RecProvider__activated (int index)
-	{
-		if (index < 0 || index >= Providers_.size ())
-			return;
-
-		auto pending = Providers_.at (index)->RequestRecommended (10);
-		connect (pending->GetQObject (),
-				SIGNAL (ready ()),
-				this,
-				SLOT (handleGotRecs ()));
-
-		auto scrob = qobject_cast<Media::IAudioScrobbler*> (ProvRoots_.at (index));
-		XmlSettingsManager::Instance ()
-				.setProperty ("LastUsedRecsProvider", scrob->GetServiceName ());
 	}
 }
 }

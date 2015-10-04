@@ -58,7 +58,6 @@ namespace LMP
 		void InitializeProviders ();
 	private slots:
 		void handleGotRecs ();
-		void on_RecProvider__activated (int);
 	};
 }
 }
