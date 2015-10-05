@@ -118,6 +118,9 @@ namespace Lastfmscrobble
 		reply->deleteLater ();
 		qWarning () << Q_FUNC_INFO
 				<< reply->errorString ();
+		qWarning () << "the query URL was:";
+		qWarning () << reply->request ().url ();
+		qWarning () << reply->readAll ();
 
 		emit error ();
 	}
