@@ -30,6 +30,7 @@
 #include "recommendationswidget.h"
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -59,15 +60,14 @@ namespace LMP
 				GetAllCastableRoots<Media::IRecommendedArtists*> ();
 		for (auto root : roots)
 		{
-			auto scrob = qobject_cast<Media::IAudioScrobbler*> (root);
-			if (!scrob)
-				continue;
-
 			const auto pending = qobject_cast<Media::IRecommendedArtists*> (root)->RequestRecommended (10);
-			connect (pending->GetQObject (),
-					SIGNAL (ready ()),
-					this,
-					SLOT (handleGotRecs ()));
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this, pending] { HandleInfos (pending->GetSimilar ()); },
+				pending->GetQObject (),
+				SIGNAL (ready ()),
+				pending->GetQObject ()
+			};
 		}
 	}
 
@@ -81,20 +81,6 @@ namespace LMP
 					Util::ComparingBy (&Media::SimilarityInfo::Similarity_));
 
 		RecView_->SetSimilarArtists (Similars_);
-	}
-
-	void RecommendationsWidget::handleGotRecs ()
-	{
-		auto pending = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
-		if (!pending)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "not a pending sender"
-					<< sender ();
-			return;
-		}
-
-		HandleInfos (pending->GetSimilar ());
 	}
 }
 }

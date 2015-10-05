@@ -53,8 +53,6 @@ namespace LMP
 		void InitializeProviders ();
 	private:
 		void HandleInfos (const Media::SimilarityInfos_t&);
-	private slots:
-		void handleGotRecs ();
 	};
 }
 }
