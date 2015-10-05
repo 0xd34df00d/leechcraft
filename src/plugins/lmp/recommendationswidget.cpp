@@ -56,11 +56,11 @@ namespace LMP
 
 	void RecommendationsWidget::InitializeProviders ()
 	{
-		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IRecommendedArtists*> ();
-		for (auto root : roots)
+		const auto& provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+				GetAllCastableTo<Media::IRecommendedArtists*> ();
+		for (auto prov : provs)
 		{
-			const auto pending = qobject_cast<Media::IRecommendedArtists*> (root)->RequestRecommended (10);
+			const auto pending = prov->RequestRecommended (10);
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
 				[this, pending] { HandleInfos (pending->GetSimilar ()); },
