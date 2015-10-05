@@ -29,6 +29,7 @@
 
 #include "recommendationswidget.h"
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -70,6 +71,18 @@ namespace LMP
 		}
 	}
 
+	void RecommendationsWidget::HandleInfos (const Media::SimilarityInfos_t& similars)
+	{
+		const auto initSize = Similars_.size ();
+		Similars_ += similars;
+
+		if (initSize)
+			std::inplace_merge (Similars_.begin (), Similars_.begin () + initSize, Similars_.end (),
+					Util::ComparingBy (&Media::SimilarityInfo::Similarity_));
+
+		RecView_->SetSimilarArtists (Similars_);
+	}
+
 	void RecommendationsWidget::handleGotRecs ()
 	{
 		auto pending = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
@@ -80,9 +93,8 @@ namespace LMP
 					<< sender ();
 			return;
 		}
-		const auto& similars = pending->GetSimilar ();
 
-		RecView_->SetSimilarArtists (similars);
+		HandleInfos (pending->GetSimilar ());
 	}
 }
 }

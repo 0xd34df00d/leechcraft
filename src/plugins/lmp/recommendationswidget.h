@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWidget>
+#include <interfaces/media/audiostructs.h>
 #include "ui_recommendationswidget.h"
 
 namespace LeechCraft
@@ -45,10 +46,13 @@ namespace LMP
 		Ui::RecommendationsWidget Ui_;
 		SimilarView * const RecView_;
 
+		Media::SimilarityInfos_t Similars_;
 	public:
 		RecommendationsWidget (QWidget* = 0);
 
 		void InitializeProviders ();
+	private:
+		void HandleInfos (const Media::SimilarityInfos_t&);
 	private slots:
 		void handleGotRecs ();
 	};
