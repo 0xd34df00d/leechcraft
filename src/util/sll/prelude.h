@@ -247,7 +247,7 @@ namespace Util
 	template<typename R>
 	auto ComparingBy (R r)
 	{
-		return [r] (const auto& left, const auto& right) { return r (left) < r (right); };
+		return [r] (const auto& left, const auto& right) { return Invoke (r, left) < Invoke (r, right); };
 	}
 
 	const auto Apply = [] (const auto& t) { return t (); };
@@ -262,7 +262,7 @@ namespace Util
 			template<typename T>
 			bool operator() (const T& left, const T& right) const
 			{
-				return R_ (left) < R_ (right);
+				return Invoke (R_, left) < Invoke (R_, right);
 			}
 		};
 	}
