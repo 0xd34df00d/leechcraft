@@ -32,7 +32,7 @@ else ()
 	if (USE_QT5)
 		find_library_with_debug(QCA2_LIBRARIES
 						WIN32_DEBUG_POSTFIX d
-						NAMES qca-qt5
+						NAMES qca-qt5 qca
 						HINTS ${PC_QCA2_LIBDIR} ${PC_QCA2_LIBRARY_DIRS} ${QCA2_DIR}/lib
 						)
 	else ()

@@ -76,4 +76,6 @@ target_link_libraries (leechcraft_gacts
 	)
 install (TARGETS leechcraft_gacts DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_gacts X11Extras)
+if (UNIX AND NOT APPLE)
+	FindQtLibs (leechcraft_gacts X11Extras)
+endif ()

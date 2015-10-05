@@ -26,7 +26,7 @@ if (NOT USE_QT5)
 	)
 else ()
 	find_library (QWT_LIBRARIES
-		NAMES qwt6-qt5 qwt-qt5
+		NAMES qwt6-qt5 qwt-qt5 qwt
 		PATHS
 		/usr/local/lib
 		/usr/lib
