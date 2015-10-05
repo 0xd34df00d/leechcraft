@@ -53,6 +53,6 @@ install (FILES ${AUTOIDLER_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_
 
 FindQtLibs (leechcraft_azoth_autoidler Widgets)
 
-if (UNIX)
+if (UNIX AND NOT APPLE)
 	FindQtLibs (leechcraft_azoth_autoidler X11Extras)
 endif ()
