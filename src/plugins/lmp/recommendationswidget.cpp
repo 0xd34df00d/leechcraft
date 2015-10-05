@@ -62,9 +62,6 @@ namespace LMP
 			if (!scrob)
 				continue;
 
-			ProvRoots_ << root;
-			Providers_ << qobject_cast<Media::IRecommendedArtists*> (root);
-
 			const auto pending = qobject_cast<Media::IRecommendedArtists*> (root)->RequestRecommended (10);
 			connect (pending->GetQObject (),
 					SIGNAL (ready ()),

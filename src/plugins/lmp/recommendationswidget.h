@@ -32,11 +32,6 @@
 #include <QWidget>
 #include "ui_recommendationswidget.h"
 
-namespace Media
-{
-	class IRecommendedArtists;
-}
-
 namespace LeechCraft
 {
 namespace LMP
@@ -50,8 +45,6 @@ namespace LMP
 		Ui::RecommendationsWidget Ui_;
 		SimilarView * const RecView_;
 
-		QList<QObject*> ProvRoots_;
-		QList<Media::IRecommendedArtists*> Providers_;
 	public:
 		RecommendationsWidget (QWidget* = 0);
 
