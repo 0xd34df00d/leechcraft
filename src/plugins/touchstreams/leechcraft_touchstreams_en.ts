@@ -4,7 +4,7 @@
 <context>
     <name>LeechCraft::TouchStreams</name>
     <message>
-        <location filename="recsmanager.cpp" line="57"/>
+        <location filename="recsmanager.cpp" line="58"/>
         <source>VKontakte: recommendations</source>
         <translation>VKontakte: recommendations</translation>
     </message>
@@ -12,13 +12,13 @@
 <context>
     <name>LeechCraft::TouchStreams::AlbumsManager</name>
     <message>
-        <location filename="albumsmanager.cpp" line="79"/>
-        <location filename="albumsmanager.cpp" line="104"/>
+        <location filename="albumsmanager.cpp" line="80"/>
+        <location filename="albumsmanager.cpp" line="102"/>
         <source>VKontakte: your audio</source>
         <translation>VKontakte: your audio</translation>
     </message>
     <message>
-        <location filename="albumsmanager.cpp" line="171"/>
+        <location filename="albumsmanager.cpp" line="175"/>
         <source>Uncategorized</source>
         <translation>Uncategorized</translation>
     </message>
@@ -35,17 +35,17 @@
 <context>
     <name>LeechCraft::TouchStreams::FriendsManager</name>
     <message>
-        <location filename="friendsmanager.cpp" line="69"/>
+        <location filename="friendsmanager.cpp" line="70"/>
         <source>VKontakte: friends</source>
         <translation>VKontakte: friends</translation>
     </message>
     <message>
-        <location filename="friendsmanager.cpp" line="142"/>
+        <location filename="friendsmanager.cpp" line="145"/>
         <source>Albums</source>
         <translation>Albums</translation>
     </message>
     <message>
-        <location filename="friendsmanager.cpp" line="151"/>
+        <location filename="friendsmanager.cpp" line="154"/>
         <source>Recommendations</source>
         <translation>Recommendations</translation>
     </message>
@@ -53,12 +53,12 @@
 <context>
     <name>LeechCraft::TouchStreams::Plugin</name>
     <message>
-        <location filename="touchstreams.cpp" line="96"/>
+        <location filename="touchstreams.cpp" line="103"/>
         <source>VK.com music streamer.</source>
         <translation>VK.com music streamer.</translation>
     </message>
     <message>
-        <location filename="touchstreams.cpp" line="111"/>
+        <location filename="touchstreams.cpp" line="118"/>
         <source>VKontakte</source>
         <translation>VKontakte</translation>
     </message>
@@ -82,6 +82,11 @@
         <location filename="dummy.cpp" line="3"/>
         <source>Request friends&apos; audio tracks</source>
         <translation>Request friends&apos; audio tracks</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="4"/>
+        <source>Search results count:</source>
+        <translation>Search results count:</translation>
     </message>
 </context>
 </TS>
