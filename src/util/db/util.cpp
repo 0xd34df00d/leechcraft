@@ -31,7 +31,6 @@
 #include <QFile>
 #include <QSqlQuery>
 #include <QThread>
-#include <util/util.h>
 #include "dblock.h"
 
 namespace LeechCraft
@@ -64,6 +63,36 @@ namespace Util
 		QSqlQuery query { db };
 		query.prepare (LoadQuery (pluginName, filename));
 		Util::DBLock::Execute (query);
+	}
+
+	namespace
+	{
+		template<typename To, typename From>
+		typename std::enable_if<std::is_same<From, To>::value, To>::type DumbCast (From from)
+		{
+			return from;
+		}
+
+		template<typename To, typename From>
+		typename std::enable_if<!std::is_same<From, To>::value &&
+					std::is_integral<From>::value &&
+					std::is_integral<To>::value, To>::type DumbCast (From from)
+		{
+			return static_cast<To> (from);
+		}
+
+		template<typename To, typename From>
+		typename std::enable_if<!std::is_same<From, To>::value &&
+					!(std::is_integral<From>::value &&
+						std::is_integral<To>::value), To>::type DumbCast (From from)
+		{
+			return reinterpret_cast<To> (from);
+		}
+
+		uintptr_t Handle2Num (Qt::HANDLE handle)
+		{
+			return DumbCast<uintptr_t> (handle);
+		}
 	}
 
 	QString GenConnectionName (const QString& base)
