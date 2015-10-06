@@ -35,6 +35,7 @@
 #include <QThread>
 #include <util/util.h>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/sys/paths.h>
 #include "util.h"
 #include "engine/rgfilter.h"
@@ -44,30 +45,10 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	namespace
-	{
-		QString GetConnName ()
-		{
-			auto cnt = 0;
-			const auto handleNum = Util::Handle2Num (QThread::currentThreadId ());
-			while (true)
-			{
-				const auto& name = QString ("LMP_LocalCollection_%1_%2")
-					.arg (cnt)
-					.arg (handleNum);
-				if (!QSqlDatabase::contains (name))
-					return name;
-
-				++cnt;
-			}
-
-			return {};
-		}
-	}
-
 	LocalCollectionStorage::LocalCollectionStorage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", GetConnName ()))
+	, DB_ (QSqlDatabase::addDatabase ("QSQLITE",
+			Util::GenConnectionName ("org.LMP.LocalCollection")))
 	{
 		DB_.setDatabaseName (Util::CreateIfNotExists ("lmp").filePath ("localcollection.db"));
 

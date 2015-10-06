@@ -172,17 +172,6 @@ namespace LeechCraft
 
 		UTIL_API QPixmap DrawOverlayText (QPixmap px, const QString& text, QFont font, const QPen& pen, const QBrush& brush);
 
-		/** @brief Converts the \em handle to an integer.
-		 *
-		 * Different handles are mapped to different integers. This way
-		 * a handle can be used, for example, as a part of a DB
-		 * connection ID string.
-		 *
-		 * @param[in] handle The handle to convert.
-		 * @return The integer representation of the handle.
-		 */
-		UTIL_API uintptr_t Handle2Num (Qt::HANDLE handle);
-
 		/** @brief Returns an element for a given tags list.
 		 *
 		 * This function tries to implement projection from tags to a

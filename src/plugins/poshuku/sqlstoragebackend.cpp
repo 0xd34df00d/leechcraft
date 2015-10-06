@@ -35,6 +35,7 @@
 #include <QThread>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -61,9 +62,7 @@ namespace Poshuku
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
-					QString ("PoshukuConnection_%1_%2")
-						.arg (qrand ())
-						.arg (Util::Handle2Num (QThread::currentThreadId ())));
+					Util::GenConnectionName ("org.LeechCraft.Poshuku"));
 		switch (Type_)
 		{
 		case SBSQLite:

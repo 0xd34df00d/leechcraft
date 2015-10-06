@@ -573,7 +573,7 @@ namespace LMP
 				<< msgStr
 				<< debugStr;
 
-		const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
+		static const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
 		{
 			{
 				GST_CORE_ERROR,

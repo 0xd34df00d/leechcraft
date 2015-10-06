@@ -29,6 +29,8 @@
 
 #include "recommendationswidget.h"
 #include <QtDebug>
+#include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/irecommendedartists.h>
 #include <interfaces/media/iaudioscrobbler.h>
@@ -54,68 +56,31 @@ namespace LMP
 
 	void RecommendationsWidget::InitializeProviders ()
 	{
-		const auto& lastProv = ShouldRememberProvs () ?
-				XmlSettingsManager::Instance ()
-					.Property ("LastUsedRecsProvider", QString ()).toString () :
-				QString ();
-
-		bool lastFound = false;
-
-		const auto& roots = Core::Instance ().GetProxy ()->GetPluginsManager ()->
-				GetAllCastableRoots<Media::IRecommendedArtists*> ();
-		for (auto root : roots)
+		const auto& provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+				GetAllCastableTo<Media::IRecommendedArtists*> ();
+		for (auto prov : provs)
 		{
-			auto scrob = qobject_cast<Media::IAudioScrobbler*> (root);
-			if (!scrob)
-				continue;
-
-			Ui_.RecProvider_->addItem (qobject_cast<IInfo*> (root)->GetIcon (),
-					scrob->GetServiceName ());
-			ProvRoots_ << root;
-			Providers_ << qobject_cast<Media::IRecommendedArtists*> (root);
-
-			if (scrob->GetServiceName () == lastProv)
+			const auto pending = prov->RequestRecommended (10);
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
-				const int idx = Providers_.size () - 1;
-				Ui_.RecProvider_->setCurrentIndex (idx);
-				on_RecProvider__activated (idx);
-				lastFound = true;
-			}
-		}
-
-		if (!lastFound)
-			Ui_.RecProvider_->setCurrentIndex (-1);
-	}
-
-	void RecommendationsWidget::handleGotRecs ()
-	{
-		auto pending = qobject_cast<Media::IPendingSimilarArtists*> (sender ());
-		if (!pending)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "not a pending sender"
-					<< sender ();
-			return;
-		}
-		const auto& similars = pending->GetSimilar ();
-
-		RecView_->SetSimilarArtists (similars);
-	}
-
-	void RecommendationsWidget::on_RecProvider__activated (int index)
-	{
-		if (index < 0 || index >= Providers_.size ())
-			return;
-
-		auto pending = Providers_.at (index)->RequestRecommended (10);
-		connect (pending->GetQObject (),
+				[this, pending] { HandleInfos (pending->GetSimilar ()); },
+				pending->GetQObject (),
 				SIGNAL (ready ()),
-				this,
-				SLOT (handleGotRecs ()));
+				pending->GetQObject ()
+			};
+		}
+	}
 
-		auto scrob = qobject_cast<Media::IAudioScrobbler*> (ProvRoots_.at (index));
-		XmlSettingsManager::Instance ()
-				.setProperty ("LastUsedRecsProvider", scrob->GetServiceName ());
+	void RecommendationsWidget::HandleInfos (const Media::SimilarityInfos_t& similars)
+	{
+		const auto initSize = Similars_.size ();
+		Similars_ += similars;
+
+		if (initSize)
+			std::inplace_merge (Similars_.begin (), Similars_.begin () + initSize, Similars_.end (),
+					Util::ComparingBy (&Media::SimilarityInfo::Similarity_));
+
+		RecView_->SetSimilarArtists (Similars_);
 	}
 }
 }
