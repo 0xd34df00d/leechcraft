@@ -86,7 +86,7 @@ namespace TouchStreams
 		return Root_;
 	}
 
-	void FriendsManager::RefreshItems (QList<QStandardItem*> items)
+	void FriendsManager::RefreshItems (QList<QStandardItem*>& items)
 	{
 		if (items.contains (Root_))
 		{
@@ -100,19 +100,22 @@ namespace TouchStreams
 			RequestQueue_.clear ();
 
 			refetchFriends ();
+
+			items.removeOne (Root_);
+
 			return;
 		}
 
 		for (const auto& mgr : Friend2AlbumsManager_)
 		{
-			items.removeOne (mgr->RefreshItems (items));
+			mgr->RefreshItems (items);
 			if (items.isEmpty ())
 				break;
 		}
 
 		for (const auto& mgr : Friend2RecsManager_)
 		{
-			items.removeOne (mgr->RefreshItems (items));
+			mgr->RefreshItems (items);
 			if (items.isEmpty ())
 				break;
 		}

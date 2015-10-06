@@ -88,7 +88,7 @@ namespace TouchStreams
 		qlonglong GetUserID () const;
 		quint32 GetTracksCount () const;
 
-		QStandardItem* RefreshItems (const QList<QStandardItem*>&);
+		void RefreshItems (QList<QStandardItem*>&);
 	private:
 		void InitRootItem ();
 

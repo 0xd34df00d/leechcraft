@@ -122,7 +122,7 @@ namespace TouchStreams
 		return TracksCount_;
 	}
 
-	QStandardItem* AlbumsManager::RefreshItems (const QList<QStandardItem*>& items)
+	void AlbumsManager::RefreshItems (QList<QStandardItem*>& items)
 	{
 		for (const auto item : items)
 		{
@@ -139,11 +139,11 @@ namespace TouchStreams
 					AlbumsRootItem_->removeRows (0, rc);
 				Albums_.clear ();
 				refetchAlbums ();
-				return item;
+
+				items.removeOne (item);
+				return;
 			}
 		}
-
-		return nullptr;
 	}
 
 	void AlbumsManager::InitRootItem ()

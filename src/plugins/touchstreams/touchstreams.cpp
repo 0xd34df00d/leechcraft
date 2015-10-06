@@ -155,7 +155,7 @@ namespace TouchStreams
 
 	void Plugin::RefreshItems (const QList<QModelIndex>& indices)
 	{
-		const auto& items = indices.isEmpty () ?
+		auto items = indices.isEmpty () ?
 				Model_->findItems ({}) :
 				Util::Map (indices, Util::BindMemFn (&QStandardItemModel::itemFromIndex, Model_));
 
