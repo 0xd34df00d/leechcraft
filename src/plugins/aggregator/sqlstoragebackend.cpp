@@ -39,6 +39,7 @@
 #include <QSqlRecord>
 #include <util/util.h>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -66,9 +67,7 @@ namespace Aggregator
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
-				QString ("AggregatorConnection" + id + "_%1_%2")
-						.arg (qrand ())
-						.arg (Util::Handle2Num (QThread::currentThreadId ())));
+				Util::GenConnectionName ("org.LeechCraft.Aggregator"));
 
 		switch (Type_)
 		{
