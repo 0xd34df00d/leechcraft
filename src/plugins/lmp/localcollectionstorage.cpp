@@ -35,6 +35,7 @@
 #include <QThread>
 #include <util/util.h>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/sys/paths.h>
 #include "util.h"
 #include "engine/rgfilter.h"
@@ -67,7 +68,8 @@ namespace LMP
 
 	LocalCollectionStorage::LocalCollectionStorage (QObject *parent)
 	: QObject (parent)
-	, DB_ (QSqlDatabase::addDatabase ("QSQLITE", GetConnName ()))
+	, DB_ (QSqlDatabase::addDatabase ("QSQLITE",
+			Util::GenConnectionName ("org.LMP.LocalCollection")))
 	{
 		DB_.setDatabaseName (Util::CreateIfNotExists ("lmp").filePath ("localcollection.db"));
 
