@@ -35,6 +35,7 @@
 #include <QThread>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/util.h>
 #include "xmlsettingsmanager.h"
 
@@ -46,9 +47,7 @@ namespace Poshuku
 	: Type_ (type)
 	{
 		DB_ = QSqlDatabase::addDatabase ("QMYSQL",
-					QString ("PoshukuConnection_%1_%2")
-						.arg (qrand ())
-						.arg (Util::Handle2Num (QThread::currentThreadId ())));
+					Util::GenConnectionName ("org.LeechCraft.Poshuku"));
 		DB_.setDatabaseName (XmlSettingsManager::Instance ()->
 				property ("MySQLDBName").toString ());
 		DB_.setHostName (XmlSettingsManager::Instance ()->
