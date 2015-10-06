@@ -11,7 +11,6 @@ add_library (leechcraft-util-threads${LC_LIBSUFFIX} SHARED
 	${THREADS_SRCS}
 	)
 target_link_libraries (leechcraft-util-threads${LC_LIBSUFFIX}
-	${PCRE_LIBRARIES}
 	leechcraft-util-sll${LC_LIBSUFFIX}
 	)
 set_property (TARGET leechcraft-util-threads${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
