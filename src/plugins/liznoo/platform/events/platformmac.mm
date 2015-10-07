@@ -72,7 +72,7 @@ namespace Events
 				IONotificationPortGetRunLoopSource (NotifyPortRef_),
 				kCFRunLoopCommonModes);
 
-		setAvailalble (true);
+		setAvailable (true);
 	}
 
 	PlatformMac::~PlatformMac ()
