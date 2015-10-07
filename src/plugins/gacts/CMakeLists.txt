@@ -7,7 +7,7 @@ option (WITH_GACTS_BUNDLED_QXT "Build with bundled Qxt with fixed media keys han
 if (NOT WITH_GACTS_BUNDLED_QXT)
 	if (USE_QT5)
 		message (FATAL_ERROR "Building Gacts with Qxt and Qt5 is not supported (as there are no
-				public releases of Qt5-enabled Qxt yet. Consider disabling WITH_GACTS_BUNDLED_QXT option.")
+				public releases of Qt5-enabled Qxt yet). Consider enabling WITH_GACTS_BUNDLED_QXT option.")
 	endif ()
 
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
