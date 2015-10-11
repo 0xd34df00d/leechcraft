@@ -899,14 +899,13 @@ install (FILES xmlsettingsdialog/xsdconfig.h DESTINATION include/leechcraft/xmls
 install (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraft/xmlsettingsdialog/)
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
-install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
-
 install (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
 install (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 install (DIRECTORY share/qml5/common DESTINATION ${LC_QML5_DEST}/org/LC)
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
 if (UNIX AND NOT APPLE)
+	install (FILES InitLCPlugin.cmake DESTINATION share/cmake/Modules)
 	install (DIRECTORY cmake/ DESTINATION share/leechcraft/cmake)
 	install (DIRECTORY data/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.gz")
 	if (USE_QT5)
