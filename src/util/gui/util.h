@@ -141,6 +141,21 @@ namespace Util
 	 */
 	UTIL_GUI_API QLabel* ShowPixmapLabel (const QPixmap& pixmap, const QPoint& pos = QPoint ());
 
+	/** @brief Mixes two colors with the given weights.
+	 *
+	 * Mixes two colors \em c1 and \em c2 with weights \em alpha and
+	 * (1 - \em alpha) respectively.
+	 *
+	 * @param[in] c1 The first color to mix.
+	 * @param[in] c2 The second color to mix.
+	 * @param[in] alpha The weight of the first color (and
+	 * <code>1 - weight</code> for the second color).
+	 * @return The mixed color.
+	 *
+	 * @sa TintPalette()
+	 *
+	 * @ingroup GuiUtil
+	 */
 	UTIL_GUI_API QColor TintColors (const QColor& c1, const QColor& c2, double alpha = 0.5);
 
 	UTIL_GUI_API void TintPalette (QWidget *widget,
