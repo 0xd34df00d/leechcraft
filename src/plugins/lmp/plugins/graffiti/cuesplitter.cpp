@@ -330,7 +330,7 @@ namespace Graffiti
 					filename += " - " + cue.Album_;
 				if (!track.Title_.isEmpty ())
 					filename += " - " + track.Title_;
-				return filename += ".flac";
+				return filename + ".flac";
 			};
 
 			for (const auto& track : file.Tracks_)

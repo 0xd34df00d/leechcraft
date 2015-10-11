@@ -34,7 +34,7 @@
 #endif
 
 class QxtGlobalShortcutPrivate : public QxtPrivate<QxtGlobalShortcut>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050000 && !defined(Q_OS_MAC)
 							   , public QAbstractNativeEventFilter
 #endif
 {
@@ -51,7 +51,7 @@ public:
 	bool unsetShortcut();
 
 	static bool error;
-#ifndef Q_WS_MAC
+#ifndef Q_OS_MAC
 	static int ref;
 #if QT_VERSION < 0x050000
 	static QAbstractEventDispatcher::EventFilter prevEventFilter;
@@ -59,7 +59,7 @@ public:
 #else
 	bool nativeEventFilter (const QByteArray&, void*, long*) override;
 #endif
-#endif // Q_WS_MAC
+#endif // Q_OS_MAC
 
 	static void activateShortcut(quint32 nativeKey, quint32 nativeMods);
 
