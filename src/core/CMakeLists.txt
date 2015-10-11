@@ -153,7 +153,7 @@ if (WIN32)
 	set (WIN_RESOURCES ../../../tools/win32/leechcraft.rc)
 endif ()
 
-if (USE_QT5)
+if (USE_QT5 AND NOT APPLE)
 	set (LC_EXEC_SUFFIX "-qt5")
 else ()
 	set (LC_EXEC_SUFFIX "")
