@@ -38,6 +38,17 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Builds a tree widget representation of the given SSL error.
+	 *
+	 * This function creates and returns a part of the tree for the given
+	 * SSL \em error. The ownership of the tree widget item is passed to
+	 * the caller.
+	 *
+	 * @param[in] error The SSL error whose representation should be built.
+	 * @return The tree widget item representing the error.
+	 *
+	 * @ingroup NetworkUtil
+	 */
 	UTIL_NETWORK_API QTreeWidgetItem* SslError2TreeItem (const QSslError& error);
 }
 }
