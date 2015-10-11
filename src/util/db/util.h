@@ -65,6 +65,15 @@ namespace Util
 		return lastVar.value<T> ();
 	}
 
+	/** @brief Generates an unique thread-safe connection name.
+	 *
+	 * This function generates a connection name using the given \em base
+	 * that is unique across all threads.
+	 *
+	 * @param[in] base The identifier base to be used to generate the
+	 * unique connection string.
+	 * @return An unique connection name across all threads.
+	 */
 	UTIL_DB_API QString GenConnectionName (const QString& base);
 }
 }
