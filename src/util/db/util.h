@@ -41,6 +41,16 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Runs the given query \em text on the given \em db.
+	 *
+	 * Prepares and executes a QSqlQuery containing the given query
+	 * \em text on the given \em db. If the query fails, an exception
+	 * is thrown.
+	 *
+	 * @param[in] db The database to execute the query \em text on.
+	 * @param[in] text The text of the query to be executed.
+	 * @throws std::exception If the query execution failed.
+	 */
 	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
 
 	UTIL_DB_API QString LoadQuery (const QString& pluginName, const QString& filename);
