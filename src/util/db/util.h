@@ -49,7 +49,10 @@ namespace Util
 	 *
 	 * @param[in] db The database to execute the query \em text on.
 	 * @param[in] text The text of the query to be executed.
+	 *
 	 * @throws std::exception If the query execution failed.
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
 
@@ -70,6 +73,8 @@ namespace Util
 	 * @throws std::exception If the given file cannot be opened.
 	 *
 	 * @sa RunQuery()
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API QString LoadQuery (const QString& plugin, const QString& filename);
 
@@ -91,6 +96,8 @@ namespace Util
 	 * query execution failed.
 	 *
 	 * @sa LoadQuery()
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& plugin, const QString& filename);
 
@@ -102,6 +109,8 @@ namespace Util
 	 *
 	 * @throws std::runtime_error If no last insert ID has been reported,
 	 * or if the last insert ID cannot be converted to type \em T.
+	 *
+	 * @ingroup DbUtil
 	 */
 	template<typename T = int>
 	T GetLastId (const QSqlQuery& query)
@@ -129,6 +138,8 @@ namespace Util
 	 * @param[in] base The identifier base to be used to generate the
 	 * unique connection string.
 	 * @return An unique connection name across all threads.
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API QString GenConnectionName (const QString& base);
 }
