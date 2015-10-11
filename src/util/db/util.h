@@ -41,11 +41,36 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Runs the given query \em text on the given \em db.
+	 *
+	 * Prepares and executes a QSqlQuery containing the given query
+	 * \em text on the given \em db. If the query fails, an exception
+	 * is thrown.
+	 *
+	 * @param[in] db The database to execute the query \em text on.
+	 * @param[in] text The text of the query to be executed.
+	 * @throws std::exception If the query execution failed.
+	 */
 	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
 
-	UTIL_DB_API QString LoadQuery (const QString& pluginName, const QString& filename);
+	/** @brief Loads the query text from the given resource file.
+	 *
+	 * Loads the query text from the resources for the given \em plugin
+	 * and exact \em filename in it.
+	 *
+	 * The file name to be loaded is formed as
+	 * <code>:/${plugin}/resources/sql/${filename}.sql</code>.
+	 *
+	 * @param[in] plugin The name of the plugin whose resources should be
+	 * used.
+	 * @param[in] filename The name of the file under
+	 * <code>${plugin}/resources/sql</code>.
+	 * @return The query text in the given file.
+	 * @throws std::exception If the given file cannot be opened.
+	 */
+	UTIL_DB_API QString LoadQuery (const QString& plugin, const QString& filename);
 
-	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& pluginName, const QString& filename);
+	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& plugin, const QString& filename);
 
 	template<typename T = int>
 	T GetLastId (const QSqlQuery& query)
@@ -65,6 +90,15 @@ namespace Util
 		return lastVar.value<T> ();
 	}
 
+	/** @brief Generates an unique thread-safe connection name.
+	 *
+	 * This function generates a connection name using the given \em base
+	 * that is unique across all threads.
+	 *
+	 * @param[in] base The identifier base to be used to generate the
+	 * unique connection string.
+	 * @return An unique connection name across all threads.
+	 */
 	UTIL_DB_API QString GenConnectionName (const QString& base);
 }
 }
