@@ -34,7 +34,7 @@
 #endif
 
 class QxtGlobalShortcutPrivate : public QxtPrivate<QxtGlobalShortcut>
-#if QT_VERSION >= 0x050000
+#if QT_VERSION >= 0x050000 && !defined(Q_OS_MAC)
 							   , public QAbstractNativeEventFilter
 #endif
 {
