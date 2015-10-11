@@ -67,6 +67,8 @@ namespace Util
 	 * <code>${plugin}/resources/sql</code>.
 	 * @return The query text in the given file.
 	 * @throws std::exception If the given file cannot be opened.
+	 *
+	 * @sa RunQuery()
 	 */
 	UTIL_DB_API QString LoadQuery (const QString& plugin, const QString& filename);
 
