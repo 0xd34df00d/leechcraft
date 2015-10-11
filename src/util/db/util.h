@@ -66,6 +66,7 @@ namespace Util
 	 * @param[in] filename The name of the file under
 	 * <code>${plugin}/resources/sql</code>.
 	 * @return The query text in the given file.
+	 *
 	 * @throws std::exception If the given file cannot be opened.
 	 *
 	 * @sa RunQuery()
@@ -85,6 +86,7 @@ namespace Util
 	 * used.
 	 * @param[in] filename The name of the file under
 	 * <code>${plugin}/resources/sql</code>.
+	 *
 	 * @throws std::exception If the given file cannot be opened or if the
 	 * query execution failed.
 	 *
@@ -92,6 +94,15 @@ namespace Util
 	 */
 	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& plugin, const QString& filename);
 
+	/** @brief Gets the last insert ID for the given query.
+	 *
+	 * @tparam T The type of the last ID.
+	 * @param[in] query The query whose last insert ID should be retrieved.
+	 * @return The last insert ID of type \em T.
+	 *
+	 * @throws std::runtime_error If no last insert ID has been reported,
+	 * or if the last insert ID cannot be converted to type \em T.
+	 */
 	template<typename T = int>
 	T GetLastId (const QSqlQuery& query)
 	{
