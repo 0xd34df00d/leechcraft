@@ -53,6 +53,21 @@ namespace Util
 	 */
 	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
 
+	/** @brief Loads the query text from the given resource file.
+	 *
+	 * Loads the query text from the resources for the given \em plugin
+	 * and exact \em filename in it.
+	 *
+	 * The file name to be loaded is formed as
+	 * <code>:/${plugin}/resources/sql/${filename}.sql</code>.
+	 *
+	 * @param[in] plugin The name of the plugin whose resources should be
+	 * used.
+	 * @param[in] filename The name of the file under
+	 * <code>${plugin}/resources/sql</code>.
+	 * @return The query text in the given file.
+	 * @throws std::exception If the given file cannot be opened.
+	 */
 	UTIL_DB_API QString LoadQuery (const QString& plugin, const QString& filename);
 
 	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& plugin, const QString& filename);
