@@ -750,11 +750,14 @@ namespace LMP
 			std::sort (result.begin (), result.end (),
 					[sorter] (const ResolvedSource_t& s1, const ResolvedSource_t& s2)
 					{
-						if (s1.first.IsLocalFile () && !s2.first.IsLocalFile ())
+						const auto leftUseful = !s1.second.IsUseless ();
+						const auto rightUseful = !s2.second.IsUseless ();
+
+						if (leftUseful && !rightUseful)
 							return true;
-						else if (!s1.first.IsLocalFile () && s2.first.IsLocalFile ())
+						else if (!leftUseful && rightUseful)
 							return false;
-						else if (!s1.first.IsLocalFile () || !s2.first.IsLocalFile ())
+						else if (!leftUseful || !rightUseful)
 							return s1.first.ToUrl () < s2.first.ToUrl ();
 						else
 							return sorter (s1.second, s2.second);
