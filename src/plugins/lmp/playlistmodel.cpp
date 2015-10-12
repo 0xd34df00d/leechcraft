@@ -30,6 +30,7 @@
 #include "playlistmodel.h"
 #include <QMimeData>
 #include <QFileInfo>
+#include <util/sll/prelude.h>
 #include "playlistparsers/playlistfactory.h"
 #include "player.h"
 #include "util.h"
@@ -56,12 +57,7 @@ namespace LMP
 	{
 		QList<QUrl> urls;
 		for (const auto& index : indexes)
-		{
-			const auto& sources = Player_->GetIndexSources (index);
-			std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-					[] (decltype (sources.front ()) source)
-						{ return source.ToUrl (); });
-		}
+			urls += Util::Map (Player_->GetIndexSources (index), &AudioSource::ToUrl);
 		urls.removeAll (QUrl ());
 
 		QMimeData *result = new QMimeData;
