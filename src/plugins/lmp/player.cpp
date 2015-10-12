@@ -40,6 +40,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -785,12 +786,7 @@ namespace LMP
 
 		emit playerAvailable (false);
 
-		auto watcher = new QFutureWatcher<ResolveJobResult> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleSorted ()));
-		watcher->setFuture (QtConcurrent::run ([=]
+		const auto future = QtConcurrent::run ([=]
 				{
 					return ResolveJobResult
 					{
@@ -803,7 +799,13 @@ namespace LMP
 								sort),
 						clear
 					};
-				}));
+				});
+		Util::Sequence (this, future) >>
+				[this] (const ResolveJobResult& result)
+				{
+					ContinueAfterSorted (result);
+					emit playerAvailable (true);
+				};
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
