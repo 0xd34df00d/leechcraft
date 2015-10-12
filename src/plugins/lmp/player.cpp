@@ -686,7 +686,9 @@ namespace LMP
 			futureWatcher->setFuture (QtConcurrent::run (worker));
 		}
 
-		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
+		using ResolvedSource_t = QPair<AudioSource, MediaInfo>;
+
+		ResolvedSource_t PairResolve (const AudioSource& source)
 		{
 			MediaInfo info;
 			if (!source.IsLocalFile ())
@@ -746,7 +748,7 @@ namespace LMP
 				return result;
 
 			std::sort (result.begin (), result.end (),
-					[sorter] (decltype (result.at (0)) s1, decltype (result.at (0)) s2) -> bool
+					[sorter] (const ResolvedSource_t& s1, const ResolvedSource_t& s2)
 					{
 						if (s1.first.IsLocalFile () && !s2.first.IsLocalFile ())
 							return true;
