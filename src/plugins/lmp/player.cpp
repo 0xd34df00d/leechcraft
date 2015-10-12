@@ -688,12 +688,13 @@ namespace LMP
 
 		using ResolvedSource_t = QPair<AudioSource, MediaInfo>;
 
-		ResolvedSource_t PairResolve (const AudioSource& source)
+		template<typename NonLocalGetter>
+		ResolvedSource_t PairResolve (const NonLocalGetter& getter, const AudioSource& source)
 		{
-			MediaInfo info;
 			if (!source.IsLocalFile ())
-				return { source, info };
+				return { source, getter (source) };
 
+			MediaInfo info;
 			info.LocalPath_ = source.GetLocalPath ();
 
 			auto collection = Core::Instance ().GetLocalCollection ();
@@ -734,15 +735,19 @@ namespace LMP
 			return { source, info };
 		}
 
-		ResolveResult_t PairResolveAll (const QList<AudioSource>& sources)
+		template<typename NonLocalGetter>
+		ResolveResult_t PairResolveAll (const QList<AudioSource>& sources,
+				const NonLocalGetter& getter)
 		{
-			return Util::Map (sources, PairResolve);
+			return Util::Map (sources,
+					[&] (const AudioSource& source) { return PairResolve (getter, source); });
 		}
 
-		template<typename T>
-		ResolveResult_t PairResolveSort (const QList<AudioSource>& sources, T sorter, bool sort)
+		template<typename Sorter, typename NonLocalGetter>
+		ResolveResult_t PairResolveSort (const QList<AudioSource>& sources,
+				Sorter sorter, NonLocalGetter nonLocalGetter, bool sort)
 		{
-			auto result = PairResolveAll (sources);
+			auto result = PairResolveAll (sources, nonLocalGetter);
 
 			if (sorter.Criteria_.isEmpty () || !sort)
 				return result;
@@ -789,7 +794,13 @@ namespace LMP
 				{
 					return ResolveJobResult
 					{
-						PairResolveSort (sources, Sorter_, sort),
+						PairResolveSort (sources,
+								Sorter_,
+								[this] (const AudioSource& source)
+								{
+									return Url2Info_.value (source.ToUrl ());
+								},
+								sort),
 						clear
 					};
 				}));
