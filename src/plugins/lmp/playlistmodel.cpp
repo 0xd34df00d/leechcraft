@@ -50,7 +50,7 @@ namespace LMP
 
 	QStringList PlaylistModel::mimeTypes () const
 	{
-		return QStringList ("text/uri-list");
+		return { "text/uri-list" };
 	}
 
 	QMimeData* PlaylistModel::mimeData (const QModelIndexList& indexes) const
@@ -58,9 +58,9 @@ namespace LMP
 		QList<QUrl> urls;
 		for (const auto& index : indexes)
 			urls += Util::Map (Player_->GetIndexSources (index), &AudioSource::ToUrl);
-		urls.removeAll (QUrl ());
+		urls.removeAll ({});
 
-		QMimeData *result = new QMimeData;
+		const auto result = new QMimeData;
 		result->setUrls (urls);
 		return result;
 	}
