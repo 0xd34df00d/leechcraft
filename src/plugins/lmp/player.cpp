@@ -39,6 +39,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -733,9 +734,7 @@ namespace LMP
 
 		ResolveResult_t PairResolveAll (const QList<AudioSource>& sources)
 		{
-			ResolveResult_t result;
-			std::transform (sources.begin (), sources.end (), std::back_inserter (result), PairResolve);
-			return result;
+			return Util::Map (sources, PairResolve);
 		}
 
 		template<typename T>
