@@ -217,8 +217,6 @@ namespace LMP
 		void clear ();
 		void shufflePlaylist ();
 	private slots:
-		void handleSorted ();
-
 		void restorePlaylist ();
 		void handleStationError (const QString&);
 		void handleRadioStream (const QUrl&, const Media::AudioInfo&);

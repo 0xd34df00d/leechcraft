@@ -1168,13 +1168,6 @@ namespace LMP
 		Enqueue (queue, EnqueueReplace);
 	}
 
-	void Player::handleSorted ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<ResolveJobResult>*> (sender ());
-		ContinueAfterSorted (watcher->result ());
-		emit playerAvailable (true);
-	}
-
 	namespace
 	{
 		void FillItem (QStandardItem *item, const MediaInfo& info)
