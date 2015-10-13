@@ -39,6 +39,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -243,10 +244,10 @@ namespace TouchStreams
 			++TracksCount_;
 		}
 
-		for (auto i = album2urls.begin (); i != album2urls.end (); ++i)
+		for (const auto& pair : Util::Stlize (album2urls))
 		{
-			auto item = Albums_ [i.key ()].Item_;
-			item->setData (QVariant::fromValue (i.value ()), Media::RadioItemRole::TracksInfos);
+			auto item = Albums_ [pair.first].Item_;
+			item->setData (QVariant::fromValue (pair.second), Media::RadioItemRole::TracksInfos);
 		}
 
 		return true;
