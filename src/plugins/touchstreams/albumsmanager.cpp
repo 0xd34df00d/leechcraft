@@ -209,11 +209,11 @@ namespace TouchStreams
 		{
 			const auto& map = trackVar.toMap ();
 
-			const auto albumId = map.value ("album", "-1").toLongLong ();
 			const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
 			if (!url.isValid ())
 				continue;
 
+			const auto albumId = map.value ("album", "-1").toLongLong ();
 			auto albumItem = Albums_ [albumId].Item_;
 			if (!albumItem)
 			{
