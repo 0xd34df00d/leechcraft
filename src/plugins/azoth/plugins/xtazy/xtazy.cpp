@@ -229,6 +229,9 @@ namespace Xtazy
 
 	void Plugin::publish (const Media::AudioInfo& info)
 	{
+		if (!XmlSettingsManager::Instance ().property ("AutoPublishTune").toBool ())
+			return;
+
 		QVariantMap map;
 		map ["artist"] = info.Artist_;
 		map ["source"] = info.Album_;
