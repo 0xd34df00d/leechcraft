@@ -30,9 +30,11 @@
 #include "touchstreams.h"
 #include <QIcon>
 #include <QStandardItem>
+#include <QFuture>
 #include <util/sll/queuemanager.h>
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
+#include <util/threads/futures.h>
 #include <util/util.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
@@ -167,6 +169,11 @@ namespace TouchStreams
 	void Plugin::saveCookies (const QByteArray& cookies)
 	{
 		XmlSettingsManager::Instance ().setProperty ("Cookies", cookies);
+	}
+
+	QFuture<QList<Media::IRadioStation_ptr>> Plugin::RestoreRadioStations (const QStringList& ids)
+	{
+		return Util::MakeReadyFuture<QList<Media::IRadioStation_ptr>> ({});
 	}
 }
 }
