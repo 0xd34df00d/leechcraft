@@ -76,7 +76,7 @@ namespace LMP
 
 	QStringList StaticPlaylistManager::EnumerateCustomPlaylists () const
 	{
-		QStringList result = PlaylistsDir_.entryList (QStringList ("*.m3u8"));
+		auto result = PlaylistsDir_.entryList ({ "*.m3u8" });
 		for (auto i = result.begin (), end = result.end (); i != end; ++i)
 			i->chop (5);
 		result.sort ();
