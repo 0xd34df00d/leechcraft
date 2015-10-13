@@ -237,6 +237,7 @@ namespace TouchStreams
 						.arg (info.Title_));
 			trackItem->setEditable (false);
 			trackItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
+			trackItem->setData (map.value ("id").toString (), Media::RadioItemRole::RadioID);
 			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
 					Media::RadioItemRole::TracksInfos);
 			albumItem->appendRow (trackItem);
