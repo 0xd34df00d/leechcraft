@@ -293,7 +293,7 @@ namespace TouchStreams
 					QUrl url ("https://api.vk.com/method/audio.get");
 					Util::UrlOperator { url }
 							("access_token", key)
-							("count", "1000");
+							("count", "6000");
 					if (UserID_ >= 0)
 						Util::UrlOperator { url } ("uid", QString::number (UserID_));
 
