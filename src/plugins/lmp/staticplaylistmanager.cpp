@@ -79,8 +79,8 @@ namespace LMP
 		static const QString plExt { ".m3u8" };
 
 		auto result = PlaylistsDir_.entryList ({ "*" + plExt });
-		for (auto i = result.begin (), end = result.end (); i != end; ++i)
-			i->chop (plExt.size ());
+		for (auto& name : result)
+			name.chop (plExt.size ());
 		result.sort ();
 		return result;
 	}
