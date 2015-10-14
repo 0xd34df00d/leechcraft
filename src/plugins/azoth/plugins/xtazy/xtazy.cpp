@@ -222,16 +222,8 @@ namespace Xtazy
 		return true;
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
+	void Plugin::SendAudioInfo (const Media::AudioInfo& info)
 	{
-		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
-	}
-
-	void Plugin::publish (const Media::AudioInfo& info)
-	{
-		if (!XmlSettingsManager::Instance ().property ("AutoPublishTune").toBool ())
-			return;
-
 		QVariantMap map;
 		map ["artist"] = info.Artist_;
 		map ["source"] = info.Album_;
@@ -250,6 +242,17 @@ namespace Xtazy
 			if (auto tune = qobject_cast<ISupportTune*> (accObj))
 				tune->PublishTune (map);
 		}
+	}
+
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+
+	void Plugin::publish (const Media::AudioInfo& info)
+	{
+		if (XmlSettingsManager::Instance ().property ("AutoPublishTune").toBool ())
+			SendAudioInfo (info);
 	}
 
 	void Plugin::handleFileUploaded (const QString& filename, const QUrl& url)

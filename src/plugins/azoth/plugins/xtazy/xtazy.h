@@ -95,6 +95,8 @@ namespace Xtazy
 	private:
 		bool SendCurrentSong (ICLEntry*, QString&);
 		bool HandleShare (ICLEntry*, QString&);
+
+		void SendAudioInfo (const Media::AudioInfo&);
 	public slots:
 		void initPlugin (QObject*);
 	private slots:
