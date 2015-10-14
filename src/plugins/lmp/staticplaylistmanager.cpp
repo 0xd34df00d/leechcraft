@@ -29,6 +29,8 @@
 
 #include "staticplaylistmanager.h"
 #include <util/sys/paths.h>
+#include <util/sll/prelude.h>
+#include "mediainfo.h"
 #include "playlistparsers/m3u.h"
 
 namespace LeechCraft
@@ -49,14 +51,16 @@ namespace LMP
 		}
 	}
 
-	void StaticPlaylistManager::SetOnLoadPlaylist (const QList<AudioSource>& sources)
+	void StaticPlaylistManager::SetOnLoadPlaylist (const OnLoadPlaylist_t& sources)
 	{
-		WritePlaylist (GetOnLoadPath (), Playlist (sources));
+		WritePlaylist (GetOnLoadPath (),
+				Playlist { Util::Map (sources, [] (const OnLoadPlaylistItem_t& item) { return item.first; }) });
 	}
 
-	QList<AudioSource> StaticPlaylistManager::GetOnLoadPlaylist () const
+	auto StaticPlaylistManager::GetOnLoadPlaylist () const -> OnLoadPlaylist_t
 	{
-		return ReadPlaylist (GetOnLoadPath ()).ToSources ();
+		const auto& playlist = ReadPlaylist (GetOnLoadPath ());
+		return Util::Map (playlist, [] (const PlaylistItem& item) { return OnLoadPlaylistItem_t { item.Source_, {} }; });
 	}
 
 	namespace

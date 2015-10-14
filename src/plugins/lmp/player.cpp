@@ -1321,14 +1321,21 @@ namespace LMP
 
 	void Player::SaveOnLoadPlaylist () const
 	{
+		const auto playlist = Util::Map (CurrentQueue_,
+				[] (const AudioSource& source)
+				{
+					return StaticPlaylistManager::OnLoadPlaylistItem_t { source, {} };
+				});
 		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+				GetStaticManager ()->SetOnLoadPlaylist (playlist);
 	}
 
 	void Player::restorePlaylist ()
 	{
-		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
-		Enqueue (staticMgr->GetOnLoadPlaylist ());
+		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+		const auto& audioSources = Util::Map (staticMgr->GetOnLoadPlaylist (),
+				[] (const StaticPlaylistManager::OnLoadPlaylistItem_t& it) { return it.first; });
+		Enqueue (audioSources);
 
 		emit playlistRestored ();
 	}

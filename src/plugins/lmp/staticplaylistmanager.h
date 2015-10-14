@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QDir>
 #include "engine/audiosource.h"
@@ -38,6 +39,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct MediaInfo;
+
 	class StaticPlaylistManager : public QObject
 	{
 		Q_OBJECT
@@ -46,8 +49,11 @@ namespace LMP
 	public:
 		StaticPlaylistManager (QObject* = 0);
 
-		void SetOnLoadPlaylist (const QList<AudioSource>&);
-		QList<AudioSource> GetOnLoadPlaylist () const;
+		using OnLoadPlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
+		using OnLoadPlaylist_t = QList<OnLoadPlaylistItem_t>;
+
+		void SetOnLoadPlaylist (const OnLoadPlaylist_t&);
+		OnLoadPlaylist_t GetOnLoadPlaylist () const;
 
 		void SaveCustomPlaylist (QString, const Playlist&);
 		QStringList EnumerateCustomPlaylists () const;
