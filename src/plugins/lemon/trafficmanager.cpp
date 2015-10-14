@@ -154,7 +154,7 @@ namespace Lemon
 	{
 		static NetIcons icons;
 
-		QNetworkSession_ptr sess (new QNetworkSession (conf, this));
+		const auto sess = std::make_shared<QNetworkSession> (conf);
 		if (sess->state () != QNetworkSession::Connected)
 			return;
 
