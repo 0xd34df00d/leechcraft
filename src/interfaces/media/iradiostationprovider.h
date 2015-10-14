@@ -139,6 +139,12 @@ namespace Media
 		 */
 		RadioID,
 
+		/** @brief The ID of the plugin for this radio item.
+		 *
+		 * As returned by IInfo::GetUniqueID().
+		 */
+		PluginID,
+
 		/** @brief The tracks list.
 		 *
 		 * This role should be available for RadioType::SingleTrack and
