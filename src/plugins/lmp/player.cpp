@@ -1338,9 +1338,14 @@ namespace LMP
 	void Player::restorePlaylist ()
 	{
 		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
-		const auto& audioSources = Util::Map (staticMgr->GetOnLoadPlaylist (),
-				[] (const StaticPlaylistManager::OnLoadPlaylistItem_t& it) { return it.first; });
-		Enqueue (audioSources);
+		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
+
+		for (const auto& item : playlist)
+			if (item.second)
+				Url2Info_ [item.first.ToUrl ()] = *item.second;
+
+		Enqueue (Util::Map (playlist,
+				[] (const StaticPlaylistManager::OnLoadPlaylistItem_t& it) { return it.first; }));
 
 		emit playlistRestored ();
 	}
