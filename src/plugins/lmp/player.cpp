@@ -406,8 +406,7 @@ namespace LMP
 				PlaylistModel_->removeRow (item->row ());
 		}
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		SaveOnLoadPlaylist ();
 	}
 
 	void Player::SetStopAfter (const QModelIndex& index)
@@ -1152,8 +1151,7 @@ namespace LMP
 
 		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		SaveOnLoadPlaylist ();
 
 		if (Source_->GetState () != SourceState::Playing)
 			Source_->SetCurrentSource ({});
@@ -1295,8 +1293,7 @@ namespace LMP
 
 		QMetaObject::invokeMethod (PlaylistModel_, "modelReset");
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		SaveOnLoadPlaylist ();
 
 		if (Source_->GetState () == SourceState::Stopped)
 		{
@@ -1320,6 +1317,12 @@ namespace LMP
 		const auto& currentSource = Source_->GetCurrentSource ();
 		if (Items_.contains (currentSource))
 			Items_ [currentSource]->setData (true, Role::IsCurrent);
+	}
+
+	void Player::SaveOnLoadPlaylist () const
+	{
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
 	}
 
 	void Player::restorePlaylist ()

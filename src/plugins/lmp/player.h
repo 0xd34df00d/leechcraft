@@ -207,6 +207,8 @@ namespace LMP
 		void MarkAsCurrent (QStandardItem*);
 
 		void ContinueAfterSorted (const ResolveJobResult&);
+
+		void SaveOnLoadPlaylist () const;
 	public slots:
 		void play (const QModelIndex&);
 		void previousTrack ();
