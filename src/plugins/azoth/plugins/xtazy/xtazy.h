@@ -102,6 +102,8 @@ namespace Xtazy
 	private slots:
 		void publish (const Media::AudioInfo&);
 		void handleFileUploaded (const QString&, const QUrl&);
+
+		void handleAutoPublishChanged ();
 	};
 }
 }

@@ -85,6 +85,9 @@ namespace Xtazy
 				SIGNAL (currentSongChanged (Media::AudioInfo)),
 				this,
 				SLOT (publish (Media::AudioInfo)));
+
+		XmlSettingsManager::Instance ().RegisterObject ("AutoPublishTune",
+				this, "handleAutoPublishChanged");
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -274,9 +277,14 @@ namespace Xtazy
 			entry->CreateMessage (msgType, notifee.second, encoded)->Send ();
 		}
 	}
+
+	void Plugin::handleAutoPublishChanged ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoPublishTune").toBool ())
+			SendAudioInfo ({});
+	}
 }
 }
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_xtazy, LeechCraft::Azoth::Xtazy::Plugin);
-
