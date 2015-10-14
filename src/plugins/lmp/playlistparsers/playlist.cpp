@@ -34,6 +34,11 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	Playlist::Playlist (const QList<PlaylistItem>& items)
+	: Playlist_ { items }
+	{
+	}
+
 	Playlist::Playlist (const QList<AudioSource>& sources)
 	{
 		Playlist_.reserve (sources.size ());
