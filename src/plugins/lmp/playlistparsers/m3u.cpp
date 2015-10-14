@@ -34,6 +34,7 @@
 #include <QDir>
 #include <QUrl>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -125,8 +126,8 @@ namespace M3U
 
 		for (const auto& item : sources)
 		{
-			for (auto i = item.Additional_.begin (); i != item.Additional_.end (); ++i)
-				file.write (("#" + i.key () + "=" + i.value ().toString () + "\n").toUtf8 ());
+			for (const auto& pair : Util::Stlize (item.Additional_))
+				file.write (("#" + pair.first + "=" + pair.second.toString () + "\n").toUtf8 ());
 			file.write (item.Source_.ToUrl ().toEncoded ());
 			file.write ("\n");
 		}
