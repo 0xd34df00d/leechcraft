@@ -41,6 +41,9 @@ namespace LMP
 	{
 		AudioSource Source_;
 		QVariantMap Additional_;
+
+		explicit PlaylistItem (const AudioSource&);
+		PlaylistItem (const AudioSource&, const QVariantMap&);
 	};
 
 	class Playlist

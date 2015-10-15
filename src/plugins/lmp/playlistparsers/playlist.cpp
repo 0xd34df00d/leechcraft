@@ -34,6 +34,17 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	PlaylistItem::PlaylistItem (const AudioSource& source)
+	: Source_ { source }
+	{
+	}
+
+	PlaylistItem::PlaylistItem (const AudioSource& source, const QVariantMap& additional)
+	: Source_ { source }
+	, Additional_ { additional }
+	{
+	}
+
 	Playlist::Playlist (const QList<PlaylistItem>& items)
 	: Playlist_ { items }
 	{
