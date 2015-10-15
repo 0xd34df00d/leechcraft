@@ -86,7 +86,7 @@ namespace LMP
 		if (!Additional_ ["LMP/HasMediaInfo"].toBool ())
 			return {};
 
-		return MediaInfo
+		MediaInfo info
 		{
 			Additional_ ["LMP/LocalPath"].toString (),
 			Additional_ ["LMP/Artist"].toString (),
@@ -97,6 +97,11 @@ namespace LMP
 			Additional_ ["LMP/Year"].toInt (),
 			Additional_ ["LMP/TrackNumber"].toInt ()
 		};
+
+		for (const auto& pair : Util::Stlize (Additional_))
+			info.Additional_ [pair.first] = pair.second;
+
+		return info;
 	}
 
 	Playlist::Playlist (const QList<PlaylistItem>& items)
