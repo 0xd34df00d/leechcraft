@@ -30,6 +30,7 @@
 #include "playlist.h"
 #include <algorithm>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <util/util.h>
 #include "mediainfo.h"
 
