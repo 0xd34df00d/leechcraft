@@ -73,6 +73,12 @@ namespace LMP
 		}
 	}
 
+	PlaylistItem::PlaylistItem (const AudioSource& source, const MediaInfo& media)
+	: Source_ { source }
+	, Additional_ { FromMediaInfo (media) }
+	{
+	}
+
 	Playlist::Playlist (const QList<PlaylistItem>& items)
 	: Playlist_ { items }
 	{

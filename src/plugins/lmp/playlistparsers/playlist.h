@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct MediaInfo;
+
 	struct PlaylistItem
 	{
 		AudioSource Source_;
@@ -44,6 +46,7 @@ namespace LMP
 
 		explicit PlaylistItem (const AudioSource&);
 		PlaylistItem (const AudioSource&, const QVariantMap&);
+		PlaylistItem (const AudioSource&, const MediaInfo&);
 	};
 
 	class Playlist
