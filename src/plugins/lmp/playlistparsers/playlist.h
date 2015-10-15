@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QVariantMap>
 #include <QSet>
 #include "../engine/audiosource.h"
@@ -47,6 +48,8 @@ namespace LMP
 		explicit PlaylistItem (const AudioSource&);
 		PlaylistItem (const AudioSource&, const QVariantMap&);
 		PlaylistItem (const AudioSource&, const MediaInfo&);
+
+		boost::optional<MediaInfo> GetMediaInfo () const;
 	};
 
 	class Playlist

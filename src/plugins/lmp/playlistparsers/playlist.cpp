@@ -79,6 +79,23 @@ namespace LMP
 	{
 	}
 
+	boost::optional<MediaInfo> PlaylistItem::GetMediaInfo () const
+	{
+		if (!Additional_ ["LMP/HasMediaInfo"].toBool ())
+			return {};
+
+		return MediaInfo
+		{
+			Additional_ ["LMP/Artist"].toString (),
+			Additional_ ["LMP/Album"].toString (),
+			Additional_ ["LMP/Title"].toString (),
+			Additional_ ["LMP/Genres"].toString ().split (" / ", QString::SkipEmptyParts),
+			Additional_ ["LMP/Length"].toInt (),
+			Additional_ ["LMP/Year"].toInt (),
+			Additional_ ["LMP/TrackNumber"].toInt ()
+		};
+	}
+
 	Playlist::Playlist (const QList<PlaylistItem>& items)
 	: Playlist_ { items }
 	{
