@@ -54,7 +54,7 @@ namespace LMP
 	{
 		Playlist_.reserve (sources.size ());
 		for (const auto& src : sources)
-			Playlist_.append ({ src, {} });
+			Playlist_.append (PlaylistItem { src });
 	}
 
 	Playlist::const_iterator Playlist::begin () const
@@ -94,7 +94,7 @@ namespace LMP
 
 	Playlist& Playlist::operator+= (const AudioSource& src)
 	{
-		Append ({ src, {} });
+		Append (PlaylistItem { src });
 		return *this;
 	}
 
