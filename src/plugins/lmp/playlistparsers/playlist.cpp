@@ -83,6 +83,19 @@ namespace LMP
 
 	boost::optional<MediaInfo> PlaylistItem::GetMediaInfo () const
 	{
+		static const QStringList knownFields
+		{
+			"HasMediaInfo",
+			"LocalPath",
+			"Artist",
+			"Album",
+			"Title",
+			"Genres",
+			"Length",
+			"Year",
+			"TrackNumber",
+		};
+
 		if (!Additional_ ["LMP/HasMediaInfo"].toBool ())
 			return {};
 
@@ -99,7 +112,8 @@ namespace LMP
 		};
 
 		for (const auto& pair : Util::Stlize (Additional_))
-			info.Additional_ [pair.first] = pair.second;
+			if (!knownFields.contains (pair.first))
+				info.Additional_ [pair.first] = pair.second;
 
 		return info;
 	}
