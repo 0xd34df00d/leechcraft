@@ -85,10 +85,8 @@ namespace LMP
 	}
 
 	Playlist::Playlist (const QList<AudioSource>& sources)
+	: Playlist { Util::Map (sources, [] (const AudioSource& src) { return PlaylistItem { src }; }) }
 	{
-		Playlist_.reserve (sources.size ());
-		for (const auto& src : sources)
-			Playlist_.append (PlaylistItem { src });
 	}
 
 	Playlist::const_iterator Playlist::begin () const
