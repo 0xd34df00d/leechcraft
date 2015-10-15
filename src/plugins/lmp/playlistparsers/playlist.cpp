@@ -61,6 +61,7 @@ namespace LMP
 
 			result.unite (Util::MakeMap<QString, QVariant> ({
 						{ "LMP/HasMediaInfo", true },
+						{ "LMP/LocalPath", info.LocalPath_ },
 						{ "LMP/Artist", info.Artist_ },
 						{ "LMP/Album", info.Album_ },
 						{ "LMP/Title", info.Title_ },
@@ -87,6 +88,7 @@ namespace LMP
 
 		return MediaInfo
 		{
+			Additional_ ["LMP/LocalPath"].toString (),
 			Additional_ ["LMP/Artist"].toString (),
 			Additional_ ["LMP/Album"].toString (),
 			Additional_ ["LMP/Title"].toString (),
