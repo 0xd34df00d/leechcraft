@@ -621,7 +621,7 @@ namespace Xoox
 
 		if (state == QXmppMessage::Gone)
 		{
-			GlooxMessage *msg = new GlooxMessage (IMessage::Type::EventMessage,
+			const auto msg = new GlooxMessage (IMessage::Type::EventMessage,
 					IMessage::Direction::In,
 					GetJID (),
 					variant,
