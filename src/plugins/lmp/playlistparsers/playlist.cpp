@@ -82,6 +82,8 @@ namespace LMP
 	Playlist::Playlist (const QList<PlaylistItem>& items)
 	: Playlist_ { items }
 	{
+		for (const auto& item : items)
+			UrlsSet_ << item.Source_.ToUrl ();
 	}
 
 	Playlist::Playlist (const QList<AudioSource>& sources)
