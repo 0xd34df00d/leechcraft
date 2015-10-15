@@ -29,6 +29,9 @@
 
 #include "playlist.h"
 #include <algorithm>
+#include <util/sll/qtutil.h>
+#include <util/util.h>
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
@@ -43,6 +46,31 @@ namespace LMP
 	: Source_ { source }
 	, Additional_ { additional }
 	{
+	}
+
+	namespace
+	{
+		QVariantMap FromMediaInfo (const MediaInfo& info)
+		{
+			QVariantMap result;
+
+			for (const auto& pair : Util::Stlize (info.Additional_))
+				if (pair.second.canConvert<QString> ())
+					result [pair.first] = pair.second;
+
+			result.unite (Util::MakeMap<QString, QVariant> ({
+						{ "LMP/HasMediaInfo", true },
+						{ "LMP/Artist", info.Artist_ },
+						{ "LMP/Album", info.Album_ },
+						{ "LMP/Title", info.Title_ },
+						{ "LMP/Genres", info.Genres_.join (" / ") },
+						{ "LMP/Length", info.Length_ },
+						{ "LMP/Year", info.Year_ },
+						{ "LMP/TrackNumber", info.TrackNumber_ }
+					}));
+
+			return result;
+		}
 	}
 
 	Playlist::Playlist (const QList<PlaylistItem>& items)
