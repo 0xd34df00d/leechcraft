@@ -176,7 +176,7 @@ namespace TouchStreams
 		auto allItem = new QStandardItem (tr ("Uncategorized"));
 		allItem->setEditable (false);
 		allItem->setData (-1, Role::AlbumID);
-		allItem->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
+		allItem->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 		allItem->setIcon (icon);
 		AlbumsRootItem_->appendRow (allItem);
 		Albums_ [-1] = AlbumInfo { -1, allItem->text (), allItem };
@@ -191,7 +191,7 @@ namespace TouchStreams
 			auto item = new QStandardItem (name);
 			item->setEditable (false);
 			item->setIcon (icon);
-			item->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
+			item->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 			item->setData (id, Role::AlbumID);
 			Albums_ [id] = AlbumInfo { id, name, item };
 
