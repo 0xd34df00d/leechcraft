@@ -54,13 +54,23 @@ namespace LMP
 	void StaticPlaylistManager::SetOnLoadPlaylist (const OnLoadPlaylist_t& sources)
 	{
 		WritePlaylist (GetOnLoadPath (),
-				Playlist { Util::Map (sources, [] (const OnLoadPlaylistItem_t& item) { return item.first; }) });
+				Util::Map (sources,
+						[] (const OnLoadPlaylistItem_t& item)
+						{
+							return item.second ?
+									PlaylistItem { item.first, *item.second } :
+									PlaylistItem { item.first };
+						}));
 	}
 
 	auto StaticPlaylistManager::GetOnLoadPlaylist () const -> OnLoadPlaylist_t
 	{
 		const auto& playlist = ReadPlaylist (GetOnLoadPath ());
-		return Util::Map (playlist, [] (const PlaylistItem& item) { return OnLoadPlaylistItem_t { item.Source_, {} }; });
+		return Util::Map (playlist,
+				[] (const PlaylistItem& item)
+				{
+					return OnLoadPlaylistItem_t { item.Source_, item.GetMediaInfo () };
+				});
 	}
 
 	namespace
