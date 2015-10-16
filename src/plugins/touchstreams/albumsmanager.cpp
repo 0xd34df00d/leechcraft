@@ -205,7 +205,6 @@ namespace TouchStreams
 	{
 		auto tracksList = tracksListVar.toList ();
 
-		QHash<qlonglong, QList<Media::AudioInfo>> album2urls;
 		for (const auto& trackVar : tracksList)
 		{
 			const auto& map = trackVar.toMap ();
@@ -230,8 +229,6 @@ namespace TouchStreams
 			info.Length_ = map ["duration"].toInt ();
 			info.Other_ ["URL"] = url;
 
-			album2urls [albumId] << info;
-
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
 						.arg (info.Artist_)
 						.arg (info.Title_));
@@ -244,12 +241,6 @@ namespace TouchStreams
 			albumItem->appendRow (trackItem);
 
 			++TracksCount_;
-		}
-
-		for (const auto& pair : Util::Stlize (album2urls))
-		{
-			auto item = Albums_ [pair.first].Item_;
-			item->setData (QVariant::fromValue (pair.second), Media::RadioItemRole::TracksInfos);
 		}
 
 		return true;
