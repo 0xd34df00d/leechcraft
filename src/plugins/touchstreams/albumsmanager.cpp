@@ -229,12 +229,17 @@ namespace TouchStreams
 			info.Length_ = map ["duration"].toInt ();
 			info.Other_ ["URL"] = url;
 
+			QUrl radioID { "vk://track" };
+			Util::UrlOperator { radioID }
+					("audio_id", map.value ("aid").toString ())
+					("owner_id", map.value ("owner_id").toString ());
+
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
 						.arg (info.Artist_)
 						.arg (info.Title_));
 			trackItem->setEditable (false);
 			trackItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
-			trackItem->setData (map.value ("aid").toString (), Media::RadioItemRole::RadioID);
+			trackItem->setData (radioID.toString (QUrl::FullyEncoded), Media::RadioItemRole::RadioID);
 			trackItem->setData ("org.LeechCraft.TouchStreams", Media::RadioItemRole::PluginID);
 			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
 					Media::RadioItemRole::TracksInfos);
