@@ -141,7 +141,8 @@ namespace Media
 
 		/** @brief The ID of the plugin for this radio item.
 		 *
-		 * As returned by IInfo::GetUniqueID().
+		 * The value should be a QByteArray and be equal to the value
+		 * returned by IInfo::GetUniqueID() for the corresponding plugin.
 		 */
 		PluginID,
 
