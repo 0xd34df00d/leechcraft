@@ -112,10 +112,45 @@ namespace Util
 		 */
 		UrlOperator& operator() (const QString& key, const QString& value);
 
+		/** @brief Adds a new \em key = \em value parameters pair.
+		 *
+		 * If the URL already contains this \em key, a new value is added
+		 * in addition to the already existing one.
+		 *
+		 * This overload is provided for convenience and efficiency.
+		 *
+		 * @param[in] key The query parameter key.
+		 * @param[in] value The query parameter value.
+		 * @return This UrlOperator object.
+		 */
 		UrlOperator& operator() (const QString& key, const QByteArray& value);
 
+		/** @brief Adds a new \em key = \em value parameters pair.
+		 *
+		 * If the URL already contains this \em key, a new value is added
+		 * in addition to the already existing one.
+		 *
+		 * The \em value is considered to be a Latin1-string.
+		 *
+		 * This overload is provided for convenience and efficiency.
+		 *
+		 * @param[in] key The query parameter key.
+		 * @param[in] value The query parameter value (a Latin1-string).
+		 * @return This UrlOperator object.
+		 */
 		UrlOperator& operator() (const QString& key, const char *value);
 
+		/** @brief Adds a new \em key = \em value parameters pair.
+		 *
+		 * If the URL already contains this \em key, a new value is added
+		 * in addition to the already existing one.
+		 *
+		 * This overload is provided for convenience and efficiency.
+		 *
+		 * @param[in] key The query parameter key.
+		 * @param[in] value The query parameter value.
+		 * @return This UrlOperator object.
+		 */
 		UrlOperator& operator() (const QString& key, int value);
 
 		/** @brief Returns the first query parameter under the \em key.
