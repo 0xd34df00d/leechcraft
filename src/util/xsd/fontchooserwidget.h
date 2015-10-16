@@ -36,18 +36,44 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Provides a widget for choosing a font.
+	 *
+	 * This widget allows the user to choose a font in the XML settings
+	 * dialog.
+	 */
 	class FontChooserWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::FontChooserWidget Ui_;
 	public:
-		FontChooserWidget (QWidget* = nullptr);
+		/** @brief Constructs the widget with the given parent.
+		 *
+		 * @param[in] parent The parent widget.
+		 */
+		FontChooserWidget (QWidget *parent = nullptr);
 
+		/** @brief Returns the currently selected font.
+		 *
+		 * @return The currently chosen font.
+		 *
+		 * @sa SetFont()
+		 */
 		QFont GetFont () const;
-		void SetFont (const QFont&);
+
+		/** @brief Sets the currently font to \em font.
+		 *
+		 * @param[in] font The font to set the currently chosen one to.
+		 *
+		 * @sa GetFont()
+		 */
+		void SetFont (const QFont& font);
 	signals:
-		void fontChanged (QFont);
+		/** @brief Emitted when another font has been chosen.
+		 *
+		 * @param[out] font The new chosen font.
+		 */
+		void fontChanged (QFont font);
 	};
 }
 }
