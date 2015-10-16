@@ -48,11 +48,11 @@ namespace Util
 	 * of direct calls to Qt API.
 	 *
 	 * This class is used as follows:
-	 * # An object of this class is constructed on a (named) QUrl object.
-	 * # New URL query parameters are added by calling this object with a
-	 *   pair of matching key and value.
-	 * # Existing URL query parameters are removed via the -= operator.
-	 * # The URL is updated on UrlOperator object destruction.
+	 * -# An object of this class is constructed on a (named) QUrl object.
+	 * -# New URL query parameters are added by calling this object with a
+	 *    pair of matching key and value.
+	 * -# Existing URL query parameters are removed via the -= operator.
+	 * -# The URL is updated on UrlOperator object destruction.
 	 *
 	 * Intended usage:
 	 * \code{.cpp}
