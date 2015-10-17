@@ -35,9 +35,12 @@
 #include <QTimer>
 #include <QEvent>
 #include <QWebView>
+#include <QFuture>
+#include <QFutureInterface>
 #include <util/network/customcookiejar.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <xmlsettingsdialog/basesettingsmanager.h>
@@ -127,6 +130,25 @@ namespace SvcAuth
 
 		InvokeQueues (Token_);
 		emit gotAuthKey (Token_);
+	}
+
+	QFuture<QString> VkAuthManager::GetAuthKeyFuture ()
+	{
+		if (SilentMode_ && !IsAuthenticated ())
+			return {};
+
+		QFutureInterface<QString> iface;
+		iface.reportStarted ();
+
+		new SlotClosure<DeleteLaterPolicy>
+		{
+			[this, iface] () mutable { iface.reportFinished (&Token_); },
+			this,
+			SIGNAL (gotAuthKey (QString)),
+			this
+		};
+
+		return iface.future ();
 	}
 
 	auto VkAuthManager::ManageQueue (VkAuthManager::RequestQueue_ptr queue) -> ScheduleGuard_t

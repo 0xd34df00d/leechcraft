@@ -39,6 +39,9 @@
 
 class QTimer;
 
+template<typename>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Util
@@ -100,6 +103,8 @@ namespace SvcAuth
 		void UpdateScope (const QStringList&);
 
 		void GetAuthKey ();
+
+		QFuture<QString> GetAuthKeyFuture ();
 
 		ScheduleGuard_t Q_REQUIRED_RESULT ManageQueue (RequestQueue_ptr);
 		ScheduleGuard_t Q_REQUIRED_RESULT ManageQueue (PrioRequestQueue_ptr);
