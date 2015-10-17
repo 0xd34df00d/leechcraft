@@ -1369,7 +1369,7 @@ namespace LMP
 					plugin2infos [pluginID].append ({ radioID, item.first.ToUrl (), media });
 			}
 
-			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadioRestoreResult_t>> ();
+			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
 
 			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 			for (const auto& pair : Util::Stlize (plugin2infos))

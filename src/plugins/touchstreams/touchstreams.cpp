@@ -171,7 +171,7 @@ namespace TouchStreams
 		XmlSettingsManager::Instance ().setProperty ("Cookies", cookies);
 	}
 
-	QFuture<Media::RadioRestoreResult_t> Plugin::RestoreRadioStations (const QStringList& ids)
+	QFuture<Media::RadiosRestoreResult_t> Plugin::RestoreRadioStations (const QStringList& ids)
 	{
 		return {};
 	}
