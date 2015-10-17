@@ -15,7 +15,7 @@ sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
 
 cp -Rv /usr/local/Cellar/$QTVERSION/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
-install -v /usr/local/lib/gstreamer-1.0/* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
+install -v /usr/local/lib/gstreamer-1.0/lib* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/libgst* $TARGET/leechcraft.app/Contents/Frameworks
 install -v /usr/local/lib/gio/modules/*.so $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 cp -Rv /usr/local/share/glib-2.0/schemas $TARGET/leechcraft.app/Contents/Frameworks
