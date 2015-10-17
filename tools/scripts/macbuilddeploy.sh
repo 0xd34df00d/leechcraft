@@ -1,6 +1,7 @@
 #! /bin/sh
 
 TARGET=/usr/local
+QTVERSION=qt5
 
 BASEDIR=$(dirname $0)
 echo $BASEDIR
@@ -12,7 +13,7 @@ make -j8 install
 install_name_tool -change lib/libqtermwidget4.0.dylib /usr/local/lib/libqtermwidget4.0.5.1.dylib $TARGET/leechcraft.app/Contents/PlugIns/libleechcraft_eleeminator.dylib
 sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
 
-cp -Rv /usr/local/Cellar/qt/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
+cp -Rv /usr/local/Cellar/$QTVERSION/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/gstreamer-1.0/* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/libgst* $TARGET/leechcraft.app/Contents/Frameworks
