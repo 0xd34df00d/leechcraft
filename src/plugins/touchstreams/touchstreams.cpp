@@ -173,7 +173,8 @@ namespace TouchStreams
 
 	QFuture<Media::RadiosRestoreResult_t> Plugin::RestoreRadioStations (const QStringList& ids)
 	{
-		return {};
+		const auto handler = new TracksRestoreHandler { ids, AuthMgr_, Queue_ };
+		return handler->GetFuture ();
 	}
 }
 }
