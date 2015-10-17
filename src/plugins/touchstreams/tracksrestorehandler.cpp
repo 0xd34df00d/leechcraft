@@ -29,24 +29,57 @@
 
 #include "tracksrestorehandler.h"
 #include <QFuture>
-#include <util/svcauth/vkauthmanager.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include <util/sll/queuemanager.h>
+#include <util/sll/urlaccessor.h>
+#include <util/sll/urloperator.h>
+#include <util/svcauth/vkauthmanager.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
 namespace TouchStreams
 {
+	namespace
+	{
+		QPair<QString, QString> ParseID (const QString& urlStr)
+		{
+			const Util::UrlAccessor acc { QUrl::fromEncoded (urlStr.toLatin1 ()) };
+			return { acc ["owner_id"], acc ["audio_id"] };
+		}
+
+		QHash<QString, QList<QString>> ToHash (const QList<QPair<QString, QString>>& pairs)
+		{
+			QHash<QString, QList<QString>> result;
+			for (const auto& pair : pairs)
+				result [pair.first] << pair.second;
+			return result;
+		}
+	}
+
 	TracksRestoreHandler::TracksRestoreHandler (const QStringList& ids,
 			Util::SvcAuth::VkAuthManager *authMgr, Util::QueueManager *queueMgr, QObject *parent)
 	: QObject { parent }
 	, AuthMgr_ { authMgr }
 	, Queue_ { queueMgr }
+	, IDs_ { ToHash (Util::Map (ids, ParseID)) }
 	{
+		Util::Sequence (this, AuthMgr_->GetAuthKeyFuture ()) >>
+				Util::BindMemFn (&TracksRestoreHandler::Request, this);
 	}
 
 	QFuture<Media::RadiosRestoreResult_t> TracksRestoreHandler::GetFuture () const
 	{
 		return {};
+	}
+
+	void TracksRestoreHandler::Request (const QString& key)
+	{
+		QUrl url ("https://api.vk.com/method/audio.get");
+		Util::UrlOperator { url }
+				("access_token", key)
+				("count", "6000");
 	}
 }
 }

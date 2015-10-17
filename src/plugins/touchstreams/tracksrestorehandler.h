@@ -55,11 +55,15 @@ namespace TouchStreams
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
+
+		const QHash<QString, QList<QString>> IDs_;
 	public:
 		TracksRestoreHandler (const QStringList&,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 
 		QFuture<Media::RadiosRestoreResult_t> GetFuture () const;
+	private:
+		void Request (const QString&);
 	};
 }
 }
