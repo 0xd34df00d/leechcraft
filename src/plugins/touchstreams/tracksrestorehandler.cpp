@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "tracksrestorehandler.h"
+#include <QFuture>
+#include <util/svcauth/vkauthmanager.h>
+#include <util/sll/queuemanager.h>
 
 namespace LeechCraft
 {
