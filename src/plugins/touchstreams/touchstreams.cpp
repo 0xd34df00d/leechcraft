@@ -173,7 +173,7 @@ namespace TouchStreams
 
 	QFuture<Media::RadioRestoreResult_t> Plugin::RestoreRadioStations (const QStringList& ids)
 	{
-		return Util::MakeReadyFuture<QList<Media::IRadioStation_ptr>> ({});
+		return {};
 	}
 }
 }
