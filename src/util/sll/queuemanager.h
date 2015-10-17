@@ -100,7 +100,7 @@ namespace Util
 		 * high priority are added to the beginning of the queue.
 		 */
 		void Schedule (std::function<void ()> functor,
-				QObject *dependent = 0,
+				QObject *dependent = nullptr,
 				QueuePriority prio = QueuePriority::Normal);
 
 		/** @brief Clears the queue.
