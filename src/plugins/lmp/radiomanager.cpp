@@ -337,7 +337,9 @@ namespace LMP
 			QList<Media::AudioInfo> result;
 
 			const auto& infosVar = index.data (Media::RadioItemRole::TracksInfos);
-			for (const auto& info : infosVar.value<QList<Media::AudioInfo>> ())
+			const auto& radioID = index.data (Media::RadioItemRole::RadioID).toString ();
+			const auto& pluginID = index.data (Media::RadioItemRole::PluginID).toByteArray ();
+			for (auto info : infosVar.value<QList<Media::AudioInfo>> ())
 			{
 				const auto& url = info.Other_ ["URL"].toUrl ();
 				if (!url.isValid ())
@@ -346,6 +348,12 @@ namespace LMP
 							<< "ignoring invalid URL"
 							<< info.Other_;
 					continue;
+				}
+
+				if (!radioID.isEmpty () && !pluginID.isEmpty ())
+				{
+					info.Other_ ["LMP/RadioID"] = radioID;
+					info.Other_ ["LMP/PluginID"] = pluginID;
 				}
 
 				result << info;

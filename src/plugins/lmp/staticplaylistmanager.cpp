@@ -29,6 +29,8 @@
 
 #include "staticplaylistmanager.h"
 #include <util/sys/paths.h>
+#include <util/sll/prelude.h>
+#include "mediainfo.h"
 #include "playlistparsers/m3u.h"
 
 namespace LeechCraft
@@ -49,14 +51,26 @@ namespace LMP
 		}
 	}
 
-	void StaticPlaylistManager::SetOnLoadPlaylist (const QList<AudioSource>& sources)
+	void StaticPlaylistManager::SetOnLoadPlaylist (const OnLoadPlaylist_t& sources)
 	{
-		WritePlaylist (GetOnLoadPath (), Playlist (sources));
+		WritePlaylist (GetOnLoadPath (),
+				Util::Map (sources,
+						[] (const OnLoadPlaylistItem_t& item)
+						{
+							return item.second ?
+									PlaylistItem { item.first, *item.second } :
+									PlaylistItem { item.first };
+						}));
 	}
 
-	QList<AudioSource> StaticPlaylistManager::GetOnLoadPlaylist () const
+	auto StaticPlaylistManager::GetOnLoadPlaylist () const -> OnLoadPlaylist_t
 	{
-		return ReadPlaylist (GetOnLoadPath ()).ToSources ();
+		const auto& playlist = ReadPlaylist (GetOnLoadPath ());
+		return Util::Map (playlist,
+				[] (const PlaylistItem& item)
+				{
+					return OnLoadPlaylistItem_t { item.Source_, item.GetMediaInfo () };
+				});
 	}
 
 	namespace
@@ -76,9 +90,11 @@ namespace LMP
 
 	QStringList StaticPlaylistManager::EnumerateCustomPlaylists () const
 	{
-		QStringList result = PlaylistsDir_.entryList (QStringList ("*.m3u8"));
-		for (auto i = result.begin (), end = result.end (); i != end; ++i)
-			i->chop (5);
+		static const QString plExt { ".m3u8" };
+
+		auto result = PlaylistsDir_.entryList ({ "*" + plExt });
+		for (auto& name : result)
+			name.chop (plExt.size ());
 		result.sort ();
 		return result;
 	}

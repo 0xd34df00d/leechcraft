@@ -3,6 +3,12 @@
 	<page>
 		<label value="Azoth Xtazy" />
 		<groupbox>
+			<label value="Behavior" />
+			<item type="checkbox" property="AutoPublishTune" default="true">
+				<label value="Publish current tune via protocols supporting tune extensions" />
+			</item>
+		</groupbox>
+		<groupbox>
 			<label value="/np command" />
 			<item type="checkbox" property="SendTextImmediately" default="false">
 				<label value="Send text immediately" />

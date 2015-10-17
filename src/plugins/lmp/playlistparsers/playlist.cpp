@@ -29,16 +29,104 @@
 
 #include "playlist.h"
 #include <algorithm>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
+#include <util/util.h>
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	Playlist::Playlist (const QList<AudioSource>& sources)
+	PlaylistItem::PlaylistItem (const AudioSource& source)
+	: Source_ { source }
 	{
-		Playlist_.reserve (sources.size ());
-		for (const auto& src : sources)
-			Playlist_.append ({ src, {} });
+	}
+
+	PlaylistItem::PlaylistItem (const AudioSource& source, const QVariantMap& additional)
+	: Source_ { source }
+	, Additional_ { additional }
+	{
+	}
+
+	namespace
+	{
+		QVariantMap FromMediaInfo (const MediaInfo& info)
+		{
+			QVariantMap result;
+
+			for (const auto& pair : Util::Stlize (info.Additional_))
+				if (pair.second.canConvert<QString> ())
+					result [pair.first] = pair.second;
+
+			result.unite (Util::MakeMap<QString, QVariant> ({
+						{ "LMP/HasMediaInfo", true },
+						{ "LMP/LocalPath", info.LocalPath_ },
+						{ "LMP/Artist", info.Artist_ },
+						{ "LMP/Album", info.Album_ },
+						{ "LMP/Title", info.Title_ },
+						{ "LMP/Genres", info.Genres_.join (" / ") },
+						{ "LMP/Length", info.Length_ },
+						{ "LMP/Year", info.Year_ },
+						{ "LMP/TrackNumber", info.TrackNumber_ }
+					}));
+
+			return result;
+		}
+	}
+
+	PlaylistItem::PlaylistItem (const AudioSource& source, const MediaInfo& media)
+	: Source_ { source }
+	, Additional_ { FromMediaInfo (media) }
+	{
+	}
+
+	boost::optional<MediaInfo> PlaylistItem::GetMediaInfo () const
+	{
+		static const auto knownFields = QSet<QString>::fromList ({
+				"HasMediaInfo",
+				"LocalPath",
+				"Artist",
+				"Album",
+				"Title",
+				"Genres",
+				"Length",
+				"Year",
+				"TrackNumber",
+			});
+
+		if (!Additional_ ["LMP/HasMediaInfo"].toBool ())
+			return {};
+
+		MediaInfo info
+		{
+			Additional_ ["LMP/LocalPath"].toString (),
+			Additional_ ["LMP/Artist"].toString (),
+			Additional_ ["LMP/Album"].toString (),
+			Additional_ ["LMP/Title"].toString (),
+			Additional_ ["LMP/Genres"].toString ().split (" / ", QString::SkipEmptyParts),
+			Additional_ ["LMP/Length"].toInt (),
+			Additional_ ["LMP/Year"].toInt (),
+			Additional_ ["LMP/TrackNumber"].toInt ()
+		};
+
+		for (const auto& pair : Util::Stlize (Additional_))
+			if (!knownFields.contains (pair.first))
+				info.Additional_ [pair.first] = pair.second;
+
+		return info;
+	}
+
+	Playlist::Playlist (const QList<PlaylistItem>& items)
+	: Playlist_ { items }
+	{
+		for (const auto& item : items)
+			UrlsSet_ << item.Source_.ToUrl ();
+	}
+
+	Playlist::Playlist (const QList<AudioSource>& sources)
+	: Playlist { Util::Map (sources, [] (const AudioSource& src) { return PlaylistItem { src }; }) }
+	{
 	}
 
 	Playlist::const_iterator Playlist::begin () const
@@ -78,7 +166,7 @@ namespace LMP
 
 	Playlist& Playlist::operator+= (const AudioSource& src)
 	{
-		Append ({ src, {} });
+		Append (PlaylistItem { src });
 		return *this;
 	}
 

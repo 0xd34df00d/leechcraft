@@ -39,6 +39,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -175,7 +176,7 @@ namespace TouchStreams
 		auto allItem = new QStandardItem (tr ("Uncategorized"));
 		allItem->setEditable (false);
 		allItem->setData (-1, Role::AlbumID);
-		allItem->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
+		allItem->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 		allItem->setIcon (icon);
 		AlbumsRootItem_->appendRow (allItem);
 		Albums_ [-1] = AlbumInfo { -1, allItem->text (), allItem };
@@ -190,7 +191,7 @@ namespace TouchStreams
 			auto item = new QStandardItem (name);
 			item->setEditable (false);
 			item->setIcon (icon);
-			item->setData (Media::RadioType::TracksList, Media::RadioItemRole::ItemType);
+			item->setData (Media::RadioType::TracksRoot, Media::RadioItemRole::ItemType);
 			item->setData (id, Role::AlbumID);
 			Albums_ [id] = AlbumInfo { id, name, item };
 
@@ -204,16 +205,15 @@ namespace TouchStreams
 	{
 		auto tracksList = tracksListVar.toList ();
 
-		QHash<qlonglong, QList<Media::AudioInfo>> album2urls;
 		for (const auto& trackVar : tracksList)
 		{
 			const auto& map = trackVar.toMap ();
 
-			const auto albumId = map.value ("album", "-1").toLongLong ();
 			const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
 			if (!url.isValid ())
 				continue;
 
+			const auto albumId = map.value ("album", "-1").toLongLong ();
 			auto albumItem = Albums_ [albumId].Item_;
 			if (!albumItem)
 			{
@@ -229,24 +229,18 @@ namespace TouchStreams
 			info.Length_ = map ["duration"].toInt ();
 			info.Other_ ["URL"] = url;
 
-			album2urls [albumId] << info;
-
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
 						.arg (info.Artist_)
 						.arg (info.Title_));
 			trackItem->setEditable (false);
 			trackItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
+			trackItem->setData (map.value ("id").toString (), Media::RadioItemRole::RadioID);
+			trackItem->setData ("org.LeechCraft.TouchStreams", Media::RadioItemRole::PluginID);
 			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
 					Media::RadioItemRole::TracksInfos);
 			albumItem->appendRow (trackItem);
 
 			++TracksCount_;
-		}
-
-		for (auto i = album2urls.begin (); i != album2urls.end (); ++i)
-		{
-			auto item = Albums_ [i.key ()].Item_;
-			item->setData (QVariant::fromValue (i.value ()), Media::RadioItemRole::TracksInfos);
 		}
 
 		return true;
@@ -293,7 +287,7 @@ namespace TouchStreams
 					QUrl url ("https://api.vk.com/method/audio.get");
 					Util::UrlOperator { url }
 							("access_token", key)
-							("count", "1000");
+							("count", "6000");
 					if (UserID_ >= 0)
 						Util::UrlOperator { url } ("uid", QString::number (UserID_));
 

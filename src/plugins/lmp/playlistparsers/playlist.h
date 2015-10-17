@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QVariantMap>
 #include <QSet>
 #include "../engine/audiosource.h"
@@ -37,10 +38,18 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	struct MediaInfo;
+
 	struct PlaylistItem
 	{
 		AudioSource Source_;
 		QVariantMap Additional_;
+
+		explicit PlaylistItem (const AudioSource&);
+		PlaylistItem (const AudioSource&, const QVariantMap&);
+		PlaylistItem (const AudioSource&, const MediaInfo&);
+
+		boost::optional<MediaInfo> GetMediaInfo () const;
 	};
 
 	class Playlist
@@ -54,6 +63,7 @@ namespace LMP
 		typedef Container_t::iterator iterator;
 
 		Playlist () = default;
+		Playlist (const QList<PlaylistItem>&);
 		explicit Playlist (const QList<AudioSource>&);
 
 		const_iterator begin () const;

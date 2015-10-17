@@ -49,7 +49,10 @@ namespace Util
 	 *
 	 * @param[in] db The database to execute the query \em text on.
 	 * @param[in] text The text of the query to be executed.
+	 *
 	 * @throws std::exception If the query execution failed.
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
 
@@ -66,12 +69,49 @@ namespace Util
 	 * @param[in] filename The name of the file under
 	 * <code>${plugin}/resources/sql</code>.
 	 * @return The query text in the given file.
+	 *
 	 * @throws std::exception If the given file cannot be opened.
+	 *
+	 * @sa RunQuery()
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API QString LoadQuery (const QString& plugin, const QString& filename);
 
+	/** @brief Loads the query from the given resource file and runs it.
+	 *
+	 * Loads the query text from the resources for the given \em plugin
+	 * and exact \em filename in it and executes it on the given \em db.
+	 *
+	 * The file name to be loaded is formed as
+	 * <code>:/${plugin}/resources/sql/${filename}.sql</code>.
+	 *
+	 * @param[in] db The database to execute the query on.
+	 * @param[in] plugin The name of the plugin whose resources should be
+	 * used.
+	 * @param[in] filename The name of the file under
+	 * <code>${plugin}/resources/sql</code>.
+	 *
+	 * @throws std::exception If the given file cannot be opened or if the
+	 * query execution failed.
+	 *
+	 * @sa LoadQuery()
+	 *
+	 * @ingroup DbUtil
+	 */
 	UTIL_DB_API void RunQuery (const QSqlDatabase& db, const QString& plugin, const QString& filename);
 
+	/** @brief Gets the last insert ID for the given query.
+	 *
+	 * @tparam T The type of the last ID.
+	 * @param[in] query The query whose last insert ID should be retrieved.
+	 * @return The last insert ID of type \em T.
+	 *
+	 * @throws std::runtime_error If no last insert ID has been reported,
+	 * or if the last insert ID cannot be converted to type \em T.
+	 *
+	 * @ingroup DbUtil
+	 */
 	template<typename T = int>
 	T GetLastId (const QSqlQuery& query)
 	{
@@ -98,6 +138,8 @@ namespace Util
 	 * @param[in] base The identifier base to be used to generate the
 	 * unique connection string.
 	 * @return An unique connection name across all threads.
+	 *
+	 * @ingroup DbUtil
 	 */
 	UTIL_DB_API QString GenConnectionName (const QString& base);
 }

@@ -34,6 +34,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/media/iaudiopile.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/media/irestorableradiostationprovider.h>
 
 class QStandardItemModel;
 
@@ -60,12 +61,14 @@ namespace TouchStreams
 				 , public IHaveSettings
 				 , public Media::IAudioPile
 				 , public Media::IRadioStationProvider
+				 , public Media::IRestorableRadioStationProvider
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IHaveSettings
 				Media::IAudioPile
-				Media::IRadioStationProvider)
+				Media::IRadioStationProvider
+				Media::IRestorableRadioStationProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.TouchStreams")
 
@@ -98,6 +101,8 @@ namespace TouchStreams
 		QList<QAbstractItemModel*> GetRadioListItems () const;
 		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
 		void RefreshItems (const QList<QModelIndex>&);
+
+		QFuture<QList<Media::IRadioStation_ptr>> RestoreRadioStations (const QStringList&);
 	private slots:
 		void saveCookies (const QByteArray&);
 	};

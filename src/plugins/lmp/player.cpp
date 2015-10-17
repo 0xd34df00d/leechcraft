@@ -39,6 +39,8 @@
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "mediainfo.h"
@@ -404,8 +406,7 @@ namespace LMP
 				PlaylistModel_->removeRow (item->row ());
 		}
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		SaveOnLoadPlaylist ();
 	}
 
 	void Player::SetStopAfter (const QModelIndex& index)
@@ -685,12 +686,15 @@ namespace LMP
 			futureWatcher->setFuture (QtConcurrent::run (worker));
 		}
 
-		QPair<AudioSource, MediaInfo> PairResolve (const AudioSource& source)
-		{
-			MediaInfo info;
-			if (!source.IsLocalFile ())
-				return { source, info };
+		using ResolvedSource_t = QPair<AudioSource, MediaInfo>;
 
+		template<typename NonLocalGetter>
+		ResolvedSource_t PairResolve (const NonLocalGetter& getter, const AudioSource& source)
+		{
+			if (!source.IsLocalFile ())
+				return { source, getter (source) };
+
+			MediaInfo info;
 			info.LocalPath_ = source.GetLocalPath ();
 
 			auto collection = Core::Instance ().GetLocalCollection ();
@@ -731,29 +735,34 @@ namespace LMP
 			return { source, info };
 		}
 
-		ResolveResult_t PairResolveAll (const QList<AudioSource>& sources)
+		template<typename NonLocalGetter>
+		ResolveResult_t PairResolveAll (const QList<AudioSource>& sources,
+				const NonLocalGetter& getter)
 		{
-			ResolveResult_t result;
-			std::transform (sources.begin (), sources.end (), std::back_inserter (result), PairResolve);
-			return result;
+			return Util::Map (sources,
+					[&] (const AudioSource& source) { return PairResolve (getter, source); });
 		}
 
-		template<typename T>
-		ResolveResult_t PairResolveSort (const QList<AudioSource>& sources, T sorter, bool sort)
+		template<typename Sorter, typename NonLocalGetter>
+		ResolveResult_t PairResolveSort (const QList<AudioSource>& sources,
+				Sorter sorter, NonLocalGetter nonLocalGetter, bool sort)
 		{
-			auto result = PairResolveAll (sources);
+			auto result = PairResolveAll (sources, nonLocalGetter);
 
 			if (sorter.Criteria_.isEmpty () || !sort)
 				return result;
 
 			std::sort (result.begin (), result.end (),
-					[sorter] (decltype (result.at (0)) s1, decltype (result.at (0)) s2) -> bool
+					[sorter] (const ResolvedSource_t& s1, const ResolvedSource_t& s2)
 					{
-						if (s1.first.IsLocalFile () && !s2.first.IsLocalFile ())
+						const auto leftUseful = !s1.second.IsUseless ();
+						const auto rightUseful = !s2.second.IsUseless ();
+
+						if (leftUseful && !rightUseful)
 							return true;
-						else if (!s1.first.IsLocalFile () && s2.first.IsLocalFile ())
+						else if (!leftUseful && rightUseful)
 							return false;
-						else if (!s1.first.IsLocalFile () || !s2.first.IsLocalFile ())
+						else if (!leftUseful || !rightUseful)
 							return s1.first.ToUrl () < s2.first.ToUrl ();
 						else
 							return sorter (s1.second, s2.second);
@@ -776,19 +785,26 @@ namespace LMP
 
 		emit playerAvailable (false);
 
-		auto watcher = new QFutureWatcher<ResolveJobResult> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleSorted ()));
-		watcher->setFuture (QtConcurrent::run ([=]
+		const auto future = QtConcurrent::run ([=]
 				{
 					return ResolveJobResult
 					{
-						PairResolveSort (sources, Sorter_, sort),
+						PairResolveSort (sources,
+								Sorter_,
+								[this] (const AudioSource& source)
+								{
+									return Url2Info_.value (source.ToUrl ());
+								},
+								sort),
 						clear
 					};
-				}));
+				});
+		Util::Sequence (this, future) >>
+				[this] (const ResolveJobResult& result)
+				{
+					ContinueAfterSorted (result);
+					emit playerAvailable (true);
+				};
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
@@ -1135,8 +1151,7 @@ namespace LMP
 
 		XmlSettingsManager::Instance ().setProperty ("LastSong", QString ());
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		SaveOnLoadPlaylist ();
 
 		if (Source_->GetState () != SourceState::Playing)
 			Source_->SetCurrentSource ({});
@@ -1149,13 +1164,6 @@ namespace LMP
 		auto queue = GetQueue ();
 		std::random_shuffle (queue.begin (), queue.end ());
 		Enqueue (queue, EnqueueReplace);
-	}
-
-	void Player::handleSorted ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<ResolveJobResult>*> (sender ());
-		ContinueAfterSorted (watcher->result ());
-		emit playerAvailable (true);
 	}
 
 	namespace
@@ -1285,8 +1293,7 @@ namespace LMP
 
 		QMetaObject::invokeMethod (PlaylistModel_, "modelReset");
 
-		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (CurrentQueue_);
+		SaveOnLoadPlaylist ();
 
 		if (Source_->GetState () == SourceState::Stopped)
 		{
@@ -1312,10 +1319,33 @@ namespace LMP
 			Items_ [currentSource]->setData (true, Role::IsCurrent);
 	}
 
+	void Player::SaveOnLoadPlaylist () const
+	{
+		const auto playlist = Util::Map (CurrentQueue_,
+				[this] (const AudioSource& source)
+				{
+					boost::optional<MediaInfo> info;
+					const auto& url = source.ToUrl ();
+					if (Url2Info_.contains (url))
+						info = Url2Info_ [url];
+
+					return StaticPlaylistManager::OnLoadPlaylistItem_t { source, info };
+				});
+		Core::Instance ().GetPlaylistManager ()->
+				GetStaticManager ()->SetOnLoadPlaylist (playlist);
+	}
+
 	void Player::restorePlaylist ()
 	{
-		auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
-		Enqueue (staticMgr->GetOnLoadPlaylist ());
+		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
+		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
+
+		for (const auto& item : playlist)
+			if (item.second)
+				Url2Info_ [item.first.ToUrl ()] = *item.second;
+
+		Enqueue (Util::Map (playlist,
+				[] (const StaticPlaylistManager::OnLoadPlaylistItem_t& it) { return it.first; }));
 
 		emit playlistRestored ();
 	}

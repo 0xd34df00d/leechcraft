@@ -85,6 +85,9 @@ namespace Xtazy
 				SIGNAL (currentSongChanged (Media::AudioInfo)),
 				this,
 				SLOT (publish (Media::AudioInfo)));
+
+		XmlSettingsManager::Instance ().RegisterObject ("AutoPublishTune",
+				this, "handleAutoPublishChanged");
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -222,12 +225,7 @@ namespace Xtazy
 		return true;
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
-	{
-		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
-	}
-
-	void Plugin::publish (const Media::AudioInfo& info)
+	void Plugin::SendAudioInfo (const Media::AudioInfo& info)
 	{
 		QVariantMap map;
 		map ["artist"] = info.Artist_;
@@ -249,6 +247,17 @@ namespace Xtazy
 		}
 	}
 
+	void Plugin::initPlugin (QObject *proxy)
+	{
+		AzothProxy_ = qobject_cast<IProxyObject*> (proxy);
+	}
+
+	void Plugin::publish (const Media::AudioInfo& info)
+	{
+		if (XmlSettingsManager::Instance ().property ("AutoPublishTune").toBool ())
+			SendAudioInfo (info);
+	}
+
 	void Plugin::handleFileUploaded (const QString& filename, const QUrl& url)
 	{
 		if (!PendingUploads_.contains (filename))
@@ -268,9 +277,14 @@ namespace Xtazy
 			entry->CreateMessage (msgType, notifee.second, encoded)->Send ();
 		}
 	}
+
+	void Plugin::handleAutoPublishChanged ()
+	{
+		if (!XmlSettingsManager::Instance ().property ("AutoPublishTune").toBool ())
+			SendAudioInfo ({});
+	}
 }
 }
 }
 
 LC_EXPORT_PLUGIN (leechcraft_azoth_xtazy, LeechCraft::Azoth::Xtazy::Plugin);
-
