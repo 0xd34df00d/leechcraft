@@ -30,6 +30,10 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/media/irestorableradiostationprovider.h>
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -54,6 +58,8 @@ namespace TouchStreams
 	public:
 		TracksRestoreHandler (const QStringList&,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
+
+		QFuture<Media::RadiosRestoreResult_t> GetFuture () const;
 	};
 }
 }

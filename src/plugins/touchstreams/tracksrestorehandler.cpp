@@ -40,5 +40,10 @@ namespace TouchStreams
 	, Queue_ { queueMgr }
 	{
 	}
+
+	QFuture<Media::RadiosRestoreResult_t> TracksRestoreHandler::GetFuture () const
+	{
+		return {};
+	}
 }
 }
