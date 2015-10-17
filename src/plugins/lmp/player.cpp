@@ -177,6 +177,13 @@ namespace LMP
 				this,
 				SLOT (handleSourceError (QString, SourceError)));
 
+		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
+	}
+
+	void Player::InitWithOtherPlugins ()
+	{
+		RulesManager_->InitializePlugins ();
+
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
 			restorePlaylist ();
@@ -185,13 +192,6 @@ namespace LMP
 					SIGNAL (collectionReady ()),
 					this,
 					SLOT (restorePlaylist ()));
-
-		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
-	}
-
-	void Player::InitWithOtherPlugins ()
-	{
-		RulesManager_->InitializePlugins ();
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
