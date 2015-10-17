@@ -37,12 +37,14 @@ class QFuture;
 
 namespace Media
 {
+	using RadioRestoreResult_t = QList<IRadioStation_ptr>;
+
 	class IRestorableRadioStationProvider
 	{
 	protected:
 		virtual ~IRestorableRadioStationProvider () {}
 	public:
-		virtual QFuture<QList<IRadioStation_ptr>> RestoreRadioStations (const QStringList&) = 0;
+		virtual QFuture<RadioRestoreResult_t> RestoreRadioStations (const QStringList&) = 0;
 	};
 }
 
