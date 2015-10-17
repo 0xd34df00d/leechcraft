@@ -65,18 +65,17 @@ namespace TouchStreams
 	}
 
 	AlbumsManager::AlbumsManager (Util::SvcAuth::VkAuthManager *authMgr,
-			Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
-	: AlbumsManager (-1, authMgr, queue, proxy, parent)
+			ICoreProxy_ptr proxy, QObject *parent)
+	: AlbumsManager (-1, authMgr, proxy, parent)
 	{
 	}
 
 	AlbumsManager::AlbumsManager (qlonglong id, Util::SvcAuth::VkAuthManager *authMgr,
-			Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
+			ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, UserID_ (id)
 	, AuthMgr_ (authMgr)
-	, Queue_ (queue)
 	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{
@@ -93,12 +92,11 @@ namespace TouchStreams
 	}
 
 	AlbumsManager::AlbumsManager (qlonglong id, const QVariant& albums, const QVariant& tracks,
-			Util::SvcAuth::VkAuthManager *authMgr, Util::QueueManager *queue, ICoreProxy_ptr proxy, QObject *parent)
+			Util::SvcAuth::VkAuthManager *authMgr, ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, Proxy_ (proxy)
 	, UserID_ (id)
 	, AuthMgr_ (authMgr)
-	, Queue_ (queue)
 	, RequestQueueGuard_ (AuthMgr_->ManageQueue (&RequestQueue_))
 	, AlbumsRootItem_ (new QStandardItem (tr ("VKontakte: your audio")))
 	{

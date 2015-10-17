@@ -72,7 +72,7 @@ namespace TouchStreams
 				this,
 				SLOT (saveCookies (QByteArray)));
 
-		AlbumsMgr_ = new AlbumsManager (AuthMgr_, Queue_, proxy, this);
+		AlbumsMgr_ = new AlbumsManager (AuthMgr_, proxy, this);
 		FriendsMgr_ = new FriendsManager (AuthMgr_, Queue_, proxy, this);
 		RecsManager_ = new RecsManager ({}, AuthMgr_, Queue_, proxy, this);
 

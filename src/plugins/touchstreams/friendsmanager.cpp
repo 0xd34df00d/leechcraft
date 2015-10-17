@@ -130,7 +130,7 @@ namespace TouchStreams
 	void FriendsManager::MakeFriendItem (qlonglong id, const QVariantMap& map, const QVariant& albums, const QVariant& tracks)
 	{
 		const auto& mgr = std::make_shared<AlbumsManager> (id,
-				albums, tracks, AuthMgr_, Queue_, Proxy_);
+				albums, tracks, AuthMgr_, Proxy_);
 		Friend2AlbumsManager_ [id] = mgr;
 
 		const auto& name = map ["first_name"].toString () + " " + map ["last_name"].toString ();

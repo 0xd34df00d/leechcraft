@@ -46,7 +46,6 @@ namespace SvcAuth
 	class VkAuthManager;
 }
 
-class QueueManager;
 enum class QueuePriority;
 }
 
@@ -60,7 +59,6 @@ namespace TouchStreams
 		const qlonglong UserID_ = -1;
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
-		Util::QueueManager * const Queue_;
 		QList<QPair<std::function<void (QString)>, Util::QueuePriority>> RequestQueue_;
 		const Util::DefaultScopeGuard RequestQueueGuard_;
 
@@ -79,10 +77,10 @@ namespace TouchStreams
 
 		quint32 TracksCount_ = 0;
 	public:
-		AlbumsManager (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
-		AlbumsManager (qlonglong, Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
+		AlbumsManager (Util::SvcAuth::VkAuthManager*, ICoreProxy_ptr, QObject* = 0);
+		AlbumsManager (qlonglong, Util::SvcAuth::VkAuthManager*, ICoreProxy_ptr, QObject* = 0);
 		AlbumsManager (qlonglong, const QVariant& albums, const QVariant& tracks,
-				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, ICoreProxy_ptr, QObject* = 0);
+				Util::SvcAuth::VkAuthManager*, ICoreProxy_ptr, QObject* = 0);
 
 		QStandardItem* GetRootItem () const;
 		qlonglong GetUserID () const;
