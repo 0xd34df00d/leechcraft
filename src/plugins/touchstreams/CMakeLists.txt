@@ -24,6 +24,7 @@ set (SRCS
 	authclosehandler.cpp
 	recsmanager.cpp
 	util.cpp
+	tracksrestorehandler.cpp
 	)
 set (RESOURCES touchstreamsresources.qrc)
 

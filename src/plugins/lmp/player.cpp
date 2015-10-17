@@ -34,14 +34,18 @@
 #include <QDir>
 #include <QUrl>
 #include <QtConcurrentRun>
+#include <QFutureSynchronizer>
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/irestorableradiostationprovider.h>
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
@@ -177,6 +181,13 @@ namespace LMP
 				this,
 				SLOT (handleSourceError (QString, SourceError)));
 
+		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
+	}
+
+	void Player::InitWithOtherPlugins ()
+	{
+		RulesManager_->InitializePlugins ();
+
 		auto collection = Core::Instance ().GetLocalCollection ();
 		if (collection->IsReady ())
 			restorePlaylist ();
@@ -185,13 +196,6 @@ namespace LMP
 					SIGNAL (collectionReady ()),
 					this,
 					SLOT (restorePlaylist ()));
-
-		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
-	}
-
-	void Player::InitWithOtherPlugins ()
-	{
-		RulesManager_->InitializePlugins ();
 	}
 
 	QAbstractItemModel* Player::GetPlaylistModel () const
@@ -1335,17 +1339,108 @@ namespace LMP
 				GetStaticManager ()->SetOnLoadPlaylist (playlist);
 	}
 
+	namespace
+	{
+		template<typename UrlInfoSetter>
+		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
+				const UrlInfoSetter& urlInfoSetter)
+		{
+			struct RestoreInfo
+			{
+				QString RadioID_;
+
+				QUrl Url_;
+				MediaInfo Media_;
+			};
+			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
+			for (const auto& item : playlist)
+			{
+				if (!item.second)
+					continue;
+
+				const auto& media = *item.second;
+
+				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
+				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
+
+				if (radioID.isEmpty () || pluginID.isEmpty ())
+					urlInfoSetter (item.first.ToUrl (), media);
+				else
+					plugin2infos [pluginID].append ({ radioID, item.first.ToUrl (), media });
+			}
+
+			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
+
+			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+			for (const auto& pair : Util::Stlize (plugin2infos))
+			{
+				const auto pObj = ipm->GetPluginByID (pair.first);
+				if (!pObj)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot find plugin for"
+							<< pair.first
+							<< ";"
+							<< pair.second.size ()
+							<< "playlist items will be lost :(";
+					continue;
+				}
+
+				const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
+				if (!irrsp)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "plugin"
+							<< pObj
+							<< "for"
+							<< pair.first
+							<< "cannot be cast to Media::IRestorableRadioStationProvider;"
+							<< pair.second.size ()
+							<< "playlist items will be lost :(";
+					continue;
+				}
+
+				const auto& ids = Util::Map (pair.second, &RestoreInfo::RadioID_);
+				const auto& future = irrsp->RestoreRadioStations (ids);
+				if (future.isCanceled ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "plugin"
+							<< pObj
+							<< "for"
+							<< pair.first
+							<< "returned null future; so"
+							<< pair.second.size ()
+							<< "playlist items will be lost in the present :(";
+					continue;
+				}
+
+				syncer->addFuture (future);
+			}
+
+			if (syncer->futures ().isEmpty ())
+				return;
+
+			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
+					[syncer, playlist]
+					{
+						for (const auto& future : syncer->futures ())
+						{
+							qDebug () << future.result ().size ();
+						}
+					};
+		}
+	}
+
 	void Player::restorePlaylist ()
 	{
 		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
 
-		for (const auto& item : playlist)
-			if (item.second)
-				Url2Info_ [item.first.ToUrl ()] = *item.second;
+		CheckPlaylistRefreshes (playlist,
+				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; });
 
-		Enqueue (Util::Map (playlist,
-				[] (const StaticPlaylistManager::OnLoadPlaylistItem_t& it) { return it.first; }));
+		Enqueue (Util::Map (playlist, &StaticPlaylistManager::OnLoadPlaylistItem_t::first));
 
 		emit playlistRestored ();
 	}

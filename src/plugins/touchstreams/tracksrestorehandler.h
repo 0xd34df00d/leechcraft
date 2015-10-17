@@ -30,81 +30,36 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/media/iaudiopile.h>
-#include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/irestorableradiostationprovider.h>
 
-class QStandardItemModel;
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class QueueManager;
+namespace SvcAuth
+{
+	class VkAuthManager;
+}
 
-	namespace SvcAuth
-	{
-		class VkAuthManager;
-	}
+class QueueManager;
 }
 
 namespace TouchStreams
 {
-	class AlbumsManager;
-	class FriendsManager;
-	class RecsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public Media::IAudioPile
-				 , public Media::IRadioStationProvider
-				 , public Media::IRestorableRadioStationProvider
+	class TracksRestoreHandler : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IHaveSettings
-				Media::IAudioPile
-				Media::IRadioStationProvider
-				Media::IRestorableRadioStationProvider)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.TouchStreams")
-
-		ICoreProxy_ptr Proxy_;
-		Util::QueueManager *Queue_;
-
-		Util::XmlSettingsDialog_ptr XSD_;
-		Util::SvcAuth::VkAuthManager *AuthMgr_;
-
-		QStandardItemModel *Model_;
-
-		AlbumsManager *AlbumsMgr_;
-		FriendsManager *FriendsMgr_;
-		RecsManager *RecsManager_;
+		Util::SvcAuth::VkAuthManager * const AuthMgr_;
+		Util::QueueManager * const Queue_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		TracksRestoreHandler (const QStringList&,
+				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QString GetServiceName () const;
-		QIcon GetServiceIcon () const;
-		Media::IPendingAudioSearch* Search (const Media::AudioSearchRequest&);
-
-		QList<QAbstractItemModel*> GetRadioListItems () const;
-		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
-		void RefreshItems (const QList<QModelIndex>&);
-
-		QFuture<Media::RadiosRestoreResult_t> RestoreRadioStations (const QStringList&);
-	private slots:
-		void saveCookies (const QByteArray&);
+		QFuture<Media::RadiosRestoreResult_t> GetFuture () const;
 	};
 }
 }
