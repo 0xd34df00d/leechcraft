@@ -34,14 +34,18 @@
 #include <QDir>
 #include <QUrl>
 #include <QtConcurrentRun>
+#include <QFutureSynchronizer>
 #include <QApplication>
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/media/irestorableradiostationprovider.h>
 #include "core.h"
 #include "mediainfo.h"
 #include "localfileresolver.h"
@@ -1341,14 +1345,62 @@ namespace LMP
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
 				const UrlInfoSetter& urlInfoSetter)
 		{
+			struct RestoreInfo
+			{
+				QString RadioID_;
+
+				QUrl Url_;
+				MediaInfo Media_;
+			};
+			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
 			{
 				if (!item.second)
 					continue;
 
 				const auto& media = *item.second;
-				urlInfoSetter (item.first.ToUrl (), media);
+
+				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
+				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
+
+				if (radioID.isEmpty () || pluginID.isEmpty ())
+					urlInfoSetter (item.first.ToUrl (), media);
+				else
+					plugin2infos [pluginID].append ({ radioID, item.first.ToUrl (), media });
 			}
+
+			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadioRestoreResult_t>> ();
+
+			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+			for (const auto& pair : Util::Stlize (plugin2infos))
+			{
+				const auto pObj = ipm->GetPluginByID (pair.first);
+				if (!pObj)
+					continue;
+
+				const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
+				if (!irrsp)
+					continue;
+
+				const auto& ids = Util::Map (pair.second, &RestoreInfo::RadioID_);
+				const auto& future = irrsp->RestoreRadioStations (ids);
+				if (future.isCanceled ())
+					continue;
+
+				syncer->addFuture (future);
+			}
+
+			if (syncer->futures ().isEmpty ())
+				return;
+
+			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
+					[syncer, playlist]
+					{
+						for (const auto& future : syncer->futures ())
+						{
+							qDebug () << future.result ().size ();
+						}
+					};
 		}
 	}
 
