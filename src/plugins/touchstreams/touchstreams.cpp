@@ -44,6 +44,7 @@
 #include "friendsmanager.h"
 #include "authclosehandler.h"
 #include "recsmanager.h"
+#include "tracksrestorehandler.h"
 
 namespace LeechCraft
 {
