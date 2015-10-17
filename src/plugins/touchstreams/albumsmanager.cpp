@@ -239,7 +239,11 @@ namespace TouchStreams
 						.arg (info.Title_));
 			trackItem->setEditable (false);
 			trackItem->setData (Media::RadioType::SingleTrack, Media::RadioItemRole::ItemType);
+#if QT_VERSION >= 0x050000
 			trackItem->setData (radioID.toString (QUrl::FullyEncoded), Media::RadioItemRole::RadioID);
+#else
+			trackItem->setData (radioID.toString (), Media::RadioItemRole::RadioID);
+#endif
 			trackItem->setData ("org.LeechCraft.TouchStreams", Media::RadioItemRole::PluginID);
 			trackItem->setData (QVariant::fromValue<QList<Media::AudioInfo>> ({ info }),
 					Media::RadioItemRole::TracksInfos);
