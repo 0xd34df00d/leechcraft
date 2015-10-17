@@ -1376,16 +1376,44 @@ namespace LMP
 			{
 				const auto pObj = ipm->GetPluginByID (pair.first);
 				if (!pObj)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "cannot find plugin for"
+							<< pair.first
+							<< ";"
+							<< pair.second.size ()
+							<< "playlist items will be lost :(";
 					continue;
+				}
 
 				const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
 				if (!irrsp)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "plugin"
+							<< pObj
+							<< "for"
+							<< pair.first
+							<< "cannot be cast to Media::IRestorableRadioStationProvider;"
+							<< pair.second.size ()
+							<< "playlist items will be lost :(";
 					continue;
+				}
 
 				const auto& ids = Util::Map (pair.second, &RestoreInfo::RadioID_);
 				const auto& future = irrsp->RestoreRadioStations (ids);
 				if (future.isCanceled ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "plugin"
+							<< pObj
+							<< "for"
+							<< pair.first
+							<< "returned null future; so"
+							<< pair.second.size ()
+							<< "playlist items will be lost in the present :(";
 					continue;
+				}
 
 				syncer->addFuture (future);
 			}
