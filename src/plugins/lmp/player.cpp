@@ -1344,8 +1344,7 @@ namespace LMP
 			if (item.second)
 				Url2Info_ [item.first.ToUrl ()] = *item.second;
 
-		Enqueue (Util::Map (playlist,
-				[] (const StaticPlaylistManager::OnLoadPlaylistItem_t& it) { return it.first; }));
+		Enqueue (Util::Map (playlist, &StaticPlaylistManager::OnLoadPlaylistItem_t::first));
 
 		emit playlistRestored ();
 	}
