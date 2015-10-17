@@ -112,16 +112,16 @@ namespace SvcAuth
 
 	void VkAuthManager::GetAuthKey ()
 	{
-		if (SilentMode_)
-		{
-			PrioManagedQueues_.clear ();
-			ManagedQueues_.clear ();
-			return;
-		}
-
 		if (!IsAuthenticated ())
 		{
-			RequestAuthKey ();
+			if (!SilentMode_)
+				RequestAuthKey ();
+			else
+			{
+				PrioManagedQueues_.clear ();
+				ManagedQueues_.clear ();
+			}
+
 			return;
 		}
 
