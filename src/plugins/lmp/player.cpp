@@ -1335,14 +1335,30 @@ namespace LMP
 				GetStaticManager ()->SetOnLoadPlaylist (playlist);
 	}
 
+	namespace
+	{
+		template<typename UrlInfoSetter>
+		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
+				const UrlInfoSetter& urlInfoSetter)
+		{
+			for (const auto& item : playlist)
+			{
+				if (!item.second)
+					continue;
+
+				const auto& media = *item.second;
+				urlInfoSetter (item.first.ToUrl (), media);
+			}
+		}
+	}
+
 	void Player::restorePlaylist ()
 	{
 		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
 
-		for (const auto& item : playlist)
-			if (item.second)
-				Url2Info_ [item.first.ToUrl ()] = *item.second;
+		CheckPlaylistRefreshes (playlist,
+				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; });
 
 		Enqueue (Util::Map (playlist, &StaticPlaylistManager::OnLoadPlaylistItem_t::first));
 
