@@ -102,7 +102,7 @@ namespace TouchStreams
 		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
 		void RefreshItems (const QList<QModelIndex>&);
 
-		QFuture<QList<Media::IRadioStation_ptr>> RestoreRadioStations (const QStringList&);
+		QFuture<Media::RadioRestoreResult_t> RestoreRadioStations (const QStringList&);
 	private slots:
 		void saveCookies (const QByteArray&);
 	};
