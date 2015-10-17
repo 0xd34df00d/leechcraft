@@ -52,7 +52,8 @@ namespace TouchStreams
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
 	public:
-		TracksRestoreHandler (Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
+		TracksRestoreHandler (const QStringList&,
+				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 	};
 }
 }

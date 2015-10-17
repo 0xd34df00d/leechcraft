@@ -33,8 +33,8 @@ namespace LeechCraft
 {
 namespace TouchStreams
 {
-	TracksRestoreHandler::TracksRestoreHandler (Util::SvcAuth::VkAuthManager *authMgr,
-			Util::QueueManager *queueMgr, QObject *parent)
+	TracksRestoreHandler::TracksRestoreHandler (const QStringList& ids,
+			Util::SvcAuth::VkAuthManager *authMgr, Util::QueueManager *queueMgr, QObject *parent)
 	: QObject { parent }
 	, AuthMgr_ { authMgr }
 	, Queue_ { queueMgr }
