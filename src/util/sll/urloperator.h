@@ -153,6 +153,15 @@ namespace Util
 		 */
 		UrlOperator& operator() (const QString& key, int value);
 
+		template<typename Key, typename Value>
+		UrlOperator& operator() (bool condition, Key&& key, Value&& value)
+		{
+			if (condition)
+				(*this) (std::forward<Key> (key), std::forward<Value> (value));
+
+			return *this;
+		}
+
 		/** @brief Returns the first query parameter under the \em key.
 		 *
 		 * If no such parameters exist, this function does nothing.
