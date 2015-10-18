@@ -1349,6 +1349,55 @@ namespace LMP
 			MediaInfo Media_;
 		};
 
+		void HandlePluginInfos (const QByteArray& pluginId,
+				const QList<RestoreInfo>& infos,
+				QFutureSynchronizer<Media::RadiosRestoreResult_t> *syncer,
+				IPluginsManager *ipm)
+		{
+			const auto pObj = ipm->GetPluginByID (pluginId);
+			if (!pObj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find plugin for"
+						<< pluginId
+						<< ";"
+						<< infos.size ()
+						<< "playlist items will be lost :(";
+				return;
+			}
+
+			const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
+			if (!irrsp)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "plugin"
+						<< pObj
+						<< "for"
+						<< pluginId
+						<< "cannot be cast to Media::IRestorableRadioStationProvider;"
+						<< infos.size ()
+						<< "playlist items will be lost :(";
+				return;
+			}
+
+			const auto& ids = Util::Map (infos, &RestoreInfo::RadioID_);
+			const auto& future = irrsp->RestoreRadioStations (ids);
+			if (future.isCanceled ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "plugin"
+						<< pObj
+						<< "for"
+						<< pluginId
+						<< "returned null future; so"
+						<< infos.size ()
+						<< "playlist items will be lost in the present :(";
+				return;
+			}
+
+			syncer->addFuture (future);
+		}
+
 		template<typename UrlInfoSetter>
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
 				const UrlInfoSetter& urlInfoSetter)
@@ -1374,50 +1423,7 @@ namespace LMP
 
 			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
 			for (const auto& pair : Util::Stlize (plugin2infos))
-			{
-				const auto pObj = ipm->GetPluginByID (pair.first);
-				if (!pObj)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "cannot find plugin for"
-							<< pair.first
-							<< ";"
-							<< pair.second.size ()
-							<< "playlist items will be lost :(";
-					continue;
-				}
-
-				const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
-				if (!irrsp)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "plugin"
-							<< pObj
-							<< "for"
-							<< pair.first
-							<< "cannot be cast to Media::IRestorableRadioStationProvider;"
-							<< pair.second.size ()
-							<< "playlist items will be lost :(";
-					continue;
-				}
-
-				const auto& ids = Util::Map (pair.second, &RestoreInfo::RadioID_);
-				const auto& future = irrsp->RestoreRadioStations (ids);
-				if (future.isCanceled ())
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "plugin"
-							<< pObj
-							<< "for"
-							<< pair.first
-							<< "returned null future; so"
-							<< pair.second.size ()
-							<< "playlist items will be lost in the present :(";
-					continue;
-				}
-
-				syncer->addFuture (future);
-			}
+				HandlePluginInfos (pair.first, pair.second, syncer.get (), ipm);
 
 			if (syncer->futures ().isEmpty ())
 				return;
