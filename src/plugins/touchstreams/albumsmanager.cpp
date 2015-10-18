@@ -205,10 +205,6 @@ namespace TouchStreams
 		{
 			const auto& map = trackVar.toMap ();
 
-			const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
-			if (!url.isValid ())
-				continue;
-
 			const auto albumId = map.value ("album_id", "-1").toLongLong ();
 			auto albumItem = Albums_ [albumId].Item_;
 			if (!albumItem)
@@ -219,11 +215,11 @@ namespace TouchStreams
 				continue;
 			}
 
-			Media::AudioInfo info {};
-			info.Title_ = map ["title"].toString ();
-			info.Artist_ = map ["artist"].toString ();
-			info.Length_ = map ["duration"].toInt ();
-			info.Other_ ["URL"] = url;
+			const auto& maybeInfo = TrackMap2Info (map);
+			if (!maybeInfo)
+				continue;
+
+			const auto& info = *maybeInfo;
 
 			QUrl radioID { "vk://track" };
 			Util::UrlOperator { radioID }

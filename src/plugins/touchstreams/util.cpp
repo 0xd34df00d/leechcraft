@@ -32,6 +32,7 @@
 #include <util/svcauth/vkauthmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/media/audiostructs.h>
 
 namespace LeechCraft
 {
@@ -50,6 +51,20 @@ namespace TouchStreams
 		item->setData (Media::RadioType::RadioAction, Media::RadioItemRole::ItemType);
 		rootItem->appendRow (item);
 		return false;
+	}
+
+	boost::optional<Media::AudioInfo> TrackMap2Info (const QVariantMap& map)
+	{
+		const auto& url = QUrl::fromEncoded (map ["url"].toString ().toUtf8 ());
+		if (!url.isValid ())
+			return {};
+
+		Media::AudioInfo info;
+		info.Title_ = map ["title"].toString ();
+		info.Artist_ = map ["artist"].toString ();
+		info.Length_ = map ["duration"].toInt ();
+		info.Other_ ["URL"] = url;
+		return info;
 	}
 }
 }
