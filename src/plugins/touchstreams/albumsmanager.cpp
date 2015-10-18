@@ -201,9 +201,7 @@ namespace TouchStreams
 
 	bool AlbumsManager::HandleTracks (const QVariant& tracksListVar)
 	{
-		auto tracksList = tracksListVar.toList ();
-
-		for (const auto& trackVar : tracksList)
+		for (const auto& trackVar : tracksListVar.toMap () ["items"].toList ())
 		{
 			const auto& map = trackVar.toMap ();
 
@@ -211,7 +209,7 @@ namespace TouchStreams
 			if (!url.isValid ())
 				continue;
 
-			const auto albumId = map.value ("album", "-1").toLongLong ();
+			const auto albumId = map.value ("album_id", "-1").toLongLong ();
 			auto albumItem = Albums_ [albumId].Item_;
 			if (!albumItem)
 			{
@@ -229,7 +227,7 @@ namespace TouchStreams
 
 			QUrl radioID { "vk://track" };
 			Util::UrlOperator { radioID }
-					("audio_id", map.value ("aid").toString ())
+					("audio_id", map.value ("id").toString ())
 					("owner_id", map.value ("owner_id").toString ());
 
 			auto trackItem = new QStandardItem (QString::fromUtf8 ("%1 — %2")
@@ -293,10 +291,11 @@ namespace TouchStreams
 				{
 					QUrl url ("https://api.vk.com/method/audio.get");
 					Util::UrlOperator { url }
+							("v", "5.37")
 							("access_token", key)
 							("count", "6000");
 					if (UserID_ >= 0)
-						Util::UrlOperator { url } ("uid", QString::number (UserID_));
+						Util::UrlOperator { url } ("owner_id", QString::number (UserID_));
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
