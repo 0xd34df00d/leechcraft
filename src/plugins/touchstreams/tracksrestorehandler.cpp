@@ -88,6 +88,7 @@ namespace TouchStreams
 
 			QUrl url { "https://api.vk.com/method/audio.get" };
 			Util::UrlOperator { url }
+					("v", "5.37")
 					("access_token", key)
 					("count", "6000")
 					("owner_id", owner)
