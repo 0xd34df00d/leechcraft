@@ -265,7 +265,7 @@ namespace TouchStreams
 							("count", "100");
 					if (UserID_ >= 0)
 						Util::UrlOperator { url }
-								("uid", QString::number (UserID_));
+								("uid", UserID_);
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
@@ -295,7 +295,7 @@ namespace TouchStreams
 							("access_token", key)
 							("count", "6000");
 					if (UserID_ >= 0)
-						Util::UrlOperator { url } ("owner_id", QString::number (UserID_));
+						Util::UrlOperator { url } ("owner_id", UserID_);
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
