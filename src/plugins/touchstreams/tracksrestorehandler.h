@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 #include <interfaces/media/irestorableradiostationprovider.h>
 
 template<typename>
