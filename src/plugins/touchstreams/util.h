@@ -53,6 +53,8 @@ namespace TouchStreams
 {
 	bool CheckAuthentication (QStandardItem *rootItem,
 			Util::SvcAuth::VkAuthManager *authMgr, const ICoreProxy_ptr&);
+
 	boost::optional<Media::AudioInfo> TrackMap2Info (const QVariantMap& trackMap);
+	QString TrackMap2RadioId (const QVariantMap& trackMap);
 }
 }

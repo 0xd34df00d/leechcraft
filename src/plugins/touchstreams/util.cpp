@@ -29,6 +29,7 @@
 
 #include "util.h"
 #include <QStandardItem>
+#include <util/sll/urloperator.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/media/iradiostationprovider.h>
@@ -65,6 +66,20 @@ namespace TouchStreams
 		info.Length_ = map ["duration"].toInt ();
 		info.Other_ ["URL"] = url;
 		return info;
+	}
+
+	QString TrackMap2RadioId (const QVariantMap& map)
+	{
+		QUrl radioID { "vk://track" };
+		Util::UrlOperator { radioID }
+				("audio_id", map.value ("id").toString ())
+				("owner_id", map.value ("owner_id").toString ());
+
+#if QT_VERSION >= 0x050000
+		return radioID.toString (QUrl::FullyEncoded);
+#else
+		return radioID.toString ();
+#endif
 	}
 }
 }
