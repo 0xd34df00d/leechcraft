@@ -58,11 +58,12 @@ namespace TouchStreams
 		}
 	}
 
-	TracksRestoreHandler::TracksRestoreHandler (const QStringList& ids,
+	TracksRestoreHandler::TracksRestoreHandler (const QStringList& ids, QNetworkAccessManager *nam,
 			Util::SvcAuth::VkAuthManager *authMgr, Util::QueueManager *queueMgr, QObject *parent)
 	: QObject { parent }
 	, AuthMgr_ { authMgr }
 	, Queue_ { queueMgr }
+	, NAM_ { nam }
 	, IDs_ { ToHash (Util::Map (ids, ParseID)) }
 	{
 		Util::Sequence (this, AuthMgr_->GetAuthKeyFuture ()) >>

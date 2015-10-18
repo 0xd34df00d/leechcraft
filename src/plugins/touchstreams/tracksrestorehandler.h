@@ -36,6 +36,8 @@
 template<typename>
 class QFuture;
 
+class QNetworkAccessManager;
+
 namespace LeechCraft
 {
 namespace Util
@@ -56,10 +58,11 @@ namespace TouchStreams
 
 		Util::SvcAuth::VkAuthManager * const AuthMgr_;
 		Util::QueueManager * const Queue_;
+		QNetworkAccessManager * const NAM_;
 
 		const QHash<QString, QStringList> IDs_;
 	public:
-		TracksRestoreHandler (const QStringList&,
+		TracksRestoreHandler (const QStringList&, QNetworkAccessManager *nam,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 
 		QFuture<Media::RadiosRestoreResult_t> GetFuture () const;
