@@ -70,13 +70,15 @@ namespace TouchStreams
 	, NAM_ { nam }
 	, IDs_ { ToHash (Util::Map (ids, ParseID)) }
 	{
+		FutureIface_.reportStarted ();
+
 		Util::Sequence (this, AuthMgr_->GetAuthKeyFuture ()) >>
 				Util::BindMemFn (&TracksRestoreHandler::Request, this);
 	}
 
 	QFuture<Media::RadiosRestoreResult_t> TracksRestoreHandler::GetFuture ()
 	{
-		return {};
+		return FutureIface_.future ();
 	}
 
 	void TracksRestoreHandler::Request (const QString& key)
@@ -107,6 +109,12 @@ namespace TouchStreams
 
 	void TracksRestoreHandler::HandleReplyFinished (QNetworkReply *reply)
 	{
+		const auto notifyGuard = Util::MakeScopeGuard ([this]
+				{
+					if (!(--PendingRequests_))
+						NotifyFuture ();
+				});
+
 		const auto& parsedVar = Util::ParseJson (reply, Q_FUNC_INFO);
 		reply->deleteLater ();
 
@@ -124,6 +132,12 @@ namespace TouchStreams
 			const QList<Media::AudioInfo> infoList { *maybeInfo };
 			Result_.append ({ "org.LeechCraft.TouchStreams", radioID, infoList });
 		}
+	}
+
+	void TracksRestoreHandler::NotifyFuture ()
+	{
+		FutureIface_.reportFinished (&Result_);
+		deleteLater ();
 	}
 }
 }

@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <QFutureInterface>
 #include <interfaces/media/audiostructs.h>
 #include <interfaces/media/irestorableradiostationprovider.h>
 
@@ -63,6 +64,9 @@ namespace TouchStreams
 		QNetworkAccessManager * const NAM_;
 
 		const QHash<QString, QStringList> IDs_;
+		int PendingRequests_ = IDs_.size ();
+
+		QFutureInterface<Media::RadiosRestoreResult_t> FutureIface_;
 		Media::RadiosRestoreResult_t Result_;
 	public:
 		TracksRestoreHandler (const QStringList&, QNetworkAccessManager *nam,
@@ -72,6 +76,7 @@ namespace TouchStreams
 	private:
 		void Request (const QString&);
 		void HandleReplyFinished (QNetworkReply*);
+		void NotifyFuture ();
 	};
 }
 }
