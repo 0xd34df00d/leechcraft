@@ -29,8 +29,10 @@
 
 #include "tracksrestorehandler.h"
 #include <QFuture>
+#include <QNetworkReply>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urlaccessor.h>
 #include <util/sll/urloperator.h>
@@ -77,10 +79,35 @@ namespace TouchStreams
 
 	void TracksRestoreHandler::Request (const QString& key)
 	{
-		QUrl url ("https://api.vk.com/method/audio.get");
-		Util::UrlOperator { url }
-				("access_token", key)
-				("count", "6000");
+		for (const auto& pair : Util::Stlize (IDs_))
+		{
+			const auto& owner = pair.first;
+			const auto& audios = pair.second.join (",");
+
+			QUrl url { "https://api.vk.com/method/audio.get" };
+			Util::UrlOperator { url }
+					("access_token", key)
+					("count", "6000")
+					("owner_id", owner)
+					("audio_ids", audios);
+
+			const auto reply = NAM_->get (QNetworkRequest { url });
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[this, reply] { HandleReplyFinished (reply); },
+				reply,
+				SIGNAL (finished ()),
+				reply
+			};
+		}
+	}
+
+	void TracksRestoreHandler::HandleReplyFinished (QNetworkReply *reply)
+	{
+		const auto& parsed = Util::ParseJson (reply, Q_FUNC_INFO);
+		reply->deleteLater ();
+
+		qDebug () << parsed;
 	}
 }
 }

@@ -37,6 +37,7 @@ template<typename>
 class QFuture;
 
 class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -68,6 +69,7 @@ namespace TouchStreams
 		QFuture<Media::RadiosRestoreResult_t> GetFuture () const;
 	private:
 		void Request (const QString&);
+		void HandleReplyFinished (QNetworkReply*);
 	};
 }
 }
