@@ -262,10 +262,8 @@ namespace TouchStreams
 					QUrl url ("https://api.vk.com/method/audio.getAlbums");
 					Util::UrlOperator { url }
 							("access_token", key)
-							("count", "100");
-					if (UserID_ >= 0)
-						Util::UrlOperator { url }
-								("uid", UserID_);
+							("count", "100")
+							(UserID_ >= 0, "uid", UserID_);
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
@@ -293,9 +291,8 @@ namespace TouchStreams
 					Util::UrlOperator { url }
 							("v", "5.37")
 							("access_token", key)
-							("count", "6000");
-					if (UserID_ >= 0)
-						Util::UrlOperator { url } ("owner_id", UserID_);
+							("count", "6000")
+							(UserID_ >= 0, "owner_id", UserID_);
 
 					auto nam = Proxy_->GetNetworkAccessManager ();
 					connect (nam->get (QNetworkRequest (url)),
