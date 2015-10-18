@@ -49,9 +49,9 @@ namespace TouchStreams
 			return { acc ["owner_id"], acc ["audio_id"] };
 		}
 
-		QHash<QString, QList<QString>> ToHash (const QList<QPair<QString, QString>>& pairs)
+		QHash<QString, QStringList> ToHash (const QList<QPair<QString, QString>>& pairs)
 		{
-			QHash<QString, QList<QString>> result;
+			QHash<QString, QStringList> result;
 			for (const auto& pair : pairs)
 				result [pair.first] << pair.second;
 			return result;
