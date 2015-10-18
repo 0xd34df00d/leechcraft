@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QtPlugin>
 #include "iradiostation.h"
 
@@ -37,11 +38,16 @@ class QFuture;
 
 namespace Media
 {
+	struct AudioInfo;
+
 	struct RadioRestoreResult
 	{
 		QString PluginID_;
 		QString RadioID_;
-		IRadioStation_ptr Station_;
+
+		using RestoreVariant_t = boost::variant<QList<Media::AudioInfo>>;
+
+		RestoreVariant_t Restored_;
 	};
 
 	using RadiosRestoreResult_t = QList<RadioRestoreResult>;
