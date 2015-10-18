@@ -72,7 +72,7 @@ namespace TouchStreams
 				Util::BindMemFn (&TracksRestoreHandler::Request, this);
 	}
 
-	QFuture<Media::RadiosRestoreResult_t> TracksRestoreHandler::GetFuture () const
+	QFuture<Media::RadiosRestoreResult_t> TracksRestoreHandler::GetFuture ()
 	{
 		return {};
 	}

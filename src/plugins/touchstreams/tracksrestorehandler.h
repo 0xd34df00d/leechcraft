@@ -66,7 +66,7 @@ namespace TouchStreams
 		TracksRestoreHandler (const QStringList&, QNetworkAccessManager *nam,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);
 
-		QFuture<Media::RadiosRestoreResult_t> GetFuture () const;
+		QFuture<Media::RadiosRestoreResult_t> GetFuture ();
 	private:
 		void Request (const QString&);
 		void HandleReplyFinished (QNetworkReply*);
