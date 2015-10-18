@@ -1341,17 +1341,18 @@ namespace LMP
 
 	namespace
 	{
+		struct RestoreInfo
+		{
+			QString RadioID_;
+
+			QUrl Url_;
+			MediaInfo Media_;
+		};
+
 		template<typename UrlInfoSetter>
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
 				const UrlInfoSetter& urlInfoSetter)
 		{
-			struct RestoreInfo
-			{
-				QString RadioID_;
-
-				QUrl Url_;
-				MediaInfo Media_;
-			};
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
 			{
