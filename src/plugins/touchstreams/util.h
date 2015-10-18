@@ -34,6 +34,11 @@
 
 class QStandardItem;
 
+template<typename K, typename V>
+class QMap;
+
+using QVariantMap = QMap<QString, QVariant>;
+
 namespace Media
 {
 	struct AudioInfo;
