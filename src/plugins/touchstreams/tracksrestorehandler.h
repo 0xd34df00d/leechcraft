@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include <interfaces/media/audiostructs.h>
 #include <interfaces/media/irestorableradiostationprovider.h>
 
 template<typename>
@@ -62,6 +63,7 @@ namespace TouchStreams
 		QNetworkAccessManager * const NAM_;
 
 		const QHash<QString, QStringList> IDs_;
+		Media::RadiosRestoreResult_t Result_;
 	public:
 		TracksRestoreHandler (const QStringList&, QNetworkAccessManager *nam,
 				Util::SvcAuth::VkAuthManager*, Util::QueueManager*, QObject* = nullptr);

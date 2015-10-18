@@ -31,6 +31,7 @@
 #include <QFuture>
 #include <QNetworkReply>
 #include <util/sll/functional.h>
+#include <util/sll/parsejson.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/queuemanager.h>
@@ -38,6 +39,7 @@
 #include <util/sll/urloperator.h>
 #include <util/svcauth/vkauthmanager.h>
 #include <util/threads/futures.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -104,10 +106,23 @@ namespace TouchStreams
 
 	void TracksRestoreHandler::HandleReplyFinished (QNetworkReply *reply)
 	{
-		const auto& parsed = Util::ParseJson (reply, Q_FUNC_INFO);
+		const auto& parsedVar = Util::ParseJson (reply, Q_FUNC_INFO);
 		reply->deleteLater ();
 
-		qDebug () << parsed;
+		const auto& items = parsedVar.toMap () ["response"].toMap () ["items"].toList ();
+		for (const auto& item : items)
+		{
+			const auto& map = item.toMap ();
+
+			const auto& maybeInfo = TrackMap2Info (map);
+			if (!maybeInfo)
+				continue;
+
+			const auto& radioID = TrackMap2RadioId (map);
+
+			const QList<Media::AudioInfo> infoList { *maybeInfo };
+			Result_.append ({ "org.LeechCraft.TouchStreams", radioID, infoList });
+		}
 	}
 }
 }
