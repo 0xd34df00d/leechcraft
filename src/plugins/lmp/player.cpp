@@ -1414,6 +1414,34 @@ namespace LMP
 			}
 		};
 
+		void HandleRestored (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
+				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
+		{
+			Util::Decay_t<decltype (playlist)> newPlaylist;
+
+			for (const auto& item : playlist)
+			{
+				if (!item.second)
+				{
+					newPlaylist << item;
+					continue;
+				}
+
+				const auto& media = *item.second;
+
+				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
+				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
+
+				if (!restored.contains ({ pluginID, radioID }))
+				{
+					newPlaylist << item;
+					continue;
+				}
+
+				newPlaylist += boost::apply_visitor (RestoreVisitor {}, restored [{ pluginID, radioID }]);
+			}
+		}
+
 		template<typename UrlInfoSetter>
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
 				const UrlInfoSetter& urlInfoSetter)
@@ -1451,6 +1479,8 @@ namespace LMP
 						for (const auto& future : syncer->futures ())
 							for (const auto& item : future.result ())
 								restored [{ item.PluginID_, item.RadioID_ }] = item.Restored_;
+
+						HandleRestored (playlist, restored);
 					};
 		}
 	}
