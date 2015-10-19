@@ -1438,7 +1438,8 @@ namespace LMP
 					continue;
 				}
 
-				newPlaylist += boost::apply_visitor (RestoreVisitor {}, restored [{ pluginID, radioID }]);
+				newPlaylist += boost::apply_visitor (RestoreVisitor {},
+						restored.value ({ pluginID, radioID }, QList<Media::AudioInfo> {})); // WORKAROUND boost 1.54
 			}
 
 			return newPlaylist;
