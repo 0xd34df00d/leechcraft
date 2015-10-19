@@ -81,6 +81,7 @@ namespace LMP
 		void HandleWokeUp ();
 
 		QList<Media::AudioInfo> GetSources (const QModelIndex&) const;
+		QList<Media::AudioInfo> GetSources (const QList<QModelIndex>&) const;
 
 		Media::IRadioStation_ptr GetRadioStation (const QString&) const;
 	private:

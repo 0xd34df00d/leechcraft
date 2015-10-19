@@ -36,6 +36,7 @@
 #include <util/models/dndactionsmixin.h>
 #include <util/models/mergemodel.h>
 #include <util/sll/dropargs.h>
+#include <util/sll/prelude.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -364,6 +365,12 @@ namespace LMP
 		default:
 			return {};
 		}
+	}
+
+	QList<Media::AudioInfo> RadioManager::GetSources (const QList<QModelIndex>& indices) const
+	{
+		return Util::Concat (Util::Map (indices,
+					[this] (const QModelIndex& idx) { return GetSources (idx); }));
 	}
 
 	Media::IRadioStation_ptr RadioManager::GetRadioStation (const QString& radioId) const
