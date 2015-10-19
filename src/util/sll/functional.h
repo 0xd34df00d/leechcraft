@@ -33,6 +33,9 @@
 #include <functional>
 #endif
 
+#include <type_traits>
+#include "oldcppkludges.h"
+
 namespace LeechCraft
 {
 namespace Util
@@ -50,14 +53,14 @@ namespace Util
 	 * itself.
 	 */
 #ifdef USE_CPP14
-	template<typename R, typename T, typename... Args>
-	auto BindMemFn (R (T::*fn) (Args...), T *c)
+	template<typename R, typename B, typename C, typename... Args>
+	auto BindMemFn (R (B::*fn) (Args...), C *c, EnableIf_t<std::is_base_of<B, C>::value>* = nullptr)
 	{
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
 
-	template<typename R, typename T, typename... Args>
-	auto BindMemFn (R (T::*fn) (Args...) const, const T *c)
+	template<typename R, typename B, typename C, typename... Args>
+	auto BindMemFn (R (B::*fn) (Args...) const, const C *c, EnableIf_t<std::is_base_of<B, C>::value>* = nullptr)
 	{
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
