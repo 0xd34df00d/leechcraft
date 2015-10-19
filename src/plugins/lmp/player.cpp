@@ -1444,9 +1444,9 @@ namespace LMP
 			return newPlaylist;
 		}
 
-		template<typename UrlInfoSetter, typename Setter>
+		template<typename UrlInfoSetter, typename Setter, typename Clearer>
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
-				const UrlInfoSetter& urlInfoSetter, const Setter& cont)
+				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
 		{
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
@@ -1475,7 +1475,7 @@ namespace LMP
 				return;
 
 			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
-					[syncer, playlist, cont]
+					[=]
 					{
 						QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t> restored;
 						for (const auto& future : syncer->futures ())
@@ -1484,7 +1484,11 @@ namespace LMP
 
 						const auto& newPlaylist = HandleRestored (playlist, restored);
 						if (newPlaylist != playlist)
-							cont (newPlaylist);
+						{
+							clearer ();
+
+							setter (newPlaylist);
+						}
 					};
 		}
 	}
@@ -1501,7 +1505,8 @@ namespace LMP
 
 		CheckPlaylistRefreshes (playlist,
 				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
-				setter);
+				setter,
+				[this] { clear (); });
 
 		setter (playlist);
 		emit playlistRestored ();
