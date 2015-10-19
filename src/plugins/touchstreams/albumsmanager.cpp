@@ -272,7 +272,7 @@ namespace TouchStreams
 		HandleAlbums (data ["response"]);
 
 		RequestQueue_.prepend ({
-				[this] (const QString& key) -> void
+				[this] (const QString& key)
 				{
 					QUrl url ("https://api.vk.com/method/audio.get");
 					Util::UrlOperator { url }
