@@ -1414,7 +1414,7 @@ namespace LMP
 			}
 		};
 
-		void HandleRestored (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
+		StaticPlaylistManager::OnLoadPlaylist_t HandleRestored (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
 				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
 		{
 			Util::Decay_t<decltype (playlist)> newPlaylist;
@@ -1440,6 +1440,8 @@ namespace LMP
 
 				newPlaylist += boost::apply_visitor (RestoreVisitor {}, restored [{ pluginID, radioID }]);
 			}
+
+			return newPlaylist;
 		}
 
 		template<typename UrlInfoSetter>
