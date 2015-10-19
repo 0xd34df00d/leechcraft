@@ -1413,9 +1413,9 @@ namespace LMP
 				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
 				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
 
-				if (radioID.isEmpty () || pluginID.isEmpty ())
-					urlInfoSetter (item.first.ToUrl (), media);
-				else
+				urlInfoSetter (item.first.ToUrl (), media);
+
+				if (!radioID.isEmpty () && !pluginID.isEmpty ())
 					plugin2infos [pluginID].append ({ radioID, item.first.ToUrl (), media });
 			}
 
