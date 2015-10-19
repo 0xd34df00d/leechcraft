@@ -1483,16 +1483,16 @@ namespace LMP
 								restored [{ item.PluginID_, item.RadioID_ }] = item.Restored_;
 
 						const auto& newPlaylist = HandleRestored (playlist, restored);
-						if (newPlaylist != playlist)
-						{
-							clearer ();
+						if (newPlaylist == playlist)
+							return;
 
-							for (const auto& item : newPlaylist)
-								if (item.second)
-									urlInfoSetter (item.first.ToUrl (), *item.second);
+						clearer ();
 
-							setter (newPlaylist);
-						}
+						for (const auto& item : newPlaylist)
+							if (item.second)
+								urlInfoSetter (item.first.ToUrl (), *item.second);
+
+						setter (newPlaylist);
 					};
 		}
 	}
