@@ -1487,6 +1487,10 @@ namespace LMP
 						{
 							clearer ();
 
+							for (const auto& item : newPlaylist)
+								if (item.second)
+									urlInfoSetter (item.first.ToUrl (), *item.second);
+
 							setter (newPlaylist);
 						}
 					};
