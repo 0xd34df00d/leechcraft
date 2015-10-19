@@ -1444,9 +1444,9 @@ namespace LMP
 			return newPlaylist;
 		}
 
-		template<typename UrlInfoSetter>
+		template<typename UrlInfoSetter, typename Continuation>
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
-				const UrlInfoSetter& urlInfoSetter)
+				const UrlInfoSetter& urlInfoSetter, const Continuation& cont)
 		{
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
@@ -1492,11 +1492,17 @@ namespace LMP
 		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
 
+		auto continuation = [this] (const StaticPlaylistManager::OnLoadPlaylist_t& pl)
+		{
+			clear ();
+			Enqueue (Util::Map (pl, &StaticPlaylistManager::OnLoadPlaylistItem_t::first));
+		};
+
 		CheckPlaylistRefreshes (playlist,
-				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; });
+				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
+				continuation);
 
-		Enqueue (Util::Map (playlist, &StaticPlaylistManager::OnLoadPlaylistItem_t::first));
-
+		continuation (playlist);
 		emit playlistRestored ();
 	}
 
