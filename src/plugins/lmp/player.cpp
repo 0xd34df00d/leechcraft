@@ -1431,10 +1431,10 @@ namespace LMP
 			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
 					[syncer, playlist]
 					{
+						QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t> restored;
 						for (const auto& future : syncer->futures ())
-						{
-							qDebug () << future.result ().size ();
-						}
+							for (const auto& item : future.result ())
+								restored [{ item.PluginID_, item.RadioID_ }] = item.Restored_;
 					};
 		}
 	}
