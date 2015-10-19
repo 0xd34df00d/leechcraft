@@ -1398,6 +1398,22 @@ namespace LMP
 			syncer->addFuture (future);
 		}
 
+		struct RestoreVisitor : boost::static_visitor<StaticPlaylistManager::OnLoadPlaylist_t>
+		{
+			StaticPlaylistManager::OnLoadPlaylist_t operator() (const QList<Media::AudioInfo>& infos) const
+			{
+				return Util::Map (infos,
+						[] (const Media::AudioInfo& info)
+						{
+							return StaticPlaylistManager::OnLoadPlaylistItem_t
+							{
+								info.Other_ ["URL"].toUrl (),
+								MediaInfo::FromAudioInfo (info)
+							};
+						});
+			}
+		};
+
 		template<typename UrlInfoSetter>
 		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
 				const UrlInfoSetter& urlInfoSetter)
