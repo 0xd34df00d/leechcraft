@@ -149,7 +149,10 @@ namespace LMP
 		menu.addAction (tr ("Refresh"),
 				this,
 				SLOT (handleRefresh ()));
-		if (type == Media::RadioType::CustomAddableStreams)
+
+		switch (type)
+		{
+		case Media::RadioType::CustomAddableStreams:
 		{
 			menu.addAction (tr ("Add an URL..."),
 					this,
@@ -160,6 +163,10 @@ namespace LMP
 				menu.addAction (tr ("Add current stream..."),
 						this,
 						SLOT (handleAddCurrentUrl ()));
+			break;
+		}
+		default:
+			break;
 		}
 
 		if (parentType == Media::RadioType::CustomAddableStreams)
