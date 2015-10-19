@@ -72,7 +72,6 @@ namespace LMP
 
 	RadioWidget::RadioWidget (QWidget *parent)
 	: QWidget (parent)
-	, Player_ (0)
 	, StationsProxy_ (new StationsFilterModel (this))
 	{
 		Ui_.setupUi (this);

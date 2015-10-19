@@ -47,7 +47,7 @@ namespace LMP
 
 		Ui::RadioWidget Ui_;
 
-		Player *Player_;
+		Player *Player_ = nullptr;
 		QSortFilterProxyModel *StationsProxy_;
 	public:
 		RadioWidget (QWidget* = 0);
