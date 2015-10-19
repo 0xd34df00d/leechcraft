@@ -161,12 +161,14 @@ namespace LMP
 						this,
 						SLOT (handleAddCurrentUrl ()));
 		}
-		else if (parentType == Media::RadioType::CustomAddableStreams)
+
+		if (parentType == Media::RadioType::CustomAddableStreams)
 		{
 			menu.addAction (tr ("Remove this URL"),
 					this,
 					SLOT (handleRemoveUrl ()));
 		}
+
 		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
 	}
 
