@@ -185,12 +185,29 @@ namespace Util
 			Invoke (f, t);
 	}
 
-	template<typename T, template<typename U> class Container, typename F>
-	auto Filter (const Container<T>& c, F f) -> Container<T>
+	namespace detail
 	{
-		Container<T> result;
-		std::copy_if (c.begin (), c.end (), std::back_inserter (result), f);
-		return result;
+		template<typename T, template<typename U> class Container, typename F>
+		Container<T> FilterImpl (const Container<T>& c, F f, int, decltype (f (*c.begin ()))* = nullptr)
+		{
+			Container<T> result;
+			std::copy_if (c.begin (), c.end (), std::back_inserter (result), f);
+			return result;
+		}
+
+		template<typename T, template<typename U> class Container, typename F>
+		Container<T> FilterImpl (const Container<T>& c, F f, ...)
+		{
+			Container<T> result;
+			std::copy_if (c.begin (), c.end (), std::back_inserter (result), std::function<bool (T)> { f });
+			return result;
+		}
+	}
+
+	template<typename T, template<typename U> class Container, typename F>
+	Container<T> Filter (const Container<T>& c, F f)
+	{
+		return detail::FilterImpl (c, f, 0);
 	}
 
 	template<template<typename> class Container, typename T>
