@@ -70,6 +70,12 @@ namespace LMP
 		return map;
 	}
 
+	QStringList GetSubstGettersKeys ()
+	{
+		static const QStringList keys = GetSubstGetters ().keys ();
+		return keys;
+	}
+
 	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags flags)
 	{
 		const auto& getters = GetSubstGetters ();

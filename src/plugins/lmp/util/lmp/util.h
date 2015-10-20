@@ -53,6 +53,8 @@ namespace LMP
 
 	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
 
+	QStringList GetSubstGettersKeys ();
+
 	QString PerformSubstitutions (QString mask,
 			const MediaInfo& info, SubstitutionFlags flags = SFNone);
 }
