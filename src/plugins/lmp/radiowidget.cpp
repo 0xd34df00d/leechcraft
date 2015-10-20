@@ -156,7 +156,8 @@ namespace LMP
 		{
 		case Media::RadioType::CustomAddableStreams:
 		{
-			menu.addAction (tr ("Add an URL..."),
+			menu.addAction (iconsMgr->GetIcon ("list-add"),
+					tr ("Add an URL..."),
 					this,
 					SLOT (handleAddUrl ()));
 
