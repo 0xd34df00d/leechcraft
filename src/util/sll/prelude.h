@@ -310,6 +310,45 @@ namespace Util
 			return t ();
 		}
 	} const Apply {};
+
+	namespace detail
+	{
+		template<typename F>
+		struct Fst
+		{
+			F F_;
+
+			template<typename Pair>
+			auto operator() (const Pair& pair) -> decltype (Invoke (F_, pair.first))
+			{
+				return Invoke (F_, pair.first);
+			}
+		};
+
+		template<typename F>
+		struct Snd
+		{
+			F F_;
+
+			template<typename Pair>
+			auto operator() (const Pair& pair) -> decltype (Invoke (F_, pair.second))
+			{
+				return Invoke (F_, pair.second);
+			}
+		};
+	}
+
+	template<typename F>
+	detail::Fst<F> Fst (F f)
+	{
+		return { f };
+	}
+
+	template<typename F>
+	detail::Snd<F> Snd (F f)
+	{
+		return { f };
+	}
 #endif
 }
 }
