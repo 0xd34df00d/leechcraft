@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QtDebug>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -104,7 +105,7 @@ namespace Graffiti
 
 	void RenameDialog::accept ()
 	{
-		std::shared_ptr<void> guard (nullptr, [this] (void*) { QDialog::accept (); });
+		const auto guard = Util::MakeScopeGuard ([this] { QDialog::accept (); });
 
 		const auto& toRename = GetRenames ();
 		if (toRename.isEmpty ())
