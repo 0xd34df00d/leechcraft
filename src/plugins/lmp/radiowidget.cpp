@@ -174,7 +174,8 @@ namespace LMP
 
 		if (parentType == Media::RadioType::CustomAddableStreams)
 		{
-			menu.addAction (tr ("Remove this URL"),
+			menu.addAction (iconsMgr->GetIcon ("list-remove"),
+					tr ("Remove this URL"),
 					this,
 					SLOT (handleRemoveUrl ()));
 		}
