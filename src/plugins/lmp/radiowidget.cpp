@@ -144,8 +144,11 @@ namespace LMP
 		const auto type = idx.data (Media::RadioItemRole::ItemType).toInt ();
 		const auto parentType = idx.parent ().data (Media::RadioItemRole::ItemType).toInt ();
 
+		const auto iconsMgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+
 		QMenu menu;
-		menu.addAction (tr ("Refresh"),
+		menu.addAction (iconsMgr->GetIcon ("view-refresh"),
+				tr ("Refresh"),
 				this,
 				SLOT (handleRefresh ()));
 
