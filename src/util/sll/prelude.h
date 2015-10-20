@@ -268,6 +268,18 @@ namespace Util
 	}
 
 	const auto Apply = [] (const auto& t) { return t (); };
+
+	template<typename F>
+	auto Fst (F&& f)
+	{
+		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.first); };
+	}
+
+	template<typename F>
+	auto Snd (F&& f)
+	{
+		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.second); };
+	}
 #else
 	namespace detail
 	{
