@@ -43,7 +43,7 @@ namespace Graffiti
 	RenameDialog::RenameDialog (ILMPProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
 	, Proxy_ (proxy)
-	, Getters_ (proxy->GetUtilProxy ()->GetSubstGetters ())
+	, Getters_ (GetSubstGetters ())
 	, PreviewModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
@@ -126,7 +126,7 @@ namespace Graffiti
 		int row = 0;
 		for (auto& info : Infos_)
 		{
-			info.second = Proxy_->GetUtilProxy ()->PerformSubstitutions (pattern,
+			info.second = PerformSubstitutions (pattern,
 					info.first, SubstitutionFlag::SFSafeFilesystem);
 			if (!hasExtension)
 				info.second += '.' + QFileInfo (info.first.LocalPath_).suffix ();

@@ -36,6 +36,7 @@ set (COMMON_SRCS
 	mediainfo.cpp
 	util/lmp/gstutil.cpp
 	util/lmp/filtersettingsmanager.cpp
+	util/lmp/util.cpp
 	)
 add_library (leechcraft_lmp_common STATIC
 	${COMMON_SRCS}

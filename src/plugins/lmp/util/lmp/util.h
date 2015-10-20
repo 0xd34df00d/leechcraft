@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2012  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,58 +29,33 @@
 
 #pragma once
 
-#include <QObject>
-#include "interfaces/lmp/ilmpproxy.h"
-#include "interfaces/lmp/ilmputilproxy.h"
-#include "interfaces/lmp/ilmpguiproxy.h"
+#include <functional>
+#include <QString>
+#include <QFlags>
+
+template<typename, typename>
+class QMap;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class PlayerTab;
+	struct MediaInfo;
 
-	class LMPUtilProxy : public QObject
-					   , public ILMPUtilProxy
+	enum SubstitutionFlag
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPUtilProxy)
-	public:
-		QString FindAlbumArt (const QString&, bool) const;
-		QList<QFileInfo> RecIterateInfo (const QString&, bool, std::atomic<bool>*) const;
+		SFNone,
+		SFSafeFilesystem
 	};
+	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
 
-	class LMPGuiProxy : public QObject
-					  , public ILMPGuiProxy
-	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPGuiProxy)
+	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
 
-		PlayerTab *PlayerTab_ = nullptr;
-	public:
-		void SetPlayerTab (PlayerTab*);
+	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
 
-		void AddCurrentSongTab (const QString&, QWidget*) const;
-		void AddToolbarAction (QAction*) const;
-	};
-
-	class LMPProxy : public QObject
-				   , public ILMPProxy
-	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
-
-		LMPUtilProxy UtilProxy_;
-		LMPGuiProxy GuiProxy_;
-	public:
-		ILocalCollection* GetLocalCollection () const;
-		ITagResolver* GetTagResolver () const;
-		const ILMPUtilProxy* GetUtilProxy () const;
-		const ILMPGuiProxy* GetGuiProxy () const;
-		LMPGuiProxy* GetGuiProxy ();
-
-		void PreviewRelease (const QString& artist, const QString& release,
-				const QList<QPair<QString, int>>& tracks) const;
-	};
+	QString PerformSubstitutions (QString mask,
+			const MediaInfo& info, SubstitutionFlags flags = SFNone);
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
