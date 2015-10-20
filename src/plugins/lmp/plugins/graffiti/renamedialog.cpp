@@ -33,6 +33,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <util/sll/util.h>
+#include <util/lmp/util.h>
 
 namespace LeechCraft
 {
@@ -43,13 +44,12 @@ namespace Graffiti
 	RenameDialog::RenameDialog (ILMPProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
 	, Proxy_ (proxy)
-	, Getters_ (GetSubstGetters ())
 	, PreviewModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
 		const auto& helpText = tr ("The following variables are allowed in the pattern: %1.")
-				.arg (QStringList (Getters_.keys ()).join ("; "));
+				.arg (QStringList (GetSubstGetters ().keys ()).join ("; "));
 		Ui_.PatternDescLabel_->setText (helpText);
 
 		Ui_.Preview_->setModel (PreviewModel_);
