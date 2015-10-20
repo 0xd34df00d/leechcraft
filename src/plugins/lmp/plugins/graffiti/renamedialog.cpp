@@ -49,7 +49,7 @@ namespace Graffiti
 		Ui_.setupUi (this);
 
 		const auto& helpText = tr ("The following variables are allowed in the pattern: %1.")
-				.arg (QStringList (GetSubstGetters ().keys ()).join ("; "));
+				.arg (GetSubstGettersKeys ().join ("; "));
 		Ui_.PatternDescLabel_->setText (helpText);
 
 		Ui_.Preview_->setModel (PreviewModel_);
