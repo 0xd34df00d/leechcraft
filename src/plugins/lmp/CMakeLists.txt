@@ -125,6 +125,7 @@ set (SRCS
 	npstateupdater.cpp
 	nptooltiphook.cpp
 	previewcharacteristicinfo.cpp
+	radiotracksgrabdialog.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -175,6 +176,7 @@ set (FORMS
 	seekslider.ui
 	radiocustomdialog.ui
 	collectionwidget.ui
+	radiotracksgrabdialog.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui
