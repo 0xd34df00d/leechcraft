@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "radiotracksgrabdialog.h"
+#include <QStandardItemModel>
 #include <util/sll/prelude.h>
 #include "mediainfo.h"
 
@@ -42,8 +43,26 @@ namespace LMP
 
 	RadioTracksGrabDialog::RadioTracksGrabDialog (const QList<MediaInfo>& infos, QWidget *parent)
 	: QDialog { parent }
+	, NamesPreviewModel_ { new QStandardItemModel { this } }
 	{
+		NamesPreviewModel_->setHorizontalHeaderLabels ({ tr ("Artist"), tr ("Title"), tr ("File name") });
+		for (const auto& info : infos)
+		{
+			const QList<QStandardItem*> items
+			{
+				new QStandardItem { info.Artist_ },
+				new QStandardItem { info.Title_ },
+				new QStandardItem {}
+			};
+
+			for (auto item : items)
+				item->setEditable (false);
+
+			NamesPreviewModel_->appendRow (items);
+		}
+
 		Ui_.setupUi (this);
+		Ui_.NamesPreview_->setModel (NamesPreviewModel_);
 	}
 }
 }

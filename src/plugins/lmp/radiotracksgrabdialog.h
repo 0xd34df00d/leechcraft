@@ -32,6 +32,8 @@
 #include <QDialog>
 #include "ui_radiotracksgrabdialog.h"
 
+class QStandardItemModel;
+
 namespace Media
 {
 	struct AudioInfo;
@@ -48,6 +50,8 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::RadioTracksGrabDialog Ui_;
+
+		QStandardItemModel * const NamesPreviewModel_;
 	public:
 		RadioTracksGrabDialog (const QList<Media::AudioInfo>&, QWidget* = nullptr);
 		RadioTracksGrabDialog (const QList<MediaInfo>&, QWidget* = nullptr);
