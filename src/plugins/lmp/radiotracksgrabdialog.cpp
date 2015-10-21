@@ -28,12 +28,19 @@
  **********************************************************************/
 
 #include "radiotracksgrabdialog.h"
+#include <util/sll/prelude.h>
+#include "mediainfo.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	RadioTracksGrabDialog::RadioTracksGrabDialog (const QList<MediaInfo>&, QWidget *parent)
+	RadioTracksGrabDialog::RadioTracksGrabDialog (const QList<Media::AudioInfo>& infos, QWidget *parent)
+	: RadioTracksGrabDialog { Util::Map (infos, &MediaInfo::FromAudioInfo), parent }
+	{
+	}
+
+	RadioTracksGrabDialog::RadioTracksGrabDialog (const QList<MediaInfo>& infos, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);

@@ -32,6 +32,11 @@
 #include <QDialog>
 #include "ui_radiotracksgrabdialog.h"
 
+namespace Media
+{
+	struct AudioInfo;
+}
+
 namespace LeechCraft
 {
 namespace LMP
@@ -44,6 +49,7 @@ namespace LMP
 
 		Ui::RadioTracksGrabDialog Ui_;
 	public:
+		RadioTracksGrabDialog (const QList<Media::AudioInfo>&, QWidget* = nullptr);
 		RadioTracksGrabDialog (const QList<MediaInfo>&, QWidget* = nullptr);
 	};
 }
