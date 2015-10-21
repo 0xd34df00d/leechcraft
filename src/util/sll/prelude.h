@@ -270,13 +270,13 @@ namespace Util
 	const auto Apply = [] (const auto& t) { return t (); };
 
 	template<typename F>
-	auto Fst (F&& f)
+	auto First (F&& f)
 	{
 		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.first); };
 	}
 
 	template<typename F>
-	auto Snd (F&& f)
+	auto Second (F&& f)
 	{
 		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.second); };
 	}
@@ -339,13 +339,13 @@ namespace Util
 	}
 
 	template<typename F>
-	detail::Fst<F> Fst (F f)
+	detail::Fst<F> First (F f)
 	{
 		return { f };
 	}
 
 	template<typename F>
-	detail::Snd<F> Snd (F f)
+	detail::Snd<F> Second (F f)
 	{
 		return { f };
 	}
