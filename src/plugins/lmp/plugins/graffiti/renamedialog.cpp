@@ -87,18 +87,21 @@ namespace Graffiti
 		return result;
 	}
 
-	void RenameDialog::Rename (const QList<QPair<QString, QString>>& pairs)
+	namespace
 	{
-		for (const auto& pair : pairs)
+		void Rename (const QList<QPair<QString, QString>>& pairs)
 		{
-			const QFileInfo sourceInfo (pair.first);
-			auto sourceDir = sourceInfo.absoluteDir ();
-			if (!sourceDir.rename (sourceInfo.fileName (), pair.second))
-				qWarning () << Q_FUNC_INFO
-						<< "failed to rename"
-						<< sourceInfo.fileName ()
-						<< "to"
-						<< pair.second;
+			for (const auto& pair : pairs)
+			{
+				const QFileInfo sourceInfo (pair.first);
+				auto sourceDir = sourceInfo.absoluteDir ();
+				if (!sourceDir.rename (sourceInfo.fileName (), pair.second))
+					qWarning () << Q_FUNC_INFO
+							<< "failed to rename"
+							<< sourceInfo.fileName ()
+							<< "to"
+							<< pair.second;
+			}
 		}
 	}
 

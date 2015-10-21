@@ -61,7 +61,6 @@ namespace Graffiti
 		void SetInfos (const QList<MediaInfo>&);
 	private:
 		QList<QPair<QString, QString>> GetRenames () const;
-		void Rename (const QList<QPair<QString, QString>>&);
 	public slots:
 		void accept ();
 	private slots:
