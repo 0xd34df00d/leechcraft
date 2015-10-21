@@ -95,5 +95,28 @@ namespace LMP
 
 		return mask;
 	}
+
+	QStringList PerformSubstitutions (const QString& pattern,
+			const QList<MediaInfo>& infos, const std::function<void (int, QString)>& setter)
+	{
+		QStringList names;
+
+		const bool hasExtension = pattern.contains ('.');
+
+		int row = 0;
+		for (const auto& info : infos)
+		{
+			auto name = PerformSubstitutions (pattern,
+					info, SubstitutionFlag::SFSafeFilesystem);
+			if (!hasExtension)
+				name += '.' + QFileInfo (info.LocalPath_).suffix ();
+
+			names << name;
+
+			setter (row++, name);
+		}
+
+		return names;
+	}
 }
 }

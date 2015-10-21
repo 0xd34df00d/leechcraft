@@ -120,32 +120,9 @@ namespace Graffiti
 			Rename (toRename);
 	}
 
-	QStringList PerformViewSubstitutions (const QString& pattern,
-			const QList<MediaInfo>& infos, const std::function<void (int, QString)>& setter)
-	{
-		QStringList names;
-
-		const bool hasExtension = pattern.contains ('.');
-
-		int row = 0;
-		for (const auto& info : infos)
-		{
-			auto name = PerformSubstitutions (pattern,
-					info, SubstitutionFlag::SFSafeFilesystem);
-			if (!hasExtension)
-				name += '.' + QFileInfo (info.LocalPath_).suffix ();
-
-			names << name;
-
-			setter (row++, name);
-		}
-
-		return names;
-	}
-
 	void RenameDialog::updatePreview ()
 	{
-		PerformViewSubstitutions (Ui_.Pattern_->currentText (), Infos_,
+		PerformSubstitutions (Ui_.Pattern_->currentText (), Infos_,
 				[this] (int row, const QString& name)
 					{ PreviewModel_->item (row, 1)->setText (name); });
 	}
