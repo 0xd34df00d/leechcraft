@@ -30,6 +30,8 @@
 #include "radiotracksgrabdialog.h"
 #include <QStandardItemModel>
 #include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
+#include <util/lmp/util.h>
 #include "mediainfo.h"
 
 namespace LeechCraft
@@ -63,6 +65,19 @@ namespace LMP
 
 		Ui_.setupUi (this);
 		Ui_.NamesPreview_->setModel (NamesPreviewModel_);
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, infos]
+			{
+				Names_ = PerformSubstitutions (Ui_.NameMask_->text (), infos,
+						[this] (int row, const QString& name)
+							{ NamesPreviewModel_->item (row, 2)->setText (name); });
+			},
+			Ui_.NameMask_,
+			SIGNAL (textChanged ()),
+			this
+		};
 	}
 }
 }

@@ -52,6 +52,7 @@ namespace LMP
 		Ui::RadioTracksGrabDialog Ui_;
 
 		QStandardItemModel * const NamesPreviewModel_;
+		QStringList Names_;
 	public:
 		RadioTracksGrabDialog (const QList<Media::AudioInfo>&, QWidget* = nullptr);
 		RadioTracksGrabDialog (const QList<MediaInfo>&, QWidget* = nullptr);
