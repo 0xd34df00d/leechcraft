@@ -59,7 +59,9 @@ namespace LMP
 			const MediaInfo& info, SubstitutionFlags flags = SFNone);
 
 	QStringList PerformSubstitutions (const QString& mask,
-			const QList<MediaInfo>& infos, const std::function<void (int, QString)>& setter);
+			const QList<MediaInfo>& infos,
+			const std::function<void (int, QString)>& setter,
+			SubstitutionFlags flags = SFSafeFilesystem);
 }
 }
 

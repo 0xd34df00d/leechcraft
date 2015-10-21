@@ -97,7 +97,9 @@ namespace LMP
 	}
 
 	QStringList PerformSubstitutions (const QString& pattern,
-			const QList<MediaInfo>& infos, const std::function<void (int, QString)>& setter)
+			const QList<MediaInfo>& infos,
+			const std::function<void (int, QString)>& setter,
+			SubstitutionFlags flags)
 	{
 		QStringList names;
 
@@ -106,10 +108,9 @@ namespace LMP
 		int row = 0;
 		for (const auto& info : infos)
 		{
-			auto name = PerformSubstitutions (pattern,
-					info, SubstitutionFlag::SFSafeFilesystem);
+			auto name = PerformSubstitutions (pattern, info, flags);
 			if (!hasExtension)
-				name += '.' + QFileInfo (info.LocalPath_).suffix ();
+				name += '.' + QFileInfo { info.LocalPath_ }.suffix ();
 
 			names << name;
 
