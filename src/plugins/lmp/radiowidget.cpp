@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
