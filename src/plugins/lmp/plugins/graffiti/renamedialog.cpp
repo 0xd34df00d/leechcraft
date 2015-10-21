@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <util/sll/util.h>
 #include <util/lmp/util.h>
 
@@ -62,9 +63,7 @@ namespace Graffiti
 
 	void RenameDialog::SetInfos (const QList<MediaInfo>& infos)
 	{
-		Infos_.clear ();
-		for (const auto& info : infos)
-			Infos_.push_back ({ info, QFileInfo (info.LocalPath_).fileName () });
+		Infos_ = infos;
 
 		PreviewModel_->clear ();
 		PreviewModel_->setHorizontalHeaderLabels ({ tr ("Source name"), tr ("Target name") });
@@ -72,7 +71,7 @@ namespace Graffiti
 		for (const auto& info : Infos_)
 		{
 			auto sourceItem = new QStandardItem;
-			sourceItem->setText (info.second);
+			sourceItem->setText (QFileInfo { info.LocalPath_ }.fileName ());
 			PreviewModel_->appendRow ({ sourceItem, new QStandardItem });
 		}
 
@@ -82,9 +81,9 @@ namespace Graffiti
 	QList<QPair<QString, QString>> RenameDialog::GetRenames () const
 	{
 		QList<QPair<QString, QString>> result;
-		for (const auto& info : Infos_)
-			if (QFileInfo (info.first.LocalPath_).fileName () != info.second)
-				result.push_back ({ info.first.LocalPath_, info.second });
+		for (const auto& pair : Util::Zip (Infos_, Names_))
+			if (QFileInfo (pair.first.LocalPath_).fileName () != pair.second)
+				result.push_back ({ pair.first.LocalPath_, pair.second });
 		return result;
 	}
 
@@ -124,15 +123,19 @@ namespace Graffiti
 		const bool hasExtension = pattern.contains ('.');
 
 		int row = 0;
-		for (auto& info : Infos_)
+
+		Names_.clear ();
+		for (const auto& info : Infos_)
 		{
-			info.second = PerformSubstitutions (pattern,
-					info.first, SubstitutionFlag::SFSafeFilesystem);
+			auto name = PerformSubstitutions (pattern,
+					info, SubstitutionFlag::SFSafeFilesystem);
 			if (!hasExtension)
-				info.second += '.' + QFileInfo (info.first.LocalPath_).suffix ();
+				name += '.' + QFileInfo (info.LocalPath_).suffix ();
 
 			auto item = PreviewModel_->item (row++, 1);
-			item->setText (info.second);
+			item->setText (name);
+
+			Names_ << name;
 		}
 	}
 }
