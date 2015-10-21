@@ -29,6 +29,7 @@
 
 #include "util.h"
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/lmp/mediainfo.h>
 
 namespace LeechCraft
@@ -78,13 +79,12 @@ namespace LMP
 
 	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags flags)
 	{
-		const auto& getters = GetSubstGetters ();
-		for (const auto& key : getters.keys ())
+		for (const auto& pair : Util::Stlize (GetSubstGetters ()))
 		{
-			auto value = getters [key] (info);
+			auto value = pair.second (info);
 			if (flags & SubstitutionFlag::SFSafeFilesystem)
 				value.replace ('/', '_');
-			mask.replace (key, value);
+			mask.replace (pair.first, value);
 		}
 
 		if (flags & SubstitutionFlag::SFSafeFilesystem)
