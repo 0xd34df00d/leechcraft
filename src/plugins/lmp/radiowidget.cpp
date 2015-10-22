@@ -31,13 +31,16 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QInputDialog>
+#include <QDir>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
+#include <util/xpc/util.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
@@ -145,6 +148,18 @@ namespace LMP
 		void PerformDownload (const QString& to,
 				const QStringList& filenames, const QList<QUrl>& urls)
 		{
+			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+
+			if (!QFile::exists (to))
+				QDir::root ().mkpath (to);
+
+			for (const auto& pair : Util::Zip (urls, filenames))
+			{
+				const auto& e = Util::MakeEntity (pair.first,
+						to + '/' + pair.second,
+						OnlyDownload | AutoAccept | FromUserInitiated);
+				iem->HandleEntity (e);
+			}
 		}
 	}
 
