@@ -58,6 +58,8 @@ namespace LMP
 		RadioTracksGrabDialog (const QList<MediaInfo>&, QWidget* = nullptr);
 
 		const QStringList& GetNames () const;
+	private slots:
+		void on_Browse__released ();
 	};
 }
 }

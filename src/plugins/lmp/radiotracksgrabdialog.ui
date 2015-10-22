@@ -27,7 +27,7 @@
       <widget class="QLineEdit" name="Destination_"/>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton">
+      <widget class="QPushButton" name="Browse_">
        <property name="text">
         <string>Browse...</string>
        </property>

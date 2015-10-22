@@ -29,6 +29,7 @@
 
 #include "radiotracksgrabdialog.h"
 #include <QStandardItemModel>
+#include <QFileDialog>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
 #include <util/lmp/util.h>
@@ -87,6 +88,16 @@ namespace LMP
 	const QStringList& RadioTracksGrabDialog::GetNames () const
 	{
 		return Names_;
+	}
+
+	void RadioTracksGrabDialog::on_Browse__released ()
+	{
+		const auto& path = QFileDialog::getExistingDirectory (this,
+				tr ("Select tracks save directory"), QDir::homePath ());
+		if (path.isEmpty ())
+			return;
+
+		Ui_.Destination_->setText (path);
 	}
 }
 }
