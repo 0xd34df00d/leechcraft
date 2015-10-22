@@ -75,7 +75,7 @@ namespace LMP
 							{ NamesPreviewModel_->item (row, 2)->setText (name); });
 			},
 			Ui_.NameMask_,
-			SIGNAL (textChanged ()),
+			SIGNAL (textChanged (QString)),
 			this
 		};
 	}
