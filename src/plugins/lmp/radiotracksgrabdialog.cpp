@@ -83,5 +83,10 @@ namespace LMP
 			this
 		};
 	}
+
+	const QStringList& RadioTracksGrabDialog::GetNames () const
+	{
+		return Names_;
+	}
 }
 }
