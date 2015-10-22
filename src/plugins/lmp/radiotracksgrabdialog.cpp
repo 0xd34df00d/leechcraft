@@ -70,7 +70,11 @@ namespace LMP
 		{
 			[this, infos]
 			{
-				Names_ = PerformSubstitutions (Ui_.NameMask_->text (), infos,
+				auto patternText = Ui_.NameMask_->text ();
+				if (!patternText.endsWith (".mp3", Qt::CaseInsensitive))
+					patternText += ".mp3";
+
+				Names_ = PerformSubstitutions (patternText, infos,
 						[this] (int row, const QString& name)
 							{ NamesPreviewModel_->item (row, 2)->setText (name); });
 			},
