@@ -33,6 +33,9 @@
 #include <QInputDialog>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
@@ -41,6 +44,7 @@
 #include "radiomanager.h"
 #include "engine/sourceobject.h"
 #include "radiocustomdialog.h"
+#include "radiotracksgrabdialog.h"
 
 namespace LeechCraft
 {
@@ -134,6 +138,44 @@ namespace LMP
 		const auto& unmapped = Ui_.StationsView_->currentIndex ();
 		const auto& index = StationsProxy_->mapToSource (unmapped);
 		Core::Instance ().GetRadioManager ()->RemoveUrl (index);
+	}
+
+	namespace
+	{
+		void PerformDownload (const QString& to,
+				const QStringList& filenames, const QList<QUrl>& urls)
+		{
+		}
+	}
+
+	void RadioWidget::handleDownloadTracks ()
+	{
+		const auto& indices = Util::Map (Ui_.StationsView_->selectionModel ()->selectedRows (),
+				Util::BindMemFn (&QAbstractProxyModel::mapToSource, StationsProxy_));
+
+		const auto radioMgr = Core::Instance ().GetRadioManager ();
+		const auto& urlInfos = Util::Filter (radioMgr->GetSources (indices),
+				[] (const Media::AudioInfo& info)
+					{ return info.Other_ ["URL"].toUrl ().isValid (); });
+
+		const auto dia = new RadioTracksGrabDialog { urlInfos, this };
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[dia, urlInfos]
+			{
+				PerformDownload (dia->GetDestination (),
+						dia->GetNames (),
+						Util::Map (urlInfos,
+								[] (const Media::AudioInfo& info)
+									{ return info.Other_ ["URL"].toUrl (); }));
+			},
+			dia,
+			SIGNAL (accepted ()),
+			dia
+		};
 	}
 
 	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)

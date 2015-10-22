@@ -61,6 +61,7 @@ namespace LMP
 		void handleAddUrl ();
 		void handleAddCurrentUrl ();
 		void handleRemoveUrl ();
+		void handleDownloadTracks ();
 
 		void on_StationsView__customContextMenuRequested (const QPoint&);
 		void on_StationsView__doubleClicked (const QModelIndex&);
