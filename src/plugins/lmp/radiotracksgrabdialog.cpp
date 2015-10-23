@@ -112,6 +112,25 @@ namespace LMP
 		return Ui_.Destination_->text ();
 	}
 
+	bool RadioTracksGrabDialog::IsComplete () const
+	{
+		QFileInfo toInfo { GetDestination () };
+		if (!toInfo.exists () || !toInfo.isDir () || !toInfo.isWritable ())
+			return false;
+
+		if (Names_.isEmpty ())
+			return false;
+
+		if (std::any_of (Names_.begin (), Names_.end (), [] (const QString& name) { return name.isEmpty (); }))
+			return false;
+
+		auto uniqueNames = Names_;
+		if (uniqueNames.removeDuplicates ())
+			return false;
+
+		return true;
+	}
+
 	void RadioTracksGrabDialog::on_Browse__released ()
 	{
 		const auto& path = QFileDialog::getExistingDirectory (this,

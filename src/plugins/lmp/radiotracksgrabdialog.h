@@ -59,6 +59,8 @@ namespace LMP
 
 		const QStringList& GetNames () const;
 		QString GetDestination () const;
+	private:
+		bool IsComplete () const;
 	private slots:
 		void on_Browse__released ();
 	};
