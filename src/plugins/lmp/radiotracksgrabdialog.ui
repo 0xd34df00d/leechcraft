@@ -46,7 +46,7 @@
     <widget class="QLineEdit" name="NameMask_"/>
    </item>
    <item row="3" column="1">
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="ButtonBox_">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -63,7 +63,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>accepted()</signal>
    <receiver>RadioTracksGrabDialog</receiver>
    <slot>accept()</slot>
@@ -79,7 +79,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>ButtonBox_</sender>
    <signal>rejected()</signal>
    <receiver>RadioTracksGrabDialog</receiver>
    <slot>reject()</slot>
