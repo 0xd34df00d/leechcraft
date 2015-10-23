@@ -85,9 +85,7 @@ namespace LMP
 					.Property ("LastTracksGrabPath", defaultPath).toString ());
 		Ui_.NamesPreview_->setModel (NamesPreviewModel_);
 
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this, infos]
+		const auto subster = [this, infos]
 			{
 				auto patternText = Ui_.NameMask_->text ();
 				if (!patternText.endsWith (".mp3", Qt::CaseInsensitive))
@@ -96,11 +94,16 @@ namespace LMP
 				Names_ = PerformSubstitutions (patternText, infos,
 						[this] (int row, const QString& name)
 							{ NamesPreviewModel_->item (row, 2)->setText (name); });
-			},
+			};
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			subster,
 			Ui_.NameMask_,
 			SIGNAL (textChanged (QString)),
 			this
 		};
+		subster ();
 
 		connect (Ui_.Destination_,
 				SIGNAL (textChanged (QString)),
