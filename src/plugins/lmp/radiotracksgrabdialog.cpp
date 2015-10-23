@@ -90,6 +90,11 @@ namespace LMP
 		return Names_;
 	}
 
+	QString RadioTracksGrabDialog::GetDestination () const
+	{
+		return Ui_.Destination_->text ();
+	}
+
 	void RadioTracksGrabDialog::on_Browse__released ()
 	{
 		const auto& path = QFileDialog::getExistingDirectory (this,
