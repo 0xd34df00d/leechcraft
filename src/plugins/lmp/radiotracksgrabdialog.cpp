@@ -34,6 +34,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/lmp/util.h>
 #include "mediainfo.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -98,9 +99,12 @@ namespace LMP
 	void RadioTracksGrabDialog::on_Browse__released ()
 	{
 		const auto& path = QFileDialog::getExistingDirectory (this,
-				tr ("Select tracks save directory"), QDir::homePath ());
+				tr ("Select tracks save directory"),
+				Ui_.Destination_->text ());
 		if (path.isEmpty ())
 			return;
+
+		XmlSettingsManager::Instance ().setProperty ("LastTracksGrabPath", path);
 
 		Ui_.Destination_->setText (path);
 	}
