@@ -63,6 +63,7 @@ namespace LMP
 		bool IsComplete () const;
 	private slots:
 		void on_Browse__released ();
+		void checkCompleteness ();
 	};
 }
 }

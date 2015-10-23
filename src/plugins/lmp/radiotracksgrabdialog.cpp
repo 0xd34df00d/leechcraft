@@ -100,6 +100,16 @@ namespace LMP
 			SIGNAL (textChanged (QString)),
 			this
 		};
+
+		connect (Ui_.Destination_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (checkCompleteness ()));
+		connect (Ui_.NameMask_,
+				SIGNAL (textChanged (QString)),
+				this,
+				SLOT (checkCompleteness ()));
+		checkCompleteness ();
 	}
 
 	const QStringList& RadioTracksGrabDialog::GetNames () const
@@ -142,6 +152,11 @@ namespace LMP
 		XmlSettingsManager::Instance ().setProperty ("LastTracksGrabPath", path);
 
 		Ui_.Destination_->setText (path);
+	}
+
+	void RadioTracksGrabDialog::checkCompleteness ()
+	{
+		Ui_.ButtonBox_->button (QDialogButtonBox::Ok)->setEnabled (IsComplete ());
 	}
 }
 }
