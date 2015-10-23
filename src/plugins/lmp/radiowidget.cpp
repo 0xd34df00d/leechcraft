@@ -146,7 +146,7 @@ namespace LMP
 	namespace
 	{
 		void PerformDownload (const QString& to,
-				const QStringList& filenames, const QList<QUrl>& urls)
+				const QList<QString>& filenames, const QList<QUrl>& urls)
 		{
 			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
 
