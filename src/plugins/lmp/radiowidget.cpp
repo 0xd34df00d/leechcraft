@@ -226,6 +226,15 @@ namespace LMP
 						SLOT (handleAddCurrentUrl ()));
 			break;
 		}
+		case Media::RadioType::TracksList:
+		case Media::RadioType::TracksRoot:
+		case Media::RadioType::SingleTrack:
+		{
+			menu.addAction (tr ("Download tracks..."),
+					this,
+					SLOT (handleDownloadTracks ()));
+			break;
+		}
 		default:
 			break;
 		}
