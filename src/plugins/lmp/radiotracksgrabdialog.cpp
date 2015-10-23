@@ -30,6 +30,7 @@
 #include "radiotracksgrabdialog.h"
 #include <QStandardItemModel>
 #include <QFileDialog>
+#include <QFileInfo>
 
 #if QT_VERSION >= 0x050000
 #include <QStandardPaths>
