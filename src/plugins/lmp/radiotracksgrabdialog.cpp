@@ -30,6 +30,13 @@
 #include "radiotracksgrabdialog.h"
 #include <QStandardItemModel>
 #include <QFileDialog>
+
+#if QT_VERSION >= 0x050000
+#include <QStandardPaths>
+#else
+#include <QDesktopServices>
+#endif
+
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
 #include <util/lmp/util.h>
@@ -66,6 +73,15 @@ namespace LMP
 		}
 
 		Ui_.setupUi (this);
+
+#if QT_VERSION >= 0x050000
+		const auto& defaultPath = QStandardPaths::writableLocation (QStandardPaths::DownloadLocation);
+#else
+		const auto& defaultPath = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+#endif
+
+		Ui_.Destination_->setText (XmlSettingsManager::Instance ()
+					.Property ("LastTracksGrabPath", defaultPath).toString ());
 		Ui_.NamesPreview_->setModel (NamesPreviewModel_);
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
