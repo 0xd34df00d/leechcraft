@@ -158,7 +158,8 @@ namespace LMP
 		if (Names_.isEmpty ())
 			return false;
 
-		if (std::any_of (Names_.begin (), Names_.end (), [] (const QString& name) { return name.isEmpty (); }))
+		if (std::any_of (Names_.begin (), Names_.end (),
+				[] (const QString& name) { return name.isEmpty (); }))
 			return false;
 
 		auto uniqueNames = Names_;
