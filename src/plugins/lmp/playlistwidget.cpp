@@ -1157,6 +1157,17 @@ namespace LMP
 		Player_->Enqueue ({ urlObj });
 	}
 
+	bool PlaylistWidget::updateDownloadAction ()
+	{
+		const auto& selected = GetSelected ();
+		const bool hasRemote = std::any_of (selected.begin (), selected.end (),
+				[] (const AudioSource& src) { return src.IsRemote (); });
+
+		ActionDownloadTrack_->setEnabled (hasRemote);
+
+		return hasRemote;
+	}
+
 	void PlaylistWidget::updateStatsLabel ()
 	{
 		const int tracksCount = Player_->GetQueue ().size ();
