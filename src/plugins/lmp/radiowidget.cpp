@@ -31,6 +31,9 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <QDir>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
@@ -148,11 +151,29 @@ namespace LMP
 		void PerformDownload (QString to,
 				const QList<QString>& filenames, const QList<QUrl>& urls, QWidget *parent)
 		{
-			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
-
 			if (!QFile::exists (to))
 				QDir::root ().mkpath (to);
 
+			QFileInfo toInfo { to };
+			while (!toInfo.exists () || !toInfo.isDir () || !toInfo.isWritable ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "bad directory"
+						<< to;
+				if (QMessageBox::question (parent,
+							RadioWidget::tr ("Invalid directory"),
+							RadioWidget::tr ("The audio tracks cannot be downloaded to %1. "
+								"Do you wish to choose another directory?")
+								.arg ("<em>" + to + "</em>"),
+							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
+				to = RadioTracksGrabDialog::SelectDestination (to, parent);
+				if (to.isEmpty ())
+					return;
+			}
+
+			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
 			for (const auto& pair : Util::Zip (urls, filenames))
 			{
 				const auto& e = Util::MakeEntity (pair.first,
