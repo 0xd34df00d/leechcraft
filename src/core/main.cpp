@@ -36,7 +36,7 @@ int main (int argc, char **argv)
 	int author = 0xd34df00d;
 	Q_UNUSED (author);
 
-#if defined(Q_OS_MAC) && (QT_VERSION < 0x050000)
+#if defined(Q_OS_MAC) && (QT_VERSION < 0x040806)
 	// https://bugreports.qt-project.org/browse/QTBUG-32789
 	if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_9)
 		QFont::insertSubstitution (".Lucida Grande UI", "Lucida Grande");
