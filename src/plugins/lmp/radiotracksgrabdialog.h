@@ -59,6 +59,8 @@ namespace LMP
 
 		const QStringList& GetNames () const;
 		QString GetDestination () const;
+
+		static QString SelectDestination (QString dir = {}, QWidget *parent = nullptr);
 	private:
 		bool IsComplete () const;
 	private slots:

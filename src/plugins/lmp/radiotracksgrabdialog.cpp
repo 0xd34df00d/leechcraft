@@ -133,6 +133,22 @@ namespace LMP
 		return Ui_.Destination_->text ();
 	}
 
+	QString RadioTracksGrabDialog::SelectDestination (QString dir, QWidget *parent)
+	{
+		if (dir.isEmpty ())
+			dir = XmlSettingsManager::Instance ()
+					.Property ("LastTracksGrabPath", GetDefaultPath ()).toString ();
+
+		const auto& path = QFileDialog::getExistingDirectory (parent,
+				tr ("Select tracks save directory"),
+				dir);
+
+		if (!path.isEmpty ())
+			XmlSettingsManager::Instance ().setProperty ("LastTracksGrabPath", path);
+
+		return path;
+	}
+
 	bool RadioTracksGrabDialog::IsComplete () const
 	{
 		QFileInfo toInfo { GetDestination () };
@@ -154,13 +170,9 @@ namespace LMP
 
 	void RadioTracksGrabDialog::on_Browse__released ()
 	{
-		const auto& path = QFileDialog::getExistingDirectory (this,
-				tr ("Select tracks save directory"),
-				Ui_.Destination_->text ());
+		const auto& path = SelectDestination (Ui_.Destination_->text (), this);
 		if (path.isEmpty ())
 			return;
-
-		XmlSettingsManager::Instance ().setProperty ("LastTracksGrabPath", path);
 
 		Ui_.Destination_->setText (path);
 	}
