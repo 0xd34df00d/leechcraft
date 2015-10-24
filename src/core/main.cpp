@@ -47,8 +47,6 @@ int main (int argc, char **argv)
 #endif
 
 	LeechCraft::Application app (argc, argv);
-	app.Continue ();
-
 	return app.exec ();
 }
 
