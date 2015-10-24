@@ -245,6 +245,7 @@ namespace LMP
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 
+		InitCommonActions ();
 		InitViewActions ();
 		InitToolbarActions ();
 
@@ -280,6 +281,16 @@ namespace LMP
 				SIGNAL (shouldClearFiltering ()),
 				Ui_.SearchPlaylist_,
 				SLOT (clear ()));
+	}
+
+	void PlaylistWidget::InitCommonActions ()
+	{
+		ActionDownloadTrack_ = new QAction (tr ("Download..."), this);
+		ActionDownloadTrack_->setProperty ("ActionIcon", "download");
+		connect (ActionDownloadTrack_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDownload ()));
 	}
 
 	void PlaylistWidget::InitToolbarActions ()

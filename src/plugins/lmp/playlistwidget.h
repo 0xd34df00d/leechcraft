@@ -58,6 +58,8 @@ namespace LMP
 
 		Player *Player_ = nullptr;
 
+		QAction *ActionDownloadTrack_ = nullptr;
+
 		QAction *ActionRemoveSelected_ = nullptr;
 
 		QAction *ActionStopAfterSelected_ = nullptr;
@@ -87,6 +89,7 @@ namespace LMP
 
 		void SetPlayer (Player*);
 	private:
+		void InitCommonActions ();
 		void InitToolbarActions ();
 		void SetPlayModeButton ();
 		void SetSortOrderButton ();
