@@ -622,7 +622,10 @@ namespace LMP
 
 	QList<AudioSource> PlaylistWidget::GetSelected () const
 	{
-		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		auto selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		if (selected.isEmpty ())
+			selected << Ui_.Playlist_->currentIndex ();
+
 		QList<AudioSource> sources;
 		Q_FOREACH (const auto& index, selected)
 			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
