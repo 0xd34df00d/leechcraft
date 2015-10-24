@@ -39,6 +39,6 @@ install (FILES xtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_xtazy Core)
 
-if (NOT WIN32)
+if (NOT WIN32 AND NOT APPLE)
 	FindQtLibs (leechcraft_xtazy DBus)
 endif ()
