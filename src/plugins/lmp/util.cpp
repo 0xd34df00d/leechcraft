@@ -34,12 +34,20 @@
 #include <QPixmap>
 #include <QApplication>
 #include <QLabel>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QFileInfo>
 #include <util/util.h>
 #include <util/gui/util.h>
+#include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
+#include <util/xpc/util.h>
 #include <util/lmp/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "localcollection.h"
 #include "xmlsettingsmanager.h"
+#include "radiotracksgrabdialog.h"
 
 namespace LeechCraft
 {
@@ -253,6 +261,67 @@ namespace LMP
 			return defLocale.toString (datetime, "dddd");
 		else
 			return defLocale.toString (datetime.time ());
+	}
+
+	namespace
+	{
+		void PerformDownload (QString to,
+				const QList<QString>& filenames, const QList<QUrl>& urls, QWidget *parent)
+		{
+			if (!QFile::exists (to))
+				QDir::root ().mkpath (to);
+
+			QFileInfo toInfo { to };
+			while (!toInfo.exists () || !toInfo.isDir () || !toInfo.isWritable ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "bad directory"
+						<< to;
+				if (QMessageBox::question (parent,
+							QObject::tr ("Invalid directory"),
+							QObject::tr ("The audio tracks cannot be downloaded to %1. "
+								"Do you wish to choose another directory?")
+								.arg ("<em>" + to + "</em>"),
+							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
+				to = RadioTracksGrabDialog::SelectDestination (to, parent);
+				if (to.isEmpty ())
+					return;
+			}
+
+			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+			for (const auto& pair : Util::Zip (urls, filenames))
+			{
+				const auto& e = Util::MakeEntity (pair.first,
+						to + '/' + pair.second,
+						OnlyDownload | AutoAccept | FromUserInitiated);
+				iem->HandleEntity (e);
+			}
+		}
+	}
+
+	void GrabTracks (const QList<Media::AudioInfo>& infos, QWidget* parent)
+	{
+		const auto dia = new RadioTracksGrabDialog { infos, parent };
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[parent, dia, infos]
+			{
+				PerformDownload (dia->GetDestination (),
+						dia->GetNames (),
+						Util::Map (infos,
+								[] (const Media::AudioInfo& info)
+									{ return info.Other_ ["URL"].toUrl (); }),
+						parent);
+			},
+			dia,
+			SIGNAL (accepted ()),
+			dia
+		};
 	}
 }
 }

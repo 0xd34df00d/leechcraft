@@ -80,5 +80,7 @@ namespace LMP
 	QPair<QString, QColor> GetRuleSymbol (const Entity&);
 
 	QString FormatDateTime (const QDateTime& datetime);
+
+	void GrabTracks (const QList<Media::AudioInfo>& infos, QWidget *parent = nullptr);
 }
 }

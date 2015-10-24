@@ -31,26 +31,20 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QInputDialog>
-#include <QMessageBox>
-#include <QFileDialog>
-#include <QFileInfo>
 #include <QDir>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
-#include <util/sll/slotclosure.h>
-#include <util/xpc/util.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/core/iiconthememanager.h>
-#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
 #include "radiomanager.h"
 #include "engine/sourceobject.h"
 #include "radiocustomdialog.h"
-#include "radiotracksgrabdialog.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -146,44 +140,6 @@ namespace LMP
 		Core::Instance ().GetRadioManager ()->RemoveUrl (index);
 	}
 
-	namespace
-	{
-		void PerformDownload (QString to,
-				const QList<QString>& filenames, const QList<QUrl>& urls, QWidget *parent)
-		{
-			if (!QFile::exists (to))
-				QDir::root ().mkpath (to);
-
-			QFileInfo toInfo { to };
-			while (!toInfo.exists () || !toInfo.isDir () || !toInfo.isWritable ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "bad directory"
-						<< to;
-				if (QMessageBox::question (parent,
-							RadioWidget::tr ("Invalid directory"),
-							RadioWidget::tr ("The audio tracks cannot be downloaded to %1. "
-								"Do you wish to choose another directory?")
-								.arg ("<em>" + to + "</em>"),
-							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-					return;
-
-				to = RadioTracksGrabDialog::SelectDestination (to, parent);
-				if (to.isEmpty ())
-					return;
-			}
-
-			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
-			for (const auto& pair : Util::Zip (urls, filenames))
-			{
-				const auto& e = Util::MakeEntity (pair.first,
-						to + '/' + pair.second,
-						OnlyDownload | AutoAccept | FromUserInitiated);
-				iem->HandleEntity (e);
-			}
-		}
-	}
-
 	void RadioWidget::handleDownloadTracks ()
 	{
 		const auto& indices = Util::Map (Ui_.StationsView_->selectionModel ()->selectedRows (),
@@ -194,25 +150,7 @@ namespace LMP
 				[] (const Media::AudioInfo& info)
 					{ return info.Other_ ["URL"].toUrl ().isValid (); });
 
-		const auto dia = new RadioTracksGrabDialog { urlInfos, this };
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, dia, urlInfos]
-			{
-				PerformDownload (dia->GetDestination (),
-						dia->GetNames (),
-						Util::Map (urlInfos,
-								[] (const Media::AudioInfo& info)
-									{ return info.Other_ ["URL"].toUrl (); }),
-						this);
-			},
-			dia,
-			SIGNAL (accepted ()),
-			dia
-		};
+		GrabTracks (urlInfos, this);
 	}
 
 	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
