@@ -183,8 +183,9 @@ namespace LMP
 
 		MediaInfo GetCurrentMediaInfo () const;
 		QString GetCurrentAAPath () const;
-	private:
+
 		MediaInfo GetMediaInfo (const AudioSource&) const;
+	private:
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);
 
