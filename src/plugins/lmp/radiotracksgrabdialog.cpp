@@ -48,6 +48,18 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	namespace
+	{
+		QString GetDefaultPath ()
+		{
+#if QT_VERSION >= 0x050000
+			return QStandardPaths::writableLocation (QStandardPaths::DownloadLocation);
+#else
+			return QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+#endif
+		}
+	}
+
 	RadioTracksGrabDialog::RadioTracksGrabDialog (const QList<Media::AudioInfo>& infos, QWidget *parent)
 	: RadioTracksGrabDialog { Util::Map (infos, &MediaInfo::FromAudioInfo), parent }
 	{
@@ -75,14 +87,9 @@ namespace LMP
 
 		Ui_.setupUi (this);
 
-#if QT_VERSION >= 0x050000
-		const auto& defaultPath = QStandardPaths::writableLocation (QStandardPaths::DownloadLocation);
-#else
-		const auto& defaultPath = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
-#endif
 
 		Ui_.Destination_->setText (XmlSettingsManager::Instance ()
-					.Property ("LastTracksGrabPath", defaultPath).toString ());
+					.Property ("LastTracksGrabPath", GetDefaultPath ()).toString ());
 		Ui_.NamesPreview_->setModel (NamesPreviewModel_);
 
 		const auto subster = [this, infos]
