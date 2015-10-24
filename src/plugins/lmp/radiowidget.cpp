@@ -145,8 +145,8 @@ namespace LMP
 
 	namespace
 	{
-		void PerformDownload (const QString& to,
-				const QList<QString>& filenames, const QList<QUrl>& urls)
+		void PerformDownload (QString to,
+				const QList<QString>& filenames, const QList<QUrl>& urls, QWidget *parent)
 		{
 			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
 
@@ -179,13 +179,14 @@ namespace LMP
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[dia, urlInfos]
+			[this, dia, urlInfos]
 			{
 				PerformDownload (dia->GetDestination (),
 						dia->GetNames (),
 						Util::Map (urlInfos,
 								[] (const Media::AudioInfo& info)
-									{ return info.Other_ ["URL"].toUrl (); }));
+									{ return info.Other_ ["URL"].toUrl (); }),
+						this);
 			},
 			dia,
 			SIGNAL (accepted ()),
