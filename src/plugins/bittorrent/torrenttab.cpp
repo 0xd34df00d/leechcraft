@@ -52,6 +52,7 @@
 #include "movetorrentfiles.h"
 #include "tabviewproxymodel.h"
 #include "addmagnetdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -672,23 +673,47 @@ namespace BitTorrent
 
 	void TorrentTab::handleMoveFilesTriggered ()
 	{
-		const int current = GetCurrentTorrent ();
-		QString oldDir = Core::Instance ()->GetTorrentDirectory (current);
-		MoveTorrentFiles mtf (oldDir);
+		const auto currentRows = GetSelectedRows ();
+
+		QList< QString > oldDirs {};
+		oldDirs.reserve ( currentRows.size () );
+		for (const auto row : currentRows)
+			oldDirs << Core::Instance ()->GetTorrentDirectory (row);
+
+		const auto allDirsAreSame = std::all_of ( oldDirs.cbegin (), oldDirs.cend ()
+							, [elem = oldDirs.front()] (const auto& it )
+							{ return elem == it; }
+							);
+
+		MoveTorrentFiles mtf {};
+		mtf.setOldLocation ( allDirsAreSame ? oldDirs.front () : trUtf8 ("Multiple Sources"));
+		// TODO: use something like GetLongestPath here.
+		if (!allDirsAreSame)
+			mtf.setNewLocation (XmlSettingsManager::Instance ()->
+						property ("LastSaveDirectory").toString ());
+
 		if (mtf.exec () == QDialog::Rejected)
 			return;
-		QString newDir = mtf.GetNewLocation ();
-		if (oldDir == newDir)
-			return;
 
-		if (!Core::Instance ()->MoveTorrentFiles (newDir, current))
+		const auto newDir = mtf.GetNewLocation ();
+
+		auto rowIt = currentRows.cbegin ();
+		auto oldDirIt = oldDirs.cbegin ();
+
+		for (; rowIt != currentRows. cend() ; ++rowIt, ++oldDirIt)
 		{
-			QString text = tr ("Failed to move torrent's files from %1 to %2")
-					.arg (oldDir)
-					.arg (newDir);
-			const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+			if (*oldDirIt == newDir)
+				continue;
+			if (!Core::Instance ()->MoveTorrentFiles (newDir, *rowIt))
+			{
+				QString text = tr ("Failed to move torrent's files from %1 to %2")
+						.arg (*oldDirIt)
+						.arg (newDir);
+				const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
+				Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+			}
 		}
+
 	}
 
 	void TorrentTab::handleMakeMagnetLinkTriggered ()

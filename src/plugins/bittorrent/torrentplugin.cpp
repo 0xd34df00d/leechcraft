@@ -863,11 +863,12 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_MoveFiles__triggered ()
 	{
-		QString oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
-		MoveTorrentFiles mtf (oldDir);
+		const auto oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
+		MoveTorrentFiles mtf {};
+		mtf.setOldLocation (oldDir);
 		if (mtf.exec () == QDialog::Rejected)
 			return;
-		QString newDir = mtf.GetNewLocation ();
+		const auto newDir = mtf.GetNewLocation ();
 		if (oldDir == newDir)
 			return;
 

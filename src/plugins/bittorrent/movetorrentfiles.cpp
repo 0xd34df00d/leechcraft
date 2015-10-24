@@ -34,12 +34,21 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	MoveTorrentFiles::MoveTorrentFiles (const QString& old, QWidget *parent)
-	: QDialog (parent)
+	MoveTorrentFiles::MoveTorrentFiles (QWidget *parent)
+	: QDialog {parent}
 	{
 		Ui_.setupUi (this);
-		Ui_.OldLocation_->setText (old);
-		Ui_.NewLocation_->setText (old);
+	}
+
+	void MoveTorrentFiles::setOldLocation (const QString& oldDir)
+	{
+		Ui_.OldLocation_->setText (oldDir);
+		Ui_.NewLocation_->setText (oldDir);
+	}
+
+	void MoveTorrentFiles::setNewLocation (const QString& newDir)
+	{
+		Ui_.NewLocation_->setText (newDir);
 	}
 
 	QString MoveTorrentFiles::GetNewLocation () const

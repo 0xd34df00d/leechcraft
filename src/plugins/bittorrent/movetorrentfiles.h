@@ -42,8 +42,10 @@ namespace BitTorrent
 
 		Ui::MoveTorrentFiles Ui_;
 	public:
-		MoveTorrentFiles (const QString&, QWidget* = 0);
+		explicit MoveTorrentFiles (QWidget *parent = nullptr);
 		QString GetNewLocation () const;
+		void setNewLocation (const QString& newDir);
+		void setOldLocation (const QString& oldDir);
 	private slots:
 		void on_Browse__released ();
 	};
