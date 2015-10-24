@@ -452,26 +452,37 @@ namespace LMP
 			return result;
 		};
 
-		typedef QPair<QString, QList<SortingCriteria>> SortPair_t;
-		QList<SortPair_t> stdSorts;
-		stdSorts << SortPair_t (tr ("Artist / Year / Album / Track number"),
-					{
-						SortingCriteria::Artist,
-						SortingCriteria::Year,
-						SortingCriteria::Album,
-						SortingCriteria::TrackNumber
-					});
-		stdSorts << SortPair_t (tr ("Artist / Track title"),
-					{
-						SortingCriteria::Artist,
-						SortingCriteria::TrackTitle
-					});
-		stdSorts << SortPair_t (tr ("File path"),
-					{
-						SortingCriteria::DirectoryPath,
-						SortingCriteria::FileName
-					});
-		stdSorts << SortPair_t (tr ("No sort"), {});
+		const auto stdSorts =
+		{
+			QPair<QString, QList<SortingCriteria>>
+			{
+				tr ("Artist / Year / Album / Track number"),
+				{
+					SortingCriteria::Artist,
+					SortingCriteria::Year,
+					SortingCriteria::Album,
+					SortingCriteria::TrackNumber
+				}
+			},
+			{
+				tr ("Artist / Track title"),
+				{
+					SortingCriteria::Artist,
+					SortingCriteria::TrackTitle
+				}
+			},
+			{
+				tr ("File path"),
+				{
+					SortingCriteria::DirectoryPath,
+					SortingCriteria::FileName
+				}
+			},
+			{
+				tr ("No sort"),
+				{}
+			}
+		};
 
 		const auto& currentCriteria = Player_->GetSortingCriteria ();
 
