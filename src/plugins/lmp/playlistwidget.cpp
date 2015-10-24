@@ -339,6 +339,8 @@ namespace LMP
 		PlaylistToolbar_->addAction (addURL);
 
 		PlaylistToolbar_->addSeparator ();
+		PlaylistToolbar_->addAction (ActionDownloadTrack_);
+		PlaylistToolbar_->addSeparator ();
 
 		ActionMoveTop_ = new QAction (tr ("Move tracks to top"), Ui_.Playlist_);
 		ActionMoveTop_->setProperty ("ActionIcon", "go-top");
