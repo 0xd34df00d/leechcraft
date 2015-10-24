@@ -858,22 +858,8 @@ namespace LMP
 
 	void PlaylistWidget::removeSelectedSongs ()
 	{
-		auto selModel = Ui_.Playlist_->selectionModel ();
-		if (!selModel)
-			return;
-
-		auto indexes = selModel->selectedRows ();
-		if (indexes.isEmpty ())
-			indexes << Ui_.Playlist_->currentIndex ();
-		indexes.removeAll (QModelIndex ());
-
-		QList<AudioSource> removedSources;
-		const QString& title = indexes.size () == 1 ?
-				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
-				tr ("Remove %n song(s)", 0, indexes.size ());
-
-		for (const auto& idx : indexes)
-			removedSources << Player_->GetIndexSources (PlaylistFilter_->mapToSource (idx));
+		const auto& removedSources = GetSelected ();
+		const auto& title = tr ("Remove %n song(s)", 0, removedSources.size ());
 
 		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
 		UndoStack_->push (cmd);
