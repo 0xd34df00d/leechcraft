@@ -616,8 +616,8 @@ namespace LMP
 
 	void PlaylistWidget::EnableMoveButtons (bool enabled)
 	{
-		MoveUpButtonAction_->setVisible (enabled);
-		MoveDownButtonAction_->setVisible (enabled);
+		MoveUpButtonAction_->setEnabled (enabled);
+		MoveDownButtonAction_->setEnabled (enabled);
 	}
 
 	QList<AudioSource> PlaylistWidget::GetSelected () const
