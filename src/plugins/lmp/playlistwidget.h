@@ -145,6 +145,8 @@ namespace LMP
 		void addURL ();
 
 		bool updateDownloadAction ();
+		void handleDownload ();
+
 		void updateStatsLabel ();
 	signals:
 		void hookPlaylistContextMenuRequested (LeechCraft::IHookProxy_ptr,

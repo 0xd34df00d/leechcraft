@@ -48,6 +48,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
@@ -1182,6 +1183,15 @@ namespace LMP
 		ActionDownloadTrack_->setEnabled (hasRemote);
 
 		return hasRemote;
+	}
+
+	void PlaylistWidget::handleDownload ()
+	{
+		const auto& remotes = Util::Filter (GetSelected (), &AudioSource::IsRemote);
+		if (remotes.isEmpty ())
+			return;
+
+		GrabTracks (Util::Map (remotes, Util::BindMemFn (&Player::GetMediaInfo, Player_)), this);
 	}
 
 	void PlaylistWidget::updateStatsLabel ()
