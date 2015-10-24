@@ -87,6 +87,9 @@ namespace LMP
 
 		Ui_.setupUi (this);
 
+		const auto& helpText = tr ("The following variables are allowed in the pattern: %1.")
+				.arg (GetSubstGettersKeys ().join ("; "));
+		Ui_.NameMask_->setText (helpText);
 
 		Ui_.Destination_->setText (XmlSettingsManager::Instance ()
 					.Property ("LastTracksGrabPath", GetDefaultPath ()).toString ());
