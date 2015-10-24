@@ -753,6 +753,12 @@ namespace LMP
 
 		menu->addSeparator ();
 
+		if (updateDownloadAction ())
+		{
+			menu->addAction (ActionDownloadTrack_);
+			menu->addSeparator ();
+		}
+
 		menu->addAction (ActionToggleSearch_);
 
 		auto mediaInfo = idx.data (Player::Role::Info).value<MediaInfo> ();
