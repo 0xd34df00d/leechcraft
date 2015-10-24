@@ -82,5 +82,6 @@ namespace LMP
 	QString FormatDateTime (const QDateTime& datetime);
 
 	void GrabTracks (const QList<Media::AudioInfo>& infos, QWidget *parent = nullptr);
+	void GrabTracks (const QList<MediaInfo>& infos, QWidget *parent = nullptr);
 }
 }

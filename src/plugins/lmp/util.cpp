@@ -323,5 +323,12 @@ namespace LMP
 			dia
 		};
 	}
+
+	void GrabTracks (const QList<MediaInfo>& infos, QWidget* parent)
+	{
+		const auto& converted = Util::Map (infos,
+				[] (const MediaInfo& info) -> Media::AudioInfo { return info; });
+		GrabTracks (converted, parent);
+	}
 }
 }
