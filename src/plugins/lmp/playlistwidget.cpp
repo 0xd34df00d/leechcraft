@@ -488,7 +488,7 @@ namespace LMP
 
 		auto sortGroup = new QActionGroup (this);
 		bool wasChecked = false;
-		Q_FOREACH (const auto& pair, stdSorts)
+		for (const auto& pair : stdSorts)
 		{
 			auto act = menu->addAction (pair.first);
 			act->setProperty ("SortInts", getInts (pair.second));
@@ -627,7 +627,7 @@ namespace LMP
 			selected << Ui_.Playlist_->currentIndex ();
 
 		QList<AudioSource> sources;
-		Q_FOREACH (const auto& index, selected)
+		for (const auto& index : selected)
 			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
 		return sources;
 	}
@@ -1143,7 +1143,7 @@ namespace LMP
 			return;
 		}
 
-		Player_->Enqueue (QList<AudioSource> () << urlObj);
+		Player_->Enqueue ({ urlObj });
 	}
 
 	void PlaylistWidget::updateStatsLabel ()
