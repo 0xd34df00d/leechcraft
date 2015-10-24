@@ -42,9 +42,13 @@ int main (int argc, char **argv)
 		QFont::insertSubstitution (".Lucida Grande UI", "Lucida Grande");
 #endif
 
+#ifndef Q_OS_MAC
 	LeechCraft::Application::setAttribute (Qt::AA_X11InitThreads);
+#endif
 
 	LeechCraft::Application app (argc, argv);
+	app.Continue ();
+
 	return app.exec ();
 }
 
