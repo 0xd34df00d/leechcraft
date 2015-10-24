@@ -264,12 +264,22 @@ namespace LMP
 				this,
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
+
 		connect (Ui_.Playlist_->selectionModel (),
 				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
 				this,
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
 		updateStatsLabel ();
+
+		connect (Ui_.Playlist_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (updateDownloadAction ()));
+		connect (Ui_.Playlist_->selectionModel (),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
+				this,
+				SLOT (updateDownloadAction ()));
 
 		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_,
 					Ui_.Playlist_,
