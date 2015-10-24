@@ -252,7 +252,8 @@ namespace LMP
 		case Media::RadioType::TracksRoot:
 		case Media::RadioType::SingleTrack:
 		{
-			menu.addAction (tr ("Download tracks..."),
+			menu.addAction (iconsMgr->GetIcon ("download"),
+					tr ("Download tracks..."),
 					this,
 					SLOT (handleDownloadTracks ()));
 			break;
