@@ -110,7 +110,7 @@ namespace LMP
 		{
 			auto name = PerformSubstitutions (pattern, info, flags);
 			if (!hasExtension)
-				name += '.' + QFileInfo { info.LocalPath_ }.suffix ();
+				name += '.' + info.LocalPath_.section ('.', -1);
 
 			names << name;
 
