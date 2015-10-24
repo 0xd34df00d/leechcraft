@@ -36,6 +36,7 @@ set (COMMON_SRCS
 	mediainfo.cpp
 	util/lmp/gstutil.cpp
 	util/lmp/filtersettingsmanager.cpp
+	util/lmp/util.cpp
 	)
 add_library (leechcraft_lmp_common STATIC
 	${COMMON_SRCS}
@@ -124,6 +125,7 @@ set (SRCS
 	npstateupdater.cpp
 	nptooltiphook.cpp
 	previewcharacteristicinfo.cpp
+	radiotracksgrabdialog.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
@@ -174,6 +176,7 @@ set (FORMS
 	seekslider.ui
 	radiocustomdialog.ui
 	collectionwidget.ui
+	radiotracksgrabdialog.ui
 	sync/cloudwidget.ui
 	sync/devicesbrowserwidget.ui
 	sync/transcodingparamswidget.ui

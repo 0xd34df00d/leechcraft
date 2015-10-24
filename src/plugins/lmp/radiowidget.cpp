@@ -31,15 +31,26 @@
 #include <QSortFilterProxyModel>
 #include <QMenu>
 #include <QInputDialog>
+#include <QMessageBox>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QDir>
 #include <QtDebug>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
+#include <util/sll/slotclosure.h>
+#include <util/xpc/util.h>
 #include <interfaces/media/iradiostationprovider.h>
+#include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "player.h"
 #include "previewhandler.h"
 #include "radiomanager.h"
 #include "engine/sourceobject.h"
 #include "radiocustomdialog.h"
+#include "radiotracksgrabdialog.h"
 
 namespace LeechCraft
 {
@@ -72,7 +83,6 @@ namespace LMP
 
 	RadioWidget::RadioWidget (QWidget *parent)
 	: QWidget (parent)
-	, Player_ (0)
 	, StationsProxy_ (new StationsFilterModel (this))
 	{
 		Ui_.setupUi (this);
@@ -136,6 +146,75 @@ namespace LMP
 		Core::Instance ().GetRadioManager ()->RemoveUrl (index);
 	}
 
+	namespace
+	{
+		void PerformDownload (QString to,
+				const QList<QString>& filenames, const QList<QUrl>& urls, QWidget *parent)
+		{
+			if (!QFile::exists (to))
+				QDir::root ().mkpath (to);
+
+			QFileInfo toInfo { to };
+			while (!toInfo.exists () || !toInfo.isDir () || !toInfo.isWritable ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "bad directory"
+						<< to;
+				if (QMessageBox::question (parent,
+							RadioWidget::tr ("Invalid directory"),
+							RadioWidget::tr ("The audio tracks cannot be downloaded to %1. "
+								"Do you wish to choose another directory?")
+								.arg ("<em>" + to + "</em>"),
+							QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+					return;
+
+				to = RadioTracksGrabDialog::SelectDestination (to, parent);
+				if (to.isEmpty ())
+					return;
+			}
+
+			const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+			for (const auto& pair : Util::Zip (urls, filenames))
+			{
+				const auto& e = Util::MakeEntity (pair.first,
+						to + '/' + pair.second,
+						OnlyDownload | AutoAccept | FromUserInitiated);
+				iem->HandleEntity (e);
+			}
+		}
+	}
+
+	void RadioWidget::handleDownloadTracks ()
+	{
+		const auto& indices = Util::Map (Ui_.StationsView_->selectionModel ()->selectedRows (),
+				Util::BindMemFn (&QAbstractProxyModel::mapToSource, StationsProxy_));
+
+		const auto radioMgr = Core::Instance ().GetRadioManager ();
+		const auto& urlInfos = Util::Filter (radioMgr->GetSources (indices),
+				[] (const Media::AudioInfo& info)
+					{ return info.Other_ ["URL"].toUrl ().isValid (); });
+
+		const auto dia = new RadioTracksGrabDialog { urlInfos, this };
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, dia, urlInfos]
+			{
+				PerformDownload (dia->GetDestination (),
+						dia->GetNames (),
+						Util::Map (urlInfos,
+								[] (const Media::AudioInfo& info)
+									{ return info.Other_ ["URL"].toUrl (); }),
+						this);
+			},
+			dia,
+			SIGNAL (accepted ()),
+			dia
+		};
+	}
+
 	void RadioWidget::on_StationsView__customContextMenuRequested (const QPoint& point)
 	{
 		const auto& idx = Ui_.StationsView_->indexAt (point);
@@ -145,13 +224,20 @@ namespace LMP
 		const auto type = idx.data (Media::RadioItemRole::ItemType).toInt ();
 		const auto parentType = idx.parent ().data (Media::RadioItemRole::ItemType).toInt ();
 
+		const auto iconsMgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+
 		QMenu menu;
-		menu.addAction (tr ("Refresh"),
+		menu.addAction (iconsMgr->GetIcon ("view-refresh"),
+				tr ("Refresh"),
 				this,
 				SLOT (handleRefresh ()));
-		if (type == Media::RadioType::CustomAddableStreams)
+
+		switch (type)
 		{
-			menu.addAction (tr ("Add an URL..."),
+		case Media::RadioType::CustomAddableStreams:
+		{
+			menu.addAction (iconsMgr->GetIcon ("list-add"),
+					tr ("Add an URL..."),
 					this,
 					SLOT (handleAddUrl ()));
 
@@ -160,13 +246,30 @@ namespace LMP
 				menu.addAction (tr ("Add current stream..."),
 						this,
 						SLOT (handleAddCurrentUrl ()));
+			break;
 		}
-		else if (parentType == Media::RadioType::CustomAddableStreams)
+		case Media::RadioType::TracksList:
+		case Media::RadioType::TracksRoot:
+		case Media::RadioType::SingleTrack:
 		{
-			menu.addAction (tr ("Remove this URL"),
+			menu.addAction (iconsMgr->GetIcon ("download"),
+					tr ("Download tracks..."),
+					this,
+					SLOT (handleDownloadTracks ()));
+			break;
+		}
+		default:
+			break;
+		}
+
+		if (parentType == Media::RadioType::CustomAddableStreams)
+		{
+			menu.addAction (iconsMgr->GetIcon ("list-remove"),
+					tr ("Remove this URL"),
 					this,
 					SLOT (handleRemoveUrl ()));
 		}
+
 		menu.exec (Ui_.StationsView_->viewport ()->mapToGlobal (point));
 	}
 

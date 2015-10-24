@@ -52,22 +52,6 @@ namespace LMP
 		return LMP::RecIterateInfo (path, followSymLinks, stopGuard);
 	}
 
-	QMap<QString, std::function<QString (MediaInfo)>> LMPUtilProxy::GetSubstGetters () const
-	{
-		return LMP::GetSubstGetters ();
-	}
-
-	QMap<QString, std::function<void (MediaInfo&, QString)>> LMPUtilProxy::GetSubstSetters () const
-	{
-		return LMP::GetSubstSetters ();
-	}
-
-	QString LMPUtilProxy::PerformSubstitutions (QString mask,
-			const MediaInfo& info, SubstitutionFlags flags) const
-	{
-		return LMP::PerformSubstitutions (mask, info, flags);
-	}
-
 	void LMPGuiProxy::SetPlayerTab (PlayerTab *tab)
 	{
 		PlayerTab_ = tab;

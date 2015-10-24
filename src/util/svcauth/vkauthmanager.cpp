@@ -121,8 +121,10 @@ namespace SvcAuth
 				RequestAuthKey ();
 			else
 			{
-				PrioManagedQueues_.clear ();
-				ManagedQueues_.clear ();
+				for (const auto& queue : PrioManagedQueues_)
+					queue->clear ();
+				for (const auto& queue : ManagedQueues_)
+					queue->clear ();
 			}
 
 			return;

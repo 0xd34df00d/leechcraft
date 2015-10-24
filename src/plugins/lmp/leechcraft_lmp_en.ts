@@ -181,9 +181,29 @@
         <translation>Custom streams</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="187"/>
+        <location filename="player.cpp" line="184"/>
         <source>Playlist</source>
         <translation>Playlist</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.cpp" line="72"/>
+        <source>Artist</source>
+        <translation>Artist</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.cpp" line="72"/>
+        <source>Title</source>
+        <translation>Title</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.cpp" line="72"/>
+        <source>File name</source>
+        <translation>File name</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.cpp" line="90"/>
+        <source>The following variables are allowed in the pattern: %1.</source>
+        <translation>The following variables are allowed in the pattern: %1.</translation>
     </message>
 </context>
 <context>
@@ -667,67 +687,72 @@
 <context>
     <name>LeechCraft::LMP::Player</name>
     <message>
-        <location filename="player.cpp" line="563"/>
+        <location filename="player.cpp" line="568"/>
         <source>Radio</source>
         <translation>Radio</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="634"/>
+        <location filename="player.cpp" line="639"/>
         <source>Bitrate</source>
         <translation>Bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="635"/>
+        <location filename="player.cpp" line="640"/>
         <source>Minimum bitrate</source>
         <translation>Minimum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="636"/>
+        <location filename="player.cpp" line="641"/>
         <source>Maximum bitrate</source>
         <translation>Maximum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="849"/>
+        <location filename="player.cpp" line="869"/>
         <source>paused</source>
         <translation>paused</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="854"/>
+        <location filename="player.cpp" line="874"/>
         <source>playing</source>
         <translation>playing</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="858"/>
+        <location filename="player.cpp" line="878"/>
         <source>stopped</source>
         <translation>stopped</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="863"/>
+        <location filename="player.cpp" line="883"/>
         <source>%1 by %2 is now %3</source>
         <translation>%1 by %2 is now %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1212"/>
+        <location filename="player.cpp" line="1224"/>
         <source>Stream</source>
         <translation>Stream</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1326"/>
+        <location filename="player.cpp" line="1523"/>
         <source>Radio station error: %1.</source>
         <translation>Radio station error: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1543"/>
+        <location filename="player.cpp" line="1740"/>
         <source>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1551"/>
+        <location filename="player.cpp" line="1748"/>
         <source>Audio source %1 not found, playing next track...</source>
         <translation>Audio source %1 not found, playing next track...</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1556"/>
+        <location filename="player.cpp" line="1753"/>
+        <source>Cannot open source %1, playing next track...</source>
+        <translation>Cannot open source %1, playing next track...</translation>
+    </message>
+    <message>
+        <location filename="player.cpp" line="1758"/>
         <source>Audio source %1 is invalid, playing next track...</source>
         <translation>Audio source %1 is invalid, playing next track...</translation>
     </message>
@@ -1249,22 +1274,22 @@
 <context>
     <name>LeechCraft::LMP::RadioManager</name>
     <message>
-        <location filename="radiomanager.cpp" line="278"/>
+        <location filename="radiomanager.cpp" line="279"/>
         <source>Similar artists radio</source>
         <translation>Similar artists radio</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="279"/>
+        <location filename="radiomanager.cpp" line="280"/>
         <source>Enter artist name for which to tune the similar artists radio station:</source>
         <translation>Enter artist name for which to tune the similar artists radio station:</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="285"/>
+        <location filename="radiomanager.cpp" line="286"/>
         <source>Global tag radio</source>
         <translation>Global tag radio</translation>
     </message>
     <message>
-        <location filename="radiomanager.cpp" line="286"/>
+        <location filename="radiomanager.cpp" line="287"/>
         <source>Enter global tag name:</source>
         <translation>Enter global tag name:</translation>
     </message>
@@ -1296,24 +1321,47 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::LMP::RadioTracksGrabDialog</name>
+    <message>
+        <location filename="radiotracksgrabdialog.cpp" line="146"/>
+        <source>Select tracks save directory</source>
+        <translation>Select tracks save directory</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::LMP::RadioWidget</name>
     <message>
-        <location filename="radiowidget.cpp" line="149"/>
+        <location filename="radiowidget.cpp" line="164"/>
+        <source>Invalid directory</source>
+        <translation>Invalid directory</translation>
+    </message>
+    <message>
+        <location filename="radiowidget.cpp" line="165"/>
+        <source>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</source>
+        <translation>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</translation>
+    </message>
+    <message>
+        <location filename="radiowidget.cpp" line="231"/>
         <source>Refresh</source>
         <translation>Refresh</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="154"/>
+        <location filename="radiowidget.cpp" line="240"/>
         <source>Add an URL...</source>
         <translation>Add an URL...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="160"/>
+        <location filename="radiowidget.cpp" line="246"/>
         <source>Add current stream...</source>
         <translation>Add current stream...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="166"/>
+        <location filename="radiowidget.cpp" line="256"/>
+        <source>Download tracks...</source>
+        <translation>Download tracks...</translation>
+    </message>
+    <message>
+        <location filename="radiowidget.cpp" line="268"/>
         <source>Remove this URL</source>
         <translation>Remove this URL</translation>
     </message>
@@ -1554,17 +1602,17 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="159"/>
+        <location filename="util.cpp" line="160"/>
         <source>Album art</source>
         <translation>Album art</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="244"/>
+        <location filename="util.cpp" line="192"/>
         <source>CD %1:</source>
         <translation>CD %1:</translation>
     </message>
     <message numerus="yes">
-        <location filename="util.cpp" line="303"/>
+        <location filename="util.cpp" line="251"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n day ago</numerusform>
@@ -1641,19 +1689,35 @@
     </message>
 </context>
 <context>
+    <name>RadioTracksGrabDialog</name>
+    <message>
+        <location filename="radiotracksgrabdialog.ui" line="14"/>
+        <source>Radio tracks grabber</source>
+        <translation>Radio tracks grabber</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.ui" line="20"/>
+        <source>Destination:</source>
+        <translation>Destination:</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.ui" line="32"/>
+        <source>Browse...</source>
+        <translation>Browse...</translation>
+    </message>
+    <message>
+        <location filename="radiotracksgrabdialog.ui" line="41"/>
+        <source>Filenames pattern:</source>
+        <oldsource>Filename mask:</oldsource>
+        <translation>Filenames pattern:</translation>
+    </message>
+</context>
+<context>
     <name>RadioWidget</name>
     <message>
         <location filename="radiowidget.ui" line="23"/>
         <source>Filter stations...</source>
         <translation>Filter stations...</translation>
-    </message>
-</context>
-<context>
-    <name>RecommendationsWidget</name>
-    <message>
-        <location filename="recommendationswidget.ui" line="25"/>
-        <source>Recommendations provider:</source>
-        <translation>Recommendations provider:</translation>
     </message>
 </context>
 <context>

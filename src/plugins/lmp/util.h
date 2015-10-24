@@ -69,10 +69,6 @@ namespace LMP
 
 	void ShowAlbumArt (const QString& near, const QPoint& pos);
 
-	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
-	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
-
-	QString PerformSubstitutions (QString mask, const MediaInfo& info, SubstitutionFlags = SFNone);
 	QString PerformSubstitutionsPlaylist (const MediaInfo& info);
 
 	bool ShouldRememberProvs ();

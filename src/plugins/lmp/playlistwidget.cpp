@@ -452,32 +452,43 @@ namespace LMP
 			return result;
 		};
 
-		typedef QPair<QString, QList<SortingCriteria>> SortPair_t;
-		QList<SortPair_t> stdSorts;
-		stdSorts << SortPair_t (tr ("Artist / Year / Album / Track number"),
-					{
-						SortingCriteria::Artist,
-						SortingCriteria::Year,
-						SortingCriteria::Album,
-						SortingCriteria::TrackNumber
-					});
-		stdSorts << SortPair_t (tr ("Artist / Track title"),
-					{
-						SortingCriteria::Artist,
-						SortingCriteria::TrackTitle
-					});
-		stdSorts << SortPair_t (tr ("File path"),
-					{
-						SortingCriteria::DirectoryPath,
-						SortingCriteria::FileName
-					});
-		stdSorts << SortPair_t (tr ("No sort"), {});
+		const auto stdSorts =
+		{
+			QPair<QString, QList<SortingCriteria>>
+			{
+				tr ("Artist / Year / Album / Track number"),
+				{
+					SortingCriteria::Artist,
+					SortingCriteria::Year,
+					SortingCriteria::Album,
+					SortingCriteria::TrackNumber
+				}
+			},
+			{
+				tr ("Artist / Track title"),
+				{
+					SortingCriteria::Artist,
+					SortingCriteria::TrackTitle
+				}
+			},
+			{
+				tr ("File path"),
+				{
+					SortingCriteria::DirectoryPath,
+					SortingCriteria::FileName
+				}
+			},
+			{
+				tr ("No sort"),
+				{}
+			}
+		};
 
 		const auto& currentCriteria = Player_->GetSortingCriteria ();
 
 		auto sortGroup = new QActionGroup (this);
 		bool wasChecked = false;
-		Q_FOREACH (const auto& pair, stdSorts)
+		for (const auto& pair : stdSorts)
 		{
 			auto act = menu->addAction (pair.first);
 			act->setProperty ("SortInts", getInts (pair.second));
@@ -605,15 +616,18 @@ namespace LMP
 
 	void PlaylistWidget::EnableMoveButtons (bool enabled)
 	{
-		MoveUpButtonAction_->setVisible (enabled);
-		MoveDownButtonAction_->setVisible (enabled);
+		MoveUpButtonAction_->setEnabled (enabled);
+		MoveDownButtonAction_->setEnabled (enabled);
 	}
 
 	QList<AudioSource> PlaylistWidget::GetSelected () const
 	{
-		const auto& selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		auto selected = Ui_.Playlist_->selectionModel ()->selectedRows ();
+		if (selected.isEmpty ())
+			selected << Ui_.Playlist_->currentIndex ();
+
 		QList<AudioSource> sources;
-		Q_FOREACH (const auto& index, selected)
+		for (const auto& index : selected)
 			sources += Player_->GetIndexSources (PlaylistFilter_->mapToSource (index));
 		return sources;
 	}
@@ -844,22 +858,8 @@ namespace LMP
 
 	void PlaylistWidget::removeSelectedSongs ()
 	{
-		auto selModel = Ui_.Playlist_->selectionModel ();
-		if (!selModel)
-			return;
-
-		auto indexes = selModel->selectedRows ();
-		if (indexes.isEmpty ())
-			indexes << Ui_.Playlist_->currentIndex ();
-		indexes.removeAll (QModelIndex ());
-
-		QList<AudioSource> removedSources;
-		const QString& title = indexes.size () == 1 ?
-				tr ("Remove %1").arg (indexes.at (0).data ().toString ()) :
-				tr ("Remove %n song(s)", 0, indexes.size ());
-
-		for (const auto& idx : indexes)
-			removedSources << Player_->GetIndexSources (PlaylistFilter_->mapToSource (idx));
+		const auto& removedSources = GetSelected ();
+		const auto& title = tr ("Remove %n song(s)", 0, removedSources.size ());
 
 		auto cmd = new PlaylistUndoCommand (title, removedSources, Player_);
 		UndoStack_->push (cmd);
@@ -1143,7 +1143,7 @@ namespace LMP
 			return;
 		}
 
-		Player_->Enqueue (QList<AudioSource> () << urlObj);
+		Player_->Enqueue ({ urlObj });
 	}
 
 	void PlaylistWidget::updateStatsLabel ()

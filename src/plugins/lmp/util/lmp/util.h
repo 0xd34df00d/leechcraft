@@ -29,42 +29,40 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_radiowidget.h"
+#include <functional>
+#include <QString>
+#include <QFlags>
 
-class QStandardItem;
-class QSortFilterProxyModel;
+template<typename, typename>
+class QMap;
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Player;
+	struct MediaInfo;
 
-	class RadioWidget : public QWidget
+	enum SubstitutionFlag
 	{
-		Q_OBJECT
-
-		Ui::RadioWidget Ui_;
-
-		Player *Player_ = nullptr;
-		QSortFilterProxyModel *StationsProxy_;
-	public:
-		RadioWidget (QWidget* = 0);
-
-		void SetPlayer (Player*);
-	private:
-		void AddUrl (const QUrl&);
-	private slots:
-		void handleRefresh ();
-
-		void handleAddUrl ();
-		void handleAddCurrentUrl ();
-		void handleRemoveUrl ();
-		void handleDownloadTracks ();
-
-		void on_StationsView__customContextMenuRequested (const QPoint&);
-		void on_StationsView__doubleClicked (const QModelIndex&);
+		SFNone,
+		SFSafeFilesystem
 	};
+	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
+
+	QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters ();
+
+	QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters ();
+
+	QStringList GetSubstGettersKeys ();
+
+	QString PerformSubstitutions (QString mask,
+			const MediaInfo& info, SubstitutionFlags flags = SFNone);
+
+	QStringList PerformSubstitutions (const QString& mask,
+			const QList<MediaInfo>& infos,
+			const std::function<void (int, QString)>& setter,
+			SubstitutionFlags flags = SFSafeFilesystem);
 }
 }
+
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)

@@ -29,42 +29,43 @@
 
 #pragma once
 
-#include <QWidget>
-#include "ui_radiowidget.h"
+#include <QDialog>
+#include "ui_radiotracksgrabdialog.h"
 
-class QStandardItem;
-class QSortFilterProxyModel;
+class QStandardItemModel;
+
+namespace Media
+{
+	struct AudioInfo;
+}
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	class Player;
+	struct MediaInfo;
 
-	class RadioWidget : public QWidget
+	class RadioTracksGrabDialog : public QDialog
 	{
 		Q_OBJECT
 
-		Ui::RadioWidget Ui_;
+		Ui::RadioTracksGrabDialog Ui_;
 
-		Player *Player_ = nullptr;
-		QSortFilterProxyModel *StationsProxy_;
+		QStandardItemModel * const NamesPreviewModel_;
+		QStringList Names_;
 	public:
-		RadioWidget (QWidget* = 0);
+		RadioTracksGrabDialog (const QList<Media::AudioInfo>&, QWidget* = nullptr);
+		RadioTracksGrabDialog (const QList<MediaInfo>&, QWidget* = nullptr);
 
-		void SetPlayer (Player*);
+		const QStringList& GetNames () const;
+		QString GetDestination () const;
+
+		static QString SelectDestination (QString dir = {}, QWidget *parent = nullptr);
 	private:
-		void AddUrl (const QUrl&);
+		bool IsComplete () const;
 	private slots:
-		void handleRefresh ();
-
-		void handleAddUrl ();
-		void handleAddCurrentUrl ();
-		void handleRemoveUrl ();
-		void handleDownloadTracks ();
-
-		void on_StationsView__customContextMenuRequested (const QPoint&);
-		void on_StationsView__doubleClicked (const QModelIndex&);
+		void on_Browse__released ();
+		void checkCompleteness ();
 	};
 }
 }

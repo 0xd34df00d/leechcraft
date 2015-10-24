@@ -32,6 +32,9 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QtDebug>
+#include <util/sll/prelude.h>
+#include <util/sll/util.h>
+#include <util/lmp/util.h>
 
 namespace LeechCraft
 {
@@ -42,13 +45,12 @@ namespace Graffiti
 	RenameDialog::RenameDialog (ILMPProxy_ptr proxy, QWidget *parent)
 	: QDialog (parent)
 	, Proxy_ (proxy)
-	, Getters_ (proxy->GetUtilProxy ()->GetSubstGetters ())
 	, PreviewModel_ (new QStandardItemModel (this))
 	{
 		Ui_.setupUi (this);
 
 		const auto& helpText = tr ("The following variables are allowed in the pattern: %1.")
-				.arg (QStringList (Getters_.keys ()).join ("; "));
+				.arg (GetSubstGettersKeys ().join ("; "));
 		Ui_.PatternDescLabel_->setText (helpText);
 
 		Ui_.Preview_->setModel (PreviewModel_);
@@ -61,9 +63,7 @@ namespace Graffiti
 
 	void RenameDialog::SetInfos (const QList<MediaInfo>& infos)
 	{
-		Infos_.clear ();
-		for (const auto& info : infos)
-			Infos_.push_back ({ info, QFileInfo (info.LocalPath_).fileName () });
+		Infos_ = infos;
 
 		PreviewModel_->clear ();
 		PreviewModel_->setHorizontalHeaderLabels ({ tr ("Source name"), tr ("Target name") });
@@ -71,7 +71,7 @@ namespace Graffiti
 		for (const auto& info : Infos_)
 		{
 			auto sourceItem = new QStandardItem;
-			sourceItem->setText (info.second);
+			sourceItem->setText (QFileInfo { info.LocalPath_ }.fileName ());
 			PreviewModel_->appendRow ({ sourceItem, new QStandardItem });
 		}
 
@@ -81,30 +81,33 @@ namespace Graffiti
 	QList<QPair<QString, QString>> RenameDialog::GetRenames () const
 	{
 		QList<QPair<QString, QString>> result;
-		for (const auto& info : Infos_)
-			if (QFileInfo (info.first.LocalPath_).fileName () != info.second)
-				result.push_back ({ info.first.LocalPath_, info.second });
+		for (const auto& pair : Util::Zip (Infos_, Names_))
+			if (QFileInfo (pair.first.LocalPath_).fileName () != pair.second)
+				result.push_back ({ pair.first.LocalPath_, pair.second });
 		return result;
 	}
 
-	void RenameDialog::Rename (const QList<QPair<QString, QString>>& pairs)
+	namespace
 	{
-		for (const auto& pair : pairs)
+		void Rename (const QList<QPair<QString, QString>>& pairs)
 		{
-			const QFileInfo sourceInfo (pair.first);
-			auto sourceDir = sourceInfo.absoluteDir ();
-			if (!sourceDir.rename (sourceInfo.fileName (), pair.second))
-				qWarning () << Q_FUNC_INFO
-						<< "failed to rename"
-						<< sourceInfo.fileName ()
-						<< "to"
-						<< pair.second;
+			for (const auto& pair : pairs)
+			{
+				const QFileInfo sourceInfo (pair.first);
+				auto sourceDir = sourceInfo.absoluteDir ();
+				if (!sourceDir.rename (sourceInfo.fileName (), pair.second))
+					qWarning () << Q_FUNC_INFO
+							<< "failed to rename"
+							<< sourceInfo.fileName ()
+							<< "to"
+							<< pair.second;
+			}
 		}
 	}
 
 	void RenameDialog::accept ()
 	{
-		std::shared_ptr<void> guard (nullptr, [this] (void*) { QDialog::accept (); });
+		const auto guard = Util::MakeScopeGuard ([this] { QDialog::accept (); });
 
 		const auto& toRename = GetRenames ();
 		if (toRename.isEmpty ())
@@ -119,20 +122,9 @@ namespace Graffiti
 
 	void RenameDialog::updatePreview ()
 	{
-		const auto& pattern = Ui_.Pattern_->currentText ();
-		const bool hasExtension = pattern.contains ('.');
-
-		int row = 0;
-		for (auto& info : Infos_)
-		{
-			info.second = Proxy_->GetUtilProxy ()->PerformSubstitutions (pattern,
-					info.first, SubstitutionFlag::SFSafeFilesystem);
-			if (!hasExtension)
-				info.second += '.' + QFileInfo (info.first.LocalPath_).suffix ();
-
-			auto item = PreviewModel_->item (row++, 1);
-			item->setText (info.second);
-		}
+		PerformSubstitutions (Ui_.Pattern_->currentText (), Infos_,
+				[this] (int row, const QString& name)
+					{ PreviewModel_->item (row, 1)->setText (name); });
 	}
 }
 }

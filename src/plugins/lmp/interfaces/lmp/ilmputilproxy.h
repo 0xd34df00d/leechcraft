@@ -42,15 +42,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-
-	enum SubstitutionFlag
-	{
-		SFNone,
-		SFSafeFilesystem
-	};
-	Q_DECLARE_FLAGS (SubstitutionFlags, SubstitutionFlag);
-
 	class ILMPUtilProxy
 	{
 	public:
@@ -61,16 +52,8 @@ namespace LMP
 		virtual QList<QFileInfo> RecIterateInfo (const QString& dirPath,
 				bool followSymlinks = false,
 				std::atomic<bool> *stopGuard = nullptr) const = 0;
-
-		virtual QMap<QString, std::function<QString (MediaInfo)>> GetSubstGetters () const = 0;
-
-		virtual QMap<QString, std::function<void (MediaInfo&, QString)>> GetSubstSetters () const = 0;
-
-		virtual QString PerformSubstitutions (QString mask,
-				const MediaInfo& info, SubstitutionFlags flags = SFNone) const = 0;
 	};
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::LMP::SubstitutionFlags)
 Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPUtilProxy, "org.LeechCraft.LMP.ILMPUtilProxy/1.0");

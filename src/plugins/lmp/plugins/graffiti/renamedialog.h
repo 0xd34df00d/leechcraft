@@ -48,20 +48,19 @@ namespace Graffiti
 		Q_OBJECT
 
 		const ILMPProxy_ptr Proxy_;
-		decltype (ILMPProxy_ptr {}->GetUtilProxy ()->GetSubstGetters ()) Getters_;
 
 		Ui::RenameDialog Ui_;
 
 		QStandardItemModel *PreviewModel_;
 
-		QList<QPair<MediaInfo, QString>> Infos_;
+		QList<MediaInfo> Infos_;
+		QList<QString> Names_;
 	public:
 		RenameDialog (ILMPProxy_ptr, QWidget* = 0);
 
 		void SetInfos (const QList<MediaInfo>&);
 	private:
 		QList<QPair<QString, QString>> GetRenames () const;
-		void Rename (const QList<QPair<QString, QString>>&);
 	public slots:
 		void accept ();
 	private slots:

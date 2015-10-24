@@ -40,14 +40,14 @@ namespace Media
 {
 	struct AudioInfo;
 
+	using RadioRestoreVariant_t = boost::variant<QList<AudioInfo>>;
+
 	struct RadioRestoreResult
 	{
 		QString PluginID_;
 		QString RadioID_;
 
-		using RestoreVariant_t = boost::variant<QList<Media::AudioInfo>>;
-
-		RestoreVariant_t Restored_;
+		RadioRestoreVariant_t Restored_;
 	};
 
 	using RadiosRestoreResult_t = QList<RadioRestoreResult>;

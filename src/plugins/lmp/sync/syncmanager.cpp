@@ -32,10 +32,10 @@
 #include <QtDebug>
 #include <QFileInfo>
 #include <util/util.h>
+#include <util/lmp/util.h>
 #include "copymanager.h"
 #include "../core.h"
 #include "../localfileresolver.h"
-#include "../util.h"
 
 namespace LeechCraft
 {
