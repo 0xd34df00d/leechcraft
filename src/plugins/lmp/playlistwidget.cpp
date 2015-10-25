@@ -1176,9 +1176,20 @@ namespace LMP
 		Player_->Enqueue ({ urlObj });
 	}
 
+	namespace
+	{
+		QList<AudioSource> GetSelectedOrCurrent (const QList<AudioSource>& selected, Player *player)
+		{
+			if (!selected.isEmpty ())
+				return selected;
+
+			return { player->GetSourceObject ()->GetCurrentSource () };
+		}
+	}
+
 	bool PlaylistWidget::updateDownloadAction ()
 	{
-		const auto& selected = GetSelected ();
+		const auto& selected = GetSelectedOrCurrent (GetSelected (), Player_);
 		const bool hasRemote = std::any_of (selected.begin (), selected.end (),
 				[] (const AudioSource& src) { return src.IsRemote (); });
 
@@ -1189,7 +1200,7 @@ namespace LMP
 
 	void PlaylistWidget::handleDownload ()
 	{
-		const auto& remotes = Util::Filter (GetSelected (), &AudioSource::IsRemote);
+		const auto& remotes = Util::Filter (GetSelectedOrCurrent (GetSelected (), Player_), &AudioSource::IsRemote);
 		if (remotes.isEmpty ())
 			return;
 
