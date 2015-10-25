@@ -49,11 +49,11 @@ namespace LMP
 	public:
 		StaticPlaylistManager (QObject* = 0);
 
-		using OnLoadPlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
-		using OnLoadPlaylist_t = QList<OnLoadPlaylistItem_t>;
+		using PlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
+		using Playlist_t = QList<PlaylistItem_t>;
 
-		void SetOnLoadPlaylist (const OnLoadPlaylist_t&);
-		OnLoadPlaylist_t GetOnLoadPlaylist () const;
+		void SetOnLoadPlaylist (const Playlist_t&);
+		Playlist_t GetOnLoadPlaylist () const;
 
 		void SaveCustomPlaylist (QString, const Playlist&);
 		QStringList EnumerateCustomPlaylists () const;

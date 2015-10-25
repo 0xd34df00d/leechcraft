@@ -1333,7 +1333,7 @@ namespace LMP
 					if (Url2Info_.contains (url))
 						info = Url2Info_ [url];
 
-					return StaticPlaylistManager::OnLoadPlaylistItem_t { source, info };
+					return StaticPlaylistManager::PlaylistItem_t { source, info };
 				});
 		Core::Instance ().GetPlaylistManager ()->
 				GetStaticManager ()->SetOnLoadPlaylist (playlist);
@@ -1398,14 +1398,14 @@ namespace LMP
 			syncer->addFuture (future);
 		}
 
-		struct RestoreVisitor : boost::static_visitor<StaticPlaylistManager::OnLoadPlaylist_t>
+		struct RestoreVisitor : boost::static_visitor<StaticPlaylistManager::Playlist_t>
 		{
-			StaticPlaylistManager::OnLoadPlaylist_t operator() (const QList<Media::AudioInfo>& infos) const
+			StaticPlaylistManager::Playlist_t operator() (const QList<Media::AudioInfo>& infos) const
 			{
 				return Util::Map (infos,
 						[] (const Media::AudioInfo& info)
 						{
-							return StaticPlaylistManager::OnLoadPlaylistItem_t
+							return StaticPlaylistManager::PlaylistItem_t
 							{
 								info.Other_ ["URL"].toUrl (),
 								MediaInfo::FromAudioInfo (info)
@@ -1414,7 +1414,7 @@ namespace LMP
 			}
 		};
 
-		StaticPlaylistManager::OnLoadPlaylist_t HandleRestored (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
+		StaticPlaylistManager::Playlist_t HandleRestored (const StaticPlaylistManager::Playlist_t& playlist,
 				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
 		{
 			Util::Decay_t<decltype (playlist)> newPlaylist;
@@ -1446,7 +1446,7 @@ namespace LMP
 		}
 
 		template<typename UrlInfoSetter, typename Setter, typename Clearer>
-		void CheckPlaylistRefreshes (const StaticPlaylistManager::OnLoadPlaylist_t& playlist,
+		void CheckPlaylistRefreshes (const StaticPlaylistManager::Playlist_t& playlist,
 				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
 		{
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
@@ -1503,9 +1503,9 @@ namespace LMP
 		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
 		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
 
-		auto setter = [this] (const StaticPlaylistManager::OnLoadPlaylist_t& pl)
+		auto setter = [this] (const StaticPlaylistManager::Playlist_t& pl)
 		{
-			Enqueue (Util::Map (pl, &StaticPlaylistManager::OnLoadPlaylistItem_t::first));
+			Enqueue (Util::Map (pl, &StaticPlaylistManager::PlaylistItem_t::first));
 		};
 
 		CheckPlaylistRefreshes (playlist,
