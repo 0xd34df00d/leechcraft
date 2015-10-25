@@ -36,5 +36,24 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	Playlist ToDumbPlaylist (const NativePlaylist_t& playlist)
+	{
+		return Util::Map (playlist,
+				[] (const NativePlaylistItem_t& item)
+				{
+					return item.second ?
+							PlaylistItem { item.first, *item.second } :
+							PlaylistItem { item.first };
+				});
+	}
+
+	NativePlaylist_t FromDumbPlaylist (const Playlist& playlist)
+	{
+		return Util::Map (playlist,
+				[] (const PlaylistItem& item)
+				{
+					return NativePlaylistItem_t { item.Source_, item.GetMediaInfo () };
+				});
+	}
 }
 }

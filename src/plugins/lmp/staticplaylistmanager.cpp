@@ -29,7 +29,6 @@
 
 #include "staticplaylistmanager.h"
 #include <util/sys/paths.h>
-#include <util/sll/prelude.h>
 #include "mediainfo.h"
 #include "playlistparsers/m3u.h"
 
@@ -105,23 +104,12 @@ namespace LMP
 
 	void StaticPlaylistManager::WritePlaylist (const QString& path, const NativePlaylist_t& sources)
 	{
-		M3U::Write (path,
-				Util::Map (sources,
-						[] (const NativePlaylistItem_t& item)
-						{
-							return item.second ?
-									PlaylistItem { item.first, *item.second } :
-									PlaylistItem { item.first };
-						}));
+		M3U::Write (path, ToDumbPlaylist (sources));
 	}
 
 	NativePlaylist_t StaticPlaylistManager::ReadPlaylist (const QString& path) const
 	{
-		return Util::Map (M3U::Read2Sources (path),
-				[] (const PlaylistItem& item)
-				{
-					return NativePlaylistItem_t { item.Source_, item.GetMediaInfo () };
-				});
+		return FromDumbPlaylist (M3U::Read2Sources (path));
 	}
 }
 }

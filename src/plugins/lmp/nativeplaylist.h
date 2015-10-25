@@ -36,9 +36,13 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	class Playlist;
 	struct MediaInfo;
 
 	using NativePlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
 	using NativePlaylist_t = QList<NativePlaylistItem_t>;
+
+	Playlist ToDumbPlaylist (const NativePlaylist_t&);
+	NativePlaylist_t FromDumbPlaylist (const Playlist&);
 }
 }
