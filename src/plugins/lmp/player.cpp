@@ -721,9 +721,9 @@ namespace LMP
 			return newPlaylist;
 		}
 
-		template<typename UrlInfoSetter, typename Setter, typename Clearer>
+		template<typename UrlInfoSetter, typename Setter>
 		void CheckPlaylistRefreshes (const NativePlaylist_t& playlist,
-				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
+				const UrlInfoSetter& urlInfoSetter, const Setter& setter)
 		{
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
@@ -763,8 +763,6 @@ namespace LMP
 						if (newPlaylist == playlist)
 							return;
 
-						clearer ();
-
 						for (const auto& item : newPlaylist)
 							if (item.second)
 								urlInfoSetter (item.first.ToUrl (), *item.second);
@@ -783,8 +781,7 @@ namespace LMP
 
 		CheckPlaylistRefreshes (playlist,
 				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
-				setter,
-				[this] { clear (); });
+				setter);
 
 		setter (playlist);
 	}
