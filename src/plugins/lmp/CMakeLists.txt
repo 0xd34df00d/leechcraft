@@ -126,6 +126,7 @@ set (SRCS
 	nptooltiphook.cpp
 	previewcharacteristicinfo.cpp
 	radiotracksgrabdialog.cpp
+	nativeplaylist.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
