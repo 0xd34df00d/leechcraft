@@ -59,7 +59,7 @@ namespace Util
 	{
 		QEventLoop loop;
 		int res = 0;
-		Sequence (nullptr, MkWaiter (), 50)
+		Sequence (nullptr, MkWaiter () (50))
 			.Then (MkWaiter ())
 			.Then (MkWaiter ())
 			.Then (MkWaiter ())
