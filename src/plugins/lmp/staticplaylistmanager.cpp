@@ -53,24 +53,12 @@ namespace LMP
 
 	void StaticPlaylistManager::SetOnLoadPlaylist (const NativePlaylist_t& sources)
 	{
-		WritePlaylist (GetOnLoadPath (),
-				Util::Map (sources,
-						[] (const PlaylistItem_t& item)
-						{
-							return item.second ?
-									PlaylistItem { item.first, *item.second } :
-									PlaylistItem { item.first };
-						}));
+		WritePlaylist (GetOnLoadPath (), sources);
 	}
 
 	NativePlaylist_t StaticPlaylistManager::GetOnLoadPlaylist () const
 	{
-		const auto& playlist = ReadPlaylist (GetOnLoadPath ());
-		return Util::Map (playlist,
-				[] (const PlaylistItem& item)
-				{
-					return PlaylistItem_t { item.Source_, item.GetMediaInfo () };
-				});
+		return ReadPlaylist (GetOnLoadPath ());
 	}
 
 	namespace
@@ -82,7 +70,7 @@ namespace LMP
 		}
 	}
 
-	void StaticPlaylistManager::SaveCustomPlaylist (QString name, const Playlist& sources)
+	void StaticPlaylistManager::SaveCustomPlaylist (QString name, const NativePlaylist_t& sources)
 	{
 		WritePlaylist (PlaylistsDir_.filePath (GetFileName (name)), sources);
 		emit customPlaylistsChanged ();
@@ -99,7 +87,7 @@ namespace LMP
 		return result;
 	}
 
-	Playlist StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
+	NativePlaylist_t StaticPlaylistManager::GetCustomPlaylist (const QString& name) const
 	{
 		return ReadPlaylist (GetCustomPlaylistPath (name));
 	}
@@ -115,14 +103,25 @@ namespace LMP
 			emit customPlaylistsChanged ();
 	}
 
-	void StaticPlaylistManager::WritePlaylist (const QString& path, const Playlist& sources)
+	void StaticPlaylistManager::WritePlaylist (const QString& path, const NativePlaylist_t& sources)
 	{
-		M3U::Write (path, sources);
+		M3U::Write (path,
+				Util::Map (sources,
+						[] (const NativePlaylistItem_t& item)
+						{
+							return item.second ?
+									PlaylistItem { item.first, *item.second } :
+									PlaylistItem { item.first };
+						}));
 	}
 
-	Playlist StaticPlaylistManager::ReadPlaylist (const QString& path) const
+	NativePlaylist_t StaticPlaylistManager::ReadPlaylist (const QString& path) const
 	{
-		return M3U::Read2Sources (path);
+		return Util::Map (M3U::Read2Sources (path),
+				[] (const PlaylistItem& item)
+				{
+					return NativePlaylistItem_t { item.Source_, item.GetMediaInfo () };
+				});
 	}
 }
 }

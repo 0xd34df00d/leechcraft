@@ -1116,9 +1116,7 @@ namespace LMP
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Playlist playlist { Player_->GetQueue () };
-		playlist.SetProperty (Player_->GetSourceObject ()->GetCurrentSource (), "Current", true);
-		mgr->SaveCustomPlaylist (name, playlist);
+		mgr->SaveCustomPlaylist (name, Player_->GetAsNativePlaylist ());
 	}
 
 	void PlaylistWidget::loadFromDisk ()
