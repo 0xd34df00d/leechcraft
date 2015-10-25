@@ -615,6 +615,180 @@ namespace LMP
 				});
 	}
 
+	namespace
+	{
+		struct RestoreInfo
+		{
+			QString RadioID_;
+
+			QUrl Url_;
+			MediaInfo Media_;
+		};
+
+		void HandlePluginInfos (const QByteArray& pluginId,
+				const QList<RestoreInfo>& infos,
+				QFutureSynchronizer<Media::RadiosRestoreResult_t> *syncer,
+				IPluginsManager *ipm)
+		{
+			const auto pObj = ipm->GetPluginByID (pluginId);
+			if (!pObj)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot find plugin for"
+						<< pluginId
+						<< ";"
+						<< infos.size ()
+						<< "playlist items will be lost :(";
+				return;
+			}
+
+			const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
+			if (!irrsp)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "plugin"
+						<< pObj
+						<< "for"
+						<< pluginId
+						<< "cannot be cast to Media::IRestorableRadioStationProvider;"
+						<< infos.size ()
+						<< "playlist items will be lost :(";
+				return;
+			}
+
+			const auto& ids = Util::Map (infos, &RestoreInfo::RadioID_);
+			const auto& future = irrsp->RestoreRadioStations (ids);
+			if (future.isCanceled ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "plugin"
+						<< pObj
+						<< "for"
+						<< pluginId
+						<< "returned null future; so"
+						<< infos.size ()
+						<< "playlist items will be lost in the present :(";
+				return;
+			}
+
+			syncer->addFuture (future);
+		}
+
+		struct RestoreVisitor : boost::static_visitor<NativePlaylist_t>
+		{
+			NativePlaylist_t operator() (const QList<Media::AudioInfo>& infos) const
+			{
+				return Util::Map (infos,
+						[] (const Media::AudioInfo& info)
+						{
+							return NativePlaylistItem_t
+							{
+								info.Other_ ["URL"].toUrl (),
+								MediaInfo::FromAudioInfo (info)
+							};
+						});
+			}
+		};
+
+		NativePlaylist_t HandleRestored (const NativePlaylist_t& playlist,
+				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
+		{
+			Util::Decay_t<decltype (playlist)> newPlaylist;
+
+			for (const auto& item : playlist)
+			{
+				if (!item.second)
+				{
+					newPlaylist << item;
+					continue;
+				}
+
+				const auto& media = *item.second;
+
+				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
+				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
+
+				if (!restored.contains ({ pluginID, radioID }))
+				{
+					newPlaylist << item;
+					continue;
+				}
+
+				newPlaylist += boost::apply_visitor (RestoreVisitor {},
+						restored.value ({ pluginID, radioID }, QList<Media::AudioInfo> {})); // WORKAROUND boost 1.54
+			}
+
+			return newPlaylist;
+		}
+
+		template<typename UrlInfoSetter, typename Setter, typename Clearer>
+		void CheckPlaylistRefreshes (const NativePlaylist_t& playlist,
+				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
+		{
+			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
+			for (const auto& item : playlist)
+			{
+				if (!item.second)
+					continue;
+
+				const auto& media = *item.second;
+
+				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
+				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
+
+				urlInfoSetter (item.first.ToUrl (), media);
+
+				if (!radioID.isEmpty () && !pluginID.isEmpty ())
+					plugin2infos [pluginID].append ({ radioID, item.first.ToUrl (), media });
+			}
+
+			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
+
+			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+			for (const auto& pair : Util::Stlize (plugin2infos))
+				HandlePluginInfos (pair.first, pair.second, syncer.get (), ipm);
+
+			if (syncer->futures ().isEmpty ())
+				return;
+
+			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
+					[=]
+					{
+						QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t> restored;
+						for (const auto& future : syncer->futures ())
+							for (const auto& item : future.result ())
+								restored [{ item.PluginID_, item.RadioID_ }] = item.Restored_;
+
+						const auto& newPlaylist = HandleRestored (playlist, restored);
+						if (newPlaylist == playlist)
+							return;
+
+						clearer ();
+
+						for (const auto& item : newPlaylist)
+							if (item.second)
+								urlInfoSetter (item.first.ToUrl (), *item.second);
+
+						setter (newPlaylist);
+					};
+		}
+	}
+
+	void Player::SetNativePlaylist (const NativePlaylist_t& playlist)
+	{
+		auto setter = [this] (const NativePlaylist_t& pl)
+		{
+			Enqueue (Util::Map (pl, &NativePlaylistItem_t::first));
+		};
+
+		CheckPlaylistRefreshes (playlist,
+				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
+				setter,
+				[this] { clear (); });
+
+		setter (playlist);
+	}
+
 	MediaInfo Player::GetPhononMediaInfo () const
 	{
 		MediaInfo info;
@@ -1343,181 +1517,10 @@ namespace LMP
 				GetStaticManager ()->SetOnLoadPlaylist (GetAsNativePlaylist ());
 	}
 
-	namespace
-	{
-		struct RestoreInfo
-		{
-			QString RadioID_;
-
-			QUrl Url_;
-			MediaInfo Media_;
-		};
-
-		void HandlePluginInfos (const QByteArray& pluginId,
-				const QList<RestoreInfo>& infos,
-				QFutureSynchronizer<Media::RadiosRestoreResult_t> *syncer,
-				IPluginsManager *ipm)
-		{
-			const auto pObj = ipm->GetPluginByID (pluginId);
-			if (!pObj)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot find plugin for"
-						<< pluginId
-						<< ";"
-						<< infos.size ()
-						<< "playlist items will be lost :(";
-				return;
-			}
-
-			const auto irrsp = qobject_cast<Media::IRestorableRadioStationProvider*> (pObj);
-			if (!irrsp)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "plugin"
-						<< pObj
-						<< "for"
-						<< pluginId
-						<< "cannot be cast to Media::IRestorableRadioStationProvider;"
-						<< infos.size ()
-						<< "playlist items will be lost :(";
-				return;
-			}
-
-			const auto& ids = Util::Map (infos, &RestoreInfo::RadioID_);
-			const auto& future = irrsp->RestoreRadioStations (ids);
-			if (future.isCanceled ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "plugin"
-						<< pObj
-						<< "for"
-						<< pluginId
-						<< "returned null future; so"
-						<< infos.size ()
-						<< "playlist items will be lost in the present :(";
-				return;
-			}
-
-			syncer->addFuture (future);
-		}
-
-		struct RestoreVisitor : boost::static_visitor<NativePlaylist_t>
-		{
-			NativePlaylist_t operator() (const QList<Media::AudioInfo>& infos) const
-			{
-				return Util::Map (infos,
-						[] (const Media::AudioInfo& info)
-						{
-							return NativePlaylistItem_t
-							{
-								info.Other_ ["URL"].toUrl (),
-								MediaInfo::FromAudioInfo (info)
-							};
-						});
-			}
-		};
-
-		NativePlaylist_t HandleRestored (const NativePlaylist_t& playlist,
-				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
-		{
-			Util::Decay_t<decltype (playlist)> newPlaylist;
-
-			for (const auto& item : playlist)
-			{
-				if (!item.second)
-				{
-					newPlaylist << item;
-					continue;
-				}
-
-				const auto& media = *item.second;
-
-				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
-				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
-
-				if (!restored.contains ({ pluginID, radioID }))
-				{
-					newPlaylist << item;
-					continue;
-				}
-
-				newPlaylist += boost::apply_visitor (RestoreVisitor {},
-						restored.value ({ pluginID, radioID }, QList<Media::AudioInfo> {})); // WORKAROUND boost 1.54
-			}
-
-			return newPlaylist;
-		}
-
-		template<typename UrlInfoSetter, typename Setter, typename Clearer>
-		void CheckPlaylistRefreshes (const NativePlaylist_t& playlist,
-				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
-		{
-			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
-			for (const auto& item : playlist)
-			{
-				if (!item.second)
-					continue;
-
-				const auto& media = *item.second;
-
-				const auto& pluginID = media.Additional_ ["LMP/PluginID"].toByteArray ();
-				const auto& radioID = media.Additional_ ["LMP/RadioID"].toString ();
-
-				urlInfoSetter (item.first.ToUrl (), media);
-
-				if (!radioID.isEmpty () && !pluginID.isEmpty ())
-					plugin2infos [pluginID].append ({ radioID, item.first.ToUrl (), media });
-			}
-
-			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
-
-			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
-			for (const auto& pair : Util::Stlize (plugin2infos))
-				HandlePluginInfos (pair.first, pair.second, syncer.get (), ipm);
-
-			if (syncer->futures ().isEmpty ())
-				return;
-
-			Util::Sequence (nullptr, QtConcurrent::run ([syncer] { syncer->waitForFinished (); })) >>
-					[=]
-					{
-						QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t> restored;
-						for (const auto& future : syncer->futures ())
-							for (const auto& item : future.result ())
-								restored [{ item.PluginID_, item.RadioID_ }] = item.Restored_;
-
-						const auto& newPlaylist = HandleRestored (playlist, restored);
-						if (newPlaylist == playlist)
-							return;
-
-						clearer ();
-
-						for (const auto& item : newPlaylist)
-							if (item.second)
-								urlInfoSetter (item.first.ToUrl (), *item.second);
-
-						setter (newPlaylist);
-					};
-		}
-	}
-
 	void Player::restorePlaylist ()
 	{
 		const auto staticMgr = Core::Instance ().GetPlaylistManager ()->GetStaticManager ();
-		const auto& playlist = staticMgr->GetOnLoadPlaylist ();
-
-		auto setter = [this] (const NativePlaylist_t& pl)
-		{
-			Enqueue (Util::Map (pl, &NativePlaylistItem_t::first));
-		};
-
-		CheckPlaylistRefreshes (playlist,
-				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
-				setter,
-				[this] { clear (); });
-
-		setter (playlist);
+		SetNativePlaylist (staticMgr->GetOnLoadPlaylist ());
 		emit playlistRestored ();
 	}
 
