@@ -601,6 +601,20 @@ namespace LMP
 				MediaInfo ();
 	}
 
+	NativePlaylist_t Player::GetAsNativePlaylist () const
+	{
+		return Util::Map (CurrentQueue_,
+				[this] (const AudioSource& source)
+				{
+					boost::optional<MediaInfo> info;
+					const auto& url = source.ToUrl ();
+					if (Url2Info_.contains (url))
+						info = Url2Info_ [url];
+
+					return NativePlaylistItem_t { source, info };
+				});
+	}
+
 	MediaInfo Player::GetPhononMediaInfo () const
 	{
 		MediaInfo info;
@@ -1325,18 +1339,8 @@ namespace LMP
 
 	void Player::SaveOnLoadPlaylist () const
 	{
-		const auto playlist = Util::Map (CurrentQueue_,
-				[this] (const AudioSource& source)
-				{
-					boost::optional<MediaInfo> info;
-					const auto& url = source.ToUrl ();
-					if (Url2Info_.contains (url))
-						info = Url2Info_ [url];
-
-					return NativePlaylistItem_t { source, info };
-				});
 		Core::Instance ().GetPlaylistManager ()->
-				GetStaticManager ()->SetOnLoadPlaylist (playlist);
+				GetStaticManager ()->SetOnLoadPlaylist (GetAsNativePlaylist ());
 	}
 
 	namespace
