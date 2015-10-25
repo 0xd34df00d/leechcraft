@@ -51,7 +51,7 @@ namespace LMP
 		}
 	}
 
-	void StaticPlaylistManager::SetOnLoadPlaylist (const Playlist_t& sources)
+	void StaticPlaylistManager::SetOnLoadPlaylist (const NativePlaylist_t& sources)
 	{
 		WritePlaylist (GetOnLoadPath (),
 				Util::Map (sources,
@@ -63,7 +63,7 @@ namespace LMP
 						}));
 	}
 
-	auto StaticPlaylistManager::GetOnLoadPlaylist () const -> Playlist_t
+	NativePlaylist_t StaticPlaylistManager::GetOnLoadPlaylist () const
 	{
 		const auto& playlist = ReadPlaylist (GetOnLoadPath ());
 		return Util::Map (playlist,
