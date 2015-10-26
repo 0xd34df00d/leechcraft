@@ -187,13 +187,8 @@ namespace LMP
 		case PlaylistTypes::BannedTracks:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
-		{
-			QList<AudioSource> result;
-			const auto& urls = index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> ();
-			std::transform (urls.begin (), urls.end (), std::back_inserter (result),
-					[] (decltype (urls.front ()) path) { return AudioSource (path); });
-			return result;
-		}
+			return Util::Map (index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> (),
+					Util::Caster<AudioSource> {});
 		}
 	}
 
