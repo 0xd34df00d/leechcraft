@@ -184,7 +184,7 @@ namespace LMP
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		case PlaylistTypes::LovedTracks:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::LovedTracks));
-			case PlaylistTypes::BannedTracks:
+		case PlaylistTypes::BannedTracks:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
 		{
