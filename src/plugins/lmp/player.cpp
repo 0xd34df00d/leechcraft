@@ -793,8 +793,10 @@ namespace LMP
 		}
 	}
 
-	void Player::SetNativePlaylist (const NativePlaylist_t& playlist)
+	void Player::SetNativePlaylist (NativePlaylist_t playlist)
 	{
+		playlist = GetAsNativePlaylist () + playlist;
+
 		auto setter = [this] (const NativePlaylist_t& pl)
 		{
 			Enqueue (Util::Map (pl, &NativePlaylistItem_t::first));
