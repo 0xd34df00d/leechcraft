@@ -33,6 +33,8 @@
 #include <QTimer>
 #include <QMimeData>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include <util/models/dndactionsmixin.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
@@ -72,13 +74,8 @@ namespace LMP
 
 				QList<QUrl> urls;
 				for (const auto& idx : indexes)
-				{
-					const auto& sources = Manager_->GetSources (idx);
-					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) src) { return src.ToUrl (); });
-				}
-
-				urls.removeAll (QUrl ());
+					urls += Util::Map (Manager_->GetSources (idx), &AudioSource::ToUrl);
+				urls.removeAll ({});
 
 				result->setUrls (urls);
 
