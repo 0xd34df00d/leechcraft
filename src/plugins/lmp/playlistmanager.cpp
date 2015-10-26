@@ -51,8 +51,7 @@ namespace LMP
 		public:
 			enum Roles
 			{
-				IncrementalFetch = Qt::UserRole + 1,
-				PlaylistProvider
+				PlaylistProvider = Qt::UserRole + 1
 			};
 
 			PlaylistModel (PlaylistManager *parent)
@@ -150,7 +149,6 @@ namespace LMP
 		PlaylistProviders_ << provObj;
 
 		auto root = prov->GetPlaylistsRoot ();
-		root->setData (true, PlaylistModel::Roles::IncrementalFetch);
 		root->setData (QVariant::fromValue (provObj), PlaylistModel::Roles::PlaylistProvider);
 		Model_->appendRow (root);
 	}
