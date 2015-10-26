@@ -43,7 +43,7 @@ namespace LMP
 		Q_OBJECT
 
 		Ui::PLManagerWidget Ui_;
-		Player *Player_;
+		Player *Player_ = nullptr;
 
 		QAction *DeletePlaylistAction_;
 	public:
