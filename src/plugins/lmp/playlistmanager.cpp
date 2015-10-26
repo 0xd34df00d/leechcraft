@@ -196,16 +196,10 @@ namespace LMP
 	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
 	{
 		for (auto provObj : PlaylistProviders_)
-		{
-			auto prov = qobject_cast<IPlaylistProvider*> (provObj);
-			auto info = prov->GetURLInfo (url);
-			if (!info)
-				continue;
+			if (const auto info = qobject_cast<IPlaylistProvider*> (provObj)->GetURLInfo (url))
+				return MediaInfo::FromAudioInfo (*info);
 
-			return boost::make_optional (MediaInfo::FromAudioInfo (*info));
-		}
-
-		return boost::optional<MediaInfo> ();
+		return {};
 	}
 
 	void PlaylistManager::handleStaticPlaylistsChanged ()
