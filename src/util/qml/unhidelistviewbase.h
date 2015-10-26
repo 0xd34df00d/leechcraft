@@ -60,7 +60,7 @@ namespace Util
 	public:
 		UnhideListViewBase (ICoreProxy_ptr,
 				const std::function<void (QStandardItemModel*)>& modelFiller,
-				QWidget* = 0);
+				QWidget* = nullptr);
 
 		void SetItems (const QList<QStandardItem*>&);
 	signals:
