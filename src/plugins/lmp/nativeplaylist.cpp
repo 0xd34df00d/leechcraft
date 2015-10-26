@@ -27,72 +27,33 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "futures.h"
-#include <thread>
-#include <chrono>
-#include <QEventLoop>
-#include <QtTest>
-#include <futures.h>
-
-QTEST_MAIN (LeechCraft::Util::FuturesTest)
+#include "nativeplaylist.h"
+#include <util/sll/prelude.h>
+#include "mediainfo.h"
+#include "playlistparsers/playlist.h"
 
 namespace LeechCraft
 {
-namespace Util
+namespace LMP
 {
-	namespace
+	Playlist ToDumbPlaylist (const NativePlaylist_t& playlist)
 	{
-		auto MkWaiter ()
-		{
-			return [] (int msecs)
-			{
-				return QtConcurrent::run ([msecs]
-						{
-							std::this_thread::sleep_for (std::chrono::milliseconds (msecs));
-							return msecs * 2;
-						});
-			};
-		}
-	}
-
-	void FuturesTest::testSequencer ()
-	{
-		QEventLoop loop;
-		int res = 0;
-		Sequence (nullptr, MkWaiter () (50))
-			.Then (MkWaiter ())
-			.Then (MkWaiter ())
-			.Then (MkWaiter ())
-			.Then ([&loop, &res] (int cnt)
-					{
-						res = cnt;
-						loop.quit ();
-					});
-
-		loop.exec ();
-
-		QCOMPARE (res, 800);
-	}
-
-	void FuturesTest::testHeterogeneousTypes ()
-	{
-		struct Bar {};
-		struct Baz {};
-
-		QEventLoop loop;
-		bool executed = false;
-		Sequence (nullptr, MkWaiter () (50)) >>
-				[] (int) { return MakeReadyFuture<Bar> ({}); } >>
-				[] (Bar) { return MakeReadyFuture<Baz> ({}); } >>
-				[&executed, &loop] (Baz)
+		return Util::Map (playlist,
+				[] (const NativePlaylistItem_t& item)
 				{
-					executed = true;
-					loop.quit ();
-				};
+					return item.second ?
+							PlaylistItem { item.first, *item.second } :
+							PlaylistItem { item.first };
+				});
+	}
 
-		loop.exec ();
-
-		QCOMPARE (executed, true);
+	NativePlaylist_t FromDumbPlaylist (const Playlist& playlist)
+	{
+		return Util::Map (playlist,
+				[] (const PlaylistItem& item)
+				{
+					return NativePlaylistItem_t { item.Source_, item.GetMediaInfo () };
+				});
 	}
 }
 }

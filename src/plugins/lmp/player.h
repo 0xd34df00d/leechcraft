@@ -43,6 +43,7 @@
 #include "engine/audiosource.h"
 #include "mediainfo.h"
 #include "sortingcriteria.h"
+#include "nativeplaylist.h"
 
 class QModelIndex;
 class QStandardItem;
@@ -183,8 +184,12 @@ namespace LMP
 
 		MediaInfo GetCurrentMediaInfo () const;
 		QString GetCurrentAAPath () const;
-	private:
+
 		MediaInfo GetMediaInfo (const AudioSource&) const;
+
+		NativePlaylist_t GetAsNativePlaylist () const;
+		void SetNativePlaylist (const NativePlaylist_t&);
+	private:
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);
 

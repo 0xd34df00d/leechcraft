@@ -48,6 +48,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
@@ -245,6 +246,7 @@ namespace LMP
 
 		Ui_.PlaylistLayout_->addWidget (PlaylistToolbar_);
 
+		InitCommonActions ();
 		InitViewActions ();
 		InitToolbarActions ();
 
@@ -263,12 +265,22 @@ namespace LMP
 				this,
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
+
 		connect (Ui_.Playlist_->selectionModel (),
 				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
 				this,
 				SLOT (updateStatsLabel ()),
 				Qt::QueuedConnection);
 		updateStatsLabel ();
+
+		connect (Ui_.Playlist_->selectionModel (),
+				SIGNAL (currentChanged (QModelIndex, QModelIndex)),
+				this,
+				SLOT (updateDownloadAction ()));
+		connect (Ui_.Playlist_->selectionModel (),
+				SIGNAL (selectionChanged (QItemSelection, QItemSelection)),
+				this,
+				SLOT (updateDownloadAction ()));
 
 		Ui_.Playlist_->installEventFilter (new PlaylistTreeEventFilter (Player_,
 					Ui_.Playlist_,
@@ -280,6 +292,16 @@ namespace LMP
 				SIGNAL (shouldClearFiltering ()),
 				Ui_.SearchPlaylist_,
 				SLOT (clear ()));
+	}
+
+	void PlaylistWidget::InitCommonActions ()
+	{
+		ActionDownloadTrack_ = new QAction (tr ("Download..."), this);
+		ActionDownloadTrack_->setProperty ("ActionIcon", "download");
+		connect (ActionDownloadTrack_,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleDownload ()));
 	}
 
 	void PlaylistWidget::InitToolbarActions ()
@@ -316,6 +338,8 @@ namespace LMP
 				SLOT (addURL ()));
 		PlaylistToolbar_->addAction (addURL);
 
+		PlaylistToolbar_->addSeparator ();
+		PlaylistToolbar_->addAction (ActionDownloadTrack_);
 		PlaylistToolbar_->addSeparator ();
 
 		ActionMoveTop_ = new QAction (tr ("Move tracks to top"), Ui_.Playlist_);
@@ -732,6 +756,12 @@ namespace LMP
 
 		menu->addSeparator ();
 
+		if (updateDownloadAction ())
+		{
+			menu->addAction (ActionDownloadTrack_);
+			menu->addSeparator ();
+		}
+
 		menu->addAction (ActionToggleSearch_);
 
 		auto mediaInfo = idx.data (Player::Role::Info).value<MediaInfo> ();
@@ -1086,9 +1116,7 @@ namespace LMP
 						QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Playlist playlist { Player_->GetQueue () };
-		playlist.SetProperty (Player_->GetSourceObject ()->GetCurrentSource (), "Current", true);
-		mgr->SaveCustomPlaylist (name, playlist);
+		mgr->SaveCustomPlaylist (name, Player_->GetAsNativePlaylist ());
 	}
 
 	void PlaylistWidget::loadFromDisk ()
@@ -1144,6 +1172,37 @@ namespace LMP
 		}
 
 		Player_->Enqueue ({ urlObj });
+	}
+
+	namespace
+	{
+		QList<AudioSource> GetSelectedOrCurrent (const QList<AudioSource>& selected, Player *player)
+		{
+			if (!selected.isEmpty ())
+				return selected;
+
+			return { player->GetSourceObject ()->GetCurrentSource () };
+		}
+	}
+
+	bool PlaylistWidget::updateDownloadAction ()
+	{
+		const auto& selected = GetSelectedOrCurrent (GetSelected (), Player_);
+		const bool hasRemote = std::any_of (selected.begin (), selected.end (),
+				[] (const AudioSource& src) { return src.IsRemote (); });
+
+		ActionDownloadTrack_->setEnabled (hasRemote);
+
+		return hasRemote;
+	}
+
+	void PlaylistWidget::handleDownload ()
+	{
+		const auto& remotes = Util::Filter (GetSelectedOrCurrent (GetSelected (), Player_), &AudioSource::IsRemote);
+		if (remotes.isEmpty ())
+			return;
+
+		GrabTracks (Util::Map (remotes, Util::BindMemFn (&Player::GetMediaInfo, Player_)), this);
 	}
 
 	void PlaylistWidget::updateStatsLabel ()

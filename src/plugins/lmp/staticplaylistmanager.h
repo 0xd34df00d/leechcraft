@@ -29,18 +29,14 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <QObject>
 #include <QDir>
-#include "engine/audiosource.h"
-#include "playlistparsers/playlist.h"
+#include "nativeplaylist.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	struct MediaInfo;
-
 	class StaticPlaylistManager : public QObject
 	{
 		Q_OBJECT
@@ -49,20 +45,19 @@ namespace LMP
 	public:
 		StaticPlaylistManager (QObject* = 0);
 
-		using OnLoadPlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
-		using OnLoadPlaylist_t = QList<OnLoadPlaylistItem_t>;
+		void SetOnLoadPlaylist (const NativePlaylist_t&);
+		NativePlaylist_t GetOnLoadPlaylist () const;
 
-		void SetOnLoadPlaylist (const OnLoadPlaylist_t&);
-		OnLoadPlaylist_t GetOnLoadPlaylist () const;
+		void SaveCustomPlaylist (QString, const NativePlaylist_t&);
 
-		void SaveCustomPlaylist (QString, const Playlist&);
 		QStringList EnumerateCustomPlaylists () const;
-		Playlist GetCustomPlaylist (const QString&) const;
+		NativePlaylist_t GetCustomPlaylist (const QString&) const;
+
 		QString GetCustomPlaylistPath (const QString&) const;
 		void DeleteCustomPlaylist (const QString&);
 	private:
-		void WritePlaylist (const QString&, const Playlist&);
-		Playlist ReadPlaylist (const QString&) const;
+		void WritePlaylist (const QString&, const NativePlaylist_t&);
+		NativePlaylist_t ReadPlaylist (const QString&) const;
 	signals:
 		void customPlaylistsChanged ();
 	};

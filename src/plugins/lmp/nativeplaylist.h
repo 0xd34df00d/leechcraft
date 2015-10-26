@@ -27,72 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "futures.h"
-#include <thread>
-#include <chrono>
-#include <QEventLoop>
-#include <QtTest>
-#include <futures.h>
+#pragma once
 
-QTEST_MAIN (LeechCraft::Util::FuturesTest)
+#include <boost/optional.hpp>
+#include "engine/audiosource.h"
 
 namespace LeechCraft
 {
-namespace Util
+namespace LMP
 {
-	namespace
-	{
-		auto MkWaiter ()
-		{
-			return [] (int msecs)
-			{
-				return QtConcurrent::run ([msecs]
-						{
-							std::this_thread::sleep_for (std::chrono::milliseconds (msecs));
-							return msecs * 2;
-						});
-			};
-		}
-	}
+	class Playlist;
+	struct MediaInfo;
 
-	void FuturesTest::testSequencer ()
-	{
-		QEventLoop loop;
-		int res = 0;
-		Sequence (nullptr, MkWaiter () (50))
-			.Then (MkWaiter ())
-			.Then (MkWaiter ())
-			.Then (MkWaiter ())
-			.Then ([&loop, &res] (int cnt)
-					{
-						res = cnt;
-						loop.quit ();
-					});
+	using NativePlaylistItem_t = QPair<AudioSource, boost::optional<MediaInfo>>;
+	using NativePlaylist_t = QList<NativePlaylistItem_t>;
 
-		loop.exec ();
-
-		QCOMPARE (res, 800);
-	}
-
-	void FuturesTest::testHeterogeneousTypes ()
-	{
-		struct Bar {};
-		struct Baz {};
-
-		QEventLoop loop;
-		bool executed = false;
-		Sequence (nullptr, MkWaiter () (50)) >>
-				[] (int) { return MakeReadyFuture<Bar> ({}); } >>
-				[] (Bar) { return MakeReadyFuture<Baz> ({}); } >>
-				[&executed, &loop] (Baz)
-				{
-					executed = true;
-					loop.quit ();
-				};
-
-		loop.exec ();
-
-		QCOMPARE (executed, true);
-	}
+	Playlist ToDumbPlaylist (const NativePlaylist_t&);
+	NativePlaylist_t FromDumbPlaylist (const Playlist&);
 }
 }
