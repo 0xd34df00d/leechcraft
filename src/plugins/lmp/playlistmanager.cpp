@@ -167,13 +167,9 @@ namespace LMP
 	QList<AudioSource> PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
-		auto toSrcs = [col] (const QList<int>& ids) -> QList<AudioSource>
+		auto toSrcs = [col] (const QList<int>& ids)
 		{
-			const auto& paths = col->TrackList2PathList (ids);
-			QList<AudioSource> result;
-			std::transform (paths.begin (), paths.end (), std::back_inserter (result),
-					[] (const QString& path) { return AudioSource (path); });
-			return result;
+			return Util::Map (col->TrackList2PathList (ids), Util::Caster<AudioSource> {});
 		};
 
 		switch (index.data (Roles::PlaylistType).toInt ())
