@@ -61,12 +61,12 @@ namespace LMP
 				setSupportedDragActions (Qt::CopyAction);
 			}
 
-			QStringList mimeTypes () const
+			QStringList mimeTypes () const override
 			{
 				return { "text/uri-list" };
 			}
 
-			QMimeData* mimeData (const QModelIndexList& indexes) const
+			QMimeData* mimeData (const QModelIndexList& indexes) const override
 			{
 				QMimeData *result = new QMimeData;
 
