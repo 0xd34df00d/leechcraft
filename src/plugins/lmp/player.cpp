@@ -603,13 +603,22 @@ namespace LMP
 
 	NativePlaylist_t Player::GetAsNativePlaylist () const
 	{
+		const auto& current = Source_->GetCurrentSource ();
+
 		return Util::Map (CurrentQueue_,
-				[this] (const AudioSource& source)
+				[this, current] (const AudioSource& source)
 				{
 					boost::optional<MediaInfo> info;
 					const auto& url = source.ToUrl ();
 					if (Url2Info_.contains (url))
 						info = Url2Info_ [url];
+
+					if (source == current)
+					{
+						if (!info)
+							info = MediaInfo {};
+						info->Additional_ ["Current"] = true;
+					}
 
 					return NativePlaylistItem_t { source, info };
 				});
