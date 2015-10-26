@@ -62,7 +62,7 @@ namespace Util
 		 *
 		 * @param[in] view The quick view to watch for errors.
 		 */
-		QmlErrorWatcher (QQuickWidget*);
+		QmlErrorWatcher (QQuickWidget *view);
 #endif
 	};
 }
