@@ -692,67 +692,67 @@
         <translation>Radio</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="639"/>
+        <location filename="player.cpp" line="833"/>
         <source>Bitrate</source>
         <translation>Bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="640"/>
+        <location filename="player.cpp" line="834"/>
         <source>Minimum bitrate</source>
         <translation>Minimum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="641"/>
+        <location filename="player.cpp" line="835"/>
         <source>Maximum bitrate</source>
         <translation>Maximum bitrate</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="869"/>
+        <location filename="player.cpp" line="1063"/>
         <source>paused</source>
         <translation>paused</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="874"/>
+        <location filename="player.cpp" line="1068"/>
         <source>playing</source>
         <translation>playing</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="878"/>
+        <location filename="player.cpp" line="1072"/>
         <source>stopped</source>
         <translation>stopped</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="883"/>
+        <location filename="player.cpp" line="1077"/>
         <source>%1 by %2 is now %3</source>
         <translation>%1 by %2 is now %3</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1224"/>
+        <location filename="player.cpp" line="1418"/>
         <source>Stream</source>
         <translation>Stream</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1523"/>
+        <location filename="player.cpp" line="1536"/>
         <source>Radio station error: %1.</source>
         <translation>Radio station error: %1.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1740"/>
+        <location filename="player.cpp" line="1753"/>
         <source>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</source>
         <translation>Cannot find a proper audio decoder for file %1. You probably don&apos;t have all the codec plugins installed.</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1748"/>
+        <location filename="player.cpp" line="1761"/>
         <source>Audio source %1 not found, playing next track...</source>
         <translation>Audio source %1 not found, playing next track...</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1753"/>
+        <location filename="player.cpp" line="1766"/>
         <source>Cannot open source %1, playing next track...</source>
         <translation>Cannot open source %1, playing next track...</translation>
     </message>
     <message>
-        <location filename="player.cpp" line="1758"/>
+        <location filename="player.cpp" line="1771"/>
         <source>Audio source %1 is invalid, playing next track...</source>
         <translation>Audio source %1 is invalid, playing next track...</translation>
     </message>
@@ -871,202 +871,202 @@
 <context>
     <name>LeechCraft::LMP::PlaylistWidget</name>
     <message>
-        <location filename="playlistwidget.cpp" line="287"/>
+        <location filename="playlistwidget.cpp" line="309"/>
         <source>Clear...</source>
         <translation>Clear...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="295"/>
+        <location filename="playlistwidget.cpp" line="317"/>
         <source>Save playlist...</source>
         <translation>Save playlist...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="303"/>
+        <location filename="playlistwidget.cpp" line="325"/>
         <source>Load from disk...</source>
         <translation>Load from disk...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="311"/>
+        <location filename="playlistwidget.cpp" line="333"/>
         <source>Add URL...</source>
         <translation>Add URL...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="321"/>
+        <location filename="playlistwidget.cpp" line="345"/>
         <source>Move tracks to top</source>
         <translation>Move tracks to top</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="344"/>
+        <location filename="playlistwidget.cpp" line="368"/>
         <source>Move tracks to bottom</source>
         <translation>Move tracks to bottom</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="364"/>
+        <location filename="playlistwidget.cpp" line="388"/>
         <source>Shuffle tracks</source>
         <translation>Shuffle tracks</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="397"/>
+        <location filename="playlistwidget.cpp" line="421"/>
         <source>Play mode</source>
         <translation>Play mode</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="402"/>
+        <location filename="playlistwidget.cpp" line="426"/>
         <source>Sequential</source>
         <translation>Sequential</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="403"/>
+        <location filename="playlistwidget.cpp" line="427"/>
         <source>Shuffle</source>
         <translation>Shuffle</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="404"/>
+        <location filename="playlistwidget.cpp" line="428"/>
         <source>Shuffle albums</source>
         <translation>Shuffle albums</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="405"/>
+        <location filename="playlistwidget.cpp" line="429"/>
         <source>Shuffle artists</source>
         <translation>Shuffle artists</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="406"/>
+        <location filename="playlistwidget.cpp" line="430"/>
         <source>Repeat track</source>
         <translation>Repeat track</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="407"/>
+        <location filename="playlistwidget.cpp" line="431"/>
         <source>Repeat album</source>
         <translation>Repeat album</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="408"/>
+        <location filename="playlistwidget.cpp" line="432"/>
         <source>Repeat whole</source>
         <translation>Repeat whole</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="444"/>
+        <location filename="playlistwidget.cpp" line="468"/>
         <source>Sorting</source>
         <translation>Sorting</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="457"/>
+        <location filename="playlistwidget.cpp" line="483"/>
         <source>Artist / Year / Album / Track number</source>
         <translation>Artist / Year / Album / Track number</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="464"/>
+        <location filename="playlistwidget.cpp" line="492"/>
         <source>Artist / Track title</source>
         <translation>Artist / Track title</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="469"/>
+        <location filename="playlistwidget.cpp" line="499"/>
         <source>File path</source>
         <translation>File path</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="474"/>
+        <location filename="playlistwidget.cpp" line="506"/>
         <source>No sort</source>
         <translation>No sort</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="501"/>
+        <location filename="playlistwidget.cpp" line="536"/>
         <source>Custom...</source>
         <translation>Custom...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="516"/>
+        <location filename="playlistwidget.cpp" line="551"/>
         <source>Delete from playlist</source>
         <translation>Delete from playlist</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="526"/>
+        <location filename="playlistwidget.cpp" line="561"/>
         <source>Stop after this track</source>
         <translation>Stop after this track</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="533"/>
+        <location filename="playlistwidget.cpp" line="568"/>
         <source>Add to instant queue</source>
         <translation>Add to instant queue</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="540"/>
+        <location filename="playlistwidget.cpp" line="575"/>
         <source>Remove from instant queue</source>
         <translation>Remove from instant queue</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="547"/>
+        <location filename="playlistwidget.cpp" line="582"/>
         <source>Move up in instant queue</source>
         <translation>Move up in instant queue</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="554"/>
+        <location filename="playlistwidget.cpp" line="589"/>
         <source>Move down in instant queue</source>
         <translation>Move down in instant queue</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="561"/>
+        <location filename="playlistwidget.cpp" line="596"/>
         <source>Show track properties</source>
         <translation>Show track properties</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="568"/>
+        <location filename="playlistwidget.cpp" line="603"/>
         <source>Show album art</source>
         <translation>Show album art</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="575"/>
+        <location filename="playlistwidget.cpp" line="610"/>
         <source>Track actions</source>
         <translation>Track actions</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="576"/>
+        <location filename="playlistwidget.cpp" line="611"/>
         <source>Perform action after this track starts...</source>
         <translation>Perform action after this track starts...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="578"/>
+        <location filename="playlistwidget.cpp" line="613"/>
         <source>Perform action after this track stops...</source>
         <translation>Perform action after this track stops...</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="581"/>
+        <location filename="playlistwidget.cpp" line="616"/>
         <source>Existing</source>
         <translation>Existing</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="985"/>
+        <location filename="playlistwidget.cpp" line="1015"/>
         <source>Perform when %1 by %2 starts playing</source>
         <translation>Perform when %1 by %2 starts playing</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="992"/>
+        <location filename="playlistwidget.cpp" line="1022"/>
         <source>Perform when %1 by %2 stops playing</source>
         <translation>Perform when %1 by %2 stops playing</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="328"/>
+        <location filename="playlistwidget.cpp" line="352"/>
         <source>Move tracks up</source>
         <translation>Move tracks up</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="336"/>
+        <location filename="playlistwidget.cpp" line="299"/>
+        <source>Download...</source>
+        <translation>Download...</translation>
+    </message>
+    <message>
+        <location filename="playlistwidget.cpp" line="360"/>
         <source>Move tracks down</source>
         <translation>Move tracks down</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="587"/>
+        <location filename="playlistwidget.cpp" line="622"/>
         <source>Toggle search field</source>
         <translation>Toggle search field</translation>
     </message>
-    <message>
-        <location filename="playlistwidget.cpp" line="858"/>
-        <source>Remove %1</source>
-        <translation>Remove %1</translation>
-    </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="859"/>
+        <location filename="playlistwidget.cpp" line="892"/>
         <source>Remove %n song(s)</source>
         <translation>
             <numerusform>Remove %n song</numerusform>
@@ -1074,52 +1074,52 @@
         </translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1074"/>
+        <location filename="playlistwidget.cpp" line="1104"/>
         <source>Save playlist</source>
         <translation>Save playlist</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1075"/>
+        <location filename="playlistwidget.cpp" line="1105"/>
         <source>Enter name for the playlist:</source>
         <translation>Enter name for the playlist:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1084"/>
+        <location filename="playlistwidget.cpp" line="1114"/>
         <source>Playlist %1 already exists. Do you want to overwrite it?</source>
         <translation>Playlist %1 already exists. Do you want to overwrite it?</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1099"/>
+        <location filename="playlistwidget.cpp" line="1127"/>
         <source>Load files</source>
         <translation>Load files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1102"/>
+        <location filename="playlistwidget.cpp" line="1130"/>
         <source>Music files</source>
         <translation>Music files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1103"/>
+        <location filename="playlistwidget.cpp" line="1131"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1104"/>
+        <location filename="playlistwidget.cpp" line="1132"/>
         <source>All files</source>
         <translation>All files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1131"/>
+        <location filename="playlistwidget.cpp" line="1159"/>
         <source>Enter URL to add to the play queue:</source>
         <translation>Enter URL to add to the play queue:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1142"/>
+        <location filename="playlistwidget.cpp" line="1170"/>
         <source>Invalid URL.</source>
         <translation>Invalid URL.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="1175"/>
+        <location filename="playlistwidget.cpp" line="1234"/>
         <source>%n track(s), total duration: %1; selected duration: %2</source>
         <translation>
             <numerusform>%n track, total duration: %1; selected duration: %2</numerusform>
@@ -1127,7 +1127,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="1179"/>
+        <location filename="playlistwidget.cpp" line="1238"/>
         <source>%n track(s), total duration: %1</source>
         <translation>
             <numerusform>%n track, total duration: %1</numerusform>
@@ -1331,37 +1331,27 @@
 <context>
     <name>LeechCraft::LMP::RadioWidget</name>
     <message>
-        <location filename="radiowidget.cpp" line="164"/>
-        <source>Invalid directory</source>
-        <translation>Invalid directory</translation>
-    </message>
-    <message>
-        <location filename="radiowidget.cpp" line="165"/>
-        <source>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</source>
-        <translation>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</translation>
-    </message>
-    <message>
-        <location filename="radiowidget.cpp" line="231"/>
+        <location filename="radiowidget.cpp" line="169"/>
         <source>Refresh</source>
         <translation>Refresh</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="240"/>
+        <location filename="radiowidget.cpp" line="178"/>
         <source>Add an URL...</source>
         <translation>Add an URL...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="246"/>
+        <location filename="radiowidget.cpp" line="184"/>
         <source>Add current stream...</source>
         <translation>Add current stream...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="256"/>
+        <location filename="radiowidget.cpp" line="194"/>
         <source>Download tracks...</source>
         <translation>Download tracks...</translation>
     </message>
     <message>
-        <location filename="radiowidget.cpp" line="268"/>
+        <location filename="radiowidget.cpp" line="206"/>
         <source>Remove this URL</source>
         <translation>Remove this URL</translation>
     </message>
@@ -1602,22 +1592,32 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="160"/>
+        <location filename="util.cpp" line="168"/>
         <source>Album art</source>
         <translation>Album art</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="192"/>
+        <location filename="util.cpp" line="200"/>
         <source>CD %1:</source>
         <translation>CD %1:</translation>
     </message>
     <message numerus="yes">
-        <location filename="util.cpp" line="251"/>
+        <location filename="util.cpp" line="259"/>
         <source>%n day(s) ago</source>
         <translation>
             <numerusform>%n day ago</numerusform>
             <numerusform>%n days ago</numerusform>
         </translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="281"/>
+        <source>Invalid directory</source>
+        <translation>Invalid directory</translation>
+    </message>
+    <message>
+        <location filename="util.cpp" line="282"/>
+        <source>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</source>
+        <translation>The audio tracks cannot be downloaded to %1. Do you wish to choose another directory?</translation>
     </message>
     <message>
         <location filename="sync/formats.cpp" line="172"/>

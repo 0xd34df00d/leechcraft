@@ -40,7 +40,6 @@ namespace LMP
 {
 	PLManagerWidget::PLManagerWidget (QWidget *parent)
 	: QWidget (parent)
-	, Player_ (0)
 	{
 		Ui_.setupUi (this);
 
