@@ -109,7 +109,8 @@ namespace LMP
 		if (sources.isEmpty ())
 			return;
 
-		Player_->Enqueue (sources, Player::EnqueueFlag::EnqueueReplace);
+		Player_->clear ();
+		Player_->SetNativePlaylist (sources);
 	}
 }
 }

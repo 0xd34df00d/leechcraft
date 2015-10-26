@@ -74,7 +74,12 @@ namespace LMP
 
 				QList<QUrl> urls;
 				for (const auto& idx : indexes)
-					urls += Util::Map (Manager_->GetSources (idx), &AudioSource::ToUrl);
+				{
+					const auto& sources = Manager_->GetSources (idx);
+					urls += Util::Map (sources,
+							[] (const NativePlaylistItem_t& item)
+								{ return item.first.ToUrl (); });
+				}
 				urls.removeAll ({});
 
 				result->setUrls (urls);
@@ -161,18 +166,20 @@ namespace LMP
 			Static_->DeleteCustomPlaylist (index.data ().toString ());
 	}
 
-	QList<AudioSource> PlaylistManager::GetSources (const QModelIndex& index) const
+	NativePlaylist_t PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
 		auto toSrcs = [col] (const QList<int>& ids)
 		{
-			return Util::Map (col->TrackList2PathList (ids), Util::Caster<AudioSource> {});
+			return Util::Map (col->TrackList2PathList (ids),
+					[] (const QString& path) -> NativePlaylistItem_t
+						{ return { path, {} }; });
 		};
 
 		switch (index.data (Roles::PlaylistType).toInt ())
 		{
 		case PlaylistTypes::Static:
-			return { Static_->GetCustomPlaylistPath (index.data ().toString ()) };
+			return Static_->GetCustomPlaylist (index.data ().toString ());
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		case PlaylistTypes::LovedTracks:
@@ -181,7 +188,8 @@ namespace LMP
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
 			return Util::Map (index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> (),
-					Util::Caster<AudioSource> {});
+					[] (const QUrl& url) -> NativePlaylistItem_t
+						{ return { url, {} }; });
 		}
 	}
 

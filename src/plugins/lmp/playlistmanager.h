@@ -29,10 +29,10 @@
 
 #pragma once
 
-#include <boost/optional.hpp>
 #include <QObject>
 #include "interfaces/lmp/iplaylistprovider.h"
 #include "engine/audiosource.h"
+#include "nativeplaylist.h"
 
 class QAbstractItemModel;
 class QStandardItemModel;
@@ -80,7 +80,7 @@ namespace LMP
 		bool CanDeletePlaylist (const QModelIndex&) const;
 		void DeletePlaylist (const QModelIndex&);
 
-		QList<AudioSource> GetSources (const QModelIndex&) const;
+		NativePlaylist_t GetSources (const QModelIndex&) const;
 
 		boost::optional<MediaInfo> TryResolveMediaInfo (const QUrl&) const;
 	private slots:
