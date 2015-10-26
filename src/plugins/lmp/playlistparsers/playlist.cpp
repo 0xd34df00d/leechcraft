@@ -59,17 +59,20 @@ namespace LMP
 				if (pair.second.canConvert<QString> ())
 					result [pair.first] = pair.second;
 
-			result.unite (Util::MakeMap<QString, QVariant> ({
-						{ "LMP/HasMediaInfo", true },
-						{ "LMP/LocalPath", info.LocalPath_ },
-						{ "LMP/Artist", info.Artist_ },
-						{ "LMP/Album", info.Album_ },
-						{ "LMP/Title", info.Title_ },
-						{ "LMP/Genres", info.Genres_.join (" / ") },
-						{ "LMP/Length", info.Length_ },
-						{ "LMP/Year", info.Year_ },
-						{ "LMP/TrackNumber", info.TrackNumber_ }
-					}));
+			const auto pairs =
+			{
+				QPair<QString, QVariant> { "LMP/HasMediaInfo", true },
+				{ "LMP/LocalPath", info.LocalPath_ },
+				{ "LMP/Artist", info.Artist_ },
+				{ "LMP/Album", info.Album_ },
+				{ "LMP/Title", info.Title_ },
+				{ "LMP/Genres", info.Genres_.join (" / ") },
+				{ "LMP/Length", info.Length_ },
+				{ "LMP/Year", info.Year_ },
+				{ "LMP/TrackNumber", info.TrackNumber_ }
+			};
+			for (const auto& pair : pairs)
+				result [pair.first] = pair.second;
 
 			return result;
 		}
