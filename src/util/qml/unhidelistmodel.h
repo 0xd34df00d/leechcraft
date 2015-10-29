@@ -41,6 +41,8 @@ namespace Util
 	 *
 	 * This model just defines some roles used in various "unhide" lists
 	 * and exposes them to QML.
+	 *
+	 * @sa UnhideListViewBase
 	 */
 	class UTIL_QML_API UnhideListModel : public RoleNamesMixin<QStandardItemModel>
 	{
