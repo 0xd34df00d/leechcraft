@@ -59,7 +59,8 @@ namespace Util
 	{
 		new UnhoverDeleteMixin (this);
 
-		filler (Model_);
+		if (filler)
+			filler (Model_);
 
 		const auto& file = GetSysPath (SysPath::QML, "common", "UnhideListView.qml");
 		if (file.isEmpty ())
