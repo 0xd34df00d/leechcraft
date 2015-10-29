@@ -188,7 +188,7 @@ namespace LMP
 		MediaInfo GetMediaInfo (const AudioSource&) const;
 
 		NativePlaylist_t GetAsNativePlaylist () const;
-		void SetNativePlaylist (const NativePlaylist_t&);
+		void SetNativePlaylist (NativePlaylist_t);
 	private:
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);

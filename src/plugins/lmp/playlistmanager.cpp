@@ -33,6 +33,8 @@
 #include <QTimer>
 #include <QMimeData>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/sll/functional.h>
+#include <util/sll/prelude.h>
 #include <util/models/dndactionsmixin.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
@@ -61,12 +63,12 @@ namespace LMP
 				setSupportedDragActions (Qt::CopyAction);
 			}
 
-			QStringList mimeTypes () const
+			QStringList mimeTypes () const override
 			{
 				return { "text/uri-list" };
 			}
 
-			QMimeData* mimeData (const QModelIndexList& indexes) const
+			QMimeData* mimeData (const QModelIndexList& indexes) const override
 			{
 				QMimeData *result = new QMimeData;
 
@@ -74,11 +76,11 @@ namespace LMP
 				for (const auto& idx : indexes)
 				{
 					const auto& sources = Manager_->GetSources (idx);
-					std::transform (sources.begin (), sources.end (), std::back_inserter (urls),
-							[] (decltype (sources.front ()) src) { return src.ToUrl (); });
+					urls += Util::Map (sources,
+							[] (const NativePlaylistItem_t& item)
+								{ return item.first.ToUrl (); });
 				}
-
-				urls.removeAll (QUrl ());
+				urls.removeAll ({});
 
 				result->setUrls (urls);
 
@@ -164,52 +166,40 @@ namespace LMP
 			Static_->DeleteCustomPlaylist (index.data ().toString ());
 	}
 
-	QList<AudioSource> PlaylistManager::GetSources (const QModelIndex& index) const
+	NativePlaylist_t PlaylistManager::GetSources (const QModelIndex& index) const
 	{
 		auto col = Core::Instance ().GetLocalCollection ();
-		auto toSrcs = [col] (const QList<int>& ids) -> QList<AudioSource>
+		auto toSrcs = [col] (const QList<int>& ids)
 		{
-			const auto& paths = col->TrackList2PathList (ids);
-			QList<AudioSource> result;
-			std::transform (paths.begin (), paths.end (), std::back_inserter (result),
-					[] (const QString& path) { return AudioSource (path); });
-			return result;
+			return Util::Map (col->TrackList2PathList (ids),
+					[] (const QString& path) -> NativePlaylistItem_t
+						{ return { path, {} }; });
 		};
 
 		switch (index.data (Roles::PlaylistType).toInt ())
 		{
 		case PlaylistTypes::Static:
-			return { Static_->GetCustomPlaylistPath (index.data ().toString ()) };
+			return Static_->GetCustomPlaylist (index.data ().toString ());
 		case PlaylistTypes::Random50:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::Random50));
 		case PlaylistTypes::LovedTracks:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::LovedTracks));
-			case PlaylistTypes::BannedTracks:
+		case PlaylistTypes::BannedTracks:
 			return toSrcs (col->GetDynamicPlaylist (LocalCollection::DynamicPlaylist::BannedTracks));
 		default:
-		{
-			QList<AudioSource> result;
-			const auto& urls = index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> ();
-			std::transform (urls.begin (), urls.end (), std::back_inserter (result),
-					[] (decltype (urls.front ()) path) { return AudioSource (path); });
-			return result;
-		}
+			return Util::Map (index.data (IPlaylistProvider::ItemRoles::SourceURLs).value<QList<QUrl>> (),
+					[] (const QUrl& url) -> NativePlaylistItem_t
+						{ return { url, {} }; });
 		}
 	}
 
 	boost::optional<MediaInfo> PlaylistManager::TryResolveMediaInfo (const QUrl& url) const
 	{
 		for (auto provObj : PlaylistProviders_)
-		{
-			auto prov = qobject_cast<IPlaylistProvider*> (provObj);
-			auto info = prov->GetURLInfo (url);
-			if (!info)
-				continue;
+			if (const auto info = qobject_cast<IPlaylistProvider*> (provObj)->GetURLInfo (url))
+				return MediaInfo::FromAudioInfo (*info);
 
-			return boost::make_optional (MediaInfo::FromAudioInfo (*info));
-		}
-
-		return boost::optional<MediaInfo> ();
+		return {};
 	}
 
 	void PlaylistManager::handleStaticPlaylistsChanged ()

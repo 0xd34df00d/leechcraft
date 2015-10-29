@@ -80,5 +80,15 @@ namespace Util
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
 #endif
+
+	template<typename To>
+	struct Caster
+	{
+		template<typename From>
+		To operator() (From&& from) const
+		{
+			return To { std::forward<From> (from) };
+		}
+	};
 }
 }
