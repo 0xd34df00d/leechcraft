@@ -56,7 +56,7 @@ namespace Util
 	{
 		Q_OBJECT
 	protected:
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 	public:
 		UnhideListViewBase (ICoreProxy_ptr,
 				const std::function<void (QStandardItemModel*)>& modelFiller,
