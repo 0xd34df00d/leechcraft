@@ -75,10 +75,16 @@ namespace Util
 		 * function at a proper time, which should in turn append the
 		 * items as needed to the model passed to it.
 		 *
+		 * The UnhideListModel is used as the model, so the passed
+		 * \em modelFiller should set the appropriate data for the roles
+		 * defined in UnhideListModel.
+		 *
 		 * @param[in] proxy The pointer to an ICoreProxy instance.
 		 * @param[in] modelFiller A function filling the model with the
-		 * items.
+		 * items, or an empty function.
 		 * @param[in] parent The parent widget of this view.
+		 *
+		 * @sa UnhideListModel
 		 */
 		UnhideListViewBase (ICoreProxy_ptr proxy,
 				const std::function<void (UnhideListModel*)>& modelFiller,
@@ -91,7 +97,13 @@ namespace Util
 		 *
 		 * The ownership of the \em items is transferred to the view.
 		 *
+		 * The UnhideListModel is used as the model, so the passed
+		 * \em modelFiller should set the appropriate data for the roles
+		 * defined in UnhideListModel.
+		 *
 		 * @param[in] items The items to be added to the view model.
+		 *
+		 * @sa UnhideListModel
 		 */
 		void SetItems (const QList<QStandardItem*>& items);
 	signals:
