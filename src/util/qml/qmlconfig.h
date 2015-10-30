@@ -36,3 +36,8 @@
 #else
 #  define UTIL_QML_API Q_DECL_IMPORT
 #endif
+
+/** @defgroup QmlUtil The QML utilities
+ *
+ * @brief Common QML-related classes and functions.
+ */
