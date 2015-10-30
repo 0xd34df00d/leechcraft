@@ -42,12 +42,13 @@
 #include "qmlconfig.h"
 
 class QStandardItem;
-class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Util
 {
+	class UnhideListModel;
+
 	/** @brief Base class for a view of a list of items to be unclosed.
 	 *
 	 * This is a base class for widgets showing QML views with a list of
@@ -66,7 +67,7 @@ namespace Util
 	{
 		Q_OBJECT
 	protected:
-		QStandardItemModel * const Model_;
+		UnhideListModel * const Model_;
 	public:
 		/** @brief Initializes the view and fills it with the items.
 		 *
@@ -80,7 +81,7 @@ namespace Util
 		 * @param[in] parent The parent widget of this view.
 		 */
 		UnhideListViewBase (ICoreProxy_ptr proxy,
-				const std::function<void (QStandardItemModel*)>& modelFiller,
+				const std::function<void (UnhideListModel*)>& modelFiller,
 				QWidget *parent = nullptr);
 
 		/** @brief Sets the items of the view model to \em items.
