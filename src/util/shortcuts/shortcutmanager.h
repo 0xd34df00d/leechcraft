@@ -94,7 +94,7 @@ namespace Util
 		 * your plugin.
 		 * @param[in] parent The parent object of this object.
 		 */
-		ShortcutManager (ICoreProxy_ptr proxy, QObject *parent = 0);
+		ShortcutManager (ICoreProxy_ptr proxy, QObject *parent = nullptr);
 
 		/** @brief Sets the plugin instance object of this manager.
 		 *
