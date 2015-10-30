@@ -31,6 +31,7 @@
 
 #include <QPoint>
 #include <QPalette>
+#include <QMimeData>
 #include "guiconfig.h"
 
 class QSize;
@@ -181,6 +182,16 @@ namespace Util
 			const QColor& color,
 			double alpha = 0.5,
 			const QList<QPalette::ColorRole>& roles = { QPalette::ColorRole::Text, QPalette::ColorRole::WindowText });
+
+	template<typename T>
+	void Save2MimeData (QMimeData *mimeData, const QString& name, const T& t)
+	{
+		QByteArray infosData;
+		QDataStream ostr { &infosData, QIODevice::WriteOnly };
+		ostr << t;
+
+		mimeData->setData (name, infosData);
+	}
 }
 }
 
