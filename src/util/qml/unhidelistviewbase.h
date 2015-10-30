@@ -48,6 +48,14 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief Base class for a view of a list of items to be unclosed.
+	 *
+	 * This is a base class for widgets showing QML views with a list of
+	 * items each of which can be unclosed, like a tab, a page, a button
+	 * on a tab bar, and so on.
+	 *
+	 * @sa UnhideListModel
+	 */
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
 #else
@@ -56,15 +64,43 @@ namespace Util
 	{
 		Q_OBJECT
 	protected:
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 	public:
-		UnhideListViewBase (ICoreProxy_ptr,
+		/** @brief Initializes the view and fills it with the items.
+		 *
+		 * The model is filled by invoking the given \em modelFiller
+		 * function at a proper time, which should in turn append the
+		 * items as needed to the model passed to it.
+		 *
+		 * @param[in] proxy The pointer to an ICoreProxy instance.
+		 * @param[in] modelFiller A function filling the model with the
+		 * items.
+		 * @param[in] parent The parent widget of this view.
+		 */
+		UnhideListViewBase (ICoreProxy_ptr proxy,
 				const std::function<void (QStandardItemModel*)>& modelFiller,
-				QWidget* = nullptr);
+				QWidget *parent = nullptr);
 
-		void SetItems (const QList<QStandardItem*>&);
+		/** @brief Sets the items of the view model to \em items.
+		 *
+		 * Replaces any items previously added via the model filler passed
+		 * to the UnhideListViewBase constructor.
+		 *
+		 * The ownership is transferred to the view.
+		 *
+		 * @param[in] items The items to be added to the view model.
+		 */
+		void SetItems (const QList<QStandardItem*>& items);
 	signals:
-		void itemUnhideRequested (const QString&);
+		/** @brief Emitted when an item with the given \em itemId is
+		 * activated.
+		 *
+		 * @param[out] itemId The ID of the activated item, equal to
+		 * UnhideListModel::Roles::ItemClass.
+		 *
+		 * @sa UnhideListModel::Roles::ItemClass
+		 */
+		void itemUnhideRequested (const QString& itemId);
 	};
 }
 }

@@ -37,10 +37,12 @@ namespace LeechCraft
 {
 namespace Util
 {
-	/** @brief A model suitable to be used with UnhideListViewBase.
+	/** @brief A model to be used with UnhideListViewBase.
 	 *
 	 * This model just defines some roles used in various "unhide" lists
 	 * and exposes them to QML.
+	 *
+	 * @sa UnhideListViewBase
 	 */
 	class UTIL_QML_API UnhideListModel : public RoleNamesMixin<QStandardItemModel>
 	{
