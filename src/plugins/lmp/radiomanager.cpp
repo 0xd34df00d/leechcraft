@@ -37,6 +37,7 @@
 #include <util/models/mergemodel.h>
 #include <util/sll/dropargs.h>
 #include <util/sll/prelude.h>
+#include <util/gui/util.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include <interfaces/media/imodifiableradiostation.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -52,19 +53,6 @@ namespace LMP
 {
 	namespace
 	{
-		namespace
-		{
-			template<typename T>
-			void Serialize (QMimeData *mimeData, const QString& name, const T& t)
-			{
-				QByteArray infosData;
-				QDataStream ostr (&infosData, QIODevice::WriteOnly);
-				ostr << t;
-
-				mimeData->setData (name, infosData);
-			}
-		}
-
 		class RadioModel : public Util::DndActionsMixin<Util::MergeModel>
 		{
 			RadioManager * const Manager_;
@@ -123,8 +111,8 @@ namespace LMP
 				auto result = new QMimeData;
 				result->setUrls (urls);
 
-				Serialize (result, "x-leechcraft-lmp/media-info-list", infos);
-				Serialize (result, "x-leechcraft-lmp/radio-ids", stationsIds);
+				Util::Save2MimeData (result, "x-leechcraft-lmp/media-info-list", infos);
+				Util::Save2MimeData (result, "x-leechcraft-lmp/radio-ids", stationsIds);
 
 				return result;
 			}
