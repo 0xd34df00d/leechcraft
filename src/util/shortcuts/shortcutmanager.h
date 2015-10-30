@@ -69,6 +69,8 @@ namespace Util
 	 * about actions and their IDs.
 	 *
 	 * @sa IHaveShortcuts
+	 *
+	 * @ingroup ShortcutsUtil
 	 */
 	class UTIL_SHORTCUTS_API ShortcutManager : public QObject
 	{
