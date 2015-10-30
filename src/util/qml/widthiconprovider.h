@@ -66,6 +66,8 @@ namespace Util
 	 * regarding upscaling.
 	 *
 	 * @sa ThemeImageProvider
+	 *
+	 * @ingroup QmlUtil
 	 */
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API WidthIconProvider : public QDeclarativeImageProvider

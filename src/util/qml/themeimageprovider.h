@@ -73,6 +73,8 @@ namespace Util
 	   \endcode
 	 * In this case there is no need to add width parameter manually,
 	 * ActionButton will take care of it.
+	 *
+	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API ThemeImageProvider : public WidthIconProvider
 	{

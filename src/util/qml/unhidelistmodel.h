@@ -43,6 +43,8 @@ namespace Util
 	 * and exposes them to QML.
 	 *
 	 * @sa UnhideListViewBase
+	 *
+	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API UnhideListModel : public RoleNamesMixin<QStandardItemModel>
 	{

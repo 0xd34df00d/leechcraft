@@ -60,6 +60,8 @@ namespace Util
 	 * Several different factories may be created sharing the same cache
 	 * location. In this case, the minimum value of the cache size would
 	 * be used as the maximum.
+	 *
+	 * @ingroup QmlUtil
 	 */
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API StandardNAMFactory : public QDeclarativeNetworkAccessManagerFactory

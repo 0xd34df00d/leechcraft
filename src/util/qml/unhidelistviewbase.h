@@ -55,6 +55,8 @@ namespace Util
 	 * on a tab bar, and so on.
 	 *
 	 * @sa UnhideListModel
+	 *
+	 * @ingroup QmlUtil
 	 */
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API UnhideListViewBase : public QDeclarativeView
