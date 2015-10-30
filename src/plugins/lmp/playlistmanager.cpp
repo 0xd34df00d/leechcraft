@@ -66,7 +66,11 @@ namespace LMP
 
 			QStringList mimeTypes () const override
 			{
-				return { "text/uri-list" };
+				return
+				{
+					"text/uri-list",
+					"x-leechcraft-lmp/media-info-list"
+				};
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const override
