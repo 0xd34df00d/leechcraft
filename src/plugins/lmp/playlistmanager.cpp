@@ -73,14 +73,18 @@ namespace LMP
 				QMimeData *result = new QMimeData;
 
 				QList<QUrl> urls;
+				QList<MediaInfo> infos;
+
 				for (const auto& idx : indexes)
-				{
-					const auto& sources = Manager_->GetSources (idx);
-					urls += Util::Map (sources,
-							[] (const NativePlaylistItem_t& item)
-								{ return item.first.ToUrl (); });
-				}
-				urls.removeAll ({});
+					for (const auto& item : Manager_->GetSources (idx))
+					{
+						const auto& url = item.first.ToUrl ();
+						if (!url.isValid ())
+							continue;
+
+						urls << url;
+						infos << item.second.get_value_or ({});
+					}
 
 				result->setUrls (urls);
 
