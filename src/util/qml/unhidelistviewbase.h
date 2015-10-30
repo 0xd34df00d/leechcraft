@@ -55,6 +55,9 @@ namespace Util
 	 * items each of which can be unclosed, like a tab, a page, a button
 	 * on a tab bar, and so on.
 	 *
+	 * The view uses UnhideListModel internally, please refer to its
+	 * documentation regarding various data roles defined by the model.
+	 *
 	 * @sa UnhideListModel
 	 *
 	 * @ingroup QmlUtil
