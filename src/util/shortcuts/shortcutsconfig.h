@@ -36,3 +36,8 @@
 #else
 #  define UTIL_SHORTCUTS_API Q_DECL_IMPORT
 #endif
+
+/** @defgroup ShortcutsUtil The shortcuts utilities
+ *
+ * @brief Classes and functions related to shortcuts handling.
+ */
