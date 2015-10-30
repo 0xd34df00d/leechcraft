@@ -89,7 +89,7 @@ namespace Util
 		 * Replaces any items previously added via the model filler passed
 		 * to the UnhideListViewBase constructor.
 		 *
-		 * The ownership is transferred to the view.
+		 * The ownership of the \em items is transferred to the view.
 		 *
 		 * @param[in] items The items to be added to the view model.
 		 */
