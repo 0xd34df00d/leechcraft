@@ -35,6 +35,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
+#include <util/gui/util.h>
 #include <util/models/dndactionsmixin.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
@@ -87,6 +88,7 @@ namespace LMP
 					}
 
 				result->setUrls (urls);
+				Util::Save2MimeData (result, "x-leechcraft-lmp/media-info-list", infos);
 
 				return result;
 			}
