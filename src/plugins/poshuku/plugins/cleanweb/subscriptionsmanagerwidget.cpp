@@ -84,7 +84,8 @@ namespace CleanWeb
 		{
 			QMessageBox::warning (this,
 					tr ("Error adding subscription"),
-					tr ("Invalid URL. Valid URL format is abp://subscribe/?location=URL"),
+					tr ("Invalid URL. Valid URL format is %1.")
+						.arg ("<em>abp://subscribe/?location=URL</em>"),
 					QMessageBox::Ok);
 			return;
 		}
