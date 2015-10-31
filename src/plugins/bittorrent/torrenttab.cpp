@@ -40,6 +40,7 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
 #include <util/sll/prelude.h>
+#include <util/sll/views.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -681,14 +682,9 @@ namespace BitTorrent
 
 		const auto oldDirs = Util::Map (currentRows
 				, [] (const int row)
-					{ return std::make_pair( row, Core::Instance ()->GetTorrentDirectory (row)); });
+					{ return Core::Instance ()->GetTorrentDirectory (row); });
 
-		const auto& elem = oldDirs.front ().second;
-
-		const auto allDirsAreSame = std::all_of (oldDirs.cbegin (), oldDirs.cend ()
-				, [elem] (const std::pair< int, QString>& it) {return elem == it.second;});
-
-		MoveTorrentFiles mtf {allDirsAreSame ? oldDirs.front ().second : QString::null};
+		MoveTorrentFiles mtf {oldDirs};
 
 		if (mtf.exec () == QDialog::Rejected)
 			return;
@@ -697,7 +693,7 @@ namespace BitTorrent
 
 		XmlSettingsManager::Instance ()->setProperty ("LastMoveDirectory", newDir);
 
-		for (auto it : oldDirs)
+		for (auto it : Util::Views::Zip (currentRows, oldDirs))
 		{
 			if (it.second == newDir)
 				continue;

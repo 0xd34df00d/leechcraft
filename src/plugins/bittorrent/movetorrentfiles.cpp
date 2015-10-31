@@ -37,13 +37,19 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	MoveTorrentFiles::MoveTorrentFiles (const QString& oldDirectory /* = QString::null */, QWidget *parent /* = nullptr */)
+	MoveTorrentFiles::MoveTorrentFiles (QStringList oldDirectories, QWidget *parent /* = nullptr */)
 	: QDialog {parent}
 	{
 		Ui_.setupUi (this);
 
-		Ui_.OldLocation_->setText ( oldDirectory.isNull () ? trUtf8( "<i>Multiple sources</i>" )
-															: oldDirectory );
+		Q_ASSERT (!oldDirectories.empty ());
+
+		oldDirectories.removeDuplicates ();
+
+		if (1 == oldDirectories.size ())
+			Ui_.OldLocation_->setText (oldDirectories.front ());
+		else
+			Ui_.OldLocation_->setToolTip (oldDirectories.join (tr (", ")));
 
 		const auto& moveDirectory = XmlSettingsManager::Instance ()->Property ("LastMoveDirectory"
 				, XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ()).toString ();

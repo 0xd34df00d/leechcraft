@@ -42,7 +42,7 @@ namespace BitTorrent
 
 		Ui::MoveTorrentFiles Ui_;
 	public:
-		explicit MoveTorrentFiles (const QString& oldDirectory = QString::null, QWidget *parent = nullptr);
+		explicit MoveTorrentFiles (QStringList oldDirectories, QWidget *parent = nullptr);
 		QString GetNewLocation () const;
 	private slots:
 		void on_Browse__released ();
