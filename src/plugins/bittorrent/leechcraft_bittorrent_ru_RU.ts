@@ -558,7 +558,7 @@ IPv6 input mask</extracomment>
     <message>
         <location filename="core.cpp" line="242"/>
         <source>Total uploaded</source>
-        <translation>Всего загружено</translation>
+        <translation>Всего отдано</translation>
     </message>
     <message>
         <location filename="core.cpp" line="587"/>
