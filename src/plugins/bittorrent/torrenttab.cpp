@@ -676,6 +676,9 @@ namespace BitTorrent
 	{
 		const auto currentRows = GetSelectedRows ();
 
+		if (currentRows.empty() )
+			return;
+
 		const auto oldDirs = Util::Map (currentRows
 				, [] (const int row)
 					{ return std::make_pair( row, Core::Instance ()->GetTorrentDirectory (row)); });
