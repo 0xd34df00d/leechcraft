@@ -38,7 +38,7 @@ namespace Util
 	class ViewsTest : public QObject
 	{
 		Q_OBJECT
-	public:
+	private slots:
 		void testZipView ();
 	};
 }
