@@ -95,7 +95,7 @@ namespace CleanWeb
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
-						tr ("Subscription with such title already exists."),
+						tr ("Subscription with this title already exists."),
 						QMessageBox::Ok);
 				return;
 			}
@@ -104,7 +104,7 @@ namespace CleanWeb
 			{
 				QMessageBox::warning (this,
 						tr ("Error adding subscription"),
-						tr ("Subscription with such location already exists."),
+						tr ("Subscription with this URL already exists."),
 						QMessageBox::Ok);
 				return;
 			}
@@ -113,7 +113,7 @@ namespace CleanWeb
 		{
 			QMessageBox::warning (this,
 					tr ("Error adding subscription"),
-					tr ("Invalid URL.<br />Valid URL format is: abp://subscribe/?location=URL"),
+					tr ("Invalid URL. Valid URL format is abp://subscribe/?location=URL"),
 					QMessageBox::Ok);
 			return;
 		}
