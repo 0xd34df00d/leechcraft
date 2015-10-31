@@ -35,6 +35,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
+#include <util/sll/views.h>
 #include <util/gui/util.h>
 #include <util/models/dndactionsmixin.h>
 #include "core.h"
@@ -120,23 +121,23 @@ namespace LMP
 		dynamicRoot->setEditable (false);
 		Model_->appendRow (dynamicRoot);
 
-		const std::vector<PlaylistTypes> types =
+		const auto types =
 		{
 			PlaylistTypes::Random50,
 			PlaylistTypes::LovedTracks,
 			PlaylistTypes::BannedTracks
 		};
-		const std::vector<QString> names =
+		const auto names =
 		{
 			tr ("50 random tracks"),
 			tr ("Loved tracks"),
 			tr ("Banned tracks")
 		};
 
-		for (size_t i = 0, size = types.size (); i < size; ++i)
+		for (const auto& pair : Util::Views::Zip (types, names))
 		{
-			auto item = new QStandardItem (names.at (i));
-			item->setData (types.at (i), Roles::PlaylistType);
+			auto item = new QStandardItem { pair.second };
+			item->setData (pair.first, Roles::PlaylistType);
 			item->setEditable (false);
 			dynamicRoot->appendRow (item);
 		}
