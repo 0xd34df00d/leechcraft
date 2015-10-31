@@ -29,8 +29,10 @@
 
 #pragma once
 
+#include <iterator>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range.hpp>
+#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -40,6 +42,73 @@ namespace Views
 {
 	namespace detail
 	{
+		template<template<typename, typename> class PairType, typename FirstIt, typename SecondIt>
+		using ValueType_t = PairType<typename std::iterator_traits<FirstIt>::value_type, typename std::iterator_traits<SecondIt>::value_type>;
+
+		template<template<typename, typename> class PairType, typename FirstIt, typename SecondIt>
+		class PairIterator : public std::iterator<std::forward_iterator_tag, ValueType_t<PairType, FirstIt, SecondIt>>
+		{
+			bool IsSentinel_;
+
+			FirstIt First_;
+			FirstIt FirstEnd_;
+			SecondIt Second_;
+			SecondIt SecondEnd_;
+		public:
+			PairIterator ()
+			: IsSentinel_ { true }
+			{
+			}
+
+			PairIterator (const FirstIt& first, const FirstIt& firstEnd,
+					const SecondIt& second, const SecondIt& secondEnd)
+			: IsSentinel_ { false }
+			, First_ { first }
+			, FirstEnd_ { firstEnd }
+			, Second_ { second }
+			, SecondEnd_ { secondEnd }
+			{
+			}
+
+			bool operator== (const PairIterator& other) const
+			{
+				return (IsSentinel () && other.IsSentinel ()) ||
+						(First_ == other.First_ && Second_ == other.Second_);
+			}
+
+			bool operator!= (const PairIterator& other) const
+			{
+				return !(*this == other);
+			}
+
+			bool IsSentinel () const
+			{
+				return IsSentinel_ || First_ == FirstEnd_ || Second_ == SecondEnd_;
+			}
+
+			PairIterator& operator++ ()
+			{
+				++First_;
+				++Second_;
+				return *this;
+			}
+
+			PairIterator operator++ (int)
+			{
+				auto it = *this;
+
+				++First_;
+				++Second_;
+
+				return it;
+			}
+
+			PairType<typename std::iterator_traits<FirstIt>::value_type, typename std::iterator_traits<SecondIt>::value_type> operator* () const
+			{
+				return { *First_, *Second_ };
+			}
+		};
+
 		template<typename C1, typename C2, typename PairType>
 		class ZipRange : public boost::iterator_range<boost::zip_iterator<PairType>>
 		{
