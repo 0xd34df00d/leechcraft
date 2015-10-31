@@ -40,6 +40,7 @@ namespace Util
 		Q_OBJECT
 	private slots:
 		void testZipView ();
+		void testZipViewDifferentLengths ();
 	};
 }
 }
