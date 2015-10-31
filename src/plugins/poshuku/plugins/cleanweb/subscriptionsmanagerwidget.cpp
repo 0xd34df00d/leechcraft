@@ -78,42 +78,40 @@ namespace CleanWeb
 		else
 			locationUrl.setUrl (location);
 
-		if (url.scheme () == "abp" &&
-				url.host () == "subscribe" &&
-				locationUrl.isValid ())
-		{
-			if (title.isEmpty ())
-			{
-				QMessageBox::warning (this,
-						tr ("Error adding subscription"),
-						tr ("Can't add subscription without a title."),
-						QMessageBox::Ok);
-				return;
-			}
-
-			if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.Name_; }))
-			{
-				QMessageBox::warning (this,
-						tr ("Error adding subscription"),
-						tr ("Subscription with this title already exists."),
-						QMessageBox::Ok);
-				return;
-			}
-
-			if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.URL_; }))
-			{
-				QMessageBox::warning (this,
-						tr ("Error adding subscription"),
-						tr ("Subscription with this URL already exists."),
-						QMessageBox::Ok);
-				return;
-			}
-		}
-		else
+		if (url.scheme () != "abp" ||
+				url.host () != "subscribe" ||
+				!locationUrl.isValid ())
 		{
 			QMessageBox::warning (this,
 					tr ("Error adding subscription"),
 					tr ("Invalid URL. Valid URL format is abp://subscribe/?location=URL"),
+					QMessageBox::Ok);
+			return;
+		}
+
+		if (title.isEmpty ())
+		{
+			QMessageBox::warning (this,
+					tr ("Error adding subscription"),
+					tr ("Can't add subscription without a title."),
+					QMessageBox::Ok);
+			return;
+		}
+
+		if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.Name_; }))
+		{
+			QMessageBox::warning (this,
+					tr ("Error adding subscription"),
+					tr ("Subscription with this title already exists."),
+					QMessageBox::Ok);
+			return;
+		}
+
+		if (Model_->HasFilter (title, [] (const Filter& f) { return f.SD_.URL_; }))
+		{
+			QMessageBox::warning (this,
+					tr ("Error adding subscription"),
+					tr ("Subscription with this URL already exists."),
 					QMessageBox::Ok);
 			return;
 		}
