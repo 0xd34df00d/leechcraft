@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2006-2015  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,6 +39,7 @@
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -675,39 +676,32 @@ namespace BitTorrent
 	{
 		const auto currentRows = GetSelectedRows ();
 
-		QList< QString > oldDirs {};
-		oldDirs.reserve ( currentRows.size () );
-		for (const auto row : currentRows)
-			oldDirs << Core::Instance ()->GetTorrentDirectory (row);
+		const auto oldDirs = Util::Map (currentRows
+				, [] (const int row)
+					{ return std::make_pair( row, Core::Instance ()->GetTorrentDirectory (row)); });
 
-		const auto allDirsAreSame = std::all_of ( oldDirs.cbegin (), oldDirs.cend ()
-							, [elem = oldDirs.front()] (const auto& it )
-							{ return elem == it; }
-							);
+		const auto& elem = oldDirs.front ().second;
 
-		MoveTorrentFiles mtf {};
-		mtf.setOldLocation ( allDirsAreSame ? oldDirs.front () : trUtf8 ("Multiple Sources"));
-		// TODO: use something like GetLongestPath here.
-		if (!allDirsAreSame)
-			mtf.setNewLocation (XmlSettingsManager::Instance ()->
-						property ("LastSaveDirectory").toString ());
+		const auto allDirsAreSame = std::all_of (oldDirs.cbegin (), oldDirs.cend ()
+				, [elem] (const std::pair< int, QString>& it) {return elem == it.second;});
+
+		MoveTorrentFiles mtf {allDirsAreSame ? oldDirs.front ().second : QString::null};
 
 		if (mtf.exec () == QDialog::Rejected)
 			return;
 
 		const auto newDir = mtf.GetNewLocation ();
 
-		auto rowIt = currentRows.cbegin ();
-		auto oldDirIt = oldDirs.cbegin ();
+		XmlSettingsManager::Instance ()->setProperty ("LastMoveDirectory", newDir);
 
-		for (; rowIt != currentRows. cend() ; ++rowIt, ++oldDirIt)
+		for (auto it : oldDirs)
 		{
-			if (*oldDirIt == newDir)
+			if (it.second == newDir)
 				continue;
-			if (!Core::Instance ()->MoveTorrentFiles (newDir, *rowIt))
+			if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
 			{
 				QString text = tr ("Failed to move torrent's files from %1 to %2")
-						.arg (*oldDirIt)
+						.arg (it.second)
 						.arg (newDir);
 				const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
 				Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);

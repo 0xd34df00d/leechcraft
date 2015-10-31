@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2006-2015  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -27,28 +27,28 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include <QFileDialog>
 #include "movetorrentfiles.h"
+
+#include <QFileDialog>
+
+#include <xmlsettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace BitTorrent
 {
-	MoveTorrentFiles::MoveTorrentFiles (QWidget *parent)
+	MoveTorrentFiles::MoveTorrentFiles (const QString& oldDirectory /* = QString::null */, QWidget *parent /* = nullptr */)
 	: QDialog {parent}
 	{
 		Ui_.setupUi (this);
-	}
 
-	void MoveTorrentFiles::setOldLocation (const QString& oldDir)
-	{
-		Ui_.OldLocation_->setText (oldDir);
-		Ui_.NewLocation_->setText (oldDir);
-	}
+		Ui_.OldLocation_->setText ( oldDirectory.isNull () ? trUtf8( "<i>Multiple sources</i>" )
+															: oldDirectory );
 
-	void MoveTorrentFiles::setNewLocation (const QString& newDir)
-	{
-		Ui_.NewLocation_->setText (newDir);
+		const auto& moveDirectory = XmlSettingsManager::Instance ()->Property ("LastMoveDirectory"
+				, XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ()).toString ();
+
+		Ui_.NewLocation_->setText (moveDirectory);
 	}
 
 	QString MoveTorrentFiles::GetNewLocation () const
