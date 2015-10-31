@@ -35,6 +35,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/sll/functional.h>
 #include <util/sll/prelude.h>
+#include <util/gui/util.h>
 #include <util/models/dndactionsmixin.h>
 #include "core.h"
 #include "staticplaylistmanager.h"
@@ -65,7 +66,11 @@ namespace LMP
 
 			QStringList mimeTypes () const override
 			{
-				return { "text/uri-list" };
+				return
+				{
+					"text/uri-list",
+					"x-leechcraft-lmp/media-info-list"
+				};
 			}
 
 			QMimeData* mimeData (const QModelIndexList& indexes) const override
@@ -73,16 +78,21 @@ namespace LMP
 				QMimeData *result = new QMimeData;
 
 				QList<QUrl> urls;
+				QList<MediaInfo> infos;
+
 				for (const auto& idx : indexes)
-				{
-					const auto& sources = Manager_->GetSources (idx);
-					urls += Util::Map (sources,
-							[] (const NativePlaylistItem_t& item)
-								{ return item.first.ToUrl (); });
-				}
-				urls.removeAll ({});
+					for (const auto& item : Manager_->GetSources (idx))
+					{
+						const auto& url = item.first.ToUrl ();
+						if (!url.isValid ())
+							continue;
+
+						urls << url;
+						infos << item.second.get_value_or ({});
+					}
 
 				result->setUrls (urls);
+				Util::Save2MimeData (result, "x-leechcraft-lmp/media-info-list", infos);
 
 				return result;
 			}
