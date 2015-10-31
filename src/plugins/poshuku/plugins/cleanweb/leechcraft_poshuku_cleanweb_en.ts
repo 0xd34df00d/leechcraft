@@ -30,7 +30,7 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="90"/>
+        <location filename="cleanweb.cpp" line="94"/>
         <source>Blocks unwanted ads.</source>
         <translation>Blocks unwanted ads.</translation>
     </message>
@@ -38,37 +38,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="179"/>
-        <source>Name</source>
-        <translation>Name</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="179"/>
-        <source>Last updated</source>
-        <translation>Last updated</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="179"/>
-        <source>URL</source>
-        <translation>URL</translation>
-    </message>
-    <message>
-        <location filename="core.cpp" line="393"/>
+        <location filename="core.cpp" line="284"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Blocked by Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="432"/>
+        <location filename="core.cpp" line="323"/>
         <source>Block image...</source>
         <translation>Block image...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="745"/>
+        <location filename="core.cpp" line="596"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>The subscription %1 was successfully added.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="779"/>
+        <location filename="core.cpp" line="626"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>The subscription %1 wasn&apos;t delegated.</translation>
     </message>
@@ -99,22 +84,22 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::FlashPlaceHolder</name>
     <message>
-        <location filename="flashplaceholder.cpp" line="173"/>
+        <location filename="flashplaceholder.cpp" line="141"/>
         <source>Load</source>
         <translation>Load</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="179"/>
+        <location filename="flashplaceholder.cpp" line="147"/>
         <source>Add URL to whitelist...</source>
         <translation>Add URL to whitelist...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="184"/>
+        <location filename="flashplaceholder.cpp" line="152"/>
         <source>Add host to whitelist...</source>
         <translation>Add host to whitelist...</translation>
     </message>
     <message>
-        <location filename="flashplaceholder.cpp" line="194"/>
+        <location filename="flashplaceholder.cpp" line="162"/>
         <source>Hide</source>
         <translation>Hide</translation>
     </message>
@@ -152,30 +137,42 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManager</name>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManagerWidget</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="85"/>
-        <location filename="subscriptionsmanager.cpp" line="94"/>
-        <location filename="subscriptionsmanager.cpp" line="103"/>
-        <location filename="subscriptionsmanager.cpp" line="112"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="86"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="96"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="105"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="114"/>
         <source>Error adding subscription</source>
         <translation>Error adding subscription</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="86"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="87"/>
+        <source>Invalid URL. Valid URL format is %1.</source>
+        <translation>Invalid URL. Valid URL format is %1.</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanagerwidget.cpp" line="97"/>
         <source>Can&apos;t add subscription without a title.</source>
         <translation>Can&apos;t add subscription without a title.</translation>
     </message>
+</context>
+<context>
+    <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsModel</name>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="95"/>
-        <location filename="subscriptionsmanager.cpp" line="104"/>
-        <source>Subscription with such title allready exists.</source>
-        <translation>Subscription with such title allready exists.</translation>
+        <location filename="subscriptionsmodel.cpp" line="47"/>
+        <source>Name</source>
+        <translation>Name</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.cpp" line="113"/>
-        <source>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</source>
-        <translation>Invalid URL.&lt;br /&gt;Valid URL format is: abp://subscribe/?location=URL</translation>
+        <location filename="subscriptionsmodel.cpp" line="47"/>
+        <source>Last updated</source>
+        <translation>Last updated</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmodel.cpp" line="47"/>
+        <source>URL</source>
+        <translation>URL</translation>
     </message>
 </context>
 <context>
@@ -207,72 +204,72 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::UserFiltersModel</name>
     <message>
-        <location filename="userfiltersmodel.cpp" line="61"/>
+        <location filename="userfiltersmodel.cpp" line="62"/>
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="62"/>
+        <location filename="userfiltersmodel.cpp" line="63"/>
         <source>Policy</source>
         <translation>Policy</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="63"/>
+        <location filename="userfiltersmodel.cpp" line="64"/>
         <source>Type</source>
         <translation>Type</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="64"/>
+        <location filename="userfiltersmodel.cpp" line="65"/>
         <source>Case sensitive</source>
         <translation>Case sensitive</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="65"/>
+        <location filename="userfiltersmodel.cpp" line="66"/>
         <source>Domains</source>
         <translation>Domains</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="110"/>
+        <location filename="userfiltersmodel.cpp" line="111"/>
         <source>Allowed</source>
         <translation>Allowed</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="111"/>
+        <location filename="userfiltersmodel.cpp" line="112"/>
         <source>Blocked</source>
         <translation>Blocked</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="119"/>
+        <location filename="userfiltersmodel.cpp" line="120"/>
         <source>Wildcard</source>
         <translation>Wildcard</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="121"/>
+        <location filename="userfiltersmodel.cpp" line="122"/>
         <source>Regexp</source>
         <translation>Regexp</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="125"/>
+        <location filename="userfiltersmodel.cpp" line="126"/>
         <source>True</source>
         <translation>True</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="126"/>
+        <location filename="userfiltersmodel.cpp" line="127"/>
         <source>False</source>
         <translation>False</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="182"/>
+        <location filename="userfiltersmodel.cpp" line="183"/>
         <source>Add a filter</source>
         <translation>Add a filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="231"/>
+        <location filename="userfiltersmodel.cpp" line="232"/>
         <source>Modify filter</source>
         <translation>Modify filter</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="265"/>
+        <location filename="userfiltersmodel.cpp" line="266"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Imported %1 user filters (%2 parsed successfully).</translation>
     </message>
@@ -440,14 +437,14 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>SubscriptionsManager</name>
+    <name>SubscriptionsManagerWidget</name>
     <message>
-        <location filename="subscriptionsmanager.ui" line="32"/>
+        <location filename="subscriptionsmanagerwidget.ui" line="32"/>
         <source>Add</source>
         <translation>Add</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanager.ui" line="39"/>
+        <location filename="subscriptionsmanagerwidget.ui" line="39"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
