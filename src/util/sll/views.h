@@ -109,15 +109,17 @@ namespace Views
 			}
 		};
 
-		template<typename C1, typename C2, typename PairType>
-		class ZipRange : public boost::iterator_range<boost::zip_iterator<PairType>>
+		template<typename I1, typename I2, template<typename, typename> class PairType>
+		class ZipRange : public boost::iterator_range<PairIterator<PairType, I1, I2>>
 		{
+			using IteratorType_t = PairIterator<PairType, I1, I2>;
 		public:
+			template<typename C1, typename C2>
 			ZipRange (C1&& c1, C2&& c2)
-			: boost::iterator_range<boost::zip_iterator<PairType>>
+			: boost::iterator_range<IteratorType_t>
 			{
-				boost::make_zip_iterator ({ c1.begin (), c2.begin () }),
-				boost::make_zip_iterator ({ c1.end (), c2.end () })
+				IteratorType_t { c1.begin (), c1.end (), c2.begin (), c2.end () },
+				IteratorType_t {}
 			}
 			{
 			}
@@ -125,7 +127,7 @@ namespace Views
 	}
 
 	template<template<typename, typename> class PairType = QPair, typename C1, typename C2>
-	detail::ZipRange<C1, C2, PairType<typename C1::iterator, typename C2::iterator>> Zip (const C1& c1, const C2& c2)
+	detail::ZipRange<typename C1::const_iterator, typename C2::const_iterator, PairType> Zip (const C1& c1, const C2& c2)
 	{
 		return { c1, c2 };
 	}
