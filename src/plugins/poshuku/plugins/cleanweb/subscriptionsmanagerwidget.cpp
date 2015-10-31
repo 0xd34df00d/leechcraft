@@ -29,11 +29,7 @@
 
 #include "subscriptionsmanagerwidget.h"
 #include <QMessageBox>
-
-#if QT_VERSION >= 0x050000
-#include <QUrlQuery>
-#endif
-
+#include <util/sll/urlaccessor.h>
 #include "core.h"
 #include "subscriptionsmodel.h"
 #include "subscriptionadddialog.h"
@@ -68,11 +64,7 @@ namespace CleanWeb
 		QUrl url (urlStr);
 		QUrl locationUrl;
 
-#if QT_VERSION < 0x050000
-		const auto& location = url.queryItemValue ("location");
-#else
-		const auto& location = QUrlQuery { url }.queryItemValue ("location");
-#endif
+		const auto& location = Util::UrlAccessor { url } ["location"];
 		if (location.contains ("%"))
 			locationUrl.setUrl (QUrl::fromPercentEncoding (location.toLatin1 ()));
 		else
