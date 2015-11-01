@@ -29,4 +29,4 @@ target_link_libraries (leechcraft_historyholder
 	)
 install (TARGETS leechcraft_historyholder DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_historyholder Concurrent Sql)
+FindQtLibs (leechcraft_historyholder Concurrent Gui Sql)
