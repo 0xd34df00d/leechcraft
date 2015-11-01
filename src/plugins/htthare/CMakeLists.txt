@@ -34,4 +34,4 @@ target_link_libraries (leechcraft_htthare
 install (TARGETS leechcraft_htthare DESTINATION ${LC_PLUGINS_DEST})
 install (FILES httharesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_htthare Network)
+FindQtLibs (leechcraft_htthare Gui Network)
