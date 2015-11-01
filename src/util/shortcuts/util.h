@@ -54,6 +54,8 @@ namespace Util
 	 * @param[in] func The function to invoke when one of key sequences in
 	 * \em seqs is activated.
 	 * @param[in] parent The parent object for the shortcuts.
+	 *
+	 * @ingroup ShortcutsUtil
 	 */
 	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>& seqs,
 			const std::function<void ()>& func, QWidget *parent);
@@ -71,6 +73,8 @@ namespace Util
 	 * @param[in] metamethod The metamethod to invoke when one of key
 	 * sequences in \em seqs is activated.
 	 * @param[in] parent The parent object for the shortcuts.
+	 *
+	 * @ingroup ShortcutsUtil
 	 */
 	UTIL_SHORTCUTS_API void CreateShortcuts (const QList<QKeySequence>& seqs,
 			QObject *object, const char *metamethod, QWidget *parent);

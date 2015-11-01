@@ -43,6 +43,8 @@ namespace Util
 	 * and exposes them to QML.
 	 *
 	 * @sa UnhideListViewBase
+	 *
+	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API UnhideListModel : public RoleNamesMixin<QStandardItemModel>
 	{
@@ -70,7 +72,8 @@ namespace Util
 			 */
 			ItemDescription,
 
-			/** @brief The URL of the icon represented by this row.
+			/** @brief The URL of the icon of the item represented by this
+			 * row.
 			 *
 			 * Exposed under the name \em itemIcon to QML.
 			 */

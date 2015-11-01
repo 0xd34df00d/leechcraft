@@ -49,7 +49,7 @@ namespace LeechCraft
 namespace Util
 {
 	UnhideListViewBase::UnhideListViewBase (ICoreProxy_ptr proxy,
-			const std::function<void (QStandardItemModel*)>& filler, QWidget *parent)
+			const std::function<void (UnhideListModel*)>& filler, QWidget *parent)
 #if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
 #else

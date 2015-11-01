@@ -43,6 +43,8 @@ namespace LeechCraft
 namespace Util
 {
 	/** @brief Utility class for logging errors from a QML view.
+	 *
+	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API QmlErrorWatcher : public QObject
 	{

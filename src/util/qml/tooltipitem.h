@@ -71,6 +71,8 @@ namespace Util
 			}
 		}
 	   \endcode
+	 *
+	 * @ingroup QmlUtil
 	 */
 #if QT_VERSION < 0x050000
 	class UTIL_QML_API ToolTipItem : public QDeclarativeItem

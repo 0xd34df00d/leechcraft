@@ -122,6 +122,8 @@ namespace Util
 	 * @sa ICoreProxy
 	 * @sa IInfo
 	 * @sa IColorThemeManager
+	 *
+	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API ColorThemeProxy : public QObject
 	{

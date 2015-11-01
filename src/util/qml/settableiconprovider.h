@@ -44,6 +44,8 @@ namespace Util
 	 * ClearIcon().
 	 *
 	 * @sa WidthIconProvider
+	 *
+	 * @ingroup QmlUtil
 	 */
 	class UTIL_QML_API SettableIconProvider : public WidthIconProvider
 	{
