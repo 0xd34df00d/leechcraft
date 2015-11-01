@@ -6,6 +6,7 @@ if (USE_QT5)
 	set (CMAKE_INCLUDE_CURRENT_DIR ON)
 	find_package (Qt5Widgets)
 
+	find_package(Qt5LinguistTools REQUIRED)
 	if (Qt5LinguistTools_FOUND)
 		if (NOT TARGET Qt5::lconvert AND TARGET Qt5::lrelease)
 			get_target_property(_lrelease_location Qt5::lrelease LOCATION)
