@@ -25,4 +25,4 @@ target_link_libraries (leechcraft_imgaste
 	)
 install (TARGETS leechcraft_imgaste DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_imgaste Gui Network)
+FindQtLibs (leechcraft_imgaste Network Widgets)
