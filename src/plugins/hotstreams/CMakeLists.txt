@@ -51,4 +51,4 @@ target_link_libraries (leechcraft_hotstreams
 	)
 install (TARGETS leechcraft_hotstreams DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_hotstreams Concurrent Network Xml)
+FindQtLibs (leechcraft_hotstreams Concurrent Gui Network Xml)
