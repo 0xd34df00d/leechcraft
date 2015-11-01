@@ -83,3 +83,7 @@ install (DIRECTORY share/qml5/sb2 DESTINATION ${LC_QML5_DEST})
 install (FILES sb2panelsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_sb2 Quick QuickWidgets Widgets)
+
+if (WITH_X11)
+	FindQtLibs (leechcraft_sb2 X11Extras)
+endif ()
