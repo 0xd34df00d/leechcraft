@@ -31,8 +31,8 @@
 
 #include <QObject>
 #include <QPointer>
-#include "convinfo.h"
 #include <interfaces/core/icoreproxy.h>
+#include "convinfo.h"
 
 namespace LeechCraft
 {
