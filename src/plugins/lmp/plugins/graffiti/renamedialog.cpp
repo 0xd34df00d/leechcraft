@@ -122,7 +122,7 @@ namespace Graffiti
 
 	void RenameDialog::updatePreview ()
 	{
-		PerformSubstitutions (Ui_.Pattern_->currentText (), Infos_,
+		Names_ = PerformSubstitutions (Ui_.Pattern_->currentText (), Infos_,
 				[this] (int row, const QString& name)
 					{ PreviewModel_->item (row, 1)->setText (name); });
 	}
