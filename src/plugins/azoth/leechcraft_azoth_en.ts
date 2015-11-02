@@ -3572,6 +3572,24 @@
     </message>
 </context>
 <context>
+    <name>PGPKeySelectionDialog</name>
+    <message>
+        <location filename="pgpkeyselectiondialog.ui" line="14"/>
+        <source>PGP key selection</source>
+        <translation>PGP key selection</translation>
+    </message>
+    <message>
+        <location filename="pgpkeyselectiondialog.ui" line="32"/>
+        <source>Key:</source>
+        <translation>Key:</translation>
+    </message>
+    <message>
+        <location filename="pgpkeyselectiondialog.ui" line="43"/>
+        <source>&lt;no key&gt;</source>
+        <translation>&lt;no key&gt;</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <location filename="util.cpp" line="120"/>
