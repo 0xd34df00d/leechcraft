@@ -89,21 +89,21 @@ namespace Xoox
 		if (!entry || !Entries2Crypt_.contains (entry->GetJID ()))
 			return;
 
-		const QCA::PGPKey& key = PGPManager_->PublicKey (entry->GetJID ());
+		const auto& key = PGPManager_->PublicKey (entry->GetJID ());
 
-		if (!key.isNull ())
-		{
-			const QString& body = msg.body ();
-			msg.setBody (tr ("This message is encrypted. Please decrypt "
-							"it to view the original contents."));
+		if (key.isNull ())
+			return;
 
-			QXmppElement crypt;
-			crypt.setTagName ("x");
-			crypt.setAttribute ("xmlns", "jabber:x:encrypted");
-			crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
+		const auto& body = msg.body ();
+		msg.setBody (tr ("This message is encrypted. Please decrypt "
+						"it to view the original contents."));
 
-			msg.setExtensions (msg.extensions () << crypt);
-		}
+		QXmppElement crypt;
+		crypt.setTagName ("x");
+		crypt.setAttribute ("xmlns", "jabber:x:encrypted");
+		crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
+
+		msg.setExtensions (msg.extensions () << crypt);
 #endif
 	}
 
