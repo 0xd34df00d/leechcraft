@@ -40,13 +40,18 @@ namespace Azoth
 		int Code_;
 		QString Message_;
 	public:
-		GPGException (int code, const QString& msg)
+		GPGException (const QString& context, int code, const QString& msg)
 		: std::runtime_error
 		{
-			"Azoth GPG error " + std::to_string (code) + ": " + msg.toStdString ()
+			context.toStdString () + std::to_string (code) + ": " + msg.toStdString ()
 		}
 		, Code_ { code }
 		, Message_ { msg }
+		{
+		}
+
+		GPGException (int code, const QString& msg)
+		: GPGException { "Azoth GPG error", code, msg }
 		{
 		}
 
