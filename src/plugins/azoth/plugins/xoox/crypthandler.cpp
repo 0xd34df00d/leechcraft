@@ -141,8 +141,9 @@ namespace Xoox
 	{
 	}
 
-	void CryptHandler::handleSignedPresenceReceived (const QString&)
+	void CryptHandler::handleSignedPresenceReceived (const QString& id)
 	{
+		SignedPresences_ << id;
 	}
 
 	void CryptHandler::handleInvalidSignatureReceived (const QString& id)
