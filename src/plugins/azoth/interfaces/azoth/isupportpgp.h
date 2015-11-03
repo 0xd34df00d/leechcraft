@@ -46,9 +46,9 @@ namespace Azoth
 	 */
 	class ISupportPGP
 	{
+	protected:
+		virtual ~ISupportPGP () = default;
 	public:
-		virtual ~ISupportPGP () {}
-
 		/** @brief Sets the private key for the account.
 		 *
 		 * @param[in] key The private key for the account.
