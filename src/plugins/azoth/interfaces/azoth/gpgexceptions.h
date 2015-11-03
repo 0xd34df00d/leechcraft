@@ -35,12 +35,14 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	class GPGException : public std::runtime_error
+namespace GPGExceptions
+{
+	class General : public std::runtime_error
 	{
 		int Code_;
 		QString Message_;
 	public:
-		GPGException (const QString& context, int code, const QString& msg)
+		General (const QString& context, int code, const QString& msg)
 		: std::runtime_error
 		{
 			context.toStdString () + std::to_string (code) + ": " + msg.toStdString ()
@@ -50,8 +52,8 @@ namespace Azoth
 		{
 		}
 
-		GPGException (int code, const QString& msg)
-		: GPGException { "Azoth GPG error", code, msg }
+		General (int code, const QString& msg)
+		: General { "Azoth GPG error", code, msg }
 		{
 		}
 
@@ -66,13 +68,23 @@ namespace Azoth
 		}
 	};
 
-	class GPGEncryptionException : public GPGException
+	class NullPubkey : public General
 	{
 	public:
-		GPGEncryptionException (int code, const QString& msg)
-		: GPGException { "Azoth GPG encryption error", code, msg }
+		NullPubkey ()
+		: General { "Azoth GPG: null pubkey", -1, {} }
 		{
 		}
 	};
+
+	class Encryption : public General
+	{
+	public:
+		Encryption (int code, const QString& msg)
+		: General { "Azoth GPG encryption error", code, msg }
+		{
+		}
+	};
+}
 }
 }
