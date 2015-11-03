@@ -88,7 +88,7 @@ namespace Azoth
 		 * @param[in] enabled Whether encryption should be enabled.
 		 */
 		virtual void SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
-
+	protected:
 		/** @brief Notifies whether signature has been verified for the
 		 * given entry.
 		 *
