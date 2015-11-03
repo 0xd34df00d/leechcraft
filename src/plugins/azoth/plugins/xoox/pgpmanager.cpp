@@ -85,7 +85,7 @@ namespace Xoox
 	{
 		if (pubkey.isNull ())
 		{
-			warning (QString ("Cannot encrypt: public key is null"));
+			warning ("Cannot encrypt: public key is null");
 			return QByteArray ();
 		}
 

@@ -131,8 +131,7 @@ namespace Xoox
 	}
 #endif
 
-	void CryptHandler::handleEncryptedMessageReceived (const QString& id,
-			const QString& decrypted)
+	void CryptHandler::handleEncryptedMessageReceived (const QString& id, const QString& decrypted)
 	{
 		EncryptedMessages_ [id] = decrypted;
 	}
