@@ -68,15 +68,37 @@ namespace Xoox
 
 	namespace
 	{
-		QString WrapPGP (const QString& str, bool sig)
+		enum class PGPType
 		{
-			const QString type = sig ? "SIGNATURE" : "MESSAGE";
+			Signature,
+			Message
+		};
+
+		QString GetAsciiString (PGPType type)
+		{
+			switch (type)
+			{
+			case PGPType::Message:
+				return "MESSAGE";
+			case PGPType::Signature:
+				return "SIGNATURE";
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message type"
+					<< static_cast<int> (type);
+			return {};
+		}
+
+		QString WrapPGP (const QString& str, PGPType type)
+		{
+			const auto& typeStr = GetAsciiString (type);
 
 			QString result;
-			result += QString ("-----BEGIN PGP %1-----\n").arg (type);
+			result += QString ("-----BEGIN PGP %1-----\n").arg (typeStr);
 			result += "Version: PGP\n\n";
 			result += str + "\n";
-			result += QString ("-----END PGP %1-----\n").arg (type);
+			result += QString ("-----END PGP %1-----\n").arg (typeStr);
 			return result;
 		}
 	}
@@ -200,7 +222,7 @@ namespace Xoox
 		QCA::SecureMessage msg (&pgp);
 		msg.setFormat (QCA::SecureMessage::Ascii);
 		msg.startDecrypt ();
-		msg.update (WrapPGP (encrypted, false).toUtf8 ());
+		msg.update (WrapPGP (encrypted, PGPType::Message).toUtf8 ());
 		msg.end ();
 		msg.waitForFinished ();
 
@@ -228,7 +250,7 @@ namespace Xoox
 		key.setPGPPublicKey (pubkey);
 		msg.setSigner (key);
 		msg.setFormat (QCA::SecureMessage::Binary);
-		msg.startVerify (WrapPGP (signature, true).toUtf8 ());
+		msg.startVerify (WrapPGP (signature, PGPType::Signature).toUtf8 ());
 		msg.update (message);
 		msg.end ();
 		msg.waitForFinished ();
