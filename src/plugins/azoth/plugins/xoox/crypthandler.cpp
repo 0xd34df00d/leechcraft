@@ -46,9 +46,6 @@ namespace Xoox
 	CryptHandler::CryptHandler (ClientConnection *conn)
 	: QObject (conn)
 	, Conn_ (conn)
-#ifdef ENABLE_CRYPT
-	, PGPManager_ (0)
-#endif
 	{
 	}
 

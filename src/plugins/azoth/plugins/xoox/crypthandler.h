@@ -60,7 +60,7 @@ namespace Xoox
 		ClientConnection *Conn_;
 
 #ifdef ENABLE_CRYPT
-		PgpManager *PGPManager_;
+		PgpManager *PGPManager_ = nullptr;
 #endif
 
 		QSet<QString> SignedPresences_;
