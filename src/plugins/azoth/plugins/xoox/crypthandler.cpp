@@ -95,8 +95,6 @@ namespace Xoox
 			return;
 
 		const auto& body = msg.body ();
-		msg.setBody (tr ("This message is encrypted. Please decrypt "
-						"it to view the original contents."));
 
 		QXmppElement crypt;
 		crypt.setTagName ("x");
@@ -104,6 +102,9 @@ namespace Xoox
 		crypt.setValue (PGPManager_->EncryptBody (key, body.toUtf8 ()));
 
 		msg.setExtensions (msg.extensions () << crypt);
+
+		msg.setBody (tr ("This message is encrypted. Please decrypt "
+						"it to view the original contents."));
 #endif
 	}
 
