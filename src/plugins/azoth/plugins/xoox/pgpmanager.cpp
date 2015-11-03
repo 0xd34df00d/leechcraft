@@ -272,7 +272,6 @@ namespace Xoox
 		if (x_element.namespaceURI () == NsEncrypted)
 		{
 			QString encryptedBodyStr = x_element.text ();
-			//TODO Check if we need another representation, instead of 'toAscii()'
 			const QByteArray& encryptedBody = encryptedBodyStr.toLatin1 ();
 			QByteArray decryptedBody = DecryptBody (encryptedBody);
 			if (!decryptedBody.isEmpty ())
