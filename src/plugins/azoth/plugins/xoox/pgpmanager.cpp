@@ -138,9 +138,9 @@ namespace Xoox
 			return QByteArray ();
 		}
 
-		const QByteArray& sig = msg.signature ();
-		const QList<QByteArray>& arrs = sig.split ('\n');
-		QList<QByteArray>::const_iterator it = arrs.begin ();
+		const auto& sig = msg.signature ();
+		const auto& arrs = sig.split ('\n');
+		auto it = arrs.begin ();
 		++it;
 		if (it == arrs.end ())
 			return sig;
@@ -244,19 +244,19 @@ namespace Xoox
 
 	bool PgpManager::handleStanza (const QDomElement& stanza)
 	{
-		const QString& tagName = stanza.tagName ();
-		if (("message" != tagName) && ("presence" != tagName))
+		const auto& tagName = stanza.tagName ();
+		if ("message" != tagName && "presence" != tagName)
 			return false;
 
-		const QString& from = stanza.attribute ("from");
+		const auto& from = stanza.attribute ("from");
 
 		// Case 1: signed presence|message
-		const QDomElement& x_element = stanza.firstChildElement ("x");
+		const auto& x_element = stanza.firstChildElement ("x");
 		if (x_element.namespaceURI () == NsSigned)
 		{
-			const QDomElement& status = stanza.firstChildElement ("status");
-			QString message = status.text ();
-			QString signature = x_element.text ();
+			const auto& status = stanza.firstChildElement ("status");
+			const auto& message = status.text ();
+			const auto& signature = x_element.text ();
 
 			const QCA::PGPKey key = PublicKey (from);
 
@@ -271,9 +271,9 @@ namespace Xoox
 		// Case 2: encrypted message
 		if (x_element.namespaceURI () == NsEncrypted)
 		{
-			QString encryptedBodyStr = x_element.text ();
-			const QByteArray& encryptedBody = encryptedBodyStr.toLatin1 ();
-			QByteArray decryptedBody = DecryptBody (encryptedBody);
+			const auto& encryptedBodyStr = x_element.text ();
+			const auto& encryptedBody = encryptedBodyStr.toLatin1 ();
+			const auto& decryptedBody = DecryptBody (encryptedBody);
 			if (!decryptedBody.isEmpty ())
 				emit encryptedMessageReceived (from, QString::fromUtf8 (decryptedBody));
 		}
