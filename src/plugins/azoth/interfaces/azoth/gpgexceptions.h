@@ -65,5 +65,14 @@ namespace Azoth
 			return Message_;
 		}
 	};
+
+	class GPGEncryptionException : public GPGException
+	{
+	public:
+		GPGEncryptionException (int code, const QString& msg)
+		: GPGException { "Azoth GPG encryption error", code, msg }
+		{
+		}
+	};
 }
 }
