@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_ISUPPORTPGP_H
-#define PLUGINS_AZOTH_INTERFACES_ISUPPORTPGP_H
+#pragma once
+
 #include <QtGlobal>
 #include <QtCrypto>
 
@@ -125,5 +125,3 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportPGP,
 		"org.Deviant.LeechCraft.Azoth.ISupportPGP/1.0");
-
-#endif
