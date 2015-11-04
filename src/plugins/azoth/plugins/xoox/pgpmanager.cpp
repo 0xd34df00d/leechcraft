@@ -94,11 +94,17 @@ namespace Xoox
 		{
 			const auto& typeStr = GetAsciiString (type);
 
+			const auto& startMarker = QString { "-----BEGIN PGP %1-----\n" }.arg (typeStr);
+			const auto& endMarker = QString { "-----END PGP %1-----\n" }.arg (typeStr);
+
+			if (str.contains (startMarker) && str.contains (endMarker))
+				return str;
+
 			QString result;
-			result += QString ("-----BEGIN PGP %1-----\n").arg (typeStr);
+			result += startMarker;
 			result += "Version: PGP\n\n";
 			result += str + "\n";
-			result += QString ("-----END PGP %1-----\n").arg (typeStr);
+			result += endMarker;
 			return result;
 		}
 	}
