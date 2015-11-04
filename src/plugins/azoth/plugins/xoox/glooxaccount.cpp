@@ -919,9 +919,11 @@ namespace Xoox
 		if (!glEntry)
 			return;
 
+		const auto cryptHandler = ClientConnection_->GetCryptHandler ();
+
 		const QString& jid = glEntry->GetJID ();
 		if (enabled &&
-				ClientConnection_->GetCryptHandler ()->GetPGPManager ()->PublicKey (jid).isNull ())
+				cryptHandler->GetPGPManager ()->PublicKey (jid).isNull ())
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to enable encryption for entry %1: "
@@ -931,7 +933,7 @@ namespace Xoox
 			return;
 		}
 
-		if (!ClientConnection_->GetCryptHandler ()->SetEncryptionEnabled (jid, enabled))
+		if (!cryptHandler->SetEncryptionEnabled (jid, enabled))
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to change encryption state for %1.")
 								.arg (glEntry->GetEntryName ()),
