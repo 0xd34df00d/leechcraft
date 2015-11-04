@@ -827,9 +827,7 @@ namespace Azoth
 		if (entry != GetEntry<QObject> ())
 			return;
 
-		EnableEncryption_->blockSignals (true);
 		EnableEncryption_->setChecked (enabled);
-		EnableEncryption_->blockSignals (false);
 	}
 #endif
 
