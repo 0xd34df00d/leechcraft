@@ -29,6 +29,7 @@
 
 #include "msgsender.h"
 #include <memory>
+#include <QMessageBox>
 #include <util/xpc/defaulthookproxy.h>
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/irichtextmessage.h"
@@ -75,7 +76,25 @@ namespace Azoth
 		if (proxy->IsCancelled ())
 			return;
 
-		msg->Send ();
+		try
+		{
+			msg->Send ();
+		}
+		catch (const std::exception& ex)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error sending message to"
+					<< e->GetEntryID ()
+					<< e->GetEntryName ()
+					<< variant
+					<< ex.what ();
+
+			QMessageBox::critical (nullptr,
+					"LeechCraft",
+					tr ("Error sending message to %1: %2.")
+						.arg ("<em>" + e->GetEntryName () + "</em>")
+						.arg (QString::fromUtf8 (ex.what ())));
+		}
 	}
 }
 }
