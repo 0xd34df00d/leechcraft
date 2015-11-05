@@ -813,13 +813,7 @@ namespace Azoth
 			return;
 		}
 
-		const bool enable = EnableEncryption_->isChecked ();
-
-		EnableEncryption_->blockSignals (true);
-		EnableEncryption_->setChecked (!enable);
-		EnableEncryption_->blockSignals (false);
-
-		pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
+		pgp->SetEncryptionEnabled (GetEntry<QObject> (), EnableEncryption_->isChecked ());
 	}
 
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
