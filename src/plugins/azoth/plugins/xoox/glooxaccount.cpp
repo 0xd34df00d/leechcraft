@@ -922,10 +922,10 @@ namespace Xoox
 
 		const auto cryptHandler = ClientConnection_->GetCryptHandler ();
 
-		bool beenEnabled = false;
+		bool beenChanged = false;
 
 		const auto emitGuard = Util::MakeScopeGuard ([&]
-					{ emit encryptionStateChanged (entry, beenEnabled); });
+					{ emit encryptionStateChanged (entry, beenChanged ? enabled : !enabled); });
 
 		const auto& jid = glEntry->GetJID ();
 		if (enabled &&
@@ -948,7 +948,7 @@ namespace Xoox
 			return;
 		}
 
-		beenEnabled = true;
+		beenChanged = true;
 	}
 #endif
 
