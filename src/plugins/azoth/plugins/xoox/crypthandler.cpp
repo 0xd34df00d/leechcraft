@@ -129,6 +129,11 @@ namespace Xoox
 
 		return true;
 	}
+
+	bool CryptHandler::IsEncryptionEnabled (const QString& jid) const
+	{
+		return Entries2Crypt_.contains (jid);
+	}
 #endif
 
 	void CryptHandler::handleEncryptedMessageReceived (const QString& id, const QString& decrypted)

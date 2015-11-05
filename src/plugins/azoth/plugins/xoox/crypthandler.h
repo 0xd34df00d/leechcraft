@@ -79,6 +79,7 @@ namespace Xoox
 #ifdef ENABLE_CRYPT
 		PgpManager* GetPGPManager () const;
 		bool SetEncryptionEnabled (const QString&, bool);
+		bool IsEncryptionEnabled (const QString&) const;
 #endif
 	private slots:
 		void handleEncryptedMessageReceived (const QString&, const QString&);
