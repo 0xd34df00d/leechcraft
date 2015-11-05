@@ -691,6 +691,8 @@ namespace Azoth
 		}
 		catch (const std::exception &ex)
 		{
+			clear = false;
+
 			QMessageBox::critical (this,
 					"LeechCraft",
 					tr ("Error sending message to %1: %2.")
