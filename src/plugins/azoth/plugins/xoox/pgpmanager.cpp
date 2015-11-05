@@ -32,6 +32,7 @@
 #include <QtCrypto>
 #include <QXmppConstants.h>
 #include <QXmppClient.h>
+#include <interfaces/azoth/gpgexceptions.h>
 
 namespace LeechCraft
 {
@@ -114,7 +115,7 @@ namespace Xoox
 		if (pubkey.isNull ())
 		{
 			warning ("Cannot encrypt: public key is null");
-			return QByteArray ();
+			throw GPGExceptions::NullPubkey {};
 		}
 
 		QCA::SecureMessageKey msgKey;
@@ -128,15 +129,15 @@ namespace Xoox
 		msg.end ();
 		msg.waitForFinished ();
 
-		if (msg.success ())
-			return msg.read ();
-		else
+		if (!msg.success ())
 		{
 			info (QString { "Error encrypting: %1 (%2)." }
 						.arg (msg.errorCode ())
 						.arg (msg.diagnosticText ()));
-			return QByteArray ();
+			throw GPGExceptions::Encryption { msg.errorCode (), msg.diagnosticText () };
 		}
+
+		return msg.read ();
 	}
 
 	QByteArray PgpManager::SignMessage (const QByteArray& body)
