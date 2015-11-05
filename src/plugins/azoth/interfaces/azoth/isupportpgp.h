@@ -79,13 +79,15 @@ namespace Azoth
 		 */
 		virtual QCA::PGPKey GetEntryKey (QObject *entry) const = 0;
 
-		/** @brief Enables or disables encryption for the given entry.
+		/** @brief Enables or disables encryption for the \em entry.
 		 *
-		 * If the encryption has been enabled successfully, the
+		 * If the encryption status has been changed successfully, the
 		 * encryptionStateChanged() should be emitted afterwards.
 		 *
 		 * @param[in] entry The entry for which to toggle the encryption.
 		 * @param[in] enabled Whether encryption should be enabled.
+		 *
+		 * @sa encryptionStateChanged()
 		 */
 		virtual void SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
 	protected:
