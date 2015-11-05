@@ -1675,11 +1675,12 @@ namespace Azoth
 #endif
 
 #ifdef ENABLE_CRYPT
-		if (qobject_cast<ISupportPGP*> (accObj))
+		if (const auto isp = qobject_cast<ISupportPGP*> (accObj))
 		{
 			EnableEncryption_ = new QAction (tr ("Enable encryption"), this);
 			EnableEncryption_->setProperty ("ActionIcon", "document-encrypt");
 			EnableEncryption_->setCheckable (true);
+			EnableEncryption_->setChecked (isp->IsEncryptionEnabled (e->GetQObject ()));
 			connect (EnableEncryption_,
 					SIGNAL (triggered ()),
 					this,
