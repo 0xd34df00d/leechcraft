@@ -950,6 +950,15 @@ namespace Xoox
 
 		beenChanged = true;
 	}
+
+	bool GlooxAccount::IsEncryptionEnabled (QObject *entry) const
+	{
+		const auto glEntry = qobject_cast<GlooxCLEntry*> (entry);
+		if (!glEntry)
+			return false;
+
+		return ClientConnection_->GetCryptHandler ()->IsEncryptionEnabled (glEntry->GetJID ());
+	}
 #endif
 
 	QString GlooxAccount::GetNick () const

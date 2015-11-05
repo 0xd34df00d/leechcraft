@@ -90,6 +90,7 @@ namespace Azoth
 		 * @sa encryptionStateChanged()
 		 */
 		virtual void SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
+		virtual bool IsEncryptionEnabled (QObject *entry) const = 0;
 	protected:
 		/** @brief Notifies whether signature has been verified for the
 		 * given entry.

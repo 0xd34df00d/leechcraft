@@ -252,6 +252,7 @@ namespace Xoox
 		void SetEntryKey (QObject*, const QCA::PGPKey&);
 		QCA::PGPKey GetEntryKey (QObject* entry) const;
 		void SetEncryptionEnabled (QObject*, bool);
+		bool IsEncryptionEnabled (QObject*) const;
 #endif
 
 		QString GetNick () const;
