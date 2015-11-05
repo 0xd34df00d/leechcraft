@@ -37,6 +37,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/util.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -921,7 +922,12 @@ namespace Xoox
 
 		const auto cryptHandler = ClientConnection_->GetCryptHandler ();
 
-		const QString& jid = glEntry->GetJID ();
+		bool beenEnabled = false;
+
+		const auto emitGuard = Util::MakeScopeGuard ([&]
+					{ emit encryptionStateChanged (entry, beenEnabled); });
+
+		const auto& jid = glEntry->GetJID ();
 		if (enabled &&
 				cryptHandler->GetPGPManager ()->PublicKey (jid).isNull ())
 		{
@@ -934,12 +940,15 @@ namespace Xoox
 		}
 
 		if (!cryptHandler->SetEncryptionEnabled (jid, enabled))
+		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to change encryption state for %1.")
 								.arg (glEntry->GetEntryName ()),
 						PCritical_));
-		else
-			emit encryptionStateChanged (entry, enabled);
+			return;
+		}
+
+		beenEnabled = true;
 	}
 #endif
 
