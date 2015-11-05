@@ -685,7 +685,18 @@ namespace Azoth
 		if (ProcessOutgoingMsg (e, text))
 			return;
 
-		new MsgSender { e, type, text, variant, richText };
+		try
+		{
+			new MsgSender { e, type, text, variant, richText };
+		}
+		catch (const std::exception &ex)
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Error sending message to %1: %2.")
+						.arg ("<em>" + e->GetEntryName () + "</em>")
+						.arg (QString::fromUtf8 (ex.what ())));
+		}
 	}
 
 	void ChatTab::on_MsgEdit__textChanged ()

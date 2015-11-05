@@ -89,11 +89,7 @@ namespace Azoth
 					<< variant
 					<< ex.what ();
 
-			QMessageBox::critical (nullptr,
-					"LeechCraft",
-					tr ("Error sending message to %1: %2.")
-						.arg ("<em>" + e->GetEntryName () + "</em>")
-						.arg (QString::fromUtf8 (ex.what ())));
+			throw;
 		}
 	}
 }
