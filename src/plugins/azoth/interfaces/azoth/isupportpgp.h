@@ -131,6 +131,9 @@ namespace Azoth
 		 * changed.
 		 * @param[out] enabled Whether encryption has been enabled or
 		 * disabled.
+		 *
+		 * @sa SetEncryptionEnabled()
+		 * @sa IsEncryptionEnabled()
 		 */
 		virtual void encryptionStateChanged (QObject *entry, bool enabled) = 0;
 	};
