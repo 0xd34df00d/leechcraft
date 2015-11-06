@@ -914,6 +914,22 @@ namespace Xoox
 		return mgr->PublicKey (entry->GetHumanReadableID ());
 	}
 
+	namespace
+	{
+		bool CheckPubKey (bool enabled, GlooxCLEntry *glEntry, CryptHandler *cryptHandler)
+		{
+			if (!enabled)
+				return true;
+
+			const auto& jid = glEntry->GetJID ();
+
+			if (cryptHandler->GetPGPManager ()->PublicKey (jid).isNull ())
+				return false;
+
+			return true;
+		}
+	}
+
 	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
 	{
 		GlooxCLEntry *glEntry = qobject_cast<GlooxCLEntry*> (entry);
@@ -927,9 +943,7 @@ namespace Xoox
 		const auto emitGuard = Util::MakeScopeGuard ([&]
 					{ emit encryptionStateChanged (entry, beenChanged ? enabled : !enabled); });
 
-		const auto& jid = glEntry->GetJID ();
-		if (enabled &&
-				cryptHandler->GetPGPManager ()->PublicKey (jid).isNull ())
+		if (!CheckPubKey (enabled, glEntry, cryptHandler))
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to enable encryption for entry %1: "
@@ -939,7 +953,7 @@ namespace Xoox
 			return;
 		}
 
-		if (!cryptHandler->SetEncryptionEnabled (jid, enabled))
+		if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJID (), enabled))
 		{
 			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
 						tr ("Unable to change encryption state for %1.")
