@@ -689,7 +689,7 @@ namespace Azoth
 		{
 			new MsgSender { e, type, text, variant, richText };
 		}
-		catch (const std::exception &ex)
+		catch (const std::exception& ex)
 		{
 			clear = false;
 
@@ -1653,8 +1653,7 @@ namespace Azoth
 					this,
 					SLOT (handleFileOffered (QObject*)));
 
-			Q_FOREACH (QObject *object,
-					Core::Instance ().GetTransferJobManager ()->
+			for (const auto object : Core::Instance ().GetTransferJobManager ()->
 							GetPendingIncomingJobsFor (EntryID_))
 				handleFileOffered (object);
 		}
