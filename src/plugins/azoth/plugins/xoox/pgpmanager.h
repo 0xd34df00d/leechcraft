@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_PGPMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_PGPMANAGER_H
+#pragma once
+
 #include <QMap>
 #include <QByteArray>
 #include <QtCrypto>
@@ -76,5 +76,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
