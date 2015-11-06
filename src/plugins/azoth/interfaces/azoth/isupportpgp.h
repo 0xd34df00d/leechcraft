@@ -90,6 +90,17 @@ namespace Azoth
 		 * @sa encryptionStateChanged()
 		 */
 		virtual void SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
+
+		/** @brief Checks if the encryption is enabled for the \em entry.
+		 *
+		 * @param[in] entry The entry for which to query the encryption
+		 * status.
+		 * @return Whether the encryption has been enabled successfully
+		 * for the \em entry.
+		 *
+		 * @sa SetEncryptionEnabled()
+		 * @sa encryptionStateChanged()
+		 */
 		virtual bool IsEncryptionEnabled (QObject *entry) const = 0;
 	protected:
 		/** @brief Notifies whether signature has been verified for the
