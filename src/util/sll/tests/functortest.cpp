@@ -37,5 +37,18 @@ namespace LeechCraft
 {
 namespace Util
 {
+	void FunctorTest::testBoostOptionalFMap ()
+	{
+		boost::optional<int> value { 2 };
+		const auto& fmapped = Fmap (value, [] (int val) { return QString::number (val); });
+		QCOMPARE (boost::optional<QString> { "2" }, fmapped);
+	}
+
+	void FunctorTest::testBoostOptionalFMapEmpty ()
+	{
+		boost::optional<int> value;
+		const auto& fmapped = Fmap (value, [] (int val) { return QString::number (val); });
+		QCOMPARE (boost::optional<QString> {}, fmapped);
+	}
 }
 }
