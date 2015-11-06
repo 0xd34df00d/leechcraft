@@ -40,6 +40,8 @@ namespace Util
 	{
 		using Either_t = boost::variant<L, R>;
 		Either_t This_;
+
+		enum { LeftVal, RightVal };
 	public:
 		Either () = delete;
 
@@ -57,6 +59,16 @@ namespace Util
 		Either (Either&&) = default;
 		Either& operator= (const Either&) = default;
 		Either& operator= (Either&&) = default;
+
+		bool IsLeft () const
+		{
+			return This_.which () == LeftVal;
+		}
+
+		bool IsRight () const
+		{
+			return This_.which () == RightVal;
+		}
 
 		static Either Left (const L& l)
 		{
