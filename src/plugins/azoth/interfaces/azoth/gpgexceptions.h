@@ -30,6 +30,7 @@
 #pragma once
 
 #include <stdexcept>
+#include <boost/variant.hpp>
 
 namespace LeechCraft
 {
@@ -85,6 +86,8 @@ namespace GPGExceptions
 		{
 		}
 	};
+
+	using AnyException_t = boost::variant<Encryption, NullPubkey, General>;
 }
 }
 }
