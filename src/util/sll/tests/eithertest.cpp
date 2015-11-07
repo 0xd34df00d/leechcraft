@@ -30,6 +30,7 @@
 #include "eithertest.h"
 #include <QtTest>
 #include <either.h>
+#include <curry.h>
 
 QTEST_MAIN (LeechCraft::Util::EitherTest)
 
@@ -89,6 +90,28 @@ namespace Util
 		const auto& right = SomeEither_t::Right ("foo");
 		const auto& fmapped = Fmap (right, [] (const QString& str) { return str + "_mapped"; });
 		QCOMPARE (fmapped.GetRight (), QString { "foo_mapped" });
+	}
+
+	void EitherTest::testPure ()
+	{
+		const auto& pure = Pure<Either, int> (QString { "foo" });
+		QCOMPARE (pure, SomeEither_t::Right ("foo"));
+	}
+
+	void EitherTest::testGSL ()
+	{
+		const auto& pure = Pure<Either, int> ([] (const QString& s) { return s + "_pure"; });
+		const auto& app = pure * Pure<Either, int> (QString { "foo" });
+		QCOMPARE (app, SomeEither_t::Right ("foo_pure"));
+	}
+
+	void EitherTest::testGSLCurry ()
+	{
+		const auto& summer = Pure<Either, int> (Curry ([] (const QString& a, const QString& b) { return a + b; }));
+		const auto& s1 = Pure<Either, int> (QString { "foo" });
+		const auto& s2 = Pure<Either, int> (QString { "bar" });
+		const auto& app = summer * s1 * s2;
+		QCOMPARE (app, SomeEither_t::Right ("foobar"));
 	}
 }
 }

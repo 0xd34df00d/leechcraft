@@ -44,6 +44,10 @@ namespace Util
 
 		void testFMapLeft ();
 		void testFMapRight ();
+
+		void testPure ();
+		void testGSL ();
+		void testGSLCurry ();
 	};
 }
 }
