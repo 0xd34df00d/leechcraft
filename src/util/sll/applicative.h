@@ -39,22 +39,19 @@ namespace Util
 	template<typename T>
 	struct InstanceApplicative;
 
-	template<typename T>
-	using PureArg_t = typename InstanceApplicative<T>::PureArg_t;
-
-	template<typename T>
-	T Pure (const PureArg_t<T>& v)
+	template<template<typename...> class Applicative, typename... Args, typename T>
+	Applicative<Args..., T> Pure (const T& v)
 	{
-		return InstanceApplicative<T>::Pure (v);
+		return InstanceApplicative<Applicative<Args..., T>>::Pure (v);
 	}
 
 	// Implementations
 	template<typename T>
 	struct InstanceApplicative<boost::optional<T>>
 	{
-		using PureArg_t = T;
+		using Type_t = boost::optional<T>;
 
-		static boost::optional<T> Pure (const PureArg_t& v)
+		static Type_t Pure (const T& v)
 		{
 			return { v };
 		}
