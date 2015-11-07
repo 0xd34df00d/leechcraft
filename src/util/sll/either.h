@@ -32,6 +32,7 @@
 #include <type_traits>
 #include <boost/variant.hpp>
 #include "functor.h"
+#include "applicative.h"
 
 namespace LeechCraft
 {
@@ -122,6 +123,40 @@ namespace Util
 				return either;
 
 			return FmapResult_t<F>::Right (f (either.GetRight ()));
+		}
+	};
+
+	template<typename L, typename R>
+	struct InstanceApplicative<Either<L, R>>
+	{
+		using Type_t = Either<L, R>;
+
+		template<typename>
+		struct GSLResult;
+
+		template<typename V>
+		struct GSLResult<Either<L, V>>
+		{
+			using Type_t = Either<L, ResultOf_t<R (V)>>;
+		};
+
+		static Type_t Pure (const R& v)
+		{
+			return Type_t::Right (v);
+		}
+
+		template<typename AV>
+		static GSLResult_t<Type_t, AV> GSL (const Type_t& f, const AV& v)
+		{
+			using R_t = GSLResult_t<Type_t, AV>;
+
+			if (f.IsLeft ())
+				return R_t::Left (f.GetLeft ());
+
+			if (v.IsLeft ())
+				return R_t::Left (v.GetLeft ());
+
+			return R_t::Right (f.GetRight () (v.GetRight ()));
 		}
 	};
 }
