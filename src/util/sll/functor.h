@@ -64,6 +64,5 @@ namespace Util
 			return { f (*t) };
 		}
 	};
-
 }
 }
