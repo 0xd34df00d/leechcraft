@@ -93,6 +93,16 @@ namespace Util
 		{
 			return Either { r };
 		}
+
+		friend bool operator== (const Either& e1, const Either& e2)
+		{
+			return e1.This_ == e2.This_;
+		}
+
+		friend bool operator!= (const Either& e1, const Either& e2)
+		{
+			return !(e1 == e2);
+		}
 	};
 }
 }
