@@ -70,6 +70,20 @@ namespace Util
 			return This_.which () == RightVal;
 		}
 
+		const L& GetLeft () const
+		{
+			if (!IsLeft ())
+				throw std::runtime_error { "Tried accessing Left for a Right Either" };
+			return boost::get<L> (This_);
+		}
+
+		const R& GetRight () const
+		{
+			if (!IsRight ())
+				throw std::runtime_error { "Tried accessing Right for a Left Either" };
+			return boost::get<R> (This_);
+		}
+
 		static Either Left (const L& l)
 		{
 			return Either { l };
