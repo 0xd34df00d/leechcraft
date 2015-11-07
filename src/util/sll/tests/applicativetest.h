@@ -41,6 +41,7 @@ namespace Util
 	private slots:
 		void testBoostOptionalPure ();
 		void testBoostOptionalGSL ();
+		void testBoostOptionalGSLCurry ();
 	};
 }
 }
