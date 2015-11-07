@@ -41,6 +41,9 @@ namespace Util
 	private slots:
 		void testBasicLeft ();
 		void testBasicRight ();
+
+		void testFMapLeft ();
+		void testFMapRight ();
 	};
 }
 }

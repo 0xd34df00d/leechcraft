@@ -76,5 +76,19 @@ namespace Util
 		}
 		QCOMPARE (hadCaught, true);
 	}
+
+	void EitherTest::testFMapLeft ()
+	{
+		const auto& left = SomeEither_t::Left (1);
+		const auto& fmapped = Fmap (left, [] (const QString& str) { return str + "_mapped"; });
+		QCOMPARE (fmapped, left);
+	}
+
+	void EitherTest::testFMapRight ()
+	{
+		const auto& right = SomeEither_t::Right ("foo");
+		const auto& fmapped = Fmap (right, [] (const QString& str) { return str + "_mapped"; });
+		QCOMPARE (fmapped.GetRight (), QString { "foo_mapped" });
+	}
 }
 }
