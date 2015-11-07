@@ -30,6 +30,7 @@
 #pragma once
 
 #include <boost/variant.hpp>
+#include "functor.h"
 
 namespace LeechCraft
 {
@@ -102,6 +103,22 @@ namespace Util
 		friend bool operator!= (const Either& e1, const Either& e2)
 		{
 			return !(e1 == e2);
+		}
+	};
+
+	template<typename L, typename R>
+	struct InstanceFunctor<Either<L, R>>
+	{
+		template<typename F>
+		using FmapResult_t = Either<L, ResultOf_t<F (R)>>;
+
+		template<typename F>
+		static FmapResult_t<F> Apply (const Either<L, R>& either, const F& f)
+		{
+			if (either.IsLeft ())
+				return either;
+
+			return FmapResult_t<F>::Right (f (either.GetRight ()));
 		}
 	};
 }
