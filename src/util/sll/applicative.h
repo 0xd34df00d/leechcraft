@@ -54,6 +54,12 @@ namespace Util
 		return InstanceApplicative<AF>::GSL (af, av);
 	}
 
+	template<typename AF, typename AV>
+	auto operator* (const AF& af, const AV& av) -> decltype (GSL (af, av))
+	{
+		return GSL (af, av);
+	}
+
 	// Implementations
 	template<typename T>
 	struct InstanceApplicative<boost::optional<T>>
