@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <type_traits>
 #include <boost/variant.hpp>
 #include "functor.h"
 
@@ -43,6 +44,8 @@ namespace Util
 		Either_t This_;
 
 		enum { LeftVal, RightVal };
+
+		static_assert (!std::is_same<L, R>::value, "Types cannot be the same.");
 	public:
 		Either () = delete;
 
