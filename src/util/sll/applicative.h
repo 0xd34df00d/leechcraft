@@ -39,10 +39,19 @@ namespace Util
 	template<typename T>
 	struct InstanceApplicative;
 
+	template<typename AF, typename AV>
+	using GSLResult_t = typename InstanceApplicative<AF>::template GSLResult<AV>::Type_t;
+
 	template<template<typename...> class Applicative, typename... Args, typename T>
 	Applicative<Args..., T> Pure (const T& v)
 	{
 		return InstanceApplicative<Applicative<Args..., T>>::Pure (v);
+	}
+
+	template<typename AF, typename AV>
+	GSLResult_t<AF, AV> GSL (const AF& af, const AV& av)
+	{
+		return InstanceApplicative<AF>::GSL (af, av);
 	}
 
 	// Implementations
@@ -51,9 +60,27 @@ namespace Util
 	{
 		using Type_t = boost::optional<T>;
 
+		template<typename>
+		struct GSLResult;
+
+		template<typename V>
+		struct GSLResult<boost::optional<V>>
+		{
+			using Type_t = boost::optional<ResultOf_t<T (V)>>;
+		};
+
 		static Type_t Pure (const T& v)
 		{
 			return { v };
+		}
+
+		template<typename AV>
+		static GSLResult_t<Type_t, AV> GSL (const Type_t& f, const AV& v)
+		{
+			if (!f || !v)
+				return {};
+
+			return { (*f) (*v) };
 		}
 	};
 }
