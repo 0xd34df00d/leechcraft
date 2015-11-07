@@ -42,5 +42,12 @@ namespace Util
 		const auto& pure = Pure<boost::optional> (2);
 		QCOMPARE (pure, boost::optional<int> { 2 });
 	}
+
+	void ApplicativeTest::testBoostOptionalGSL ()
+	{
+		const auto& pure = Pure<boost::optional> ([] (int a) { return ++a; });
+		const auto& app = GSL (pure, Pure<boost::optional> (2));
+		QCOMPARE (app, boost::optional<int> { 3 });
+	}
 }
 }
