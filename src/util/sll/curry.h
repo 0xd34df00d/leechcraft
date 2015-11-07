@@ -50,12 +50,6 @@ namespace Util
 		, m_prevArgs { prev }
 		{
 		}
-
-		template<typename T>
-		auto operator() (const T& arg) const
-		{
-			return invoke (arg, 0);
-		}
 	private:
 		template<typename T>
 		std::result_of_t<F (PrevArgs..., T)> invoke (const T& arg, int) const
@@ -97,6 +91,12 @@ namespace Util
 		auto invoke (const T& arg, ...) const
 		{
 			return CurryImpl<F, PrevArgs..., T> { m_f, std::tuple_cat (m_prevArgs, std::tuple<T> { arg }) };
+		}
+	public:
+		template<typename T>
+		auto operator() (const T& arg) const -> decltype (invoke (arg, 0))
+		{
+			return invoke (arg, 0);
 		}
 	};
 
