@@ -39,7 +39,7 @@ namespace Util
 {
 	void ApplicativeTest::testBoostOptionalPure ()
 	{
-		const auto& pure = Pure<boost::optional<int>> (2);
+		const auto& pure = Pure<boost::optional> (2);
 		QCOMPARE (pure, boost::optional<int> { 2 });
 	}
 }
