@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "prelude.h"
+#include "preludetest.h"
 #include <QtTest>
 #include <prelude.h>
 #include <qtutil.h>

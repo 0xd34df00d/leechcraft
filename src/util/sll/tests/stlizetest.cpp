@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "stlize.h"
+#include "stlizetest.h"
 #include <QtTest>
 #include <qtutil.h>
 

@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "typelist.h"
+#include "typelisttest.h"
 #include <QtTest>
 #include <typelist.h>
 
