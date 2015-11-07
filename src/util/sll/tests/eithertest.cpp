@@ -42,9 +42,9 @@ namespace Util
 	void EitherTest::testBasicLeft ()
 	{
 		const auto& left = SomeEither_t::Left (1);
-		QCOMPARE (true, left.IsLeft ());
-		QCOMPARE (false, left.IsRight ());
-		QCOMPARE (1, left.GetLeft ());
+		QCOMPARE (left.IsLeft (), true);
+		QCOMPARE (left.IsRight (), false);
+		QCOMPARE (left.GetLeft (), 1);
 
 		bool hadCaught = false;
 		try
@@ -55,15 +55,15 @@ namespace Util
 		{
 			hadCaught = true;
 		}
-		QCOMPARE (true, hadCaught);
+		QCOMPARE (hadCaught, true);
 	}
 
 	void EitherTest::testBasicRight ()
 	{
 		const auto& right = SomeEither_t::Right ("foo");
-		QCOMPARE (false, right.IsLeft ());
-		QCOMPARE (true, right.IsRight ());
-		QCOMPARE (QString { "foo" }, right.GetRight ());
+		QCOMPARE (right.IsLeft (), false);
+		QCOMPARE (right.IsRight (), true);
+		QCOMPARE (right.GetRight (), QString { "foo" });
 
 		bool hadCaught = false;
 		try
@@ -74,7 +74,7 @@ namespace Util
 		{
 			hadCaught = true;
 		}
-		QCOMPARE (true, hadCaught);
+		QCOMPARE (hadCaught, true);
 	}
 }
 }
