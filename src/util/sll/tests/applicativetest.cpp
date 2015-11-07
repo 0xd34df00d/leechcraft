@@ -59,5 +59,12 @@ namespace Util
 		const auto& app = GSL (GSL (summer, s1), s2);
 		QCOMPARE (app, boost::optional<int> { 3 });
 	}
+
+	void ApplicativeTest::testBoostOptionalGSLOperatorCurry ()
+	{
+		const auto& summer = Pure<boost::optional> (Curry ([] (int a, int b) { return a + b; }));
+		const auto& app = summer * Pure<boost::optional> (1) * Pure<boost::optional> (2);
+		QCOMPARE (app, boost::optional<int> { 3 });
+	}
 }
 }

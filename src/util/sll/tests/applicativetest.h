@@ -42,6 +42,7 @@ namespace Util
 		void testBoostOptionalPure ();
 		void testBoostOptionalGSL ();
 		void testBoostOptionalGSLCurry ();
+		void testBoostOptionalGSLOperatorCurry ();
 	};
 }
 }
