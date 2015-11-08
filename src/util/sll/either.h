@@ -90,6 +90,20 @@ namespace Util
 			return boost::get<R> (This_);
 		}
 
+		boost::optional<L> MaybeLeft () const
+		{
+			if (!IsLeft ())
+				return {};
+			return GetLeft ();
+		}
+
+		boost::optional<R> MaybeRight () const
+		{
+			if (!IsRight ())
+				return {};
+			return GetRight ();
+		}
+
 		static Either Left (const L& l)
 		{
 			return Either { l };
