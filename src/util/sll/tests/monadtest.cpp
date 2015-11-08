@@ -49,5 +49,11 @@ namespace Util
 		const auto& result = Bind (pure, [] (int value) { return boost::optional<int> { ++value }; });
 		QCOMPARE (result, boost::optional<int> { 3 });
 	}
+
+	void MonadTest::testBoostOptionalBindEmpty ()
+	{
+		const auto& result = Bind (boost::optional<int> {}, [] (int value) { return boost::optional<int> { ++value }; });
+		QCOMPARE (result, boost::optional<int> {});
+	}
 }
 }

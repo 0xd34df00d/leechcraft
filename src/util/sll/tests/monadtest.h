@@ -41,6 +41,7 @@ namespace Util
 	private slots:
 		void testBoostOptionalReturn ();
 		void testBoostOptionalBind ();
+		void testBoostOptionalBindEmpty ();
 	};
 }
 }
