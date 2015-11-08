@@ -31,6 +31,7 @@
 
 #include <boost/optional.hpp>
 #include "oldcppkludges.h"
+#include "typelist.h"
 #include "applicative.h"
 
 namespace LeechCraft
@@ -48,6 +49,51 @@ namespace Util
 
 	template<typename MV, typename F>
 	using BindResult_t = typename InstanceMonad<MV>::template BindResult_t<F>;
+
+	namespace detail
+	{
+		constexpr bool CheckArgsEquality (Typelist<>, Typelist<>, int)
+		{
+			return true;
+		}
+
+		template<typename Head1, typename Head2, typename... Tail1, typename... Tail2>
+		constexpr bool CheckArgsEquality (Typelist<Head1, Tail1...>, Typelist<Head2, Tail2...>, int)
+		{
+			return (sizeof... (Tail1) == 0 || std::is_same<Head1, Head2>::value) &&
+					CheckArgsEquality (Typelist<Tail1...> {}, Typelist<Tail2...> {}, 0);
+		}
+
+		template<typename... A1, typename... A2>
+		constexpr bool CheckArgsEquality (Typelist<A1...>, Typelist<A2...>, float)
+		{
+			return false;
+		}
+
+		template<template<typename...> class Monad, typename... Args1, typename... Args2>
+		constexpr bool IsCompatibleMonadImpl (const Monad<Args1...>*, const Monad<Args2...>*, int)
+		{
+			return CheckArgsEquality (Typelist<Args1...> {}, Typelist<Args2...> {}, 0);
+		}
+
+		template<typename T1, typename T2>
+		constexpr bool IsCompatibleMonadImpl (const T1*, const T2*, ...)
+		{
+			return false;
+		}
+
+		template<typename T>
+		constexpr T* declptr () noexcept
+		{
+			return nullptr;
+		}
+
+		template<typename T1, typename T2>
+		constexpr bool IsCompatibleMonad ()
+		{
+			return IsCompatibleMonadImpl (detail::declptr<T1> (), detail::declptr<T2> (), 0);
+		}
+	}
 
 	template<typename MV, typename F>
 	BindResult_t<MV, F> Bind (const MV& value, const F& f)
