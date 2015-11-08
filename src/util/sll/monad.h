@@ -52,28 +52,13 @@ namespace Util
 
 	namespace detail
 	{
-		constexpr bool CheckArgsEquality (Typelist<>, Typelist<>, int)
-		{
-			return true;
-		}
-
-		template<typename Head1, typename Head2, typename... Tail1, typename... Tail2>
-		constexpr bool CheckArgsEquality (Typelist<Head1, Tail1...>, Typelist<Head2, Tail2...>, int)
-		{
-			return (sizeof... (Tail1) == 0 || std::is_same<Head1, Head2>::value) &&
-					CheckArgsEquality (Typelist<Tail1...> {}, Typelist<Tail2...> {}, 0);
-		}
-
-		template<typename... A1, typename... A2>
-		constexpr bool CheckArgsEquality (Typelist<A1...>, Typelist<A2...>, float)
-		{
-			return false;
-		}
-
 		template<template<typename...> class Monad, typename... Args1, typename... Args2>
 		constexpr bool IsCompatibleMonadImpl (const Monad<Args1...>*, const Monad<Args2...>*, int)
 		{
-			return CheckArgsEquality (Typelist<Args1...> {}, Typelist<Args2...> {}, 0);
+			return std::is_same<
+						decltype (Reverse (Tail (Reverse (Typelist<Args1...> {})))),
+						decltype (Reverse (Tail (Reverse (Typelist<Args2...> {}))))
+					>::value;
 		}
 
 		template<typename T1, typename T2>
