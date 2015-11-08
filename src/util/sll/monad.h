@@ -83,6 +83,8 @@ namespace Util
 	template<typename MV, typename F>
 	BindResult_t<MV, F> Bind (const MV& value, const F& f)
 	{
+		static_assert (detail::IsCompatibleMonad<MV, BindResult_t<MV, F>> (),
+				"Incompatible function return type");
 		return InstanceMonad<MV>::Bind (value, f);
 	}
 
