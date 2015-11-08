@@ -70,7 +70,7 @@ namespace Util
 	template<typename MV, typename FHead, typename... FArgs>
 	auto Do (const MV& value, const FHead& fHead, const FArgs&... fArgs)
 	{
-		return Do (value >> fHead, fArgs...);
+		return Do (Bind (value, fHead), fArgs...);
 	}
 
 	// Implementations
