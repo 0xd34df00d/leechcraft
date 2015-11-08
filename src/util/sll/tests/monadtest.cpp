@@ -68,5 +68,26 @@ namespace Util
 		const auto& result = boost::optional<int> {} >> [] (int value) { return boost::optional<int> { ++value }; };
 		QCOMPARE (result, boost::optional<int> {});
 	}
+
+	void MonadTest::testBoostOptionalDo ()
+	{
+		const auto& result = Do (boost::optional<int> { 2 },
+				[] (int a) -> boost::optional<int> { return a * 2; },
+				[] (int a) -> boost::optional<int> { return a + 1; },
+				[] (int a) -> boost::optional<int> { return a * 3; });
+		QCOMPARE (result, boost::optional<int> { 15 });
+	}
+
+	void MonadTest::testBoostOptionalDoEmpty ()
+	{
+		bool called = false;
+		const auto& result = Do (boost::optional<int> { 2 },
+				[] (int a) -> boost::optional<int> { return a * 2; },
+				[] (int a) -> boost::optional<int> { return {}; },
+				[&called] (int a) -> boost::optional<int> { called = true; return a * 3; });
+
+		QCOMPARE (result, boost::optional<int> {});
+		QCOMPARE (called, false);
+	}
 }
 }

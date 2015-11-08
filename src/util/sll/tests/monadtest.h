@@ -44,6 +44,9 @@ namespace Util
 		void testBoostOptionalBindEmpty ();
 		void testBoostOptionalBindOperator ();
 		void testBoostOptionalBindEmptyOperator ();
+
+		void testBoostOptionalDo ();
+		void testBoostOptionalDoEmpty ();
 	};
 }
 }
