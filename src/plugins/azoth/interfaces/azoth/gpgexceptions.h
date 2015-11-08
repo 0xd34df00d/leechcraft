@@ -40,6 +40,7 @@ namespace GPGExceptions
 {
 	class General : public std::runtime_error
 	{
+		QString Context_;
 		int Code_;
 		QString Message_;
 	public:
@@ -48,6 +49,7 @@ namespace GPGExceptions
 		{
 			context.toStdString () + std::to_string (code) + ": " + msg.toStdString ()
 		}
+		, Context_ { context }
 		, Code_ { code }
 		, Message_ { msg }
 		{
@@ -56,6 +58,11 @@ namespace GPGExceptions
 		General (int code, const QString& msg)
 		: General { "Azoth GPG error", code, msg }
 		{
+		}
+
+		const QString& GetContext () const
+		{
+			return Context_;
 		}
 
 		int GetCode () const
