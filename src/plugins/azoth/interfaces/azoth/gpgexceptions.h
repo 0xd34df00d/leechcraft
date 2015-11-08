@@ -41,9 +41,15 @@ namespace GPGExceptions
 	class General : public std::runtime_error
 	{
 		QString Context_;
-		int Code_;
+		int Code_ = -1;
 		QString Message_;
 	public:
+		General (const QString& context)
+		: std::runtime_error { context.toStdString () }
+		, Context_ { context }
+		{
+		}
+
 		General (const QString& context, int code, const QString& msg)
 		: std::runtime_error
 		{
@@ -80,7 +86,7 @@ namespace GPGExceptions
 	{
 	public:
 		NullPubkey ()
-		: General { "Azoth GPG: null pubkey", -1, {} }
+		: General { "Azoth GPG: null pubkey" }
 		{
 		}
 	};
