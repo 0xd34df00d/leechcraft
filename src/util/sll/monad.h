@@ -61,6 +61,18 @@ namespace Util
 		return Bind (value, f);
 	}
 
+	template<typename MV>
+	MV Do (const MV& value)
+	{
+		return value;
+	}
+
+	template<typename MV, typename FHead, typename... FArgs>
+	auto Do (const MV& value, const FHead& fHead, const FArgs&... fArgs)
+	{
+		return Do (value >> fHead, fArgs...);
+	}
+
 	// Implementations
 	template<typename T>
 	struct InstanceMonad<boost::optional<T>>
