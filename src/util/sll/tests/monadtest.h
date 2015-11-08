@@ -47,6 +47,14 @@ namespace Util
 
 		void testBoostOptionalDo ();
 		void testBoostOptionalDoEmpty ();
+
+		void testCompatibilitySingle ();
+		void testCompatibilitySingleDif ();
+		void testCompatibilityMulti ();
+		void testCompatibilityMultiDifEnd ();
+
+		void testInCompatibilityMulti ();
+		void testInCompatibilityMultiStart ();
 	};
 }
 }

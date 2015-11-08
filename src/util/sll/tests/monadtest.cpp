@@ -30,6 +30,7 @@
 #include "monadtest.h"
 #include <QtTest>
 #include <monad.h>
+#include <typelist.h>
 
 QTEST_MAIN (LeechCraft::Util::MonadTest)
 
@@ -88,6 +89,60 @@ namespace Util
 
 		QCOMPARE (result, boost::optional<int> {});
 		QCOMPARE (called, false);
+	}
+
+	void MonadTest::testCompatibilitySingle ()
+	{
+		constexpr auto result = detail::IsCompatibleMonad<
+					Typelist<QString>,
+					Typelist<QString>
+				> ();
+		QCOMPARE (result, true);
+	}
+
+	void MonadTest::testCompatibilitySingleDif ()
+	{
+		constexpr auto result = detail::IsCompatibleMonad<
+					Typelist<QString>,
+					Typelist<QByteArray>
+				> ();
+		QCOMPARE (result, true);
+	}
+
+	void MonadTest::testCompatibilityMulti ()
+	{
+		constexpr auto result = detail::IsCompatibleMonad<
+					Typelist<int, float, QString>,
+					Typelist<int, float, QString>
+				> ();
+		QCOMPARE (result, true);
+	}
+
+	void MonadTest::testCompatibilityMultiDifEnd ()
+	{
+		constexpr auto result = detail::IsCompatibleMonad<
+					Typelist<int, float, QString>,
+					Typelist<int, float, QByteArray>
+				> ();
+		QCOMPARE (result, true);
+	}
+
+	void MonadTest::testInCompatibilityMulti ()
+	{
+		constexpr auto result = detail::IsCompatibleMonad<
+					Typelist<int, float, QString>,
+					Typelist<int, double, QString>
+				> ();
+		QCOMPARE (result, false);
+	}
+
+	void MonadTest::testInCompatibilityMultiStart ()
+	{
+		constexpr auto result = detail::IsCompatibleMonad<
+					Typelist<int, float, QString>,
+					Typelist<QByteArray, float, QString>
+				> ();
+		QCOMPARE (result, false);
 	}
 }
 }
