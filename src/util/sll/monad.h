@@ -47,7 +47,10 @@ namespace Util
 	}
 
 	template<typename MV, typename F>
-	auto Bind (const MV& value, const F& f)
+	using BindResult_t = typename InstanceMonad<MV>::template BindResult_t<F>;
+
+	template<typename MV, typename F>
+	BindResult_t<MV, F> Bind (const MV& value, const F& f)
 	{
 		return InstanceMonad<MV>::Bind (value, f);
 	}
@@ -57,7 +60,10 @@ namespace Util
 	struct InstanceMonad<boost::optional<T>>
 	{
 		template<typename F>
-		static ResultOf_t<F (T)> Bind (const boost::optional<T>& value, const F& f)
+		using BindResult_t = ResultOf_t<F (T)>;
+
+		template<typename F>
+		static BindResult_t<F> Bind (const boost::optional<T>& value, const F& f)
 		{
 			if (!value)
 				return {};
