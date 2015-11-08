@@ -48,6 +48,9 @@ namespace Util
 		void testPure ();
 		void testGSL ();
 		void testGSLCurry ();
+
+		void testBind ();
+		void testBindLeft ();
 	};
 }
 }

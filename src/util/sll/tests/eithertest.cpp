@@ -113,5 +113,20 @@ namespace Util
 		const auto& app = summer * s1 * s2;
 		QCOMPARE (app, SomeEither_t::Right ("foobar"));
 	}
+
+	void EitherTest::testBind ()
+	{
+		const auto& res = Return<Either, int> (QString { "foo" }) >>
+				[] (const QString& right) { return SomeEither_t::Right (right + "_bound"); };
+		QCOMPARE (res, SomeEither_t::Right ("foo_bound"));
+	}
+
+	void EitherTest::testBindLeft ()
+	{
+		const auto& value = SomeEither_t::Left (2);
+		const auto& res = value >>
+				[] (const QString& right) { return SomeEither_t::Right (right + "_bound"); };
+		QCOMPARE (res, value);
+	}
 }
 }
