@@ -31,6 +31,7 @@
 
 #include <stdexcept>
 #include <boost/variant.hpp>
+#include <boost/optional.hpp>
 
 namespace LeechCraft
 {
@@ -101,6 +102,7 @@ namespace GPGExceptions
 	};
 
 	using AnyException_t = boost::variant<Encryption, NullPubkey, General>;
+	using MaybeException_t = boost::optional<AnyException_t>;
 }
 }
 }
