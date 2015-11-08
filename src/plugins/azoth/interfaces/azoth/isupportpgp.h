@@ -31,6 +31,7 @@
 
 #include <QtGlobal>
 #include <QtCrypto>
+#include "gpgexceptions.h"
 
 namespace LeechCraft
 {
@@ -89,7 +90,7 @@ namespace Azoth
 		 *
 		 * @sa encryptionStateChanged()
 		 */
-		virtual void SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
+		virtual GPGExceptions::MaybeException_t SetEncryptionEnabled (QObject *entry, bool enabled) = 0;
 
 		/** @brief Checks if the encryption is enabled for the \em entry.
 		 *

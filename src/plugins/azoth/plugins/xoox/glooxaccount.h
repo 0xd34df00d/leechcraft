@@ -251,7 +251,7 @@ namespace Xoox
 		QCA::PGPKey GetPrivateKey () const;
 		void SetEntryKey (QObject*, const QCA::PGPKey&);
 		QCA::PGPKey GetEntryKey (QObject* entry) const;
-		void SetEncryptionEnabled (QObject*, bool);
+		GPGExceptions::MaybeException_t SetEncryptionEnabled (QObject*, bool);
 		bool IsEncryptionEnabled (QObject*) const;
 #endif
 

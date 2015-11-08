@@ -38,6 +38,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/util.h>
+#include <util/sll/either.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -914,55 +915,41 @@ namespace Xoox
 		return mgr->PublicKey (entry->GetHumanReadableID ());
 	}
 
-	namespace
+	GPGExceptions::MaybeException_t GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
 	{
-		bool CheckPubKey (bool enabled, GlooxCLEntry *glEntry, CryptHandler *cryptHandler)
-		{
-			if (!enabled)
-				return true;
+		using EitherException_t = Util::Either<GPGExceptions::AnyException_t, boost::none_t>;
 
-			const auto& jid = glEntry->GetJID ();
-
-			if (cryptHandler->GetPGPManager ()->PublicKey (jid).isNull ())
-				return false;
-
-			return true;
-		}
-	}
-
-	void GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
-	{
-		GlooxCLEntry *glEntry = qobject_cast<GlooxCLEntry*> (entry);
-		if (!glEntry)
-			return;
+		const auto glEntry = qobject_cast<GlooxCLEntry*> (entry);
 
 		const auto cryptHandler = ClientConnection_->GetCryptHandler ();
+		const auto pgpManager = cryptHandler->GetPGPManager ();
 
 		bool beenChanged = false;
-
 		const auto emitGuard = Util::MakeScopeGuard ([&]
 					{ emit encryptionStateChanged (entry, beenChanged ? enabled : !enabled); });
 
-		if (!CheckPubKey (enabled, glEntry, cryptHandler))
-		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
-						tr ("Unable to enable encryption for entry %1: "
-							"no key has been set.")
-								.arg (glEntry->GetEntryName ()),
-						PCritical_));
-			return;
-		}
+		const auto& result = EitherException_t::Right ({}) >>
+				[=] (const boost::none_t&)
+				{
+					return glEntry ?
+							EitherException_t::Right ({}) :
+							EitherException_t::Left (GPGExceptions::General { "Null entry" });
+				} >>
+				[=] (const boost::none_t&)
+				{
+					return enabled && pgpManager->PublicKey (glEntry->GetJID ()).isNull () ?
+							EitherException_t::Left (GPGExceptions::NullPubkey {}) :
+							EitherException_t::Right ({});
+				} >>
+				[=, &beenChanged] (const boost::none_t&)
+				{
+					if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJID (), enabled))
+						return EitherException_t::Left (GPGExceptions::General { "Cannot change encryption state. "});
 
-		if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJID (), enabled))
-		{
-			Core::Instance ().SendEntity (Util::MakeNotification ("Azoth",
-						tr ("Unable to change encryption state for %1.")
-								.arg (glEntry->GetEntryName ()),
-						PCritical_));
-			return;
-		}
-
-		beenChanged = true;
+					beenChanged = true;
+					return EitherException_t::Right ({});
+				};
+		return result.MaybeLeft ();
 	}
 
 	bool GlooxAccount::IsEncryptionEnabled (QObject *entry) const
