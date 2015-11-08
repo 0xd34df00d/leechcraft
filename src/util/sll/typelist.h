@@ -83,6 +83,12 @@ namespace Util
 		return {};
 	}
 
+	template<template<typename...> class List, typename... Args>
+	constexpr auto Init (List<Args...>) -> decltype (Reverse (Tail (Reverse (List<Args...> {}))))
+	{
+		return {};
+	}
+
 	namespace detail
 	{
 		template<typename Type, template<typename...> class List, typename... Tail>
