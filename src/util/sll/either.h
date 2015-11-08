@@ -33,6 +33,7 @@
 #include <boost/variant.hpp>
 #include "functor.h"
 #include "applicative.h"
+#include "monad.h"
 
 namespace LeechCraft
 {
@@ -157,6 +158,24 @@ namespace Util
 				return R_t::Left (v.GetLeft ());
 
 			return R_t::Right (f.GetRight () (v.GetRight ()));
+		}
+	};
+
+	template<typename L, typename R>
+	struct InstanceMonad<Either<L, R>>
+	{
+		template<typename F>
+		using BindResult_t = ResultOf_t<F (R)>;
+
+		template<typename F>
+		static BindResult_t<F> Bind (const Either<L, R>& value, const F& f)
+		{
+			using R_t = BindResult_t<F>;
+
+			if (value.IsLeft ())
+				return R_t::Left (value.GetLeft ());
+
+			return f (value.GetRight ());
 		}
 	};
 }
