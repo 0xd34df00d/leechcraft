@@ -46,10 +46,24 @@ namespace Util
 		return Pure<Monad, Args...> (v);
 	}
 
+	template<typename MV, typename F>
+	auto Bind (const MV& value, const F& f)
+	{
+		return InstanceMonad<MV>::Bind (value, f);
+	}
+
 	// Implementations
 	template<typename T>
 	struct InstanceMonad<boost::optional<T>>
 	{
+		template<typename F>
+		static ResultOf_t<F (T)> Bind (const boost::optional<T>& value, const F& f)
+		{
+			if (!value)
+				return {};
+
+			return f (*value);
+		}
 	};
 }
 }
