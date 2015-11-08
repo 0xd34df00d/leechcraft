@@ -42,5 +42,12 @@ namespace Util
 		const auto& pure = Return<boost::optional> (2);
 		QCOMPARE (pure, boost::optional<int> { 2 });
 	}
+
+	void MonadTest::testBoostOptionalBind ()
+	{
+		const auto& pure = Return<boost::optional> (2);
+		const auto& result = Bind (pure, [] (int value) { return boost::optional<int> { ++value }; });
+		QCOMPARE (result, boost::optional<int> { 3 });
+	}
 }
 }
