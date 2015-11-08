@@ -105,6 +105,14 @@ namespace Util
 		QCOMPARE (app, SomeEither_t::Right ("foo_pure"));
 	}
 
+	void EitherTest::testGSLLeft ()
+	{
+		const auto& pure = Pure<Either, int> ([] (const QString& s) { return s + "_pure"; });
+		const auto& value = SomeEither_t::Left (2);
+		const auto& app = pure * value;
+		QCOMPARE (app, value);
+	}
+
 	void EitherTest::testGSLCurry ()
 	{
 		const auto& summer = Pure<Either, int> (Curry ([] (const QString& a, const QString& b) { return a + b; }));
@@ -112,6 +120,15 @@ namespace Util
 		const auto& s2 = Pure<Either, int> (QString { "bar" });
 		const auto& app = summer * s1 * s2;
 		QCOMPARE (app, SomeEither_t::Right ("foobar"));
+	}
+
+	void EitherTest::testGSLCurryLeft ()
+	{
+		const auto& summer = Pure<Either, int> (Curry ([] (const QString& a, const QString& b) { return a + b; }));
+		const auto& s1 = SomeEither_t::Left (2);
+		const auto& s2 = Pure<Either, int> (QString { "bar" });
+		const auto& app = summer * s1 * s2;
+		QCOMPARE (app, s1);
 	}
 
 	void EitherTest::testBind ()
