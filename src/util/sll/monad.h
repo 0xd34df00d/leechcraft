@@ -56,8 +56,8 @@ namespace Util
 		constexpr bool IsCompatibleMonadImpl (const Monad<Args1...>*, const Monad<Args2...>*, int)
 		{
 			return std::is_same<
-						decltype (Reverse (Tail (Reverse (Typelist<Args1...> {})))),
-						decltype (Reverse (Tail (Reverse (Typelist<Args2...> {}))))
+						decltype (Init (Typelist<Args1...> {})),
+						decltype (Init (Typelist<Args2...> {}))
 					>::value;
 		}
 
