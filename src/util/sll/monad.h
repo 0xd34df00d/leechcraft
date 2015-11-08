@@ -55,6 +55,12 @@ namespace Util
 		return InstanceMonad<MV>::Bind (value, f);
 	}
 
+	template<typename MV, typename F>
+	auto operator>> (const MV& value, const F& f) -> decltype (Bind (value, f))
+	{
+		return Bind (value, f);
+	}
+
 	// Implementations
 	template<typename T>
 	struct InstanceMonad<boost::optional<T>>
