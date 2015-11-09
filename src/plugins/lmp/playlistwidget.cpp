@@ -69,6 +69,7 @@
 #include "palettefixerfilter.h"
 #include "engine/sourceobject.h"
 #include "hookinterconnector.h"
+#include "playlistwidgetviewexpander.h"
 
 Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
 
@@ -193,11 +194,8 @@ namespace LMP
 				PlaylistFilter_,
 				SLOT (setFilterFixedString (QString)));
 
-		connect (PlaylistFilter_,
-				SIGNAL (rowsInserted (QModelIndex, int, int)),
-				this,
-				SLOT (expandAll ()),
-				Qt::QueuedConnection);
+		new PlaylistWidgetViewExpander { PlaylistFilter_, [this] { expandAll (); }, this };
+
 		connect (PlaylistFilter_,
 				SIGNAL (modelReset ()),
 				this,
