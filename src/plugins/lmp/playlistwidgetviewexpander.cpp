@@ -29,6 +29,7 @@
 
 #include "playlistwidgetviewexpander.h"
 #include <QAbstractItemModel>
+#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -43,13 +44,21 @@ namespace LMP
 		connect (model,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
 				this,
-				SLOT (checkInsertion (QModelIndex)),
-				Qt::QueuedConnection);
+				SLOT (checkRowInsertion ()));
 	}
 
 	void PlaylistWidgetViewExpander::checkRowInsertion (const QModelIndex&)
 	{
-		Expander_ ();
+		if (IsScheduled_)
+			return;
+
+		IsScheduled_ = true;
+
+		Util::ExecuteLater ([this]
+				{
+					IsScheduled_ = false;
+					Expander_ ();
+				});
 	}
 }
 }

@@ -44,6 +44,7 @@ namespace LMP
 		Q_OBJECT
 
 		std::function<void ()> Expander_;
+		bool IsScheduled_ = false;
 	public:
 		PlaylistWidgetViewExpander (QAbstractItemModel*, const std::function<void ()>&, QObject*);
 	private slots:
