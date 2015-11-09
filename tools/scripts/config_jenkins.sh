@@ -281,6 +281,6 @@ case $1 in
 			-DENABLE_VTYULC=True \
 			-DENABLE_VROOBY=True \
 			-DENABLE_ELEEMINATOR=True \
-			-DENABLE_XPROXY=False \
-			-DENABLE_FONTIAC=False ;;
+			-DENABLE_XPROXY=True \
+			-DENABLE_FONTIAC=True ;;
 esac
