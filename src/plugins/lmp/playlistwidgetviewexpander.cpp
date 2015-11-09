@@ -47,7 +47,7 @@ namespace LMP
 				SLOT (checkRowInsertion ()));
 	}
 
-	void PlaylistWidgetViewExpander::checkRowInsertion (const QModelIndex&)
+	void PlaylistWidgetViewExpander::checkRowInsertion ()
 	{
 		if (IsScheduled_)
 			return;

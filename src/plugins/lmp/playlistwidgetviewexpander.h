@@ -48,7 +48,7 @@ namespace LMP
 	public:
 		PlaylistWidgetViewExpander (QAbstractItemModel*, const std::function<void ()>&, QObject*);
 	private slots:
-		void checkRowInsertion (const QModelIndex&);
+		void checkRowInsertion ();
 	};
 }
 }
