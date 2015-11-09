@@ -127,6 +127,7 @@ set (SRCS
 	previewcharacteristicinfo.cpp
 	radiotracksgrabdialog.cpp
 	nativeplaylist.cpp
+	playlistwidgetviewexpander.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp
