@@ -61,5 +61,17 @@ namespace Util
 					[] (auto) { return false; });
 		QCOMPARE (res, true);
 	}
+
+	void VisitorTest::testBasicVisitorCoercion ()
+	{
+		Visitor_t v { 'a' };
+		const auto& res = Visit (v,
+					[] (int) { return true; },
+					[] (std::string) { return false; },
+					[] (QString) { return false; },
+					[] (double) { return false; },
+					[] (float) { return false; });
+		QCOMPARE (res, true);
+	}
 }
 }

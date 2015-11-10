@@ -41,6 +41,7 @@ namespace Util
 	private slots:
 		void testBasicVisitor ();
 		void testBasicVisitorGenericFallback ();
+		void testBasicVisitorCoercion ();
 	};
 }
 }
