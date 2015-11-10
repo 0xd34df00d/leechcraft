@@ -73,5 +73,15 @@ namespace Util
 					[] (float) { return false; });
 		QCOMPARE (res, true);
 	}
+
+	void VisitorTest::testBasicVisitorCoercionGenericFallback ()
+	{
+		Visitor_t v { 'a' };
+		const auto& res = Visit (v,
+					[] (int) { return false; },
+					[] (QString) { return false; },
+					[] (auto) { return true; });
+		QCOMPARE (res, true);
+	}
 }
 }

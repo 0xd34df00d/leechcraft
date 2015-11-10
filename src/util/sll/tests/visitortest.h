@@ -42,6 +42,7 @@ namespace Util
 		void testBasicVisitor ();
 		void testBasicVisitorGenericFallback ();
 		void testBasicVisitorCoercion ();
+		void testBasicVisitorCoercionGenericFallback ();
 	};
 }
 }
