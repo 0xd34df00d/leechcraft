@@ -49,6 +49,8 @@ namespace Util
 		void testMapMapNonMutatingVoid ();
 		void testMapMapNonMutatingVoidConst ();
 
+		void testMapStringList ();
+
 		void testMapMapStlized ();
 
 		void testMapMember ();

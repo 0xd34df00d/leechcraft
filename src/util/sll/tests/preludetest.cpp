@@ -149,6 +149,14 @@ namespace Util
 		QCOMPARE (map, GetSimpleMap ());
 	}
 
+	void PreludeTest::testMapStringList ()
+	{
+		const QStringList list { "aaa", "bbb", "ccc" };
+		const auto& result = Map (list, [] (const QString& s) { return s.size (); });
+
+		QCOMPARE (result, (QList<int> { 3, 3, 3 }));
+	}
+
 	void PreludeTest::testMapMapStlized ()
 	{
 		const auto& map = GetSimpleMap ();
