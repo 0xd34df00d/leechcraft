@@ -353,17 +353,17 @@ namespace Azoth
 		const auto& str = QObject::tr ("Please select the key for %1 (%2).")
 				.arg (entry->GetEntryName ())
 				.arg (entry->GetHumanReadableID ());
-		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic,
-				pgp->GetEntryKey (entry->GetQObject ()));
+		PGPKeySelectionDialog dia { str, PGPKeySelectionDialog::TPublic,
+				pgp->GetEntryKey (entry->GetQObject ()) };
 		if (dia.exec () != QDialog::Accepted)
 			return;
 
-		const QCA::PGPKey& key = dia.GetSelectedKey ();
+		const auto& key = dia.GetSelectedKey ();
 
 		pgp->SetEntryKey (entry->GetQObject (), key);
 
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth");
+		QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth" };
 		settings.beginGroup ("PublicEntryKeys");
 		if (key.isNull ())
 			settings.remove (entry->GetEntryID ());
