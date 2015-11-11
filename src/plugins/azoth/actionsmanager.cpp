@@ -67,7 +67,6 @@
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
-#include "pgpkeyselectiondialog.h"
 #endif
 
 #include "core.h"
@@ -269,7 +268,7 @@ namespace Azoth
 		{
 			const auto acc = entry->GetParentAccount ();
 			const auto accObj = acc->GetQObject ();
-			ISupportPGP *pgp = qobject_cast<ISupportPGP*> (accObj);
+			const auto pgp = qobject_cast<ISupportPGP*> (accObj);
 
 			if (!pgp)
 			{
@@ -285,26 +284,7 @@ namespace Azoth
 				return;
 			}
 
-			const QString& str = ActionsManager::tr ("Please select the key for %1 (%2).")
-					.arg (entry->GetEntryName ())
-					.arg (entry->GetHumanReadableID ());
-			PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic,
-					pgp->GetEntryKey (entry->GetQObject ()));
-			if (dia.exec () != QDialog::Accepted)
-				return;
-
-			const QCA::PGPKey& key = dia.GetSelectedKey ();
-
-			pgp->SetEntryKey (entry->GetQObject (), key);
-
-			QSettings settings (QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_Azoth");
-			settings.beginGroup ("PublicEntryKeys");
-			if (key.isNull ())
-				settings.remove (entry->GetEntryID ());
-			else
-				settings.setValue (entry->GetEntryID (), key.keyId ());
-			settings.endGroup ();
+			ChoosePGPKey (pgp, entry);
 		}
 #endif
 
