@@ -49,6 +49,7 @@ struct Entity;
 namespace Azoth
 {
 	class ICLEntry;
+	class ISupportPGP;
 	class IAccount;
 	class AvatarsManager;
 
@@ -72,5 +73,7 @@ namespace Azoth
 
 	QString StateToString (State);
 	QString PrettyPrintDateTime (const QDateTime&);
+
+	void ChoosePGPKey (ISupportPGP*, ICLEntry*);
 }
 }

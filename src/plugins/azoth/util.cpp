@@ -47,6 +47,12 @@
 #include "interfaces/azoth/iclentry.h"
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/iregmanagedaccount.h"
+
+#ifdef ENABLE_CRYPT
+#include "interfaces/azoth/isupportpgp.h"
+#include "pgpkeyselectiondialog.h"
+#endif
+
 #include "addaccountwizardfirstpage.h"
 #include "core.h"
 #include "chattabsmanager.h"
@@ -338,6 +344,32 @@ namespace Azoth
 		return QString::fromUtf8 (ostr.str ().c_str ());
 #else
 		return QLocale {}.toString (dt);
+#endif
+	}
+
+	void ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
+	{
+#ifdef ENABLE_CRYPT
+		const auto& str = QObject::tr ("Please select the key for %1 (%2).")
+				.arg (entry->GetEntryName ())
+				.arg (entry->GetHumanReadableID ());
+		PGPKeySelectionDialog dia (str, PGPKeySelectionDialog::TPublic,
+				pgp->GetEntryKey (entry->GetQObject ()));
+		if (dia.exec () != QDialog::Accepted)
+			return;
+
+		const QCA::PGPKey& key = dia.GetSelectedKey ();
+
+		pgp->SetEntryKey (entry->GetQObject (), key);
+
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth");
+		settings.beginGroup ("PublicEntryKeys");
+		if (key.isNull ())
+			settings.remove (entry->GetEntryID ());
+		else
+			settings.setValue (entry->GetEntryID (), key.keyId ());
+		settings.endGroup ();
 #endif
 	}
 }
