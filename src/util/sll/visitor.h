@@ -54,7 +54,8 @@ namespace Util
 	}
 
 	template<typename HeadVar, typename... TailVars, typename... Args>
-	auto Visit (const boost::variant<HeadVar, TailVars...>& v, Args&&... args)
+	auto Visit (const boost::variant<HeadVar, TailVars...>& v, Args&&... args) ->
+			decltype (detail::VisitorBase<Args...> { std::forward<Args> (args)... } (std::declval<HeadVar> ()))
 	{
 		using R_t = decltype (detail::VisitorBase<Args...> { std::forward<Args> (args)... } (std::declval<HeadVar> ()));
 
