@@ -83,5 +83,20 @@ namespace Util
 					[] (auto) { return true; });
 		QCOMPARE (res, true);
 	}
+
+#define NC nc = std::unique_ptr<int> {}
+
+	void VisitorTest::testNonCopyableFunctors ()
+	{
+		Visitor_t v { 'a' };
+		const auto& res = Visit (v,
+					[NC] (char) { return true; },
+					[NC] (int) { return false; },
+					[NC] (std::string) { return false; },
+					[NC] (QString) { return false; },
+					[NC] (double) { return false; },
+					[NC] (float) { return false; });
+		QCOMPARE (res, true);
+	}
 }
 }

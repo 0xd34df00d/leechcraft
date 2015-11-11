@@ -43,6 +43,8 @@ namespace Util
 		void testBasicVisitorGenericFallback ();
 		void testBasicVisitorCoercion ();
 		void testBasicVisitorCoercionGenericFallback ();
+
+		void testNonCopyableFunctors ();
 	};
 }
 }
