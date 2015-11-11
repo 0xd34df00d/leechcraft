@@ -828,26 +828,7 @@ namespace Azoth
 		}
 
 		const bool enable = EnableEncryption_->isChecked ();
-		const auto& result = pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
-		if (!result)
-			return;
-
-		Util::Visit (*result,
-				[this, pgp] (const GPGExceptions::NullPubkey&)
-				{
-					if (QMessageBox::question (this,
-								"LeechCraft",
-								tr ("This entry has no pubkey assigned to it. Do you want to choose one?"),
-								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
-						ChoosePGPKey (pgp, GetEntry<ICLEntry> ());
-				},
-				[this] (const GPGExceptions::General& ex)
-				{
-					QMessageBox::critical (this,
-							"LeechCraft",
-							tr ("Cannot enable encryption: %1.")
-								.arg ("<br/><em>" + QString::fromStdString (ex.what ()) + "</em>"));
-				});
+		SetEncryptionEnabled (pgp, enable);
 	}
 
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
@@ -2123,5 +2104,33 @@ namespace Azoth
 	{
 		emit changeTabIcon (this, TabIcon_);
 	}
+
+#ifdef ENABLE_CRYPT
+	void ChatTab::SetEncryptionEnabled (ISupportPGP *pgp, bool enable)
+	{
+		const auto& result = pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
+		if (!result)
+			return;
+
+		Util::Visit (*result,
+				[this, pgp] (const GPGExceptions::NullPubkey&)
+				{
+					if (QMessageBox::question (this,
+								"LeechCraft",
+								tr ("This entry has no pubkey assigned to it. Do you want to choose one?"),
+								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+						return;
+
+					ChoosePGPKey (pgp, GetEntry<ICLEntry> ());
+				},
+				[this] (const GPGExceptions::General& ex)
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Cannot enable encryption: %1.")
+								.arg ("<br/><em>" + QString::fromStdString (ex.what ()) + "</em>"));
+				});
+	}
+#endif
 }
 }

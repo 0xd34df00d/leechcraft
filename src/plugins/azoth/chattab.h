@@ -61,6 +61,7 @@ namespace Azoth
 	class IAccount;
 	class IMessage;
 	class ITransferManager;
+	class ISupportPGP;
 	class ContactDropFilter;
 	class MsgFormatterWidget;
 	class AvatarsManager;
@@ -265,6 +266,10 @@ namespace Azoth
 		 * @param nickname a nick to insert, in html format.
 		 */
 		void InsertNick (const QString& nicknameHtml);
+
+#ifdef ENABLE_CRYPT
+		void SetEncryptionEnabled (ISupportPGP*, bool enable);
+#endif
 	signals:
 		void changeTabName (QWidget*, const QString&);
 		void changeTabIcon (QWidget*, const QIcon&);
