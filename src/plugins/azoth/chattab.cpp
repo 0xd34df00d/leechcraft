@@ -833,6 +833,14 @@ namespace Azoth
 			return;
 
 		Util::Visit (*result,
+				[this, pgp] (const GPGExceptions::NullPubkey&)
+				{
+					if (QMessageBox::question (this,
+								"LeechCraft",
+								tr ("This entry has no pubkey assigned to it. Do you want to choose one?"),
+								QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes)
+						ChoosePGPKey (pgp, GetEntry<ICLEntry> ());
+				},
 				[this] (const GPGExceptions::General& ex)
 				{
 					QMessageBox::critical (this,
