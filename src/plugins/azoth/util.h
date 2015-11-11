@@ -74,6 +74,6 @@ namespace Azoth
 	QString StateToString (State);
 	QString PrettyPrintDateTime (const QDateTime&);
 
-	void ChoosePGPKey (ISupportPGP*, ICLEntry*);
+	bool ChoosePGPKey (ISupportPGP*, ICLEntry*);
 }
 }

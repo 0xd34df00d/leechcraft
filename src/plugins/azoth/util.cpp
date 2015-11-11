@@ -347,7 +347,7 @@ namespace Azoth
 #endif
 	}
 
-	void ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
+	bool ChoosePGPKey (ISupportPGP *pgp, ICLEntry *entry)
 	{
 #ifdef ENABLE_CRYPT
 		const auto& str = QObject::tr ("Please select the key for %1 (%2).")
@@ -356,7 +356,7 @@ namespace Azoth
 		PGPKeySelectionDialog dia { str, PGPKeySelectionDialog::TPublic,
 				pgp->GetEntryKey (entry->GetQObject ()) };
 		if (dia.exec () != QDialog::Accepted)
-			return;
+			return false;
 
 		const auto& key = dia.GetSelectedKey ();
 
@@ -370,6 +370,8 @@ namespace Azoth
 		else
 			settings.setValue (entry->GetEntryID (), key.keyId ());
 		settings.endGroup ();
+
+		return !key.isNull ();
 #endif
 	}
 }
