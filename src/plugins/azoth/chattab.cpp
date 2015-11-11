@@ -57,6 +57,7 @@
 #include <util/gui/findnotificationwk.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
+#include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -826,7 +827,19 @@ namespace Azoth
 			return;
 		}
 
-		pgp->SetEncryptionEnabled (GetEntry<QObject> (), EnableEncryption_->isChecked ());
+		const bool enable = EnableEncryption_->isChecked ();
+		const auto& result = pgp->SetEncryptionEnabled (GetEntry<QObject> (), enable);
+		if (!result)
+			return;
+
+		Util::Visit (*result,
+				[this] (const GPGExceptions::General& ex)
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Cannot enable encryption: %1.")
+								.arg ("<br/><em>" + QString::fromStdString (ex.what ()) + "</em>"));
+				});
 	}
 
 	void ChatTab::handleEncryptionStateChanged (QObject *entry, bool enabled)
