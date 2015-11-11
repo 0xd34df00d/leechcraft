@@ -63,10 +63,10 @@
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/imucprotocol.h"
 #include "interfaces/azoth/ihaveblacklists.h"
+#include "interfaces/azoth/ihaveserverhistory.h"
 
 #ifdef ENABLE_CRYPT
 #include "interfaces/azoth/isupportpgp.h"
-#include "interfaces/azoth/ihaveserverhistory.h"
 #include "pgpkeyselectiondialog.h"
 #endif
 
