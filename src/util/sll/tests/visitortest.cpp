@@ -37,11 +37,11 @@ namespace LeechCraft
 {
 namespace Util
 {
-	using Visitor_t = boost::variant<int, char, std::string, QString, double, float>;
+	using Variant_t = boost::variant<int, char, std::string, QString, double, float>;
 
 	void VisitorTest::testBasicVisitor ()
 	{
-		Visitor_t v { 'a' };
+		Variant_t v { 'a' };
 		const auto& res = Visit (v,
 					[] (char) { return true; },
 					[] (int) { return false; },
@@ -54,7 +54,7 @@ namespace Util
 
 	void VisitorTest::testBasicVisitorGenericFallback ()
 	{
-		Visitor_t v { 'a' };
+		Variant_t v { 'a' };
 		const auto& res = Visit (v,
 					[] (char) { return true; },
 					[] (int) { return false; },
@@ -64,7 +64,7 @@ namespace Util
 
 	void VisitorTest::testBasicVisitorCoercion ()
 	{
-		Visitor_t v { 'a' };
+		Variant_t v { 'a' };
 		const auto& res = Visit (v,
 					[] (int) { return true; },
 					[] (std::string) { return false; },
@@ -76,7 +76,7 @@ namespace Util
 
 	void VisitorTest::testBasicVisitorCoercionGenericFallback ()
 	{
-		Visitor_t v { 'a' };
+		Variant_t v { 'a' };
 		const auto& res = Visit (v,
 					[] (int) { return false; },
 					[] (QString) { return false; },
@@ -88,7 +88,7 @@ namespace Util
 
 	void VisitorTest::testNonCopyableFunctors ()
 	{
-		Visitor_t v { 'a' };
+		Variant_t v { 'a' };
 		const auto& res = Visit (v,
 					[NC] (char) { return true; },
 					[NC] (int) { return false; },
