@@ -2113,7 +2113,7 @@ namespace Azoth
 			return;
 
 		Util::Visit (*result,
-				[this, pgp] (const GPGExceptions::NullPubkey&)
+				[this, pgp, enable] (const GPGExceptions::NullPubkey&)
 				{
 					if (QMessageBox::question (this,
 								"LeechCraft",
@@ -2121,7 +2121,8 @@ namespace Azoth
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 						return;
 
-					ChoosePGPKey (pgp, GetEntry<ICLEntry> ());
+					if (ChoosePGPKey (pgp, GetEntry<ICLEntry> ()))
+						SetEncryptionEnabled (pgp, enable);
 				},
 				[this] (const GPGExceptions::General& ex)
 				{
