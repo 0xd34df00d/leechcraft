@@ -1486,7 +1486,7 @@ namespace Azoth
 
 	void ActionsManager::handleActoredActionTriggered ()
 	{
-		QAction *action = qobject_cast<QAction*> (sender ());
+		const auto action = qobject_cast<QAction*> (sender ());
 		if (!action)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -1495,14 +1495,7 @@ namespace Azoth
 			return;
 		}
 
-		auto function = action->property ("Azoth/EntryActor").value<EntryActor_f> ();
-		if (!function.which ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no function set on the action"
-					<< action->text ();
-			return;
-		}
+		const auto& function = action->property ("Azoth/EntryActor").value<EntryActor_f> ();
 
 		const auto& entries = GetEntriesFromAction (action);
 		if (entries.isEmpty ())
@@ -1525,10 +1518,11 @@ namespace Azoth
 						actor (entry, this);
 				},
 				[&entries] (const MultiEntryActor_f& actor) { actor (entries); },
-				[] (const None&)
+				[action] (const None&)
 				{
 					qWarning () << Q_FUNC_INFO
-							<< "called on None";
+							<< "no function set for"
+							<< action->text ();
 				});
 	}
 
