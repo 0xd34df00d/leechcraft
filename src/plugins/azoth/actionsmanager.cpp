@@ -93,9 +93,7 @@ using SingleEntryActor_f = std::function<void (LeechCraft::Azoth::ICLEntry*)> ;
 using SingleEntryActorWManager_f = std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)>;
 using MultiEntryActor_f = std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> ;
 
-struct None {};
-
-using EntryActor_f = boost::variant<None, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
+using EntryActor_f = boost::variant<boost::none_t, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 using EntriesList_t = QList<LeechCraft::Azoth::ICLEntry*>;
@@ -1518,7 +1516,7 @@ namespace Azoth
 						actor (entry, this);
 				},
 				[&entries] (const MultiEntryActor_f& actor) { actor (entries); },
-				[action] (const None&)
+				[action] (const boost::none_t&)
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "no function set for"
