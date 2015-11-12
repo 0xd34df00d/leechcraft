@@ -37,11 +37,26 @@ namespace Util
 {
 	namespace detail
 	{
-		template<typename... Args>
-		struct VisitorBase : Args...
+		template<typename Head, typename... Tail>
+		struct VisitorBase : Head, VisitorBase<Tail...>
 		{
-			VisitorBase (Args&&... args)
-			: Args { std::forward<Args> (args) }...
+			using Head::operator();
+			using VisitorBase<Tail...>::operator();
+
+			VisitorBase (Head&& head, Tail&&... tail)
+			: Head { std::forward<Head> (head) }
+			, VisitorBase<Tail...> { std::forward<Tail> (tail)... }
+			{
+			}
+		};
+
+		template<typename Head>
+		struct VisitorBase<Head> : Head
+		{
+			using Head::operator();
+
+			VisitorBase (Head&& head)
+			: Head { std::forward<Head> (head) }
 			{
 			}
 		};
