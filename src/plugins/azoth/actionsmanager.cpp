@@ -1466,6 +1466,24 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		QList<ICLEntry*> GetEntriesFromAction (QAction *action)
+		{
+			if (const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ())
+				return { entry };
+
+			const auto& entriesVar = action->property ("Azoth/Entries");
+			if (entriesVar.isValid ())
+				return entriesVar.value<EntriesList_t> ();
+
+			qWarning () << Q_FUNC_INFO
+					<< "neither Entry nor Entries properties are set for"
+					<< action->text ();
+			return {};
+		}
+	}
+
 	void ActionsManager::handleActoredActionTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -1486,17 +1504,11 @@ namespace Azoth
 			return;
 		}
 
-		const auto& entriesVar = action->property ("Azoth/Entries");
-
-		QList<ICLEntry*> entries;
-		if (const auto entry = action->property ("Azoth/Entry").value<ICLEntry*> ())
-			entries << entry;
-		else if (entriesVar.isValid ())
-			entries = entriesVar.value<EntriesList_t> ();
-		else
+		const auto& entries = GetEntriesFromAction (action);
+		if (entries.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "neither Entry nor Entries properties are set for"
+					<< "no entries for"
 					<< action->text ();
 			return;
 		}
