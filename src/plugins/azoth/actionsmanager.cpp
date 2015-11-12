@@ -44,6 +44,7 @@
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include <util/sys/util.h>
 #include <util/threads/futures.h>
 #include <util/xpc/util.h>
@@ -1465,44 +1466,6 @@ namespace Azoth
 		}
 	}
 
-	namespace
-	{
-		struct EntryCallVisitor : public boost::static_visitor<void>
-		{
-			const QList<ICLEntry*>& Entries_;
-			ActionsManager * const Manager_;
-
-			EntryCallVisitor (const QList<ICLEntry*>& es, ActionsManager *manager)
-			: Entries_ { es }
-			, Manager_ { manager }
-			{
-			}
-
-			void operator() (const SingleEntryActor_f& actor) const
-			{
-				for (const auto entry : Entries_)
-					actor (entry);
-			}
-
-			void operator() (const SingleEntryActorWManager_f& actor) const
-			{
-				for (const auto entry : Entries_)
-					actor (entry, Manager_);
-			}
-
-			void operator() (const MultiEntryActor_f& actor) const
-			{
-				actor (Entries_);
-			}
-
-			void operator() (const None&) const
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "called on None";
-			}
-		};
-	}
-
 	void ActionsManager::handleActoredActionTriggered ()
 	{
 		QAction *action = qobject_cast<QAction*> (sender ());
@@ -1538,7 +1501,23 @@ namespace Azoth
 			return;
 		}
 
-		boost::apply_visitor (EntryCallVisitor { entries, this }, function);
+		Util::Visit (function,
+				[&entries] (const SingleEntryActor_f& actor)
+				{
+					for (const auto entry : entries)
+						actor (entry);
+				},
+				[&entries, this] (const SingleEntryActorWManager_f& actor)
+				{
+					for (const auto entry : entries)
+						actor (entry, this);
+				},
+				[&entries] (const MultiEntryActor_f& actor) { actor (entries); },
+				[] (const None&)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "called on None";
+				});
 	}
 
 	void ActionsManager::handleActionNotifyChangesState ()
