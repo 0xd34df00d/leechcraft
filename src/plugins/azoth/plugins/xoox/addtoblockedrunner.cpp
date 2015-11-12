@@ -81,7 +81,8 @@ namespace Xoox
 
 	void AddToBlockedRunner::AddToList (const QString& name, const PrivacyList& oldList, bool activate)
 	{
-		const auto deleteGuard = Util::MakeScopeGuard ([this] { deleteLater (); });
+		deleteLater ();
+
 		auto list = oldList;
 		if (list.GetName ().isEmpty ())
 			list.SetName (name);
