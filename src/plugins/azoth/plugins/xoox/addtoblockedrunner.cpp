@@ -79,11 +79,10 @@ namespace Xoox
 				});
 	}
 
-	void AddToBlockedRunner::AddToList (const QString& name, const PrivacyList& oldList, bool activate)
+	void AddToBlockedRunner::AddToList (const QString& name, PrivacyList list, bool activate)
 	{
 		deleteLater ();
 
-		auto list = oldList;
 		if (list.GetName ().isEmpty ())
 			list.SetName (name);
 

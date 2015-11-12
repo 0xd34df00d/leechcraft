@@ -32,6 +32,7 @@
 #include <memory>
 #include <QObject>
 #include <QStringList>
+#include "privacylistsmanager.h"
 
 namespace LeechCraft
 {
@@ -41,8 +42,6 @@ namespace Xoox
 {
 	class ClientConnection;
 	using ClientConnection_ptr = std::shared_ptr<ClientConnection>;
-
-	class PrivacyList;
 
 	class AddToBlockedRunner : public QObject
 	{
@@ -55,7 +54,7 @@ namespace Xoox
 	private:
 		void HandleGotLists (const QStringList&, const QString&, const QString&);
 		void FetchList (const QString&, bool);
-		void AddToList (const QString&, const PrivacyList&, bool);
+		void AddToList (const QString&, PrivacyList, bool);
 	};
 }
 }
