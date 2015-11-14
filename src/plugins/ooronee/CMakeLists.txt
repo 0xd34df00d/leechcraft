@@ -14,7 +14,7 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	)
 
-#CreateTrs("ooronee" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("ooronee" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("ooronee" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 add_library (leechcraft_ooronee SHARED
