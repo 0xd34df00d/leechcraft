@@ -129,8 +129,8 @@ namespace Ooronee
 
 		bool ok = false;
 		const auto& selected = QInputDialog::getItem (nullptr,
-				tr ("Handle text"),
-				tr ("Select the data filter to handle the dropped text:"),
+				tr ("Handle dropped data"),
+				tr ("Select the data filter to handle the dropped item:"),
 				strings,
 				0,
 				false,
