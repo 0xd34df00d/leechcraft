@@ -55,7 +55,7 @@ namespace Sarin
 		Q_OBJECT
 
 		ToxThread * const Thread_;
-		std::unique_ptr<ToxAv, decltype (&toxav_kill)> ToxAv_;
+		std::unique_ptr<ToxAV, decltype (&toxav_kill)> ToxAv_;
 	public:
 		CallManager (ToxThread*, Tox*, QObject* = nullptr);
 
