@@ -69,10 +69,7 @@ namespace Sarin
 		};
 		QFuture<WriteResult> WriteData (int32_t callIdx, const QByteArray& data);
 
-		struct AcceptCallResult
-		{
-			ToxAvCSettings CodecSettings_;
-		};
+		using AcceptCallResult = MaybeError_t<CallInitiateException>;
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 
 		QFuture<ToxAvCSettings> QueryCodec (int32_t callIdx);
