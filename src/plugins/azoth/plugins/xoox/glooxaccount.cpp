@@ -868,8 +868,7 @@ namespace Xoox
 						return bare.section ('@', 1);
 					});
 
-		allJids.sort ();
-		allJids.erase (std::unique (allJids.begin (), allJids.end ()), allJids.end ());
+		allJids.removeDuplicates ();
 
 		new AddToBlockedRunner { allJids, ClientConnection_, this };
 	}
