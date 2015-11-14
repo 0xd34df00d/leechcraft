@@ -112,7 +112,7 @@ namespace HotSensors
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		QuarkComponent_ptr component (new QuarkComponent (ComponentTemplate_));
+		auto component = std::make_shared<QuarkComponent> (ComponentTemplate_);
 		component->ContextProps_.append ({ "HS_plotManager", PlotMgr_->CreateContextWrapper () });
 		return { component };
 	}
