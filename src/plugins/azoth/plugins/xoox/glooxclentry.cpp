@@ -143,24 +143,6 @@ namespace Xoox
 
 	void GlooxCLEntry::Initialize ()
 	{
-		BlockContact_ = new QAction (tr ("Block contact"), this);
-		BlockContact_->setToolTip (tr ("Add this user to the active privacy list "
-					"(not all servers support this feature)."));
-		BlockContact_->setProperty ("ActionIcon", "im-ban-user");
-		BlockContact_->setCheckable (true);
-		connect (BlockContact_,
-				SIGNAL (triggered (bool)),
-				this,
-				SLOT (addToPrivacyList (bool)));
-
-		auto lists = Account_->GetClientConnection ()->GetPrivacyListsManager ();
-		connect (lists,
-				SIGNAL (currentListFetched (PrivacyList)),
-				this,
-				SLOT (checkIsBlocked (PrivacyList)));
-		const auto& current = lists->GetCurrentList ();
-		if (!current.GetItems ().isEmpty ())
-			checkIsBlocked (current);
 	}
 
 	OfflineDataSource_ptr GlooxCLEntry::ToOfflineDataSource () const
@@ -397,7 +379,6 @@ namespace Xoox
 			GWActions_.clear ();
 
 		result += GWActions_;
-		result += BlockContact_;
 
 		return result;
 	}
@@ -501,57 +482,6 @@ namespace Xoox
 		auto dia = new GWOptionsDialog (Account_->GetClientConnection ()->GetClient (), GetJID ());
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
-	}
-
-	void GlooxCLEntry::checkIsBlocked (const PrivacyList& list)
-	{
-		const auto& items = list.GetItems ();
-
-		const auto& jid = GetJID ();
-		const auto pos = std::find_if (items.begin (), items.end (),
-				[&jid] (const PrivacyListItem& item)
-				{
-					return item.GetType () == PrivacyListItem::Type::Jid &&
-							item.GetAction () == PrivacyListItem::Action::Deny &&
-							item.GetValue () == jid;
-				});
-		BlockContact_->setChecked (pos != items.end ());
-	}
-
-	void GlooxCLEntry::addToPrivacyList (bool add)
-	{
-		const auto& jid = GetJID ();
-
-		auto lists = Account_->GetClientConnection ()->GetPrivacyListsManager ();
-
-		auto current = lists->GetCurrentList ();
-		auto items = current.GetItems ();
-		for (const auto& item : items)
-		{
-			if (item.GetType () != PrivacyListItem::Type::Jid)
-				continue;
-
-			if (item.GetValue () != jid)
-				continue;
-
-			if ((item.GetAction () == PrivacyListItem::Action::Allow && !add) ||
-				(item.GetAction () == PrivacyListItem::Action::Deny && add))
-				return;
-
-			if (!add)
-			{
-				items.removeAll (item);
-				break;
-			}
-		}
-		if (add)
-			items.append ({ jid, PrivacyListItem::Type::Jid });
-
-		if (items.size () == current.GetItems ().size ())
-			return;
-
-		current.SetItems (items);
-		lists->SetList (current);
 	}
 }
 }

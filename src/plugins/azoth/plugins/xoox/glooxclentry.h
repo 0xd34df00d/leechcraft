@@ -83,7 +83,6 @@ namespace Xoox
 		bool AuthRequested_ = false;
 
 		mutable QList<QAction*> GWActions_;
-		QAction *BlockContact_;
 	public:
 		GlooxCLEntry (const QString& bareJID, GlooxAccount*);
 		GlooxCLEntry (OfflineDataSource_ptr, GlooxAccount*);
@@ -133,9 +132,6 @@ namespace Xoox
 		void handleGWLogin ();
 		void handleGWLogout ();
 		void handleGWEdit ();
-
-		void checkIsBlocked (const PrivacyList&);
-		void addToPrivacyList (bool);
 	};
 }
 }
