@@ -30,6 +30,8 @@
 #pragma once
 
 #include <memory>
+#include <boost/optional.hpp>
+#include <boost/variant.hpp>
 #include <QObject>
 #include <tox/toxav.h>
 
@@ -43,6 +45,9 @@ namespace Azoth
 namespace Sarin
 {
 	class ToxThread;
+
+	template<typename... Errors>
+	using MaybeError_t = boost::optional<boost::variant<Errors...>>;
 
 	class CallManager : public QObject
 	{
