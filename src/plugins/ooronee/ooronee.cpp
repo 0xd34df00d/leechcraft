@@ -50,12 +50,12 @@ namespace Ooronee
 	{
 		Util::InstallTranslator ("ooronee");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "ooroneesettings.xml");
 
 		qmlRegisterType<DropArea> ("org.LC.Ooronee", 1, 0, "DropArea");
 
-		Quark_.reset (new QuarkComponent { "ooronee", "OoroneeQuark.qml" });
+		Quark_ = std::make_shared<QuarkComponent> ("ooronee", "OoroneeQuark.qml");
 		Quark_->DynamicProps_.append ({ "Ooronee_Proxy", new QuarkProxy { proxy } });
 	}
 
