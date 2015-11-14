@@ -88,8 +88,7 @@ namespace Xoox
 
 		auto items = list.GetItems ();
 
-		const auto& presentIds = QSet<QString>::fromList (Util::Map (items,
-					std::mem_fn (&PrivacyListItem::GetValue)));
+		const auto& presentIds = QSet<QString>::fromList (Util::Map (items, &PrivacyListItem::GetValue));
 
 		bool modified = false;
 		for (const auto& id : Ids_)
