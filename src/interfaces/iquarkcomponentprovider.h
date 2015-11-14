@@ -115,8 +115,24 @@ namespace LeechCraft
 		 */
 		QuarkComponent () = default;
 
-		QuarkComponent (QuarkComponent&&) = default;
-		QuarkComponent& operator= (QuarkComponent&&) = default;
+		/** @brief Move-constructs this quark component from \em other.
+		 *
+		 * The \em other quark component is in unspecified state after the
+		 * move and can only be destructed.
+		 *
+		 * @param[in] other The quark component to move from.
+		 */
+		QuarkComponent (QuarkComponent&& other) = default;
+
+		/** @brief Move-assigns this quark component from \em other.
+		 *
+		 * The \em other quark component is in unspecified state after the
+		 * move and can only be destructed.
+		 *
+		 * @param[in] other The quark component to move from.
+		 * @return A reference to this quark component.
+		 */
+		QuarkComponent& operator= (QuarkComponent&& other) = default;
 
 		/** @brief Initializes a quark component for the given file path.
 		 *
