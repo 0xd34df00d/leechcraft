@@ -71,8 +71,6 @@ namespace Sarin
 
 		using AcceptCallResult = MaybeError_t<CallInitiateException>;
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
-
-		QFuture<ToxAvCSettings> QueryCodec (int32_t callIdx);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx);
