@@ -30,6 +30,7 @@
 #include "quarkproxy.h"
 #include <QInputDialog>
 #include <QMenu>
+#include <QUrl>
 #include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
@@ -132,7 +133,9 @@ namespace Ooronee
 			case QVariant::String:
 				return QuarkProxy::tr ("Select the data filter to handle the dropped text:");
 			case QVariant::Url:
-				return QuarkProxy::tr ("Select the data filter to handle the dropped URL:");
+				return data.toUrl ().isLocalFile () ?
+						QuarkProxy::tr ("Select the data filter to handle the dropped file:") :
+						QuarkProxy::tr ("Select the data filter to handle the dropped URL:");
 			default:
 				return QuarkProxy::tr ("Select the data filter to handle the dropped data:");
 			}
