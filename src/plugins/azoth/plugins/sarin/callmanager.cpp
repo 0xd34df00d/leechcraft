@@ -139,31 +139,22 @@ namespace Sarin
 				});
 	}
 
-	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t callIdx)
+	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t friendIdx)
 	{
-		return Thread_->ScheduleFunction ([this, callIdx] (Tox*) -> AcceptCallResult
+		return Thread_->ScheduleFunction ([this, friendIdx] (Tox*) -> AcceptCallResult
 				{
-					ToxAvCSettings settings;
-					auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
-					if (rc < 0)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to get peer settings for call"
-								<< callIdx
-								<< rc;
-						throw CallAnswerException { rc };
-					}
-
-					if ((rc = toxav_answer (ToxAv_.get (), callIdx, &settings)))
+					TOXAV_ERR_ANSWER error;
+					toxav_answer (ToxAv_.get (), friendIdx, AudioBitRate, VideoBitRate, &error);
+					if (error != TOXAV_ERR_ANSWER_OK)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to answer the call"
-								<< callIdx
-								<< rc;
-						throw CallAnswerException { rc };
+								<< friendIdx
+								<< error;
+						return CallAnswerException { error };
 					}
 
-					return { settings };
+					return {};
 				});
 	}
 
