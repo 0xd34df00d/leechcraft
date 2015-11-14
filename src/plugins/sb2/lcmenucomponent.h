@@ -42,7 +42,7 @@ namespace SB2
 		Q_OBJECT
 
 		IMWProxy* Proxy_;
-		QuarkComponent Component_;
+		const QuarkComponent_ptr Component_;
 	public:
 		LCMenuComponent (IMWProxy*, QObject* = 0);
 
