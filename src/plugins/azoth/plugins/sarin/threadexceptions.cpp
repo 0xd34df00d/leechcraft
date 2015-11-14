@@ -44,22 +44,6 @@ namespace Sarin
 	{
 		return Msg_.constData ();
 	}
-
-	CodeExceptionBase::CodeExceptionBase (int code)
-	: Code_ { code }
-	, Msg_ { QString { "Unable to perform action: %1." }.arg (code).toUtf8 () }
-	{
-	}
-
-	const char* CodeExceptionBase::what () const noexcept
-	{
-		return Msg_;
-	}
-
-	int CodeExceptionBase::GetCode () const noexcept
-	{
-		return Code_;
-	}
 }
 }
 }

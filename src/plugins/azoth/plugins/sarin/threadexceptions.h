@@ -53,23 +53,33 @@ namespace Sarin
 	using ThreadException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
 	using UnknownFriendException = Util::ConcurrentException<Util::NewType<TextExceptionBase, NewTypeTag>>;
 
-	class CodeExceptionBase
+	template<typename CodeType = int>
+	class TypedCodeExceptionBase
 	{
-		int Code_;
-
+		const CodeType Code_;
 		const QByteArray Msg_;
 	public:
-		CodeExceptionBase (int code);
+		TypedCodeExceptionBase (CodeType code)
+		: Code_ { code }
+		, Msg_ { QString { "Unable to perform action: %1." }.arg (code).toUtf8 () }
+		{
+		}
 
-		const char* what () const noexcept;
+		const char* what () const noexcept
+		{
+			return Msg_;
+		}
 
-		int GetCode () const noexcept;
+		CodeType GetCode () const noexcept
+		{
+			return Code_;
+		}
 	};
 
-	using CallInitiateException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
-	using FramePrepareException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
-	using FrameSendException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
-	using CallAnswerException = Util::ConcurrentException<Util::NewType<CodeExceptionBase, NewTypeTag>>;
+	using CallInitiateException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<>, NewTypeTag>>;
+	using FramePrepareException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<>, NewTypeTag>>;
+	using FrameSendException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<>, NewTypeTag>>;
+	using CallAnswerException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<>, NewTypeTag>>;
 
 	template<typename T>
 	class CommandCodeExceptionBase
