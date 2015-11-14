@@ -68,6 +68,12 @@ namespace Sarin
 				this);
 	}
 
+	namespace
+	{
+		const int AudioBitRate = 16;
+		const int VideoBitRate = 0;
+	}
+
 	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
 	{
 		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox) -> InitiateResult
@@ -78,20 +84,20 @@ namespace Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "unable to get user ID for"
 								<< pkey;
-						throw UnknownFriendException { tr ("Unable to get user ID.") };
+						return UnknownFriendException { tr ("Unable to get user ID.") };
 					}
 
-					int32_t callIdx = 0;
-					auto res = toxav_call (ToxAv_.get (), &callIdx, id, &av_DefaultSettings, 15);
-					if (res < 0)
+					TOXAV_ERR_CALL error;
+					toxav_call (ToxAv_.get (), id, AudioBitRate, VideoBitRate, error);
+					if (error != TOXAV_ERR_CALL_OK)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to initiate call:"
-								<< res;
-						throw CallInitiateException { res };
+								<< error;
+						return CallInitiateException { error };
 					}
 
-					return { callIdx, av_DefaultSettings };
+					return {};
 				});
 	}
 
