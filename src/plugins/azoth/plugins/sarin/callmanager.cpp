@@ -84,17 +84,17 @@ namespace Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "unable to get user ID for"
 								<< pkey;
-						return UnknownFriendException { tr ("Unable to get user ID.") };
+						return InitiateResult { UnknownFriendException { } };
 					}
 
 					TOXAV_ERR_CALL error;
-					toxav_call (ToxAv_.get (), id, AudioBitRate, VideoBitRate, error);
+					toxav_call (ToxAv_.get (), id, AudioBitRate, VideoBitRate, &error);
 					if (error != TOXAV_ERR_CALL_OK)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to initiate call:"
 								<< error;
-						return CallInitiateException { error };
+						return InitiateResult { CallInitiateException { error } };
 					}
 
 					return {};
@@ -151,7 +151,7 @@ namespace Sarin
 								<< "unable to answer the call"
 								<< friendIdx
 								<< error;
-						return CallAnswerException { error };
+						return InitiateResult { CallAnswerException { error } };
 					}
 
 					return {};
