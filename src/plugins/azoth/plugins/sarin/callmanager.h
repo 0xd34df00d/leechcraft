@@ -34,6 +34,7 @@
 #include <boost/variant.hpp>
 #include <QObject>
 #include <tox/toxav.h>
+#include "threadexceptions.h"
 
 template<typename T>
 class QFuture;
@@ -58,11 +59,7 @@ namespace Sarin
 	public:
 		CallManager (ToxThread*, Tox*, QObject* = nullptr);
 
-		struct InitiateResult
-		{
-			int32_t CallIndex_;
-			ToxAvCSettings CodecSettings_;
-		};
+		using InitiateResult = MaybeError_t<UnknownFriendException, CallInitiateException>;
 		QFuture<InitiateResult> InitiateCall (const QByteArray& pkey);
 
 		struct WriteResult
