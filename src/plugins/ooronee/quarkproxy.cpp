@@ -164,9 +164,27 @@ namespace Ooronee
 		XmlSettingsManager::Instance ().setProperty ("PrevVariant" + typeId, variant);
 	}
 
+	namespace
+	{
+		QByteArray GetTypeId (const QVariant& data)
+		{
+			switch (data.type ())
+			{
+			case QVariant::Image:
+				return "Image";
+			case QVariant::ByteArray:
+				return "ByteArray";
+			case QVariant::String:
+				return "String";
+			default:
+				return "Other";
+			}
+		}
+	}
+
 	void QuarkProxy::handle (const QVariant& data, bool menuSelect)
 	{
-		Handle (data, data.canConvert<QImage> () ? "Image" : "Text", menuSelect);
+		Handle (data, GetTypeId (data), menuSelect);
 	}
 }
 }
