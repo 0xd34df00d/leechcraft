@@ -30,6 +30,7 @@
 #include "quarkproxy.h"
 #include <QInputDialog>
 #include <QMenu>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
@@ -104,10 +105,7 @@ namespace Ooronee
 			}
 		}
 
-		QStringList strings;
-		for (const auto& info : varInfos)
-			strings << info.HumanReadable_;
-
+		const auto& strings = Util::Map (varInfos, &VarInfo::HumanReadable_);
 		HandleVariantsDialog (entity, strings, varInfos, typeId);
 	}
 
