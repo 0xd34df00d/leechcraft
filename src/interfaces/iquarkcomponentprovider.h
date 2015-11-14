@@ -90,7 +90,7 @@ namespace LeechCraft
 
 		/** @brief Context-depended properties to be exposed to the engine.
 		 */
-		QList<QPair<QString, QObject*>> ContextProps_;
+		std::vector<std::pair<QString, std::unique_ptr<QObject>>> ContextProps_;
 
 		/** @brief Statis properties to be exposed to the engine.
 		 *
@@ -136,17 +136,6 @@ namespace LeechCraft
 		QuarkComponent (const QString& subdir, const QString& filename)
 		: Url_ (Util::GetSysPathUrl (Util::SysPath::QML, subdir, filename))
 		{
-		}
-
-		/** @brief Destroys the quark.
-		 *
-		 * Destroys the quark and all context-specific properties listed
-		 * in the ContextProps_ list.
-		 */
-		~QuarkComponent ()
-		{
-			for (auto pair : ContextProps_)
-				delete pair.second;
 		}
 	};
 

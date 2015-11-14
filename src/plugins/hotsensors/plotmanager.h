@@ -53,7 +53,7 @@ namespace HotSensors
 
 		QAbstractItemModel* GetModel () const;
 
-		QObject* CreateContextWrapper ();
+		std::unique_ptr<QObject> CreateContextWrapper ();
 	public slots:
 		void handleHistoryUpdated (const ReadingsHistory_t&);
 	};
