@@ -113,9 +113,10 @@ namespace LeechCraft
 
 		/** @brief Initializes a null quark component.
 		 */
-		QuarkComponent ()
-		{
-		}
+		QuarkComponent () = default;
+
+		QuarkComponent (QuarkComponent&&) = default;
+		QuarkComponent& operator= (QuarkComponent&&) = default;
 
 		/** @brief Initializes a quark component for the given file path.
 		 *
