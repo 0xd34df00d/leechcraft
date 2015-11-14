@@ -77,8 +77,6 @@ namespace HotSensors
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),
 				SLOT (handleHistoryUpdated (ReadingsHistory_t)));
-
-		ComponentTemplate_ = QuarkComponent ("hotsensors", "HSQuark.qml");
 	}
 
 	void Plugin::SecondInit ()
@@ -112,7 +110,7 @@ namespace HotSensors
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-		auto component = std::make_shared<QuarkComponent> (ComponentTemplate_);
+		auto component = std::make_shared<QuarkComponent> ("hotsensors", "HSQuark.qml");
 		component->ContextProps_.append ({ "HS_plotManager", PlotMgr_->CreateContextWrapper () });
 		return { component };
 	}

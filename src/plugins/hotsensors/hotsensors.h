@@ -54,8 +54,6 @@ namespace HotSensors
 		std::shared_ptr<Backend> SensorsMgr_;
 		std::unique_ptr<HistoryManager> HistoryMgr_;
 		std::unique_ptr<PlotManager> PlotMgr_;
-
-		QuarkComponent ComponentTemplate_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
