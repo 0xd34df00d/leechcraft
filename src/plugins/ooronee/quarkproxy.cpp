@@ -121,6 +121,24 @@ namespace Ooronee
 		SaveUsed (creator.GetChosenPlugin (), creator.GetChosenVariant (), typeId);
 	}
 
+	namespace
+	{
+		QString GetTypeString (const QVariant& data)
+		{
+			switch (data.type ())
+			{
+			case QVariant::Image:
+				return QuarkProxy::tr ("Select the data filter to handle the dropped image:");
+			case QVariant::String:
+				return QuarkProxy::tr ("Select the data filter to handle the dropped text:");
+			case QVariant::Url:
+				return QuarkProxy::tr ("Select the data filter to handle the dropped URL:");
+			default:
+				return QuarkProxy::tr ("Select the data filter to handle the dropped data:");
+			}
+		}
+	}
+
 	void QuarkProxy::HandleVariantsDialog (Entity entity,
 			const QStringList& strings, const QList<VarInfo>& varInfos, const QByteArray& typeId)
 	{
@@ -130,7 +148,7 @@ namespace Ooronee
 		bool ok = false;
 		const auto& selected = QInputDialog::getItem (nullptr,
 				tr ("Handle dropped data"),
-				tr ("Select the data filter to handle the dropped item:"),
+				GetTypeString (entity.Entity_),
 				strings,
 				0,
 				false,
