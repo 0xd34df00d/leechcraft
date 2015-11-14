@@ -58,6 +58,8 @@ namespace Util
 	public:
 		using T::T;
 
+		NewType () = default;
+
 		NewType (const T& t)
 		: T { t }
 		{
