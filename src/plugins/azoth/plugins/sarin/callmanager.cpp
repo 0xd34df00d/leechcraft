@@ -44,7 +44,18 @@ namespace Sarin
 	CallManager::CallManager (ToxThread *thread, Tox *tox, QObject *parent)
 	: QObject { parent }
 	, Thread_ { thread }
-	, ToxAv_ { toxav_new (tox, 64), &toxav_kill }
+	, ToxAv_
+	{
+		[tox]
+		{
+			TOXAV_ERR_NEW error;
+			const auto toxAV = toxav_new (tox, &error);
+			if (error != TOXAV_ERR_NEW_OK)
+				throw std::runtime_error { "Failed to create tox AV instance: " + std::to_string (error) };
+			return toxAV;
+		} (),
+		&toxav_kill
+	}
 	{
 		toxav_register_callstate_callback (ToxAv_.get (),
 				[] (void*, int32_t callIdx, void *udata)
