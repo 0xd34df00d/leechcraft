@@ -243,8 +243,11 @@ namespace Azoth
 #endif
 		const int bufSize = (frequency * channels * (format.sampleSize () / 8) * 160) / 1000;
 
-		if (mode & QIODevice::WriteOnly)
+		auto& callState = CallStates_ [sender ()];
+		if ((mode & QIODevice::WriteOnly) && !callState.OpenedWrite_)
 		{
+			callState.OpenedWrite_ = true;
+
 			qDebug () << "opening output...";
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultOutputDevice ());
 			if (!info.isFormatSupported (format))
@@ -261,8 +264,10 @@ namespace Azoth
 			output->start (callAudioDev);
 		}
 
-		if (mode & QIODevice::ReadOnly)
+		if ((mode & QIODevice::ReadOnly) && !callState.OpenedRead_)
 		{
+			callState.OpenedRead_ = true;
+
 			qDebug () << "opening input...";
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultInputDevice ());
 			if (!info.isFormatSupported (format))
