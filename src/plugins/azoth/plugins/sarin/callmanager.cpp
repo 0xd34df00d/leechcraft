@@ -162,41 +162,11 @@ namespace Sarin
 				});
 	}
 
-	void CallManager::HandleIncomingCall (int32_t callIdx)
+	void CallManager::HandleIncomingCall (int32_t friendNum)
 	{
-		const auto friendNum = toxav_get_peer_id (ToxAv_.get (), callIdx, 0);
-		if (friendNum < 0)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to get friend ID for call"
-					<< callIdx;
-			return;
-		}
-
 		Util::ExecuteFuture ([this, friendNum] { return Thread_->GetFriendPubkey (friendNum); },
-				[this, callIdx] (const QByteArray& pubkey) { HandleIncomingCall (pubkey, callIdx); },
+				[this] (const QByteArray& pubkey) { gotIncomingCall (pubkey); },
 				this);
-	}
-
-	void CallManager::HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx)
-	{
-		ToxAvCSettings settings;
-		const auto rc = toxav_get_peer_csettings (ToxAv_.get (), callIdx, 0, &settings);
-		if (rc < 0)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to get peer settings";
-			return;
-		}
-
-		if (settings.call_type == av_TypeVideo)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "video calls are unsupported for now";
-			return;
-		}
-
-		emit gotIncomingCall (pubkey, callIdx);
 	}
 
 	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size)
