@@ -36,6 +36,8 @@
 #include <tox/tox.h>
 #include <util/xpc/util.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/functional.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include "toxprotocol.h"
 #include "toxthread.h"
@@ -368,8 +370,11 @@ namespace Sarin
 			return nullptr;
 		}
 
-		const auto call = new AudioCall { entry, Thread_->GetCallManager () };
+		const auto callMgr = Thread_->GetCallManager ();
+		const auto call = new AudioCall { entry, callMgr, AudioCall::DOut };
 		emit called (call);
+		Util::Sequence (entry, Thread_->ResolveFriendId (entry->GetPubKey ())) >>
+				Util::BindMemFn (&AudioCall::SetCallIdx, call);
 		return call;
 	}
 
@@ -507,7 +512,8 @@ namespace Sarin
 			return;
 		}
 
-		const auto call = new AudioCall { callIdx, entry, Thread_->GetCallManager () };
+		const auto call = new AudioCall { entry, Thread_->GetCallManager (), AudioCall::DIn };
+		call->SetCallIdx (callIdx);
 		emit called (call);
 	}
 
