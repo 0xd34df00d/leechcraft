@@ -75,11 +75,7 @@ namespace Sarin
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleIncomingCall (const QByteArray& pubkey, int32_t callIdx);
 
-		void HandleAvStart (int32_t);
-
 		void HandleAudio (int32_t call, const int16_t *frames, int size);
-
-		void PrepareTransmission (int32_t);
 	signals:
 		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
 		void transferStarting (int32_t callIdx);

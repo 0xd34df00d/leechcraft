@@ -64,13 +64,6 @@ namespace Sarin
 				},
 				av_OnInvite,
 				this);
-		toxav_register_callstate_callback (ToxAv_.get (),
-				[] (void*, int32_t callIdx, void *udata)
-				{
-					static_cast<CallManager*> (udata)->HandleAvStart (callIdx);
-				},
-				av_OnStart,
-				this);
 		toxav_register_audio_callback (ToxAv_.get (),
 				[] (void*, int32_t callIdx, const int16_t *frames, uint16_t size, void *udata)
 				{
@@ -206,38 +199,10 @@ namespace Sarin
 		emit gotIncomingCall (pubkey, callIdx);
 	}
 
-	void CallManager::HandleAvStart (int32_t callIdx)
-	{
-		try
-		{
-			PrepareTransmission (callIdx);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "failed to prepare transmission, so we are not gonna start:"
-					<< e.what ();
-			return;
-		}
-
-		emit transferStarting (callIdx);
-	}
-
 	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size)
 	{
 		const QByteArray data { reinterpret_cast<const char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
 		emit gotFrame (call, data);
-	}
-
-	void CallManager::PrepareTransmission (int32_t callIdx)
-	{
-		if (const auto rc = toxav_prepare_transmission (ToxAv_.get (), callIdx, false))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to prepare transmission:"
-					<< rc;
-			throw CallInitiateException { rc };
-		}
 	}
 }
 }
