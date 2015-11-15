@@ -87,7 +87,6 @@ namespace Sarin
 		QIODevice* GetVideoDevice ();
 	private:
 		void InitiateCall ();
-		void HandleInitiateResult (const QFuture<CallManager::InitiateResult>&);
 		void MoveToActiveState ();
 	private slots:
 		void handleTransferStarting (int32_t);

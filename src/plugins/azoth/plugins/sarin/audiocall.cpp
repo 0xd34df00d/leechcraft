@@ -120,48 +120,19 @@ namespace Sarin
 
 	void AudioCall::InitiateCall ()
 	{
-		auto watcher = new QFutureWatcher<CallManager::InitiateResult> { this };
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[watcher, this]
-			{
-				watcher->deleteLater ();
-				HandleInitiateResult (watcher->future ());
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-		watcher->setFuture (CallMgr_->InitiateCall (SourcePubkey_.toUtf8 ()));
-	}
+		Util::Sequence (this, CallMgr_->InitiateCall (SourcePubkey_.toUtf8 ())) >>
+				[this] (const CallManager::InitiateResult& result)
+				{
+					if (result)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error initiating the call";
+						emit stateChanged (SFinished);
+						return;
+					}
 
-	void AudioCall::HandleInitiateResult (const QFuture<CallManager::InitiateResult>& future)
-	{
-		try
-		{
-			const auto& result = future.result ();
-			CallIdx_ = result.CallIndex_;
-
-			emit stateChanged (SConnecting);
-		}
-		catch (const ThreadException& ex)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got exception:"
-					<< ex.what ();
-			emit stateChanged (SFinished);
-		}
-		catch (const CallInitiateException& ex)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error initiating call:"
-					<< ex.what ();
-			emit stateChanged (SFinished);
-		}
-	}
-
-	namespace
-	{
+					emit stateChanged (SConnecting);
+				};
 	}
 
 	void AudioCall::MoveToActiveState ()
