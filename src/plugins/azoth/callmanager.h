@@ -49,6 +49,13 @@ namespace Azoth
 		Q_OBJECT
 
 		QHash<QString, QObjectList> Entry2Calls_;
+
+		struct CallState
+		{
+			bool OpenedRead_ = false;
+			bool OpenedWrite_ = false;
+		};
+		QHash<QObject*, CallState> CallStates_;
 	public:
 		CallManager (QObject* = 0);
 

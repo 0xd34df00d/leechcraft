@@ -179,14 +179,16 @@ namespace Azoth
 	{
 		qDebug () << Q_FUNC_INFO << state << (state == IMediaCall::SActive);
 
-		if (state == IMediaCall::SFinished)
-		{
-			if (auto call = qobject_cast<IMediaCall*> (sender ()))
-				Entry2Calls_ [call->GetSourceID ()].removeAll (sender ());
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "sender isn't an IMediaCall";
-		}
+		if (state != IMediaCall::SFinished)
+			return;
+
+		CallStates_.remove (sender ());
+
+		if (const auto call = qobject_cast<IMediaCall*> (sender ()))
+			Entry2Calls_ [call->GetSourceID ()].removeAll (sender ());
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "sender isn't an IMediaCall";
 	}
 
 	namespace
