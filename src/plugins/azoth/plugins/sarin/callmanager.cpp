@@ -57,17 +57,18 @@ namespace Sarin
 		&toxav_kill
 	}
 	{
-		toxav_register_callstate_callback (ToxAv_.get (),
-				[] (void*, int32_t callIdx, void *udata)
+		toxav_callback_call (ToxAv_.get (),
+				[] (ToxAV*, uint32_t friendNum, bool audio, bool video, void *udata)
 				{
-					static_cast<CallManager*> (udata)->HandleIncomingCall (callIdx);
+					static_cast<CallManager*> (udata)->HandleIncomingCall (friendNum);
 				},
-				av_OnInvite,
 				this);
-		toxav_register_audio_callback (ToxAv_.get (),
-				[] (void*, int32_t callIdx, const int16_t *frames, uint16_t size, void *udata)
+		toxav_callback_audio_receive_frame (ToxAv_.get (),
+				[] (ToxAV*, uint32_t friendNum, const int16_t *frames,
+						size_t size, uint8_t, uint32_t,
+						void *udata)
 				{
-					static_cast<CallManager*> (udata)->HandleAudio (callIdx, frames, size);
+					static_cast<CallManager*> (udata)->HandleAudio (friendNum, frames, size);
 				},
 				this);
 	}
