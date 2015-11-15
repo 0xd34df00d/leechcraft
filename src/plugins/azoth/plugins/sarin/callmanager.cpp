@@ -155,7 +155,7 @@ namespace Sarin
 								<< "unable to answer the call"
 								<< friendIdx
 								<< error;
-						return InitiateResult { CallAnswerException { error } };
+						return AcceptCallResult { CallAnswerException { error } };
 					}
 
 					return {};

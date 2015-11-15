@@ -69,7 +69,7 @@ namespace Sarin
 		};
 		QFuture<WriteResult> WriteData (int32_t callIdx, const QByteArray& data);
 
-		using AcceptCallResult = MaybeError_t<CallInitiateException>;
+		using AcceptCallResult = MaybeError_t<CallAnswerException>;
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
