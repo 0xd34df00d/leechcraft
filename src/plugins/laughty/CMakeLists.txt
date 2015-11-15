@@ -24,4 +24,4 @@ target_link_libraries (leechcraft_laughty
 	)
 install (TARGETS leechcraft_laughty DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_laughty DBus)
+FindQtLibs (leechcraft_laughty DBus Gui)
