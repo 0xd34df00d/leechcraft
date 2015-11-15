@@ -88,7 +88,7 @@ namespace Sarin
 	private:
 		void InitiateCall ();
 		void HandleInitiateResult (const QFuture<CallManager::InitiateResult>&);
-		void MoveToActiveState (const ToxAvCSettings&);
+		void MoveToActiveState ();
 	private slots:
 		void handleTransferStarting (int32_t);
 	signals:

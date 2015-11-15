@@ -162,34 +162,23 @@ namespace Sarin
 
 	namespace
 	{
-#ifdef ENABLE_MEDIACALLS
-		QAudioFormat AvCSettings2Format (const ToxAvCSettings& settings)
-		{
-			QAudioFormat fmt;
-			fmt.setChannelCount (settings.audio_channels);
-			fmt.setSampleRate (settings.audio_sample_rate);
-			fmt.setSampleSize (16);
-			fmt.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
-					QAudioFormat::BigEndian :
-					QAudioFormat::LittleEndian);
-			fmt.setCodec ("audio/pcm");
-			fmt.setSampleType (QAudioFormat::SignedInt);
-			return fmt;
-		}
-#else
-		QAudioFormat AvCSettings2Format (const ToxAvCSettings&)
-		{
-			return {};
-		}
-#endif
 	}
 
-	void AudioCall::MoveToActiveState (const ToxAvCSettings& settings)
+	void AudioCall::MoveToActiveState ()
 	{
 		Device_ = std::make_shared<AudioCallDevice> (CallIdx_, CallMgr_);
 		Device_->open (QIODevice::ReadWrite);
 
-		Fmt_ = AvCSettings2Format (settings);
+		/*
+		Fmt_.setChannelCount ();
+		Fmt_.setSampleRate ();
+		*/
+		Fmt_.setSampleSize (16);
+		Fmt_.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
+				QAudioFormat::BigEndian :
+				QAudioFormat::LittleEndian);
+		Fmt_.setCodec ("audio/pcm");
+		Fmt_.setSampleType (QAudioFormat::SignedInt);
 
 		emit stateChanged (SActive);
 		emit audioModeChanged (QIODevice::ReadWrite);
@@ -201,9 +190,7 @@ namespace Sarin
 			return;
 
 		qDebug () << Q_FUNC_INFO;
-		Util::ExecuteFuture ([this, callIdx] { return CallMgr_->QueryCodec (callIdx); },
-				Util::BindMemFn (&AudioCall::MoveToActiveState, this),
-				this);
+		MoveToActiveState ();
 	}
 }
 }
