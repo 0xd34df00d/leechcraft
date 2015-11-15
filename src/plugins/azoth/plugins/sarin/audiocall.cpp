@@ -55,16 +55,20 @@ namespace Sarin
 				SLOT (handleTransferStarting (int32_t)));
 	}
 
-	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr)
-	: AudioCall { contact, callMgr, DOut }
+	void AudioCall::SetCallIdx (const boost::optional<qint32>& idx)
 	{
-		InitiateCall ();
-	}
+		if (!idx)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no call idx";
+			emit stateChanged (SFinished);
+			return;
+		}
 
-	AudioCall::AudioCall (int32_t callIdx, const ToxContact *contact, CallManager *callMgr)
-	: AudioCall { contact, callMgr, DIn }
-	{
-		CallIdx_ = callIdx;
+		CallIdx_ = *idx;
+
+		if (Dir_ == DOut)
+			InitiateCall ();
 	}
 
 	IMediaCall::Direction AudioCall::GetDirection () const

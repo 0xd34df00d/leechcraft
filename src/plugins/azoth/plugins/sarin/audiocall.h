@@ -73,10 +73,10 @@ namespace Sarin
 
 		std::shared_ptr<AudioCallDevice> Device_;
 
-		AudioCall (const ToxContact*, CallManager*, Direction);
 	public:
-		AudioCall (const ToxContact*, CallManager*);
-		AudioCall (int32_t, const ToxContact*, CallManager*);
+		AudioCall (const ToxContact*, CallManager*, Direction);
+
+		void SetCallIdx (const boost::optional<qint32>&);
 
 		Direction GetDirection () const;
 		QString GetSourceID () const;
