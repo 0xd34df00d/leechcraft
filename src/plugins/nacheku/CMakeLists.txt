@@ -27,4 +27,4 @@ target_link_libraries (leechcraft_nacheku
 install (TARGETS leechcraft_nacheku DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nachekusettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_nacheku Core)
+FindQtLibs (leechcraft_nacheku Core Widgets)
