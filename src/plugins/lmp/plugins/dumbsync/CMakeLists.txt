@@ -28,4 +28,4 @@ install (TARGETS leechcraft_lmp_dumbsync DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpdumbsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${DUMBSYNC_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
-FindQtLibs (leechcraft_lmp_dumbsync Concurrent)
+FindQtLibs (leechcraft_lmp_dumbsync Concurrent Gui)
