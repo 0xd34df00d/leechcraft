@@ -34,4 +34,4 @@ install (TARGETS leechcraft_lmp_httstream DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmphttstreamfiltersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES ${HTTSTREAM_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
-FindQtLibs (leechcraft_lmp_httstream Core)
+FindQtLibs (leechcraft_lmp_httstream Gui)
