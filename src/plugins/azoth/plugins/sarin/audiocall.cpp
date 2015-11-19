@@ -67,6 +67,9 @@ namespace Sarin
 
 		CallIdx_ = *idx;
 
+		Device_ = std::make_shared<AudioCallDevice> (CallIdx_, CallMgr_);
+		Device_->open (QIODevice::ReadWrite);
+
 		if (Dir_ == DOut)
 			InitiateCall ();
 	}
@@ -137,8 +140,6 @@ namespace Sarin
 
 	void AudioCall::MoveToActiveState ()
 	{
-		Device_ = std::make_shared<AudioCallDevice> (CallIdx_, CallMgr_);
-		Device_->open (QIODevice::ReadWrite);
 
 		/*
 		Fmt_.setChannelCount ();
