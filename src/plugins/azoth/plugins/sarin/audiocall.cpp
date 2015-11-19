@@ -89,17 +89,17 @@ namespace Sarin
 		if (Dir_ == DOut)
 			return;
 
-		try
-		{
-			CallMgr_->AcceptCall (CallIdx_).result ();
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-
-			emit stateChanged (IMediaCall::SFinished);
-		}
+		Util::Sequence (this, CallMgr_->AcceptCall (CallIdx_)) >>
+				[this] (const CallManager::AcceptCallResult& result)
+				{
+					if (result)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error accepting the call";
+						emit stateChanged (SFinished);
+						return;
+					}
+				};
 	}
 
 	void AudioCall::Hangup ()
