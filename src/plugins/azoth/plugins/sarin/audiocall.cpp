@@ -50,9 +50,9 @@ namespace Sarin
 	, CallMgr_ { callMgr }
 	{
 		connect (CallMgr_,
-				SIGNAL (transferStarting (int32_t)),
+				SIGNAL (callStateChanged (int32_t, uint32_t)),
 				this,
-				SLOT (handleTransferStarting (int32_t)));
+				SLOT (handleCallStateChanged (int32_t, uint32_t)));
 	}
 
 	void AudioCall::SetCallIdx (const boost::optional<qint32>& idx)
@@ -113,7 +113,7 @@ namespace Sarin
 
 	QAudioFormat AudioCall::GetAudioFormat ()
 	{
-		return Fmt_;
+		return ReadFmt_;
 	}
 
 	QIODevice* AudioCall::GetVideoDevice ()
@@ -138,31 +138,26 @@ namespace Sarin
 				};
 	}
 
-	void AudioCall::MoveToActiveState ()
-	{
-
-		/*
-		Fmt_.setChannelCount ();
-		Fmt_.setSampleRate ();
-		*/
-		Fmt_.setSampleSize (16);
-		Fmt_.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
-				QAudioFormat::BigEndian :
-				QAudioFormat::LittleEndian);
-		Fmt_.setCodec ("audio/pcm");
-		Fmt_.setSampleType (QAudioFormat::SignedInt);
-
-		emit stateChanged (SActive);
-		emit audioModeChanged (QIODevice::ReadWrite);
-	}
-
-	void AudioCall::handleTransferStarting (int32_t callIdx)
+	void AudioCall::handleCallStateChanged (int32_t callIdx, uint32_t state)
 	{
 		if (callIdx != CallIdx_)
 			return;
 
 		qDebug () << Q_FUNC_INFO;
-		MoveToActiveState ();
+
+		/*
+		ReadFmt_.setChannelCount ();
+		ReadFmt_.setSampleRate ();
+		*/
+		ReadFmt_.setSampleSize (16);
+		ReadFmt_.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
+				QAudioFormat::BigEndian :
+				QAudioFormat::LittleEndian);
+		ReadFmt_.setCodec ("audio/pcm");
+		ReadFmt_.setSampleType (QAudioFormat::SignedInt);
+
+		emit stateChanged (SActive);
+		emit audioModeChanged (QIODevice::ReadWrite);
 	}
 }
 }

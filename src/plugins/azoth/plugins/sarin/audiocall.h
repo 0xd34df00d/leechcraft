@@ -69,7 +69,7 @@ namespace Sarin
 
 		int32_t CallIdx_ = -1;
 
-		QAudioFormat Fmt_;
+		QAudioFormat ReadFmt_;
 
 		std::shared_ptr<AudioCallDevice> Device_;
 
@@ -87,9 +87,8 @@ namespace Sarin
 		QIODevice* GetVideoDevice ();
 	private:
 		void InitiateCall ();
-		void MoveToActiveState ();
 	private slots:
-		void handleTransferStarting (int32_t);
+		void handleCallStateChanged (int32_t, uint32_t);
 	signals:
 		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
