@@ -76,7 +76,7 @@ namespace Sarin
 
 		void HandleAudio (int32_t call, const int16_t *frames, int size);
 	signals:
-		void gotIncomingCall (const QByteArray& pubkey);
+		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
 		void transferStarting (int32_t callIdx);
 		void gotFrame (int32_t call, const QByteArray&);
 	};
