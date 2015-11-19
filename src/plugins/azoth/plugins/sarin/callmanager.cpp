@@ -63,6 +63,12 @@ namespace Sarin
 					static_cast<CallManager*> (udata)->HandleIncomingCall (friendNum);
 				},
 				this);
+		toxav_callback_call_state (ToxAv_.get (),
+				[] (ToxAV*, uint32_t friendNum, uint32_t state, void *udata)
+				{
+					static_cast<CallManager*> (udata)->HandleStateChanged (friendNum, state);
+				},
+				this);
 		toxav_callback_audio_receive_frame (ToxAv_.get (),
 				[] (ToxAV*, uint32_t friendNum, const int16_t *frames,
 						size_t size, uint8_t, uint32_t,
@@ -168,6 +174,11 @@ namespace Sarin
 		Util::ExecuteFuture ([this, friendNum] { return Thread_->GetFriendPubkey (friendNum); },
 				[this, friendNum] (const QByteArray& pubkey) { gotIncomingCall (pubkey, friendNum); },
 				this);
+	}
+
+	void CallManager::HandleStateChanged (int32_t friendIdx, uint32_t state)
+	{
+		emit callStateChanged (friendIdx, state);
 	}
 
 	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size)

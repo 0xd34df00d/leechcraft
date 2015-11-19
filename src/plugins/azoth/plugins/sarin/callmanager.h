@@ -73,10 +73,12 @@ namespace Sarin
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
+		void HandleStateChanged (int32_t friendIdx, uint32_t state);
 
 		void HandleAudio (int32_t call, const int16_t *frames, int size);
 	signals:
 		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
+		void callStateChanged (int32_t callidx, uint32_t state);
 		void gotFrame (int32_t call, const QByteArray&);
 	};
 }
