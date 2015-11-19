@@ -28,4 +28,4 @@ target_link_libraries (leechcraft_lmp_mp3tunes
 install (TARGETS leechcraft_lmp_mp3tunes DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpmp3tunessettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_lmp_mp3tunes Network Xml)
+FindQtLibs (leechcraft_lmp_mp3tunes Gui Network Xml)
