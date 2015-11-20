@@ -92,7 +92,7 @@ namespace Sarin
 		Util::Sequence (this, CallMgr_->AcceptCall (CallIdx_)) >>
 				[this] (const CallManager::AcceptCallResult& result)
 				{
-					if (result)
+					if (result.IsLeft ())
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "error accepting the call";
@@ -126,7 +126,7 @@ namespace Sarin
 		Util::Sequence (this, CallMgr_->InitiateCall (SourcePubkey_.toUtf8 ())) >>
 				[this] (const CallManager::InitiateResult& result)
 				{
-					if (result)
+					if (result.IsLeft ())
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "error initiating the call";

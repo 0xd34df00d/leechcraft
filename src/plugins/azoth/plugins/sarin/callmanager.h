@@ -30,10 +30,10 @@
 #pragma once
 
 #include <memory>
-#include <boost/optional.hpp>
 #include <boost/variant.hpp>
 #include <QObject>
 #include <tox/toxav.h>
+#include <util/sll/either.h>
 #include "threadexceptions.h"
 
 template<typename T>
@@ -48,7 +48,7 @@ namespace Sarin
 	class ToxThread;
 
 	template<typename... Errors>
-	using MaybeError_t = boost::optional<boost::variant<Errors...>>;
+	using Error_t = boost::variant<Errors...>;
 
 	class CallManager : public QObject
 	{
@@ -59,7 +59,15 @@ namespace Sarin
 	public:
 		CallManager (ToxThread*, Tox*, QObject* = nullptr);
 
-		using InitiateResult = MaybeError_t<UnknownFriendException, CallInitiateException>;
+		struct AudioFormatParams
+		{
+			int AudioBitrate_;
+		};
+
+		template<typename... Errors>
+		using CallStartResult = Util::Either<Error_t<Errors...>, AudioFormatParams>;
+
+		using InitiateResult = CallStartResult<UnknownFriendException, CallInitiateException>;
 		QFuture<InitiateResult> InitiateCall (const QByteArray& pkey);
 
 		struct WriteResult
@@ -69,7 +77,7 @@ namespace Sarin
 		};
 		QFuture<WriteResult> WriteData (int32_t callIdx, const QByteArray& data);
 
-		using AcceptCallResult = MaybeError_t<CallAnswerException>;
+		using AcceptCallResult = CallStartResult<CallAnswerException>;
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 	private:
 		void HandleIncomingCall (int32_t callIdx);

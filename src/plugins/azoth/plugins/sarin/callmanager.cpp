@@ -87,7 +87,7 @@ namespace Sarin
 
 	QFuture<CallManager::InitiateResult> CallManager::InitiateCall (const QByteArray& pkey)
 	{
-		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox) -> InitiateResult
+		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox)
 				{
 					const auto id = GetFriendId (tox, pkey);
 					if (id < 0)
@@ -95,7 +95,7 @@ namespace Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "unable to get user ID for"
 								<< pkey;
-						return InitiateResult { UnknownFriendException { } };
+						return InitiateResult::Left (UnknownFriendException {});
 					}
 
 					TOXAV_ERR_CALL error;
@@ -105,10 +105,10 @@ namespace Sarin
 						qWarning () << Q_FUNC_INFO
 								<< "unable to initiate call:"
 								<< error;
-						return InitiateResult { CallInitiateException { error } };
+						return InitiateResult::Left (CallInitiateException { error });
 					}
 
-					return {};
+					return InitiateResult::Right ({ AudioBitRate });
 				});
 	}
 
@@ -152,7 +152,7 @@ namespace Sarin
 
 	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t friendIdx)
 	{
-		return Thread_->ScheduleFunction ([this, friendIdx] (Tox*) -> AcceptCallResult
+		return Thread_->ScheduleFunction ([this, friendIdx] (Tox*)
 				{
 					TOXAV_ERR_ANSWER error;
 					toxav_answer (ToxAv_.get (), friendIdx, AudioBitRate, VideoBitRate, &error);
@@ -162,10 +162,10 @@ namespace Sarin
 								<< "unable to answer the call"
 								<< friendIdx
 								<< error;
-						return AcceptCallResult { CallAnswerException { error } };
+						return AcceptCallResult::Left (CallAnswerException { error });
 					}
 
-					return {};
+					return AcceptCallResult::Right ({ AudioBitRate });
 				});
 	}
 
