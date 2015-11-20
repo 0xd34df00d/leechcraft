@@ -104,6 +104,11 @@ namespace Util
 			return GetRight ();
 		}
 
+		boost::variant<L, R> AsVariant () const
+		{
+			return This_;
+		}
+
 		static Either Left (const L& l)
 		{
 			return Either { l };
