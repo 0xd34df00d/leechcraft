@@ -223,6 +223,18 @@ namespace Azoth
 					<< "\n\tsample type:"
 					<< format.sampleType ();
 		}
+
+		int GetBufSize (const QAudioFormat& format)
+		{
+#if QT_VERSION < 0x050000
+			const auto frequency = format.frequency ();
+			const auto channels = format.channels ();
+#else
+			const auto frequency = format.sampleRate ();
+			const auto channels = format.channelCount ();
+#endif
+			return (frequency * channels * (format.sampleSize () / 8) * 160) / 1000;
+		}
 #endif
 	}
 
@@ -234,16 +246,9 @@ namespace Azoth
 		QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
 
 		const auto& format = mediaCall->GetAudioFormat ();
-#if QT_VERSION < 0x050000
-		const auto frequency = format.frequency ();
-		const auto channels = format.channels ();
-#else
-		const auto frequency = format.sampleRate ();
-		const auto channels = format.channelCount ();
-#endif
-		const int bufSize = (frequency * channels * (format.sampleSize () / 8) * 160) / 1000;
 
 		auto& callState = CallStates_ [sender ()];
+
 		if ((mode & QIODevice::WriteOnly) && !callState.OpenedWrite_)
 		{
 			callState.OpenedWrite_ = true;
@@ -260,7 +265,7 @@ namespace Azoth
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
 					SLOT (handleDevStateChanged (QAudio::State)));
-			output->setBufferSize (bufSize);
+			output->setBufferSize (GetBufSize (format));
 			output->start (callAudioDev);
 		}
 
@@ -280,7 +285,7 @@ namespace Azoth
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
 					SLOT (handleDevStateChanged (QAudio::State)));
-			input->setBufferSize (bufSize);
+			input->setBufferSize (GetBufSize (format));
 			input->start (callAudioDev);
 		}
 #endif
