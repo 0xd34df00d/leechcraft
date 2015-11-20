@@ -87,6 +87,7 @@ namespace Sarin
 		QIODevice* GetVideoDevice ();
 	private:
 		void InitiateCall ();
+		void HandleWriteParams (const CallManager::AudioFormatParams&);
 	private slots:
 		void handleCallStateChanged (int32_t, uint32_t);
 	signals:

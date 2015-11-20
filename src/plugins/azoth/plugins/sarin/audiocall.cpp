@@ -32,6 +32,7 @@
 #include <QFutureWatcher>
 #include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include "threadexceptions.h"
 #include "audiocalldevice.h"
@@ -90,15 +91,19 @@ namespace Sarin
 			return;
 
 		Util::Sequence (this, CallMgr_->AcceptCall (CallIdx_)) >>
-				[this] (const CallManager::AcceptCallResult& result)
+				[this] (auto&& result)
 				{
-					if (result.IsLeft ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "error accepting the call";
-						emit stateChanged (SFinished);
-						return;
-					}
+					Util::Visit (result.AsVariant (),
+							Util::BindMemFn (&AudioCall::HandleWriteParams, this),
+							[this] (auto&& error)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "error accepting the call:"
+										<< Util::Visit (error,
+												[] (auto&& error) { return error.what (); });
+								emit stateChanged (SFinished);
+								return;
+							});
 				};
 	}
 
@@ -124,18 +129,27 @@ namespace Sarin
 	void AudioCall::InitiateCall ()
 	{
 		Util::Sequence (this, CallMgr_->InitiateCall (SourcePubkey_.toUtf8 ())) >>
-				[this] (const CallManager::InitiateResult& result)
+				[this] (auto&& result)
 				{
-					if (result.IsLeft ())
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "error initiating the call";
-						emit stateChanged (SFinished);
-						return;
-					}
-
-					emit stateChanged (SConnecting);
+					Util::Visit (result.AsVariant (),
+							[this] (const CallManager::AudioFormatParams& params)
+							{
+								HandleWriteParams (params);
+								emit stateChanged (SConnecting);
+							},
+							[this] (auto&& error)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "error initiating the call:"
+										<< Util::Visit (error,
+												[] (auto&& error) { return error.what (); });
+								emit stateChanged (SFinished);
+							});
 				};
+	}
+
+	void AudioCall::HandleWriteParams (const CallManager::AudioFormatParams&)
+	{
 	}
 
 	void AudioCall::handleCallStateChanged (int32_t callIdx, uint32_t state)
