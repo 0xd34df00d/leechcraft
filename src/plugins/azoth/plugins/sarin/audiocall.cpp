@@ -166,6 +166,8 @@ namespace Sarin
 		{
 			ReadFmt_.setChannelCount (channels);
 			ReadFmt_.setSampleRate (sampleRate);
+
+			emit readFormatChanged ();
 		}
 	}
 
