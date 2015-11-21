@@ -90,19 +90,13 @@ namespace Sarin
 		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox)
 				{
 					return InitiateResult::FromMaybe (GetFriendId (tox, pkey), UnknownFriendException {}) >>
-							[this] (qint32 id) -> InitiateResult
+							[this] (qint32 id)
 							{
 								TOXAV_ERR_CALL error;
 								toxav_call (ToxAv_.get (), id, AudioBitRate, VideoBitRate, &error);
-								if (error != TOXAV_ERR_CALL_OK)
-								{
-									qWarning () << Q_FUNC_INFO
-											<< "unable to initiate call:"
-											<< error;
-									return InitiateResult::Left (CallInitiateException { error });
-								}
-
-								return InitiateResult::Right ({ AudioBitRate });
+								return error != TOXAV_ERR_CALL_OK ?
+										InitiateResult::Left (CallInitiateException { error }) :
+										InitiateResult::Right ({ AudioBitRate });
 							};
 				});
 	}
@@ -151,16 +145,9 @@ namespace Sarin
 				{
 					TOXAV_ERR_ANSWER error;
 					toxav_answer (ToxAv_.get (), friendIdx, AudioBitRate, VideoBitRate, &error);
-					if (error != TOXAV_ERR_ANSWER_OK)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to answer the call"
-								<< friendIdx
-								<< error;
-						return AcceptCallResult::Left (CallAnswerException { error });
-					}
-
-					return AcceptCallResult::Right ({ AudioBitRate });
+					return error != TOXAV_ERR_ANSWER_OK ?
+							AcceptCallResult::Left (CallAnswerException { error }) :
+							AcceptCallResult::Right ({ AudioBitRate });
 				});
 	}
 
