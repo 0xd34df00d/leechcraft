@@ -109,6 +109,14 @@ namespace Util
 			return This_;
 		}
 
+		template<typename RNew>
+		static Either<L, RNew> FromMaybe (const boost::optional<RNew>& maybeRight, const L& left)
+		{
+			return maybeRight ?
+					Either<L, RNew>::Right (*maybeRight) :
+					Either<L, RNew>::Left (left);
+		}
+
 		static Either Left (const L& l)
 		{
 			return Either { l };
