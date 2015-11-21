@@ -99,12 +99,11 @@ namespace Sarin
 				{
 					Util::Visit (result.AsVariant (),
 							Util::BindMemFn (&AudioCall::HandleWriteParams, this),
-							[this] (auto&& error)
+							[this] (auto&& err)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "error accepting the call:"
-										<< Util::Visit (error,
-												[] (auto&& error) { return error.what (); });
+										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
 								emit stateChanged (SFinished);
 								return;
 							});
@@ -141,12 +140,11 @@ namespace Sarin
 								HandleWriteParams (params);
 								emit stateChanged (SConnecting);
 							},
-							[this] (auto&& error)
+							[this] (auto&& err)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "error initiating the call:"
-										<< Util::Visit (error,
-												[] (auto&& error) { return error.what (); });
+										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
 								emit stateChanged (SFinished);
 							});
 				};
