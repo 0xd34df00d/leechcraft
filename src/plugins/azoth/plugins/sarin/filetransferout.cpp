@@ -78,6 +78,8 @@ namespace Sarin
 						const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
 
 						const auto friendNum = GetFriendId (tox, PubKey_);;
+						if (!friendNum)
+							throw UnknownFriendException {};
 						FriendNum_ = *friendNum;
 
 						TOX_ERR_FILE_SEND error {};
