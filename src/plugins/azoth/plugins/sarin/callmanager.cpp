@@ -71,10 +71,10 @@ namespace Sarin
 				this);
 		toxav_callback_audio_receive_frame (ToxAv_.get (),
 				[] (ToxAV*, uint32_t friendNum, const int16_t *frames,
-						size_t size, uint8_t, uint32_t,
+						size_t size, uint8_t channels, uint32_t rate,
 						void *udata)
 				{
-					static_cast<CallManager*> (udata)->HandleAudio (friendNum, frames, size);
+					static_cast<CallManager*> (udata)->HandleAudio (friendNum, frames, size, channels, rate);
 				},
 				this);
 	}
@@ -163,7 +163,7 @@ namespace Sarin
 		emit callStateChanged (friendIdx, state);
 	}
 
-	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size)
+	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size, int channels, int rate)
 	{
 		const QByteArray data { reinterpret_cast<const char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
 		emit gotFrame (call, data);

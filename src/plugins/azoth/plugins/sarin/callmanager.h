@@ -83,7 +83,7 @@ namespace Sarin
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleStateChanged (int32_t friendIdx, uint32_t state);
 
-		void HandleAudio (int32_t call, const int16_t *frames, int size);
+		void HandleAudio (int32_t call, const int16_t *frames, int size, int channels, int rate);
 	signals:
 		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
 		void callStateChanged (int32_t callidx, uint32_t state);
