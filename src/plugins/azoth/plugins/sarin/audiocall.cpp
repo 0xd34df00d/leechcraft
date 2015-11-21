@@ -71,6 +71,8 @@ namespace Sarin
 				SIGNAL (gotFrameParams (int32_t, int, int)),
 				this,
 				SLOT (handleReadFrameParams (int32_t, int, int)));
+
+		InitFormat (ReadFmt_);
 	}
 
 	void AudioCall::SetCallIdx (const boost::optional<qint32>& idx)
@@ -188,8 +190,6 @@ namespace Sarin
 			return;
 
 		qDebug () << Q_FUNC_INFO;
-
-		InitFormat (ReadFmt_);
 
 		emit stateChanged (SActive);
 		emit audioModeChanged (QIODevice::ReadWrite);
