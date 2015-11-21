@@ -89,26 +89,21 @@ namespace Sarin
 	{
 		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox)
 				{
-					const auto id = GetFriendId (tox, pkey);
-					if (!id)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to get user ID for"
-								<< pkey;
-						return InitiateResult::Left (UnknownFriendException {});
-					}
+					return InitiateResult::FromMaybe (GetFriendId (tox, pkey), UnknownFriendException {}) >>
+							[this] (qint32 id) -> InitiateResult
+							{
+								TOXAV_ERR_CALL error;
+								toxav_call (ToxAv_.get (), id, AudioBitRate, VideoBitRate, &error);
+								if (error != TOXAV_ERR_CALL_OK)
+								{
+									qWarning () << Q_FUNC_INFO
+											<< "unable to initiate call:"
+											<< error;
+									return InitiateResult::Left (CallInitiateException { error });
+								}
 
-					TOXAV_ERR_CALL error;
-					toxav_call (ToxAv_.get (), *id, AudioBitRate, VideoBitRate, &error);
-					if (error != TOXAV_ERR_CALL_OK)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to initiate call:"
-								<< error;
-						return InitiateResult::Left (CallInitiateException { error });
-					}
-
-					return InitiateResult::Right ({ AudioBitRate });
+								return InitiateResult::Right ({ AudioBitRate });
+							};
 				});
 	}
 
