@@ -54,6 +54,10 @@ namespace Sarin
 				SIGNAL (callStateChanged (int32_t, uint32_t)),
 				this,
 				SLOT (handleCallStateChanged (int32_t, uint32_t)));
+		connect (CallMgr_,
+				SIGNAL (gotFrameParams (int32_t, int, int)),
+				this,
+				SLOT (handleReadFrameParams (int32_t, int, int)));
 	}
 
 	void AudioCall::SetCallIdx (const boost::optional<qint32>& idx)
@@ -152,6 +156,19 @@ namespace Sarin
 	{
 	}
 
+	void AudioCall::handleReadFrameParams (int32_t callIdx, int channels, int sampleRate)
+	{
+		if (callIdx != CallIdx_)
+			return;
+
+		if (ReadFmt_.channelCount () != channels ||
+				ReadFmt_.sampleRate () != sampleRate)
+		{
+			ReadFmt_.setChannelCount (channels);
+			ReadFmt_.setSampleRate (sampleRate);
+		}
+	}
+
 	void AudioCall::handleCallStateChanged (int32_t callIdx, uint32_t state)
 	{
 		if (callIdx != CallIdx_)
@@ -159,10 +176,6 @@ namespace Sarin
 
 		qDebug () << Q_FUNC_INFO;
 
-		/*
-		ReadFmt_.setChannelCount ();
-		ReadFmt_.setSampleRate ();
-		*/
 		ReadFmt_.setSampleSize (16);
 		ReadFmt_.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
 				QAudioFormat::BigEndian :
