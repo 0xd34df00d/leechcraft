@@ -44,6 +44,19 @@ namespace Azoth
 {
 namespace Sarin
 {
+	namespace
+	{
+		void InitFormat (QAudioFormat& format)
+		{
+			format.setSampleSize (16);
+			format.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
+					QAudioFormat::BigEndian :
+					QAudioFormat::LittleEndian);
+			format.setCodec ("audio/pcm");
+			format.setSampleType (QAudioFormat::SignedInt);
+		}
+	}
+
 	AudioCall::AudioCall (const ToxContact *contact, CallManager *callMgr, Direction dir)
 	: SourceId_ { contact->GetEntryID () }
 	, SourcePubkey_ { contact->GetPubKey () }
@@ -176,12 +189,7 @@ namespace Sarin
 
 		qDebug () << Q_FUNC_INFO;
 
-		ReadFmt_.setSampleSize (16);
-		ReadFmt_.setByteOrder (QSysInfo::ByteOrder == QSysInfo::BigEndian ?
-				QAudioFormat::BigEndian :
-				QAudioFormat::LittleEndian);
-		ReadFmt_.setCodec ("audio/pcm");
-		ReadFmt_.setSampleType (QAudioFormat::SignedInt);
+		InitFormat (ReadFmt_);
 
 		emit stateChanged (SActive);
 		emit audioModeChanged (QIODevice::ReadWrite);
