@@ -84,7 +84,9 @@ namespace Sarin
 			return;
 
 		ReadBuffer_ += data;
-		qDebug () << Q_FUNC_INFO << "got frame of size" << data.size () << "; total size:" << ReadBuffer_.size ();
+		qDebug () << Q_FUNC_INFO
+				<< "got frame of size" << data.size ()
+				<< "; total size:" << ReadBuffer_.size ();
 		emit readyRead ();
 	}
 
