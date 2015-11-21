@@ -76,7 +76,9 @@ namespace Sarin
 			return Thread_->ScheduleFunction ([this] (Tox *tox)
 					{
 						const auto& name = FilePath_.section ('/', -1, -1).toUtf8 ();
-						FriendNum_ = GetFriendId (tox, PubKey_);
+
+						const auto friendNum = GetFriendId (tox, PubKey_);;
+						FriendNum_ = *friendNum;
 
 						TOX_ERR_FILE_SEND error {};
 						const auto result = tox_file_send (tox,

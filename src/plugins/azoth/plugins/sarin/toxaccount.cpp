@@ -396,7 +396,7 @@ namespace Sarin
 		Thread_->ScheduleFunction ([pkey, isTyping] (Tox *tox)
 				{
 					const auto num = GetFriendId (tox, pkey);
-					if (num < 0)
+					if (!num)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to find user ID for"
@@ -405,7 +405,7 @@ namespace Sarin
 					}
 
 					TOX_ERR_SET_TYPING error {};
-					if (!tox_self_set_typing (tox, num, isTyping, &error))
+					if (!tox_self_set_typing (tox, *num, isTyping, &error))
 						qWarning () << Q_FUNC_INFO
 								<< "cannot set typing state to"
 								<< isTyping

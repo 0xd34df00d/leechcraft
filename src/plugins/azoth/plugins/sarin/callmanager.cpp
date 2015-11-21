@@ -90,7 +90,7 @@ namespace Sarin
 		return Thread_->ScheduleFunction ([this, pkey] (Tox *tox)
 				{
 					const auto id = GetFriendId (tox, pkey);
-					if (id < 0)
+					if (!id)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to get user ID for"
@@ -99,7 +99,7 @@ namespace Sarin
 					}
 
 					TOXAV_ERR_CALL error;
-					toxav_call (ToxAv_.get (), id, AudioBitRate, VideoBitRate, &error);
+					toxav_call (ToxAv_.get (), *id, AudioBitRate, VideoBitRate, &error);
 					if (error != TOXAV_ERR_CALL_OK)
 					{
 						qWarning () << Q_FUNC_INFO

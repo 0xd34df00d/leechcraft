@@ -279,7 +279,7 @@ namespace Sarin
 		ScheduleFunction ([origId, this] (Tox *tox)
 				{
 					const auto friendNum = GetFriendId (tox, origId);
-					if (friendNum < 0)
+					if (!friendNum)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unknown friend"
@@ -288,7 +288,7 @@ namespace Sarin
 					}
 
 					TOX_ERR_FRIEND_DELETE error {};
-					if (!tox_friend_delete (tox, friendNum, &error))
+					if (!tox_friend_delete (tox, *friendNum, &error))
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unable to delete friend"

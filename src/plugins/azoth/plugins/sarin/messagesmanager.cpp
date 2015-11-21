@@ -100,7 +100,7 @@ namespace Sarin
 		watcher->setFuture (thread->ScheduleFunction ([=] (Tox *tox) -> MessageSendResult
 				{
 					const auto friendNum = GetFriendId (tox, privkey);
-					if (friendNum < 0)
+					if (!friendNum)
 					{
 						qWarning () << Q_FUNC_INFO
 								<< "unknown friend"
@@ -111,7 +111,7 @@ namespace Sarin
 					const auto& msgUtf8 = body.toUtf8 ();
 					TOX_ERR_FRIEND_SEND_MESSAGE error {};
 					const auto id = tox_friend_send_message (tox,
-							friendNum,
+							*friendNum,
 							TOX_MESSAGE_TYPE_NORMAL,
 							reinterpret_cast<const uint8_t*> (msgUtf8.constData ()),
 							msgUtf8.size (),

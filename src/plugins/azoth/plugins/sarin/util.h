@@ -30,6 +30,7 @@
 #pragma once
 
 #include <array>
+#include <boost/optional.hpp>
 #include <QByteArray>
 
 typedef struct Tox Tox;
@@ -40,7 +41,7 @@ namespace Azoth
 {
 namespace Sarin
 {
-	qint32 GetFriendId (const Tox *tox, const QByteArray& pubkey);
+	boost::optional<qint32> GetFriendId (const Tox *tox, const QByteArray& pubkey);
 	QByteArray GetFriendId (const Tox *tox, int32_t friendId);
 
 	template<size_t Size>
