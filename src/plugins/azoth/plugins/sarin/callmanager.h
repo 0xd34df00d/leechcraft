@@ -87,6 +87,8 @@ namespace Sarin
 	signals:
 		void gotIncomingCall (const QByteArray& pubkey, int32_t callIdx);
 		void callStateChanged (int32_t callidx, uint32_t state);
+
+		void gotFrameParams (int32_t call, int channels, int rate);
 		void gotFrame (int32_t call, const QByteArray&);
 	};
 }

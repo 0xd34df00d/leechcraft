@@ -166,6 +166,7 @@ namespace Sarin
 	void CallManager::HandleAudio (int32_t call, const int16_t *frames, int size, int channels, int rate)
 	{
 		const QByteArray data { reinterpret_cast<const char*> (frames), static_cast<int> (size * sizeof (int16_t)) };
+		emit gotFrameParams (call, channels, rate);
 		emit gotFrame (call, data);
 	}
 }
