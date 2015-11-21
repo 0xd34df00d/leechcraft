@@ -72,7 +72,7 @@ namespace Sarin
 		QAudioFormat ReadFmt_;
 
 		std::shared_ptr<AudioCallDevice> Device_;
-
+		QIODevice::OpenMode CurrentMode_ = QIODevice::NotOpen;
 	public:
 		AudioCall (const ToxContact*, CallManager*, Direction);
 

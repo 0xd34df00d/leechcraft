@@ -189,10 +189,35 @@ namespace Sarin
 		if (callIdx != CallIdx_)
 			return;
 
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO << state;
 
-		emit stateChanged (SActive);
-		emit audioModeChanged (QIODevice::ReadWrite);
+		switch (static_cast<TOXAV_FRIEND_CALL_STATE> (state))
+		{
+		case TOXAV_FRIEND_CALL_STATE_ACCEPTING_V:
+		case TOXAV_FRIEND_CALL_STATE_SENDING_V:
+			qWarning () << Q_FUNC_INFO
+					<< "cannot handle videos yet";
+			break;
+		case TOXAV_FRIEND_CALL_STATE_ERROR:
+			emit stateChanged (SFinished);
+			qWarning () << Q_FUNC_INFO
+					<< "got error state";
+			break;
+		case TOXAV_FRIEND_CALL_STATE_FINISHED:
+			emit stateChanged (SFinished);
+			break;
+		case TOXAV_FRIEND_CALL_STATE_ACCEPTING_A:
+			CurrentMode_ |= QIODevice::ReadOnly;
+			break;
+		case TOXAV_FRIEND_CALL_STATE_SENDING_A:
+			CurrentMode_ |= QIODevice::WriteOnly;
+			break;
+		}
+
+		if (CurrentMode_ == QIODevice::ReadWrite)
+			emit stateChanged (SActive);
+
+		emit audioModeChanged (CurrentMode_);
 	}
 }
 }
