@@ -43,4 +43,4 @@ target_link_libraries (leechcraft_netstoremanager_dbox
 install (TARGETS leechcraft_netstoremanager_dbox DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nsmdropboxsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_netstoremanager_dbox Core)
+FindQtLibs (leechcraft_netstoremanager_dbox Network Widgets)

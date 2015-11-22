@@ -47,4 +47,4 @@ target_link_libraries (leechcraft_netstoremanager_googledrive
 install (TARGETS leechcraft_netstoremanager_googledrive DESTINATION ${LC_PLUGINS_DEST})
 install (FILES nsmgoogledrivesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_netstoremanager_googledrive Core)
+FindQtLibs (leechcraft_netstoremanager_googledrive Network Widgets)
