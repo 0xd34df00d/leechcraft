@@ -34,4 +34,4 @@ if (UNIX AND NOT APPLE)
 	endif ()
 endif ()
 
-FindQtLibs (leechcraft_monocle_postrus Core)
+FindQtLibs (leechcraft_monocle_postrus Gui)
