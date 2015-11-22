@@ -56,4 +56,4 @@ if (UNIX AND NOT APPLE)
 	endif ()
 endif ()
 
-FindQtLibs (leechcraft_monocle_pdf Concurrent)
+FindQtLibs (leechcraft_monocle_pdf Concurrent Gui)
