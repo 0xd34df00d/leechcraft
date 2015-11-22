@@ -30,4 +30,4 @@ target_link_libraries (leechcraft_pintab
 	)
 install (TARGETS leechcraft_pintab DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_pintab Core)
+FindQtLibs (leechcraft_pintab Widgets)
