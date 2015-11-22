@@ -45,4 +45,4 @@ install (TARGETS leechcraft_syncer DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES syncersettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_syncer Network)
+FindQtLibs (leechcraft_syncer Network Gui)
