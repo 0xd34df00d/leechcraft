@@ -31,4 +31,4 @@ install (TARGETS leechcraft_monocle_dik DESTINATION ${LC_PLUGINS_DEST})
 #	install (FILES freedesktop/leechcraft-monocle-dik.desktop DESTINATION share/applications)
 #endif ()
 
-FindQtLibs (leechcraft_monocle_dik Core)
+FindQtLibs (leechcraft_monocle_dik Gui Xml)
