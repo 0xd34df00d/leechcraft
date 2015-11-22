@@ -30,4 +30,4 @@ target_link_libraries (leechcraft_pogooglue
 	)
 install (TARGETS leechcraft_pogooglue DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_pogooglue Core)
+FindQtLibs (leechcraft_pogooglue Gui)
