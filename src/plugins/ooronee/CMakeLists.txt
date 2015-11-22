@@ -30,4 +30,4 @@ install (DIRECTORY share/qml/ooronee DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/ooronee DESTINATION ${LC_QML5_DEST})
 install (FILES ooroneesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_ooronee Quick)
+FindQtLibs (leechcraft_ooronee Quick Widgets)
