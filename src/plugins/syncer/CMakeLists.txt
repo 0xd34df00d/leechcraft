@@ -16,21 +16,10 @@ set (SRCS
 	syncablemanager.cpp
 	singlesyncable.cpp
 	)
-set (TRANSLATIONS
-	leechcraft_syncer_ru_RU.ts
-	leechcraft_syncer_en.ts
-	)
-set (COMPILED_TRANSLATIONS
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_syncer_ru_RU.qm
-	${CMAKE_CURRENT_SOURCE_DIR}/leechcraft_syncer_en.qm
-	)
 
-add_custom_command (OUTPUT
-	${COMPILED_TRANSLATIONS}
-	COMMAND "${QT_LRELEASE_EXECUTABLE}" ${TRANSLATIONS}
-	DEPENDS ${TRANSLATIONS}
-	WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
+CreateTrs ("syncer" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrsUpTarget("syncer" "en;ru_RU" "${SRCS}" "${FORMS}" "syncersettings.xml")
+
 add_library (leechcraft_syncer SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
