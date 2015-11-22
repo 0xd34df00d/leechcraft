@@ -52,4 +52,4 @@ target_link_libraries (leechcraft_musiczombie
 	)
 install (TARGETS leechcraft_musiczombie DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_musiczombie Concurrent Network Xml)
+FindQtLibs (leechcraft_musiczombie Concurrent Gui Network Xml)
