@@ -66,6 +66,8 @@ namespace Sarin
 					Buffer_.prepend (result.Leftover_);
 				};
 
+		Buffer_.clear ();
+
 		return data.size ();
 	}
 }
