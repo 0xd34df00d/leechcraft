@@ -53,13 +53,11 @@ namespace Sarin
 
 		QByteArray Buffer_;
 
-		std::shared_ptr<QFutureWatcher<CallManager::WriteResult>> WriteWatcher_;
+		bool IsWriting_ = false;
 	public:
 		CallDataWriter (int32_t, CallManager*, QObject* = nullptr);
 
 		qint64 WriteData (const QByteArray&);
-	private slots:
-		void handleWritten ();
 	signals:
 		void gotError (const QString&);
 	};

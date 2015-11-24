@@ -29,6 +29,7 @@
 
 #include "calldatawriter.h"
 #include <QFutureWatcher>
+#include <util/threads/futures.h>
 #include "callmanager.h"
 
 namespace LeechCraft
@@ -46,7 +47,7 @@ namespace Sarin
 
 	qint64 CallDataWriter::WriteData (const QByteArray& data)
 	{
-		if (WriteWatcher_)
+		if (IsWriting_)
 		{
 			qDebug () << Q_FUNC_INFO << "already writing, queuing up" << data.size ();
 			Buffer_ += data;
@@ -54,37 +55,18 @@ namespace Sarin
 		}
 
 		qDebug () << Q_FUNC_INFO << "sending" << data.size ();
-		WriteWatcher_.reset (new QFutureWatcher<CallManager::WriteResult>,
-				[] (QObject *obj) { obj->deleteLater (); });
-		connect (WriteWatcher_.get (),
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleWritten ()));
-		WriteWatcher_->setFuture (Mgr_->WriteData (CallIdx_, Buffer_ + data));
+
+		IsWriting_ = true;
+
+		Util::Sequence (this, Mgr_->WriteData (CallIdx_, Buffer_ + data)) >>
+				[this] (auto&& result)
+				{
+					IsWriting_ = false;
+
+					Buffer_.prepend (result.Leftover_);
+				};
+
 		return data.size ();
-	}
-
-	void CallDataWriter::handleWritten ()
-	{
-		qDebug () << Q_FUNC_INFO;
-		decltype (WriteWatcher_) watcher;
-		using std::swap;
-		swap (WriteWatcher_, watcher);
-
-		try
-		{
-			const auto& result = watcher->result ();
-			Buffer_.prepend (result.Leftover_);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to send data"
-					<< e.what ()
-					<< typeid (e).name ();
-
-			emit gotError (e.what ());
-		}
 	}
 }
 }
