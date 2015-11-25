@@ -54,7 +54,7 @@ namespace Sarin
 			return data.size ();
 		}
 
-		qDebug () << Q_FUNC_INFO << "sending" << data.size ();
+		qDebug () << Q_FUNC_INFO << "sending" << data.size () << "with buffer of size" << Buffer_.size ();
 
 		IsWriting_ = true;
 
