@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "calldatawriter.h"
-#include <QFutureWatcher>
 #include <util/threads/futures.h>
 #include "callmanager.h"
 
