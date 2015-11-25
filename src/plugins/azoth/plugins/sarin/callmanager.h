@@ -72,7 +72,6 @@ namespace Sarin
 
 		struct WriteResult
 		{
-			qint64 Written_;
 			QByteArray Leftover_;
 		};
 		QFuture<WriteResult> WriteData (int32_t callIdx, const QByteArray& data);

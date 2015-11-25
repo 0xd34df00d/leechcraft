@@ -135,7 +135,7 @@ namespace Sarin
 						//qDebug () << "sent frame of size" << size;
 					}
 
-					return { currentPos, data.mid (currentPos) };
+					return { data.mid (currentPos) };
 				});
 	}
 
