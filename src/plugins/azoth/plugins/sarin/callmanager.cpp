@@ -153,9 +153,8 @@ namespace Sarin
 
 	void CallManager::HandleIncomingCall (int32_t friendNum)
 	{
-		Util::ExecuteFuture ([this, friendNum] { return Thread_->GetFriendPubkey (friendNum); },
-				[this, friendNum] (const QByteArray& pubkey) { gotIncomingCall (pubkey, friendNum); },
-				this);
+		Util::Sequence (this, Thread_->GetFriendPubkey (friendNum)) >>
+				[this, friendNum] (const QByteArray& pubkey) { gotIncomingCall (pubkey, friendNum); };
 	}
 
 	void CallManager::HandleStateChanged (int32_t friendIdx, uint32_t state)
