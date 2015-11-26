@@ -80,7 +80,18 @@ namespace Sarin
 
 	qint64 AudioCallDevice::writeData (const char *data, qint64 len)
 	{
-		return DataWriter_->WriteData (WriteFmt_, { data, static_cast<int> (len) });
+		if (!WriteFmt_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no write format has been set for call"
+					<< Idx_;
+
+			setErrorString ("AudioCallDevice::writeData(): no write QAudioFormat has been set.");
+
+			return -1;
+		}
+
+		return DataWriter_->WriteData (*WriteFmt_, { data, static_cast<int> (len) });
 	}
 
 	void AudioCallDevice::handleGotFrame (int32_t callIdx, const QByteArray& data)
