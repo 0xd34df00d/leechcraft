@@ -44,7 +44,7 @@ namespace Sarin
 	{
 	}
 
-	qint64 CallDataWriter::WriteData (const QByteArray& data)
+	qint64 CallDataWriter::WriteData (const QAudioFormat& fmt, const QByteArray& data)
 	{
 		if (IsWriting_)
 		{

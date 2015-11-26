@@ -36,6 +36,8 @@
 template<typename T>
 class QFutureWatcher;
 
+class QAudioFormat;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -57,7 +59,7 @@ namespace Sarin
 	public:
 		CallDataWriter (int32_t, CallManager*, QObject* = nullptr);
 
-		qint64 WriteData (const QByteArray&);
+		qint64 WriteData (const QAudioFormat&, const QByteArray&);
 	signals:
 		void gotError (const QString&);
 	};

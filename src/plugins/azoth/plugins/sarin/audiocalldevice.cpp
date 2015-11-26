@@ -80,7 +80,7 @@ namespace Sarin
 
 	qint64 AudioCallDevice::writeData (const char *data, qint64 len)
 	{
-		return DataWriter_->WriteData ({ data, static_cast<int> (len) });
+		return DataWriter_->WriteData (WriteFmt_, { data, static_cast<int> (len) });
 	}
 
 	void AudioCallDevice::handleGotFrame (int32_t callIdx, const QByteArray& data)
