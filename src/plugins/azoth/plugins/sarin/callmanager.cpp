@@ -102,6 +102,18 @@ namespace Sarin
 				});
 	}
 
+	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t friendIdx)
+	{
+		return Thread_->ScheduleFunction ([this, friendIdx] (Tox*)
+				{
+					TOXAV_ERR_ANSWER error;
+					toxav_answer (ToxAv_.get (), friendIdx, AudioBitRate, VideoBitRate, &error);
+					return error != TOXAV_ERR_ANSWER_OK ?
+							AcceptCallResult::Left (CallAnswerException { error }) :
+							AcceptCallResult::Right ({ AudioBitRate });
+				});
+	}
+
 	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
 			const QAudioFormat& fmt, const QByteArray& data)
 	{
@@ -135,18 +147,6 @@ namespace Sarin
 							&error);
 
 					return { data.mid (samplesToSend * sizeof (int16_t) * fmt.channelCount ()) };
-				});
-	}
-
-	QFuture<CallManager::AcceptCallResult> CallManager::AcceptCall (int32_t friendIdx)
-	{
-		return Thread_->ScheduleFunction ([this, friendIdx] (Tox*)
-				{
-					TOXAV_ERR_ANSWER error;
-					toxav_answer (ToxAv_.get (), friendIdx, AudioBitRate, VideoBitRate, &error);
-					return error != TOXAV_ERR_ANSWER_OK ?
-							AcceptCallResult::Left (CallAnswerException { error }) :
-							AcceptCallResult::Right ({ AudioBitRate });
 				});
 	}
 

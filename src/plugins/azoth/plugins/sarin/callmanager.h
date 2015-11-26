@@ -72,14 +72,14 @@ namespace Sarin
 		using InitiateResult = CallStartResult<UnknownFriendException, CallInitiateException>;
 		QFuture<InitiateResult> InitiateCall (const QByteArray& pkey);
 
+		using AcceptCallResult = CallStartResult<CallAnswerException>;
+		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
+
 		struct WriteResult
 		{
 			QByteArray Leftover_;
 		};
 		QFuture<WriteResult> WriteData (int32_t callIdx, const QAudioFormat&, const QByteArray& data);
-
-		using AcceptCallResult = CallStartResult<CallAnswerException>;
-		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleStateChanged (int32_t friendIdx, uint32_t state);
