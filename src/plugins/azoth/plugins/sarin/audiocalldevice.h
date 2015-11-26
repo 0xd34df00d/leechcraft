@@ -57,7 +57,7 @@ namespace Sarin
 	public:
 		AudioCallDevice (int32_t, CallManager*);
 
-		void SetFormat (const QAudioFormat&);
+		void SetWriteFormat (const QAudioFormat&);
 
 		qint64 bytesAvailable () const override;
 		bool isSequential () const override;
