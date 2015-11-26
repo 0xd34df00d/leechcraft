@@ -29,6 +29,7 @@
 
 #include "callmanager.h"
 #include <QFuture>
+#include <QAudioFormat>
 #include <QElapsedTimer>
 #include <util/threads/futures.h>
 #include "toxthread.h"
@@ -101,7 +102,8 @@ namespace Sarin
 				});
 	}
 
-	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx, const QByteArray& data)
+	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
+			const QAudioFormat& fmt, const QByteArray& data)
 	{
 		return Thread_->ScheduleFunction ([this, data, callIdx] (Tox*) -> WriteResult
 				{

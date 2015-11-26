@@ -57,7 +57,7 @@ namespace Sarin
 
 		IsWriting_ = true;
 
-		Util::Sequence (this, Mgr_->WriteData (CallIdx_, Buffer_ + data)) >>
+		Util::Sequence (this, Mgr_->WriteData (CallIdx_, fmt, Buffer_ + data)) >>
 				[this] (auto&& result)
 				{
 					IsWriting_ = false;

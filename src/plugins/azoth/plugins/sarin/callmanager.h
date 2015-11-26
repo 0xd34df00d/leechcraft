@@ -39,6 +39,8 @@
 template<typename T>
 class QFuture;
 
+class QAudioFormat;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -74,7 +76,7 @@ namespace Sarin
 		{
 			QByteArray Leftover_;
 		};
-		QFuture<WriteResult> WriteData (int32_t callIdx, const QByteArray& data);
+		QFuture<WriteResult> WriteData (int32_t callIdx, const QAudioFormat&, const QByteArray& data);
 
 		using AcceptCallResult = CallStartResult<CallAnswerException>;
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
