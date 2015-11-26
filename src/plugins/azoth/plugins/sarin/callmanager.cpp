@@ -105,39 +105,36 @@ namespace Sarin
 	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
 			const QAudioFormat& fmt, const QByteArray& data)
 	{
-		return Thread_->ScheduleFunction ([this, data, callIdx] (Tox*) -> WriteResult
+		return Thread_->ScheduleFunction ([=] (Tox*) -> WriteResult
 				{
-					const auto perFrame = av_DefaultSettings.audio_frame_duration * av_DefaultSettings.audio_sample_rate * av_DefaultSettings.audio_channels / 1000;
-					const auto dataShift = perFrame * sizeof (int16_t);
+					const auto totalSamples = data.size () / sizeof (int16_t) / fmt.channelCount ();
 
-					int currentPos = 0;
-					for (; currentPos + dataShift < static_cast<uint> (data.size ()); currentPos += dataShift)
-					{
-						uint8_t prepared [RTP_PAYLOAD_SIZE] = { 0 };
-						const auto size = toxav_prepare_audio_frame (ToxAv_.get (), callIdx,
-								prepared, RTP_PAYLOAD_SIZE,
-								reinterpret_cast<const int16_t*> (data.constData () + currentPos), perFrame);
-						if (size < 0)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to prepare frame";
-							throw FramePrepareException { size };
-						}
+					const float allowedLengths [] = { 0, 2.5, 5, 10, 20, 40, 60 };
 
-						const auto rc = toxav_send_audio (ToxAv_.get (), callIdx, prepared, size);
-						if (rc)
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "unable to send frame of size"
-									<< size
-									<< "; rc:"
-									<< rc;
-							throw FrameSendException { rc };
-						}
-						//qDebug () << "sent frame of size" << size;
-					}
+					/* Tox docs say that valid samples count is subject to
+					 * (samples count) = (sample rate) * (audio length) / 1000
+					 * thus max audio length is
+					 * audio length = 1000 * (samples count) / (sample rate)
+					 */
+					const auto maxAudioLength = 1000.0 * totalSamples / fmt.sampleRate ();
+					const auto allowedLength = *std::lower_bound (std::begin (allowedLengths),
+							std::end (allowedLengths), maxAudioLength);
 
-					return { data.mid (currentPos) };
+					const auto samplesToSend = fmt.sampleRate () * allowedLength / 1000;
+
+					qDebug () << Q_FUNC_INFO << "gonna send" << allowedLength << "of" << maxAudioLength << "seconds";
+					qDebug () << "or" << samplesToSend << "of" << totalSamples << "samples";
+
+					TOXAV_ERR_SEND_FRAME error;
+					toxav_audio_send_frame (ToxAv_.get (),
+							callIdx,
+							reinterpret_cast<const int16_t*> (data.constData ()),
+							samplesToSend,
+							fmt.channelCount (),
+							fmt.sampleRate (),
+							&error);
+
+					return { data.mid (samplesToSend * sizeof (int16_t) * fmt.channelCount ()) };
 				});
 	}
 
