@@ -73,6 +73,10 @@ namespace Sarin
 				SLOT (handleReadFrameParams (int32_t, int, int)));
 
 		InitFormat (ReadFmt_);
+
+		InitFormat (WriteFmt_);
+		WriteFmt_.setChannelCount (1);
+		WriteFmt_.setSampleRate (24000);
 	}
 
 	void AudioCall::SetCallIdx (const boost::optional<qint32>& idx)
@@ -89,6 +93,7 @@ namespace Sarin
 
 		Device_ = std::make_shared<AudioCallDevice> (CallIdx_, CallMgr_);
 		Device_->open (QIODevice::ReadWrite);
+		Device_->SetWriteFormat (WriteFmt_);
 
 		if (Dir_ == DOut)
 			InitiateCall ();

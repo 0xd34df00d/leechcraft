@@ -70,6 +70,7 @@ namespace Sarin
 		int32_t CallIdx_ = -1;
 
 		QAudioFormat ReadFmt_;
+		QAudioFormat WriteFmt_;
 
 		std::shared_ptr<AudioCallDevice> Device_;
 		QIODevice::OpenMode CurrentMode_ = QIODevice::NotOpen;
