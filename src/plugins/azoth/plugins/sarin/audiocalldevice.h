@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QIODevice>
+#include <QAudioFormat>
 #include "calldatawriter.h"
 
 namespace LeechCraft
@@ -51,8 +52,12 @@ namespace Sarin
 		QByteArray ReadBuffer_;
 
 		std::unique_ptr<CallDataWriter> DataWriter_;
+
+		QAudioFormat WriteFmt_;
 	public:
 		AudioCallDevice (int32_t, CallManager*);
+
+		void SetFormat (const QAudioFormat&);
 
 		qint64 bytesAvailable () const override;
 		bool isSequential () const override;

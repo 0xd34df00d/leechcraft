@@ -54,6 +54,11 @@ namespace Sarin
 				SLOT (handleWriteError (QString)));
 	}
 
+	void AudioCallDevice::SetFormat (const QAudioFormat& fmt)
+	{
+		WriteFmt_ = fmt;
+	}
+
 	qint64 AudioCallDevice::bytesAvailable () const
 	{
 		return ReadBuffer_.size () + QIODevice::bytesAvailable ();
