@@ -242,8 +242,8 @@ namespace Azoth
 	{
 		qDebug () << Q_FUNC_INFO;
 #ifdef ENABLE_MEDIACALLS
-		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
-		QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
+		const auto mediaCall = qobject_cast<IMediaCall*> (sender ());
+		const auto callAudioDev = mediaCall->GetAudioDevice ();
 
 		auto& callState = CallStates_ [sender ()];
 
@@ -254,13 +254,13 @@ namespace Azoth
 			const auto& format = mediaCall->GetAudioWriteFormat ();
 
 			qDebug () << "opening output...";
-			QAudioDeviceInfo info (QAudioDeviceInfo::defaultOutputDevice ());
+			const auto& info = QAudioDeviceInfo::defaultOutputDevice ();
 			if (!info.isFormatSupported (format))
 				WarnUnsupported (info, format,
 						"raw audio format not supported by backend, cannot play audio");
 
-			QAudioDeviceInfo outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
-			QAudioOutput *output = new QAudioOutput (format, sender ());
+			const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
+			const auto output = new QAudioOutput (format, sender ());
 			connect (output,
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
@@ -276,13 +276,13 @@ namespace Azoth
 			const auto& format = mediaCall->GetAudioReadFormat ();
 
 			qDebug () << "opening input...";
-			QAudioDeviceInfo info (QAudioDeviceInfo::defaultInputDevice ());
+			const auto& info = QAudioDeviceInfo::defaultInputDevice ();
 			if (!info.isFormatSupported (format))
 				WarnUnsupported (info, format,
 						"raw audio format not supported by backend, cannot record audio");
 
-			QAudioDeviceInfo inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
-			QAudioInput *input = new QAudioInput (format, sender ());
+			const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+			const auto input = new QAudioInput (format, sender ());
 			connect (input,
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
