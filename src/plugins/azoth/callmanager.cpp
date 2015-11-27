@@ -254,12 +254,13 @@ namespace Azoth
 			const auto& format = mediaCall->GetAudioWriteFormat ();
 
 			qDebug () << "opening output...";
-			const auto& info = QAudioDeviceInfo::defaultOutputDevice ();
-			if (!info.isFormatSupported (format))
-				WarnUnsupported (info, format,
-						"raw audio format not supported by backend, cannot play audio");
 
 			const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
+
+			if (!outInfo.isFormatSupported (format))
+				WarnUnsupported (outInfo, format,
+						"raw audio format not supported by backend, cannot play audio");
+
 			const auto output = new QAudioOutput (outInfo, format, sender ());
 			connect (output,
 					SIGNAL (stateChanged (QAudio::State)),
@@ -276,12 +277,13 @@ namespace Azoth
 			const auto& format = mediaCall->GetAudioReadFormat ();
 
 			qDebug () << "opening input...";
-			const auto& info = QAudioDeviceInfo::defaultInputDevice ();
-			if (!info.isFormatSupported (format))
-				WarnUnsupported (info, format,
-						"raw audio format not supported by backend, cannot record audio");
 
 			const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+
+			if (!inInfo.isFormatSupported (format))
+				WarnUnsupported (inInfo, format,
+						"raw audio format not supported by backend, cannot record audio");
+
 			const auto input = new QAudioInput (inInfo, format, sender ());
 			connect (input,
 					SIGNAL (stateChanged (QAudio::State)),
