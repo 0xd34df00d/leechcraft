@@ -260,7 +260,7 @@ namespace Azoth
 						"raw audio format not supported by backend, cannot play audio");
 
 			const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
-			const auto output = new QAudioOutput (format, sender ());
+			const auto output = new QAudioOutput (outInfo, format, sender ());
 			connect (output,
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
@@ -282,7 +282,7 @@ namespace Azoth
 						"raw audio format not supported by backend, cannot record audio");
 
 			const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
-			const auto input = new QAudioInput (format, sender ());
+			const auto input = new QAudioInput (inInfo, format, sender ());
 			connect (input,
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
