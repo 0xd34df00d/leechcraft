@@ -98,7 +98,7 @@ namespace Xoox
 		return Call_->audioChannel ();
 	}
 
-	QAudioFormat MediaCall::GetAudioFormat ()
+	QAudioFormat MediaCall::GetAudioReadFormat () const
 	{
 		const auto& payload = Call_->audioChannel ()->payloadType ();
 		QAudioFormat result;
@@ -113,6 +113,11 @@ namespace Xoox
 		result.setByteOrder (QAudioFormat::LittleEndian);
 		result.setSampleType (QAudioFormat::SignedInt);
 		return result;
+	}
+
+	QAudioFormat MediaCall::GetAudioWriteFormat () const
+	{
+		return GetAudioReadFormat ();
 	}
 
 	QIODevice* MediaCall::GetVideoDevice ()

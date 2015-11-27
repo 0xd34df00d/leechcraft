@@ -84,7 +84,10 @@ namespace Sarin
 		void Accept ();
 		void Hangup ();
 		QIODevice* GetAudioDevice ();
-		QAudioFormat GetAudioFormat ();
+
+		QAudioFormat GetAudioReadFormat () const;
+		QAudioFormat GetAudioWriteFormat () const;
+
 		QIODevice* GetVideoDevice ();
 	private:
 		void InitiateCall ();

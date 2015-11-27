@@ -245,13 +245,13 @@ namespace Azoth
 		IMediaCall *mediaCall = qobject_cast<IMediaCall*> (sender ());
 		QIODevice *callAudioDev = mediaCall->GetAudioDevice ();
 
-		const auto& format = mediaCall->GetAudioFormat ();
-
 		auto& callState = CallStates_ [sender ()];
 
 		if ((mode & QIODevice::WriteOnly) && !callState.OpenedWrite_)
 		{
 			callState.OpenedWrite_ = true;
+
+			const auto& format = mediaCall->GetAudioWriteFormat ();
 
 			qDebug () << "opening output...";
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultOutputDevice ());
@@ -272,6 +272,8 @@ namespace Azoth
 		if ((mode & QIODevice::ReadOnly) && !callState.OpenedRead_)
 		{
 			callState.OpenedRead_ = true;
+
+			const auto& format = mediaCall->GetAudioReadFormat ();
 
 			qDebug () << "opening input...";
 			QAudioDeviceInfo info (QAudioDeviceInfo::defaultInputDevice ());

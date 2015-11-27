@@ -139,9 +139,14 @@ namespace Sarin
 		return Device_.get ();
 	}
 
-	QAudioFormat AudioCall::GetAudioFormat ()
+	QAudioFormat AudioCall::GetAudioReadFormat () const
 	{
 		return ReadFmt_;
+	}
+
+	QAudioFormat AudioCall::GetAudioWriteFormat () const
+	{
+		return WriteFmt_;
 	}
 
 	QIODevice* AudioCall::GetVideoDevice ()

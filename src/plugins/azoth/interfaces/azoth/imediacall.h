@@ -68,7 +68,9 @@ namespace Azoth
 
 		virtual QIODevice* GetAudioDevice () = 0;
 
-		virtual QAudioFormat GetAudioFormat () = 0;
+		virtual QAudioFormat GetAudioReadFormat () const = 0;
+
+		virtual QAudioFormat GetAudioWriteFormat () const = 0;
 
 		virtual QIODevice* GetVideoDevice () = 0;
 	protected:

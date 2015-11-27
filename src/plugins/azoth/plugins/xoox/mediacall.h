@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_MEDIACALL_H
+#pragma once
+
 #include <QObject>
 #include <QXmppCallManager.h>
 #include <interfaces/azoth/imediacall.h>
@@ -61,7 +61,8 @@ namespace Xoox
 		void Accept ();
 		void Hangup ();
 		QIODevice* GetAudioDevice ();
-		QAudioFormat GetAudioFormat ();
+		QAudioFormat GetAudioReadFormat () const;
+		QAudioFormat GetAudioWriteFormat () const;
 		QIODevice* GetVideoDevice ();
 	private slots:
 		void handleStateChanged (QXmppCall::State);
@@ -72,5 +73,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
