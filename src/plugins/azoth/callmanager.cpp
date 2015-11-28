@@ -280,33 +280,43 @@ namespace Azoth
 		}
 
 		if ((mode & QIODevice::ReadOnly) && !callState.InDevice_)
-		{
-			const auto& format = mediaCall->GetAudioReadFormat ();
-
-			const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
-
-			qDebug () << "opening input:" << inInfo.deviceName ();
-
-			if (!inInfo.isFormatSupported (format))
-				WarnUnsupported (inInfo, format,
-						"raw audio format not supported by backend, cannot record audio");
-
-			const auto input = std::make_shared<QAudioInput> (inInfo, format);
-			connect (input.get (),
-					SIGNAL (stateChanged (QAudio::State)),
-					this,
-					SLOT (handleDevStateChanged (QAudio::State)));
-			input->setBufferSize (GetBufSize (format));
-			input->start (callAudioDev);
-
-			callState.InDevice_ = input;
-		}
+			handleReadFormatChanged ();
 #endif
 	}
 
 	void CallManager::handleReadFormatChanged ()
 	{
 		qDebug () << Q_FUNC_INFO;
+
+		auto& callState = CallStates_ [sender ()];
+
+		const auto mediaCall = qobject_cast<IMediaCall*> (sender ());
+		const auto callAudioDev = mediaCall->GetAudioDevice ();
+
+		const auto& format = mediaCall->GetAudioReadFormat ();
+		if (!format.isValid ())
+		{
+			qDebug () << "format is invalid for now, waiting for a better chance";
+			return;
+		}
+
+		const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+
+		qDebug () << "opening input:" << inInfo.deviceName () << format;
+
+		if (!inInfo.isFormatSupported (format))
+			WarnUnsupported (inInfo, format,
+					"raw audio format not supported by backend, cannot record audio");
+
+		const auto input = std::make_shared<QAudioInput> (inInfo, format);
+		connect (input.get (),
+				SIGNAL (stateChanged (QAudio::State)),
+				this,
+				SLOT (handleDevStateChanged (QAudio::State)));
+		input->setBufferSize (GetBufSize (format));
+		input->start (callAudioDev);
+
+		callState.InDevice_ = input;
 	}
 
 	void CallManager::handleWriteFormatChanged ()
