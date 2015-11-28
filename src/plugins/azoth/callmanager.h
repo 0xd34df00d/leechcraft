@@ -74,6 +74,10 @@ namespace Azoth
 		void handleCall (QObject*);
 		void handleStateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void handleAudioModeChanged (QIODevice::OpenMode);
+
+		void handleReadFormatChanged ();
+		void handleWriteFormatChanged ();
+
 #ifdef ENABLE_MEDIACALLS
 		void handleDevStateChanged (QAudio::State);
 #endif

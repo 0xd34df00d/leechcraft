@@ -170,6 +170,14 @@ namespace Azoth
 				SIGNAL (audioModeChanged (QIODevice::OpenMode)),
 				this,
 				SLOT (handleAudioModeChanged (QIODevice::OpenMode)));
+		connect (obj,
+				SIGNAL (readFormatChanged ()),
+				this,
+				SLOT (handleReadFormatChanged ()));
+		connect (obj,
+				SIGNAL (writeFormatChanged ()),
+				this,
+				SLOT (handleWriteFormatChanged ()));
 
 		if (mediaCall->GetDirection () == IMediaCall::DIn)
 			HandleIncomingCall (mediaCall);
@@ -293,6 +301,16 @@ namespace Azoth
 			callState.InDevice_ = input;
 		}
 #endif
+	}
+
+	void CallManager::handleReadFormatChanged ()
+	{
+		qDebug () << Q_FUNC_INFO;
+	}
+
+	void CallManager::handleWriteFormatChanged ()
+	{
+		qDebug () << Q_FUNC_INFO;
 	}
 
 #ifdef ENABLE_MEDIACALLS
