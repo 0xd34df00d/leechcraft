@@ -29,13 +29,19 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <QHash>
+
 #ifdef ENABLE_MEDIACALLS
 #include <QAudio>
 #endif
+
 #include "interfaces/azoth/imediacall.h"
 #include "interfaces/azoth/isupportmediacalls.h"
+
+class QAudioInput;
+class QAudioOutput;
 
 namespace LeechCraft
 {
@@ -52,8 +58,8 @@ namespace Azoth
 
 		struct CallState
 		{
-			bool OpenedRead_ = false;
-			bool OpenedWrite_ = false;
+			std::shared_ptr<QAudioInput> InDevice_;
+			std::shared_ptr<QAudioOutput> OutDevice_;
 		};
 		QHash<QObject*, CallState> CallStates_;
 	public:

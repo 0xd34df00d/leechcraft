@@ -247,10 +247,8 @@ namespace Azoth
 
 		auto& callState = CallStates_ [sender ()];
 
-		if ((mode & QIODevice::WriteOnly) && !callState.OpenedWrite_)
+		if ((mode & QIODevice::WriteOnly) && !callState.OutDevice_)
 		{
-			callState.OpenedWrite_ = true;
-
 			const auto& format = mediaCall->GetAudioWriteFormat ();
 
 			qDebug () << "opening output...";
@@ -261,19 +259,19 @@ namespace Azoth
 				WarnUnsupported (outInfo, format,
 						"raw audio format not supported by backend, cannot play audio");
 
-			const auto output = new QAudioOutput (outInfo, format, sender ());
-			connect (output,
+			const auto output = std::make_shared<QAudioOutput> (outInfo, format);
+			connect (output.get (),
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
 					SLOT (handleDevStateChanged (QAudio::State)));
 			output->setBufferSize (GetBufSize (format));
 			output->start (callAudioDev);
+
+			callState.OutDevice_ = output;
 		}
 
-		if ((mode & QIODevice::ReadOnly) && !callState.OpenedRead_)
+		if ((mode & QIODevice::ReadOnly) && !callState.InDevice_)
 		{
-			callState.OpenedRead_ = true;
-
 			const auto& format = mediaCall->GetAudioReadFormat ();
 
 			qDebug () << "opening input...";
@@ -284,13 +282,15 @@ namespace Azoth
 				WarnUnsupported (inInfo, format,
 						"raw audio format not supported by backend, cannot record audio");
 
-			const auto input = new QAudioInput (inInfo, format, sender ());
-			connect (input,
+			const auto input = std::make_shared<QAudioInput> (inInfo, format);
+			connect (input.get (),
 					SIGNAL (stateChanged (QAudio::State)),
 					this,
 					SLOT (handleDevStateChanged (QAudio::State)));
 			input->setBufferSize (GetBufSize (format));
 			input->start (callAudioDev);
+
+			callState.InDevice_ = input;
 		}
 #endif
 	}
