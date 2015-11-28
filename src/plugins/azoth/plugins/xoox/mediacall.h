@@ -69,6 +69,9 @@ namespace Xoox
 	signals:
 		void stateChanged (LeechCraft::Azoth::IMediaCall::State);
 		void audioModeChanged (QIODevice::OpenMode);
+
+		void readFormatChanged ();
+		void writeFormatChanged ();
 	};
 }
 }

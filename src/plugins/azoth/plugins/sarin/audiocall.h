@@ -100,6 +100,7 @@ namespace Sarin
 		void audioModeChanged (QIODevice::OpenMode);
 
 		void readFormatChanged ();
+		void writeFormatChanged ();
 	};
 }
 }

@@ -77,6 +77,10 @@ namespace Azoth
 		virtual void stateChanged (State) = 0;
 
 		virtual void audioModeChanged (QIODevice::OpenMode) = 0;
+
+		virtual void readFormatChanged () = 0;
+
+		virtual void writeFormatChanged () = 0;
 	};
 }
 }
