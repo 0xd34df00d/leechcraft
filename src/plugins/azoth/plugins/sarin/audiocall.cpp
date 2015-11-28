@@ -201,28 +201,30 @@ namespace Sarin
 
 		qDebug () << Q_FUNC_INFO << state;
 
-		switch (static_cast<TOXAV_FRIEND_CALL_STATE> (state))
+		if (state & TOXAV_FRIEND_CALL_STATE_ERROR)
 		{
-		case TOXAV_FRIEND_CALL_STATE_ACCEPTING_V:
-		case TOXAV_FRIEND_CALL_STATE_SENDING_V:
-			qWarning () << Q_FUNC_INFO
-					<< "cannot handle videos yet";
-			break;
-		case TOXAV_FRIEND_CALL_STATE_ERROR:
 			emit stateChanged (SFinished);
 			qWarning () << Q_FUNC_INFO
 					<< "got error state";
-			break;
-		case TOXAV_FRIEND_CALL_STATE_FINISHED:
-			emit stateChanged (SFinished);
-			break;
-		case TOXAV_FRIEND_CALL_STATE_ACCEPTING_A:
-			CurrentMode_ |= QIODevice::ReadOnly;
-			break;
-		case TOXAV_FRIEND_CALL_STATE_SENDING_A:
-			CurrentMode_ |= QIODevice::WriteOnly;
-			break;
+			return;
 		}
+
+		if (state & TOXAV_FRIEND_CALL_STATE_FINISHED)
+		{
+			emit stateChanged (SFinished);
+			return;
+		}
+
+		if ((state & TOXAV_FRIEND_CALL_STATE_ACCEPTING_V) ||
+				(state & TOXAV_FRIEND_CALL_STATE_SENDING_V))
+			qWarning () << Q_FUNC_INFO
+					<< "cannot handle videos yet";
+
+		if (state & TOXAV_FRIEND_CALL_STATE_ACCEPTING_A)
+			CurrentMode_ |= QIODevice::ReadOnly;
+
+		if (state & TOXAV_FRIEND_CALL_STATE_SENDING_A)
+			CurrentMode_ |= QIODevice::WriteOnly;
 
 		if (CurrentMode_ == QIODevice::ReadWrite)
 			emit stateChanged (SActive);
