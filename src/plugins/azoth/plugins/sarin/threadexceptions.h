@@ -79,7 +79,7 @@ namespace Sarin
 
 	using CallInitiateException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_CALL>, NewTypeTag>>;
 	using FramePrepareException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<>, NewTypeTag>>;
-	using FrameSendException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<>, NewTypeTag>>;
+	using FrameSendException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_SEND_FRAME>, NewTypeTag>>;
 	using CallAnswerException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_ANSWER>, NewTypeTag>>;
 
 	template<typename T>
