@@ -259,9 +259,9 @@ namespace Azoth
 		{
 			const auto& format = mediaCall->GetAudioWriteFormat ();
 
-			qDebug () << "opening output...";
-
 			const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
+
+			qDebug () << "opening output:" << outInfo.deviceName ();
 
 			if (!outInfo.isFormatSupported (format))
 				WarnUnsupported (outInfo, format,
@@ -282,9 +282,9 @@ namespace Azoth
 		{
 			const auto& format = mediaCall->GetAudioReadFormat ();
 
-			qDebug () << "opening input...";
-
 			const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
+
+			qDebug () << "opening input:" << inInfo.deviceName ();
 
 			if (!inInfo.isFormatSupported (format))
 				WarnUnsupported (inInfo, format,
