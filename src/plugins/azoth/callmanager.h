@@ -58,6 +58,7 @@ namespace Azoth
 
 		struct CallState
 		{
+			QIODevice::OpenMode LastMode_;
 			std::shared_ptr<QAudioInput> InDevice_;
 			std::shared_ptr<QAudioOutput> OutDevice_;
 		};

@@ -254,6 +254,7 @@ namespace Azoth
 		const auto callAudioDev = mediaCall->GetAudioDevice ();
 
 		auto& callState = CallStates_ [sender ()];
+		callState.LastMode_ = mode;
 
 		if ((mode & QIODevice::WriteOnly) && !callState.OutDevice_)
 		{
