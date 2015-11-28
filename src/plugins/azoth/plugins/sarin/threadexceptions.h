@@ -66,6 +66,12 @@ namespace Sarin
 		{
 		}
 
+		TypedCodeExceptionBase (const QByteArray& context, CodeType code)
+		: Code_ { code }
+		, Msg_ { "Unable to perform action " + context + ": " + QByteArray::number (code) }
+		{
+		}
+
 		const char* what () const noexcept
 		{
 			return Msg_;
