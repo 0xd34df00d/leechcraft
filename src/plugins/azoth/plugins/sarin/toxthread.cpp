@@ -67,7 +67,7 @@ namespace Sarin
 	namespace
 	{
 		template<typename T>
-		typename std::result_of<T (const uint8_t*, size_t)>::type DoTox (const QString& str, T f)
+		auto DoTox (const QString& str, T f)
 		{
 			const auto& strUtf8 = str.toUtf8 ();
 			return f (reinterpret_cast<const uint8_t*> (strUtf8.constData ()), strUtf8.size ());
