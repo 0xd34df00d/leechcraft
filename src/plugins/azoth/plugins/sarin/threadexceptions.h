@@ -88,30 +88,7 @@ namespace Sarin
 	using CallAnswerException = Util::ConcurrentException<Util::NewType<TypedCodeExceptionBase<TOXAV_ERR_ANSWER>, NewTypeTag>>;
 
 	template<typename T>
-	class CommandCodeExceptionBase
-	{
-		const T Code_;
-		const QByteArray Msg_;
-	public:
-		CommandCodeExceptionBase (const QByteArray& cmd, T code)
-		: Code_ { code }
-		, Msg_ { "Error executing command " + cmd + ": " + QByteArray::number (code) }
-		{
-		}
-
-		const char* what () const noexcept
-		{
-			return Msg_.constData ();
-		}
-
-		T GetCode () const noexcept
-		{
-			return Code_;
-		}
-	};
-
-	template<typename T>
-	using CommandCodeException = Util::ConcurrentException<CommandCodeExceptionBase<T>>;
+	using CommandCodeException = Util::ConcurrentException<TypedCodeExceptionBase<T>>;
 
 	template<typename T>
 	CommandCodeException<T> MakeCommandCodeException (const QByteArray& msg, T error)
