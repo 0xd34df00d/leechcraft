@@ -29,6 +29,7 @@
 
 #include "calldatawriter.h"
 #include <util/threads/futures.h>
+#include <util/sll/visitor.h>
 #include "callmanager.h"
 
 namespace LeechCraft
@@ -62,7 +63,14 @@ namespace Sarin
 				{
 					IsWriting_ = false;
 
-					Buffer_.prepend (result.Leftover_);
+					Util::Visit (result.AsVariant (),
+							[this] (const QByteArray& leftover) { Buffer_.prepend (leftover); },
+							[this] (auto&& err)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "error writing frame:"
+										<< Util::Visit (err, [] (auto&& e) { return e.what (); });
+							});
 				};
 
 		Buffer_.clear ();

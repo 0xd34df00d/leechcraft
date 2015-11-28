@@ -117,7 +117,7 @@ namespace Sarin
 	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
 			const QAudioFormat& fmt, const QByteArray& data)
 	{
-		return Thread_->ScheduleFunction ([=] (Tox*) -> WriteResult
+		return Thread_->ScheduleFunction ([=] (Tox*)
 				{
 					const auto totalSamples = data.size () / sizeof (int16_t) / fmt.channelCount ();
 
@@ -146,7 +146,9 @@ namespace Sarin
 							fmt.sampleRate (),
 							&error);
 
-					return { data.mid (samplesToSend * sizeof (int16_t) * fmt.channelCount ()) };
+					return error != TOXAV_ERR_SEND_FRAME_OK ?
+							WriteResult::Left (FrameSendException { error }) :
+							WriteResult::Right (data.mid (samplesToSend * sizeof (int16_t) * fmt.channelCount ()));
 				});
 	}
 

@@ -75,10 +75,7 @@ namespace Sarin
 		using AcceptCallResult = CallStartResult<CallAnswerException>;
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 
-		struct WriteResult
-		{
-			QByteArray Leftover_;
-		};
+		using WriteResult = Util::Either<Error_t<FrameSendException>, QByteArray>;
 		QFuture<WriteResult> WriteData (int32_t callIdx, const QAudioFormat&, const QByteArray& data);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
