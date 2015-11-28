@@ -530,6 +530,8 @@ namespace Sarin
 
 		SetCallbacks ();
 
+		LoadFriends ();
+
 		SetToxStatus (Tox_.get (), Status_);
 
 		emit toxCreated (Tox_.get ());
