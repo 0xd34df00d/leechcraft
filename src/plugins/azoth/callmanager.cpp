@@ -276,16 +276,17 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 	namespace
 	{
-		template<typename T>
+		template<typename FormatGetter, typename DeviceSetter>
 		void HandleDeviceReopening (CallState& callState,
 				IMediaCall *mediaCall,
+				FormatGetter fmtGetter,
 				const QAudioDeviceInfo& info,
-				T setter,
+				DeviceSetter setter,
 				QObject *callMgr)
 		{
 			const auto callAudioDev = mediaCall->GetAudioDevice ();
 
-			const auto& format = mediaCall->GetAudioReadFormat ();
+			const auto& format = Util::Invoke (fmtGetter, mediaCall);
 			if (!format.isValid ())
 			{
 				qDebug () << "format is invalid for now, waiting for a better chance";
@@ -311,6 +312,7 @@ namespace Azoth
 			device->start (callAudioDev);
 		}
 	}
+#endif
 
 	void CallManager::handleReadFormatChanged ()
 	{
@@ -319,6 +321,7 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 		HandleDeviceReopening (CallStates_ [sender ()],
 				qobject_cast<IMediaCall*> (sender ()),
+				&IMediaCall::GetAudioReadFormat,
 				FindDevice ("OutputAudioDevice", QAudio::AudioOutput),
 				&CallState::OutDevice_,
 				this);
@@ -332,6 +335,7 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 		HandleDeviceReopening (CallStates_ [sender ()],
 				qobject_cast<IMediaCall*> (sender ()),
+				&IMediaCall::GetAudioWriteFormat,
 				FindDevice ("InputAudioDevice", QAudio::AudioInput),
 				&CallState::InDevice_,
 				this);
