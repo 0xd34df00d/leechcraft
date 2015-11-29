@@ -46,7 +46,7 @@ namespace Util
 {
 	template<typename R, typename F, typename... Args>
 	EnableIf_t<!std::is_same<R, void>::value, void>
-		ReportFutureResult (QFutureInterface<R>& iface, const F& f, Args... args)
+		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args... args)
 	{
 		try
 		{
@@ -66,7 +66,7 @@ namespace Util
 	}
 
 	template<typename F, typename... Args>
-	void ReportFutureResult (QFutureInterface<void>& iface, F& f, Args... args)
+	void ReportFutureResult (QFutureInterface<void>& iface, F&& f, Args... args)
 	{
 		try
 		{
