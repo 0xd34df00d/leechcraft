@@ -319,8 +319,8 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 		HandleDeviceReopening (CallStates_ [sender ()],
 				qobject_cast<IMediaCall*> (sender ()),
-				FindDevice ("InputAudioDevice", QAudio::AudioInput),
-				&CallState::InDevice_,
+				FindDevice ("OutputAudioDevice", QAudio::AudioOutput),
+				&CallState::OutDevice_,
 				this);
 #endif
 	}
@@ -332,8 +332,8 @@ namespace Azoth
 #ifdef ENABLE_MEDIACALLS
 		HandleDeviceReopening (CallStates_ [sender ()],
 				qobject_cast<IMediaCall*> (sender ()),
-				FindDevice ("OutputAudioDevice", QAudio::AudioOutput),
-				&CallState::OutDevice_,
+				FindDevice ("InputAudioDevice", QAudio::AudioInput),
+				&CallState::InDevice_,
 				this);
 #endif
 	}
