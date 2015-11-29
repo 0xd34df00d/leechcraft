@@ -79,7 +79,7 @@ namespace Sarin
 		QFuture<AcceptCallResult> AcceptCall (int32_t callIdx);
 
 		using WriteResult = Util::Either<Error_t<FrameSendException>, QByteArray>;
-		QFuture<WriteResult> WriteData (int32_t callIdx, const QAudioFormat&, const QByteArray& data);
+		QFuture<WriteResult> WriteData (int32_t callIdx, const QAudioFormat&, QByteArray data);
 	private:
 		void HandleIncomingCall (int32_t callIdx);
 		void HandleStateChanged (int32_t friendIdx, uint32_t state);

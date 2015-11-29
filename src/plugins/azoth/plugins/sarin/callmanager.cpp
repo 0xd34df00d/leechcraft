@@ -153,7 +153,7 @@ namespace Sarin
 	}
 
 	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
-			const QAudioFormat& fmt, const QByteArray& data)
+			const QAudioFormat& fmt, QByteArray data)
 	{
 		return Thread_->ScheduleFunction ([=] (Tox*)
 				{
