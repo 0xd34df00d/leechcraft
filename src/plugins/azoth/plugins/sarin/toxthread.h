@@ -114,13 +114,13 @@ namespace Sarin
 		QFuture<FriendInfo> ResolveFriend (qint32);
 
 		template<typename F>
-		auto ScheduleFunction (const F& func)
+		auto ScheduleFunction (F&& func)
 		{
 			QFutureInterface<decltype (func ({}))> iface;
 			iface.reportStarted ();
 			ScheduleFunctionImpl ([iface, func] (Tox *tox) mutable
 					{
-						Util::ReportFutureResult (iface, func, tox);
+						Util::ReportFutureResult (iface, std::forward<F> (func), tox);
 					});
 			return iface.future ();
 		}
