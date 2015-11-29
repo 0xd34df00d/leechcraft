@@ -250,34 +250,11 @@ namespace Azoth
 	{
 		qDebug () << Q_FUNC_INFO;
 #ifdef ENABLE_MEDIACALLS
-		const auto mediaCall = qobject_cast<IMediaCall*> (sender ());
-		const auto callAudioDev = mediaCall->GetAudioDevice ();
-
 		auto& callState = CallStates_ [sender ()];
 		callState.LastMode_ = mode;
 
 		if ((mode & QIODevice::WriteOnly) && !callState.OutDevice_)
-		{
-			const auto& format = mediaCall->GetAudioWriteFormat ();
-
-			const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
-
-			qDebug () << "opening output:" << outInfo.deviceName ();
-
-			if (!outInfo.isFormatSupported (format))
-				WarnUnsupported (outInfo, format,
-						"raw audio format not supported by backend, cannot play audio");
-
-			const auto output = std::make_shared<QAudioOutput> (outInfo, format);
-			connect (output.get (),
-					SIGNAL (stateChanged (QAudio::State)),
-					this,
-					SLOT (handleDevStateChanged (QAudio::State)));
-			output->setBufferSize (GetBufSize (format));
-			output->start (callAudioDev);
-
-			callState.OutDevice_ = output;
-		}
+			handleWriteFormatChanged ();
 
 		if ((mode & QIODevice::ReadOnly) && !callState.InDevice_)
 			handleReadFormatChanged ();
@@ -322,6 +299,36 @@ namespace Azoth
 	void CallManager::handleWriteFormatChanged ()
 	{
 		qDebug () << Q_FUNC_INFO;
+
+		auto& callState = CallStates_ [sender ()];
+
+		const auto mediaCall = qobject_cast<IMediaCall*> (sender ());
+		const auto callAudioDev = mediaCall->GetAudioDevice ();
+
+		const auto& format = mediaCall->GetAudioWriteFormat ();
+		if (!format.isValid ())
+		{
+			qDebug () << "format is invalid for now, waiting for a better chance";
+			return;
+		}
+
+		const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
+
+		qDebug () << "opening output:" << outInfo.deviceName () << format;
+
+		if (!outInfo.isFormatSupported (format))
+			WarnUnsupported (outInfo, format,
+					"raw audio format not supported by backend, cannot play audio");
+
+		const auto output = std::make_shared<QAudioOutput> (outInfo, format);
+		connect (output.get (),
+				SIGNAL (stateChanged (QAudio::State)),
+				this,
+				SLOT (handleDevStateChanged (QAudio::State)));
+		output->setBufferSize (GetBufSize (format));
+		output->start (callAudioDev);
+
+		callState.OutDevice_ = output;
 	}
 
 #ifdef ENABLE_MEDIACALLS
