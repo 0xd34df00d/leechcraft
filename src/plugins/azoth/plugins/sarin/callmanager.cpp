@@ -176,8 +176,9 @@ namespace Sarin
 
 					const auto samplesToSend = fmt.sampleRate () * allowedLength / 1000;
 
-					qDebug () << Q_FUNC_INFO << "gonna send" << allowedLength << "of" << maxAudioLength << "seconds";
-					qDebug () << "or" << samplesToSend << "of" << totalSamples << "samples";
+					qDebug () << Q_FUNC_INFO << "gonna send"
+							<< allowedLength << "of" << maxAudioLength << "seconds or"
+							<< samplesToSend << "of" << totalSamples << "samples";
 
 					TOXAV_ERR_SEND_FRAME error;
 					toxav_audio_send_frame (ToxAv_.get (),
