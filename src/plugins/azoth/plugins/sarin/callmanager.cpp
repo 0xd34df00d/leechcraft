@@ -53,6 +53,12 @@ namespace Sarin
 		{
 		}
 
+		~ToxAvThread ()
+		{
+			Stop ();
+			wait (5);
+		}
+
 		void Stop ()
 		{
 			ShouldStop_.clear (std::memory_order_relaxed);
