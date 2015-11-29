@@ -297,15 +297,17 @@ namespace Azoth
 				WarnUnsupported (info, format, "raw audio format not supported by backend");
 
 			using AudioDevice_t = Util::Decay_t<decltype (*(callState.*setter))>;
+
 			const auto device = std::make_shared<AudioDevice_t> (info, format);
+
+			callState.*setter = device;
+
 			QObject::connect (device.get (),
 					SIGNAL (stateChanged (QAudio::State)),
 					callMgr,
 					SLOT (handleDevStateChanged (QAudio::State)));
 			device->setBufferSize (GetBufSize (format));
 			device->start (callAudioDev);
-
-			callState.*setter = device;
 		}
 	}
 
