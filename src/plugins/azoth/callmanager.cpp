@@ -36,6 +36,7 @@
 #endif
 
 #include <QtDebug>
+#include <util/sll/oldcppkludges.h>
 #include <util/xpc/util.h>
 #include <util/xpc/notificationactionhandler.h>
 #include "interfaces/azoth/iclentry.h"
@@ -272,74 +273,62 @@ namespace Azoth
 #endif
 	}
 
+	namespace
+	{
+		template<typename T>
+		void HandleDeviceReopening (CallState& callState,
+				IMediaCall *mediaCall,
+				const QAudioDeviceInfo& info,
+				T setter,
+				QObject *callMgr)
+		{
+			const auto callAudioDev = mediaCall->GetAudioDevice ();
+
+			const auto& format = mediaCall->GetAudioReadFormat ();
+			if (!format.isValid ())
+			{
+				qDebug () << "format is invalid for now, waiting for a better chance";
+				return;
+			}
+
+			qDebug () << "opening:" << info.deviceName () << format;
+
+			if (!info.isFormatSupported (format))
+				WarnUnsupported (info, format, "raw audio format not supported by backend");
+
+			using AudioDevice_t = Util::Decay_t<decltype (*(callState.*setter))>;
+			const auto device = std::make_shared<AudioDevice_t> (info, format);
+			QObject::connect (device.get (),
+					SIGNAL (stateChanged (QAudio::State)),
+					callMgr,
+					SLOT (handleDevStateChanged (QAudio::State)));
+			device->setBufferSize (GetBufSize (format));
+			device->start (callAudioDev);
+
+			callState.*setter = device;
+		}
+	}
+
 	void CallManager::handleReadFormatChanged ()
 	{
 		qDebug () << Q_FUNC_INFO;
 
-		auto& callState = CallStates_ [sender ()];
-
-		const auto mediaCall = qobject_cast<IMediaCall*> (sender ());
-		const auto callAudioDev = mediaCall->GetAudioDevice ();
-
-		const auto& format = mediaCall->GetAudioReadFormat ();
-		if (!format.isValid ())
-		{
-			qDebug () << "format is invalid for now, waiting for a better chance";
-			return;
-		}
-
-		const auto& inInfo = FindDevice ("InputAudioDevice", QAudio::AudioInput);
-
-		qDebug () << "opening input:" << inInfo.deviceName () << format;
-
-		if (!inInfo.isFormatSupported (format))
-			WarnUnsupported (inInfo, format,
-					"raw audio format not supported by backend, cannot record audio");
-
-		const auto input = std::make_shared<QAudioInput> (inInfo, format);
-		connect (input.get (),
-				SIGNAL (stateChanged (QAudio::State)),
-				this,
-				SLOT (handleDevStateChanged (QAudio::State)));
-		input->setBufferSize (GetBufSize (format));
-		input->start (callAudioDev);
-
-		callState.InDevice_ = input;
+		HandleDeviceReopening (CallStates_ [sender ()],
+				qobject_cast<IMediaCall*> (sender ()),
+				FindDevice ("InputAudioDevice", QAudio::AudioInput),
+				&CallState::InDevice_,
+				this);
 	}
 
 	void CallManager::handleWriteFormatChanged ()
 	{
 		qDebug () << Q_FUNC_INFO;
 
-		auto& callState = CallStates_ [sender ()];
-
-		const auto mediaCall = qobject_cast<IMediaCall*> (sender ());
-		const auto callAudioDev = mediaCall->GetAudioDevice ();
-
-		const auto& format = mediaCall->GetAudioWriteFormat ();
-		if (!format.isValid ())
-		{
-			qDebug () << "format is invalid for now, waiting for a better chance";
-			return;
-		}
-
-		const auto& outInfo = FindDevice ("OutputAudioDevice", QAudio::AudioOutput);
-
-		qDebug () << "opening output:" << outInfo.deviceName () << format;
-
-		if (!outInfo.isFormatSupported (format))
-			WarnUnsupported (outInfo, format,
-					"raw audio format not supported by backend, cannot play audio");
-
-		const auto output = std::make_shared<QAudioOutput> (outInfo, format);
-		connect (output.get (),
-				SIGNAL (stateChanged (QAudio::State)),
-				this,
-				SLOT (handleDevStateChanged (QAudio::State)));
-		output->setBufferSize (GetBufSize (format));
-		output->start (callAudioDev);
-
-		callState.OutDevice_ = output;
+		HandleDeviceReopening (CallStates_ [sender ()],
+				qobject_cast<IMediaCall*> (sender ()),
+				FindDevice ("OutputAudioDevice", QAudio::AudioOutput),
+				&CallState::OutDevice_,
+				this);
 	}
 
 #ifdef ENABLE_MEDIACALLS
