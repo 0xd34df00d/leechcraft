@@ -155,43 +155,48 @@ namespace Sarin
 	QFuture<CallManager::WriteResult> CallManager::WriteData (int32_t callIdx,
 			const QAudioFormat& fmt, QByteArray data)
 	{
-		return Thread_->ScheduleFunction ([=] (Tox*)
+		return Thread_->ScheduleFunction ([=] (Tox*) mutable
 				{
-					const auto totalSamples = data.size () / sizeof (int16_t) / fmt.channelCount ();
+					qDebug () << Q_FUNC_INFO;
+					while (true)
+					{
+						const auto totalSamples = data.size () / sizeof (int16_t) / fmt.channelCount ();
 
-					const float allowedLengths [] = { 2.5, 5, 10, 20, 40, 60 };
+						const float allowedLengths [] = { 2.5, 5, 10, 20, 40, 60 };
 
-					/* Tox docs say that valid samples count is subject to
-					 * (samples count) = (sample rate) * (audio length) / 1000
-					 * thus max audio length is
-					 * audio length = 1000 * (samples count) / (sample rate)
-					 */
-					const auto maxAudioLength = 1000.0 * totalSamples / fmt.sampleRate ();
-					if (maxAudioLength < allowedLengths [0])
-						return WriteResult::Right (data);
+						/* Tox docs say that valid samples count is subject to
+						* (samples count) = (sample rate) * (audio length) / 1000
+						* thus max audio length is
+						* audio length = 1000 * (samples count) / (sample rate)
+						*/
+						const auto maxAudioLength = 1000.0 * totalSamples / fmt.sampleRate ();
+						if (maxAudioLength < allowedLengths [0])
+							return WriteResult::Right (data);
 
-					const auto allowedLengthPos = std::lower_bound (std::begin (allowedLengths),
-							std::end (allowedLengths), maxAudioLength);
-					const auto allowedLength = *std::prev (allowedLengthPos);
+						const auto allowedLengthPos = std::lower_bound (std::begin (allowedLengths),
+								std::end (allowedLengths), maxAudioLength);
+						const auto allowedLength = *std::prev (allowedLengthPos);
 
-					const auto samplesToSend = fmt.sampleRate () * allowedLength / 1000;
+						const auto samplesToSend = fmt.sampleRate () * allowedLength / 1000;
 
-					qDebug () << Q_FUNC_INFO << "gonna send"
-							<< allowedLength << "of" << maxAudioLength << "seconds or"
-							<< samplesToSend << "of" << totalSamples << "samples";
+						qDebug () << "gonna send"
+								<< allowedLength << "of" << maxAudioLength << "ms or"
+								<< samplesToSend << "of" << totalSamples << "samples";
 
-					TOXAV_ERR_SEND_FRAME error;
-					toxav_audio_send_frame (ToxAv_.get (),
-							callIdx,
-							reinterpret_cast<const int16_t*> (data.constData ()),
-							samplesToSend,
-							fmt.channelCount (),
-							fmt.sampleRate (),
-							&error);
+						TOXAV_ERR_SEND_FRAME error;
+						toxav_audio_send_frame (ToxAv_.get (),
+								callIdx,
+								reinterpret_cast<const int16_t*> (data.constData ()),
+								samplesToSend,
+								fmt.channelCount (),
+								fmt.sampleRate (),
+								&error);
 
-					return error != TOXAV_ERR_SEND_FRAME_OK ?
-							WriteResult::Left (FrameSendException { error }) :
-							WriteResult::Right (data.mid (samplesToSend * sizeof (int16_t) * fmt.channelCount ()));
+						if (error != TOXAV_ERR_SEND_FRAME_OK)
+							return WriteResult::Left (FrameSendException { error });
+
+						data = data.mid (samplesToSend * sizeof (int16_t) * fmt.channelCount ());
+					}
 				});
 	}
 
