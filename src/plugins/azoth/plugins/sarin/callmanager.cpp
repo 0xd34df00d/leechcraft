@@ -42,6 +42,35 @@ namespace Azoth
 {
 namespace Sarin
 {
+	struct CallManager::ToxAvThread : public QThread
+	{
+		std::atomic_flag ShouldStop_ = ATOMIC_FLAG_INIT;
+
+		ToxAV * const ToxAv_;
+	public:
+		ToxAvThread (ToxAV *toxAv)
+		: ToxAv_ { toxAv }
+		{
+		}
+
+		void Stop ()
+		{
+			ShouldStop_.clear (std::memory_order_relaxed);
+		}
+	protected:
+		void run () override
+		{
+			ShouldStop_.test_and_set (std::memory_order_relaxed);
+
+			while (ShouldStop_.test_and_set (std::memory_order_relaxed))
+			{
+				const auto delay = toxav_iteration_interval (ToxAv_);
+				msleep (delay);
+				toxav_iterate (ToxAv_);
+			}
+		}
+	};
+
 	CallManager::CallManager (ToxThread *thread, Tox *tox, QObject *parent)
 	: QObject { parent }
 	, Thread_ { thread }
