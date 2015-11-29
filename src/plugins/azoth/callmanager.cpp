@@ -273,6 +273,7 @@ namespace Azoth
 #endif
 	}
 
+#ifdef ENABLE_MEDIACALLS
 	namespace
 	{
 		template<typename T>
@@ -315,22 +316,26 @@ namespace Azoth
 	{
 		qDebug () << Q_FUNC_INFO;
 
+#ifdef ENABLE_MEDIACALLS
 		HandleDeviceReopening (CallStates_ [sender ()],
 				qobject_cast<IMediaCall*> (sender ()),
 				FindDevice ("InputAudioDevice", QAudio::AudioInput),
 				&CallState::InDevice_,
 				this);
+#endif
 	}
 
 	void CallManager::handleWriteFormatChanged ()
 	{
 		qDebug () << Q_FUNC_INFO;
 
+#ifdef ENABLE_MEDIACALLS
 		HandleDeviceReopening (CallStates_ [sender ()],
 				qobject_cast<IMediaCall*> (sender ()),
 				FindDevice ("OutputAudioDevice", QAudio::AudioOutput),
 				&CallState::OutDevice_,
 				this);
+#endif
 	}
 
 #ifdef ENABLE_MEDIACALLS
