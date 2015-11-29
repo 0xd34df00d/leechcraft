@@ -60,6 +60,7 @@ namespace Sarin
 		std::unique_ptr<ToxAV, decltype (&toxav_kill)> ToxAv_;
 
 		struct ToxAvThread;
+		std::shared_ptr<ToxAvThread> ToxAvThread_;
 	public:
 		CallManager (ToxThread*, Tox*, QObject* = nullptr);
 

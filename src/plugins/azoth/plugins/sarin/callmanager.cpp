@@ -86,6 +86,7 @@ namespace Sarin
 		} (),
 		&toxav_kill
 	}
+	, ToxAvThread_ { std::make_shared<ToxAvThread> (ToxAv_.get ()) }
 	{
 		toxav_callback_call (ToxAv_.get (),
 				[] (ToxAV*, uint32_t friendNum, bool audio, bool video, void *udata)
@@ -107,6 +108,8 @@ namespace Sarin
 					static_cast<CallManager*> (udata)->HandleAudio (friendNum, frames, size, channels, rate);
 				},
 				this);
+
+		ToxAvThread_->start (QThread::IdlePriority);
 	}
 
 	namespace
