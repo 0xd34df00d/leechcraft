@@ -121,7 +121,7 @@ namespace Sarin
 				{
 					const auto totalSamples = data.size () / sizeof (int16_t) / fmt.channelCount ();
 
-					const float allowedLengths [] = { 0, 2.5, 5, 10, 20, 40, 60 };
+					const float allowedLengths [] = { 2.5, 5, 10, 20, 40, 60 };
 
 					/* Tox docs say that valid samples count is subject to
 					 * (samples count) = (sample rate) * (audio length) / 1000
@@ -129,8 +129,12 @@ namespace Sarin
 					 * audio length = 1000 * (samples count) / (sample rate)
 					 */
 					const auto maxAudioLength = 1000.0 * totalSamples / fmt.sampleRate ();
-					const auto allowedLength = *std::lower_bound (std::begin (allowedLengths),
+					if (maxAudioLength < allowedLengths [0])
+						return WriteResult::Right (data);
+
+					const auto allowedLengthPos = std::lower_bound (std::begin (allowedLengths),
 							std::end (allowedLengths), maxAudioLength);
+					const auto allowedLength = *std::prev (allowedLengthPos);
 
 					const auto samplesToSend = fmt.sampleRate () * allowedLength / 1000;
 
