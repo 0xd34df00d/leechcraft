@@ -173,7 +173,7 @@ namespace Sarin
 						if (maxAudioLength < allowedLengths [0])
 							return WriteResult::Right (data);
 
-						const auto allowedLengthPos = std::lower_bound (std::begin (allowedLengths),
+						const auto allowedLengthPos = std::upper_bound (std::begin (allowedLengths),
 								std::end (allowedLengths), maxAudioLength);
 						const auto allowedLength = *std::prev (allowedLengthPos);
 
