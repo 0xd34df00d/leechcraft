@@ -293,7 +293,11 @@ namespace Azoth
 				return;
 			}
 
+#if QT_VERSION >= 0x050000
 			qDebug () << "opening:" << info.deviceName () << format;
+#else
+			qDebug () << "opening:" << info.deviceName ();
+#endif
 
 			if (!info.isFormatSupported (format))
 				WarnUnsupported (info, format, "raw audio format not supported by backend");
