@@ -50,21 +50,18 @@ namespace Azoth
 	class ICLEntry;
 	class IMediaCall;
 
+	struct CallState;
+
 	class CallManager : public QObject
 	{
 		Q_OBJECT
 
 		QHash<QString, QObjectList> Entry2Calls_;
 
-		struct CallState
-		{
-			QIODevice::OpenMode LastMode_;
-			std::shared_ptr<QAudioInput> InDevice_;
-			std::shared_ptr<QAudioOutput> OutDevice_;
-		};
 		QHash<QObject*, CallState> CallStates_;
 	public:
 		CallManager (QObject* = 0);
+		~CallManager ();
 
 		void AddAccount (QObject*);
 		QObject* Call (ICLEntry*, const QString&);
