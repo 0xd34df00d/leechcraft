@@ -265,10 +265,10 @@ namespace Azoth
 		auto& callState = CallStates_ [sender ()];
 		callState.LastMode_ = mode;
 
-		if ((mode & QIODevice::WriteOnly) && !callState.OutDevice_)
+		if ((mode & QIODevice::WriteOnly) && !callState.InDevice_)
 			handleWriteFormatChanged ();
 
-		if ((mode & QIODevice::ReadOnly) && !callState.InDevice_)
+		if ((mode & QIODevice::ReadOnly) && !callState.OutDevice_)
 			handleReadFormatChanged ();
 #endif
 	}
