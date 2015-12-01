@@ -31,7 +31,6 @@
 #include <QFileSystemWatcher>
 #include <QStandardItemModel>
 #include <QStringListModel>
-#include <QApplication>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
