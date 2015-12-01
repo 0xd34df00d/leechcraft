@@ -37,4 +37,4 @@ target_link_libraries (leechcraft_rosenthal
 install (TARGETS leechcraft_rosenthal DESTINATION ${LC_PLUGINS_DEST})
 install (FILES rosenthalsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_rosenthal Core)
+FindQtLibs (leechcraft_rosenthal Gui)
