@@ -44,17 +44,19 @@ namespace Rosenthal
 	{
 		QStringList GetSystemPaths ()
 		{
-			QStringList candidates;
+			static const QStringList candidates
+			{
 #ifdef Q_OS_WIN32
-			candidates << QCoreApplication::applicationDirPath () + "/myspell/";
+				QCoreApplication::applicationDirPath () + "/myspell/"
 #else
-			candidates << "/usr/local/share/myspell/"
-					<< "/usr/share/myspell/"
-					<< "/usr/local/share/myspell/dicts/"
-					<< "/usr/share/myspell/dicts/"
-					<< "/usr/local/share/hunspell/"
-					<< "/usr/share/hunspell/";
+				"/usr/local/share/myspell/",
+				"/usr/share/myspell/",
+				"/usr/local/share/myspell/dicts/",
+				"/usr/share/myspell/dicts/",
+				"/usr/local/share/hunspell/",
+				"/usr/share/hunspell/"
 #endif
+			};
 
 			return candidates;
 		}
