@@ -228,6 +228,12 @@ namespace Util
 		return result;
 	}
 
+	template<typename Cont, typename F>
+	auto ConcatMap (Cont&& c, F&& f) -> decltype (Concat (Map (std::forward<Cont> (c), std::forward<F> (f))))
+	{
+		return Concat (Map (std::forward<Cont> (c), std::forward<F> (f)));
+	}
+
 	template<template<typename> class Container, typename T>
 	Container<Container<T>> SplitInto (size_t numChunks, const Container<T>& container)
 	{
