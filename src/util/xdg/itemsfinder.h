@@ -70,6 +70,7 @@ namespace XDG
 		Cat2Items_t Items_;
 
 		bool IsReady_ = false;
+		bool IsScanning_ = false;
 
 		const QList<Type> Types_;
 	public:

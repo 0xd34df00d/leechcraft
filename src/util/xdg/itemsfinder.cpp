@@ -162,6 +162,9 @@ namespace XDG
 
 	void ItemsFinder::update ()
 	{
+		if (IsScanning_)
+			return;
+
 		if (!IsReady_)
 		{
 			IsReady_ = true;
@@ -173,9 +176,13 @@ namespace XDG
 			return;
 		}
 
+		IsScanning_ = true;
+
 		ExecuteFuture ([this] { return QtConcurrent::run (FindAndParse, Types_); },
 				[this] (Cat2Items_t result)
 				{
+					IsScanning_ = false;
+
 					if (result == Items_)
 						return;
 
