@@ -31,6 +31,7 @@
 #include <QFileSystemWatcher>
 #include <QStandardItemModel>
 #include <QStringListModel>
+#include <QCoreApplication>
 #include <util/util.h>
 #include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
@@ -45,7 +46,7 @@ namespace Rosenthal
 		{
 			QStringList candidates;
 #ifdef Q_OS_WIN32
-			candidates << qApp->applicationDirPath () + "/myspell/";
+			candidates << QCoreApplication::applicationDirPath () + "/myspell/";
 #else
 			candidates << "/usr/local/share/myspell/"
 					<< "/usr/share/myspell/"
