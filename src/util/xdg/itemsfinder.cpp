@@ -181,8 +181,8 @@ namespace XDG
 
 		IsScanning_ = true;
 
-		ExecuteFuture ([this] { return QtConcurrent::run (FindAndParse, Types_); },
-				[this] (Cat2Items_t result)
+		Util::Sequence (this, QtConcurrent::run (FindAndParse, Types_)) >>
+				[this] (const Cat2Items_t& result)
 				{
 					IsScanning_ = false;
 
@@ -193,8 +193,7 @@ namespace XDG
 					FixIcons (Items_, Proxy_);
 
 					emit itemsListChanged ();
-				},
-				this);
+				};
 	}
 }
 }
