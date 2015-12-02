@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include "interfaces/core/iiconthememanager.h"
 #include "xdg.h"
@@ -80,14 +81,16 @@ namespace XDG
 	{
 		QStringList ScanDir (const QString& path)
 		{
-			const auto& infos = QDir (path).entryInfoList (QStringList ("*.desktop"),
+			const auto& infos = QDir (path).entryInfoList ({ "*.desktop" },
 						QDir::Files | QDir::AllDirs | QDir::NoDotAndDotDot);
-			QStringList result;
-			for (const auto& info : infos)
-				result += info.isDir () ?
-						ScanDir (info.absoluteFilePath ()) :
-						QStringList (info.absoluteFilePath ());
-			return result;
+
+			return Util::ConcatMap (infos,
+					[] (const QFileInfo& info)
+					{
+						return info.isDir () ?
+								ScanDir (info.absoluteFilePath ()) :
+								QStringList { info.absoluteFilePath () };
+					});
 		}
 
 		QIcon GetIconDevice (ICoreProxy_ptr proxy, QString name)
