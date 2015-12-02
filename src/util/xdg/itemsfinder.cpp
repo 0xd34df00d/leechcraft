@@ -168,23 +168,13 @@ namespace XDG
 		if (IsScanning_)
 			return;
 
-		if (!IsReady_)
-		{
-			IsReady_ = true;
-			Items_ = FindAndParse (Types_);
-
-			FixIcons (Items_, Proxy_);
-
-			emit itemsListChanged ();
-			return;
-		}
-
 		IsScanning_ = true;
 
 		Util::Sequence (this, QtConcurrent::run (FindAndParse, Types_)) >>
 				[this] (const Cat2Items_t& result)
 				{
 					IsScanning_ = false;
+					IsReady_ = true;
 
 					if (result == Items_)
 						return;
