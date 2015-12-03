@@ -42,11 +42,11 @@ namespace Util
 namespace XDG
 {
 	class UTIL_XDG_API Item;
-	typedef std::shared_ptr<Item> Item_ptr;
+	using Item_ptr = std::shared_ptr<Item>;
+
+	using Cat2Items_t = QHash<QString, QList<Item_ptr>>;
 
 	enum class Type;
-
-	typedef QHash<QString, QList<Item_ptr>> Cat2Items_t;
 
 	/** @brief Finds and parses XDG <code>.desktop</code> files.
 	 *

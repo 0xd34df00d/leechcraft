@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <QtConcurrentRun>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "xdg.h"
 #include "item.h"
@@ -118,9 +119,9 @@ namespace XDG
 					});
 		}
 
-		Cat2Items_t FindAndParse (const QList<Type>& types)
+		Cat2ID2Item_t FindAndParse (const QList<Type>& types)
 		{
-			Cat2Items_t result;
+			Cat2ID2Item_t result;
 
 			QStringList paths;
 			for (const auto& dir : ToPaths (types))
@@ -152,7 +153,7 @@ namespace XDG
 
 				for (const auto& cat : item->GetCategories ())
 					if (!cat.startsWith ("X-"))
-						result [cat] << item;
+						result [cat] [item->GetPermanentID ()] = item;
 			}
 
 			return result;
@@ -200,17 +201,52 @@ namespace XDG
 		IsScanning_ = true;
 
 		Util::Sequence (this, QtConcurrent::run (FindAndParse, Types_)) >>
-				[this] (const Cat2Items_t& result)
+				[this] (Cat2ID2Item_t result)
 				{
 					IsScanning_ = false;
 					IsReady_ = true;
 
-					if (result == Items_)
-						return;
+					auto ourItems = ItemsList2Map (Items_);
 
-					Items_ = std::move (result);
+					using std::swap;
 
-					emit itemsListChanged ();
+					const auto& diffCats = CalcDiff (Util::Sorted (Items_.keys ()),
+							Util::Sorted (result.keys ()));
+
+					for (const auto& removed : diffCats.Removed_)
+						ourItems.remove (removed);
+					for (const auto& added : diffCats.Added_)
+						swap (ourItems [added], result [added]);
+
+					bool changed = diffCats.HasChanges ();
+
+					for (const auto& cat : diffCats.Intersection_)
+					{
+						auto& ourList = ourItems [cat];
+						auto& newList = result [cat];
+						const auto& diffItems = CalcDiff (Util::Sorted (ourList.keys ()),
+								Util::Sorted (newList.keys ()));
+
+						changed = changed || diffItems.HasChanges ();
+
+						for (const auto& removed : diffItems.Removed_)
+							ourList.remove (removed);
+						for (const auto& added : diffItems.Added_)
+							swap (ourList [added], newList [added]);
+
+						for (const auto& existing : diffItems.Intersection_)
+							if (ourList [existing] != newList [existing])
+							{
+								swap (ourList [existing], newList [existing]);
+								changed = true;
+							}
+					}
+
+					if (changed)
+					{
+						Items_ = ItemsMap2List (ourItems);
+						emit itemsListChanged ();
+					}
 				};
 	}
 }
