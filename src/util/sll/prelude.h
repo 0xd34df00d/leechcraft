@@ -159,6 +159,7 @@ namespace Util
 		Map (copy, f);
 	}
 
+	/*
 #ifndef USE_CPP14
 	template<typename F>
 	auto Map (const QStringList& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, QString {}))>::value,
@@ -177,6 +178,7 @@ namespace Util
 			Invoke (f, t);
 	}
 #endif
+*/
 
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>::type
@@ -264,6 +266,13 @@ namespace Util
 				return pair.second;
 
 		return {};
+	}
+
+	template<typename Cont>
+	Cont Sorted (Cont&& cont)
+	{
+		std::sort (cont.begin (), cont.end ());
+		return cont;
 	}
 
 #ifdef USE_CPP14
