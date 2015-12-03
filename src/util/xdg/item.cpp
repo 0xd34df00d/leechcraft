@@ -57,6 +57,11 @@ namespace XDG
 				left.IconName_ == right.IconName_;
 	}
 
+	bool operator!= (const Item& left, const Item& right)
+	{
+		return !(left == right);
+	}
+
 	bool Item::IsValid () const
 	{
 		return !Name_.isEmpty ();

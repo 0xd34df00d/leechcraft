@@ -84,6 +84,8 @@ namespace XDG
 		 */
 		friend UTIL_XDG_API bool operator== (const Item& left, const Item& right);
 
+		friend UTIL_XDG_API bool operator!= (const Item& left, const Item& right);
+
 		/** @brief Checks whether this XDG item is valid.
 		 *
 		 * A valid item has name field set for at least one language.
