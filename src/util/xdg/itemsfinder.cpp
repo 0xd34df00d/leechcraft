@@ -247,12 +247,16 @@ namespace XDG
 		Util::Sequence (this, QtConcurrent::run (FindAndParse, Types_)) >>
 				[this] (Cat2ID2Item_t result)
 				{
+					return QtConcurrent::run (Merge, Items_, result);
+				} >>
+				[this] (const boost::optional<Cat2Items_t>& result)
+				{
 					IsScanning_ = false;
 					IsReady_ = true;
 
-					if (const auto res = Merge (Items_, result))
+					if (result)
 					{
-						Items_ = *res;
+						Items_ = *result;
 						emit itemsListChanged ();
 					}
 				};
