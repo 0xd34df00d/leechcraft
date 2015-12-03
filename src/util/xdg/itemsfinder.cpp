@@ -223,7 +223,7 @@ namespace XDG
 					swap (ourList [added], newList [added]);
 
 				for (const auto& existing : diffItems.Intersection_)
-					if (ourList [existing] != newList [existing])
+					if (*ourList [existing] != *newList [existing])
 					{
 						swap (ourList [existing], newList [existing]);
 						changed = true;
