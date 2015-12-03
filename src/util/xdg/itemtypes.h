@@ -32,10 +32,9 @@
 #include "xdgconfig.h"
 
 template<typename T>
-class QSet;
-
-template<typename T>
 class QList;
+
+class QStringList;
 
 namespace LeechCraft
 {
@@ -73,7 +72,7 @@ namespace XDG
 	 * @return The list of the directories where the said files typically
 	 * reside.
 	 */
-	UTIL_XDG_API QSet<QString> ToPaths (const QList<Type>& types);
+	UTIL_XDG_API QStringList ToPaths (const QList<Type>& types);
 }
 }
 }

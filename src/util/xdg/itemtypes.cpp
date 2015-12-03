@@ -28,8 +28,9 @@
  **********************************************************************/
 
 #include "itemtypes.h"
-#include <QSet>
+#include <QStringList>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -37,28 +38,40 @@ namespace Util
 {
 namespace XDG
 {
-	QSet<QString> ToPaths (Type type)
+	namespace
 	{
-		switch (type)
+		QStringList ToPathsImpl (Type type)
 		{
-		case Type::Application:
-		case Type::Dir:
-		case Type::URL:
-			return QSet<QString> () << "/usr/share/applications"
-					<< "/usr/local/share/applications";
-		case Type::Other:
+			switch (type)
+			{
+			case Type::Application:
+			case Type::Dir:
+			case Type::URL:
+				return
+				{
+					"/usr/share/applications"
+					"/usr/local/share/applications"
+				};
+			case Type::Other:
+				return {};
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< static_cast<int> (type);
 			return {};
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown type"
-				<< static_cast<int> (type);
-		return {};
 	}
 
-	QSet<QString> ToPaths (const QList<Type>& types)
+	QStringList ToPaths (Type type)
 	{
-		QSet<QString> result;
+		return ToPathsImpl (type);
+	}
+
+	QStringList ToPaths (const QList<Type>& types)
+	{
+		QStringList result;
 		for (auto type : types)
 			result += ToPaths (type);
 		return result;

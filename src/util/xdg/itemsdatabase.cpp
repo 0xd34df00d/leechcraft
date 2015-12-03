@@ -43,7 +43,7 @@ namespace XDG
 	: ItemsFinder { proxy, types, parent }
 	, Watcher_ { new QFileSystemWatcher { this } }
 	{
-		Watcher_->addPaths (ToPaths (types).toList ());
+		Watcher_->addPaths (ToPaths (types));
 		connect (Watcher_,
 				SIGNAL (directoryChanged (QString)),
 				this,
