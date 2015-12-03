@@ -69,7 +69,7 @@ namespace XDG
 		for (const auto& list : Items_)
 		{
 			const auto pos = std::find_if (list.begin (), list.end (),
-					[&id] (Item_ptr item) { return item->GetPermanentID () == id; });
+					[&id] (const Item_ptr& item) { return item->GetPermanentID () == id; });
 			if (pos != list.end ())
 				return *pos;
 		}
@@ -117,7 +117,7 @@ namespace XDG
 		void FixIcons (const Cat2Items_t& items, ICoreProxy_ptr proxy)
 		{
 			for (const auto& list : items)
-				for (auto item : list)
+				for (const auto& item : list)
 					if (item->GetIcon ().isNull ())
 						item->SetIcon (GetIconDevice (proxy, item->GetIconName ()));
 		}
