@@ -74,7 +74,7 @@ namespace Launchy
 
 		ShortcutMgr_->RegisterAction ("FSLauncher", FSLauncher_);
 
-		auto itemImageProv = new ItemImageProvider;
+		auto itemImageProv = new ItemImageProvider { proxy };
 		auto quarkMgr = new QuarkManager (proxy, FavManager_, Finder_, itemImageProv);
 
 		LaunchQuark_.reset (new QuarkComponent ("launchy", "LaunchyQuark.qml"));

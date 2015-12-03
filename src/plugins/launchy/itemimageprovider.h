@@ -32,6 +32,7 @@
 #include <QHash>
 #include <util/qml/widthiconprovider.h>
 #include <util/xdg/xdgfwd.h>
+#include <interfaces/core/icoreproxy.h>
 
 namespace LeechCraft
 {
@@ -39,9 +40,10 @@ namespace Launchy
 {
 	class ItemImageProvider : public Util::WidthIconProvider
 	{
+		const ICoreProxy_ptr Proxy_;
 		QHash<QString, QIcon> PermID2Icon_;
 	public:
-		ItemImageProvider ();
+		ItemImageProvider (const ICoreProxy_ptr&);
 
 		void AddItem (Util::XDG::Item_ptr);
 

@@ -35,7 +35,8 @@ namespace LeechCraft
 {
 namespace Launchy
 {
-	ItemImageProvider::ItemImageProvider ()
+	ItemImageProvider::ItemImageProvider (const ICoreProxy_ptr& proxy)
+	: Proxy_ { proxy }
 	{
 	}
 
