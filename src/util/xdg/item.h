@@ -84,6 +84,15 @@ namespace XDG
 		 */
 		friend UTIL_XDG_API bool operator== (const Item& left, const Item& right);
 
+		/** @brief Checks whether \em left and \em right are not equal.
+		 *
+		 * The icon field obtained via GetIcon() is \em not checked for
+		 * equality.
+		 *
+		 * @param[in] left First XDG item to check for inequality.
+		 * @param[in] right Second XDG item to check for inequality.
+		 * @return Whether \em left and \em right are not equal.
+		 */
 		friend UTIL_XDG_API bool operator!= (const Item& left, const Item& right);
 
 		/** @brief Checks whether this XDG item is valid.
