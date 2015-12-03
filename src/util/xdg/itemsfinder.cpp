@@ -31,11 +31,9 @@
 #include <QDir>
 #include <QTimer>
 #include <QtDebug>
-#include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
-#include "interfaces/core/iiconthememanager.h"
 #include "xdg.h"
 #include "item.h"
 
@@ -91,35 +89,6 @@ namespace XDG
 								ScanDir (info.absoluteFilePath ()) :
 								QStringList { info.absoluteFilePath () };
 					});
-		}
-
-		QIcon GetIconDevice (ICoreProxy_ptr proxy, QString name)
-		{
-			if (name.isEmpty ())
-				return QIcon ();
-
-			if (name.endsWith (".png") || name.endsWith (".svg"))
-				name.chop (4);
-
-			auto result = proxy->GetIconThemeManager ()->GetIcon (name);
-			if (!result.isNull ())
-				return result;
-
-			result = GetAppIcon (name);
-			if (!result.isNull ())
-				return result;
-
-			qDebug () << Q_FUNC_INFO << name << "not found";
-
-			return result;
-		}
-
-		void FixIcons (const Cat2Items_t& items, ICoreProxy_ptr proxy)
-		{
-			for (const auto& list : items)
-				for (const auto& item : list)
-					if (item->GetIcon ().isNull ())
-						item->SetIcon (GetIconDevice (proxy, item->GetIconName ()));
 		}
 
 		Cat2Items_t FindAndParse (const QList<Type>& types)
@@ -180,7 +149,6 @@ namespace XDG
 						return;
 
 					Items_ = std::move (result);
-					FixIcons (Items_, Proxy_);
 
 					emit itemsListChanged ();
 				};

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <boost/optional.hpp>
 #include <QHash>
 #include <QDebug>
 #include <QIcon>
@@ -67,7 +68,7 @@ namespace XDG
 		QString WD_;
 
 		QString IconName_;
-		QIcon Icon_;
+		mutable boost::optional<QIcon> Icon_;
 
 		bool IsHidden_;
 		Type Type_;
@@ -199,21 +200,6 @@ namespace XDG
 		 * @return The permanent ID of this item.
 		 */
 		QString GetPermanentID () const;
-
-		/** @brief Sets the icon associated with this item.
-		 *
-		 * The icon can be accessed later via the GetIcon() method.
-		 *
-		 * This method is not related to GetIconName() in any way and is
-		 * provided purely for convenience, for example, to associate a
-		 * loaded icon with the item.
-		 *
-		 * @param[in] icon The icon to set.
-		 *
-		 * @sa GetIcon()
-		 * @sa GetIconName()
-		 */
-		void SetIcon (const QIcon& icon);
 
 		/** @brief Returns the icon previously set by SetIcon().
 		 *

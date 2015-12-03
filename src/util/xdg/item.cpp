@@ -34,7 +34,9 @@
 #include <QProcess>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include "desktopparser.h"
+#include "xdg.h"
 
 namespace LeechCraft
 {
@@ -154,14 +156,36 @@ namespace XDG
 		return GetCommand ();
 	}
 
-	void Item::SetIcon (const QIcon& icon)
+	namespace
 	{
-		Icon_ = icon;
+		QIcon GetIconDevice (const ICoreProxy_ptr& proxy, QString name)
+		{
+			if (name.isEmpty ())
+				return QIcon ();
+
+			if (name.endsWith (".png") || name.endsWith (".svg"))
+				name.chop (4);
+
+			auto result = proxy->GetIconThemeManager ()->GetIcon (name);
+			if (!result.isNull ())
+				return result;
+
+			result = GetAppIcon (name);
+			if (!result.isNull ())
+				return result;
+
+			qDebug () << Q_FUNC_INFO << name << "not found";
+
+			return result;
+		}
 	}
 
 	QIcon Item::GetIcon (const ICoreProxy_ptr& proxy) const
 	{
-		return Icon_;
+		if (!Icon_)
+			Icon_ = GetIconDevice (proxy, GetIconName ());
+
+		return *Icon_;
 	}
 
 	QDebug Item::DebugPrint (QDebug dbg) const
