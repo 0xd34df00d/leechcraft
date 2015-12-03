@@ -77,6 +77,33 @@ namespace XDG
 
 	namespace
 	{
+		using Cat2ID2Item_t = QHash<QString, QHash<QString, Item_ptr>>;
+
+		Cat2ID2Item_t ItemsList2Map (const Cat2Items_t& items)
+		{
+			Cat2ID2Item_t result;
+
+			for (const auto& pair : Util::Stlize (items))
+			{
+				auto& map = result [pair.first];
+				for (const auto& item : pair.second)
+					map [item->GetPermanentID ()] = item;
+			}
+
+			return result;
+		}
+
+		Cat2Items_t ItemsMap2List (const Cat2ID2Item_t& items)
+		{
+			Cat2Items_t result;
+
+			for (const auto& pair : Util::Stlize (items))
+				std::copy (pair.second.begin (), pair.second.end (),
+						std::back_inserter (result [pair.first]));
+
+			return result;
+		}
+
 		QStringList ScanDir (const QString& path)
 		{
 			const auto& infos = QDir (path).entryInfoList ({ "*.desktop" },
