@@ -191,6 +191,50 @@ namespace XDG
 		{
 			return { std::forward<Container> (oldCont), std::forward<Container> (newCont) };
 		}
+
+		boost::optional<Cat2Items_t> Merge (const Cat2Items_t& existing, Cat2ID2Item_t result)
+		{
+			auto ourItems = ItemsList2Map (existing);
+
+			using std::swap;
+
+			const auto& diffCats = CalcDiff (Util::Sorted (existing.keys ()),
+					Util::Sorted (result.keys ()));
+
+			for (const auto& removed : diffCats.Removed_)
+				ourItems.remove (removed);
+			for (const auto& added : diffCats.Added_)
+				swap (ourItems [added], result [added]);
+
+			bool changed = diffCats.HasChanges ();
+
+			for (const auto& cat : diffCats.Intersection_)
+			{
+				auto& ourList = ourItems [cat];
+				auto& newList = result [cat];
+				const auto& diffItems = CalcDiff (Util::Sorted (ourList.keys ()),
+						Util::Sorted (newList.keys ()));
+
+				changed = changed || diffItems.HasChanges ();
+
+				for (const auto& removed : diffItems.Removed_)
+					ourList.remove (removed);
+				for (const auto& added : diffItems.Added_)
+					swap (ourList [added], newList [added]);
+
+				for (const auto& existing : diffItems.Intersection_)
+					if (ourList [existing] != newList [existing])
+					{
+						swap (ourList [existing], newList [existing]);
+						changed = true;
+					}
+			}
+
+			if (!changed)
+				return {};
+
+			return ItemsMap2List (ourItems);
+		}
 	}
 
 	void ItemsFinder::update ()
@@ -206,45 +250,9 @@ namespace XDG
 					IsScanning_ = false;
 					IsReady_ = true;
 
-					auto ourItems = ItemsList2Map (Items_);
-
-					using std::swap;
-
-					const auto& diffCats = CalcDiff (Util::Sorted (Items_.keys ()),
-							Util::Sorted (result.keys ()));
-
-					for (const auto& removed : diffCats.Removed_)
-						ourItems.remove (removed);
-					for (const auto& added : diffCats.Added_)
-						swap (ourItems [added], result [added]);
-
-					bool changed = diffCats.HasChanges ();
-
-					for (const auto& cat : diffCats.Intersection_)
+					if (const auto res = Merge (Items_, result))
 					{
-						auto& ourList = ourItems [cat];
-						auto& newList = result [cat];
-						const auto& diffItems = CalcDiff (Util::Sorted (ourList.keys ()),
-								Util::Sorted (newList.keys ()));
-
-						changed = changed || diffItems.HasChanges ();
-
-						for (const auto& removed : diffItems.Removed_)
-							ourList.remove (removed);
-						for (const auto& added : diffItems.Added_)
-							swap (ourList [added], newList [added]);
-
-						for (const auto& existing : diffItems.Intersection_)
-							if (ourList [existing] != newList [existing])
-							{
-								swap (ourList [existing], newList [existing]);
-								changed = true;
-							}
-					}
-
-					if (changed)
-					{
-						Items_ = ItemsMap2List (ourItems);
+						Items_ = *res;
 						emit itemsListChanged ();
 					}
 				};
