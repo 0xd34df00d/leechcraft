@@ -29,6 +29,7 @@
 
 #include "itemtypes.h"
 #include <QStringList>
+#include <QDir>
 #include <QtDebug>
 #include <util/sll/prelude.h>
 
@@ -62,19 +63,28 @@ namespace XDG
 			return {};
 		}
 
-	}
+		QStringList Recurse (const QString& path)
+		{
+			const auto& infos = QDir { path }.entryInfoList (QDir::AllDirs | QDir::NoDotAndDotDot);
 
-	QStringList ToPaths (Type type)
-	{
-		return ToPathsImpl (type);
+			QStringList result { path };
+			result += Util::ConcatMap (infos,
+					[] (const QFileInfo& info)
+					{
+						return Recurse (info.absoluteFilePath ());
+					});
+			return result;
+		}
+
+		QStringList ToPathsRecurse (Type type)
+		{
+			return Util::ConcatMap (ToPathsImpl (type), Recurse);
+		}
 	}
 
 	QStringList ToPaths (const QList<Type>& types)
 	{
-		QStringList result;
-		for (auto type : types)
-			result += ToPaths (type);
-		return result;
+		return Util::ConcatMap (types, ToPathsRecurse);
 	}
 }
 }
