@@ -157,6 +157,39 @@ namespace XDG
 
 			return result;
 		}
+
+		template<typename T>
+		struct DiffResult
+		{
+			Util::Decay_t<T> Added_;
+			Util::Decay_t<T> Removed_;
+			Util::Decay_t<T> Intersection_;
+
+			DiffResult (T&& oldCont, T&& newCont)
+			{
+				std::set_difference (oldCont.begin (), oldCont.end (),
+						newCont.begin (), newCont.end (),
+						std::back_inserter (Removed_));
+				std::set_difference (newCont.begin (), newCont.end (),
+						oldCont.begin (), oldCont.end (),
+						std::back_inserter (Added_));
+
+				std::set_intersection (oldCont.begin (), oldCont.end (),
+						newCont.begin (), newCont.end (),
+						std::back_inserter (Intersection_));
+			}
+
+			bool HasChanges () const
+			{
+				return !Removed_.isEmpty () || !Added_.isEmpty ();
+			}
+		};
+
+		template<typename Container>
+		DiffResult<Container> CalcDiff (Container&& oldCont, Container&& newCont)
+		{
+			return { std::forward<Container> (oldCont), std::forward<Container> (newCont) };
+		}
 	}
 
 	void ItemsFinder::update ()
