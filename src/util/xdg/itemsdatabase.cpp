@@ -31,6 +31,7 @@
 #include <QFileSystemWatcher>
 #include <QSet>
 #include <QStringList>
+#include <util/sll/delayedexecutor.h>
 #include "itemtypes.h"
 
 namespace LeechCraft
@@ -47,7 +48,21 @@ namespace XDG
 		connect (Watcher_,
 				SIGNAL (directoryChanged (QString)),
 				this,
-				SLOT (update ()));
+				SLOT (scheduleUpdate ()));
+	}
+
+	void ItemsDatabase::scheduleUpdate ()
+	{
+		if (UpdateScheduled_)
+			return;
+
+		UpdateScheduled_ = true;
+		Util::ExecuteLater ([this]
+				{
+					UpdateScheduled_ = false;
+					update ();
+				},
+				10000);
 	}
 }
 }
