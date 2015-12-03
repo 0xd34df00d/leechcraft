@@ -50,7 +50,7 @@ namespace XDG
 			case Type::URL:
 				return
 				{
-					"/usr/share/applications"
+					"/usr/share/applications",
 					"/usr/local/share/applications"
 				};
 			case Type::Other:
