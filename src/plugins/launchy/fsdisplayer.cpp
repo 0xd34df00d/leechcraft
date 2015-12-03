@@ -426,7 +426,7 @@ namespace Launchy
 
 			const auto& iconName = item->GetIconName ();
 			appItem->setData (iconName, ModelRoles::ItemIcon);
-			IconsProvider_->AddIcon (iconName, item->GetIcon ());
+			IconsProvider_->AddIcon (iconName, item->GetIcon (Proxy_));
 
 			appItem->setData (item->GetCategories (), ModelRoles::ItemNativeCategories);
 			appItem->setData (item->GetPermanentID (), ModelRoles::ItemID);

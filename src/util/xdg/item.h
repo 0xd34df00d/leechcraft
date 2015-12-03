@@ -231,7 +231,7 @@ namespace XDG
 		 * @sa SetIcon()
 		 * @sa GetIconName()
 		 */
-		QIcon GetIcon () const;
+		QIcon GetIcon (const ICoreProxy_ptr&) const;
 
 		/** @brief Serializes item contents to the debugging \em stream.
 		 *

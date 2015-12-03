@@ -159,7 +159,7 @@ namespace XDG
 		Icon_ = icon;
 	}
 
-	QIcon Item::GetIcon () const
+	QIcon Item::GetIcon (const ICoreProxy_ptr& proxy) const
 	{
 		return Icon_;
 	}

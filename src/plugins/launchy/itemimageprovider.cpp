@@ -42,7 +42,7 @@ namespace Launchy
 
 	void ItemImageProvider::AddItem (Util::XDG::Item_ptr item)
 	{
-		PermID2Icon_ [item->GetPermanentID ()] = item->GetIcon ();
+		PermID2Icon_ [item->GetPermanentID ()] = item->GetIcon (Proxy_);
 	}
 
 	QIcon ItemImageProvider::GetIcon (const QStringList& list)
