@@ -29,4 +29,4 @@ target_link_libraries (leechcraft_scroblibre
 install (TARGETS leechcraft_scroblibre DESTINATION ${LC_PLUGINS_DEST})
 install (FILES scroblibresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_scroblibre Network)
+FindQtLibs (leechcraft_scroblibre Gui Network)
