@@ -24,4 +24,4 @@ target_link_libraries (leechcraft_sysnotify
 	)
 install (TARGETS leechcraft_sysnotify DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_sysnotify DBus)
+FindQtLibs (leechcraft_sysnotify DBus Gui)
