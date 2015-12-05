@@ -42,8 +42,8 @@ namespace Azoth
 namespace Acetamide
 {
 	Core::Core ()
+	: IrcProtocol_ { std::make_shared<IrcProtocol> () }
 	{
-		IrcProtocol_.reset (new IrcProtocol (this));
 	}
 
 	Core& Core::Instance ()
