@@ -37,7 +37,7 @@ target_link_libraries (leechcraft_xtazy
 install (TARGETS leechcraft_xtazy DESTINATION ${LC_PLUGINS_DEST})
 install (FILES xtazysettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_xtazy Core)
+FindQtLibs (leechcraft_xtazy Gui)
 
 if (NOT WIN32 AND NOT APPLE)
 	FindQtLibs (leechcraft_xtazy DBus)
