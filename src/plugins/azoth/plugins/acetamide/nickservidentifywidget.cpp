@@ -48,11 +48,13 @@ namespace Acetamide
 		Ui_.setupUi (this);
 
 		Ui_.NickServIdentifyView_->setModel (Model_);
-		Model_->setHorizontalHeaderLabels (QStringList () << tr ("Server")
-				<< tr ("Nickname")
-				<< tr ("NickServ nickname")
-				<< tr ("NickServ auth string")
-				<< tr ("Auth message"));
+		Model_->setHorizontalHeaderLabels ({
+				tr ("Server"),
+				tr ("Nickname"),
+				tr ("NickServ nickname"),
+				tr ("NickServ auth string"),
+				tr ("Auth message")
+			});
 		Ui_.NickServIdentifyView_->horizontalHeader ()->setStretchLastSection (true);
 
 		ReadSettings ();
@@ -60,10 +62,10 @@ namespace Acetamide
 
 	void NickServIdentifyWidget::ReadSettings ()
 	{
-		QList<QStringList> list = XmlSettingsManager::Instance ()
+		const auto& list = XmlSettingsManager::Instance ()
 				.property ("NickServIdentify").value<QList<QStringList>> ();
 
-		Q_FOREACH (const QStringList& subList, list)
+		for (const auto& subList : list)
 		{
 			if (subList.isEmpty ())
 				continue;
