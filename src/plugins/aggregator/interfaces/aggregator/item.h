@@ -191,8 +191,8 @@ namespace Aggregator
 
 	struct MRSSEntry
 	{
-		IDType_t MRSSEntryID_;
-		IDType_t ItemID_;
+		IDType_t MRSSEntryID_ = 0;
+		IDType_t ItemID_ = 0;
 		QString URL_;
 		qint64 Size_;
 		QString Type_;
