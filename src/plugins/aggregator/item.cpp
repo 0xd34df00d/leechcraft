@@ -190,12 +190,6 @@ namespace Aggregator
 	{
 	}
 
-	MRSSEntry::MRSSEntry ()
-	: MRSSEntryID_ (0)
-	, ItemID_ (0)
-	{
-	}
-
 	Item::Item (const IDType_t& channel)
 	: ItemID_ (Core::Instance ().GetPool (PTItem).GetID ())
 	, ChannelID_ (channel)
