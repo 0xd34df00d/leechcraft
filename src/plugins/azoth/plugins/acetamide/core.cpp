@@ -42,7 +42,6 @@ namespace Azoth
 namespace Acetamide
 {
 	Core::Core ()
-	: PluginProxy_ (0)
 	{
 		IrcProtocol_.reset (new IrcProtocol (this));
 	}

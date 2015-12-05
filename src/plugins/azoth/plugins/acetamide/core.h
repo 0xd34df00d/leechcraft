@@ -55,7 +55,7 @@ namespace Acetamide
 
 		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<IrcProtocol> IrcProtocol_;
-		QObject *PluginProxy_;
+		QObject *PluginProxy_ = nullptr;
 		QStandardItemModel* Model_;
 		NickServIdentifyWidget* NickServIdentifyWidget_;
 		QList<NickServIdentify> NickServIdentifyList_;
