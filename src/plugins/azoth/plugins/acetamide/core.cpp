@@ -43,6 +43,8 @@ namespace Acetamide
 {
 	Core::Core ()
 	: IrcProtocol_ { std::make_shared<IrcProtocol> () }
+	, Model_ { new QStandardItemModel { this } }
+	, NickServIdentifyWidget_ { new NickServIdentifyWidget { Model_ } }
 	{
 	}
 
@@ -54,8 +56,6 @@ namespace Acetamide
 
 	void Core::Init ()
 	{
-		Model_ = new QStandardItemModel (this);
-		NickServIdentifyWidget_ = new NickServIdentifyWidget (Model_);
 	}
 
 	void Core::SecondInit ()
