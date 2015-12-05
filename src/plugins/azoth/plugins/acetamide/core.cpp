@@ -54,10 +54,6 @@ namespace Acetamide
 		return c;
 	}
 
-	void Core::Init ()
-	{
-	}
-
 	void Core::SecondInit ()
 	{
 		IrcProtocol_->SetProxyObject (PluginProxy_);

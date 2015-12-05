@@ -64,7 +64,6 @@ namespace Acetamide
 	public:
 		static Core& Instance ();
 
-		void Init ();
 		void SecondInit ();
 		void Release ();
 		QList<QObject*> GetProtocols () const;

@@ -55,7 +55,6 @@ namespace Acetamide
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 					"azothacetamidesettings.xml");
 
-		Core::Instance ().Init ();
 		Core::Instance ().SetProxy (proxy);
 
 		SettingsDialog_->SetCustomWidget ("NickServIdentifyWidget",
