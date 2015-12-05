@@ -58,7 +58,7 @@ namespace Acetamide
 		QList<IrcAccount*> IrcAccounts_;
 		QObject *ProxyObject_;
 	public:
-		IrcProtocol (QObject*);
+		IrcProtocol (QObject* = nullptr);
 		virtual ~IrcProtocol ();
 
 		void Prepare ();
