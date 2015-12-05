@@ -30,7 +30,6 @@
 #include "notificationmanager.h"
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
-#include <QApplication>
 #include <QIcon>
 #include <QDBusMetaType>
 #include <QtDebug>
