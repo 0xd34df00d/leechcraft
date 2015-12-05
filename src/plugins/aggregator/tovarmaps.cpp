@@ -60,8 +60,8 @@ namespace Aggregator
 	QVariantList GetItems (const Channel_ptr& channel)
 	{
 		QVariantList result;
-		const QVariantMap& channelPart = GetItemMapChannelPart (channel);
-		Q_FOREACH (const Item_ptr item, channel->Items_)
+		const auto& channelPart = GetItemMapChannelPart (channel);
+		for (const auto& item : channel->Items_)
 			result << GetItemMapItemPart (item).unite (channelPart);
 		return result;
 	}

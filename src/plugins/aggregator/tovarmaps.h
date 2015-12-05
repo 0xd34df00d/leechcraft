@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_TOVARMAPS_H
-#define PLUGINS_AGGREGATOR_TOVARMAPS_H
+#pragma once
+
 #include <QVariantMap>
 #include "channel.h"
 
@@ -41,5 +41,3 @@ namespace Aggregator
 	QVariantList GetItems (const Channel_ptr& channel);
 }
 }
-
-#endif
