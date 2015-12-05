@@ -36,9 +36,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	QVariantMap GetItemMapChannelPart (const Channel_ptr channel);
-	QVariantMap GetItemMapItemPart (const Item_ptr item);
-	QVariantList GetItems (const Channel_ptr channel);
+	QVariantMap GetItemMapChannelPart (const Channel_ptr& channel);
+	QVariantMap GetItemMapItemPart (const Item_ptr& item);
+	QVariantList GetItems (const Channel_ptr& channel);
 }
 }
 

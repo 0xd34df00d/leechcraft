@@ -33,7 +33,7 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	QVariantMap GetItemMapChannelPart (const Channel_ptr channel)
+	QVariantMap GetItemMapChannelPart (const Channel_ptr& channel)
 	{
 		QVariantMap result;
 		result ["ChannelID"] = channel->ChannelID_;
@@ -43,7 +43,7 @@ namespace Aggregator
 		return result;
 	}
 
-	QVariantMap GetItemMapItemPart (const Item_ptr item)
+	QVariantMap GetItemMapItemPart (const Item_ptr& item)
 	{
 		QVariantMap result;
 		result ["ItemID"] = item->ItemID_;
@@ -57,7 +57,7 @@ namespace Aggregator
 		return result;
 	}
 
-	QVariantList GetItems (const Channel_ptr channel)
+	QVariantList GetItems (const Channel_ptr& channel)
 	{
 		QVariantList result;
 		const QVariantMap& channelPart = GetItemMapChannelPart (channel);
