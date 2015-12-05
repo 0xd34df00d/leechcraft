@@ -46,4 +46,4 @@ target_link_libraries (leechcraft_touchstreams
 install (TARGETS leechcraft_touchstreams DESTINATION ${LC_PLUGINS_DEST})
 install (FILES touchstreamssettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_touchstreams Network Widgets Xml)
+FindQtLibs (leechcraft_touchstreams Concurrent Network Widgets Xml)
