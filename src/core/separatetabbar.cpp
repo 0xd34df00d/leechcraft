@@ -36,6 +36,7 @@
 #include <QMimeData>
 #include <QDrag>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
 #include "coreproxy.h"
@@ -158,8 +159,7 @@ namespace LeechCraft
 					std::min (hintedWidth, maxTabWidth)
 				});
 		}
-		std::sort (infos.begin (), infos.end (),
-				[] (const TabInfo& l, const TabInfo& r) { return l.WidthHint_ < r.WidthHint_; });
+		std::sort (infos.begin (), infos.end (), Util::ComparingBy (&TabInfo::WidthHint_));
 
 		return infos;
 	}
