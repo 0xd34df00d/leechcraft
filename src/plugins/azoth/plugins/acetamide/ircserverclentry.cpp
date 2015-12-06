@@ -46,7 +46,6 @@ namespace Acetamide
 			IrcAccount *account)
 	: EntryBase (account)
 	, ISH_ (handler)
-	, Account_ (account)
 	{
 		QAction *showChannels = new QAction (tr ("Channels list"), this);
 		connect (showChannels,

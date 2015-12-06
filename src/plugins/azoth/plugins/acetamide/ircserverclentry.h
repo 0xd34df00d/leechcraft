@@ -55,7 +55,6 @@ namespace Acetamide
 				LeechCraft::Azoth::IConfigurableMUC)
 
 		IrcServerHandler *ISH_;
-		IrcAccount *Account_;
 	public:
 		IrcServerCLEntry (IrcServerHandler*, IrcAccount*);
 
