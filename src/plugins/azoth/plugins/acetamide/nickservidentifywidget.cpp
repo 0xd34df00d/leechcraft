@@ -29,6 +29,7 @@
 
 #include "nickservidentifywidget.h"
 #include <QStandardItemModel>
+#include <util/sll/delayedexecutor.h>
 #include "acetamide.h"
 #include "core.h"
 #include "newnickservidentifydialog.h"
@@ -57,7 +58,7 @@ namespace Acetamide
 			});
 		Ui_.NickServIdentifyView_->horizontalHeader ()->setStretchLastSection (true);
 
-		ReadSettings ();
+		Util::ExecuteLater ([this] { ReadSettings (); });
 	}
 
 	void NickServIdentifyWidget::ReadSettings ()
