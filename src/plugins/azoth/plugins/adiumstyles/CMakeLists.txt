@@ -11,7 +11,6 @@ set (ADIUMSTYLES_SRCS
 	adiumstyles.cpp
 	adiumstylesource.cpp
 	packproxymodel.cpp
-	plistparser.cpp
 	)
 set (ADIUMSTYLES_RESOURCES
 	adiumstyles.qrc
