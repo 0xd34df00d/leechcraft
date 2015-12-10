@@ -33,6 +33,7 @@
 #include <QPointer>
 #include <QAbstractProxyModel>
 #include <QStringList>
+#include <QStack>
 #include "modelsconfig.h"
 #include "modelitem.h"
 
@@ -65,6 +66,8 @@ namespace LeechCraft
 			QStringList Headers_;
 
 			ModelItem_ptr Root_;
+
+			QStack<std::function<void ()>> RemovalRefreshers_;
 		public:
 			typedef models_t::iterator iterator;
 			typedef models_t::const_iterator const_iterator;

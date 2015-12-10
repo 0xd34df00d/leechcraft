@@ -433,13 +433,11 @@ namespace Util
 		auto it = item->EraseChildren (item->begin () + startingRow + first,
 				item->begin () + startingRow + last + 1);
 
-		for ( ; it < item->end (); ++it)
-		{
-			if ((*it)->GetModel () != model)
-				break;
-
-			(*it)->RefreshIndex (startingRow);
-		}
+		RemovalRefreshers_.push ([=] () mutable
+				{
+					for ( ; it != item->end () && (*it)->GetModel () == model; ++it)
+						(*it)->RefreshIndex (startingRow);
+				});
 	}
 
 	void MergeModel::handleRowsInserted (const QModelIndex& parent, int first, int last)
@@ -478,6 +476,7 @@ namespace Util
 
 	void MergeModel::handleRowsRemoved (const QModelIndex&, int, int)
 	{
+		RemovalRefreshers_.pop () ();
 		endRemoveRows ();
 	}
 
