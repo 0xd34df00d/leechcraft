@@ -41,7 +41,7 @@ namespace AdiumStyles
 	: QStandardItemModel (parent)
 	, Loader_ (loader)
 	{
-		QAbstractItemModel *model = loader->GetSubElemModel ();
+		const auto model = loader->GetSubElemModel ();
 
 		connect (model,
 				SIGNAL (rowsInserted (QModelIndex, int, int)),
@@ -63,7 +63,7 @@ namespace AdiumStyles
 
 	QString PackProxyModel::GetOrigName (const QString& pack) const
 	{
-		const QString& our = pack.split ('/', QString::SkipEmptyParts).value (0);
+		const auto& our = pack.split ('/', QString::SkipEmptyParts).value (0);
 		if (!OrigDatas_.contains (our))
 		{
 			qWarning () << Q_FUNC_INFO
@@ -85,9 +85,9 @@ namespace AdiumStyles
 	{
 		void DeSuf (QString& ourName, QString& suffix)
 		{
-			QStringList suffixes (".AdiumMessageStyle");
+			const QStringList suffixes { ".AdiumMessageStyle" };
 
-			Q_FOREACH (const QString& suf, suffixes)
+			for (const auto& suf : suffixes)
 				if (ourName.endsWith (suf))
 				{
 					ourName.chop (suf.length ());
@@ -101,15 +101,15 @@ namespace AdiumStyles
 	{
 		for (int i = start; i <= end; ++i)
 		{
-			const QString& origName = Loader_->GetSubElemModel ()->
+			const auto& origName = Loader_->GetSubElemModel ()->
 					index (i, 0, parent).data ().toString ();
 
 			OrigData origData;
 
-			QString ourName = origName;
+			auto ourName = origName;
 			DeSuf (ourName, origData.Suffix_);
 
-			QStandardItem *item = new QStandardItem (ourName);
+			const auto item = new QStandardItem (ourName);
 			item->setData (origName);
 			appendRow (item);
 
@@ -121,15 +121,13 @@ namespace AdiumStyles
 	{
 		for (int i = start; i <= end; ++i)
 		{
-			const QString& origName = Loader_->GetSubElemModel ()->
+			auto ourName = Loader_->GetSubElemModel ()->
 					index (i, 0, parent).data ().toString ();
 
-			QString ourName = origName;
 			QString suf;
 			DeSuf (ourName, suf);
 
-			auto items = findItems (ourName);
-			Q_FOREACH (QStandardItem *item, items)
+			for (const auto item : findItems (ourName))
 				removeRow (item->row ());
 		}
 	}
@@ -138,9 +136,8 @@ namespace AdiumStyles
 	{
 		clear ();
 
-		const int rc = Loader_->GetSubElemModel ()->rowCount ();
-		if (rc)
-			handleRowsInserted (QModelIndex (), 0, rc);
+		if (const int rc = Loader_->GetSubElemModel ()->rowCount ())
+			handleRowsInserted ({}, 0, rc);
 	}
 }
 }
