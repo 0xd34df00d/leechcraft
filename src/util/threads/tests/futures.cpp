@@ -94,5 +94,30 @@ namespace Util
 
 		QCOMPARE (executed, true);
 	}
+
+	void FuturesTest::testDestruction ()
+	{
+		struct Bar {};
+
+		QEventLoop loop;
+		bool executed = false;
+
+		{
+			QObject obj;
+			Sequence (&obj, MkWaiter () (100)) >>
+					[] (int) { return MakeReadyFuture<Bar> ({}); } >>
+					[&executed, &loop] (Bar)
+					{
+						executed = true;
+						loop.quit ();
+					};
+		}
+
+		QTimer::singleShot (10, &loop, SLOT (quit ()));
+
+		loop.exec ();
+
+		QCOMPARE (executed, false);
+	}
 }
 }

@@ -41,6 +41,8 @@ namespace Util
 	private slots:
 		void testSequencer ();
 		void testHeterogeneousTypes ();
+
+		void testDestruction ();
 	};
 }
 }
