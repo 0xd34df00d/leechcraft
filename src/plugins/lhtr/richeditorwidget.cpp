@@ -58,6 +58,7 @@
 
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/visitor.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -78,44 +79,16 @@ namespace LHTR
 
 	namespace
 	{
-		class Addable
+		// TODO won't be needed in C++14
+		using Addable = boost::variant<QMenu*, QToolBar*>;
+
+		QAction* AddAction (const Addable& addable,
+				const QString& text, const QObject *receiver, const char *member)
 		{
-			enum class Type
-			{
-				Menu,
-				Bar
-			} Type_;
-
-			QMenu *Menu_;
-			QToolBar *Bar_;
-		public:
-			explicit Addable (QMenu *menu)
-			: Type_ (Type::Menu)
-			, Menu_ (menu)
-			{
-			}
-
-			explicit Addable (QToolBar *bar)
-			: Type_ (Type::Bar)
-			, Bar_ (bar)
-			{
-			}
-
-			QAction *addAction (const QString& text, const QObject *receiver, const char *member)
-			{
-				switch (Type_)
-				{
-				case Type::Menu:
-					return Menu_->addAction (text, receiver, member);
-				case Type::Bar:
-					return Bar_->addAction (text, receiver, member);
-				}
-
-				qWarning () << Q_FUNC_INFO
-						<< "unknown addable type";
-				return 0;
-			}
-		};
+			return Util::Visit (addable,
+					[&] (QMenu *obj) { return obj->addAction (text, receiver, member); },
+					[&] (QToolBar *obj) { return obj->addAction (text, receiver, member); });
+		}
 
 		class EditorPage : public QWebPage
 		{
@@ -198,8 +171,8 @@ namespace LHTR
 				QWebPage::WebAction action,
 				Addable addable) -> QAction*
 		{
-			QAction *act = addable.addAction (name,
-					Ui_.View_->pageAction (action), SLOT (trigger ()));
+			QAction *act = AddAction (addable,
+					name, Ui_.View_->pageAction (action), SLOT (trigger ()));
 			act->setProperty ("ActionIcon", icon);
 			connect (Ui_.View_->pageAction (action),
 					SIGNAL (changed ()),
@@ -214,7 +187,7 @@ namespace LHTR
 				Addable addable,
 				const QString& arg) -> QAction*
 		{
-			QAction *act = addable.addAction (name, this, SLOT (handleCmd ()));
+			QAction *act = AddAction (addable, name, this, SLOT (handleCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
 			act->setProperty ("Editor/Args", arg);
@@ -246,7 +219,7 @@ namespace LHTR
 				const QString& cmd,
 				Addable addable) -> QAction*
 		{
-			auto act = addable.addAction (name, this, SLOT (handleInlineCmd ()));
+			auto act = AddAction (addable, name, this, SLOT (handleInlineCmd ()));
 			act->setProperty ("ActionIcon", icon);
 			act->setProperty ("Editor/Command", cmd);
 			return act;
