@@ -59,7 +59,7 @@ namespace Util
 	{
 		QEventLoop loop;
 		int res = 0;
-		Sequence (nullptr, MkWaiter () (50))
+		Sequence (nullptr, MkWaiter () (25))
 			.Then (MkWaiter ())
 			.Then (MkWaiter ())
 			.Then (MkWaiter ())
@@ -71,7 +71,7 @@ namespace Util
 
 		loop.exec ();
 
-		QCOMPARE (res, 800);
+		QCOMPARE (res, 400);
 	}
 
 	void FuturesTest::testHeterogeneousTypes ()
