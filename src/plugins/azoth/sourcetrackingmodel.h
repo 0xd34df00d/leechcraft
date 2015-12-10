@@ -43,10 +43,7 @@ namespace Azoth
 		QHash<QString, SrcType*> Option2Source_;
 		QHash<const QAbstractItemModel*, SrcType*> Model2Source_;
 	public:
-		SourceTrackingModel (const QStringList& strings, QObject *parent = 0)
-		: MergeModel (strings, parent)
-		{
-		}
+		using MergeModel::MergeModel;
 
 		void AddSource (SrcType *src)
 		{
