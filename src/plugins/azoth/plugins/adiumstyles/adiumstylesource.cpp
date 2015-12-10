@@ -44,7 +44,6 @@
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iextselfinfoaccount.h>
 #include "packproxymodel.h"
-#include "plistparser.h"
 
 namespace LeechCraft
 {
@@ -676,30 +675,6 @@ namespace AdiumStyles
 	QString AdiumStyleSource::GetMessageID (QObject *msgObj)
 	{
 		return QString::number (reinterpret_cast<uintptr_t> (msgObj));
-	}
-
-	PListParser_ptr AdiumStyleSource::GetPListParser (const QString& pack) const
-	{
-		if (PListParsers_.contains (pack))
-			return PListParsers_ [pack];
-
-		auto plist = std::make_shared<PListParser> ();
-		try
-		{
-			const QString& name = pack + "/Contents/Info.plist";
-			const auto& path = StylesLoader_->GetPath (QStringList (name));
-			plist->Parse (path);
-		}
-		catch (const PListParseError& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "error parsing PList for"
-					<< pack
-					<< e.GetStr ();
-			return PListParser_ptr ();
-		}
-		PListParsers_ [pack] = plist;
-		return plist;
 	}
 
 	void AdiumStyleSource::handleMessageDelivered ()
