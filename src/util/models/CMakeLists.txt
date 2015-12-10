@@ -16,7 +16,7 @@ add_library (leechcraft-util-models${LC_LIBSUFFIX} SHARED
 	)
 target_link_libraries (leechcraft-util-models${LC_LIBSUFFIX}
 	)
-set_property (TARGET leechcraft-util-models${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION})
+set_property (TARGET leechcraft-util-models${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-models${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
 FindQtLibs (leechcraft-util-models${LC_LIBSUFFIX} WebKitWidgets Widgets)
