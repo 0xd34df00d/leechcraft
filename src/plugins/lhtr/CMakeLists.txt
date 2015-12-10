@@ -3,12 +3,17 @@ project (leechcraft_lhtr)
 include (InitLCPlugin OPTIONAL)
 
 option (WITH_LHTR_HTML "Build extended support for (invalid) HTML" ON)
+option (USE_LIBTIDY_HTML5 "Use the libtidy-html5 fork instead of libtidy" OFF)
 
 if (WITH_LHTR_HTML)
 	set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 	find_package (LibTidy REQUIRED)
 	set (ADDITIONAL_LIBRARES ${LIBTIDY_LIBRARIES})
 	add_definitions (-DWITH_HTMLTIDY)
+
+	if (USE_LIBTIDY_HTML5)
+		add_definitions (-DUSE_LIBTIDY_HTML5)
+	endif ()
 endif (WITH_LHTR_HTML)
 
 include_directories (
