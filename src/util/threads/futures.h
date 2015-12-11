@@ -543,6 +543,16 @@ namespace Util
 				return Then (std::forward<F> (f));
 			}
 
+			template<typename F>
+			SequenceProxy<Ret, Future, ResultOf_t<F ()>> DestructionValue (F&& f)
+			{
+				static_assert (std::is_same<DestructionTag, EmptyDestructionTag>::value, "Destruction handling function has been already set.");
+
+				Seq_->SetDestructionHandler (std::forward<F> (f));
+
+				return { ExecuteGuard_, Seq_ };
+			}
+
 			operator QFuture<Ret> ()
 			{
 				if (ThisFuture_)
@@ -551,8 +561,29 @@ namespace Util
 				QFutureInterface<Ret> iface;
 				iface.reportStarted ();
 
-				Then ([iface] (const Ret& ret)
-						{ QFutureInterface<Ret> { iface }.reportFinished (&ret); });
+				SlotClosure<DeleteLaterPolicy> *deleteGuard = nullptr;
+				if (const auto holder = Seq_->GetDestructonHandler ())
+					deleteGuard = new SlotClosure<DeleteLaterPolicy>
+					{
+						[holder, iface] () mutable
+						{
+							if (iface.isFinished ())
+								return;
+
+							const auto res = dynamic_cast<FunctionHandlerHolder<Ret>*> (holder)->GetFunction () ();
+							iface.reportFinished (&res);
+						},
+						Seq_->parent (),
+						SIGNAL (destroyed ()),
+						Seq_
+					};
+
+				Then ([deleteGuard, iface] (const Ret& ret)
+						{
+							QFutureInterface<Ret> { iface }.reportFinished (&ret);
+
+							delete deleteGuard;
+						});
 
 				const auto& future = iface.future ();
 				ThisFuture_ = future;
