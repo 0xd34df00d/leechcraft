@@ -418,6 +418,8 @@ namespace Util
 			}
 		};
 
+		struct EmptyDestructionTag;
+
 		template<typename T>
 		using SequencerRetType_t = typename Sequencer<T>::RetType_t;
 
@@ -437,10 +439,10 @@ namespace Util
 		 * @tparam E0 The type of the first executor.
 		 * @tparam A0 The types of the arguments to the executor \em E0.
 		 */
-		template<typename Ret, typename Future>
+		template<typename Ret, typename Future, typename DestructionTag>
 		class SequenceProxy
 		{
-			template<typename, typename>
+			template<typename, typename, typename>
 			friend class SequenceProxy;
 
 			std::shared_ptr<void> ExecuteGuard_;
@@ -496,7 +498,7 @@ namespace Util
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (F&& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future>
+			auto Then (F&& f) -> SequenceProxy<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Future, DestructionTag>
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
@@ -627,7 +629,12 @@ namespace Util
 	 * @sa detail::SequenceProxy
 	 */
 	template<typename T>
-	detail::SequenceProxy<detail::SequencerRetType_t<QFuture<T>>, QFuture<T>> Sequence (QObject *parent, const QFuture<T>& future)
+	detail::SequenceProxy<
+			detail::SequencerRetType_t<QFuture<T>>,
+			QFuture<T>,
+			detail::EmptyDestructionTag
+		>
+		Sequence (QObject *parent, const QFuture<T>& future)
 	{
 		return { new detail::Sequencer<QFuture<T>> { future, parent } };
 	}
