@@ -382,10 +382,13 @@ namespace Util
 			}
 		};
 
+		template<typename T>
+		using SequencerRetType_t = typename Sequencer<T>::RetType_t;
+
 		struct EmptyDestructionTag;
 
 		template<typename T>
-		using SequencerRetType_t = typename Sequencer<T>::RetType_t;
+		using IsEmptyDestr_t = std::is_same<EmptyDestructionTag, T>;
 
 		/** @brief A proxy object allowing type-checked sequencing of
 		 * actions and responsible for starting the initial action.
