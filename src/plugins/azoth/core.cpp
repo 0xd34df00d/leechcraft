@@ -1297,9 +1297,6 @@ namespace Azoth
 		Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
 				[=] (QImage avatar)
 				{
-					if (avatar.isNull () || !avatar.width ())
-						avatar = ResourcesManager::Instance ().GetDefaultAvatar (size);
-
 					avatar = avatar.isNull () ?
 							QImage {} :
 							avatar.scaled ({ size, size },
