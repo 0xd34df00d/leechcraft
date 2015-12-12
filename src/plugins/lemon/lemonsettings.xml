@@ -8,5 +8,11 @@
 		<item type="checkbox" property="SplitAxes" default="true">
 			<label value="Split download and upload axes" />
 		</item>
+		<item type="color" property="DownloadColor" default="blue">
+			<label value="Download color:" />
+		</item>
+		<item type="color" property="UploadColor" default="red">
+			<label value="Upload color:" />
+		</item>
 	</page>
 </settings>
