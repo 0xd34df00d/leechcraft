@@ -450,9 +450,13 @@ namespace Util
 
 			boost::optional<QFuture<Ret>> ThisFuture_;
 
-			SequenceProxy (const std::shared_ptr<void>& guard, Sequencer<Future> *seq)
+			std::function<DestructionTag ()> DestrHandler_;
+
+			SequenceProxy (const std::shared_ptr<void>& guard, Sequencer<Future> *seq,
+					const std::function<DestructionTag ()>& destrHandler)
 			: ExecuteGuard_ { guard }
 			, Seq_ { seq }
+			, DestrHandler_ { destrHandler }
 			{
 			}
 		public:
@@ -504,7 +508,7 @@ namespace Util
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
 
 				Seq_->template Then<UnwrapFutureType_t<decltype (f (std::declval<Ret> ()))>, Ret> (f);
-				return { ExecuteGuard_, Seq_ };
+				return { ExecuteGuard_, Seq_, DestrHandler_ };
 			}
 
 			/** @brief Adds the funtor \em f to the chain of actions and
@@ -549,15 +553,13 @@ namespace Util
 				static_assert (std::is_same<DestructionTag, EmptyDestructionTag>::value,
 						"Destruction handling function has been already set.");
 
-				Seq_->SetDestructionHandler (std::forward<F> (f));
-
-				return { ExecuteGuard_, Seq_ };
+				return { ExecuteGuard_, Seq_, std::forward<F> (f) };
 			}
 
 			operator QFuture<Ret> ()
 			{
-				static_assert (std::is_same<DestructionTag, Ret>::value ||
-							std::is_same<DestructionTag, EmptyDestructionTag>::value,
+				constexpr bool isEmptyDestr = std::is_same<DestructionTag, EmptyDestructionTag>::value;
+				static_assert (std::is_same<DestructionTag, Ret>::value || isEmptyDestr,
 						"Destruction handler's return type doesn't match expected future type.");
 
 				if (ThisFuture_)
@@ -567,21 +569,25 @@ namespace Util
 				iface.reportStarted ();
 
 				SlotClosure<DeleteLaterPolicy> *deleteGuard = nullptr;
-				if (const auto holder = Seq_->GetDestructonHandler ())
+				if (!isEmptyDestr)
+				{
+					// TODO C++14 capture the copy directly
+					const auto destrHandler = DestrHandler_;
 					deleteGuard = new SlotClosure<DeleteLaterPolicy>
 					{
-						[holder, iface] () mutable
+						[destrHandler, iface] () mutable
 						{
 							if (iface.isFinished ())
 								return;
 
-							const auto res = dynamic_cast<FunctionHandlerHolder<Ret>*> (holder)->GetFunction () ();
+							const auto res = destrHandler ();
 							iface.reportFinished (&res);
 						},
 						Seq_->parent (),
 						SIGNAL (destroyed ()),
 						Seq_
 					};
+				}
 
 				Then ([deleteGuard, iface] (const Ret& ret)
 						{
