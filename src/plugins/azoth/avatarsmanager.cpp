@@ -78,10 +78,7 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
 		if (!iha)
-		{
-			const auto& image = ResourcesManager::Instance ().GetDefaultAvatar (Size2Dim (size));
-			return Util::MakeReadyFuture (image);
-		}
+			return Util::MakeReadyFuture (defaultAvatarGetter ());
 
 		const auto& sizes = PendingRequests_.value (entryObj);
 		if (sizes.contains (size))
