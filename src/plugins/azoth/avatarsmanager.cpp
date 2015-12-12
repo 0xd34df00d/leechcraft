@@ -83,7 +83,7 @@ namespace Azoth
 			return sizes.value (size);
 
 		const auto entryId = entry->GetEntryID ();
-		auto future = Util::Sequence (this, Storage_->GetAvatar (entry, size)) >>
+		auto future = Util::Sequence (entryObj, Storage_->GetAvatar (entry, size)) >>
 				[=] (const MaybeImage& image)
 				{
 					if (image)
