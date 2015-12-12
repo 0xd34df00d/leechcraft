@@ -62,8 +62,8 @@ namespace Lemon
 
 		const bool splitAxes = XmlSettingsManager::Instance ().property ("SplitAxes").toBool ();
 
-		QColor downColor { Qt::blue };
-		QColor upColor { Qt::red };
+		auto downColor = XmlSettingsManager::Instance ().property ("DownloadColor").value<QColor> ();
+		auto upColor = XmlSettingsManager::Instance ().property ("UploadColor").value<QColor> ();
 
 		Ui_.TrafficPlot_->setAutoReplot (false);
 		Ui_.TrafficPlot_->setAxisScale (QwtPlot::xBottom, 0, manager->GetBacktrackSize ());
