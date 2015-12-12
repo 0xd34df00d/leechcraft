@@ -390,6 +390,18 @@ namespace Util
 		template<typename T>
 		using IsEmptyDestr_t = std::is_same<EmptyDestructionTag, T>;
 
+		template<typename Ret, typename DestrType, typename = EnableIf_t<IsEmptyDestr_t<DestrType>::value>>
+		void InvokeDestructionHandler (const std::function<DestrType ()>&, QFutureInterface<Ret>&, float)
+		{
+		}
+
+		template<typename Ret, typename DestrType, typename = EnableIf_t<!IsEmptyDestr_t<DestrType>::value>>
+		void InvokeDestructionHandler (const std::function<DestrType ()>& handler, QFutureInterface<Ret>& iface, int)
+		{
+			const auto res = handler ();
+			iface.reportFinished (&res);
+		}
+
 		/** @brief A proxy object allowing type-checked sequencing of
 		 * actions and responsible for starting the initial action.
 		 *
@@ -547,8 +559,7 @@ namespace Util
 							if (iface.isFinished ())
 								return;
 
-							const auto res = destrHandler ();
-							iface.reportFinished (&res);
+							InvokeDestructionHandler<Ret, DestructionTag> (destrHandler, iface, 0);
 						},
 						Seq_->parent (),
 						SIGNAL (destroyed ()),
