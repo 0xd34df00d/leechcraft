@@ -555,6 +555,10 @@ namespace Util
 
 			operator QFuture<Ret> ()
 			{
+				static_assert (std::is_same<DestructionTag, Ret>::value ||
+							std::is_same<DestructionTag, EmptyDestructionTag>::value,
+						"Destruction handler's return type doesn't match expected future type.");
+
 				if (ThisFuture_)
 					return *ThisFuture_;
 
