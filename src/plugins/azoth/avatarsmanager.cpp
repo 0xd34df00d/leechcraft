@@ -99,13 +99,16 @@ namespace Azoth
 
 					return refreshFuture;
 				} >>
-				[=] (const QImage& image)
+				[=] (QImage image)
 				{
 					auto& sizes = PendingRequests_ [entryObj];
 
 					sizes.remove (size);
 					if (sizes.isEmpty ())
 						PendingRequests_.remove (entryObj);
+
+					if (image.isNull ())
+						image = defaultAvatarGetter ();
 
 					return Util::MakeReadyFuture (image);
 				};
