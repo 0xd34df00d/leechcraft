@@ -30,43 +30,27 @@
 #pragma once
 
 #include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include <QMap>
+#include <QPointer>
 
 namespace LeechCraft
 {
 namespace Lemon
 {
 	class TrafficManager;
-	class ActionsManager;
+	class TrafficDialog;
 
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public IQuarkComponentProvider
+	class QuarkProxy : public QObject
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Lemon")
+		TrafficManager * const TrafficMgr_;
 
-		Util::XmlSettingsDialog_ptr XSD_;
-
-		TrafficManager *TrafficMgr_;
-		QuarkComponent_ptr PanelComponent_;
+		QMap<QString, QPointer<TrafficDialog>> Iface2Dialog_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QuarkComponents_t GetComponents () const;
+		QuarkProxy (TrafficManager*, QObject* = nullptr);
+	public slots:
+		void showGraph (const QString&);
 	};
 }
 }

@@ -21,6 +21,7 @@ set (SRCS
 	platformbackend.cpp
 	linuxplatformbackend.cpp
 	xmlsettingsmanager.cpp
+	quarkproxy.cpp
 	)
 set (FORMS
 	trafficdialog.ui

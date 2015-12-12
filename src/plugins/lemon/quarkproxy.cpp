@@ -27,46 +27,31 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/iquarkcomponentprovider.h>
+#include "quarkproxy.h"
+#include "trafficdialog.h"
 
 namespace LeechCraft
 {
 namespace Lemon
 {
-	class TrafficManager;
-	class ActionsManager;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IHaveSettings
-				 , public IQuarkComponentProvider
+	QuarkProxy::QuarkProxy (TrafficManager *tm, QObject *parent)
+	: QObject { parent }
+	, TrafficMgr_ { tm }
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IQuarkComponentProvider)
+	}
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Lemon")
+	void QuarkProxy::showGraph (const QString& ifaceName)
+	{
+		if (auto dia = Iface2Dialog_ [ifaceName])
+		{
+			delete dia;
+			return;
+		}
 
-		Util::XmlSettingsDialog_ptr XSD_;
-
-		TrafficManager *TrafficMgr_;
-		QuarkComponent_ptr PanelComponent_;
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		QuarkComponents_t GetComponents () const;
-	};
+		auto dia = new TrafficDialog (ifaceName, TrafficMgr_);
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
+		Iface2Dialog_ [ifaceName] = dia;
+	}
 }
 }

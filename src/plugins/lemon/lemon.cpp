@@ -35,8 +35,8 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "trafficmanager.h"
-#include "trafficdialog.h"
 #include "xmlsettingsmanager.h"
+#include "quarkproxy.h"
 
 namespace LeechCraft
 {
@@ -55,7 +55,7 @@ namespace Lemon
 
 		PanelComponent_ = std::make_shared<QuarkComponent> ("lemon", "LemonQuark.qml");
 		PanelComponent_->DynamicProps_.append ({ "Lemon_infoModel", TrafficMgr_->GetModel () });
-		PanelComponent_->DynamicProps_.append ({ "Lemon_proxy", this });
+		PanelComponent_->DynamicProps_.append ({ "Lemon_proxy", new QuarkProxy { TrafficMgr_ } });
 	}
 
 	void Plugin::SecondInit ()
@@ -95,20 +95,6 @@ namespace Lemon
 	QuarkComponents_t Plugin::GetComponents () const
 	{
 		return { PanelComponent_ };
-	}
-
-	void Plugin::showGraph (const QString& ifaceName)
-	{
-		if (auto dia = Iface2Dialog_ [ifaceName])
-		{
-			delete dia;
-			return;
-		}
-
-		auto dia = new TrafficDialog (ifaceName, TrafficMgr_);
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
-		Iface2Dialog_ [ifaceName] = dia;
 	}
 }
 }
