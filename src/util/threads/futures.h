@@ -268,8 +268,6 @@ namespace Util
 			Future Future_;
 			QFutureWatcher<RetType_t> BaseWatcher_;
 			QObject *LastWatcher_ = &BaseWatcher_;
-
-			std::unique_ptr<FunctionHandlerHolderBase> DestructionHandler_;
 		public:
 			/** @brief Constructs the sequencer.
 			 *
@@ -404,17 +402,6 @@ namespace Util
 					SIGNAL (finished ()),
 					LastWatcher_
 				};
-			}
-
-			template<typename F>
-			void SetDestructionHandler (F&& f)
-			{
-				DestructionHandler_.reset (new FunctionHandlerHolder<ResultOf_t<F ()>> { f });
-			}
-
-			FunctionHandlerHolderBase* GetDestructonHandler () const
-			{
-				return DestructionHandler_.get ();
 			}
 		};
 
