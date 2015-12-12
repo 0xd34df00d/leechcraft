@@ -546,7 +546,8 @@ namespace Util
 			template<typename F>
 			SequenceProxy<Ret, Future, ResultOf_t<F ()>> DestructionValue (F&& f)
 			{
-				static_assert (std::is_same<DestructionTag, EmptyDestructionTag>::value, "Destruction handling function has been already set.");
+				static_assert (std::is_same<DestructionTag, EmptyDestructionTag>::value,
+						"Destruction handling function has been already set.");
 
 				Seq_->SetDestructionHandler (std::forward<F> (f));
 
