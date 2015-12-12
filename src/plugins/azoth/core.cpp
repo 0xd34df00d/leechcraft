@@ -1294,7 +1294,7 @@ namespace Azoth
 			return {};
 
 		const auto obj = entry->GetQObject ();
-		Util::Sequence (this, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
+		Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Thumbnail)) >>
 				[=] (QImage avatar)
 				{
 					if (avatar.isNull () || !avatar.width ())
