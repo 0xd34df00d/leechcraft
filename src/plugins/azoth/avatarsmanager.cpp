@@ -71,9 +71,9 @@ namespace Azoth
 	QFuture<QImage> AvatarsManager::GetAvatar (QObject *entryObj, IHaveAvatars::Size size)
 	{
 		const auto defaultAvatarGetter = [size]
-				{
-					return ResourcesManager::Instance ().GetDefaultAvatar (Size2Dim (size));
-				};
+		{
+			return ResourcesManager::Instance ().GetDefaultAvatar (Size2Dim (size));
+		};
 
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
