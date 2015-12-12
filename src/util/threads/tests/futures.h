@@ -44,6 +44,8 @@ namespace Util
 
 		void testDestruction ();
 		void testDestructionHandler ();
+
+		void testNoDestrHandler ();
 	};
 }
 }

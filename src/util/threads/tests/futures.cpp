@@ -151,5 +151,23 @@ namespace Util
 		QCOMPARE (executed, true);
 		QCOMPARE (value, destructed);
 	}
+
+	void FuturesTest::testNoDestrHandler ()
+	{
+		struct Bar {};
+		struct Baz {};
+
+		QEventLoop loop;
+		bool executed = false;
+		Sequence (nullptr, MkWaiter () (50))
+				.DestructionValue ([&executed] { executed = true; }) >>
+				[] (int) { return MakeReadyFuture<Bar> ({}); } >>
+				[] (Bar) { return MakeReadyFuture<Baz> ({}); } >>
+				[&loop] (Baz) { loop.quit (); };
+
+		loop.exec ();
+
+		QCOMPARE (executed, false);
+	}
 }
 }
