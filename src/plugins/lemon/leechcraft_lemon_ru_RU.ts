@@ -92,5 +92,15 @@
         <source>Split download and upload axes</source>
         <translation>Разделять оси скачивания и отдачи</translation>
     </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Download color:</source>
+        <translation>Цвет для скачивания:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Upload color:</source>
+        <translation>Цвет для отдачи:</translation>
+    </message>
 </context>
 </TS>

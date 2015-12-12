@@ -92,5 +92,15 @@
         <source>Split download and upload axes</source>
         <translation>Split download and upload axes</translation>
     </message>
+    <message>
+        <location filename="dummy.cpp" line="5"/>
+        <source>Download color:</source>
+        <translation>Download color:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="6"/>
+        <source>Upload color:</source>
+        <translation>Upload color:</translation>
+    </message>
 </context>
 </TS>
