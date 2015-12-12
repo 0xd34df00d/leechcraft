@@ -221,29 +221,6 @@ namespace Util
 
 	namespace detail
 	{
-		class FunctionHandlerHolderBase
-		{
-		public:
-			virtual ~FunctionHandlerHolderBase () = default;
-		};
-
-		template<typename Ret>
-		class FunctionHandlerHolder final : public FunctionHandlerHolderBase
-		{
-			const std::function<Ret ()> F_;
-		public:
-			template<typename F>
-			FunctionHandlerHolder (F&& f)
-			: F_ { std::forward<F> (f) }
-			{
-			}
-
-			std::function<Ret ()> GetFunction () const
-			{
-				return F_;
-			}
-		};
-
 		/** @brief Incapsulates the sequencing logic of asynchronous
 		 * actions.
 		 *
