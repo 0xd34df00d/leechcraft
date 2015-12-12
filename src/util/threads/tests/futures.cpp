@@ -119,5 +119,37 @@ namespace Util
 
 		QCOMPARE (executed, false);
 	}
+
+	void FuturesTest::testDestructionHandler ()
+	{
+		const auto finished = 1;
+		const auto destructed = 2;
+
+		QEventLoop loop;
+		bool executed = false;
+		int value = 0;
+
+		QFuture<int> future;
+		{
+			QObject obj;
+			future = Sequence (&obj, MkWaiter () (100))
+					.DestructionValue ([destructed] { return destructed; }) >>
+					[=] (int) { return MakeReadyFuture (finished); };
+		}
+		Sequence (nullptr, future) >>
+				[&executed, &value, &loop] (int val)
+				{
+					value = val;
+					executed = true;
+					loop.quit ();
+				};
+
+		QTimer::singleShot (10, &loop, SLOT (quit ()));
+
+		loop.exec ();
+
+		QCOMPARE (executed, true);
+		QCOMPARE (value, destructed);
+	}
 }
 }

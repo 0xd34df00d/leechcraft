@@ -43,6 +43,7 @@ namespace Util
 		void testHeterogeneousTypes ();
 
 		void testDestruction ();
+		void testDestructionHandler ();
 	};
 }
 }
