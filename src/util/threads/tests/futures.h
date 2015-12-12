@@ -46,6 +46,8 @@ namespace Util
 		void testDestructionHandler ();
 
 		void testNoDestrHandler ();
+
+		void testNoDestrHandlerSetBuildable ();
 	};
 }
 }

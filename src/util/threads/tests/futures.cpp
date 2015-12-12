@@ -169,5 +169,29 @@ namespace Util
 
 		QCOMPARE (executed, false);
 	}
+
+	void FuturesTest::testNoDestrHandlerSetBuildable ()
+	{
+		const auto finished = 1;
+
+		QEventLoop loop;
+		bool executed = false;
+		int value = 0;
+
+		QFuture<int> future = Sequence (nullptr, MkWaiter () (10)) >>
+				[=] (int) { return MakeReadyFuture (finished); };
+		Sequence (nullptr, future) >>
+				[&executed, &value, &loop] (int val)
+				{
+					value = val;
+					executed = true;
+					loop.quit ();
+				};
+
+		loop.exec ();
+
+		QCOMPARE (executed, true);
+		QCOMPARE (value, finished);
+	}
 }
 }
