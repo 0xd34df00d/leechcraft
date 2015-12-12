@@ -567,9 +567,9 @@ namespace Util
 					};
 				}
 
-				Then ([deleteGuard, iface] (const Ret& ret)
+				Then ([deleteGuard, iface] (const Ret& ret) mutable
 						{
-							QFutureInterface<Ret> { iface }.reportFinished (&ret);
+							iface.reportFinished (&ret);
 
 							delete deleteGuard;
 						});
