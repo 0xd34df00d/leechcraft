@@ -54,6 +54,7 @@ namespace LastSeen
 		OnDiskStorage (QObject* = nullptr);
 
 		boost::optional<EntryStats> GetEntryStats (const QString&);
+		void SetEntryStats (const QString&, const EntryStats&);
 	};
 }
 }

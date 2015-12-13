@@ -121,6 +121,11 @@ namespace LastSeen
 		return Util::Fmap (AdaptedRecord_->DoSelectOneByFields_ (sph::_0 == entryId),
 				Util::Caster<EntryStats> {});
 	}
+
+	void OnDiskStorage::SetEntryStats (const QString& entryId, const EntryStats& stats)
+	{
+		AdaptedRecord_->DoInsert_ ({ entryId, stats }, Util::oral::InsertAction::Replace);
+	}
 }
 }
 }
