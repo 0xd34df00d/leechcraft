@@ -187,6 +187,9 @@ namespace LastSeen
 		}
 
 		const State oldState = LastState_ [id];
+		if (oldState == status.State_)
+			return;
+
 		LastState_ [id] = status.State_;
 
 		const auto& now = QDateTime::currentDateTime ();
