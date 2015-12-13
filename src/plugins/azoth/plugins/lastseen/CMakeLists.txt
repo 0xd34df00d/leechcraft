@@ -9,6 +9,7 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (LASTSEEN_SRCS
 	lastseen.cpp
+	ondiskstorage.cpp
 	)
 set (LASTSEEN_RESOURCES
 	lastseenresources.qrc
