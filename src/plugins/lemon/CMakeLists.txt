@@ -31,6 +31,9 @@ QtWrapUi (UIS_H ${FORMS})
 CreateTrs("lemon" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lemon" "en;ru_RU" "${SRCS}" "" "lemonsettings.xml")
 
+file(GLOB QML_FILES "share/qml5/lemon/*.qml")
+CreateQmlTrsUpTarget("lemon" "en;ru_RU" "${QML_FILES}" "share/qml5/lemon/LemonQuark.qml.settings")
+
 add_library (leechcraft_lemon SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
