@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QMap>
 #include <QPointer>
+#include <QColor>
 
 namespace LeechCraft
 {
@@ -47,10 +48,19 @@ namespace Lemon
 		TrafficManager * const TrafficMgr_;
 
 		QMap<QString, QPointer<TrafficDialog>> Iface2Dialog_;
+
+		Q_PROPERTY (QColor downloadGraphColor READ GetDownloadGraphColor NOTIFY downloadGraphColorChanged);
+		Q_PROPERTY (QColor uploadGraphColor READ GetUploadGraphColor NOTIFY uploadGraphColorChanged);
 	public:
 		QuarkProxy (TrafficManager*, QObject* = nullptr);
+
+		QColor GetDownloadGraphColor () const;
+		QColor GetUploadGraphColor () const;
 	public slots:
 		void showGraph (const QString&);
+	signals:
+		void downloadGraphColorChanged ();
+		void uploadGraphColorChanged ();
 	};
 }
 }

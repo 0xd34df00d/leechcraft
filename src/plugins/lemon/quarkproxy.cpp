@@ -29,6 +29,7 @@
 
 #include "quarkproxy.h"
 #include "trafficdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +39,20 @@ namespace Lemon
 	: QObject { parent }
 	, TrafficMgr_ { tm }
 	{
+		XmlSettingsManager::Instance ().RegisterObject ("DownloadColor",
+				this, "downloadGraphColorChanged");
+		XmlSettingsManager::Instance ().RegisterObject ("UploadColor",
+				this, "uploadGraphColorChanged");
+	}
+
+	QColor QuarkProxy::GetDownloadGraphColor () const
+	{
+		return XmlSettingsManager::Instance ().property ("DownloadColor").value<QColor> ();
+	}
+
+	QColor QuarkProxy::GetUploadGraphColor () const
+	{
+		return XmlSettingsManager::Instance ().property ("UploadColor").value<QColor> ();
 	}
 
 	void QuarkProxy::showGraph (const QString& ifaceName)
