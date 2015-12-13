@@ -32,6 +32,7 @@
 #include <QSqlError>
 #include <util/db/oral.h>
 #include <util/sll/functor.h>
+#include <util/sll/functional.h>
 #include <util/sys/paths.h>
 #include "entrystats.h"
 
@@ -110,7 +111,7 @@ namespace LastSeen
 	boost::optional<EntryStats> OnDiskStorage::GetEntryStats (const QString& entryId)
 	{
 		return Util::Fmap (AdaptedRecord_->DoSelectOneByFields_ (sph::_0 == entryId),
-				[] (const Record& r) -> EntryStats { return r; });
+				Util::Caster<EntryStats> {});
 	}
 }
 }
