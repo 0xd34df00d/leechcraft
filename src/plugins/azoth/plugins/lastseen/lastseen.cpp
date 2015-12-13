@@ -28,13 +28,9 @@
  **********************************************************************/
 
 #include "lastseen.h"
-#include <QTimer>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QIcon>
-#include <QTranslator>
-#include <QFutureWatcher>
-#include <QtConcurrentRun>
 #include <util/util.h>
 #include <util/db/dblock.h>
 #include <util/sll/onetimerunner.h>
