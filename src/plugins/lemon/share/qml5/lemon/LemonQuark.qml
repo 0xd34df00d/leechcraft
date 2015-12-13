@@ -68,6 +68,32 @@ Rectangle {
 
                     color: indicatorButton.adjustAlpha(Lemon_proxy.uploadGraphColor)
                 }
+
+                Text {
+                    id: downloadTextLabel
+
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+
+                    color: Lemon_proxy.downloadGraphColor
+
+                    font.pointSize: 6
+
+                    text: quarkProxy.prettySize(downSpeed)
+                }
+
+                Text {
+                    id: uploadTextLabel
+
+                    anchors.right: parent.right
+                    anchors.top: downloadTextLabel.bottom
+
+                    color: Lemon_proxy.uploadGraphColor
+
+                    font.pointSize: 6
+
+                    text: quarkProxy.prettySize(upSpeed)
+                }
             }
         }
     }
