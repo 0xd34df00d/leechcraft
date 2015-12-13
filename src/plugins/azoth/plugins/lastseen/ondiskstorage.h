@@ -52,6 +52,8 @@ namespace LastSeen
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		OnDiskStorage (QObject* = nullptr);
+
+		boost::optional<EntryStats> GetEntryStats (const QString&);
 	};
 }
 }
