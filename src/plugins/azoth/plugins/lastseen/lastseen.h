@@ -44,7 +44,8 @@ namespace Azoth
 {
 namespace LastSeen
 {
-	typedef QHash<QString, QDateTime> LastHash_t;
+	class OnDiskStorage;
+	struct EntryStats;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -56,14 +57,8 @@ namespace LastSeen
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.LastSeen")
 
 		QHash<QString, State> LastState_;
-		LastHash_t LastAvailable_;
-		LastHash_t LastOnline_;
-		LastHash_t LastStatusChange_;
 
-		bool SaveScheduled_ = false;
-
-		bool IsLoaded_ = false;
-		bool IsSaving_ = false;
+		std::shared_ptr<OnDiskStorage> Storage_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -75,10 +70,7 @@ namespace LastSeen
 
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
-		void ScheduleSave ();
-		void Load ();
-	private slots:
-		void save ();
+		void Migrate ();
 	public slots:
 		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,

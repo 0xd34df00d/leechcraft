@@ -36,8 +36,25 @@
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
 #include <util/util.h>
+#include <util/db/dblock.h>
 #include <util/sll/onetimerunner.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/util.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/azoth/iclentry.h>
+#include "ondiskstorage.h"
+#include "entrystats.h"
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace LastSeen
+{
+	using LastHash_t = QHash<QString, QDateTime>;
+}
+}
+}
 
 Q_DECLARE_METATYPE (LeechCraft::Azoth::LastSeen::LastHash_t);
 
@@ -54,7 +71,9 @@ namespace LastSeen
 		qRegisterMetaType<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
 		qRegisterMetaTypeStreamOperators<LastHash_t> ("LeechCraft::Azoth::LastSeen::LastHash_t");
 
-		Load ();
+		Storage_ = std::make_shared<OnDiskStorage> ();
+
+		Migrate ();
 	}
 
 	void Plugin::SecondInit ()
@@ -108,114 +127,62 @@ namespace LastSeen
 
 			return true;
 		}
-
-		const int SaveTimeout = 60 * 1000;
 	}
 
-	void Plugin::ScheduleSave ()
+	void Plugin::Migrate ()
 	{
-		if (SaveScheduled_)
+		QSettings settings
+		{
+			QCoreApplication::organizationName (),
+			QCoreApplication::applicationName () + "_Azoth_LastSeen"
+		};
+
+		if (settings.allKeys ().isEmpty ())
 			return;
 
-		if (!IsSaving_)
-			QTimer::singleShot (SaveTimeout,
-					this,
-					SLOT (save ()));
-		SaveScheduled_ = true;
-	}
+		qDebug () << Q_FUNC_INFO
+				<< "gonna migrate";
 
-	namespace
-	{
-		struct LoadResult
+		const auto& avail = settings.value ("LastAvailable").value<LastHash_t> ();
+		const auto& online = settings.value ("LastOnline").value<LastHash_t> ();
+		const auto& status = settings.value ("LastStatusChange").value<LastHash_t> ();
+		qDebug () << "done reading";
+
+		QHash<QString, EntryStats> stats;
+		for (const auto& pair : Util::Stlize (avail))
+			stats [pair.first].Available_ = pair.second;
+		for (const auto& pair : Util::Stlize (online))
+			stats [pair.first].Online_ = pair.second;
+		for (const auto& pair : Util::Stlize (status))
+			stats [pair.first].StatusChange_ = pair.second;
+
+		qDebug () << "done uniting";
+
 		{
-			LastHash_t Avail_;
-			LastHash_t Online_;
-			LastHash_t StatusChange_;
-		};
+			auto lock = Storage_->BeginTransaction ();
+			for (const auto& pair : Util::Stlize (stats))
+				Storage_->SetEntryStats (pair.first, pair.second);
+
+			qDebug () << "done writing";
+
+			lock.Good ();
+
+			qDebug () << "done committing";
+		}
+
+		settings.clear ();
+
+		qDebug () << "done clearing";
 	}
 
-	void Plugin::Load ()
+	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString variant)
 	{
-		auto watcher = new QFutureWatcher<LoadResult> ();
-		new Util::OneTimeRunner
-		{
-			[this, watcher] ()
-			{
-				const auto& result = watcher->result ();
-				watcher->deleteLater ();
-
-				LastAvailable_ = result.Avail_;
-				LastOnline_ = result.Online_;
-				LastStatusChange_ = result.StatusChange_;
-
-				IsLoaded_ = true;
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-		watcher->setFuture (QtConcurrent::run ([] () -> LoadResult
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "_Azoth_LastSeen");
-					const auto& avail = settings.value ("LastAvailable").value<LastHash_t> ();
-					const auto& online = settings.value ("LastOnline").value<LastHash_t> ();
-					const auto& status = settings.value ("LastStatusChange").value<LastHash_t> ();
-
-					return { avail, online, status };
-				}));
-	}
-
-	void Plugin::save ()
-	{
-		if (IsSaving_)
+		if (!IsGoodEntry (entryObj))
 			return;
 
-		SaveScheduled_ = false;
-		IsSaving_ = true;
-
-		LoadResult res { LastAvailable_, LastOnline_, LastStatusChange_ };
-
-		auto watcher = new QFutureWatcher<void> ();
-		new Util::OneTimeRunner
-		{
-			[this, watcher] () -> void
-			{
-				watcher->deleteLater ();
-				IsSaving_ = false;
-
-				if (SaveScheduled_)
-					QTimer::singleShot (SaveTimeout,
-							this,
-							SLOT (save ()));
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-		watcher->setFuture (QtConcurrent::run ([this, res] () -> void
-				{
-					QSettings settings (QCoreApplication::organizationName (),
-							QCoreApplication::applicationName () + "_Azoth_LastSeen");
-					settings.setValue ("LastAvailable", QVariant::fromValue (res.Avail_));
-					settings.setValue ("LastOnline", QVariant::fromValue (res.Online_));
-					settings.setValue ("LastStatusChange", QVariant::fromValue (res.StatusChange_));
-				}));
-	}
-
-	void Plugin::hookEntryStatusChanged (IHookProxy_ptr, QObject *entryObj, QString)
-	{
-		if (!IsLoaded_ || !IsGoodEntry (entryObj))
-			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		const QString& id = entry->GetEntryID ();
-		const EntryStatus& status = entry->GetStatus ();
-
-		const auto& now = QDateTime::currentDateTime ();
-		LastStatusChange_ [id] = now;
-
-		ScheduleSave ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& id = entry->GetEntryID ();
+		const auto& status = entry->GetStatus ();
 
 		if (!LastState_.contains (id))
 		{
@@ -226,6 +193,11 @@ namespace LastSeen
 		const State oldState = LastState_ [id];
 		LastState_ [id] = status.State_;
 
+		const auto& now = QDateTime::currentDateTime ();
+
+		auto stats = Storage_->GetEntryStats (id).get_value_or ({});
+		stats.StatusChange_ = now;
+
 		switch (oldState)
 		{
 		case SOffline:
@@ -235,11 +207,14 @@ namespace LastSeen
 		case SConnecting:
 			return;
 		case SOnline:
-			LastAvailable_ [id] = now;
+			stats.Available_ = now;
 		default:
-			LastOnline_ [id] = now;
+			stats.Online_ = now;
 			break;
 		}
+
+		auto st = Storage_;
+		Util::ExecuteLater ([stats, st, id] { st->SetEntryStats (id, stats); });
 	}
 
 	void Plugin::hookTooltipBeforeVariants (IHookProxy_ptr proxy, QObject *entryObj)
@@ -247,16 +222,22 @@ namespace LastSeen
 		if (!IsGoodEntry (entryObj))
 			return;
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		const QString& id = entry->GetEntryID ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto& id = entry->GetEntryID ();
+
+		const auto& maybeStats = Storage_->GetEntryStats (id);
+		if (!maybeStats)
+			return;
+
+		const auto& stats = *maybeStats;
 
 		QString addition;
 
-		const State curState = entry->GetStatus ().State_;
+		const auto curState = entry->GetStatus ().State_;
 
 		if (curState != SOnline)
 		{
-			const QDateTime& avail = LastAvailable_.value (id);
+			const auto& avail = stats.Available_;
 			if (avail.isValid ())
 				addition += tr ("Was available: %1")
 					.arg (avail.toString ());
@@ -266,8 +247,8 @@ namespace LastSeen
 				curState == SError ||
 				curState == SInvalid)
 		{
-			const QDateTime& online = LastOnline_.value (id);
-			if (LastOnline_.contains (id))
+			const auto& online = stats.Online_;
+			if (online.isValid ())
 			{
 				if (!addition.isEmpty ())
 					addition += "<br/>";
@@ -276,7 +257,7 @@ namespace LastSeen
 			}
 		}
 
-		const auto& lastChange = LastStatusChange_.value (id);
+		const auto& lastChange = stats.StatusChange_;
 		if (lastChange.isValid ())
 		{
 			if (!addition.isEmpty ())
@@ -288,7 +269,7 @@ namespace LastSeen
 		if (addition.isEmpty ())
 			return;
 
-		const QString& tip = proxy->GetValue ("tooltip").toString ();
+		const auto& tip = proxy->GetValue ("tooltip").toString ();
 		proxy->SetValue ("tooltip", tip + "<br/><br/>" + addition + "<br/>");
 	}
 }
