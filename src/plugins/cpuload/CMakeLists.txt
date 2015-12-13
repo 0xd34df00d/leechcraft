@@ -27,7 +27,7 @@ else ()
 	message (STATUS "CpuLoad: unsupported platform")
 endif ()
 
-#CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("cpuload" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("cpuload" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 file(GLOB QML_FILES "share/qml/cpuload/*.qml")
