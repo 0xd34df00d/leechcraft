@@ -43,6 +43,7 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include <util/gui/util.h>
 #include <util/gui/autoresizemixin.h>
+#include <util/util.h>
 #include "viewmanager.h"
 #include "sbview.h"
 #include "quarkunhidelistview.h"
@@ -243,6 +244,11 @@ namespace SB2
 
 		PanelSettingsDialog dia { xsds };
 		dia.exec ();
+	}
+
+	QString QuarkProxy::prettySize (qint64 size)
+	{
+		return Util::MakePrettySize (size);
 	}
 
 	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)

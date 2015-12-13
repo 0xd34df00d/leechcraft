@@ -79,6 +79,8 @@ namespace SB2
 		void quarkOrderRequested (int, int);
 
 		void panelSettingsRequested ();
+
+		QString prettySize (qint64);
 	private slots:
 		void handleExtHoveredQuarkClass (const QString&);
 	signals:
