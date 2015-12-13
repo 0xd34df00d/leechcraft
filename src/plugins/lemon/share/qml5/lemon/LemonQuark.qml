@@ -48,7 +48,7 @@ Rectangle {
                 onHoverLeft: opener.closeTooltip(tooltip, function(t) { tooltip = t; })
 
                 function adjustAlpha(c) {
-                    return Qt.rgba(c.r, c.g, c.b, 0x44 / 0xff);
+                    return Qt.rgba(c.r, c.g, c.b, 0x22 / 0xff);
                 }
 
                 Rectangle {
