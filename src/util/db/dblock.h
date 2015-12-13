@@ -72,6 +72,8 @@ namespace LeechCraft
 			DBLock (const DBLock&) = delete;
 			DBLock& operator= (const DBLock&) = delete;
 
+			DBLock (DBLock&&) = default;
+
 			/** @brief Constructor.
 			 *
 			 * Constructs the lock and prepares it to work with the database.
