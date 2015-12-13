@@ -37,6 +37,8 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/util.h>
 #include <util/sll/delayedexecutor.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/azoth/iclentry.h>
 #include "ondiskstorage.h"
 #include "entrystats.h"
@@ -60,7 +62,7 @@ namespace Azoth
 {
 namespace LastSeen
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("azoth_lastseen");
 
@@ -69,7 +71,7 @@ namespace LastSeen
 
 		Storage_ = std::make_shared<OnDiskStorage> ();
 
-		Migrate ();
+		Migrate (proxy->GetPluginsManager ());
 	}
 
 	void Plugin::SecondInit ()
@@ -125,7 +127,7 @@ namespace LastSeen
 		}
 	}
 
-	void Plugin::Migrate ()
+	void Plugin::Migrate (IPluginsManager *manager)
 	{
 		QSettings settings
 		{

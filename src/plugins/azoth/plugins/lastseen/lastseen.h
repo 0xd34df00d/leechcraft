@@ -36,6 +36,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/azothcommon.h>
 
+class IPluginsManager;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -68,7 +70,7 @@ namespace LastSeen
 
 		QSet<QByteArray> GetPluginClasses () const;
 	private:
-		void Migrate ();
+		void Migrate (IPluginsManager*);
 	public slots:
 		void hookEntryStatusChanged (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,
