@@ -34,6 +34,7 @@
 #endif
 
 #include <type_traits>
+#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -85,9 +86,15 @@ namespace Util
 	struct Caster
 	{
 		template<typename From>
-		To operator() (From&& from) const
+		EnableIf_t<!std::is_base_of<To, From>::value, To> operator() (From&& from) const
 		{
 			return To { std::forward<From> (from) };
+		}
+
+		template<typename From>
+		EnableIf_t<std::is_base_of<To, From>::value, To> operator() (From&& from) const
+		{
+			return from;
 		}
 	};
 }
