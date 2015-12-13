@@ -39,6 +39,7 @@
 #include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/iloadprogressreporter.h>
 #include <interfaces/azoth/iclentry.h>
 #include "ondiskstorage.h"
 #include "entrystats.h"
@@ -138,6 +139,8 @@ namespace LastSeen
 		if (settings.allKeys ().isEmpty ())
 			return;
 
+		const auto& reporter = manager->CreateLoadProgressReporter (this);
+
 		qDebug () << Q_FUNC_INFO
 				<< "gonna migrate";
 
@@ -147,19 +150,37 @@ namespace LastSeen
 		qDebug () << "done reading";
 
 		QHash<QString, EntryStats> stats;
-		for (const auto& pair : Util::Stlize (avail))
-			stats [pair.first].Available_ = pair.second;
-		for (const auto& pair : Util::Stlize (online))
-			stats [pair.first].Online_ = pair.second;
-		for (const auto& pair : Util::Stlize (status))
-			stats [pair.first].StatusChange_ = pair.second;
+
+		{
+			const auto& proc = reporter->InitiateProcess (tr ("Uniting keys"), 0, 3);
+
+			for (const auto& pair : Util::Stlize (avail))
+				stats [pair.first].Available_ = pair.second;
+
+			++*proc;
+
+			for (const auto& pair : Util::Stlize (online))
+				stats [pair.first].Online_ = pair.second;
+
+			++*proc;
+
+			for (const auto& pair : Util::Stlize (status))
+				stats [pair.first].StatusChange_ = pair.second;
+
+			++*proc;
+		}
 
 		qDebug () << "done uniting";
 
 		{
 			auto lock = Storage_->BeginTransaction ();
+
+			const auto& proc = reporter->InitiateProcess (tr ("Writing the database"), 0, stats.size ());
 			for (const auto& pair : Util::Stlize (stats))
+			{
 				Storage_->SetEntryStats (pair.first, pair.second);
+				++*proc;
+			}
 
 			qDebug () << "done writing";
 
