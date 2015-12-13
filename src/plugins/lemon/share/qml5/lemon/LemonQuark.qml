@@ -57,7 +57,7 @@ Rectangle {
                     width: parent.width / 2
                     height: maxDownSpeed ? parent.height * downSpeed / maxDownSpeed : 0
 
-                    color: "#44009900"
+                    color: indicatorButton.adjustAlpha(Lemon_proxy.downloadGraphColor)
                 }
 
                 Rectangle {
@@ -66,7 +66,7 @@ Rectangle {
                     width: parent.width / 2
                     height: maxUpSpeed ? parent.height * upSpeed / maxUpSpeed : 0
 
-                    color: "#44990000"
+                    color: indicatorButton.adjustAlpha(Lemon_proxy.uploadGraphColor)
                 }
             }
         }
