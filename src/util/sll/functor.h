@@ -61,7 +61,7 @@ namespace Util
 			if (!t)
 				return {};
 
-			return { f (*t) };
+			return { Invoke (f, *t) };
 		}
 	};
 }
