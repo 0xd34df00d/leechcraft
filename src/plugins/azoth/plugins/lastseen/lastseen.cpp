@@ -176,6 +176,9 @@ namespace LastSeen
 		if (!IsGoodEntry (entryObj))
 			return;
 
+		if (variant.isEmpty ())
+			return;
+
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto& id = entry->GetEntryID ();
 		const auto& status = entry->GetStatus ();
