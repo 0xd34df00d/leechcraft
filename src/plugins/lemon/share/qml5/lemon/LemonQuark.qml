@@ -58,6 +58,8 @@ Rectangle {
                     height: maxDownSpeed ? parent.height * downSpeed / maxDownSpeed : 0
 
                     color: indicatorButton.adjustAlpha(Lemon_proxy.downloadGraphColor)
+
+                    visible: Lemon_showBars
                 }
 
                 Rectangle {
@@ -67,6 +69,8 @@ Rectangle {
                     height: maxUpSpeed ? parent.height * upSpeed / maxUpSpeed : 0
 
                     color: indicatorButton.adjustAlpha(Lemon_proxy.uploadGraphColor)
+
+                    visible: Lemon_showBars
                 }
 
                 Text {
@@ -74,9 +78,9 @@ Rectangle {
 
                     anchors.right: parent.right
                     anchors.top: parent.top
+                    visible: Lemon_showTextLabels
 
                     color: Lemon_proxy.downloadGraphColor
-
                     font.pointSize: 6
 
                     text: quarkProxy.prettySize(downSpeed)
@@ -87,9 +91,9 @@ Rectangle {
 
                     anchors.right: parent.right
                     anchors.top: downloadTextLabel.bottom
+                    visible: Lemon_showTextLabels
 
                     color: Lemon_proxy.uploadGraphColor
-
                     font.pointSize: 6
 
                     text: quarkProxy.prettySize(upSpeed)
