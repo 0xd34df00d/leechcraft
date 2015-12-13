@@ -53,7 +53,7 @@ namespace Util
 	struct InstanceFunctor<boost::optional<T>>
 	{
 		template<typename F>
-		using FmapResult_t = boost::optional<ResultOf_t<F (T)>>;
+		using FmapResult_t = boost::optional<Decay_t<ResultOf_t<F (T)>>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const boost::optional<T>& t, const F& f)
