@@ -36,6 +36,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class DBLock;
+}
+
 namespace Azoth
 {
 namespace LastSeen
@@ -55,6 +60,8 @@ namespace LastSeen
 
 		boost::optional<EntryStats> GetEntryStats (const QString&);
 		void SetEntryStats (const QString&, const EntryStats&);
+
+		Util::DBLock BeginTransaction ();
 	};
 }
 }

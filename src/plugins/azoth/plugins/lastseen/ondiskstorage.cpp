@@ -116,6 +116,13 @@ namespace LastSeen
 	{
 		AdaptedRecord_->DoInsert_ ({ entryId, stats }, Util::oral::InsertAction::Replace);
 	}
+
+	Util::DBLock OnDiskStorage::BeginTransaction ()
+	{
+		Util::DBLock lock { DB_ };
+		lock.Init ();
+		return lock;
+	}
 }
 }
 }
