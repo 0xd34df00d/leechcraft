@@ -33,6 +33,7 @@
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include <util/db/oral.h>
+#include <util/sll/functor.h>
 #include <util/sys/paths.h>
 
 namespace LeechCraft
@@ -124,11 +125,8 @@ namespace Xoox
 
 	boost::optional<QString> VCardStorageOnDisk::GetVCard (const QString& jid) const
 	{
-		const auto& result = AdaptedVCards_->DoSelectByFields_ (sph::_0 == jid);
-		if (result.isEmpty ())
-			return {};
-
-		return result.front ().VCardIq_;
+		return Util::Fmap (AdaptedVCards_->DoSelectOneByFields_ (sph::_0 == jid),
+				&VCardRecord::VCardIq_);
 	}
 
 	void VCardStorageOnDisk::SetVCardPhotoHash (const QString& jid, const QByteArray& hash)
@@ -138,11 +136,8 @@ namespace Xoox
 
 	boost::optional<QByteArray> VCardStorageOnDisk::GetVCardPhotoHash (const QString& jid) const
 	{
-		const auto& result = AdaptedPhotoHashes_->DoSelectByFields_ (sph::_0 == jid);
-		if (result.isEmpty ())
-			return {};
-
-		return result.front ().Hash_;
+		return Util::Fmap (AdaptedPhotoHashes_->DoSelectOneByFields_ (sph::_0 == jid),
+				&PhotoHashRecord::Hash_);
 	}
 }
 }
