@@ -46,6 +46,14 @@ namespace LastSeen
 	{
 		Util::oral::PKey<QString, Util::oral::NoAutogen> EntryID_;
 
+		Record () = default;
+
+		Record (const QString& entryId, const EntryStats& stats)
+		: EntryStats { stats }
+		, EntryID_ { entryId }
+		{
+		}
+
 		static QString ClassName ()
 		{
 			return "EntryStats";
