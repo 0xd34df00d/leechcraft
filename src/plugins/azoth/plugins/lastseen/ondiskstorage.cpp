@@ -49,8 +49,8 @@ namespace LastSeen
 		Record () = default;
 
 		Record (const QString& entryId, const EntryStats& stats)
-		: EntryStats { stats }
-		, EntryID_ { entryId }
+		: EntryStats (stats)
+		, EntryID_ (entryId)
 		{
 		}
 
