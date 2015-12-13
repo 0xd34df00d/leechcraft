@@ -60,7 +60,7 @@ namespace LastSeen
 		LastHash_t LastOnline_;
 		LastHash_t LastStatusChange_;
 
-		bool SaveScheduled_;
+		bool SaveScheduled_ = false;
 
 		bool IsLoaded_ = false;
 		bool IsSaving_ = false;
