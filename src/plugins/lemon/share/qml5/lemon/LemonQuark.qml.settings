@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Lemon settings" />
+		<item type="checkbox" property="Lemon_showTextLabels" default="true">
+			<label value="Show text labels with current upload/download speeds" />
+		</item>
+		<item type="checkbox" property="Lemon_showBars" default="true">
+			<label value="Show color bars matching current upload/download speeds" />
+		</item>
+	</page>
+</settings>
