@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QDateTime>
-#include <interfaces/azoth/azothcommon.h>
 
 namespace LeechCraft
 {
@@ -40,8 +39,6 @@ namespace LastSeen
 {
 	struct EntryStats
 	{
-		State LastState_;
-
 		QDateTime Available_;
 		QDateTime Online_;
 		QDateTime StatusChange_;

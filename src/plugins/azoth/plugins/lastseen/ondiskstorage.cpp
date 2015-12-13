@@ -72,22 +72,12 @@ using StatsRecord = LeechCraft::Azoth::LastSeen::OnDiskStorage::Record;
 
 BOOST_FUSION_ADAPT_STRUCT (StatsRecord,
 		(decltype (StatsRecord::EntryID_), EntryID_)
-		(decltype (StatsRecord::LastState_), LastState_)
 		(decltype (StatsRecord::Available_), Available_)
 		(decltype (StatsRecord::Online_), Online_)
 		(decltype (StatsRecord::StatusChange_), StatusChange_))
 
 namespace LeechCraft
 {
-namespace Util
-{
-namespace oral
-{
-	template<>
-	struct Type2Name<LeechCraft::Azoth::State> : Type2Name<int> {};
-}
-}
-
 namespace Azoth
 {
 namespace LastSeen
