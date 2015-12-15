@@ -618,6 +618,8 @@ namespace Poshuku
 				xsm->property ("EnableHyperlinkAuditing").toBool ());
 		global->setAttribute (QWebSettings::WebGLEnabled,
 				xsm->property ("EnableWebGL").toBool ());
+		global->setAttribute (QWebSettings::NotificationsEnabled,
+				xsm->property ("EnableNotifications").toBool ());
 #if QT_VERSION >= 0x050000
 		global->setAttribute (QWebSettings::ScrollAnimatorEnabled,
 				xsm->property ("EnableSmoothScrolling").toBool ());

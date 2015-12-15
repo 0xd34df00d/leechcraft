@@ -150,6 +150,9 @@
 				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
 					<label lang="en" value="Javascript programs can access clipboard" />
 				</item>
+				<item type="checkbox" property="EnableNotifications" default="true">
+					<label value="Enable HTML5 notifications" />
+				</item>
 				<item type="checkbox" property="EnableWebGL" default="true">
 					<label value="Enable WebGL" />
 				</item>
