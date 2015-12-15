@@ -72,7 +72,7 @@ namespace Poshuku
 
 		void handleContentsChanged ();
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);
-		void handleDownloadRequested (const QNetworkRequest&);
+		void handleDownloadRequested (QNetworkRequest);
 		void handleFrameCreated (QWebFrame*);
 		void handleInitialLayoutCompleted ();
 		void handleJavaScriptWindowObjectCleared ();

@@ -333,9 +333,8 @@ namespace Poshuku
 				this, frame, string);
 	}
 
-	void CustomWebPage::handleDownloadRequested (const QNetworkRequest& other)
+	void CustomWebPage::handleDownloadRequested (QNetworkRequest request)
 	{
-		QNetworkRequest request = other;
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookDownloadRequested (proxy, this, request);
 		if (proxy->IsCancelled ())
