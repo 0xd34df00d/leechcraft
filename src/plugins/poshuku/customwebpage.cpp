@@ -209,65 +209,65 @@ namespace Poshuku
 
 		switch (e)
 		{
-			case ErrorPageExtension:
+		case ErrorPageExtension:
+		{
+			auto error = static_cast<const ErrorPageExtensionOption*> (eo);
+			auto ret = static_cast<ErrorPageExtensionReturn*> (er);
+
+			qDebug () << Q_FUNC_INFO
+					<< "error extension:"
+					<< error->domain
+					<< error->error
+					<< error->errorString
+					<< error->url;
+
+			switch (error->error)
 			{
-				auto error = static_cast<const ErrorPageExtensionOption*> (eo);
-				auto ret = static_cast<ErrorPageExtensionReturn*> (er);
-
-				qDebug () << Q_FUNC_INFO
-						<< "error extension:"
-						<< error->domain
-						<< error->error
-						<< error->errorString
-						<< error->url;
-
-				switch (error->error)
+			case 102:			// Delegated entity
+				return false;
+			case 301:			// Unknown protocol (should delegate)
+			{
+				auto e = Util::MakeEntity (error->url,
+						QString (),
+						LeechCraft::FromUserInitiated);
+				e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+				auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+				if (em->CouldHandle (e))
 				{
-				case 102:			// Delegated entity
+					em->HandleEntity (e);
+					if (XmlSettingsManager::Instance ()->
+							property ("CloseEmptyDelegatedPages").toBool () &&
+							history ()->currentItem ().url ().isEmpty ())
+						emit windowCloseRequested ();
 					return false;
-				case 301:			// Unknown protocol (should delegate)
-				{
-					auto e = Util::MakeEntity (error->url,
-							QString (),
-							LeechCraft::FromUserInitiated);
-					e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-					auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
-					if (em->CouldHandle (e))
-					{
-						em->HandleEntity (e);
-						if (XmlSettingsManager::Instance ()->
-								property ("CloseEmptyDelegatedPages").toBool () &&
-								history ()->currentItem ().url ().isEmpty ())
-							emit windowCloseRequested ();
-						return false;
-					}
-				}
-				default:
-				{
-					QString data = MakeErrorReplyContents (error->error,
-							error->url, error->errorString, error->domain);
-					ret->baseUrl = error->url;
-					ret->content = data.toUtf8 ();
-					if (error->domain == QWebPage::QtNetwork)
-						switch (error->error)
-						{
-						case QNetworkReply::ContentReSendError:
-							emit gotEntity (Util::MakeNotification ("Poshuku",
-										tr ("Unable to send the request to %1. Please try submitting it again.")
-											.arg (error->url.host ()),
-										PCritical_));
-							return false;
-						default:
-							return true;
-						}
-					else
-						return true;
-				}
 				}
 			}
 			default:
-				return QWebPage::extension (e, eo, er);
+			{
+				QString data = MakeErrorReplyContents (error->error,
+						error->url, error->errorString, error->domain);
+				ret->baseUrl = error->url;
+				ret->content = data.toUtf8 ();
+				if (error->domain == QWebPage::QtNetwork)
+					switch (error->error)
+					{
+					case QNetworkReply::ContentReSendError:
+						emit gotEntity (Util::MakeNotification ("Poshuku",
+									tr ("Unable to send the request to %1. Please try submitting it again.")
+										.arg (error->url.host ()),
+									PCritical_));
+						return false;
+					default:
+						return true;
+					}
+				else
+					return true;
+			}
+			}
 		}
+		default:
+			return QWebPage::extension (e, eo, er);
+	}
 	}
 
 	namespace
