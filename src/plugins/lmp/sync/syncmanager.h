@@ -46,26 +46,7 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		struct CopyJob
-		{
-			QObject* GetQObject () const
-			{
-				return Syncer_->GetQObject ();
-			}
-
-			void Upload () const
-			{
-				Syncer_->Upload (From_, OrigPath_, MountPoint_, Filename_);
-			}
-
-			QString From_;
-			bool RemoveOnFinish_;
-
-			ISyncPlugin *Syncer_;
-			QString OrigPath_;
-			QString MountPoint_;
-			QString Filename_;
-		};
+		struct CopyJob;
 		QMap<QString, CopyManager<CopyJob>*> Mount2Copiers_;
 
 		struct SyncTo
