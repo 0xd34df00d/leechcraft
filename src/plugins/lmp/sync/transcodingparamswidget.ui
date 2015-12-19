@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>438</width>
-    <height>176</height>
+    <height>224</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -144,6 +144,16 @@
       </item>
       <item row="1" column="1">
        <widget class="QComboBox" name="BitrateTypeBox_"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QCheckBox" name="OnlyLosslessBox_">
+        <property name="text">
+         <string>Only transcode lossless formats</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

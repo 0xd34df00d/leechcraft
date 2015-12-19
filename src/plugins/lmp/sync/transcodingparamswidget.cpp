@@ -88,7 +88,8 @@ namespace LMP
 			transcode ? GetCurrentFormat ()->GetFormatID () : QString (),
 			GetCurrentBitrateType (),
 			Ui_.QualitySlider_->value (),
-			Ui_.ThreadsSlider_->value ()
+			Ui_.ThreadsSlider_->value (),
+			Ui_.OnlyLosslessBox_->checkState () == Qt::Checked
 		};
 	}
 
@@ -127,6 +128,8 @@ namespace LMP
 		}
 
 		Ui_.QualitySlider_->setValue (params.Quality_);
+
+		Ui_.OnlyLosslessBox_->setCheckState (params.OnlyLossless_ ? Qt::Checked : Qt::Unchecked);
 	}
 
 	Format_ptr TranscodingParamsWidget::GetCurrentFormat () const
