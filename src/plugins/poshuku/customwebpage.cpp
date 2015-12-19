@@ -345,7 +345,7 @@ namespace Poshuku
 		Entity e = Util::MakeEntity (request.url (),
 				QString (),
 				FromUserInitiated);
-		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
+		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 		emit gotEntity (e);
 	}
