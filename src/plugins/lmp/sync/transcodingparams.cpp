@@ -37,7 +37,7 @@ namespace LMP
 {
 	QDataStream& operator<< (QDataStream& out, const TranscodingParams& params)
 	{
-		out << static_cast<quint8> (1);
+		out << static_cast<quint8> (2);
 		out << params.FilePattern_
 				<< params.FormatID_;
 
@@ -53,7 +53,8 @@ namespace LMP
 		}
 		out << fmtStr
 				<< params.Quality_
-				<< params.NumThreads_;
+				<< params.NumThreads_
+				<< params.OnlyLossless_;
 
 		return out;
 	}
@@ -62,7 +63,7 @@ namespace LMP
 	{
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -81,6 +82,11 @@ namespace LMP
 			params.BitrateType_ = Format::BitrateType::CBR;
 		else if (fmtStr == "vbr")
 			params.BitrateType_ = Format::BitrateType::VBR;
+
+		if (version >= 2)
+			in >> params.OnlyLossless_;
+		else
+			params.OnlyLossless_ = true;
 
 		return in;
 	}
