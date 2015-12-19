@@ -64,10 +64,10 @@ namespace LMP
 
 		if (params.OnlyLossless_)
 		{
-			auto partPos = std::stable_partition (files.begin (), files.end (), IsLossless);
+			const auto partPos = std::stable_partition (files.begin (), files.end (), IsLossless);
 
-			for (; partPos != files.end (); ++partPos)
-				emit fileReady (*partPos, *partPos, params.FilePattern_);
+			for (auto i = partPos; i != files.end (); ++i)
+				emit fileReady (*i, *i, params.FilePattern_);
 
 			files.erase (partPos, files.end ());
 		}
