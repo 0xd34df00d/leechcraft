@@ -73,7 +73,7 @@ namespace LMP
 		};
 		QMap<QString, SyncTo> Source2Params_;
 	public:
-		SyncManager (QObject* = 0);
+		using SyncManagerBase::SyncManagerBase;
 
 		void AddFiles (ISyncPlugin*, const QString& mount, const QStringList&, const TranscodingParams&);
 	private:

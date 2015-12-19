@@ -41,11 +41,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	SyncManager::SyncManager (QObject *parent)
-	: SyncManagerBase (parent)
-	{
-	}
-
 	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
 			const QStringList& files, const TranscodingParams& params)
 	{
