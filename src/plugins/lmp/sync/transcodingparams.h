@@ -53,6 +53,8 @@ namespace LMP
 		Format::BitrateType BitrateType_;
 		int Quality_;
 		int NumThreads_;
+
+		bool OnlyLossless_;
 	};
 
 	QDataStream& operator<< (QDataStream&, const TranscodingParams&);
