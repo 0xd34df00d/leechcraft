@@ -77,10 +77,7 @@ namespace LMP
 		job->deleteLater ();
 
 		if (!Queue_.isEmpty ())
-		{
-			const auto& pair = Queue_.takeFirst ();
-			EnqueueJob (pair);
-		}
+			EnqueueJob (Queue_.takeFirst ());
 
 		if (success)
 			emit fileReady (job->GetOrigPath (), job->GetTranscodedPath (), job->GetTargetPattern ());
