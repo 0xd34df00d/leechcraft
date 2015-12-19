@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "transcodemanager.h"
-#include <algorithm>
 #include <QStringList>
 #include <QtDebug>
 #include <QFileInfo>
+#include <util/sll/prelude.h>
 #include "transcodejob.h"
 
 namespace LeechCraft
@@ -47,16 +47,14 @@ namespace LMP
 	{
 		if (params.FormatID_.isEmpty ())
 		{
-			std::for_each (files.begin (), files.end (),
-						[this, &params] (decltype (files.front ()) file)
-						{
-							emit fileReady (file, file, params.FilePattern_);
-						});
+			Util::Map (files,
+					[this, &params] (const QString& file)
+						{ emit fileReady (file, file, params.FilePattern_); });
 			return;
 		}
 
-		std::transform (files.begin (), files.end (), std::back_inserter (Queue_),
-				[&params] (decltype (files.front ()) file) { return qMakePair (file, params); });
+		Queue_ += Util::Map (files,
+				[&params] (const QString& file) { return qMakePair (file, params); });
 
 		while (RunningJobs_.size () < params.NumThreads_ && !Queue_.isEmpty ())
 			EnqueueJob (Queue_.takeFirst ());
