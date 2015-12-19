@@ -30,7 +30,6 @@
 #pragma once
 
 #include "syncmanagerbase.h"
-#include "copymanager.h"
 #include "interfaces/lmp/isyncplugin.h"
 
 namespace LeechCraft
@@ -39,6 +38,9 @@ namespace LMP
 {
 	class TranscodeManager;
 	struct TranscodingParams;
+
+	template<typename>
+	class CopyManager;
 
 	class SyncManager : public SyncManagerBase
 	{
