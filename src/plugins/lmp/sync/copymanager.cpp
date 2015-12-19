@@ -33,9 +33,5 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	CopyManagerBase::CopyManagerBase (QObject *parent)
-	: QObject (parent)
-	{
-	}
 }
 }

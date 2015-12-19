@@ -45,7 +45,7 @@ namespace LMP
 	{
 		Q_OBJECT
 	protected:
-		CopyManagerBase (QObject* parent = 0);
+		using QObject::QObject;
 	protected slots:
 		virtual void handleUploadFinished (const QString& localPath,
 				QFile::FileError error, const QString& errorStr) = 0;
