@@ -102,7 +102,7 @@ namespace LMP
 			return !CurrentJob_.Filename_.isEmpty ();
 		}
 	protected:
-		void handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr)
+		void handleUploadFinished (const QString& localPath, QFile::FileError error, const QString& errorStr) override
 		{
 			const bool remove = CurrentJob_.RemoveOnFinish_;
 			CurrentJob_ = CopyJobT ();
