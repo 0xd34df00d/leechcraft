@@ -43,7 +43,7 @@ namespace LMP
 	{
 	}
 
-	void TranscodeManager::Enqueue (const QStringList& files, const TranscodingParams& params)
+	void TranscodeManager::Enqueue (QStringList files, const TranscodingParams& params)
 	{
 		if (params.FormatID_.isEmpty ())
 		{

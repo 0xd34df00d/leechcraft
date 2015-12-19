@@ -49,7 +49,7 @@ namespace LMP
 	public:
 		TranscodeManager (QObject* = 0);
 
-		void Enqueue (const QStringList&, const TranscodingParams&);
+		void Enqueue (QStringList, const TranscodingParams&);
 	private:
 		void EnqueueJob (const QPair<QString, TranscodingParams>&);
 	private slots:
