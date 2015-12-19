@@ -62,6 +62,16 @@ namespace LMP
 			return;
 		}
 
+		if (params.OnlyLossless_)
+		{
+			auto partPos = std::stable_partition (files.begin (), files.end (), IsLossless);
+
+			for (; partPos != files.end (); ++partPos)
+				emit fileReady (*partPos, *partPos, params.FilePattern_);
+
+			files.erase (partPos, files.end ());
+		}
+
 		Queue_ += Util::Map (files,
 				[&params] (const QString& file) { return qMakePair (file, params); });
 
