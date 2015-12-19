@@ -65,9 +65,8 @@ namespace LMP
 	void SyncManager::AddFiles (ISyncPlugin *syncer, const QString& mount,
 			const QStringList& files, const TranscodingParams& params)
 	{
-		std::for_each (files.begin (), files.end (),
-				[this, syncer, &mount] (decltype (files.front ()) file)
-					{ Source2Params_ [file] = { syncer, mount }; });
+		for (const auto& file : files)
+			Source2Params_ [file] = { syncer, mount };
 
 		SyncManagerBase::AddFiles (files, params);
 	}
