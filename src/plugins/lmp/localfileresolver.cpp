@@ -32,6 +32,7 @@
 #include <QFileInfo>
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
+#include <util/sll/prelude.h>
 #include "util/lmp/gstutil.h"
 #include "xmlsettingsmanager.h"
 
@@ -103,9 +104,8 @@ namespace LMP
 		{
 			return GstUtil::FixEncoding (QString::fromUtf8 (str.toCString (true)), region);
 		};
-		auto genres = ftl (tag->genre ()).split ('/', QString::SkipEmptyParts);
-		std::for_each (genres.begin (), genres.end (),
-				[] (QString& genre) { genre = genre.trimmed (); });
+
+		const auto& genres = ftl (tag->genre ()).split ('/', QString::SkipEmptyParts);
 
 		MediaInfo info
 		{
@@ -113,7 +113,7 @@ namespace LMP
 			ftl (tag->artist ()),
 			ftl (tag->album ()),
 			ftl (tag->title ()),
-			genres,
+			Util::Map (genres, [] (QString& genre) { genre = genre.trimmed (); }),
 			audio ? audio->length () : 0,
 			static_cast<qint32> (tag->year ()),
 			static_cast<qint32> (tag->track ())
