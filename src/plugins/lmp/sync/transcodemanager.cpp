@@ -43,6 +43,15 @@ namespace LMP
 	{
 	}
 
+	namespace
+	{
+		bool IsLossless (const QString& filename)
+		{
+			return filename.endsWith (".flac", Qt::CaseInsensitive) ||
+					filename.endsWith (".alac", Qt::CaseInsensitive);
+		}
+	}
+
 	void TranscodeManager::Enqueue (QStringList files, const TranscodingParams& params)
 	{
 		if (params.FormatID_.isEmpty ())
