@@ -323,19 +323,19 @@ namespace Poshuku
 
 	void CustomWebPage::handleContentsChanged ()
 	{
-		emit hookContentsChanged (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookContentsChanged (std::make_shared<Util::DefaultHookProxy> (),
 				this);
 	}
 
 	void CustomWebPage::handleDatabaseQuotaExceeded (QWebFrame *frame, QString string)
 	{
-		emit hookDatabaseQuotaExceeded (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookDatabaseQuotaExceeded (std::make_shared<Util::DefaultHookProxy> (),
 				this, frame, string);
 	}
 
 	void CustomWebPage::handleDownloadRequested (QNetworkRequest request)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookDownloadRequested (proxy, this, request);
 		if (proxy->IsCancelled ())
 			return;
@@ -352,20 +352,20 @@ namespace Poshuku
 
 	void CustomWebPage::handleFrameCreated (QWebFrame *frame)
 	{
-		emit hookFrameCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookFrameCreated (std::make_shared<Util::DefaultHookProxy> (),
 				this, frame);
 	}
 
 	void CustomWebPage::handleInitialLayoutCompleted ()
 	{
-		emit hookInitialLayoutCompleted (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookInitialLayoutCompleted (std::make_shared<Util::DefaultHookProxy> (),
 				this, mainFrame ());
 	}
 
 	void CustomWebPage::handleJavaScriptWindowObjectCleared ()
 	{
 		QWebFrame *frame = qobject_cast<QWebFrame*> (sender ());
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookJavaScriptWindowObjectCleared (proxy, this, frame);
 		if (proxy->IsCancelled ())
 			return;
