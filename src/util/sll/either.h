@@ -109,6 +109,14 @@ namespace Util
 			return This_;
 		}
 
+		template<typename F>
+		R ToRight (F&& f) const
+		{
+			return IsRight () ?
+					GetRight () :
+					f (GetLeft ());
+		}
+
 		template<typename RNew>
 		static Either<L, RNew> FromMaybe (const boost::optional<RNew>& maybeRight, const L& left)
 		{
