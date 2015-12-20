@@ -31,6 +31,7 @@
 #include <boost/optional.hpp>
 #include <QDir>
 #include <QSettings>
+#include <QSet>
 #include <qtermwidget.h>
 #include <util/sll/prelude.h>
 
@@ -45,6 +46,8 @@ namespace Eleeminator
 
 		Schemes_ += Util::Map (QTermWidget::availableColorSchemes (),
 				[] (const QString& name) { return Scheme { name, name }; });
+
+		FilterDuplicates ();
 	}
 
 	QList<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
@@ -77,6 +80,24 @@ namespace Eleeminator
 		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
 						[] (const boost::optional<Scheme>& scheme) { return static_cast<bool> (scheme); }),
 					[] (const boost::optional<Scheme>& scheme) { return *scheme; });
+	}
+
+	void ColorSchemesManager::FilterDuplicates ()
+	{
+		QSet<QString> names;
+
+		for (auto i = Schemes_.begin (); i != Schemes_.end (); )
+		{
+			const auto normalized = QString { i->Name_ }.remove (' ');
+
+			if (names.contains (normalized))
+				i = Schemes_.erase (i);
+			else
+			{
+				names << normalized;
+				++i;
+			}
+		}
 	}
 }
 }

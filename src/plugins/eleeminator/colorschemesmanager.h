@@ -52,6 +52,7 @@ namespace Eleeminator
 		QList<Scheme> GetSchemes () const;
 	private:
 		void LoadKonsoleSchemes ();
+		void FilterDuplicates ();
 	};
 }
 }
