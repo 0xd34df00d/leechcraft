@@ -40,9 +40,10 @@ namespace Eleeminator
 	ColorSchemesManager::ColorSchemesManager (QObject* parent)
 	: QObject { parent }
 	{
-		Schemes_ = Util::Map (QTermWidget::availableColorSchemes (),
-				[] (const QString& name) { return Scheme { name, name }; });
 		LoadKonsoleSchemes ();
+
+		Schemes_ += Util::Map (QTermWidget::availableColorSchemes (),
+				[] (const QString& name) { return Scheme { name, name }; });
 	}
 
 	QList<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
