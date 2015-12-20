@@ -78,7 +78,8 @@ namespace Eleeminator
 
 	void ColorSchemesManager::LoadKonsoleSchemes ()
 	{
-		const auto& filenames = CollectSchemes ("/usr/share/apps/konsole/");
+		const auto& filenames = CollectSchemes ("/usr/share/apps/konsole/") +
+				CollectSchemes ("/usr/local/share/apps/konsole/");
 		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
 						[] (const boost::optional<Scheme>& scheme) { return static_cast<bool> (scheme); }),
 					[] (const boost::optional<Scheme>& scheme) { return *scheme; });
