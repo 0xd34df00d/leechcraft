@@ -54,6 +54,7 @@
 #include "xmlsettingsmanager.h"
 #include "processgraphbuilder.h"
 #include "closedialog.h"
+#include "colorschemesmanager.h"
 
 namespace LeechCraft
 {
@@ -209,13 +210,13 @@ namespace Eleeminator
 				.Property ("LastColorScheme", "Linux").toString ();
 
 		const auto colorActionGroup = new QActionGroup { colorMenu };
-		for (const auto& colorScheme : QTermWidget::availableColorSchemes ())
+		for (const auto& colorScheme : ColorSchemesMgr_->GetSchemes ())
 		{
-			auto act = colorMenu->addAction (colorScheme);
+			auto act = colorMenu->addAction (colorScheme.Name_);
 			act->setCheckable (true);
-			act->setProperty ("ER/ColorScheme", colorScheme);
+			act->setProperty ("ER/ColorScheme", colorScheme.ID_);
 
-			if (colorScheme == lastScheme)
+			if (colorScheme.ID_ == lastScheme)
 			{
 				act->setChecked (true);
 				setColorScheme (act);
