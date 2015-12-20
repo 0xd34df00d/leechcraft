@@ -18,6 +18,7 @@ set (SRCS
 	processinfo.cpp
 	xmlsettingsmanager.cpp
 	closedialog.cpp
+	colorschemesmanager.cpp
 	)
 set (FORMS
 	closedialog.ui
