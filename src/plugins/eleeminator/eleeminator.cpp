@@ -36,6 +36,7 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "termtab.h"
 #include "xmlsettingsmanager.h"
+#include "colorschemesmanager.h"
 
 namespace LeechCraft
 {
@@ -72,6 +73,8 @@ namespace Eleeminator
 					QString { "Ctrl+Shift+V" },
 					proxy->GetIconThemeManager ()->GetIcon ("edit-paste")
 				});
+
+		ColorSchemesMgr_ = new ColorSchemesManager;
 
 		Util::InstallTranslator ("eleeminator");
 

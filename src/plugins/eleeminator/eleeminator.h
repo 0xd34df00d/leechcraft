@@ -44,6 +44,8 @@ namespace Util
 
 namespace Eleeminator
 {
+	class ColorSchemesManager;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IHaveTabs
@@ -61,6 +63,8 @@ namespace Eleeminator
 		Util::ShortcutManager *ShortcutMgr_;
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		ColorSchemesManager *ColorSchemesMgr_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
