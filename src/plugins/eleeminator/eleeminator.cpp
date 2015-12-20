@@ -130,7 +130,7 @@ namespace Eleeminator
 	{
 		if (tc == TermTabTC_.TabClass_)
 		{
-			auto tab = new TermTab { Proxy_, ShortcutMgr_, TermTabTC_, this };
+			auto tab = new TermTab { Proxy_, ShortcutMgr_, TermTabTC_, ColorSchemesMgr_, this };
 			emit addNewTab (TermTabTC_.VisibleName_, tab);
 			emit raiseTab (tab);
 

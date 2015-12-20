@@ -45,6 +45,8 @@ namespace Util
 
 namespace Eleeminator
 {
+	class ColorSchemesManager;
+
 	class TermTab : public QWidget
 				  , public ITabWidget
 	{
@@ -59,11 +61,12 @@ namespace Eleeminator
 
 		QTermWidget * const Term_;
 
+		ColorSchemesManager * const ColorSchemesMgr_;
 		QString CurrentColorScheme_;
 
 		bool IsTabCurrent_ = false;
 	public:
-		TermTab (const ICoreProxy_ptr&, Util::ShortcutManager*, const TabClassInfo&, QObject*);
+		TermTab (const ICoreProxy_ptr&, Util::ShortcutManager*, const TabClassInfo&, ColorSchemesManager*, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

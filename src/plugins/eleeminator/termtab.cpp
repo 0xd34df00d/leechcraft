@@ -60,12 +60,13 @@ namespace LeechCraft
 namespace Eleeminator
 {
 	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
-			const TabClassInfo& tc, QObject *plugin)
+			const TabClassInfo& tc, ColorSchemesManager *colorSchemesMgr, QObject *plugin)
 	: CoreProxy_ { proxy }
 	, TC_ (tc)
 	, ParentPlugin_ { plugin }
 	, Toolbar_ { new QToolBar { tr ("Terminal toolbar") } }
 	, Term_ { new QTermWidget { false } }
+	, ColorSchemesMgr_ { colorSchemesMgr }
 	{
 		auto lay = new QVBoxLayout;
 		lay->setContentsMargins (0, 0, 0, 0);
