@@ -48,6 +48,8 @@ namespace Eleeminator
 				[] (const QString& name) { return Scheme { name, name }; });
 
 		FilterDuplicates ();
+
+		std::sort (Schemes_.begin (), Schemes_.end (), Util::ComparingBy (&Scheme::Name_));
 	}
 
 	QList<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
