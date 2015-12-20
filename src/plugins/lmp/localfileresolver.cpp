@@ -113,7 +113,7 @@ namespace LMP
 			ftl (tag->artist ()),
 			ftl (tag->album ()),
 			ftl (tag->title ()),
-			Util::Map (genres, [] (QString& genre) { genre = genre.trimmed (); }),
+			Util::Map (genres, [] (const QString& genre) { return genre.trimmed (); }),
 			audio ? audio->length () : 0,
 			static_cast<qint32> (tag->year ()),
 			static_cast<qint32> (tag->track ())
