@@ -53,7 +53,7 @@ namespace LMP
 		QReadWriteLock CacheLock_;
 		QHash<QString, QPair<QDateTime, MediaInfo>> Cache_;
 	public:
-		LocalFileResolver (QObject* = 0);
+		using QObject::QObject;
 
 		TagLib::FileRef GetFileRef (const QString&) const;
 		ResolveResult_t ResolveInfo (const QString&);
