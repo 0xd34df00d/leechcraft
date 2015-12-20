@@ -641,7 +641,7 @@ namespace Graffiti
 		FilesModel_->AddFiles (files);
 
 		auto resolver = LMPProxy_->GetTagResolver ();
-		auto worker = [resolver, files] () -> QList<MediaInfo>
+		auto worker = [resolver, files]
 		{
 			const auto& eithers = Util::Map (files,
 					[resolver] (const QFileInfo& info)
