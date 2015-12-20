@@ -90,7 +90,7 @@ namespace Eleeminator
 
 		for (auto i = Schemes_.begin (); i != Schemes_.end (); )
 		{
-			const auto normalized = QString { i->Name_ }.remove (' ');
+			const auto normalized = QString { i->Name_ }.remove (' ').toLower ();
 
 			if (names.contains (normalized))
 				i = Schemes_.erase (i);
