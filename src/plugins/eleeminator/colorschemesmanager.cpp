@@ -30,6 +30,7 @@
 #include "colorschemesmanager.h"
 #include <boost/optional.hpp>
 #include <QDir>
+#include <QSettings>
 #include <qtermwidget.h>
 #include <util/sll/prelude.h>
 
