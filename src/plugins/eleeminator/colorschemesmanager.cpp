@@ -28,8 +28,10 @@
  **********************************************************************/
 
 #include "colorschemesmanager.h"
-#include <util/sll/prelude.h>
+#include <boost/optional.hpp>
+#include <QDir>
 #include <qtermwidget.h>
+#include <util/sll/prelude.h>
 
 namespace LeechCraft
 {
@@ -45,6 +47,28 @@ namespace Eleeminator
 	QList<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
 	{
 		return Schemes_;
+	}
+
+	namespace
+	{
+		QStringList CollectSchemes (const QString& dir)
+		{
+			return Util::Map (QDir { dir }.entryList ({ "*.colorscheme" }),
+					[&dir] (QString str) { return str.prepend (dir); });
+		}
+
+		boost::optional<ColorSchemesManager::Scheme> ParseScheme (const QString& filename)
+		{
+			return { { QFileInfo { filename }.baseName (), filename } };
+		}
+	}
+
+	void ColorSchemesManager::LoadKonsoleSchemes ()
+	{
+		const auto& filenames = CollectSchemes ("/usr/share/apps/konsole/");
+		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
+						[] (const boost::optional<Scheme>& scheme) { return static_cast<bool> (scheme); }),
+					[] (const boost::optional<Scheme>& scheme) { return *scheme; });
 	}
 }
 }

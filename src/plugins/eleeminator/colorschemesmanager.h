@@ -50,6 +50,8 @@ namespace Eleeminator
 		explicit ColorSchemesManager (QObject *parent = nullptr);
 
 		QList<Scheme> GetSchemes () const;
+	private:
+		void LoadKonsoleSchemes ();
 	};
 }
 }
