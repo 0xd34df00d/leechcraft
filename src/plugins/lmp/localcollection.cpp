@@ -37,6 +37,7 @@
 #include <QtConcurrentRun>
 #include <QTimer>
 #include <QtDebug>
+#include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -684,20 +685,16 @@ namespace LMP
 		auto resolver = Core::Instance ().GetLocalFileResolver ();
 
 		emit scanStarted (newPaths.size ());
-		auto worker = [resolver] (const QString& path) -> MediaInfo
+		auto worker = [resolver] (const QString& path)
 		{
-			try
-			{
-				return resolver->ResolveInfo (path);
-			}
-			catch (const ResolveError& error)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "error resolving media info for"
-						<< error.GetPath ()
-						<< error.what ();
-				return MediaInfo ();
-			}
+			return resolver->ResolveInfo (path).ToRight ([] (const ResolveError& error)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "error resolving media info for"
+								<< error.FilePath_
+								<< error.ReasonString_;
+						return MediaInfo {};
+					});
 		};
 		const auto& future = QtConcurrent::mapped (newPaths,
 				std::function<MediaInfo (const QString&)> (worker));

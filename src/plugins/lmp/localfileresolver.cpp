@@ -33,6 +33,7 @@
 #include <taglib/fileref.h>
 #include <taglib/tag.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
 #include "util/lmp/gstutil.h"
 #include "xmlsettingsmanager.h"
 
@@ -40,21 +41,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	ResolveError::ResolveError (const QString& path, const std::string& what)
-	: runtime_error (what)
-	, Path_ (path)
-	{
-	}
-
-	ResolveError::~ResolveError () throw ()
-	{
-	}
-
-	QString ResolveError::GetPath () const
-	{
-		return Path_;
-	}
-
 	LocalFileResolver::LocalFileResolver (QObject *parent)
 	: QObject (parent)
 	{
@@ -74,16 +60,17 @@ namespace LMP
 #endif
 	}
 
-	MediaInfo LocalFileResolver::ResolveInfo (const QString& file)
+	LocalFileResolver::ResolveResult_t LocalFileResolver::ResolveInfo (const QString& file)
 	{
 		const auto& modified = QFileInfo (file).lastModified ();
+
 		{
 			QReadLocker locker (&CacheLock_);
 			if (Cache_.contains (file))
 			{
 				const auto& pair = Cache_ [file];
 				if (pair.first == modified)
-					return pair.second;
+					return ResolveResult_t::Right (pair.second);
 			}
 		}
 
@@ -92,7 +79,7 @@ namespace LMP
 		auto r = GetFileRef (file);
 		auto tag = r.tag ();
 		if (!tag)
-			throw ResolveError (file, "failed to get file tags");
+			return ResolveResult_t::Left ({ file, "cannot get audio tags" });
 
 		auto audio = r.audioProperties ();
 
@@ -124,7 +111,7 @@ namespace LMP
 				Cache_.clear ();
 			Cache_ [file] = qMakePair (modified, info);
 		}
-		return info;
+		return ResolveResult_t::Right (info);
 	}
 
 	QMutex& LocalFileResolver::GetMutex ()

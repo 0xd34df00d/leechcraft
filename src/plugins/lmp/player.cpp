@@ -42,6 +42,8 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -916,18 +918,16 @@ namespace LMP
 			if (trackId == -1)
 			{
 				auto resolver = Core::Instance ().GetLocalFileResolver ();
-				try
-				{
-					info = resolver->ResolveInfo (source.GetLocalPath ());
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "could not find track"
-							<< info.LocalPath_
-							<< "in library and cannot resolve its info, probably missing?";
-				}
-				return { source, info };
+				return Util::Visit (resolver->ResolveInfo (source.GetLocalPath ()).AsVariant (),
+						[&source] (const MediaInfo& resolved) { return ResolvedSource_t { source, resolved }; },
+						[&source, &info] (const ResolveError&)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "could not find track"
+									<< info.LocalPath_
+									<< "in library and cannot resolve its info, probably missing?";
+							return ResolvedSource_t { source, info };
+						});
 			}
 
 			info.Artist_ = collection->GetTrackData (trackId,

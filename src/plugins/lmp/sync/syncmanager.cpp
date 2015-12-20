@@ -33,6 +33,8 @@
 #include <QFileInfo>
 #include <util/util.h>
 #include <util/lmp/util.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include "copymanager.h"
 #include "../core.h"
 #include "../localfileresolver.h"
@@ -95,29 +97,17 @@ namespace LMP
 
 	namespace
 	{
-		bool FixMask (QString& mask, const QString& transcoded)
+		Util::Either<ResolveError, QString> FixMask (const QString& mask, const QString& transcoded)
 		{
-			MediaInfo info;
-			try
-			{
-				info = Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< e.what ()
-						<< "for"
-						<< mask
-						<< transcoded;
-				return false;
-			}
-
-			mask = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
-			const auto& ext = QFileInfo (transcoded).suffix ();
-			if (!mask.endsWith (ext))
-				mask += "." + ext;
-
-			return true;
+			return Core::Instance ().GetLocalFileResolver ()->ResolveInfo (transcoded) >>
+					[&] (const MediaInfo& info)
+					{
+						auto result = PerformSubstitutions (mask, info, SubstitutionFlag::SFSafeFilesystem);
+						const auto& ext = QFileInfo (transcoded).suffix ();
+						if (!result.endsWith (ext))
+							result += "." + ext;
+						return ITagResolver::ResolveResult_t::Right (result);
+					};
 		}
 	}
 
@@ -140,27 +130,29 @@ namespace LMP
 				.arg ("<em>" + QFileInfo (from).fileName () + "</em>")
 				.arg ("<em>" + syncTo.MountPath_) + "</em>");
 
-		if (!FixMask (mask, transcoded))
-		{
-			const auto& errString = tr ("Unable to expand mask for file %1.")
-					.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>");
-			emit uploadLog (errString);
-			handleErrorCopying (transcoded, errString);
-			return;
-		}
-
-		if (!Mount2Copiers_.contains (syncTo.MountPath_))
-			CreateSyncer (syncTo.MountPath_);
-		const CopyJob copyJob
-		{
-			transcoded,
-			from != transcoded,
-			syncTo.Syncer_,
-			from,
-			syncTo.MountPath_,
-			mask
-		};
-		Mount2Copiers_ [syncTo.MountPath_]->Copy (copyJob);
+		Util::Visit (FixMask (mask, transcoded).AsVariant (),
+				[&] (const QString& filename)
+				{
+					if (!Mount2Copiers_.contains (syncTo.MountPath_))
+						CreateSyncer (syncTo.MountPath_);
+					const CopyJob copyJob
+					{
+						transcoded,
+						from != transcoded,
+						syncTo.Syncer_,
+						from,
+						syncTo.MountPath_,
+						filename
+					};
+					Mount2Copiers_ [syncTo.MountPath_]->Copy (copyJob);
+				},
+				[&] (const ResolveError& err)
+				{
+					const auto& errString = tr ("Unable to expand mask for file %1.")
+							.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>");
+					emit uploadLog (errString);
+					handleErrorCopying (transcoded, errString);
+				});
 	}
 }
 }

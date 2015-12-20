@@ -45,6 +45,8 @@
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
 #include <util/xpc/util.h>
+#include <util/sll/either.h>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/media/itagsfetcher.h>
@@ -641,18 +643,17 @@ namespace Graffiti
 		auto resolver = LMPProxy_->GetTagResolver ();
 		auto worker = [resolver, files] () -> QList<MediaInfo>
 		{
-			QList<MediaInfo> infos;
-			for (const auto& file : files)
-				try
-				{
-					infos << resolver->ResolveInfo (file.absoluteFilePath ());
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< e.what ();
-				}
-			return infos;
+			const auto& eithers = Util::Map (files,
+					[resolver] (const QFileInfo& info)
+						{ return resolver->ResolveInfo (info.absoluteFilePath ()); });
+			const auto& parts = Util::PartitionEithers (eithers);
+
+			for (const auto& resolveError : parts.first)
+				qWarning () << Q_FUNC_INFO
+						<< resolveError.FilePath_
+						<< resolveError.ReasonString_;
+
+			return parts.second;
 		};
 
 		auto scanWatcher = new QFutureWatcher<QList<MediaInfo>> ();

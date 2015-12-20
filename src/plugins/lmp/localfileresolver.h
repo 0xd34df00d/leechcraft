@@ -43,16 +43,6 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	class ResolveError : public std::runtime_error
-	{
-		QString Path_;
-	public:
-		ResolveError (const QString&, const std::string&);
-		~ResolveError () throw ();
-
-		QString GetPath () const;
-	};
-
 	class LocalFileResolver : public QObject
 							, public ITagResolver
 	{
@@ -66,7 +56,7 @@ namespace LMP
 		LocalFileResolver (QObject* = 0);
 
 		TagLib::FileRef GetFileRef (const QString&) const;
-		MediaInfo ResolveInfo (const QString&);
+		ResolveResult_t ResolveInfo (const QString&);
 		QMutex& GetMutex ();
 	private slots:
 		void flushCache ();

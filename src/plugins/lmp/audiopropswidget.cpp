@@ -67,6 +67,8 @@
 #include <taglib/wavproperties.h>
 #include <taglib/trueaudioproperties.h>
 #include <taglib/wavpackproperties.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "localfileresolver.h"
 #include "core.h"
@@ -118,23 +120,19 @@ namespace LMP
 
 	void AudioPropsWidget::SetProps (const QString& path)
 	{
-		try
-		{
-			const auto& info = Core::Instance ().GetLocalFileResolver ()->ResolveInfo (path);
-			SetProps (info);
-		}
-		catch (const ResolveError& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< path
-					<< e.what ();
+		Util::Visit (Core::Instance ().GetLocalFileResolver ()->ResolveInfo (path).AsVariant (),
+				[this] (const MediaInfo& info) { SetProps (info); },
+				[this] (const ResolveError& err)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< err.FilePath_;
 
-			QMessageBox::critical (this,
-					"LeechCraft",
-					tr ("Error showing properties for %1: %2.")
-						.arg (QFileInfo (path).fileName ())
-						.arg (e.what ()));
-		}
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Error showing properties for %1: %2.")
+								.arg (QFileInfo (err.FilePath_).fileName ())
+								.arg (err.ReasonString_));
+				});
 	}
 
 	namespace

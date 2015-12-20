@@ -40,17 +40,32 @@ namespace TagLib
 
 namespace LeechCraft
 {
+namespace Util
+{
+	template<typename, typename>
+	class Either;
+}
+
 namespace LMP
 {
 	struct MediaInfo;
+
+	struct ResolveError
+	{
+		QString FilePath_;
+
+		QString ReasonString_;
+	};
 
 	class ITagResolver
 	{
 	public:
 		virtual ~ITagResolver () {}
 
+		using ResolveResult_t = Util::Either<ResolveError, MediaInfo>;
+
 		virtual TagLib::FileRef GetFileRef (const QString&) const = 0;
-		virtual MediaInfo ResolveInfo (const QString&) = 0;
+		virtual ResolveResult_t ResolveInfo (const QString&) = 0;
 		virtual QMutex& GetMutex () = 0;
 	};
 }
