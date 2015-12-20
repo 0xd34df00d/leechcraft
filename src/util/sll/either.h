@@ -127,6 +127,12 @@ namespace Util
 			return Either { r };
 		}
 
+		template<typename RNew>
+		static Either<L, RNew> Right (const RNew& r)
+		{
+			return Either<L, RNew>::Right (r);
+		}
+
 		friend bool operator== (const Either& e1, const Either& e2)
 		{
 			return e1.This_ == e2.This_;
