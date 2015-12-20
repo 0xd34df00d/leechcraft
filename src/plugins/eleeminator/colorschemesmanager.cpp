@@ -60,7 +60,12 @@ namespace Eleeminator
 
 		boost::optional<ColorSchemesManager::Scheme> ParseScheme (const QString& filename)
 		{
-			return { { QFileInfo { filename }.baseName (), filename } };
+			QSettings settings { filename, QSettings::IniFormat };
+			auto name = settings.value ("Description").toString ();
+			if (name.isEmpty ())
+				name = QFileInfo { filename }.baseName ();
+
+			return { { name, filename } };
 		}
 	}
 
