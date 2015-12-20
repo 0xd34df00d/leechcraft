@@ -42,6 +42,7 @@ namespace Eleeminator
 	{
 		Schemes_ = Util::Map (QTermWidget::availableColorSchemes (),
 				[] (const QString& name) { return Scheme { name, name }; });
+		LoadKonsoleSchemes ();
 	}
 
 	QList<ColorSchemesManager::Scheme> ColorSchemesManager::GetSchemes () const
