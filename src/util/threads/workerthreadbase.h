@@ -58,14 +58,14 @@ namespace Util
 		virtual void Cleanup () = 0;
 
 		template<typename F>
-		QFuture<Util::ResultOf_t<F ()>> ScheduleImpl (const F& func)
+		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
 		{
 			QFutureInterface<decltype (func ())> iface;
 			iface.reportStarted ();
 
 			auto reporting = [func, iface] () mutable
 			{
-				Util::ReportFutureResult (iface, func);
+				ReportFutureResult (iface, func);
 			};
 
 			{
