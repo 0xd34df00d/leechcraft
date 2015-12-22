@@ -36,7 +36,7 @@ namespace Util
 {
 	void WorkerThreadBase::run ()
 	{
-		Util::SlotClosure<Util::NoDeletePolicy> rotator
+		SlotClosure<NoDeletePolicy> rotator
 		{
 			[this] { RotateFuncs (); },
 			this,
