@@ -136,7 +136,7 @@ namespace Util
 		}
 
 		template<typename RNew>
-		static Either<L, RNew> Right (const RNew& r)
+		static EnableIf_t<!std::is_convertible<RNew, R>::value, Either<L, RNew>> Right (const RNew& r)
 		{
 			return Either<L, RNew>::Right (r);
 		}
