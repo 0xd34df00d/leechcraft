@@ -65,7 +65,9 @@ namespace Eleeminator
 					[&dir] (QString str) { return str.prepend (dir); });
 		}
 
-		boost::optional<ColorSchemesManager::Scheme> ParseScheme (const QString& filename)
+		using MaybeScheme_t = boost::optional<ColorSchemesManager::Scheme>;
+
+		MaybeScheme_t ParseScheme (const QString& filename)
 		{
 			QSettings settings { filename, QSettings::IniFormat };
 			auto name = settings.value ("Description").toString ();
@@ -81,8 +83,8 @@ namespace Eleeminator
 		const auto& filenames = CollectSchemes ("/usr/share/apps/konsole/") +
 				CollectSchemes ("/usr/local/share/apps/konsole/");
 		Schemes_ += Util::Map (Util::Filter (Util::Map (filenames, &ParseScheme),
-						[] (const boost::optional<Scheme>& scheme) { return static_cast<bool> (scheme); }),
-					[] (const boost::optional<Scheme>& scheme) { return *scheme; });
+						[] (const MaybeScheme_t& scheme) { return static_cast<bool> (scheme); }),
+					[] (const MaybeScheme_t& scheme) { return *scheme; });
 	}
 
 	void ColorSchemesManager::FilterDuplicates ()
