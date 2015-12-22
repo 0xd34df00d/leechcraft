@@ -60,7 +60,7 @@ namespace Util
 		template<typename F>
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
 		{
-			QFutureInterface<decltype (func ())> iface;
+			QFutureInterface<ResultOf_t<F ()>> iface;
 			iface.reportStarted ();
 
 			auto reporting = [func, iface] () mutable
