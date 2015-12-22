@@ -45,7 +45,7 @@ namespace LeechCraft
 namespace Util
 {
 	template<typename R, typename F, typename... Args>
-	EnableIf_t<!std::is_same<R, void>::value, void>
+	EnableIf_t<!std::is_same<R, void>::value>
 		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args... args)
 	{
 		try
