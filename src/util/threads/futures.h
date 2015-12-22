@@ -46,11 +46,11 @@ namespace Util
 {
 	template<typename R, typename F, typename... Args>
 	EnableIf_t<!std::is_same<R, void>::value>
-		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args... args)
+		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
 	{
 		try
 		{
-			auto result = f (args...);
+			const auto result = f (std::forward<Args> (args)...);
 			iface.reportFinished (&result);
 		}
 		catch (const QtException_t& e)
@@ -66,11 +66,11 @@ namespace Util
 	}
 
 	template<typename F, typename... Args>
-	void ReportFutureResult (QFutureInterface<void>& iface, F&& f, Args... args)
+	void ReportFutureResult (QFutureInterface<void>& iface, F&& f, Args&&... args)
 	{
 		try
 		{
-			f (args...);
+			f (std::forward<Args> (args)...);
 		}
 		catch (const QtException_t& e)
 		{
