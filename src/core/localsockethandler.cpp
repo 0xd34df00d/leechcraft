@@ -103,8 +103,12 @@ namespace LeechCraft
 		QVariantMap GetAdditionalMap (const boost::program_options::variables_map& map)
 		{
 			QVariantMap addMap;
-			const auto& additionals = map ["additional"].as<std::vector<std::string>> ();
-			for (const auto& add : additionals)
+
+			const auto pos = map.find ("additional");
+			if (pos == map.end ())
+				return addMap;
+
+			for (const auto& add : pos->second.as<std::vector<std::string>> ())
 			{
 				const auto& split = QString::fromUtf8 (add.c_str ()).split (":", QString::SkipEmptyParts);
 				if (split.size () == 2)
