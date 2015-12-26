@@ -295,6 +295,8 @@ namespace LMP
 
 		auto showInArtistBrowser = menu.addAction (tr ("Show in artist browser"),
 				this, SLOT (showInArtistBrowser ()));
+		showInArtistBrowser->setIcon (QIcon { "lcicons:/lmp/resources/images/lmp_artist_browser.svg" });
+
 		menu.addSeparator ();
 
 		auto remove = menu.addAction (tr ("Remove from collection..."), this, SLOT (handleCollectionRemove ()));
