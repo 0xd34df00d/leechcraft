@@ -69,6 +69,8 @@ namespace LMP
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		Util::InstallTranslator ("lmp");
 
 #ifdef Q_OS_MAC

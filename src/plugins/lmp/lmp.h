@@ -77,6 +77,8 @@ namespace LMP
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP")
 
+		ICoreProxy_ptr Proxy_;
+
 		TabClassInfo PlayerTC_;
 		TabClassInfo ArtistBrowserTC_;
 
