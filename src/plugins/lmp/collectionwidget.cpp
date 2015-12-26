@@ -293,6 +293,8 @@ namespace LMP
 			menu.addAction (tr ("Album art manager..."), this, SLOT (showAlbumArtManager ()));
 		}
 
+		auto showInArtistBrowser = menu.addAction (tr ("Show in artist browser"),
+				this, SLOT (showInArtistBrowser ()));
 		menu.addSeparator ();
 
 		auto remove = menu.addAction (tr ("Remove from collection..."), this, SLOT (handleCollectionRemove ()));
