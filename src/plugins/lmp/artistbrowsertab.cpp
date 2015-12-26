@@ -50,7 +50,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	ArtistBrowserTab::ArtistBrowserTab (const TabClassInfo& tc, QObject *plugin)
+	ArtistBrowserTab::ArtistBrowserTab (const ICoreProxy_ptr& proxy,
+			const TabClassInfo& tc, QObject *plugin)
 	: TC_ (tc)
 	, Plugin_ (plugin)
 #if QT_VERSION < 0x050000

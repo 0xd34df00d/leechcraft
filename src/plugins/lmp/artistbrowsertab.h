@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_artistbrowsertab.h"
 
 #if QT_VERSION < 0x050000
@@ -68,7 +69,7 @@ namespace LMP
 		BioViewManager *BioMgr_;
 		SimilarViewManager *SimilarMgr_;
 	public:
-		ArtistBrowserTab (const TabClassInfo&, QObject*);
+		ArtistBrowserTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

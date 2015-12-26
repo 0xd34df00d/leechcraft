@@ -526,7 +526,7 @@ namespace LMP
 
 	void Plugin::handleArtistBrowseRequested (const QString& artist, const DynPropertiesList_t& props)
 	{
-		auto tab = new ArtistBrowserTab (ArtistBrowserTC_, this);
+		auto tab = new ArtistBrowserTab (Proxy_, ArtistBrowserTC_, this);
 
 		for (const auto& pair : props)
 			tab->setProperty (pair.first, pair.second);
