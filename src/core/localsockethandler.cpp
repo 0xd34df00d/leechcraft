@@ -134,6 +134,29 @@ namespace LeechCraft
 			}
 			return addMap;
 		}
+
+		TaskParameters GetTaskParams (const boost::program_options::variables_map& map)
+		{
+			TaskParameters tp { FromCommandLine };
+			if (map.count ("automatic"))
+				tp |= AutoAccept;
+			else
+				tp |= FromUserInitiated;
+
+			if (map.count ("handle"))
+			{
+				tp |= OnlyHandle;
+				tp |= AutoAccept;
+			}
+
+			if (map.count ("download"))
+			{
+				tp |= OnlyDownload;
+				tp |= AutoAccept;
+			}
+
+			return tp;
+		}
 	}
 
 	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map)
@@ -141,24 +164,7 @@ namespace LeechCraft
 		if (!map.count ("entity"))
 			return;
 
-		TaskParameters tp { FromCommandLine };
-		if (map.count ("automatic"))
-			tp |= AutoAccept;
-		else
-			tp |= FromUserInitiated;
-
-		if (map.count ("handle"))
-		{
-			tp |= OnlyHandle;
-			tp |= AutoAccept;
-		}
-
-		if (map.count ("download"))
-		{
-			tp |= OnlyDownload;
-			tp |= AutoAccept;
-		}
-
+		const auto& tp = GetTaskParams (map);
 		const auto& type = GetType (map);
 		const auto& addMap = GetAdditionalMap (map);
 
