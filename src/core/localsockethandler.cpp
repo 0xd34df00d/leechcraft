@@ -84,7 +84,7 @@ namespace LeechCraft
 		qDebug () << Q_FUNC_INFO << arguments;
 
 		std::vector<std::wstring> strings;
-		Q_FOREACH (const QString& arg, arguments)
+		for (const auto& arg : arguments)
 			strings.push_back (arg.toStdWString ());
 
 		boost::program_options::options_description desc;
@@ -142,12 +142,11 @@ namespace LeechCraft
 				addMap [split.value (0)] = split.value (1);
 		}
 
-		const auto& entities = map ["entity"].as<std::vector<std::wstring>> ();
-		Q_FOREACH (const std::wstring& rawEntity, entities)
+		for (const auto& rawEntity : map ["entity"].as<std::vector<std::wstring>> ())
 		{
 			QVariant ve;
 
-			const QString entity = QString::fromWCharArray (rawEntity.c_str ());
+			const auto& entity = QString::fromWCharArray (rawEntity.c_str ());
 
 			if (type == "url")
 				ve = QUrl (entity);
@@ -166,7 +165,7 @@ namespace LeechCraft
 			}
 
 			auto e = Util::MakeEntity (ve,
-					QString (),
+					{},
 					tp);
 			e.Additional_ = addMap;
 			qDebug () << e.Entity_ << e.Additional_;
