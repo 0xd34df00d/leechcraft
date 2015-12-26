@@ -110,9 +110,13 @@ namespace LeechCraft
 
 			for (const auto& add : pos->second.as<std::vector<std::string>> ())
 			{
-				const auto& split = QString::fromUtf8 (add.c_str ()).split (":", QString::SkipEmptyParts);
-				if (split.size () == 2)
-					addMap [split.value (0)] = split.value (1);
+				const auto& str = QString::fromStdString (add);
+				const auto& name = str.section (':', 0, 0);
+				const auto& value = str.section (':', 1);
+				if (value.isEmpty ())
+					continue;
+
+				addMap [name] = value;
 			}
 			return addMap;
 		}
