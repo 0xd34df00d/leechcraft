@@ -161,6 +161,13 @@ namespace LMP
 		dia->show ();
 	}
 
+	void CollectionWidget::showInArtistBrowser ()
+	{
+		const auto& index = Ui_.CollectionTree_->currentIndex ();
+		const auto& artist = index.data (LocalCollectionModel::Role::ArtistName).toString ();
+		Core::Instance ().RequestArtistBrowser (artist);
+	}
+
 	namespace
 	{
 		template<typename T>

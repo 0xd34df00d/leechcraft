@@ -57,6 +57,7 @@ namespace LMP
 		void showCollectionTrackProps ();
 		void showCollectionAlbumArt ();
 		void showAlbumArtManager ();
+		void showInArtistBrowser ();
 		void handleCollectionRemove ();
 		void handleCollectionDelete ();
 		void loadFromCollection ();
