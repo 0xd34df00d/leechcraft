@@ -100,6 +100,15 @@ namespace LeechCraft
 
 	namespace
 	{
+		QString GetType (const boost::program_options::variables_map& map)
+		{
+			const auto pos = map.find ("type");
+			if (pos == map.end ())
+				return {};
+
+			return QString::fromStdString (pos->second.as<std::string> ());
+		}
+
 		QVariantMap GetAdditionalMap (const boost::program_options::variables_map& map)
 		{
 			QVariantMap addMap;
@@ -150,18 +159,7 @@ namespace LeechCraft
 			tp |= AutoAccept;
 		}
 
-		QString type;
-		try
-		{
-			if (map.find ("type") != map.end ())
-				type = QString::fromUtf8 (map ["type"].as<std::string> ().c_str ());
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< e.what ();
-		}
-
+		const auto& type = GetType (map);
 		const auto& addMap = GetAdditionalMap (map);
 
 		for (const auto& rawEntity : map ["entity"].as<std::vector<std::wstring>> ())
