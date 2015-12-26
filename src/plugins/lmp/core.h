@@ -109,6 +109,8 @@ namespace LMP
 		QObjectList GetSyncPlugins () const;
 		QObjectList GetCloudStoragePlugins () const;
 
+		void RequestArtistBrowser (const QString&);
+
 		HookInterconnector* GetHookInterconnector () const;
 		LocalFileResolver* GetLocalFileResolver () const;
 		LocalCollection* GetLocalCollection () const;
