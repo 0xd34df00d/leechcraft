@@ -104,7 +104,7 @@ namespace LMP
 		qRegisterMetaType<QList<SavedFilterInfo>> ("QList<LeechCraft::LMP::SavedFilterInfo>");
 		qRegisterMetaTypeStreamOperators<QList<SavedFilterInfo>> ();
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "lmpsettings.xml");
 
 #if QT_VERSION < 0x050000
