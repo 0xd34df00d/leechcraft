@@ -53,7 +53,7 @@ namespace LMP
 
 		SimilarViewManager *Manager_;
 	public:
-		SimilarView (QWidget* = 0);
+		SimilarView (QWidget* = nullptr);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 	};
