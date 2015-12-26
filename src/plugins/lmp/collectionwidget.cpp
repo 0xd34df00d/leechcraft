@@ -154,7 +154,7 @@ namespace LMP
 
 		const auto& index = Ui_.CollectionTree_->currentIndex ();
 		const auto& album = index.data (LocalCollectionModel::Role::AlbumName).toString ();
-		const auto& artist= index.data (LocalCollectionModel::Role::ArtistName).toString ();
+		const auto& artist = index.data (LocalCollectionModel::Role::ArtistName).toString ();
 
 		auto dia = new AlbumArtManagerDialog (artist, album, aamgr, this);
 		dia->setAttribute (Qt::WA_DeleteOnClose);
