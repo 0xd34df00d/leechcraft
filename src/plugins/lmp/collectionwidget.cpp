@@ -219,7 +219,7 @@ namespace LMP
 		if (response != QMessageBox::Yes)
 			return;
 
-		Q_FOREACH (const auto& path, paths)
+		for (const auto& path : paths)
 			QFile::remove (path);
 	}
 
