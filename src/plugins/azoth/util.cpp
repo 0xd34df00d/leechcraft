@@ -372,6 +372,8 @@ namespace Azoth
 		settings.endGroup ();
 
 		return !key.isNull ();
+#else
+		return false;
 #endif
 	}
 }
