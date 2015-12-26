@@ -48,7 +48,7 @@ namespace LMP
 
 		Media::SimilarityInfos_t Similars_;
 	public:
-		RecommendationsWidget (QWidget* = 0);
+		RecommendationsWidget (QWidget* = nullptr);
 
 		void InitializeProviders ();
 	private:
