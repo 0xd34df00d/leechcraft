@@ -114,7 +114,12 @@ namespace LeechCraft
 				const auto& name = str.section (':', 0, 0);
 				const auto& value = str.section (':', 1);
 				if (value.isEmpty ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "malformed Additional parameter:"
+							<< str;
 					continue;
+				}
 
 				addMap [name] = value;
 			}
