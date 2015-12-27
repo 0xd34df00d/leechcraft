@@ -155,9 +155,9 @@ namespace LMP
 
 			PropsGetter (Appender app, TagLib::AudioProperties *props)
 			: F_ (app)
+			, IF_ ([app] (const QString& name, int val) { app (name, QString::number (val)); })
 			, Props_ (props)
 			{
-				IF_ = [app] (const QString& name, int val) { app (name, QString::number (val)); };
 			}
 
 			template<typename T>
