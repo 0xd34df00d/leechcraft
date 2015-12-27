@@ -72,9 +72,9 @@ namespace LMP
 		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
 	public:
 #if QT_VERSION < 0x050000
-		BioViewManager (QDeclarativeView*, QObject* = 0);
+		BioViewManager (QDeclarativeView*, QObject* = nullptr);
 #else
-		BioViewManager (QQuickWidget*, QObject* = 0);
+		BioViewManager (QQuickWidget*, QObject* = nullptr);
 #endif
 
 		void InitWithSource ();
