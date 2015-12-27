@@ -49,7 +49,6 @@ namespace LMP
 	: QWidget (parent)
 	, BioWidget_ (new BioWidget)
 	, SimilarView_ (new SimilarView)
-	, LyricsVariantPos_ (0)
 	{
 		Ui_.setupUi (this);
 		Ui_.BioPage_->layout ()->addWidget (BioWidget_);

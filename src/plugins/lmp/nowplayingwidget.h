@@ -56,7 +56,7 @@ namespace LMP
 		MediaInfo CurrentInfo_;
 
 		QList<Media::LyricsResultItem> PossibleLyrics_;
-		int LyricsVariantPos_;
+		int LyricsVariantPos_ = 0;
 	public:
 		NowPlayingWidget (QWidget* = nullptr);
 
