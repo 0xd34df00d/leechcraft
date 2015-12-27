@@ -70,8 +70,8 @@ namespace LMP
 #endif
 		layout ()->addWidget (View_);
 
-		BioMgr_ = new BioViewManager (Core::Instance ().GetProxy (), View_, this);
-		SimilarMgr_ = new SimilarViewManager (View_, this);
+		BioMgr_ = new BioViewManager (proxy, View_, this);
+		SimilarMgr_ = new SimilarViewManager (proxy, View_, this);
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
@@ -81,7 +81,7 @@ namespace LMP
 		BioMgr_->InitWithSource ();
 		SimilarMgr_->InitWithSource ();
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.ArtistNameEdit_);
+		new Util::ClearLineEditAddon (proxy, Ui_.ArtistNameEdit_);
 	}
 
 	TabClassInfo ArtistBrowserTab::GetTabClassInfo () const
