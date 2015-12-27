@@ -66,8 +66,8 @@ namespace LMP
 
 		Ui::ArtistBrowserTab Ui_;
 
-		BioViewManager *BioMgr_;
-		SimilarViewManager *SimilarMgr_;
+		BioViewManager * const BioMgr_;
+		SimilarViewManager * const SimilarMgr_;
 
 		const ICoreProxy_ptr Proxy_;
 	public:
