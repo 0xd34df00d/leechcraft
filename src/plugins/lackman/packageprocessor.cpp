@@ -332,9 +332,6 @@ namespace LackMan
 			return;
 		}
 
-		const QString& archiver = info.VersionArchivers_
-				.value (info.Versions_.value (0), "gz");
-
 		QProcess *unarch = new QProcess (this);
 		connect (unarch,
 				SIGNAL (finished (int, QProcess::ExitStatus)),
@@ -365,6 +362,7 @@ namespace LackMan
 			<< "-so"
 			<< path;
 #else
+		const auto& archiver = info.VersionArchivers_.value (info.Versions_.value (0), "gz");
 		if (archiver == "lzma")
 			args << "--lzma";
 		args << "-xf";
