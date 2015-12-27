@@ -58,7 +58,7 @@ namespace LMP
 		QList<Media::LyricsResultItem> PossibleLyrics_;
 		int LyricsVariantPos_;
 	public:
-		NowPlayingWidget (QWidget* = 0);
+		NowPlayingWidget (QWidget* = nullptr);
 
 		void AddTab (const QString&, QWidget*);
 
