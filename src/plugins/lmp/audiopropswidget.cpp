@@ -150,8 +150,8 @@ namespace LMP
 		struct PropsGetter
 		{
 			Appender F_;
-			std::function<void (QString, int)> IF_;
-			TagLib::AudioProperties *Props_;
+			const std::function<void (QString, int)> IF_;
+			TagLib::AudioProperties * const Props_;
 
 			PropsGetter (Appender app, TagLib::AudioProperties *props)
 			: F_ (app)
