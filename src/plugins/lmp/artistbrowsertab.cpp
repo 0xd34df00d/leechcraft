@@ -70,7 +70,7 @@ namespace LMP
 #endif
 		layout ()->addWidget (View_);
 
-		BioMgr_ = new BioViewManager (View_, this);
+		BioMgr_ = new BioViewManager (Core::Instance ().GetProxy (), View_, this);
 		SimilarMgr_ = new SimilarViewManager (View_, this);
 
 		new Util::StandardNAMFactory ("lmp/qml",

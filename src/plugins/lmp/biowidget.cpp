@@ -75,7 +75,7 @@ namespace LMP
 				[] { return 50 * 1024 * 1024; },
 				View_->engine ());
 
-		Manager_ = new BioViewManager (View_, this);
+		Manager_ = new BioViewManager (Core::Instance ().GetProxy (), View_, this);
 		View_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "BioView.qml"));
 		Manager_->InitWithSource ();
 

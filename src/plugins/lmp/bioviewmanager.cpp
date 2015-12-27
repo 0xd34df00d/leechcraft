@@ -95,16 +95,17 @@ namespace LMP
 	}
 
 #if QT_VERSION < 0x050000
-	BioViewManager::BioViewManager (QDeclarativeView *view, QObject *parent)
+	BioViewManager::BioViewManager (const ICoreProxy_ptr& proxy,
+			QDeclarativeView *view, QObject *parent)
 #else
-	BioViewManager::BioViewManager (QQuickWidget *view, QObject *parent)
+	BioViewManager::BioViewManager (const ICoreProxy_ptr& proxy,
+			QQuickWidget *view, QObject *parent)
 #endif
 	: QObject (parent)
 	, View_ (view)
 	, BioPropProxy_ (new BioPropProxy (this))
 	, DiscoModel_ (new DiscoModel (this))
 	{
-		auto proxy = Core::Instance ().GetProxy ();
 		View_->rootContext ()->setContextObject (BioPropProxy_);
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
 		View_->rootContext ()->setContextProperty ("colorProxy",

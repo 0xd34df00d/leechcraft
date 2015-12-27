@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QImage>
 #include <interfaces/media/idiscographyprovider.h>
+#include <interfaces/core/icoreproxyfwd.h>
 
 #if QT_VERSION < 0x050000
 class QDeclarativeView;
@@ -72,9 +73,9 @@ namespace LMP
 		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
 	public:
 #if QT_VERSION < 0x050000
-		BioViewManager (QDeclarativeView*, QObject* = nullptr);
+		BioViewManager (const ICoreProxy_ptr&, QDeclarativeView*, QObject* = nullptr);
 #else
-		BioViewManager (QQuickWidget*, QObject* = nullptr);
+		BioViewManager (const ICoreProxy_ptr&, QQuickWidget*, QObject* = nullptr);
 #endif
 
 		void InitWithSource ();
