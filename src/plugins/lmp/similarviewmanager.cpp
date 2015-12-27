@@ -51,9 +51,11 @@ namespace LeechCraft
 namespace LMP
 {
 #if QT_VERSION < 0x050000
-	SimilarViewManager::SimilarViewManager (QDeclarativeView *view, QObject *parent)
+	SimilarViewManager::SimilarViewManager (const ICoreProxy_ptr& proxy,
+			QDeclarativeView *view, QObject *parent)
 #else
-	SimilarViewManager::SimilarViewManager (QQuickWidget *view, QObject *parent)
+	SimilarViewManager::SimilarViewManager (const ICoreProxy_ptr& proxy,
+			QQuickWidget *view, QObject *parent)
 #endif
 	: QObject (parent)
 	, View_ (view)

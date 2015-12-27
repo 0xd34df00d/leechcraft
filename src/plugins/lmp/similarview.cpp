@@ -51,7 +51,7 @@ namespace LMP
 #else
 	: QQuickWidget (parent)
 #endif
-	, Manager_ (new SimilarViewManager (this, this))
+	, Manager_ (new SimilarViewManager (proxy, this, this))
 	{
 		setResizeMode (SizeRootObjectToView);
 		engine ()->addImageProvider ("ThemeIcons",
