@@ -36,6 +36,7 @@
 #include <QQuickWidget>
 #endif
 #include <interfaces/media/audiostructs.h>
+#include <interfaces/core/icoreproxyfwd.h>
 
 namespace LeechCraft
 {
@@ -53,7 +54,7 @@ namespace LMP
 
 		SimilarViewManager *Manager_;
 	public:
-		SimilarView (QWidget* = nullptr);
+		SimilarView (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		void SetSimilarArtists (Media::SimilarityInfos_t);
 	};

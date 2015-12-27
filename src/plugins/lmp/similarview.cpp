@@ -45,7 +45,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	SimilarView::SimilarView (QWidget *parent)
+	SimilarView::SimilarView (const ICoreProxy_ptr& proxy, QWidget *parent)
 #if QT_VERSION < 0x050000
 	: QDeclarativeView (parent)
 #else

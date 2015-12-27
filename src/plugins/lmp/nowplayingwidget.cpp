@@ -48,7 +48,7 @@ namespace LMP
 	NowPlayingWidget::NowPlayingWidget (QWidget *parent)
 	: QWidget (parent)
 	, BioWidget_ (new BioWidget)
-	, SimilarView_ (new SimilarView)
+	, SimilarView_ (new SimilarView (Core::Instance ().GetProxy ()))
 	{
 		Ui_.setupUi (this);
 		Ui_.BioPage_->layout ()->addWidget (BioWidget_);

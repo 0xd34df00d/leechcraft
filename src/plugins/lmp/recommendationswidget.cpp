@@ -47,7 +47,7 @@ namespace LMP
 {
 	RecommendationsWidget::RecommendationsWidget (QWidget *parent)
 	: QWidget (parent)
-	, RecView_ (new SimilarView)
+	, RecView_ (new SimilarView (Core::Instance ().GetProxy ()))
 	{
 		Ui_.setupUi (this);
 
