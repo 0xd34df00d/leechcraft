@@ -69,6 +69,7 @@
 #include <taglib/wavpackproperties.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "localfileresolver.h"
 #include "core.h"
@@ -339,8 +340,8 @@ namespace LMP
 
 		auto addMap = [append] (const QMap<QString, QString>& map)
 		{
-			Q_FOREACH (const auto& key, map.keys ())
-				append (key, map [key]);
+			for (const auto& pair : Util::Stlize (map))
+				append (pair.first, pair.second);
 		};
 
 		addMap (GetGenericProps (props));
