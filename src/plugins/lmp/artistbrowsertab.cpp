@@ -43,7 +43,6 @@
 #include <util/sys/paths.h>
 #include "similarviewmanager.h"
 #include "bioviewmanager.h"
-#include "core.h"
 #include "previewhandler.h"
 
 namespace LeechCraft
@@ -136,7 +135,7 @@ namespace LMP
 
 	void ArtistBrowserTab::on_ArtistNameEdit__returnPressed ()
 	{
-		auto provs = Core::Instance ().GetProxy ()->GetPluginsManager ()->
+		auto provs = Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<Media::IArtistBioFetcher*> ();
 		if (provs.isEmpty ())
 		{
