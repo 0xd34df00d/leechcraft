@@ -59,6 +59,7 @@ namespace LMP
 #else
 	, View_ (new QQuickWidget)
 #endif
+	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
 

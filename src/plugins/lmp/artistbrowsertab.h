@@ -68,6 +68,8 @@ namespace LMP
 
 		BioViewManager *BioMgr_;
 		SimilarViewManager *SimilarMgr_;
+
+		const ICoreProxy_ptr Proxy_;
 	public:
 		ArtistBrowserTab (const ICoreProxy_ptr&, const TabClassInfo&, QObject*);
 
