@@ -58,6 +58,8 @@ namespace LMP
 #else
 	, View_ (new QQuickWidget)
 #endif
+	, BioMgr_ (new BioViewManager (proxy, View_, this))
+	, SimilarMgr_ (new SimilarViewManager (proxy, View_, this))
 	, Proxy_ (proxy)
 	{
 		Ui_.setupUi (this);
@@ -69,9 +71,6 @@ namespace LMP
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 #endif
 		layout ()->addWidget (View_);
-
-		BioMgr_ = new BioViewManager (proxy, View_, this);
-		SimilarMgr_ = new SimilarViewManager (proxy, View_, this);
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },
