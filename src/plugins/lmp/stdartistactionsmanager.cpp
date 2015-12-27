@@ -38,6 +38,8 @@
 #endif
 
 #include <util/xpc/util.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "previewhandler.h"
 
@@ -76,18 +78,18 @@ namespace LMP
 	void StdArtistActionsManager::handleBookmark (const QString& name, const QString& page, const QString& tags)
 	{
 		auto e = Util::MakeEntity (tr ("Check out \"%1\"").arg (name),
-				QString (),
+				{},
 				FromUserInitiated | OnlyHandle,
 				"x-leechcraft/todo-item");
 		e.Additional_ ["TodoBody"] = tags + "<br />" + QString ("<a href='%1'>%1</a>").arg (page);
 		e.Additional_ ["Tags"] = QStringList ("music");
-		Core::Instance ().SendEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void StdArtistActionsManager::handleLink (const QString& link)
 	{
-		Core::Instance ().SendEntity (Util::MakeEntity (QUrl (link),
-					QString (),
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (QUrl (link),
+					{},
 					FromUserInitiated | OnlyHandle));
 	}
 }
