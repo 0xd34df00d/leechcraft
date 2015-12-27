@@ -46,11 +46,14 @@ namespace LeechCraft
 namespace LMP
 {
 #if QT_VERSION < 0x050000
-	StdArtistActionsManager::StdArtistActionsManager (QDeclarativeView *view, QObject* parent)
+	StdArtistActionsManager::StdArtistActionsManager (const ICoreProxy_ptr& proxy,
+			QDeclarativeView *view, QObject* parent)
 #else
-	StdArtistActionsManager::StdArtistActionsManager (QQuickWidget *view, QObject* parent)
+	StdArtistActionsManager::StdArtistActionsManager (const ICoreProxy_ptr& proxy,
+			QQuickWidget *view, QObject* parent)
 #endif
-	: QObject (parent)
+	: QObject { parent }
+	, Proxy_ { proxy }
 	{
 		connect (view->rootObject (),
 				SIGNAL (bookmarkArtistRequested (QString, QString, QString)),

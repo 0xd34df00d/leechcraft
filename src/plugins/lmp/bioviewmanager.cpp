@@ -105,6 +105,7 @@ namespace LMP
 	, View_ (view)
 	, BioPropProxy_ (new BioPropProxy (this))
 	, DiscoModel_ (new DiscoModel (this))
+	, Proxy_ (proxy)
 	{
 		View_->rootContext ()->setContextObject (BioPropProxy_);
 		View_->rootContext ()->setContextProperty ("artistDiscoModel", DiscoModel_);
@@ -123,7 +124,7 @@ namespace LMP
 				this,
 				SLOT (handleAlbumPreviewRequested (int)));
 
-		new StdArtistActionsManager (View_, this);
+		new StdArtistActionsManager (Proxy_, View_, this);
 	}
 
 	void BioViewManager::Request (Media::IArtistBioFetcher *fetcher, const QString& artist)

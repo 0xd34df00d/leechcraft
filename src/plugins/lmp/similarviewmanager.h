@@ -55,6 +55,7 @@ namespace LMP
 		QQuickWidget * const View_;
 #endif
 		QStandardItemModel * const Model_;
+		const ICoreProxy_ptr Proxy_;
 	public:
 #if QT_VERSION < 0x050000
 		SimilarViewManager (const ICoreProxy_ptr&, QDeclarativeView*, QObject* = 0);

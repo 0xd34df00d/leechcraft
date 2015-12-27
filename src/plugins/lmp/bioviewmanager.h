@@ -71,6 +71,8 @@ namespace LMP
 		BioPropProxy *BioPropProxy_;
 		QStandardItemModel *DiscoModel_;
 		QList<QList<Media::ReleaseTrackInfo>> Album2Tracks_;
+
+		const ICoreProxy_ptr Proxy_;
 	public:
 #if QT_VERSION < 0x050000
 		BioViewManager (const ICoreProxy_ptr&, QDeclarativeView*, QObject* = nullptr);

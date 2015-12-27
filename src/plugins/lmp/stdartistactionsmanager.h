@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/core/icoreproxyfwd.h>
 
 #if QT_VERSION < 0x050000
 class QDeclarativeView;
@@ -46,9 +47,9 @@ namespace LMP
 		Q_OBJECT
 	public:
 #if QT_VERSION < 0x050000
-		StdArtistActionsManager (QDeclarativeView *view, QObject *parent = 0);
+		StdArtistActionsManager (const ICoreProxy_ptr&, QDeclarativeView *view, QObject *parent = 0);
 #else
-		StdArtistActionsManager (QQuickWidget *view, QObject *parent = 0);
+		StdArtistActionsManager (const ICoreProxy_ptr&, QQuickWidget *view, QObject *parent = 0);
 #endif
 	private slots:
 		void handleBookmark (const QString&, const QString&, const QString&);

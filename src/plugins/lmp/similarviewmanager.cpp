@@ -60,6 +60,7 @@ namespace LMP
 	: QObject (parent)
 	, View_ (view)
 	, Model_ (new SimilarModel (this))
+	, Proxy_ (proxy)
 	{
 		View_->rootContext ()->setContextProperty ("similarModel", Model_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
@@ -68,7 +69,7 @@ namespace LMP
 
 	void SimilarViewManager::InitWithSource ()
 	{
-		new StdArtistActionsManager (View_, this);
+		new StdArtistActionsManager (Proxy_, View_, this);
 	}
 
 	void SimilarViewManager::DefaultRequest (const QString& artist)
