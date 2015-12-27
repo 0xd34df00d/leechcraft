@@ -134,7 +134,7 @@ namespace Krigstask
 			minimizeAct->setProperty ("Actor",
 					QVariant::fromValue<Actor_f> ([this, state] (const QString& wid)
 							{
-								state & Util::WinStateFlag::Hidden ?
+								(state & Util::WinStateFlag::Hidden) ?
 										raiseWindow (wid) :
 										minimizeWindow (wid);
 							}));
