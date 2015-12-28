@@ -48,33 +48,31 @@ namespace Snails
 	{
 	}
 
-	QFuture<void> AccountThread::AddTask (const TaskQueueItem& item)
-	{
-		QMutexLocker guard { &QueueMutex_ };
-
-		if (QueueManager_)
-			QueueManager_->AddTasks ({ item });
-		else
-			PendingQueue_ << item;
-
-		return item.Promise_->future ();
-	}
-
 	void AccountThread::run ()
 	{
 		W_ = new AccountThreadWorker { IsListening_, Name_, Certs_, A_ };
+
 		ConnectSignals ();
 
+		Util::SlotClosure<Util::NoDeletePolicy> rotator
 		{
-			QMutexLocker guard { &QueueMutex_ };
-			QueueManager_ = new TaskQueueManager { W_ };
-			QueueManager_->AddTasks (PendingQueue_);
-			PendingQueue_.clear ();
-		}
+			[this] { RotateFuncs (); },
+			this,
+			SIGNAL (rotateFuncs ()),
+			nullptr
+		};
+
+		const auto shouldRotate = [&]
+			{
+				QMutexLocker locker { &FunctionsMutex_ };
+				return !Functions_.isEmpty ();
+			} ();
+
+		if (shouldRotate)
+			RotateFuncs ();
 
 		QThread::run ();
 
-		delete QueueManager_;
 		delete W_;
 	}
 
@@ -114,6 +112,21 @@ namespace Snails
 				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
 				A_,
 				SLOT (handleFolderSyncFinished (QStringList, QByteArray)));
+	}
+
+	void AccountThread::RotateFuncs ()
+	{
+		decltype (Functions_) funcs;
+
+		{
+			QMutexLocker locker { &FunctionsMutex_ };
+
+			using std::swap;
+			swap (funcs, Functions_);
+		}
+
+		for (const auto& func : funcs)
+			func.Executor_ (W_);
 	}
 }
 }

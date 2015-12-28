@@ -83,8 +83,7 @@ namespace Snails
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
 	{
-		Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
-		MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+		UpdateNoopInterval ();
 
 		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
@@ -141,33 +140,17 @@ namespace Snails
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		Thread_->AddTask ({
-				"synchronize",
-				{
-					{ folders },
-					QByteArray {}
-				}
-			});
+		Thread_->Schedule (&AccountThreadWorker::synchronize, folders, QByteArray {});
 	}
 
 	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
-		Thread_->AddTask ({
-				"synchronize",
-				{
-					QList<QStringList> { path },
-					last
-				},
-				"syncFolder"
-			});
+		Thread_->Schedule (&AccountThreadWorker::synchronize, QList<QStringList> { path }, last);
 	}
 
 	void Account::FetchWholeMessage (const Message_ptr& msg)
 	{
-		MessageFetchThread_->AddTask ({
-				"fetchWholeMessage",
-				{ msg }
-			});
+		Thread_->Schedule (&AccountThreadWorker::fetchWholeMessage, msg);
 	}
 
 	QFuture<void> Account::SendMessage (const Message_ptr& msg)
@@ -179,47 +162,24 @@ namespace Snails
 			pair.second = UserEmail_;
 		msg->SetAddress (Message::Address::From, pair);
 
-		return MessageFetchThread_->AddTask ({
-				"sendMessage",
-				{ msg }
-			});
+		return MessageFetchThread_->Schedule (&AccountThreadWorker::sendMessage, msg);
 	}
 
 	void Account::FetchAttachment (const Message_ptr& msg,
 			const QString& attName, const QString& path)
 	{
-		MessageFetchThread_->AddTask ({
-				"fetchAttachment",
-				{
-					msg,
-					attName,
-					path
-				}
-			});
+		MessageFetchThread_->Schedule (&AccountThreadWorker::fetchAttachment,
+				msg, attName, path);
 	}
 
 	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		MessageFetchThread_->AddTask ({
-				"setReadStatus",
-				{
-					read,
-					ids,
-					folder
-				}
-			});
+		MessageFetchThread_->Schedule (&AccountThreadWorker::setReadStatus, read, ids, folder);
 	}
 
 	void Account::CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
 	{
-		MessageFetchThread_->AddTask ({
-				"copyMessages",
-				{
-					ids,
-					from,
-					to
-				}
-			});
+		MessageFetchThread_->Schedule (&AccountThreadWorker::copyMessages, ids, from, to);
 	}
 
 	void Account::MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
@@ -230,13 +190,7 @@ namespace Snails
 
 	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		MessageFetchThread_->AddTask ({
-				"deleteMessages",
-				{
-					ids,
-					folder
-				}
-			});
+		MessageFetchThread_->Schedule (&AccountThreadWorker::deleteMessages, ids, folder);
 	}
 
 	QByteArray Account::Serialize () const
@@ -420,8 +374,7 @@ namespace Snails
 				if (KeepAliveInterval_ != dia->GetKeepAliveInterval ())
 				{
 					KeepAliveInterval_ = dia->GetKeepAliveInterval ();
-					Thread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
-					MessageFetchThread_->AddTask ({ "setNoopTimeout", { KeepAliveInterval_ } });
+					UpdateNoopInterval ();
 				}
 
 				LogToFile_ = dia->GetLogConnectionsToFile ();
@@ -464,6 +417,12 @@ namespace Snails
 	QMutex* Account::GetMutex () const
 	{
 		return AccMutex_;
+	}
+
+	void Account::UpdateNoopInterval ()
+	{
+		Thread_->Schedule (&AccountThreadWorker::setNoopTimeout, KeepAliveInterval_);
+		MessageFetchThread_->Schedule (&AccountThreadWorker::setNoopTimeout, KeepAliveInterval_);
 	}
 
 	QString Account::BuildInURL ()
@@ -606,14 +565,8 @@ namespace Snails
 		if (lastRequestedId.isEmpty ())
 			return;
 
-		Thread_->AddTask ({
-				"getMessageCount",
-				{
-					folder,
-					static_cast<QObject*> (this),
-					QByteArray { "handleMessageCountFetched" }
-				}
-			});
+		Thread_->Schedule (&AccountThreadWorker::getMessageCount,
+				folder, this, "handleMessageCountFetched");
 	}
 
 	void Account::handleMessageCountFetched (int count, int unread, const QStringList& folder)
@@ -652,15 +605,9 @@ namespace Snails
 			FoldersModel_->SetFolderMessageCount (folder.Path_, count);
 			FoldersModel_->SetFolderUnreadCount (folder.Path_, unread);
 
-			Thread_->AddTask ({
-					TaskQueueItem::Priority::Lowest,
-					"getMessageCount",
-					{
-						folder.Path_,
-						static_cast<QObject*> (this),
-						QByteArray { "handleMessageCountFetched" }
-					}
-				});
+			// TODO lowest priority
+			Thread_->Schedule (&AccountThreadWorker::getMessageCount,
+					folder.Path_, this, "handleMessageCountFetched");
 		}
 	}
 

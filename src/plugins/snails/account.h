@@ -164,6 +164,8 @@ namespace Snails
 	private:
 		QMutex* GetMutex () const;
 
+		void UpdateNoopInterval ();
+
 		QString BuildInURL ();
 		QString BuildOutURL ();
 		QByteArray GetStoreID (Direction) const;

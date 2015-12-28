@@ -32,6 +32,7 @@
 #include <QThread>
 #include <QFuture>
 #include <vmime/security/cert/X509Certificate.hpp>
+#include <util/threads/futures.h>
 #include "taskqueuemanager.h"
 
 namespace LeechCraft
@@ -44,6 +45,11 @@ namespace Snails
 
 	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
 
+	struct Task
+	{
+		std::function<void (AccountThreadWorker*)> Executor_;
+	};
+
 	class AccountThread : public QThread
 	{
 		Q_OBJECT
@@ -55,18 +61,39 @@ namespace Snails
 
 		AccountThreadWorker *W_;
 
-		QMutex QueueMutex_;
-		QList<TaskQueueItem> PendingQueue_;
-		TaskQueueManager *QueueManager_ = nullptr;
+		QMutex FunctionsMutex_;
+		QList<Task> Functions_;
 	public:
 		AccountThread (bool isListening, const QString& name,
 				const CertList_t& certs, Account *acc);
 
-		QFuture<void> AddTask (const TaskQueueItem&);
+		template<typename F, typename... Args>
+		QFuture<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>> Schedule (const F& func, const Args&... args)
+		{
+			QFutureInterface<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>> iface;
+
+			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
+			{
+				iface.reportStarted ();
+				Util::ReportFutureResult (iface, func, w, args...);
+			};
+
+			{
+				QMutexLocker locker { &FunctionsMutex_ };
+				Functions_ << Task { reporting };
+			}
+
+			emit rotateFuncs ();
+
+			return iface.future ();
+		}
 	protected:
 		void run ();
 	private:
+		void RotateFuncs ();
 		void ConnectSignals ();
+	signals:
+		void rotateFuncs ();
 	};
 }
 }
