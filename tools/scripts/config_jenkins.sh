@@ -99,7 +99,7 @@ case $1 in
 			-DENABLE_FONTIAC=False ;;
 	opensuse_13_2*)
 		CC="/usr/bin/clang" CXX="/usr/bin/clang++" cmake ../src \
-			-DLIB_SUFFIX=64 '-DCMAKE_CXX_FLAGS=-fmessage-length=0 -grecord-gcc-switches -fstack-protector -O2 -Wall -D_FORTIFY_SOURCE=2 -funwind-tables -fasynchronous-unwind-tables -Doverride=' \
+			-DLIB_SUFFIX=64 \
 			-DENABLE_ADVANCEDNOTIFICATIONS=True \
 			-DENABLE_AGGREGATOR=True \
 			-DENABLE_AGGREGATOR_WEBACCESS=False \
