@@ -50,7 +50,7 @@ namespace Util
 	{
 		try
 		{
-			const auto result = f (std::forward<Args> (args)...);
+			const auto result = Invoke (std::forward<F> (f), std::forward<Args> (args)...);
 			iface.reportFinished (&result);
 		}
 		catch (const QtException_t& e)
@@ -70,7 +70,7 @@ namespace Util
 	{
 		try
 		{
-			f (std::forward<Args> (args)...);
+			Invoke (std::forward<F> (f), std::forward<Args> (args)...);
 		}
 		catch (const QtException_t& e)
 		{
