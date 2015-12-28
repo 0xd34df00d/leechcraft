@@ -101,11 +101,7 @@ namespace Snails
 		void SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);
-	private slots:
-		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
-
-		void sendNoop ();
-	public slots:
+	public:
 		void setNoopTimeout (int);
 
 		void flushSockets ();
@@ -122,6 +118,10 @@ namespace Snails
 		void deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void sendMessage (const LeechCraft::Snails::Message_ptr&);
+	private slots:
+		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
+
+		void sendNoop ();
 	public:
 		struct Args
 		{
