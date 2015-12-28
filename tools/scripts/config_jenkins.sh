@@ -190,7 +190,7 @@ case $1 in
 			-DENABLE_XPROXY=False \
 			-DENABLE_FONTIAC=False ;;
 	opensuse_factory*)
-		cmake ../src -DLIB_SUFFIX=64 '-DCMAKE_CXX_FLAGS=-fmessage-length=0 -grecord-gcc-switches -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector -funwind-tables -fasynchronous-unwind-tables -Doverride=' \
+		cmake ../src -DLIB_SUFFIX=64 \
 			-DUSE_CPP14=True \
 			-DCMAKE_INSTALL_PREFIX=/usr \
 			-DSTRICT_LICENSING=True \
