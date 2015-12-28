@@ -192,6 +192,7 @@ case $1 in
 	opensuse_factory*)
 		cmake ../src -DLIB_SUFFIX=64 \
 			-DUSE_CPP14=True \
+			-DEXTRA_WARNINGS=True \
 			-DCMAKE_INSTALL_PREFIX=/usr \
 			-DSTRICT_LICENSING=True \
 			-DENABLE_ADVANCEDNOTIFICATIONS=True \
