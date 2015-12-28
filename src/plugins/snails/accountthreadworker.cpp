@@ -664,8 +664,7 @@ namespace Snails
 	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			const VmimeFolder_ptr& folder, const QByteArray& lastId)
 	{
-		const auto& changeGuard = ChangeListener_->Disable ();
-		Q_UNUSED (changeGuard)
+		const auto changeGuard = ChangeListener_->Disable ();
 
 		const std::shared_ptr<void> syncFinishedGuard
 		{
