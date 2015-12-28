@@ -48,16 +48,16 @@ namespace Util
 		return obj.*mem;
 	}
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype ((obj.*mem) ())
+	template<typename Base, typename Real, typename Res, typename... Rest>
+	auto Invoke (Res Base::* mem, Real&& obj, Rest&&... rest) -> decltype ((obj.*mem) (std::forward<Rest> (rest)...))
 	{
-		return (obj.*mem) ();
+		return (obj.*mem) (std::forward<Rest> (rest)...);
 	}
 
-	template<typename Base, typename Real, typename Res>
-	auto Invoke (Res Base::* mem, Real&& obj) -> decltype ((obj->*mem) ())
+	template<typename Base, typename Real, typename Res, typename... Rest>
+	auto Invoke (Res Base::* mem, Real&& obj, Rest&&... rest) -> decltype ((obj->*mem) (std::forward<Rest> (rest)...))
 	{
-		return (obj->*mem) ();
+		return (obj->*mem) (std::forward<Rest> (rest)...);
 	}
 
 	template<typename T>
