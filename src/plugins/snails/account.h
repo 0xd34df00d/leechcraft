@@ -171,6 +171,9 @@ namespace Snails
 		QByteArray GetStoreID (Direction) const;
 
 		void UpdateFolderCount (const QStringList&);
+
+		void RequestMessageCount (const QStringList&);
+		void HandleMessageCountFetched (int, int, const QStringList&);
 	private slots:
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
@@ -182,7 +185,6 @@ namespace Snails
 		void handleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
 
 		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
-		void handleMessageCountFetched (int, int, const QStringList&);
 
 		void handleGotFolders (const QList<LeechCraft::Snails::Folder>&);
 		void handleFoldersUpdated ();

@@ -903,18 +903,14 @@ namespace Snails
 		FetchMessagesIMAP (folders, last);
 	}
 
-	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
+	auto AccountThreadWorker::getMessageCount (const QStringList& folder) -> MsgCountResult_t
 	{
 		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
-			return;
+			return MsgCountResult_t::Left (FolderNotFound {});
 
 		const auto& status = netFolder->getStatus ();
-		QMetaObject::invokeMethod (handler,
-				slot,
-				Q_ARG (int, status->getMessageCount ()),
-				Q_ARG (int, status->getUnseenCount ()),
-				Q_ARG (QStringList, folder));
+		return MsgCountResult_t::Right ({ status->getMessageCount (), status->getUnseenCount () });
 	}
 
 	void AccountThreadWorker::setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folderPath)

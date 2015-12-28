@@ -36,8 +36,9 @@
 #include <QStandardItemModel>
 #include <QSslSocket>
 #include <util/xpc/util.h>
-#include <util/sll/slotclosure.h>
 #include <util/xpc/passutils.h>
+#include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
 #include "core.h"
 #include "accountconfigdialog.h"
 #include "accountthread.h"
@@ -565,11 +566,22 @@ namespace Snails
 		if (lastRequestedId.isEmpty ())
 			return;
 
-		Thread_->Schedule (&AccountThreadWorker::getMessageCount,
-				folder, this, "handleMessageCountFetched");
+		RequestMessageCount (folder);
 	}
 
-	void Account::handleMessageCountFetched (int count, int unread, const QStringList& folder)
+	void Account::RequestMessageCount (const QStringList& folder)
+	{
+		Util::Sequence (this, Thread_->Schedule (&AccountThreadWorker::getMessageCount, folder)) >>
+				[=] (const auto& counts)
+				{
+					Util::Visit (counts.AsVariant (),
+							[=] (const QPair<int, int>& counts)
+								{ HandleMessageCountFetched (counts.first, counts.second, folder); },
+							[] (auto) {});
+				};
+	}
+
+	void Account::HandleMessageCountFetched (int count, int unread, const QStringList& folder)
 	{
 		const auto storedCount = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
 		if (storedCount && count != storedCount)
@@ -606,8 +618,7 @@ namespace Snails
 			FoldersModel_->SetFolderUnreadCount (folder.Path_, unread);
 
 			// TODO lowest priority
-			Thread_->Schedule (&AccountThreadWorker::getMessageCount,
-					folder.Path_, this, "handleMessageCountFetched");
+			RequestMessageCount (folder.Path_);
 		}
 	}
 

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
@@ -36,6 +37,7 @@
 #include <vmime/net/store.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
 #include <util/sll/assoccache.h>
+#include <util/sll/either.h>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
 #include "message.h"
@@ -108,7 +110,10 @@ namespace Snails
 
 		void synchronize (const QList<QStringList>&, const QByteArray& last);
 
-		void getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot);
+		struct FolderNotFound {};
+		using MsgCountError_t = boost::variant<FolderNotFound>;
+		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
+		MsgCountResult_t getMessageCount (const QStringList& folder);
 
 		void setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
