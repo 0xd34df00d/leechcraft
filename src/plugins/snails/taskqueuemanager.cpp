@@ -30,6 +30,7 @@
 #include "taskqueuemanager.h"
 #include <thread>
 #include <QMutexLocker>
+#include <util/sll/prelude.h>
 #include "accountthreadworker.h"
 #include "concurrentexceptions.h"
 
@@ -205,8 +206,7 @@ namespace Snails
 
 				const auto pos = std::lower_bound (Items_.begin (), Items_.end (),
 						item,
-						[] (const TaskQueueItem& left, const TaskQueueItem& right)
-							{ return left.Priority_ < right.Priority_; });
+						Util::ComparingBy (&TaskQueueItem::Priority_));
 				Items_.insert (pos, item);
 			}
 
