@@ -84,10 +84,17 @@ namespace Util
 	{
 		QVariantList result;
 		for (const auto& set : Multipoints_)
-			result << Util::MakeMap<QString, QVariant> ({
+		{
+			auto map = Util::MakeMap<QString, QVariant> ({
 					{ "color", QVariant::fromValue (set.Color_) },
 					{ "points", QVariant::fromValue (set.Points_) }
 				});
+
+			if (set.BrushColor_)
+				map ["brushColor"] = *set.BrushColor_;
+
+			result << map;
+		}
 		return result;
 	}
 
@@ -102,6 +109,18 @@ namespace Util
 			const auto& colorVar = map ["color"];
 			const auto& pointsVar = map ["points"];
 
+			boost::optional<QColor> brushColor;
+			if (map.contains ("brushColor"))
+			{
+				const auto& brushVar = map ["brushColor"];
+				if (!brushVar.canConvert<QString> ())
+					qWarning () << Q_FUNC_INFO
+							<< "invalid brush color"
+							<< brushVar;
+				else
+					brushColor = QColor { brushVar.toString () };
+			}
+
 			if (!colorVar.canConvert<QString> () ||
 				!pointsVar.canConvert<QList<QPointF>> ())
 			{
@@ -115,6 +134,7 @@ namespace Util
 
 			Multipoints_.append ({
 					map ["color"].toString (),
+					brushColor,
 					map ["points"].value<QList<QPointF>> ()
 				});
 		}
@@ -365,7 +385,7 @@ namespace Util
 
 		auto items = Multipoints_;
 		if (items.isEmpty ())
-			items.push_back ({ Color_, Points_ });
+			items.push_back ({ Color_, {}, Points_ });
 
 		if (MinXValue_ < MaxXValue_)
 			plot.setAxisScale (QwtPlot::xBottom, MinXValue_, MaxXValue_);

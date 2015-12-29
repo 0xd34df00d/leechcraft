@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <functional>
+#include <boost/optional.hpp>
 #include <QtGlobal>
 #if QT_VERSION < 0x050000
 #include <QDeclarativeItem>
@@ -86,6 +87,7 @@ namespace Util
 		struct PointsSet
 		{
 			QColor Color_;
+			boost::optional<QColor> BrushColor_;
 			QList<QPointF> Points_;
 		};
 		QList<PointsSet> Multipoints_;
