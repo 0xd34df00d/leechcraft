@@ -32,7 +32,10 @@ Window {
         Plot {
             anchors.fill: parent
 
-            points: pointsList
+            multipoints: [
+                    { color: "#FF4B10", points: pointsList },
+                    { color: "yellow", brushColor: "transparent", points: maxPointsList }
+                ]
 
             plotTitle: sensorName
 
