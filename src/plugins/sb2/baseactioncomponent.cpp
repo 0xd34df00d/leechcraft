@@ -144,9 +144,6 @@ namespace SB2
 
 		const auto& prefix = "image://" + ComponentInfo_.ImageProvID_ + '/';
 
-		QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
-		Model_->blockSignals (true);
-
 		int insRow = 0;
 		switch (pos)
 		{
@@ -182,9 +179,6 @@ namespace SB2
 
 			++NextActionId_;
 		}
-
-		Model_->blockSignals (false);
-		QMetaObject::invokeMethod (Model_, "modelReset");
 	}
 
 	void BaseActionComponent::RemoveAction (QAction *action)
