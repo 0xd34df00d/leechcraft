@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QObject>
 #include <vmime/net/session.hpp>
 #include <vmime/net/message.hpp>
@@ -36,6 +37,7 @@
 #include <vmime/net/store.hpp>
 #include <vmime/security/cert/defaultCertificateVerifier.hpp>
 #include <util/sll/assoccache.h>
+#include <util/sll/either.h>
 #include <interfaces/structures.h>
 #include "progresslistener.h"
 #include "message.h"
@@ -86,6 +88,17 @@ namespace Snails
 		};
 	public:
 		AccountThreadWorker (bool, const QString&, const CertList_t&, Account*);
+
+		struct FolderMessages
+		{
+			QList<Message_ptr> NewHeaders_;
+			QList<Message_ptr> UpdatedMsgs_;
+			QList<QByteArray> OtherIds_;
+			QList<QByteArray> RemovedIds_;
+		};
+		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
+
+		struct FolderNotFound {};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
@@ -94,34 +107,45 @@ namespace Snails
 
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 
-		void FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
+		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
 		QList<Message_ptr> FetchVmimeMessages (MessageVector_t, const VmimeFolder_ptr&, const QStringList&);
-		void FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
+		FolderMessages FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
-		void SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
+		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);
-	private slots:
-		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
-
-		void sendNoop ();
-	public slots:
+	public:
 		void setNoopTimeout (int);
 
 		void flushSockets ();
 
-		void synchronize (const QList<QStringList>&, const QByteArray& last);
+		struct SyncResultRight
+		{
+			QList<Folder> AllFolders_;
+			Folder2Messages_t Messages_;
+		};
+		using SyncResult_t = Util::Either<boost::none_t, SyncResultRight>;
+		SyncResult_t synchronize (const QList<QStringList>&, const QByteArray& last);
 
-		void getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot);
+		using MsgCountError_t = boost::variant<FolderNotFound>;
+		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
+		MsgCountResult_t getMessageCount (const QStringList& folder);
 
-		void setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
+		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, QList<Message_ptr>>;
+		SetReadStatusResult_t setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
 		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
 		void fetchAttachment (LeechCraft::Snails::Message_ptr, const QString&, const QString&);
 
 		void copyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
-		void deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
+
+		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, boost::none_t>;
+		DeleteResult_t deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void sendMessage (const LeechCraft::Snails::Message_ptr&);
+	private slots:
+		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
+
+		void sendNoop ();
 	public:
 		struct Args
 		{
@@ -144,14 +168,7 @@ namespace Snails
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);
 
-		void gotMsgHeaders (QList<Message_ptr>, QStringList);
-		void gotUpdatedMessages (QList<Message_ptr>, QStringList);
-		void gotOtherMessages (QList<QByteArray>, QStringList);
-		void gotMessagesRemoved (QList<QByteArray>, QStringList);
-
 		void messageBodyFetched (Message_ptr);
-
-		void gotFolders (const QList<LeechCraft::Snails::Folder>&);
 
 		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
 	};

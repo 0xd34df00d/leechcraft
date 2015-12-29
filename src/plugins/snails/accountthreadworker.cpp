@@ -551,12 +551,16 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
-			const QByteArray& last)
+	auto AccountThreadWorker::FetchMessagesIMAP (const QList<QStringList>& origFolders,
+			const QByteArray& last) -> Folder2Messages_t
 	{
+		Folder2Messages_t result;
+
 		for (const auto& folder : origFolders)
 			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadWrite))
-				FetchMessagesInFolder (folder, netFolder, last);
+				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+
+		return result;
 	}
 
 	namespace
@@ -661,11 +665,10 @@ namespace Snails
 		return newMessages;
 	}
 
-	void AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
-			const VmimeFolder_ptr& folder, const QByteArray& lastId)
+	auto AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
+			const VmimeFolder_ptr& folder, const QByteArray& lastId) -> FolderMessages
 	{
-		const auto& changeGuard = ChangeListener_->Disable ();
-		Q_UNUSED (changeGuard)
+		const auto changeGuard = ChangeListener_->Disable ();
 
 		const std::shared_ptr<void> syncFinishedGuard
 		{
@@ -716,14 +719,13 @@ namespace Snails
 				ids << msg->GetFolderID ();
 		}
 
-		if (ids.size ())
-			emit gotOtherMessages (ids, folderName);
-
-		emit gotMsgHeaders (newMessages, folderName);
-		emit gotUpdatedMessages (updatedMessages, folderName);
-
-		if (lastId.isEmpty ())
-			emit gotMessagesRemoved (existing, folderName);
+		return
+		{
+			newMessages,
+			updatedMessages,
+			ids,
+			lastId.isEmpty () ? existing : QList<QByteArray> {}
+		};
 	}
 
 	namespace
@@ -805,7 +807,7 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::SyncIMAPFolders (vmime::shared_ptr<vmime::net::store> store)
+	QList<Folder> AccountThreadWorker::SyncIMAPFolders (vmime::shared_ptr<vmime::net::store> store)
 	{
 		const auto& root = store->getRootFolder ();
 		const auto& inbox = store->getDefaultFolder ();
@@ -821,7 +823,7 @@ namespace Snails
 						ToFolderType (attrs.getSpecialUse ())
 				});
 		}
-		emit gotFolders (folders);
+		return folders;
 	}
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)
@@ -896,32 +898,30 @@ namespace Snails
 		CachedStore_.reset ();
 	}
 
-	void AccountThreadWorker::synchronize (const QList<QStringList>& folders, const QByteArray& last)
+	auto AccountThreadWorker::synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult_t
 	{
 		const auto& store = MakeStore ();
-		SyncIMAPFolders (store);
-		FetchMessagesIMAP (folders, last);
+		const auto& folders = SyncIMAPFolders (store);
+		const auto& fetchResult = FetchMessagesIMAP (foldersToFetch, last);
+		return SyncResult_t::Right ({ folders, fetchResult });
 	}
 
-	void AccountThreadWorker::getMessageCount (const QStringList& folder, QObject *handler, const QByteArray& slot)
+	auto AccountThreadWorker::getMessageCount (const QStringList& folder) -> MsgCountResult_t
 	{
 		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
-			return;
+			return MsgCountResult_t::Left (FolderNotFound {});
 
 		const auto& status = netFolder->getStatus ();
-		QMetaObject::invokeMethod (handler,
-				slot,
-				Q_ARG (int, status->getMessageCount ()),
-				Q_ARG (int, status->getUnseenCount ()),
-				Q_ARG (QStringList, folder));
+		return MsgCountResult_t::Right ({ status->getMessageCount (), status->getUnseenCount () });
 	}
 
-	void AccountThreadWorker::setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folderPath)
+	auto AccountThreadWorker::setReadStatus (bool read,
+			const QList<QByteArray>& ids, const QStringList& folderPath) -> SetReadStatusResult_t
 	{
 		const auto& folder = GetFolder (folderPath, FolderMode::ReadWrite);
 		if (!folder)
-			return;
+			return SetReadStatusResult_t::Left (FolderNotFound {});
 
 		folder->setMessageFlags (ToMessageSet (ids),
 				vmime::net::message::Flags::FLAG_SEEN,
@@ -938,7 +938,7 @@ namespace Snails
 			messages << message;
 		}
 
-		emit gotUpdatedMessages (messages, folderPath);
+		return SetReadStatusResult_t::Right (messages);
 	}
 
 	void AccountThreadWorker::fetchWholeMessage (Message_ptr origMsg)
@@ -1053,18 +1053,25 @@ namespace Snails
 			folder->copyMessages (Folder2Path (to), set);
 	}
 
-	void AccountThreadWorker::deleteMessages (const QList<QByteArray>& ids, const QStringList& path)
+	auto AccountThreadWorker::deleteMessages (const QList<QByteArray>& ids,
+			const QStringList& path) -> DeleteResult_t
 	{
 		if (ids.isEmpty ())
-			return;
+			return DeleteResult_t::Right ({});
 
 		const auto& folder = GetFolder (path, FolderMode::ReadWrite);
 		if (!folder)
-			return;
+		{
+			qWarning () << Q_FUNC_INFO
+					<< path
+					<< "not found";
+			return DeleteResult_t::Left (FolderNotFound {});
+		}
 
 		folder->deleteMessages (ToMessageSet (ids));
 		folder->expunge ();
-		emit gotMessagesRemoved (ids, path);
+
+		return DeleteResult_t::Right ({});
 	}
 
 	namespace

@@ -84,30 +84,10 @@ namespace Snails
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
 
 		connect (W_,
-				SIGNAL (gotMsgHeaders (QList<Message_ptr>, QStringList)),
-				A_,
-				SLOT (handleMsgHeaders (QList<Message_ptr>, QStringList)));
-		connect (W_,
 				SIGNAL (messageBodyFetched (Message_ptr)),
 				A_,
 				SLOT (handleMessageBodyFetched (Message_ptr)));
-		connect (W_,
-				SIGNAL (gotUpdatedMessages (QList<Message_ptr>, QStringList)),
-				A_,
-				SLOT (handleGotUpdatedMessages (QList<Message_ptr>, QStringList)));
-		connect (W_,
-				SIGNAL (gotOtherMessages (QList<QByteArray>, QStringList)),
-				A_,
-				SLOT (handleGotOtherMessages (QList<QByteArray>, QStringList)));
-		connect (W_,
-				SIGNAL (gotMessagesRemoved (QList<QByteArray>, QStringList)),
-				A_,
-				SLOT (handleMessagesRemoved (QList<QByteArray>, QStringList)));
 
-		connect (W_,
-				SIGNAL (gotFolders (QList<LeechCraft::Snails::Folder>)),
-				A_,
-				SLOT (handleGotFolders (QList<LeechCraft::Snails::Folder>)));
 		connect (W_,
 				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
 				A_,
