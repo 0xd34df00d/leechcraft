@@ -399,9 +399,15 @@ namespace Util
 			const auto curve = curves.back ().get ();
 
 			curve->setPen (QPen (item.Color_));
-			auto transpColor = item.Color_;
-			transpColor.setAlphaF (Alpha_);
-			curve->setBrush (transpColor);
+
+			if (item.BrushColor_)
+				curve->setBrush (*item.BrushColor_);
+			else
+			{
+				auto brushColor = item.Color_;
+				brushColor.setAlphaF (Alpha_);
+				curve->setBrush (brushColor);
+			}
 
 			curve->setRenderHint (QwtPlotItem::RenderAntialiased);
 			curve->attach (&plot);
