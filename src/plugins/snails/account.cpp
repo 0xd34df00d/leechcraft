@@ -39,6 +39,7 @@
 #include <util/xpc/passutils.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "accountconfigdialog.h"
 #include "accountthread.h"
@@ -141,12 +142,38 @@ namespace Snails
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		Thread_->Schedule (&AccountThreadWorker::synchronize, folders, QByteArray {});
+		SynchronizeImpl (folders, {});
 	}
 
 	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
-		Thread_->Schedule (&AccountThreadWorker::synchronize, QList<QStringList> { path }, last);
+		SynchronizeImpl ({ path }, last);
+	}
+
+	void Account::SynchronizeImpl (const QList<QStringList>& folders, const QByteArray& last)
+	{
+		const auto& future = Thread_->Schedule (&AccountThreadWorker::synchronize, folders, last);
+		Util::Sequence (this, future) >>
+				[=] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (const AccountThreadWorker::SyncResultRight& right)
+							{
+								HandleGotFolders (right.AllFolders_);
+
+								for (const auto& pair : Util::Stlize (right.Messages_))
+								{
+									const auto& folder = pair.first;
+									const auto& msgs = pair.second;
+
+									HandleMessagesRemoved (msgs.RemovedIds_, folder);
+									HandleGotOtherMessages (msgs.OtherIds_, folder);
+									HandleMsgHeaders (msgs.NewHeaders_, folder);
+									HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
+								}
+							},
+							[] (auto) {});
+				};
 	}
 
 	void Account::FetchWholeMessage (const Message_ptr& msg)
@@ -175,7 +202,14 @@ namespace Snails
 
 	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		MessageFetchThread_->Schedule (&AccountThreadWorker::setReadStatus, read, ids, folder);
+		const auto& future = MessageFetchThread_->Schedule (&AccountThreadWorker::setReadStatus, read, ids, folder);
+		Util::Sequence (this, future) >>
+				[=] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (const QList<Message_ptr>& msgs) { HandleUpdatedMessages (msgs, folder); },
+							[] (auto) {});
+				};
 	}
 
 	void Account::CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
@@ -191,7 +225,14 @@ namespace Snails
 
 	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		MessageFetchThread_->Schedule (&AccountThreadWorker::deleteMessages, ids, folder);
+		const auto& future = MessageFetchThread_->Schedule (&AccountThreadWorker::deleteMessages, ids, folder);
+		Util::Sequence (this, future) >>
+				[=] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (boost::none_t) { HandleMessagesRemoved (ids, folder); },
+							[] (auto) {});
+				};
 	}
 
 	QByteArray Account::Serialize () const
@@ -518,7 +559,7 @@ namespace Snails
 				Core::Instance ().GetProxy ());
 	}
 
-	void Account::handleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)
+	void Account::HandleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
@@ -529,7 +570,7 @@ namespace Snails
 		UpdateFolderCount (folder);
 	}
 
-	void Account::handleGotUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
+	void Account::HandleUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
@@ -540,7 +581,7 @@ namespace Snails
 		UpdateFolderCount (folder);
 	}
 
-	void Account::handleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
+	void Account::HandleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
 		const auto& msgs = Core::Instance ().GetStorage ()->LoadMessages (this, folder, ids);
@@ -550,7 +591,7 @@ namespace Snails
 		UpdateFolderCount (folder);
 	}
 
-	void Account::handleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
+	void Account::HandleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
 		for (const auto& id : ids)
@@ -591,7 +632,7 @@ namespace Snails
 		FoldersModel_->SetFolderUnreadCount (folder, unread);
 	}
 
-	void Account::handleGotFolders (const QList<Folder>& folders)
+	void Account::HandleGotFolders (const QList<Folder>& folders)
 	{
 		FolderManager_->SetFolders (folders);
 	}

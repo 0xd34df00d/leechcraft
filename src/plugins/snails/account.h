@@ -162,6 +162,7 @@ namespace Snails
 		QString GetInUsername ();
 		QString GetOutUsername ();
 	private:
+		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();
@@ -174,19 +175,20 @@ namespace Snails
 
 		void RequestMessageCount (const QStringList&);
 		void HandleMessageCountFetched (int, int, const QStringList&);
+
+		void HandleUpdatedMessages (const QList<Message_ptr>&, const QStringList&);
+		void HandleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
+		void HandleGotFolders (const QList<Folder>&);
 	private slots:
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 
-		void handleMsgHeaders (const QList<Message_ptr>&, const QStringList&);
-		void handleGotUpdatedMessages (const QList<Message_ptr>&, const QStringList&);
-		void handleGotOtherMessages (const QList<QByteArray>&, const QStringList&);
-		void handleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
+		void HandleMsgHeaders (const QList<Message_ptr>&, const QStringList&);
+		void HandleGotOtherMessages (const QList<QByteArray>&, const QStringList&);
 
 		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
 
-		void handleGotFolders (const QList<LeechCraft::Snails::Folder>&);
 		void handleFoldersUpdated ();
 
 		void handleMessageBodyFetched (Message_ptr);
