@@ -78,12 +78,18 @@ namespace HotSensors
 
 			double max = 0, crit = 0;
 			QList<QPointF> points;
+			QList<QPointF> maxPoints;
 			for (const auto& item : pair.second)
 			{
-				points.append ({ static_cast<qreal> (points.size ()), item.Value_ });
+				const auto index = static_cast<qreal> (points.size ());
+				points.append ({ index, item.Value_ });
+				maxPoints.append ({ index, item.Max_ });
 				max = std::max (max, item.Max_);
 				crit = std::max (crit, item.Crit_);
 			}
+
+			for (int i = maxPoints.size (); i < HistoryManager::GetMaxHistorySize (); ++i)
+				maxPoints.append ({ static_cast<qreal> (i), max });
 
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
@@ -94,6 +100,7 @@ namespace HotSensors
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
+			item->setData (QVariant::fromValue (maxPoints), SensorsGraphModel::MaxPointsList);
 			item->setData (max, SensorsGraphModel::MaxTemp);
 			item->setData (crit, SensorsGraphModel::CritTemp);
 			item->setData (HistoryManager::GetMaxHistorySize (),
