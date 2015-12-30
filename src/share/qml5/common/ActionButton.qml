@@ -31,14 +31,19 @@ Item {
     signal hoverLeft()
     signal held()
 
+    property bool marginsManaged: false
+    property alias margins: actionRect.margins
+
     Rectangle {
         id: actionRect
 
         radius: Math.min(width, height) / 10
         smooth: true
 
+        property real margins: hoverScalesIcons ? 2 : 0
+
         anchors.fill: parent
-        anchors.margins: hoverScalesIcons ? 2 : 0
+        anchors.margins: actionRoot.marginsManaged ? 0 : margins
         border.width: isStrongHighlight ? 2 : 1
         border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, decoOpacity)
 
@@ -57,12 +62,12 @@ Item {
             State {
                 name: "current"
                 when: actionRoot.isCurrent && !actionMouseArea.containsMouse
-                PropertyChanges { target: actionRect; anchors.margins: 0 }
+                PropertyChanges { target: actionRect; margins: 0 }
             },
             State {
                 name: "hovered"
                 when: actionMouseArea.containsMouse && !actionMouseArea.pressed
-                PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_HoveredBorderColor; anchors.margins: 0 }
+                PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_HoveredBorderColor; margins: 0 }
             },
             State {
                 name: "pressed"
@@ -76,7 +81,7 @@ Item {
                 from: ""
                 to: "hovered,current"
                 reversible: true
-                PropertyAnimation { properties: "border.color,anchors.margins"; duration: 200 }
+                PropertyAnimation { properties: "border.color,margins"; duration: 200 }
             }
         ]
 
