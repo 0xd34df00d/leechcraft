@@ -44,6 +44,7 @@ namespace HotSensors
 			LastTemp = Qt::UserRole + 1,
 			SensorName,
 			PointsList,
+			MaxPointsList,
 			MaxTemp,
 			CritTemp,
 			MaxPointsCount

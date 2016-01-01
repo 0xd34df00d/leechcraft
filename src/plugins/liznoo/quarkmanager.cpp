@@ -27,24 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sensorsgraphmodel.h"
+#include "quarkmanager.h"
+#include <QStandardItemModel>
+#include <util/models/rolenamesmixin.h>
 
 namespace LeechCraft
 {
-namespace HotSensors
+namespace Liznoo
 {
-	SensorsGraphModel::SensorsGraphModel (QObject *parent)
-	: RoleNamesMixin<QStandardItemModel> (parent)
+	namespace
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [LastTemp] = "lastTemp";
-		roleNames [SensorName] = "sensorName";
-		roleNames [PointsList] = "pointsList";
-		roleNames [MaxPointsList] = "maxPointsList";
-		roleNames [MaxTemp] = "maxTemp";
-		roleNames [CritTemp] = "critTemp";
-		roleNames [MaxPointsCount] = "maxPointsCount";
-		setRoleNames (roleNames);
+		class QuarkModel : public Util::RoleNamesMixin<QStandardItemModel>
+		{
+		public:
+			enum Roles
+			{
+				BatteryName = Qt::UserRole + 1,
+				Percentage,
+				IsCharging
+			};
+
+			QuarkModel (QObject *parent = nullptr)
+			: Util::RoleNamesMixin<QStandardItemModel> { parent }
+			{
+				QHash<int, QByteArray> names;
+				names [BatteryName] = "batteryName";
+				names [Percentage] = "percentage";
+				names [IsCharging] = "IsCharging";
+				setRoleNames (names);
+			}
+		};
+	}
+
+	QuarkManager::QuarkManager (QObject *parent)
+	: QObject { parent }
+	, Model_ { new QuarkModel { this } }
+	{
+	}
+
+	QObject* QuarkManager::GetBatteryModel () const
+	{
+		return Model_;
 	}
 }
 }

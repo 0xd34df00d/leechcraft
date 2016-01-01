@@ -27,24 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sensorsgraphmodel.h"
+#pragma once
+
+#include <QObject>
+
+class QStandardItemModel;
+class QAbstractItemModel;
 
 namespace LeechCraft
 {
-namespace HotSensors
+namespace Liznoo
 {
-	SensorsGraphModel::SensorsGraphModel (QObject *parent)
-	: RoleNamesMixin<QStandardItemModel> (parent)
+	class QuarkManager : public QObject
 	{
-		QHash<int, QByteArray> roleNames;
-		roleNames [LastTemp] = "lastTemp";
-		roleNames [SensorName] = "sensorName";
-		roleNames [PointsList] = "pointsList";
-		roleNames [MaxPointsList] = "maxPointsList";
-		roleNames [MaxTemp] = "maxTemp";
-		roleNames [CritTemp] = "critTemp";
-		roleNames [MaxPointsCount] = "maxPointsCount";
-		setRoleNames (roleNames);
-	}
+		Q_OBJECT
+
+		QStandardItemModel * const Model_;
+
+		Q_PROPERTY (QObject* batteryModel READ GetBatteryModel NOTIFY batteryModelChanged)
+	public:
+		QuarkManager (QObject* = nullptr);
+
+		QObject* GetBatteryModel () const;
+	signals:
+		void batteryModelChanged ();
+	};
 }
 }

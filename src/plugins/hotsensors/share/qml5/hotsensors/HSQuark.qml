@@ -85,7 +85,8 @@ Rectangle {
                         "critTemp": critTemp,
                         "sensorName": sensorName,
                         "maxPointsCount": maxPointsCount,
-                        "pointsList": Qt.binding(function() { return pointsList; })
+                        "pointsList": Qt.binding(function() { return pointsList; }),
+                        "maxPointsList": Qt.binding(function() { return maxPointsList; })
                     };
                     opener.openWindow(delegateItem, params, Qt.resolvedUrl("Tooltip.qml"), tooltip, function(t) { tooltip = t; });
                 }
