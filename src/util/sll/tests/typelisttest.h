@@ -41,6 +41,8 @@ namespace Util
 	private slots:
 		void testHasTypeTrue ();
 		void testHasTypeFalse ();
+
+		void testFilter ();
 	};
 }
 }

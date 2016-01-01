@@ -29,11 +29,15 @@
 
 #pragma once
 
+#include <thread>
 #include <QThread>
 #include <QFuture>
 #include <vmime/security/cert/X509Certificate.hpp>
+#include <util/sll/either.h>
+#include <util/sll/typelist.h>
+#include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
-#include "taskqueuemanager.h"
+#include "accountthreadfwd.h"
 
 namespace LeechCraft
 {
@@ -50,6 +54,150 @@ namespace Snails
 		std::function<void (AccountThreadWorker*)> Executor_;
 	};
 
+	namespace detail
+	{
+		const auto MaxRecLevel = 3;
+
+		template<typename Result, typename F, typename Ex = std::exception>
+		Result HandleExceptions (F&& f, int recLevel = 0, const Ex& ex = {})
+		{
+			if (recLevel)
+			{
+				const auto timeout = recLevel * 3000 + 1000;
+				qWarning () << Q_FUNC_INFO
+						<< "sleeping for"
+						<< timeout
+						<< "and retrying for the"
+						<< recLevel
+						<< "time after getting an exception:"
+						<< ex.what ();
+
+				std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+			}
+
+			if (recLevel == MaxRecLevel)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "giving up after"
+						<< recLevel
+						<< "retries:"
+						<< ex.what ();
+
+				return Result::Left (ex);
+			}
+
+			try
+			{
+				return f ();
+			}
+			catch (const vmime::exceptions::authentication_error& err)
+			{
+				const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+				qWarning () << Q_FUNC_INFO
+						<< "caught auth error:"
+						<< respStr;
+
+				return Result::Left (err);
+			}
+			catch (const vmime::exceptions::invalid_response& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const vmime::exceptions::operation_timed_out& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const vmime::exceptions::not_connected& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const vmime::exceptions::socket_exception& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const std::exception& e)
+			{
+				return Result::Left (e);
+			}
+		}
+
+		template<typename Right>
+		struct WrapFunctionTypeImpl
+		{
+			using Result_t = Util::Either<InvokeError_t<>, Right>;
+
+			template<typename F>
+			static auto WrapFunction (const F& f)
+			{
+				return [f] (auto... args)
+				{
+					return HandleExceptions<Result_t> ([&]
+							{
+								return Result_t::Right (Util::Invoke (f, args...));
+							});
+				};
+			}
+		};
+
+		template<>
+		struct WrapFunctionTypeImpl<void>
+		{
+			using Result_t = Util::Either<InvokeError_t<>, boost::none_t>;
+
+			template<typename F>
+			static auto WrapFunction (const F& f)
+			{
+				return [f] (auto... args)
+				{
+					return HandleExceptions<Result_t> ([&]
+							{
+								Util::Invoke (f, args...);
+								return Result_t::Right ({});
+							});
+				};
+			}
+		};
+
+		template<typename T>
+		using IsVoid_t = std::is_same<T, boost::detail::variant::void_>;
+
+		template<typename... Lefts, typename Right>
+		struct WrapFunctionTypeImpl<Util::Either<boost::variant<Lefts...>, Right>>
+		{
+			using LeftTypes_t = Util::Filter_t<Util::Not<IsVoid_t>::Result_t, Util::Typelist<Lefts...>>;
+
+			template<typename>
+			struct BuildErrorList;
+
+			template<typename... Types>
+			struct BuildErrorList<Util::Typelist<Types...>>
+			{
+				using Result_t = InvokeError_t<Types...>;
+			};
+
+			using Result_t = Util::Either<typename BuildErrorList<LeftTypes_t>::Result_t, Right>;
+
+			template<typename F>
+			static auto WrapFunction (const F& f)
+			{
+				return [f] (auto... args)
+				{
+					return HandleExceptions<Result_t> ([&] { return Util::Invoke (f, args...); });
+				};
+			}
+		};
+
+		template<typename F, typename... Args>
+		using WrapFunctionType_t = typename WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::Result_t;
+
+		template<typename... Args, typename F>
+		auto WrapFunction (const F& f)
+		{
+			return WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (f);
+		}
+	}
+
 	class AccountThread : public QThread
 	{
 		Q_OBJECT
@@ -59,8 +207,6 @@ namespace Snails
 		const QString Name_;
 		const CertList_t Certs_;
 
-		AccountThreadWorker *W_;
-
 		QMutex FunctionsMutex_;
 		QList<Task> Functions_;
 	public:
@@ -68,14 +214,14 @@ namespace Snails
 				const CertList_t& certs, Account *acc);
 
 		template<typename F, typename... Args>
-		QFuture<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>> Schedule (const F& func, const Args&... args)
+		QFuture<detail::WrapFunctionType_t<F, Args...>> Schedule (const F& func, const Args&... args)
 		{
-			QFutureInterface<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>> iface;
+			QFutureInterface<detail::WrapFunctionType_t<F, Args...>> iface;
 
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{
 				iface.reportStarted ();
-				Util::ReportFutureResult (iface, func, w, args...);
+				Util::ReportFutureResult (iface, detail::WrapFunction<Args...> (func), w, args...);
 			};
 
 			{
@@ -90,8 +236,8 @@ namespace Snails
 	protected:
 		void run ();
 	private:
-		void RotateFuncs ();
-		void ConnectSignals ();
+		void RotateFuncs (AccountThreadWorker*);
+		void ConnectSignals (AccountThreadWorker*);
 	signals:
 		void rotateFuncs ();
 	};

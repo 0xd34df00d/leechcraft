@@ -94,8 +94,6 @@ namespace Snails
 
 		void SetMessageReferences (const Message_ptr&) const;
 	private slots:
-		void handleMessageSent ();
-
 		void handleSend ();
 		void handleAddAttachment ();
 		void handleRemoveAttachment ();

@@ -119,13 +119,12 @@ namespace Snails
 
 		void flushSockets ();
 
-		struct SyncResultRight
+		struct SyncResult
 		{
 			QList<Folder> AllFolders_;
 			Folder2Messages_t Messages_;
 		};
-		using SyncResult_t = Util::Either<boost::none_t, SyncResultRight>;
-		SyncResult_t synchronize (const QList<QStringList>&, const QByteArray& last);
+		SyncResult synchronize (const QList<QStringList>&, const QByteArray& last);
 
 		using MsgCountError_t = boost::variant<FolderNotFound>;
 		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;

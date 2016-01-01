@@ -898,12 +898,12 @@ namespace Snails
 		CachedStore_.reset ();
 	}
 
-	auto AccountThreadWorker::synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult_t
+	auto AccountThreadWorker::synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
 		const auto& store = MakeStore ();
 		const auto& folders = SyncIMAPFolders (store);
 		const auto& fetchResult = FetchMessagesIMAP (foldersToFetch, last);
-		return SyncResult_t::Right ({ folders, fetchResult });
+		return { folders, fetchResult };
 	}
 
 	auto AccountThreadWorker::getMessageCount (const QStringList& folder) -> MsgCountResult_t

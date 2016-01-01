@@ -27,48 +27,28 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "concurrentexceptions.h"
+#pragma once
+
+#include <boost/variant.hpp>
+#include <boost/none_t.hpp>
+#include <vmime/exception.hpp>
 
 namespace LeechCraft
 {
+namespace Util
+{
+template<typename, typename>
+class Either;
+}
+
 namespace Snails
 {
-	namespace
-	{
-		QByteArray MakeWhat (const TaskQueueItem& item)
-		{
-			QString str;
-
-			QDebug debug { &str };
-			debug << Q_FUNC_INFO
-					<< "unable to call"
-					<< item.Method_
-					<< "with"
-					<< item.Args_;
-
-			return str.toUtf8 ();
-		}
-	}
-
-	InvokeFailedException::InvokeFailedException (const TaskQueueItem& item)
-	: Item_ { item }
-	, What_ { MakeWhat (item) }
-	{
-	}
-
-	const char* InvokeFailedException::what () const noexcept
-	{
-		return What_.constData ();
-	}
-
-	AuthorizationException::AuthorizationException (const QString& msg)
-	: Message_ { msg }
-	{
-	}
-
-	const QString& AuthorizationException::GetMessage () const
-	{
-		return Message_;
-	}
+	template<typename... Rest>
+	using InvokeError_t = boost::variant<
+				vmime::exceptions::authentication_error,
+				vmime::exceptions::connection_error,
+				std::exception,
+				Rest...
+			>;
 }
 }

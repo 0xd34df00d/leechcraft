@@ -43,6 +43,7 @@
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -52,9 +53,9 @@
 #include "message.h"
 #include "core.h"
 #include "texteditoradaptor.h"
-#include "concurrentexceptions.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
+#include "accountthread.h"
 
 namespace LeechCraft
 {
@@ -324,37 +325,6 @@ namespace Snails
 		message->SetReferences (references);
 	}
 
-	void ComposeMessageTab::handleMessageSent ()
-	{
-		const auto watcher = dynamic_cast<QFutureWatcher<void>*> (sender ());
-		watcher->deleteLater ();
-
-		try
-		{
-			watcher->waitForFinished ();
-			Remove ();
-		}
-		catch (const AuthorizationException& err)
-		{
-			QMessageBox::critical (this, "LeechCraft",
-					tr ("Unable to send the message: authorization failure. Server reports: %1.")
-						.arg ("<br/><em>" + err.GetMessage () + "</em>"));
-		}
-		catch (const TimeoutException&)
-		{
-			const auto& notify = Util::MakeNotification ("Snails",
-					tr ("Unable to send email: operation timed out.<br/><br/>"
-						"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
-						"Port 465 is typically used with SSL, while port 587 is used with TLS."),
-					PCritical_);
-			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO << "caught exception:" <<  e.what ();
-		}
-	}
-
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -429,13 +399,35 @@ namespace Snails
 			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
 		}
 
-		const auto watcher = new QFutureWatcher<void> { this };
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleMessageSent ()));
-		const auto& future = account->SendMessage (message);
-		watcher->setFuture (future);
+		Util::Sequence (nullptr, account->SendMessage (message)) >>
+				[safeThis = QPointer<ComposeMessageTab> { this }] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[safeThis] (const boost::none_t&) { if (safeThis) safeThis->Remove (); },
+							[safeThis] (const auto& err)
+							{
+								Util::Visit (err,
+										[safeThis] (const vmime::exceptions::authentication_error& err)
+										{
+											QMessageBox::critical (safeThis, "LeechCraft",
+													tr ("Unable to send the message: authorization failure. Server reports: %1.")
+														.arg ("<br/><em>" + QString::fromStdString (err.response ()) + "</em>"));
+										},
+										[] (const vmime::exceptions::connection_error&)
+										{
+											const auto& notify = Util::MakeNotification ("Snails",
+													tr ("Unable to send email: operation timed out.<br/><br/>"
+														"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
+														"Port 465 is typically used with SSL, while port 587 is used with TLS."),
+													PCritical_);
+											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+										},
+										[] (const auto& err)
+										{
+											qWarning () << Q_FUNC_INFO << "caught exception:" << err.what ();
+										});
+							});
+				};
 	}
 
 	void ComposeMessageTab::handleAddAttachment ()

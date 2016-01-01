@@ -29,86 +29,26 @@
 
 #pragma once
 
-#include <QFutureInterface>
-#include "taskqueuemanager.h"
+#include <type_traits>
 
 namespace LeechCraft
 {
-namespace Snails
+namespace Util
 {
-	template<typename T>
-#if QT_VERSION < 0x050000
-	class ConcurrentExceptionMixin : public QtConcurrent::Exception
-#else
-	class ConcurrentExceptionMixin : public QException
-#endif
+	template<template<typename> class Pred>
+	struct Not
 	{
-	public:
-		void raise () const override
+		template<typename V>
+		struct Negate;
+
+		template<bool V>
+		struct Negate<std::integral_constant<bool, V>>
 		{
-			throw *dynamic_cast<const T*> (this);
-		}
+			using Result_t = std::integral_constant<bool, !V>;
+		};
 
-#if QT_VERSION < 0x050000
-		Exception* clone () const override
-#else
-		QException* clone () const override
-#endif
-		{
-			return new T { *dynamic_cast<const T*> (this) };
-		}
+		template<typename T>
+		struct Result_t : Negate<typename Pred<T>::type>::Result_t {};
 	};
-
-	class InvokeFailedException : public ConcurrentExceptionMixin<InvokeFailedException>
-	{
-		const TaskQueueItem Item_;
-		const QByteArray What_;
-	public:
-		InvokeFailedException (const TaskQueueItem&);
-		~InvokeFailedException () noexcept = default;
-
-		const char* what () const noexcept override;
-	};
-
-	class AuthorizationException : public ConcurrentExceptionMixin<AuthorizationException>
-	{
-		const QString Message_;
-	public:
-		AuthorizationException (const QString&);
-		~AuthorizationException () noexcept = default;
-
-		const QString& GetMessage () const;
-	};
-
-	class TimeoutException : public ConcurrentExceptionMixin<TimeoutException>
-	{
-	public:
-		TimeoutException () = default;
-		~TimeoutException () noexcept = default;
-	};
-
-	template<typename Wrapped>
-	class WrappedException : public ConcurrentExceptionMixin<WrappedException<Wrapped>>
-	{
-		const Wrapped W_;
-	public:
-		WrappedException (const Wrapped& w)
-		: W_ { w }
-		{
-		}
-
-		~WrappedException () noexcept = default;
-
-		const char* what () const noexcept override
-		{
-			return W_.what ();
-		}
-	};
-
-	template<typename Wrapped>
-	WrappedException<Wrapped> MakeWrappedException (const Wrapped& e)
-	{
-		return { e };
-	}
 }
 }
