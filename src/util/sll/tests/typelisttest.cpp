@@ -45,14 +45,12 @@ namespace Util
 
 	void TypelistTest::testHasTypeTrue ()
 	{
-		using value = bool_constant<HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Foo> {})>;
-		QCOMPARE (value::value, true);
+		static_assert (HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Foo> {}), "test failed");
 	}
 
 	void TypelistTest::testHasTypeFalse ()
 	{
-		using value = bool_constant<HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Qux> {})>;
-		QCOMPARE (value::value, false);
+		static_assert (!HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Qux> {}), "test failed");
 	}
 }
 }
