@@ -58,7 +58,11 @@ namespace Snails
 	};
 
 	template<typename... Rest>
-	using InvokeError_t = boost::variant<AuthorizationException, std::exception, Rest...>;
+	using InvokeError_t = boost::variant<
+				vmime::exceptions::authentication_error,
+				std::exception,
+				Rest...
+			>;
 
 	namespace detail
 	{
@@ -104,7 +108,7 @@ namespace Snails
 						<< "caught auth error:"
 						<< respStr;
 
-				return Result::Left (AuthorizationException { respStr });
+				return Result::Left (err);
 			}
 			catch (const vmime::exceptions::invalid_response& e)
 			{
