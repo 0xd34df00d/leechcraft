@@ -400,21 +400,21 @@ namespace Snails
 			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
 		}
 
-		Util::Sequence (this, account->SendMessage (message)) >>
-				[this] (const auto& result)
+		Util::Sequence (nullptr, account->SendMessage (message)) >>
+				[safeThis = QPointer<ComposeMessageTab> { this }] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[this] (const boost::none_t&) { Remove (); },
-							[this] (const auto& err)
+							[safeThis] (const boost::none_t&) { if (safeThis) safeThis->Remove (); },
+							[safeThis] (const auto& err)
 							{
 								Util::Visit (err,
-										[this] (const vmime::exceptions::authentication_error& err)
+										[safeThis] (const vmime::exceptions::authentication_error& err)
 										{
-											QMessageBox::critical (this, "LeechCraft",
+											QMessageBox::critical (safeThis, "LeechCraft",
 													tr ("Unable to send the message: authorization failure. Server reports: %1.")
 														.arg ("<br/><em>" + QString::fromStdString (err.response ()) + "</em>"));
 										},
-										[this] (const vmime::exceptions::connection_error&)
+										[] (const vmime::exceptions::connection_error&)
 										{
 											const auto& notify = Util::MakeNotification ("Snails",
 													tr ("Unable to send email: operation timed out.<br/><br/>"
@@ -423,7 +423,7 @@ namespace Snails
 													PCritical_);
 											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 										},
-										[this] (const auto& err)
+										[] (const auto& err)
 										{
 											qWarning () << Q_FUNC_INFO << "caught exception:" << err.what ();
 										});
