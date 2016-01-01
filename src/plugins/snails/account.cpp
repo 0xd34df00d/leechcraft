@@ -48,7 +48,6 @@
 #include "storage.h"
 #include "accountfoldermanager.h"
 #include "mailmodel.h"
-#include "taskqueuemanager.h"
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
 #include "accountlogger.h"
@@ -135,6 +134,17 @@ namespace Snails
 	QAbstractItemModel* Account::GetFoldersModel () const
 	{
 		return FoldersModel_;
+	}
+
+	AccountThread* Account::GetAccountThread (Thread thread) const
+	{
+		switch (thread)
+		{
+		case Thread::LowPriority:
+			return Thread_;
+		case Thread::HighPriority:
+			return MessageFetchThread_;
+		}
 	}
 
 	void Account::Synchronize ()

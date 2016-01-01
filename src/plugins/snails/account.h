@@ -138,6 +138,13 @@ namespace Snails
 		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
+		enum class Thread
+		{
+			LowPriority,
+			HighPriority
+		};
+		AccountThread* GetAccountThread (Thread) const;
+
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
