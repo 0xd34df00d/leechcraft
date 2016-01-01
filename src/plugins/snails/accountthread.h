@@ -29,16 +29,15 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
 #include <thread>
 #include <QThread>
 #include <QFuture>
 #include <vmime/security/cert/X509Certificate.hpp>
-#include <vmime/exception.hpp>
 #include <util/sll/either.h>
 #include <util/sll/typelist.h>
 #include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
+#include "accountthreadfwd.h"
 #include "taskqueuemanager.h"
 #include "concurrentexceptions.h"
 
@@ -56,13 +55,6 @@ namespace Snails
 	{
 		std::function<void (AccountThreadWorker*)> Executor_;
 	};
-
-	template<typename... Rest>
-	using InvokeError_t = boost::variant<
-				vmime::exceptions::authentication_error,
-				std::exception,
-				Rest...
-			>;
 
 	namespace detail
 	{
