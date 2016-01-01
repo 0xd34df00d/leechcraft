@@ -125,6 +125,7 @@ target_link_libraries (leechcraft_liznoo
 	)
 install (TARGETS leechcraft_liznoo DESTINATION ${LC_PLUGINS_DEST})
 install (FILES liznoosettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (DIRECTORY share/qml5/liznoo DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_liznoo Concurrent Widgets)
 
