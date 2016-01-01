@@ -692,6 +692,9 @@ namespace LHTR
 	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
 	{
 		TryFixHTML (html, mode == ExpandMode::FullHTML);
+		if (CustomTags_.isEmpty ())
+			return html;
+
 		html.remove ('\n');
 
 		QDomDocument doc;
