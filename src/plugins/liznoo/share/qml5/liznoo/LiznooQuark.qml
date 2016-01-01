@@ -44,51 +44,54 @@ Rectangle {
                 anchors.margins: margins
 
                 Rectangle {
-                    height: parent.height
-                    width: height / 1.62
+                    width: parent.width - anchors.rightMargin
+                    height: width / 1.62
 
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: parent.top
+                    anchors.centerIn: parent
+                    anchors.rightMargin: 2
 
                     radius: 3
-                    color: "transparent"
                     border.width: 1
-                    border.color: colorProxy.color_TextBox_BorderColor
+                    border.color: colorProxy.color_ToolButton_SelectedBorderColor
+
+                    gradient: Gradient {
+                        GradientStop { position: 0.0; color: colorProxy.color_ToolButton_TopColor }
+                        GradientStop { position: 1.0; color: colorProxy.color_ToolButton_BottomColor }
+                    }
 
                     Rectangle {
                         anchors.fill: parent
-                        anchors.leftMargin: 2
-                        anchors.rightMargin: 2
-                        anchors.bottomMargin: 2
-                        anchors.topMargin: 2 + (parent.height - 4) * (1 - percentage / 100)
+                        property real baseMargin: 1
+                        anchors.leftMargin: baseMargin
+                        anchors.bottomMargin: baseMargin
+                        anchors.topMargin: baseMargin
+                        anchors.rightMargin: baseMargin + (parent.width - 2 * baseMargin) * (1 - percentage / 100)
 
                         radius: parent.radius
-                        color: "transparent"
 
-                        Rectangle {
-                            width: parent.height
-                            height: parent.width
-
-                            anchors.top: parent.top
-                            anchors.left: parent.left
-
-                            transform: Rotation { axis.x: 1; axis.y: 1; axis.z: 0; angle: 180 }
-
-                            radius: parent.radius
-
-                            gradient: Gradient {
-                                GradientStop { position: 0.0; color: colorProxy.color_TextBox_BottomColor }
-                                GradientStop { position: 1.0; color: colorProxy.color_TextBox_TopColor }
-                            }
+                        gradient: Gradient {
+                            GradientStop { position: 0.0; color: colorProxy.color_ToolButton_HoveredBottomColor }
+                            GradientStop { position: 1.0; color: colorProxy.color_ToolButton_HoveredTopColor }
                         }
+                    }
 
-                        Text {
-                            color: colorProxy.color_TextBox_TextColor
-                            text: percentage + '%'
-                            font.pointSize: 5
+                    Rectangle {
+                        anchors.left: parent.right
+                        width: parent.anchors.rightMargin
+                        height: parent.height / 3
+                        anchors.verticalCenter: parent.verticalCenter
 
-                            anchors.centerIn: parent
-                        }
+                        radius: parent.radius
+
+                        color: colorProxy.color_ToolButton_SelectedBorderColor
+                    }
+
+                    Text {
+                        color: colorProxy.color_ToolButton_TextColor
+                        text: percentage + '%'
+                        font.pointSize: 7
+
+                        anchors.centerIn: parent
                     }
                 }
             }
