@@ -39,10 +39,10 @@ namespace HotSensors
 	{
 		QByteArray Prefix_;
 		sensors_bus_id Bus_;
-		int Addr_;
+		int Addr_ = 0;
 		QByteArray Path_;
 
-		StoredChipName ();
+		StoredChipName () = default;
 		StoredChipName (const sensors_chip_name*);
 
 		sensors_chip_name ToSensorsChip ();
@@ -61,11 +61,6 @@ namespace HotSensors
 		StoredSubfeature SF_;
 		QString Name_;
 	};
-
-	StoredChipName::StoredChipName ()
-	: Addr_ (0)
-	{
-	}
 
 	StoredChipName::StoredChipName (const sensors_chip_name *chipName)
 	: Prefix_ (chipName->prefix)
