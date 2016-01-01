@@ -61,6 +61,14 @@ namespace Util
 		{
 		}
 
+		template<typename LPrime, typename RPrime,
+				typename = EnableIf_t<std::is_convertible<LPrime, L>::value &&
+							std::is_convertible<RPrime, R>::value>>
+		Either (const Either<LPrime, RPrime>& other)
+		: This_ { other.AsVariant () }
+		{
+		}
+
 		Either (const Either&) = default;
 		Either (Either&&) = default;
 		Either& operator= (const Either&) = default;
