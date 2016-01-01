@@ -326,38 +326,6 @@ namespace Snails
 		message->SetReferences (references);
 	}
 
-	void ComposeMessageTab::handleMessageSent ()
-	{
-		const auto watcher = dynamic_cast<QFutureWatcher<Account::SendMessageResult_t>*> (sender ());
-		watcher->deleteLater ();
-
-		Util::Visit (watcher->result ().AsVariant (),
-				[this] (const boost::none_t&) { Remove (); },
-				[this] (const auto& err)
-				{
-					Util::Visit (err,
-							[this] (const vmime::exceptions::authentication_error& err)
-							{
-								QMessageBox::critical (this, "LeechCraft",
-										tr ("Unable to send the message: authorization failure. Server reports: %1.")
-											.arg ("<br/><em>" + QString::fromStdString (err.response ()) + "</em>"));
-							},
-							[this] (const vmime::exceptions::connection_error&)
-							{
-								const auto& notify = Util::MakeNotification ("Snails",
-										tr ("Unable to send email: operation timed out.<br/><br/>"
-											"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
-											"Port 465 is typically used with SSL, while port 587 is used with TLS."),
-										PCritical_);
-								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
-							},
-							[this] (const auto& err)
-							{
-								qWarning () << Q_FUNC_INFO << "caught exception:" << err.what ();
-							});
-				});
-	}
-
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -432,13 +400,35 @@ namespace Snails
 			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
 		}
 
-		const auto watcher = new QFutureWatcher<Account::SendMessageResult_t> { this };
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleMessageSent ()));
-		const auto& future = account->SendMessage (message);
-		watcher->setFuture (future);
+		Util::Sequence (this, account->SendMessage (message)) >>
+				[this] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[this] (const boost::none_t&) { Remove (); },
+							[this] (const auto& err)
+							{
+								Util::Visit (err,
+										[this] (const vmime::exceptions::authentication_error& err)
+										{
+											QMessageBox::critical (this, "LeechCraft",
+													tr ("Unable to send the message: authorization failure. Server reports: %1.")
+														.arg ("<br/><em>" + QString::fromStdString (err.response ()) + "</em>"));
+										},
+										[this] (const vmime::exceptions::connection_error&)
+										{
+											const auto& notify = Util::MakeNotification ("Snails",
+													tr ("Unable to send email: operation timed out.<br/><br/>"
+														"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
+														"Port 465 is typically used with SSL, while port 587 is used with TLS."),
+													PCritical_);
+											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+										},
+										[this] (const auto& err)
+										{
+											qWarning () << Q_FUNC_INFO << "caught exception:" << err.what ();
+										});
+							});
+				};
 	}
 
 	void ComposeMessageTab::handleAddAttachment ()
