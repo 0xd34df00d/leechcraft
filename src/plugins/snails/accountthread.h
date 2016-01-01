@@ -50,6 +50,18 @@ namespace Snails
 		std::function<void (AccountThreadWorker*)> Executor_;
 	};
 
+	namespace detail
+	{
+		template<typename T>
+		struct WrapFunctionTypeImpl
+		{
+			using Result_t = T;
+		};
+
+		template<typename F, typename... Args>
+		using WrapFunctionType_t = typename WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::Result_t;
+	}
+
 	class AccountThread : public QThread
 	{
 		Q_OBJECT
@@ -68,9 +80,9 @@ namespace Snails
 				const CertList_t& certs, Account *acc);
 
 		template<typename F, typename... Args>
-		QFuture<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>> Schedule (const F& func, const Args&... args)
+		QFuture<detail::WrapFunctionType_t<F, Args...>> Schedule (const F& func, const Args&... args)
 		{
-			QFutureInterface<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>> iface;
+			QFutureInterface<detail::WrapFunctionType_t<F, Args...>> iface;
 
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{
