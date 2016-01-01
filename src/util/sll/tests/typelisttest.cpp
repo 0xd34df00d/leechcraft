@@ -30,6 +30,7 @@
 #include "typelisttest.h"
 #include <QtTest>
 #include <typelist.h>
+#include <typelevel.h>
 
 QTEST_MAIN (LeechCraft::Util::TypelistTest)
 
@@ -51,6 +52,22 @@ namespace Util
 	void TypelistTest::testHasTypeFalse ()
 	{
 		static_assert (!HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Qux> {}), "test failed");
+	}
+
+	void TypelistTest::testFilter ()
+	{
+		using List_t = Typelist<struct Foo, struct Bar, void, void, int, double, void>;
+		using Expected_t = Typelist<struct Foo, struct Bar, int, double>;
+		using Removed_t = Typelist<void, void, void>;
+
+		struct Pred
+		{
+			template<typename T>
+			using Pred_t = std::is_same<T, void>;
+		};
+
+		static_assert (std::is_same<Removed_t, Filter_t<Pred::Pred_t, List_t>>::value, "test failed");
+		static_assert (std::is_same<Expected_t, Filter_t<Not<Pred::Pred_t>::Result_t, List_t>>::value, "test failed");
 	}
 }
 }
