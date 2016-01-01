@@ -157,7 +157,7 @@ namespace Snails
 				[=] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[=] (const AccountThreadWorker::SyncResultRight& right)
+							[=] (const AccountThreadWorker::SyncResult& right)
 							{
 								HandleGotFolders (right.AllFolders_);
 
