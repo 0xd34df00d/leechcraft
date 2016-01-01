@@ -35,6 +35,7 @@
 #include <QHash>
 #include "message.h"
 #include "progresslistener.h"
+#include "accountthreadfwd.h"
 
 class QMutex;
 class QAbstractItemModel;
@@ -149,7 +150,10 @@ namespace Snails
 		void Synchronize (const QStringList&, const QByteArray&);
 
 		void FetchWholeMessage (const Message_ptr&);
-		QFuture<void> SendMessage (const Message_ptr&);
+
+		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
+		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
+
 		void FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 

@@ -194,7 +194,7 @@ namespace Snails
 		Thread_->Schedule (&AccountThreadWorker::fetchWholeMessage, msg);
 	}
 
-	QFuture<void> Account::SendMessage (const Message_ptr& msg)
+	QFuture<Account::SendMessageResult_t> Account::SendMessage (const Message_ptr& msg)
 	{
 		auto pair = msg->GetAddress (Message::Address::From);
 		if (pair.first.isEmpty ())

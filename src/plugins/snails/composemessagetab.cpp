@@ -43,6 +43,7 @@
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -55,6 +56,7 @@
 #include "concurrentexceptions.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
+#include "accountthread.h"
 
 namespace LeechCraft
 {
@@ -326,33 +328,34 @@ namespace Snails
 
 	void ComposeMessageTab::handleMessageSent ()
 	{
-		const auto watcher = dynamic_cast<QFutureWatcher<void>*> (sender ());
+		const auto watcher = dynamic_cast<QFutureWatcher<Account::SendMessageResult_t>*> (sender ());
 		watcher->deleteLater ();
 
-		try
-		{
-			watcher->waitForFinished ();
-			Remove ();
-		}
-		catch (const AuthorizationException& err)
-		{
-			QMessageBox::critical (this, "LeechCraft",
-					tr ("Unable to send the message: authorization failure. Server reports: %1.")
-						.arg ("<br/><em>" + err.GetMessage () + "</em>"));
-		}
-		catch (const TimeoutException&)
-		{
-			const auto& notify = Util::MakeNotification ("Snails",
-					tr ("Unable to send email: operation timed out.<br/><br/>"
-						"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
-						"Port 465 is typically used with SSL, while port 587 is used with TLS."),
-					PCritical_);
-			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO << "caught exception:" <<  e.what ();
-		}
+		Util::Visit (watcher->result ().AsVariant (),
+				[this] (const boost::none_t&) { Remove (); },
+				[this] (const auto& err)
+				{
+					Util::Visit (err,
+							[this] (const vmime::exceptions::authentication_error& err)
+							{
+								QMessageBox::critical (this, "LeechCraft",
+										tr ("Unable to send the message: authorization failure. Server reports: %1.")
+											.arg ("<br/><em>" + QString::fromStdString (err.response ()) + "</em>"));
+							},
+							[this] (const vmime::exceptions::connection_error&)
+							{
+								const auto& notify = Util::MakeNotification ("Snails",
+										tr ("Unable to send email: operation timed out.<br/><br/>"
+											"Consider switching between SSL and TLS/STARTSSL or replacing port 465 with 587, or vice versa."
+											"Port 465 is typically used with SSL, while port 587 is used with TLS."),
+										PCritical_);
+								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+							},
+							[this] (const auto& err)
+							{
+								qWarning () << Q_FUNC_INFO << "caught exception:" << err.what ();
+							});
+				});
 	}
 
 	namespace
@@ -429,7 +432,7 @@ namespace Snails
 			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
 		}
 
-		const auto watcher = new QFutureWatcher<void> { this };
+		const auto watcher = new QFutureWatcher<Account::SendMessageResult_t> { this };
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,

@@ -37,6 +37,7 @@
 #include <util/threads/futures.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/urlaccessor.h>
+#include <util/sll/either.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "message.h"
@@ -302,7 +303,7 @@ namespace Snails
 				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
 
 				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
-						[url]
+						[url] (const auto& result)
 						{
 							const auto& entity = Util::MakeNotification ("Snails",
 									QObject::tr ("Successfully sent unsubscribe request to %1.")
