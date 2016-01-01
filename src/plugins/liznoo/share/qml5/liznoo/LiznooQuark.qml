@@ -82,6 +82,13 @@ Rectangle {
                             }
                         }
 
+                        Text {
+                            color: colorProxy.color_TextBox_TextColor
+                            text: percentage + '%'
+                            font.pointSize: 5
+
+                            anchors.centerIn: parent
+                        }
                     }
                 }
             }
