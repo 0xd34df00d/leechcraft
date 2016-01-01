@@ -53,7 +53,6 @@
 #include "message.h"
 #include "core.h"
 #include "texteditoradaptor.h"
-#include "concurrentexceptions.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
 #include "accountthread.h"

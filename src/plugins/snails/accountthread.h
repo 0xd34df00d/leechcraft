@@ -38,8 +38,6 @@
 #include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
 #include "accountthreadfwd.h"
-#include "taskqueuemanager.h"
-#include "concurrentexceptions.h"
 
 namespace LeechCraft
 {

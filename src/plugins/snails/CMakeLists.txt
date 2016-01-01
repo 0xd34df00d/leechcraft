@@ -34,14 +34,11 @@ set (SRCS
 	outputiodevadapter.cpp
 	common.cpp
 	mailmodel.cpp
-	taskqueuemanager.cpp
-	valuedmetaargument.cpp
 	messagechangelistener.cpp
 	foldersmodel.cpp
 	folder.cpp
 	viewcolumnsmanager.cpp
 	texteditoradaptor.cpp
-	concurrentexceptions.cpp
 	mailsortmodel.cpp
 	headersviewwidget.cpp
 	mailwebpage.cpp

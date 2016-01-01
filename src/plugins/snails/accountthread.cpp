@@ -33,7 +33,6 @@
 #include "account.h"
 #include "accountthreadworker.h"
 #include "core.h"
-#include "taskqueuemanager.h"
 
 namespace LeechCraft
 {
