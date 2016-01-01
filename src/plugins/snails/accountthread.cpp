@@ -50,13 +50,13 @@ namespace Snails
 
 	void AccountThread::run ()
 	{
-		W_ = new AccountThreadWorker { IsListening_, Name_, Certs_, A_ };
+		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_ };
 
-		ConnectSignals ();
+		ConnectSignals (&atw);
 
 		Util::SlotClosure<Util::NoDeletePolicy> rotator
 		{
-			[this] { RotateFuncs (); },
+			[this, &atw] { RotateFuncs (&atw); },
 			this,
 			SIGNAL (rotateFuncs ()),
 			nullptr
@@ -69,32 +69,30 @@ namespace Snails
 			} ();
 
 		if (shouldRotate)
-			RotateFuncs ();
+			RotateFuncs (&atw);
 
 		QThread::run ();
-
-		delete W_;
 	}
 
-	void AccountThread::ConnectSignals ()
+	void AccountThread::ConnectSignals (AccountThreadWorker *atw)
 	{
-		connect (W_,
+		connect (atw,
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
 				A_,
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
 
-		connect (W_,
+		connect (atw,
 				SIGNAL (messageBodyFetched (Message_ptr)),
 				A_,
 				SLOT (handleMessageBodyFetched (Message_ptr)));
 
-		connect (W_,
+		connect (atw,
 				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
 				A_,
 				SLOT (handleFolderSyncFinished (QStringList, QByteArray)));
 	}
 
-	void AccountThread::RotateFuncs ()
+	void AccountThread::RotateFuncs (AccountThreadWorker *atw)
 	{
 		decltype (Functions_) funcs;
 
@@ -106,7 +104,7 @@ namespace Snails
 		}
 
 		for (const auto& func : funcs)
-			func.Executor_ (W_);
+			func.Executor_ (atw);
 	}
 }
 }

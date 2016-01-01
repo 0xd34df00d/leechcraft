@@ -169,8 +169,6 @@ namespace Snails
 		const QString Name_;
 		const CertList_t Certs_;
 
-		AccountThreadWorker *W_;
-
 		QMutex FunctionsMutex_;
 		QList<Task> Functions_;
 	public:
@@ -200,8 +198,8 @@ namespace Snails
 	protected:
 		void run ();
 	private:
-		void RotateFuncs ();
-		void ConnectSignals ();
+		void RotateFuncs (AccountThreadWorker*);
+		void ConnectSignals (AccountThreadWorker*);
 	signals:
 		void rotateFuncs ();
 	};
