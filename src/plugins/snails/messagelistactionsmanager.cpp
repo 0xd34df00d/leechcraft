@@ -38,6 +38,7 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/urlaccessor.h>
 #include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "message.h"
@@ -305,10 +306,24 @@ namespace Snails
 				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
 						[url] (const auto& result)
 						{
-							const auto& entity = Util::MakeNotification ("Snails",
-									QObject::tr ("Successfully sent unsubscribe request to %1.")
-										.arg ("<em>" + url.path () + "</em>"),
-									PInfo_);
+							const auto& entity = Util::Visit (result.AsVariant (),
+									[url] (const boost::none_t&)
+									{
+										return Util::MakeNotification ("Snails",
+												QObject::tr ("Successfully sent unsubscribe request to %1.")
+													.arg ("<em>" + url.path () + "</em>"),
+												PInfo_);
+									},
+									[url] (const auto& err)
+									{
+										const auto& msg = Util::Visit (err,
+												[] (const auto& err) { return QString::fromUtf8 (err.what ()); });
+										return Util::MakeNotification ("Snails",
+												QObject::tr ("Unable to send unsubscribe request to %1: %2.")
+													.arg ("<em>" + url.path () + "</em>")
+													.arg (msg),
+												PWarning_);
+									});
 							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
 						},
 						nullptr,
