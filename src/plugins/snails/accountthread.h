@@ -145,13 +145,7 @@ namespace Snails
 			{
 				return [f] (auto... args)
 				{
-					return HandleExceptions<Result_t> ([&]
-							{
-								const auto& res = Util::Invoke (f, args...);
-								if (res.IsRight ())
-									return Result_t::Right (res.GetRight ());
-								return Result_t::Left (res.GetLeft ());
-							});
+					return HandleExceptions<Result_t> ([&] { return Util::Invoke (f, args...); });
 				};
 			}
 		};
