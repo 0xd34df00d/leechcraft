@@ -61,6 +61,29 @@ namespace Snails
 
 	namespace detail
 	{
+		template<typename Result, typename F>
+		Result HandleExceptions (F&& f)
+		{
+			try
+			{
+				return f ();
+			}
+			catch (const vmime::exceptions::authentication_error& err)
+			{
+				const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+				qWarning () << Q_FUNC_INFO
+						<< "caught auth error:"
+						<< respStr;
+
+				return Result::Left (AuthorizationException { respStr });
+			}
+			catch (const std::exception& e)
+			{
+				return Result::Left (e);
+			}
+		}
+
 		template<typename Right>
 		struct WrapFunctionTypeImpl
 		{
@@ -69,26 +92,12 @@ namespace Snails
 			template<typename F>
 			static auto WrapFunction (const F& f)
 			{
-				return [f] (auto... args) -> Result_t
+				return [f] (auto... args)
 				{
-					try
-					{
-						return Result_t::Right (Util::Invoke (f, args...));
-					}
-					catch (const vmime::exceptions::authentication_error& err)
-					{
-						const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
-
-						qWarning () << Q_FUNC_INFO
-								<< "caught auth error:"
-								<< respStr;
-
-						return Result_t::Left (AuthorizationException { respStr });
-					}
-					catch (const std::exception& e)
-					{
-						return Result_t::Left (e);
-					}
+					return HandleExceptions<Result_t> ([&]
+							{
+								return Result_t::Right (Util::Invoke (f, args...));
+							});
 				};
 			}
 		};
@@ -101,27 +110,13 @@ namespace Snails
 			template<typename F>
 			static auto WrapFunction (const F& f)
 			{
-				return [f] (auto... args) -> Result_t
+				return [f] (auto... args)
 				{
-					try
-					{
-						Util::Invoke (f, args...);
-						return Result_t::Right ({});
-					}
-					catch (const vmime::exceptions::authentication_error& err)
-					{
-						const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
-
-						qWarning () << Q_FUNC_INFO
-								<< "caught auth error:"
-								<< respStr;
-
-						return Result_t::Left (AuthorizationException { respStr });
-					}
-					catch (const std::exception& e)
-					{
-						return Result_t::Left (e);
-					}
+					return HandleExceptions<Result_t> ([&]
+							{
+								Util::Invoke (f, args...);
+								return Result_t::Right ({});
+							});
 				};
 			}
 		};
@@ -148,30 +143,15 @@ namespace Snails
 			template<typename F>
 			static auto WrapFunction (const F& f)
 			{
-				return [f] (auto... args) -> Result_t
+				return [f] (auto... args)
 				{
-					try
-					{
-						const auto& res = Util::Invoke (f, args...);
-						if (res.IsRight ())
-							return Result_t::Right (res.GetRight ());
-
-						return Result_t::Left (res.GetLeft ());
-					}
-					catch (const vmime::exceptions::authentication_error& err)
-					{
-						const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
-
-						qWarning () << Q_FUNC_INFO
-								<< "caught auth error:"
-								<< respStr;
-
-						return Result_t::Left (AuthorizationException { respStr });
-					}
-					catch (const std::exception& e)
-					{
-						return Result_t::Left (e);
-					}
+					return HandleExceptions<Result_t> ([&]
+							{
+								const auto& res = Util::Invoke (f, args...);
+								if (res.IsRight ())
+									return Result_t::Right (res.GetRight ());
+								return Result_t::Left (res.GetLeft ());
+							});
 				};
 			}
 		};
