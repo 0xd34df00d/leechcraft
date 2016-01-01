@@ -29,11 +29,17 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QThread>
 #include <QFuture>
 #include <vmime/security/cert/X509Certificate.hpp>
+#include <vmime/exception.hpp>
+#include <util/sll/either.h>
+#include <util/sll/typelist.h>
+#include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
 #include "taskqueuemanager.h"
+#include "concurrentexceptions.h"
 
 namespace LeechCraft
 {
@@ -50,16 +56,134 @@ namespace Snails
 		std::function<void (AccountThreadWorker*)> Executor_;
 	};
 
+	template<typename... Rest>
+	using InvokeError_t = boost::variant<AuthorizationException, std::exception, Rest...>;
+
 	namespace detail
 	{
-		template<typename T>
+		template<typename Right>
 		struct WrapFunctionTypeImpl
 		{
-			using Result_t = T;
+			using Result_t = Util::Either<InvokeError_t<>, Right>;
+
+			template<typename F>
+			static auto WrapFunction (const F& f)
+			{
+				return [f] (auto... args) -> Result_t
+				{
+					try
+					{
+						return Result_t::Right (Util::Invoke (f, args...));
+					}
+					catch (const vmime::exceptions::authentication_error& err)
+					{
+						const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+						qWarning () << Q_FUNC_INFO
+								<< "caught auth error:"
+								<< respStr;
+
+						return Result_t::Left (AuthorizationException { respStr });
+					}
+					catch (const std::exception& e)
+					{
+						return Result_t::Left (e);
+					}
+				};
+			}
+		};
+
+		template<>
+		struct WrapFunctionTypeImpl<void>
+		{
+			using Result_t = Util::Either<InvokeError_t<>, boost::none_t>;
+
+			template<typename F>
+			static auto WrapFunction (const F& f)
+			{
+				return [f] (auto... args) -> Result_t
+				{
+					try
+					{
+						Util::Invoke (f, args...);
+						return Result_t::Right ({});
+					}
+					catch (const vmime::exceptions::authentication_error& err)
+					{
+						const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+						qWarning () << Q_FUNC_INFO
+								<< "caught auth error:"
+								<< respStr;
+
+						return Result_t::Left (AuthorizationException { respStr });
+					}
+					catch (const std::exception& e)
+					{
+						return Result_t::Left (e);
+					}
+				};
+			}
+		};
+
+		template<typename T>
+		using IsVoid_t = std::is_same<T, boost::detail::variant::void_>;
+
+		template<typename... Lefts, typename Right>
+		struct WrapFunctionTypeImpl<Util::Either<boost::variant<Lefts...>, Right>>
+		{
+			using LeftTypes_t = Util::Filter_t<Util::Not<IsVoid_t>::Result_t, Util::Typelist<Lefts...>>;
+
+			template<typename>
+			struct BuildErrorList;
+
+			template<typename... Types>
+			struct BuildErrorList<Util::Typelist<Types...>>
+			{
+				using Result_t = InvokeError_t<Types...>;
+			};
+
+			using Result_t = Util::Either<typename BuildErrorList<LeftTypes_t>::Result_t, Right>;
+
+			template<typename F>
+			static auto WrapFunction (const F& f)
+			{
+				return [f] (auto... args) -> Result_t
+				{
+					try
+					{
+						const auto& res = Util::Invoke (f, args...);
+						if (res.IsRight ())
+							return Result_t::Right (res.GetRight ());
+
+						return Result_t::Left (res.GetLeft ());
+					}
+					catch (const vmime::exceptions::authentication_error& err)
+					{
+						const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+						qWarning () << Q_FUNC_INFO
+								<< "caught auth error:"
+								<< respStr;
+
+						return Result_t::Left (AuthorizationException { respStr });
+					}
+					catch (const std::exception& e)
+					{
+						return Result_t::Left (e);
+					}
+				};
+			}
 		};
 
 		template<typename F, typename... Args>
 		using WrapFunctionType_t = typename WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::Result_t;
+
+		template<typename... Args, typename F>
+		auto WrapFunction (const F& f)
+		{
+			return WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (f);
+		}
 	}
 
 	class AccountThread : public QThread
@@ -87,7 +211,7 @@ namespace Snails
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{
 				iface.reportStarted ();
-				Util::ReportFutureResult (iface, func, w, args...);
+				Util::ReportFutureResult (iface, detail::WrapFunction<Args...> (func), w, args...);
 			};
 
 			{
