@@ -44,6 +44,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
+#include "quarkmanager.h"
 #include "platform/screen/screenplatform.h"
 #include "platform/battery/batteryplatform.h"
 
@@ -170,6 +171,16 @@ namespace Liznoo
 				SIGNAL (pushButtonClicked (QString)),
 				this,
 				SLOT (handlePushButton (QString)));
+
+		const auto qm = new QuarkManager;
+		LiznooQuark_ = std::make_shared<QuarkComponent> ("liznoo", "LiznooQuark.qml");
+		LiznooQuark_->DynamicProps_.append ({ "Liznoo_proxy", qm });
+
+		if (BatteryPlatform_)
+			connect (BatteryPlatform_.get (),
+					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+					qm,
+					SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
 	}
 
 	void Plugin::SecondInit ()
