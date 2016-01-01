@@ -35,6 +35,7 @@
 #include <QMutex>
 #include <QStandardItemModel>
 #include <QSslSocket>
+#include <QElapsedTimer>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sll/slotclosure.h>
@@ -170,6 +171,8 @@ namespace Snails
 									HandleGotOtherMessages (msgs.OtherIds_, folder);
 									HandleMsgHeaders (msgs.NewHeaders_, folder);
 									HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
+
+									UpdateFolderCount (folder);
 								}
 							},
 							[] (auto) {});
@@ -207,7 +210,11 @@ namespace Snails
 				[=] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[=] (const QList<Message_ptr>& msgs) { HandleUpdatedMessages (msgs, folder); },
+							[=] (const QList<Message_ptr>& msgs)
+							{
+								HandleUpdatedMessages (msgs, folder);
+								UpdateFolderCount (folder);
+							},
 							[] (auto) {});
 				};
 	}
@@ -230,7 +237,11 @@ namespace Snails
 				[=] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[=] (boost::none_t) { HandleMessagesRemoved (ids, folder); },
+							[=] (boost::none_t)
+							{
+								HandleMessagesRemoved (ids, folder);
+								UpdateFolderCount (folder);
+							},
 							[] (auto) {});
 				};
 	}
@@ -566,8 +577,6 @@ namespace Snails
 		emit mailChanged ();
 
 		MailModelsManager_->Append (messages);
-
-		UpdateFolderCount (folder);
 	}
 
 	void Account::HandleUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
@@ -577,8 +586,6 @@ namespace Snails
 		emit mailChanged ();
 
 		MailModelsManager_->Update (messages);
-
-		UpdateFolderCount (folder);
 	}
 
 	void Account::HandleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
@@ -587,8 +594,6 @@ namespace Snails
 		const auto& msgs = Core::Instance ().GetStorage ()->LoadMessages (this, folder, ids);
 
 		MailModelsManager_->Append (msgs);
-
-		UpdateFolderCount (folder);
 	}
 
 	void Account::HandleMessagesRemoved (const QList<QByteArray>& ids, const QStringList& folder)
@@ -598,8 +603,6 @@ namespace Snails
 			Core::Instance ().GetStorage ()->RemoveMessage (this, folder, id);
 
 		MailModelsManager_->Remove (ids);
-
-		UpdateFolderCount (folder);
 	}
 
 	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)
