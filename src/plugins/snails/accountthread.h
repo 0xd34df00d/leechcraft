@@ -30,6 +30,7 @@
 #pragma once
 
 #include <boost/variant.hpp>
+#include <thread>
 #include <QThread>
 #include <QFuture>
 #include <vmime/security/cert/X509Certificate.hpp>
@@ -61,9 +62,36 @@ namespace Snails
 
 	namespace detail
 	{
-		template<typename Result, typename F>
-		Result HandleExceptions (F&& f)
+		const auto MaxRecLevel = 3;
+
+		template<typename Result, typename F, typename Ex = std::exception>
+		Result HandleExceptions (F&& f, int recLevel = 0, const Ex& ex = {})
 		{
+			if (recLevel)
+			{
+				const auto timeout = recLevel * 3000 + 1000;
+				qWarning () << Q_FUNC_INFO
+						<< "sleeping for"
+						<< timeout
+						<< "and retrying for the"
+						<< recLevel
+						<< "time after getting an exception:"
+						<< ex.what ();
+
+				std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+			}
+
+			if (recLevel == MaxRecLevel)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "giving up after"
+						<< recLevel
+						<< "retries:"
+						<< ex.what ();
+
+				return Result::Left (ex);
+			}
+
 			try
 			{
 				return f ();
@@ -77,6 +105,22 @@ namespace Snails
 						<< respStr;
 
 				return Result::Left (AuthorizationException { respStr });
+			}
+			catch (const vmime::exceptions::invalid_response& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const vmime::exceptions::operation_timed_out& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const vmime::exceptions::not_connected& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
+			catch (const vmime::exceptions::socket_exception& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
 			}
 			catch (const std::exception& e)
 			{
