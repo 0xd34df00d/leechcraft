@@ -1,0 +1,7 @@
+{
+    "quarkID": "org.LeechCraft.Liznoo.LiznooQuark",
+    "quarkName": "Battery status",
+    "icon": "dialog-information",
+    "areas": [ "panel" ],
+    "defaultVisibility": true
+}
