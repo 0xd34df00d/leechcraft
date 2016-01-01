@@ -303,7 +303,7 @@ namespace Snails
 				const auto& subjQuery = Util::UrlAccessor { url } ["subject"];
 				msg->SetSubject (subjQuery.isEmpty () ? "unsubscribe" : subjQuery);
 
-				Util::ExecuteFuture ([acc] (auto msg) { return acc->SendMessage (msg); },
+				Util::Sequence (nullptr, acc->SendMessage (msg)) >>
 						[url] (const auto& result)
 						{
 							const auto& entity = Util::Visit (result.AsVariant (),
@@ -325,9 +325,7 @@ namespace Snails
 												PWarning_);
 									});
 							Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-						},
-						nullptr,
-						msg);
+						};
 			}
 			else
 			{
