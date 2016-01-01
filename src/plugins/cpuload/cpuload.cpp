@@ -59,7 +59,7 @@ namespace CpuLoad
 		if (!backend)
 			return;
 
-		CpuQuark_.reset (new QuarkComponent { "cpuload", "CpuLoadQuark.qml" });
+		CpuQuark_ = std::make_shared<QuarkComponent> ("cpuload", "CpuLoadQuark.qml");
 
 		auto backendProxy = new BackendProxy { backend };
 		CpuQuark_->DynamicProps_.append ({ "CpuLoad_proxy", backendProxy });
