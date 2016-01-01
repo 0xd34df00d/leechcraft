@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include "oldcppkludges.h"
+
 namespace LeechCraft
 {
 namespace Util
@@ -114,6 +116,36 @@ namespace Util
 	constexpr bool HasType (List<Args...> list)
 	{
 		return detail::HasTypeImpl<Type> (list, 0);
+	}
+
+	namespace detail
+	{
+		template<template<typename> class, typename, typename = void>
+		struct Filter;
+	}
+
+	template<template<typename> class Pred, typename List>
+	using Filter_t = typename detail::Filter<Pred, List>::Result_t;
+
+	namespace detail
+	{
+		template<template<typename> class Pred, template<typename...> class List, typename Head, typename... Tail>
+		struct Filter<Pred, List<Head, Tail...>, EnableIf_t<Pred<Head>::value>>
+		{
+			using Result_t = decltype (Concat (List<Head> {}, Filter_t<Pred, List<Tail...>> {}));
+		};
+
+		template<template<typename> class Pred, template<typename...> class List, typename Head, typename... Tail>
+		struct Filter<Pred, List<Head, Tail...>, EnableIf_t<!Pred<Head>::value>>
+		{
+			using Result_t = Filter_t<Pred, List<Tail...>>;
+		};
+
+		template<template<typename> class Pred, template<typename...> class List>
+		struct Filter<Pred, List<>>
+		{
+			using Result_t = List<>;
+		};
 	}
 
 	template<typename T>
