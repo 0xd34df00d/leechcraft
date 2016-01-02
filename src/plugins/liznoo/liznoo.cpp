@@ -463,8 +463,7 @@ namespace Liznoo
 		if (!Battery2History_.contains (id) ||
 				Battery2Dialog_.contains (id))
 		{
-			auto dia = static_cast<BatteryHistoryDialog*> (Battery2Dialog_.value (id));
-			if (dia)
+			if (auto dia = Battery2Dialog_.value (id))
 				dia->close ();
 			return;
 		}
