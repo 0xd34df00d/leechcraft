@@ -114,7 +114,7 @@ namespace Pogooglue
 		return { { GetUniqueID () + "_Google", "Google", "Google", {} } };
 	}
 
-	void Plugin::GoogleIt (QString text)
+	void Plugin::GoogleIt (const QString& text)
 	{
 		QString urlStr = QString ("http://www.google.com/search?q=%2"
 				"&client=leechcraft_poshuku"
