@@ -600,6 +600,9 @@ namespace Snails
 	void Account::HandleGotOtherMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
+		if (ids.isEmpty ())
+			return;
+
 		const auto& msgs = Core::Instance ().GetStorage ()->LoadMessages (this, folder, ids);
 
 		MailModelsManager_->Append (msgs);
