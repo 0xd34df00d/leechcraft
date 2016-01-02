@@ -34,6 +34,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -126,10 +127,9 @@ namespace Pogooglue
 			.arg (QString::fromUtf8 (QUrl::toPercentEncoding (text)));
 		QUrl result = QUrl::fromEncoded (urlStr.toUtf8 ());
 
-		const auto& e = Util::MakeEntity (result,
-				QString (),
-				LeechCraft::FromUserInitiated | LeechCraft::OnlyHandle);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (result,
+					{},
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }
