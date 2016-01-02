@@ -66,8 +66,6 @@ namespace Pogooglue
 		QList<FilterVariant> GetFilterVariants () const;
 	private:
 		void GoogleIt (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
