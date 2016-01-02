@@ -30,6 +30,7 @@
 #include "quarkmanager.h"
 #include <QStandardItemModel>
 #include <util/models/rolenamesmixin.h>
+#include "batteryinfo.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace Liznoo
 		public:
 			enum Roles
 			{
-				BatteryName = Qt::UserRole + 1,
+				BatteryId = Qt::UserRole + 1,
 				Percentage,
 				IsCharging
 			};
@@ -51,9 +52,9 @@ namespace Liznoo
 			: Util::RoleNamesMixin<QStandardItemModel> { parent }
 			{
 				QHash<int, QByteArray> names;
-				names [BatteryName] = "batteryName";
+				names [BatteryId] = "batteryId";
 				names [Percentage] = "percentage";
-				names [IsCharging] = "IsCharging";
+				names [IsCharging] = "isCharging";
 				setRoleNames (names);
 			}
 		};
@@ -68,6 +69,23 @@ namespace Liznoo
 	QObject* QuarkManager::GetBatteryModel () const
 	{
 		return Model_;
+	}
+
+	void QuarkManager::handleBatteryInfo (const BatteryInfo& info)
+	{
+		const auto& id = info.ID_;
+		const auto isNew = !Battery2Item_.contains (id);
+		const auto item = isNew ?  new QStandardItem : Battery2Item_ [id];
+
+		item->setData (info.ID_, QuarkModel::BatteryId);
+		item->setData (info.Percentage_, QuarkModel::Percentage);
+		item->setData (info.TimeToFull_ && !info.TimeToEmpty_, QuarkModel::IsCharging);
+
+		if (isNew)
+		{
+			Model_->appendRow (item);
+			Battery2Item_ [id] = item;
+		}
 	}
 }
 }

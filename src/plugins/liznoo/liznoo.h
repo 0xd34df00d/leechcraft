@@ -35,6 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/iquarkcomponentprovider.h>
 #include "batteryhistory.h"
 #include "batteryinfo.h"
 #include "platform/poweractions/platform.h"
@@ -92,6 +93,8 @@ namespace Liznoo
 
 		QAction *Suspend_;
 		QAction *Hibernate_;
+
+		QuarkComponent_ptr LiznooQuark_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -30,25 +30,32 @@
 #pragma once
 
 #include <QObject>
+#include <QHash>
 
 class QStandardItemModel;
+class QStandardItem;
 class QAbstractItemModel;
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
+	struct BatteryInfo;
+
 	class QuarkManager : public QObject
 	{
 		Q_OBJECT
 
 		QStandardItemModel * const Model_;
+		QHash<QString, QStandardItem*> Battery2Item_;
 
 		Q_PROPERTY (QObject* batteryModel READ GetBatteryModel NOTIFY batteryModelChanged)
 	public:
 		QuarkManager (QObject* = nullptr);
 
 		QObject* GetBatteryModel () const;
+	public slots:
+		void handleBatteryInfo (const Liznoo::BatteryInfo&);
 	signals:
 		void batteryModelChanged ();
 	};
