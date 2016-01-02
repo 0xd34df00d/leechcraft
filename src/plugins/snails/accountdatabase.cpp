@@ -302,7 +302,7 @@ namespace Snails
 					WHERE folders.FolderPath = :path
 					AND folders.Id = msg2folder.FolderId
 					AND messages.Id = msg2folder.MsgId
-					AND messages.IsRead = "false"
+					AND messages.IsRead = 0
 				)d");
 
 		QueryGetTotalCount_ = QSqlQuery { *DB_ };
