@@ -48,6 +48,8 @@ namespace Pogooglue
 		Q_INTERFACES (IInfo IEntityHandler IDataFilter)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Pogooglue")
+
+		ICoreProxy_ptr Proxy_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -63,9 +65,7 @@ namespace Pogooglue
 		QString GetFilterVerb () const;
 		QList<FilterVariant> GetFilterVariants () const;
 	private:
-		void GoogleIt (QString);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
+		void GoogleIt (const QString&);
 	};
 }
 }

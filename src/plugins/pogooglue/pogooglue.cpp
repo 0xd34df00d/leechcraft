@@ -34,14 +34,17 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
 namespace Pogooglue
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("pogooglue");
+
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
@@ -114,20 +117,19 @@ namespace Pogooglue
 		return { { GetUniqueID () + "_Google", "Google", "Google", {} } };
 	}
 
-	void Plugin::GoogleIt (QString text)
+	void Plugin::GoogleIt (const QString& text)
 	{
-		QString urlStr = QString ("http://www.google.com/search?q=%2"
+		const auto& urlStr = QString ("http://www.google.com/search?q=%2"
 				"&client=leechcraft_poshuku"
 				"&ie=utf-8"
 				"&rls=org.leechcraft:%1")
 			.arg (QLocale::system ().name ().replace ('_', '-'))
 			.arg (QString::fromUtf8 (QUrl::toPercentEncoding (text)));
-		QUrl result = QUrl::fromEncoded (urlStr.toUtf8 ());
+		const auto& result = QUrl::fromEncoded (urlStr.toUtf8 ());
 
-		const auto& e = Util::MakeEntity (result,
-				QString (),
-				LeechCraft::FromUserInitiated | LeechCraft::OnlyHandle);
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (result,
+					{},
+					FromUserInitiated | OnlyHandle));
 	}
 }
 }

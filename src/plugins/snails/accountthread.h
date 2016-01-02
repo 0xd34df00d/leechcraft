@@ -100,6 +100,10 @@ namespace Snails
 
 				return Result::Left (err);
 			}
+			catch (const vmime::exceptions::connection_error& e)
+			{
+				return HandleExceptions<Result> (f, ++recLevel, e);
+			}
 			catch (const vmime::exceptions::invalid_response& e)
 			{
 				return HandleExceptions<Result> (f, ++recLevel, e);
