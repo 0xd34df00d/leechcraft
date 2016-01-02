@@ -38,12 +38,6 @@ namespace LeechCraft
 {
 namespace Util
 {
-	namespace
-	{
-		template<bool b>
-		using bool_constant = std::integral_constant<bool, b>;
-	}
-
 	void TypelistTest::testHasTypeTrue ()
 	{
 		static_assert (HasType<struct Foo> (Typelist<struct Bar, struct Baz, struct Foo> {}), "test failed");
