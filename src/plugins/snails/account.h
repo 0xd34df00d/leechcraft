@@ -189,14 +189,14 @@ namespace Snails
 
 		void HandleUpdatedMessages (const QList<Message_ptr>&, const QStringList&);
 		void HandleMessagesRemoved (const QList<QByteArray>&, const QStringList&);
+		void HandleMsgHeaders (const QList<Message_ptr>&, const QStringList&);
+		void HandleGotOtherMessages (const QList<QByteArray>&, const QStringList&);
+
 		void HandleGotFolders (const QList<Folder>&);
 	private slots:
 		void buildInURL (QString*);
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
-
-		void HandleMsgHeaders (const QList<Message_ptr>&, const QStringList&);
-		void HandleGotOtherMessages (const QList<QByteArray>&, const QStringList&);
 
 		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
 
