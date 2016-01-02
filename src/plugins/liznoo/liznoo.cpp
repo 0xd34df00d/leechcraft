@@ -458,8 +458,12 @@ namespace Liznoo
 
 	void Plugin::handleHistoryTriggered ()
 	{
-		const QString& id = sender ()->
-				property ("Liznoo/BatteryID").toString ();
+		const auto& id = sender ()->property ("Liznoo/BatteryID").toString ();
+		handleHistoryTriggered (id);
+	}
+
+	void Plugin::handleHistoryTriggered (const QString& id)
+	{
 		if (!Battery2History_.contains (id) ||
 				Battery2Dialog_.contains (id))
 		{
