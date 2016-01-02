@@ -38,8 +38,6 @@
 #include <QTextDocument>
 #include <QToolButton>
 #include <QSignalMapper>
-#include <QFuture>
-#include <QFutureWatcher>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sll/qtutil.h>
