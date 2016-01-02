@@ -39,9 +39,11 @@ namespace LeechCraft
 {
 namespace Pogooglue
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("pogooglue");
+
+		Proxy_ = proxy;
 	}
 
 	void Plugin::SecondInit ()
