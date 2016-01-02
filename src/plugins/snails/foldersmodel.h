@@ -73,8 +73,7 @@ namespace Snails
 		int rowCount (const QModelIndex& = {}) const;
 
 		void SetFolders (const QList<Folder>& folders);
-		void SetFolderMessageCount (const QStringList&, int);
-		void SetFolderUnreadCount (const QStringList&, int);
+		void SetFolderCounts (const QStringList&, int unread, int total);
 	};
 }
 }

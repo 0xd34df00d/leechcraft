@@ -558,8 +558,7 @@ namespace Snails
 
 		const auto totalCount = storage->GetNumMessages (this, folder);
 		const auto unreadCount = storage->GetNumUnread (this, folder);
-		FoldersModel_->SetFolderUnreadCount (folder, unreadCount);
-		FoldersModel_->SetFolderMessageCount (folder, totalCount);
+		FoldersModel_->SetFolderCounts (folder, unreadCount, totalCount);
 	}
 
 	void Account::buildInURL (QString *res)
@@ -641,8 +640,7 @@ namespace Snails
 		if (storedCount && count != storedCount)
 			Synchronize (folder, {});
 
-		FoldersModel_->SetFolderMessageCount (folder, count);
-		FoldersModel_->SetFolderUnreadCount (folder, unread);
+		FoldersModel_->SetFolderCounts (folder, unread, count);
 	}
 
 	void Account::HandleGotFolders (const QList<Folder>& folders)
@@ -668,8 +666,7 @@ namespace Snails
 			{
 			}
 
-			FoldersModel_->SetFolderMessageCount (folder.Path_, count);
-			FoldersModel_->SetFolderUnreadCount (folder.Path_, unread);
+			FoldersModel_->SetFolderCounts (folder.Path_, unread, count);
 
 			// TODO lowest priority
 			RequestMessageCount (folder.Path_);

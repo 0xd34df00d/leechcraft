@@ -230,7 +230,7 @@ namespace Snails
 		}
 	}
 
-	void FoldersModel::SetFolderMessageCount (const QStringList& folder, int count)
+	void FoldersModel::SetFolderCounts (const QStringList& folder, int unread, int total)
 	{
 		const auto descr = Folder2Descr_.value (folder);
 		if (!descr)
@@ -241,27 +241,12 @@ namespace Snails
 			return;
 		}
 
-		descr->MessageCount_ = count;
+		descr->UnreadCount_ = unread;
+		descr->MessageCount_ = total;
 
-		const auto& index = createIndex (descr->Row (), Column::MessageCount, descr);
-		emit dataChanged (index, index);
-	}
-
-	void FoldersModel::SetFolderUnreadCount (const QStringList& folder, int count)
-	{
-		const auto descr = Folder2Descr_.value (folder);
-		if (!descr)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no description for folder"
-					<< folder;
-			return;
-		}
-
-		descr->UnreadCount_ = count;
-
-		const auto& index = createIndex (descr->Row (), Column::UnreadCount, descr);
-		emit dataChanged (index, index);
+		const auto& msgCount = createIndex (descr->Row (), Column::MessageCount, descr);
+		const auto& unreadCount = createIndex (descr->Row (), Column::UnreadCount, descr);
+		emit dataChanged (msgCount, unreadCount);
 	}
 }
 }
