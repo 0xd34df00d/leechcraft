@@ -41,8 +41,7 @@ namespace Snails
 	}
 	void OutputIODevAdapter::flush ()
 	{
-		QFile *file = 0;
-		if ((file = qobject_cast<QFile*> (Dev_)))
+		if (const auto file = qobject_cast<QFile*> (Dev_))
 			file->flush ();
 	}
 
