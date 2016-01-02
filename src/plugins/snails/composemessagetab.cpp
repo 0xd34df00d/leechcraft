@@ -423,6 +423,12 @@ namespace Snails
 										[] (const auto& err)
 										{
 											qWarning () << Q_FUNC_INFO << "caught exception:" << err.what ();
+
+											const auto& notify = Util::MakeNotification ("Snails",
+													tr ("Unable to send email: %1.")
+															.arg (QString::fromUtf8 (err.what ())),
+													PCritical_);
+											Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 										});
 							});
 				};
