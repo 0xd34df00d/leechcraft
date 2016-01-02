@@ -43,6 +43,8 @@ Rectangle {
                 marginsManaged: true
                 anchors.margins: margins
 
+                onTriggered: Liznoo_proxy.batteryHistoryDialogRequested(batteryId)
+
                 Rectangle {
                     width: parent.width - anchors.rightMargin
                     height: width / 1.62
