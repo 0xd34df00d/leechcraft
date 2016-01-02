@@ -119,13 +119,13 @@ namespace Pogooglue
 
 	void Plugin::GoogleIt (const QString& text)
 	{
-		QString urlStr = QString ("http://www.google.com/search?q=%2"
+		const auto& urlStr = QString ("http://www.google.com/search?q=%2"
 				"&client=leechcraft_poshuku"
 				"&ie=utf-8"
 				"&rls=org.leechcraft:%1")
 			.arg (QLocale::system ().name ().replace ('_', '-'))
 			.arg (QString::fromUtf8 (QUrl::toPercentEncoding (text)));
-		QUrl result = QUrl::fromEncoded (urlStr.toUtf8 ());
+		const auto& result = QUrl::fromEncoded (urlStr.toUtf8 ());
 
 		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeEntity (result,
 					{},
