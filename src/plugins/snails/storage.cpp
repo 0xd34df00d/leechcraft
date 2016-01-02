@@ -264,7 +264,8 @@ namespace Snails
 		for (const auto& elem : folder)
 		{
 			const auto& subdir = elem.toUtf8 ().toHex ();
-			if (!rootDir.cd (subdir))
+			if (!rootDir.cd (subdir) &&
+					!(rootDir.mkpath (subdir) && rootDir.cd (subdir)))
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to cd to"
