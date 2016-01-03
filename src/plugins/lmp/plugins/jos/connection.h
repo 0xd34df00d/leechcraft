@@ -54,10 +54,10 @@ namespace jOS
 	{
 		Q_OBJECT
 
-		const MobileRaii<idevice_t> Device_;
-		const MobileRaii<lockdownd_client_t> Lockdown_;
-		const MobileRaii<lockdownd_service_descriptor_t> Service_;
-		const MobileRaii<afc_client_t> AFC_;
+		const MobileRaii<idevice_t, idevice_error_t> Device_;
+		const MobileRaii<lockdownd_client_t, lockdownd_error_t> Lockdown_;
+		const MobileRaii<lockdownd_service_descriptor_t, lockdownd_error_t> Service_;
+		const MobileRaii<afc_client_t, afc_error_t> AFC_;
 
 		const QString TempDirPath_;
 
