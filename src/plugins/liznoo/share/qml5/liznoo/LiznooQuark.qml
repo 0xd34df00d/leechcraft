@@ -43,6 +43,8 @@ Rectangle {
                 marginsManaged: true
                 anchors.margins: margins
 
+                onTriggered: Liznoo_proxy.batteryHistoryDialogRequested(batteryId)
+
                 Rectangle {
                     width: parent.width - anchors.rightMargin
                     height: width / 1.62
@@ -60,6 +62,7 @@ Rectangle {
                     }
 
                     Rectangle {
+                        id: battLevelFillRect
                         anchors.fill: parent
                         property real baseMargin: 1
                         anchors.leftMargin: baseMargin
@@ -69,9 +72,26 @@ Rectangle {
 
                         radius: parent.radius
 
+                        function adjustColor(c, base) {
+                            function lightness(c) {
+                                // https://en.wikipedia.org/wiki/HSL_and_HSV#Lightness
+                                return (c.r + c.g + c.b) / 3;
+                            }
+
+                            return lightness(c) >= lightness(base) ?
+                                        Qt.lighter(c) :
+                                        Qt.darker(c);
+                        }
+
                         gradient: Gradient {
-                            GradientStop { position: 0.0; color: colorProxy.color_ToolButton_HoveredBottomColor }
-                            GradientStop { position: 1.0; color: colorProxy.color_ToolButton_HoveredTopColor }
+                            GradientStop {
+                                position: 0.0
+                                color: battLevelFillRect.adjustColor(colorProxy.color_ToolButton_HoveredBottomColor, colorProxy.color_ToolButton_BottomColor)
+                            }
+                            GradientStop {
+                                position: 1.0
+                                color: battLevelFillRect.adjustColor(colorProxy.color_ToolButton_HoveredTopColor, colorProxy.color_ToolButton_TopColor)
+                            }
                         }
                     }
 

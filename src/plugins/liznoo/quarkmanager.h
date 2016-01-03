@@ -58,6 +58,8 @@ namespace Liznoo
 		void handleBatteryInfo (const Liznoo::BatteryInfo&);
 	signals:
 		void batteryModelChanged ();
+
+		void batteryHistoryDialogRequested (const QString&);
 	};
 }
 }

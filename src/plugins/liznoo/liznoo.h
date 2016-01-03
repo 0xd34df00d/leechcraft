@@ -120,6 +120,7 @@ namespace Liznoo
 		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();
 		void handleHistoryTriggered ();
+		void handleHistoryTriggered (const QString&);
 		void handleBatteryDialogDestroyed ();
 
 		void handleSuspendRequested ();

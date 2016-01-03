@@ -176,6 +176,11 @@ namespace Liznoo
 		LiznooQuark_ = std::make_shared<QuarkComponent> ("liznoo", "LiznooQuark.qml");
 		LiznooQuark_->DynamicProps_.append ({ "Liznoo_proxy", qm });
 
+		connect (qm,
+				SIGNAL (batteryHistoryDialogRequested (QString)),
+				this,
+				SLOT (handleHistoryTriggered (QString)));
+
 		if (BatteryPlatform_)
 			connect (BatteryPlatform_.get (),
 					SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
@@ -458,13 +463,16 @@ namespace Liznoo
 
 	void Plugin::handleHistoryTriggered ()
 	{
-		const QString& id = sender ()->
-				property ("Liznoo/BatteryID").toString ();
+		const auto& id = sender ()->property ("Liznoo/BatteryID").toString ();
+		handleHistoryTriggered (id);
+	}
+
+	void Plugin::handleHistoryTriggered (const QString& id)
+	{
 		if (!Battery2History_.contains (id) ||
 				Battery2Dialog_.contains (id))
 		{
-			auto dia = static_cast<BatteryHistoryDialog*> (Battery2Dialog_.value (id));
-			if (dia)
+			if (auto dia = Battery2Dialog_.value (id))
 				dia->close ();
 			return;
 		}
