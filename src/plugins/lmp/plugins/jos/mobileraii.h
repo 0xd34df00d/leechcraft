@@ -29,10 +29,11 @@
 
 #pragma once
 
-#include <libimobiledevice/libimobiledevice.h>
 #include <stdexcept>
 #include <typeinfo>
 #include <QString>
+#include <libimobiledevice/libimobiledevice.h>
+#include <util/sll/oldcppkludges.h>
 
 namespace LeechCraft
 {
@@ -50,7 +51,7 @@ namespace jOS
 		uint16_t GetErrCode () const;
 	};
 
-	template<typename T, typename Deleter = int16_t (*) (T)>
+	template<typename T, typename DeleterRes = int16_t, typename Deleter = DeleterRes (*) (T)>
 	class MobileRaii
 	{
 		T Type_ = nullptr;
@@ -92,7 +93,7 @@ namespace jOS
 	};
 
 	template<typename T, typename Creator, typename Deleter>
-	MobileRaii<T, Deleter> MakeRaii (Creator c, Deleter d)
+	MobileRaii<T, Util::ResultOf_t<Deleter (T)>, Deleter> MakeRaii (Creator c, Deleter d)
 	{
 		return { c, d };
 	}
