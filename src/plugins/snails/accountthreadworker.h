@@ -115,32 +115,32 @@ namespace Snails
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
 		ProgressListener* MkPgListener (const QString&);
 	public:
-		void setNoopTimeout (int);
+		void SetNoopTimeout (int);
 
-		void flushSockets ();
+		void FlushSockets ();
 
 		struct SyncResult
 		{
 			QList<Folder> AllFolders_;
 			Folder2Messages_t Messages_;
 		};
-		SyncResult synchronize (const QList<QStringList>&, const QByteArray& last);
+		SyncResult Synchronize (const QList<QStringList>&, const QByteArray& last);
 
 		using MsgCountError_t = boost::variant<FolderNotFound>;
 		using MsgCountResult_t = Util::Either<MsgCountError_t, QPair<int, int>>;
-		MsgCountResult_t getMessageCount (const QStringList& folder);
+		MsgCountResult_t GetMessageCount (const QStringList& folder);
 
 		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, QList<Message_ptr>>;
-		SetReadStatusResult_t setReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
-		void fetchWholeMessage (LeechCraft::Snails::Message_ptr);
-		void fetchAttachment (LeechCraft::Snails::Message_ptr, const QString&, const QString&);
+		SetReadStatusResult_t SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
+		void FetchWholeMessage (Message_ptr);
+		void FetchAttachment (Message_ptr, const QString&, const QString&);
 
-		void copyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
+		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 
 		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, boost::none_t>;
-		DeleteResult_t deleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
+		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
-		void sendMessage (const LeechCraft::Snails::Message_ptr&);
+		void SendMessage (const Message_ptr&);
 	private slots:
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 

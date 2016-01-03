@@ -852,7 +852,7 @@ namespace Snails
 			CachedStore_->noop ();
 	}
 
-	void AccountThreadWorker::setNoopTimeout (int timeout)
+	void AccountThreadWorker::SetNoopTimeout (int timeout)
 	{
 		NoopTimer_->stop ();
 
@@ -862,13 +862,13 @@ namespace Snails
 		NoopTimer_->start (timeout);
 	}
 
-	void AccountThreadWorker::flushSockets ()
+	void AccountThreadWorker::FlushSockets ()
 	{
 		CachedFolders_.clear ();
 		CachedStore_.reset ();
 	}
 
-	auto AccountThreadWorker::synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
+	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
 		const auto& store = MakeStore ();
 		const auto& folders = SyncIMAPFolders (store);
@@ -876,7 +876,7 @@ namespace Snails
 		return { folders, fetchResult };
 	}
 
-	auto AccountThreadWorker::getMessageCount (const QStringList& folder) -> MsgCountResult_t
+	auto AccountThreadWorker::GetMessageCount (const QStringList& folder) -> MsgCountResult_t
 	{
 		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
@@ -886,7 +886,7 @@ namespace Snails
 		return MsgCountResult_t::Right ({ status->getMessageCount (), status->getUnseenCount () });
 	}
 
-	auto AccountThreadWorker::setReadStatus (bool read,
+	auto AccountThreadWorker::SetReadStatus (bool read,
 			const QList<QByteArray>& ids, const QStringList& folderPath) -> SetReadStatusResult_t
 	{
 		const auto& folder = GetFolder (folderPath, FolderMode::ReadWrite);
@@ -911,7 +911,7 @@ namespace Snails
 		return SetReadStatusResult_t::Right (messages);
 	}
 
-	void AccountThreadWorker::fetchWholeMessage (Message_ptr origMsg)
+	void AccountThreadWorker::FetchWholeMessage (Message_ptr origMsg)
 	{
 		if (!origMsg)
 			return;
@@ -964,7 +964,7 @@ namespace Snails
 		emit messageBodyFetched (origMsg);
 	}
 
-	void AccountThreadWorker::fetchAttachment (Message_ptr msg,
+	void AccountThreadWorker::FetchAttachment (Message_ptr msg,
 			const QString& attName, const QString& path)
 	{
 		const auto& msgId = msg->GetFolderID ();
@@ -1008,7 +1008,7 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::copyMessages (const QList<QByteArray>& ids,
+	void AccountThreadWorker::CopyMessages (const QList<QByteArray>& ids,
 			const QStringList& from, const QList<QStringList>& tos)
 	{
 		if (ids.isEmpty () || tos.isEmpty ())
@@ -1023,7 +1023,7 @@ namespace Snails
 			folder->copyMessages (Folder2Path (to), set);
 	}
 
-	auto AccountThreadWorker::deleteMessages (const QList<QByteArray>& ids,
+	auto AccountThreadWorker::DeleteMessages (const QList<QByteArray>& ids,
 			const QStringList& path) -> DeleteResult_t
 	{
 		if (ids.isEmpty ())
@@ -1083,7 +1083,7 @@ namespace Snails
 		}
 	}
 
-	void AccountThreadWorker::sendMessage (const Message_ptr& msg)
+	void AccountThreadWorker::SendMessage (const Message_ptr& msg)
 	{
 		if (!msg)
 			return;
