@@ -394,15 +394,19 @@ namespace CSTP
 			{
 				const auto cur = contdis.at (startPos++);
 				if (cur == '\\')
-					ignoreNextQuote = true;
-				else if (cur == '"' &&
-						!ignoreNextQuote)
-					break;
-				else
 				{
-					result += cur;
-					ignoreNextQuote = false;
+					ignoreNextQuote = true;
+					continue;
 				}
+
+				result += cur;
+
+				if (cur == '"' &&
+						!ignoreNextQuote &&
+						result.size () != 1)
+					break;
+
+				ignoreNextQuote = false;
 			}
 			return result;
 		}
