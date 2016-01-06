@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2006-2015  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -42,7 +42,7 @@ namespace BitTorrent
 
 		Ui::MoveTorrentFiles Ui_;
 	public:
-		MoveTorrentFiles (const QString&, QWidget* = 0);
+		explicit MoveTorrentFiles (QStringList oldDirectories, QWidget *parent = nullptr);
 		QString GetNewLocation () const;
 	private slots:
 		void on_Browse__released ();

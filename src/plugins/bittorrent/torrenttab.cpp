@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2006-2015  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -39,6 +39,8 @@
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
+#include <util/sll/prelude.h>
+#include <util/sll/views.h>
 #include <util/xpc/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -52,6 +54,7 @@
 #include "movetorrentfiles.h"
 #include "tabviewproxymodel.h"
 #include "addmagnetdialog.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -672,23 +675,38 @@ namespace BitTorrent
 
 	void TorrentTab::handleMoveFilesTriggered ()
 	{
-		const int current = GetCurrentTorrent ();
-		QString oldDir = Core::Instance ()->GetTorrentDirectory (current);
-		MoveTorrentFiles mtf (oldDir);
-		if (mtf.exec () == QDialog::Rejected)
-			return;
-		QString newDir = mtf.GetNewLocation ();
-		if (oldDir == newDir)
+		const auto currentRows = GetSelectedRows ();
+
+		if (currentRows.empty() )
 			return;
 
-		if (!Core::Instance ()->MoveTorrentFiles (newDir, current))
+		const auto oldDirs = Util::Map (currentRows
+				, [] (const int row)
+					{ return Core::Instance ()->GetTorrentDirectory (row); });
+
+		MoveTorrentFiles mtf {oldDirs};
+
+		if (mtf.exec () == QDialog::Rejected)
+			return;
+
+		const auto newDir = mtf.GetNewLocation ();
+
+		XmlSettingsManager::Instance ()->setProperty ("LastMoveDirectory", newDir);
+
+		for (auto it : Util::Views::Zip (currentRows, oldDirs))
 		{
-			QString text = tr ("Failed to move torrent's files from %1 to %2")
-					.arg (oldDir)
-					.arg (newDir);
-			const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
-			Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+			if (it.second == newDir)
+				continue;
+			if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
+			{
+				QString text = tr ("Failed to move torrent's files from %1 to %2")
+						.arg (it.second)
+						.arg (newDir);
+				const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
+				Core::Instance ()->GetProxy ()->GetEntityManager ()->HandleEntity (e);
+			}
 		}
+
 	}
 
 	void TorrentTab::handleMakeMagnetLinkTriggered ()

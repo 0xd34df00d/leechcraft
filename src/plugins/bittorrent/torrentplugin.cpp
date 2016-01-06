@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2006-2014  Georg Rudoy
+ * Copyright (C) 2006-2015  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -863,11 +863,11 @@ namespace BitTorrent
 
 	void TorrentPlugin::on_MoveFiles__triggered ()
 	{
-		QString oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
-		MoveTorrentFiles mtf (oldDir);
+		const auto oldDir = Core::Instance ()->GetTorrentDirectory (Core::Instance ()->GetCurrentTorrent ());
+		MoveTorrentFiles mtf {{oldDir}};
 		if (mtf.exec () == QDialog::Rejected)
 			return;
-		QString newDir = mtf.GetNewLocation ();
+		const auto newDir = mtf.GetNewLocation ();
 		if (oldDir == newDir)
 			return;
 
