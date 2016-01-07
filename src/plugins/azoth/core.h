@@ -95,7 +95,7 @@ namespace Azoth
 		QObjectList ProtocolPlugins_;
 		QList<QAction*> AccountCreatorActions_;
 
-		AvatarsManager * const AvatarsManager_;
+		std::shared_ptr<AvatarsManager> AvatarsManager_;
 		CLTooltipManager * const TooltipManager_;
 		CLModel *CLModel_;
 		ChatTabsManager *ChatTabsManager_;

@@ -200,19 +200,19 @@ namespace Azoth
 
 	Core::Core ()
 	: Proxy_ (nullptr)
-	, AvatarsManager_ (new AvatarsManager (this))
-	, TooltipManager_ (new CLTooltipManager (AvatarsManager_, Entry2Items_))
+	, AvatarsManager_ (std::make_shared<AvatarsManager> ())
+	, TooltipManager_ (new CLTooltipManager (AvatarsManager_.get (), Entry2Items_))
 	, CLModel_ (new CLModel (TooltipManager_, this))
-	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_, this))
+	, ChatTabsManager_ (new ChatTabsManager (AvatarsManager_.get (), this))
 	, CoreCommandsManager_ (new CoreCommandsManager (this))
-	, ActionsManager_ (new ActionsManager (AvatarsManager_, this))
+	, ActionsManager_ (new ActionsManager (AvatarsManager_.get (), this))
 	, ItemIconManager_ (new AnimatedIconManager<QStandardItem*> ([] (QStandardItem *it, const QIcon& ic)
 						{ it->setIcon (ic); }))
 	, SmilesOptionsModel_ (new SourceTrackingModel<IEmoticonResourceSource> ({ tr ("Smile pack") }))
 	, ChatStylesOptionsModel_ (new SourceTrackingModel<IChatStyleResourceSource> ({ tr ("Chat style") }))
 	, PluginManager_ (new PluginManager)
-	, PluginProxyObject_ (new ProxyObject (AvatarsManager_))
-	, XferJobManager_ (new TransferJobManager { AvatarsManager_ })
+	, PluginProxyObject_ (new ProxyObject (AvatarsManager_.get ()))
+	, XferJobManager_ (new TransferJobManager { AvatarsManager_.get () })
 	, CallManager_ (new CallManager)
 	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
@@ -266,6 +266,7 @@ namespace Azoth
 	{
 		ShortcutManager_.reset ();
 		StyleOptionManagers_.clear ();
+		AvatarsManager_.reset ();
 
 #ifdef ENABLE_CRYPT
 		CryptoManager::Instance ().Release ();
@@ -279,7 +280,7 @@ namespace Azoth
 		ShortcutManager_.reset (new Util::ShortcutManager (proxy));
 		CustomStatusesManager_.reset (new CustomStatusesManager);
 
-		NotificationsManager_.reset (new NotificationsManager (proxy->GetEntityManager (), AvatarsManager_));
+		NotificationsManager_.reset (new NotificationsManager (proxy->GetEntityManager (), AvatarsManager_.get ()));
 		PluginManager_->RegisterHookable (NotificationsManager_.get ());
 		connect (UnreadQueueManager_.get (),
 				SIGNAL (messagesCleared (QObject*)),
@@ -353,7 +354,7 @@ namespace Azoth
 
 	AvatarsManager* Core::GetAvatarsManager () const
 	{
-		return AvatarsManager_;
+		return AvatarsManager_.get ();
 	}
 
 	void Core::AddPlugin (QObject *plugin)
