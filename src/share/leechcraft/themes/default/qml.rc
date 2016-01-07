@@ -1,6 +1,6 @@
 [ToolButton]
-TopColor=0,0,0
-BottomColor=66,57,75
+TopColor=0,0,0,127
+BottomColor=66,57,75,127
 BorderColor=0,0,0
 SelectedTopColor=75,10,0
 SelectedBottomColor=120,67,75
