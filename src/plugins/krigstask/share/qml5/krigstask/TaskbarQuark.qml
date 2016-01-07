@@ -69,7 +69,6 @@ Rectangle {
 
                     actionIconURL: "image://TaskbarIcons/" + windowID + '/' + iconGenID
                     textTooltip: windowName
-                    decoOpacity: isMinimizedWindow ? 0.3 : (isActiveWindow ? 0.8 : 0.5)
                     orientation: viewOrient
                     acceptedButtons: Qt.LeftButton | Qt.RightButton
 
