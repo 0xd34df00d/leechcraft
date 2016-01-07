@@ -145,24 +145,6 @@ namespace Snails
 		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
 
 		void sendNoop ();
-	public:
-		struct Args
-		{
-			struct SetReadStatus
-			{
-				enum Args
-				{
-					Read,
-					Ids,
-					Folder
-				};
-
-				using ArgTypes = std::tuple<bool, QList<QByteArray>, QStringList>;
-				using Function = decltype (&AccountThreadWorker::setReadStatus);
-			};
-
-			using Known = std::tuple<SetReadStatus>;
-		};
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);
