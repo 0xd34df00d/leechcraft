@@ -28,17 +28,15 @@
  **********************************************************************/
 
 #include "movetorrentfiles.h"
-
 #include <QFileDialog>
-
 #include <xmlsettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace BitTorrent
 {
-	MoveTorrentFiles::MoveTorrentFiles (QStringList oldDirectories, QWidget *parent /* = nullptr */)
-	: QDialog {parent}
+	MoveTorrentFiles::MoveTorrentFiles (QStringList oldDirectories, QWidget *parent)
+	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
@@ -51,8 +49,9 @@ namespace BitTorrent
 		else
 			Ui_.OldLocation_->setToolTip (oldDirectories.join (tr (", ")));
 
-		const auto& moveDirectory = XmlSettingsManager::Instance ()->Property ("LastMoveDirectory"
-				, XmlSettingsManager::Instance ()->property ("LastSaveDirectory").toString ()).toString ();
+		const auto xsm = XmlSettingsManager::Instance ();
+		const auto& moveDirectory = xsm->Property ("LastMoveDirectory",
+					xsm->property ("LastSaveDirectory").toString ()).toString ();
 
 		Ui_.NewLocation_->setText (moveDirectory);
 	}
@@ -64,7 +63,7 @@ namespace BitTorrent
 
 	void MoveTorrentFiles::on_Browse__released ()
 	{
-		QString dir = QFileDialog::getExistingDirectory (this, tr ("New location"),
+		const auto& dir = QFileDialog::getExistingDirectory (this, tr ("New location"),
 				Ui_.NewLocation_->text ());
 		if (dir.isEmpty () || dir == Ui_.NewLocation_->text ())
 			return;

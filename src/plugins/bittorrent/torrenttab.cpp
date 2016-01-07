@@ -680,11 +680,10 @@ namespace BitTorrent
 		if (currentRows.empty() )
 			return;
 
-		const auto oldDirs = Util::Map (currentRows
-				, [] (const int row)
-					{ return Core::Instance ()->GetTorrentDirectory (row); });
+		const auto oldDirs = Util::Map (currentRows,
+				[] (const int row) { return Core::Instance ()->GetTorrentDirectory (row); });
 
-		MoveTorrentFiles mtf {oldDirs};
+		MoveTorrentFiles mtf { oldDirs };
 
 		if (mtf.exec () == QDialog::Rejected)
 			return;
@@ -697,9 +696,10 @@ namespace BitTorrent
 		{
 			if (it.second == newDir)
 				continue;
+
 			if (!Core::Instance ()->MoveTorrentFiles (newDir, it.first))
 			{
-				QString text = tr ("Failed to move torrent's files from %1 to %2")
+				const auto& text = tr ("Failed to move torrent's files from %1 to %2.")
 						.arg (it.second)
 						.arg (newDir);
 				const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
