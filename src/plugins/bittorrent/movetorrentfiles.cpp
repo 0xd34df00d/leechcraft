@@ -47,7 +47,10 @@ namespace BitTorrent
 		if (1 == oldDirectories.size ())
 			Ui_.OldLocation_->setText (oldDirectories.front ());
 		else
+		{
 			Ui_.OldLocation_->setToolTip (oldDirectories.join (tr (", ")));
+			Ui_.OldLocation_->setPlaceholderText (tr ("Multiple directories"));
+		}
 
 		const auto xsm = XmlSettingsManager::Instance ();
 		const auto& moveDirectory = xsm->Property ("LastMoveDirectory",
