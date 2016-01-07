@@ -74,6 +74,7 @@ Rectangle {
 
                     isHighlight: !isMinimizedWindow
                     isStrongHighlight: isActiveWindow
+                    isCurrent: isActiveWindow
 
                     onTriggered: isActiveWindow ?
                             KT_taskbarProxy.minimizeWindow(windowID) :
