@@ -13,7 +13,6 @@ Item {
     property bool actionIconScales: true
 
     property bool hoverScalesIcons: true
-    property real decoOpacity: 0
 
     property alias isHovered: actionMouseArea.containsMouse
     property alias acceptedButtons: actionMouseArea.acceptedButtons
@@ -40,21 +39,28 @@ Item {
         radius: Math.min(width, height) / 10
         smooth: true
 
-        property real margins: hoverScalesIcons ? 2 : 0
+        property real margins: 0
+
+        property bool hasText : actionRoot.actionText.length > 0
 
         anchors.fill: parent
         anchors.margins: actionRoot.marginsManaged ? 0 : margins
         border.width: isStrongHighlight ? 2 : 1
+
+        property real decoOpacity: actionRect.hasText ? 0.5 : 0
+
         border.color: colorProxy.setAlpha(colorProxy.color_ToolButton_BorderColor, decoOpacity)
 
         gradient: Gradient {
             GradientStop {
+                id: topGradientStop
                 position: 0
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, decoOpacity)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_TopColor, actionRect.decoOpacity)
             }
             GradientStop {
+                id: bottomGradientStop
                 position: 1
-                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, decoOpacity)
+                color: colorProxy.setAlpha(colorProxy.color_ToolButton_BottomColor, actionRect.decoOpacity)
             }
         }
 
@@ -62,12 +68,15 @@ Item {
             State {
                 name: "current"
                 when: actionRoot.isCurrent && !actionMouseArea.containsMouse
-                PropertyChanges { target: actionRect; margins: 0 }
+                PropertyChanges { target: topGradientStop; color: colorProxy.color_ToolButton_SelectedTopColor }
+                PropertyChanges { target: bottomGradientStop; color: colorProxy.color_ToolButton_SelectedBottomColor }
             },
             State {
                 name: "hovered"
                 when: actionMouseArea.containsMouse && !actionMouseArea.pressed
-                PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_HoveredBorderColor; margins: 0 }
+                PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_HoveredBorderColor }
+                PropertyChanges { target: topGradientStop; color: colorProxy.color_ToolButton_HoveredTopColor }
+                PropertyChanges { target: bottomGradientStop; color: colorProxy.color_ToolButton_HoveredBottomColor }
             },
             State {
                 name: "pressed"
@@ -81,7 +90,7 @@ Item {
                 from: ""
                 to: "hovered,current"
                 reversible: true
-                PropertyAnimation { properties: "border.color,margins"; duration: 200 }
+                PropertyAnimation { properties: "border.color,color"; duration: 200 }
             }
         ]
 
@@ -93,9 +102,7 @@ Item {
             width: Math.min(parent.width, parent.height)
             height: width
 
-            source: actionIconScales && actionIconURL.length > 0 ?
-                        (actionIconURL + '/' + width) :
-                        actionIconURL
+            source: actionIconURL.length > 0 ? actionIconURL + '/' + width : actionIconURL
             smooth: true
             cache: false
 
