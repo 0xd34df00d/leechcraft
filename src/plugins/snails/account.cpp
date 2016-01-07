@@ -583,7 +583,6 @@ namespace Snails
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
-		emit mailChanged ();
 
 		MailModelsManager_->Append (messages);
 	}
@@ -592,7 +591,6 @@ namespace Snails
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
 		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
-		emit mailChanged ();
 
 		MailModelsManager_->Update (messages);
 	}
