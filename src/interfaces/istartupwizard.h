@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_ISTARTUPWIZARD_H
-#define INTERFACES_ISTARTUPWIZARD_H
+#pragma once
+
 #include <QList>
 
 class QWizardPage;
@@ -50,7 +50,7 @@ public:
 	 * Pages in the returned list will be inserted into the wizard in
 	 * the same order as they appear in the list. Order of different
 	 * sets of pages returned by different plugins is arbitrary.
-	 * 
+	 *
 	 * Plugin can return different pages each time this function is
 	 * called.
 	 *
@@ -60,6 +60,3 @@ public:
 };
 
 Q_DECLARE_INTERFACE (IStartupWizard, "org.Deviant.LeechCraft.IStartupWizard/1.0");
-
-#endif
-
