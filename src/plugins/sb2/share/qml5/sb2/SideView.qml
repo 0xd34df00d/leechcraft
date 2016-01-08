@@ -230,7 +230,7 @@ Rectangle {
                     }
                     border.color: colorProxy.color_ToolButton_SelectedBorderColor
                     border.width: 1
-                    radius: width / 10
+                    radius: Math.min(width, height) / 10
 
                     states: [
                         State {
