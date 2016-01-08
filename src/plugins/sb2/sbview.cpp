@@ -77,6 +77,9 @@ namespace SB2
 	{
 		for (const auto item : UnhoverItems_)
 		{
+			if (!item.Item_)
+				continue;
+
 			QHoverEvent ev { QEvent::HoverEnter, item.OldPos_, { -1, -1 } };
 			static_cast<QObject*> (item.Item_)->event (&ev);
 		}

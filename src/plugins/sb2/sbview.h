@@ -34,6 +34,7 @@
 #include <QDeclarativeView>
 #else
 #include <QQuickWidget>
+#include <QPointer>
 #endif
 
 namespace LeechCraft
@@ -53,7 +54,7 @@ namespace SB2
 #if QT_VERSION >= 0x050000
 		struct UnhoverItem
 		{
-			QQuickItem *Item_;
+			QPointer<QQuickItem> Item_;
 			QPointF OldPos_;
 		};
 		QList<UnhoverItem> UnhoverItems_;
