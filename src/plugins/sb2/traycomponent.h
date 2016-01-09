@@ -42,8 +42,6 @@ namespace SB2
 		Q_OBJECT
 	public:
 		TrayComponent (ICoreProxy_ptr, SBView*, QObject* parent = 0);
-
-		void HandleDockAction (QDockWidget*, bool);
 	public slots:
 		void handlePluginsAvailable ();
 	private slots:

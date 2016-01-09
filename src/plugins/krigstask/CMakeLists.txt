@@ -14,6 +14,7 @@ set (SRCS
 	windowsmodel.cpp
 	taskbarproxy.cpp
 	pagerwindow.cpp
+	pagerwindowproxy.cpp
 	)
 CreateTrs("krigstask" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("krigstask" "en;ru_RU" "${SRCS}" "${FORMS}" "")

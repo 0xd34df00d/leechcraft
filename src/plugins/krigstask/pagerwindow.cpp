@@ -64,6 +64,8 @@
 #include <xcb/xcb_renderutil.h>
 #endif
 
+#include "pagerwindowproxy.h"
+
 namespace LeechCraft
 {
 namespace Krigstask
@@ -179,12 +181,21 @@ namespace Krigstask
 		FillModel ();
 		rootContext ()->setContextProperty ("showThumbs", ShowThumbs_);
 		rootContext ()->setContextProperty ("desktopsModel", DesktopsModel_);
-		rootContext ()->setContextProperty ("pagerProxy", this);
+
+		const auto pagerProxy = new PagerWindowProxy { this };
+		connect (pagerProxy,
+				SIGNAL (showDesktop (int)),
+				this,
+				SLOT (showDesktop (int)));
+		connect (pagerProxy,
+				SIGNAL (showWindow (qulonglong)),
+				this,
+				SLOT (showWindow (qulonglong)));
+		rootContext ()->setContextProperty ("pagerProxy", pagerProxy);
 
 		setResizeMode (SizeViewToRootObject);
 
-		const auto& path = Util::GetSysPath (Util::SysPath::QML, "krigstask", "Pager.qml");
-		setSource (QUrl::fromLocalFile (path));
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "krigstask", "Pager.qml"));
 	}
 
 	void PagerWindow::FillModel ()

@@ -27,43 +27,22 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "traycomponent.h"
-#include <QDockWidget>
-#include <interfaces/iactionsexporter.h>
-#include <interfaces/core/ipluginsmanager.h>
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
-namespace SB2
+namespace Krigstask
 {
-	TrayComponent::TrayComponent (ICoreProxy_ptr proxy, SBView *view, QObject *parent)
-	: BaseActionComponent ({ "SB2_TrayActionImage", "TrayComponent.qml", "SB2_trayModel" }, proxy, view, parent)
+	class PagerWindowProxy : public QObject
 	{
-		const auto& hasActions = Proxy_->GetPluginsManager ()->
-				GetAllCastableRoots<IActionsExporter*> ();
-		for (QObject *actObj : hasActions)
-			connect (actObj,
-					SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)),
-					this,
-					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
-	}
-
-	void TrayComponent::handlePluginsAvailable ()
-	{
-		const auto places = { ActionsEmbedPlace::QuickLaunch, ActionsEmbedPlace::LCTray };
-		const auto& hasActions = Proxy_->GetPluginsManager ()->
-				GetAllCastableTo<IActionsExporter*> ();
-		for (auto place : places)
-			for (auto exp : hasActions)
-				handleGotActions (exp->GetActions (place), place);
-	}
-
-	void TrayComponent::handleGotActions (const QList<QAction*>& acts, ActionsEmbedPlace aep)
-	{
-		if (aep != ActionsEmbedPlace::LCTray && aep != ActionsEmbedPlace::QuickLaunch)
-			return;
-
-		AddActions (acts, ActionPos::End);
-	}
+		Q_OBJECT
+	public:
+		using QObject::QObject;
+	signals:
+		void showDesktop (int);
+		void showWindow (qulonglong);
+	};
 }
 }
