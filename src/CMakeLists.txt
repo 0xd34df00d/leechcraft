@@ -18,8 +18,6 @@ set (CMAKE_MACOSX_RPATH OFF)
 option (USE_QT5 "Enable Qt5 build" OFF)
 option (USE_CPP14 "Enable C++14 features and plugins" OFF)
 
-add_definitions (-DBOOST_OPTIONAL_USE_OLD_DEFINITION_OF_NONE)
-
 if (MSVC)
 	set (CMAKE_CXX_FLAGS "/EHa /W3")
 	set (CMAKE_CXX_FLAGS_RELEASE "/Ob2 /O2 /Ot /Oi /Oy /GT /GL /MD /D NDEBUG")
