@@ -48,15 +48,6 @@ namespace SB2
 					SLOT (handleGotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 	}
 
-	void TrayComponent::HandleDockAction (QDockWidget *dw, bool visible)
-	{
-		QAction *act = dw->toggleViewAction ();
-		if (!visible)
-			RemoveAction (act);
-		else
-			AddActions ({ act }, ActionPos::Beginning);
-	}
-
 	void TrayComponent::handlePluginsAvailable ()
 	{
 		const auto places = { ActionsEmbedPlace::QuickLaunch, ActionsEmbedPlace::LCTray };
