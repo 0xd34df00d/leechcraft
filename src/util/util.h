@@ -86,6 +86,7 @@ namespace LeechCraft
 		 */
 		UTIL_API QString MakePrettySize (qint64 sourceSize);
 
+		UTIL_API QString MakePrettySizeShort (qint64 size);
 		/** @brief Makes a formatted time from number.
 		 *
 		 * Converts, for example 256 to 00:04:16.

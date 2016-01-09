@@ -123,6 +123,19 @@ QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 	return MakePrettySizeWith (sourcesize, units);
 }
 
+QString LeechCraft::Util::MakePrettySizeShort (qint64 sourcesize)
+{
+	static const QStringList units
+	{
+		QObject::tr (" b", "Short one-character unit for bytes."),
+		QObject::tr (" K", "Short one-character unit for kilobytes."),
+		QObject::tr (" M", "Short one-character unit for megabytes."),
+		QObject::tr (" G", "Short one-character unit for gigabytes.")
+	};
+
+	return MakePrettySizeWith (sourcesize, units);
+}
+
 QString LeechCraft::Util::MakeTimeFromLong (ulong time)
 {
 	int d = time / 86400;
