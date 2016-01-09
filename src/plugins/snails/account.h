@@ -204,7 +204,6 @@ namespace Snails
 
 		void handleMessageBodyFetched (Message_ptr);
 	signals:
-		void mailChanged ();
 		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 		void messageBodyFetched (const Message_ptr&);
