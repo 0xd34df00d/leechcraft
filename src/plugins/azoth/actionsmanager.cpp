@@ -45,6 +45,7 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
+#include <util/sll/void.h>
 #include <util/sys/util.h>
 #include <util/threads/futures.h>
 #include <util/xpc/util.h>
@@ -93,7 +94,7 @@ using SingleEntryActor_f = std::function<void (LeechCraft::Azoth::ICLEntry*)> ;
 using SingleEntryActorWManager_f = std::function<void (LeechCraft::Azoth::ICLEntry*, LeechCraft::Azoth::ActionsManager*)>;
 using MultiEntryActor_f = std::function<void (QList<LeechCraft::Azoth::ICLEntry*>)> ;
 
-using EntryActor_f = boost::variant<boost::none_t, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
+using EntryActor_f = boost::variant<LeechCraft::Util::Void, SingleEntryActor_f, SingleEntryActorWManager_f, MultiEntryActor_f>;
 Q_DECLARE_METATYPE (EntryActor_f);
 
 using EntriesList_t = QList<LeechCraft::Azoth::ICLEntry*>;
@@ -1516,7 +1517,7 @@ namespace Azoth
 						actor (entry, this);
 				},
 				[&entries] (const MultiEntryActor_f& actor) { actor (entries); },
-				[action] (const boost::none_t&)
+				[action] (const Util::Void&)
 				{
 					qWarning () << Q_FUNC_INFO
 							<< "no function set for"
