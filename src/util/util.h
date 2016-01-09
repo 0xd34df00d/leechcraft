@@ -86,7 +86,22 @@ namespace LeechCraft
 		 */
 		UTIL_API QString MakePrettySize (qint64 sourceSize);
 
+		/** @brief Converts a bytes count to a string representation with
+		 * appropriately chosen units.
+		 *
+		 * Converts, for example, <em>1048576</em> to <em>1.0 M</em>.
+		 *
+		 * As opposed to MakePrettySize(), this function tries to keep the
+		 * returned string short.
+		 *
+		 * @param[in] size Size in bytes.
+		 * @return Formatted string in relevant units.
+		 *
+		 * @sa MakeTimeFromLong()
+		 * @sa MakePrettySize()
+		 */
 		UTIL_API QString MakePrettySizeShort (qint64 size);
+
 		/** @brief Makes a formatted time from number.
 		 *
 		 * Converts, for example 256 to 00:04:16.
