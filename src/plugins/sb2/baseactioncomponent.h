@@ -55,7 +55,7 @@ namespace SB2
 
 		ActionImageProvider *ImageProv_;
 
-		int NextActionId_;
+		int NextActionId_ = 0;
 	public:
 		enum class ActionPos
 		{
