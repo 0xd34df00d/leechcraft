@@ -183,8 +183,7 @@ namespace Krigstask
 
 		setResizeMode (SizeViewToRootObject);
 
-		const auto& path = Util::GetSysPath (Util::SysPath::QML, "krigstask", "Pager.qml");
-		setSource (QUrl::fromLocalFile (path));
+		setSource (Util::GetSysPathUrl (Util::SysPath::QML, "krigstask", "Pager.qml"));
 	}
 
 	void PagerWindow::FillModel ()
