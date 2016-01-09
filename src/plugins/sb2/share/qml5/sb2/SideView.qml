@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtQuick.Layouts 1.2
 import org.LC.common 1.0
 
 Rectangle {
@@ -168,7 +169,7 @@ Rectangle {
         }
     }
 
-    Grid {
+    GridLayout {
         id: itemsView
 
         anchors.top: parent.top
@@ -176,10 +177,10 @@ Rectangle {
         height: isVert ? parent.height - ownStuffGrid.height : parent.height
         width: isVert ? parent.width : parent.width - ownStuffGrid.width
 
-        columns: isVert ? 1 : itemsRepeater.count
-        rows: isVert ? itemsRepeater.count : 1
+        flow: isVert ? GridLayout.TopToBottom : GridLayout.LeftToRight
 
-        spacing: quarkSpacing
+        rowSpacing: quarkSpacing
+        columnSpacing: quarkSpacing
 
         clip: true
 
@@ -190,40 +191,22 @@ Rectangle {
             Item {
                 id: itemsDelegate
 
-                height: isVert ? itemLoader.height : itemsView.height
-                width: isVert ? itemsView.width : itemLoader.width
-
                 property bool isExpandable: itemLoader.item.isExpandable == undefined ? false : itemLoader.item.isExpandable
                 implicitWidth: itemLoader.item.implicitWidth
                 implicitHeight: itemLoader.item.implicitHeight
 
+                Layout.fillWidth: isExpandable
+                Layout.fillHeight: isExpandable
+
                 Loader {
                     id: itemLoader
 
-                    property real quarkBaseSize: isVert ? width : height
+                    property real quarkBaseSize: isVert ? itemsView.width : itemsView.height
 
                     source: sourceURL
 
-                    function calcDim(getDim, getImpDim) {
-                        var w = getImpDim(item);
-                        if (item.isExpandable == undefined || !item.isExpandable)
-                            return w;
-
-                        var expandablesCount = 0;
-                        var sumImplicitSize = 0;
-                        for (var i = 0; i < itemsRepeater.count; ++i)
-                        {
-                            var child = itemsRepeater.itemAt(i);
-                            if (child.isExpandable != undefined && child.isExpandable)
-                                ++expandablesCount;
-                            sumImplicitSize += getImpDim(child);
-                        }
-
-                        return w + (getDim(itemsView) - sumImplicitSize) / expandablesCount;
-                    }
-
-                    height: isVert ? calcDim(function (item) { return item.height; }, function (item) { return item.implicitHeight; }) : itemsDelegate.height
-                    width: isVert ? itemsDelegate.width : calcDim(function (item) { return item.width; }, function (item) { return item.implicitWidth; })
+                    width: parent.width
+                    height: parent.height
 
                     clip: true
                 }
@@ -247,7 +230,7 @@ Rectangle {
                     }
                     border.color: colorProxy.color_ToolButton_SelectedBorderColor
                     border.width: 1
-                    radius: width / 10
+                    radius: Math.min(width, height) / 10
 
                     states: [
                         State {
