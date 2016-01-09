@@ -96,14 +96,22 @@ QString LeechCraft::Util::GetUserText (const Entity& p)
 	return string;
 }
 
+namespace
+{
+	QString MakePrettySizeWith (qint64 sourceSize, const QStringList& units)
+	{
+		int strNum = 0;
+		long double size = sourceSize;
+
+		for (; strNum < 3 && size >= 1024; ++strNum, size /= 1024)
+			;
+
+		return QString::number (size, 'f', 1) + units.value (strNum);
+	}
+}
+
 QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 {
-	int strNum = 0;
-	long double size = sourcesize;
-
-	for (; strNum < 3 && size >= 1024; ++strNum, size /= 1024)
-		;
-
 	static QStringList units
 	{
 		QObject::tr (" b"),
@@ -112,7 +120,7 @@ QString LeechCraft::Util::MakePrettySize (qint64 sourcesize)
 		QObject::tr (" GiB")
 	};
 
-	return QString::number (size, 'f', 1) + units.value (strNum);
+	return MakePrettySizeWith (sourcesize, units);
 }
 
 QString LeechCraft::Util::MakeTimeFromLong (ulong time)
