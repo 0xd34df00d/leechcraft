@@ -50,10 +50,10 @@ namespace SB2
 		Q_OBJECT
 	protected:
 		ICoreProxy_ptr Proxy_;
-		QStandardItemModel *Model_;
+		QStandardItemModel * const Model_;
 		QuarkComponent_ptr Component_;
 
-		ActionImageProvider *ImageProv_;
+		ActionImageProvider * const ImageProv_;
 
 		int NextActionId_ = 0;
 	public:
