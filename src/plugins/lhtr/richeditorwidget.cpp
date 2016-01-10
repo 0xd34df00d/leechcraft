@@ -59,6 +59,7 @@
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
+#include <util/sll/util.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -632,8 +633,7 @@ namespace LHTR
 
 			auto tdoc = tidyCreate ();
 
-			std::shared_ptr<void> guard (nullptr,
-					[&tdoc, &output, &errbuf] (void*) -> void
+			const auto guard = Util::MakeScopeGuard ([&tdoc, &output, &errbuf]
 					{
 						tidyBufFree (&output);
 						tidyBufFree (&errbuf);
