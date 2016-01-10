@@ -629,15 +629,13 @@ namespace LHTR
 		{
 #ifdef WITH_HTMLTIDY
 			TidyBuffer output {};
-			TidyBuffer errbuf {};
 
 			auto tdoc = tidyCreate ();
 
-			const auto guard = Util::MakeScopeGuard ([&tdoc, &output, &errbuf]
+			const auto guard = Util::MakeScopeGuard ([&tdoc, &output]
 					{
-						tidyBufFree (&output);
-						tidyBufFree (&errbuf);
 						tidyRelease (tdoc);
+						tidyBufFree (&output);
 					});
 
 			if (!tidyOptSetBool (tdoc, TidyXmlOut, yes) ||
@@ -650,8 +648,6 @@ namespace LHTR
 			}
 
 			tidyOptSetInt (tdoc, TidyWrapLen, std::numeric_limits<int>::max ());
-
-			tidySetErrorBuffer (tdoc, &errbuf);
 
 			if (tidyParseString (tdoc, html.toUtf8 ().constData ()) < 0)
 			{
