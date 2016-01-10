@@ -70,7 +70,7 @@ namespace Snails
 
 	namespace
 	{
-		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir dir)
+		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir& dir)
 		{
 			for (const auto& msg : msgs)
 			{
