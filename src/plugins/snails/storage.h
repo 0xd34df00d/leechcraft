@@ -55,8 +55,6 @@ namespace Snails
 
 		QHash<Account*, AccountDatabase_ptr> AccountBases_;
 		QHash<Account*, QHash<QByteArray, Message_ptr>> PendingSaveMessages_;
-
-		QHash<QObject*, Account*> FutureWatcher2Account_;
 	public:
 		Storage (QObject* = nullptr);
 
@@ -84,8 +82,6 @@ namespace Snails
 
 		void AddMessage (Message_ptr, Account*);
 		void UpdateCaches (Message_ptr);
-	private slots:
-		void handleMessagesSaved ();
 	};
 }
 }
