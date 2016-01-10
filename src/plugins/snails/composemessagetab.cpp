@@ -154,32 +154,41 @@ namespace Snails
 					<< replyOpt;
 	}
 
+	namespace
+	{
+		void SetupPlaintextContents (QStringList plainSplit, IEditorWidget *editor)
+		{
+			for (auto& str : plainSplit)
+			{
+				str = str.trimmed ();
+				if (str.at (0) != '>')
+					str.prepend (' ');
+				str.prepend ('>');
+			}
+			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
+			editor->SetContents (plainContent, ContentType::PlainText);
+		}
+
+		void SetupRichContents (QStringList plainSplit, IEditorWidget *editor)
+		{
+			const auto quoteStartMarker = "<span style='border-left: 2px solid #900060; padding-left: 0.5em;'>";
+			const auto quoteEndMarker = "</span>";
+
+			for (auto& str : plainSplit)
+				str = quoteStartMarker + Util::Escape (str) + quoteEndMarker;
+
+			editor->SetContents (plainSplit.join ("<br/>"), ContentType::HTML);
+		}
+	}
+
 	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
 	{
 		PrepareReplyEditor (msg);
-
-		auto plainSplit = msg->GetBody ().split ('\n');
-		for (auto& str : plainSplit)
-		{
-			str = str.trimmed ();
-			if (str.at (0) != '>')
-				str.prepend (' ');
-			str.prepend ('>');
-		}
-
 		const auto editor = GetCurrentEditor ();
 
-		const auto& plainContent = plainSplit.join ("\n") + "\n\n";
-		editor->SetContents (plainContent, ContentType::PlainText);
-
-		const auto quoteStartMarker = "<span style='border-left: 2px solid #900060; padding-left: 0.5em;'>";
-		const auto quoteEndMarker = "</span>";
-
-		for (auto& str : plainSplit)
-			str = quoteStartMarker + Util::Escape (str) + quoteEndMarker;
-
-		auto htmlBody = plainSplit.join ("<br/>");
-		editor->SetContents (htmlBody, ContentType::HTML);
+		const auto& plainSplit = msg->GetBody ().split ('\n');
+		SetupPlaintextContents (plainSplit, editor);
+		SetupRichContents (plainSplit, editor);
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
