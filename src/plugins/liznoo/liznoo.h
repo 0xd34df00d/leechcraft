@@ -115,7 +115,6 @@ namespace Liznoo
 
 		QuarkComponents_t GetComponents () const;
 	private:
-		void UpdateAction (const BatteryInfo&);
 		void CheckNotifications (const BatteryInfo&);
 
 		void ChangeState (PowerActions::Platform::State);

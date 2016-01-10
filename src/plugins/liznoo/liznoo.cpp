@@ -305,59 +305,6 @@ namespace Liznoo
 		}
 	}
 
-	void Plugin::UpdateAction (const BatteryInfo& info)
-	{
-		QAction *act = Battery2Action_ [info.ID_];
-
-		const bool isDischarging = info.TimeToEmpty_ && !info.TimeToFull_;
-		const bool isCharging = info.TimeToFull_ && !info.TimeToEmpty_;
-
-		QString text = QString::number (info.Percentage_) + '%';
-		if (isCharging)
-			text += " " + tr ("(charging)");
-		else if (isDischarging)
-			text += " " + tr ("(discharging)");
-		act->setText (text);
-
-		QString tooltip = QString ("%1: %2<br />")
-				.arg (tr ("Battery"))
-				.arg (text);
-		if (isCharging)
-			tooltip += QString ("%1 until charged")
-					.arg (Util::MakeTimeFromLong (info.TimeToFull_));
-		else if (isDischarging)
-			tooltip += QString ("%1 until discharged")
-					.arg (Util::MakeTimeFromLong (info.TimeToEmpty_));
-		if (isCharging || isDischarging)
-			tooltip += "<br /><br />";
-
-		tooltip += tr ("Battery technology: %1")
-				.arg (info.Technology_);
-		tooltip += "<br />";
-		auto isNotNull = [] (double val) { return std::fabs (val) > std::numeric_limits<double>::epsilon (); };
-		if (isNotNull (info.EnergyRate_))
-		{
-			tooltip += tr ("Energy rate: %1 W")
-					.arg (std::abs (info.EnergyRate_));
-			tooltip += "<br />";
-		}
-		if (isNotNull (info.Energy_))
-		{
-			tooltip += tr ("Remaining energy: %1 Wh")
-					.arg (info.Energy_);
-			tooltip += "<br />";
-		}
-		if (isNotNull (info.EnergyFull_))
-		{
-			tooltip += tr ("Full energy capacity: %1 Wh")
-					.arg (info.EnergyFull_);
-			tooltip += "<br />";
-		}
-
-		act->setToolTip (tooltip);
-		act->setProperty ("ActionIcon", GetBattIconName (info));
-	}
-
 	void Plugin::CheckNotifications (const BatteryInfo& info)
 	{
 		auto check = [&info, this] (const std::function<bool (BatteryInfo)>& f)
@@ -432,6 +379,7 @@ namespace Liznoo
 
 	void Plugin::handleBatteryInfo (BatteryInfo info)
 	{
+		const auto& iconName = GetBattIconName (info);
 		if (!Battery2Action_.contains (info.ID_))
 		{
 			QAction *act = new QAction (tr ("Battery status"), this);
@@ -440,6 +388,7 @@ namespace Liznoo
 
 			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
 			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
+			act->setProperty ("ActionIcon", iconName);
 
 			emit gotActions ({ act }, ActionsEmbedPlace::LCTray);
 			Battery2Action_ [info.ID_] = act;
@@ -449,8 +398,9 @@ namespace Liznoo
 					this,
 					SLOT (handleHistoryTriggered ()));
 		}
+		else
+			Battery2Action_ [info.ID_]->setProperty ("ActionIcon", iconName);
 
-		UpdateAction (info);
 		CheckNotifications (info);
 
 		Battery2LastInfo_ [info.ID_] = info;
