@@ -46,6 +46,8 @@ namespace CrashProcess
 		QString Version_;
 
 		QString ExecLine_;
+
+		bool SuggestRestart_;
 	};
 
 }

@@ -29,33 +29,14 @@
 
 #pragma once
 
-#include <QObject>
-#include <QStringList>
-#include <interfaces/iinfo.h>
-#include <interfaces/ishutdownlistener.h>
+#include <QtPlugin>
 
-namespace LeechCraft
+class Q_DECL_EXPORT IShutdownListener
 {
-namespace AnHero
-{
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IShutdownListener
-	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IShutdownListener)
+public:
+	virtual ~IShutdownListener () {}
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.AnHero")
-	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+	virtual void HandleShutdownInitiated () = 0;
+};
 
-		void HandleShutdownInitiated ();
-	};
-}
-}
+Q_DECLARE_INTERFACE (IShutdownListener, "org.Deviant.LeechCraft.IShutdownListener/1.0");

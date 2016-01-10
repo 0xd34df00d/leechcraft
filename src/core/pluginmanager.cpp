@@ -48,6 +48,7 @@
 #include <interfaces/ipluginready.h>
 #include <interfaces/ipluginadaptor.h>
 #include <interfaces/ihaveshortcuts.h>
+#include <interfaces/ishutdownlistener.h>
 #include "core.h"
 #include "pluginmanager.h"
 #include "mainwindow.h"
@@ -542,6 +543,11 @@ namespace LeechCraft
 	{
 		auto ordered = PluginTreeBuilder_->GetResult ();
 		std::reverse (ordered.begin (), ordered.end ());
+
+		for (const auto obj : ordered)
+			if (const auto isl = qobject_cast<IShutdownListener*> (obj))
+				isl->HandleShutdownInitiated ();
+
 		for (const auto obj : ordered)
 		{
 			try

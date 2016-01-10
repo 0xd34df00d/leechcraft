@@ -65,6 +65,7 @@ namespace
 				("pid", bpo::value<uint64_t> ()->required (), "the PID of the crashed process")
 				("path", bpo::value<std::string> ()->required (), "the application path of the crashed process")
 				("version", bpo::value<std::string> ()->required (), "the LeechCraft version at the moment of the crash")
+				("suggest_restart", bpo::value<int> (), "suggest restarting LeechCraft (0 or 1)")
 				("cmdline", bpo::value<std::string> (), "the command line LeechCraft was started with")
 				("help", "show help message");
 
@@ -103,7 +104,8 @@ namespace
 			vm ["pid"].as<uint64_t> (),
 			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
 			vm ["version"].as<std::string> ().c_str (),
-			vm ["cmdline"].as<std::string> ().c_str ()
+			vm ["cmdline"].as<std::string> ().c_str (),
+			vm ["suggest_restart"].as<int> () != 0
 		};
 	}
 }

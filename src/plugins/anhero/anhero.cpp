@@ -49,6 +49,7 @@ namespace AnHero
 		QByteArray AppDir_;
 		QByteArray AppVersion_;
 		QByteArray AppArgs_;
+		bool IsShuttingDown_ = false;
 
 		void CloseFiles ()
 		{
@@ -124,6 +125,8 @@ namespace AnHero
 				AppVersion_.constData (),
 				"--cmdline",
 				AppArgs_.constData (),
+				"--suggest_restart",
+				IsShuttingDown_ ? "0" : "1",
 				nullptr
 			};
 
@@ -210,6 +213,11 @@ namespace AnHero
 	{
 		static QIcon icon ("lcicons:/resources/images/anhero.svg");
 		return icon;
+	}
+
+	void Plugin::HandleShutdownInitiated ()
+	{
+		IsShuttingDown_ = true;
 	}
 }
 }

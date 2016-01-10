@@ -60,6 +60,7 @@ namespace CrashProcess
 		QFont traceFont ("Terminus");
 		traceFont.setStyleHint (QFont::TypeWriter);
 		Ui_.TraceDisplay_->setFont (traceFont);
+		Ui_.RestartBox_->setCheckState (info.SuggestRestart_ ? Qt::Checked : Qt::Unchecked);
 
 		new Highlighter (Ui_.TraceDisplay_->document ());
 
