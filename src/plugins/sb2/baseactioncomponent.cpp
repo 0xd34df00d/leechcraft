@@ -116,7 +116,6 @@ namespace SB2
 	, Model_ (new TrayModel (this))
 	, Component_ (new QuarkComponent ("sb2", info.Filename_))
 	, ImageProv_ (new ActionImageProvider (proxy))
-	, NextActionId_ (0)
 	, View_ (view)
 	, ComponentInfo_ (info)
 	{

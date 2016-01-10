@@ -83,7 +83,7 @@ Rectangle {
                     color: Lemon_proxy.downloadGraphColor
                     font.pointSize: 6
 
-                    text: quarkProxy.prettySize(downSpeed)
+                    text: quarkProxy.prettySizeShort(downSpeed)
                 }
 
                 Text {
@@ -96,7 +96,7 @@ Rectangle {
                     color: Lemon_proxy.uploadGraphColor
                     font.pointSize: 6
 
-                    text: quarkProxy.prettySize(upSpeed)
+                    text: quarkProxy.prettySizeShort(upSpeed)
                 }
             }
         }

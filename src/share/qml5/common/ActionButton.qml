@@ -102,7 +102,9 @@ Item {
             width: Math.min(parent.width, parent.height)
             height: width
 
-            source: actionIconURL.length > 0 ? actionIconURL + '/' + width : actionIconURL
+            source: actionIconURL.length > 0 && actionIconScales ?
+                        actionIconURL + '/' + width :
+                        actionIconURL
             smooth: true
             cache: false
 

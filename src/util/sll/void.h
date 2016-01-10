@@ -29,63 +29,12 @@
 
 #pragma once
 
-#include <QObject>
-#include <QPointer>
-#include <QHash>
-#include <QUrl>
-#include <interfaces/core/icoreproxy.h>
-
-class QUrl;
-class QPoint;
-
 namespace LeechCraft
 {
-namespace SB2
+namespace Util
 {
-	class ViewManager;
-	class DeclarativeWindow;
-	class QuarkOrderView;
-
-	class QuarkProxy : public QObject
+	struct Void
 	{
-		Q_OBJECT
-		Q_PROPERTY (QString extHoveredQuarkClass READ GetExtHoveredQuarkClass NOTIFY extHoveredQuarkClassChanged)
-
-		ViewManager *Manager_;
-		ICoreProxy_ptr Proxy_;
-
-		QString ExtHoveredQuarkClass_;
-
-		QHash<QUrl, QPointer<DeclarativeWindow>> URL2LastOpened_;
-		QPointer<QuarkOrderView> QuarkOrderView_;
-	public:
-		QuarkProxy (ViewManager*, ICoreProxy_ptr, QObject* = 0);
-
-		const QString& GetExtHoveredQuarkClass () const;
-		QRect GetFreeCoords () const;
-	public slots:
-		QPoint mapToGlobal (double, double);
-		void showTextTooltip (int, int, const QString&);
-		void removeQuark (const QUrl&);
-		QVariant openWindow (const QUrl&, const QString&, const QVariant&);
-		QRect getWinRect ();
-
-		QPoint fitRect (const QPoint& src, const QSize& size, const QRect& rect, bool canOverlap);
-		void registerAutoresize (const QPoint&, const QVariant&);
-
-		void panelMoveRequested (const QString&);
-
-		void quarkAddRequested (int, int);
-		void quarkOrderRequested (int, int);
-
-		void panelSettingsRequested ();
-
-		QString prettySize (qint64);
-		QString prettySizeShort (qint64);
-	private slots:
-		void handleExtHoveredQuarkClass (const QString&);
-	signals:
-		void extHoveredQuarkClassChanged ();
 	};
 }
 }

@@ -178,9 +178,11 @@ Rectangle {
                                     anchors.left: parent.left
                                     anchors.right: parent.right
                                     anchors.margins: 5
+                                    height: width > 0 && sourceSize.width > 0 ?
+                                                width * sourceSize.height / sourceSize.width :
+                                                0
 
                                     smooth: true
-                                    fillMode: Image.PreserveAspectFit
                                     cache: false
 
                                     visible: showThumbs

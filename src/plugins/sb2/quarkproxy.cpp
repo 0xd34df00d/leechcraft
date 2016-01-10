@@ -251,6 +251,11 @@ namespace SB2
 		return Util::MakePrettySize (size);
 	}
 
+	QString QuarkProxy::prettySizeShort (qint64 size)
+	{
+		return Util::MakePrettySizeShort (size);
+	}
+
 	void QuarkProxy::handleExtHoveredQuarkClass (const QString& qClass)
 	{
 		if (ExtHoveredQuarkClass_ == qClass)

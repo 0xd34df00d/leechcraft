@@ -39,6 +39,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/util.h>
 #include <util/sll/either.h>
+#include <util/sll/void.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -916,7 +917,7 @@ namespace Xoox
 
 	GPGExceptions::MaybeException_t GlooxAccount::SetEncryptionEnabled (QObject *entry, bool enabled)
 	{
-		using EitherException_t = Util::Either<GPGExceptions::AnyException_t, boost::none_t>;
+		using EitherException_t = Util::Either<GPGExceptions::AnyException_t, Util::Void>;
 
 		const auto glEntry = qobject_cast<GlooxCLEntry*> (entry);
 
@@ -928,19 +929,19 @@ namespace Xoox
 					{ emit encryptionStateChanged (entry, beenChanged ? enabled : !enabled); });
 
 		const auto& result = EitherException_t::Right ({}) >>
-				[=] (const boost::none_t&)
+				[=] (const Util::Void&)
 				{
 					return glEntry ?
 							EitherException_t::Right ({}) :
 							EitherException_t::Left (GPGExceptions::General { "Null entry" });
 				} >>
-				[=] (const boost::none_t&)
+				[=] (const Util::Void&)
 				{
 					return enabled && pgpManager->PublicKey (glEntry->GetJID ()).isNull () ?
 							EitherException_t::Left (GPGExceptions::NullPubkey {}) :
 							EitherException_t::Right ({});
 				} >>
-				[=, &beenChanged] (const boost::none_t&)
+				[=, &beenChanged] (const Util::Void&)
 				{
 					if (!cryptHandler->SetEncryptionEnabled (glEntry->GetJID (), enabled))
 						return EitherException_t::Left (GPGExceptions::General { "Cannot change encryption state. "});
