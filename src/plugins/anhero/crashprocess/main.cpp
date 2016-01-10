@@ -104,7 +104,8 @@ namespace
 			vm ["pid"].as<uint64_t> (),
 			QString::fromUtf8 (vm ["path"].as<std::string> ().c_str ()),
 			vm ["version"].as<std::string> ().c_str (),
-			vm ["cmdline"].as<std::string> ().c_str ()
+			vm ["cmdline"].as<std::string> ().c_str (),
+			vm ["suggest_restart"].as<int> () != 0
 		};
 	}
 }
