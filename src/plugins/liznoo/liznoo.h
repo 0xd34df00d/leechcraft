@@ -87,7 +87,10 @@ namespace Liznoo
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
 
+#if QT_VERSION < 0x050000
 		QMap<QString, QAction*> Battery2Action_;
+#endif
+
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
 		QMap<QString, QLinkedList<BatteryHistory>> Battery2History_;

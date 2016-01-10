@@ -253,10 +253,15 @@ namespace Liznoo
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
+#if QT_VERSION >= 0x050000
+		Q_UNUSED (place);
+		return {};
+#else
 		QList<QAction*> result;
 		if (place == ActionsEmbedPlace::LCTray)
 			result << Battery2Action_.values ();
 		return result;
+#endif
 	}
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
@@ -379,6 +384,7 @@ namespace Liznoo
 
 	void Plugin::handleBatteryInfo (BatteryInfo info)
 	{
+#if QT_VERSION < 0x050000
 		const auto& iconName = GetBattIconName (info);
 		if (!Battery2Action_.contains (info.ID_))
 		{
@@ -400,6 +406,7 @@ namespace Liznoo
 		}
 		else
 			Battery2Action_ [info.ID_]->setProperty ("ActionIcon", iconName);
+#endif
 
 		CheckNotifications (info);
 
