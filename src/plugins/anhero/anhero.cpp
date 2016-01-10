@@ -211,6 +211,10 @@ namespace AnHero
 		static QIcon icon ("lcicons:/resources/images/anhero.svg");
 		return icon;
 	}
+
+	void Plugin::HandleShutdownInitiated ()
+	{
+	}
 }
 }
 

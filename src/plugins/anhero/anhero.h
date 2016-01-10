@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QStringList>
 #include <interfaces/iinfo.h>
+#include <interfaces/ishutdownlistener.h>
 
 namespace LeechCraft
 {
@@ -39,9 +40,10 @@ namespace AnHero
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IShutdownListener
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IShutdownListener)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.AnHero")
 	public:
@@ -52,6 +54,8 @@ namespace AnHero
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+
+		void HandleShutdownInitiated ();
 	};
 }
 }
