@@ -269,7 +269,11 @@ namespace Liznoo
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
+#if QT_VERSION >= 0x050000
+		return { LiznooQuark_ };
+#else
 		return {};
+#endif
 	}
 
 	namespace
