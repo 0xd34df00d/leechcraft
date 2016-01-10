@@ -71,9 +71,10 @@ namespace Liznoo
 				 , public IHaveSettings
 				 , public IEntityHandler
 				 , public IActionsExporter
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter)
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter IQuarkComponentProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Liznoo")
 
@@ -86,7 +87,10 @@ namespace Liznoo
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
 
+#if QT_VERSION < 0x050000
 		QMap<QString, QAction*> Battery2Action_;
+#endif
+
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
 		QMap<QString, QLinkedList<BatteryHistory>> Battery2History_;
@@ -111,8 +115,9 @@ namespace Liznoo
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
+
+		QuarkComponents_t GetComponents () const;
 	private:
-		void UpdateAction (const BatteryInfo&);
 		void CheckNotifications (const BatteryInfo&);
 
 		void ChangeState (PowerActions::Platform::State);

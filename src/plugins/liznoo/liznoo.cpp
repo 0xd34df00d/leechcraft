@@ -253,10 +253,15 @@ namespace Liznoo
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
+#if QT_VERSION >= 0x050000
+		Q_UNUSED (place);
+		return {};
+#else
 		QList<QAction*> result;
 		if (place == ActionsEmbedPlace::LCTray)
 			result << Battery2Action_.values ();
 		return result;
+#endif
 	}
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
@@ -267,6 +272,16 @@ namespace Liznoo
 		return result;
 	}
 
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+#if QT_VERSION >= 0x050000
+		return { LiznooQuark_ };
+#else
+		return {};
+#endif
+	}
+
+#if QT_VERSION < 0x050000
 	namespace
 	{
 		QString GetBattIconName (BatteryInfo info)
@@ -295,59 +310,7 @@ namespace Liznoo
 			return name;
 		}
 	}
-
-	void Plugin::UpdateAction (const BatteryInfo& info)
-	{
-		QAction *act = Battery2Action_ [info.ID_];
-
-		const bool isDischarging = info.TimeToEmpty_ && !info.TimeToFull_;
-		const bool isCharging = info.TimeToFull_ && !info.TimeToEmpty_;
-
-		QString text = QString::number (info.Percentage_) + '%';
-		if (isCharging)
-			text += " " + tr ("(charging)");
-		else if (isDischarging)
-			text += " " + tr ("(discharging)");
-		act->setText (text);
-
-		QString tooltip = QString ("%1: %2<br />")
-				.arg (tr ("Battery"))
-				.arg (text);
-		if (isCharging)
-			tooltip += QString ("%1 until charged")
-					.arg (Util::MakeTimeFromLong (info.TimeToFull_));
-		else if (isDischarging)
-			tooltip += QString ("%1 until discharged")
-					.arg (Util::MakeTimeFromLong (info.TimeToEmpty_));
-		if (isCharging || isDischarging)
-			tooltip += "<br /><br />";
-
-		tooltip += tr ("Battery technology: %1")
-				.arg (info.Technology_);
-		tooltip += "<br />";
-		auto isNotNull = [] (double val) { return std::fabs (val) > std::numeric_limits<double>::epsilon (); };
-		if (isNotNull (info.EnergyRate_))
-		{
-			tooltip += tr ("Energy rate: %1 W")
-					.arg (std::abs (info.EnergyRate_));
-			tooltip += "<br />";
-		}
-		if (isNotNull (info.Energy_))
-		{
-			tooltip += tr ("Remaining energy: %1 Wh")
-					.arg (info.Energy_);
-			tooltip += "<br />";
-		}
-		if (isNotNull (info.EnergyFull_))
-		{
-			tooltip += tr ("Full energy capacity: %1 Wh")
-					.arg (info.EnergyFull_);
-			tooltip += "<br />";
-		}
-
-		act->setToolTip (tooltip);
-		act->setProperty ("ActionIcon", GetBattIconName (info));
-	}
+#endif
 
 	void Plugin::CheckNotifications (const BatteryInfo& info)
 	{
@@ -423,6 +386,8 @@ namespace Liznoo
 
 	void Plugin::handleBatteryInfo (BatteryInfo info)
 	{
+#if QT_VERSION < 0x050000
+		const auto& iconName = GetBattIconName (info);
 		if (!Battery2Action_.contains (info.ID_))
 		{
 			QAction *act = new QAction (tr ("Battery status"), this);
@@ -431,6 +396,7 @@ namespace Liznoo
 
 			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
 			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
+			act->setProperty ("ActionIcon", iconName);
 
 			emit gotActions ({ act }, ActionsEmbedPlace::LCTray);
 			Battery2Action_ [info.ID_] = act;
@@ -440,8 +406,10 @@ namespace Liznoo
 					this,
 					SLOT (handleHistoryTriggered ()));
 		}
+		else
+			Battery2Action_ [info.ID_]->setProperty ("ActionIcon", iconName);
+#endif
 
-		UpdateAction (info);
 		CheckNotifications (info);
 
 		Battery2LastInfo_ [info.ID_] = info;

@@ -82,7 +82,8 @@ namespace LeechCraft
 		 * @param[in] sourceSize Size in bytes.
 		 * @return Formatted string.
 		 *
-		 * @sa MakeTimeFromLong
+		 * @sa MakeTimeFromLong()
+		 * @sa MakePrettySizeShort()
 		 */
 		UTIL_API QString MakePrettySize (qint64 sourceSize);
 
