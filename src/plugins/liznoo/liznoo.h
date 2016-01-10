@@ -71,9 +71,10 @@ namespace Liznoo
 				 , public IHaveSettings
 				 , public IEntityHandler
 				 , public IActionsExporter
+				 , public IQuarkComponentProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter)
+		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IActionsExporter IQuarkComponentProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Liznoo")
 
@@ -111,6 +112,8 @@ namespace Liznoo
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
 		QMap<QString, QList<QAction*>> GetMenuActions () const;
+
+		QuarkComponents_t GetComponents () const;
 	private:
 		void UpdateAction (const BatteryInfo&);
 		void CheckNotifications (const BatteryInfo&);

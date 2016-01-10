@@ -267,6 +267,11 @@ namespace Liznoo
 		return result;
 	}
 
+	QuarkComponents_t Plugin::GetComponents () const
+	{
+		return {};
+	}
+
 	namespace
 	{
 		QString GetBattIconName (BatteryInfo info)
