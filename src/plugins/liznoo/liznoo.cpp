@@ -281,6 +281,7 @@ namespace Liznoo
 #endif
 	}
 
+#if QT_VERSION < 0x050000
 	namespace
 	{
 		QString GetBattIconName (BatteryInfo info)
@@ -309,6 +310,7 @@ namespace Liznoo
 			return name;
 		}
 	}
+#endif
 
 	void Plugin::CheckNotifications (const BatteryInfo& info)
 	{
