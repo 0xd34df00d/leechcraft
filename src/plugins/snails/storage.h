@@ -58,7 +58,7 @@ namespace Snails
 
 		QHash<QObject*, Account*> FutureWatcher2Account_;
 	public:
-		Storage (QObject* = 0);
+		Storage (QObject* = nullptr);
 
 		void SaveMessages (Account*, const QStringList& folders, const QList<Message_ptr>&);
 
