@@ -37,9 +37,9 @@
 #include <QSqlError>
 #include <QDataStream>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <util/db/dblock.h>
 #include <util/sys/paths.h>
+#include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
 #include "account.h"
 #include "accountdatabase.h"
@@ -70,7 +70,7 @@ namespace Snails
 
 	namespace
 	{
-		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir dir)
+		QList<Message_ptr> MessageSaverProc (QList<Message_ptr> msgs, const QDir& dir)
 		{
 			for (const auto& msg : msgs)
 			{
@@ -120,15 +120,14 @@ namespace Snails
 		for (const auto& msg : msgs)
 			PendingSaveMessages_ [acc] [msg->GetFolderID ()] = msg;
 
-		auto watcher = new QFutureWatcher<QList<Message_ptr>> ();
-		FutureWatcher2Account_ [watcher] = acc;
+		Util::Sequence (this, QtConcurrent::run (MessageSaverProc, msgs, dir)) >>
+				[this, acc] (const QList<Message_ptr>& messages)
+				{
+					auto& hash = PendingSaveMessages_ [acc];
 
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleMessagesSaved ()));
-		auto future = QtConcurrent::run (MessageSaverProc, msgs, dir);
-		watcher->setFuture (future);
+					for (const auto& msg : messages)
+						hash.remove (msg->GetFolderID ());
+				};
 
 		for (const auto& msg : msgs)
 		{
@@ -424,27 +423,6 @@ namespace Snails
 	void Storage::UpdateCaches (Message_ptr msg)
 	{
 		IsMessageRead_ [msg->GetFolderID ()] = msg->IsRead ();
-	}
-
-	void Storage::handleMessagesSaved ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<Message_ptr>>*> (sender ());
-		watcher->deleteLater ();
-
-		auto acc = FutureWatcher2Account_.take (watcher);
-		if (!acc)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no account for future watcher"
-					<< watcher;
-			return;
-		}
-
-		auto& hash = PendingSaveMessages_ [acc];
-
-		auto messages = watcher->result ();
-		for (const auto& msg : messages)
-			hash.remove (msg->GetFolderID ());
 	}
 }
 }
