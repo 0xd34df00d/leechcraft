@@ -45,7 +45,7 @@ namespace LeechCraft
 {
 namespace Dumbeep
 {
-	void Plugin::Init (ICoreProxy_ptr proxy)
+	void Plugin::Init (ICoreProxy_ptr)
 	{
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "dumbeepsettings.xml");
