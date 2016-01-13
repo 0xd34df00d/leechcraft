@@ -25,14 +25,6 @@ Rectangle {
 
         model: Liznoo_proxy.batteryModel
 
-        transform: Rotation {
-            origin.x: 0
-            origin.y: 0
-            axis { x: 1; y: 1; z: 0 }
-
-            angle: viewOrient == "horizontal" ? 0 : 180
-        }
-
         delegate: Item {
             height: battView.height
             width: battView.height
