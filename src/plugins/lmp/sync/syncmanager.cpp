@@ -148,8 +148,9 @@ namespace LMP
 				},
 				[&] (const ResolveError& err)
 				{
-					const auto& errString = tr ("Unable to expand mask for file %1.")
-							.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>");
+					const auto& errString = tr ("Unable to expand mask for file %1: %2.")
+							.arg ("<em>" + QFileInfo { transcoded }.fileName () + "</em>")
+							.arg (err.ReasonString_);
 					emit uploadLog (errString);
 					handleErrorCopying (transcoded, errString);
 				});
