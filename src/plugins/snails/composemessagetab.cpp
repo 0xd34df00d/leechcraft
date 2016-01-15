@@ -308,7 +308,7 @@ namespace Snails
 		handleEditorSelected (1);
 	}
 
-	IEditorWidget* ComposeMessageTab::GetCurrentEditor() const
+	IEditorWidget* ComposeMessageTab::GetCurrentEditor () const
 	{
 		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ());
 	}
