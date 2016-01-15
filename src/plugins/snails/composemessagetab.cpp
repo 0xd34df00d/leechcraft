@@ -178,11 +178,16 @@ namespace Snails
 			return quoteStartMarker + str + quoteEndMarker;
 		}
 
+		void SetHTMLContents (const QString& contents, IEditorWidget *editor)
+		{
+			editor->SetContents (contents, ContentType::HTML);
+		}
+
 		void SetupRichContents (const Message_ptr& msg, IEditorWidget *editor)
 		{
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
-				editor->SetContents (WrapString (htmlBody, "blockquote"), ContentType::HTML);
+				SetHTMLContents (WrapString (htmlBody, "blockquote"), editor);
 			else
 			{
 				auto plainSplit = msg->GetBody ().split ('\n');
@@ -190,7 +195,7 @@ namespace Snails
 				for (auto& str : plainSplit)
 					str = WrapString (str, "span");
 
-				editor->SetContents (plainSplit.join ("<br/>"), ContentType::HTML);
+				SetHTMLContents (plainSplit.join ("<br/>"), editor);
 			}
 		}
 	}
@@ -513,7 +518,7 @@ namespace Snails
 		const auto newEditor = GetCurrentEditor ();
 		newEditor->SetContents (currentPlain, ContentType::PlainText);
 		if (!currentHtml.isEmpty ())
-			newEditor->SetContents (currentHtml, ContentType::HTML);
+			SetHTMLContents (currentHtml, newEditor);
 	}
 }
 }
