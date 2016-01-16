@@ -195,6 +195,14 @@ namespace Snails
 				this,
 				SLOT (handleRefreshFolder ()));
 		TabToolbar_->addAction (refresh);
+
+		const auto msgCompose = new QAction (tr ("Compose a message..."), this);
+		msgCompose->setProperty ("ActionIcon", "mail-message-new");
+		connect (msgCompose,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleCompose ()));
+		TabToolbar_->addAction (msgCompose);
 	}
 
 	void MailTab::FillMailActions ()
@@ -697,6 +705,14 @@ namespace Snails
 
 		setter (MsgCopy_, SLOT (handleCopyMultipleFolders ()));
 		setter (MsgMove_, SLOT (handleMoveMultipleFolders ()));
+	}
+
+	void MailTab::handleCompose ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		ComposeMessageTabFactory_->PrepareComposeTab (CurrAcc_);
 	}
 
 	void MailTab::handleReply ()
