@@ -178,6 +178,92 @@ namespace Snails
 			return quoteStartMarker + str + quoteEndMarker;
 		}
 
+		static const QString BlockquoteBreakJS =
+			R"delim(
+				var input = document.querySelector('body');
+
+				input.addEventListener('keydown', function(e, data) {
+						if (e.keyCode === 13 && !e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+							e.preventDefault();
+							split();
+						}
+					});
+
+				function split() {
+					var sel = window.getSelection(),
+							range,
+							textNode,
+							elem;
+
+					if (sel.rangeCount) {
+							range = sel.getRangeAt(0);
+						textNode = range.commonAncestorContainer;
+						elem = textNode.parentNode;
+						var topBlockquote = findTopBlockquote(elem);
+						if (topBlockquote) {
+								splitBlockquote(textNode, range.endOffset, topBlockquote);
+						}
+					}
+				}
+
+				function isBlockquote(elem) {
+					return elem.tagName.toLowerCase() === 'blockquote';
+				}
+
+				function findTopBlockquote(elem) {
+					var lastBlockquote = null;
+					while (elem.parentNode && elem.parentNode.tagName) {
+						elem = elem.parentNode;
+						if (isBlockquote(elem))
+							lastBlockquote = elem;
+					}
+
+					return lastBlockquote;
+				}
+
+				function splitBlockquote(textNode, pos, topBq) {
+					var parent = topBq.parentNode,
+						parentPos = getNodeIndex(parent, topBq),
+						doc = textNode.ownerDocument,
+						range = doc.createRange(),
+						fragment,
+						div = createExtra("div");
+
+					range.setStart(parent, parentPos);
+					range.setEnd(textNode, pos);
+					fragment = range.extractContents();
+					fragment.appendChild(div);
+
+					parent.insertBefore(fragment, topBq);
+					select(div);
+				}
+
+				function getNodeIndex(parent, node) {
+					var index = parent.childNodes.length - 1;
+
+					while (index > 0 && node !== parent.childNodes[index]) {
+						index--;
+					}
+
+					return index;
+				}
+
+				function createExtra(tag) {
+					var elem = document.createElement(tag);
+
+					elem.innerHTML = "&#160;";
+
+					return elem;
+				}
+
+				function select(elem) {
+					var sel = window.getSelection();
+
+					sel.removeAllRanges();
+					sel.selectAllChildren(elem);
+				}
+			)delim";
+
 		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
 		{
 			editor->SetContents (contents, ContentType::HTML);
