@@ -60,6 +60,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -348,6 +349,7 @@ namespace LHTR
 			content += contents;
 			break;
 		case ContentType::PlainText:
+			contents = Util::Escape (contents);
 			contents.replace ("\r\n", "<br/>");
 			contents.replace ("\n", "<br/>");
 			contents.replace ("\r", "<br/>");
