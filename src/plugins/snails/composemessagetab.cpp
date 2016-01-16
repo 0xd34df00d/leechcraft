@@ -156,8 +156,9 @@ namespace Snails
 
 	namespace
 	{
-		void SetupPlaintextContents (QStringList plainSplit, IEditorWidget *editor)
+		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor)
 		{
+			auto plainSplit = msg->GetBody ().split ('\n');
 			for (auto& str : plainSplit)
 			{
 				str = str.trimmed ();
@@ -169,15 +170,125 @@ namespace Snails
 			editor->SetContents (plainContent, ContentType::PlainText);
 		}
 
-		void SetupRichContents (QStringList plainSplit, IEditorWidget *editor)
+		QString WrapString (const QString& str, const QString& tagName)
 		{
-			const auto quoteStartMarker = "<span style='border-left: 2px solid #900060; padding-left: 0.5em;'>";
-			const auto quoteEndMarker = "</span>";
+			const auto quoteStartMarker = "<" + tagName + " style='border-left: 2px solid #ccc; margin-left: 0; padding-left: 0.5em;'>";
+			const auto quoteEndMarker = "</" + tagName + ">";
 
-			for (auto& str : plainSplit)
-				str = quoteStartMarker + Util::Escape (str) + quoteEndMarker;
+			return quoteStartMarker + str + quoteEndMarker;
+		}
 
-			editor->SetContents (plainSplit.join ("<br/>"), ContentType::HTML);
+		static const QString BlockquoteBreakJS =
+			R"delim(
+				var input = document.querySelector('body');
+
+				input.addEventListener('keydown', function(e, data) {
+						if (e.keyCode === 13 && !e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
+							if (split())
+								e.preventDefault();
+						}
+					});
+
+				function split() {
+					var sel = window.getSelection(),
+							range,
+							textNode,
+							elem;
+
+					if (sel.rangeCount) {
+						range = sel.getRangeAt(0);
+						textNode = range.commonAncestorContainer;
+						elem = textNode.parentNode;
+						var topBlockquote = findTopBlockquote(elem);
+						if (topBlockquote) {
+							splitBlockquote(textNode, range.endOffset, topBlockquote);
+							return true;
+						}
+					}
+
+					return false;
+				}
+
+				function isBlockquote(elem) {
+					return elem.tagName.toLowerCase() === 'blockquote';
+				}
+
+				function findTopBlockquote(elem) {
+					var lastBlockquote = null;
+					while (elem.parentNode && elem.parentNode.tagName) {
+						elem = elem.parentNode;
+						if (isBlockquote(elem))
+							lastBlockquote = elem;
+					}
+
+					return lastBlockquote;
+				}
+
+				function splitBlockquote(textNode, pos, topBq) {
+					var parent = topBq.parentNode,
+						parentPos = getNodeIndex(parent, topBq),
+						doc = textNode.ownerDocument,
+						range = doc.createRange(),
+						fragment,
+						div = createExtra("div");
+
+					range.setStart(parent, parentPos);
+					range.setEnd(textNode, pos);
+					fragment = range.extractContents();
+					fragment.appendChild(div);
+
+					parent.insertBefore(fragment, topBq);
+					select(div);
+				}
+
+				function getNodeIndex(parent, node) {
+					var index = parent.childNodes.length - 1;
+
+					while (index > 0 && node !== parent.childNodes[index]) {
+						index--;
+					}
+
+					return index;
+				}
+
+				function createExtra(tag) {
+					var elem = document.createElement(tag);
+
+					elem.innerHTML = "&#160;";
+
+					return elem;
+				}
+
+				function select(elem) {
+					var sel = window.getSelection();
+
+					sel.removeAllRanges();
+					sel.selectAllChildren(elem);
+				}
+			)delim";
+
+		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
+		{
+			editor->SetContents (contents, ContentType::HTML);
+
+			if (const auto iahe = dynamic_cast<IAdvancedHTMLEditor*> (editor))
+				iahe->ExecJS (BlockquoteBreakJS);
+		}
+
+		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor)
+		{
+			const auto& htmlBody = msg->GetHTMLBody ();
+			if (!htmlBody.isEmpty ())
+				SetReplyHTMLContents (WrapString (htmlBody, "blockquote"), editor);
+			else
+			{
+				auto str = Util::Escape (msg->GetBody ());
+				str.replace ("\r\n", "<br/>");
+				str.replace ("\r", "<br/>");
+				str.replace ("\n", "<br/>");
+
+				SetReplyHTMLContents (WrapString (str, "blockquote"), editor);
+			}
 		}
 	}
 
@@ -186,9 +297,8 @@ namespace Snails
 		PrepareReplyEditor (msg);
 		const auto editor = GetCurrentEditor ();
 
-		const auto& plainSplit = msg->GetBody ().split ('\n');
-		SetupPlaintextContents (plainSplit, editor);
-		SetupRichContents (plainSplit, editor);
+		SetupReplyPlaintextContents (msg, editor);
+		SetupReplyRichContents (msg, editor);
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
@@ -308,7 +418,7 @@ namespace Snails
 		handleEditorSelected (1);
 	}
 
-	IEditorWidget* ComposeMessageTab::GetCurrentEditor() const
+	IEditorWidget* ComposeMessageTab::GetCurrentEditor () const
 	{
 		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ());
 	}
@@ -500,7 +610,7 @@ namespace Snails
 		const auto newEditor = GetCurrentEditor ();
 		newEditor->SetContents (currentPlain, ContentType::PlainText);
 		if (!currentHtml.isEmpty ())
-			newEditor->SetContents (currentHtml, ContentType::HTML);
+			SetReplyHTMLContents (currentHtml, newEditor);
 	}
 }
 }

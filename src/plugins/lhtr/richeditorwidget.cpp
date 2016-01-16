@@ -60,6 +60,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -341,14 +342,17 @@ namespace LHTR
 		content += "<!DOCTYPE html PUBLIC";
 		content += "	\"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 		content += "	<html dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">";
-		content += "<head><title></title></head><body contenteditable='true'>";
+		content += "<head><title></title></head><body>";
 		switch (type)
 		{
 		case ContentType::HTML:
 			content += contents;
 			break;
 		case ContentType::PlainText:
-			contents.replace ('\n', "<br/>");
+			contents = Util::Escape (contents);
+			contents.replace ("\r\n", "<br/>");
+			contents.replace ("\n", "<br/>");
+			contents.replace ("\r", "<br/>");
 			content += "<pre>" + contents + "</pre>";
 			break;
 		}
