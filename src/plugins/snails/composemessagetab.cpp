@@ -518,7 +518,7 @@ namespace Snails
 		const auto newEditor = GetCurrentEditor ();
 		newEditor->SetContents (currentPlain, ContentType::PlainText);
 		if (!currentHtml.isEmpty ())
-			SetHTMLContents (currentHtml, newEditor);
+			SetReplyHTMLContents (currentHtml, newEditor);
 	}
 }
 }
