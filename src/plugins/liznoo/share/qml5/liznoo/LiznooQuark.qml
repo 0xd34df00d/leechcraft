@@ -101,7 +101,7 @@ Rectangle {
                     Text {
                         color: colorProxy.color_ToolButton_TextColor
                         text: percentage + '%'
-                        font.pointSize: 7
+                        font.pointSize: 8
 
                         anchors.centerIn: parent
                     }
