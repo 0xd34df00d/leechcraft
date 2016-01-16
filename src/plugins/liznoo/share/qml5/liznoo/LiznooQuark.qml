@@ -108,6 +108,19 @@ Rectangle {
 
                         anchors.centerIn: parent
                     }
+
+                    Image {
+                        anchors.horizontalCenter: battLevelText.horizontalCenter
+                        anchors.top: timeToEmpty ? battLevelText.bottom : undefined
+                        anchors.bottom: timeToFull ? battLevelText.top : undefined
+
+                        width: height
+                        height: (battButton.height - battLevelText.height) / 2
+
+                        source: "image://ThemeIcons/go-" +
+                                (timeToEmpty ? "down" : "up") + "/" + width
+                        visible: timeToEmpty || timeToFull
+                    }
                 }
             }
         }
