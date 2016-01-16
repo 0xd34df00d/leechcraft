@@ -267,6 +267,9 @@ namespace Snails
 		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
 		{
 			editor->SetContents (contents, ContentType::HTML);
+
+			if (const auto iahe = dynamic_cast<IAdvancedHTMLEditor*> (editor))
+				iahe->ExecJS (BlockquoteBreakJS);
 		}
 
 		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor)
