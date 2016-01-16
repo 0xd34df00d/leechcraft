@@ -30,6 +30,8 @@ Rectangle {
             width: battView.height
 
             ActionButton {
+                id: battButton
+
                 anchors.fill: parent
 
                 marginsManaged: true
@@ -99,6 +101,7 @@ Rectangle {
                     }
 
                     Text {
+                        id: battLevelText
                         color: colorProxy.color_ToolButton_TextColor
                         text: percentage + '%'
                         font.pointSize: 8
