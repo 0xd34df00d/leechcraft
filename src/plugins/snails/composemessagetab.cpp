@@ -156,7 +156,7 @@ namespace Snails
 
 	namespace
 	{
-		void SetupPlaintextContents (const Message_ptr& msg, IEditorWidget *editor)
+		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor)
 		{
 			auto plainSplit = msg->GetBody ().split ('\n');
 			for (auto& str : plainSplit)
@@ -178,16 +178,16 @@ namespace Snails
 			return quoteStartMarker + str + quoteEndMarker;
 		}
 
-		void SetHTMLContents (const QString& contents, IEditorWidget *editor)
+		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
 		{
 			editor->SetContents (contents, ContentType::HTML);
 		}
 
-		void SetupRichContents (const Message_ptr& msg, IEditorWidget *editor)
+		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor)
 		{
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
-				SetHTMLContents (WrapString (htmlBody, "blockquote"), editor);
+				SetReplyHTMLContents (WrapString (htmlBody, "blockquote"), editor);
 			else
 			{
 				auto plainSplit = msg->GetBody ().split ('\n');
@@ -198,7 +198,7 @@ namespace Snails
 					str = WrapString (Util::Escape (str), "span");
 				}
 
-				SetHTMLContents (plainSplit.join ("<br/>"), editor);
+				SetReplyHTMLContents (WrapString (str, "blockquote"), editor);
 			}
 		}
 	}
@@ -208,8 +208,8 @@ namespace Snails
 		PrepareReplyEditor (msg);
 		const auto editor = GetCurrentEditor ();
 
-		SetupPlaintextContents (msg, editor);
-		SetupRichContents (msg, editor);
+		SetupReplyPlaintextContents (msg, editor);
+		SetupReplyRichContents (msg, editor);
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
