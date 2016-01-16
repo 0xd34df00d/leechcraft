@@ -118,7 +118,7 @@ Rectangle {
                         height: (battButton.height - battLevelText.height) / 2
 
                         source: "image://ThemeIcons/go-" +
-                                (timeToEmpty ? "down" : "up") + "/" + width
+                                (timeToEmpty ? "previous" : "next") + "/" + width
                         visible: timeToEmpty || timeToFull
                     }
                 }
