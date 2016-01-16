@@ -193,7 +193,7 @@ namespace Snails
 				auto plainSplit = msg->GetBody ().split ('\n');
 
 				for (auto& str : plainSplit)
-					str = WrapString (str, "span");
+					str = WrapString (Util::Escape (str), "span");
 
 				SetHTMLContents (plainSplit.join ("<br/>"), editor);
 			}
