@@ -92,7 +92,7 @@ namespace Snails
 
 	FoldersModel::FoldersModel (Account *acc)
 	: QAbstractItemModel { acc }
-	, Headers_ { tr ("Folder"), tr ("Messages"), tr ("Unread") }
+	, Headers_ { tr ("Folder"), tr ("Messages") }
 	, RootFolder_ { new FolderDescr {} }
 	{
 	}
@@ -150,13 +150,15 @@ namespace Snails
 		case Column::FolderName:
 			return folder->Name_;
 		case Column::MessageCount:
-			return folder->MessageCount_ >= 0 ?
-					QString::number (folder->MessageCount_) :
-					QString {};
-		case Column::UnreadCount:
-			return folder->UnreadCount_ >= 0 ?
-					QString::number (folder->UnreadCount_) :
-					QString {};
+		{
+			if (folder->MessageCount_ < 0)
+				return {};
+
+			auto result = QString::number (folder->MessageCount_);
+			if (folder->UnreadCount_)
+				result += " (" + QString::number (folder->UnreadCount_) + ")";
+			return result;
+		}
 		default:
 			return {};
 		}
@@ -251,9 +253,9 @@ namespace Snails
 		descr->UnreadCount_ = unread;
 		descr->MessageCount_ = total;
 
-		const auto& msgCount = createIndex (descr->Row (), Column::MessageCount, descr);
-		const auto& unreadCount = createIndex (descr->Row (), Column::UnreadCount, descr);
-		emit dataChanged (msgCount, unreadCount);
+		const auto& first = createIndex (descr->Row (), 0, descr);
+		const auto& second = createIndex (descr->Row (), columnCount () - 1, descr);
+		emit dataChanged (first, second);
 	}
 }
 }
