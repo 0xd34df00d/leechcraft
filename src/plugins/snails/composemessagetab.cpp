@@ -184,8 +184,8 @@ namespace Snails
 
 				input.addEventListener('keydown', function(e, data) {
 						if (e.keyCode === 13 && !e.altKey && !e.shiftKey && !e.ctrlKey && !e.metaKey) {
-							e.preventDefault();
-							split();
+							if (split())
+								e.preventDefault();
 						}
 					});
 
