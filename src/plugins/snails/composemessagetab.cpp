@@ -196,12 +196,12 @@ namespace Snails
 							elem;
 
 					if (sel.rangeCount) {
-							range = sel.getRangeAt(0);
+						range = sel.getRangeAt(0);
 						textNode = range.commonAncestorContainer;
 						elem = textNode.parentNode;
 						var topBlockquote = findTopBlockquote(elem);
 						if (topBlockquote) {
-								splitBlockquote(textNode, range.endOffset, topBlockquote);
+							splitBlockquote(textNode, range.endOffset, topBlockquote);
 						}
 					}
 				}
