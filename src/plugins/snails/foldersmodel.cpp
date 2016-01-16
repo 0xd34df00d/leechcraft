@@ -30,6 +30,7 @@
 #include "foldersmodel.h"
 #include <algorithm>
 #include <QIcon>
+#include <QFont>
 #include <QtDebug>
 #include "account.h"
 #include "core.h"
@@ -122,6 +123,12 @@ namespace Snails
 				return {};
 
 			return GetFolderIcon (folder->Type_);
+		case Qt::FontRole:
+		{
+			QFont font;
+			font.setBold (folder->UnreadCount_ > 0);
+			return font;
+		}
 		case Role::FolderPath:
 		{
 			QStringList path { folder->Name_ };
