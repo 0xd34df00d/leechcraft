@@ -53,6 +53,8 @@ namespace Snails
 		ComposeMessageTabFactory (const AccountsManager*, QObject* = nullptr);
 
 		ComposeMessageTab* MakeTab () const;
+
+		void PrepareComposeTab (const Account_ptr&);
 		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
 	signals:
 		void gotTab (const QString&, QWidget*);
