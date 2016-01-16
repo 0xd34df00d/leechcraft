@@ -45,7 +45,9 @@ namespace Liznoo
 			{
 				BatteryId = Qt::UserRole + 1,
 				Percentage,
-				IsCharging
+				IsCharging,
+				TimeToEmpty,
+				TimeToFull
 			};
 
 			QuarkModel (QObject *parent = nullptr)
@@ -55,6 +57,8 @@ namespace Liznoo
 				names [BatteryId] = "batteryId";
 				names [Percentage] = "percentage";
 				names [IsCharging] = "isCharging";
+				names [TimeToEmpty] = "timeToEmpty";
+				names [TimeToFull] = "timeToFull";
 				setRoleNames (names);
 			}
 		};
@@ -80,6 +84,8 @@ namespace Liznoo
 		item->setData (info.ID_, QuarkModel::BatteryId);
 		item->setData (info.Percentage_, QuarkModel::Percentage);
 		item->setData (info.TimeToFull_ && !info.TimeToEmpty_, QuarkModel::IsCharging);
+		item->setData (info.TimeToEmpty_, QuarkModel::TimeToEmpty);
+		item->setData (info.TimeToFull_, QuarkModel::TimeToFull);
 
 		if (isNew)
 		{

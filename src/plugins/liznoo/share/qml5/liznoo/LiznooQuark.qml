@@ -30,6 +30,8 @@ Rectangle {
             width: battView.height
 
             ActionButton {
+                id: battButton
+
                 anchors.fill: parent
 
                 marginsManaged: true
@@ -99,11 +101,25 @@ Rectangle {
                     }
 
                     Text {
+                        id: battLevelText
                         color: colorProxy.color_ToolButton_TextColor
                         text: percentage + '%'
-                        font.pointSize: 7
+                        font.pointSize: 8
 
                         anchors.centerIn: parent
+                    }
+
+                    Image {
+                        anchors.horizontalCenter: battLevelText.horizontalCenter
+                        anchors.top: timeToEmpty ? battLevelText.bottom : undefined
+                        anchors.bottom: timeToFull ? battLevelText.top : undefined
+
+                        width: height
+                        height: (battButton.height - battLevelText.height) / 2
+
+                        source: "image://ThemeIcons/go-" +
+                                (timeToEmpty ? "down" : "up") + "/" + width
+                        visible: timeToEmpty || timeToFull
                     }
                 }
             }
