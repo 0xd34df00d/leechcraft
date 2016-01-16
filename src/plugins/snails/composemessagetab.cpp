@@ -202,8 +202,11 @@ namespace Snails
 						var topBlockquote = findTopBlockquote(elem);
 						if (topBlockquote) {
 							splitBlockquote(textNode, range.endOffset, topBlockquote);
+							return true;
 						}
 					}
+
+					return false;
 				}
 
 				function isBlockquote(elem) {
