@@ -190,13 +190,10 @@ namespace Snails
 				SetReplyHTMLContents (WrapString (htmlBody, "blockquote"), editor);
 			else
 			{
-				auto plainSplit = msg->GetBody ().split ('\n');
-
-				for (auto& str : plainSplit)
-				{
-					str = str.simplified ();
-					str = WrapString (Util::Escape (str), "span");
-				}
+				auto str = Util::Escape (msg->GetBody ());
+				str.replace ("\r\n", "<br/>");
+				str.replace ("\r", "<br/>");
+				str.replace ("\n", "<br/>");
 
 				SetReplyHTMLContents (WrapString (str, "blockquote"), editor);
 			}
