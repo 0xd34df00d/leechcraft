@@ -87,28 +87,6 @@ namespace Snails
 		Ui_.MailView_->setPage (mailWebPage);
 		Ui_.MailView_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 
-		auto colMgr = new ViewColumnsManager (Ui_.MailTree_->header ());
-		colMgr->SetStretchColumn (static_cast<int> (MailModel::Column::Subject));
-		colMgr->SetDefaultWidths ({
-				"Typical sender name and surname",
-				"999",
-				{},
-				{},
-				{},
-				QDateTime::currentDateTime ().toString () + "  ",
-				Util::MakePrettySize (999 * 1024) + "  "
-			});
-
-		const auto iconSize = style ()->pixelMetric (QStyle::PM_ListViewIconSize) + 6;
-		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::StatusIcon), iconSize + 6);
-		colMgr->SetDefaultWidth (static_cast<int> (MailModel::Column::AttachIcon), iconSize + 6);
-		colMgr->SetSwaps ({
-					{
-						static_cast<int> (MailModel::Column::From),
-						static_cast<int> (MailModel::Column::StatusIcon)
-					}
-				});
-
 		Ui_.AccountsTree_->setModel (AccsMgr_->GetAccountsModel ());
 
 		MailSortFilterModel_->setDynamicSortFilter (true);
@@ -595,6 +573,8 @@ namespace Snails
 				SLOT (handleMessageListUpdated ()));
 		MailSortFilterModel_->setSourceModel (MailModel_.get ());
 		MailSortFilterModel_->setDynamicSortFilter (true);
+		for (int i = 1; i < MailModel_->columnCount (); ++i)
+			Ui_.MailTree_->hideColumn (i);
 
 		if (Ui_.TagsTree_->selectionModel ())
 			Ui_.TagsTree_->selectionModel ()->deleteLater ();

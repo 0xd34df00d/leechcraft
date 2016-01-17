@@ -49,18 +49,89 @@ namespace Snails
 	{
 	}
 
+	const int Padding = 2;
+
+	namespace
+	{
+		QString GetString (const QModelIndex& index, MailModel::Column column)
+		{
+			return index.sibling (index.row (), static_cast<int> (column)).data ().toString ();
+		}
+	}
+
 	void MailTreeDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
 		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
 		const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
 
-		QStyleOptionViewItemV4 item { stockItem };
+		QStyleOptionViewItemV4 option { stockItem };
+		if (!isEnabled)
+			option.font.setStrikeOut (true);
+
+		auto subjectFont = option.font;
 		if (!isRead && isEnabled)
-			item.font.setBold (true);
-		else if (!isEnabled)
-			item.font.setStrikeOut (true);
-		QStyledItemDelegate::paint (painter, item, index);
+			subjectFont.setBold (true);
+
+		const auto style = option.widget ?
+				option.widget->style () :
+				QApplication::style ();
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
+
+		painter->save ();
+
+		if (option.state & QStyle::State_Selected)
+			painter->setPen (option.palette.color (QPalette::HighlightedText));
+
+		const auto& subject = GetString (index, MailModel::Column::Subject);
+
+		const QFontMetrics subjectFM { subjectFont };
+		auto y = option.rect.top () + subjectFM.boundingRect (subject).height ();
+
+		painter->setFont (subjectFont);
+		painter->drawText (option.rect.left (),
+				y,
+				subjectFM.elidedText (subject, Qt::ElideRight, option.rect.width ()));
+
+		const QFontMetrics fontFM { option.font };
+
+		auto stringHeight = [&fontFM] (const QString& str)
+		{
+			return fontFM.boundingRect (str).height ();
+		};
+
+		const auto& from = GetString (index, MailModel::Column::From);
+		const auto& date = GetString (index, MailModel::Column::Date);
+
+		y += std::max ({ stringHeight (from), stringHeight (date) });
+
+		painter->setFont (option.font);
+
+		const auto dateWidth = fontFM.boundingRect (date).width ();
+		painter->drawText (option.rect.right () - dateWidth,
+				y,
+				date);
+
+		painter->drawText (option.rect.left (),
+				y,
+				fontFM.elidedText (from, Qt::ElideRight, option.rect.width () - dateWidth - 5 * Padding));
+
+		painter->restore ();
+	}
+
+	QSize MailTreeDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		auto bold = option.font;
+		bold.setBold (true);
+		const QFontMetrics boldFM { bold };
+
+		const auto width = View_->viewport ()->width ();
+		const auto height = 2 * Padding +
+				boldFM.boundingRect (GetString (index, MailModel::Column::Subject)).height () +
+				boldFM.boundingRect (GetString (index, MailModel::Column::From)).height ();
+
+		return { width, height };
 	}
 
 	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
