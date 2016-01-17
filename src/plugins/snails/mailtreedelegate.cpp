@@ -154,20 +154,6 @@ namespace Snails
 
 		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
 
-		Message_ptr msg;
-		try
-		{
-			msg = Loader_ (id);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to load message"
-					<< id.toHex ()
-					<< e.what ();
-			return nullptr;
-		}
-
 		const auto container = new QToolBar { parent };
 		for (const auto actInfo : actionInfos)
 		{
@@ -176,7 +162,24 @@ namespace Snails
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[msg, handler = actInfo.Handler_] { handler (msg); },
+				[this, id, handler = actInfo.Handler_]
+				{
+					Message_ptr msg;
+					try
+					{
+						msg = Loader_ (id);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to load message"
+								<< id.toHex ()
+								<< e.what ();
+						return;
+					}
+
+					handler (msg);
+				},
 				action,
 				SIGNAL (triggered ()),
 				action
