@@ -190,9 +190,17 @@ namespace Snails
 	}
 
 	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
-			const QStyleOptionViewItem& option, const QModelIndex&) const
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		qobject_cast<QToolBar*> (editor)->setIconSize (option.decorationSize * 0.75);
+		const auto style = option.widget ? option.widget->style () : QApplication::style ();
+		const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
+				style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
+
+		const auto& subjFM = GetSubjectFont (index, option).second;
+		auto height = subjFM.boundingRect (GetString (index, MailModel::Column::Subject)).height ();
+		height -= 2 * margin;
+
+		qobject_cast<QToolBar*> (editor)->setIconSize ({ height, height });
 
 		editor->setMaximumSize (option.rect.size ());
 		editor->move (option.rect.topRight () - QPoint { editor->width (), 0 });
