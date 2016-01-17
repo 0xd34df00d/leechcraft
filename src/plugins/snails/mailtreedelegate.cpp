@@ -133,7 +133,14 @@ namespace Snails
 			return fontFM.boundingRect (str).height ();
 		};
 
-		const auto& from = GetString (index, MailModel::Column::From);
+		auto from = GetString (index, MailModel::Column::From);
+		if (const auto childrenCount = index.data (MailModel::MailRole::TotalChildrenCount).toInt ())
+		{
+			from += " (";
+			if (const auto unread = index.data (MailModel::MailRole::UnreadChildrenCount).toInt ())
+				from += QString::number (unread) + "/";
+			from += QString::number (childrenCount) + ")";
+		}
 		const auto& date = GetString (index, MailModel::Column::Date);
 
 		y += std::max ({ stringHeight (from), stringHeight (date) });
