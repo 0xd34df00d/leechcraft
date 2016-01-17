@@ -57,21 +57,29 @@ namespace Snails
 		{
 			return index.sibling (index.row (), static_cast<int> (column)).data ().toString ();
 		}
+
+		QPair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index,
+				const QStyleOptionViewItem& option)
+		{
+			const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
+			const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
+
+			auto subjectFont = option.font;
+			if (!isRead && isEnabled)
+				subjectFont.setBold (true);
+
+			return { subjectFont, QFontMetrics { subjectFont } };
+		}
 	}
 
 	void MailTreeDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
-		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
 		const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
 
 		QStyleOptionViewItemV4 option { stockItem };
 		if (!isEnabled)
 			option.font.setStrikeOut (true);
-
-		auto subjectFont = option.font;
-		if (!isRead && isEnabled)
-			subjectFont.setBold (true);
 
 		const auto style = option.widget ?
 				option.widget->style () :
@@ -86,13 +94,13 @@ namespace Snails
 
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
-		const QFontMetrics subjectFM { subjectFont };
-		auto y = option.rect.top () + subjectFM.boundingRect (subject).height ();
+		const auto& subjFontInfo = GetSubjectFont (index, option);
+		auto y = option.rect.top () + subjFontInfo.second.boundingRect (subject).height ();
 
-		painter->setFont (subjectFont);
+		painter->setFont (subjFontInfo.first);
 		painter->drawText (option.rect.left (),
 				y,
-				subjectFM.elidedText (subject, Qt::ElideRight, option.rect.width ()));
+				subjFontInfo.second.elidedText (subject, Qt::ElideRight, option.rect.width ()));
 
 		const QFontMetrics fontFM { option.font };
 
@@ -122,14 +130,13 @@ namespace Snails
 
 	QSize MailTreeDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		auto bold = option.font;
-		bold.setBold (true);
-		const QFontMetrics boldFM { bold };
+		const auto& subjFontInfo = GetSubjectFont (index, option);
+		const QFontMetrics plainFM { option.font };
 
 		const auto width = View_->viewport ()->width ();
 		const auto height = 2 * Padding +
-				boldFM.boundingRect (GetString (index, MailModel::Column::Subject)).height () +
-				boldFM.boundingRect (GetString (index, MailModel::Column::From)).height ();
+				subjFontInfo.second.boundingRect (GetString (index, MailModel::Column::Subject)).height () +
+				plainFM.boundingRect (GetString (index, MailModel::Column::From)).height ();
 
 		return { width, height };
 	}
