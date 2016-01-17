@@ -48,8 +48,7 @@ namespace Snails
 	{
 		const auto model = View_->model ();
 		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
-			View_->openPersistentEditor (model->index (i,
-						static_cast<int> (MailModel::Column::Subject)));
+			View_->openPersistentEditor (model->index (i, 0));
 	}
 }
 }
