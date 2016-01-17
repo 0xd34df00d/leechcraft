@@ -109,9 +109,9 @@ Rectangle {
                                 else if (Liznoo_labelContents == "ChargeLevel")
                                     return percentage + '%';
                                 else if (timeToEmpty)
-                                    return quarkProxy.prettyTime(timeToEmpty);
+                                    return quarkProxy.prettyTime(timeToEmpty).slice(0, -3);
                                 else if (timeToFull)
-                                    return quarkProxy.prettyTime(timeToFull);
+                                    return quarkProxy.prettyTime(timeToFull).slice(0, -3);
                                 else
                                     return "";
                             }
