@@ -112,8 +112,9 @@ namespace Snails
 
 		switch (role)
 		{
-		case Qt::DisplayRole:
 		case MessageActions:
+			return QVariant::fromValue (MsgId2Actions_.value (msg->GetFolderID ()));
+		case Qt::DisplayRole:
 		case Sort:
 			break;
 		case Qt::TextAlignmentRole:
@@ -171,10 +172,7 @@ namespace Snails
 			return addr.first.isEmpty () ? addr.second : addr.first;
 		}
 		case Column::Subject:
-			if (role != MessageActions)
-				return msg->GetSubject ();
-			else
-				return QVariant::fromValue (MsgId2Actions_.value (msg->GetFolderID ()));
+			return msg->GetSubject ();
 		case Column::Date:
 			if (role == Sort)
 				return msg->GetDate ();
