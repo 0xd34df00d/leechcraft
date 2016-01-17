@@ -111,6 +111,7 @@ namespace Snails
 
 		void rebuildOpsToFolders ();
 
+		void handleCompose ();
 		void handleReply ();
 		void handleCopyMultipleFolders ();
 		void handleCopyMessages (QAction*);

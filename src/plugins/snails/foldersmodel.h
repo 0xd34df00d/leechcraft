@@ -59,8 +59,7 @@ namespace Snails
 		enum Column
 		{
 			FolderName,
-			MessageCount,
-			UnreadCount
+			MessageCount
 		};
 
 		FoldersModel (Account*);

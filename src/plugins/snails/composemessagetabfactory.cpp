@@ -46,6 +46,15 @@ namespace Snails
 		return new ComposeMessageTab { AccsMgr_ };
 	}
 
+	void ComposeMessageTabFactory::PrepareComposeTab (const Account_ptr& account)
+	{
+		const auto cmt = MakeTab ();
+
+		cmt->SelectAccount (account);
+
+		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
+	}
+
 	void ComposeMessageTabFactory::PrepareReplyTab (const Message_ptr& message, const Account_ptr& account)
 	{
 		const auto cmt = MakeTab ();
