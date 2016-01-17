@@ -40,6 +40,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class MessageListActionsManager;
+
 	class MailModel : public QAbstractItemModel
 	{
 		Q_OBJECT
