@@ -168,6 +168,8 @@ namespace Snails
 			return msg->IsRead ();
 		case UnreadChildrenCount:
 			return structItem->UnreadChildren_.size ();
+		case TotalChildrenCount:
+			return structItem->GetChildrenCount ();
 		default:
 			return {};
 		}
