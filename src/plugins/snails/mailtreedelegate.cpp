@@ -70,6 +70,26 @@ namespace Snails
 
 			return { subjectFont, QFontMetrics { subjectFont } };
 		}
+
+		int GetActionsBarWidth (const QModelIndex& index, const QStyleOptionViewItem& option, int subjHeight)
+		{
+			const auto& acts = index.data (MailModel::MailRole::MessageActions)
+					.value<QList<MessageListActionInfo>> ();
+			if (acts.isEmpty ())
+				return 0;
+
+			const auto style = option.widget ?
+					option.widget->style () :
+					QApplication::style ();
+			const auto spacing = style->pixelMetric (QStyle::PM_ToolBarItemSpacing, &option);
+			const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
+					style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
+
+			return acts.size () * (subjHeight - margin * 2) +
+					(acts.size () - 1) * spacing +
+					margin * 2 +
+					Padding;
+		}
 	}
 
 	void MailTreeDelegate::paint (QPainter *painter,
