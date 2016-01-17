@@ -115,12 +115,16 @@ namespace Snails
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
 		const auto& subjFontInfo = GetSubjectFont (index, option);
-		auto y = option.rect.top () + subjFontInfo.second.boundingRect (subject).height ();
+		const auto subjHeight = subjFontInfo.second.boundingRect (subject).height ();
+		auto y = option.rect.top () + subjHeight;
+
+		const auto actionsWidth = GetActionsBarWidth (index, option, subjHeight);
 
 		painter->setFont (subjFontInfo.first);
 		painter->drawText (option.rect.left (),
 				y,
-				subjFontInfo.second.elidedText (subject, Qt::ElideRight, option.rect.width ()));
+				subjFontInfo.second.elidedText (subject, Qt::ElideRight,
+						option.rect.width () - actionsWidth));
 
 		const QFontMetrics fontFM { option.font };
 
