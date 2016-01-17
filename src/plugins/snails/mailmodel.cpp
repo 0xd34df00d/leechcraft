@@ -76,6 +76,14 @@ namespace Snails
 		, Parent_ { parent }
 		{
 		}
+
+		int GetChildrenCount () const
+		{
+			int result = Children_.size ();
+			for (const auto& child : Children_)
+				result += child->GetChildrenCount ();
+			return result;
+		}
 	};
 
 	MailModel::MailModel (const MessageListActionsManager *actsMgr, QObject *parent)
