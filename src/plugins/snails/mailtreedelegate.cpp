@@ -30,6 +30,7 @@
 #include "mailtreedelegate.h"
 #include <QPainter>
 #include <QToolBar>
+#include <QTreeView>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include "mailtab.h"
@@ -40,9 +41,11 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	MailTreeDelegate::MailTreeDelegate (const MessageLoader_f& loader, QObject *parent)
+	MailTreeDelegate::MailTreeDelegate (const MessageLoader_f& loader,
+			const QTreeView *view, QObject *parent)
 	: QStyledItemDelegate { parent }
 	, Loader_ { loader }
+	, View_ { view }
 	{
 	}
 

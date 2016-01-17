@@ -34,6 +34,7 @@
 #include <QStyledItemDelegate>
 
 class QByteArray;
+class QTreeView;
 
 namespace LeechCraft
 {
@@ -47,8 +48,9 @@ namespace Snails
 	class MailTreeDelegate : public QStyledItemDelegate
 	{
 		const MessageLoader_f Loader_;
+		const QTreeView * const View_;
 	public:
-		MailTreeDelegate (const MessageLoader_f&, QObject* = nullptr);
+		MailTreeDelegate (const MessageLoader_f&, const QTreeView*, QObject* = nullptr);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;

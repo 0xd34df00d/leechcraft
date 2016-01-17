@@ -123,6 +123,7 @@ namespace Snails
 					return Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (),
 							MailModel_->GetCurrentFolder (), id);
 				},
+				Ui_.MailTree_,
 				this);
 		Ui_.MailTree_->setItemDelegate (delegate);
 		Ui_.MailTree_->setModel (MailSortFilterModel_);
