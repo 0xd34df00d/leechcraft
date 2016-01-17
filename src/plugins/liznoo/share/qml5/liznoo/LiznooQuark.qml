@@ -116,6 +116,11 @@ Rectangle {
                                     return "";
                             }
                         font.pointSize: 8
+                        fontSizeMode: Text.Fit
+                        width: parent.width
+                        minimumPointSize: 5
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
 
                         anchors.centerIn: parent
                     }
