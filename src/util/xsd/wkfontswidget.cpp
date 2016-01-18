@@ -89,6 +89,8 @@ namespace Util
 				SIGNAL (valueChanged (int)),
 				this
 			};
+
+		ResetZoom ();
 	}
 
 	void WkFontsWidget::RegisterSettable (IWkFontsSettable *settable)
@@ -107,6 +109,8 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (Size2Spinbox_))
 			settable->SetFontSize (pair.first, pair.second->value ());
+
+		settable->SetFontSizeMultiplier (Ui_->Zoom_->value ());
 	}
 
 	void WkFontsWidget::ResetFontChoosers ()
@@ -125,6 +129,11 @@ namespace Util
 			const auto& option = Size2Name_ [pair.first];
 			pair.second->setValue (BSM_->Property (option, 10).toInt ());
 		}
+	}
+
+	void WkFontsWidget::ResetZoom ()
+	{
+		Ui_->Zoom_->setValue (BSM_->Property ("FontZoom", 100).toInt ());
 	}
 
 	void WkFontsWidget::on_ChangeAll__released ()
@@ -189,16 +198,28 @@ namespace Util
 				settable->SetFontSize (pair.first, pair.second);
 		}
 
+		if (IsFontZoomDirty_)
+		{
+			const auto value = Ui_->Zoom_->value () / 100.;
+			emit sizeMultiplierChanged (value);
+			for (const auto settable : Settables_)
+				settable->SetFontSizeMultiplier (value);
+		}
+
 		PendingFontChanges_.clear ();
 		PendingSizeChanges_.clear ();
+		IsFontZoomDirty_ = false;
 	}
 
 	void WkFontsWidget::reject ()
 	{
 		ResetFontChoosers ();
 		ResetSizeChoosers ();
+		ResetZoom ();
+
 		PendingFontChanges_.clear ();
 		PendingSizeChanges_.clear ();
+		IsFontZoomDirty_ = false;
 	}
 }
 }

@@ -104,6 +104,8 @@ namespace Util
 		QHash<QWebSettings::FontSize, int> PendingSizeChanges_;
 
 		QList<IWkFontsSettable*> Settables_;
+
+		bool IsFontZoomDirty_ = false;
 	public:
 		/** @brief Creates the fonts settings widget.
 		 *
@@ -124,6 +126,7 @@ namespace Util
 	private:
 		void ResetFontChoosers ();
 		void ResetSizeChoosers ();
+		void ResetZoom ();
 	private slots:
 		void on_ChangeAll__released ();
 	public slots:
@@ -140,6 +143,8 @@ namespace Util
 		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
 
 		void sizeChanged (QWebSettings::FontSize type, int size);
+
+		void sizeMultiplierChanged (qreal factor);
 	};
 }
 }
