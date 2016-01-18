@@ -132,6 +132,29 @@
       <item row="2" column="1">
        <widget class="QSpinBox" name="SizeFixedWidth_"/>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Font zoom:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QSpinBox" name="Zoom_">
+        <property name="suffix">
+         <string notr="true">%</string>
+        </property>
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="maximum">
+         <number>1600</number>
+        </property>
+        <property name="value">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
