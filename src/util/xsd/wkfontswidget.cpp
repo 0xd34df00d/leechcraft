@@ -93,6 +93,11 @@ namespace Util
 		ResetZoom ();
 	}
 
+	void WkFontsWidget::SetFontZoomLabel (const QString& label)
+	{
+		Ui_->Zoom_->setToolTip (label);
+	}
+
 	void WkFontsWidget::RegisterSettable (IWkFontsSettable *settable)
 	{
 		Settables_ << settable;
