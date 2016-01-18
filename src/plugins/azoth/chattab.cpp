@@ -1787,7 +1787,7 @@ namespace Azoth
 		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
 	}
 
-	void ChatTab::RegisterSettings()
+	void ChatTab::RegisterSettings ()
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
 				this, "handleRichFormatterPosition");
