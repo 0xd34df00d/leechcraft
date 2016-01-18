@@ -1420,9 +1420,6 @@ namespace Azoth
 
 	void ChatTab::handleFontSizeChanged ()
 	{
-		const int zoom = XmlSettingsManager::Instance ()
-				.property ("FontZoom").toInt ();
-		Ui_.View_->setTextSizeMultiplier (zoom / 100.);
 	}
 
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
@@ -1796,10 +1793,6 @@ namespace Azoth
 
 	void ChatTab::RegisterSettings()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("FontZoom",
-				this, "handleFontSizeChanged");
-		handleFontSizeChanged ();
-
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
 				this, "handleRichFormatterPosition");
 

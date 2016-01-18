@@ -132,11 +132,6 @@
 				<item type="color" property="HighlightColor" default="#FF0000">
 					<label value="Highlight color:" />
 				</item>
-				<item type="spinbox" property="FontZoom" default="100" minimum="10" maximum="1600">
-					<label value="Font zoom:" />
-					<suffix value=" %" />
-					<tooltip>Some themes have fixed-size font and font size setting doesn't affect them. Use this option to change their font size.</tooltip>
-				</item>
 				<item type="spinbox" property="MsgEditFontSize" default="5" minimum="5" maximum="72">
 					<label value="Message editor font size:" />
 					<suffix value=" px" />
