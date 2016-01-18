@@ -94,6 +94,8 @@ namespace Snails
 
 		QObject* GetQObject ();
 		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
+		void SetFontSize (QWebSettings::FontSize type, int size);
+		void SetFontSizeMultiplier (qreal factor);
 	private:
 		void FillCommonActions ();
 		void FillMailActions ();

@@ -82,6 +82,7 @@ namespace SB2
 
 		QString prettySize (qint64);
 		QString prettySizeShort (qint64);
+		QString prettyTime (qint64);
 	private slots:
 		void handleExtHoveredQuarkClass (const QString&);
 	signals:

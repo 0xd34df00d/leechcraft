@@ -467,6 +467,16 @@ namespace Azoth
 		Ui_.View_->settings ()->setFontFamily (family, font.family ());
 	}
 
+	void ChatTab::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		Ui_.View_->settings ()->setFontSize (type, size);
+	}
+
+	void ChatTab::SetFontSizeMultiplier (qreal factor)
+	{
+		Ui_.View_->setTextSizeMultiplier (factor);
+	}
+
 	void ChatTab::ShowUsersList ()
 	{
 		IMUCEntry *muc = GetEntry<IMUCEntry> ();
@@ -1408,17 +1418,6 @@ namespace Azoth
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 	}
 
-	void ChatTab::handleFontSizeChanged ()
-	{
-		const int size = XmlSettingsManager::Instance ()
-				.property ("FontSize").toInt ();
-		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
-
-		const int zoom = XmlSettingsManager::Instance ()
-				.property ("FontZoom").toInt ();
-		Ui_.View_->setTextSizeMultiplier (zoom / 100.);
-	}
-
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
 	{
 		auto entry = GetEntry<ICLEntry> ();
@@ -1788,12 +1787,8 @@ namespace Azoth
 		MsgFormatter_->setVisible (ToggleRichText_->isChecked ());
 	}
 
-	void ChatTab::RegisterSettings()
+	void ChatTab::RegisterSettings ()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ({ "FontSize", "FontZoom" },
-				this, "handleFontSizeChanged");
-		handleFontSizeChanged ();
-
 		XmlSettingsManager::Instance ().RegisterObject ("RichFormatterPosition",
 				this, "handleRichFormatterPosition");
 

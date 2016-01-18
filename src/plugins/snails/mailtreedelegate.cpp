@@ -30,6 +30,7 @@
 #include "mailtreedelegate.h"
 #include <QPainter>
 #include <QToolBar>
+#include <QTreeView>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include "mailtab.h"
@@ -40,24 +41,135 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	MailTreeDelegate::MailTreeDelegate (const MessageLoader_f& loader, QObject *parent)
+	MailTreeDelegate::MailTreeDelegate (const MessageLoader_f& loader,
+			const QTreeView *view, QObject *parent)
 	: QStyledItemDelegate { parent }
 	, Loader_ { loader }
+	, View_ { view }
 	{
+	}
+
+	const int Padding = 2;
+
+	namespace
+	{
+		QString GetString (const QModelIndex& index, MailModel::Column column)
+		{
+			return index.sibling (index.row (), static_cast<int> (column)).data ().toString ();
+		}
+
+		QPair<QFont, QFontMetrics> GetSubjectFont (const QModelIndex& index,
+				const QStyleOptionViewItem& option)
+		{
+			const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
+			const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
+
+			auto subjectFont = option.font;
+			if (!isRead && isEnabled)
+				subjectFont.setBold (true);
+
+			return { subjectFont, QFontMetrics { subjectFont } };
+		}
+
+		int GetActionsBarWidth (const QModelIndex& index, const QStyleOptionViewItem& option, int subjHeight)
+		{
+			const auto& acts = index.data (MailModel::MailRole::MessageActions)
+					.value<QList<MessageListActionInfo>> ();
+			if (acts.isEmpty ())
+				return 0;
+
+			const auto style = option.widget ?
+					option.widget->style () :
+					QApplication::style ();
+			const auto spacing = style->pixelMetric (QStyle::PM_ToolBarItemSpacing, &option);
+			const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
+					style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
+
+			return acts.size () * (subjHeight - margin * 2) +
+					(acts.size () - 1) * spacing +
+					margin * 2 +
+					Padding;
+		}
 	}
 
 	void MailTreeDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& stockItem, const QModelIndex& index) const
 	{
-		const bool isRead = index.data (MailModel::MailRole::IsRead).toBool ();
 		const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
 
-		QStyleOptionViewItemV4 item { stockItem };
-		if (!isRead && isEnabled)
-			item.font.setBold (true);
-		else if (!isEnabled)
-			item.font.setStrikeOut (true);
-		QStyledItemDelegate::paint (painter, item, index);
+		QStyleOptionViewItemV4 option { stockItem };
+		if (!isEnabled)
+			option.font.setStrikeOut (true);
+
+		const auto style = option.widget ?
+				option.widget->style () :
+				QApplication::style ();
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
+
+		painter->save ();
+
+		if (option.state & QStyle::State_Selected)
+			painter->setPen (option.palette.color (QPalette::HighlightedText));
+
+		const auto& subject = GetString (index, MailModel::Column::Subject);
+
+		const auto& subjFontInfo = GetSubjectFont (index, option);
+		const auto subjHeight = subjFontInfo.second.boundingRect (subject).height ();
+		auto y = option.rect.top () + subjHeight;
+
+		const auto actionsWidth = GetActionsBarWidth (index, option, subjHeight);
+
+		painter->setFont (subjFontInfo.first);
+		painter->drawText (option.rect.left (),
+				y,
+				subjFontInfo.second.elidedText (subject, Qt::ElideRight,
+						option.rect.width () - actionsWidth));
+
+		const QFontMetrics fontFM { option.font };
+
+		auto stringHeight = [&fontFM] (const QString& str)
+		{
+			return fontFM.boundingRect (str).height ();
+		};
+
+		auto from = GetString (index, MailModel::Column::From);
+		if (const auto childrenCount = index.data (MailModel::MailRole::TotalChildrenCount).toInt ())
+		{
+			from += " (";
+			if (const auto unread = index.data (MailModel::MailRole::UnreadChildrenCount).toInt ())
+				from += QString::number (unread) + "/";
+			from += QString::number (childrenCount) + ")";
+		}
+		const auto& date = GetString (index, MailModel::Column::Date);
+
+		y += std::max ({ stringHeight (from), stringHeight (date) });
+
+		painter->setFont (option.font);
+
+		const auto dateWidth = fontFM.boundingRect (date).width ();
+		painter->drawText (option.rect.right () - dateWidth,
+				y,
+				date);
+
+		painter->drawText (option.rect.left (),
+				y,
+				fontFM.elidedText (from, Qt::ElideRight, option.rect.width () - dateWidth - 5 * Padding));
+
+		painter->restore ();
+	}
+
+	QSize MailTreeDelegate::sizeHint (const QStyleOptionViewItem& option, const QModelIndex& index) const
+	{
+		const auto& subjFontInfo = GetSubjectFont (index, option);
+		const QFontMetrics plainFM { option.font };
+
+		const auto width = View_->viewport ()->width ();
+		const auto height = 2 * Padding +
+				subjFontInfo.second.boundingRect (GetString (index, MailModel::Column::Subject)).height () +
+				plainFM.boundingRect (GetString (index, MailModel::Column::From)).height ();
+
+		return { width, height };
 	}
 
 	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
@@ -73,20 +185,6 @@ namespace Snails
 
 		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
 
-		Message_ptr msg;
-		try
-		{
-			msg = Loader_ (id);
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to load message"
-					<< id.toHex ()
-					<< e.what ();
-			return nullptr;
-		}
-
 		const auto container = new QToolBar { parent };
 		for (const auto actInfo : actionInfos)
 		{
@@ -95,7 +193,24 @@ namespace Snails
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[msg, handler = actInfo.Handler_] { handler (msg); },
+				[this, id, handler = actInfo.Handler_]
+				{
+					Message_ptr msg;
+					try
+					{
+						msg = Loader_ (id);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to load message"
+								<< id.toHex ()
+								<< e.what ();
+						return;
+					}
+
+					handler (msg);
+				},
 				action,
 				SIGNAL (triggered ()),
 				action
@@ -106,9 +221,17 @@ namespace Snails
 	}
 
 	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
-			const QStyleOptionViewItem& option, const QModelIndex&) const
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		qobject_cast<QToolBar*> (editor)->setIconSize (option.decorationSize * 0.75);
+		const auto style = option.widget ? option.widget->style () : QApplication::style ();
+		const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
+				style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
+
+		const auto& subjFM = GetSubjectFont (index, option).second;
+		auto height = subjFM.boundingRect (GetString (index, MailModel::Column::Subject)).height ();
+		height -= 2 * margin;
+
+		qobject_cast<QToolBar*> (editor)->setIconSize ({ height, height });
 
 		editor->setMaximumSize (option.rect.size ());
 		editor->move (option.rect.topRight () - QPoint { editor->width (), 0 });

@@ -462,6 +462,8 @@ namespace Azoth
 				SLOT (saveAccountVisibility (IAccount*)));
 
 		FontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
+		FontsWidget_->SetFontZoomLabel (tr ("Some themes have fixed-size font and font size "
+					"setting doesn't affect them. Use this option to change their font size."));
 		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
 
 		XmlSettingsDialog_->SetCustomWidget ("ColorListEditor", new ColorListEditorWidget);

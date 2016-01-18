@@ -60,6 +60,10 @@ public:
 	 * @param[in] font The font to set for the font family.
 	 */
 	virtual void SetFontFamily (QWebSettings::FontFamily family, const QFont& font) = 0;
+
+	virtual void SetFontSize (QWebSettings::FontSize type, int size) = 0;
+
+	virtual void SetFontSizeMultiplier (qreal factor) = 0;
 };
 
 Q_DECLARE_INTERFACE (IWkFontsSettable, "org.LeechCraft.IWkFontsSettable/1.0");

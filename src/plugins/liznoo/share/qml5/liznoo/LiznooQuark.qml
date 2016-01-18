@@ -103,8 +103,24 @@ Rectangle {
                     Text {
                         id: battLevelText
                         color: colorProxy.color_ToolButton_TextColor
-                        text: percentage + '%'
+                        text: {
+                                if (Liznoo_labelContents == "Nothing")
+                                    return "";
+                                else if (Liznoo_labelContents == "ChargeLevel")
+                                    return percentage + '%';
+                                else if (timeToEmpty)
+                                    return quarkProxy.prettyTime(timeToEmpty).slice(0, -3);
+                                else if (timeToFull)
+                                    return quarkProxy.prettyTime(timeToFull).slice(0, -3);
+                                else
+                                    return "";
+                            }
                         font.pointSize: 8
+                        fontSizeMode: Text.Fit
+                        width: parent.width
+                        minimumPointSize: 5
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
 
                         anchors.centerIn: parent
                     }
@@ -118,7 +134,7 @@ Rectangle {
                         height: (battButton.height - battLevelText.height) / 2
 
                         source: "image://ThemeIcons/go-" +
-                                (timeToEmpty ? "down" : "up") + "/" + width
+                                (timeToEmpty ? "previous" : "next") + "/" + width
                         visible: timeToEmpty || timeToFull
                     }
                 }
