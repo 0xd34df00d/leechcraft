@@ -65,9 +65,28 @@ namespace Util
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[this, pair] { PendingChanges_ [pair.first] = pair.second->GetFont (); },
+				[this, pair] { PendingFontChanges_ [pair.first] = pair.second->GetFont (); },
 				pair.second,
 				SIGNAL (fontChanged (QFont)),
+				this
+			};
+
+		Size2Spinbox_ [QWebSettings::DefaultFontSize] = Ui_->SizeDefault_;
+		Size2Spinbox_ [QWebSettings::DefaultFixedFontSize] = Ui_->SizeFixedWidth_;
+		Size2Spinbox_ [QWebSettings::MinimumFontSize] = Ui_->SizeMinimum_;
+
+		Size2Name_ [QWebSettings::DefaultFontSize] = "FontSize";
+		Size2Name_ [QWebSettings::DefaultFixedFontSize] = "FixedFontSize";
+		Size2Name_ [QWebSettings::MinimumFontSize] = "MinimumFontSize";
+
+		ResetSizeChoosers ();
+
+		for (const auto& pair : Util::Stlize (Size2Spinbox_))
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[this, pair] { PendingSizeChanges_ [pair.first] = pair.second->value (); },
+				pair.second,
+				SIGNAL (valueChanged (int)),
 				this
 			};
 	}
@@ -85,6 +104,9 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 			settable->SetFontFamily (pair.first, pair.second->GetFont ());
+
+		for (const auto& pair : Util::Stlize (Size2Spinbox_))
+			settable->SetFontSize (pair.first, pair.second->value ());
 	}
 
 	void WkFontsWidget::ResetFontChoosers ()
@@ -93,6 +115,15 @@ namespace Util
 		{
 			const auto& option = Family2Name_ [pair.first];
 			pair.second->SetFont (BSM_->property (option).value<QFont> ());
+		}
+	}
+
+	void WkFontsWidget::ResetSizeChoosers ()
+	{
+		for (const auto& pair : Util::Stlize (Size2Spinbox_))
+		{
+			const auto& option = Size2Name_ [pair.first];
+			pair.second->setValue (BSM_->Property (option, 10).toInt ());
 		}
 	}
 
@@ -128,7 +159,7 @@ namespace Util
 				const auto& font = dialog->GetFont ();
 				for (const auto family : dialog->GetFamilies ())
 				{
-					PendingChanges_ [family] = font;
+					PendingFontChanges_ [family] = font;
 					Family2Chooser_ [family]->SetFont (font);
 				}
 			},
@@ -140,7 +171,7 @@ namespace Util
 
 	void WkFontsWidget::accept ()
 	{
-		for (const auto& pair : Util::Stlize (PendingChanges_))
+		for (const auto& pair : Util::Stlize (PendingFontChanges_))
 		{
 			emit fontChanged (pair.first, pair.second);
 			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
@@ -149,13 +180,25 @@ namespace Util
 				settable->SetFontFamily (pair.first, pair.second);
 		}
 
-		PendingChanges_.clear ();
+		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
+		{
+			emit sizeChanged (pair.first, pair.second);
+			BSM_->setProperty (Size2Name_ [pair.first], pair.second);
+
+			for (const auto settable : Settables_)
+				settable->SetFontSize (pair.first, pair.second);
+		}
+
+		PendingFontChanges_.clear ();
+		PendingSizeChanges_.clear ();
 	}
 
 	void WkFontsWidget::reject ()
 	{
 		ResetFontChoosers ();
-		PendingChanges_.clear ();
+		ResetSizeChoosers ();
+		PendingFontChanges_.clear ();
+		PendingSizeChanges_.clear ();
 	}
 }
 }

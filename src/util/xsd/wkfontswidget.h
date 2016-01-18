@@ -35,6 +35,8 @@
 #include <QtWebKit/QWebSettings>
 #include "xsdconfig.h"
 
+class QSpinBox;
+
 namespace Ui
 {
 	class WkFontsWidget;
@@ -95,8 +97,11 @@ namespace Util
 
 		QHash<QWebSettings::FontFamily, FontChooserWidget*> Family2Chooser_;
 		QHash<QWebSettings::FontFamily, QByteArray> Family2Name_;
+		QHash<QWebSettings::FontFamily, QFont> PendingFontChanges_;
 
-		QHash<QWebSettings::FontFamily, QFont> PendingChanges_;
+		QHash<QWebSettings::FontSize, QSpinBox*> Size2Spinbox_;
+		QHash<QWebSettings::FontSize, QByteArray> Size2Name_;
+		QHash<QWebSettings::FontSize, int> PendingSizeChanges_;
 
 		QList<IWkFontsSettable*> Settables_;
 	public:
@@ -118,6 +123,7 @@ namespace Util
 		void RegisterSettable (IWkFontsSettable *settable);
 	private:
 		void ResetFontChoosers ();
+		void ResetSizeChoosers ();
 	private slots:
 		void on_ChangeAll__released ();
 	public slots:
@@ -132,6 +138,8 @@ namespace Util
 		 * @param[out] font The new fonr for the given \em family.
 		 */
 		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
+
+		void sizeChanged (QWebSettings::FontSize type, int size);
 	};
 }
 }
