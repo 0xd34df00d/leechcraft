@@ -155,6 +155,16 @@ namespace Snails
 			settings->setFontFamily (family, font.family ());
 	}
 
+	void MailTab::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		Ui_.MailView_->settings ()->setFontSize (type, size);
+	}
+
+	void MailTab::SetFontSizeMultiplier (qreal factor)
+	{
+		Ui_.MailView_->setTextSizeMultiplier (factor);
+	}
+
 	void MailTab::FillCommonActions ()
 	{
 		const auto fetch = new QAction (tr ("Fetch new mail"), this);
