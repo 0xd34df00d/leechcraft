@@ -1418,10 +1418,6 @@ namespace Azoth
 		Ui_.MainLayout_->insertWidget (pos, MsgFormatter_);
 	}
 
-	void ChatTab::handleFontSizeChanged ()
-	{
-	}
-
 	void ChatTab::handleAccountStyleChanged (IAccount *acc)
 	{
 		auto entry = GetEntry<ICLEntry> ();
