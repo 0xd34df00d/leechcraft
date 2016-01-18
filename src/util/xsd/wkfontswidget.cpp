@@ -115,7 +115,7 @@ namespace Util
 		for (const auto& pair : Util::Stlize (Size2Spinbox_))
 			settable->SetFontSize (pair.first, pair.second->value ());
 
-		settable->SetFontSizeMultiplier (Ui_->Zoom_->value ());
+		settable->SetFontSizeMultiplier (Ui_->Zoom_->value () / 100.);
 	}
 
 	void WkFontsWidget::ResetFontChoosers ()
