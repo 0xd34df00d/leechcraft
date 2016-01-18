@@ -1420,10 +1420,6 @@ namespace Azoth
 
 	void ChatTab::handleFontSizeChanged ()
 	{
-		const int size = XmlSettingsManager::Instance ()
-				.property ("FontSize").toInt ();
-		Ui_.View_->settings ()->setFontSize (QWebSettings::DefaultFontSize, size);
-
 		const int zoom = XmlSettingsManager::Instance ()
 				.property ("FontZoom").toInt ();
 		Ui_.View_->setTextSizeMultiplier (zoom / 100.);
@@ -1800,7 +1796,7 @@ namespace Azoth
 
 	void ChatTab::RegisterSettings()
 	{
-		XmlSettingsManager::Instance ().RegisterObject ({ "FontSize", "FontZoom" },
+		XmlSettingsManager::Instance ().RegisterObject ("FontZoom",
 				this, "handleFontSizeChanged");
 		handleFontSizeChanged ();
 
