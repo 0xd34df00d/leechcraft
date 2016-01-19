@@ -1,5 +1,6 @@
 import QtQuick 2.3
 import QtGraphicalEffects 1.0
+import QtQuick.Controls 1.4
 import org.LC.common 1.0
 import "."
 
@@ -366,10 +367,10 @@ Rectangle {
             }
         }
 
-        Flickable {
-            z: 2
-
+        ScrollView {
             id: flickableBioText
+
+            style: LMPScrollStyle {}
 
             anchors.leftMargin: 5
             anchors.left: artistImageThumb.right
@@ -378,25 +379,29 @@ Rectangle {
             anchors.top: artistNameLabel.bottom
             height: Math.min(parent.height / 3, contentHeight)
 
-            contentWidth: width
-            contentHeight: shortDescLabel.height + 16
+            Flickable {
+                z: 2
 
-            clip: true
+                contentWidth: width
+                contentHeight: shortDescLabel.height + 16
 
-            Text {
-                id: shortDescLabel
-                text: artistInfo
-                textFormat: Text.RichText
                 clip: true
-                color: colorProxy.color_TextBox_TextColor
-                wrapMode: Text.WordWrap
 
-                anchors.top: parent.top
-                anchors.topMargin: 8
-                anchors.left: parent.left
-                anchors.right: parent.right
+                Text {
+                    id: shortDescLabel
+                    text: artistInfo
+                    textFormat: Text.RichText
+                    clip: true
+                    color: colorProxy.color_TextBox_TextColor
+                    wrapMode: Text.WordWrap
 
-                onLinkActivated: rootRect.linkActivated(link)
+                    anchors.top: parent.top
+                    anchors.topMargin: 8
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+
+                    onLinkActivated: rootRect.linkActivated(link)
+                }
             }
         }
 
