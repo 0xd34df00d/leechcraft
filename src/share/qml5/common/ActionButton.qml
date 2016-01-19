@@ -70,7 +70,7 @@ Item {
         states: [
             State {
                 name: "current"
-                when: actionRoot.isCurrent && !actionMouseArea.containsMouse
+                when: actionRoot.isCurrent && !actionMouseArea.containsMouse && !forceHover && !forcePress
                 PropertyChanges { target: topGradientStop; color: colorProxy.color_ToolButton_SelectedTopColor }
                 PropertyChanges { target: bottomGradientStop; color: colorProxy.color_ToolButton_SelectedBottomColor }
             },
