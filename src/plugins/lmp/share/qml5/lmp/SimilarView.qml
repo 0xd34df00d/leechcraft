@@ -73,11 +73,11 @@ Rectangle {
 
         style: LMPScrollStyle {}
 
+        opacity: similarViewBlur.radius == 0 ? 1 : 0.001
+
         ListView {
             id: similarView
             smooth: true
-
-            visible: similarViewBlur.radius == 0
 
             model: similarModel
             delegate: Item {
