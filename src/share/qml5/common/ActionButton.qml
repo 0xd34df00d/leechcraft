@@ -24,6 +24,9 @@ Item {
     property string orientation: "horizontal"
     property bool isButtonVertical: orientation == "vertical"
 
+    property bool forceHover: false
+    property bool forcePress: false
+
     signal triggered()
     signal clicked(variant event)
     signal hovered()
@@ -73,14 +76,14 @@ Item {
             },
             State {
                 name: "hovered"
-                when: actionMouseArea.containsMouse && !actionMouseArea.pressed
+                when: (actionMouseArea.containsMouse && !actionMouseArea.pressed) || actionRoot.forceHover
                 PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_HoveredBorderColor }
                 PropertyChanges { target: topGradientStop; color: colorProxy.color_ToolButton_HoveredTopColor }
                 PropertyChanges { target: bottomGradientStop; color: colorProxy.color_ToolButton_HoveredBottomColor }
             },
             State {
                 name: "pressed"
-                when: actionMouseArea.containsMouse && actionMouseArea.pressed
+                when: (actionMouseArea.containsMouse && actionMouseArea.pressed) || actionRoot.forcePress
                 PropertyChanges { target: actionRect; border.color: colorProxy.color_ToolButton_PressedBorderColor }
             }
         ]
