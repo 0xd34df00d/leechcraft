@@ -48,7 +48,7 @@ Rectangle {
             State {
                 name: "visible"
                 PropertyChanges { target: fullSizeArtistImg; opacity: 1 }
-                PropertyChanges { target: similarViewBlur; radius: 20 }
+                PropertyChanges { target: similarViewBlur; radius: 16 }
             }
         ]
 
