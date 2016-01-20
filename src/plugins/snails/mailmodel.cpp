@@ -108,6 +108,27 @@ namespace Snails
 		return Headers_.size ();
 	}
 
+	namespace
+	{
+		QString GetNeatDate (QDateTime dt)
+		{
+			dt = dt.toLocalTime ();
+
+			const auto& now = QDateTime::currentDateTime ();
+			if (dt.secsTo (now) < 60 * 60 * 24)
+				return dt.toLocalTime ().time ().toString ("HH:mm");
+
+			const auto days = dt.daysTo (now);
+			if (days < 7)
+				return dt.toString ("dddd, HH:mm");
+
+			if (days < 365)
+				return dt.date ().toString ("dd MMMM");
+
+			return dt.date ().toString (Qt::DefaultLocaleLongDate);
+		}
+	}
+
 	QVariant MailModel::data (const QModelIndex& index, int role) const
 	{
 		const auto structItem = static_cast<TreeNode*> (index.internalPointer ());
@@ -187,7 +208,7 @@ namespace Snails
 			if (role == Sort)
 				return msg->GetDate ();
 			else
-				return msg->GetDate ().toLocalTime ().toString ();
+				return GetNeatDate (msg->GetDate ());
 		case Column::Size:
 			if (role == Sort)
 				return msg->GetSize ();
