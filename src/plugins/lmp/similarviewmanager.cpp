@@ -33,12 +33,15 @@
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #include <QDeclarativeContext>
+#include <QDeclarativeEngine>
 #else
 #include <QQuickWidget>
 #include <QQmlContext>
+#include <QQmlEngine>
 #endif
 
 #include <util/qml/colorthemeproxy.h>
+#include <util/sys/paths.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/media/isimilarartists.h>
 #include <interfaces/media/ipendingsimilarartists.h>
@@ -65,6 +68,9 @@ namespace LMP
 		View_->rootContext ()->setContextProperty ("similarModel", Model_);
 		View_->rootContext ()->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			View_->engine ()->addImportPath (cand);
 	}
 
 	void SimilarViewManager::InitWithSource ()

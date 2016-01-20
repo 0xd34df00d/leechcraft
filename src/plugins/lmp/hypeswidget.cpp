@@ -133,6 +133,10 @@ namespace LMP
 		root->setContextProperty ("topsText", tr ("Show tops"));
 		root->setContextProperty ("colorProxy",
 				new Util::ColorThemeProxy (Core::Instance ().GetProxy ()->GetColorThemeManager (), this));
+
+		for (const auto& cand : Util::GetPathCandidates (Util::SysPath::QML, ""))
+			HypesView_->engine ()->addImportPath (cand);
+
 		HypesView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "lmp", "HypesView.qml"));
 
 		connect (Ui_.InfoProvider_,

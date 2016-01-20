@@ -1,4 +1,5 @@
 import QtQuick 2.3
+import QtQuick.Controls 1.4
 import "."
 
 Rectangle {
@@ -211,133 +212,137 @@ Rectangle {
                 }
             }
 
-            ListView {
-                id: hypedTracksView
-
+            ScrollView {
                 anchors.fill: parent
-                smooth: true
+                style: LMPScrollStyle {}
 
-                model: topTracksModel
+                ListView {
+                    id: hypedTracksView
 
-                delegate: Item {
-                    height: 75
-                    width: hypedTracksView.width
                     smooth: true
 
-                    Rectangle {
-                        id: delegateRect
+                    model: topTracksModel
 
-                        anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        anchors.topMargin: 5
-                        anchors.bottomMargin: 5
-
-                        radius: 5
-
-                        gradient: Gradient {
-                            GradientStop {
-                                position: 0
-                                color: colorProxy.color_TextBox_TopColor
-                            }
-                            GradientStop {
-                                position: 1
-                                color: colorProxy.color_TextBox_BottomColor
-                            }
-                        }
-
-                        border.width: 1
-                        border.color: colorProxy.color_TextBox_BorderColor
+                    delegate: Item {
+                        height: 75
+                        width: hypedTracksView.width
                         smooth: true
 
-                        Image {
-                            id: trackImageThumb
-                            width: 62
-                            height: 62
+                        Rectangle {
+                            id: delegateRect
+
+                            anchors.fill: parent
+                            anchors.leftMargin: 10
+                            anchors.rightMargin: 10
+                            anchors.topMargin: 5
+                            anchors.bottomMargin: 5
+
+                            radius: 5
+
+                            gradient: Gradient {
+                                GradientStop {
+                                    position: 0
+                                    color: colorProxy.color_TextBox_TopColor
+                                }
+                                GradientStop {
+                                    position: 1
+                                    color: colorProxy.color_TextBox_BottomColor
+                                }
+                            }
+
+                            border.width: 1
+                            border.color: colorProxy.color_TextBox_BorderColor
                             smooth: true
 
-                            cache: false
+                            Image {
+                                id: trackImageThumb
+                                width: 62
+                                height: 62
+                                smooth: true
 
-                            fillMode: Image.PreserveAspectFit
-                            source: thumbImageURL
+                                cache: false
 
-                            anchors.left: parent.left
-                            anchors.leftMargin: 2
-                            anchors.top: parent.top
-                            anchors.topMargin: 2
-                        }
+                                fillMode: Image.PreserveAspectFit
+                                source: thumbImageURL
 
-                        Text {
-                            id: trackNameLabel
-                            text: trackName
-
-                            font.bold: true
-                            font.underline: true
-                            font.pointSize: 12
-                            color: colorProxy.color_TextBox_TitleTextColor
-                            anchors.top: parent.top
-                            anchors.topMargin: 2
-                            anchors.left: trackImageThumb.right
-                            anchors.leftMargin: 5
-                            anchors.right: browseInfoImage.left
-                            anchors.rightMargin: 8
-
-                            elide: Text.ElideRight
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: rootRect.linkActivated(trackURL)
+                                anchors.left: parent.left
+                                anchors.leftMargin: 2
+                                anchors.top: parent.top
+                                anchors.topMargin: 2
                             }
-                        }
 
-                        BrowseButton {
-                            id: browseInfoImage
+                            Text {
+                                id: trackNameLabel
+                                text: trackName
 
-                            anchors.top: parent.top
-                            anchors.topMargin: 2
-                            anchors.right: previewAudio.left
-                            anchors.rightMargin: 5
+                                font.bold: true
+                                font.underline: true
+                                font.pointSize: 12
+                                color: colorProxy.color_TextBox_TitleTextColor
+                                anchors.top: parent.top
+                                anchors.topMargin: 2
+                                anchors.left: trackImageThumb.right
+                                anchors.leftMargin: 5
+                                anchors.right: browseInfoImage.left
+                                anchors.rightMargin: 8
 
-                            onClicked: rootRect.browseInfo(artistName)
-                        }
+                                elide: Text.ElideRight
 
-                        PreviewAudioButton {
-                            id: previewAudio
-
-                            anchors.top: parent.top
-                            anchors.topMargin: 2
-                            anchors.right: parent.right
-                            anchors.rightMargin: 5
-
-                            onClicked: rootRect.trackPreviewRequested(trackName, artistName)
-                        }
-
-                        Text {
-                            id: trackArtistNameLabel
-                            text: artistName
-
-                            font.underline: true
-                            font.pointSize: 11
-                            color: colorProxy.color_TextBox_TextColor
-                            anchors.top: trackNameLabel.bottom
-                            anchors.topMargin: 2
-                            anchors.left: trackImageThumb.right
-                            anchors.leftMargin: 5
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: rootRect.linkActivated(artistURL)
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: rootRect.linkActivated(trackURL)
+                                }
                             }
-                        }
 
-                        Text {
-                            id: changeLabel
-                            text: change
-                            color: colorProxy.color_TextBox_Aux1TextColor
-                            anchors.top: trackArtistNameLabel.bottom
-                            anchors.topMargin: 2
-                            anchors.left: trackImageThumb.right
-                            anchors.leftMargin: 5
+                            BrowseButton {
+                                id: browseInfoImage
+
+                                anchors.top: parent.top
+                                anchors.topMargin: 2
+                                anchors.right: previewAudio.left
+                                anchors.rightMargin: 5
+
+                                onClicked: rootRect.browseInfo(artistName)
+                            }
+
+                            PreviewAudioButton {
+                                id: previewAudio
+
+                                anchors.top: parent.top
+                                anchors.topMargin: 2
+                                anchors.right: parent.right
+                                anchors.rightMargin: 5
+
+                                onClicked: rootRect.trackPreviewRequested(trackName, artistName)
+                            }
+
+                            Text {
+                                id: trackArtistNameLabel
+                                text: artistName
+
+                                font.underline: true
+                                font.pointSize: 11
+                                color: colorProxy.color_TextBox_TextColor
+                                anchors.top: trackNameLabel.bottom
+                                anchors.topMargin: 2
+                                anchors.left: trackImageThumb.right
+                                anchors.leftMargin: 5
+
+                                MouseArea {
+                                    anchors.fill: parent
+                                    onClicked: rootRect.linkActivated(artistURL)
+                                }
+                            }
+
+                            Text {
+                                id: changeLabel
+                                text: change
+                                color: colorProxy.color_TextBox_Aux1TextColor
+                                anchors.top: trackArtistNameLabel.bottom
+                                anchors.topMargin: 2
+                                anchors.left: trackImageThumb.right
+                                anchors.leftMargin: 5
+                            }
                         }
                     }
                 }
