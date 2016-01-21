@@ -200,6 +200,9 @@ namespace Snails
 
 	void FoldersModel::SetFolders (const QList<Folder>& folders)
 	{
+		for (auto& custom : CustomFolders_)
+			custom.clear ();
+
 		if (const auto rc = RootFolder_->Children_.size ())
 		{
 			Folder2Descr_.clear ();
@@ -229,6 +232,9 @@ namespace Snails
 			currentRoot->Type_ = folder.Type_;
 
 			Folder2Descr_ [folder.Path_] = currentRoot.get ();
+
+			if (folder.Type_ != FolderType::Other)
+				CustomFolders_ [static_cast<int> (folder.Type_)] = folder.Path_;
 		}
 
 		if (const auto newRc = newRoot->Children_.size ())

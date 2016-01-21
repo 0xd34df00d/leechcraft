@@ -30,9 +30,11 @@
 #pragma once
 
 #include <memory>
+#include <array>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include "common.h"
+#include "folder.h"
 
 namespace LeechCraft
 {
@@ -50,6 +52,8 @@ namespace Snails
 
 		FolderDescr_ptr RootFolder_;
 		QHash<QStringList, FolderDescr*> Folder2Descr_;
+
+		std::array<QStringList, static_cast<int> (FolderType::Other)> CustomFolders_;
 	public:
 		enum Role
 		{
