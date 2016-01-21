@@ -623,7 +623,7 @@ namespace Snails
 		}
 
 		const auto& folder = MailModel_->GetCurrentFolder ();
-		ReadMarker_->HandleDeselectingMessage (CurrMsg_, folder);
+		ReadMarker_->HandleDeselectingMessage (folder);
 
 		CurrMsg_.reset ();
 
