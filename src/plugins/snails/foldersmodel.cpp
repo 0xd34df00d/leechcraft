@@ -263,5 +263,17 @@ namespace Snails
 		const auto& second = createIndex (descr->Row (), columnCount () - 1, descr);
 		emit dataChanged (first, second);
 	}
+
+	boost::optional<QStringList> FoldersModel::GetFolderPath (FolderType type) const
+	{
+		if (type == FolderType::Other)
+			return {};
+
+		const auto& value = CustomFolders_ [static_cast<int> (type)];
+		if (!value.isEmpty ())
+			return value;
+		else
+			return {};
+	}
 }
 }

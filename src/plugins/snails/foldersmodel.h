@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <array>
+#include <boost/optional.hpp>
 #include <QAbstractItemModel>
 #include <QStringList>
 #include "common.h"
@@ -77,6 +78,8 @@ namespace Snails
 
 		void SetFolders (const QList<Folder>& folders);
 		void SetFolderCounts (const QStringList&, int unread, int total);
+
+		boost::optional<QStringList> GetFolderPath (FolderType) const;
 	};
 }
 }
