@@ -240,8 +240,27 @@ namespace Snails
 		DeleteMessages (ids, from);
 	}
 
+	namespace
+	{
+		Account::DeleteBehaviour RollupBehaviour (Account::DeleteBehaviour behaviour, const QString& service)
+		{
+			if (behaviour != Account::DeleteBehaviour::Default)
+				return behaviour;
+
+			static const QStringList knownTrashes { "imap.gmail.com" };
+			return knownTrashes.contains (service) ?
+					Account::DeleteBehaviour::MoveToTrash :
+					Account::DeleteBehaviour::Expunge;
+		}
+	}
+
 	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
+		const auto& trashPath = FoldersModel_->GetFolderPath (FolderType::Trash);
+		if (trashPath &&
+				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)
+			CopyMessages (ids, folder, { *trashPath });
+
 		const auto& future = MessageFetchThread_->Schedule (&AccountThreadWorker::DeleteMessages, ids, folder);
 		Util::Sequence (this, future) >>
 				[=] (const auto& result)
