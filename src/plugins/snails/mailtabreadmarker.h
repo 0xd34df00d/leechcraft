@@ -46,7 +46,7 @@ namespace Snails
 	public:
 		MailTabReadMarker (const Account_ptr&, QObject* = nullptr);
 
-		void HandleDeselectingMessage (const Message_ptr& msg, const QStringList& folder);
+		void HandleDeselectingMessage (const QStringList& folder);
 		void SetCurrentMessage (const Message_ptr&);
 	public slots:
 		void handleWillMoveMessages (const QList<QByteArray>&, const QStringList&);

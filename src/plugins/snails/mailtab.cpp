@@ -623,7 +623,7 @@ namespace Snails
 		}
 
 		const auto& folder = MailModel_->GetCurrentFolder ();
-		ReadMarker_->HandleDeselectingMessage (CurrMsg_, folder);
+		ReadMarker_->HandleDeselectingMessage (folder);
 
 		CurrMsg_.reset ();
 
@@ -876,7 +876,7 @@ namespace Snails
 			auto widget = new HeadersViewWidget { header, this };
 			widget->setAttribute (Qt::WA_DeleteOnClose);
 			widget->setWindowFlags (Qt::Dialog);
-			widget->setWindowTitle (tr ("Headers for \"%1\"").arg (msg->GetSubject ()));
+			widget->setWindowTitle (tr ("Headers for %1").arg ('"' + msg->GetSubject () + '"'));
 			widget->show ();
 		}
 	}

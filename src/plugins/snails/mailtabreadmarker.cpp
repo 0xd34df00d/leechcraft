@@ -40,13 +40,13 @@ namespace Snails
 	{
 	}
 
-	void MailTabReadMarker::HandleDeselectingMessage (const Message_ptr& msg, const QStringList& folder)
+	void MailTabReadMarker::HandleDeselectingMessage (const QStringList& folder)
 	{
-		if (!msg || msg->IsRead ())
-			return;
+		if (CurrMsg_ && !CurrMsg_->IsRead ())
+			Util::ExecuteLater ([this, folder, msgId = CurrMsg_->GetFolderID ()]
+					{ Acc_->SetReadStatus (true, { msgId }, folder); });
 
-		Util::ExecuteLater ([this, folder, msgId = msg->GetFolderID ()]
-				{ Acc_->SetReadStatus (true, { msgId }, folder); });
+		CurrMsg_.reset ();
 	}
 
 	void MailTabReadMarker::SetCurrentMessage (const Message_ptr& msg)
