@@ -185,6 +185,37 @@ namespace Snails
 				return QProxyStyle::pixelMetric (metric, option, widget);
 			}
 		};
+
+		template<typename Loader, typename ContainerT>
+		void BuildAction (const Loader& loader, ContainerT *container, const MessageListActionInfo& actInfo)
+		{
+			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
+			action->setToolTip (actInfo.Description_);
+
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[loader, handler = actInfo.Handler_]
+				{
+					Message_ptr msg;
+					try
+					{
+						msg = loader ();
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unable to load message:"
+								<< e.what ();
+						return;
+					}
+
+					handler (msg);
+				},
+				action,
+				SIGNAL (triggered ()),
+				action
+			};
+		}
 	}
 
 	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
@@ -204,36 +235,8 @@ namespace Snails
 		auto style = new NullMarginsStyle;
 		style->setParent (container);
 		container->setStyle (style);
-		for (const auto actInfo : actionInfos)
-		{
-			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
-			action->setToolTip (actInfo.Description_);
-
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this, id, handler = actInfo.Handler_]
-				{
-					Message_ptr msg;
-					try
-					{
-						msg = Loader_ (id);
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to load message"
-								<< id.toHex ()
-								<< e.what ();
-						return;
-					}
-
-					handler (msg);
-				},
-				action,
-				SIGNAL (triggered ()),
-				action
-			};
-		}
+		for (const auto& actInfo : actionInfos)
+			BuildAction (std::bind (Loader_, id), container, actInfo);
 
 		return container;
 	}
