@@ -67,7 +67,7 @@ namespace Aggregator
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
-				Util::GenConnectionName ("org.LeechCraft.Aggregator"));
+				Util::GenConnectionName ("org.LeechCraft.Aggregator" + id));
 
 		switch (Type_)
 		{
