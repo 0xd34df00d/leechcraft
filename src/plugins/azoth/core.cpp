@@ -714,7 +714,7 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QObject *object, irp->GetResourceSources ())
+		for (const auto object : irp->GetResourceSources ())
 		{
 			if (const auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object))
 				AddSmileResourceSource (smileSrc);
@@ -1161,7 +1161,7 @@ namespace Azoth
 
 		QList<QStandardItem*> result;
 		ModelUpdateSafeguard guard (CLModel_);
-		Q_FOREACH (const QString& cat, cats)
+		for (const auto& cat : cats)
 		{
 			if (!Account2Category2Item_ [account].keys ().contains (cat))
 			{
