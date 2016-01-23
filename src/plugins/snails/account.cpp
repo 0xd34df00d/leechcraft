@@ -281,8 +281,8 @@ namespace Snails
 
 		QByteArray result;
 
-		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (3);
+		QDataStream out { &result, QIODevice::WriteOnly };
+		out << static_cast<quint8> (4);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -304,7 +304,8 @@ namespace Snails
 			<< UserEmail_
 			<< FolderManager_->Serialize ()
 			<< KeepAliveInterval_
-			<< LogToFile_;
+			<< LogToFile_
+			<< static_cast<quint8> (DeleteBehaviour_);
 
 		return result;
 	}
@@ -315,7 +316,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
 		quint8 outType = 0;
@@ -360,6 +361,13 @@ namespace Snails
 
 			if (version >= 3)
 				in >> LogToFile_;
+
+			if (version >= 4)
+			{
+				quint8 deleteBehaviour = 0;
+				in >> deleteBehaviour;
+				DeleteBehaviour_ = static_cast<DeleteBehaviour> (deleteBehaviour);
+			}
 		}
 	}
 
