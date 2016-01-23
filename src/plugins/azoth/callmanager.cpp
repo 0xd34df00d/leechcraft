@@ -99,6 +99,8 @@ namespace Azoth
 
 		return callObj;
 #else
+		Q_UNUSED (entry)
+		Q_UNUSED (variant)
 		return nullptr;
 #endif
 	}
@@ -270,6 +272,8 @@ namespace Azoth
 
 		if ((mode & QIODevice::ReadOnly) && !callState.OutDevice_)
 			handleReadFormatChanged ();
+#else
+		Q_UNUSED (mode)
 #endif
 	}
 
