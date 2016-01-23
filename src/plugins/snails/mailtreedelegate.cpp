@@ -241,8 +241,6 @@ namespace Snails
 	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		const auto style = option.widget ? option.widget->style () : QApplication::style ();
-
 		const auto& subjFM = GetSubjectFont (index, option).second;
 		auto height = subjFM.boundingRect (GetString (index, MailModel::Column::Subject)).height ();
 
