@@ -110,7 +110,7 @@ namespace Util
 					};
 		}
 
-		QTimer::singleShot (10, &loop, SLOT (quit ()));
+		QTimer::singleShot (100, &loop, SLOT (quit ()));
 
 		loop.exec ();
 
