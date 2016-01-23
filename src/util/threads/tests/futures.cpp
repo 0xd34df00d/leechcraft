@@ -102,7 +102,7 @@ namespace Util
 
 		{
 			QObject obj;
-			Sequence (&obj, MkWaiter () (100)) >>
+			Sequence (&obj, MakeReadyFuture (0)) >>
 					[&executed, &loop] (int)
 					{
 						executed = true;
