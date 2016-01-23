@@ -83,12 +83,9 @@ namespace Snails
 					option.widget->style () :
 					QApplication::style ();
 			const auto spacing = style->pixelMetric (QStyle::PM_ToolBarItemSpacing, &option);
-			const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
-					style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
 
-			return acts.size () * (subjHeight - margin * 2) +
+			return acts.size () * subjHeight +
 					(acts.size () - 1) * spacing +
-					margin * 2 +
 					Padding;
 		}
 	}
