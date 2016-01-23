@@ -240,8 +240,27 @@ namespace Snails
 		DeleteMessages (ids, from);
 	}
 
+	namespace
+	{
+		Account::DeleteBehaviour RollupBehaviour (Account::DeleteBehaviour behaviour, const QString& service)
+		{
+			if (behaviour != Account::DeleteBehaviour::Default)
+				return behaviour;
+
+			static const QStringList knownTrashes { "imap.gmail.com" };
+			return knownTrashes.contains (service) ?
+					Account::DeleteBehaviour::MoveToTrash :
+					Account::DeleteBehaviour::Expunge;
+		}
+	}
+
 	void Account::DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder)
 	{
+		const auto& trashPath = FoldersModel_->GetFolderPath (FolderType::Trash);
+		if (trashPath &&
+				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)
+			CopyMessages (ids, folder, { *trashPath });
+
 		const auto& future = MessageFetchThread_->Schedule (&AccountThreadWorker::DeleteMessages, ids, folder);
 		Util::Sequence (this, future) >>
 				[=] (const auto& result)
@@ -262,8 +281,8 @@ namespace Snails
 
 		QByteArray result;
 
-		QDataStream out (&result, QIODevice::WriteOnly);
-		out << static_cast<quint8> (3);
+		QDataStream out { &result, QIODevice::WriteOnly };
+		out << static_cast<quint8> (4);
 		out << ID_
 			<< AccName_
 			<< Login_
@@ -285,7 +304,8 @@ namespace Snails
 			<< UserEmail_
 			<< FolderManager_->Serialize ()
 			<< KeepAliveInterval_
-			<< LogToFile_;
+			<< LogToFile_
+			<< static_cast<quint8> (DeleteBehaviour_);
 
 		return result;
 	}
@@ -296,7 +316,7 @@ namespace Snails
 		quint8 version = 0;
 		in >> version;
 
-		if (version < 1 || version > 3)
+		if (version < 1 || version > 4)
 			throw std::runtime_error { "Unknown version " + std::to_string (version) };
 
 		quint8 outType = 0;
@@ -341,6 +361,13 @@ namespace Snails
 
 			if (version >= 3)
 				in >> LogToFile_;
+
+			if (version >= 4)
+			{
+				quint8 deleteBehaviour = 0;
+				in >> deleteBehaviour;
+				DeleteBehaviour_ = static_cast<DeleteBehaviour> (deleteBehaviour);
+			}
 		}
 	}
 
@@ -391,6 +418,8 @@ namespace Snails
 					dia->SetOutFolder (folder);
 			}
 			dia->SetFoldersToSync (toSync);
+
+			dia->SetDeleteBehaviour (DeleteBehaviour_);
 		}
 
 		dia->show ();
@@ -449,6 +478,8 @@ namespace Snails
 
 				for (const auto& sync : dia->GetFoldersToSync ())
 					FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
+
+				DeleteBehaviour_ = dia->GetDeleteBehaviour ();
 
 				emit accountChanged ();
 

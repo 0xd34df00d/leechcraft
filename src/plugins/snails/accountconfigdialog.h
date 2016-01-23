@@ -109,6 +109,9 @@ namespace Snails
 
 		bool GetLogConnectionsToFile () const;
 		void SetLogConnectionsToFile (bool);
+
+		Account::DeleteBehaviour GetDeleteBehaviour () const;
+		void SetDeleteBehaviour (Account::DeleteBehaviour);
 	private slots:
 		void resetInPort ();
 		void rebuildFoldersToSyncLine ();

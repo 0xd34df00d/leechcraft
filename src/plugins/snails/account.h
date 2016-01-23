@@ -118,8 +118,16 @@ namespace Snails
 			SMTP,
 			Sendmail
 		};
+
+		enum class DeleteBehaviour
+		{
+			Default,
+			Expunge,
+			MoveToTrash
+		};
 	private:
 		OutType OutType_;
+		DeleteBehaviour DeleteBehaviour_ = DeleteBehaviour::Default;
 
 		AccountFolderManager *FolderManager_;
 		FoldersModel *FoldersModel_;

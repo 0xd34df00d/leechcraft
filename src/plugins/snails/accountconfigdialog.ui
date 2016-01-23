@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>621</width>
-    <height>355</height>
+    <height>371</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -429,6 +429,32 @@
          </item>
          <item row="1" column="1">
           <widget class="QComboBox" name="OutgoingFolder_"/>
+         </item>
+         <item row="2" column="0">
+          <widget class="QLabel" name="label_16">
+           <property name="text">
+            <string>Deletion behaviour:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QComboBox" name="DeletionBehaviour_">
+           <item>
+            <property name="text">
+             <string>Default (service-dependent)</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Delete and expunge</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Move to trash</string>
+            </property>
+           </item>
+          </widget>
          </item>
         </layout>
        </item>

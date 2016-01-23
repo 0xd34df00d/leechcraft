@@ -309,5 +309,15 @@ namespace Snails
 				[] (QStringList fs, const QStringList& f) { return fs << f.join ("/"); });
 		Ui_.FoldersToSync_->setText (folders.join ("; "));
 	}
+
+	Account::DeleteBehaviour AccountConfigDialog::GetDeleteBehaviour () const
+	{
+		return static_cast<Account::DeleteBehaviour> (Ui_.DeletionBehaviour_->currentIndex ());
+	}
+
+	void AccountConfigDialog::SetDeleteBehaviour (Account::DeleteBehaviour behaviour)
+	{
+		Ui_.DeletionBehaviour_->setCurrentIndex (static_cast<int> (behaviour));
+	}
 }
 }
