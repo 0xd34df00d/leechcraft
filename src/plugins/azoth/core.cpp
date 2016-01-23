@@ -579,7 +579,7 @@ namespace Azoth
 			Q_FOREACH (QObject *obj, protos)
 				result << qobject_cast<IProtocol*> (obj);
 		}
-		result.removeAll (0);
+		result.removeAll (nullptr);
 		return result;
 	}
 
@@ -593,7 +593,7 @@ namespace Azoth
 					return acc;
 			}
 
-		return 0;
+		return nullptr;
 	}
 
 	void Core::UpdateItem (QObject *entryObj)
