@@ -86,7 +86,7 @@ namespace Snails
 
 			return acts.size () * subjHeight +
 					(acts.size () - 1) * spacing +
-					Padding;
+					2 * Padding;
 		}
 	}
 
