@@ -197,7 +197,7 @@ namespace GstUtil
 		};
 
 #if GST_VERSION_MAJOR >= 1
-		GstPadProbeReturn ProbeHandler (GstPad *pad, GstPadProbeInfo*, gpointer cbDataPtr)
+		GstPadProbeReturn ProbeHandler (GstPad*, GstPadProbeInfo*, gpointer cbDataPtr)
 		{
 			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
 			cbData->Functor_ ();
