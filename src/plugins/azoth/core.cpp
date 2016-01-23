@@ -573,20 +573,17 @@ namespace Azoth
 	QList<IProtocol*> Core::GetProtocols () const
 	{
 		QList<IProtocol*> result;
-		Q_FOREACH (QObject *protoPlugin, ProtocolPlugins_)
-		{
-			QObjectList protos = qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ();
-			Q_FOREACH (QObject *obj, protos)
+		for (const auto protoPlugin : ProtocolPlugins_)
+			for (const auto obj : qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ())
 				result << qobject_cast<IProtocol*> (obj);
-		}
 		result.removeAll (nullptr);
 		return result;
 	}
 
 	IAccount* Core::GetAccount (const QByteArray& id) const
 	{
-		Q_FOREACH (IProtocol *proto, GetProtocols ())
-			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+		for (const auto proto : GetProtocols ())
+			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
 				auto acc = qobject_cast<IAccount*> (accObj);
 				if (acc && acc->GetAccountID () == id)
