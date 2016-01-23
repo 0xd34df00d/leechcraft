@@ -97,16 +97,13 @@ namespace Util
 
 	void FuturesTest::testDestruction ()
 	{
-		struct Bar {};
-
 		QEventLoop loop;
 		bool executed = false;
 
 		{
 			QObject obj;
 			Sequence (&obj, MkWaiter () (100)) >>
-					[] (int) { return MakeReadyFuture<Bar> ({}); } >>
-					[&executed, &loop] (Bar)
+					[&executed, &loop] (int)
 					{
 						executed = true;
 						loop.quit ();
