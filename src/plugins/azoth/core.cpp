@@ -433,7 +433,7 @@ namespace Azoth
 
 	bool Core::CouldHandleURL (const QUrl& url) const
 	{
-		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		for (const auto obj : ProtocolPlugins_)
 		{
 			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
 			if (!protoPlug)
@@ -445,7 +445,7 @@ namespace Azoth
 				continue;
 			}
 
-			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			for (const auto protoObj : protoPlug->GetProtocols ())
 			{
 				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
 				if (!handler)
