@@ -1163,7 +1163,7 @@ namespace Azoth
 		ModelUpdateSafeguard guard (CLModel_);
 		for (const auto& cat : cats)
 		{
-			if (!Account2Category2Item_ [account].keys ().contains (cat))
+			if (!Account2Category2Item_ [account].contains (cat))
 			{
 				QStandardItem *catItem = new QStandardItem (cat);
 				catItem->setEditable (false);
