@@ -31,6 +31,7 @@
 #include <QPainter>
 #include <QToolBar>
 #include <QTreeView>
+#include <QProxyStyle>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include "mailtab.h"
@@ -172,6 +173,23 @@ namespace Snails
 		return { width, height };
 	}
 
+	namespace
+	{
+		class NullMarginsStyle : public QProxyStyle
+		{
+		public:
+			using QProxyStyle::QProxyStyle;
+
+			int pixelMetric (PixelMetric metric, const QStyleOption *option, const QWidget *widget) const override
+			{
+				if (metric == QStyle::PM_ToolBarItemMargin || metric == QStyle::PM_ToolBarFrameWidth)
+					return 0;
+
+				return QProxyStyle::pixelMetric (metric, option, widget);
+			}
+		};
+	}
+
 	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
 			const QStyleOptionViewItem&, const QModelIndex& index) const
 	{
@@ -186,6 +204,9 @@ namespace Snails
 		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
 
 		const auto container = new QToolBar { parent };
+		auto style = new NullMarginsStyle;
+		style->setParent (container);
+		container->setStyle (style);
 		for (const auto actInfo : actionInfos)
 		{
 			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
@@ -224,12 +245,9 @@ namespace Snails
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const auto style = option.widget ? option.widget->style () : QApplication::style ();
-		const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
-				style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
 
 		const auto& subjFM = GetSubjectFont (index, option).second;
 		auto height = subjFM.boundingRect (GetString (index, MailModel::Column::Subject)).height ();
-		height -= 2 * margin;
 
 		qobject_cast<QToolBar*> (editor)->setIconSize ({ height, height });
 
