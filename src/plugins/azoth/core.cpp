@@ -447,10 +447,8 @@ namespace Azoth
 
 			for (const auto protoObj : protoPlug->GetProtocols ())
 			{
-				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
-				if (!handler)
-					continue;
-				if (handler->SupportsURI (url))
+				const auto handler = qobject_cast<IURIHandler*> (protoObj);
+				if (handler && handler->SupportsURI (url))
 					return true;
 			}
 		}
