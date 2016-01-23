@@ -418,6 +418,8 @@ namespace Snails
 					dia->SetOutFolder (folder);
 			}
 			dia->SetFoldersToSync (toSync);
+
+			dia->SetDeleteBehaviour (DeleteBehaviour_);
 		}
 
 		dia->show ();
@@ -476,6 +478,8 @@ namespace Snails
 
 				for (const auto& sync : dia->GetFoldersToSync ())
 					FolderManager_->AppendFolderFlags (sync, AccountFolderManager::FolderSyncable);
+
+				DeleteBehaviour_ = dia->GetDeleteBehaviour ();
 
 				emit accountChanged ();
 
