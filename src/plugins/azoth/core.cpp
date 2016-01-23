@@ -435,7 +435,7 @@ namespace Azoth
 	{
 		for (const auto obj : ProtocolPlugins_)
 		{
-			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			const auto protoPlug = qobject_cast<IProtocolPlugin*> (obj);
 			if (!protoPlug)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -585,7 +585,7 @@ namespace Azoth
 		for (const auto proto : GetProtocols ())
 			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
-				auto acc = qobject_cast<IAccount*> (accObj);
+				const auto acc = qobject_cast<IAccount*> (accObj);
 				if (acc && acc->GetAccountID () == id)
 					return acc;
 			}
@@ -705,7 +705,7 @@ namespace Azoth
 
 	void Core::AddResourceSourcePlugin (QObject *rp)
 	{
-		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (rp);
+		const auto irp = qobject_cast<IResourcePlugin*> (rp);
 		if (!irp)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -716,12 +716,10 @@ namespace Azoth
 
 		Q_FOREACH (QObject *object, irp->GetResourceSources ())
 		{
-			auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
-			if (smileSrc)
+			if (const auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object))
 				AddSmileResourceSource (smileSrc);
 
-			auto chatStyleSrc = qobject_cast<IChatStyleResourceSource*> (object);
-			if (chatStyleSrc)
+			if (const auto chatStyleSrc = qobject_cast<IChatStyleResourceSource*> (object))
 				AddChatStyleResourceSource (chatStyleSrc);
 		}
 	}
