@@ -77,7 +77,6 @@ namespace Snails
 	, MailSortFilterModel_ (new MailSortModel { this })
 	{
 		Ui_.setupUi (this);
-		//Ui_.MailTreeLay_->insertWidget (0, MsgToolbar_);
 
 		const auto mailWebPage = new MailWebPage { Proxy_, Ui_.MailView_ };
 		connect (mailWebPage,
