@@ -32,6 +32,7 @@
 #include <QToolBar>
 #include <QTreeView>
 #include <QProxyStyle>
+#include <QMenu>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include "mailtab.h"
@@ -192,29 +193,40 @@ namespace Snails
 			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
 			action->setToolTip (actInfo.Description_);
 
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[loader, handler = actInfo.Handler_]
+			if (actInfo.Children_.isEmpty ())
+				new Util::SlotClosure<Util::NoDeletePolicy>
 				{
-					Message_ptr msg;
-					try
+					[loader, handler = actInfo.Handler_]
 					{
-						msg = loader ();
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to load message:"
-								<< e.what ();
-						return;
-					}
+						Message_ptr msg;
+						try
+						{
+							msg = loader ();
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to load message:"
+									<< e.what ();
+							return;
+						}
 
-					handler (msg);
-				},
-				action,
-				SIGNAL (triggered ()),
-				action
-			};
+						handler (msg);
+					},
+					action,
+					SIGNAL (triggered ()),
+					action
+				};
+			else
+			{
+				auto menu = new QMenu;
+				menu->setIcon (actInfo.Icon_);
+				menu->setTitle (actInfo.Name_);
+				action->setMenu (menu);
+
+				for (const auto& child : actInfo.Children_)
+					BuildAction (loader, menu, child);
+			}
 		}
 	}
 
