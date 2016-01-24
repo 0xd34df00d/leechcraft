@@ -93,7 +93,7 @@ namespace Util
 		ResetZoom ();
 	}
 
-	void WkFontsWidget::SetFontZoomLabel (const QString& label)
+	void WkFontsWidget::SetFontZoomTooltip (const QString& label)
 	{
 		Ui_->Zoom_->setToolTip (label);
 	}

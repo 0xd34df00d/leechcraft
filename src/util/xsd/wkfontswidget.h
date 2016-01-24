@@ -115,7 +115,7 @@ namespace Util
 		 */
 		WkFontsWidget (Util::BaseSettingsManager *bsm, QWidget *parent = nullptr);
 
-		void SetFontZoomLabel (const QString&);
+		void SetFontZoomTooltip (const QString&);
 
 		/** @brief Registers an object to be automatically updated
 		 * whenever font settings change.
