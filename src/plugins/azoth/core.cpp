@@ -433,9 +433,9 @@ namespace Azoth
 
 	bool Core::CouldHandleURL (const QUrl& url) const
 	{
-		Q_FOREACH (QObject *obj, ProtocolPlugins_)
+		for (const auto obj : ProtocolPlugins_)
 		{
-			IProtocolPlugin *protoPlug = qobject_cast<IProtocolPlugin*> (obj);
+			const auto protoPlug = qobject_cast<IProtocolPlugin*> (obj);
 			if (!protoPlug)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -445,12 +445,10 @@ namespace Azoth
 				continue;
 			}
 
-			Q_FOREACH (QObject *protoObj, protoPlug->GetProtocols ())
+			for (const auto protoObj : protoPlug->GetProtocols ())
 			{
-				IURIHandler *handler = qobject_cast<IURIHandler*> (protoObj);
-				if (!handler)
-					continue;
-				if (handler->SupportsURI (url))
+				const auto handler = qobject_cast<IURIHandler*> (protoObj);
+				if (handler && handler->SupportsURI (url))
 					return true;
 			}
 		}
@@ -575,27 +573,24 @@ namespace Azoth
 	QList<IProtocol*> Core::GetProtocols () const
 	{
 		QList<IProtocol*> result;
-		Q_FOREACH (QObject *protoPlugin, ProtocolPlugins_)
-		{
-			QObjectList protos = qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ();
-			Q_FOREACH (QObject *obj, protos)
+		for (const auto protoPlugin : ProtocolPlugins_)
+			for (const auto obj : qobject_cast<IProtocolPlugin*> (protoPlugin)->GetProtocols ())
 				result << qobject_cast<IProtocol*> (obj);
-		}
-		result.removeAll (0);
+		result.removeAll (nullptr);
 		return result;
 	}
 
 	IAccount* Core::GetAccount (const QByteArray& id) const
 	{
-		Q_FOREACH (IProtocol *proto, GetProtocols ())
-			Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+		for (const auto proto : GetProtocols ())
+			for (const auto accObj : proto->GetRegisteredAccounts ())
 			{
-				auto acc = qobject_cast<IAccount*> (accObj);
+				const auto acc = qobject_cast<IAccount*> (accObj);
 				if (acc && acc->GetAccountID () == id)
 					return acc;
 			}
 
-		return 0;
+		return nullptr;
 	}
 
 	void Core::UpdateItem (QObject *entryObj)
@@ -710,7 +705,7 @@ namespace Azoth
 
 	void Core::AddResourceSourcePlugin (QObject *rp)
 	{
-		IResourcePlugin *irp = qobject_cast<IResourcePlugin*> (rp);
+		const auto irp = qobject_cast<IResourcePlugin*> (rp);
 		if (!irp)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -719,14 +714,12 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (QObject *object, irp->GetResourceSources ())
+		for (const auto object : irp->GetResourceSources ())
 		{
-			auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object);
-			if (smileSrc)
+			if (const auto smileSrc = qobject_cast<IEmoticonResourceSource*> (object))
 				AddSmileResourceSource (smileSrc);
 
-			auto chatStyleSrc = qobject_cast<IChatStyleResourceSource*> (object);
-			if (chatStyleSrc)
+			if (const auto chatStyleSrc = qobject_cast<IChatStyleResourceSource*> (object))
 				AddChatStyleResourceSource (chatStyleSrc);
 		}
 	}
@@ -1168,9 +1161,9 @@ namespace Azoth
 
 		QList<QStandardItem*> result;
 		ModelUpdateSafeguard guard (CLModel_);
-		Q_FOREACH (const QString& cat, cats)
+		for (const auto& cat : cats)
 		{
-			if (!Account2Category2Item_ [account].keys ().contains (cat))
+			if (!Account2Category2Item_ [account].contains (cat))
 			{
 				QStandardItem *catItem = new QStandardItem (cat);
 				catItem->setEditable (false);

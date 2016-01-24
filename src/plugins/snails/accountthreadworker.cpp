@@ -342,7 +342,7 @@ namespace Snails
 	{
 		const auto& utf8cs = vmime::charset { vmime::charsets::UTF_8 };
 
-		Message_ptr msg (new Message);
+		auto msg = std::make_shared<Message> ();
 		msg->SetVmimeHeader (message->getHeader ());
 		msg->SetFolderID (static_cast<vmime::string> (message->getUID ()).c_str ());
 		msg->SetSize (message->getSize ());

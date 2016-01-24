@@ -31,6 +31,8 @@
 #include <QPainter>
 #include <QToolBar>
 #include <QTreeView>
+#include <QProxyStyle>
+#include <QMenu>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include "mailtab.h"
@@ -82,13 +84,10 @@ namespace Snails
 					option.widget->style () :
 					QApplication::style ();
 			const auto spacing = style->pixelMetric (QStyle::PM_ToolBarItemSpacing, &option);
-			const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
-					style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
 
-			return acts.size () * (subjHeight - margin * 2) +
+			return acts.size () * subjHeight +
 					(acts.size () - 1) * spacing +
-					margin * 2 +
-					Padding;
+					2 * Padding;
 		}
 	}
 
@@ -172,6 +171,65 @@ namespace Snails
 		return { width, height };
 	}
 
+	namespace
+	{
+		class NullMarginsStyle : public QProxyStyle
+		{
+		public:
+			using QProxyStyle::QProxyStyle;
+
+			int pixelMetric (PixelMetric metric, const QStyleOption *option, const QWidget *widget) const override
+			{
+				if (metric == QStyle::PM_ToolBarItemMargin || metric == QStyle::PM_ToolBarFrameWidth)
+					return 0;
+
+				return QProxyStyle::pixelMetric (metric, option, widget);
+			}
+		};
+
+		template<typename Loader, typename ContainerT>
+		void BuildAction (const Loader& loader, ContainerT *container, const MessageListActionInfo& actInfo)
+		{
+			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
+			action->setToolTip (actInfo.Description_);
+
+			if (actInfo.Children_.isEmpty ())
+				new Util::SlotClosure<Util::NoDeletePolicy>
+				{
+					[loader, handler = actInfo.Handler_]
+					{
+						Message_ptr msg;
+						try
+						{
+							msg = loader ();
+						}
+						catch (const std::exception& e)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to load message:"
+									<< e.what ();
+							return;
+						}
+
+						handler (msg);
+					},
+					action,
+					SIGNAL (triggered ()),
+					action
+				};
+			else
+			{
+				auto menu = new QMenu;
+				menu->setIcon (actInfo.Icon_);
+				menu->setTitle (actInfo.Name_);
+				action->setMenu (menu);
+
+				for (const auto& child : actInfo.Children_)
+					BuildAction (loader, menu, child);
+			}
+		}
+	}
+
 	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
 			const QStyleOptionViewItem&, const QModelIndex& index) const
 	{
@@ -186,36 +244,11 @@ namespace Snails
 		const auto& id = index.data (MailModel::MailRole::ID).toByteArray ();
 
 		const auto container = new QToolBar { parent };
-		for (const auto actInfo : actionInfos)
-		{
-			const auto action = container->addAction (actInfo.Icon_, actInfo.Name_);
-			action->setToolTip (actInfo.Description_);
-
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[this, id, handler = actInfo.Handler_]
-				{
-					Message_ptr msg;
-					try
-					{
-						msg = Loader_ (id);
-					}
-					catch (const std::exception& e)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unable to load message"
-								<< id.toHex ()
-								<< e.what ();
-						return;
-					}
-
-					handler (msg);
-				},
-				action,
-				SIGNAL (triggered ()),
-				action
-			};
-		}
+		auto style = new NullMarginsStyle;
+		style->setParent (container);
+		container->setStyle (style);
+		for (const auto& actInfo : actionInfos)
+			BuildAction (std::bind (Loader_, id), container, actInfo);
 
 		return container;
 	}
@@ -223,13 +256,8 @@ namespace Snails
 	void MailTreeDelegate::updateEditorGeometry (QWidget *editor,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		const auto style = option.widget ? option.widget->style () : QApplication::style ();
-		const auto margin = style->pixelMetric (QStyle::PM_ToolBarItemMargin, &option) +
-				style->pixelMetric (QStyle::PM_ToolBarFrameWidth, &option);
-
 		const auto& subjFM = GetSubjectFont (index, option).second;
 		auto height = subjFM.boundingRect (GetString (index, MailModel::Column::Subject)).height ();
-		height -= 2 * margin;
 
 		qobject_cast<QToolBar*> (editor)->setIconSize ({ height, height });
 
