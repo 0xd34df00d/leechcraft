@@ -56,6 +56,8 @@ public:
 
 	/** @brief Sets the \em font for the given font \em family.
 	 *
+	 * See also <code>QWebSettings::setFontFamily()</code>.
+	 *
 	 * @param[in] family The font family to change.
 	 * @param[in] font The font to set for the font family.
 	 */
@@ -63,12 +65,16 @@ public:
 
 	/** @brief Sets the \em size for the given font size \em type.
 	 *
+	 * See also <code>QWebSettings::setFontSize()</code>.
+	 *
 	 * @param[in] type The font type to change.
 	 * @param[in] size The font size to set.
 	 */
 	virtual void SetFontSize (QWebSettings::FontSize type, int size) = 0;
 
 	/** @brief Sets the font size multiplier to the given \em factor.
+	 *
+	 * See also <code>QWebView::setTextSizeMultiplier()</code>.
 	 *
 	 * @param[in] factor The font size multiplier.
 	 */
