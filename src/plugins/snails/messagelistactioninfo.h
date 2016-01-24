@@ -50,6 +50,8 @@ namespace Snails
 		QIcon Icon_;
 
 		std::function<void (Message_ptr)> Handler_;
+
+		QList<MessageListActionInfo> Children_;
 	};
 }
 }
