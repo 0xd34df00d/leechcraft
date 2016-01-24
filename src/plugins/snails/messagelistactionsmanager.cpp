@@ -121,15 +121,11 @@ namespace Snails
 
 				const auto& url = StringizeCT (*urlText);
 
-				const auto& referencesField = headers->References ();
+				const auto& referencesField = headers->MessageId ();
 				if (!referencesField)
 					return {};
 
-				const auto& refSeq = referencesField->getValue<vmime::messageIdSequence> ();
-				if (!refSeq)
-					return {};
-
-				const auto& ref = refSeq->getMessageIdAt (0);
+				const auto& ref = referencesField->getValue<vmime::messageId> ();
 				if (!ref)
 					return {};
 
