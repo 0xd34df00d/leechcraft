@@ -61,8 +61,17 @@ public:
 	 */
 	virtual void SetFontFamily (QWebSettings::FontFamily family, const QFont& font) = 0;
 
+	/** @brief Sets the \em size for the given font size \em type.
+	 *
+	 * @param[in] type The font type to change.
+	 * @param[in] size The font size to set.
+	 */
 	virtual void SetFontSize (QWebSettings::FontSize type, int size) = 0;
 
+	/** @brief Sets the font size multiplier to the given \em factor.
+	 *
+	 * @param[in] factor The font size multiplier.
+	 */
 	virtual void SetFontSizeMultiplier (qreal factor) = 0;
 };
 
