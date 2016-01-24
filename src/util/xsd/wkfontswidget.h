@@ -115,7 +115,11 @@ namespace Util
 		 */
 		WkFontsWidget (Util::BaseSettingsManager *bsm, QWidget *parent = nullptr);
 
-		void SetFontZoomTooltip (const QString&);
+		/** @brief Sets the tooltip for the font size multiplier control.
+		 *
+		 * @param[in] tooltip The tooltip string.
+		 */
+		void SetFontZoomTooltip (const QString& tooltip);
 
 		/** @brief Registers an object to be automatically updated
 		 * whenever font settings change.
@@ -135,7 +139,7 @@ namespace Util
 		void accept ();
 		void reject ();
 	signals:
-		/** @brief Notifies the font for the given \em family has been
+		/** @brief Notifies the \em font for the given \em family has been
 		 * changed.
 		 *
 		 * @param[out] family The font family for which the \em font has
@@ -144,8 +148,19 @@ namespace Util
 		 */
 		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
 
+		/** @brief Notifies the \em size for the given font \em type has
+		 * been changed.
+		 *
+		 * @param[out] type The font type for which the \em size has been
+		 * changed.
+		 * @param[out] size The new font size for the given font \em type.
+		 */
 		void sizeChanged (QWebSettings::FontSize type, int size);
 
+		/** @brief Notifies the text zoom \em factor has been changed.
+		 *
+		 * @param[out] factor The new font size multiplier.
+		 */
 		void sizeMultiplierChanged (qreal factor);
 	};
 }
