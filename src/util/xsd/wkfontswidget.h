@@ -140,7 +140,7 @@ namespace Util
 		 *
 		 * @param[out] family The font family for which the \em font has
 		 * been changed.
-		 * @param[out] font The new fonr for the given \em family.
+		 * @param[out] font The new font for the given \em family.
 		 */
 		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
 
