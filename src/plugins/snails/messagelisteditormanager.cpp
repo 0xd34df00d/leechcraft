@@ -44,11 +44,19 @@ namespace Snails
 	{
 	}
 
+	namespace
+	{
+		void OpenEditors (QTreeView *view, const QModelIndex& parent)
+		{
+			const auto model = view->model ();
+			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
+				view->openPersistentEditor (model->index (i, 0, parent));
+		}
+	}
+
 	void MessageListEditorManager::handleMessageListUpdated ()
 	{
-		const auto model = View_->model ();
-		for (int i = 0, rc = model->rowCount (); i < rc; ++i)
-			View_->openPersistentEditor (model->index (i, 0));
+		OpenEditors (View_, {});
 	}
 }
 }
