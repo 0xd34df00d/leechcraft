@@ -42,6 +42,10 @@ namespace Snails
 	, View_ { view }
 	, Delegate_ { delegate }
 	{
+		connect (View_,
+				SIGNAL (expanded (QModelIndex)),
+				this,
+				SLOT (handleExpanded (QModelIndex)));
 	}
 
 	namespace
@@ -57,6 +61,11 @@ namespace Snails
 	void MessageListEditorManager::handleMessageListUpdated ()
 	{
 		OpenEditors (View_, {});
+	}
+
+	void MessageListEditorManager::handleExpanded (const QModelIndex& index)
+	{
+		OpenEditors (View_, index);
 	}
 }
 }

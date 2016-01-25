@@ -50,6 +50,8 @@ namespace Snails
 		MessageListEditorManager (QTreeView*, MailTreeDelegate*, QObject* = nullptr);
 	public slots:
 		void handleMessageListUpdated ();
+	private slots:
+		void handleExpanded (const QModelIndex&);
 	};
 }
 }
