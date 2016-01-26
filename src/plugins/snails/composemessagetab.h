@@ -71,7 +71,7 @@ namespace Snails
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);
 
-		ComposeMessageTab (const AccountsManager*, QWidget* = 0);
+		ComposeMessageTab (const AccountsManager*, QWidget* = nullptr);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs();
