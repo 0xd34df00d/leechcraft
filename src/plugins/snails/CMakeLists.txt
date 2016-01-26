@@ -53,6 +53,7 @@ set (SRCS
 	accountlogger.cpp
 	tracerfactory.cpp
 	tracer.cpp
+	msgtemplatesmanager.cpp
 	)
 set (FORMS
 	mailtab.ui
