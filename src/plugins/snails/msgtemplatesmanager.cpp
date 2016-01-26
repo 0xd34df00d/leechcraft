@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "msgtemplatesmanager.h"
+#include <QtDebug>
+#include <interfaces/itexteditor.h>
 
 namespace LeechCraft
 {
@@ -36,6 +38,32 @@ namespace Snails
 	MsgTemplatesManager::MsgTemplatesManager (QObject *parent)
 	: QObject { parent }
 	{
+	}
+
+	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
+			MsgType msgType, const QString& body, const Message *msg) const
+	{
+		switch (type)
+		{
+		case ContentType::PlainText:
+			return GetPlainText (msgType, body, msg);
+		case ContentType::HTML:
+			return GetHTMLText (msgType, body, msg);
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown content type"
+				<< static_cast<int> (type);
+		return body;
+	}
+	QString MsgTemplatesManager::GetPlainText (MsgType type, const QString& body, const Message *msg) const
+	{
+		return body;
+	}
+
+	QString MsgTemplatesManager::GetHTMLText (MsgType type, const QString& body, const Message *msg) const
+	{
+		return body;
 	}
 }
 }

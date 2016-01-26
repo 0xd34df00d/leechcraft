@@ -33,13 +33,29 @@
 
 namespace LeechCraft
 {
+enum class ContentType;
+
 namespace Snails
 {
+	class Message;
+
 	class MsgTemplatesManager : public QObject
 	{
 		Q_OBJECT
 	public:
+		enum class MsgType
+		{
+			New,
+			Reply,
+			Forward
+		};
+
 		MsgTemplatesManager (QObject* = nullptr);
+
+		QString GetTemplatedText (ContentType, MsgType, const QString&, const Message* = nullptr) const;
+	private:
+		QString GetPlainText (MsgType, const QString&, const Message*) const;
+		QString GetHTMLText (MsgType, const QString&, const Message*) const;
 	};
 }
 }
