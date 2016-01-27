@@ -41,4 +41,8 @@
 		<label value="Accounts" />
 		<item type="customwidget" name="AccountsWidget" label="own" />
 	</page>
+	<page>
+		<label value="Templates" />
+		<item type="customwidget" name="TemplatesWidget" label="own" />
+	</page>
 </settings>

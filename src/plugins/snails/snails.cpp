@@ -41,6 +41,8 @@
 #include "composemessagetab.h"
 #include "accountsmanager.h"
 #include "composemessagetabfactory.h"
+#include "msgtemplatesmanager.h"
+#include "templateseditorwidget.h"
 
 namespace LeechCraft
 {
@@ -78,6 +80,7 @@ namespace Snails
 
 		AccsMgr_ = new AccountsManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_ };
+		auto templatesMgr = new MsgTemplatesManager;
 
 		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
@@ -91,6 +94,8 @@ namespace Snails
 
 		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
+
+		XSD_->SetCustomWidget ("TemplatesWidget", new TemplatesEditorWidget { templatesMgr });
 	}
 
 	void Plugin::SecondInit ()
