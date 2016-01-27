@@ -54,6 +54,7 @@ set (SRCS
 	tracerfactory.cpp
 	tracer.cpp
 	msgtemplatesmanager.cpp
+	templateseditorwidget.cpp
 	)
 set (FORMS
 	mailtab.ui
@@ -61,6 +62,7 @@ set (FORMS
 	accountconfigdialog.ui
 	composemessagetab.ui
 	headersviewwidget.ui
+	templateseditorwidget.ui
 	)
 set (RESOURCES snailsresources.qrc)
 CreateTrs ("snails" "en;ru_RU" COMPILED_TRANSLATIONS)
