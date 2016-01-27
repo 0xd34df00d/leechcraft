@@ -31,12 +31,16 @@
 
 #include <QObject>
 
+template<typename, typename>
+class QMap;
+
 namespace LeechCraft
 {
 enum class ContentType;
 
 namespace Snails
 {
+	class Account;
 	class Message;
 
 	class MsgTemplatesManager : public QObject
@@ -52,10 +56,10 @@ namespace Snails
 
 		MsgTemplatesManager (QObject* = nullptr);
 
+		QString GetTemplate (ContentType, MsgType, Account*) const;
 		QString GetTemplatedText (ContentType, MsgType, const QString&, const Message* = nullptr) const;
 	private:
-		QString GetPlainText (MsgType, const QString&, const Message*) const;
-		QString GetHTMLText (MsgType, const QString&, const Message*) const;
+		static QMap<ContentType, QMap<MsgType, QString>> GetDefaults ();
 	};
 }
 }

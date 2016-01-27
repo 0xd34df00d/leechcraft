@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <interfaces/itexteditor.h>
 #include "message.h"
+#include "account.h"
 
 namespace LeechCraft
 {
@@ -43,21 +44,10 @@ namespace Snails
 	{
 	}
 
-	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
-			MsgType msgType, const QString& body, const Message *msg) const
+	QString MsgTemplatesManager::GetTemplate (ContentType contentType, MsgType msgType, Account *account) const
 	{
-		switch (type)
-		{
-		case ContentType::PlainText:
-			return GetPlainText (msgType, body, msg);
-		case ContentType::HTML:
-			return GetHTMLText (msgType, body, msg);
-		}
-
-		qWarning () << Q_FUNC_INFO
-				<< "unknown content type"
-				<< static_cast<int> (type);
-		return body;
+		static const auto defaults = GetDefaults ();
+		return defaults [contentType] [msgType];
 	}
 
 	namespace
@@ -79,17 +69,41 @@ namespace Snails
 
 			return result;
 		}
-
 	}
 
-	QString MsgTemplatesManager::GetPlainText (MsgType type, const QString& body, const Message *msg) const
+	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
+			MsgType msgType, const QString& body, const Message *msg) const
 	{
 		return body;
 	}
 
-	QString MsgTemplatesManager::GetHTMLText (MsgType type, const QString& body, const Message *msg) const
+	QMap<ContentType, QMap<MsgTemplatesManager::MsgType, QString>> MsgTemplatesManager::GetDefaults ()
 	{
-		return body;
+		return
+		{
+			{
+				ContentType::PlainText,
+				{
+					{
+						MsgType::New,
+						tr (R"delim(Dear ${ONAME},
+
+${CURSOR}
+
+${SIGNATURE})delim")
+					},
+					{
+						MsgType::Reply,
+						tr (R"delim(On ${ODATE} at ${OTIME} user ${ONAME} wrote:
+${QUOTE}
+
+${CURSOR}
+
+${SIGNATURE})delim")
+					}
+				}
+			}
+		};
 	}
 }
 }
