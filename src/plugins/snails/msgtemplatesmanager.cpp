@@ -28,8 +28,11 @@
  **********************************************************************/
 
 #include "msgtemplatesmanager.h"
+#include <functional>
+#include <QLocale>
 #include <QtDebug>
 #include <interfaces/itexteditor.h>
+#include "message.h"
 
 namespace LeechCraft
 {
@@ -56,6 +59,29 @@ namespace Snails
 				<< static_cast<int> (type);
 		return body;
 	}
+
+	namespace
+	{
+		auto GetFunctions ()
+		{
+			QHash<QString, std::function<QString (const Message*, QString)>> result;
+
+			result ["ODATE"] = [] (const Message *msg, const QString&) { return msg->GetDate ().date ().toString (Qt::DefaultLocaleLongDate); };
+			result ["OTIME"] = [] (const Message *msg, const QString&) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleLongDate); };
+			result ["ONAME"] = [] (const Message *msg, const QString&) { return msg->GetAddress (Message::Address::ReplyTo).first; };
+			result ["OEMAIL"] = [] (const Message *msg, const QString&) { return msg->GetAddress (Message::Address::ReplyTo).second; };
+			result ["ONAMEOREMAIL"] = [] (const Message *msg, const QString&)
+						{
+							const auto& addr = msg->GetAddress (Message::Address::ReplyTo);
+							return addr.first.isEmpty () ? addr.second : addr.first;
+						};
+			result ["QUOTE"] = [] (const Message*, const QString& body) { return body; };
+
+			return result;
+		}
+
+	}
+
 	QString MsgTemplatesManager::GetPlainText (MsgType type, const QString& body, const Message *msg) const
 	{
 		return body;
