@@ -36,13 +36,17 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	class MsgTemplatesManager;
+
 	class TemplatesEditorWidget : public QWidget
 	{
 		Q_OBJECT
 
 		Ui::TemplatesEditorWidget Ui_;
+
+		MsgTemplatesManager * const TemplatesMgr_;
 	public:
-		TemplatesEditorWidget (QWidget* = nullptr);
+		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
 	};
 }
 }

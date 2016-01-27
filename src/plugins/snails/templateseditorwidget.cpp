@@ -28,13 +28,15 @@
  **********************************************************************/
 
 #include "templateseditorwidget.h"
+#include "msgtemplatesmanager.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	TemplatesEditorWidget::TemplatesEditorWidget (QWidget *parent)
+	TemplatesEditorWidget::TemplatesEditorWidget (MsgTemplatesManager *mgr, QWidget *parent)
 	: QWidget { parent }
+	, TemplatesMgr_ { mgr }
 	{
 		Ui_.setupUi (this);
 	}
