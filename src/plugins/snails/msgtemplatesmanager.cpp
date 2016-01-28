@@ -69,6 +69,37 @@ namespace Snails
 
 			return result;
 		}
+
+		static const QString OpenMarker = "${";
+		static const QString CloseMarker = "}";
+
+		QString PerformSubstitutions (QString text, const Message *msg, const QString& body)
+		{
+			static const auto functions = GetFunctions ();
+
+			const auto openSize = OpenMarker.size ();
+
+			auto pos = 0;
+			while ((pos = text.indexOf (OpenMarker, pos)) != -1)
+			{
+				const auto closing = text.indexOf (CloseMarker, pos);
+				if (closing == -1)
+					break;
+
+				const auto& variable = text.mid (pos + openSize, closing - pos - openSize);
+
+				if (functions.contains (variable))
+				{
+					const auto& subst = functions [variable] (msg, body);
+					text.replace (pos, closing - pos + 1, subst);
+					pos += subst.size ();
+				}
+				else
+					pos = closing + 1;
+			}
+
+			return text;
+		}
 	}
 
 	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
