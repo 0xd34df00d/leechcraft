@@ -56,6 +56,7 @@ namespace Snails
 
 		void SetupEditors (const std::function<void (QAction*)>&);
 
+		ContentType GetCurrentEditorType () const;
 		IEditorWidget* GetCurrentEditor () const;
 		void SelectEditor (ContentType);
 	private slots:

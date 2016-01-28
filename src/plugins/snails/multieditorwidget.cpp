@@ -97,6 +97,11 @@ namespace Snails
 		Ui_.EditorStack_->setCurrentIndex (Ui_.EditorStack_->count () - 1);
 	}
 
+	ContentType MultiEditorWidget::GetCurrentEditorType () const
+	{
+		return Ui_.EditorStack_->currentIndex () ? ContentType::HTML : ContentType::PlainText;
+	}
+
 	IEditorWidget* MultiEditorWidget::GetCurrentEditor () const
 	{
 		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ()).get ();
