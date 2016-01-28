@@ -69,7 +69,6 @@ namespace Snails
 			Actions_ << action;
 		};
 
-		MsgEditWidgets_ << Ui_.PlainEdit_;
 		MsgEdits_ << std::make_shared<TextEditorAdaptor> (Ui_.PlainEdit_);
 
 		addEditor (tr ("Plain text (internal)"), MsgEdits_.size () - 1);
@@ -88,7 +87,6 @@ namespace Snails
 			if (!edit)
 				continue;
 
-			MsgEditWidgets_ << w;
 			MsgEdits_ << edit;
 			Ui_.EditorStack_->addWidget (w.get ());
 

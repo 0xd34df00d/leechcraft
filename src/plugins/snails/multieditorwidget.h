@@ -48,7 +48,6 @@ namespace Snails
 
 		Ui::MultiEditorWidget Ui_;
 
-		QList<QWidget*> MsgEditWidgets_;
 		QList<std::shared_ptr<IEditorWidget>> MsgEdits_;
 
 		QList<QAction*> Actions_;
