@@ -353,8 +353,8 @@ namespace Snails
 
 	void ComposeMessageTab::SetupEditors ()
 	{
-		EditorsMapper_ = new QSignalMapper (this);
-		connect (EditorsMapper_,
+		auto mapper = new QSignalMapper (this);
+		connect (mapper,
 				SIGNAL (mapped (int)),
 				this,
 				SLOT (handleEditorSelected (int)));
@@ -362,11 +362,11 @@ namespace Snails
 		const auto editorsGroup = new QActionGroup (this);
 		auto addEditor = [this, editorsGroup] (const QString& name, int index) -> void
 		{
-			auto action = EditorsMenu_->addAction (name, EditorsMapper_, SLOT (map ()));
+			auto action = EditorsMenu_->addAction (name, mapper, SLOT (map ()));
 			editorsGroup->addAction (action);
 			action->setCheckable (true);
 			action->setChecked (true);
-			EditorsMapper_->setMapping (action, index);
+			mapper->setMapping (action, index);
 		};
 
 		MsgEditWidgets_ << Ui_.PlainEdit_;

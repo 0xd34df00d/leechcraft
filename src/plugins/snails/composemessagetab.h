@@ -34,7 +34,6 @@
 #include "ui_composemessagetab.h"
 #include "account.h"
 
-class QSignalMapper;
 class IEditorWidget;
 
 namespace LeechCraft
@@ -60,8 +59,6 @@ namespace Snails
 		QMenu *AccountsMenu_;
 		QMenu *AttachmentsMenu_;
 		QMenu *EditorsMenu_;
-
-		QSignalMapper *EditorsMapper_;
 
 		QList<QWidget*> MsgEditWidgets_;
 		QList<IEditorWidget*> MsgEdits_;
