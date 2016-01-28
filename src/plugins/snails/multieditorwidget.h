@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 #include <QWidget>
 #include "ui_multieditorwidget.h"
 
@@ -48,7 +49,7 @@ namespace Snails
 		Ui::MultiEditorWidget Ui_;
 
 		QList<QWidget*> MsgEditWidgets_;
-		QList<IEditorWidget*> MsgEdits_;
+		QList<std::shared_ptr<IEditorWidget>> MsgEdits_;
 
 		QList<QAction*> Actions_;
 	public:

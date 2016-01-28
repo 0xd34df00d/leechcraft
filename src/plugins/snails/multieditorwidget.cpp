@@ -46,7 +46,6 @@ namespace Snails
 
 	MultiEditorWidget::~MultiEditorWidget ()
 	{
-		qDeleteAll (MsgEditWidgets_);
 	}
 
 	void MultiEditorWidget::SetupEditors (const std::function<void (QAction*)>& editorsHandler)
@@ -75,7 +74,7 @@ namespace Snails
 		};
 
 		MsgEditWidgets_ << Ui_.PlainEdit_;
-		MsgEdits_ << new TextEditorAdaptor (Ui_.PlainEdit_);
+		MsgEdits_ << std::make_shared<TextEditorAdaptor> (Ui_.PlainEdit_);
 
 		addEditor (tr ("Plain text (internal)"), MsgEdits_.size () - 1);
 
@@ -88,17 +87,14 @@ namespace Snails
 			if (!plug->SupportsEditor (ContentType::HTML))
 				continue;
 
-			const auto w = plug->GetTextEditor (ContentType::HTML);
-			const auto edit = qobject_cast<IEditorWidget*> (w);
+			const std::shared_ptr<QWidget> w { plug->GetTextEditor (ContentType::HTML) };
+			const auto edit = std::dynamic_pointer_cast<IEditorWidget> (w);
 			if (!edit)
-			{
-				delete w;
 				continue;
-			}
 
 			MsgEditWidgets_ << w;
 			MsgEdits_ << edit;
-			Ui_.EditorStack_->addWidget (w);
+			Ui_.EditorStack_->addWidget (w.get ());
 
 			const auto& pluginName = qobject_cast<IInfo*> (plugObj)->GetName ();
 			addEditor (tr ("Rich text (%1)").arg (pluginName), MsgEdits_.size () - 1);
@@ -109,7 +105,7 @@ namespace Snails
 
 	IEditorWidget* MultiEditorWidget::GetCurrentEditor () const
 	{
-		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ());
+		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ()).get ();
 	}
 
 	void MultiEditorWidget::SelectEditor (ContentType type)
