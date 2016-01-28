@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>805</width>
-    <height>590</height>
+    <height>574</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -65,36 +65,25 @@
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="MsgEditFrame_">
+    <widget class="LeechCraft::Snails::MultiEditorWidget" name="Editor_" native="true">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <property name="margin">
-       <number>0</number>
-      </property>
-      <item>
-       <widget class="QStackedWidget" name="EditorStack_">
-        <widget class="QWidget" name="PlainPage_">
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="margin">
-           <number>0</number>
-          </property>
-          <item>
-           <widget class="QTextEdit" name="PlainEdit_"/>
-          </item>
-         </layout>
-        </widget>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Snails::MultiEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>multieditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

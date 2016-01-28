@@ -60,8 +60,6 @@ namespace Snails
 		QMenu *AttachmentsMenu_;
 		QMenu *EditorsMenu_;
 
-		QList<QWidget*> MsgEditWidgets_;
-		QList<IEditorWidget*> MsgEdits_;
 
 		Message_ptr ReplyMessage_;
 	public:
@@ -84,18 +82,13 @@ namespace Snails
 		void SetupToolbar ();
 		void SetupEditors ();
 
-		void SelectPlainEditor ();
-		void SelectHtmlEditor ();
-
-		IEditorWidget* GetCurrentEditor () const;
-
 		void SetMessageReferences (const Message_ptr&) const;
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();
 		void handleRemoveAttachment ();
 
-		void handleEditorSelected (int);
+		void handleEditorChanged (IEditorWidget*, IEditorWidget*);
 	signals:
 		void removeTab (QWidget*);
 	};
