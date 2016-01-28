@@ -54,7 +54,6 @@ namespace Snails
 		QList<QAction*> Actions_;
 	public:
 		MultiEditorWidget (QWidget* = nullptr);
-		~MultiEditorWidget ();
 
 		void SetupEditors (const std::function<void (QAction*)>&);
 

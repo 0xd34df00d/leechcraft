@@ -44,10 +44,6 @@ namespace Snails
 		Ui_.setupUi (this);
 	}
 
-	MultiEditorWidget::~MultiEditorWidget ()
-	{
-	}
-
 	void MultiEditorWidget::SetupEditors (const std::function<void (QAction*)>& editorsHandler)
 	{
 		auto mapper = new QSignalMapper (this);
