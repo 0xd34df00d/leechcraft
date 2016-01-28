@@ -29,11 +29,16 @@
 
 #pragma once
 
+#include <functional>
 #include <QWidget>
 #include "ui_multieditorwidget.h"
 
+class IEditorWidget;
+
 namespace LeechCraft
 {
+enum class ContentType;
+
 namespace Snails
 {
 	class MultiEditorWidget : public QWidget
@@ -41,8 +46,23 @@ namespace Snails
 		Q_OBJECT
 
 		Ui::MultiEditorWidget Ui_;
+
+		QList<QWidget*> MsgEditWidgets_;
+		QList<IEditorWidget*> MsgEdits_;
+
+		QList<QAction*> Actions_;
 	public:
 		MultiEditorWidget (QWidget* = nullptr);
+		~MultiEditorWidget ();
+
+		void SetupEditors (const std::function<void (QAction*)>&);
+
+		IEditorWidget* GetCurrentEditor () const;
+		void SelectEditor (ContentType);
+	private slots:
+		void handleEditorSelected (int);
+	signals:
+		void editorChanged (IEditorWidget*, IEditorWidget*);
 	};
 }
 }
