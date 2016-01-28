@@ -80,7 +80,7 @@ namespace Snails
 
 		AccsMgr_ = new AccountsManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_ };
-		auto templatesMgr = new MsgTemplatesManager;
+		TemplatesMgr_ = new MsgTemplatesManager;
 
 		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
