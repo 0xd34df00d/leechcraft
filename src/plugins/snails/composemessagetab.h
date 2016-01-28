@@ -69,9 +69,9 @@ namespace Snails
 		ComposeMessageTab (const AccountsManager*, QWidget* = nullptr);
 
 		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs();
-		void Remove();
-		QToolBar* GetToolBar() const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 
 		void SelectAccount (const Account_ptr&);
 		void PrepareReply (const Message_ptr&);
