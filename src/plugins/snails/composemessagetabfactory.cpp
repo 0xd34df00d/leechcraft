@@ -35,7 +35,8 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ComposeMessageTabFactory::ComposeMessageTabFactory (const AccountsManager *accsMgr, QObject *parent)
+	ComposeMessageTabFactory::ComposeMessageTabFactory (const AccountsManager *accsMgr,
+			const MsgTemplatesManager *templatesMgr, QObject *parent)
 	: QObject { parent }
 	, AccsMgr_ { accsMgr }
 	{
