@@ -45,8 +45,13 @@ namespace Snails
 		Ui::TemplatesEditorWidget Ui_;
 
 		MsgTemplatesManager * const TemplatesMgr_;
+
+		QList<QAction*> EditorTypeActions_;
 	public:
 		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
+	private slots:
+		void prepareEditor (int);
+		void loadTemplate ();
 	};
 }
 }

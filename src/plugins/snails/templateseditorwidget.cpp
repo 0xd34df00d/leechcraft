@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "templateseditorwidget.h"
+#include <interfaces/itexteditor.h>
 #include "msgtemplatesmanager.h"
 
 namespace LeechCraft
@@ -39,6 +40,41 @@ namespace Snails
 	, TemplatesMgr_ { mgr }
 	{
 		Ui_.setupUi (this);
+
+		connect (Ui_.MessageType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (loadTemplate ()));
+
+		connect (Ui_.ContentType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (prepareEditor (int)));
+
+		Ui_.Editor_->SetupEditors ([this] (QAction *action)
+				{
+					EditorTypeActions_ << action;
+					Ui_.ContentType_->addItem (action->icon (), action->text ());
+				});
+
+		prepareEditor (Ui_.ContentType_->currentIndex ());
+	}
+
+	void TemplatesEditorWidget::prepareEditor (int index)
+	{
+		EditorTypeActions_.value (index)->trigger ();
+
+		loadTemplate ();
+	}
+
+	void TemplatesEditorWidget::loadTemplate ()
+	{
+		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
+		const auto msgType = static_cast<MsgTemplatesManager::MsgType> (Ui_.MessageType_->currentIndex ());
+
+		const auto& tpl = TemplatesMgr_->GetTemplate (currentType, msgType, nullptr);
+
+		Ui_.Editor_->GetCurrentEditor ()->SetContents (tpl, currentType);
 	}
 }
 }

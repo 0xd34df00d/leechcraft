@@ -13,66 +13,70 @@
   <property name="windowTitle">
    <string/>
   </property>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>40</y>
-     <width>193</width>
-     <height>54</height>
-    </rect>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
    </property>
-   <layout class="QFormLayout" name="formLayout">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label">
-      <property name="text">
-       <string>Template type:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="MessageType_">
-      <item>
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>New message</string>
+        <string>Template type:</string>
        </property>
-      </item>
-      <item>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="MessageType_">
+       <item>
+        <property name="text">
+         <string>New message</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Reply</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Forwarded message</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Reply</string>
+        <string>Content type:</string>
        </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Forwarded message</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Content type:</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="1">
-     <widget class="QComboBox" name="ContentType_">
-      <item>
-       <property name="text">
-        <string>Plain text</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>HTML</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-   </layout>
-  </widget>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="ContentType_"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="LeechCraft::Snails::MultiEditorWidget" name="Editor_" native="true">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LeechCraft::Snails::MultiEditorWidget</class>
+   <extends>QWidget</extends>
+   <header>multieditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
