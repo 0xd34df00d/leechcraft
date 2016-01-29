@@ -69,7 +69,8 @@ namespace Snails
 		S_TabClassInfo_ = info;
 	}
 
-	ComposeMessageTab::ComposeMessageTab (const AccountsManager *accsMgr, QWidget *parent)
+	ComposeMessageTab::ComposeMessageTab (const AccountsManager *accsMgr,
+			const MsgTemplatesManager *templatesMgr, QWidget *parent)
 	: QWidget (parent)
 	, AccsMgr_ (accsMgr)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))

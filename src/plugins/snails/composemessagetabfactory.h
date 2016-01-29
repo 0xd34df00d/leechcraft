@@ -50,6 +50,7 @@ namespace Snails
 		Q_OBJECT
 
 		const AccountsManager * const AccsMgr_;
+		const MsgTemplatesManager * const TemplatesMgr_;
 	public:
 		ComposeMessageTabFactory (const AccountsManager*,
 				const MsgTemplatesManager*, QObject* = nullptr);

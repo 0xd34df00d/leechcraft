@@ -39,12 +39,13 @@ namespace Snails
 			const MsgTemplatesManager *templatesMgr, QObject *parent)
 	: QObject { parent }
 	, AccsMgr_ { accsMgr }
+	, TemplatesMgr_ { templatesMgr }
 	{
 	}
 
 	ComposeMessageTab* ComposeMessageTabFactory::MakeTab () const
 	{
-		return new ComposeMessageTab { AccsMgr_ };
+		return new ComposeMessageTab { AccsMgr_, TemplatesMgr_ };
 	}
 
 	void ComposeMessageTabFactory::PrepareComposeTab (const Account_ptr& account)

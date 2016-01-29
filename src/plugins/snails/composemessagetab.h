@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class AccountsManager;
+	class MsgTemplatesManager;
 
 	class ComposeMessageTab : public QWidget
 							, public ITabWidget
@@ -66,7 +67,7 @@ namespace Snails
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);
 
-		ComposeMessageTab (const AccountsManager*, QWidget* = nullptr);
+		ComposeMessageTab (const AccountsManager*, const MsgTemplatesManager*, QWidget* = nullptr);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
