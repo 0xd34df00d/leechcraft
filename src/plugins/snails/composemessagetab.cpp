@@ -73,6 +73,7 @@ namespace Snails
 			const MsgTemplatesManager *templatesMgr, QWidget *parent)
 	: QWidget (parent)
 	, AccsMgr_ (accsMgr)
+	, TemplatesMgr_ (templatesMgr)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
 	{
 		Ui_.setupUi (this);
@@ -153,7 +154,8 @@ namespace Snails
 
 	namespace
 	{
-		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor)
+		template<typename Templater>
+		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
 			auto plainSplit = msg->GetBody ().split ('\n');
 			for (auto& str : plainSplit)
@@ -163,8 +165,9 @@ namespace Snails
 					str.prepend (' ');
 				str.prepend ('>');
 			}
+
 			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
-			editor->SetContents (plainContent, ContentType::PlainText);
+			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
 		}
 
 		QString WrapString (const QString& str, const QString& tagName)
@@ -272,7 +275,8 @@ namespace Snails
 				iahe->ExecJS (BlockquoteBreakJS);
 		}
 
-		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor)
+		template<typename Templater>
+		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&&)
 		{
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
@@ -294,8 +298,14 @@ namespace Snails
 		PrepareReplyEditor (msg);
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
-		SetupReplyPlaintextContents (msg, editor);
-		SetupReplyRichContents (msg, editor);
+		const auto type = MsgTemplatesManager::MsgType::Reply;
+
+		SetupReplyPlaintextContents (msg, editor,
+				[&] (auto... rest)
+					{ return TemplatesMgr_->GetTemplatedText (ContentType::PlainText, type, rest...); });
+		SetupReplyRichContents (msg, editor,
+				[&] (auto... rest)
+					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, rest...); });
 	}
 
 	void ComposeMessageTab::SetupToolbar ()

@@ -55,12 +55,12 @@ namespace Snails
 		Ui::ComposeMessageTab Ui_;
 
 		const AccountsManager * const AccsMgr_;
+		const MsgTemplatesManager * const TemplatesMgr_;
 
 		QToolBar *Toolbar_;
 		QMenu *AccountsMenu_;
 		QMenu *AttachmentsMenu_;
 		QMenu *EditorsMenu_;
-
 
 		Message_ptr ReplyMessage_;
 	public:
