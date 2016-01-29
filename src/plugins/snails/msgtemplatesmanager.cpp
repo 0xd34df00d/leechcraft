@@ -105,7 +105,8 @@ namespace Snails
 	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
 			MsgType msgType, const QString& body, const Message *msg) const
 	{
-		return body;
+		const auto& tpl = GetTemplate (type, msgType, nullptr);
+		return PerformSubstitutions (tpl, msg, body);
 	}
 
 	QMap<ContentType, QMap<MsgTemplatesManager::MsgType, QString>> MsgTemplatesManager::GetDefaults ()
