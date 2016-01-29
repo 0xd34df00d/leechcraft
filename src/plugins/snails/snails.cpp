@@ -94,12 +94,11 @@ namespace Snails
 
 		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
-
-		XSD_->SetCustomWidget ("TemplatesWidget", new TemplatesEditorWidget { templatesMgr });
 	}
 
 	void Plugin::SecondInit ()
 	{
+		XSD_->SetCustomWidget ("TemplatesWidget", new TemplatesEditorWidget { TemplatesMgr_ });
 	}
 
 	QByteArray Plugin::GetUniqueID () const
