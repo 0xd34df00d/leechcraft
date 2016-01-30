@@ -35,6 +35,7 @@
 #include "message.h"
 #include "account.h"
 #include "structures.h"
+#include "templatesstorage.h"
 
 namespace LeechCraft
 {
@@ -42,6 +43,7 @@ namespace Snails
 {
 	MsgTemplatesManager::MsgTemplatesManager (QObject *parent)
 	: QObject { parent }
+	, Storage_ { std::make_shared<TemplatesStorage> () }
 	{
 	}
 

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 
 template<typename, typename>
@@ -42,12 +43,15 @@ namespace Snails
 {
 	class Account;
 	class Message;
+	class TemplatesStorage;
 
 	enum class MsgType;
 
 	class MsgTemplatesManager : public QObject
 	{
 		Q_OBJECT
+
+		const std::shared_ptr<TemplatesStorage> Storage_;
 	public:
 		MsgTemplatesManager (QObject* = nullptr);
 
