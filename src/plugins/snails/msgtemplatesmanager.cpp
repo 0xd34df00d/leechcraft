@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <interfaces/itexteditor.h>
 #include <util/sll/either.h>
+#include <util/sll/monadplus.h>
 #include <util/sll/curry.h>
 #include "message.h"
 #include "account.h"
@@ -56,7 +57,11 @@ namespace Snails
 
 		return [&] (const auto& maybeResult)
 					{ return maybeResult ? *maybeResult : defaults [contentType] [msgType]; } *
-				Storage_->LoadTemplate (contentType, msgType, account);
+				(
+					Util::Pure<Util::Either, TemplatesStorage::LoadError_t> (Util::Mplus) *
+							Storage_->LoadTemplate (contentType, msgType, account) *
+							Storage_->LoadTemplate (contentType, msgType, nullptr)
+				);
 	}
 
 	namespace
