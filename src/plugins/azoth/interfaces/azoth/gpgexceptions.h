@@ -45,9 +45,15 @@ namespace GPGExceptions
 	 * error message and an optional error code, if applicable, or -1
 	 * otherwise.
 	 *
-	 * There are some more specific classes for more specific error cases:
+	 * There are some more specific classes deriving from this one for
+	 * more specific error cases:
 	 * - NullPubkey
 	 * - Encryption
+	 *
+	 * This class hierarchy has been designed to be used either with usual
+	 * C++ exceptions or with monadic error handling (see Util::Either).
+	 * There is an algebraic sum type for the latter which can be
+	 * pattern-matched using Util::Visit(), see AnyException_t.
 	 */
 	class General : public std::runtime_error
 	{
