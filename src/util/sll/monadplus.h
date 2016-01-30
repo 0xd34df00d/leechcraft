@@ -44,16 +44,19 @@ namespace Util
 		return InstanceMonadPlus<MP>::Mzero ();
 	}
 
-	template<typename MP>
-	MP Mplus (const MP& m1, const MP& m2)
+	const struct
 	{
-		return InstanceMonadPlus<MP>::Mplus (m1, m2);
-	}
+		template<typename MP>
+		auto operator() (const MP& m1) const
+		{
+			return [m1] (const MP& m2) { return InstanceMonadPlus<MP>::Mplus (m1, m2); };
+		}
+	} Mplus {};
 
 	template<typename MP>
-	auto operator+ (const MP& m1, const MP& m2) -> decltype (Mplus (m1, m2))
+	auto operator+ (const MP& m1, const MP& m2) -> decltype (Mplus (m1) (m2))
 	{
-		return Mplus (m1, m2);
+		return Mplus (m1) (m2);
 	}
 
 	template<typename T>
