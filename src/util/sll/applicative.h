@@ -48,6 +48,12 @@ namespace Util
 		return InstanceApplicative<Applicative<Args..., T>>::Pure (v);
 	}
 
+	template<typename Applicative, typename T>
+	auto Pure (const T& v)
+	{
+		return InstanceApplicative<Applicative>::Pure (v);
+	}
+
 	template<typename AF, typename AV>
 	GSLResult_t<AF, AV> GSL (const AF& af, const AV& av)
 	{
