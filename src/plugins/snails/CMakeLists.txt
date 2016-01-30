@@ -56,6 +56,7 @@ set (SRCS
 	msgtemplatesmanager.cpp
 	templateseditorwidget.cpp
 	multieditorwidget.cpp
+	templatesstorage.cpp
 	)
 set (FORMS
 	mailtab.ui
