@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QObject>
+#include <util/sll/eitherfwd.h>
 
 template<typename, typename>
 class QMap;
@@ -55,7 +56,9 @@ namespace Snails
 	public:
 		MsgTemplatesManager (QObject* = nullptr);
 
-		QString GetTemplate (ContentType, MsgType, const Account*) const;
+		using LoadResult_t = Util::Either<std::runtime_error, QString>;
+
+		LoadResult_t GetTemplate (ContentType, MsgType, const Account*) const;
 		QString GetTemplatedText (ContentType, MsgType, const QString&, const Message* = nullptr) const;
 	private:
 		static QMap<ContentType, QMap<MsgType, QString>> GetDefaults ();

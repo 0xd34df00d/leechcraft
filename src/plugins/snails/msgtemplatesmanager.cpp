@@ -32,6 +32,8 @@
 #include <QLocale>
 #include <QtDebug>
 #include <interfaces/itexteditor.h>
+#include <util/sll/either.h>
+#include <util/sll/curry.h>
 #include "message.h"
 #include "account.h"
 #include "structures.h"
@@ -47,10 +49,14 @@ namespace Snails
 	{
 	}
 
-	QString MsgTemplatesManager::GetTemplate (ContentType contentType, MsgType msgType, const Account *account) const
+	auto MsgTemplatesManager::GetTemplate (ContentType contentType,
+			MsgType msgType, const Account *account) const -> LoadResult_t
 	{
 		static const auto defaults = GetDefaults ();
-		return defaults [contentType] [msgType];
+
+		return [&] (const auto& maybeResult)
+					{ return maybeResult ? *maybeResult : defaults [contentType] [msgType]; } *
+				Storage_->LoadTemplate (contentType, msgType, account);
 	}
 
 	namespace
@@ -76,7 +82,7 @@ namespace Snails
 		static const QString OpenMarker = "${";
 		static const QString CloseMarker = "}";
 
-		QString PerformSubstitutions (QString text, const Message *msg, const QString& body)
+		QString PerformSubstitutions (const Message *msg, const QString& body, QString text)
 		{
 			static const auto functions = GetFunctions ();
 
@@ -108,8 +114,9 @@ namespace Snails
 	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
 			MsgType msgType, const QString& body, const Message *msg) const
 	{
-		const auto& tpl = GetTemplate (type, msgType, nullptr);
-		return PerformSubstitutions (tpl, msg, body);
+		return Util::RightOr (Util::Curry (&PerformSubstitutions) (msg) (body) *
+					GetTemplate (type, msgType, nullptr),
+				body);
 	}
 
 	QMap<ContentType, QMap<MsgType, QString>> MsgTemplatesManager::GetDefaults ()

@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "templateseditorwidget.h"
+#include <QMessageBox>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <interfaces/itexteditor.h>
 #include "msgtemplatesmanager.h"
 #include "structures.h"
@@ -78,9 +81,15 @@ namespace Snails
 		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
 		const auto msgType = static_cast<MsgType> (Ui_.MessageType_->currentIndex ());
 
-		const auto& tpl = TemplatesMgr_->GetTemplate (currentType, msgType, nullptr);
-
-		Ui_.Editor_->GetCurrentEditor ()->SetContents (tpl, currentType);
+		Util::Visit (TemplatesMgr_->GetTemplate (currentType, msgType, nullptr).AsVariant (),
+				[=] (const QString& tpl) { Ui_.Editor_->GetCurrentEditor ()->SetContents (tpl, currentType); },
+				[=] (const auto& err)
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Unable to load template: %1.")
+								.arg (err.what ()));
+				});
 	}
 }
 }
