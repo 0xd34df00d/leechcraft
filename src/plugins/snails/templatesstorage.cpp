@@ -91,7 +91,7 @@ namespace Snails
 			QFile file { filename };
 			if (!file.open (QIODevice::ReadOnly))
 			{
-				const auto modeStr = ((mode == QIODevice::ReadOnly) ? "for reading:" : "for writing:");
+				const auto modeStr = mode == QIODevice::ReadOnly ? "for reading:" : "for writing:";
 				qWarning () << Q_FUNC_INFO
 						<< "cannot open file"
 						<< file.fileName ()
