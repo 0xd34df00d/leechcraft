@@ -47,7 +47,7 @@ namespace Snails
 	{
 	}
 
-	QString MsgTemplatesManager::GetTemplate (ContentType contentType, MsgType msgType, Account *account) const
+	QString MsgTemplatesManager::GetTemplate (ContentType contentType, MsgType msgType, const Account *account) const
 	{
 		static const auto defaults = GetDefaults ();
 		return defaults [contentType] [msgType];

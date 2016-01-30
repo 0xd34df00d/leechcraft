@@ -55,7 +55,7 @@ namespace Snails
 	public:
 		MsgTemplatesManager (QObject* = nullptr);
 
-		QString GetTemplate (ContentType, MsgType, Account*) const;
+		QString GetTemplate (ContentType, MsgType, const Account*) const;
 		QString GetTemplatedText (ContentType, MsgType, const QString&, const Message* = nullptr) const;
 	private:
 		static QMap<ContentType, QMap<MsgType, QString>> GetDefaults ();
