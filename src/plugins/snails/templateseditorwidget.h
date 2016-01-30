@@ -49,6 +49,8 @@ namespace Snails
 		QList<QAction*> EditorTypeActions_;
 	public:
 		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
+	public slots:
+		void reject ();
 	private slots:
 		void prepareEditor (int);
 		void loadTemplate ();

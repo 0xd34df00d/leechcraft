@@ -61,6 +61,11 @@ namespace Snails
 		prepareEditor (Ui_.ContentType_->currentIndex ());
 	}
 
+	void TemplatesEditorWidget::reject ()
+	{
+		loadTemplate ();
+	}
+
 	void TemplatesEditorWidget::prepareEditor (int index)
 	{
 		EditorTypeActions_.value (index)->trigger ();
