@@ -160,6 +160,22 @@ namespace Util
 		}
 	};
 
+	template<typename L, typename R, typename F, typename = ResultOf_t<F ()>>
+	R RightOr (const Either<L, R>& either, F&& f)
+	{
+		return either.IsRight () ?
+				either.GetRight () :
+				f ();
+	}
+
+	template<typename L, typename R>
+	R RightOr (const Either<L, R>& either, const R& r)
+	{
+		return either.IsRight () ?
+				either.GetRight () :
+				r;
+	}
+
 	template<template<typename> class Cont, typename L, typename R>
 	std::pair<Cont<L>, Cont<R>> PartitionEithers (const Cont<Either<L, R>>& eithers)
 	{
