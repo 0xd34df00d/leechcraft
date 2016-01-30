@@ -34,7 +34,6 @@
 #include "ui_composemessagetab.h"
 #include "account.h"
 
-class QSignalMapper;
 class IEditorWidget;
 
 namespace LeechCraft
@@ -42,6 +41,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class AccountsManager;
+	class MsgTemplatesManager;
 
 	class ComposeMessageTab : public QWidget
 							, public ITabWidget
@@ -55,28 +55,24 @@ namespace Snails
 		Ui::ComposeMessageTab Ui_;
 
 		const AccountsManager * const AccsMgr_;
+		const MsgTemplatesManager * const TemplatesMgr_;
 
 		QToolBar *Toolbar_;
 		QMenu *AccountsMenu_;
 		QMenu *AttachmentsMenu_;
 		QMenu *EditorsMenu_;
 
-		QSignalMapper *EditorsMapper_;
-
-		QList<QWidget*> MsgEditWidgets_;
-		QList<IEditorWidget*> MsgEdits_;
-
 		Message_ptr ReplyMessage_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);
 
-		ComposeMessageTab (const AccountsManager*, QWidget* = 0);
+		ComposeMessageTab (const AccountsManager*, const MsgTemplatesManager*, QWidget* = nullptr);
 
 		TabClassInfo GetTabClassInfo () const;
-		QObject* ParentMultiTabs();
-		void Remove();
-		QToolBar* GetToolBar() const;
+		QObject* ParentMultiTabs ();
+		void Remove ();
+		QToolBar* GetToolBar () const;
 
 		void SelectAccount (const Account_ptr&);
 		void PrepareReply (const Message_ptr&);
@@ -87,18 +83,13 @@ namespace Snails
 		void SetupToolbar ();
 		void SetupEditors ();
 
-		void SelectPlainEditor ();
-		void SelectHtmlEditor ();
-
-		IEditorWidget* GetCurrentEditor () const;
-
 		void SetMessageReferences (const Message_ptr&) const;
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();
 		void handleRemoveAttachment ();
 
-		void handleEditorSelected (int);
+		void handleEditorChanged (IEditorWidget*, IEditorWidget*);
 	signals:
 		void removeTab (QWidget*);
 	};

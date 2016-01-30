@@ -29,38 +29,37 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
+
+template<typename, typename>
+class QMap;
 
 namespace LeechCraft
 {
+enum class ContentType;
+
 namespace Snails
 {
-	class ComposeMessageTab;
-	class MsgTemplatesManager;
-	class AccountsManager;
-
-	class Message;
 	class Account;
-	using Message_ptr = std::shared_ptr<Message>;
-	using Account_ptr = std::shared_ptr<Account>;
+	class Message;
 
-	class ComposeMessageTabFactory : public QObject
+	class MsgTemplatesManager : public QObject
 	{
 		Q_OBJECT
-
-		const AccountsManager * const AccsMgr_;
-		const MsgTemplatesManager * const TemplatesMgr_;
 	public:
-		ComposeMessageTabFactory (const AccountsManager*,
-				const MsgTemplatesManager*, QObject* = nullptr);
+		enum class MsgType
+		{
+			New,
+			Reply,
+			Forward
+		};
 
-		ComposeMessageTab* MakeTab () const;
+		MsgTemplatesManager (QObject* = nullptr);
 
-		void PrepareComposeTab (const Account_ptr&);
-		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
-	signals:
-		void gotTab (const QString&, QWidget*);
+		QString GetTemplate (ContentType, MsgType, Account*) const;
+		QString GetTemplatedText (ContentType, MsgType, const QString&, const Message* = nullptr) const;
+	private:
+		static QMap<ContentType, QMap<MsgType, QString>> GetDefaults ();
 	};
 }
 }

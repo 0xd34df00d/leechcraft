@@ -37,23 +37,20 @@
 #include <QInputDialog>
 #include <QTextDocument>
 #include <QToolButton>
-#include <QSignalMapper>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
-#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/iinfo.h>
 #include "message.h"
 #include "core.h"
-#include "texteditoradaptor.h"
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
 #include "accountthread.h"
+#include "msgtemplatesmanager.h"
 
 namespace LeechCraft
 {
@@ -72,9 +69,11 @@ namespace Snails
 		S_TabClassInfo_ = info;
 	}
 
-	ComposeMessageTab::ComposeMessageTab (const AccountsManager *accsMgr, QWidget *parent)
+	ComposeMessageTab::ComposeMessageTab (const AccountsManager *accsMgr,
+			const MsgTemplatesManager *templatesMgr, QWidget *parent)
 	: QWidget (parent)
 	, AccsMgr_ (accsMgr)
+	, TemplatesMgr_ (templatesMgr)
 	, Toolbar_ (new QToolBar (tr ("Compose tab bar")))
 	{
 		Ui_.setupUi (this);
@@ -96,7 +95,6 @@ namespace Snails
 	void ComposeMessageTab::Remove ()
 	{
 		emit removeTab (this);
-		qDeleteAll (MsgEditWidgets_);
 		deleteLater ();
 	}
 
@@ -138,15 +136,15 @@ namespace Snails
 		const auto& replyOpt = XmlSettingsManager::Instance ()
 				.property ("ReplyMessageFormat").toString ();
 		if (replyOpt == "Plain")
-			SelectPlainEditor ();
+			Ui_.Editor_->SelectEditor (ContentType::PlainText);
 		else if (replyOpt == "HTML")
-			SelectHtmlEditor ();
+			Ui_.Editor_->SelectEditor (ContentType::HTML);
 		else if (replyOpt == "Orig")
 		{
 			if (msg->GetHTMLBody ().isEmpty ())
-				SelectPlainEditor ();
+				Ui_.Editor_->SelectEditor (ContentType::PlainText);
 			else
-				SelectHtmlEditor ();
+				Ui_.Editor_->SelectEditor (ContentType::HTML);
 		}
 		else
 			qWarning () << Q_FUNC_INFO
@@ -156,7 +154,8 @@ namespace Snails
 
 	namespace
 	{
-		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor)
+		template<typename Templater>
+		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
 			auto plainSplit = msg->GetBody ().split ('\n');
 			for (auto& str : plainSplit)
@@ -166,8 +165,9 @@ namespace Snails
 					str.prepend (' ');
 				str.prepend ('>');
 			}
+
 			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
-			editor->SetContents (plainContent, ContentType::PlainText);
+			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
 		}
 
 		QString WrapString (const QString& str, const QString& tagName)
@@ -275,7 +275,8 @@ namespace Snails
 				iahe->ExecJS (BlockquoteBreakJS);
 		}
 
-		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor)
+		template<typename Templater>
+		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&&)
 		{
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
@@ -295,10 +296,16 @@ namespace Snails
 	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
 	{
 		PrepareReplyEditor (msg);
-		const auto editor = GetCurrentEditor ();
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
-		SetupReplyPlaintextContents (msg, editor);
-		SetupReplyRichContents (msg, editor);
+		const auto type = MsgTemplatesManager::MsgType::Reply;
+
+		SetupReplyPlaintextContents (msg, editor,
+				[&] (auto... rest)
+					{ return TemplatesMgr_->GetTemplatedText (ContentType::PlainText, type, rest...); });
+		SetupReplyRichContents (msg, editor,
+				[&] (auto... rest)
+					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, rest...); });
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
@@ -353,74 +360,12 @@ namespace Snails
 
 	void ComposeMessageTab::SetupEditors ()
 	{
-		EditorsMapper_ = new QSignalMapper (this);
-		connect (EditorsMapper_,
-				SIGNAL (mapped (int)),
+		Ui_.Editor_->SetupEditors ([this] (QAction *act) { EditorsMenu_->addAction (act); });
+
+		connect (Ui_.Editor_,
+				SIGNAL (editorChanged (IEditorWidget*, IEditorWidget*)),
 				this,
-				SLOT (handleEditorSelected (int)));
-
-		const auto editorsGroup = new QActionGroup (this);
-		auto addEditor = [this, editorsGroup] (const QString& name, int index) -> void
-		{
-			auto action = EditorsMenu_->addAction (name, EditorsMapper_, SLOT (map ()));
-			editorsGroup->addAction (action);
-			action->setCheckable (true);
-			action->setChecked (true);
-			EditorsMapper_->setMapping (action, index);
-		};
-
-		MsgEditWidgets_ << Ui_.PlainEdit_;
-		MsgEdits_ << new TextEditorAdaptor (Ui_.PlainEdit_);
-
-		addEditor (tr ("Plain text (internal)"), MsgEdits_.size () - 1);
-
-		const auto& plugs = Core::Instance ().GetProxy ()->
-				GetPluginsManager ()->GetAllCastableRoots<ITextEditor*> ();
-		for (const auto plugObj : plugs)
-		{
-			const auto plug = qobject_cast<ITextEditor*> (plugObj);
-
-			if (!plug->SupportsEditor (ContentType::HTML))
-				continue;
-
-			const auto w = plug->GetTextEditor (ContentType::HTML);
-			const auto edit = qobject_cast<IEditorWidget*> (w);
-			if (!edit)
-			{
-				delete w;
-				continue;
-			}
-
-			MsgEditWidgets_ << w;
-			MsgEdits_ << edit;
-			Ui_.EditorStack_->addWidget (w);
-
-			const auto& pluginName = qobject_cast<IInfo*> (plugObj)->GetName ();
-			addEditor (tr ("Rich text (%1)").arg (pluginName), MsgEdits_.size () - 1);
-		}
-
-		Ui_.EditorStack_->setCurrentIndex (Ui_.EditorStack_->count () - 1);
-	}
-
-	void ComposeMessageTab::SelectPlainEditor ()
-	{
-		EditorsMenu_->actions ().value (0)->setChecked (true);
-		handleEditorSelected (0);
-	}
-
-	void ComposeMessageTab::SelectHtmlEditor ()
-	{
-		const auto& actions = EditorsMenu_->actions ();
-		if (actions.size () < 2)
-			return;
-
-		actions.value (1)->setChecked (true);
-		handleEditorSelected (1);
-	}
-
-	IEditorWidget* ComposeMessageTab::GetCurrentEditor () const
-	{
-		return MsgEdits_.value (Ui_.EditorStack_->currentIndex ());
+				SLOT (handleEditorChanged (IEditorWidget*, IEditorWidget*)));
 	}
 
 	void ComposeMessageTab::SetMessageReferences (const Message_ptr& message) const
@@ -489,7 +434,7 @@ namespace Snails
 		if (!account)
 			return;
 
-		const auto editor = GetCurrentEditor ();
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		const auto& message = std::make_shared<Message> ();
 		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
@@ -598,16 +543,11 @@ namespace Snails
 		AttachmentsMenu_->removeAction (act);
 	}
 
-	void ComposeMessageTab::handleEditorSelected (int index)
+	void ComposeMessageTab::handleEditorChanged (IEditorWidget *newEditor, IEditorWidget *previous)
 	{
-		const auto currentEditor = GetCurrentEditor ();
+		const auto& currentHtml = previous->GetContents (ContentType::HTML);
+		const auto& currentPlain = previous->GetContents (ContentType::PlainText);
 
-		const auto& currentHtml = currentEditor->GetContents (ContentType::HTML);
-		const auto& currentPlain = currentEditor->GetContents (ContentType::PlainText);
-
-		Ui_.EditorStack_->setCurrentIndex (index);
-
-		const auto newEditor = GetCurrentEditor ();
 		newEditor->SetContents (currentPlain, ContentType::PlainText);
 		if (!currentHtml.isEmpty ())
 			SetReplyHTMLContents (currentHtml, newEditor);

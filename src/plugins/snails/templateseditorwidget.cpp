@@ -27,40 +27,54 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
+#include "templateseditorwidget.h"
+#include <interfaces/itexteditor.h>
+#include "msgtemplatesmanager.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class ComposeMessageTab;
-	class MsgTemplatesManager;
-	class AccountsManager;
-
-	class Message;
-	class Account;
-	using Message_ptr = std::shared_ptr<Message>;
-	using Account_ptr = std::shared_ptr<Account>;
-
-	class ComposeMessageTabFactory : public QObject
+	TemplatesEditorWidget::TemplatesEditorWidget (MsgTemplatesManager *mgr, QWidget *parent)
+	: QWidget { parent }
+	, TemplatesMgr_ { mgr }
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
 
-		const AccountsManager * const AccsMgr_;
-		const MsgTemplatesManager * const TemplatesMgr_;
-	public:
-		ComposeMessageTabFactory (const AccountsManager*,
-				const MsgTemplatesManager*, QObject* = nullptr);
+		connect (Ui_.MessageType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (loadTemplate ()));
 
-		ComposeMessageTab* MakeTab () const;
+		connect (Ui_.ContentType_,
+				SIGNAL (currentIndexChanged (int)),
+				this,
+				SLOT (prepareEditor (int)));
 
-		void PrepareComposeTab (const Account_ptr&);
-		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
-	signals:
-		void gotTab (const QString&, QWidget*);
-	};
+		Ui_.Editor_->SetupEditors ([this] (QAction *action)
+				{
+					EditorTypeActions_ << action;
+					Ui_.ContentType_->addItem (action->icon (), action->text ());
+				});
+
+		prepareEditor (Ui_.ContentType_->currentIndex ());
+	}
+
+	void TemplatesEditorWidget::prepareEditor (int index)
+	{
+		EditorTypeActions_.value (index)->trigger ();
+
+		loadTemplate ();
+	}
+
+	void TemplatesEditorWidget::loadTemplate ()
+	{
+		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
+		const auto msgType = static_cast<MsgTemplatesManager::MsgType> (Ui_.MessageType_->currentIndex ());
+
+		const auto& tpl = TemplatesMgr_->GetTemplate (currentType, msgType, nullptr);
+
+		Ui_.Editor_->GetCurrentEditor ()->SetContents (tpl, currentType);
+	}
 }
 }

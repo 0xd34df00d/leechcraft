@@ -47,6 +47,7 @@ namespace Snails
 {
 	class AccountsManager;
 	class ComposeMessageTabFactory;
+	class MsgTemplatesManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -67,6 +68,7 @@ namespace Snails
 
 		AccountsManager *AccsMgr_;
 		ComposeMessageTabFactory *ComposeTabFactory_;
+		MsgTemplatesManager *TemplatesMgr_;
 
 		ICoreProxy_ptr Proxy_;
 	public:

@@ -41,6 +41,8 @@
 #include "composemessagetab.h"
 #include "accountsmanager.h"
 #include "composemessagetabfactory.h"
+#include "msgtemplatesmanager.h"
+#include "templateseditorwidget.h"
 
 namespace LeechCraft
 {
@@ -77,7 +79,8 @@ namespace Snails
 		Core::Instance ().SetProxy (proxy);
 
 		AccsMgr_ = new AccountsManager;
-		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_ };
+		TemplatesMgr_ = new MsgTemplatesManager;
+		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
 
 		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
@@ -95,6 +98,7 @@ namespace Snails
 
 	void Plugin::SecondInit ()
 	{
+		XSD_->SetCustomWidget ("TemplatesWidget", new TemplatesEditorWidget { TemplatesMgr_ });
 	}
 
 	QByteArray Plugin::GetUniqueID () const

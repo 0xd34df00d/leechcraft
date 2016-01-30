@@ -29,38 +29,29 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
+#include <QWidget>
+#include "ui_templateseditorwidget.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class ComposeMessageTab;
 	class MsgTemplatesManager;
-	class AccountsManager;
 
-	class Message;
-	class Account;
-	using Message_ptr = std::shared_ptr<Message>;
-	using Account_ptr = std::shared_ptr<Account>;
-
-	class ComposeMessageTabFactory : public QObject
+	class TemplatesEditorWidget : public QWidget
 	{
 		Q_OBJECT
 
-		const AccountsManager * const AccsMgr_;
-		const MsgTemplatesManager * const TemplatesMgr_;
+		Ui::TemplatesEditorWidget Ui_;
+
+		MsgTemplatesManager * const TemplatesMgr_;
+
+		QList<QAction*> EditorTypeActions_;
 	public:
-		ComposeMessageTabFactory (const AccountsManager*,
-				const MsgTemplatesManager*, QObject* = nullptr);
-
-		ComposeMessageTab* MakeTab () const;
-
-		void PrepareComposeTab (const Account_ptr&);
-		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
-	signals:
-		void gotTab (const QString&, QWidget*);
+		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
+	private slots:
+		void prepareEditor (int);
+		void loadTemplate ();
 	};
 }
 }

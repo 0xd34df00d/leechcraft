@@ -29,38 +29,40 @@
 
 #pragma once
 
+#include <functional>
 #include <memory>
-#include <QObject>
+#include <QWidget>
+#include "ui_multieditorwidget.h"
+
+class IEditorWidget;
 
 namespace LeechCraft
 {
+enum class ContentType;
+
 namespace Snails
 {
-	class ComposeMessageTab;
-	class MsgTemplatesManager;
-	class AccountsManager;
-
-	class Message;
-	class Account;
-	using Message_ptr = std::shared_ptr<Message>;
-	using Account_ptr = std::shared_ptr<Account>;
-
-	class ComposeMessageTabFactory : public QObject
+	class MultiEditorWidget : public QWidget
 	{
 		Q_OBJECT
 
-		const AccountsManager * const AccsMgr_;
-		const MsgTemplatesManager * const TemplatesMgr_;
+		Ui::MultiEditorWidget Ui_;
+
+		QList<std::shared_ptr<IEditorWidget>> MsgEdits_;
+
+		QList<QAction*> Actions_;
 	public:
-		ComposeMessageTabFactory (const AccountsManager*,
-				const MsgTemplatesManager*, QObject* = nullptr);
+		MultiEditorWidget (QWidget* = nullptr);
 
-		ComposeMessageTab* MakeTab () const;
+		void SetupEditors (const std::function<void (QAction*)>&);
 
-		void PrepareComposeTab (const Account_ptr&);
-		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
+		ContentType GetCurrentEditorType () const;
+		IEditorWidget* GetCurrentEditor () const;
+		void SelectEditor (ContentType);
+	private slots:
+		void handleEditorSelected (int);
 	signals:
-		void gotTab (const QString&, QWidget*);
+		void editorChanged (IEditorWidget*, IEditorWidget*);
 	};
 }
 }
