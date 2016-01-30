@@ -199,7 +199,7 @@ namespace Util
 		static FmapResult_t<F> Apply (const Either<L, R>& either, const F& f)
 		{
 			if (either.IsLeft ())
-				return either;
+				return FmapResult_t<F>::Left (either.GetLeft ());
 
 			return FmapResult_t<F>::Right (f (either.GetRight ()));
 		}
