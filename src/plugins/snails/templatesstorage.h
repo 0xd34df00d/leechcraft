@@ -57,8 +57,8 @@ namespace Snails
 		using LoadResult_t = Util::Either<LoadError_t, boost::optional<QString>>;
 		using SaveResult_t = Util::Either<SaveError_t, Util::Void>;
 
-		LoadResult_t LoadTemplate (ContentType, MsgType, Account*);
-		SaveResult_t SaveTemplate (ContentType, MsgType, Account*, const QString&);
+		LoadResult_t LoadTemplate (ContentType, MsgType, const Account*);
+		SaveResult_t SaveTemplate (ContentType, MsgType, const Account*, const QString&);
 	};
 }
 }

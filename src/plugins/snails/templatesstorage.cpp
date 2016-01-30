@@ -80,7 +80,7 @@ namespace Snails
 			return {};
 		}
 
-		QString GetAccountDirName (Account *acc)
+		QString GetAccountDirName (const Account *acc)
 		{
 			return acc->GetID ();
 		}
@@ -107,7 +107,7 @@ namespace Snails
 	}
 
 	auto TemplatesStorage::LoadTemplate (ContentType contentType,
-			MsgType msgType, Account *account) -> LoadResult_t
+			MsgType msgType, const Account *account) -> LoadResult_t
 	{
 		auto dir = RootDir_;
 		if (account && !dir.cd (GetAccountDirName (account)))
@@ -125,7 +125,7 @@ namespace Snails
 	}
 
 	auto TemplatesStorage::SaveTemplate (ContentType contentType,
-			MsgType msgType, Account *account, const QString& tpl) -> SaveResult_t
+			MsgType msgType, const Account *account, const QString& tpl) -> SaveResult_t
 	{
 		auto dir = RootDir_;
 		if (account)
