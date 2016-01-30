@@ -44,6 +44,7 @@ namespace Util
 
 		void testFMapLeft ();
 		void testFMapRight ();
+		void testFMapRightChangeType ();
 
 		void testPure ();
 		void testGSL ();

@@ -92,6 +92,13 @@ namespace Util
 		QCOMPARE (fmapped.GetRight (), QString { "foo_mapped" });
 	}
 
+	void EitherTest::testFMapRightChangeType ()
+	{
+		const auto& right = SomeEither_t::Right ("foo");
+		const auto& fmapped = Fmap (right, [] (const QString& str) { return static_cast<long> (str.size ()); });
+		QCOMPARE (fmapped.GetRight (), static_cast<long> (right.GetRight ().size ()));
+	}
+
 	void EitherTest::testPure ()
 	{
 		const auto& pure = Pure<Either, int> (QString { "foo" });
