@@ -84,6 +84,26 @@ namespace Snails
 		{
 			return acc->GetID ();
 		}
+
+		template<typename F>
+		auto WithFile (const QString& filename, QIODevice::OpenMode mode, F&& worker)
+		{
+			QFile file { filename };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				const auto modeStr = ((mode == QIODevice::ReadOnly) ? "for reading:" : "for writing:");
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open file"
+						<< file.fileName ()
+						<< modeStr
+						<< file.errorString ();
+				const auto& msg = "Cannot open file " + file.fileName ().toStdString () +
+						" " + modeStr + " " + file.errorString ().toStdString ();
+				return std::result_of_t<F (QFile&)>::Left (std::runtime_error { msg });
+			}
+
+			return worker (file);
+		}
 	}
 
 	auto TemplatesStorage::LoadTemplate (ContentType contentType,
@@ -97,20 +117,11 @@ namespace Snails
 		if (!dir.exists (filename))
 			return LoadResult_t::Right ({});
 
-		QFile file { dir.filePath (filename) };
-		if (!file.open (QIODevice::ReadOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open file"
-					<< file.fileName ()
-					<< ":"
-					<< file.errorString ();
-			const auto& msg = "Cannot open file " + file.fileName ().toStdString () +
-					" for reading: " + file.errorString ().toStdString ();
-			return LoadResult_t::Left (std::runtime_error { msg });
-		}
-
-		return LoadResult_t::Right (QString::fromUtf8 (file.readAll ()));
+		return WithFile (dir.filePath (filename), QIODevice::ReadOnly,
+				[] (QFile& file)
+				{
+					return LoadResult_t::Right (QString::fromUtf8 (file.readAll ()));
+				});
 	}
 
 	auto TemplatesStorage::SaveTemplate (ContentType contentType,
@@ -143,31 +154,24 @@ namespace Snails
 			}
 		}
 
-		QFile file { dir.filePath (GetBasename (msgType) + "." + GetExtension (contentType)) };
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot open file"
-					<< file.fileName ()
-					<< ":"
-					<< file.errorString ();
-			const auto& msg = "Cannot open file " + file.fileName ().toStdString () +
-					" for writing: " + file.errorString ().toStdString ();
-			return SaveResult_t::Left (std::runtime_error { msg });
-		}
-		if (file.write (tpl.toUtf8 ()) == -1)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot save file"
-					<< file.fileName ()
-					<< ":"
-					<< file.errorString ();
-			const auto& msg = "Cannot save file " + file.fileName ().toStdString () +
-					": " + file.errorString ().toStdString ();
-			return SaveResult_t::Left (std::runtime_error { msg });
-		}
+		return WithFile (dir.filePath (GetBasename (msgType) + "." + GetExtension (contentType)),
+				QIODevice::WriteOnly,
+				[&tpl] (QFile& file)
+				{
+					if (file.write (tpl.toUtf8 ()) == -1)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "cannot save file"
+								<< file.fileName ()
+								<< ":"
+								<< file.errorString ();
+						const auto& msg = "Cannot save file " + file.fileName ().toStdString () +
+								": " + file.errorString ().toStdString ();
+						return SaveResult_t::Left (std::runtime_error { msg });
+					}
 
-		return SaveResult_t::Right ({});
+					return SaveResult_t::Right ({});
+				});
 	}
 }
 }
