@@ -75,7 +75,8 @@ namespace Util
 			using Type_t = boost::optional<ResultOf_t<T (V)>>;
 		};
 
-		static Type_t Pure (const T& v)
+		template<typename U>
+		static boost::optional<U> Pure (const U& v)
 		{
 			return { v };
 		}
