@@ -219,9 +219,10 @@ namespace Util
 			using Type_t = Either<L, ResultOf_t<R (V)>>;
 		};
 
-		static Type_t Pure (const R& v)
+		template<typename RP>
+		static auto Pure (const RP& v)
 		{
-			return Type_t::Right (v);
+			return Either<L, RP>::Right (v);
 		}
 
 		template<typename AV>
