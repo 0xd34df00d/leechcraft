@@ -51,6 +51,7 @@
 #include "accountsmanager.h"
 #include "accountthread.h"
 #include "msgtemplatesmanager.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -298,7 +299,7 @@ namespace Snails
 		PrepareReplyEditor (msg);
 		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
-		const auto type = MsgTemplatesManager::MsgType::Reply;
+		const auto type = MsgType::Reply;
 
 		SetupReplyPlaintextContents (msg, editor,
 				[&] (auto... rest)

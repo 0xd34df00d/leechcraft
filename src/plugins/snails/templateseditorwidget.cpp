@@ -30,6 +30,7 @@
 #include "templateseditorwidget.h"
 #include <interfaces/itexteditor.h>
 #include "msgtemplatesmanager.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -70,7 +71,7 @@ namespace Snails
 	void TemplatesEditorWidget::loadTemplate ()
 	{
 		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
-		const auto msgType = static_cast<MsgTemplatesManager::MsgType> (Ui_.MessageType_->currentIndex ());
+		const auto msgType = static_cast<MsgType> (Ui_.MessageType_->currentIndex ());
 
 		const auto& tpl = TemplatesMgr_->GetTemplate (currentType, msgType, nullptr);
 

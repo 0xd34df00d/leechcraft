@@ -29,32 +29,15 @@
 
 #pragma once
 
-#include <QObject>
-
-template<typename, typename>
-class QMap;
-
 namespace LeechCraft
 {
-enum class ContentType;
-
 namespace Snails
 {
-	class Account;
-	class Message;
-
-	enum class MsgType;
-
-	class MsgTemplatesManager : public QObject
+	enum class MsgType
 	{
-		Q_OBJECT
-	public:
-		MsgTemplatesManager (QObject* = nullptr);
-
-		QString GetTemplate (ContentType, MsgType, Account*) const;
-		QString GetTemplatedText (ContentType, MsgType, const QString&, const Message* = nullptr) const;
-	private:
-		static QMap<ContentType, QMap<MsgType, QString>> GetDefaults ();
+		New,
+		Reply,
+		Forward
 	};
 }
 }

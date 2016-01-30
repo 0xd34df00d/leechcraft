@@ -34,6 +34,7 @@
 #include <interfaces/itexteditor.h>
 #include "message.h"
 #include "account.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -109,7 +110,7 @@ namespace Snails
 		return PerformSubstitutions (tpl, msg, body);
 	}
 
-	QMap<ContentType, QMap<MsgTemplatesManager::MsgType, QString>> MsgTemplatesManager::GetDefaults ()
+	QMap<ContentType, QMap<MsgType, QString>> MsgTemplatesManager::GetDefaults ()
 	{
 		return
 		{
