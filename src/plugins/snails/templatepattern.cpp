@@ -79,7 +79,7 @@ namespace Snails
 						})
 			},
 			{
-				"OQUOTE",
+				"QUOTE",
 				[] (const Account*, const Message*, ContentType, const QString& body) { return body; }
 			},
 		};
