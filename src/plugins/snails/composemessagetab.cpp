@@ -261,12 +261,30 @@ namespace Snails
 				}
 			)delim";
 
+		static const QString DeleteCursorJS =
+			R"delim(
+				(function(){
+					var el = document.getElementById('place_cursor_here');
+
+					var sel = window.getSelection();
+					sel.removeAllRanges();
+					sel.selectAllChildren(el);
+					sel.collapseToEnd();
+					sel.modify("move", "forward", "character");
+
+					el.remove();
+				}());
+			)delim";
+
 		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
 		{
 			editor->SetContents (contents, ContentType::HTML);
 
 			if (const auto iahe = dynamic_cast<IAdvancedHTMLEditor*> (editor))
+			{
 				iahe->ExecJS (BlockquoteBreakJS);
+				iahe->ExecJS (DeleteCursorJS);
+			}
 		}
 
 		template<typename Templater>
