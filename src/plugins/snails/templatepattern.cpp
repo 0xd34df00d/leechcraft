@@ -35,39 +35,46 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	namespace
+	{
+		template<typename F, typename = std::result_of_t<F (const Message*)>>
+		PatternFunction_t Wrap (const F& f)
+		{
+			return [f] (const Message *msg, const QString&) { return f (msg); };
+		}
+	}
+
 	QList<TemplatePattern> GetKnownPatterns ()
 	{
 		static const QList<TemplatePattern> patterns
 		{
 			{
 				"ODATE",
-				[] (const Message *msg, const QString&) { return msg->GetDate ().date ().toString (Qt::DefaultLocaleLongDate); }
+				Wrap ([] (const Message *msg) { return msg->GetDate ().date ().toString (Qt::DefaultLocaleLongDate); })
 			},
 			{
 				"OTIME",
-				[] (const Message *msg, const QString&) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleLongDate); }
+				Wrap ([] (const Message *msg) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleLongDate); })
 			},
 			{
 				"ONAME",
-				[] (const Message *msg, const QString&) { return msg->GetAddress (Message::Address::ReplyTo).first; }
+				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::ReplyTo).first; })
 			},
 			{
 				"OEMAIL",
-				[] (const Message *msg, const QString&) { return msg->GetAddress (Message::Address::ReplyTo).second; }
+				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::ReplyTo).second; })
 			},
 			{
 				"ONAMEOREMAIL",
-				[] (const Message *msg, const QString&)
-				{
-					const auto& addr = msg->GetAddress (Message::Address::ReplyTo);
-					return addr.first.isEmpty () ? addr.second : addr.first;
-				}
+				Wrap ([] (const Message *msg)
+						{
+							const auto& addr = msg->GetAddress (Message::Address::ReplyTo);
+							return addr.first.isEmpty () ? addr.second : addr.first;
+						})
 			},
 			{
 				"OQUOTE",
 				[] (const Message*, const QString& body) { return body; }
-			},
-			{
 			},
 		};
 
