@@ -41,6 +41,7 @@
 #include <util/sys/mimedetector.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -130,6 +131,11 @@ namespace Snails
 		PrepareReplyBody (msg);
 
 		ReplyMessage_ = msg;
+
+		Util::ExecuteLater ([=]
+				{
+					dynamic_cast<QWidget*> (Ui_.Editor_->GetCurrentEditor ())->setFocus ();
+				});
 	}
 
 	void ComposeMessageTab::PrepareReplyEditor (const Message_ptr& msg)
