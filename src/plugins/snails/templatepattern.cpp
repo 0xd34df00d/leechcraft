@@ -97,6 +97,19 @@ namespace Snails
 					}
 				}
 			},
+			{
+				"CURSOR",
+				[] (const Account*, const Message*, ContentType type, const QString&)
+				{
+					switch (type)
+					{
+					case ContentType::PlainText:
+						return "${CURSOR}";
+					case ContentType::HTML:
+						return "<div id='place_cursor_here'>&nbsp;</div>";
+					}
+				}
+			},
 		};
 
 		return patterns;
