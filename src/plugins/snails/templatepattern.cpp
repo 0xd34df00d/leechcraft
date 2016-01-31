@@ -40,7 +40,13 @@ namespace Snails
 		template<typename F, typename = std::result_of_t<F (const Message*)>>
 		PatternFunction_t Wrap (const F& f)
 		{
-			return [f] (const Account*, const Message *msg, const QString&) { return f (msg); };
+			return [f] (const Account*, const Message *msg, const QString&)
+					{
+						if (!msg)
+							return QString {};
+
+						return f (msg);
+					};
 		}
 	}
 
