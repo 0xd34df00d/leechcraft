@@ -129,6 +129,20 @@ ${QUOTE}
 ${CURSOR}
 
 ${SIGNATURE})delim")
+					},
+					{
+						MsgType::Forward,
+						tr (R"delim(${CURSOR}
+
+---------- Forwarded message ----------
+From: <${ONAMEANDEMAIL}>
+To: <${NAMEANDEMAIL}>
+Date: ${ODATETIME}
+Subject: ${OSUBJECT}
+
+${OBODY}
+
+${SIGNATURE})delim")
 					}
 				}
 			}
