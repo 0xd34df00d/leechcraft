@@ -70,7 +70,8 @@ namespace Snails
 		static const QString OpenMarker = "${";
 		static const QString CloseMarker = "}";
 
-		QString PerformSubstitutions (const Message *msg, const QString& body, QString text)
+		QString PerformSubstitutions (const Account *acc,
+				const Message *msg, const QString& body, QString text)
 		{
 			const auto functions = GetKnownPatternsHash ();
 
@@ -102,7 +103,7 @@ namespace Snails
 	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
 			MsgType msgType, const Account *acc, const QString& body, const Message *msg) const
 	{
-		return Util::RightOr (Util::Curry (&PerformSubstitutions) (msg) (body) *
+		return Util::RightOr (Util::Curry (&PerformSubstitutions) (acc) (msg) (body) *
 					GetTemplate (type, msgType, acc),
 				body);
 	}
