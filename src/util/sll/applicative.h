@@ -36,7 +36,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	template<typename T>
+	template<typename Applicative>
 	struct InstanceApplicative;
 
 	template<typename AF, typename AV>
