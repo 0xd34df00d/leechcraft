@@ -40,12 +40,14 @@ class QHash;
 
 namespace LeechCraft
 {
+enum class ContentType;
+
 namespace Snails
 {
 	class Message;
 	class Account;
 
-	using PatternFunction_t = std::function<QString (const Account*, const Message*, QString)>;
+	using PatternFunction_t = std::function<QString (const Account*, const Message*, ContentType, QString)>;
 
 	struct TemplatePattern
 	{
