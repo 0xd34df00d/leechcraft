@@ -169,14 +169,7 @@ namespace Snails
 
 			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
 			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
-		}
 
-		QString WrapString (const QString& str, const QString& tagName)
-		{
-			const auto quoteStartMarker = "<" + tagName + " style='border-left: 2px solid #ccc; margin-left: 0; padding-left: 0.5em;'>";
-			const auto quoteEndMarker = "</" + tagName + ">";
-
-			return quoteStartMarker + str + quoteEndMarker;
 		}
 
 		static const QString BlockquoteBreakJS =
@@ -277,11 +270,11 @@ namespace Snails
 		}
 
 		template<typename Templater>
-		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&&)
+		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
-				SetReplyHTMLContents (WrapString (htmlBody, "blockquote"), editor);
+				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
 			else
 			{
 				auto str = Util::Escape (msg->GetBody ());
@@ -289,7 +282,7 @@ namespace Snails
 				str.replace ("\r", "<br/>");
 				str.replace ("\n", "<br/>");
 
-				SetReplyHTMLContents (WrapString (str, "blockquote"), editor);
+				SetReplyHTMLContents (tpl (str, msg.get ()), editor);
 			}
 		}
 	}
