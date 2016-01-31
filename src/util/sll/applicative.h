@@ -49,7 +49,7 @@ namespace Util
 	}
 
 	template<typename Applicative, typename T>
-	auto Pure (const T& v)
+	auto Pure (const T& v) -> decltype (InstanceApplicative<Applicative>::Pure (v))
 	{
 		return InstanceApplicative<Applicative>::Pure (v);
 	}
