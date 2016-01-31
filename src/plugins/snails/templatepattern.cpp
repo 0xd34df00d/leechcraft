@@ -29,7 +29,9 @@
 
 #include "templatepattern.h"
 #include <QHash>
+#include <interfaces/itexteditor.h>
 #include "message.h"
+#include "account.h"
 
 namespace LeechCraft
 {
@@ -81,6 +83,19 @@ namespace Snails
 			{
 				"QUOTE",
 				[] (const Account*, const Message*, ContentType, const QString& body) { return body; }
+			},
+			{
+				"SIGNATURE",
+				[] (const Account *acc, const Message*, ContentType type, const QString&)
+				{
+					switch (type)
+					{
+					case ContentType::PlainText:
+						return "-- \n  " + acc->GetUserName () + "\n";
+					case ContentType::HTML:
+						return "-- <br/>&nbsp;&nbsp;" + acc->GetUserName () + "<br/>";
+					}
+				}
 			},
 		};
 
