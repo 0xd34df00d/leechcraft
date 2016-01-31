@@ -220,7 +220,7 @@ namespace Util
 		};
 
 		template<typename RP>
-		static auto Pure (const RP& v)
+		static Either<L, RP> Pure (const RP& v)
 		{
 			return Either<L, RP>::Right (v);
 		}
