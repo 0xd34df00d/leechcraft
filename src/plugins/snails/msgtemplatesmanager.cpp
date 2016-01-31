@@ -117,9 +117,7 @@ namespace Snails
 				{
 					{
 						MsgType::New,
-						tr (R"delim(Dear ${ONAME},
-
-${CURSOR}
+						tr (R"delim(${CURSOR}
 
 ${SIGNATURE})delim")
 					},
