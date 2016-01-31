@@ -117,10 +117,10 @@ namespace Snails
 	}
 
 	QString MsgTemplatesManager::GetTemplatedText (ContentType type,
-			MsgType msgType, const QString& body, const Message *msg) const
+			MsgType msgType, const Account *acc, const QString& body, const Message *msg) const
 	{
 		return Util::RightOr (Util::Curry (&PerformSubstitutions) (msg) (body) *
-					GetTemplate (type, msgType, nullptr),
+					GetTemplate (type, msgType, acc),
 				body);
 	}
 

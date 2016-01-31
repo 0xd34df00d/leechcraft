@@ -301,12 +301,14 @@ namespace Snails
 
 		const auto type = MsgType::Reply;
 
+		const auto acc = GetSelectedAccount ();
+
 		SetupReplyPlaintextContents (msg, editor,
 				[&] (auto... rest)
-					{ return TemplatesMgr_->GetTemplatedText (ContentType::PlainText, type, rest...); });
+					{ return TemplatesMgr_->GetTemplatedText (ContentType::PlainText, type, acc, rest...); });
 		SetupReplyRichContents (msg, editor,
 				[&] (auto... rest)
-					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, rest...); });
+					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, acc, rest...); });
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
