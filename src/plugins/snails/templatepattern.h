@@ -35,6 +35,9 @@
 template<typename>
 class QList;
 
+template<typename, typename>
+class QHash;
+
 namespace LeechCraft
 {
 namespace Snails
@@ -51,5 +54,6 @@ namespace Snails
 	};
 
 	QList<TemplatePattern> GetKnownPatterns ();
+	QHash<QString, PatternFunction_t> GetKnownPatternsHash ();
 }
 }

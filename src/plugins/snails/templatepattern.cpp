@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "templatepattern.h"
+#include <QHash>
 #include "message.h"
 
 namespace LeechCraft
@@ -71,6 +72,18 @@ namespace Snails
 		};
 
 		return patterns;
+	}
+
+	QHash<QString, PatternFunction_t> GetKnownPatternsHash ()
+	{
+		static const auto hash = []
+				{
+					QHash<QString, PatternFunction_t> result;
+					for (const auto& pattern : GetKnownPatterns ())
+						result [pattern.PatternText_] = pattern.Substitute_;
+					return result;
+				} ();
+		return hash;
 	}
 }
 }
