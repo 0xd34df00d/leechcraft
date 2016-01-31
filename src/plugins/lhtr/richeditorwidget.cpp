@@ -317,6 +317,8 @@ namespace LHTR
 		SetContents ("", ContentType::HTML);
 
 		new HtmlHighlighter (Ui_.HTML_->document ());
+
+		setFocusProxy (Ui_.View_);
 	}
 
 	QString RichEditorWidget::GetContents (ContentType type) const
