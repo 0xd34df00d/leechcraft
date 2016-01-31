@@ -388,6 +388,15 @@ namespace Snails
 		message->SetReferences (references);
 	}
 
+	Account* ComposeMessageTab::GetSelectedAccount () const
+	{
+		for (auto act : AccountsMenu_->actions ())
+			if (act->isChecked ())
+				return act->property ("Account").value<Account_ptr> ().get ();
+
+		return nullptr;
+	}
+
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -423,15 +432,7 @@ namespace Snails
 
 	void ComposeMessageTab::handleSend ()
 	{
-		Account_ptr account;
-		for (auto act : AccountsMenu_->actions ())
-		{
-			if (!act->isChecked ())
-				continue;
-
-			account = act->property ("Account").value<Account_ptr> ();
-			break;
-		}
+		const auto account = GetSelectedAccount ();
 		if (!account)
 			return;
 

@@ -84,6 +84,8 @@ namespace Snails
 		void SetupEditors ();
 
 		void SetMessageReferences (const Message_ptr&) const;
+
+		Account* GetSelectedAccount () const;
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();
