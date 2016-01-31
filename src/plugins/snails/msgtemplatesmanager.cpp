@@ -88,7 +88,7 @@ namespace Snails
 
 				if (functions.contains (variable))
 				{
-					const auto& subst = functions [variable] (msg, body);
+					const auto& subst = functions [variable] (acc, msg, body);
 					text.replace (pos, closing - pos + 1, subst);
 					pos += subst.size ();
 				}

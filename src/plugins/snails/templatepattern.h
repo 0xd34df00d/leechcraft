@@ -43,8 +43,9 @@ namespace LeechCraft
 namespace Snails
 {
 	class Message;
+	class Account;
 
-	using PatternFunction_t = std::function<QString (const Message*, QString)>;
+	using PatternFunction_t = std::function<QString (const Account*, const Message*, QString)>;
 
 	struct TemplatePattern
 	{
