@@ -145,6 +145,24 @@ ${OBODY}
 ${SIGNATURE})delim")
 					}
 				}
+			},
+			{
+				ContentType::HTML,
+				{
+					{
+						MsgType::Reply,
+						tr (R"delim(
+<br/>
+On ${ODATE} at ${OTIME} user ${ONAME} &lt;${OEMAIL}> wrote:<br/>
+<blockquote style='border-left: 2px solid #ccc; margin-left: 0; padding-left: 0.5em;'>
+${QUOTE}
+</blockquote>
+
+${CURSOR}
+<br/><br/><br/>
+${SIGNATURE})delim")
+					}
+				}
 			}
 		};
 	}
