@@ -134,7 +134,7 @@ namespace Snails
 
 		MailModelsManager * const MailModelsManager_;
 	public:
-		Account (QObject* = 0);
+		Account (QObject* = nullptr);
 
 		QByteArray GetID () const;
 		QString GetName () const;
