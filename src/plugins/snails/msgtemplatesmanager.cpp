@@ -58,7 +58,7 @@ namespace Snails
 		return [&] (const auto& maybeResult)
 					{ return maybeResult ? *maybeResult : defaults [contentType] [msgType]; } *
 				(
-					Util::Pure<Util::Either, TemplatesStorage::LoadError_t> (Util::Mplus) *
+					Util::Pure<TemplatesStorage::LoadResult_t> (Util::Mplus) *
 							Storage_->LoadTemplate (contentType, msgType, account) *
 							Storage_->LoadTemplate (contentType, msgType, nullptr)
 				);
