@@ -66,11 +66,11 @@ namespace Snails
 			},
 			{
 				"ONAME",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::ReplyTo).first; })
+				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).first; })
 			},
 			{
 				"OEMAIL",
-				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::ReplyTo).second; })
+				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).second; })
 			},
 			{
 				"ONAMEOREMAIL",
