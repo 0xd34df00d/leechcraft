@@ -65,6 +65,10 @@ namespace Snails
 				Wrap ([] (const Message *msg) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleLongDate); })
 			},
 			{
+				"ODATETIME",
+				Wrap ([] (const Message *msg) { return msg->GetDate ().toString (Qt::DefaultLocaleShortDate); })
+			},
+			{
 				"ONAME",
 				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).first; })
 			},
