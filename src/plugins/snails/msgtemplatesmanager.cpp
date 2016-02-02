@@ -35,6 +35,7 @@
 #include <util/sll/either.h>
 #include <util/sll/monadplus.h>
 #include <util/sll/curry.h>
+#include <util/sys/paths.h>
 #include "message.h"
 #include "account.h"
 #include "structures.h"
@@ -108,63 +109,37 @@ namespace Snails
 				body);
 	}
 
+	namespace
+	{
+		QString LoadTemplate (ContentType ct, MsgType msgType)
+		{
+			const auto& filename = GetBasename (msgType) + "." + GetExtension (ct);
+
+			const auto& str = Util::GetSysPath (Util::SysPath::Share, "snails/templates", filename);
+			if (str.isEmpty ())
+				return {};
+
+			QFile file { str };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open file"
+						<< file.fileName ()
+						<< file.errorString ();
+				return {};
+			}
+
+			return QString::fromUtf8 (file.readAll ());
+		}
+	}
+
 	QMap<ContentType, QMap<MsgType, QString>> MsgTemplatesManager::GetDefaults ()
 	{
-		return
-		{
-			{
-				ContentType::PlainText,
-				{
-					{
-						MsgType::New,
-						tr (R"delim(${CURSOR}
-
-${SIGNATURE})delim")
-					},
-					{
-						MsgType::Reply,
-						tr (R"delim(On ${ODATE} at ${OTIME} user ${ONAME} wrote:
-${QUOTE}
-
-${CURSOR}
-
-${SIGNATURE})delim")
-					},
-					{
-						MsgType::Forward,
-						tr (R"delim(${CURSOR}
-
----------- Forwarded message ----------
-From: <${ONAMEANDEMAIL}>
-To: <${NAMEANDEMAIL}>
-Date: ${ODATETIME}
-Subject: ${OSUBJECT}
-
-${OBODY}
-
-${SIGNATURE})delim")
-					}
-				}
-			},
-			{
-				ContentType::HTML,
-				{
-					{
-						MsgType::Reply,
-						tr (R"delim(
-<br/>
-On ${ODATE} at ${OTIME} user ${ONAME} &lt;${OEMAIL}> wrote:<br/>
-<blockquote style='border-left: 2px solid #ccc; margin-left: 0; padding-left: 0.5em;'>
-${QUOTE}
-</blockquote>
-
-${CURSOR}
-<br/><br/><br/>
-${SIGNATURE})delim")
-					}
-				}
-			}
-		};
+		QMap<ContentType, QMap<MsgType, QString>> result;
+		for (auto ct : { ContentType::PlainText, ContentType::HTML })
+			for (auto msgType : { MsgType::New, MsgType::Reply, MsgType::Forward })
+				result [ct] [msgType] = LoadTemplate (ct, msgType);
+		return result;
 	}
 }
 }

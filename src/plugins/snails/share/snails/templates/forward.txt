@@ -1,0 +1,11 @@
+${CURSOR}
+
+---------- Forwarded message ----------
+From: <${ONAMEANDEMAIL}>
+To: <${NAMEANDEMAIL}>
+Date: ${ODATETIME}
+Subject: ${OSUBJECT}
+
+${OBODY}
+
+${SIGNATURE}
