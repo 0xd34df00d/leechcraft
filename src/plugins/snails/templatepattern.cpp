@@ -97,7 +97,7 @@ namespace Snails
 					case ContentType::PlainText:
 						return "-- \n  " + acc->GetUserName () + "\n";
 					case ContentType::HTML:
-						return "-- <br/>&nbsp;&nbsp;" + acc->GetUserName () + "<br/>";
+						return "--&nbsp;<br/>&nbsp;" + acc->GetUserName () + "<br/>";
 					}
 				}
 			},
