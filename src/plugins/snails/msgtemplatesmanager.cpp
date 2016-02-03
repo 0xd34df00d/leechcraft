@@ -129,7 +129,10 @@ namespace Snails
 				return {};
 			}
 
-			return QString::fromUtf8 (file.readAll ());
+			auto data = file.readAll ();
+			if (ct == ContentType::HTML)
+				data.replace ('\n', "");
+			return QString::fromUtf8 (data);
 		}
 	}
 
