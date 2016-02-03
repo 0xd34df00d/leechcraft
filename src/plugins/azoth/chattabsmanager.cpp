@@ -246,7 +246,9 @@ namespace Azoth
 					<< "chat's tab is not an ICLEntry";
 			return;
 		}
-		entry->MarkMsgsRead ();
+
+		if (IsActiveChat (entry))
+			entry->MarkMsgsRead ();
 	}
 
 	void ChatTabsManager::EnqueueRestoreInfos (const QList<RestoreChatInfo>& infos)
