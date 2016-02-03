@@ -89,6 +89,8 @@ namespace Murm
 			return HandleMessageResult::UserInfoRequested;
 		}
 
+		HasUnread_ = true;
+
 		auto msg = new VkMessage (false, IMessage::Direction::In, IMessage::Type::MUCMessage, this, entry);
 		msg->SetDateTime (info.TS_);
 		msg->SetID (info.ID_);
@@ -221,11 +223,6 @@ namespace Murm
 	QMap<QString, QVariant> VkChatEntry::GetClientInfo (const QString&) const
 	{
 		return {};
-	}
-
-	void VkChatEntry::MarkMsgsRead ()
-	{
-		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
 	}
 
 	void VkChatEntry::ChatTabClosed ()

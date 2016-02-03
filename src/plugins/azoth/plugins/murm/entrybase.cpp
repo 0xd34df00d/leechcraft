@@ -38,6 +38,7 @@
 #include <util/sys/extensionsdata.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/azoth/azothutil.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "vkaccount.h"
 #include "vkmessage.h"
 #include "vkconnection.h"
@@ -89,6 +90,27 @@ namespace Murm
 	void EntryBase::PurgeMessages (const QDateTime& before)
 	{
 		AzothUtil::StandardPurgeMessages (Messages_, before);
+	}
+
+	void EntryBase::MarkMsgsRead ()
+	{
+		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
+
+		if (!HasUnread_)
+			return;
+
+		QList<qulonglong> ids;
+		for (auto msg : Messages_)
+			if (!msg->IsRead ())
+			{
+				ids << msg->GetID ();
+				msg->SetRead ();
+			}
+
+		HasUnread_ = false;
+
+		if (!ids.isEmpty ())
+			Account_->GetConnection ()->MarkAsRead (ids);
 	}
 
 	namespace

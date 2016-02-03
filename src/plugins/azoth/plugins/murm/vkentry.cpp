@@ -545,27 +545,6 @@ namespace Murm
 			});
 	}
 
-	void VkEntry::MarkMsgsRead ()
-	{
-		Account_->GetParentProtocol ()->GetAzothProxy ()->MarkMessagesAsRead (this);
-
-		if (!HasUnread_)
-			return;
-
-		QList<qulonglong> ids;
-		for (auto msg : Messages_)
-			if (!msg->IsRead ())
-			{
-				ids << msg->GetID ();
-				msg->SetRead ();
-			}
-
-		HasUnread_ = false;
-
-		if (!ids.isEmpty ())
-			Account_->GetConnection ()->MarkAsRead (ids);
-	}
-
 	void VkEntry::ChatTabClosed ()
 	{
 	}
