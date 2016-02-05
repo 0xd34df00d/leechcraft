@@ -39,6 +39,7 @@
 #include <QToolButton>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sys/extensionsdata.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/xpc/util.h>
@@ -530,7 +531,10 @@ namespace Snails
 		QAction *attAct = new QAction (QString ("%1 (%2)").arg (fi.fileName (), size), this);
 		attAct->setProperty ("Snails/AttachmentPath", path);
 		attAct->setProperty ("Snails/Description", descr);
-		attAct->setIcon (QFileIconProvider ().icon (fi));
+
+		const auto& mime = Util::MimeDetector {} (fi.fileName ());
+		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
+
 		connect (attAct,
 				SIGNAL (triggered ()),
 				this,
