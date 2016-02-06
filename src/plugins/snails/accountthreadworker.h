@@ -98,7 +98,11 @@ namespace Snails
 		};
 		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
 
-		struct FolderNotFound {};
+		struct FolderNotFound : public std::exception
+		{
+		public:
+			const char* what () const noexcept override;
+		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();

@@ -120,6 +120,11 @@ namespace Snails
 		}
 	}
 
+	const char* AccountThreadWorker::FolderNotFound::what () const noexcept
+	{
+		return "folder not found";
+	}
+
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
 			const QString& threadName, const CertList_t& certs, Account *parent)
 	: A_ (parent)
