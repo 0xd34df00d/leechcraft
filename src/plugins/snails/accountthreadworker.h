@@ -103,6 +103,12 @@ namespace Snails
 		public:
 			const char* what () const noexcept override;
 		};
+
+		struct MessageNotFound : public std::exception
+		{
+		public:
+			const char* what () const noexcept override;
+		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
