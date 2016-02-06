@@ -160,7 +160,8 @@ namespace Snails
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
-		QFuture<WrapReturnType_t<FetchWholeMessageResult_t>> FetchWholeMessage (const Message_ptr&);
+		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
+		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
 
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
