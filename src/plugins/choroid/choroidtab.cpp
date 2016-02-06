@@ -50,6 +50,7 @@
 #endif
 
 #include <util/models/rolenamesmixin.h>
+#include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 
@@ -181,23 +182,7 @@ namespace Choroid
 
 		DeclView_->rootContext ()->setContextProperty ("filesListModel", QMLFilesModel_);
 
-		QStringList candidates;
-#ifdef Q_OS_WIN32
-		candidates << QApplication::applicationDirPath () + "/share/qml/choroid/";
-#else
-		candidates << "/usr/local/share/leechcraft/qml/choroid/"
-				<< "/usr/share/leechcraft/qml/choroid/";
-#endif
-
-		QString fileLocation;
-		Q_FOREACH (const QString& cand, candidates)
-			if (QFile::exists (cand + "ImgView.qml"))
-			{
-				fileLocation = cand + "ImgView.qml";
-				break;
-			}
-
-		DeclView_->setSource (QUrl::fromLocalFile (fileLocation));
+		DeclView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "choroid", "ImgView.qml"));
 
 		auto item = DeclView_->rootObject ();
 		connect (item,
