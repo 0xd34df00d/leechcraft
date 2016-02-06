@@ -30,6 +30,9 @@
 #pragma once
 
 #include <stdexcept>
+#include <memory>
+#include <boost/variant.hpp>
+#include <util/sll/either.h>
 
 namespace LeechCraft
 {
@@ -46,5 +49,10 @@ namespace Snails
 	public:
 		const char* what () const noexcept override;
 	};
+
+	class Message;
+	using Message_ptr = std::shared_ptr<Message>;
+
+	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, Message_ptr>;
 }
 }
