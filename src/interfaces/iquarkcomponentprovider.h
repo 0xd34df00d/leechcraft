@@ -30,7 +30,7 @@
 #pragma once
 
 #include <vector>
-#include <pair>
+#include <utility>
 #include <memory>
 #include <QString>
 #include <QUrl>
