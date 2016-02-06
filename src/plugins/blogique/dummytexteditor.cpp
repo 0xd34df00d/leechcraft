@@ -89,5 +89,10 @@ namespace Blogique
 	void DummyTextEditor::SetBackgroundColor (const QColor&, ContentType)
 	{
 	}
+
+	QWidget* DummyTextEditor::GetWidget ()
+	{
+		return this;
+	}
 }
 }
