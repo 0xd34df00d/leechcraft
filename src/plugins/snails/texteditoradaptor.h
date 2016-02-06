@@ -55,6 +55,7 @@ namespace Snails
 		void AppendSeparator ();
 		void RemoveAction (QAction*);
 		void SetBackgroundColor (const QColor&, ContentType);
+		QWidget* GetWidget ();
 	signals:
 		void textChanged();
 	};

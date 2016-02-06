@@ -81,5 +81,10 @@ namespace Snails
 	void TextEditorAdaptor::SetBackgroundColor (const QColor&, ContentType)
 	{
 	}
+
+	QWidget* TextEditorAdaptor::GetWidget ()
+	{
+		return Edit_;
+	}
 }
 }
