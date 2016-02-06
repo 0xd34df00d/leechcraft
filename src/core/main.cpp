@@ -30,6 +30,38 @@
 #include "application.h"
 #include <QFont>
 #include <QSysInfo>
+#include <QDir>
+#include <QFileInfo>
+#include <QCoreApplication>
+#include <QtDebug>
+
+#ifdef Q_OS_MAC
+#include <mach-o/dyld.h>
+
+namespace
+{
+	void SetupLibraryPaths ()
+	{
+		char path [1024] = { 0 };
+		uint32_t pathLength = sizeof (path);
+		if (const auto rc = _NSGetExecutablePath (path, &pathLength))
+		{
+			qCritical () << Q_FUNC_INFO
+					<< "cannot get executable path:"
+					<< rc;
+			return;
+		}
+
+		auto dir = QFileInfo { path }.dir ();
+		dir.cdUp ();
+		dir.cd ("PlugIns");
+		qDebug () << Q_FUNC_INFO
+				<< "setting"
+				<< dir.absolutePath ();
+		QCoreApplication::setLibraryPaths ({ dir.absolutePath () });
+	}
+}
+#endif
 
 int main (int argc, char **argv)
 {
@@ -40,6 +72,10 @@ int main (int argc, char **argv)
 	// https://bugreports.qt-project.org/browse/QTBUG-32789
 	if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_9)
 		QFont::insertSubstitution (".Lucida Grande UI", "Lucida Grande");
+#endif
+
+#ifdef Q_OS_MAC
+	SetupLibraryPaths ();
 #endif
 
 #ifndef Q_OS_MAC
