@@ -136,7 +136,7 @@ namespace Snails
 
 		Util::ExecuteLater ([=]
 				{
-					dynamic_cast<QWidget*> (Ui_.Editor_->GetCurrentEditor ())->setFocus ();
+					Ui_.Editor_->GetCurrentEditor ()->GetWidget ()->setFocus ();
 				});
 	}
 
