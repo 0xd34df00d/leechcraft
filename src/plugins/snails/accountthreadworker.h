@@ -42,6 +42,7 @@
 #include "progresslistener.h"
 #include "message.h"
 #include "account.h"
+#include "accountthreadworkerfwd.h"
 
 class QTimer;
 
@@ -97,18 +98,6 @@ namespace Snails
 			QList<QByteArray> RemovedIds_;
 		};
 		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
-
-		struct FolderNotFound : public std::exception
-		{
-		public:
-			const char* what () const noexcept override;
-		};
-
-		struct MessageNotFound : public std::exception
-		{
-		public:
-			const char* what () const noexcept override;
-		};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();

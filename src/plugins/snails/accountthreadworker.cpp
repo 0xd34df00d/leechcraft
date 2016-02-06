@@ -120,12 +120,12 @@ namespace Snails
 		}
 	}
 
-	const char* AccountThreadWorker::FolderNotFound::what () const noexcept
+	const char* FolderNotFound::what () const noexcept
 	{
 		return "folder not found";
 	}
 
-	const char* AccountThreadWorker::MessageNotFound::what () const noexcept
+	const char* MessageNotFound::what () const noexcept
 	{
 		return "message not found";
 	}
