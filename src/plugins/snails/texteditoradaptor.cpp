@@ -86,5 +86,15 @@ namespace Snails
 	{
 		return Edit_;
 	}
+
+	bool TextEditorAdaptor::FindText (const QString& text)
+	{
+		return Edit_->find (text);
+	}
+
+	void TextEditorAdaptor::DeleteSelection ()
+	{
+		Edit_->textCursor ().deleteChar ();
+	}
 }
 }

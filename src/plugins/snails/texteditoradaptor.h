@@ -30,6 +30,7 @@
 #pragma once
 
 #include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedplaintexteditor.h>
 
 class QTextEdit;
 
@@ -39,9 +40,10 @@ namespace Snails
 {
 	class TextEditorAdaptor : public QObject
 							, public IEditorWidget
+							, public IAdvancedPlainTextEditor
 	{
 		Q_OBJECT
-		Q_INTERFACES (IEditorWidget)
+		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor)
 
 		QTextEdit * const Edit_;
 	public:
@@ -56,6 +58,9 @@ namespace Snails
 		void RemoveAction (QAction*);
 		void SetBackgroundColor (const QColor&, ContentType);
 		QWidget* GetWidget ();
+
+		bool FindText (const QString&);
+		void DeleteSelection ();
 	signals:
 		void textChanged();
 	};
