@@ -39,6 +39,9 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 done
 sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess
 
+cp -Rv /usr/local/lib/qca/crypto $TARGET/leechcraft.app/Contents/PlugIns
+CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do sudo install_name_tool -change $(dyldinfo -dylibs $CDIR/$PLUG | grep qca) @executable_path/../Frameworks/qca.framework/qca $CDIR/$PLUG; done
+
 sudo install_name_tool -change @loader_path/libicudata.56.dylib @executable_path/../Frameworks/libicudata.56.1.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicuuc.56.dylib
 sudo install_name_tool -change @loader_path/libicudata.56.dylib @executable_path/../Frameworks/libicudata.56.1.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicui18n.56.dylib
 sudo install_name_tool -change @loader_path/libicuuc.56.dylib @executable_path/../Frameworks/libicuuc.56.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicui18n.56.dylib
