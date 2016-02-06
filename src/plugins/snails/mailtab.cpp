@@ -740,7 +740,10 @@ namespace Snails
 		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
-		ComposeMessageTabFactory_->PrepareReplyTab (CurrMsg_, CurrAcc_);
+		if (CurrMsgFetchFuture_)
+			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, *CurrMsgFetchFuture_);
+		else
+			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, CurrMsg_);
 	}
 
 	namespace

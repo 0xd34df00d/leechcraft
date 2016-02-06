@@ -30,7 +30,9 @@
 #pragma once
 
 #include <memory>
+#include <boost/variant.hpp>
 #include <QObject>
+#include "account.h"
 
 namespace LeechCraft
 {
@@ -39,11 +41,6 @@ namespace Snails
 	class ComposeMessageTab;
 	class MsgTemplatesManager;
 	class AccountsManager;
-
-	class Message;
-	class Account;
-	using Message_ptr = std::shared_ptr<Message>;
-	using Account_ptr = std::shared_ptr<Account>;
 
 	class ComposeMessageTabFactory : public QObject
 	{
@@ -58,7 +55,8 @@ namespace Snails
 		ComposeMessageTab* MakeTab () const;
 
 		void PrepareComposeTab (const Account_ptr&);
-		void PrepareReplyTab (const Message_ptr&, const Account_ptr&);
+		void PrepareReplyTab (const Account_ptr&,
+				const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>&);
 	signals:
 		void gotTab (const QString&, QWidget*);
 	};

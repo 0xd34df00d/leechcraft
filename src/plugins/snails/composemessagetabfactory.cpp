@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "composemessagetabfactory.h"
+#include <QMessageBox>
+#include <util/sll/visitor.h>
 #include "composemessagetab.h"
 #include "core.h"
 
@@ -57,12 +59,40 @@ namespace Snails
 		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
 	}
 
-	void ComposeMessageTabFactory::PrepareReplyTab (const Message_ptr& message, const Account_ptr& account)
+	void ComposeMessageTabFactory::PrepareReplyTab (const Account_ptr& account,
+			const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>& message)
 	{
 		const auto cmt = MakeTab ();
 
 		cmt->SelectAccount (account);
-		cmt->PrepareReply (message);
+
+		Util::Visit (message,
+				[cmt] (const Message_ptr& msg) { cmt->PrepareReply (msg); },
+				[cmt] (const Account::FetchWholeMessageResult_t& future)
+				{
+					cmt->setEnabled (false);
+
+					Util::Sequence (cmt, future) >>
+							[cmt] (const auto& result)
+							{
+								Util::Visit (result.AsVariant (),
+										[cmt] (const Message_ptr& msg)
+										{
+											cmt->setEnabled (true);
+											cmt->PrepareReply (msg);
+										},
+										[cmt] (const auto& err)
+										{
+											QMessageBox::critical (cmt,
+													"LeechCraft",
+													tr ("Unable to fetch message: %1.")
+														.arg (Util::Visit (err,
+																[] (auto err) { return err.what (); })));
+
+											cmt->Remove ();
+										});
+							};
+				});
 
 		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
 	}
