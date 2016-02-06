@@ -14,6 +14,10 @@ install_name_tool -change lib/libqtermwidget4.0.dylib /usr/local/lib/libqtermwid
 sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
 
 cp -Rv /usr/local/Cellar/$QTVERSION/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
+mkdir $TARGET/leechcraft.app/Contents/PlugIns/quick
+cp -Rv /usr/local/Cellar/$QTVERSION/*/qml/*/*/*.dylib $TARGET/leechcraft.app/Contents/PlugIns/quick
+cp -Rv /usr/local/Cellar/$QTVERSION/*/qml/*/*.dylib $TARGET/leechcraft.app/Contents/PlugIns/quick
+
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/gstreamer-1.0/lib* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/libgst* $TARGET/leechcraft.app/Contents/Frameworks
