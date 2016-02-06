@@ -46,6 +46,7 @@
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/iadvancedplaintexteditor.h>
 #include "message.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -176,6 +177,9 @@ namespace Snails
 			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
 			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
 
+			if (const auto iape = dynamic_cast<IAdvancedPlainTextEditor*> (editor))
+				if (iape->FindText ("${CURSOR}"))
+					iape->DeleteSelection ();
 		}
 
 		static const QString BlockquoteBreakJS =
