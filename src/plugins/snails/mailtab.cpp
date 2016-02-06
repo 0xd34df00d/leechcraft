@@ -669,7 +669,10 @@ namespace Snails
 		SetMessage (msg);
 
 		if (!msg->IsFullyFetched ())
-			Util::Sequence (this, CurrAcc_->FetchWholeMessage (msg)) >>
+		{
+			auto future = CurrAcc_->FetchWholeMessage (msg);
+			CurrMsgFetchFuture_ = std::make_shared<Account::FetchWholeMessageResult_t> (future);
+			Util::Sequence (this, future) >>
 					[this] (const auto& result)
 					{
 						Util::Visit (result.AsVariant (),
@@ -688,7 +691,9 @@ namespace Snails
 												.arg (errMsg);
 									Ui_.MailView_->setHtml (ToHtmlError (msg));
 								});
+						CurrMsgFetchFuture_.reset ();
 					};
+		}
 
 		CurrMsg_ = msg;
 
