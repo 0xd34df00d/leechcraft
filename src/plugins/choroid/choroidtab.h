@@ -32,7 +32,7 @@
 
 #include <functional>
 #include <QWidget>
-#include <QDeclarativeView>
+#include <QUrl>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/core/icoreproxy.h>
 #include "ui_choroidtab.h"
@@ -42,6 +42,12 @@ class QStandardItemModel;
 class QStandardItem;
 class QFileInfo;
 class QDeclarativeView;
+
+#if QT_VERSION <= 0x050000
+class QDeclarativeView;
+#else
+class QQuickWidget;
+#endif
 
 namespace LeechCraft
 {
@@ -61,7 +67,11 @@ namespace Choroid
 
 		Ui::ChoroidTab Ui_;
 
+#if QT_VERSION <= 0x050000
 		QDeclarativeView *DeclView_;
+#else
+		QQuickWidget *DeclView_;
+#endif
 
 		QMLItemModel *QMLFilesModel_;
 
@@ -76,13 +86,6 @@ namespace Choroid
 		enum CustomRoles
 		{
 			CRFilePath = Qt::UserRole + 1
-		};
-
-		enum ImagesListRoles
-		{
-			ILRFilename = Qt::UserRole + 1,
-			ILRImage,
-			ILRFileSize
 		};
 
 		std::function<bool (QFileInfo, QFileInfo)> CurrentSorter_;
