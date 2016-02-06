@@ -35,11 +35,13 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QToolButton>
+#include <QMessageBox>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/visitor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -570,11 +572,6 @@ namespace Snails
 				this,
 				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
 
-		connect (CurrAcc_.get (),
-				SIGNAL (messageBodyFetched (Message_ptr)),
-				this,
-				SLOT (handleMessageBodyFetched (Message_ptr)));
-
 		MailModel_.reset (CurrAcc_->GetMailModelsManager ()->CreateModel ());
 		connect (MailModel_.get (),
 				SIGNAL (messageListUpdated ()),
@@ -660,10 +657,30 @@ namespace Snails
 
 		SetMsgActionsEnabled (true);
 
-		if (!msg->IsFullyFetched ())
-			CurrAcc_->FetchWholeMessage (msg);
-
 		SetMessage (msg);
+
+		if (!msg->IsFullyFetched ())
+			Util::Sequence (this, CurrAcc_->FetchWholeMessage (msg)) >>
+					[this] (const auto& result)
+					{
+						Util::Visit (result.AsVariant (),
+								[this] (const Message_ptr& msg)
+								{
+									const auto& cur = Ui_.MailTree_->currentIndex ();
+									const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
+									if (curId == msg->GetFolderID ())
+										SetMessage (msg);
+								},
+								[this] (auto err)
+								{
+									const auto& msg = Util::Visit (err,
+											[] (auto e) { return QString::fromUtf8 (e.what ()); });
+									QMessageBox::critical (this,
+											"LeechCraft",
+											tr ("Unable to fetch whole message: %1.")
+												.arg (msg));
+								});
+					};
 
 		CurrMsg_ = msg;
 
@@ -935,15 +952,6 @@ namespace Snails
 			return;
 
 		CurrAcc_->Synchronize (MailModel_->GetCurrentFolder (), {});
-	}
-
-	void MailTab::handleMessageBodyFetched (Message_ptr msg)
-	{
-		const auto& cur = Ui_.MailTree_->currentIndex ();
-		if (cur.data (MailModel::MailRole::ID).toByteArray () != msg->GetFolderID ())
-			return;
-
-		SetMessage (msg);
 	}
 }
 }

@@ -130,8 +130,6 @@ namespace Snails
 		void handleAttachment (const QByteArray&, const QStringList&, const QString&);
 		void handleFetchNewMail ();
 		void handleRefreshFolder ();
-
-		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void removeTab (QWidget*);
 

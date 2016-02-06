@@ -921,57 +921,38 @@ namespace Snails
 		return SetReadStatusResult_t::Right (messages);
 	}
 
-	void AccountThreadWorker::FetchWholeMessage (Message_ptr origMsg)
+	FetchWholeMessageResult_t AccountThreadWorker::FetchWholeMessage (Message_ptr origMsg)
 	{
 		if (!origMsg)
-			return;
+			return FetchWholeMessageResult_t::Right ({});
 
 		const QByteArray& sid = origMsg->GetFolderID ();
 		auto folder = GetFolder (origMsg->GetFolders ().value (0), FolderMode::ReadOnly);
 		if (!folder)
-			return;
+			return FetchWholeMessageResult_t::Left (FolderNotFound {});
 
-		try
-		{
-			const auto& set = vmime::net::messageSet::byUID (sid.constData ());
-			const auto attrs = vmime::net::fetchAttributes::FLAGS |
-					vmime::net::fetchAttributes::UID |
-					vmime::net::fetchAttributes::CONTENT_INFO |
-					vmime::net::fetchAttributes::STRUCTURE |
-					vmime::net::fetchAttributes::FULL_HEADER;
-			const auto& messages = folder->getAndFetchMessages (set, attrs);
-			if (messages.empty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "message with ID"
-						<< sid.toHex ()
-						<< "not found in"
-						<< messages.size ();
-				return;
-			}
-
-			FullifyHeaderMessage (origMsg, messages.front ());
-		}
-		catch (const vmime::exceptions::invalid_response& resp)
+		const auto& set = vmime::net::messageSet::byUID (sid.constData ());
+		const auto attrs = vmime::net::fetchAttributes::FLAGS |
+				vmime::net::fetchAttributes::UID |
+				vmime::net::fetchAttributes::CONTENT_INFO |
+				vmime::net::fetchAttributes::STRUCTURE |
+				vmime::net::fetchAttributes::FULL_HEADER;
+		const auto& messages = folder->getAndFetchMessages (set, attrs);
+		if (messages.empty ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "invalid response"
-					<< resp.response ().c_str ()
-					<< "to command"
-					<< resp.command ().c_str ();
-			return;
+					<< "message with ID"
+					<< sid.toHex ()
+					<< "not found in"
+					<< messages.size ();
+			return FetchWholeMessageResult_t::Left (MessageNotFound {});
 		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "failed to fetch the message:"
-					<< e.what ();
-			return;
-		}
+
+		FullifyHeaderMessage (origMsg, messages.front ());
 
 		qDebug () << "done";
 
-		emit messageBodyFetched (origMsg);
+		return FetchWholeMessageResult_t::Right (origMsg);
 	}
 
 	void AccountThreadWorker::FetchAttachment (Message_ptr msg,
