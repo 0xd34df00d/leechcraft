@@ -682,12 +682,11 @@ namespace Snails
 								},
 								[this] (auto err)
 								{
-									const auto& msg = Util::Visit (err,
+									const auto& errMsg = Util::Visit (err,
 											[] (auto e) { return QString::fromUtf8 (e.what ()); });
-									QMessageBox::critical (this,
-											"LeechCraft",
-											tr ("Unable to fetch whole message: %1.")
-												.arg (msg));
+									const auto& msg = tr ("Unable to fetch whole message: %1.")
+												.arg (errMsg);
+									Ui_.MailView_->setHtml (ToHtmlError (msg));
 								});
 					};
 
