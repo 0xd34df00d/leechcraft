@@ -201,16 +201,6 @@ namespace LeechCraft
 
 		ParseCommandLine ();
 
-#ifdef Q_OS_MAC
-		if (!Arguments_.contains ("-nobundle"))
-		{
-			QDir dir (applicationDirPath ());
-			dir.cdUp ();
-			dir.cd ("PlugIns");
-			QApplication::setLibraryPaths ({ dir.absolutePath () });
-		}
-#endif
-
 		// Say hello to logs
 		qDebug () << "======APPLICATION STARTUP======";
 		qWarning () << "======APPLICATION STARTUP======";

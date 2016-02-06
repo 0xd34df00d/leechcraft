@@ -56,6 +56,8 @@ namespace Murm
 	protected:
 		VkAccount * const Account_;
 		QList<VkMessage*> Messages_;
+
+		bool HasUnread_ = false;
 	public:
 		EntryBase (VkAccount*);
 
@@ -68,6 +70,8 @@ namespace Murm
 		IMessage* CreateMessage (IMessage::Type type, const QString& variant, const QString& body) override;
 		QList<IMessage*> GetAllMessages () const override;
 		void PurgeMessages (const QDateTime& before) override;
+
+		void MarkMsgsRead () override;
 	protected:
 		void HandleAttaches (VkMessage*, const MessageInfo&, const FullMessageInfo&);
 	private:

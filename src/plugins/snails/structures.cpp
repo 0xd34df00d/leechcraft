@@ -27,24 +27,46 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-class QString;
+#include "structures.h"
+#include <QtDebug>
+#include <interfaces/itexteditor.h>
 
 namespace LeechCraft
 {
-enum class ContentType;
-
 namespace Snails
 {
-	enum class MsgType
+	QString GetBasename (MsgType type)
 	{
-		New,
-		Reply,
-		Forward
-	};
+		switch (type)
+		{
+		case MsgType::New:
+			return "new";
+		case MsgType::Reply:
+			return "reply";
+		case MsgType::Forward:
+			return "forward";
+		}
 
-	QString GetBasename (MsgType);
-	QString GetExtension (ContentType);
+		qWarning () << Q_FUNC_INFO
+				<< "unknown message type"
+				<< static_cast<int> (type);
+		return {};
+	}
+
+	QString GetExtension (ContentType type)
+	{
+		switch (type)
+		{
+		case ContentType::PlainText:
+			return "txt";
+		case ContentType::HTML:
+			return "html";
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown content type"
+				<< static_cast<int> (type);
+		return {};
+	}
 }
 }

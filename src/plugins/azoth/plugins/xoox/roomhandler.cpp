@@ -747,7 +747,7 @@ namespace Xoox
 							std::all_of (Nick2Entry_.begin (), Nick2Entry_.end (),
 									[] (const RoomParticipantEntry_ptr& entry)
 										{ return entry->GetStatus ({}).State_ == SOffline; }))
-						new Util::DelayedExecutor { [this] { Join (); }, 5000 };
+						new Util::DelayedExecutor { [this] { Join (); }, 5000, this };
 				});
 
 		if (us)

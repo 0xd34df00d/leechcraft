@@ -90,7 +90,6 @@ namespace Murm
 		void ShowInfo () override;
 		QList<QAction*> GetActions () const override;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
-		void MarkMsgsRead () override;
 		void ChatTabClosed () override;
 
 		MUCFeatures GetMUCFeatures () const override;

@@ -34,8 +34,9 @@ namespace LeechCraft
 {
 namespace Util
 {
-	DelayedExecutor::DelayedExecutor (Actor_f actor, int timeout)
-	: Actor_ (actor)
+	DelayedExecutor::DelayedExecutor (Actor_f actor, int timeout, QObject *parent)
+	: QObject (parent)
+	, Actor_ (actor)
 	{
 		QTimer::singleShot (timeout,
 				this,

@@ -109,6 +109,7 @@ namespace Snails
 
 		Address_t GetAddress (Address) const;
 		Addresses_t GetAddresses (Address) const;
+		bool HasAddress (Address) const;
 		void AddAddress (Address, const Address_t&);
 		void SetAddress (Address, const Address_t&);
 		void SetAddresses (Address, const Addresses_t&);

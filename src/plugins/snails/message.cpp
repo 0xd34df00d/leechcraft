@@ -125,6 +125,11 @@ namespace Snails
 		return Addresses_ [a];
 	}
 
+	bool Message::HasAddress (Message::Address a) const
+	{
+		return Addresses_.contains (a);
+	}
+
 	void Message::AddAddress (Message::Address a, const Message::Address_t& pair)
 	{
 		Addresses_ [a] << pair;

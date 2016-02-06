@@ -57,6 +57,8 @@ set (SRCS
 	templateseditorwidget.cpp
 	multieditorwidget.cpp
 	templatesstorage.cpp
+	templatepattern.cpp
+	structures.cpp
 	)
 set (FORMS
 	mailtab.ui

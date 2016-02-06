@@ -42,6 +42,7 @@
 #include <util/sys/extensionsdata.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -131,6 +132,11 @@ namespace Snails
 		PrepareReplyBody (msg);
 
 		ReplyMessage_ = msg;
+
+		Util::ExecuteLater ([=]
+				{
+					dynamic_cast<QWidget*> (Ui_.Editor_->GetCurrentEditor ())->setFocus ();
+				});
 	}
 
 	void ComposeMessageTab::PrepareReplyEditor (const Message_ptr& msg)
@@ -170,14 +176,7 @@ namespace Snails
 
 			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
 			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
-		}
 
-		QString WrapString (const QString& str, const QString& tagName)
-		{
-			const auto quoteStartMarker = "<" + tagName + " style='border-left: 2px solid #ccc; margin-left: 0; padding-left: 0.5em;'>";
-			const auto quoteEndMarker = "</" + tagName + ">";
-
-			return quoteStartMarker + str + quoteEndMarker;
 		}
 
 		static const QString BlockquoteBreakJS =
@@ -269,20 +268,38 @@ namespace Snails
 				}
 			)delim";
 
+		static const QString DeleteCursorJS =
+			R"delim(
+				(function(){
+					var el = document.getElementById('place_cursor_here');
+
+					var sel = window.getSelection();
+					sel.removeAllRanges();
+					sel.selectAllChildren(el);
+					sel.collapseToEnd();
+					sel.modify("move", "forward", "character");
+
+					el.remove();
+				}());
+			)delim";
+
 		void SetReplyHTMLContents (const QString& contents, IEditorWidget *editor)
 		{
 			editor->SetContents (contents, ContentType::HTML);
 
 			if (const auto iahe = dynamic_cast<IAdvancedHTMLEditor*> (editor))
+			{
 				iahe->ExecJS (BlockquoteBreakJS);
+				iahe->ExecJS (DeleteCursorJS);
+			}
 		}
 
 		template<typename Templater>
-		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&&)
+		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
-				SetReplyHTMLContents (WrapString (htmlBody, "blockquote"), editor);
+				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
 			else
 			{
 				auto str = Util::Escape (msg->GetBody ());
@@ -290,7 +307,7 @@ namespace Snails
 				str.replace ("\r", "<br/>");
 				str.replace ("\n", "<br/>");
 
-				SetReplyHTMLContents (WrapString (str, "blockquote"), editor);
+				SetReplyHTMLContents (tpl (str, msg.get ()), editor);
 			}
 		}
 	}

@@ -111,6 +111,11 @@ namespace Snails
 		return InHost_ + ':' + QString::number (InPort_);
 	}
 
+	QString Account::GetUserName () const
+	{
+		return UserName_;
+	}
+
 	bool Account::ShouldLogToFile () const
 	{
 		return LogToFile_;

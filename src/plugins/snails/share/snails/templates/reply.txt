@@ -1,0 +1,6 @@
+On ${ODATE} at ${OTIME} user ${ONAMEANDEMAIL} wrote:
+${QUOTE}
+
+${CURSOR}
+
+${SIGNATURE}

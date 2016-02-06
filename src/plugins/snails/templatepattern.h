@@ -29,7 +29,14 @@
 
 #pragma once
 
-class QString;
+#include <functional>
+#include <QString>
+
+template<typename>
+class QList;
+
+template<typename, typename>
+class QHash;
 
 namespace LeechCraft
 {
@@ -37,14 +44,19 @@ enum class ContentType;
 
 namespace Snails
 {
-	enum class MsgType
+	class Message;
+	class Account;
+
+	using PatternFunction_t = std::function<QString (const Account*, const Message*, ContentType, QString)>;
+
+	struct TemplatePattern
 	{
-		New,
-		Reply,
-		Forward
+		QString PatternText_;
+
+		PatternFunction_t Substitute_;
 	};
 
-	QString GetBasename (MsgType);
-	QString GetExtension (ContentType);
+	QList<TemplatePattern> GetKnownPatterns ();
+	QHash<QString, PatternFunction_t> GetKnownPatternsHash ();
 }
 }

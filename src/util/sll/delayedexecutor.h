@@ -83,10 +83,16 @@ namespace Util
 		 * If the \em timeout is 0, the \em action will be executed next
 		 * time event loop is run.
 		 *
+		 * If the \em parent object is passed and it is destroyed before
+		 * the delayed executor fires, the \em action will not be
+		 * performed. This is useful to avoid execution the \em action if
+		 * it depends on some object being alive.
+		 *
 		 * @param[in] action The action to execute.
 		 * @param[in] timeout The timeout before executing the action.
+		 * @param[in] parent The parent object of this delayed executor.
 		 */
-		DelayedExecutor (Actor_f action, int timeout = 0);
+		DelayedExecutor (Actor_f action, int timeout = 0, QObject *parent = nullptr);
 	private slots:
 		void handleTimeout ();
 	};

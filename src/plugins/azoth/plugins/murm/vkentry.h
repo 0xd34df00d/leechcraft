@@ -68,7 +68,6 @@ namespace Murm
 
 		bool IsSelf_ = false;
 		bool IsNonRoster_ = false;
-		bool HasUnread_ = false;
 
 		QImage AppImage_;
 
@@ -113,7 +112,6 @@ namespace Murm
 		void ShowInfo () override;
 		QList<QAction*> GetActions () const override;
 		QMap<QString, QVariant> GetClientInfo (const QString&) const override;
-		void MarkMsgsRead () override;
 		void ChatTabClosed () override;
 
 		QVariant GetMetaInfo (DataField) const override;
