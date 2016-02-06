@@ -76,11 +76,6 @@ namespace Choroid
 		Ui_.ViewFrame_->setLayout (lay);
 		lay->addWidget (DeclView_);
 
-		connect (DeclView_,
-				SIGNAL (statusChanged (QDeclarativeView::Status)),
-				this,
-				SLOT (handleStatusChanged (QDeclarativeView::Status)));
-
 		LoadQML ();
 
 		Ui_.VertSplitter_->setStretchFactor (1, 1);
@@ -395,21 +390,6 @@ namespace Choroid
 		{
 			const auto& parentIdx = Ui_.DirTree_->currentIndex ().parent ();
 			Ui_.DirTree_->setCurrentIndex (parentIdx);
-		}
-	}
-
-	void ChoroidTab::handleStatusChanged (QDeclarativeView::Status status)
-	{
-		if (status == QDeclarativeView::Error)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got errors:"
-					<< DeclView_->errors ().size ();
-			for (const QDeclarativeError& error : DeclView_->errors ())
-				qWarning () << error.toString ()
-						<< "["
-						<< error.description ()
-						<< "]";
 		}
 	}
 }

@@ -115,8 +115,6 @@ namespace Choroid
 		void showNextImage ();
 		void showPrevImage ();
 		void goUp ();
-
-		void handleStatusChanged (QDeclarativeView::Status);
 	signals:
 		void removeTab (QWidget*);
 	};
