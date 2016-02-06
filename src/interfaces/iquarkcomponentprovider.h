@@ -29,6 +29,8 @@
 
 #pragma once
 
+#include <vector>
+#include <pair>
 #include <memory>
 #include <QString>
 #include <QUrl>
