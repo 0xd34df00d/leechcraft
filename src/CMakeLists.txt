@@ -879,6 +879,13 @@ else ()
 	install (FILES ${CMAKE_CURRENT_BINARY_DIR}/FindLeechCraft.cmake DESTINATION ${LC_SHARE_DEST}/cmake/)
 endif ()
 
+if (APPLE)
+	configure_file (Info.plist.in Info.plist)
+	if (NOT USE_UNIX_LAYOUT)
+		install (FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist DESTINATION ${LC_BINDIR}/../)
+	endif ()
+endif ()
+
 add_subdirectory (core)
 
 option (BUILD_CODEGEN "Build LeechCraft bindings generator (development only)" OFF)
