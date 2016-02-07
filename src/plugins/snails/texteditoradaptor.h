@@ -62,7 +62,7 @@ namespace Snails
 		bool FindText (const QString&);
 		void DeleteSelection ();
 	signals:
-		void textChanged();
+		void textChanged ();
 	};
 }
 }
