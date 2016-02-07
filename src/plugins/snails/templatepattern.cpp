@@ -58,11 +58,11 @@ namespace Snails
 		{
 			{
 				"ODATE",
-				Wrap ([] (const Message *msg) { return msg->GetDate ().date ().toString (Qt::DefaultLocaleLongDate); })
+				Wrap ([] (const Message *msg) { return msg->GetDate ().date ().toString (Qt::DefaultLocaleShortDate); })
 			},
 			{
 				"OTIME",
-				Wrap ([] (const Message *msg) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleLongDate); })
+				Wrap ([] (const Message *msg) { return msg->GetDate ().time ().toString (Qt::DefaultLocaleShortDate); })
 			},
 			{
 				"ODATETIME",
