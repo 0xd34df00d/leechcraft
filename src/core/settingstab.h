@@ -73,6 +73,7 @@ namespace LeechCraft
 		QToolBar* GetToolBar () const;
 	private:
 		void FillPages (QObject*, bool);
+		QSet<IHaveSettings*> GetUniqueIHS () const;
 	public slots:
 		void showSettingsFor (QObject*);
 	private slots:

@@ -327,6 +327,14 @@ namespace LeechCraft
 			FillPages (sub, true);
 	}
 
+	QSet<IHaveSettings*> SettingsTab::GetUniqueIHS () const
+	{
+		QSet<IHaveSettings*> uniques;
+		for (const auto& pair : Item2Page_)
+			uniques << pair.first;
+		return uniques;
+	}
+
 	void SettingsTab::addSearchBox ()
 	{
 		auto widget = new QWidget ();
