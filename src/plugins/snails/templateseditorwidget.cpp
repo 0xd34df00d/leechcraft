@@ -64,6 +64,24 @@ namespace Snails
 		prepareEditor (Ui_.ContentType_->currentIndex ());
 	}
 
+	void TemplatesEditorWidget::accept ()
+	{
+		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
+		const auto msgType = static_cast<MsgType> (Ui_.MessageType_->currentIndex ());
+
+		const auto& tpl = Ui_.Editor_->GetCurrentEditor ()->GetContents (currentType);
+
+		Util::Visit (TemplatesMgr_->SaveTemplate (currentType, msgType, nullptr, tpl).AsVariant (),
+				[=] (Util::Void) {},
+				[=] (const auto& err)
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Unable to save template: %1.")
+								.arg (err.what ()));
+				});
+	}
+
 	void TemplatesEditorWidget::reject ()
 	{
 		loadTemplate ();

@@ -50,6 +50,7 @@ namespace Snails
 	public:
 		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
 	public slots:
+		void accept ();
 		void reject ();
 	private slots:
 		void prepareEditor (int);
