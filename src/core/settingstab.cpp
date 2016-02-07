@@ -487,14 +487,14 @@ namespace LeechCraft
 
 	void SettingsTab::handleApply ()
 	{
-		for (const auto& pair : Item2Page_)
-			pair.first->GetSettingsDialog ()->accept ();
+		for (const auto& ihs : GetUniqueIHS ())
+			ihs->GetSettingsDialog ()->accept ();
 	}
 
 	void SettingsTab::handleCancel ()
 	{
-		for (const auto& pair : Item2Page_)
-			pair.first->GetSettingsDialog ()->reject ();
+		for (const auto& ihs : GetUniqueIHS ())
+			ihs->GetSettingsDialog ()->reject ();
 	}
 
 	void SettingsTab::on_Cats__currentItemChanged (QTreeWidgetItem *current)
