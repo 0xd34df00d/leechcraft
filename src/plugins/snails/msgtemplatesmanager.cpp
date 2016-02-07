@@ -110,6 +110,12 @@ namespace Snails
 				body);
 	}
 
+	auto MsgTemplatesManager::SaveTemplate (ContentType type,
+			MsgType msgType, const Account *acc, const QString& tpl) -> SaveResult_t
+	{
+		return Storage_->SaveTemplate (type, msgType, acc, tpl);
+	}
+
 	namespace
 	{
 		QString LoadTemplate (ContentType ct, MsgType msgType)
