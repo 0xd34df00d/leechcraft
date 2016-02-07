@@ -174,6 +174,13 @@ target_link_libraries (leechcraft${LC_EXEC_SUFFIX}
 		${ADDITIONAL_LIBS}
 		)
 
+if (APPLE AND USE_UNIX_LAYOUT)
+	get_property (_core_link_flags TARGET leechcraft${LC_EXEC_SUFFIX} PROPERTY LINK_FLAGS)
+	set (_core_link_flags "${_core_link_flags} -sectcreate __TEXT __info_plist ${CMAKE_CURRENT_BINARY_DIR}/../Info.plist")
+	message (STATUS "Setting Core link flags to: ${_core_link_flags}")
+	set_target_properties (leechcraft${LC_EXEC_SUFFIX} PROPERTIES LINK_FLAGS ${_core_link_flags})
+endif ()
+
 install (TARGETS leechcraft${LC_EXEC_SUFFIX} DESTINATION ${LC_BINDIR})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 

@@ -14,6 +14,10 @@ install_name_tool -change lib/libqtermwidget4.0.dylib /usr/local/lib/libqtermwid
 sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
 
 cp -Rv /usr/local/Cellar/$QTVERSION/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
+mkdir $TARGET/leechcraft.app/Contents/PlugIns/quick
+cp -Rv /usr/local/Cellar/$QTVERSION/*/qml/*/*/*.dylib $TARGET/leechcraft.app/Contents/PlugIns/quick
+cp -Rv /usr/local/Cellar/$QTVERSION/*/qml/*/*.dylib $TARGET/leechcraft.app/Contents/PlugIns/quick
+
 mkdir $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/gstreamer-1.0/lib* $TARGET/leechcraft.app/Contents/PlugIns/gstreamer
 install -v /usr/local/lib/libgst* $TARGET/leechcraft.app/Contents/Frameworks
@@ -37,7 +41,15 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 		install_name_tool -change $LIB @executable_path/../Frameworks/$(basename $LIB) $GST
 	done
 done
-sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess
+
+cp -Rv /usr/local/lib/qca/crypto $TARGET/leechcraft.app/Contents/PlugIns
+CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do sudo install_name_tool -change $(dyldinfo -dylibs $CDIR/$PLUG | grep qca) @executable_path/../Frameworks/qca.framework/qca $CDIR/$PLUG; done
+
+sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess -qmldir=/usr/local/leechcraft.app/Contents/Resources/share/qml5
+
+sudo install_name_tool -change @loader_path/libicudata.56.dylib @executable_path/../Frameworks/libicudata.56.1.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicuuc.56.dylib
+sudo install_name_tool -change @loader_path/libicudata.56.dylib @executable_path/../Frameworks/libicudata.56.1.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicui18n.56.dylib
+sudo install_name_tool -change @loader_path/libicuuc.56.dylib @executable_path/../Frameworks/libicuuc.56.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicui18n.56.dylib
 
 # Kludge
 sudo rm /usr/lib/libleechcraft-*

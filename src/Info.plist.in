@@ -20,5 +20,7 @@
 	<string>0.5.85</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.5.85</string>
+	<key>NSSupportsAutomaticGraphicsSwitching</key>
+	<true/>
 </dict>
 </plist>
