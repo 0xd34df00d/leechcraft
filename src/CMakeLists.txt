@@ -92,6 +92,10 @@ if (UNIX AND (NOT APPLE OR USE_UNIX_LAYOUT))
 		set (LIBDIR "lib${LIB_SUFFIX}")
 	endif ()
 
+	if (USE_UNIX_LAYOUT)
+		add_definitions (-DUSE_UNIX_LAYOUT)
+	endif ()
+
 	set (LC_BINDIR "bin")
 	if (USE_QT5)
 		set (LC_PLUGINS_DEST "${LIBDIR}/leechcraft/plugins-qt5")
