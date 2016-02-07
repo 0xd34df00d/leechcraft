@@ -37,10 +37,8 @@ Settings::Settings ()
 {
 #ifdef Q_OS_WIN32
 	ConfigDir_ = QCoreApplication::applicationDirPath () + "/leechcraft/";
-#elif defined (Q_OS_MAC)
-	ConfigDir_ = QApplication::arguments ().contains ("-nobundle") ?
-			"/etc/leechcraft/" :
-			QCoreApplication::applicationDirPath () + "/../Resources/config";
+#elif defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+	ConfigDir_ = QCoreApplication::applicationDirPath () + "/../Resources/config";
 #else
 	ConfigDir_ = "/etc/leechcraft/";
 #endif
