@@ -29,40 +29,16 @@
 
 #pragma once
 
-#include <interfaces/itexteditor.h>
-#include <interfaces/iadvancedplaintexteditor.h>
+#include <QtPlugin>
 
-class QTextEdit;
-
-namespace LeechCraft
+class Q_DECL_EXPORT IAdvancedPlainTextEditor
 {
-namespace Snails
-{
-	class TextEditorAdaptor : public QObject
-							, public IEditorWidget
-							, public IAdvancedPlainTextEditor
-	{
-		Q_OBJECT
-		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor)
+public:
+	virtual ~IAdvancedPlainTextEditor () = default;
 
-		QTextEdit * const Edit_;
-	public:
-		TextEditorAdaptor (QTextEdit*);
+	virtual bool FindText (const QString&) = 0;
 
-		QString GetContents (ContentType type) const;
-		void SetContents (QString contents, ContentType type);
+	virtual void DeleteSelection () = 0;
+};
 
-		QAction* GetEditorAction (EditorAction);
-		void AppendAction (QAction*);
-		void AppendSeparator ();
-		void RemoveAction (QAction*);
-		void SetBackgroundColor (const QColor&, ContentType);
-		QWidget* GetWidget ();
-
-		bool FindText (const QString&);
-		void DeleteSelection ();
-	signals:
-		void textChanged();
-	};
-}
-}
+Q_DECLARE_INTERFACE (IAdvancedPlainTextEditor, "org.LeechCraft.IAdvancedPlainTextEditor/1.0");

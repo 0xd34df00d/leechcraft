@@ -36,6 +36,7 @@
 #include <util/sll/monadplus.h>
 #include <util/sll/curry.h>
 #include <util/sys/paths.h>
+#include <util/util.h>
 #include "message.h"
 #include "account.h"
 #include "structures.h"
@@ -113,9 +114,20 @@ namespace Snails
 	{
 		QString LoadTemplate (ContentType ct, MsgType msgType)
 		{
-			const auto& filename = GetBasename (msgType) + "." + GetExtension (ct);
+			const auto& basename = GetBasename (msgType);
+			const auto& extension = GetExtension (ct);
+			const auto& mkFilename = [&] (const QString& locale)
+			{
+				return basename + (locale.isEmpty () ? "" : ("_" + locale)) + "." + extension;
+			};
 
-			const auto& str = Util::GetSysPath (Util::SysPath::Share, "snails/templates", filename);
+			const auto& localeName = Util::GetLocaleName ();
+
+			auto str = Util::GetSysPath (Util::SysPath::Share,
+					"snails/templates", mkFilename (localeName.left (2)));
+			if (str.isEmpty ())
+				str = Util::GetSysPath (Util::SysPath::Share,
+						"snails/templates", mkFilename ({}));
 			if (str.isEmpty ())
 				return {};
 

@@ -81,11 +81,6 @@ namespace Snails
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
 
 		connect (atw,
-				SIGNAL (messageBodyFetched (Message_ptr)),
-				A_,
-				SLOT (handleMessageBodyFetched (Message_ptr)));
-
-		connect (atw,
 				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
 				A_,
 				SLOT (handleFolderSyncFinished (QStringList, QByteArray)));

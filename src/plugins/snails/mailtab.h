@@ -82,6 +82,8 @@ namespace Snails
 		Account_ptr CurrAcc_;
 		Message_ptr CurrMsg_;
 
+		std::shared_ptr<Account::FetchWholeMessageResult_t> CurrMsgFetchFuture_;
+
 		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 	public:
 		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*,
@@ -130,8 +132,6 @@ namespace Snails
 		void handleAttachment (const QByteArray&, const QStringList&, const QString&);
 		void handleFetchNewMail ();
 		void handleRefreshFolder ();
-
-		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void removeTab (QWidget*);
 

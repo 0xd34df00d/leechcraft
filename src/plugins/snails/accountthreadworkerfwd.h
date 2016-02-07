@@ -29,40 +29,30 @@
 
 #pragma once
 
-#include <interfaces/itexteditor.h>
-#include <interfaces/iadvancedplaintexteditor.h>
-
-class QTextEdit;
+#include <stdexcept>
+#include <memory>
+#include <boost/variant.hpp>
+#include <util/sll/either.h>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class TextEditorAdaptor : public QObject
-							, public IEditorWidget
-							, public IAdvancedPlainTextEditor
+	class FolderNotFound : public std::exception
 	{
-		Q_OBJECT
-		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor)
-
-		QTextEdit * const Edit_;
 	public:
-		TextEditorAdaptor (QTextEdit*);
-
-		QString GetContents (ContentType type) const;
-		void SetContents (QString contents, ContentType type);
-
-		QAction* GetEditorAction (EditorAction);
-		void AppendAction (QAction*);
-		void AppendSeparator ();
-		void RemoveAction (QAction*);
-		void SetBackgroundColor (const QColor&, ContentType);
-		QWidget* GetWidget ();
-
-		bool FindText (const QString&);
-		void DeleteSelection ();
-	signals:
-		void textChanged();
+		const char* what () const noexcept override;
 	};
+
+	class MessageNotFound : public std::exception
+	{
+	public:
+		const char* what () const noexcept override;
+	};
+
+	class Message;
+	using Message_ptr = std::shared_ptr<Message>;
+
+	using FetchWholeMessageResult_t = Util::Either<boost::variant<FolderNotFound, MessageNotFound>, Message_ptr>;
 }
 }

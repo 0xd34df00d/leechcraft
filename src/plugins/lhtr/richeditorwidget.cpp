@@ -414,6 +414,11 @@ namespace LHTR
 			InternalSetBgColor (color, type);
 	}
 
+	QWidget* RichEditorWidget::GetWidget ()
+	{
+		return this;
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		auto expanded = ExpandCustomTags (html, ExpandMode::PartialHTML);
@@ -692,6 +697,9 @@ namespace LHTR
 	QString RichEditorWidget::ExpandCustomTags (QString html, ExpandMode mode) const
 	{
 		TryFixHTML (html, mode == ExpandMode::FullHTML);
+		if (CustomTags_.isEmpty ())
+			return html;
+
 		html.remove ('\n');
 
 		QDomDocument doc;

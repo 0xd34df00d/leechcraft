@@ -192,15 +192,18 @@ namespace Snails
 			}
 		};
 
-		template<typename F, typename... Args>
-		using WrapFunctionType_t = typename WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::Result_t;
-
 		template<typename... Args, typename F>
 		auto WrapFunction (const F& f)
 		{
 			return WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (f);
 		}
 	}
+
+	template<typename T>
+	using WrapReturnType_t = typename detail::WrapFunctionTypeImpl<T>::Result_t;
+
+	template<typename F, typename... Args>
+	using WrapFunctionType_t = WrapReturnType_t<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>;
 
 	class AccountThread : public QThread
 	{
@@ -218,9 +221,9 @@ namespace Snails
 				const CertList_t& certs, Account *acc);
 
 		template<typename F, typename... Args>
-		QFuture<detail::WrapFunctionType_t<F, Args...>> Schedule (const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (const F& func, const Args&... args)
 		{
-			QFutureInterface<detail::WrapFunctionType_t<F, Args...>> iface;
+			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
 
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{

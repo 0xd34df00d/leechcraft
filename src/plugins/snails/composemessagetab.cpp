@@ -39,6 +39,7 @@
 #include <QToolButton>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sys/extensionsdata.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
 #include <util/sll/delayedexecutor.h>
@@ -46,6 +47,7 @@
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/iadvancedplaintexteditor.h>
 #include "message.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -134,7 +136,7 @@ namespace Snails
 
 		Util::ExecuteLater ([=]
 				{
-					dynamic_cast<QWidget*> (Ui_.Editor_->GetCurrentEditor ())->setFocus ();
+					Ui_.Editor_->GetCurrentEditor ()->GetWidget ()->setFocus ();
 				});
 	}
 
@@ -176,6 +178,9 @@ namespace Snails
 			const auto& plainContent = plainSplit.join ("\n") + "\n\n";
 			editor->SetContents (tpl (plainContent, msg.get ()), ContentType::PlainText);
 
+			if (const auto iape = dynamic_cast<IAdvancedPlainTextEditor*> (editor))
+				if (iape->FindText ("${CURSOR}"))
+					iape->DeleteSelection ();
 		}
 
 		static const QString BlockquoteBreakJS =
@@ -547,7 +552,10 @@ namespace Snails
 		QAction *attAct = new QAction (QString ("%1 (%2)").arg (fi.fileName (), size), this);
 		attAct->setProperty ("Snails/AttachmentPath", path);
 		attAct->setProperty ("Snails/Description", descr);
-		attAct->setIcon (QFileIconProvider ().icon (fi));
+
+		const auto& mime = Util::MimeDetector {} (fi.fileName ());
+		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
+
 		connect (attAct,
 				SIGNAL (triggered ()),
 				this,

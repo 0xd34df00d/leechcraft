@@ -56,6 +56,7 @@ namespace Blogique
 
 		void SetBackgroundColor (const QColor& color, ContentType editor);
 
+		QWidget* GetWidget ();
 	signals:
 		void textChanged ();
 	};

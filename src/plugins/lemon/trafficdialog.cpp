@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "trafficdialog.h"
+#include <numeric>
 #include <QtDebug>
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>

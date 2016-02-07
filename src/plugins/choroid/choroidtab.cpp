@@ -38,33 +38,60 @@
 #include <QToolBar>
 #include <QMenu>
 #include <QFileInfo>
+
+#if QT_VERSION < 0x050000
+#include <QDeclarativeView>
 #include <QDeclarativeContext>
 #include <QDeclarativeError>
+#else
+#include <QQuickWidget>
+#include <QQuickItem>
+#include <QQmlContext>
+#endif
+
+#include <util/models/rolenamesmixin.h>
+#include <util/sys/paths.h>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
 
+#if QT_VERSION < 0x050000
 Q_DECLARE_METATYPE (QFileInfo);
+#endif
 
 namespace LeechCraft
 {
 namespace Choroid
 {
-	class QMLItemModel : public QStandardItemModel
+	class QMLItemModel : public Util::RoleNamesMixin<QStandardItemModel>
 	{
 	public:
-		QMLItemModel (QObject *parent = 0)
-		: QStandardItemModel (parent)
+		enum ImagesListRoles
 		{
-		}
+			ILRFilename = Qt::UserRole + 1,
+			ILRImage,
+			ILRFileSize
+		};
 
-		using QStandardItemModel::setRoleNames;
+		QMLItemModel (QObject *parent = nullptr)
+		: Util::RoleNamesMixin<QStandardItemModel> (parent)
+		{
+			QHash<int, QByteArray> roles;
+			roles [ILRFilename] = "filename";
+			roles [ILRImage] = "image";
+			roles [ILRFileSize] = "filesize";
+			setRoleNames (roles);
+		}
 	};
 
 	ChoroidTab::ChoroidTab (const TabClassInfo& tc, ICoreProxy_ptr proxy, QObject *parent)
 	: TabClass_ (tc)
 	, Parent_ (parent)
 	, Proxy_ (proxy)
+#if QT_VERSION < 0x050000
 	, DeclView_ (new QDeclarativeView)
+#else
+	, DeclView_ (new QQuickWidget)
+#endif
 	, QMLFilesModel_ (new QMLItemModel)
 	, FSModel_ (new QFileSystemModel (this))
 	, FilesModel_ (new QStandardItemModel (this))
@@ -75,11 +102,6 @@ namespace Choroid
 		lay->setContentsMargins (0, 0, 0, 0);
 		Ui_.ViewFrame_->setLayout (lay);
 		lay->addWidget (DeclView_);
-
-		connect (DeclView_,
-				SIGNAL (statusChanged (QDeclarativeView::Status)),
-				this,
-				SLOT (handleStatusChanged (QDeclarativeView::Status)));
 
 		LoadQML ();
 
@@ -152,35 +174,17 @@ namespace Choroid
 
 	void ChoroidTab::LoadQML ()
 	{
+#if QT_VERSION < 0x050000
 		DeclView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-
-		QHash<int, QByteArray> roles;
-		roles [ILRFilename] = "filename";
-		roles [ILRImage] = "image";
-		roles [ILRFileSize] = "filesize";
-		QMLFilesModel_->setRoleNames (roles);
+#else
+		DeclView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
+#endif
 
 		DeclView_->rootContext ()->setContextProperty ("filesListModel", QMLFilesModel_);
 
-		QStringList candidates;
-#ifdef Q_OS_WIN32
-		candidates << QApplication::applicationDirPath () + "/share/qml/choroid/";
-#else
-		candidates << "/usr/local/share/leechcraft/qml/choroid/"
-				<< "/usr/share/leechcraft/qml/choroid/";
-#endif
+		DeclView_->setSource (Util::GetSysPathUrl (Util::SysPath::QML, "choroid", "ImgView.qml"));
 
-		QString fileLocation;
-		Q_FOREACH (const QString& cand, candidates)
-			if (QFile::exists (cand + "ImgView.qml"))
-			{
-				fileLocation = cand + "ImgView.qml";
-				break;
-			}
-
-		DeclView_->setSource (QUrl::fromLocalFile (fileLocation));
-
-		QObject *item = DeclView_->rootObject ();
+		auto item = DeclView_->rootObject ();
 		connect (item,
 				SIGNAL (imageSelected (QString)),
 				this,
@@ -251,7 +255,7 @@ namespace Choroid
 		for (int i = 0; i < QMLFilesModel_->rowCount (); ++i)
 		{
 			auto item = QMLFilesModel_->item (i);
-			if (item->data (ILRFilename).toString () == filename)
+			if (item->data (QMLItemModel::ILRFilename).toString () == filename)
 				return item;
 		}
 		return 0;
@@ -339,9 +343,9 @@ namespace Choroid
 			FilesModel_->appendRow (row);
 
 			auto qmlItem = new QStandardItem (info.fileName ());
-			qmlItem->setData (info.fileName (), ILRFilename);
-			qmlItem->setData (Util::MakePrettySize (info.size ()), ILRFileSize);
-			qmlItem->setData (QUrl::fromLocalFile (absPath), ILRImage);
+			qmlItem->setData (info.fileName (), QMLItemModel::ILRFilename);
+			qmlItem->setData (Util::MakePrettySize (info.size ()), QMLItemModel::ILRFileSize);
+			qmlItem->setData (QUrl::fromLocalFile (absPath), QMLItemModel::ILRImage);
 			qmlItems << qmlItem;
 		}
 
@@ -370,7 +374,7 @@ namespace Choroid
 			return;
 
 		const auto rc = QMLFilesModel_->rowCount ();
-		const auto& url = QMLFilesModel_->item ((current->row () + 1) % rc)->data (ILRImage).value<QUrl> ();
+		const auto& url = QMLFilesModel_->item ((current->row () + 1) % rc)->data (QMLItemModel::ILRImage).value<QUrl> ();
 		ShowImage (url);
 	}
 
@@ -383,7 +387,7 @@ namespace Choroid
 		auto prev = current->row () - 1;
 		if (prev < 0)
 			prev = QMLFilesModel_->rowCount () - 1;
-		const auto& url = QMLFilesModel_->item (prev)->data (ILRImage).value<QUrl> ();
+		const auto& url = QMLFilesModel_->item (prev)->data (QMLItemModel::ILRImage).value<QUrl> ();
 		ShowImage (url);
 	}
 
@@ -395,21 +399,6 @@ namespace Choroid
 		{
 			const auto& parentIdx = Ui_.DirTree_->currentIndex ().parent ();
 			Ui_.DirTree_->setCurrentIndex (parentIdx);
-		}
-	}
-
-	void ChoroidTab::handleStatusChanged (QDeclarativeView::Status status)
-	{
-		if (status == QDeclarativeView::Error)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got errors:"
-					<< DeclView_->errors ().size ();
-			for (const QDeclarativeError& error : DeclView_->errors ())
-				qWarning () << error.toString ()
-						<< "["
-						<< error.description ()
-						<< "]";
 		}
 	}
 }

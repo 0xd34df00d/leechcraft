@@ -35,7 +35,8 @@
 #include <QHash>
 #include "message.h"
 #include "progresslistener.h"
-#include "accountthreadfwd.h"
+#include "accountthread.h"
+#include "accountthreadworkerfwd.h"
 
 class QMutex;
 class QAbstractItemModel;
@@ -159,7 +160,8 @@ namespace Snails
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
-		void FetchWholeMessage (const Message_ptr&);
+		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
+		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
 
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
@@ -211,12 +213,9 @@ namespace Snails
 		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
 
 		void handleFoldersUpdated ();
-
-		void handleMessageBodyFetched (Message_ptr);
 	signals:
 		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
-		void messageBodyFetched (const Message_ptr&);
 	};
 
 	typedef std::shared_ptr<Account> Account_ptr;

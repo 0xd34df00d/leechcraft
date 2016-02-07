@@ -28,7 +28,6 @@ add_library(leechcraft_gmailnotifier SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
 	${RCCS}
-	${MOC_SRCS}
 )
 target_link_libraries(leechcraft_gmailnotifier
 	${LEECHCRAFT_LIBRARIES}

@@ -194,9 +194,28 @@ namespace Snails
 				};
 	}
 
-	void Account::FetchWholeMessage (const Message_ptr& msg)
+	QFuture<WrapReturnType_t<FetchWholeMessageResult_t>> Account::FetchWholeMessage (const Message_ptr& msg)
 	{
-		Thread_->Schedule (&AccountThreadWorker::FetchWholeMessage, msg);
+		auto future = Thread_->Schedule (&AccountThreadWorker::FetchWholeMessage, msg);
+
+		Util::Sequence (this, future) >>
+			[this] (const auto& result)
+			{
+				Util::Visit (result.AsVariant (),
+						[this] (const Message_ptr& msg)
+						{
+							const auto st = Core::Instance ().GetStorage ();
+							for (const auto& folder : msg->GetFolders ())
+								st->SaveMessages (this, folder, { msg });
+						},
+						[] (const auto& e)
+						{
+							Util::Visit (e,
+									[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
+						});
+			};
+
+		return future;
 	}
 
 	QFuture<Account::SendMessageResult_t> Account::SendMessage (const Message_ptr& msg)
@@ -708,13 +727,6 @@ namespace Snails
 			// TODO lowest priority
 			RequestMessageCount (folder.Path_);
 		}
-	}
-
-	void Account::handleMessageBodyFetched (Message_ptr msg)
-	{
-		for (const auto& folder : msg->GetFolders ())
-			Core::Instance ().GetStorage ()->SaveMessages (this, folder, { msg });
-		emit messageBodyFetched (msg);
 	}
 }
 }

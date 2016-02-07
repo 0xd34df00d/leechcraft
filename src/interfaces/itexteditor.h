@@ -208,6 +208,8 @@ public:
 	 * @param[in] editor The editor to change color of.
 	 */
 	virtual void SetBackgroundColor (const QColor& color, LeechCraft::ContentType editor) = 0;
+
+	virtual QWidget* GetWidget () = 0;
 protected:
 	/** @brief Notifies about contents changes.
 	 *

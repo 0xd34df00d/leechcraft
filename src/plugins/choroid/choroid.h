@@ -45,6 +45,8 @@ namespace Choroid
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Choroid")
+
 		ICoreProxy_ptr Proxy_;
 		TabClassInfo TabInfo_;
 	public:

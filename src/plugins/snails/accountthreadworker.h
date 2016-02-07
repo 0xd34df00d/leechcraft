@@ -42,6 +42,7 @@
 #include "progresslistener.h"
 #include "message.h"
 #include "account.h"
+#include "accountthreadworkerfwd.h"
 
 class QTimer;
 
@@ -97,8 +98,6 @@ namespace Snails
 			QList<QByteArray> RemovedIds_;
 		};
 		using Folder2Messages_t = QHash<QStringList, FolderMessages>;
-
-		struct FolderNotFound {};
 	private:
 		vmime::shared_ptr<vmime::net::store> MakeStore ();
 		vmime::shared_ptr<vmime::net::transport> MakeTransport ();
@@ -132,7 +131,9 @@ namespace Snails
 
 		using SetReadStatusResult_t = Util::Either<boost::variant<FolderNotFound>, QList<Message_ptr>>;
 		SetReadStatusResult_t SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder);
-		void FetchWholeMessage (Message_ptr);
+
+		FetchWholeMessageResult_t FetchWholeMessage (Message_ptr);
+
 		void FetchAttachment (Message_ptr, const QString&, const QString&);
 
 		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
@@ -148,8 +149,6 @@ namespace Snails
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);
-
-		void messageBodyFetched (Message_ptr);
 
 		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
 	};
