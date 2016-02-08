@@ -210,6 +210,8 @@ public:
 	virtual void SetBackgroundColor (const QColor& color, LeechCraft::ContentType editor) = 0;
 
 	virtual QWidget* GetWidget () = 0;
+
+	virtual QObject* GetQObject () = 0;
 protected:
 	/** @brief Notifies about contents changes.
 	 *
