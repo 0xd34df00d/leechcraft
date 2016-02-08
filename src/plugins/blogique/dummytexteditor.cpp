@@ -94,5 +94,10 @@ namespace Blogique
 	{
 		return this;
 	}
+
+	QObject* DummyTextEditor::GetQObject ()
+	{
+		return this;
+	}
 }
 }
