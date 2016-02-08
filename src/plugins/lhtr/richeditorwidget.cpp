@@ -419,6 +419,11 @@ namespace LHTR
 		return this;
 	}
 
+	QObject* RichEditorWidget::GetQObject ()
+	{
+		return this;
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		auto expanded = ExpandCustomTags (html, ExpandMode::PartialHTML);

@@ -82,6 +82,7 @@ namespace LHTR
 		QAction* GetEditorAction (EditorAction);
 		void SetBackgroundColor (const QColor&, ContentType);
 		QWidget* GetWidget ();
+		QObject* GetQObject ();
 
 		void InsertHTML (const QString&);
 		void SetCustomTags (const QList<CustomTag>&);
