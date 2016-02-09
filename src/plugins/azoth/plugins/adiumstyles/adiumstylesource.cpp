@@ -415,10 +415,10 @@ namespace AdiumStyles
 				Msg2Frame_ [msgObj] = frame;
 			}
 
-			const auto& content = StylesLoader_->Load ({ prefix + fname });
+			const auto& stateContent = StylesLoader_->Load ({ prefix + fname });
 			QString replacement;
-			if (content && content->open (QIODevice::ReadOnly))
-				replacement = QString::fromUtf8 (content->readAll ());
+			if (stateContent && stateContent->open (QIODevice::ReadOnly))
+				replacement = QString::fromUtf8 (stateContent->readAll ());
 
 			const QString& selector = QString ("*[id=\"delivery_state_%1\"]")
 					.arg (GetMessageID (msgObj));
