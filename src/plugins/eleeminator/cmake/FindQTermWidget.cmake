@@ -18,9 +18,9 @@ if (NOT USE_QT5)
 		PATHS
 			${QTERMWIDGET_PATH_LIB}
 			/usr/lib/
-			/usr/lib${LIB_SUFFIX}/
+			/usr/lib64/
 			/usr/local/lib/
-			/usr/local/lib${LIB_SUFFIX}/
+			/usr/local/lib64/
 			/opt/local/lib/
 		)
 else ()
@@ -31,9 +31,9 @@ else ()
 		PATHS
 			${QTERMWIDGET_PATH_LIB}
 			/usr/lib/
-			/usr/lib${LIB_SUFFIX}/
+			/usr/lib64/
 			/usr/local/lib/
-			/usr/local/lib${LIB_SUFFIX}/
+			/usr/local/lib64/
 			/opt/local/lib/
 		)
 endif ()
