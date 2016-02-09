@@ -282,7 +282,8 @@ namespace Azoth
 
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
+		const auto entry = GetEntry<QObject> ();
+		auto data = Core::Instance ().GetSelectedChatTemplate (entry,
 				Ui_.View_->page ()->mainFrame ());
 		if (data.isEmpty ())
 			data = QString (R"delim(
@@ -301,7 +302,7 @@ namespace Azoth
 
 		Ui_.View_->setContent (data.toUtf8 (),
 				"text/html", //"application/xhtml+xml" fails to work, though better to use it
-				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
+				Core::Instance ().GetSelectedChatTemplateURL (entry));
 	}
 
 	void ChatTab::HasBeenAdded ()
