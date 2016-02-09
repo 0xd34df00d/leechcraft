@@ -248,7 +248,7 @@ namespace Azoth
 		InitMsgEdit ();
 		RegisterSettings ();
 
-		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookChatTabCreated (std::make_shared<Util::DefaultHookProxy> (),
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
