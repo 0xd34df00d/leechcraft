@@ -31,6 +31,7 @@
 #include <QMessageBox>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/itexteditor.h>
 #include "msgtemplatesmanager.h"
 #include "structures.h"
@@ -64,31 +65,67 @@ namespace Snails
 		prepareEditor (Ui_.ContentType_->currentIndex ());
 	}
 
-	void TemplatesEditorWidget::accept ()
+	void TemplatesEditorWidget::SaveCurrentText ()
 	{
+		if (!IsDirty_)
+			return;
+
 		const auto currentType = Ui_.Editor_->GetCurrentEditorType ();
 		const auto msgType = static_cast<MsgType> (Ui_.MessageType_->currentIndex ());
 
 		const auto& tpl = Ui_.Editor_->GetCurrentEditor ()->GetContents (currentType);
 
-		Util::Visit (TemplatesMgr_->SaveTemplate (currentType, msgType, nullptr, tpl).AsVariant (),
-				[=] (Util::Void) {},
-				[=] (const auto& err)
-				{
-					QMessageBox::critical (this,
-							"LeechCraft",
-							tr ("Unable to save template: %1.")
-								.arg (err.what ()));
-				});
+		Unsaved_ [currentType] [msgType] = tpl;
+
+		IsDirty_ = false;
+	}
+
+	void TemplatesEditorWidget::accept ()
+	{
+		SaveCurrentText ();
+
+		const auto localCopy = Unsaved_;
+		for (const auto& rootPair : Util::Stlize (localCopy))
+		{
+			const auto contentType = rootPair.first;
+
+			for (const auto& pair : Util::Stlize (rootPair.second))
+			{
+				Util::Visit (TemplatesMgr_->SaveTemplate (contentType, pair.first, nullptr, pair.second).AsVariant (),
+						[=] (Util::Void)
+						{
+							auto& submap = Unsaved_ [contentType];
+							submap.remove (pair.first);
+							if (submap.isEmpty ())
+								Unsaved_.remove (contentType);
+						},
+						[=] (const auto& err)
+						{
+							QMessageBox::critical (this,
+									"LeechCraft",
+									tr ("Unable to save template: %1.")
+										.arg (err.what ()));
+						});
+			}
+		}
 	}
 
 	void TemplatesEditorWidget::reject ()
 	{
+		IsDirty_ = false;
+
 		loadTemplate ();
 	}
 
 	void TemplatesEditorWidget::prepareEditor (int index)
 	{
+		disconnect (Ui_.Editor_->GetCurrentEditor ()->GetQObject (),
+				SIGNAL (textChanged ()),
+				this,
+				SLOT (markAsDirty ()));
+
+		SaveCurrentText ();
+
 		EditorTypeActions_.value (index)->trigger ();
 
 		loadTemplate ();
@@ -100,7 +137,16 @@ namespace Snails
 		const auto msgType = static_cast<MsgType> (Ui_.MessageType_->currentIndex ());
 
 		Util::Visit (TemplatesMgr_->GetTemplate (currentType, msgType, nullptr).AsVariant (),
-				[=] (const QString& tpl) { Ui_.Editor_->GetCurrentEditor ()->SetContents (tpl, currentType); },
+				[=] (const QString& tpl)
+				{
+					auto editor = Ui_.Editor_->GetCurrentEditor ();
+					editor->SetContents (tpl, currentType);
+
+					connect (editor->GetQObject (),
+							SIGNAL (textChanged ()),
+							this,
+							SLOT (markAsDirty ()));
+				},
 				[=] (const auto& err)
 				{
 					QMessageBox::critical (this,
@@ -108,6 +154,11 @@ namespace Snails
 							tr ("Unable to load template: %1.")
 								.arg (err.what ()));
 				});
+	}
+
+	void TemplatesEditorWidget::markAsDirty ()
+	{
+		IsDirty_ = true;
 	}
 }
 }

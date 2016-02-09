@@ -34,9 +34,13 @@
 
 namespace LeechCraft
 {
+enum class ContentType;
+
 namespace Snails
 {
 	class MsgTemplatesManager;
+
+	enum class MsgType;
 
 	class TemplatesEditorWidget : public QWidget
 	{
@@ -47,14 +51,20 @@ namespace Snails
 		MsgTemplatesManager * const TemplatesMgr_;
 
 		QList<QAction*> EditorTypeActions_;
+
+		bool IsDirty_ = false;
+		QMap<ContentType, QMap<MsgType, QString>> Unsaved_;
 	public:
 		TemplatesEditorWidget (MsgTemplatesManager*, QWidget* = nullptr);
+	private:
+		void SaveCurrentText ();
 	public slots:
 		void accept ();
 		void reject ();
 	private slots:
 		void prepareEditor (int);
 		void loadTemplate ();
+		void markAsDirty ();
 	};
 }
 }
