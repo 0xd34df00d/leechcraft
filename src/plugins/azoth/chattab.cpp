@@ -353,7 +353,7 @@ namespace Azoth
 		Core::Instance ().GetChatTabsManager ()->ChatMadeCurrent (this);
 		Core::Instance ().FrameFocused (GetEntry<QObject> (), Ui_.View_->page ()->mainFrame ());
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookMadeCurrent (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
