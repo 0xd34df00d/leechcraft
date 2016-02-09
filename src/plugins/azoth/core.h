@@ -272,6 +272,8 @@ namespace Azoth
 		void IncreaseUnreadCount (ICLEntry *entry, int amount = 1);
 
 		int GetUnreadCount (ICLEntry *entry) const;
+
+		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
 	private:
 		/** Adds the protocol object. The object must implement
 		 * IProtocolPlugin interface.
@@ -339,8 +341,6 @@ namespace Azoth
 		/** Adds the given entry to the given category item.
 		 */
 		void AddEntryTo (ICLEntry*, QStandardItem*);
-
-		IChatStyleResourceSource* GetCurrentChatStyle (QObject*) const;
 
 		void FillANFields ();
 
