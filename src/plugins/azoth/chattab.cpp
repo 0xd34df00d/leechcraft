@@ -58,6 +58,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
 #include <util/sll/visitor.h>
+#include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -320,18 +321,14 @@ namespace Azoth
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
-		QList<QAction*> allActions = manager->
-				GetEntryActions (GetEntry<ICLEntry> ());
-		QList<QAction*> result;
-		Q_FOREACH (QAction *act, allActions)
-		{
-			if (manager->GetAreasForAction (act)
-					.contains (ActionsManager::CLEAATabCtxtMenu) ||
-				act->isSeparator ())
-				result << act;
-		}
-		return result;
+		const auto mgr = Core::Instance ().GetActionsManager ();
+		return Util::Filter (mgr->GetEntryActions (GetEntry<ICLEntry> ()),
+				[mgr] (QAction *act)
+				{
+					return act->isSeparator () ||
+							mgr->GetAreasForAction (act)
+									.contains (ActionsManager::CLEAATabCtxtMenu);
+				});
 	}
 
 	QObject* ChatTab::ParentMultiTabs ()
