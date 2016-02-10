@@ -110,6 +110,8 @@ namespace Azoth
 			emit downloadProgress (Buffer_.size (), Buffer_.size ());
 
 			emit readyRead ();
+
+			emit finished ();
 		}
 	}
 
