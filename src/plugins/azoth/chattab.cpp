@@ -1448,13 +1448,7 @@ namespace Azoth
 			return 0;
 		}
 
-		T *entry = qobject_cast<T*> (obj);
-		if (!entry)
-			qWarning () << Q_FUNC_INFO
-					<< "object"
-					<< obj
-					<< "doesn't implement the required interface";
-		return entry;
+		return qobject_cast<T*> (obj);
 	}
 
 	void ChatTab::BuildBasicActions ()
