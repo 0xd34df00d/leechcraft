@@ -967,6 +967,14 @@ namespace Xoox
 		return SettingsHolder_->GetNick ();
 	}
 
+	namespace
+	{
+		QString NormalizeRoomJid (const QString& jid)
+		{
+			return jid.toLower ();
+		}
+	}
+
 	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick, const QString& password)
 	{
 		if (!ClientConnection_)
