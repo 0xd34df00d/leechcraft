@@ -56,7 +56,7 @@ namespace Herbicide
 	{
 		Util::InstallTranslator ("azoth_herbicide");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");
 
