@@ -171,7 +171,7 @@ namespace Snails
 				this,
 				SIGNAL (removeTab (QWidget*)));
 
-		if (const auto iwfs = dynamic_cast<IWkFontsSettable*> (mt))
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (mt))
 			WkFontsWidget_->RegisterSettable (iwfs);
 
 		emit addNewTab (name, mt);
