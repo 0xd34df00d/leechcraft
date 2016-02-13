@@ -975,7 +975,7 @@ namespace Xoox
 		}
 	}
 
-	void GlooxAccount::JoinRoom (const QString& jid, const QString& nick, const QString& password)
+	void GlooxAccount::JoinRoom (const QString& origJid, const QString& nick, const QString& password)
 	{
 		if (!ClientConnection_)
 		{
@@ -983,6 +983,14 @@ namespace Xoox
 					<< "null ClientConnection";
 			return;
 		}
+
+		auto jid = NormalizeRoomJid (origJid);
+		if (jid != origJid)
+			qWarning () << Q_FUNC_INFO
+					<< "room jid normalization happened from"
+					<< origJid
+					<< "to"
+					<< jid;
 
 		const auto existingObj = ClientConnection_->GetCLEntry (jid, {});
 		const auto existing = qobject_cast<ICLEntry*> (existingObj);
