@@ -106,10 +106,12 @@ namespace LeechCraft
  * In general, ContentType::HTML type is used when the caller considers
  * the contents as HTML-enabled, and ContentType::PlainText otherwise.
  *
- * A text editor widget may also implement IAdvancedHTMLEditor if it
- * supports the functionality required by that interface.
+ * A text editor widget may also implement IAdvancedHTMLEditor and
+ * IAdvancedPlainTextEditor if it supports the functionality required by
+ * those interfaces.
  *
  * @sa IAdvancedHTMLEditor
+ * @sa IAdvancedPlainTextEditor
  */
 class Q_DECL_EXPORT IEditorWidget
 {
