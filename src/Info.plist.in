@@ -17,9 +17,9 @@
 	<key>CFBundleIdentifier</key>
 	<string>org.LC.LeechCraft</string>
 	<key>CFBundleVersion</key>
-	<string>0.5.85</string>
+	<string>${LEECHCRAFT_VERSION}</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.5.85</string>
+	<string>${LEECHCRAFT_VERSION}</string>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
 </dict>
