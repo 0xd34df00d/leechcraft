@@ -134,7 +134,9 @@ namespace Lastfmscrobble
 	{
 		params.append ({ "method", method });
 		params.append ({ "api_key", lastfm::ws::ApiKey });
-		params.append ({ "sk", lastfm::ws::SessionKey });
+
+		if (!lastfm::ws::SessionKey.isEmpty ())
+			params.append ({ "sk", lastfm::ws::SessionKey });
 
 		return XmlSettingsManager::Instance ().property ("UseGetRequests").toBool () ?
 				MakeGetRequest (nam, params) :

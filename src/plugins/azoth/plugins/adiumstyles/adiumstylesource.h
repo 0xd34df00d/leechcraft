@@ -83,6 +83,7 @@ namespace AdiumStyles
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 		QStringList GetVariantsForPack (const QString&);
+		void PostprocessFrame (QWebFrame*, QObject*);
 	private:
 		void PercentTemplate (QString&, const QMap<QString, QString>&) const;
 		void SubstituteUserIcon (QString&,

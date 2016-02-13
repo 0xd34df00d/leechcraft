@@ -87,6 +87,11 @@ namespace Snails
 		return Edit_;
 	}
 
+	QObject* TextEditorAdaptor::GetQObject ()
+	{
+		return this;
+	}
+
 	bool TextEditorAdaptor::FindText (const QString& text)
 	{
 		return Edit_->find (text);

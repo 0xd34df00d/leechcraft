@@ -188,10 +188,10 @@ namespace AdiumStyles
 		{
 			return QStringList { prefix + name, prefix + name.toLower () };
 		};
-		Util::QIODevice_ptr header = StylesLoader_->Load (insensitive ("Header.html"));
-		Util::QIODevice_ptr footer = StylesLoader_->Load (insensitive ("Footer.html"));
-		Util::QIODevice_ptr css = StylesLoader_->Load ({ prefix + "main.css" });
-		Util::QIODevice_ptr tmpl = StylesLoader_->Load (insensitive ("Template.html"));
+		const auto& header = StylesLoader_->Load (insensitive ("Header.html"));
+		const auto& footer = StylesLoader_->Load (insensitive ("Footer.html"));
+		const auto& css = StylesLoader_->Load ({ prefix + "main.css" });
+		const auto& tmpl = StylesLoader_->Load (insensitive ("Template.html"));
 
 		if ((header && !header->open (QIODevice::ReadOnly)) ||
 				(footer && !footer->open (QIODevice::ReadOnly)) ||
@@ -400,7 +400,7 @@ namespace AdiumStyles
 
 		if (templ.contains ("%stateElementId%"))
 		{
-			IAdvancedMessage *advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
+			const auto advMsg = qobject_cast<IAdvancedMessage*> (msgObj);
 			QString fname;
 			if (!advMsg || advMsg->IsDelivered () || in)
 				fname = "StateSent.html";
@@ -415,11 +415,10 @@ namespace AdiumStyles
 				Msg2Frame_ [msgObj] = frame;
 			}
 
-			Util::QIODevice_ptr content =
-					StylesLoader_->Load (QStringList (prefix + fname));
+			const auto& stateContent = StylesLoader_->Load ({ prefix + fname });
 			QString replacement;
-			if (content && content->open (QIODevice::ReadOnly))
-				replacement = QString::fromUtf8 (content->readAll ());
+			if (stateContent && stateContent->open (QIODevice::ReadOnly))
+				replacement = QString::fromUtf8 (stateContent->readAll ());
 
 			const QString& selector = QString ("*[id=\"delivery_state_%1\"]")
 					.arg (GetMessageID (msgObj));
@@ -452,6 +451,11 @@ namespace AdiumStyles
 			}
 
 		return result;
+	}
+
+	void AdiumStyleSource::PostprocessFrame (QWebFrame *frame, QObject*)
+	{
+		frame->evaluateJavaScript ("initStyle();");
 	}
 
 	void AdiumStyleSource::PercentTemplate (QString& result, const QMap<QString, QString>& map) const

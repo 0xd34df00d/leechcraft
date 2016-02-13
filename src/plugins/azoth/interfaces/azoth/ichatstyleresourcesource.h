@@ -155,6 +155,8 @@ namespace Azoth
 		 * @sa GetHTMLTemplate()
 		 */
 		virtual QStringList GetVariantsForPack (const QString& style) = 0;
+
+		virtual void PostprocessFrame (QWebFrame *frame, QObject *entry) = 0;
 	};
 }
 }

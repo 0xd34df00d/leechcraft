@@ -419,6 +419,11 @@ namespace LHTR
 		return this;
 	}
 
+	QObject* RichEditorWidget::GetQObject ()
+	{
+		return this;
+	}
+
 	void RichEditorWidget::InsertHTML (const QString& html)
 	{
 		auto expanded = ExpandCustomTags (html, ExpandMode::PartialHTML);
@@ -466,6 +471,21 @@ namespace LHTR
 	void RichEditorWidget::ExecJS (const QString& js)
 	{
 		Ui_.View_->page ()->mainFrame ()->evaluateJavaScript (js);
+	}
+
+	void RichEditorWidget::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		Ui_.View_->settings ()->setFontFamily (family, font.family ());
+	}
+
+	void RichEditorWidget::SetFontSize (QWebSettings::FontSize font, int size)
+	{
+		Ui_.View_->settings ()->setFontSize (font, size);
+	}
+
+	void RichEditorWidget::SetFontSizeMultiplier (qreal factor)
+	{
+		Ui_.View_->setTextSizeMultiplier (factor);
 	}
 
 	bool RichEditorWidget::eventFilter (QObject*, QEvent *event)

@@ -18,9 +18,9 @@ if (NOT USE_QT5)
 		PATHS
 			${QTERMWIDGET_PATH_LIB}
 			/usr/lib/
-			/usr/lib${LIB_SUFFIX}/
+			/usr/lib64/
 			/usr/local/lib/
-			/usr/local/lib${LIB_SUFFIX}/
+			/usr/local/lib64/
 			/opt/local/lib/
 		)
 else ()
@@ -31,9 +31,9 @@ else ()
 		PATHS
 			${QTERMWIDGET_PATH_LIB}
 			/usr/lib/
-			/usr/lib${LIB_SUFFIX}/
+			/usr/lib64/
 			/usr/local/lib/
-			/usr/local/lib${LIB_SUFFIX}/
+			/usr/local/lib64/
 			/opt/local/lib/
 		)
 endif ()
@@ -42,9 +42,10 @@ if (QTERMWIDGET_LIBRARIES AND QTERMWIDGET_INCLUDE_DIR)
 	set (QTERMWIDGET_FOUND TRUE)
 endif ()
 
-if (QTERMWIDGET_FOUND)
-	message (STATUS "Found QTermWidget: includes at ${QTERMWIDGET_INCLUDE_DIR} and libs at ${QTERMWIDGET_LIBRARIES}")
-else ()
+message (STATUS "Found QTermWidget includes at ${QTERMWIDGET_INCLUDE_DIR}")
+message (STATUS "Found QTermWidget libraries at ${QTERMWIDGET_LIBRARIES}")
+
+if (NOT QTERMWIDGET_FOUND)
 	if (QTermWidget_FIND_REQUIRED)
 		message (FATAL_ERROR "Could not find QTermWidget library")
 	endif ()

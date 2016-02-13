@@ -45,9 +45,10 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
+#include <interfaces/iadvancedplaintexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/iadvancedplaintexteditor.h>
 #include "message.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -105,6 +106,32 @@ namespace Snails
 	QToolBar* ComposeMessageTab::GetToolBar () const
 	{
 		return Toolbar_;
+	}
+
+	QObject* ComposeMessageTab::GetQObject ()
+	{
+		return this;
+	}
+
+	void ComposeMessageTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		for (const auto editor : Ui_.Editor_->GetAllEditors ())
+			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
+				iwfs->SetFontFamily (family, font);
+	}
+
+	void ComposeMessageTab::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		for (const auto editor : Ui_.Editor_->GetAllEditors ())
+			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
+				iwfs->SetFontSize (type, size);
+	}
+
+	void ComposeMessageTab::SetFontSizeMultiplier (qreal factor)
+	{
+		for (const auto editor : Ui_.Editor_->GetAllEditors ())
+			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
+				iwfs->SetFontSizeMultiplier (factor);
 	}
 
 	void ComposeMessageTab::SelectAccount (const Account_ptr& account)

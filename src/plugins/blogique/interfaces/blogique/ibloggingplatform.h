@@ -32,7 +32,7 @@
 #include <functional>
 #include <QMetaType>
 #include <QAction>
-#include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
 
 class QObject;
 class QIcon;
@@ -102,7 +102,7 @@ namespace Blogique
 			/** This blogging platform supports post preview in blog style
 			 */
 			BPFPostPreviewSupport = 64,
-			
+
 			/** This blogging platform supports getting comments
 			 */
 			BPFSupportComments = 128
@@ -247,7 +247,6 @@ namespace Blogique
 
 		virtual QList<InlineTagInserter> GetInlineTagInserters () const = 0;
 
-
 		/** @brief Returns the widgets used for extended posting features.
 		 *
 		 * The widgets from the returned list are shown in the side dockwidget
@@ -264,7 +263,6 @@ namespace Blogique
 		virtual QList<QWidget*> GetBlogiqueSideWidgets () const = 0;
 
 		virtual IAdvancedHTMLEditor::CustomTags_t GetCustomTags () const = 0;
-
 	protected:
 		/** @brief Notifies about new account.
 		 *

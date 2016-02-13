@@ -58,11 +58,12 @@ namespace Snails
 		void RemoveAction (QAction*);
 		void SetBackgroundColor (const QColor&, ContentType);
 		QWidget* GetWidget ();
+		QObject* GetQObject ();
 
 		bool FindText (const QString&);
 		void DeleteSelection ();
 	signals:
-		void textChanged();
+		void textChanged ();
 	};
 }
 }

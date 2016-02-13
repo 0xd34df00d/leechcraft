@@ -369,12 +369,42 @@ namespace Snails
 					};
 			}
 		};
+
+		class AttachmentsProvider : public MessageListActionsProvider
+		{
+			Account * const Acc_;
+		public:
+			AttachmentsProvider (Account *acc)
+			: Acc_ { acc }
+			{
+			}
+
+			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account *acc) const override
+			{
+				if (msg->GetAttachments ().isEmpty ())
+					return {};
+
+				return
+				{
+					{
+						QObject::tr ("Attachments"),
+						QObject::tr ("Open/save attachments."),
+						QIcon::fromTheme ("mail-attachment"),
+						[acc = Acc_] (const Message_ptr& msg)
+						{
+							//new MessageAttachmentsDialog { acc, msg };
+						}
+					}
+				};
+			}
+		};
 	}
 
 	MessageListActionsManager::MessageListActionsManager (Account *acc, QObject *parent)
 	: QObject { parent }
 	, Acc_ { acc }
 	{
+		Providers_ << std::make_shared<AttachmentsProvider> (acc);
 		Providers_ << std::make_shared<GithubProvider> ();
 		Providers_ << std::make_shared<RedmineProvider> ();
 		Providers_ << std::make_shared<BugzillaProvider> ();

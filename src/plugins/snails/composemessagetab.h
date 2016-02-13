@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/iwkfontssettable.h>
 #include "ui_composemessagetab.h"
 #include "account.h"
 
@@ -45,9 +46,10 @@ namespace Snails
 
 	class ComposeMessageTab : public QWidget
 							, public ITabWidget
+							, public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IWkFontsSettable)
 
 		static QObject *S_ParentPlugin_;
 		static TabClassInfo S_TabClassInfo_;
@@ -73,6 +75,11 @@ namespace Snails
 		QObject* ParentMultiTabs ();
 		void Remove ();
 		QToolBar* GetToolBar () const;
+
+		QObject* GetQObject ();
+		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
+		void SetFontSize (QWebSettings::FontSize, int);
+		void SetFontSizeMultiplier (qreal);
 
 		void SelectAccount (const Account_ptr&);
 		void PrepareReply (const Message_ptr&);

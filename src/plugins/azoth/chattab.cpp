@@ -58,6 +58,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
 #include <util/sll/visitor.h>
+#include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -248,7 +249,7 @@ namespace Azoth
 		InitMsgEdit ();
 		RegisterSettings ();
 
-		emit hookChatTabCreated (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookChatTabCreated (std::make_shared<Util::DefaultHookProxy> (),
 				this,
 				GetEntry<QObject> (),
 				Ui_.View_);
@@ -282,7 +283,8 @@ namespace Azoth
 
 	void ChatTab::PrepareTheme ()
 	{
-		QString data = Core::Instance ().GetSelectedChatTemplate (GetEntry<QObject> (),
+		const auto entry = GetEntry<QObject> ();
+		auto data = Core::Instance ().GetSelectedChatTemplate (entry,
 				Ui_.View_->page ()->mainFrame ());
 		if (data.isEmpty ())
 			data = QString (R"delim(
@@ -301,7 +303,10 @@ namespace Azoth
 
 		Ui_.View_->setContent (data.toUtf8 (),
 				"text/html", //"application/xhtml+xml" fails to work, though better to use it
-				Core::Instance ().GetSelectedChatTemplateURL (GetEntry<QObject> ()));
+				Core::Instance ().GetSelectedChatTemplateURL (entry));
+
+		auto src = Core::Instance ().GetCurrentChatStyle (entry);
+		src->PostprocessFrame (Ui_.View_->page ()->mainFrame (), entry);
 	}
 
 	void ChatTab::HasBeenAdded ()
@@ -316,18 +321,14 @@ namespace Azoth
 
 	QList<QAction*> ChatTab::GetTabBarContextMenuActions () const
 	{
-		ActionsManager *manager = Core::Instance ().GetActionsManager ();
-		QList<QAction*> allActions = manager->
-				GetEntryActions (GetEntry<ICLEntry> ());
-		QList<QAction*> result;
-		Q_FOREACH (QAction *act, allActions)
-		{
-			if (manager->GetAreasForAction (act)
-					.contains (ActionsManager::CLEAATabCtxtMenu) ||
-				act->isSeparator ())
-				result << act;
-		}
-		return result;
+		const auto mgr = Core::Instance ().GetActionsManager ();
+		return Util::Filter (mgr->GetEntryActions (GetEntry<ICLEntry> ()),
+				[mgr] (QAction *act)
+				{
+					return act->isSeparator () ||
+							mgr->GetAreasForAction (act)
+									.contains (ActionsManager::CLEAATabCtxtMenu);
+				});
 	}
 
 	QObject* ChatTab::ParentMultiTabs ()
@@ -352,7 +353,7 @@ namespace Azoth
 		Core::Instance ().GetChatTabsManager ()->ChatMadeCurrent (this);
 		Core::Instance ().FrameFocused (GetEntry<QObject> (), Ui_.View_->page ()->mainFrame ());
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookMadeCurrent (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
@@ -1447,13 +1448,7 @@ namespace Azoth
 			return 0;
 		}
 
-		T *entry = qobject_cast<T*> (obj);
-		if (!entry)
-			qWarning () << Q_FUNC_INFO
-					<< "object"
-					<< obj
-					<< "doesn't implement the required interface";
-		return entry;
+		return qobject_cast<T*> (obj);
 	}
 
 	void ChatTab::BuildBasicActions ()

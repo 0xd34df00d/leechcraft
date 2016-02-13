@@ -75,6 +75,7 @@ namespace StandardStyles
 		bool AppendMessage (QWebFrame*, QObject*, const ChatMsgAppendInfo&);
 		void FrameFocused (QWebFrame*);
 		QStringList GetVariantsForPack (const QString&);
+		void PostprocessFrame (QWebFrame*, QObject*);
 	private:
 		QList<QColor> CreateColors (const QString&, QWebFrame*);
 		QString GetMessageID (QObject*);
