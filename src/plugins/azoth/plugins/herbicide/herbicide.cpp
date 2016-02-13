@@ -259,7 +259,7 @@ namespace Herbicide
 			QSet<QRegExp> result;
 
 			const auto& strings = XmlSettingsManager::Instance ().property (prop).toStringList ();
-			Q_FOREACH (auto string, strings)
+			for (auto string : strings)
 			{
 				string = string.trimmed ();
 				if (string.isEmpty ())
