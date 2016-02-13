@@ -33,6 +33,7 @@
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
 #include "ui_richeditorwidget.h"
 
 class QToolBar;

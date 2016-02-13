@@ -45,9 +45,10 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
+#include <interfaces/iadvancedplaintexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/iadvancedplaintexteditor.h>
 #include "message.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"

@@ -32,7 +32,7 @@
 #include <functional>
 #include <QMetaType>
 #include <QAction>
-#include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
 
 class QObject;
 class QIcon;
