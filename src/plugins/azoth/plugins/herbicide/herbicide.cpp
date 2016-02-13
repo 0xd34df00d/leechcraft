@@ -135,18 +135,17 @@ namespace Herbicide
 
 		const auto& id = entry->GetHumanReadableID ();
 
-		Q_FOREACH (const auto& rx, Whitelist_)
-			if (rx.exactMatch (id))
-				return true;
+		const auto checkRxList = [&id] (const QSet<QRegExp>& rxList)
+		{
+			return std::any_of (rxList.begin (), rxList.end (),
+					[&id] (const QRegExp& rx) { return rx.exactMatch (id); });
+		};
+
+		if (checkRxList (Whitelist_))
+			return true;
 
 		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
-		{
-			Q_FOREACH (const auto& rx, Blacklist_)
-				if (rx.exactMatch (id))
-					return false;
-
-			return true;
-		}
+			return !checkRxList (Blacklist_);
 
 		return false;
 	}
