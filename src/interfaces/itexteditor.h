@@ -110,8 +110,12 @@ namespace LeechCraft
  * IAdvancedPlainTextEditor if it supports the functionality required by
  * those interfaces.
  *
+ * For an HTML editor to expose configurable fonts, it should implement
+ * IWkFontsSettable.
+ *
  * @sa IAdvancedHTMLEditor
  * @sa IAdvancedPlainTextEditor
+ * @sa IWkFontsSettable
  */
 class Q_DECL_EXPORT IEditorWidget
 {
