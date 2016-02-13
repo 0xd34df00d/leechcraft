@@ -142,7 +142,6 @@ namespace Snails
 		{
 			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, MailTabClass_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
-			WkFontsWidget_->RegisterSettable (mt);
 		}
 		else if (tabClass == "compose")
 		{
@@ -171,6 +170,9 @@ namespace Snails
 				SIGNAL (removeTab (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
+
+		if (const auto iwfs = dynamic_cast<IWkFontsSettable*> (mt))
+			WkFontsWidget_->RegisterSettable (iwfs);
 
 		emit addNewTab (name, mt);
 		emit raiseTab (mt);
