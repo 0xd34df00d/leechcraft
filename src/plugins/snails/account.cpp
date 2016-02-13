@@ -261,7 +261,7 @@ namespace Snails
 	void Account::MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
 	{
 		CopyMessages (ids, from, to);
-		DeleteMessages (ids, from);
+		DeleteFromFolder (ids, from);
 	}
 
 	namespace
@@ -285,18 +285,7 @@ namespace Snails
 				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)
 			CopyMessages (ids, folder, { *trashPath });
 
-		const auto& future = MessageFetchThread_->Schedule (&AccountThreadWorker::DeleteMessages, ids, folder);
-		Util::Sequence (this, future) >>
-				[=] (const auto& result)
-				{
-					Util::Visit (result.AsVariant (),
-							[=] (boost::none_t)
-							{
-								HandleMessagesRemoved (ids, folder);
-								UpdateFolderCount (folder);
-							},
-							[] (auto) {});
-				};
+		DeleteFromFolder (ids, folder);
 	}
 
 	QByteArray Account::Serialize () const
@@ -605,6 +594,22 @@ namespace Snails
 		if (dir == Direction::Out)
 			result += "/out";
 		return result;
+	}
+
+	void Account::DeleteFromFolder (const QList<QByteArray>& ids, const QStringList& folder)
+	{
+		const auto& future = MessageFetchThread_->Schedule (&AccountThreadWorker::DeleteMessages, ids, folder);
+		Util::Sequence (this, future) >>
+				[=] (const auto& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (boost::none_t)
+							{
+								HandleMessagesRemoved (ids, folder);
+								UpdateFolderCount (folder);
+							},
+							[] (auto) {});
+				};
 	}
 
 	void Account::UpdateFolderCount (const QStringList& folder)
