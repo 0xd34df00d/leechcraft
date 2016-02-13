@@ -3,7 +3,7 @@
 <plist version=1.0>
 <dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>(C) 2006-2012 LeechCraft Development Team</string>
+	<string>(C) 2006-2016 LeechCraft Development Team</string>
 	<key>CFBundleIconFile</key>
 	<string>leechcraft.icns</string>
 	<key>CFBundlePackageType</key>
