@@ -131,10 +131,16 @@ namespace Herbicide
 			return true;
 
 		if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry)
+		{
+			Logger_->LogEvent (Logger::Event::Granted, entry, "entry is permanent");
 			return true;
+		}
 
 		if (AllowedEntries_.contains (entryObj))
+		{
+			Logger_->LogEvent (Logger::Event::Granted, entry, "entry has been previously allowed");
 			return true;
+		}
 
 		const auto& id = entry->GetHumanReadableID ();
 
@@ -145,10 +151,22 @@ namespace Herbicide
 		};
 
 		if (checkRxList (Whitelist_))
+		{
+			Logger_->LogEvent (Logger::Event::Granted, entry, "entry is in the whitelist");
 			return true;
+		}
 
 		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
-			return !checkRxList (Blacklist_);
+		{
+			const auto isBlacklisted = checkRxList (Blacklist_);
+			if (isBlacklisted)
+				Logger_->LogEvent (Logger::Event::Denied, entry, "entry is in the blacklist");
+			else
+				Logger_->LogEvent (Logger::Event::Granted, entry, "entry is not in the blacklist and blacklist-only mode is enabled");
+			return !isBlacklisted;
+		}
+
+		Logger_->LogEvent (Logger::Event::Denied, entry, "fallback case");
 
 		return false;
 	}
@@ -161,6 +179,8 @@ namespace Herbicide
 				"question to verify you are not a bot and is welcome "
 				"to communicate with me:\n%1")
 					.arg (ConfWidget_->GetQuestion ());
+
+		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 
 		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msg;
@@ -243,9 +263,14 @@ namespace Herbicide
 		if (!AskedEntries_.contains (entryObj))
 			ChallengeEntry (proxy, entryObj);
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
+		{
+			Logger_->LogEvent (Logger::Event::Succeeded, entry, msg->GetBody ());
 			GreetEntry (entryObj);
+		}
 		else
 		{
+			Logger_->LogEvent (Logger::Event::Failed, entry, msg->GetBody ());
+
 			const auto& text = tr ("Sorry, you are wrong. Try again.");
 			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 			OurMessages_ << msg;
