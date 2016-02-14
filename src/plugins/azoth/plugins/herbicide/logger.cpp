@@ -224,6 +224,20 @@ namespace Herbicide
 
 	void Logger::LogEvent (Logger::Event event, const ICLEntry *entry, const QString& descr)
 	{
+		const auto& accId = entry->GetParentAccount ()->GetAccountID ();
+		const auto& entryId = entry->GetEntryID ();
+
+		const auto& maybeAccPKey = AdaptedAccount_->DoSelectOneByFields_ (sph::_0, sph::_1 == accId);
+		const auto accPKey = maybeAccPKey ?
+				**maybeAccPKey :
+				InsertAccount (entry->GetParentAccount ());
+
+		const auto maybeEntryPKey = AdaptedEntry_->DoSelectOneByFields_ (sph::_0, sph::_2 == entryId);
+		const auto entryPKey = maybeEntryPKey ?
+				**maybeEntryPKey :
+				InsertEntry (accPKey, entry);
+
+		AdaptedEvent_->DoInsert_ ({ {}, entryPKey, event, descr });
 	}
 
 	int Logger::InsertAccount (const IAccount *acc)
