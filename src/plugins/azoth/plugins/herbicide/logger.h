@@ -69,6 +69,7 @@ namespace Herbicide
 		void LogEvent (Event, const ICLEntry*, const QString& descr);
 	private:
 		int InsertAccount (const IAccount*);
+		int InsertEntry (int, const ICLEntry*);
 	};
 }
 }

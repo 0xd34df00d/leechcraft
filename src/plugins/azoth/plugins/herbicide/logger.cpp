@@ -234,6 +234,17 @@ namespace Herbicide
 				acc->GetAccountName ()
 			});
 	}
+
+	int Logger::InsertEntry (int accPKey, const ICLEntry *entry)
+	{
+		return AdaptedEntry_->DoInsert_ ({
+				{},
+				accPKey,
+				entry->GetEntryID (),
+				entry->GetHumanReadableID (),
+				entry->GetEntryName ()
+			});
+	}
 }
 }
 }
