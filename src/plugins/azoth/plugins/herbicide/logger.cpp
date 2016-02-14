@@ -34,6 +34,8 @@
 #include <util/db/util.h>
 #include <util/sys/paths.h>
 #include <util/util.h>
+#include <interfaces/azoth/iclentry.h>
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {
@@ -218,8 +220,15 @@ namespace Herbicide
 		AdaptedEvent_ = Util::oral::AdaptPtr<EventRecord> (DB_);
 	}
 
+	namespace sph = Util::oral::sph;
+
 	void Logger::LogEvent (Logger::Event event, ICLEntry *entry, const QString& descr)
 	{
+	}
+
+	int Logger::InsertAccount (const IAccount *acc)
+	{
+		return AdaptedAccount_->DoInsert_ ({ {}, QString { acc->GetAccountID () }, acc->GetAccountName () });
 	}
 }
 }

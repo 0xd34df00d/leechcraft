@@ -38,6 +38,7 @@ namespace LeechCraft
 namespace Azoth
 {
 class ICLEntry;
+class IAccount;
 
 namespace Herbicide
 {
@@ -66,6 +67,8 @@ namespace Herbicide
 		};
 
 		void LogEvent (Event, ICLEntry*, const QString& descr);
+	private:
+		int InsertAccount (const IAccount*);
 	};
 }
 }
