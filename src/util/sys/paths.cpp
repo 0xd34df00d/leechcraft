@@ -67,11 +67,8 @@ namespace Util
 		case SysPath::Share:
 #ifdef Q_OS_WIN32
 			candidates << QApplication::applicationDirPath () + "/share/" + suffix;
-#elif defined (Q_OS_MAC)
-			if (QApplication::arguments ().contains ("-nobundle"))
-				candidates << "/usr/local/share/leechcraft/" + suffix;
-			else
-				candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
+#elif defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+			candidates << QApplication::applicationDirPath () + "/../Resources/share/" + suffix;
 #else
 	#ifdef INSTALL_PREFIX
 			candidates << INSTALL_PREFIX "/share/leechcraft/" + suffix;
