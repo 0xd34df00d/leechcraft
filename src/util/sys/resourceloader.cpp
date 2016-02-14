@@ -117,7 +117,7 @@ namespace LeechCraft
 			};
 #endif
 			bool hasBeenAdded = false;
-			for (const QString& prefix : prefixes)
+			for (const auto& prefix : prefixes)
 			{
 				GlobalPrefixesChain_ << prefix;
 				ScanPath (prefix + RelativePath_);

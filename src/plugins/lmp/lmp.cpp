@@ -73,7 +73,7 @@ namespace LMP
 
 		Util::InstallTranslator ("lmp");
 
-#ifdef Q_OS_MAC
+#if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 		auto updateEnv = [] (const char *name, const QByteArray& relpath)
 		{
 			if (qgetenv (name).isEmpty ())
@@ -81,16 +81,13 @@ namespace LMP
 						QCoreApplication::applicationDirPath ().toUtf8 () + relpath);
 		};
 
-		if (!QApplication::arguments ().contains ("-nobundle"))
-		{
-			updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
-			updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
-			updateEnv ("GTK_PATH", "/../Frameworks");
-			updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
-			updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
+		updateEnv ("GST_PLUGIN_SYSTEM_PATH", "/../PlugIns/gstreamer");
+		updateEnv ("GST_PLUGIN_SCANNER", "gst-plugin-scanner");
+		updateEnv ("GTK_PATH", "/../Frameworks");
+		updateEnv ("GIO_EXTRA_MODULES", "/../PlugIns/gstreamer");
+		updateEnv ("GSETTINGS_SCHEMA_DIR", "/../Frameworks/schemas");
 
-			qputenv ("GST_REGISTRY_FORK", "no");
-		}
+		qputenv ("GST_REGISTRY_FORK", "no");
 #endif
 
 		gint argc = 1;
