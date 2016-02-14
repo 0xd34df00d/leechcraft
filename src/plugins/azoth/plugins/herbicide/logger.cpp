@@ -202,7 +202,7 @@ namespace Herbicide
 	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
 				Util::GenConnectionName ("org.LeechCraft.Azoth.Herbicide.Log")) }
 	{
-		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth/herbicide");
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::LC, "azoth/herbicide");
 		DB_.setDatabaseName (cacheDir.filePath ("log.db"));
 		if (!DB_.open ())
 		{
