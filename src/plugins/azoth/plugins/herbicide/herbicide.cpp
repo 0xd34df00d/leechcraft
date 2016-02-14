@@ -56,7 +56,7 @@ namespace Herbicide
 	{
 		Util::InstallTranslator ("azoth_herbicide");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");
 
@@ -135,18 +135,17 @@ namespace Herbicide
 
 		const auto& id = entry->GetHumanReadableID ();
 
-		Q_FOREACH (const auto& rx, Whitelist_)
-			if (rx.exactMatch (id))
-				return true;
+		const auto checkRxList = [&id] (const QSet<QRegExp>& rxList)
+		{
+			return std::any_of (rxList.begin (), rxList.end (),
+					[&id] (const QRegExp& rx) { return rx.exactMatch (id); });
+		};
+
+		if (checkRxList (Whitelist_))
+			return true;
 
 		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
-		{
-			Q_FOREACH (const auto& rx, Blacklist_)
-				if (rx.exactMatch (id))
-					return false;
-
-			return true;
-		}
+			return !checkRxList (Blacklist_);
 
 		return false;
 	}
@@ -260,7 +259,7 @@ namespace Herbicide
 			QSet<QRegExp> result;
 
 			const auto& strings = XmlSettingsManager::Instance ().property (prop).toStringList ();
-			Q_FOREACH (auto string, strings)
+			for (auto string : strings)
 			{
 				string = string.trimmed ();
 				if (string.isEmpty ())
