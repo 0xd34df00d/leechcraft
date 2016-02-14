@@ -35,7 +35,7 @@
 #include <QCoreApplication>
 #include <QtDebug>
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 #include <mach-o/dyld.h>
 
 namespace
@@ -74,7 +74,7 @@ int main (int argc, char **argv)
 		QFont::insertSubstitution (".Lucida Grande UI", "Lucida Grande");
 #endif
 
-#ifdef Q_OS_MAC
+#if defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 	SetupLibraryPaths ();
 #endif
 
