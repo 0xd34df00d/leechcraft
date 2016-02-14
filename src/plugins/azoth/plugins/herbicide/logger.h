@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <QSqlDatabase>
 
 namespace LeechCraft
 {
@@ -41,6 +42,9 @@ namespace Herbicide
 {
 	class Logger : public QObject
 	{
+	public:
+	private:
+		QSqlDatabase DB_;
 	public:
 		Logger (QObject* = nullptr);
 

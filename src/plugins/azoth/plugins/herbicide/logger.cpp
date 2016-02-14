@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "logger.h"
+#include <QDir>
+#include <QSqlError>
+#include <util/db/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -37,7 +41,21 @@ namespace Herbicide
 {
 	Logger::Logger (QObject *parent)
 	: QObject { parent }
+	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
+				Util::GenConnectionName ("org.LeechCraft.Azoth.Herbicide.Log")) }
 	{
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth/herbicide");
+		DB_.setDatabaseName (cacheDir.filePath ("log.db"));
+		if (!DB_.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open the database";
+			Util::DBLock::DumpError (DB_.lastError ());
+			throw std::runtime_error { "Cannot create database" };
+		}
+
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 	}
 
 	void Logger::LogEvent (Logger::Event event, ICLEntry *entry, const QString& descr)
