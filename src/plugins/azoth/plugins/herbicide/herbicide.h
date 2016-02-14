@@ -46,6 +46,7 @@ class IMessage;
 namespace Herbicide
 {
 	class ConfWidget;
+	class Logger;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -59,6 +60,9 @@ namespace Herbicide
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
 		ConfWidget *ConfWidget_;
+
+		Logger *Logger_;
+
 		QSet<QObject*> AskedEntries_;
 		QSet<QObject*> AllowedEntries_;
 		QSet<IMessage*> OurMessages_;

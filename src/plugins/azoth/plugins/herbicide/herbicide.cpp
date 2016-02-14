@@ -40,6 +40,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"
+#include "logger.h"
 
 uint qHash (const QRegExp& rx)
 {
@@ -62,6 +63,8 @@ namespace Herbicide
 
 		ConfWidget_ = new ConfWidget ();
 		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
+
+		Logger_ = new Logger;
 
 		handleWhitelistChanged ();
 		handleBlacklistChanged ();
