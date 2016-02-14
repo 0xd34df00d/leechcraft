@@ -66,7 +66,7 @@ namespace Herbicide
 			Failed
 		};
 
-		void LogEvent (Event, ICLEntry*, const QString& descr);
+		void LogEvent (Event, const ICLEntry*, const QString& descr);
 	private:
 		int InsertAccount (const IAccount*);
 	};

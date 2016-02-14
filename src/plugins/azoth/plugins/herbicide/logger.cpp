@@ -222,7 +222,7 @@ namespace Herbicide
 
 	namespace sph = Util::oral::sph;
 
-	void Logger::LogEvent (Logger::Event event, ICLEntry *entry, const QString& descr)
+	void Logger::LogEvent (Logger::Event event, const ICLEntry *entry, const QString& descr)
 	{
 	}
 
