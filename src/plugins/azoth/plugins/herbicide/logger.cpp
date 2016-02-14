@@ -139,6 +139,58 @@ BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::EventRecord,
 
 namespace LeechCraft
 {
+namespace Util
+{
+namespace oral
+{
+	template<>
+	struct Type2Name<Azoth::Herbicide::Logger::Event>
+	{
+		QString operator() () const
+		{
+			return Type2Name<QString> {} ();
+		}
+	};
+
+	template<>
+	struct ToVariant<Azoth::Herbicide::Logger::Event>
+	{
+		QVariant operator() (Azoth::Herbicide::Logger::Event event) const
+		{
+			switch (event)
+			{
+			case Azoth::Herbicide::Logger::Event::Granted:
+				return "granted";
+			case Azoth::Herbicide::Logger::Event::Denied:
+				return "denied";
+			case Azoth::Herbicide::Logger::Event::Challenged:
+				return "challenged";
+			case Azoth::Herbicide::Logger::Event::Succeeded:
+				return "succeeded";
+			case Azoth::Herbicide::Logger::Event::Failed:
+				return "failed";
+			}
+		}
+	};
+
+	template<>
+	struct FromVariant<Azoth::Herbicide::Logger::Event>
+	{
+		Azoth::Herbicide::Logger::Event operator() (const QVariant& var) const
+		{
+			static const auto map = Util::MakeMap<QString, Azoth::Herbicide::Logger::Event> ({
+						{ "granted", Azoth::Herbicide::Logger::Event::Granted },
+						{ "denied", Azoth::Herbicide::Logger::Event::Denied },
+						{ "challenged", Azoth::Herbicide::Logger::Event::Challenged },
+						{ "succeeded", Azoth::Herbicide::Logger::Event::Succeeded },
+						{ "failed", Azoth::Herbicide::Logger::Event::Failed },
+					});
+			return map.value (var.toString ());
+		}
+	};
+}
+}
+
 namespace Azoth
 {
 namespace Herbicide
