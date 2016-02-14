@@ -35,12 +35,25 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class ICLEntry;
+
 namespace Herbicide
 {
 	class Logger : public QObject
 	{
 	public:
 		Logger (QObject* = nullptr);
+
+		enum class Event
+		{
+			Granted,
+			Denied,
+			Challenged,
+			Succeeded,
+			Failed
+		};
+
+		void LogEvent (Event, ICLEntry*, const QString& descr);
 	};
 }
 }

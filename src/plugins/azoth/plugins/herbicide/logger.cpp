@@ -39,6 +39,10 @@ namespace Herbicide
 	: QObject { parent }
 	{
 	}
+
+	void Logger::LogEvent (Logger::Event event, ICLEntry *entry, const QString& descr)
+	{
+	}
 }
 }
 }
