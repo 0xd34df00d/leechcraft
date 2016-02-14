@@ -228,7 +228,11 @@ namespace Herbicide
 
 	int Logger::InsertAccount (const IAccount *acc)
 	{
-		return AdaptedAccount_->DoInsert_ ({ {}, QString { acc->GetAccountID () }, acc->GetAccountName () });
+		return AdaptedAccount_->DoInsert_ ({
+				{},
+				QString { acc->GetAccountID () },
+				acc->GetAccountName ()
+			});
 	}
 }
 }
