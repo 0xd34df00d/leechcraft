@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QSqlDatabase>
+#include <util/db/oralfwd.h>
 
 namespace LeechCraft
 {
@@ -48,6 +49,10 @@ namespace Herbicide
 		struct EventRecord;
 	private:
 		QSqlDatabase DB_;
+
+		Util::oral::ObjectInfo_ptr<AccountRecord> AdaptedAccount_;
+		Util::oral::ObjectInfo_ptr<EntryRecord> AdaptedEntry_;
+		Util::oral::ObjectInfo_ptr<EventRecord> AdaptedEvent_;
 	public:
 		Logger (QObject* = nullptr);
 

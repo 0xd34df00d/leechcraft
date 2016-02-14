@@ -213,9 +213,9 @@ namespace Herbicide
 		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
-		Util::oral::Adapt<AccountRecord> (DB_);
-		Util::oral::Adapt<EntryRecord> (DB_);
-		Util::oral::Adapt<EventRecord> (DB_);
+		AdaptedAccount_ = Util::oral::AdaptPtr<AccountRecord> (DB_);
+		AdaptedEntry_ = Util::oral::AdaptPtr<EntryRecord> (DB_);
+		AdaptedEvent_ = Util::oral::AdaptPtr<EventRecord> (DB_);
 	}
 
 	void Logger::LogEvent (Logger::Event event, ICLEntry *entry, const QString& descr)
