@@ -30,8 +30,112 @@
 #include "logger.h"
 #include <QDir>
 #include <QSqlError>
+#include <util/db/oral.h>
 #include <util/db/util.h>
 #include <util/sys/paths.h>
+#include <util/util.h>
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace Herbicide
+{
+	struct Logger::AccountRecord
+	{
+		Util::oral::PKey<int> PKey_;
+
+		Util::oral::Unique<QString> AccountID_;
+		QString AccountName_;
+
+		static QByteArray ClassName ()
+		{
+			return "AccountRecord";
+		}
+
+		static QString FieldNameMorpher (const QString& str)
+		{
+			return str.left (str.size () - 1);
+		}
+	};
+}
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::AccountRecord,
+		PKey_,
+		AccountID_,
+		AccountName_)
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace Herbicide
+{
+	struct Logger::EntryRecord
+	{
+		Util::oral::PKey<int> PKey_;
+		Util::oral::References<AccountRecord, 0> AccountID_;
+
+		Util::oral::Unique<QString> EntryID_;
+		QString EntryHumanReadableId_;
+		QString EntryName_;
+
+		static QByteArray ClassName ()
+		{
+			return "EntryRecord";
+		}
+
+		static QString FieldNameMorpher (const QString& str)
+		{
+			return str.left (str.size () - 1);
+		}
+	};
+}
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::EntryRecord,
+		PKey_,
+		AccountID_,
+		EntryID_,
+		EntryHumanReadableId_,
+		EntryName_)
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace Herbicide
+{
+	struct Logger::EventRecord
+	{
+		Util::oral::PKey<int> PKey_;
+		Util::oral::References<EntryRecord, 0> EntryID_;
+
+		Logger::Event Event_;
+		QString Reason_;
+
+		static QByteArray ClassName ()
+		{
+			return "EventRecord";
+		}
+
+		static QString FieldNameMorpher (const QString& str)
+		{
+			return str.left (str.size () - 1);
+		}
+	};
+}
+}
+}
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Herbicide::Logger::EventRecord,
+		PKey_,
+		EntryID_,
+		Event_,
+		Reason_)
 
 namespace LeechCraft
 {

@@ -43,6 +43,9 @@ namespace Herbicide
 	class Logger : public QObject
 	{
 	public:
+		struct AccountRecord;
+		struct EntryRecord;
+		struct EventRecord;
 	private:
 		QSqlDatabase DB_;
 	public:
