@@ -224,7 +224,7 @@ namespace Herbicide
 
 	void Logger::LogEvent (Logger::Event event, const ICLEntry *entry, const QString& descr)
 	{
-		const auto& accId = entry->GetParentAccount ()->GetAccountID ();
+		const QString accId { entry->GetParentAccount ()->GetAccountID () };
 		const auto& entryId = entry->GetEntryID ();
 
 		const auto& maybeAccPKey = AdaptedAccount_->DoSelectOneByFields_ (sph::_0, sph::_1 == accId);
