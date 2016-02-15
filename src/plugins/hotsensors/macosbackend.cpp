@@ -29,6 +29,7 @@
 
 #include "macosbackend.h"
 #include <limits>
+#include <QtConcurrent>
 #include <QtDebug>
 #include <IOKit/IOKitLib.h>
 
@@ -235,6 +236,32 @@ namespace HotSensors
 			memcpy (result.Bytes_, outputStruct.Bytes_, sizeof (outputStruct.Bytes_));
 
 			return result;
+		}
+
+		void EnumerateSensors ()
+		{
+			QtConcurrent::run ([]
+					{
+						SMC smc;
+
+						std::vector<char> allSyms;
+						for (char c = 'A'; c <= 'Z'; ++c)
+							allSyms.push_back (c);
+						for (char c = 'a'; c <= 'z'; ++c)
+							allSyms.push_back (c);
+						for (char c = '0'; c <= '9'; ++c)
+							allSyms.push_back (c);
+
+						for (char c : allSyms)
+							for (char n : allSyms)
+								for (char s : allSyms)
+								{
+									char sensor [] = { 'T', c, n, s, '\0' };
+									const auto temp = smc.GetTemp (sensor);
+									if (temp > std::numeric_limits<double>::epsilon ())
+										qDebug () << "got reading" << sensor << ":" << temp;
+								}
+					});
 		}
 	}
 
