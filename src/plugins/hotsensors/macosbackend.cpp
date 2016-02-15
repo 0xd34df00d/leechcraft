@@ -29,6 +29,8 @@
 
 #include "macosbackend.h"
 #include <limits>
+#include <QtConcurrent>
+#include <QCoreApplication>
 #include <QtDebug>
 #include <IOKit/IOKitLib.h>
 
@@ -236,11 +238,39 @@ namespace HotSensors
 
 			return result;
 		}
+
+		void EnumerateSensors ()
+		{
+			QtConcurrent::run ([]
+					{
+						SMC smc;
+
+						std::vector<char> allSyms;
+						for (char c = 'A'; c <= 'Z'; ++c)
+							allSyms.push_back (c);
+						for (char c = 'a'; c <= 'z'; ++c)
+							allSyms.push_back (c);
+						for (char c = '0'; c <= '9'; ++c)
+							allSyms.push_back (c);
+
+						for (char c : allSyms)
+							for (char n : allSyms)
+								for (char s : allSyms)
+								{
+									char sensor [] = { 'T', c, n, s, '\0' };
+									const auto temp = smc.GetTemp (sensor);
+									if (temp > std::numeric_limits<double>::epsilon ())
+										qDebug () << "got reading" << sensor << ":" << temp;
+								}
+					});
+		}
 	}
 
 	MacOsBackend::MacOsBackend (QObject *parent)
 	: Backend { parent }
 	{
+		if (QCoreApplication::arguments ().contains ("--enumerateSensors"))
+			EnumerateSensors ();
 	}
 
 	void MacOsBackend::update ()
@@ -259,6 +289,16 @@ namespace HotSensors
 		append ("CPU diode", "TC0D");
 		append ("GPU", "TG0P");
 		append ("GPU diode", "TG0D");
+		append ("Power supply proximity", "Tp0P");
+		append ("Palm rest", "Ts0P");
+		append ("Battery TS_MAX", "TB0T");
+		append ("Battery 1", "TB1T");
+		append ("Battery 2", "TB2T");
+		append ("Memory proximity", "Ts0S");
+		append ("PCH die", "TPCD");
+		append ("Heat pipe 1", "Th1H");
+		append ("Heat pipe 2", "Th2H");
+		append ("PCH die", "TPCD");
 
 		/** More at:
 		 *
@@ -266,7 +306,7 @@ namespace HotSensors
 		 * http://superuser.com/questions/553197/interpreting-sensor-names
 		 * https://discussions.apple.com/thread/4838014?tstart=0
 		 * http://www.parhelia.ch/blog/statics/k3_keys.html
-		 *
+		 * http://jbot-42.github.io/Articles/smc.html
 		 */
 
 		emit gotReadings (readings);
