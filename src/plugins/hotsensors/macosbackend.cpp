@@ -289,6 +289,16 @@ namespace HotSensors
 		append ("CPU diode", "TC0D");
 		append ("GPU", "TG0P");
 		append ("GPU diode", "TG0D");
+		append ("Power supply proximity", "Tp0P");
+		append ("Palm rest", "Ts0P");
+		append ("Battery TS_MAX", "TB0T");
+		append ("Battery 1", "TB1T");
+		append ("Battery 2", "TB2T");
+		append ("Memory proximity", "Ts0S");
+		append ("PCH die", "TPCD");
+		append ("Heat pipe 1", "Th1H");
+		append ("Heat pipe 2", "Th2H");
+		append ("PCH die", "TPCD");
 
 		/** More at:
 		 *
