@@ -296,7 +296,7 @@ namespace HotSensors
 		 * http://superuser.com/questions/553197/interpreting-sensor-names
 		 * https://discussions.apple.com/thread/4838014?tstart=0
 		 * http://www.parhelia.ch/blog/statics/k3_keys.html
-		 *
+		 * http://jbot-42.github.io/Articles/smc.html
 		 */
 
 		emit gotReadings (readings);
