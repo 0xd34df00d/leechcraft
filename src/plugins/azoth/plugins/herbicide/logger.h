@@ -27,80 +27,50 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
-#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/core/ihookproxy.h>
+#pragma once
 
-class QTranslator;
+#include <QObject>
+#include <QSqlDatabase>
+#include <util/db/oralfwd.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IMessage;
+class ICLEntry;
+class IAccount;
 
 namespace Herbicide
 {
-	class ConfWidget;
-	class Logger;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IHaveSettings
+	class Logger : public QObject
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
-
-		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Herbicide")
-
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		ConfWidget *ConfWidget_;
-
-		Logger *Logger_;
-
-		QSet<QObject*> AskedEntries_;
-		QSet<QObject*> AllowedEntries_;
-		QSet<IMessage*> OurMessages_;
-
-		QHash<QObject*, QString> DeniedAuth_;
-
-		QSet<QRegExp> Whitelist_;
-		QSet<QRegExp> Blacklist_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		struct AccountRecord;
+		struct EntryRecord;
+		struct EventRecord;
 	private:
-		bool IsConfValid () const;
-		bool IsEntryAllowed (QObject*) const;
+		QSqlDatabase DB_;
 
-		void ChallengeEntry (IHookProxy_ptr, QObject*);
-		void GreetEntry (QObject*);
-	public slots:
-		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
-				QObject *entry,
-				QString msg);
-		void hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
-				QObject *message);
-	private slots:
-		void handleWhitelistChanged ();
-		void handleBlacklistChanged ();
+		Util::oral::ObjectInfo_ptr<AccountRecord> AdaptedAccount_;
+		Util::oral::ObjectInfo_ptr<EntryRecord> AdaptedEntry_;
+		Util::oral::ObjectInfo_ptr<EventRecord> AdaptedEvent_;
+	public:
+		Logger (QObject* = nullptr);
+
+		enum class Event
+		{
+			Granted,
+			Denied,
+			Challenged,
+			Succeeded,
+			Failed
+		};
+
+		void LogEvent (Event, const ICLEntry*, const QString& descr);
+	private:
+		int InsertAccount (const IAccount*);
+		int InsertEntry (int, const ICLEntry*);
 	};
 }
 }
 }
-
-#endif
