@@ -38,6 +38,26 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	GenericExceptionWrapper::GenericExceptionWrapper (const std::exception_ptr& ptr)
+	: Wrapped_ { ptr }
+	{
+	}
+
+	const char* GenericExceptionWrapper::what () const noexcept
+	{
+		if (!Wrapped_)
+			return "no exception information";
+
+		try
+		{
+			std::rethrow_exception (Wrapped_);
+		}
+		catch (const std::exception& e)
+		{
+			return e.what ();
+		}
+	}
+
 	AccountThread::AccountThread (bool isListening, const QString& name,
 			const CertList_t& certs, Account *parent)
 	: A_ { parent }

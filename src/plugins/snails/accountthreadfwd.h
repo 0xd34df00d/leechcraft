@@ -43,11 +43,13 @@ class Either;
 
 namespace Snails
 {
+	class GenericExceptionWrapper;
+
 	template<typename... Rest>
 	using InvokeError_t = boost::variant<
 				vmime::exceptions::authentication_error,
 				vmime::exceptions::connection_error,
-				std::exception,
+				GenericExceptionWrapper,
 				Rest...
 			>;
 }

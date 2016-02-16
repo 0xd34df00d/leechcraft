@@ -54,9 +54,31 @@ namespace Snails
 		std::function<void (AccountThreadWorker*)> Executor_;
 	};
 
+	class GenericExceptionWrapper
+	{
+		const std::exception_ptr Wrapped_;
+	public:
+		GenericExceptionWrapper (const std::exception_ptr&);
+
+		const char* what () const noexcept;
+	};
+
 	namespace detail
 	{
 		const auto MaxRecLevel = 3;
+
+		template<typename Result, typename Ex,
+				typename = std::enable_if_t<Util::HasType<std::decay_t<Ex>> (Util::AsTypelist_t<typename Result::L_t> {})>>
+		Result ReturnException (const Ex& ex, int)
+		{
+			return Result::Left (ex);
+		}
+
+		template<typename Result, typename Ex>
+		Result ReturnException (const Ex&, float)
+		{
+			return Result::Left (std::current_exception ());
+		}
 
 		template<typename Result, typename F, typename Ex = std::exception>
 		Result HandleExceptions (F&& f, int recLevel = 0, const Ex& ex = {})
@@ -83,7 +105,7 @@ namespace Snails
 						<< "retries:"
 						<< ex.what ();
 
-				return Result::Left (ex);
+				return ReturnException<Result> (ex, 0);
 			}
 
 			try
@@ -120,9 +142,9 @@ namespace Snails
 			{
 				return HandleExceptions<Result> (f, ++recLevel, e);
 			}
-			catch (const std::exception& e)
+			catch (const std::exception&)
 			{
-				return Result::Left (e);
+				return Result::Left (std::current_exception ());
 			}
 		}
 
