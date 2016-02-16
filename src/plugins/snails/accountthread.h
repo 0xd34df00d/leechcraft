@@ -56,7 +56,7 @@ namespace Snails
 
 	class GenericExceptionWrapper
 	{
-		const std::exception_ptr Wrapped_;
+		std::string Msg_;
 	public:
 		GenericExceptionWrapper (const std::exception_ptr&);
 
