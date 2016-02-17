@@ -855,12 +855,15 @@ namespace Snails
 
 	auto AccountThreadWorker::GetMessageCount (const QStringList& folder) -> MsgCountResult_t
 	{
-		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
+		auto netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
 			return MsgCountResult_t::Left (FolderNotFound {});
 
 		const auto& status = netFolder->getStatus ();
-		return MsgCountResult_t::Right ({ status->getMessageCount (), status->getUnseenCount () });
+		auto count = status->getMessageCount ();
+		if (count >= 3000)
+			count = GetFolder (folder, FolderMode::ReadOnly)->getMessageCount ();
+		return MsgCountResult_t::Right ({ count, status->getUnseenCount () });
 	}
 
 	auto AccountThreadWorker::SetReadStatus (bool read,
