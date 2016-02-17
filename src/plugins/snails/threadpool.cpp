@@ -27,35 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <boost/variant.hpp>
-#include <boost/none_t.hpp>
-#include <vmime/exception.hpp>
-#include <vmime/security/cert/X509Certificate.hpp>
+#include "threadpool.h"
+#include "accountthread.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-template<typename, typename>
-class Either;
-}
-
 namespace Snails
 {
-	class GenericExceptionWrapper;
+	ThreadPool::ThreadPool (const CertList_t& certList, Account *acc)
+	: Acc_ { acc }
+	, CertList_ { certList }
+	{
+		CreateThread ();
+	}
 
-	template<typename... Rest>
-	using InvokeError_t = boost::variant<
-				vmime::exceptions::authentication_error,
-				vmime::exceptions::connection_error,
-				GenericExceptionWrapper,
-				Rest...
-			>;
+	AccountThread* ThreadPool::GetThread ()
+	{
+		return ExistingThreads_.front ().get ();
+	}
 
-	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
-
-	class AccountThread;
+	AccountThread_ptr ThreadPool::CreateThread ()
+	{
+		const auto thread = std::make_shared<AccountThread> (false,
+				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
+		ExistingThreads_ << thread;
+		thread->start (QThread::IdlePriority);
+		return thread;
+	}
 }
 }

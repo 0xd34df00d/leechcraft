@@ -32,7 +32,6 @@
 #include <thread>
 #include <QThread>
 #include <QFuture>
-#include <vmime/security/cert/X509Certificate.hpp>
 #include <util/sll/either.h>
 #include <util/sll/typelist.h>
 #include <util/sll/typelevel.h>
@@ -46,8 +45,6 @@ namespace Snails
 	class Account;
 	class AccountThreadWorker;
 	class TaskQueueManager;
-
-	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
 
 	struct Task
 	{

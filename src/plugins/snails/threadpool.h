@@ -29,33 +29,30 @@
 
 #pragma once
 
-#include <boost/variant.hpp>
-#include <boost/none_t.hpp>
-#include <vmime/exception.hpp>
-#include <vmime/security/cert/X509Certificate.hpp>
+#include <memory>
+#include <QObject>
+#include "accountthreadfwd.h"
 
 namespace LeechCraft
 {
-namespace Util
-{
-template<typename, typename>
-class Either;
-}
-
 namespace Snails
 {
-	class GenericExceptionWrapper;
+	class Account;
 
-	template<typename... Rest>
-	using InvokeError_t = boost::variant<
-				vmime::exceptions::authentication_error,
-				vmime::exceptions::connection_error,
-				GenericExceptionWrapper,
-				Rest...
-			>;
+	using AccountThread_ptr = std::shared_ptr<AccountThread>;
 
-	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
+	class ThreadPool : public QObject
+	{
+		Account * const Acc_;
+		const CertList_t CertList_;
 
-	class AccountThread;
+		QList<AccountThread_ptr> ExistingThreads_;
+	public:
+		ThreadPool (const CertList_t&, Account*);
+
+		AccountThread* GetThread ();
+	private:
+		AccountThread_ptr CreateThread ();
+	};
 }
 }
