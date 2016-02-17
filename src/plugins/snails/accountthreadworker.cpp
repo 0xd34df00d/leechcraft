@@ -537,7 +537,7 @@ namespace Snails
 		Folder2Messages_t result;
 
 		for (const auto& folder : origFolders)
-			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadWrite))
+			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
 				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
 
 		return result;
