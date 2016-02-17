@@ -54,6 +54,7 @@
 #include <vmime/messageIdSequence.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "message.h"
 #include "account.h"
 #include "core.h"
@@ -547,6 +548,13 @@ namespace Snails
 	{
 		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr& folder, const QByteArray& lastId)
 		{
+			const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
+						vmime::net::fetchAttributes::SIZE |
+						vmime::net::fetchAttributes::UID |
+						vmime::net::fetchAttributes::FULL_HEADER |
+						vmime::net::fetchAttributes::STRUCTURE |
+						vmime::net::fetchAttributes::ENVELOPE;
+
 			if (lastId.isEmpty ())
 			{
 				const auto count = folder->getMessageCount ();
@@ -561,7 +569,7 @@ namespace Snails
 					const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
 					try
 					{
-						const auto& theseMessages = folder->getMessages (set);
+						auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
 						std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
 					}
 					catch (const std::exception& e)
@@ -584,7 +592,7 @@ namespace Snails
 				const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
 				try
 				{
-					return folder->getMessages (set);
+					return folder->getAndFetchMessages (set, desiredFlags);
 				}
 				catch (const std::exception& e)
 				{
@@ -597,52 +605,6 @@ namespace Snails
 				}
 			}
 		}
-	}
-
-	QList<Message_ptr> AccountThreadWorker::FetchVmimeMessages (MessageVector_t messages,
-			const VmimeFolder_ptr& folder, const QStringList& folderName)
-	{
-		if (!messages.size ())
-			return {};
-
-		const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
-					vmime::net::fetchAttributes::SIZE |
-					vmime::net::fetchAttributes::UID |
-					vmime::net::fetchAttributes::FULL_HEADER |
-					vmime::net::fetchAttributes::STRUCTURE |
-					vmime::net::fetchAttributes::ENVELOPE;
-
-		try
-		{
-			const auto& context = tr ("Fetching headers for %1")
-					.arg (A_->GetName ());
-
-			folder->fetchMessages (messages, desiredFlags, MkPgListener (context));
-		}
-		catch (const vmime::exceptions::operation_not_supported& ons)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "fetch operation not supported:"
-					<< ons.what ();
-			return {};
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "generally something bad happened:"
-					<< e.what ();
-			return {};
-		}
-
-		QList<Message_ptr> newMessages;
-		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
-				[this, &folderName] (decltype (messages.front ()) msg)
-				{
-					auto res = FromHeaders (msg);
-					res->AddFolder (folderName);
-					return res;
-				});
-		return newMessages;
 	}
 
 	auto AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
@@ -659,7 +621,12 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
-		auto newMessages = FetchVmimeMessages (messages, folder, folderName);
+		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
+				{
+					auto res = FromHeaders (msg);
+					res->AddFolder (folderName);
+					return res;
+				});
 		auto existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<QByteArray> ids;
