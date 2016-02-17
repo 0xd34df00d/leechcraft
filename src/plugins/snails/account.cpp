@@ -700,7 +700,11 @@ namespace Snails
 					Util::Visit (counts.AsVariant (),
 							[=] (const QPair<int, int>& counts)
 								{ HandleMessageCountFetched (counts.first, counts.second, folder); },
-							[] (auto) {});
+							[] (const auto& e)
+							{
+								Util::Visit (e,
+										[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
+							});
 				};
 	}
 
