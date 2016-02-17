@@ -190,7 +190,16 @@ namespace Snails
 									UpdateFolderCount (folder);
 								}
 							},
-							[] (auto) {});
+							[=] (auto err)
+							{
+								qWarning () << Q_FUNC_INFO
+										<< "error synchronizing"
+										<< folders
+										<< "to"
+										<< last
+										<< ":"
+										<< Util::Visit (err, [] (auto e) { return e.what (); });
+							});
 				};
 	}
 
