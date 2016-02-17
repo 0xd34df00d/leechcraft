@@ -58,6 +58,7 @@ namespace Snails
 	class MailModel;
 	class FoldersModel;
 	class MailModelsManager;
+	class ThreadPool;
 	struct Folder;
 
 	class Account : public QObject
@@ -66,8 +67,10 @@ namespace Snails
 
 		friend class AccountThreadWorker;
 		AccountLogger * const Logger_;
-		AccountThread * const Thread_;
+
+		ThreadPool * const WorkerPool_;
 		AccountThread * const MessageFetchThread_;
+
 		QMutex * const AccMutex_;
 
 		QByteArray ID_;

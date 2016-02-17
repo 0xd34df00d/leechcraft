@@ -51,6 +51,7 @@
 #include "foldersmodel.h"
 #include "mailmodelsmanager.h"
 #include "accountlogger.h"
+#include "threadpool.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -77,7 +78,7 @@ namespace Snails
 	Account::Account (QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
-	, Thread_ (new AccountThread (true, "OpThread", GetCerts (), this))
+	, WorkerPool_ (new ThreadPool (GetCerts (), this))
 	, MessageFetchThread_ (new AccountThread (false, "MessageFetchThread", GetCerts (), this))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
@@ -87,7 +88,6 @@ namespace Snails
 	{
 		UpdateNoopInterval ();
 
-		Thread_->start (QThread::IdlePriority);
 		MessageFetchThread_->start (QThread::LowPriority);
 
 		connect (FolderManager_,
@@ -146,7 +146,7 @@ namespace Snails
 		switch (thread)
 		{
 		case Thread::LowPriority:
-			return Thread_;
+			return WorkerPool_->GetThread ();
 		case Thread::HighPriority:
 			return MessageFetchThread_;
 		}
