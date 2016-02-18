@@ -278,10 +278,15 @@ namespace Snails
 		const auto requestedMode = mode == FolderMode::ReadOnly ?
 				vmime::net::folder::MODE_READ_ONLY :
 				vmime::net::folder::MODE_READ_WRITE;
-		if (folder->isOpen () && folder->getMode () != requestedMode)
+
+		const auto isOpen = folder->isOpen ();
+		if (isOpen && folder->getMode () == requestedMode)
+			return folder;
+		else if (isOpen)
 			folder->close (false);
-		if (!folder->isOpen ())
-			folder->open (requestedMode);
+
+		folder->open (requestedMode);
+
 		return folder;
 	}
 
