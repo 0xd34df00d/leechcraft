@@ -184,8 +184,6 @@ namespace Snails
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 		st->setProperty ("server.port", A_->InPort_);
 
-		CachedStore_ = st;
-
 		st->connect ();
 
 		if (IsListening_)
@@ -194,6 +192,8 @@ namespace Snails
 				defFolder->addMessageChangedListener (ChangeListener_);
 				CachedFolders_ [GetFolderPath (defFolder)] = defFolder;
 			}
+
+		CachedStore_ = st;
 
 		return st;
 	}
