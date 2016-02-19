@@ -81,6 +81,11 @@ namespace Snails
 
 			return iface.future ();
 		}
+
+		template<typename F, typename... Args>
+		void ScheduleOnAllThreads (const F& func, const Args&... args)
+		{
+		}
 	private:
 		template<typename FutureInterface, typename F, typename... Args>
 		void PerformScheduledFunc (AccountThread *thread, FutureInterface iface, const F& func, const Args&... args)
