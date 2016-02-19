@@ -77,72 +77,99 @@ namespace Snails
 			return Result::Left (std::current_exception ());
 		}
 
-		template<typename Result, typename F, typename Ex = std::exception>
-		Result HandleExceptions (F&& f, int recLevel = 0, const Ex& ex = {})
+		template<typename Result, typename F>
+		class ExceptionsHandler
 		{
-			if (recLevel)
-			{
-				const auto timeout = recLevel * 3000 + 1000;
-				qWarning () << Q_FUNC_INFO
-						<< "sleeping for"
-						<< timeout
-						<< "and retrying for the"
-						<< recLevel
-						<< "time after getting an exception:"
-						<< ex.what ();
+			F F_;
+			const int MaxRetries_;
 
-				std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+			int RecLevel_ = 0;
+		public:
+			ExceptionsHandler (const F& f, int maxRetries)
+			: F_ { f }
+			, MaxRetries_ { maxRetries }
+			{
 			}
 
-			if (recLevel == MaxRecLevel)
+			template<typename Ex = std::exception>
+			Result operator() (const Ex& ex = {})
 			{
-				qWarning () << Q_FUNC_INFO
-						<< "giving up after"
-						<< recLevel
-						<< "retries:"
-						<< ex.what ();
+				if (RecLevel_)
+				{
+					const auto timeout = RecLevel_ * 3000 + 1000;
+					qWarning () << Q_FUNC_INFO
+							<< "sleeping for"
+							<< timeout
+							<< "and retrying for the"
+							<< RecLevel_
+							<< "time after getting an exception:"
+							<< ex.what ();
 
-				return ReturnException<Result> (ex, 0);
-			}
+					std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+				}
 
-			try
-			{
-				return f ();
-			}
-			catch (const vmime::exceptions::authentication_error& err)
-			{
-				const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+				if (RecLevel_ == MaxRetries_)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "giving up after"
+							<< RecLevel_
+							<< "retries:"
+							<< ex.what ();
 
-				qWarning () << Q_FUNC_INFO
-						<< "caught auth error:"
-						<< respStr;
+					return ReturnException<Result> (ex, 0);
+				}
 
-				return Result::Left (err);
+				++RecLevel_;
+
+				try
+				{
+					return F_ ();
+				}
+				catch (const vmime::exceptions::authentication_error& err)
+				{
+					const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+					qWarning () << Q_FUNC_INFO
+							<< "caught auth error:"
+							<< respStr;
+
+					return Result::Left (err);
+				}
+				catch (const vmime::exceptions::connection_error& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::command_error& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::invalid_response& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::operation_timed_out& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::not_connected& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::socket_exception& e)
+				{
+					return (*this) (e);
+				}
+				catch (const std::exception&)
+				{
+					return Result::Left (std::current_exception ());
+				}
 			}
-			catch (const vmime::exceptions::connection_error& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::invalid_response& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::operation_timed_out& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::not_connected& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::socket_exception& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const std::exception&)
-			{
-				return Result::Left (std::current_exception ());
-			}
+		};
+
+		template<typename Result, typename F>
+		Result HandleExceptions (const F& f)
+		{
+			return ExceptionsHandler<Result, F> { f, detail::MaxRecLevel } ();
 		}
 
 		template<typename Right>
