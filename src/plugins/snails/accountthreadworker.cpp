@@ -850,6 +850,16 @@ namespace Snails
 		CachedStore_.reset ();
 	}
 
+	void AccountThreadWorker::Disconnect ()
+	{
+		if (CachedStore_ && CachedStore_->isConnected ())
+		{
+			CachedFolders_.clear ();
+			CachedStore_->disconnect ();
+			CachedStore_.reset ();
+		}
+	}
+
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
 		const auto& store = MakeStore ();

@@ -116,6 +116,7 @@ namespace Snails
 		void SetNoopTimeout (int);
 
 		void FlushSockets ();
+		void Disconnect ();
 
 		struct SyncResult
 		{
