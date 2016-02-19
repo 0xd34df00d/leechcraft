@@ -112,17 +112,25 @@ namespace Snails
 
 	void AccountThread::RotateFuncs (AccountThreadWorker *atw)
 	{
-		decltype (Functions_) funcs;
+		auto maybeTask = [&] () -> boost::optional<Task>
+			{
+				QMutexLocker locker { &FunctionsMutex_ };
+				if (Functions_.isEmpty ())
+					return {};
+				else
+					return Functions_.takeFirst ();
+			} ();
 
-		{
-			QMutexLocker locker { &FunctionsMutex_ };
+		if (maybeTask)
+			maybeTask->Executor_ (atw);
 
-			using std::swap;
-			swap (funcs, Functions_);
-		}
-
-		for (const auto& func : funcs)
-			func.Executor_ (atw);
+		const auto shouldRotate = [&]
+			{
+				QMutexLocker locker { &FunctionsMutex_ };
+				return !Functions_.isEmpty ();
+			} ();
+		if (shouldRotate)
+			emit rotateFuncs ();
 	}
 }
 }
