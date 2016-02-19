@@ -118,6 +118,8 @@ namespace Snails
 		void FlushSockets ();
 		void Disconnect ();
 
+		void TestConnectivity ();
+
 		struct SyncResult
 		{
 			QList<Folder> AllFolders_;

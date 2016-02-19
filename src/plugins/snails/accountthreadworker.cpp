@@ -860,6 +860,14 @@ namespace Snails
 		}
 	}
 
+	void AccountThreadWorker::TestConnectivity ()
+	{
+		if (!CachedStore_)
+			MakeStore ();
+
+		sendNoop ();
+	}
+
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
 		const auto& store = MakeStore ();
