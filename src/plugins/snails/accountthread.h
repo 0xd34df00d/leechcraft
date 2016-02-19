@@ -291,6 +291,8 @@ namespace Snails
 
 			return iface.future ();
 		}
+
+		int GetQueueSize ();
 	protected:
 		void run ();
 	private:

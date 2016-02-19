@@ -71,6 +71,12 @@ namespace Snails
 	{
 	}
 
+	int AccountThread::GetQueueSize ()
+	{
+		QMutexLocker locker { &FunctionsMutex_ };
+		return Functions_.size ();
+	}
+
 	void AccountThread::run ()
 	{
 		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_ };
