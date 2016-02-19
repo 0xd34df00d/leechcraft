@@ -51,7 +51,7 @@ namespace Snails
 		const auto thread = std::make_shared<AccountThread> (false,
 				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
 		ExistingThreads_ << thread;
-		thread->start (QThread::IdlePriority);
+		thread->start (QThread::LowPriority);
 		return thread;
 	}
 }
