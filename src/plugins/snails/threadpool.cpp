@@ -30,6 +30,7 @@
 #include "threadpool.h"
 #include <util/sll/visitor.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include "accountthread.h"
 #include "accountthreadworker.h"
@@ -138,10 +139,9 @@ namespace Snails
 
 	AccountThread* ThreadPool::GetNextThread ()
 	{
-		if (NextThread_ >= ExistingThreads_.size ())
-			NextThread_ = 0;
-
-		return ExistingThreads_.value (NextThread_++).get ();
+		const auto min = std::min_element (ExistingThreads_.begin (), ExistingThreads_.end (),
+				Util::ComparingBy ([] (const auto& ptr) { return ptr->GetQueueSize (); }));
+		return min->get ();
 	}
 
 	void ThreadPool::HandleThreadOverflow (AccountThread *thread)
