@@ -172,6 +172,11 @@ namespace oral
 			case Azoth::Herbicide::Logger::Event::Failed:
 				return "failed";
 			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown event type"
+					<< static_cast<int> (event);
+			return {};
 		}
 	};
 
