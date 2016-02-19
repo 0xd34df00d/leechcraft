@@ -54,8 +54,7 @@ case $1 in
 		cmake ../src \
 			-DLIB_SUFFIX=64 \
 			-DUSE_CPP14=True \
-			-DCMAKE_CXX_FLAGS="-O3 -pipe -Wall -Werror=format-security -fexceptions --param=ssp-buffer-size=4 -march=native -fasynchronous-unwind-tables" \
-			-DCMAKE_BUILD_TYPE=Release \
+			-DCMAKE_CXX_FLAGS="-pipe -Wall -Werror=format-security -fexceptions --param=ssp-buffer-size=4 -fasynchronous-unwind-tables" \
 			-DSTRICT_LICENSING=True \
 			-DWITH_DBUS_LOADERS=True \
 			-DWITH_PCRE=True \
