@@ -28,7 +28,11 @@
  **********************************************************************/
 
 #include "threadpool.h"
+#include <util/sll/visitor.h>
+#include <util/sll/delayedexecutor.h>
+#include <util/threads/futures.h>
 #include "accountthread.h"
+#include "accountthreadworker.h"
 
 namespace LeechCraft
 {
@@ -38,21 +42,138 @@ namespace Snails
 	: Acc_ { acc }
 	, CertList_ { certList }
 	{
-		CreateThread ();
+		auto thread = CreateThread ();
+		ExistingThreads_ << thread;
+
+		Util::Sequence (this, thread->Schedule (&AccountThreadWorker::TestConnectivity)) >>
+			[this, thread] (const auto& result)
+			{
+				RunScheduled (thread.get ());
+
+				Util::Visit (result.AsVariant (),
+						[] (boost::none_t) {},
+						[this] (const auto& err)
+						{
+							Util::Visit (err,
+									[this] (const vmime::exceptions::authentication_error& err)
+									{
+										qWarning () << Q_FUNC_INFO
+												<< "initial thread authentication failed";
+										HitLimit_ = true;
+									},
+									[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
+						});
+			};
 	}
 
 	AccountThread* ThreadPool::GetThread ()
 	{
-		return ExistingThreads_.front ().get ();
+		return GetNextThread ();
+	}
+
+	void ThreadPool::RunThreads ()
+	{
+		if (CheckingNext_)
+			return;
+
+		if (HitLimit_)
+		{
+			while (!Scheduled_.isEmpty ())
+				Scheduled_.takeFirst () (GetNextThread ());
+			return;
+		}
+
+		CheckingNext_ = true;
+
+		auto thread = CreateThread ();
+
+		Util::Sequence (this, thread->Schedule (&AccountThreadWorker::TestConnectivity)) >>
+			[this, thread] (const auto& result)
+			{
+				CheckingNext_ = false;
+
+				Util::Visit (result.AsVariant (),
+						[this, thread] (boost::none_t)
+						{
+							ExistingThreads_ << thread;
+							RunScheduled (thread.get ());
+						},
+						[this, thread] (const auto& err)
+						{
+							Util::Visit (err,
+									[this, thread] (const vmime::exceptions::authentication_error& err)
+									{
+										qWarning () << Q_FUNC_INFO
+												<< "connections limit at"
+												<< ExistingThreads_.size ();
+										HitLimit_ = true;
+
+										HandleThreadOverflow (thread);
+
+										while (!Scheduled_.isEmpty ())
+											Scheduled_.takeFirst () (GetNextThread ());
+									},
+									[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
+						});
+			};
 	}
 
 	AccountThread_ptr ThreadPool::CreateThread ()
 	{
 		const auto thread = std::make_shared<AccountThread> (false,
 				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
-		ExistingThreads_ << thread;
 		thread->start (QThread::LowPriority);
+
 		return thread;
+	}
+
+	void ThreadPool::RunScheduled (AccountThread *thread)
+	{
+		if (!Scheduled_.isEmpty ())
+			Scheduled_.takeFirst () (thread);
+
+		if (!Scheduled_.isEmpty ())
+			Util::ExecuteLater ([this] { RunThreads (); }, 500);
+	}
+
+	AccountThread* ThreadPool::GetNextThread ()
+	{
+		if (NextThread_ >= ExistingThreads_.size ())
+			NextThread_ = 0;
+
+		return ExistingThreads_.value (NextThread_++).get ();
+	}
+
+	void ThreadPool::HandleThreadOverflow (AccountThread *thread)
+	{
+		const auto pos = std::find_if (ExistingThreads_.begin (), ExistingThreads_.end (),
+				[thread] (const auto& ptr) { return ptr.get () == thread; });
+		if (pos == ExistingThreads_.end ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "thread"
+					<< thread
+					<< "is not found among existing threads";
+			return;
+		}
+
+		HandleThreadOverflow (*pos);
+	}
+
+	void ThreadPool::HandleThreadOverflow (const AccountThread_ptr& thread)
+	{
+		thread->Schedule (&AccountThreadWorker::Disconnect);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[thread] {},
+			thread.get (),
+			SIGNAL (finished ()),
+			nullptr
+		};
+		thread->quit ();
+
+		ExistingThreads_.removeOne (thread);
 	}
 }
 }

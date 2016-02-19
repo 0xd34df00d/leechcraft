@@ -31,7 +31,8 @@
 
 #include <memory>
 #include <QObject>
-#include "accountthreadfwd.h"
+#include <util/sll/visitor.h>
+#include "accountthread.h"
 
 namespace LeechCraft
 {
@@ -47,12 +48,82 @@ namespace Snails
 		const CertList_t CertList_;
 
 		QList<AccountThread_ptr> ExistingThreads_;
+
+		bool HitLimit_ = false;
+		bool CheckingNext_ = false;
+
+		QList<std::function<void (AccountThread*)>> Scheduled_;
+
+		int NextThread_ = 0;
 	public:
 		ThreadPool (const CertList_t&, Account*);
 
 		AccountThread* GetThread ();
+
+		enum class Priority
+		{
+			High,
+			Low
+		};
+
+		template<typename F, typename... Args>
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (Priority, const F& func, const Args&... args)
+		{
+			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
+
+			Scheduled_ << [=] (AccountThread *thread) mutable
+					{
+						iface.reportStarted ();
+						PerformScheduledFunc (thread, iface, func, args...);
+					};
+
+			RunThreads ();
+
+			return iface.future ();
+		}
 	private:
+		template<typename FutureInterface, typename F, typename... Args>
+		void PerformScheduledFunc (AccountThread *thread, FutureInterface iface, const F& func, const Args&... args)
+		{
+			Util::Sequence (nullptr, thread->Schedule (func, args...)) >>
+					[=] (auto result) mutable
+					{
+						if (result.IsRight ())
+						{
+							iface.reportFinished (&result);
+							return;
+						}
+
+						Util::Visit (result.GetLeft (),
+								[=, &iface] (const vmime::exceptions::authentication_error& e)
+								{
+									const auto& respStr = QString::fromStdString (e.response ());
+									if (respStr.contains ("simultaneous"))
+									{
+										qWarning () << Q_FUNC_INFO
+												<< "seems like a thread has died, rescheduling...";
+										HandleThreadOverflow (thread);
+										PerformScheduledFunc (GetNextThread (), iface, func, args...);
+									}
+									else
+										iface.reportFinished (&result);
+								},
+								[=, &iface] (auto)
+								{
+									iface.reportFinished (&result);
+								});
+					};
+		}
+
+		void RunThreads ();
+
 		AccountThread_ptr CreateThread ();
+
+		void RunScheduled (AccountThread*);
+		AccountThread* GetNextThread ();
+
+		void HandleThreadOverflow (AccountThread*);
+		void HandleThreadOverflow (const AccountThread_ptr&);
 	};
 }
 }
