@@ -69,7 +69,6 @@ namespace Snails
 		AccountLogger * const Logger_;
 
 		ThreadPool * const WorkerPool_;
-		AccountThread * const MessageFetchThread_;
 
 		QMutex * const AccMutex_;
 
@@ -152,13 +151,6 @@ namespace Snails
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
-
-		enum class Thread
-		{
-			LowPriority,
-			HighPriority
-		};
-		AccountThread* GetAccountThread (Thread) const;
 
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
