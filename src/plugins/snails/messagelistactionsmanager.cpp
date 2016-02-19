@@ -57,32 +57,44 @@ namespace Snails
 
 	namespace
 	{
+		vmime::shared_ptr<const vmime::messageId> GetGithubMsgId (const vmime::shared_ptr<const vmime::header>& headers)
+		{
+			const auto& referencesField = headers->References ();
+			if (!referencesField)
+			{
+				if (const auto msgId = headers->MessageId ())
+					return msgId->getValue<vmime::messageId> ();
+				return {};
+			}
+
+			const auto& refSeq = referencesField->getValue<vmime::messageIdSequence> ();
+			if (!refSeq)
+				return {};
+
+			if (!refSeq->getMessageIdCount ())
+				return {};
+
+			return refSeq->getMessageIdAt (0);
+		}
+
+		QString GetGithubAddr (const vmime::shared_ptr<const vmime::header>& headers)
+		{
+			if (!headers->findField ("X-GitHub-Sender"))
+				return {};
+
+			const auto& ref = GetGithubMsgId (headers);
+			if (!ref)
+				return {};
+
+			return QString::fromUtf8 (ref->getLeft ().c_str ());
+		}
+
 		class GithubProvider : public MessageListActionsProvider
 		{
 		public:
 			QList<MessageListActionInfo> GetMessageActions (const Message_ptr& msg, Account*) const override
 			{
-				const auto& headers = msg->GetVmimeHeader ();
-				if (!headers)
-					return {};
-
-				const auto header = headers->findField ("X-GitHub-Sender");
-				if (!header)
-					return {};
-
-				const auto& referencesField = headers->References ();
-				if (!referencesField)
-					return {};
-
-				const auto& refSeq = referencesField->getValue<vmime::messageIdSequence> ();
-				if (!refSeq)
-					return {};
-
-				const auto& ref = refSeq->getMessageIdAt (0);
-				if (!ref)
-					return {};
-
-				const auto& addrReq = QString::fromUtf8 (ref->getLeft ().c_str ());
+				const auto& addrReq = GetGithubAddr (msg->GetVmimeHeader ());
 				if (addrReq.isEmpty ())
 					return {};
 
