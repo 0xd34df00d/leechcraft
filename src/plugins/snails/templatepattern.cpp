@@ -94,7 +94,7 @@ namespace Snails
 				Wrap ([] (const Message *msg)
 						{
 							const auto& addr = msg->GetAddress (Message::Address::From);
-							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.first + ">";
+							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
 						})
 			},
 			{
