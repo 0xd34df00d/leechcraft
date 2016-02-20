@@ -78,6 +78,10 @@ namespace Snails
 				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).second; })
 			},
 			{
+				"OSUBJECT",
+				Wrap ([] (const Message *msg) { return msg->GetSubject (); })
+			},
+			{
 				"ONAMEOREMAIL",
 				Wrap ([] (const Message *msg)
 						{
