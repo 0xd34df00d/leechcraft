@@ -84,6 +84,10 @@ namespace Snails
 			return;
 		}
 
+		const auto leastBusyThread = GetNextThread ();
+		if (!leastBusyThread->GetQueueSize ())
+			Scheduled_.takeFirst () (leastBusyThread);
+
 		CheckingNext_ = true;
 
 		auto thread = CreateThread ();
