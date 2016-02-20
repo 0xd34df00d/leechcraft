@@ -218,6 +218,18 @@ namespace Snails
 		TabToolbar_->addAction (msgReply);
 		registerMailAction (msgReply);
 
+		const auto msgFwd = new QAction (tr ("Forward..."), this);
+		msgFwd->setProperty ("ActionIcon", "mail-forward");
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleLinkedRequested (MsgType::Forward); },
+			msgFwd,
+			SIGNAL (triggered ()),
+			this
+		};
+		TabToolbar_->addAction (msgFwd);
+		registerMailAction (msgFwd);
+
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
 		MsgAttachmentsButton_ = new QToolButton;
 		MsgAttachmentsButton_->setProperty ("ActionIcon", "mail-attachment");
