@@ -59,6 +59,7 @@
 #include "mailtabreadmarker.h"
 #include "composemessagetabfactory.h"
 #include "accountsmanager.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -741,9 +742,9 @@ namespace Snails
 			return;
 
 		if (CurrMsgFetchFuture_)
-			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, *CurrMsgFetchFuture_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (MsgType::Reply, CurrAcc_, *CurrMsgFetchFuture_);
 		else
-			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, CurrMsg_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (MsgType::Reply, CurrAcc_, CurrMsg_);
 	}
 
 	namespace

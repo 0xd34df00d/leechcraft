@@ -42,6 +42,8 @@ namespace Snails
 	class MsgTemplatesManager;
 	class AccountsManager;
 
+	enum class MsgType;
+
 	class ComposeMessageTabFactory : public QObject
 	{
 		Q_OBJECT
@@ -55,7 +57,7 @@ namespace Snails
 		ComposeMessageTab* MakeTab () const;
 
 		void PrepareComposeTab (const Account_ptr&);
-		void PrepareReplyTab (const Account_ptr&,
+		void PrepareLinkedTab (MsgType, const Account_ptr&,
 				const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>&);
 	signals:
 		void gotTab (const QString&, QWidget*);
