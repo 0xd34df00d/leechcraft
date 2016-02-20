@@ -32,6 +32,7 @@
 #include <interfaces/itexteditor.h>
 #include "message.h"
 #include "account.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -91,6 +92,24 @@ namespace Snails
 							const auto& addr = msg->GetAddress (Message::Address::From);
 							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.first + ">";
 						})
+			},
+			{
+				"OBODY",
+				[] (const Account*, const Message *msg, ContentType type, const QString&)
+				{
+					switch (type)
+					{
+					case ContentType::PlainText:
+						return msg->GetBody ();
+					case ContentType::HTML:
+					{
+						const auto& html = msg->GetHTMLBody ();
+						return !html.isEmpty () ?
+								html :
+								PlainBody2HTML (msg->GetBody ());
+					}
+					}
+				}
 			},
 			{
 				"QUOTE",
