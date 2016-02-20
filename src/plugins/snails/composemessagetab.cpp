@@ -145,19 +145,25 @@ namespace Snails
 			}
 	}
 
-	void ComposeMessageTab::PrepareReply (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinked (MsgType type, const Message_ptr& msg)
 	{
-		auto address = msg->GetAddress (Message::Address::ReplyTo);
-		if (address.second.isEmpty ())
-			address = msg->GetAddress (Message::Address::From);
-		Ui_.To_->setText (GetNiceMail (address));
+		if (type == MsgType::Reply)
+		{
+			auto address = msg->GetAddress (Message::Address::ReplyTo);
+			if (address.second.isEmpty ())
+				address = msg->GetAddress (Message::Address::From);
+			Ui_.To_->setText (GetNiceMail (address));
+		}
 
-		auto subj = msg->GetSubject ();
-		if (subj.left (3).toLower () != "re:")
-			subj.prepend ("Re: ");
-		Ui_.Subject_->setText (subj);
+		if (type != MsgType::New)
+		{
+			auto subj = msg->GetSubject ();
+			if (subj.left (3).toLower () != "re:")
+				subj.prepend ("Re: ");
+			Ui_.Subject_->setText (subj);
+		}
 
-		PrepareReplyBody (msg);
+		PrepareLinkedBody (type, msg);
 
 		ReplyMessage_ = msg;
 
@@ -167,7 +173,7 @@ namespace Snails
 				});
 	}
 
-	void ComposeMessageTab::PrepareReplyEditor (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedEditor (const Message_ptr& msg)
 	{
 		const auto& replyOpt = XmlSettingsManager::Instance ()
 				.property ("ReplyMessageFormat").toString ();
@@ -177,7 +183,7 @@ namespace Snails
 			Ui_.Editor_->SelectEditor (ContentType::HTML);
 		else if (replyOpt == "Orig")
 		{
-			if (msg->GetHTMLBody ().isEmpty ())
+			if (msg && msg->GetHTMLBody ().isEmpty ())
 				Ui_.Editor_->SelectEditor (ContentType::PlainText);
 			else
 				Ui_.Editor_->SelectEditor (ContentType::HTML);
@@ -343,12 +349,11 @@ namespace Snails
 		}
 	}
 
-	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedBody (MsgType type, const Message_ptr& msg)
 	{
-		PrepareReplyEditor (msg);
-		const auto editor = Ui_.Editor_->GetCurrentEditor ();
+		PrepareLinkedEditor (msg);
 
-		const auto type = MsgType::Reply;
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		const auto acc = GetSelectedAccount ();
 

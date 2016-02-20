@@ -32,6 +32,7 @@
 #include <util/sll/visitor.h>
 #include "composemessagetab.h"
 #include "core.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -67,7 +68,7 @@ namespace Snails
 		cmt->SelectAccount (account);
 
 		Util::Visit (message,
-				[cmt] (const Message_ptr& msg) { cmt->PrepareReply (msg); },
+				[cmt] (const Message_ptr& msg) { cmt->PrepareLinked (MsgType::Reply, msg); },
 				[cmt] (const Account::FetchWholeMessageResult_t& future)
 				{
 					cmt->setEnabled (false);
@@ -79,7 +80,7 @@ namespace Snails
 										[cmt] (const Message_ptr& msg)
 										{
 											cmt->setEnabled (true);
-											cmt->PrepareReply (msg);
+											cmt->PrepareLinked (MsgType::Reply, msg);
 										},
 										[cmt] (const auto& err)
 										{
