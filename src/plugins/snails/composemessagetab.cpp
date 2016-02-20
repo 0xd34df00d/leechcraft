@@ -56,6 +56,7 @@
 #include "accountthread.h"
 #include "msgtemplatesmanager.h"
 #include "structures.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -338,14 +339,7 @@ namespace Snails
 			if (!htmlBody.isEmpty ())
 				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
 			else
-			{
-				auto str = Util::Escape (msg->GetBody ());
-				str.replace ("\r\n", "<br/>");
-				str.replace ("\r", "<br/>");
-				str.replace ("\n", "<br/>");
-
-				SetReplyHTMLContents (tpl (str, msg.get ()), editor);
-			}
+				SetReplyHTMLContents (tpl (PlainBody2HTML (msg->GetBody ()), msg.get ()), editor);
 		}
 	}
 
