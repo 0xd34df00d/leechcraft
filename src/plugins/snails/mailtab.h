@@ -50,6 +50,8 @@ namespace Snails
 	class ComposeMessageTabFactory;
 	class AccountsManager;
 
+	enum class MsgType;
+
 	class MailTab : public QWidget
 				  , public ITabWidget
 				  , public IWkFontsSettable
@@ -108,6 +110,8 @@ namespace Snails
 		QList<Folder> GetActualFolders () const;
 
 		void SetMessage (const Message_ptr&);
+
+		void HandleLinkedRequested (MsgType);
 	private slots:
 		void handleCurrentAccountChanged (const QModelIndex&);
 		void handleCurrentTagChanged (const QModelIndex&);
@@ -116,7 +120,6 @@ namespace Snails
 		void rebuildOpsToFolders ();
 
 		void handleCompose ();
-		void handleReply ();
 		void handleCopyMultipleFolders ();
 		void handleCopyMessages (QAction*);
 		void handleMoveMultipleFolders ();

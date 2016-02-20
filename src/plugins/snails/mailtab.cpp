@@ -208,10 +208,13 @@ namespace Snails
 
 		const auto msgReply = new QAction (tr ("Reply..."), this);
 		msgReply->setProperty ("ActionIcon", "mail-reply-sender");
-		connect (msgReply,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleReply ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleLinkedRequested (MsgType::Reply); },
+			msgReply,
+			SIGNAL (triggered ()),
+			this
+		};
 		TabToolbar_->addAction (msgReply);
 		registerMailAction (msgReply);
 
@@ -736,15 +739,15 @@ namespace Snails
 		ComposeMessageTabFactory_->PrepareComposeTab (CurrAcc_);
 	}
 
-	void MailTab::handleReply ()
+	void MailTab::HandleLinkedRequested (MsgType type)
 	{
 		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
 		if (CurrMsgFetchFuture_)
-			ComposeMessageTabFactory_->PrepareLinkedTab (MsgType::Reply, CurrAcc_, *CurrMsgFetchFuture_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgFetchFuture_);
 		else
-			ComposeMessageTabFactory_->PrepareLinkedTab (MsgType::Reply, CurrAcc_, CurrMsg_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, CurrMsg_);
 	}
 
 	namespace
