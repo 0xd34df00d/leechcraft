@@ -647,6 +647,7 @@ namespace Snails
 		ReadMarker_->HandleDeselectingMessage (folder);
 
 		CurrMsg_.reset ();
+		CurrMsgFetchFuture_.reset ();
 
 		const auto& sidx = Ui_.MailTree_->currentIndex ();
 
