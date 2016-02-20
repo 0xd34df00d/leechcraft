@@ -30,6 +30,7 @@
 #pragma once
 
 #include <thread>
+#include <atomic>
 #include <QThread>
 #include <QFuture>
 #include <util/sll/either.h>
@@ -262,6 +263,8 @@ namespace Snails
 
 		QMutex FunctionsMutex_;
 		QList<Task> Functions_;
+
+		std::atomic_bool IsRunning_;
 	public:
 		AccountThread (bool isListening, const QString& name,
 				const CertList_t& certs, Account *acc);

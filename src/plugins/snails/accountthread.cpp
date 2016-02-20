@@ -74,7 +74,7 @@ namespace Snails
 	int AccountThread::GetQueueSize ()
 	{
 		QMutexLocker locker { &FunctionsMutex_ };
-		return Functions_.size ();
+		return Functions_.size () + IsRunning_;
 	}
 
 	void AccountThread::run ()
@@ -128,7 +128,11 @@ namespace Snails
 			} ();
 
 		if (maybeTask)
+		{
+			IsRunning_ = true;
 			maybeTask->Executor_ (atw);
+			IsRunning_ = false;
+		}
 
 		const auto shouldRotate = [&]
 			{
