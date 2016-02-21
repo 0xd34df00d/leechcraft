@@ -113,6 +113,11 @@ namespace Snails
 		return UserName_;
 	}
 
+	QString Account::GetUserEmail () const
+	{
+		return UserEmail_;
+	}
+
 	bool Account::ShouldLogToFile () const
 	{
 		return LogToFile_;

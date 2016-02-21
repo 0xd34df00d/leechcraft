@@ -144,6 +144,7 @@ namespace Snails
 		QString GetServer () const;
 
 		QString GetUserName () const;
+		QString GetUserEmail () const;
 
 		bool ShouldLogToFile () const;
 		AccountLogger* GetLogger () const;
