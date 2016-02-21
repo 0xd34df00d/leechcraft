@@ -127,6 +127,15 @@ namespace Snails
 						})
 			},
 			{
+				"CCNAMEANDEMAIL",
+				Wrap ([] (const Message *msg, ContentType ct)
+						{
+							return Util::Map (msg->GetAddresses (Message::Address::Cc),
+									Util::Curry (&FormatNameAndEmail) (ct))
+								.join ("; ");
+						})
+			},
+			{
 				"OBODY",
 				Wrap ([] (const Message *msg, ContentType type)
 						{
