@@ -29,6 +29,7 @@
 
 #include "templatepattern.h"
 #include <QHash>
+#include <util/sll/qtutil.h>
 #include <interfaces/itexteditor.h>
 #include "message.h"
 #include "account.h"
@@ -64,9 +65,10 @@ namespace Snails
 					};
 		}
 
-		QString FormatNameAndEmail (const Message::Address_t& addr)
+		QString FormatNameAndEmail (ContentType ct, const Message::Address_t& addr)
 		{
-			return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+			const auto& result = (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+			return ct == ContentType::HTML ? Util::Escape (result) : result;
 		}
 	}
 
@@ -108,16 +110,16 @@ namespace Snails
 			},
 			{
 				"ONAMEANDEMAIL",
-				Wrap ([] (const Message *msg)
+				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							return FormatNameAndEmail (msg->GetAddress (Message::Address::From));
+							return FormatNameAndEmail (ct, msg->GetAddress (Message::Address::From));
 						})
 			},
 			{
 				"NAMEANDEMAIL",
-				Wrap ([] (const Message *msg)
+				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							return FormatNameAndEmail (msg->GetAddress (Message::Address::To));
+							return FormatNameAndEmail (ct, msg->GetAddress (Message::Address::To));
 						})
 			},
 			{
