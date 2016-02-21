@@ -52,6 +52,18 @@ namespace Snails
 					};
 		}
 
+		template<typename F>
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (const Message*, ContentType)>* = nullptr)
+		{
+			return [f] (const Account*, const Message *msg, ContentType ct, const QString&)
+					{
+						if (!msg)
+							return QString {};
+
+						return f (msg, ct);
+					};
+		}
+
 		QString FormatNameAndEmail (const Message::Address_t& addr)
 		{
 			return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
