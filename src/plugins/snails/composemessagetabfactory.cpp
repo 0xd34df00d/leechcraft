@@ -56,6 +56,7 @@ namespace Snails
 		const auto cmt = MakeTab ();
 
 		cmt->SelectAccount (account);
+		cmt->PrepareLinked (MsgType::New, {});
 
 		emit gotTab (cmt->GetTabClassInfo ().VisibleName_, cmt);
 	}
