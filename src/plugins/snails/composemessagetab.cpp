@@ -200,7 +200,9 @@ namespace Snails
 		template<typename Templater>
 		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
-			auto plainSplit = msg->GetBody ().split ('\n');
+			auto plainSplit = msg ?
+					msg->GetBody ().split ('\n') :
+					QStringList {};
 			for (auto& str : plainSplit)
 			{
 				str = str.trimmed ();
@@ -335,6 +337,12 @@ namespace Snails
 		template<typename Templater>
 		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
+			if (!msg)
+			{
+				SetReplyHTMLContents (tpl (QString {}, nullptr), editor);
+				return;
+			}
+
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
 				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
