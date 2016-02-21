@@ -47,7 +47,7 @@ namespace Xoox
 		Q_OBJECT
 
 		QMap<QString, SrvHistMessages_t> Messages_;
-		QMap<QString, QString> LastId2Jid_;
+		QMap<QString, QString> QueryId2Jid_;
 
 		int NextQueryNumber_ = 0;
 	public:

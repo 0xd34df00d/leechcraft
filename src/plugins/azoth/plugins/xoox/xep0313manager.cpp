@@ -118,6 +118,8 @@ namespace Xoox
 
 		const auto& queryId = "xep0313_" + QString::number (++NextQueryNumber_);
 
+		QueryId2Jid_ [queryId] = jid;
+
 		Xep0313ReqIq iq
 		{
 			jid,
@@ -156,7 +158,6 @@ namespace Xoox
 
 		const SrvHistMessage msg { dir, id.toUtf8 (), {}, message.body (), message.stamp (), message.xhtml () };
 		Messages_ [otherJid] << msg;
-		LastId2Jid_ [id] = otherJid;
 	}
 
 	void Xep0313Manager::HandleHistoryQueryFinished (const QDomElement& finElem)
@@ -166,19 +167,7 @@ namespace Xoox
 		QXmppResultSetReply resultSet;
 		resultSet.parse (setElem);
 
-		if (!resultSet.last ().isEmpty () &&
-				!LastId2Jid_.contains (resultSet.last ()))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown `last`"
-					<< resultSet.last ()
-					<< "; clearing all fetched stuff";
-			LastId2Jid_.clear ();
-			Messages_.clear ();
-			return;
-		}
-
-		const auto& jid = LastId2Jid_.take (resultSet.last ());
+		const auto& jid = QueryId2Jid_.take (finElem.attribute ("queryid"));
 		auto messages = Messages_.take (jid);
 
 		qDebug () << Q_FUNC_INFO << resultSet.first () << resultSet.last () << messages.size ();
