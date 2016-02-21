@@ -98,6 +98,14 @@ namespace Snails
 						})
 			},
 			{
+				"NAMEANDEMAIL",
+				Wrap ([] (const Message *msg)
+						{
+							const auto& addr = msg->GetAddress (Message::Address::To);
+							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+						})
+			},
+			{
 				"OBODY",
 				[] (const Account*, const Message *msg, ContentType type, const QString&)
 				{
