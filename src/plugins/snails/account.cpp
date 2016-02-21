@@ -709,7 +709,14 @@ namespace Snails
 	{
 		const auto storedCount = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
 		if (storedCount && count != storedCount)
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "outdated local stored count"
+					<< storedCount
+					<< "vs"
+					<< count;
 			Synchronize (folder, {});
+		}
 
 		FoldersModel_->SetFolderCounts (folder, unread, count);
 	}
