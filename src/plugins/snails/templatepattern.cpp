@@ -122,21 +122,21 @@ namespace Snails
 			},
 			{
 				"OBODY",
-				[] (const Account*, const Message *msg, ContentType type, const QString&)
-				{
-					switch (type)
-					{
-					case ContentType::PlainText:
-						return msg->GetBody ();
-					case ContentType::HTML:
-					{
-						const auto& html = msg->GetHTMLBody ();
-						return !html.isEmpty () ?
-								html :
-								PlainBody2HTML (msg->GetBody ());
-					}
-					}
-				}
+				Wrap ([] (const Message *msg, ContentType type)
+						{
+							switch (type)
+							{
+							case ContentType::PlainText:
+								return msg->GetBody ();
+							case ContentType::HTML:
+							{
+								const auto& html = msg->GetHTMLBody ();
+								return !html.isEmpty () ?
+										html :
+										PlainBody2HTML (msg->GetBody ());
+							}
+							}
+						})
 			},
 			{
 				"QUOTE",
