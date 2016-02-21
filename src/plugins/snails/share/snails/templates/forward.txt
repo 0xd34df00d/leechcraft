@@ -3,6 +3,7 @@ ${CURSOR}
 ---------- Forwarded message ----------
 From: ${ONAMEANDEMAIL}
 To: ${TONAMEANDEMAIL}
+Cc: ${CCNAMEANDEMAIL}
 Date: ${ODATETIME}
 Subject: ${OSUBJECT}
 
