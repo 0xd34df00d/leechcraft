@@ -118,7 +118,7 @@ namespace Snails
 						})
 			},
 			{
-				"NAMEANDEMAIL",
+				"TONAMEANDEMAIL",
 				Wrap ([] (const Message *msg, ContentType ct)
 						{
 							return Util::Map (msg->GetAddresses (Message::Address::To),

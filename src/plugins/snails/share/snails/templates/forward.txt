@@ -2,7 +2,7 @@ ${CURSOR}
 
 ---------- Forwarded message ----------
 From: ${ONAMEANDEMAIL}
-To: ${NAMEANDEMAIL}
+To: ${TONAMEANDEMAIL}
 Date: ${ODATETIME}
 Subject: ${OSUBJECT}
 
