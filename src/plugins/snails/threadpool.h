@@ -53,8 +53,6 @@ namespace Snails
 		bool CheckingNext_ = false;
 
 		QList<std::function<void (AccountThread*)>> Scheduled_;
-
-		int NextThread_ = 0;
 	public:
 		ThreadPool (const CertList_t&, Account*);
 
