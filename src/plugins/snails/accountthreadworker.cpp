@@ -830,8 +830,12 @@ namespace Snails
 
 	void AccountThreadWorker::sendNoop ()
 	{
-		if (CachedStore_)
-			CachedStore_->noop ();
+		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
+		at->Schedule ([this] (AccountThreadWorker*)
+				{
+					if (CachedStore_)
+						CachedStore_->noop ();
+				});
 	}
 
 	void AccountThreadWorker::SetNoopTimeout (int timeout)
