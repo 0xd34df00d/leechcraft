@@ -116,6 +116,8 @@ namespace Xoox
 			baseId = "";
 		qDebug () << Q_FUNC_INFO << jid << baseId << count;
 
+		const auto& queryId = "xep0313_" + QString::number (++NextQueryNumber_);
+
 		Xep0313ReqIq iq
 		{
 			jid,
@@ -123,7 +125,8 @@ namespace Xoox
 			std::abs (count),
 			count > 0 ?
 					Xep0313ReqIq::Direction::Before :
-					Xep0313ReqIq::Direction::After
+					Xep0313ReqIq::Direction::After,
+			queryId
 		};
 		client ()->sendPacket (iq);
 	}
