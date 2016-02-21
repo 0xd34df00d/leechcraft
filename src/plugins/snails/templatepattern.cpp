@@ -51,6 +51,11 @@ namespace Snails
 						return f (msg);
 					};
 		}
+
+		QString FormatNameAndEmail (const Message::Address_t& addr)
+		{
+			return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+		}
 	}
 
 	QList<TemplatePattern> GetKnownPatterns ()
@@ -93,16 +98,14 @@ namespace Snails
 				"ONAMEANDEMAIL",
 				Wrap ([] (const Message *msg)
 						{
-							const auto& addr = msg->GetAddress (Message::Address::From);
-							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+							return FormatNameAndEmail (msg->GetAddress (Message::Address::From));
 						})
 			},
 			{
 				"NAMEANDEMAIL",
 				Wrap ([] (const Message *msg)
 						{
-							const auto& addr = msg->GetAddress (Message::Address::To);
-							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+							return FormatNameAndEmail (msg->GetAddress (Message::Address::To));
 						})
 			},
 			{
