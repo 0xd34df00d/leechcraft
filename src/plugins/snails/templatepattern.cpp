@@ -30,6 +30,8 @@
 #include "templatepattern.h"
 #include <QHash>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
+#include <util/sll/curry.h>
 #include <interfaces/itexteditor.h>
 #include "message.h"
 #include "account.h"
@@ -119,7 +121,9 @@ namespace Snails
 				"NAMEANDEMAIL",
 				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							return FormatNameAndEmail (ct, msg->GetAddress (Message::Address::To));
+							return Util::Map (msg->GetAddresses (Message::Address::To),
+									Util::Curry (&FormatNameAndEmail) (ct))
+								.join ("; ");
 						})
 			},
 			{
