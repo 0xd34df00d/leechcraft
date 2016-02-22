@@ -146,6 +146,30 @@ namespace Snails
 			}
 	}
 
+	namespace
+	{
+		boost::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
+		{
+			switch (type)
+			{
+			case MsgType::New:
+				return {};
+			default:
+			{
+				auto subj = msg->GetSubject ();
+				if (subj.left (3).toLower () != "re:")
+					subj.prepend ("Re: ");
+				return subj;
+			}
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message type"
+					<< static_cast<int> (type);
+			return {};
+		}
+	}
+
 	void ComposeMessageTab::PrepareLinked (MsgType type, const Message_ptr& msg)
 	{
 		if (type == MsgType::Reply)
@@ -156,13 +180,8 @@ namespace Snails
 			Ui_.To_->setText (GetNiceMail (address));
 		}
 
-		if (type != MsgType::New)
-		{
-			auto subj = msg->GetSubject ();
-			if (subj.left (3).toLower () != "re:")
-				subj.prepend ("Re: ");
-			Ui_.Subject_->setText (subj);
-		}
+		if (const auto& subj = CreateSubj (type, msg))
+			Ui_.Subject_->setText (*subj);
 
 		PrepareLinkedBody (type, msg);
 
