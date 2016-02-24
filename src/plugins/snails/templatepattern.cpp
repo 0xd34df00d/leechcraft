@@ -29,9 +29,13 @@
 
 #include "templatepattern.h"
 #include <QHash>
+#include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
+#include <util/sll/curry.h>
 #include <interfaces/itexteditor.h>
 #include "message.h"
 #include "account.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -39,8 +43,8 @@ namespace Snails
 {
 	namespace
 	{
-		template<typename F, typename = std::result_of_t<F (const Message*)>>
-		PatternFunction_t Wrap (const F& f)
+		template<typename F>
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (const Message*)>* = nullptr)
 		{
 			return [f] (const Account*, const Message *msg, ContentType, const QString&)
 					{
@@ -49,6 +53,24 @@ namespace Snails
 
 						return f (msg);
 					};
+		}
+
+		template<typename F>
+		PatternFunction_t Wrap (const F& f, std::result_of_t<F (const Message*, ContentType)>* = nullptr)
+		{
+			return [f] (const Account*, const Message *msg, ContentType ct, const QString&)
+					{
+						if (!msg)
+							return QString {};
+
+						return f (msg, ct);
+					};
+		}
+
+		QString FormatNameAndEmail (ContentType ct, const Message::Address_t& addr)
+		{
+			const auto& result = (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.second + ">";
+			return ct == ContentType::HTML ? Util::Escape (result) : result;
 		}
 	}
 
@@ -77,6 +99,10 @@ namespace Snails
 				Wrap ([] (const Message *msg) { return msg->GetAddress (Message::Address::From).second; })
 			},
 			{
+				"OSUBJECT",
+				Wrap ([] (const Message *msg) { return msg->GetSubject (); })
+			},
+			{
 				"ONAMEOREMAIL",
 				Wrap ([] (const Message *msg)
 						{
@@ -86,10 +112,45 @@ namespace Snails
 			},
 			{
 				"ONAMEANDEMAIL",
-				Wrap ([] (const Message *msg)
+				Wrap ([] (const Message *msg, ContentType ct)
 						{
-							const auto& addr = msg->GetAddress (Message::Address::From);
-							return (addr.first.isEmpty () ? "" : addr.first + " ") + "<" + addr.first + ">";
+							return FormatNameAndEmail (ct, msg->GetAddress (Message::Address::From));
+						})
+			},
+			{
+				"TONAMEANDEMAIL",
+				Wrap ([] (const Message *msg, ContentType ct)
+						{
+							return Util::Map (msg->GetAddresses (Message::Address::To),
+									Util::Curry (&FormatNameAndEmail) (ct))
+								.join ("; ");
+						})
+			},
+			{
+				"CCNAMEANDEMAIL",
+				Wrap ([] (const Message *msg, ContentType ct)
+						{
+							return Util::Map (msg->GetAddresses (Message::Address::Cc),
+									Util::Curry (&FormatNameAndEmail) (ct))
+								.join ("; ");
+						})
+			},
+			{
+				"OBODY",
+				Wrap ([] (const Message *msg, ContentType type)
+						{
+							switch (type)
+							{
+							case ContentType::PlainText:
+								return msg->GetBody ();
+							case ContentType::HTML:
+							{
+								const auto& html = msg->GetHTMLBody ();
+								return !html.isEmpty () ?
+										html :
+										PlainBody2HTML (msg->GetBody ());
+							}
+							}
 						})
 			},
 			{

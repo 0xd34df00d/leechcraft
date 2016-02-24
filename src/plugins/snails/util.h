@@ -29,38 +29,12 @@
 
 #pragma once
 
-#include <memory>
-#include <boost/variant.hpp>
-#include <QObject>
-#include "account.h"
+class QString;
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class ComposeMessageTab;
-	class MsgTemplatesManager;
-	class AccountsManager;
-
-	enum class MsgType;
-
-	class ComposeMessageTabFactory : public QObject
-	{
-		Q_OBJECT
-
-		const AccountsManager * const AccsMgr_;
-		const MsgTemplatesManager * const TemplatesMgr_;
-	public:
-		ComposeMessageTabFactory (const AccountsManager*,
-				const MsgTemplatesManager*, QObject* = nullptr);
-
-		ComposeMessageTab* MakeTab () const;
-
-		void PrepareComposeTab (const Account_ptr&);
-		void PrepareLinkedTab (MsgType, const Account_ptr&,
-				const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>&);
-	signals:
-		void gotTab (const QString&, QWidget*);
-	};
+	QString PlainBody2HTML (const QString&);
 }
 }

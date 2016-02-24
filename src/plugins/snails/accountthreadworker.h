@@ -107,7 +107,6 @@ namespace Snails
 		Message_ptr FromHeaders (const vmime::shared_ptr<vmime::net::message>&) const;
 
 		Folder2Messages_t FetchMessagesIMAP (const QList<QStringList>&, const QByteArray&);
-		QList<Message_ptr> FetchVmimeMessages (MessageVector_t, const VmimeFolder_ptr&, const QStringList&);
 		FolderMessages FetchMessagesInFolder (const QStringList&, const VmimeFolder_ptr&, const QByteArray&);
 
 		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
@@ -117,6 +116,9 @@ namespace Snails
 		void SetNoopTimeout (int);
 
 		void FlushSockets ();
+		void Disconnect ();
+
+		void TestConnectivity ();
 
 		struct SyncResult
 		{

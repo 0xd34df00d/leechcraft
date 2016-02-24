@@ -126,7 +126,7 @@ namespace Herbicide
 
 	bool Plugin::IsEntryAllowed (QObject *entryObj) const
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 			return true;
 

@@ -49,6 +49,9 @@ namespace Util
 
 		static_assert (!std::is_same<L, R>::value, "Types cannot be the same.");
 	public:
+		using L_t = L;
+		using R_t = R;
+
 		Either () = delete;
 
 		explicit Either (const L& l)

@@ -56,6 +56,7 @@
 #include "accountthread.h"
 #include "msgtemplatesmanager.h"
 #include "structures.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -145,19 +146,44 @@ namespace Snails
 			}
 	}
 
-	void ComposeMessageTab::PrepareReply (const Message_ptr& msg)
+	namespace
 	{
-		auto address = msg->GetAddress (Message::Address::ReplyTo);
-		if (address.second.isEmpty ())
-			address = msg->GetAddress (Message::Address::From);
-		Ui_.To_->setText (GetNiceMail (address));
+		boost::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
+		{
+			switch (type)
+			{
+			case MsgType::New:
+				return {};
+			default:
+			{
+				auto subj = msg->GetSubject ();
+				if (subj.left (3).toLower () != "re:")
+					subj.prepend ("Re: ");
+				return subj;
+			}
+			}
 
-		auto subj = msg->GetSubject ();
-		if (subj.left (3).toLower () != "re:")
-			subj.prepend ("Re: ");
-		Ui_.Subject_->setText (subj);
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message type"
+					<< static_cast<int> (type);
+			return {};
+		}
+	}
 
-		PrepareReplyBody (msg);
+	void ComposeMessageTab::PrepareLinked (MsgType type, const Message_ptr& msg)
+	{
+		if (type == MsgType::Reply)
+		{
+			auto address = msg->GetAddress (Message::Address::ReplyTo);
+			if (address.second.isEmpty ())
+				address = msg->GetAddress (Message::Address::From);
+			Ui_.To_->setText (GetNiceMail (address));
+		}
+
+		if (const auto& subj = CreateSubj (type, msg))
+			Ui_.Subject_->setText (*subj);
+
+		PrepareLinkedBody (type, msg);
 
 		ReplyMessage_ = msg;
 
@@ -167,7 +193,7 @@ namespace Snails
 				});
 	}
 
-	void ComposeMessageTab::PrepareReplyEditor (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedEditor (const Message_ptr& msg)
 	{
 		const auto& replyOpt = XmlSettingsManager::Instance ()
 				.property ("ReplyMessageFormat").toString ();
@@ -177,7 +203,7 @@ namespace Snails
 			Ui_.Editor_->SelectEditor (ContentType::HTML);
 		else if (replyOpt == "Orig")
 		{
-			if (msg->GetHTMLBody ().isEmpty ())
+			if (msg && msg->GetHTMLBody ().isEmpty ())
 				Ui_.Editor_->SelectEditor (ContentType::PlainText);
 			else
 				Ui_.Editor_->SelectEditor (ContentType::HTML);
@@ -193,7 +219,9 @@ namespace Snails
 		template<typename Templater>
 		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
-			auto plainSplit = msg->GetBody ().split ('\n');
+			auto plainSplit = msg ?
+					msg->GetBody ().split ('\n') :
+					QStringList {};
 			for (auto& str : plainSplit)
 			{
 				str = str.trimmed ();
@@ -328,27 +356,25 @@ namespace Snails
 		template<typename Templater>
 		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
+			if (!msg)
+			{
+				SetReplyHTMLContents (tpl (QString {}, nullptr), editor);
+				return;
+			}
+
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
 				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
 			else
-			{
-				auto str = Util::Escape (msg->GetBody ());
-				str.replace ("\r\n", "<br/>");
-				str.replace ("\r", "<br/>");
-				str.replace ("\n", "<br/>");
-
-				SetReplyHTMLContents (tpl (str, msg.get ()), editor);
-			}
+				SetReplyHTMLContents (tpl (PlainBody2HTML (msg->GetBody ()), msg.get ()), editor);
 		}
 	}
 
-	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedBody (MsgType type, const Message_ptr& msg)
 	{
-		PrepareReplyEditor (msg);
-		const auto editor = Ui_.Editor_->GetCurrentEditor ();
+		PrepareLinkedEditor (msg);
 
-		const auto type = MsgType::Reply;
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		const auto acc = GetSelectedAccount ();
 

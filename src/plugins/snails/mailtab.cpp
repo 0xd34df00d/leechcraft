@@ -59,6 +59,7 @@
 #include "mailtabreadmarker.h"
 #include "composemessagetabfactory.h"
 #include "accountsmanager.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -207,12 +208,27 @@ namespace Snails
 
 		const auto msgReply = new QAction (tr ("Reply..."), this);
 		msgReply->setProperty ("ActionIcon", "mail-reply-sender");
-		connect (msgReply,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleReply ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleLinkedRequested (MsgType::Reply); },
+			msgReply,
+			SIGNAL (triggered ()),
+			this
+		};
 		TabToolbar_->addAction (msgReply);
 		registerMailAction (msgReply);
+
+		const auto msgFwd = new QAction (tr ("Forward..."), this);
+		msgFwd->setProperty ("ActionIcon", "mail-forward");
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleLinkedRequested (MsgType::Forward); },
+			msgFwd,
+			SIGNAL (triggered ()),
+			this
+		};
+		TabToolbar_->addAction (msgFwd);
+		registerMailAction (msgFwd);
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
 		MsgAttachmentsButton_ = new QToolButton;
@@ -631,6 +647,7 @@ namespace Snails
 		ReadMarker_->HandleDeselectingMessage (folder);
 
 		CurrMsg_.reset ();
+		CurrMsgFetchFuture_.reset ();
 
 		const auto& sidx = Ui_.MailTree_->currentIndex ();
 
@@ -735,15 +752,15 @@ namespace Snails
 		ComposeMessageTabFactory_->PrepareComposeTab (CurrAcc_);
 	}
 
-	void MailTab::handleReply ()
+	void MailTab::HandleLinkedRequested (MsgType type)
 	{
 		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
 		if (CurrMsgFetchFuture_)
-			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, *CurrMsgFetchFuture_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgFetchFuture_);
 		else
-			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, CurrMsg_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, CurrMsg_);
 	}
 
 	namespace

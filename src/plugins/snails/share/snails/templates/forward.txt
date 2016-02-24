@@ -1,8 +1,9 @@
 ${CURSOR}
 
 ---------- Forwarded message ----------
-From: <${ONAMEANDEMAIL}>
-To: <${NAMEANDEMAIL}>
+From: ${ONAMEANDEMAIL}
+To: ${TONAMEANDEMAIL}
+Cc: ${CCNAMEANDEMAIL}
 Date: ${ODATETIME}
 Subject: ${OSUBJECT}
 

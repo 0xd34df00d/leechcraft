@@ -54,6 +54,7 @@
 #include <vmime/messageIdSequence.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "message.h"
 #include "account.h"
 #include "core.h"
@@ -183,8 +184,6 @@ namespace Snails
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 		st->setProperty ("server.port", A_->InPort_);
 
-		CachedStore_ = st;
-
 		st->connect ();
 
 		if (IsListening_)
@@ -193,6 +192,8 @@ namespace Snails
 				defFolder->addMessageChangedListener (ChangeListener_);
 				CachedFolders_ [GetFolderPath (defFolder)] = defFolder;
 			}
+
+		CachedStore_ = st;
 
 		return st;
 	}
@@ -277,10 +278,15 @@ namespace Snails
 		const auto requestedMode = mode == FolderMode::ReadOnly ?
 				vmime::net::folder::MODE_READ_ONLY :
 				vmime::net::folder::MODE_READ_WRITE;
-		if (folder->isOpen () && folder->getMode () != requestedMode)
+
+		const auto isOpen = folder->isOpen ();
+		if (isOpen && folder->getMode () == requestedMode)
+			return folder;
+		else if (isOpen)
 			folder->close (false);
-		if (!folder->isOpen ())
-			folder->open (requestedMode);
+
+		folder->open (requestedMode);
+
 		return folder;
 	}
 
@@ -537,7 +543,7 @@ namespace Snails
 		Folder2Messages_t result;
 
 		for (const auto& folder : origFolders)
-			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadWrite))
+			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
 				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
 
 		return result;
@@ -547,6 +553,13 @@ namespace Snails
 	{
 		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr& folder, const QByteArray& lastId)
 		{
+			const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
+						vmime::net::fetchAttributes::SIZE |
+						vmime::net::fetchAttributes::UID |
+						vmime::net::fetchAttributes::FULL_HEADER |
+						vmime::net::fetchAttributes::STRUCTURE |
+						vmime::net::fetchAttributes::ENVELOPE;
+
 			if (lastId.isEmpty ())
 			{
 				const auto count = folder->getMessageCount ();
@@ -561,7 +574,7 @@ namespace Snails
 					const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
 					try
 					{
-						const auto& theseMessages = folder->getMessages (set);
+						auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
 						std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
 					}
 					catch (const std::exception& e)
@@ -584,7 +597,7 @@ namespace Snails
 				const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
 				try
 				{
-					return folder->getMessages (set);
+					return folder->getAndFetchMessages (set, desiredFlags);
 				}
 				catch (const std::exception& e)
 				{
@@ -597,52 +610,6 @@ namespace Snails
 				}
 			}
 		}
-	}
-
-	QList<Message_ptr> AccountThreadWorker::FetchVmimeMessages (MessageVector_t messages,
-			const VmimeFolder_ptr& folder, const QStringList& folderName)
-	{
-		if (!messages.size ())
-			return {};
-
-		const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
-					vmime::net::fetchAttributes::SIZE |
-					vmime::net::fetchAttributes::UID |
-					vmime::net::fetchAttributes::FULL_HEADER |
-					vmime::net::fetchAttributes::STRUCTURE |
-					vmime::net::fetchAttributes::ENVELOPE;
-
-		try
-		{
-			const auto& context = tr ("Fetching headers for %1")
-					.arg (A_->GetName ());
-
-			folder->fetchMessages (messages, desiredFlags, MkPgListener (context));
-		}
-		catch (const vmime::exceptions::operation_not_supported& ons)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "fetch operation not supported:"
-					<< ons.what ();
-			return {};
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "generally something bad happened:"
-					<< e.what ();
-			return {};
-		}
-
-		QList<Message_ptr> newMessages;
-		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
-				[this, &folderName] (decltype (messages.front ()) msg)
-				{
-					auto res = FromHeaders (msg);
-					res->AddFolder (folderName);
-					return res;
-				});
-		return newMessages;
 	}
 
 	auto AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
@@ -659,7 +626,12 @@ namespace Snails
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
-		auto newMessages = FetchVmimeMessages (messages, folder, folderName);
+		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
+				{
+					auto res = FromHeaders (msg);
+					res->AddFolder (folderName);
+					return res;
+				});
 		auto existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<QByteArray> ids;
@@ -858,8 +830,12 @@ namespace Snails
 
 	void AccountThreadWorker::sendNoop ()
 	{
-		if (CachedStore_)
-			CachedStore_->noop ();
+		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
+		at->Schedule ([this] (AccountThreadWorker*)
+				{
+					if (CachedStore_)
+						CachedStore_->noop ();
+				});
 	}
 
 	void AccountThreadWorker::SetNoopTimeout (int timeout)
@@ -878,6 +854,24 @@ namespace Snails
 		CachedStore_.reset ();
 	}
 
+	void AccountThreadWorker::Disconnect ()
+	{
+		if (CachedStore_ && CachedStore_->isConnected ())
+		{
+			CachedFolders_.clear ();
+			CachedStore_->disconnect ();
+			CachedStore_.reset ();
+		}
+	}
+
+	void AccountThreadWorker::TestConnectivity ()
+	{
+		if (!CachedStore_)
+			MakeStore ();
+
+		sendNoop ();
+	}
+
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
 	{
 		const auto& store = MakeStore ();
@@ -888,12 +882,15 @@ namespace Snails
 
 	auto AccountThreadWorker::GetMessageCount (const QStringList& folder) -> MsgCountResult_t
 	{
-		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
+		auto netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
 			return MsgCountResult_t::Left (FolderNotFound {});
 
 		const auto& status = netFolder->getStatus ();
-		return MsgCountResult_t::Right ({ status->getMessageCount (), status->getUnseenCount () });
+		auto count = status->getMessageCount ();
+		if (count >= 3000)
+			count = GetFolder (folder, FolderMode::ReadOnly)->getMessageCount ();
+		return MsgCountResult_t::Right ({ count, status->getUnseenCount () });
 	}
 
 	auto AccountThreadWorker::SetReadStatus (bool read,

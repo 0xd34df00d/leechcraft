@@ -27,40 +27,21 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <boost/variant.hpp>
-#include <QObject>
-#include "account.h"
+#include "util.h"
+#include <QString>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	class ComposeMessageTab;
-	class MsgTemplatesManager;
-	class AccountsManager;
-
-	enum class MsgType;
-
-	class ComposeMessageTabFactory : public QObject
+	QString PlainBody2HTML (const QString& body)
 	{
-		Q_OBJECT
-
-		const AccountsManager * const AccsMgr_;
-		const MsgTemplatesManager * const TemplatesMgr_;
-	public:
-		ComposeMessageTabFactory (const AccountsManager*,
-				const MsgTemplatesManager*, QObject* = nullptr);
-
-		ComposeMessageTab* MakeTab () const;
-
-		void PrepareComposeTab (const Account_ptr&);
-		void PrepareLinkedTab (MsgType, const Account_ptr&,
-				const boost::variant<Message_ptr, Account::FetchWholeMessageResult_t>&);
-	signals:
-		void gotTab (const QString&, QWidget*);
-	};
+		auto str = Util::Escape (body);
+		str.replace ("\r\n", "<br/>");
+		str.replace ("\r", "<br/>");
+		str.replace ("\n", "<br/>");
+		return str;
+	}
 }
 }

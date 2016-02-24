@@ -133,6 +133,13 @@ namespace Snails
 		return Util::Map (MsgEdits_, [] (auto ptr) { return ptr.get (); });
 	}
 
+	ContentType MultiEditorWidget::GetEditorType (IEditorWidget *editor) const
+	{
+		return editor == MsgEdits_.value (0).get () ?
+				ContentType::PlainText :
+				ContentType::HTML;
+	}
+
 	void MultiEditorWidget::handleEditorSelected (int index)
 	{
 		const auto previous = GetCurrentEditor ();

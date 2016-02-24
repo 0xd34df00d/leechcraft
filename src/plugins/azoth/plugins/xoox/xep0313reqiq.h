@@ -42,6 +42,8 @@ namespace Xoox
 		QString JID_;
 		QString ItemId_;
 		int Count_;
+
+		QString QueryID_;
 	public:
 		enum class Direction
 		{
@@ -52,7 +54,7 @@ namespace Xoox
 	private:
 		Direction Dir_ = Direction::Unspecified;
 	public:
-		Xep0313ReqIq (const QString&, const QString&, int, Direction);
+		Xep0313ReqIq (const QString&, const QString&, int, Direction, const QString& queryId);
 	protected:
 		void parseElementFromChild (const QDomElement&);
 		void toXmlElementFromChild (QXmlStreamWriter*) const;

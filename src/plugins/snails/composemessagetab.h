@@ -44,6 +44,8 @@ namespace Snails
 	class AccountsManager;
 	class MsgTemplatesManager;
 
+	enum class MsgType;
+
 	class ComposeMessageTab : public QWidget
 							, public ITabWidget
 							, public IWkFontsSettable
@@ -82,10 +84,10 @@ namespace Snails
 		void SetFontSizeMultiplier (qreal);
 
 		void SelectAccount (const Account_ptr&);
-		void PrepareReply (const Message_ptr&);
+		void PrepareLinked (MsgType, const Message_ptr&);
 	private:
-		void PrepareReplyEditor (const Message_ptr&);
-		void PrepareReplyBody (const Message_ptr&);
+		void PrepareLinkedEditor (const Message_ptr&);
+		void PrepareLinkedBody (MsgType, const Message_ptr&);
 
 		void SetupToolbar ();
 		void SetupEditors ();

@@ -59,6 +59,8 @@ set (SRCS
 	templatesstorage.cpp
 	templatepattern.cpp
 	structures.cpp
+	threadpool.cpp
+	util.cpp
 	)
 set (FORMS
 	mailtab.ui

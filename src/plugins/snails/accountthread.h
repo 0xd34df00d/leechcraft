@@ -30,9 +30,9 @@
 #pragma once
 
 #include <thread>
+#include <atomic>
 #include <QThread>
 #include <QFuture>
-#include <vmime/security/cert/X509Certificate.hpp>
 #include <util/sll/either.h>
 #include <util/sll/typelist.h>
 #include <util/sll/typelevel.h>
@@ -47,83 +47,130 @@ namespace Snails
 	class AccountThreadWorker;
 	class TaskQueueManager;
 
-	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
-
 	struct Task
 	{
 		std::function<void (AccountThreadWorker*)> Executor_;
+	};
+
+	class GenericExceptionWrapper
+	{
+		std::string Msg_;
+	public:
+		GenericExceptionWrapper (const std::exception_ptr&);
+
+		const char* what () const noexcept;
 	};
 
 	namespace detail
 	{
 		const auto MaxRecLevel = 3;
 
-		template<typename Result, typename F, typename Ex = std::exception>
-		Result HandleExceptions (F&& f, int recLevel = 0, const Ex& ex = {})
+		template<typename Result, typename Ex,
+				typename = std::enable_if_t<Util::HasType<std::decay_t<Ex>> (Util::AsTypelist_t<typename Result::L_t> {})>>
+		Result ReturnException (const Ex& ex, int)
 		{
-			if (recLevel)
+			return Result::Left (ex);
+		}
+
+		template<typename Result, typename Ex>
+		Result ReturnException (const Ex&, float)
+		{
+			return Result::Left (std::current_exception ());
+		}
+
+		template<typename Result, typename F>
+		class ExceptionsHandler
+		{
+			F F_;
+			const int MaxRetries_;
+
+			int RecLevel_ = 0;
+		public:
+			ExceptionsHandler (const F& f, int maxRetries)
+			: F_ { f }
+			, MaxRetries_ { maxRetries }
 			{
-				const auto timeout = recLevel * 3000 + 1000;
-				qWarning () << Q_FUNC_INFO
-						<< "sleeping for"
-						<< timeout
-						<< "and retrying for the"
-						<< recLevel
-						<< "time after getting an exception:"
-						<< ex.what ();
-
-				std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
-			}
-
-			if (recLevel == MaxRecLevel)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "giving up after"
-						<< recLevel
-						<< "retries:"
-						<< ex.what ();
-
-				return Result::Left (ex);
 			}
 
-			try
+			template<typename Ex = std::exception>
+			Result operator() (const Ex& ex = {})
 			{
-				return f ();
-			}
-			catch (const vmime::exceptions::authentication_error& err)
-			{
-				const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+				if (RecLevel_)
+				{
+					const auto timeout = RecLevel_ * 3000 + 1000;
+					qWarning () << Q_FUNC_INFO
+							<< "sleeping for"
+							<< timeout
+							<< "and retrying for the"
+							<< RecLevel_
+							<< "time after getting an exception:"
+							<< ex.what ();
 
-				qWarning () << Q_FUNC_INFO
-						<< "caught auth error:"
-						<< respStr;
+					std::this_thread::sleep_for (std::chrono::milliseconds { timeout });
+				}
 
-				return Result::Left (err);
+				if (RecLevel_ == MaxRetries_)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "giving up after"
+							<< RecLevel_
+							<< "retries:"
+							<< ex.what ();
+
+					return ReturnException<Result> (ex, 0);
+				}
+
+				++RecLevel_;
+
+				try
+				{
+					return F_ ();
+				}
+				catch (const vmime::exceptions::authentication_error& err)
+				{
+					const auto& respStr = QString::fromUtf8 (err.response ().c_str ());
+
+					qWarning () << Q_FUNC_INFO
+							<< "caught auth error:"
+							<< respStr;
+
+					return Result::Left (err);
+				}
+				catch (const vmime::exceptions::connection_error& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::command_error& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::invalid_response& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::operation_timed_out& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::not_connected& e)
+				{
+					return (*this) (e);
+				}
+				catch (const vmime::exceptions::socket_exception& e)
+				{
+					return (*this) (e);
+				}
+				catch (const std::exception&)
+				{
+					return Result::Left (std::current_exception ());
+				}
 			}
-			catch (const vmime::exceptions::connection_error& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::invalid_response& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::operation_timed_out& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::not_connected& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const vmime::exceptions::socket_exception& e)
-			{
-				return HandleExceptions<Result> (f, ++recLevel, e);
-			}
-			catch (const std::exception& e)
-			{
-				return Result::Left (e);
-			}
+		};
+
+		template<typename Result, typename F>
+		Result HandleExceptions (const F& f)
+		{
+			return ExceptionsHandler<Result, F> { f, detail::MaxRecLevel } ();
 		}
 
 		template<typename Right>
@@ -216,6 +263,8 @@ namespace Snails
 
 		QMutex FunctionsMutex_;
 		QList<Task> Functions_;
+
+		std::atomic_bool IsRunning_;
 	public:
 		AccountThread (bool isListening, const QString& name,
 				const CertList_t& certs, Account *acc);
@@ -224,7 +273,12 @@ namespace Snails
 		QFuture<WrapFunctionType_t<F, Args...>> Schedule (const F& func, const Args&... args)
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
+			return Schedule (iface, func, args...);
+		}
 
+		template<typename F, typename... Args>
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface, const F& func, const Args&... args)
+		{
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{
 				iface.reportStarted ();
@@ -240,6 +294,8 @@ namespace Snails
 
 			return iface.future ();
 		}
+
+		int GetQueueSize ();
 	protected:
 		void run ();
 	private:

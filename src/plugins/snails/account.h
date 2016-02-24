@@ -58,6 +58,7 @@ namespace Snails
 	class MailModel;
 	class FoldersModel;
 	class MailModelsManager;
+	class ThreadPool;
 	struct Folder;
 
 	class Account : public QObject
@@ -66,8 +67,9 @@ namespace Snails
 
 		friend class AccountThreadWorker;
 		AccountLogger * const Logger_;
-		AccountThread * const Thread_;
-		AccountThread * const MessageFetchThread_;
+
+		ThreadPool * const WorkerPool_;
+
 		QMutex * const AccMutex_;
 
 		QByteArray ID_;
@@ -142,6 +144,7 @@ namespace Snails
 		QString GetServer () const;
 
 		QString GetUserName () const;
+		QString GetUserEmail () const;
 
 		bool ShouldLogToFile () const;
 		AccountLogger* GetLogger () const;
@@ -149,13 +152,6 @@ namespace Snails
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
-
-		enum class Thread
-		{
-			LowPriority,
-			HighPriority
-		};
-		AccountThread* GetAccountThread (Thread) const;
 
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);

@@ -32,6 +32,7 @@
 #include <boost/variant.hpp>
 #include <boost/none_t.hpp>
 #include <vmime/exception.hpp>
+#include <vmime/security/cert/X509Certificate.hpp>
 
 namespace LeechCraft
 {
@@ -43,12 +44,18 @@ class Either;
 
 namespace Snails
 {
+	class GenericExceptionWrapper;
+
 	template<typename... Rest>
 	using InvokeError_t = boost::variant<
 				vmime::exceptions::authentication_error,
 				vmime::exceptions::connection_error,
-				std::exception,
+				GenericExceptionWrapper,
 				Rest...
 			>;
+
+	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
+
+	class AccountThread;
 }
 }
