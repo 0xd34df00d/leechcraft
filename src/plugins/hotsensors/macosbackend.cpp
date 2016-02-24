@@ -279,7 +279,7 @@ namespace HotSensors
 
 		Readings_t readings;
 
-		auto append = [&smc, &readings] (const QString& name, const char *sensor) -> void
+		auto append = [&smc, &readings] (const QString& name, const char *sensor)
 		{
 			const auto temp = smc.GetTemp (sensor);
 			if (temp > std::numeric_limits<double>::epsilon ())
