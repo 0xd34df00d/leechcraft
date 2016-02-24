@@ -163,6 +163,11 @@ namespace Util
 			return Children_;
 		}
 
+		TList_t& GetChildren ()
+		{
+			return Children_;
+		}
+
 		/** @brief Returns the children count.
 		 *
 		 * @return The children count.
