@@ -237,6 +237,11 @@ namespace Util
 			Children_ << t;
 		}
 
+		void AppendExisting (const TList_t& items)
+		{
+			Children_ += items;
+		}
+
 		/** @brief Creates a new child item, appends it and returns it.
 		 *
 		 * @tparam Args The types of the arguments to the constructor of
