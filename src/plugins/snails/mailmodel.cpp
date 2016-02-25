@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/models/modelitembase.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "messagelistactionsmanager.h"
@@ -39,12 +40,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	struct MailModel::TreeNode : std::enable_shared_from_this<TreeNode>
+	struct MailModel::TreeNode : Util::ModelItemBase<MailModel::TreeNode>
 	{
 		Message_ptr Msg_;
-
-		TreeNode_wptr Parent_;
-		QList<TreeNode_ptr> Children_;
 
 		QSet<QByteArray> UnreadChildren_;
 
@@ -72,9 +70,14 @@ namespace Snails
 		TreeNode () = default;
 
 		TreeNode (const Message_ptr& msg, const TreeNode_ptr& parent)
-		: Msg_ { msg }
-		, Parent_ { parent }
+		: Util::ModelItemBase<TreeNode> { parent }
+		, Msg_ { msg }
 		{
+		}
+
+		void SetParent (const TreeNode_wptr& parent)
+		{
+			Parent_ = parent;
 		}
 
 		int GetChildrenCount () const
@@ -245,7 +248,7 @@ namespace Snails
 		const auto structItem = parent.isValid () ?
 				static_cast<TreeNode*> (parent.internalPointer ()) :
 				Root_.get ();
-		const auto childItem = structItem->Children_.value (row).get ();
+		const auto childItem = structItem->GetChild (row).get ();
 		if (!childItem)
 			return {};
 
@@ -258,7 +261,7 @@ namespace Snails
 			return {};
 
 		const auto structItem = static_cast<TreeNode*> (index.internalPointer ());
-		const auto& parentItem = structItem->Parent_.lock ();
+		const auto& parentItem = structItem->GetParent ();
 		if (parentItem == Root_)
 			return {};
 
@@ -270,7 +273,7 @@ namespace Snails
 		const auto structItem = parent.isValid () ?
 				static_cast<TreeNode*> (parent.internalPointer ()) :
 				Root_.get ();
-		return structItem->Children_.size ();
+		return structItem->GetRowCount ();
 	}
 
 	void MailModel::SetFolder (const QStringList& folder)
@@ -295,7 +298,7 @@ namespace Snails
 
 		beginRemoveRows ({}, 0, Messages_.size () - 1);
 		Messages_.clear ();
-		Root_->Children_.clear ();
+		Root_->EraseChildren (Root_->begin (), Root_->end ());
 		FolderId2Nodes_.clear ();
 		MsgId2FolderId_.clear ();
 		endRemoveRows ();
@@ -350,9 +353,11 @@ namespace Snails
 		for (const auto& msg : messages)
 			if (!AppendStructured (msg))
 			{
-				const auto& node = std::make_shared<TreeNode> (msg, Root_);
-				beginInsertRows ({}, Root_->Children_.size (), Root_->Children_.size ());
-				Root_->Children_.append (node);
+				const auto node = std::make_shared<TreeNode> (msg, Root_);
+
+				const auto childrenCount = Root_->GetRowCount ();
+				beginInsertRows ({}, childrenCount, childrenCount);
+				Root_->AppendExisting (node);
 				FolderId2Nodes_ [msg->GetFolderID ()] << node;
 				endInsertRows ();
 			}
@@ -424,7 +429,7 @@ namespace Snails
 		QList<TreeNode_ptr> nodes;
 		for (const auto& node : FolderId2Nodes_.value (folderId))
 		{
-			const auto& parent = node->Parent_.lock ();
+			const auto& parent = node->GetParent ();
 			if (parent != Root_)
 				nodes << parent;
 		}
@@ -449,7 +454,7 @@ namespace Snails
 				emit dataChanged (leftIdx, rightIdx);
 			}
 
-			const auto& parent = item->Parent_.lock ();
+			const auto& parent = item->GetParent ();
 			if (parent != Root_)
 				nodes << parent;
 		}
@@ -457,7 +462,7 @@ namespace Snails
 
 	void MailModel::RemoveNode (const TreeNode_ptr& node)
 	{
-		const auto& parent = node->Parent_.lock ();
+		const auto& parent = node->GetParent ();
 
 		const auto& parentIndex = parent == Root_ ?
 				QModelIndex {} :
@@ -465,27 +470,27 @@ namespace Snails
 
 		const auto row = node->Row ();
 
-		if (const auto childCount = node->Children_.size ())
+		// TODO can this be reworked?
+		if (const auto childCount = node->GetRowCount ())
 		{
 			const auto& nodeIndex = createIndex (row, 0, node.get ());
 
 			beginRemoveRows (nodeIndex, 0, childCount - 1);
-			auto childNodes = std::move (node->Children_);
-			node->Children_.clear ();
+			auto childNodes = std::move (node->GetChildren ());
 			endRemoveRows ();
 
 			for (const auto& childNode : childNodes)
-				childNode->Parent_ = parent;
+				childNode->SetParent (parent);
 
 			beginInsertRows (parentIndex,
-					parent->Children_.size (),
-					parent->Children_.size () + childCount - 1);
-			parent->Children_ += childNodes;
+					parent->GetRowCount (),
+					parent->GetRowCount () + childCount - 1);
+			parent->AppendExisting (childNodes);
 			endInsertRows ();
 		}
 
 		beginRemoveRows (parentIndex, row, row);
-		parent->Children_.removeOne (node);
+		parent->EraseChild (parent->begin () + row);
 		endRemoveRows ();
 	}
 
@@ -513,11 +518,11 @@ namespace Snails
 		for (const auto& parentIndex : indexes)
 		{
 			const auto parentNode = static_cast<TreeNode*> (parentIndex.internalPointer ());
-			const auto row = parentNode->Children_.size ();
+			const auto row = parentNode->GetRowCount ();
 
-			const auto& node = std::make_shared<TreeNode> (msg, parentNode->shared_from_this ());
+			const auto node = std::make_shared<TreeNode> (msg, parentNode->shared_from_this ());
 			beginInsertRows (parentIndex, row, row);
-			parentNode->Children_ << node;
+			parentNode->AppendExisting (node);
 			FolderId2Nodes_ [msg->GetFolderID ()] << node;
 			endInsertRows ();
 		}
