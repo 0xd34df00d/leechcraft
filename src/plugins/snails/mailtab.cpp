@@ -692,13 +692,16 @@ namespace Snails
 			Util::Sequence (this, future) >>
 					[this] (const auto& result)
 					{
+						const auto& cur = Ui_.MailTree_->currentIndex ();
+						const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
+						if (curId != msg->GetFolderID ())
+							return;
+
+						CurrMsgFetchFuture_.reset ();
 						Util::Visit (result.AsVariant (),
 								[this] (const Message_ptr& msg)
 								{
-									const auto& cur = Ui_.MailTree_->currentIndex ();
-									const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
-									if (curId == msg->GetFolderID ())
-										SetMessage (msg);
+									SetMessage (msg);
 								},
 								[this] (auto err)
 								{
@@ -708,7 +711,6 @@ namespace Snails
 												.arg (errMsg);
 									Ui_.MailView_->setHtml (ToHtmlError (msg));
 								});
-						CurrMsgFetchFuture_.reset ();
 					};
 		}
 
