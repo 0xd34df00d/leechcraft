@@ -597,6 +597,11 @@ namespace Poshuku
 		return Ui_.URLFrame_->GetEdit ();
 	}
 
+	QObject* BrowserWidget::GetQObject ()
+	{
+		return this;
+	}
+
 	BrowserWidgetSettings BrowserWidget::GetWidgetSettings () const
 	{
 		QByteArray ba;
@@ -895,6 +900,21 @@ namespace Poshuku
 	QIcon BrowserWidget::GetTabRecoverIcon () const
 	{
 		return WebView_->icon ();
+	}
+
+	void BrowserWidget::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		WebView_->settings ()->setFontFamily (family, font.family ());
+	}
+
+	void BrowserWidget::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		WebView_->settings ()->setFontSize (type, size);
+	}
+
+	void BrowserWidget::SetFontSizeMultiplier (qreal factor)
+	{
+		WebView_->setTextSizeMultiplier (factor);
 	}
 
 	void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
