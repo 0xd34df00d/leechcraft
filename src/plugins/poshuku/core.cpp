@@ -82,10 +82,6 @@ namespace Poshuku
 	, URLCompletionModel_ (new URLCompletionModel (this))
 	, HistoryModel_ (new HistoryModel (this))
 	, FavoritesModel_ (new FavoritesModel (this))
-	, NetworkAccessManager_ (0)
-	, WebPluginFactory_ (0)
-	, ShortcutProxy_ (0)
-	, Initialized_ (false)
 	{
 		qRegisterMetaType<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
 		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
