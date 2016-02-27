@@ -215,6 +215,8 @@ namespace Util
 		if (IsFontZoomDirty_)
 		{
 			const auto factor = Ui_->Zoom_->value () / 100.;
+
+			BSM_->setProperty ("FontSizeMultiplier", factor);
 			emit sizeMultiplierChanged (factor);
 
 			for (const auto settable : Settables_)
