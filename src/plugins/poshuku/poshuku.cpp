@@ -123,8 +123,8 @@ namespace Poshuku
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
-		const auto fontsSelector = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
-		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", fontsSelector);
+		FontsWidget_ = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
 
 		InitConnections ();
 

@@ -49,6 +49,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class WkFontsWidget;
+}
+
 namespace Poshuku
 {
 	class Poshuku : public QObject
@@ -84,6 +89,8 @@ namespace Poshuku
 		QAction *ReloadAll_;
 
 		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+
+		Util::WkFontsWidget *FontsWidget_;
 	public:
 		virtual ~Poshuku ();
 		void Init (ICoreProxy_ptr);
