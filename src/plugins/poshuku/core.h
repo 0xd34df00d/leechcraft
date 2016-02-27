@@ -71,9 +71,9 @@ namespace Poshuku
 		typedef std::vector<BrowserWidget*> widgets_t;
 		widgets_t Widgets_;
 
-		PluginManager  * const PluginManager_;
-		URLCompletionModel  * const URLCompletionModel_;
-		HistoryModel  * const HistoryModel_;
+		PluginManager * const PluginManager_;
+		URLCompletionModel * const URLCompletionModel_;
+		HistoryModel * const HistoryModel_;
 		FavoritesModel * const FavoritesModel_;
 
 		std::shared_ptr<StorageBackend> StorageBackend_;
