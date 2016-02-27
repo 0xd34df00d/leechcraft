@@ -91,6 +91,14 @@ namespace Util
 			};
 
 		ResetZoom ();
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { IsFontZoomDirty_ = true; },
+			Ui_->Zoom_,
+			SIGNAL (valueChanged (int)),
+			this
+		};
 	}
 
 	void WkFontsWidget::SetFontZoomTooltip (const QString& label)
