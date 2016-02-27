@@ -328,6 +328,7 @@ namespace Poshuku
 			return nullptr;
 
 		const auto widget = new BrowserWidget ();
+		emit browserWidgetCreated (widget);
 		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
 
@@ -366,6 +367,7 @@ namespace Poshuku
 			return nullptr;
 
 		const auto widget = new BrowserWidget ();
+		emit browserWidgetCreated (widget);
 		widget->Deown ();
 		widget->FinalizeInit ();
 		SetupConnections (widget);

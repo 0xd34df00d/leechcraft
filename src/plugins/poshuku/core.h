@@ -184,6 +184,7 @@ namespace Poshuku
 		void couldHandle (const LeechCraft::Entity&, bool*);
 		void bookmarkAdded (const QString&);
 		void bookmarkRemoved (const QString&);
+		void browserWidgetCreated (BrowserWidget*);
 
 		// Hook support signals
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,
