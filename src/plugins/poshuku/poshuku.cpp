@@ -117,7 +117,7 @@ namespace Poshuku
 					e.what ());
 		}
 
-		XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukusettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
