@@ -187,8 +187,8 @@ namespace Util
 	{
 		for (const auto& pair : Util::Stlize (PendingFontChanges_))
 		{
-			emit fontChanged (pair.first, pair.second);
 			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
+			emit fontChanged (pair.first, pair.second);
 
 			for (const auto settable : Settables_)
 				settable->SetFontFamily (pair.first, pair.second);
@@ -196,8 +196,8 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
 		{
-			emit sizeChanged (pair.first, pair.second);
 			BSM_->setProperty (Size2Name_ [pair.first], pair.second);
+			emit sizeChanged (pair.first, pair.second);
 
 			for (const auto settable : Settables_)
 				settable->SetFontSize (pair.first, pair.second);
