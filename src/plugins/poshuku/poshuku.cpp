@@ -583,12 +583,6 @@ namespace Poshuku
 
 		auto global = QWebSettings::globalSettings ();
 
-		global->setFontSize (QWebSettings::MinimumFontSize,
-				xsm->property ("MinimumFontSize").toInt ());
-		global->setFontSize (QWebSettings::DefaultFontSize,
-				xsm->property ("DefaultFontSize").toInt ());
-		global->setFontSize (QWebSettings::DefaultFixedFontSize,
-				xsm->property ("DefaultFixedFontSize").toInt ());
 		global->setAttribute (QWebSettings::AutoLoadImages,
 				xsm->property ("AutoLoadImages").toBool ());
 		global->setAttribute (QWebSettings::DnsPrefetchEnabled,
