@@ -570,16 +570,6 @@ namespace Poshuku
 	void Poshuku::viewerSettingsChanged ()
 	{
 		auto xsm = XmlSettingsManager::Instance ();
-		auto setFamily = [this, xsm] (QWebSettings::FontFamily family, const char *prop)
-		{
-			handleFontChanged (family, xsm->property (prop).value<QFont> ());
-		};
-		setFamily (QWebSettings::StandardFont, "StandardFont");
-		setFamily (QWebSettings::FixedFont, "FixedFont");
-		setFamily (QWebSettings::SerifFont, "SerifFont");
-		setFamily (QWebSettings::SansSerifFont, "SansSerifFont");
-		setFamily (QWebSettings::CursiveFont, "CursiveFont");
-		setFamily (QWebSettings::FantasyFont, "FantasyFont");
 
 		auto global = QWebSettings::globalSettings ();
 
