@@ -265,7 +265,7 @@ namespace Snails
 		if (parentItem == Root_)
 			return {};
 
-		return createIndex (parentItem->Row (), 0, parentItem.get ());
+		return createIndex (parentItem->GetRow (), 0, parentItem.get ());
 	}
 
 	int MailModel::rowCount (const QModelIndex& parent) const
@@ -449,8 +449,8 @@ namespace Snails
 
 			if (emitUpdate)
 			{
-				const auto& leftIdx = createIndex (item->Row (), 0, item.get ());
-				const auto& rightIdx = createIndex (item->Row (), columnCount () - 1, item.get ());
+				const auto& leftIdx = createIndex (item->GetRow (), 0, item.get ());
+				const auto& rightIdx = createIndex (item->GetRow (), columnCount () - 1, item.get ());
 				emit dataChanged (leftIdx, rightIdx);
 			}
 
@@ -466,9 +466,9 @@ namespace Snails
 
 		const auto& parentIndex = parent == Root_ ?
 				QModelIndex {} :
-				createIndex (parent->Row (), 0, parent.get ());
+				createIndex (parent->GetRow (), 0, parent.get ());
 
-		const auto row = node->Row ();
+		const auto row = node->GetRow ();
 
 		// TODO can this be reworked?
 		if (const auto childCount = node->GetRowCount ())
@@ -541,7 +541,7 @@ namespace Snails
 
 	QModelIndex MailModel::GetIndex (const TreeNode_ptr& node, int column) const
 	{
-		return createIndex (node->Row (), column, node.get ());
+		return createIndex (node->GetRow (), column, node.get ());
 	}
 
 	QList<QModelIndex> MailModel::GetIndexes (const QByteArray& folderId, int column) const
