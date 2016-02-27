@@ -690,11 +690,11 @@ namespace Snails
 			auto future = CurrAcc_->FetchWholeMessage (msg);
 			CurrMsgFetchFuture_ = std::make_shared<Account::FetchWholeMessageResult_t> (future);
 			Util::Sequence (this, future) >>
-					[this] (const auto& result)
+					[this, thisFolderId = msg->GetFolderID ()] (const auto& result)
 					{
 						const auto& cur = Ui_.MailTree_->currentIndex ();
 						const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
-						if (curId != msg->GetFolderID ())
+						if (curId != thisFolderId)
 							return;
 
 						CurrMsgFetchFuture_.reset ();
