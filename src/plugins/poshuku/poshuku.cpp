@@ -125,6 +125,10 @@ namespace Poshuku
 
 		FontsWidget_ = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
 		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
+		connect (&Core::Instance (),
+				SIGNAL (browserWidgetCreated (BrowserWidget*)),
+				this,
+				SLOT (handleBrowserWidgetCreated (BrowserWidget*)));
 
 		InitConnections ();
 
@@ -661,6 +665,11 @@ namespace Poshuku
 	void Poshuku::handleReloadAll ()
 	{
 		Core::Instance ().ReloadAll ();
+	}
+
+	void Poshuku::handleBrowserWidgetCreated (BrowserWidget *widget)
+	{
+		FontsWidget_->RegisterSettable (widget);
 	}
 }
 }

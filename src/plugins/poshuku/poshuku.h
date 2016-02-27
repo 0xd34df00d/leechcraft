@@ -142,6 +142,7 @@ namespace Poshuku
 		void handleSettingsClicked (const QString&);
 		void handleCheckFavorites ();
 		void handleReloadAll ();
+		void handleBrowserWidgetCreated (BrowserWidget*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
