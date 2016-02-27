@@ -125,10 +125,6 @@ namespace Poshuku
 
 		const auto fontsSelector = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
 		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", fontsSelector);
-		connect (fontsSelector,
-				SIGNAL (fontChanged (QWebSettings::FontFamily, QFont)),
-				this,
-				SLOT (handleFontChanged (QWebSettings::FontFamily, QFont)));
 
 		InitConnections ();
 
