@@ -146,7 +146,8 @@ namespace Util
 
 	void WkFontsWidget::ResetZoom ()
 	{
-		Ui_->Zoom_->setValue (BSM_->Property ("FontZoom", 100).toInt ());
+		const auto factor = BSM_->Property ("FontSizeMultiplier", 1).toDouble ();
+		Ui_->Zoom_->setValue (factor * 100);
 	}
 
 	void WkFontsWidget::on_ChangeAll__released ()
