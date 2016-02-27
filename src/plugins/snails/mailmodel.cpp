@@ -48,25 +48,6 @@ namespace Snails
 
 		bool IsAvailable_ = true;
 
-		int Row () const
-		{
-			const auto& parent = Parent_.lock ();
-			if (!parent)
-				return -1;
-
-			const auto pos = std::find_if (parent->Children_.begin (), parent->Children_.end (),
-					[this] (const TreeNode_ptr& other) { return other.get () == this; });
-			if (pos == parent->Children_.end ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unknown row for item"
-						<< Msg_->GetFolderID ();
-				return -1;
-			}
-
-			return std::distance (parent->Children_.begin (), pos);
-		}
-
 		TreeNode () = default;
 
 		TreeNode (const Message_ptr& msg, const TreeNode_ptr& parent)
