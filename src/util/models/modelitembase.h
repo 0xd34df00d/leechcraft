@@ -163,6 +163,10 @@ namespace Util
 			return Children_;
 		}
 
+		/** @brief Returns a non-constant reference to the list of children.
+		 *
+		 * @return The non-constant reference to the list of children.
+		 */
 		TList_t& GetChildren ()
 		{
 			return Children_;
@@ -242,6 +246,15 @@ namespace Util
 			Children_ << t;
 		}
 
+		/** @brief Appends a list of \em items to the list of child items.
+		 *
+		 * This function invalidates all iterators.
+		 *
+		 * @param[in] items The list of items to append.
+		 *
+		 * @sa AppendChild()
+		 * @sa InsertChild()
+		 */
 		void AppendExisting (const TList_t& items)
 		{
 			Children_ += items;
