@@ -553,16 +553,6 @@ namespace Poshuku
 #endif
 	}
 
-	void Poshuku::handleFontChanged (QWebSettings::FontFamily family, const QFont& font)
-	{
-		QWebSettings::globalSettings ()->setFontFamily (family, font.family ());
-
-#if QT_VERSION < 0x050000
-		if (family == QWebSettings::FixedFont)
-			SetSubsts ();
-#endif
-	}
-
 	void Poshuku::viewerSettingsChanged ()
 	{
 		auto xsm = XmlSettingsManager::Instance ();

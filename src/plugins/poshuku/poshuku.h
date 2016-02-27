@@ -127,7 +127,6 @@ namespace Poshuku
 		void RegisterSettings ();
 	private slots:
 		void createTabFirstTime ();
-		void handleFontChanged (QWebSettings::FontFamily, const QFont&);
 		void viewerSettingsChanged ();
 		void developerExtrasChanged ();
 		void cacheSettingsChanged ();
