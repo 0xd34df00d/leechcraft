@@ -148,19 +148,23 @@ namespace Snails
 
 	namespace
 	{
+		QString MakeLinkedSubject (QString subj, const QString& marker)
+		{
+			if (marker.compare (subj.left (marker.size ()), Qt::CaseInsensitive))
+				subj.prepend (marker + ": ");
+			return subj;
+		}
+
 		boost::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
 		{
 			switch (type)
 			{
 			case MsgType::New:
 				return {};
-			default:
-			{
-				auto subj = msg->GetSubject ();
-				if (subj.left (3).toLower () != "re:")
-					subj.prepend ("Re: ");
-				return subj;
-			}
+			case MsgType::Reply:
+				return MakeLinkedSubject (msg->GetSubject (), "Re");
+			case MsgType::Forward:
+				return MakeLinkedSubject (msg->GetSubject (), "Fwd");
 			}
 
 			qWarning () << Q_FUNC_INFO
