@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_BROWSERWIDGET_H
-#define PLUGINS_POSHUKU_BROWSERWIDGET_H
+#pragma once
+
 #include <memory>
 #include <QWidget>
 #include <QTime>
@@ -271,5 +271,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
