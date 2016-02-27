@@ -213,10 +213,11 @@ namespace Util
 
 		if (IsFontZoomDirty_)
 		{
-			const auto value = Ui_->Zoom_->value () / 100.;
-			emit sizeMultiplierChanged (value);
+			const auto factor = Ui_->Zoom_->value () / 100.;
+			emit sizeMultiplierChanged (factor);
+
 			for (const auto settable : Settables_)
-				settable->SetFontSizeMultiplier (value);
+				settable->SetFontSizeMultiplier (factor);
 		}
 
 		PendingFontChanges_.clear ();
