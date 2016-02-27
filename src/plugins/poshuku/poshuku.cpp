@@ -456,10 +456,7 @@ namespace Poshuku
 	void Poshuku::RegisterSettings ()
 	{
 		QList<QByteArray> viewerSettings;
-		viewerSettings << "MinimumFontSize"
-			<< "DefaultFontSize"
-			<< "DefaultFixedFontSize"
-			<< "AutoLoadImages"
+		viewerSettings << "AutoLoadImages"
 			<< "DNSPrefetchEnabled"
 			<< "AllowJavascript"
 			<< "AllowJava"
