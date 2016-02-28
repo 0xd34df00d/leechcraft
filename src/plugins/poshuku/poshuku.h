@@ -88,7 +88,7 @@ namespace Poshuku
 		QAction *CheckFavorites_;
 		QAction *ReloadAll_;
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
 
 		Util::WkFontsWidget *FontsWidget_;
 	public:
