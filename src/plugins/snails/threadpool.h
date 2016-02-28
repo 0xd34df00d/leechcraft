@@ -42,6 +42,8 @@ namespace Snails
 
 	using AccountThread_ptr = std::shared_ptr<AccountThread>;
 
+	enum class TaskPriority;
+
 	class ThreadPool : public QObject
 	{
 		Account * const Acc_;
@@ -58,14 +60,8 @@ namespace Snails
 
 		AccountThread* GetThread ();
 
-		enum class Priority
-		{
-			High,
-			Low
-		};
-
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (Priority, const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
 

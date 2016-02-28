@@ -36,3 +36,15 @@ inline uint qHash (const QStringList& list)
 {
 	return qHash (list.join ("<|>"));
 }
+
+namespace LeechCraft
+{
+namespace Snails
+{
+	enum class TaskPriority
+	{
+		High,
+		Low
+	};
+}
+}
