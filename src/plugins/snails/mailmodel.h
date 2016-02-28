@@ -66,7 +66,6 @@ namespace Snails
 		{
 			From,
 			UnreadChildren,
-			AttachIcon,
 			StatusIcon,
 			Subject,
 			Date,

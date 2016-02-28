@@ -72,7 +72,7 @@ namespace Snails
 	MailModel::MailModel (const MessageListActionsManager *actsMgr, QObject *parent)
 	: QAbstractItemModel { parent }
 	, ActionsMgr_ { actsMgr }
-	, Headers_ { tr ("From"), {}, {}, {}, tr ("Subject"), tr ("Date"), tr ("Size")  }
+	, Headers_ { tr ("From"), {}, {}, tr ("Subject"), tr ("Date"), tr ("Size") }
 	, Folder_ { "INBOX" }
 	, Root_ { std::make_shared<TreeNode> () }
 	{
@@ -154,9 +154,6 @@ namespace Snails
 				else
 					iconName = "mail-read";
 				break;
-			case Column::AttachIcon:
-				if (!msg->GetAttachments ().isEmpty ())
-					iconName = "mail-attachment";
 			default:
 				break;
 			}
@@ -210,7 +207,6 @@ namespace Snails
 
 			return role == Sort ? 0 : QString::fromUtf8 ("·");
 		case Column::StatusIcon:
-		case Column::AttachIcon:
 			break;
 		}
 
