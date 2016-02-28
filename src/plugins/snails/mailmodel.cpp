@@ -194,9 +194,10 @@ namespace Snails
 						msg->GetDate () :
 						structItem->Fold ([] (const TreeNode *n) { return n->Msg_->GetDate (); },
 								[] (auto d1, auto d2) { return std::max (d1, d2); });
-			return role == Sort ?
-					date :
-					GetNeatDate (date);
+			if (role == Sort)
+				return date;
+			else
+				return GetNeatDate (date);
 		}
 		case Column::Size:
 			if (role == Sort)
