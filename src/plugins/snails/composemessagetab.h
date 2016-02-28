@@ -95,6 +95,8 @@ namespace Snails
 		void SetMessageReferences (const Message_ptr&) const;
 
 		Account* GetSelectedAccount () const;
+
+		void AppendAttachment (const QString& path, const QString& descr);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();

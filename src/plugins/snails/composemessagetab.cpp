@@ -478,6 +478,27 @@ namespace Snails
 		return nullptr;
 	}
 
+	void ComposeMessageTab::AppendAttachment (const QString& path, const QString& descr)
+	{
+		const QFileInfo fi { path };
+
+		const auto& size = Util::MakePrettySize (fi.size ());
+		const auto attAct = new QAction (QString { "%1 (%2)" }.arg (fi.fileName (), size), this);
+		attAct->setProperty ("Snails/AttachmentPath", path);
+		attAct->setProperty ("Snails/Description", descr);
+
+		const auto& mime = Util::MimeDetector {} (fi.fileName ());
+		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
+
+		connect (attAct,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRemoveAttachment ()));
+
+		const auto& acts = AttachmentsMenu_->actions ();
+		AttachmentsMenu_->insertAction (acts.at (acts.size () - 2), attAct);
+	}
+
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -603,23 +624,7 @@ namespace Snails
 				tr ("Attachment description"),
 				tr ("Enter optional attachment description (you may leave it blank):"));
 
-		const QFileInfo fi (path);
-
-		const QString& size = Util::MakePrettySize (file.size ());
-		QAction *attAct = new QAction (QString ("%1 (%2)").arg (fi.fileName (), size), this);
-		attAct->setProperty ("Snails/AttachmentPath", path);
-		attAct->setProperty ("Snails/Description", descr);
-
-		const auto& mime = Util::MimeDetector {} (fi.fileName ());
-		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
-
-		connect (attAct,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRemoveAttachment ()));
-
-		const auto& acts = AttachmentsMenu_->actions ();
-		AttachmentsMenu_->insertAction (acts.at (acts.size () - 2), attAct);
+		AppendAttachment (path, descr);
 	}
 
 	void ComposeMessageTab::handleRemoveAttachment ()
