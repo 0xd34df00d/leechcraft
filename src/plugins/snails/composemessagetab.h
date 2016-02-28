@@ -99,6 +99,7 @@ namespace Snails
 		void AppendAttachment (const QString& path, const QString& descr);
 
 		void AddAttachments (const Message_ptr&);
+		void Send (Account*, const Message_ptr&);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();

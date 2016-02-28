@@ -552,24 +552,8 @@ namespace Snails
 		}
 	}
 
-	void ComposeMessageTab::handleSend ()
+	void ComposeMessageTab::Send (Account *account, const Message_ptr& message)
 	{
-		const auto account = GetSelectedAccount ();
-		if (!account)
-			return;
-
-		const auto editor = Ui_.Editor_->GetCurrentEditor ();
-
-		const auto& message = std::make_shared<Message> ();
-		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
-		message->SetSubject (Ui_.Subject_->text ());
-		message->SetBody (editor->GetContents (ContentType::PlainText));
-		message->SetHTMLBody (editor->GetContents (ContentType::HTML));
-
-		SetMessageReferences (message);
-
-		AddAttachments (message);
-
 		Util::Sequence (nullptr, account->SendMessage (message)) >>
 				[safeThis = QPointer<ComposeMessageTab> { this }] (const auto& result)
 				{
@@ -605,6 +589,26 @@ namespace Snails
 										});
 							});
 				};
+	}
+
+	void ComposeMessageTab::handleSend ()
+	{
+		const auto account = GetSelectedAccount ();
+		if (!account)
+			return;
+
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
+
+		const auto& message = std::make_shared<Message> ();
+		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
+		message->SetSubject (Ui_.Subject_->text ());
+		message->SetBody (editor->GetContents (ContentType::PlainText));
+		message->SetHTMLBody (editor->GetContents (ContentType::HTML));
+
+		SetMessageReferences (message);
+
+		AddAttachments (message);
+		Send (account, message);
 	}
 
 	void ComposeMessageTab::handleAddAttachment ()
