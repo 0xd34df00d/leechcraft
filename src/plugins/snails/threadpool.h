@@ -65,11 +65,21 @@ namespace Snails
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
 
-			Scheduled_ << [=] (AccountThread *thread) mutable
+			auto runner = [=] (AccountThread *thread) mutable
 					{
 						iface.reportStarted ();
 						PerformScheduledFunc (thread, iface, func, args...);
 					};
+
+			switch (prio)
+			{
+			case TaskPriority::High:
+				Scheduled_.prepend (runner);
+				break;
+			case TaskPriority::Low:
+				Scheduled_.append (runner);
+				break;
+			}
 
 			RunThreads ();
 
