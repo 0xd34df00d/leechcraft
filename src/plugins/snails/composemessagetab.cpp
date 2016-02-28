@@ -184,6 +184,8 @@ namespace Snails
 				address = msg->GetAddress (Message::Address::From);
 			Ui_.To_->setText (GetNiceMail (address));
 		}
+		else if (type == MsgType::Forward)
+			CopyAttachments (msg);
 
 		if (const auto& subj = CreateSubj (type, msg))
 			Ui_.Subject_->setText (*subj);
