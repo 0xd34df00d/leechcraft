@@ -68,7 +68,7 @@ namespace Snails
 			auto runner = [=] (AccountThread *thread) mutable
 					{
 						iface.reportStarted ();
-						PerformScheduledFunc (thread, iface, func, args...);
+						PerformScheduledFunc (thread, iface, prio, func, args...);
 					};
 
 			switch (prio)
@@ -92,9 +92,9 @@ namespace Snails
 		}
 	private:
 		template<typename FutureInterface, typename F, typename... Args>
-		void PerformScheduledFunc (AccountThread *thread, FutureInterface iface, const F& func, const Args&... args)
+		void PerformScheduledFunc (AccountThread *thread, FutureInterface iface, TaskPriority prio, const F& func, const Args&... args)
 		{
-			Util::Sequence (nullptr, thread->Schedule (func, args...)) >>
+			Util::Sequence (nullptr, thread->Schedule (prio, func, args...)) >>
 					[=] (auto result) mutable
 					{
 						if (result.IsRight ())
@@ -112,7 +112,7 @@ namespace Snails
 										qWarning () << Q_FUNC_INFO
 												<< "seems like a thread has died, rescheduling...";
 										HandleThreadOverflow (thread);
-										PerformScheduledFunc (GetNextThread (), iface, func, args...);
+										PerformScheduledFunc (GetNextThread (), iface, prio, func, args...);
 									}
 									else
 										iface.reportFinished (&result);

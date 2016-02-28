@@ -46,7 +46,7 @@ namespace Snails
 		auto thread = CreateThread ();
 		ExistingThreads_ << thread;
 
-		Util::Sequence (this, thread->Schedule (&AccountThreadWorker::TestConnectivity)) >>
+		Util::Sequence (this, thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
 			[this, thread] (const auto& result)
 			{
 				RunScheduled (thread.get ());
@@ -92,7 +92,7 @@ namespace Snails
 
 		auto thread = CreateThread ();
 
-		Util::Sequence (this, thread->Schedule (&AccountThreadWorker::TestConnectivity)) >>
+		Util::Sequence (this, thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
 			[this, thread] (const auto& result)
 			{
 				CheckingNext_ = false;
@@ -166,7 +166,7 @@ namespace Snails
 
 	void ThreadPool::HandleThreadOverflow (const AccountThread_ptr& thread)
 	{
-		thread->Schedule (&AccountThreadWorker::Disconnect);
+		thread->Schedule (TaskPriority::Low, &AccountThreadWorker::Disconnect);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{

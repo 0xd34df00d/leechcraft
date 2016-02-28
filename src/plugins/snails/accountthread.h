@@ -38,6 +38,7 @@
 #include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
 #include "accountthreadfwd.h"
+#include "common.h"
 
 namespace LeechCraft
 {
@@ -270,14 +271,14 @@ namespace Snails
 				const CertList_t& certs, Account *acc);
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
-			return Schedule (iface, func, args...);
+			return Schedule (iface, prio, func, args...);
 		}
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface, const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface, TaskPriority prio, const F& func, const Args&... args)
 		{
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{
@@ -287,7 +288,16 @@ namespace Snails
 
 			{
 				QMutexLocker locker { &FunctionsMutex_ };
-				Functions_ << Task { reporting };
+
+				switch (prio)
+				{
+				case TaskPriority::High:
+					Functions_.prepend ({ reporting });
+					break;
+				case TaskPriority::Low:
+					Functions_.append ({ reporting });
+					break;
+				}
 			}
 
 			emit rotateFuncs ();

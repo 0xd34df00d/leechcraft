@@ -831,7 +831,8 @@ namespace Snails
 	void AccountThreadWorker::sendNoop ()
 	{
 		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
-		at->Schedule ([this] (AccountThreadWorker*)
+		at->Schedule (TaskPriority::Low,
+				[this] (AccountThreadWorker*)
 				{
 					if (CachedStore_)
 						CachedStore_->noop ();
