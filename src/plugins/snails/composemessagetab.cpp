@@ -649,8 +649,44 @@ namespace Snails
 
 		SetMessageReferences (message);
 
-		AddAttachments (message);
-		Send (account, message);
+		if (!LinkedAttachmentsFetcher_)
+		{
+			AddAttachments (message);
+			Send (account, message);
+			return;
+		}
+
+		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
+				[=] (const AttachmentsFetcher::Result_t& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (const AttachmentsFetcher::FetchResult&)
+							{
+								AddAttachments (message);
+								Send (account, message);
+							},
+							[=] (auto err)
+							{
+								Util::Visit (err,
+										[this] (const AttachmentsFetcher::TemporaryDirError& dir)
+										{
+											QMessageBox::critical (this,
+													"LeechCraft",
+													tr ("Unable to create temporary directory to "
+														"fetch the attachments of the source "
+														"message."));
+										},
+										[this] (const auto& e)
+										{
+											const auto& msg = QString::fromUtf8 (e.what ());
+											QMessageBox::critical (this,
+													"LeechCraft",
+													tr ("Unable to fetch the attachments of the "
+														"source message: %1.")
+														.arg ("<em>" + msg + "</em>"));
+										});
+							});
+				};
 	}
 
 	void ComposeMessageTab::handleAddAttachment ()
