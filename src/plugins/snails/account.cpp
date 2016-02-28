@@ -232,10 +232,10 @@ namespace Snails
 				&AccountThreadWorker::SendMessage, msg);
 	}
 
-	void Account::FetchAttachment (const Message_ptr& msg,
-			const QString& attName, const QString& path)
+	auto Account::FetchAttachment (const Message_ptr& msg,
+			const QString& attName, const QString& path) -> QFuture<FetchAttachmentResult_t>
 	{
-		WorkerPool_->Schedule (ThreadPool::Priority::Low,
+		return WorkerPool_->Schedule (ThreadPool::Priority::Low,
 				&AccountThreadWorker::FetchAttachment, msg, attName, path);
 	}
 

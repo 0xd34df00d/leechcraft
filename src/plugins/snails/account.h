@@ -162,7 +162,8 @@ namespace Snails
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
 
-		void FetchAttachment (const Message_ptr&,
+		using FetchAttachmentResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
+		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
