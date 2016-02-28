@@ -61,6 +61,8 @@ namespace Snails
 	class ThreadPool;
 	struct Folder;
 
+	enum class TaskPriority;
+
 	class Account : public QObject
 	{
 		Q_OBJECT
@@ -182,7 +184,7 @@ namespace Snails
 		QString GetInUsername ();
 		QString GetOutUsername ();
 	private:
-		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&);
+		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();

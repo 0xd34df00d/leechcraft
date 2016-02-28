@@ -149,17 +149,18 @@ namespace Snails
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		SynchronizeImpl (folders, {});
+		SynchronizeImpl (folders, { }, TaskPriority::Low);
 	}
 
 	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
-		SynchronizeImpl ({ path }, last);
+		SynchronizeImpl ({ path }, last, TaskPriority::Low);
 	}
 
-	void Account::SynchronizeImpl (const QList<QStringList>& folders, const QByteArray& last)
+	void Account::SynchronizeImpl (const QList<QStringList>& folders,
+			const QByteArray& last, TaskPriority prio)
 	{
-		const auto& future = WorkerPool_->Schedule (TaskPriority::Low,
+		const auto& future = WorkerPool_->Schedule (prio,
 				&AccountThreadWorker::Synchronize, folders, last);
 		Util::Sequence (this, future) >>
 				[=] (const auto& result)
