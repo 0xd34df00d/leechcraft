@@ -407,6 +407,14 @@ namespace Snails
 							{
 								for (const auto& path : result.Paths_)
 									AppendAttachment (path, {});
+
+								const auto& notify = Util::MakeNotification ("Snails",
+										tr ("Attached %n files(s) from the source message.",
+												0,
+												result.Paths_.size ()),
+										PInfo_);
+								Core::Instance ().GetProxy ()->
+										GetEntityManager ()->HandleEntity (notify);
 							},
 							[this] (auto err)
 							{
