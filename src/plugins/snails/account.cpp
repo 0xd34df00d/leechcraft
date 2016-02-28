@@ -154,7 +154,7 @@ namespace Snails
 
 	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
-		SynchronizeImpl ({ path }, last, TaskPriority::Low);
+		SynchronizeImpl ({ path }, last, TaskPriority::High);
 	}
 
 	void Account::SynchronizeImpl (const QList<QStringList>& folders,
