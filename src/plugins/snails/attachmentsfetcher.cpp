@@ -43,6 +43,8 @@ namespace Snails
 	, Msg_ { msg }
 	, AttQueue_ { msg->GetAttachments () }
 	{
+		Promise_.reportStarted ();
+
 		RotateQueue ();
 	}
 
