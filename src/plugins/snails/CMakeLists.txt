@@ -61,6 +61,7 @@ set (SRCS
 	structures.cpp
 	threadpool.cpp
 	util.cpp
+	attachmentsfetcher.cpp
 	)
 set (FORMS
 	mailtab.ui
