@@ -189,10 +189,15 @@ namespace Snails
 		case Column::Subject:
 			return msg->GetSubject ();
 		case Column::Date:
-			if (role == Sort)
-				return msg->GetDate ();
-			else
-				return GetNeatDate (msg->GetDate ());
+		{
+			const auto& date = index.parent ().isValid () ?
+						msg->GetDate () :
+						structItem->Fold ([] (const TreeNode *n) { return n->Msg_->GetDate (); },
+								[] (auto d1, auto d2) { return std::max (d1, d2); });
+			return role == Sort ?
+					date :
+					GetNeatDate (date);
+		}
 		case Column::Size:
 			if (role == Sort)
 				return msg->GetSize ();
