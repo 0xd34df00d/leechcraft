@@ -61,12 +61,11 @@ namespace Snails
 			Parent_ = parent;
 		}
 
-		int GetChildrenCount () const
+		template<typename G, typename F>
+		std::result_of_t<G (const TreeNode*)> Fold (const G& g, const F& f) const
 		{
-			int result = Children_.size ();
-			for (const auto& child : Children_)
-				result += child->GetChildrenCount ();
-			return result;
+			const auto& values = Util::Map (Children_, [&] (const TreeNode_ptr& c) { return c->Fold (g, f); });
+			return std::accumulate (values.begin (), values.end (), g (this), f);
 		}
 	};
 
@@ -174,7 +173,8 @@ namespace Snails
 		case UnreadChildrenCount:
 			return structItem->UnreadChildren_.size ();
 		case TotalChildrenCount:
-			return structItem->GetChildrenCount ();
+			return structItem->Fold ([] (const TreeNode *n) { return n->GetRowCount (); },
+					[] (int a, int b) { return a + b; });
 		default:
 			return {};
 		}
