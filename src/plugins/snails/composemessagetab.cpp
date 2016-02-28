@@ -57,6 +57,7 @@
 #include "msgtemplatesmanager.h"
 #include "structures.h"
 #include "util.h"
+#include "attachmentsfetcher.h"
 
 namespace LeechCraft
 {
@@ -388,6 +389,47 @@ namespace Snails
 		SetupReplyRichContents (msg, editor,
 				[&] (auto... rest)
 					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, acc, rest...); });
+	}
+
+	void ComposeMessageTab::CopyAttachments (const Message_ptr& msg)
+	{
+		if (msg->GetAttachments ().isEmpty ())
+			return;
+
+		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (), msg);
+		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
+				[this] (const AttachmentsFetcher::Result_t& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[this] (const AttachmentsFetcher::FetchResult& result)
+							{
+								for (const auto& path : result.Paths_)
+									AppendAttachment (path, {});
+							},
+							[this] (auto err)
+							{
+								const auto& notify = Util::Visit (err,
+										[this] (const AttachmentsFetcher::TemporaryDirError& dir)
+										{
+											return Util::MakeNotification ("Snails",
+													tr ("Unable to create temporary directory to "
+														"fetch the attachments of the source "
+														"message."),
+													PCritical_);
+										},
+										[this] (const auto& e)
+										{
+											const auto& msg = QString::fromUtf8 (e.what ());
+											return Util::MakeNotification ("Snails",
+													tr ("Unable to fetch the attachments of the "
+														"source message: %1.")
+														.arg ("<em>" + msg + "</em>"),
+													PCritical_);
+										});
+								Core::Instance ().GetProxy ()->
+										GetEntityManager ()->HandleEntity (notify);
+							});
+				};
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
