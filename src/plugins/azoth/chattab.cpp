@@ -304,9 +304,6 @@ namespace Azoth
 		Ui_.View_->setContent (data.toUtf8 (),
 				"text/html", //"application/xhtml+xml" fails to work, though better to use it
 				Core::Instance ().GetSelectedChatTemplateURL (entry));
-
-		auto src = Core::Instance ().GetCurrentChatStyle (entry);
-		src->PostprocessFrame (Ui_.View_->page ()->mainFrame (), entry);
 	}
 
 	void ChatTab::HasBeenAdded ()
