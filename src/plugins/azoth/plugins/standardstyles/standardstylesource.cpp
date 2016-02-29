@@ -357,10 +357,6 @@ namespace StandardStyles
 		return {};
 	}
 
-	void StandardStyleSource::PostprocessFrame (QWebFrame*, QObject*)
-	{
-	}
-
 	QList<QColor> StandardStyleSource::CreateColors (const QString& scheme, QWebFrame *frame)
 	{
 		QColor bgColor;
