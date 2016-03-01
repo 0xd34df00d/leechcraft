@@ -160,9 +160,12 @@ namespace GPGExceptions
 		}
 	};
 
-	/** @brief A sum type (a variant) of all the possible errors.
+	/** @brief A sum type of all the possible GPG-related errors.
 	 */
 	using AnyException_t = boost::variant<Encryption, NullPubkey, General>;
+
+	/** @brief A type representing a possibility of a GPG-related error.
+	 */
 	using MaybeException_t = boost::optional<AnyException_t>;
 }
 }
