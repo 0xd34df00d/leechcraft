@@ -533,7 +533,6 @@ namespace Snails
 
 	void Account::UpdateNoopInterval ()
 	{
-		WorkerPool_->ScheduleOnAllThreads (&AccountThreadWorker::SetNoopTimeout, KeepAliveInterval_);
 	}
 
 	QString Account::BuildInURL ()
