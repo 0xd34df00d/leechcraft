@@ -29,14 +29,9 @@
 
 #pragma once
 
-#include <QObject>
-#include <QIcon>
-#include <interfaces/iinfo.h>
-#include <interfaces/structures.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
+#include <qt4/QtCore/QObject>
+#include "twitteruser.h"
 #include "woodpecker.h"
-#include "twitterpage.h"
 
 namespace LeechCraft
 {
@@ -44,29 +39,23 @@ namespace Azoth
 {
 namespace Woodpecker
 {
-	class TwitterPage;
-
-	class Core : public QObject
+	class UserManager : public QObject
 	{
-		Q_OBJECT
+			Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
+	private:
+		QHash<qulonglong, TwitterUser> Container_;
+		Plugin * const ParentPlugin_;
 
-		Core ();
-		
-		Core (const Core&) = delete;
-		Core (Core&&) = delete;
-		
-		Core& operator= (const Core&) = delete;
-		Core& operator= (Core&&) = delete;
-		
 	public:
-		static Core& Instance ();
+		UserManager (Plugin *plugin, QObject *parent = 0);
+		~UserManager ();
 
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
+		TwitterUser* GetUser(const qulonglong id);
+		TwitterUser* AddUser(const TwitterUser& user);
+
+		decltype(Container_) GetContainer() const;
 	};
-};
-};
 }
-
+}
+}

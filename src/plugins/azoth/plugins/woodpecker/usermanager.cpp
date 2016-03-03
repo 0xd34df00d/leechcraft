@@ -27,16 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QIcon>
-#include <interfaces/iinfo.h>
-#include <interfaces/structures.h>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/core/icoreproxy.h>
-#include "woodpecker.h"
-#include "twitterpage.h"
+#include "usermanager.h"
 
 namespace LeechCraft
 {
@@ -44,29 +35,33 @@ namespace Azoth
 {
 namespace Woodpecker
 {
-	class TwitterPage;
-
-	class Core : public QObject
-	{
-		Q_OBJECT
-
-		ICoreProxy_ptr Proxy_;
-
-		Core ();
-		
-		Core (const Core&) = delete;
-		Core (Core&&) = delete;
-		
-		Core& operator= (const Core&) = delete;
-		Core& operator= (Core&&) = delete;
-		
-	public:
-		static Core& Instance ();
-
-		void SetProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
-	};
-};
-};
+UserManager::UserManager (Plugin *plugin, QObject *parent)
+	: QObject (parent)
+	, ParentPlugin_ (plugin)
+{
 }
 
+UserManager::~UserManager ()
+{
+}
+
+TwitterUser* UserManager::GetUser (const qulonglong id)
+{
+	auto user = Container_.find (id);
+	if (user == Container_.end ())
+		return 0;
+	return &*user;
+}
+
+TwitterUser* UserManager::AddUser (const TwitterUser& user)
+{
+	return &*Container_.insert(user.GetID (), user);
+}
+}
+
+QHash< qulonglong, Woodpecker::TwitterUser > Woodpecker::UserManager::GetContainer() const
+{
+	return Container_;
+}
+}
+}

@@ -41,15 +41,12 @@ namespace Woodpecker
 	{
 	}
 
-	Tweet::Tweet (const QString& text, TwitterUser_ptr author, QObject *parent)
+	Tweet::Tweet (const QString& text, const qulonglong id, TwitterUser* author, QObject *parent)
 	: QObject (parent)
-	, Id_ (0)
+	, Id_ (id)
+	, Author_ (author)
 	{
 		SetText (text);
-		if (!author)
-			Author_ = std::make_shared<TwitterUser> (parent);
-		else
-			Author_ = author;
 	}
 
 	Tweet::Tweet (const Tweet& original)
@@ -58,19 +55,6 @@ namespace Woodpecker
 	, Created_ (original.GetDateTime ())
 	{
 		SetText (original.GetText ());
-	}
-
-	Tweet& Tweet::operator= (const Tweet& rhs)
-	{
-		if (this == &rhs)
-			return *this;
-
-		Id_ = rhs.GetId ();
-		Author_ = rhs.GetAuthor ();
-		Created_ = rhs.GetDateTime ();
-		SetText (rhs.GetText ());
-
-		return *this;
 	}
 
 	bool Tweet::operator== (const Tweet& other) const
@@ -167,14 +151,9 @@ namespace Woodpecker
 		Document_.setHtml (html);
 	}
 
-	TwitterUser_ptr Tweet::GetAuthor () const
+	TwitterUser * Tweet::GetAuthor () const
 	{
 		return Author_;
-	}
-
-	void Tweet::setAuthor (TwitterUser_ptr newAuthor)
-	{
-		Author_ = newAuthor;
 	}
 
 	QDateTime Tweet::GetDateTime () const
@@ -200,11 +179,6 @@ namespace Woodpecker
 	qulonglong Tweet::GetId () const
 	{
 		return Id_;
-	}
-
-	void Tweet::SetId (qulonglong id)
-	{
-		Id_ = id;
 	}
 }
 }
