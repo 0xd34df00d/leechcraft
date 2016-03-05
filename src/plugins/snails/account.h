@@ -218,7 +218,6 @@ namespace Snails
 
 		void handleFoldersUpdated ();
 	signals:
-		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 	};
 
