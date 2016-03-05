@@ -143,8 +143,10 @@ namespace Snails
 		MailModelsManager * const MailModelsManager_;
 
 		std::shared_ptr<AccountThreadNotifier<int>> NoopNotifier_;
+
+		ProgressManager * const ProgressMgr_;
 	public:
-		Account (QObject* = nullptr);
+		Account (ProgressManager*, QObject* = nullptr);
 
 		QByteArray GetID () const;
 		QString GetName () const;

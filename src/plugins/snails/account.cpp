@@ -76,7 +76,7 @@ namespace Snails
 		}
 	}
 
-	Account::Account (QObject *parent)
+	Account::Account (ProgressManager *pm, QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
 	, WorkerPool_ (new ThreadPool (GetCerts (), this))
@@ -86,6 +86,7 @@ namespace Snails
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
 	, NoopNotifier_ (std::make_shared<AccountThreadNotifier<int>> ())
+	, ProgressMgr_ (pm)
 	{
 		UpdateNoopInterval ();
 
