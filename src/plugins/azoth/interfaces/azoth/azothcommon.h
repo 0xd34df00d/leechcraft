@@ -37,6 +37,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Describes possible presence states of an account or a
+	 * contact.
+	 */
 	enum State
 	{
 		SOffline,
