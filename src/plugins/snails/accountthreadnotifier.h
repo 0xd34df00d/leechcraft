@@ -30,6 +30,9 @@
 #pragma once
 
 #include <QObject>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 namespace LeechCraft
 {
@@ -37,6 +40,40 @@ namespace Snails
 {
 	class AccountThreadNotifierBase : public QObject
 	{
+		Q_OBJECT
+	public:
+		using QObject::QObject;
+	signals:
+		void changed ();
+	};
+
+	template<typename T>
+	class AccountThreadNotifier : public AccountThreadNotifierBase
+	{
+		mutable QReadWriteLock Lock_;
+
+		T Data_;
+	public:
+		using AccountThreadNotifierBase::AccountThreadNotifierBase;
+
+		void SetData (const T& t)
+		{
+			if (GetData () == t)
+				return;
+
+			{
+				QWriteLocker locker { &Lock_ };
+				Data_ = t;
+			}
+
+			emit changed ();
+		}
+
+		T GetData () const
+		{
+			QReadLocker locker { &Lock_ };
+			return Data_;
+		}
 	};
 }
 }
