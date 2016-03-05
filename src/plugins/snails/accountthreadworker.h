@@ -156,8 +156,6 @@ namespace Snails
 	signals:
 		void error (const QString&);
 		void gotProgressListener (ProgressListener_g_ptr);
-
-		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
 	};
 }
 }
