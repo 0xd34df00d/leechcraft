@@ -52,6 +52,7 @@ namespace Azoth
 		SProbe,
 		SError,
 		SInvalid,
+
 		/** Makes sense only for account state. This state is used when
 		 * account is connecting and the moment and hasn't connected
 		 * successfully and neither has failed yet.
@@ -139,11 +140,20 @@ namespace Azoth
 		CPSPaused
 	};
 
+	/** @brief A custom saved named status.
+	 */
 	struct CustomStatus
 	{
+		/** @brief The name of this status.
+		 */
 		QString Name_;
 
+		/** @brief The state associated with this status.
+		 */
 		State State_;
+
+		/** @brief The status text associated with this status.
+		 */
 		QString Text_;
 	};
 }
