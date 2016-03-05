@@ -186,8 +186,8 @@ namespace Snails
 
 		bool IsNull () const;
 
-		QString GetInUsername ();
-		QString GetOutUsername ();
+		QString GetInUsername () const;
+		QString GetOutUsername () const;
 	private:
 		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;

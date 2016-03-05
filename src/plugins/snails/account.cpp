@@ -524,12 +524,12 @@ namespace Snails
 			Login_.isEmpty ();
 	}
 
-	QString Account::GetInUsername ()
+	QString Account::GetInUsername () const
 	{
 		return Login_;
 	}
 
-	QString Account::GetOutUsername ()
+	QString Account::GetOutUsername () const
 	{
 		return OutLogin_;
 	}
