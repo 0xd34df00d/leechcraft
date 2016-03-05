@@ -52,6 +52,7 @@
 #include "mailmodelsmanager.h"
 #include "accountlogger.h"
 #include "threadpool.h"
+#include "accountthreadnotifier.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -84,6 +85,7 @@ namespace Snails
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
+	, NoopNotifier_ (std::make_shared<AccountThreadNotifier<int>> ())
 	{
 		UpdateNoopInterval ();
 
@@ -91,6 +93,12 @@ namespace Snails
 				SIGNAL (foldersUpdated ()),
 				this,
 				SLOT (handleFoldersUpdated ()));
+
+		WorkerPool_->AddThreadInitializer ([this] (AccountThread *t)
+				{
+					t->Schedule (TaskPriority::Low,
+							&AccountThreadWorker::SetNoopTimeoutChangeNotifier, NoopNotifier_);
+				});
 	}
 
 	QByteArray Account::GetID () const
@@ -533,6 +541,7 @@ namespace Snails
 
 	void Account::UpdateNoopInterval ()
 	{
+		NoopNotifier_->SetData (KeepAliveInterval_);
 	}
 
 	QString Account::BuildInURL ()

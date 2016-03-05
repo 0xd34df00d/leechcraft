@@ -63,6 +63,9 @@ namespace Snails
 
 	enum class TaskPriority;
 
+	template<typename T>
+	class AccountThreadNotifier;
+
 	class Account : public QObject
 	{
 		Q_OBJECT
@@ -138,6 +141,8 @@ namespace Snails
 		FoldersModel *FoldersModel_;
 
 		MailModelsManager * const MailModelsManager_;
+
+		std::shared_ptr<AccountThreadNotifier<int>> NoopNotifier_;
 	public:
 		Account (QObject* = nullptr);
 
