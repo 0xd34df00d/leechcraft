@@ -55,6 +55,8 @@ namespace Snails
 		bool CheckingNext_ = false;
 
 		QList<std::function<void (AccountThread*)>> Scheduled_;
+
+		QList<std::function<void (AccountThread*)>> ThreadInitializers_;
 	public:
 		ThreadPool (const CertList_t&, Account*);
 
@@ -84,6 +86,16 @@ namespace Snails
 			RunThreads ();
 
 			return iface.future ();
+		}
+
+		template<typename F, typename... Args>
+		void AddThreadInitializer (const F& func, const Args&... args)
+		{
+			auto runner = [=] (AccountThread *thread) { Util::Invoke (func, thread, args...); };
+			ThreadInitializers_ << runner;
+
+			for (const auto& thread : ExistingThreads_)
+				runner (thread.get ());
 		}
 	private:
 		template<typename FutureInterface, typename F, typename... Args>
