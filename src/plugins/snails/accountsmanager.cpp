@@ -66,6 +66,17 @@ namespace Snails
 		return Accounts_ [index.row ()];
 	}
 
+	void AccountsManager::InitiateAccountAddition ()
+	{
+		const auto acc = std::make_shared<Account> ();
+
+		acc->OpenConfigDialog ([acc, this]
+				{
+					if (!acc->IsNull ())
+						AddAccount (acc);
+				});
+	}
+
 	void AccountsManager::AddAccount (Account_ptr account)
 	{
 		AddAccountImpl (account);
