@@ -50,7 +50,7 @@ namespace Snails
 		QStandardItemModel *Model_;
 		QMap<QObject*, QStandardItem*> Listener2Row_;
 	public:
-		ProgressManager (QObject* = 0);
+		ProgressManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetRepresentation () const;
 		void AddAccount (Account*);
