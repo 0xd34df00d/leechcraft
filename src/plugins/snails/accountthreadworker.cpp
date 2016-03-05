@@ -66,6 +66,7 @@
 #include "messagechangelistener.h"
 #include "folder.h"
 #include "tracerfactory.h"
+#include "accountthreadnotifier.h"
 
 namespace LeechCraft
 {
@@ -847,6 +848,19 @@ namespace Snails
 			sendNoop ();
 
 		NoopTimer_->start (timeout);
+	}
+
+	void AccountThreadWorker::SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>& notifier)
+	{
+		SetNoopTimeout (notifier->GetData ());
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[notifier, this] { SetNoopTimeout (notifier->GetData ()); },
+			notifier.get (),
+			SIGNAL (changed ()),
+			this
+		};
 	}
 
 	void AccountThreadWorker::FlushSockets ()
