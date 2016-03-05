@@ -51,9 +51,10 @@ namespace Snails
 
 		bool cancel () const;
 	signals:
-		void start (const size_t);
-		void progress (const size_t, const size_t);
-		void stop (const size_t);
+
+		void start (const size_t) override;
+		void progress (const size_t, const size_t) override;
+		void stop (const size_t) override;
 	};
 
 	typedef QPointer<ProgressListener> ProgressListener_g_ptr;
