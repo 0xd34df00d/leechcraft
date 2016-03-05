@@ -746,7 +746,6 @@ namespace Snails
 
 			FoldersModel_->SetFolderCounts (folder.Path_, unread, count);
 
-			// TODO lowest priority
 			RequestMessageCount (folder.Path_);
 		}
 	}
