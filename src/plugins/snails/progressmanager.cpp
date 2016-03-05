@@ -39,8 +39,8 @@ namespace LeechCraft
 namespace Snails
 {
 	ProgressManager::ProgressManager (QObject *parent)
-	: QObject (parent)
-	, Model_ (new QStandardItemModel)
+	: QObject { parent }
+	, Model_ { new QStandardItemModel { this } }
 	{
 		Model_->setColumnCount (3);
 	}
