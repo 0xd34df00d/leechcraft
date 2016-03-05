@@ -127,6 +127,19 @@ namespace Snails
 	{
 		const auto thread = std::make_shared<AccountThread> (false,
 				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, thread]
+			{
+				for (const auto& init : ThreadInitializers_)
+					init (thread.get ());
+			},
+			thread.get (),
+			SIGNAL (started ()),
+			thread.get ()
+		};
+
 		thread->start (QThread::LowPriority);
 
 		return thread;
