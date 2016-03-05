@@ -216,8 +216,6 @@ namespace Snails
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 
-		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
-
 		void handleFoldersUpdated ();
 	signals:
 		void gotProgressListener (ProgressListener_g_ptr);

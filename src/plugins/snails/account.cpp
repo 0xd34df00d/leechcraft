@@ -688,14 +688,6 @@ namespace Snails
 		MailModelsManager_->Remove (ids);
 	}
 
-	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)
-	{
-		if (lastRequestedId.isEmpty ())
-			return;
-
-		RequestMessageCount (folder);
-	}
-
 	void Account::RequestMessageCount (const QStringList& folder)
 	{
 		auto future = WorkerPool_->Schedule (TaskPriority::Low,

@@ -109,11 +109,6 @@ namespace Snails
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
 				A_,
 				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
-
-		connect (atw,
-				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
-				A_,
-				SLOT (handleFolderSyncFinished (QStringList, QByteArray)));
 	}
 
 	void AccountThread::RotateFuncs (AccountThreadWorker *atw)
