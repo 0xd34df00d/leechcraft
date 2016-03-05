@@ -190,6 +190,8 @@ namespace Snails
 
 		QString GetInUsername () const;
 		QString GetOutUsername () const;
+
+		ProgressListener_ptr MakeProgressListener (const QString&) const;
 	private:
 		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;

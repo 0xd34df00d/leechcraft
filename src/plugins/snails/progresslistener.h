@@ -57,6 +57,7 @@ namespace Snails
 		void stop (const size_t) override;
 	};
 
+	using ProgressListener_ptr = std::shared_ptr<ProgressListener>;
 	typedef QPointer<ProgressListener> ProgressListener_g_ptr;
 }
 }

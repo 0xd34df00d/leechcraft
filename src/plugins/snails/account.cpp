@@ -535,6 +535,11 @@ namespace Snails
 		return OutLogin_;
 	}
 
+	ProgressListener_ptr Account::MakeProgressListener (const QString& context) const
+	{
+		return {};
+	}
+
 	QMutex* Account::GetMutex () const
 	{
 		return AccMutex_;
