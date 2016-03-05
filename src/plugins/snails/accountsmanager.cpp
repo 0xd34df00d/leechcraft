@@ -72,16 +72,13 @@ namespace Snails
 
 		acc->OpenConfigDialog ([acc, this]
 				{
-					if (!acc->IsNull ())
-						AddAccount (acc);
+					if (acc->IsNull ())
+						return;
+
+					AddAccountImpl (acc);
+
+					saveAccounts ();
 				});
-	}
-
-	void AccountsManager::AddAccount (Account_ptr account)
-	{
-		AddAccountImpl (account);
-
-		saveAccounts ();
 	}
 
 	void AccountsManager::AddAccountImpl (Account_ptr account)
