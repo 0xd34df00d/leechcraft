@@ -39,9 +39,10 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AccountsManager::AccountsManager (QObject *parent)
+	AccountsManager::AccountsManager (ProgressManager *pm, QObject *parent)
 	: QObject { parent }
 	, AccountsModel_ { new QStandardItemModel { this } }
+	, ProgressMgr_ { pm }
 	{
 		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server") });
 		LoadAccounts ();

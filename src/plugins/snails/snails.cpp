@@ -80,7 +80,7 @@ namespace Snails
 
 		ProgressMgr_ = new ProgressManager;
 
-		AccsMgr_ = new AccountsManager;
+		AccsMgr_ = new AccountsManager { ProgressMgr_ };
 		TemplatesMgr_ = new MsgTemplatesManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
 
