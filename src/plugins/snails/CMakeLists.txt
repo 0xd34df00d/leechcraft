@@ -62,6 +62,7 @@ set (SRCS
 	threadpool.cpp
 	util.cpp
 	attachmentsfetcher.cpp
+	accountthreadnotifier.cpp
 	)
 set (FORMS
 	mailtab.ui
