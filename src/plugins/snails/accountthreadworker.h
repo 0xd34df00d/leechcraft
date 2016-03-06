@@ -154,7 +154,6 @@ namespace Snails
 		void sendNoop ();
 	signals:
 		void error (const QString&);
-		void gotProgressListener (ProgressListener_g_ptr);
 	};
 }
 }
