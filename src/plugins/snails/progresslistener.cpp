@@ -38,6 +38,11 @@ namespace Snails
 	{
 	}
 
+	void ProgressListener::Increment ()
+	{
+		progress (LastProgress_ + 1, LastTotal_);
+	}
+
 	bool ProgressListener::cancel () const
 	{
 		return false;

@@ -48,6 +48,8 @@ namespace Snails
 	public:
 		ProgressListener (QObject* = nullptr);
 
+		void Increment ();
+
 		bool cancel () const;
 
 		void start (const size_t) override;
