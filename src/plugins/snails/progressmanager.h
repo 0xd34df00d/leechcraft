@@ -48,7 +48,6 @@ namespace Snails
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
-		QMap<QObject*, QStandardItem*> Listener2Row_;
 	public:
 		ProgressManager (QObject* = nullptr);
 
