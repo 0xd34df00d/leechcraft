@@ -81,8 +81,6 @@ namespace Snails
 	{
 		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_ };
 
-		ConnectSignals (&atw);
-
 		Util::SlotClosure<Util::NoDeletePolicy> rotator
 		{
 			[this, &atw] { RotateFuncs (&atw); },
@@ -101,14 +99,6 @@ namespace Snails
 			RotateFuncs (&atw);
 
 		QThread::run ();
-	}
-
-	void AccountThread::ConnectSignals (AccountThreadWorker *atw)
-	{
-		connect (atw,
-				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
-				A_,
-				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
 	}
 
 	void AccountThread::RotateFuncs (AccountThreadWorker *atw)

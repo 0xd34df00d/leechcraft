@@ -310,7 +310,6 @@ namespace Snails
 		void run ();
 	private:
 		void RotateFuncs (AccountThreadWorker*);
-		void ConnectSignals (AccountThreadWorker*);
 	signals:
 		void rotateFuncs ();
 	};
