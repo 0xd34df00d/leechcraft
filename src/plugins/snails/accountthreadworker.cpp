@@ -775,23 +775,17 @@ namespace Snails
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)
 	{
-		const auto& context = tr ("Fetching messages for %1")
-					.arg (A_->GetName ());
+		const auto pl = A_->MakeProgressListener (tr ("Fetching messages for %1")
+					.arg (A_->GetName ()));
 
-		auto pl = MkPgListener (context);
-
-		QMetaObject::invokeMethod (pl,
-				"start",
-				Q_ARG (const int, messages.size ()));
+		const auto msgsCount = messages.size ();
+		pl->start (msgsCount);
 
 		int i = 0;
 		QList<Message_ptr> newMessages;
 		Q_FOREACH (auto message, messages)
 		{
-			QMetaObject::invokeMethod (pl,
-					"progress",
-					Q_ARG (const int, ++i),
-					Q_ARG (const int, messages.size ()));
+			pl->progress (++i, msgsCount);
 
 			auto msgObj = FromHeaders (message);
 
@@ -800,19 +794,9 @@ namespace Snails
 			newMessages << msgObj;
 		}
 
-		QMetaObject::invokeMethod (pl,
-					"stop",
-					Q_ARG (const int, messages.size ()));
+		pl->stop (msgsCount);
 
 		return newMessages;
-	}
-
-	ProgressListener* AccountThreadWorker::MkPgListener (const QString& text)
-	{
-		auto pl = new ProgressListener (text);
-		pl->deleteLater ();
-		emit gotProgressListener (ProgressListener_g_ptr (pl));
-		return pl;
 	}
 
 	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<int>& numbers)
@@ -998,8 +982,9 @@ namespace Snails
 			}
 
 			OutputIODevAdapter adapter (&file);
-			data->extract (adapter,
-					MkPgListener (tr ("Fetching attachment %1...").arg (attName)));
+			const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
+						.arg (attName));
+			data->extract (adapter, pl.get ());
 
 			break;
 		}
@@ -1143,7 +1128,7 @@ namespace Snails
 
 		header->MessageId ()->setValue (GenerateMsgId (msg));
 
-		auto pl = MkPgListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
+		auto pl = A_->MakeProgressListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
 		auto transport = MakeTransport ();
 		try
 		{
@@ -1159,7 +1144,7 @@ namespace Snails
 					<< e.response ().c_str ();
 			throw;
 		}
-		transport->send (vMsg, pl);
+		transport->send (vMsg, pl.get ());
 	}
 }
 }

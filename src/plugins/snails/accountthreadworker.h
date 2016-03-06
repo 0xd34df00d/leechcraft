@@ -114,7 +114,6 @@ namespace Snails
 
 		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
-		ProgressListener* MkPgListener (const QString&);
 
 		void SetNoopTimeout (int);
 	public:
