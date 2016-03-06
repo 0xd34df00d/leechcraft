@@ -55,8 +55,6 @@ namespace Snails
 		QAbstractItemModel* GetRepresentation () const;
 
 		ProgressListener_ptr MakeProgressListener (const QString&);
-	private slots:
-		void handleProgress (size_t, size_t);
 	};
 }
 }

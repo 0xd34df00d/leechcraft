@@ -66,29 +66,20 @@ namespace Snails
 		Model_->appendRow (row);
 
 		const auto pl = std::make_shared<ProgressListener> ();
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, anItem = row.first ()]
-			{
-				Model_->removeRow (anItem->row ());
-			},
-			pl.get (),
-			SIGNAL (destroyed ()),
-			this
-		};
+		connect (pl.get (),
+				&ProgressListener::destroyed,
+				this,
+				[this, anItem = row.first ()] { Model_->removeRow (anItem->row ()); });
+
+		connect (pl.get (),
+				&ProgressListener::gotProgress,
+				this,
+				[row, this] (quint64 done, quint64 total)
+				{
+					Util::SetJobHolderProgress (row, done, total, "%1/%2");
+				});
 
 		return pl;
-	}
-
-	void ProgressManager::handleProgress (size_t done, size_t total)
-	{
-		auto item = Listener2Row_.value (sender ());
-		if (!item)
-			return;
-
-		Util::SetJobHolderProgress (item, done, total);
-
-		item->setText (QString ("%1/%2").arg (done).arg (total));
 	}
 }
 }
