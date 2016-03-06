@@ -57,5 +57,10 @@ namespace Snails
 	{
 		emit gotProgress (total, total);
 	}
+
+	bool operator< (const ProgressListener_wptr& w1, const ProgressListener_wptr& w2)
+	{
+		return w1.owner_before (w2);
+	}
 }
 }

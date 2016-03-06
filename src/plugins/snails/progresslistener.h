@@ -55,5 +55,8 @@ namespace Snails
 	};
 
 	using ProgressListener_ptr = std::shared_ptr<ProgressListener>;
+	using ProgressListener_wptr = std::weak_ptr<ProgressListener>;
+
+	bool operator< (const ProgressListener_wptr&, const ProgressListener_wptr&);
 }
 }
