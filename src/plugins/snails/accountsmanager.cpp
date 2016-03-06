@@ -92,10 +92,6 @@ namespace Snails
 		};
 		AccountsModel_->appendRow (row);
 
-		/* TODO
-		ProgressManager_->AddAccount (account.get ());
-		*/
-
 		connect (account.get (),
 				SIGNAL (accountChanged ()),
 				this,
