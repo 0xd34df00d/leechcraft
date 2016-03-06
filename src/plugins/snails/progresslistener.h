@@ -42,12 +42,8 @@ namespace Snails
 						   , public vmime::utility::progressListener
 	{
 		Q_OBJECT
-
-		QString Context_;
 	public:
-		ProgressListener (const QString&, QObject* = 0);
-
-		QString GetContext () const;
+		ProgressListener (QObject* = nullptr);
 
 		bool cancel () const;
 
