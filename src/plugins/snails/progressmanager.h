@@ -53,9 +53,9 @@ namespace Snails
 		ProgressManager (QObject* = nullptr);
 
 		QAbstractItemModel* GetRepresentation () const;
-		void AddAccount (Account*);
+
+		ProgressListener_ptr MakeProgressListener (const QString&);
 	private slots:
-		void handlePL (ProgressListener_g_ptr);
 		void handleProgress (size_t, size_t);
 	};
 }

@@ -50,27 +50,11 @@ namespace Snails
 		return Model_;
 	}
 
-	void ProgressManager::AddAccount (Account *acc)
+	ProgressListener_ptr ProgressManager::MakeProgressListener (const QString& context)
 	{
-		connect (acc,
-				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
-				this,
-				SLOT (handlePL (ProgressListener_g_ptr)));
-	}
-
-	void ProgressManager::handlePL (ProgressListener_g_ptr pl)
-	{
-		if (!pl)
-			return;
-
-		connect (pl,
-				SIGNAL (progress (size_t, size_t)),
-				this,
-				SLOT (handleProgress (size_t, size_t)));
-
 		const QList<QStandardItem*> row
 		{
-			new QStandardItem { pl->GetContext () },
+			new QStandardItem { context },
 			new QStandardItem { tr ("Running") },
 			new QStandardItem { {} }
 		};
@@ -81,19 +65,19 @@ namespace Snails
 
 		Model_->appendRow (row);
 
-		Listener2Row_ [pl] = row.last ();
-
+		const auto pl = std::make_shared<ProgressListener> ();
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, pl]
+			[this, anItem = row.first ()]
 			{
-				const auto item = Listener2Row_.take (pl);
-				Model_->removeRow (item->row ());
+				Model_->removeRow (anItem->row ());
 			},
-			pl,
-			SIGNAL (destroyed (QObject*)),
+			pl.get (),
+			SIGNAL (destroyed ()),
 			this
 		};
+
+		return pl;
 	}
 
 	void ProgressManager::handleProgress (size_t done, size_t total)
