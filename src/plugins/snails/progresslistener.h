@@ -55,8 +55,5 @@ namespace Snails
 	};
 
 	using ProgressListener_ptr = std::shared_ptr<ProgressListener>;
-	typedef QPointer<ProgressListener> ProgressListener_g_ptr;
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Snails::ProgressListener_g_ptr);
