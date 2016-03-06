@@ -543,9 +543,18 @@ namespace Snails
 	{
 		Folder2Messages_t result;
 
+		const auto pl = A_->MakeProgressListener (tr ("Synchronizing messages..."));
+		pl->start (origFolders.size ());
+
 		for (const auto& folder : origFolders)
+		{
 			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
 				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+
+			pl->Increment ();
+		}
+
+		pl->stop (origFolders.size ());
 
 		return result;
 	}
