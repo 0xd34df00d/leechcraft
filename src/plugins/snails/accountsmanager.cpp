@@ -68,7 +68,7 @@ namespace Snails
 
 	void AccountsManager::InitiateAccountAddition ()
 	{
-		const auto acc = std::make_shared<Account> ();
+		const auto acc = std::make_shared<Account> (ProgressMgr_);
 
 		acc->OpenConfigDialog ([acc, this]
 				{
@@ -112,7 +112,7 @@ namespace Snails
 				QCoreApplication::applicationName () + "_Snails_Accounts");
 		for (const auto& var : settings.value ("Accounts").toList ())
 		{
-			const auto acc = std::make_shared<Account> ();
+			const auto acc = std::make_shared<Account> (ProgressMgr_);
 			try
 			{
 				acc->Deserialize (var.toByteArray ());
