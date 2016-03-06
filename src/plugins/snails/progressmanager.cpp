@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include "account.h"
 
@@ -52,31 +53,59 @@ namespace Snails
 
 	ProgressListener_ptr ProgressManager::MakeProgressListener (const QString& context)
 	{
-		const QList<QStandardItem*> row
-		{
-			new QStandardItem { context },
-			new QStandardItem { tr ("Running") },
-			new QStandardItem { {} }
-		};
-		for (const auto item : row)
-			item->setEditable (false);
-
-		Util::InitJobHolderRow (row);
-
-		Model_->appendRow (row);
-
 		const auto pl = std::make_shared<ProgressListener> ();
+		const ProgressListener_wptr weakPl { pl };
+
+		Util::ExecuteLater ([this, weakPl, context]
+				{
+					const QList<QStandardItem*> row
+					{
+						new QStandardItem { context },
+						new QStandardItem { tr ("Running") },
+						new QStandardItem { {} }
+					};
+					for (const auto item : row)
+						item->setEditable (false);
+
+					Util::InitJobHolderRow (row);
+
+					Model_->appendRow (row);
+
+					QMutexLocker locker { &Listener2RowMutex_ };
+					Listener2Row_ [weakPl] = row;
+
+					if (weakPl.expired ())
+						Listener2Row_.remove (weakPl);
+				});
+
 		connect (pl.get (),
 				&ProgressListener::destroyed,
 				this,
-				[this, anItem = row.first ()] { Model_->removeRow (anItem->row ()); });
+				[this, weakPl]
+				{
+					QList<QStandardItem*> row;
+					{
+						QMutexLocker locker { &Listener2RowMutex_ };
+						row = Listener2Row_.take (weakPl);
+					}
+
+					if (!row.isEmpty ())
+						Model_->removeRow (row.first ()->row ());
+				});
 
 		connect (pl.get (),
 				&ProgressListener::gotProgress,
 				this,
-				[row, this] (quint64 done, quint64 total)
+				[this, weakPl] (quint64 done, quint64 total)
 				{
-					Util::SetJobHolderProgress (row, done, total, "%1/%2");
+					QList<QStandardItem*> row;
+					{
+						QMutexLocker locker { &Listener2RowMutex_ };
+						row = Listener2Row_.take (weakPl);
+					}
+
+					if (!row.isEmpty ())
+						Util::SetJobHolderProgress (row, done, total, "%1/%2");
 				});
 
 		return pl;

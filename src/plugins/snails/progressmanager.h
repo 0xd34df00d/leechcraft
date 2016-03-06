@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <QMutex>
 #include "progresslistener.h"
 
 class QAbstractItemModel;
@@ -48,6 +49,9 @@ namespace Snails
 		Q_OBJECT
 
 		QStandardItemModel *Model_;
+
+		QMutex Listener2RowMutex_;
+		QMap<ProgressListener_wptr, QList<QStandardItem*>> Listener2Row_;
 	public:
 		ProgressManager (QObject* = nullptr);
 
