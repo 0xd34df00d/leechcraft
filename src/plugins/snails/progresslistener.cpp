@@ -43,16 +43,19 @@ namespace Snails
 		return false;
 	}
 
-	void ProgressListener::start (const size_t)
+	void ProgressListener::start (const size_t total)
 	{
+		emit gotProgress (0, total);
 	}
 
-	void ProgressListener::progress (const size_t, const size_t)
+	void ProgressListener::progress (const size_t done, const size_t total)
 	{
+		emit gotProgress (done, total);
 	}
 
-	void ProgressListener::stop (const size_t)
+	void ProgressListener::stop (const size_t total)
 	{
+		emit gotProgress (total, total);
 	}
 }
 }

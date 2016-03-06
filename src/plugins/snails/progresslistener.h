@@ -50,6 +50,8 @@ namespace Snails
 		void start (const size_t) override;
 		void progress (const size_t, const size_t) override;
 		void stop (const size_t) override;
+	signals:
+		void gotProgress (quint64, quint64);
 	};
 
 	using ProgressListener_ptr = std::shared_ptr<ProgressListener>;
