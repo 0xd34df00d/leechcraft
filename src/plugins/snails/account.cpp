@@ -53,6 +53,8 @@
 #include "accountlogger.h"
 #include "threadpool.h"
 #include "accountthreadnotifier.h"
+#include "progresslistener.h"
+#include "progressmanager.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
