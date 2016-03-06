@@ -50,7 +50,6 @@ namespace Snails
 		QString GetContext () const;
 
 		bool cancel () const;
-	signals:
 
 		void start (const size_t) override;
 		void progress (const size_t, const size_t) override;
