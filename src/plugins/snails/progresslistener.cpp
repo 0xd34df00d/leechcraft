@@ -42,5 +42,17 @@ namespace Snails
 	{
 		return false;
 	}
+
+	void ProgressListener::start (const size_t)
+	{
+	}
+
+	void ProgressListener::progress (const size_t, const size_t)
+	{
+	}
+
+	void ProgressListener::stop (const size_t)
+	{
+	}
 }
 }
