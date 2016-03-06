@@ -45,17 +45,20 @@ namespace Snails
 
 	void ProgressListener::start (const size_t total)
 	{
-		emit gotProgress (0, total);
+		progress (0, total);
 	}
 
 	void ProgressListener::progress (const size_t done, const size_t total)
 	{
+		LastProgress_ = done;
+		LastTotal_ = total;
+
 		emit gotProgress (done, total);
 	}
 
 	void ProgressListener::stop (const size_t total)
 	{
-		emit gotProgress (total, total);
+		progress (total, total);
 	}
 
 	bool operator< (const ProgressListener_wptr& w1, const ProgressListener_wptr& w2)

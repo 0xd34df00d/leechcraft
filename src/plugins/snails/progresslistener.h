@@ -42,6 +42,9 @@ namespace Snails
 						   , public vmime::utility::progressListener
 	{
 		Q_OBJECT
+
+		size_t LastProgress_ = 0;
+		size_t LastTotal_ = 0;
 	public:
 		ProgressListener (QObject* = nullptr);
 
