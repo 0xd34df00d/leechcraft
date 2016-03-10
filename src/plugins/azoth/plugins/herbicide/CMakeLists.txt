@@ -34,7 +34,6 @@ target_link_libraries (leechcraft_azoth_herbicide
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_azoth_herbicide DESTINATION ${LC_PLUGINS_DEST})
-install (FILES ${HERBICIDE_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 install (FILES azothherbicidesettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_azoth_herbicide Sql Widgets)
