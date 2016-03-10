@@ -1096,7 +1096,8 @@ namespace Murm
 
 	void VkConnection::markOnline ()
 	{
-		if (Status_.State_ == SOffline)
+		if (Status_.State_ != SOnline &&
+				Status_.State_ != SChat)
 			return;
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
