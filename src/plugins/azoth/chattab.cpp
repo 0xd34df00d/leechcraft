@@ -1675,9 +1675,7 @@ namespace Azoth
 					this,
 					SLOT (handleCall (QObject*)));
 
-			Q_FOREACH (QObject *object,
-					Core::Instance ().GetCallManager ()->
-							GetCallsForEntry (EntryID_))
+			for (auto object : Core::Instance ().GetCallManager ()->GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
 #endif
