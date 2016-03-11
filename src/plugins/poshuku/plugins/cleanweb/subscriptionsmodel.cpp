@@ -129,6 +129,9 @@ namespace CleanWeb
 	void SubscriptionsModel::AddFilter (const Filter& filter)
 	{
 		AddImpl (filter);
+
+		SaveSettings ();
+
 		emit filtersListChanged ();
 	}
 
@@ -176,8 +179,6 @@ namespace CleanWeb
 			Filters_ << filter;
 			endInsertRows ();
 		}
-
-		SaveSettings ();
 	}
 
 	void SubscriptionsModel::RemoveFilter (int pos)

@@ -53,6 +53,9 @@ namespace Snails
 	class Account;
 	class MessageChangeListener;
 
+	template<typename T>
+	class AccountThreadNotifier;
+
 	struct Folder;
 
 	using MessageVector_t = std::vector<vmime::shared_ptr<vmime::net::message>>;
@@ -111,9 +114,10 @@ namespace Snails
 
 		QList<Folder> SyncIMAPFolders (vmime::shared_ptr<vmime::net::store>);
 		QList<Message_ptr> FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>&);
-		ProgressListener* MkPgListener (const QString&);
-	public:
+
 		void SetNoopTimeout (int);
+	public:
+		void SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>&);
 
 		void FlushSockets ();
 		void Disconnect ();
@@ -150,9 +154,6 @@ namespace Snails
 		void sendNoop ();
 	signals:
 		void error (const QString&);
-		void gotProgressListener (ProgressListener_g_ptr);
-
-		void folderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId);
 	};
 }
 }

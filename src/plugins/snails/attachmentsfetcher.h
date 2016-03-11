@@ -27,48 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "progresslistener.h"
+#pragma once
+
+#include <memory>
+#include <QFutureInterface>
+#include <util/sll/eitherfwd.h>
+#include "attdescr.h"
+#include "accountthreadfwd.h"
+
+class QTemporaryDir;
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	ProgressListener::ProgressListener (QObject *parent)
-	: QObject { parent }
-	{
-	}
+	class Account;
+	class Message;
+	using Message_ptr = std::shared_ptr<Message>;
 
-	void ProgressListener::Increment ()
+	class AttachmentsFetcher
 	{
-		progress (LastProgress_ + 1, LastTotal_);
-	}
+		Account * const Acc_;
+		const Message_ptr Msg_;
 
-	bool ProgressListener::cancel () const
-	{
-		return false;
-	}
+		QList<AttDescr> AttQueue_;
 
-	void ProgressListener::start (const size_t total)
-	{
-		progress (0, total);
-	}
+		std::shared_ptr<QTemporaryDir> TempDir_;
+		QStringList Paths_;
+	public:
+		struct TemporaryDirError {};
 
-	void ProgressListener::progress (const size_t done, const size_t total)
-	{
-		LastProgress_ = done;
-		LastTotal_ = total;
+		struct FetchResult
+		{
+			std::shared_ptr<QTemporaryDir> TempDirGuard_;
+			QStringList Paths_;
+		};
 
-		emit gotProgress (done, total);
-	}
+		using Result_t = Util::Either<InvokeError_t<TemporaryDirError>, FetchResult>;
+	private:
+		QFutureInterface<Result_t> Promise_;
+	public:
+		AttachmentsFetcher (Account*, const Message_ptr&);
 
-	void ProgressListener::stop (const size_t total)
-	{
-		progress (total, total);
-	}
-
-	bool operator< (const ProgressListener_wptr& w1, const ProgressListener_wptr& w2)
-	{
-		return w1.owner_before (w2);
-	}
+		QFuture<Result_t> GetFuture ();
+	private:
+		void RotateQueue ();
+	};
 }
 }
+

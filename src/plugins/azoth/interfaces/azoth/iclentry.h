@@ -97,7 +97,11 @@ namespace Azoth
 	 * Advanced features, like drawing attention and such, are in
 	 * IAdvancedCLEntry.
 	 *
+	 * If the CL entry can have an avatar, it makes sense to implement the
+	 * IHaveAvatars interface.
+	 *
 	 * @sa IAdvancedCLEntry
+	 * @sa IHaveAvatars
 	 */
 	class ICLEntry
 	{

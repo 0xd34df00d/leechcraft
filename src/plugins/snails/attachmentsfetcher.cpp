@@ -27,48 +27,69 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "progresslistener.h"
+#include "attachmentsfetcher.h"
+#include <QTemporaryDir>
+#include <util/threads/futures.h>
+#include <util/sll/visitor.h>
+#include "account.h"
+#include "message.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	ProgressListener::ProgressListener (QObject *parent)
-	: QObject { parent }
+	AttachmentsFetcher::AttachmentsFetcher (Account *acc, const Message_ptr& msg)
+	: Acc_ { acc }
+	, Msg_ { msg }
+	, AttQueue_ { msg->GetAttachments () }
 	{
+		Promise_.reportStarted ();
+
+		RotateQueue ();
 	}
 
-	void ProgressListener::Increment ()
+	QFuture<AttachmentsFetcher::Result_t> AttachmentsFetcher::GetFuture ()
 	{
-		progress (LastProgress_ + 1, LastTotal_);
+		return Promise_.future ();
 	}
 
-	bool ProgressListener::cancel () const
+	void AttachmentsFetcher::RotateQueue ()
 	{
-		return false;
-	}
+		if (AttQueue_.isEmpty ())
+		{
+			Util::ReportFutureResult (Promise_,
+					[&] { return Result_t::Right ({ TempDir_, Paths_ }); });
+			return;
+		}
 
-	void ProgressListener::start (const size_t total)
-	{
-		progress (0, total);
-	}
+		if (!TempDir_)
+		{
+			TempDir_ = std::make_shared<QTemporaryDir> ();
+			if (!TempDir_->isValid ())
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to create temporary directory";
+				Util::ReportFutureResult (Promise_, [] { return Result_t::Left (TemporaryDirError {}); });
+				return;
+			}
+		}
 
-	void ProgressListener::progress (const size_t done, const size_t total)
-	{
-		LastProgress_ = done;
-		LastTotal_ = total;
-
-		emit gotProgress (done, total);
-	}
-
-	void ProgressListener::stop (const size_t total)
-	{
-		progress (total, total);
-	}
-
-	bool operator< (const ProgressListener_wptr& w1, const ProgressListener_wptr& w2)
-	{
-		return w1.owner_before (w2);
+		const auto& att = AttQueue_.takeFirst ();
+		const auto& filePath = QDir { TempDir_->path () }.filePath (att.GetName ());
+		Util::Sequence (Acc_, Acc_->FetchAttachment (Msg_, att.GetName (), filePath)) >>
+				[=] (const Account::FetchAttachmentResult_t& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (const boost::none_t&)
+							{
+								Paths_ << filePath;
+								RotateQueue ();
+							},
+							[=] (auto e)
+							{
+								Util::ReportFutureResult (Promise_, [&] { return Result_t::Left (e); });
+							});
+				};
 	}
 }
 }

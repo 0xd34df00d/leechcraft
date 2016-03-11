@@ -170,18 +170,6 @@
 				<label value="Font families" />
 				<item type="customwidget" label="own" name="FontsSelector" />
 			</groupbox>
-			<groupbox>
-				<label lang="en" value="Sizes" />
-				<item type="spinbox" property="MinimumFontSize" default="9" minimum="5" maximum="40" step="1">
-					<label lang="en" value="Minimum font size:" />
-				</item>
-				<item type="spinbox" property="DefaultFontSize" default="14" minimum="5" maximum="40" step="1">
-					<label lang="en" value="Default font size:" />
-				</item>
-				<item type="spinbox" property="DefaultFixedFontSize" default="14" minimum="5" maximum="40" step="1">
-					<label lang="en" value="Default fixed font size:" />
-				</item>
-			</groupbox>
 		</tab>
 		<tab>
 			<label lang="en" value="Rendering" />

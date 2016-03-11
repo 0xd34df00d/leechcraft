@@ -78,7 +78,9 @@ namespace Snails
 
 		Core::Instance ().SetProxy (proxy);
 
-		AccsMgr_ = new AccountsManager;
+		ProgressMgr_ = new ProgressManager;
+
+		AccsMgr_ = new AccountsManager { ProgressMgr_ };
 		TemplatesMgr_ = new MsgTemplatesManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
 
@@ -161,7 +163,7 @@ namespace Snails
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
-		return Core::Instance ().GetProgressManager ()->GetRepresentation ();
+		return ProgressMgr_->GetRepresentation ();
 	}
 
 	void Plugin::handleNewTab (const QString& name, QWidget *mt)

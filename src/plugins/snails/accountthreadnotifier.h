@@ -27,48 +27,53 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "progresslistener.h"
+#pragma once
+
+#include <QObject>
+#include <QReadWriteLock>
+#include <QReadLocker>
+#include <QWriteLocker>
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	ProgressListener::ProgressListener (QObject *parent)
-	: QObject { parent }
+	class AccountThreadNotifierBase : public QObject
 	{
-	}
+		Q_OBJECT
+	public:
+		using QObject::QObject;
+	signals:
+		void changed ();
+	};
 
-	void ProgressListener::Increment ()
+	template<typename T>
+	class AccountThreadNotifier : public AccountThreadNotifierBase
 	{
-		progress (LastProgress_ + 1, LastTotal_);
-	}
+		mutable QReadWriteLock Lock_;
 
-	bool ProgressListener::cancel () const
-	{
-		return false;
-	}
+		T Data_;
+	public:
+		using AccountThreadNotifierBase::AccountThreadNotifierBase;
 
-	void ProgressListener::start (const size_t total)
-	{
-		progress (0, total);
-	}
+		void SetData (const T& t)
+		{
+			if (GetData () == t)
+				return;
 
-	void ProgressListener::progress (const size_t done, const size_t total)
-	{
-		LastProgress_ = done;
-		LastTotal_ = total;
+			{
+				QWriteLocker locker { &Lock_ };
+				Data_ = t;
+			}
 
-		emit gotProgress (done, total);
-	}
+			emit changed ();
+		}
 
-	void ProgressListener::stop (const size_t total)
-	{
-		progress (total, total);
-	}
-
-	bool operator< (const ProgressListener_wptr& w1, const ProgressListener_wptr& w2)
-	{
-		return w1.owner_before (w2);
-	}
+		T GetData () const
+		{
+			QReadLocker locker { &Lock_ };
+			return Data_;
+		}
+	};
 }
 }

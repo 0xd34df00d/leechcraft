@@ -37,6 +37,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Describes possible presence states of an account or a
+	 * contact.
+	 */
 	enum State
 	{
 		SOffline,
@@ -49,6 +52,7 @@ namespace Azoth
 		SProbe,
 		SError,
 		SInvalid,
+
 		/** Makes sense only for account state. This state is used when
 		 * account is connecting and the moment and hasn't connected
 		 * successfully and neither has failed yet.
@@ -56,6 +60,22 @@ namespace Azoth
 		SConnecting
 	};
 
+	/** @brief Compares two states according to the implied desire to
+	 * have a conversation.
+	 *
+	 * State \em s1 is less than state \em s2 if a contact in state
+	 * \em s1 is more likely to want or be ready to have a conversation
+	 * than a contact in state \em s2.
+	 *
+	 * For instance, <code>IsLess(State::SOnline, State::SDND)</code>
+	 * holds, just as <code>IsLess(State::SChat, State::SOnline)</code>
+	 * does.
+	 *
+	 * @param[in] s1 First state to compare.
+	 * @param[in] s2 Second state to compare.
+	 * @return Whether \em s1 implies more desire to have a conversation
+	 * than \em s2.
+	 */
 	bool IsLess (State s1, State s2);
 
 	/** Represents possible state of authorizations between two
@@ -120,11 +140,20 @@ namespace Azoth
 		CPSPaused
 	};
 
+	/** @brief A custom saved named status.
+	 */
 	struct CustomStatus
 	{
+		/** @brief The name of this status.
+		 */
 		QString Name_;
 
+		/** @brief The state associated with this status.
+		 */
 		State State_;
+
+		/** @brief The status text associated with this status.
+		 */
 		QString Text_;
 	};
 }

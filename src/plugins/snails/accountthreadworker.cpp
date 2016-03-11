@@ -66,6 +66,7 @@
 #include "messagechangelistener.h"
 #include "folder.h"
 #include "tracerfactory.h"
+#include "accountthreadnotifier.h"
 
 namespace LeechCraft
 {
@@ -542,9 +543,18 @@ namespace Snails
 	{
 		Folder2Messages_t result;
 
+		const auto pl = A_->MakeProgressListener (tr ("Synchronizing messages..."));
+		pl->start (origFolders.size ());
+
 		for (const auto& folder : origFolders)
+		{
 			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
 				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+
+			pl->Increment ();
+		}
+
+		pl->stop (origFolders.size ());
 
 		return result;
 	}
@@ -616,12 +626,6 @@ namespace Snails
 			const VmimeFolder_ptr& folder, const QByteArray& lastId) -> FolderMessages
 	{
 		const auto changeGuard = ChangeListener_->Disable ();
-
-		const std::shared_ptr<void> syncFinishedGuard
-		{
-			nullptr,
-			[this, &folderName, &lastId] (void*) { emit folderSyncFinished (folderName, lastId); }
-		};
 
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
@@ -780,23 +784,17 @@ namespace Snails
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)
 	{
-		const auto& context = tr ("Fetching messages for %1")
-					.arg (A_->GetName ());
+		const auto pl = A_->MakeProgressListener (tr ("Fetching messages for %1")
+					.arg (A_->GetName ()));
 
-		auto pl = MkPgListener (context);
-
-		QMetaObject::invokeMethod (pl,
-				"start",
-				Q_ARG (const int, messages.size ()));
+		const auto msgsCount = messages.size ();
+		pl->start (msgsCount);
 
 		int i = 0;
 		QList<Message_ptr> newMessages;
 		Q_FOREACH (auto message, messages)
 		{
-			QMetaObject::invokeMethod (pl,
-					"progress",
-					Q_ARG (const int, ++i),
-					Q_ARG (const int, messages.size ()));
+			pl->progress (++i, msgsCount);
 
 			auto msgObj = FromHeaders (message);
 
@@ -805,19 +803,9 @@ namespace Snails
 			newMessages << msgObj;
 		}
 
-		QMetaObject::invokeMethod (pl,
-					"stop",
-					Q_ARG (const int, messages.size ()));
+		pl->stop (msgsCount);
 
 		return newMessages;
-	}
-
-	ProgressListener* AccountThreadWorker::MkPgListener (const QString& text)
-	{
-		auto pl = new ProgressListener (text);
-		pl->deleteLater ();
-		emit gotProgressListener (ProgressListener_g_ptr (pl));
-		return pl;
 	}
 
 	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<int>& numbers)
@@ -831,7 +819,8 @@ namespace Snails
 	void AccountThreadWorker::sendNoop ()
 	{
 		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
-		at->Schedule ([this] (AccountThreadWorker*)
+		at->Schedule (TaskPriority::Low,
+				[this] (AccountThreadWorker*)
 				{
 					if (CachedStore_)
 						CachedStore_->noop ();
@@ -846,6 +835,19 @@ namespace Snails
 			sendNoop ();
 
 		NoopTimer_->start (timeout);
+	}
+
+	void AccountThreadWorker::SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>& notifier)
+	{
+		SetNoopTimeout (notifier->GetData ());
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[notifier, this] { SetNoopTimeout (notifier->GetData ()); },
+			notifier.get (),
+			SIGNAL (changed ()),
+			this
+		};
 	}
 
 	void AccountThreadWorker::FlushSockets ()
@@ -989,8 +991,9 @@ namespace Snails
 			}
 
 			OutputIODevAdapter adapter (&file);
-			data->extract (adapter,
-					MkPgListener (tr ("Fetching attachment %1...").arg (attName)));
+			const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
+						.arg (attName));
+			data->extract (adapter, pl.get ());
 
 			break;
 		}
@@ -1134,7 +1137,7 @@ namespace Snails
 
 		header->MessageId ()->setValue (GenerateMsgId (msg));
 
-		auto pl = MkPgListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
+		auto pl = A_->MakeProgressListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
 		auto transport = MakeTransport ();
 		try
 		{
@@ -1150,7 +1153,7 @@ namespace Snails
 					<< e.response ().c_str ();
 			throw;
 		}
-		transport->send (vMsg, pl);
+		transport->send (vMsg, pl.get ());
 	}
 }
 }

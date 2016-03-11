@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_BROWSERWIDGET_H
-#define PLUGINS_POSHUKU_BROWSERWIDGET_H
+#pragma once
+
 #include <memory>
 #include <QWidget>
 #include <QTime>
@@ -40,6 +40,7 @@
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/structures.h>
 #include <interfaces/ihaverecoverabletabs.h>
+#include <interfaces/iwkfontssettable.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "ui_browserwidget.h"
@@ -66,13 +67,15 @@ namespace Poshuku
 						, public ITabWidget
 						, public IDNDTab
 						, public IRecoverableTab
+						, public IWkFontsSettable
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::IBrowserWidget
 				IWebWidget
 				ITabWidget
 				IDNDTab
-				IRecoverableTab)
+				IRecoverableTab
+				IWkFontsSettable)
 
 		Ui::BrowserWidget Ui_;
 
@@ -136,6 +139,7 @@ namespace Poshuku
 
 		CustomWebView* GetView () const;
 		QLineEdit* GetURLEdit () const;
+		QObject* GetQObject ();
 
 		BrowserWidgetSettings GetWidgetSettings () const;
 		void SetWidgetSettings (const BrowserWidgetSettings&);
@@ -165,6 +169,10 @@ namespace Poshuku
 		QByteArray GetTabRecoverData () const;
 		QString GetTabRecoverName () const;
 		QIcon GetTabRecoverIcon () const;
+
+		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font);
+		void SetFontSize (QWebSettings::FontSize type, int size);
+		void SetFontSizeMultiplier (qreal factor);
 
 		void SetOnLoadScrollPoint (const QPoint&);
 	private:
@@ -271,5 +279,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

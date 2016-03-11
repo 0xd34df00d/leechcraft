@@ -34,9 +34,9 @@
 #include <QObject>
 #include <QHash>
 #include "message.h"
-#include "progresslistener.h"
 #include "accountthread.h"
 #include "accountthreadworkerfwd.h"
+#include "progressfwd.h"
 
 class QMutex;
 class QAbstractItemModel;
@@ -60,6 +60,11 @@ namespace Snails
 	class MailModelsManager;
 	class ThreadPool;
 	struct Folder;
+
+	enum class TaskPriority;
+
+	template<typename T>
+	class AccountThreadNotifier;
 
 	class Account : public QObject
 	{
@@ -136,8 +141,12 @@ namespace Snails
 		FoldersModel *FoldersModel_;
 
 		MailModelsManager * const MailModelsManager_;
+
+		std::shared_ptr<AccountThreadNotifier<int>> NoopNotifier_;
+
+		ProgressManager * const ProgressMgr_;
 	public:
-		Account (QObject* = nullptr);
+		Account (ProgressManager*, QObject* = nullptr);
 
 		QByteArray GetID () const;
 		QString GetName () const;
@@ -162,7 +171,8 @@ namespace Snails
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
 
-		void FetchAttachment (const Message_ptr&,
+		using FetchAttachmentResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
+		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
@@ -178,10 +188,12 @@ namespace Snails
 
 		bool IsNull () const;
 
-		QString GetInUsername ();
-		QString GetOutUsername ();
+		QString GetInUsername () const;
+		QString GetOutUsername () const;
+
+		ProgressListener_ptr MakeProgressListener (const QString&) const;
 	private:
-		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&);
+		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();
@@ -208,11 +220,8 @@ namespace Snails
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 
-		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
-
 		void handleFoldersUpdated ();
 	signals:
-		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 	};
 

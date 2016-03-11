@@ -46,8 +46,8 @@ namespace Xoox
 	, JID_ { jid }
 	, ItemId_ { startId }
 	, Count_ { count }
-	, Dir_ { dir }
 	, QueryID_ { queryId }
+	, Dir_ { dir }
 	{
 	}
 

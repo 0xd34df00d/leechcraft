@@ -175,10 +175,10 @@ namespace Herbicide
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		AskedEntries_ << entryObj;
-		const QString& text = tr ("Please answer to the following "
-				"question to verify you are not a bot and is welcome "
-				"to communicate with me:\n%1")
-					.arg (ConfWidget_->GetQuestion ());
+
+		const auto& greeting = XmlSettingsManager::Instance ()
+				.property ("QuestPrefix").toString ();
+		const auto& text = greeting + "\n" + ConfWidget_->GetQuestion ();
 
 		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 

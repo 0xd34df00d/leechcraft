@@ -42,6 +42,8 @@ namespace Snails
 
 	using AccountThread_ptr = std::shared_ptr<AccountThread>;
 
+	enum class TaskPriority;
+
 	class ThreadPool : public QObject
 	{
 		Account * const Acc_;
@@ -53,27 +55,33 @@ namespace Snails
 		bool CheckingNext_ = false;
 
 		QList<std::function<void (AccountThread*)>> Scheduled_;
+
+		QList<std::function<void (AccountThread*)>> ThreadInitializers_;
 	public:
 		ThreadPool (const CertList_t&, Account*);
 
 		AccountThread* GetThread ();
 
-		enum class Priority
-		{
-			High,
-			Low
-		};
-
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (Priority, const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)
 		{
 			QFutureInterface<WrapFunctionType_t<F, Args...>> iface;
 
-			Scheduled_ << [=] (AccountThread *thread) mutable
+			auto runner = [=] (AccountThread *thread) mutable
 					{
 						iface.reportStarted ();
-						PerformScheduledFunc (thread, iface, func, args...);
+						PerformScheduledFunc (thread, iface, prio, func, args...);
 					};
+
+			switch (prio)
+			{
+			case TaskPriority::High:
+				Scheduled_.prepend (runner);
+				break;
+			case TaskPriority::Low:
+				Scheduled_.append (runner);
+				break;
+			}
 
 			RunThreads ();
 
@@ -81,14 +89,19 @@ namespace Snails
 		}
 
 		template<typename F, typename... Args>
-		void ScheduleOnAllThreads (const F& func, const Args&... args)
+		void AddThreadInitializer (const F& func, const Args&... args)
 		{
+			auto runner = [=] (AccountThread *thread) { Util::Invoke (func, thread, args...); };
+			ThreadInitializers_ << runner;
+
+			for (const auto& thread : ExistingThreads_)
+				runner (thread.get ());
 		}
 	private:
 		template<typename FutureInterface, typename F, typename... Args>
-		void PerformScheduledFunc (AccountThread *thread, FutureInterface iface, const F& func, const Args&... args)
+		void PerformScheduledFunc (AccountThread *thread, FutureInterface iface, TaskPriority prio, const F& func, const Args&... args)
 		{
-			Util::Sequence (nullptr, thread->Schedule (func, args...)) >>
+			Util::Sequence (nullptr, thread->Schedule (prio, func, args...)) >>
 					[=] (auto result) mutable
 					{
 						if (result.IsRight ())
@@ -106,7 +119,7 @@ namespace Snails
 										qWarning () << Q_FUNC_INFO
 												<< "seems like a thread has died, rescheduling...";
 										HandleThreadOverflow (thread);
-										PerformScheduledFunc (GetNextThread (), iface, func, args...);
+										PerformScheduledFunc (GetNextThread (), iface, prio, func, args...);
 									}
 									else
 										iface.reportFinished (&result);

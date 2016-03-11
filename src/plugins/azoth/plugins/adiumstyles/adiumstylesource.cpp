@@ -453,11 +453,6 @@ namespace AdiumStyles
 		return result;
 	}
 
-	void AdiumStyleSource::PostprocessFrame (QWebFrame *frame, QObject*)
-	{
-		frame->evaluateJavaScript ("initStyle();");
-	}
-
 	void AdiumStyleSource::PercentTemplate (QString& result, const QMap<QString, QString>& map) const
 	{
 		QRegExp rx ("(?:%@){1}");

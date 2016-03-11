@@ -43,6 +43,7 @@ namespace Snails
 {
 	class AccountsManager;
 	class MsgTemplatesManager;
+	class AttachmentsFetcher;
 
 	enum class MsgType;
 
@@ -67,6 +68,8 @@ namespace Snails
 		QMenu *EditorsMenu_;
 
 		Message_ptr ReplyMessage_;
+
+		std::shared_ptr<AttachmentsFetcher> LinkedAttachmentsFetcher_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);
@@ -88,6 +91,7 @@ namespace Snails
 	private:
 		void PrepareLinkedEditor (const Message_ptr&);
 		void PrepareLinkedBody (MsgType, const Message_ptr&);
+		void CopyAttachments (const Message_ptr&);
 
 		void SetupToolbar ();
 		void SetupEditors ();
@@ -95,6 +99,11 @@ namespace Snails
 		void SetMessageReferences (const Message_ptr&) const;
 
 		Account* GetSelectedAccount () const;
+
+		void AppendAttachment (const QString& path, const QString& descr);
+
+		void AddAttachments (const Message_ptr&);
+		void Send (Account*, const Message_ptr&);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();

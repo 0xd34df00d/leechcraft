@@ -52,6 +52,9 @@
 #include "mailmodelsmanager.h"
 #include "accountlogger.h"
 #include "threadpool.h"
+#include "accountthreadnotifier.h"
+#include "progresslistener.h"
+#include "progressmanager.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -75,7 +78,7 @@ namespace Snails
 		}
 	}
 
-	Account::Account (QObject *parent)
+	Account::Account (ProgressManager *pm, QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
 	, WorkerPool_ (new ThreadPool (GetCerts (), this))
@@ -84,6 +87,8 @@ namespace Snails
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
 	, MailModelsManager_ (new MailModelsManager (this))
+	, NoopNotifier_ (std::make_shared<AccountThreadNotifier<int>> ())
+	, ProgressMgr_ (pm)
 	{
 		UpdateNoopInterval ();
 
@@ -91,6 +96,12 @@ namespace Snails
 				SIGNAL (foldersUpdated ()),
 				this,
 				SLOT (handleFoldersUpdated ()));
+
+		WorkerPool_->AddThreadInitializer ([this] (AccountThread *t)
+				{
+					t->Schedule (TaskPriority::Low,
+							&AccountThreadWorker::SetNoopTimeoutChangeNotifier, NoopNotifier_);
+				});
 	}
 
 	QByteArray Account::GetID () const
@@ -149,17 +160,18 @@ namespace Snails
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		SynchronizeImpl (folders, {});
+		SynchronizeImpl (folders, { }, TaskPriority::Low);
 	}
 
 	void Account::Synchronize (const QStringList& path, const QByteArray& last)
 	{
-		SynchronizeImpl ({ path }, last);
+		SynchronizeImpl ({ path }, last, TaskPriority::High);
 	}
 
-	void Account::SynchronizeImpl (const QList<QStringList>& folders, const QByteArray& last)
+	void Account::SynchronizeImpl (const QList<QStringList>& folders,
+			const QByteArray& last, TaskPriority prio)
 	{
-		const auto& future = WorkerPool_->Schedule (ThreadPool::Priority::Low,
+		const auto& future = WorkerPool_->Schedule (prio,
 				&AccountThreadWorker::Synchronize, folders, last);
 		Util::Sequence (this, future) >>
 				[=] (const auto& result)
@@ -197,7 +209,7 @@ namespace Snails
 
 	QFuture<WrapReturnType_t<FetchWholeMessageResult_t>> Account::FetchWholeMessage (const Message_ptr& msg)
 	{
-		auto future = WorkerPool_->Schedule (ThreadPool::Priority::High,
+		auto future = WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::FetchWholeMessage, msg);
 		Util::Sequence (this, future) >>
 			[this] (const auto& result)
@@ -228,20 +240,20 @@ namespace Snails
 			pair.second = UserEmail_;
 		msg->SetAddress (Message::Address::From, pair);
 
-		return WorkerPool_->Schedule (ThreadPool::Priority::High,
+		return WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::SendMessage, msg);
 	}
 
-	void Account::FetchAttachment (const Message_ptr& msg,
-			const QString& attName, const QString& path)
+	auto Account::FetchAttachment (const Message_ptr& msg,
+			const QString& attName, const QString& path) -> QFuture<FetchAttachmentResult_t>
 	{
-		WorkerPool_->Schedule (ThreadPool::Priority::Low,
+		return WorkerPool_->Schedule (TaskPriority::Low,
 				&AccountThreadWorker::FetchAttachment, msg, attName, path);
 	}
 
 	void Account::SetReadStatus (bool read, const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		const auto& future = WorkerPool_->Schedule (ThreadPool::Priority::High,
+		const auto& future = WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::SetReadStatus, read, ids, folder);
 		Util::Sequence (this, future) >>
 				[=] (const auto& result)
@@ -258,7 +270,7 @@ namespace Snails
 
 	void Account::CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
 	{
-		WorkerPool_->Schedule (ThreadPool::Priority::High,
+		WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::CopyMessages, ids, from, to);
 	}
 
@@ -515,14 +527,19 @@ namespace Snails
 			Login_.isEmpty ();
 	}
 
-	QString Account::GetInUsername ()
+	QString Account::GetInUsername () const
 	{
 		return Login_;
 	}
 
-	QString Account::GetOutUsername ()
+	QString Account::GetOutUsername () const
 	{
 		return OutLogin_;
+	}
+
+	ProgressListener_ptr Account::MakeProgressListener (const QString& context) const
+	{
+		return ProgressMgr_->MakeProgressListener (context);
 	}
 
 	QMutex* Account::GetMutex () const
@@ -532,7 +549,7 @@ namespace Snails
 
 	void Account::UpdateNoopInterval ()
 	{
-		WorkerPool_->ScheduleOnAllThreads (&AccountThreadWorker::SetNoopTimeout, KeepAliveInterval_);
+		NoopNotifier_->SetData (KeepAliveInterval_);
 	}
 
 	QString Account::BuildInURL ()
@@ -601,7 +618,7 @@ namespace Snails
 
 	void Account::DeleteFromFolder (const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		const auto& future = WorkerPool_->Schedule (ThreadPool::Priority::High,
+		const auto& future = WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::DeleteMessages, ids, folder);
 		Util::Sequence (this, future) >>
 				[=] (const auto& result)
@@ -679,17 +696,9 @@ namespace Snails
 		MailModelsManager_->Remove (ids);
 	}
 
-	void Account::handleFolderSyncFinished (const QStringList& folder, const QByteArray& lastRequestedId)
-	{
-		if (lastRequestedId.isEmpty ())
-			return;
-
-		RequestMessageCount (folder);
-	}
-
 	void Account::RequestMessageCount (const QStringList& folder)
 	{
-		auto future = WorkerPool_->Schedule (ThreadPool::Priority::Low,
+		auto future = WorkerPool_->Schedule (TaskPriority::Low,
 				&AccountThreadWorker::GetMessageCount, folder);
 		Util::Sequence (this, future) >>
 				[=] (const auto& counts)
@@ -746,7 +755,6 @@ namespace Snails
 
 			FoldersModel_->SetFolderCounts (folder.Path_, unread, count);
 
-			// TODO lowest priority
 			RequestMessageCount (folder.Path_);
 		}
 	}

@@ -43,21 +43,25 @@ namespace Snails
 	{
 		Q_OBJECT
 
-		QString Context_;
+		size_t LastProgress_ = 0;
+		size_t LastTotal_ = 0;
 	public:
-		ProgressListener (const QString&, QObject* = 0);
+		ProgressListener (QObject* = nullptr);
 
-		QString GetContext () const;
+		void Increment ();
 
 		bool cancel () const;
+
+		void start (const size_t) override;
+		void progress (const size_t, const size_t) override;
+		void stop (const size_t) override;
 	signals:
-		void start (const size_t);
-		void progress (const size_t, const size_t);
-		void stop (const size_t);
+		void gotProgress (quint64, quint64);
 	};
 
-	typedef QPointer<ProgressListener> ProgressListener_g_ptr;
-}
-}
+	using ProgressListener_ptr = std::shared_ptr<ProgressListener>;
+	using ProgressListener_wptr = std::weak_ptr<ProgressListener>;
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::ProgressListener_g_ptr);
+	bool operator< (const ProgressListener_wptr&, const ProgressListener_wptr&);
+}
+}

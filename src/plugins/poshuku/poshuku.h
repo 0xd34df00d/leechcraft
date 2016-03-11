@@ -49,6 +49,11 @@
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class WkFontsWidget;
+}
+
 namespace Poshuku
 {
 	class Poshuku : public QObject
@@ -83,7 +88,9 @@ namespace Poshuku
 		QAction *CheckFavorites_;
 		QAction *ReloadAll_;
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> XmlSettingsDialog_;
+		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		Util::WkFontsWidget *FontsWidget_;
 	public:
 		virtual ~Poshuku ();
 		void Init (ICoreProxy_ptr);
@@ -127,7 +134,6 @@ namespace Poshuku
 		void RegisterSettings ();
 	private slots:
 		void createTabFirstTime ();
-		void handleFontChanged (QWebSettings::FontFamily, const QFont&);
 		void viewerSettingsChanged ();
 		void developerExtrasChanged ();
 		void cacheSettingsChanged ();
@@ -136,6 +142,7 @@ namespace Poshuku
 		void handleSettingsClicked (const QString&);
 		void handleCheckFavorites ();
 		void handleReloadAll ();
+		void handleBrowserWidgetCreated (BrowserWidget*);
 	signals:
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);

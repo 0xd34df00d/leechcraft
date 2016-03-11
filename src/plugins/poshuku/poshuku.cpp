@@ -117,18 +117,18 @@ namespace Poshuku
 					e.what ());
 		}
 
-		XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukusettings.xml");
 		XmlSettingsDialog_->SetCustomWidget ("BackendSelector",
 				new Util::BackendSelector (XmlSettingsManager::Instance ()));
 
-		const auto fontsSelector = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
-		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", fontsSelector);
-		connect (fontsSelector,
-				SIGNAL (fontChanged (QWebSettings::FontFamily, QFont)),
+		FontsWidget_ = new Util::WkFontsWidget { XmlSettingsManager::Instance () };
+		XmlSettingsDialog_->SetCustomWidget ("FontsSelector", FontsWidget_);
+		connect (&Core::Instance (),
+				SIGNAL (browserWidgetCreated (BrowserWidget*)),
 				this,
-				SLOT (handleFontChanged (QWebSettings::FontFamily, QFont)));
+				SLOT (handleBrowserWidgetCreated (BrowserWidget*)));
 
 		InitConnections ();
 
@@ -456,10 +456,7 @@ namespace Poshuku
 	void Poshuku::RegisterSettings ()
 	{
 		QList<QByteArray> viewerSettings;
-		viewerSettings << "MinimumFontSize"
-			<< "DefaultFontSize"
-			<< "DefaultFixedFontSize"
-			<< "AutoLoadImages"
+		viewerSettings << "AutoLoadImages"
 			<< "DNSPrefetchEnabled"
 			<< "AllowJavascript"
 			<< "AllowJava"
@@ -560,38 +557,12 @@ namespace Poshuku
 #endif
 	}
 
-	void Poshuku::handleFontChanged (QWebSettings::FontFamily family, const QFont& font)
-	{
-		QWebSettings::globalSettings ()->setFontFamily (family, font.family ());
-
-#if QT_VERSION < 0x050000
-		if (family == QWebSettings::FixedFont)
-			SetSubsts ();
-#endif
-	}
-
 	void Poshuku::viewerSettingsChanged ()
 	{
 		auto xsm = XmlSettingsManager::Instance ();
-		auto setFamily = [this, xsm] (QWebSettings::FontFamily family, const char *prop)
-		{
-			handleFontChanged (family, xsm->property (prop).value<QFont> ());
-		};
-		setFamily (QWebSettings::StandardFont, "StandardFont");
-		setFamily (QWebSettings::FixedFont, "FixedFont");
-		setFamily (QWebSettings::SerifFont, "SerifFont");
-		setFamily (QWebSettings::SansSerifFont, "SansSerifFont");
-		setFamily (QWebSettings::CursiveFont, "CursiveFont");
-		setFamily (QWebSettings::FantasyFont, "FantasyFont");
 
 		auto global = QWebSettings::globalSettings ();
 
-		global->setFontSize (QWebSettings::MinimumFontSize,
-				xsm->property ("MinimumFontSize").toInt ());
-		global->setFontSize (QWebSettings::DefaultFontSize,
-				xsm->property ("DefaultFontSize").toInt ());
-		global->setFontSize (QWebSettings::DefaultFixedFontSize,
-				xsm->property ("DefaultFixedFontSize").toInt ());
 		global->setAttribute (QWebSettings::AutoLoadImages,
 				xsm->property ("AutoLoadImages").toBool ());
 		global->setAttribute (QWebSettings::DnsPrefetchEnabled,
@@ -694,6 +665,11 @@ namespace Poshuku
 	void Poshuku::handleReloadAll ()
 	{
 		Core::Instance ().ReloadAll ();
+	}
+
+	void Poshuku::handleBrowserWidgetCreated (BrowserWidget *widget)
+	{
+		FontsWidget_->RegisterSettable (widget);
 	}
 }
 }

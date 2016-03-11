@@ -46,13 +46,7 @@ namespace Snails
 
 	void AccountsListWidget::on_AddButton__released ()
 	{
-		const auto acc = std::make_shared<Account> ();
-
-		acc->OpenConfigDialog ([acc, this]
-				{
-					if (!acc->IsNull ())
-						AccsMgr_->AddAccount (acc);
-				});
+		AccsMgr_->InitiateAccountAddition ();
 	}
 
 	void AccountsListWidget::on_ModifyButton__released ()

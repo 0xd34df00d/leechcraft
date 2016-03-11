@@ -46,7 +46,7 @@ namespace Snails
 		auto thread = CreateThread ();
 		ExistingThreads_ << thread;
 
-		Util::Sequence (this, thread->Schedule (&AccountThreadWorker::TestConnectivity)) >>
+		Util::Sequence (this, thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
 			[this, thread] (const auto& result)
 			{
 				RunScheduled (thread.get ());
@@ -92,7 +92,7 @@ namespace Snails
 
 		auto thread = CreateThread ();
 
-		Util::Sequence (this, thread->Schedule (&AccountThreadWorker::TestConnectivity)) >>
+		Util::Sequence (this, thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
 			[this, thread] (const auto& result)
 			{
 				CheckingNext_ = false;
@@ -127,6 +127,19 @@ namespace Snails
 	{
 		const auto thread = std::make_shared<AccountThread> (false,
 				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, thread]
+			{
+				for (const auto& init : ThreadInitializers_)
+					init (thread.get ());
+			},
+			thread.get (),
+			SIGNAL (started ()),
+			thread.get ()
+		};
+
 		thread->start (QThread::LowPriority);
 
 		return thread;
@@ -166,7 +179,7 @@ namespace Snails
 
 	void ThreadPool::HandleThreadOverflow (const AccountThread_ptr& thread)
 	{
-		thread->Schedule (&AccountThreadWorker::Disconnect);
+		thread->Schedule (TaskPriority::Low, &AccountThreadWorker::Disconnect);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
