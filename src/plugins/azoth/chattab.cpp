@@ -1529,11 +1529,11 @@ namespace Azoth
 				this,
 				SLOT (handleEntryMessage (QObject*)));
 		connect (obj,
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
-				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+				SLOT (handleStatusChanged (EntryStatus, QString)));
 		connect (obj,
-				SIGNAL (availableVariantsChanged (const QStringList&)),
+				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
 				SLOT (handleVariantsChanged (QStringList)));
 		connect (obj,
