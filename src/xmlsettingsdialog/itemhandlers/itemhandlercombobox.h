@@ -46,7 +46,6 @@ namespace LeechCraft
 		QHash<QString, QDomElement> Propname2Item_;
 	public:
 		ItemHandlerCombobox (ItemHandlerFactory*);
-		virtual ~ItemHandlerCombobox ();
 
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);

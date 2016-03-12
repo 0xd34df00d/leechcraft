@@ -45,10 +45,6 @@ namespace LeechCraft
 	{
 	}
 
-	ItemHandlerCombobox::~ItemHandlerCombobox ()
-	{
-	}
-
 	bool ItemHandlerCombobox::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "combobox";
