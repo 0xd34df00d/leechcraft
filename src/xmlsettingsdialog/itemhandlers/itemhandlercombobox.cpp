@@ -134,7 +134,6 @@ namespace LeechCraft
 		{
 			Scripter scripter (scriptContainer);
 
-			QStringList fromScript = scripter.GetOptions ();
 			Q_FOREACH (const QString& elm, scripter.GetOptions ())
 				box->addItem (scripter.HumanReadableOption (elm),
 						elm);
