@@ -37,9 +37,6 @@ namespace LeechCraft
 	class ItemHandlerCheckbox : public ItemHandlerBooleanGetValue
 	{
 	public:
-		ItemHandlerCheckbox ();
-		virtual ~ItemHandlerCheckbox ();
-
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
