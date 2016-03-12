@@ -61,7 +61,7 @@ namespace LeechCraft
 		picker->SetCurrentColor (XSD_->GetValue (item).value<QColor> ());
 
 		connect (picker,
-				SIGNAL (currentColorChanged (const QColor&)),
+				SIGNAL (currentColorChanged (QColor)),
 				this,
 				SLOT (updatePreferences ()));
 
