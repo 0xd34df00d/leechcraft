@@ -57,24 +57,19 @@ namespace LeechCraft
 	QVariant ItemHandlerOptionsSetValue::GetValue (const QDomElement& item,
 			QVariant value) const
 	{
-		if (value.isNull () ||
-				value.toString ().isEmpty ())
+		if (!value.toString ().isEmpty ())
+			return value;
+
+		if (item.hasAttribute ("default"))
+			return item.attribute ("default");
+
+		auto option = item.firstChildElement ("option");
+		while (!option.isNull ())
 		{
-			if (item.hasAttribute ("default"))
-				value = item.attribute ("default");
-			else
-			{
-				QDomElement option = item.firstChildElement ("option");
-				while (!option.isNull ())
-				{
-					if (option.attribute ("default") == "true")
-					{
-						value = option.attribute ("name");
-						break;
-					}
-					option = option.nextSiblingElement ("option");
-				}
-			}
+			if (option.attribute ("default") == "true")
+				return option.attribute ("name");
+
+			option = option.nextSiblingElement ("option");
 		}
 
 		return value;
