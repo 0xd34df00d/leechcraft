@@ -215,8 +215,7 @@ namespace Util
 		 * be ignored.
 		 * @return The current preferences value for the element.
 		 */
-		QVariant GetValue (const QDomElement& element,
-				bool ignoreObject = false) const;
+		QVariant GetValue (const QDomElement& element) const;
 
 		/** @brief Returns the list of images associated with the
 		 * given element.
