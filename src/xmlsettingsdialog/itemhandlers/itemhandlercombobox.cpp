@@ -134,9 +134,8 @@ namespace LeechCraft
 		{
 			Scripter scripter (scriptContainer);
 
-			Q_FOREACH (const QString& elm, scripter.GetOptions ())
-				box->addItem (scripter.HumanReadableOption (elm),
-						elm);
+			for (const auto& elm : scripter.GetOptions ())
+				box->addItem (scripter.HumanReadableOption (elm), elm);
 		}
 
 		int pos = box->findData (XSD_->GetValue (item));
