@@ -40,7 +40,7 @@ namespace LeechCraft
 
 	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
 	{
-		ItemHandlerFactory *Factory_;
+		ItemHandlerFactory * const Factory_;
 
 		QHash<QString, QComboBox*> Propname2Combobox_;
 		QHash<QString, QDomElement> Propname2Item_;
