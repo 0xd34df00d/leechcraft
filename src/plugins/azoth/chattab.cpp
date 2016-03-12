@@ -1526,11 +1526,11 @@ namespace Azoth
 				this,
 				SLOT (handleEntryMessage (QObject*)));
 		connect (obj,
-				SIGNAL (statusChanged (const EntryStatus&, const QString&)),
+				SIGNAL (statusChanged (EntryStatus, QString)),
 				this,
-				SLOT (handleStatusChanged (const EntryStatus&, const QString&)));
+				SLOT (handleStatusChanged (EntryStatus, QString)));
 		connect (obj,
-				SIGNAL (availableVariantsChanged (const QStringList&)),
+				SIGNAL (availableVariantsChanged (QStringList)),
 				this,
 				SLOT (handleVariantsChanged (QStringList)));
 		connect (obj,
@@ -1672,9 +1672,7 @@ namespace Azoth
 					this,
 					SLOT (handleCall (QObject*)));
 
-			Q_FOREACH (QObject *object,
-					Core::Instance ().GetCallManager ()->
-							GetCallsForEntry (EntryID_))
+			for (auto object : Core::Instance ().GetCallManager ()->GetCallsForEntry (EntryID_))
 				handleCall (object);
 		}
 #endif
