@@ -205,14 +205,8 @@ namespace Util
 		 * settings dialog and returns a value previously stored or
 		 * default value if no previously set value exists.
 		 *
-		 * If ignoreObject is set, this function ignores the
-		 * preferences already present and just parses the XML file.
-		 * In this case, the default value is returned.
-		 *
 		 * @param[in] element The element for which the preferences
 		 * value should be returned.
-		 * @param[in] ignoreObject Whether associated object should
-		 * be ignored.
 		 * @return The current preferences value for the element.
 		 */
 		QVariant GetValue (const QDomElement& element) const;
