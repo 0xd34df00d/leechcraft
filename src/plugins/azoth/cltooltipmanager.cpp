@@ -401,7 +401,7 @@ namespace Azoth
 		if (shouldScheduleAvatarFetch)
 		{
 			const auto& obj = entry->GetQObject ();
-			Util::Sequence (this, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Full)) >>
+			Util::Sequence (obj, AvatarsManager_->GetAvatar (obj, IHaveAvatars::Size::Full)) >>
 					[this, entry, tip, avatarSize] (QImage avatar)
 					{
 						if (avatar.isNull ())
