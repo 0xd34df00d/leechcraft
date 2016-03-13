@@ -107,4 +107,4 @@ namespace LeechCraft
 		}
 		return colorPicker->GetCurrentColor ();
 	}
-};
+}

@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOLOR_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOLOR_H
+#pragma once
 
 #include "itemhandlerbase.h"
 
@@ -45,6 +44,4 @@ namespace LeechCraft
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	};
-};
-
-#endif
+}

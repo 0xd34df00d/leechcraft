@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCHECKBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCHECKBOX_H
+#pragma once
 
 #include "itemhandlerbooleangetvalue.h"
 
@@ -43,6 +42,4 @@ namespace LeechCraft
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	};
-};
-
-#endif
+}

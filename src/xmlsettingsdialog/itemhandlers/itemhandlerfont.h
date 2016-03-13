@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERFONT_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERFONT_H
+#pragma once
 
 #include "itemhandlerbase.h"
 
@@ -48,5 +47,3 @@ namespace LeechCraft
 	};
 
 }
-
-#endif

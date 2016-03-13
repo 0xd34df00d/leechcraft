@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCUSTOMWIDGET_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCUSTOMWIDGET_H
+#pragma once
 
 #include "itemhandlernovalue.h"
 
@@ -40,6 +39,4 @@ namespace LeechCraft
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 	};
-};
-
-#endif
+}

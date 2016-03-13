@@ -92,4 +92,4 @@ namespace LeechCraft
 		}
 		return groupbox->isChecked ();
 	}
-};
+}

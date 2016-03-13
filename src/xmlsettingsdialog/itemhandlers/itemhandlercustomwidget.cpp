@@ -56,4 +56,4 @@ namespace LeechCraft
 			lay->addWidget (widget, rc, 0, 1, -1);
 		}
 	}
-};
+}

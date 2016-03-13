@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBOOLEANGETVALUE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBOOLEANGETVALUE_H
+#pragma once
+
 #include "itemhandlerstringsetvalue.h"
 
 namespace LeechCraft
@@ -44,6 +44,4 @@ namespace LeechCraft
 		QVariant GetValue (const QDomElement& element,
 				QVariant value) const override;
 	};
-};
-
-#endif
+}

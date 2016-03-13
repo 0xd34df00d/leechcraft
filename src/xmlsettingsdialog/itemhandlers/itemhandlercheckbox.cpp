@@ -88,4 +88,4 @@ namespace LeechCraft
 		}
 		return checkbox->checkState () == Qt::Checked;
 	}
-};
+}

@@ -70,4 +70,4 @@ namespace LeechCraft
 
 		return value;
 	}
-};
+}

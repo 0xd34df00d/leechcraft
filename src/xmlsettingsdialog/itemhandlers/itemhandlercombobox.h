@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
+#pragma once
+
 #include "itemhandleroptionssetvalue.h"
 #include <QHash>
 
@@ -55,6 +55,4 @@ namespace LeechCraft
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
 	};
-};
-
-#endif
+}
