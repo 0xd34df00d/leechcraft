@@ -37,9 +37,6 @@ namespace LeechCraft
 	class ItemHandlerCustomWidget : public ItemHandlerNoValue
 	{
 	public:
-		ItemHandlerCustomWidget ();
-		virtual ~ItemHandlerCustomWidget ();
-
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 	};

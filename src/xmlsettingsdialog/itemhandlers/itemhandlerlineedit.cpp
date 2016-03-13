@@ -36,14 +36,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerLineEdit::ItemHandlerLineEdit ()
-	{
-	}
-
-	ItemHandlerLineEdit::~ItemHandlerLineEdit ()
-	{
-	}
-
 	bool ItemHandlerLineEdit::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "lineedit";

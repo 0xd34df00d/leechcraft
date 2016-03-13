@@ -37,9 +37,6 @@ namespace LeechCraft
 	class ItemHandlerLineEdit : public ItemHandlerStringGetValue
 	{
 	public:
-		ItemHandlerLineEdit ();
-		virtual ~ItemHandlerLineEdit ();
-
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;

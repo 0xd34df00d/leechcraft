@@ -41,9 +41,6 @@ namespace LeechCraft
 	class ItemHandlerBooleanGetValue : public ItemHandlerStringSetValue
 	{
 	public:
-		ItemHandlerBooleanGetValue ();
-		virtual ~ItemHandlerBooleanGetValue ();
-
 		QVariant GetValue (const QDomElement& element,
 				QVariant value) const override;
 	};

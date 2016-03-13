@@ -37,9 +37,6 @@ namespace LeechCraft
 	class ItemHandlerColor : public ItemHandlerBase
 	{
 	public:
-		ItemHandlerColor ();
-		virtual ~ItemHandlerColor ();
-
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		QVariant GetValue (const QDomElement&, QVariant) const;

@@ -36,14 +36,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerColor::ItemHandlerColor ()
-	{
-	}
-
-	ItemHandlerColor::~ItemHandlerColor ()
-	{
-	}
-
 	bool ItemHandlerColor::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "color";
