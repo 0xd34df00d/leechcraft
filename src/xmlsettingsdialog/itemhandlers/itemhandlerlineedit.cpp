@@ -68,7 +68,7 @@ namespace LeechCraft
 		if (item.hasAttribute ("inputMask"))
 			edit->setInputMask (item.attribute ("inputMask"));
 		connect (edit,
-				SIGNAL (textChanged (const QString&)),
+				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (updatePreferences ()));
 
