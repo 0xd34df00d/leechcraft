@@ -44,8 +44,8 @@ namespace LeechCraft
 
 		auto def = item.attribute ("default");
 		if (item.attribute ("translatable") == "true")
-		def = QCoreApplication::translate (qPrintable (context),
-				def.toUtf8 ().constData ());
+			def = QCoreApplication::translate (qPrintable (context),
+					def.toUtf8 ().constData ());
 		return def;
 	}
 };
