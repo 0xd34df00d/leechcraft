@@ -31,10 +31,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerOptionsSetValue::~ItemHandlerOptionsSetValue ()
-	{
-	}
-
 	void ItemHandlerOptionsSetValue::UpdateValue (QDomElement& element,
 			const QVariant& value) const
 	{

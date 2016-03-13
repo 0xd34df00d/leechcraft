@@ -41,8 +41,6 @@ namespace LeechCraft
 	class ItemHandlerOptionsSetValue : public ItemHandlerBase
 	{
 	public:
-		virtual ~ItemHandlerOptionsSetValue ();
-
 		void UpdateValue (QDomElement&, const QVariant& value) const override;
 		QVariant GetValue (const QDomElement& element, QVariant value) const override;
 	};
