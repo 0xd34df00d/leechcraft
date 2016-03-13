@@ -107,9 +107,7 @@ namespace LeechCraft
 			return false;
 
 		const int index = GetWindowIndex (win);
-		const auto& data = Windows_ [index];
-		for (int i = data.TM_->GetWidgetCount () - 1; i >= 0; --i)
-			qobject_cast<ITabWidget*> (data.TM_->GetWidget (i))->Remove ();
+		CloseWindowTabs (index);
 
 		auto mainWindow = Windows_ [0].Window_;
 
@@ -291,6 +289,13 @@ namespace LeechCraft
 		targetMgr->changeTabIcon (widget, icon);
 
 		emit tabMoved (fromWin, toWin, Windows_ [toWin].TM_->FindTabForWidget (widget));
+	}
+
+	void RootWindowsManager::CloseWindowTabs (int index)
+	{
+		const auto& data = Windows_ [index];
+		for (int i = data.TM_->GetWidgetCount () - 1; i >= 0; --i)
+			qobject_cast<ITabWidget*> (data.TM_->GetWidget (i))->Remove ();
 	}
 
 	void RootWindowsManager::moveTabToNewWindow ()
