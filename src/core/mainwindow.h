@@ -71,9 +71,9 @@ namespace LeechCraft
 
 		const bool IsPrimary_;
 
-		QSystemTrayIcon *TrayIcon_;
-		bool IsShown_;
-		bool WasMaximized_;
+		QSystemTrayIcon *TrayIcon_ = nullptr;
+		bool IsShown_ = true;
+		bool WasMaximized_ = false;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
 

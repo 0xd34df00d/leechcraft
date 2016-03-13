@@ -69,9 +69,6 @@ using namespace LeechCraft::Util;
 
 LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 : IsPrimary_ (isPrimary)
-, TrayIcon_ (0)
-, IsShown_ (true)
-, WasMaximized_ (false)
 , LeftDockToolbar_ (new QToolBar ())
 , RightDockToolbar_ (new QToolBar ())
 , TopDockToolbar_ (new QToolBar ())
