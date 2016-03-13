@@ -305,6 +305,9 @@ void LeechCraft::MainWindow::ReadSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
 
+	if (WindowIdx_)
+		settings.beginGroup (QString::number (WindowIdx_));
+
 	if (!Application::instance ()->arguments ().contains ("--desktop") || !IsPrimary_)
 	{
 		settings.beginGroup ("geometry");
@@ -318,11 +321,18 @@ void LeechCraft::MainWindow::ReadSettings ()
 	Ui_.ActionShowStatusBar_->setChecked (settings.value ("StatusBarEnabled", true).toBool ());
 	on_ActionShowStatusBar__triggered ();
 	settings.endGroup ();
+
+	if (WindowIdx_)
+		settings.endGroup ();
 }
 
 void LeechCraft::MainWindow::WriteSettings ()
 {
 	QSettings settings ("Deviant", "Leechcraft");
+
+	if (WindowIdx_)
+		settings.beginGroup (QString::number (WindowIdx_));
+
 	settings.beginGroup ("geometry");
 	settings.setValue ("size", size ());
 	settings.setValue ("pos",  pos ());
@@ -332,6 +342,9 @@ void LeechCraft::MainWindow::WriteSettings ()
 	settings.setValue ("StatusBarEnabled",
 			Ui_.ActionShowStatusBar_->isChecked ());
 	settings.endGroup ();
+
+	if (WindowIdx_)
+		settings.endGroup ();
 }
 
 void LeechCraft::MainWindow::on_ActionAddTask__triggered ()
