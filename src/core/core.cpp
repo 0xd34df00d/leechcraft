@@ -87,15 +87,13 @@ using namespace LeechCraft::Util;
 namespace LeechCraft
 {
 	Core::Core ()
-	: PluginManager_ (0)
-	, NetworkAccessManager_ (new NetworkAccessManager)
+	: NetworkAccessManager_ (new NetworkAccessManager)
 	, StorageBackend_ (new SQLStorageBackend)
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
 	, RootWindowsManager_ (new RootWindowsManager)
 	, DM_ (new DockManager (RootWindowsManager_.get (), this))
-	, IsShuttingDown_ (false)
 	{
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (NetworkAccessManager_.get ());
 		CoreInstanceObject_->GetCorePluginManager ()->RegisterHookable (DM_);

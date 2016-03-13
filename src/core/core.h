@@ -62,7 +62,7 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		PluginManager *PluginManager_;
+		PluginManager *PluginManager_ = nullptr;
 		std::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		std::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
@@ -71,7 +71,7 @@ namespace LeechCraft
 		std::shared_ptr<RootWindowsManager> RootWindowsManager_;
 		DockManager *DM_;
 		QList<Entity> QueuedEntities_;
-		bool IsShuttingDown_;
+		bool IsShuttingDown_ = false;
 
 		Core ();
 	public:
