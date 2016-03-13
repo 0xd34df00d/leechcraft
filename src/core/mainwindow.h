@@ -90,7 +90,6 @@ namespace LeechCraft
 	public:
 		MainWindow (int screen, bool isPrimary);
 		void Init ();
-		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
 		QSplitter* GetMainSplitter () const;

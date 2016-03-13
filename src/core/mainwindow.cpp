@@ -143,10 +143,6 @@ void LeechCraft::MainWindow::handleShortcutFullscreenMode ()
 	on_ActionFullscreenMode__triggered (!isFullScreen ());
 }
 
-LeechCraft::MainWindow::~MainWindow ()
-{
-}
-
 SeparateTabWidget* LeechCraft::MainWindow::GetTabWidget () const
 {
 	return Ui_.MainTabWidget_;
