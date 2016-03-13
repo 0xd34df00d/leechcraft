@@ -47,11 +47,11 @@ namespace LeechCraft
 	public:
 		ItemHandlerCombobox (ItemHandlerFactory*);
 
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
+		bool CanHandle (const QDomElement&) const override;
+		void Handle (const QDomElement&, QWidget*) override;
+		void SetValue (QWidget*, const QVariant&) const override;
 	protected:
-		QVariant GetObjectValue (QObject*) const;
+		QVariant GetObjectValue (QObject*) const override;
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
 	};

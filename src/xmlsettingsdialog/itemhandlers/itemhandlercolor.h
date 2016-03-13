@@ -36,12 +36,12 @@ namespace LeechCraft
 	class ItemHandlerColor : public ItemHandlerBase
 	{
 	public:
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		QVariant GetValue (const QDomElement&, QVariant) const;
-		void SetValue (QWidget*, const QVariant&) const;
-		void UpdateValue (QDomElement&, const QVariant&) const;
+		bool CanHandle (const QDomElement&) const override;
+		void Handle (const QDomElement&, QWidget*) override;
+		QVariant GetValue (const QDomElement&, QVariant) const override;
+		void SetValue (QWidget*, const QVariant&) const override;
+		void UpdateValue (QDomElement&, const QVariant&) const override;
 	protected:
-		QVariant GetObjectValue (QObject*) const;
+		QVariant GetObjectValue (QObject*) const override;
 	};
 }
