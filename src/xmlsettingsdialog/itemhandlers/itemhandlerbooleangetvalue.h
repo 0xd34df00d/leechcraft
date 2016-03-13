@@ -44,8 +44,8 @@ namespace LeechCraft
 		ItemHandlerBooleanGetValue ();
 		virtual ~ItemHandlerBooleanGetValue ();
 
-		virtual QVariant GetValue (const QDomElement& element,
-				QVariant value) const;
+		QVariant GetValue (const QDomElement& element,
+				QVariant value) const override;
 	};
 };
 
