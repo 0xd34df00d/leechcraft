@@ -48,4 +48,4 @@ namespace LeechCraft
 					def.toUtf8 ().constData ());
 		return def;
 	}
-};
+}

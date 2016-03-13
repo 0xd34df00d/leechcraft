@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERMULTILINE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERMULTILINE_H
+#pragma once
+
 #include "itemhandlerbase.h"
 
 namespace LeechCraft
@@ -50,5 +50,3 @@ namespace LeechCraft
 		QVariant GetObjectValue (QObject*) const;
 	};
 }
-
-#endif

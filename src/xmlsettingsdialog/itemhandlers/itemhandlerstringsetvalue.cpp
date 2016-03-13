@@ -40,4 +40,4 @@ namespace LeechCraft
 	{
 		element.setAttribute ("default", value.toString ());
 	}
-};
+}
