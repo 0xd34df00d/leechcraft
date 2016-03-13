@@ -72,7 +72,6 @@ LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
 , TrayIcon_ (0)
 , IsShown_ (true)
 , WasMaximized_ (false)
-, IsQuitting_ (false)
 , LeftDockToolbar_ (new QToolBar ())
 , RightDockToolbar_ (new QToolBar ())
 , TopDockToolbar_ (new QToolBar ())
@@ -435,8 +434,6 @@ void LeechCraft::MainWindow::handleQuit ()
 {
 	WriteSettings ();
 	hide ();
-
-	IsQuitting_ = true;
 
 	disconnect (Ui_.MainTabWidget_,
 				0,

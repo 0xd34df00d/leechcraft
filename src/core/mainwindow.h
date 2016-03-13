@@ -76,7 +76,6 @@ namespace LeechCraft
 		bool WasMaximized_;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
-		bool IsQuitting_;
 
 		QToolBar *QLBar_;
 
