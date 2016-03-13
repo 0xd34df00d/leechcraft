@@ -67,8 +67,9 @@
 using namespace LeechCraft;
 using namespace LeechCraft::Util;
 
-LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary)
+LeechCraft::MainWindow::MainWindow (int screen, bool isPrimary, int windowIdx)
 : IsPrimary_ (isPrimary)
+, WindowIdx_ (windowIdx)
 , LeftDockToolbar_ (new QToolBar ())
 , RightDockToolbar_ (new QToolBar ())
 , TopDockToolbar_ (new QToolBar ())

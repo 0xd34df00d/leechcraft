@@ -70,6 +70,7 @@ namespace LeechCraft
 		Ui::LeechCraft Ui_;
 
 		const bool IsPrimary_;
+		const int WindowIdx_;
 
 		QSystemTrayIcon *TrayIcon_ = nullptr;
 		bool IsShown_ = true;
@@ -88,7 +89,8 @@ namespace LeechCraft
 		QToolBar *TopDockToolbar_;
 		QToolBar *BottomDockToolbar_;
 	public:
-		MainWindow (int screen, bool isPrimary);
+		MainWindow (int screen, bool isPrimary, int windowIdx);
+
 		void Init ();
 
 		SeparateTabWidget* GetTabWidget () const;

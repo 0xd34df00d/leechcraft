@@ -239,7 +239,9 @@ namespace LeechCraft
 
 	MainWindow* RootWindowsManager::CreateWindow (int screen, bool primary)
 	{
-		auto win = new MainWindow (screen, primary);
+		const auto nextIdx = Windows_.size ();
+
+		auto win = new MainWindow (screen, primary, nextIdx);
 		auto proxy = new MWProxy (win);
 		auto tm = new TabManager (win->GetTabWidget (), win, win->GetTabWidget ());
 
@@ -251,7 +253,7 @@ namespace LeechCraft
 		Windows_.push_back ({ win, proxy, tm });
 		win->Init ();
 
-		emit windowAdded (Windows_.size () - 1);
+		emit windowAdded (nextIdx);
 
 		return win;
 	}
