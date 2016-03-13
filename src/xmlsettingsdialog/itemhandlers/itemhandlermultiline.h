@@ -29,11 +29,11 @@
 
 #pragma once
 
-#include "itemhandlerbase.h"
+#include "itemhandlerstringgetvalue.h"
 
 namespace LeechCraft
 {
-	class ItemHandlerMultiLine : public ItemHandlerBase
+	class ItemHandlerMultiLine : public ItemHandlerStringGetValue
 	{
 	public:
 		ItemHandlerMultiLine ();
@@ -42,10 +42,6 @@ namespace LeechCraft
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
-		QVariant GetValue (const QDomElement& element,
-				QVariant value) const;
-		void UpdateValue (QDomElement& element,
-				const QVariant& value) const;
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	};

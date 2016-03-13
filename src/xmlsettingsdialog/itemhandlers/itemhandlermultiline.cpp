@@ -116,22 +116,6 @@ namespace LeechCraft
 		edit->setPlainText (value.toStringList ().join ("\n"));
 	}
 
-	QVariant ItemHandlerMultiLine::GetValue (const QDomElement& item,
-			QVariant) const
-	{
-		QString def = item.attribute ("default");
-		if (item.attribute ("translatable") == "true")
-			def = QCoreApplication::translate (qPrintable (XSD_->GetBasename ()),
-					def.toUtf8 ().constData ());
-		return def;
-	}
-
-	void ItemHandlerMultiLine::UpdateValue (QDomElement& element,
-			const QVariant& value) const
-	{
-		element.setAttribute ("default", value.toString ());
-	}
-
 	QVariant ItemHandlerMultiLine::GetObjectValue (QObject *object) const
 	{
 		QTextEdit *edit = qobject_cast<QTextEdit*> (object);
