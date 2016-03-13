@@ -36,14 +36,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerMultiLine::ItemHandlerMultiLine ()
-	{
-	}
-
-	ItemHandlerMultiLine::~ItemHandlerMultiLine ()
-	{
-	}
-
 	bool ItemHandlerMultiLine::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "multiline";
