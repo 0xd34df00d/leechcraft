@@ -74,7 +74,7 @@ namespace LeechCraft
 
 	QVariant ItemHandlerListView::GetValue (const QDomElement&, QVariant) const
 	{
-		return QVariant ();
+		return {};
 	}
 
 	void ItemHandlerListView::SetValue (QWidget*, const QVariant&) const
@@ -87,7 +87,7 @@ namespace LeechCraft
 
 	QVariant ItemHandlerListView::GetObjectValue (QObject*) const
 	{
-		return QVariant ();
+		return {};
 	}
 
 	void ItemHandlerListView::SetDataSource (const QString& prop, QAbstractItemModel *model)
