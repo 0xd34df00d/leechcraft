@@ -32,14 +32,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerStringGetValue::ItemHandlerStringGetValue ()
-	{
-	}
-
-	ItemHandlerStringGetValue::~ItemHandlerStringGetValue ()
-	{
-	}
-
 	QVariant ItemHandlerStringGetValue::GetValue (const QDomElement& item,
 			QVariant) const
 	{

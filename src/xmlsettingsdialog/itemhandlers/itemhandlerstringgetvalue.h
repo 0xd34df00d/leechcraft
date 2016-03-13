@@ -43,9 +43,6 @@ namespace LeechCraft
 	class ItemHandlerStringGetValue : public ItemHandlerStringSetValue
 	{
 	public:
-		ItemHandlerStringGetValue ();
-		virtual ~ItemHandlerStringGetValue ();
-
 		virtual QVariant GetValue (const QDomElement& element,
 				QVariant value) const;
 	};
