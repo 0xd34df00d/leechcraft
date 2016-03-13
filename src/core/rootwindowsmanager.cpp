@@ -78,8 +78,12 @@ namespace LeechCraft
 
 	void RootWindowsManager::Release ()
 	{
-		for (const auto& win : Windows_)
-			win.Window_->handleQuit ();
+		for (const auto& winData : Windows_)
+		{
+			const auto win = winData.Window_;
+			CloseWindowTabs (GetWindowIndex (win));
+			win->handleQuit ();
+		}
 
 		IsShuttingDown_ = true;
 	}
