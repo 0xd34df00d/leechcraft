@@ -45,7 +45,6 @@ namespace LeechCraft
 		QHash<QString, QListView*> Propname2Listview_;
 	public:
 		ItemHandlerListView (ItemHandlerFactory*);
-		virtual ~ItemHandlerListView ();
 
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);

@@ -42,10 +42,6 @@ namespace LeechCraft
 	{
 	}
 
-	ItemHandlerListView::~ItemHandlerListView ()
-	{
-	}
-
 	bool ItemHandlerListView::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "listview";
