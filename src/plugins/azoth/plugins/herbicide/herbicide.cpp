@@ -176,9 +176,10 @@ namespace Herbicide
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		AskedEntries_ << entryObj;
 
-		const auto& greeting = XmlSettingsManager::Instance ()
-				.property ("QuestPrefix").toString ();
-		const auto& text = greeting + "\n" + ConfWidget_->GetQuestion ();
+		auto greeting = XmlSettingsManager::Instance ().property ("QuestPrefix").toString ();
+		if (!greeting.isEmpty ())
+			greeting += "\n";
+		const auto& text = greeting + ConfWidget_->GetQuestion ();
 
 		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 
