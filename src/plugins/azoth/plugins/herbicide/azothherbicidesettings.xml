@@ -12,11 +12,13 @@
 				<label value="Question prefix:" />
 				<default>Please answer the following question to verify that you are not a bot:</default>
 			</item>
-			<item type="lineedit" property="QuestSuccessReply" default="You've answered correctly! Please write again now what you wanted to write.">
+			<item type="lineedit" property="QuestSuccessReply">
 				<label value="Reply for a correctly answered quest:" />
+				<default>You've answered correctly! Please write again now what you wanted to write.</default>
 			</item>
-			<item type="lineedit" property="QuestFailureReply" default="Sorry, please try again.">
+			<item type="lineedit" property="QuestFailureReply">
 				<label value="Reply for an incorrectly answered quest:" />
+				<default>Sorry, please try again.</default>
 			</item>
 			<item type="checkbox" property="EnableForAuths" default="false">
 				<label value="Enable even for authorization requests" />
