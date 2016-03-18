@@ -54,7 +54,7 @@ namespace UDisks
 
 		QStandardItemModel *DevicesModel_;
 
-		QDBusInterface *UDisksObj_;
+		QDBusInterface *UDisksObj_ = nullptr;
 		QHash<QString, QStandardItem*> Object2Item_;
 		QSet<QString> Unremovables_;
 	public:
