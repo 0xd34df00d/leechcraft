@@ -158,6 +158,8 @@ namespace LeechCraft
 		NetworkAccessManager_.reset ();
 
 		StorageBackend_.reset ();
+
+		XmlSettingsManager::Instance ()->Release ();
 	}
 
 	bool Core::IsShuttingDown () const

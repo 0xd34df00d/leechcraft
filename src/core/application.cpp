@@ -559,7 +559,6 @@ namespace LeechCraft
 	void Application::handleQuit ()
 	{
 		Core::Instance ().Release ();
-		XmlSettingsManager::Instance ()->Release ();
 	}
 
 #ifdef Q_OS_MAC
