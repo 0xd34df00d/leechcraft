@@ -41,16 +41,6 @@
         <source>A simple antispam plugin for Azoth.</source>
         <translation>Простой антиспам-модуль для Azoth.</translation>
     </message>
-    <message>
-        <location filename="herbicide.cpp" line="200"/>
-        <source>Nice, seems like you&apos;ve answered correctly. Please write again now what you wanted to write.</source>
-        <translation>Отлично, похоже, вы ответили правильно. Пожалуйста, напишите еще раз то, что вы хотели написать.</translation>
-    </message>
-    <message>
-        <location filename="herbicide.cpp" line="274"/>
-        <source>Sorry, you are wrong. Try again.</source>
-        <translation>Извините, вы ошиблись. Попробуйте еще раз.</translation>
-    </message>
 </context>
 <context>
     <name>azothherbicidesettings</name>
@@ -76,42 +66,67 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="6"/>
+        <source>Please answer the following question to verify that you are not a bot:</source>
+        <translation>Пожалуйста, ответьте на следующий вопрос для проверки, что вы не бот:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="8"/>
+        <source>You&apos;ve answered correctly! Please write again now what you wanted to write.</source>
+        <translation>Вы ответили правильно! Пожалуйста, напишите ещё раз, что вы хотели написать.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="7"/>
+        <source>Reply for a correctly answered quest:</source>
+        <translation>Ответное сообщение на правильно отвеченный вопрос:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="10"/>
+        <source>Sorry, please try again.</source>
+        <translation>Пожалуйста, попробуйте ещё раз.</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="9"/>
+        <source>Reply for an incorrectly answered quest:</source>
+        <translation>Ответное сообщение на неправильно отвеченный вопрос:</translation>
+    </message>
+    <message>
+        <location filename="dummy.cpp" line="11"/>
         <source>Enable even for authorization requests</source>
         <translation>Включить даже для запросов авторизации</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="7"/>
+        <location filename="dummy.cpp" line="12"/>
         <source>Blacklist</source>
         <translation>Чёрный список</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="8"/>
+        <location filename="dummy.cpp" line="13"/>
         <source>Ask only those in the black list</source>
         <translation>Спрашивать только пользователей из чёрного списка</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="9"/>
+        <location filename="dummy.cpp" line="14"/>
         <source>Otherwise, everyone who isn&apos;t present in the contact list will be asked with the challenge.</source>
         <translation>Иначе все, кого ещё нет в списке контактов, будут озадачены вопросами.</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="10"/>
-        <location filename="dummy.cpp" line="13"/>
+        <location filename="dummy.cpp" line="15"/>
+        <location filename="dummy.cpp" line="18"/>
         <source>Entry ID regexps:</source>
         <translation>Регулярные выражения на ID контактов:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="11"/>
+        <location filename="dummy.cpp" line="16"/>
         <source>If the above option is active, only entry IDs that match these regular expressions will be asked with the challenge. Example regexps:&lt;br/&gt;&lt;blockquote&gt;.*@jabber.org&lt;br/&gt;.*@jabber.(org|ru)(/QIP)?&lt;/blockquote&gt;</source>
         <translation>Если опция выше активна, то вопрос будет задан только тем записям, которые соответствуют этим регулярным выражениям. Примеры регулярных выражений:&lt;br/&gt;&lt;blockquote&gt;.*@jabber.org&lt;br/&gt;.*@jabber.(org|ru)(/QIP)?&lt;/blockquote&gt;</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="12"/>
+        <location filename="dummy.cpp" line="17"/>
         <source>Whitelist</source>
         <translation>Белый список</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="14"/>
+        <location filename="dummy.cpp" line="19"/>
         <source>Entry IDs matching these regular expressions won&apos;t be asked with the challenge. See the blacklist regexps option for examples.</source>
         <translation>ID контактов, соответствующие регулярным выражениям из этого списка, никогда не будут озадачены вопросом. Примеры регулярных выражений приведены в подсказке по чёрному списку.</translation>
     </message>
