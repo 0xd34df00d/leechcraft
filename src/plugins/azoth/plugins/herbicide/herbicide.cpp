@@ -198,9 +198,7 @@ namespace Herbicide
 
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const QString& text = tr ("Nice, seems like you've answered "
-				"correctly. Please write again now what you wanted "
-				"to write.");
+		const auto& text = XmlSettingsManager::Instance ().property ("QuestSuccessReply").toString ();
 		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msg;
 		msg->Send ();
@@ -272,7 +270,7 @@ namespace Herbicide
 		{
 			Logger_->LogEvent (Logger::Event::Failed, entry, msg->GetBody ());
 
-			const auto& text = tr ("Sorry, you are wrong. Try again.");
+			const auto& text = XmlSettingsManager::Instance ().property ("QuestFailureReply").toString ();
 			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 			OurMessages_ << msg;
 			msg->Send ();
