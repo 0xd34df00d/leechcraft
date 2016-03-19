@@ -49,6 +49,7 @@
 #include <QNetworkCookie>
 #include <util/xpc/util.h>
 #include <util/network/customcookiejar.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
@@ -187,17 +188,13 @@ namespace LeechCraft
 
 	QList<QList<QAction*>> Core::GetActions2Embed () const
 	{
-		const QList<IActionsExporter*>& plugins =
-				PluginManager_->GetAllCastableTo<IActionsExporter*> ();
-		QList<QList<QAction*>> actions;
-		Q_FOREACH (const IActionsExporter *plugin, plugins)
-		{
-			const QList<QAction*>& list = plugin->GetActions (ActionsEmbedPlace::CommonContextMenu);
-			if (!list.size ())
-				continue;
-			actions << list;
-		}
-		return actions;
+		const auto& plugins = PluginManager_->GetAllCastableTo<IActionsExporter*> ();
+
+		auto result = Util::Map (plugins,
+				[] (const IActionsExporter *plugin)
+					{ return plugin->GetActions (ActionsEmbedPlace::CommonContextMenu); });
+		result.removeAll ({});
+		return result;
 	}
 
 	QAbstractItemModel* Core::GetPluginsModel () const
