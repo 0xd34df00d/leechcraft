@@ -143,6 +143,9 @@ namespace LeechCraft
 
 	void Core::Release ()
 	{
+		if (IsShuttingDown_)
+			return;
+
 		IsShuttingDown_ = true;
 
 		RootWindowsManager_->Release ();
