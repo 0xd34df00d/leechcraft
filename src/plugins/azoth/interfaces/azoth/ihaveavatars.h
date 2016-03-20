@@ -91,8 +91,13 @@ namespace Azoth
 	protected:
 		/** @brief Notifies that the avatar of the entry has been changed.
 		 *
+		 * This signal should be emitted when the entry detects that the
+		 * avatar has been changed.
+		 *
 		 * If possible, the new avatar should \em not be fetched unless
 		 * RefreshAvatar() is called.
+		 *
+		 * @note This function is expected to be a signal.
 		 *
 		 * @param[out] thisObject The <code>this</code> pointer.
 		 */
