@@ -396,9 +396,6 @@ void LeechCraft::MainWindow::on_ActionRestart__triggered()
 		return;
 
 	static_cast<Application*> (qApp)->InitiateRestart ();
-	QTimer::singleShot (1000,
-			qApp,
-			SLOT (quit ()));
 }
 
 void LeechCraft::MainWindow::on_ActionQuit__triggered ()
