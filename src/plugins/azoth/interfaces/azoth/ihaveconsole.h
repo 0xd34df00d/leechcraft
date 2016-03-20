@@ -113,7 +113,7 @@ namespace Azoth
 		 * @param[in] enabled Whether the console should be enabled.
 		 */
 		virtual void SetConsoleEnabled (bool enabled) = 0;
-		
+	protected:
 		/** @brief Notifies about new packet.
 		 * 
 		 * This signal is used by the console-supporting account to
