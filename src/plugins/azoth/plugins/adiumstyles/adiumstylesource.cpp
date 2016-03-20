@@ -699,8 +699,7 @@ namespace AdiumStyles
 		const QString& pack = Frame2Pack_ [frame];
 		const QString& prefix = pack + "/Contents/Resources/Outgoing/";
 
-		Util::QIODevice_ptr content =
-				StylesLoader_->Load (QStringList (prefix + "StateSent.html"));
+		const auto& content = StylesLoader_->Load (QStringList (prefix + "StateSent.html"));
 		QString replacement;
 		if (content && content->open (QIODevice::ReadOnly))
 			replacement = QString::fromUtf8 (content->readAll ());
