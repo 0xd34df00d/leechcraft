@@ -337,33 +337,31 @@ namespace LeechCraft
 		if (event->type () == QEvent::LanguageChange)
 			return true;
 
-		if (CatchExceptions_)
-		{
-			try
-			{
-				return QApplication::notify (obj, event);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< QString::fromUtf8 (e.what ())
-					<< typeid (e).name ()
-					<< "for"
-					<< obj
-					<< event
-					<< event->type ();
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< obj
-					<< event
-					<< event->type ();
-			}
-			return false;
-		}
-		else
+		if (!CatchExceptions_)
 			return QApplication::notify (obj, event);
+
+		try
+		{
+			return QApplication::notify (obj, event);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< QString::fromUtf8 (e.what ())
+				<< typeid (e).name ()
+				<< "for"
+				<< obj
+				<< event
+				<< event->type ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< obj
+				<< event
+				<< event->type ();
+		}
+		return false;
 	}
 
 	void Application::commitData (QSessionManager& sm)
