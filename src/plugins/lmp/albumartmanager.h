@@ -54,7 +54,7 @@ namespace LMP
 
 		QHash<Media::AlbumInfo, QSize> BestSizes_;
 	public:
-		AlbumArtManager (QObject* = 0);
+		AlbumArtManager (QObject*);
 
 		void CheckAlbumArt (const Collection::Artist&, Collection::Album_ptr);
 		void CheckAlbumArt (const QString& artist, const QString& album, bool preview);
