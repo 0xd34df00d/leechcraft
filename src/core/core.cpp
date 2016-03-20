@@ -51,6 +51,7 @@
 #include <util/network/customcookiejar.h>
 #include <util/sll/prelude.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/sll/delayedexecutor.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/idownload.h>
@@ -151,20 +152,24 @@ namespace LeechCraft
 
 		RootWindowsManager_->Release ();
 
-		LocalSocketHandler_.reset ();
-		XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
+		Util::ExecuteLater ([this]
+				{
+					LocalSocketHandler_.reset ();
+					XmlSettingsManager::Instance ()->setProperty ("FirstStart", "false");
 
-		PluginManager_->Release ();
-		delete PluginManager_;
+					PluginManager_->Release ();
+					delete PluginManager_;
 
-		CoreInstanceObject_.reset ();
+					CoreInstanceObject_.reset ();
 
-		NetworkAccessManager_.reset ();
+					NetworkAccessManager_.reset ();
 
-		StorageBackend_.reset ();
+					StorageBackend_.reset ();
 
-		qApp->quit ();
-		XmlSettingsManager::Instance ()->Release ();
+					XmlSettingsManager::Instance ()->Release ();
+
+					qApp->quit ();
+				});
 	}
 
 	bool Core::IsShuttingDown () const
