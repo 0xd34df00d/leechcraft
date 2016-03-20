@@ -80,8 +80,8 @@ namespace Snails
 				"ONAMEOREMAIL",
 				Wrap ([] (const Message *msg)
 						{
-							const auto& addr = msg->GetAddress (Message::Address::ReplyTo);
-							return addr.first.isEmpty () ? addr.second : addr.first;
+							const auto& addr = msg->GetAddress (Message::Address::From);
+							return addr.first.isEmpty () ? "<" + addr.second + ">" : addr.first;
 						})
 			},
 			{
