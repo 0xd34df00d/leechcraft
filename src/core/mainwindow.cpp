@@ -422,7 +422,7 @@ void LeechCraft::MainWindow::on_ActionQuit__triggered ()
 	}
 
 	setEnabled (false);
-	qApp->quit ();
+	static_cast<Application*> (qApp)->Quit ();
 }
 
 void LeechCraft::MainWindow::on_ActionShowStatusBar__triggered ()
