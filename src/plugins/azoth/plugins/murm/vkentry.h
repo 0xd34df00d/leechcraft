@@ -63,8 +63,8 @@ namespace Murm
 
 		UserInfo Info_;
 
-		QTimer *RemoteTypingTimer_;
-		QTimer *LocalTypingTimer_;
+		QTimer * const RemoteTypingTimer_;
+		QTimer * const LocalTypingTimer_;
 
 		bool IsSelf_ = false;
 		bool IsNonRoster_ = false;
