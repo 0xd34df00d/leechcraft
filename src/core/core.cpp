@@ -163,6 +163,7 @@ namespace LeechCraft
 
 		StorageBackend_.reset ();
 
+		qApp->quit ();
 		XmlSettingsManager::Instance ()->Release ();
 	}
 
