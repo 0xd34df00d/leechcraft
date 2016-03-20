@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCUSTOMWIDGET_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCUSTOMWIDGET_H
+#pragma once
 
 #include "itemhandlernovalue.h"
 
@@ -37,12 +36,7 @@ namespace LeechCraft
 	class ItemHandlerCustomWidget : public ItemHandlerNoValue
 	{
 	public:
-		ItemHandlerCustomWidget ();
-		virtual ~ItemHandlerCustomWidget ();
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
+		bool CanHandle (const QDomElement&) const override;
+		void Handle (const QDomElement&, QWidget*) override;
 	};
-};
-
-#endif
+}

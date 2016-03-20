@@ -286,6 +286,5 @@ typedef std::shared_ptr<QObject> QObject_ptr;
 Q_DECLARE_METATYPE (LeechCraft::Entity);
 Q_DECLARE_METATYPE (QIODevice*);
 Q_DECLARE_METATYPE (QObject_ptr);
-Q_DECLARE_METATYPE (QPointer<QObject*>);
 Q_DECLARE_METATYPE (LeechCraft::TaskParameters);
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TaskParameters);

@@ -33,20 +33,42 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ProgressListener::ProgressListener (const QString& ctx, QObject *parent)
-	: QObject (parent)
-	, Context_ (ctx)
+	ProgressListener::ProgressListener (QObject *parent)
+	: QObject { parent }
 	{
 	}
 
-	QString ProgressListener::GetContext () const
+	void ProgressListener::Increment ()
 	{
-		return Context_;
+		progress (LastProgress_ + 1, LastTotal_);
 	}
 
 	bool ProgressListener::cancel () const
 	{
 		return false;
+	}
+
+	void ProgressListener::start (const size_t total)
+	{
+		progress (0, total);
+	}
+
+	void ProgressListener::progress (const size_t done, const size_t total)
+	{
+		LastProgress_ = done;
+		LastTotal_ = total;
+
+		emit gotProgress (done, total);
+	}
+
+	void ProgressListener::stop (const size_t total)
+	{
+		progress (total, total);
+	}
+
+	bool operator< (const ProgressListener_wptr& w1, const ProgressListener_wptr& w2)
+	{
+		return w1.owner_before (w2);
 	}
 }
 }

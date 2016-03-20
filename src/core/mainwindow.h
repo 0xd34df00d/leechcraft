@@ -70,13 +70,13 @@ namespace LeechCraft
 		Ui::LeechCraft Ui_;
 
 		const bool IsPrimary_;
+		const int WindowIdx_;
 
-		QSystemTrayIcon *TrayIcon_;
-		bool IsShown_;
-		bool WasMaximized_;
+		QSystemTrayIcon *TrayIcon_ = nullptr;
+		bool IsShown_ = true;
+		bool WasMaximized_ = false;
 		QShortcut *FullScreenShortcut_;
 		QShortcut *CloseTabShortcut_;
-		bool IsQuitting_;
 
 		QToolBar *QLBar_;
 
@@ -89,9 +89,9 @@ namespace LeechCraft
 		QToolBar *TopDockToolbar_;
 		QToolBar *BottomDockToolbar_;
 	public:
-		MainWindow (int screen, bool isPrimary);
+		MainWindow (int screen, bool isPrimary, int windowIdx);
+
 		void Init ();
-		virtual ~MainWindow ();
 
 		SeparateTabWidget* GetTabWidget () const;
 		QSplitter* GetMainSplitter () const;

@@ -581,10 +581,8 @@ namespace Poshuku
 		TextZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomReset_"));
 
 		if (Own_)
-		{
-			IHookProxy_ptr proxy { new Util::DefaultHookProxy };
-			emit hookBrowserWidgetInitialized (proxy, WebView_, this);
-		}
+			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (),
+					WebView_, this);
 	}
 
 	CustomWebView* BrowserWidget::GetView () const
@@ -595,6 +593,11 @@ namespace Poshuku
 	QLineEdit* BrowserWidget::GetURLEdit () const
 	{
 		return Ui_.URLFrame_->GetEdit ();
+	}
+
+	QObject* BrowserWidget::GetQObject ()
+	{
+		return this;
 	}
 
 	BrowserWidgetSettings BrowserWidget::GetWidgetSettings () const
@@ -895,6 +898,21 @@ namespace Poshuku
 	QIcon BrowserWidget::GetTabRecoverIcon () const
 	{
 		return WebView_->icon ();
+	}
+
+	void BrowserWidget::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		WebView_->settings ()->setFontFamily (family, font.family ());
+	}
+
+	void BrowserWidget::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		WebView_->settings ()->setFontSize (type, size);
+	}
+
+	void BrowserWidget::SetFontSizeMultiplier (qreal factor)
+	{
+		WebView_->setTextSizeMultiplier (factor);
 	}
 
 	void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)

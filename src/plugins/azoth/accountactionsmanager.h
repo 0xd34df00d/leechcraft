@@ -75,7 +75,7 @@ namespace Azoth
 		QAction *AccountModify_;
 		QAction *AccountRemove_;
 	public:
-		AccountActionsManager (QObject* = 0);
+		AccountActionsManager (QObject* = nullptr);
 
 		void SetMainWidget (QWidget*);
 		QList<QAction*> GetMenuActions (QMenu*, IAccount*);

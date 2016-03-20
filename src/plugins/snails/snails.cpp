@@ -78,7 +78,9 @@ namespace Snails
 
 		Core::Instance ().SetProxy (proxy);
 
-		AccsMgr_ = new AccountsManager;
+		ProgressMgr_ = new ProgressManager;
+
+		AccsMgr_ = new AccountsManager { ProgressMgr_ };
 		TemplatesMgr_ = new MsgTemplatesManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
 
@@ -142,7 +144,6 @@ namespace Snails
 		{
 			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, MailTabClass_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
-			WkFontsWidget_->RegisterSettable (mt);
 		}
 		else if (tabClass == "compose")
 		{
@@ -162,7 +163,7 @@ namespace Snails
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
 	{
-		return Core::Instance ().GetProgressManager ()->GetRepresentation ();
+		return ProgressMgr_->GetRepresentation ();
 	}
 
 	void Plugin::handleNewTab (const QString& name, QWidget *mt)
@@ -171,6 +172,9 @@ namespace Snails
 				SIGNAL (removeTab (QWidget*)),
 				this,
 				SIGNAL (removeTab (QWidget*)));
+
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (mt))
+			WkFontsWidget_->RegisterSettable (iwfs);
 
 		emit addNewTab (name, mt);
 		emit raiseTab (mt);

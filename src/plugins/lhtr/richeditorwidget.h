@@ -33,6 +33,8 @@
 #include <QHash>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
+#include <interfaces/iwkfontssettable.h>
 #include "ui_richeditorwidget.h"
 
 class QToolBar;
@@ -44,9 +46,10 @@ namespace LHTR
 	class RichEditorWidget : public QWidget
 						   , public IEditorWidget
 						   , public IAdvancedHTMLEditor
+						   , public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (IEditorWidget IAdvancedHTMLEditor)
+		Q_INTERFACES (IEditorWidget IAdvancedHTMLEditor IWkFontsSettable)
 
 		ICoreProxy_ptr Proxy_;
 		Ui::RichEditorWidget Ui_;
@@ -88,6 +91,10 @@ namespace LHTR
 		void SetCustomTags (const QList<CustomTag>&);
 		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params);
 		void ExecJS (const QString&);
+
+		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
+		void SetFontSize (QWebSettings::FontSize, int);
+		void SetFontSizeMultiplier (qreal);
 
 		bool eventFilter (QObject*, QEvent*);
 	private:

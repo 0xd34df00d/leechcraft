@@ -59,6 +59,7 @@
 #include "mailtabreadmarker.h"
 #include "composemessagetabfactory.h"
 #include "accountsmanager.h"
+#include "structures.h"
 
 namespace LeechCraft
 {
@@ -207,12 +208,27 @@ namespace Snails
 
 		const auto msgReply = new QAction (tr ("Reply..."), this);
 		msgReply->setProperty ("ActionIcon", "mail-reply-sender");
-		connect (msgReply,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleReply ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleLinkedRequested (MsgType::Reply); },
+			msgReply,
+			SIGNAL (triggered ()),
+			this
+		};
 		TabToolbar_->addAction (msgReply);
 		registerMailAction (msgReply);
+
+		const auto msgFwd = new QAction (tr ("Forward..."), this);
+		msgFwd->setProperty ("ActionIcon", "mail-forward");
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleLinkedRequested (MsgType::Forward); },
+			msgFwd,
+			SIGNAL (triggered ()),
+			this
+		};
+		TabToolbar_->addAction (msgFwd);
+		registerMailAction (msgFwd);
 
 		MsgAttachments_ = new QMenu (tr ("Attachments"));
 		MsgAttachmentsButton_ = new QToolButton;
@@ -631,6 +647,7 @@ namespace Snails
 		ReadMarker_->HandleDeselectingMessage (folder);
 
 		CurrMsg_.reset ();
+		CurrMsgFetchFuture_.reset ();
 
 		const auto& sidx = Ui_.MailTree_->currentIndex ();
 
@@ -673,15 +690,18 @@ namespace Snails
 			auto future = CurrAcc_->FetchWholeMessage (msg);
 			CurrMsgFetchFuture_ = std::make_shared<Account::FetchWholeMessageResult_t> (future);
 			Util::Sequence (this, future) >>
-					[this] (const auto& result)
+					[this, thisFolderId = msg->GetFolderID ()] (const auto& result)
 					{
+						const auto& cur = Ui_.MailTree_->currentIndex ();
+						const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
+						if (curId != thisFolderId)
+							return;
+
+						CurrMsgFetchFuture_.reset ();
 						Util::Visit (result.AsVariant (),
 								[this] (const Message_ptr& msg)
 								{
-									const auto& cur = Ui_.MailTree_->currentIndex ();
-									const auto& curId = cur.data (MailModel::MailRole::ID).toByteArray ();
-									if (curId == msg->GetFolderID ())
-										SetMessage (msg);
+									SetMessage (msg);
 								},
 								[this] (auto err)
 								{
@@ -691,7 +711,6 @@ namespace Snails
 												.arg (errMsg);
 									Ui_.MailView_->setHtml (ToHtmlError (msg));
 								});
-						CurrMsgFetchFuture_.reset ();
 					};
 		}
 
@@ -735,15 +754,15 @@ namespace Snails
 		ComposeMessageTabFactory_->PrepareComposeTab (CurrAcc_);
 	}
 
-	void MailTab::handleReply ()
+	void MailTab::HandleLinkedRequested (MsgType type)
 	{
 		if (!CurrAcc_ || !CurrMsg_)
 			return;
 
 		if (CurrMsgFetchFuture_)
-			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, *CurrMsgFetchFuture_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, *CurrMsgFetchFuture_);
 		else
-			ComposeMessageTabFactory_->PrepareReplyTab (CurrAcc_, CurrMsg_);
+			ComposeMessageTabFactory_->PrepareLinkedTab (type, CurrAcc_, CurrMsg_);
 	}
 
 	namespace

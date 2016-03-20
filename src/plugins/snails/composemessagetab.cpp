@@ -45,9 +45,10 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include <interfaces/itexteditor.h>
+#include <interfaces/iadvancedhtmleditor.h>
+#include <interfaces/iadvancedplaintexteditor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include <interfaces/iadvancedplaintexteditor.h>
 #include "message.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -55,6 +56,8 @@
 #include "accountthread.h"
 #include "msgtemplatesmanager.h"
 #include "structures.h"
+#include "util.h"
+#include "attachmentsfetcher.h"
 
 namespace LeechCraft
 {
@@ -107,6 +110,32 @@ namespace Snails
 		return Toolbar_;
 	}
 
+	QObject* ComposeMessageTab::GetQObject ()
+	{
+		return this;
+	}
+
+	void ComposeMessageTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		for (const auto editor : Ui_.Editor_->GetAllEditors ())
+			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
+				iwfs->SetFontFamily (family, font);
+	}
+
+	void ComposeMessageTab::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		for (const auto editor : Ui_.Editor_->GetAllEditors ())
+			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
+				iwfs->SetFontSize (type, size);
+	}
+
+	void ComposeMessageTab::SetFontSizeMultiplier (qreal factor)
+	{
+		for (const auto editor : Ui_.Editor_->GetAllEditors ())
+			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
+				iwfs->SetFontSizeMultiplier (factor);
+	}
+
 	void ComposeMessageTab::SelectAccount (const Account_ptr& account)
 	{
 		const auto& var = QVariant::fromValue<Account_ptr> (account);
@@ -118,19 +147,50 @@ namespace Snails
 			}
 	}
 
-	void ComposeMessageTab::PrepareReply (const Message_ptr& msg)
+	namespace
 	{
-		auto address = msg->GetAddress (Message::Address::ReplyTo);
-		if (address.second.isEmpty ())
-			address = msg->GetAddress (Message::Address::From);
-		Ui_.To_->setText (GetNiceMail (address));
+		QString MakeLinkedSubject (QString subj, const QString& marker)
+		{
+			if (marker.compare (subj.left (marker.size ()), Qt::CaseInsensitive))
+				subj.prepend (marker + ": ");
+			return subj;
+		}
 
-		auto subj = msg->GetSubject ();
-		if (subj.left (3).toLower () != "re:")
-			subj.prepend ("Re: ");
-		Ui_.Subject_->setText (subj);
+		boost::optional<QString> CreateSubj (MsgType type, const Message_ptr& msg)
+		{
+			switch (type)
+			{
+			case MsgType::New:
+				return {};
+			case MsgType::Reply:
+				return MakeLinkedSubject (msg->GetSubject (), "Re");
+			case MsgType::Forward:
+				return MakeLinkedSubject (msg->GetSubject (), "Fwd");
+			}
 
-		PrepareReplyBody (msg);
+			qWarning () << Q_FUNC_INFO
+					<< "unknown message type"
+					<< static_cast<int> (type);
+			return {};
+		}
+	}
+
+	void ComposeMessageTab::PrepareLinked (MsgType type, const Message_ptr& msg)
+	{
+		if (type == MsgType::Reply)
+		{
+			auto address = msg->GetAddress (Message::Address::ReplyTo);
+			if (address.second.isEmpty ())
+				address = msg->GetAddress (Message::Address::From);
+			Ui_.To_->setText (GetNiceMail (address));
+		}
+		else if (type == MsgType::Forward)
+			CopyAttachments (msg);
+
+		if (const auto& subj = CreateSubj (type, msg))
+			Ui_.Subject_->setText (*subj);
+
+		PrepareLinkedBody (type, msg);
 
 		ReplyMessage_ = msg;
 
@@ -140,7 +200,7 @@ namespace Snails
 				});
 	}
 
-	void ComposeMessageTab::PrepareReplyEditor (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedEditor (const Message_ptr& msg)
 	{
 		const auto& replyOpt = XmlSettingsManager::Instance ()
 				.property ("ReplyMessageFormat").toString ();
@@ -150,7 +210,7 @@ namespace Snails
 			Ui_.Editor_->SelectEditor (ContentType::HTML);
 		else if (replyOpt == "Orig")
 		{
-			if (msg->GetHTMLBody ().isEmpty ())
+			if (msg && msg->GetHTMLBody ().isEmpty ())
 				Ui_.Editor_->SelectEditor (ContentType::PlainText);
 			else
 				Ui_.Editor_->SelectEditor (ContentType::HTML);
@@ -166,7 +226,9 @@ namespace Snails
 		template<typename Templater>
 		void SetupReplyPlaintextContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
-			auto plainSplit = msg->GetBody ().split ('\n');
+			auto plainSplit = msg ?
+					msg->GetBody ().split ('\n') :
+					QStringList {};
 			for (auto& str : plainSplit)
 			{
 				str = str.trimmed ();
@@ -301,27 +363,25 @@ namespace Snails
 		template<typename Templater>
 		void SetupReplyRichContents (const Message_ptr& msg, IEditorWidget *editor, Templater&& tpl)
 		{
+			if (!msg)
+			{
+				SetReplyHTMLContents (tpl (QString {}, nullptr), editor);
+				return;
+			}
+
 			const auto& htmlBody = msg->GetHTMLBody ();
 			if (!htmlBody.isEmpty ())
 				SetReplyHTMLContents (tpl (htmlBody, msg.get ()), editor);
 			else
-			{
-				auto str = Util::Escape (msg->GetBody ());
-				str.replace ("\r\n", "<br/>");
-				str.replace ("\r", "<br/>");
-				str.replace ("\n", "<br/>");
-
-				SetReplyHTMLContents (tpl (str, msg.get ()), editor);
-			}
+				SetReplyHTMLContents (tpl (PlainBody2HTML (msg->GetBody ()), msg.get ()), editor);
 		}
 	}
 
-	void ComposeMessageTab::PrepareReplyBody (const Message_ptr& msg)
+	void ComposeMessageTab::PrepareLinkedBody (MsgType type, const Message_ptr& msg)
 	{
-		PrepareReplyEditor (msg);
-		const auto editor = Ui_.Editor_->GetCurrentEditor ();
+		PrepareLinkedEditor (msg);
 
-		const auto type = MsgType::Reply;
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
 
 		const auto acc = GetSelectedAccount ();
 
@@ -331,6 +391,55 @@ namespace Snails
 		SetupReplyRichContents (msg, editor,
 				[&] (auto... rest)
 					{ return TemplatesMgr_->GetTemplatedText (ContentType::HTML, type, acc, rest...); });
+	}
+
+	void ComposeMessageTab::CopyAttachments (const Message_ptr& msg)
+	{
+		if (msg->GetAttachments ().isEmpty ())
+			return;
+
+		LinkedAttachmentsFetcher_ = std::make_shared<AttachmentsFetcher> (GetSelectedAccount (), msg);
+		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
+				[this] (const AttachmentsFetcher::Result_t& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[this] (const AttachmentsFetcher::FetchResult& result)
+							{
+								for (const auto& path : result.Paths_)
+									AppendAttachment (path, {});
+
+								const auto& notify = Util::MakeNotification ("Snails",
+										tr ("Attached %n files(s) from the source message.",
+												0,
+												result.Paths_.size ()),
+										PInfo_);
+								Core::Instance ().GetProxy ()->
+										GetEntityManager ()->HandleEntity (notify);
+							},
+							[this] (auto err)
+							{
+								const auto& notify = Util::Visit (err,
+										[this] (const AttachmentsFetcher::TemporaryDirError& dir)
+										{
+											return Util::MakeNotification ("Snails",
+													tr ("Unable to create temporary directory to "
+														"fetch the attachments of the source "
+														"message."),
+													PCritical_);
+										},
+										[this] (const auto& e)
+										{
+											const auto& msg = QString::fromUtf8 (e.what ());
+											return Util::MakeNotification ("Snails",
+													tr ("Unable to fetch the attachments of the "
+														"source message: %1.")
+														.arg ("<em>" + msg + "</em>"),
+													PCritical_);
+										});
+								Core::Instance ().GetProxy ()->
+										GetEntityManager ()->HandleEntity (notify);
+							});
+				};
 	}
 
 	void ComposeMessageTab::SetupToolbar ()
@@ -421,6 +530,27 @@ namespace Snails
 		return nullptr;
 	}
 
+	void ComposeMessageTab::AppendAttachment (const QString& path, const QString& descr)
+	{
+		const QFileInfo fi { path };
+
+		const auto& size = Util::MakePrettySize (fi.size ());
+		const auto attAct = new QAction (QString { "%1 (%2)" }.arg (fi.fileName (), size), this);
+		attAct->setProperty ("Snails/AttachmentPath", path);
+		attAct->setProperty ("Snails/Description", descr);
+
+		const auto& mime = Util::MimeDetector {} (fi.fileName ());
+		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
+
+		connect (attAct,
+				SIGNAL (triggered ()),
+				this,
+				SLOT (handleRemoveAttachment ()));
+
+		const auto& acts = AttachmentsMenu_->actions ();
+		AttachmentsMenu_->insertAction (acts.at (acts.size () - 2), attAct);
+	}
+
 	namespace
 	{
 		Message::Addresses_t FromUserInput (const QString& text)
@@ -454,22 +584,8 @@ namespace Snails
 		}
 	}
 
-	void ComposeMessageTab::handleSend ()
+	void ComposeMessageTab::AddAttachments (const Message_ptr& message)
 	{
-		const auto account = GetSelectedAccount ();
-		if (!account)
-			return;
-
-		const auto editor = Ui_.Editor_->GetCurrentEditor ();
-
-		const auto& message = std::make_shared<Message> ();
-		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
-		message->SetSubject (Ui_.Subject_->text ());
-		message->SetBody (editor->GetContents (ContentType::PlainText));
-		message->SetHTMLBody (editor->GetContents (ContentType::HTML));
-
-		SetMessageReferences (message);
-
 		Util::MimeDetector detector;
 
 		for (auto act : AttachmentsMenu_->actions ())
@@ -486,7 +602,10 @@ namespace Snails
 
 			message->AddAttachment ({ path, descr, type, subtype, QFileInfo (path).size () });
 		}
+	}
 
+	void ComposeMessageTab::Send (Account *account, const Message_ptr& message)
+	{
 		Util::Sequence (nullptr, account->SendMessage (message)) >>
 				[safeThis = QPointer<ComposeMessageTab> { this }] (const auto& result)
 				{
@@ -524,6 +643,62 @@ namespace Snails
 				};
 	}
 
+	void ComposeMessageTab::handleSend ()
+	{
+		const auto account = GetSelectedAccount ();
+		if (!account)
+			return;
+
+		const auto editor = Ui_.Editor_->GetCurrentEditor ();
+
+		const auto& message = std::make_shared<Message> ();
+		message->SetAddresses (Message::Address::To, FromUserInput (Ui_.To_->text ()));
+		message->SetSubject (Ui_.Subject_->text ());
+		message->SetBody (editor->GetContents (ContentType::PlainText));
+		message->SetHTMLBody (editor->GetContents (ContentType::HTML));
+
+		SetMessageReferences (message);
+
+		if (!LinkedAttachmentsFetcher_)
+		{
+			AddAttachments (message);
+			Send (account, message);
+			return;
+		}
+
+		Util::Sequence (this, LinkedAttachmentsFetcher_->GetFuture ()) >>
+				[=] (const AttachmentsFetcher::Result_t& result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (const AttachmentsFetcher::FetchResult&)
+							{
+								AddAttachments (message);
+								Send (account, message);
+							},
+							[=] (auto err)
+							{
+								Util::Visit (err,
+										[this] (const AttachmentsFetcher::TemporaryDirError& dir)
+										{
+											QMessageBox::critical (this,
+													"LeechCraft",
+													tr ("Unable to create temporary directory to "
+														"fetch the attachments of the source "
+														"message."));
+										},
+										[this] (const auto& e)
+										{
+											const auto& msg = QString::fromUtf8 (e.what ());
+											QMessageBox::critical (this,
+													"LeechCraft",
+													tr ("Unable to fetch the attachments of the "
+														"source message: %1.")
+														.arg ("<em>" + msg + "</em>"));
+										});
+							});
+				};
+	}
+
 	void ComposeMessageTab::handleAddAttachment ()
 	{
 		const QString& path = QFileDialog::getOpenFileName (this,
@@ -546,23 +721,7 @@ namespace Snails
 				tr ("Attachment description"),
 				tr ("Enter optional attachment description (you may leave it blank):"));
 
-		const QFileInfo fi (path);
-
-		const QString& size = Util::MakePrettySize (file.size ());
-		QAction *attAct = new QAction (QString ("%1 (%2)").arg (fi.fileName (), size), this);
-		attAct->setProperty ("Snails/AttachmentPath", path);
-		attAct->setProperty ("Snails/Description", descr);
-
-		const auto& mime = Util::MimeDetector {} (fi.fileName ());
-		attAct->setIcon (Util::ExtensionsData::Instance ().GetMimeIcon (mime));
-
-		connect (attAct,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRemoveAttachment ()));
-
-		const auto& acts = AttachmentsMenu_->actions ();
-		AttachmentsMenu_->insertAction (acts.at (acts.size () - 2), attAct);
+		AppendAttachment (path, descr);
 	}
 
 	void ComposeMessageTab::handleRemoveAttachment ()

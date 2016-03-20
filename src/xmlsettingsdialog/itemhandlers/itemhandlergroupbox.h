@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERGROUPBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERGROUPBOX_H
+#pragma once
 
 #include "itemhandlerbooleangetvalue.h"
 
@@ -37,15 +36,10 @@ namespace LeechCraft
 	class ItemHandlerGroupbox : public ItemHandlerBooleanGetValue
 	{
 	public:
-		ItemHandlerGroupbox ();
-		virtual ~ItemHandlerGroupbox ();
-
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	};
-};
-
-#endif
+}

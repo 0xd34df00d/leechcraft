@@ -54,6 +54,7 @@
 #include <vmime/messageIdSequence.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "message.h"
 #include "account.h"
 #include "core.h"
@@ -65,6 +66,7 @@
 #include "messagechangelistener.h"
 #include "folder.h"
 #include "tracerfactory.h"
+#include "accountthreadnotifier.h"
 
 namespace LeechCraft
 {
@@ -183,8 +185,6 @@ namespace Snails
 		st->setProperty ("options.sasl.fallback", A_->SASLRequired_);
 		st->setProperty ("server.port", A_->InPort_);
 
-		CachedStore_ = st;
-
 		st->connect ();
 
 		if (IsListening_)
@@ -193,6 +193,8 @@ namespace Snails
 				defFolder->addMessageChangedListener (ChangeListener_);
 				CachedFolders_ [GetFolderPath (defFolder)] = defFolder;
 			}
+
+		CachedStore_ = st;
 
 		return st;
 	}
@@ -277,10 +279,15 @@ namespace Snails
 		const auto requestedMode = mode == FolderMode::ReadOnly ?
 				vmime::net::folder::MODE_READ_ONLY :
 				vmime::net::folder::MODE_READ_WRITE;
-		if (folder->isOpen () && folder->getMode () != requestedMode)
+
+		const auto isOpen = folder->isOpen ();
+		if (isOpen && folder->getMode () == requestedMode)
+			return folder;
+		else if (isOpen)
 			folder->close (false);
-		if (!folder->isOpen ())
-			folder->open (requestedMode);
+
+		folder->open (requestedMode);
+
 		return folder;
 	}
 
@@ -536,9 +543,18 @@ namespace Snails
 	{
 		Folder2Messages_t result;
 
+		const auto pl = A_->MakeProgressListener (tr ("Synchronizing messages..."));
+		pl->start (origFolders.size ());
+
 		for (const auto& folder : origFolders)
-			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadWrite))
+		{
+			if (const auto& netFolder = GetFolder (folder, FolderMode::ReadOnly))
 				result [folder] = FetchMessagesInFolder (folder, netFolder, last);
+
+			pl->Increment ();
+		}
+
+		pl->stop (origFolders.size ());
 
 		return result;
 	}
@@ -547,6 +563,13 @@ namespace Snails
 	{
 		MessageVector_t GetMessagesInFolder (const VmimeFolder_ptr& folder, const QByteArray& lastId)
 		{
+			const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
+						vmime::net::fetchAttributes::SIZE |
+						vmime::net::fetchAttributes::UID |
+						vmime::net::fetchAttributes::FULL_HEADER |
+						vmime::net::fetchAttributes::STRUCTURE |
+						vmime::net::fetchAttributes::ENVELOPE;
+
 			if (lastId.isEmpty ())
 			{
 				const auto count = folder->getMessageCount ();
@@ -561,7 +584,7 @@ namespace Snails
 					const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
 					try
 					{
-						const auto& theseMessages = folder->getMessages (set);
+						auto theseMessages = folder->getAndFetchMessages (set, desiredFlags);
 						std::move (theseMessages.begin (), theseMessages.end (), std::back_inserter (messages));
 					}
 					catch (const std::exception& e)
@@ -584,7 +607,7 @@ namespace Snails
 				const auto& set = vmime::net::messageSet::byUID (lastId.constData (), "*");
 				try
 				{
-					return folder->getMessages (set);
+					return folder->getAndFetchMessages (set, desiredFlags);
 				}
 				catch (const std::exception& e)
 				{
@@ -599,67 +622,20 @@ namespace Snails
 		}
 	}
 
-	QList<Message_ptr> AccountThreadWorker::FetchVmimeMessages (MessageVector_t messages,
-			const VmimeFolder_ptr& folder, const QStringList& folderName)
-	{
-		if (!messages.size ())
-			return {};
-
-		const int desiredFlags = vmime::net::fetchAttributes::FLAGS |
-					vmime::net::fetchAttributes::SIZE |
-					vmime::net::fetchAttributes::UID |
-					vmime::net::fetchAttributes::FULL_HEADER |
-					vmime::net::fetchAttributes::STRUCTURE |
-					vmime::net::fetchAttributes::ENVELOPE;
-
-		try
-		{
-			const auto& context = tr ("Fetching headers for %1")
-					.arg (A_->GetName ());
-
-			folder->fetchMessages (messages, desiredFlags, MkPgListener (context));
-		}
-		catch (const vmime::exceptions::operation_not_supported& ons)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "fetch operation not supported:"
-					<< ons.what ();
-			return {};
-		}
-		catch (const std::exception& e)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "generally something bad happened:"
-					<< e.what ();
-			return {};
-		}
-
-		QList<Message_ptr> newMessages;
-		std::transform (messages.begin (), messages.end (), std::back_inserter (newMessages),
-				[this, &folderName] (decltype (messages.front ()) msg)
-				{
-					auto res = FromHeaders (msg);
-					res->AddFolder (folderName);
-					return res;
-				});
-		return newMessages;
-	}
-
 	auto AccountThreadWorker::FetchMessagesInFolder (const QStringList& folderName,
 			const VmimeFolder_ptr& folder, const QByteArray& lastId) -> FolderMessages
 	{
 		const auto changeGuard = ChangeListener_->Disable ();
 
-		const std::shared_ptr<void> syncFinishedGuard
-		{
-			nullptr,
-			[this, &folderName, &lastId] (void*) { emit folderSyncFinished (folderName, lastId); }
-		};
-
 		qDebug () << Q_FUNC_INFO << folderName << folder.get () << lastId;
 
 		auto messages = GetMessagesInFolder (folder, lastId);
-		auto newMessages = FetchVmimeMessages (messages, folder, folderName);
+		auto newMessages = Util::Map (messages, [this, &folderName] (const auto& msg)
+				{
+					auto res = FromHeaders (msg);
+					res->AddFolder (folderName);
+					return res;
+				});
 		auto existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
 
 		QList<QByteArray> ids;
@@ -808,23 +784,17 @@ namespace Snails
 
 	QList<Message_ptr> AccountThreadWorker::FetchFullMessages (const std::vector<vmime::shared_ptr<vmime::net::message>>& messages)
 	{
-		const auto& context = tr ("Fetching messages for %1")
-					.arg (A_->GetName ());
+		const auto pl = A_->MakeProgressListener (tr ("Fetching messages for %1")
+					.arg (A_->GetName ()));
 
-		auto pl = MkPgListener (context);
-
-		QMetaObject::invokeMethod (pl,
-				"start",
-				Q_ARG (const int, messages.size ()));
+		const auto msgsCount = messages.size ();
+		pl->start (msgsCount);
 
 		int i = 0;
 		QList<Message_ptr> newMessages;
 		Q_FOREACH (auto message, messages)
 		{
-			QMetaObject::invokeMethod (pl,
-					"progress",
-					Q_ARG (const int, ++i),
-					Q_ARG (const int, messages.size ()));
+			pl->progress (++i, msgsCount);
 
 			auto msgObj = FromHeaders (message);
 
@@ -833,19 +803,9 @@ namespace Snails
 			newMessages << msgObj;
 		}
 
-		QMetaObject::invokeMethod (pl,
-					"stop",
-					Q_ARG (const int, messages.size ()));
+		pl->stop (msgsCount);
 
 		return newMessages;
-	}
-
-	ProgressListener* AccountThreadWorker::MkPgListener (const QString& text)
-	{
-		auto pl = new ProgressListener (text);
-		pl->deleteLater ();
-		emit gotProgressListener (ProgressListener_g_ptr (pl));
-		return pl;
 	}
 
 	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<int>& numbers)
@@ -858,8 +818,13 @@ namespace Snails
 
 	void AccountThreadWorker::sendNoop ()
 	{
-		if (CachedStore_)
-			CachedStore_->noop ();
+		const auto at = static_cast<AccountThread*> (QThread::currentThread ());
+		at->Schedule (TaskPriority::Low,
+				[this] (AccountThreadWorker*)
+				{
+					if (CachedStore_)
+						CachedStore_->noop ();
+				});
 	}
 
 	void AccountThreadWorker::SetNoopTimeout (int timeout)
@@ -872,10 +837,41 @@ namespace Snails
 		NoopTimer_->start (timeout);
 	}
 
+	void AccountThreadWorker::SetNoopTimeoutChangeNotifier (const std::shared_ptr<AccountThreadNotifier<int>>& notifier)
+	{
+		SetNoopTimeout (notifier->GetData ());
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[notifier, this] { SetNoopTimeout (notifier->GetData ()); },
+			notifier.get (),
+			SIGNAL (changed ()),
+			this
+		};
+	}
+
 	void AccountThreadWorker::FlushSockets ()
 	{
 		CachedFolders_.clear ();
 		CachedStore_.reset ();
+	}
+
+	void AccountThreadWorker::Disconnect ()
+	{
+		if (CachedStore_ && CachedStore_->isConnected ())
+		{
+			CachedFolders_.clear ();
+			CachedStore_->disconnect ();
+			CachedStore_.reset ();
+		}
+	}
+
+	void AccountThreadWorker::TestConnectivity ()
+	{
+		if (!CachedStore_)
+			MakeStore ();
+
+		sendNoop ();
 	}
 
 	auto AccountThreadWorker::Synchronize (const QList<QStringList>& foldersToFetch, const QByteArray& last) -> SyncResult
@@ -888,12 +884,15 @@ namespace Snails
 
 	auto AccountThreadWorker::GetMessageCount (const QStringList& folder) -> MsgCountResult_t
 	{
-		const auto& netFolder = GetFolder (folder, FolderMode::NoChange);
+		auto netFolder = GetFolder (folder, FolderMode::NoChange);
 		if (!netFolder)
 			return MsgCountResult_t::Left (FolderNotFound {});
 
 		const auto& status = netFolder->getStatus ();
-		return MsgCountResult_t::Right ({ status->getMessageCount (), status->getUnseenCount () });
+		auto count = status->getMessageCount ();
+		if (count >= 3000)
+			count = GetFolder (folder, FolderMode::ReadOnly)->getMessageCount ();
+		return MsgCountResult_t::Right ({ count, status->getUnseenCount () });
 	}
 
 	auto AccountThreadWorker::SetReadStatus (bool read,
@@ -992,8 +991,9 @@ namespace Snails
 			}
 
 			OutputIODevAdapter adapter (&file);
-			data->extract (adapter,
-					MkPgListener (tr ("Fetching attachment %1...").arg (attName)));
+			const auto pl = A_->MakeProgressListener (tr ("Fetching attachment %1...")
+						.arg (attName));
+			data->extract (adapter, pl.get ());
 
 			break;
 		}
@@ -1137,7 +1137,7 @@ namespace Snails
 
 		header->MessageId ()->setValue (GenerateMsgId (msg));
 
-		auto pl = MkPgListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
+		auto pl = A_->MakeProgressListener (tr ("Sending message %1...").arg (msg->GetSubject ()));
 		auto transport = MakeTransport ();
 		try
 		{
@@ -1153,7 +1153,7 @@ namespace Snails
 					<< e.response ().c_str ();
 			throw;
 		}
-		transport->send (vMsg, pl);
+		transport->send (vMsg, pl.get ());
 	}
 }
 }

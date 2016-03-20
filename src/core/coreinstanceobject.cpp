@@ -61,13 +61,9 @@ namespace LeechCraft
 	#ifdef Q_OS_WIN32
 			filenames << QDir (QCoreApplication::applicationDirPath () + "/translations")
 					.entryList (QStringList ("leechcraft_*.qm"));
-	#elif defined (Q_OS_MAC)
-			if (QApplication::arguments ().contains ("-nobundle"))
-				filenames << QDir ("/usr/local/share/leechcraft/translations")
-						.entryList (QStringList ("leechcraft_*.qm"));
-			else
-				filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
-						.entryList (QStringList ("leechcraft_*.qm"));
+	#elif defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+			filenames << QDir (QCoreApplication::applicationDirPath () + "/../Resources/translations")
+					.entryList (QStringList ("leechcraft_*.qm"));
 	#elif defined (INSTALL_PREFIX)
 			filenames << QDir (INSTALL_PREFIX "/share/leechcraft/translations")
 					.entryList (QStringList ("leechcraft_*.qm"));

@@ -31,13 +31,9 @@
 
 namespace LeechCraft
 {
-	ItemHandlerStringSetValue::~ItemHandlerStringSetValue ()
-	{
-	}
-
 	void ItemHandlerStringSetValue::UpdateValue (QDomElement& element,
 			const QVariant& value) const
 	{
 		element.setAttribute ("default", value.toString ());
 	}
-};
+}

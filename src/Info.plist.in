@@ -3,7 +3,7 @@
 <plist version=1.0>
 <dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>(C) 2006-2012 LeechCraft Development Team</string>
+	<string>(C) 2006-2016 LeechCraft Development Team</string>
 	<key>CFBundleIconFile</key>
 	<string>leechcraft.icns</string>
 	<key>CFBundlePackageType</key>
@@ -17,9 +17,9 @@
 	<key>CFBundleIdentifier</key>
 	<string>org.LC.LeechCraft</string>
 	<key>CFBundleVersion</key>
-	<string>0.5.85</string>
+	<string>${LEECHCRAFT_VERSION}</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.5.85</string>
+	<string>${LEECHCRAFT_VERSION}</string>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
 </dict>

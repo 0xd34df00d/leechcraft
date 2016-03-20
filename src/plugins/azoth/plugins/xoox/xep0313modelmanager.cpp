@@ -71,8 +71,8 @@ namespace Xoox
 		if (!item)
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "no index for item"
-					<< item;
+					<< "no index for JID"
+					<< jid;
 			return {};
 		}
 		return item->index ();

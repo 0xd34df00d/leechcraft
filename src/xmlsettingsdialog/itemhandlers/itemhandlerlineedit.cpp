@@ -36,14 +36,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerLineEdit::ItemHandlerLineEdit ()
-	{
-	}
-
-	ItemHandlerLineEdit::~ItemHandlerLineEdit ()
-	{
-	}
-
 	bool ItemHandlerLineEdit::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "lineedit";
@@ -68,7 +60,7 @@ namespace LeechCraft
 		if (item.hasAttribute ("inputMask"))
 			edit->setInputMask (item.attribute ("inputMask"));
 		connect (edit,
-				SIGNAL (textChanged (const QString&)),
+				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (updatePreferences ()));
 

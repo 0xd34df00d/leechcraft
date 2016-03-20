@@ -31,6 +31,7 @@
 #include <QStandardItemModel>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/xpc/util.h>
 #include "account.h"
 
@@ -39,8 +40,8 @@ namespace LeechCraft
 namespace Snails
 {
 	ProgressManager::ProgressManager (QObject *parent)
-	: QObject (parent)
-	, Model_ (new QStandardItemModel)
+	: QObject { parent }
+	, Model_ { new QStandardItemModel { this } }
 	{
 		Model_->setColumnCount (3);
 	}
@@ -50,61 +51,64 @@ namespace Snails
 		return Model_;
 	}
 
-	void ProgressManager::AddAccount (Account *acc)
+	ProgressListener_ptr ProgressManager::MakeProgressListener (const QString& context)
 	{
-		connect (acc,
-				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
+		const auto pl = std::make_shared<ProgressListener> ();
+		const ProgressListener_wptr weakPl { pl };
+
+		Util::ExecuteLater ([this, weakPl, context]
+				{
+					const QList<QStandardItem*> row
+					{
+						new QStandardItem { context },
+						new QStandardItem { tr ("Running") },
+						new QStandardItem { {} }
+					};
+					for (const auto item : row)
+						item->setEditable (false);
+
+					Util::InitJobHolderRow (row);
+
+					Model_->appendRow (row);
+
+					QMutexLocker locker { &Listener2RowMutex_ };
+					Listener2Row_ [weakPl] = row;
+
+					if (weakPl.expired ())
+						Listener2Row_.remove (weakPl);
+				});
+
+		connect (pl.get (),
+				&ProgressListener::destroyed,
 				this,
-				SLOT (handlePL (ProgressListener_g_ptr)));
-	}
+				[this, weakPl]
+				{
+					QList<QStandardItem*> row;
+					{
+						QMutexLocker locker { &Listener2RowMutex_ };
+						row = Listener2Row_.take (weakPl);
+					}
 
-	void ProgressManager::handlePL (ProgressListener_g_ptr pl)
-	{
-		if (!pl)
-			return;
+					if (!row.isEmpty ())
+						Model_->removeRow (row.first ()->row ());
+				});
 
-		connect (pl,
-				SIGNAL (progress (size_t, size_t)),
+		connect (pl.get (),
+				&ProgressListener::gotProgress,
 				this,
-				SLOT (handleProgress (size_t, size_t)));
+				[this, weakPl] (quint64 done, quint64 total)
+				{
+					QList<QStandardItem*> row;
+					{
+						QMutexLocker locker { &Listener2RowMutex_ };
+						row = Listener2Row_.take (weakPl);
+					}
 
-		const QList<QStandardItem*> row
-		{
-			new QStandardItem { pl->GetContext () },
-			new QStandardItem { tr ("Running") },
-			new QStandardItem { {} }
-		};
-		for (const auto item : row)
-			item->setEditable (false);
+					if (!row.isEmpty ())
+						Util::SetJobHolderProgress (row, done, total, "%1/%2");
+				});
 
-		Util::InitJobHolderRow (row);
-
-		Model_->appendRow (row);
-
-		Listener2Row_ [pl] = row.last ();
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, pl]
-			{
-				const auto item = Listener2Row_.take (pl);
-				Model_->removeRow (item->row ());
-			},
-			pl,
-			SIGNAL (destroyed (QObject*)),
-			this
-		};
-	}
-
-	void ProgressManager::handleProgress (size_t done, size_t total)
-	{
-		auto item = Listener2Row_.value (sender ());
-		if (!item)
-			return;
-
-		Util::SetJobHolderProgress (item, done, total);
-
-		item->setText (QString ("%1/%2").arg (done).arg (total));
+		return pl;
 	}
 }
 }

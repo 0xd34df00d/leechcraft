@@ -36,14 +36,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerFont::ItemHandlerFont ()
-	{
-	}
-
-	ItemHandlerFont::~ItemHandlerFont ()
-	{
-	}
-
 	bool ItemHandlerFont::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "font";

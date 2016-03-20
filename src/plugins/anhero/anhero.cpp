@@ -95,7 +95,7 @@ namespace AnHero
 			char pidtxt [10];
 			sprintf (pidtxt, "%lld", QCoreApplication::applicationPid ());
 
-#ifdef Q_OS_MAC
+#if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 			char crashprocess [1024] = { 0 };
 #if QT_VERSION > 0x050000
 			sprintf (crashprocess, "%s/lc_anhero_crashprocess-qt5", AppDir_.constData ());
@@ -106,14 +106,14 @@ namespace AnHero
 
 			const char *argv [] =
 			{
-#ifndef Q_OS_MAC
+#if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
+				crashprocess,
+#else
 #if QT_VERSION > 0x050000
 				"lc_anhero_crashprocess-qt5",
 #else
 				"lc_anhero_crashprocess",
 #endif
-#else
-				crashprocess,
 #endif
 				"--signal",
 				sigtxt,

@@ -60,10 +60,13 @@ IconThemeEngine::IconThemeEngine ()
 #ifdef Q_OS_WIN32
 	QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/icons/" });
 #elif defined (Q_OS_MAC)
-	if (QApplication::arguments ().contains ("-nobundle"))
-		QIcon::setThemeSearchPaths ({ "/usr/local/kde4/share/icons/" });
-	else
-		QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/../Resources/icons/" });
+	#ifdef USE_UNIX_LAYOUT
+	const auto& envPath = qgetenv ("LC_ICONSETS_PATH");
+	if (!envPath.isEmpty ())
+		QIcon::setThemeSearchPaths ({ QString::fromUtf8 (envPath) });
+	#else
+	QIcon::setThemeSearchPaths ({ qApp->applicationDirPath () + "/../Resources/icons/" });
+	#endif
 #endif
 
 	const QDir& dir = Util::CreateIfNotExists ("/icons/");

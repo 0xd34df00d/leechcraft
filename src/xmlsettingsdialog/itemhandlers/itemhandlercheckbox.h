@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCHECKBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCHECKBOX_H
+#pragma once
 
 #include "itemhandlerbooleangetvalue.h"
 
@@ -37,15 +36,10 @@ namespace LeechCraft
 	class ItemHandlerCheckbox : public ItemHandlerBooleanGetValue
 	{
 	public:
-		ItemHandlerCheckbox ();
-		virtual ~ItemHandlerCheckbox ();
-
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
+		bool CanHandle (const QDomElement&) const override;
+		void Handle (const QDomElement&, QWidget*) override;
+		void SetValue (QWidget*, const QVariant&) const override;
 	protected:
-		QVariant GetObjectValue (QObject*) const;
+		QVariant GetObjectValue (QObject*) const override;
 	};
-};
-
-#endif
+}

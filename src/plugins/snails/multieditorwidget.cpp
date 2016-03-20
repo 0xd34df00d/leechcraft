@@ -29,6 +29,7 @@
 
 #include "multieditorwidget.h"
 #include <QSignalMapper>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iinfo.h>
 #include "core.h"
@@ -125,6 +126,18 @@ namespace Snails
 
 		Actions_.value (index)->setChecked (true);
 		handleEditorSelected (index);
+	}
+
+	QList<IEditorWidget*> MultiEditorWidget::GetAllEditors () const
+	{
+		return Util::Map (MsgEdits_, [] (auto ptr) { return ptr.get (); });
+	}
+
+	ContentType MultiEditorWidget::GetEditorType (IEditorWidget *editor) const
+	{
+		return editor == MsgEdits_.value (0).get () ?
+				ContentType::PlainText :
+				ContentType::HTML;
 	}
 
 	void MultiEditorWidget::handleEditorSelected (int index)

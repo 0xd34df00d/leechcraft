@@ -550,7 +550,7 @@ namespace LackMan
 #if defined(Q_OS_WIN32)
 		infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
 				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-#elif defined(Q_OS_MAC)
+#elif defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 		infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
 				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
 #else

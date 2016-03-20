@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/iwkfontssettable.h>
 #include "ui_composemessagetab.h"
 #include "account.h"
 
@@ -42,12 +43,16 @@ namespace Snails
 {
 	class AccountsManager;
 	class MsgTemplatesManager;
+	class AttachmentsFetcher;
+
+	enum class MsgType;
 
 	class ComposeMessageTab : public QWidget
 							, public ITabWidget
+							, public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (ITabWidget)
+		Q_INTERFACES (ITabWidget IWkFontsSettable)
 
 		static QObject *S_ParentPlugin_;
 		static TabClassInfo S_TabClassInfo_;
@@ -63,6 +68,8 @@ namespace Snails
 		QMenu *EditorsMenu_;
 
 		Message_ptr ReplyMessage_;
+
+		std::shared_ptr<AttachmentsFetcher> LinkedAttachmentsFetcher_;
 	public:
 		static void SetParentPlugin (QObject*);
 		static void SetTabClassInfo (const TabClassInfo&);
@@ -74,11 +81,17 @@ namespace Snails
 		void Remove ();
 		QToolBar* GetToolBar () const;
 
+		QObject* GetQObject ();
+		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
+		void SetFontSize (QWebSettings::FontSize, int);
+		void SetFontSizeMultiplier (qreal);
+
 		void SelectAccount (const Account_ptr&);
-		void PrepareReply (const Message_ptr&);
+		void PrepareLinked (MsgType, const Message_ptr&);
 	private:
-		void PrepareReplyEditor (const Message_ptr&);
-		void PrepareReplyBody (const Message_ptr&);
+		void PrepareLinkedEditor (const Message_ptr&);
+		void PrepareLinkedBody (MsgType, const Message_ptr&);
+		void CopyAttachments (const Message_ptr&);
 
 		void SetupToolbar ();
 		void SetupEditors ();
@@ -86,6 +99,11 @@ namespace Snails
 		void SetMessageReferences (const Message_ptr&) const;
 
 		Account* GetSelectedAccount () const;
+
+		void AppendAttachment (const QString& path, const QString& descr);
+
+		void AddAttachments (const Message_ptr&);
+		void Send (Account*, const Message_ptr&);
 	private slots:
 		void handleSend ();
 		void handleAddAttachment ();

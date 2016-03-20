@@ -40,6 +40,7 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"
+#include "logger.h"
 
 uint qHash (const QRegExp& rx)
 {
@@ -56,12 +57,14 @@ namespace Herbicide
 	{
 		Util::InstallTranslator ("azoth_herbicide");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");
 
 		ConfWidget_ = new ConfWidget ();
 		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
+
+		Logger_ = new Logger;
 
 		handleWhitelistChanged ();
 		handleBlacklistChanged ();
@@ -123,30 +126,47 @@ namespace Herbicide
 
 	bool Plugin::IsEntryAllowed (QObject *entryObj) const
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 			return true;
 
 		if ((entry->GetEntryFeatures () & ICLEntry::FMaskLongetivity) == ICLEntry::FPermanentEntry)
+		{
+			Logger_->LogEvent (Logger::Event::Granted, entry, "entry is permanent");
 			return true;
+		}
 
 		if (AllowedEntries_.contains (entryObj))
+		{
+			Logger_->LogEvent (Logger::Event::Granted, entry, "entry has been previously allowed");
 			return true;
+		}
 
 		const auto& id = entry->GetHumanReadableID ();
 
-		Q_FOREACH (const auto& rx, Whitelist_)
-			if (rx.exactMatch (id))
-				return true;
+		const auto checkRxList = [&id] (const QSet<QRegExp>& rxList)
+		{
+			return std::any_of (rxList.begin (), rxList.end (),
+					[&id] (const QRegExp& rx) { return rx.exactMatch (id); });
+		};
+
+		if (checkRxList (Whitelist_))
+		{
+			Logger_->LogEvent (Logger::Event::Granted, entry, "entry is in the whitelist");
+			return true;
+		}
 
 		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
 		{
-			Q_FOREACH (const auto& rx, Blacklist_)
-				if (rx.exactMatch (id))
-					return false;
-
-			return true;
+			const auto isBlacklisted = checkRxList (Blacklist_);
+			if (isBlacklisted)
+				Logger_->LogEvent (Logger::Event::Denied, entry, "entry is in the blacklist");
+			else
+				Logger_->LogEvent (Logger::Event::Granted, entry, "entry is not in the blacklist and blacklist-only mode is enabled");
+			return !isBlacklisted;
 		}
+
+		Logger_->LogEvent (Logger::Event::Denied, entry, "fallback case");
 
 		return false;
 	}
@@ -155,10 +175,13 @@ namespace Herbicide
 	{
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		AskedEntries_ << entryObj;
-		const QString& text = tr ("Please answer to the following "
-				"question to verify you are not a bot and is welcome "
-				"to communicate with me:\n%1")
-					.arg (ConfWidget_->GetQuestion ());
+
+		auto greeting = XmlSettingsManager::Instance ().property ("QuestPrefix").toString ();
+		if (!greeting.isEmpty ())
+			greeting += "\n";
+		const auto& text = greeting + ConfWidget_->GetQuestion ();
+
+		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 
 		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msg;
@@ -175,9 +198,7 @@ namespace Herbicide
 
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const QString& text = tr ("Nice, seems like you've answered "
-				"correctly. Please write again now what you wanted "
-				"to write.");
+		const auto& text = XmlSettingsManager::Instance ().property ("QuestSuccessReply").toString ();
 		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msg;
 		msg->Send ();
@@ -241,10 +262,15 @@ namespace Herbicide
 		if (!AskedEntries_.contains (entryObj))
 			ChallengeEntry (proxy, entryObj);
 		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
+		{
+			Logger_->LogEvent (Logger::Event::Succeeded, entry, msg->GetBody ());
 			GreetEntry (entryObj);
+		}
 		else
 		{
-			const auto& text = tr ("Sorry, you are wrong. Try again.");
+			Logger_->LogEvent (Logger::Event::Failed, entry, msg->GetBody ());
+
+			const auto& text = XmlSettingsManager::Instance ().property ("QuestFailureReply").toString ();
 			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 			OurMessages_ << msg;
 			msg->Send ();
@@ -260,7 +286,7 @@ namespace Herbicide
 			QSet<QRegExp> result;
 
 			const auto& strings = XmlSettingsManager::Instance ().property (prop).toStringList ();
-			Q_FOREACH (auto string, strings)
+			for (auto string : strings)
 			{
 				string = string.trimmed ();
 				if (string.isEmpty ())

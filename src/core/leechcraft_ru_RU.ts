@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="ru">
-<defaultcodec>UTF-8</defaultcodec>
 <context>
     <name>AboutDialog</name>
     <message>
@@ -579,6 +578,14 @@
         <source>Could not load plugin from %1: API level mismatch.</source>
         <translation>Невозможно загрузить модуль %1: несоответствие уровня API.</translation>
     </message>
+    <message>
+        <source>Plugins initialization: first stage...</source>
+        <translation>Инициализация модулей: первая стадия…</translation>
+    </message>
+    <message>
+        <source>Plugins initialization: second stage...</source>
+        <translation>Инициализация модулей: вторая стадия…</translation>
+    </message>
 </context>
 <context>
     <name>LeechCraft::PrefDelegate</name>
@@ -666,6 +673,13 @@
     <message>
         <source>Set primary shortcut:</source>
         <translation>Установить главное сочетание:</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::SplashScreen</name>
+    <message>
+        <source>(%1 of %2)</source>
+        <translation>(%1 из %2)</translation>
     </message>
 </context>
 <context>
@@ -1281,6 +1295,26 @@ LeechCraft для Windows — довольно экспериментальна�
         <source>Subject info</source>
         <translation>Тема</translation>
     </message>
+    <message>
+        <source>b</source>
+        <comment>Short one-character unit for bytes.</comment>
+        <translation>б</translation>
+    </message>
+    <message>
+        <source>K</source>
+        <comment>Short one-character unit for kilobytes.</comment>
+        <translation>К</translation>
+    </message>
+    <message>
+        <source>M</source>
+        <comment>Short one-character unit for megabytes.</comment>
+        <translation>М</translation>
+    </message>
+    <message>
+        <source>G</source>
+        <comment>Short one-character unit for gigabytes.</comment>
+        <translation>Г</translation>
+    </message>
 </context>
 <context>
     <name>ShortcutManager</name>
@@ -1414,6 +1448,30 @@ LeechCraft для Windows — довольно экспериментальна�
     <message>
         <source>Monospace font:</source>
         <translation>Моноширинный шрифт:</translation>
+    </message>
+    <message>
+        <source>Font families</source>
+        <translation>Семейства шрифтов</translation>
+    </message>
+    <message>
+        <source>Font sizes</source>
+        <translation>Размеры шрифтов</translation>
+    </message>
+    <message>
+        <source>Default:</source>
+        <translation>По умолчанию:</translation>
+    </message>
+    <message>
+        <source>Minimum:</source>
+        <translation>Минимальный:</translation>
+    </message>
+    <message>
+        <source>Fixed-width:</source>
+        <translation>Фиксированной ширины:</translation>
+    </message>
+    <message>
+        <source>Font zoom:</source>
+        <translation>Масштаб шрифтов:</translation>
     </message>
 </context>
 <context>

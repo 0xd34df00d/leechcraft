@@ -39,9 +39,10 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	AccountsManager::AccountsManager (QObject *parent)
+	AccountsManager::AccountsManager (ProgressManager *pm, QObject *parent)
 	: QObject { parent }
 	, AccountsModel_ { new QStandardItemModel { this } }
+	, ProgressMgr_ { pm }
 	{
 		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server") });
 		LoadAccounts ();
@@ -65,11 +66,19 @@ namespace Snails
 		return Accounts_ [index.row ()];
 	}
 
-	void AccountsManager::AddAccount (Account_ptr account)
+	void AccountsManager::InitiateAccountAddition ()
 	{
-		AddAccountImpl (account);
+		const auto acc = std::make_shared<Account> (ProgressMgr_);
 
-		saveAccounts ();
+		acc->OpenConfigDialog ([acc, this]
+				{
+					if (acc->IsNull ())
+						return;
+
+					AddAccountImpl (acc);
+
+					saveAccounts ();
+				});
 	}
 
 	void AccountsManager::AddAccountImpl (Account_ptr account)
@@ -82,10 +91,6 @@ namespace Snails
 			new QStandardItem { account->GetServer () }
 		};
 		AccountsModel_->appendRow (row);
-
-		/* TODO
-		ProgressManager_->AddAccount (account.get ());
-		*/
 
 		connect (account.get (),
 				SIGNAL (accountChanged ()),
@@ -103,7 +108,7 @@ namespace Snails
 				QCoreApplication::applicationName () + "_Snails_Accounts");
 		for (const auto& var : settings.value ("Accounts").toList ())
 		{
-			const auto acc = std::make_shared<Account> ();
+			const auto acc = std::make_shared<Account> (ProgressMgr_);
 			try
 			{
 				acc->Deserialize (var.toByteArray ());

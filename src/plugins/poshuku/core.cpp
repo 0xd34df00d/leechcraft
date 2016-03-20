@@ -82,10 +82,6 @@ namespace Poshuku
 	, URLCompletionModel_ (new URLCompletionModel (this))
 	, HistoryModel_ (new HistoryModel (this))
 	, FavoritesModel_ (new FavoritesModel (this))
-	, NetworkAccessManager_ (0)
-	, WebPluginFactory_ (0)
-	, ShortcutProxy_ (0)
-	, Initialized_ (false)
 	{
 		qRegisterMetaType<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
 		qRegisterMetaTypeStreamOperators<BrowserWidgetSettings> ("LeechCraft::Poshuku::BrowserWidgetSettings");
@@ -329,13 +325,14 @@ namespace Poshuku
 			const QList<QPair<QByteArray, QVariant>>& props)
 	{
 		if (!Initialized_)
-			return 0;
+			return nullptr;
 
-		BrowserWidget *widget = new BrowserWidget ();
+		const auto widget = new BrowserWidget ();
+		emit browserWidgetCreated (widget);
 		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
 
-		Q_FOREACH (const auto& pair, props)
+		for (const auto& pair : props)
 			widget->setProperty (pair.first, pair.second);
 
 		QString tabTitle = "Poshuku";
@@ -351,7 +348,7 @@ namespace Poshuku
 		if (raise)
 			emit raiseTab (widget);
 
-		emit hookTabAdded (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookTabAdded (std::make_shared<Util::DefaultHookProxy> (),
 				widget,
 				widget->getWebView (),
 				url);
@@ -367,9 +364,10 @@ namespace Poshuku
 	IWebWidget* Core::GetWidget ()
 	{
 		if (!Initialized_)
-			return 0;
+			return nullptr;
 
-		BrowserWidget *widget = new BrowserWidget ();
+		const auto widget = new BrowserWidget ();
+		emit browserWidgetCreated (widget);
 		widget->Deown ();
 		widget->FinalizeInit ();
 		SetupConnections (widget);

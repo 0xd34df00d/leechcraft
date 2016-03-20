@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGSETVALUE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSTRINGSETVALUE_H
+#pragma once
+
 #include "itemhandlerbase.h"
 
 namespace LeechCraft
@@ -47,11 +47,7 @@ namespace LeechCraft
 	class ItemHandlerStringSetValue : public ItemHandlerBase
 	{
 	public:
-		virtual ~ItemHandlerStringSetValue ();
-
-		virtual void UpdateValue (QDomElement& element,
-				const QVariant& value) const;
+		void UpdateValue (QDomElement& element,
+				const QVariant& value) const override;
 	};
-};
-
-#endif
+}

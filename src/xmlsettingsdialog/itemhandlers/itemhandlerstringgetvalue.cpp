@@ -32,21 +32,20 @@
 
 namespace LeechCraft
 {
-	ItemHandlerStringGetValue::ItemHandlerStringGetValue ()
-	{
-	}
-
-	ItemHandlerStringGetValue::~ItemHandlerStringGetValue ()
-	{
-	}
-
 	QVariant ItemHandlerStringGetValue::GetValue (const QDomElement& item,
 			QVariant) const
 	{
-		QString def = item.attribute ("default");
+		const auto& context = XSD_->GetBasename ();
+
+		const auto& defChild = item.firstChildElement ("default");
+		if (!defChild.isNull ())
+			return QCoreApplication::translate (qPrintable (context),
+					defChild.text ().toUtf8 ().constData ());
+
+		auto def = item.attribute ("default");
 		if (item.attribute ("translatable") == "true")
-			def = QCoreApplication::translate (qPrintable (XSD_->GetBasename ()),
+			def = QCoreApplication::translate (qPrintable (context),
 					def.toUtf8 ().constData ());
 		return def;
 	}
-};
+}

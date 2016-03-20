@@ -145,8 +145,15 @@ namespace TabSessManager
 		}
 	}
 
+	void Plugin::HandleShutdownInitiated ()
+	{
+	}
+
 	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
 	{
+		if (Proxy_->IsShuttingDown ())
+			return;
+
 		const auto rootWM = Proxy_->GetRootWindowsManager ();
 		const auto tabWidget = rootWM->GetTabWidget (windowId);
 		const auto widget = tabWidget->Widget (index);

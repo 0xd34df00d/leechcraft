@@ -71,20 +71,20 @@ namespace Poshuku
 		typedef std::vector<BrowserWidget*> widgets_t;
 		widgets_t Widgets_;
 
-		PluginManager  * const PluginManager_;
-		URLCompletionModel  * const URLCompletionModel_;
-		HistoryModel  * const HistoryModel_;
+		PluginManager * const PluginManager_;
+		URLCompletionModel * const URLCompletionModel_;
+		HistoryModel * const HistoryModel_;
 		FavoritesModel * const FavoritesModel_;
 
 		std::shared_ptr<StorageBackend> StorageBackend_;
-		QNetworkAccessManager *NetworkAccessManager_;
-		WebPluginFactory *WebPluginFactory_;
+		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
+		WebPluginFactory *WebPluginFactory_ = nullptr;
 
-		IShortcutProxy *ShortcutProxy_;
+		IShortcutProxy *ShortcutProxy_ = nullptr;
 
 		ICoreProxy_ptr Proxy_;
 
-		bool Initialized_;
+		bool Initialized_ = false;
 
 		TabClassInfo TabClass_;
 
@@ -184,6 +184,7 @@ namespace Poshuku
 		void couldHandle (const LeechCraft::Entity&, bool*);
 		void bookmarkAdded (const QString&);
 		void bookmarkRemoved (const QString&);
+		void browserWidgetCreated (BrowserWidget*);
 
 		// Hook support signals
 		void hookAddToFavoritesRequested (LeechCraft::IHookProxy_ptr,

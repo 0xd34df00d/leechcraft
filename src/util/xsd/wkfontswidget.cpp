@@ -91,6 +91,14 @@ namespace Util
 			};
 
 		ResetZoom ();
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { IsFontZoomDirty_ = true; },
+			Ui_->Zoom_,
+			SIGNAL (valueChanged (int)),
+			this
+		};
 	}
 
 	void WkFontsWidget::SetFontZoomTooltip (const QString& label)
@@ -138,7 +146,8 @@ namespace Util
 
 	void WkFontsWidget::ResetZoom ()
 	{
-		Ui_->Zoom_->setValue (BSM_->Property ("FontZoom", 100).toInt ());
+		const auto factor = BSM_->Property ("FontSizeMultiplier", 1).toDouble ();
+		Ui_->Zoom_->setValue (factor * 100);
 	}
 
 	void WkFontsWidget::on_ChangeAll__released ()
@@ -187,8 +196,8 @@ namespace Util
 	{
 		for (const auto& pair : Util::Stlize (PendingFontChanges_))
 		{
-			emit fontChanged (pair.first, pair.second);
 			BSM_->setProperty (Family2Name_ [pair.first], pair.second);
+			emit fontChanged (pair.first, pair.second);
 
 			for (const auto settable : Settables_)
 				settable->SetFontFamily (pair.first, pair.second);
@@ -196,8 +205,8 @@ namespace Util
 
 		for (const auto& pair : Util::Stlize (PendingSizeChanges_))
 		{
-			emit sizeChanged (pair.first, pair.second);
 			BSM_->setProperty (Size2Name_ [pair.first], pair.second);
+			emit sizeChanged (pair.first, pair.second);
 
 			for (const auto settable : Settables_)
 				settable->SetFontSize (pair.first, pair.second);
@@ -205,10 +214,13 @@ namespace Util
 
 		if (IsFontZoomDirty_)
 		{
-			const auto value = Ui_->Zoom_->value () / 100.;
-			emit sizeMultiplierChanged (value);
+			const auto factor = Ui_->Zoom_->value () / 100.;
+
+			BSM_->setProperty ("FontSizeMultiplier", factor);
+			emit sizeMultiplierChanged (factor);
+
 			for (const auto settable : Settables_)
-				settable->SetFontSizeMultiplier (value);
+				settable->SetFontSizeMultiplier (factor);
 		}
 
 		PendingFontChanges_.clear ();

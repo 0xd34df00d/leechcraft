@@ -220,11 +220,6 @@ namespace LeechCraft
 
 		setQuitOnLastWindowClosed (false);
 
-		connect (this,
-				SIGNAL (aboutToQuit ()),
-				this,
-				SLOT (handleQuit ()));
-
 		Splash_ = new SplashScreen { QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen };
 		Splash_->setUpdatesEnabled (true);
 		Splash_->show ();
@@ -329,7 +324,12 @@ namespace LeechCraft
 		arguments << "--restart";
 		QProcess::startDetached (applicationFilePath (), arguments);
 
-		qApp->quit ();
+		Quit ();
+	}
+
+	void Application::Quit ()
+	{
+		Core::Instance ().Release ();
 	}
 
 	bool Application::notify (QObject *obj, QEvent *event)
@@ -556,12 +556,6 @@ namespace LeechCraft
 		Splash_->finish (win);
 	}
 
-	void Application::handleQuit ()
-	{
-		Core::Instance ().Release ();
-		XmlSettingsManager::Instance ()->Release ();
-	}
-
 #ifdef Q_OS_MAC
 	namespace
 	{
@@ -644,6 +638,6 @@ namespace LeechCraft
 
 		QProcess::startDetached (applicationFilePath (), Arguments_);
 
-		quit ();
+		Quit ();
 	}
 }

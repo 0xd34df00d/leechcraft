@@ -45,10 +45,6 @@ namespace LeechCraft
 	{
 	}
 
-	ItemHandlerCombobox::~ItemHandlerCombobox ()
-	{
-	}
-
 	bool ItemHandlerCombobox::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "combobox";
@@ -134,10 +130,8 @@ namespace LeechCraft
 		{
 			Scripter scripter (scriptContainer);
 
-			QStringList fromScript = scripter.GetOptions ();
-			Q_FOREACH (const QString& elm, scripter.GetOptions ())
-				box->addItem (scripter.HumanReadableOption (elm),
-						elm);
+			for (const auto& elm : scripter.GetOptions ())
+				box->addItem (scripter.HumanReadableOption (elm), elm);
 		}
 
 		int pos = box->findData (XSD_->GetValue (item));

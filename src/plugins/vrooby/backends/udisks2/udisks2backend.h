@@ -56,11 +56,11 @@ namespace UDisks2
 
 		QStandardItemModel *DevicesModel_;
 
-		org::freedesktop::DBus::ObjectManager *UDisksObj_;
+		org::freedesktop::DBus::ObjectManager *UDisksObj_ = nullptr;
 		QHash<QString, QStandardItem*> Object2Item_;
 		QSet<QString> Unremovables_;
 	public:
-		Backend (QObject* = 0);
+		Backend (QObject* = nullptr);
 
 		QString GetBackendName () const;
 		bool IsAvailable ();

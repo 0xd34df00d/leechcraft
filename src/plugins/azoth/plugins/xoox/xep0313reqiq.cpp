@@ -40,11 +40,13 @@ namespace Azoth
 {
 namespace Xoox
 {
-	Xep0313ReqIq::Xep0313ReqIq (const QString& jid, const QString& startId, int count, Direction dir)
+	Xep0313ReqIq::Xep0313ReqIq (const QString& jid, const QString& startId,
+			int count, Direction dir, const QString& queryId)
 	: QXmppIq { QXmppIq::Set }
 	, JID_ { jid }
 	, ItemId_ { startId }
 	, Count_ { count }
+	, QueryID_ { queryId }
 	, Dir_ { dir }
 	{
 	}
@@ -88,6 +90,9 @@ namespace Xoox
 		const auto endGuard = Util::MakeScopeGuard ([writer] { writer->writeEndElement (); });
 
 		writer->writeAttribute ("xmlns", Xep0313Manager::GetNsUri ());
+
+		if (!QueryID_.isEmpty ())
+			writer->writeAttribute ("queryid", QueryID_);
 
 		if (JID_.isEmpty () && !Count_ && ItemId_.isEmpty ())
 			return;

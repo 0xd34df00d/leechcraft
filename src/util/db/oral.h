@@ -500,6 +500,18 @@ namespace oral
 			}
 
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
+			EnableIf_t<Autogen, ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>>
+				operator() (const Seq& t, InsertAction action = InsertAction::Default) const
+			{
+				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
+				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
+				MakeInserter<Seq> (Data_, query, false) (t);
+
+				constexpr auto index = FindPKey<Seq>::result_type::value;
+				return FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
+			}
+
+			template<bool Autogen = HasAutogenPKey<Seq> ()>
 			EnableIf_t<!Autogen> operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);

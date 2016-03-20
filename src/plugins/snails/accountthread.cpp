@@ -38,6 +38,30 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	GenericExceptionWrapper::GenericExceptionWrapper (const std::exception_ptr& ptr)
+	{
+		if (!ptr)
+		{
+			Msg_ = "no exception information";
+			return;
+		}
+
+		try
+		{
+			std::rethrow_exception (ptr);
+		}
+		catch (const std::exception& e)
+		{
+			Msg_ = std::string { "generic exception of type `" } + typeid (e).name () +
+					"`: `" + e.what () + "`";
+		}
+	}
+
+	const char* GenericExceptionWrapper::what () const noexcept
+	{
+		return Msg_.c_str ();
+	}
+
 	AccountThread::AccountThread (bool isListening, const QString& name,
 			const CertList_t& certs, Account *parent)
 	: A_ { parent }
@@ -47,11 +71,15 @@ namespace Snails
 	{
 	}
 
+	int AccountThread::GetQueueSize ()
+	{
+		QMutexLocker locker { &FunctionsMutex_ };
+		return Functions_.size () + IsRunning_;
+	}
+
 	void AccountThread::run ()
 	{
 		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_ };
-
-		ConnectSignals (&atw);
 
 		Util::SlotClosure<Util::NoDeletePolicy> rotator
 		{
@@ -73,32 +101,31 @@ namespace Snails
 		QThread::run ();
 	}
 
-	void AccountThread::ConnectSignals (AccountThreadWorker *atw)
-	{
-		connect (atw,
-				SIGNAL (gotProgressListener (ProgressListener_g_ptr)),
-				A_,
-				SIGNAL (gotProgressListener (ProgressListener_g_ptr)));
-
-		connect (atw,
-				SIGNAL (folderSyncFinished (QStringList, QByteArray)),
-				A_,
-				SLOT (handleFolderSyncFinished (QStringList, QByteArray)));
-	}
-
 	void AccountThread::RotateFuncs (AccountThreadWorker *atw)
 	{
-		decltype (Functions_) funcs;
+		auto maybeTask = [&] () -> boost::optional<Task>
+			{
+				QMutexLocker locker { &FunctionsMutex_ };
+				if (Functions_.isEmpty ())
+					return {};
+				else
+					return Functions_.takeFirst ();
+			} ();
 
+		if (maybeTask)
 		{
-			QMutexLocker locker { &FunctionsMutex_ };
-
-			using std::swap;
-			swap (funcs, Functions_);
+			IsRunning_ = true;
+			maybeTask->Executor_ (atw);
+			IsRunning_ = false;
 		}
 
-		for (const auto& func : funcs)
-			func.Executor_ (atw);
+		const auto shouldRotate = [&]
+			{
+				QMutexLocker locker { &FunctionsMutex_ };
+				return !Functions_.isEmpty ();
+			} ();
+		if (shouldRotate)
+			emit rotateFuncs ();
 	}
 }
 }

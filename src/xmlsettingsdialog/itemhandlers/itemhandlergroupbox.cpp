@@ -35,14 +35,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerGroupbox::ItemHandlerGroupbox ()
-	{
-	}
-
-	ItemHandlerGroupbox::~ItemHandlerGroupbox ()
-	{
-	}
-
 	bool ItemHandlerGroupbox::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "groupbox" &&
@@ -100,4 +92,4 @@ namespace LeechCraft
 		}
 		return groupbox->isChecked ();
 	}
-};
+}

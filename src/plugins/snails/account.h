@@ -34,9 +34,9 @@
 #include <QObject>
 #include <QHash>
 #include "message.h"
-#include "progresslistener.h"
 #include "accountthread.h"
 #include "accountthreadworkerfwd.h"
+#include "progressfwd.h"
 
 class QMutex;
 class QAbstractItemModel;
@@ -58,7 +58,13 @@ namespace Snails
 	class MailModel;
 	class FoldersModel;
 	class MailModelsManager;
+	class ThreadPool;
 	struct Folder;
+
+	enum class TaskPriority;
+
+	template<typename T>
+	class AccountThreadNotifier;
 
 	class Account : public QObject
 	{
@@ -66,8 +72,9 @@ namespace Snails
 
 		friend class AccountThreadWorker;
 		AccountLogger * const Logger_;
-		AccountThread * const Thread_;
-		AccountThread * const MessageFetchThread_;
+
+		ThreadPool * const WorkerPool_;
+
 		QMutex * const AccMutex_;
 
 		QByteArray ID_;
@@ -134,14 +141,19 @@ namespace Snails
 		FoldersModel *FoldersModel_;
 
 		MailModelsManager * const MailModelsManager_;
+
+		std::shared_ptr<AccountThreadNotifier<int>> NoopNotifier_;
+
+		ProgressManager * const ProgressMgr_;
 	public:
-		Account (QObject* = nullptr);
+		Account (ProgressManager*, QObject* = nullptr);
 
 		QByteArray GetID () const;
 		QString GetName () const;
 		QString GetServer () const;
 
 		QString GetUserName () const;
+		QString GetUserEmail () const;
 
 		bool ShouldLogToFile () const;
 		AccountLogger* GetLogger () const;
@@ -149,13 +161,6 @@ namespace Snails
 		AccountFolderManager* GetFolderManager () const;
 		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
-
-		enum class Thread
-		{
-			LowPriority,
-			HighPriority
-		};
-		AccountThread* GetAccountThread (Thread) const;
 
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
@@ -166,7 +171,8 @@ namespace Snails
 		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
 
-		void FetchAttachment (const Message_ptr&,
+		using FetchAttachmentResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
+		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
@@ -182,10 +188,12 @@ namespace Snails
 
 		bool IsNull () const;
 
-		QString GetInUsername ();
-		QString GetOutUsername ();
+		QString GetInUsername () const;
+		QString GetOutUsername () const;
+
+		ProgressListener_ptr MakeProgressListener (const QString&) const;
 	private:
-		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&);
+		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();
@@ -193,6 +201,8 @@ namespace Snails
 		QString BuildInURL ();
 		QString BuildOutURL ();
 		QByteArray GetStoreID (Direction) const;
+
+		void DeleteFromFolder (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void UpdateFolderCount (const QStringList&);
 
@@ -210,11 +220,8 @@ namespace Snails
 		void buildOutURL (QString*);
 		void getPassword (QString*, Direction = Direction::In);
 
-		void handleFolderSyncFinished (const QStringList&, const QByteArray&);
-
 		void handleFoldersUpdated ();
 	signals:
-		void gotProgressListener (ProgressListener_g_ptr);
 		void accountChanged ();
 	};
 

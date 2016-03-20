@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/iactionsexporter.h>
+#include <interfaces/ishutdownlistener.h>
 #include <interfaces/core/ihookproxy.h>
 
 namespace LeechCraft
@@ -48,9 +49,10 @@ namespace TabSessManager
 				 , public IInfo
 				 , public IPlugin2
 				 , public IActionsExporter
+				 , public IShutdownListener
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IActionsExporter)
+		Q_INTERFACES (IInfo IPlugin2 IActionsExporter IShutdownListener)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.TabSessManager")
 
@@ -74,6 +76,8 @@ namespace TabSessManager
 		QSet<QByteArray> GetPluginClasses () const;
 
 		QList<QAction*> GetActions (ActionsEmbedPlace) const;
+
+		void HandleShutdownInitiated ();
 	public slots:
 		void hookTabIsRemoving (LeechCraft::IHookProxy_ptr proxy,
 				int index,
