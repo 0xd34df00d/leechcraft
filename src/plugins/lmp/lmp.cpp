@@ -139,7 +139,7 @@ namespace LMP
 		auto mgr = new RootPathSettingsManager (this);
 		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
 
-		PlayerTab_ = new PlayerTab (PlayerTC_, Core::Instance ().GetPlayer (), this);
+		PlayerTab_ = new PlayerTab (PlayerTC_, Core::Instance ().GetPlayer (), proxy, this);
 
 		Core::Instance ().GetLmpProxy ()->GetGuiProxy ()->SetPlayerTab (PlayerTab_);
 

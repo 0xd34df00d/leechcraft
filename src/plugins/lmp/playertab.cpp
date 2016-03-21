@@ -74,7 +74,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	PlayerTab::PlayerTab (const TabClassInfo& info, Player *player, QObject *plugin, QWidget *parent)
+	PlayerTab::PlayerTab (const TabClassInfo& info, Player *player, const ICoreProxy_ptr& proxy, QObject *plugin, QWidget *parent)
 	: QWidget (parent)
 	, Plugin_ (plugin)
 	, TC_ (info)
