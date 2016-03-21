@@ -67,14 +67,20 @@ namespace LMP
 		PlayerTab_->GetToolBar ()->addAction (action);
 	}
 
+	LMPProxy::LMPProxy (ILocalCollection *lc, ITagResolver *tr)
+	: LocalCollection_ { lc }
+	, TagResolver_ { tr }
+	{
+	}
+
 	ILocalCollection* LMPProxy::GetLocalCollection () const
 	{
-		return Core::Instance ().GetLocalCollection ();
+		return LocalCollection_;
 	}
 
 	ITagResolver* LMPProxy::GetTagResolver () const
 	{
-		return Core::Instance ().GetLocalFileResolver ();
+		return TagResolver_;
 	}
 
 	const ILMPUtilProxy* LMPProxy::GetUtilProxy () const

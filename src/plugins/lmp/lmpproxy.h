@@ -70,9 +70,14 @@ namespace LMP
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::LMP::ILMPProxy)
 
+		ILocalCollection * const LocalCollection_;
+		ITagResolver * const TagResolver_;
+
 		LMPUtilProxy UtilProxy_;
 		LMPGuiProxy GuiProxy_;
 	public:
+		LMPProxy (ILocalCollection*, ITagResolver*);
+
 		ILocalCollection* GetLocalCollection () const;
 		ITagResolver* GetTagResolver () const;
 		const ILMPUtilProxy* GetUtilProxy () const;

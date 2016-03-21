@@ -63,7 +63,7 @@ namespace LMP
 	, CloudUpMgr_ (new CloudUploadManager)
 	, ProgressManager_ (new ProgressManager)
 	, RadioManager_ (new RadioManager)
-	, LmpProxy_ (new LMPProxy)
+	, LmpProxy_ (new LMPProxy (Collection_.get (), Resolver_.get ()))
 	{
 		ProgressManager_->AddSyncManager (SyncManager_.get ());
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_.get ());
