@@ -95,8 +95,8 @@ namespace LMP
 		Core& operator= (Core&&) = delete;
 	public:
 		static Core& Instance ();
+		static void InitWithProxy (const ICoreProxy_ptr&);
 
-		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy ();
 
 		void SendEntity (const Entity&);

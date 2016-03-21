@@ -79,9 +79,10 @@ namespace LMP
 		return c;
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
+	void Core::InitWithProxy (const ICoreProxy_ptr& proxy)
 	{
-		Proxy_ = proxy;
+		Core::Instance ().Proxy_ = proxy;
+		Core::Instance ().PostInit ();
 	}
 
 	ICoreProxy_ptr Core::GetProxy ()

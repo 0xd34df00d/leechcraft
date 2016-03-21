@@ -133,8 +133,7 @@ namespace LMP
 			TFSuggestOpening | TFOpenableByRequest
 		};
 
-		Core::Instance ().SetProxy (proxy);
-		Core::Instance ().PostInit ();
+		Core::Instance ().InitWithProxy (proxy);
 
 		auto mgr = new RootPathSettingsManager (this);
 		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
