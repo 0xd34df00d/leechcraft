@@ -145,7 +145,7 @@ namespace LMP
 		SetupToolbar ();
 		Ui_.PLManagerWidget_->SetPlayer (Player_);
 
-		Ui_.Playlist_->SetPlayer (Player_);
+		Ui_.Playlist_->SetPlayer (Player_, proxy);
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowTrayIcon",
 				this, "handleShowTrayIcon");

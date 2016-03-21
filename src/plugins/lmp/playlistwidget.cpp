@@ -214,7 +214,7 @@ namespace LMP
 		Core::Instance ().GetHookInterconnector ()->RegisterHookable (this);
 	}
 
-	void PlaylistWidget::SetPlayer (Player *player)
+	void PlaylistWidget::SetPlayer (Player *player, const ICoreProxy_ptr& proxy)
 	{
 		Player_ = player;
 
