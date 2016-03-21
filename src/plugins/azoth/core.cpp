@@ -662,6 +662,7 @@ namespace Azoth
 			return proxy->GetReturnValue ().toBool ();
 
 		return !ChatTabsManager_->IsActiveChat (entry) &&
+				msg->GetDirection () == IMessage::Direction::In &&
 				(msg->GetMessageType () == IMessage::Type::ChatMessage ||
 				 msg->GetMessageType () == IMessage::Type::MUCMessage);
 	}
