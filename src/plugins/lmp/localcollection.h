@@ -108,7 +108,7 @@ namespace LMP
 			Banned
 		};
 
-		LocalCollection (QObject* = 0);
+		LocalCollection (QObject* = nullptr);
 		void FinalizeInit ();
 
 		bool IsReady () const;
