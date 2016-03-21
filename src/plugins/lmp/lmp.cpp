@@ -160,10 +160,6 @@ namespace LMP
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (&Core::Instance (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
 				SIGNAL (artistBrowseRequested (QString)),
 				this,
 				SLOT (handleArtistBrowseRequested (QString)));

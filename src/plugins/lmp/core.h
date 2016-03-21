@@ -129,8 +129,6 @@ namespace LMP
 	public slots:
 		void rescan ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void cloudStoragePluginsChanged ();
 
 		void artistBrowseRequested (const QString&);
