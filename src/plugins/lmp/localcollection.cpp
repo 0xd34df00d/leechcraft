@@ -94,7 +94,6 @@ namespace LMP
 
 	void LocalCollection::FinalizeInit ()
 	{
-		CollectionModel_->FinalizeInit ();
 	}
 
 	bool LocalCollection::IsReady () const

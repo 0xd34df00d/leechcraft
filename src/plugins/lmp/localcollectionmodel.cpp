@@ -95,12 +95,6 @@ namespace LMP
 		return result;
 	}
 
-	void LocalCollectionModel::FinalizeInit ()
-	{
-		ArtistIcon_ = Core::Instance ().GetProxy ()->
-				GetIconThemeManager ()->GetIcon ("view-media-artist");
-	}
-
 	namespace
 	{
 		template<typename T, typename U, typename Init, typename Parent>

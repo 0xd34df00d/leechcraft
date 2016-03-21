@@ -44,7 +44,7 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		QIcon ArtistIcon_;
+		QIcon ArtistIcon_ = QIcon::fromTheme ("view-media-artist");
 
 		QHash<int, QStandardItem*> Artist2Item_;
 		QHash<int, QStandardItem*> Album2Item_;
@@ -77,8 +77,6 @@ namespace LMP
 		QMimeData* mimeData (const QModelIndexList&) const;
 
 		QList<QUrl> ToSourceUrls (const QList<QModelIndex>&) const;
-
-		void FinalizeInit ();
 
 		void AddArtists (const Collection::Artists_t&);
 		void Clear ();
