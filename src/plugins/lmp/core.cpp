@@ -54,8 +54,9 @@ namespace LMP
 {
 	std::shared_ptr<Core> Core::CoreInstance_;
 
-	Core::Core ()
-	: Resolver_ (new LocalFileResolver)
+	Core::Core (const ICoreProxy_ptr& proxy)
+	: Proxy_ (proxy)
+	, Resolver_ (new LocalFileResolver)
 	, HookInterconnector_ (new HookInterconnector)
 	, Collection_ (new LocalCollection)
 	, CollectionsManager_ (new CollectionsManager)
@@ -65,6 +66,9 @@ namespace LMP
 	, CloudUpMgr_ (new CloudUploadManager)
 	, ProgressManager_ (new ProgressManager)
 	, RadioManager_ (new RadioManager)
+	, Player_ (std::make_shared<Player> ())
+	, PreviewMgr_ (std::make_shared<PreviewHandler> (Player_.get ()))
+	, LmpProxy_ (std::make_shared<LMPProxy> (Collection_.get (), Resolver_.get (), PreviewMgr_.get ()))
 	{
 		ProgressManager_->AddSyncManager (SyncManager_.get ());
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_.get ());
@@ -82,9 +86,7 @@ namespace LMP
 
 	void Core::InitWithProxy (const ICoreProxy_ptr& proxy)
 	{
-		CoreInstance_.reset (new Core);
-		CoreInstance_->Proxy_ = proxy;
-		CoreInstance_->PostInit ();
+		CoreInstance_.reset (new Core (proxy));
 	}
 
 	ICoreProxy_ptr Core::GetProxy ()
@@ -95,14 +97,6 @@ namespace LMP
 	void Core::SendEntity (const Entity& e)
 	{
 		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
-	void Core::PostInit ()
-	{
-		Player_ = std::make_shared<Player> ();
-		PreviewMgr_ = std::make_shared<PreviewHandler> (Player_.get ());
-
-		LmpProxy_ = std::make_shared<LMPProxy> (Collection_.get (), Resolver_.get (), PreviewMgr_.get ());
 	}
 
 	void Core::InitWithOtherPlugins ()

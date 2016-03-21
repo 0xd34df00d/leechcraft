@@ -63,7 +63,7 @@ namespace LMP
 
 		static std::shared_ptr<Core> CoreInstance_;
 
-		ICoreProxy_ptr Proxy_;
+		const ICoreProxy_ptr Proxy_;
 
 		std::shared_ptr<LocalFileResolver> Resolver_;
 
@@ -90,7 +90,9 @@ namespace LMP
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
 
-		Core ();
+		Core (const ICoreProxy_ptr&);
+
+		Core () = delete;
 		Core (const Core&) = delete;
 		Core (Core&&) = delete;
 		Core& operator= (const Core&) = delete;
@@ -103,7 +105,6 @@ namespace LMP
 
 		void SendEntity (const Entity&);
 
-		void PostInit ();
 		void InitWithOtherPlugins ();
 
 		const std::shared_ptr<LMPProxy>& GetLmpProxy () const;
