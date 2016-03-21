@@ -656,7 +656,7 @@ namespace Azoth
 		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return false;
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookShouldCountUnread (proxy, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
