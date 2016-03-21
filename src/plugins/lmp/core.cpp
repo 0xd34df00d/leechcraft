@@ -29,6 +29,7 @@
 
 #include "core.h"
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ientitymanager.h>
 #include "collectionsmanager.h"
 #include "localfileresolver.h"
 #include "localcollection.h"
@@ -96,7 +97,7 @@ namespace LMP
 
 	void Core::SendEntity (const Entity& e)
 	{
-		emit gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Core::PostInit ()
