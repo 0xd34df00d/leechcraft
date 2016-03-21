@@ -87,7 +87,6 @@ namespace BrainSlugz
 #else
 	: CheckView_ { new QQuickWidget }
 #endif
-	, LmpProxy_ { lmpProxy }
 	, CoreProxy_ { coreProxy }
 	, TC_ (tc)
 	, Plugin_ { plugin }
@@ -198,7 +197,7 @@ namespace BrainSlugz
 
 		Model_->RemoveUnscheduled ();
 
-		const auto checker = new Checker { Model_, types, LmpProxy_, CoreProxy_, this };
+		const auto checker = new Checker { Model_, types, CoreProxy_, this };
 		connect (checker,
 				SIGNAL (finished ()),
 				this,

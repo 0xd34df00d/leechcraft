@@ -44,14 +44,12 @@ namespace BrainSlugz
 {
 	Checker::Checker (CheckModel *model,
 			const QList<Media::ReleaseInfo::Type>& types,
-			const ILMPProxy_ptr& lmpProxy,
 			const ICoreProxy_ptr& coreProxy,
 			QObject *parent)
 	: QObject { parent }
 	, Model_ { model }
 	, Provider_ { coreProxy->GetPluginsManager ()->
 				GetAllCastableTo<Media::IDiscographyProvider*> ().value (0) }
-	, LmpProxy_ { lmpProxy }
 	, Types_ { types }
 	, Artists_ { Model_->GetSelectedArtists () }
 	{

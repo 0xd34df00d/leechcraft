@@ -55,15 +55,13 @@ namespace BrainSlugz
 		CheckModel * const Model_;
 		Media::IDiscographyProvider * const Provider_;
 
-		const ILMPProxy_ptr LmpProxy_;
-
 		const QList<Media::ReleaseInfo::Type> Types_;
 
 		Collection::Artists_t Artists_;
 		Collection::Artist Current_;
 	public:
 		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
-				const ILMPProxy_ptr&, const ICoreProxy_ptr&, QObject* = nullptr);
+				const ICoreProxy_ptr&, QObject* = nullptr);
 
 		int GetRemainingCount () const;
 	private:

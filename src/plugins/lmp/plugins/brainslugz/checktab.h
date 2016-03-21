@@ -65,7 +65,6 @@ namespace BrainSlugz
 		QQuickWidget * const CheckView_;
 #endif
 
-		const ILMPProxy_ptr LmpProxy_;
 		const ICoreProxy_ptr CoreProxy_;
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
