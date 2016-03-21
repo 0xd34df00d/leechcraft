@@ -69,7 +69,7 @@ namespace LMP
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_.get ());
 		ProgressManager_->AddSyncManager (CloudUpMgr_.get ());
 
-		new RgAnalysisManager (Collection_.get (), this);
+		new RgAnalysisManager (Collection_, this);
 
 		CollectionsManager_->Add (Collection_->GetCollectionModel ());
 	}

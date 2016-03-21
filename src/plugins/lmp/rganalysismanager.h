@@ -44,13 +44,13 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		LocalCollection * const Coll_;
+		const std::weak_ptr<LocalCollection> Coll_;
 
 		std::shared_ptr<RgAnalyser> CurrentAnalyser_;
 
 		QList<Collection::Album_ptr> AlbumsQueue_;
 	public:
-		RgAnalysisManager (LocalCollection*, QObject* = nullptr);
+		RgAnalysisManager (const std::weak_ptr<LocalCollection>&, QObject* = nullptr);
 	private slots:
 		void handleAnalysed ();
 		void rotateQueue ();
