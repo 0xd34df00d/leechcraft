@@ -29,7 +29,6 @@
 
 #include "lmpproxy.h"
 #include <QToolBar>
-#include "core.h"
 #include "util.h"
 #include "localcollection.h"
 #include "localfileresolver.h"
@@ -102,7 +101,7 @@ namespace LMP
 	void LMPProxy::PreviewRelease (const QString& artist,
 			const QString& release, const QList<QPair<QString, int>>& tracks) const
 	{
-		Core::Instance ().GetPreviewHandler ()->previewAlbum (artist, release, tracks);
+		PreviewHandler_->previewAlbum (artist, release, tracks);
 	}
 }
 }
