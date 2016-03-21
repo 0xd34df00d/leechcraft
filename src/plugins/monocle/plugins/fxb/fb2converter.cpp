@@ -251,7 +251,7 @@ namespace FXB
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
 		QStringList chunks;
-		auto flushChunks = [this, &chunks] () -> void
+		auto flushChunks = [this, &chunks]
 		{
 			if (!chunks.isEmpty ())
 			{
