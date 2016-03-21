@@ -63,7 +63,6 @@ namespace LMP
 	, CloudUpMgr_ (new CloudUploadManager)
 	, ProgressManager_ (new ProgressManager)
 	, RadioManager_ (new RadioManager)
-	, LmpProxy_ (new LMPProxy (Collection_.get (), Resolver_.get ()))
 	{
 		ProgressManager_->AddSyncManager (SyncManager_.get ());
 		ProgressManager_->AddSyncManager (SyncUnmountableManager_.get ());
@@ -101,6 +100,8 @@ namespace LMP
 
 		Player_ = std::make_shared<Player> ();
 		PreviewMgr_ = std::make_shared<PreviewHandler> (Player_.get ());
+
+		LmpProxy_ = std::make_shared<LMPProxy> (Collection_.get (), Resolver_.get (), PreviewMgr_.get ());
 	}
 
 	void Core::InitWithOtherPlugins ()

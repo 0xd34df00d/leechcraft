@@ -67,9 +67,10 @@ namespace LMP
 		PlayerTab_->GetToolBar ()->addAction (action);
 	}
 
-	LMPProxy::LMPProxy (ILocalCollection *lc, ITagResolver *tr)
+	LMPProxy::LMPProxy (ILocalCollection *lc, ITagResolver *tr, PreviewHandler *ph)
 	: LocalCollection_ { lc }
 	, TagResolver_ { tr }
+	, PreviewHandler_ { ph }
 	{
 	}
 

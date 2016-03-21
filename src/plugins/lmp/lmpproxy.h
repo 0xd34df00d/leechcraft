@@ -39,6 +39,7 @@ namespace LeechCraft
 namespace LMP
 {
 	class PlayerTab;
+	class PreviewHandler;
 
 	class LMPUtilProxy : public QObject
 					   , public ILMPUtilProxy
@@ -72,11 +73,12 @@ namespace LMP
 
 		ILocalCollection * const LocalCollection_;
 		ITagResolver * const TagResolver_;
+		PreviewHandler * const PreviewHandler_;
 
 		LMPUtilProxy UtilProxy_;
 		LMPGuiProxy GuiProxy_;
 	public:
-		LMPProxy (ILocalCollection*, ITagResolver*);
+		LMPProxy (ILocalCollection*, ITagResolver*, PreviewHandler*);
 
 		ILocalCollection* GetLocalCollection () const;
 		ITagResolver* GetTagResolver () const;
