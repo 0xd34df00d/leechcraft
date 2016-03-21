@@ -72,12 +72,13 @@ namespace Murm
 			return Pending_.value (url);
 
 		QFutureInterface<QImage> iface;
-		iface.reportStarted ();
 
 		const auto& future = iface.future ();
 		Pending_ [url] = future;
 		FetchQueue_->Schedule ([=] () mutable
 				{
+					iface.reportStarted ();
+
 					const auto& reply = NAM_->get (QNetworkRequest (url));
 					new Util::SlotClosure<Util::DeleteLaterPolicy>
 					{
