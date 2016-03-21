@@ -41,6 +41,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QtDebug>
+#include <util/sll/util.h>
 #include "toclink.h"
 
 namespace LeechCraft
@@ -371,8 +372,7 @@ namespace FXB
 		auto child = tagElem.firstChild ();
 		while (!child.isNull ())
 		{
-			std::shared_ptr<void> guard (static_cast<void*> (0),
-					[&child] (void*) { child = child.nextSibling (); });
+			const auto guard = Util::MakeScopeGuard ([&child] { child = child.nextSibling (); });
 
 			if (child.isText ())
 			{
