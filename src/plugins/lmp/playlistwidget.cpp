@@ -184,10 +184,7 @@ namespace LMP
 
 		Ui_.setupUi (this);
 
-		new Util::ClearLineEditAddon (Core::Instance ().GetProxy (), Ui_.SearchPlaylist_);
-
 		Ui_.BufferProgress_->hide ();
-		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
 
 		connect (Ui_.SearchPlaylist_,
 				SIGNAL (textChanged (QString)),
@@ -216,6 +213,9 @@ namespace LMP
 
 	void PlaylistWidget::SetPlayer (Player *player, const ICoreProxy_ptr& proxy)
 	{
+		new Util::ClearLineEditAddon (proxy, Ui_.SearchPlaylist_);
+		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
+
 		Player_ = player;
 
 		connect (Player_,
