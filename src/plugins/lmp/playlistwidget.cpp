@@ -214,7 +214,7 @@ namespace LMP
 	void PlaylistWidget::SetPlayer (Player *player, const ICoreProxy_ptr& proxy)
 	{
 		new Util::ClearLineEditAddon (proxy, Ui_.SearchPlaylist_);
-		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_));
+		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_, proxy));
 
 		Player_ = player;
 

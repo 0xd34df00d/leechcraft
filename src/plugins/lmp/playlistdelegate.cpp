@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include "player.h"
 #include "mediainfo.h"
 #include "core.h"
@@ -46,9 +47,10 @@ namespace LMP
 {
 	const int Padding = 2;
 
-	PlaylistDelegate::PlaylistDelegate (QTreeView *view, QObject *parent)
+	PlaylistDelegate::PlaylistDelegate (QTreeView *view, QObject *parent, const ICoreProxy_ptr& proxy)
 	: QStyledItemDelegate (parent)
 	, View_ (view)
+	, Proxy_ (proxy)
 	{
 	}
 
