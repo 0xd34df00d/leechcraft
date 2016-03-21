@@ -68,11 +68,11 @@ namespace Murm
 
 	QFuture<QImage> PhotoStorage::GetImage (const QUrl& url)
 	{
-		QFutureInterface<QImage> iface;
-		iface.reportStarted ();
-
 		if (Pending_.contains (url))
 			return Pending_.value (url);
+
+		QFutureInterface<QImage> iface;
+		iface.reportStarted ();
 
 		const auto& future = iface.future ();
 		Pending_ [url] = future;
