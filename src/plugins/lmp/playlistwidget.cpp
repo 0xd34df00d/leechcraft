@@ -216,6 +216,7 @@ namespace LMP
 		new Util::ClearLineEditAddon (proxy, Ui_.SearchPlaylist_);
 		Ui_.Playlist_->setItemDelegate (new PlaylistDelegate (Ui_.Playlist_, Ui_.Playlist_, proxy));
 
+		Proxy_ = proxy;
 		Player_ = player;
 
 		connect (Player_,
@@ -413,8 +414,7 @@ namespace LMP
 	void PlaylistWidget::SetPlayModeButton ()
 	{
 		auto playButton = new QToolButton;
-		playButton->setIcon (Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("view-media-playlist"));
+		playButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-media-playlist"));
 		playButton->setPopupMode (QToolButton::InstantPopup);
 		QMenu *playMode = new QMenu (tr ("Play mode"));
 		playButton->setMenu (playMode);
@@ -459,8 +459,7 @@ namespace LMP
 	void PlaylistWidget::SetSortOrderButton ()
 	{
 		auto sortButton = new QToolButton;
-		sortButton->setIcon (Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("view-sort-ascending"));
+		sortButton->setIcon (Proxy_->GetIconThemeManager ()->GetIcon ("view-sort-ascending"));
 		sortButton->setPopupMode (QToolButton::InstantPopup);
 
 		auto menu = new QMenu (tr ("Sorting"));
@@ -960,7 +959,8 @@ namespace LMP
 
 	namespace
 	{
-		void EmitStateRule (const QModelIndex& index, const QString& state, const QString& nameTempl)
+		void EmitStateRule (const QModelIndex& index, const QString& state,
+				const QString& nameTempl, const ICoreProxy_ptr& proxy)
 		{
 			const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
@@ -1002,7 +1002,7 @@ namespace LMP
 							ANStringFieldValue { url.toEncoded () }
 						}
 					});
-			Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+			proxy->GetEntityManager ()->HandleEntity (e);
 		}
 	}
 
@@ -1010,14 +1010,16 @@ namespace LMP
 	{
 		EmitStateRule (Ui_.Playlist_->currentIndex (),
 				"Playing",
-				 tr ("Perform when %1 by %2 starts playing"));
+				tr ("Perform when %1 by %2 starts playing"),
+				Proxy_);
 	}
 
 	void PlaylistWidget::initPerformAfterTrackStop ()
 	{
 		EmitStateRule (Ui_.Playlist_->currentIndex (),
 				"Stopped",
-				tr ("Perform when %1 by %2 stops playing"));
+				tr ("Perform when %1 by %2 stops playing"),
+				Proxy_);
 	}
 
 	void PlaylistWidget::handleExistingTrackAction (QAction *action)
@@ -1025,7 +1027,7 @@ namespace LMP
 		const auto& rule = action->property ("LMP/SourceRule").value<Entity> ();
 		const auto& pluginId = rule.Additional_ ["org.LC.AdvNotifications.SenderID"].toByteArray ();
 
-		const auto pluginMgr = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		const auto pluginMgr = Proxy_->GetPluginsManager ();
 		const auto pluginObj = pluginMgr->GetPluginByID (pluginId);
 		if (!pluginObj)
 		{

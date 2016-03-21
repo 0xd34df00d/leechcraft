@@ -57,6 +57,7 @@ namespace LMP
 
 		QUndoStack * const UndoStack_;
 
+		ICoreProxy_ptr Proxy_;
 		Player *Player_ = nullptr;
 
 		QAction *ActionDownloadTrack_ = nullptr;
