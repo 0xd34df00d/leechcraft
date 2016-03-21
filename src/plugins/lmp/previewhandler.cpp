@@ -44,6 +44,10 @@ namespace LMP
 	: QObject (parent)
 	, Player_ (player)
 	{
+	}
+
+	void PreviewHandler::InitWithPlugins ()
+	{
 		Providers_ = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableTo<Media::IAudioPile*> ();
 	}
