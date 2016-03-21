@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <boost/optional.hpp>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
@@ -62,25 +63,25 @@ namespace LMP
 
 		ICoreProxy_ptr Proxy_;
 
-		LocalFileResolver *Resolver_;
+		std::shared_ptr<LocalFileResolver> Resolver_;
 
-		HookInterconnector *HookInterconnector_;
+		std::shared_ptr<HookInterconnector> HookInterconnector_;
 
-		LocalCollection *Collection_;
-		CollectionsManager *CollectionsManager_;
+		std::shared_ptr<LocalCollection> Collection_;
+		std::shared_ptr<CollectionsManager> CollectionsManager_;
 
-		PlaylistManager *PLManager_;
+		std::shared_ptr<PlaylistManager> PLManager_;
 
-		SyncManager *SyncManager_;
-		SyncUnmountableManager *SyncUnmountableManager_;
-		CloudUploadManager *CloudUpMgr_;
+		std::shared_ptr<SyncManager> SyncManager_;
+		std::shared_ptr<SyncUnmountableManager> SyncUnmountableManager_;
+		std::shared_ptr<CloudUploadManager> CloudUpMgr_;
 
-		ProgressManager *ProgressManager_;
+		std::shared_ptr<ProgressManager> ProgressManager_;
 
-		RadioManager *RadioManager_;
+		std::shared_ptr<RadioManager> RadioManager_;
 
-		Player *Player_;
-		PreviewHandler *PreviewMgr_;
+		std::shared_ptr<Player> Player_;
+		std::shared_ptr<PreviewHandler> PreviewMgr_;
 
 		std::shared_ptr<LMPProxy> LmpProxy_;
 

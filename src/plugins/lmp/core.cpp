@@ -63,15 +63,13 @@ namespace LMP
 	, CloudUpMgr_ (new CloudUploadManager)
 	, ProgressManager_ (new ProgressManager)
 	, RadioManager_ (new RadioManager)
-	, Player_ (0)
-	, PreviewMgr_ (0)
 	, LmpProxy_ (new LMPProxy)
 	{
-		ProgressManager_->AddSyncManager (SyncManager_);
-		ProgressManager_->AddSyncManager (SyncUnmountableManager_);
-		ProgressManager_->AddSyncManager (CloudUpMgr_);
+		ProgressManager_->AddSyncManager (SyncManager_.get ());
+		ProgressManager_->AddSyncManager (SyncUnmountableManager_.get ());
+		ProgressManager_->AddSyncManager (CloudUpMgr_.get ());
 
-		new RgAnalysisManager (Collection_, this);
+		new RgAnalysisManager (Collection_.get (), this);
 
 		CollectionsManager_->Add (Collection_->GetCollectionModel ());
 	}
@@ -101,8 +99,8 @@ namespace LMP
 	{
 		Collection_->FinalizeInit ();
 
-		Player_ = new Player;
-		PreviewMgr_ = new PreviewHandler (Player_, this);
+		Player_ = std::make_shared<Player> ();
+		PreviewMgr_ = std::make_shared<PreviewHandler> (Player_.get ());
 	}
 
 	void Core::InitWithOtherPlugins ()
@@ -167,62 +165,62 @@ namespace LMP
 
 	HookInterconnector* Core::GetHookInterconnector () const
 	{
-		return HookInterconnector_;
+		return HookInterconnector_.get ();
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
 	{
-		return Resolver_;
+		return Resolver_.get ();
 	}
 
 	LocalCollection* Core::GetLocalCollection () const
 	{
-		return Collection_;
+		return Collection_.get ();
 	}
 
 	CollectionsManager* Core::GetCollectionsManager () const
 	{
-		return CollectionsManager_;
+		return CollectionsManager_.get ();
 	}
 
 	PlaylistManager* Core::GetPlaylistManager () const
 	{
-		return PLManager_;
+		return PLManager_.get ();
 	}
 
 	SyncManager* Core::GetSyncManager () const
 	{
-		return SyncManager_;
+		return SyncManager_.get ();
 	}
 
 	SyncUnmountableManager* Core::GetSyncUnmountableManager () const
 	{
-		return SyncUnmountableManager_;
+		return SyncUnmountableManager_.get ();
 	}
 
 	CloudUploadManager* Core::GetCloudUploadManager () const
 	{
-		return CloudUpMgr_;
+		return CloudUpMgr_.get ();
 	}
 
 	ProgressManager* Core::GetProgressManager () const
 	{
-		return ProgressManager_;
+		return ProgressManager_.get ();
 	}
 
 	RadioManager* Core::GetRadioManager () const
 	{
-		return RadioManager_;
+		return RadioManager_.get ();
 	}
 
 	Player* Core::GetPlayer () const
 	{
-		return Player_;
+		return Player_.get ();
 	}
 
 	PreviewHandler* Core::GetPreviewHandler () const
 	{
-		return PreviewMgr_;
+		return PreviewMgr_.get ();
 	}
 
 	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
