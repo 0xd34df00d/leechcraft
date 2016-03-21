@@ -1112,6 +1112,7 @@ namespace Monocle
 		printer.setOutputFileName (path);
 		printer.setPageMargins (0, 0, 0, 0, QPrinter::DevicePixel);
 		printer.setPaperSize (CurrentDoc_->GetPageSize (0), QPrinter::DevicePixel);
+		printer.setFontEmbeddingEnabled (true);
 
 		QPainter painter (&printer);
 		painter.setRenderHint (QPainter::Antialiasing);
