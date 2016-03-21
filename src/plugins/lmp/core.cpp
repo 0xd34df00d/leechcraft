@@ -39,16 +39,13 @@
 #include "sync/syncunmountablemanager.h"
 #include "sync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
-#include "interfaces/lmp/isyncplugin.h"
 #include "interfaces/lmp/icloudstorageplugin.h"
-#include "interfaces/lmp/iplaylistprovider.h"
 #include "lmpproxy.h"
 #include "player.h"
 #include "previewhandler.h"
 #include "progressmanager.h"
 #include "radiomanager.h"
 #include "rganalysismanager.h"
-#include "localcollectionmodel.h"
 #include "hookinterconnector.h"
 
 namespace LeechCraft
