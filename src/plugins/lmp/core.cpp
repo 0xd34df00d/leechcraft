@@ -99,8 +99,6 @@ namespace LMP
 
 	void Core::PostInit ()
 	{
-		Collection_->FinalizeInit ();
-
 		Player_ = std::make_shared<Player> ();
 		PreviewMgr_ = std::make_shared<PreviewHandler> (Player_.get ());
 

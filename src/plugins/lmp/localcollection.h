@@ -109,7 +109,6 @@ namespace LMP
 		};
 
 		LocalCollection (QObject* = nullptr);
-		void FinalizeInit ();
 
 		bool IsReady () const;
 
