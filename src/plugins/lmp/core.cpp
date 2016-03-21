@@ -52,6 +52,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
+	std::shared_ptr<Core> Core::CoreInstance_;
+
 	Core::Core ()
 	: Resolver_ (new LocalFileResolver)
 	, HookInterconnector_ (new HookInterconnector)
@@ -75,14 +77,14 @@ namespace LMP
 
 	Core& Core::Instance ()
 	{
-		static Core c;
-		return c;
+		return *CoreInstance_;
 	}
 
 	void Core::InitWithProxy (const ICoreProxy_ptr& proxy)
 	{
-		Core::Instance ().Proxy_ = proxy;
-		Core::Instance ().PostInit ();
+		CoreInstance_.reset (new Core);
+		CoreInstance_->Proxy_ = proxy;
+		CoreInstance_->PostInit ();
 	}
 
 	ICoreProxy_ptr Core::GetProxy ()

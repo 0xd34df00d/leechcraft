@@ -61,6 +61,8 @@ namespace LMP
 	{
 		Q_OBJECT
 
+		static std::shared_ptr<Core> CoreInstance_;
+
 		ICoreProxy_ptr Proxy_;
 
 		std::shared_ptr<LocalFileResolver> Resolver_;
