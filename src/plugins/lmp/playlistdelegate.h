@@ -43,7 +43,7 @@ namespace LMP
 	{
 		QTreeView *View_;
 	public:
-		PlaylistDelegate (QTreeView*, QObject* = 0);
+		PlaylistDelegate (QTreeView*, QObject*);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
