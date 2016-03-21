@@ -29,7 +29,6 @@
 
 #pragma once
 
-#include <memory>
 #include <QtPlugin>
 
 namespace LeechCraft
@@ -37,7 +36,8 @@ namespace LeechCraft
 namespace LMP
 {
 	class ILMPProxy;
-	typedef std::shared_ptr<ILMPProxy> ILMPProxy_ptr;
+
+	using ILMPProxy_ptr = ILMPProxy*;
 
 	class ILMPPlugin
 	{
