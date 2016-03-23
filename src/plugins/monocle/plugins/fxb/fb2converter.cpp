@@ -318,14 +318,13 @@ namespace FXB
 
 				Cursor_->setCharFormat (origFmt);
 
-				const TOCEntry entry =
-				{
-					ILink_ptr (new TOCLink (ParentDoc_, Result_->pageCount () - 1)),
-					child.text (),
-					TOCEntryLevel_t ()
-				};
 				if (CurrentTOCStack_.top ()->Name_.isEmpty ())
-					*CurrentTOCStack_.top () = entry;
+					*CurrentTOCStack_.top () = TOCEntry
+							{
+								std::make_shared<TOCLink> (ParentDoc_, Result_->pageCount () - 1),
+								child.text (),
+								{}
+							};
 			}
 
 			child = child.nextSiblingElement ();
