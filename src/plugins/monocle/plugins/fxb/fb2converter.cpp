@@ -87,10 +87,14 @@ namespace FXB
 		Handlers_ ["stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
 		Handlers_ ["v"] = [this] (const QDomElement& p)
 		{
-			auto fmt = Cursor_->blockFormat ();
-			fmt.setTextIndent (50);
-			Cursor_->insertBlock (fmt);
-			HandleParaWONL (p);
+			auto blockFmt = Cursor_->blockFormat ();
+			blockFmt.setTextIndent (50);
+
+			Cursor_->insertBlock (blockFmt);
+
+			HandleMangleCharFormat (p,
+					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
+					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
 
 		Handlers_ ["emphasis"] = [this] (const QDomElement& p)
