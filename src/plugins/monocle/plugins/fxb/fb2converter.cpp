@@ -67,11 +67,13 @@ namespace FXB
 			return;
 		}
 
-		auto frameFmt = Result_->rootFrame ()->frameFormat ();
+		const auto rootFrame = Result_->rootFrame ();
+
+		auto frameFmt = rootFrame->frameFormat ();
 		frameFmt.setMargin (20);
 		const auto& pal = qApp->palette ();
 		frameFmt.setBackground (pal.brush (QPalette::Base));
-		Result_->rootFrame ()->setFrameFormat (frameFmt);
+		rootFrame->setFrameFormat (frameFmt);
 
 		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
 		Handlers_ ["title"] = [this] (const QDomElement& p) { HandleTitle (p); };
