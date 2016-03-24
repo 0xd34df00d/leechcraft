@@ -363,6 +363,7 @@ namespace FXB
 	{
 		auto fmt = Cursor_->blockFormat ();
 		fmt.setTextIndent (20);
+		fmt.setAlignment (Qt::AlignJustify);
 		Cursor_->insertBlock (fmt);
 
 		HandleParaWONL (tagElem);
