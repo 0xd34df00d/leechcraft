@@ -102,6 +102,11 @@ namespace LMP
 		CoreInstance_.reset (new Core { proxy });
 	}
 
+	void Core::Release ()
+	{
+		CoreInstance_.reset ();
+	}
+
 	ICoreProxy_ptr Core::GetProxy ()
 	{
 		return Proxy_;

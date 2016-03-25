@@ -83,6 +83,8 @@ namespace LMP
 		static Core& Instance ();
 		static void InitWithProxy (const ICoreProxy_ptr&);
 
+		void Release ();
+
 		ICoreProxy_ptr GetProxy ();
 
 		void SendEntity (const Entity&);
