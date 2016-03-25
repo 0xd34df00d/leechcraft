@@ -76,9 +76,10 @@ namespace LeechCraft
 		QByteArray read = socket->readAll ();
 		QDataStream in (read);
 		QStringList arguments;
-		in >> arguments;
+		QString foreignPath;
+		in >> arguments >> foreignPath;
 
-		qDebug () << Q_FUNC_INFO << arguments;
+		qDebug () << Q_FUNC_INFO << arguments << foreignPath;
 
 		std::vector<std::wstring> strings;
 		for (const auto& arg : arguments)
