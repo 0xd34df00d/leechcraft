@@ -38,11 +38,11 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	RgAnalysisManager::RgAnalysisManager (const std::weak_ptr<LocalCollection>& coll, QObject *parent)
+	RgAnalysisManager::RgAnalysisManager (LocalCollection *coll, QObject *parent)
 	: QObject { parent }
 	, Coll_ { coll }
 	{
-		connect (Coll_.lock ().get (),
+		connect (Coll_,
 				SIGNAL (scanFinished ()),
 				this,
 				SLOT (handleScanFinished ()));
@@ -61,19 +61,11 @@ namespace LMP
 
 	void RgAnalysisManager::handleAnalysed ()
 	{
-		const auto coll = Coll_.lock ();
-		if (!coll)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "collection expired";
-			return;
-		}
-
 		const auto& result = CurrentAnalyser_->GetResult ();
 
 		for (const auto& track : result.Tracks_)
 		{
-			const auto id = coll->FindTrack (track.TrackPath_);
+			const auto id = Coll_->FindTrack (track.TrackPath_);
 			if (id == -1)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -82,7 +74,7 @@ namespace LMP
 				continue;
 			}
 
-			coll->GetStorage ()->SetRgTrackInfo (id,
+			Coll_->GetStorage ()->SetRgTrackInfo (id,
 					{
 						track.TrackGain_,
 						track.TrackPeak_,
@@ -123,22 +115,14 @@ namespace LMP
 		if (!IsScanAllowed ())
 			return;
 
-		const auto coll = Coll_.lock ();
-		if (!coll)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "collection expired";
-			return;
-		}
-
 		QSet<int> albums;
-		for (const auto track : coll->GetStorage ()->GetOutdatedRgTracks ())
-			albums << coll->GetTrackAlbumId (track);
+		for (const auto track : Coll_->GetStorage ()->GetOutdatedRgTracks ())
+			albums << Coll_->GetTrackAlbumId (track);
 
 		const bool wasEmpty = AlbumsQueue_.isEmpty ();
 
 		for (auto albumId : albums)
-			if (const auto& album = coll->GetAlbum (albumId))
+			if (const auto& album = Coll_->GetAlbum (albumId))
 				AlbumsQueue_ << album;
 
 		qDebug () << AlbumsQueue_.size ()

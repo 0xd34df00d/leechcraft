@@ -54,29 +54,42 @@ namespace LMP
 {
 	std::shared_ptr<Core> Core::CoreInstance_;
 
+	struct Core::Members
+	{
+		LocalFileResolver Resolver_;
+
+		HookInterconnector HookInterconnector_;
+
+		LocalCollection Collection_;
+		CollectionsManager CollectionsManager_;
+
+		PlaylistManager PLManager_;
+
+		SyncManager SyncManager_;
+		SyncUnmountableManager SyncUnmountableManager_;
+		CloudUploadManager CloudUpMgr_;
+
+		ProgressManager ProgressManager_;
+
+		RadioManager RadioManager_;
+
+		Player Player_;
+		PreviewHandler PreviewMgr_ { &Player_ };
+
+		LMPProxy LmpProxy_ { &Collection_, &Resolver_, &PreviewMgr_ };
+
+		RgAnalysisManager RgMgr_ { &Collection_ };
+	};
+
 	Core::Core (const ICoreProxy_ptr& proxy)
 	: Proxy_ (proxy)
-	, Resolver_ (new LocalFileResolver)
-	, HookInterconnector_ (new HookInterconnector)
-	, Collection_ (new LocalCollection)
-	, CollectionsManager_ (new CollectionsManager)
-	, PLManager_ (new PlaylistManager)
-	, SyncManager_ (new SyncManager)
-	, SyncUnmountableManager_ (new SyncUnmountableManager)
-	, CloudUpMgr_ (new CloudUploadManager)
-	, ProgressManager_ (new ProgressManager)
-	, RadioManager_ (new RadioManager)
-	, Player_ (std::make_shared<Player> ())
-	, PreviewMgr_ (std::make_shared<PreviewHandler> (Player_.get ()))
-	, LmpProxy_ (std::make_shared<LMPProxy> (Collection_.get (), Resolver_.get (), PreviewMgr_.get ()))
+	, M_ (std::make_shared<Members> ())
 	{
-		ProgressManager_->AddSyncManager (SyncManager_.get ());
-		ProgressManager_->AddSyncManager (SyncUnmountableManager_.get ());
-		ProgressManager_->AddSyncManager (CloudUpMgr_.get ());
+		M_->ProgressManager_.AddSyncManager (&M_->SyncManager_);
+		M_->ProgressManager_.AddSyncManager (&M_->SyncUnmountableManager_);
+		M_->ProgressManager_.AddSyncManager (&M_->CloudUpMgr_);
 
-		new RgAnalysisManager (Collection_, this);
-
-		CollectionsManager_->Add (Collection_->GetCollectionModel ());
+		M_->CollectionsManager_.Add (M_->Collection_.GetCollectionModel ());
 	}
 
 	Core& Core::Instance ()
@@ -86,7 +99,7 @@ namespace LMP
 
 	void Core::InitWithProxy (const ICoreProxy_ptr& proxy)
 	{
-		CoreInstance_.reset (new Core (proxy));
+		CoreInstance_.reset (new Core { proxy });
 	}
 
 	ICoreProxy_ptr Core::GetProxy ()
@@ -101,13 +114,14 @@ namespace LMP
 
 	void Core::InitWithOtherPlugins ()
 	{
-		Player_->InitWithOtherPlugins ();
-		RadioManager_->InitProviders ();
+		M_->PreviewMgr_.InitWithPlugins ();
+		M_->Player_.InitWithOtherPlugins ();
+		M_->RadioManager_.InitProviders ();
 	}
 
-	const std::shared_ptr<LMPProxy>& Core::GetLmpProxy () const
+	LMPProxy* Core::GetLmpProxy () const
 	{
-		return LmpProxy_;
+		return &M_->LmpProxy_;
 	}
 
 	void Core::AddPlugin (QObject *pluginObj)
@@ -123,7 +137,7 @@ namespace LMP
 			return;
 		}
 
-		ilmpPlug->SetLMPProxy (LmpProxy_.get ());
+		ilmpPlug->SetLMPProxy (&M_->LmpProxy_);
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
@@ -139,9 +153,9 @@ namespace LMP
 
 		if (classes.contains ("org.LeechCraft.LMP.PlaylistProvider") &&
 			qobject_cast<IPlaylistProvider*> (pluginObj))
-			PLManager_->AddProvider (pluginObj);
+			M_->PLManager_.AddProvider (pluginObj);
 
-		HookInterconnector_->AddPlugin (pluginObj);
+		M_->HookInterconnector_.AddPlugin (pluginObj);
 	}
 
 	QObjectList Core::GetSyncPlugins () const
@@ -161,72 +175,72 @@ namespace LMP
 
 	HookInterconnector* Core::GetHookInterconnector () const
 	{
-		return HookInterconnector_.get ();
+		return &M_->HookInterconnector_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
 	{
-		return Resolver_.get ();
+		return &M_->Resolver_;
 	}
 
 	LocalCollection* Core::GetLocalCollection () const
 	{
-		return Collection_.get ();
+		return &M_->Collection_;
 	}
 
 	CollectionsManager* Core::GetCollectionsManager () const
 	{
-		return CollectionsManager_.get ();
+		return &M_->CollectionsManager_;
 	}
 
 	PlaylistManager* Core::GetPlaylistManager () const
 	{
-		return PLManager_.get ();
+		return &M_->PLManager_;
 	}
 
 	SyncManager* Core::GetSyncManager () const
 	{
-		return SyncManager_.get ();
+		return &M_->SyncManager_;
 	}
 
 	SyncUnmountableManager* Core::GetSyncUnmountableManager () const
 	{
-		return SyncUnmountableManager_.get ();
+		return &M_->SyncUnmountableManager_;
 	}
 
 	CloudUploadManager* Core::GetCloudUploadManager () const
 	{
-		return CloudUpMgr_.get ();
+		return &M_->CloudUpMgr_;
 	}
 
 	ProgressManager* Core::GetProgressManager () const
 	{
-		return ProgressManager_.get ();
+		return &M_->ProgressManager_;
 	}
 
 	RadioManager* Core::GetRadioManager () const
 	{
-		return RadioManager_.get ();
+		return &M_->RadioManager_;
 	}
 
 	Player* Core::GetPlayer () const
 	{
-		return Player_.get ();
+		return &M_->Player_;
 	}
 
 	PreviewHandler* Core::GetPreviewHandler () const
 	{
-		return PreviewMgr_.get ();
+		return &M_->PreviewMgr_;
 	}
 
 	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
 	{
-		return PLManager_->TryResolveMediaInfo (url);
+		return M_->PLManager_.TryResolveMediaInfo (url);
 	}
 
 	void Core::rescan ()
 	{
-		Collection_->Rescan ();
+		M_->Collection_.Rescan ();
 	}
 }
 }

@@ -65,27 +65,9 @@ namespace LMP
 
 		const ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<LocalFileResolver> Resolver_;
+		struct Members;
 
-		std::shared_ptr<HookInterconnector> HookInterconnector_;
-
-		std::shared_ptr<LocalCollection> Collection_;
-		std::shared_ptr<CollectionsManager> CollectionsManager_;
-
-		std::shared_ptr<PlaylistManager> PLManager_;
-
-		std::shared_ptr<SyncManager> SyncManager_;
-		std::shared_ptr<SyncUnmountableManager> SyncUnmountableManager_;
-		std::shared_ptr<CloudUploadManager> CloudUpMgr_;
-
-		std::shared_ptr<ProgressManager> ProgressManager_;
-
-		std::shared_ptr<RadioManager> RadioManager_;
-
-		std::shared_ptr<Player> Player_;
-		std::shared_ptr<PreviewHandler> PreviewMgr_;
-
-		std::shared_ptr<LMPProxy> LmpProxy_;
+		std::shared_ptr<Members> M_;
 
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
@@ -107,7 +89,7 @@ namespace LMP
 
 		void InitWithOtherPlugins ();
 
-		const std::shared_ptr<LMPProxy>& GetLmpProxy () const;
+		LMPProxy* GetLmpProxy () const;
 
 		void AddPlugin (QObject*);
 		QObjectList GetSyncPlugins () const;
