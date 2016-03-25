@@ -34,6 +34,7 @@
 #include <QLocalSocket>
 #include <QUrl>
 #include <QFile>
+#include <QDir>
 #include "util/xpc/util.h"
 #include "interfaces/structures.h"
 #include "application.h"
@@ -88,12 +89,12 @@ namespace LeechCraft
 		boost::program_options::options_description desc;
 		boost::program_options::wcommand_line_parser parser (strings);
 		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
-		DoLine (map);
+		DoLine (map, foreignPath);
 	}
 
 	void LocalSocketHandler::pullCommandLine ()
 	{
-		DoLine (qobject_cast<Application*> (qApp)->GetVarMap ());
+		DoLine (qobject_cast<Application*> (qApp)->GetVarMap (), QDir::currentPath ());
 	}
 
 	namespace
@@ -157,7 +158,7 @@ namespace LeechCraft
 		}
 	}
 
-	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map)
+	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map, const QString& curDir)
 	{
 		if (!map.count ("entity"))
 			return;

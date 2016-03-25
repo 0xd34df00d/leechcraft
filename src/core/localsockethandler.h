@@ -50,7 +50,7 @@ namespace LeechCraft
 		void handleNewLocalServerConnection ();
 		void pullCommandLine ();
 	private:
-		void DoLine (const boost::program_options::variables_map&);
+		void DoLine (const boost::program_options::variables_map&, const QString&);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 	};
