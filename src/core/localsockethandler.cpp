@@ -156,6 +156,17 @@ namespace LeechCraft
 
 			return tp;
 		}
+
+		QUrl ResolveLocalFile (const QString& entity, const QString& curDir)
+		{
+			if (QDir::isAbsolutePath (entity))
+				return QUrl::fromLocalFile (entity);
+
+			if (!QFileInfo { curDir }.isDir ())
+				return QUrl::fromLocalFile (entity);
+
+			return QUrl::fromLocalFile (QDir { curDir }.filePath (entity));
+		}
 	}
 
 	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map, const QString& curDir)
@@ -178,7 +189,7 @@ namespace LeechCraft
 			else if (type == "url_encoded")
 				ve = QUrl::fromEncoded (entity.toUtf8 ());
 			else if (type == "file")
-				ve = QUrl::fromLocalFile (entity);
+				ve = ResolveLocalFile (entity, curDir);
 			else
 			{
 				if (QFile::exists (entity))
