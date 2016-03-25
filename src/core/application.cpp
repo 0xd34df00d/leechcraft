@@ -385,7 +385,7 @@ namespace LeechCraft
 				socket.state () == QLocalSocket::ConnectedState)
 		{
 			QDataStream out (&socket);
-			out << Arguments_;
+			out << Arguments_ << QDir::currentPath ();
 			if (socket.waitForBytesWritten ())
 				return true;
 			if (socket.error() == QLocalSocket::UnknownSocketError)
