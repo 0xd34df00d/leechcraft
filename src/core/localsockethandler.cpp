@@ -78,9 +78,6 @@ namespace LeechCraft
 		QStringList arguments;
 		in >> arguments;
 
-		if (!arguments.isEmpty ())
-			arguments.removeFirst ();
-
 		qDebug () << Q_FUNC_INFO << arguments;
 
 		std::vector<std::wstring> strings;
