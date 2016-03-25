@@ -149,7 +149,7 @@ namespace LMP
 		return SyncPlugins_;
 	}
 
-	QObjectList Core::GetCloudStoragePlugins() const
+	QObjectList Core::GetCloudStoragePlugins () const
 	{
 		return CloudPlugins_;
 	}
