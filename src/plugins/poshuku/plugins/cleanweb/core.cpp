@@ -41,7 +41,6 @@
 #include <QDir>
 #include <qwebframe.h>
 #include <qwebpage.h>
-#include <qwebelement.h>
 #include <QCoreApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
