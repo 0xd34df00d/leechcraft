@@ -760,12 +760,14 @@ namespace CleanWeb
 			const auto& selector = result.Selectors_.value (i);
 
 			QString js;
+			js += "(function(){";
 			js += "var elems = document.querySelectorAll('" + selector + "');";
 			js += R"delim(
 					for (var i = 0; i < elems.length; ++i)
 						elems[i].remove();
 					return elems.length;
 					)delim";
+			js += "})();";
 
 			const auto& res = result.Frame_->evaluateJavaScript (js);
 			if (const auto count = res.toInt ())
