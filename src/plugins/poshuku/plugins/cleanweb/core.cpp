@@ -520,7 +520,7 @@ namespace CleanWeb
 								for (const auto& item : items)
 								{
 									const auto& opt = item->Option_;
-									if (opt.AbortForeign_ && isForeign)
+									if (opt.AbortForeign_ && !isForeign)
 										continue;
 
 									if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
