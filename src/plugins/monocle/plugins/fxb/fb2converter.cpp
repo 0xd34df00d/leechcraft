@@ -30,6 +30,7 @@
 #include "fb2converter.h"
 #include <functional>
 #include <memory>
+#include <boost/optional.hpp>
 #include <QDomDocument>
 #include <QTextDocument>
 #include <QTextCursor>
@@ -353,27 +354,33 @@ namespace FXB
 		--SectionLevel_;
 	}
 
-	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
+	namespace
 	{
-		if (CurrentTOCStack_.top ()->Name_.isEmpty ())
+		boost::optional<QString> GetTitleName (const QDomElement& tagElem)
 		{
 			auto child = tagElem.firstChildElement ();
 			while (!child.isNull ())
 			{
 				if (child.tagName () == "p")
-				{
-					*CurrentTOCStack_.top () = TOCEntry
-							{
-								std::make_shared<TOCLink> (ParentDoc_, Result_->pageCount () - 1),
-								child.text (),
-								{}
-							};
-					break;
-				}
+					return child.text ();
 
 				child = child.nextSiblingElement ();
 			}
+
+			return {};
 		}
+	}
+
+	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
+	{
+		if (CurrentTOCStack_.top ()->Name_.isEmpty ())
+			if (const auto name = GetTitleName (tagElem))
+				*CurrentTOCStack_.top () = TOCEntry
+						{
+							std::make_shared<TOCLink> (ParentDoc_, Result_->pageCount () - 1),
+							*name,
+							{}
+						};
 
 		const auto currentSectionLevel = SectionLevel_;
 		HandleMangleBlockFormat (tagElem,
