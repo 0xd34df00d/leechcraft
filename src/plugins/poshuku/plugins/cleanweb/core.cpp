@@ -777,6 +777,10 @@ namespace CleanWeb
 						<< selector
 						<< "on frame with URL"
 						<< result.Frame_->url ();
+			else if (!res.canConvert<int> ())
+				qWarning () << Q_FUNC_INFO
+						<< "failed to execute JS:"
+						<< js;
 		}
 
 		if (result.CurrentPos_ < result.Selectors_.size ())
