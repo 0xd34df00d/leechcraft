@@ -50,11 +50,6 @@
 #include <QMainWindow>
 #include <QDir>
 #include <qwebview.h>
-
-#if QT_VERSION >= 0x050000
-#include <QUrlQuery>
-#endif
-
 #include <util/xpc/util.h>
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
@@ -62,6 +57,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/qstringwrappers.h>
+#include <util/sll/urlaccessor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "userfiltersmodel.h"
@@ -572,22 +568,15 @@ namespace CleanWeb
 		qDebug () << Q_FUNC_INFO << subscrUrl;
 		QUrl url;
 
-#if QT_VERSION < 0x050000
-		const auto& location = subscrUrl.queryItemValue ("location");
-#else
-		const auto& location = QUrlQuery { subscrUrl }.queryItemValue ("location");
-#endif
+		const Util::UrlAccessor accessor { subscrUrl };
+		const auto& location = accessor ["location"];
 
 		if (location.contains ("%"))
 			url.setUrl (QUrl::fromPercentEncoding (location.toLatin1 ()));
 		else
 			url.setUrl (location);
 
-#if QT_VERSION < 0x050000
-		const auto& subscrName = subscrUrl.queryItemValue ("title");
-#else
-		const auto& subscrName = QUrlQuery { subscrUrl }.queryItemValue ("title");
-#endif
+		const auto& subscrName = accessor ["title"];
 
 		qDebug () << "adding" << url << "as" << subscrName;
 		bool result = Load (url, subscrName);
