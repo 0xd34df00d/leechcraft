@@ -763,7 +763,7 @@ namespace CleanWeb
 			js += "var elems = document.querySelectorAll('" + selector + "');";
 			js += R"delim(
 					for (var i = 0; i < elems.length; ++i)
-						elems[i].remove();';
+						elems[i].remove();
 					return elems.length;
 					)delim";
 
