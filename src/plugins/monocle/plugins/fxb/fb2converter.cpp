@@ -118,7 +118,7 @@ namespace FXB
 		Handlers_ ["annotation"] = [this] (const QDomElement& p)
 		{
 			HandleMangleBlockFormat (p,
-					[] (QTextBlockFormat& fmt) -> void
+					[] (QTextBlockFormat& fmt)
 					{
 						fmt.setAlignment (Qt::AlignRight);
 						fmt.setLeftMargin (60);
