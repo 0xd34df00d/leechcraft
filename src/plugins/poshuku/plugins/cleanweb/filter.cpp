@@ -102,6 +102,20 @@ namespace CleanWeb
 		return !(f1 == f2);
 	}
 
+	QDebug operator<< (QDebug dbg, const FilterOption& option)
+	{
+		dbg << "FilterOption {"
+				<< "CS:" << (option.Case_ == Qt::CaseSensitive) << "; "
+				<< "Match type:" << option.MatchType_ << "; "
+				<< "Match objects:" << option.MatchObjects_ << "; "
+				<< "Domains:" << option.Domains_ << "; "
+				<< "!domains:" << option.NotDomains_ << "; "
+				<< "Selector:" << option.HideSelector_ << "; "
+				<< "Abort foreign requests:" << option.AbortForeign_
+				<< "}";
+		return dbg;
+	}
+
 	QDataStream& operator<< (QDataStream& out, const FilterItem& item)
 	{
 		out << static_cast<quint8> (2)

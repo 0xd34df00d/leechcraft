@@ -85,6 +85,8 @@ namespace CleanWeb
 	bool operator== (const FilterOption&, const FilterOption&);
 	bool operator!= (const FilterOption&, const FilterOption&);
 
+	QDebug operator<< (QDebug, const FilterOption&);
+
 	struct SubscriptionData
 	{
 		/// The URL of the subscription.
