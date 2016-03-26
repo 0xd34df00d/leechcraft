@@ -52,6 +52,8 @@ namespace FXB
 {
 	class Document;
 
+	class CursorCacher;
+
 	class FB2Converter : public QObject
 	{
 		Document *ParentDoc_;

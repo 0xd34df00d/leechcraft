@@ -50,6 +50,90 @@ namespace Monocle
 {
 namespace FXB
 {
+	class CursorCacher
+	{
+		QTextCursor * const Cursor_;
+
+		QString Text_;
+
+		QTextBlockFormat LastBlockFormat_ = Cursor_->blockFormat ();
+		QTextCharFormat LastCharFormat_ = Cursor_->charFormat ();
+	public:
+		CursorCacher (QTextCursor *cursor);
+		~CursorCacher ();
+
+		const QTextBlockFormat& blockFormat () const;
+		const QTextCharFormat& charFormat () const;
+
+		void insertBlock (const QTextBlockFormat&);
+		void insertText (const QString&);
+
+		void setCharFormat (const QTextCharFormat&);
+
+		void Flush ();
+	};
+
+	CursorCacher::CursorCacher (QTextCursor *cursor)
+	: Cursor_ (cursor)
+	{
+	}
+
+	CursorCacher::~CursorCacher ()
+	{
+		Flush ();
+	}
+
+	const QTextBlockFormat& CursorCacher::blockFormat () const
+	{
+		return LastBlockFormat_;
+	}
+
+	const QTextCharFormat& CursorCacher::charFormat () const
+	{
+		return LastCharFormat_;
+	}
+
+	void CursorCacher::insertBlock (const QTextBlockFormat& fmt)
+	{
+		if (fmt == LastBlockFormat_)
+		{
+			if (!Text_.isEmpty ())
+				Text_ += "\n";
+
+			return;
+		}
+
+		Flush ();
+
+		Cursor_->insertBlock (fmt);
+		LastBlockFormat_ = fmt;
+	}
+
+	void CursorCacher::insertText (const QString& text)
+	{
+		Text_ += text;
+	}
+
+	void CursorCacher::setCharFormat (const QTextCharFormat& fmt)
+	{
+		if (LastCharFormat_ == fmt)
+			return;
+
+		Flush ();
+
+		Cursor_->setCharFormat (fmt);
+		LastCharFormat_ = fmt;
+	}
+
+	void CursorCacher::Flush ()
+	{
+		if (Text_.isEmpty ())
+			return;
+
+		Cursor_->insertText (Text_);
+		Text_.clear ();
+	}
+
 	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2)
 	: ParentDoc_ (doc)
 	, FB2_ (fb2)
