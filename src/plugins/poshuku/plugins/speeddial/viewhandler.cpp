@@ -271,6 +271,8 @@ namespace SpeedDial
 				{
 					image = QImage { thumbSize, QImage::Format_ARGB32 };
 					image.fill (Qt::transparent);
+
+					++PendingImages_;
 				}
 
 				w.writeStartElement ("td");
@@ -300,16 +302,29 @@ namespace SpeedDial
 		}
 
 		w.writeEndElement ();
+
+		if (!PendingImages_)
+			deleteLater ();
 	}
 
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
 	{
 		const auto& elemId = QString::number (qHash (url));
 
-		auto js = "var image = document.getElementById(" + elemId + ");";
+		QString js;
+		js += "(function() {";
+		js += "var image = document.getElementById(" + elemId + ");";
+		js += "if (image == null) return false;";
 		js += "image.src = '" + Util::GetAsBase64Src (image) + "';";
+		js += "return true;";
+		js += "})()";
 
-		View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		const auto& res = View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		if (!res.toBool ())
+			return;
+
+		if (!--PendingImages_)
+			deleteLater ();
 	}
 }
 }

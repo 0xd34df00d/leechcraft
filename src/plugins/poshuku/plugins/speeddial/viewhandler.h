@@ -63,6 +63,8 @@ namespace SpeedDial
 		IProxyObject * const PoshukuProxy_;
 
 		bool IsLoading_ = false;
+
+		int PendingImages_ = 0;
 	public:
 		ViewHandler (QWebView*, QObject*, ImageCache*, CustomSitesManager*, IProxyObject*);
 	private:
