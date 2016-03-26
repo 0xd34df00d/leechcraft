@@ -404,6 +404,14 @@ namespace FXB
 							{}
 						};
 
+		if (const auto emptyCount = GetEmptyLinesCount (tagElem))
+		{
+			CursorCacher_->insertText ("\n\n");
+			for (int i = 0; i < emptyCount; ++i)
+				CursorCacher_->insertText ("\n");
+			return;
+		}
+
 		const auto currentSectionLevel = SectionLevel_;
 		HandleMangleBlockFormat (tagElem,
 				[] (QTextBlockFormat&) {},
