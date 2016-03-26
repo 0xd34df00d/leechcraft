@@ -33,9 +33,6 @@
 #include <QPair>
 #include <QList>
 
-template<typename T>
-class QFutureWatcher;
-
 class QXmlStreamWriter;
 class QWebView;
 class QUrl;
@@ -65,8 +62,6 @@ namespace SpeedDial
 		ImageCache * const ImageCache_;
 		IProxyObject * const PoshukuProxy_;
 
-		QFutureWatcher<LoadResult> * const LoadWatcher_;
-
 		bool IsLoading_ = false;
 	public:
 		ViewHandler (QWebView*, QObject*, ImageCache*, CustomSitesManager*, IProxyObject*);
@@ -77,7 +72,6 @@ namespace SpeedDial
 	private slots:
 		void handleLoadStarted ();
 
-		void handleLoaded ();
 		void handleSnapshot (const QUrl&, const QImage&);
 	};
 }
