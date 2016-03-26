@@ -761,7 +761,7 @@ namespace CleanWeb
 
 			QString js;
 			js += "(function(){";
-			js += "var elems = document.querySelectorAll('" + selector + "');";
+			js += "var elems = document.querySelectorAll('" + selector.replace ('\'', "\\'") + "');";
 			js += R"delim(
 					for (var i = 0; i < elems.length; ++i)
 						elems[i].remove();
