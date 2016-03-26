@@ -97,9 +97,7 @@ namespace FXB
 	{
 		if (fmt == LastBlockFormat_)
 		{
-			if (!Text_.isEmpty ())
-				Text_ += "\n";
-
+			Text_ += "\n";
 			return;
 		}
 
