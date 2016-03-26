@@ -64,7 +64,7 @@ namespace FatApe
 		return settings;
 	}
 
-	void GreaseMonkey::addStyle (const QString& css)
+	void GreaseMonkey::addStyle (QString css)
 	{
 		QWebElement body = Frame_->findFirstElement ("body");
 
