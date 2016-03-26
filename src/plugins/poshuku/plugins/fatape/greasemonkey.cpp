@@ -32,7 +32,6 @@
 #include <QFile>
 #include <QHash>
 #include <QTextStream>
-#include <QWebElement>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -66,9 +65,12 @@ namespace FatApe
 
 	void GreaseMonkey::addStyle (QString css)
 	{
-		QWebElement body = Frame_->findFirstElement ("body");
-
-		body.appendInside (QString ("<style type=\"text/css\">%1</style>").arg (css));
+		QString js;
+		js += "var el = document.createElement('style');";
+		js += "el.type = 'text/css';";
+		js += "el.innerHTML = '* { " + css.replace ('\'', "\\'") + " }'";
+		js += "document.body.insertBefore(el, document.body.firstChild);";
+		Frame_->evaluateJavaScript (js);
 	}
 
 	void GreaseMonkey::deleteValue (const QString& name)
