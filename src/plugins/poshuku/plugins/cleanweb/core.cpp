@@ -790,21 +790,25 @@ namespace CleanWeb
 	{
 		bool RemoveElements (QWebFrame *frame, const QList<QUrl>& urls)
 		{
-			const auto& baseUrl = frame->baseUrl ();
+			const auto& preparedUrls = Util::Map (urls,
+					[] (const QUrl& url) { return QString { '"' + url.toEncoded () + '"' }; });
 
-			const auto& elems = frame->findAllElements ("img,script,iframe,applet,object");
+			QString js;
+			js += "(function(){";
+			js += "var urls = [ " + preparedUrls.join (", ") + " ];";
+			js += "var elems = document.querySelectorAll('img,script,iframe,applet,object');";
+			js += "if (elems.length == 0)";
+			js += "	return false;";
+			js += "var removed = false;";
+			js += "for (var i = 0; i < elems.length; ++i)";
+			js += "	if (urls.indexOf(elems[i].src) != -1){";
+			js += "		elems[i].remove();";
+			js += "		removed = true;";
+			js += "	}";
+			js += "return removed;";
+			js += "})();";
 
-			bool removed = false;
-			for (int i = elems.count () - 1; i >= 0; --i)
-			{
-				auto elem = elems.at (i);
-				if (urls.contains (baseUrl.resolved (QUrl::fromEncoded (elem.attribute ("src").toUtf8 ()))))
-				{
-					elem.removeFromDocument ();
-					removed = true;
-				}
-			}
-			return removed;
+			return frame->evaluateJavaScript (js).toBool ();
 		}
 	}
 
