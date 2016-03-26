@@ -58,7 +58,6 @@ namespace CleanWeb
 	struct HidingWorkerResult
 	{
 		QPointer<QWebFrame> Frame_;
-		int CurrentPos_;
 		QStringList Selectors_;
 	};
 

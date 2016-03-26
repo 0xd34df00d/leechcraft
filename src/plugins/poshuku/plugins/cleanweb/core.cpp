@@ -718,7 +718,7 @@ namespace CleanWeb
 
 								sels << item->Option_.HideSelector_;
 							}
-						return { frame, 0, sels };
+						return { frame, sels };
 					}));
 
 		auto worker = [this, frame]
@@ -752,43 +752,32 @@ namespace CleanWeb
 		if (!result.Frame_)
 			return;
 
-		const int chunkSize = 100;
+		for (auto& selector : result.Selectors_)
+			selector.replace ('\\', "\\\\")
+					.replace ('\'', "\\'")
+					;
 
-		auto& i = result.CurrentPos_;
-		for (auto end = std::min (i + chunkSize, result.Selectors_.size ()); i < end; ++i)
-		{
-			const auto& selector = result.Selectors_.value (i);
+		QString js;
+		js += "(function(){";
+		js += "var elems = document.querySelectorAll('" + result.Selectors_.join (", ") + "');";
+		js += R"delim(
+				for (var i = 0; i < elems.length; ++i)
+					elems[i].remove();
+				return elems.length;
+				)delim";
+		js += "})();";
 
-			QString js;
-			js += "(function(){";
-			js += "var elems = document.querySelectorAll('" + selector.replace ('\'', "\\'") + "');";
-			js += R"delim(
-					for (var i = 0; i < elems.length; ++i)
-						elems[i].remove();
-					return elems.length;
-					)delim";
-			js += "})();";
-
-			const auto& res = result.Frame_->evaluateJavaScript (js);
-			if (const auto count = res.toInt ())
-				qDebug () << "removed"
-						<< count
-						<< "elements for selector"
-						<< selector
-						<< "on frame with URL"
-						<< result.Frame_->url ();
-			else if (!res.canConvert<int> ())
-				qWarning () << Q_FUNC_INFO
-						<< "failed to execute JS:"
-						<< js;
-		}
-
-		if (result.CurrentPos_ < result.Selectors_.size ())
-			new Util::DelayedExecutor
-			{
-				[this, result] { HideElementsChunk (result); },
-				0
-			};
+		const auto& res = result.Frame_->evaluateJavaScript (js);
+		if (const auto count = res.toInt ())
+			qDebug () << "removed"
+					<< count
+					<< "elements on frame with URL"
+					<< result.Frame_->url ()
+					<< result.Frame_->baseUrl ();
+		else if (!res.canConvert<int> ())
+			qWarning () << Q_FUNC_INFO
+					<< "failed to execute JS:"
+					<< js;
 	}
 
 	namespace
