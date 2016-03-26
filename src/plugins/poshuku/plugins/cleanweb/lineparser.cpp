@@ -70,11 +70,12 @@ namespace CleanWeb
 			Q_FOREACH (const QString& option, options)
 				if (option.startsWith ("domain="))
 				{
-					const auto& domain = option.mid (7);
-					if (domain.startsWith ('~'))
-						f.NotDomains_ << domain.mid (1);
-					else
-						f.Domains_ << domain;
+					const auto& domains = option.mid (7);
+					for (const auto& domain : domains.split ("|", QString::SkipEmptyParts))
+						if (domain.startsWith ('~'))
+							f.NotDomains_ << domain.mid (1);
+						else
+							f.Domains_ << domain;
 					options.removeAll (option);
 				}
 
