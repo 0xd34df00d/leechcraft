@@ -34,7 +34,6 @@
 #include <QtConcurrentRun>
 #include <QFutureWatcher>
 #include <QWebFrame>
-#include <QWebElement>
 #include <QXmlStreamWriter>
 #include <QLineEdit>
 #include <util/util.h>
@@ -320,10 +319,11 @@ namespace SpeedDial
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
 	{
 		const auto& elemId = QString::number (qHash (url));
-		const auto& elems = View_->page ()->mainFrame ()->findAllElements ("img[id='" + elemId + "']");
 
-		for (auto elem : elems.toList ())
-			elem.setAttribute ("src", Util::GetAsBase64Src (image));
+		auto js = "var image = document.getElementById(" + elemId + ");";
+		js += "image.src = '" + Util::GetAsBase64Src (image) + "';";
+
+		View_->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
 }
 }
