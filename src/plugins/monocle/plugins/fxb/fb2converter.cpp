@@ -255,20 +255,6 @@ namespace FXB
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
-		QStringList chunks;
-		auto flushChunks = [this, &chunks]
-		{
-			if (!chunks.isEmpty ())
-			{
-				QTextBlockFormat fmt;
-				fmt.setTextIndent (20);
-				Cursor_->insertBlock (fmt);
-
-				Cursor_->insertText (chunks.join ("\n"));
-				chunks.clear ();
-			}
-		};
-
 		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
