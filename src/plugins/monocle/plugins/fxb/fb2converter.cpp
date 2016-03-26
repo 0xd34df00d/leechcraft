@@ -171,10 +171,10 @@ namespace FXB
 		Handlers_ ["stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
 		Handlers_ ["v"] = [this] (const QDomElement& p)
 		{
-			auto blockFmt = Cursor_->blockFormat ();
+			auto blockFmt = CursorCacher_->blockFormat ();
 			blockFmt.setTextIndent (50);
 
-			Cursor_->insertBlock (blockFmt);
+			CursorCacher_->insertBlock (blockFmt);
 
 			HandleMangleCharFormat (p,
 					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
@@ -239,6 +239,8 @@ namespace FXB
 		}
 
 		TOC_ = entry.ChildLevel_;
+
+		CursorCacher_->Flush ();
 	}
 
 	FB2Converter::~FB2Converter ()
@@ -355,46 +357,40 @@ namespace FXB
 
 	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
 	{
-		auto topFrame = Cursor_->currentFrame ();
-
-		QTextFrameFormat frameFmt;
-		frameFmt.setBorder (1);
-		frameFmt.setPadding (10);
-		frameFmt.setBackground (QColor ("#A4C0E4"));
-		Cursor_->insertFrame (frameFmt);
-
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
+		if (CurrentTOCStack_.top ()->Name_.isEmpty ())
 		{
-			const auto& tagName = child.tagName ();
-
-			if (tagName == "empty-line")
-				Handlers_ [tagName] ({ child });
-			else if (tagName == "p")
+			auto child = tagElem.firstChildElement ();
+			while (!child.isNull ())
 			{
-				const auto origFmt = Cursor_->charFormat ();
-
-				auto titleFmt = origFmt;
-				titleFmt.setFontPointSize (18 - 2 * level - SectionLevel_);
-				Cursor_->setCharFormat (titleFmt);
-
-				Handlers_ ["p"] ({ child });
-
-				Cursor_->setCharFormat (origFmt);
-
-				if (CurrentTOCStack_.top ()->Name_.isEmpty ())
+				if (child.tagName () == "p")
+				{
 					*CurrentTOCStack_.top () = TOCEntry
 							{
 								std::make_shared<TOCLink> (ParentDoc_, Result_->pageCount () - 1),
 								child.text (),
 								{}
 							};
-			}
+					break;
+				}
 
-			child = child.nextSiblingElement ();
+				child = child.nextSiblingElement ();
+			}
 		}
 
-		Cursor_->setPosition (topFrame->lastPosition ());
+		const auto currentSectionLevel = SectionLevel_;
+		HandleMangleBlockFormat (tagElem,
+				[] (QTextBlockFormat&) {},
+				[=] (const QDomElement& e)
+				{
+					HandleMangleCharFormat (e,
+							[=] (QTextCharFormat& fmt)
+							{
+								const auto newSize = 18 - 2 * level - currentSectionLevel;
+								fmt.setFontPointSize (newSize);
+								fmt.setFontWeight (currentSectionLevel <= 1 ? QFont::Bold : QFont::DemiBold);
+							},
+							[this] (const QDomElement& e) { HandleChildren (e); });
+				});
 	}
 
 	void FB2Converter::HandleEpigraph (const QDomElement& tagElem)
@@ -418,15 +414,16 @@ namespace FXB
 				{ "image://" + refId },
 				QVariant::fromValue (image));
 
+		CursorCacher_->Flush ();
 		Cursor_->insertHtml (QString ("<img src='image://%1'/>").arg (refId));
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
-		auto fmt = Cursor_->blockFormat ();
+		auto fmt = CursorCacher_->blockFormat ();
 		fmt.setTextIndent (20);
 		fmt.setAlignment (Qt::AlignJustify);
-		Cursor_->insertBlock (fmt);
+		CursorCacher_->insertBlock (fmt);
 
 		HandleParaWONL (tagElem);
 	}
@@ -440,7 +437,7 @@ namespace FXB
 
 			if (child.isText ())
 			{
-				Cursor_->insertText (child.toText ().data ());
+				CursorCacher_->insertText (child.toText ().data ());
 				continue;
 			}
 
@@ -463,7 +460,7 @@ namespace FXB
 
 	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
-		Cursor_->insertText ("\n\n");
+		CursorCacher_->insertText ("\n\n");
 	}
 
 	void FB2Converter::HandleChildren (const QDomElement& tagElem)
@@ -490,33 +487,35 @@ namespace FXB
 	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
 			std::function<void (QTextBlockFormat&)> mangler, Handler_f next)
 	{
-		const auto origFmt = Cursor_->blockFormat ();
+		const auto origFmt = CursorCacher_->blockFormat ();
 
 		auto mangledFmt = origFmt;
 		mangler (mangledFmt);
-		Cursor_->insertBlock (mangledFmt);
+		CursorCacher_->insertBlock (mangledFmt);
 
 		next ({ tagElem });
 
-		Cursor_->insertBlock (origFmt);
+		CursorCacher_->insertBlock (origFmt);
 	}
 
 	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
 			std::function<void (QTextCharFormat&)> mangler, Handler_f next)
 	{
-		const auto origFmt = Cursor_->charFormat ();
+		const auto origFmt = CursorCacher_->charFormat ();
 
 		auto mangledFmt = origFmt;
 		mangler (mangledFmt);
-		Cursor_->setCharFormat (mangledFmt);
+		CursorCacher_->setCharFormat (mangledFmt);
 
 		next ({ tagElem });
 
-		Cursor_->setCharFormat (origFmt);
+		CursorCacher_->setCharFormat (origFmt);
 	}
 
 	void FB2Converter::FillPreamble ()
 	{
+		CursorCacher_->Flush ();
+
 		auto topFrame = Cursor_->currentFrame ();
 
 		QTextFrameFormat format;
