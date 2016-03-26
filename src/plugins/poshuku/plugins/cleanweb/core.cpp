@@ -218,14 +218,6 @@ namespace CleanWeb
 		Add (subscrUrl);
 	}
 
-	namespace
-	{
-		void RemoveElem (QWebElement elem)
-		{
-			elem.setStyleProperty ("visibility", "hidden !important");
-		}
-	}
-
 	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
 	{
 		QPointer<QWebFrame> safeFrame { frame };
@@ -768,16 +760,22 @@ namespace CleanWeb
 		{
 			const auto& selector = result.Selectors_.value (i);
 
-			const auto& matchingElems = result.Frame_->findAllElements (selector);
-			if (matchingElems.count ())
-				qDebug () << "removing"
-						<< matchingElems.count ()
-						<< "elems for"
-						<< selector
-						<< result.Frame_->url ();
+			QString js;
+			js += "var elems = document.querySelectorAll('" + selector + "');";
+			js += R"delim(
+					for (var i = 0; i < elems.length; ++i)
+						elems[i].remove();';
+					return elems.length;
+					)delim";
 
-			for (int i = matchingElems.count () - 1; i >= 0; --i)
-				RemoveElem (matchingElems.at (i));
+			const auto& res = result.Frame_->evaluateJavaScript (js);
+			if (const auto count = res.toInt ())
+				qDebug () << "removed"
+						<< count
+						<< "elements for selector"
+						<< selector
+						<< "on frame with URL"
+						<< result.Frame_->url ();
 		}
 
 		if (result.CurrentPos_ < result.Selectors_.size ())
