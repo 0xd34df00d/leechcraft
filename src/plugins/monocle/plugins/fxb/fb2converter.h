@@ -66,7 +66,7 @@ namespace FXB
 
 		QTextCursor *Cursor_;
 
-		int SectionLevel_;
+		int SectionLevel_ = 0;
 
 		typedef std::function<void (QDomElement)> Handler_f;
 		QHash<QString, Handler_f> Handlers_;

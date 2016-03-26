@@ -55,7 +55,6 @@ namespace FXB
 	, FB2_ (fb2)
 	, Result_ (new QTextDocument)
 	, Cursor_ (new QTextCursor (Result_))
-	, SectionLevel_ (0)
 	{
 		Result_->setPageSize (QSize (600, 800));
 		Result_->setUndoRedoEnabled (false);
