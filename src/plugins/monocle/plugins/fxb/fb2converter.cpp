@@ -369,6 +369,28 @@ namespace FXB
 
 			return {};
 		}
+
+		/** Returns 0 if there are no empty lines or there are elements
+		 * other than empty lines, returns the count of empty lines
+		 * otherwise.
+		 */
+		int GetEmptyLinesCount (const QDomElement& elem)
+		{
+			int emptyCount = 0;
+
+			auto child = elem.firstChildElement ();
+			while (!child.isNull ())
+			{
+				if (child.tagName () != "empty-line")
+					return 0;
+
+				++emptyCount;
+
+				child = child.nextSiblingElement ();
+			}
+
+			return emptyCount;
+		}
 	}
 
 	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
