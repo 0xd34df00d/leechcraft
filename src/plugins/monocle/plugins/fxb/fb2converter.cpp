@@ -139,6 +139,7 @@ namespace FXB
 	, FB2_ (fb2)
 	, Result_ (new QTextDocument)
 	, Cursor_ (new QTextCursor (Result_))
+	, CursorCacher_ (new CursorCacher (Cursor_))
 	{
 		Result_->setPageSize (QSize (600, 800));
 		Result_->setUndoRedoEnabled (false);
@@ -242,6 +243,7 @@ namespace FXB
 
 	FB2Converter::~FB2Converter ()
 	{
+		delete CursorCacher_;
 		delete Cursor_;
 	}
 
