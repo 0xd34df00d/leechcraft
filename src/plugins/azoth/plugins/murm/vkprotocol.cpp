@@ -164,6 +164,11 @@ namespace Murm
 		settings.setValue (account->GetAccountID (), account->Serialize ());
 		settings.endGroup ();
 	}
+
+	PhotoUrlStorage* VkProtocol::GetPhotoUrlStorage () const
+	{
+		return PhotoUrlStorage_;
+	}
 }
 }
 }
