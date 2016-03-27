@@ -183,7 +183,9 @@ namespace CleanWeb
 		if (dia.exec () != QDialog::Accepted)
 			return false;
 
-		return Add (dia);
+		const bool isException = Add (dia);
+		WriteSettings ();
+		return isException;
 	}
 
 	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
