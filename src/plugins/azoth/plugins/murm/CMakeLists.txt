@@ -21,7 +21,7 @@ set (MURM_SRCS
 	vkconnection.cpp
 	vkentry.cpp
 	vkmessage.cpp
-	photostorage.cpp
+	photofetcher.cpp
 	vcarddialog.cpp
 	georesolver.cpp
 	xmlsettingsmanager.cpp

@@ -37,7 +37,7 @@
 #include "vkaccount.h"
 #include "vkmessage.h"
 #include "vkconnection.h"
-#include "photostorage.h"
+#include "photofetcher.h"
 #include "vcarddialog.h"
 #include "groupsmanager.h"
 #include "vkchatentry.h"

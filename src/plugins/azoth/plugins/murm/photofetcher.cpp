@@ -27,39 +27,73 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-#include <QHash>
+#include "photofetcher.h"
+#include <QUrl>
+#include <QImage>
+#include <QNetworkAccessManager>
+#include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QFuture>
-
-class QImage;
-class QUrl;
-class QNetworkAccessManager;
-class QNetworkReply;
+#include <QFutureInterface>
+#include <QtDebug>
+#include <util/sll/queuemanager.h>
+#include <util/sll/slotclosure.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class QueueManager;
-}
-
 namespace Azoth
 {
 namespace Murm
 {
-	class PhotoStorage : public QObject
+	PhotoFetcher::PhotoFetcher (QNetworkAccessManager *nam, QObject *parent)
+	: QObject (parent)
+	, NAM_ (nam)
+	, FetchQueue_ (new Util::QueueManager (100, this))
 	{
-		QNetworkAccessManager * const NAM_;
-		Util::QueueManager * const FetchQueue_;
+	}
 
-		QHash<QUrl, QFuture<QImage>> Pending_;
-	public:
-		PhotoStorage (QNetworkAccessManager*, QObject* = 0);
+	namespace
+	{
+		void HandleReplyFinished (QNetworkReply *reply, QFutureInterface<QImage> iface)
+		{
+			const auto& data = reply->readAll ();
 
-		QFuture<QImage> GetImage (const QUrl&);
-	};
+			reply->deleteLater ();
+
+			const auto& image = QImage::fromData (data);
+			iface.reportFinished (&image);
+		}
+	}
+
+	QFuture<QImage> PhotoFetcher::GetImage (const QUrl& url)
+	{
+		if (Pending_.contains (url))
+			return Pending_.value (url);
+
+		QFutureInterface<QImage> iface;
+
+		const auto& future = iface.future ();
+		Pending_ [url] = future;
+		FetchQueue_->Schedule ([=] () mutable
+				{
+					iface.reportStarted ();
+
+					const auto& reply = NAM_->get (QNetworkRequest (url));
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						[=]
+						{
+							Pending_.remove (url);
+							HandleReplyFinished (reply, iface);
+						},
+						reply,
+						SIGNAL (finished ()),
+						reply
+					};
+				});
+		return future;
+	}
 }
 }
 }

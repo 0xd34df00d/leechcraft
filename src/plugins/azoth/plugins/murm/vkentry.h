@@ -50,7 +50,7 @@ namespace Murm
 {
 	class VkAccount;
 	class VkMessage;
-	class PhotoStorage;
+	class PhotoFetcher;
 	class VCardDialog;
 	class VkChatEntry;
 

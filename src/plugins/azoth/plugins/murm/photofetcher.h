@@ -27,73 +27,39 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "photostorage.h"
-#include <QUrl>
-#include <QImage>
-#include <QNetworkAccessManager>
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#pragma once
+
+#include <QObject>
+#include <QHash>
 #include <QFuture>
-#include <QFutureInterface>
-#include <QtDebug>
-#include <util/sll/queuemanager.h>
-#include <util/sll/slotclosure.h>
-#include <util/sys/paths.h>
+
+class QImage;
+class QUrl;
+class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class QueueManager;
+}
+
 namespace Azoth
 {
 namespace Murm
 {
-	PhotoStorage::PhotoStorage (QNetworkAccessManager *nam, QObject *parent)
-	: QObject (parent)
-	, NAM_ (nam)
-	, FetchQueue_ (new Util::QueueManager (100, this))
+	class PhotoFetcher : public QObject
 	{
-	}
+		QNetworkAccessManager * const NAM_;
+		Util::QueueManager * const FetchQueue_;
 
-	namespace
-	{
-		void HandleReplyFinished (QNetworkReply *reply, QFutureInterface<QImage> iface)
-		{
-			const auto& data = reply->readAll ();
+		QHash<QUrl, QFuture<QImage>> Pending_;
+	public:
+		PhotoFetcher (QNetworkAccessManager*, QObject* = 0);
 
-			reply->deleteLater ();
-
-			const auto& image = QImage::fromData (data);
-			iface.reportFinished (&image);
-		}
-	}
-
-	QFuture<QImage> PhotoStorage::GetImage (const QUrl& url)
-	{
-		if (Pending_.contains (url))
-			return Pending_.value (url);
-
-		QFutureInterface<QImage> iface;
-
-		const auto& future = iface.future ();
-		Pending_ [url] = future;
-		FetchQueue_->Schedule ([=] () mutable
-				{
-					iface.reportStarted ();
-
-					const auto& reply = NAM_->get (QNetworkRequest (url));
-					new Util::SlotClosure<Util::DeleteLaterPolicy>
-					{
-						[=]
-						{
-							Pending_.remove (url);
-							HandleReplyFinished (reply, iface);
-						},
-						reply,
-						SIGNAL (finished ()),
-						reply
-					};
-				});
-		return future;
-	}
+		QFuture<QImage> GetImage (const QUrl&);
+	};
 }
 }
 }
