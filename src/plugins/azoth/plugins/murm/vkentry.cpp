@@ -80,6 +80,8 @@ namespace Murm
 
 		XmlSettingsManager::Instance ()
 				.RegisterObject ("EntryNameFormat", this, "handleEntryNameFormat");
+
+		CheckPhotoChange ();
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info, bool spontaneous)
@@ -109,6 +111,8 @@ namespace Murm
 		}
 
 		emit vcardUpdated ();
+
+		CheckPhotoChange ();
 	}
 
 	const UserInfo& VkEntry::GetInfo () const
