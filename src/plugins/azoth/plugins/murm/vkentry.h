@@ -119,6 +119,8 @@ namespace Murm
 		QFuture<QImage> RefreshAvatar (Size) override;
 		bool HasAvatar () const override;
 		bool SupportsSize (Size) const override;
+	private:
+		void CheckPhotoChange ();
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();

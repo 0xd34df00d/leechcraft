@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <util/sll/delayedexecutor.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
@@ -43,6 +44,7 @@
 #include "vkchatentry.h"
 #include "georesolver.h"
 #include "util.h"
+#include "photourlstorage.h"
 
 namespace LeechCraft
 {
@@ -629,6 +631,28 @@ namespace Murm
 	void VkEntry::handleEntryNameFormat ()
 	{
 		emit nameChanged (GetEntryName ());
+	}
+
+	void VkEntry::CheckPhotoChange ()
+	{
+		QPointer<QObject> safeThis { this };
+
+		const auto id = Info_.ID_;
+		const auto url = Info_.BigPhoto_.isValid () ?
+				Info_.BigPhoto_ :
+				Info_.Photo_;
+		const auto photoUrlStorage = Account_->GetParentProtocol ()->GetPhotoUrlStorage ();
+
+		Util::ExecuteLater ([=] {
+				const auto& storedUrl = photoUrlStorage->GetUserUrl (id);
+				if (!storedUrl || *storedUrl == url)
+					return;
+
+				photoUrlStorage->SetUserUrl (id, url);
+
+				if (safeThis)
+					emit avatarChanged (this);
+			});
 	}
 }
 }
