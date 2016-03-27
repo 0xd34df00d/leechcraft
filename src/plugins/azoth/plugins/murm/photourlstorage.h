@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QSqlDatabase>
+#include <util/db/oralfwd.h>
 
 namespace LeechCraft
 {
@@ -39,7 +41,11 @@ namespace Murm
 {
 	class PhotoUrlStorage : public QObject
 	{
+	public:
 		struct Record;
+	private:
+		QSqlDatabase DB_;
+		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		PhotoUrlStorage (QObject* = nullptr);
 	};

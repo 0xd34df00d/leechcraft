@@ -28,6 +28,42 @@
  **********************************************************************/
 
 #include "photourlstorage.h"
+#include <QDir>
+#include <QSqlError>
+#include <util/sys/paths.h>
+#include <util/db/oral.h>
+#include <util/db/dblock.h>
+
+namespace LeechCraft
+{
+namespace Azoth
+{
+namespace Murm
+{
+	struct PhotoUrlStorage::Record
+	{
+		Util::oral::PKey<int> UserNum_;
+		QByteArray BigPhotoUrl_;
+
+		static QString ClassName ()
+		{
+			return "PhotoUrls";
+		}
+
+		static QString FieldNameMorpher (const QString& str)
+		{
+			return str.left (str.size () - 1);
+		}
+	};
+}
+}
+}
+
+using PhotoUrlRecord = LeechCraft::Azoth::Murm::PhotoUrlStorage::Record;
+
+BOOST_FUSION_ADAPT_STRUCT (PhotoUrlRecord,
+		(decltype (PhotoUrlRecord::UserNum_), UserNum_)
+		(decltype (PhotoUrlRecord::BigPhotoUrl_), BigPhotoUrl_))
 
 namespace LeechCraft
 {
@@ -37,7 +73,23 @@ namespace Murm
 {
 	PhotoUrlStorage::PhotoUrlStorage (QObject *parent)
 	: QObject { parent }
+	, DB_ { QSqlDatabase::addDatabase ("QSQLITE",
+			Util::GenConnectionName ("org.LeechCraft.Azoth.Murm.PhotoUrls")) }
 	{
+		const auto& cacheDir = Util::GetUserDir (Util::UserDir::Cache, "azoth/murm");
+		DB_.setDatabaseName (cacheDir.filePath ("photourls.db"));
+		if (!DB_.open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open the database";
+			Util::DBLock::DumpError (DB_.lastError ());
+			throw std::runtime_error { "Cannot create database" };
+		}
+
+		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
+		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 }
 }
