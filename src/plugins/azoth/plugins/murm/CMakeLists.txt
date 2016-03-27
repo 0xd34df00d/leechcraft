@@ -39,6 +39,7 @@ set (MURM_SRCS
 	util.cpp
 	appinfomanager.cpp
 	structures.cpp
+	photourlstorage.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
