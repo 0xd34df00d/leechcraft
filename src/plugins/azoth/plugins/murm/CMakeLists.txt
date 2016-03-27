@@ -68,4 +68,4 @@ target_link_libraries (leechcraft_azoth_murm
 install (TARGETS leechcraft_azoth_murm DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothmurmsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_azoth_murm Concurrent Network Widgets Xml)
+FindQtLibs (leechcraft_azoth_murm Concurrent Network Sql Widgets Xml)
