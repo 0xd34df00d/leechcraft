@@ -29,9 +29,12 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QSqlDatabase>
 #include <util/db/oralfwd.h>
+
+class QUrl;
 
 namespace LeechCraft
 {
@@ -48,6 +51,9 @@ namespace Murm
 		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
 	public:
 		PhotoUrlStorage (QObject* = nullptr);
+
+		boost::optional<QUrl> GetUserUrl (int);
+		void SetUserUrl (int, const QUrl&);
 	};
 }
 }

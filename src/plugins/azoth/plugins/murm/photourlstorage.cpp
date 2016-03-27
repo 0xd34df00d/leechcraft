@@ -28,11 +28,13 @@
  **********************************************************************/
 
 #include "photourlstorage.h"
+#include <QUrl>
 #include <QDir>
 #include <QSqlError>
-#include <util/sys/paths.h>
 #include <util/db/oral.h>
 #include <util/db/dblock.h>
+#include <util/sll/functor.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -90,6 +92,20 @@ namespace Murm
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
 
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
+	}
+
+	boost::optional<QUrl> PhotoUrlStorage::GetUserUrl (int userId)
+	{
+		using namespace Util::oral::sph;
+		using namespace Util;
+
+		return [] (const QByteArray& ba) { return QUrl::fromEncoded (ba); } *
+				AdaptedRecord_->DoSelectOneByFields_ (_1, _0 == userId);
+	}
+
+	void PhotoUrlStorage::SetUserUrl (int userId, const QUrl& url)
+	{
+		AdaptedRecord_->DoInsert_ ({ userId, url.toEncoded () }, Util::oral::InsertAction::Replace);
 	}
 }
 }
