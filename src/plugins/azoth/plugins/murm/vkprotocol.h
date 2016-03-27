@@ -43,6 +43,7 @@ class IProxyObject;
 namespace Murm
 {
 	class VkAccount;
+	class PhotoUrlStorage;
 
 	class VkProtocol : public QObject
 					 , public IProtocol
@@ -56,6 +57,8 @@ namespace Murm
 		QObject * const Plugin_;
 
 		QList<VkAccount*> Accounts_;
+
+		PhotoUrlStorage * const PhotoUrlStorage_;
 	public:
 		VkProtocol (ICoreProxy_ptr, IProxyObject*, QObject*);
 		~VkProtocol ();

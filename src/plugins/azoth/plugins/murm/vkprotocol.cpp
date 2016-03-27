@@ -33,6 +33,7 @@
 #include <QSettings>
 #include "vkaccount.h"
 #include "mucjoinwidget.h"
+#include "photourlstorage.h"
 
 namespace LeechCraft
 {
@@ -45,6 +46,7 @@ namespace Murm
 	, Proxy_ (proxy)
 	, AzothProxy_ (azothProxy)
 	, Plugin_ (plugin)
+	, PhotoUrlStorage_ (new PhotoUrlStorage (this))
 	{
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Murm");
