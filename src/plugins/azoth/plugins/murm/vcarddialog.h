@@ -44,7 +44,6 @@ namespace Murm
 {
 	class VkEntry;
 	class GeoResolver;
-	class PhotoStorage;
 
 	class VCardDialog : public QDialog
 	{
