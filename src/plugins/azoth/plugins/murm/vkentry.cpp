@@ -648,14 +648,16 @@ namespace Murm
 		const auto photoUrlStorage = Account_->GetParentProtocol ()->GetPhotoUrlStorage ();
 
 		Util::ExecuteLater ([=] {
+				if (!safeThis)
+					return;
+
 				const auto& storedUrl = photoUrlStorage->GetUserUrl (id);
 				if (!storedUrl || *storedUrl == url)
 					return;
 
-				photoUrlStorage->SetUserUrl (id, url);
+				emit avatarChanged (this);
 
-				if (safeThis)
-					emit avatarChanged (this);
+				photoUrlStorage->SetUserUrl (id, url);
 			});
 	}
 }
