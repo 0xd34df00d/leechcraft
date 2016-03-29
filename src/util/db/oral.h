@@ -167,6 +167,12 @@ namespace oral
 	};
 
 	template<>
+	struct Type2Name<qulonglong>
+	{
+		QString operator() () const { return "INTEGER"; }
+	};
+
+	template<>
 	struct Type2Name<double>
 	{
 		QString operator() () const { return "REAL"; }
