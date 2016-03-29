@@ -52,8 +52,8 @@ namespace Murm
 	public:
 		PhotoUrlStorage (QObject* = nullptr);
 
-		boost::optional<QUrl> GetUserUrl (int);
-		void SetUserUrl (int, const QUrl&);
+		boost::optional<QUrl> GetUserUrl (qulonglong);
+		void SetUserUrl (qulonglong, const QUrl&);
 	};
 }
 }

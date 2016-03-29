@@ -44,7 +44,7 @@ namespace Murm
 {
 	struct PhotoUrlStorage::Record
 	{
-		Util::oral::PKey<int> UserNum_;
+		Util::oral::PKey<qulonglong> UserNum_;
 		QByteArray BigPhotoUrl_;
 
 		static QString ClassName ()
@@ -94,7 +94,7 @@ namespace Murm
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
 
-	boost::optional<QUrl> PhotoUrlStorage::GetUserUrl (int userId)
+	boost::optional<QUrl> PhotoUrlStorage::GetUserUrl (qulonglong userId)
 	{
 		using namespace Util::oral::sph;
 		using namespace Util;
@@ -103,7 +103,7 @@ namespace Murm
 				AdaptedRecord_->DoSelectOneByFields_ (_1, _0 == userId);
 	}
 
-	void PhotoUrlStorage::SetUserUrl (int userId, const QUrl& url)
+	void PhotoUrlStorage::SetUserUrl (qulonglong userId, const QUrl& url)
 	{
 		AdaptedRecord_->DoInsert_ ({ userId, url.toEncoded () }, Util::oral::InsertAction::Replace);
 	}
