@@ -52,8 +52,8 @@ namespace FileScheme
 		virtual void close ();
 	protected:
 		virtual qint64 readData (char*, qint64);
-	private slots:
-		void list ();
+	private:
+		void List ();
 	};
 }
 }
