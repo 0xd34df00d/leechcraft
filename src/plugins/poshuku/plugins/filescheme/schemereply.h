@@ -38,7 +38,7 @@ namespace Poshuku
 {
 namespace FileScheme
 {
-	class SchemeReply : public QNetworkReply
+	class SchemeReply : public QNetworkReply final
 	{
 		QBuffer Buffer_;
 	public:
