@@ -652,7 +652,13 @@ namespace Murm
 					return;
 
 				const auto& storedUrl = photoUrlStorage->GetUserUrl (id);
-				if (!storedUrl || *storedUrl == url)
+				if (!storedUrl)
+				{
+					photoUrlStorage->SetUserUrl (id, url);
+					return;
+				}
+
+				if (*storedUrl == url)
 					return;
 
 				emit avatarChanged (this);
