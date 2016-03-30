@@ -40,8 +40,6 @@ namespace FileScheme
 {
 	class SchemeReply : public QNetworkReply
 	{
-		Q_OBJECT
-
 		QBuffer Buffer_;
 	public:
 		SchemeReply (const QNetworkRequest&, QObject* = 0);
