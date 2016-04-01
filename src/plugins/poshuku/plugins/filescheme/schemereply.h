@@ -45,11 +45,11 @@ namespace FileScheme
 		SchemeReply (const QNetworkRequest&, QObject* = 0);
 		virtual ~SchemeReply ();
 
-		virtual qint64 bytesAvailable () const;
-		virtual void abort ();
-		virtual void close ();
+		qint64 bytesAvailable () const override;
+		void abort () override;
+		void close () override;
 	protected:
-		virtual qint64 readData (char*, qint64);
+		qint64 readData (char*, qint64) override;
 	private:
 		void List ();
 	};
