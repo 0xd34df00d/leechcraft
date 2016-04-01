@@ -35,6 +35,7 @@
 #include <QPalette>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
@@ -135,13 +136,7 @@ namespace StandardStyles
 			const QString& pre = type == IMessage::Type::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
-			return pre +
-#if QT_VERSION < 0x050000
-					Qt::escape (part) +
-#else
-					part.toHtmlEscaped () +
-#endif
-					"</span>";
+			return pre + Util::Escape (part) + "</span>";
 		}
 	}
 
@@ -160,11 +155,7 @@ namespace StandardStyles
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
 		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
-#if QT_VERSION < 0x050000
-				Qt::escape (other->GetEntryName ()) :
-#else
-				other->GetEntryName ().toHtmlEscaped () :
-#endif
+				Util::Escape (other->GetEntryName ()) :
 				QString ();
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
