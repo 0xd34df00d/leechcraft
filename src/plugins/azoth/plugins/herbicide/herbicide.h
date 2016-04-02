@@ -34,6 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/azoth/iaccountactionsprovider.h>
 
 namespace LeechCraft
 {
@@ -50,9 +51,10 @@ namespace Herbicide
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IAccountActionsProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::IAccountActionsProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Herbicide")
 
@@ -81,6 +83,8 @@ namespace Herbicide
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QList<QAction*> GetActions (IAccount*);
 	private:
 		bool IsConfValid () const;
 		bool IsEntryAllowed (QObject*) const;

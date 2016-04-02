@@ -111,6 +111,11 @@ namespace Herbicide
 		return SettingsDialog_;
 	}
 
+	QList<QAction*> Plugin::GetActions (IAccount *account)
+	{
+		return {};
+	}
+
 	bool Plugin::IsConfValid () const
 	{
 		if (!XmlSettingsManager::Instance ()
