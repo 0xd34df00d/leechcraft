@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
-#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -100,5 +100,3 @@ namespace Herbicide
 }
 }
 }
-
-#endif
