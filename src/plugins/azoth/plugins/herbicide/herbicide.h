@@ -91,6 +91,8 @@ namespace Herbicide
 
 		void ChallengeEntry (IHookProxy_ptr, QObject*);
 		void GreetEntry (QObject*);
+
+		void ShowAccountAntispamConfig (IAccount*);
 	public slots:
 		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,

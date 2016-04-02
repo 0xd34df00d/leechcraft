@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iaccount.h>
@@ -111,9 +112,16 @@ namespace Herbicide
 		return SettingsDialog_;
 	}
 
-	QList<QAction*> Plugin::CreateActions (IAccount*)
+	QList<QAction*> Plugin::CreateActions (IAccount *acc)
 	{
 		const auto configAction = new QAction { tr ("Configure antispam settings..."), this };
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, acc] { ShowAccountAntispamConfig (acc); },
+			configAction,
+			SIGNAL (triggered ()),
+			configAction
+		};
 		return { configAction };
 	}
 
@@ -214,6 +222,10 @@ namespace Herbicide
 					"authorizationRequested",
 					Q_ARG (QObject*, entryObj),
 					Q_ARG (QString, DeniedAuth_.take (entryObj)));
+	}
+
+	void Plugin::ShowAccountAntispamConfig (IAccount *acc)
+	{
 	}
 
 	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
