@@ -44,7 +44,7 @@ namespace Murm
 {
 	struct PhotoUrlStorage::Record
 	{
-		Util::oral::PKey<qulonglong> UserNum_;
+		Util::oral::PKey<qulonglong, Util::oral::NoAutogen> UserNum_;
 		QByteArray BigPhotoUrl_;
 
 		static QString ClassName ()
