@@ -47,7 +47,7 @@ namespace Azoth
 	protected:
 		virtual ~IAccountActionsProvider () = default;
 	public:
-		virtual QList<QAction*> GetActions (IAccount*) = 0;
+		virtual QList<QAction*> CreateActions (IAccount*) = 0;
 	};
 }
 }

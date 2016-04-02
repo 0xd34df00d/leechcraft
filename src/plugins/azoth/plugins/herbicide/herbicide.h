@@ -84,7 +84,7 @@ namespace Herbicide
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		QList<QAction*> GetActions (IAccount*);
+		QList<QAction*> CreateActions (IAccount*);
 	private:
 		bool IsConfValid () const;
 		bool IsEntryAllowed (QObject*) const;

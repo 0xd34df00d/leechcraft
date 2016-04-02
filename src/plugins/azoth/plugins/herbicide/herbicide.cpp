@@ -111,7 +111,7 @@ namespace Herbicide
 		return SettingsDialog_;
 	}
 
-	QList<QAction*> Plugin::GetActions (IAccount *account)
+	QList<QAction*> Plugin::CreateActions (IAccount*)
 	{
 		return {};
 	}
