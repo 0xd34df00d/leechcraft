@@ -113,7 +113,8 @@ namespace Herbicide
 
 	QList<QAction*> Plugin::CreateActions (IAccount*)
 	{
-		return {};
+		const auto configAction = new QAction { tr ("Configure antispam settings..."), this };
+		return { configAction };
 	}
 
 	bool Plugin::IsConfValid () const
