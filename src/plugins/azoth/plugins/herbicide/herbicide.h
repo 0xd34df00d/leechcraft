@@ -35,8 +35,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Azoth
