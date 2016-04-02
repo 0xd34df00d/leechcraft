@@ -152,8 +152,8 @@ namespace StandardStyles
 
 		const QString& msgId = GetMessageID (msgObj);
 
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
 				Util::Escape (other->GetEntryName ()) :
 				QString ();
