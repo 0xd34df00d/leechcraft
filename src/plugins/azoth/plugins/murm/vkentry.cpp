@@ -645,6 +645,9 @@ namespace Murm
 		const auto url = Info_.BigPhoto_.isValid () ?
 				Info_.BigPhoto_ :
 				Info_.Photo_;
+		if (!url.isValid ())
+			return;
+
 		const auto photoUrlStorage = Account_->GetParentProtocol ()->GetPhotoUrlStorage ();
 
 		Util::ExecuteLater ([=] {
