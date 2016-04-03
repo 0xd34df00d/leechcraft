@@ -60,6 +60,17 @@ namespace Herbicide
 {
 	namespace
 	{
+		bool HasSpecificSettings (IAccount *acc)
+		{
+			QSettings settings
+			{
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Herbicide"
+			};
+
+			return settings.childGroups ().contains (acc->GetAccountID ());
+		}
+
 		QVariant GetAccountProperty (IAccount *acc, const QByteArray& name)
 		{
 			QSettings settings
