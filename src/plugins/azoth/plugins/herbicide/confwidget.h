@@ -30,10 +30,16 @@
 #pragma once
 
 #include <QWidget>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include "ui_confwidget.h"
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class BaseSettingsManager;
+}
+
 namespace Azoth
 {
 namespace Herbicide
@@ -44,8 +50,10 @@ namespace Herbicide
 		
 		Ui::ConfWidget Ui_;
 		QList<QList<QPair<QString, QStringList>>> PredefinedQuests_;
+
+		Util::BaseSettingsManager * const BSM_;
 	public:
-		ConfWidget (QWidget* = nullptr);
+		ConfWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 		
 		QString GetQuestion () const;
 		QStringList GetAnswers () const;
