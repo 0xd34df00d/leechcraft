@@ -128,7 +128,7 @@ namespace Herbicide
 		return { configAction };
 	}
 
-	bool Plugin::IsConfValid () const
+	bool Plugin::IsConfValid (IAccount *acc) const
 	{
 		if (!XmlSettingsManager::Instance ()
 				.property ("EnableQuest").toBool ())
@@ -300,7 +300,7 @@ namespace Herbicide
 
 	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
 	{
-		if (!IsConfValid ())
+		if (!IsConfValid (qobject_cast<ICLEntry*> (entry)->GetParentAccount ()))
 			return;
 
 		if (!XmlSettingsManager::Instance ().property ("EnableForAuths").toBool ())
@@ -319,9 +319,6 @@ namespace Herbicide
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
-		if (!IsConfValid ())
-			return;
-
 		const auto msg = qobject_cast<IMessage*> (message);
 		if (!msg)
 		{
@@ -343,6 +340,10 @@ namespace Herbicide
 
 		const auto entryObj = msg->OtherPart ();
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto acc = entry->GetParentAccount ();
+
+		if (!IsConfValid (acc))
+			return;
 
 		if (IsEntryAllowed (entryObj))
 			return;
