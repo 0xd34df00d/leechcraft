@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
+#pragma once
+
 #include <QWidget>
 #include "ui_confwidget.h"
 
@@ -45,7 +45,7 @@ namespace Herbicide
 		Ui::ConfWidget Ui_;
 		QList<QList<QPair<QString, QStringList>>> PredefinedQuests_;
 	public:
-		ConfWidget (QWidget* = 0);
+		ConfWidget (QWidget* = nullptr);
 		
 		QString GetQuestion () const;
 		QStringList GetAnswers () const;
@@ -62,5 +62,3 @@ namespace Herbicide
 }
 }
 }
-
-#endif
