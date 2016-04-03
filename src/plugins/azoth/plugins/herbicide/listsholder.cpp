@@ -32,10 +32,12 @@
 #include <util/sll/functor.h>
 #include <interfaces/azoth/iaccount.h>
 
+#if QT_VERSION < 0x050600
 uint qHash (const QRegExp& rx)
 {
 	return qHash (rx.pattern ());
 }
+#endif
 
 namespace LeechCraft
 {
