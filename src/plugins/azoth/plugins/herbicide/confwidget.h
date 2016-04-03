@@ -66,6 +66,8 @@ namespace Herbicide
 	private slots:
 		void on_QuestStyle__currentIndexChanged (int);
 		void on_QuestVariant__currentIndexChanged (int);
+	signals:
+		void listsChanged ();
 	};
 }
 }

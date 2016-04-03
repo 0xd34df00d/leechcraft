@@ -80,6 +80,7 @@ namespace Herbicide
 	void ConfWidget::accept ()
 	{
 		SaveSettings ();
+		emit listsChanged ();
 	}
 
 	void ConfWidget::reject ()
