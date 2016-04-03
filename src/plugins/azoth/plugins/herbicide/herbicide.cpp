@@ -314,6 +314,14 @@ namespace Herbicide
 		auto confWidget = new ConfWidget (accsm);
 		xsd->SetCustomWidget ("ConfWidget", confWidget);
 
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, acc] { ListsHolder_->ReloadLists (acc); },
+			confWidget,
+			SIGNAL (listsChanged ()),
+			this
+		};
+
 		dia->layout ()->addWidget (xsd->GetWidget ());
 
 		auto buttons = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
