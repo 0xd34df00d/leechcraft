@@ -106,6 +106,14 @@ namespace Herbicide
 		Logger_ = new Logger;
 
 		ListsHolder_ = std::make_shared<ListsHolder> (&GetAccountProperty);
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { ListsHolder_->ReloadLists (nullptr); },
+			confWidget,
+			SIGNAL (listsChanged ()),
+			this
+		};
 	}
 
 	void Plugin::SecondInit ()
