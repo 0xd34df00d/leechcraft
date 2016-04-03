@@ -266,8 +266,10 @@ namespace Herbicide
 		dia->setLayout (new QVBoxLayout);
 
 		auto xsd = new Util::XmlSettingsDialog;
-		xsd->RegisterObject (&XmlSettingsManager::Instance (), "azothherbicidesettings.xml");
-		auto confWidget = new ConfWidget (&XmlSettingsManager::Instance ());
+		const auto accsm = new AccountSettingsManager { acc, xsd };
+
+		xsd->RegisterObject (accsm, "azothherbicidesettings.xml");
+		auto confWidget = new ConfWidget (accsm);
 		xsd->SetCustomWidget ("ConfWidget", confWidget);
 
 		dia->layout ()->addWidget (xsd->GetWidget ());
