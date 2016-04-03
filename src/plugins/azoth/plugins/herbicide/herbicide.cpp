@@ -310,11 +310,11 @@ namespace Herbicide
 
 		connect (buttons,
 				SIGNAL (accepted ()),
-				dia,
+				xsd,
 				SLOT (accept ()));
 		connect (buttons,
 				SIGNAL (accepted ()),
-				xsd,
+				dia,
 				SLOT (accept ()));
 		connect (buttons,
 				SIGNAL (rejected ()),
