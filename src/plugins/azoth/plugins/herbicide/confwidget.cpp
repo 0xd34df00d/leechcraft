@@ -29,6 +29,7 @@
 
 #include "confwidget.h"
 #include <xmlsettingsdialog/basesettingsmanager.h>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -50,6 +51,21 @@ namespace Herbicide
 			{ QString::fromUtf8 ("e^(iπ)"), { "-1" } }
 		};
 		PredefinedQuests_ << mathQuests;
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { IsDirty_ = true; },
+			Ui_.Question_,
+			SIGNAL (textChanged ()),
+			this
+		};
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { IsDirty_ = true; },
+			Ui_.Answers_,
+			SIGNAL (textChanged ()),
+			this
+		};
 	}
 
 	QString ConfWidget::GetQuestion () const
@@ -66,6 +82,8 @@ namespace Herbicide
 	{
 		BSM_->setProperty ("Question", GetQuestion ());
 		BSM_->setProperty ("Answers", GetAnswers ());
+
+		IsDirty_ = false;
 	}
 
 	void ConfWidget::LoadSettings ()
@@ -75,10 +93,15 @@ namespace Herbicide
 
 		const auto& answers = BSM_->property ("Answers").toStringList ();
 		Ui_.Answers_->setPlainText (answers.join ("\n"));
+
+		IsDirty_ = false;
 	}
 
 	void ConfWidget::accept ()
 	{
+		if (!IsDirty_)
+			return;
+
 		SaveSettings ();
 		emit listsChanged ();
 	}

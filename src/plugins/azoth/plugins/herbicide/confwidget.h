@@ -52,6 +52,8 @@ namespace Herbicide
 		QList<QList<QPair<QString, QStringList>>> PredefinedQuests_;
 
 		Util::BaseSettingsManager * const BSM_;
+
+		mutable bool IsDirty_ = false;
 	public:
 		ConfWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 		
