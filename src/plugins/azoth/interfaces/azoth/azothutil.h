@@ -71,6 +71,8 @@ namespace AzothUtil
 	 * @param[inout] messages The list of messages to check.
 	 * @param[in] before Messages with timestamp earlier than this
 	 * parameter will be erased.
+	 * @tparam T The type of the message object, which should be
+	 * implementing the IMessage interface.
 	 *
 	 * @sa IMessage
 	 */

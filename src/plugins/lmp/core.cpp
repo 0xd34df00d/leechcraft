@@ -29,6 +29,7 @@
 
 #include "core.h"
 #include <interfaces/iplugin2.h>
+#include <interfaces/core/ientitymanager.h>
 #include "collectionsmanager.h"
 #include "localfileresolver.h"
 #include "localcollection.h"
@@ -38,55 +39,72 @@
 #include "sync/syncunmountablemanager.h"
 #include "sync/clouduploadmanager.h"
 #include "interfaces/lmp/ilmpplugin.h"
-#include "interfaces/lmp/isyncplugin.h"
 #include "interfaces/lmp/icloudstorageplugin.h"
-#include "interfaces/lmp/iplaylistprovider.h"
 #include "lmpproxy.h"
 #include "player.h"
 #include "previewhandler.h"
 #include "progressmanager.h"
 #include "radiomanager.h"
 #include "rganalysismanager.h"
-#include "localcollectionmodel.h"
 #include "hookinterconnector.h"
 
 namespace LeechCraft
 {
 namespace LMP
 {
-	Core::Core ()
-	: Resolver_ (new LocalFileResolver)
-	, HookInterconnector_ (new HookInterconnector)
-	, Collection_ (new LocalCollection)
-	, CollectionsManager_ (new CollectionsManager)
-	, PLManager_ (new PlaylistManager)
-	, SyncManager_ (new SyncManager)
-	, SyncUnmountableManager_ (new SyncUnmountableManager)
-	, CloudUpMgr_ (new CloudUploadManager)
-	, ProgressManager_ (new ProgressManager)
-	, RadioManager_ (new RadioManager)
-	, Player_ (0)
-	, PreviewMgr_ (0)
-	, LmpProxy_ (new LMPProxy)
+	std::shared_ptr<Core> Core::CoreInstance_;
+
+	struct Core::Members
 	{
-		ProgressManager_->AddSyncManager (SyncManager_);
-		ProgressManager_->AddSyncManager (SyncUnmountableManager_);
-		ProgressManager_->AddSyncManager (CloudUpMgr_);
+		LocalFileResolver Resolver_;
 
-		new RgAnalysisManager (Collection_, this);
+		HookInterconnector HookInterconnector_;
 
-		CollectionsManager_->Add (Collection_->GetCollectionModel ());
+		LocalCollection Collection_;
+		CollectionsManager CollectionsManager_;
+
+		PlaylistManager PLManager_;
+
+		SyncManager SyncManager_;
+		SyncUnmountableManager SyncUnmountableManager_;
+		CloudUploadManager CloudUpMgr_;
+
+		ProgressManager ProgressManager_;
+
+		RadioManager RadioManager_;
+
+		Player Player_;
+		PreviewHandler PreviewMgr_ { &Player_ };
+
+		LMPProxy LmpProxy_ { &Collection_, &Resolver_, &PreviewMgr_ };
+
+		RgAnalysisManager RgMgr_ { &Collection_ };
+	};
+
+	Core::Core (const ICoreProxy_ptr& proxy)
+	: Proxy_ (proxy)
+	, M_ (std::make_shared<Members> ())
+	{
+		M_->ProgressManager_.AddSyncManager (&M_->SyncManager_);
+		M_->ProgressManager_.AddSyncManager (&M_->SyncUnmountableManager_);
+		M_->ProgressManager_.AddSyncManager (&M_->CloudUpMgr_);
+
+		M_->CollectionsManager_.Add (M_->Collection_.GetCollectionModel ());
 	}
 
 	Core& Core::Instance ()
 	{
-		static Core c;
-		return c;
+		return *CoreInstance_;
 	}
 
-	void Core::SetProxy (ICoreProxy_ptr proxy)
+	void Core::InitWithProxy (const ICoreProxy_ptr& proxy)
 	{
-		Proxy_ = proxy;
+		CoreInstance_.reset (new Core { proxy });
+	}
+
+	void Core::Release ()
+	{
+		CoreInstance_.reset ();
 	}
 
 	ICoreProxy_ptr Core::GetProxy ()
@@ -96,26 +114,19 @@ namespace LMP
 
 	void Core::SendEntity (const Entity& e)
 	{
-		emit gotEntity (e);
-	}
-
-	void Core::PostInit ()
-	{
-		Collection_->FinalizeInit ();
-
-		Player_ = new Player;
-		PreviewMgr_ = new PreviewHandler (Player_, this);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Core::InitWithOtherPlugins ()
 	{
-		Player_->InitWithOtherPlugins ();
-		RadioManager_->InitProviders ();
+		M_->PreviewMgr_.InitWithPlugins ();
+		M_->Player_.InitWithOtherPlugins ();
+		M_->RadioManager_.InitProviders ();
 	}
 
-	const std::shared_ptr<LMPProxy>& Core::GetLmpProxy () const
+	LMPProxy* Core::GetLmpProxy () const
 	{
-		return LmpProxy_;
+		return &M_->LmpProxy_;
 	}
 
 	void Core::AddPlugin (QObject *pluginObj)
@@ -131,7 +142,7 @@ namespace LMP
 			return;
 		}
 
-		ilmpPlug->SetLMPProxy (LmpProxy_);
+		ilmpPlug->SetLMPProxy (&M_->LmpProxy_);
 
 		const auto& classes = ip2->GetPluginClasses ();
 		if (classes.contains ("org.LeechCraft.LMP.CollectionSync") &&
@@ -147,9 +158,9 @@ namespace LMP
 
 		if (classes.contains ("org.LeechCraft.LMP.PlaylistProvider") &&
 			qobject_cast<IPlaylistProvider*> (pluginObj))
-			PLManager_->AddProvider (pluginObj);
+			M_->PLManager_.AddProvider (pluginObj);
 
-		HookInterconnector_->AddPlugin (pluginObj);
+		M_->HookInterconnector_.AddPlugin (pluginObj);
 	}
 
 	QObjectList Core::GetSyncPlugins () const
@@ -157,7 +168,7 @@ namespace LMP
 		return SyncPlugins_;
 	}
 
-	QObjectList Core::GetCloudStoragePlugins() const
+	QObjectList Core::GetCloudStoragePlugins () const
 	{
 		return CloudPlugins_;
 	}
@@ -169,72 +180,72 @@ namespace LMP
 
 	HookInterconnector* Core::GetHookInterconnector () const
 	{
-		return HookInterconnector_;
+		return &M_->HookInterconnector_;
 	}
 
 	LocalFileResolver* Core::GetLocalFileResolver () const
 	{
-		return Resolver_;
+		return &M_->Resolver_;
 	}
 
 	LocalCollection* Core::GetLocalCollection () const
 	{
-		return Collection_;
+		return &M_->Collection_;
 	}
 
 	CollectionsManager* Core::GetCollectionsManager () const
 	{
-		return CollectionsManager_;
+		return &M_->CollectionsManager_;
 	}
 
 	PlaylistManager* Core::GetPlaylistManager () const
 	{
-		return PLManager_;
+		return &M_->PLManager_;
 	}
 
 	SyncManager* Core::GetSyncManager () const
 	{
-		return SyncManager_;
+		return &M_->SyncManager_;
 	}
 
 	SyncUnmountableManager* Core::GetSyncUnmountableManager () const
 	{
-		return SyncUnmountableManager_;
+		return &M_->SyncUnmountableManager_;
 	}
 
 	CloudUploadManager* Core::GetCloudUploadManager () const
 	{
-		return CloudUpMgr_;
+		return &M_->CloudUpMgr_;
 	}
 
 	ProgressManager* Core::GetProgressManager () const
 	{
-		return ProgressManager_;
+		return &M_->ProgressManager_;
 	}
 
 	RadioManager* Core::GetRadioManager () const
 	{
-		return RadioManager_;
+		return &M_->RadioManager_;
 	}
 
 	Player* Core::GetPlayer () const
 	{
-		return Player_;
+		return &M_->Player_;
 	}
 
 	PreviewHandler* Core::GetPreviewHandler () const
 	{
-		return PreviewMgr_;
+		return &M_->PreviewMgr_;
 	}
 
 	boost::optional<MediaInfo> Core::TryURLResolve (const QUrl& url) const
 	{
-		return PLManager_->TryResolveMediaInfo (url);
+		return M_->PLManager_.TryResolveMediaInfo (url);
 	}
 
 	void Core::rescan ()
 	{
-		Collection_->Rescan ();
+		M_->Collection_.Rescan ();
 	}
 }
 }

@@ -74,7 +74,7 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	PlayerTab::PlayerTab (const TabClassInfo& info, Player *player, QObject *plugin, QWidget *parent)
+	PlayerTab::PlayerTab (const TabClassInfo& info, Player *player, const ICoreProxy_ptr& proxy, QObject *plugin, QWidget *parent)
 	: QWidget (parent)
 	, Plugin_ (plugin)
 	, TC_ (info)
@@ -145,7 +145,7 @@ namespace LMP
 		SetupToolbar ();
 		Ui_.PLManagerWidget_->SetPlayer (Player_);
 
-		Ui_.Playlist_->SetPlayer (Player_);
+		Ui_.Playlist_->SetPlayer (Player_, proxy);
 
 		XmlSettingsManager::Instance ().RegisterObject ("ShowTrayIcon",
 				this, "handleShowTrayIcon");

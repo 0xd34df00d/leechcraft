@@ -609,27 +609,15 @@ namespace Util
 		return Basename_;
 	}
 
-	QVariant XmlSettingsDialog::GetValue (const QDomElement& item, bool ignoreObject) const
+	QVariant XmlSettingsDialog::GetValue (const QDomElement& item) const
 	{
 		const auto& property = item.attribute ("property");
 
-		QVariant value;
-		if (ignoreObject)
-		{
-			auto def = item.attribute ("default");
-			if (item.attribute ("translatable") == "true")
-				def = QCoreApplication::translate (qPrintable (TrContext_),
-						def.toUtf8 ().constData ());
-			value = def;
-		}
-		else
-		{
-			const auto& tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
-			if (tmpValue.isValid ())
-				return tmpValue;
-		}
+		const auto& tmpValue = WorkingObject_->property (property.toLatin1 ().constData ());
+		if (tmpValue.isValid ())
+			return tmpValue;
 
-		return HandlersManager_->GetValue (item, value);
+		return HandlersManager_->GetValue (item, {});
 	}
 
 	QList<QImage> XmlSettingsDialog::GetImages (const QDomElement& item) const

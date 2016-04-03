@@ -33,16 +33,18 @@
 #include <QTimer>
 #include <util/util.h>
 #include <interfaces/azoth/iproxyobject.h>
+#include <util/sll/delayedexecutor.h>
 #include "xmlsettingsmanager.h"
 #include "vkaccount.h"
 #include "vkmessage.h"
 #include "vkconnection.h"
-#include "photostorage.h"
+#include "photofetcher.h"
 #include "vcarddialog.h"
 #include "groupsmanager.h"
 #include "vkchatentry.h"
 #include "georesolver.h"
 #include "util.h"
+#include "photourlstorage.h"
 
 namespace LeechCraft
 {
@@ -78,6 +80,8 @@ namespace Murm
 
 		XmlSettingsManager::Instance ()
 				.RegisterObject ("EntryNameFormat", this, "handleEntryNameFormat");
+
+		CheckPhotoChange ();
 	}
 
 	void VkEntry::UpdateInfo (const UserInfo& info, bool spontaneous)
@@ -107,6 +111,8 @@ namespace Murm
 		}
 
 		emit vcardUpdated ();
+
+		CheckPhotoChange ();
 	}
 
 	const UserInfo& VkEntry::GetInfo () const
@@ -629,6 +635,39 @@ namespace Murm
 	void VkEntry::handleEntryNameFormat ()
 	{
 		emit nameChanged (GetEntryName ());
+	}
+
+	void VkEntry::CheckPhotoChange ()
+	{
+		QPointer<QObject> safeThis { this };
+
+		const auto id = Info_.ID_;
+		const auto url = Info_.BigPhoto_.isValid () ?
+				Info_.BigPhoto_ :
+				Info_.Photo_;
+		if (!url.isValid ())
+			return;
+
+		const auto photoUrlStorage = Account_->GetParentProtocol ()->GetPhotoUrlStorage ();
+
+		Util::ExecuteLater ([=] {
+				if (!safeThis)
+					return;
+
+				const auto& storedUrl = photoUrlStorage->GetUserUrl (id);
+				if (!storedUrl)
+				{
+					photoUrlStorage->SetUserUrl (id, url);
+					return;
+				}
+
+				if (*storedUrl == url)
+					return;
+
+				emit avatarChanged (this);
+
+				photoUrlStorage->SetUserUrl (id, url);
+			});
 	}
 }
 }

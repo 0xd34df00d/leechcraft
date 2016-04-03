@@ -39,6 +39,7 @@
 #include <QStyle>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -56,9 +57,7 @@ namespace FileScheme
 		Buffer_.open (QIODevice::ReadWrite);
 		setError (NoError, tr ("No error"));
 
-		QTimer::singleShot (0,
-				this,
-				SLOT (list ()));
+		Util::ExecuteLater ([this] { List (); });
 		open (QIODevice::ReadOnly);
 	}
 
@@ -106,7 +105,7 @@ namespace FileScheme
 		}
 	};
 
-	void SchemeReply::list ()
+	void SchemeReply::List ()
 	{
 		QDir dir (url ().toLocalFile ());
 		if (!dir.exists ())

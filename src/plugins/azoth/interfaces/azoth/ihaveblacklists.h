@@ -37,14 +37,27 @@ namespace Azoth
 {
 	class ICLEntry;
 
+	/** @brief Interface for accounts that may have blacklists.
+	 */
 	class IHaveBlacklists
 	{
 	protected:
 		virtual ~IHaveBlacklists () = default;
 	public:
+		/** @brief Checks whether this exact account supports blacklists.
+		 *
+		 * @return Whether blacklists are supported by this account.
+		 */
 		virtual bool SupportsBlacklists () const = 0;
 
-		virtual void SuggestToBlacklist (const QList<ICLEntry*>&) = 0;
+		/** @brief Suggests adding the given \em entries to the blacklist.
+		 *
+		 * It's up to the protocol plugin to show any additional UI that
+		 * is required to handle this suggestion.
+		 *
+		 * @param[in] entries The list of entries to add to the blacklist.
+		 */
+		virtual void SuggestToBlacklist (const QList<ICLEntry*>& entries) = 0;
 	};
 }
 }

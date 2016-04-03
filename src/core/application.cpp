@@ -220,11 +220,6 @@ namespace LeechCraft
 
 		setQuitOnLastWindowClosed (false);
 
-		connect (this,
-				SIGNAL (aboutToQuit ()),
-				this,
-				SLOT (handleQuit ()));
-
 		Splash_ = new SplashScreen { QPixmap (":/resources/images/splash.svg"), Qt::SplashScreen };
 		Splash_->setUpdatesEnabled (true);
 		Splash_->show ();
@@ -329,7 +324,12 @@ namespace LeechCraft
 		arguments << "--restart";
 		QProcess::startDetached (applicationFilePath (), arguments);
 
-		qApp->quit ();
+		Quit ();
+	}
+
+	void Application::Quit ()
+	{
+		Core::Instance ().Release ();
 	}
 
 	bool Application::notify (QObject *obj, QEvent *event)
@@ -337,33 +337,31 @@ namespace LeechCraft
 		if (event->type () == QEvent::LanguageChange)
 			return true;
 
-		if (CatchExceptions_)
-		{
-			try
-			{
-				return QApplication::notify (obj, event);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< QString::fromUtf8 (e.what ())
-					<< typeid (e).name ()
-					<< "for"
-					<< obj
-					<< event
-					<< event->type ();
-			}
-			catch (...)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< obj
-					<< event
-					<< event->type ();
-			}
-			return false;
-		}
-		else
+		if (!CatchExceptions_)
 			return QApplication::notify (obj, event);
+
+		try
+		{
+			return QApplication::notify (obj, event);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< QString::fromUtf8 (e.what ())
+				<< typeid (e).name ()
+				<< "for"
+				<< obj
+				<< event
+				<< event->type ();
+		}
+		catch (...)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< obj
+				<< event
+				<< event->type ();
+		}
+		return false;
 	}
 
 	void Application::commitData (QSessionManager& sm)
@@ -387,7 +385,7 @@ namespace LeechCraft
 				socket.state () == QLocalSocket::ConnectedState)
 		{
 			QDataStream out (&socket);
-			out << Arguments_;
+			out << Arguments_ << QDir::currentPath ();
 			if (socket.waitForBytesWritten ())
 				return true;
 			if (socket.error() == QLocalSocket::UnknownSocketError)
@@ -556,12 +554,6 @@ namespace LeechCraft
 		Splash_->finish (win);
 	}
 
-	void Application::handleQuit ()
-	{
-		Core::Instance ().Release ();
-		XmlSettingsManager::Instance ()->Release ();
-	}
-
 #ifdef Q_OS_MAC
 	namespace
 	{
@@ -644,6 +636,6 @@ namespace LeechCraft
 
 		QProcess::startDetached (applicationFilePath (), Arguments_);
 
-		quit ();
+		Quit ();
 	}
 }

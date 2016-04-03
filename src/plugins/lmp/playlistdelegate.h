@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QStyledItemDelegate>
+#include <interfaces/core/icoreproxyfwd.h>
 
 class QTreeView;
 
@@ -42,8 +43,10 @@ namespace LMP
 	class PlaylistDelegate : public QStyledItemDelegate
 	{
 		QTreeView *View_;
+
+		const ICoreProxy_ptr Proxy_;
 	public:
-		PlaylistDelegate (QTreeView*, QObject* = 0);
+		PlaylistDelegate (QTreeView*, QObject*, const ICoreProxy_ptr&);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;

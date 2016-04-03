@@ -50,7 +50,7 @@ namespace LMP
 
 		QList<Collection::Album_ptr> AlbumsQueue_;
 	public:
-		RgAnalysisManager (LocalCollection*, QObject* = nullptr);
+		RgAnalysisManager (LocalCollection *coll, QObject* = nullptr);
 	private slots:
 		void handleAnalysed ();
 		void rotateQueue ();

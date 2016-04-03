@@ -52,7 +52,7 @@ namespace Murm
 	class VkMessage;
 	class VkConnection;
 	class VkConnectionTuneSetter;
-	class PhotoStorage;
+	class PhotoFetcher;
 	class GeoResolver;
 	class GroupsManager;
 	class Logger;
@@ -82,7 +82,7 @@ namespace Murm
 		VkProtocol * const Proto_;
 		const QByteArray ID_;
 
-		PhotoStorage * const PhotoStorage_;
+		PhotoFetcher * const PhotoStorage_;
 
 		QString Name_;
 
@@ -135,7 +135,7 @@ namespace Murm
 
 		ICoreProxy_ptr GetCoreProxy () const;
 		VkConnection* GetConnection () const;
-		PhotoStorage* GetPhotoStorage () const;
+		PhotoFetcher* GetPhotoStorage () const;
 		GeoResolver* GetGeoResolver () const;
 		GroupsManager* GetGroupsManager () const;
 

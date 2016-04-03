@@ -29,52 +29,28 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/lmp/ilmpplugin.h>
-#include <interfaces/lmp/collectiontypes.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/media/idiscographyprovider.h>
+#include <QtPlugin>
 
-namespace Media
-{
-class IDiscographyProvider;
-}
+class QAction;
+
+template<typename>
+class QList;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Azoth
 {
-namespace BrainSlugz
-{
-	class CheckModel;
+	class IAccount;
 
-	class Checker : public QObject
+	class IAccountActionsProvider
 	{
-		Q_OBJECT
-
-		CheckModel * const Model_;
-		Media::IDiscographyProvider * const Provider_;
-
-		const QList<Media::ReleaseInfo::Type> Types_;
-
-		Collection::Artists_t Artists_;
-		Collection::Artist Current_;
+	protected:
+		virtual ~IAccountActionsProvider () = default;
 	public:
-		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
-				const ICoreProxy_ptr&, QObject* = nullptr);
-
-		int GetRemainingCount () const;
-	private:
-		void HandleReady ();
-	private slots:
-		void handleDiscoReady ();
-		void handleDiscoError ();
-
-		void rotateQueue ();
-	signals:
-		void finished ();
-		void progress (int remaining);
+		virtual QList<QAction*> CreateActions (IAccount*) = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccountActionsProvider,
+		"org.LeechCraft.Azoth.IAccountActionsProvider/1.0");

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FILESCHEME_SCHEMEREPLY_H
-#define PLUGINS_POSHUKU_PLUGINS_FILESCHEME_SCHEMEREPLY_H
+#pragma once
+
 #include <QNetworkReply>
 #include <QBuffer>
 
@@ -38,25 +38,21 @@ namespace Poshuku
 {
 namespace FileScheme
 {
-	class SchemeReply : public QNetworkReply
+	class SchemeReply final : public QNetworkReply
 	{
-		Q_OBJECT
-
 		QBuffer Buffer_;
 	public:
 		SchemeReply (const QNetworkRequest&, QObject* = 0);
 		virtual ~SchemeReply ();
 
-		virtual qint64 bytesAvailable () const;
-		virtual void abort ();
-		virtual void close ();
+		qint64 bytesAvailable () const override;
+		void abort () override;
+		void close () override;
 	protected:
-		virtual qint64 readData (char*, qint64);
-	private slots:
-		void list ();
+		qint64 readData (char*, qint64) override;
+	private:
+		void List ();
 	};
 }
 }
 }
-
-#endif

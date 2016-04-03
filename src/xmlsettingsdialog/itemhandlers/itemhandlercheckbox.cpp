@@ -35,14 +35,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerCheckbox::ItemHandlerCheckbox ()
-	{
-	}
-
-	ItemHandlerCheckbox::~ItemHandlerCheckbox ()
-	{
-	}
-
 	bool ItemHandlerCheckbox::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "checkbox";
@@ -96,4 +88,4 @@ namespace LeechCraft
 		}
 		return checkbox->checkState () == Qt::Checked;
 	}
-};
+}

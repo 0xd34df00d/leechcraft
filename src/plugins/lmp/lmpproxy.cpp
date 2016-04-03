@@ -29,7 +29,6 @@
 
 #include "lmpproxy.h"
 #include <QToolBar>
-#include "core.h"
 #include "util.h"
 #include "localcollection.h"
 #include "localfileresolver.h"
@@ -67,14 +66,21 @@ namespace LMP
 		PlayerTab_->GetToolBar ()->addAction (action);
 	}
 
+	LMPProxy::LMPProxy (ILocalCollection *lc, ITagResolver *tr, PreviewHandler *ph)
+	: LocalCollection_ { lc }
+	, TagResolver_ { tr }
+	, PreviewHandler_ { ph }
+	{
+	}
+
 	ILocalCollection* LMPProxy::GetLocalCollection () const
 	{
-		return Core::Instance ().GetLocalCollection ();
+		return LocalCollection_;
 	}
 
 	ITagResolver* LMPProxy::GetTagResolver () const
 	{
-		return Core::Instance ().GetLocalFileResolver ();
+		return TagResolver_;
 	}
 
 	const ILMPUtilProxy* LMPProxy::GetUtilProxy () const
@@ -95,7 +101,7 @@ namespace LMP
 	void LMPProxy::PreviewRelease (const QString& artist,
 			const QString& release, const QList<QPair<QString, int>>& tracks) const
 	{
-		Core::Instance ().GetPreviewHandler ()->previewAlbum (artist, release, tracks);
+		PreviewHandler_->previewAlbum (artist, release, tracks);
 	}
 }
 }

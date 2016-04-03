@@ -52,6 +52,8 @@ namespace FXB
 {
 	class Document;
 
+	class CursorCacher;
+
 	class FB2Converter : public QObject
 	{
 		Document *ParentDoc_;
@@ -65,8 +67,9 @@ namespace FXB
 		QStack<TOCEntry*> CurrentTOCStack_;
 
 		QTextCursor *Cursor_;
+		CursorCacher *CursorCacher_;
 
-		int SectionLevel_;
+		int SectionLevel_ = 0;
 
 		typedef std::function<void (QDomElement)> Handler_f;
 		QHash<QString, Handler_f> Handlers_;

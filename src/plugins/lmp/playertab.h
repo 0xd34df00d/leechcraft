@@ -89,7 +89,7 @@ namespace LMP
 
 		QMenu * const EffectsMenu_;
 	public:
-		PlayerTab (const TabClassInfo&, Player*, QObject*, QWidget* = 0);
+		PlayerTab (const TabClassInfo&, Player*, const ICoreProxy_ptr&, QObject*, QWidget* = 0);
 		~PlayerTab ();
 
 		TabClassInfo GetTabClassInfo () const;

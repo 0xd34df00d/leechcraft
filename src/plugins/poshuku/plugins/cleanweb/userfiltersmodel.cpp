@@ -37,7 +37,6 @@
 #include <QMessageBox>
 #include <qwebview.h>
 #include <qwebframe.h>
-#include <qwebelement.h>
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
@@ -184,7 +183,9 @@ namespace CleanWeb
 		if (dia.exec () != QDialog::Accepted)
 			return false;
 
-		return Add (dia);
+		const bool isException = Add (dia);
+		WriteSettings ();
+		return isException;
 	}
 
 	bool UserFiltersModel::Add (const RuleOptionDialog& dia)
@@ -335,13 +336,13 @@ namespace CleanWeb
 		QUrl blockUrl = blocker->property ("CleanWeb/URL").value<QUrl> ();
 		QWebView *view = qobject_cast<QWebView*> (blocker->
 					property ("CleanWeb/View").value<QObject*> ());
-		if (InitiateAdd (blockUrl.toString ()) && view)
-		{
-			QWebFrame *frame = view->page ()->mainFrame ();
-			QWebElement elem = frame->findFirstElement ("img[src=\"" + blockUrl.toEncoded () + "\"]");
-			if (!elem.isNull ())
-				elem.removeFromDocument ();
-		}
+		if (!InitiateAdd (blockUrl.toString ()) || !view)
+			return;
+
+		QString js;
+		js += "var elems = document.querySelectorAll(\"img[src='" + blockUrl.toEncoded () + "']\");";
+		js += "for (var i = 0; i < elems.length; ++i) elems[i].remove();";
+		view->page ()->mainFrame ()->evaluateJavaScript (js);
 	}
 }
 }

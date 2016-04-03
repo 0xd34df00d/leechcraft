@@ -63,7 +63,7 @@ namespace LMP
 				const QList<QPair<QString, int>>& tracks) const = 0;
 	};
 
-	typedef std::shared_ptr<ILMPProxy> ILMPProxy_ptr;
+	using ILMPProxy_ptr = ILMPProxy*;
 }
 }
 

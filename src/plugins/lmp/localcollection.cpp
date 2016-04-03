@@ -92,11 +92,6 @@ namespace LMP
 				SLOT (saveRootPaths ()));
 	}
 
-	void LocalCollection::FinalizeInit ()
-	{
-		CollectionModel_->FinalizeInit ();
-	}
-
 	bool LocalCollection::IsReady () const
 	{
 		return IsReady_;

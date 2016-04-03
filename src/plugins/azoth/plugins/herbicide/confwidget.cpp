@@ -28,7 +28,7 @@
  **********************************************************************/
 
 #include "confwidget.h"
-#include "xmlsettingsmanager.h"
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
@@ -36,8 +36,9 @@ namespace Azoth
 {
 namespace Herbicide
 {
-	ConfWidget::ConfWidget (QWidget *parent)
-	: QWidget (parent)
+	ConfWidget::ConfWidget (Util::BaseSettingsManager *bsm, QWidget *parent)
+	: QWidget { parent }
+	, BSM_ { bsm }
 	{
 		Ui_.setupUi (this);
 
@@ -63,18 +64,16 @@ namespace Herbicide
 
 	void ConfWidget::SaveSettings () const
 	{
-		XmlSettingsManager::Instance ().setProperty ("Question", GetQuestion ());
-		XmlSettingsManager::Instance ().setProperty ("Answers", GetAnswers ());
+		BSM_->setProperty ("Question", GetQuestion ());
+		BSM_->setProperty ("Answers", GetAnswers ());
 	}
 
 	void ConfWidget::LoadSettings ()
 	{
-		const auto& question = XmlSettingsManager::Instance ()
-				.property ("Question").toString ();
+		const auto& question = BSM_->property ("Question").toString ();
 		Ui_.Question_->setPlainText (question);
 
-		const auto& answers = XmlSettingsManager::Instance ()
-				.property ("Answers").toStringList ();
+		const auto& answers = BSM_->property ("Answers").toStringList ();
 		Ui_.Answers_->setPlainText (answers.join ("\n"));
 	}
 

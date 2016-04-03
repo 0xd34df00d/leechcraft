@@ -36,14 +36,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerColor::ItemHandlerColor ()
-	{
-	}
-
-	ItemHandlerColor::~ItemHandlerColor ()
-	{
-	}
-
 	bool ItemHandlerColor::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "color";
@@ -61,7 +53,7 @@ namespace LeechCraft
 		picker->SetCurrentColor (XSD_->GetValue (item).value<QColor> ());
 
 		connect (picker,
-				SIGNAL (currentColorChanged (const QColor&)),
+				SIGNAL (currentColorChanged (QColor)),
 				this,
 				SLOT (updatePreferences ()));
 
@@ -115,4 +107,4 @@ namespace LeechCraft
 		}
 		return colorPicker->GetCurrentColor ();
 	}
-};
+}

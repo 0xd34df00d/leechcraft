@@ -36,7 +36,9 @@
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/azoth/iaccount.h"
+#include "interfaces/azoth/iaccountactionsprovider.h"
 #include "interfaces/azoth/imucjoinwidget.h"
 #include "interfaces/azoth/iprotocol.h"
 #include "interfaces/azoth/isupportbookmarks.h"
@@ -237,6 +239,20 @@ namespace Azoth
 			actions << AccountConsole_;
 
 		actions << Util::CreateSeparator (menu);
+
+		const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+		for (const auto plugin : ipm->GetAllCastableTo<IAccountActionsProvider*> ())
+		{
+			const auto& subs = plugin->CreateActions (account);
+			if (subs.isEmpty ())
+				continue;
+
+			for (const auto act : subs)
+				act->setParent (menu);
+
+			actions += subs;
+			actions << Util::CreateSeparator (menu);
+		}
 
 		if (auto managed = qobject_cast<IRegManagedAccount*> (account->GetQObject ()))
 			if (managed->SupportsFeature (IRegManagedAccount::Feature::UpdatePass))

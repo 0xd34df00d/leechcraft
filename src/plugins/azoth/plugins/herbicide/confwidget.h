@@ -27,13 +27,19 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_CONFWIDGET_H
+#pragma once
+
 #include <QWidget>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 #include "ui_confwidget.h"
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class BaseSettingsManager;
+}
+
 namespace Azoth
 {
 namespace Herbicide
@@ -44,8 +50,10 @@ namespace Herbicide
 		
 		Ui::ConfWidget Ui_;
 		QList<QList<QPair<QString, QStringList>>> PredefinedQuests_;
+
+		Util::BaseSettingsManager * const BSM_;
 	public:
-		ConfWidget (QWidget* = 0);
+		ConfWidget (Util::BaseSettingsManager*, QWidget* = nullptr);
 		
 		QString GetQuestion () const;
 		QStringList GetAnswers () const;
@@ -62,5 +70,3 @@ namespace Herbicide
 }
 }
 }
-
-#endif

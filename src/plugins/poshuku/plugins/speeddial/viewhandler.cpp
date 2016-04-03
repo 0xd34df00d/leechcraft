@@ -32,13 +32,12 @@
 #include <QWebView>
 #include <QHash>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QWebFrame>
-#include <QWebElement>
 #include <QXmlStreamWriter>
 #include <QLineEdit>
 #include <util/util.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/threads/futures.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
@@ -135,7 +134,6 @@ namespace SpeedDial
 	, BrowserWidget_ { browser }
 	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
-	, LoadWatcher_ { new QFutureWatcher<LoadResult> { this } }
 	{
 		connect (ImageCache_,
 				SIGNAL (gotSnapshot (QUrl, QImage)),
@@ -154,45 +152,32 @@ namespace SpeedDial
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (handleLoadStarted ()));
-		connect (LoadWatcher_,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleLoaded ()));
 
 		auto proxy = PoshukuProxy_;
-		LoadWatcher_->setFuture (QtConcurrent::run ([proxy] () -> LoadResult
+		Util::Sequence (this,
+				QtConcurrent::run ([proxy]
+				{
+					const auto sb = proxy->CreateStorageBackend ();
+					return GetTopUrls (sb, Rows * Cols);
+				})) >>
+				[this] (const LoadResult& result)
+				{
+					if (IsLoading_ || static_cast<size_t> (result.TopPages_.size ()) < Rows * Cols)
 					{
-						const auto& sb = proxy->CreateStorageBackend ();
-						return GetTopUrls (sb, Rows * Cols);
-					}));
+						deleteLater ();
+						return;
+					}
+
+					WriteTables ({
+							{ tr ("Top pages"), result.TopPages_ },
+							{ tr ("Top sites"), result.TopHosts_ }
+						});
+				};
 	}
 
 	void ViewHandler::handleLoadStarted ()
 	{
 		IsLoading_ = true;
-	}
-
-	void ViewHandler::handleLoaded ()
-	{
-		const auto& result = LoadWatcher_->result ();
-		LoadWatcher_->deleteLater ();
-
-		if (static_cast<size_t> (result.TopPages_.size ()) < Rows * Cols)
-		{
-			deleteLater ();
-			return;
-		}
-
-		if (IsLoading_)
-		{
-			deleteLater ();
-			return;
-		}
-
-		WriteTables ({
-				{ tr ("Top pages"), result.TopPages_ },
-				{ tr ("Top sites"), result.TopHosts_ }
-			});
 	}
 
 	void ViewHandler::WriteTables (const QList<QPair<QString, TopList_t>>& tables)
@@ -286,6 +271,8 @@ namespace SpeedDial
 				{
 					image = QImage { thumbSize, QImage::Format_ARGB32 };
 					image.fill (Qt::transparent);
+
+					++PendingImages_;
 				}
 
 				w.writeStartElement ("td");
@@ -315,15 +302,29 @@ namespace SpeedDial
 		}
 
 		w.writeEndElement ();
+
+		if (!PendingImages_)
+			deleteLater ();
 	}
 
 	void ViewHandler::handleSnapshot (const QUrl& url, const QImage& image)
 	{
 		const auto& elemId = QString::number (qHash (url));
-		const auto& elems = View_->page ()->mainFrame ()->findAllElements ("img[id='" + elemId + "']");
 
-		for (auto elem : elems.toList ())
-			elem.setAttribute ("src", Util::GetAsBase64Src (image));
+		QString js;
+		js += "(function() {";
+		js += "var image = document.getElementById(" + elemId + ");";
+		js += "if (image == null) return false;";
+		js += "image.src = '" + Util::GetAsBase64Src (image) + "';";
+		js += "return true;";
+		js += "})()";
+
+		const auto& res = View_->page ()->mainFrame ()->evaluateJavaScript (js);
+		if (!res.toBool ())
+			return;
+
+		if (!--PendingImages_)
+			deleteLater ();
 	}
 }
 }

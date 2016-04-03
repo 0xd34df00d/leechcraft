@@ -51,7 +51,6 @@ namespace UDisks
 	Backend::Backend (QObject *parent)
 	: DevBackend (parent)
 	, DevicesModel_ (new QStandardItemModel (this))
-	, UDisksObj_ (0)
 	{
 	}
 

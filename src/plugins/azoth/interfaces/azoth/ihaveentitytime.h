@@ -33,13 +33,26 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Interface for entries that can report their local time.
+	 */
 	class IHaveEntityTime
 	{
 	public:
 		virtual ~IHaveEntityTime () {}
 
+		/** @brief Requests updating the entry's local time.
+		 */
 		virtual void UpdateEntityTime () = 0;
 	protected:
+		/** @brief Notifies that the entry local time is now known or
+		 * has changed.
+		 *
+		 * This signal may be emitted either as the result of calling
+		 * UpdateEntityTime() or when the protocol plugin gets the
+		 * updated entity local time during the normal course of actions.
+		 *
+		 * @note This function is expected to be a signal.
+		 */
 		virtual void entityTimeUpdated () = 0;
 	};
 }

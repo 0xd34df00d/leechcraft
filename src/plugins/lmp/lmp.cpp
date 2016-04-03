@@ -133,13 +133,12 @@ namespace LMP
 			TFSuggestOpening | TFOpenableByRequest
 		};
 
-		Core::Instance ().SetProxy (proxy);
-		Core::Instance ().PostInit ();
+		Core::Instance ().InitWithProxy (proxy);
 
 		auto mgr = new RootPathSettingsManager (this);
 		XSD_->SetDataSource ("RootPathsView", mgr->GetModel ());
 
-		PlayerTab_ = new PlayerTab (PlayerTC_, Core::Instance ().GetPlayer (), this);
+		PlayerTab_ = new PlayerTab (PlayerTC_, Core::Instance ().GetPlayer (), proxy, this);
 
 		Core::Instance ().GetLmpProxy ()->GetGuiProxy ()->SetPlayerTab (PlayerTab_);
 
@@ -156,10 +155,6 @@ namespace LMP
 				this,
 				SIGNAL (raiseTab (QWidget*)));
 		connect (PlayerTab_,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (&Core::Instance (),
 				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
 				SIGNAL (gotEntity (LeechCraft::Entity)));
@@ -241,6 +236,7 @@ namespace LMP
 
 	void Plugin::Release ()
 	{
+		Core::Instance ().Release ();
 	}
 
 	QString Plugin::GetName () const

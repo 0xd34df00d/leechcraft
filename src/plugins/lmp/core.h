@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <boost/optional.hpp>
 #include <QObject>
 #include <interfaces/core/icoreproxy.h>
@@ -60,50 +61,37 @@ namespace LMP
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr Proxy_;
+		static std::shared_ptr<Core> CoreInstance_;
 
-		LocalFileResolver *Resolver_;
+		const ICoreProxy_ptr Proxy_;
 
-		HookInterconnector *HookInterconnector_;
+		struct Members;
 
-		LocalCollection *Collection_;
-		CollectionsManager *CollectionsManager_;
-
-		PlaylistManager *PLManager_;
-
-		SyncManager *SyncManager_;
-		SyncUnmountableManager *SyncUnmountableManager_;
-		CloudUploadManager *CloudUpMgr_;
-
-		ProgressManager *ProgressManager_;
-
-		RadioManager *RadioManager_;
-
-		Player *Player_;
-		PreviewHandler *PreviewMgr_;
-
-		std::shared_ptr<LMPProxy> LmpProxy_;
+		std::shared_ptr<Members> M_;
 
 		QObjectList SyncPlugins_;
 		QObjectList CloudPlugins_;
 
-		Core ();
+		Core (const ICoreProxy_ptr&);
+
+		Core () = delete;
 		Core (const Core&) = delete;
 		Core (Core&&) = delete;
 		Core& operator= (const Core&) = delete;
 		Core& operator= (Core&&) = delete;
 	public:
 		static Core& Instance ();
+		static void InitWithProxy (const ICoreProxy_ptr&);
 
-		void SetProxy (ICoreProxy_ptr);
+		void Release ();
+
 		ICoreProxy_ptr GetProxy ();
 
 		void SendEntity (const Entity&);
 
-		void PostInit ();
 		void InitWithOtherPlugins ();
 
-		const std::shared_ptr<LMPProxy>& GetLmpProxy () const;
+		LMPProxy* GetLmpProxy () const;
 
 		void AddPlugin (QObject*);
 		QObjectList GetSyncPlugins () const;
@@ -129,8 +117,6 @@ namespace LMP
 	public slots:
 		void rescan ();
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void cloudStoragePluginsChanged ();
 
 		void artistBrowseRequested (const QString&);

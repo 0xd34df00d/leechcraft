@@ -78,8 +78,12 @@ namespace LeechCraft
 
 	void RootWindowsManager::Release ()
 	{
-		for (const auto& win : Windows_)
-			win.Window_->handleQuit ();
+		for (const auto& winData : Windows_)
+		{
+			const auto win = winData.Window_;
+			CloseWindowTabs (GetWindowIndex (win));
+			win->handleQuit ();
+		}
 
 		IsShuttingDown_ = true;
 	}
@@ -107,9 +111,7 @@ namespace LeechCraft
 			return false;
 
 		const int index = GetWindowIndex (win);
-		const auto& data = Windows_ [index];
-		for (int i = data.TM_->GetWidgetCount () - 1; i >= 0; --i)
-			qobject_cast<ITabWidget*> (data.TM_->GetWidget (i))->Remove ();
+		CloseWindowTabs (index);
 
 		auto mainWindow = Windows_ [0].Window_;
 
@@ -239,7 +241,9 @@ namespace LeechCraft
 
 	MainWindow* RootWindowsManager::CreateWindow (int screen, bool primary)
 	{
-		auto win = new MainWindow (screen, primary);
+		const auto nextIdx = Windows_.size ();
+
+		auto win = new MainWindow (screen, primary, nextIdx);
 		auto proxy = new MWProxy (win);
 		auto tm = new TabManager (win->GetTabWidget (), win, win->GetTabWidget ());
 
@@ -251,7 +255,7 @@ namespace LeechCraft
 		Windows_.push_back ({ win, proxy, tm });
 		win->Init ();
 
-		emit windowAdded (Windows_.size () - 1);
+		emit windowAdded (nextIdx);
 
 		return win;
 	}
@@ -289,6 +293,13 @@ namespace LeechCraft
 		targetMgr->changeTabIcon (widget, icon);
 
 		emit tabMoved (fromWin, toWin, Windows_ [toWin].TM_->FindTabForWidget (widget));
+	}
+
+	void RootWindowsManager::CloseWindowTabs (int index)
+	{
+		const auto& data = Windows_ [index];
+		for (int i = data.TM_->GetWidgetCount () - 1; i >= 0; --i)
+			qobject_cast<ITabWidget*> (data.TM_->GetWidget (i))->Remove ();
 	}
 
 	void RootWindowsManager::moveTabToNewWindow ()

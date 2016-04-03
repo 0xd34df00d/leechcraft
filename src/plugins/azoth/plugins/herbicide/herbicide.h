@@ -27,15 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
-#define PLUGINS_AZOTH_PLUGINS_HERBICIDE_HERBICIDE_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
-
-class QTranslator;
+#include <interfaces/azoth/iaccountactionsprovider.h>
 
 namespace LeechCraft
 {
@@ -52,14 +51,14 @@ namespace Herbicide
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IAccountActionsProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Azoth::IAccountActionsProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Herbicide")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		ConfWidget *ConfWidget_;
 
 		Logger *Logger_;
 
@@ -83,12 +82,16 @@ namespace Herbicide
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+
+		QList<QAction*> CreateActions (IAccount*);
 	private:
-		bool IsConfValid () const;
+		bool IsConfValid (IAccount*) const;
 		bool IsEntryAllowed (QObject*) const;
 
 		void ChallengeEntry (IHookProxy_ptr, QObject*);
 		void GreetEntry (QObject*);
+
+		void ShowAccountAntispamConfig (IAccount*);
 	public slots:
 		void hookGotAuthRequest (LeechCraft::IHookProxy_ptr proxy,
 				QObject *entry,
@@ -102,5 +105,3 @@ namespace Herbicide
 }
 }
 }
-
-#endif

@@ -14,6 +14,9 @@
 	<xsl:template match="tooltip">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="text()" disable-output-escaping="yes" />")
 	</xsl:template>
+	<xsl:template match="default">
+		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="text()" disable-output-escaping="yes" />")
+	</xsl:template>
 
 	<xsl:template match="item[@translatable='true']">
 		QT_TRANSLATE_NOOP("__FILENAME__", "<xsl:value-of select="@default"/>")

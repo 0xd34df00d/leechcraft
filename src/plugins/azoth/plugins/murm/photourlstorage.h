@@ -29,51 +29,31 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QObject>
-#include <interfaces/lmp/ilmpplugin.h>
-#include <interfaces/lmp/collectiontypes.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/media/idiscographyprovider.h>
+#include <QSqlDatabase>
+#include <util/db/oralfwd.h>
 
-namespace Media
-{
-class IDiscographyProvider;
-}
+class QUrl;
 
 namespace LeechCraft
 {
-namespace LMP
+namespace Azoth
 {
-namespace BrainSlugz
+namespace Murm
 {
-	class CheckModel;
-
-	class Checker : public QObject
+	class PhotoUrlStorage : public QObject
 	{
-		Q_OBJECT
-
-		CheckModel * const Model_;
-		Media::IDiscographyProvider * const Provider_;
-
-		const QList<Media::ReleaseInfo::Type> Types_;
-
-		Collection::Artists_t Artists_;
-		Collection::Artist Current_;
 	public:
-		Checker (CheckModel*, const QList<Media::ReleaseInfo::Type>&,
-				const ICoreProxy_ptr&, QObject* = nullptr);
-
-		int GetRemainingCount () const;
+		struct Record;
 	private:
-		void HandleReady ();
-	private slots:
-		void handleDiscoReady ();
-		void handleDiscoError ();
+		QSqlDatabase DB_;
+		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
+	public:
+		PhotoUrlStorage (QObject* = nullptr);
 
-		void rotateQueue ();
-	signals:
-		void finished ();
-		void progress (int remaining);
+		boost::optional<QUrl> GetUserUrl (qulonglong);
+		void SetUserUrl (qulonglong, const QUrl&);
 	};
 }
 }

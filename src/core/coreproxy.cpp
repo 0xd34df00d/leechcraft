@@ -129,7 +129,7 @@ namespace LeechCraft
 
 	void CoreProxy::RegisterSkinnable (QAction *act)
 	{
-		IconThemeEngine::Instance ().UpdateIconset (QList<QAction*> () << act);
+		IconThemeEngine::Instance ().UpdateIconset ({ act });
 	}
 
 	bool CoreProxy::IsShuttingDown ()

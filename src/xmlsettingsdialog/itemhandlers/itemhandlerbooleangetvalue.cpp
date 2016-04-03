@@ -31,14 +31,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerBooleanGetValue::ItemHandlerBooleanGetValue ()
-	{
-	}
-
-	ItemHandlerBooleanGetValue::~ItemHandlerBooleanGetValue ()
-	{
-	}
-
 	QVariant ItemHandlerBooleanGetValue::GetValue (const QDomElement& item,
 			QVariant value) const
 	{
@@ -57,4 +49,4 @@ namespace LeechCraft
 		}
 		return value;
 	}
-};
+}

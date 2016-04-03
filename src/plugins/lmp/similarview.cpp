@@ -39,7 +39,6 @@
 #include <util/qml/standardnamfactory.h>
 #include <util/sys/paths.h>
 #include "similarviewmanager.h"
-#include "core.h"
 
 namespace LeechCraft
 {
@@ -54,8 +53,7 @@ namespace LMP
 	, Manager_ (new SimilarViewManager (proxy, this, this))
 	{
 		setResizeMode (SizeRootObjectToView);
-		engine ()->addImageProvider ("ThemeIcons",
-				new Util::ThemeImageProvider (Core::Instance ().GetProxy ()));
+		engine ()->addImageProvider ("ThemeIcons", new Util::ThemeImageProvider (proxy));
 
 		new Util::StandardNAMFactory ("lmp/qml",
 				[] { return 50 * 1024 * 1024; },

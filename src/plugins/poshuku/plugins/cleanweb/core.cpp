@@ -41,7 +41,6 @@
 #include <QDir>
 #include <qwebframe.h>
 #include <qwebpage.h>
-#include <qwebelement.h>
 #include <QCoreApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
@@ -50,11 +49,6 @@
 #include <QMainWindow>
 #include <QDir>
 #include <qwebview.h>
-
-#if QT_VERSION >= 0x050000
-#include <QUrlQuery>
-#endif
-
 #include <util/xpc/util.h>
 #include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
@@ -62,6 +56,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/qstringwrappers.h>
+#include <util/sll/urlaccessor.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "userfiltersmodel.h"
@@ -220,14 +215,6 @@ namespace CleanWeb
 		QUrl subscrUrl = subscr.Entity_.toUrl ();
 
 		Add (subscrUrl);
-	}
-
-	namespace
-	{
-		void RemoveElem (QWebElement elem)
-		{
-			elem.setStyleProperty ("visibility", "hidden !important");
-		}
 	}
 
 	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
@@ -520,7 +507,7 @@ namespace CleanWeb
 								for (const auto& item : items)
 								{
 									const auto& opt = item->Option_;
-									if (opt.AbortForeign_ && isForeign)
+									if (opt.AbortForeign_ && !isForeign)
 										continue;
 
 									if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
@@ -572,22 +559,15 @@ namespace CleanWeb
 		qDebug () << Q_FUNC_INFO << subscrUrl;
 		QUrl url;
 
-#if QT_VERSION < 0x050000
-		const auto& location = subscrUrl.queryItemValue ("location");
-#else
-		const auto& location = QUrlQuery { subscrUrl }.queryItemValue ("location");
-#endif
+		const Util::UrlAccessor accessor { subscrUrl };
+		const auto& location = accessor ["location"];
 
 		if (location.contains ("%"))
 			url.setUrl (QUrl::fromPercentEncoding (location.toLatin1 ()));
 		else
 			url.setUrl (location);
 
-#if QT_VERSION < 0x050000
-		const auto& subscrName = subscrUrl.queryItemValue ("title");
-#else
-		const auto& subscrName = QUrlQuery { subscrUrl }.queryItemValue ("title");
-#endif
+		const auto& subscrName = accessor ["title"];
 
 		qDebug () << "adding" << url << "as" << subscrName;
 		bool result = Load (url, subscrName);
@@ -738,7 +718,7 @@ namespace CleanWeb
 
 								sels << item->Option_.HideSelector_;
 							}
-						return { frame, 0, sels };
+						return { frame, sels };
 					}));
 
 		auto worker = [this, frame]
@@ -772,52 +752,57 @@ namespace CleanWeb
 		if (!result.Frame_)
 			return;
 
-		const int chunkSize = 100;
+		for (auto& selector : result.Selectors_)
+			selector.replace ('\\', "\\\\")
+					.replace ('\'', "\\'")
+					;
 
-		auto& i = result.CurrentPos_;
-		for (auto end = std::min (i + chunkSize, result.Selectors_.size ()); i < end; ++i)
-		{
-			const auto& selector = result.Selectors_.value (i);
+		QString js;
+		js += "(function(){";
+		js += "var elems = document.querySelectorAll('" + result.Selectors_.join (", ") + "');";
+		js += R"delim(
+				for (var i = 0; i < elems.length; ++i)
+					elems[i].remove();
+				return elems.length;
+				)delim";
+		js += "})();";
 
-			const auto& matchingElems = result.Frame_->findAllElements (selector);
-			if (matchingElems.count ())
-				qDebug () << "removing"
-						<< matchingElems.count ()
-						<< "elems for"
-						<< selector
-						<< result.Frame_->url ();
-
-			for (int i = matchingElems.count () - 1; i >= 0; --i)
-				RemoveElem (matchingElems.at (i));
-		}
-
-		if (result.CurrentPos_ < result.Selectors_.size ())
-			new Util::DelayedExecutor
-			{
-				[this, result] { HideElementsChunk (result); },
-				0
-			};
+		const auto& res = result.Frame_->evaluateJavaScript (js);
+		if (const auto count = res.toInt ())
+			qDebug () << "removed"
+					<< count
+					<< "elements on frame with URL"
+					<< result.Frame_->url ()
+					<< result.Frame_->baseUrl ();
+		else if (!res.canConvert<int> ())
+			qWarning () << Q_FUNC_INFO
+					<< "failed to execute JS:"
+					<< js;
 	}
 
 	namespace
 	{
 		bool RemoveElements (QWebFrame *frame, const QList<QUrl>& urls)
 		{
-			const auto& baseUrl = frame->baseUrl ();
+			const auto& preparedUrls = Util::Map (urls,
+					[] (const QUrl& url) { return QString { '"' + url.toEncoded () + '"' }; });
 
-			const auto& elems = frame->findAllElements ("img,script,iframe,applet,object");
+			QString js;
+			js += "(function(){";
+			js += "var urls = [ " + preparedUrls.join (", ") + " ];";
+			js += "var elems = document.querySelectorAll('img,script,iframe,applet,object');";
+			js += "if (elems.length == 0)";
+			js += "	return false;";
+			js += "var removed = false;";
+			js += "for (var i = 0; i < elems.length; ++i)";
+			js += "	if (urls.indexOf(elems[i].src) != -1){";
+			js += "		elems[i].remove();";
+			js += "		removed = true;";
+			js += "	}";
+			js += "return removed;";
+			js += "})();";
 
-			bool removed = false;
-			for (int i = elems.count () - 1; i >= 0; --i)
-			{
-				auto elem = elems.at (i);
-				if (urls.contains (baseUrl.resolved (QUrl::fromEncoded (elem.attribute ("src").toUtf8 ()))))
-				{
-					elem.removeFromDocument ();
-					removed = true;
-				}
-			}
-			return removed;
+			return frame->evaluateJavaScript (js).toBool ();
 		}
 	}
 

@@ -35,6 +35,7 @@
 #include <QPalette>
 #include <QtDebug>
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
 #include <util/util.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iadvancedmessage.h>
@@ -135,13 +136,7 @@ namespace StandardStyles
 			const QString& pre = type == IMessage::Type::MUCMessage ?
 					"<span class='nickname' style='color: " + color + "'>" :
 					"<span class='nickname'>";
-			return pre +
-#if QT_VERSION < 0x050000
-					Qt::escape (part) +
-#else
-					part.toHtmlEscaped () +
-#endif
-					"</span>";
+			return pre + Util::Escape (part) + "</span>";
 		}
 	}
 
@@ -157,14 +152,10 @@ namespace StandardStyles
 
 		const QString& msgId = GetMessageID (msgObj);
 
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		ICLEntry *other = qobject_cast<ICLEntry*> (msg->OtherPart ());
+		const auto msg = qobject_cast<IMessage*> (msgObj);
+		const auto other = qobject_cast<ICLEntry*> (msg->OtherPart ());
 		QString entryName = other ?
-#if QT_VERSION < 0x050000
-				Qt::escape (other->GetEntryName ()) :
-#else
-				other->GetEntryName ().toHtmlEscaped () :
-#endif
+				Util::Escape (other->GetEntryName ()) :
 				QString ();
 		if (msg->GetMessageType () == IMessage::Type::ChatMessage &&
 				Proxy_->GetSettingsManager ()->property ("ShowNormalChatResources").toBool () &&
@@ -282,13 +273,9 @@ namespace StandardStyles
 			if (advMsg && advMsg->IsDelivered ())
 				statusIconName = "notification_chat_delivery_ok";
 
-			const auto entry = other ?
-					qobject_cast<IMUCEntry*> (other->GetParentCLEntryObject ()) :
-					nullptr;
-			const auto acc = other ?
-					other->GetParentAccount () :
-					nullptr;
-			const QString& nick = entry ?
+			const auto entry = qobject_cast<IMUCEntry*> (other->GetParentCLEntryObject ());
+			const auto acc = other->GetParentAccount ();
+			const auto& nick = entry ?
 					entry->GetNick () :
 					acc->GetOurNick ();
 			if (body.startsWith ("/leechcraft "))

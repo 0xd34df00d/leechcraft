@@ -56,7 +56,7 @@ namespace FatApe
 	private:
 		std::shared_ptr<QSettings> GetStorage () const;
 	public slots:
-		void addStyle (const QString& css);
+		void addStyle (QString css);
 		void deleteValue (const QString& name);
 		QVariant getValue (const QString& name);
 		QVariant getValue (const QString& name, QVariant defVal);

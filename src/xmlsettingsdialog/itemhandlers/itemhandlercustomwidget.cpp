@@ -33,14 +33,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerCustomWidget::ItemHandlerCustomWidget ()
-	{
-	}
-
-	ItemHandlerCustomWidget::~ItemHandlerCustomWidget ()
-	{
-	}
-
 	bool ItemHandlerCustomWidget::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "customwidget";
@@ -64,4 +56,4 @@ namespace LeechCraft
 			lay->addWidget (widget, rc, 0, 1, -1);
 		}
 	}
-};
+}

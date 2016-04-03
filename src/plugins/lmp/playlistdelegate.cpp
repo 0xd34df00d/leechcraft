@@ -33,9 +33,9 @@
 #include <QApplication>
 #include <util/util.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/core/icoreproxy.h>
 #include "player.h"
 #include "mediainfo.h"
-#include "core.h"
 #include "util.h"
 
 Q_DECLARE_METATYPE (QList<LeechCraft::Entity>)
@@ -46,9 +46,10 @@ namespace LMP
 {
 	const int Padding = 2;
 
-	PlaylistDelegate::PlaylistDelegate (QTreeView *view, QObject *parent)
+	PlaylistDelegate::PlaylistDelegate (QTreeView *view, QObject *parent, const ICoreProxy_ptr& proxy)
 	: QStyledItemDelegate (parent)
 	, View_ (view)
+	, Proxy_ (proxy)
 	{
 	}
 
@@ -207,8 +208,7 @@ namespace LMP
 
 		if (index.data (Player::Role::IsStop).toBool ())
 		{
-			const auto& icon = Core::Instance ().GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("media-playback-stop");
+			const auto& icon = Proxy_->GetIconThemeManager ()->GetIcon ("media-playback-stop");
 			const auto& px = icon.pixmap (option.rect.size ());
 			style->drawItemPixmap (painter, option.rect, Qt::AlignLeft | Qt::AlignVCenter, px);
 

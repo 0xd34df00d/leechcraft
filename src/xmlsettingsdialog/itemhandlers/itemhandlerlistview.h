@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERLISTVIEW_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERLISTVIEW_H
+#pragma once
 
 #include "itemhandlerbase.h"
 #include <QHash>
@@ -41,22 +40,19 @@ namespace LeechCraft
 
 	class ItemHandlerListView : public ItemHandlerBase
 	{
-		ItemHandlerFactory *Factory_;
+		ItemHandlerFactory * const Factory_;
 		QHash<QString, QListView*> Propname2Listview_;
 	public:
 		ItemHandlerListView (ItemHandlerFactory*);
-		virtual ~ItemHandlerListView ();
 
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		QVariant GetValue (const QDomElement&, QVariant) const;
-		void SetValue (QWidget*, const QVariant&) const;
-		void UpdateValue (QDomElement&, const QVariant&) const;
+		bool CanHandle (const QDomElement&) const override;
+		void Handle (const QDomElement&, QWidget*) override;
+		QVariant GetValue (const QDomElement&, QVariant) const override;
+		void SetValue (QWidget*, const QVariant&) const override;
+		void UpdateValue (QDomElement&, const QVariant&) const override;
 	protected:
-		QVariant GetObjectValue (QObject*) const;
+		QVariant GetObjectValue (QObject*) const override;
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*);
 	};
-};
-
-#endif //XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERLISTVIEW_H
+}

@@ -34,6 +34,7 @@
 #include <QLocalSocket>
 #include <QUrl>
 #include <QFile>
+#include <QDir>
 #include "util/xpc/util.h"
 #include "interfaces/structures.h"
 #include "application.h"
@@ -76,12 +77,10 @@ namespace LeechCraft
 		QByteArray read = socket->readAll ();
 		QDataStream in (read);
 		QStringList arguments;
-		in >> arguments;
+		QString foreignPath;
+		in >> arguments >> foreignPath;
 
-		if (!arguments.isEmpty ())
-			arguments.removeFirst ();
-
-		qDebug () << Q_FUNC_INFO << arguments;
+		qDebug () << Q_FUNC_INFO << arguments << foreignPath;
 
 		std::vector<std::wstring> strings;
 		for (const auto& arg : arguments)
@@ -90,12 +89,12 @@ namespace LeechCraft
 		boost::program_options::options_description desc;
 		boost::program_options::wcommand_line_parser parser (strings);
 		auto map = qobject_cast<Application*> (qApp)->Parse (parser, &desc);
-		DoLine (map);
+		DoLine (map, foreignPath);
 	}
 
 	void LocalSocketHandler::pullCommandLine ()
 	{
-		DoLine (qobject_cast<Application*> (qApp)->GetVarMap ());
+		DoLine (qobject_cast<Application*> (qApp)->GetVarMap (), QDir::currentPath ());
 	}
 
 	namespace
@@ -157,9 +156,20 @@ namespace LeechCraft
 
 			return tp;
 		}
+
+		QUrl ResolveLocalFile (const QString& entity, const QString& curDir)
+		{
+			if (QDir::isAbsolutePath (entity))
+				return QUrl::fromLocalFile (entity);
+
+			if (!QFileInfo { curDir }.isDir ())
+				return QUrl::fromLocalFile (entity);
+
+			return QUrl::fromLocalFile (QDir { curDir }.filePath (entity));
+		}
 	}
 
-	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map)
+	void LocalSocketHandler::DoLine (const boost::program_options::variables_map& map, const QString& curDir)
 	{
 		if (!map.count ("entity"))
 			return;
@@ -179,7 +189,7 @@ namespace LeechCraft
 			else if (type == "url_encoded")
 				ve = QUrl::fromEncoded (entity.toUtf8 ());
 			else if (type == "file")
-				ve = QUrl::fromLocalFile (entity);
+				ve = ResolveLocalFile (entity, curDir);
 			else
 			{
 				if (QFile::exists (entity))

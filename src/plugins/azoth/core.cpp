@@ -656,12 +656,13 @@ namespace Azoth
 		if (msg->GetQObject ()->property ("Azoth/HiddenMessage").toBool ())
 			return false;
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookShouldCountUnread (proxy, msg->GetQObject ());
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
 
 		return !ChatTabsManager_->IsActiveChat (entry) &&
+				msg->GetDirection () == IMessage::Direction::In &&
 				(msg->GetMessageType () == IMessage::Type::ChatMessage ||
 				 msg->GetMessageType () == IMessage::Type::MUCMessage);
 	}

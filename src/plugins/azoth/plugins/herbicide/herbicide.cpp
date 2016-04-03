@@ -33,7 +33,11 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <util/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iaccount.h>
@@ -61,8 +65,8 @@ namespace Herbicide
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");
 
-		ConfWidget_ = new ConfWidget ();
-		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
+		const auto confWidget = new ConfWidget (&XmlSettingsManager::Instance ());
+		SettingsDialog_->SetCustomWidget ("ConfWidget", confWidget);
 
 		Logger_ = new Logger;
 
@@ -111,14 +115,58 @@ namespace Herbicide
 		return SettingsDialog_;
 	}
 
-	bool Plugin::IsConfValid () const
+	QList<QAction*> Plugin::CreateActions (IAccount *acc)
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("EnableQuest").toBool ())
+		const auto configAction = new QAction { tr ("Configure antispam settings..."), this };
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, acc] { ShowAccountAntispamConfig (acc); },
+			configAction,
+			SIGNAL (triggered ()),
+			configAction
+		};
+		return { configAction };
+	}
+
+	namespace
+	{
+		QVariant GetAccountProperty (IAccount *acc, const QByteArray& name)
+		{
+			QSettings settings
+			{
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Herbicide"
+			};
+
+			const auto& accId = acc->GetAccountID ();
+			if (!settings.childGroups ().contains (accId))
+				return settings.value (name);
+
+			settings.beginGroup (accId);
+			const auto& value = settings.value (name);
+			settings.endGroup ();
+
+			return value;
+		}
+
+		QString GetQuestion (IAccount *acc)
+		{
+			return GetAccountProperty (acc, "Question").toString ();
+		}
+
+		QStringList GetAnswers (IAccount *acc)
+		{
+			return GetAccountProperty (acc, "Answers").toStringList ();
+		}
+	}
+
+	bool Plugin::IsConfValid (IAccount *acc) const
+	{
+		if (!GetAccountProperty (acc, "EnableQuest").toBool ())
 			return false;
 
-		if (ConfWidget_->GetQuestion ().isEmpty () ||
-				ConfWidget_->GetAnswers ().isEmpty ())
+		if (GetQuestion (acc).isEmpty () ||
+				GetAnswers (acc).isEmpty ())
 			return false;
 
 		return true;
@@ -156,7 +204,7 @@ namespace Herbicide
 			return true;
 		}
 
-		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
+		if (GetAccountProperty (entry->GetParentAccount (), "AskOnlyBL").toBool ())
 		{
 			const auto isBlacklisted = checkRxList (Blacklist_);
 			if (isBlacklisted)
@@ -176,9 +224,10 @@ namespace Herbicide
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		AskedEntries_ << entryObj;
 
-		const auto& greeting = XmlSettingsManager::Instance ()
-				.property ("QuestPrefix").toString ();
-		const auto& text = greeting + "\n" + ConfWidget_->GetQuestion ();
+		auto greeting = GetAccountProperty (entry->GetParentAccount (), "QuestPrefix").toString ();
+		if (!greeting.isEmpty ())
+			greeting += "\n";
+		const auto& text = greeting + GetQuestion (entry->GetParentAccount ());
 
 		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 
@@ -197,9 +246,7 @@ namespace Herbicide
 
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const QString& text = tr ("Nice, seems like you've answered "
-				"correctly. Please write again now what you wanted "
-				"to write.");
+		const auto& text = GetAccountProperty (entry->GetParentAccount (), "QuestSuccessReply").toString ();
 		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msg;
 		msg->Send ();
@@ -211,12 +258,84 @@ namespace Herbicide
 					Q_ARG (QString, DeniedAuth_.take (entryObj)));
 	}
 
+	namespace
+	{
+		class AccountSettingsManager : public Util::BaseSettingsManager
+		{
+			const QByteArray GroupName_;
+		public:
+			AccountSettingsManager (IAccount*, QObject*);
+		protected:
+			QSettings* BeginSettings () const override;
+			void EndSettings (QSettings*) const override;
+		};
+
+		AccountSettingsManager::AccountSettingsManager (IAccount *acc, QObject *parent)
+		: Util::BaseSettingsManager { parent }
+		, GroupName_ { acc->GetAccountID () }
+		{
+			Util::BaseSettingsManager::Init ();
+		}
+
+		QSettings* AccountSettingsManager::BeginSettings () const
+		{
+			const auto settings = new QSettings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth_Herbicide");
+			settings->beginGroup (GroupName_);
+			return settings;
+		}
+
+		void AccountSettingsManager::EndSettings (QSettings *settings) const
+		{
+			settings->endGroup ();
+		}
+	}
+
+	void Plugin::ShowAccountAntispamConfig (IAccount *acc)
+	{
+		auto dia = new QDialog;
+		dia->setLayout (new QVBoxLayout);
+
+		auto xsd = new Util::XmlSettingsDialog;
+		const auto accsm = new AccountSettingsManager { acc, xsd };
+
+		xsd->RegisterObject (accsm, "azothherbicidesettings.xml");
+		auto confWidget = new ConfWidget (accsm);
+		xsd->SetCustomWidget ("ConfWidget", confWidget);
+
+		dia->layout ()->addWidget (xsd->GetWidget ());
+
+		auto buttons = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
+		dia->layout ()->addWidget (buttons);
+
+		connect (buttons,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (accept ()));
+		connect (buttons,
+				SIGNAL (accepted ()),
+				xsd,
+				SLOT (accept ()));
+		connect (buttons,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (reject ()));
+
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->open ();
+		connect (dia,
+				SIGNAL (finished (int)),
+				xsd,
+				SLOT (deleteLater ()));
+	}
+
 	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
 	{
-		if (!IsConfValid ())
+		const auto acc = qobject_cast<ICLEntry*> (entry)->GetParentAccount ();
+		if (!IsConfValid (acc))
 			return;
 
-		if (!XmlSettingsManager::Instance ().property ("EnableForAuths").toBool ())
+		if (!GetAccountProperty (acc, "EnableForAuths").toBool ())
 			return;
 
 		if (IsEntryAllowed (entry))
@@ -232,9 +351,6 @@ namespace Herbicide
 	void Plugin::hookGotMessage (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message)
 	{
-		if (!IsConfValid ())
-			return;
-
 		const auto msg = qobject_cast<IMessage*> (message);
 		if (!msg)
 		{
@@ -254,15 +370,19 @@ namespace Herbicide
 		if (msg->GetMessageType () != IMessage::Type::ChatMessage)
 			return;
 
-		QObject *entryObj = msg->OtherPart ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entryObj = msg->OtherPart ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto acc = entry->GetParentAccount ();
+
+		if (!IsConfValid (acc))
+			return;
 
 		if (IsEntryAllowed (entryObj))
 			return;
 
 		if (!AskedEntries_.contains (entryObj))
 			ChallengeEntry (proxy, entryObj);
-		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
+		else if (GetAnswers (acc).contains (msg->GetBody ().toLower ()))
 		{
 			Logger_->LogEvent (Logger::Event::Succeeded, entry, msg->GetBody ());
 			GreetEntry (entryObj);
@@ -271,7 +391,7 @@ namespace Herbicide
 		{
 			Logger_->LogEvent (Logger::Event::Failed, entry, msg->GetBody ());
 
-			const auto& text = tr ("Sorry, you are wrong. Try again.");
+			const auto& text = GetAccountProperty (acc, "QuestFailureReply").toString ();
 			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 			OurMessages_ << msg;
 			msg->Send ();

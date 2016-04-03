@@ -50,7 +50,6 @@ namespace Murm
 {
 	class VkAccount;
 	class VkMessage;
-	class PhotoStorage;
 	class VCardDialog;
 	class VkChatEntry;
 
@@ -63,8 +62,8 @@ namespace Murm
 
 		UserInfo Info_;
 
-		QTimer *RemoteTypingTimer_;
-		QTimer *LocalTypingTimer_;
+		QTimer * const RemoteTypingTimer_;
+		QTimer * const LocalTypingTimer_;
 
 		bool IsSelf_ = false;
 		bool IsNonRoster_ = false;
@@ -120,6 +119,8 @@ namespace Murm
 		QFuture<QImage> RefreshAvatar (Size) override;
 		bool HasAvatar () const override;
 		bool SupportsSize (Size) const override;
+	private:
+		void CheckPhotoChange ();
 	private slots:
 		void handleTypingTimeout ();
 		void sendTyping ();

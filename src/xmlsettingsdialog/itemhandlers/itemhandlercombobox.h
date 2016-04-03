@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERCOMBOBOX_H
+#pragma once
+
 #include "itemhandleroptionssetvalue.h"
 #include <QHash>
 
@@ -40,22 +40,19 @@ namespace LeechCraft
 
 	class ItemHandlerCombobox : public ItemHandlerOptionsSetValue
 	{
-		ItemHandlerFactory *Factory_;
+		ItemHandlerFactory * const Factory_;
 
 		QHash<QString, QComboBox*> Propname2Combobox_;
 		QHash<QString, QDomElement> Propname2Item_;
 	public:
 		ItemHandlerCombobox (ItemHandlerFactory*);
-		virtual ~ItemHandlerCombobox ();
 
-		bool CanHandle (const QDomElement&) const;
-		void Handle (const QDomElement&, QWidget*);
-		void SetValue (QWidget*, const QVariant&) const;
+		bool CanHandle (const QDomElement&) const override;
+		void Handle (const QDomElement&, QWidget*) override;
+		void SetValue (QWidget*, const QVariant&) const override;
 	protected:
-		QVariant GetObjectValue (QObject*) const;
+		QVariant GetObjectValue (QObject*) const override;
 	private:
 		void SetDataSource (const QString&, QAbstractItemModel*, Util::XmlSettingsDialog*);
 	};
-};
-
-#endif
+}

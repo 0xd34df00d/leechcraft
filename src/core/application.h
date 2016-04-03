@@ -106,6 +106,8 @@ namespace LeechCraft
 		 */
 		void InitiateRestart ();
 
+		void Quit ();
+
 		/** Checks whether another instance of LeechCraft is running.
 		 */
 		bool IsAlreadyRunning () const;
@@ -142,7 +144,6 @@ namespace LeechCraft
 	private slots:
 		void finishInit ();
 
-		void handleQuit ();
 		void handleAppStyle ();
 		void handleLanguage ();
 

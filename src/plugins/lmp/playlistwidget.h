@@ -31,6 +31,7 @@
 
 #include <QWidget>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "ui_playlistwidget.h"
 #include "player.h"
 
@@ -56,6 +57,7 @@ namespace LMP
 
 		QUndoStack * const UndoStack_;
 
+		ICoreProxy_ptr Proxy_;
 		Player *Player_ = nullptr;
 
 		QAction *ActionDownloadTrack_ = nullptr;
@@ -85,9 +87,9 @@ namespace LMP
 
 		QList<AudioSource> NextResetSelect_;
 	public:
-		PlaylistWidget (QWidget* = 0);
+		PlaylistWidget (QWidget* = nullptr);
 
-		void SetPlayer (Player*);
+		void SetPlayer (Player*, const ICoreProxy_ptr&);
 	private:
 		void InitCommonActions ();
 		void InitToolbarActions ();

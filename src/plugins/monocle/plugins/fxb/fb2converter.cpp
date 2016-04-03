@@ -30,6 +30,7 @@
 #include "fb2converter.h"
 #include <functional>
 #include <memory>
+#include <boost/optional.hpp>
 #include <QDomDocument>
 #include <QTextDocument>
 #include <QTextCursor>
@@ -41,6 +42,7 @@
 #include <QVariant>
 #include <QStringList>
 #include <QtDebug>
+#include <util/sll/util.h>
 #include "toclink.h"
 
 namespace LeechCraft
@@ -49,12 +51,94 @@ namespace Monocle
 {
 namespace FXB
 {
+	class CursorCacher
+	{
+		QTextCursor * const Cursor_;
+
+		QString Text_;
+
+		QTextBlockFormat LastBlockFormat_ = Cursor_->blockFormat ();
+		QTextCharFormat LastCharFormat_ = Cursor_->charFormat ();
+	public:
+		CursorCacher (QTextCursor *cursor);
+		~CursorCacher ();
+
+		const QTextBlockFormat& blockFormat () const;
+		const QTextCharFormat& charFormat () const;
+
+		void insertBlock (const QTextBlockFormat&);
+		void insertText (const QString&);
+
+		void setCharFormat (const QTextCharFormat&);
+
+		void Flush ();
+	};
+
+	CursorCacher::CursorCacher (QTextCursor *cursor)
+	: Cursor_ (cursor)
+	{
+	}
+
+	CursorCacher::~CursorCacher ()
+	{
+		Flush ();
+	}
+
+	const QTextBlockFormat& CursorCacher::blockFormat () const
+	{
+		return LastBlockFormat_;
+	}
+
+	const QTextCharFormat& CursorCacher::charFormat () const
+	{
+		return LastCharFormat_;
+	}
+
+	void CursorCacher::insertBlock (const QTextBlockFormat& fmt)
+	{
+		if (fmt == LastBlockFormat_)
+		{
+			Text_ += "\n";
+			return;
+		}
+
+		Flush ();
+
+		Cursor_->insertBlock (fmt);
+		LastBlockFormat_ = fmt;
+	}
+
+	void CursorCacher::insertText (const QString& text)
+	{
+		Text_ += text;
+	}
+
+	void CursorCacher::setCharFormat (const QTextCharFormat& fmt)
+	{
+		if (LastCharFormat_ == fmt)
+			return;
+
+		Flush ();
+
+		Cursor_->setCharFormat (fmt);
+		LastCharFormat_ = fmt;
+	}
+
+	void CursorCacher::Flush ()
+	{
+		if (Text_.isEmpty ())
+			return;
+
+		Cursor_->insertText (Text_);
+		Text_.clear ();
+	}
+
 	FB2Converter::FB2Converter (Document *doc, const QDomDocument& fb2)
 	: ParentDoc_ (doc)
 	, FB2_ (fb2)
 	, Result_ (new QTextDocument)
 	, Cursor_ (new QTextCursor (Result_))
-	, SectionLevel_ (0)
+	, CursorCacher_ (new CursorCacher (Cursor_))
 	{
 		Result_->setPageSize (QSize (600, 800));
 		Result_->setUndoRedoEnabled (false);
@@ -66,11 +150,13 @@ namespace FXB
 			return;
 		}
 
-		auto frameFmt = Result_->rootFrame ()->frameFormat ();
+		const auto rootFrame = Result_->rootFrame ();
+
+		auto frameFmt = rootFrame->frameFormat ();
 		frameFmt.setMargin (20);
 		const auto& pal = qApp->palette ();
 		frameFmt.setBackground (pal.brush (QPalette::Base));
-		Result_->rootFrame ()->setFrameFormat (frameFmt);
+		rootFrame->setFrameFormat (frameFmt);
 
 		Handlers_ ["section"] = [this] (const QDomElement& p) { HandleSection (p); };
 		Handlers_ ["title"] = [this] (const QDomElement& p) { HandleTitle (p); };
@@ -84,10 +170,14 @@ namespace FXB
 		Handlers_ ["stanza"] = [this] (const QDomElement& p) { HandleStanza (p); };
 		Handlers_ ["v"] = [this] (const QDomElement& p)
 		{
-			auto fmt = Cursor_->blockFormat ();
-			fmt.setTextIndent (50);
-			Cursor_->insertBlock (fmt);
-			HandleParaWONL (p);
+			auto blockFmt = CursorCacher_->blockFormat ();
+			blockFmt.setTextIndent (50);
+
+			CursorCacher_->insertBlock (blockFmt);
+
+			HandleMangleCharFormat (p,
+					[] (QTextCharFormat& fmt) { fmt.setFontItalic (true); },
+					[this] (const QDomElement& p) { HandleParaWONL (p); });
 		};
 
 		Handlers_ ["emphasis"] = [this] (const QDomElement& p)
@@ -112,7 +202,7 @@ namespace FXB
 		Handlers_ ["annotation"] = [this] (const QDomElement& p)
 		{
 			HandleMangleBlockFormat (p,
-					[] (QTextBlockFormat& fmt) -> void
+					[] (QTextBlockFormat& fmt)
 					{
 						fmt.setAlignment (Qt::AlignRight);
 						fmt.setLeftMargin (60);
@@ -148,10 +238,13 @@ namespace FXB
 		}
 
 		TOC_ = entry.ChildLevel_;
+
+		CursorCacher_->Flush ();
 	}
 
 	FB2Converter::~FB2Converter ()
 	{
+		delete CursorCacher_;
 		delete Cursor_;
 	}
 
@@ -249,88 +342,90 @@ namespace FXB
 		CurrentTOCStack_.top ()->ChildLevel_.append (TOCEntry ());
 		CurrentTOCStack_.push (&CurrentTOCStack_.top ()->ChildLevel_.last ());
 
-		QStringList chunks;
-		auto flushChunks = [this, &chunks] () -> void
-		{
-			if (!chunks.isEmpty ())
-			{
-				QTextBlockFormat fmt;
-				fmt.setTextIndent (20);
-				Cursor_->insertBlock (fmt);
-
-				Cursor_->insertText (chunks.join ("\n"));
-				chunks.clear ();
-			}
-		};
-
 		auto child = tagElem.firstChildElement ();
 		while (!child.isNull ())
 		{
-			if (child.tagName () == "p")
-			{
-				if (child.childNodes ().size () == 1 && child.firstChild ().isText ())
-					chunks << child.firstChild ().toText ().data ();
-
-				child = child.nextSiblingElement ();
-				continue;
-			}
-
-			flushChunks ();
-
 			Handle (child);
 			child = child.nextSiblingElement ();
 		}
-
-		flushChunks ();
 
 		CurrentTOCStack_.pop ();
 
 		--SectionLevel_;
 	}
 
-	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
+	namespace
 	{
-		auto topFrame = Cursor_->currentFrame ();
-
-		QTextFrameFormat frameFmt;
-		frameFmt.setBorder (1);
-		frameFmt.setPadding (10);
-		frameFmt.setBackground (QColor ("#A4C0E4"));
-		Cursor_->insertFrame (frameFmt);
-
-		auto child = tagElem.firstChildElement ();
-		while (!child.isNull ())
+		boost::optional<QString> GetTitleName (const QDomElement& tagElem)
 		{
-			const auto& tagName = child.tagName ();
-
-			if (tagName == "empty-line")
-				Handlers_ [tagName] ({ child });
-			else if (tagName == "p")
+			auto child = tagElem.firstChildElement ();
+			while (!child.isNull ())
 			{
-				const auto origFmt = Cursor_->charFormat ();
+				if (child.tagName () == "p")
+					return child.text ();
 
-				auto titleFmt = origFmt;
-				titleFmt.setFontPointSize (18 - 2 * level - SectionLevel_);
-				Cursor_->setCharFormat (titleFmt);
-
-				Handlers_ ["p"] ({ child });
-
-				Cursor_->setCharFormat (origFmt);
-
-				const TOCEntry entry =
-				{
-					ILink_ptr (new TOCLink (ParentDoc_, Result_->pageCount () - 1)),
-					child.text (),
-					TOCEntryLevel_t ()
-				};
-				if (CurrentTOCStack_.top ()->Name_.isEmpty ())
-					*CurrentTOCStack_.top () = entry;
+				child = child.nextSiblingElement ();
 			}
 
-			child = child.nextSiblingElement ();
+			return {};
 		}
 
-		Cursor_->setPosition (topFrame->lastPosition ());
+		/** Returns 0 if there are no empty lines or there are elements
+		 * other than empty lines, returns the count of empty lines
+		 * otherwise.
+		 */
+		int GetEmptyLinesCount (const QDomElement& elem)
+		{
+			int emptyCount = 0;
+
+			auto child = elem.firstChildElement ();
+			while (!child.isNull ())
+			{
+				if (child.tagName () != "empty-line")
+					return 0;
+
+				++emptyCount;
+
+				child = child.nextSiblingElement ();
+			}
+
+			return emptyCount;
+		}
+	}
+
+	void FB2Converter::HandleTitle (const QDomElement& tagElem, int level)
+	{
+		if (CurrentTOCStack_.top ()->Name_.isEmpty ())
+			if (const auto name = GetTitleName (tagElem))
+				*CurrentTOCStack_.top () = TOCEntry
+						{
+							std::make_shared<TOCLink> (ParentDoc_, Result_->pageCount () - 1),
+							*name,
+							{}
+						};
+
+		if (const auto emptyCount = GetEmptyLinesCount (tagElem))
+		{
+			CursorCacher_->insertText ("\n\n");
+			for (int i = 0; i < emptyCount; ++i)
+				CursorCacher_->insertText ("\n");
+			return;
+		}
+
+		const auto currentSectionLevel = SectionLevel_;
+		HandleMangleBlockFormat (tagElem,
+				[] (QTextBlockFormat&) {},
+				[=] (const QDomElement& e)
+				{
+					HandleMangleCharFormat (e,
+							[=] (QTextCharFormat& fmt)
+							{
+								const auto newSize = 18 - 2 * level - currentSectionLevel;
+								fmt.setFontPointSize (newSize);
+								fmt.setFontWeight (currentSectionLevel <= 1 ? QFont::Bold : QFont::DemiBold);
+							},
+							[this] (const QDomElement& e) { HandleChildren (e); });
+				});
 	}
 
 	void FB2Converter::HandleEpigraph (const QDomElement& tagElem)
@@ -354,14 +449,16 @@ namespace FXB
 				{ "image://" + refId },
 				QVariant::fromValue (image));
 
+		CursorCacher_->Flush ();
 		Cursor_->insertHtml (QString ("<img src='image://%1'/>").arg (refId));
 	}
 
 	void FB2Converter::HandlePara (const QDomElement& tagElem)
 	{
-		auto fmt = Cursor_->blockFormat ();
+		auto fmt = CursorCacher_->blockFormat ();
 		fmt.setTextIndent (20);
-		Cursor_->insertBlock (fmt);
+		fmt.setAlignment (Qt::AlignJustify);
+		CursorCacher_->insertBlock (fmt);
 
 		HandleParaWONL (tagElem);
 	}
@@ -371,12 +468,11 @@ namespace FXB
 		auto child = tagElem.firstChild ();
 		while (!child.isNull ())
 		{
-			std::shared_ptr<void> guard (static_cast<void*> (0),
-					[&child] (void*) { child = child.nextSibling (); });
+			const auto guard = Util::MakeScopeGuard ([&child] { child = child.nextSibling (); });
 
 			if (child.isText ())
 			{
-				Cursor_->insertText (child.toText ().data ());
+				CursorCacher_->insertText (child.toText ().data ());
 				continue;
 			}
 
@@ -399,7 +495,7 @@ namespace FXB
 
 	void FB2Converter::HandleEmptyLine (const QDomElement&)
 	{
-		Cursor_->insertText ("\n\n");
+		CursorCacher_->insertText ("\n\n");
 	}
 
 	void FB2Converter::HandleChildren (const QDomElement& tagElem)
@@ -426,33 +522,35 @@ namespace FXB
 	void FB2Converter::HandleMangleBlockFormat (const QDomElement& tagElem,
 			std::function<void (QTextBlockFormat&)> mangler, Handler_f next)
 	{
-		const auto origFmt = Cursor_->blockFormat ();
+		const auto origFmt = CursorCacher_->blockFormat ();
 
 		auto mangledFmt = origFmt;
 		mangler (mangledFmt);
-		Cursor_->insertBlock (mangledFmt);
+		CursorCacher_->insertBlock (mangledFmt);
 
 		next ({ tagElem });
 
-		Cursor_->insertBlock (origFmt);
+		CursorCacher_->insertBlock (origFmt);
 	}
 
 	void FB2Converter::HandleMangleCharFormat (const QDomElement& tagElem,
 			std::function<void (QTextCharFormat&)> mangler, Handler_f next)
 	{
-		const auto origFmt = Cursor_->charFormat ();
+		const auto origFmt = CursorCacher_->charFormat ();
 
 		auto mangledFmt = origFmt;
 		mangler (mangledFmt);
-		Cursor_->setCharFormat (mangledFmt);
+		CursorCacher_->setCharFormat (mangledFmt);
 
 		next ({ tagElem });
 
-		Cursor_->setCharFormat (origFmt);
+		CursorCacher_->setCharFormat (origFmt);
 	}
 
 	void FB2Converter::FillPreamble ()
 	{
+		CursorCacher_->Flush ();
+
 		auto topFrame = Cursor_->currentFrame ();
 
 		QTextFrameFormat format;
