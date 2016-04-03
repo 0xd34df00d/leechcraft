@@ -128,6 +128,38 @@ namespace Herbicide
 		return { configAction };
 	}
 
+	namespace
+	{
+		QVariant GetAccountProperty (IAccount *acc, const QByteArray& name)
+		{
+			QSettings settings
+			{
+				QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_Herbicide"
+			};
+
+			const auto& accId = acc->GetAccountID ();
+			if (!settings.childGroups ().contains (accId))
+				return settings.value (name);
+
+			settings.beginGroup (accId);
+			const auto& value = settings.value (name);
+			settings.endGroup ();
+
+			return value;
+		}
+
+		QString GetQuestion (IAccount *acc)
+		{
+			return GetAccountProperty (acc, "Question").toString ();
+		}
+
+		QStringList GetAnswers (IAccount *acc)
+		{
+			return GetAccountProperty (acc, "Answers").toStringList ();
+		}
+	}
+
 	bool Plugin::IsConfValid (IAccount *acc) const
 	{
 		if (!XmlSettingsManager::Instance ()
