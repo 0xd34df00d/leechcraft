@@ -86,7 +86,7 @@ namespace Herbicide
 
 		QList<QAction*> CreateActions (IAccount*);
 	private:
-		bool IsConfValid () const;
+		bool IsConfValid (IAccount*) const;
 		bool IsEntryAllowed (QObject*) const;
 
 		void ChallengeEntry (IHookProxy_ptr, QObject*);
