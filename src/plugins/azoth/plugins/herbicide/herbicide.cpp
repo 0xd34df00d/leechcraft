@@ -172,7 +172,7 @@ namespace Herbicide
 	{
 		QList<QAction*> result;
 
-		const auto configAction = new QAction { tr ("Configure antispam settings..."), this };
+		const auto configAction = new QAction { GetIcon (), tr ("Configure antispam settings..."), this };
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
