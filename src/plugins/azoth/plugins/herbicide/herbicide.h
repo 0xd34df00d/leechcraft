@@ -44,7 +44,6 @@ class IMessage;
 
 namespace Herbicide
 {
-	class ConfWidget;
 	class Logger;
 
 	class Plugin : public QObject
