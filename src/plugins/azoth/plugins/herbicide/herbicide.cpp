@@ -341,8 +341,8 @@ namespace Herbicide
 		if (msg->GetMessageType () != IMessage::Type::ChatMessage)
 			return;
 
-		QObject *entryObj = msg->OtherPart ();
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entryObj = msg->OtherPart ();
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 
 		if (IsEntryAllowed (entryObj))
 			return;
