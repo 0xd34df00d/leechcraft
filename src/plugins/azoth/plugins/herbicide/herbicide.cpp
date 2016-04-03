@@ -106,8 +106,6 @@ namespace Herbicide
 		Logger_ = new Logger;
 
 		ListsHolder_ = std::make_shared<ListsHolder> (&GetAccountProperty);
-		handleWhitelistChanged ();
-		handleBlacklistChanged ();
 	}
 
 	void Plugin::SecondInit ()
@@ -403,35 +401,6 @@ namespace Herbicide
 
 			proxy->CancelDefault ();
 		}
-	}
-
-	namespace
-	{
-		QSet<QRegExp> GetRegexps (const QByteArray& prop)
-		{
-			QSet<QRegExp> result;
-
-			const auto& strings = XmlSettingsManager::Instance ().property (prop).toStringList ();
-			for (auto string : strings)
-			{
-				string = string.trimmed ();
-				if (string.isEmpty ())
-					continue;
-				result << QRegExp (string);
-			}
-
-			return result;
-		}
-	}
-
-	void Plugin::handleWhitelistChanged ()
-	{
-		Whitelist_ = GetRegexps ("WhitelistRegexps");
-	}
-
-	void Plugin::handleBlacklistChanged ()
-	{
-		Blacklist_ = GetRegexps ("BlacklistRegexps");
 	}
 }
 }
