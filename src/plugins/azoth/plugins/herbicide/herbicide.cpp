@@ -227,6 +227,39 @@ namespace Herbicide
 					Q_ARG (QString, DeniedAuth_.take (entryObj)));
 	}
 
+	namespace
+	{
+		class AccountSettingsManager : public Util::BaseSettingsManager
+		{
+			const QByteArray GroupName_;
+		public:
+			AccountSettingsManager (IAccount*, QObject*);
+		protected:
+			QSettings* BeginSettings () const override;
+			void EndSettings (QSettings*) const override;
+		};
+
+		AccountSettingsManager::AccountSettingsManager (IAccount *acc, QObject *parent)
+		: Util::BaseSettingsManager { parent }
+		, GroupName_ { acc->GetAccountID () }
+		{
+			Util::BaseSettingsManager::Init ();
+		}
+
+		QSettings* AccountSettingsManager::BeginSettings () const
+		{
+			const auto settings = new QSettings (QCoreApplication::organizationName (),
+					QCoreApplication::applicationName () + "_Azoth_Herbicide");
+			settings->beginGroup (GroupName_);
+			return settings;
+		}
+
+		void AccountSettingsManager::EndSettings (QSettings *settings) const
+		{
+			settings->endGroup ();
+		}
+	}
+
 	void Plugin::ShowAccountAntispamConfig (IAccount *acc)
 	{
 		auto dia = new QDialog;
