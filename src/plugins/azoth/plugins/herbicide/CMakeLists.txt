@@ -12,6 +12,7 @@ set (HERBICIDE_SRCS
 	confwidget.cpp
 	xmlsettingsmanager.cpp
 	logger.cpp
+	listsholder.cpp
 	)
 set (HERBICIDE_FORMS
 	confwidget.ui
