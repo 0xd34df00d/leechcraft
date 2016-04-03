@@ -33,6 +33,9 @@
 #include <QTranslator>
 #include <QSettings>
 #include <QCoreApplication>
+#include <QDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <util/util.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/azoth/iclentry.h>
@@ -226,6 +229,38 @@ namespace Herbicide
 
 	void Plugin::ShowAccountAntispamConfig (IAccount *acc)
 	{
+		auto dia = new QDialog;
+		dia->setLayout (new QVBoxLayout);
+
+		auto xsd = new Util::XmlSettingsDialog;
+		xsd->RegisterObject (&XmlSettingsManager::Instance (), "azothherbicidesettings.xml");
+		auto confWidget = new ConfWidget ();
+		xsd->SetCustomWidget ("ConfWidget", confWidget);
+
+		dia->layout ()->addWidget (xsd->GetWidget ());
+
+		auto buttons = new QDialogButtonBox { QDialogButtonBox::Ok | QDialogButtonBox::Cancel };
+		dia->layout ()->addWidget (buttons);
+
+		connect (buttons,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (accept ()));
+		connect (buttons,
+				SIGNAL (accepted ()),
+				xsd,
+				SLOT (accept ()));
+		connect (buttons,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (reject ()));
+
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->open ();
+		connect (dia,
+				SIGNAL (finished (int)),
+				xsd,
+				SLOT (deleteLater ()));
 	}
 
 	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
