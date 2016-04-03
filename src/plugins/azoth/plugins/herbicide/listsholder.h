@@ -47,15 +47,22 @@ namespace Herbicide
 	{
 		const std::function<QVariant (IAccount*, QByteArray)> PropGetter_;
 
-		QSet<QRegExp> Whitelist_;
-		QSet<QRegExp> Blacklist_;
+		struct ListInfo
+		{
+			QSet<QRegExp> White_;
+			QSet<QRegExp> Black_;
+		};
+
+		QHash<QByteArray, ListInfo> Acc2ListInfo_;
 	public:
 		ListsHolder (const std::function<QVariant (IAccount*, QByteArray)>&);
 
-		QSet<QRegExp> GetWhitelist (IAccount*) const;
-		QSet<QRegExp> GetBlacklist (IAccount*) const;
+		QSet<QRegExp> GetWhitelist (IAccount*);
+		QSet<QRegExp> GetBlacklist (IAccount*);
 
 		void ReloadLists (IAccount*);
+	private:
+		ListInfo& PreloadList (IAccount*);
 	};
 }
 }

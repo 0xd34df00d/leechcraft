@@ -29,6 +29,8 @@
 
 #include "listsholder.h"
 #include <QVariant>
+#include <util/sll/functor.h>
+#include <interfaces/azoth/iaccount.h>
 
 namespace LeechCraft
 {
@@ -42,14 +44,24 @@ namespace Herbicide
 		ReloadLists (nullptr);
 	}
 
-	QSet<QRegExp> ListsHolder::GetWhitelist (IAccount*) const
+	namespace
 	{
-		return Whitelist_;
+		QByteArray GetID (IAccount *acc)
+		{
+			return acc ?
+					acc->GetAccountID () :
+					QByteArray {};
+		}
 	}
 
-	QSet<QRegExp> ListsHolder::GetBlacklist (IAccount*) const
+	QSet<QRegExp> ListsHolder::GetWhitelist (IAccount *acc)
 	{
-		return Blacklist_;
+		return PreloadList (acc).White_;
+	}
+
+	QSet<QRegExp> ListsHolder::GetBlacklist (IAccount *acc)
+	{
+		return PreloadList (acc).Black_;
 	}
 
 	namespace
@@ -71,10 +83,21 @@ namespace Herbicide
 		}
 	}
 
-	void ListsHolder::ReloadLists (IAccount*)
+	void ListsHolder::ReloadLists (IAccount *acc)
 	{
-		Whitelist_ = GetRegexps (PropGetter_ (nullptr, "Whitelist"));
-		Blacklist_ = GetRegexps (PropGetter_ (nullptr, "Blacklist"));
+		auto& listInfo = Acc2ListInfo_ [GetID (acc)];
+
+		listInfo.White_ = GetRegexps (PropGetter_ (acc, "Whitelist"));
+		listInfo.Black_ = GetRegexps (PropGetter_ (acc, "Blacklist"));
+	}
+
+	ListsHolder::ListInfo& ListsHolder::PreloadList (IAccount *acc)
+	{
+		const auto& id = GetID (acc);
+		if (!Acc2ListInfo_.contains (id))
+			ReloadLists (acc);
+
+		return Acc2ListInfo_ [id];
 	}
 }
 }
