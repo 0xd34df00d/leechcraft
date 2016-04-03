@@ -67,8 +67,10 @@ namespace Herbicide
 				QCoreApplication::applicationName () + "_Azoth_Herbicide"
 			};
 
-			const auto& accId = acc->GetAccountID ();
-			if (!settings.childGroups ().contains (accId))
+			const auto& accId = acc ?
+					acc->GetAccountID () :
+					QByteArray {};
+			if (!acc || !settings.childGroups ().contains (accId))
 				return settings.value (name);
 
 			settings.beginGroup (accId);
