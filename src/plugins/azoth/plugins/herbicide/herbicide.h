@@ -45,6 +45,7 @@ class IMessage;
 namespace Herbicide
 {
 	class Logger;
+	class ListsHolder;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -67,6 +68,7 @@ namespace Herbicide
 
 		QHash<QObject*, QString> DeniedAuth_;
 
+		std::shared_ptr<ListsHolder> ListsHolder_;
 		QSet<QRegExp> Whitelist_;
 		QSet<QRegExp> Blacklist_;
 	public:

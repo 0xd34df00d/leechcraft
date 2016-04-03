@@ -45,6 +45,7 @@
 #include "xmlsettingsmanager.h"
 #include "confwidget.h"
 #include "logger.h"
+#include "listsholder.h"
 
 uint qHash (const QRegExp& rx)
 {
@@ -104,6 +105,7 @@ namespace Herbicide
 
 		Logger_ = new Logger;
 
+		ListsHolder_ = std::make_shared<ListsHolder> (&GetAccountProperty);
 		handleWhitelistChanged ();
 		handleBlacklistChanged ();
 	}
@@ -200,7 +202,8 @@ namespace Herbicide
 					[&id] (const QRegExp& rx) { return rx.exactMatch (id); });
 		};
 
-		if (checkRxList (Whitelist_))
+		const auto acc = entry->GetParentAccount ();
+		if (checkRxList (ListsHolder_->GetWhitelist (acc)))
 		{
 			Logger_->LogEvent (Logger::Event::Granted, entry, "entry is in the whitelist");
 			return true;
@@ -208,7 +211,7 @@ namespace Herbicide
 
 		if (GetAccountProperty (entry->GetParentAccount (), "AskOnlyBL").toBool ())
 		{
-			const auto isBlacklisted = checkRxList (Blacklist_);
+			const auto isBlacklisted = checkRxList (ListsHolder_->GetBlacklist (acc));
 			if (isBlacklisted)
 				Logger_->LogEvent (Logger::Event::Denied, entry, "entry is in the blacklist");
 			else
