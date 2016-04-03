@@ -170,7 +170,10 @@ namespace Herbicide
 
 	QList<QAction*> Plugin::CreateActions (IAccount *acc)
 	{
+		QList<QAction*> result;
+
 		const auto configAction = new QAction { tr ("Configure antispam settings..."), this };
+
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this, acc] { ShowAccountAntispamConfig (acc); },
@@ -178,7 +181,35 @@ namespace Herbicide
 			SIGNAL (triggered ()),
 			configAction
 		};
-		return { configAction };
+
+		result << configAction;
+
+		if (HasSpecificSettings (acc))
+		{
+			const auto removeAction = new QAction { tr ("Remove account-specific antispam settings"), this };
+
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[this, acc]
+				{
+					QSettings settings
+					{
+						QCoreApplication::organizationName (),
+						QCoreApplication::applicationName () + "_Azoth_Herbicide"
+					};
+
+					settings.remove (acc->GetAccountID ());
+					ListsHolder_->ReloadLists (acc);
+				},
+				removeAction,
+				SIGNAL (triggered ()),
+				removeAction
+			};
+
+			result << removeAction;
+		}
+
+		return result;
 	}
 
 	bool Plugin::IsConfValid (IAccount *acc) const
