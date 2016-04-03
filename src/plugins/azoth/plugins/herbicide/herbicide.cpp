@@ -162,12 +162,11 @@ namespace Herbicide
 
 	bool Plugin::IsConfValid (IAccount *acc) const
 	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("EnableQuest").toBool ())
+		if (!GetAccountProperty (acc, "EnableQuest").toBool ())
 			return false;
 
-		if (ConfWidget_->GetQuestion ().isEmpty () ||
-				ConfWidget_->GetAnswers ().isEmpty ())
+		if (GetQuestion (acc).isEmpty () ||
+				GetAnswers (acc).isEmpty ())
 			return false;
 
 		return true;
@@ -205,7 +204,7 @@ namespace Herbicide
 			return true;
 		}
 
-		if (XmlSettingsManager::Instance ().property ("AskOnlyBL").toBool ())
+		if (GetAccountProperty (entry->GetParentAccount (), "AskOnlyBL").toBool ())
 		{
 			const auto isBlacklisted = checkRxList (Blacklist_);
 			if (isBlacklisted)
@@ -225,10 +224,10 @@ namespace Herbicide
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 		AskedEntries_ << entryObj;
 
-		auto greeting = XmlSettingsManager::Instance ().property ("QuestPrefix").toString ();
+		auto greeting = GetAccountProperty (entry->GetParentAccount (), "QuestPrefix").toString ();
 		if (!greeting.isEmpty ())
 			greeting += "\n";
-		const auto& text = greeting + ConfWidget_->GetQuestion ();
+		const auto& text = greeting + GetQuestion (entry->GetParentAccount ());
 
 		Logger_->LogEvent (Logger::Event::Challenged, entry, text);
 
@@ -247,7 +246,7 @@ namespace Herbicide
 
 		auto entry = qobject_cast<ICLEntry*> (entryObj);
 
-		const auto& text = XmlSettingsManager::Instance ().property ("QuestSuccessReply").toString ();
+		const auto& text = GetAccountProperty (entry->GetParentAccount (), "QuestSuccessReply").toString ();
 		const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 		OurMessages_ << msg;
 		msg->Send ();
@@ -332,10 +331,11 @@ namespace Herbicide
 
 	void Plugin::hookGotAuthRequest (IHookProxy_ptr proxy, QObject *entry, QString msg)
 	{
-		if (!IsConfValid (qobject_cast<ICLEntry*> (entry)->GetParentAccount ()))
+		const auto acc = qobject_cast<ICLEntry*> (entry)->GetParentAccount ();
+		if (!IsConfValid (acc))
 			return;
 
-		if (!XmlSettingsManager::Instance ().property ("EnableForAuths").toBool ())
+		if (!GetAccountProperty (acc, "EnableForAuths").toBool ())
 			return;
 
 		if (IsEntryAllowed (entry))
@@ -382,7 +382,7 @@ namespace Herbicide
 
 		if (!AskedEntries_.contains (entryObj))
 			ChallengeEntry (proxy, entryObj);
-		else if (ConfWidget_->GetAnswers ().contains (msg->GetBody ().toLower ()))
+		else if (GetAnswers (acc).contains (msg->GetBody ().toLower ()))
 		{
 			Logger_->LogEvent (Logger::Event::Succeeded, entry, msg->GetBody ());
 			GreetEntry (entryObj);
@@ -391,7 +391,7 @@ namespace Herbicide
 		{
 			Logger_->LogEvent (Logger::Event::Failed, entry, msg->GetBody ());
 
-			const auto& text = XmlSettingsManager::Instance ().property ("QuestFailureReply").toString ();
+			const auto& text = GetAccountProperty (acc, "QuestFailureReply").toString ();
 			const auto msg = entry->CreateMessage (IMessage::Type::ChatMessage, QString (), text);
 			OurMessages_ << msg;
 			msg->Send ();
