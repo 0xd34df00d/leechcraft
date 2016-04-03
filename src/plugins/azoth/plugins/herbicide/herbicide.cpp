@@ -65,8 +65,8 @@ namespace Herbicide
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"azothherbicidesettings.xml");
 
-		ConfWidget_ = new ConfWidget (&XmlSettingsManager::Instance ());
-		SettingsDialog_->SetCustomWidget ("ConfWidget", ConfWidget_);
+		const auto confWidget = new ConfWidget (&XmlSettingsManager::Instance ());
+		SettingsDialog_->SetCustomWidget ("ConfWidget", confWidget);
 
 		Logger_ = new Logger;
 

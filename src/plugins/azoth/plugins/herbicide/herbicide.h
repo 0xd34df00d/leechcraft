@@ -59,7 +59,6 @@ namespace Herbicide
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Herbicide")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		ConfWidget *ConfWidget_;
 
 		Logger *Logger_;
 
