@@ -47,11 +47,6 @@
 #include "logger.h"
 #include "listsholder.h"
 
-uint qHash (const QRegExp& rx)
-{
-	return qHash (rx.pattern ());
-}
-
 namespace LeechCraft
 {
 namespace Azoth

@@ -32,6 +32,11 @@
 #include <util/sll/functor.h>
 #include <interfaces/azoth/iaccount.h>
 
+uint qHash (const QRegExp& rx)
+{
+	return qHash (rx.pattern ());
+}
+
 namespace LeechCraft
 {
 namespace Azoth
