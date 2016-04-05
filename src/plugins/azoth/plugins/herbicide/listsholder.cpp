@@ -87,8 +87,8 @@ namespace Herbicide
 	{
 		auto& listInfo = Acc2ListInfo_ [GetID (acc)];
 
-		listInfo.White_ = GetRegexps (PropGetter_ (acc, "Whitelist"));
-		listInfo.Black_ = GetRegexps (PropGetter_ (acc, "Blacklist"));
+		listInfo.White_ = GetRegexps (PropGetter_ (acc, "WhitelistRegexps"));
+		listInfo.Black_ = GetRegexps (PropGetter_ (acc, "BlacklistRegexps"));
 	}
 
 	ListsHolder::ListInfo& ListsHolder::PreloadList (IAccount *acc)
