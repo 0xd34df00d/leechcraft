@@ -35,8 +35,6 @@
 #include <QMetaType>
 #include <QtDebug>
 #include <QUrl>
-#include <QWaitCondition>
-#include <QMutex>
 #include "util/lmp/gstutil.h"
 #include "../gstfix.h"
 #include "../xmlsettingsmanager.h"
@@ -51,9 +49,7 @@ namespace LMP
 		QObject * const Handler_;
 
 		std::atomic_bool ShouldStop_ { false };
-
-		QMutex PauseMutex_;
-		QWaitCondition PauseWC_;
+		std::atomic_bool ShouldWait_ { false };
 	public:
 		LightPopThread (GstBus*, QObject*);
 		~LightPopThread ();
@@ -83,7 +79,7 @@ namespace LMP
 
 	void LightPopThread::Resume ()
 	{
-		PauseWC_.wakeOne ();
+		ShouldWait_ = false;
 	}
 
 	void LightPopThread::run ()
@@ -94,15 +90,18 @@ namespace LMP
 			if (!msg)
 				continue;
 
-			QMetaObject::invokeMethod (Handler_,
-					"handleMessage",
-					Qt::QueuedConnection,
-					Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
-
 			if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR)
+				ShouldWait_ = true;
+
+			QMetaObject::invokeMethod (Handler_,
+				"handleMessage",
+				Qt::QueuedConnection,
+				Q_ARG (GstMessage_ptr, std::shared_ptr<GstMessage> (msg, gst_message_unref)));
+
+			while (ShouldWait_)
 			{
-				QMutexLocker locker { &PauseMutex_ };
-				PauseWC_.wait (&PauseMutex_);
+				msleep (10);
+				continue;
 			}
 		}
 	}
@@ -227,7 +226,6 @@ namespace LMP
 				<< code
 				<< msgStr
 				<< debugStr;
-
 
 		if (IsDraining_)
 			return;
