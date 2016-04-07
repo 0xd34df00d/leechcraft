@@ -366,7 +366,7 @@ namespace Liznoo
 		if (!PowerActPlatform_)
 			return;
 
-		Util::ExecuteFuture ([state, this] { return PowerActPlatform_->CanChangeState (state); },
+		Util::Sequence (this, PowerActPlatform_->CanChangeState (state)) >>
 				[state, this] (const PowerActions::Platform::QueryChangeStateResult& res)
 				{
 					if (res.CanChangeState_)
@@ -380,8 +380,7 @@ namespace Liznoo
 								msg, PCritical_);
 						Proxy_->GetEntityManager ()->HandleEntity (entity);
 					}
-				},
-				this);
+				};
 	}
 
 	void Plugin::handleBatteryInfo (BatteryInfo info)
