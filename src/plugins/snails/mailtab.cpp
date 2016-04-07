@@ -378,7 +378,7 @@ namespace Snails
 			return result.join (", ");
 		}
 
-		QString GetStyle ()
+		QString GetStyle (const QString& headerClass)
 		{
 			const auto& palette = qApp->palette ();
 
@@ -398,7 +398,7 @@ namespace Snails
 							margin: 0 !important;
 						}
 
-						.header {
+					)" + headerClass + R"( {
 							top: 0;
 							left: 0;
 							right: 0;
@@ -466,7 +466,7 @@ namespace Snails
 		{
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-			html += GetStyle ();
+			html += GetStyle (".header");
 			html += "</style>";
 			html += R"d(
 						<script language='javascript'>
@@ -535,7 +535,7 @@ namespace Snails
 		{
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-			html += GetStyle ();
+			html += GetStyle (".header");
 			html += "</style><body><div style='errormessage'>" + err + "</div></body></html>";
 			return html;
 		}
