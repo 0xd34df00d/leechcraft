@@ -390,7 +390,7 @@ namespace Snails
 			result.replace ("$LinkVisited", palette.color (QPalette::ColorRole::LinkVisited).name ());
 			result.replace ("$Link", palette.color (QPalette::ColorRole::Link).name ());
 
-			result += R"delim(
+			result += R"(
 						html, body {
 							width: 100%;
 							height: 100%;
@@ -411,7 +411,7 @@ namespace Snails
 							position: absolute;
 							overflow: auto;
 						}
-					)delim";
+					)";
 
 			return result;
 		}
