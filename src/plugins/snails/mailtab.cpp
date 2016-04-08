@@ -397,7 +397,6 @@ namespace Snails
 							overflow: hidden;
 							margin: 0 !important;
 						}
-
 					)" + headerClass + R"( {
 							top: 0;
 							left: 0;
@@ -484,9 +483,11 @@ namespace Snails
 
 		QString ToHtml (const Message_ptr& msg)
 		{
+			const auto& headerClass = "." + GenerateId (msg->GetHTMLBody (), "header");
+
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
-			html += GetStyle (".header");
+			html += GetStyle (headerClass);
 			html += "</style>";
 			html += R"d(
 						<script language='javascript'>
@@ -502,7 +503,7 @@ namespace Snails
 							}
 						</script>
 					)d";
-			html += "</head><body onload='setupResize()'><header class='header' id='msgHeader'>";
+			html += "</head><body onload='setupResize()'><header class='" + headerClass + "' id='msgHeader'>";
 			auto addField = [&html] (const QString& cssClass, const QString& name, const QString& text)
 			{
 				if (!text.trimmed ().isEmpty ())
