@@ -378,11 +378,14 @@ namespace Snails
 			return result.join (", ");
 		}
 
-		QString GetStyle (const QString& headerClass)
+		QString GetStyle (QString headerClass)
 		{
+			headerClass.prepend ('.');
+
 			const auto& palette = qApp->palette ();
 
 			auto result = Core::Instance ().GetMsgViewTemplate ();
+			result.replace (".header", headerClass);
 			result.replace ("$WindowText", palette.color (QPalette::ColorRole::WindowText).name ());
 			result.replace ("$Window", palette.color (QPalette::ColorRole::Window).name ());
 			result.replace ("$Base", palette.color (QPalette::ColorRole::Base).name ());
@@ -483,7 +486,7 @@ namespace Snails
 
 		QString ToHtml (const Message_ptr& msg)
 		{
-			const auto& headerClass = "." + GenerateId (msg->GetHTMLBody (), "header");
+			const auto& headerClass = GenerateId (msg->GetHTMLBody (), "header");
 
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 			html += "<html xmlns='http://www.w3.org/1999/xhtml'><head><title>Message</title><style>";
