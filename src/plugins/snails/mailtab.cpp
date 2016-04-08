@@ -462,6 +462,26 @@ namespace Snails
 			return result;
 		}
 
+		namespace
+		{
+			QString GenerateId (const QString& body, QString classId)
+			{
+				int pos = 0;
+				while ((pos = body.indexOf (classId)) >= 0)
+				{
+					const auto nextCharIdx = pos + classId.size ();
+					if (nextCharIdx >= body.size ())
+						classId += '1';
+					else
+						classId += body.at (nextCharIdx) == '1' ?
+								'2' :
+								'1';
+				}
+
+				return classId;
+			}
+		}
+
 		QString ToHtml (const Message_ptr& msg)
 		{
 			QString html = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
