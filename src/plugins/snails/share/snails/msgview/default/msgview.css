@@ -19,8 +19,11 @@
 .header {
 	padding-left: 1em;
 	padding-right: 1em;
-	border: 2px solid $Window;
-	-webkit-border-radius: 1em;
+	border-width: 2px 0px 2px 0px;
+	border-style: solid;
+	border-color: $Window;
+	-webkit-border-top-left-radius: 1em;
+	-webkit-border-top-right-radius: 1em;
 }
 
 .replyPart {
@@ -51,6 +54,5 @@ body {
 	color: $Text;
 	background-color: $Base;
 
-	margin-left: 1em;
-	margin-right: 1em;
+	margin: 1em !important;
 }
