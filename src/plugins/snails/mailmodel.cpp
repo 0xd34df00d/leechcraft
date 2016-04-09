@@ -184,7 +184,10 @@ namespace Snails
 			return addr.first.isEmpty () ? addr.second : addr.first;
 		}
 		case Column::Subject:
-			return msg->GetSubject ();
+		{
+			const auto& subject = msg->GetSubject ();
+			return subject.isEmpty () ? "<" + tr ("No subject") + ">" : subject;
+		}
 		case Column::Date:
 		{
 			const auto& date = index.parent ().isValid () ?
