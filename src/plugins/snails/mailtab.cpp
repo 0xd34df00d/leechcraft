@@ -139,6 +139,16 @@ namespace Snails
 			{
 			}
 
+			QString GetName () const
+			{
+				return Info_.UserVisibleText_;
+			}
+
+			QString GetIconName () const
+			{
+				return IconName_;
+			}
+
 			ActionInfo GetInfo (const ICoreProxy_ptr& proxy) const
 			{
 				auto info = Info_;
