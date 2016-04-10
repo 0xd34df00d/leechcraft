@@ -167,6 +167,24 @@ namespace Snails
 				{ "MailTab.Compose", { MailTab::tr ("Compose a message..."), { "C" }, "mail-message-new" } },
 			};
 		}
+
+		QAction* MakeAction (const QString& id,
+				Util::ShortcutManager *sm,
+				QObject *parent, const char *slot)
+		{
+			auto info = GetActionInfos () [id];
+
+			auto action = new QAction { info.GetName (), parent };
+			action->setProperty ("ActionIcon", info.GetIconName ());
+			QObject::connect (action,
+					SIGNAL (triggered),
+					parent,
+					slot);
+
+			sm->RegisterAction (id, action);
+
+			return action;
+		}
 	}
 
 	TabClassInfo MailTab::GetTabClassInfo () const
