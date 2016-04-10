@@ -163,15 +163,15 @@ namespace Util
 	void ShortcutManager::handleActionDestroyed ()
 	{
 		auto act = static_cast<QAction*> (sender ());
-		for (const auto& id : Actions_.keys ())
-			Actions_ [id].removeAll (act);
+		for (auto& list : Actions_)
+			list.removeAll (act);
 	}
 
 	void ShortcutManager::handleShortcutDestroyed()
 	{
 		auto sc = static_cast<QShortcut*> (sender ());
-		for (const auto& id : Shortcuts_.keys ())
-			Shortcuts_ [id].removeAll (sc);
+		for (auto& list : Shortcuts_)
+			list.removeAll (sc);
 
 		qDeleteAll (Shortcut2Subs_.take (sc));
 	}
