@@ -86,10 +86,13 @@ namespace Snails
 			const int MaxRetries_;
 
 			int RecLevel_ = 0;
+
+			AccountThreadWorker * const W_;
 		public:
-			ExceptionsHandler (const F& f, int maxRetries)
+			ExceptionsHandler (AccountThreadWorker *w, const F& f, int maxRetries)
 			: F_ { f }
 			, MaxRetries_ { maxRetries }
+			, W_ { w }
 			{
 			}
 
@@ -169,9 +172,9 @@ namespace Snails
 		};
 
 		template<typename Result, typename F>
-		Result HandleExceptions (const F& f)
+		Result HandleExceptions (AccountThreadWorker *w, const F& f)
 		{
-			return ExceptionsHandler<Result, F> { f, detail::MaxRecLevel } ();
+			return ExceptionsHandler<Result, F> { w, f, detail::MaxRecLevel } ();
 		}
 
 		template<typename Right>
@@ -180,11 +183,12 @@ namespace Snails
 			using Result_t = Util::Either<InvokeError_t<>, Right>;
 
 			template<typename F>
-			static auto WrapFunction (const F& f)
+			static auto WrapFunction (AccountThreadWorker *w, const F& f)
 			{
-				return [f] (auto... args)
+				return [=] (auto... args)
 				{
-					return HandleExceptions<Result_t> ([&]
+					return HandleExceptions<Result_t> (w,
+							[&]
 							{
 								return Result_t::Right (Util::Invoke (f, args...));
 							});
@@ -198,11 +202,12 @@ namespace Snails
 			using Result_t = Util::Either<InvokeError_t<>, boost::none_t>;
 
 			template<typename F>
-			static auto WrapFunction (const F& f)
+			static auto WrapFunction (AccountThreadWorker *w, const F& f)
 			{
-				return [f] (auto... args)
+				return [=] (auto... args)
 				{
-					return HandleExceptions<Result_t> ([&]
+					return HandleExceptions<Result_t> (w,
+							[&]
 							{
 								Util::Invoke (f, args...);
 								return Result_t::Right ({});
@@ -231,19 +236,19 @@ namespace Snails
 			using Result_t = Util::Either<typename BuildErrorList<LeftTypes_t>::Result_t, Right>;
 
 			template<typename F>
-			static auto WrapFunction (const F& f)
+			static auto WrapFunction (AccountThreadWorker *w, const F& f)
 			{
-				return [f] (auto... args)
+				return [=] (auto... args)
 				{
-					return HandleExceptions<Result_t> ([&] { return Util::Invoke (f, args...); });
+					return HandleExceptions<Result_t> (w, [&] { return Util::Invoke (f, args...); });
 				};
 			}
 		};
 
 		template<typename... Args, typename F>
-		auto WrapFunction (const F& f)
+		auto WrapFunction (AccountThreadWorker *w, const F& f)
 		{
-			return WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (f);
+			return WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (w, f);
 		}
 	}
 
@@ -283,7 +288,7 @@ namespace Snails
 			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
 			{
 				iface.reportStarted ();
-				Util::ReportFutureResult (iface, detail::WrapFunction<Args...> (func), w, args...);
+				Util::ReportFutureResult (iface, detail::WrapFunction<Args...> (w, func), w, args...);
 			};
 
 			{
