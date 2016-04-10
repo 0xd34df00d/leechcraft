@@ -145,6 +145,16 @@ namespace Snails
 				return info;
 			}
 		};
+
+		QHash<QString, AugmentedActionInfo> GetActionInfos ()
+		{
+			return
+			{
+				{ "MailTab.Fetch", { MailTab::tr ("Fetch new mail"), { "Shift+F" }, "mail-receive" } },
+				{ "MailTab.Refresh", { MailTab::tr ("Refresh the folder"), { "F" }, "view-refresh" } },
+				{ "MailTab.Compose", { MailTab::tr ("Compose a message..."), { "C" }, "mail-message-new" } },
+			};
+		}
 	}
 
 	TabClassInfo MailTab::GetTabClassInfo () const
