@@ -131,6 +131,8 @@ namespace Snails
 			QString IconName_;
 			ActionInfo Info_;
 		public:
+			AugmentedActionInfo () = default;
+
 			AugmentedActionInfo (const QString& name, const QKeySequence& seq, const QString& iconName)
 			: IconName_ { iconName }
 			, Info_ { name, seq, {} }
