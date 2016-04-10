@@ -124,6 +124,29 @@ namespace Snails
 		FillTabToolbarActions ();
 	}
 
+	namespace
+	{
+		struct AugmentedActionInfo
+		{
+			QString IconName_;
+			ActionInfo Info_;
+		public:
+			AugmentedActionInfo (const QString& name, const QKeySequence& seq, const QString& iconName)
+			: IconName_ { iconName }
+			, Info_ { name, seq, {} }
+			{
+			}
+
+			ActionInfo GetInfo (const ICoreProxy_ptr& proxy) const
+			{
+				auto info = Info_;
+				if (!IconName_.isEmpty ())
+					info.Icon_ = proxy->GetIconThemeManager ()->GetIcon (IconName_);
+				return info;
+			}
+		};
+	}
+
 	TabClassInfo MailTab::GetTabClassInfo () const
 	{
 		return TabClass_;
