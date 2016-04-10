@@ -42,6 +42,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "storage.h"
@@ -185,6 +186,12 @@ namespace Snails
 
 			return action;
 		}
+	}
+
+	void MailTab::FillShortcutsManager (Util::ShortcutManager *sm, const ICoreProxy_ptr& proxy)
+	{
+		for (const auto& pair : Util::Stlize (GetActionInfos ()))
+			sm->RegisterActionInfo (pair.first, pair.second.GetInfo (proxy));
 	}
 
 	TabClassInfo MailTab::GetTabClassInfo () const

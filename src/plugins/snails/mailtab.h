@@ -96,6 +96,8 @@ namespace Snails
 		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*,
 				const TabClassInfo&, Util::ShortcutManager*, QObject*, QWidget* = nullptr);
 
+		static void FillShortcutsManager (Util::ShortcutManager*, const ICoreProxy_ptr&);
+
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();
 		void Remove ();
