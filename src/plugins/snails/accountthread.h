@@ -79,6 +79,8 @@ namespace Snails
 			return Result::Left (std::current_exception ());
 		}
 
+		void ReconnectATW (AccountThreadWorker*);
+
 		template<typename Result, typename F>
 		class ExceptionsHandler
 		{
@@ -158,6 +160,8 @@ namespace Snails
 				}
 				catch (const vmime::exceptions::not_connected& e)
 				{
+					ReconnectATW (W_);
+
 					return (*this) (e);
 				}
 				catch (const vmime::exceptions::socket_exception& e)

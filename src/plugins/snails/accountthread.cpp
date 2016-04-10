@@ -62,6 +62,14 @@ namespace Snails
 		return Msg_.c_str ();
 	}
 
+	namespace detail
+	{
+		void ReconnectATW (AccountThreadWorker *w)
+		{
+			w->Disconnect ();
+		}
+	}
+
 	AccountThread::AccountThread (bool isListening, const QString& name,
 			const CertList_t& certs, Account *parent)
 	: A_ { parent }
