@@ -858,12 +858,15 @@ namespace Snails
 
 	void AccountThreadWorker::Disconnect ()
 	{
-		if (CachedStore_ && CachedStore_->isConnected ())
-		{
-			CachedFolders_.clear ();
+		CachedFolders_.clear ();
+
+		if (!CachedStore_)
+			return;
+
+		if (CachedStore_->isConnected ())
 			CachedStore_->disconnect ();
-			CachedStore_.reset ();
-		}
+
+		CachedStore_.reset ();
 	}
 
 	void AccountThreadWorker::TestConnectivity ()
