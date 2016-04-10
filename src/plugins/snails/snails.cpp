@@ -84,6 +84,8 @@ namespace Snails
 		ShortcutsMgr_ = new Util::ShortcutManager { proxy, this };
 		ShortcutsMgr_->SetObject (this);
 
+		MailTab::FillShortcutsManager (ShortcutsMgr_, proxy);
+
 		AccsMgr_ = new AccountsManager { ProgressMgr_ };
 		TemplatesMgr_ = new MsgTemplatesManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
