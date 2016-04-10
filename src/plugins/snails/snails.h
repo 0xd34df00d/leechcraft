@@ -35,6 +35,7 @@
 #include <interfaces/ihavetabs.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ijobholder.h>
+#include <interfaces/ihaveshortcuts.h>
 
 namespace LeechCraft
 {
@@ -56,9 +57,10 @@ namespace Snails
 				 , public IHaveTabs
 				 , public IHaveSettings
 				 , public IJobHolder
+				 , public IHaveShortcuts
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder)
+		Q_INTERFACES (IInfo IHaveTabs IHaveSettings IJobHolder IHaveShortcuts)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Snails")
 
@@ -91,6 +93,9 @@ namespace Snails
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		QAbstractItemModel* GetRepresentation () const;
+
+		void SetShortcut (const QString& id, const QKeySequences_t& sequences);
+		QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
 	private slots:
 		void handleNewTab (const QString& name, QWidget*);
 	signals:

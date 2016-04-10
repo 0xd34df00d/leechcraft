@@ -170,6 +170,16 @@ namespace Snails
 		return ProgressMgr_->GetRepresentation ();
 	}
 
+	void Plugin::SetShortcut (const QString& id, const QKeySequences_t& sequences)
+	{
+		ShortcutsMgr_->SetShortcut (id, sequences);
+	}
+
+	QMap<QString, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
+	{
+		return ShortcutsMgr_->GetActionInfo ();
+	}
+
 	void Plugin::handleNewTab (const QString& name, QWidget *mt)
 	{
 		connect (mt,
