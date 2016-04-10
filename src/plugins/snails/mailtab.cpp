@@ -241,31 +241,9 @@ namespace Snails
 
 	void MailTab::FillCommonActions (Util::ShortcutManager *sm)
 	{
-		const auto fetch = new QAction (tr ("Fetch new mail"), this);
-		fetch->setProperty ("ActionIcon", "mail-receive");
-		TabToolbar_->addAction (fetch);
-		connect (fetch,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleFetchNewMail ()));
-		TabToolbar_->addAction (fetch);
-
-		const auto refresh = new QAction (tr ("Refresh the folder"), this);
-		refresh->setProperty ("ActionIcon", "view-refresh");
-		TabToolbar_->addAction (refresh);
-		connect (refresh,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRefreshFolder ()));
-		TabToolbar_->addAction (refresh);
-
-		const auto msgCompose = new QAction (tr ("Compose a message..."), this);
-		msgCompose->setProperty ("ActionIcon", "mail-message-new");
-		connect (msgCompose,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleCompose ()));
-		TabToolbar_->addAction (msgCompose);
+		TabToolbar_->addAction (MakeAction ("MailTab.Fetch", sm, this, SLOT (handleFetchNewMail ())));
+		TabToolbar_->addAction (MakeAction ("MailTab.Refresh", sm, this, SLOT (handleRefreshFolder ())));
+		TabToolbar_->addAction (MakeAction ("MailTab.Compose", sm, this, SLOT (handleCompose ())));
 	}
 
 	void MailTab::FillMailActions (Util::ShortcutManager *sm)
