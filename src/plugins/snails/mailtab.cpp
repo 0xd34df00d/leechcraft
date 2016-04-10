@@ -121,7 +121,7 @@ namespace Snails
 				this,
 				SLOT (handleMailSelected ()));
 
-		FillTabToolbarActions ();
+		FillTabToolbarActions (sm);
 	}
 
 	namespace
@@ -202,7 +202,7 @@ namespace Snails
 		Ui_.MailView_->setTextSizeMultiplier (factor);
 	}
 
-	void MailTab::FillCommonActions ()
+	void MailTab::FillCommonActions (Util::ShortcutManager *sm)
 	{
 		const auto fetch = new QAction (tr ("Fetch new mail"), this);
 		fetch->setProperty ("ActionIcon", "mail-receive");
@@ -231,7 +231,7 @@ namespace Snails
 		TabToolbar_->addAction (msgCompose);
 	}
 
-	void MailTab::FillMailActions ()
+	void MailTab::FillMailActions (Util::ShortcutManager *sm)
 	{
 		auto registerMailAction = [this] (QObject *obj)
 		{
@@ -339,11 +339,11 @@ namespace Snails
 		SetMsgActionsEnabled (false);
 	}
 
-	void MailTab::FillTabToolbarActions ()
+	void MailTab::FillTabToolbarActions (Util::ShortcutManager *sm)
 	{
-		FillCommonActions ();
+		FillCommonActions (sm);
 		TabToolbar_->addSeparator ();
-		FillMailActions ();
+		FillMailActions (sm);
 	}
 
 	QList<QByteArray> MailTab::GetSelectedIds () const

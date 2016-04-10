@@ -106,9 +106,9 @@ namespace Snails
 		void SetFontSize (QWebSettings::FontSize type, int size);
 		void SetFontSizeMultiplier (qreal factor);
 	private:
-		void FillCommonActions ();
-		void FillMailActions ();
-		void FillTabToolbarActions ();
+		void FillCommonActions (Util::ShortcutManager*);
+		void FillMailActions (Util::ShortcutManager*);
+		void FillTabToolbarActions (Util::ShortcutManager*);
 		QList<QByteArray> GetSelectedIds () const;
 
 		void SetMsgActionsEnabled (bool);
