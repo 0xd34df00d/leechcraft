@@ -77,7 +77,7 @@ namespace Util
 		Q_OBJECT
 
 		ICoreProxy_ptr CoreProxy_;
-		QObject *ContextObj_;
+		QObject *ContextObj_ = nullptr;
 
 		QHash<QString, QList<QAction*>> Actions_;
 

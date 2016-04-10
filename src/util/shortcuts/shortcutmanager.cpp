@@ -44,7 +44,6 @@ namespace Util
 	ShortcutManager::ShortcutManager (ICoreProxy_ptr proxy, QObject *parent)
 	: QObject (parent)
 	, CoreProxy_ (proxy)
-	, ContextObj_ (0)
 	{
 	}
 
