@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace Util
 {
 	class WkFontsWidget;
+	class ShortcutManager;
 }
 
 namespace Snails
@@ -66,6 +67,8 @@ namespace Snails
 
 		Util::XmlSettingsDialog_ptr XSD_;
 		Util::WkFontsWidget *WkFontsWidget_;
+
+		Util::ShortcutManager *ShortcutsMgr_;
 
 		ProgressManager *ProgressMgr_;
 		AccountsManager *AccsMgr_;

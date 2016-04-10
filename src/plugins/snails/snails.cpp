@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <util/xsd/wkfontswidget.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "mailtab.h"
@@ -79,6 +80,9 @@ namespace Snails
 		Core::Instance ().SetProxy (proxy);
 
 		ProgressMgr_ = new ProgressManager;
+
+		ShortcutsMgr_ = new Util::ShortcutManager { proxy, this };
+		ShortcutsMgr_->SetObject (this);
 
 		AccsMgr_ = new AccountsManager { ProgressMgr_ };
 		TemplatesMgr_ = new MsgTemplatesManager;
