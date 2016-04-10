@@ -177,7 +177,7 @@ namespace Snails
 			auto action = new QAction { info.GetName (), parent };
 			action->setProperty ("ActionIcon", info.GetIconName ());
 			QObject::connect (action,
-					SIGNAL (triggered),
+					SIGNAL (triggered ()),
 					parent,
 					slot);
 
