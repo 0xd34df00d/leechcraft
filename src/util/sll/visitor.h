@@ -76,5 +76,11 @@ namespace Util
 
 		return boost::apply_visitor (detail::Visitor<R_t, Args...> { std::forward<Args> (args)... }, v);
 	}
+
+	template<typename T, typename... Args>
+	auto InvokeOn (T&& t, Args&&... args) -> decltype (detail::VisitorBase<Args...> { std::forward<Args> (args)... } (std::forward<T> (t)))
+	{
+		return detail::VisitorBase<Args...> { std::forward<Args> (args)... } (std::forward<T> (t));
+	}
 }
 }
