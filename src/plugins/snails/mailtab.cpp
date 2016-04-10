@@ -169,18 +169,19 @@ namespace Snails
 			};
 		}
 
+		template<typename Invokable>
 		QAction* MakeAction (const QString& id,
 				Util::ShortcutManager *sm,
-				QObject *parent, const char *slot)
+				QObject *parent, Invokable&& slot)
 		{
 			auto info = GetActionInfos () [id];
 
 			auto action = new QAction { info.GetName (), parent };
 			action->setProperty ("ActionIcon", info.GetIconName ());
-			QObject::connect (action,
-					SIGNAL (triggered ()),
-					parent,
-					slot);
+
+			Util::InvokeOn (slot,
+					[&] (const char *slot) { QObject::connect (action, SIGNAL (triggered ()), parent, slot); },
+					[&] (auto invokable) { QObject::connect (action, &QAction::triggered, parent, slot); });
 
 			sm->RegisterAction (id, action);
 
