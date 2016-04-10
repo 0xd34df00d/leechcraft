@@ -43,6 +43,11 @@ class QToolButton;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Snails
 {
 	class MessageListEditorManager;
@@ -89,7 +94,7 @@ namespace Snails
 		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 	public:
 		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*,
-				const TabClassInfo&, QObject*, QWidget* = nullptr);
+				const TabClassInfo&, Util::ShortcutManager*, QObject*, QWidget* = nullptr);
 
 		TabClassInfo GetTabClassInfo () const;
 		QObject* ParentMultiTabs ();

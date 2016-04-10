@@ -68,7 +68,9 @@ namespace Snails
 	MailTab::MailTab (const ICoreProxy_ptr& proxy,
 			const AccountsManager *accsMgr,
 			ComposeMessageTabFactory *cmpMsgTabFactory,
-			const TabClassInfo& tc, QObject *pmt, QWidget *parent)
+			const TabClassInfo& tc,
+			Util::ShortcutManager *sm,
+			QObject *pmt, QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
 	, ComposeMessageTabFactory_ (cmpMsgTabFactory)

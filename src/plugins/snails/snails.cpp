@@ -146,7 +146,7 @@ namespace Snails
 	{
 		if (tabClass == "mail")
 		{
-			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, MailTabClass_, this };
+			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, MailTabClass_, ShortcutsMgr_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
 		}
 		else if (tabClass == "compose")
