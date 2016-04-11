@@ -1010,6 +1010,22 @@ namespace Snails
 		}
 	}
 
+	void MailTab::selectAllChildren ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto model = Ui_.MailTree_->model ();
+
+		const auto sm = Ui_.MailTree_->selectionModel ();
+		for (const auto& idx : sm->selectedRows ())
+			Recurse (idx, model,
+				[&] (const QModelIndex& idx)
+				{
+					Ui_.MailTree_->expand (idx);
+				});
+	}
+
 	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		const auto selModel = Ui_.MailTree_->selectionModel ();

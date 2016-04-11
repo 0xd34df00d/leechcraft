@@ -136,6 +136,8 @@ namespace Snails
 		void handleRemoveMsgs ();
 		void handleViewHeaders ();
 
+		void selectAllChildren ();
+
 		void deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void handleAttachment ();
