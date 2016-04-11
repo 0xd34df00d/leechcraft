@@ -1027,6 +1027,7 @@ namespace Snails
 				[&] (const QModelIndex& idx)
 				{
 					Ui_.MailTree_->expand (idx);
+					sm->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 				});
 	}
 
