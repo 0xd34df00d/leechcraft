@@ -166,6 +166,8 @@ namespace Snails
 				{ "MailTab.Fetch", { MailTab::tr ("Fetch new mail"), { "Shift+F" }, "mail-receive" } },
 				{ "MailTab.Refresh", { MailTab::tr ("Refresh the folder"), { "F" }, "view-refresh" } },
 				{ "MailTab.Compose", { MailTab::tr ("Compose a message..."), { "C" }, "mail-message-new" } },
+				{ "MailTab.Reply", { MailTab::tr ("Reply..."), { "C, R" }, "mail-reply-sender" } },
+				{ "MailTab.Forward", { MailTab::tr ("Forward..."), { "C, F" }, "mail-forward" } },
 			};
 		}
 
@@ -257,27 +259,11 @@ namespace Snails
 					SLOT (setEnabled (bool)));
 		};
 
-		const auto msgReply = new QAction (tr ("Reply..."), this);
-		msgReply->setProperty ("ActionIcon", "mail-reply-sender");
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { HandleLinkedRequested (MsgType::Reply); },
-			msgReply,
-			SIGNAL (triggered ()),
-			this
-		};
+		const auto msgReply = MakeAction ("MailTab.Reply", sm, this, [this] { HandleLinkedRequested (MsgType::Reply); });
 		TabToolbar_->addAction (msgReply);
 		registerMailAction (msgReply);
 
-		const auto msgFwd = new QAction (tr ("Forward..."), this);
-		msgFwd->setProperty ("ActionIcon", "mail-forward");
-		new Util::SlotClosure<Util::NoDeletePolicy>
-		{
-			[this] { HandleLinkedRequested (MsgType::Forward); },
-			msgFwd,
-			SIGNAL (triggered ()),
-			this
-		};
+		const auto msgFwd = MakeAction ("MailTab.Forward", sm, this, [this] { HandleLinkedRequested (MsgType::Forward); });
 		TabToolbar_->addAction (msgFwd);
 		registerMailAction (msgFwd);
 
