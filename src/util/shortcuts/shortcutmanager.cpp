@@ -125,18 +125,17 @@ namespace Util
 			qDeleteAll (Shortcut2Subs_.take (sc));
 
 			const int seqsSize = seqs.size ();
-			if (seqsSize > 1)
-				for (int i = 1; i < seqsSize; ++i)
-				{
-					auto subsc = new QShortcut { sc->parentWidget () };
-					subsc->setContext (sc->context ());
-					subsc->setKey (seqs.value (i));
-					connect (subsc,
-							SIGNAL (activated ()),
-							sc,
-							SIGNAL (activated ()));
-					Shortcut2Subs_ [sc] << subsc;
-				}
+			for (int i = 1; i < seqsSize; ++i)
+			{
+				auto subsc = new QShortcut { sc->parentWidget () };
+				subsc->setContext (sc->context ());
+				subsc->setKey (seqs.value (i));
+				connect (subsc,
+						SIGNAL (activated ()),
+						sc,
+						SIGNAL (activated ()));
+				Shortcut2Subs_ [sc] << subsc;
+			}
 		}
 
 		if (Globals_.contains (id))
