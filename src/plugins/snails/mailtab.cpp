@@ -36,6 +36,7 @@
 #include <QFileDialog>
 #include <QToolButton>
 #include <QMessageBox>
+#include <QShortcut>
 #include <util/util.h>
 #include <util/tags/categoryselector.h>
 #include <util/sys/extensionsdata.h>
@@ -194,6 +195,25 @@ namespace Snails
 			sm->RegisterAction (id, action);
 
 			return action;
+		}
+
+		template<typename Invokable>
+		QShortcut* MakeShortcut (const QString& id,
+				Util::ShortcutManager *sm,
+				const ICoreProxy_ptr& proxy,
+				QWidget *parent, Invokable&& slot)
+		{
+			const auto& info = GetActionInfos () [id];
+
+			auto shortcut = new QShortcut { parent };
+
+			Util::InvokeOn (slot,
+				[&] (const char *slot) { QObject::connect (shortcut, SIGNAL (activated ()), parent, slot); },
+				[&] (auto invokable) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
+
+			sm->RegisterShortcut (id, info.GetInfo (proxy), shortcut);
+
+			return shortcut;
 		}
 	}
 
