@@ -161,7 +161,7 @@ namespace Snails
 
 		QHash<QString, AugmentedActionInfo> GetActionInfos ()
 		{
-			return
+			static QHash<QString, AugmentedActionInfo> result
 			{
 				{ "MailTab.Fetch", { MailTab::tr ("Fetch new mail"), { "Shift+F" }, "mail-receive" } },
 				{ "MailTab.Refresh", { MailTab::tr ("Refresh the folder"), { "F" }, "view-refresh" } },
@@ -173,6 +173,8 @@ namespace Snails
 				{ "MailTab.Remove", { MailTab::tr ("Delete messages"), { "D" }, "list-remove" } },
 				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "text-plain" } },
 			};
+
+			return result;
 		}
 
 		template<typename Invokable>
