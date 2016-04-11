@@ -165,7 +165,7 @@ namespace Snails
 			{
 				{ "MailTab.Fetch", { MailTab::tr ("Fetch new mail"), { "Shift+F" }, "mail-receive" } },
 				{ "MailTab.Refresh", { MailTab::tr ("Refresh the folder"), { "F" }, "view-refresh" } },
-				{ "MailTab.Compose", { MailTab::tr ("Compose a message..."), { "C" }, "mail-message-new" } },
+				{ "MailTab.Compose", { MailTab::tr ("Compose a message..."), { "C, N" }, "mail-message-new" } },
 				{ "MailTab.Reply", { MailTab::tr ("Reply..."), { "C, R" }, "mail-reply-sender" } },
 				{ "MailTab.Forward", { MailTab::tr ("Forward..."), { "C, F" }, "mail-forward" } },
 			};
