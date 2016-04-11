@@ -71,7 +71,7 @@ namespace Util
 					CoreProxy_->GetShortcutProxy ()->GetShortcuts (ContextObj_, id));
 	}
 
-	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut* shortcut)
+	void ShortcutManager::RegisterShortcut (const QString& id, const ActionInfo& info, QShortcut *shortcut)
 	{
 		Shortcuts_ [id] << shortcut;
 		connect (shortcut,
