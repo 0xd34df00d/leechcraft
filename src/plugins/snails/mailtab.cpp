@@ -159,7 +159,7 @@ namespace Snails
 			}
 		};
 
-		QHash<QString, AugmentedActionInfo> GetActionInfos ()
+		auto GetActionInfos ()
 		{
 			static QHash<QString, AugmentedActionInfo> result
 			{
