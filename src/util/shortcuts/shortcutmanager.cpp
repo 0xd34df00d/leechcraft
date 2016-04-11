@@ -124,7 +124,7 @@ namespace Util
 			sc->setKey (seqs.value (0));
 			qDeleteAll (Shortcut2Subs_.take (sc));
 
-			const auto seqsSize = seqs.size ();
+			const int seqsSize = seqs.size ();
 			if (seqsSize > 1)
 				for (int i = 1; i < seqsSize; ++i)
 				{
