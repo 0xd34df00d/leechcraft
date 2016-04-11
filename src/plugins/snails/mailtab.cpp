@@ -998,6 +998,18 @@ namespace Snails
 		}
 	}
 
+	namespace
+	{
+		template<typename F>
+		void Recurse (const QModelIndex& index, QAbstractItemModel *model, const F& f)
+		{
+			f (index);
+
+			for (int i = 0; i < model->rowCount (index); ++i)
+				Recurse (model->index (i, 0, index), model, f);
+		}
+	}
+
 	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
 	{
 		const auto selModel = Ui_.MailTree_->selectionModel ();
