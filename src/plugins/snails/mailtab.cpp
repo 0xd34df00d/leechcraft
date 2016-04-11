@@ -168,6 +168,10 @@ namespace Snails
 				{ "MailTab.Compose", { MailTab::tr ("Compose a message..."), { "C, N" }, "mail-message-new" } },
 				{ "MailTab.Reply", { MailTab::tr ("Reply..."), { "C, R" }, "mail-reply-sender" } },
 				{ "MailTab.Forward", { MailTab::tr ("Forward..."), { "C, F" }, "mail-forward" } },
+				{ "MailTab.MarkRead", { MailTab::tr ("Mark as read"), { "R" }, "mail-mark-read" } },
+				{ "MailTab.MarkUnread", { MailTab::tr ("Mark as unread"), { "U" }, "mail-mark-unread" } },
+				{ "MailTab.Remove", { MailTab::tr ("Delete messages"), { "D" }, "list-remove" } },
+				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "text-plain" } },
 			};
 		}
 
@@ -300,41 +304,21 @@ namespace Snails
 
 		registerMailAction (msgMoveButton);
 
-		const auto msgMarkRead = new QAction (tr ("Mark as read"), this);
-		msgMarkRead->setProperty ("ActionIcon", "mail-mark-read");
-		connect (msgMarkRead,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMarkMsgRead ()));
+		const auto msgMarkRead = MakeAction ("MailTab.MarkRead", sm, this, SLOT (handleMarkMsgRead ()));
 		TabToolbar_->addAction (msgMarkRead);
 		registerMailAction (msgMarkRead);
 
-		const auto msgMarkUnread = new QAction (tr ("Mark as unread"), this);
-		msgMarkUnread->setProperty ("ActionIcon", "mail-mark-unread");
-		connect (msgMarkUnread,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleMarkMsgUnread ()));
+		const auto msgMarkUnread = MakeAction ("MailTab.MarkUnread", sm, this, SLOT (handleMarkMsgUnread ()));
 		TabToolbar_->addAction (msgMarkUnread);
 		registerMailAction (msgMarkUnread);
 
-		const auto msgRemove = new QAction (tr ("Delete messages"), this);
-		msgRemove->setProperty ("ActionIcon", "list-remove");
-		connect (msgRemove,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleRemoveMsgs ()));
+		const auto msgRemove = MakeAction ("MailTab.Remove", sm, this, SLOT (handleRemoveMsgs ()));
 		TabToolbar_->addAction (msgRemove);
 		registerMailAction (msgRemove);
 
 		TabToolbar_->addSeparator ();
 
-		const auto msgViewHeaders = new QAction (tr ("View headers"), this);
-		msgViewHeaders->setProperty ("ActionIcon", "text-plain");
-		connect (msgViewHeaders,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handleViewHeaders ()));
+		const auto msgViewHeaders = MakeAction ("MailTab.ViewHeaders", sm, this, SLOT (handleViewHeaders ()));
 		TabToolbar_->addAction (msgViewHeaders);
 		registerMailAction (msgViewHeaders);
 
