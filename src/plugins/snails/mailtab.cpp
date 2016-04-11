@@ -769,10 +769,7 @@ namespace Snails
 
 						CurrMsgFetchFuture_.reset ();
 						Util::Visit (result.AsVariant (),
-								[this] (const Message_ptr& msg)
-								{
-									SetMessage (msg);
-								},
+								[this] (const Message_ptr& msg) { SetMessage (msg); },
 								[this] (auto err)
 								{
 									const auto& errMsg = Util::Visit (err,
