@@ -347,6 +347,8 @@ namespace Snails
 		registerMailAction (msgViewHeaders);
 
 		SetMsgActionsEnabled (false);
+
+		MakeShortcut ("MailTab.SelectAllChildren", sm, Proxy_, this, SLOT (selectAllChildren ()));
 	}
 
 	void MailTab::FillTabToolbarActions (Util::ShortcutManager *sm)
