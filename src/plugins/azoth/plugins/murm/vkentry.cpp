@@ -664,6 +664,15 @@ namespace Murm
 				if (*storedUrl == url)
 					return;
 
+				qDebug () << Q_FUNC_INFO
+						<< "photo for"
+						<< id
+						<< GetEntryName ()
+						<< "changed from"
+						<< *storedUrl
+						<< "to"
+						<< url;
+
 				emit avatarChanged (this);
 
 				photoUrlStorage->SetUserUrl (id, url);
