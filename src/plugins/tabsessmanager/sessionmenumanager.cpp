@@ -35,8 +35,9 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
-	SessionMenuManager::SessionMenuManager (QObject *parent)
+	SessionMenuManager::SessionMenuManager (const SessionsManager *sessMgr, QObject *parent)
 	: QObject { parent }
+	, SessMgr_ { sessMgr }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
 	{
 		const auto saveAct = SessMgrMenu_->addAction (tr ("Save current session..."),
@@ -102,6 +103,8 @@ namespace TabSessManager
 			SIGNAL (triggered ()),
 			deleteAct
 		};
+
+
 	}
 }
 }

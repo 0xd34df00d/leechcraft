@@ -58,7 +58,7 @@ namespace TabSessManager
 
 		SessionsMgr_ = new SessionsManager { proxy, TabsPropsMgr_.get () };
 
-		SessionMenuMgr_ = new SessionMenuManager;
+		SessionMenuMgr_ = new SessionMenuManager { SessionsMgr_ };
 		connect (SessionMenuMgr_,
 				SIGNAL (loadRequested (QString)),
 				SessionsMgr_,

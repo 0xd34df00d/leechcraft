@@ -40,15 +40,19 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
+	class SessionsManager;
+
 	class SessionMenuManager : public QObject
 	{
 		Q_OBJECT
+
+		const SessionsManager * const SessMgr_;
 
 		QMenu * const SessMgrMenu_;
 
 		QHash<QString, std::shared_ptr<QMenu>> Session2Menu_;
 	public:
-		SessionMenuManager (QObject* = nullptr);
+		SessionMenuManager (const SessionsManager*, QObject* = nullptr);
 
 		QAction* GetSessionsAction () const;
 	private:
