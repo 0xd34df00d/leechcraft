@@ -142,6 +142,17 @@ namespace TabSessManager
 
 			tabs = dia.GetTabs ();
 		}
+
+		QHash<QObject*, QList<RecInfo>> GetSession (const QString& name, const ICoreProxy_ptr& proxy)
+		{
+			QSettings settings { QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_TabSessManager" };
+			settings.beginGroup (name);
+			QDataStream str { settings.value ("Data").toByteArray () };
+			settings.endGroup ();
+
+			return GetTabsFromStream (str, proxy);
+		}
 	}
 
 	bool SessionsManager::HasTab (QObject *tab)
@@ -314,20 +325,6 @@ namespace TabSessManager
 		settings.endGroup ();
 
 		emit gotCustomSession (name);
-	}
-
-	namespace
-	{
-		QHash<QObject*, QList<RecInfo>> GetSession (const QString& name, const ICoreProxy_ptr& proxy)
-		{
-			QSettings settings { QCoreApplication::organizationName (),
-					QCoreApplication::applicationName () + "_TabSessManager" };
-			settings.beginGroup (name);
-			QDataStream str { settings.value ("Data").toByteArray () };
-			settings.endGroup ();
-
-			return GetTabsFromStream (str, proxy);
-		}
 	}
 
 	void SessionsManager::loadCustomSession (const QString& name)
