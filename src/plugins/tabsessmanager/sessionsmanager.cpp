@@ -155,6 +155,11 @@ namespace TabSessManager
 		}
 	}
 
+	QHash<QObject *, QList<RecInfo>> SessionsManager::GetTabsInSession (const QString& name) const
+	{
+		return GetSession (name, Proxy_);
+	}
+
 	bool SessionsManager::HasTab (QObject *tab)
 	{
 		return std::any_of (Tabs_.begin (), Tabs_.end (),

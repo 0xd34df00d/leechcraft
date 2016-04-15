@@ -58,6 +58,8 @@ namespace TabSessManager
 		QStringList GetCustomSessions () const;
 
 		bool HasTab (QObject*);
+
+		QHash<QObject*, QList<RecInfo>> GetTabsInSession (const QString&) const;
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
