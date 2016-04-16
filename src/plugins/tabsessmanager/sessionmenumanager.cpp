@@ -29,7 +29,11 @@
 
 #include "sessionmenumanager.h"
 #include <QMenu>
+#include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
+#include <interfaces/iinfo.h>
+#include "sessionsmanager.h"
+#include "recinfo.h"
 
 namespace LeechCraft
 {
@@ -104,7 +108,17 @@ namespace TabSessManager
 			deleteAct
 		};
 
+		menu->addSeparator ();
 
+		for (const auto& pair : Util::Stlize (SessMgr_->GetTabsInSession (name)))
+		{
+			const auto ii = qobject_cast<IInfo*> (pair.first);
+
+			const auto submenu = menu->addMenu (ii->GetIcon (), ii->GetName ());
+
+			for (const auto& info : pair.second)
+				submenu->addAction (info.Icon_, info.Name_);
+		}
 	}
 }
 }
