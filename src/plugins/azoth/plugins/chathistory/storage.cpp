@@ -743,9 +743,9 @@ namespace ChatHistory
 		lock.Good ();
 	}
 
-	void Storage::getOurAccounts ()
+	QStringList Storage::GetOurAccounts () const
 	{
-		emit gotOurAccounts (Accounts_.keys ());
+		return Accounts_.keys ();
 	}
 
 	void Storage::getUsersForAccount (const QString& accountId)

@@ -36,6 +36,9 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 
+template<typename>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -88,7 +91,9 @@ namespace ChatHistory
 
 		void Process (QObject*);
 		void Process (QVariantMap);
-		void GetOurAccounts ();
+
+		QFuture<QStringList> GetOurAccounts ();
+
 		void GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
@@ -103,7 +108,6 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 	signals:
-		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 
 		/** The variant is a list of QVariantMaps.

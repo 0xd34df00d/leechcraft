@@ -95,8 +95,9 @@ namespace ChatHistory
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
 		QList<QAction*> GetTabBarContextMenuActions () const;
+	private:
+		void HandleGotOurAccounts (const QStringList&);
 	private slots:
-		void handleGotOurAccounts (const QStringList&);
 		void handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void handleGotSearchPosition (const QString&, const QString&, int);

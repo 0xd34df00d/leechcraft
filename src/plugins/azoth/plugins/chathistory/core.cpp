@@ -218,11 +218,9 @@ namespace ChatHistory
 				Q_ARG (QVariantMap, data));
 	}
 
-	void Core::GetOurAccounts ()
+	QFuture<QStringList> Core::GetOurAccounts ()
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getOurAccounts",
-				Qt::QueuedConnection);
+		return StorageThread_->ScheduleImpl (&Storage::GetOurAccounts);
 	}
 
 	void Core::GetUsersForAccount (const QString& accountID)

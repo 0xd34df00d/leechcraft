@@ -35,6 +35,7 @@
 #include <QToolBar>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
@@ -112,10 +113,6 @@ namespace ChatHistory
 				this,
 				SLOT (handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&)));
 		connect (Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
-				this,
-				SLOT (handleGotOurAccounts (const QStringList&)));
-		connect (Core::Instance ().get (),
 				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
 				this,
 				SLOT (handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&)));
@@ -142,7 +139,8 @@ namespace ChatHistory
 				SLOT (clearHistory ()))->
 					setProperty ("ActionIcon", "list-remove");
 
-		Core::Instance ()->GetOurAccounts ();
+		Util::Sequence (this, Core::Instance ()->GetOurAccounts ()) >>
+				[this] (const QStringList& accs) { HandleGotOurAccounts (accs); };
 	}
 
 	void ChatHistoryWidget::Remove ()
@@ -171,7 +169,7 @@ namespace ChatHistory
 		return {};
 	}
 
-	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
+	void ChatHistoryWidget::HandleGotOurAccounts (const QStringList& accounts)
 	{
 		const auto proxy = Core::Instance ()->GetPluginProxy ();
 		for (const auto& accountID : accounts)
@@ -188,11 +186,6 @@ namespace ChatHistory
 			if (CurrentAccount_.isEmpty ())
 				CurrentAccount_ = accountID;
 		}
-
-		disconnect (Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
-				this,
-				SLOT (handleGotOurAccounts (const QStringList&)));
 
 		if (EntryToFocus_)
 		{

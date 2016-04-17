@@ -52,11 +52,6 @@ namespace ChatHistory
 	void StorageThread::ConnectSignals ()
 	{
 		connect (Worker_.get (),
-				SIGNAL (gotOurAccounts (QStringList)),
-				Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (QStringList)),
-				Qt::QueuedConnection);
-		connect (Worker_.get (),
 				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),
 				Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),

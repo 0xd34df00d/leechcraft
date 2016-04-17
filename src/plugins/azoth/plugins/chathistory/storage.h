@@ -88,6 +88,8 @@ namespace ChatHistory
 		};
 	public:
 		Storage (QObject* = 0);
+
+		QStringList GetOurAccounts () const;
 	private:
 		void CheckDB ();
 		void InitializeTables ();
@@ -111,7 +113,6 @@ namespace ChatHistory
 		void regenUsersCache ();
 
 		void addMessage (const QVariantMap&);
-		void getOurAccounts ();
 		void getUsersForAccount (const QString&);
 		void getChatLogs (const QString& accountId,
 				const QString& entryId, int backpages, int amount);
@@ -121,7 +122,6 @@ namespace ChatHistory
 		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
-		void gotOurAccounts (const QStringList&);
 		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 		void gotChatLogs (const QString&, const QString&,
 				int, int, const QVariant&);
