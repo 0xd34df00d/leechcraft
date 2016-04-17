@@ -89,6 +89,7 @@ namespace ChatHistory
 	public:
 		Storage (QObject* = 0);
 	private:
+		void CheckDB ();
 		void InitializeTables ();
 		void UpdateTables ();
 

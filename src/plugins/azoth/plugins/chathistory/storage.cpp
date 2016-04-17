@@ -85,6 +85,8 @@ namespace ChatHistory
 		pragma.exec ("PRAGMA foreign_keys = ON;");
 		pragma.exec ("PRAGMA synchronous = OFF;");
 
+		CheckDB ();
+
 		InitializeTables ();
 
 		UserSelector_ = QSqlQuery (*DB_);
@@ -199,6 +201,18 @@ namespace ChatHistory
 		}
 
 		PrepareEntryCache ();
+	}
+
+	void Storage::CheckDB ()
+	{
+		QSqlQuery pragma { *DB_ };
+		if (pragma.exec ("PRAGMA integrity_check;") &&
+				pragma.next () &&
+				pragma.value (0) == "ok")
+			return;
+
+		qWarning () << Q_FUNC_INFO
+				<< "integrity check failed";
 	}
 
 	void Storage::InitializeTables ()
