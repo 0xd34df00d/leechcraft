@@ -40,16 +40,14 @@ namespace ChatHistory
 {
 	class Storage;
 
-	class StorageThread : public Util::WorkerThreadBase
+	class StorageThread : public Util::WorkerThread<Storage>
 	{
-		std::shared_ptr<Storage> Storage_;
 	public:
-		using WorkerThreadBase::WorkerThreadBase;
+		using WorkerThread::WorkerThread;
 
 		Storage* GetStorage ();
 	private:
 		void Initialize () override;
-		void Cleanup () override;
 
 		void ConnectSignals ();
 	};

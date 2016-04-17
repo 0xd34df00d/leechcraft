@@ -39,43 +39,39 @@ namespace ChatHistory
 {
 	Storage* StorageThread::GetStorage ()
 	{
-		return Storage_.get ();
+		return Worker_.get ();
 	}
 
 	void StorageThread::Initialize ()
 	{
-		Storage_ = std::make_shared<Storage> ();
-		ConnectSignals ();
-	}
+		WorkerThread::Initialize ();
 
-	void StorageThread::Cleanup ()
-	{
-		Storage_.reset ();
+		ConnectSignals ();
 	}
 
 	void StorageThread::ConnectSignals ()
 	{
-		connect (Storage_.get (),
+		connect (Worker_.get (),
 				SIGNAL (gotOurAccounts (QStringList)),
 				Core::Instance ().get (),
 				SIGNAL (gotOurAccounts (QStringList)),
 				Qt::QueuedConnection);
-		connect (Storage_.get (),
+		connect (Worker_.get (),
 				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),
 				Core::Instance ().get (),
 				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),
 				Qt::QueuedConnection);
-		connect (Storage_.get (),
+		connect (Worker_.get (),
 				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
 				Core::Instance ().get (),
 				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
 				Qt::QueuedConnection);
-		connect (Storage_.get (),
+		connect (Worker_.get (),
 				SIGNAL (gotSearchPosition (QString, QString, int)),
 				Core::Instance ().get (),
 				SIGNAL (gotSearchPosition (QString, QString, int)),
 				Qt::QueuedConnection);
-		connect (Storage_.get (),
+		connect (Worker_.get (),
 				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
 				Core::Instance ().get (),
 				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
