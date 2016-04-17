@@ -867,6 +867,8 @@ namespace ChatHistory
 					GetMsgEscapePolicy (HistoryGetter_.value (6))
 				});
 
+		std::reverse (result.begin (), result.end ());
+
 		return ChatLogsResult_t::Right (result);
 	}
 
