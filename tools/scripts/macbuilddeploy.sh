@@ -42,6 +42,9 @@ for GST in $TARGET/leechcraft.app/Contents/PlugIns/gstreamer/lib*.so; do
 	done
 done
 
+#Kludge for macdeployqt not handling @loader_path-prefixed dependencies.
+cp -Rv /usr/local/lib/libboost_chrono*dylib $TARGET/leechcraft.app/Contents/Frameworks/
+
 cp -Rv /usr/local/lib/qca/crypto $TARGET/leechcraft.app/Contents/PlugIns
 CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do sudo install_name_tool -change $(dyldinfo -dylibs $CDIR/$PLUG | grep qca) @executable_path/../Frameworks/qca.framework/qca $CDIR/$PLUG; done
 
