@@ -377,7 +377,7 @@ namespace ChatHistory
 
 			html += postNick + ' ' + msgText;
 
-			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
+			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - ++Amount_;
 			if (isChat && !isSearchRes)
 			{
 				const auto& color = formatter.GetNickColor (isIncoming ? remoteName : ourName, colors);
@@ -391,7 +391,6 @@ namespace ChatHistory
 				html.prepend ("<font color='#FF7E00'>");
 				html += "</font>";
 			}
-			++Amount_;
 
 			Ui_.HistView_->append (html);
 		}

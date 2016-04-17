@@ -113,7 +113,7 @@ namespace ChatHistory
 		RowID2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
 				"WHERE Id = :entry_id "
 				"AND AccountID = :account_id "
-				"AND rowid >= :rowid");
+				"AND rowid > :rowid");
 
 		Date2Pos_ = QSqlQuery (*DB_);
 		Date2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
