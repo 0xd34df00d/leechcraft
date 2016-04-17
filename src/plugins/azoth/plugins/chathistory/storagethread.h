@@ -30,7 +30,7 @@
 #pragma once
 
 #include <memory>
-#include <QThread>
+#include <util/threads/workerthreadbase.h>
 
 namespace LeechCraft
 {
@@ -40,16 +40,17 @@ namespace ChatHistory
 {
 	class Storage;
 
-	class StorageThread : public QThread
+	class StorageThread : public Util::WorkerThreadBase
 	{
 		std::shared_ptr<Storage> Storage_;
 	public:
-		using QThread::QThread;
+		using WorkerThreadBase::WorkerThreadBase;
 
 		Storage* GetStorage ();
-	protected:
-		void run () override;
 	private:
+		void Initialize () override;
+		void Cleanup () override;
+
 		void ConnectSignals ();
 	};
 }

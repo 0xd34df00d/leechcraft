@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "storagethread.h"
-#include <util/sll/delayedexecutor.h>
 #include "storage.h"
 #include "core.h"
 
@@ -43,13 +42,14 @@ namespace ChatHistory
 		return Storage_.get ();
 	}
 
-	void StorageThread::run ()
+	void StorageThread::Initialize ()
 	{
 		Storage_ = std::make_shared<Storage> ();
+		ConnectSignals ();
+	}
 
-		Util::ExecuteLater ([this] { ConnectSignals (); });
-
-		QThread::run ();
+	void StorageThread::Cleanup ()
+	{
 		Storage_.reset ();
 	}
 
