@@ -60,11 +60,12 @@ namespace TabSessManager
 		bool HasTab (QObject*);
 
 		QHash<QObject*, QList<RecInfo>> GetTabsInSession (const QString&) const;
+
+		void OpenTabs (const QHash<QObject*, QList<RecInfo>>&);
 	protected:
 		bool eventFilter (QObject*, QEvent*);
 	private:
 		QByteArray GetCurrentSession () const;
-		void OpenTabs (const QHash<QObject*, QList<RecInfo>>&);
 	public slots:
 		void recover ();
 		void handleTabRecoverDataChanged ();
