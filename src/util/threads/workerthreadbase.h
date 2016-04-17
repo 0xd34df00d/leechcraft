@@ -88,5 +88,32 @@ namespace Util
 	signals:
 		void rotateFuncs ();
 	};
+
+	template<typename WorkerType>
+	class WorkerThread : public WorkerThreadBase
+	{
+	protected:
+		std::shared_ptr<WorkerType> Worker_;
+	public:
+		using WorkerThreadBase::WorkerThreadBase;
+
+		using WorkerThreadBase::ScheduleImpl;
+
+		template<typename F, typename... Args>
+		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (const F& f, Args&&... args)
+		{
+			return WorkerThreadBase::ScheduleImpl (f, Worker_.get (), std::forward<Args> (args)...);
+		}
+	protected:
+		void Initialize () override
+		{
+			Worker_ = std::make_shared<WorkerType> ();
+		}
+
+		void Cleanup () override
+		{
+			Worker_.reset ();
+		}
+	};
 }
 }
