@@ -51,11 +51,6 @@ namespace Util
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
-	protected:
-		void run () override;
-
-		virtual void Initialize () = 0;
-		virtual void Cleanup () = 0;
 
 		template<typename F>
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
@@ -77,6 +72,11 @@ namespace Util
 
 			return iface.future ();
 		}
+	protected:
+		void run () override final;
+
+		virtual void Initialize () = 0;
+		virtual void Cleanup () = 0;
 	private:
 		void RotateFuncs ();
 	signals:
