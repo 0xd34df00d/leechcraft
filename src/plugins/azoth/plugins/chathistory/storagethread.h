@@ -48,7 +48,7 @@ namespace ChatHistory
 
 		Storage* GetStorage ();
 	protected:
-		virtual void run ();
+		void run () override;
 	private:
 		void ConnectSignals ();
 	};
