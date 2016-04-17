@@ -42,8 +42,6 @@ namespace ChatHistory
 
 	class StorageThread : public QThread
 	{
-		Q_OBJECT
-
 		std::shared_ptr<Storage> Storage_;
 	public:
 		using QThread::QThread;
