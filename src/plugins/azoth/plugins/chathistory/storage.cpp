@@ -790,7 +790,9 @@ namespace ChatHistory
 
 		IMessage::Type GetMsgType (const QVariant& var)
 		{
-			return static_cast<IMessage::Type> (var.toInt ());
+			return var.toString () == "CHAT" ?
+					IMessage::Type::ChatMessage :
+					IMessage::Type::MUCMessage;
 		}
 
 		IMessage::EscapePolicy GetMsgEscapePolicy (const QVariant& var)
