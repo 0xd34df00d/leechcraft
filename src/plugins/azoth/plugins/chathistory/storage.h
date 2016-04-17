@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
+#pragma once
+
 #include <memory>
 #include <QSqlQuery>
 #include <QHash>
@@ -132,5 +132,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif
