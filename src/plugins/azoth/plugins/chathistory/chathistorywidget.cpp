@@ -111,10 +111,6 @@ namespace ChatHistory
 				SLOT (handleContactSelected (const QModelIndex&)));
 
 		connect (Core::Instance ().get (),
-				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
-				this,
-				SLOT (handleGotSearchPosition (const QString&, const QString&, int)));
-		connect (Core::Instance ().get (),
 				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
 				this,
 				SLOT (handleGotDaysForSheet (QString, QString, int, int, QList<int>)));
@@ -409,12 +405,22 @@ namespace ChatHistory
 		}
 	}
 
-	void ChatHistoryWidget::handleGotSearchPosition (const QString& accountId,
-			const QString& entryId, int position)
+	void ChatHistoryWidget::HandleGotSearchPosition (const QString& accountId,
+			const QString& entryId, const SearchResult_t& result)
 	{
 		if (accountId != CurrentAccount_ ||
 				entryId != CurrentEntry_)
 			return;
+
+		if (const auto err = result.MaybeLeft ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Unable to perform the search.") + " " + *err);
+			return;
+		}
+
+		const auto position = result.GetRight ();
 
 		if (!position)
 		{
@@ -532,7 +538,11 @@ namespace ChatHistory
 
 		PreviousSearchText_.clear ();
 		FindBox_->clear ();
-		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime (date));
+
+		Util::Sequence (this,
+				Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime { date })) >>
+				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
+						this, CurrentAccount_, CurrentEntry_, _1);
 	}
 
 	void ChatHistoryWidget::handleNext (const QString& text, ChatFindBox::FindFlags flags)
@@ -663,9 +673,12 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)
 	{
-		Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
+		const auto& future = Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
 				PreviousSearchText_, SearchShift_,
 				flags & ChatFindBox::FindCaseSensitively);
+		Util::Sequence (this, future) >>
+				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
+						this, CurrentAccount_, CurrentEntry_, _1);
 	}
 }
 }

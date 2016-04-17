@@ -99,9 +99,10 @@ namespace ChatHistory
 		QFuture<ChatLogsResult_t> GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
 
-		void Search (const QString& accountId, const QString& entryId,
+		QFuture<SearchResult_t> Search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);
-		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
+		QFuture<SearchResult_t> Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
+
 		void GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void ClearHistory (const QString& accountId, const QString& entryId);
 
@@ -110,7 +111,6 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 	signals:
-
 		void gotSearchPosition (const QString&, const QString&, int);
 
 		void gotDaysForSheet (const QString& accountId, const QString& entryId,

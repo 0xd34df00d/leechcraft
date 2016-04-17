@@ -97,6 +97,11 @@ namespace ChatHistory
 
 		void AddMessage (const QString& accountId, const QString& entryId,
 				const QString& visibleName, const LogItem&);
+
+		SearchResult_t Search (const QString& accountId, const QString& entryId,
+				const QString& text, int shift, bool cs);
+		SearchResult_t SearchDate (const QString& accountId,
+				const QString& entryId, const QDateTime& dt);
 	private:
 		void CheckDB ();
 		void InitializeTables ();
@@ -111,21 +116,18 @@ namespace ChatHistory
 		QHash<QString, qint32> GetAccounts ();
 		qint32 GetAccountID (const QString&);
 		void AddAccount (const QString& id);
-		RawSearchResult Search (const QString& accountId, const QString& entryId,
+		RawSearchResult SearchImpl (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);
-		RawSearchResult Search (const QString& accountId, const QString& text, int shift, bool cs);
-		RawSearchResult Search (const QString& text, int shift, bool cs);
-		void SearchDate (qint32, qint32, const QDateTime&);
+		RawSearchResult SearchImpl (const QString& accountId, const QString& text, int shift, bool cs);
+		RawSearchResult SearchImpl (const QString& text, int shift, bool cs);
+
+		SearchResult_t SearchDateImpl (qint32, qint32, const QDateTime&);
 	public slots:
 		void regenUsersCache ();
 
-		void search (const QString& accountId, const QString& entryId,
-				const QString& text, int shift, bool cs);
-		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
-		void gotSearchPosition (const QString&, const QString&, int);
 		void gotDaysForSheet (const QString& accountId, const QString& entryId,
 				int year, int month, const QList<int>& days);
 	};

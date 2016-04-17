@@ -61,6 +61,8 @@ namespace ChatHistory
 	using LogList_t = QList<LogItem>;
 
 	using ChatLogsResult_t = Util::Either<QString, LogList_t>;
+
+	using SearchResult_t = Util::Either<QString, int>;
 }
 }
 }

@@ -493,7 +493,7 @@ namespace ChatHistory
 		}
 	}
 
-	Storage::RawSearchResult Storage::Search (const QString& accountId,
+	Storage::RawSearchResult Storage::SearchImpl (const QString& accountId,
 			const QString& entryId, const QString& text, int shift, bool cs)
 	{
 		if (!Accounts_.contains (accountId))
@@ -543,7 +543,7 @@ namespace ChatHistory
 		return RawSearchResult (intEntryId, intAccId, LogsSearcher_.value (0).toDateTime ());
 	}
 
-	Storage::RawSearchResult Storage::Search (const QString& accountId,
+	Storage::RawSearchResult Storage::SearchImpl (const QString& accountId,
 			const QString& text, int shift, bool cs)
 	{
 		if (!Accounts_.contains (accountId))
@@ -584,7 +584,7 @@ namespace ChatHistory
 				LogsSearcherWOContact_.value (0).toDateTime ());
 	}
 
-	Storage::RawSearchResult Storage::Search (const QString& text, int shift, bool cs)
+	Storage::RawSearchResult Storage::SearchImpl (const QString& text, int shift, bool cs)
 	{
 		LogsSearcherWOContactAccount_.bindValue (":text", '%' + text + '%');
 		LogsSearcherWOContactAccount_.bindValue (":ctext", '*' + text + '*');
@@ -611,7 +611,7 @@ namespace ChatHistory
 				LogsSearcherWOContactAccount_.value (0).toDateTime ());
 	}
 
-	void Storage::SearchDate (qint32 accountId, qint32 entryId, const QDateTime& dt)
+	SearchResult_t Storage::SearchDateImpl (qint32 accountId, qint32 entryId, const QDateTime& dt)
 	{
 		Date2Pos_.bindValue (":date", dt);
 		Date2Pos_.bindValue (":account_id", accountId);
@@ -619,20 +619,20 @@ namespace ChatHistory
 		if (!Date2Pos_.exec ())
 		{
 			Util::DBLock::DumpError (Date2Pos_);
-			return;
+			return SearchResult_t::Left ("Unable to execute search query.");
 		}
 
 		if (!Date2Pos_.next ())
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to navigate to next record";
-			return;
+			return SearchResult_t::Left ("Unable to navigate to the search results.");
 		}
 
 		const int index = Date2Pos_.value (0).toInt ();
 		Date2Pos_.finish ();
 
-		emit gotSearchPosition (Accounts_.key (accountId), Users_.key (entryId), index);
+		return SearchResult_t::Right (index);
 	}
 
 	void Storage::regenUsersCache ()
@@ -872,30 +872,24 @@ namespace ChatHistory
 		return ChatLogsResult_t::Right (result);
 	}
 
-	void Storage::search (const QString& accountId,
+	SearchResult_t Storage::Search (const QString& accountId,
 			const QString& entryId, const QString& text, int shift, bool cs)
 	{
 		RawSearchResult res;
 		if (!accountId.isEmpty () && !entryId.isEmpty ())
-			res = Search (accountId, entryId, text, shift, cs);
+			res = SearchImpl (accountId, entryId, text, shift, cs);
 		else if (!accountId.isEmpty ())
-			res = Search (accountId, text, shift, cs);
+			res = SearchImpl (accountId, text, shift, cs);
 		else
-			res = Search (text, shift, cs);
-
-		if (res.Date_.isNull ())
-		{
-			emit gotSearchPosition (accountId, entryId, 0);
-			return;
-		}
+			res = SearchImpl (text, shift, cs);
 
 		if (res.IsEmpty ())
-			return;
+			return SearchResult_t::Left ("Empty result.");
 
-		SearchDate (res.AccountID_, res.EntryID_, res.Date_);
+		return SearchDateImpl (res.AccountID_, res.EntryID_, res.Date_);
 	}
 
-	void Storage::searchDate (const QString& account, const QString& entry, const QDateTime& dt)
+	SearchResult_t Storage::SearchDate (const QString& account, const QString& entry, const QDateTime& dt)
 	{
 		if (!Accounts_.contains (account))
 		{
@@ -904,7 +898,7 @@ namespace ChatHistory
 					<< account
 					<< "; raw contents"
 					<< Accounts_;
-			return;
+			return SearchResult_t::Left ("Unknown account.");
 		}
 		if (!Users_.contains (entry))
 		{
@@ -913,12 +907,12 @@ namespace ChatHistory
 					<< entry
 					<< "; raw contents"
 					<< Users_;
-			return;
+			return SearchResult_t::Left ("Unknown user.");
 		}
 
 		const qint32 entryId = Users_ [entry];
 		const qint32 accId = Accounts_ [account];
-		SearchDate (accId, entryId, dt);
+		return SearchDateImpl (accId, entryId, dt);
 	}
 
 	void Storage::getDaysForSheet (const QString& account, const QString& entry, int year, int month)

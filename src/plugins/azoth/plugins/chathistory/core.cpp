@@ -228,27 +228,17 @@ namespace ChatHistory
 		return StorageThread_->ScheduleImpl (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
 	}
 
-	void Core::Search (const QString& accountId, const QString& entryId,
+	QFuture<SearchResult_t> Core::Search (const QString& accountId, const QString& entryId,
 			const QString& text, int shift, bool cs)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"search",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountId),
-				Q_ARG (QString, entryId),
-				Q_ARG (QString, text),
-				Q_ARG (int, shift),
-				Q_ARG (bool, cs));
+		return StorageThread_->ScheduleImpl (&Storage::Search,
+				accountId, entryId, text, shift, cs);
 	}
 
-	void Core::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)
+	QFuture<SearchResult_t> Core::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"searchDate",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountId),
-				Q_ARG (QString, entryId),
-				Q_ARG (QDateTime, dt));
+		return StorageThread_->ScheduleImpl (&Storage::SearchDate,
+				accountId, entryId, dt);
 	}
 
 	void Core::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
