@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
-	SessionMenuManager::SessionMenuManager (const SessionsManager *sessMgr, QObject *parent)
+	SessionMenuManager::SessionMenuManager (SessionsManager *sessMgr, QObject *parent)
 	: QObject { parent }
 	, SessMgr_ { sessMgr }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
