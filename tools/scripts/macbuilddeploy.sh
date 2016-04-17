@@ -50,10 +50,6 @@ CDIR=$TARGET/leechcraft.app/Contents/PlugIns/crypto; for PLUG in `ls $CDIR`; do 
 
 sudo macdeployqt $TARGET/leechcraft.app -verbose=2 -executable=$TARGET/leechcraft.app/Contents/MacOs/lc_anhero_crashprocess -qmldir=/usr/local/leechcraft.app/Contents/Resources/share/qml5
 
-sudo install_name_tool -change @loader_path/libicudata.56.dylib @executable_path/../Frameworks/libicudata.56.1.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicuuc.56.dylib
-sudo install_name_tool -change @loader_path/libicudata.56.dylib @executable_path/../Frameworks/libicudata.56.1.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicui18n.56.dylib
-sudo install_name_tool -change @loader_path/libicuuc.56.dylib @executable_path/../Frameworks/libicuuc.56.dylib $TARGET/leechcraft.app/Contents/Frameworks/libicui18n.56.dylib
-
 # Kludge
 sudo rm /usr/lib/libleechcraft-*
 
