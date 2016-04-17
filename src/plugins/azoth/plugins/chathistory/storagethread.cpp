@@ -63,24 +63,24 @@ namespace ChatHistory
 	void StorageThread::connectSignals ()
 	{
 		connect (Storage_.get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
+				SIGNAL (gotOurAccounts (QStringList)),
 				Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
+				SIGNAL (gotOurAccounts (QStringList)),
 				Qt::QueuedConnection);
 		connect (Storage_.get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
+				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),
 				Core::Instance ().get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
+				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),
 				Qt::QueuedConnection);
 		connect (Storage_.get (),
-				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
 				Core::Instance ().get (),
-				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
+				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
 				Qt::QueuedConnection);
 		connect (Storage_.get (),
-				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				SIGNAL (gotSearchPosition (QString, QString, int)),
 				Core::Instance ().get (),
-				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
+				SIGNAL (gotSearchPosition (QString, QString, int)),
 				Qt::QueuedConnection);
 		connect (Storage_.get (),
 				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
