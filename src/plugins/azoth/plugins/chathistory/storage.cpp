@@ -130,14 +130,11 @@ namespace ChatHistory
 
 		LogsSearcher_ = QSqlQuery (*DB_);
 		LogsSearcher_.prepare ("SELECT Rowid FROM azoth_history "
-				"WHERE Id = :entry_id "
-				"AND AccountID = :account_id "
-				"AND Rowid = (SELECT Rowid FROM azoth_history "
-				"	WHERE Id = :inner_entry_id "
-				"	AND AccountID = :inner_account_id "
-				"	AND ((Message LIKE :text AND :insensitive) OR (Message GLOB :ctext AND :sensitive)) "
-				"	ORDER BY Rowid DESC "
-				"	LIMIT 1 OFFSET :offset);");
+				"WHERE Id = :inner_entry_id "
+				"AND AccountID = :inner_account_id "
+				"AND ((Message LIKE :text AND :insensitive) OR (Message GLOB :ctext AND :sensitive)) "
+				"ORDER BY Rowid DESC "
+				"LIMIT 1 OFFSET :offset;");
 
 		LogsSearcherWOContact_ = QSqlQuery (*DB_);
 		LogsSearcherWOContact_.prepare ("SELECT Date, Id FROM azoth_history "
