@@ -646,7 +646,50 @@ namespace ChatHistory
 		}
 	}
 
-	void Storage::addMessage (const QVariantMap& data)
+	namespace
+	{
+		QVariant ToVariant (IMessage::Direction dir)
+		{
+			switch (dir)
+			{
+			case IMessage::Direction::In:
+				return "IN";
+			case IMessage::Direction::Out:
+				return "OUT";
+			}
+		}
+
+		QVariant ToVariant (IMessage::EscapePolicy escPolicy)
+		{
+			switch (escPolicy)
+			{
+			case IMessage::EscapePolicy::Escape:
+				return "Esc";
+			case IMessage::EscapePolicy::NoEscape:
+				return "NEs";
+			}
+		}
+
+		QVariant ToVariant (IMessage::Type type)
+		{
+			switch (type)
+			{
+			case IMessage::Type::ChatMessage:
+				return "CHAT";
+			case IMessage::Type::MUCMessage:
+				return "MUC";
+			case IMessage::Type::StatusMessage:
+				return "STATUS";
+			case IMessage::Type::EventMessage:
+				return "EVENT";
+			case IMessage::Type::ServiceMessage:
+				return "SERVICE";
+			}
+		}
+	}
+
+	void Storage::AddMessage (const QString& accountID,
+			const QString& entryID, const QString& visibleName, const LogItem& logItem)
 	{
 		Util::DBLock lock (*DB_);
 		try
@@ -661,9 +704,7 @@ namespace ChatHistory
 			return;
 		}
 
-		const QString& accountID = data ["AccountID"].toString ();
 		if (!Accounts_.contains (accountID))
-		{
 			try
 			{
 				AddAccount (accountID);
@@ -676,11 +717,8 @@ namespace ChatHistory
 						<< e.what ();
 				return;
 			}
-		}
 
-		const QString& entryID = data ["EntryID"].toString ();
 		if (!Users_.contains (entryID))
-		{
 			try
 			{
 				AddUser (entryID, accountID);
@@ -693,46 +731,27 @@ namespace ChatHistory
 						<< e.what ();
 				return;
 			}
-		}
 
 		auto userId = Users_ [entryID];
 		if (!EntryCache_.contains (userId))
 		{
 			EntryCacheSetter_.bindValue (":id", userId);
-			EntryCacheSetter_.bindValue (":visible_name", data ["VisibleName"]);
+			EntryCacheSetter_.bindValue (":visible_name", visibleName);
 			if (!EntryCacheSetter_.exec ())
 				Util::DBLock::DumpError (EntryCacheSetter_);
 
-			EntryCache_ [userId] = data ["VisibleName"].toString ();
+			EntryCache_ [userId] = visibleName;
 		}
 
 		MessageDumper_.bindValue (":id", userId);
 		MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
-		MessageDumper_.bindValue (":date", data ["DateTime"]);
-		MessageDumper_.bindValue (":direction", data ["Direction"]);
-		MessageDumper_.bindValue (":message", data ["Body"]);
-		MessageDumper_.bindValue (":variant", data ["OtherVariant"]);
-		MessageDumper_.bindValue (":rich_message", data ["RichBody"]);
-		MessageDumper_.bindValue (":escape_policy", data ["EscapePolicy"]);
-
-		switch (static_cast<IMessage::Type> (data ["Type"].toInt ()))
-		{
-		case IMessage::Type::ChatMessage:
-			MessageDumper_.bindValue (":type", "CHAT");
-			break;
-		case IMessage::Type::MUCMessage:
-			MessageDumper_.bindValue (":type", "MUC");
-			break;
-		case IMessage::Type::StatusMessage:
-			MessageDumper_.bindValue (":type", "STATUS");
-			break;
-		case IMessage::Type::EventMessage:
-			MessageDumper_.bindValue (":type", "EVENT");
-			break;
-		case IMessage::Type::ServiceMessage:
-			MessageDumper_.bindValue (":type", "SERVICE");
-			break;
-		}
+		MessageDumper_.bindValue (":date", logItem.Date_);
+		MessageDumper_.bindValue (":direction", ToVariant (logItem.Dir_));
+		MessageDumper_.bindValue (":message", logItem.Message_);
+		MessageDumper_.bindValue (":variant", logItem.Variant_);
+		MessageDumper_.bindValue (":rich_message", logItem.RichMessage_);
+		MessageDumper_.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
+		MessageDumper_.bindValue (":type", ToVariant (logItem.Type_));
 
 		if (!MessageDumper_.exec ())
 		{

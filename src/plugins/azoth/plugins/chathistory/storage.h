@@ -94,6 +94,9 @@ namespace ChatHistory
 		UsersForAccountResult_t GetUsersForAccount (const QString&);
 		ChatLogsResult_t GetChatLogs (const QString& accountId,
 				const QString& entryId, int backpages, int amount);
+
+		void AddMessage (const QString& accountId, const QString& entryId,
+				const QString& visibleName, const LogItem&);
 	private:
 		void CheckDB ();
 		void InitializeTables ();
@@ -116,7 +119,6 @@ namespace ChatHistory
 	public slots:
 		void regenUsersCache ();
 
-		void addMessage (const QVariantMap&);
 		void search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);
 		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);

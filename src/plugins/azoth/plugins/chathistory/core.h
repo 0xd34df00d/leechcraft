@@ -91,7 +91,6 @@ namespace ChatHistory
 		void SetLoggingEnabled (QObject*, bool);
 
 		void Process (QObject*);
-		void Process (QVariantMap);
 
 		QFuture<QStringList> GetOurAccounts ();
 

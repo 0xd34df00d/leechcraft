@@ -149,6 +149,20 @@ namespace ChatHistory
 		SaveDisabled ();
 	}
 
+	namespace
+	{
+		QString GetVisibleName (const ICLEntry *entry)
+		{
+			if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
+			{
+				const auto parent = entry->GetParentCLEntry ();
+				return parent->GetEntryName () + "/" + entry->GetEntryName ();
+			}
+			else
+				return entry->GetEntryName ();
+		}
+	}
+
 	void Core::Process (QObject *msgObj)
 	{
 		IMessage *msg = qobject_cast<IMessage*> (msgObj);
@@ -180,43 +194,22 @@ namespace ChatHistory
 		if (DisabledIDs_.contains (entry->GetEntryID ()))
 			return;
 
-		const auto acc = entry->GetParentAccount ();
+		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
 
-		QVariantMap data;
-		data ["EntryID"] = entry->GetEntryID ();
-		data ["AccountID"] = acc->GetAccountID ();
-		data ["DateTime"] = msg->GetDateTime ();
-		data ["Direction"] = msg->GetDirection () == IMessage::Direction::In ? "IN" : "OUT";
-		data ["Body"] = msg->GetBody ();
-		data ["OtherVariant"] = msg->GetOtherVariant ();
-		data ["Type"] = static_cast<int> (msg->GetMessageType ());
-		data ["EscapePolicy"] = msg->GetEscapePolicy () == IMessage::EscapePolicy::Escape ? "Esc" : "NEs";
-
-		if (const auto irtm = qobject_cast<IRichTextMessage*> (msgObj))
-			data ["RichBody"] = irtm->GetRichBody ();
-
-		if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-		{
-			const auto parent = entry->GetParentCLEntry ();
-			data ["VisibleName"] = parent->GetEntryName () + "/" + entry->GetEntryName ();
-		}
-		else
-			data ["VisibleName"] = entry->GetEntryName ();
-
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"addMessage",
-				Qt::QueuedConnection,
-				Q_ARG (QVariantMap, data));
-	}
-
-	void Core::Process (QVariantMap data)
-	{
-		data ["Direction"] = data ["Direction"].toString ().toUpper ();
-
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"addMessage",
-				Qt::QueuedConnection,
-				Q_ARG (QVariantMap, data));
+		StorageThread_->ScheduleImpl (&Storage::AddMessage,
+				entry->GetParentAccount ()->GetAccountID (),
+				entry->GetEntryID (),
+				GetVisibleName (entry),
+				LogItem
+				{
+					msg->GetDateTime (),
+					msg->GetDirection (),
+					msg->GetBody (),
+					msg->GetOtherVariant (),
+					msg->GetMessageType (),
+					irtm ? irtm->GetRichBody () : QString {},
+					msg->GetEscapePolicy ()
+				});
 	}
 
 	QFuture<QStringList> Core::GetOurAccounts ()

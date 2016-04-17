@@ -180,7 +180,8 @@ namespace ChatHistory
 
 	void Plugin::AddRawMessage (const QVariantMap& map)
 	{
-		Core::Instance ()->Process (map);
+		// TODO
+		//Core::Instance ()->Process (map);
 	}
 
 	void Plugin::InitWidget (ChatHistoryWidget *wh)
