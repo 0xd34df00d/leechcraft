@@ -472,8 +472,8 @@ namespace ChatHistory
 				}
 		}
 
-		Backpages_ = position / PerPageAmount_;
-		SearchResultPosition_ = position % PerPageAmount_;
+		Backpages_ = *position / PerPageAmount_;
+		SearchResultPosition_ = *position % PerPageAmount_;
 		RequestLogs ();
 	}
 

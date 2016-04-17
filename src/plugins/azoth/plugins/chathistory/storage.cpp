@@ -627,11 +627,7 @@ namespace ChatHistory
 		}
 
 		if (!RowID2Pos_.next ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unable to navigate to next record";
-			return SearchResult_t::Left ("Unable to navigate to the search results.");
-		}
+			return SearchResult_t::Right ({});
 
 		const int index = RowID2Pos_.value (0).toInt ();
 		RowID2Pos_.finish ();
@@ -912,7 +908,7 @@ namespace ChatHistory
 			res = SearchImpl (text, shift, cs);
 
 		if (res.IsEmpty ())
-			return SearchResult_t::Left ("Empty result.");
+			return SearchResult_t::Right ({});
 
 		return SearchRowIdImpl (res.AccountID_, res.EntryID_, res.RowID_);
 	}

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QStringList>
 #include <util/sll/either.h>
 #include <interfaces/azoth/imessage.h>
@@ -62,7 +63,7 @@ namespace ChatHistory
 
 	using ChatLogsResult_t = Util::Either<QString, LogList_t>;
 
-	using SearchResult_t = Util::Either<QString, int>;
+	using SearchResult_t = Util::Either<QString, boost::optional<int>>;
 }
 }
 }
