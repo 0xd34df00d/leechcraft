@@ -111,10 +111,6 @@ namespace ChatHistory
 				SLOT (handleContactSelected (const QModelIndex&)));
 
 		connect (Core::Instance ().get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
-				this,
-				SLOT (handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&)));
-		connect (Core::Instance ().get (),
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
 				this,
 				SLOT (handleGotSearchPosition (const QString&, const QString&, int)));
