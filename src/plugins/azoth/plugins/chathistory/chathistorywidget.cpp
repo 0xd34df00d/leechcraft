@@ -291,11 +291,11 @@ namespace ChatHistory
 	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
 			const QString& entryId, int, int, const QVariant& logsVar)
 	{
-		const QString& selectedEntry = Ui_.Contacts_->selectionModel ()->
+		const auto& selEntry = Ui_.Contacts_->selectionModel ()->
 				currentIndex ().data (MRIDRole).toString ();
-		if (accountId != Ui_.AccountBox_->
-					itemData (Ui_.AccountBox_->currentIndex ()).toString () ||
-				entryId != selectedEntry)
+		const auto& selAcc = Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ();
+		if (accountId != selAcc ||
+				entryId != selEntry)
 			return;
 
 		Amount_ = 0;
@@ -303,18 +303,18 @@ namespace ChatHistory
 
 		auto& formatter = Core::Instance ()->GetPluginProxy ()->GetFormatterProxy ();
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
+		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
-		const QString& name = entry ?
+		const auto& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
 		const auto& ourName = entry ?
 				entry->GetParentAccount ()->GetOurNick () :
 				QString ();
 
-		QString preNick = Core::Instance ()->GetPluginProxy ()->
+		auto preNick = Core::Instance ()->GetPluginProxy ()->
 				GetSettingsManager ()->property ("PreNickText").toString ();
-		QString postNick = Core::Instance ()->GetPluginProxy ()->
+		auto postNick = Core::Instance ()->GetPluginProxy ()->
 				GetSettingsManager ()->property ("PostNickText").toString ();
 		preNick.replace ('<', "&lt;");
 		postNick.replace ('<', "&lt;");
