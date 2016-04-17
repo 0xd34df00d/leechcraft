@@ -72,6 +72,12 @@ namespace Util
 
 			return iface.future ();
 		}
+
+		template<typename F, typename... Args>
+		QFuture<ResultOf_t<F (Args...)>> ScheduleImpl (const F& f, Args&&... args)
+		{
+			return ScheduleImpl ([f, args...] { return Invoke (f, args...); });
+		}
 	protected:
 		void run () override final;
 
