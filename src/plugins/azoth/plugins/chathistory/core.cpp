@@ -41,6 +41,7 @@
 #include <interfaces/azoth/irichtextmessage.h>
 #include "storage.h"
 #include "storagethread.h"
+#include "storagestructures.h"
 
 namespace LeechCraft
 {
@@ -218,31 +219,20 @@ namespace ChatHistory
 				Q_ARG (QVariantMap, data));
 	}
 
-	void Core::GetOurAccounts ()
+	QFuture<QStringList> Core::GetOurAccounts ()
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getOurAccounts",
-				Qt::QueuedConnection);
+		return StorageThread_->ScheduleImpl (&Storage::GetOurAccounts);
 	}
 
-	void Core::GetUsersForAccount (const QString& accountID)
+	QFuture<UsersForAccountResult_t> Core::GetUsersForAccount (const QString& accountID)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getUsersForAccount",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountID));
+		return StorageThread_->ScheduleImpl (&Storage::GetUsersForAccount, accountID);
 	}
 
-	void Core::GetChatLogs (const QString& accountId,
+	QFuture<ChatLogsResult_t> Core::GetChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getChatLogs",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountId),
-				Q_ARG (QString, entryId),
-				Q_ARG (int, backpages),
-				Q_ARG (int, amount));
+		return StorageThread_->ScheduleImpl (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
 	}
 
 	void Core::Search (const QString& accountId, const QString& entryId,

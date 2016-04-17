@@ -27,13 +27,14 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGE_H
+#pragma once
+
 #include <memory>
 #include <QSqlQuery>
 #include <QHash>
 #include <QVariant>
 #include <QDateTime>
+#include "storagestructures.h"
 
 class QSqlDatabase;
 
@@ -88,7 +89,13 @@ namespace ChatHistory
 		};
 	public:
 		Storage (QObject* = 0);
+
+		QStringList GetOurAccounts () const;
+		UsersForAccountResult_t GetUsersForAccount (const QString&);
+		ChatLogsResult_t GetChatLogs (const QString& accountId,
+				const QString& entryId, int backpages, int amount);
 	private:
+		void CheckDB ();
 		void InitializeTables ();
 		void UpdateTables ();
 
@@ -110,20 +117,12 @@ namespace ChatHistory
 		void regenUsersCache ();
 
 		void addMessage (const QVariantMap&);
-		void getOurAccounts ();
-		void getUsersForAccount (const QString&);
-		void getChatLogs (const QString& accountId,
-				const QString& entryId, int backpages, int amount);
 		void search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);
 		void searchDate (const QString& accountId, const QString& entryId, const QDateTime& dt);
 		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
-		void gotOurAccounts (const QStringList&);
-		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
-		void gotChatLogs (const QString&, const QString&,
-				int, int, const QVariant&);
 		void gotSearchPosition (const QString&, const QString&, int);
 		void gotDaysForSheet (const QString& accountId, const QString& entryId,
 				int year, int month, const QList<int>& days);
@@ -131,5 +130,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif

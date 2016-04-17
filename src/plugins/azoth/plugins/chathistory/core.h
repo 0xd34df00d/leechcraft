@@ -27,14 +27,18 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CORE_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CORE_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QSet>
 #include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
+#include "storagestructures.h"
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -88,10 +92,14 @@ namespace ChatHistory
 
 		void Process (QObject*);
 		void Process (QVariantMap);
-		void GetOurAccounts ();
-		void GetUsersForAccount (const QString&);
-		void GetChatLogs (const QString& accountId, const QString& entryId,
+
+		QFuture<QStringList> GetOurAccounts ();
+
+		QFuture<UsersForAccountResult_t> GetUsersForAccount (const QString&);
+
+		QFuture<ChatLogsResult_t> GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
+
 		void Search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);
 		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
@@ -103,12 +111,7 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 	signals:
-		void gotOurAccounts (const QStringList&);
-		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 
-		/** The variant is a list of QVariantMaps.
-		 */
-		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void gotSearchPosition (const QString&, const QString&, int);
 
 		void gotDaysForSheet (const QString& accountId, const QString& entryId,
@@ -117,5 +120,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif

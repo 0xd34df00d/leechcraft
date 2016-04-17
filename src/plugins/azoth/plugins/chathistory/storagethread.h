@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
+#pragma once
+
 #include <memory>
-#include <QThread>
+#include <util/threads/workerthreadbase.h>
 
 namespace LeechCraft
 {
@@ -40,22 +40,17 @@ namespace ChatHistory
 {
 	class Storage;
 
-	class StorageThread : public QThread
+	class StorageThread : public Util::WorkerThread<Storage>
 	{
-		Q_OBJECT
-
-		std::shared_ptr<Storage> Storage_;
 	public:
-		StorageThread (QObject* = 0);
+		using WorkerThread::WorkerThread;
 
 		Storage* GetStorage ();
-	protected:
-		virtual void run ();
-	private slots:
-		void connectSignals ();
+	private:
+		void Initialize () override;
+
+		void ConnectSignals ();
 	};
 }
 }
 }
-
-#endif

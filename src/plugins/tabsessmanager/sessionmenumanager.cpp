@@ -39,7 +39,7 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
-	SessionMenuManager::SessionMenuManager (const SessionsManager *sessMgr, QObject *parent)
+	SessionMenuManager::SessionMenuManager (SessionsManager *sessMgr, QObject *parent)
 	: QObject { parent }
 	, SessMgr_ { sessMgr }
 	, SessMgrMenu_ { new QMenu { tr ("Sessions") } }
@@ -112,12 +112,27 @@ namespace TabSessManager
 
 		for (const auto& pair : Util::Stlize (SessMgr_->GetTabsInSession (name)))
 		{
-			const auto ii = qobject_cast<IInfo*> (pair.first);
+			const auto pluginObj = pair.first;
+			const auto ii = qobject_cast<IInfo*> (pluginObj);
 
 			const auto submenu = menu->addMenu (ii->GetIcon (), ii->GetName ());
 
 			for (const auto& info : pair.second)
-				submenu->addAction (info.Icon_, info.Name_);
+			{
+				const auto action = submenu->addAction (info.Icon_, info.Name_);
+				new Util::SlotClosure<Util::NoDeletePolicy>
+				{
+					[pluginObj, info, this]
+					{
+						QHash<QObject*, QList<RecInfo>> toOpen;
+						toOpen [pluginObj] = { info };
+						SessMgr_->OpenTabs (toOpen);
+					},
+					action,
+					SIGNAL (triggered ()),
+					action
+				};
+			}
 		}
 	}
 }

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QAction>
@@ -78,8 +78,6 @@ namespace ChatHistory
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
 
-		QHash<QString, QHash<QString, QPointer<QObject>>> RequestedLogs_;
-
 		QAction *SeparatorAction_;
 	public:
 		void Init (ICoreProxy_ptr);
@@ -110,6 +108,8 @@ namespace ChatHistory
 		void AddRawMessage (const QVariantMap&);
 	private:
 		void InitWidget (ChatHistoryWidget*);
+
+		void HandleGotChatLogs (const QPointer<QObject>&, const ChatLogsResult_t&);
 	public slots:
 		void initPlugin (QObject*);
 
@@ -123,8 +123,6 @@ namespace ChatHistory
 		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
-		void handleGotChatLogs (const QString&,
-				const QString&, int, int, const QVariant&);
 
 		void handlePushButton (const QString&);
 
@@ -149,5 +147,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif

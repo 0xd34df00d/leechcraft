@@ -46,13 +46,13 @@ namespace TabSessManager
 	{
 		Q_OBJECT
 
-		const SessionsManager * const SessMgr_;
+		SessionsManager * const SessMgr_;
 
 		QMenu * const SessMgrMenu_;
 
 		QHash<QString, std::shared_ptr<QMenu>> Session2Menu_;
 	public:
-		SessionMenuManager (const SessionsManager*, QObject* = nullptr);
+		SessionMenuManager (SessionsManager*, QObject* = nullptr);
 
 		QAction* GetSessionsAction () const;
 	private:

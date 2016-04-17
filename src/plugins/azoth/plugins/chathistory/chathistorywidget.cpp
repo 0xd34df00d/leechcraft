@@ -35,6 +35,7 @@
 #include <QToolBar>
 #include <util/xpc/util.h>
 #include <util/gui/clearlineeditaddon.h>
+#include <util/threads/futures.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/iclentry.h>
@@ -56,6 +57,8 @@ namespace ChatHistory
 	{
 		S_ParentMultiTabs_ = ch;
 	}
+
+	using namespace std::placeholders;
 
 	ChatHistoryWidget::ChatHistoryWidget (ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
@@ -108,18 +111,6 @@ namespace ChatHistory
 				SLOT (handleContactSelected (const QModelIndex&)));
 
 		connect (Core::Instance ().get (),
-				SIGNAL (gotUsersForAccount (const QStringList&, const QString&, const QStringList&)),
-				this,
-				SLOT (handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&)));
-		connect (Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
-				this,
-				SLOT (handleGotOurAccounts (const QStringList&)));
-		connect (Core::Instance ().get (),
-				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
-				this,
-				SLOT (handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&)));
-		connect (Core::Instance ().get (),
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
 				this,
 				SLOT (handleGotSearchPosition (const QString&, const QString&, int)));
@@ -142,7 +133,8 @@ namespace ChatHistory
 				SLOT (clearHistory ()))->
 					setProperty ("ActionIcon", "list-remove");
 
-		Core::Instance ()->GetOurAccounts ();
+		Util::Sequence (this, Core::Instance ()->GetOurAccounts ()) >>
+				[this] (const QStringList& accs) { HandleGotOurAccounts (accs); };
 	}
 
 	void ChatHistoryWidget::Remove ()
@@ -171,7 +163,7 @@ namespace ChatHistory
 		return {};
 	}
 
-	void ChatHistoryWidget::handleGotOurAccounts (const QStringList& accounts)
+	void ChatHistoryWidget::HandleGotOurAccounts (const QStringList& accounts)
 	{
 		const auto proxy = Core::Instance ()->GetPluginProxy ();
 		for (const auto& accountID : accounts)
@@ -188,11 +180,6 @@ namespace ChatHistory
 			if (CurrentAccount_.isEmpty ())
 				CurrentAccount_ = accountID;
 		}
-
-		disconnect (Core::Instance ().get (),
-				SIGNAL (gotOurAccounts (const QStringList&)),
-				this,
-				SLOT (handleGotOurAccounts (const QStringList&)));
 
 		if (EntryToFocus_)
 		{
@@ -242,11 +229,20 @@ namespace ChatHistory
 		}
 	}
 
-	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users,
-			const QString& id, const QStringList& nameCache)
+	void ChatHistoryWidget::HandleGotUsersForAccount (const QString& id,
+			const UsersForAccountResult_t& result)
 	{
-		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
+		if (const auto left = result.MaybeLeft ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Unable to get the list of users in the account.") + " " + *left);
 			return;
+		}
+
+		const auto& right = result.GetRight ();
+		const auto& nameCache = right.NameCache_;
+		const auto& users = right.Users_;
 
 		ContactsModel_->clear ();
 
@@ -284,34 +280,44 @@ namespace ChatHistory
 		}
 	}
 
-	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
-			const QString& entryId, int, int, const QVariant& logsVar)
+	void ChatHistoryWidget::HandleGotChatLogs (const QString& accountId,
+			const QString& entryId, const ChatLogsResult_t& result)
 	{
-		const QString& selectedEntry = Ui_.Contacts_->selectionModel ()->
+		const auto& selEntry = Ui_.Contacts_->selectionModel ()->
 				currentIndex ().data (MRIDRole).toString ();
-		if (accountId != Ui_.AccountBox_->
-					itemData (Ui_.AccountBox_->currentIndex ()).toString () ||
-				entryId != selectedEntry)
+		const auto& selAcc = Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ();
+		if (accountId != selAcc ||
+				entryId != selEntry)
 			return;
 
 		Amount_ = 0;
 		Ui_.HistView_->clear ();
 
-		const auto& defFormat = Ui_.HistView_->currentCharFormat ();
 		auto& formatter = Core::Instance ()->GetPluginProxy ()->GetFormatterProxy ();
 
-		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
+		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ()->
 					GetPluginProxy ()->GetEntry (entryId, accountId));
-		const QString& name = entry ?
+		const auto& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
+
+		if (const auto err = result.MaybeLeft ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Error getting logs with %1.")
+						.arg (name) +
+					" " + *err);
+			return;
+		}
+
 		const auto& ourName = entry ?
 				entry->GetParentAccount ()->GetOurNick () :
 				QString ();
 
-		QString preNick = Core::Instance ()->GetPluginProxy ()->
+		auto preNick = Core::Instance ()->GetPluginProxy ()->
 				GetSettingsManager ()->property ("PreNickText").toString ();
-		QString postNick = Core::Instance ()->GetPluginProxy ()->
+		auto postNick = Core::Instance ()->GetPluginProxy ()->
 				GetSettingsManager ()->property ("PostNickText").toString ();
 		preNick.replace ('<', "&lt;");
 		postNick.replace ('<', "&lt;");
@@ -321,17 +327,17 @@ namespace ChatHistory
 
 		int scrollPos = -1;
 
-		for (const auto& logVar : logsVar.toList ())
+		for (const auto& logItem : result.GetRight ())
 		{
-			const QVariantMap& map = logVar.toMap ();
+			const bool isChat = logItem.Type_ == IMessage::Type::ChatMessage;
+			const bool isIncoming = logItem.Dir_ == IMessage::Direction::In;
 
-			const bool isChat = map ["Type"] == "CHAT";
+			QString remoteName;
 
-			QString html = "[" + map ["Date"].toDateTime ().toString () + "] " + preNick;
-			const QString& var = map ["Variant"].toString ();
+			auto html = "[" + logItem.Date_.toString () + "] " + preNick;
+			const auto& var = logItem.Variant_;
 			if (isChat)
 			{
-				QString remoteName;
 				if (!name.isEmpty () && var.isEmpty ())
 					remoteName += name;
 				else if (name.isEmpty () && !var.isEmpty ())
@@ -342,12 +348,12 @@ namespace ChatHistory
 					remoteName += name;
 
 				if (!ourName.isEmpty ())
-					html += map ["Direction"] == "IN" ?
+					html += isIncoming ?
 							remoteName :
 							ourName;
 				else
 				{
-					html += map ["Direction"] == "IN" ?
+					html += isIncoming ?
 							QString::fromUtf8 ("← ") :
 							QString::fromUtf8 ("→ ");
 					html += remoteName;
@@ -359,12 +365,12 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 
-			auto msgText = map ["RichMessage"].toString ();
+			auto msgText = logItem.RichMessage_;
 			if (msgText.isEmpty ())
 			{
-				const bool escape = map ["EscapePolicy"] != "NEs";
+				const bool escape = logItem.EscPolicy_ == IMessage::EscapePolicy::Escape;
 
-				msgText = map ["Message"].toString ();
+				msgText = logItem.Message_;
 
 				if (escape)
 					msgText.replace ('<', "&lt;");
@@ -378,13 +384,12 @@ namespace ChatHistory
 			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
 			if (isChat && !isSearchRes)
 			{
-				const auto& color = formatter.GetNickColor (map ["Direction"].toString (), colors);
+				const auto& color = formatter.GetNickColor (isIncoming ? remoteName : ourName, colors);
 				html.prepend ("<font color=\"" + color + "\">");
 				html += "</font>";
 			}
 			else if (isSearchRes)
 			{
-				QTextCharFormat fmt = defFormat;
 				scrollPos = Ui_.HistView_->document ()->characterCount ();
 
 				html.prepend ("<font color='#FF7E00'>");
@@ -393,9 +398,6 @@ namespace ChatHistory
 			++Amount_;
 
 			Ui_.HistView_->append (html);
-
-			if (isSearchRes)
-				Ui_.HistView_->setCurrentCharFormat (defFormat);
 		}
 
 		if (scrollPos >= 0)
@@ -488,10 +490,12 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
 	{
-		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
-		Core::Instance ()->GetUsersForAccount (id);
+		const auto& id = Ui_.AccountBox_->itemData (idx).toString ();
 		CurrentEntry_.clear ();
 		UpdateDates ();
+
+		Util::Sequence (this, Core::Instance ()->GetUsersForAccount (id)) >>
+				std::bind (&ChatHistoryWidget::HandleGotUsersForAccount, this, id, _1);
 	}
 
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
@@ -651,8 +655,10 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestLogs ()
 	{
-		Core::Instance ()->GetChatLogs (CurrentAccount_,
+		const auto& future = Core::Instance ()->GetChatLogs (CurrentAccount_,
 				CurrentEntry_, Backpages_, PerPageAmount_);
+		Util::Sequence (this, future) >>
+				std::bind (&ChatHistoryWidget::HandleGotChatLogs, this, CurrentAccount_, CurrentEntry_, _1);
 	}
 
 	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)

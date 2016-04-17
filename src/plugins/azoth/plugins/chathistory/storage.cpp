@@ -70,8 +70,8 @@ namespace ChatHistory
 
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
+	, DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", "History connection")))
 	{
-		DB_.reset (new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE", "History connection")));
 		DB_->setDatabaseName (Util::CreateIfNotExists ("azoth").filePath ("history.db"));
 		if (!DB_->open ())
 		{
@@ -84,6 +84,8 @@ namespace ChatHistory
 		QSqlQuery pragma (*DB_);
 		pragma.exec ("PRAGMA foreign_keys = ON;");
 		pragma.exec ("PRAGMA synchronous = OFF;");
+
+		CheckDB ();
 
 		InitializeTables ();
 
@@ -199,6 +201,18 @@ namespace ChatHistory
 		}
 
 		PrepareEntryCache ();
+	}
+
+	void Storage::CheckDB ()
+	{
+		QSqlQuery pragma { *DB_ };
+		if (pragma.exec ("PRAGMA integrity_check;") &&
+				pragma.next () &&
+				pragma.value (0) == "ok")
+			return;
+
+		qWarning () << Q_FUNC_INFO
+				<< "integrity check failed";
 	}
 
 	void Storage::InitializeTables ()
@@ -729,12 +743,12 @@ namespace ChatHistory
 		lock.Good ();
 	}
 
-	void Storage::getOurAccounts ()
+	QStringList Storage::GetOurAccounts () const
 	{
-		emit gotOurAccounts (Accounts_.keys ());
+		return Accounts_.keys ();
 	}
 
-	void Storage::getUsersForAccount (const QString& accountId)
+	UsersForAccountResult_t Storage::GetUsersForAccount (const QString& accountId)
 	{
 		if (!Accounts_.contains (accountId))
 		{
@@ -743,14 +757,14 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents:"
 					<< Accounts_;
-			return;
+			return UsersForAccountResult_t::Left ("Unknown account.");
 		}
 
 		UsersForAccountGetter_.bindValue (":account_id", Accounts_ [accountId]);
 		if (!UsersForAccountGetter_.exec ())
 		{
 			Util::DBLock::DumpError (UsersForAccountGetter_);
-			return;
+			return UsersForAccountResult_t::Left ("Error executing the SQL query.");
 		}
 
 		QStringList result;
@@ -762,10 +776,34 @@ namespace ChatHistory
 			cachedNames << EntryCache_.value (id);
 		}
 
-		emit gotUsersForAccount (result, accountId, cachedNames);
+		return UsersForAccountResult_t::Right ({ result, cachedNames });
 	}
 
-	void Storage::getChatLogs (const QString& accountId,
+	namespace
+	{
+		IMessage::Direction GetMsgDirection (const QVariant& var)
+		{
+			return var.toString () == "IN" ?
+					IMessage::Direction::In :
+					IMessage::Direction::Out;
+		}
+
+		IMessage::Type GetMsgType (const QVariant& var)
+		{
+			return var.toString () == "CHAT" ?
+					IMessage::Type::ChatMessage :
+					IMessage::Type::MUCMessage;
+		}
+
+		IMessage::EscapePolicy GetMsgEscapePolicy (const QVariant& var)
+		{
+			return var.toString () == "NEs" ?
+					IMessage::EscapePolicy::NoEscape :
+					IMessage::EscapePolicy::Escape;
+		}
+	}
+
+	ChatLogsResult_t Storage::GetChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
 		if (!Accounts_.contains (accountId))
@@ -775,7 +813,7 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents"
 					<< Accounts_;
-			return;
+			return ChatLogsResult_t::Left ("Unknown account.");
 		}
 		if (!Users_.contains (entryId))
 		{
@@ -784,7 +822,7 @@ namespace ChatHistory
 					<< entryId
 					<< "; raw contents"
 					<< Users_;
-			return;
+			return ChatLogsResult_t::Left ("Unknown user.");
 		}
 
 		HistoryGetter_.bindValue (":entry_id", Users_ [entryId]);
@@ -795,24 +833,22 @@ namespace ChatHistory
 		if (!HistoryGetter_.exec ())
 		{
 			Util::DBLock::DumpError (HistoryGetter_);
-			return;
+			return ChatLogsResult_t::Left ("Unable to execute the SQL query.");
 		}
 
-		QList<QVariant> result;
+		LogList_t result;
 		while (HistoryGetter_.next ())
-		{
-			QVariantMap map;
-			map ["Date"] = HistoryGetter_.value (0);
-			map ["Direction"] = HistoryGetter_.value (1);
-			map ["Message"] = HistoryGetter_.value (2);
-			map ["Variant"] = HistoryGetter_.value (3);
-			map ["Type"] = HistoryGetter_.value (4);
-			map ["RichMessage"] = HistoryGetter_.value (5);
-			map ["EscapePolicy"] = HistoryGetter_.value (6);
-			result.prepend (map);
-		}
+			result.push_back ({
+					HistoryGetter_.value (0).toDateTime (),
+					GetMsgDirection (HistoryGetter_.value (1)),
+					HistoryGetter_.value (2).toString (),
+					HistoryGetter_.value (3).toString (),
+					GetMsgType (HistoryGetter_.value (4)),
+					HistoryGetter_.value (5).toString (),
+					GetMsgEscapePolicy (HistoryGetter_.value (6))
+				});
 
-		emit gotChatLogs (accountId, entryId, backpages, amount, result);
+		return ChatLogsResult_t::Right (result);
 	}
 
 	void Storage::search (const QString& accountId,

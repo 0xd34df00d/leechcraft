@@ -51,11 +51,6 @@ namespace Util
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
-	protected:
-		void run () override;
-
-		virtual void Initialize () = 0;
-		virtual void Cleanup () = 0;
 
 		template<typename F>
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
@@ -77,10 +72,48 @@ namespace Util
 
 			return iface.future ();
 		}
+
+		template<typename F, typename... Args>
+		QFuture<ResultOf_t<F (Args...)>> ScheduleImpl (const F& f, Args&&... args)
+		{
+			return ScheduleImpl ([f, args...] { return Invoke (f, args...); });
+		}
+	protected:
+		void run () override final;
+
+		virtual void Initialize () = 0;
+		virtual void Cleanup () = 0;
 	private:
 		void RotateFuncs ();
 	signals:
 		void rotateFuncs ();
+	};
+
+	template<typename WorkerType>
+	class WorkerThread : public WorkerThreadBase
+	{
+	protected:
+		std::shared_ptr<WorkerType> Worker_;
+	public:
+		using WorkerThreadBase::WorkerThreadBase;
+
+		using WorkerThreadBase::ScheduleImpl;
+
+		template<typename F, typename... Args>
+		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (const F& f, Args&&... args)
+		{
+			return WorkerThreadBase::ScheduleImpl (f, Worker_.get (), std::forward<Args> (args)...);
+		}
+	protected:
+		void Initialize () override
+		{
+			Worker_ = std::make_shared<WorkerType> ();
+		}
+
+		void Cleanup () override
+		{
+			Worker_.reset ();
+		}
 	};
 }
 }

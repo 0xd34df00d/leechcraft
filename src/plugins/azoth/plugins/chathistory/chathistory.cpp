@@ -33,6 +33,7 @@
 #include <QAction>
 #include <QTranslator>
 #include <util/util.h>
+#include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iclentry.h>
@@ -173,9 +174,8 @@ namespace ChatHistory
 		const auto account = entry->GetParentAccount ();
 		const QString& accId = account->GetAccountID ();
 		const QString& entryId = entry->GetEntryID ();
-		Core::Instance ()->GetChatLogs (accId, entryId, 0, num);
-
-		RequestedLogs_ [accId] [entryId] = entryObj;
+		Util::Sequence (this, Core::Instance ()->GetChatLogs (accId, entryId, 0, num)) >>
+				std::bind (&Plugin::HandleGotChatLogs, this, entryObj, std::placeholders::_1);
 	}
 
 	void Plugin::AddRawMessage (const QVariantMap& map)
@@ -277,14 +277,9 @@ namespace ChatHistory
 		Core::Instance ()->Process (message);
 	}
 
-	void Plugin::handleGotChatLogs (const QString& accId, const QString& entryId,
-			int, int, const QVariant& logs)
+	void Plugin::HandleGotChatLogs (const QPointer<QObject>& entryObj,
+			const ChatLogsResult_t& result)
 	{
-		if (!RequestedLogs_.contains (accId) ||
-				!RequestedLogs_ [accId].contains (entryId))
-			return;
-
-		auto entryObj = RequestedLogs_ [accId].take (entryId);
 		if (!entryObj)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -293,48 +288,43 @@ namespace ChatHistory
 			return;
 		}
 
+		if (const auto err = result.MaybeLeft ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to request logs:"
+					<< *err;
+			return;
+		}
+
 		auto mucEntry = qobject_cast<IMUCEntry*> (entryObj);
 		const auto& parts = mucEntry ?
 				mucEntry->GetParticipants () :
 				QObjectList ();
 
-		QList<QObject*> result;
-		for (const auto& messageVar : logs.toList ())
+		QList<QObject*> logs;
+		for (const auto& item : result.GetRight ())
 		{
-			const QVariantMap& msgMap = messageVar.toMap ();
-
-			const auto& variant = msgMap ["Variant"].toString ();
 			QObject *participantObj = nullptr;
 			for (auto part : parts)
-				if (qobject_cast<ICLEntry*> (part)->GetEntryName () == variant)
+				if (qobject_cast<ICLEntry*> (part)->GetEntryName () == item.Variant_)
 				{
 					participantObj = part;
 					break;
 				}
 
-			const auto dir = msgMap ["Direction"].toString () == "IN" ?
-					IMessage::Direction::In :
-					IMessage::Direction::Out;
-			const auto type = participantObj ?
-					IMessage::Type::MUCMessage :
-					IMessage::Type::ChatMessage;
-			const auto escPolicy = msgMap ["EscapePolicy"].toString () == "NEs" ?
-					IMessage::EscapePolicy::NoEscape :
-					IMessage::EscapePolicy::Escape;
-
-			const auto msg = new HistoryMessage (dir,
+			const auto msg = new HistoryMessage (item.Dir_,
 					participantObj ? participantObj : entryObj.data (),
-					type,
-					participantObj ? QString () : variant,
-					msgMap ["Message"].toString (),
-					msgMap ["Date"].toDateTime (),
-					msgMap ["RichMessage"].toString (),
-					escPolicy);
+					item.Type_,
+					participantObj ? QString {} : item.Variant_,
+					item.Message_,
+					item.Date_,
+					item.RichMessage_,
+					item.EscPolicy_);
 
-			result << msg;
+			logs << msg;
 		}
 
-		emit gotLastMessages (entryObj, result);
+		emit gotLastMessages (entryObj, logs);
 	}
 
 	void Plugin::handlePushButton (const QString& name)

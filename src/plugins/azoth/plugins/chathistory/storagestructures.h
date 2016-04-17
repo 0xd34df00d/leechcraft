@@ -27,9 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "storagethread.h"
-#include "storage.h"
-#include "core.h"
+#pragma once
+
+#include <QStringList>
+#include <util/sll/either.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
@@ -37,31 +39,28 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Storage* StorageThread::GetStorage ()
+	struct UsersForAccount
 	{
-		return Worker_.get ();
-	}
+		QStringList Users_;
+		QStringList NameCache_;
+	};
 
-	void StorageThread::Initialize ()
+	using UsersForAccountResult_t = Util::Either<QString, UsersForAccount>;
+
+	struct LogItem
 	{
-		WorkerThread::Initialize ();
+		QDateTime Date_;
+		IMessage::Direction Dir_;
+		QString Message_;
+		QString Variant_;
+		IMessage::Type Type_;
+		QString RichMessage_;
+		IMessage::EscapePolicy EscPolicy_;
+	};
 
-		ConnectSignals ();
-	}
+	using LogList_t = QList<LogItem>;
 
-	void StorageThread::ConnectSignals ()
-	{
-		connect (Worker_.get (),
-				SIGNAL (gotSearchPosition (QString, QString, int)),
-				Core::Instance ().get (),
-				SIGNAL (gotSearchPosition (QString, QString, int)),
-				Qt::QueuedConnection);
-		connect (Worker_.get (),
-				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
-				Core::Instance ().get (),
-				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
-				Qt::QueuedConnection);
-	}
+	using ChatLogsResult_t = Util::Either<QString, LogList_t>;
 }
 }
 }
