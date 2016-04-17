@@ -28,9 +28,9 @@
  **********************************************************************/
 
 #include "storagethread.h"
+#include <util/sll/delayedexecutor.h>
 #include "storage.h"
 #include "core.h"
-#include <QTimer>
 
 namespace LeechCraft
 {
@@ -47,9 +47,7 @@ namespace ChatHistory
 	{
 		Storage_ = std::make_shared<Storage> ();
 
-		QTimer::singleShot (0,
-				this,
-				SLOT (connectSignals ()));
+		Util::ExecuteLater ([this] { connectSignals (); });
 
 		QThread::run ();
 		Storage_.reset ();
