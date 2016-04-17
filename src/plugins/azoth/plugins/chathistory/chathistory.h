@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_CHATHISTORY_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QAction>
@@ -147,5 +147,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif

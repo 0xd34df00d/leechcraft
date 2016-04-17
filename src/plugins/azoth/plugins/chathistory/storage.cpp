@@ -886,7 +886,8 @@ namespace ChatHistory
 		if (!Users_.contains (entry))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "Users_ doesn't contain" << entry
+					<< "Users_ doesn't contain"
+					<< entry
 					<< "; raw contents"
 					<< Users_;
 			return;
