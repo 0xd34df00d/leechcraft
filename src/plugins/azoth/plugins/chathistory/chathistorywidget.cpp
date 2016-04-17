@@ -301,7 +301,6 @@ namespace ChatHistory
 		Amount_ = 0;
 		Ui_.HistView_->clear ();
 
-		const auto& defFormat = Ui_.HistView_->currentCharFormat ();
 		auto& formatter = Core::Instance ()->GetPluginProxy ()->GetFormatterProxy ();
 
 		ICLEntry *entry = qobject_cast<ICLEntry*> (Core::Instance ()->
@@ -388,7 +387,6 @@ namespace ChatHistory
 			}
 			else if (isSearchRes)
 			{
-				QTextCharFormat fmt = defFormat;
 				scrollPos = Ui_.HistView_->document ()->characterCount ();
 
 				html.prepend ("<font color='#FF7E00'>");
@@ -397,9 +395,6 @@ namespace ChatHistory
 			++Amount_;
 
 			Ui_.HistView_->append (html);
-
-			if (isSearchRes)
-				Ui_.HistView_->setCurrentCharFormat (defFormat);
 		}
 
 		if (scrollPos >= 0)
