@@ -46,7 +46,7 @@ namespace ChatHistory
 
 		std::shared_ptr<Storage> Storage_;
 	public:
-		StorageThread (QObject* = 0);
+		using QThread::QThread;
 
 		Storage* GetStorage ();
 	protected:

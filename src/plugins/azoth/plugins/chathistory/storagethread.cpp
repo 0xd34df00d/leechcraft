@@ -38,11 +38,6 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	StorageThread::StorageThread (QObject *parent)
-	: QThread (parent)
-	{
-	}
-
 	Storage* StorageThread::GetStorage ()
 	{
 		return Storage_.get ();
