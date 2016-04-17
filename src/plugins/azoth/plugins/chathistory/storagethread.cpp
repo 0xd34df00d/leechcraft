@@ -47,13 +47,13 @@ namespace ChatHistory
 	{
 		Storage_ = std::make_shared<Storage> ();
 
-		Util::ExecuteLater ([this] { connectSignals (); });
+		Util::ExecuteLater ([this] { ConnectSignals (); });
 
 		QThread::run ();
 		Storage_.reset ();
 	}
 
-	void StorageThread::connectSignals ()
+	void StorageThread::ConnectSignals ()
 	{
 		connect (Storage_.get (),
 				SIGNAL (gotOurAccounts (QStringList)),
