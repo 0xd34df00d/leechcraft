@@ -229,16 +229,10 @@ namespace ChatHistory
 		return StorageThread_->ScheduleImpl (&Storage::GetUsersForAccount, accountID);
 	}
 
-	void Core::GetChatLogs (const QString& accountId,
+	QFuture<ChatLogsResult_t> Core::GetChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getChatLogs",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountId),
-				Q_ARG (QString, entryId),
-				Q_ARG (int, backpages),
-				Q_ARG (int, amount));
+		return StorageThread_->ScheduleImpl (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
 	}
 
 	void Core::Search (const QString& accountId, const QString& entryId,

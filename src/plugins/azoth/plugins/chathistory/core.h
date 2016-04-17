@@ -96,8 +96,10 @@ namespace ChatHistory
 		QFuture<QStringList> GetOurAccounts ();
 
 		QFuture<UsersForAccountResult_t> GetUsersForAccount (const QString&);
-		void GetChatLogs (const QString& accountId, const QString& entryId,
+
+		QFuture<ChatLogsResult_t> GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
+
 		void Search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);
 		void Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
@@ -109,9 +111,7 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 	signals:
-		/** The variant is a list of QVariantMaps.
-		 */
-		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);
+
 		void gotSearchPosition (const QString&, const QString&, int);
 
 		void gotDaysForSheet (const QString& accountId, const QString& entryId,

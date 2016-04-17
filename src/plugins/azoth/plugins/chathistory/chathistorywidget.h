@@ -99,8 +99,8 @@ namespace ChatHistory
 	private:
 		void HandleGotOurAccounts (const QStringList&);
 		void HandleGotUsersForAccount (const QString&, const UsersForAccountResult_t&);
+		void HandleGotChatLogs (const QString&, const QString&, const ChatLogsResult_t&);
 	private slots:
-		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void handleGotSearchPosition (const QString&, const QString&, int);
 		void handleGotDaysForSheet (const QString&, const QString&, int, int, const QList<int>&);
 

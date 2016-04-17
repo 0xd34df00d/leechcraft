@@ -115,10 +115,6 @@ namespace ChatHistory
 				this,
 				SLOT (handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&)));
 		connect (Core::Instance ().get (),
-				SIGNAL (gotChatLogs (const QString&, const QString&, int, int, const QVariant&)),
-				this,
-				SLOT (handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&)));
-		connect (Core::Instance ().get (),
 				SIGNAL (gotSearchPosition (const QString&, const QString&, int)),
 				this,
 				SLOT (handleGotSearchPosition (const QString&, const QString&, int)));
@@ -288,8 +284,8 @@ namespace ChatHistory
 		}
 	}
 
-	void ChatHistoryWidget::handleGotChatLogs (const QString& accountId,
-			const QString& entryId, int, int, const QVariant& logsVar)
+	void ChatHistoryWidget::HandleGotChatLogs (const QString& accountId,
+			const QString& entryId, const ChatLogsResult_t& result)
 	{
 		const auto& selEntry = Ui_.Contacts_->selectionModel ()->
 				currentIndex ().data (MRIDRole).toString ();
@@ -308,6 +304,17 @@ namespace ChatHistory
 		const auto& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
+
+		if (const auto err = result.MaybeLeft ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Error getting logs with %1.")
+						.arg (name) +
+					" " + *err);
+			return;
+		}
+
 		const auto& ourName = entry ?
 				entry->GetParentAccount ()->GetOurNick () :
 				QString ();
@@ -324,17 +331,17 @@ namespace ChatHistory
 
 		int scrollPos = -1;
 
-		for (const auto& logVar : logsVar.toList ())
+		for (const auto& logItem : result.GetRight ())
 		{
-			const QVariantMap& map = logVar.toMap ();
+			const bool isChat = logItem.Type_ == IMessage::Type::ChatMessage;
+			const bool isIncoming = logItem.Dir_ == IMessage::Direction::In;
 
-			const bool isChat = map ["Type"] == "CHAT";
+			QString remoteName;
 
-			QString html = "[" + map ["Date"].toDateTime ().toString () + "] " + preNick;
-			const QString& var = map ["Variant"].toString ();
+			auto html = "[" + logItem.Date_.toString () + "] " + preNick;
+			const auto& var = logItem.Variant_;
 			if (isChat)
 			{
-				QString remoteName;
 				if (!name.isEmpty () && var.isEmpty ())
 					remoteName += name;
 				else if (name.isEmpty () && !var.isEmpty ())
@@ -345,12 +352,12 @@ namespace ChatHistory
 					remoteName += name;
 
 				if (!ourName.isEmpty ())
-					html += map ["Direction"] == "IN" ?
+					html += isIncoming ?
 							remoteName :
 							ourName;
 				else
 				{
-					html += map ["Direction"] == "IN" ?
+					html += isIncoming ?
 							QString::fromUtf8 ("← ") :
 							QString::fromUtf8 ("→ ");
 					html += remoteName;
@@ -362,12 +369,12 @@ namespace ChatHistory
 				html += "<font color=\"" + color + "\">" + var + "</font>";
 			}
 
-			auto msgText = map ["RichMessage"].toString ();
+			auto msgText = logItem.RichMessage_;
 			if (msgText.isEmpty ())
 			{
-				const bool escape = map ["EscapePolicy"] != "NEs";
+				const bool escape = logItem.EscPolicy_ == IMessage::EscapePolicy::Escape;
 
-				msgText = map ["Message"].toString ();
+				msgText = logItem.Message_;
 
 				if (escape)
 					msgText.replace ('<', "&lt;");
@@ -381,7 +388,7 @@ namespace ChatHistory
 			const bool isSearchRes = SearchResultPosition_ == PerPageAmount_ - Amount_;
 			if (isChat && !isSearchRes)
 			{
-				const auto& color = formatter.GetNickColor (map ["Direction"].toString (), colors);
+				const auto& color = formatter.GetNickColor (isIncoming ? remoteName : ourName, colors);
 				html.prepend ("<font color=\"" + color + "\">");
 				html += "</font>";
 			}
@@ -652,8 +659,10 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestLogs ()
 	{
-		Core::Instance ()->GetChatLogs (CurrentAccount_,
+		const auto& future = Core::Instance ()->GetChatLogs (CurrentAccount_,
 				CurrentEntry_, Backpages_, PerPageAmount_);
+		Util::Sequence (this, future) >>
+				std::bind (&ChatHistoryWidget::HandleGotChatLogs, this, CurrentAccount_, CurrentEntry_, _1);
 	}
 
 	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)

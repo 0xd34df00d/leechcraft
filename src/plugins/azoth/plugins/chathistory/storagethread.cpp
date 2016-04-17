@@ -57,11 +57,6 @@ namespace ChatHistory
 				SIGNAL (gotUsersForAccount (QStringList, QString, QStringList)),
 				Qt::QueuedConnection);
 		connect (Worker_.get (),
-				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
-				Core::Instance ().get (),
-				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
-				Qt::QueuedConnection);
-		connect (Worker_.get (),
 				SIGNAL (gotSearchPosition (QString, QString, int)),
 				Core::Instance ().get (),
 				SIGNAL (gotSearchPosition (QString, QString, int)),
