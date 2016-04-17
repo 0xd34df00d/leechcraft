@@ -35,6 +35,7 @@
 #include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
+#include "storagestructures.h"
 
 template<typename>
 class QFuture;
@@ -94,7 +95,7 @@ namespace ChatHistory
 
 		QFuture<QStringList> GetOurAccounts ();
 
-		void GetUsersForAccount (const QString&);
+		QFuture<UsersForAccountResult_t> GetUsersForAccount (const QString&);
 		void GetChatLogs (const QString& accountId, const QString& entryId,
 				int backpages, int amount);
 		void Search (const QString& accountId, const QString& entryId,
@@ -108,8 +109,6 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 	signals:
-		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
-
 		/** The variant is a list of QVariantMaps.
 		 */
 		void gotChatLogs (const QString&, const QString&, int, int, const QVariant&);

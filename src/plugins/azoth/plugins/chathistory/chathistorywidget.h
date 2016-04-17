@@ -32,6 +32,7 @@
 #include <QWidget>
 #include <interfaces/ihavetabs.h>
 #include "chatfindbox.h"
+#include "storagestructures.h"
 #include "ui_chathistorywidget.h"
 
 class QStandardItemModel;
@@ -97,8 +98,8 @@ namespace ChatHistory
 		QList<QAction*> GetTabBarContextMenuActions () const;
 	private:
 		void HandleGotOurAccounts (const QStringList&);
+		void HandleGotUsersForAccount (const QString&, const UsersForAccountResult_t&);
 	private slots:
-		void handleGotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 		void handleGotChatLogs (const QString&, const QString&, int, int, const QVariant&);
 		void handleGotSearchPosition (const QString&, const QString&, int);
 		void handleGotDaysForSheet (const QString&, const QString&, int, int, const QList<int>&);

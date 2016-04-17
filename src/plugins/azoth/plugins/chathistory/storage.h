@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QVariant>
 #include <QDateTime>
+#include "storagestructures.h"
 
 class QSqlDatabase;
 
@@ -90,6 +91,7 @@ namespace ChatHistory
 		Storage (QObject* = 0);
 
 		QStringList GetOurAccounts () const;
+		UsersForAccountResult_t GetUsersForAccount (const QString&);
 	private:
 		void CheckDB ();
 		void InitializeTables ();
@@ -113,7 +115,6 @@ namespace ChatHistory
 		void regenUsersCache ();
 
 		void addMessage (const QVariantMap&);
-		void getUsersForAccount (const QString&);
 		void getChatLogs (const QString& accountId,
 				const QString& entryId, int backpages, int amount);
 		void search (const QString& accountId, const QString& entryId,
@@ -122,7 +123,6 @@ namespace ChatHistory
 		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);
 	signals:
-		void gotUsersForAccount (const QStringList&, const QString&, const QStringList&);
 		void gotChatLogs (const QString&, const QString&,
 				int, int, const QVariant&);
 		void gotSearchPosition (const QString&, const QString&, int);

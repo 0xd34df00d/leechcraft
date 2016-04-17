@@ -41,6 +41,7 @@
 #include <interfaces/azoth/irichtextmessage.h>
 #include "storage.h"
 #include "storagethread.h"
+#include "storagestructures.h"
 
 namespace LeechCraft
 {
@@ -223,12 +224,9 @@ namespace ChatHistory
 		return StorageThread_->ScheduleImpl (&Storage::GetOurAccounts);
 	}
 
-	void Core::GetUsersForAccount (const QString& accountID)
+	QFuture<UsersForAccountResult_t> Core::GetUsersForAccount (const QString& accountID)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getUsersForAccount",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountID));
+		return StorageThread_->ScheduleImpl (&Storage::GetUsersForAccount, accountID);
 	}
 
 	void Core::GetChatLogs (const QString& accountId,

@@ -58,6 +58,8 @@ namespace ChatHistory
 		S_ParentMultiTabs_ = ch;
 	}
 
+	using namespace std::placeholders;
+
 	ChatHistoryWidget::ChatHistoryWidget (ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
@@ -235,11 +237,20 @@ namespace ChatHistory
 		}
 	}
 
-	void ChatHistoryWidget::handleGotUsersForAccount (const QStringList& users,
-			const QString& id, const QStringList& nameCache)
+	void ChatHistoryWidget::HandleGotUsersForAccount (const QString& id,
+			const UsersForAccountResult_t& result)
 	{
-		if (id != Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ())
+		if (const auto left = result.MaybeLeft ())
+		{
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("Unable to get the list of users in the account.") + " " + *left);
 			return;
+		}
+
+		const auto& right = result.GetRight ();
+		const auto& nameCache = right.NameCache_;
+		const auto& users = right.Users_;
 
 		ContactsModel_->clear ();
 
@@ -481,10 +492,12 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
 	{
-		const QString& id = Ui_.AccountBox_->itemData (idx).toString ();
-		Core::Instance ()->GetUsersForAccount (id);
+		const auto& id = Ui_.AccountBox_->itemData (idx).toString ();
 		CurrentEntry_.clear ();
 		UpdateDates ();
+
+		Util::Sequence (this, Core::Instance ()->GetUsersForAccount (id)) >>
+				std::bind (&ChatHistoryWidget::HandleGotUsersForAccount, this, id, _1);
 	}
 
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)

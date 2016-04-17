@@ -748,7 +748,7 @@ namespace ChatHistory
 		return Accounts_.keys ();
 	}
 
-	void Storage::getUsersForAccount (const QString& accountId)
+	UsersForAccountResult_t Storage::GetUsersForAccount (const QString& accountId)
 	{
 		if (!Accounts_.contains (accountId))
 		{
@@ -757,14 +757,14 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents:"
 					<< Accounts_;
-			return;
+			return UsersForAccountResult_t::Left ("Unknown account.");
 		}
 
 		UsersForAccountGetter_.bindValue (":account_id", Accounts_ [accountId]);
 		if (!UsersForAccountGetter_.exec ())
 		{
 			Util::DBLock::DumpError (UsersForAccountGetter_);
-			return;
+			return UsersForAccountResult_t::Left ("Error executing the SQL query.");
 		}
 
 		QStringList result;
@@ -776,7 +776,7 @@ namespace ChatHistory
 			cachedNames << EntryCache_.value (id);
 		}
 
-		emit gotUsersForAccount (result, accountId, cachedNames);
+		return UsersForAccountResult_t::Right ({ result, cachedNames });
 	}
 
 	void Storage::getChatLogs (const QString& accountId,
