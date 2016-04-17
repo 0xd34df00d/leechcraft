@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
-#define PLUGINS_AZOTH_PLUGINS_CHATHISTORY_STORAGETHREAD_H
+#pragma once
+
 #include <memory>
 #include <QThread>
 
@@ -57,5 +57,3 @@ namespace ChatHistory
 }
 }
 }
-
-#endif
