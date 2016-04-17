@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include <util/sll/either.h>
+#include <interfaces/azoth/imessage.h>
 
 namespace LeechCraft
 {
@@ -45,6 +46,21 @@ namespace ChatHistory
 	};
 
 	using UsersForAccountResult_t = Util::Either<QString, UsersForAccount>;
+
+	struct LogItem
+	{
+		QDateTime Date_;
+		IMessage::Direction Dir_;
+		QString Message_;
+		QString Variant_;
+		IMessage::Type Type_;
+		QString RichMessage_;
+		IMessage::EscapePolicy EscPolicy_;
+	};
+
+	using LogList_t = QList<LogItem>;
+
+	using ChatLogsResult_t = Util::Either<QString, LogList_t>;
 }
 }
 }
