@@ -50,7 +50,7 @@ namespace ChatHistory
 
 	void StorageThread::run ()
 	{
-		Storage_.reset (new Storage);
+		Storage_ = std::make_shared<Storage> ();
 
 		QTimer::singleShot (0,
 				this,
