@@ -59,6 +59,7 @@ namespace ChatHistory
 		QSqlQuery AccountInserter_;
 		QSqlQuery MessageDumper_;
 		QSqlQuery UsersForAccountGetter_;
+		QSqlQuery RowID2Pos_;
 		QSqlQuery Date2Pos_;
 		QSqlQuery GetMonthDates_;
 		QSqlQuery LogsSearcher_;
@@ -78,12 +79,12 @@ namespace ChatHistory
 
 		struct RawSearchResult
 		{
-			qint32 EntryID_;
-			qint32 AccountID_;
-			QDateTime Date_;
+			qint32 EntryID_ = 0;
+			qint32 AccountID_ = 0;
+			qint64 RowID_ = -1;
 
-			RawSearchResult ();
-			RawSearchResult (qint32 entryId, qint32 accountId, const QDateTime& date);
+			RawSearchResult () = default;
+			RawSearchResult (qint32 entryId, qint32 accountId, qint64 rowId);
 
 			bool IsEmpty () const;
 		};
@@ -121,6 +122,7 @@ namespace ChatHistory
 		RawSearchResult SearchImpl (const QString& accountId, const QString& text, int shift, bool cs);
 		RawSearchResult SearchImpl (const QString& text, int shift, bool cs);
 
+		SearchResult_t SearchRowIdImpl (qint32, qint32, qint64);
 		SearchResult_t SearchDateImpl (qint32, qint32, const QDateTime&);
 	public slots:
 		void regenUsersCache ();

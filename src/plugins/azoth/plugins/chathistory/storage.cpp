@@ -50,22 +50,16 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Storage::RawSearchResult::RawSearchResult ()
-	: EntryID_ (0)
-	, AccountID_ (0)
-	{
-	}
-
-	Storage::RawSearchResult::RawSearchResult (qint32 entryId, qint32 accountId, const QDateTime& date)
-	: EntryID_ (entryId)
-	, AccountID_ (accountId)
-	, Date_ (date)
+	Storage::RawSearchResult::RawSearchResult (qint32 entryId, qint32 accountId, qint64 rowId)
+	: EntryID_ { entryId }
+	, AccountID_ { accountId }
+	, RowID_ { rowId }
 	{
 	}
 
 	bool Storage::RawSearchResult::IsEmpty () const
 	{
-		return Date_.isNull () || !EntryID_ || !AccountID_;
+		return RowID_ < 0 || !EntryID_ || !AccountID_;
 	}
 
 	Storage::Storage (QObject *parent)
@@ -115,6 +109,12 @@ namespace ChatHistory
 		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users2.UserId, EntryID FROM azoth_users, azoth_acc2users2 "
 				"WHERE azoth_acc2users2.UserId = azoth_users.Id AND azoth_acc2users2.AccountID = :account_id;");
 
+		RowID2Pos_ = QSqlQuery (*DB_);
+		RowID2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
+				"WHERE Id = :entry_id "
+				"AND AccountID = :account_id "
+				"AND rowid >= :rowid");
+
 		Date2Pos_ = QSqlQuery (*DB_);
 		Date2Pos_.prepare ("SELECT COUNT(1) FROM azoth_history "
 				"WHERE Id = :entry_id "
@@ -129,10 +129,10 @@ namespace ChatHistory
 				"AND Date <= :upper_date");
 
 		LogsSearcher_ = QSqlQuery (*DB_);
-		LogsSearcher_.prepare ("SELECT date FROM azoth_history "
+		LogsSearcher_.prepare ("SELECT Rowid FROM azoth_history "
 				"WHERE Id = :entry_id "
 				"AND AccountID = :account_id "
-				"AND Date = (SELECT Date FROM azoth_history "
+				"AND Rowid = (SELECT Rowid FROM azoth_history "
 				"	WHERE Id = :inner_entry_id "
 				"	AND AccountID = :inner_account_id "
 				"	AND ((Message LIKE :text AND :insensitive) OR (Message GLOB :ctext AND :sensitive)) "
@@ -503,7 +503,7 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents"
 					<< Accounts_;
-			return RawSearchResult ();
+			return {};
 		}
 		if (!Users_.contains (entryId))
 		{
@@ -512,7 +512,7 @@ namespace ChatHistory
 					<< entryId
 					<< "; raw contents"
 					<< Users_;
-			return RawSearchResult ();
+			return {};
 		}
 
 		const qint32 intEntryId = Users_ [entryId];
@@ -529,7 +529,7 @@ namespace ChatHistory
 		if (!LogsSearcher_.exec ())
 		{
 			Util::DBLock::DumpError (LogsSearcher_);
-			return RawSearchResult ();
+			return {};
 		}
 		auto guard = CleanupQueryGuard (LogsSearcher_);
 
@@ -537,10 +537,11 @@ namespace ChatHistory
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unable to move to the next entry";
-			return RawSearchResult ();
+			Util::DBLock::DumpError (LogsSearcher_);
+			return {};
 		}
 
-		return RawSearchResult (intEntryId, intAccId, LogsSearcher_.value (0).toDateTime ());
+		return { intEntryId, intAccId, LogsSearcher_.value (0).value<qint64> () };
 	}
 
 	Storage::RawSearchResult Storage::SearchImpl (const QString& accountId,
@@ -553,7 +554,7 @@ namespace ChatHistory
 					<< accountId
 					<< "; raw contents"
 					<< Accounts_;
-			return RawSearchResult ();
+			return {};
 		}
 
 		const qint32 intAccId = Accounts_ [accountId];
@@ -579,9 +580,12 @@ namespace ChatHistory
 
 		auto guard = CleanupQueryGuard (LogsSearcherWOContact_);
 
-		return RawSearchResult (LogsSearcherWOContact_.value (1).toInt (),
-				intAccId,
-				LogsSearcherWOContact_.value (0).toDateTime ());
+		return
+		{
+			LogsSearcherWOContact_.value (1).toInt (),
+			intAccId,
+			LogsSearcherWOContact_.value (0).value<qint64> ()
+		};
 	}
 
 	Storage::RawSearchResult Storage::SearchImpl (const QString& text, int shift, bool cs)
@@ -606,9 +610,36 @@ namespace ChatHistory
 
 		auto guard = CleanupQueryGuard (LogsSearcherWOContactAccount_);
 
-		return RawSearchResult (LogsSearcherWOContactAccount_.value (1).toInt (),
-				LogsSearcherWOContactAccount_.value (2).toInt (),
-				LogsSearcherWOContactAccount_.value (0).toDateTime ());
+		return
+		{
+			LogsSearcherWOContactAccount_.value (1).toInt (),
+			LogsSearcherWOContactAccount_.value (2).toInt (),
+			LogsSearcherWOContactAccount_.value (0).value<qint64> ()
+		};
+	}
+
+	SearchResult_t Storage::SearchRowIdImpl (qint32 accountId, qint32 entryId, qint64 rowId)
+	{
+		RowID2Pos_.bindValue (":rowid", rowId);
+		RowID2Pos_.bindValue (":account_id", accountId);
+		RowID2Pos_.bindValue (":entry_id", entryId);
+		if (!RowID2Pos_.exec ())
+		{
+			Util::DBLock::DumpError (RowID2Pos_);
+			return SearchResult_t::Left ("Unable to execute search query.");
+		}
+
+		if (!RowID2Pos_.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to navigate to next record";
+			return SearchResult_t::Left ("Unable to navigate to the search results.");
+		}
+
+		const int index = RowID2Pos_.value (0).toInt ();
+		RowID2Pos_.finish ();
+
+		return SearchResult_t::Right (index);
 	}
 
 	SearchResult_t Storage::SearchDateImpl (qint32 accountId, qint32 entryId, const QDateTime& dt)
@@ -886,7 +917,7 @@ namespace ChatHistory
 		if (res.IsEmpty ())
 			return SearchResult_t::Left ("Empty result.");
 
-		return SearchDateImpl (res.AccountID_, res.EntryID_, res.Date_);
+		return SearchRowIdImpl (res.AccountID_, res.EntryID_, res.RowID_);
 	}
 
 	SearchResult_t Storage::SearchDate (const QString& account, const QString& entry, const QDateTime& dt)
