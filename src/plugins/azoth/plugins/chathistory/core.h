@@ -110,11 +110,6 @@ namespace ChatHistory
 	private:
 		void LoadDisabled ();
 		void SaveDisabled ();
-	signals:
-		void gotSearchPosition (const QString&, const QString&, int);
-
-		void gotDaysForSheet (const QString& accountId, const QString& entryId,
-				int year, int month, const QList<int>& days);
 	};
 }
 }
