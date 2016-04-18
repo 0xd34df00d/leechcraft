@@ -46,10 +46,6 @@ namespace ChatHistory
 		using WorkerThread::WorkerThread;
 
 		Storage* GetStorage ();
-	private:
-		void Initialize () override;
-
-		void ConnectSignals ();
 	};
 }
 }

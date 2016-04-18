@@ -41,27 +41,6 @@ namespace ChatHistory
 	{
 		return Worker_.get ();
 	}
-
-	void StorageThread::Initialize ()
-	{
-		WorkerThread::Initialize ();
-
-		ConnectSignals ();
-	}
-
-	void StorageThread::ConnectSignals ()
-	{
-		connect (Worker_.get (),
-				SIGNAL (gotSearchPosition (QString, QString, int)),
-				Core::Instance ().get (),
-				SIGNAL (gotSearchPosition (QString, QString, int)),
-				Qt::QueuedConnection);
-		connect (Worker_.get (),
-				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
-				Core::Instance ().get (),
-				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
-				Qt::QueuedConnection);
-	}
 }
 }
 }
