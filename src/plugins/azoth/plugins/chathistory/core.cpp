@@ -249,11 +249,7 @@ namespace ChatHistory
 
 	void Core::ClearHistory (const QString& accountId, const QString& entryId)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"clearHistory",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountId),
-				Q_ARG (QString, entryId));
+		StorageThread_->ScheduleImpl (&Storage::ClearHistory, accountId, entryId);
 	}
 
 	void Core::RegenUsersCache ()

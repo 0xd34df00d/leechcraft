@@ -988,7 +988,7 @@ namespace ChatHistory
 		return DaysResult_t::Right (result);
 	}
 
-	void Storage::clearHistory (const QString& accountId, const QString& entryId)
+	void Storage::ClearHistory (const QString& accountId, const QString& entryId)
 	{
 		if (!Accounts_.contains (accountId) ||
 				!Users_.contains (entryId))
