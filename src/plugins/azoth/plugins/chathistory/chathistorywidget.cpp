@@ -485,12 +485,12 @@ namespace ChatHistory
 			month != Ui_.Calendar_->monthShown ())
 			return;
 
-		Ui_.Calendar_->setDateTextFormat (QDate (), QTextCharFormat ());
+		Ui_.Calendar_->setDateTextFormat ({}, {});
 
 		QTextCharFormat fmt;
 		fmt.setFontWeight (QFont::Bold);
-		Q_FOREACH (int day, days)
-			Ui_.Calendar_->setDateTextFormat (QDate (year, month, day), fmt);
+		for (int day : days)
+			Ui_.Calendar_->setDateTextFormat ({ year, month, day }, fmt);
 	}
 
 	void ChatHistoryWidget::on_AccountBox__currentIndexChanged (int idx)
