@@ -103,7 +103,7 @@ namespace ChatHistory
 				const QString& text, int shift, bool cs);
 		QFuture<SearchResult_t> Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
 
-		void GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
+		QFuture<DaysResult_t> GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void ClearHistory (const QString& accountId, const QString& entryId);
 
 		void RegenUsersCache ();

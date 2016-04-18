@@ -103,6 +103,8 @@ namespace ChatHistory
 				const QString& text, int shift, bool cs);
 		SearchResult_t SearchDate (const QString& accountId,
 				const QString& entryId, const QDateTime& dt);
+
+		DaysResult_t GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 	private:
 		void CheckDB ();
 		void InitializeTables ();
@@ -127,11 +129,7 @@ namespace ChatHistory
 	public slots:
 		void regenUsersCache ();
 
-		void getDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
 		void clearHistory (const QString& accountId, const QString& entryId);
-	signals:
-		void gotDaysForSheet (const QString& accountId, const QString& entryId,
-				int year, int month, const QList<int>& days);
 	};
 }
 }

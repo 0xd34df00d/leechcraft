@@ -64,6 +64,8 @@ namespace ChatHistory
 	using ChatLogsResult_t = Util::Either<QString, LogList_t>;
 
 	using SearchResult_t = Util::Either<QString, boost::optional<int>>;
+
+	using DaysResult_t = Util::Either<QString, QList<int>>;
 }
 }
 }

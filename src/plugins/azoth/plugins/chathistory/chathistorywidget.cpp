@@ -110,10 +110,6 @@ namespace ChatHistory
 				this,
 				SLOT (handleContactSelected (const QModelIndex&)));
 
-		connect (Core::Instance ().get (),
-				SIGNAL (gotDaysForSheet (QString, QString, int, int, QList<int>)),
-				this,
-				SLOT (handleGotDaysForSheet (QString, QString, int, int, QList<int>)));
 
 		Toolbar_->addAction (tr ("Previous"),
 				this,
@@ -476,8 +472,8 @@ namespace ChatHistory
 		RequestLogs ();
 	}
 
-	void ChatHistoryWidget::handleGotDaysForSheet (const QString& accountId,
-			const QString& entryId, int year, int month, const QList<int>& days)
+	void ChatHistoryWidget::HandleGotDaysForSheet (const QString& accountId,
+			const QString& entryId, int year, int month, const DaysResult_t& days)
 	{
 		if (accountId != CurrentAccount_ ||
 			entryId != CurrentEntry_ ||
@@ -485,11 +481,14 @@ namespace ChatHistory
 			month != Ui_.Calendar_->monthShown ())
 			return;
 
+		if (days.IsLeft ())
+			return;
+
 		Ui_.Calendar_->setDateTextFormat ({}, {});
 
 		QTextCharFormat fmt;
 		fmt.setFontWeight (QFont::Bold);
-		for (int day : days)
+		for (int day : days.GetRight ())
 			Ui_.Calendar_->setDateTextFormat ({ year, month, day }, fmt);
 	}
 
@@ -658,8 +657,13 @@ namespace ChatHistory
 		if (CurrentEntry_.isEmpty ())
 			return;
 
-		Core::Instance ()->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
-				Ui_.Calendar_->yearShown (), Ui_.Calendar_->monthShown ());
+		const auto year = Ui_.Calendar_->yearShown ();
+		const auto month = Ui_.Calendar_->monthShown ();
+		const auto& future = Core::Instance ()->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
+				year, month);
+		Util::Sequence (this, future) >>
+				std::bind (&ChatHistoryWidget::HandleGotDaysForSheet,
+						this, CurrentAccount_, CurrentEntry_, year, month, _1);
 	}
 
 	void ChatHistoryWidget::RequestLogs ()

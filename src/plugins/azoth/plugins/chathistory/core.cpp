@@ -241,15 +241,10 @@ namespace ChatHistory
 				accountId, entryId, dt);
 	}
 
-	void Core::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
+	QFuture<DaysResult_t> Core::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"getDaysForSheet",
-				Qt::QueuedConnection,
-				Q_ARG (QString, accountId),
-				Q_ARG (QString, entryId),
-				Q_ARG (int, year),
-				Q_ARG (int, month));
+		return StorageThread_->ScheduleImpl (&Storage::GetDaysForSheet,
+				accountId, entryId, year, month);
 	}
 
 	void Core::ClearHistory (const QString& accountId, const QString& entryId)

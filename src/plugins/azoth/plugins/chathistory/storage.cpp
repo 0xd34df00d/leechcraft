@@ -939,7 +939,7 @@ namespace ChatHistory
 		return SearchDateImpl (accId, entryId, dt);
 	}
 
-	void Storage::getDaysForSheet (const QString& account, const QString& entry, int year, int month)
+	DaysResult_t Storage::GetDaysForSheet (const QString& account, const QString& entry, int year, int month)
 	{
 		if (!Accounts_.contains (account))
 		{
@@ -948,7 +948,7 @@ namespace ChatHistory
 					<< account
 					<< "; raw contents"
 					<< Accounts_;
-			return;
+			return DaysResult_t::Left ("Unknown account.");
 		}
 		if (!Users_.contains (entry))
 		{
@@ -957,7 +957,7 @@ namespace ChatHistory
 					<< entry
 					<< "; raw contents"
 					<< Users_;
-			return;
+			return DaysResult_t::Left ("Unknown user.");
 		}
 
 		const QDate lowerDate (year, month, 1);
@@ -972,7 +972,7 @@ namespace ChatHistory
 		if (!GetMonthDates_.exec ())
 		{
 			Util::DBLock::DumpError (GetMonthDates_);
-			return;
+			return DaysResult_t::Left ("Unable to execute SQL query.");
 		}
 
 		QList<int> result;
@@ -984,7 +984,8 @@ namespace ChatHistory
 				result << day;
 		}
 		std::sort (result.begin (), result.end ());
-		emit gotDaysForSheet (account, entry, year, month, result);
+
+		return DaysResult_t::Right (result);
 	}
 
 	void Storage::clearHistory (const QString& accountId, const QString& entryId)

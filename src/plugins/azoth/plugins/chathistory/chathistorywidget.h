@@ -101,9 +101,8 @@ namespace ChatHistory
 		void HandleGotUsersForAccount (const QString&, const UsersForAccountResult_t&);
 		void HandleGotChatLogs (const QString&, const QString&, const ChatLogsResult_t&);
 		void HandleGotSearchPosition (const QString&, const QString&, const SearchResult_t&);
+		void HandleGotDaysForSheet (const QString&, const QString&, int, int, const DaysResult_t&);
 	private slots:
-		void handleGotDaysForSheet (const QString&, const QString&, int, int, const QList<int>&);
-
 		void on_AccountBox__currentIndexChanged (int);
 		void handleContactSelected (const QModelIndex&);
 
