@@ -254,9 +254,7 @@ namespace ChatHistory
 
 	void Core::RegenUsersCache ()
 	{
-		QMetaObject::invokeMethod (StorageThread_->GetStorage (),
-				"regenUsersCache",
-				Qt::QueuedConnection);
+		StorageThread_->ScheduleImpl (&Storage::RegenUsersCache);
 	}
 
 	void Core::LoadDisabled ()

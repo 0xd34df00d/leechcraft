@@ -301,7 +301,7 @@ namespace ChatHistory
 		}
 
 		if (!hadAcc2User)
-			regenUsersCache ();
+			RegenUsersCache ();
 
 		lock.Good ();
 	}
@@ -659,7 +659,7 @@ namespace ChatHistory
 		return SearchResult_t::Right (index);
 	}
 
-	void Storage::regenUsersCache ()
+	void Storage::RegenUsersCache ()
 	{
 		QSqlQuery query (*DB_);
 		if (!query.exec ("DELETE FROM azoth_acc2users2;") ||

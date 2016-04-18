@@ -105,6 +105,8 @@ namespace ChatHistory
 				const QString& entryId, const QDateTime& dt);
 
 		DaysResult_t GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
+
+		void RegenUsersCache ();
 		void ClearHistory (const QString& accountId, const QString& entryId);
 	private:
 		void CheckDB ();
@@ -127,8 +129,6 @@ namespace ChatHistory
 
 		SearchResult_t SearchRowIdImpl (qint32, qint32, qint64);
 		SearchResult_t SearchDateImpl (qint32, qint32, const QDateTime&);
-	public slots:
-		void regenUsersCache ();
 	};
 }
 }
