@@ -44,8 +44,6 @@ namespace ChatHistory
 	{
 	public:
 		using WorkerThread::WorkerThread;
-
-		Storage* GetStorage ();
 	};
 }
 }

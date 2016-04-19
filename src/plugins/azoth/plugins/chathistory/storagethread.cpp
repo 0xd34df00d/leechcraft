@@ -37,10 +37,6 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Storage* StorageThread::GetStorage ()
-	{
-		return Worker_.get ();
-	}
 }
 }
 }
