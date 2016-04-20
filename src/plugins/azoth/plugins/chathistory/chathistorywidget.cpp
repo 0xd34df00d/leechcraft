@@ -110,20 +110,16 @@ namespace ChatHistory
 				this,
 				SLOT (handleContactSelected (const QModelIndex&)));
 
-
 		Toolbar_->addAction (tr ("Previous"),
 				this,
-				SLOT (previousHistory ()))->
-					setProperty ("ActionIcon", "go-previous");
+				SLOT (previousHistory ()))->setProperty ("ActionIcon", "go-previous");
 		Toolbar_->addAction (tr ("Next"),
 				this,
-				SLOT (nextHistory ()))->
-					setProperty ("ActionIcon", "go-next");
+				SLOT (nextHistory ()))->setProperty ("ActionIcon", "go-next");
 		Toolbar_->addSeparator ();
 		Toolbar_->addAction (tr ("Clear"),
 				this,
-				SLOT (clearHistory ()))->
-					setProperty ("ActionIcon", "list-remove");
+				SLOT (clearHistory ()))->setProperty ("ActionIcon", "list-remove");
 
 		Util::Sequence (this, Core::Instance ()->GetOurAccounts ()) >>
 				[this] (const QStringList& accs) { HandleGotOurAccounts (accs); };
