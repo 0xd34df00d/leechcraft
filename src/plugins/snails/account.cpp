@@ -624,7 +624,7 @@ namespace Snails
 				[=] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[=] (boost::none_t)
+							[=] (Util::Void)
 							{
 								HandleMessagesRemoved (ids, folder);
 								UpdateFolderCount (folder);

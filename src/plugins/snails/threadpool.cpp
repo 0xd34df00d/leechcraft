@@ -52,7 +52,7 @@ namespace Snails
 				RunScheduled (thread.get ());
 
 				Util::Visit (result.AsVariant (),
-						[] (boost::none_t) {},
+						[] (Util::Void) {},
 						[this] (const auto& err)
 						{
 							Util::Visit (err,
@@ -98,7 +98,7 @@ namespace Snails
 				CheckingNext_ = false;
 
 				Util::Visit (result.AsVariant (),
-						[this, thread] (boost::none_t)
+						[this, thread] (Util::Void)
 						{
 							ExistingThreads_ << thread;
 							RunScheduled (thread.get ());

@@ -168,10 +168,10 @@ namespace Snails
 		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
 		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
 
-		using SendMessageResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
+		using SendMessageResult_t = Util::Either<InvokeError_t<>, Util::Void>;
 		QFuture<SendMessageResult_t> SendMessage (const Message_ptr&);
 
-		using FetchAttachmentResult_t = Util::Either<InvokeError_t<>, boost::none_t>;
+		using FetchAttachmentResult_t = Util::Either<InvokeError_t<>, Util::Void>;
 		QFuture<FetchAttachmentResult_t> FetchAttachment (const Message_ptr&,
 				const QString&, const QString&);
 

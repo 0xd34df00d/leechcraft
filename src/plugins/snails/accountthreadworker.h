@@ -144,7 +144,7 @@ namespace Snails
 
 		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& tos);
 
-		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, boost::none_t>;
+		using DeleteResult_t = Util::Either<boost::variant<FolderNotFound>, Util::Void>;
 		DeleteResult_t DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
 		void SendMessage (const Message_ptr&);

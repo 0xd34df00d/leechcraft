@@ -80,7 +80,7 @@ namespace Snails
 				[=] (const Account::FetchAttachmentResult_t& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[=] (const boost::none_t&)
+							[=] (Util::Void)
 							{
 								Paths_ << filePath;
 								RotateQueue ();
