@@ -89,7 +89,7 @@ namespace ChatHistory
 			bool IsEmpty () const;
 		};
 	public:
-		Storage (QObject* = 0);
+		Storage (QObject* = nullptr);
 
 		QStringList GetOurAccounts () const;
 		UsersForAccountResult_t GetUsersForAccount (const QString&);
