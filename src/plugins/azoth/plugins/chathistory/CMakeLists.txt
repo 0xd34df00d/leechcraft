@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_chathistory)
 include (InitLCPlugin OPTIONAL)
 
+find_package (Boost REQUIRED COMPONENTS filesystem)
+
 include_directories (${AZOTH_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -37,6 +39,7 @@ add_library (leechcraft_azoth_chathistory SHARED
 	)
 target_link_libraries (leechcraft_azoth_chathistory
 	${LEECHCRAFT_LIBRARIES}
+	${Boost_FILESYSTEM_LIBRARY}
 	)
 install (TARGETS leechcraft_azoth_chathistory DESTINATION ${LC_PLUGINS_DEST})
 install (FILES azothchathistorysettings.xml DESTINATION ${LC_SETTINGS_DEST})
