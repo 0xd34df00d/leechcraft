@@ -102,7 +102,8 @@ namespace Util
 		template<typename F, typename... Args>
 		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (const F& f, Args&&... args)
 		{
-			return WorkerThreadBase::ScheduleImpl (f, Worker_.get (), std::forward<Args> (args)...);
+			const auto fWrapped = [f, this] (auto... args) { return Invoke (f, Worker_.get (), args...); };
+			return WorkerThreadBase::ScheduleImpl (fWrapped, std::forward<Args> (args)...);
 		}
 	protected:
 		void Initialize () override
