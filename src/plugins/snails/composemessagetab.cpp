@@ -610,7 +610,7 @@ namespace Snails
 				[safeThis = QPointer<ComposeMessageTab> { this }] (const auto& result)
 				{
 					Util::Visit (result.AsVariant (),
-							[safeThis] (const boost::none_t&) { if (safeThis) safeThis->Remove (); },
+							[safeThis] (Util::Void) { if (safeThis) safeThis->Remove (); },
 							[safeThis] (const auto& err)
 							{
 								Util::Visit (err,

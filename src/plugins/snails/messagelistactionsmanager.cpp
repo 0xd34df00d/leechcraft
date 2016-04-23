@@ -315,7 +315,7 @@ namespace Snails
 						[url] (const auto& result)
 						{
 							const auto& entity = Util::Visit (result.AsVariant (),
-									[url] (const boost::none_t&)
+									[url] (Util::Void)
 									{
 										return Util::MakeNotification ("Snails",
 												QObject::tr ("Successfully sent unsubscribe request to %1.")

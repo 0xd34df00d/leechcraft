@@ -30,9 +30,9 @@
 #pragma once
 
 #include <boost/variant.hpp>
-#include <boost/none_t.hpp>
 #include <vmime/exception.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
+#include <util/sll/void.h>
 
 namespace LeechCraft
 {

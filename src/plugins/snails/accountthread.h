@@ -203,7 +203,7 @@ namespace Snails
 		template<>
 		struct WrapFunctionTypeImpl<void>
 		{
-			using Result_t = Util::Either<InvokeError_t<>, boost::none_t>;
+			using Result_t = Util::Either<InvokeError_t<>, Util::Void>;
 
 			template<typename F>
 			static auto WrapFunction (AccountThreadWorker *w, const F& f)
