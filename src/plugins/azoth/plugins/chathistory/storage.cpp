@@ -83,7 +83,8 @@ namespace ChatHistory
 		pragma.exec ("PRAGMA foreign_keys = ON;");
 		pragma.exec ("PRAGMA synchronous = OFF;");
 
-		CheckDB ();
+		if (const auto err = CheckDB ())
+			return InitializationResult_t::Left (*err);
 
 		InitializeTables ();
 
@@ -206,16 +207,18 @@ namespace ChatHistory
 		return InitializationResult_t::Right ({});
 	}
 
-	void Storage::CheckDB ()
+	boost::optional<Storage::InitializationError_t> Storage::CheckDB ()
 	{
 		QSqlQuery pragma { *DB_ };
 		if (pragma.exec ("PRAGMA integrity_check;") &&
 				pragma.next () &&
 				pragma.value (0) == "ok")
-			return;
+			return {};
 
 		qWarning () << Q_FUNC_INFO
 				<< "integrity check failed";
+
+		return InitializationError_t { Corruption {} };
 	}
 
 	void Storage::InitializeTables ()

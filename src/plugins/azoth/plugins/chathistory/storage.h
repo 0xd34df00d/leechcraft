@@ -122,7 +122,7 @@ namespace ChatHistory
 		void RegenUsersCache ();
 		void ClearHistory (const QString& accountId, const QString& entryId);
 	private:
-		void CheckDB ();
+		boost::optional<InitializationError_t> CheckDB ();
 		void InitializeTables ();
 		void UpdateTables ();
 
