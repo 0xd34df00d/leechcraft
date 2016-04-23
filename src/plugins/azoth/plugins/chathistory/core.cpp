@@ -58,11 +58,12 @@ namespace ChatHistory
 	{
 		StorageThread_->start (QThread::LowestPriority);
 		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
-				[] (const Storage::InitializationResult_t& res)
+				[this] (const Storage::InitializationResult_t& res)
 				{
 					if (res.IsRight ())
 						return;
 
+					StorageThread_->SetIgnoreMode ();
 				};
 
 		TabClass_.TabClass_ = "Chathistory";
