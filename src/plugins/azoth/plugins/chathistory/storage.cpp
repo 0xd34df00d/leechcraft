@@ -73,6 +73,11 @@ namespace ChatHistory
 		return Util::CreateIfNotExists ("azoth").filePath ("history.db");
 	}
 
+	QSqlDatabase Storage::GetDB () const
+	{
+		return *DB_;
+	}
+
 	Storage::InitializationResult_t Storage::Initialize ()
 	{
 		DB_ = std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("Azoth.ChatHistory.HistoryConnection")));

@@ -104,6 +104,8 @@ namespace ChatHistory
 
 		static QString GetDatabasePath ();
 
+		QSqlDatabase GetDB () const;
+
 		InitializationResult_t Initialize ();
 
 		QStringList GetOurAccounts () const;
