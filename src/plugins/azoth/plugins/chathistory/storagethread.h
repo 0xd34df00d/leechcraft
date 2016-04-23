@@ -42,12 +42,27 @@ namespace ChatHistory
 
 	class StorageThread : public Util::WorkerThread<Storage>
 	{
+		bool IsIgnoreMode_ = false;
 	public:
 		using WorkerThread::WorkerThread;
+
+		void SetIgnoreMode ();
 
 		template<typename... Args>
 		auto Schedule (Args&&... args) -> decltype (ScheduleImpl (std::forward<Args> (args)...))
 		{
+			if (IsIgnoreMode_)
+			{
+				using FutureType_t = decltype (ScheduleImpl (std::forward<Args> (args)...));
+				using Type_t = Util::UnwrapFutureType_t<FutureType_t>;
+
+				QFutureInterface<Type_t> iface;
+				iface.reportStarted ();
+				iface.reportFinished ();
+
+				return iface.future ();
+			}
+
 			return ScheduleImpl (std::forward<Args> (args)...);
 		}
 	};
