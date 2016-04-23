@@ -46,6 +46,8 @@ namespace Util
 
 		Initialize ();
 
+		RotateFuncs ();
+
 		QThread::run ();
 
 		Cleanup ();
