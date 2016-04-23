@@ -36,6 +36,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
@@ -74,7 +75,7 @@ namespace ChatHistory
 
 	Storage::InitializationResult_t Storage::Initialize ()
 	{
-		DB_ = std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", "History connection"));
+		DB_ = std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("Azoth.ChatHistory.HistoryConnection")));
 		DB_->setDatabaseName (GetDatabasePath ());
 		if (!DB_->open ())
 		{
