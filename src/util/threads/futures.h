@@ -99,10 +99,13 @@ namespace Util
 		struct UnwrapFutureType : UnwrapFutureTypeBase<Decay_t<T>>
 		{
 		};
+	}
 
-		template<typename T>
-		using UnwrapFutureType_t = typename UnwrapFutureType<T>::type;
+	template<typename T>
+	using UnwrapFutureType_t = typename detail::UnwrapFutureType<T>::type;
 
+	namespace detail
+	{
 		template<typename T>
 		struct IsFuture
 		{
@@ -197,7 +200,7 @@ namespace Util
 
 		// Don't replace result_of with decltype, this triggers a gcc bug leading to segfault:
 		// http://leechcraft.org:8080/job/leechcraft/=debian_unstable/1998/console
-		using RetType_t = detail::UnwrapFutureType_t<typename std::result_of<Executor (Args...)>::type>;
+		using RetType_t = UnwrapFutureType_t<typename std::result_of<Executor (Args...)>::type>;
 
 		static_assert (detail::IsCompatible<ResultHandler, RetType_t> (),
 				"Executor's watcher type and result handler argument type are not compatible.");
