@@ -76,7 +76,7 @@ namespace ChatHistory
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open the database";
 			Util::DBLock::DumpError (DB_->lastError ());
-			throw std::runtime_error ("unable to open Azoth history database");
+			return InitializationResult_t::Left (GeneralError { tr ("Unable to open Azoth history database.") });
 		}
 
 		QSqlQuery pragma (*DB_);
