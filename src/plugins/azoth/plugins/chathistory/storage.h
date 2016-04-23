@@ -102,6 +102,8 @@ namespace ChatHistory
 		using InitializationError_t = boost::variant<Corruption, GeneralError>;
 		using InitializationResult_t = Util::Either<InitializationError_t, Util::Void>;
 
+		static QString GetDatabasePath ();
+
 		InitializationResult_t Initialize ();
 
 		QStringList GetOurAccounts () const;

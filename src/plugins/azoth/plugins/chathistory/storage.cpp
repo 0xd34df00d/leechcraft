@@ -67,10 +67,15 @@ namespace ChatHistory
 	{
 	}
 
+	QString Storage::GetDatabasePath ()
+	{
+		return Util::CreateIfNotExists ("azoth").filePath ("history.db");
+	}
+
 	Storage::InitializationResult_t Storage::Initialize ()
 	{
 		DB_ = std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", "History connection"));
-		DB_->setDatabaseName (Util::CreateIfNotExists ("azoth").filePath ("history.db"));
+		DB_->setDatabaseName (GetDatabasePath ());
 		if (!DB_->open ())
 		{
 			qWarning () << Q_FUNC_INFO
