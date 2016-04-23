@@ -34,6 +34,7 @@
 #include <QHash>
 #include <QVariant>
 #include <QDateTime>
+#include <util/sll/void.h>
 #include "storagestructures.h"
 
 class QSqlDatabase;
@@ -90,6 +91,18 @@ namespace ChatHistory
 		};
 	public:
 		Storage (QObject* = nullptr);
+
+		struct GeneralError
+		{
+			QString ErrorText_;
+		};
+
+		struct Corruption {};
+
+		using InitializationError_t = boost::variant<Corruption, GeneralError>;
+		using InitializationResult_t = Util::Either<InitializationError_t, Util::Void>;
+
+		InitializationResult_t Initialize ();
 
 		QStringList GetOurAccounts () const;
 		UsersForAccountResult_t GetUsersForAccount (const QString&);

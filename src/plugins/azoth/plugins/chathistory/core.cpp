@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <util/threads/futures.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
@@ -56,6 +57,13 @@ namespace ChatHistory
 	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
+		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::Initialize)) >>
+				[] (const Storage::InitializationResult_t& res)
+				{
+					if (res.IsRight ())
+						return;
+
+				};
 
 		TabClass_.TabClass_ = "Chathistory";
 		TabClass_.VisibleName_ = tr ("Chat history");

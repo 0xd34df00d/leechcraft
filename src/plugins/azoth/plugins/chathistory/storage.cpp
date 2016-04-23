@@ -64,8 +64,12 @@ namespace ChatHistory
 
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
-	, DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", "History connection")))
 	{
+	}
+
+	Storage::InitializationResult_t Storage::Initialize ()
+	{
+		DB_ = std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", "History connection"));
 		DB_->setDatabaseName (Util::CreateIfNotExists ("azoth").filePath ("history.db"));
 		if (!DB_->open ())
 		{
@@ -198,6 +202,8 @@ namespace ChatHistory
 		}
 
 		PrepareEntryCache ();
+
+		return InitializationResult_t::Right ({});
 	}
 
 	void Storage::CheckDB ()
