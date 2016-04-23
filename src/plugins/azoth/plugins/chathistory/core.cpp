@@ -57,7 +57,7 @@ namespace ChatHistory
 	, PluginProxy_ (0)
 	{
 		StorageThread_->start (QThread::LowestPriority);
-		Util::Sequence (this, StorageThread_->ScheduleImpl (&Storage::Initialize)) >>
+		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
 				[] (const Storage::InitializationResult_t& res)
 				{
 					if (res.IsRight ())
@@ -204,7 +204,7 @@ namespace ChatHistory
 
 		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
 
-		StorageThread_->ScheduleImpl (&Storage::AddMessage,
+		StorageThread_->Schedule (&Storage::AddMessage,
 				entry->GetParentAccount ()->GetAccountID (),
 				entry->GetEntryID (),
 				GetVisibleName (entry),
@@ -222,47 +222,47 @@ namespace ChatHistory
 
 	QFuture<QStringList> Core::GetOurAccounts ()
 	{
-		return StorageThread_->ScheduleImpl (&Storage::GetOurAccounts);
+		return StorageThread_->Schedule (&Storage::GetOurAccounts);
 	}
 
 	QFuture<UsersForAccountResult_t> Core::GetUsersForAccount (const QString& accountID)
 	{
-		return StorageThread_->ScheduleImpl (&Storage::GetUsersForAccount, accountID);
+		return StorageThread_->Schedule (&Storage::GetUsersForAccount, accountID);
 	}
 
 	QFuture<ChatLogsResult_t> Core::GetChatLogs (const QString& accountId,
 			const QString& entryId, int backpages, int amount)
 	{
-		return StorageThread_->ScheduleImpl (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
+		return StorageThread_->Schedule (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
 	}
 
 	QFuture<SearchResult_t> Core::Search (const QString& accountId, const QString& entryId,
 			const QString& text, int shift, bool cs)
 	{
-		return StorageThread_->ScheduleImpl (&Storage::Search,
+		return StorageThread_->Schedule (&Storage::Search,
 				accountId, entryId, text, shift, cs);
 	}
 
 	QFuture<SearchResult_t> Core::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)
 	{
-		return StorageThread_->ScheduleImpl (&Storage::SearchDate,
+		return StorageThread_->Schedule (&Storage::SearchDate,
 				accountId, entryId, dt);
 	}
 
 	QFuture<DaysResult_t> Core::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
 	{
-		return StorageThread_->ScheduleImpl (&Storage::GetDaysForSheet,
+		return StorageThread_->Schedule (&Storage::GetDaysForSheet,
 				accountId, entryId, year, month);
 	}
 
 	void Core::ClearHistory (const QString& accountId, const QString& entryId)
 	{
-		StorageThread_->ScheduleImpl (&Storage::ClearHistory, accountId, entryId);
+		StorageThread_->Schedule (&Storage::ClearHistory, accountId, entryId);
 	}
 
 	void Core::RegenUsersCache ()
 	{
-		StorageThread_->ScheduleImpl (&Storage::RegenUsersCache);
+		StorageThread_->Schedule (&Storage::RegenUsersCache);
 	}
 
 	void Core::LoadDisabled ()

@@ -44,6 +44,12 @@ namespace ChatHistory
 	{
 	public:
 		using WorkerThread::WorkerThread;
+
+		template<typename... Args>
+		auto Schedule (Args&&... args) -> decltype (ScheduleImpl (std::forward<Args> (args)...))
+		{
+			return ScheduleImpl (std::forward<Args> (args)...);
+		}
 	};
 }
 }
