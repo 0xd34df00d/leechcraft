@@ -702,6 +702,8 @@ namespace ChatHistory
 			case IMessage::Direction::Out:
 				return "OUT";
 			}
+
+			assert (0);
 		}
 
 		QVariant ToVariant (IMessage::EscapePolicy escPolicy)
@@ -713,6 +715,8 @@ namespace ChatHistory
 			case IMessage::EscapePolicy::NoEscape:
 				return "NEs";
 			}
+
+			assert (0);
 		}
 
 		QVariant ToVariant (IMessage::Type type)
@@ -730,6 +734,8 @@ namespace ChatHistory
 			case IMessage::Type::ServiceMessage:
 				return "SERVICE";
 			}
+
+			assert (0);
 		}
 	}
 
