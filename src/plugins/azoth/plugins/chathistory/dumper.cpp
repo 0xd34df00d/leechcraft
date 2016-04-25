@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "dumper.h"
+#include <QtDebug>
+#include <util/sll/slotclosure.h>
 
 namespace LeechCraft
 {
@@ -42,13 +44,42 @@ namespace ChatHistory
 	{
 		Dumper_->setStandardOutputProcess (Restorer_);
 
-		connect (Dumper_,
-				SIGNAL (error (QProcess::ProcessError)),
-				this,
-				SLOT (handleDumperError (QProcess::ProcessError)));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleProcessError (Dumper_); },
+			Dumper_,
+			SIGNAL (error (QProcess::ProcessError)),
+			Dumper_
+		};
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleProcessError (Restorer_); },
+			Restorer_,
+			SIGNAL (error (QProcess::ProcessError)),
+			Restorer_
+		};
 
 		Dumper_->start ("sqlite3", { from, ".dump" });
 		Restorer_->start ("sqlite3", { to });
+	}
+
+	void Dumper::HandleProcessError (const QProcess *process)
+	{
+		qWarning () << Q_FUNC_INFO
+				<< process->error ()
+				<< process->errorString ();
+
+		if (HadError_)
+			return;
+
+		HadError_ = true;
+
+		if (process->error () == QProcess::FailedToStart)
+			emit error (tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?")
+					.arg (process->errorString ()));
+		else
+			emit error (tr ("Unable to dump the database: %1.")
+					.arg (process->errorString ()));
 	}
 }
 }
