@@ -37,9 +37,9 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	void StorageThread::SetIgnoreMode ()
+	void StorageThread::SetIgnoreMode (bool ignoreMode)
 	{
-		IsIgnoreMode_ = true;
+		IsIgnoreMode_ = ignoreMode;
 	}
 }
 }

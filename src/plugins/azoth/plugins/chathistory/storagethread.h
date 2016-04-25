@@ -46,7 +46,7 @@ namespace ChatHistory
 	public:
 		using WorkerThread::WorkerThread;
 
-		void SetIgnoreMode ();
+		void SetIgnoreMode (bool);
 
 		template<typename... Args>
 		auto Schedule (Args&&... args) -> decltype (ScheduleImpl (std::forward<Args> (args)...))

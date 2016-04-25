@@ -379,7 +379,7 @@ namespace ChatHistory
 					DumpReinit ();
 				});
 
-		StorageThread_->SetIgnoreMode ();
+		StorageThread_->SetIgnoreMode (true);
 	}
 
 	void Core::handleDumperError (const QString& error)
