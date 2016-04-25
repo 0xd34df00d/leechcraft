@@ -373,14 +373,19 @@ namespace ChatHistory
 			return;
 		}
 
-		const auto& text = newSize > oldSize * 0.9 ?
-				tr ("Finished restoring history database contents. Old file size: %1, new file size: %2. Yay, seems like most of the contents are intact!") :
-				tr ("Finished restoring history database contents. Old file size: %1, new file size: %2. Sadly, seems like quite some history is lost.");
+		Util::Sequence (this, StorageThread_->Schedule (&Storage::GetAllHistoryCount)) >>
+				[=] (const boost::optional<int>& count)
+				{
+					const auto& text = newSize > oldSize * 0.9 ?
+							tr ("Finished restoring history database contents. Old file size: %1, new file size: %2, %3 records recovered. Yay, seems like most of the contents are intact!") :
+							tr ("Finished restoring history database contents. Old file size: %1, new file size: %2, %3 records recovered. Sadly, seems like quite some history is lost.");
 
-		QMessageBox::information (nullptr,
-				"Azoth ChatHistory",
-				text.arg (Util::MakePrettySize (oldSize))
-					.arg (Util::MakePrettySize (newSize)));
+					QMessageBox::information (nullptr,
+							"Azoth ChatHistory",
+							text.arg (Util::MakePrettySize (oldSize))
+								.arg (Util::MakePrettySize (newSize))
+								.arg (count.get_value_or (0)));
+				};
 	}
 
 	void Core::HandleStorageError (const Storage::InitializationError_t& error)
