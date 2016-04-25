@@ -304,6 +304,29 @@ namespace ChatHistory
 				SIGNAL (error (QString)),
 				this,
 				SLOT (handleDumperError (QString)));
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[=] { HandleDumperFinished (path, newPath); },
+			dumper,
+			SIGNAL (finished ()),
+			this
+		};
+	}
+
+	void Core::HandleDumperFinished (const QString& from, const QString& to)
+	{
+		const auto oldSize = QFileInfo { from }.size ();
+		const auto newSize = QFileInfo { to }.size ();
+
+		const auto& text = newSize > oldSize * 0.9 ?
+				tr ("Finished restoring history database contents. Old file size: %1, new file size: %2. Yay, seems like most of the contents are intact!") :
+				tr ("Finished restoring history database contents. Old file size: %1, new file size: %2. Sadly, seems like quite some history is lost.");
+
+		QMessageBox::information (nullptr,
+				"Azoth ChatHistory",
+				text.arg (Util::MakePrettySize (oldSize))
+					.arg (Util::MakePrettySize (newSize)));
 	}
 
 	void Core::HandleStorageError (const Storage::InitializationError_t& error)
