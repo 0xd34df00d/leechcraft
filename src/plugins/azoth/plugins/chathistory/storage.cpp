@@ -683,6 +683,25 @@ namespace ChatHistory
 		return SearchResult_t::Right (index);
 	}
 
+	boost::optional<int> Storage::GetAllHistoryCount ()
+	{
+		QSqlQuery query { *DB_ };
+		if (!query.exec ("SELECT COUNT(1) FROM azoth_history"))
+		{
+			Util::DBLock::DumpError (query);
+			return {};
+		}
+
+		if (!query.next ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to navigate to next record";
+			return {};
+		}
+
+		return query.value (0).toInt ();
+	}
+
 	void Storage::RegenUsersCache ()
 	{
 		QSqlQuery query (*DB_);
