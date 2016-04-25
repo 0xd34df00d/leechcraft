@@ -91,12 +91,12 @@ namespace ChatHistory
 			return InitializationResult_t::Left (GeneralError { tr ("Unable to open Azoth history database.") });
 		}
 
-		QSqlQuery pragma (*DB_);
-		pragma.exec ("PRAGMA foreign_keys = ON;");
-		pragma.exec ("PRAGMA synchronous = OFF;");
-
 		if (const auto err = CheckDB ())
 			return InitializationResult_t::Left (*err);
+
+		QSqlQuery pragma (*DB_);
+		pragma.exec ("PRAGMA foreign_keys = ON;");
+		pragma.exec ("PRAGMA synchronous = OFF");
 
 		InitializeTables ();
 
