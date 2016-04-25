@@ -65,7 +65,10 @@ namespace ChatHistory
 
 	Storage::Storage (QObject *parent)
 	: QObject (parent)
+	, DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE",
+			Util::GenConnectionName ("Azoth.ChatHistory.HistoryConnection"))))
 	{
+		DB_->setDatabaseName (GetDatabasePath ());
 	}
 
 	QString Storage::GetDatabasePath ()
@@ -80,8 +83,6 @@ namespace ChatHistory
 
 	Storage::InitializationResult_t Storage::Initialize ()
 	{
-		DB_ = std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE", Util::GenConnectionName ("Azoth.ChatHistory.HistoryConnection")));
-		DB_->setDatabaseName (GetDatabasePath ());
 		if (!DB_->open ())
 		{
 			qWarning () << Q_FUNC_INFO
