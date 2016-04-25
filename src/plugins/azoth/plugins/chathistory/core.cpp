@@ -300,6 +300,10 @@ namespace ChatHistory
 		const auto& newPath = path + ".new";
 
 		const auto dumper = new Dumper { path, newPath };
+		connect (dumper,
+				SIGNAL (error (QString)),
+				this,
+				SLOT (handleDumperError (QString)));
 	}
 
 	void Core::HandleStorageError (const Storage::InitializationError_t& error)
@@ -324,6 +328,13 @@ namespace ChatHistory
 				});
 
 		StorageThread_->SetIgnoreMode ();
+	}
+
+	void Core::handleDumperError (const QString& error)
+	{
+		QMessageBox::critical (nullptr,
+				"Azoth ChatHistory",
+				tr ("Unable to restore the database.") + " " + error);
 	}
 }
 }
