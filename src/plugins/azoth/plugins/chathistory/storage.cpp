@@ -83,6 +83,9 @@ namespace ChatHistory
 
 	Storage::InitializationResult_t Storage::Initialize ()
 	{
+		if (DB_->isOpen ())
+			DB_->close ();
+
 		if (!DB_->open ())
 		{
 			qWarning () << Q_FUNC_INFO
