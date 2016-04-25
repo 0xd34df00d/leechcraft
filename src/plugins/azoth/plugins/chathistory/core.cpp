@@ -297,7 +297,7 @@ namespace ChatHistory
 				<< "db size:" << filesize
 				<< "free space:" << available;
 
-		if (available < filesize)
+		if (available < static_cast<qint64> (filesize))
 		{
 			if (QMessageBox::question (nullptr,
 						"Azoth ChatHistory",
