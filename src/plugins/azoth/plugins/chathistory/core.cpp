@@ -299,6 +299,18 @@ namespace ChatHistory
 
 		const auto& newPath = path + ".new";
 
+		if (QFile::exists (newPath))
+		{
+			if (QMessageBox::question (nullptr,
+						"Azoth ChatHistory",
+						tr ("%1 already exists. Please either remove the file manually to retry the restore process or cancel it.")
+								.arg ("<em>" + newPath + "</em>"),
+						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Retry)
+				DumpReinit ();
+
+			return;
+		}
+
 		const auto dumper = new Dumper { path, newPath };
 		connect (dumper,
 				SIGNAL (error (QString)),
