@@ -59,8 +59,59 @@ namespace ChatHistory
 			Restorer_
 		};
 
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleProcessFinished (Dumper_); },
+			Dumper_,
+			SIGNAL (finished (int, QProcess::ExitStatus)),
+			Dumper_
+		};
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { HandleProcessFinished (Restorer_); },
+			Restorer_,
+			SIGNAL (finished (int, QProcess::ExitStatus)),
+			Restorer_
+		};
+
 		Dumper_->start ("sqlite3", { from, ".dump" });
 		Restorer_->start ("sqlite3", { to });
+	}
+
+	void Dumper::HandleProcessFinished (QProcess *process)
+	{
+		const auto& stderr = QString::fromUtf8 (process->readAllStandardError ());
+		const auto exitCode = process->exitCode ();
+
+		qDebug () << Q_FUNC_INFO
+				<< process->exitStatus ()
+				<< exitCode
+				<< stderr;
+
+		switch (process->exitStatus ())
+		{
+		case QProcess::CrashExit:
+			if (HadError_)
+				break;
+
+			HadError_ = true;
+			emit error (tr ("Dumping process crashed: %1.")
+					.arg (stderr.isEmpty () ?
+							process->errorString () :
+							stderr));
+			break;
+		case QProcess::NormalExit:
+			if (exitCode)
+				emit error (tr ("Dumping process finished with error: %1 (%2).")
+						.arg (stderr)
+						.arg (exitCode));
+			else if (++FinishedCount_ == 2)
+			{
+				emit finished ();
+				deleteLater ();
+			}
+			break;
+		}
 	}
 
 	void Dumper::HandleProcessError (const QProcess *process)

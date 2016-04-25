@@ -45,12 +45,16 @@ namespace ChatHistory
 		QProcess * const Restorer_;
 
 		bool HadError_ = false;
+
+		int FinishedCount_ = 0;
 	public:
 		Dumper (const QString& from, const QString& to, QObject* = nullptr);
 	private slots:
+		void HandleProcessFinished (QProcess*);
 		void HandleProcessError (const QProcess*);
 	signals:
 		void error (const QString&);
+		void finished ();
 	};
 }
 }
