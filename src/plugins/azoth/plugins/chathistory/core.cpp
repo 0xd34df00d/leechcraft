@@ -29,20 +29,26 @@
 
 #include "core.h"
 #include <cmath>
+#include <boost/filesystem.hpp>
+#include <QMessageBox>
 #include <QMetaObject>
 #include <QVariant>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
+#include <QFileInfo>
 #include <util/threads/futures.h>
+#include <util/sll/visitor.h>
+#include <util/db/util.h>
+#include <util/util.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/irichtextmessage.h>
-#include "storage.h"
 #include "storagethread.h"
 #include "storagestructures.h"
+#include "dumper.h"
 
 namespace LeechCraft
 {
@@ -63,7 +69,7 @@ namespace ChatHistory
 					if (res.IsRight ())
 						return;
 
-					StorageThread_->SetIgnoreMode ();
+					HandleStorageError (res.GetLeft ());
 				};
 
 		TabClass_.TabClass_ = "Chathistory";
@@ -278,6 +284,27 @@ namespace ChatHistory
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
 		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
+	}
+	void Core::HandleStorageError (const Storage::InitializationError_t& error)
+	{
+		Util::Visit (error,
+				[] (const Storage::GeneralError& err)
+				{
+					QMessageBox::critical (nullptr,
+							"Azoth ChatHistory",
+							tr ("Unable to initialize permanent storage. %1.")
+								.arg (err.ErrorText_));
+				},
+				[this] (const Storage::Corruption&)
+				{
+					if (QMessageBox::question (nullptr,
+								"Azoth ChatHistory",
+								tr ("Sadly, seems like the database is corrupted. Would you like to try restoring its contents?"),
+								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
+						return;
+				});
+
+		StorageThread_->SetIgnoreMode ();
 	}
 }
 }

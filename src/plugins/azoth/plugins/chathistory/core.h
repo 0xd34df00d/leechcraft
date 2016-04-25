@@ -36,6 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include "storagestructures.h"
+#include "storage.h"
 
 template<typename>
 class QFuture;
@@ -110,6 +111,8 @@ namespace ChatHistory
 	private:
 		void LoadDisabled ();
 		void SaveDisabled ();
+
+		void HandleStorageError (const Storage::InitializationError_t&);
 	};
 }
 }
