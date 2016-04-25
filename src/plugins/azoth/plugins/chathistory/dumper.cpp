@@ -36,19 +36,19 @@ namespace Azoth
 namespace ChatHistory
 {
 	Dumper::Dumper (const QString& from, const QString& to, QObject *parent)
+	: QObject { parent }
+	, Dumper_ { new QProcess { this } }
+	, Restorer_ { new QProcess { this } }
 	{
-		auto dumper = new QProcess;
-		auto restorer = new QProcess;
+		Dumper_->setStandardOutputProcess (Restorer_);
 
-		dumper->setStandardOutputProcess (restorer);
-
-		connect (dumper,
+		connect (Dumper_,
 				SIGNAL (error (QProcess::ProcessError)),
 				this,
 				SLOT (handleDumperError (QProcess::ProcessError)));
 
-		dumper->start ("sqlite3", { from, ".dump" });
-		restorer->start ("sqlite3", { to });
+		Dumper_->start ("sqlite3", { from, ".dump" });
+		Restorer_->start ("sqlite3", { to });
 	}
 }
 }

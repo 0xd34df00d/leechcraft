@@ -40,6 +40,9 @@ namespace ChatHistory
 	class Dumper : public QObject
 	{
 		Q_OBJECT
+
+		QProcess * const Dumper_;
+		QProcess * const Restorer_;
 	public:
 		Dumper (const QString& from, const QString& to, QObject* = nullptr);
 	};
