@@ -348,6 +348,31 @@ namespace ChatHistory
 		const auto oldSize = QFileInfo { from }.size ();
 		const auto newSize = QFileInfo { to }.size ();
 
+		const auto& backup = from + ".bak";
+		if (!QFile::rename (from, backup))
+		{
+			QMessageBox::critical (nullptr,
+					"Azoth ChatHistory",
+					tr ("Unable to backup %1 to %2. Please remove %2 and hit OK.")
+						.arg (from)
+						.arg (backup));
+			HandleDumperFinished (from, to);
+			return;
+		}
+
+		QFile::rename (to, from);
+
+		StorageThread_->SetIgnoreMode (false);
+
+		auto future = StorageThread_->Schedule (&Storage::Initialize);
+		future.waitForFinished ();
+		const auto& res = future.result ();
+		if (res.IsLeft ())
+		{
+			HandleStorageError (res.GetLeft ());
+			return;
+		}
+
 		const auto& text = newSize > oldSize * 0.9 ?
 				tr ("Finished restoring history database contents. Old file size: %1, new file size: %2. Yay, seems like most of the contents are intact!") :
 				tr ("Finished restoring history database contents. Old file size: %1, new file size: %2. Sadly, seems like quite some history is lost.");
