@@ -112,6 +112,7 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 
+		void DumpReinit ();
 		void HandleStorageError (const Storage::InitializationError_t&);
 	};
 }

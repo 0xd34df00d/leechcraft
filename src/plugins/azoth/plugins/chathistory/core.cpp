@@ -285,6 +285,23 @@ namespace ChatHistory
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
 		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
 	}
+
+	void Core::DumpReinit ()
+	{
+		const auto& path = Storage::GetDatabasePath ();
+		const QFileInfo fi { path };
+		const auto filesize = fi.size ();
+
+		const auto available = boost::filesystem::space (path.toStdString ()).available;
+		qDebug () << Q_FUNC_INFO
+				<< "db size:" << filesize
+				<< "free space:" << available;
+
+		const auto& newPath = path + ".new";
+
+		const auto dumper = new Dumper { path, newPath };
+	}
+
 	void Core::HandleStorageError (const Storage::InitializationError_t& error)
 	{
 		Util::Visit (error,
@@ -302,6 +319,8 @@ namespace ChatHistory
 								tr ("Sadly, seems like the database is corrupted. Would you like to try restoring its contents?"),
 								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 						return;
+
+					DumpReinit ();
 				});
 
 		StorageThread_->SetIgnoreMode ();
