@@ -297,6 +297,23 @@ namespace ChatHistory
 				<< "db size:" << filesize
 				<< "free space:" << available;
 
+		if (available < filesize)
+		{
+			if (QMessageBox::question (nullptr,
+						"Azoth ChatHistory",
+						tr ("Not enough available space on partition with file %1: "
+							"%2 while we expect the restored file to be around %3. "
+							"Please either clean up the partition and retry or "
+							"cancel the restore process.")
+								.arg ("<em>" + path + "</em>")
+								.arg (Util::MakePrettySize (available))
+								.arg (Util::MakePrettySize (filesize)),
+						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Retry)
+				DumpReinit ();
+
+			return;
+		}
+
 		const auto& newPath = path + ".new";
 
 		if (QFile::exists (newPath))
