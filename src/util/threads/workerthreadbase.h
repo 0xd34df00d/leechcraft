@@ -56,10 +56,10 @@ namespace Util
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
 		{
 			QFutureInterface<ResultOf_t<F ()>> iface;
+			iface.reportStarted ();
 
 			auto reporting = [func, iface] () mutable
 			{
-				iface.reportStarted ();
 				ReportFutureResult (iface, func);
 			};
 
