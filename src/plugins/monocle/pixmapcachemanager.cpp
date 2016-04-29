@@ -65,7 +65,7 @@ namespace Monocle
 	{
 		if (RecentlyUsed_.removeAll (item))
 			CurrentSize_ = std::accumulate (RecentlyUsed_.begin (), RecentlyUsed_.end (), 0,
-					[] (qint64 size, decltype (RecentlyUsed_.front ()) item)
+					[] (qint64 size, const PageGraphicsItem *item)
 						{ return size + GetPixmapSize (item->pixmap ()); });
 
 		RecentlyUsed_ << item;
