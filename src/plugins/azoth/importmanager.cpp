@@ -47,8 +47,8 @@ namespace Azoth
 
 	void ImportManager::HandleAccountImport (Entity e)
 	{
-		const QVariantMap& map = e.Additional_ ["AccountData"].toMap ();
-		const QString& protoId = map ["Protocol"].toString ();
+		const auto& map = e.Additional_ ["AccountData"].toMap ();
+		const auto& protoId = map ["Protocol"].toString ();
 		if (protoId.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -57,9 +57,9 @@ namespace Azoth
 			return;
 		}
 
-		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
+		for (const auto proto : Core::Instance ().GetProtocols ())
 		{
-			ISupportImport *isi = qobject_cast<ISupportImport*> (proto->GetQObject ());
+			const auto isi = qobject_cast<ISupportImport*> (proto->GetQObject ());
 			if (!isi || isi->GetImportProtocolID () != protoId)
 				continue;
 
@@ -126,21 +126,21 @@ namespace Azoth
 			return;
 		}
 
-		IAccount *acc = GetAccountID (e);
+		const auto acc = GetAccountID (e);
 		if (!acc)
 			return;
 
-		ISupportImport *isi = qobject_cast<ISupportImport*> (acc->GetParentProtocol ());
+		const auto isi = qobject_cast<ISupportImport*> (acc->GetParentProtocol ());
 
 		QHash<QString, QString> entryIDcache;
 
 		QVariantList history;
-		Q_FOREACH (Entity qe, EntityQueues_.take (e.Additional_ ["AccountID"].toString ()))
+		for (const auto& qe : EntityQueues_.take (e.Additional_ ["AccountID"].toString ()))
 			history.append (qe.Additional_ ["History"].toList ());
 
 		qDebug () << history.size ();
 
-		Q_FOREACH (const QVariant& lineVar, history)
+		for (const auto& lineVar : history)
 		{
 			const auto& histMap = lineVar.toMap ();
 
@@ -172,23 +172,22 @@ namespace Azoth
 				GetEscapePolicy (histMap ["EscapePolicy"].toByteArray ())
 			};
 
-			Q_FOREACH (IHistoryPlugin *plugin, histories)
+			for (const auto plugin : histories)
 				plugin->AddRawMessage (accId, entryId, visibleName, item);
 		}
 	}
 
 	IAccount* ImportManager::GetAccountID (Entity e)
 	{
-		const QString& accName = e.Additional_ ["AccountName"].toString ();
+		const auto& accName = e.Additional_ ["AccountName"].toString ();
 
 		auto accs = Core::Instance ().GetAccounts ([] (IProtocol *proto)
 				{ return qobject_cast<ISupportImport*> (proto->GetQObject ()); });
-		IAccount *acc = 0;
-		Q_FOREACH (acc, accs)
+		for (auto acc : accs)
 			if (acc->GetAccountName () == accName)
 				return acc;
 
-		const QString& impId = e.Additional_ ["AccountID"].toString ();
+		const auto& impId = e.Additional_ ["AccountID"].toString ();
 
 		EntityQueues_ [impId] << e;
 		if (EntityQueues_ [impId].size () > 1)
@@ -202,7 +201,7 @@ namespace Azoth
 		if (dia.exec () != QDialog::Accepted)
 			return 0;
 
-		acc = dia.GetSelectedAccount ();
+		const auto acc = dia.GetSelectedAccount ();
 		AccID2OurID_ [impId] = acc;
 		return acc;
 	}
