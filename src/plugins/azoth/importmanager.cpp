@@ -118,8 +118,10 @@ namespace Azoth
 			else if (histMap ["Type"] == "event")
 				histMap ["Type"] = static_cast<int> (IMessage::Type::EventMessage);
 
+			/* TODO
 			Q_FOREACH (IHistoryPlugin *plugin, histories)
 				plugin->AddRawMessage (histMap);
+				*/
 		}
 	}
 

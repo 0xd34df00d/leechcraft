@@ -178,7 +178,8 @@ namespace ChatHistory
 				std::bind (&Plugin::HandleGotChatLogs, this, entryObj, std::placeholders::_1);
 	}
 
-	void Plugin::AddRawMessage (const QVariantMap& map)
+	void Plugin::AddRawMessage (const QString& accountId, const QString& entryId,
+			const QString& visibleName, const HistoryItem& item)
 	{
 		// TODO
 		//Core::Instance ()->Process (map);

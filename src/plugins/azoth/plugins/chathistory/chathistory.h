@@ -105,7 +105,7 @@ namespace ChatHistory
 		// IHistoryPlugin
 		bool IsHistoryEnabledFor (QObject*) const;
 		void RequestLastMessages (QObject*, int);
-		void AddRawMessage (const QVariantMap&);
+		void AddRawMessage (const QString&, const QString&, const QString&, const HistoryItem&);
 	private:
 		void InitWidget (ChatHistoryWidget*);
 

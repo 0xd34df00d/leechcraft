@@ -106,7 +106,8 @@ namespace Azoth
 		 * @param[in] rawMsg The variant map containing the raw message
 		 * description.
 		 */
-		virtual void AddRawMessage (const QVariantMap& rawMsg) = 0;
+		virtual void AddRawMessage (const QString& accountId,
+				const QString& entryId, const QString& visibleName, const HistoryItem& item) = 0;
 	protected:
 		/** @brief Notifies about last messages for the given entry.
 		 *
