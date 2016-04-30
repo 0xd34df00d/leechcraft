@@ -101,6 +101,9 @@ namespace Monocle
 		void UpdatePixmap ();
 
 		bool IsDisplayed () const;
+
+		QRectF boundingRect () const;
+		QPainterPath shape () const;
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
 		void mousePressEvent (QGraphicsSceneMouseEvent*);
