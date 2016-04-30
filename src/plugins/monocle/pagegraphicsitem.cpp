@@ -55,6 +55,7 @@ namespace Monocle
 	, PageNum_ (page)
 	{
 		setTransformationMode (Qt::SmoothTransformation);
+		setShapeMode (QGraphicsPixmapItem::BoundingRectShape);
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));
 		setAcceptHoverEvents (true);
 	}
