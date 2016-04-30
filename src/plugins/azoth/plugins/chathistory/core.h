@@ -92,6 +92,7 @@ namespace ChatHistory
 		void SetLoggingEnabled (QObject*, bool);
 
 		void Process (QObject*);
+		void AddLogItem (const QString&, const QString&, const QString&, const LogItem&);
 
 		QFuture<QStringList> GetOurAccounts ();
 

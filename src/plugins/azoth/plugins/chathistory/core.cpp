@@ -211,8 +211,7 @@ namespace ChatHistory
 
 		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
 
-		StorageThread_->Schedule (&Storage::AddMessage,
-				entry->GetParentAccount ()->GetAccountID (),
+		AddLogItem (entry->GetParentAccount ()->GetAccountID (),
 				entry->GetEntryID (),
 				GetVisibleName (entry),
 				LogItem
@@ -225,6 +224,16 @@ namespace ChatHistory
 					irtm ? irtm->GetRichBody () : QString {},
 					msg->GetEscapePolicy ()
 				});
+	}
+
+	void Core::AddLogItem (const QString& accountId, const QString& entryId,
+			const QString& visibleName, const LogItem& item)
+	{
+		StorageThread_->Schedule (&Storage::AddMessage,
+				accountId,
+				entryId,
+				visibleName,
+				item);
 	}
 
 	QFuture<QStringList> Core::GetOurAccounts ()
