@@ -86,12 +86,12 @@ namespace Monocle
 		XScale_ = xs;
 		YScale_ = ys;
 
-		setPixmap (GetEmptyPixmap (false));
-
 		Invalid_ = true;
 
 		if (IsDisplayed ())
 			update ();
+		else
+			prepareGeometryChange ();
 
 		for (auto i = Item2RectInfo_.begin (); i != Item2RectInfo_.end (); ++i)
 		{
@@ -141,7 +141,7 @@ namespace Monocle
 
 	void PageGraphicsItem::ClearPixmap ()
 	{
-		setPixmap (GetEmptyPixmap (false));
+		setPixmap (QPixmap { QSize { 1, 1 } });
 
 		Invalid_ = true;
 	}
