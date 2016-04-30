@@ -99,6 +99,8 @@ namespace Monocle
 
 		void ClearPixmap ();
 		void UpdatePixmap ();
+
+		bool IsDisplayed () const;
 	protected:
 		void paint (QPainter*, const QStyleOptionGraphicsItem*, QWidget*);
 		void mousePressEvent (QGraphicsSceneMouseEvent*);
@@ -106,7 +108,6 @@ namespace Monocle
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
 		void RequestThreadedRender ();
-		bool IsDisplayed () const;
 	private slots:
 		void rotateCCW ();
 		void rotateCW ();
