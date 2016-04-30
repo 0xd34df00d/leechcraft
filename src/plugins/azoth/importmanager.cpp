@@ -192,7 +192,7 @@ namespace Azoth
 
 		EntityQueues_ [impId] << e;
 		if (EntityQueues_ [impId].size () > 1)
-			return 0;
+			return nullptr;
 
 		if (AccID2OurID_.contains (impId))
 			return AccID2OurID_ [impId];
