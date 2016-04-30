@@ -93,6 +93,16 @@ namespace Monocle
 			page->ClearPixmap ();
 			i = RecentlyUsed_.erase (i);
 		}
+
+		if (MaxSize_ < CurrentSize_)
+			qWarning () << Q_FUNC_INFO
+					<< "cache overflow:"
+					<< CurrentSize_
+					<< "instead of"
+					<< MaxSize_
+					<< "for"
+					<< RecentlyUsed_.size ()
+					<< "pages";
 	}
 
 	void PixmapCacheManager::handleCacheSizeChanged ()
