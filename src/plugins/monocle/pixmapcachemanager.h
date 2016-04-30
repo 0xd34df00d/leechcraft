@@ -41,8 +41,8 @@ namespace Monocle
 	{
 		Q_OBJECT
 
-		qint64 CurrentSize_;
-		qint64 MaxSize_;
+		qint64 CurrentSize_ = 0;
+		qint64 MaxSize_ = 0;
 		QList<PageGraphicsItem*> RecentlyUsed_;
 	public:
 		PixmapCacheManager (QObject* = 0);

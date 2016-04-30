@@ -39,8 +39,6 @@ namespace Monocle
 {
 	PixmapCacheManager::PixmapCacheManager (QObject *parent)
 	: QObject (parent)
-	, CurrentSize_ (0)
-	, MaxSize_ (0)
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("PixmapCacheSize",
 				this, "handleCacheSizeChanged");
