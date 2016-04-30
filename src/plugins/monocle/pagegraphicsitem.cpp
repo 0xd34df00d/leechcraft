@@ -53,10 +53,6 @@ namespace Monocle
 	: QGraphicsPixmapItem (parent)
 	, Doc_ (doc)
 	, PageNum_ (page)
-	, XScale_ (1)
-	, YScale_ (1)
-	, Invalid_ (true)
-	, LayoutManager_ (0)
 	{
 		setTransformationMode (Qt::SmoothTransformation);
 		setPixmap (QPixmap (Doc_->GetPageSize (page)));

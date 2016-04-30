@@ -53,14 +53,14 @@ namespace Monocle
 		IDocument_ptr Doc_;
 		const int PageNum_;
 
-		double XScale_;
-		double YScale_;
+		double XScale_ = 1;
+		double YScale_ = 1;
 
-		bool Invalid_;
+		bool Invalid_ = true;
 
 		std::function<void (int, QPointF)> ReleaseHandler_;
 
-		PagesLayoutManager *LayoutManager_;
+		PagesLayoutManager *LayoutManager_ = nullptr;
 
 		QPointer<ArbitraryRotationWidget> ArbWidget_;
 
