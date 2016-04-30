@@ -107,7 +107,7 @@ namespace Azoth
 		 * description.
 		 */
 		virtual void AddRawMessage (const QVariantMap& rawMsg) = 0;
-
+	protected:
 		/** @brief Notifies about last messages for the given entry.
 		 *
 		 * This signal should be emitted when last chat messages with
