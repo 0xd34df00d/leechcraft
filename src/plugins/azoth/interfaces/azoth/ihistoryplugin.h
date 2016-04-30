@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_INTERFACES_IHISTORYPLUGIN_H
-#define PLUGINS_AZOTH_INTERFACES_IHISTORYPLUGIN_H
+#pragma once
+
 #include <QList>
 #include <QVariantMap>
 
@@ -118,5 +118,3 @@ namespace Azoth
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHistoryPlugin,
 		"org.Deviant.LeechCraft.Azoth.IHistoryPlugin/1.0");
-
-#endif
