@@ -86,10 +86,7 @@ namespace Monocle
 		XScale_ = xs;
 		YScale_ = ys;
 
-		auto size = Doc_->GetPageSize (PageNum_);
-		size.rwidth () *= xs;
-		size.rheight () *= ys;
-		setPixmap (QPixmap (size));
+		setPixmap (GetEmptyPixmap (false));
 
 		Invalid_ = true;
 
@@ -144,10 +141,7 @@ namespace Monocle
 
 	void PageGraphicsItem::ClearPixmap ()
 	{
-		auto size = Doc_->GetPageSize (PageNum_);
-		size.rwidth () *= XScale_;
-		size.rheight () *= YScale_;
-		setPixmap (QPixmap (size));
+		setPixmap (GetEmptyPixmap (false));
 
 		Invalid_ = true;
 	}
@@ -170,12 +164,7 @@ namespace Monocle
 				if (!RenderFuture_)
 					RequestThreadedRender ();
 
-				auto size = Doc_->GetPageSize (PageNum_);
-				size.rwidth () *= XScale_;
-				size.rheight () *= YScale_;
-				QPixmap px (size);
-				px.fill ();
-				setPixmap (px);
+				setPixmap (GetEmptyPixmap (true));
 			}
 			else
 			{
@@ -238,6 +227,17 @@ namespace Monocle
 		arbMenu->addAction (actionWidget);
 
 		rotateMenu.exec (event->screenPos ());
+	}
+
+	QPixmap PageGraphicsItem::GetEmptyPixmap (bool fill) const
+	{
+		auto size = Doc_->GetPageSize (PageNum_);
+		size.rwidth () *= XScale_;
+		size.rheight () *= YScale_;
+		QPixmap px { size };
+		if (fill)
+			px.fill ();
+		return px;
 	}
 
 	void PageGraphicsItem::RequestThreadedRender ()

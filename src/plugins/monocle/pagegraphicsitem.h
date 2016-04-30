@@ -107,6 +107,7 @@ namespace Monocle
 		void mouseReleaseEvent (QGraphicsSceneMouseEvent*);
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
+		QPixmap GetEmptyPixmap (bool fill) const;
 		void RequestThreadedRender ();
 	private slots:
 		void rotateCCW ();
