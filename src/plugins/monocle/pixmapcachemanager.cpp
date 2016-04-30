@@ -49,6 +49,9 @@ namespace Monocle
 	{
 		quint64 GetPixmapSize (const QPixmap& px)
 		{
+			if (px.isNull ())
+				return 0;
+
 			return px.width () * px.height () * px.defaultDepth () / 8 * 1.5;
 		}
 	}
