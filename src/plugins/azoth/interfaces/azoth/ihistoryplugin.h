@@ -38,6 +38,17 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	struct HistoryItem
+	{
+		QDateTime Date_;
+		IMessage::Direction Dir_;
+		QString Message_;
+		QString Variant_;
+		IMessage::Type Type_;
+		QString RichMessage_;
+		IMessage::EscapePolicy EscPolicy_;
+	};
+
 	/** @brief Interface for plugins storing chat history.
 	 *
 	 * This interface should be implemented by plugins that store chat
