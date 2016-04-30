@@ -79,12 +79,19 @@ namespace Monocle
 
 	void PixmapCacheManager::CheckCache ()
 	{
-		while (MaxSize_ < CurrentSize_ && RecentlyUsed_.size () > 2)
+		for (auto i = RecentlyUsed_.begin (); i != RecentlyUsed_.end () && MaxSize_ < CurrentSize_; )
 		{
-			auto page = RecentlyUsed_.takeFirst ();
+			const auto page = *i;
+			if (page->IsDisplayed ())
+			{
+				++i;
+				continue;
+			}
+
 			const quint64 pxSize = GetPixmapSize (page->pixmap ());
 			CurrentSize_ -= pxSize;
 			page->ClearPixmap ();
+			i = RecentlyUsed_.erase (i);
 		}
 	}
 
