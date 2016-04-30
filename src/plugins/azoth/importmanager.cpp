@@ -68,6 +68,52 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		IMessage::Direction GetDirection (const QByteArray& dirStr)
+		{
+			if (dirStr == "out")
+				return IMessage::Direction::Out;
+			else if (dirStr == "in")
+				return IMessage::Direction::In;
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown direction"
+					<< dirStr;
+			return IMessage::Direction::In;
+		}
+
+		IMessage::Type GetMessageType (const QByteArray& typeStr)
+		{
+			if (typeStr == "chat")
+				return IMessage::Type::ChatMessage;
+			else if (typeStr == "muc")
+				return IMessage::Type::MUCMessage;
+			else if (typeStr == "event")
+				return IMessage::Type::EventMessage;
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown type"
+					<< typeStr;
+			return IMessage::Type::ChatMessage;
+		}
+
+		IMessage::EscapePolicy GetEscapePolicy (const QByteArray& polStr)
+		{
+			if (polStr.isEmpty ())
+				return IMessage::EscapePolicy::Escape;
+			else if (polStr == "escape")
+				return IMessage::EscapePolicy::Escape;
+			else if (polStr == "noEscape")
+				return IMessage::EscapePolicy::NoEscape;
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown escape policy"
+					<< polStr;
+			return IMessage::EscapePolicy::Escape;
+		}
+	}
+
 	void ImportManager::HandleHistoryImport (Entity e)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -91,37 +137,43 @@ namespace Azoth
 		QVariantList history;
 		Q_FOREACH (Entity qe, EntityQueues_.take (e.Additional_ ["AccountID"].toString ()))
 			history.append (qe.Additional_ ["History"].toList ());
+
 		qDebug () << history.size ();
+
 		Q_FOREACH (const QVariant& lineVar, history)
 		{
-			QVariantMap histMap = lineVar.toMap ();
+			const auto& histMap = lineVar.toMap ();
 
-			const QString& origID = histMap ["EntryID"].toString ();
-			if (entryIDcache.contains (origID))
-				histMap ["EntryID"] = entryIDcache [origID];
+			const auto& origId = histMap ["EntryID"].toString ();
+			QString entryId;
+			if (entryIDcache.contains (origId))
+				entryId = entryIDcache [origId];
 			else
 			{
-				const QString& realID = isi->GetEntryID (origID, acc->GetQObject ());
-				entryIDcache [origID] = realID;
-				histMap ["EntryID"] = realID;
+				const auto& realId = isi->GetEntryID (origId, acc->GetQObject ());
+				entryIDcache [origId] = realId;
+				entryId = realId;
 			}
 
-			if (histMap ["VisibleName"].toString ().isEmpty ())
-				histMap ["VisibleName"] = origID;
+			auto visibleName = histMap ["VisibleName"].toString ();
+			if (visibleName.isEmpty ())
+				visibleName = origId;
 
-			histMap ["AccountID"] = acc->GetAccountID ();
+			const auto& accId = acc->GetAccountID ();
 
-			if (histMap ["Type"] == "chat")
-				histMap ["Type"] = static_cast<int> (IMessage::Type::ChatMessage);
-			else if (histMap ["Type"] == "muc")
-				histMap ["Type"] = static_cast<int> (IMessage::Type::MUCMessage);
-			else if (histMap ["Type"] == "event")
-				histMap ["Type"] = static_cast<int> (IMessage::Type::EventMessage);
+			HistoryItem item
+			{
+				histMap ["DateTime"].toDateTime (),
+				GetDirection (histMap ["Direction"].toByteArray ()),
+				histMap ["Body"].toString (),
+				histMap ["OtherVariant"].toString (),
+				GetMessageType (histMap ["Type"].toByteArray ()),
+				histMap ["RichBody"].toString (),
+				GetEscapePolicy (histMap ["EscapePolicy"].toByteArray ())
+			};
 
-			/* TODO
 			Q_FOREACH (IHistoryPlugin *plugin, histories)
-				plugin->AddRawMessage (histMap);
-				*/
+				plugin->AddRawMessage (accId, entryId, visibleName, item);
 		}
 	}
 
