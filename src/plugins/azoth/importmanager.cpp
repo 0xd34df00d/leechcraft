@@ -181,11 +181,12 @@ namespace Azoth
 	{
 		const auto& accName = e.Additional_ ["AccountName"].toString ();
 
-		auto accs = Core::Instance ().GetAccounts ([] (IProtocol *proto)
+		const auto& accs = Core::Instance ().GetAccounts ([] (IProtocol *proto)
 				{ return qobject_cast<ISupportImport*> (proto->GetQObject ()); });
-		for (auto acc : accs)
-			if (acc->GetAccountName () == accName)
-				return acc;
+		const auto pos = std::find_if (accs.begin (), accs.end (),
+				[&accName] (IAccount *acc) { return acc->GetAccountName () == accName; });
+		if (pos != accs.end ())
+			return *pos;
 
 		const auto& impId = e.Additional_ ["AccountID"].toString ();
 
