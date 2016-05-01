@@ -236,6 +236,11 @@ namespace ChatHistory
 				item);
 	}
 
+	QFuture<IHistoryPlugin::MaxTimestampResult_t> Core::GetMaxTimestamp (const QString& accId)
+	{
+		return StorageThread_->Schedule (&Storage::GetMaxTimestamp, accId);
+	}
+
 	QFuture<QStringList> Core::GetOurAccounts ()
 	{
 		return StorageThread_->Schedule (&Storage::GetOurAccounts);

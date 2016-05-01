@@ -105,6 +105,7 @@ namespace ChatHistory
 		// IHistoryPlugin
 		bool IsHistoryEnabledFor (QObject*) const;
 		void RequestLastMessages (QObject*, int);
+		QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount*);
 		void AddRawMessage (const QString&, const QString&, const QString&, const HistoryItem&);
 	private:
 		void InitWidget (ChatHistoryWidget*);

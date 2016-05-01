@@ -178,6 +178,11 @@ namespace ChatHistory
 				std::bind (&Plugin::HandleGotChatLogs, this, entryObj, std::placeholders::_1);
 	}
 
+	QFuture<Plugin::MaxTimestampResult_t> Plugin::RequestMaxTimestamp (IAccount *acc)
+	{
+		return Core::Instance ()->GetMaxTimestamp (acc->GetAccountID ());
+	}
+
 	void Plugin::AddRawMessage (const QString& accountId, const QString& entryId,
 			const QString& visibleName, const HistoryItem& item)
 	{

@@ -35,6 +35,7 @@
 #include <QVariantMap>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
+#include <interfaces/azoth/ihistoryplugin.h>
 #include "storagestructures.h"
 #include "storage.h"
 
@@ -93,6 +94,8 @@ namespace ChatHistory
 
 		void Process (QObject*);
 		void AddLogItem (const QString&, const QString&, const QString&, const LogItem&);
+
+		QFuture<IHistoryPlugin::MaxTimestampResult_t> GetMaxTimestamp (const QString&);
 
 		QFuture<QStringList> GetOurAccounts ();
 
