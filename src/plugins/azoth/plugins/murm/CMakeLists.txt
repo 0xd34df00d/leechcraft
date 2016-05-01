@@ -40,6 +40,7 @@ set (MURM_SRCS
 	appinfomanager.cpp
 	structures.cpp
 	photourlstorage.cpp
+	servermessagessyncer.cpp
 	)
 set (MURM_FORMS
 	vcarddialog.ui
