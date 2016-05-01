@@ -69,9 +69,12 @@
 #include "interfaces/azoth/irichtextmessage.h"
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
+#include "interfaces/azoth/ihistoryplugin.h"
+
 #ifdef ENABLE_CRYPT
 #include "cryptomanager.h"
 #endif
+
 #include "chattabsmanager.h"
 #include "pluginmanager.h"
 #include "proxyobject.h"
@@ -384,6 +387,9 @@ namespace Azoth
 
 		if (classes.contains ("org.LeechCraft.Plugins.Azoth.Plugins.IResourceSourcePlugin"))
 			AddResourceSourcePlugin (plugin);
+
+		if (const auto ihp = qobject_cast<IHistoryPlugin*> (plugin))
+			HistorySyncer_->AddStorage (ihp);
 	}
 
 	void Core::RegisterHookable (QObject *object)
