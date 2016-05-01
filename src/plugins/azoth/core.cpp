@@ -98,6 +98,7 @@
 #include "resourcesmanager.h"
 #include "notificationsmanager.h"
 #include "avatarsmanager.h"
+#include "historysyncer.h"
 
 Q_DECLARE_METATYPE (QPointer<QObject>);
 
@@ -217,6 +218,7 @@ namespace Azoth
 	, ImportManager_ (new ImportManager)
 	, UnreadQueueManager_ (new UnreadQueueManager)
 	, CustomChatStyleManager_ (new CustomChatStyleManager)
+	, HistorySyncer_ (std::make_shared<HistorySyncer> ())
 	{
 		FillANFields ();
 

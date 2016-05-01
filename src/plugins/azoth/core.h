@@ -83,6 +83,7 @@ namespace Azoth
 	class CoreCommandsManager;
 	class NotificationsManager;
 	class AvatarsManager;
+	class HistorySyncer;
 
 	class Core : public QObject
 	{
@@ -136,6 +137,7 @@ namespace Azoth
 		std::shared_ptr<CustomStatusesManager> CustomStatusesManager_;
 		std::shared_ptr<CustomChatStyleManager> CustomChatStyleManager_;
 		std::shared_ptr<NotificationsManager> NotificationsManager_;
+		std::shared_ptr<HistorySyncer> HistorySyncer_;
 
 		Core ();
 	public:
