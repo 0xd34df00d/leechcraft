@@ -104,7 +104,7 @@ namespace ChatHistory
 		InitializeTables ();
 
 		MaxTimestampSelector_ = QSqlQuery (*DB_);
-		MaxTimestampSelector_.prepare ("SELECT max(date) FROM azoth_history WHERE AccountID = :account_id;");
+		MaxTimestampSelector_.prepare ("SELECT max(Date) FROM azoth_history WHERE AccountID = :account_id");
 
 		UserSelector_ = QSqlQuery (*DB_);
 		UserSelector_.prepare ("SELECT Id, EntryID FROM azoth_users");
