@@ -31,10 +31,14 @@
 
 #include <QList>
 #include <QtPlugin>
+#include <util/sll/eitherfwd.h>
 #include "imessage.h"
 
 class QModelIndex;
 class QAbstractItemModel;
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -51,7 +55,9 @@ namespace Azoth
 		QString RichBody_;
 	};
 
-	typedef QList<SrvHistMessage> SrvHistMessages_t;
+	using SrvHistMessages_t = QList<SrvHistMessage>;
+
+	using MessagesMap_t = QHash<QString, SrvHistMessages_t>;
 
 	enum ServerHistoryRole
 	{
@@ -121,6 +127,8 @@ namespace Azoth
 				const QByteArray& startId, int count) = 0;
 
 		virtual DefaultSortParams GetSortParams () const = 0;
+
+		using DatedFetchResult_t = Util::Either<QString, MessagesMap_t>;
 	protected:
 		/** @brief Emitted when messages are fetched.
 		 *
