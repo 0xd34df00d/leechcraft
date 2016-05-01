@@ -103,6 +103,9 @@ namespace ChatHistory
 
 		InitializeTables ();
 
+		MaxTimestampSelector_ = QSqlQuery (*DB_);
+		MaxTimestampSelector_.prepare ("SELECT max(date) FROM azoth_history WHERE AccountID = :account_id;");
+
 		UserSelector_ = QSqlQuery (*DB_);
 		UserSelector_.prepare ("SELECT Id, EntryID FROM azoth_users");
 
@@ -833,6 +836,23 @@ namespace ChatHistory
 		}
 
 		lock.Good ();
+	}
+
+	IHistoryPlugin::MaxTimestampResult_t Storage::GetMaxTimestamp (const QString& accountId)
+	{
+		using R_t = IHistoryPlugin::MaxTimestampResult_t;
+
+		MaxTimestampSelector_.bindValue (":account_id", accountId);
+		if (!MaxTimestampSelector_.exec ())
+		{
+			Util::DBLock::DumpError (MaxTimestampSelector_);
+			return R_t::Left ("Error executing the SQL query.");
+		}
+
+		if (!MaxTimestampSelector_.next ())
+			return R_t::Right ({});
+
+		return R_t::Right (MaxTimestampSelector_.value (0).toDateTime ());
 	}
 
 	QStringList Storage::GetOurAccounts () const

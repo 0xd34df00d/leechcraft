@@ -35,6 +35,7 @@
 #include <QVariant>
 #include <QDateTime>
 #include <util/sll/void.h>
+#include <interfaces/azoth/ihistoryplugin.h>
 #include "storagestructures.h"
 
 class QSqlDatabase;
@@ -52,6 +53,7 @@ namespace ChatHistory
 		Q_OBJECT
 
 		std::shared_ptr<QSqlDatabase> DB_;
+		QSqlQuery MaxTimestampSelector_;
 		QSqlQuery UserSelector_;
 		QSqlQuery AccountSelector_;
 		QSqlQuery UserIDSelector_;
@@ -107,6 +109,8 @@ namespace ChatHistory
 		QSqlDatabase GetDB () const;
 
 		InitializationResult_t Initialize ();
+
+		IHistoryPlugin::MaxTimestampResult_t GetMaxTimestamp (const QString&);
 
 		QStringList GetOurAccounts () const;
 		UsersForAccountResult_t GetUsersForAccount (const QString&);
