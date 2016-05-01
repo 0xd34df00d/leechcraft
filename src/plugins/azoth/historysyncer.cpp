@@ -36,10 +36,14 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	HistorySyncer::HistorySyncer (const QList<IHistoryPlugin*>& storages, QObject *parent)
+	HistorySyncer::HistorySyncer (QObject *parent)
 	: QObject { parent }
-	, Storages_ { storages }
 	{
+	}
+
+	void HistorySyncer::AddStorage (IHistoryPlugin *storage)
+	{
+		Storages_ << storage;
 	}
 
 	void HistorySyncer::AddAccount (IAccount *acc)

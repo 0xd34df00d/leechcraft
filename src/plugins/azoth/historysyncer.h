@@ -42,11 +42,12 @@ namespace Azoth
 	{
 		Q_OBJECT
 
-		const QList<IHistoryPlugin*> Storages_;
+		QList<IHistoryPlugin*> Storages_;
 	public:
-		HistorySyncer (const QList<IHistoryPlugin*>&, QObject* = nullptr);
+		HistorySyncer (QObject* = nullptr);
 
-		void AddAccount (IAccount *acc);
+		void AddStorage (IHistoryPlugin*);
+		void AddAccount (IAccount*);
 	};
 }
 }
