@@ -35,11 +35,13 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/serializejson.h>
+#include <util/sll/either.h>
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include "vkaccount.h"
 #include "vkentry.h"
 #include "logger.h"
 #include "util.h"
+#include "servermessagessyncer.h"
 
 namespace LeechCraft
 {
@@ -140,6 +142,12 @@ namespace Murm
 
 			Acc_->GetConnection ()->QueueRequest (getter);
 		}
+	}
+
+	QFuture<IHaveServerHistory::DatedFetchResult_t> ServerHistoryManager::FetchServerHistory (const QDateTime& since)
+	{
+		const auto syncer = new ServerMessagesSyncer { since, Acc_ };
+		return syncer->GetFuture ();
 	}
 
 	void ServerHistoryManager::Request (int offset)

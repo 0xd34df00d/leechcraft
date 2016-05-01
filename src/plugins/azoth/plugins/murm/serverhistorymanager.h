@@ -69,6 +69,8 @@ namespace Murm
 
 		QAbstractItemModel* GetModel () const;
 		void RequestHistory (const QModelIndex&, int, int);
+
+		QFuture<IHaveServerHistory::DatedFetchResult_t> FetchServerHistory (const QDateTime&);
 	private:
 		void Request (int);
 
