@@ -38,14 +38,37 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	/** @brief Describes a single chat log item.
+	 */
 	struct HistoryItem
 	{
+		/** @brief The timestamp of the message.
+		 */
 		QDateTime Date_;
+
+		/** @brief The direction of the message.
+		 */
 		IMessage::Direction Dir_;
+
+		/** @brief The message itself.
+		 */
 		QString Message_;
+
+		/** @brief The variant of the other entry.
+		 */
 		QString Variant_;
+
+		/** @brief The message type.
+		 */
 		IMessage::Type Type_;
+
+		/** @brief The rich message contents, if any.
+		 */
 		QString RichMessage_;
+
+		/** @brief Whether the message should be HTML-escaped when
+		 * displayed to the user.
+		 */
 		IMessage::EscapePolicy EscPolicy_;
 	};
 
@@ -87,24 +110,12 @@ namespace Azoth
 		 */
 		virtual void RequestLastMessages (QObject *entry, int num) = 0;
 
-		/** @brief Adds a raw message to the history.
+		/** @brief Adds a message to the history.
 		 *
-		 * The raw message is stored in the rawMsg map. The map contains
-		 * the following keys:
-		 * - "EntryID" of type QString: the unique ID of the entry.
-		 * - "AccountID" of type QString: the unique ID of the
-		 *   corresponding account.
-		 * - "DateTime" of type QDateTime: the timestamp of the message.
-		 * - "Direction" of type QString: either "in" or "out".
-		 * - "Body" of type QString: the contents of the message.
-		 * - "OtherVariant" of type QString: the variant of the entry
-		 *   that has sent the message.
-		 * - "Type" of type int: the type of the message.
-		 * - "VisibleName" of type QString: the human-readable name of
-		 *   the entry.
-		 *
-		 * @param[in] rawMsg The variant map containing the raw message
-		 * description.
+		 * @param[in] accountId The unique ID of the corresponding account.
+		 * @param[in] entryId The unique ID of the corresponding entry.
+		 * @param[in] visibleName The human-readable name of the entry.
+		 * @param[in] item The HistoryItem struct describing the message.
 		 */
 		virtual void AddRawMessage (const QString& accountId,
 				const QString& entryId, const QString& visibleName, const HistoryItem& item) = 0;
