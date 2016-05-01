@@ -35,6 +35,8 @@
 template<typename>
 class QFuture;
 
+class QDateTime;
+
 namespace LeechCraft
 {
 namespace Azoth
