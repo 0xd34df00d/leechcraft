@@ -31,7 +31,13 @@
 
 #include <QList>
 #include <QVariantMap>
+#include <util/sll/eitherfwd.h>
 #include "imessage.h"
+
+template<typename>
+class QFuture;
+
+class QDateTime;
 
 class QObject;
 
@@ -110,6 +116,8 @@ namespace Azoth
 		 * @sa gotLastMessages()
 		 */
 		virtual void RequestLastMessages (QObject *entry, int num) = 0;
+
+		using MaxTimestampResult_t = Util::Either<QString, QDateTime>;
 
 		/** @brief Adds a message to the history.
 		 *
