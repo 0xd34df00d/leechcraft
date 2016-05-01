@@ -1549,12 +1549,11 @@ namespace Azoth
 
 	void Core::handleNewProtocols (const QList<QObject*>& protocols)
 	{
-		Q_FOREACH (QObject *protoObj, protocols)
+		for (const auto protoObj : protocols)
 		{
-			IProtocol *proto = qobject_cast<IProtocol*> (protoObj);
+			const auto proto = qobject_cast<IProtocol*> (protoObj);
 
-			Q_FOREACH (QObject *accObj,
-					proto->GetRegisteredAccounts ())
+			for (const auto accObj : proto->GetRegisteredAccounts ())
 				addAccount (accObj);
 
 			connect (proto->GetQObject (),
@@ -1607,9 +1606,9 @@ namespace Azoth
 		accItem->setEditable (false);
 
 		QList<QStandardItem*> clItems;
-		Q_FOREACH (QObject *clObj, account->GetCLEntries ())
+		for (const auto clObj : account->GetCLEntries ())
 		{
-			ICLEntry *clEntry = qobject_cast<ICLEntry*> (clObj);
+			const auto clEntry = qobject_cast<ICLEntry*> (clObj);
 			if (!clEntry)
 			{
 				qWarning () << Q_FUNC_INFO
