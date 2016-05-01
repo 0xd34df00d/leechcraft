@@ -487,10 +487,7 @@ namespace Murm
 			return false;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown feature"
-				<< static_cast<int> (feature);
-		return false;
+		assert (false);
 	}
 
 	void VkAccount::OpenServerHistoryConfiguration ()
