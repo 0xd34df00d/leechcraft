@@ -45,6 +45,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+	class IAccount;
+
 	/** @brief Describes a single chat log item.
 	 */
 	struct HistoryItem
@@ -118,6 +120,8 @@ namespace Azoth
 		virtual void RequestLastMessages (QObject *entry, int num) = 0;
 
 		using MaxTimestampResult_t = Util::Either<QString, QDateTime>;
+
+		virtual QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount *acc) = 0;
 
 		/** @brief Adds a message to the history.
 		 *
