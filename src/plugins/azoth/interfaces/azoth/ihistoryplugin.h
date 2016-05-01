@@ -31,6 +31,7 @@
 
 #include <QList>
 #include <QVariantMap>
+#include "imessage.h"
 
 class QObject;
 
