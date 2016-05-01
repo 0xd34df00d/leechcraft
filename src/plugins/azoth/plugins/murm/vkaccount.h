@@ -178,6 +178,7 @@ namespace Murm
 		QAbstractItemModel* GetServerContactsModel () const;
 		void FetchServerHistory (const QModelIndex& contact, const QByteArray& startId, int count);
 		DefaultSortParams GetSortParams () const;
+		QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime& since);
 	private:
 		void TryPendingMessages ();
 		VkEntry* CreateNonRosterItem (qulonglong);

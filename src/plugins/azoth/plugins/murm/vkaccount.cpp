@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <util/svcauth/vkcaptchadialog.h>
 #include <util/sll/prelude.h>
+#include <util/sll/either.h>
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
@@ -507,6 +508,11 @@ namespace Murm
 	DefaultSortParams VkAccount::GetSortParams () const
 	{
 		return { 0, ServerHistoryRole::LastMessageDate, Qt::DescendingOrder };
+	}
+
+	QFuture<IHaveServerHistory::DatedFetchResult_t> VkAccount::FetchServerHistory (const QDateTime& since)
+	{
+		return ServHistMgr_->FetchServerHistory (since);
 	}
 
 	void VkAccount::TryPendingMessages ()
