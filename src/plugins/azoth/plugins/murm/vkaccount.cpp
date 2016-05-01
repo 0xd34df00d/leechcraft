@@ -512,7 +512,10 @@ namespace Murm
 	void VkAccount::TryPendingMessages ()
 	{
 		decltype (PendingMessages_) pending;
-		std::swap (pending, PendingMessages_);
+
+		using std::swap;
+		swap (pending, PendingMessages_);
+
 		for (const auto& pair : pending)
 			handleMessage (pair.second, pair.first);
 	}
