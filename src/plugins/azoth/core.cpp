@@ -1589,6 +1589,8 @@ namespace Azoth
 			return;
 		}
 
+		HistorySyncer_->AddAccount (account);
+
 		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + account->GetAccountID ());
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
