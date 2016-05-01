@@ -842,7 +842,10 @@ namespace ChatHistory
 	{
 		using R_t = IHistoryPlugin::MaxTimestampResult_t;
 
-		MaxTimestampSelector_.bindValue (":account_id", accountId);
+		if (!Accounts_.contains (accountId))
+			return R_t::Left ("Unknown account " + accountId);
+
+		MaxTimestampSelector_.bindValue (":account_id", Accounts_ [accountId]);
 		if (!MaxTimestampSelector_.exec ())
 		{
 			Util::DBLock::DumpError (MaxTimestampSelector_);
