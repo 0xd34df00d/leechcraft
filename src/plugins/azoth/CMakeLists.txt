@@ -158,6 +158,7 @@ set (SRCS
 	avatarsstorageondisk.cpp
 	avatarsstoragethread.cpp
 	chattabnetworkaccessmanager.cpp
+	historysyncer.cpp
 	)
 set (FORMS
 	mainwidget.ui
