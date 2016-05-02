@@ -87,7 +87,7 @@ namespace Murm
 				[=] { HandleFinished (reply, dir); },
 				reply,
 				SIGNAL (finished ()),
-				reply
+				this
 			};
 
 			return reply;
