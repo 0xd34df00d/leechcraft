@@ -149,7 +149,7 @@ namespace Snails
 
 		void SendMessage (const Message_ptr&);
 	private slots:
-		void handleMessagesChanged (const QStringList& folder, const QList<int>& numbers);
+		void handleMessagesChanged (const QStringList& folder, const QList<size_t>& numbers);
 
 		void sendNoop ();
 	signals:

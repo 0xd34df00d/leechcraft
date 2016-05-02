@@ -49,7 +49,7 @@ namespace Snails
 	protected:
 		void messageChanged (vmime::shared_ptr<vmime::net::events::messageChangedEvent>) override;
 	signals:
-		void messagesChanged (const QStringList& folder, const QList<int>& numbers);
+		void messagesChanged (const QStringList& folder, const QList<size_t>& numbers);
 	};
 }
 }

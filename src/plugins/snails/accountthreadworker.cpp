@@ -148,9 +148,9 @@ namespace Snails
 
 		if (IsListening_)
 			connect (ChangeListener_,
-					SIGNAL (messagesChanged (QStringList, QList<int>)),
+					SIGNAL (messagesChanged (QStringList, QList<size_t>)),
 					this,
-					SLOT (handleMessagesChanged (QStringList, QList<int>)));
+					SLOT (handleMessagesChanged (QStringList, QList<size_t>)));
 
 		connect (NoopTimer_,
 				SIGNAL (timeout ()),
@@ -808,7 +808,7 @@ namespace Snails
 		return newMessages;
 	}
 
-	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<int>& numbers)
+	void AccountThreadWorker::handleMessagesChanged (const QStringList& folder, const QList<size_t>& numbers)
 	{
 		qDebug () << Q_FUNC_INFO << folder << numbers;
 		auto set = vmime::net::messageSet::empty ();

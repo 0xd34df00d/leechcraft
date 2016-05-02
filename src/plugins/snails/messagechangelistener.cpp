@@ -58,7 +58,7 @@ namespace Snails
 
 		const auto& folder = event->getFolder ();
 
-		QList<int> numsList;
+		QList<size_t> numsList;
 		for (const auto num : event->getNumbers ())
 			numsList << num;
 
