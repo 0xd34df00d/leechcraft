@@ -33,6 +33,7 @@
 #include <util/sll/either.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/urloperator.h>
+#include <util/sll/parsejson.h>
 #include "vkconnection.h"
 #include "vkaccount.h"
 
@@ -98,8 +99,31 @@ namespace Murm
 
 	void ServerMessagesSyncer::HandleFinished (QNetworkReply *reply, IMessage::Direction dir)
 	{
-		const auto& data = reply->readAll ();
+		const auto& json = Util::ParseJson (reply, Q_FUNC_INFO);
 		reply->deleteLater ();
+
+		const auto itemsVar = json.toMap () ["response"].toMap () ["items"];
+		const auto& itemsList = itemsVar.toList ();
+
+		const auto& accId = Acc_->GetAccountID ();
+		for (const auto& mapVar : itemsList)
+		{
+			const auto& map = mapVar.toMap ();
+
+			const HistoryItem item
+			{
+				QDateTime::fromTime_t (map ["date"].toULongLong ()),
+				dir,
+				map ["body"].toString (),
+				{},
+				IMessage::Type::ChatMessage,
+				{},
+				IMessage::EscapePolicy::Escape
+			};
+
+			const auto& id = accId + QString::number (map ["user_id"].toLongLong ());
+			Messages_ [id] << item;
+		}
 	}
 }
 }

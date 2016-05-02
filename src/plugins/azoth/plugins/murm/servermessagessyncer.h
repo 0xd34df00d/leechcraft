@@ -52,6 +52,8 @@ namespace Murm
 		int Offset_ = 0;
 
 		QFutureInterface<IHaveServerHistory::DatedFetchResult_t> Iface_;
+
+		IHaveServerHistory::MessagesSyncMap_t Messages_;
 	public:
 		ServerMessagesSyncer (const QDateTime&, VkAccount*, QObject* = nullptr);
 
