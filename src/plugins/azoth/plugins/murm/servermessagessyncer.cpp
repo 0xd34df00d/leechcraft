@@ -124,6 +124,29 @@ namespace Murm
 			const auto& id = accId + QString::number (map ["user_id"].toLongLong ());
 			Messages_ [id] << item;
 		}
+
+		if (itemsList.size () == RequestSize)
+		{
+			Offset_ += RequestSize;
+			Request (dir);
+		}
+		else
+		{
+			Dones_.insert (dir);
+			CheckDone ();
+		}
+	}
+
+	void ServerMessagesSyncer::CheckDone ()
+	{
+		if (Dones_.size () != 2)
+			return;
+
+		qDebug () << Q_FUNC_INFO;
+		const auto res = IHaveServerHistory::DatedFetchResult_t::Right (Messages_);
+		Iface_.reportFinished (&res);
+
+		deleteLater ();
 	}
 }
 }
