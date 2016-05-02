@@ -139,7 +139,7 @@ namespace Snails
 	, IsListening_ (isListening)
 	, ThreadName_ (threadName)
 	, ChangeListener_ (new MessageChangeListener (this))
-	, Session_ (vmime::make_shared<vmime::net::session> ())
+	, Session_ (vmime::net::session::create ())
 	, CachedFolders_ (2)
 	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
@@ -578,7 +578,7 @@ namespace Snails
 				messages.reserve (count);
 
 				const auto chunkSize = 100;
-				for (int i = 0; i < count; i += chunkSize)
+				for (vmime::size_t i = 0; i < count; i += chunkSize)
 				{
 					const auto endVal = i + chunkSize;
 					const auto& set = vmime::net::messageSet::byNumber (i + 1, std::min (count, endVal));
