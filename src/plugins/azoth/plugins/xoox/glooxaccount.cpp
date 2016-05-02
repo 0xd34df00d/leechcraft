@@ -830,6 +830,11 @@ namespace Xoox
 		return { 0, Qt::DisplayRole, Qt::AscendingOrder };
 	}
 
+	QFuture<IHaveServerHistory::DatedFetchResult_t> GlooxAccount::FetchServerHistory (const QDateTime&)
+	{
+		return {};
+	}
+
 	bool GlooxAccount::SupportsBlacklists () const
 	{
 		if (!ClientConnection_)

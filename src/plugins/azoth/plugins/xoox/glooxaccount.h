@@ -240,6 +240,7 @@ namespace Xoox
 		QAbstractItemModel* GetServerContactsModel () const;
 		void FetchServerHistory (const QModelIndex&, const QByteArray&, int);
 		DefaultSortParams GetSortParams () const;
+		QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime&);
 
 		// IHaveBlacklists
 		bool SupportsBlacklists () const;
