@@ -33,6 +33,7 @@
 #include <QtPlugin>
 #include <util/sll/eitherfwd.h>
 #include "imessage.h"
+#include "ihistoryplugin.h"
 
 class QModelIndex;
 class QAbstractItemModel;
@@ -56,8 +57,6 @@ namespace Azoth
 	};
 
 	using SrvHistMessages_t = QList<SrvHistMessage>;
-
-	using MessagesMap_t = QHash<QString, SrvHistMessages_t>;
 
 	enum ServerHistoryRole
 	{
@@ -128,7 +127,10 @@ namespace Azoth
 
 		virtual DefaultSortParams GetSortParams () const = 0;
 
-		using DatedFetchResult_t = Util::Either<QString, MessagesMap_t>;
+		using MessagesSyncMap_t = QHash<QString, QList<HistoryItem>>;
+		using DatedFetchResult_t = Util::Either<QString, MessagesSyncMap_t>;
+
+		virtual QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime& since) = 0;
 	protected:
 		/** @brief Emitted when messages are fetched.
 		 *
