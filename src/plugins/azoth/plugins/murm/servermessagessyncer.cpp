@@ -42,6 +42,11 @@ namespace Azoth
 {
 namespace Murm
 {
+	namespace
+	{
+		const auto RequestSize = 200;
+	}
+
 	ServerMessagesSyncer::ServerMessagesSyncer (const QDateTime& since, VkAccount *acc, QObject *parent)
 	: QObject { parent }
 	, Since_ { since }
@@ -69,7 +74,7 @@ namespace Murm
 			Util::UrlOperator { url }
 					("access_token", key)
 					("out", dir == IMessage::Direction::Out ? "1" : "0")
-					("count", 200)
+					("count", RequestSize)
 					("offset", Offset_)
 					("time_offset", secsDiff);
 			VkConnection::AddParams (url, params);
