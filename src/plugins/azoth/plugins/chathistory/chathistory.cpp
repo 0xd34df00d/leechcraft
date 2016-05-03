@@ -183,10 +183,10 @@ namespace ChatHistory
 		return Core::Instance ()->GetMaxTimestamp (acc->GetAccountID ());
 	}
 
-	void Plugin::AddRawMessage (const QString& accountId, const QString& entryId,
-			const QString& visibleName, const HistoryItem& item)
+	void Plugin::AddRawMessages (const QString& accountId, const QString& entryId,
+			const QString& visibleName, const QList<HistoryItem>& items)
 	{
-		Core::Instance ()->AddLogItems (accountId, entryId, visibleName, { item });
+		Core::Instance ()->AddLogItems (accountId, entryId, visibleName, items);
 	}
 
 	void Plugin::InitWidget (ChatHistoryWidget *wh)

@@ -173,7 +173,7 @@ namespace Azoth
 			};
 
 			for (const auto plugin : histories)
-				plugin->AddRawMessage (accId, entryId, visibleName, item);
+				plugin->AddRawMessages (accId, entryId, visibleName, { item });
 		}
 	}
 

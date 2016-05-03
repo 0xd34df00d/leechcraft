@@ -130,8 +130,10 @@ namespace Azoth
 		 * @param[in] visibleName The human-readable name of the entry.
 		 * @param[in] item The HistoryItem struct describing the message.
 		 */
-		virtual void AddRawMessage (const QString& accountId,
-				const QString& entryId, const QString& visibleName, const HistoryItem& item) = 0;
+		virtual void AddRawMessages (const QString& accountId,
+				const QString& entryId,
+				const QString& visibleName,
+				const QList<HistoryItem>& items) = 0;
 	protected:
 		/** @brief Notifies about last messages for the given entry.
 		 *
