@@ -40,6 +40,7 @@
 #include <util/sll/util.h>
 #include <util/sll/either.h>
 #include <util/sll/void.h>
+#include <util/threads/futures.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 
@@ -832,7 +833,7 @@ namespace Xoox
 
 	QFuture<IHaveServerHistory::DatedFetchResult_t> GlooxAccount::FetchServerHistory (const QDateTime&)
 	{
-		return {};
+		return Util::MakeReadyFuture (IHaveServerHistory::DatedFetchResult_t::Left ("Not implemented yet."));
 	}
 
 	bool GlooxAccount::SupportsBlacklists () const
