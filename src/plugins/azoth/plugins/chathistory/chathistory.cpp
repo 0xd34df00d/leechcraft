@@ -186,7 +186,7 @@ namespace ChatHistory
 	void Plugin::AddRawMessage (const QString& accountId, const QString& entryId,
 			const QString& visibleName, const HistoryItem& item)
 	{
-		Core::Instance ()->AddLogItem (accountId, entryId, visibleName, item);
+		Core::Instance ()->AddLogItems (accountId, entryId, visibleName, { item });
 	}
 
 	void Plugin::InitWidget (ChatHistoryWidget *wh)

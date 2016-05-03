@@ -93,7 +93,7 @@ namespace ChatHistory
 		void SetLoggingEnabled (QObject*, bool);
 
 		void Process (QObject*);
-		void AddLogItem (const QString&, const QString&, const QString&, const LogItem&);
+		void AddLogItems (const QString&, const QString&, const QString&, const QList<LogItem>&);
 
 		QFuture<IHistoryPlugin::MaxTimestampResult_t> GetMaxTimestamp (const QString&);
 

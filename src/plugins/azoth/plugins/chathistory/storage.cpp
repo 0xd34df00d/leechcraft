@@ -764,8 +764,8 @@ namespace ChatHistory
 		}
 	}
 
-	void Storage::AddMessage (const QString& accountID,
-			const QString& entryID, const QString& visibleName, const LogItem& logItem)
+	void Storage::AddMessages (const QString& accountID,
+			const QString& entryID, const QString& visibleName, const QList<LogItem>& items)
 	{
 		Util::DBLock lock (*DB_);
 		try
@@ -819,20 +819,23 @@ namespace ChatHistory
 			EntryCache_ [userId] = visibleName;
 		}
 
-		MessageDumper_.bindValue (":id", userId);
-		MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
-		MessageDumper_.bindValue (":date", logItem.Date_);
-		MessageDumper_.bindValue (":direction", ToVariant (logItem.Dir_));
-		MessageDumper_.bindValue (":message", logItem.Message_);
-		MessageDumper_.bindValue (":variant", logItem.Variant_);
-		MessageDumper_.bindValue (":rich_message", logItem.RichMessage_);
-		MessageDumper_.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
-		MessageDumper_.bindValue (":type", ToVariant (logItem.Type_));
-
-		if (!MessageDumper_.exec ())
+		for (const auto& logItem : items)
 		{
-			Util::DBLock::DumpError (MessageDumper_);
-			return;
+			MessageDumper_.bindValue (":id", userId);
+			MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
+			MessageDumper_.bindValue (":date", logItem.Date_);
+			MessageDumper_.bindValue (":direction", ToVariant (logItem.Dir_));
+			MessageDumper_.bindValue (":message", logItem.Message_);
+			MessageDumper_.bindValue (":variant", logItem.Variant_);
+			MessageDumper_.bindValue (":rich_message", logItem.RichMessage_);
+			MessageDumper_.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
+			MessageDumper_.bindValue (":type", ToVariant (logItem.Type_));
+
+			if (!MessageDumper_.exec ())
+			{
+				Util::DBLock::DumpError (MessageDumper_);
+				return;
+			}
 		}
 
 		lock.Good ();

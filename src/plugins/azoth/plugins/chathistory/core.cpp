@@ -211,29 +211,31 @@ namespace ChatHistory
 
 		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
 
-		AddLogItem (entry->GetParentAccount ()->GetAccountID (),
+		AddLogItems (entry->GetParentAccount ()->GetAccountID (),
 				entry->GetEntryID (),
 				GetVisibleName (entry),
-				LogItem
 				{
-					msg->GetDateTime (),
-					msg->GetDirection (),
-					msg->GetBody (),
-					msg->GetOtherVariant (),
-					msg->GetMessageType (),
-					irtm ? irtm->GetRichBody () : QString {},
-					msg->GetEscapePolicy ()
+					LogItem
+					{
+						msg->GetDateTime (),
+						msg->GetDirection (),
+						msg->GetBody (),
+						msg->GetOtherVariant (),
+						msg->GetMessageType (),
+						irtm ? irtm->GetRichBody () : QString {},
+						msg->GetEscapePolicy ()
+					}
 				});
 	}
 
-	void Core::AddLogItem (const QString& accountId, const QString& entryId,
-			const QString& visibleName, const LogItem& item)
+	void Core::AddLogItems (const QString& accountId, const QString& entryId,
+			const QString& visibleName, const QList<LogItem>& items)
 	{
-		StorageThread_->Schedule (&Storage::AddMessage,
+		StorageThread_->Schedule (&Storage::AddMessages,
 				accountId,
 				entryId,
 				visibleName,
-				item);
+				items);
 	}
 
 	QFuture<IHistoryPlugin::MaxTimestampResult_t> Core::GetMaxTimestamp (const QString& accId)
