@@ -387,6 +387,19 @@ namespace BitTorrent
 		Ui_.UploadingTorrents_->setValue (ssm->GetMaxUploadingTorrents ());
 	}
 
+	namespace
+	{
+		QTime Announce2Time (const boost::posix_time::time_duration& announce)
+		{
+			return QTime
+			{
+				announce.hours (),
+				announce.minutes (),
+				announce.seconds ()
+			};
+		}
+	}
+
 	void TorrentTabWidget::UpdateTorrentControl ()
 	{
 		Ui_.TorrentDownloadRateController_->setValue (Core::Instance ()->GetTorrentDownloadRate (Index_));
@@ -416,11 +429,7 @@ namespace BitTorrent
 		Ui_.LabelState_->setText (i->State_);
 		Ui_.LabelDownloadRate_->setText (Util::MakePrettySize (i->Status_.download_rate) + tr ("/s"));
 		Ui_.LabelUploadRate_->setText (Util::MakePrettySize (i->Status_.upload_rate) + tr ("/s"));
-		Ui_.LabelNextAnnounce_->setText (QTime {
-					i->Status_.next_announce.hours (),
-					i->Status_.next_announce.minutes (),
-					i->Status_.next_announce.seconds ()
-				}.toString ());
+		Ui_.LabelNextAnnounce_->setText (Announce2Time (i->Status_.next_announce).toString ());
 		Ui_.LabelProgress_->setText (QString::number (i->Status_.progress * 100, 'f', 2) + "%");
 		Ui_.LabelDownloaded_->setText (Util::MakePrettySize (i->Status_.total_download));
 		Ui_.LabelUploaded_->setText (Util::MakePrettySize (i->Status_.total_upload));
@@ -471,9 +480,7 @@ namespace BitTorrent
 		Ui_.LabelFailed_->setText (Util::MakePrettySize (i->Status_.total_failed_bytes));
 		Ui_.LabelConnectedPeers_->setText (QString::number (i->Status_.num_peers));
 		Ui_.LabelConnectedSeeds_->setText (QString::number (i->Status_.num_seeds));
-		Ui_.LabelAnnounceInterval_->setText (QTime (i->Status_.announce_interval.hours (),
-					i->Status_.announce_interval.minutes (),
-					i->Status_.announce_interval.seconds ()).toString ());
+		Ui_.LabelAnnounceInterval_->setText (Announce2Time (i->Status_.announce_interval).toString ());
 		Ui_.LabelTotalPieces_->setText (QString::number (i->Info_->num_pieces ()));
 		Ui_.LabelDownloadedPieces_->setText (QString::number (i->Status_.num_pieces));
 		Ui_.LabelPieceSize_->setText (Util::MakePrettySize (i->Info_->piece_length ()));
