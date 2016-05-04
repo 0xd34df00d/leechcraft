@@ -32,6 +32,7 @@
 #include <QVector>
 #include <QFile>
 #include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/torrent_info.hpp>
 #include <libtorrent/alert_types.hpp>
 
 namespace LeechCraft
