@@ -149,7 +149,9 @@ namespace Murm
 		if (Dones_.size () != 2)
 			return;
 
-		qDebug () << Q_FUNC_INFO;
+		qDebug () << Q_FUNC_INFO
+				<< Messages_.size ();
+
 		for (auto& list : Messages_)
 			std::sort (list.begin (), list.end (), Util::ComparingBy (&HistoryItem::Date_));
 
