@@ -68,7 +68,8 @@ namespace Azoth
 	enum class ServerHistoryFeature
 	{
 		AccountSupportsHistory,
-		Configurable
+		Configurable,
+		DatedFetching
 	};
 
 	struct DefaultSortParams
