@@ -72,6 +72,12 @@
 #include <libtorrent/ip_filter.hpp>
 #include <libtorrent/version.hpp>
 #include <libtorrent/session.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+#include <libtorrent/lazy_entry.hpp>
+#include <libtorrent/announce_entry.hpp>
+#endif
+
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -1021,7 +1027,11 @@ namespace BitTorrent
 		libtorrent::add_torrent_params atp;
 		try
 		{
+#if LIBTORRENT_VERSION_NUM >= 10100
+			atp.ti = boost::make_shared<libtorrent::torrent_info> (GetTorrentInfo (filename));
+#else
 			atp.ti = new libtorrent::torrent_info (GetTorrentInfo (filename));
+#endif
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = std::string (path.toUtf8 ().constData ());
 			if (!autoManaged)
@@ -1667,7 +1677,14 @@ namespace BitTorrent
 
 		QList<FileInfo> result;
 		const auto& handle = Handles_.at (idx).Handle_;
-#if LIBTORRENT_VERSION_NUM >= 10000
+#if LIBTORRENT_VERSION_NUM >= 10100
+		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
+					libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
+		if (!infoPtr)
+			return {};
+
+		const auto& info = *infoPtr;
+#elif LIBTORRENT_VERSION_NUM >= 10000
 		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 					libtorrent::torrent_handle::query_torrent_file).torrent_file;
 		if (!infoPtr)
@@ -1677,7 +1694,8 @@ namespace BitTorrent
 #else
 		const auto& info = handle.get_torrent_info ();
 #endif
-		std::vector<libtorrent::size_type> prbytes;
+
+		std::vector<boost::int64_t> prbytes;
 
 		int flags = 0;
 		if (!XmlSettingsManager::Instance ()->
@@ -1802,7 +1820,11 @@ namespace BitTorrent
 
 			if (priorities.empty ())
 			{
-#if LIBTORRENT_VERSION_NUM >= 10000
+#if LIBTORRENT_VERSION_NUM >= 10100
+				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
+							libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
+				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
+#elif LIBTORRENT_VERSION_NUM >= 10000
 				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 							libtorrent::torrent_handle::query_torrent_file).torrent_file;
 				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
@@ -1872,7 +1894,11 @@ namespace BitTorrent
 		try
 		{
 			libtorrent::add_torrent_params atp;
+#if LIBTORRENT_VERSION_NUM >= 10100
+			atp.ti = boost::make_shared<libtorrent::torrent_info> (e);
+#else
 			atp.ti = new libtorrent::torrent_info (e);
+#endif
 			atp.storage_mode = GetCurrentStorageMode ();
 			atp.save_path = path.string ();
 			if (!automanaged)
@@ -1919,7 +1945,12 @@ namespace BitTorrent
 #if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& name = QString::fromStdString (status.name);
 
-		if (!status.torrent_file)
+	#if LIBTORRENT_VERSION_NUM >= 10100
+		const auto filePtr = status.torrent_file.lock ();
+	#else
+		const auto filePtr = status.torrent_file;
+	#endif
+		if (!filePtr)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "torrent"
@@ -1927,7 +1958,7 @@ namespace BitTorrent
 					<< "has finished, but we don't have its info";
 			return;
 		}
-		const auto& info = *status.torrent_file;
+		const auto& info = *filePtr;
 #else
 		const auto& info = torrent.Handle_.get_torrent_info ();
 		const auto& name = QString::fromUtf8 (info.name ().c_str ());

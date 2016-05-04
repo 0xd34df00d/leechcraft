@@ -31,6 +31,11 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+#include <libtorrent/announce_entry.hpp>
+#endif
+
 #include <QHeaderView>
 #include <QFileDialog>
 #include <QMessageBox>

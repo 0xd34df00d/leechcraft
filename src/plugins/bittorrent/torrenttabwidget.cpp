@@ -28,9 +28,15 @@
  **********************************************************************/
 
 #include "torrenttabwidget.h"
+#include <chrono>
 #include <QSortFilterProxyModel>
 #include <QUrl>
 #include <libtorrent/session.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+#include <libtorrent/lazy_entry.hpp>
+#endif
+
 #include <util/util.h>
 #include <util/xpc/util.h>
 #include <util/tags/tagscompleter.h>
@@ -389,6 +395,13 @@ namespace BitTorrent
 
 	namespace
 	{
+#if LIBTORRENT_VERSION_NUM >= 10100
+		QTime Announce2Time (const libtorrent::time_duration& announce)
+		{
+			return QTime { 0, 0 }
+					.addMSecs (std::chrono::duration_cast<std::chrono::seconds> (announce).count ());
+		}
+#else
 		QTime Announce2Time (const boost::posix_time::time_duration& announce)
 		{
 			return QTime
@@ -398,6 +411,7 @@ namespace BitTorrent
 				announce.seconds ()
 			};
 		}
+#endif
 	}
 
 	void TorrentTabWidget::UpdateTorrentControl ()
