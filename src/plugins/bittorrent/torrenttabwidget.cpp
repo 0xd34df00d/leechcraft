@@ -30,7 +30,6 @@
 #include "torrenttabwidget.h"
 #include <QSortFilterProxyModel>
 #include <QUrl>
-#include <QTimer>
 #include <libtorrent/session.hpp>
 #include <util/util.h>
 #include <util/xpc/util.h>
