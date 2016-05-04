@@ -827,8 +827,7 @@ namespace BitTorrent
 		{
 			auto those = Core::Instance ()->GetTrackers (Core::Instance ()->
 					GetProxy ()->MapToSource (si).row ());
-			std::copy (those.begin (), those.end (),
-					std::back_inserter (allTrackers));
+			std::copy (those.begin (), those.end (), std::back_inserter (allTrackers));
 		}
 
 		if (allTrackers.empty ())

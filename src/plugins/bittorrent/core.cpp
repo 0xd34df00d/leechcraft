@@ -1284,7 +1284,7 @@ namespace BitTorrent
 	{
 		int tor = row ? *row : CurrentTorrent_;
 		if (!CheckValidity (tor))
-			return std::vector<libtorrent::announce_entry> ();
+			return {};
 
 		return Handles_.at (tor).Handle_.trackers ();
 	}
