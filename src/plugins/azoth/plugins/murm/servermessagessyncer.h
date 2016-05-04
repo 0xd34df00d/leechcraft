@@ -66,6 +66,7 @@ namespace Murm
 		void HandleFinished (QNetworkReply*, IMessage::Direction);
 
 		void CheckDone ();
+		void ReportError (const QString&);
 	};
 }
 }

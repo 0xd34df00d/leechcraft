@@ -104,6 +104,12 @@ namespace Murm
 		reply->deleteLater ();
 
 		const auto itemsVar = json.toMap () ["response"].toMap () ["items"];
+		if (itemsVar.type () != QVariant::List)
+		{
+			ReportError ("Unable to parse reply.");
+			return;
+		}
+
 		const auto& itemsList = itemsVar.toList ();
 
 		const auto& accId = Acc_->GetAccountID ();
@@ -148,6 +154,14 @@ namespace Murm
 			std::sort (list.begin (), list.end (), Util::ComparingBy (&HistoryItem::Date_));
 
 		const auto res = IHaveServerHistory::DatedFetchResult_t::Right (Messages_);
+		Iface_.reportFinished (&res);
+
+		deleteLater ();
+	}
+
+	void ServerMessagesSyncer::ReportError (const QString& err)
+	{
+		const auto res = IHaveServerHistory::DatedFetchResult_t::Left (err);
 		Iface_.reportFinished (&res);
 
 		deleteLater ();
