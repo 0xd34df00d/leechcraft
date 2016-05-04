@@ -34,6 +34,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/prelude.h>
 #include "vkconnection.h"
 #include "vkaccount.h"
 
@@ -143,6 +144,9 @@ namespace Murm
 			return;
 
 		qDebug () << Q_FUNC_INFO;
+		for (auto& list : Messages_)
+			std::sort (list.begin (), list.end (), Util::ComparingBy (&HistoryItem::Date_));
+
 		const auto res = IHaveServerHistory::DatedFetchResult_t::Right (Messages_);
 		Iface_.reportFinished (&res);
 
