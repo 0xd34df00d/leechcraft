@@ -30,6 +30,12 @@
 #include "trackerschanger.h"
 #include <QMessageBox>
 #include <QMainWindow>
+#include <libtorrent/version.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+#include <libtorrent/announce_entry.hpp>
+#endif
+
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"

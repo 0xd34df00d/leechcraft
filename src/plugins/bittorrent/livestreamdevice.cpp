@@ -47,7 +47,11 @@ namespace BitTorrent
 	{
 		[&]
 		{
+#if LIBTORRENT_VERSION_NUM >= 10100
+			const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file.lock ();
+#else
 			const auto tf = keeper->GetStatus (h, th::query_pieces | th::query_torrent_file).torrent_file;
+#endif
 			if (!tf)
 				throw std::runtime_error { LiveStreamDevice::tr ("No metadata is available yet.").toStdString () };
 			return *tf;

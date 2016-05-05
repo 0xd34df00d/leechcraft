@@ -33,6 +33,7 @@
 #include <QTime>
 #include <libtorrent/torrent_info.hpp>
 #include <libtorrent/torrent_handle.hpp>
+#include <libtorrent/session_status.hpp>
 
 namespace LeechCraft
 {

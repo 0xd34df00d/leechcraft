@@ -544,8 +544,6 @@ namespace BitTorrent
 			property ("UPNPIgnoreNonrouters").toBool ();
 		settings.send_buffer_watermark = XmlSettingsManager::Instance ()->
 			property ("SendBufferWatermark").toInt () * 1024;
-		settings.auto_upload_slots = XmlSettingsManager::Instance ()->
-			property ("AutoUploadSlots").toBool ();
 		settings.use_parole_mode = XmlSettingsManager::Instance ()->
 			property ("UseParoleMode").toBool ();
 		settings.cache_size = 1048576 / 16384 * XmlSettingsManager::Instance ()->
@@ -557,7 +555,14 @@ namespace BitTorrent
 
 		const auto& ports = XmlSettingsManager::Instance ()->property ("OutgoingPorts").toList ();
 		if (ports.size () == 2)
+#if LIBTORRENT_VERSION_NUM >= 10100
+		{
+			settings.outgoing_port = ports.at (0).toInt ();
+			settings.num_outgoing_ports = ports.at (1).toInt () - ports.at (0).toInt ();
+		}
+#else
 			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
+#endif
 
 		settings.use_read_cache = XmlSettingsManager::Instance ()->
 			property ("UseReadCache").toBool ();

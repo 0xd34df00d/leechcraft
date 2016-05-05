@@ -53,6 +53,11 @@
 #include <boost/preprocessor/repetition/repeat.hpp>
 #include <libtorrent/session.hpp>
 #include <libtorrent/version.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+#include <libtorrent/announce_entry.hpp>
+#endif
+
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
@@ -827,8 +832,7 @@ namespace BitTorrent
 		{
 			auto those = Core::Instance ()->GetTrackers (Core::Instance ()->
 					GetProxy ()->MapToSource (si).row ());
-			std::copy (those.begin (), those.end (),
-					std::back_inserter (allTrackers));
+			std::copy (those.begin (), those.end (), std::back_inserter (allTrackers));
 		}
 
 		if (allTrackers.empty ())
