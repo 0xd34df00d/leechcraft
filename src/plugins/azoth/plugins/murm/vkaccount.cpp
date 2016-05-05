@@ -483,6 +483,7 @@ namespace Murm
 		switch (feature)
 		{
 		case ServerHistoryFeature::AccountSupportsHistory:
+		case ServerHistoryFeature::DatedFetching:
 			return true;
 		case ServerHistoryFeature::Configurable:
 			return false;
