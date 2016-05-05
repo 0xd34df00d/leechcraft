@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QMap>
+#include <libtorrent/version.hpp>
 #include <libtorrent/torrent_handle.hpp>
 
 #if LIBTORRENT_VERSION_NUM >= 10100
