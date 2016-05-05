@@ -32,7 +32,10 @@
 #include <QObject>
 #include <QMap>
 #include <libtorrent/torrent_handle.hpp>
+
+#if LIBTORRENT_VERSION_NUM >= 10100
 #include <libtorrent/torrent_status.hpp>
+#endif
 
 namespace LeechCraft
 {
