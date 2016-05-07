@@ -77,11 +77,6 @@ namespace ChatHistory
 
 		SeparatorAction_ = Util::CreateSeparator (this);
 		SeparatorAction_->property ("Azoth/ChatHistory/IsGood").toBool ();
-
-		connect (Core::Instance ().get (),
-				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
-				this,
-				SLOT (handleGotChatLogs (QString, QString, int, int, QVariant)));
 	}
 
 	void Plugin::SecondInit ()
