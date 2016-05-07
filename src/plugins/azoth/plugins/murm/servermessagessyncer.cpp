@@ -129,7 +129,8 @@ namespace Murm
 			};
 
 			const auto& id = accId + QString::number (map ["user_id"].toLongLong ());
-			Messages_ [id] << item;
+			Messages_ [id].VisibleName_ = id;
+			Messages_ [id].Messages_ << item;
 		}
 
 		if (itemsList.size () == RequestSize)
@@ -153,7 +154,8 @@ namespace Murm
 				<< Messages_.size ();
 
 		for (auto& list : Messages_)
-			std::sort (list.begin (), list.end (), Util::ComparingBy (&HistoryItem::Date_));
+			std::sort (list.Messages_.begin (), list.Messages_.end (),
+					Util::ComparingBy (&HistoryItem::Date_));
 
 		const auto res = IHaveServerHistory::DatedFetchResult_t::Right (Messages_);
 		Iface_.reportFinished (&res);

@@ -128,7 +128,12 @@ namespace Azoth
 
 		virtual DefaultSortParams GetSortParams () const = 0;
 
-		using MessagesSyncMap_t = QHash<QString, QList<HistoryItem>>;
+		struct UserHistorySyncInfo
+		{
+			QString VisibleName_;
+			QList<HistoryItem> Messages_;
+		};
+		using MessagesSyncMap_t = QHash<QString, UserHistorySyncInfo>;
 		using DatedFetchResult_t = Util::Either<QString, MessagesSyncMap_t>;
 
 		virtual QFuture<DatedFetchResult_t> FetchServerHistory (const QDateTime& since) = 0;
