@@ -124,7 +124,6 @@ namespace ChatHistory
 		void hookGotMessage2 (LeechCraft::IHookProxy_ptr proxy,
 				QObject *message);
 	private slots:
-
 		void handlePushButton (const QString&);
 
 		void handleHistoryRequested ();
