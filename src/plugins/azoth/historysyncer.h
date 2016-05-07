@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QSet>
+#include "interfaces/azoth/ihaveserverhistory.h"
 
 template<typename>
 class QFuture;
@@ -59,6 +60,8 @@ namespace Azoth
 	private:
 		void StartAccountSync (IAccount*);
 		void RequestAccountFrom (IAccount*, const QDateTime&);
+
+		void AppendItems (const IHaveServerHistory::MessagesSyncMap_t&);
 	};
 }
 }

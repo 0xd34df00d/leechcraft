@@ -33,6 +33,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/either.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
 #include <util/threads/futures.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
@@ -138,6 +139,22 @@ namespace Azoth
 		qDebug () << Q_FUNC_INFO
 				<< acc->GetAccountID ()
 				<< from;
+
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
+		Util::Sequence (this, ihsh->FetchServerHistory (from)) >>
+				[this] (const auto& res)
+				{
+					Util::Visit (res.AsVariant (),
+							[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
+							[this] (const auto& map) { AppendItems (map); });
+				};
+	}
+
+	void HistorySyncer::AppendItems (const IHaveServerHistory::MessagesSyncMap_t& map)
+	{
+		for (const auto storage : Storages_)
+		{
+		}
 	}
 }
 }
