@@ -501,12 +501,8 @@ namespace BitTorrent
 
 		const auto& h = Handles_.at (row).Handle_;
 		const auto& status = StatusKeeper_->GetStatus (h,
-#if LIBTORRENT_VERSION_NUM >= 10000
 				libtorrent::torrent_handle::query_name |
 				libtorrent::torrent_handle::query_save_path);
-#else
-				0);
-#endif
 
 		switch (role)
 		{
@@ -542,11 +538,7 @@ namespace BitTorrent
 			case ColumnID:
 				return row + 1;
 			case ColumnName:
-#if LIBTORRENT_VERSION_NUM >= 10000
 				return QString::fromStdString (status.name);
-#else
-				return QString::fromUtf8 (h.name ().c_str ());
-#endif
 			case ColumnState:
 				return status.paused ?
 						-1 :
@@ -584,11 +576,7 @@ namespace BitTorrent
 			case ColumnID:
 				return row + 1;
 			case ColumnName:
-#if LIBTORRENT_VERSION_NUM >= 10000
 				return QString::fromStdString (status.name);
-#else
-				return QString::fromUtf8 (h.name ().c_str ());
-#endif
 			case ColumnState:
 				return GetStringForStatus (status);
 			{
@@ -688,18 +676,10 @@ namespace BitTorrent
 		case Qt::ToolTipRole:
 		{
 			QString result;
-#if LIBTORRENT_VERSION_NUM >= 10000
 			const auto& name = QString::fromStdString (status.name);
-#else
-			const auto& name = QString::fromUtf8 (h.name ().c_str ());
-#endif
 			result += tr ("Name:") + " " + name + "\n";
 			result += tr ("Destination:") + " " +
-#if LIBTORRENT_VERSION_NUM >= 10000
 				QString::fromStdString (status.save_path) + "\n";
-#else
-				QString::fromUtf8 (h.save_path ().c_str ()) + "\n";
-#endif
 			result += tr ("Progress:") + " " +
 				QString (tr ("%1% (%2 of %3)")
 						.arg (status.progress * 100, 0, 'f', 2)
@@ -847,14 +827,9 @@ namespace BitTorrent
 
 		std::unique_ptr<TorrentInfo> result (new TorrentInfo);
 		result->Status_ = StatusKeeper_->GetStatus (handle, 0xffffffff);
-#if LIBTORRENT_VERSION_NUM >= 10000
 		if (const auto info = handle.torrent_file ())
 			result->Info_.reset (new libtorrent::torrent_info (*info));
 		result->Destination_ = QString::fromStdString (result->Status_.save_path);
-#else
-		result->Info_.reset (new libtorrent::torrent_info (handle.get_torrent_info ()));
-		result->Destination_ = QString::fromUtf8 (handle.save_path ().c_str ());
-#endif
 		result->State_ = GetStringForStatus (result->Status_);
 
 		if (!result->Status_.error.empty ())
@@ -1072,12 +1047,8 @@ namespace BitTorrent
 		handle.auto_managed (autoManaged);
 
 		beginInsertRows (QModelIndex (), Handles_.size (), Handles_.size ());
-#if LIBTORRENT_VERSION_NUM >= 10000
 		auto torrentFileName = QString::fromStdString (handle
 					.status (libtorrent::torrent_handle::query_name).name);
-#else
-		QString torrentFileName = QString::fromUtf8 (handle.name ().c_str ());
-#endif
 		if (!torrentFileName.endsWith (".torrent"))
 			torrentFileName.append (".torrent");
 
@@ -1324,13 +1295,9 @@ namespace BitTorrent
 		if (!CheckValidity (idx))
 			return QString ();
 
-#if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& handle = Handles_.at (idx).Handle_;
 		const auto& path = StatusKeeper_->GetStatus (handle,
 					libtorrent::torrent_handle::query_save_path).save_path;
-#else
-		const auto& path = Handles_.at (idx).Handle_.save_path ();
-#endif
 		return QString::fromStdString (path);
 	}
 
@@ -1477,12 +1444,8 @@ namespace BitTorrent
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "not saving erroneous torrent:"
-#if LIBTORRENT_VERSION_NUM >= 10000
 					<< StatusKeeper_->GetStatus (a.handle, libtorrent::torrent_handle::query_name)
 							.name.c_str ();
-#else
-					<< a.handle.name ().c_str ();
-#endif
 			return;
 		}
 
@@ -1516,7 +1479,6 @@ namespace BitTorrent
 			return;
 		}
 
-#if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& file = a.handle.torrent_file ();
 		if (!file)
 		{
@@ -1526,9 +1488,6 @@ namespace BitTorrent
 		}
 
 		const auto& info = *file;
-#else
-		const auto& info = a.handle.get_torrent_info ();
-#endif
 		torrent->TorrentFileName_ = QString::fromUtf8 (info.name ().c_str ()) + ".torrent";
 		torrent->FilePriorities_.resize (info.num_files ());
 		std::fill (torrent->FilePriorities_.begin (),
@@ -1577,12 +1536,8 @@ namespace BitTorrent
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown torrent handle"
-#if LIBTORRENT_VERSION_NUM >= 10000
 					<< StatusKeeper_->GetStatus (h, libtorrent::torrent_handle::query_name)
 							.name.c_str ();
-#else
-					<< h.name ().c_str ();
-#endif
 			return;
 		}
 
@@ -1684,15 +1639,13 @@ namespace BitTorrent
 			return {};
 
 		const auto& info = *infoPtr;
-#elif LIBTORRENT_VERSION_NUM >= 10000
+#else
 		const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 					libtorrent::torrent_handle::query_torrent_file).torrent_file;
 		if (!infoPtr)
 			return {};
 
 		const auto& info = *infoPtr;
-#else
-		const auto& info = handle.get_torrent_info ();
 #endif
 
 		std::vector<boost::int64_t> prbytes;
@@ -1824,12 +1777,10 @@ namespace BitTorrent
 				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 							libtorrent::torrent_handle::query_torrent_file).torrent_file.lock ();
 				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
-#elif LIBTORRENT_VERSION_NUM >= 10000
+#else
 				const auto& infoPtr = StatusKeeper_->GetStatus (handle,
 							libtorrent::torrent_handle::query_torrent_file).torrent_file;
 				const auto numFiles = infoPtr ? infoPtr->num_files () : 0;
-#else
-				const auto numFiles = handle.get_torrent_info ().num_files ();
 #endif
 				priorities.resize (numFiles);
 				std::fill (priorities.begin (), priorities.end (), 1);
@@ -1907,16 +1858,9 @@ namespace BitTorrent
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 
-#if LIBTORRENT_VERSION_NUM >= 10000
 			std::copy (resumeData.constData (),
 					resumeData.constData () + resumeData.size (),
 					std::back_inserter (atp.resume_data));
-#else
-			atp.resume_data = new std::vector<char>;
-			std::copy (resumeData.constData (),
-					resumeData.constData () + resumeData.size (),
-					std::back_inserter (*atp.resume_data));
-#endif
 
 			handle = Session_->add_torrent (atp);
 			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
@@ -1935,14 +1879,11 @@ namespace BitTorrent
 	{
 		TorrentStruct torrent = Handles_.at (i);
 		const auto& status = StatusKeeper_->GetStatus (torrent.Handle_,
-#if LIBTORRENT_VERSION_NUM >= 10000
 				libtorrent::torrent_handle::query_save_path |
 				libtorrent::torrent_handle::query_torrent_file |
 				libtorrent::torrent_handle::query_name |
-#endif
 				libtorrent::torrent_handle::query_pieces);
 
-#if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& name = QString::fromStdString (status.name);
 
 	#if LIBTORRENT_VERSION_NUM >= 10100
@@ -1959,10 +1900,6 @@ namespace BitTorrent
 			return;
 		}
 		const auto& info = *filePtr;
-#else
-		const auto& info = torrent.Handle_.get_torrent_info ();
-		const auto& name = QString::fromUtf8 (info.name ().c_str ());
-#endif
 
 		if (LiveStreamManager_->IsEnabledOn (torrent.Handle_) &&
 				status.num_pieces != info.num_pieces ())
@@ -1977,11 +1914,7 @@ namespace BitTorrent
 				"org.LC.Plugins.BitTorrent.DLFinished/" + name,
 				QStringList (name));
 
-#if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& savePath = status.save_path;
-#else
-		const auto& savePath = torrent.Handle_.save_path ();
-#endif
 		const auto& savePathStr = QString::fromUtf8 (savePath.c_str ());
 
 		const auto iem = Proxy_->GetEntityManager ();
@@ -2141,12 +2074,8 @@ namespace BitTorrent
 					if (handle.need_save_resume_data ())
 						handle.save_resume_data ();
 
-#if LIBTORRENT_VERSION_NUM >= 10000
 					const auto& savePath = StatusKeeper_->GetStatus (handle,
 								libtorrent::torrent_handle::query_save_path).save_path;
-#else
-					const auto& savePath = Handles_.at (i).Handle_.save_path ();
-#endif
 					settings.setValue ("SavePath",
 							QString::fromUtf8 (savePath.c_str ()));
 					settings.setValue ("Filename",
@@ -2408,13 +2337,9 @@ namespace BitTorrent
 	private:
 		QString GetTorrentName (const libtorrent::torrent_handle& handle) const
 		{
-#if LIBTORRENT_VERSION_NUM >= 10000
 			const auto& status = Core::Instance ()->GetStatusKeeper ()->
 					GetStatus (handle, libtorrent::torrent_handle::query_name);
 			return QString::fromStdString (status.name);
-#else
-			return QString::fromStdString (handle.name ());
-#endif
 		}
 	};
 

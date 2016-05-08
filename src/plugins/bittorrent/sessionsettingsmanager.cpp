@@ -58,11 +58,6 @@ namespace BitTorrent
 		sslPortChanged ();
 		tcpPortRangeChanged ();
 
-#if LIBTORRENT_VERSION_NUM < 10000
-		if (XmlSettingsManager::Instance ()->
-				property ("EnableMetadata").toBool ())
-			Session_->add_extension (&libtorrent::create_metadata_plugin);
-#endif
 		if (XmlSettingsManager::Instance ()->
 				property ("EnablePEX").toBool ())
 			Session_->add_extension (&libtorrent::create_ut_pex_plugin);

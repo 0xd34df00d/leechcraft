@@ -106,11 +106,8 @@
 				<item type="checkbox" property="EnablePEX" default="true">
 					<label lang="en" value="Enable PeX" />
 				</item>
-				<item type="checkbox" property="EnableMetadata" default="true">
-					<label lang="en" value="Allow to download metadata from the swarm" />
-				</item>
 				<item type="checkbox" property="EnableUTMetadata" default="true">
-					<label lang="en" value="Same as the above, but µTorrent-compatible" />
+					<label lang="en" value="Allow downloading the metadata from the swarm in a µTorrent-compatible way" />
 				</item>
 				<item type="checkbox" property="EnableSmartBan" default="true">
 					<label lang="en" value="Enable Smart Ban" />
