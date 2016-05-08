@@ -70,6 +70,8 @@ namespace ChatHistory
 							[this] (const ConsistencyChecker::Succeeded&) { StartStorage (); },
 							[this] (const ConsistencyChecker::Failed& failed)
 							{
+								qWarning () << Q_FUNC_INFO
+										<< "db is broken, gonna repair";
 								Util::Sequence (this, failed->DumpReinit ()) >>
 										[this] (const ConsistencyChecker::DumpResult_t& result)
 										{
@@ -322,7 +324,6 @@ namespace ChatHistory
 
 	void Core::StartStorage ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		StorageThread_->SetPaused (false);
 		StorageThread_->start (QThread::LowestPriority);
 		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
