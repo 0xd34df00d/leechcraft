@@ -1091,18 +1091,20 @@ namespace LackMan
 	void Storage::InitTables ()
 	{
 		QSqlQuery query (DB_);
-		QStringList names;
-		names << "packages"
-				<< "packagesizes"
-				<< "packagearchivers"
-				<< "deps"
-				<< "infos"
-				<< "locations"
-				<< "images"
-				<< "tags"
-				<< "repos"
-				<< "components"
-				<< "installed";
+		const QStringList names
+		{
+			"packages"
+			"packagesizes",
+			"packagearchivers",
+			"deps",
+			"infos",
+			"locations",
+			"images",
+			"tags",
+			"repos",
+			"components",
+			"installed"
+		};
 		for (const auto& name : names)
 			if (!DB_.tables ().contains (name))
 				if (!query.exec (LoadQuery (QString ("create_table_%1").arg (name))))
