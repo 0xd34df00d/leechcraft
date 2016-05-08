@@ -39,6 +39,7 @@
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -155,9 +156,16 @@ namespace Azoth
 			const IHaveServerHistory::MessagesSyncMap_t& map)
 	{
 		for (const auto& pair : Util::Stlize (map))
+		{
+			const auto& entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (pair.first));
+			const auto& name = entry ?
+					entry->GetEntryName () :
+					pair.second.VisibleName_;
+
 			for (const auto storage : Storages_)
 				storage->AddRawMessages (acc->GetAccountID (),
-						pair.first, pair.second.VisibleName_, pair.second.Messages_);
+						pair.first, name, pair.second.Messages_);
+		}
 	}
 }
 }
