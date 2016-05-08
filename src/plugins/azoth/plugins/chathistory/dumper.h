@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QProcess>
+#include <QFuture>
 
 namespace LeechCraft
 {
@@ -48,13 +50,27 @@ namespace ChatHistory
 
 		int FinishedCount_ = 0;
 	public:
+		struct Finished {};
+		struct Error
+		{
+			QString What_;
+
+			Error (const QString& str)
+			: What_ { str }
+			{
+			}
+		};
+		using Result_t = boost::variant<Finished, Error>;
+	private:
+		QFutureInterface<Result_t> Iface_;
+	public:
 		Dumper (const QString& from, const QString& to, QObject* = nullptr);
+
+		QFuture<Result_t> GetFuture ();
 	private:
 		void HandleProcessFinished (QProcess*);
 		void HandleProcessError (const QProcess*);
-	signals:
-		void error (const QString&);
-		void finished ();
+		void ReportResult (const Result_t&);
 	};
 }
 }

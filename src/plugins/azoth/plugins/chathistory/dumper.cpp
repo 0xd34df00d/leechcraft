@@ -42,6 +42,8 @@ namespace ChatHistory
 	, Dumper_ { new QProcess { this } }
 	, Restorer_ { new QProcess { this } }
 	{
+		Iface_.reportStarted ();
+
 		Dumper_->setStandardOutputProcess (Restorer_);
 
 		new Util::SlotClosure<Util::NoDeletePolicy>
@@ -78,6 +80,11 @@ namespace ChatHistory
 		Restorer_->start ("sqlite3", { to });
 	}
 
+	QFuture<Dumper::Result_t> Dumper::GetFuture ()
+	{
+		return Iface_.future ();
+	}
+
 	void Dumper::HandleProcessFinished (QProcess *process)
 	{
 		const auto& stderr = QString::fromUtf8 (process->readAllStandardError ());
@@ -95,19 +102,19 @@ namespace ChatHistory
 				break;
 
 			HadError_ = true;
-			emit error (tr ("Dumping process crashed: %1.")
+			ReportResult (tr ("Dumping process crashed: %1.")
 					.arg (stderr.isEmpty () ?
 							process->errorString () :
 							stderr));
 			break;
 		case QProcess::NormalExit:
 			if (exitCode)
-				emit error (tr ("Dumping process finished with error: %1 (%2).")
+				ReportResult (tr ("Dumping process finished with error: %1 (%2).")
 						.arg (stderr)
 						.arg (exitCode));
 			else if (++FinishedCount_ == 2)
 			{
-				emit finished ();
+				ReportResult (Finished {});
 				deleteLater ();
 			}
 			break;
@@ -126,11 +133,16 @@ namespace ChatHistory
 		HadError_ = true;
 
 		if (process->error () == QProcess::FailedToStart)
-			emit error (tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?")
+			ReportResult (tr ("Unable to start dumping process: %1. Do you have sqlite3 installed?")
 					.arg (process->errorString ()));
 		else
-			emit error (tr ("Unable to dump the database: %1.")
+			ReportResult (tr ("Unable to dump the database: %1.")
 					.arg (process->errorString ()));
+	}
+
+	void Dumper::ReportResult (const Result_t& result)
+	{
+		Iface_.reportFinished (&result);
 	}
 }
 }
