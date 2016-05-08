@@ -29,6 +29,7 @@
 
 #include "formats.h"
 #include <algorithm>
+#include <cassert>
 #include <QtDebug>
 #include <QProcess>
 #include "transcodingparams.h"
@@ -112,9 +113,7 @@ namespace LMP
 				return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown bitrate type";
-			return QList<int> ();
+			assert (false);
 		}
 	};
 
@@ -146,9 +145,7 @@ namespace LMP
 			}
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown bitrate type";
-			return QList<int> ();
+			assert (false);
 		}
 
 		QStringList ToFFmpeg (const TranscodingParams& params) const
@@ -243,9 +240,7 @@ namespace LMP
 				return { -9, -8, -7, -6, -5, -4, -3, -2, -1 };
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown bitrate type";
-			return QList<int> ();
+			assert (false);
 		}
 	};
 
