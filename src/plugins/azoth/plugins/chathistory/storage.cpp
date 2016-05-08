@@ -764,6 +764,22 @@ namespace ChatHistory
 		}
 	}
 
+	namespace
+	{
+		void BindStrict (QSqlQuery& dumper, qint32 userId, qint32 accountId, const LogItem& logItem)
+		{
+			dumper.bindValue (":id", userId);
+			dumper.bindValue (":account_id", accountId);
+			dumper.bindValue (":date", logItem.Date_);
+			dumper.bindValue (":direction", ToVariant (logItem.Dir_));
+			dumper.bindValue (":message", logItem.Message_);
+			dumper.bindValue (":variant", logItem.Variant_);
+			dumper.bindValue (":rich_message", logItem.RichMessage_);
+			dumper.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
+			dumper.bindValue (":type", ToVariant (logItem.Type_));
+		}
+	}
+
 	void Storage::AddMessages (const QString& accountID,
 			const QString& entryID, const QString& visibleName,
 			const QList<LogItem>& items, bool fuzzy)
@@ -822,15 +838,7 @@ namespace ChatHistory
 
 		for (const auto& logItem : items)
 		{
-			MessageDumper_.bindValue (":id", userId);
-			MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
-			MessageDumper_.bindValue (":date", logItem.Date_);
-			MessageDumper_.bindValue (":direction", ToVariant (logItem.Dir_));
-			MessageDumper_.bindValue (":message", logItem.Message_);
-			MessageDumper_.bindValue (":variant", logItem.Variant_);
-			MessageDumper_.bindValue (":rich_message", logItem.RichMessage_);
-			MessageDumper_.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
-			MessageDumper_.bindValue (":type", ToVariant (logItem.Type_));
+			BindStrict (MessageDumper_, userId, Accounts_ [accountID], logItem);
 
 			if (!MessageDumper_.exec ())
 			{
