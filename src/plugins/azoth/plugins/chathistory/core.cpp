@@ -29,7 +29,6 @@
 
 #include "core.h"
 #include <cmath>
-#include <boost/filesystem.hpp>
 #include <QMessageBox>
 #include <QMetaObject>
 #include <QVariant>
@@ -48,7 +47,7 @@
 #include <interfaces/azoth/irichtextmessage.h>
 #include "storagethread.h"
 #include "storagestructures.h"
-#include "dumper.h"
+#include "consistencychecker.h"
 
 namespace LeechCraft
 {
@@ -63,17 +62,30 @@ namespace ChatHistory
 	{
 		StorageThread_->SetPaused (true);
 
-		StorageThread_->start (QThread::LowestPriority);
-		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
-				[this] (const Storage::InitializationResult_t& res)
+		auto checker = new ConsistencyChecker { Storage::GetDatabasePath () };
+		Util::Sequence (this, checker->StartCheck ()) >>
+				[this] (const ConsistencyChecker::CheckResult_t& result)
 				{
-					if (res.IsRight ())
-					{
-						StorageThread_->SetPaused (false);
-						return;
-					}
-
-					HandleStorageError (res.GetLeft ());
+					Util::Visit (result,
+							[this] (const ConsistencyChecker::Succeeded&) { StartStorage (); },
+							[this] (const ConsistencyChecker::Failed& failed)
+							{
+								Util::Sequence (this, failed->DumpReinit ()) >>
+										[this] (const ConsistencyChecker::DumpResult_t& result)
+										{
+											Util::Visit (result,
+													[] (const ConsistencyChecker::DumpError& err)
+													{
+														QMessageBox::critical (nullptr,
+																"Azoth ChatHistory",
+																err.Error_);
+													},
+													[this] (const ConsistencyChecker::DumpFinished& res)
+													{
+														HandleDumpFinished (res.OldFileSize_, res.NewFileSize_);
+													});
+										};
+							});
 				};
 
 		TabClass_.TabClass_ = "Chathistory";
@@ -308,82 +320,38 @@ namespace ChatHistory
 		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
 	}
 
-	void Core::DumpReinit ()
+	void Core::StartStorage ()
 	{
-		const auto& path = Storage::GetDatabasePath ();
-		const QFileInfo fi { path };
-		const auto filesize = fi.size ();
+		qDebug () << Q_FUNC_INFO;
+		StorageThread_->SetPaused (false);
+		StorageThread_->start (QThread::LowestPriority);
+		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
+				[this] (const Storage::InitializationResult_t& res)
+				{
+					if (res.IsRight ())
+					{
+						StorageThread_->SetPaused (false);
+						return;
+					}
 
-		const auto available = boost::filesystem::space (path.toStdString ()).available;
-		qDebug () << Q_FUNC_INFO
-				<< "db size:" << filesize
-				<< "free space:" << available;
-
-		if (available < static_cast<qint64> (filesize))
-		{
-			if (QMessageBox::question (nullptr,
-						"Azoth ChatHistory",
-						tr ("Not enough available space on partition with file %1: "
-							"%2 while we expect the restored file to be around %3. "
-							"Please either clean up the partition and retry or "
-							"cancel the restore process.")
-								.arg ("<em>" + path + "</em>")
-								.arg (Util::MakePrettySize (available))
-								.arg (Util::MakePrettySize (filesize)),
-						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Retry)
-				DumpReinit ();
-
-			return;
-		}
-
-		const auto& newPath = path + ".new";
-
-		if (QFile::exists (newPath))
-		{
-			if (QMessageBox::question (nullptr,
-						"Azoth ChatHistory",
-						tr ("%1 already exists. Please either remove the file manually to retry the restore process or cancel it.")
-								.arg ("<em>" + newPath + "</em>"),
-						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Retry)
-				DumpReinit ();
-
-			return;
-		}
-
-		const auto dumper = new Dumper { path, newPath };
-		connect (dumper,
-				SIGNAL (error (QString)),
-				this,
-				SLOT (handleDumperError (QString)));
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[=] { HandleDumperFinished (path, newPath); },
-			dumper,
-			SIGNAL (finished ()),
-			this
-		};
+					HandleStorageError (res.GetLeft ());
+				};
 	}
 
-	void Core::HandleDumperFinished (const QString& from, const QString& to)
+	void Core::HandleStorageError (const Storage::InitializationError_t& error)
 	{
-		const auto oldSize = QFileInfo { from }.size ();
-		const auto newSize = QFileInfo { to }.size ();
+		Util::Visit (error,
+				[] (const Storage::GeneralError& err)
+				{
+					QMessageBox::critical (nullptr,
+							"Azoth ChatHistory",
+							tr ("Unable to initialize permanent storage. %1.")
+								.arg (err.ErrorText_));
+				});
+	}
 
-		const auto& backup = from + ".bak";
-		if (!QFile::rename (from, backup))
-		{
-			QMessageBox::critical (nullptr,
-					"Azoth ChatHistory",
-					tr ("Unable to backup %1 to %2. Please remove %2 and hit OK.")
-						.arg (from)
-						.arg (backup));
-			HandleDumperFinished (from, to);
-			return;
-		}
-
-		QFile::rename (to, from);
-
+	void Core::HandleDumpFinished (qint64 oldSize, qint64 newSize)
+	{
 		StorageThread_->SetPaused (false);
 
 		auto future = StorageThread_->Schedule (&Storage::Initialize);
@@ -411,35 +379,6 @@ namespace ChatHistory
 								.arg (count.get_value_or (0))
 								.arg (greet));
 				};
-	}
-
-	void Core::HandleStorageError (const Storage::InitializationError_t& error)
-	{
-		Util::Visit (error,
-				[] (const Storage::GeneralError& err)
-				{
-					QMessageBox::critical (nullptr,
-							"Azoth ChatHistory",
-							tr ("Unable to initialize permanent storage. %1.")
-								.arg (err.ErrorText_));
-				},
-				[this] (const Storage::Corruption&)
-				{
-					if (QMessageBox::question (nullptr,
-								"Azoth ChatHistory",
-								tr ("Sadly, seems like the database is corrupted. Would you like to try restoring its contents?"),
-								QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
-						return;
-
-					DumpReinit ();
-				});
-	}
-
-	void Core::handleDumperError (const QString& error)
-	{
-		QMessageBox::critical (nullptr,
-				"Azoth ChatHistory",
-				tr ("Unable to restore the database.") + " " + error);
 	}
 }
 }

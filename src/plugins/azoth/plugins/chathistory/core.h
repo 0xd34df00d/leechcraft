@@ -116,12 +116,9 @@ namespace ChatHistory
 		void LoadDisabled ();
 		void SaveDisabled ();
 
-		void DumpReinit ();
-		void HandleDumperFinished (const QString&, const QString&);
-
+		void StartStorage ();
 		void HandleStorageError (const Storage::InitializationError_t&);
-	private slots:
-		void handleDumperError (const QString&);
+		void HandleDumpFinished (qint64, qint64);
 	};
 }
 }
