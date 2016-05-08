@@ -30,8 +30,9 @@
 #include "formats.h"
 #include <algorithm>
 #include <cassert>
-#include <QtDebug>
 #include <QProcess>
+#include <QtDebug>
+#include <util/sll/prelude.h>
 #include "transcodingparams.h"
 
 namespace LeechCraft
@@ -296,8 +297,8 @@ namespace LMP
 		Formats_ << std::make_shared<MP3Format> ();
 		Formats_ << std::make_shared<WMAFormat> ();
 
-		std::copy_if (Formats_.begin (), Formats_.end (), std::back_inserter (EnabledFormats_),
-				[] (const Format_ptr format)
+		EnabledFormats_ = Util::Filter (Formats_,
+				[] (const Format_ptr& format)
 				{
 					return S_FFmpegCodecs_.contains (QRegExp (".EA... " + format->GetCodecName ()));
 				});
