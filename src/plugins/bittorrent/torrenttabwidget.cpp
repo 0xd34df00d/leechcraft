@@ -399,7 +399,7 @@ namespace BitTorrent
 		QTime Announce2Time (const libtorrent::time_duration& announce)
 		{
 			return QTime { 0, 0 }
-					.addMSecs (std::chrono::duration_cast<std::chrono::seconds> (announce).count ());
+					.addMSecs (libtorrent::duration_cast<libtorrent::seconds> (announce).count ());
 		}
 #else
 		QTime Announce2Time (const boost::posix_time::time_duration& announce)
