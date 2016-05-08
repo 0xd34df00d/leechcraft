@@ -152,7 +152,7 @@ namespace LackMan
 	{
 		InstalledDependencyInfoList result;
 
-		Q_FOREACH (int id, GetInstalledPackagesIDs ())
+		for (int id : GetInstalledPackagesIDs ())
 		{
 			PackageShortInfo psi;
 			try
@@ -242,7 +242,7 @@ namespace LackMan
 			throw std::runtime_error ("Just inserted repo cannot be found.");
 		}
 
-		Q_FOREACH (const QString& component, ri.GetComponents ())
+		for (const auto& component : ri.GetComponents ())
 			AddComponent (repoId, component);
 
 		lock.Good ();
@@ -253,7 +253,7 @@ namespace LackMan
 	void Storage::RemoveRepo (int repoId)
 	{
 		QStringList components = GetComponents (repoId);
-		Q_FOREACH (const QString& component, components)
+		for (const auto& component : components)
 			RemoveComponent (repoId, component);
 
 		QueryRemoveRepo_.bindValue (":repo_id", repoId);
@@ -390,7 +390,7 @@ namespace LackMan
 		}
 		remover.finish ();
 
-		Q_FOREACH (int packageId, toRemove)
+		for (int packageId : toRemove)
 		{
 			emit packageRemoved (packageId);
 			RemovePackage (packageId);
@@ -1103,7 +1103,7 @@ namespace LackMan
 				<< "repos"
 				<< "components"
 				<< "installed";
-		Q_FOREACH (const QString& name, names)
+		for (const auto& name : names)
 			if (!DB_.tables ().contains (name))
 				if (!query.exec (LoadQuery (QString ("create_table_%1").arg (name))))
 				{
