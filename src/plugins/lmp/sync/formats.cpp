@@ -49,8 +49,11 @@ namespace LMP
 
 	QStringList Format::ToFFmpeg (const TranscodingParams& params) const
 	{
-		QStringList result;
-		result << "-acodec" << GetCodecID ();
+		QStringList result
+		{
+			"-acodec",
+			GetCodecID ()
+		};
 		StandardQualityAppend (result, params);
 		return result;
 	}
