@@ -34,6 +34,7 @@
 #include <util/sll/either.h>
 #include <util/sll/prelude.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
@@ -153,9 +154,10 @@ namespace Azoth
 	void HistorySyncer::AppendItems (IAccount *acc,
 			const IHaveServerHistory::MessagesSyncMap_t& map)
 	{
-		for (const auto storage : Storages_)
-		{
-		}
+		for (const auto& pair : Util::Stlize (map))
+			for (const auto storage : Storages_)
+				storage->AddRawMessages (acc->GetAccountID (),
+						pair.first, pair.second.VisibleName_, pair.second.Messages_);
 	}
 }
 }
