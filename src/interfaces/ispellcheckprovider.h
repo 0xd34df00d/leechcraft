@@ -121,5 +121,5 @@ public:
 	virtual ISpellChecker_ptr CreateSpellchecker () = 0;
 };
 
-Q_DECLARE_INTERFACE (ISpellChecker, "org.LeechCraft.ISpellChecker/1.0");
-Q_DECLARE_INTERFACE (ISpellCheckProvider, "org.LeechCraft.ISpellCheckProvider/1.0");
+Q_DECLARE_INTERFACE (ISpellChecker, "org.LeechCraft.ISpellChecker/1.0")
+Q_DECLARE_INTERFACE (ISpellCheckProvider, "org.LeechCraft.ISpellCheckProvider/1.0")

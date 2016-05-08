@@ -84,4 +84,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IKnowFileExtensions,
-		"org.LeechCraft.Monocle.IKnowFileExtensions/1.0");
+		"org.LeechCraft.Monocle.IKnowFileExtensions/1.0")

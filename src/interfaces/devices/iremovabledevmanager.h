@@ -93,4 +93,4 @@ public:
 	virtual void MountDevice (const QString& id) = 0;
 };
 
-Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0");
+Q_DECLARE_INTERFACE (IRemovableDevManager, "org.Deviant.LeechCraft.IRemovableDevManager/1.0")

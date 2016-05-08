@@ -357,7 +357,7 @@ public:
 	}
 };
 
-Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0");
+Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 
 #define CURRENT_API_LEVEL 20
 

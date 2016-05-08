@@ -74,4 +74,4 @@ public:
 	virtual ~IShortcutProxy () { }
 };
 
-Q_DECLARE_INTERFACE (IShortcutProxy, "org.Deviant.LeechCraft.IShortcutProxy/1.0");
+Q_DECLARE_INTERFACE (IShortcutProxy, "org.Deviant.LeechCraft.IShortcutProxy/1.0")

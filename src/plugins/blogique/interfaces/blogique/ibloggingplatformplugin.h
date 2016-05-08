@@ -70,5 +70,5 @@ namespace Blogique
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBloggingPlatformPlugin,
-		"org.Deviant.LeechCraft.Blogique.IBloggingPlatformPlugin/1.0");
+		"org.Deviant.LeechCraft.Blogique.IBloggingPlatformPlugin/1.0")
 

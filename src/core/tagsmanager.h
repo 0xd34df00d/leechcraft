@@ -80,7 +80,7 @@ namespace LeechCraft
 	};
 };
 
-Q_DECLARE_METATYPE (LeechCraft::TagsManager::TagsDictionary_t);
+Q_DECLARE_METATYPE (LeechCraft::TagsManager::TagsDictionary_t)
 
 #endif
 

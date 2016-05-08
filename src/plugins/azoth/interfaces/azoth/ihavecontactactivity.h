@@ -139,6 +139,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactActivity,
-		"org.LeechCraft.Azoth.IHaveContactActivity/1.0");
+		"org.LeechCraft.Azoth.IHaveContactActivity/1.0")
 
 

@@ -44,5 +44,5 @@ namespace Blogique
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IPluginProxy,
-		"org.Deviant.LeechCraft.Plugins.Blogique.Plugins.IPluginProxy/1.0");
+		"org.Deviant.LeechCraft.Plugins.Blogique.Plugins.IPluginProxy/1.0")
 

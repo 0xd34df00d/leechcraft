@@ -71,7 +71,7 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IWebPlugin,
-		"org.Deviant.LeechCraft.Poshuku.IWebPlugin/1.0");
+		"org.Deviant.LeechCraft.Poshuku.IWebPlugin/1.0")
 
 #endif
 

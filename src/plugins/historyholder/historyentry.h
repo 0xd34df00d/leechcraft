@@ -47,4 +47,4 @@ namespace HistoryHolder
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::HistoryHolder::HistoryEntry);
+Q_DECLARE_METATYPE (LeechCraft::HistoryHolder::HistoryEntry)

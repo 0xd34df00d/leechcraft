@@ -110,4 +110,4 @@ namespace SeekThru
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::SeekThru::Description);
+Q_DECLARE_METATYPE (LeechCraft::SeekThru::Description)

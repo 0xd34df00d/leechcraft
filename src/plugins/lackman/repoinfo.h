@@ -231,9 +231,9 @@ namespace LackMan
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LackMan::RepoInfo);
-Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageShortInfo);
-Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageShortInfoList);
-Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageInfo);
+Q_DECLARE_METATYPE (LeechCraft::LackMan::RepoInfo)
+Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageShortInfo)
+Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageShortInfoList)
+Q_DECLARE_METATYPE (LeechCraft::LackMan::PackageInfo)
 
 #endif

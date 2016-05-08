@@ -49,4 +49,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPPlugin, "org.LeechCraft.LMP.ILMPPlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ILMPPlugin, "org.LeechCraft.LMP.ILMPPlugin/1.0")

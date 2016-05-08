@@ -210,14 +210,14 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IAnnotation,
-		"org.LeechCraft.Monocle.IAnnotation/1.0");
+		"org.LeechCraft.Monocle.IAnnotation/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ITextAnnotation,
-		"org.LeechCraft.Monocle.ITextAnnotation/1.0");
+		"org.LeechCraft.Monocle.ITextAnnotation/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHighlightAnnotation,
-		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0");
+		"org.LeechCraft.Monocle.IHighlightAnnotation/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ILinkAnnotation,
-		"org.LeechCraft.Monocle.ILinkAnnotation/1.0");
+		"org.LeechCraft.Monocle.ILinkAnnotation/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ICaretAnnotation,
-		"org.LeechCraft.Monocle.ICaretAnnotation/1.0");
+		"org.LeechCraft.Monocle.ICaretAnnotation/1.0")
 
 Q_DECLARE_METATYPE (LeechCraft::Monocle::IAnnotation_ptr)

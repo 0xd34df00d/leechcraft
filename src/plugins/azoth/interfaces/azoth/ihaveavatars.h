@@ -117,4 +117,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveAvatars,
-		"org.LeechCraft.Azoth.IHaveAvatars/1.0");
+		"org.LeechCraft.Azoth.IHaveAvatars/1.0")

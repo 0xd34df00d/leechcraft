@@ -467,9 +467,9 @@ public:
 	virtual void raiseTab (QWidget *tabContents) = 0;
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TabFeatures);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::TabFeatures)
 
-Q_DECLARE_INTERFACE (ITabWidget, "org.Deviant.LeechCraft.ITabWidget/1.0");
-Q_DECLARE_INTERFACE (IHaveTabs, "org.Deviant.LeechCraft.IHaveTabs/1.0");
+Q_DECLARE_INTERFACE (ITabWidget, "org.Deviant.LeechCraft.ITabWidget/1.0")
+Q_DECLARE_INTERFACE (IHaveTabs, "org.Deviant.LeechCraft.IHaveTabs/1.0")
 
 #endif

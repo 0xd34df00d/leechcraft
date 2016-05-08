@@ -33,10 +33,10 @@
 #include <QtDBus/QDBusObjectPath>
 
 typedef QMap<QString, QVariantMap> VariantMapMap_t;
-Q_DECLARE_METATYPE (VariantMapMap_t);
+Q_DECLARE_METATYPE (VariantMapMap_t)
 
 typedef QMap<QDBusObjectPath, VariantMapMap_t> EnumerationResult_t;
-Q_DECLARE_METATYPE (EnumerationResult_t);
+Q_DECLARE_METATYPE (EnumerationResult_t)
 
 typedef QList<QByteArray> ByteArrayList_t;
-Q_DECLARE_METATYPE (ByteArrayList_t);
+Q_DECLARE_METATYPE (ByteArrayList_t)

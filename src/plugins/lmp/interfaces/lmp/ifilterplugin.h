@@ -57,4 +57,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::IFilterPlugin, "org.LeechCraft.LMP.IFilterPlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::LMP::IFilterPlugin, "org.LeechCraft.LMP.IFilterPlugin/1.0")

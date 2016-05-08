@@ -201,4 +201,4 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::Core::UncloseData);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::Core::UncloseData)

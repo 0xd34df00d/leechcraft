@@ -101,4 +101,4 @@ protected:
 	virtual void fileUploaded (const QString& filename, const QUrl& fileUrl) = 0;
 };
 
-Q_DECLARE_INTERFACE (IWebFileStorage, "org.Deviant.LeechCraft.IWebFileStorage/1.0");
+Q_DECLARE_INTERFACE (IWebFileStorage, "org.Deviant.LeechCraft.IWebFileStorage/1.0")

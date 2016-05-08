@@ -104,6 +104,6 @@ namespace OnlineBookmarks
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService::Features)
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IBookmarksService,
-					 "org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IBookmarksService/1.0");
+					 "org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IBookmarksService/1.0")
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IBOOKMARKSSERVICE_H

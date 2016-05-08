@@ -79,6 +79,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IURIHandler,
-		"org.Deviant.LeechCraft.Azoth.IURIHandler/1.0");
+		"org.Deviant.LeechCraft.Azoth.IURIHandler/1.0")
 
 #endif

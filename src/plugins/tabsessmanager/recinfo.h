@@ -53,6 +53,6 @@ namespace TabSessManager
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::TabSessManager::RecInfo);
+Q_DECLARE_METATYPE (LeechCraft::TabSessManager::RecInfo)
 
 #endif

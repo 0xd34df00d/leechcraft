@@ -86,6 +86,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMediaCall,
-		"org.Deviant.LeechCraft.Azoth.IMediaCall/1.0");
+		"org.Deviant.LeechCraft.Azoth.IMediaCall/1.0")
 
 #endif

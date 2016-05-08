@@ -257,8 +257,8 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ITransferJob,
-		"org.Deviant.LeechCraft.Azoth.ITransferJob/1.0");
+		"org.Deviant.LeechCraft.Azoth.ITransferJob/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ITransferManager,
-		"org.Deviant.LeechCraft.Azoth.ITransferManager/1.0");
+		"org.Deviant.LeechCraft.Azoth.ITransferManager/1.0")
 
 #endif

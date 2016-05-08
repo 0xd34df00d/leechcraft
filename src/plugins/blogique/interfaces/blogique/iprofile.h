@@ -58,4 +58,4 @@ namespace Blogique
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IProfile,
-		"org.Deviant.LeechCraft.Blogique.IProfile/1.0");
+		"org.Deviant.LeechCraft.Blogique.IProfile/1.0")

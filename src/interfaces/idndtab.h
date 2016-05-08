@@ -86,4 +86,4 @@ public:
 	virtual void HandleDrop (QDropEvent *event) = 0;
 };
 
-Q_DECLARE_INTERFACE (IDNDTab, "org.Deviant.LeechCraft.IDNDTab/1.0");
+Q_DECLARE_INTERFACE (IDNDTab, "org.Deviant.LeechCraft.IDNDTab/1.0")

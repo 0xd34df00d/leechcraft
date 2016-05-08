@@ -255,7 +255,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IProtocol*);
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IProtocol::ProtocolFeatures);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::IProtocol*)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IProtocol::ProtocolFeatures)
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocol,
-		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0");
+		"org.Deviant.LeechCraft.Azoth.IProtocol/1.0")

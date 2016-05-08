@@ -195,4 +195,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IBackendPlugin,
-		"org.LeechCraft.Monocle.IBackendPlugin/1.0");
+		"org.LeechCraft.Monocle.IBackendPlugin/1.0")

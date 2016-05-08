@@ -39,7 +39,7 @@
 class QAction;
 
 using QKeySequences_t = QList<QKeySequence>;
-Q_DECLARE_METATYPE (QKeySequences_t);
+Q_DECLARE_METATYPE (QKeySequences_t)
 
 namespace LeechCraft
 {
@@ -96,7 +96,7 @@ namespace LeechCraft
 	};
 };
 
-Q_DECLARE_METATYPE (LeechCraft::ActionInfo);
+Q_DECLARE_METATYPE (LeechCraft::ActionInfo)
 
 /** @brief Interface for plugins that support configuring shortcuts.
  *
@@ -131,4 +131,4 @@ public:
 	virtual ~IHaveShortcuts () { }
 };
 
-Q_DECLARE_INTERFACE (IHaveShortcuts, "org.Deviant.LeechCraft.IHaveShortcuts/1.0");
+Q_DECLARE_INTERFACE (IHaveShortcuts, "org.Deviant.LeechCraft.IHaveShortcuts/1.0")

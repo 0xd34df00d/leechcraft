@@ -302,9 +302,9 @@ public:
 	virtual QList<LeechCraft::ANFieldData> GetANFields () const = 0;
 };
 
-Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0");
-Q_DECLARE_METATYPE (LeechCraft::ANFieldData);
-Q_DECLARE_METATYPE (LeechCraft::ANFieldValue);
-Q_DECLARE_METATYPE (QList<LeechCraft::ANFieldValue>);
+Q_DECLARE_INTERFACE (IANEmitter, "org.Deviant.LeechCraft.IANEmitter/1.0")
+Q_DECLARE_METATYPE (LeechCraft::ANFieldData)
+Q_DECLARE_METATYPE (LeechCraft::ANFieldValue)
+Q_DECLARE_METATYPE (QList<LeechCraft::ANFieldValue>)
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::ANIntFieldValue::Operations);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::ANIntFieldValue::Operations)

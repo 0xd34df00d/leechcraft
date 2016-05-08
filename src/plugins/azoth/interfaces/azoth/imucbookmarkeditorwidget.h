@@ -69,6 +69,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCBookmarkEditorWidget,
-		"org.Deviant.LeechCraft.Azoth.IMUCBookmarkEditorWidget/1.0");
+		"org.Deviant.LeechCraft.Azoth.IMUCBookmarkEditorWidget/1.0")
 
 #endif

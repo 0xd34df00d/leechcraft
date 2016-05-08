@@ -89,8 +89,8 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementData);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementsData_t);
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::PageFormsData_t);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementData)
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementsData_t)
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::PageFormsData_t)
 
 #endif

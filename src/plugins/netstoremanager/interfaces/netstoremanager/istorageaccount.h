@@ -85,10 +85,10 @@ namespace NetStoreManager
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::AccountFeatures);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::AccountFeatures)
 
 Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::IStorageAccount,
-		"org.Deviant.LeechCraft.NetStoreManager.IStorageAccount/1.0");
-Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::IStorageAccount*);
+		"org.Deviant.LeechCraft.NetStoreManager.IStorageAccount/1.0")
+Q_DECLARE_METATYPE (LeechCraft::NetStoreManager::IStorageAccount*)
 
 #endif

@@ -57,4 +57,4 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMetaInfoEntry, "org.Deviant.LeechCraft.Azoth.IMetaInfoEntry/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMetaInfoEntry, "org.Deviant.LeechCraft.Azoth.IMetaInfoEntry/1.0")

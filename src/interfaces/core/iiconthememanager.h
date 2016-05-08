@@ -107,4 +107,4 @@ public:
 	virtual void RegisterChangeHandler (const std::function<void ()>& function) = 0;
 };
 
-Q_DECLARE_INTERFACE (IIconThemeManager, "org.LeechCraft.IIconThemeManager/1.0");
+Q_DECLARE_INTERFACE (IIconThemeManager, "org.LeechCraft.IIconThemeManager/1.0")

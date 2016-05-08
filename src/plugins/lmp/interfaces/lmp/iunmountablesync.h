@@ -115,4 +115,4 @@ namespace LMP
 }
 
 Q_DECLARE_METATYPE (LeechCraft::LMP::UnmountableDevInfo)
-Q_DECLARE_INTERFACE (LeechCraft::LMP::IUnmountableSync, "org.LeechCraft.LMP.IUnmountableSync/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::LMP::IUnmountableSync, "org.LeechCraft.LMP.IUnmountableSync/1.0")

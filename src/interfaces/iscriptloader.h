@@ -227,8 +227,8 @@ public:
 	virtual IScriptLoaderInstance_ptr CreateScriptLoaderInstance (const QString& relPath) = 0;
 };
 
-Q_DECLARE_INTERFACE (IScript, "org.Deviant.LeechCraft.IScript/1.0");
-Q_DECLARE_INTERFACE (IScriptLoaderInstance, "org.Deviant.LeechCraft.IScriptLoaderInstance/1.0");
-Q_DECLARE_INTERFACE (IScriptLoader, "org.Deviant.LeechCraft.IScriptLoader/1.0");
+Q_DECLARE_INTERFACE (IScript, "org.Deviant.LeechCraft.IScript/1.0")
+Q_DECLARE_INTERFACE (IScriptLoaderInstance, "org.Deviant.LeechCraft.IScriptLoaderInstance/1.0")
+Q_DECLARE_INTERFACE (IScriptLoader, "org.Deviant.LeechCraft.IScriptLoader/1.0")
 
 #endif

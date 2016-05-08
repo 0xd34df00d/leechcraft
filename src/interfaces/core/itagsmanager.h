@@ -172,6 +172,6 @@ public:
 	virtual QObject* GetQObject () = 0;
 };
 
-Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0");
+Q_DECLARE_INTERFACE (ITagsManager, "org.Deviant.LeechCraft.ITagsManager/1.0")
 
 #endif

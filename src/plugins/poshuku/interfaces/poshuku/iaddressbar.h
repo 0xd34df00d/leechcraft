@@ -61,6 +61,6 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IAddressBar,
-		"org.Deviant.LeechCraft.Poshuku.IAddressBar/1.0");
+		"org.Deviant.LeechCraft.Poshuku.IAddressBar/1.0")
 
 #endif

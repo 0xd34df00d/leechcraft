@@ -115,4 +115,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IRecentReleases, "org.LeechCraft.Media.IRecentReleases/1.0");
+Q_DECLARE_INTERFACE (Media::IRecentReleases, "org.LeechCraft.Media.IRecentReleases/1.0")

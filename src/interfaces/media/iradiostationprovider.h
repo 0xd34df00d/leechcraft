@@ -222,4 +222,4 @@ namespace Media
 
 Q_DECLARE_METATYPE (Media::ActionFunctor_f)
 
-Q_DECLARE_INTERFACE (Media::IRadioStationProvider, "org.LeechCraft.Media.IRadioStationProvider/1.0");
+Q_DECLARE_INTERFACE (Media::IRadioStationProvider, "org.LeechCraft.Media.IRadioStationProvider/1.0")

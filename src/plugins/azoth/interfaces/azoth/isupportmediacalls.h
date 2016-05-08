@@ -114,4 +114,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportMediaCalls,
-		"org.Deviant.LeechCraft.Azoth.ISupportMediaCalls/1.0");
+		"org.Deviant.LeechCraft.Azoth.ISupportMediaCalls/1.0")

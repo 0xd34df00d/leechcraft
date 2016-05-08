@@ -70,4 +70,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::ISimilarArtists, "org.LeechCraft.Media.ISimilarArtists/1.0");
+Q_DECLARE_INTERFACE (Media::ISimilarArtists, "org.LeechCraft.Media.ISimilarArtists/1.0")

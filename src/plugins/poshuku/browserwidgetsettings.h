@@ -54,4 +54,4 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::BrowserWidgetSettings);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::BrowserWidgetSettings)

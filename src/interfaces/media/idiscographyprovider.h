@@ -236,5 +236,5 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IPendingDisco, "org.LeechCraft.Media.IPendingDisco/1.0");
-Q_DECLARE_INTERFACE (Media::IDiscographyProvider, "org.LeechCraft.Media.IDiscographyProvider/1.0");
+Q_DECLARE_INTERFACE (Media::IPendingDisco, "org.LeechCraft.Media.IPendingDisco/1.0")
+Q_DECLARE_INTERFACE (Media::IDiscographyProvider, "org.LeechCraft.Media.IDiscographyProvider/1.0")

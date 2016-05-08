@@ -40,7 +40,7 @@ class QTabWidget;
 class QNetworkAccessManager;
 class ICoreTabWidget;
 
-Q_DECLARE_METATYPE (QNetworkAccessManager*);
+Q_DECLARE_METATYPE (QNetworkAccessManager*)
 
 namespace LeechCraft
 {

@@ -54,4 +54,4 @@ public:
 
 using ILoadProgressReporter_ptr = std::shared_ptr<ILoadProgressReporter>;
 
-Q_DECLARE_INTERFACE (ILoadProgressReporter, "org.Deviant.LeechCraft.ILoadProgressReporter/1.0");
+Q_DECLARE_INTERFACE (ILoadProgressReporter, "org.Deviant.LeechCraft.ILoadProgressReporter/1.0")

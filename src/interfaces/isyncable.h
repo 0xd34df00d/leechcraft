@@ -64,5 +64,5 @@ public:
 	virtual ISyncProxy* GetSyncProxy () = 0;
 };
 
-Q_DECLARE_INTERFACE (ISyncProxy, "org.Deviant.LeechCraft.ISyncProxy/1.0");
-Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.ISyncable/1.0");
+Q_DECLARE_INTERFACE (ISyncProxy, "org.Deviant.LeechCraft.ISyncProxy/1.0")
+Q_DECLARE_INTERFACE (ISyncable, "org.Deviant.LeechCraft.ISyncable/1.0")

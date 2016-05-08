@@ -114,4 +114,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IRedirectProxy,
-		"org.LeechCraft.Monocle.IRedirectProxy/1.0");
+		"org.LeechCraft.Monocle.IRedirectProxy/1.0")

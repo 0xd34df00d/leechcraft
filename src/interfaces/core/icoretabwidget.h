@@ -199,6 +199,6 @@ protected:
 	virtual void tabWasMoved (int from, int to) = 0;
 };
 
-Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0");
+Q_DECLARE_INTERFACE (ICoreTabWidget, "org.Deviant.LeechCraft.ICoreTabWidget/1.0")
 
 #endif

@@ -117,4 +117,4 @@ namespace Blogique
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBlogiqueSideWidget,
-		"org.Deviant.LeechCraft.Blogique.IBlogiqueSideWidget/1.0");
+		"org.Deviant.LeechCraft.Blogique.IBlogiqueSideWidget/1.0")

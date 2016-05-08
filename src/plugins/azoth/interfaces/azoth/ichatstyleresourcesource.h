@@ -160,6 +160,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IChatStyleResourceSource,
-		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0");
+		"org.Deviant.LeechCraft.Azoth.IChatStyleResourceSource/1.0")
 
 #endif

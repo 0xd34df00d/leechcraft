@@ -50,4 +50,4 @@ namespace AdvancedNotifications
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::NotificationMethods);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AdvancedNotifications::NotificationMethods)

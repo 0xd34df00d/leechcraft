@@ -60,7 +60,7 @@ public:
 	virtual ~IPlugin2 () {}
 };
 
-Q_DECLARE_INTERFACE (IPlugin2, "org.Deviant.LeechCraft.IPlugin2/1.0");
+Q_DECLARE_INTERFACE (IPlugin2, "org.Deviant.LeechCraft.IPlugin2/1.0")
 
 #endif
 

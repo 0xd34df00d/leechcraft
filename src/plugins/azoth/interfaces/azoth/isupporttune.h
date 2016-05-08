@@ -65,6 +65,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportTune,
-		"org.Deviant.LeechCraft.Azoth.ISupportTune/1.0");
+		"org.Deviant.LeechCraft.Azoth.ISupportTune/1.0")
 
 #endif

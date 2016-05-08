@@ -136,4 +136,4 @@ public:
 };
 
 Q_DECLARE_METATYPE (DataFilterCallback_f)
-Q_DECLARE_INTERFACE (IDataFilter, "org.Deviant.LeechCraft.IDataFilter/1.0");
+Q_DECLARE_INTERFACE (IDataFilter, "org.Deviant.LeechCraft.IDataFilter/1.0")

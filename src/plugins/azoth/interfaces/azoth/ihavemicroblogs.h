@@ -46,4 +46,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveMicroblogs,
-		"org.Deviant.LeechCraft.Azoth.IHaveMicroblogs/1.0");
+		"org.Deviant.LeechCraft.Azoth.IHaveMicroblogs/1.0")

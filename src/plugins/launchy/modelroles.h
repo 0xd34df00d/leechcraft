@@ -63,4 +63,4 @@ namespace Launchy
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Launchy::Executor_f);
+Q_DECLARE_METATYPE (LeechCraft::Launchy::Executor_f)

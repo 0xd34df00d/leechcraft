@@ -43,7 +43,7 @@ public:
 	virtual QTreeView* GetCurrentView () const = 0;
 };
 
-Q_DECLARE_INTERFACE (ISummaryRepresentation, "org.Deviant.LeechCraft.ISummaryRepresentation/1.0");
+Q_DECLARE_INTERFACE (ISummaryRepresentation, "org.Deviant.LeechCraft.ISummaryRepresentation/1.0")
 
 #endif
 

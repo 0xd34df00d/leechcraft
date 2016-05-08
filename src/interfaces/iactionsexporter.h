@@ -131,6 +131,6 @@ protected:
 	virtual void gotActions (QList<QAction*> actions, LeechCraft::ActionsEmbedPlace area) = 0;
 };
 
-Q_DECLARE_INTERFACE (IActionsExporter, "org.Deviant.LeechCraft.IActionsExporter/1.0");
+Q_DECLARE_INTERFACE (IActionsExporter, "org.Deviant.LeechCraft.IActionsExporter/1.0")
 
 #endif

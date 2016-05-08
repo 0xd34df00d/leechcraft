@@ -200,4 +200,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IEventsProvider, "org.LeechCraft.Media.IEventsProvider/1.0");
+Q_DECLARE_INTERFACE (Media::IEventsProvider, "org.LeechCraft.Media.IEventsProvider/1.0")

@@ -85,7 +85,7 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProtocolPlugin,
-		"org.Deviant.LeechCraft.Azoth.IProtocolPlugin/1.0");
+		"org.Deviant.LeechCraft.Azoth.IProtocolPlugin/1.0")
 
 #endif
 

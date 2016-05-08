@@ -116,4 +116,4 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProvideCommands, "org.LeechCraft.Azoth.IProvideCommands/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProvideCommands, "org.LeechCraft.Azoth.IProvideCommands/1.0")

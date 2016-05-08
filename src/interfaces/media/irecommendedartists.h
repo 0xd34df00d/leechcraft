@@ -73,4 +73,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IRecommendedArtists, "org.LeechCraft.Media.IRecommendedArtists/1.0");
+Q_DECLARE_INTERFACE (Media::IRecommendedArtists, "org.LeechCraft.Media.IRecommendedArtists/1.0")

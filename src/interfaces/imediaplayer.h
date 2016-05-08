@@ -58,8 +58,8 @@ public:
 	virtual ~IMediaPlayer () {}
 };
 
-Q_DECLARE_INTERFACE (IVideoWidget, "org.Deviant.LeechCraft.IVideoWidget/1.0");
-Q_DECLARE_INTERFACE (IMediaPlayer, "org.Deviant.LeechCraft.IMediaPlayer/1.0");
+Q_DECLARE_INTERFACE (IVideoWidget, "org.Deviant.LeechCraft.IVideoWidget/1.0")
+Q_DECLARE_INTERFACE (IMediaPlayer, "org.Deviant.LeechCraft.IMediaPlayer/1.0")
 
 #endif
 

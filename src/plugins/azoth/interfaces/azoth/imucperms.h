@@ -218,6 +218,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCPerms,
-		"org.Deviant.LeechCraft.Azoth.IMUCPerms/1.0");
+		"org.Deviant.LeechCraft.Azoth.IMUCPerms/1.0")
 
 #endif

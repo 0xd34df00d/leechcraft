@@ -79,7 +79,7 @@ public:
 	virtual QList<QObject*> GetPlugins () = 0;
 };
 
-Q_DECLARE_INTERFACE (IPluginAdaptor, "org.Deviant.LeechCraft.IPluginAdaptor/1.0");
+Q_DECLARE_INTERFACE (IPluginAdaptor, "org.Deviant.LeechCraft.IPluginAdaptor/1.0")
 
 #endif
 

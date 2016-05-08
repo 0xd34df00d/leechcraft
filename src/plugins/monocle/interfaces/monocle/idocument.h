@@ -239,4 +239,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDocument,
-		"org.LeechCraft.Monocle.IDocument/1.0");
+		"org.LeechCraft.Monocle.IDocument/1.0")

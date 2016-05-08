@@ -130,5 +130,5 @@ namespace CleanWeb
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::FilterItem);
-Q_DECLARE_METATYPE (QList<LeechCraft::Poshuku::CleanWeb::FilterItem>);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::CleanWeb::FilterItem)
+Q_DECLARE_METATYPE (QList<LeechCraft::Poshuku::CleanWeb::FilterItem>)

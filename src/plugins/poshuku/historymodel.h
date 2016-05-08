@@ -89,4 +89,4 @@ namespace Poshuku
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::HistoryItem);
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::HistoryItem)

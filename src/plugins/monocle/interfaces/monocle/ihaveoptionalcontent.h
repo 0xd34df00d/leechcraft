@@ -58,4 +58,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveOptionalContent,
-		"org.LeechCraft.Monocle.IHaveOptionalContent/1.0");
+		"org.LeechCraft.Monocle.IHaveOptionalContent/1.0")

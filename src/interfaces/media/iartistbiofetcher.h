@@ -178,5 +178,5 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IPendingArtistBio, "org.LeechCraft.Media.IPendingArtistBio/1.0");
-Q_DECLARE_INTERFACE (Media::IArtistBioFetcher, "org.LeechCraft.Media.IArtistBioFetcher/1.0");
+Q_DECLARE_INTERFACE (Media::IPendingArtistBio, "org.LeechCraft.Media.IPendingArtistBio/1.0")
+Q_DECLARE_INTERFACE (Media::IArtistBioFetcher, "org.LeechCraft.Media.IArtistBioFetcher/1.0")

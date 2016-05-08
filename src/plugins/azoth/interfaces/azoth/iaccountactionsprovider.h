@@ -53,4 +53,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccountActionsProvider,
-		"org.LeechCraft.Azoth.IAccountActionsProvider/1.0");
+		"org.LeechCraft.Azoth.IAccountActionsProvider/1.0")

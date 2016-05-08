@@ -41,4 +41,4 @@ public:
 	virtual void DeleteSelection () = 0;
 };
 
-Q_DECLARE_INTERFACE (IAdvancedPlainTextEditor, "org.LeechCraft.IAdvancedPlainTextEditor/1.0");
+Q_DECLARE_INTERFACE (IAdvancedPlainTextEditor, "org.LeechCraft.IAdvancedPlainTextEditor/1.0")

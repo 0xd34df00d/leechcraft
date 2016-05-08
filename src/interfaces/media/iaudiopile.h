@@ -202,5 +202,5 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IPendingAudioSearch, "org.LeechCraft.Media.IPendingAudioSearch/1.0");
-Q_DECLARE_INTERFACE (Media::IAudioPile, "org.LeechCraft.Media.IAudioPile/1.0");
+Q_DECLARE_INTERFACE (Media::IPendingAudioSearch, "org.LeechCraft.Media.IPendingAudioSearch/1.0")
+Q_DECLARE_INTERFACE (Media::IAudioPile, "org.LeechCraft.Media.IAudioPile/1.0")

@@ -39,4 +39,4 @@ public:
 	virtual void HandleShutdownInitiated () = 0;
 };
 
-Q_DECLARE_INTERFACE (IShutdownListener, "org.Deviant.LeechCraft.IShutdownListener/1.0");
+Q_DECLARE_INTERFACE (IShutdownListener, "org.Deviant.LeechCraft.IShutdownListener/1.0")

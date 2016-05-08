@@ -67,6 +67,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IPendingLastActivityRequest,
-		"org.LeechCraft.Azoth.IPendingLastActivityRequest/1.0");
+		"org.LeechCraft.Azoth.IPendingLastActivityRequest/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportLastActivity,
-		"org.LeechCraft.Azoth.ISupportLastActivity/1.0");
+		"org.LeechCraft.Azoth.ISupportLastActivity/1.0")

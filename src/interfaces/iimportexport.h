@@ -99,7 +99,7 @@ public:
 	virtual ~IImportExport () {}
 };
 
-Q_DECLARE_INTERFACE (IImportExport, "org.Deviant.LeechCraft.IImportExport/1.0");
+Q_DECLARE_INTERFACE (IImportExport, "org.Deviant.LeechCraft.IImportExport/1.0")
 
 #endif
 

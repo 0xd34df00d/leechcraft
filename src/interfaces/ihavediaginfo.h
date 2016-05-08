@@ -52,6 +52,6 @@ public:
 	virtual QString GetDiagInfoString () const = 0;
 };
 
-Q_DECLARE_INTERFACE (IHaveDiagInfo, "org.Deviant.LeechCraft.IHaveDiagInfo/1.0");
+Q_DECLARE_INTERFACE (IHaveDiagInfo, "org.Deviant.LeechCraft.IHaveDiagInfo/1.0")
 
 #endif

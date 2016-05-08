@@ -57,4 +57,4 @@ namespace Aggregator
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IItemsModel,
-		"org.Deviant.LeechCraft.Aggregator.IItemsModel/1.0");
+		"org.Deviant.LeechCraft.Aggregator.IItemsModel/1.0")

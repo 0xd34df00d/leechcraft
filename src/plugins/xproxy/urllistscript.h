@@ -78,5 +78,5 @@ namespace XProxy
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::XProxy::ScriptEntry_t);
-Q_DECLARE_METATYPE (QList<LeechCraft::XProxy::ScriptEntry_t>);
+Q_DECLARE_METATYPE (LeechCraft::XProxy::ScriptEntry_t)
+Q_DECLARE_METATYPE (QList<LeechCraft::XProxy::ScriptEntry_t>)

@@ -78,6 +78,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAuthable,
-		"org.Deviant.LeechCraft.Azoth.IAuthable/1.0");
+		"org.Deviant.LeechCraft.Azoth.IAuthable/1.0")
 
 #endif

@@ -275,4 +275,4 @@ namespace AN
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AN::NotifyFlags);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::AN::NotifyFlags)

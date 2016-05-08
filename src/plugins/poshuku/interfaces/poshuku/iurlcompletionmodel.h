@@ -46,4 +46,4 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IURLCompletionModel,
-		"org.Deviant.LeechCraft.Poshuku.IURLCompletionModel/1.0");
+		"org.Deviant.LeechCraft.Poshuku.IURLCompletionModel/1.0")

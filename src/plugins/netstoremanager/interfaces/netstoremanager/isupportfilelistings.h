@@ -155,6 +155,6 @@ namespace NetStoreManager
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::NetStoreManager::ISupportFileListings,
-		"org.Deviant.LeechCraft.NetStoreManager.ISupportFileListings/1.0");
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::ListingOps);
+		"org.Deviant.LeechCraft.NetStoreManager.ISupportFileListings/1.0")
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::NetStoreManager::ListingOps)
 

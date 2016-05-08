@@ -472,10 +472,10 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormField,
-		"org.LeechCraft.Monocle.IFormField/1.0");
+		"org.LeechCraft.Monocle.IFormField/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormFieldText,
-		"org.LeechCraft.Monocle.IFormFieldText/1.0");
+		"org.LeechCraft.Monocle.IFormFieldText/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormFieldChoice,
-		"org.LeechCraft.Monocle.IFormFieldChoice/1.0");
+		"org.LeechCraft.Monocle.IFormFieldChoice/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IFormFieldButton,
-		"org.LeechCraft.Monocle.IFormFieldButton/1.0");
+		"org.LeechCraft.Monocle.IFormFieldButton/1.0")

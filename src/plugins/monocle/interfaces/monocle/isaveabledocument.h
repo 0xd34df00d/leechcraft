@@ -98,4 +98,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISaveableDocument,
-		"org.LeechCraft.Monocle.ISaveableDocument/1.0");
+		"org.LeechCraft.Monocle.ISaveableDocument/1.0")

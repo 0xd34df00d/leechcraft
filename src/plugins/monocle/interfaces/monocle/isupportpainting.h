@@ -63,4 +63,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportPainting,
-		"org.LeechCraft.Monocle.ISupportPainting/1.0");
+		"org.LeechCraft.Monocle.ISupportPainting/1.0")

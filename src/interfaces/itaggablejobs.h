@@ -62,7 +62,7 @@ public:
 	virtual ~ITaggableJobs () {}
 };
 
-Q_DECLARE_INTERFACE (ITaggableJobs, "org.Deviant.LeechCraft.ITaggableJobs/1.0");
+Q_DECLARE_INTERFACE (ITaggableJobs, "org.Deviant.LeechCraft.ITaggableJobs/1.0")
 
 #endif
 

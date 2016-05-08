@@ -71,4 +71,4 @@ namespace Aggregator
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Aggregator::IProxyObject,
-		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0");
+		"org.Deviant.LeechCraft.Aggregator.IProxyObject/1.0")

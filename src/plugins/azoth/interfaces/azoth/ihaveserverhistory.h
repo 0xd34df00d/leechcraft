@@ -163,4 +163,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveServerHistory,
-		"org.LeechCraft.Azoth.IHaveServerHistory/1.0");
+		"org.LeechCraft.Azoth.IHaveServerHistory/1.0")

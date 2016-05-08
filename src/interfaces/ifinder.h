@@ -182,8 +182,8 @@ public:
 			const QStringList& oldCats) = 0;
 };
 
-Q_DECLARE_INTERFACE (IFinder, "org.Deviant.LeechCraft.IFinder/1.0");
-Q_DECLARE_INTERFACE (IFindProxy, "org.Deviant.LeechCraft.IFinder/1.0");
+Q_DECLARE_INTERFACE (IFinder, "org.Deviant.LeechCraft.IFinder/1.0")
+Q_DECLARE_INTERFACE (IFindProxy, "org.Deviant.LeechCraft.IFinder/1.0")
 
 #endif
 

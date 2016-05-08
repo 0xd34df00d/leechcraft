@@ -133,8 +133,8 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISearchSession,
-		"org.Deviant.LeechCraft.Azoth.ISearchSession/1.0");
+		"org.Deviant.LeechCraft.Azoth.ISearchSession/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveSearch,
-		"org.Deviant.LeechCraft.Azoth.IHaveSearch/1.0");
+		"org.Deviant.LeechCraft.Azoth.IHaveSearch/1.0")
 
 #endif

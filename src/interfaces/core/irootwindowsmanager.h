@@ -264,4 +264,4 @@ protected:
 	virtual void tabMoved (int fromWin, int toWin, int tabIdx) = 0;
 };
 
-Q_DECLARE_INTERFACE (IRootWindowsManager, "org.LeechCraft.IRootWindowsManager/1.0");
+Q_DECLARE_INTERFACE (IRootWindowsManager, "org.LeechCraft.IRootWindowsManager/1.0")

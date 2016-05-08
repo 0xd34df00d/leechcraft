@@ -195,4 +195,4 @@ namespace Util
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::FitFlags);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Util::FitFlags)

@@ -70,4 +70,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportActivity,
-		"org.Deviant.LeechCraft.Azoth.ISupportActivity/1.0");
+		"org.Deviant.LeechCraft.Azoth.ISupportActivity/1.0")

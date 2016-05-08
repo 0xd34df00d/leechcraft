@@ -142,4 +142,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportPGP,
-		"org.Deviant.LeechCraft.Azoth.ISupportPGP/1.0");
+		"org.Deviant.LeechCraft.Azoth.ISupportPGP/1.0")

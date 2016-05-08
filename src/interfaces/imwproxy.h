@@ -170,6 +170,6 @@ public:
 	virtual void HideMainMenu () = 0;
 };
 
-Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0");
+Q_DECLARE_INTERFACE (IMWProxy, "org.Deviant.LeechCraft.IMWProxy/1.0")
 
 #endif

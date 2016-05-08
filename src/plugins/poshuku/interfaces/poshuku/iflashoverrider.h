@@ -48,6 +48,6 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IFlashOverrider,
-		"org.Deviant.LeechCraft.Poshuku.IFlashOverrider/1.0");
+		"org.Deviant.LeechCraft.Poshuku.IFlashOverrider/1.0")
 
 #endif

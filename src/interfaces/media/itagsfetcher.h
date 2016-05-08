@@ -113,5 +113,5 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IPendingTagsFetch, "org.LeechCraft.Media.IPendingTagsFetch/1.0");
-Q_DECLARE_INTERFACE (Media::ITagsFetcher, "org.LeechCraft.Media.ITagsFetcher/1.0");
+Q_DECLARE_INTERFACE (Media::IPendingTagsFetch, "org.LeechCraft.Media.IPendingTagsFetch/1.0")
+Q_DECLARE_INTERFACE (Media::ITagsFetcher, "org.LeechCraft.Media.ITagsFetcher/1.0")

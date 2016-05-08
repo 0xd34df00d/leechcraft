@@ -55,4 +55,4 @@ namespace AdvancedNotifications
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::AdvancedNotifications::INotificationHandler,
-		"org.LeechCraft.AdvancedNotifications.INotificationHandler/1.0");
+		"org.LeechCraft.AdvancedNotifications.INotificationHandler/1.0")

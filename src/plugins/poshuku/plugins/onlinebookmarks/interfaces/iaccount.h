@@ -86,6 +86,6 @@ namespace OnlineBookmarks
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IAccount,
-		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IAccount/1.0");
+		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IAccount/1.0")
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_IACCOUNT_H

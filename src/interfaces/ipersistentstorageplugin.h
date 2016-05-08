@@ -109,5 +109,5 @@ public:
 	virtual IPersistentStorage_ptr RequestStorage () = 0;
 };
 
-Q_DECLARE_INTERFACE (IPersistentStorage, "org.LeechCraft.IPersistentStorage/1.0");
-Q_DECLARE_INTERFACE (IPersistentStoragePlugin, "org.LeechCraft.IPersistentStoragePlugin/1.0");
+Q_DECLARE_INTERFACE (IPersistentStorage, "org.LeechCraft.IPersistentStorage/1.0")
+Q_DECLARE_INTERFACE (IPersistentStoragePlugin, "org.LeechCraft.IPersistentStoragePlugin/1.0")

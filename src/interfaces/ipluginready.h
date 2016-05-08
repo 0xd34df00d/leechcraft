@@ -73,7 +73,7 @@ public:
 	virtual void AddPlugin (QObject *plugin) = 0;
 };
 
-Q_DECLARE_INTERFACE (IPluginReady, "org.Deviant.LeechCraft.IPluginReady/1.0");
+Q_DECLARE_INTERFACE (IPluginReady, "org.Deviant.LeechCraft.IPluginReady/1.0")
 
 #endif
 

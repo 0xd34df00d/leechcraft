@@ -61,4 +61,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::IRestorableRadioStationProvider, "org.LeechCraft.Media.IRestorableRadioStationProvider/1.0");
+Q_DECLARE_INTERFACE (Media::IRestorableRadioStationProvider, "org.LeechCraft.Media.IRestorableRadioStationProvider/1.0")

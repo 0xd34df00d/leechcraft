@@ -149,6 +149,6 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IPendingFontInfoRequest,
-		"org.LeechCraft.Monocle.IPendingFontInfoRequest/1.0");
+		"org.LeechCraft.Monocle.IPendingFontInfoRequest/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveFontInfo,
-		"org.LeechCraft.Monocle.IHaveFontInfo/1.0");
+		"org.LeechCraft.Monocle.IHaveFontInfo/1.0")

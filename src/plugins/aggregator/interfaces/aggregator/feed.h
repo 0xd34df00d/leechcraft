@@ -154,6 +154,6 @@ namespace Aggregator
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Aggregator::Feed);
+Q_DECLARE_METATYPE (LeechCraft::Aggregator::Feed)
 
 #endif

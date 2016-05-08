@@ -92,4 +92,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo);
+Q_DECLARE_METATYPE (LeechCraft::LMP::MediaInfo)

@@ -60,6 +60,6 @@ namespace LMP
 }
 }
 
-Q_DECLARE_METATYPE (QList<QUrl>);
+Q_DECLARE_METATYPE (QList<QUrl>)
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::IPlaylistProvider, "org.LeechCraft.LMP.IPlaylistProvider/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::LMP::IPlaylistProvider, "org.LeechCraft.LMP.IPlaylistProvider/1.0")

@@ -57,4 +57,4 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IProxyObject,
-		"org.Deviant.LeechCraft.Poshuku.IProxyObject/1.0");
+		"org.Deviant.LeechCraft.Poshuku.IProxyObject/1.0")

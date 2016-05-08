@@ -63,4 +63,4 @@ namespace LMP
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::LMP::ISyncPlugin, "org.LeechCraft.LMP.ISyncPlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::LMP::ISyncPlugin, "org.LeechCraft.LMP.ISyncPlugin/1.0")

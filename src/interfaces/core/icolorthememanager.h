@@ -73,4 +73,4 @@ protected:
 	virtual void themeChanged () = 0;
 };
 
-Q_DECLARE_INTERFACE (IColorThemeManager, "org.Deviant.LeechCraft.IColorThemeManager/1.0");
+Q_DECLARE_INTERFACE (IColorThemeManager, "org.Deviant.LeechCraft.IColorThemeManager/1.0")

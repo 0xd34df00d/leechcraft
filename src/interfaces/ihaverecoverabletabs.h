@@ -216,7 +216,7 @@ protected:
 	}
 };
 
-Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0");
-Q_DECLARE_INTERFACE (IHaveRecoverableTabs, "org.Deviant.LeechCraft.IHaveRecoverableTabs/1.0");
+Q_DECLARE_INTERFACE (IRecoverableTab, "org.Deviant.LeechCraft.IRecoverableTab/1.0")
+Q_DECLARE_INTERFACE (IHaveRecoverableTabs, "org.Deviant.LeechCraft.IHaveRecoverableTabs/1.0")
 
 #endif

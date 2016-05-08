@@ -47,4 +47,4 @@ namespace Blasq
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blasq::IServicesPlugin, "org.LeechCraft.Blasq.IServicesPlugin/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Blasq::IServicesPlugin, "org.LeechCraft.Blasq.IServicesPlugin/1.0")

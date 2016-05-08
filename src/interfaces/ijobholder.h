@@ -287,8 +287,8 @@ public:
 	virtual ~IJobHolder () {}
 };
 
-Q_DECLARE_METATYPE (LeechCraft::JobHolderRow);
-Q_DECLARE_METATYPE (LeechCraft::ProcessStateInfo);
-Q_DECLARE_METATYPE (QAbstractItemModel*);
+Q_DECLARE_METATYPE (LeechCraft::JobHolderRow)
+Q_DECLARE_METATYPE (LeechCraft::ProcessStateInfo)
+Q_DECLARE_METATYPE (QAbstractItemModel*)
 
-Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0");
+Q_DECLARE_INTERFACE (IJobHolder, "org.Deviant.LeechCraft.IJobHolder/1.0")

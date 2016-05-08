@@ -213,6 +213,6 @@ namespace Media
 	};
 }
 
-Q_DECLARE_METATYPE (Media::AlbumInfo);
-Q_DECLARE_INTERFACE (Media::IAlbumArtProvider, "org.LeechCraft.Media.IAlbumArtProvider/1.0");
-Q_DECLARE_INTERFACE (Media::IPendingAlbumArt, "org.LeechCraft.Media.IPendingAlbumArt/1.0");
+Q_DECLARE_METATYPE (Media::AlbumInfo)
+Q_DECLARE_INTERFACE (Media::IAlbumArtProvider, "org.LeechCraft.Media.IAlbumArtProvider/1.0")
+Q_DECLARE_INTERFACE (Media::IPendingAlbumArt, "org.LeechCraft.Media.IPendingAlbumArt/1.0")

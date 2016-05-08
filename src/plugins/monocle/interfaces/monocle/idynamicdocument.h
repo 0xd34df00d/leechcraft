@@ -86,4 +86,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IDynamicDocument,
-		"org.LeechCraft.Monocle.IDynamicDocument/1.0");
+		"org.LeechCraft.Monocle.IDynamicDocument/1.0")

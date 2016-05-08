@@ -193,4 +193,4 @@ public:
 	virtual LeechCraft::QuarkComponents_t GetComponents () const = 0;
 };
 
-Q_DECLARE_INTERFACE (IQuarkComponentProvider, "org.Deviant.LeechCraft.IQuarkComponentProvider/1.0");
+Q_DECLARE_INTERFACE (IQuarkComponentProvider, "org.Deviant.LeechCraft.IQuarkComponentProvider/1.0")

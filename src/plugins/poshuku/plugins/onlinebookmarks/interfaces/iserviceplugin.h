@@ -50,6 +50,6 @@ namespace OnlineBookmarks
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::OnlineBookmarks::IServicePlugin,
-		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IServicePlugin/1.0");
+		"org.Deviant.LeechCraft.Poshuku.OnlineBookmarks.IServicePlugin/1.0")
 
 #endif // PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ISERVICEPLUGIN_H

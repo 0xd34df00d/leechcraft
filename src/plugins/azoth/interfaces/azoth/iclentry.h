@@ -584,7 +584,7 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::EntryStatus);
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::ICLEntry::Features);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::EntryStatus)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::ICLEntry::Features)
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ICLEntry,
-		"org.Deviant.LeechCraft.Azoth.ICLEntry/1.0");
+		"org.Deviant.LeechCraft.Azoth.ICLEntry/1.0")

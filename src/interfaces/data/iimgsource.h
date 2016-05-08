@@ -209,5 +209,5 @@ public:
 	virtual IPendingImgSourceRequest* StartDefaultChooser () = 0;
 };
 
-Q_DECLARE_INTERFACE (IPendingImgSourceRequest, "org.Deviant.LeechCraft.IPendingImgSourceRequest/1.0");
-Q_DECLARE_INTERFACE (IImgSource, "org.Deviant.LeechCraft.IImgSource/1.0");
+Q_DECLARE_INTERFACE (IPendingImgSourceRequest, "org.Deviant.LeechCraft.IPendingImgSourceRequest/1.0")
+Q_DECLARE_INTERFACE (IImgSource, "org.Deviant.LeechCraft.IImgSource/1.0")

@@ -159,5 +159,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::State);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::State)
+Q_DECLARE_METATYPE (LeechCraft::Azoth::ChatPartState)

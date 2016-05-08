@@ -466,9 +466,9 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::IAccount*);
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IAccount::AccountFeatures);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::IAccount*)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::IAccount::AccountFeatures)
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IAccount,
-		"org.Deviant.LeechCraft.Azoth.IAccount/1.0");
+		"org.Deviant.LeechCraft.Azoth.IAccount/1.0")
 
 #endif

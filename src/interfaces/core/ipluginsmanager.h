@@ -194,4 +194,4 @@ public:
 	virtual ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject *thisPlugin) = 0;
 };
 
-Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0");
+Q_DECLARE_INTERFACE (IPluginsManager, "org.Deviant.LeechCraft.IPluginsManager/1.0")

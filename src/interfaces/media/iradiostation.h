@@ -136,4 +136,4 @@ namespace Media
 	typedef std::shared_ptr<IRadioStation> IRadioStation_ptr;
 }
 
-Q_DECLARE_INTERFACE (Media::IRadioStation, "org.LeechCraft.Media.IRadioStation/1.0");
+Q_DECLARE_INTERFACE (Media::IRadioStation, "org.LeechCraft.Media.IRadioStation/1.0")

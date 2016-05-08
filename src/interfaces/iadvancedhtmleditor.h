@@ -172,4 +172,4 @@ public:
 	virtual void ExecJS (const QString& js) = 0;
 };
 
-Q_DECLARE_INTERFACE (IAdvancedHTMLEditor, "org.Deviant.LeechCraft.IAdvancedHTMLEditor/1.0");
+Q_DECLARE_INTERFACE (IAdvancedHTMLEditor, "org.Deviant.LeechCraft.IAdvancedHTMLEditor/1.0")

@@ -78,4 +78,4 @@ protected:
 	virtual void rulesChanged () = 0;
 };
 
-Q_DECLARE_INTERFACE (IANRulesStorage, "org.LeechCraft.IANRulesStorage/1.0");
+Q_DECLARE_INTERFACE (IANRulesStorage, "org.LeechCraft.IANRulesStorage/1.0")

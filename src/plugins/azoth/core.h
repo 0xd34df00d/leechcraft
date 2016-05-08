@@ -516,5 +516,5 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryType);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Core::CLEntryType)
+Q_DECLARE_METATYPE (LeechCraft::Azoth::ICLEntry*)

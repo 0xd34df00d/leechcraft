@@ -48,6 +48,6 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IBrowserWidget,
-		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0");
+		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0")
 
 #endif

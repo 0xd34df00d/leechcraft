@@ -74,4 +74,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveTextContent,
-		"org.LeechCraft.Monocle.IHaveTextContent/1.0");
+		"org.LeechCraft.Monocle.IHaveTextContent/1.0")

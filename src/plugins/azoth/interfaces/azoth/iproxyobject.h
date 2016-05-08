@@ -368,4 +368,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IProxyObject,
-		"org.LeechCraft.Azoth.IProxyObject/1.0");
+		"org.LeechCraft.Azoth.IProxyObject/1.0")

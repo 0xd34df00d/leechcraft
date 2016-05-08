@@ -152,6 +152,6 @@ public:
 	virtual ~IDownload () {}
 };
 
-Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0");
+Q_DECLARE_INTERFACE (IDownload, "org.Deviant.LeechCraft.IDownload/1.0")
 
-Q_DECLARE_METATYPE (QList<QUrl>);
+Q_DECLARE_METATYPE (QList<QUrl>)

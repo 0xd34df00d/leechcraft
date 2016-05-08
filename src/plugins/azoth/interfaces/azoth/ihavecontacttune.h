@@ -88,4 +88,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveContactTune,
-		"org.LeechCraft.Azoth.IHaveContactTune/1.0");
+		"org.LeechCraft.Azoth.IHaveContactTune/1.0")

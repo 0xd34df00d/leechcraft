@@ -62,4 +62,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::ISupportAnnotations,
-		"org.LeechCraft.Monocle.ISupportAnnotations/1.0");
+		"org.LeechCraft.Monocle.ISupportAnnotations/1.0")

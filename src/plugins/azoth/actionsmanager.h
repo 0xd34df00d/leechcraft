@@ -100,4 +100,4 @@ namespace Azoth
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::ActionsManager::CLEntryActionArea);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::ActionsManager::CLEntryActionArea)

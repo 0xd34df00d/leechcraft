@@ -157,5 +157,5 @@ QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::AudioPar
 QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::TrayParams&);
 QDebug operator<< (QDebug dbg, const LeechCraft::AdvancedNotifications::CmdParams&);
 
-Q_DECLARE_METATYPE (LeechCraft::AdvancedNotifications::NotificationRule);
-Q_DECLARE_METATYPE (QList<LeechCraft::AdvancedNotifications::NotificationRule>);
+Q_DECLARE_METATYPE (LeechCraft::AdvancedNotifications::NotificationRule)
+Q_DECLARE_METATYPE (QList<LeechCraft::AdvancedNotifications::NotificationRule>)

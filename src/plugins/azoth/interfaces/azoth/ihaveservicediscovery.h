@@ -227,8 +227,8 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISDSession,
-		"org.Deviant.LeechCraft.Azoth.ISDSession/1.0");
+		"org.Deviant.LeechCraft.Azoth.ISDSession/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHaveServiceDiscovery,
-		"org.Deviant.LeechCraft.Azoth.IHaveServiceDiscovery/1.0");
+		"org.Deviant.LeechCraft.Azoth.IHaveServiceDiscovery/1.0")
 
 #endif

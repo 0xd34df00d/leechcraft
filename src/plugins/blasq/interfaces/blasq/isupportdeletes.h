@@ -55,4 +55,4 @@ namespace Blasq
 }
 }
 
-Q_DECLARE_INTERFACE (LeechCraft::Blasq::ISupportDeletes, "org.LeechCraft.Blasq.ISupportDeletes/1.0");
+Q_DECLARE_INTERFACE (LeechCraft::Blasq::ISupportDeletes, "org.LeechCraft.Blasq.ISupportDeletes/1.0")

@@ -234,6 +234,6 @@ namespace Proto
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::MsgFlags);
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::FeatureFlags);
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::ContactOpFlags);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::MsgFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::FeatureFlags)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Azoth::Vader::Proto::ContactOpFlags)

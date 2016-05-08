@@ -88,4 +88,4 @@ namespace Monocle
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Monocle::IHaveTOC,
-		"org.LeechCraft.Monocle.IHaveTOC/1.0");
+		"org.LeechCraft.Monocle.IHaveTOC/1.0")

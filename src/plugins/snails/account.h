@@ -229,4 +229,4 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::Account_ptr);
+Q_DECLARE_METATYPE (LeechCraft::Snails::Account_ptr)

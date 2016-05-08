@@ -225,4 +225,4 @@ public:
 using ICoreProxy_ptr = std::shared_ptr<ICoreProxy>;
 
 Q_DECLARE_METATYPE (ICoreProxy_ptr)
-Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0");
+Q_DECLARE_INTERFACE (ICoreProxy, "org.Deviant.LeechCraft.ICoreProxy/1.0")

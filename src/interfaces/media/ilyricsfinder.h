@@ -165,4 +165,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::ILyricsFinder, "org.LeechCraft.Media.ILyricsFinder/1.0");
+Q_DECLARE_INTERFACE (Media::ILyricsFinder, "org.LeechCraft.Media.ILyricsFinder/1.0")

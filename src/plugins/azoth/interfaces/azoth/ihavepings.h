@@ -56,6 +56,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IPendingPing,
-		"org.LeechCraft.Azoth.IPendingPing/1.0");
+		"org.LeechCraft.Azoth.IPendingPing/1.0")
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IHavePings,
-		"org.LeechCraft.Azoth.IHavePings/1.0");
+		"org.LeechCraft.Azoth.IHavePings/1.0")

@@ -120,4 +120,4 @@ public:
 	virtual QList<QObject*> GetPossibleHandlers (const LeechCraft::Entity& entity) = 0;
 };
 
-Q_DECLARE_INTERFACE (IEntityManager, "org.Deviant.LeechCraft.IEntityManager/1.0");
+Q_DECLARE_INTERFACE (IEntityManager, "org.Deviant.LeechCraft.IEntityManager/1.0")

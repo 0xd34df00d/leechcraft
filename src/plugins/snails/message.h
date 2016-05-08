@@ -163,5 +163,5 @@ namespace Snails
 
 uint qHash (const LeechCraft::Snails::Message_ptr);
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr);
-Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>);
+Q_DECLARE_METATYPE (LeechCraft::Snails::Message_ptr)
+Q_DECLARE_METATYPE (QList<LeechCraft::Snails::Message_ptr>)

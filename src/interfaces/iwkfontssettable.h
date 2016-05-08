@@ -81,4 +81,4 @@ public:
 	virtual void SetFontSizeMultiplier (qreal factor) = 0;
 };
 
-Q_DECLARE_INTERFACE (IWkFontsSettable, "org.LeechCraft.IWkFontsSettable/1.0");
+Q_DECLARE_INTERFACE (IWkFontsSettable, "org.LeechCraft.IWkFontsSettable/1.0")

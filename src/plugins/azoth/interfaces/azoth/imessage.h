@@ -352,4 +352,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMessage,
-		"org.LeechCraft.Azoth.IMessage/1.0");
+		"org.LeechCraft.Azoth.IMessage/1.0")

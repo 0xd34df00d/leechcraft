@@ -61,4 +61,4 @@ namespace Media
 	};
 }
 
-Q_DECLARE_INTERFACE (Media::ICurrentSongKeeper, "org.LeechCraft.Media.ICurrentSongKeeper/1.0");
+Q_DECLARE_INTERFACE (Media::ICurrentSongKeeper, "org.LeechCraft.Media.ICurrentSongKeeper/1.0")

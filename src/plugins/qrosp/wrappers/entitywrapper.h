@@ -72,6 +72,6 @@ namespace Qrosp
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Qrosp::EntityWrapper);
+Q_DECLARE_METATYPE (LeechCraft::Qrosp::EntityWrapper)
 
 #endif

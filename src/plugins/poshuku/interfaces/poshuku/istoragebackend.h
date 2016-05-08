@@ -57,4 +57,4 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IStorageBackend,
-		"org.LeechCraft.Poshuku.IStorageBackend/1.0");
+		"org.LeechCraft.Poshuku.IStorageBackend/1.0")

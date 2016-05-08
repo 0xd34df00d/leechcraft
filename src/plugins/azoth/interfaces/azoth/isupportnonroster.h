@@ -49,4 +49,4 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::ISupportNonRoster,
-		"org.LeechCraft.Azoth.ISupportNonRoster/1.0");
+		"org.LeechCraft.Azoth.ISupportNonRoster/1.0")

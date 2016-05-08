@@ -128,6 +128,6 @@ namespace Azoth
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Azoth::IMUCJoinWidget,
-		"org.Deviant.LeechCraft.Azoth.IMUCJoinWidget/1.0");
+		"org.Deviant.LeechCraft.Azoth.IMUCJoinWidget/1.0")
 
 #endif

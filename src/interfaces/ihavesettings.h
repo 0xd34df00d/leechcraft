@@ -66,7 +66,7 @@ public:
 	virtual ~IHaveSettings () {}
 };
 
-Q_DECLARE_INTERFACE (IHaveSettings, "org.Deviant.LeechCraft.IHaveSettings/1.0");
+Q_DECLARE_INTERFACE (IHaveSettings, "org.Deviant.LeechCraft.IHaveSettings/1.0")
 
 #endif
 

@@ -70,4 +70,4 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr);
+Q_DECLARE_METATYPE (LeechCraft::Snails::AttDescr)

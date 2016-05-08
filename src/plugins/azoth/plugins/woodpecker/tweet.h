@@ -98,5 +98,5 @@ namespace Woodpecker
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet);
-Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet_ptr);
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet)
+Q_DECLARE_METATYPE (LeechCraft::Azoth::Woodpecker::Tweet_ptr)

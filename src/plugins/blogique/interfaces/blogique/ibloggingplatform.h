@@ -306,7 +306,7 @@ namespace Blogique
 }
 }
 
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::BloggingPlatfromFeatures);
-Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::AccountAddOptions);
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::BloggingPlatfromFeatures)
+Q_DECLARE_OPERATORS_FOR_FLAGS (LeechCraft::Blogique::IBloggingPlatform::AccountAddOptions)
 Q_DECLARE_INTERFACE (LeechCraft::Blogique::IBloggingPlatform,
-		"org.Deviant.LeechCraft.Blogique.IBloggingPlatform/1.0");
+		"org.Deviant.LeechCraft.Blogique.IBloggingPlatform/1.0")

@@ -56,5 +56,5 @@ namespace Snails
 }
 }
 
-Q_DECLARE_METATYPE (LeechCraft::Snails::MessageListActionInfo);
-Q_DECLARE_METATYPE (QList<LeechCraft::Snails::MessageListActionInfo>);
+Q_DECLARE_METATYPE (LeechCraft::Snails::MessageListActionInfo)
+Q_DECLARE_METATYPE (QList<LeechCraft::Snails::MessageListActionInfo>)

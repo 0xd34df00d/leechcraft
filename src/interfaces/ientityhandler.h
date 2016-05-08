@@ -81,7 +81,7 @@ public:
 	virtual ~IEntityHandler () {}
 };
 
-Q_DECLARE_INTERFACE (IEntityHandler, "org.Deviant.LeechCraft.IEntityHandler/1.0");
+Q_DECLARE_INTERFACE (IEntityHandler, "org.Deviant.LeechCraft.IEntityHandler/1.0")
 
 #endif
 

@@ -61,4 +61,4 @@ namespace SecMan
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::SecMan::IStoragePlugin,
-		"org.LeechCraft.SecMan.IStoragePlugin/1.0");
+		"org.LeechCraft.SecMan.IStoragePlugin/1.0")
