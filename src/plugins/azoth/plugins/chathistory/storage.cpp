@@ -765,7 +765,8 @@ namespace ChatHistory
 	}
 
 	void Storage::AddMessages (const QString& accountID,
-			const QString& entryID, const QString& visibleName, const QList<LogItem>& items)
+			const QString& entryID, const QString& visibleName,
+			const QList<LogItem>& items, bool fuzzy)
 	{
 		Util::DBLock lock (*DB_);
 		try

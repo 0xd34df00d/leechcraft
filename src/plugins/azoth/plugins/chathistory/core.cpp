@@ -236,7 +236,8 @@ namespace ChatHistory
 				accountId,
 				entryId,
 				visibleName,
-				items);
+				items,
+				fuzzy);
 	}
 
 	QFuture<IHistoryPlugin::MaxTimestampResult_t> Core::GetMaxTimestamp (const QString& accId)
