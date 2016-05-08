@@ -34,6 +34,16 @@ namespace LeechCraft
 {
 namespace Util
 {
+	void WorkerThreadBase::SetPaused (bool paused)
+	{
+		if (paused == IsPaused_)
+			return;
+
+		IsPaused_ = paused;
+		if (!paused)
+			emit rotateFuncs ();
+	}
+
 	void WorkerThreadBase::run ()
 	{
 		SlotClosure<NoDeletePolicy> rotator
@@ -55,6 +65,9 @@ namespace Util
 
 	void WorkerThreadBase::RotateFuncs ()
 	{
+		if (IsPaused_)
+			return;
+
 		decltype (Functions_) funcs;
 
 		{

@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include <atomic>
 #include <QThread>
 #include <QMutex>
 #include <QMutexLocker>
@@ -47,10 +48,14 @@ namespace Util
 	{
 		Q_OBJECT
 
+		std::atomic_bool IsPaused_ { false };
+
 		QMutex FunctionsMutex_;
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
+
+		void SetPaused (bool);
 
 		template<typename F>
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
