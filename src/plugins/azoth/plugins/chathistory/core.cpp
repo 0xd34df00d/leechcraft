@@ -352,16 +352,7 @@ namespace ChatHistory
 
 	void Core::HandleDumpFinished (qint64 oldSize, qint64 newSize)
 	{
-		StorageThread_->SetPaused (false);
-
-		auto future = StorageThread_->Schedule (&Storage::Initialize);
-		future.waitForFinished ();
-		const auto& res = future.result ();
-		if (res.IsLeft ())
-		{
-			HandleStorageError (res.GetLeft ());
-			return;
-		}
+		StartStorage ();
 
 		Util::Sequence (this, StorageThread_->Schedule (&Storage::GetAllHistoryCount)) >>
 				[=] (const boost::optional<int>& count)
