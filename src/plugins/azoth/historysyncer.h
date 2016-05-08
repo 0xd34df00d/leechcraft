@@ -61,7 +61,7 @@ namespace Azoth
 		void StartAccountSync (IAccount*);
 		void RequestAccountFrom (IAccount*, const QDateTime&);
 
-		void AppendItems (const IHaveServerHistory::MessagesSyncMap_t&);
+		void AppendItems (IAccount*, const IHaveServerHistory::MessagesSyncMap_t&);
 	};
 }
 }

@@ -142,15 +142,16 @@ namespace Azoth
 
 		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
 		Util::Sequence (this, ihsh->FetchServerHistory (from)) >>
-				[this] (const auto& res)
+				[this, acc] (const auto& res)
 				{
 					Util::Visit (res.AsVariant (),
 							[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
-							[this] (const auto& map) { AppendItems (map); });
+							[this, acc] (const auto& map) { AppendItems (acc, map); });
 				};
 	}
 
-	void HistorySyncer::AppendItems (const IHaveServerHistory::MessagesSyncMap_t& map)
+	void HistorySyncer::AppendItems (IAccount *acc,
+			const IHaveServerHistory::MessagesSyncMap_t& map)
 	{
 		for (const auto storage : Storages_)
 		{
