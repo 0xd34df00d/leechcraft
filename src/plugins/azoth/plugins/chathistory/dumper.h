@@ -49,7 +49,7 @@ namespace ChatHistory
 		int FinishedCount_ = 0;
 	public:
 		Dumper (const QString& from, const QString& to, QObject* = nullptr);
-	private slots:
+	private:
 		void HandleProcessFinished (QProcess*);
 		void HandleProcessError (const QProcess*);
 	signals:
