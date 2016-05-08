@@ -225,11 +225,12 @@ namespace ChatHistory
 						irtm ? irtm->GetRichBody () : QString {},
 						msg->GetEscapePolicy ()
 					}
-				});
+				},
+				false);
 	}
 
 	void Core::AddLogItems (const QString& accountId, const QString& entryId,
-			const QString& visibleName, const QList<LogItem>& items)
+			const QString& visibleName, const QList<LogItem>& items, bool fuzzy)
 	{
 		StorageThread_->Schedule (&Storage::AddMessages,
 				accountId,
