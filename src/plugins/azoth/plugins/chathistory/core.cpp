@@ -60,7 +60,6 @@ namespace ChatHistory
 
 	Core::Core ()
 	: StorageThread_ (new StorageThread ())
-	, PluginProxy_ (0)
 	{
 		StorageThread_->SetPaused (true);
 

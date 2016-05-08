@@ -70,7 +70,7 @@ namespace ChatHistory
 
 		StorageThread *StorageThread_;
 		ICoreProxy_ptr CoreProxy_;
-		IProxyObject *PluginProxy_;
+		IProxyObject *PluginProxy_ = nullptr;
 		QSet<QString> DisabledIDs_;
 
 		TabClassInfo TabClass_;
