@@ -62,8 +62,10 @@ namespace ChatHistory
 		}
 	};
 
-	ConsistencyChecker::ConsistencyChecker (const QString& dbPath, QObject *parent)
+	ConsistencyChecker::ConsistencyChecker (const QString& dbPath,
+			const QString& dialogContext, QObject *parent)
 	: DBPath_ { dbPath }
+	, DialogContext_ { dialogContext }
 	{
 	}
 
@@ -137,7 +139,7 @@ namespace ChatHistory
 				break;
 
 			if (QMessageBox::question (nullptr,
-						"LeechCraft",
+						DialogContext_,
 						tr ("Not enough available space on partition with file %1: "
 							"%2 while we expect the restored file to be around %3. "
 							"Please either clean up the partition and retry or "
@@ -160,7 +162,7 @@ namespace ChatHistory
 				break;
 
 			if (QMessageBox::question (nullptr,
-						"LeechCraft",
+						DialogContext_,
 						tr ("%1 already exists. Please either remove the file manually to retry the restore process or cancel it.")
 								.arg ("<em>" + newPath + "</em>"),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
@@ -192,7 +194,7 @@ namespace ChatHistory
 		const auto& backup = DBPath_ + ".bak";
 		while (!QFile::rename (DBPath_, backup))
 			QMessageBox::critical (nullptr,
-					"LeechCraft",
+					DialogContext_,
 					tr ("Unable to backup %1 to %2. Please remove %2 and hit OK.")
 						.arg (DBPath_)
 						.arg (backup));

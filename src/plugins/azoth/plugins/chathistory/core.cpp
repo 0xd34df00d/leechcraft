@@ -62,7 +62,7 @@ namespace ChatHistory
 	{
 		StorageThread_->SetPaused (true);
 
-		auto checker = new ConsistencyChecker { Storage::GetDatabasePath () };
+		auto checker = new ConsistencyChecker { Storage::GetDatabasePath (), "Azoth ChatHistory" };
 		Util::Sequence (this, checker->StartCheck ()) >>
 				[this] (const ConsistencyChecker::CheckResult_t& result)
 				{

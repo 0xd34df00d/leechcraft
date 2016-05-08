@@ -47,10 +47,11 @@ namespace ChatHistory
 	class ConsistencyChecker : public QObject
 	{
 		const QString DBPath_;
+		const QString DialogContext_;
 
 		friend class FailedImpl;
 	public:
-		ConsistencyChecker (const QString&, QObject* = nullptr);
+		ConsistencyChecker (const QString& dbPath, const QString& dialogContext, QObject* = nullptr);
 
 		struct DumpFinished
 		{
