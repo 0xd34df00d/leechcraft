@@ -20,6 +20,7 @@ set (CHATHISTORY_SRCS
 	xmlsettingsmanager.cpp
 	historyvieweventfilter.cpp
 	dumper.cpp
+	consistencychecker.cpp
 	)
 set (CHATHISTORY_FORMS
 	chathistorywidget.ui
