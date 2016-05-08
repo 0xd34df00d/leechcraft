@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "fotobilderaccount.h"
+#include <cassert>
 #include <QDomDocument>
 #include <QCryptographicHash>
 #include <QInputDialog>
@@ -185,7 +186,7 @@ namespace DeathNote
 			return true;
 		}
 
-		return false;
+		assert (false);
 	}
 
 	void FotoBilderAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)
