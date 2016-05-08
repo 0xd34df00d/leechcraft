@@ -290,11 +290,11 @@ namespace LMP
 			S_FFmpegCodecs_ = ffmpegProcess.readAllStandardOutput ();
 		}
 
-		Formats_ << Format_ptr (new OggFormat);
-		Formats_ << Format_ptr (new AACFormat);
-		Formats_ << Format_ptr (new FAACFormat);
-		Formats_ << Format_ptr (new MP3Format);
-		Formats_ << Format_ptr (new WMAFormat);
+		Formats_ << std::make_shared<OggFormat> ();
+		Formats_ << std::make_shared<AACFormat> ();
+		Formats_ << std::make_shared<FAACFormat> ();
+		Formats_ << std::make_shared<MP3Format> ();
+		Formats_ << std::make_shared<WMAFormat> ();
 
 		std::copy_if (Formats_.begin (), Formats_.end (), std::back_inserter (EnabledFormats_),
 				[] (const Format_ptr format)
