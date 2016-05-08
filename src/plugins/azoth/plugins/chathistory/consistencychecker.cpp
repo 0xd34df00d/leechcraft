@@ -39,6 +39,21 @@ namespace Azoth
 {
 namespace ChatHistory
 {
+	class FailedImpl final : public ConsistencyChecker::IFailed
+	{
+		ConsistencyChecker * const Checker_;
+	public:
+		FailedImpl (ConsistencyChecker *checker)
+		: Checker_ { checker }
+		{
+		}
+	private:
+		void DumpReinit () override
+		{
+			Checker_->DumpReinit ();
+		}
+	};
+
 	ConsistencyChecker::ConsistencyChecker (const QString& dbPath, QObject *parent)
 	: DBPath_ { dbPath }
 	{
@@ -77,7 +92,11 @@ namespace ChatHistory
 				pragma.value (0) == "ok")
 			return Succeeded {};
 		else
-			return Failed {};
+			return std::make_shared<FailedImpl> (this);
+	}
+
+	void ConsistencyChecker::DumpReinit ()
+	{
 	}
 }
 }

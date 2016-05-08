@@ -44,17 +44,24 @@ namespace ChatHistory
 	class ConsistencyChecker : public QObject
 	{
 		const QString DBPath_;
+
+		friend class FailedImpl;
 	public:
 		ConsistencyChecker (const QString&, QObject* = nullptr);
 
 		struct Succeeded {};
-		struct Failed {};
+		struct IFailed
+		{
+			virtual void DumpReinit () = 0;
+		};
+		using Failed = std::shared_ptr<IFailed>;
 
 		using CheckResult_t = boost::variant<Succeeded, Failed>;
 
 		QFuture<CheckResult_t> StartCheck ();
 	private:
 		CheckResult_t CheckDB ();
+		void DumpReinit ();
 	};
 }
 }
