@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "importmanager.h"
+#include <util/sll/qtutil.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/azoth/iaccount.h"
@@ -140,6 +141,12 @@ namespace Azoth
 
 		qDebug () << history.size ();
 
+		struct EntryInfo
+		{
+			QString VisibleName_;
+			QList<HistoryItem> Items_;
+		};
+		QHash<QString, QHash<QString, EntryInfo>> items;
 		for (const auto& lineVar : history)
 		{
 			const auto& histMap = lineVar.toMap ();
@@ -161,7 +168,7 @@ namespace Azoth
 
 			const auto& accId = acc->GetAccountID ();
 
-			HistoryItem item
+			const HistoryItem item
 			{
 				histMap ["DateTime"].toDateTime (),
 				GetDirection (histMap ["Direction"].toByteArray ()),
@@ -172,9 +179,19 @@ namespace Azoth
 				GetEscapePolicy (histMap ["EscapePolicy"].toByteArray ())
 			};
 
-			for (const auto plugin : histories)
-				plugin->AddRawMessages (accId, entryId, visibleName, { item });
+			auto& info = items [accId] [entryId];
+			info.VisibleName_ = visibleName;
+			info.Items_ << item;
 		}
+
+		for (const auto& accPair : Util::Stlize (items))
+			for (const auto& entryPair : Util::Stlize (accPair.second))
+			{
+				const auto& info = entryPair.second;
+				for (const auto plugin : histories)
+					plugin->AddRawMessages (accPair.first,
+							entryPair.first, info.VisibleName_, info.Items_);
+			}
 	}
 
 	IAccount* ImportManager::GetAccountID (Entity e)
