@@ -28,6 +28,10 @@
  **********************************************************************/
 
 #include "consistencychecker.h"
+#include <memory>
+#include <QSqlDatabase>
+#include <QtConcurrentRun>
+#include <util/db/util.h>
 
 namespace LeechCraft
 {
@@ -36,7 +40,44 @@ namespace Azoth
 namespace ChatHistory
 {
 	ConsistencyChecker::ConsistencyChecker (const QString& dbPath, QObject *parent)
+	: DBPath_ { dbPath }
 	{
+	}
+
+	QFuture<ConsistencyChecker::CheckResult_t> ConsistencyChecker::StartCheck ()
+	{
+		return QtConcurrent::run ([this] { return CheckDB (); });
+	}
+
+	ConsistencyChecker::CheckResult_t ConsistencyChecker::CheckDB ()
+	{
+		const auto& connName = Util::GenConnectionName ("ConsistencyChecker_" + DBPath_);
+
+		std::shared_ptr<QSqlDatabase> db
+		{
+			new QSqlDatabase { QSqlDatabase::addDatabase ("QSQLITE", connName) },
+			[connName] (QSqlDatabase *db)
+			{
+				delete db;
+				QSqlDatabase::removeDatabase (connName);
+			}
+		};
+
+		db->setDatabaseName (DBPath_);
+		if (!db->open ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open the DB, but that's not the kind of errors we're solving.";
+			return Succeeded {};
+		}
+
+		QSqlQuery pragma { *db };
+		if (pragma.exec ("PRAGMA integrity_check;") &&
+				pragma.next () &&
+				pragma.value (0) == "ok")
+			return Succeeded {};
+		else
+			return Failed {};
 	}
 }
 }

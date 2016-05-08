@@ -30,6 +30,10 @@
 #pragma once
 
 #include <QObject>
+#include <boost/variant.hpp>
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -39,9 +43,18 @@ namespace ChatHistory
 {
 	class ConsistencyChecker : public QObject
 	{
-		Q_OBJECT
+		const QString DBPath_;
 	public:
 		ConsistencyChecker (const QString&, QObject* = nullptr);
+
+		struct Succeeded {};
+		struct Failed {};
+
+		using CheckResult_t = boost::variant<Succeeded, Failed>;
+
+		QFuture<CheckResult_t> StartCheck ();
+	private:
+		CheckResult_t CheckDB ();
 	};
 }
 }
