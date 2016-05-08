@@ -128,6 +128,20 @@ namespace ChatHistory
 		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type, RichMessage, EscapePolicy) "
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type, :rich_message, :escape_policy);");
 
+		MessageDumperFuzzy_ = QSqlQuery (*DB_);
+		MessageDumperFuzzy_.prepare (R"(
+				INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type, RichMessage, EscapePolicy)
+				SELECT :id, :account_id, :date, :direction, :message, :variant, :type, :rich_message, :escape_policy
+				WHERE NOT EXISTS (
+					SELECT 1 FROM azoth_history
+					WHERE Id = :id_inner
+						AND AccountID = :account_id_inner
+						AND Direction = :direction_inner
+						AND Message = :message_inner
+						AND abs(Date - :date_inner) < :tolerance
+				)
+				)");
+
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
 		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users2.UserId, EntryID FROM azoth_users, azoth_acc2users2 "
 				"WHERE azoth_acc2users2.UserId = azoth_users.Id AND azoth_acc2users2.AccountID = :account_id;");

@@ -61,6 +61,7 @@ namespace ChatHistory
 		QSqlQuery UserInserter_;
 		QSqlQuery AccountInserter_;
 		QSqlQuery MessageDumper_;
+		QSqlQuery MessageDumperFuzzy_;
 		QSqlQuery UsersForAccountGetter_;
 		QSqlQuery RowID2Pos_;
 		QSqlQuery Date2Pos_;
