@@ -29,8 +29,10 @@
 
 #include "formats.h"
 #include <algorithm>
-#include <QtDebug>
+#include <cassert>
 #include <QProcess>
+#include <QtDebug>
+#include <util/sll/prelude.h>
 #include "transcodingparams.h"
 
 namespace LeechCraft
@@ -49,8 +51,11 @@ namespace LMP
 
 	QStringList Format::ToFFmpeg (const TranscodingParams& params) const
 	{
-		QStringList result;
-		result << "-acodec" << GetCodecID ();
+		QStringList result
+		{
+			"-acodec",
+			GetCodecID ()
+		};
 		StandardQualityAppend (result, params);
 		return result;
 	}
@@ -109,9 +114,7 @@ namespace LMP
 				return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown bitrate type";
-			return QList<int> ();
+			assert (false);
 		}
 	};
 
@@ -143,9 +146,7 @@ namespace LMP
 			}
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown bitrate type";
-			return QList<int> ();
+			assert (false);
 		}
 
 		QStringList ToFFmpeg (const TranscodingParams& params) const
@@ -240,9 +241,7 @@ namespace LMP
 				return { -9, -8, -7, -6, -5, -4, -3, -2, -1 };
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown bitrate type";
-			return QList<int> ();
+			assert (false);
 		}
 	};
 
@@ -292,14 +291,14 @@ namespace LMP
 			S_FFmpegCodecs_ = ffmpegProcess.readAllStandardOutput ();
 		}
 
-		Formats_ << Format_ptr (new OggFormat);
-		Formats_ << Format_ptr (new AACFormat);
-		Formats_ << Format_ptr (new FAACFormat);
-		Formats_ << Format_ptr (new MP3Format);
-		Formats_ << Format_ptr (new WMAFormat);
+		Formats_ << std::make_shared<OggFormat> ();
+		Formats_ << std::make_shared<AACFormat> ();
+		Formats_ << std::make_shared<FAACFormat> ();
+		Formats_ << std::make_shared<MP3Format> ();
+		Formats_ << std::make_shared<WMAFormat> ();
 
-		std::copy_if (Formats_.begin (), Formats_.end (), std::back_inserter (EnabledFormats_),
-				[] (const Format_ptr format)
+		EnabledFormats_ = Util::Filter (Formats_,
+				[] (const Format_ptr& format)
 				{
 					return S_FFmpegCodecs_.contains (QRegExp (".EA... " + format->GetCodecName ()));
 				});

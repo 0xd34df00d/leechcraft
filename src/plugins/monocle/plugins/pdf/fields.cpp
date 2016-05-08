@@ -28,12 +28,12 @@
  **********************************************************************/
 
 #include "fields.h"
-#include "links.h"
-
+#include <cassert>
 #include <algorithm>
 #include <QtDebug>
 #include <poppler-form.h>
 #include <poppler-version.h>
+#include "links.h"
 
 namespace LeechCraft
 {
@@ -99,10 +99,7 @@ namespace PDF
 			return Type::File;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown native text type"
-				<< Field_->textType ();
-		return Type::SingleLine;
+		assert (false);
 	}
 
 	int FormFieldText::GetMaximumLength () const

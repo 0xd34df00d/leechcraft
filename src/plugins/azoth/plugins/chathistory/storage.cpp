@@ -128,6 +128,20 @@ namespace ChatHistory
 		MessageDumper_.prepare ("INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type, RichMessage, EscapePolicy) "
 				"VALUES (:id, :account_id, :date, :direction, :message, :variant, :type, :rich_message, :escape_policy);");
 
+		MessageDumperFuzzy_ = QSqlQuery (*DB_);
+		MessageDumperFuzzy_.prepare (R"(
+				INSERT INTO azoth_history (Id, AccountID, Date, Direction, Message, Variant, Type, RichMessage, EscapePolicy)
+				SELECT :id, :account_id, :date, :direction, :message, :variant, :type, :rich_message, :escape_policy
+				WHERE NOT EXISTS (
+					SELECT 1 FROM azoth_history
+					WHERE Id = :id_inner
+						AND AccountID = :account_id_inner
+						AND Direction = :direction_inner
+						AND Message = :message_inner
+						AND abs(Date - :date_inner) < :tolerance
+				)
+				)");
+
 		UsersForAccountGetter_ = QSqlQuery (*DB_);
 		UsersForAccountGetter_.prepare ("SELECT DISTINCT azoth_acc2users2.UserId, EntryID FROM azoth_users, azoth_acc2users2 "
 				"WHERE azoth_acc2users2.UserId = azoth_users.Id AND azoth_acc2users2.AccountID = :account_id;");
@@ -764,8 +778,37 @@ namespace ChatHistory
 		}
 	}
 
+	namespace
+	{
+		void BindStrict (QSqlQuery& dumper, qint32 userId, qint32 accountId, const LogItem& logItem)
+		{
+			dumper.bindValue (":id", userId);
+			dumper.bindValue (":account_id", accountId);
+			dumper.bindValue (":date", logItem.Date_);
+			dumper.bindValue (":direction", ToVariant (logItem.Dir_));
+			dumper.bindValue (":message", logItem.Message_);
+			dumper.bindValue (":variant", logItem.Variant_);
+			dumper.bindValue (":rich_message", logItem.RichMessage_);
+			dumper.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
+			dumper.bindValue (":type", ToVariant (logItem.Type_));
+		}
+
+		void BindFuzzy (QSqlQuery& dumper, qint32 userId, qint32 accountId, const LogItem& logItem)
+		{
+			BindStrict (dumper, userId, accountId, logItem);
+
+			dumper.bindValue (":id_inner", userId);
+			dumper.bindValue (":account_id_inner", accountId);
+			dumper.bindValue (":date_inner", logItem.Date_);
+			dumper.bindValue (":direction_inner", ToVariant (logItem.Dir_));
+			dumper.bindValue (":message_inner", logItem.Message_);
+			dumper.bindValue (":tolerance", 0.1);
+		}
+	}
+
 	void Storage::AddMessages (const QString& accountID,
-			const QString& entryID, const QString& visibleName, const QList<LogItem>& items)
+			const QString& entryID, const QString& visibleName,
+			const QList<LogItem>& items, bool fuzzy)
 	{
 		Util::DBLock lock (*DB_);
 		try
@@ -821,19 +864,16 @@ namespace ChatHistory
 
 		for (const auto& logItem : items)
 		{
-			MessageDumper_.bindValue (":id", userId);
-			MessageDumper_.bindValue (":account_id", Accounts_ [accountID]);
-			MessageDumper_.bindValue (":date", logItem.Date_);
-			MessageDumper_.bindValue (":direction", ToVariant (logItem.Dir_));
-			MessageDumper_.bindValue (":message", logItem.Message_);
-			MessageDumper_.bindValue (":variant", logItem.Variant_);
-			MessageDumper_.bindValue (":rich_message", logItem.RichMessage_);
-			MessageDumper_.bindValue (":escape_policy", ToVariant (logItem.EscPolicy_));
-			MessageDumper_.bindValue (":type", ToVariant (logItem.Type_));
+			auto& query = fuzzy ? MessageDumperFuzzy_ : MessageDumper_;
 
-			if (!MessageDumper_.exec ())
+			if (fuzzy)
+				BindFuzzy (query, userId, Accounts_ [accountID], logItem);
+			else
+				BindStrict (query, userId, Accounts_ [accountID], logItem);
+
+			if (!query.exec ())
 			{
-				Util::DBLock::DumpError (MessageDumper_);
+				Util::DBLock::DumpError (query);
 				return;
 			}
 		}

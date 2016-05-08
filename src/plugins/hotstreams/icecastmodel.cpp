@@ -115,10 +115,7 @@ namespace HotStreams
 			return {};
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown index type"
-				<< parent;
-		return {};
+		assert (false);
 	}
 
 	QModelIndex IcecastModel::parent (const QModelIndex& child) const
@@ -134,10 +131,7 @@ namespace HotStreams
 			return createIndex (GetGenreIndex (child), 0, MakeGenreId ());
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown index type"
-				<< child;
-		return {};
+		assert (false);
 	}
 
 	int IcecastModel::rowCount (const QModelIndex& parent) const
@@ -154,10 +148,7 @@ namespace HotStreams
 			return 0;
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown index type"
-				<< parent;
-		return 0;
+		assert (false);
 	}
 
 	int IcecastModel::columnCount (const QModelIndex&) const
@@ -206,10 +197,7 @@ namespace HotStreams
 			return GetStationData (index, role);
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown index type"
-				<< index;
-		return {};
+		assert (false);
 	}
 
 	void IcecastModel::SetStations (const StationInfoList_t& stations)

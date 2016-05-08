@@ -61,6 +61,7 @@ namespace ChatHistory
 		QSqlQuery UserInserter_;
 		QSqlQuery AccountInserter_;
 		QSqlQuery MessageDumper_;
+		QSqlQuery MessageDumperFuzzy_;
 		QSqlQuery UsersForAccountGetter_;
 		QSqlQuery RowID2Pos_;
 		QSqlQuery Date2Pos_;
@@ -118,7 +119,7 @@ namespace ChatHistory
 				const QString& entryId, int backpages, int amount);
 
 		void AddMessages (const QString& accountId, const QString& entryId,
-				const QString& visibleName, const QList<LogItem>&);
+				const QString& visibleName, const QList<LogItem>&, bool fuzzy);
 
 		SearchResult_t Search (const QString& accountId, const QString& entryId,
 				const QString& text, int shift, bool cs);

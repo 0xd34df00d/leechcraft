@@ -33,10 +33,13 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/either.h>
 #include <util/sll/prelude.h>
+#include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include "interfaces/azoth/iaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
 #include "interfaces/azoth/ihaveserverhistory.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -138,6 +141,31 @@ namespace Azoth
 		qDebug () << Q_FUNC_INFO
 				<< acc->GetAccountID ()
 				<< from;
+
+		const auto ihsh = qobject_cast<IHaveServerHistory*> (acc->GetQObject ());
+		Util::Sequence (this, ihsh->FetchServerHistory (from)) >>
+				[this, acc] (const auto& res)
+				{
+					Util::Visit (res.AsVariant (),
+							[] (const QString& err) { qWarning () << Q_FUNC_INFO << err; },
+							[this, acc] (const auto& map) { this->AppendItems (acc, map); });		// workaround gcc crappiness
+				};
+	}
+
+	void HistorySyncer::AppendItems (IAccount *acc,
+			const IHaveServerHistory::MessagesSyncMap_t& map)
+	{
+		for (const auto& pair : Util::Stlize (map))
+		{
+			const auto& entry = qobject_cast<ICLEntry*> (Core::Instance ().GetEntry (pair.first));
+			const auto& name = entry ?
+					entry->GetEntryName () :
+					pair.second.VisibleName_;
+
+			for (const auto storage : Storages_)
+				storage->AddRawMessages (acc->GetAccountID (),
+						pair.first, name, pair.second.Messages_);
+		}
 	}
 }
 }

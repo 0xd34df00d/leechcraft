@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "structures.h"
+#include <cassert>
 #include <QtDebug>
 #include <interfaces/itexteditor.h>
 
@@ -47,10 +48,7 @@ namespace Snails
 			return "forward";
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown message type"
-				<< static_cast<int> (type);
-		return {};
+		assert (false);
 	}
 
 	QString GetExtension (ContentType type)
@@ -63,10 +61,7 @@ namespace Snails
 			return "html";
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown content type"
-				<< static_cast<int> (type);
-		return {};
+		assert (false);
 	}
 }
 }

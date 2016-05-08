@@ -77,11 +77,6 @@ namespace ChatHistory
 
 		SeparatorAction_ = Util::CreateSeparator (this);
 		SeparatorAction_->property ("Azoth/ChatHistory/IsGood").toBool ();
-
-		connect (Core::Instance ().get (),
-				SIGNAL (gotChatLogs (QString, QString, int, int, QVariant)),
-				this,
-				SLOT (handleGotChatLogs (QString, QString, int, int, QVariant)));
 	}
 
 	void Plugin::SecondInit ()
@@ -186,7 +181,7 @@ namespace ChatHistory
 	void Plugin::AddRawMessages (const QString& accountId, const QString& entryId,
 			const QString& visibleName, const QList<HistoryItem>& items)
 	{
-		Core::Instance ()->AddLogItems (accountId, entryId, visibleName, items);
+		Core::Instance ()->AddLogItems (accountId, entryId, visibleName, items, true);
 	}
 
 	void Plugin::InitWidget (ChatHistoryWidget *wh)

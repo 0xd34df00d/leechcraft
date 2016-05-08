@@ -42,7 +42,6 @@ namespace BitTorrent
 	: QIODevice (parent)
 	, StatusKeeper_ (keeper)
 	, Handle_ (h)
-#if LIBTORRENT_VERSION_NUM >= 10000
 	, TI_
 	{
 		[&]
@@ -57,15 +56,8 @@ namespace BitTorrent
 			return *tf;
 		} ()
 	}
-#else
-	, TI_ { h.get_torrent_info () }
-#endif
 	{
-#if LIBTORRENT_VERSION_NUM >= 10000
 		const auto& tpath = keeper->GetStatus (h, th::query_save_path).save_path;
-#else
-		const auto& tpath = h.save_path ();
-#endif
 		const auto& fpath = TI_.file_at (0).path;
 		File_.setFileName (QString::fromStdString (tpath + '/' + fpath));
 
