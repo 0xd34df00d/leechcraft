@@ -62,12 +62,17 @@ namespace ChatHistory
 	: StorageThread_ (new StorageThread ())
 	, PluginProxy_ (0)
 	{
+		StorageThread_->SetPaused (true);
+
 		StorageThread_->start (QThread::LowestPriority);
 		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
 				[this] (const Storage::InitializationResult_t& res)
 				{
 					if (res.IsRight ())
+					{
+						StorageThread_->SetPaused (false);
 						return;
+					}
 
 					HandleStorageError (res.GetLeft ());
 				};
@@ -380,7 +385,7 @@ namespace ChatHistory
 
 		QFile::rename (to, from);
 
-		StorageThread_->SetIgnoreMode (false);
+		StorageThread_->SetPaused (false);
 
 		auto future = StorageThread_->Schedule (&Storage::Initialize);
 		future.waitForFinished ();
@@ -429,8 +434,6 @@ namespace ChatHistory
 
 					DumpReinit ();
 				});
-
-		StorageThread_->SetIgnoreMode (true);
 	}
 
 	void Core::handleDumperError (const QString& error)
