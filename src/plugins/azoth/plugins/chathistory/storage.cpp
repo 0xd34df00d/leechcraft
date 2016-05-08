@@ -94,9 +94,6 @@ namespace ChatHistory
 			return InitializationResult_t::Left (GeneralError { tr ("Unable to open Azoth history database.") });
 		}
 
-		if (const auto err = CheckDB ())
-			return InitializationResult_t::Left (*err);
-
 		QSqlQuery pragma (*DB_);
 		pragma.exec ("PRAGMA foreign_keys = ON;");
 		pragma.exec ("PRAGMA synchronous = OFF");
@@ -237,20 +234,6 @@ namespace ChatHistory
 		PrepareEntryCache ();
 
 		return InitializationResult_t::Right ({});
-	}
-
-	boost::optional<Storage::InitializationError_t> Storage::CheckDB ()
-	{
-		QSqlQuery pragma { *DB_ };
-		if (pragma.exec ("PRAGMA integrity_check;") &&
-				pragma.next () &&
-				pragma.value (0) == "ok")
-			return {};
-
-		qWarning () << Q_FUNC_INFO
-				<< "integrity check failed";
-
-		return InitializationError_t { Corruption {} };
 	}
 
 	void Storage::InitializeTables ()
