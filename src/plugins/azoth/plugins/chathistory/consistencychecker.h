@@ -35,6 +35,9 @@
 template<typename>
 class QFuture;
 
+template<typename>
+class QFutureInterface;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -49,10 +52,21 @@ namespace ChatHistory
 	public:
 		ConsistencyChecker (const QString&, QObject* = nullptr);
 
+		struct DumpFinished
+		{
+			qint64 OldFileSize_;
+			qint64 NewFileSize_;
+		};
+		struct DumpError
+		{
+			QString Error_;
+		};
+		using DumpResult_t = boost::variant<DumpFinished, DumpError>;
+
 		struct Succeeded {};
 		struct IFailed
 		{
-			virtual void DumpReinit () = 0;
+			virtual QFuture<DumpResult_t> DumpReinit () = 0;
 		};
 		using Failed = std::shared_ptr<IFailed>;
 
@@ -61,7 +75,11 @@ namespace ChatHistory
 		QFuture<CheckResult_t> StartCheck ();
 	private:
 		CheckResult_t CheckDB ();
-		void DumpReinit ();
+
+		QFuture<DumpResult_t> DumpReinit ();
+		void DumpReinitImpl (QFutureInterface<DumpResult_t>);
+
+		void HandleDumperFinished (QFutureInterface<DumpResult_t>, const QString&);
 	};
 }
 }

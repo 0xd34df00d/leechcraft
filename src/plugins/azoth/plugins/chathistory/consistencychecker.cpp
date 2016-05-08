@@ -29,9 +29,17 @@
 
 #include "consistencychecker.h"
 #include <memory>
+#include <boost/filesystem.hpp>
+#include <QFile>
 #include <QSqlDatabase>
+#include <QMessageBox>
 #include <QtConcurrentRun>
 #include <util/db/util.h>
+#include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
+#include <util/util.h>
+#include "dumper.h"
 
 namespace LeechCraft
 {
@@ -48,9 +56,9 @@ namespace ChatHistory
 		{
 		}
 	private:
-		void DumpReinit () override
+		QFuture<ConsistencyChecker::DumpResult_t> DumpReinit () override
 		{
-			Checker_->DumpReinit ();
+			return Checker_->DumpReinit ();
 		}
 	};
 
@@ -95,8 +103,103 @@ namespace ChatHistory
 			return std::make_shared<FailedImpl> (this);
 	}
 
-	void ConsistencyChecker::DumpReinit ()
+	QFuture<ConsistencyChecker::DumpResult_t> ConsistencyChecker::DumpReinit ()
 	{
+		QFutureInterface<DumpResult_t> iface;
+		iface.reportStarted ();
+
+		DumpReinitImpl (iface);
+
+		return iface.future ();
+	}
+
+	namespace
+	{
+		void ReportResult (QFutureInterface<ConsistencyChecker::DumpResult_t> iface,
+				const ConsistencyChecker::DumpResult_t& result)
+		{
+			iface.reportFinished (&result);
+		}
+	}
+
+	void ConsistencyChecker::DumpReinitImpl (QFutureInterface<DumpResult_t> iface)
+	{
+		const QFileInfo fi { DBPath_ };
+		const auto filesize = fi.size ();
+
+		while (true)
+		{
+			const auto available = boost::filesystem::space (DBPath_.toStdString ()).available;
+			qDebug () << Q_FUNC_INFO
+					<< "db size:" << filesize
+					<< "free space:" << available;
+			if (available >= static_cast<qint64> (filesize))
+				break;
+
+			if (QMessageBox::question (nullptr,
+						"LeechCraft",
+						tr ("Not enough available space on partition with file %1: "
+							"%2 while we expect the restored file to be around %3. "
+							"Please either clean up the partition and retry or "
+							"cancel the restore process.")
+								.arg ("<em>" + DBPath_ + "</em>")
+								.arg (Util::MakePrettySize (available))
+								.arg (Util::MakePrettySize (filesize)),
+						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
+			{
+				ReportResult (iface, DumpError { tr ("Not enough available disk space.") });
+				return;
+			}
+		}
+
+		const auto& newPath = DBPath_ + ".new";
+
+		while (true)
+		{
+			if (!QFile::exists (newPath))
+				break;
+
+			if (QMessageBox::question (nullptr,
+						"LeechCraft",
+						tr ("%1 already exists. Please either remove the file manually to retry the restore process or cancel it.")
+								.arg ("<em>" + newPath + "</em>"),
+						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
+			{
+				ReportResult (iface, DumpError { tr ("Backup file already exists.") });
+				return;
+			}
+		}
+
+		const auto dumper = new Dumper { DBPath_, newPath };
+		Util::Sequence (this, dumper->GetFuture ()) >>
+				[=] (const Dumper::Result_t& result)
+				{
+					Util::Visit (result,
+							[=] (const Dumper::Error& error)
+							{
+								ReportResult (iface,
+										DumpError { tr ("Unable to restore the database.") + " " + error.What_ });
+							},
+							[=] (const Dumper::Finished&) { HandleDumperFinished (iface, newPath); });
+				};
+	}
+
+	void ConsistencyChecker::HandleDumperFinished (QFutureInterface<DumpResult_t> iface, const QString& to)
+	{
+		const auto oldSize = QFileInfo { DBPath_ }.size ();
+		const auto newSize = QFileInfo { to }.size ();
+
+		const auto& backup = DBPath_ + ".bak";
+		while (!QFile::rename (DBPath_, backup))
+			QMessageBox::critical (nullptr,
+					"LeechCraft",
+					tr ("Unable to backup %1 to %2. Please remove %2 and hit OK.")
+						.arg (DBPath_)
+						.arg (backup));
+
+		QFile::rename (to, DBPath_);
+
+		ReportResult (iface, DumpFinished { oldSize, newSize });
 	}
 }
 }
