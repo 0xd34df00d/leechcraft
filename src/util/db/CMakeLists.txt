@@ -35,4 +35,4 @@ target_link_libraries (leechcraft-util-db${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-util-db${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-db${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Sql Widgets)
+FindQtLibs (leechcraft-util-db${LC_LIBSUFFIX} Concurrent Sql Widgets)
