@@ -34,6 +34,7 @@
 #include <QNetworkReply>
 #include <QUrl>
 #include <QRegExp>
+#include <QStringList>
 #include "requestbuilder.h"
 
 namespace LeechCraft
