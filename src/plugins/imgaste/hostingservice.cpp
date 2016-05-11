@@ -94,7 +94,7 @@ namespace Imgaste
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am) const
 			{
-				QUrl url ("http://imagebin.ca/upload.php");
+				QUrl url { "https://imagebin.ca/upload.php" };
 
 				RequestBuilder builder;
 				builder.AddPair ("t", "file");
