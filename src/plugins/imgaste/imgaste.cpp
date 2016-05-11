@@ -32,6 +32,7 @@
 #include <QBuffer>
 #include <QUrl>
 #include <QStandardItemModel>
+#include <QMessageBox>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -177,7 +178,18 @@ namespace Imgaste
 
 	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, const QString& format)
 	{
-		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
+		const auto& dataFilter = e.Additional_ ["DataFilter"].toString ();
+		const auto& type = FromString (dataFilter);
+		if (!type)
+		{
+			QMessageBox::critical (nullptr,
+					"LeechCraft",
+					tr ("Unknown upload service: %1.")
+						.arg (dataFilter));
+			return;
+		}
+
+		new Poster (*type,
 				data,
 				format,
 				Proxy_,

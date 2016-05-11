@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <boost/optional.hpp>
 
 class QString;
 class QByteArray;
@@ -49,7 +50,7 @@ namespace Imgaste
 
 	bool operator< (HostingService, HostingService);
 	QString ToString (HostingService);
-	HostingService FromString (const QString&);
+	boost::optional<HostingService> FromString (const QString&);
 
 	struct Worker
 	{

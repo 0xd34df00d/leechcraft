@@ -63,7 +63,7 @@ namespace Imgaste
 		return "<unknown>";
 	}
 
-	HostingService FromString (const QString& str)
+	boost::optional<HostingService> FromString (const QString& str)
 	{
 		const auto known =
 		{
@@ -78,7 +78,7 @@ namespace Imgaste
 		qWarning () << Q_FUNC_INFO
 				<< "unknown hosting service"
 				<< str;
-		return HostingService::DumpBitcheeseNet;
+		return {};
 	}
 
 	namespace
