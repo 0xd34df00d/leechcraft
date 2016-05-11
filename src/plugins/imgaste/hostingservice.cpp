@@ -100,30 +100,40 @@ namespace Imgaste
 				RequestBuilder builder;
 				builder.AddPair ("t", "file");
 
-				QString name = QString ("screenshot.%1").arg (format.toLower ());
-				builder.AddPair ("name", name);
+				builder.AddPair ("title", "");
+				builder.AddPair ("description", "");
 				builder.AddPair ("tags", "leechcraft");
-				builder.AddPair ("adult", "f");
-				builder.AddFile (format, "f", data);
+				builder.AddPair ("category", "general");
+				builder.AddPair ("private", "true");
+				builder.AddFile (format, "file", data);
 
 				QByteArray formed = builder.Build ();
 
-				QNetworkRequest request (url);
+				QNetworkRequest request { url };
 				request.setHeader (QNetworkRequest::ContentTypeHeader,
 						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
 				request.setHeader (QNetworkRequest::ContentLengthHeader,
 						QString::number (formed.size ()));
+				request.setRawHeader ("Origin", "https://imagebin.ca");
+				request.setRawHeader ("Referer", "https://imagebin.ca/");
 				return am->post (request, formed);
 			}
 
 			QString GetLink (const QString& contents, QNetworkReply*) const
 			{
-				if (!RegExp_.exactMatch (contents))
-					return QString ();
+				const auto& lines = contents.split ('\n');
+				const auto pos = std::find_if (lines.begin (), lines.end (),
+						[] (const QString& line) { return line.startsWith ("url:"); });
 
-				QString pasteUrl = RegExp_.cap (1);
-				pasteUrl.replace ("html", "jpg").replace ("view", "img");
-				return pasteUrl;
+				if (pos == lines.end ())
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no URL:"
+							<< contents;
+					return {};
+				}
+
+				return pos->section (':', 1);
 			}
 		};
 
