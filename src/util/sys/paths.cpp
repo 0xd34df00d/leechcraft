@@ -29,6 +29,7 @@
 
 #include "paths.h"
 #include <stdexcept>
+#include <boost/filesystem.hpp>
 #include <QFile>
 #include <QTemporaryFile>
 #if defined (Q_OS_WIN32) || defined (Q_OS_MAC)
@@ -188,6 +189,17 @@ namespace Util
 		file.close ();
 		file.remove ();
 		return name;
+	}
+
+	SpaceInfo GetSpaceInfo (const QString& path)
+	{
+		const auto& info = boost::filesystem::space (path.toStdString ());
+		return
+		{
+			info.capacity,
+			info.free,
+			info.available
+		};
 	}
 }
 }

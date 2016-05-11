@@ -202,5 +202,14 @@ namespace Util
 	 * @return The filename.
 	 */
 	UTIL_SYS_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
+
+	struct SpaceInfo
+	{
+		quint64 Capacity_;
+		quint64 Free_;
+		quint64 Available_;
+	};
+
+	UTIL_SYS_API SpaceInfo GetSpaceInfo (const QString& path);
 }
 }
