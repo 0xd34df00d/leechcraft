@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "hostingservice.h"
+#include <cassert>
 #include <QString>
 #include <QtDebug>
 #include <QNetworkReply>
@@ -216,10 +217,7 @@ namespace Imgaste
 			return Worker_ptr { new SavepicWorker };
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown service"
-				<< static_cast<int> (s);
-		return {};
+		assert (false);
 	}
 }
 }
