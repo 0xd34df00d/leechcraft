@@ -153,12 +153,7 @@ namespace Imgaste
 
 		const auto& format = QString::fromLatin1 (Util::DetectFileMime (name)).section ('/', 1, 1);
 
-		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
-				file.readAll (),
-				format,
-				Proxy_,
-				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
-				ReprModel_);
+		UploadImpl (file.readAll (), e, format);
 	}
 
 	void Plugin::UploadImage (const QImage& img, const Entity& e)
@@ -177,8 +172,13 @@ namespace Imgaste
 			return;
 		}
 
+		UploadImpl (buf.data (), e, format);
+	}
+
+	void Plugin::UploadImpl (const QByteArray& data, const Entity& e, const QString& format)
+	{
 		new Poster (FromString (e.Additional_ ["DataFilter"].toString ()),
-				buf.data (),
+				data,
 				format,
 				Proxy_,
 				e.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> (),
