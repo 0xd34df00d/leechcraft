@@ -85,13 +85,6 @@ namespace Imgaste
 	{
 		struct ImagebinWorker : Worker
 		{
-			QRegExp RegExp_;
-
-			ImagebinWorker ()
-			: RegExp_ ("<p>You can find this at <a href='([^<]+)'>([^<]+)</a></p>")
-			{
-			}
-
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am) const
 			{
