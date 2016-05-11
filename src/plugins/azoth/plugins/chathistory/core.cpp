@@ -38,7 +38,7 @@
 #include <QFileInfo>
 #include <util/threads/futures.h>
 #include <util/sll/visitor.h>
-#include <util/db/util.h>
+#include <util/db/consistencychecker.h>
 #include <util/util.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iproxyobject.h>
@@ -47,7 +47,6 @@
 #include <interfaces/azoth/irichtextmessage.h>
 #include "storagethread.h"
 #include "storagestructures.h"
-#include "consistencychecker.h"
 
 namespace LeechCraft
 {
@@ -62,27 +61,27 @@ namespace ChatHistory
 	{
 		StorageThread_->SetPaused (true);
 
-		auto checker = new ConsistencyChecker { Storage::GetDatabasePath (), "Azoth ChatHistory" };
+		auto checker = new Util::ConsistencyChecker { Storage::GetDatabasePath (), "Azoth ChatHistory" };
 		Util::Sequence (this, checker->StartCheck ()) >>
-				[this] (const ConsistencyChecker::CheckResult_t& result)
+				[this] (const Util::ConsistencyChecker::CheckResult_t& result)
 				{
 					Util::Visit (result,
-							[this] (const ConsistencyChecker::Succeeded&) { StartStorage (); },
-							[this] (const ConsistencyChecker::Failed& failed)
+							[this] (const Util::ConsistencyChecker::Succeeded&) { StartStorage (); },
+							[this] (const Util::ConsistencyChecker::Failed& failed)
 							{
 								qWarning () << Q_FUNC_INFO
 										<< "db is broken, gonna repair";
 								Util::Sequence (this, failed->DumpReinit ()) >>
-										[this] (const ConsistencyChecker::DumpResult_t& result)
+										[this] (const Util::ConsistencyChecker::DumpResult_t& result)
 										{
 											Util::Visit (result,
-													[] (const ConsistencyChecker::DumpError& err)
+													[] (const Util::ConsistencyChecker::DumpError& err)
 													{
 														QMessageBox::critical (nullptr,
 																"Azoth ChatHistory",
 																err.Error_);
 													},
-													[this] (const ConsistencyChecker::DumpFinished& res)
+													[this] (const Util::ConsistencyChecker::DumpFinished& res)
 													{
 														HandleDumpFinished (res.OldFileSize_, res.NewFileSize_);
 													});

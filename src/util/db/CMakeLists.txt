@@ -4,6 +4,8 @@ set (DB_SRCS
 	dblock.cpp
 	util.cpp
 	closingdb.cpp
+	dumper.cpp
+	consistencychecker.cpp
 	)
 set (DB_FORMS
 	backendselector.ui

@@ -33,9 +33,7 @@
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-namespace ChatHistory
+namespace Util
 {
 	Dumper::Dumper (const QString& from, const QString& to, QObject *parent)
 	: QObject { parent }
@@ -144,6 +142,5 @@ namespace ChatHistory
 	{
 		Iface_.reportFinished (&result);
 	}
-}
 }
 }

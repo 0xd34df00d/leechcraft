@@ -29,8 +29,9 @@
 
 #pragma once
 
-#include <QObject>
 #include <boost/variant.hpp>
+#include <QObject>
+#include "dbconfig.h"
 
 template<typename>
 class QFuture;
@@ -40,11 +41,9 @@ class QFutureInterface;
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-namespace ChatHistory
-{
-	class ConsistencyChecker : public QObject
+	class UTIL_DB_API ConsistencyChecker : public QObject
 	{
 		const QString DBPath_;
 		const QString DialogContext_;
@@ -82,6 +81,5 @@ namespace ChatHistory
 
 		void HandleDumperFinished (QFutureInterface<DumpResult_t>, const QString&);
 	};
-}
 }
 }

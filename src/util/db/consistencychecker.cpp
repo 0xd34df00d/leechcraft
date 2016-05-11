@@ -29,23 +29,21 @@
 
 #include "consistencychecker.h"
 #include <memory>
-#include <boost/filesystem.hpp>
 #include <QFile>
 #include <QSqlDatabase>
 #include <QMessageBox>
 #include <QtConcurrentRun>
-#include <util/db/util.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
+#include <util/sys/paths.h>
 #include <util/threads/futures.h>
 #include <util/util.h>
 #include "dumper.h"
+#include "util.h"
 
 namespace LeechCraft
 {
-namespace Azoth
-{
-namespace ChatHistory
+namespace Util
 {
 	class FailedImpl final : public ConsistencyChecker::IFailed
 	{
@@ -131,7 +129,8 @@ namespace ChatHistory
 
 		while (true)
 		{
-			const auto available = boost::filesystem::space (DBPath_.toStdString ()).available;
+			const auto available = GetSpaceInfo (DBPath_).Available_;
+
 			qDebug () << Q_FUNC_INFO
 					<< "db size:" << filesize
 					<< "free space:" << available;
@@ -203,6 +202,5 @@ namespace ChatHistory
 
 		ReportResult (iface, DumpFinished { oldSize, newSize });
 	}
-}
 }
 }

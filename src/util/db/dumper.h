@@ -32,14 +32,13 @@
 #include <boost/variant.hpp>
 #include <QProcess>
 #include <QFuture>
+#include "dbconfig.h"
 
 namespace LeechCraft
 {
-namespace Azoth
+namespace Util
 {
-namespace ChatHistory
-{
-	class Dumper : public QObject
+	class UTIL_DB_API Dumper : public QObject
 	{
 		Q_OBJECT
 
@@ -72,6 +71,5 @@ namespace ChatHistory
 		void HandleProcessError (const QProcess*);
 		void ReportResult (const Result_t&);
 	};
-}
 }
 }
