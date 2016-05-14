@@ -6,7 +6,7 @@ else ()
 	set (MAGIC_LIBRARIES)
 endif ()
 
-find_package (Boost REQUIRED COMPONENTS filesystem)
+find_package (Boost REQUIRED COMPONENTS filesystem system)
 
 include_directories (${MAGIC_INCLUDE_DIRS})
 
@@ -46,6 +46,7 @@ add_library (leechcraft-util-sys${LC_LIBSUFFIX} SHARED
 target_link_libraries (leechcraft-util-sys${LC_LIBSUFFIX}
 	${MAGIC_LIBRARIES}
 	${Boost_FILESYSTEM_LIBRARY}
+	${Boost_SYSTEM_LIBRARY}
 	)
 set_property (TARGET leechcraft-util-sys${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.1)
 install (TARGETS leechcraft-util-sys${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
