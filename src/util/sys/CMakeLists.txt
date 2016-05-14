@@ -44,6 +44,8 @@ add_library (leechcraft-util-sys${LC_LIBSUFFIX} SHARED
 	${SYS_SRCS}
 	)
 target_link_libraries (leechcraft-util-sys${LC_LIBSUFFIX}
+	leechcraft-util-sll${LC_LIBSUFFIX}
+	leechcraft-util${LC_LIBSUFFIX}
 	${MAGIC_LIBRARIES}
 	${Boost_FILESYSTEM_LIBRARY}
 	${Boost_SYSTEM_LIBRARY}
