@@ -58,10 +58,7 @@ namespace Imgaste
 			return "savepic.ru";
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown service"
-				<< static_cast<int> (s);
-		return "<unknown>";
+		assert (false);
 	}
 
 	boost::optional<HostingService> FromString (const QString& str)
