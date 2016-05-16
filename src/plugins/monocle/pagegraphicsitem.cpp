@@ -94,11 +94,8 @@ namespace Monocle
 		else
 			prepareGeometryChange ();
 
-		for (auto i = Item2RectInfo_.begin (); i != Item2RectInfo_.end (); ++i)
-		{
-			const auto& info = *i;
+		for (const auto& info : Item2RectInfo_)
 			info.Setter_ (MapFromDoc (info.DocRect_));
-		}
 	}
 
 	int PageGraphicsItem::GetPageNum () const
