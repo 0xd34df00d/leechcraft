@@ -36,7 +36,7 @@ namespace LeechCraft
 namespace CpuLoad
 {
 	const auto HistCount = 500;
-	const auto PointsPerPixel = 2.0;
+	const qreal PointsPerPixel = 2.0;
 
 	CpuLoadProxyObj::CpuLoadProxyObj (const QMap<LoadPriority, LoadTypeInfo>& infos)
 	{

@@ -203,13 +203,36 @@ namespace Util
 	 */
 	UTIL_SYS_API QString GetTemporaryName (const QString& pattern = QString ("lc_temp.XXXXXX"));
 
+	/** @brief Contains information about a partition's disk space.
+	 */
 	struct SpaceInfo
 	{
+		/** @brief The capacity of the partition.
+		 */
 		quint64 Capacity_;
+
+		/** @brief How much free space there is.
+		 *
+		 * This is equal or less than Capacity_.
+		 */
 		quint64 Free_;
+
+		/** @brief How much space is available to the current user.
+		 *
+		 * This is equal or less than Free_ and includes all the quotas
+		 * and other limitations the user is subject to.
+		 */
 		quint64 Available_;
 	};
 
+	/** @brief Returns the disk space info of the partition containing
+	 * \em path.
+	 *
+	 * @param[in] path The path on the partition for which the space
+	 * information should be returned.
+	 * @return The information about the disk space on the partition
+	 * containing \em path.
+	 */
 	UTIL_SYS_API SpaceInfo GetSpaceInfo (const QString& path);
 }
 }
