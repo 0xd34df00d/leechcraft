@@ -94,7 +94,7 @@ namespace GPGExceptions
 		 * \em message.
 		 *
 		 * @param[in] code The error code.
-		 * @param[in] message The human-readable error message.
+		 * @param[in] msg The human-readable error message.
 		 */
 		General (int code, const QString& msg)
 		: General { "Azoth GPG error", code, msg }
