@@ -83,7 +83,7 @@ namespace Azoth
 		 *
 		 * @param[in] input The user input, like a human-readable MUC
 		 * name.
-		 * @param[in] accountObj The entry this input is relevant to.
+		 * @param[in] entryObj The entry this input is relevant to.
 		 * @return The MUC identifying data suitable for passing to
 		 * IMUCJoinWidget::SetIdentifyingData(), or an empty variantmap
 		 * if guessing failed.
