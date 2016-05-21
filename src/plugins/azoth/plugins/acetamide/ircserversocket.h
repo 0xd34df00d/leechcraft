@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <boost/variant.hpp>
 #include <QObject>
 #include <QSslSocket>
 
@@ -49,9 +50,10 @@ namespace Acetamide
 		Q_OBJECT
 
 		IrcServerHandler * const ISH_;
-		const bool SSL_;
 
-		std::shared_ptr<QTcpSocket> Socket_;
+		using Tcp_ptr = std::shared_ptr<QTcpSocket>;
+		using Ssl_ptr = std::shared_ptr<QSslSocket>;
+		boost::variant<Tcp_ptr, Ssl_ptr> Socket_;
 
 		QTextCodec *LastCodec_ = nullptr;
 	public:
@@ -65,6 +67,8 @@ namespace Acetamide
 
 		void RefreshCodec ();
 		void HandleSslErrors (const std::shared_ptr<QSslSocket>&, const QList<QSslError>&);
+
+		QTcpSocket* GetSocketPtr () const;
 	private slots:
 		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);
