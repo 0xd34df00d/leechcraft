@@ -1,44 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="ru_RU">
+<TS version="2.0" language="ru_RU">
 <context>
     <name>AuthenticationDialog</name>
     <message>
         <location filename="authenticationdialog.ui" line="13"/>
         <source>Authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation>Требуется аутентификация</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="29"/>
         <source>Login:</source>
-        <translation type="unfinished"></translation>
+        <translation>Логин:</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="39"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <location filename="authenticationdialog.ui" line="55"/>
         <source>Save credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить реквизиты</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NamAuth::NamHandler</name>
     <message>
         <location filename="namhandler.cpp" line="85"/>
-        <location filename="namhandler.cpp" line="98"/>
-        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation type="unfinished"></translation>
+        <location filename="namhandler.cpp" line="95"/>
+        <source>%1 (%2) requires authentication.</source>
+        <oldsource>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</oldsource>
+        <translation>%1 (%2) запрашивает аутентификацию.</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::NamAuth::Plugin</name>
     <message>
-        <location filename="namauth.cpp" line="68"/>
+        <location filename="namauth.cpp" line="71"/>
         <source>Provides basic support for HTTP-level authentication.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обеспечивает базовую поддержку аутентификации на уровне HTTP.</translation>
     </message>
 </context>
 </TS>
