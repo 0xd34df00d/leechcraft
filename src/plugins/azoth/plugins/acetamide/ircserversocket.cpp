@@ -124,8 +124,20 @@ namespace Acetamide
 	void IrcServerSocket::RefreshCodec ()
 	{
 		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
-		if (!LastCodec_ || LastCodec_->name () != encoding)
-			LastCodec_ = QTextCodec::codecForName (encoding.toLatin1 ());
+		if (LastCodec_ && LastCodec_->name () == encoding)
+			return;
+
+		if (const auto newCodec = QTextCodec::codecForName (encoding.toLatin1 ()))
+		{
+			LastCodec_ = newCodec;
+			return;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unable to create codec for encoding `"
+				<< encoding.toUtf8 ()
+				<< "`; known codecs:"
+				<< QTextCodec::availableCodecs ();
 	}
 
 	void IrcServerSocket::readReply ()
