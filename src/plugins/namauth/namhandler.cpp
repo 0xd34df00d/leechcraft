@@ -82,12 +82,9 @@ namespace NamAuth
 	void NamHandler::handleAuthentication (QNetworkReply *reply,
 			QAuthenticator *authen)
 	{
-		QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
-			.arg (authen->realm ())
-			.arg (QApplication::fontMetrics ()
-					.elidedText (reply->url ().toString (),
-							Qt::ElideMiddle,
-							300));
+		const auto& msg = tr ("%1 (%2) requires authentication.")
+				.arg (authen->realm ())
+				.arg ("<em>" + reply->url ().toString () + "</em>");
 
 		DoCommonAuth (msg, authen);
 	}
@@ -95,9 +92,9 @@ namespace NamAuth
 	void NamHandler::handleAuthentication (const QNetworkProxy& proxy,
 			QAuthenticator *authen)
 	{
-		QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
-			.arg (authen->realm ())
-			.arg (proxy.hostName ());
+		const auto& msg = tr ("%1 (%2) requires authentication.")
+				.arg (authen->realm ())
+				.arg ("<em>" + proxy.hostName () + "</em>");
 
 		DoCommonAuth (msg, authen);
 	}
