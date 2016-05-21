@@ -62,14 +62,6 @@ namespace NamAuth
 
 	void SQLStorageBackend::Prepare ()
 	{
-		QSqlQuery pragma (DB_);
-		if (!pragma.exec ("PRAGMA journal_mode = TRUNCATE;"))
-			LeechCraft::Util::DBLock::DumpError (pragma);
-		if (!pragma.exec ("PRAGMA synchronous = OFF;"))
-			LeechCraft::Util::DBLock::DumpError (pragma);
-		if (!pragma.exec ("PRAGMA temp_store = MEMORY;"))
-			LeechCraft::Util::DBLock::DumpError (pragma);
-
 		AuthGetter_ = QSqlQuery (DB_);
 		AuthGetter_.prepare ("SELECT "
 				"login, "
