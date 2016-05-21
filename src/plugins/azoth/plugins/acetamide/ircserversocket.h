@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
+#pragma once
 
 #include <memory>
 #include <QObject>
@@ -67,7 +66,6 @@ namespace Acetamide
 		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
+}
+}
+}
