@@ -29,15 +29,77 @@
 
 #include "namhandler.h"
 #include <QNetworkAccessManager>
+#include <QFontMetrics>
+#include <QAuthenticator>
+#include <QNetworkReply>
+#include <QNetworkProxy>
+#include <QApplication>
+#include "authenticationdialog.h"
+#include "storagebackend.h"
 
 namespace LeechCraft
 {
 namespace NamAuth
 {
-	NamHandler::NamHandler (QNetworkAccessManager *nam)
+	NamHandler::NamHandler (StorageBackend *sb, QNetworkAccessManager *nam)
 	: QObject { nam }
+	, SB_ { sb }
 	, NAM_ { nam }
 	{
+		connect (nam,
+				SIGNAL (authenticationRequired (QNetworkReply*, QAuthenticator*)),
+				this,
+				SLOT (handleAuthentication (QNetworkReply*, QAuthenticator*)));
+		connect (nam,
+				SIGNAL (proxyAuthenticationRequired (QNetworkProxy, QAuthenticator*)),
+				this,
+				SLOT (handleAuthentication (QNetworkProxy, QAuthenticator*)));
+	}
+
+	void NamHandler::DoCommonAuth (const QString& msg, QAuthenticator *authen)
+	{
+		const auto& realm = authen->realm ();
+
+		auto suggestedUser = authen->user ();
+		auto suggestedPassword = authen->password ();
+
+		if (suggestedUser.isEmpty ())
+			SB_->GetAuth (realm, suggestedUser, suggestedPassword);
+
+		AuthenticationDialog dia (msg, suggestedUser, suggestedPassword, qApp->activeWindow ());
+		if (dia.exec () == QDialog::Rejected)
+			return;
+
+		const auto& login = dia.GetLogin ();
+		const auto& password = dia.GetPassword ();
+		authen->setUser (login);
+		authen->setPassword (password);
+
+		if (dia.ShouldSave ())
+			SB_->SetAuth (realm, login, password);
+	}
+
+	void NamHandler::handleAuthentication (QNetworkReply *reply,
+			QAuthenticator *authen)
+	{
+		QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
+			.arg (authen->realm ())
+			.arg (QApplication::fontMetrics ()
+					.elidedText (reply->url ().toString (),
+							Qt::ElideMiddle,
+							300));
+
+		DoCommonAuth (msg, authen);
+	}
+
+	void NamHandler::handleAuthentication (const QNetworkProxy& proxy,
+			QAuthenticator *authen)
+	{
+		QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
+			.arg (authen->realm ())
+			.arg (proxy.hostName ());
+
+		DoCommonAuth (msg, authen);
 	}
 }
 }

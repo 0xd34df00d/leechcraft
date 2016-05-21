@@ -59,10 +59,7 @@ set (SRCS
 	iconthemeengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
-	authenticationdialog.cpp
 	sslerrorsdialog.cpp
-	storagebackend.cpp
-	sqlstoragebackend.cpp
 	debugmessagehandler.cpp
 	application.cpp
 	handlerchoicedialog.cpp
@@ -115,7 +112,6 @@ set (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
-	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui
 	shortcutmanager.ui

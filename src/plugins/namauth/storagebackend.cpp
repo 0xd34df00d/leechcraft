@@ -29,14 +29,17 @@
 
 #include "storagebackend.h"
 
-using namespace LeechCraft;
-
-StorageBackend::StorageBackend (QObject *parent)
-: QObject (parent)
+namespace LeechCraft
 {
-}
-
-StorageBackend::~StorageBackend ()
+namespace NamAuth
 {
-}
+	StorageBackend::StorageBackend (QObject *parent)
+	: QObject (parent)
+	{
+	}
 
+	StorageBackend::~StorageBackend ()
+	{
+	}
+}
+}

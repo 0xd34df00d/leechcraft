@@ -27,51 +27,26 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef SQLSTORAGEBACKEND_H
-#define SQLSTORAGEBACKEND_H
-#include "storagebackend.h"
-#include <QSqlDatabase>
-#include <QSqlQuery>
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
-	class SQLStorageBackend : public StorageBackend
+namespace NamAuth
+{
+	class StorageBackend : public QObject
 	{
 		Q_OBJECT
-
-		QSqlDatabase DB_;
-
-				/** Binds:
-				 * - realm
-				 * Returns:
-				 * - login
-				 * - password
-				 */
-		mutable QSqlQuery AuthGetter_,
-				/** Binds:
-				 * - realm
-				 * - login
-				 * - password
-				 */
-				AuthInserter_,
-				/** Binds:
-				 * - realm
-				 * - login
-				 * - password
-				 */
-				AuthUpdater_;
 	public:
-		SQLStorageBackend ();
-		virtual ~SQLStorageBackend ();
+		StorageBackend (QObject* = 0);
+		virtual ~StorageBackend ();
 
-		void Prepare ();
-
-		virtual void GetAuth (const QString&, QString&, QString&) const;
-		virtual void SetAuth (const QString&, const QString&, const QString&);
-	private:
-		void InitializeTables ();
+		virtual void Prepare () = 0;
+		virtual void GetAuth (const QString& realm,
+				QString& login, QString& password) const = 0;
+		virtual void SetAuth (const QString& realm,
+				const QString& login, const QString& password) = 0;
 	};
-};
-
-#endif
-
+}
+}

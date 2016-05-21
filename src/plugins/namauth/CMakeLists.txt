@@ -8,19 +8,28 @@ include_directories (
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (SRCS
+	authenticationdialog.cpp
 	namauth.cpp
 	namhandler.cpp
+	storagebackend.cpp
+	sqlstoragebackend.cpp
+	)
+set (FORMS
+	authenticationdialog.ui
 	)
 #CreateTrs("namauth" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("namauth" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
+QtWrapUi (UIS_H ${FORMS})
+
 add_library (leechcraft_namauth SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
+	${UIS_H}
 	)
 target_link_libraries (leechcraft_namauth
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_namauth DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_namauth Gui Network)
+FindQtLibs (leechcraft_namauth Network Widgets)

@@ -69,7 +69,6 @@
 #include "pluginmanager.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "sqlstoragebackend.h"
 #include "handlerchoicedialog.h"
 #include "tagsmanager.h"
 #include "application.h"
@@ -77,7 +76,6 @@
 #include "networkaccessmanager.h"
 #include "tabmanager.h"
 #include "localsockethandler.h"
-#include "storagebackend.h"
 #include "coreinstanceobject.h"
 #include "coreplugin2manager.h"
 #include "dockmanager.h"
@@ -90,7 +88,6 @@ namespace LeechCraft
 {
 	Core::Core ()
 	: NetworkAccessManager_ (new NetworkAccessManager)
-	, StorageBackend_ (new SQLStorageBackend)
 	, LocalSocketHandler_ (new LocalSocketHandler)
 	, NewTabMenuManager_ (new NewTabMenuManager)
 	, CoreInstanceObject_ (new CoreInstanceObject)
@@ -119,8 +116,6 @@ namespace LeechCraft
 				SIGNAL (error (const QString&)),
 				this,
 				SIGNAL (error (const QString&)));
-
-		StorageBackend_->Prepare ();
 
 		QStringList paths;
 		const auto& map = qobject_cast<Application*> (qApp)->GetVarMap ();
@@ -163,8 +158,6 @@ namespace LeechCraft
 					CoreInstanceObject_.reset ();
 
 					NetworkAccessManager_.reset ();
-
-					StorageBackend_.reset ();
 
 					XmlSettingsManager::Instance ()->Release ();
 
@@ -211,11 +204,6 @@ namespace LeechCraft
 	PluginManager* Core::GetPluginManager () const
 	{
 		return PluginManager_;
-	}
-
-	StorageBackend* Core::GetStorageBackend () const
-	{
-		return StorageBackend_.get ();
 	}
 
 	CoreInstanceObject* Core::GetCoreInstanceObject () const

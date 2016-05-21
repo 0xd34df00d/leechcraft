@@ -27,54 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef AUTHENTICATIONDIALOG_H
-#define AUTHENTICATIONDIALOG_H
-#include <QDialog>
-#include "ui_authenticationdialog.h"
+#include "authenticationdialog.h"
 
 namespace LeechCraft
 {
-	/** Provides a standard authentication dialog, for example, for
-	 * proxies, SSL stuff etc.
-	 */
-	class AuthenticationDialog : public QDialog
+namespace NamAuth
+{
+	AuthenticationDialog::AuthenticationDialog (const QString& message,
+			const QString& login,
+			const QString& password,
+			QWidget *parent)
+	: QDialog { parent }
 	{
-		Q_OBJECT
+		Ui_.setupUi (this);
+		Ui_.Message_->setText (message);
+		Ui_.LoginEdit_->setText (login);
+		Ui_.PasswordEdit_->setText (password);
+	}
 
-		Ui::AuthenticationDialog Ui_;
-	public:
-		/** Initializes the dialog. Sets initial login to login, initial
-		 * password to password and message of the dialog to message.
-		 *
-		 * @param[in] message The message explaining the dialog.
-		 * @param[in] login Initial (suggested) login.
-		 * @param[in] password Initial (suggested) password.
-		 * @param[in] parent Parent widget of this dialog.
-		 */
-		AuthenticationDialog (const QString& message,
-				const QString& login,
-				const QString& password,
-				QWidget *parent = 0);
+	QString AuthenticationDialog::GetLogin () const
+	{
+		return Ui_.LoginEdit_->text ();
+	}
 
-		/** Returns the login.
-		 *
-		 * @return The login.
-		 */
-		QString GetLogin () const;
+	QString AuthenticationDialog::GetPassword () const
+	{
+		return Ui_.PasswordEdit_->text ();
+	}
 
-		/** Returns the password.
-		 *
-		 * @return The password.
-		 */
-		QString GetPassword () const;
-
-		/** Returns whether user has chosen to save authentication data.
-		 *
-		 * @return True if auth data should be saved, false otherwise.
-		 */
-		bool ShouldSave () const;
-	};
-};
-
-#endif
-
+	bool AuthenticationDialog::ShouldSave () const
+	{
+		return Ui_.SaveCredentials_->checkState () == Qt::Checked;
+	}
+}
+}

@@ -32,18 +32,29 @@
 #include <QObject>
 
 class QNetworkAccessManager;
+class QNetworkReply;
+class QNetworkProxy;
+class QAuthenticator;
 
 namespace LeechCraft
 {
 namespace NamAuth
 {
+	class StorageBackend;
+
 	class NamHandler : public QObject
 	{
 		Q_OBJECT
 
+		StorageBackend * const SB_;
 		QNetworkAccessManager * const NAM_;
 	public:
-		NamHandler (QNetworkAccessManager*);
+		NamHandler (StorageBackend*, QNetworkAccessManager*);
+	private:
+		void DoCommonAuth (const QString&, QAuthenticator*);
+	private slots:
+		void handleAuthentication (QNetworkReply*, QAuthenticator*);
+		void handleAuthentication (const QNetworkProxy&, QAuthenticator*);
 	};
 }
 }

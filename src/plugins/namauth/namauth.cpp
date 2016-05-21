@@ -1,6 +1,6 @@
 /**********************************************************************
  * LeechCraft - modular cross-platform feature rich internet client.
- * Copyright (C) 2014  Georg Rudoy
+ * Copyright (C) 2006-2014  Georg Rudoy
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -29,6 +29,9 @@
 
 #include "namauth.h"
 #include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include "namhandler.h"
+#include "sqlstoragebackend.h"
 
 namespace LeechCraft
 {
@@ -36,6 +39,10 @@ namespace NamAuth
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		const auto sb = new SQLStorageBackend;
+		sb->Prepare ();
+
+		new NamHandler { sb, proxy->GetNetworkAccessManager () };
 	}
 
 	void Plugin::SecondInit ()
