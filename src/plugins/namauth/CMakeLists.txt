@@ -9,6 +9,7 @@ include_directories (
 	)
 set (SRCS
 	namauth.cpp
+	namhandler.cpp
 	)
 #CreateTrs("namauth" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("namauth" "en;ru_RU" "${SRCS}" "${FORMS}" "")
