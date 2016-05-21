@@ -49,8 +49,8 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcServerHandler *ISH_;
-		bool SSL_;
+		IrcServerHandler * const ISH_;
+		const bool SSL_;
 		std::shared_ptr<QTcpSocket> Socket_ptr;
 
 		QTextCodec *LastCodec_ = nullptr;
