@@ -40,16 +40,16 @@ namespace LeechCraft
 {
 namespace NamAuth
 {
-	class StorageBackend;
+	class SQLStorageBackend;
 
 	class NamHandler : public QObject
 	{
 		Q_OBJECT
 
-		StorageBackend * const SB_;
+		SQLStorageBackend * const SB_;
 		QNetworkAccessManager * const NAM_;
 	public:
-		NamHandler (StorageBackend*, QNetworkAccessManager*);
+		NamHandler (SQLStorageBackend*, QNetworkAccessManager*);
 	private:
 		void DoCommonAuth (const QString&, QAuthenticator*);
 	private slots:

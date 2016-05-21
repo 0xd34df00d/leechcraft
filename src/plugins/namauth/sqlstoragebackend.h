@@ -30,14 +30,14 @@
 #pragma once
 
 #include <memory>
+#include <QObject>
 #include <QSqlQuery>
-#include "storagebackend.h"
 
 namespace LeechCraft
 {
 namespace NamAuth
 {
-	class SQLStorageBackend : public StorageBackend
+	class SQLStorageBackend : public QObject
 	{
 		Q_OBJECT
 
@@ -64,12 +64,12 @@ namespace NamAuth
 				AuthUpdater_;
 	public:
 		SQLStorageBackend ();
-		virtual ~SQLStorageBackend ();
+		~SQLStorageBackend ();
 
 		void Prepare ();
 
-		virtual void GetAuth (const QString&, QString&, QString&) const;
-		virtual void SetAuth (const QString&, const QString&, const QString&);
+		void GetAuth (const QString&, QString&, QString&) const;
+		void SetAuth (const QString&, const QString&, const QString&);
 	private:
 		void InitializeTables ();
 	};

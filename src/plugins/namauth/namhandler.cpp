@@ -35,13 +35,13 @@
 #include <QNetworkProxy>
 #include <QApplication>
 #include "authenticationdialog.h"
-#include "storagebackend.h"
+#include "sqlstoragebackend.h"
 
 namespace LeechCraft
 {
 namespace NamAuth
 {
-	NamHandler::NamHandler (StorageBackend *sb, QNetworkAccessManager *nam)
+	NamHandler::NamHandler (SQLStorageBackend *sb, QNetworkAccessManager *nam)
 	: QObject { nam }
 	, SB_ { sb }
 	, NAM_ { nam }

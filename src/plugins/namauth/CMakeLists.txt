@@ -11,7 +11,6 @@ set (SRCS
 	authenticationdialog.cpp
 	namauth.cpp
 	namhandler.cpp
-	storagebackend.cpp
 	sqlstoragebackend.cpp
 	)
 set (FORMS
