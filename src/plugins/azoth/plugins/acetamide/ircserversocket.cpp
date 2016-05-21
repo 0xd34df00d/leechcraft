@@ -32,6 +32,9 @@
 #include <QTcpSocket>
 #include <QTextCodec>
 #include <QSettings>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/xpc/util.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 #include "sslerrorsdialog.h"
@@ -138,6 +141,12 @@ namespace Acetamide
 				<< encoding.toUtf8 ()
 				<< "`; known codecs:"
 				<< QTextCodec::availableCodecs ();
+
+		const auto& notify = Util::MakeNotification ("Azoth Acetamide",
+				tr ("Unknown encoding %1.")
+					.arg ("<em>" + encoding + "</em>"),
+				PCritical_);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
 
 		if (LastCodec_)
 			return;
