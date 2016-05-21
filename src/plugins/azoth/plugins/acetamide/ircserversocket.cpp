@@ -227,6 +227,6 @@ namespace Acetamide
 				[&] (const Ssl_ptr& s) { HandleSslErrors (s, errors); },
 				[] (auto) { qWarning () << Q_FUNC_INFO << "expected SSL socket"; });
 	}
-};
-};
-};
+}
+}
+}
