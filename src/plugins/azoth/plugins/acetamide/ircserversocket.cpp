@@ -79,9 +79,7 @@ namespace Acetamide
 			return;
 		}
 
-		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
-		if (!LastCodec_ || LastCodec_->name () != encoding)
-			LastCodec_ = QTextCodec::codecForName (encoding.toLatin1 ());
+		RefreshCodec ();
 
 		if (Socket_ptr->write (LastCodec_->fromUnicode (message)) == -1)
 			qWarning () << Q_FUNC_INFO
@@ -121,6 +119,13 @@ namespace Acetamide
 					SIGNAL (sslErrors (const QList<QSslError> &)),
 					this,
 					SLOT (handleSslErrors (const QList<QSslError>&)));
+	}
+
+	void IrcServerSocket::RefreshCodec ()
+	{
+		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
+		if (!LastCodec_ || LastCodec_->name () != encoding)
+			LastCodec_ = QTextCodec::codecForName (encoding.toLatin1 ());
 	}
 
 	void IrcServerSocket::readReply ()

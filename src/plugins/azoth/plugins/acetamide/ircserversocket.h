@@ -62,6 +62,8 @@ namespace Acetamide
 		void Close ();
 	private:
 		void Init ();
+
+		void RefreshCodec ();
 	private slots:
 		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);
