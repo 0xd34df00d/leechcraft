@@ -64,6 +64,7 @@ namespace Acetamide
 		void Init ();
 
 		void RefreshCodec ();
+		void HandleSslErrors (const std::shared_ptr<QSslSocket>&, const QList<QSslError>&);
 	private slots:
 		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);

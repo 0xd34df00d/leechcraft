@@ -163,10 +163,8 @@ namespace Acetamide
 			ISH_->ReadReply (Socket_->readLine ());
 	}
 
-	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	void IrcServerSocket::HandleSslErrors (const std::shared_ptr<QSslSocket>& s, const QList<QSslError>& errors)
 	{
-		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_);
-
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
 		settings.beginGroup ("SSL exceptions");
@@ -210,6 +208,10 @@ namespace Acetamide
 		settings.endGroup ();
 	}
 
+	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	{
+		HandleSslErrors (std::dynamic_pointer_cast<QSslSocket> (Socket_), errors);
+	}
 };
 };
 };
