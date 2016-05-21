@@ -30,6 +30,7 @@
 #include "namauth.h"
 #include <QIcon>
 #include <interfaces/core/icoreproxy.h>
+#include <util/util.h>
 #include "namhandler.h"
 #include "sqlstoragebackend.h"
 
@@ -39,6 +40,8 @@ namespace NamAuth
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Util::InstallTranslator ("namauth");
+
 		const auto sb = new SQLStorageBackend;
 		sb->Prepare ();
 

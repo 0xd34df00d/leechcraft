@@ -17,7 +17,7 @@ set (SRCS
 set (FORMS
 	authenticationdialog.ui
 	)
-#CreateTrs("namauth" "en;ru_RU" COMPILED_TRANSLATIONS)
+CreateTrs("namauth" "en;ru_RU" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("namauth" "en;ru_RU" "${SRCS}" "${FORMS}" "")
 
 QtWrapUi (UIS_H ${FORMS})
