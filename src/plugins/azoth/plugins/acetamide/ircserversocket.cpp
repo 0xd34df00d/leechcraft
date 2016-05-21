@@ -138,6 +138,14 @@ namespace Acetamide
 				<< encoding.toUtf8 ()
 				<< "`; known codecs:"
 				<< QTextCodec::availableCodecs ();
+
+		if (LastCodec_)
+			return;
+
+		qWarning () << Q_FUNC_INFO
+				<< "no codec is set, will fall back to locale-default codec";
+
+		LastCodec_ = QTextCodec::codecForLocale ();
 	}
 
 	void IrcServerSocket::readReply ()
