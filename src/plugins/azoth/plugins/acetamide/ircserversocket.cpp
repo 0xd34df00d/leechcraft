@@ -52,73 +52,73 @@ namespace Acetamide
 	, ISH_ (ish)
 	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
-		Socket_ptr.reset (SSL_ ? new QSslSocket : new QTcpSocket);
+		Socket_.reset (SSL_ ? new QSslSocket : new QTcpSocket);
 		Init ();
 	}
 
 	void IrcServerSocket::ConnectToHost (const QString& host, int port)
 	{
 		if (!SSL_)
-			Socket_ptr->connectToHost (host, port);
+			Socket_->connectToHost (host, port);
 		else
 		{
-			std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+			std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_);
 			s->connectToHostEncrypted (host, port);
 		}
 	}
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		Socket_ptr->disconnectFromHost ();
+		Socket_->disconnectFromHost ();
 	}
 
 	void IrcServerSocket::Send (const QString& message)
 	{
-		if (!Socket_ptr->isWritable ())
+		if (!Socket_->isWritable ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< Socket_ptr->error ()
-					<< Socket_ptr->errorString ();
+					<< Socket_->error ()
+					<< Socket_->errorString ();
 			return;
 		}
 
 		RefreshCodec ();
 
-		if (Socket_ptr->write (LastCodec_->fromUnicode (message)) == -1)
+		if (Socket_->write (LastCodec_->fromUnicode (message)) == -1)
 			qWarning () << Q_FUNC_INFO
-					<< Socket_ptr->error ()
-					<< Socket_ptr->errorString ();
+					<< Socket_->error ()
+					<< Socket_->errorString ();
 	}
 
 	void IrcServerSocket::Close ()
 	{
-		Socket_ptr->close ();
+		Socket_->close ();
 	}
 
 	void IrcServerSocket::Init ()
 	{
-		connect (Socket_ptr.get (),
+		connect (Socket_.get (),
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readReply ()));
 
-		connect (Socket_ptr.get (),
+		connect (Socket_.get (),
 				SIGNAL (connected ()),
 				ISH_,
 				SLOT (connectionEstablished ()));
 
-		connect (Socket_ptr.get (),
+		connect (Socket_.get (),
 				SIGNAL (disconnected ()),
 				ISH_,
 				SLOT (connectionClosed ()));
 
-		connect (Socket_ptr.get (),
+		connect (Socket_.get (),
 				SIGNAL (error (QAbstractSocket::SocketError)),
 				ISH_,
 				SLOT (handleSocketError (QAbstractSocket::SocketError)));
 
 		if (SSL_)
-			connect (Socket_ptr.get(),
+			connect (Socket_.get(),
 					SIGNAL (sslErrors (const QList<QSslError> &)),
 					this,
 					SLOT (handleSslErrors (const QList<QSslError>&)));
@@ -159,13 +159,13 @@ namespace Acetamide
 
 	void IrcServerSocket::readReply ()
 	{
-		while (Socket_ptr->canReadLine ())
-			ISH_->ReadReply (Socket_ptr->readLine ());
+		while (Socket_->canReadLine ())
+			ISH_->ReadReply (Socket_->readLine ());
 	}
 
 	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
 	{
-		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
+		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_);
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");

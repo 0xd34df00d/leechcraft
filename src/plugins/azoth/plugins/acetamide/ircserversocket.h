@@ -41,7 +41,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerHandler;
 	class IrcAccount;
 
@@ -51,7 +50,8 @@ namespace Acetamide
 
 		IrcServerHandler * const ISH_;
 		const bool SSL_;
-		std::shared_ptr<QTcpSocket> Socket_ptr;
+
+		std::shared_ptr<QTcpSocket> Socket_;
 
 		QTextCodec *LastCodec_ = nullptr;
 	public:
