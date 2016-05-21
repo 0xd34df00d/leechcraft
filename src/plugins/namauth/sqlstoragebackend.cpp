@@ -36,6 +36,7 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/sys/paths.h>
 
 namespace LeechCraft
 {
@@ -45,10 +46,7 @@ namespace NamAuth
 	: DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE",
 			Util::GenConnectionName ("NamAuth.Connection"))))
 	{
-		QDir dir = QDir::home ();
-		dir.cd (".leechcraft");
-		dir.cd ("core");
-		DB_->setDatabaseName (dir.filePath ("core.db"));
+		DB_->setDatabaseName (Util::CreateIfNotExists ("core").filePath ("core.db"));
 		if (!DB_->open ())
 			Util::DBLock::DumpError (DB_->lastError ());
 
