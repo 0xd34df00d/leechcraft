@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include "storagebackend.h"
-#include <QSqlDatabase>
+#include <memory>
 #include <QSqlQuery>
+#include "storagebackend.h"
 
 namespace LeechCraft
 {
@@ -41,7 +41,7 @@ namespace NamAuth
 	{
 		Q_OBJECT
 
-		QSqlDatabase DB_;
+		std::shared_ptr<QSqlDatabase> DB_;
 
 				/** Binds:
 				 * - realm

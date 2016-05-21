@@ -29,27 +29,30 @@
 
 #include "sqlstoragebackend.h"
 #include <QDir>
+#include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QVariant>
 #include <QtDebug>
 #include <util/db/dblock.h>
+#include <util/db/util.h>
 
 namespace LeechCraft
 {
 namespace NamAuth
 {
 	SQLStorageBackend::SQLStorageBackend ()
-	: DB_ (QSqlDatabase::addDatabase ("QSQLITE", "CoreConnection"))
+	: DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE",
+			Util::GenConnectionName ("NamAuth.Connection"))))
 	{
 		QDir dir = QDir::home ();
 		dir.cd (".leechcraft");
 		dir.cd ("core");
-		DB_.setDatabaseName (dir.filePath ("core.db"));
-		if (!DB_.open ())
-			LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
+		DB_->setDatabaseName (dir.filePath ("core.db"));
+		if (!DB_->open ())
+			Util::DBLock::DumpError (DB_->lastError ());
 
-		if (!DB_.tables ().contains ("sitesAuth"))
+		if (!DB_->tables ().contains ("sitesAuth"))
 			InitializeTables ();
 	}
 
@@ -62,14 +65,14 @@ namespace NamAuth
 
 	void SQLStorageBackend::Prepare ()
 	{
-		AuthGetter_ = QSqlQuery (DB_);
+		AuthGetter_ = QSqlQuery (*DB_);
 		AuthGetter_.prepare ("SELECT "
 				"login, "
 				"password "
 				"FROM sitesAuth "
 				"WHERE realm = :realm");
 
-		AuthInserter_ = QSqlQuery (DB_);
+		AuthInserter_ = QSqlQuery (*DB_);
 		AuthInserter_.prepare ("INSERT INTO sitesAuth ("
 				"realm, "
 				"login, "
@@ -80,7 +83,7 @@ namespace NamAuth
 				":password"
 				")");
 
-		AuthUpdater_ = QSqlQuery (DB_);
+		AuthUpdater_ = QSqlQuery (*DB_);
 		AuthUpdater_.prepare ("UPDATE sitesAuth SET "
 				"login = :login, "
 				"password = :password "
@@ -149,7 +152,7 @@ namespace NamAuth
 
 	void SQLStorageBackend::InitializeTables ()
 	{
-		QSqlQuery query (DB_);
+		QSqlQuery query (*DB_);
 
 		if (!query.exec ("CREATE TABLE sitesAuth ("
 					"realm TEXT PRIMARY KEY, "
