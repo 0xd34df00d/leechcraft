@@ -22,4 +22,4 @@ target_link_libraries (leechcraft_namauth
 	)
 install (TARGETS leechcraft_namauth DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_namauth Gui)
+FindQtLibs (leechcraft_namauth Gui Network)
