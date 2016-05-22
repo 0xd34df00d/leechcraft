@@ -52,7 +52,6 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <util/sll/typelist.h>
 #include <util/sll/oldcppkludges.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
@@ -90,12 +89,6 @@ namespace oral
 			return *Query_;
 		}
 	};
-
-	template<int... Fields>
-	struct UniqueSubset;
-
-	template<typename... Args>
-	using Constraints = Typelist<Args...>;
 
 	namespace detail
 	{
