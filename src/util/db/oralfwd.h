@@ -31,6 +31,8 @@
 
 #include <memory>
 
+class QSqlDatabase;
+
 namespace LeechCraft
 {
 namespace Util
