@@ -498,9 +498,9 @@ namespace oral
 				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
 			}
 
-			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			EnableIf_t<Autogen, ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>>
-				operator() (const Seq& t, InsertAction action = InsertAction::Default) const
+			template<typename SeqPrime = Seq, bool Autogen = HasAutogenPKey<SeqPrime> ()>
+			EnableIf_t<Autogen, ValueAtC_t<SeqPrime, FindPKey<SeqPrime>::result_type::value>>
+				operator() (const SeqPrime& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
 				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
