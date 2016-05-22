@@ -518,7 +518,7 @@ namespace oral
 
 			template<typename SeqPrime = Seq, bool Autogen = HasAutogenPKey<SeqPrime> ()>
 			EnableIf_t<Autogen, ValueAtC_t<SeqPrime, FindPKey<SeqPrime>::result_type::value>>
-				operator() (const SeqPrime& t, InsertAction action = InsertAction::Default) const
+				operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
 				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
