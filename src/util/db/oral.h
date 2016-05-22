@@ -407,7 +407,7 @@ namespace oral
 			using result_type = typename std::conditional<
 						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
 						Lazy<MemberIdx>,
-						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>>>
+						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>::type>>
 					>::type::type;
 		};
 
