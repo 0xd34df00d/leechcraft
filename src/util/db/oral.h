@@ -578,27 +578,44 @@ namespace oral
 			}
 		};
 
-		template<typename T>
-		std::function<void (T)> AdaptDelete (CachedFieldsData data)
+		template<typename Seq, bool HasPKey = HasPKey<Seq> ()>
+		struct AdaptDelete
 		{
-			const auto index = FindPKey<T>::result_type::value;
-
-			const auto& boundName = data.BoundFields_.at (index);
-			const auto& del = "DELETE FROM " + data.Table_ +
-					" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
-
-			const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
-			deleteQuery->prepare (del);
-
-			return [deleteQuery, boundName] (const T& t)
+			std::function<void (Seq)> Deleter_;
+		public:
+			template<bool B = HasPKey>
+			AdaptDelete (const CachedFieldsData& data, EnableIf_t<B>* = nullptr)
 			{
-				constexpr auto index = FindPKey<T>::result_type::value;
-				deleteQuery->bindValue (boundName,
-						ToVariant<ValueAtC_t<T, index>> {} (boost::fusion::at_c<index> (t)));
-				if (!deleteQuery->exec ())
-					throw QueryException ("delete query execution failed", deleteQuery);
-			};
-		}
+				const auto index = FindPKey<Seq>::result_type::value;
+
+				const auto& boundName = data.BoundFields_.at (index);
+				const auto& del = "DELETE FROM " + data.Table_ +
+						" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+
+				const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
+				deleteQuery->prepare (del);
+
+				Deleter_ = [deleteQuery, boundName] (const Seq& t)
+				{
+					constexpr auto index = FindPKey<Seq>::result_type::value;
+					deleteQuery->bindValue (boundName,
+							ToVariant<ValueAtC_t<Seq, index>> {} (boost::fusion::at_c<index> (t)));
+					if (!deleteQuery->exec ())
+						throw QueryException ("delete query execution failed", deleteQuery);
+				};
+			}
+
+			template<bool B = HasPKey>
+			AdaptDelete (const CachedFieldsData&, EnableIf_t<!B>* = nullptr)
+			{
+			}
+
+			template<bool B = HasPKey>
+			EnableIf_t<B> operator() (const Seq& seq)
+			{
+				Deleter_ (seq);
+			}
+		};
 
 		template<typename T>
 		QList<T> PerformSelect (QSqlQuery_ptr q)
@@ -1347,7 +1364,7 @@ namespace oral
 		std::function<QList<T> ()> DoSelectAll_;
 		detail::AdaptInsert<T> DoInsert_;
 		detail::AdaptUpdate<T> DoUpdate_;
-		std::function<void (T)> DoDelete_;
+		detail::AdaptDelete<T> DoDelete_;
 
 		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
 		detail::SelectOneByFieldsWrapper<T> DoSelectOneByFields_;
