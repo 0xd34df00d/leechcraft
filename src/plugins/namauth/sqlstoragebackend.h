@@ -30,8 +30,10 @@
 #pragma once
 
 #include <memory>
+#include <boost/optional.hpp>
 #include <QObject>
-#include <QSqlQuery>
+#include <util/db/oralfwd.h>
+#include <util/db/oraltypes.h>
 
 namespace LeechCraft
 {
@@ -42,36 +44,30 @@ namespace NamAuth
 		Q_OBJECT
 
 		std::shared_ptr<QSqlDatabase> DB_;
+	public:
+		struct AuthRecord
+		{
+			QString RealmName_;
+			QString Context_;
+			QString Login_;
+			QString Password_;
 
-				/** Binds:
-				 * - realm
-				 * Returns:
-				 * - login
-				 * - password
-				 */
-		mutable QSqlQuery AuthGetter_,
-				/** Binds:
-				 * - realm
-				 * - login
-				 * - password
-				 */
-				AuthInserter_,
-				/** Binds:
-				 * - realm
-				 * - login
-				 * - password
-				 */
-				AuthUpdater_;
+			static QString ClassName ()
+			{
+				return "AuthRecords";
+			}
+
+			using Constraints = Util::oral::Constraints<
+					Util::oral::PrimaryKey<0, 1>
+				>;
+		};
+	private:
+		Util::oral::ObjectInfo_ptr<AuthRecord> AdaptedRecord_;
 	public:
 		SQLStorageBackend ();
-		~SQLStorageBackend ();
 
-		void Prepare ();
-
-		void GetAuth (const QString&, QString&, QString&) const;
-		void SetAuth (const QString&, const QString&, const QString&);
-	private:
-		void InitializeTables ();
+		boost::optional<AuthRecord> GetAuth (const QString&, const QString&);
+		void SetAuth (const AuthRecord&);
 	};
 }
 }

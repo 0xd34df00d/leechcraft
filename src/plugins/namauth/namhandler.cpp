@@ -64,7 +64,11 @@ namespace NamAuth
 		auto suggestedPassword = authen->password ();
 
 		if (suggestedUser.isEmpty ())
-			SB_->GetAuth (realm, suggestedUser, suggestedPassword);
+			if (const auto& data = SB_->GetAuth (realm, context))
+			{
+				suggestedUser = data->Login_;
+				suggestedPassword = data->Password_;
+			}
 
 		AuthenticationDialog dia (msg, suggestedUser, suggestedPassword, qApp->activeWindow ());
 		if (dia.exec () == QDialog::Rejected)
@@ -76,7 +80,7 @@ namespace NamAuth
 		authen->setPassword (password);
 
 		if (dia.ShouldSave ())
-			SB_->SetAuth (realm, login, password);
+			SB_->SetAuth ({ realm, context, login, password });
 	}
 
 	void NamHandler::handleAuthentication (QNetworkReply *reply,

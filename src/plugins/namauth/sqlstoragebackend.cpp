@@ -36,7 +36,14 @@
 #include <QtDebug>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
+#include <util/db/oral.h>
 #include <util/sys/paths.h>
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::NamAuth::SQLStorageBackend::AuthRecord,
+		RealmName_,
+		Context_,
+		Login_,
+		Password_)
 
 namespace LeechCraft
 {
@@ -48,123 +55,24 @@ namespace NamAuth
 	{
 		DB_->setDatabaseName (Util::CreateIfNotExists ("core").filePath ("core.db"));
 		if (!DB_->open ())
+		{
 			Util::DBLock::DumpError (DB_->lastError ());
-
-		if (!DB_->tables ().contains ("sitesAuth"))
-			InitializeTables ();
-	}
-
-	SQLStorageBackend::~SQLStorageBackend ()
-	{
-		AuthGetter_.finish ();
-		AuthInserter_.finish ();
-		AuthUpdater_.finish ();
-	}
-
-	void SQLStorageBackend::Prepare ()
-	{
-		AuthGetter_ = QSqlQuery (*DB_);
-		AuthGetter_.prepare ("SELECT "
-				"login, "
-				"password "
-				"FROM sitesAuth "
-				"WHERE realm = :realm");
-
-		AuthInserter_ = QSqlQuery (*DB_);
-		AuthInserter_.prepare ("INSERT INTO sitesAuth ("
-				"realm, "
-				"login, "
-				"password"
-				") VALUES ("
-				":realm, "
-				":login, "
-				":password"
-				")");
-
-		AuthUpdater_ = QSqlQuery (*DB_);
-		AuthUpdater_.prepare ("UPDATE sitesAuth SET "
-				"login = :login, "
-				"password = :password "
-				"WHERE realm = :realm");
-	}
-
-	void SQLStorageBackend::GetAuth (const QString& realm,
-			QString& login, QString& password) const
-	{
-		AuthGetter_.bindValue (":realm", realm);
-
-		if (!AuthGetter_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (AuthGetter_);
-			return;
-		}
-		if (!AuthGetter_.next ())
-		{
-			AuthGetter_.finish ();
 			return;
 		}
 
-		login = AuthGetter_.value (0).toString ();
-		password = AuthGetter_.value (1).toString ();
-		AuthGetter_.finish ();
+		AdaptedRecord_ = Util::oral::AdaptPtr<AuthRecord> (*DB_);
 	}
 
-	void SQLStorageBackend::SetAuth (const QString& realm,
-			const QString& login, const QString& password)
+	namespace sph = Util::oral::sph;
+
+	boost::optional<SQLStorageBackend::AuthRecord> SQLStorageBackend::GetAuth (const QString& realm, const QString& context)
 	{
-		AuthGetter_.bindValue (":realm", realm);
-
-		if (!AuthGetter_.exec ())
-		{
-			LeechCraft::Util::DBLock::DumpError (AuthGetter_);
-			return;
-		}
-
-		AuthGetter_.finish ();
-
-		if (AuthGetter_.size () <= 0)
-		{
-			AuthInserter_.bindValue (":realm", realm);
-			AuthInserter_.bindValue (":login", login);
-			AuthInserter_.bindValue (":password", password);
-			if (!AuthInserter_.exec ())
-			{
-				LeechCraft::Util::DBLock::DumpError (AuthInserter_);
-				return;
-			}
-			AuthInserter_.finish ();
-		}
-		else
-		{
-			AuthUpdater_.bindValue (":realm", realm);
-			AuthUpdater_.bindValue (":login", login);
-			AuthUpdater_.bindValue (":password", password);
-			if (!AuthUpdater_.exec ())
-			{
-				LeechCraft::Util::DBLock::DumpError (AuthUpdater_);
-				return;
-			}
-			AuthUpdater_.finish ();
-		}
+		return AdaptedRecord_->DoSelectOneByFields_ (sph::_0 == realm && sph::_1 == context);
 	}
 
-	void SQLStorageBackend::InitializeTables ()
+	void SQLStorageBackend::SetAuth (const AuthRecord& record)
 	{
-		QSqlQuery query (*DB_);
-
-		if (!query.exec ("CREATE TABLE sitesAuth ("
-					"realm TEXT PRIMARY KEY, "
-					"login TEXT, "
-					"password TEXT"
-					");"))
-		{
-			LeechCraft::Util::DBLock::DumpError (query);
-			return;
-		}
-
-		if (!query.exec ("CREATE UNIQUE INDEX sitesAuth_realm "
-					"ON sitesAuth (realm);"))
-			LeechCraft::Util::DBLock::DumpError (query);
+		AdaptedRecord_->DoInsert_ (record, Util::oral::InsertAction::Replace);
 	}
 }
 }

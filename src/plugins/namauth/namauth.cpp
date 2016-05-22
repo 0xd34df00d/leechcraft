@@ -43,7 +43,6 @@ namespace NamAuth
 		Util::InstallTranslator ("namauth");
 
 		const auto sb = new SQLStorageBackend;
-		sb->Prepare ();
 
 		new NamHandler { sb, proxy->GetNetworkAccessManager () };
 	}
