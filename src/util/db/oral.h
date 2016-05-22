@@ -1294,6 +1294,15 @@ namespace oral
 			}
 		};
 
+		template<int... Fields>
+		struct ConstraintToString<PrimaryKey<Fields...>>
+		{
+			QString operator() (const CachedFieldsData& data) const
+			{
+				return "PRIMARY KEY (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
+			}
+		};
+
 		template<typename...>
 		struct GetConstraintsStringList;
 

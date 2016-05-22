@@ -163,6 +163,9 @@ namespace oral
 	};
 
 	template<int... Fields>
+	struct PrimaryKey;
+
+	template<int... Fields>
 	struct UniqueSubset;
 
 	template<typename... Args>
