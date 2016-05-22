@@ -567,7 +567,7 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			AdaptUpdate (const CachedFieldsData& data, EnableIf_t<!B>* = nullptr)
+			AdaptUpdate (const CachedFieldsData&, EnableIf_t<!B>* = nullptr)
 			{
 			}
 
