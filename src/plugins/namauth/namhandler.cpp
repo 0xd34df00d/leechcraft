@@ -56,7 +56,7 @@ namespace NamAuth
 				SLOT (handleAuthentication (QNetworkProxy, QAuthenticator*)));
 	}
 
-	void NamHandler::DoCommonAuth (const QString& msg, QAuthenticator *authen)
+	void NamHandler::DoCommonAuth (const QString& msg, const QString& context, QAuthenticator *authen)
 	{
 		const auto& realm = authen->realm ();
 
@@ -86,7 +86,7 @@ namespace NamAuth
 				.arg (authen->realm ())
 				.arg ("<em>" + reply->url ().toString () + "</em>");
 
-		DoCommonAuth (msg, authen);
+		DoCommonAuth (msg, reply->url ().host (), authen);
 	}
 
 	void NamHandler::handleAuthentication (const QNetworkProxy& proxy,
@@ -96,7 +96,7 @@ namespace NamAuth
 				.arg (authen->realm ())
 				.arg ("<em>" + proxy.hostName () + "</em>");
 
-		DoCommonAuth (msg, authen);
+		DoCommonAuth (msg, proxy.hostName (), authen);
 	}
 }
 }

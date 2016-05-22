@@ -51,7 +51,7 @@ namespace NamAuth
 	public:
 		NamHandler (SQLStorageBackend*, QNetworkAccessManager*);
 	private:
-		void DoCommonAuth (const QString&, QAuthenticator*);
+		void DoCommonAuth (const QString&, const QString&, QAuthenticator*);
 	private slots:
 		void handleAuthentication (QNetworkReply*, QAuthenticator*);
 		void handleAuthentication (const QNetworkProxy&, QAuthenticator*);
