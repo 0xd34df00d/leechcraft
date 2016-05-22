@@ -68,5 +68,8 @@ namespace Util
 
 	template<typename T>
 	using Decay_t = typename std::decay<T>::type;
+
+	template<typename T, typename U>
+	using IsSame_t = typename std::is_same<T, U>::type;
 }
 }
