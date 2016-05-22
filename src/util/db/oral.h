@@ -412,6 +412,24 @@ namespace oral
 		};
 
 		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
+		constexpr bool HasPKeyImpl (int)
+		{
+			return true;
+		}
+
+		template<typename Seq>
+		constexpr bool HasPKeyImpl (float)
+		{
+			return false;
+		}
+
+		template<typename Seq>
+		constexpr bool HasPKey ()
+		{
+			return HasPKeyImpl<Seq> (0);
+		}
+
+		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
 		constexpr bool HasAutogenPKeyImpl (int)
 		{
 			return !HasType<NoAutogen> (AsTypelist_t<ValueAtC_t<Seq, Idx>> {});
