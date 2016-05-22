@@ -537,29 +537,46 @@ namespace oral
 			}
 		};
 
-		template<typename T>
-		std::function<void (T)> AdaptUpdate (const CachedFieldsData& data)
+		template<typename Seq, bool HasPKey = HasPKey<Seq> ()>
+		class AdaptUpdate
 		{
-			const auto index = FindPKey<T>::result_type::value;
+			std::function<void (Seq)> Updater_;
+		public:
+			template<bool B = HasPKey>
+			AdaptUpdate (const CachedFieldsData& data, EnableIf_t<B>* = nullptr)
+			{
+				const auto index = FindPKey<Seq>::result_type::value;
 
-			auto removedFields = data.Fields_;
-			auto removedBoundFields = data.BoundFields_;
+				auto removedFields = data.Fields_;
+				auto removedBoundFields = data.BoundFields_;
 
-			const auto& fieldName = removedFields.takeAt (index);
-			const auto& boundName = removedBoundFields.takeAt (index);
+				const auto& fieldName = removedFields.takeAt (index);
+				const auto& boundName = removedBoundFields.takeAt (index);
 
-			const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
-					[] (const QString& s1, const QString& s2) -> QString
-						{ return s1 + " = " + s2; });
+				const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
+						[] (const QString& s1, const QString& s2) -> QString
+							{ return s1 + " = " + s2; });
 
-			const auto& update = "UPDATE " + data.Table_ +
-					" SET " + QStringList { statements }.join (", ") +
-					" WHERE " + fieldName + " = " + boundName + ";";
+				const auto& update = "UPDATE " + data.Table_ +
+						" SET " + QStringList { statements }.join (", ") +
+						" WHERE " + fieldName + " = " + boundName + ";";
 
-			const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
-			updateQuery->prepare (update);
-			return MakeInserter<T> (data, updateQuery, true);
-		}
+				const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
+				updateQuery->prepare (update);
+				Updater_ = MakeInserter<Seq> (data, updateQuery, true);
+			}
+
+			template<bool B = HasPKey>
+			AdaptUpdate (const CachedFieldsData& data, EnableIf_t<!B>* = nullptr)
+			{
+			}
+
+			template<bool B = HasPKey>
+			EnableIf_t<B> operator() (const Seq& seq)
+			{
+				Updater_ (seq);
+			}
+		};
 
 		template<typename T>
 		std::function<void (T)> AdaptDelete (CachedFieldsData data)
@@ -1329,7 +1346,7 @@ namespace oral
 	{
 		std::function<QList<T> ()> DoSelectAll_;
 		detail::AdaptInsert<T> DoInsert_;
-		std::function<void (T)> DoUpdate_;
+		detail::AdaptUpdate<T> DoUpdate_;
 		std::function<void (T)> DoDelete_;
 
 		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
