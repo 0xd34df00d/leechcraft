@@ -251,7 +251,7 @@ namespace LeechCraft
 	 *
 	 * @param[in] left The left operand.
 	 * @param[in] right The right operand.
-	 * @return Whether \em left and \right have the same regexp pattern
+	 * @return Whether \em left and \em right have the same regexp pattern
 	 * and they both require the presense (or the absence) of the match.
 	 */
 	inline bool operator== (const ANStringFieldValue& left, const ANStringFieldValue& right)
