@@ -123,12 +123,15 @@ namespace Azoth
 
 		virtual QFuture<MaxTimestampResult_t> RequestMaxTimestamp (IAccount *acc) = 0;
 
-		/** @brief Adds a message to the history.
+		/** @brief Adds a set of messages to the history.
 		 *
 		 * @param[in] accountId The unique ID of the corresponding account.
 		 * @param[in] entryId The unique ID of the corresponding entry.
 		 * @param[in] visibleName The human-readable name of the entry.
-		 * @param[in] item The HistoryItem struct describing the message.
+		 * @param[in] items A list of HistoryItem structures describing the
+		 * messages.
+		 *
+		 * @sa HistoryItem
 		 */
 		virtual void AddRawMessages (const QString& accountId,
 				const QString& entryId,
