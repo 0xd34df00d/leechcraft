@@ -70,7 +70,7 @@ typedef std::function<void (QVariant)> DataFilterCallback_f;
  * key in the LeechCraft::Entity::Additional_ map with the ID of the
  * exact filter variant to use (if user has already selected it).
  *
- * \subsection Data filter callbacks
+ * \section Data filter callbacks
  *
  * The result of the data filter, if any, can be passed to the plugin
  * emitting the entity. For this the emitting plugin shall set the
