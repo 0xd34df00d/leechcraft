@@ -70,7 +70,6 @@ namespace LeechCraft
 			 *
 			 * @param[in] line The line edit which would be used for tag
 			 * completion.
-			 * @param[in] parent Parent object.
 			 */
 			UTIL_TAGS_API TagsCompleter (TagsLineEdit *line);
 
