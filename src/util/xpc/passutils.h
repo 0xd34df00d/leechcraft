@@ -44,9 +44,8 @@ namespace Util
 
 	/** @brief Returns password for the key, possibly asking the user.
 	 *
-	 * This function returns password for the given \em keyName and using
-	 * the given \em emitter object. The password is typically stored in
-	 * a storage plugin like SecMan.
+	 * This function returns password for the given \em keyName.
+	 * The password is typically stored in a storage plugin like SecMan.
 	 *
 	 * If the password isn't found in any password stores (or there are
 	 * no password stores) or \em useStore is set to false, this function
@@ -55,11 +54,6 @@ namespace Util
 	 * canceled the dialog it returns an null string. Otherwise, if the
 	 * user has entered some text this function automatically stores the
 	 * password under the \em keyName.
-	 *
-	 * The emitter object is used to send the corresponding internal
-	 * Entity objects around, so it should have its gotEntity() and
-	 * delegateEntity() signals both relayed to the corresponding plugin
-	 * instance object.
 	 *
 	 * @note Despite the name this function can be used to retrieve
 	 * arbitrary string data saved via SavePassword().
@@ -91,16 +85,10 @@ namespace Util
 
 	/** @brief Saves the password to be retrieved later via GetPassword().
 	 *
-	 * This function stores the \em password under the given \em keyName
-	 * and using the given \em emitter object. The password is typically
-	 * stored in a storage plugin like SecMan.
+	 * This function stores the \em password under the given \em keyName.
+	 * The password is typically stored in a storage plugin like SecMan.
 	 *
 	 * If there are no storage plugins, this function does nothing.
-	 *
-	 * The emitter object is used to send the corresponding internal
-	 * Entity objects around, so it should have its gotEntity() and
-	 * delegateEntity() signals both relayed to the corresponding plugin
-	 * instance object.
 	 *
 	 * @note Despite the name this function can be used to save arbitrary
 	 * string data in secure storages like SecMan.
