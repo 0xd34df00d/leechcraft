@@ -31,6 +31,7 @@
 
 #include <interfaces/itexteditor.h>
 #include <interfaces/iadvancedplaintexteditor.h>
+#include <interfaces/iwkfontssettable.h>
 
 class QTextEdit;
 
@@ -41,9 +42,10 @@ namespace Snails
 	class TextEditorAdaptor : public QObject
 							, public IEditorWidget
 							, public IAdvancedPlainTextEditor
+							, public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor)
+		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor IWkFontsSettable)
 
 		QTextEdit * const Edit_;
 	public:
@@ -62,6 +64,10 @@ namespace Snails
 
 		bool FindText (const QString&);
 		void DeleteSelection ();
+
+		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font);
+		void SetFontSize (QWebSettings::FontSize type, int size);
+		void SetFontSizeMultiplier (qreal factor);
 	signals:
 		void textChanged ();
 	};

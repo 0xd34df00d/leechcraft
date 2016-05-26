@@ -101,5 +101,17 @@ namespace Snails
 	{
 		Edit_->textCursor ().deleteChar ();
 	}
+
+	void TextEditorAdaptor::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+	}
+
+	void TextEditorAdaptor::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+	}
+
+	void TextEditorAdaptor::SetFontSizeMultiplier (qreal)
+	{
+	}
 }
 }
