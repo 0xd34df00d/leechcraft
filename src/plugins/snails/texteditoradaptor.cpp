@@ -104,8 +104,19 @@ namespace Snails
 
 	void TextEditorAdaptor::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
 	{
-		if (family == QWebSettings::FixedFont)
-			Edit_->document ()->setDefaultFont (font);
+		if (family != QWebSettings::FixedFont)
+			return;
+
+		auto cursor = Edit_->textCursor ();
+		cursor.select (QTextCursor::Document);
+
+		auto fmt = cursor.charFormat ();
+
+		auto newFont = font;
+		newFont.setPixelSize (fmt.font ().pixelSize ());
+		fmt.setFont (newFont);
+
+		cursor.setCharFormat (fmt);
 	}
 
 	void TextEditorAdaptor::SetFontSize (QWebSettings::FontSize type, int size)
