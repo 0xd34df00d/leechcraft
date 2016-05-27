@@ -121,6 +121,19 @@ namespace Snails
 
 	void TextEditorAdaptor::SetFontSize (QWebSettings::FontSize type, int size)
 	{
+		if (type != QWebSettings::DefaultFixedFontSize)
+			return;
+
+		auto cursor = Edit_->textCursor ();
+		cursor.select (QTextCursor::Document);
+
+		auto fmt = cursor.charFormat ();
+
+		auto font = fmt.font ();
+		font.setPixelSize (size);
+		fmt.setFont (font);
+
+		cursor.setCharFormat (fmt);
 	}
 
 	void TextEditorAdaptor::SetFontSizeMultiplier (qreal)
