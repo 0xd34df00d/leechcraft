@@ -620,21 +620,21 @@ namespace Util
 							file->close ();
 							file->remove ();
 							return DoSomethingWith (contents);
-						}))
-				.Then ([this, url, script] (const QString& contents)
+						})) >>
+				[this, url, script] (const QString& contents)
+				{
+					const auto& result = Parse (contents);
+					if (result.isEmpty ())
 					{
-						const auto& result = Parse (contents);
-						if (result.isEmpty ())
-						{
-							qWarning () << Q_FUNC_INFO
-									<< "empty result for"
-									<< url;
-							return;
-						}
+						qWarning () << Q_FUNC_INFO
+								<< "empty result for"
+								<< url;
+						return;
+					}
 
-						const auto id = DoSomethingSynchronouslyWith (result);
-						emit gotResult (id);
-					});
+					const auto id = DoSomethingSynchronouslyWith (result);
+					emit gotResult (id);
+				};
 	   \endcode
 	 *
 	 * @param[in] parent The parent object of the sequencer (may be
