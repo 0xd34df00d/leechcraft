@@ -582,29 +582,32 @@ namespace Util
 
 	/** @brief Creates a sequencer that allows chaining multiple futures.
 	 *
-	 * This function creates a sequencer object that calls the given
-	 * executor \em f with the given \em args, which must return a
-	 * <code>QFuture<T></code> (or throw an exception) or
-	 * <code>void</code>. The concrete object will be unwrapped from the
-	 * <code>QFuture<T></code> and passed to the chained function, if any,
-	 * and so on. The functors may also return <code>QFuture<void></code>,
-	 * in which case the next action is expected to be invokable without
-	 * any arguments.
+	 * This function creates a sequencer object that starts with the
+	 * passed \em future, and, after this future being completed, passes
+	 * its result to the next function in chain, and so on, until either
+	 * there are no more functions in the chain or a function returns
+	 * something different from <code>QFuture<T></code>
+	 * and so on.
+	 *
+	 * Each function in the chain may return a <code>QFuture<T></code> for
+	 * some <code>T != void</code>, in which case it will be unwrapped and
+	 * passed along to the next function in the chain.
+	 *
+	 * The functors may also return <code>QFuture<void></code>, meaning
+	 * that the next function in the chain will be invoked without
+	 * arguments when this future is completed.
 	 *
 	 * If a functor returns <code>void</code>, no further chaining is
 	 * possible.
 	 *
 	 * The functions are chained via the detail::SequenceProxy::Then()
-	 * method.
-	 *
-	 * The sequencer object is reference-counted internally, and it
-	 * invokes the executor \em f after the last instance of this
-	 * sequencer is destroyed.
+	 * method or via the <code>operator>>()</code> (leading to a nice
+	 * somewhat monadic-like syntax).
 	 *
 	 * The \em parent QObject controls the lifetime of the sequencer: as
 	 * soon as it is destroyed, the sequencer is destroyed as well, and
-	 * all pending actions are cancelled (note, the currently executing
-	 * action will still continue to execute). This parameter is optional
+	 * all pending actions are cancelled (the currently executing action
+	 * will still continue to execute, though). This parameter is optional
 	 * and may be <code>nullptr</code>.
 	 *
 	 * A sample usage may look like:
