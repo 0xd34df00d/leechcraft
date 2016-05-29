@@ -27,10 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
+#pragma once
 
 #include <memory>
+#include <boost/variant.hpp>
 #include <QObject>
 #include <QSslSocket>
 
@@ -42,7 +42,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerHandler;
 	class IrcAccount;
 
@@ -50,9 +49,11 @@ namespace Acetamide
 	{
 		Q_OBJECT
 
-		IrcServerHandler *ISH_;
-		bool SSL_;
-		std::shared_ptr<QTcpSocket> Socket_ptr;
+		IrcServerHandler * const ISH_;
+
+		using Tcp_ptr = std::shared_ptr<QTcpSocket>;
+		using Ssl_ptr = std::shared_ptr<QSslSocket>;
+		boost::variant<Tcp_ptr, Ssl_ptr> Socket_;
 
 		QTextCodec *LastCodec_ = nullptr;
 	public:
@@ -63,11 +64,15 @@ namespace Acetamide
 		void Close ();
 	private:
 		void Init ();
+
+		void RefreshCodec ();
+		void HandleSslErrors (const std::shared_ptr<QSslSocket>&, const QList<QSslError>&);
+
+		QTcpSocket* GetSocketPtr () const;
 	private slots:
 		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCSERVERSOCKET_H
+}
+}
+}

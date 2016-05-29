@@ -27,49 +27,54 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <interfaces/itexteditor.h>
-#include <interfaces/iadvancedplaintexteditor.h>
-#include <interfaces/iwkfontssettable.h>
-
-class QTextEdit;
+#include "namauth.h"
+#include <QIcon>
+#include <interfaces/core/icoreproxy.h>
+#include <util/util.h>
+#include "namhandler.h"
+#include "sqlstoragebackend.h"
 
 namespace LeechCraft
 {
-namespace Snails
+namespace NamAuth
 {
-	class TextEditorAdaptor : public QObject
-							, public IEditorWidget
-							, public IAdvancedPlainTextEditor
-							, public IWkFontsSettable
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Q_OBJECT
-		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor IWkFontsSettable)
+		Util::InstallTranslator ("namauth");
 
-		QTextEdit * const Edit_;
-	public:
-		TextEditorAdaptor (QTextEdit*);
+		const auto sb = new SQLStorageBackend;
 
-		QString GetContents (ContentType type) const;
-		void SetContents (QString contents, ContentType type);
+		new NamHandler { sb, proxy->GetNetworkAccessManager () };
+	}
 
-		QAction* GetEditorAction (EditorAction);
-		void AppendAction (QAction*);
-		void AppendSeparator ();
-		void RemoveAction (QAction*);
-		void SetBackgroundColor (const QColor&, ContentType);
-		QWidget* GetWidget ();
-		QObject* GetQObject ();
+	void Plugin::SecondInit ()
+	{
+	}
 
-		bool FindText (const QString&);
-		void DeleteSelection ();
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.NamAuth";
+	}
 
-		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font);
-		void SetFontSize (QWebSettings::FontSize type, int size);
-		void SetFontSizeMultiplier (qreal factor);
-	signals:
-		void textChanged ();
-	};
+	void Plugin::Release ()
+	{
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "NamAuth";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Provides basic support for HTTP-level authentication.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return {};
+	}
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_namauth, LeechCraft::NamAuth::Plugin);

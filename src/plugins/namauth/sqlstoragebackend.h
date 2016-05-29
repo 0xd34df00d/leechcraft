@@ -27,51 +27,47 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef SQLSTORAGEBACKEND_H
-#define SQLSTORAGEBACKEND_H
-#include "storagebackend.h"
-#include <QSqlDatabase>
-#include <QSqlQuery>
+#pragma once
+
+#include <memory>
+#include <boost/optional.hpp>
+#include <QObject>
+#include <util/db/oralfwd.h>
+#include <util/db/oraltypes.h>
 
 namespace LeechCraft
 {
-	class SQLStorageBackend : public StorageBackend
+namespace NamAuth
+{
+	class SQLStorageBackend : public QObject
 	{
 		Q_OBJECT
 
-		QSqlDatabase DB_;
+		std::shared_ptr<QSqlDatabase> DB_;
+	public:
+		struct AuthRecord
+		{
+			QString RealmName_;
+			QString Context_;
+			QString Login_;
+			QString Password_;
 
-				/** Binds:
-				 * - realm
-				 * Returns:
-				 * - login
-				 * - password
-				 */
-		mutable QSqlQuery AuthGetter_,
-				/** Binds:
-				 * - realm
-				 * - login
-				 * - password
-				 */
-				AuthInserter_,
-				/** Binds:
-				 * - realm
-				 * - login
-				 * - password
-				 */
-				AuthUpdater_;
+			static QString ClassName ()
+			{
+				return "AuthRecords";
+			}
+
+			using Constraints = Util::oral::Constraints<
+					Util::oral::PrimaryKey<0, 1>
+				>;
+		};
+	private:
+		Util::oral::ObjectInfo_ptr<AuthRecord> AdaptedRecord_;
 	public:
 		SQLStorageBackend ();
-		virtual ~SQLStorageBackend ();
 
-		void Prepare ();
-
-		virtual void GetAuth (const QString&, QString&, QString&) const;
-		virtual void SetAuth (const QString&, const QString&, const QString&);
-	private:
-		void InitializeTables ();
+		boost::optional<AuthRecord> GetAuth (const QString&, const QString&);
+		void SetAuth (const AuthRecord&);
 	};
-};
-
-#endif
-
+}
+}

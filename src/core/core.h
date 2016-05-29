@@ -50,7 +50,6 @@ namespace LeechCraft
 	class RootWindowsManager;
 	class MainWindow;
 	class NewTabMenuManager;
-	class StorageBackend;
 	class LocalSocketHandler;
 	class CoreInstanceObject;
 	class DockManager;
@@ -64,7 +63,6 @@ namespace LeechCraft
 
 		PluginManager *PluginManager_ = nullptr;
 		std::shared_ptr<QNetworkAccessManager> NetworkAccessManager_;
-		std::shared_ptr<StorageBackend> StorageBackend_;
 		std::shared_ptr<LocalSocketHandler> LocalSocketHandler_;
 		std::shared_ptr<NewTabMenuManager> NewTabMenuManager_;
 		std::shared_ptr<CoreInstanceObject> CoreInstanceObject_;
@@ -126,10 +124,6 @@ namespace LeechCraft
 		 * to DelayedInit().
 		 */
 		PluginManager* GetPluginManager () const;
-
-		/** Returns pointer to the storage backend of the Core.
-		 */
-		StorageBackend* GetStorageBackend () const;
 
 		/** @brief Returns the pointer to the core instance.
 		 *

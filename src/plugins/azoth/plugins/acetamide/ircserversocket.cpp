@@ -32,6 +32,10 @@
 #include <QTcpSocket>
 #include <QTextCodec>
 #include <QSettings>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/xpc/util.h>
+#include <util/sll/visitor.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
 #include "sslerrorsdialog.h"
@@ -47,92 +51,133 @@ namespace Acetamide
 	IrcServerSocket::IrcServerSocket (IrcServerHandler *ish)
 	: QObject (ish)
 	, ISH_ (ish)
-	, SSL_ (ish->GetServerOptions ().SSL_)
 	{
-		Socket_ptr.reset (SSL_ ? new QSslSocket : new QTcpSocket);
+		if (ish->GetServerOptions ().SSL_)
+			Socket_ = std::make_shared<QSslSocket> ();
+		else
+			Socket_ = std::make_shared<QTcpSocket> ();
+
 		Init ();
 	}
 
 	void IrcServerSocket::ConnectToHost (const QString& host, int port)
 	{
-		if (!SSL_)
-			Socket_ptr->connectToHost (host, port);
-		else
-		{
-			std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
-			s->connectToHostEncrypted (host, port);
-		}
+		Util::Visit (Socket_,
+				[&] (const Tcp_ptr& ptr) { ptr->connectToHost (host, port); },
+				[&] (const Ssl_ptr& ptr) { ptr->connectToHostEncrypted (host, port); });
 	}
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		Socket_ptr->disconnectFromHost ();
+		GetSocketPtr ()->disconnectFromHost ();
 	}
 
 	void IrcServerSocket::Send (const QString& message)
 	{
-		if (!Socket_ptr->isWritable ())
+		const auto socket = GetSocketPtr ();
+		if (!socket->isWritable ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< Socket_ptr->error ()
-					<< Socket_ptr->errorString ();
+					<< socket->error ()
+					<< socket->errorString ();
 			return;
 		}
 
-		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
-		if (!LastCodec_ || LastCodec_->name () != encoding)
-			LastCodec_ = QTextCodec::codecForName (encoding.toLatin1 ());
+		RefreshCodec ();
 
-		if (Socket_ptr->write (LastCodec_->fromUnicode (message)) == -1)
+		if (socket->write (LastCodec_->fromUnicode (message)) == -1)
 			qWarning () << Q_FUNC_INFO
-					<< Socket_ptr->error ()
-					<< Socket_ptr->errorString ();
+					<< socket->error ()
+					<< socket->errorString ();
 	}
 
 	void IrcServerSocket::Close ()
 	{
-		Socket_ptr->close ();
+		GetSocketPtr ()->close ();
 	}
 
 	void IrcServerSocket::Init ()
 	{
-		connect (Socket_ptr.get (),
+		const auto socket = GetSocketPtr ();
+		connect (socket,
 				SIGNAL (readyRead ()),
 				this,
 				SLOT (readReply ()));
 
-		connect (Socket_ptr.get (),
+		connect (socket,
 				SIGNAL (connected ()),
 				ISH_,
 				SLOT (connectionEstablished ()));
 
-		connect (Socket_ptr.get (),
+		connect (socket,
 				SIGNAL (disconnected ()),
 				ISH_,
 				SLOT (connectionClosed ()));
 
-		connect (Socket_ptr.get (),
+		connect (socket,
 				SIGNAL (error (QAbstractSocket::SocketError)),
 				ISH_,
 				SLOT (handleSocketError (QAbstractSocket::SocketError)));
 
-		if (SSL_)
-			connect (Socket_ptr.get(),
-					SIGNAL (sslErrors (const QList<QSslError> &)),
-					this,
-					SLOT (handleSslErrors (const QList<QSslError>&)));
+		Util::Visit (Socket_,
+				[this] (const Ssl_ptr& ptr)
+				{
+					connect (ptr.get (),
+							SIGNAL (sslErrors (const QList<QSslError> &)),
+							this,
+							SLOT (handleSslErrors (const QList<QSslError>&)));
+				},
+				[] (auto) {});
+	}
+
+	void IrcServerSocket::RefreshCodec ()
+	{
+		const auto encoding = ISH_->GetServerOptions ().ServerEncoding_;
+		if (LastCodec_ && LastCodec_->name () == encoding)
+			return;
+
+		if (const auto newCodec = QTextCodec::codecForName (encoding.toLatin1 ()))
+		{
+			LastCodec_ = newCodec;
+			return;
+		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unable to create codec for encoding `"
+				<< encoding.toUtf8 ()
+				<< "`; known codecs:"
+				<< QTextCodec::availableCodecs ();
+
+		const auto& notify = Util::MakeNotification ("Azoth Acetamide",
+				tr ("Unknown encoding %1.")
+					.arg ("<em>" + encoding + "</em>"),
+				PCritical_);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (notify);
+
+		if (LastCodec_)
+			return;
+
+		qWarning () << Q_FUNC_INFO
+				<< "no codec is set, will fall back to locale-default codec";
+
+		LastCodec_ = QTextCodec::codecForLocale ();
+	}
+
+	QTcpSocket* IrcServerSocket::GetSocketPtr () const
+	{
+		return Util::Visit (Socket_,
+				[] (const auto& ptr) { return ptr.get (); });
 	}
 
 	void IrcServerSocket::readReply ()
 	{
-		while (Socket_ptr->canReadLine ())
-			ISH_->ReadReply (Socket_ptr->readLine ());
+		const auto socket = GetSocketPtr ();
+		while (socket->canReadLine ())
+			ISH_->ReadReply (socket->readLine ());
 	}
 
-	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	void IrcServerSocket::HandleSslErrors (const std::shared_ptr<QSslSocket>& s, const QList<QSslError>& errors)
 	{
-		std::shared_ptr<QSslSocket> s = std::dynamic_pointer_cast<QSslSocket> (Socket_ptr);
-
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_Acetamide");
 		settings.beginGroup ("SSL exceptions");
@@ -176,6 +221,12 @@ namespace Acetamide
 		settings.endGroup ();
 	}
 
-};
-};
-};
+	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)
+	{
+		Util::Visit (Socket_,
+				[&] (const Ssl_ptr& s) { HandleSslErrors (s, errors); },
+				[] (auto) { qWarning () << Q_FUNC_INFO << "expected SSL socket"; });
+	}
+}
+}
+}

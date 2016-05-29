@@ -27,54 +27,34 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef AUTHENTICATIONDIALOG_H
-#define AUTHENTICATIONDIALOG_H
-#include <QDialog>
-#include "ui_authenticationdialog.h"
+#pragma once
+
+#include <QObject>
+
+class QNetworkAccessManager;
+class QNetworkReply;
+class QNetworkProxy;
+class QAuthenticator;
 
 namespace LeechCraft
 {
-	/** Provides a standard authentication dialog, for example, for
-	 * proxies, SSL stuff etc.
-	 */
-	class AuthenticationDialog : public QDialog
+namespace NamAuth
+{
+	class SQLStorageBackend;
+
+	class NamHandler : public QObject
 	{
 		Q_OBJECT
 
-		Ui::AuthenticationDialog Ui_;
+		SQLStorageBackend * const SB_;
+		QNetworkAccessManager * const NAM_;
 	public:
-		/** Initializes the dialog. Sets initial login to login, initial
-		 * password to password and message of the dialog to message.
-		 *
-		 * @param[in] message The message explaining the dialog.
-		 * @param[in] login Initial (suggested) login.
-		 * @param[in] password Initial (suggested) password.
-		 * @param[in] parent Parent widget of this dialog.
-		 */
-		AuthenticationDialog (const QString& message,
-				const QString& login,
-				const QString& password,
-				QWidget *parent = 0);
-
-		/** Returns the login.
-		 *
-		 * @return The login.
-		 */
-		QString GetLogin () const;
-
-		/** Returns the password.
-		 *
-		 * @return The password.
-		 */
-		QString GetPassword () const;
-
-		/** Returns whether user has chosen to save authentication data.
-		 *
-		 * @return True if auth data should be saved, false otherwise.
-		 */
-		bool ShouldSave () const;
+		NamHandler (SQLStorageBackend*, QNetworkAccessManager*);
+	private:
+		void DoCommonAuth (const QString&, const QString&, QAuthenticator*);
+	private slots:
+		void handleAuthentication (QNetworkReply*, QAuthenticator*);
+		void handleAuthentication (const QNetworkProxy&, QAuthenticator*);
 	};
-};
-
-#endif
-
+}
+}

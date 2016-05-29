@@ -101,5 +101,43 @@ namespace Snails
 	{
 		Edit_->textCursor ().deleteChar ();
 	}
+
+	void TextEditorAdaptor::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	{
+		if (family != QWebSettings::FixedFont)
+			return;
+
+		auto cursor = Edit_->textCursor ();
+		cursor.select (QTextCursor::Document);
+
+		auto fmt = cursor.charFormat ();
+
+		auto newFont = font;
+		newFont.setPixelSize (fmt.font ().pixelSize ());
+		fmt.setFont (newFont);
+
+		cursor.setCharFormat (fmt);
+	}
+
+	void TextEditorAdaptor::SetFontSize (QWebSettings::FontSize type, int size)
+	{
+		if (type != QWebSettings::DefaultFixedFontSize)
+			return;
+
+		auto cursor = Edit_->textCursor ();
+		cursor.select (QTextCursor::Document);
+
+		auto fmt = cursor.charFormat ();
+
+		auto font = fmt.font ();
+		font.setPixelSize (size);
+		fmt.setFont (font);
+
+		cursor.setCharFormat (fmt);
+	}
+
+	void TextEditorAdaptor::SetFontSizeMultiplier (qreal)
+	{
+	}
 }
 }

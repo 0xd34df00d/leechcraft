@@ -301,6 +301,7 @@ cmake_dependent_option (ENABLE_MELLONETRAY "Build Mellonetray for providing tray
 option (ENABLE_MONOCLE "Build Monocle, modular document viewer for LeechCraft" ${WITH_PLUGINS})
 option (ENABLE_MUSICZOMBIE "Build MusicZombie, MusicBrainz.org client" ${WITH_PLUGINS})
 option (ENABLE_NACHEKU "Build Nacheku, clipboard/download dir watcher" ${WITH_PLUGINS})
+option (ENABLE_NAMAUTH "Build NamAuth, providing standard HTTP authentication facilities" ${WITH_PLUGINS})
 option (ENABLE_NETSTOREMANAGER "Build NetStoreManager for managing network data storages like Yandex.Disk" ${WITH_PLUGINS})
 option (ENABLE_OTLOZHU "Build Otlozhu, a GTD-inspired ToDo manager" ${WITH_PLUGINS})
 option (ENABLE_OORONEE "Build Ooronee, a quark for handling text and images dropped on it" ${WITH_PLUGINS})
@@ -798,6 +799,10 @@ endif ()
 
 if (ENABLE_NACHEKU)
 	add_subdirectory (plugins/nacheku)
+endif ()
+
+if (ENABLE_NAMAUTH)
+	add_subdirectory (plugins/namauth)
 endif ()
 
 if (ENABLE_VROOBY)

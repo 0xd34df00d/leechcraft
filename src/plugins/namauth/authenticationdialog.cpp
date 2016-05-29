@@ -27,49 +27,37 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <interfaces/itexteditor.h>
-#include <interfaces/iadvancedplaintexteditor.h>
-#include <interfaces/iwkfontssettable.h>
-
-class QTextEdit;
+#include "authenticationdialog.h"
 
 namespace LeechCraft
 {
-namespace Snails
+namespace NamAuth
 {
-	class TextEditorAdaptor : public QObject
-							, public IEditorWidget
-							, public IAdvancedPlainTextEditor
-							, public IWkFontsSettable
+	AuthenticationDialog::AuthenticationDialog (const QString& message,
+			const QString& login,
+			const QString& password,
+			QWidget *parent)
+	: QDialog { parent }
 	{
-		Q_OBJECT
-		Q_INTERFACES (IEditorWidget IAdvancedPlainTextEditor IWkFontsSettable)
+		Ui_.setupUi (this);
+		Ui_.Message_->setText (message);
+		Ui_.LoginEdit_->setText (login);
+		Ui_.PasswordEdit_->setText (password);
+	}
 
-		QTextEdit * const Edit_;
-	public:
-		TextEditorAdaptor (QTextEdit*);
+	QString AuthenticationDialog::GetLogin () const
+	{
+		return Ui_.LoginEdit_->text ();
+	}
 
-		QString GetContents (ContentType type) const;
-		void SetContents (QString contents, ContentType type);
+	QString AuthenticationDialog::GetPassword () const
+	{
+		return Ui_.PasswordEdit_->text ();
+	}
 
-		QAction* GetEditorAction (EditorAction);
-		void AppendAction (QAction*);
-		void AppendSeparator ();
-		void RemoveAction (QAction*);
-		void SetBackgroundColor (const QColor&, ContentType);
-		QWidget* GetWidget ();
-		QObject* GetQObject ();
-
-		bool FindText (const QString&);
-		void DeleteSelection ();
-
-		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font);
-		void SetFontSize (QWebSettings::FontSize type, int size);
-		void SetFontSizeMultiplier (qreal factor);
-	signals:
-		void textChanged ();
-	};
+	bool AuthenticationDialog::ShouldSave () const
+	{
+		return Ui_.SaveCredentials_->checkState () == Qt::Checked;
+	}
 }
 }

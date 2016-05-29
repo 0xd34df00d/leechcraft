@@ -27,56 +27,52 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef STORAGEBACKEND_H
-#define STORAGEBACKEND_H
-#include <QObject>
+#include "sqlstoragebackend.h"
+#include <QDir>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+#include <QVariant>
+#include <QtDebug>
+#include <util/db/dblock.h>
+#include <util/db/util.h>
+#include <util/db/oral.h>
+#include <util/sys/paths.h>
+
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::NamAuth::SQLStorageBackend::AuthRecord,
+		RealmName_,
+		Context_,
+		Login_,
+		Password_)
 
 namespace LeechCraft
 {
-	/** @brief Abstract base class for storage backends.
-	 *
-	 * Specifies interface for all storage backends. Includes functions for
-	 * storing the history, favorites, saved passwords etc.
-	 */
-	class StorageBackend : public QObject
+namespace NamAuth
+{
+	SQLStorageBackend::SQLStorageBackend ()
+	: DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE",
+			Util::GenConnectionName ("NamAuth.Connection"))))
 	{
-		Q_OBJECT
-	public:
-		StorageBackend (QObject* = 0);
-		virtual ~StorageBackend ();
+		DB_->setDatabaseName (Util::CreateIfNotExists ("core").filePath ("core.db"));
+		if (!DB_->open ())
+		{
+			Util::DBLock::DumpError (DB_->lastError ());
+			return;
+		}
 
-		/** @brief Do post-initialization.
-		 *
-		 * This function is called by the Core after all the updates are
-		 * checked and done, if required.
-		 */
-		virtual void Prepare () = 0;
-		/** @brief Get authentication information.
-		 *
-		 * Finds authentication information for the given realm and puts it
-		 * into login and password. If no information is found, leaves these
-		 * fields unchanged.
-		 *
-		 * @param[in] realm Realm of the interesting authentication resource.
-		 * @param[out] login Stored login.
-		 * @param[out] password Stored password.
-		 */
-		virtual void GetAuth (const QString& realm,
-				QString& login, QString& password) const = 0;
-		/** @brief Set authentication information.
-		 *
-		 * Sets authentication information for the given realm from passed
-		 * parameters. Creates a new record if there is no older one,
-		 * updates old record otherwise.
-		 *
-		 * @param[in] realm Realm of the authentication resource.
-		 * @param[in] login New login.
-		 * @param[in] password New password.
-		 */
-		virtual void SetAuth (const QString& realm,
-				const QString& login, const QString& password) = 0;
-	};
-};
+		AdaptedRecord_ = Util::oral::AdaptPtr<AuthRecord> (*DB_);
+	}
 
-#endif
+	namespace sph = Util::oral::sph;
 
+	boost::optional<SQLStorageBackend::AuthRecord> SQLStorageBackend::GetAuth (const QString& realm, const QString& context)
+	{
+		return AdaptedRecord_->DoSelectOneByFields_ (sph::_0 == realm && sph::_1 == context);
+	}
+
+	void SQLStorageBackend::SetAuth (const AuthRecord& record)
+	{
+		AdaptedRecord_->DoInsert_ (record, Util::oral::InsertAction::Replace);
+	}
+}
+}

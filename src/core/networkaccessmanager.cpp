@@ -33,19 +33,15 @@
 #include <QNetworkRequest>
 #include <QDir>
 #include <QFile>
-#include <QAuthenticator>
 #include <QNetworkReply>
-#include <QNetworkProxy>
 #include <QTimer>
 #include <util/util.h>
 #include <util/network/customcookiejar.h>
 #include <util/network/networkdiskcache.h>
 #include <util/xpc/defaulthookproxy.h>
 #include "core.h"
-#include "authenticationdialog.h"
 #include "xmlsettingsmanager.h"
 #include "mainwindow.h"
-#include "storagebackend.h"
 #include "sslerrorshandler.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
@@ -57,18 +53,6 @@ NetworkAccessManager::NetworkAccessManager (QObject *parent)
 : QNetworkAccessManager (parent)
 , CookieSaveTimer_ (new QTimer (this))
 {
-	connect (this,
-			SIGNAL (authenticationRequired (QNetworkReply*,
-					QAuthenticator*)),
-			this,
-			SLOT (handleAuthentication (QNetworkReply*,
-					QAuthenticator*)));
-	connect (this,
-			SIGNAL (proxyAuthenticationRequired (const QNetworkProxy&,
-					QAuthenticator*)),
-			this,
-			SLOT (handleAuthentication (const QNetworkProxy&,
-					QAuthenticator*)));
 	connect (this,
 			SIGNAL (sslErrors (QNetworkReply*, QList<QSslError>)),
 			this,
@@ -163,54 +147,6 @@ QNetworkReply* NetworkAccessManager::createRequest (QNetworkAccessManager::Opera
 	QNetworkReply *result = QNetworkAccessManager::createRequest (op, r, out);
 	emit requestCreated (op, r, result);
 	return result;
-}
-
-void LeechCraft::NetworkAccessManager::DoCommonAuth (const QString& msg, QAuthenticator *authen)
-{
-	const auto& realm = authen->realm ();
-
-	auto suggestedUser = authen->user ();
-	auto suggestedPassword = authen->password ();
-
-	const auto backend = Core::Instance ().GetStorageBackend ();
-
-	if (suggestedUser.isEmpty ())
-		backend->GetAuth (realm, suggestedUser, suggestedPassword);
-
-	AuthenticationDialog dia (msg, suggestedUser, suggestedPassword, qApp->activeWindow ());
-	if (dia.exec () == QDialog::Rejected)
-		return;
-
-	const auto& login = dia.GetLogin ();
-	const auto& password = dia.GetPassword ();
-	authen->setUser (login);
-	authen->setPassword (password);
-
-	if (dia.ShouldSave ())
-		backend->SetAuth (realm, login, password);
-}
-
-void LeechCraft::NetworkAccessManager::handleAuthentication (QNetworkReply *reply,
-		QAuthenticator *authen)
-{
-	QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
-		.arg (authen->realm ())
-		.arg (QApplication::fontMetrics ()
-				.elidedText (reply->url ().toString (),
-						Qt::ElideMiddle,
-						300));
-
-	DoCommonAuth (msg, authen);
-}
-
-void LeechCraft::NetworkAccessManager::handleAuthentication (const QNetworkProxy& proxy,
-		QAuthenticator *authen)
-{
-	QString msg = tr ("%1<br /><em>%2</em><br />requires authentication.")
-		.arg (authen->realm ())
-		.arg (proxy.hostName ());
-
-	DoCommonAuth (msg, authen);
 }
 
 void LeechCraft::NetworkAccessManager::handleSslErrors (QNetworkReply *replyObj,

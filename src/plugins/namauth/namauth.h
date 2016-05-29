@@ -27,34 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "authenticationdialog.h"
+#pragma once
 
-using namespace LeechCraft;
+#include <QObject>
+#include <interfaces/iinfo.h>
 
-LeechCraft::AuthenticationDialog::AuthenticationDialog (const QString& message,
-		const QString& login,
-		const QString& password,
-		QWidget *parent)
-: QDialog (parent)
+namespace LeechCraft
 {
-	Ui_.setupUi (this);
-	Ui_.Message_->setText (message);
-	Ui_.LoginEdit_->setText (login);
-	Ui_.PasswordEdit_->setText (password);
-}
-
-QString LeechCraft::AuthenticationDialog::GetLogin () const
+namespace NamAuth
 {
-	return Ui_.LoginEdit_->text ();
-}
+	class Plugin : public QObject
+				 , public IInfo
+	{
+		Q_OBJECT
+		Q_INTERFACES (IInfo)
 
-QString LeechCraft::AuthenticationDialog::GetPassword () const
-{
-	return Ui_.PasswordEdit_->text ();
+		LC_PLUGIN_METADATA ("org.LeechCraft.NamAuth")
+	public:
+		void Init (ICoreProxy_ptr);
+		void SecondInit ();
+		QByteArray GetUniqueID () const;
+		void Release ();
+		QString GetName () const;
+		QString GetInfo () const;
+		QIcon GetIcon () const;
+	};
 }
-
-bool LeechCraft::AuthenticationDialog::ShouldSave () const
-{
-	return Ui_.SaveCredentials_->checkState () == Qt::Checked;
 }
-

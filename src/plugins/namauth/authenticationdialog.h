@@ -27,16 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "storagebackend.h"
+#pragma once
 
-using namespace LeechCraft;
+#include <QDialog>
+#include "ui_authenticationdialog.h"
 
-StorageBackend::StorageBackend (QObject *parent)
-: QObject (parent)
+namespace LeechCraft
 {
-}
-
-StorageBackend::~StorageBackend ()
+namespace NamAuth
 {
-}
+	class AuthenticationDialog : public QDialog
+	{
+		Q_OBJECT
 
+		Ui::AuthenticationDialog Ui_;
+	public:
+		AuthenticationDialog (const QString& message,
+				const QString& login,
+				const QString& password,
+				QWidget *parent = nullptr);
+
+		QString GetLogin () const;
+		QString GetPassword () const;
+		bool ShouldSave () const;
+	};
+}
+}

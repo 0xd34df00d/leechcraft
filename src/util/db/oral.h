@@ -52,7 +52,6 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <util/sll/typelist.h>
 #include <util/sll/oldcppkludges.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
@@ -90,12 +89,6 @@ namespace oral
 			return *Query_;
 		}
 	};
-
-	template<int... Fields>
-	struct UniqueSubset;
-
-	template<typename... Args>
-	using Constraints = Typelist<Args...>;
 
 	namespace detail
 	{
@@ -414,9 +407,27 @@ namespace oral
 			using result_type = typename std::conditional<
 						IsPKey<ValueAt_t<Seq, MemberIdx>>::value,
 						Lazy<MemberIdx>,
-						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>>>
+						Lazy<FindPKey<Seq, typename boost::mpl::next<MemberIdx>::type>>
 					>::type::type;
 		};
+
+		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
+		constexpr bool HasPKeyImpl (int)
+		{
+			return true;
+		}
+
+		template<typename Seq>
+		constexpr bool HasPKeyImpl (float)
+		{
+			return false;
+		}
+
+		template<typename Seq>
+		constexpr bool HasPKey ()
+		{
+			return HasPKeyImpl<Seq> (0);
+		}
 
 		template<typename Seq, int Idx = FindPKey<Seq>::result_type::value>
 		constexpr bool HasAutogenPKeyImpl (int)
@@ -505,8 +516,8 @@ namespace oral
 				boost::fusion::at_c<index> (t) = FromVariant<ValueAtC_t<Seq, index>> {} (query->lastInsertId ());
 			}
 
-			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			EnableIf_t<Autogen, ValueAtC_t<Seq, FindPKey<Seq>::result_type::value>>
+			template<typename SeqPrime = Seq, bool Autogen = HasAutogenPKey<SeqPrime> ()>
+			EnableIf_t<Autogen, ValueAtC_t<SeqPrime, FindPKey<SeqPrime>::result_type::value>>
 				operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
@@ -526,51 +537,85 @@ namespace oral
 			}
 		};
 
-		template<typename T>
-		std::function<void (T)> AdaptUpdate (const CachedFieldsData& data)
+		template<typename Seq, bool HasPKey = HasPKey<Seq> ()>
+		class AdaptUpdate
 		{
-			const auto index = FindPKey<T>::result_type::value;
-
-			auto removedFields = data.Fields_;
-			auto removedBoundFields = data.BoundFields_;
-
-			const auto& fieldName = removedFields.takeAt (index);
-			const auto& boundName = removedBoundFields.takeAt (index);
-
-			const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
-					[] (const QString& s1, const QString& s2) -> QString
-						{ return s1 + " = " + s2; });
-
-			const auto& update = "UPDATE " + data.Table_ +
-					" SET " + QStringList { statements }.join (", ") +
-					" WHERE " + fieldName + " = " + boundName + ";";
-
-			const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
-			updateQuery->prepare (update);
-			return MakeInserter<T> (data, updateQuery, true);
-		}
-
-		template<typename T>
-		std::function<void (T)> AdaptDelete (CachedFieldsData data)
-		{
-			const auto index = FindPKey<T>::result_type::value;
-
-			const auto& boundName = data.BoundFields_.at (index);
-			const auto& del = "DELETE FROM " + data.Table_ +
-					" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
-
-			const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
-			deleteQuery->prepare (del);
-
-			return [deleteQuery, boundName] (const T& t)
+			std::function<void (Seq)> Updater_;
+		public:
+			template<bool B = HasPKey>
+			AdaptUpdate (const CachedFieldsData& data, EnableIf_t<B>* = nullptr)
 			{
-				constexpr auto index = FindPKey<T>::result_type::value;
-				deleteQuery->bindValue (boundName,
-						ToVariant<ValueAtC_t<T, index>> {} (boost::fusion::at_c<index> (t)));
-				if (!deleteQuery->exec ())
-					throw QueryException ("delete query execution failed", deleteQuery);
-			};
-		}
+				const auto index = FindPKey<Seq>::result_type::value;
+
+				auto removedFields = data.Fields_;
+				auto removedBoundFields = data.BoundFields_;
+
+				const auto& fieldName = removedFields.takeAt (index);
+				const auto& boundName = removedBoundFields.takeAt (index);
+
+				const auto& statements = Util::ZipWith (removedFields, removedBoundFields,
+						[] (const QString& s1, const QString& s2) -> QString
+							{ return s1 + " = " + s2; });
+
+				const auto& update = "UPDATE " + data.Table_ +
+						" SET " + QStringList { statements }.join (", ") +
+						" WHERE " + fieldName + " = " + boundName + ";";
+
+				const auto updateQuery = std::make_shared<QSqlQuery> (data.DB_);
+				updateQuery->prepare (update);
+				Updater_ = MakeInserter<Seq> (data, updateQuery, true);
+			}
+
+			template<bool B = HasPKey>
+			AdaptUpdate (const CachedFieldsData&, EnableIf_t<!B>* = nullptr)
+			{
+			}
+
+			template<bool B = HasPKey>
+			EnableIf_t<B> operator() (const Seq& seq)
+			{
+				Updater_ (seq);
+			}
+		};
+
+		template<typename Seq, bool HasPKey = HasPKey<Seq> ()>
+		struct AdaptDelete
+		{
+			std::function<void (Seq)> Deleter_;
+		public:
+			template<bool B = HasPKey>
+			AdaptDelete (const CachedFieldsData& data, EnableIf_t<B>* = nullptr)
+			{
+				const auto index = FindPKey<Seq>::result_type::value;
+
+				const auto& boundName = data.BoundFields_.at (index);
+				const auto& del = "DELETE FROM " + data.Table_ +
+						" WHERE " + data.Fields_.at (index) + " = " + boundName + ";";
+
+				const auto deleteQuery = std::make_shared<QSqlQuery> (data.DB_);
+				deleteQuery->prepare (del);
+
+				Deleter_ = [deleteQuery, boundName] (const Seq& t)
+				{
+					constexpr auto index = FindPKey<Seq>::result_type::value;
+					deleteQuery->bindValue (boundName,
+							ToVariant<ValueAtC_t<Seq, index>> {} (boost::fusion::at_c<index> (t)));
+					if (!deleteQuery->exec ())
+						throw QueryException ("delete query execution failed", deleteQuery);
+				};
+			}
+
+			template<bool B = HasPKey>
+			AdaptDelete (const CachedFieldsData&, EnableIf_t<!B>* = nullptr)
+			{
+			}
+
+			template<bool B = HasPKey>
+			EnableIf_t<B> operator() (const Seq& seq)
+			{
+				Deleter_ (seq);
+			}
+		};
 
 		template<typename T>
 		QList<T> PerformSelect (QSqlQuery_ptr q)
@@ -1249,6 +1294,15 @@ namespace oral
 			}
 		};
 
+		template<int... Fields>
+		struct ConstraintToString<PrimaryKey<Fields...>>
+		{
+			QString operator() (const CachedFieldsData& data) const
+			{
+				return "PRIMARY KEY (" + QStringList { data.Fields_.value (Fields)... }.join (", ") + ")";
+			}
+		};
+
 		template<typename...>
 		struct GetConstraintsStringList;
 
@@ -1318,8 +1372,8 @@ namespace oral
 	{
 		std::function<QList<T> ()> DoSelectAll_;
 		detail::AdaptInsert<T> DoInsert_;
-		std::function<void (T)> DoUpdate_;
-		std::function<void (T)> DoDelete_;
+		detail::AdaptUpdate<T> DoUpdate_;
+		detail::AdaptDelete<T> DoDelete_;
 
 		detail::SelectByFieldsWrapper<T> DoSelectByFields_;
 		detail::SelectOneByFieldsWrapper<T> DoSelectOneByFields_;

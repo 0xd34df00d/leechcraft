@@ -57,11 +57,7 @@ namespace LeechCraft
 	protected:
 		QNetworkReply* createRequest (Operation,
 				const QNetworkRequest&, QIODevice*);
-	private:
-		void DoCommonAuth (const QString&, QAuthenticator*);
 	private slots:
-		void handleAuthentication (QNetworkReply*, QAuthenticator*);
-		void handleAuthentication (const QNetworkProxy&, QAuthenticator*);
 		void handleSslErrors (QNetworkReply*, const QList<QSslError>&);
 
 		void saveCookies () const;

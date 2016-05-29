@@ -59,10 +59,7 @@ set (SRCS
 	iconthemeengine.cpp
 	childactioneventfilter.cpp
 	tabmanager.cpp
-	authenticationdialog.cpp
 	sslerrorsdialog.cpp
-	storagebackend.cpp
-	sqlstoragebackend.cpp
 	debugmessagehandler.cpp
 	application.cpp
 	handlerchoicedialog.cpp
@@ -115,7 +112,6 @@ set (FORMS
 	commonjobadder.ui
 	leechcraft.ui
 	pluginmanagerdialog.ui
-	authenticationdialog.ui
 	sslerrorsdialog.ui
 	handlerchoicedialog.ui
 	shortcutmanager.ui
@@ -184,7 +180,7 @@ endif ()
 install (TARGETS leechcraft${LC_EXEC_SUFFIX} DESTINATION ${LC_BINDIR})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft${LC_EXEC_SUFFIX} Gui Network Widgets Xml Quick Qml Script Concurrent Svg Sql)
+FindQtLibs (leechcraft${LC_EXEC_SUFFIX} Gui Network Widgets Xml Quick Qml Script Concurrent Svg)
 
 if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
