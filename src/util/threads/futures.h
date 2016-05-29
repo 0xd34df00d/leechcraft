@@ -231,10 +231,7 @@ namespace Util
 		 * They will delete themselves automatically after the chain is
 		 * walked (or an exception is thrown).
 		 *
-		 * @tparam Executor The type of the initial functor in the async
-		 * call chain.
-		 * @tparam Args The types of the arguments that should be passed
-		 * to the \em Executor.
+		 * @tparam Future The type of the initial future.
 		 */
 		template<typename Future>
 		class Sequencer : public QObject
@@ -251,8 +248,7 @@ namespace Util
 		public:
 			/** @brief Constructs the sequencer.
 			 *
-			 * @param[in] f The first action in the chain.
-			 * @param[in] args The arguments to the action.
+			 * @param[in] future The initial future in the chain.
 			 * @param[in] parent The parent object for the sequencer.
 			 */
 			Sequencer (const Future& future, QObject *parent)
@@ -475,7 +471,7 @@ namespace Util
 			 * when called with a value of type \em Ret. That is, the
 			 * expression <code>f (std::declval<Ret> ())</code> should be
 			 * well-formed, and, moreover, its return type should be
-			 * <code>QFuture<T0><code> for some T0.
+			 * <code>QFuture<T0></code> for some T0.
 			 *
 			 * @param[in] f The functor to chain.
 			 * @return An object of type
@@ -586,68 +582,66 @@ namespace Util
 
 	/** @brief Creates a sequencer that allows chaining multiple futures.
 	 *
-	 * This function creates a sequencer object that calls the given
-	 * executor \em f with the given \em args, which must return a
-	 * <code>QFuture<T></code> (or throw an exception) or
-	 * <code>void</code>. The concrete object will be unwrapped from the
-	 * <code>QFuture<T></code> and passed to the chained function, if any,
-	 * and so on. The functors may also return <code>QFuture<void></code>,
-	 * in which case the next action is expected to be invokable without
-	 * any arguments.
+	 * This function creates a sequencer object that starts with the
+	 * passed \em future, and, after this future being completed, passes
+	 * its result to the next function in chain, and so on, until either
+	 * there are no more functions in the chain or a function returns
+	 * something different from <code>QFuture<T></code>
+	 * and so on.
+	 *
+	 * Each function in the chain may return a <code>QFuture<T></code> for
+	 * some <code>T != void</code>, in which case it will be unwrapped and
+	 * passed along to the next function in the chain.
+	 *
+	 * The functors may also return <code>QFuture<void></code>, meaning
+	 * that the next function in the chain will be invoked without
+	 * arguments when this future is completed.
 	 *
 	 * If a functor returns <code>void</code>, no further chaining is
 	 * possible.
 	 *
 	 * The functions are chained via the detail::SequenceProxy::Then()
-	 * method.
+	 * method or via the <code>operator>>()</code> (leading to a nice
+	 * somewhat monadic-like syntax).
 	 *
-	 * The sequencer object is reference-counted internally, and it
-	 * invokes the executor \em f after the last instance of this
-	 * sequencer is destroyed.
-	 *
-	 * A \em parent QObject controls the lifetime of the sequencer: as
+	 * The \em parent QObject controls the lifetime of the sequencer: as
 	 * soon as it is destroyed, the sequencer is destroyed as well, and
-	 * all pending actions are cancelled (note, the currently executing
-	 * action will still continue to execute). This parameter is optional
+	 * all pending actions are cancelled (the currently executing action
+	 * will still continue to execute, though). This parameter is optional
 	 * and may be <code>nullptr</code>.
 	 *
 	 * A sample usage may look like:
 	 * \code
 		Util::Sequence (this,
-					[this, &]
-					{
-						return QtConcurrent::run ([this, &]
-								{
-									const auto& contents = file->readAll ();
-									file->close ();
-									file->remove ();
-									return DoSomethingWith (contents);
-								});
-					})
-				.Then ([this, url, script] (const QString& contents)
-					{
-						const auto& result = Parse (contents);
-						if (result.isEmpty ())
+				QtConcurrent::run ([this, &]
 						{
-							qWarning () << Q_FUNC_INFO
-									<< "empty result for"
-									<< url;
-							return;
-						}
+							const auto& contents = file->readAll ();
+							file->close ();
+							file->remove ();
+							return DoSomethingWith (contents);
+						})) >>
+				[this, url, script] (const QString& contents)
+				{
+					const auto& result = Parse (contents);
+					if (result.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "empty result for"
+								<< url;
+						return;
+					}
 
-						const auto id = DoSomethingSynchronouslyWith (result);
-						emit gotResult (id);
-					});
+					const auto id = DoSomethingSynchronouslyWith (result);
+					emit gotResult (id);
+				};
 	   \endcode
 	 *
 	 * @param[in] parent The parent object of the sequencer (may be
 	 * <code>nullptr</code>.
-	 * @param[in] f The executor to run when chaining is finished.
-	 * @param[in] args The arguments to pass to \em f.
+	 * @param[in] future The future to pass to the sequencer.
 	 * @return The sequencer object.
-	 * @tparam Executor The type of the executor object.
-	 * @tparam Args The types of the arguments for the \em Executor, if
-	 * any.
+	 * @tparam T The underlying type of the passed future (the async
+	 * computation result type).
 	 *
 	 * @sa detail::SequenceProxy
 	 */
