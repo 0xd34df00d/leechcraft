@@ -47,6 +47,7 @@
 #include <QDir>
 #include <qtermwidget.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/oldcppkludges.h>
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/shortcuts/shortcutmanager.h>
