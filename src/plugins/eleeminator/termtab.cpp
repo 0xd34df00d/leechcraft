@@ -42,6 +42,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QTimer>
+#include <QKeyEvent>
 #include <QtDebug>
 #include <QDir>
 #include <qtermwidget.h>
@@ -128,6 +129,40 @@ namespace Eleeminator
 		Term_->setFlowControlEnabled (true);
 		Term_->setFlowControlWarningEnabled (true);
 		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
+
+#ifdef Q_OS_MAC
+		Term_->installEventFilter (MakeLambdaEventFilter ([] (QKeyEvent *ev)
+				{
+					auto mods = ev->modifiers ();
+					const auto hasCtrl = mods & Qt::ControlModifier;
+					const auto hasCmd = mods & Qt::MetaModifier;
+					if (hasCtrl == hasCmd)
+						return false;
+
+					if (hasCtrl)
+					{
+						mods |= Qt::MetaModifier;
+						mods &= ~Qt::ControlModifier;
+					}
+					else
+					{
+						mods |= Qt::ControlModifier;
+						mods &= ~Qt::MetaModifier;
+					}
+
+					*ev = QKeyEvent
+					{
+						ev->type (),
+						ev->key (),
+						mods,
+						ev->text (),
+						ev->isAutoRepeat (),
+						static_cast<ushort> (ev->count ())
+					};
+
+					return false;
+				}));
+#endif
 
 		auto systemEnv = QProcessEnvironment::systemEnvironment ();
 		if (systemEnv.value ("TERM") != "xterm")
