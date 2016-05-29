@@ -614,16 +614,13 @@ namespace Util
 	 * A sample usage may look like:
 	 * \code
 		Util::Sequence (this,
-					[this, &]
-					{
-						return QtConcurrent::run ([this, &]
-								{
-									const auto& contents = file->readAll ();
-									file->close ();
-									file->remove ();
-									return DoSomethingWith (contents);
-								});
-					})
+				QtConcurrent::run ([this, &]
+						{
+							const auto& contents = file->readAll ();
+							file->close ();
+							file->remove ();
+							return DoSomethingWith (contents);
+						}))
 				.Then ([this, url, script] (const QString& contents)
 					{
 						const auto& result = Parse (contents);
