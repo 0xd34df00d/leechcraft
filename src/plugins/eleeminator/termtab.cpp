@@ -60,6 +60,27 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
+	namespace detail
+	{
+		template<typename F, typename R>
+		F TypeGetter (R (*) (F));
+
+		template<typename F>
+		auto TypeGetter (F&& f) -> decltype (TypeGetter (+f));
+
+		template<typename C, typename R, typename F>
+		F TypeGetter (R (C::*) (F) const);
+
+		template<typename C, typename R, typename F>
+		F TypeGetter (R (C::*) (F));
+
+		template<typename C>
+		decltype (TypeGetter (&C::operator ())) TypeGetter (const C& c);
+
+		template<typename F>
+		using ArgType_t = decltype (TypeGetter (*static_cast<F*> (nullptr)));
+	}
+
 	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
 			const TabClassInfo& tc, ColorSchemesManager *colorSchemesMgr, QObject *plugin)
 	: CoreProxy_ { proxy }
