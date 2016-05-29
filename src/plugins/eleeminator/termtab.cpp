@@ -79,6 +79,35 @@ namespace Eleeminator
 
 		template<typename F>
 		using ArgType_t = decltype (TypeGetter (*static_cast<F*> (nullptr)));
+
+		template<typename F>
+		class LambdaEventFilter : public QObject
+		{
+			const F F_;
+
+			using EventType_t = typename std::remove_pointer<ArgType_t<F>>::type;
+		public:
+			LambdaEventFilter (F&& f, QObject *parent = nullptr)
+			: QObject { parent }
+			, F_ { std::move (f) }
+			{
+			}
+
+			bool eventFilter (QObject*, QEvent *srcEv) override
+			{
+				const auto ev = dynamic_cast<EventType_t*> (srcEv);
+				if (!ev)
+					return false;
+
+				return F_ (ev);
+			}
+		};
+	}
+
+	template<typename F>
+	detail::LambdaEventFilter<Util::Decay_t<F>>* MakeLambdaEventFilter (F&& f, QObject *parent = nullptr)
+	{
+		return new detail::LambdaEventFilter<Util::Decay_t<F>> { std::forward<F> (f), parent };
 	}
 
 	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
