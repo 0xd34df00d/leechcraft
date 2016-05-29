@@ -639,12 +639,10 @@ namespace Util
 	 *
 	 * @param[in] parent The parent object of the sequencer (may be
 	 * <code>nullptr</code>.
-	 * @param[in] f The executor to run when chaining is finished.
-	 * @param[in] args The arguments to pass to \em f.
+	 * @param[in] future The future to pass to the sequencer.
 	 * @return The sequencer object.
-	 * @tparam Executor The type of the executor object.
-	 * @tparam Args The types of the arguments for the \em Executor, if
-	 * any.
+	 * @tparam T The underlying type of the passed future (the async
+	 * computation result type).
 	 *
 	 * @sa detail::SequenceProxy
 	 */
