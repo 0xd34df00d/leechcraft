@@ -475,7 +475,7 @@ namespace Util
 			 * when called with a value of type \em Ret. That is, the
 			 * expression <code>f (std::declval<Ret> ())</code> should be
 			 * well-formed, and, moreover, its return type should be
-			 * <code>QFuture<T0><code> for some T0.
+			 * <code>QFuture<T0></code> for some T0.
 			 *
 			 * @param[in] f The functor to chain.
 			 * @return An object of type
