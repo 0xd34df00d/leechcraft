@@ -601,7 +601,7 @@ namespace Util
 	 * invokes the executor \em f after the last instance of this
 	 * sequencer is destroyed.
 	 *
-	 * A \em parent QObject controls the lifetime of the sequencer: as
+	 * The \em parent QObject controls the lifetime of the sequencer: as
 	 * soon as it is destroyed, the sequencer is destroyed as well, and
 	 * all pending actions are cancelled (note, the currently executing
 	 * action will still continue to execute). This parameter is optional
