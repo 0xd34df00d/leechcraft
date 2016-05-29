@@ -659,11 +659,11 @@ namespace Snails
 		ReadMarker_.reset (new MailTabReadMarker { CurrAcc_, this },
 				[] (QObject *obj) { obj->deleteLater (); });
 		connect (this,
-				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
+				SIGNAL (willMoveMessages (QList<QByteArray>, QStringList)),
 				ReadMarker_.get (),
 				SLOT (handleWillMoveMessages (QList<QByteArray>, QStringList)));
 		connect (this,
-				SIGNAL(willMoveMessages (QList<QByteArray>, QStringList)),
+				SIGNAL (willMoveMessages (QList<QByteArray>, QStringList)),
 				this,
 				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
 
