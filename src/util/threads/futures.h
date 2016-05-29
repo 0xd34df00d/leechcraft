@@ -231,10 +231,7 @@ namespace Util
 		 * They will delete themselves automatically after the chain is
 		 * walked (or an exception is thrown).
 		 *
-		 * @tparam Executor The type of the initial functor in the async
-		 * call chain.
-		 * @tparam Args The types of the arguments that should be passed
-		 * to the \em Executor.
+		 * @tparam Future The type of the initial future.
 		 */
 		template<typename Future>
 		class Sequencer : public QObject
@@ -251,8 +248,7 @@ namespace Util
 		public:
 			/** @brief Constructs the sequencer.
 			 *
-			 * @param[in] f The first action in the chain.
-			 * @param[in] args The arguments to the action.
+			 * @param[in] future The initial future in the chain.
 			 * @param[in] parent The parent object for the sequencer.
 			 */
 			Sequencer (const Future& future, QObject *parent)
