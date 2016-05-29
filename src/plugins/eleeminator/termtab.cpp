@@ -112,6 +112,54 @@ namespace Eleeminator
 		return new detail::LambdaEventFilter<Util::Decay_t<F>> { std::forward<F> (f), parent };
 	}
 
+	namespace
+	{
+		void FixCommandControl (QKeyEvent *ev)
+		{
+			auto mods = ev->modifiers ();
+			const bool hasCtrl = mods & Qt::ControlModifier;
+			const bool hasCmd = mods & Qt::MetaModifier;
+			bool changed = false;
+			if (hasCtrl != hasCmd)
+			{
+				if (hasCtrl)
+				{
+					mods |= Qt::MetaModifier;
+					mods &= ~Qt::ControlModifier;
+				}
+				else
+				{
+					mods |= Qt::ControlModifier;
+					mods &= ~Qt::MetaModifier;
+				}
+				changed = true;
+			}
+
+			auto key = ev->key ();
+			if (key == Qt::Key_Control)
+			{
+				key = Qt::Key_Meta;
+				changed = true;
+			}
+			else if (key == Qt::Key_Meta)
+			{
+				key = Qt::Key_Control;
+				changed = true;
+			}
+
+			if (changed)
+				*ev = QKeyEvent
+				{
+					ev->type (),
+					key,
+					mods,
+					ev->text (),
+					ev->isAutoRepeat (),
+					static_cast<ushort> (ev->count ())
+				};
+		}
+	}
+
 	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
 			const TabClassInfo& tc, ColorSchemesManager *colorSchemesMgr, QObject *plugin)
 	: CoreProxy_ { proxy }
@@ -132,37 +180,10 @@ namespace Eleeminator
 		Term_->setScrollBarPosition (QTermWidget::ScrollBarRight);
 
 #ifdef Q_OS_MAC
-		Term_->installEventFilter (MakeLambdaEventFilter ([] (QKeyEvent *ev)
-				{
-					auto mods = ev->modifiers ();
-					const auto hasCtrl = mods & Qt::ControlModifier;
-					const auto hasCmd = mods & Qt::MetaModifier;
-					if (hasCtrl == hasCmd)
-						return false;
-
-					if (hasCtrl)
-					{
-						mods |= Qt::MetaModifier;
-						mods &= ~Qt::ControlModifier;
-					}
-					else
-					{
-						mods |= Qt::ControlModifier;
-						mods &= ~Qt::MetaModifier;
-					}
-
-					*ev = QKeyEvent
-					{
-						ev->type (),
-						ev->key (),
-						mods,
-						ev->text (),
-						ev->isAutoRepeat (),
-						static_cast<ushort> (ev->count ())
-					};
-
-					return false;
-				}));
+		connect (Term_,
+				&QTermWidget::termKeyPressed,
+				Term_,
+				&FixCommandControl);
 #endif
 
 		auto systemEnv = QProcessEnvironment::systemEnvironment ();
