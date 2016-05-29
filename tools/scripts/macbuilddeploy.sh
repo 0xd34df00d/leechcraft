@@ -10,7 +10,7 @@ sudo rm -rf $TARGET/leechcraft.app/Contents/Resources/qt.conf $TARGET/leechcraft
 make -j8 install
 
 # Kludge
-install_name_tool -change lib/libqtermwidget4.0.dylib /usr/local/lib/libqtermwidget4.0.5.1.dylib $TARGET/leechcraft.app/Contents/PlugIns/libleechcraft_eleeminator.dylib
+install_name_tool -change libqtermwidget5.0.dylib /usr/local/lib/libqtermwidget5.0.6.0.dylib $TARGET/leechcraft.app/Contents/PlugIns/libleechcraft_eleeminator.dylib
 sudo cp /usr/local/leechcraft.app/Contents/Frameworks/libleechcraft-* /usr/lib
 
 cp -Rv /usr/local/Cellar/$QTVERSION/*/plugins/* $TARGET/leechcraft.app/Contents/PlugIns
