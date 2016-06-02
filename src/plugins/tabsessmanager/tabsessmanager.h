@@ -58,12 +58,8 @@ namespace TabSessManager
 
 		ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<TabsPropsManager> TabsPropsMgr_;
-
-		UncloseManager *UncloseMgr_;
-
-		SessionsManager *SessionsMgr_;
-		SessionMenuManager *SessionMenuMgr_;
+		struct Managers;
+		std::shared_ptr<Managers> Mgrs_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -48,49 +48,59 @@ namespace LeechCraft
 {
 namespace TabSessManager
 {
+	struct Plugin::Managers
+	{
+		TabsPropsManager TabsPropsMgr_;
+		UncloseManager UncloseMgr_;
+		SessionsManager SessionsMgr_;
+		SessionMenuManager SessionMenuMgr_;
+
+		Managers (const ICoreProxy_ptr& proxy)
+		: UncloseMgr_ { proxy, &TabsPropsMgr_ }
+		, SessionsMgr_ { proxy, &TabsPropsMgr_ }
+		, SessionMenuMgr_ { &SessionsMgr_ }
+		{
+		}
+	};
+
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("tabsessmanager");
 
-		TabsPropsMgr_ = std::make_shared<TabsPropsManager> ();
+		Mgrs_ = std::make_shared<Managers> (proxy);
 
-		UncloseMgr_ = new UncloseManager { proxy, TabsPropsMgr_.get () };
-
-		SessionsMgr_ = new SessionsManager { proxy, TabsPropsMgr_.get () };
-
-		SessionMenuMgr_ = new SessionMenuManager { SessionsMgr_ };
-		connect (SessionMenuMgr_,
+		connect (&Mgrs_->SessionMenuMgr_,
 				SIGNAL (loadRequested (QString)),
-				SessionsMgr_,
+				&Mgrs_->SessionsMgr_,
 				SLOT (loadCustomSession (QString)));
-		connect (SessionMenuMgr_,
+		connect (&Mgrs_->SessionMenuMgr_,
 				SIGNAL (addRequested (QString)),
-				SessionsMgr_,
+				&Mgrs_->SessionsMgr_,
 				SLOT (addCustomSession (QString)));
-		connect (SessionMenuMgr_,
+		connect (&Mgrs_->SessionMenuMgr_,
 				SIGNAL (deleteRequested (QString)),
-				SessionsMgr_,
+				&Mgrs_->SessionsMgr_,
 				SLOT (deleteCustomSession (QString)));
-		connect (SessionMenuMgr_,
+		connect (&Mgrs_->SessionMenuMgr_,
 				SIGNAL (saveCustomSessionRequested ()),
-				SessionsMgr_,
+				&Mgrs_->SessionsMgr_,
 				SLOT (saveCustomSession ()));
 
-		connect (SessionsMgr_,
+		connect (&Mgrs_->SessionsMgr_,
 				SIGNAL (gotCustomSession (QString)),
-				SessionMenuMgr_,
+				&Mgrs_->SessionMenuMgr_,
 				SLOT (addCustomSession (QString)));
 
 		Proxy_ = proxy;
 
-		for (const auto& name : SessionsMgr_->GetCustomSessions ())
-			SessionMenuMgr_->addCustomSession (name);
+		for (const auto& name : Mgrs_->SessionsMgr_.GetCustomSessions ())
+			Mgrs_->SessionMenuMgr_.addCustomSession (name);
 	}
 
 	void Plugin::SecondInit ()
 	{
 		QTimer::singleShot (5000,
-				SessionsMgr_,
+				&Mgrs_->SessionsMgr_,
 				SLOT (recover ()));
 	}
 
@@ -135,11 +145,11 @@ namespace TabSessManager
 		case ActionsEmbedPlace::ToolsMenu:
 			return
 			{
-				SessionMenuMgr_->GetSessionsAction (),
-				UncloseMgr_->GetMenuAction ()
+				Mgrs_->SessionMenuMgr_.GetSessionsAction (),
+				Mgrs_->UncloseMgr_.GetMenuAction ()
 			};
 		case ActionsEmbedPlace::CommonContextMenu:
-			return { UncloseMgr_->GetMenuAction () };
+			return { Mgrs_->UncloseMgr_.GetMenuAction () };
 		default:
 			return {};
 		}
@@ -158,18 +168,18 @@ namespace TabSessManager
 		const auto tabWidget = rootWM->GetTabWidget (windowId);
 		const auto widget = tabWidget->Widget (index);
 
-		UncloseMgr_->HandleRemoveTab (widget);
-		SessionsMgr_->handleRemoveTab (widget);
+		Mgrs_->UncloseMgr_.HandleRemoveTab (widget);
+		Mgrs_->SessionsMgr_.handleRemoveTab (widget);
 	}
 
 	void Plugin::hookTabAdding (IHookProxy_ptr, QWidget *widget)
 	{
-		TabsPropsMgr_->HandleTabAdding (widget);
+		Mgrs_->TabsPropsMgr_.HandleTabAdding (widget);
 	}
 
 	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
 	{
-		TabsPropsMgr_->HandlePreferredWindowIndex (proxy, widget);
+		Mgrs_->TabsPropsMgr_.HandlePreferredWindowIndex (proxy, widget);
 	}
 }
 }
