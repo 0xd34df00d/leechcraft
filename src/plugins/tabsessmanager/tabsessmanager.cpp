@@ -60,6 +60,27 @@ namespace TabSessManager
 		, SessionsMgr_ { proxy, &TabsPropsMgr_ }
 		, SessionMenuMgr_ { &SessionsMgr_ }
 		{
+			QObject::connect (&SessionMenuMgr_,
+					SIGNAL (loadRequested (QString)),
+					&SessionsMgr_,
+					SLOT (loadCustomSession (QString)));
+			QObject::connect (&SessionMenuMgr_,
+					SIGNAL (addRequested (QString)),
+					&SessionsMgr_,
+					SLOT (addCustomSession (QString)));
+			QObject::connect (&SessionMenuMgr_,
+					SIGNAL (deleteRequested (QString)),
+					&SessionsMgr_,
+					SLOT (deleteCustomSession (QString)));
+			QObject::connect (&SessionMenuMgr_,
+					SIGNAL (saveCustomSessionRequested ()),
+					&SessionsMgr_,
+					SLOT (saveCustomSession ()));
+
+			QObject::connect (&SessionsMgr_,
+					SIGNAL (gotCustomSession (QString)),
+					&SessionMenuMgr_,
+					SLOT (addCustomSession (QString)));
 		}
 	};
 
@@ -68,28 +89,6 @@ namespace TabSessManager
 		Util::InstallTranslator ("tabsessmanager");
 
 		Mgrs_ = std::make_shared<Managers> (proxy);
-
-		connect (&Mgrs_->SessionMenuMgr_,
-				SIGNAL (loadRequested (QString)),
-				&Mgrs_->SessionsMgr_,
-				SLOT (loadCustomSession (QString)));
-		connect (&Mgrs_->SessionMenuMgr_,
-				SIGNAL (addRequested (QString)),
-				&Mgrs_->SessionsMgr_,
-				SLOT (addCustomSession (QString)));
-		connect (&Mgrs_->SessionMenuMgr_,
-				SIGNAL (deleteRequested (QString)),
-				&Mgrs_->SessionsMgr_,
-				SLOT (deleteCustomSession (QString)));
-		connect (&Mgrs_->SessionMenuMgr_,
-				SIGNAL (saveCustomSessionRequested ()),
-				&Mgrs_->SessionsMgr_,
-				SLOT (saveCustomSession ()));
-
-		connect (&Mgrs_->SessionsMgr_,
-				SIGNAL (gotCustomSession (QString)),
-				&Mgrs_->SessionMenuMgr_,
-				SLOT (addCustomSession (QString)));
 
 		Proxy_ = proxy;
 
