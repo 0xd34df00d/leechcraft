@@ -51,7 +51,7 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = 0;
+	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = nullptr;
 
 	void ChatHistoryWidget::SetParentMultiTabs (Plugin *ch)
 	{
