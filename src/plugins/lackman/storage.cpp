@@ -1093,7 +1093,7 @@ namespace LackMan
 		QSqlQuery query (DB_);
 		const QStringList names
 		{
-			"packages"
+			"packages",
 			"packagesizes",
 			"packagearchivers",
 			"deps",
