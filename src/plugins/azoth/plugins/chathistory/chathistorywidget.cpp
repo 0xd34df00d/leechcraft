@@ -65,11 +65,6 @@ namespace ChatHistory
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
-	, Backpages_ (0)
-	, Amount_ (0)
-	, SearchShift_ (0)
-	, SearchResultPosition_ (-1)
-	, ContactSelectedAsGlobSearch_ (false)
 	, Toolbar_ (new QToolBar (tr ("Chat history")))
 	, EntryToFocus_ (entry)
 	{

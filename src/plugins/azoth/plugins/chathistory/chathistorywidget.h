@@ -64,11 +64,11 @@ namespace ChatHistory
 
 		QStandardItemModel *ContactsModel_;
 		QSortFilterProxyModel *SortFilter_;
-		int Backpages_;
-		int Amount_;
-		int SearchShift_;
-		int SearchResultPosition_;
-		bool ContactSelectedAsGlobSearch_;
+		int Backpages_ = 0;
+		int Amount_ = 0;
+		int SearchShift_ = 0;
+		int SearchResultPosition_ = -1;
+		bool ContactSelectedAsGlobSearch_ = false;
 		QString CurrentAccount_;
 		QString CurrentEntry_;
 		QString PreviousSearchText_;
