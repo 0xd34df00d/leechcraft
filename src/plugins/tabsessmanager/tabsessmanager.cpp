@@ -156,6 +156,7 @@ namespace TabSessManager
 
 	void Plugin::HandleShutdownInitiated ()
 	{
+		Mgrs_.reset ();
 	}
 
 	void Plugin::hookTabIsRemoving (IHookProxy_ptr, int index, int windowId)
