@@ -236,7 +236,6 @@ namespace ChatHistory
 		const auto& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
 				CurrentEntry_;
-		EntryToFocus_ = nullptr;
 		for (int i = 0; i < users.size (); ++i)
 		{
 			const auto& user = users.at (i);
@@ -256,6 +255,7 @@ namespace ChatHistory
 
 		if (ourFocus)
 		{
+			EntryToFocus_ = nullptr;
 			ShowLoading ();
 			auto idx = ContactsModel_->indexFromItem (ourFocus);
 			idx = SortFilter_->mapFromSource (idx);
