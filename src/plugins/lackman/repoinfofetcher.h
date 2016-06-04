@@ -35,7 +35,6 @@
 #include <QHash>
 #include <interfaces/idownload.h>
 #include <interfaces/core/icoreproxyfwd.h>
-#include <util/sll/oldcppkludges.h>
 #include "repoinfo.h"
 
 namespace LeechCraft
@@ -93,14 +92,6 @@ namespace LackMan
 				const QList<QString>& newVers,
 				int componentId);
 	private:
-		template<typename PendingF>
-		void FetchImpl (QHash<int, Util::ResultOf_t<PendingF (QString)>>& map,
-				PendingF&& factory,
-				const QUrl& url,
-				QObject *object,
-				const char *finished,
-				const char *removed,
-				const char *error);
 		void FetchPackageInfo (const QUrl& url,
 				const QString& name,
 				const QList<QString>& newVers,

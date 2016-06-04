@@ -46,53 +46,57 @@ namespace LackMan
 	{
 	}
 
-	template<typename PendingF>
-	void RepoInfoFetcher::FetchImpl (QHash<int, Util::ResultOf_t<PendingF (QString)>>& map,
-			PendingF&& factory,
-			const QUrl& url,
-			QObject *object,
-			const char *finished,
-			const char *removed,
-			const char *error)
+	namespace
 	{
-		const auto& location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
-
-		const auto iem = Proxy_->GetEntityManager ();
-
-		const auto& e = Util::MakeEntity (url,
-				location,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
-		const auto& result = iem->DelegateEntity (e);
-		if (!result)
+		template<typename PendingF>
+		void FetchImpl (QHash<int, Util::ResultOf_t<PendingF (QString)>>& map,
+				PendingF&& factory,
+				const QUrl& url,
+				const ICoreProxy_ptr& proxy,
+				QObject *object,
+				const char *finished,
+				const char *removed,
+				const char *error)
 		{
-			iem->HandleEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
-					RepoInfoFetcher::tr ("Could not find plugin to fetch %1.")
-						.arg (url.toString ()),
-					PCritical_));
-			return;
+			const auto& location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
+
+			const auto iem = proxy->GetEntityManager ();
+
+			const auto& e = Util::MakeEntity (url,
+					location,
+					LeechCraft::Internal |
+						LeechCraft::DoNotNotifyUser |
+						LeechCraft::DoNotSaveInHistory |
+						LeechCraft::NotPersistent |
+						LeechCraft::DoNotAnnounceEntity);
+			const auto& result = iem->DelegateEntity (e);
+			if (!result)
+			{
+				iem->HandleEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
+						RepoInfoFetcher::tr ("Could not find plugin to fetch %1.")
+							.arg (url.toString ()),
+						PCritical_));
+				return;
+			}
+
+			map [result.ID_] = factory (location);
+
+			QObject::connect (result.Handler_,
+					SIGNAL (jobFinished (int)),
+					object,
+					SLOT (handleRIFinished (int)),
+					Qt::UniqueConnection);
+			QObject::connect (result.Handler_,
+					SIGNAL (jobRemoved (int)),
+					object,
+					SLOT (handleRIRemoved (int)),
+					Qt::UniqueConnection);
+			QObject::connect (result.Handler_,
+					SIGNAL (jobError (int, IDownload::Error)),
+					object,
+					SLOT (handleRIError (int, IDownload::Error)),
+					Qt::UniqueConnection);
 		}
-
-		map [result.ID_] = factory (location);
-
-		QObject::connect (result.Handler_,
-				SIGNAL (jobFinished (int)),
-				object,
-				SLOT (handleRIFinished (int)),
-				Qt::UniqueConnection);
-		QObject::connect (result.Handler_,
-				SIGNAL (jobRemoved (int)),
-				object,
-				SLOT (handleRIRemoved (int)),
-				Qt::UniqueConnection);
-		QObject::connect (result.Handler_,
-				SIGNAL (jobError (int, IDownload::Error)),
-				object,
-				SLOT (handleRIError (int, IDownload::Error)),
-				Qt::UniqueConnection);
 	}
 
 	void RepoInfoFetcher::FetchFor (QUrl url)
@@ -110,6 +114,7 @@ namespace LackMan
 		FetchImpl (PendingRIs_,
 				[&] (const QString& loc) { return PendingRI { goodUrl, loc }; },
 				url,
+				Proxy_,
 				this,
 				SLOT (handleRIFinished (int)),
 				SLOT (handleRIRemoved (int)),
@@ -124,6 +129,7 @@ namespace LackMan
 		FetchImpl (PendingComponents_,
 				[&] (const QString& loc) { return PendingComponent { url, loc, component, repoId }; },
 				url,
+				Proxy_,
 				this,
 				SLOT (handleComponentFinished (int)),
 				SLOT (handleComponentRemoved (int)),
@@ -163,6 +169,7 @@ namespace LackMan
 		FetchImpl (PendingPackages_,
 				[&] (const QString& loc) { return PendingPackage { packageUrl, baseUrl, loc, packageName, newVersions, componentId }; },
 				packageUrl,
+				Proxy_,
 				this,
 				SLOT (handlePackageFinished (int)),
 				SLOT (handlePackageRemoved (int)),
