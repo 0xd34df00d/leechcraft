@@ -415,9 +415,7 @@ namespace Acetamide
 
 	bool IrcParser::ParseMessage (const QByteArray& message)
 	{
-		QTextCodec *codec = QTextCodec::codecForName (ISH_->
-				GetServerOptions ().ServerEncoding_.toUtf8 ());
-		const auto& msg = codec->toUnicode (message);
+		const auto& msg = GetCodec ()->toUnicode (message);
 
 		IrcMessageOptions_.Command_.clear ();
 		IrcMessageOptions_.Nick_.clear ();
