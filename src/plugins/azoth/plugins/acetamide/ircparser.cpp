@@ -509,7 +509,6 @@ namespace Acetamide
 
 		return encodedList;
 	}
-
-};
-};
-};
+}
+}
+}
