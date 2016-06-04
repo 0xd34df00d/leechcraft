@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
+#include <util/sll/oldcppkludges.h>
 #include "core.h"
 #include "xmlparsers.h"
 
@@ -44,6 +45,55 @@ namespace LackMan
 	{
 	}
 
+	template<typename PendingF>
+	void RepoInfoFetcher::FetchImpl (QHash<int, Util::ResultOf_t<PendingF (QString)>>& map,
+			PendingF&& factory,
+			const QUrl& url,
+			QObject *object,
+			const char *finished,
+			const char *removed,
+			const char *error)
+	{
+		const auto& location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
+
+		const auto& e = Util::MakeEntity (url,
+				location,
+				LeechCraft::Internal |
+					LeechCraft::DoNotNotifyUser |
+					LeechCraft::DoNotSaveInHistory |
+					LeechCraft::NotPersistent |
+					LeechCraft::DoNotAnnounceEntity);
+		int id = -1;
+		QObject *pr = nullptr;
+		emit delegateEntity (e, &id, &pr);
+		if (id == -1)
+		{
+			emit gotEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
+					RepoInfoFetcher::tr ("Could not find plugin to fetch %1.")
+						.arg (url.toString ()),
+					PCritical_));
+			return;
+		}
+
+		map [id] = factory (location);
+
+		QObject::connect (pr,
+				SIGNAL (jobFinished (int)),
+				object,
+				SLOT (handleRIFinished (int)),
+				Qt::UniqueConnection);
+		QObject::connect (pr,
+				SIGNAL (jobRemoved (int)),
+				object,
+				SLOT (handleRIRemoved (int)),
+				Qt::UniqueConnection);
+		QObject::connect (pr,
+				SIGNAL (jobError (int, IDownload::Error)),
+				object,
+				SLOT (handleRIError (int, IDownload::Error)),
+				Qt::UniqueConnection);
+	}
+
 	void RepoInfoFetcher::FetchFor (QUrl url)
 	{
 		QString path = url.path ();
@@ -53,53 +103,16 @@ namespace LackMan
 			url.setPath (path);
 		}
 
-		QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
-
 		QUrl goodUrl = url;
 		goodUrl.setPath (goodUrl.path ().remove ("/Repo.xml.gz"));
 
-		PendingRI pri =
-		{
-			goodUrl,
-			location
-		};
-
-		Entity e = Util::MakeEntity (url,
-				location,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
-		{
-			emit gotEntity (Util::MakeNotification (tr ("Error fetching repository"),
-					tr ("Could not find plugin to fetch repository information for %1.")
-						.arg (url.toString ()),
-					PCritical_));
-			return;
-		}
-
-		PendingRIs_ [id] = pri;
-
-		connect (pr,
-				SIGNAL (jobFinished (int)),
+		FetchImpl (PendingRIs_,
+				[&] (const QString& loc) { return PendingRI { goodUrl, loc }; },
+				url,
 				this,
 				SLOT (handleRIFinished (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobRemoved (int)),
-				this,
 				SLOT (handleRIRemoved (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobError (int, IDownload::Error)),
-				this,
-				SLOT (handleRIError (int, IDownload::Error)),
-				Qt::UniqueConnection);
+				SLOT (handleRIError (int, IDownload::Error)));
 	}
 
 	void RepoInfoFetcher::FetchComponent (QUrl url, int repoId, const QString& component)
@@ -107,52 +120,13 @@ namespace LackMan
 		if (!url.path ().endsWith ("/Packages.xml.gz"))
 			url.setPath (url.path () + "/Packages.xml.gz");
 
-		QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
-
-		PendingComponent pc =
-		{
-			url,
-			location,
-			component,
-			repoId
-		};
-
-		Entity e = Util::MakeEntity (url,
-				location,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
-		{
-			emit gotEntity (Util::MakeNotification (tr ("Error fetching component"),
-					tr ("Could not find plugin to fetch component information at %1.")
-						.arg (url.toString ()),
-					PCritical_));
-			return;
-		}
-
-		PendingComponents_ [id] = pc;
-
-		connect (pr,
-				SIGNAL (jobFinished (int)),
+		FetchImpl (PendingComponents_,
+				[&] (const QString& loc) { return PendingComponent { url, loc, component, repoId }; },
+				url,
 				this,
 				SLOT (handleComponentFinished (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobRemoved (int)),
-				this,
 				SLOT (handleComponentRemoved (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobError (int, IDownload::Error)),
-				this,
-				SLOT (handleComponentError (int, IDownload::Error)),
-				Qt::UniqueConnection);
+				SLOT (handleComponentError (int, IDownload::Error)));
 	}
 
 	void RepoInfoFetcher::ScheduleFetchPackageInfo (const QUrl& url,
@@ -181,57 +155,17 @@ namespace LackMan
 			const QList<QString>& newVersions,
 			int componentId)
 	{
-		QString location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
-		QUrl packageUrl = baseUrl;
+		auto packageUrl = baseUrl;
 		packageUrl.setPath (packageUrl.path () +
 				Core::Instance ().NormalizePackageName (packageName) + ".xml.gz");
 
-		PendingPackage pp =
-		{
-			packageUrl,
-			baseUrl,
-			location,
-			packageName,
-			newVersions,
-			componentId
-		};
-
-		Entity e = Util::MakeEntity (packageUrl,
-				location,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
-		{
-			emit gotEntity (Util::MakeNotification (tr ("Error fetching package information"),
-					tr ("Could not find plugin to fetch package information at %1.")
-						.arg (packageUrl.toString ()),
-					PCritical_));
-			return;
-		}
-
-		PendingPackages_ [id] = pp;
-
-		connect (pr,
-				SIGNAL (jobFinished (int)),
+		FetchImpl (PendingPackages_,
+				[&] (const QString& loc) { return PendingPackage { packageUrl, baseUrl, loc, packageName, newVersions, componentId }; },
+				packageUrl,
 				this,
 				SLOT (handlePackageFinished (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobRemoved (int)),
-				this,
 				SLOT (handlePackageRemoved (int)),
-				Qt::UniqueConnection);
-		connect (pr,
-				SIGNAL (jobError (int, IDownload::Error)),
-				this,
-				SLOT (handlePackageError (int, IDownload::Error)),
-				Qt::UniqueConnection);
+				SLOT (handlePackageError (int, IDownload::Error)));
 	}
 
 	void RepoInfoFetcher::rotatePackageFetchQueue ()
