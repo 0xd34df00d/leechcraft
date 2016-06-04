@@ -32,6 +32,7 @@
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
 #include <util/sll/oldcppkludges.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlparsers.h"
 
@@ -56,6 +57,8 @@ namespace LackMan
 	{
 		const auto& location = Util::GetTemporaryName ("lackman_XXXXXX.gz");
 
+		const auto iem = Proxy_->GetEntityManager ();
+
 		const auto& e = Util::MakeEntity (url,
 				location,
 				LeechCraft::Internal |
@@ -63,31 +66,29 @@ namespace LackMan
 					LeechCraft::DoNotSaveInHistory |
 					LeechCraft::NotPersistent |
 					LeechCraft::DoNotAnnounceEntity);
-		int id = -1;
-		QObject *pr = nullptr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto& result = iem->DelegateEntity (e);
+		if (!result)
 		{
-			emit gotEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
+			iem->HandleEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
 					RepoInfoFetcher::tr ("Could not find plugin to fetch %1.")
 						.arg (url.toString ()),
 					PCritical_));
 			return;
 		}
 
-		map [id] = factory (location);
+		map [result.ID_] = factory (location);
 
-		QObject::connect (pr,
+		QObject::connect (result.Handler_,
 				SIGNAL (jobFinished (int)),
 				object,
 				SLOT (handleRIFinished (int)),
 				Qt::UniqueConnection);
-		QObject::connect (pr,
+		QObject::connect (result.Handler_,
 				SIGNAL (jobRemoved (int)),
 				object,
 				SLOT (handleRIRemoved (int)),
 				Qt::UniqueConnection);
-		QObject::connect (pr,
+		QObject::connect (result.Handler_,
 				SIGNAL (jobError (int, IDownload::Error)),
 				object,
 				SLOT (handleRIError (int, IDownload::Error)),
