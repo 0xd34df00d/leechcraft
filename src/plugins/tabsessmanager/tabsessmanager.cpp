@@ -139,6 +139,9 @@ namespace TabSessManager
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
 	{
+		if (!Mgrs_)
+			return {};
+
 		switch (place)
 		{
 		case ActionsEmbedPlace::ToolsMenu:
@@ -174,11 +177,17 @@ namespace TabSessManager
 
 	void Plugin::hookTabAdding (IHookProxy_ptr, QWidget *widget)
 	{
+		if (!Mgrs_)
+			return;
+
 		Mgrs_->TabsPropsMgr_.HandleTabAdding (widget);
 	}
 
 	void Plugin::hookGetPreferredWindowIndex (IHookProxy_ptr proxy, const QWidget *widget) const
 	{
+		if (!Mgrs_)
+			return;
+
 		Mgrs_->TabsPropsMgr_.HandlePreferredWindowIndex (proxy, widget);
 	}
 }
