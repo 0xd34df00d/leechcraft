@@ -55,7 +55,7 @@ namespace LackMan
 		Q_OBJECT
 
 		ICoreProxy_ptr Proxy_;
-		RepoInfoFetcher *RepoInfoFetcher_;
+		RepoInfoFetcher *RepoInfoFetcher_ = nullptr;
 		ExternalResourceManager *ExternalResourceManager_;
 		Storage *Storage_;
 		PackagesModel *PackagesModel_;

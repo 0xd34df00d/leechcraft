@@ -57,8 +57,7 @@ namespace LackMan
 	QMap<Dependency::Relation, Comparator_t> Relation2comparator;
 
 	Core::Core ()
-	: RepoInfoFetcher_ (new RepoInfoFetcher (this))
-	, ExternalResourceManager_ (new ExternalResourceManager (this))
+	: ExternalResourceManager_ (new ExternalResourceManager (this))
 	, Storage_ (new Storage (this))
 	, PackagesModel_ (new PackagesModel (this))
 	, PendingManager_ (new PendingManager (this))
@@ -91,30 +90,6 @@ namespace LackMan
 				this,
 				SIGNAL (delegateEntity (const LeechCraft::Entity&,
 						int*, QObject**)));
-		connect (RepoInfoFetcher_,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (RepoInfoFetcher_,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (RepoInfoFetcher_,
-				SIGNAL (infoFetched (const RepoInfo&)),
-				this,
-				SLOT (handleInfoFetched (const RepoInfo&)));
-		connect (RepoInfoFetcher_,
-				SIGNAL (componentFetched (const PackageShortInfoList&,
-						const QString&, int)),
-				this,
-				SLOT (handleComponentFetched (const PackageShortInfoList&,
-						const QString&, int)));
-		connect (RepoInfoFetcher_,
-				SIGNAL (packageFetched (const PackageInfo&, int)),
-				this,
-				SLOT (handlePackageFetched (const PackageInfo&, int)));
 		connect (PackageProcessor_,
 				SIGNAL (packageInstallError (int, const QString&)),
 				this,
@@ -174,6 +149,32 @@ namespace LackMan
 	void Core::SetProxy (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		RepoInfoFetcher_ = new RepoInfoFetcher (proxy, this);
+		connect (RepoInfoFetcher_,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)),
+				this,
+				SIGNAL (delegateEntity (const LeechCraft::Entity&,
+						int*, QObject**)));
+		connect (RepoInfoFetcher_,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				this,
+				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+		connect (RepoInfoFetcher_,
+				SIGNAL (infoFetched (const RepoInfo&)),
+				this,
+				SLOT (handleInfoFetched (const RepoInfo&)));
+		connect (RepoInfoFetcher_,
+				SIGNAL (componentFetched (const PackageShortInfoList&,
+						const QString&, int)),
+				this,
+				SLOT (handleComponentFetched (const PackageShortInfoList&,
+						const QString&, int)));
+		connect (RepoInfoFetcher_,
+				SIGNAL (packageFetched (const PackageInfo&, int)),
+				this,
+				SLOT (handlePackageFetched (const PackageInfo&, int)));
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const

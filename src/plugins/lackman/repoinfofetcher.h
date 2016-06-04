@@ -34,6 +34,7 @@
 #include <QProcess>
 #include <QHash>
 #include <interfaces/idownload.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "repoinfo.h"
 
 namespace LeechCraft
@@ -43,6 +44,8 @@ namespace LackMan
 	class RepoInfoFetcher : public QObject
 	{
 		Q_OBJECT
+
+		const ICoreProxy_ptr Proxy_;
 
 		struct PendingRI
 		{
@@ -80,7 +83,7 @@ namespace LackMan
 		};
 		QHash<int, PendingPackage> PendingPackages_;
 	public:
-		RepoInfoFetcher (QObject*);
+		RepoInfoFetcher (const ICoreProxy_ptr& proxy, QObject*);
 
 		void FetchFor (QUrl);
 		void FetchComponent (QUrl, int, const QString& component);

@@ -38,8 +38,9 @@ namespace LeechCraft
 {
 namespace LackMan
 {
-	RepoInfoFetcher::RepoInfoFetcher (QObject *parent)
-	: QObject (parent)
+	RepoInfoFetcher::RepoInfoFetcher (const ICoreProxy_ptr& proxy, QObject *parent)
+	: QObject { parent }
+	, Proxy_ { proxy }
 	{
 	}
 
