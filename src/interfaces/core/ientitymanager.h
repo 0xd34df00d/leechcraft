@@ -71,6 +71,11 @@ public:
 		, ID_ { id }
 		{
 		}
+
+		operator bool () const
+		{
+			return Handler_;
+		}
 	};
 
 	virtual ~IEntityManager () {}
