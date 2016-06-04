@@ -33,6 +33,7 @@
 #include <boost/spirit/include/classic_loops.hpp>
 #include <boost/spirit/include/classic_push_back_actor.hpp>
 #include <QTextCodec>
+#include <util/sll/prelude.h>
 #include "ircaccount.h"
 #include "ircserverhandler.h"
 
@@ -501,13 +502,8 @@ namespace Acetamide
 	{
 		QTextCodec *codec = QTextCodec::codecForName (ISH_->
 				GetServerOptions ().ServerEncoding_.toUtf8 ());
-		QStringList encodedList;
-		Q_FOREACH (const QString& str, list)
-		{
-			encodedList << codec->fromUnicode (str);
-		}
-
-		return encodedList;
+		return Util::Map (list,
+				[codec] (const QString& str) { return QString { codec->fromUnicode (str) }; });
 	}
 }
 }
