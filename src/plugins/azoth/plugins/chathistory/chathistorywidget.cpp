@@ -500,6 +500,12 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::handleContactSelected (const QModelIndex& index)
 	{
+		if (!index.isValid ())
+		{
+			Ui_.HistView_->clear ();
+			return;
+		}
+
 		CurrentAccount_ = Ui_.AccountBox_->itemData (Ui_.AccountBox_->currentIndex ()).toString ();
 		CurrentEntry_ = index.data (MRIDRole).toString ();
 		if (!ContactSelectedAsGlobSearch_)
