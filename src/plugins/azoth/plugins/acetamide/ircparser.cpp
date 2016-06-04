@@ -498,22 +498,26 @@ namespace Acetamide
 		return IrcMessageOptions_;
 	}
 
-	QStringList IrcParser::EncodingList (const QStringList& list)
+	QTextCodec* IrcParser::GetCodec ()
 	{
 		const auto& encoding = ISH_->GetServerOptions ().ServerEncoding_;
 
-		auto codec = encoding == "System" ?
+		const auto codec = encoding == "System" ?
 				QTextCodec::codecForLocale () :
 				QTextCodec::codecForName (encoding.toLatin1 ());
-		if (!codec)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "unknown encoding"
-					<< encoding
-					<< ", will fall back to the system encoding";
-			codec = QTextCodec::codecForLocale ();
-		}
+		if (codec)
+			return codec;
 
+		qWarning () << Q_FUNC_INFO
+				<< "unknown encoding"
+				<< encoding
+				<< ", will fall back to the system encoding";
+		return QTextCodec::codecForLocale ();
+	}
+
+	QStringList IrcParser::EncodingList (const QStringList& list)
+	{
+		const auto codec = GetCodec ();
 		return Util::Map (list,
 				[codec] (const QString& str) { return QString { codec->fromUnicode (str) }; });
 	}

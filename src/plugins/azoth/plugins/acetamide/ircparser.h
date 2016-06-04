@@ -104,6 +104,7 @@ namespace Acetamide
 		bool ParseMessage (const QByteArray& ba);
 		IrcMessageOptions GetIrcMessageOptions () const;
 	private:
+		QTextCodec* GetCodec ();
 		QStringList EncodingList (const QStringList&);
 	};
 }
