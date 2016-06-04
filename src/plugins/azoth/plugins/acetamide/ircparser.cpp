@@ -500,9 +500,11 @@ namespace Acetamide
 
 	QStringList IrcParser::EncodingList (const QStringList& list)
 	{
-		const auto& encoding = ISH_->GetServerOptions ().ServerEncoding_.toUtf8 ();
+		const auto& encoding = ISH_->GetServerOptions ().ServerEncoding_;
 
-		auto codec = QTextCodec::codecForName (encoding);
+		auto codec = encoding == "System" ?
+				QTextCodec::codecForLocale () :
+				QTextCodec::codecForName (encoding.toLatin1 ());
 		if (!codec)
 		{
 			qWarning () << Q_FUNC_INFO

@@ -136,7 +136,10 @@ namespace Acetamide
 		if (LastCodec_ && LastCodec_->name () == encoding)
 			return;
 
-		if (const auto newCodec = QTextCodec::codecForName (encoding.toLatin1 ()))
+		const auto newCodec = encoding == "System" ?
+				QTextCodec::codecForLocale () :
+				QTextCodec::codecForName (encoding.toLatin1 ());
+		if (newCodec)
 		{
 			LastCodec_ = newCodec;
 			return;
