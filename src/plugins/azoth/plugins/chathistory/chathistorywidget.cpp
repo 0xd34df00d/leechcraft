@@ -233,10 +233,10 @@ namespace ChatHistory
 		Ui_.HistView_->clear ();
 
 		QStandardItem *ourFocus = nullptr;
-		const QString& focusId = EntryToFocus_ ?
+		const auto& focusId = EntryToFocus_ ?
 				EntryToFocus_->GetEntryID () :
 				CurrentEntry_;
-		EntryToFocus_ = 0;
+		EntryToFocus_ = nullptr;
 		for (int i = 0; i < users.size (); ++i)
 		{
 			const auto& user = users.at (i);
