@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
+#pragma once
 
 #include <QObject>
 #include "core.h"
@@ -40,7 +39,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerHandler;
 
 	class IrcParser : public QObject
@@ -108,7 +106,6 @@ namespace Acetamide
 	private:
 		QStringList EncodingList (const QStringList&);
 	};
-};
-};
-};
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_IRCPARSER_H
+}
+}
+}
