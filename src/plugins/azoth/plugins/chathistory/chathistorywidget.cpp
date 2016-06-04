@@ -90,6 +90,7 @@ namespace ChatHistory
 
 		SortFilter_->setDynamicSortFilter (true);
 		SortFilter_->setSortCaseSensitivity (Qt::CaseInsensitive);
+		SortFilter_->setFilterCaseSensitivity (Qt::CaseInsensitive);
 		SortFilter_->setSourceModel (ContactsModel_);
 		SortFilter_->sort (0);
 		Ui_.Contacts_->setModel (SortFilter_);
