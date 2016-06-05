@@ -114,6 +114,7 @@ namespace Eleeminator
 
 	namespace
 	{
+#ifdef Q_OS_MAC
 		void FixCommandControl (QKeyEvent *ev)
 		{
 			auto mods = ev->modifiers ();
@@ -158,6 +159,7 @@ namespace Eleeminator
 					static_cast<ushort> (ev->count ())
 				};
 		}
+#endif
 	}
 
 	TermTab::TermTab (const ICoreProxy_ptr& proxy, Util::ShortcutManager *scMgr,
