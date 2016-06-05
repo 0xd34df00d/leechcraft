@@ -84,7 +84,7 @@ namespace Util
 		bool called = false;
 		const auto& result = Do (boost::optional<int> { 2 },
 				[] (int a) -> boost::optional<int> { return a * 2; },
-				[] (int a) -> boost::optional<int> { return {}; },
+				[] (int) -> boost::optional<int> { return {}; },
 				[&called] (int a) -> boost::optional<int> { called = true; return a * 3; });
 
 		QCOMPARE (result, boost::optional<int> {});
