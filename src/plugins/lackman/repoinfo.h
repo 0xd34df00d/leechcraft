@@ -45,7 +45,7 @@ namespace LackMan
 		QString Email_;
 	};
 
-	typedef QList<MaintainerInfo> MaintainerInfoList;
+	using MaintainerInfoList = QList<MaintainerInfo>;
 
 	class RepoInfo
 	{
@@ -83,7 +83,7 @@ namespace LackMan
 		QMap<QString, QString> VersionArchivers_;
 	};
 
-	typedef QList<PackageShortInfo> PackageShortInfoList;
+	using PackageShortInfoList = QList<PackageShortInfo>;
 
 	struct Dependency
 	{
@@ -109,7 +109,7 @@ namespace LackMan
 		QString Version_;
 	};
 
-	typedef QList<Dependency> DependencyList;
+	using DependencyList = QList<Dependency>;
 
 	bool operator== (const Dependency&, const Dependency&);
 
@@ -202,7 +202,7 @@ namespace LackMan
 
 	bool operator== (const ListPackageInfo&, const ListPackageInfo&);
 
-	typedef std::function<bool (const QString&, const QString&)> Comparator_t;
+	using Comparator_t = std::function<bool (const QString&, const QString&)>;
 
 	extern QMap<Dependency::Relation, Comparator_t> Relation2comparator;
 
@@ -225,7 +225,7 @@ namespace LackMan
 		} Source_;
 	};
 
-	typedef QList<InstalledDependencyInfo> InstalledDependencyInfoList;
+	using InstalledDependencyInfoList = QList<InstalledDependencyInfo>;
 
 	uint qHash (const Dependency&);
 }
