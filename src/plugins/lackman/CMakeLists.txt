@@ -29,6 +29,7 @@ set (SRCS
 	delegatebuttongroup.cpp
 	stringfiltermodel.cpp
 	updatesnotificationmanager.cpp
+	lackmanutil.cpp
 	)
 set (RESOURCES
 	lackmanresources.qrc

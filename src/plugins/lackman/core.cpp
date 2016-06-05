@@ -49,6 +49,7 @@
 #include "versioncomparator.h"
 #include "xmlsettingsmanager.h"
 #include "updatesnotificationmanager.h"
+#include "lackmanutil.h"
 
 namespace LeechCraft
 {
@@ -313,7 +314,7 @@ namespace LackMan
 		}
 
 		auto pathAddition = QString ("dists/%1/all/");
-		const auto& normalized = NormalizePackageName (info.Name_);
+		const auto& normalized = LackManUtil::NormalizePackageName (info.Name_);
 		const auto& version = info.Versions_.at (0);
 		pathAddition += QString ("%1/%1-%2.tar.%3")
 				.arg (normalized)
@@ -520,14 +521,6 @@ namespace LackMan
 		}
 	}
 
-	QString Core::NormalizePackageName (const QString& packageName) const
-	{
-		QString normalized = packageName.simplified ();
-		normalized.remove (' ');
-		normalized.remove ('\t');
-		return normalized;
-	}
-
 	QStringList Core::GetAllTags () const
 	{
 		return Storage_->GetAllTags ();
@@ -722,7 +715,7 @@ namespace LackMan
 		for (const QString& packageName : PackageName2NewVersions_.keys ())
 		{
 			auto packageUrl = repoUrl;
-			const QString& normalized = NormalizePackageName (packageName);
+			const auto& normalized = LackManUtil::NormalizePackageName (packageName);
 			packageUrl.setPath (packageUrl.path () +
 					"/dists/" + component + "/all" +
 					'/' + normalized +

@@ -99,8 +99,6 @@ namespace LackMan
 		void AddRepo (const QUrl&);
 		void UpdateRepo (const QUrl&, const QStringList&);
 
-		QString NormalizePackageName (const QString&) const;
-
 		QStringList GetAllTags () const;
 	private:
 		InstalledDependencyInfoList GetSystemInstalledPackages () const;

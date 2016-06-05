@@ -35,6 +35,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlparsers.h"
+#include "lackmanutil.h"
 
 namespace LeechCraft
 {
@@ -164,7 +165,7 @@ namespace LackMan
 	{
 		auto packageUrl = baseUrl;
 		packageUrl.setPath (packageUrl.path () +
-				Core::Instance ().NormalizePackageName (packageName) + ".xml.gz");
+				LackManUtil::NormalizePackageName (packageName) + ".xml.gz");
 
 		FetchImpl (PendingPackages_,
 				[&] (const QString& loc) { return PendingPackage { packageUrl, baseUrl, loc, packageName, newVersions, componentId }; },
