@@ -231,7 +231,7 @@ namespace LackMan
 
 		QFile::remove (pri.Location_);
 
-		emit gotEntity (Util::MakeNotification (tr ("Error fetching repository"),
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching repository"),
 				tr ("Error downloading file from %1.")
 					.arg (pri.URL_.toString ()),
 				PCritical_));
@@ -281,7 +281,7 @@ namespace LackMan
 
 		QFile::remove (pc.Location_);
 
-		emit gotEntity (Util::MakeNotification (tr ("Error fetching component"),
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching component"),
 				tr ("Error downloading file from %1.")
 					.arg (pc.URL_.toString ()),
 				PCritical_));
@@ -330,7 +330,7 @@ namespace LackMan
 
 		QFile::remove (pp.Location_);
 
-		emit gotEntity (Util::MakeNotification (tr ("Error fetching package"),
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Error fetching package"),
 				tr ("Error fetching package from %1.")
 					.arg (pp.URL_.toString ()),
 				PCritical_));
@@ -343,7 +343,7 @@ namespace LackMan
 
 		if (exitCode)
 		{
-			emit gotEntity (Util::MakeNotification (tr ("Repository unpack error"),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Repository unpack error"),
 					tr ("Unable to unpack the repository file. gunzip error: %1. "
 						"Problematic file is at %2.")
 						.arg (exitCode)
@@ -364,7 +364,7 @@ namespace LackMan
 		{
 			qWarning () << Q_FUNC_INFO
 					<< error;
-			emit gotEntity (Util::MakeNotification (tr ("Repository parse error"),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Repository parse error"),
 					tr ("Unable to parse repository description: %1.")
 						.arg (error),
 					PCritical_));
@@ -381,7 +381,7 @@ namespace LackMan
 
 		if (exitCode)
 		{
-			emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
 					tr ("Unable to unpack the component file. gunzip error: %1. "
 						"Problematic file is at %2.")
 						.arg (exitCode)
@@ -402,7 +402,7 @@ namespace LackMan
 		{
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
-			emit gotEntity (Util::MakeNotification (tr ("Component parse error"),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component parse error"),
 					tr ("Unable to parse component %1 description file. "
 						"More information is available in logs.")
 						.arg (sender ()->property ("Component").toString ()),
@@ -425,7 +425,7 @@ namespace LackMan
 
 		if (exitCode)
 		{
-			emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
 					tr ("Unable to unpack the component file. gunzip error: %1. "
 						"Problematic file is at %2.")
 						.arg (exitCode)
@@ -446,7 +446,7 @@ namespace LackMan
 		{
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
-			emit gotEntity (Util::MakeNotification (tr ("Package parse error"),
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Package parse error"),
 					tr ("Unable to parse package description file. "
 						"More information is available in logs."),
 					PCritical_));
@@ -467,7 +467,7 @@ namespace LackMan
 				<< "with"
 				<< error
 				<< qobject_cast<QProcess*> (sender ())->readAllStandardError ();
-		emit gotEntity (Util::MakeNotification (tr ("Component unpack error"),
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification (tr ("Component unpack error"),
 					tr ("Unable to unpack file. Exit code: %1. "
 						"Problematic file is at %2.")
 						.arg (error)
