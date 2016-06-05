@@ -152,16 +152,6 @@ namespace LackMan
 
 		RepoInfoFetcher_ = new RepoInfoFetcher (proxy, this);
 		connect (RepoInfoFetcher_,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
-		connect (RepoInfoFetcher_,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (RepoInfoFetcher_,
 				SIGNAL (infoFetched (const RepoInfo&)),
 				this,
 				SLOT (handleInfoFetched (const RepoInfo&)));

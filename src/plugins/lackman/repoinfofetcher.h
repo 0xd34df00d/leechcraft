@@ -114,9 +114,6 @@ namespace LackMan
 		void handlePackageUnarchFinished (int, QProcess::ExitStatus);
 		void handleUnarchError (QProcess::ProcessError);
 	signals:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
-
 		void infoFetched (const RepoInfo&);
 		void componentFetched (const PackageShortInfoList& packages,
 				const QString& component, int repoId);
