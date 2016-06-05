@@ -84,17 +84,17 @@ namespace LackMan
 			QObject::connect (result.Handler_,
 					SIGNAL (jobFinished (int)),
 					object,
-					SLOT (handleRIFinished (int)),
+					finished,
 					Qt::UniqueConnection);
 			QObject::connect (result.Handler_,
 					SIGNAL (jobRemoved (int)),
 					object,
-					SLOT (handleRIRemoved (int)),
+					removed,
 					Qt::UniqueConnection);
 			QObject::connect (result.Handler_,
 					SIGNAL (jobError (int, IDownload::Error)),
 					object,
-					SLOT (handleRIError (int, IDownload::Error)),
+					error,
 					Qt::UniqueConnection);
 		}
 	}
