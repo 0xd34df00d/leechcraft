@@ -526,81 +526,6 @@ namespace LackMan
 		return Storage_->GetAllTags ();
 	}
 
-	InstalledDependencyInfoList Core::GetSystemInstalledPackages () const
-	{
-		InstalledDependencyInfoList result;
-
-		QFileInfoList infoEntries;
-#if defined(Q_OS_WIN32)
-		infoEntries += QDir (QApplication::applicationDirPath () + "/share/installed")
-				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-#elif defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
-		infoEntries += QDir (QCoreApplication::applicationDirPath () + "/../installed")
-				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-#else
-		infoEntries += QDir ("/usr/share/leechcraft/installed")
-				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-		infoEntries += QDir ("/usr/local/share/leechcraft/installed")
-				.entryInfoList (QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files);
-#endif
-
-		QStringList entries;
-
-		Q_FOREACH (const QFileInfo& info, infoEntries)
-		{
-			QString path = info.absoluteFilePath ();
-			if (info.isFile ())
-				entries << path;
-			else if (info.isDir ())
-				Q_FOREACH (const QFileInfo& subInfo,
-						QDir (path).entryInfoList (QDir::Files))
-					entries << subInfo.absoluteFilePath ();
-		}
-
-		QString nameStart ("Name: ");
-		QString versionStart ("Version: ");
-
-		Q_FOREACH (const QString& entry, entries)
-		{
-			QFile file (entry);
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open"
-						<< entry
-						<< "for reading, skipping it.";
-				continue;
-			}
-
-			InstalledDependencyInfo info;
-			info.Source_ = InstalledDependencyInfo::SSystem;
-
-			QStringList lines = QString (file.readAll ()).split ('\n', QString::SkipEmptyParts);
-			Q_FOREACH (const QString& untrimmed, lines)
-			{
-				QString string = untrimmed.trimmed ();
-				if (string.startsWith (nameStart))
-					info.Dep_.Name_ = string.mid (nameStart.length ());
-				else if (string.startsWith (versionStart))
-					info.Dep_.Version_ = string.mid (versionStart.length ());
-			}
-
-			if (info.Dep_.Version_.isEmpty ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "dependency version for"
-						<< info.Dep_.Name_
-						<< "not filled, defaulting to"
-						<< Proxy_->GetVersion ();
-				info.Dep_.Version_ = Proxy_->GetVersion ();
-			}
-
-			result << info;
-		}
-
-		return result;
-	}
-
 	InstalledDependencyInfoList Core::GetLackManInstalledPackages () const
 	{
 		return Storage_->GetInstalledPackages ();
@@ -608,7 +533,8 @@ namespace LackMan
 
 	InstalledDependencyInfoList Core::GetAllInstalledPackages () const
 	{
-		return GetSystemInstalledPackages () + GetLackManInstalledPackages ();
+		return LackManUtil::GetSystemInstalledPackages (Proxy_->GetVersion ()) +
+				GetLackManInstalledPackages ();
 	}
 
 	void Core::PopulatePluginsModel ()

@@ -101,7 +101,6 @@ namespace LackMan
 
 		QStringList GetAllTags () const;
 	private:
-		InstalledDependencyInfoList GetSystemInstalledPackages () const;
 		InstalledDependencyInfoList GetLackManInstalledPackages () const;
 		InstalledDependencyInfoList GetAllInstalledPackages () const;
 		void PopulatePluginsModel ();

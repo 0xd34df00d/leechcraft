@@ -29,15 +29,23 @@
 
 #pragma once
 
+template<typename>
+class QList;
+
 class QString;
 
 namespace LeechCraft
 {
 namespace LackMan
 {
+struct InstalledDependencyInfo;
+using InstalledDependencyInfoList = QList<InstalledDependencyInfo>;
+
 namespace LackManUtil
 {
 	QString NormalizePackageName (const QString&);
+
+	InstalledDependencyInfoList GetSystemInstalledPackages (const QString& defVersion);
 }
 }
 }
