@@ -135,7 +135,7 @@ namespace Util
 			qDebug () << Q_FUNC_INFO
 					<< "db size:" << filesize
 					<< "free space:" << available;
-			if (available >= static_cast<qint64> (filesize))
+			if (available >= static_cast<quint64> (filesize))
 				break;
 
 			if (QMessageBox::question (nullptr,
