@@ -62,7 +62,8 @@ namespace Util
 
 	ConsistencyChecker::ConsistencyChecker (const QString& dbPath,
 			const QString& dialogContext, QObject *parent)
-	: DBPath_ { dbPath }
+	: QObject { parent }
+	, DBPath_ { dbPath }
 	, DialogContext_ { dialogContext }
 	{
 	}
