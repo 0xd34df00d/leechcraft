@@ -68,23 +68,22 @@ namespace LackManUtil
 
 		QStringList entries;
 
-		Q_FOREACH (const QFileInfo& info, infoEntries)
+		for (const auto& info : infoEntries)
 		{
-			QString path = info.absoluteFilePath ();
+			const auto& path = info.absoluteFilePath ();
 			if (info.isFile ())
 				entries << path;
 			else if (info.isDir ())
-				Q_FOREACH (const QFileInfo& subInfo,
-						QDir (path).entryInfoList (QDir::Files))
+				for (const auto& subInfo : QDir { path }.entryInfoList (QDir::Files))
 					entries << subInfo.absoluteFilePath ();
 		}
 
 		QString nameStart ("Name: ");
 		QString versionStart ("Version: ");
 
-		Q_FOREACH (const QString& entry, entries)
+		for (const auto& entry : entries)
 		{
-			QFile file (entry);
+			QFile file { entry };
 			if (!file.open (QIODevice::ReadOnly))
 			{
 				qWarning () << Q_FUNC_INFO
@@ -97,10 +96,10 @@ namespace LackManUtil
 			InstalledDependencyInfo info;
 			info.Source_ = InstalledDependencyInfo::SSystem;
 
-			QStringList lines = QString (file.readAll ()).split ('\n', QString::SkipEmptyParts);
-			Q_FOREACH (const QString& untrimmed, lines)
+			const auto& lines = QString { file.readAll () }.split ('\n', QString::SkipEmptyParts);
+			for (const auto& untrimmed : lines)
 			{
-				QString string = untrimmed.trimmed ();
+				const auto& string = untrimmed.trimmed ();
 				if (string.startsWith (nameStart))
 					info.Dep_.Name_ = string.mid (nameStart.length ());
 				else if (string.startsWith (versionStart))
@@ -122,7 +121,6 @@ namespace LackManUtil
 
 		return result;
 	}
-
 }
 }
 }
