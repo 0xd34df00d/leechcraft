@@ -75,7 +75,7 @@ namespace LackMan
 			{
 				iem->HandleEntity (Util::MakeNotification (RepoInfoFetcher::tr ("Error fetching repository"),
 						RepoInfoFetcher::tr ("Could not find any plugins to fetch %1.")
-							.arg (url.toString ()),
+							.arg ("<em>" + url.toString () + "</em>"),
 						PCritical_));
 				return;
 			}
