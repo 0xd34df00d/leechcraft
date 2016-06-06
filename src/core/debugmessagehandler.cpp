@@ -34,7 +34,7 @@
 #include <iomanip>
 #include <cstdlib>
 
-#ifdef _GNU_SOURCE
+#if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 #include <execinfo.h>
 #endif
 
@@ -143,7 +143,7 @@ namespace
 
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
 	{
-#ifdef _GNU_SOURCE
+#if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 		const int maxSize = 100;
 		void *array [maxSize];
 		size_t size = backtrace (array, maxSize);
@@ -188,9 +188,7 @@ namespace DebugHandler
 				<< message
 				<< std::endl;
 
-#ifdef _GNU_SOURCE
 		if (type != QtDebugMsg && (flags & DWFBacktrace))
 			PrintBacktrace (ostr);
-#endif
 	}
 }
