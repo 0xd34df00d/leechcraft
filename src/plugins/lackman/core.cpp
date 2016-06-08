@@ -36,6 +36,7 @@
 #include <QTimer>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <xmlsettingsdialog/datasourceroles.h>
 #include <interfaces/core/icoreproxy.h>
@@ -876,9 +877,7 @@ namespace LackMan
 
 	void Core::removeRequested (const QString&, const QModelIndexList& list)
 	{
-		QList<int> rows;
-		Q_FOREACH (const QModelIndex& index, list)
-			rows << index.row ();
+		auto rows = Util::Map (list, &QModelIndex::row);
 
 		std::sort (rows.begin (), rows.end ());
 		std::reverse (rows.begin (), rows.end ());
