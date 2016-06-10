@@ -104,7 +104,7 @@ namespace CpuLoad
 			return;
 		}
 
-		if (Loads_.size () == CpuCount_)
+		if (static_cast<uint> (Loads_.size ()) == CpuCount_)
 			std::swap (PrevLoads_, Loads_);
 
 		Loads_.resize (CpuCount_);

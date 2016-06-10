@@ -273,6 +273,10 @@ void TabManager::changeTabName (QWidget *contents, const QString& name)
 	int tabNumber = FindTabForWidget (contents);
 	if (tabNumber == -1)
 		return;
+
+	if (TabWidget_->TabText (tabNumber) == name)
+		return;
+
 	TabWidget_->SetTabText (tabNumber, name);
 	OriginalTabNames_ [tabNumber] = name;
 	InvalidateName ();

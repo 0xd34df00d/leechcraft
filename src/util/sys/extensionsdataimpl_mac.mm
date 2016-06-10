@@ -40,7 +40,7 @@ namespace Util
 	};
 
 	ExtensionsDataImpl::ExtensionsDataImpl ()
-	: Details_ { new Details }
+	: Details_ { std::make_shared<Details> () }
 	{
 	}
 
