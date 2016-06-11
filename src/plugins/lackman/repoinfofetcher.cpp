@@ -209,9 +209,9 @@ namespace LackMan
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
 #ifdef Q_OS_WIN32
-		unarch->start ("7za", QStringList ("e") << "-so" << name);
+		unarch->start ("7za", { "e", "-so", name });
 #else
-		unarch->start ("gunzip", QStringList ("-c") << name);
+		unarch->start ("gunzip", { "-c", name });
 #endif
 	}
 
@@ -259,9 +259,9 @@ namespace LackMan
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
 #ifdef Q_OS_WIN32
-		unarch->start ("7za", QStringList ("e") << "-so" << pc.Location_);
+		unarch->start ("7za", { "e", "-so", pc.Location_ });
 #else
-		unarch->start ("gunzip", QStringList ("-c") << pc.Location_);
+		unarch->start ("gunzip", { "-c", pc.Location_ });
 #endif
 	}
 
@@ -308,9 +308,9 @@ namespace LackMan
 				this,
 				SLOT (handleUnarchError (QProcess::ProcessError)));
 #ifdef Q_OS_WIN32
-		unarch->start ("7za", QStringList ("e") << "-so" << pp.Location_);
+		unarch->start ("7za", { "e", "-so", pp.Location_ });
 #else
-		unarch->start ("gunzip", QStringList ("-c") << pp.Location_);
+		unarch->start ("gunzip", { "-c", pp.Location_ });
 #endif
 	}
 
