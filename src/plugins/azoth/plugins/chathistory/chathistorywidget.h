@@ -90,8 +90,6 @@ namespace ChatHistory
 
 		ICLEntry *EntryToFocus_;
 
-		static Plugin *S_ParentMultiTabs_;
-
 		ChatFindBox *FindBox_;
 
 		enum ModelRoles
@@ -99,8 +97,6 @@ namespace ChatHistory
 			MRIDRole = Qt::UserRole + 1
 		};
 	public:
-		static void SetParentMultiTabs (Plugin*);
-
 		ChatHistoryWidget (const InitParams&, ICLEntry* = 0, QWidget* = 0);
 
 		void Remove ();

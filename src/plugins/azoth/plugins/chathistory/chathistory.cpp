@@ -68,8 +68,6 @@ namespace ChatHistory
 
 		StorageMgr_ = std::make_shared<StorageManager> (Core::Instance ().get ());
 
-		ChatHistoryWidget::SetParentMultiTabs (this);
-
 		Guard_.reset (new STGuard<Core> ());
 		ActionHistory_ = new QAction (tr ("IM history"), this);
 		connect (ActionHistory_,

@@ -52,13 +52,6 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	Plugin *ChatHistoryWidget::S_ParentMultiTabs_ = nullptr;
-
-	void ChatHistoryWidget::SetParentMultiTabs (Plugin *ch)
-	{
-		S_ParentMultiTabs_ = ch;
-	}
-
 	using namespace std::placeholders;
 
 	ChatHistoryWidget::ChatHistoryWidget (const InitParams& params, ICLEntry *entry, QWidget *parent)
@@ -140,7 +133,7 @@ namespace ChatHistory
 
 	QObject* ChatHistoryWidget::ParentMultiTabs ()
 	{
-		return S_ParentMultiTabs_;
+		return Params_.ParentMultiTabs_;
 	}
 
 	QList<QAction*> ChatHistoryWidget::GetTabBarContextMenuActions () const
