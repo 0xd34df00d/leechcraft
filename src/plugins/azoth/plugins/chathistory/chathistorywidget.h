@@ -67,6 +67,7 @@ namespace ChatHistory
 			StorageManager * const StorageMgr_;
 			IProxyObject *const PluginProxy_;
 			const ICoreProxy_ptr CoreProxy_;
+			Plugin * const ParentMultiTabs_;
 		};
 	private:
 		InitParams Params_;
