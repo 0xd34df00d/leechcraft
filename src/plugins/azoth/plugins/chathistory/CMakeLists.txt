@@ -17,6 +17,7 @@ set (CHATHISTORY_SRCS
 	chatfindbox.cpp
 	xmlsettingsmanager.cpp
 	historyvieweventfilter.cpp
+	storagemanager.cpp
 	)
 set (CHATHISTORY_FORMS
 	chathistorywidget.ui
