@@ -9,7 +9,6 @@ include_directories (${AZOTH_INCLUDE_DIR}
 	)
 set (CHATHISTORY_SRCS
 	chathistory.cpp
-	core.cpp
 	storage.cpp
 	chathistorywidget.cpp
 	storagethread.cpp

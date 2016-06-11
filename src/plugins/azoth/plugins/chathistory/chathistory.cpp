@@ -41,7 +41,6 @@
 #include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/imucentry.h>
 #include <interfaces/azoth/iproxyobject.h>
-#include "core.h"
 #include "chathistorywidget.h"
 #include "historymessage.h"
 #include "xmlsettingsmanager.h"
@@ -77,7 +76,6 @@ namespace ChatHistory
 		LoggingStateKeeper_ = std::make_shared<LoggingStateKeeper> ();
 		StorageMgr_ = std::make_shared<StorageManager> (LoggingStateKeeper_.get ());
 
-		Guard_.reset (new STGuard<Core> ());
 		ActionHistory_ = new QAction (tr ("IM history"), this);
 		connect (ActionHistory_,
 				SIGNAL (triggered ()),
@@ -99,7 +97,6 @@ namespace ChatHistory
 
 	void Plugin::Release ()
 	{
-		Guard_.reset ();
 	}
 
 	QString Plugin::GetName () const

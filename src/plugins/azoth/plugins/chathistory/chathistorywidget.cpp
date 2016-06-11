@@ -42,7 +42,6 @@
 #include <interfaces/azoth/iproxyobject.h>
 #include "chathistory.h"
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "historyvieweventfilter.h"
 #include "storagemanager.h"
 

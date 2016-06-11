@@ -40,7 +40,6 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihistoryplugin.h>
-#include "core.h"
 #include "storagestructures.h"
 
 namespace LeechCraft
@@ -79,7 +78,6 @@ namespace ChatHistory
 
 		std::shared_ptr<LoggingStateKeeper> LoggingStateKeeper_;
 		std::shared_ptr<StorageManager> StorageMgr_;
-		std::shared_ptr<STGuard<Core>> Guard_;
 		QAction *ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;

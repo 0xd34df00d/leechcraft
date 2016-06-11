@@ -29,7 +29,6 @@
 
 #include "storagethread.h"
 #include "storage.h"
-#include "core.h"
 
 namespace LeechCraft
 {
