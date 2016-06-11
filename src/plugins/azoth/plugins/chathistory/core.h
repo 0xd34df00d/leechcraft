@@ -90,6 +90,7 @@ namespace ChatHistory
 		IProxyObject* GetPluginProxy () const;
 
 		bool IsLoggingEnabled (QObject*) const;
+		bool IsLoggingEnabled (ICLEntry*) const;
 		void SetLoggingEnabled (QObject*, bool);
 
 		void Process (QObject*);

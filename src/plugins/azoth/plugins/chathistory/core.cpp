@@ -149,7 +149,7 @@ namespace ChatHistory
 
 	bool Core::IsLoggingEnabled (QObject *entryObj) const
 	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -158,6 +158,11 @@ namespace ChatHistory
 			return true;
 		}
 
+		return IsLoggingEnabled (entry);
+	}
+
+	bool Core::IsLoggingEnabled (ICLEntry *entry) const
+	{
 		return !DisabledIDs_.contains (entry->GetEntryID ());
 	}
 
