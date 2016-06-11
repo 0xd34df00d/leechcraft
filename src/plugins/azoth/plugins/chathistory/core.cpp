@@ -69,16 +69,6 @@ namespace ChatHistory
 		return TabClass_;
 	}
 
-	void Core::SetCoreProxy (ICoreProxy_ptr proxy)
-	{
-		CoreProxy_ = proxy;
-	}
-
-	ICoreProxy_ptr Core::GetCoreProxy () const
-	{
-		return CoreProxy_;
-	}
-
 	bool Core::IsLoggingEnabled (QObject *entryObj) const
 	{
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);

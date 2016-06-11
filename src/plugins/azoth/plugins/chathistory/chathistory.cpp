@@ -68,8 +68,6 @@ namespace ChatHistory
 
 		StorageMgr_ = std::make_shared<StorageManager> (Core::Instance ().get ());
 
-		Core::Instance ()->SetCoreProxy (proxy);
-
 		ChatHistoryWidget::SetParentMultiTabs (this);
 
 		Guard_.reset (new STGuard<Core> ());

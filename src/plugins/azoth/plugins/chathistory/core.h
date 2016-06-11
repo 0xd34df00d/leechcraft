@@ -33,7 +33,6 @@
 #include <QObject>
 #include <QSet>
 #include <QVariantMap>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/azoth/ihistoryplugin.h>
 
@@ -64,7 +63,6 @@ namespace ChatHistory
 		Q_OBJECT
 		static std::shared_ptr<Core> InstPtr_;
 
-		ICoreProxy_ptr CoreProxy_;
 		QSet<QString> DisabledIDs_;
 
 		TabClassInfo TabClass_;
@@ -76,9 +74,6 @@ namespace ChatHistory
 		~Core ();
 
 		TabClassInfo GetTabClass () const;
-
-		void SetCoreProxy (ICoreProxy_ptr);
-		ICoreProxy_ptr GetCoreProxy () const;
 
 		bool IsLoggingEnabled (QObject*) const;
 		bool IsLoggingEnabled (ICLEntry*) const;
