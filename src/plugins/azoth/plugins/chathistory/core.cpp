@@ -28,25 +28,11 @@
  **********************************************************************/
 
 #include "core.h"
-#include <cmath>
-#include <QMessageBox>
-#include <QMetaObject>
-#include <QVariant>
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <QFileInfo>
-#include <util/threads/futures.h>
-#include <util/sll/visitor.h>
-#include <util/db/consistencychecker.h>
-#include <util/util.h>
-#include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
-#include <interfaces/azoth/iaccount.h>
-#include <interfaces/azoth/irichtextmessage.h>
-#include "storagethread.h"
-#include "storagestructures.h"
 
 namespace LeechCraft
 {
@@ -57,38 +43,7 @@ namespace ChatHistory
 	std::shared_ptr<Core> Core::InstPtr_;
 
 	Core::Core ()
-	: StorageThread_ (new StorageThread ())
 	{
-		StorageThread_->SetPaused (true);
-
-		auto checker = new Util::ConsistencyChecker { Storage::GetDatabasePath (), "Azoth ChatHistory" };
-		Util::Sequence (this, checker->StartCheck ()) >>
-				[this] (const Util::ConsistencyChecker::CheckResult_t& result)
-				{
-					Util::Visit (result,
-							[this] (const Util::ConsistencyChecker::Succeeded&) { StartStorage (); },
-							[this] (const Util::ConsistencyChecker::Failed& failed)
-							{
-								qWarning () << Q_FUNC_INFO
-										<< "db is broken, gonna repair";
-								Util::Sequence (this, failed->DumpReinit ()) >>
-										[this] (const Util::ConsistencyChecker::DumpResult_t& result)
-										{
-											Util::Visit (result,
-													[] (const Util::ConsistencyChecker::DumpError& err)
-													{
-														QMessageBox::critical (nullptr,
-																"Azoth ChatHistory",
-																err.Error_);
-													},
-													[this] (const Util::ConsistencyChecker::DumpFinished& res)
-													{
-														HandleDumpFinished (res.OldFileSize_, res.NewFileSize_);
-													});
-										};
-							});
-				};
-
 		TabClass_.TabClass_ = "Chathistory";
 		TabClass_.VisibleName_ = tr ("Chat history");
 		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
@@ -108,18 +63,6 @@ namespace ChatHistory
 
 	Core::~Core ()
 	{
-		StorageThread_->quit ();
-		StorageThread_->wait (2000);
-
-		if (StorageThread_->isRunning ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "storage thread still running, forcefully terminating...";
-			StorageThread_->terminate ();
-			StorageThread_->wait (5000);
-		}
-		else
-			delete StorageThread_;
 	}
 
 	TabClassInfo Core::GetTabClass () const
@@ -186,132 +129,6 @@ namespace ChatHistory
 		SaveDisabled ();
 	}
 
-	namespace
-	{
-		QString GetVisibleName (const ICLEntry *entry)
-		{
-			if (entry->GetEntryType () == ICLEntry::EntryType::PrivateChat)
-			{
-				const auto parent = entry->GetParentCLEntry ();
-				return parent->GetEntryName () + "/" + entry->GetEntryName ();
-			}
-			else
-				return entry->GetEntryName ();
-		}
-	}
-
-	void Core::Process (QObject *msgObj)
-	{
-		IMessage *msg = qobject_cast<IMessage*> (msgObj);
-		if (msg->GetMessageType () != IMessage::Type::ChatMessage &&
-			msg->GetMessageType () != IMessage::Type::MUCMessage)
-			return;
-
-		if (msg->GetBody ().isEmpty ())
-			return;
-
-		if (msg->GetDirection () == IMessage::Direction::Out &&
-				msg->GetMessageType () == IMessage::Type::MUCMessage)
-			return;
-
-		const double secsDiff = msg->GetDateTime ().secsTo (QDateTime::currentDateTime ());
-		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
-				std::abs (secsDiff) >= 2)
-			return;
-
-		ICLEntry *entry = qobject_cast<ICLEntry*> (msg->ParentCLEntry ());
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "message's other part doesn't implement ICLEntry"
-					<< msg->GetQObject ()
-					<< msg->OtherPart ();
-			return;
-		}
-		if (DisabledIDs_.contains (entry->GetEntryID ()))
-			return;
-
-		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
-
-		AddLogItems (entry->GetParentAccount ()->GetAccountID (),
-				entry->GetEntryID (),
-				GetVisibleName (entry),
-				{
-					LogItem
-					{
-						msg->GetDateTime (),
-						msg->GetDirection (),
-						msg->GetBody (),
-						msg->GetOtherVariant (),
-						msg->GetMessageType (),
-						irtm ? irtm->GetRichBody () : QString {},
-						msg->GetEscapePolicy ()
-					}
-				},
-				false);
-	}
-
-	void Core::AddLogItems (const QString& accountId, const QString& entryId,
-			const QString& visibleName, const QList<LogItem>& items, bool fuzzy)
-	{
-		StorageThread_->Schedule (&Storage::AddMessages,
-				accountId,
-				entryId,
-				visibleName,
-				items,
-				fuzzy);
-	}
-
-	QFuture<IHistoryPlugin::MaxTimestampResult_t> Core::GetMaxTimestamp (const QString& accId)
-	{
-		return StorageThread_->Schedule (&Storage::GetMaxTimestamp, accId);
-	}
-
-	QFuture<QStringList> Core::GetOurAccounts ()
-	{
-		return StorageThread_->Schedule (&Storage::GetOurAccounts);
-	}
-
-	QFuture<UsersForAccountResult_t> Core::GetUsersForAccount (const QString& accountID)
-	{
-		return StorageThread_->Schedule (&Storage::GetUsersForAccount, accountID);
-	}
-
-	QFuture<ChatLogsResult_t> Core::GetChatLogs (const QString& accountId,
-			const QString& entryId, int backpages, int amount)
-	{
-		return StorageThread_->Schedule (&Storage::GetChatLogs, accountId, entryId, backpages, amount);
-	}
-
-	QFuture<SearchResult_t> Core::Search (const QString& accountId, const QString& entryId,
-			const QString& text, int shift, bool cs)
-	{
-		return StorageThread_->Schedule (&Storage::Search,
-				accountId, entryId, text, shift, cs);
-	}
-
-	QFuture<SearchResult_t> Core::Search (const QString& accountId, const QString& entryId, const QDateTime& dt)
-	{
-		return StorageThread_->Schedule (&Storage::SearchDate,
-				accountId, entryId, dt);
-	}
-
-	QFuture<DaysResult_t> Core::GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month)
-	{
-		return StorageThread_->Schedule (&Storage::GetDaysForSheet,
-				accountId, entryId, year, month);
-	}
-
-	void Core::ClearHistory (const QString& accountId, const QString& entryId)
-	{
-		StorageThread_->Schedule (&Storage::ClearHistory, accountId, entryId);
-	}
-
-	void Core::RegenUsersCache ()
-	{
-		StorageThread_->Schedule (&Storage::RegenUsersCache);
-	}
-
 	void Core::LoadDisabled ()
 	{
 		QSettings settings (QCoreApplication::organizationName (),
@@ -324,57 +141,6 @@ namespace ChatHistory
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
 		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
-	}
-
-	void Core::StartStorage ()
-	{
-		StorageThread_->SetPaused (false);
-		StorageThread_->start (QThread::LowestPriority);
-		Util::Sequence (this, StorageThread_->Schedule (&Storage::Initialize)) >>
-				[this] (const Storage::InitializationResult_t& res)
-				{
-					if (res.IsRight ())
-					{
-						StorageThread_->SetPaused (false);
-						return;
-					}
-
-					HandleStorageError (res.GetLeft ());
-				};
-	}
-
-	void Core::HandleStorageError (const Storage::InitializationError_t& error)
-	{
-		Util::Visit (error,
-				[] (const Storage::GeneralError& err)
-				{
-					QMessageBox::critical (nullptr,
-							"Azoth ChatHistory",
-							tr ("Unable to initialize permanent storage. %1.")
-								.arg (err.ErrorText_));
-				});
-	}
-
-	void Core::HandleDumpFinished (qint64 oldSize, qint64 newSize)
-	{
-		StartStorage ();
-
-		Util::Sequence (this, StorageThread_->Schedule (&Storage::GetAllHistoryCount)) >>
-				[=] (const boost::optional<int>& count)
-				{
-					const auto& text = tr ("Finished restoring history database contents. "
-							"Old file size: %1, new file size: %2, %3 records recovered. %4");
-					const auto& greet = newSize > oldSize * 0.9 ?
-							tr ("Yay, seems like most of the contents are intact!") :
-							tr ("Sadly, seems like quite some history is lost.");
-
-					QMessageBox::information (nullptr,
-							"Azoth ChatHistory",
-							text.arg (Util::MakePrettySize (oldSize))
-								.arg (Util::MakePrettySize (newSize))
-								.arg (count.get_value_or (0))
-								.arg (greet));
-				};
 	}
 }
 }

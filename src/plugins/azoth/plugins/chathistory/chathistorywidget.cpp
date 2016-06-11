@@ -119,7 +119,7 @@ namespace ChatHistory
 				this,
 				SLOT (clearHistory ()))->setProperty ("ActionIcon", "list-remove");
 
-		Util::Sequence (this, Core::Instance ()->GetOurAccounts ()) >>
+		Util::Sequence (this, StorageMgr_->GetOurAccounts ()) >>
 				[this] (const QStringList& accs) { HandleGotOurAccounts (accs); };
 	}
 
@@ -492,7 +492,7 @@ namespace ChatHistory
 		CurrentEntry_.clear ();
 		UpdateDates ();
 
-		Util::Sequence (this, Core::Instance ()->GetUsersForAccount (id)) >>
+		Util::Sequence (this, StorageMgr_->GetUsersForAccount (id)) >>
 				std::bind (&ChatHistoryWidget::HandleGotUsersForAccount, this, id, _1);
 	}
 
@@ -537,7 +537,7 @@ namespace ChatHistory
 		FindBox_->clear ();
 
 		Util::Sequence (this,
-				Core::Instance ()->Search (CurrentAccount_, CurrentEntry_, QDateTime { date })) >>
+				StorageMgr_->Search (CurrentAccount_, CurrentEntry_, QDateTime { date })) >>
 				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
 						this, CurrentAccount_, CurrentEntry_, _1);
 	}
@@ -600,7 +600,7 @@ namespace ChatHistory
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		Core::Instance ()->ClearHistory (CurrentAccount_, CurrentEntry_);
+		StorageMgr_->ClearHistory (CurrentAccount_, CurrentEntry_);
 
 		Ui_.Contacts_->clearSelection ();
 		if (const auto item = FindContactItem (CurrentEntry_))
@@ -658,7 +658,7 @@ namespace ChatHistory
 
 		const auto year = Ui_.Calendar_->yearShown ();
 		const auto month = Ui_.Calendar_->monthShown ();
-		const auto& future = Core::Instance ()->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
+		const auto& future = StorageMgr_->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
 				year, month);
 		Util::Sequence (this, future) >>
 				std::bind (&ChatHistoryWidget::HandleGotDaysForSheet,
@@ -667,7 +667,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestLogs ()
 	{
-		const auto& future = Core::Instance ()->GetChatLogs (CurrentAccount_,
+		const auto& future = StorageMgr_->GetChatLogs (CurrentAccount_,
 				CurrentEntry_, Backpages_, PerPageAmount_);
 		Util::Sequence (this, future) >>
 				std::bind (&ChatHistoryWidget::HandleGotChatLogs, this, CurrentAccount_, CurrentEntry_, _1);
@@ -675,7 +675,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)
 	{
-		const auto& future = Core::Instance ()->Search (CurrentAccount_, CurrentEntry_,
+		const auto& future = StorageMgr_->Search (CurrentAccount_, CurrentEntry_,
 				PreviousSearchText_, SearchShift_,
 				flags & ChatFindBox::FindCaseSensitively);
 		Util::Sequence (this, future) >>

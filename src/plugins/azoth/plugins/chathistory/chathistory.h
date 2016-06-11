@@ -41,6 +41,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihistoryplugin.h>
 #include "core.h"
+#include "storagestructures.h"
 
 namespace LeechCraft
 {

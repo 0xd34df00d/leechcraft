@@ -36,8 +36,6 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/azoth/ihistoryplugin.h>
-#include "storagestructures.h"
-#include "storage.h"
 
 template<typename>
 class QFuture;
@@ -61,14 +59,11 @@ namespace ChatHistory
 		{}
 	};
 
-	class StorageThread;
-
 	class Core : public QObject
 	{
 		Q_OBJECT
 		static std::shared_ptr<Core> InstPtr_;
 
-		StorageThread *StorageThread_;
 		ICoreProxy_ptr CoreProxy_;
 		IProxyObject *PluginProxy_ = nullptr;
 		QSet<QString> DisabledIDs_;
@@ -92,34 +87,9 @@ namespace ChatHistory
 		bool IsLoggingEnabled (QObject*) const;
 		bool IsLoggingEnabled (ICLEntry*) const;
 		void SetLoggingEnabled (QObject*, bool);
-
-		void Process (QObject*);
-		void AddLogItems (const QString&, const QString&, const QString&, const QList<LogItem>&, bool);
-
-		QFuture<IHistoryPlugin::MaxTimestampResult_t> GetMaxTimestamp (const QString&);
-
-		QFuture<QStringList> GetOurAccounts ();
-
-		QFuture<UsersForAccountResult_t> GetUsersForAccount (const QString&);
-
-		QFuture<ChatLogsResult_t> GetChatLogs (const QString& accountId, const QString& entryId,
-				int backpages, int amount);
-
-		QFuture<SearchResult_t> Search (const QString& accountId, const QString& entryId,
-				const QString& text, int shift, bool cs);
-		QFuture<SearchResult_t> Search (const QString& accountId, const QString& entryId, const QDateTime& dt);
-
-		QFuture<DaysResult_t> GetDaysForSheet (const QString& accountId, const QString& entryId, int year, int month);
-		void ClearHistory (const QString& accountId, const QString& entryId);
-
-		void RegenUsersCache ();
 	private:
 		void LoadDisabled ();
 		void SaveDisabled ();
-
-		void StartStorage ();
-		void HandleStorageError (const Storage::InitializationError_t&);
-		void HandleDumpFinished (qint64, qint64);
 	};
 }
 }

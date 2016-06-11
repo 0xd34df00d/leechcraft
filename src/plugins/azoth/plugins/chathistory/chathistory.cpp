@@ -170,19 +170,19 @@ namespace ChatHistory
 		const auto account = entry->GetParentAccount ();
 		const QString& accId = account->GetAccountID ();
 		const QString& entryId = entry->GetEntryID ();
-		Util::Sequence (this, Core::Instance ()->GetChatLogs (accId, entryId, 0, num)) >>
+		Util::Sequence (this, StorageMgr_->GetChatLogs (accId, entryId, 0, num)) >>
 				std::bind (&Plugin::HandleGotChatLogs, this, entryObj, std::placeholders::_1);
 	}
 
 	QFuture<Plugin::MaxTimestampResult_t> Plugin::RequestMaxTimestamp (IAccount *acc)
 	{
-		return Core::Instance ()->GetMaxTimestamp (acc->GetAccountID ());
+		return StorageMgr_->GetMaxTimestamp (acc->GetAccountID ());
 	}
 
 	void Plugin::AddRawMessages (const QString& accountId, const QString& entryId,
 			const QString& visibleName, const QList<HistoryItem>& items)
 	{
-		Core::Instance ()->AddLogItems (accountId, entryId, visibleName, items, true);
+		StorageMgr_->AddLogItems (accountId, entryId, visibleName, items, true);
 	}
 
 	void Plugin::InitWidget (ChatHistoryWidget *wh)
@@ -276,7 +276,7 @@ namespace ChatHistory
 			return;
 		}
 
-		Core::Instance ()->Process (message);
+		StorageMgr_->Process (message);
 	}
 
 	void Plugin::HandleGotChatLogs (const QPointer<QObject>& entryObj,
@@ -332,7 +332,7 @@ namespace ChatHistory
 	void Plugin::handlePushButton (const QString& name)
 	{
 		if (name == "RegenUsersCache")
-			Core::Instance ()->RegenUsersCache ();
+			StorageMgr_->RegenUsersCache ();
 	}
 
 	void Plugin::handleHistoryRequested ()
