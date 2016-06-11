@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "dumbstorage.h"
-#include <boost/optional.hpp>
 
 namespace LeechCraft
 {

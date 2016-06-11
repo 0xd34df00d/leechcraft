@@ -29,7 +29,6 @@
 
 #include "sqlstoragebackend.h"
 #include <stdexcept>
-#include <boost/optional.hpp>
 #include <QDir>
 #include <QDebug>
 #include <QBuffer>

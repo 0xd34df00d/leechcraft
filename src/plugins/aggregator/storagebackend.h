@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/optional/optional_fwd.hpp>
+#include <boost/optional.hpp>
 #include <QObject>
 #include <QSet>
 #include <interfaces/core/ihookproxy.h>
