@@ -56,7 +56,7 @@ namespace ChatHistory
 	{
 		Util::InstallTranslator ("azoth_chathistory");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
 		connect (XSD_.get (),
 				SIGNAL (pushButtonClicked (QString)),
