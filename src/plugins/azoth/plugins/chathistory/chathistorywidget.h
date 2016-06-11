@@ -61,10 +61,15 @@ namespace ChatHistory
 		Q_INTERFACES (ITabWidget)
 
 		Ui::ChatHistoryWidget Ui_;
-
-		StorageManager * const StorageMgr_;
-		IProxyObject * const PluginProxy_;
-		const ICoreProxy_ptr CoreProxy_;
+	public:
+		struct InitParams
+		{
+			StorageManager * const StorageMgr_;
+			IProxyObject *const PluginProxy_;
+			const ICoreProxy_ptr CoreProxy_;
+		};
+	private:
+		InitParams Params_;
 
 		const int PerPageAmount_;
 
@@ -95,7 +100,7 @@ namespace ChatHistory
 	public:
 		static void SetParentMultiTabs (Plugin*);
 
-		ChatHistoryWidget (StorageManager*, IProxyObject*, const ICoreProxy_ptr&, ICLEntry* = 0, QWidget* = 0);
+		ChatHistoryWidget (const InitParams&, ICLEntry* = 0, QWidget* = 0);
 
 		void Remove ();
 		QToolBar* GetToolBar () const;

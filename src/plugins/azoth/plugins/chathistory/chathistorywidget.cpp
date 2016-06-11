@@ -61,11 +61,9 @@ namespace ChatHistory
 
 	using namespace std::placeholders;
 
-	ChatHistoryWidget::ChatHistoryWidget (StorageManager *sm, IProxyObject *ipo, const ICoreProxy_ptr& proxy, ICLEntry *entry, QWidget *parent)
+	ChatHistoryWidget::ChatHistoryWidget (const InitParams& params, ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
-	, StorageMgr_ (sm)
-	, PluginProxy_ (ipo)
-	, CoreProxy_ (proxy)
+	, Params_ (params)
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
@@ -76,14 +74,14 @@ namespace ChatHistory
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
 		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
-		FindBox_ = new ChatFindBox (proxy, Ui_.HistView_);
+		FindBox_ = new ChatFindBox (Params_.CoreProxy_, Ui_.HistView_);
 		connect (FindBox_,
 				SIGNAL (next (QString, ChatFindBox::FindFlags)),
 				this,
 				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
 		FindBox_->SetEscCloses (false);
 
-		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
+		new Util::ClearLineEditAddon (Params_.CoreProxy_, Ui_.ContactsSearch_);
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
 		connect (hvef,
@@ -120,7 +118,7 @@ namespace ChatHistory
 				this,
 				SLOT (clearHistory ()))->setProperty ("ActionIcon", "list-remove");
 
-		Util::Sequence (this, StorageMgr_->GetOurAccounts ()) >>
+		Util::Sequence (this, Params_.StorageMgr_->GetOurAccounts ()) >>
 				[this] (const QStringList& accs) { HandleGotOurAccounts (accs); };
 	}
 
@@ -154,7 +152,7 @@ namespace ChatHistory
 	{
 		for (const auto& accountID : accounts)
 		{
-			const auto account = qobject_cast<IAccount*> (PluginProxy_->GetAccount (accountID));
+			const auto account = qobject_cast<IAccount*> (Params_.PluginProxy_->GetAccount (accountID));
 			if (!account)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -239,7 +237,7 @@ namespace ChatHistory
 		for (int i = 0; i < users.size (); ++i)
 		{
 			const auto& user = users.at (i);
-			const auto& name = GetEntryName (user, id, nameCache.value (i), PluginProxy_);
+			const auto& name = GetEntryName (user, id, nameCache.value (i), Params_.PluginProxy_);
 
 			EntryID2NameCache_ [user] = name;
 
@@ -277,9 +275,9 @@ namespace ChatHistory
 		Amount_ = 0;
 		Ui_.HistView_->clear ();
 
-		auto& formatter = PluginProxy_->GetFormatterProxy ();
+		auto& formatter = Params_.PluginProxy_->GetFormatterProxy ();
 
-		const auto entry = qobject_cast<ICLEntry*> (PluginProxy_->GetEntry (entryId, accountId));
+		const auto entry = qobject_cast<ICLEntry*> (Params_.PluginProxy_->GetEntry (entryId, accountId));
 		const auto& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
@@ -298,8 +296,8 @@ namespace ChatHistory
 				entry->GetParentAccount ()->GetOurNick () :
 				QString ();
 
-		auto preNick = PluginProxy_->GetSettingsManager ()->property ("PreNickText").toString ();
-		auto postNick = PluginProxy_->GetSettingsManager ()->property ("PostNickText").toString ();
+		auto preNick = Params_.PluginProxy_->GetSettingsManager ()->property ("PreNickText").toString ();
+		auto postNick = Params_.PluginProxy_->GetSettingsManager ()->property ("PostNickText").toString ();
 		preNick.replace ('<', "&lt;");
 		postNick.replace ('<', "&lt;");
 
@@ -421,7 +419,7 @@ namespace ChatHistory
 						tr ("No more search results for %1, searching from the beginning now.")
 							.arg ("<em>" + PreviousSearchText_ + "</em>"),
 						PInfo_);
-				CoreProxy_->GetEntityManager ()->HandleEntity (e);
+				Params_.CoreProxy_->GetEntityManager ()->HandleEntity (e);
 
 				RequestSearch (FindBox_->GetFlags ());
 			}
@@ -487,7 +485,7 @@ namespace ChatHistory
 		CurrentEntry_.clear ();
 		UpdateDates ();
 
-		Util::Sequence (this, StorageMgr_->GetUsersForAccount (id)) >>
+		Util::Sequence (this, Params_.StorageMgr_->GetUsersForAccount (id)) >>
 				std::bind (&ChatHistoryWidget::HandleGotUsersForAccount, this, id, _1);
 	}
 
@@ -532,7 +530,7 @@ namespace ChatHistory
 		FindBox_->clear ();
 
 		Util::Sequence (this,
-				StorageMgr_->Search (CurrentAccount_, CurrentEntry_, QDateTime { date })) >>
+				Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_, QDateTime { date })) >>
 				std::bind (&ChatHistoryWidget::HandleGotSearchPosition,
 						this, CurrentAccount_, CurrentEntry_, _1);
 	}
@@ -595,7 +593,7 @@ namespace ChatHistory
 					QMessageBox::Yes | QMessageBox::No) != QMessageBox::Yes)
 			return;
 
-		StorageMgr_->ClearHistory (CurrentAccount_, CurrentEntry_);
+		Params_.StorageMgr_->ClearHistory (CurrentAccount_, CurrentEntry_);
 
 		Ui_.Contacts_->clearSelection ();
 		if (const auto item = FindContactItem (CurrentEntry_))
@@ -653,7 +651,7 @@ namespace ChatHistory
 
 		const auto year = Ui_.Calendar_->yearShown ();
 		const auto month = Ui_.Calendar_->monthShown ();
-		const auto& future = StorageMgr_->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
+		const auto& future = Params_.StorageMgr_->GetDaysForSheet (CurrentAccount_, CurrentEntry_,
 				year, month);
 		Util::Sequence (this, future) >>
 				std::bind (&ChatHistoryWidget::HandleGotDaysForSheet,
@@ -662,7 +660,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestLogs ()
 	{
-		const auto& future = StorageMgr_->GetChatLogs (CurrentAccount_,
+		const auto& future = Params_.StorageMgr_->GetChatLogs (CurrentAccount_,
 				CurrentEntry_, Backpages_, PerPageAmount_);
 		Util::Sequence (this, future) >>
 				std::bind (&ChatHistoryWidget::HandleGotChatLogs, this, CurrentAccount_, CurrentEntry_, _1);
@@ -670,7 +668,7 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::RequestSearch (ChatFindBox::FindFlags flags)
 	{
-		const auto& future = StorageMgr_->Search (CurrentAccount_, CurrentEntry_,
+		const auto& future = Params_.StorageMgr_->Search (CurrentAccount_, CurrentEntry_,
 				PreviousSearchText_, SearchShift_,
 				flags & ChatFindBox::FindCaseSensitively);
 		Util::Sequence (this, future) >>
