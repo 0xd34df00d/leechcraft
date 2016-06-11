@@ -35,9 +35,13 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	class StorageManager
+	class Core;
+
+	class StorageManager : public QObject
 	{
+		Core * const Core_;
 	public:
+		StorageManager (Core*);
 	};
 }
 }

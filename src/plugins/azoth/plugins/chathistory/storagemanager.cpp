@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "storage.h"
+#include "core.h"
 
 namespace LeechCraft
 {
@@ -35,6 +36,10 @@ namespace Azoth
 {
 namespace ChatHistory
 {
+	StorageManager::StorageManager (Core *core)
+	: Core_ { core }
+	{
+	}
 }
 }
 }

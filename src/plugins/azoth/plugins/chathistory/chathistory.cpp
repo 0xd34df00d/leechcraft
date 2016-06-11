@@ -63,7 +63,7 @@ namespace ChatHistory
 				this,
 				SLOT (handlePushButton (QString)));
 
-		StorageMgr_ = std::make_shared<StorageManager> ();
+		StorageMgr_ = std::make_shared<StorageManager> (Core::Instance ().get ());
 
 		Core::Instance ()->SetCoreProxy (proxy);
 
