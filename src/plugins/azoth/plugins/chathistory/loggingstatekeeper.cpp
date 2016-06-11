@@ -27,48 +27,75 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <QObject>
-#include <QSet>
-#include <QVariantMap>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/azoth/ihistoryplugin.h>
-
-template<typename>
-class QFuture;
+#include "loggingstatekeeper.h"
+#include <QSettings>
+#include <QCoreApplication>
+#include <QtDebug>
+#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IMessage;
-class IProxyObject;
-
 namespace ChatHistory
 {
-	template<typename T>
-	class STGuard
+	LoggingStateKeeper::LoggingStateKeeper ()
 	{
-		std::shared_ptr<T> C_;
-	public:
-		STGuard ()
-		: C_ (T::Instance ())
-		{}
-	};
+		LoadDisabled ();
+	}
 
-	class Core : public QObject
+	bool LoggingStateKeeper::IsLoggingEnabled (QObject *entryObj) const
 	{
-		Q_OBJECT
-		static std::shared_ptr<Core> InstPtr_;
+		const auto entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "could not be casted to ICLEntry";
+			return true;
+		}
 
-		Core ();
-	public:
-		static std::shared_ptr<Core> Instance ();
+		return IsLoggingEnabled (entry);
+	}
 
-		~Core ();
-	};
+	bool LoggingStateKeeper::IsLoggingEnabled (ICLEntry *entry) const
+	{
+		return !DisabledIDs_.contains (entry->GetEntryID ());
+	}
+
+	void LoggingStateKeeper::SetLoggingEnabled (QObject *entryObj, bool enable)
+	{
+		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
+		if (!entry)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< entryObj
+					<< "could not be casted to ICLEntry";
+			return;
+		}
+
+		const auto& id = entry->GetEntryID ();
+		if (enable)
+			DisabledIDs_.remove (id);
+		else
+			DisabledIDs_ << id;
+
+		SaveDisabled ();
+	}
+
+	void LoggingStateKeeper::LoadDisabled ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
+		DisabledIDs_ = settings.value ("DisabledIDs").toStringList ().toSet ();
+	}
+
+	void LoggingStateKeeper::SaveDisabled ()
+	{
+		QSettings settings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
+		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
+	}
 }
 }
 }

@@ -38,14 +38,14 @@ namespace Azoth
 namespace ChatHistory
 {
 	class StorageThread;
-	class Core;
+	class LoggingStateKeeper;
 
 	class StorageManager : public QObject
 	{
 		const std::shared_ptr<StorageThread> StorageThread_;
-		Core * const Core_;
+		LoggingStateKeeper * const LoggingStateKeeper_;
 	public:
-		StorageManager (Core*);
+		StorageManager (LoggingStateKeeper*);
 
 		void Process (QObject*);
 		void AddLogItems (const QString&, const QString&, const QString&, const QList<LogItem>&, bool);

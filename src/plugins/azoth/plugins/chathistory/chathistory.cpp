@@ -46,6 +46,7 @@
 #include "historymessage.h"
 #include "xmlsettingsmanager.h"
 #include "storagemanager.h"
+#include "loggingstatekeeper.h"
 
 namespace LeechCraft
 {
@@ -73,7 +74,8 @@ namespace ChatHistory
 				this,
 				SLOT (handlePushButton (QString)));
 
-		StorageMgr_ = std::make_shared<StorageManager> (Core::Instance ().get ());
+		LoggingStateKeeper_ = std::make_shared<LoggingStateKeeper> ();
+		StorageMgr_ = std::make_shared<StorageManager> (LoggingStateKeeper_.get ());
 
 		Guard_.reset (new STGuard<Core> ());
 		ActionHistory_ = new QAction (tr ("IM history"), this);
@@ -157,7 +159,7 @@ namespace ChatHistory
 
 	bool Plugin::IsHistoryEnabledFor (QObject *entry) const
 	{
-		return Core::Instance ()->IsLoggingEnabled (entry);
+		return LoggingStateKeeper_->IsLoggingEnabled (entry);
 	}
 
 	void Plugin::RequestLastMessages (QObject *entryObj, int num)
@@ -246,7 +248,7 @@ namespace ChatHistory
 		{
 			QAction *action = new QAction (tr ("Logging enabled"), entry);
 			action->setCheckable (true);
-			action->setChecked (Core::Instance ()->IsLoggingEnabled (entry));
+			action->setChecked (LoggingStateKeeper_->IsLoggingEnabled (entry));
 			action->setProperty ("Azoth/ChatHistory/IsGood", true);
 			action->setProperty ("Azoth/ChatHistory/Entry",
 					QVariant::fromValue<QObject*> (entry));
@@ -401,7 +403,7 @@ namespace ChatHistory
 			return;
 		}
 
-		Core::Instance ()->SetLoggingEnabled (obj, enable);
+		LoggingStateKeeper_->SetLoggingEnabled (obj, enable);
 	}
 }
 }

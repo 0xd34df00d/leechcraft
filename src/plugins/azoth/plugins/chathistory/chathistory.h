@@ -53,6 +53,7 @@ namespace ChatHistory
 {
 	class ChatHistoryWidget;
 	class StorageManager;
+	class LoggingStateKeeper;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -76,6 +77,7 @@ namespace ChatHistory
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
+		std::shared_ptr<LoggingStateKeeper> LoggingStateKeeper_;
 		std::shared_ptr<StorageManager> StorageMgr_;
 		std::shared_ptr<STGuard<Core>> Guard_;
 		QAction *ActionHistory_;

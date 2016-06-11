@@ -28,10 +28,6 @@
  **********************************************************************/
 
 #include "core.h"
-#include <QSettings>
-#include <QCoreApplication>
-#include <QtDebug>
-#include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
 {
@@ -43,7 +39,6 @@ namespace ChatHistory
 
 	Core::Core ()
 	{
-		LoadDisabled ();
 	}
 
 	std::shared_ptr<Core> Core::Instance ()
@@ -55,59 +50,6 @@ namespace ChatHistory
 
 	Core::~Core ()
 	{
-	}
-
-	bool Core::IsLoggingEnabled (QObject *entryObj) const
-	{
-		const auto entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "could not be casted to ICLEntry";
-			return true;
-		}
-
-		return IsLoggingEnabled (entry);
-	}
-
-	bool Core::IsLoggingEnabled (ICLEntry *entry) const
-	{
-		return !DisabledIDs_.contains (entry->GetEntryID ());
-	}
-
-	void Core::SetLoggingEnabled (QObject *entryObj, bool enable)
-	{
-		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
-		if (!entry)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< entryObj
-					<< "could not be casted to ICLEntry";
-			return;
-		}
-
-		const QString& id = entry->GetEntryID ();
-		if (enable)
-			DisabledIDs_.remove (id);
-		else
-			DisabledIDs_ << id;
-
-		SaveDisabled ();
-	}
-
-	void Core::LoadDisabled ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
-		DisabledIDs_ = settings.value ("DisabledIDs").toStringList ().toSet ();
-	}
-
-	void Core::SaveDisabled ()
-	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_ChatHistory");
-		settings.setValue ("DisabledIDs", QStringList (DisabledIDs_.toList ()));
 	}
 }
 }

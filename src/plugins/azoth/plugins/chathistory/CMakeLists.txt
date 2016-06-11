@@ -18,6 +18,7 @@ set (CHATHISTORY_SRCS
 	xmlsettingsmanager.cpp
 	historyvieweventfilter.cpp
 	storagemanager.cpp
+	loggingstatekeeper.cpp
 	)
 set (CHATHISTORY_FORMS
 	chathistorywidget.ui

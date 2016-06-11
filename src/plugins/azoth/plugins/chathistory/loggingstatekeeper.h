@@ -29,45 +29,31 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
 #include <QSet>
-#include <QVariantMap>
-#include <interfaces/ihavetabs.h>
-#include <interfaces/azoth/ihistoryplugin.h>
+#include <QString>
 
-template<typename>
-class QFuture;
+class QObject;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-class IMessage;
-class IProxyObject;
+class ICLEntry;
 
 namespace ChatHistory
 {
-	template<typename T>
-	class STGuard
+	class LoggingStateKeeper
 	{
-		std::shared_ptr<T> C_;
+		QSet<QString> DisabledIDs_;
 	public:
-		STGuard ()
-		: C_ (T::Instance ())
-		{}
-	};
+		LoggingStateKeeper ();
 
-	class Core : public QObject
-	{
-		Q_OBJECT
-		static std::shared_ptr<Core> InstPtr_;
-
-		Core ();
-	public:
-		static std::shared_ptr<Core> Instance ();
-
-		~Core ();
+		bool IsLoggingEnabled (QObject*) const;
+		bool IsLoggingEnabled (ICLEntry*) const;
+		void SetLoggingEnabled (QObject*, bool);
+	private:
+		void LoadDisabled ();
+		void SaveDisabled ();
 	};
 }
 }

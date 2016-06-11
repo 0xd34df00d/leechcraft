@@ -40,7 +40,7 @@
 #include <interfaces/azoth/irichtextmessage.h>
 #include "storagethread.h"
 #include "storage.h"
-#include "core.h"
+#include "loggingstatekeeper.h"
 
 namespace LeechCraft
 {
@@ -48,9 +48,9 @@ namespace Azoth
 {
 namespace ChatHistory
 {
-	StorageManager::StorageManager (Core *core)
+	StorageManager::StorageManager (LoggingStateKeeper *keeper)
 	: StorageThread_ { std::make_shared<StorageThread> () }
-	, Core_ { core }
+	, LoggingStateKeeper_ { keeper }
 	{
 		StorageThread_->SetPaused (true);
 		StorageThread_->SetAutoQuit (true);
@@ -126,7 +126,7 @@ namespace ChatHistory
 					<< msg->OtherPart ();
 			return;
 		}
-		if (!Core_->IsLoggingEnabled (entry))
+		if (!LoggingStateKeeper_->IsLoggingEnabled (entry))
 			return;
 
 		const auto irtm = qobject_cast<IRichTextMessage*> (msgObj);
