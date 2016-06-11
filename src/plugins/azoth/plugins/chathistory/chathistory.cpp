@@ -54,7 +54,7 @@ namespace ChatHistory
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("azoth_chathistory"));
+		Util::InstallTranslator ("azoth_chathistory");
 
 		XSD_.reset (new Util::XmlSettingsDialog);
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");

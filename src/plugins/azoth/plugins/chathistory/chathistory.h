@@ -42,8 +42,6 @@
 #include <interfaces/azoth/ihistoryplugin.h>
 #include "core.h"
 
-class QTranslator;
-
 namespace LeechCraft
 {
 namespace Azoth
@@ -75,7 +73,6 @@ namespace ChatHistory
 
 		std::shared_ptr<StorageManager> StorageMgr_;
 		std::shared_ptr<STGuard<Core>> Guard_;
-		std::shared_ptr<QTranslator> Translator_;
 		QAction *ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionHistory_;
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
