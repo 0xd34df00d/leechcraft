@@ -31,7 +31,6 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <QtDebug>
-#include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/iclentry.h>
 
 namespace LeechCraft
@@ -78,16 +77,6 @@ namespace ChatHistory
 	ICoreProxy_ptr Core::GetCoreProxy () const
 	{
 		return CoreProxy_;
-	}
-
-	void Core::SetPluginProxy (QObject *proxy)
-	{
-		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
-	}
-
-	IProxyObject* Core::GetPluginProxy () const
-	{
-		return PluginProxy_;
 	}
 
 	bool Core::IsLoggingEnabled (QObject *entryObj) const

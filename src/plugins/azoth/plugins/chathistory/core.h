@@ -65,7 +65,6 @@ namespace ChatHistory
 		static std::shared_ptr<Core> InstPtr_;
 
 		ICoreProxy_ptr CoreProxy_;
-		IProxyObject *PluginProxy_ = nullptr;
 		QSet<QString> DisabledIDs_;
 
 		TabClassInfo TabClass_;
@@ -80,9 +79,6 @@ namespace ChatHistory
 
 		void SetCoreProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetCoreProxy () const;
-
-		void SetPluginProxy (QObject*);
-		IProxyObject* GetPluginProxy () const;
 
 		bool IsLoggingEnabled (QObject*) const;
 		bool IsLoggingEnabled (ICLEntry*) const;

@@ -201,7 +201,6 @@ namespace ChatHistory
 	void Plugin::initPlugin (QObject *proxy)
 	{
 		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
-		Core::Instance ()->SetPluginProxy (proxy);
 	}
 
 	void Plugin::hookEntryActionAreasRequested (IHookProxy_ptr proxy,
