@@ -68,6 +68,7 @@ namespace ChatHistory
 			IProxyObject * const PluginProxy_;
 			const ICoreProxy_ptr CoreProxy_;
 			Plugin * const ParentMultiTabs_;
+			const TabClassInfo Info_;
 		};
 	private:
 		InitParams Params_;

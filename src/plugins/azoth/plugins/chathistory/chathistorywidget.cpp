@@ -128,7 +128,7 @@ namespace ChatHistory
 
 	TabClassInfo ChatHistoryWidget::GetTabClassInfo () const
 	{
-		return Core::Instance ()->GetTabClass ();
+		return Params_.Info_;
 	}
 
 	QObject* ChatHistoryWidget::ParentMultiTabs ()
