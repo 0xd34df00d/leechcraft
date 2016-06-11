@@ -57,6 +57,8 @@ namespace ChatHistory
 	{
 		Util::InstallTranslator ("azoth_chathistory");
 
+		CoreProxy_ = proxy;
+
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
 		connect (XSD_.get (),
