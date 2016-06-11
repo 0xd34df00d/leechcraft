@@ -65,11 +65,11 @@ namespace LackMan
 
 			const auto& e = Util::MakeEntity (url,
 					location,
-					LeechCraft::Internal |
-						LeechCraft::DoNotNotifyUser |
-						LeechCraft::DoNotSaveInHistory |
-						LeechCraft::NotPersistent |
-						LeechCraft::DoNotAnnounceEntity);
+					Internal |
+						DoNotNotifyUser |
+						DoNotSaveInHistory |
+						NotPersistent |
+						DoNotAnnounceEntity);
 			const auto& result = iem->DelegateEntity (e);
 			if (!result)
 			{
