@@ -61,10 +61,11 @@ namespace ChatHistory
 
 	using namespace std::placeholders;
 
-	ChatHistoryWidget::ChatHistoryWidget (StorageManager *sm, IProxyObject *ipo, ICLEntry *entry, QWidget *parent)
+	ChatHistoryWidget::ChatHistoryWidget (StorageManager *sm, IProxyObject *ipo, const ICoreProxy_ptr& proxy, ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
 	, StorageMgr_ (sm)
 	, PluginProxy_ (ipo)
+	, CoreProxy_ (proxy)
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
@@ -75,14 +76,13 @@ namespace ChatHistory
 		Ui_.VertSplitter_->setStretchFactor (0, 0);
 		Ui_.VertSplitter_->setStretchFactor (1, 4);
 
-		FindBox_ = new ChatFindBox (Core::Instance ()->GetCoreProxy (), Ui_.HistView_);
+		FindBox_ = new ChatFindBox (proxy, Ui_.HistView_);
 		connect (FindBox_,
 				SIGNAL (next (QString, ChatFindBox::FindFlags)),
 				this,
 				SLOT (handleNext (QString, ChatFindBox::FindFlags)));
 		FindBox_->SetEscCloses (false);
 
-		auto proxy = Core::Instance ()->GetCoreProxy ();
 		new Util::ClearLineEditAddon (proxy, Ui_.ContactsSearch_);
 
 		const auto hvef = new HistoryViewEventFilter (Ui_.HistView_);
@@ -421,7 +421,7 @@ namespace ChatHistory
 						tr ("No more search results for %1, searching from the beginning now.")
 							.arg ("<em>" + PreviousSearchText_ + "</em>"),
 						PInfo_);
-				Core::Instance ()->GetCoreProxy ()->GetEntityManager ()->HandleEntity (e);
+				CoreProxy_->GetEntityManager ()->HandleEntity (e);
 
 				RequestSearch (FindBox_->GetFlags ());
 			}
