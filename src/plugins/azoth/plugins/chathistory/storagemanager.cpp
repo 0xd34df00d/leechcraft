@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "storagemanager.h"
+#include <cmath>
 #include <QMessageBox>
 #include <util/util.h>
 #include <util/threads/futures.h>
