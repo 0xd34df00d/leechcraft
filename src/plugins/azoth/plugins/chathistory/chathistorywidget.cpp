@@ -44,6 +44,7 @@
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "historyvieweventfilter.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -60,8 +61,9 @@ namespace ChatHistory
 
 	using namespace std::placeholders;
 
-	ChatHistoryWidget::ChatHistoryWidget (ICLEntry *entry, QWidget *parent)
+	ChatHistoryWidget::ChatHistoryWidget (StorageManager *sm, ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
+	, StorageMgr_ (sm)
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))

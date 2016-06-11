@@ -51,6 +51,7 @@ namespace ChatHistory
 {
 	class Plugin;
 	class ChatFindBox;
+	class StorageManager;
 
 	class ChatHistoryWidget : public QWidget
 							, public ITabWidget
@@ -59,6 +60,8 @@ namespace ChatHistory
 		Q_INTERFACES (ITabWidget)
 
 		Ui::ChatHistoryWidget Ui_;
+
+		StorageManager * const StorageMgr_;
 
 		const int PerPageAmount_;
 
@@ -89,7 +92,7 @@ namespace ChatHistory
 	public:
 		static void SetParentMultiTabs (Plugin*);
 
-		ChatHistoryWidget (ICLEntry* = 0, QWidget* = 0);
+		ChatHistoryWidget (StorageManager*, ICLEntry* = 0, QWidget* = 0);
 
 		void Remove ();
 		QToolBar* GetToolBar () const;

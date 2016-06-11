@@ -337,7 +337,7 @@ namespace ChatHistory
 
 	void Plugin::handleHistoryRequested ()
 	{
-		ChatHistoryWidget *wh = new ChatHistoryWidget;
+		const auto wh = new ChatHistoryWidget { StorageMgr_.get () };
 		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 	}
@@ -372,7 +372,7 @@ namespace ChatHistory
 			return;
 		}
 
-		ChatHistoryWidget *wh = new ChatHistoryWidget (entry);
+		const auto wh = new ChatHistoryWidget { StorageMgr_.get (), entry };
 		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);
