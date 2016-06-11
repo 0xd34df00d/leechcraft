@@ -42,11 +42,10 @@ namespace ChatHistory
 
 	class StorageManager : public QObject
 	{
-		StorageThread *StorageThread_;
+		const std::shared_ptr<StorageThread> StorageThread_;
 		Core * const Core_;
 	public:
 		StorageManager (Core*);
-		~StorageManager ();
 
 		void Process (QObject*);
 		void AddLogItems (const QString&, const QString&, const QString&, const QList<LogItem>&, bool);

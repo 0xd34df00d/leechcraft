@@ -48,7 +48,7 @@ namespace Azoth
 namespace ChatHistory
 {
 	StorageManager::StorageManager (Core *core)
-	: StorageThread_ (new StorageThread ())
+	: StorageThread_ { std::make_shared<StorageThread> () }
 	, Core_ { core }
 	{
 		StorageThread_->SetPaused (true);
@@ -81,11 +81,6 @@ namespace ChatHistory
 										};
 							});
 				};
-	}
-
-	StorageManager::~StorageManager ()
-	{
-		delete StorageThread_;
 	}
 
 	namespace
