@@ -44,6 +44,7 @@
 #include "chathistorywidget.h"
 #include "historymessage.h"
 #include "xmlsettingsmanager.h"
+#include "storagemanager.h"
 
 namespace LeechCraft
 {
@@ -61,6 +62,8 @@ namespace ChatHistory
 				SIGNAL (pushButtonClicked (QString)),
 				this,
 				SLOT (handlePushButton (QString)));
+
+		StorageMgr_ = std::make_shared<StorageManager> ();
 
 		Core::Instance ()->SetCoreProxy (proxy);
 

@@ -51,6 +51,7 @@ namespace Azoth
 namespace ChatHistory
 {
 	class ChatHistoryWidget;
+	class StorageManager;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -72,6 +73,7 @@ namespace ChatHistory
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
+		std::shared_ptr<StorageManager> StorageMgr_;
 		std::shared_ptr<STGuard<Core>> Guard_;
 		std::shared_ptr<QTranslator> Translator_;
 		QAction *ActionHistory_;
