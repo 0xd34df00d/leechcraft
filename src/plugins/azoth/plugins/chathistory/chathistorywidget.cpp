@@ -61,9 +61,10 @@ namespace ChatHistory
 
 	using namespace std::placeholders;
 
-	ChatHistoryWidget::ChatHistoryWidget (StorageManager *sm, ICLEntry *entry, QWidget *parent)
+	ChatHistoryWidget::ChatHistoryWidget (StorageManager *sm, IProxyObject *ipo, ICLEntry *entry, QWidget *parent)
 	: QWidget (parent)
 	, StorageMgr_ (sm)
+	, PluginProxy_ (ipo)
 	, PerPageAmount_ (XmlSettingsManager::Instance ().property ("ItemsPerPage").toInt ())
 	, ContactsModel_ (new QStandardItemModel (this))
 	, SortFilter_ (new QSortFilterProxyModel (this))
@@ -151,10 +152,9 @@ namespace ChatHistory
 
 	void ChatHistoryWidget::HandleGotOurAccounts (const QStringList& accounts)
 	{
-		const auto proxy = Core::Instance ()->GetPluginProxy ();
 		for (const auto& accountID : accounts)
 		{
-			const auto account = qobject_cast<IAccount*> (proxy->GetAccount (accountID));
+			const auto account = qobject_cast<IAccount*> (PluginProxy_->GetAccount (accountID));
 			if (!account)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -191,10 +191,8 @@ namespace ChatHistory
 
 	namespace
 	{
-		QString GetEntryName (const QString& entryId, const QString& accountId, const QString& cachedName)
+		QString GetEntryName (const QString& entryId, const QString& accountId, const QString& cachedName, IProxyObject *proxy)
 		{
-			const auto proxy = Core::Instance ()->GetPluginProxy ();
-
 			if (const auto entry = qobject_cast<ICLEntry*> (proxy->GetEntry (entryId, accountId)))
 			{
 				const auto& entryName = entry->GetEntryName ();
@@ -241,7 +239,7 @@ namespace ChatHistory
 		for (int i = 0; i < users.size (); ++i)
 		{
 			const auto& user = users.at (i);
-			const auto& name = GetEntryName (user, id, nameCache.value (i));
+			const auto& name = GetEntryName (user, id, nameCache.value (i), PluginProxy_);
 
 			EntryID2NameCache_ [user] = name;
 
@@ -279,10 +277,9 @@ namespace ChatHistory
 		Amount_ = 0;
 		Ui_.HistView_->clear ();
 
-		auto& formatter = Core::Instance ()->GetPluginProxy ()->GetFormatterProxy ();
+		auto& formatter = PluginProxy_->GetFormatterProxy ();
 
-		const auto entry = qobject_cast<ICLEntry*> (Core::Instance ()->
-					GetPluginProxy ()->GetEntry (entryId, accountId));
+		const auto entry = qobject_cast<ICLEntry*> (PluginProxy_->GetEntry (entryId, accountId));
 		const auto& name = entry ?
 				entry->GetEntryName () :
 				EntryID2NameCache_.value (entryId, entryId);
@@ -301,10 +298,8 @@ namespace ChatHistory
 				entry->GetParentAccount ()->GetOurNick () :
 				QString ();
 
-		auto preNick = Core::Instance ()->GetPluginProxy ()->
-				GetSettingsManager ()->property ("PreNickText").toString ();
-		auto postNick = Core::Instance ()->GetPluginProxy ()->
-				GetSettingsManager ()->property ("PostNickText").toString ();
+		auto preNick = PluginProxy_->GetSettingsManager ()->property ("PreNickText").toString ();
+		auto postNick = PluginProxy_->GetSettingsManager ()->property ("PostNickText").toString ();
 		preNick.replace ('<', "&lt;");
 		postNick.replace ('<', "&lt;");
 

@@ -46,6 +46,7 @@ struct Entity;
 namespace Azoth
 {
 class ICLEntry;
+class IProxyObject;
 
 namespace ChatHistory
 {
@@ -62,6 +63,7 @@ namespace ChatHistory
 		Ui::ChatHistoryWidget Ui_;
 
 		StorageManager * const StorageMgr_;
+		IProxyObject * const PluginProxy_;
 
 		const int PerPageAmount_;
 
@@ -92,7 +94,7 @@ namespace ChatHistory
 	public:
 		static void SetParentMultiTabs (Plugin*);
 
-		ChatHistoryWidget (StorageManager*, ICLEntry* = 0, QWidget* = 0);
+		ChatHistoryWidget (StorageManager*, IProxyObject*, ICLEntry* = 0, QWidget* = 0);
 
 		void Remove ();
 		QToolBar* GetToolBar () const;
