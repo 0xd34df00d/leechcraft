@@ -47,6 +47,8 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IProxyObject;
+
 namespace ChatHistory
 {
 	class ChatHistoryWidget;
@@ -79,6 +81,8 @@ namespace ChatHistory
 		QHash<QObject*, QAction*> Entry2ActionEnableHistory_;
 
 		QAction *SeparatorAction_;
+
+		IProxyObject *PluginProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();

@@ -40,6 +40,7 @@
 #include <interfaces/azoth/iaccount.h>
 #include <interfaces/azoth/azothcommon.h>
 #include <interfaces/azoth/imucentry.h>
+#include <interfaces/azoth/iproxyobject.h>
 #include "core.h"
 #include "chathistorywidget.h"
 #include "historymessage.h"
@@ -199,6 +200,7 @@ namespace ChatHistory
 
 	void Plugin::initPlugin (QObject *proxy)
 	{
+		PluginProxy_ = qobject_cast<IProxyObject*> (proxy);
 		Core::Instance ()->SetPluginProxy (proxy);
 	}
 
