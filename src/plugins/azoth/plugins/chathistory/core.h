@@ -65,15 +65,11 @@ namespace ChatHistory
 
 		QSet<QString> DisabledIDs_;
 
-		TabClassInfo TabClass_;
-
 		Core ();
 	public:
 		static std::shared_ptr<Core> Instance ();
 
 		~Core ();
-
-		TabClassInfo GetTabClass () const;
 
 		bool IsLoggingEnabled (QObject*) const;
 		bool IsLoggingEnabled (ICLEntry*) const;

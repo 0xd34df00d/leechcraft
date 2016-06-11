@@ -43,13 +43,6 @@ namespace ChatHistory
 
 	Core::Core ()
 	{
-		TabClass_.TabClass_ = "Chathistory";
-		TabClass_.VisibleName_ = tr ("Chat history");
-		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
-		TabClass_.Priority_ = 40;
-		TabClass_.Features_ = TFOpenableByRequest;
-		TabClass_.Icon_ = QIcon ("lcicons:/azoth/chathistory/resources/images/chathistory.svg");
-
 		LoadDisabled ();
 	}
 
@@ -62,11 +55,6 @@ namespace ChatHistory
 
 	Core::~Core ()
 	{
-	}
-
-	TabClassInfo Core::GetTabClass () const
-	{
-		return TabClass_;
 	}
 
 	bool Core::IsLoggingEnabled (QObject *entryObj) const

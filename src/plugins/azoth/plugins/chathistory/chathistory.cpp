@@ -59,6 +59,13 @@ namespace ChatHistory
 
 		CoreProxy_ = proxy;
 
+		TabClass_.TabClass_ = "Chathistory";
+		TabClass_.VisibleName_ = tr ("Chat history");
+		TabClass_.Description_ = tr ("Chat history viewer for the Azoth IM");
+		TabClass_.Priority_ = 40;
+		TabClass_.Features_ = TFOpenableByRequest;
+		TabClass_.Icon_ = QIcon ("lcicons:/azoth/chathistory/resources/images/chathistory.svg");
+
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "azothchathistorysettings.xml");
 		connect (XSD_.get (),
@@ -130,9 +137,7 @@ namespace ChatHistory
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << Core::Instance ()->GetTabClass ();
-		return result;
+		return { TabClass_ };
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tabClass)
@@ -336,7 +341,7 @@ namespace ChatHistory
 
 	void Plugin::handleHistoryRequested ()
 	{
-		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, Core::Instance ()->GetTabClass () } };
+		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ } };
 		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 	}
@@ -371,7 +376,7 @@ namespace ChatHistory
 			return;
 		}
 
-		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, Core::Instance ()->GetTabClass () }, entry };
+		const auto wh = new ChatHistoryWidget { { StorageMgr_.get (), PluginProxy_, CoreProxy_, this, TabClass_ }, entry };
 		InitWidget (wh);
 		emit addNewTab (tr ("Chat history"), wh);
 		emit raiseTab (wh);

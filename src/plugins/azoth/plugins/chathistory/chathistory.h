@@ -72,6 +72,8 @@ namespace ChatHistory
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.ChatHistory")
 
+		TabClassInfo TabClass_;
+
 		Util::XmlSettingsDialog_ptr XSD_;
 
 		std::shared_ptr<StorageManager> StorageMgr_;
