@@ -34,6 +34,19 @@ namespace LeechCraft
 {
 namespace Util
 {
+	WorkerThreadBase::~WorkerThreadBase ()
+	{
+		if (!IsAutoQuit_)
+			return;
+
+		quit ();
+		wait (2000);
+
+		if (isRunning ())
+			qWarning () << Q_FUNC_INFO
+					<< "thread is still running";
+	}
+
 	void WorkerThreadBase::SetPaused (bool paused)
 	{
 		if (paused == IsPaused_)
@@ -42,6 +55,11 @@ namespace Util
 		IsPaused_ = paused;
 		if (!paused)
 			emit rotateFuncs ();
+	}
+
+	void WorkerThreadBase::SetAutoQuit (bool autoQuit)
+	{
+		IsAutoQuit_ = autoQuit;
 	}
 
 	void WorkerThreadBase::run ()

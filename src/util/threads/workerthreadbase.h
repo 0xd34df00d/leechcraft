@@ -49,13 +49,16 @@ namespace Util
 		Q_OBJECT
 
 		std::atomic_bool IsPaused_ { false };
+		std::atomic_bool IsAutoQuit_ { false };
 
 		QMutex FunctionsMutex_;
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
+		virtual ~WorkerThreadBase ();
 
 		void SetPaused (bool);
+		void SetAutoQuit (bool);
 
 		template<typename F>
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
