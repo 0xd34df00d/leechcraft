@@ -52,6 +52,7 @@ namespace ChatHistory
 	, Core_ { core }
 	{
 		StorageThread_->SetPaused (true);
+		StorageThread_->SetAutoQuit (true);
 
 		auto checker = new Util::ConsistencyChecker { Storage::GetDatabasePath (), "Azoth ChatHistory" };
 		Util::Sequence (this, checker->StartCheck ()) >>
@@ -84,18 +85,7 @@ namespace ChatHistory
 
 	StorageManager::~StorageManager ()
 	{
-		StorageThread_->quit ();
-		StorageThread_->wait (2000);
-
-		if (StorageThread_->isRunning ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "storage thread still running, forcefully terminating...";
-			StorageThread_->terminate ();
-			StorageThread_->wait (5000);
-		}
-		else
-			delete StorageThread_;
+		delete StorageThread_;
 	}
 
 	namespace
