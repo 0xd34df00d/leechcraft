@@ -94,7 +94,7 @@ namespace Events
 		Port_ = 0;
 	}
 
-	void PlatformMac::IOCallback (io_service_t service, natural_t messageType, void *messageArgument)
+	void PlatformMac::IOCallback (io_service_t, natural_t messageType, void *messageArgument)
 	{
 		switch (messageType)
 		{
