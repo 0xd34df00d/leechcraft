@@ -198,8 +198,6 @@ namespace NetStoreManager
 
 		void handleCurrentIndexChanged (int index);
 
-		void handleGotFileUrl (const QUrl& url, const QByteArray&);
-
 		void handleGotChanges (const QList<Change>& changes);
 
 		void handleFilterTextChanged (const QString& text);

@@ -37,10 +37,15 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/sll/curry.h>
+#include <util/threads/futures.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "interfaces/netstoremanager/isupportfilelistings.h"
 #include "xmlsettingsmanager.h"
+#include "utils.h"
 
 inline uint qHash (const QStringList& id)
 {
@@ -112,12 +117,6 @@ namespace NetStoreManager
 					SIGNAL (upProgress (quint64, quint64, QString)),
 					this,
 					SLOT (handleUpProgress (quint64, quint64, QString)));
-
-			if (qobject_cast<ISupportFileListings*> (accObj))
-				connect (accObj,
-						SIGNAL (gotFileUrl (QUrl, QByteArray)),
-						this,
-						SLOT (handleGotURL (QUrl, QByteArray)));
 		}
 		else if (Uploads_ [acc].contains (path))
 		{
@@ -162,28 +161,6 @@ namespace NetStoreManager
 			ScheduleAutoshare (path);
 	}
 
-	void UpManager::handleGotURL (const QUrl& url, const QByteArray& id)
-	{
-		const auto& handlers = URLHandlers_.take (id);
-		if (!handlers.isEmpty ())
-		{
-			Q_FOREACH (auto handler, handlers)
-				handler (url, id);
-
-			return;
-		}
-
-		const QString& urlStr = url.toString ();
-		qApp->clipboard ()->setText (urlStr, QClipboard::Clipboard);
-		qApp->clipboard ()->setText (urlStr, QClipboard::Selection);
-
-		auto plugin = GetSenderPlugin ();
-		const Entity& e = Util::MakeNotification (plugin->GetStorageName (),
-				tr ("URL is pasted into clipboard."),
-				PInfo_);
-		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
 	void UpManager::handleError (const QString& str, const QString& path)
 	{
 		qWarning () << Q_FUNC_INFO << str << path;
@@ -211,29 +188,28 @@ namespace NetStoreManager
 	void UpManager::handleUpFinished (const QByteArray& id, const QString& filePath)
 	{
 		RemovePending (filePath);
+		const auto& fileName = QFileInfo { filePath }.fileName ();
 		const auto& e = Util::MakeNotification ("NetStoreManager",
 				tr ("File %1 was uploaded successfully")
-						.arg ("<em>" + QFileInfo (filePath).fileName () + "</em>"),
+						.arg ("<em>" + fileName + "</em>"),
 				PInfo_);
 		Proxy_->GetEntityManager ()->HandleEntity (e);
 
-		URLHandlers_ [id] << [this, filePath] (const QUrl& url, const QByteArray&)
-		{
-			emit fileUploaded (filePath, url);
-		};
+		if (!Autoshare_.remove (filePath))
+			return;
 
-		if (Autoshare_.remove (filePath))
+		auto ifl = qobject_cast<ISupportFileListings*> (sender ());
+		if (!ifl)
 		{
-			auto ifl = qobject_cast<ISupportFileListings*> (sender ());
-			if (!ifl)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "account doesn't support file listings, cannot autoshare";
-				return;
-			}
-
-			ifl->RequestUrl (id);
+			qWarning () << Q_FUNC_INFO
+					<< "account doesn't support file listings, cannot autoshare";
+			return;
 		}
+
+		Util::Sequence (this, ifl->RequestUrl (id)) >>
+				Utils::HandleRequestFileUrlResult (Proxy_->GetEntityManager (),
+						tr ("Failed to auto-share file %1.").arg ("<em>" + fileName + "</em>"),
+						[=] (const QUrl& url) { emit fileUploaded (filePath, url); });
 	}
 
 	void UpManager::handleUpProgress (quint64 done, quint64 total, const QString& filepath)

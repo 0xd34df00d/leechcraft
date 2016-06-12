@@ -29,13 +29,18 @@
 
 #pragma once
 
+#include <boost/variant/variant_fwd.hpp>
 #include <QStringList>
 #include <QtPlugin>
 #include <QUrl>
 #include <QMap>
 #include <QDateTime>
+#include <util/sll/eitherfwd.h>
 
 class QStandardItem;
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -123,6 +128,9 @@ namespace NetStoreManager
 	public:
 		virtual ~ISupportFileListings () {}
 
+		struct InvalidItem {};
+		struct UserCancelled {};
+
 		virtual ListingOps GetListingOps () const = 0;
 		virtual HashAlgorithm GetCheckSumAlgorithm () const = 0;
 
@@ -135,16 +143,17 @@ namespace NetStoreManager
 		virtual void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId) = 0;
 		virtual void Move (const QList<QByteArray>& ids, const QByteArray& newParentId) = 0;
 
-		virtual void RequestUrl (const QByteArray& id) = 0;
+		using RequestUrlError_t = boost::variant<InvalidItem, UserCancelled, QString>;
+		using RequestUrlResult_t = Util::Either<RequestUrlError_t, QUrl>;
+		virtual QFuture<RequestUrlResult_t> RequestUrl (const QByteArray& id) = 0;
+
 		virtual void CreateDirectory (const QString& name, const QByteArray& parentId) = 0;
 
 		virtual void Rename (const QByteArray& id, const QString& newName) = 0;
 		virtual void RequestChanges () = 0;
-
 	protected:
 		virtual void gotListing (const QList<StorageItem>& items) = 0;
 		virtual void listingUpdated (const QByteArray& parentId) = 0;
-		virtual void gotFileUrl (const QUrl& url, const QByteArray& id) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;
 		virtual void gotNewItem (const StorageItem& item, const QByteArray& parentId) = 0;

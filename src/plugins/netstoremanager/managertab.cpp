@@ -42,6 +42,9 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "interfaces/netstoremanager/istorageplugin.h"
 #include "accountsmanager.h"
@@ -49,6 +52,7 @@
 #include "xmlsettingsmanager.h"
 #include "filesproxymodel.h"
 #include "downmanager.h"
+#include "utils.h"
 
 namespace LeechCraft
 {
@@ -326,10 +330,6 @@ namespace NetStoreManager
 				SIGNAL (gotNewItem (StorageItem, QByteArray)),
 				this,
 				SLOT (handleGotNewItem (StorageItem, QByteArray)));
-		connect (acc->GetQObject (),
-				SIGNAL (gotFileUrl (QUrl, QByteArray)),
-				this,
-				SLOT (handleGotFileUrl (QUrl, QByteArray)));
 		connect (acc->GetQObject (),
 				SIGNAL (gotChanges (QList<Change>)),
 				this,
@@ -921,15 +921,32 @@ namespace NetStoreManager
 
 	void ManagerTab::flCopyUrl ()
 	{
-		IStorageAccount *acc = GetCurrentAccount ();
+		const auto acc = GetCurrentAccount ();
 		if (!acc)
 			return;
 
-		const QByteArray id = GetCurrentID ();
+		const auto urlHandler = [this] (const QUrl& url)
+		{
+			const auto& str = url.toString ();
+			qApp->clipboard ()->setText (str, QClipboard::Clipboard);
+			qApp->clipboard ()->setText (str, QClipboard::Selection);
+
+			const auto& text = tr ("File URL has been copied to the clipboard.");
+			Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
+		};
+
+		const auto& id = GetCurrentID ();
 		if (Id2Item_ [id].Shared_)
-			handleGotFileUrl (Id2Item_ [id].ShareUrl_, id);
-		else
-			qobject_cast<ISupportFileListings*> (acc->GetQObject ())->RequestUrl (id);
+		{
+			urlHandler (Id2Item_ [id].ShareUrl_);
+			return;
+		}
+
+		const auto isfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		Util::Sequence (this, isfl->RequestUrl (id)) >>
+				Utils::HandleRequestFileUrlResult (Proxy_->GetEntityManager (),
+						tr ("Unable to request file URL."),
+						urlHandler);
 	}
 
 	void ManagerTab::showTrashContent (bool show)
@@ -1068,21 +1085,6 @@ namespace NetStoreManager
 
 		XmlSettingsManager::Instance ().setProperty ("LastActiveAccount",
 				acc->GetUniqueID ());
-	}
-
-	void ManagerTab::handleGotFileUrl (const QUrl& url, const QByteArray&)
-	{
-		if (url.isEmpty () ||
-				!url.isValid ())
-			return;
-
-		const QString& str = url.toString ();
-		qApp->clipboard ()->setText (str, QClipboard::Clipboard);
-		qApp->clipboard ()->setText (str, QClipboard::Selection);
-
-		QString text = tr ("File URL has been copied to the clipboard.");
-		Proxy_->GetEntityManager ()->
-				HandleEntity (Util::MakeNotification ("NetStoreManager", text, PInfo_));
 	}
 
 	void ManagerTab::handleGotChanges(const QList<Change>& changes)

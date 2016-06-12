@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "utils.h"
+#include <QtDebug>
+#include <util/sll/visitor.h>
+#include <util/sll/either.h>
+#include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 
 namespace LeechCraft
 {
@@ -73,6 +78,33 @@ namespace Utils
 		return result;
 	}
 
+	std::function<void (ISupportFileListings::RequestUrlResult_t)> HandleRequestFileUrlResult (IEntityManager *entityMgr,
+			const QString& errorText,
+			const std::function<void (QUrl)>& urlHandler)
+	{
+		return [=] (const ISupportFileListings::RequestUrlResult_t& result)
+		{
+			Util::Visit (result.AsVariant (),
+					urlHandler,
+					[&] (const ISupportFileListings::RequestUrlError_t& error)
+					{
+						Util::Visit (error,
+								[] (const ISupportFileListings::UserCancelled&) {},
+								[&] (const ISupportFileListings::InvalidItem&)
+								{
+									qWarning () << Q_FUNC_INFO
+											<< "invalid item";
+								},
+								[&] (const QString& errStr)
+								{
+									const auto& e = Util::MakeNotification ("NetStoreManager",
+											errorText + " " + errStr,
+											PCritical_);
+									entityMgr->HandleEntity (e);
+								});
+					});
+		};
+	}
 }
 }
 }

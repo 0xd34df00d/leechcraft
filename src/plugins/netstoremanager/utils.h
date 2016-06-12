@@ -29,9 +29,12 @@
 
 #pragma once
 
+#include <functional>
 #include <QString>
 #include <QDir>
 #include "interfaces/netstoremanager/isupportfilelistings.h"
+
+class IEntityManager;
 
 namespace LeechCraft
 {
@@ -41,6 +44,10 @@ namespace Utils
 {
 	QStringList ScanDir (QDir::Filters filter, const QString& path, bool recursive = false);
 	bool RemoveDirectoryContent (const QString& dirPath);
+
+	std::function<void (ISupportFileListings::RequestUrlResult_t)> HandleRequestFileUrlResult (IEntityManager *entityMgr,
+			const QString& errorText,
+			const std::function<void (QUrl)>& urlHandler);
 }
 }
 }

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_NETSTOREMANAGER_UPMANAGER_H
-#define PLUGINS_NETSTOREMANAGER_UPMANAGER_H
+#pragma once
+
 #include <functional>
 #include <QObject>
 #include <QHash>
@@ -59,9 +59,6 @@ namespace NetStoreManager
 		QHash<IStorageAccount*, QHash<QString, QList<QStandardItem*>>> ReprItems_;
 		QSet<QString> Autoshare_;
 
-		typedef std::function<void (QUrl, QByteArray)> URLHandler_f;
-		QHash<QByteArray, QList<URLHandler_f>> URLHandlers_;
-
 		ICoreProxy_ptr Proxy_;
 	public:
 		UpManager (ICoreProxy_ptr proxy, QObject* = 0);
@@ -75,7 +72,6 @@ namespace NetStoreManager
 		void handleUploadRequest (IStorageAccount *isa, const QString& file,
 				const QByteArray& id = QByteArray (), bool byHand = true);
 	private slots:
-		void handleGotURL (const QUrl& url, const QByteArray& id);
 		void handleError (const QString& str, const QString& path);
 		void handleUpStatusChanged (const QString& status, const QString& filePath);
 		void handleUpFinished (const QByteArray& id, const QString& filePath);
@@ -85,5 +81,3 @@ namespace NetStoreManager
 	};
 }
 }
-
-#endif
