@@ -30,6 +30,7 @@
 #include "loggingstatekeeper.h"
 #include <QSettings>
 #include <QCoreApplication>
+#include <QStringList>
 #include <QtDebug>
 #include <interfaces/azoth/iclentry.h>
 
