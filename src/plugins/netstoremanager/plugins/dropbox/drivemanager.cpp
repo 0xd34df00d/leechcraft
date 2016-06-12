@@ -39,7 +39,9 @@
 #include <interfaces/core/irootwindowsmanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/either.h>
 #include <util/util.h>
+#include <util/threads/futures.h>
 #include "account.h"
 #include "chunkiodevice.h"
 #include "core.h"
@@ -72,12 +74,17 @@ namespace DBox
 		ApiCallQueue_ << [this, parentId] () { RequestFiles (parentId); };
 	}
 
-	void DriveManager::ShareEntry (const QString& id, ShareType type)
+	QFuture<DriveManager::ShareResult_t> DriveManager::ShareEntry (const QString& id, ShareType type)
 	{
 		if (id.isEmpty ())
-			return;
+			throw std::runtime_error { std::string { Q_FUNC_INFO } + ": empty id" };
+
+		QFutureInterface<ShareResult_t> iface;
+
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, id, type] () { RequestSharingEntry (id, type); };
+		ApiCallQueue_ << [this, id, type, iface] { RequestSharingEntry (id, type, iface); };
+
+		return iface.future ();
 	}
 
 	void DriveManager::CreateDirectory (const QString& name, const QString& parentId)
@@ -171,7 +178,7 @@ namespace DBox
 				SLOT (handleGotFiles ()));
 	}
 
-	void DriveManager::RequestSharingEntry (const QString& id, ShareType type)
+	void DriveManager::RequestSharingEntry (const QString& id, ShareType type, QFutureInterface<ShareResult_t> iface)
 	{
 		QString str;
 		switch (type)
@@ -191,13 +198,25 @@ namespace DBox
 		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader, "application/json");
 
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+		const auto reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->post (request, QByteArray ());
 
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRequestFileSharing ()));
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[reply, iface] () mutable
+			{
+				reply->deleteLater ();
+
+				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+				Util::ReportFutureResult (iface,
+						res.isNull () ?
+							ShareResult_t::Left (tr ("Unable to parse server reply.")) :
+							ShareResult_t::Right (res.toMap () ["url"].toUrl ()));
+			},
+			reply,
+			SIGNAL (finished ()),
+			reply
+		};
 	}
 
 	void DriveManager::RequestCreateDirectory (const QString& name, const QString& parentId)
@@ -460,24 +479,6 @@ namespace DBox
 		}
 
 		emit gotFiles (resList);
-	}
-
-	void DriveManager::handleRequestFileSharing ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (res.isNull ())
-			return;
-
-		const auto& map = res.toMap ();
-		qDebug () << Q_FUNC_INFO
-				<< "file shared successfully";
-		emit gotSharedFileUrl (map ["url"].toUrl (), map ["expires"].toDateTime ());
 	}
 
 	void DriveManager::handleCreateDirectory ()

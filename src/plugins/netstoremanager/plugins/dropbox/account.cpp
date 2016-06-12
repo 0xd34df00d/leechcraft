@@ -34,6 +34,10 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QFuture>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
+#include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "uploadmanager.h"
@@ -148,19 +152,21 @@ namespace DBox
 		DriveManager_->RefreshListing (parentId);
 	}
 
-	void Account::RequestUrl (const QByteArray& id)
+	namespace
+	{
+		static const QString PublicUrlTemplate { "https://dl.dropbox.com/u/%1/%2" };
+	}
+
+	QFuture<Account::RequestUrlResult_t> Account::RequestUrl (const QByteArray& id)
 	{
 		if (id.isNull ())
-			return;
+			return Util::MakeReadyFuture (RequestUrlResult_t::Left (InvalidItem {}));
 
 		const bool directLinkAvailable = id.startsWith ("/Public");
 		if (directLinkAvailable)
-		{
-			//Remove /Public from second params
-			emit gotFileUrl (QUrl (QString ("https://dl.dropbox.com/u/%1/%2")
-					.arg (UserID_, QString (id).remove ("/Public/"))), id);
-			return;
-		}
+			return Util::MakeReadyFuture (RequestUrlResult_t::Right (PublicUrlTemplate
+							.arg (UserID_)
+							.arg (QString { id }.remove ("/Public/"))));
 
 		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
 		QMessageBox mbox (QMessageBox::Question,
@@ -179,10 +185,16 @@ namespace DBox
 
 		mbox.exec ();
 
+		ShareType type;
 		if (mbox.clickedButton () == &dropboxShareLink)
-			DriveManager_->ShareEntry (id, ShareType::Share);
+			type = ShareType::Share;
 		else if (mbox.clickedButton () == &dropboxPreviewLink)
-			DriveManager_->ShareEntry (id, ShareType::Preview);
+			type = ShareType::Preview;
+		else
+			return Util::MakeReadyFuture (RequestUrlResult_t::Left (UserCancelled {}));
+
+		return DriveManager_->ShareEntry (id, type) *
+				RequestUrlResult_t::EmbeddingLeft ();
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
@@ -334,12 +346,6 @@ namespace DBox
 
 		emit gotListing (result);
 		emit listingUpdated (result.value (0).ParentID_);
-	}
-
-	void Account::handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate)
-	{
-		Q_UNUSED (expiredDate)
-		emit gotFileUrl (url, QByteArray ());
 	}
 
 	void Account::handleGotNewItem (const DBoxItem& item)

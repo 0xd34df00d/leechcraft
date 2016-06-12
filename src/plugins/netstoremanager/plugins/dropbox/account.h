@@ -86,7 +86,7 @@ namespace DBox
 
 		void RefreshListing ();
 		void RefreshChildren (const QByteArray& parentId);
-		void RequestUrl (const QByteArray& id);
+		QFuture<RequestUrlResult_t> RequestUrl (const QByteArray& id);
 		void CreateDirectory (const QString& name, const QByteArray& parentId);
 		void Delete (const QList<QByteArray>& ids, bool ask = true);
 		void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId);
@@ -111,9 +111,7 @@ namespace DBox
 		DriveManager* GetDriveManager () const;
 	private slots:
 		void handleFileList (const QList<DBoxItem>& items);
-		void handleSharedFileUrl (const QUrl& url, const QDateTime& expiredDate);
 		void handleGotNewItem (const DBoxItem& item);
-
 	signals:
 		void upError (const QString& error, const QString& filepath);
 		void upFinished (const QByteArray& id, const QString& filepath);
@@ -122,7 +120,6 @@ namespace DBox
 
 		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated (const QByteArray& parentId);
-		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);
 

@@ -38,6 +38,8 @@
 #include <QStringList>
 #include <QVariant>
 #include <QNetworkReply>
+#include <QFuture>
+#include <util/sll/eitherfwd.h>
 #include <interfaces/structures.h>
 
 class QFile;
@@ -105,7 +107,10 @@ namespace DBox
 		void RequestUserId ();
 
 		void RefreshListing (const QByteArray& parentId = QByteArray ());
-		void ShareEntry (const QString& id, ShareType type);
+
+		using ShareResult_t = Util::Either<QString, QUrl>;
+		QFuture<ShareResult_t> ShareEntry (const QString& id, ShareType type);
+
 		void CreateDirectory (const QString& name,
 				const QString& parentId = QString ());
 		void RemoveEntry (const QByteArray& id);
@@ -119,7 +124,7 @@ namespace DBox
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();
 		void RequestFiles (const QByteArray& parntId);
-		void RequestSharingEntry (const QString& id, ShareType type);
+		void RequestSharingEntry (const QString& id, ShareType type, QFutureInterface<ShareResult_t>);
 		void RequestCreateDirectory (const QString& name, const QString& parentId);
 		void RequestEntryRemoving (const QString& id);
 		void RequestCopyItem (const QString& id, const QString& parentId);
@@ -130,11 +135,9 @@ namespace DBox
 				const QString& uploadId = QString (), quint64 offset = 0);
 
 		void ParseError (const QVariantMap& map);
-
 	private slots:
 		void handleGotAccountInfo ();
 		void handleGotFiles ();
-		void handleRequestFileSharing ();
 		void handleCreateDirectory ();
 		void handleRequestEntryRemoving ();
 		void handleCopyItem ();
@@ -146,7 +149,6 @@ namespace DBox
 
 	signals:
 		void gotFiles (const QList<DBoxItem>& items);
-		void gotSharedFileUrl (const QUrl& url, const QDateTime& expiredDate);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);
