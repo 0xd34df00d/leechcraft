@@ -84,6 +84,14 @@ namespace Util
 		iface.reportFinished ();
 	}
 
+	template<typename R, typename U>
+	EnableIf_t<std::is_constructible<R, U>::value>
+		ReportFutureResult (QFutureInterface<R>& iface, U&& value)
+	{
+		const R result { value };
+		iface.reportFinished (&result);
+	}
+
 	namespace detail
 	{
 		template<typename T>
