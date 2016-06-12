@@ -49,16 +49,14 @@ namespace Util
 		Q_OBJECT
 
 		std::atomic_bool IsPaused_ { false };
-		std::atomic_bool IsAutoQuit_ { false };
 
 		QMutex FunctionsMutex_;
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
-		virtual ~WorkerThreadBase ();
+		virtual ~WorkerThreadBase () = default;
 
 		void SetPaused (bool);
-		void SetAutoQuit (bool);
 
 		template<typename F>
 		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
@@ -100,12 +98,31 @@ namespace Util
 	template<typename WorkerType>
 	class WorkerThread : public WorkerThreadBase
 	{
+		std::atomic_bool IsAutoQuit_ { false };
 	protected:
 		std::shared_ptr<WorkerType> Worker_;
 	public:
 		using WorkerThreadBase::WorkerThreadBase;
 
+		~WorkerThread ()
+		{
+			if (!IsAutoQuit_)
+				return;
+
+			quit ();
+			wait (2000);
+
+			if (isRunning ())
+				qWarning () << Q_FUNC_INFO
+						<< "thread is still running";
+		}
+
 		using WorkerThreadBase::ScheduleImpl;
+
+		void SetAutoQuit (bool autoQuit)
+		{
+			IsAutoQuit_ = autoQuit;
+		}
 
 		template<typename F, typename... Args>
 		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (const F& f, Args&&... args)
