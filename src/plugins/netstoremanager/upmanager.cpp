@@ -211,7 +211,7 @@ namespace NetStoreManager
 	void UpManager::handleUpFinished (const QByteArray& id, const QString& filePath)
 	{
 		RemovePending (filePath);
-		const auto& e =Util::MakeNotification ("NetStoreManager",
+		const auto& e = Util::MakeNotification ("NetStoreManager",
 				tr ("File %1 was uploaded successfully")
 						.arg ("<em>" + QFileInfo (filePath).fileName () + "</em>"),
 				PInfo_);
