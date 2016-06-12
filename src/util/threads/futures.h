@@ -109,7 +109,7 @@ namespace Util
 	EnableIf_t<std::is_constructible<R, U>::value && !detail::IsCallable<U> ()>
 		ReportFutureResult (QFutureInterface<R>& iface, U&& value)
 	{
-		const R result { value };
+		const R result { std::forward<U> (value) };
 		iface.reportFinished (&result);
 	}
 
