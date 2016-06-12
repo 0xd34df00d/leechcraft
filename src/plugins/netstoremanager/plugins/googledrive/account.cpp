@@ -34,11 +34,16 @@
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QPushButton>
+#include <QFuture>
 
 #if QT_VERSION >= 0x050000
 #include <QUrlQuery>
 #endif
 
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
+#include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
 #include "core.h"
 #include "uploadmanager.h"
@@ -61,10 +66,6 @@ namespace GoogleDrive
 				SIGNAL (gotFiles (const QList<DriveItem>&)),
 				this,
 				SLOT (handleFileList (const QList<DriveItem>&)));
-		connect (DriveManager_,
-				SIGNAL (gotSharedFileId (const QString&)),
-				this,
-				SLOT (handleSharedFileId (const QString&)));
 		connect (DriveManager_,
 				SIGNAL (gotNewItem (DriveItem)),
 				this,
@@ -206,10 +207,10 @@ namespace GoogleDrive
 			DriveManager_->Move (id, newParentId);
 	}
 
-	void Account::RequestUrl (const QByteArray& id)
+	QFuture<Account::RequestUrlResult_t> Account::RequestUrl (const QByteArray& id)
 	{
 		if (id.isNull ())
-			return;
+			return Util::MakeReadyFuture (RequestUrlResult_t::Left (InvalidItem {}));
 
 		if (!XmlSettingsManager::Instance ().property ("AutoShareOnUrlRequest").toBool ())
 		{
@@ -225,12 +226,13 @@ namespace GoogleDrive
 			mbox.addButton (&always, QMessageBox::AcceptRole);
 
 			if (mbox.exec () == QMessageBox::No)
-				return;
+				return Util::MakeReadyFuture (RequestUrlResult_t::Left (UserCancelled {}));
 			else if (mbox.clickedButton () == &always)
 				XmlSettingsManager::Instance ().setProperty ("AutoShareOnUrlRequest", true);
 		}
 
-		DriveManager_->ShareEntry (id);
+		return DriveManager_->ShareEntry (id) *
+				RequestUrlResult_t::EmbeddingLeft ();
 	}
 
 	void Account::CreateDirectory (const QString& name, const QByteArray& parentId)
@@ -361,12 +363,6 @@ namespace GoogleDrive
 
 		emit gotListing (result);
 		emit listingUpdated (QByteArray ());
-	}
-
-	void Account::handleSharedFileId (const QString& id)
-	{
-		emit gotFileUrl (QUrl (QString ("https://docs.google.com/uc?id=%1&export=download")
-				.arg (id)), id.toUtf8 ());
 	}
 
 	void Account::handleGotNewItem (const DriveItem& item)

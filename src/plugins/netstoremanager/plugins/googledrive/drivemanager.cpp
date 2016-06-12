@@ -47,6 +47,8 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/parsejson.h>
 #include <util/sll/serializejson.h>
+#include <util/sll/either.h>
+#include <util/threads/futures.h>
 #include "account.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -107,16 +109,22 @@ namespace GoogleDrive
 	{
 		if (id.isEmpty ())
 			return;
+
 		ApiCallQueue_ << [this, id, parentId] (const QString& key) { RequestMoveItem (id, parentId, key); };
 		RequestAccessToken ();
 	}
 
-	void DriveManager::ShareEntry (const QString& id)
+	QFuture<DriveManager::ShareResult_t> DriveManager::ShareEntry (const QString& id)
 	{
 		if (id.isEmpty ())
-			return;
-		ApiCallQueue_ << [this, id] (const QString& key) { RequestSharingEntry (id, key); };
+			throw std::runtime_error { std::string { Q_FUNC_INFO } + ": id cannot be empty" };
+
+		QFutureInterface<ShareResult_t> iface;
+
+		ApiCallQueue_ << [this, id, iface] (const QString& key) { RequestSharingEntry (id, key, iface); };
 		RequestAccessToken ();
+
+		return iface.future ();
 	}
 
 	void DriveManager::Upload (const QString& filePath, const QStringList& parentId)
@@ -180,8 +188,13 @@ namespace GoogleDrive
 				SLOT (handleGotFiles ()));
 	}
 
+	namespace
+	{
+		static const QString ShareTemplateStr { "https://docs.google.com/uc?id=%1&export=download" };
+	}
+
 	void DriveManager::RequestSharingEntry (const QString& id,
-			const QString& key)
+			const QString& key, QFutureInterface<ShareResult_t> iface)
 	{
 		QString str = QString ("https://www.googleapis.com/drive/v2/files/%1/permissions?access_token=%2")
 				.arg (id, key);
@@ -197,12 +210,28 @@ namespace GoogleDrive
 
 		const auto reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->post (request, Util::SerializeJson (map));
-		Reply2Id_ [reply] = id;
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[=] () mutable
+			{
+				reply->deleteLater ();
 
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleRequestFileSharing ()));
+				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+				if (res.isNull ())
+				{
+					Util::ReportFutureResult (iface, tr ("Unable to parse server reply."));
+					return;
+				}
+
+				if (!res.toMap ().contains ("error"))
+					Util::ReportFutureResult (iface, QUrl { ShareTemplateStr.arg (id) });
+				else
+					Util::ReportFutureResult (iface, ParseError (res.toMap ()));
+			},
+			reply,
+			SIGNAL (finished ()),
+			reply
+		};
 	}
 
 	void DriveManager::RequestEntryRemoving (const QString& id,
@@ -508,6 +537,7 @@ namespace GoogleDrive
 		if (res.isNull ())
 			return;
 
+		qDebug () << res.toMap ();
 		const auto& accessKey = res.toMap ().value ("access_token").toString ();
 		if (accessKey.isEmpty ())
 		{
@@ -718,29 +748,6 @@ namespace GoogleDrive
 
 		ApiCallQueue_ << [this, nextPageToken] (const QString& key) { RequestFiles (key, nextPageToken); };
 		RequestAccessToken ();
-	}
-
-	void DriveManager::handleRequestFileSharing ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (res.isNull ())
-			return;
-
-		if (!res.toMap ().contains ("error"))
-		{
-			qDebug () << Q_FUNC_INFO
-					<< "file shared successfully";
-			emit gotSharedFileId (Reply2Id_.take (reply));
-			return;
-		}
-
-		ParseError (res.toMap ());
 	}
 
 	void DriveManager::handleRequestEntryRemoving ()

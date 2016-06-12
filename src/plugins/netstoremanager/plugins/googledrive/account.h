@@ -95,7 +95,8 @@ namespace GoogleDrive
 		void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId);
 		void Move (const QList<QByteArray>& ids, const QByteArray& newParentId);
 
-		void RequestUrl (const QByteArray& id);
+		QFuture<RequestUrlResult_t> RequestUrl (const QByteArray& id);
+
 		void CreateDirectory (const QString& name, const QByteArray& parentId);
 		void Rename (const QByteArray& id, const QString& newName);
 		void RequestChanges ();
@@ -113,10 +114,8 @@ namespace GoogleDrive
 		DriveManager* GetDriveManager () const;
 	private slots:
 		void handleFileList (const QList<DriveItem>& items);
-		void handleSharedFileId (const QString& id);
 		void handleGotNewItem (const DriveItem& item);
 		void handleGotChanges (const QList<DriveChanges>& changes);
-
 	signals:
 		void upError (const QString& error, const QString& filepath);
 		void upFinished (const QByteArray& id, const QString& filepath);
@@ -125,8 +124,6 @@ namespace GoogleDrive
 
 		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated (const QByteArray& parentId);
-
-		void gotFileUrl (const QUrl& url, const QByteArray& id);
 
 		void gotChanges (const QList<Change>& changes);
 

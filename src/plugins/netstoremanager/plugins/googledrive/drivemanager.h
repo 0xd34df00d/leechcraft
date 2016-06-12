@@ -38,7 +38,9 @@
 #include <QStringList>
 #include <QVariant>
 #include <QNetworkReply>
+#include <QFuture>
 #include <interfaces/structures.h>
+#include <util/sll/eitherfwd.h>
 
 class QFile;
 
@@ -156,7 +158,6 @@ namespace GoogleDrive
 		Account *Account_;
 		QQueue<std::function<void (const QString&)>> ApiCallQueue_;
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
-		QHash<QNetworkReply*, QString> Reply2Id_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
 		bool SecondRequestIfNoItems_;
@@ -171,7 +172,8 @@ namespace GoogleDrive
 		void Copy (const QByteArray& id, const QString& parentId);
 		void Move (const QByteArray& id, const QString& parentId);
 
-		void ShareEntry (const QString& id);
+		using ShareResult_t = Util::Either<QString, QUrl>;
+		QFuture<ShareResult_t> ShareEntry (const QString& id);
 		void Upload (const QString& filePath,
 				const QStringList& parentId = QStringList ());
 		void Download (const QString& id, const QString& filePath,
@@ -184,7 +186,7 @@ namespace GoogleDrive
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
 		void RequestFiles (const QString& key, const QString& nextPageToken = {});
-		void RequestSharingEntry (const QString& id, const QString& key);
+		void RequestSharingEntry (const QString& id, const QString& key, QFutureInterface<ShareResult_t>);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
 		void RequestRestoreEntryFromTrash (const QString& id, const QString& key);
@@ -209,7 +211,6 @@ namespace GoogleDrive
 	private slots:
 		void handleAuthTokenRequestFinished ();
 		void handleGotFiles ();
-		void handleRequestFileSharing ();
 		void handleRequestEntryRemoving ();
 		void handleRequestMovingEntryToTrash ();
 		void handleRequestRestoreEntryFromTrash ();
@@ -226,7 +227,6 @@ namespace GoogleDrive
 
 	signals:
 		void gotFiles (const QList<DriveItem>& items);
-		void gotSharedFileId (const QString& id);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);
