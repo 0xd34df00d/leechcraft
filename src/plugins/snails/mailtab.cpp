@@ -192,7 +192,7 @@ namespace Snails
 
 			Util::InvokeOn (slot,
 					[&] (const char *slot) { QObject::connect (action, SIGNAL (triggered ()), parent, slot); },
-					[&] (auto invokable) { QObject::connect (action, &QAction::triggered, parent, slot); });
+					[&] (auto slot) { QObject::connect (action, &QAction::triggered, parent, slot); });
 
 			sm->RegisterAction (id, action);
 
@@ -211,7 +211,7 @@ namespace Snails
 
 			Util::InvokeOn (slot,
 				[&] (const char *slot) { QObject::connect (shortcut, SIGNAL (activated ()), parent, slot); },
-				[&] (auto invokable) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
+				[&] (auto slot) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
 
 			sm->RegisterShortcut (id, info.GetInfo (proxy), shortcut);
 
