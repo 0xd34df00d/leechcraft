@@ -57,8 +57,7 @@ namespace Snails
 	{
 		if (AttQueue_.isEmpty ())
 		{
-			Util::ReportFutureResult (Promise_,
-					[&] { return Result_t::Right ({ TempDir_, Paths_ }); });
+			Util::ReportFutureResult (Promise_, Result_t::Right ({ TempDir_, Paths_ }));
 			return;
 		}
 
@@ -69,7 +68,7 @@ namespace Snails
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "unable to create temporary directory";
-				Util::ReportFutureResult (Promise_, [] { return Result_t::Left (TemporaryDirError {}); });
+				Util::ReportFutureResult (Promise_, Result_t::Left (TemporaryDirError {}));
 				return;
 			}
 		}
@@ -87,7 +86,7 @@ namespace Snails
 							},
 							[=] (auto e)
 							{
-								Util::ReportFutureResult (Promise_, [&] { return Result_t::Left (e); });
+								Util::ReportFutureResult (Promise_, Result_t::Left (e));
 							});
 				};
 	}
