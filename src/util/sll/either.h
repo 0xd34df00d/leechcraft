@@ -152,6 +152,16 @@ namespace Util
 			return Either<L, RNew>::Right (r);
 		}
 
+		static auto EmbeddingLeft ()
+		{
+			return [] (const auto& other) -> EnableIf_t<std::is_convertible<decltype (other.GetLeft ()), L>::value, Either<L, R>>
+			{
+				return other.IsLeft () ?
+						Left (other.GetLeft ()) :
+						Right (other.GetRight ());
+			};
+		}
+
 		friend bool operator== (const Either& e1, const Either& e2)
 		{
 			return e1.This_ == e2.This_;
