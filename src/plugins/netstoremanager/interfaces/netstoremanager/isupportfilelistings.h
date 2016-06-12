@@ -59,6 +59,7 @@ namespace NetStoreManager
 		TrashSupporting = 0x02,
 		DirectorySupport = 0x04
 	};
+
 	Q_DECLARE_FLAGS (ListingOps, ListingOp);
 
 	enum class HashAlgorithm
@@ -67,7 +68,6 @@ namespace NetStoreManager
 		Md5,
 		Sha1
 	};
-
 
 	struct StorageItem
 	{
@@ -132,10 +132,8 @@ namespace NetStoreManager
 		virtual void Delete (const QList<QByteArray>& ids, bool ask = true) = 0;
 		virtual void MoveToTrash (const QList<QByteArray>& ids) = 0;
 		virtual void RestoreFromTrash (const QList<QByteArray>& ids) = 0;
-		virtual void Copy (const QList<QByteArray>& ids,
-				const QByteArray& newParentId) = 0;
-		virtual void Move (const QList<QByteArray>& ids,
-				const QByteArray& newParentId) = 0;
+		virtual void Copy (const QList<QByteArray>& ids, const QByteArray& newParentId) = 0;
+		virtual void Move (const QList<QByteArray>& ids, const QByteArray& newParentId) = 0;
 
 		virtual void RequestUrl (const QByteArray& id) = 0;
 		virtual void CreateDirectory (const QString& name, const QByteArray& parentId) = 0;
