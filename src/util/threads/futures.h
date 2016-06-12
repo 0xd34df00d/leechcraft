@@ -84,8 +84,29 @@ namespace Util
 		iface.reportFinished ();
 	}
 
+	namespace detail
+	{
+		template<typename T>
+		constexpr bool IsCallableImpl (int, ResultOf_t<T ()>* = nullptr)
+		{
+			return true;
+		}
+
+		template<typename T>
+		constexpr bool IsCallableImpl (float)
+		{
+			return false;
+		}
+
+		template<typename T>
+		constexpr bool IsCallable ()
+		{
+			return IsCallableImpl<T> (0);
+		}
+	}
+
 	template<typename R, typename U>
-	EnableIf_t<std::is_constructible<R, U>::value>
+	EnableIf_t<std::is_constructible<R, U>::value && !detail::IsCallable<U> ()>
 		ReportFutureResult (QFutureInterface<R>& iface, U&& value)
 	{
 		const R result { value };
