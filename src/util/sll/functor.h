@@ -54,6 +54,12 @@ namespace Util
 		return Fmap (value, f);
 	}
 
+	template<typename MF, typename F>
+	auto operator* (const MF& value, const F& f) -> decltype (Fmap (value, f))
+	{
+		return Fmap (value, f);
+	}
+
 	// Implementations
 	template<typename T>
 	struct InstanceFunctor<boost::optional<T>>
