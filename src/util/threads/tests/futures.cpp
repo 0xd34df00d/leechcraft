@@ -28,11 +28,10 @@
  **********************************************************************/
 
 #include "futures.h"
-#include <thread>
-#include <chrono>
 #include <QEventLoop>
 #include <QtTest>
 #include <futures.h>
+#include "common.h"
 
 QTEST_MAIN (LeechCraft::Util::FuturesTest)
 
@@ -40,21 +39,6 @@ namespace LeechCraft
 {
 namespace Util
 {
-	namespace
-	{
-		auto MkWaiter ()
-		{
-			return [] (int msecs)
-			{
-				return QtConcurrent::run ([msecs]
-						{
-							std::this_thread::sleep_for (std::chrono::milliseconds (msecs));
-							return msecs * 2;
-						});
-			};
-		}
-	}
-
 	void FuturesTest::testSequencer ()
 	{
 		QEventLoop loop;
