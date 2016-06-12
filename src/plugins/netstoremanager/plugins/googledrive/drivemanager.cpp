@@ -479,7 +479,7 @@ namespace GoogleDrive
 			CreateDirectory (baseName);
 	}
 
-	void DriveManager::ParseError (const QVariantMap& map)
+	QString DriveManager::ParseError (const QVariantMap& map)
 	{
 		const auto& errorMap = map ["error"].toMap ();
 		const QString& code = errorMap ["code"].toString ();
@@ -492,6 +492,8 @@ namespace GoogleDrive
 		Core::Instance ().SendEntity (Util::MakeNotification ("NetStoreManager",
 				msg,
 				PWarning_));
+
+		return msg;
 	}
 
 	void DriveManager::handleAuthTokenRequestFinished ()

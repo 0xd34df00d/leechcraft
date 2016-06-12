@@ -205,8 +205,7 @@ namespace GoogleDrive
 				const QString& baseDir, const QList<DriveItem>& items);
 
 		void RequestAccessToken ();
-		void ParseError (const QVariantMap& map);
-
+		QString ParseError (const QVariantMap& map);
 	private slots:
 		void handleAuthTokenRequestFinished ();
 		void handleGotFiles ();
