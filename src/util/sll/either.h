@@ -154,8 +154,10 @@ namespace Util
 
 		static auto EmbeddingLeft ()
 		{
-			return [] (const auto& other) -> EnableIf_t<std::is_convertible<decltype (other.GetLeft ()), L>::value, Either<L, R>>
+			return [] (const auto& other)
 			{
+				static_assert (std::is_convertible<decltype (other.GetLeft ()), L>::value,
+						"Other's Either's Left type is not convertible to this Left type.");
 				return other.IsLeft () ?
 						Either<L, R>::Left (other.GetLeft ()) :
 						Either<L, R>::Right (other.GetRight ());
