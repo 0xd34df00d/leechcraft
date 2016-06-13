@@ -157,8 +157,8 @@ namespace Util
 			return [] (const auto& other) -> EnableIf_t<std::is_convertible<decltype (other.GetLeft ()), L>::value, Either<L, R>>
 			{
 				return other.IsLeft () ?
-						Left (other.GetLeft ()) :
-						Right (other.GetRight ());
+						Either<L, R>::Left (other.GetLeft ()) :
+						Either<L, R>::Right (other.GetRight ());
 			};
 		}
 
