@@ -282,7 +282,7 @@ namespace GoogleDrive
 
 		QString name;
 		str >> name;
-		Account_ptr acc (new Account (name, parentPlugin));
+		const auto acc = std::make_shared<Account> (name, parentPlugin);
 		str >> acc->Trusted_
 				>> acc->RefreshToken_;
 		return acc;
