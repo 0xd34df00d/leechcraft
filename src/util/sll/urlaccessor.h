@@ -56,6 +56,8 @@ namespace Util
 		UrlAccessor (const QUrl&);
 
 		QString operator[] (const QString&) const;
+
+		const value_type& last () const;
 	};
 }
 }
