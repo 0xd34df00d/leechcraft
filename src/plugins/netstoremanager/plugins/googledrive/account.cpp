@@ -35,13 +35,9 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QFuture>
-
-#if QT_VERSION >= 0x050000
-#include <QUrlQuery>
-#endif
-
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
+#include <util/sll/urlaccessor.h>
 #include <util/threads/futures.h>
 #include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -340,11 +336,7 @@ namespace GoogleDrive
 			{
 				const auto mime = item.ExportLinks_.value (key);
 
-#if QT_VERSION < 0x050000
-				const auto queryItems = key.queryItems ();
-#else
-				const auto queryItems = QUrlQuery { key }.queryItems ();
-#endif
+				const auto& queryItems = Util::UrlAccessor { key };
 				const auto lastQueryPair = queryItems.last ();
 
 				storageItem.ExportLinks [key] = qMakePair (mime, lastQueryPair.second);
