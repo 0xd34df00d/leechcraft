@@ -119,9 +119,8 @@ namespace Util
 		if (CurrentSize_ < 0)
 		{
 			const auto& dir = cacheDirectory ();
-			Util::ExecuteFuture ([dir] { return NetworkDiskCacheGC::Instance ().GetCurrentSize (dir); },
-					[this] (qint64 res) { CurrentSize_ = res; },
-					this);
+			Util::Sequence (this, NetworkDiskCacheGC::Instance ().GetCurrentSize (dir)) >>
+					[this] (qint64 res) { CurrentSize_ = res; };
 
 			return maximumCacheSize () * 8 / 10;
 		}
