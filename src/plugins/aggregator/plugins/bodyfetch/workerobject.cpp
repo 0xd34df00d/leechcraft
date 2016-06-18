@@ -33,6 +33,7 @@
 #include <QWebPage>
 #include <QWebFrame>
 #include <QWebElementCollection>
+#include <QtConcurrentRun>
 #include <QTextCodec>
 #include <QTimer>
 #include <QApplication>
