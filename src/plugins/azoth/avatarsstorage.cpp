@@ -29,6 +29,7 @@
 
 #include "avatarsstorage.h"
 #include <QBuffer>
+#include <QtConcurrentRun>
 #include <QtDebug>
 #include <util/threads/futures.h>
 #include "avatarsstoragethread.h"
