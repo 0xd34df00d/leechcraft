@@ -170,23 +170,20 @@ namespace Util
 
 		IsCollecting_ = true;
 
-		Util::ExecuteFuture ([dirs]
-				{
-					return QtConcurrent::run ([dirs]
-							{
-								QMap<QString, qint64> sizes;
-								for (const auto& pair : dirs)
-									sizes [pair.first] = Collector (pair.first, pair.second);
-								return sizes;
-							});
-				},
+		Util::Sequence (this,
+				QtConcurrent::run ([dirs]
+						{
+							QMap<QString, qint64> sizes;
+							for (const auto& pair : dirs)
+								sizes [pair.first] = Collector (pair.first, pair.second);
+							return sizes;
+						})) >>
 				[this] (const QMap<QString, qint64>& sizes)
 				{
 					IsCollecting_ = false;
 					for (const auto& pair : Util::Stlize (sizes))
 						LastSizes_ [pair.first] = pair.second;
-				},
-				this);
+				};
 	}
 }
 }
