@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <QDir>
 #include <QDirIterator>
+#include <QtConcurrentRun>
 #include <QDateTime>
 #include <QtDebug>
 #include <util/sll/qtutil.h>
