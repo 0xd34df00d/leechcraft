@@ -29,6 +29,7 @@
 
 #include "vcarddialog.h"
 #include <QFuture>
+#include <QtConcurrentRun>
 #include <util/xpc/util.h>
 #include <util/threads/futures.h>
 #include <util/sll/functional.h>
