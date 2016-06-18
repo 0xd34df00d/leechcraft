@@ -82,7 +82,7 @@ namespace NetStoreManager
 		QString Name_;
 		QDateTime ModifyDate_;
 
-		quint64 Size_;
+		quint64 Size_ = 0;
 
 		QByteArray Hash_;
 
@@ -90,23 +90,15 @@ namespace NetStoreManager
 		QUrl ShareUrl_;
 		QMap<QUrl, QPair<QString, QString>> ExportLinks;
 
-		bool Shared_;
+		bool Shared_ = false;
 
-		bool IsDirectory_;
+		bool IsDirectory_ = false;
 
-		bool IsTrashed_;
+		bool IsTrashed_ = false;
 
 		HashAlgorithm HashType_;
 
 		QString MimeType_;
-
-		StorageItem ()
-		: Size_ (0)
-		, Shared_ (false)
-		, IsDirectory_ (false)
-		, IsTrashed_ (false)
-		{
-		}
 
 		bool IsValid () const
 		{

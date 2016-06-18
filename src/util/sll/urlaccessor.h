@@ -51,9 +51,13 @@ namespace Util
 		const QUrl Url_;
 #endif
 	public:
+		using value_type = typename decltype (Url_.queryItems ())::value_type;
+
 		UrlAccessor (const QUrl&);
 
 		QString operator[] (const QString&) const;
+
+		const value_type& last () const;
 	};
 }
 }
