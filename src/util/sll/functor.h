@@ -66,7 +66,7 @@ namespace Util
 	template<typename T, typename F>
 	using FmapResult_t = typename InstanceFunctor<T>::template FmapResult_t<F>;
 
-	template<typename T, typename F>
+	template<typename T, typename F, typename = EnableIf_t<IsFunctor<T> ()>>
 	FmapResult_t<T, F> Fmap (const T& t, const F& f)
 	{
 		return InstanceFunctor<T>::Apply (t, f);
