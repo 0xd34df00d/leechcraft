@@ -37,7 +37,10 @@ namespace LeechCraft
 namespace Util
 {
 	template<typename T>
-	struct InstanceFunctor;
+	struct InstanceFunctor
+	{
+		using UndefinedTag = void;
+	};
 
 	template<typename T, typename F>
 	using FmapResult_t = typename InstanceFunctor<T>::template FmapResult_t<F>;
