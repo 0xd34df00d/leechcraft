@@ -31,6 +31,7 @@
 
 #include <boost/optional.hpp>
 #include "oldcppkludges.h"
+#include "typeclassutil.h"
 
 namespace LeechCraft
 {
