@@ -72,7 +72,7 @@ namespace Util
 		 * \em function.
 		 * @param[in] function The function that should be applied to the
 		 * values in the \em functor.
-		 * @return A functor of tyoe FmapResult_t<F> where each element
+		 * @return A functor of type FmapResult_t<F> where each element
 		 * is the result of applying the \em function to the elements in
 		 * \em functor.
 		 *
