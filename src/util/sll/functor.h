@@ -109,6 +109,13 @@ namespace Util
 		return detail::IsFunctorImpl<T> (0);
 	}
 
+	/** @brief The result type of the contents of the functor \em T mapped
+	 * by function \em F.
+	 *
+	 * @tparam T The type of the functor.
+	 * @tparam F The type of the function to apply to the elements inside the
+	 * functor.
+	 */
 	template<typename T, typename F>
 	using FmapResult_t = typename InstanceFunctor<T>::template FmapResult_t<F>;
 
