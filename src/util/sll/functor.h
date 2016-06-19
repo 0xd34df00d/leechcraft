@@ -42,6 +42,27 @@ namespace Util
 		using UndefinedTag = void;
 	};
 
+	namespace detail
+	{
+		template<typename T>
+		constexpr bool IsFunctorImpl (int, typename InstanceFunctor<T>::UndefinedTag* = nullptr)
+		{
+			return false;
+		}
+
+		template<typename T>
+		constexpr bool IsFunctorImpl (float)
+		{
+			return true;
+		}
+	}
+
+	template<typename T>
+	constexpr bool IsFunctor ()
+	{
+		return detail::IsFunctorImpl<T> (0);
+	}
+
 	template<typename T, typename F>
 	using FmapResult_t = typename InstanceFunctor<T>::template FmapResult_t<F>;
 
