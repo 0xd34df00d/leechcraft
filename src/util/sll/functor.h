@@ -120,6 +120,24 @@ namespace Util
 	template<typename T, typename F>
 	using FmapResult_t = typename InstanceFunctor<T>::template FmapResult_t<F>;
 
+	/** @brief Apply the function \em f to the elements in \em functor.
+	 *
+	 * This function forwards the function \em f to the instance of the
+	 * Functor class (namely, InstanceFunctor<T>) for the type \em T to do
+	 * the actual function application.
+	 *
+	 * @param[in] functor The functor whose values are subject to
+	 * \em function.
+	 * @param[in] function The function that should be applied to the
+	 * values in the functor.
+	 * @return A functor of type FmapResult_t<T, F> where each element is
+	 * the result of applying the \em function to the corresponding element
+	 * in the source \em functor.
+	 *
+	 * @tparam T The type of the functor.
+	 * @tparam F The type of the function to apply to the elements inside
+	 * the functor.
+	 */
 	template<typename T, typename F, typename = EnableIf_t<IsFunctor<T> ()>>
 	FmapResult_t<T, F> Fmap (const T& functor, const F& f)
 	{
