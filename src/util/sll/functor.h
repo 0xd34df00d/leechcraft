@@ -37,10 +37,49 @@ namespace LeechCraft
 {
 namespace Util
 {
+	/** @brief The Functor class is used for types that can be mapped over.
+	 *
+	 * Minimal complete definition:
+	 * - Apply() function and FmapResult_t alias.
+	 *
+	 * For a reference imolementation please see InstanceFunctor<boost::optional<T>>.
+	 *
+	 * @tparam T The functor type instantiated with some concrete
+	 * containee type.
+	 */
 	template<typename T>
 	struct InstanceFunctor
 	{
 		using UndefinedTag = void;
+
+		/** @brief The type of the functor after its elements were
+		 * mapped by the function \em F.
+		 *
+		 * This type should correspond to the return type of the Apply()
+		 * function when passed this functor and a function of type
+		 * \em F.
+		 *
+		 * @tparam F The type of the function object applied to the
+		 * contents of this functor.
+		 */
+		template<typename F>
+		using FmapResult_t = detail::ImplementationType;
+
+		/** @brief Applies the \em function to the each of the elements
+		 * inside the \em functor.
+		 *
+		 * @param[in] functor The functor whose values are subject to
+		 * \em function.
+		 * @param[in] function The function that should be applied to the
+		 * values in the \em functor.
+		 * @return A functor of tyoe FmapResult_t<F> where each element
+		 * is the result of applying the \em function to the elements in
+		 * \em functor.
+		 *
+		 * @tparam F The type of the \em function object.
+		 */
+		template<typename F>
+		static FmapResult_t<F> Apply (const T& functor, const F& function);
 	};
 
 	namespace detail
