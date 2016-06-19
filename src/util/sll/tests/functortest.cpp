@@ -50,5 +50,15 @@ namespace Util
 		const auto& fmapped = Fmap (value, [] (int val) { return QString::number (val); });
 		QCOMPARE (boost::optional<QString> {}, fmapped);
 	}
+
+	void FunctorTest::testIsFunctorTrue ()
+	{
+		static_assert (IsFunctor<boost::optional<int>> (), "test failed");
+	}
+
+	void FunctorTest::testIsFunctorFalse ()
+	{
+		static_assert (!IsFunctor<int> (), "test failed");
+	}
 }
 }

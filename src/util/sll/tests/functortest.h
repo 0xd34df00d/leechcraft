@@ -41,6 +41,8 @@ namespace Util
 	private slots:
 		void testBoostOptionalFMap ();
 		void testBoostOptionalFMapEmpty ();
+		void testIsFunctorTrue ();
+		void testIsFunctorFalse ();
 	};
 }
 }
