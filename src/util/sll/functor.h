@@ -97,6 +97,12 @@ namespace Util
 		}
 	}
 
+	/** @brief Checks whether the given type has a Functor instance for it.
+	 *
+	 * @return Whether type T implements the Functor class.
+	 *
+	 * @tparam T The type to check.
+	 */
 	template<typename T>
 	constexpr bool IsFunctor ()
 	{
