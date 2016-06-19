@@ -59,8 +59,8 @@ namespace Util
 		 * function when passed this functor and a function of type
 		 * \em F.
 		 *
-		 * @tparam F The type of the function object applied to the
-		 * contents of this functor.
+		 * @tparam F The type of the function to apply to the elements
+		 * inside this functor.
 		 */
 		template<typename F>
 		using FmapResult_t = detail::ImplementationType;
@@ -73,10 +73,11 @@ namespace Util
 		 * @param[in] function The function that should be applied to the
 		 * values in the \em functor.
 		 * @return A functor of type FmapResult_t<F> where each element
-		 * is the result of applying the \em function to the elements in
-		 * \em functor.
+		 * the result of applying the \em function to the corresponding element
+		 * in the source \em functor.
 		 *
-		 * @tparam F The type of the \em function object.
+		 * @tparam F The type of the \em function to apply to the elements
+		 * in the function.
 		 */
 		template<typename F>
 		static FmapResult_t<F> Apply (const T& functor, const F& function);
