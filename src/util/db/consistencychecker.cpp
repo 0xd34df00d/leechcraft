@@ -141,9 +141,9 @@ namespace Util
 			if (QMessageBox::question (nullptr,
 						DialogContext_,
 						tr ("Not enough available space on partition with file %1: "
-							"%2 while we expect the restored file to be around %3. "
-							"Please either clean up the partition and retry or "
-							"cancel the restore process.")
+							"%2 while the restored file is expected to be around %3. "
+							"Please either free some disk space on this partition "
+							"and retry or cancel the restore process.")
 								.arg ("<em>" + DBPath_ + "</em>")
 								.arg (Util::MakePrettySize (available))
 								.arg (Util::MakePrettySize (filesize)),
@@ -163,7 +163,8 @@ namespace Util
 
 			if (QMessageBox::question (nullptr,
 						DialogContext_,
-						tr ("%1 already exists. Please either remove the file manually to retry the restore process or cancel it.")
+						tr ("%1 already exists. Please either remove the file manually "
+							"and retry or cancel the restore process.")
 								.arg ("<em>" + newPath + "</em>"),
 						QMessageBox::Retry | QMessageBox::Cancel) == QMessageBox::Cancel)
 			{
