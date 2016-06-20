@@ -144,16 +144,56 @@ namespace Util
 		return InstanceFunctor<T>::Apply (functor, f);
 	}
 
-	template<typename MF, typename F>
-	auto operator* (const F& f, const MF& value) -> decltype (Fmap (value, f))
+	/** @brief An operator-style alias for Fmap().
+	 *
+	 * This operator allows writing Fmap()'s in infix form. Internally, it
+	 * just forwards the call to Fmap().
+	 *
+	 * @param[in] functor The functor whose values are subject to
+	 * \em function.
+	 * @param[in] function The function that should be applied to the
+	 * values in the functor.
+	 * @return A functor of type FmapResult_t<T, F> where each element is
+	 * the result of applying the \em function to the corresponding element
+	 * in the source \em functor.
+	 *
+	 * @tparam T The type of the functor.
+	 * @tparam F The type of the function to apply to the elements inside
+	 * the functor.
+	 *
+	 * @sa InstanceFunctor
+	 * @sa Fmap()
+	 */
+	template<typename T, typename F>
+	auto operator* (const F& f, const T& functor) -> decltype (Fmap (functor, f))
 	{
-		return Fmap (value, f);
+		return Fmap (functor, f);
 	}
 
-	template<typename MF, typename F>
-	auto operator* (const MF& value, const F& f) -> decltype (Fmap (value, f))
+	/** @brief An operator-style alias for Fmap().
+	 *
+	 * This operator allows writing Fmap()'s in infix form. Internally, it
+	 * just forwards the call to Fmap().
+	 *
+	 * @param[in] functor The functor whose values are subject to
+	 * \em function.
+	 * @param[in] function The function that should be applied to the
+	 * values in the functor.
+	 * @return A functor of type FmapResult_t<T, F> where each element is
+	 * the result of applying the \em function to the corresponding element
+	 * in the source \em functor.
+	 *
+	 * @tparam T The type of the functor.
+	 * @tparam F The type of the function to apply to the elements inside
+	 * the functor.
+	 *
+	 * @sa InstanceFunctor
+	 * @sa Fmap()
+	 */
+	template<typename T, typename F>
+	auto operator* (const T& functor, const F& f) -> decltype (Fmap (functor, f))
 	{
-		return Fmap (value, f);
+		return Fmap (functor, f);
 	}
 
 	// Implementations
