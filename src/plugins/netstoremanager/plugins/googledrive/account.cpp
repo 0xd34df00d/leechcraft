@@ -55,7 +55,6 @@ namespace GoogleDrive
 	: QObject (parentPlugin)
 	, ParentPlugin_ (parentPlugin)
 	, Name_ (name)
-	, Trusted_ (false)
 	, DriveManager_ (new DriveManager (this, this))
 	{
 		connect (DriveManager_,

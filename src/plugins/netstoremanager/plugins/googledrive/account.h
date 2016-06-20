@@ -61,7 +61,7 @@ namespace GoogleDrive
 		QString AccessToken_;
 		QString RefreshToken_;
 
-		bool Trusted_;
+		bool Trusted_ = false;
 
 		DriveManager *DriveManager_;
 		QHash<QString, DriveItem> Items_;
