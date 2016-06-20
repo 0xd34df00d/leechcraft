@@ -144,9 +144,9 @@ namespace Util
 	 * @sa InstanceFunctor
 	 */
 	template<typename T, typename F, typename = EnableIf_t<IsFunctor<T> ()>>
-	FmapResult_t<T, F> Fmap (const T& functor, const F& f)
+	FmapResult_t<T, F> Fmap (const T& functor, const F& function)
 	{
-		return InstanceFunctor<T>::Apply (functor, f);
+		return InstanceFunctor<T>::Apply (functor, function);
 	}
 
 	/** @brief An operator-style alias for Fmap().
@@ -170,9 +170,9 @@ namespace Util
 	 * @sa Fmap()
 	 */
 	template<typename T, typename F>
-	auto operator* (const F& f, const T& functor) -> decltype (Fmap (functor, f))
+	auto operator* (const F& function, const T& functor) -> decltype (Fmap (functor, function))
 	{
-		return Fmap (functor, f);
+		return Fmap (functor, function);
 	}
 
 	/** @brief An operator-style alias for Fmap().
@@ -196,9 +196,9 @@ namespace Util
 	 * @sa Fmap()
 	 */
 	template<typename T, typename F>
-	auto operator* (const T& functor, const F& f) -> decltype (Fmap (functor, f))
+	auto operator* (const T& functor, const F& function) -> decltype (Fmap (functor, function))
 	{
-		return Fmap (functor, f);
+		return Fmap (functor, function);
 	}
 
 	/** @brief Implementation of the Functor class for boost.optional.
