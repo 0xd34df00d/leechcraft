@@ -83,7 +83,7 @@ namespace GoogleDrive
 
 	QByteArray Account::GetUniqueID () const
 	{
-		return ("NetStoreManager.GoogleDrive_" + Name_).toUtf8 ();
+		return "NetStoreManager.GoogleDrive_" + Name_.toUtf8 ();
 	}
 
 	AccountFeatures Account::GetAccountFeatures () const
