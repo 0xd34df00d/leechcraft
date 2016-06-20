@@ -337,10 +337,8 @@ namespace GoogleDrive
 				const auto& key = pair.first;
 				const auto& mime = pair.second;
 
-				const auto& queryItems = Util::UrlAccessor { key };
-				const auto lastQueryPair = queryItems.last ();
-
-				storageItem.ExportLinks [key] = qMakePair (mime, lastQueryPair.second);
+				storageItem.ExportLinks [key] = qMakePair (mime,
+						Util::UrlAccessor { key }.last ().second);
 			}
 
 			return storageItem;
