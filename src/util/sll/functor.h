@@ -46,6 +46,9 @@ namespace Util
 	 *
 	 * @tparam T The functor type instantiated with some concrete
 	 * containee type.
+	 *
+	 * @sa Fmap()
+	 * @sa IsFunctor()
 	 */
 	template<typename T>
 	struct InstanceFunctor
@@ -137,6 +140,8 @@ namespace Util
 	 * @tparam T The type of the functor.
 	 * @tparam F The type of the function to apply to the elements inside
 	 * the functor.
+	 *
+	 * @sa InstanceFunctor
 	 */
 	template<typename T, typename F, typename = EnableIf_t<IsFunctor<T> ()>>
 	FmapResult_t<T, F> Fmap (const T& functor, const F& f)
