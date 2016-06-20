@@ -43,7 +43,7 @@ namespace Util
 		return Url_.queryItemValue (key);
 	}
 
-	const UrlAccessor::value_type& UrlAccessor::last() const
+	const UrlAccessor::value_type& UrlAccessor::last () const
 	{
 		return Url_.queryItems ().last ();
 	}
