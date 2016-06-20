@@ -38,6 +38,7 @@
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
 #include <util/sll/urlaccessor.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -331,9 +332,10 @@ namespace GoogleDrive
 			storageItem.Url_ = item.DownloadUrl_;
 			storageItem.ShareUrl_ = item.ShareUrl_;
 			storageItem.Shared_ = item.Shared_;
-			for (const auto& key : item.ExportLinks_.keys ())
+			for (const auto& pair : Util::Stlize (item.ExportLinks_))
 			{
-				const auto mime = item.ExportLinks_.value (key);
+				const auto& key = pair.first;
+				const auto& mime = pair.second;
 
 				const auto& queryItems = Util::UrlAccessor { key };
 				const auto lastQueryPair = queryItems.last ();
