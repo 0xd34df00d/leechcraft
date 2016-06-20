@@ -510,9 +510,9 @@ namespace NetStoreManager
 
 		for (const auto& item : Id2Item_)
 		{
-			quint64 folderSize = 0;
-				if (item.IsDirectory_)
-					folderSize = GetFolderSize (item.ID_);
+			const quint64 folderSize = item.IsDirectory_ ?
+					GetFolderSize (item.ID_) :
+					0;
 			if (!inTrash &&
 					!item.IsTrashed_)
 			{
