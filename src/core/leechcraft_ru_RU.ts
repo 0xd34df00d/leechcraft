@@ -37,25 +37,6 @@
     </message>
 </context>
 <context>
-    <name>AuthenticationDialog</name>
-    <message>
-        <source>Authentication required</source>
-        <translation>Требуется аутентификация</translation>
-    </message>
-    <message>
-        <source>Login:</source>
-        <translation>Логин:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <source>Save credentials</source>
-        <translation>Сохранить</translation>
-    </message>
-</context>
-<context>
     <name>BackendSelector</name>
     <message>
         <source>SQLite</source>
@@ -508,10 +489,6 @@
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Невозможно сохранить cookies, ошибка открытия cookie-файла.</translation>
     </message>
-    <message>
-        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;требует аутентификации.</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::NewTabMenuManager</name>
@@ -749,6 +726,52 @@
     <message>
         <source>Select color</source>
         <translation>Выбрать цвет</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::ConsistencyChecker</name>
+    <message>
+        <source>Not enough available disk space.</source>
+        <translation>Недостаточно места на диске.</translation>
+    </message>
+    <message>
+        <source>Backup file already exists.</source>
+        <translation>Файл с резервной копией уже существует.</translation>
+    </message>
+    <message>
+        <source>Unable to restore the database.</source>
+        <translation>Невозможно восстановить базу данных.</translation>
+    </message>
+    <message>
+        <source>Unable to backup %1 to %2. Please remove %2 and hit OK.</source>
+        <translation>Невозможно скопировать %1 в %2. Пожалуйста, удалите %2 и нажмите ОК.</translation>
+    </message>
+    <message>
+        <source>Not enough available space on partition with file %1: %2 while the restored file is expected to be around %3. Please either free some disk space on this partition and retry or cancel the restore process.</source>
+        <translation>Недостаточно свободного места на разделе с файлом %1: доступно %2, тогда как размер восстановленного файла ожидается в районе %3. Пожалуйста, либо освободите достаточно места на этом разделе и попробуйте снова, либо откажитесь от восстановления.</translation>
+    </message>
+    <message>
+        <source>%1 already exists. Please either remove the file manually and retry or cancel the restore process.</source>
+        <translation>%1 уже существует. Пожалуйста, либо удалите этот файл вручную и попробуйте снова, либо отмените процесс восстановления.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::Dumper</name>
+    <message>
+        <source>Dumping process crashed: %1.</source>
+        <translation>Процесс выгрузки данных упал: %1.</translation>
+    </message>
+    <message>
+        <source>Dumping process finished with error: %1 (%2).</source>
+        <translation>Процесс выгрузки данных завершился с ошибкой: %1 (%2).</translation>
+    </message>
+    <message>
+        <source>Unable to start dumping process: %1. Do you have sqlite3 installed?</source>
+        <translation>Невозможно запустить процесс выгрузки данных: %1. Установлен ли sqlite3?</translation>
+    </message>
+    <message>
+        <source>Unable to dump the database: %1.</source>
+        <translation>Невозможно выгрузить базу данных %1.</translation>
     </message>
 </context>
 <context>

@@ -46,29 +46,6 @@
     </message>
 </context>
 <context>
-    <name>AuthenticationDialog</name>
-    <message>
-        <location filename="authenticationdialog.ui" line="13"/>
-        <source>Authentication required</source>
-        <translation>Authentication required</translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="29"/>
-        <source>Login:</source>
-        <translation>Login:</translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="39"/>
-        <source>Password:</source>
-        <translation>Password:</translation>
-    </message>
-    <message>
-        <location filename="authenticationdialog.ui" line="55"/>
-        <source>Save credentials</source>
-        <translation>Save credentials</translation>
-    </message>
-</context>
-<context>
     <name>BackendSelector</name>
     <message>
         <location filename="../util/db/backendselector.ui" line="21"/>
@@ -372,32 +349,32 @@
         <translation>Could not create path %1/.leechcraft</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="541"/>
+        <location filename="application.cpp" line="539"/>
         <source>Initializing LeechCraft...</source>
         <translation>Initializing LeechCraft...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="552"/>
+        <location filename="application.cpp" line="550"/>
         <source>Finalizing...</source>
         <translation>Finalizing...</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="517"/>
+        <location filename="application.cpp" line="515"/>
         <source>Startup password</source>
         <translation>Startup password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="518"/>
+        <location filename="application.cpp" line="516"/>
         <source>Enter startup password for LeechCraft:</source>
         <translation>Enter startup password for LeechCraft:</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="523"/>
+        <location filename="application.cpp" line="521"/>
         <source>Sorry, incorrect password</source>
         <translation>Sorry, incorrect password</translation>
     </message>
     <message>
-        <location filename="application.cpp" line="620"/>
+        <location filename="application.cpp" line="612"/>
         <source>This change requires restarting LeechCraft. Do you want to restart now?</source>
         <translation>This change requires restarting LeechCraft. Do you want to restart now?</translation>
     </message>
@@ -413,32 +390,32 @@
 <context>
     <name>LeechCraft::Core</name>
     <message>
-        <location filename="core.cpp" line="281"/>
+        <location filename="core.cpp" line="277"/>
         <source>No plugins are able to download &quot;%1&quot;</source>
         <translation>No plugins are able to download &quot;%1&quot;</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="353"/>
+        <location filename="core.cpp" line="349"/>
         <source>Do you really want to clear the network cache?</source>
         <translation>Do you really want to clear the network cache?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="365"/>
+        <location filename="core.cpp" line="361"/>
         <source>Do you really want to clear cookies?</source>
         <translation>Do you really want to clear cookies?</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="377"/>
+        <location filename="core.cpp" line="373"/>
         <source>This security measure is easily circumvented by modifying LeechCraft&apos;s settings files (or registry on Windows) in a text editor. For proper and robust protection consider using some third-party tools like &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Accept this dialog if you understand the above and this kind of security through obscurity is OK for you.</source>
         <translation>This security measure is easily circumvented by modifying LeechCraft&apos;s settings files (or registry on Windows) in a text editor. For proper and robust protection consider using some third-party tools like &lt;em&gt;encfs&lt;/em&gt; (http://www.arg0.net/encfs/).&lt;br/&gt;&lt;br/&gt;Accept this dialog if you understand the above and this kind of security through obscurity is OK for you.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="389"/>
+        <location filename="core.cpp" line="385"/>
         <source>Enter new startup password:</source>
         <translation>Enter new startup password:</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="436"/>
+        <location filename="core.cpp" line="432"/>
         <source>Plugin load error</source>
         <translation>Plugin load error</translation>
     </message>
@@ -599,17 +576,17 @@
         <translation>Do you really want to restart?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="410"/>
+        <location filename="mainwindow.cpp" line="407"/>
         <source>Do you really want to quit?</source>
         <translation>Do you really want to quit?</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="415"/>
+        <location filename="mainwindow.cpp" line="412"/>
         <source>Always</source>
         <translation>Always</translation>
     </message>
     <message>
-        <location filename="mainwindow.cpp" line="665"/>
+        <location filename="mainwindow.cpp" line="662"/>
         <source>Toggle LeechCraft window</source>
         <translation>Toggle LeechCraft window</translation>
     </message>
@@ -617,18 +594,12 @@
 <context>
     <name>LeechCraft::NetworkAccessManager</name>
     <message>
-        <location filename="networkaccessmanager.cpp" line="196"/>
-        <location filename="networkaccessmanager.cpp" line="209"/>
-        <source>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</source>
-        <translation>%1&lt;br /&gt;&lt;em&gt;%2&lt;/em&gt;&lt;br /&gt;requires authentication.</translation>
-    </message>
-    <message>
-        <location filename="networkaccessmanager.cpp" line="229"/>
+        <location filename="networkaccessmanager.cpp" line="165"/>
         <source>Could not create Core directory.</source>
         <translation>Could not create Core directory.</translation>
     </message>
     <message>
-        <location filename="networkaccessmanager.cpp" line="237"/>
+        <location filename="networkaccessmanager.cpp" line="173"/>
         <source>Could not save cookies, error opening cookie file.</source>
         <translation>Could not save cookies, error opening cookie file.</translation>
     </message>
@@ -926,6 +897,62 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Util::ConsistencyChecker</name>
+    <message>
+        <location filename="../util/db/consistencychecker.cpp" line="152"/>
+        <source>Not enough available disk space.</source>
+        <translation>Not enough available disk space.</translation>
+    </message>
+    <message>
+        <location filename="../util/db/consistencychecker.cpp" line="143"/>
+        <source>Not enough available space on partition with file %1: %2 while the restored file is expected to be around %3. Please either free some disk space on this partition and retry or cancel the restore process.</source>
+        <translation>Not enough available space on partition with file %1: %2 while the restored file is expected to be around %3. Please either free some disk space on this partition and retry or cancel the restore process.</translation>
+    </message>
+    <message>
+        <location filename="../util/db/consistencychecker.cpp" line="166"/>
+        <source>%1 already exists. Please either remove the file manually and retry or cancel the restore process.</source>
+        <translation>%1 already exists. Please either remove the file manually and retry or cancel the restore process.</translation>
+    </message>
+    <message>
+        <location filename="../util/db/consistencychecker.cpp" line="171"/>
+        <source>Backup file already exists.</source>
+        <translation>Backup file already exists.</translation>
+    </message>
+    <message>
+        <location filename="../util/db/consistencychecker.cpp" line="184"/>
+        <source>Unable to restore the database.</source>
+        <translation>Unable to restore the database.</translation>
+    </message>
+    <message>
+        <location filename="../util/db/consistencychecker.cpp" line="199"/>
+        <source>Unable to backup %1 to %2. Please remove %2 and hit OK.</source>
+        <translation>Unable to backup %1 to %2. Please remove %2 and hit OK.</translation>
+    </message>
+</context>
+<context>
+    <name>LeechCraft::Util::Dumper</name>
+    <message>
+        <location filename="../util/db/dumper.cpp" line="103"/>
+        <source>Dumping process crashed: %1.</source>
+        <translation>Dumping process crashed: %1.</translation>
+    </message>
+    <message>
+        <location filename="../util/db/dumper.cpp" line="110"/>
+        <source>Dumping process finished with error: %1 (%2).</source>
+        <translation>Dumping process finished with error: %1 (%2).</translation>
+    </message>
+    <message>
+        <location filename="../util/db/dumper.cpp" line="134"/>
+        <source>Unable to start dumping process: %1. Do you have sqlite3 installed?</source>
+        <translation>Unable to start dumping process: %1. Do you have sqlite3 installed?</translation>
+    </message>
+    <message>
+        <location filename="../util/db/dumper.cpp" line="137"/>
+        <source>Unable to dump the database: %1.</source>
+        <translation>Unable to dump the database: %1.</translation>
+    </message>
+</context>
+<context>
     <name>LeechCraft::Util::FlatToFoldersProxyModel</name>
     <message>
         <location filename="../util/models/flattofoldersproxymodel.cpp" line="111"/>
@@ -1101,12 +1128,12 @@ If you have read and really understood all these letters, click Cancel button in
         </translation>
     </message>
     <message>
-        <location filename="../util/sys/paths.cpp" line="179"/>
+        <location filename="../util/sys/paths.cpp" line="180"/>
         <source>Could not cd into %1</source>
         <translation>Could not cd into %1</translation>
     </message>
     <message>
-        <location filename="../util/sys/paths.cpp" line="173"/>
+        <location filename="../util/sys/paths.cpp" line="174"/>
         <source>Could not create %1</source>
         <translation>Could not create %1</translation>
     </message>
