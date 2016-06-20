@@ -201,7 +201,16 @@ namespace Util
 		return Fmap (functor, f);
 	}
 
-	// Implementations
+	/** @brief Implementation of the Functor class for boost.optional.
+	 *
+	 * The implementation applies the function to the contents of the
+	 * boost.optional if it's not empty, otherwise it just leaves an
+	 * empty boost.optional.
+	 *
+	 * This is analogous to the Maybe type.
+	 *
+	 * @tparam T The element type contained inside the boost.optional.
+	 */
 	template<typename T>
 	struct InstanceFunctor<boost::optional<T>>
 	{
