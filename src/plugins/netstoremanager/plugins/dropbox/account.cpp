@@ -345,7 +345,6 @@ namespace DBox
 			result << CreateItem (item);
 
 		emit gotListing (result);
-		emit listingUpdated (result.value (0).ParentID_);
 	}
 
 	void Account::handleGotNewItem (const DBoxItem& item)
