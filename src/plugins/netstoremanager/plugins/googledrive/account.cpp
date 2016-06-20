@@ -353,7 +353,6 @@ namespace GoogleDrive
 			result << CreateItem (item);
 
 		emit gotListing (result);
-		emit listingUpdated (QByteArray ());
 	}
 
 	void Account::handleGotNewItem (const DriveItem& item)
