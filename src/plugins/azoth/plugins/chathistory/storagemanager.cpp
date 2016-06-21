@@ -247,7 +247,7 @@ namespace ChatHistory
 				[=] (const boost::optional<int>& count)
 				{
 					const auto& text = QObject::tr ("Finished restoring history database contents. "
-							"Old file size: %1, new file size: %2, %3 records recovered. %4");
+							"Old file size: %1, new file size: %2, %3 records recovered.");
 					const auto& greet = newSize > oldSize * 0.9 ?
 							QObject::tr ("Yay, seems like most of the contents are intact!") :
 							QObject::tr ("Sadly, seems like quite some history is lost.");
@@ -256,8 +256,8 @@ namespace ChatHistory
 							"Azoth ChatHistory",
 							text.arg (Util::MakePrettySize (oldSize))
 								.arg (Util::MakePrettySize (newSize))
-								.arg (count.get_value_or (0))
-								.arg (greet));
+								.arg (count.get_value_or (0)) +
+								" " + greet);
 				};
 	}
 }
