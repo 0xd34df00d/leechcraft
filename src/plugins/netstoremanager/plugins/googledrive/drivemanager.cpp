@@ -713,6 +713,12 @@ namespace GoogleDrive
 			return;
 
 		const auto& resMap = res.toMap ();
+		if (resMap.contains ("error"))
+		{
+			ParseError (res.toMap ());
+			return;
+		}
+
 		if (!resMap.contains ("items"))
 		{
 			qDebug () << Q_FUNC_INFO << "there are no items";
@@ -721,12 +727,6 @@ namespace GoogleDrive
 				SecondRequestIfNoItems_ = false;
 				RefreshListing ();
 			}
-			return;
-		}
-
-		if (resMap.contains ("error"))
-		{
-			ParseError (res.toMap ());
 			return;
 		}
 
