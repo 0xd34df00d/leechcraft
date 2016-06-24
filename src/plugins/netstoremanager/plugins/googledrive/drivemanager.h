@@ -48,6 +48,8 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+struct StorageItem;
+
 namespace GoogleDrive
 {
 	class Account;
@@ -140,6 +142,8 @@ namespace GoogleDrive
 			return Id_ == item.Id_;
 		}
 	};
+
+	StorageItem ToStorageItem (const DriveItem&);
 
 	struct DriveChanges
 	{

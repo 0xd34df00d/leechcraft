@@ -37,8 +37,6 @@
 #include <QFuture>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
-#include <util/sll/urlaccessor.h>
-#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -314,37 +312,6 @@ namespace GoogleDrive
 		return DriveManager_;
 	}
 
-	namespace
-	{
-		StorageItem CreateItem (const DriveItem& item)
-		{
-			StorageItem storageItem;
-			storageItem.ID_ = item.Id_.toUtf8 ();
-			storageItem.ParentID_ = item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ();
-			storageItem.Name_ = item.Name_;
-			storageItem.Size_ = item.FileSize_;
-			storageItem.ModifyDate_ = item.ModifiedDate_;
-			storageItem.Hash_ = item.Md5_.toUtf8 ();
-			storageItem.HashType_ = HashAlgorithm::Md5;
-			storageItem.IsDirectory_ = item.IsFolder_;
-			storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
-			storageItem.MimeType_ = item.Mime_;
-			storageItem.Url_ = item.DownloadUrl_;
-			storageItem.ShareUrl_ = item.ShareUrl_;
-			storageItem.Shared_ = item.Shared_;
-			for (const auto& pair : Util::Stlize (item.ExportLinks_))
-			{
-				const auto& key = pair.first;
-				const auto& mime = pair.second;
-
-				storageItem.ExportLinks [key] = qMakePair (mime,
-						Util::UrlAccessor { key }.last ().second);
-			}
-
-			return storageItem;
-		}
-	}
-
 	void Account::handleFileList (const QList<DriveItem>& items)
 	{
 		QList<StorageItem> result;
@@ -357,7 +324,7 @@ namespace GoogleDrive
 
 	void Account::handleGotNewItem (const DriveItem& item)
 	{
-		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
+		emit gotNewItem (ToStorageItem (item), item.ParentId_.toUtf8 ());
 		emit listingUpdated (item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ());
 	}
 
@@ -375,7 +342,7 @@ namespace GoogleDrive
 			change.ID_ = driveChange.Id_.toUtf8 ();
 			change.ItemID_ = driveChange.FileId_.toUtf8 ();
 			if (!change.Deleted_)
-				change.Item_ = CreateItem (driveChange.FileResource_);
+				change.Item_ = ToStorageItem (driveChange.FileResource_);
 
 			changes << change;
 		}

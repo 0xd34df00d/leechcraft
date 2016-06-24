@@ -48,6 +48,8 @@
 #include <util/sll/parsejson.h>
 #include <util/sll/serializejson.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/urlaccessor.h>
 #include <util/threads/futures.h>
 #include "account.h"
 #include "core.h"
@@ -59,6 +61,34 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
+	StorageItem ToStorageItem (const DriveItem& item)
+	{
+		StorageItem storageItem;
+		storageItem.ID_ = item.Id_.toUtf8 ();
+		storageItem.ParentID_ = item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ();
+		storageItem.Name_ = item.Name_;
+		storageItem.Size_ = item.FileSize_;
+		storageItem.ModifyDate_ = item.ModifiedDate_;
+		storageItem.Hash_ = item.Md5_.toUtf8 ();
+		storageItem.HashType_ = HashAlgorithm::Md5;
+		storageItem.IsDirectory_ = item.IsFolder_;
+		storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
+		storageItem.MimeType_ = item.Mime_;
+		storageItem.Url_ = item.DownloadUrl_;
+		storageItem.ShareUrl_ = item.ShareUrl_;
+		storageItem.Shared_ = item.Shared_;
+		for (const auto& pair : Util::Stlize (item.ExportLinks_))
+		{
+			const auto& key = pair.first;
+			const auto& mime = pair.second;
+
+			storageItem.ExportLinks [key] = qMakePair (mime,
+					Util::UrlAccessor { key }.last ().second);
+		}
+
+		return storageItem;
+	}
+
 	DriveManager::DriveManager (Account *acc, QObject *parent)
 	: QObject (parent)
 	, DirectoryId_ ("application/vnd.google-apps.folder")
