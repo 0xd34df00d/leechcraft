@@ -252,6 +252,18 @@ namespace Util
 
 	namespace detail
 	{
+		class FutureResultHandler : public QObject
+		{
+			Q_OBJECT
+
+			const std::function<void (int)> Handler_;
+		public:
+			FutureResultHandler (const std::function<void (int)>&,
+					QFutureWatcherBase*, QObject* = nullptr);
+		public slots:
+			void handleResult (int);
+		};
+
 		/** @brief Incapsulates the sequencing logic of asynchronous
 		 * actions.
 		 *
