@@ -174,5 +174,34 @@ namespace Util
 		QCOMPARE (executed, true);
 		QCOMPARE (value, finished);
 	}
+
+	void FuturesTest::testMulti ()
+	{
+		QEventLoop loop;
+
+		QFutureInterface<int> iface;
+
+		int count = 0;
+		int sum = 0;
+		Sequence (nullptr, iface.future ())
+				.MultipleResults ([&] (int sub)
+						{
+							sum += sub;
+							++count;
+						},
+						[&] { loop.quit (); });
+
+		iface.reportStarted ();
+		iface.setProgressRange (0, 2);
+		iface.reportResult (1, 0);
+		iface.reportResult (2, 1);
+		iface.reportResult (3, 2);
+		iface.reportFinished ();
+
+		loop.exec ();
+
+		QCOMPARE (count, 3);
+		QCOMPARE (sum, 6);
+	}
 }
 }

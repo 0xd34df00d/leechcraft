@@ -48,6 +48,8 @@ namespace Util
 		void testNoDestrHandler ();
 
 		void testNoDestrHandlerSetBuildable ();
+
+		void testMulti ();
 	};
 }
 }
