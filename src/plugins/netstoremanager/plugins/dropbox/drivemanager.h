@@ -60,9 +60,9 @@ namespace DBox
 		QByteArray Revision_;
 
 		QString Name_;
-		bool IsDeleted_;
 		quint64 FileSize_ = 0;
 		bool IsFolder_ = false;
+		bool IsDeleted_ = false;
 		QString FolderHash_;
 		QDateTime ModifiedDate_;
 		QString MimeType_;
