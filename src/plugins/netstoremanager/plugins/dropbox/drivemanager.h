@@ -97,8 +97,6 @@ namespace DBox
 		QHash<QNetworkReply*, QString> Reply2ParentId_;
 		QHash<QNetworkReply*, quint64> Reply2Offset_;
 		bool SecondRequestIfNoItems_;
-		const int ChunkUploadBound_;
-
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
 

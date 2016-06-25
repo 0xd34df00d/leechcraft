@@ -69,12 +69,16 @@ namespace DBox
 		return storageItem;
 	}
 
+	namespace
+	{
+		const int ChunkUploadBound = 150 * 1024 * 1024;
+	}
+
 	DriveManager::DriveManager (Account *acc, QObject *parent)
 	: QObject (parent)
 	, DirectoryId_ ("application/vnd.google-apps.folder")
 	, Account_ (acc)
 	, SecondRequestIfNoItems_ (true)
-	, ChunkUploadBound_ (150 * 1024 * 1024)
 	{
 	}
 
@@ -138,7 +142,7 @@ namespace DBox
 		QString parent = parentId.value (0);
 		auto guard = MakeRunnerGuard ();
 
-		if (QFileInfo (filePath).size () < ChunkUploadBound_)
+		if (QFileInfo (filePath).size () < ChunkUploadBound)
 			ApiCallQueue_ << [this, filePath, parent] () { RequestUpload (filePath, parent); };
 		else
 			ApiCallQueue_ << [this, filePath, parent] () { RequestChunkUpload (filePath, parent); };
@@ -634,7 +638,7 @@ namespace DBox
 		const auto& path = Reply2FilePath_ [reply];
 		const quint64 offset = Reply2Offset_ [reply];
 		QFileInfo fi (path);
-		if (fi.size () < ChunkUploadBound_)
+		if (fi.size () < ChunkUploadBound)
 			emit uploadProgress (uploaded, total, path);
 		else
 			emit uploadProgress (uploaded + offset, fi.size (), path);
