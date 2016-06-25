@@ -21,6 +21,6 @@ FindQtLibs (leechcraft-util-threads${LC_LIBSUFFIX} Core Concurrent)
 
 if (ENABLE_UTIL_TESTS)
 	include_directories (${CMAKE_CURRENT_BINARY_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR})
-	AddUtilTest (threads_futures tests/futures.cpp UtilThreadsFuturesTest leechcraft-util-sll${LC_LIBSUFFIX})
+	AddUtilTest (threads_futures tests/futurestest.cpp UtilThreadsFuturesTest leechcraft-util-sll${LC_LIBSUFFIX})
 	AddUtilTest (threads_monadicfuture tests/monadicfuturetest.cpp UtilThreadsMonadicFutureTest leechcraft-util-sll${LC_LIBSUFFIX})
 endif ()

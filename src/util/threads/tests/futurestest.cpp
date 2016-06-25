@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "futures.h"
+#include "futurestest.h"
 #include <QEventLoop>
 #include <QtTest>
 #include <futures.h>
