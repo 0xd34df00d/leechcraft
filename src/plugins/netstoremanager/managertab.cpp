@@ -404,6 +404,7 @@ namespace NetStoreManager
 
 	void ManagerTab::FillListModel ()
 	{
+		ClearModel ();
 		ShowListItemsWithParent (LastParentID_, OpenTrash_->isChecked ());
 
 		Ui_.FilesView_->header ()->resizeSection (Columns::CName,
@@ -498,7 +499,6 @@ namespace NetStoreManager
 
 	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
 	{
-		ClearModel ();
 		if (!parentId.isEmpty ())
 		{
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIconThemeManager ()->GetIcon ("go-up"), "..");
@@ -724,11 +724,13 @@ namespace NetStoreManager
 			return;
 
 		const auto& id = index.data (Qt::UserRole + 1).toByteArray ();
+		ClearModel ();
 		ShowListItemsWithParent (Id2Item_ [id].ParentID_, OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::handleQuoteLeftPressed ()
 	{
+		ClearModel ();
 		ShowListItemsWithParent (QByteArray (), OpenTrash_->isChecked ());
 	}
 
@@ -953,6 +955,7 @@ namespace NetStoreManager
 	void ManagerTab::showTrashContent (bool show)
 	{
 		OpenTrash_->setText (show ? tr ("Close trash") : tr ("Open trash"));
+		ClearModel ();
 		ShowListItemsWithParent (QByteArray (), show);
 	}
 
