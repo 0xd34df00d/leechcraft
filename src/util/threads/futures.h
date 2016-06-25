@@ -37,6 +37,7 @@
 #include <QFutureWatcher>
 #include <util/sll/oldcppkludges.h>
 #include <util/sll/slotclosure.h>
+#include "threadsconfig.h"
 #include "concurrentexception.h"
 
 namespace LeechCraft
@@ -252,7 +253,7 @@ namespace Util
 
 	namespace detail
 	{
-		class FutureResultHandler : public QObject
+		class UTIL_THREADS_API FutureResultHandler : public QObject
 		{
 			Q_OBJECT
 
