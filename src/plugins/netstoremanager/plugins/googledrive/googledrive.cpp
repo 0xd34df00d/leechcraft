@@ -129,7 +129,7 @@ namespace GoogleDrive
 
 	void Plugin::RegisterAccount (const QString& name)
 	{
-		Account *account = new Account (name, this);
+		const auto account = new Account (name, this);
 		AuthManager_->Auth (account);
 	}
 
@@ -169,7 +169,7 @@ namespace GoogleDrive
 		{
 			settings.setArrayIndex (i);
 			const QByteArray& data = settings.value ("SerializedData").toByteArray ();
-			Account_ptr acc = Account::Deserialize (data, this);
+			const auto acc = Account::Deserialize (data, this);
 			Accounts_ << acc;
 			emit accountAdded (acc.get ());
 		}
