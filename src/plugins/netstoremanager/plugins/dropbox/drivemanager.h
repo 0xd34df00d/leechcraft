@@ -60,19 +60,13 @@ namespace DBox
 		QByteArray Revision_;
 
 		QString Name_;
-		quint64 FileSize_;
-		bool IsFolder_;
 		bool IsDeleted_;
+		quint64 FileSize_ = 0;
+		bool IsFolder_ = false;
 		QString FolderHash_;
 		QDateTime ModifiedDate_;
 		QString MimeType_;
 
-
-		DBoxItem ()
-		: FileSize_ (0)
-		, IsFolder_ (false)
-		{
-		}
 
 		bool operator== (const DBoxItem& item) const
 		{
