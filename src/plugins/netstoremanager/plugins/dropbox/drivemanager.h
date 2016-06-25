@@ -119,7 +119,7 @@ namespace DBox
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();
-		void RequestFiles (const QByteArray& parntId);
+		void RequestFiles (const QByteArray& parentId);
 		void RequestSharingEntry (const QString& id, ShareType type, QFutureInterface<ShareResult_t>);
 		void RequestCreateDirectory (const QString& name, const QString& parentId);
 		void RequestEntryRemoving (const QString& id);
