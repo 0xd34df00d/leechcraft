@@ -102,13 +102,13 @@ namespace DBox
 
 		void RequestUserId ();
 
-		void RefreshListing (const QByteArray& parentId = QByteArray ());
+		void RefreshListing (const QByteArray& parentId = {});
 
 		using ShareResult_t = Util::Either<QString, QUrl>;
 		QFuture<ShareResult_t> ShareEntry (const QString& id, ShareType type);
 
 		void CreateDirectory (const QString& name,
-				const QString& parentId = QString ());
+				const QString& parentId = {});
 		void RemoveEntry (const QByteArray& id);
 		void Copy (const QByteArray& id, const QString& parentId);
 		void Move (const QByteArray& id, const QString& parentId);
@@ -128,7 +128,7 @@ namespace DBox
 
 		void RequestUpload (const QString& filePath, const QString& parent);
 		void RequestChunkUpload (const QString& filePath, const QString& parent,
-				const QString& uploadId = QString (), quint64 offset = 0);
+				const QString& uploadId = {}, quint64 offset = 0);
 
 		void ParseError (const QVariantMap& map);
 	private slots:
@@ -142,7 +142,6 @@ namespace DBox
 		void handleChunkUploadFinished ();
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
-
 	signals:
 		void gotFiles (const QList<DBoxItem>& items);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
