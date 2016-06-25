@@ -67,8 +67,7 @@ namespace NetStoreManager
 		Model_->setHorizontalHeaderLabels ({ tr ("Directory") });
 		ProxyModel_->setSourceModel (Model_);
 		Ui_.DirectoriesView_->setModel (ProxyModel_);
-		auto account = am->GetAccountFromUniqueID (accId);
-		if (account)
+		if (auto account = am->GetAccountFromUniqueID (accId))
 			if (auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ()))
 			{
 				connect (account->GetQObject (),
