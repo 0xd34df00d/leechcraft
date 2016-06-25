@@ -53,6 +53,22 @@ namespace NetStoreManager
 {
 namespace DBox
 {
+	StorageItem ToStorageItem (const DBoxItem& item)
+	{
+		StorageItem storageItem;
+		storageItem.ID_ = item.Id_.toUtf8 ();
+		storageItem.ParentID_ = item.ParentID_.toUtf8 ();
+		storageItem.Name_ = item.Name_;
+		storageItem.Size_ = item.FileSize_;
+		storageItem.ModifyDate_ = item.ModifiedDate_;
+		storageItem.IsDirectory_ = item.IsFolder_;
+		storageItem.IsTrashed_ = item.IsDeleted_;
+		storageItem.MimeType_ = item.MimeType_;
+		storageItem.Hash_ = item.Revision_;
+
+		return storageItem;
+	}
+
 	DriveManager::DriveManager (Account *acc, QObject *parent)
 	: QObject (parent)
 	, DirectoryId_ ("application/vnd.google-apps.folder")

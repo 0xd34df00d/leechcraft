@@ -318,38 +318,19 @@ namespace DBox
 		return DriveManager_;
 	}
 
-	namespace
-	{
-		StorageItem CreateItem (const DBoxItem& item)
-		{
-			StorageItem storageItem;
-			storageItem.ID_ = item.Id_.toUtf8 ();
-			storageItem.ParentID_ = item.ParentID_.toUtf8 ();
-			storageItem.Name_ = item.Name_;
-			storageItem.Size_ = item.FileSize_;
-			storageItem.ModifyDate_ = item.ModifiedDate_;
-			storageItem.IsDirectory_ = item.IsFolder_;
-			storageItem.IsTrashed_ = item.IsDeleted_;
-			storageItem.MimeType_ = item.MimeType_;
-			storageItem.Hash_ = item.Revision_;
-
-			return storageItem;
-		}
-	}
-
 	void Account::handleFileList (const QList<DBoxItem>& items)
 	{
 		QList<StorageItem> result;
 
 		for (const auto& item : items)
-			result << CreateItem (item);
+			result << ToStorageItem (item);
 
 		emit gotListing (result);
 	}
 
 	void Account::handleGotNewItem (const DBoxItem& item)
 	{
-		const auto& storageItem = CreateItem (item);
+		const auto& storageItem = ToStorageItem (item);
 		emit gotNewItem (storageItem, storageItem.ParentID_);
 		emit listingUpdated (storageItem.ParentID_);
 	}

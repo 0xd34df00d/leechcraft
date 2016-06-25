@@ -48,6 +48,8 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+struct StorageItem;
+
 namespace DBox
 {
 	class Account;
@@ -73,6 +75,8 @@ namespace DBox
 			return Id_ == item.Id_;
 		}
 	};
+
+	StorageItem ToStorageItem (const DBoxItem&);
 
 	enum class ShareType
 	{
