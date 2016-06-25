@@ -419,6 +419,43 @@ namespace Util
 					LastWatcher_
 				};
 			}
+
+			void MultipleResults (const std::function<void (RetType_t)>& handler,
+					const std::function<void ()>& finishHandler = {},
+					const std::function<void ()>& startHandler = {})
+			{
+				if (LastWatcher_ != &BaseWatcher_)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "multiple results handler should be chained directly to the source";
+					throw std::runtime_error { "invalid multiple results handler chaining" };
+				}
+
+				new FutureResultHandler
+				{
+					[handler, this] (int index) { handler (BaseWatcher_.resultAt (index)); },
+					&BaseWatcher_,
+					&BaseWatcher_
+				};
+
+				if (finishHandler)
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						finishHandler,
+						&BaseWatcher_,
+						SIGNAL (finished ()),
+						&BaseWatcher_
+					};
+
+				if (startHandler)
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						startHandler,
+						&BaseWatcher_,
+						SIGNAL (started ()),
+						&BaseWatcher_
+					};
+			}
 		};
 
 		template<typename T>
@@ -572,6 +609,27 @@ namespace Util
 						"Destruction handling function has been already set.");
 
 				return { ExecuteGuard_, Seq_, std::forward<F> (f) };
+			}
+
+			template<typename F>
+			void MultipleResults (F&& f)
+			{
+				Seq_->MultipleResults (std::forward<F> (f));
+			}
+
+			template<typename F, typename Finish>
+			void MultipleResults (F&& f, Finish&& finish)
+			{
+				Seq_->MultipleResults (std::forward<F> (f),
+						std::forward<Finish> (finish));
+			}
+
+			template<typename F, typename Finish, typename Start>
+			void MultipleResults (F&& f, Finish&& finish, Start&& start)
+			{
+				Seq_->MultipleResults (std::forward<F> (f),
+						std::forward<Finish> (finish),
+						std::forward<Start> (start));
 			}
 
 			operator QFuture<Ret> ()
