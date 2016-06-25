@@ -1,4 +1,5 @@
 set (THREADS_SRCS
+	futures.cpp
 	workerthreadbase.cpp
 	)
 
