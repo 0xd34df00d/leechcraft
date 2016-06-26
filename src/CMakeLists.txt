@@ -12,6 +12,9 @@ project (leechcraft)
 
 set (CMAKE_MACOSX_RPATH OFF)
 
+set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_EXTENSIONS OFF)
+
 option (USE_QT5 "Enable Qt5 build" OFF)
 option (USE_CPP14 "Enable C++14 features and plugins" OFF)
 option (EXTRA_WARNINGS "Enable extra compiler warnings" OFF)
@@ -31,7 +34,7 @@ if (WIN32)
 	add_definitions (-DNTDDI_VERSION=0x0600)
 endif ()
 if (UNIX OR (WIN32 AND MINGW))
-	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall -std=c++1y")
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall")
 	if (USE_CPP14)
 		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_CPP14")
 	endif ()
