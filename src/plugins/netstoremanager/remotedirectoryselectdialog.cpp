@@ -35,6 +35,9 @@
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QtDebug>
+#include <util/threads/futures.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "accountsmanager.h"
@@ -69,13 +72,9 @@ namespace NetStoreManager
 		Ui_.DirectoriesView_->setModel (ProxyModel_);
 		if (auto account = am->GetAccountFromUniqueID (accId))
 			if (auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ()))
-			{
-				connect (account->GetQObject (),
-						SIGNAL (gotListing (QList<StorageItem>)),
-						this,
-						SLOT (handleGotListing (QList<StorageItem>)));
-				isfl->RefreshListing ();
-			}
+				Util::Sequence (this, isfl->RefreshListing ())
+						.MultipleResults ([this] (const ISupportFileListings::RefreshResult_t& result)
+								{ HandleGotListing (result); });
 	}
 
 	QStringList RemoteDirectorySelectDialog::GetDirectoryPath () const
@@ -94,36 +93,41 @@ namespace NetStoreManager
 		return path;
 	}
 
-	void RemoteDirectorySelectDialog::handleGotListing (const QList<StorageItem>& items)
+	void RemoteDirectorySelectDialog::HandleGotListing (const ISupportFileListings::RefreshResult_t& items)
 	{
-		disconnect (sender (),
-				0,
-				this,
-				0);
+		Util::Visit (items.AsVariant (),
+				[this] (const QString& error)
+				{
+					QMessageBox::critical (this,
+							"LeechCraft",
+							tr ("Unable to get file listing for the account.") + " " + error);
+				},
+				[this] (const QList<StorageItem>& items)
+				{
+					QHash<QByteArray, StorageItem> id2Item;
+					QHash<QByteArray, QStandardItem*> id2StandardItem;
+					for (const auto& item : items)
+					{
+						if (!item.IsDirectory_ ||
+								item.IsTrashed_)
+							continue;
 
-		QHash<QByteArray, StorageItem> id2Item;
-		QHash<QByteArray, QStandardItem*> id2StandardItem;
-		for (const auto& item : items)
-		{
-			if (!item.IsDirectory_ ||
-					item.IsTrashed_)
-				continue;
+						id2Item [item.ID_] = item;
+						QStandardItem *dir = new QStandardItem (AM_->GetProxy ()->
+								GetIconThemeManager ()->GetIcon ("inode-directory"), item.Name_);
+						dir->setData (item.ID_, ListingRole::ID);
+						dir->setEditable (false);
+						id2StandardItem [item.ID_] = dir;
+					}
 
-			id2Item [item.ID_] = item;
-			QStandardItem *dir = new QStandardItem (AM_->GetProxy ()->
-					GetIconThemeManager ()->GetIcon ("inode-directory"), item.Name_);
-			dir->setData (item.ID_, ListingRole::ID);
-			dir->setEditable (false);
-			id2StandardItem [item.ID_] = dir;
-		}
-
-		for (const auto& key : id2StandardItem.keys ())
-		{
-			if (!id2Item.contains (id2Item [key].ParentID_))
-				Model_->appendRow (id2StandardItem [key]);
-			else
-				id2StandardItem [id2Item [key].ParentID_]->appendRow (id2StandardItem [key]);
-		}
+					for (const auto& key : id2StandardItem.keys ())
+					{
+						if (!id2Item.contains (id2Item [key].ParentID_))
+							Model_->appendRow (id2StandardItem [key]);
+						else
+							id2StandardItem [id2Item [key].ParentID_]->appendRow (id2StandardItem [key]);
+					}
+				});
 	}
 
 	void RemoteDirectorySelectDialog::createNewDir ()

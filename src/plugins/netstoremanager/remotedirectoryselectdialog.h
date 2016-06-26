@@ -58,9 +58,9 @@ namespace NetStoreManager
 				AccountsManager *am, QWidget *parent = 0);
 
 		QStringList GetDirectoryPath () const;
-
+	private:
+		void HandleGotListing (const ISupportFileListings::RefreshResult_t& items);
 	private slots:
-		void handleGotListing (const QList<StorageItem>& items);
 		void createNewDir ();
 	};
 }
