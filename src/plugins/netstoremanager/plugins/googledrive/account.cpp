@@ -37,7 +37,6 @@
 #include <QFuture>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
-#include <util/sll/urlaccessor.h>
 #include <util/threads/futures.h>
 #include <util/threads/monadicfuture.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -55,13 +54,8 @@ namespace GoogleDrive
 	: QObject (parentPlugin)
 	, ParentPlugin_ (parentPlugin)
 	, Name_ (name)
-	, Trusted_ (false)
 	, DriveManager_ (new DriveManager (this, this))
 	{
-		connect (DriveManager_,
-				SIGNAL (gotFiles (const QList<DriveItem>&)),
-				this,
-				SLOT (handleFileList (const QList<DriveItem>&)));
 		connect (DriveManager_,
 				SIGNAL (gotNewItem (DriveItem)),
 				this,
@@ -84,7 +78,7 @@ namespace GoogleDrive
 
 	QByteArray Account::GetUniqueID () const
 	{
-		return ("NetStoreManager.GoogleDrive_" + Name_).toUtf8 ();
+		return "NetStoreManager.GoogleDrive_" + Name_.toUtf8 ();
 	}
 
 	AccountFeatures Account::GetAccountFeatures () const
@@ -146,9 +140,9 @@ namespace GoogleDrive
 		return HashAlgorithm::Md5;
 	}
 
-	void Account::RefreshListing ()
+	QFuture<Account::RefreshResult_t> Account::RefreshListing ()
 	{
-		DriveManager_->RefreshListing ();
+		return DriveManager_->RefreshListing ();
 	}
 
 	void Account::RefreshChildren (const QByteArray& parentId)
@@ -314,52 +308,9 @@ namespace GoogleDrive
 		return DriveManager_;
 	}
 
-	namespace
-	{
-		StorageItem CreateItem (const DriveItem& item)
-		{
-			StorageItem storageItem;
-			storageItem.ID_ = item.Id_.toUtf8 ();
-			storageItem.ParentID_ = item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ();
-			storageItem.Name_ = item.Name_;
-			storageItem.Size_ = item.FileSize_;
-			storageItem.ModifyDate_ = item.ModifiedDate_;
-			storageItem.Hash_ = item.Md5_.toUtf8 ();
-			storageItem.HashType_ = HashAlgorithm::Md5;
-			storageItem.IsDirectory_ = item.IsFolder_;
-			storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
-			storageItem.MimeType_ = item.Mime_;
-			storageItem.Url_ = item.DownloadUrl_;
-			storageItem.ShareUrl_ = item.ShareUrl_;
-			storageItem.Shared_ = item.Shared_;
-			for (const auto& key : item.ExportLinks_.keys ())
-			{
-				const auto mime = item.ExportLinks_.value (key);
-
-				const auto& queryItems = Util::UrlAccessor { key };
-				const auto lastQueryPair = queryItems.last ();
-
-				storageItem.ExportLinks [key] = qMakePair (mime, lastQueryPair.second);
-			}
-
-			return storageItem;
-		}
-	}
-
-	void Account::handleFileList (const QList<DriveItem>& items)
-	{
-		QList<StorageItem> result;
-
-		for (const auto& item : items)
-			result << CreateItem (item);
-
-		emit gotListing (result);
-		emit listingUpdated (QByteArray ());
-	}
-
 	void Account::handleGotNewItem (const DriveItem& item)
 	{
-		emit gotNewItem (CreateItem (item), item.ParentId_.toUtf8 ());
+		emit gotNewItem (ToStorageItem (item), item.ParentId_.toUtf8 ());
 		emit listingUpdated (item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ());
 	}
 
@@ -377,7 +328,7 @@ namespace GoogleDrive
 			change.ID_ = driveChange.Id_.toUtf8 ();
 			change.ItemID_ = driveChange.FileId_.toUtf8 ();
 			if (!change.Deleted_)
-				change.Item_ = CreateItem (driveChange.FileResource_);
+				change.Item_ = ToStorageItem (driveChange.FileResource_);
 
 			changes << change;
 		}

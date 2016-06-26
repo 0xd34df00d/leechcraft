@@ -29,20 +29,13 @@
 
 #pragma once
 
-#include <QObject>
-
 namespace LeechCraft
 {
 namespace Util
 {
-	class FunctorTest : public QObject
-	{
-		Q_OBJECT
-	private slots:
-		void testBoostOptionalFMap ();
-		void testBoostOptionalFMapEmpty ();
-		void testIsFunctorTrue ();
-		void testIsFunctorFalse ();
-	};
+namespace detail
+{
+	struct ImplementationType;
+}
 }
 }

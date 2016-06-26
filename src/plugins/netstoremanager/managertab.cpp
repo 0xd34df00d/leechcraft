@@ -319,10 +319,6 @@ namespace NetStoreManager
 			return;
 
 		connect (acc->GetQObject (),
-				SIGNAL (gotListing (QList<StorageItem>)),
-				this,
-				SLOT (handleGotListing (QList<StorageItem>)));
-		connect (acc->GetQObject (),
 				SIGNAL (listingUpdated (QByteArray)),
 				this,
 				SLOT (handleListingUpdated (QByteArray)));
@@ -413,7 +409,7 @@ namespace NetStoreManager
 
 	void ManagerTab::RequestFileListings (IStorageAccount *acc)
 	{
-		ISupportFileListings *sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
+		const auto sfl = qobject_cast<ISupportFileListings*> (acc->GetQObject ());
 		if (!sfl)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -421,7 +417,35 @@ namespace NetStoreManager
 					<< "doesn't support FileListings";
 			return;
 		}
-		sfl->RefreshListing ();
+
+		Util::Sequence (nullptr, sfl->RefreshListing ())
+				.MultipleResults ([this, acc] (const ISupportFileListings::RefreshResult_t& result)
+						{
+							if (acc != GetCurrentAccount ())
+								return;
+
+							Util::Visit (result.AsVariant (),
+									[this, acc] (const QString& error)
+									{
+										QMessageBox::critical (this,
+												"LeechCraft",
+												tr ("Unable to get file listing for the account %1.")
+													.arg (acc->GetAccountName ()) +
+													" " + error);
+									},
+									[this] (const QList<StorageItem>& items)
+									{
+										for (auto item : items)
+											Id2Item_ [item.ID_] = item;
+
+										const auto iconName = GetTrashedFiles ().isEmpty () ?
+											"user-trash-full" :
+											"user-trash";
+										Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (iconName));
+										ClearModel ();
+										FillListModel ();
+									});
+						});
 	}
 
 	void ManagerTab::RequestFileChanges (IStorageAccount*)
@@ -498,7 +522,6 @@ namespace NetStoreManager
 
 	void ManagerTab::ShowListItemsWithParent (const QByteArray& parentId, bool inTrash)
 	{
-		ClearModel ();
 		if (!parentId.isEmpty ())
 		{
 			QStandardItem *upLevel = new QStandardItem (Proxy_->GetIconThemeManager ()->GetIcon ("go-up"), "..");
@@ -510,9 +533,9 @@ namespace NetStoreManager
 
 		for (const auto& item : Id2Item_)
 		{
-			quint64 folderSize = 0;
-				if (item.IsDirectory_)
-					folderSize = GetFolderSize (item.ID_);
+			const quint64 folderSize = item.IsDirectory_ ?
+					GetFolderSize (item.ID_) :
+					0;
 			if (!inTrash &&
 					!item.IsTrashed_)
 			{
@@ -635,25 +658,13 @@ namespace NetStoreManager
 			ShowAccountActions (false);
 	}
 
-	void ManagerTab::handleGotListing (const QList<StorageItem>& items)
-	{
-		IStorageAccount *acc = GetCurrentAccount ();
-		if (!acc ||
-				sender () != acc->GetQObject ())
-			return;
-
-		for (auto item : items)
-			Id2Item_ [item.ID_] = item;
-
-		Trash_->setIcon (Proxy_->GetIconThemeManager ()->GetIcon (GetTrashedFiles ().isEmpty () ?
-			"user-trash-full" :
-			"user-trash"));
-	}
-
 	void ManagerTab::handleListingUpdated (const QByteArray& parentId)
 	{
 		if (LastParentID_ == parentId || parentId.isEmpty ())
+		{
+			ClearModel ();
 			FillListModel ();
+		}
 	}
 
 	void ManagerTab::handleGotNewItem (const StorageItem& item, const QByteArray&)
@@ -723,11 +734,13 @@ namespace NetStoreManager
 			return;
 
 		const auto& id = index.data (Qt::UserRole + 1).toByteArray ();
+		ClearModel ();
 		ShowListItemsWithParent (Id2Item_ [id].ParentID_, OpenTrash_->isChecked ());
 	}
 
 	void ManagerTab::handleQuoteLeftPressed ()
 	{
+		ClearModel ();
 		ShowListItemsWithParent (QByteArray (), OpenTrash_->isChecked ());
 	}
 
@@ -952,6 +965,7 @@ namespace NetStoreManager
 	void ManagerTab::showTrashContent (bool show)
 	{
 		OpenTrash_->setText (show ? tr ("Close trash") : tr ("Open trash"));
+		ClearModel ();
 		ShowListItemsWithParent (QByteArray (), show);
 	}
 

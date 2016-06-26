@@ -35,9 +35,9 @@
 #include <boost/optional.hpp>
 #include <QFutureInterface>
 #include <QFutureWatcher>
-#include <QtConcurrentRun>
 #include <util/sll/oldcppkludges.h>
 #include <util/sll/slotclosure.h>
+#include "threadsconfig.h"
 #include "concurrentexception.h"
 
 namespace LeechCraft
@@ -253,6 +253,18 @@ namespace Util
 
 	namespace detail
 	{
+		class UTIL_THREADS_API FutureResultHandler : public QObject
+		{
+			Q_OBJECT
+
+			const std::function<void (int)> Handler_;
+		public:
+			FutureResultHandler (const std::function<void (int)>&,
+					QFutureWatcherBase*, QObject* = nullptr);
+		public slots:
+			void handleResult (int);
+		};
+
 		/** @brief Incapsulates the sequencing logic of asynchronous
 		 * actions.
 		 *
@@ -408,6 +420,44 @@ namespace Util
 					LastWatcher_
 				};
 			}
+
+			template<typename Handler>
+			void MultipleResults (const Handler& handler,
+					const std::function<void ()>& finishHandler = {},
+					const std::function<void ()>& startHandler = {})
+			{
+				if (LastWatcher_ != &BaseWatcher_)
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "multiple results handler should be chained directly to the source";
+					throw std::runtime_error { "invalid multiple results handler chaining" };
+				}
+
+				new FutureResultHandler
+				{
+					[handler, this] (int index) { handler (BaseWatcher_.resultAt (index)); },
+					&BaseWatcher_,
+					&BaseWatcher_
+				};
+
+				if (finishHandler)
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						finishHandler,
+						&BaseWatcher_,
+						SIGNAL (finished ()),
+						&BaseWatcher_
+					};
+
+				if (startHandler)
+					new Util::SlotClosure<Util::DeleteLaterPolicy>
+					{
+						startHandler,
+						&BaseWatcher_,
+						SIGNAL (started ()),
+						&BaseWatcher_
+					};
+			}
 		};
 
 		template<typename T>
@@ -561,6 +611,27 @@ namespace Util
 						"Destruction handling function has been already set.");
 
 				return { ExecuteGuard_, Seq_, std::forward<F> (f) };
+			}
+
+			template<typename F>
+			void MultipleResults (F&& f)
+			{
+				Seq_->MultipleResults (std::forward<F> (f));
+			}
+
+			template<typename F, typename Finish>
+			void MultipleResults (F&& f, Finish&& finish)
+			{
+				Seq_->MultipleResults (std::forward<F> (f),
+						std::forward<Finish> (finish));
+			}
+
+			template<typename F, typename Finish, typename Start>
+			void MultipleResults (F&& f, Finish&& finish, Start&& start)
+			{
+				Seq_->MultipleResults (std::forward<F> (f),
+						std::forward<Finish> (finish),
+						std::forward<Start> (start));
 			}
 
 			operator QFuture<Ret> ()

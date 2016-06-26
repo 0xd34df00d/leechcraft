@@ -29,6 +29,7 @@
 
 #include "historysyncer.h"
 #include <QFutureSynchronizer>
+#include <QtConcurrentRun>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <util/sll/either.h>

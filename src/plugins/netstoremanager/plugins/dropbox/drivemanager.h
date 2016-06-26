@@ -48,6 +48,8 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+struct StorageItem;
+
 namespace DBox
 {
 	class Account;
@@ -60,25 +62,21 @@ namespace DBox
 		QByteArray Revision_;
 
 		QString Name_;
-		quint64 FileSize_;
-		bool IsFolder_;
-		bool IsDeleted_;
+		quint64 FileSize_ = 0;
+		bool IsFolder_ = false;
+		bool IsDeleted_ = false;
 		QString FolderHash_;
 		QDateTime ModifiedDate_;
 		QString MimeType_;
 
-
-		DBoxItem ()
-		: FileSize_ (0)
-		, IsFolder_ (false)
-		{
-		}
 
 		bool operator== (const DBoxItem& item) const
 		{
 			return Id_ == item.Id_;
 		}
 	};
+
+	StorageItem ToStorageItem (const DBoxItem&);
 
 	enum class ShareType
 	{
@@ -99,20 +97,19 @@ namespace DBox
 		QHash<QNetworkReply*, QString> Reply2ParentId_;
 		QHash<QNetworkReply*, quint64> Reply2Offset_;
 		bool SecondRequestIfNoItems_;
-		const int ChunkUploadBound_;
-
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
 
 		void RequestUserId ();
 
-		void RefreshListing (const QByteArray& parentId = QByteArray ());
+		using RefreshResult_t = Util::Either<QString, QList<StorageItem>>;
+		QFuture<RefreshResult_t> RefreshListing (const QByteArray& parentId = {});
 
 		using ShareResult_t = Util::Either<QString, QUrl>;
 		QFuture<ShareResult_t> ShareEntry (const QString& id, ShareType type);
 
 		void CreateDirectory (const QString& name,
-				const QString& parentId = QString ());
+				const QString& parentId = {});
 		void RemoveEntry (const QByteArray& id);
 		void Copy (const QByteArray& id, const QString& parentId);
 		void Move (const QByteArray& id, const QString& parentId);
@@ -123,7 +120,7 @@ namespace DBox
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();
-		void RequestFiles (const QByteArray& parntId);
+		void RequestFiles (const QByteArray& parentId, QFutureInterface<RefreshResult_t>);
 		void RequestSharingEntry (const QString& id, ShareType type, QFutureInterface<ShareResult_t>);
 		void RequestCreateDirectory (const QString& name, const QString& parentId);
 		void RequestEntryRemoving (const QString& id);
@@ -132,12 +129,11 @@ namespace DBox
 
 		void RequestUpload (const QString& filePath, const QString& parent);
 		void RequestChunkUpload (const QString& filePath, const QString& parent,
-				const QString& uploadId = QString (), quint64 offset = 0);
+				const QString& uploadId = {}, quint64 offset = 0);
 
 		void ParseError (const QVariantMap& map);
 	private slots:
 		void handleGotAccountInfo ();
-		void handleGotFiles ();
 		void handleCreateDirectory ();
 		void handleRequestEntryRemoving ();
 		void handleCopyItem ();
@@ -146,9 +142,7 @@ namespace DBox
 		void handleChunkUploadFinished ();
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
-
 	signals:
-		void gotFiles (const QList<DBoxItem>& items);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);

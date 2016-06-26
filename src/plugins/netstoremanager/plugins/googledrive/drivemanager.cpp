@@ -48,6 +48,8 @@
 #include <util/sll/parsejson.h>
 #include <util/sll/serializejson.h>
 #include <util/sll/either.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/urlaccessor.h>
 #include <util/threads/futures.h>
 #include "account.h"
 #include "core.h"
@@ -59,18 +61,50 @@ namespace NetStoreManager
 {
 namespace GoogleDrive
 {
+	StorageItem ToStorageItem (const DriveItem& item)
+	{
+		StorageItem storageItem;
+		storageItem.ID_ = item.Id_.toUtf8 ();
+		storageItem.ParentID_ = item.ParentIsRoot_ ? QByteArray () : item.ParentId_.toUtf8 ();
+		storageItem.Name_ = item.Name_;
+		storageItem.Size_ = item.FileSize_;
+		storageItem.ModifyDate_ = item.ModifiedDate_;
+		storageItem.Hash_ = item.Md5_.toUtf8 ();
+		storageItem.HashType_ = HashAlgorithm::Md5;
+		storageItem.IsDirectory_ = item.IsFolder_;
+		storageItem.IsTrashed_ = item.Labels_ & DriveItem::ILRemoved;
+		storageItem.MimeType_ = item.Mime_;
+		storageItem.Url_ = item.DownloadUrl_;
+		storageItem.ShareUrl_ = item.ShareUrl_;
+		storageItem.Shared_ = item.Shared_;
+		for (const auto& pair : Util::Stlize (item.ExportLinks_))
+		{
+			const auto& key = pair.first;
+			const auto& mime = pair.second;
+
+			storageItem.ExportLinks [key] = qMakePair (mime,
+					Util::UrlAccessor { key }.last ().second);
+		}
+
+		return storageItem;
+	}
+
 	DriveManager::DriveManager (Account *acc, QObject *parent)
 	: QObject (parent)
 	, DirectoryId_ ("application/vnd.google-apps.folder")
 	, Account_ (acc)
-	, SecondRequestIfNoItems_ (true)
 	{
 	}
 
-	void DriveManager::RefreshListing ()
+	QFuture<DriveManager::ListingResult_t> DriveManager::RefreshListing ()
 	{
-		ApiCallQueue_ << [this] (const QString& key) { RequestFiles (key); };
+		QFutureInterface<ListingResult_t> iface;
+		iface.reportStarted ();
+
+		ApiCallQueue_ << [this, iface] (const QString& key) { RequestFiles (key, iface); };
 		RequestAccessToken ();
+
+		return iface.future ();
 	}
 
 	void DriveManager::RemoveEntry (const QByteArray& id)
@@ -168,24 +202,237 @@ namespace GoogleDrive
 		RequestAccessToken ();
 	}
 
-	void DriveManager::RequestFiles (const QString& key, const QString& nextPageToken)
+	namespace
+	{
+		QString GetLocalMimeTypeFromGoogleMimeType (const QString& mime, const QString& fileExt)
+		{
+			static const auto mimeMap = Util::MakeMap<QPair<QString, QString>, QString> ({
+				{ { "application/vnd.google-apps.audio", "" }, "audio-x-generic" },
+				{ { "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.document", "doc" }, "application-msword" },
+				{ { "application/vnd.google-apps.document", "docx" }, "application-msword" },
+				{ { "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text" },
+				{ { "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image" },
+				{ { "application/vnd.google-apps.file", "" }, "unknown" },
+				{ { "application/vnd.google-apps.form", "" }, "unknown" },
+				{ { "application/vnd.google-apps.fusiontable", "" }, "unknown" },
+				{ { "application/vnd.google-apps.photo", "" }, "image-x-generic" },
+				{ { "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation" },
+				{ { "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint" },
+				{ { "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint" },
+				{ { "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx" }, "application-vnd.ms-powerpoint" },
+				{ { "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation" },
+				{ { "application/vnd.google-apps.script", "" }, "text-x-script" },
+				{ { "application/vnd.google-apps.sites", "" }, "text-html" },
+				{ { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.spreadsheet", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png" },
+				{ { "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png" },
+				{ { "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/x-vnd.oasis.opendocument.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet" },
+				{ { "application/vnd.google-apps.unknown", "" }, "unknown" },
+				{ { "application/vnd.google-apps.video", "" }, "video-x-generic" },
+				{ { "application/x-msdos-program", "" }, "application-x-ms-dos-executable" },
+				{ { "application/x-msdos-program", "exe" }, "application-x-ms-dos-executable" },
+				{ { "application/x-dosexec", "" }, "application-x-desktop" },
+				{ { "application/x-dosexec", "desktop" }, "application-x-desktop" },
+				{ { "application/x-cab", "" }, "application-x-archive" },
+				{ { "application/x-cab", "cab" }, "application-x-archive" },
+				{ { "application/rar", "" }, "application-x-archive" },
+				{ { "application/rar", "rar" }, "application-x-archive" },
+				{ { "image/png", "png" }, "image-x-generic" },
+				{ { "image/jpeg", "jpeg" }, "image-x-generic" },
+				{ { "application/x-iso9660-image", "iso" }, "application-x-cd-image" } });
+
+			QString res;
+			if (mimeMap.contains ({ mime, fileExt }))
+				res = mimeMap.value ({ mime, fileExt });
+			else
+			{
+				res = mime;
+				res.replace ('/', '-');
+			}
+			return res;
+		}
+
+		DriveItem CreateDriveItem (const QVariant& itemData)
+		{
+			const QVariantMap& map = itemData.toMap ();
+
+			const QVariantMap& permission = map ["userPermission"].toMap ();
+			const QString& role = permission ["role"].toString ();
+
+			DriveItem driveItem;
+
+			const QString& type = permission ["type"].toString ();
+
+			driveItem.PermissionAdditionalRole_ = DriveItem::ARNone;
+			if (permission ["additionalRoles"].toList ().contains ("commenter"))
+				driveItem.PermissionAdditionalRole_ |= DriveItem::ARCommenter;
+
+			if (role == "owner")
+				driveItem.PermissionRole_ = DriveItem::Roles::Owner;
+			else if (role == "writer")
+				driveItem.PermissionRole_ = DriveItem::Roles::Writer;
+			else if (role == "reader")
+				driveItem.PermissionRole_ = DriveItem::Roles::Reader;
+
+			if (type == "user")
+				driveItem.PermissionType_ = DriveItem::PermissionTypes::User;
+
+			driveItem.Id_ = map ["id"].toString ();
+			driveItem.Name_ = map ["title"].toString ();
+			driveItem.IsFolder_ = map ["mimeType"].toString () ==
+					"application/vnd.google-apps.folder";
+			driveItem.FileExtension_ = map ["fileExtension"].toString ();
+			QString mime = map ["mimeType"].toString ();
+			if (!driveItem.IsFolder_)
+				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
+			driveItem.Mime_ = mime;
+
+			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
+			driveItem.ShareUrl_ = QUrl (map ["webContentLink"].toString ());
+			driveItem.Shared_ = map ["shared"].toBool ();
+
+			const QVariantMap& labels = map ["labels"].toMap ();
+			driveItem.Labels_ = DriveItem::ILNone;
+			if (labels ["starred"].toBool ())
+				driveItem.Labels_ |= DriveItem::ILFavorite;
+			if (labels ["hidden"].toBool ())
+				driveItem.Labels_ |= DriveItem::ILHidden;
+			if (labels ["trashed"].toBool ())
+				driveItem.Labels_ |= DriveItem::ILRemoved;
+			if (labels ["restricted"].toBool ())
+				driveItem.Labels_ |= DriveItem::ILShared;
+			if (labels ["viewed"].toBool ())
+				driveItem.Labels_ |= DriveItem::ILViewed;
+
+			const QVariantMap& exports = map ["exportLinks"].toMap ();
+			for (const auto& key : exports.keys ())
+			{
+				QUrl url = exports.value (key).toUrl ();
+
+#if QT_VERSION < 0x050000
+				const auto lastQueryPair = url.queryItems ().last ();
+#else
+				const auto lastQueryPair = QUrlQuery { url }.queryItems ().last ();
+#endif
+
+				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, lastQueryPair.second);
+			}
+
+			driveItem.CreateDate_ = QDateTime::fromString (map ["createdDate"].toString (),
+					Qt::ISODate);
+			driveItem.ModifiedDate_ = QDateTime::fromString (map ["modifiedDate"].toString (),
+					Qt::ISODate);
+			driveItem.LastViewedByMe_ = QDateTime::fromString (map ["lastViewedByMeDate"].toString (),
+					Qt::ISODate);
+
+			driveItem.OriginalFileName_ = map ["originalFilename"].toString ();
+			driveItem.Md5_ = map ["md5Checksum"].toString ();
+			driveItem.FileSize_ = map ["quotaBytesUsed"].toLongLong ();
+
+			for (const auto& ownerName : map ["ownerNames"].toList ())
+				driveItem.OwnerNames_ << ownerName.toString ();
+
+			driveItem.LastModifiedBy_ = map ["lastModifyingUserName"].toString ();
+			driveItem.Editable_ = map ["editable"].toBool ();
+			driveItem.WritersCanShare_ = map ["writersCanShare"].toBool ();
+
+			const auto& parent = map ["parents"].toList ().value (0).toMap ();
+			if (!parent.isEmpty ())
+			{
+				driveItem.ParentId_ = parent ["id"].toString ();
+				driveItem.ParentIsRoot_ = parent ["isRoot"].toBool ();
+			}
+
+			return driveItem;
+		}
+	}
+
+	void DriveManager::RequestFiles (const QString& key,
+			QFutureInterface<ListingResult_t> iface, const QString& nextPageToken)
 	{
 		auto str = QString ("https://www.googleapis.com/drive/v2/files?access_token=%1")
 				.arg (key);
 		if (!nextPageToken.isEmpty ())
 			str += "&pageToken=" + nextPageToken;
-		QNetworkRequest request (str);
 
+		QNetworkRequest request (str);
 		request.setHeader (QNetworkRequest::ContentTypeHeader,
 				"application/x-www-form-urlencoded");
 
-		QNetworkReply *reply = Core::Instance ().GetProxy ()->
+		const auto reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->get (request);
 
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotFiles ()));
+		qDebug () << Q_FUNC_INFO << iface.progressValue () << iface.progressMaximum ();
+		iface.setProgressRange (0, iface.progressMaximum () + 1);
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[=] () mutable
+			{
+				reply->deleteLater ();
+
+				const auto resultPos = iface.progressValue ();
+
+				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+				if (res.isNull ())
+				{
+					iface.reportResult (ListingResult_t::Left (tr ("Empty reply from server")), resultPos);
+					iface.reportFinished ();
+					return;
+				}
+
+				const auto& resMap = res.toMap ();
+				if (resMap.contains ("error"))
+				{
+					iface.reportResult (ListingResult_t::Left (ParseError (res.toMap ())), resultPos);
+					iface.reportFinished ();
+					return;
+				}
+
+				if (!resMap.contains ("items"))
+				{
+					// TODO
+					qDebug () << Q_FUNC_INFO << "there are no items";
+					if (SecondRequestIfNoItems_)
+					{
+						SecondRequestIfNoItems_ = false;
+						RefreshListing ();
+					}
+					iface.reportFinished ();
+					return;
+				}
+
+				SecondRequestIfNoItems_ = true;
+				QList<StorageItem> resList;
+				for (const auto& item : resMap ["items"].toList ())
+				{
+					const auto& driveItem = CreateDriveItem (item);
+					if (driveItem.Name_.isEmpty ())
+						continue;
+
+					resList << ToStorageItem (driveItem);
+				}
+
+				iface.reportResult (ListingResult_t::Right (resList), resultPos);
+
+				const auto& nextPageToken = resMap ["nextPageToken"].toString ();
+				if (nextPageToken.isEmpty ())
+				{
+					iface.reportFinished ();
+					return;
+				}
+
+				ApiCallQueue_ << [this, nextPageToken, iface] (const QString& key) { RequestFiles (key, iface, nextPageToken); };
+				RequestAccessToken ();
+			},
+			reply,
+			SIGNAL (finished ()),
+			reply
+		};
 	}
 
 	namespace
@@ -549,205 +796,6 @@ namespace GoogleDrive
 			return;
 
 		ApiCallQueue_.dequeue () (accessKey);
-	}
-
-	namespace
-	{
-		QString GetLocalMimeTypeFromGoogleMimeType (const QString& mime, const QString& fileExt)
-		{
-			static const auto mimeMap = Util::MakeMap<QPair<QString, QString>, QString> ({
-				{ { "application/vnd.google-apps.audio", "" }, "audio-x-generic" },
-				{ { "application/vnd.google-apps.document", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
-				{ { "application/vnd.google-apps.document", "doc" }, "application-msword" },
-				{ { "application/vnd.google-apps.document", "docx" }, "application-msword" },
-				{ { "application/vnd.google-apps.document", "odt" }, "application-vnd.oasis.opendocument.text" },
-				{ { "application/vnd.google-apps.drawing", "" }, "application-vnd.oasis.opendocument.image" },
-				{ { "application/vnd.google-apps.file", "" }, "unknown" },
-				{ { "application/vnd.google-apps.form", "" }, "unknown" },
-				{ { "application/vnd.google-apps.fusiontable", "" }, "unknown" },
-				{ { "application/vnd.google-apps.photo", "" }, "image-x-generic" },
-				{ { "application/vnd.google-apps.presentation", "" }, "application-vnd.oasis.opendocument.presentation" },
-				{ { "application/vnd.google-apps.presentation", "ppt" }, "application-vnd.ms-powerpoint" },
-				{ { "application/vnd.google-apps.presentation", "pptx" }, "application-vnd.ms-powerpoint" },
-				{ { "application/vnd.openxmlformats-officedocument.presentationml.presentation", "pptx" }, "application-vnd.ms-powerpoint" },
-				{ { "application/vnd.google-apps.presentation", "odp" }, "application-vnd.oasis.opendocument.presentation" },
-				{ { "application/vnd.google-apps.script", "" }, "text-x-script" },
-				{ { "application/vnd.google-apps.sites", "" }, "text-html" },
-				{ { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
-				{ { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx" }, "application-vnd.oasis.opendocument.spreadsheet" },
-				{ { "application/vnd.google-apps.spreadsheet", "" }, "application-vnd.oasis.opendocument.spreadsheet" },
-				{ { "application/vnd.google-apps.spreadsheet", "xls" }, "x-office-spreadsheet.png" },
-				{ { "application/vnd.google-apps.spreadsheet", "xlsx" }, "x-office-spreadsheet.png" },
-				{ { "application/vnd.google-apps.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet" },
-				{ { "application/x-vnd.oasis.opendocument.spreadsheet", "ods" }, "application-vnd.oasis.opendocument.spreadsheet" },
-				{ { "application/vnd.google-apps.unknown", "" }, "unknown" },
-				{ { "application/vnd.google-apps.video", "" }, "video-x-generic" },
-				{ { "application/x-msdos-program", "" }, "application-x-ms-dos-executable" },
-				{ { "application/x-msdos-program", "exe" }, "application-x-ms-dos-executable" },
-				{ { "application/x-dosexec", "" }, "application-x-desktop" },
-				{ { "application/x-dosexec", "desktop" }, "application-x-desktop" },
-				{ { "application/x-cab", "" }, "application-x-archive" },
-				{ { "application/x-cab", "cab" }, "application-x-archive" },
-				{ { "application/rar", "" }, "application-x-archive" },
-				{ { "application/rar", "rar" }, "application-x-archive" },
-				{ { "image/png", "png" }, "image-x-generic" },
-				{ { "image/jpeg", "jpeg" }, "image-x-generic" },
-				{ { "application/x-iso9660-image", "iso" }, "application-x-cd-image" } });
-
-			QString res;
-			if (mimeMap.contains ({ mime, fileExt }))
-				res = mimeMap.value ({ mime, fileExt });
-			else
-			{
-				res = mime;
-				res.replace ('/', '-');
-			}
-			return res;
-		}
-
-		DriveItem CreateDriveItem (const QVariant& itemData)
-		{
-			const QVariantMap& map = itemData.toMap ();
-
-			const QVariantMap& permission = map ["userPermission"].toMap ();
-			const QString& role = permission ["role"].toString ();
-
-			DriveItem driveItem;
-
-			const QString& type = permission ["type"].toString ();
-
-			driveItem.PermissionAdditionalRole_ = DriveItem::ARNone;
-			if (permission ["additionalRoles"].toList ().contains ("commenter"))
-				driveItem.PermissionAdditionalRole_ |= DriveItem::ARCommenter;
-
-			if (role == "owner")
-				driveItem.PermissionRole_ = DriveItem::Roles::Owner;
-			else if (role == "writer")
-				driveItem.PermissionRole_ = DriveItem::Roles::Writer;
-			else if (role == "reader")
-				driveItem.PermissionRole_ = DriveItem::Roles::Reader;
-
-			if (type == "user")
-				driveItem.PermissionType_ = DriveItem::PermissionTypes::User;
-
-			driveItem.Id_ = map ["id"].toString ();
-			driveItem.Name_ = map ["title"].toString ();
-			driveItem.IsFolder_ = map ["mimeType"].toString () ==
-					"application/vnd.google-apps.folder";
-			driveItem.FileExtension_ = map ["fileExtension"].toString ();
-			QString mime = map ["mimeType"].toString ();
-			if (!driveItem.IsFolder_)
-				mime = GetLocalMimeTypeFromGoogleMimeType (mime, driveItem.FileExtension_);
-			driveItem.Mime_ = mime;
-
-			driveItem.DownloadUrl_ = QUrl (map ["downloadUrl"].toString ());
-			driveItem.ShareUrl_ = QUrl (map ["webContentLink"].toString ());
-			driveItem.Shared_ = map ["shared"].toBool ();
-
-			const QVariantMap& labels = map ["labels"].toMap ();
-			driveItem.Labels_ = DriveItem::ILNone;
-			if (labels ["starred"].toBool ())
-				driveItem.Labels_ |= DriveItem::ILFavorite;
-			if (labels ["hidden"].toBool ())
-				driveItem.Labels_ |= DriveItem::ILHidden;
-			if (labels ["trashed"].toBool ())
-				driveItem.Labels_ |= DriveItem::ILRemoved;
-			if (labels ["restricted"].toBool ())
-				driveItem.Labels_ |= DriveItem::ILShared;
-			if (labels ["viewed"].toBool ())
-				driveItem.Labels_ |= DriveItem::ILViewed;
-
-			const QVariantMap& exports = map ["exportLinks"].toMap ();
-			for (const auto& key : exports.keys ())
-			{
-				QUrl url = exports.value (key).toUrl ();
-
-#if QT_VERSION < 0x050000
-				const auto lastQueryPair = url.queryItems ().last ();
-#else
-				const auto lastQueryPair = QUrlQuery { url }.queryItems ().last ();
-#endif
-
-				driveItem.ExportLinks_ [url] = GetLocalMimeTypeFromGoogleMimeType (key, lastQueryPair.second);
-			}
-
-			driveItem.CreateDate_ = QDateTime::fromString (map ["createdDate"].toString (),
-					Qt::ISODate);
-			driveItem.ModifiedDate_ = QDateTime::fromString (map ["modifiedDate"].toString (),
-					Qt::ISODate);
-			driveItem.LastViewedByMe_ = QDateTime::fromString (map ["lastViewedByMeDate"].toString (),
-					Qt::ISODate);
-
-			driveItem.OriginalFileName_ = map ["originalFilename"].toString ();
-			driveItem.Md5_ = map ["md5Checksum"].toString ();
-			driveItem.FileSize_ = map ["quotaBytesUsed"].toLongLong ();
-
-			for (const auto& ownerName : map ["ownerNames"].toList ())
-				driveItem.OwnerNames_ << ownerName.toString ();
-
-			driveItem.LastModifiedBy_ = map ["lastModifyingUserName"].toString ();
-			driveItem.Editable_ = map ["editable"].toBool ();
-			driveItem.WritersCanShare_ = map ["writersCanShare"].toBool ();
-
-			const auto& parent = map ["parents"].toList ().value (0).toMap ();
-			if (!parent.isEmpty ())
-			{
-				driveItem.ParentId_ = parent ["id"].toString ();
-				driveItem.ParentIsRoot_ = parent ["isRoot"].toBool ();
-			}
-
-			return driveItem;
-		}
-	}
-
-	void DriveManager::handleGotFiles ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (res.isNull ())
-			return;
-
-		const auto& resMap = res.toMap ();
-		if (!resMap.contains ("items"))
-		{
-			qDebug () << Q_FUNC_INFO << "there are no items";
-			if (SecondRequestIfNoItems_)
-			{
-				SecondRequestIfNoItems_ = false;
-				RefreshListing ();
-			}
-			return;
-		}
-
-		if (resMap.contains ("error"))
-		{
-			ParseError (res.toMap ());
-			return;
-		}
-
-		SecondRequestIfNoItems_ = true;
-		QList<DriveItem> resList;
-		for (const auto& item : resMap ["items"].toList ())
-		{
-			const auto& driveItem = CreateDriveItem (item);
-			if (driveItem.Name_.isEmpty ())
-				continue;
-			resList << driveItem;
-		}
-
-		emit gotFiles (resList);
-
-		const auto& nextPageToken = resMap ["nextPageToken"].toString ();
-		if (nextPageToken.isEmpty ())
-			return;
-
-		ApiCallQueue_ << [this, nextPageToken] (const QString& key) { RequestFiles (key, nextPageToken); };
-		RequestAccessToken ();
 	}
 
 	void DriveManager::handleRequestEntryRemoving ()

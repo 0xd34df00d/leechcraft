@@ -27,22 +27,30 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
+#include "futures.h"
 
 namespace LeechCraft
 {
 namespace Util
 {
-	class FunctorTest : public QObject
+	namespace detail
 	{
-		Q_OBJECT
-	private slots:
-		void testBoostOptionalFMap ();
-		void testBoostOptionalFMapEmpty ();
-		void testIsFunctorTrue ();
-		void testIsFunctorFalse ();
-	};
+		// TODO Qt5: this class won't be needed when we drop Qt4 support.
+		FutureResultHandler::FutureResultHandler (const std::function<void (int)>& handler,
+				QFutureWatcherBase *base, QObject *parent)
+		: QObject { parent }
+		, Handler_ { handler }
+		{
+			connect (base,
+					SIGNAL (resultReadyAt (int)),
+					this,
+					SLOT (handleResult (int)));
+		}
+
+		void FutureResultHandler::handleResult (int index)
+		{
+			Handler_ (index);
+		}
+	}
 }
 }

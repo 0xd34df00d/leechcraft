@@ -84,7 +84,7 @@ namespace DBox
 		ListingOps GetListingOps () const;
 		HashAlgorithm GetCheckSumAlgorithm () const;
 
-		void RefreshListing ();
+		QFuture<RefreshResult_t> RefreshListing ();
 		void RefreshChildren (const QByteArray& parentId);
 		QFuture<RequestUrlResult_t> RequestUrl (const QByteArray& id);
 		void CreateDirectory (const QString& name, const QByteArray& parentId);
@@ -110,7 +110,6 @@ namespace DBox
 
 		DriveManager* GetDriveManager () const;
 	private slots:
-		void handleFileList (const QList<DBoxItem>& items);
 		void handleGotNewItem (const DBoxItem& item);
 	signals:
 		void upError (const QString& error, const QString& filepath);
@@ -118,7 +117,6 @@ namespace DBox
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated (const QByteArray& parentId);
 
 		void gotChanges (const QList<Change>& changes);

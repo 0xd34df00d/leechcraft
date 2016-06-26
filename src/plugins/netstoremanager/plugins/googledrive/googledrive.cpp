@@ -129,15 +129,14 @@ namespace GoogleDrive
 
 	void Plugin::RegisterAccount (const QString& name)
 	{
-		Account *account = new Account (name, this);
+		const auto account = new Account (name, this);
 		AuthManager_->Auth (account);
 	}
 
 	void Plugin::RemoveAccount (QObject *accObj)
 	{
 		auto pos = std::find_if (Accounts_.begin (), Accounts_.end (),
-				[accObj] (decltype (Accounts_.front ()) acc)
-					{ return acc.get () == accObj; });
+				[accObj] (const auto& acc) { return acc.get () == accObj; });
 		if (pos == Accounts_.end ())
 			return;
 
@@ -170,7 +169,7 @@ namespace GoogleDrive
 		{
 			settings.setArrayIndex (i);
 			const QByteArray& data = settings.value ("SerializedData").toByteArray ();
-			Account_ptr acc = Account::Deserialize (data, this);
+			const auto acc = Account::Deserialize (data, this);
 			Accounts_ << acc;
 			emit accountAdded (acc.get ());
 		}

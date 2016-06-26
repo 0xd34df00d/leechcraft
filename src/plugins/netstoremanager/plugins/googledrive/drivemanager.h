@@ -48,6 +48,8 @@ namespace LeechCraft
 {
 namespace NetStoreManager
 {
+struct StorageItem;
+
 namespace GoogleDrive
 {
 	class Account;
@@ -141,6 +143,8 @@ namespace GoogleDrive
 		}
 	};
 
+	StorageItem ToStorageItem (const DriveItem&);
+
 	struct DriveChanges
 	{
 		QString Id_;
@@ -160,12 +164,14 @@ namespace GoogleDrive
 		QQueue<std::function<void (const QUrl&)>> DownloadsQueue_;
 		QHash<QNetworkReply*, QString> Reply2FilePath_;
 		QHash<QNetworkReply*, QString> Reply2DownloadAccessToken_;
-		bool SecondRequestIfNoItems_;
+		bool SecondRequestIfNoItems_ = true;
 
 	public:
 		DriveManager (Account *acc, QObject *parent = 0);
 
-		void RefreshListing ();
+		using ListingResult_t = Util::Either<QString, QList<StorageItem>>;
+		QFuture<ListingResult_t> RefreshListing ();
+
 		void RemoveEntry (const QByteArray& id);
 		void MoveEntryToTrash (const QByteArray& id);
 		void RestoreEntryFromTrash (const QByteArray& id);
@@ -185,7 +191,8 @@ namespace GoogleDrive
 
 		void RequestFileChanges (qlonglong startId, const QString& pageToken = QString ());
 	private:
-		void RequestFiles (const QString& key, const QString& nextPageToken = {});
+		void RequestFiles (const QString& key,
+				QFutureInterface<ListingResult_t>, const QString& nextPageToken = {});
 		void RequestSharingEntry (const QString& id, const QString& key, QFutureInterface<ShareResult_t>);
 		void RequestEntryRemoving (const QString& id, const QString& key);
 		void RequestMovingEntryToTrash (const QString& id, const QString& key);
@@ -210,7 +217,6 @@ namespace GoogleDrive
 		QString ParseError (const QVariantMap& map);
 	private slots:
 		void handleAuthTokenRequestFinished ();
-		void handleGotFiles ();
 		void handleRequestEntryRemoving ();
 		void handleRequestMovingEntryToTrash ();
 		void handleRequestRestoreEntryFromTrash ();
@@ -226,7 +232,6 @@ namespace GoogleDrive
 		void handleItemRenamed ();
 
 	signals:
-		void gotFiles (const QList<DriveItem>& items);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);

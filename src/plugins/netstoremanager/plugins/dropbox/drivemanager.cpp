@@ -53,12 +53,32 @@ namespace NetStoreManager
 {
 namespace DBox
 {
+	StorageItem ToStorageItem (const DBoxItem& item)
+	{
+		StorageItem storageItem;
+		storageItem.ID_ = item.Id_.toUtf8 ();
+		storageItem.ParentID_ = item.ParentID_.toUtf8 ();
+		storageItem.Name_ = item.Name_;
+		storageItem.Size_ = item.FileSize_;
+		storageItem.ModifyDate_ = item.ModifiedDate_;
+		storageItem.IsDirectory_ = item.IsFolder_;
+		storageItem.IsTrashed_ = item.IsDeleted_;
+		storageItem.MimeType_ = item.MimeType_;
+		storageItem.Hash_ = item.Revision_;
+
+		return storageItem;
+	}
+
+	namespace
+	{
+		const int ChunkUploadBound = 150 * 1024 * 1024;
+	}
+
 	DriveManager::DriveManager (Account *acc, QObject *parent)
 	: QObject (parent)
 	, DirectoryId_ ("application/vnd.google-apps.folder")
 	, Account_ (acc)
 	, SecondRequestIfNoItems_ (true)
-	, ChunkUploadBound_ (150 * 1024 * 1024)
 	{
 	}
 
@@ -68,10 +88,16 @@ namespace DBox
 		ApiCallQueue_ << [this] () { RequestAccountInfo (); };
 	}
 
-	void DriveManager::RefreshListing (const QByteArray& parentId)
+	QFuture<DriveManager::RefreshResult_t> DriveManager::RefreshListing (const QByteArray& parentId)
 	{
 		auto guard = MakeRunnerGuard ();
-		ApiCallQueue_ << [this, parentId] () { RequestFiles (parentId); };
+
+		QFutureInterface<RefreshResult_t> iface;
+		iface.reportStarted ();
+
+		ApiCallQueue_ << [this, parentId, iface] () { RequestFiles (parentId, iface); };
+
+		return iface.future ();
 	}
 
 	QFuture<DriveManager::ShareResult_t> DriveManager::ShareEntry (const QString& id, ShareType type)
@@ -122,7 +148,7 @@ namespace DBox
 		QString parent = parentId.value (0);
 		auto guard = MakeRunnerGuard ();
 
-		if (QFileInfo (filePath).size () < ChunkUploadBound_)
+		if (QFileInfo (filePath).size () < ChunkUploadBound)
 			ApiCallQueue_ << [this, filePath, parent] () { RequestUpload (filePath, parent); };
 		else
 			ApiCallQueue_ << [this, filePath, parent] () { RequestChunkUpload (filePath, parent); };
@@ -156,10 +182,38 @@ namespace DBox
 				SLOT (handleGotAccountInfo ()));
 	}
 
-	void DriveManager::RequestFiles (const QByteArray& parentId)
+	namespace
+	{
+		DBoxItem CreateDBoxItem (const QVariant& itemData)
+		{
+			const QVariantMap& map = itemData.toMap ();
+
+			DBoxItem driveItem;
+			driveItem.FileSize_ = map ["bytes"].toULongLong ();
+			driveItem.FolderHash_ = map ["hash"].toString ();
+			driveItem.Revision_ = map ["rev"].toByteArray ();
+			const auto& path = map ["path"].toString ();
+			driveItem.Id_ = path;
+			const auto& parent = QFileInfo (path).dir ().absolutePath ();
+			driveItem.ParentID_ = parent == "/" ? QString () : parent;
+			driveItem.IsDeleted_ = map ["is_deleted"].toBool ();
+			driveItem.IsFolder_ = map ["is_dir"].toBool ();
+			driveItem.ModifiedDate_ = map ["modified"].toDateTime ();
+			driveItem.Name_ = QFileInfo (path).fileName ();
+			driveItem.MimeType_ = map ["mime_type"].toString ().replace ('/', '-');
+
+			return driveItem;
+		}
+	}
+
+	void DriveManager::RequestFiles (const QByteArray& parentId, QFutureInterface<RefreshResult_t> iface)
 	{
 		if (Account_->GetAccessToken ().isEmpty ())
+		{
+			Util::ReportFutureResult (iface,
+					RefreshResult_t::Left (tr ("No access token for this account.")));
 			return;
+		}
 
 		QString str = QString ("https://api.dropbox.com/1/metadata/dropbox?access_token=%1&path=%2")
 				.arg (Account_->GetAccessToken ())
@@ -172,10 +226,49 @@ namespace DBox
 		QNetworkReply *reply = Core::Instance ().GetProxy ()->
 				GetNetworkAccessManager ()->get (request);
 
-		connect (reply,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotFiles ()));
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[=] () mutable
+			{
+				reply->deleteLater ();
+
+				const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
+				if (res.isNull ())
+				{
+					Util::ReportFutureResult (iface,
+							RefreshResult_t::Left (tr ("Unable to parse server reply.")));
+					return;
+				}
+
+				const auto& resMap = res.toMap ();
+				if (!resMap.contains ("contents"))
+				{
+					if (SecondRequestIfNoItems_)
+					{
+						SecondRequestIfNoItems_ = false;
+						RequestFiles ({}, iface);
+					}
+					else
+						Util::ReportFutureResult (iface,
+								RefreshResult_t::Left (tr ("Server returned empty files info.")));
+					return;
+				}
+
+				SecondRequestIfNoItems_ = true;
+				QList<StorageItem> resList;
+				for (const auto& item : resMap ["contents"].toList ())
+				{
+					const auto& driveItem = CreateDBoxItem (item);
+					if (!driveItem.Name_.isEmpty ())
+						resList << ToStorageItem (driveItem);
+				}
+
+				Util::ReportFutureResult (iface, RefreshResult_t::Right (resList));
+			},
+			reply,
+			SIGNAL (finished ()),
+			reply
+		};
 	}
 
 	void DriveManager::RequestSharingEntry (const QString& id, ShareType type, QFutureInterface<ShareResult_t> iface)
@@ -419,68 +512,6 @@ namespace DBox
 		Account_->SetUserID (res.toMap () ["uid"].toString ());
 	}
 
-	namespace
-	{
-		DBoxItem CreateDBoxItem (const QVariant& itemData)
-		{
-			const QVariantMap& map = itemData.toMap ();
-
-			DBoxItem driveItem;
-			driveItem.FileSize_ = map ["bytes"].toULongLong ();
-			driveItem.FolderHash_ = map ["hash"].toString ();
-			driveItem.Revision_ = map ["rev"].toByteArray ();
-			const auto& path = map ["path"].toString ();
-			driveItem.Id_ = path;
-			const auto& parent = QFileInfo (path).dir ().absolutePath ();
-			driveItem.ParentID_ = parent == "/" ? QString () : parent;
-			driveItem.IsDeleted_ = map ["is_deleted"].toBool ();
-			driveItem.IsFolder_ = map ["is_dir"].toBool ();
-			driveItem.ModifiedDate_ = map ["modified"].toDateTime ();
-			driveItem.Name_ = QFileInfo (path).fileName ();
-			driveItem.MimeType_ = map ["mime_type"].toString ().replace ('/', '-');
-
-			return driveItem;
-		}
-	}
-
-	void DriveManager::handleGotFiles ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
-		reply->deleteLater ();
-
-		const auto& res = Util::ParseJson (reply, Q_FUNC_INFO);
-		if (res.isNull ())
-			return;
-
-		const auto& resMap = res.toMap ();
-		if (!resMap.contains ("contents"))
-		{
-			qDebug () << Q_FUNC_INFO << "there are no items";
-			if (SecondRequestIfNoItems_)
-			{
-				SecondRequestIfNoItems_ = false;
-				RefreshListing ();
-			}
-			return;
-		}
-
-		SecondRequestIfNoItems_ = true;
-		QList<DBoxItem> resList;
-		for (const auto& item : resMap ["contents"].toList ())
-		{
-			const auto& driveItem = CreateDBoxItem (item);
-
-			if (driveItem.Name_.isEmpty ())
-				continue;
-			resList << driveItem;
-		}
-
-		emit gotFiles (resList);
-	}
-
 	void DriveManager::handleCreateDirectory ()
 	{
 		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
@@ -618,7 +649,7 @@ namespace DBox
 		const auto& path = Reply2FilePath_ [reply];
 		const quint64 offset = Reply2Offset_ [reply];
 		QFileInfo fi (path);
-		if (fi.size () < ChunkUploadBound_)
+		if (fi.size () < ChunkUploadBound)
 			emit uploadProgress (uploaded, total, path);
 		else
 			emit uploadProgress (uploaded + offset, fi.size (), path);

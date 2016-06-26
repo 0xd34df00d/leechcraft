@@ -126,7 +126,9 @@ namespace NetStoreManager
 		virtual ListingOps GetListingOps () const = 0;
 		virtual HashAlgorithm GetCheckSumAlgorithm () const = 0;
 
-		virtual void RefreshListing () = 0;
+		using RefreshResult_t = Util::Either<QString, QList<StorageItem>>;
+		virtual QFuture<RefreshResult_t> RefreshListing () = 0;
+
 		virtual void RefreshChildren (const QByteArray& parentId) = 0;
 
 		virtual void Delete (const QList<QByteArray>& ids, bool ask = true) = 0;
@@ -144,7 +146,6 @@ namespace NetStoreManager
 		virtual void Rename (const QByteArray& id, const QString& newName) = 0;
 		virtual void RequestChanges () = 0;
 	protected:
-		virtual void gotListing (const QList<StorageItem>& items) = 0;
 		virtual void listingUpdated (const QByteArray& parentId) = 0;
 
 		virtual void gotChanges (const QList<Change>& changes) = 0;
