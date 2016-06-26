@@ -421,7 +421,8 @@ namespace Util
 				};
 			}
 
-			void MultipleResults (const std::function<void (RetType_t)>& handler,
+			template<typename Handler>
+			void MultipleResults (const Handler& handler,
 					const std::function<void ()>& finishHandler = {},
 					const std::function<void ()>& startHandler = {})
 			{
