@@ -124,10 +124,11 @@ namespace NetStoreManager
 					for (const auto& pair : Util::Stlize (id2StandardItem))
 					{
 						const auto& key = pair.first;
-						if (!id2Item.contains (id2Item [key].ParentID_))
+						const auto& id = id2Item [key].ParentID_;
+						if (!id2Item.contains (id))
 							Model_->appendRow (pair.second);
 						else
-							id2StandardItem [id2Item [key].ParentID_]->appendRow (pair.second);
+							id2StandardItem [id]->appendRow (pair.second);
 					}
 				});
 	}
