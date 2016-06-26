@@ -57,10 +57,6 @@ namespace DBox
 	, DriveManager_ (new DriveManager (this, this))
 	{
 		connect (DriveManager_,
-				SIGNAL (gotFiles (QList<DBoxItem>)),
-				this,
-				SLOT (handleFileList (QList<DBoxItem>)));
-		connect (DriveManager_,
 				SIGNAL (gotSharedFileUrl (QUrl, QDateTime)),
 				this,
 				SLOT (handleSharedFileUrl (QUrl, QDateTime)));
@@ -142,9 +138,9 @@ namespace DBox
 		return HashAlgorithm::Md5;
 	}
 
-	void Account::RefreshListing ()
+	QFuture<Account::RefreshResult_t> Account::RefreshListing ()
 	{
-		DriveManager_->RefreshListing ();
+		return DriveManager_->RefreshListing ();
 	}
 
 	void Account::RefreshChildren (const QByteArray& parentId)
@@ -316,16 +312,6 @@ namespace DBox
 	DriveManager* Account::GetDriveManager () const
 	{
 		return DriveManager_;
-	}
-
-	void Account::handleFileList (const QList<DBoxItem>& items)
-	{
-		QList<StorageItem> result;
-
-		for (const auto& item : items)
-			result << ToStorageItem (item);
-
-		emit gotListing (result);
 	}
 
 	void Account::handleGotNewItem (const DBoxItem& item)

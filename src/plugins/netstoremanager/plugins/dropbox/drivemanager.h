@@ -102,7 +102,8 @@ namespace DBox
 
 		void RequestUserId ();
 
-		void RefreshListing (const QByteArray& parentId = {});
+		using RefreshResult_t = Util::Either<QString, QList<StorageItem>>;
+		QFuture<RefreshResult_t> RefreshListing (const QByteArray& parentId = {});
 
 		using ShareResult_t = Util::Either<QString, QUrl>;
 		QFuture<ShareResult_t> ShareEntry (const QString& id, ShareType type);
@@ -119,7 +120,7 @@ namespace DBox
 	private:
 		std::shared_ptr<void> MakeRunnerGuard ();
 		void RequestAccountInfo ();
-		void RequestFiles (const QByteArray& parentId);
+		void RequestFiles (const QByteArray& parentId, QFutureInterface<RefreshResult_t>);
 		void RequestSharingEntry (const QString& id, ShareType type, QFutureInterface<ShareResult_t>);
 		void RequestCreateDirectory (const QString& name, const QString& parentId);
 		void RequestEntryRemoving (const QString& id);
@@ -133,7 +134,6 @@ namespace DBox
 		void ParseError (const QVariantMap& map);
 	private slots:
 		void handleGotAccountInfo ();
-		void handleGotFiles ();
 		void handleCreateDirectory ();
 		void handleRequestEntryRemoving ();
 		void handleCopyItem ();
@@ -143,7 +143,6 @@ namespace DBox
 		void handleUploadProgress (qint64 uploaded, qint64 total);
 		void handleUploadError (QNetworkReply::NetworkError error);
 	signals:
-		void gotFiles (const QList<DBoxItem>& items);
 		void uploadProgress (qint64 sent, qint64 total, const QString& filePath);
 		void uploadStatusChanged (const QString& status, const QString& filePath);
 		void uploadError (const QString& str, const QString& filePath);
