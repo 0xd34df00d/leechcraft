@@ -86,7 +86,7 @@ namespace GoogleDrive
 		ListingOps GetListingOps () const;
 		HashAlgorithm GetCheckSumAlgorithm () const;
 
-		void RefreshListing ();
+		QFuture<RefreshResult_t> RefreshListing ();
 		void RefreshChildren (const QByteArray& parentId);
 
 		void Delete (const QList<QByteArray>& ids, bool ask = true);
@@ -113,7 +113,6 @@ namespace GoogleDrive
 
 		DriveManager* GetDriveManager () const;
 	private slots:
-		void handleFileList (const QList<DriveItem>& items);
 		void handleGotNewItem (const DriveItem& item);
 		void handleGotChanges (const QList<DriveChanges>& changes);
 	signals:
@@ -122,7 +121,6 @@ namespace GoogleDrive
 		void upProgress (quint64 done, quint64 total, const QString& filepath);
 		void upStatusChanged (const QString& status, const QString& filepath);
 
-		void gotListing (const QList<StorageItem>& items);
 		void listingUpdated (const QByteArray& parentId);
 
 		void gotChanges (const QList<Change>& changes);

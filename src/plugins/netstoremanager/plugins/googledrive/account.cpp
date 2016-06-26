@@ -57,10 +57,6 @@ namespace GoogleDrive
 	, DriveManager_ (new DriveManager (this, this))
 	{
 		connect (DriveManager_,
-				SIGNAL (gotFiles (const QList<DriveItem>&)),
-				this,
-				SLOT (handleFileList (const QList<DriveItem>&)));
-		connect (DriveManager_,
 				SIGNAL (gotNewItem (DriveItem)),
 				this,
 				SLOT (handleGotNewItem (DriveItem)));
@@ -144,9 +140,9 @@ namespace GoogleDrive
 		return HashAlgorithm::Md5;
 	}
 
-	void Account::RefreshListing ()
+	QFuture<Account::RefreshResult_t> Account::RefreshListing ()
 	{
-		DriveManager_->RefreshListing ();
+		return DriveManager_->RefreshListing ();
 	}
 
 	void Account::RefreshChildren (const QByteArray& parentId)
@@ -310,16 +306,6 @@ namespace GoogleDrive
 	DriveManager* Account::GetDriveManager () const
 	{
 		return DriveManager_;
-	}
-
-	void Account::handleFileList (const QList<DriveItem>& items)
-	{
-		QList<StorageItem> result;
-
-		for (const auto& item : items)
-			result << CreateItem (item);
-
-		emit gotListing (result);
 	}
 
 	void Account::handleGotNewItem (const DriveItem& item)
