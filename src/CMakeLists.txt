@@ -12,6 +12,7 @@ project (leechcraft)
 
 set (CMAKE_MACOSX_RPATH OFF)
 
+set (CMAKE_CXX_STANDARD 14)
 option (USE_QT5 "Enable Qt5 build" OFF)
 option (USE_CPP14 "Enable C++14 features and plugins" OFF)
 option (EXTRA_WARNINGS "Enable extra compiler warnings" OFF)
