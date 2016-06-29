@@ -75,6 +75,9 @@ namespace Util
 
 	ConsistencyChecker::CheckResult_t ConsistencyChecker::CheckDB ()
 	{
+		qDebug () << Q_FUNC_INFO
+				<< "checking"
+				<< DBPath_;
 		const auto& connName = Util::GenConnectionName ("ConsistencyChecker_" + DBPath_);
 
 		std::shared_ptr<QSqlDatabase> db
@@ -96,9 +99,15 @@ namespace Util
 		}
 
 		QSqlQuery pragma { *db };
-		if (pragma.exec ("PRAGMA integrity_check;") &&
+		const auto isGood = pragma.exec ("PRAGMA integrity_check;") &&
 				pragma.next () &&
-				pragma.value (0) == "ok")
+				pragma.value (0) == "ok";
+		qDebug () << Q_FUNC_INFO
+				<< "done checking"
+				<< DBPath_
+				<< "; result is:"
+				<< isGood;
+		if (isGood)
 			return Succeeded {};
 		else
 			return std::make_shared<FailedImpl> (this);
