@@ -38,6 +38,7 @@
 #include <util/threads/futures.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "interfaces/netstoremanager/istorageaccount.h"
 #include "accountsmanager.h"
@@ -120,12 +121,14 @@ namespace NetStoreManager
 						id2StandardItem [item.ID_] = dir;
 					}
 
-					for (const auto& key : id2StandardItem.keys ())
+					for (const auto& pair : Util::Stlize (id2StandardItem))
 					{
-						if (!id2Item.contains (id2Item [key].ParentID_))
-							Model_->appendRow (id2StandardItem [key]);
+						const auto& key = pair.first;
+						const auto& id = id2Item [key].ParentID_;
+						if (!id2Item.contains (id))
+							Model_->appendRow (pair.second);
 						else
-							id2StandardItem [id2Item [key].ParentID_]->appendRow (id2StandardItem [key]);
+							id2StandardItem [id]->appendRow (pair.second);
 					}
 				});
 	}
