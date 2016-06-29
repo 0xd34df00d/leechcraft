@@ -53,7 +53,7 @@ namespace NamAuth
 	: DB_ (std::make_shared<QSqlDatabase> (QSqlDatabase::addDatabase ("QSQLITE",
 			Util::GenConnectionName ("NamAuth.Connection"))))
 	{
-		DB_->setDatabaseName (Util::CreateIfNotExists ("core").filePath ("core.db"));
+		DB_->setDatabaseName (GetDBPath ());
 		if (!DB_->open ())
 		{
 			Util::DBLock::DumpError (DB_->lastError ());
@@ -61,6 +61,11 @@ namespace NamAuth
 		}
 
 		AdaptedRecord_ = Util::oral::AdaptPtr<AuthRecord> (*DB_);
+	}
+
+	QString SQLStorageBackend::GetDBPath ()
+	{
+		return Util::CreateIfNotExists ("core").filePath ("core.db");
 	}
 
 	namespace sph = Util::oral::sph;
