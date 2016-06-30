@@ -66,6 +66,8 @@ namespace NamAuth
 	public:
 		SQLStorageBackend ();
 
+		static QString GetDBPath ();
+
 		boost::optional<AuthRecord> GetAuth (const QString&, const QString&);
 		void SetAuth (const AuthRecord&);
 	};
