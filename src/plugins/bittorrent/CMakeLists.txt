@@ -127,10 +127,6 @@ if (UNIX)
 		)
 	message (STATUS "BitTorrent: fetched flags for version ${RB_LT_VERSION}: ${RB_LT_CFLAGS}")
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${RB_LT_CFLAGS}")
-
-	if (RB_LT_VERSION VERSION_GREATER 0.15.9999)
-		add_definitions (-DBOOST_ASIO_DYN_LINK)
-	endif ()
 endif ()
 
 if (WIN32)
