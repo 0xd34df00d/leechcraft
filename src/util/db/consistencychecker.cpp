@@ -47,9 +47,9 @@ namespace Util
 {
 	class FailedImpl final : public ConsistencyChecker::IFailed
 	{
-		ConsistencyChecker * const Checker_;
+		const std::shared_ptr<ConsistencyChecker> Checker_;
 	public:
-		FailedImpl (ConsistencyChecker *checker)
+		FailedImpl (const std::shared_ptr<ConsistencyChecker>& checker)
 		: Checker_ { checker }
 		{
 		}
@@ -75,7 +75,8 @@ namespace Util
 
 	QFuture<ConsistencyChecker::CheckResult_t> ConsistencyChecker::StartCheck ()
 	{
-		return QtConcurrent::run ([this] { return CheckDB (); });
+		const auto managed = shared_from_this ();
+		return QtConcurrent::run ([managed] { return managed->CheckDB (); });
 	}
 
 	ConsistencyChecker::CheckResult_t ConsistencyChecker::CheckDB ()
@@ -115,7 +116,7 @@ namespace Util
 		if (isGood)
 			return Succeeded {};
 		else
-			return std::make_shared<FailedImpl> (this);
+			return std::make_shared<FailedImpl> (shared_from_this ());
 	}
 
 	QFuture<ConsistencyChecker::DumpResult_t> ConsistencyChecker::DumpReinit ()
@@ -188,16 +189,18 @@ namespace Util
 		}
 
 		const auto dumper = new Dumper { DBPath_, newPath };
+
+		const auto managed = shared_from_this ();
 		Util::Sequence (this, dumper->GetFuture ()) >>
-				[=] (const Dumper::Result_t& result)
+				[iface, newPath, managed] (const Dumper::Result_t& result)
 				{
 					Util::Visit (result,
-							[=] (const Dumper::Error& error)
+							[iface] (const Dumper::Error& error)
 							{
 								ReportResult (iface,
 										DumpError { tr ("Unable to restore the database.") + " " + error.What_ });
 							},
-							[=] (const Dumper::Finished&) { HandleDumperFinished (iface, newPath); });
+							[iface, newPath, managed] (const Dumper::Finished&) { managed->HandleDumperFinished (iface, newPath); });
 				};
 	}
 
