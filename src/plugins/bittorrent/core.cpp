@@ -188,6 +188,7 @@ namespace BitTorrent
 						ver.at (2).digitValue (),
 						ver.at (3).digitValue ()),
 					0);
+			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
 
