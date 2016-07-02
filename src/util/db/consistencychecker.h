@@ -49,8 +49,10 @@ namespace Util
 		const QString DialogContext_;
 
 		friend class FailedImpl;
-	public:
+
 		ConsistencyChecker (const QString& dbPath, const QString& dialogContext, QObject* = nullptr);
+	public:
+		static std::shared_ptr<ConsistencyChecker> Create (const QString& dbPath, const QString& dialogContext);
 
 		struct DumpFinished
 		{

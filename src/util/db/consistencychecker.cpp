@@ -68,6 +68,11 @@ namespace Util
 	{
 	}
 
+	std::shared_ptr<ConsistencyChecker> ConsistencyChecker::Create (const QString& dbPath, const QString& dialogContext)
+	{
+		return std::shared_ptr<ConsistencyChecker> { new ConsistencyChecker { dbPath, dialogContext } };
+	}
+
 	QFuture<ConsistencyChecker::CheckResult_t> ConsistencyChecker::StartCheck ()
 	{
 		return QtConcurrent::run ([this] { return CheckDB (); });

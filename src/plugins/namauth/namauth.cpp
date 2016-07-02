@@ -45,7 +45,7 @@ namespace NamAuth
 	{
 		Util::InstallTranslator ("namauth");
 
-		const auto checker = std::make_shared<Util::ConsistencyChecker> (SQLStorageBackend::GetDBPath (), GetName ());
+		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
 		Util::Sequence (this, checker->StartCheck ()) >>
 				[=] (const auto& result)
 				{
