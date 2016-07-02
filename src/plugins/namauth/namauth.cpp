@@ -29,6 +29,7 @@
 
 #include "namauth.h"
 #include <QIcon>
+#include <QMessageBox>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include <util/sll/visitor.h>
@@ -53,6 +54,28 @@ namespace NamAuth
 							[=] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
 							[=] (Util::ConsistencyChecker::Failed failed)
 							{
+								Util::Sequence (this, failed->DumpReinit ()) >>
+										[=] (const auto& result)
+										{
+											Util::Visit (result,
+													[=] (Util::ConsistencyChecker::DumpError err)
+													{
+														QMessageBox::critical (nullptr,
+																tr ("LeechCraft"),
+																tr ("Unable to recover the HTTP passwords database: %1.")
+																		.arg (err.Error_));
+
+														const auto& path = SQLStorageBackend::GetDBPath ();
+														QFile::copy (path, path + ".old");
+														QFile::remove (path);
+
+														InitStorage (proxy);
+													},
+													[=] (Util::ConsistencyChecker::DumpFinished)
+													{
+														InitStorage (proxy);
+													});
+										};
 							});
 				};
 	}
