@@ -44,6 +44,7 @@ namespace LeechCraft
 namespace Util
 {
 	class UTIL_DB_API ConsistencyChecker : public QObject
+										 , public std::enable_shared_from_this<ConsistencyChecker>
 	{
 		const QString DBPath_;
 		const QString DialogContext_;
