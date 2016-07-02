@@ -191,7 +191,7 @@ namespace Util
 		const auto dumper = new Dumper { DBPath_, newPath };
 
 		const auto managed = shared_from_this ();
-		Util::Sequence (this, dumper->GetFuture ()) >>
+		Util::Sequence (nullptr, dumper->GetFuture ()) >>
 				[iface, newPath, managed] (const Dumper::Result_t& result)
 				{
 					Util::Visit (result,
