@@ -53,7 +53,6 @@ namespace GActs
 
 	void Plugin::Release ()
 	{
-		qDeleteAll (RegisteredShortcuts_.values ());
 		RegisteredShortcuts_.clear ();
 	}
 
@@ -88,7 +87,7 @@ namespace GActs
 
 		if (e.Mime_ == "x-leechcraft/global-action-unregister")
 		{
-			delete RegisteredShortcuts_.take (id);
+			RegisteredShortcuts_.remove (id);
 			return;
 		}
 
@@ -99,7 +98,7 @@ namespace GActs
 		if (const auto sh = RegisteredShortcuts_.value (id))
 		{
 			sh->setShortcut (seq);
-			RegisterChildren (sh, e);
+			RegisterChildren (sh.get (), e);
 			return;
 		}
 
@@ -117,14 +116,14 @@ namespace GActs
 				SLOT (handleReceiverDeleted ()),
 				Qt::UniqueConnection);
 
-		const auto sh = new QxtGlobalShortcut (seq, receiver);
-		connect (sh,
+		const auto sh = std::make_shared<QxtGlobalShortcut> (seq, receiver);
+		connect (sh.get (),
 				SIGNAL (activated ()),
 				receiver,
 				method);
 		RegisteredShortcuts_ [id] = sh;
 
-		RegisterChildren (sh, e);
+		RegisterChildren (sh.get (), e);
 	}
 
 	void Plugin::RegisterChildren (QxtGlobalShortcut *sh, const Entity& e)

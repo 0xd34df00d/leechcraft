@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/ientityhandler.h>
@@ -48,7 +49,7 @@ namespace GActs
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.GActs")
 
-		QHash<QByteArray, QxtGlobalShortcut*> RegisteredShortcuts_;
+		QHash<QByteArray, std::shared_ptr<QxtGlobalShortcut>> RegisteredShortcuts_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
