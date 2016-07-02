@@ -51,6 +51,8 @@ namespace NamAuth
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
+	private:
+		void InitStorage (const ICoreProxy_ptr&);
 	};
 }
 }

@@ -201,9 +201,12 @@ namespace LeechCraft
 
 		ParseCommandLine ();
 
-		// Say hello to logs
-		qDebug () << "======APPLICATION STARTUP======";
-		qWarning () << "======APPLICATION STARTUP======";
+		if (!VarMap_.count ("nolog"))
+		{
+			// Say hello to logs
+			qDebug () << "======APPLICATION STARTUP======";
+			qWarning () << "======APPLICATION STARTUP======";
+		}
 
 #ifdef Q_OS_WIN32
 		new WinWarnDialog;

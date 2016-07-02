@@ -44,13 +44,16 @@ namespace LeechCraft
 namespace Util
 {
 	class UTIL_DB_API ConsistencyChecker : public QObject
+										 , public std::enable_shared_from_this<ConsistencyChecker>
 	{
 		const QString DBPath_;
 		const QString DialogContext_;
 
 		friend class FailedImpl;
-	public:
+
 		ConsistencyChecker (const QString& dbPath, const QString& dialogContext, QObject* = nullptr);
+	public:
+		static std::shared_ptr<ConsistencyChecker> Create (const QString& dbPath, const QString& dialogContext);
 
 		struct DumpFinished
 		{

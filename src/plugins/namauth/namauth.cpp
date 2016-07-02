@@ -29,8 +29,12 @@
 
 #include "namauth.h"
 #include <QIcon>
+#include <QMessageBox>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
+#include <util/db/consistencychecker.h>
 #include "namhandler.h"
 #include "sqlstoragebackend.h"
 
@@ -42,9 +46,38 @@ namespace NamAuth
 	{
 		Util::InstallTranslator ("namauth");
 
-		const auto sb = new SQLStorageBackend;
+		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
+		Util::Sequence (this, checker->StartCheck ()) >>
+				[=] (const auto& result)
+				{
+					Util::Visit (result,
+							[=] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
+							[=] (Util::ConsistencyChecker::Failed failed)
+							{
+								Util::Sequence (this, failed->DumpReinit ()) >>
+										[=] (const auto& result)
+										{
+											Util::Visit (result,
+													[=] (Util::ConsistencyChecker::DumpError err)
+													{
+														QMessageBox::critical (nullptr,
+																tr ("LeechCraft"),
+																tr ("Unable to recover the HTTP passwords database: %1.")
+																		.arg (err.Error_));
 
-		new NamHandler { sb, proxy->GetNetworkAccessManager () };
+														const auto& path = SQLStorageBackend::GetDBPath ();
+														QFile::copy (path, path + ".old");
+														QFile::remove (path);
+
+														InitStorage (proxy);
+													},
+													[=] (Util::ConsistencyChecker::DumpFinished)
+													{
+														InitStorage (proxy);
+													});
+										};
+							});
+				};
 	}
 
 	void Plugin::SecondInit ()
@@ -73,6 +106,12 @@ namespace NamAuth
 	QIcon Plugin::GetIcon () const
 	{
 		return {};
+	}
+
+	void Plugin::InitStorage (const ICoreProxy_ptr& proxy)
+	{
+		const auto sb = new SQLStorageBackend;
+		new NamHandler { sb, proxy->GetNetworkAccessManager () };
 	}
 }
 }
