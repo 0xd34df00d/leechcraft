@@ -371,7 +371,7 @@ namespace Hestia
 		while (GetEntriesCountByDate_.next ())
 			statistic.insert (GetEntriesCountByDate_.value (0).toDate (),
 					GetEntriesCountByDate_.value (1).toInt ());
-			GetEntriesCountByDate_.finish ();
+		GetEntriesCountByDate_.finish ();
 
 		return statistic;
 	}
