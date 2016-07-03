@@ -685,7 +685,7 @@ namespace Metida
 		else if (event.Security_ == Access::Custom)
 			element.appendChild (GetSimpleMemberElement ("allowmask", "int",
 					QString::number (event.AllowMask_), document));
-			element.appendChild (GetSimpleMemberElement ("year", "int",
+		element.appendChild (GetSimpleMemberElement ("year", "int",
 				QString::number (event.DateTime_.date ().year ()), document));
 		element.appendChild (GetSimpleMemberElement ("mon", "int",
 				QString::number (event.DateTime_.date ().month ()), document));
