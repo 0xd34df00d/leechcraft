@@ -448,7 +448,7 @@ namespace Acetamide
 							ChannelHandlers_ [channel]->MakePermsChangedMessage (value,
 									ChannelRole::Owner, action);
 						}
-						break;
+					break;
 				case 'p':
 					ChannelHandlers_ [channel]->SetPrivateMode (action);
 					break;
