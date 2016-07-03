@@ -93,13 +93,6 @@ namespace GActs
 		if (seq.isEmpty ())
 			return;
 
-		if (const auto sh = RegisteredShortcuts_.value (id))
-		{
-			sh->setShortcut (seq);
-			RegisterChildren (sh.get (), e);
-			return;
-		}
-
 		QObject *receiver = e.Additional_ ["Receiver"].value<QObject*> ();
 		if (!receiver)
 			return;
