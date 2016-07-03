@@ -85,11 +85,9 @@ namespace GActs
 	{
 		const QByteArray& id = e.Additional_ ["ActionID"].toByteArray ();
 
+		RegisteredShortcuts_.remove (id);
 		if (e.Mime_ == "x-leechcraft/global-action-unregister")
-		{
-			RegisteredShortcuts_.remove (id);
 			return;
-		}
 
 		const QKeySequence& seq = e.Additional_ ["Shortcut"].value<QKeySequence> ();
 		if (seq.isEmpty ())
