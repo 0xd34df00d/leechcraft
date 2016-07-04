@@ -213,7 +213,7 @@ namespace Aggregator
 			{
 				const auto& name = Util::GetTemporaryName ();
 
-				Entity e = Util::MakeEntity (url,
+				const auto& dlEntity = Util::MakeEntity (url,
 						name,
 						Internal |
 							DoNotNotifyUser |
@@ -223,7 +223,7 @@ namespace Aggregator
 
 				int id = -1;
 				QObject *pr;
-				emit delegateEntity (e, &id, &pr);
+				emit delegateEntity (dlEntity, &id, &pr);
 				if (id == -1)
 				{
 					ErrorNotification (tr ("Import error"),
