@@ -1451,10 +1451,9 @@ namespace BitTorrent
 			return;
 		}
 
-		QFile file (QDir::homePath () +
-				"/.leechcraft/bittorrent/" +
-				torrent->TorrentFileName_ +
-				".resume");
+		const auto& filePath = Util::CreateIfNotExists ("bittorrent")
+				.filePath (torrent->TorrentFileName_ + ".resume");
+		QFile file { filePath };
 
 		if (!file.open (QIODevice::WriteOnly))
 		{
