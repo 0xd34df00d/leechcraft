@@ -438,8 +438,7 @@ namespace Acetamide
 						if (!value.isEmpty () &&
 								ChannelHandlers_ [channel]->IsUserExists (value))
 						{
-							ChannelParticipantEntry_ptr entry =
-									ChannelHandlers_ [channel]->GetParticipantEntry (value);
+							const auto& entry = ChannelHandlers_ [channel]->GetParticipantEntry (value);
 							if (action)
 								entry->SetRole (ChannelRole::Owner);
 							else
@@ -448,7 +447,7 @@ namespace Acetamide
 							ChannelHandlers_ [channel]->MakePermsChangedMessage (value,
 									ChannelRole::Owner, action);
 						}
-						break;
+					break;
 				case 'p':
 					ChannelHandlers_ [channel]->SetPrivateMode (action);
 					break;

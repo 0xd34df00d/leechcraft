@@ -53,6 +53,7 @@ public:
 	static bool error;
 #ifndef Q_OS_MAC
 	static int ref;
+	static QList<QxtGlobalShortcutPrivate*> allPrivates;
 #if QT_VERSION < 0x050000
 	static QAbstractEventDispatcher::EventFilter prevEventFilter;
 	static bool eventFilter(void* message);

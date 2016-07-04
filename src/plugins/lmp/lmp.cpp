@@ -297,8 +297,8 @@ namespace LMP
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
-					url.isValid () &&
-					url.scheme () == "file")
+				url.isValid () &&
+				url.scheme () == "file")
 			path = url.toLocalFile ();
 
 		const auto& goodExt = XmlSettingsManager::Instance ()
@@ -341,8 +341,8 @@ namespace LMP
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
 		if (path.isEmpty () &&
-					url.isValid () &&
-					url.scheme () == "file")
+				url.isValid () &&
+				url.scheme () == "file")
 			path = url.toLocalFile ();
 
 		if (e.Parameters_ & Internal)

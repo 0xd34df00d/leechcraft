@@ -48,14 +48,14 @@ namespace NamAuth
 
 		const auto checker = Util::ConsistencyChecker::Create (SQLStorageBackend::GetDBPath (), GetName ());
 		Util::Sequence (this, checker->StartCheck ()) >>
-				[=] (const auto& result)
+				[=] (const Util::ConsistencyChecker::CheckResult_t& result)
 				{
 					Util::Visit (result,
 							[=] (Util::ConsistencyChecker::Succeeded) { InitStorage (proxy); },
 							[=] (Util::ConsistencyChecker::Failed failed)
 							{
 								Util::Sequence (this, failed->DumpReinit ()) >>
-										[=] (const auto& result)
+										[=] (const Util::ConsistencyChecker::DumpResult_t& result)
 										{
 											Util::Visit (result,
 													[=] (Util::ConsistencyChecker::DumpError err)
