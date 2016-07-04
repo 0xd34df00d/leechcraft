@@ -51,6 +51,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
@@ -1391,10 +1392,11 @@ namespace Aggregator
 					SLOT (rotateUpdatesQueue ()));
 
 		QString url = StorageBackend_->GetFeed (id)->URL_;
-		for (int key : PendingJobs_.keys ())
-			if (PendingJobs_ [key].URL_ == url)
+		for (const auto& pair : Util::Stlize (PendingJobs_))
+			if (pair.second.URL_ == url)
 			{
-				QObject *provider = ID2Downloader_ [key];
+				const auto id = pair.first;
+				QObject *provider = ID2Downloader_ [id];
 				IDownload *downloader = qobject_cast<IDownload*> (provider);
 				if (downloader)
 				{
@@ -1402,9 +1404,10 @@ namespace Aggregator
 						<< "stalled task detected from"
 						<< downloader
 						<< "trying to kill...";
-					downloader->KillTask (key);
-					ID2Downloader_.remove (key);
-					PendingJobs_.remove (key);
+
+					downloader->KillTask (id);
+					ID2Downloader_.remove (id);
+					PendingJobs_.remove (id);
 					qWarning () << Q_FUNC_INFO
 						<< "killed!";
 				}
