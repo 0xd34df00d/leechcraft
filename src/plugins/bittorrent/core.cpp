@@ -2026,14 +2026,8 @@ namespace BitTorrent
 	void Core::writeSettings ()
 	{
 		SaveScheduled_ = false;
-		QDir home = QDir::home ();
-		if (!home.exists (".leechcraft/bittorrent"))
-			if (!home.mkdir (".leechcraft/bittorrent"))
-			{
-				ShowError (QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft/bittorrent"))
-						.arg (QDir::toNativeSeparators (QDir::homePath ())));
-				return;
-			}
+
+		const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Torrent");
@@ -2060,9 +2054,7 @@ namespace BitTorrent
 			CurrentTorrent_ = i;
 			try
 			{
-				QFile file_info (QDir::homePath () +
-						"/.leechcraft/bittorrent/" +
-						Handles_.at (i).TorrentFileName_);
+				QFile file_info (torrentsDir.filePath (Handles_.at (i).TorrentFileName_));
 				if (!file_info.open (QIODevice::WriteOnly))
 					ShowError (QString ("Cannot write settings! "
 								"Cannot open file %1 for write!")
