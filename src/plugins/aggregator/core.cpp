@@ -1291,18 +1291,16 @@ namespace Aggregator
 			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
 			ErrorNotification (tr ("Feed error"),
 					tr ("Could not find plugin to download external file %1.").arg (url));
 			return;
 		}
 
-		HandleProvider (pr, id);
-		PendingJobs_ [id] = pj;
+		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
+		PendingJobs_ [delegateResult.ID_] = pj;
 	}
 
 	void Core::saveSettings ()
