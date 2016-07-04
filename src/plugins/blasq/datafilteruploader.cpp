@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <QInputDialog>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/structures.h>
 #include <interfaces/idatafilter.h>
 #include "accountsmanager.h"
@@ -61,9 +62,7 @@ namespace Blasq
 	void DataFilterUploader::SelectAcc ()
 	{
 		const auto& accs = AccMgr_->GetAccounts ();
-		QStringList accNames;
-		for (auto acc : accs)
-			accNames << acc->GetName ();
+		const auto& accNames = Util::Map (accs, &IAccount::GetName);
 
 		bool ok = false;
 		const auto& chosenAcc = QInputDialog::getItem (nullptr,
