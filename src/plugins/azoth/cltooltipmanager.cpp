@@ -251,6 +251,50 @@ namespace Azoth
 	namespace
 	{
 		const auto MinAvatarSize = 32;
+
+		void FormatClientInfo (QString& tip,
+				const QMap<QString, QVariant>& info,
+				const QIcon& icon)
+		{
+			QString clientIconString;
+			if (!icon.isNull ())
+			{
+				const auto& data = Util::GetAsBase64Src (icon.pixmap (16, 16).toImage ());
+				clientIconString = "&nbsp;&nbsp;&nbsp;<img src='" + data + "'/>";
+			}
+
+			bool clientIconInserted = false;
+
+			if (info.contains ("client_name"))
+			{
+				tip += "<br />" + CLTooltipManager::tr ("Using:") + ' ' + Util::Escape (info.value ("client_name").toString ());
+
+				if (!info.contains ("client_version"))
+				{
+					tip += clientIconString;
+					clientIconInserted = true;
+				}
+			}
+			if (info.contains ("client_version"))
+			{
+				tip += " " + Util::Escape (info.value ("client_version").toString ());
+
+				tip += clientIconString;
+				clientIconInserted = true;
+			}
+			if (info.contains ("client_remote_name"))
+			{
+				tip += "<br />" + CLTooltipManager::tr ("Claiming:") + ' ' + Util::Escape (info.value ("client_remote_name").toString ());
+
+				if (!clientIconInserted)
+				{
+					tip += clientIconString;
+					clientIconInserted = true;
+				}
+			}
+			if (info.contains ("client_os"))
+				tip += "<br />" + CLTooltipManager::tr ("OS:") + ' ' + Util::Escape (info.value ("client_os").toString ());
+		}
 	}
 
 	QString CLTooltipManager::MakeTooltipString (ICLEntry *entry, QString avatarStr)
@@ -333,44 +377,7 @@ namespace Azoth
 			if (!variant.isEmpty () || variants.size () > 1)
 				tip += Status2Str (entry->GetStatus (variant));
 
-			QString clientIconString;
-			if (!icons.value (variant).isNull ())
-			{
-				const auto& data = Util::GetAsBase64Src (icons.value (variant).pixmap (16, 16).toImage ());
-				clientIconString = "&nbsp;&nbsp;&nbsp;<img src='" + data + "'/>";
-			}
-
-			bool clientIconInserted = false;
-
-			if (info.contains ("client_name"))
-			{
-				tip += "<br />" + tr ("Using:") + ' ' + Util::Escape (info.value ("client_name").toString ());
-
-				if (!info.contains ("client_version"))
-				{
-					tip += clientIconString;
-					clientIconInserted = true;
-				}
-			}
-			if (info.contains ("client_version"))
-			{
-				tip += " " + Util::Escape (info.value ("client_version").toString ());
-
-				tip += clientIconString;
-				clientIconInserted = true;
-			}
-			if (info.contains ("client_remote_name"))
-			{
-				tip += "<br />" + tr ("Claiming:") + ' ' + Util::Escape (info.value ("client_remote_name").toString ());
-
-				if (!clientIconInserted)
-				{
-					tip += clientIconString;
-					clientIconInserted = true;
-				}
-			}
-			if (info.contains ("client_os"))
-				tip += "<br />" + tr ("OS:") + ' ' + Util::Escape (info.value ("client_os").toString ());
+			FormatClientInfo (tip, info, icons.value (variant));
 
 			if (info.contains ("client_time"))
 			{
