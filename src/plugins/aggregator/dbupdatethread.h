@@ -43,7 +43,7 @@ namespace Aggregator
 
 		DBUpdateThreadWorker *W_;
 	public:
-		DBUpdateThread (QObject* = 0);
+		DBUpdateThread (QObject* = nullptr);
 
 		DBUpdateThreadWorker* GetWorker () const;
 	protected:

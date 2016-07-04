@@ -51,7 +51,7 @@ namespace Aggregator
 
 		std::shared_ptr<StorageBackend> SB_;
 	public:
-		DBUpdateThreadWorker (QObject* = 0);
+		DBUpdateThreadWorker (QObject* = nullptr);
 	private:
 		Feed::FeedSettings GetFeedSettings (IDType_t);
 		void AddChannel (const Channel_ptr& channel, const Feed::FeedSettings& settings);
