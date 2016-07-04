@@ -158,8 +158,7 @@ namespace Blasq
 		if (item.FilePath_ != UploadFileName_)
 			return;
 
-		const auto cb = Entity_.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
-		if (cb)
+		if (const auto cb = Entity_.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ())
 			cb (url);
 
 		deleteLater ();
