@@ -220,10 +220,6 @@ namespace Aggregator
 							LeechCraft::DoNotSaveInHistory |
 							LeechCraft::NotPersistent |
 							LeechCraft::DoNotAnnounceEntity);
-				PendingOPML po =
-				{
-					name
-				};
 
 				int id = -1;
 				QObject *pr;
@@ -237,7 +233,7 @@ namespace Aggregator
 				}
 
 				HandleProvider (pr, id);
-				PendingOPMLs_ [id] = po;
+				PendingOPMLs_ [id] = PendingOPML { name };
 			}
 
 			const auto& s = e.Additional_;
