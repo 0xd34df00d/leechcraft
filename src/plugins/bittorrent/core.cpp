@@ -91,6 +91,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
