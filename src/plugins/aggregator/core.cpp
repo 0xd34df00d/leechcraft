@@ -50,6 +50,7 @@
 #include <util/sys/paths.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
@@ -502,9 +503,8 @@ namespace Aggregator
 					LeechCraft::NotPersistent |
 					LeechCraft::DoNotAnnounceEntity);
 
-		QStringList tagIds;
-		Q_FOREACH (QString tag, tags)
-			tagIds << Proxy_->GetTagsManager ()->GetID (tag);
+		const auto& tagIds = Util::Map (tags,
+				[this] (const QString& tag) { return Proxy_->GetTagsManager ()->GetID (tag); });
 
 		PendingJob pj =
 		{
