@@ -494,14 +494,14 @@ namespace Aggregator
 			return;
 		}
 
-		QString name = LeechCraft::Util::GetTemporaryName ();
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (fixedUrl,
+		const auto& name = Util::GetTemporaryName ();
+		const auto& e = Util::MakeEntity (fixedUrl,
 				name,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		const auto& tagIds = Util::Map (tags,
 				[this] (const QString& tag) { return Proxy_->GetTagsManager ()->GetID (tag); });
@@ -1274,13 +1274,13 @@ namespace Aggregator
 
 	void Core::fetchExternalFile (const QString& url, const QString& where)
 	{
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
+		const auto& e = Util::MakeEntity (QUrl (url),
 				where,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		PendingJob pj =
 		{
@@ -1421,11 +1421,11 @@ namespace Aggregator
 
 		Entity e = Util::MakeEntity (QUrl (url),
 				filename,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		PendingJob pj =
 		{
@@ -1444,7 +1444,7 @@ namespace Aggregator
 			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
 			emit gotEntity (Util::MakeNotification ("Aggregator",
 					tr ("Could not find plugin for feed with URL %1")
-						.arg (url), LeechCraft::PCritical_));
+						.arg (url), PCritical_));
 			return;
 		}
 
