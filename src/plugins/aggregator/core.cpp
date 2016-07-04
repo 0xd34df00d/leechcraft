@@ -145,7 +145,7 @@ namespace Aggregator
 		return Pools_ [type];
 	}
 
-	bool Core::CouldHandle (const LeechCraft::Entity& e)
+	bool Core::CouldHandle (const Entity& e)
 	{
 		if (!e.Entity_.canConvert<QUrl> () ||
 				!Initialized_)
@@ -202,7 +202,7 @@ namespace Aggregator
 		return true;
 	}
 
-	void Core::Handle (LeechCraft::Entity e)
+	void Core::Handle (Entity e)
 	{
 		QUrl url = e.Entity_.toUrl ();
 		if (e.Mime_ == "text/x-opml")
@@ -211,15 +211,15 @@ namespace Aggregator
 				StartAddingOPML (url.toLocalFile ());
 			else
 			{
-				QString name = LeechCraft::Util::GetTemporaryName ();
+				const auto& name = Util::GetTemporaryName ();
 
-				LeechCraft::Entity e = Util::MakeEntity (url,
+				Entity e = Util::MakeEntity (url,
 						name,
-						LeechCraft::Internal |
-							LeechCraft::DoNotNotifyUser |
-							LeechCraft::DoNotSaveInHistory |
-							LeechCraft::NotPersistent |
-							LeechCraft::DoNotAnnounceEntity);
+						Internal |
+							DoNotNotifyUser |
+							DoNotSaveInHistory |
+							NotPersistent |
+							DoNotAnnounceEntity);
 
 				int id = -1;
 				QObject *pr;
@@ -263,7 +263,7 @@ namespace Aggregator
 			else if (str.startsWith ("itpc://"))
 				str.replace (0, 4, "http");
 
-			LeechCraft::Aggregator::AddFeed af (str);
+			class AddFeed af { str };
 			if (af.exec () == QDialog::Accepted)
 				AddFeed (af.GetURL (),
 						af.GetTags ());
