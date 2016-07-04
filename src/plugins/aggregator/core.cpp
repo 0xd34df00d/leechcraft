@@ -43,6 +43,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/models/mergemodel.h>
 #include <util/xpc/util.h>
 #include <util/sys/fileremoveguard.h>
@@ -221,10 +222,8 @@ namespace Aggregator
 							NotPersistent |
 							DoNotAnnounceEntity);
 
-				int id = -1;
-				QObject *pr;
-				emit delegateEntity (dlEntity, &id, &pr);
-				if (id == -1)
+				const auto& handleResult = Proxy_->GetEntityManager ()->DelegateEntity (dlEntity);
+				if (!handleResult)
 				{
 					ErrorNotification (tr ("Import error"),
 							tr ("Could not find plugin to download OPML %1.")
@@ -232,8 +231,8 @@ namespace Aggregator
 					return;
 				}
 
-				HandleProvider (pr, id);
-				PendingOPMLs_ [id] = PendingOPML { name };
+				HandleProvider (handleResult.Handler_, handleResult.ID_);
+				PendingOPMLs_ [handleResult.ID_] = PendingOPML { name };
 			}
 
 			const auto& s = e.Additional_;
