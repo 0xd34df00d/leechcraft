@@ -552,10 +552,10 @@ namespace Aggregator
 		channels_shorts_t shorts;
 		StorageBackend_->GetChannels (shorts, channel.FeedID_);
 
-		for (size_t i = 0, size = shorts.size (); i < size; ++i)
+		for (const auto& item : shorts)
 		{
-			ChannelsModel_->RemoveChannel (shorts [i]);
-			emit channelRemoved (shorts [i].ChannelID_);
+			ChannelsModel_->RemoveChannel (item);
+			emit channelRemoved (item.ChannelID_);
 		}
 		StorageBackend_->RemoveFeed (channel.FeedID_);
 
