@@ -287,10 +287,7 @@ namespace Azoth
 				tip += "<br />" + CLTooltipManager::tr ("Claiming:") + ' ' + Util::Escape (info.value ("client_remote_name").toString ());
 
 				if (!clientIconInserted)
-				{
 					tip += clientIconString;
-					clientIconInserted = true;
-				}
 			}
 			if (info.contains ("client_os"))
 				tip += "<br />" + CLTooltipManager::tr ("OS:") + ' ' + Util::Escape (info.value ("client_os").toString ());
