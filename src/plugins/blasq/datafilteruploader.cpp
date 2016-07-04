@@ -97,7 +97,7 @@ namespace Blasq
 	{
 		bool shouldCleanup = true;
 		auto deleteGuard = std::shared_ptr<void> (nullptr,
-				[this, shouldCleanup] (void*)
+				[this, &shouldCleanup] (void*)
 				{
 					if (shouldCleanup)
 						deleteLater ();
