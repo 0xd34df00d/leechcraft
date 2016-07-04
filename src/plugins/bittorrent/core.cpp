@@ -1714,6 +1714,8 @@ namespace BitTorrent
 
 	void Core::RestoreTorrents ()
 	{
+		const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Torrent");
 		settings.beginGroup ("Core");
@@ -1725,7 +1727,7 @@ namespace BitTorrent
 			const auto& pathStr = settings.value ("SavePath").toString ();
 			const auto& path = std::string (pathStr.toUtf8 ().constData ());
 			QString filename = settings.value ("Filename").toString ();
-			QFile torrent (QDir::homePath () + "/.leechcraft/bittorrent/" + filename);
+			QFile torrent (torrentsDir.filePath (filename));
 			if (!torrent.open (QIODevice::ReadOnly))
 			{
 				ShowError (tr ("Could not open saved torrent %1 for read.").arg (filename));
@@ -1741,8 +1743,7 @@ namespace BitTorrent
 				continue;
 			}
 
-			QFile resumeDataFile (QDir::homePath () + "/.leechcraft/bittorrent/" +
-					filename + ".resume");
+			QFile resumeDataFile (torrentsDir.filePath (filename + ".resume"));
 			QByteArray resumed;
 			if (resumeDataFile.open (QIODevice::ReadOnly))
 			{
