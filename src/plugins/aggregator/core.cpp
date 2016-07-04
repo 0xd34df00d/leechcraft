@@ -515,10 +515,8 @@ namespace Aggregator
 			fs
 		};
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
 			ErrorNotification (tr ("Plugin error"),
 					tr ("Could not find plugin to download feed %1.")
@@ -527,8 +525,8 @@ namespace Aggregator
 			return;
 		}
 
-		HandleProvider (pr, id);
-		PendingJobs_ [id] = pj;
+		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
+		PendingJobs_ [delegateResult.ID_] = pj;
 	}
 
 	void Core::RemoveFeed (const QModelIndex& index)
