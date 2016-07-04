@@ -1436,20 +1436,17 @@ namespace Aggregator
 			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
-		int jobId = -1;
-		QObject *pr;
-		emit delegateEntity (e, &jobId, &pr);
-		if (jobId == -1)
+		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
-			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
 			emit gotEntity (Util::MakeNotification ("Aggregator",
 					tr ("Could not find plugin for feed with URL %1")
 						.arg (url), PCritical_));
 			return;
 		}
 
-		HandleProvider (pr, jobId);
-		PendingJobs_ [jobId] = pj;
+		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
+		PendingJobs_ [delegateResult.ID_] = pj;
 		Updates_ [id] = QDateTime::currentDateTime ();
 	}
 
