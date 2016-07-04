@@ -240,7 +240,7 @@ namespace Aggregator
 				PendingOPMLs_ [id] = po;
 			}
 
-			QMap<QString, QVariant> s = e.Additional_;
+			const auto& s = e.Additional_;
 			if (s.contains ("ShowTrayIcon"))
 				XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
 						s.value ("ShowIconInTray").toBool ());
