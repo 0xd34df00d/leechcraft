@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
-#define PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QVariantList>
@@ -71,5 +71,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

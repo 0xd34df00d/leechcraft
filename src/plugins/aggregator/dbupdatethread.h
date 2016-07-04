@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_DBUPDATETHREAD_H
-#define PLUGINS_AGGREGATOR_DBUPDATETHREAD_H
+#pragma once
+
 #include <QThread>
 
 namespace LeechCraft
@@ -51,5 +51,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
