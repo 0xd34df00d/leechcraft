@@ -28,30 +28,10 @@
  **********************************************************************/
 
 #include "dbupdatethread.h"
-#include "dbupdatethreadworker.h"
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
-	DBUpdateThread::DBUpdateThread (QObject *parent)
-	: QThread (parent)
-	, W_ (0)
-	{
-	}
-
-	DBUpdateThreadWorker* DBUpdateThread::GetWorker () const
-	{
-		return W_;
-	}
-
-	void DBUpdateThread::run ()
-	{
-		W_ = new DBUpdateThreadWorker ();
-
-		QThread::run ();
-
-		delete W_;
-	}
 }
 }

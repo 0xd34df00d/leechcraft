@@ -249,7 +249,6 @@ namespace Aggregator
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 
-		void handleDBUpThreadStarted ();
 		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;

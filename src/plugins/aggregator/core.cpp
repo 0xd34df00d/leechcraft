@@ -317,12 +317,25 @@ namespace Aggregator
 
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
 
-		connect (DBUpThread_,
-				SIGNAL (started ()),
-				this,
-				SLOT (handleDBUpThreadStarted ()),
-				Qt::QueuedConnection);
 		DBUpThread_->start (QThread::LowestPriority);
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
+				[this] (DBUpdateThreadWorker *worker)
+				{
+					connect (worker,
+							SIGNAL (gotNewChannel (ChannelShort)),
+							this,
+							SLOT (handleDBUpGotNewChannel (ChannelShort)),
+							Qt::QueuedConnection);
+					connect (worker,
+							SIGNAL (gotEntity (LeechCraft::Entity)),
+							this,
+							SIGNAL (gotEntity (LeechCraft::Entity)),
+							Qt::QueuedConnection);
+					connect (worker,
+							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
+							this,
+							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
+				});
 
 		connect (&StorageBackendManager::Instance (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
@@ -1451,24 +1464,6 @@ namespace Aggregator
 		Updates_ [id] = QDateTime::currentDateTime ();
 	}
 
-	void Core::handleDBUpThreadStarted ()
-	{
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (gotNewChannel (ChannelShort)),
-				this,
-				SLOT (handleDBUpGotNewChannel (ChannelShort)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
-				this,
-				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
-	}
-
 	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)
 	{
 		ChannelsModel_->AddChannel (chSh);
@@ -1604,10 +1599,9 @@ namespace Aggregator
 	void Core::HandleFeedUpdated (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
-		QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
-				"updateFeed",
-				Q_ARG (channels_container_t, channels),
-				Q_ARG (QString, pj.URL_));
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed,
+				channels,
+				pj.URL_);
 	}
 
 	void Core::MarkChannel (const QModelIndex& i, bool state)
@@ -1615,11 +1609,9 @@ namespace Aggregator
 		try
 		{
 			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-			QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
-					"toggleChannelUnread",
-					Qt::QueuedConnection,
-					Q_ARG (IDType_t, cs.ChannelID_),
-					Q_ARG (bool, state));
+			DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread,
+					cs.ChannelID_,
+					state);
 		}
 		catch (const std::exception& e)
 		{

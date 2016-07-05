@@ -29,11 +29,14 @@
 
 #pragma once
 
+#include <util/threads/workerthreadbasefwd.h>
+
 namespace LeechCraft
 {
 namespace Aggregator
 {
 	class DBUpdateThreadWorker;
-	class DBUpdateThread;
+
+	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
 }
 }

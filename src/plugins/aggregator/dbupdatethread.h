@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <QThread>
+#include <util/threads/workerthreadbase.h>
 
 namespace LeechCraft
 {
@@ -37,17 +37,6 @@ namespace Aggregator
 {
 	class DBUpdateThreadWorker;
 
-	class DBUpdateThread : public QThread
-	{
-		Q_OBJECT
-
-		DBUpdateThreadWorker *W_;
-	public:
-		DBUpdateThread (QObject* = nullptr);
-
-		DBUpdateThreadWorker* GetWorker () const;
-	protected:
-		void run ();
-	};
+	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
 }
 }
