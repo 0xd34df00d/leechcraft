@@ -282,6 +282,17 @@ namespace LeechCraft
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
+		if (QThread::currentThread () != thread ())
+		{
+			bool res = false;
+			QMetaObject::invokeMethod (this,
+					"CouldHandle",
+					Qt::BlockingQueuedConnection,
+					Q_RETURN_ARG (bool, res),
+					Q_ARG (Entity, e));
+			return res;
+		}
+
 		const auto pm = Core::Instance ().GetPluginManager ();
 		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
 		{
