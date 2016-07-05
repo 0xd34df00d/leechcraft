@@ -40,8 +40,6 @@
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Aggregator
 {
 	class StorageBackend;
@@ -68,7 +66,6 @@ namespace Aggregator
 		void updateFeed (channels_container_t channels, QString url);
 	signals:
 		void gotNewChannel (const ChannelShort&);
-		void gotEntity (const LeechCraft::Entity&);
 
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);

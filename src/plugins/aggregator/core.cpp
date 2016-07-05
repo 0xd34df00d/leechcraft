@@ -327,11 +327,6 @@ namespace Aggregator
 							SLOT (handleDBUpGotNewChannel (ChannelShort)),
 							Qt::QueuedConnection);
 					connect (worker,
-							SIGNAL (gotEntity (LeechCraft::Entity)),
-							this,
-							SIGNAL (gotEntity (LeechCraft::Entity)),
-							Qt::QueuedConnection);
-					connect (worker,
 							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
 							this,
 							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
