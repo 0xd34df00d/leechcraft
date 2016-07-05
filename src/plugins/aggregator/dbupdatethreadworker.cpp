@@ -69,6 +69,11 @@ namespace Aggregator
 		SB_->Prepare ();
 	}
 
+	void DBUpdateThreadWorker::WithWorker (const std::function<void (DBUpdateThreadWorker*)>& func)
+	{
+		func (this);
+	}
+
 	Feed::FeedSettings DBUpdateThreadWorker::GetFeedSettings (IDType_t feedId)
 	{
 		const auto itemAge = XmlSettingsManager::Instance ()->property ("ItemsMaxAge").toInt ();
