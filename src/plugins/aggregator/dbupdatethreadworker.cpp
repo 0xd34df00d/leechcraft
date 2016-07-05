@@ -44,8 +44,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	DBUpdateThreadWorker::DBUpdateThreadWorker (QObject *parent)
+	DBUpdateThreadWorker::DBUpdateThreadWorker (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ { proxy }
 	{
 		try
 		{

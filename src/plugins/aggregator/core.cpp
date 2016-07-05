@@ -89,7 +89,6 @@ namespace Aggregator
 	, Initialized_ (false)
 	, ReprWidget_ (0)
 	, PluginManager_ (nullptr)
-	, DBUpThread_ (new DBUpdateThread (this))
 	, ShortcutMgr_ (nullptr)
 	{
 		qRegisterMetaType<IDType_t> ("IDType_t");
@@ -317,6 +316,7 @@ namespace Aggregator
 
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
 
+		DBUpThread_ = new DBUpdateThread (this, Proxy_);
 		DBUpThread_->start (QThread::LowestPriority);
 		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
 				[this] (DBUpdateThreadWorker *worker)
