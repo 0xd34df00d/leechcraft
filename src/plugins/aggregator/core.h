@@ -45,6 +45,7 @@
 #include "feed.h"
 #include "storagebackend.h"
 #include "actionsstructs.h"
+#include "dbupdatethreadfwd.h"
 
 class QTimer;
 class QNetworkReply;
@@ -62,7 +63,6 @@ namespace Util
 
 namespace Aggregator
 {
-	class DBUpdateThread;
 	class ChannelsModel;
 	class JobHolderRepresentation;
 	class ChannelsFilterModel;
