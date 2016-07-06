@@ -131,7 +131,7 @@ namespace Aggregator
 
 		PluginManager *PluginManager_;
 
-		DBUpdateThread *DBUpThread_;
+		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
 		Util::ShortcutManager *ShortcutMgr_;
 

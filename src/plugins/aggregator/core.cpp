@@ -110,7 +110,7 @@ namespace Aggregator
 
 	void Core::Release ()
 	{
-		delete DBUpThread_;
+		DBUpThread_.reset ();
 
 		delete JobHolderRepresentation_;
 		delete ChannelsFilterModel_;
@@ -310,7 +310,7 @@ namespace Aggregator
 
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
 
-		DBUpThread_ = new DBUpdateThread (this, Proxy_);
+		DBUpThread_ = std::make_shared<DBUpdateThread> (nullptr, Proxy_);
 		DBUpThread_->start (QThread::LowestPriority);
 		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
 				[this] (DBUpdateThreadWorker *worker)
