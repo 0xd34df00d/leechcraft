@@ -110,19 +110,13 @@ namespace Aggregator
 
 	void Core::Release ()
 	{
-		if (DBUpThread_->isRunning ())
-			DBUpThread_->quit ();
+		delete DBUpThread_;
 
 		delete JobHolderRepresentation_;
 		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
 
 		StorageBackend_.reset ();
-
-		if (DBUpThread_->isRunning ())
-			DBUpThread_->wait (1000);
-		if (DBUpThread_->isRunning ())
-			DBUpThread_->terminate ();
 
 		XmlSettingsManager::Instance ()->Release ();
 	}
