@@ -54,7 +54,6 @@ namespace Util
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
-		virtual ~WorkerThreadBase () = default;
 
 		void SetPaused (bool);
 
