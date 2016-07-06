@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_CORE_H
-#define PLUGINS_AGGREGATOR_CORE_H
+#pragma once
+
 #include <memory>
 #include <QAbstractItemModel>
 #include <QString>
@@ -277,5 +277,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
