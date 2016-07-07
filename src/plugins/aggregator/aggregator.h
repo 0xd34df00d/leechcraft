@@ -100,7 +100,6 @@ namespace Aggregator
 		QStringList Provides () const;
 		QStringList Needs () const;
 		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
 
 		TabClasses_t GetTabClasses () const;

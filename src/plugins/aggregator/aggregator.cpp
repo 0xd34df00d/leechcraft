@@ -345,10 +345,6 @@ namespace Aggregator
 		return QStringList ("webbrowser");
 	}
 
-	void Aggregator::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QIcon Aggregator::GetIcon () const
 	{
 		static QIcon icon ("lcicons:/resources/images/aggregator.svg");
