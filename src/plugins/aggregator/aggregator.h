@@ -112,11 +112,11 @@ namespace Aggregator
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
+		QMap<QString, ActionInfo> GetActionInfo () const;
 
 		QList<QWizardPage*> GetWizardPages () const;
 
