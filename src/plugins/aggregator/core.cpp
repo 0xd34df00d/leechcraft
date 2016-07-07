@@ -190,7 +190,7 @@ namespace Aggregator
 				return false;
 
 			QString linkRel = e.Additional_ ["LinkRel"].toString ();
-			if (linkRel.size () &&
+			if (!linkRel.isEmpty () &&
 					linkRel != "alternate")
 				return false;
 		}
