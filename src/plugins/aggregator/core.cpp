@@ -766,12 +766,12 @@ namespace Aggregator
 
 	QStringList Core::GetCategories (const items_shorts_t& items) const
 	{
-		QStringList result;
 		QSet<QString> unique;
 		for (const auto& item : items)
 			for (const auto& category : item.Categories_)
 				unique << category;
-		result = unique.toList ();
+
+		auto result = unique.toList ();
 		std::sort (result.begin (), result.end ());
 		return result;
 	}
