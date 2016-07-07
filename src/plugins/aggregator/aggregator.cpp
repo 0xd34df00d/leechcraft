@@ -328,17 +328,17 @@ namespace Aggregator
 
 	QStringList Aggregator::Provides () const
 	{
-		return QStringList ("rss");
+		return { "rss" };
 	}
 
 	QStringList Aggregator::Needs () const
 	{
-		return QStringList ("http");
+		return { "http" };
 	}
 
 	QStringList Aggregator::Uses () const
 	{
-		return QStringList ("webbrowser");
+		return { "webbrowser" };
 	}
 
 	QIcon Aggregator::GetIcon () const
@@ -349,9 +349,7 @@ namespace Aggregator
 
 	TabClasses_t Aggregator::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << Impl_->TabInfo_;
-		return result;
+		return { Impl_->TabInfo_ };
 	}
 
 	QToolBar* Aggregator::GetToolBar () const
