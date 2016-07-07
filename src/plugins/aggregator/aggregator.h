@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_AGGREGATOR_H
-#define PLUGINS_AGGREGATOR_AGGREGATOR_H
+#pragma once
+
 #include <memory>
 #include <boost/function.hpp>
 #include <QWidget>
@@ -186,5 +186,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
