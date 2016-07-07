@@ -189,7 +189,7 @@ namespace Aggregator
 					e.Mime_ != "application/rss+xml")
 				return false;
 
-			QString linkRel = e.Additional_ ["LinkRel"].toString ();
+			const auto& linkRel = e.Additional_ ["LinkRel"].toString ();
 			if (!linkRel.isEmpty () &&
 					linkRel != "alternate")
 				return false;

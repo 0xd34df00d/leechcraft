@@ -1317,7 +1317,7 @@ namespace Aggregator
 	{
 		auto rd = [this] (const QString& drstr)
 		{
-			QSqlQuery dropper = QSqlQuery (DB_);
+			QSqlQuery dropper { DB_ };
 			if (!dropper.exec (drstr))
 			{
 				Util::DBLock::DumpError (dropper);

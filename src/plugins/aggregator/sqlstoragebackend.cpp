@@ -2599,7 +2599,7 @@ namespace Aggregator
 
 		auto rd = [this] (const QString& drstr)
 		{
-			QSqlQuery dropper = QSqlQuery (DB_);
+			QSqlQuery dropper { DB_ };
 			if (!dropper.exec (drstr))
 			{
 				Util::DBLock::DumpError (dropper);
@@ -2686,14 +2686,13 @@ namespace Aggregator
 
 		Q_FOREACH (Feed_ptr feed, result)
 		{
-			QList<Channel_ptr> channels =
-					GetChannelsFromVersion5 (feed->URL_, feed->FeedID_);
+			auto channels = GetChannelsFromVersion5 (feed->URL_, feed->FeedID_);
 			Q_FOREACH (Channel_ptr channel, channels)
 			{
-				QString hash = feed->URL_ + channel->Title_;
-				channel->Items_ =
-						GetItemsFromVersion5 (hash, channel->ChannelID_)
-							.toVector ().toStdVector ();
+				const auto& hash = feed->URL_ + channel->Title_;
+				channel->Items_ = GetItemsFromVersion5 (hash, channel->ChannelID_)
+						.toVector ()
+						.toStdVector ();
 			}
 
 			feed->Channels_ = channels.toVector ().toStdVector ();
