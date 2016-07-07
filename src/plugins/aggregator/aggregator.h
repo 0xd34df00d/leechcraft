@@ -110,7 +110,7 @@ namespace Aggregator
 
 		QAbstractItemModel* GetRepresentation () const;
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
 		void Handle (LeechCraft::Entity);
