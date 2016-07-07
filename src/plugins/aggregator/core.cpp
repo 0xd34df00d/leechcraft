@@ -1616,9 +1616,9 @@ namespace Aggregator
 
 	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
 	{
-		Entity e = Util::MakeNotification (h, body, PCritical_);
+		auto e = Util::MakeNotification (h, body, PCritical_);
 		e.Additional_ ["UntilUserSees"] = wait;
-		emit const_cast<Core*> (this)->gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }
