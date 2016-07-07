@@ -146,12 +146,6 @@ namespace Aggregator
 				SIGNAL (unreadNumberChanged (int)),
 				this,
 				SLOT (unreadNumberChanged (int)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
 
 		Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

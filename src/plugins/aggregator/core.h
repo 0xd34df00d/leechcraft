@@ -262,7 +262,6 @@ namespace Aggregator
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
 		void unreadNumberChanged (int) const;
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void channelRemoved (IDType_t);
 
 		void storageChanged ();
