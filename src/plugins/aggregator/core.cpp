@@ -1413,9 +1413,9 @@ namespace Aggregator
 		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
 		if (!delegateResult)
 		{
-			emit gotEntity (Util::MakeNotification ("Aggregator",
+			ErrorNotification ("Aggregator",
 					tr ("Could not find plugin for feed with URL %1")
-						.arg (url), PCritical_));
+						.arg (url));
 			return;
 		}
 
