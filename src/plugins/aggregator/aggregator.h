@@ -170,8 +170,6 @@ namespace Aggregator
 		void handleGroupChannels ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
