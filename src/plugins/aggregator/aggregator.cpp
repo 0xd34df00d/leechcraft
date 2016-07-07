@@ -104,10 +104,6 @@ namespace Aggregator
 		bool InitFailed_;
 	};
 
-	Aggregator::~Aggregator ()
-	{
-	}
-
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
 		setProperty ("IsUnremoveable", true);

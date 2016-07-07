@@ -90,7 +90,6 @@ namespace Aggregator
 
 		Aggregator_Impl *Impl_;
 	public:
-		virtual ~Aggregator ();
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
