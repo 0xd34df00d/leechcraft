@@ -115,25 +115,25 @@ namespace Aggregator
 		QList<QObject*> Downloaders_;
 		QMap<int, QObject*> ID2Downloader_;
 
-		bool SaveScheduled_;
-		ChannelsModel *ChannelsModel_;
-		QTimer *UpdateTimer_, *CustomUpdateTimer_;
+		bool SaveScheduled_ = false;
+		ChannelsModel *ChannelsModel_ = nullptr;
+		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
-		JobHolderRepresentation *JobHolderRepresentation_;
+		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
 		QMap<IDType_t, QDateTime> Updates_;
-		ChannelsFilterModel *ChannelsFilterModel_;
+		ChannelsFilterModel *ChannelsFilterModel_ = nullptr;
 		ICoreProxy_ptr Proxy_;
-		bool Initialized_;
+		bool Initialized_ = false;
 		AppWideActions AppWideActions_;
-		ItemsWidget *ReprWidget_;
+		ItemsWidget *ReprWidget_ = nullptr;
 
 		QList<IDType_t> UpdatesQueue_;
 
-		PluginManager *PluginManager_;
+		PluginManager *PluginManager_ = nullptr;
 
 		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
-		Util::ShortcutManager *ShortcutMgr_;
+		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		Core ();
 	private:

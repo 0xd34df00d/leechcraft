@@ -82,14 +82,6 @@ namespace LeechCraft
 namespace Aggregator
 {
 	Core::Core ()
-	: SaveScheduled_ (false)
-	, ChannelsModel_ (0)
-	, JobHolderRepresentation_ (0)
-	, ChannelsFilterModel_ (0)
-	, Initialized_ (false)
-	, ReprWidget_ (0)
-	, PluginManager_ (nullptr)
-	, ShortcutMgr_ (nullptr)
 	{
 		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
