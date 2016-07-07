@@ -1315,21 +1315,16 @@ namespace Aggregator
 
 	void SQLStorageBackendMysql::RemoveTables ()
 	{
-		struct
+		auto rd = [this] (const QString& drstr)
 		{
-			const QSqlDatabase& ThisDB_;
-
-			void operator() (const QString& drstr)
+			QSqlQuery dropper = QSqlQuery (DB_);
+			if (!dropper.exec (drstr))
 			{
-				QSqlQuery dropper = QSqlQuery (ThisDB_);
-				if (!dropper.exec (drstr))
-				{
-					Util::DBLock::DumpError (dropper);
-					throw std::runtime_error (qPrintable (dropper
-							.lastError ().text ()));
-				}
+				Util::DBLock::DumpError (dropper);
+				throw std::runtime_error (qPrintable (dropper
+						.lastError ().text ()));
 			}
-		} rd = { DB_ };
+		};
 		rd (StorageBackend::LoadQuery ("mysql", "remove_db"));
 	}
 

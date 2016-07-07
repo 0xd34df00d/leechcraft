@@ -2597,21 +2597,16 @@ namespace Aggregator
 			return;
 		}
 
-		struct
+		auto rd = [this] (const QString& drstr)
 		{
-			const QSqlDatabase& ThisDB_;
-
-			void operator() (const QString& drstr)
+			QSqlQuery dropper = QSqlQuery (DB_);
+			if (!dropper.exec (drstr))
 			{
-				QSqlQuery dropper = QSqlQuery (ThisDB_);
-				if (!dropper.exec (drstr))
-				{
-					Util::DBLock::DumpError (dropper);
-					throw std::runtime_error (qPrintable (dropper
-							.lastError ().text ()));
-				}
+				Util::DBLock::DumpError (dropper);
+				throw std::runtime_error (qPrintable (dropper
+						.lastError ().text ()));
 			}
-		} rd = { DB_ };
+		};
 
 		rd ("ALTER TABLE feeds DROP CONSTRAINT feeds_pkey;");
 		rd ("ALTER TABLE enclosures DROP CONSTRAINT enclosures_pkey;");
