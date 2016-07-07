@@ -1279,7 +1279,7 @@ namespace Aggregator
 				<< "mrss_comments"
 				<< "mrss_scenes";
 
-		Q_FOREACH (const QString& name, names)
+		for (const auto& name : names)
 		{
 			if (!DB_.tables ().contains (name))
 				if (!query.exec (StorageBackend::LoadQuery ("mysql",
@@ -1409,7 +1409,7 @@ namespace Aggregator
 
 	void SQLStorageBackendMysql::WriteMRSSEntries (const QList<MRSSEntry>& entries)
 	{
-		Q_FOREACH (MRSSEntry e, entries)
+		for (const auto& e : entries)
 		{
 			WriteMediaRSS_.bindValue (0, e.MRSSEntryID_);
 			WriteMediaRSS_.bindValue (1, e.ItemID_);
@@ -1451,7 +1451,7 @@ namespace Aggregator
 
 			WriteMediaRSS_.finish ();
 
-			Q_FOREACH (MRSSThumbnail t, e.Thumbnails_)
+			for (const auto& t : e.Thumbnails_)
 			{
 				WriteMediaRSSThumbnail_.bindValue (0, t.MRSSThumbnailID_);
 				WriteMediaRSSThumbnail_.bindValue (1, t.MRSSEntryID_);
@@ -1466,7 +1466,7 @@ namespace Aggregator
 				WriteMediaRSSThumbnail_.finish ();
 			}
 
-			Q_FOREACH (MRSSCredit c, e.Credits_)
+			for (const auto& c : e.Credits_)
 			{
 				WriteMediaRSSCredit_.bindValue (0, c.MRSSCreditID_);
 				WriteMediaRSSCredit_.bindValue (1, c.MRSSEntryID_);
@@ -1479,7 +1479,7 @@ namespace Aggregator
 				WriteMediaRSSCredit_.finish ();
 			}
 
-			Q_FOREACH (MRSSComment c, e.Comments_)
+			for (const auto& c : e.Comments_)
 			{
 				WriteMediaRSSComment_.bindValue (0, c.MRSSCommentID_);
 				WriteMediaRSSComment_.bindValue (1, c.MRSSEntryID_);
@@ -1492,7 +1492,7 @@ namespace Aggregator
 				WriteMediaRSSComment_.finish ();
 			}
 
-			Q_FOREACH (MRSSPeerLink p, e.PeerLinks_)
+			for (const auto& p : e.PeerLinks_)
 			{
 				WriteMediaRSSPeerLink_.bindValue (0, p.MRSSPeerLinkID_);
 				WriteMediaRSSPeerLink_.bindValue (1, p.MRSSEntryID_);
@@ -1505,7 +1505,7 @@ namespace Aggregator
 				WriteMediaRSSPeerLink_.finish ();
 			}
 
-			Q_FOREACH (MRSSScene s, e.Scenes_)
+			for (const auto& s : e.Scenes_)
 			{
 				WriteMediaRSSScene_.bindValue (0, s.MRSSSceneID_);
 				WriteMediaRSSScene_.bindValue (1, s.MRSSEntryID_);

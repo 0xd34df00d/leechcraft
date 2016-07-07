@@ -2509,7 +2509,7 @@ namespace Aggregator
 			QList<Feed::FeedSettings> settings;
 			try
 			{
-				Q_FOREACH (Feed_ptr feed, feeds)
+				for (const auto& feed : feeds)
 				{
 					try
 					{
@@ -2555,7 +2555,7 @@ namespace Aggregator
 
 			qDebug () << Q_FUNC_INFO << "re-adding feeds...";
 
-			Q_FOREACH (Feed_ptr feed, feeds)
+			for (const auto& feed : feeds)
 			{
 				qDebug () << "adding feed" << feed->URL_;
 				AddFeed (feed);
@@ -2563,7 +2563,7 @@ namespace Aggregator
 
 			qDebug () << Q_FUNC_INFO << "re-adding settings...";
 
-			Q_FOREACH (Feed::FeedSettings s, settings)
+			for (const auto& s : settings)
 				SetFeedSettings (s);
 
 			qDebug () << Q_FUNC_INFO << "syncing pools and exiting";
@@ -2684,10 +2684,10 @@ namespace Aggregator
 	{
 		QList<Feed_ptr> result = GetFeedsFromVersion5 ();
 
-		Q_FOREACH (Feed_ptr feed, result)
+		for (const auto& feed : result)
 		{
 			auto channels = GetChannelsFromVersion5 (feed->URL_, feed->FeedID_);
-			Q_FOREACH (Channel_ptr channel, channels)
+			for (const auto& channel : channels)
 			{
 				const auto& hash = feed->URL_ + channel->Title_;
 				channel->Items_ = GetItemsFromVersion5 (hash, channel->ChannelID_)
@@ -3184,7 +3184,7 @@ namespace Aggregator
 
 	void SQLStorageBackend::WriteMRSSEntries (const QList<MRSSEntry>& entries)
 	{
-		Q_FOREACH (MRSSEntry e, entries)
+		for (const auto& e : entries)
 		{
 			WriteMediaRSS_.bindValue (":mrss_id", e.MRSSEntryID_);
 			WriteMediaRSS_.bindValue (":item_id", e.ItemID_);
@@ -3226,7 +3226,7 @@ namespace Aggregator
 
 			WriteMediaRSS_.finish ();
 
-			Q_FOREACH (MRSSThumbnail t, e.Thumbnails_)
+			for (const auto& t : e.Thumbnails_)
 			{
 				WriteMediaRSSThumbnail_.bindValue (":mrss_thumb_id", t.MRSSThumbnailID_);
 				WriteMediaRSSThumbnail_.bindValue (":mrss_id", t.MRSSEntryID_);
@@ -3241,7 +3241,7 @@ namespace Aggregator
 				WriteMediaRSSThumbnail_.finish ();
 			}
 
-			Q_FOREACH (MRSSCredit c, e.Credits_)
+			for (const auto& c : e.Credits_)
 			{
 				WriteMediaRSSCredit_.bindValue (":mrss_credits_id", c.MRSSCreditID_);
 				WriteMediaRSSCredit_.bindValue (":mrss_id", c.MRSSEntryID_);
@@ -3254,7 +3254,7 @@ namespace Aggregator
 				WriteMediaRSSCredit_.finish ();
 			}
 
-			Q_FOREACH (MRSSComment c, e.Comments_)
+			for (const auto& c : e.Comments_)
 			{
 				WriteMediaRSSComment_.bindValue (":mrss_comment_id", c.MRSSCommentID_);
 				WriteMediaRSSComment_.bindValue (":mrss_id", c.MRSSEntryID_);
@@ -3267,7 +3267,7 @@ namespace Aggregator
 				WriteMediaRSSComment_.finish ();
 			}
 
-			Q_FOREACH (MRSSPeerLink p, e.PeerLinks_)
+			for (const auto& p : e.PeerLinks_)
 			{
 				WriteMediaRSSPeerLink_.bindValue (":mrss_peerlink_id", p.MRSSPeerLinkID_);
 				WriteMediaRSSPeerLink_.bindValue (":mrss_id", p.MRSSEntryID_);
@@ -3280,7 +3280,7 @@ namespace Aggregator
 				WriteMediaRSSPeerLink_.finish ();
 			}
 
-			Q_FOREACH (MRSSScene s, e.Scenes_)
+			for (const auto& s : e.Scenes_)
 			{
 				WriteMediaRSSScene_.bindValue (":mrss_scene_id", s.MRSSSceneID_);
 				WriteMediaRSSScene_.bindValue (":mrss_id", s.MRSSEntryID_);
