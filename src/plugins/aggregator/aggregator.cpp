@@ -278,10 +278,6 @@ namespace Aggregator
 				SIGNAL (gotLink (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		currentChannelChanged ();
 
