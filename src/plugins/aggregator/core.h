@@ -115,7 +115,6 @@ namespace Aggregator
 		QList<QObject*> Downloaders_;
 		QMap<int, QObject*> ID2Downloader_;
 
-		bool SaveScheduled_ = false;
 		ChannelsModel *ChannelsModel_ = nullptr;
 		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
@@ -240,11 +239,9 @@ namespace Aggregator
 		void handleSslError (QNetworkReply*);
 	private slots:
 		void fetchExternalFile (const QString&, const QString&);
-		void scheduleSave ();
 		void handleJobFinished (int);
 		void handleJobRemoved (int);
 		void handleJobError (int, IDownload::Error);
-		void saveSettings ();
 		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();

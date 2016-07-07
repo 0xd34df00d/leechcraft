@@ -369,13 +369,6 @@ namespace Aggregator
 				UpdateTimer_->start (updateDiff * 1000);
 		}
 
-		QTimer *saveTimer = new QTimer (this);
-		saveTimer->start (60 * 1000);
-		connect (saveTimer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (scheduleSave ()));
-
 		XmlSettingsManager::Instance ()->
 			RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
 		XmlSettingsManager::Instance ()->
@@ -1051,14 +1044,6 @@ namespace Aggregator
 		ChannelsModel_->SetMenu (menu);
 	}
 
-	void Core::scheduleSave ()
-	{
-		if (SaveScheduled_)
-			return;
-		QTimer::singleShot (500, this, SLOT (saveSettings ()));
-		SaveScheduled_ = true;
-	}
-
 	void Core::openLink (const QString& url)
 	{
 		IWebBrowser *browser = GetWebBrowser ();
@@ -1179,7 +1164,6 @@ namespace Aggregator
 		else if (pj.Role_ == PendingJob::RFeedExternalData)
 			HandleExternalData (pj.URL_, file);
 		UpdateUnreadItemsNumber ();
-		scheduleSave ();
 	}
 
 	void Core::handleJobRemoved (int id)
@@ -1296,11 +1280,6 @@ namespace Aggregator
 
 		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
 		PendingJobs_ [delegateResult.ID_] = pj;
-	}
-
-	void Core::saveSettings ()
-	{
-		SaveScheduled_ = false;
 	}
 
 	void Core::handleChannelDataUpdated (Channel_ptr channel)
