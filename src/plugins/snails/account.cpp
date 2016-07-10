@@ -277,7 +277,7 @@ namespace Snails
 
 	void Account::MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
 	{
-		Util::Sequence (nullptr, CopyMessages (ids, from, to)) >>
+		Util::Sequence (this, CopyMessages (ids, from, to)) >>
 				[=] (auto result)
 				{
 					Util::Visit (result.AsVariant (),
