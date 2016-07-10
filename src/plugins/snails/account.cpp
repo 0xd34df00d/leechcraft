@@ -155,18 +155,19 @@ namespace Snails
 		return FoldersModel_;
 	}
 
-	void Account::Synchronize ()
+	QFuture<Account::SynchronizeResult_t> Account::Synchronize ()
 	{
 		auto folders = FolderManager_->GetSyncFolders ();
 		if (folders.isEmpty ())
 			folders << QStringList ("INBOX");
 
-		SynchronizeImpl (folders, { }, TaskPriority::Low);
+		return SynchronizeImpl (folders, { }, TaskPriority::Low);
 	}
 
-	void Account::Synchronize (const QStringList& path, const QByteArray& last)
+	QFuture<Account::SynchronizeResult_t> Account::Synchronize (const QStringList& path,
+			const QByteArray& last)
 	{
-		SynchronizeImpl ({ path }, last, TaskPriority::High);
+		return SynchronizeImpl ({ path }, last, TaskPriority::High);
 	}
 
 	QFuture<Account::SynchronizeResult_t> Account::SynchronizeImpl (const QList<QStringList>& folders,
