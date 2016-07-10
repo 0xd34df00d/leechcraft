@@ -33,15 +33,10 @@
 #include <vmime/exception.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
 #include <util/sll/void.h>
+#include <util/sll/eitherfwd.h>
 
 namespace LeechCraft
 {
-namespace Util
-{
-template<typename, typename>
-class Either;
-}
-
 namespace Snails
 {
 	class GenericExceptionWrapper;
