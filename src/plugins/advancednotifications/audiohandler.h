@@ -44,8 +44,6 @@ namespace AdvancedNotifications
 	{
 		QHash<QString, QDateTime> LastNotify_;
 	public:
-		AudioHandler ();
-
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);
 	};
