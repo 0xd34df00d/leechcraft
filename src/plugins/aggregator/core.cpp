@@ -223,9 +223,6 @@ namespace Aggregator
 			}
 
 			const auto& s = e.Additional_;
-			if (s.contains ("ShowTrayIcon"))
-				XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
-						s.value ("ShowIconInTray").toBool ());
 			if (s.contains ("UpdateOnStartup"))
 				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup",
 						s.value ("UpdateOnStartup").toBool ());
