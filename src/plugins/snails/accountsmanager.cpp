@@ -34,16 +34,16 @@
 #include <QtDebug>
 #include <util/sll/prelude.h>
 #include "accountfoldermanager.h"
-#include "core.h"
 
 namespace LeechCraft
 {
 namespace Snails
 {
-	AccountsManager::AccountsManager (ProgressManager *pm, QObject *parent)
+	AccountsManager::AccountsManager (ProgressManager *pm, Storage *st, QObject *parent)
 	: QObject { parent }
 	, AccountsModel_ { new QStandardItemModel { this } }
 	, ProgressMgr_ { pm }
+	, Storage_ { st }
 	{
 		AccountsModel_->setHorizontalHeaderLabels ({ tr ("Name"), tr ("Server") });
 		LoadAccounts ();
@@ -69,7 +69,7 @@ namespace Snails
 
 	void AccountsManager::InitiateAccountAddition ()
 	{
-		const auto acc = std::make_shared<Account> (Core::Instance ().GetStorage (), ProgressMgr_);
+		const auto acc = std::make_shared<Account> (Storage_, ProgressMgr_);
 
 		acc->OpenConfigDialog ([acc, this]
 				{
@@ -109,7 +109,7 @@ namespace Snails
 				QCoreApplication::applicationName () + "_Snails_Accounts");
 		for (const auto& var : settings.value ("Accounts").toList ())
 		{
-			const auto acc = std::make_shared<Account> (Core::Instance ().GetStorage (), ProgressMgr_);
+			const auto acc = std::make_shared<Account> (Storage_, ProgressMgr_);
 			try
 			{
 				acc->Deserialize (var.toByteArray ());

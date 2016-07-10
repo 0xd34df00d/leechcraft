@@ -41,6 +41,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class ProgressManager;
+	class Storage;
 
 	class AccountsManager : public QObject
 	{
@@ -50,8 +51,9 @@ namespace Snails
 		QList<Account_ptr> Accounts_;
 
 		ProgressManager * const ProgressMgr_;
+		Storage * const Storage_;
 	public:
-		AccountsManager (ProgressManager*, QObject* = nullptr);
+		AccountsManager (ProgressManager*, Storage*, QObject* = nullptr);
 
 		QAbstractItemModel* GetAccountsModel () const;
 		QList<Account_ptr> GetAccounts () const;

@@ -86,7 +86,7 @@ namespace Snails
 
 		MailTab::FillShortcutsManager (ShortcutsMgr_, proxy);
 
-		AccsMgr_ = new AccountsManager { ProgressMgr_ };
+		AccsMgr_ = new AccountsManager { ProgressMgr_, Core::Instance ().GetStorage () };
 		TemplatesMgr_ = new MsgTemplatesManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
 
