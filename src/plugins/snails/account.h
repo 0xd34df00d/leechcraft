@@ -59,6 +59,7 @@ namespace Snails
 	class FoldersModel;
 	class MailModelsManager;
 	class ThreadPool;
+	class Storage;
 	struct Folder;
 
 	enum class TaskPriority;
@@ -145,8 +146,9 @@ namespace Snails
 		std::shared_ptr<AccountThreadNotifier<int>> NoopNotifier_;
 
 		ProgressManager * const ProgressMgr_;
+		Storage * const Storage_;
 	public:
-		Account (ProgressManager*, QObject* = nullptr);
+		Account (Storage *st, ProgressManager*, QObject* = nullptr);
 
 		QByteArray GetID () const;
 		QString GetName () const;

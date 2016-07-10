@@ -79,7 +79,7 @@ namespace Snails
 		}
 	}
 
-	Account::Account (ProgressManager *pm, QObject *parent)
+	Account::Account (Storage *st, ProgressManager *pm, QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
 	, WorkerPool_ (new ThreadPool (GetCerts (), this))
@@ -90,6 +90,7 @@ namespace Snails
 	, MailModelsManager_ (new MailModelsManager (this))
 	, NoopNotifier_ (std::make_shared<AccountThreadNotifier<int>> ())
 	, ProgressMgr_ (pm)
+	, Storage_ (st)
 	{
 		UpdateNoopInterval ();
 
@@ -225,9 +226,8 @@ namespace Snails
 				Util::Visit (result.AsVariant (),
 						[this] (const Message_ptr& msg)
 						{
-							const auto st = Core::Instance ().GetStorage ();
 							for (const auto& folder : msg->GetFolders ())
-								st->SaveMessages (this, folder, { msg });
+								Storage_->SaveMessages (this, folder, { msg });
 						},
 						[] (const auto& e)
 						{
@@ -664,10 +664,8 @@ namespace Snails
 
 	void Account::UpdateFolderCount (const QStringList& folder)
 	{
-		const auto storage = Core::Instance ().GetStorage ();
-
-		const auto totalCount = storage->GetNumMessages (this, folder);
-		const auto unreadCount = storage->GetNumUnread (this, folder);
+		const auto totalCount = Storage_->GetNumMessages (this, folder);
+		const auto unreadCount = Storage_->GetNumUnread (this, folder);
 		FoldersModel_->SetFolderCounts (folder, unreadCount, totalCount);
 	}
 
@@ -692,7 +690,7 @@ namespace Snails
 	void Account::HandleMsgHeaders (const QList<Message_ptr>& messages, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
-		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
+		Storage_->SaveMessages (this, folder, messages);
 
 		MailModelsManager_->Append (messages);
 	}
@@ -700,7 +698,7 @@ namespace Snails
 	void Account::HandleUpdatedMessages (const QList<Message_ptr>& messages, const QStringList& folder)
 	{
 		qDebug () << Q_FUNC_INFO << messages.size ();
-		Core::Instance ().GetStorage ()->SaveMessages (this, folder, messages);
+		Storage_->SaveMessages (this, folder, messages);
 
 		MailModelsManager_->Update (messages);
 	}
@@ -711,7 +709,7 @@ namespace Snails
 		if (ids.isEmpty ())
 			return;
 
-		const auto& msgs = Core::Instance ().GetStorage ()->LoadMessages (this, folder, ids);
+		const auto& msgs = Storage_->LoadMessages (this, folder, ids);
 
 		MailModelsManager_->Append (msgs);
 	}
@@ -720,7 +718,7 @@ namespace Snails
 	{
 		qDebug () << Q_FUNC_INFO << ids.size () << folder;
 		for (const auto& id : ids)
-			Core::Instance ().GetStorage ()->RemoveMessage (this, folder, id);
+			Storage_->RemoveMessage (this, folder, id);
 
 		MailModelsManager_->Remove (ids);
 	}
@@ -745,7 +743,7 @@ namespace Snails
 
 	void Account::HandleMessageCountFetched (int count, int unread, const QStringList& folder)
 	{
-		const auto storedCount = Core::Instance ().GetStorage ()->GetNumMessages (this, folder);
+		const auto storedCount = Storage_->GetNumMessages (this, folder);
 		if (storedCount && count != storedCount)
 		{
 			qDebug () << Q_FUNC_INFO
@@ -772,11 +770,10 @@ namespace Snails
 		for (const auto& folder : folders)
 		{
 			int count = -1, unread = -1;
-			const auto storage = Core::Instance ().GetStorage ();
 			try
 			{
-				count = storage->GetNumMessages (this, folder.Path_);
-				unread = storage->GetNumUnread (this, folder.Path_);
+				count = Storage_->GetNumMessages (this, folder.Path_);
+				unread = Storage_->GetNumUnread (this, folder.Path_);
 			}
 			catch (const std::exception&)
 			{
