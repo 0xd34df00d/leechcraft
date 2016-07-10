@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_AUDIOHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_AUDIOHANDLER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QDateTime>
@@ -53,5 +53,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif
