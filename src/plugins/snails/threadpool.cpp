@@ -39,8 +39,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ThreadPool::ThreadPool (const CertList_t& certList, Account *acc)
+	ThreadPool::ThreadPool (const CertList_t& certList, Account *acc, Storage *st)
 	: Acc_ { acc }
+	, Storage_ { st }
 	, CertList_ { certList }
 	{
 		auto thread = CreateThread ();
@@ -128,8 +129,9 @@ namespace Snails
 
 	AccountThread_ptr ThreadPool::CreateThread ()
 	{
+		const auto& threadName = "PooledThread_" + QString::number (ExistingThreads_.size ());
 		const auto thread = std::make_shared<AccountThread> (false,
-				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
+				threadName, CertList_, Acc_, Storage_);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{

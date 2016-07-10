@@ -71,8 +71,9 @@ namespace Snails
 	}
 
 	AccountThread::AccountThread (bool isListening, const QString& name,
-			const CertList_t& certs, Account *parent)
+			const CertList_t& certs, Account *parent, Storage *st)
 	: A_ { parent }
+	, St_ { st }
 	, IsListening_ { isListening }
 	, Name_ { name }
 	, Certs_ { certs }
@@ -87,7 +88,7 @@ namespace Snails
 
 	void AccountThread::run ()
 	{
-		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_ };
+		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_, St_ };
 
 		Util::SlotClosure<Util::NoDeletePolicy> rotator
 		{

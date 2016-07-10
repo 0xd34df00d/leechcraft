@@ -133,8 +133,9 @@ namespace Snails
 	}
 
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
-			const QString& threadName, const CertList_t& certs, Account *parent)
+			const QString& threadName, const CertList_t& certs, Account *parent, Storage *st)
 	: A_ (parent)
+	, Storage_ (st)
 	, NoopTimer_ (new QTimer (this))
 	, IsListening_ (isListening)
 	, ThreadName_ (threadName)
@@ -636,7 +637,7 @@ namespace Snails
 					res->AddFolder (folderName);
 					return res;
 				});
-		auto existing = Core::Instance ().GetStorage ()->LoadIDs (A_, folderName);
+		auto existing = Storage_->LoadIDs (A_, folderName);
 
 		QList<QByteArray> ids;
 
@@ -651,7 +652,7 @@ namespace Snails
 
 			bool isUpdated = false;
 
-			auto updated = Core::Instance ().GetStorage ()->LoadMessage (A_, folderName, msg->GetFolderID ());
+			auto updated = Storage_->LoadMessage (A_, folderName, msg->GetFolderID ());
 
 			if (updated->IsRead () != msg->IsRead ())
 			{
@@ -914,7 +915,7 @@ namespace Snails
 		QList<Message_ptr> messages;
 		for (const auto& id : ids)
 		{
-			const auto& message = Core::Instance ().GetStorage ()->LoadMessage (A_, folderPath, id);
+			const auto& message = Storage_->LoadMessage (A_, folderPath, id);
 			message->SetRead (read);
 
 			messages << message;

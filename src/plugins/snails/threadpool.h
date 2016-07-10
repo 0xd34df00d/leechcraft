@@ -39,6 +39,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class Account;
+	class Storage;
 
 	using AccountThread_ptr = std::shared_ptr<AccountThread>;
 
@@ -47,6 +48,7 @@ namespace Snails
 	class ThreadPool : public QObject
 	{
 		Account * const Acc_;
+		Storage * const Storage_;
 		const CertList_t CertList_;
 
 		QList<AccountThread_ptr> ExistingThreads_;
@@ -58,7 +60,7 @@ namespace Snails
 
 		QList<std::function<void (AccountThread*)>> ThreadInitializers_;
 	public:
-		ThreadPool (const CertList_t&, Account*);
+		ThreadPool (const CertList_t&, Account*, Storage*);
 
 		AccountThread* GetThread ();
 

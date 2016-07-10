@@ -82,7 +82,7 @@ namespace Snails
 	Account::Account (Storage *st, ProgressManager *pm, QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
-	, WorkerPool_ (new ThreadPool (GetCerts (), this))
+	, WorkerPool_ (new ThreadPool (GetCerts (), this, st))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, FolderManager_ (new AccountFolderManager (this))
