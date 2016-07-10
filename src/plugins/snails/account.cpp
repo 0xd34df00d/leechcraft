@@ -268,9 +268,10 @@ namespace Snails
 				};
 	}
 
-	void Account::CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
+	QFuture<Account::CopyMessagesResult_t> Account::CopyMessages (const QList<QByteArray>& ids,
+				const QStringList& from, const QList<QStringList>& to)
 	{
-		WorkerPool_->Schedule (TaskPriority::High,
+		return WorkerPool_->Schedule (TaskPriority::High,
 				&AccountThreadWorker::CopyMessages, ids, from, to);
 	}
 

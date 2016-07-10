@@ -177,7 +177,8 @@ namespace Snails
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
 
-		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
+		using CopyMessagesResult_t = Util::Either<InvokeError_t<>, Util::Void>;
+		QFuture<CopyMessagesResult_t> CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
 		void MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
 		void DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
