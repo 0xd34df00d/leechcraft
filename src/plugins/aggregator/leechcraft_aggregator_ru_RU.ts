@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>AddFeed</name>
     <message>
@@ -1031,114 +1031,96 @@
 <context>
     <name>LeechCraft::Aggregator::Aggregator</name>
     <message>
-        <location filename="aggregator.cpp" line="130"/>
+        <location filename="aggregator.cpp" line="124"/>
         <source>Aggregator</source>
         <translation>Aggregator</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="191"/>
+        <location filename="aggregator.cpp" line="167"/>
         <source>Aggregator failed to initialize properly. Check logs and talk with the developers. Or, at least, check the storage backend settings and restart LeechCraft.&lt;br /&gt;&lt;br /&gt;If you are using SQLite backend (the default), make sure you have the corresponding Qt driver installed.</source>
         <translation>Aggregator не смог корректно инициализироваться. Проверьте логи и поговорите с разработчиками. Или, по крайней мере, проверьте настройки хранилища и перезапустите LeechCraft.&lt;br/&gt;&lt;br/&gt;Если вы используете SQLite-хранилище (по умолчанию), убедитесь, что у вас установлен соответствующий драйвер для Qt.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="243"/>
+        <location filename="aggregator.cpp" line="219"/>
         <source>Feeds actions</source>
         <translation>Действия над лентами</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="330"/>
+        <location filename="aggregator.cpp" line="301"/>
         <source>RSS/Atom feed reader.</source>
         <translation>Чтение RSS/Atom-лент.</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="655"/>
+        <location filename="aggregator.cpp" line="620"/>
         <source>Do you really want to mark all channels as read?</source>
         <translation>Вы действительно хотите отметить все каналы как прочитанные?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="660"/>
-        <location filename="aggregator.cpp" line="807"/>
+        <location filename="aggregator.cpp" line="625"/>
+        <location filename="aggregator.cpp" line="772"/>
         <source>Always</source>
         <translation>Всегда</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="717"/>
+        <location filename="aggregator.cpp" line="682"/>
         <source>You are going to permanently remove the feed:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Feed removal confirmation</comment>
         <translation>Вы собираетесь навсегда удалить ленту:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Вы уверены?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="738"/>
+        <location filename="aggregator.cpp" line="703"/>
         <source>Rename feed</source>
         <translation>Переименование ленты</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="739"/>
+        <location filename="aggregator.cpp" line="704"/>
         <source>New feed name:</source>
         <oldsource>New feed name</oldsource>
         <translation>Новое имя ленты:</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="759"/>
+        <location filename="aggregator.cpp" line="724"/>
         <source>You are going to remove the channel:&lt;br /&gt;%1&lt;br /&gt;&lt;br /&gt;Are you really sure that you want to do it?</source>
         <comment>Channel removal confirmation</comment>
         <translation>Вы собираетесь удалить канал:&lt;br/&gt;%1&lt;br/&gt;&lt;br/&gt;Вы уверены?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="801"/>
+        <location filename="aggregator.cpp" line="766"/>
         <source>Are you sure you want to mark all items in %1 as read?</source>
         <oldsource>Are you sure you want to mark all items in %n channel(s) %1 as read?</oldsource>
         <translation>Вы уверены, что хотите пометить все статьи в %1 как прочитанные?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="826"/>
+        <location filename="aggregator.cpp" line="791"/>
         <source>Are you sure you want to mark all items in %1 as unread?</source>
         <oldsource>Are you sure you want to mark all items in %n channel(s) %1 as unread?</oldsource>
         <translation>Вы уверены, что хотите пометить все статьи в %1 как непрочитанные?</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="883"/>
+        <location filename="aggregator.cpp" line="848"/>
         <source>Export to OPML</source>
         <translation>Экспорт в OPML</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="884"/>
-        <location filename="aggregator.cpp" line="914"/>
+        <location filename="aggregator.cpp" line="849"/>
+        <location filename="aggregator.cpp" line="879"/>
         <source>Select save file</source>
         <translation>Выберите файл сохранения</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="885"/>
+        <location filename="aggregator.cpp" line="850"/>
         <source>OPML files (*.opml);;XML files (*.xml);;All files (*.*)</source>
         <translation>OPML-файлы (*.opml);;XML-файлы (*.xml);;Все файлы (*.*)</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="913"/>
+        <location filename="aggregator.cpp" line="878"/>
         <source>Export to binary file</source>
         <translation>Экспорт в бинарный файл</translation>
     </message>
     <message>
-        <location filename="aggregator.cpp" line="915"/>
+        <location filename="aggregator.cpp" line="880"/>
         <source>Aggregator exchange files (*.lcae);;All files (*.*)</source>
         <translation>Файл обмена Aggregator (*.lcae);;Все файлы (*.*)</translation>
-    </message>
-    <message numerus="yes">
-        <location filename="aggregator.cpp" line="987"/>
-        <source>%n unread message(s)</source>
-        <translation>
-            <numerusform>%n непрочитанное сообщение</numerusform>
-            <numerusform>%n непрочитанных сообщения</numerusform>
-            <numerusform>%n непрочитанных сообщений</numerusform>
-        </translation>
-    </message>
-    <message numerus="yes">
-        <location filename="aggregator.cpp" line="988"/>
-        <source>in %n channel(s).</source>
-        <translation>
-            <numerusform>в %n канале.</numerusform>
-            <numerusform>в %n каналах.</numerusform>
-            <numerusform>в %n каналах.</numerusform>
-        </translation>
     </message>
 </context>
 <context>
@@ -1172,213 +1154,213 @@
 <context>
     <name>LeechCraft::Aggregator::Core</name>
     <message>
-        <location filename="core.cpp" line="233"/>
+        <location filename="core.cpp" line="215"/>
         <source>Import error</source>
         <translation>Ошибка импорта</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="234"/>
+        <location filename="core.cpp" line="216"/>
         <source>Could not find plugin to download OPML %1.</source>
         <translation>Невозможно найти модуль для скачивания OPML %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="418"/>
-        <location filename="core.cpp" line="425"/>
+        <location filename="core.cpp" line="396"/>
+        <location filename="core.cpp" line="403"/>
         <source>Storage error</source>
         <translation>Ошибка хранилища</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="426"/>
+        <location filename="core.cpp" line="404"/>
         <source>Aggregator: general storage initialization error.</source>
         <translation>Aggregator: общая ошибка инициализации подсистемы хранения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="495"/>
+        <location filename="core.cpp" line="473"/>
         <source>Feed addition error</source>
         <translation>Ошибка добавления ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="496"/>
+        <location filename="core.cpp" line="474"/>
         <source>The feed %1 is already added</source>
         <translation>Лента %1 уже добавлена</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="528"/>
+        <location filename="core.cpp" line="503"/>
         <source>Plugin error</source>
         <translation>Ошибка модуля</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="529"/>
+        <location filename="core.cpp" line="504"/>
         <source>Could not find plugin to download feed %1.</source>
         <translation>Невозможно найти модуль для скачивания ленты %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="551"/>
+        <location filename="core.cpp" line="526"/>
         <source>Feed removal error</source>
         <translation>Ошибка удаления ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="552"/>
+        <location filename="core.cpp" line="527"/>
         <source>Could not remove the feed: %1</source>
         <translation>Невозможно удалить ленту: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="582"/>
+        <location filename="core.cpp" line="555"/>
         <source>Feed rename error</source>
         <translation>Ошибка переименования ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="583"/>
+        <location filename="core.cpp" line="556"/>
         <source>Could not rename the feed: %1</source>
         <translation>Невозможно переименовать ленту: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="612"/>
+        <location filename="core.cpp" line="585"/>
         <source>Channel removal error</source>
         <translation>Ошибка удаления канала</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="613"/>
+        <location filename="core.cpp" line="586"/>
         <source>Could not remove the channel: %1</source>
         <translation>Невозможно удалить канал: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="807"/>
-        <location filename="core.cpp" line="823"/>
-        <location filename="core.cpp" line="1637"/>
+        <location filename="core.cpp" line="780"/>
+        <location filename="core.cpp" line="796"/>
+        <location filename="core.cpp" line="1560"/>
         <source>Aggregator error</source>
         <translation>Ошибка Aggregator</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="808"/>
+        <location filename="core.cpp" line="781"/>
         <source>Could not get feed settings: %1</source>
         <translation>Невозможно получить параметры ленты: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="824"/>
+        <location filename="core.cpp" line="797"/>
         <source>Could not update feed settings: %1</source>
         <translation>Невозможно обновить параметры ленты: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="844"/>
+        <location filename="core.cpp" line="817"/>
         <source>Feed update error</source>
         <translation>Ошибка обновления ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="845"/>
+        <location filename="core.cpp" line="818"/>
         <source>Could not update feed</source>
         <translation>Невозможно обновить ленту</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="870"/>
-        <location filename="core.cpp" line="888"/>
-        <location filename="core.cpp" line="900"/>
-        <location filename="core.cpp" line="1213"/>
+        <location filename="core.cpp" line="843"/>
+        <location filename="core.cpp" line="861"/>
+        <location filename="core.cpp" line="873"/>
+        <location filename="core.cpp" line="1176"/>
         <source>OPML import error</source>
         <translation>Ошибка импорта OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="871"/>
+        <location filename="core.cpp" line="844"/>
         <source>Could not open file %1 for reading.</source>
         <translation>Невозможно открыть %1 для чтения.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="889"/>
+        <location filename="core.cpp" line="862"/>
         <source>XML error, file %1, line %2, column %3, error:&lt;br /&gt;%4</source>
         <translation>Ошибка XML, файл %1, строка %2, столбец %3, ошибка:&lt;br /&gt;%4</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="901"/>
+        <location filename="core.cpp" line="874"/>
         <source>OPML from file %1 is not valid.</source>
         <translation>OPML-файл %1 некорректен.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="956"/>
+        <location filename="core.cpp" line="929"/>
         <source>OPML export error</source>
         <translation>Ошибка экспорта OPML</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="957"/>
-        <location filename="core.cpp" line="988"/>
+        <location filename="core.cpp" line="930"/>
+        <location filename="core.cpp" line="961"/>
         <source>Could not open file %1 for write.</source>
         <translation>Невозможно открыть файл %1 на запись.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="987"/>
+        <location filename="core.cpp" line="960"/>
         <source>Binary export error</source>
         <translation>Ошибка экспорта в бинарный формат</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1130"/>
-        <location filename="core.cpp" line="1145"/>
-        <location filename="core.cpp" line="1159"/>
-        <location filename="core.cpp" line="1179"/>
-        <location filename="core.cpp" line="1306"/>
+        <location filename="core.cpp" line="1095"/>
+        <location filename="core.cpp" line="1110"/>
+        <location filename="core.cpp" line="1124"/>
+        <location filename="core.cpp" line="1144"/>
+        <location filename="core.cpp" line="1267"/>
         <source>Feed error</source>
         <translation>Ошибка ленты</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1131"/>
+        <location filename="core.cpp" line="1096"/>
         <source>Downloaded file from url %1 has null size.</source>
         <translation>Файл, скачанный с %1, имеет нулевой размер.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1146"/>
+        <location filename="core.cpp" line="1111"/>
         <source>XML file parse error: %1, line %2, column %3, filename %4, from %5</source>
         <translation>Ошибка разбора XML: %1, строка %2, столбец %3, имя файла %4, от %5</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1160"/>
+        <location filename="core.cpp" line="1125"/>
         <source>Could not find parser to parse file %1 from %2</source>
         <translation>Невозможно найти парсер для файла %1 из %2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1180"/>
+        <location filename="core.cpp" line="1145"/>
         <source>Feed with url %1 not found.</source>
         <translation>Лента с URL %1 не найдена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1214"/>
+        <location filename="core.cpp" line="1177"/>
         <source>Unable to download the OPML file.</source>
         <translation>Невозможно скачать OPML-файл.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1229"/>
+        <location filename="core.cpp" line="1192"/>
         <source>Address not found:&lt;br /&gt;%1</source>
         <translation>Адрес не найден:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1232"/>
+        <location filename="core.cpp" line="1195"/>
         <source>Access denied:&lt;br /&gt;%1</source>
         <translation>Доступ запрещён:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1235"/>
+        <location filename="core.cpp" line="1198"/>
         <source>Local error for:&lt;br /&gt;%1</source>
         <translation>Локальная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1238"/>
+        <location filename="core.cpp" line="1201"/>
         <source>Unknown error for:&lt;br /&gt;%1</source>
         <translation>Неизвестная ошибка для:&lt;br /&gt;%1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1241"/>
+        <location filename="core.cpp" line="1204"/>
         <source>Download error</source>
         <translation>Ошибка скачивания</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1307"/>
+        <location filename="core.cpp" line="1268"/>
         <source>Could not find plugin to download external file %1.</source>
         <translation>Невозможно найти модуль для скачивания внешнего файла %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1638"/>
+        <location filename="core.cpp" line="1561"/>
         <source>Could not mark channel</source>
         <translation>Невозможно отметить канал</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1453"/>
+        <location filename="core.cpp" line="1402"/>
         <source>Could not find plugin for feed with URL %1</source>
         <translation>Невозможно найти модуль для ленты с URL %1</translation>
     </message>
@@ -1386,7 +1368,7 @@
 <context>
     <name>LeechCraft::Aggregator::DBUpdateThreadWorker</name>
     <message numerus="yes">
-        <location filename="dbupdatethreadworker.cpp" line="122"/>
+        <location filename="dbupdatethreadworker.cpp" line="129"/>
         <source>Added channel &quot;%1&quot; (%n item(s))</source>
         <translation>
             <numerusform>Добавлен канал &quot;%1&quot; (%n статья)</numerusform>
@@ -1395,7 +1377,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="dbupdatethreadworker.cpp" line="216"/>
+        <location filename="dbupdatethreadworker.cpp" line="224"/>
         <source>%n new item(s)</source>
         <comment>Channel update</comment>
         <translation>
@@ -1405,7 +1387,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="dbupdatethreadworker.cpp" line="218"/>
+        <location filename="dbupdatethreadworker.cpp" line="226"/>
         <source>%n updated item(s)</source>
         <comment>Channel update</comment>
         <translation>
@@ -1415,7 +1397,7 @@
         </translation>
     </message>
     <message>
-        <location filename="dbupdatethreadworker.cpp" line="219"/>
+        <location filename="dbupdatethreadworker.cpp" line="227"/>
         <source>Updated channel &quot;%1&quot; (%2).</source>
         <translation>Обновлен канал &quot;%1&quot; (%2).</translation>
     </message>
@@ -2245,116 +2227,111 @@
     </message>
     <message>
         <location filename="dummy.cpp" line="19"/>
-        <source>Show icon in tray when there are unread items</source>
-        <translation>Показывать значок в системном лотке при наличии непрочитанных сообщений</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="20"/>
         <source>Show items category selector</source>
         <translation>Показывать список категорий новостей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="21"/>
+        <location filename="dummy.cpp" line="20"/>
         <source>Show tooltips for news items</source>
         <translation>Показывать всплывающие подсказки для статей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="22"/>
+        <location filename="dummy.cpp" line="21"/>
         <source>Show navigation bar when showing the news item</source>
         <translation>Показывать навигационную панель при отображении новости</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="23"/>
+        <location filename="dummy.cpp" line="22"/>
         <source>Show images linked via MediaRSS</source>
         <translation>Показывать картинки, приложенные через MediaRSS</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="24"/>
+        <location filename="dummy.cpp" line="23"/>
         <source>Items list</source>
         <translation>Список новостей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="25"/>
+        <location filename="dummy.cpp" line="24"/>
         <source>Font for unread:</source>
         <translation>Шрифт для непрочитанных:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="26"/>
+        <location filename="dummy.cpp" line="25"/>
         <source>Use color to mark unread</source>
         <translation>Выделять непрочитанные цветом</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="27"/>
+        <location filename="dummy.cpp" line="26"/>
         <source>Color:</source>
         <translation>Цвет:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="28"/>
+        <location filename="dummy.cpp" line="27"/>
         <source>Use colors from the palette for read/unread items</source>
         <translation>Использовать цвета из палитры для прочитанных/непрочитанных статей</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="29"/>
+        <location filename="dummy.cpp" line="28"/>
         <source>Feeds handling</source>
         <translation>Обработка лент</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="30"/>
+        <location filename="dummy.cpp" line="29"/>
         <source>Updates</source>
         <translation>Обновления</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="31"/>
+        <location filename="dummy.cpp" line="30"/>
         <source>Update feeds on startup</source>
         <translation>Обновлять ленты при запуске</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="32"/>
+        <location filename="dummy.cpp" line="31"/>
         <source>Update interval:</source>
         <translation>Интервал обновления:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="33"/>
+        <location filename="dummy.cpp" line="32"/>
         <source> min</source>
         <translation> мин</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="34"/>
+        <location filename="dummy.cpp" line="33"/>
         <source>Automatic downloading</source>
         <translation>Автоматическое скачивание</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="35"/>
+        <location filename="dummy.cpp" line="34"/>
         <source>Download directory for enclosures:</source>
         <translation>Каталог для вложений:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="36"/>
+        <location filename="dummy.cpp" line="35"/>
         <source>Store</source>
         <translation>Хранение</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="37"/>
+        <location filename="dummy.cpp" line="36"/>
         <source>Items per channel:</source>
         <translation>Статей в канале:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="38"/>
+        <location filename="dummy.cpp" line="37"/>
         <source>Store items for:</source>
         <translation>Хранить статьи:</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="39"/>
+        <location filename="dummy.cpp" line="38"/>
         <source> days</source>
         <translation> дней</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="40"/>
+        <location filename="dummy.cpp" line="39"/>
         <source>Ask mark all feeds as read confirmation</source>
         <translation>Запрашивать подтверждение об отметке всех лент как прочитанных</translation>
     </message>
     <message>
-        <location filename="dummy.cpp" line="41"/>
+        <location filename="dummy.cpp" line="40"/>
         <source>Storage</source>
         <translation>Хранилище</translation>
     </message>
