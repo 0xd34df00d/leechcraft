@@ -162,7 +162,7 @@ namespace Snails
 
 		auto GetActionInfos ()
 		{
-			static QHash<QString, AugmentedActionInfo> result
+			static const QHash<QString, AugmentedActionInfo> result
 			{
 				{ "MailTab.Fetch", { MailTab::tr ("Fetch new mail"), { "Shift+F" }, "mail-receive" } },
 				{ "MailTab.Refresh", { MailTab::tr ("Refresh the folder"), { "F" }, "view-refresh" } },
