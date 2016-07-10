@@ -98,7 +98,7 @@ namespace Snails
 				this,
 				SLOT (handleNewTab (QString, QWidget*)));
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
 		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget { AccsMgr_ });
