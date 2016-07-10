@@ -419,7 +419,7 @@ namespace Snails
 							[this] (auto err)
 							{
 								const auto& notify = Util::Visit (err,
-										[this] (const AttachmentsFetcher::TemporaryDirError& dir)
+										[this] (const AttachmentsFetcher::TemporaryDirError&)
 										{
 											return Util::MakeNotification ("Snails",
 													tr ("Unable to create temporary directory to "
@@ -678,7 +678,7 @@ namespace Snails
 							[=] (auto err)
 							{
 								Util::Visit (err,
-										[this] (const AttachmentsFetcher::TemporaryDirError& dir)
+										[this] (const AttachmentsFetcher::TemporaryDirError&)
 										{
 											QMessageBox::critical (this,
 													"LeechCraft",
