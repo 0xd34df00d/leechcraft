@@ -120,6 +120,8 @@ namespace Snails
 	void Plugin::Release ()
 	{
 		Core::Instance ().Release ();
+
+		Storage_.reset ();
 	}
 
 	QString Plugin::GetName () const
