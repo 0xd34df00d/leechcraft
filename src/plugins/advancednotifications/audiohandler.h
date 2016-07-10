@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_AUDIOHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_AUDIOHANDLER_H
+#pragma once
+
 #include <QObject>
 #include <QHash>
 #include <QDateTime>
@@ -42,16 +42,10 @@ namespace AdvancedNotifications
 {
 	class AudioHandler : public ConcreteHandlerBase
 	{
-		Q_OBJECT
-
 		QHash<QString, QDateTime> LastNotify_;
 	public:
-		AudioHandler ();
-
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);
 	};
 }
 }
-
-#endif

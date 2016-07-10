@@ -37,10 +37,6 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	AudioHandler::AudioHandler ()
-	{
-	}
-
 	NotificationMethod AudioHandler::GetHandlerMethod () const
 	{
 		return NMAudio;
