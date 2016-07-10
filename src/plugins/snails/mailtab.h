@@ -54,6 +54,7 @@ namespace Snails
 	class MailTabReadMarker;
 	class ComposeMessageTabFactory;
 	class AccountsManager;
+	class Storage;
 
 	enum class MsgType;
 
@@ -69,6 +70,7 @@ namespace Snails
 		const ICoreProxy_ptr Proxy_;
 		ComposeMessageTabFactory * const ComposeMessageTabFactory_;
 		const AccountsManager * const AccsMgr_;
+		Storage * const Storage_;
 
 		QToolBar * const TabToolbar_;
 		QToolBar * const MsgToolbar_;
@@ -93,7 +95,7 @@ namespace Snails
 
 		std::shared_ptr<MailTabReadMarker> ReadMarker_;
 	public:
-		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*,
+		MailTab (const ICoreProxy_ptr&, const AccountsManager*, ComposeMessageTabFactory*, Storage*,
 				const TabClassInfo&, Util::ShortcutManager*, QObject*, QWidget* = nullptr);
 
 		static void FillShortcutsManager (Util::ShortcutManager*, const ICoreProxy_ptr&);

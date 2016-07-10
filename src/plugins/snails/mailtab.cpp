@@ -70,13 +70,16 @@ namespace Snails
 	MailTab::MailTab (const ICoreProxy_ptr& proxy,
 			const AccountsManager *accsMgr,
 			ComposeMessageTabFactory *cmpMsgTabFactory,
+			Storage *st,
 			const TabClassInfo& tc,
 			Util::ShortcutManager *sm,
-			QObject *pmt, QWidget *parent)
+			QObject *pmt,
+			QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
 	, ComposeMessageTabFactory_ (cmpMsgTabFactory)
 	, AccsMgr_ (accsMgr)
+	, Storage_ (st)
 	, TabToolbar_ (new QToolBar)
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
@@ -104,7 +107,7 @@ namespace Snails
 				{
 					if (!CurrAcc_ || !MailModel_)
 						return {};
-					return Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (),
+					return Storage_->LoadMessage (CurrAcc_.get (),
 							MailModel_->GetCurrentFolder (), id);
 				},
 				Ui_.MailTree_,
@@ -739,7 +742,7 @@ namespace Snails
 		Message_ptr msg;
 		try
 		{
-			msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
+			msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
 		}
 		catch (const std::exception& e)
 		{
@@ -1081,7 +1084,7 @@ namespace Snails
 		if (path.isEmpty ())
 			return;
 
-		const auto& msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
+		const auto& msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
 		CurrAcc_->FetchAttachment (msg, name, path);
 	}
 
