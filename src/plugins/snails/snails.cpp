@@ -44,6 +44,7 @@
 #include "composemessagetabfactory.h"
 #include "msgtemplatesmanager.h"
 #include "templateseditorwidget.h"
+#include "storage.h"
 
 namespace LeechCraft
 {
@@ -79,6 +80,8 @@ namespace Snails
 
 		Core::Instance ().SetProxy (proxy);
 
+		Storage_ = std::make_shared<Storage> ();
+
 		ProgressMgr_ = new ProgressManager;
 
 		ShortcutsMgr_ = new Util::ShortcutManager { proxy, this };
@@ -86,7 +89,7 @@ namespace Snails
 
 		MailTab::FillShortcutsManager (ShortcutsMgr_, proxy);
 
-		AccsMgr_ = new AccountsManager { ProgressMgr_, Core::Instance ().GetStorage () };
+		AccsMgr_ = new AccountsManager { ProgressMgr_, Storage_.get () };
 		TemplatesMgr_ = new MsgTemplatesManager;
 		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
 
@@ -148,7 +151,8 @@ namespace Snails
 	{
 		if (tabClass == "mail")
 		{
-			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_, Core::Instance ().GetStorage (), MailTabClass_, ShortcutsMgr_, this };
+			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_,
+					Storage_.get (), MailTabClass_, ShortcutsMgr_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
 		}
 		else if (tabClass == "compose")

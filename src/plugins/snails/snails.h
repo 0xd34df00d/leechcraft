@@ -51,6 +51,7 @@ namespace Snails
 	class ComposeMessageTabFactory;
 	class MsgTemplatesManager;
 	class ProgressManager;
+	class Storage;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -71,6 +72,8 @@ namespace Snails
 		Util::WkFontsWidget *WkFontsWidget_;
 
 		Util::ShortcutManager *ShortcutsMgr_;
+
+		std::shared_ptr<Storage> Storage_;
 
 		ProgressManager *ProgressMgr_;
 		AccountsManager *AccsMgr_;
