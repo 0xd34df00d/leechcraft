@@ -59,7 +59,8 @@ namespace Snails
 									[this] (const vmime::exceptions::authentication_error& err)
 									{
 										qWarning () << Q_FUNC_INFO
-												<< "initial thread authentication failed";
+												<< "initial thread authentication failed:"
+												<< err.what ();
 										HitLimit_ = true;
 									},
 									[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
@@ -109,7 +110,9 @@ namespace Snails
 									[this, thread] (const vmime::exceptions::authentication_error& err)
 									{
 										qWarning () << Q_FUNC_INFO
-												<< "connections limit at"
+												<< "got auth error:"
+												<< err.what ()
+												<< "; seems like connections limit at"
 												<< ExistingThreads_.size ();
 										HitLimit_ = true;
 
