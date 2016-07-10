@@ -277,8 +277,13 @@ namespace Snails
 
 	void Account::MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
 	{
-		CopyMessages (ids, from, to);
-		DeleteFromFolder (ids, from);
+		Util::Sequence (nullptr, CopyMessages (ids, from, to)) >>
+				[=] (auto result)
+				{
+					Util::Visit (result.AsVariant (),
+							[=] (Util::Void) { DeleteFromFolder (ids, from); },
+							[=] (const auto& err) {});
+				};
 	}
 
 	namespace
