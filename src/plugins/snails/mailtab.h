@@ -137,6 +137,7 @@ namespace Snails
 		void handleViewHeaders ();
 
 		void selectAllChildren ();
+		void expandAllChildren ();
 
 		void deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder);
 

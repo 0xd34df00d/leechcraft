@@ -175,6 +175,7 @@ namespace Snails
 				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "text-plain" } },
 
 				{ "MailTab.SelectAllChildren", { MailTab::tr ("Select all children"), { "S" }, "edit-select-all" } },
+				{ "MailTab.ExpandAllChildren", { MailTab::tr ("Expand all children"), { "E" }, "view-list-tree" } },
 			};
 
 			return result;
@@ -348,6 +349,7 @@ namespace Snails
 
 		SetMsgActionsEnabled (false);
 
+		MakeShortcut ("MailTab.ExpandAllChildren", sm, Proxy_, this, SLOT (expandAllChildren ()));
 		MakeShortcut ("MailTab.SelectAllChildren", sm, Proxy_, this, SLOT (selectAllChildren ()));
 	}
 
@@ -1026,6 +1028,16 @@ namespace Snails
 						Ui_.MailTree_->expand (idx);
 						sm->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
 					});
+	}
+
+	void MailTab::expandAllChildren ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto model = Ui_.MailTree_->model ();
+		for (const auto& idx : Ui_.MailTree_->selectionModel ()->selectedRows ())
+			Recurse (idx, model, [&] (const QModelIndex& idx) { Ui_.MailTree_->expand (idx); });
 	}
 
 	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
