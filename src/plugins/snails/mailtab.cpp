@@ -188,7 +188,7 @@ namespace Snails
 				Util::ShortcutManager *sm,
 				QObject *parent, Invokable&& slot)
 		{
-			const auto info = GetActionInfos () [id];
+			const auto& info = GetActionInfos () [id];
 
 			auto action = new QAction { info.GetName (), parent };
 			action->setProperty ("ActionIcon", info.GetIconName ());
@@ -208,7 +208,7 @@ namespace Snails
 				const ICoreProxy_ptr& proxy,
 				QWidget *parent, Invokable&& slot)
 		{
-			const auto info = GetActionInfos () [id];
+			const auto& info = GetActionInfos () [id];
 
 			auto shortcut = new QShortcut { parent };
 
