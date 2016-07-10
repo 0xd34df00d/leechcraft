@@ -283,7 +283,8 @@ namespace Snails
 				&AccountThreadWorker::CopyMessages, ids, from, to);
 	}
 
-	void Account::MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to)
+	void Account::MoveMessages (const QList<QByteArray>& ids,
+			const QStringList& from, const QList<QStringList>& to)
 	{
 		Util::Sequence (this, CopyMessages (ids, from, to)) >>
 				[=] (auto result)

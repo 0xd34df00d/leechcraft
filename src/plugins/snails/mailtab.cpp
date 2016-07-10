@@ -210,8 +210,8 @@ namespace Snails
 			auto shortcut = new QShortcut { parent };
 
 			Util::InvokeOn (slot,
-				[&] (const char *slot) { QObject::connect (shortcut, SIGNAL (activated ()), parent, slot); },
-				[&] (auto slot) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
+					[&] (const char *slot) { QObject::connect (shortcut, SIGNAL (activated ()), parent, slot); },
+					[&] (auto slot) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
 
 			sm->RegisterShortcut (id, info.GetInfo (proxy), shortcut);
 
@@ -1021,11 +1021,11 @@ namespace Snails
 		const auto sm = Ui_.MailTree_->selectionModel ();
 		for (const auto& idx : sm->selectedRows ())
 			Recurse (idx, model,
-				[&] (const QModelIndex& idx)
-				{
-					Ui_.MailTree_->expand (idx);
-					sm->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
-				});
+					[&] (const QModelIndex& idx)
+					{
+						Ui_.MailTree_->expand (idx);
+						sm->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+					});
 	}
 
 	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
