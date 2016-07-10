@@ -183,7 +183,7 @@ namespace Snails
 		ShortcutsMgr_->SetShortcut (id, sequences);
 	}
 
-	QMap<QString, LeechCraft::ActionInfo> Plugin::GetActionInfo () const
+	QMap<QString, ActionInfo> Plugin::GetActionInfo () const
 	{
 		return ShortcutsMgr_->GetActionInfo ();
 	}
