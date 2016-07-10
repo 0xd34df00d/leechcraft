@@ -54,7 +54,6 @@ namespace Util
 		QList<std::function<void ()>> Functions_;
 	public:
 		using QThread::QThread;
-		virtual ~WorkerThreadBase () = default;
 
 		void SetPaused (bool);
 
@@ -95,14 +94,61 @@ namespace Util
 		void rotateFuncs ();
 	};
 
+	namespace detail
+	{
+		template<typename WorkerType>
+		struct InitializerBase
+		{
+			virtual std::shared_ptr<WorkerType> Initialize () = 0;
+		};
+
+		template<typename WorkerType, typename... Args>
+		struct Initializer : InitializerBase<WorkerType>
+		{
+			std::tuple<Args...> Args_;
+
+			Initializer (std::tuple<Args...>&& tuple)
+			: Args_ { std::move (tuple) }
+			{
+			}
+
+			std::shared_ptr<WorkerType> Initialize () override
+			{
+				return CPP17::Apply ([] (auto&&... args) { return std::make_shared<WorkerType> (std::forward<Args> (args)...); }, Args_);
+			}
+		};
+
+		template<typename WorkerType>
+		struct Initializer<WorkerType> : InitializerBase<WorkerType>
+		{
+			std::shared_ptr<WorkerType> Initialize () override
+			{
+				return std::make_shared<WorkerType> ();
+			}
+		};
+	}
+
 	template<typename WorkerType>
 	class WorkerThread : public WorkerThreadBase
 	{
 		std::atomic_bool IsAutoQuit_ { false };
 	protected:
 		std::shared_ptr<WorkerType> Worker_;
+
+		std::shared_ptr<detail::InitializerBase<WorkerType>> Initializer_;
 	public:
-		using WorkerThreadBase::WorkerThreadBase;
+		WorkerThread (QObject *parent = nullptr)
+		: WorkerThreadBase { parent }
+		, Initializer_ { std::make_shared<detail::Initializer<WorkerType>> () }
+		{
+		}
+
+		template<typename... Args>
+		WorkerThread (QObject *parent, const Args&... args)
+		: WorkerThreadBase { parent }
+		, Initializer_ { std::make_shared<detail::Initializer<WorkerType, std::decay_t<Args>...>> (std::tuple<std::decay_t<Args>...> { args... }) }
+		{
+		}
 
 		~WorkerThread ()
 		{
@@ -133,7 +179,9 @@ namespace Util
 	protected:
 		void Initialize () override
 		{
-			Worker_ = std::make_shared<WorkerType> ();
+			Worker_ = Initializer_->Initialize ();
+
+			Initializer_.reset ();
 		}
 
 		void Cleanup () override

@@ -27,11 +27,13 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbupdatethread.h"
+#pragma once
 
 namespace LeechCraft
 {
-namespace Aggregator
+namespace Util
 {
+	template<typename>
+	class WorkerThread;
 }
 }

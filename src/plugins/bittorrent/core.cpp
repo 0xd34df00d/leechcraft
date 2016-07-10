@@ -91,6 +91,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
 #include "peersmodel.h"
@@ -1450,10 +1451,9 @@ namespace BitTorrent
 			return;
 		}
 
-		QFile file (QDir::homePath () +
-				"/.leechcraft/bittorrent/" +
-				torrent->TorrentFileName_ +
-				".resume");
+		const auto& filePath = Util::CreateIfNotExists ("bittorrent")
+				.filePath (torrent->TorrentFileName_ + ".resume");
+		QFile file { filePath };
 
 		if (!file.open (QIODevice::WriteOnly))
 		{
@@ -1714,6 +1714,8 @@ namespace BitTorrent
 
 	void Core::RestoreTorrents ()
 	{
+		const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
+
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Torrent");
 		settings.beginGroup ("Core");
@@ -1725,7 +1727,7 @@ namespace BitTorrent
 			const auto& pathStr = settings.value ("SavePath").toString ();
 			const auto& path = std::string (pathStr.toUtf8 ().constData ());
 			QString filename = settings.value ("Filename").toString ();
-			QFile torrent (QDir::homePath () + "/.leechcraft/bittorrent/" + filename);
+			QFile torrent (torrentsDir.filePath (filename));
 			if (!torrent.open (QIODevice::ReadOnly))
 			{
 				ShowError (tr ("Could not open saved torrent %1 for read.").arg (filename));
@@ -1741,8 +1743,7 @@ namespace BitTorrent
 				continue;
 			}
 
-			QFile resumeDataFile (QDir::homePath () + "/.leechcraft/bittorrent/" +
-					filename + ".resume");
+			QFile resumeDataFile (torrentsDir.filePath (filename + ".resume"));
 			QByteArray resumed;
 			if (resumeDataFile.open (QIODevice::ReadOnly))
 			{
@@ -2025,14 +2026,8 @@ namespace BitTorrent
 	void Core::writeSettings ()
 	{
 		SaveScheduled_ = false;
-		QDir home = QDir::home ();
-		if (!home.exists (".leechcraft/bittorrent"))
-			if (!home.mkdir (".leechcraft/bittorrent"))
-			{
-				ShowError (QDir::toNativeSeparators (tr ("Could not create path %1/.leechcraft/bittorrent"))
-						.arg (QDir::toNativeSeparators (QDir::homePath ())));
-				return;
-			}
+
+		const auto& torrentsDir = Util::CreateIfNotExists ("bittorrent");
 
 		QSettings settings (QCoreApplication::organizationName (),
 				QCoreApplication::applicationName () + "_Torrent");
@@ -2059,9 +2054,7 @@ namespace BitTorrent
 			CurrentTorrent_ = i;
 			try
 			{
-				QFile file_info (QDir::homePath () +
-						"/.leechcraft/bittorrent/" +
-						Handles_.at (i).TorrentFileName_);
+				QFile file_info (torrentsDir.filePath (Handles_.at (i).TorrentFileName_));
 				if (!file_info.open (QIODevice::WriteOnly))
 					ShowError (QString ("Cannot write settings! "
 								"Cannot open file %1 for write!")

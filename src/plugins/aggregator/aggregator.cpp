@@ -104,10 +104,6 @@ namespace Aggregator
 		bool InitFailed_;
 	};
 
-	Aggregator::~Aggregator ()
-	{
-	}
-
 	void Aggregator::Init (ICoreProxy_ptr proxy)
 	{
 		setProperty ("IsUnremoveable", true);
@@ -150,12 +146,6 @@ namespace Aggregator
 				SIGNAL (unreadNumberChanged (int)),
 				this,
 				SLOT (unreadNumberChanged (int)));
-		connect (&Core::Instance (),
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&,
-						int*, QObject**)));
 
 		Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -278,10 +268,6 @@ namespace Aggregator
 				SIGNAL (gotLink (const LeechCraft::Entity&)),
 				this,
 				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (&Core::Instance (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		currentChannelChanged ();
 
@@ -332,21 +318,17 @@ namespace Aggregator
 
 	QStringList Aggregator::Provides () const
 	{
-		return QStringList ("rss");
+		return { "rss" };
 	}
 
 	QStringList Aggregator::Needs () const
 	{
-		return QStringList ("http");
+		return { "http" };
 	}
 
 	QStringList Aggregator::Uses () const
 	{
-		return QStringList ("webbrowser");
-	}
-
-	void Aggregator::SetProvider (QObject*, const QString&)
-	{
+		return { "webbrowser" };
 	}
 
 	QIcon Aggregator::GetIcon () const
@@ -357,9 +339,7 @@ namespace Aggregator
 
 	TabClasses_t Aggregator::GetTabClasses () const
 	{
-		TabClasses_t result;
-		result << Impl_->TabInfo_;
-		return result;
+		return { Impl_->TabInfo_ };
 	}
 
 	QToolBar* Aggregator::GetToolBar () const

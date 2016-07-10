@@ -43,12 +43,15 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/itagsmanager.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/models/mergemodel.h>
 #include <util/xpc/util.h>
 #include <util/sys/fileremoveguard.h>
 #include <util/sys/paths.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/shortcuts/shortcutmanager.h>
+#include <util/sll/prelude.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
@@ -79,15 +82,6 @@ namespace LeechCraft
 namespace Aggregator
 {
 	Core::Core ()
-	: SaveScheduled_ (false)
-	, ChannelsModel_ (0)
-	, JobHolderRepresentation_ (0)
-	, ChannelsFilterModel_ (0)
-	, Initialized_ (false)
-	, ReprWidget_ (0)
-	, PluginManager_ (nullptr)
-	, DBUpThread_ (new DBUpdateThread (this))
-	, ShortcutMgr_ (nullptr)
 	{
 		qRegisterMetaType<IDType_t> ("IDType_t");
 		qRegisterMetaType<QList<IDType_t>> ("QList<IDType_t>");
@@ -108,19 +102,13 @@ namespace Aggregator
 
 	void Core::Release ()
 	{
-		if (DBUpThread_->isRunning ())
-			DBUpThread_->quit ();
+		DBUpThread_.reset ();
 
 		delete JobHolderRepresentation_;
 		delete ChannelsFilterModel_;
 		delete ChannelsModel_;
 
 		StorageBackend_.reset ();
-
-		if (DBUpThread_->isRunning ())
-			DBUpThread_->wait (1000);
-		if (DBUpThread_->isRunning ())
-			DBUpThread_->terminate ();
 
 		XmlSettingsManager::Instance ()->Release ();
 	}
@@ -145,7 +133,7 @@ namespace Aggregator
 		return Pools_ [type];
 	}
 
-	bool Core::CouldHandle (const LeechCraft::Entity& e)
+	bool Core::CouldHandle (const Entity& e)
 	{
 		if (!e.Entity_.canConvert<QUrl> () ||
 				!Initialized_)
@@ -193,8 +181,8 @@ namespace Aggregator
 					e.Mime_ != "application/rss+xml")
 				return false;
 
-			QString linkRel = e.Additional_ ["LinkRel"].toString ();
-			if (linkRel.size () &&
+			const auto& linkRel = e.Additional_ ["LinkRel"].toString ();
+			if (!linkRel.isEmpty () &&
 					linkRel != "alternate")
 				return false;
 		}
@@ -202,7 +190,7 @@ namespace Aggregator
 		return true;
 	}
 
-	void Core::Handle (LeechCraft::Entity e)
+	void Core::Handle (Entity e)
 	{
 		QUrl url = e.Entity_.toUrl ();
 		if (e.Mime_ == "text/x-opml")
@@ -211,24 +199,18 @@ namespace Aggregator
 				StartAddingOPML (url.toLocalFile ());
 			else
 			{
-				QString name = LeechCraft::Util::GetTemporaryName ();
+				const auto& name = Util::GetTemporaryName ();
 
-				LeechCraft::Entity e = Util::MakeEntity (url,
+				const auto& dlEntity = Util::MakeEntity (url,
 						name,
-						LeechCraft::Internal |
-							LeechCraft::DoNotNotifyUser |
-							LeechCraft::DoNotSaveInHistory |
-							LeechCraft::NotPersistent |
-							LeechCraft::DoNotAnnounceEntity);
-				PendingOPML po =
-				{
-					name
-				};
+						Internal |
+							DoNotNotifyUser |
+							DoNotSaveInHistory |
+							NotPersistent |
+							DoNotAnnounceEntity);
 
-				int id = -1;
-				QObject *pr;
-				emit delegateEntity (e, &id, &pr);
-				if (id == -1)
+				const auto& handleResult = Proxy_->GetEntityManager ()->DelegateEntity (dlEntity);
+				if (!handleResult)
 				{
 					ErrorNotification (tr ("Import error"),
 							tr ("Could not find plugin to download OPML %1.")
@@ -236,11 +218,11 @@ namespace Aggregator
 					return;
 				}
 
-				HandleProvider (pr, id);
-				PendingOPMLs_ [id] = po;
+				HandleProvider (handleResult.Handler_, handleResult.ID_);
+				PendingOPMLs_ [handleResult.ID_] = PendingOPML { name };
 			}
 
-			QMap<QString, QVariant> s = e.Additional_;
+			const auto& s = e.Additional_;
 			if (s.contains ("ShowTrayIcon"))
 				XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
 						s.value ("ShowIconInTray").toBool ());
@@ -267,7 +249,7 @@ namespace Aggregator
 			else if (str.startsWith ("itpc://"))
 				str.replace (0, 4, "http");
 
-			LeechCraft::Aggregator::AddFeed af (str);
+			class AddFeed af { str };
 			if (af.exec () == QDialog::Accepted)
 				AddFeed (af.GetURL (),
 						af.GetTags ());
@@ -320,12 +302,21 @@ namespace Aggregator
 
 		JobHolderRepresentation_ = new JobHolderRepresentation ();
 
-		connect (DBUpThread_,
-				SIGNAL (started ()),
-				this,
-				SLOT (handleDBUpThreadStarted ()),
-				Qt::QueuedConnection);
+		DBUpThread_ = std::make_shared<DBUpdateThread> (nullptr, Proxy_);
 		DBUpThread_->start (QThread::LowestPriority);
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::WithWorker,
+				[this] (DBUpdateThreadWorker *worker)
+				{
+					connect (worker,
+							SIGNAL (gotNewChannel (ChannelShort)),
+							this,
+							SLOT (handleDBUpGotNewChannel (ChannelShort)),
+							Qt::QueuedConnection);
+					connect (worker,
+							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
+							this,
+							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
+				});
 
 		connect (&StorageBackendManager::Instance (),
 				SIGNAL (channelDataUpdated (Channel_ptr)),
@@ -377,13 +368,6 @@ namespace Aggregator
 			else
 				UpdateTimer_->start (updateDiff * 1000);
 		}
-
-		QTimer *saveTimer = new QTimer (this);
-		saveTimer->start (60 * 1000);
-		connect (saveTimer,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (scheduleSave ()));
 
 		XmlSettingsManager::Instance ()->
 			RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
@@ -498,18 +482,17 @@ namespace Aggregator
 			return;
 		}
 
-		QString name = LeechCraft::Util::GetTemporaryName ();
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (fixedUrl,
+		const auto& name = Util::GetTemporaryName ();
+		const auto& e = Util::MakeEntity (fixedUrl,
 				name,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
-		QStringList tagIds;
-		Q_FOREACH (QString tag, tags)
-			tagIds << Proxy_->GetTagsManager ()->GetID (tag);
+		const auto& tagIds = Util::Map (tags,
+				[this] (const QString& tag) { return Proxy_->GetTagsManager ()->GetID (tag); });
 
 		PendingJob pj =
 		{
@@ -520,10 +503,8 @@ namespace Aggregator
 			fs
 		};
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
 			ErrorNotification (tr ("Plugin error"),
 					tr ("Could not find plugin to download feed %1.")
@@ -532,8 +513,8 @@ namespace Aggregator
 			return;
 		}
 
-		HandleProvider (pr, id);
-		PendingJobs_ [id] = pj;
+		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
+		PendingJobs_ [delegateResult.ID_] = pj;
 	}
 
 	void Core::RemoveFeed (const QModelIndex& index)
@@ -557,10 +538,10 @@ namespace Aggregator
 		channels_shorts_t shorts;
 		StorageBackend_->GetChannels (shorts, channel.FeedID_);
 
-		for (size_t i = 0, size = shorts.size (); i < size; ++i)
+		for (const auto& item : shorts)
 		{
-			ChannelsModel_->RemoveChannel (shorts [i]);
-			emit channelRemoved (shorts [i].ChannelID_);
+			ChannelsModel_->RemoveChannel (item);
+			emit channelRemoved (item.ChannelID_);
 		}
 		StorageBackend_->RemoveFeed (channel.FeedID_);
 
@@ -785,12 +766,12 @@ namespace Aggregator
 
 	QStringList Core::GetCategories (const items_shorts_t& items) const
 	{
-		QStringList result;
 		QSet<QString> unique;
 		for (const auto& item : items)
 			for (const auto& category : item.Categories_)
 				unique << category;
-		result = unique.toList ();
+
+		auto result = unique.toList ();
 		std::sort (result.begin (), result.end ());
 		return result;
 	}
@@ -1063,14 +1044,6 @@ namespace Aggregator
 		ChannelsModel_->SetMenu (menu);
 	}
 
-	void Core::scheduleSave ()
-	{
-		if (SaveScheduled_)
-			return;
-		QTimer::singleShot (500, this, SLOT (saveSettings ()));
-		SaveScheduled_ = true;
-	}
-
 	void Core::openLink (const QString& url)
 	{
 		IWebBrowser *browser = GetWebBrowser ();
@@ -1191,7 +1164,6 @@ namespace Aggregator
 		else if (pj.Role_ == PendingJob::RFeedExternalData)
 			HandleExternalData (pj.URL_, file);
 		UpdateUnreadItemsNumber ();
-		scheduleSave ();
 	}
 
 	void Core::handleJobRemoved (int id)
@@ -1281,13 +1253,13 @@ namespace Aggregator
 
 	void Core::fetchExternalFile (const QString& url, const QString& where)
 	{
-		LeechCraft::Entity e = LeechCraft::Util::MakeEntity (QUrl (url),
+		const auto& e = Util::MakeEntity (QUrl (url),
 				where,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		PendingJob pj =
 		{
@@ -1298,23 +1270,16 @@ namespace Aggregator
 			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
-		int id = -1;
-		QObject *pr;
-		emit delegateEntity (e, &id, &pr);
-		if (id == -1)
+		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
 			ErrorNotification (tr ("Feed error"),
 					tr ("Could not find plugin to download external file %1.").arg (url));
 			return;
 		}
 
-		HandleProvider (pr, id);
-		PendingJobs_ [id] = pj;
-	}
-
-	void Core::saveSettings ()
-	{
-		SaveScheduled_ = false;
+		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
+		PendingJobs_ [delegateResult.ID_] = pj;
 	}
 
 	void Core::handleChannelDataUpdated (Channel_ptr channel)
@@ -1400,10 +1365,11 @@ namespace Aggregator
 					SLOT (rotateUpdatesQueue ()));
 
 		QString url = StorageBackend_->GetFeed (id)->URL_;
-		for (int key : PendingJobs_.keys ())
-			if (PendingJobs_ [key].URL_ == url)
+		for (const auto& pair : Util::Stlize (PendingJobs_))
+			if (pair.second.URL_ == url)
 			{
-				QObject *provider = ID2Downloader_ [key];
+				const auto id = pair.first;
+				QObject *provider = ID2Downloader_ [id];
 				IDownload *downloader = qobject_cast<IDownload*> (provider);
 				if (downloader)
 				{
@@ -1411,9 +1377,10 @@ namespace Aggregator
 						<< "stalled task detected from"
 						<< downloader
 						<< "trying to kill...";
-					downloader->KillTask (key);
-					ID2Downloader_.remove (key);
-					PendingJobs_.remove (key);
+
+					downloader->KillTask (id);
+					ID2Downloader_.remove (id);
+					PendingJobs_.remove (id);
 					qWarning () << Q_FUNC_INFO
 						<< "killed!";
 				}
@@ -1428,11 +1395,11 @@ namespace Aggregator
 
 		Entity e = Util::MakeEntity (QUrl (url),
 				filename,
-				LeechCraft::Internal |
-					LeechCraft::DoNotNotifyUser |
-					LeechCraft::DoNotSaveInHistory |
-					LeechCraft::NotPersistent |
-					LeechCraft::DoNotAnnounceEntity);
+				Internal |
+					DoNotNotifyUser |
+					DoNotSaveInHistory |
+					NotPersistent |
+					DoNotAnnounceEntity);
 
 		PendingJob pj =
 		{
@@ -1443,39 +1410,18 @@ namespace Aggregator
 			std::shared_ptr<Feed::FeedSettings> ()
 		};
 
-		int jobId = -1;
-		QObject *pr;
-		emit delegateEntity (e, &jobId, &pr);
-		if (jobId == -1)
+		const auto& delegateResult = Proxy_->GetEntityManager ()->DelegateEntity (e);
+		if (!delegateResult)
 		{
-			qWarning () << Q_FUNC_INFO << url << "wasn't delegated";
-			emit gotEntity (Util::MakeNotification ("Aggregator",
+			ErrorNotification ("Aggregator",
 					tr ("Could not find plugin for feed with URL %1")
-						.arg (url), LeechCraft::PCritical_));
+						.arg (url));
 			return;
 		}
 
-		HandleProvider (pr, jobId);
-		PendingJobs_ [jobId] = pj;
+		HandleProvider (delegateResult.Handler_, delegateResult.ID_);
+		PendingJobs_ [delegateResult.ID_] = pj;
 		Updates_ [id] = QDateTime::currentDateTime ();
-	}
-
-	void Core::handleDBUpThreadStarted ()
-	{
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (gotNewChannel (ChannelShort)),
-				this,
-				SLOT (handleDBUpGotNewChannel (ChannelShort)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				Qt::QueuedConnection);
-		connect (DBUpThread_->GetWorker (),
-				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
-				this,
-				SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
 	}
 
 	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)
@@ -1613,10 +1559,9 @@ namespace Aggregator
 	void Core::HandleFeedUpdated (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
-		QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
-				"updateFeed",
-				Q_ARG (channels_container_t, channels),
-				Q_ARG (QString, pj.URL_));
+		DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::updateFeed,
+				channels,
+				pj.URL_);
 	}
 
 	void Core::MarkChannel (const QModelIndex& i, bool state)
@@ -1624,11 +1569,9 @@ namespace Aggregator
 		try
 		{
 			ChannelShort cs = ChannelsModel_->GetChannelForIndex (i);
-			QMetaObject::invokeMethod (DBUpThread_->GetWorker (),
-					"toggleChannelUnread",
-					Qt::QueuedConnection,
-					Q_ARG (IDType_t, cs.ChannelID_),
-					Q_ARG (bool, state));
+			DBUpThread_->ScheduleImpl (&DBUpdateThreadWorker::toggleChannelUnread,
+					cs.ChannelID_,
+					state);
 		}
 		catch (const std::exception& e)
 		{
@@ -1673,9 +1616,9 @@ namespace Aggregator
 
 	void Core::ErrorNotification (const QString& h, const QString& body, bool wait) const
 	{
-		Entity e = Util::MakeNotification (h, body, PCritical_);
+		auto e = Util::MakeNotification (h, body, PCritical_);
 		e.Additional_ ["UntilUserSees"] = wait;
-		emit const_cast<Core*> (this)->gotEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 }
 }

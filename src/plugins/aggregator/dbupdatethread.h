@@ -27,9 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_DBUPDATETHREAD_H
-#define PLUGINS_AGGREGATOR_DBUPDATETHREAD_H
-#include <QThread>
+#pragma once
+
+#include <util/threads/workerthreadbase.h>
 
 namespace LeechCraft
 {
@@ -37,19 +37,6 @@ namespace Aggregator
 {
 	class DBUpdateThreadWorker;
 
-	class DBUpdateThread : public QThread
-	{
-		Q_OBJECT
-
-		DBUpdateThreadWorker *W_;
-	public:
-		DBUpdateThread (QObject* = 0);
-
-		DBUpdateThreadWorker* GetWorker () const;
-	protected:
-		void run ();
-	};
+	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
 }
 }
-
-#endif

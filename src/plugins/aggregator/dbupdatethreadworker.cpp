@@ -34,6 +34,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 #include "storagebackend.h"
@@ -44,8 +45,9 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
-	DBUpdateThreadWorker::DBUpdateThreadWorker (QObject *parent)
+	DBUpdateThreadWorker::DBUpdateThreadWorker (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ { proxy }
 	{
 		try
 		{
@@ -67,6 +69,11 @@ namespace Aggregator
 		}
 
 		SB_->Prepare ();
+	}
+
+	void DBUpdateThreadWorker::WithWorker (const std::function<void (DBUpdateThreadWorker*)>& func)
+	{
+		func (this);
 	}
 
 	Feed::FeedSettings DBUpdateThreadWorker::GetFeedSettings (IDType_t feedId)
@@ -123,7 +130,7 @@ namespace Aggregator
 				"", channel->Items_.size ())
 			.arg (channel->Title_);
 
-		emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 	}
 
 	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel_ptr& channel,
@@ -147,6 +154,7 @@ namespace Aggregator
 		emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
 				itemData);
 
+		const auto iem = Proxy_->GetEntityManager ();
 		if (settings.AutoDownloadEnclosures_)
 			for (const auto& e : item->Enclosures_)
 			{
@@ -156,7 +164,7 @@ namespace Aggregator
 						0,
 						e.Type_);
 				de.Additional_ [" Tags"] = channel->Tags_;
-				emit gotEntity (de);
+				iem->HandleEntity (de);
 			}
 
 		return true;
@@ -219,7 +227,7 @@ namespace Aggregator
 		const auto& str = tr ("Updated channel \"%1\" (%2).")
 				.arg (channel->Title_)
 				.arg (substrs.join (", "));
-		emit gotEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
+		Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Aggregator", str, PInfo_));
 	}
 
 	void DBUpdateThreadWorker::toggleChannelUnread (IDType_t channel, bool state)

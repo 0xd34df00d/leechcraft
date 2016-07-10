@@ -43,8 +43,8 @@ namespace LeechCraft
 		EntityManager (QObject* = 0);
 
 		DelegationResult DelegateEntity (Entity, QObject* = 0);
-		bool HandleEntity (Entity, QObject* = 0);
-		bool CouldHandle (const Entity&);
+		Q_INVOKABLE bool HandleEntity (LeechCraft::Entity, QObject* = 0);
+		Q_INVOKABLE bool CouldHandle (const LeechCraft::Entity&);
 		QList<QObject*> GetPossibleHandlers (const Entity&);
 	};
 }

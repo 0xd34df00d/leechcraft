@@ -27,20 +27,19 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
-#define PLUGINS_AGGREGATOR_DBUPDATETHREADWORKER_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QVariantList>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include "common.h"
 #include "channel.h"
 #include "feed.h"
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Aggregator
 {
 	class StorageBackend;
@@ -49,9 +48,12 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
+		const ICoreProxy_ptr Proxy_;
 		std::shared_ptr<StorageBackend> SB_;
 	public:
-		DBUpdateThreadWorker (QObject* = 0);
+		DBUpdateThreadWorker (const ICoreProxy_ptr&, QObject* = nullptr);
+
+		void WithWorker (const std::function<void (DBUpdateThreadWorker*)>&);
 	private:
 		Feed::FeedSettings GetFeedSettings (IDType_t);
 		void AddChannel (const Channel_ptr& channel, const Feed::FeedSettings& settings);
@@ -64,12 +66,9 @@ namespace Aggregator
 		void updateFeed (channels_container_t channels, QString url);
 	signals:
 		void gotNewChannel (const ChannelShort&);
-		void gotEntity (const LeechCraft::Entity&);
 
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
 				QVariantList items);
 	};
 }
 }
-
-#endif

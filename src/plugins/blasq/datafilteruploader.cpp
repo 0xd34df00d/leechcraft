@@ -34,6 +34,7 @@
 #include <QUrl>
 #include <QInputDialog>
 #include <util/sll/slotclosure.h>
+#include <util/sll/prelude.h>
 #include <interfaces/structures.h>
 #include <interfaces/idatafilter.h>
 #include "accountsmanager.h"
@@ -61,9 +62,7 @@ namespace Blasq
 	void DataFilterUploader::SelectAcc ()
 	{
 		const auto& accs = AccMgr_->GetAccounts ();
-		QStringList accNames;
-		for (auto acc : accs)
-			accNames << acc->GetName ();
+		const auto& accNames = Util::Map (accs, &IAccount::GetName);
 
 		bool ok = false;
 		const auto& chosenAcc = QInputDialog::getItem (nullptr,
@@ -97,7 +96,7 @@ namespace Blasq
 	{
 		bool shouldCleanup = true;
 		auto deleteGuard = std::shared_ptr<void> (nullptr,
-				[this, shouldCleanup] (void*)
+				[this, &shouldCleanup] (void*)
 				{
 					if (shouldCleanup)
 						deleteLater ();
@@ -159,8 +158,7 @@ namespace Blasq
 		if (item.FilePath_ != UploadFileName_)
 			return;
 
-		const auto cb = Entity_.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ();
-		if (cb)
+		if (const auto cb = Entity_.Additional_ ["DataFilterCallback"].value<DataFilterCallback_f> ())
 			cb (url);
 
 		deleteLater ();

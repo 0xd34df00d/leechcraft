@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_CORE_H
-#define PLUGINS_AGGREGATOR_CORE_H
+#pragma once
+
 #include <memory>
 #include <QAbstractItemModel>
 #include <QString>
@@ -45,6 +45,7 @@
 #include "feed.h"
 #include "storagebackend.h"
 #include "actionsstructs.h"
+#include "dbupdatethreadfwd.h"
 
 class QTimer;
 class QNetworkReply;
@@ -62,7 +63,6 @@ namespace Util
 
 namespace Aggregator
 {
-	class DBUpdateThread;
 	class ChannelsModel;
 	class JobHolderRepresentation;
 	class ChannelsFilterModel;
@@ -115,25 +115,24 @@ namespace Aggregator
 		QList<QObject*> Downloaders_;
 		QMap<int, QObject*> ID2Downloader_;
 
-		bool SaveScheduled_;
-		ChannelsModel *ChannelsModel_;
-		QTimer *UpdateTimer_, *CustomUpdateTimer_;
+		ChannelsModel *ChannelsModel_ = nullptr;
+		QTimer *UpdateTimer_ = nullptr, *CustomUpdateTimer_ = nullptr;
 		std::shared_ptr<StorageBackend> StorageBackend_;
-		JobHolderRepresentation *JobHolderRepresentation_;
+		JobHolderRepresentation *JobHolderRepresentation_ = nullptr;
 		QMap<IDType_t, QDateTime> Updates_;
-		ChannelsFilterModel *ChannelsFilterModel_;
+		ChannelsFilterModel *ChannelsFilterModel_ = nullptr;
 		ICoreProxy_ptr Proxy_;
-		bool Initialized_;
+		bool Initialized_ = false;
 		AppWideActions AppWideActions_;
-		ItemsWidget *ReprWidget_;
+		ItemsWidget *ReprWidget_ = nullptr;
 
 		QList<IDType_t> UpdatesQueue_;
 
-		PluginManager *PluginManager_;
+		PluginManager *PluginManager_ = nullptr;
 
-		DBUpdateThread *DBUpThread_;
+		std::shared_ptr<DBUpdateThread> DBUpThread_;
 
-		Util::ShortcutManager *ShortcutMgr_;
+		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		Core ();
 	private:
@@ -240,16 +239,13 @@ namespace Aggregator
 		void handleSslError (QNetworkReply*);
 	private slots:
 		void fetchExternalFile (const QString&, const QString&);
-		void scheduleSave ();
 		void handleJobFinished (int);
 		void handleJobRemoved (int);
 		void handleJobError (int, IDownload::Error);
-		void saveSettings ();
 		void handleChannelDataUpdated (Channel_ptr);
 		void handleCustomUpdates ();
 		void rotateUpdatesQueue ();
 
-		void handleDBUpThreadStarted ();
 		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
 		void UpdateUnreadItemsNumber () const;
@@ -266,8 +262,6 @@ namespace Aggregator
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
 		void unreadNumberChanged (int) const;
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void gotEntity (const LeechCraft::Entity&);
 		void channelRemoved (IDType_t);
 
 		void storageChanged ();
@@ -278,5 +272,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

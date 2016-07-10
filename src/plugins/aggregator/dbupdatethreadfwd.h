@@ -27,11 +27,16 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "dbupdatethread.h"
+#pragma once
+
+#include <util/threads/workerthreadbasefwd.h>
 
 namespace LeechCraft
 {
 namespace Aggregator
 {
+	class DBUpdateThreadWorker;
+
+	using DBUpdateThread = Util::WorkerThread<DBUpdateThreadWorker>;
 }
 }

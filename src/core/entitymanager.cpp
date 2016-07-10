@@ -30,6 +30,7 @@
 #include "entitymanager.h"
 #include <functional>
 #include <algorithm>
+#include <QThread>
 #include <QDesktopServices>
 #include <QUrl>
 #include "util/util.h"
@@ -281,6 +282,17 @@ namespace LeechCraft
 
 	bool EntityManager::CouldHandle (const Entity& e)
 	{
+		if (QThread::currentThread () != thread ())
+		{
+			bool res = false;
+			QMetaObject::invokeMethod (this,
+					"CouldHandle",
+					Qt::BlockingQueuedConnection,
+					Q_RETURN_ARG (bool, res),
+					Q_ARG (Entity, e));
+			return res;
+		}
+
 		const auto pm = Core::Instance ().GetPluginManager ();
 		if (pm->GetInitStage () == PluginManager::InitStage::BeforeFirst)
 		{
@@ -296,6 +308,18 @@ namespace LeechCraft
 
 	bool EntityManager::HandleEntity (Entity e, QObject *desired)
 	{
+		if (QThread::currentThread () != thread ())
+		{
+			bool res = false;
+			QMetaObject::invokeMethod (this,
+					"HandleEntity",
+					Qt::BlockingQueuedConnection,
+					Q_RETURN_ARG (bool, res),
+					Q_ARG (Entity, e),
+					Q_ARG (QObject*, desired));
+			return res;
+		}
+
 		if (!CheckInitStage (e, desired, &EntityManager::HandleEntity))
 			return false;
 

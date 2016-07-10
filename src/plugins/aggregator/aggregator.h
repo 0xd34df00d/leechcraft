@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_AGGREGATOR_H
-#define PLUGINS_AGGREGATOR_AGGREGATOR_H
+#pragma once
+
 #include <memory>
 #include <boost/function.hpp>
 #include <QWidget>
@@ -90,7 +90,6 @@ namespace Aggregator
 
 		Aggregator_Impl *Impl_;
 	public:
-		virtual ~Aggregator ();
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
 		void Release ();
@@ -100,7 +99,6 @@ namespace Aggregator
 		QStringList Provides () const;
 		QStringList Needs () const;
 		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
 
 		TabClasses_t GetTabClasses () const;
@@ -112,13 +110,13 @@ namespace Aggregator
 
 		QAbstractItemModel* GetRepresentation () const;
 
-		std::shared_ptr<LeechCraft::Util::XmlSettingsDialog> GetSettingsDialog () const;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
-		EntityTestHandleResult CouldHandle (const LeechCraft::Entity&) const;
-		void Handle (LeechCraft::Entity);
+		EntityTestHandleResult CouldHandle (const Entity&) const;
+		void Handle (Entity);
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, LeechCraft::ActionInfo> GetActionInfo () const;
+		QMap<QString, ActionInfo> GetActionInfo () const;
 
 		QList<QWizardPage*> GetWizardPages () const;
 
@@ -172,8 +170,6 @@ namespace Aggregator
 		void handleGroupChannels ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&,
-				int*, QObject**);
 		void addNewTab (const QString&, QWidget*);
 		void removeTab (QWidget*);
 		void changeTabName (QWidget*, const QString&);
@@ -188,5 +184,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif
