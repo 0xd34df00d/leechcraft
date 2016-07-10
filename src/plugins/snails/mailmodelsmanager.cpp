@@ -38,9 +38,10 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	MailModelsManager::MailModelsManager (Account *acc)
+	MailModelsManager::MailModelsManager (Account *acc, Storage *st)
 	: QObject { acc }
 	, Acc_ { acc }
+	, Storage_ { st }
 	, MsgListActionsMgr_ { new MessageListActionsManager { Acc_, this } }
 	{
 	}
@@ -77,12 +78,11 @@ namespace Snails
 
 		mailModel->SetFolder (path);
 
-		const auto storage = Core::Instance ().GetStorage ();
-		const auto& ids = storage->LoadIDs (Acc_, path);
+		const auto& ids = Storage_->LoadIDs (Acc_, path);
 
 		try
 		{
-			mailModel->Append (storage->LoadMessages (Acc_, path, ids));
+			mailModel->Append (Storage_->LoadMessages (Acc_, path, ids));
 		}
 		catch (const std::exception& e)
 		{

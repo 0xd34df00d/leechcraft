@@ -87,7 +87,7 @@ namespace Snails
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, FolderManager_ (new AccountFolderManager (this))
 	, FoldersModel_ (new FoldersModel (this))
-	, MailModelsManager_ (new MailModelsManager (this))
+	, MailModelsManager_ (new MailModelsManager (this, st))
 	, NoopNotifier_ (std::make_shared<AccountThreadNotifier<int>> ())
 	, ProgressMgr_ (pm)
 	, Storage_ (st)

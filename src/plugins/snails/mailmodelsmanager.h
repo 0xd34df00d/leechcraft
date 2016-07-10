@@ -38,6 +38,7 @@ namespace Snails
 {
 	class MailModel;
 	class Account;
+	class Storage;
 	class Message;
 	class MessageListActionsManager;
 
@@ -48,11 +49,12 @@ namespace Snails
 		Q_OBJECT
 
 		Account * const Acc_;
+		Storage * const Storage_;
 		MessageListActionsManager * const MsgListActionsMgr_;
 
 		QList<MailModel*> Models_;
 	public:
-		MailModelsManager (Account*);
+		MailModelsManager (Account*, Storage*);
 
 		MailModel* CreateModel ();
 
