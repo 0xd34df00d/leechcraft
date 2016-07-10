@@ -282,7 +282,11 @@ namespace Snails
 				{
 					Util::Visit (result.AsVariant (),
 							[=] (Util::Void) { DeleteFromFolder (ids, from); },
-							[=] (const auto& err) {});
+							[=] (auto err)
+							{
+								Util::Visit (err,
+										[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
+							});
 				};
 	}
 
