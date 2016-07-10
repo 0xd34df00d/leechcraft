@@ -42,8 +42,6 @@ namespace AdvancedNotifications
 {
 	class AudioHandler : public ConcreteHandlerBase
 	{
-		Q_OBJECT
-
 		QHash<QString, QDateTime> LastNotify_;
 	public:
 		AudioHandler ();
