@@ -165,8 +165,6 @@ namespace Aggregator
 		void currentChannelChanged ();
 		void handleItemsMovedToChannel (QModelIndex);
 
-		void unreadNumberChanged (int);
-		void trayIconActivated ();
 		void handleGroupChannels ();
 	signals:
 		void gotEntity (const LeechCraft::Entity&);

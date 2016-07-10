@@ -32,7 +32,6 @@
 #include <QSortFilterProxyModel>
 #include <QHeaderView>
 #include <QCompleter>
-#include <QSystemTrayIcon>
 #include <QPainter>
 #include <QMenu>
 #include <QToolBar>
@@ -94,7 +93,6 @@ namespace Aggregator
 		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<Util::TagsCompleter> TagsLineCompleter_;
-		std::unique_ptr<QSystemTrayIcon> TrayIcon_;
 		std::unique_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 		QModelIndex SelectedRepr_;
@@ -133,19 +131,7 @@ namespace Aggregator
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportBinary_);
 		Impl_->ToolMenu_->addAction (Impl_->AppWideActions_.ActionExportFB2_);
 
-		Impl_->TrayIcon_.reset (new QSystemTrayIcon (QIcon ("lcicons:/resources/images/aggregator.svg"), this));
-		Impl_->TrayIcon_->hide ();
-		connect (Impl_->TrayIcon_.get (),
-				SIGNAL (activated (QSystemTrayIcon::ActivationReason)),
-				this,
-				SLOT (trayIconActivated ()));
-
 		Core::Instance ().SetProxy (proxy);
-
-		connect (&Core::Instance (),
-				SIGNAL (unreadNumberChanged (int)),
-				this,
-				SLOT (unreadNumberChanged (int)));
 
 		Impl_->XmlSettingsDialog_.reset (new LeechCraft::Util::XmlSettingsDialog ());
 		Impl_->XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
@@ -296,7 +282,6 @@ namespace Aggregator
 			disconnect (Core::Instance ().GetChannelsModel (), 0, this, 0);
 		if (Impl_->TagsLineCompleter_.get ())
 			disconnect (Impl_->TagsLineCompleter_.get (), 0, this, 0);
-		Impl_->TrayIcon_->hide ();
 		delete Impl_;
 		Core::Instance ().Release ();
 	}
@@ -952,34 +937,6 @@ namespace Aggregator
 		Impl_->Ui_.Feeds_->blockSignals (true);
 		Impl_->Ui_.Feeds_->setCurrentIndex (index);
 		Impl_->Ui_.Feeds_->blockSignals (false);
-	}
-
-	void Aggregator::unreadNumberChanged (int number)
-	{
-		if (!number ||
-				!XmlSettingsManager::Instance ()->
-					property ("ShowIconInTray").toBool ())
-		{
-			Impl_->TrayIcon_->hide ();
-			return;
-		}
-
-		QString tip = tr ("%n unread message(s)", "", number) + " " +
-					tr ("in %n channel(s).", "", Core::Instance ().GetUnreadChannelsNumber ());
-		Impl_->TrayIcon_->setToolTip (tip);
-		Impl_->TrayIcon_->show ();
-	}
-
-	void Aggregator::trayIconActivated ()
-	{
-		emit raiseTab (this);
-		QModelIndex unread = Core::Instance ().GetUnreadChannelIndex ();
-		if (unread.isValid ())
-		{
-			if (Impl_->FlatToFolders_->GetSourceModel ())
-				unread = Impl_->FlatToFolders_->MapFromSource (unread).at (0);
-			Impl_->Ui_.Feeds_->setCurrentIndex (unread);
-		}
 	}
 
 	void Aggregator::handleGroupChannels ()
