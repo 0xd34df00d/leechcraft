@@ -309,9 +309,19 @@ namespace Snails
 		const auto& trashPath = FoldersModel_->GetFolderPath (FolderType::Trash);
 		if (trashPath &&
 				RollupBehaviour (DeleteBehaviour_, InHost_) == DeleteBehaviour::MoveToTrash)
-			CopyMessages (ids, folder, { *trashPath });
-
-		DeleteFromFolder (ids, folder);
+			Util::Sequence (this, CopyMessages (ids, folder, { *trashPath })) >>
+					[=] (auto result)
+					{
+						Util::Visit (result.AsVariant (),
+								[=] (Util::Void) { DeleteFromFolder (ids, folder); },
+								[=] (auto err)
+								{
+									Util::Visit (err,
+											[] (auto e) { qWarning () << Q_FUNC_INFO << e.what (); });
+								});
+					};
+		else
+			DeleteFromFolder (ids, folder);
 	}
 
 	QByteArray Account::Serialize () const
