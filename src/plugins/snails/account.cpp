@@ -41,6 +41,7 @@
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
+#include <util/threads/monadicfuture.h>
 #include "core.h"
 #include "accountconfigdialog.h"
 #include "accountthread.h"
@@ -168,18 +169,19 @@ namespace Snails
 		SynchronizeImpl ({ path }, last, TaskPriority::High);
 	}
 
-	void Account::SynchronizeImpl (const QList<QStringList>& folders,
+	QFuture<Account::SynchronizeResult_t> Account::SynchronizeImpl (const QList<QStringList>& folders,
 			const QByteArray& last, TaskPriority prio)
 	{
 		const auto& future = WorkerPool_->Schedule (prio,
 				&AccountThreadWorker::Synchronize, folders, last);
-		Util::Sequence (this, future) >>
-				[=] (const auto& result)
+		return future * [=] (const auto& result)
 				{
-					Util::Visit (result.AsVariant (),
+					return Util::Visit (result.AsVariant (),
 							[=] (const AccountThreadWorker::SyncResult& right)
 							{
 								HandleGotFolders (right.AllFolders_);
+
+								SyncStats stats;
 
 								for (const auto& pair : Util::Stlize (right.Messages_))
 								{
@@ -192,7 +194,11 @@ namespace Snails
 									HandleUpdatedMessages (msgs.UpdatedMsgs_, folder);
 
 									UpdateFolderCount (folder);
+
+									stats.NewMsgsCount_ += msgs.NewHeaders_.size ();
 								}
+
+								return SynchronizeResult_t::Right (stats);
 							},
 							[=] (auto err)
 							{
@@ -203,6 +209,7 @@ namespace Snails
 										<< last
 										<< ":"
 										<< Util::Visit (err, [] (auto e) { return e.what (); });
+								return SynchronizeResult_t::Left (err);
 							});
 				};
 	}

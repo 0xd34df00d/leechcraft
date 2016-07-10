@@ -162,6 +162,12 @@ namespace Snails
 		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
+		struct SyncStats
+		{
+			size_t NewMsgsCount_ = 0;
+		};
+		using SynchronizeResult_t = Util::Either<InvokeError_t<>, SyncStats>;
+
 		void Synchronize ();
 		void Synchronize (const QStringList&, const QByteArray&);
 
@@ -194,7 +200,7 @@ namespace Snails
 
 		ProgressListener_ptr MakeProgressListener (const QString&) const;
 	private:
-		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
+		QFuture<SynchronizeResult_t> SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();
