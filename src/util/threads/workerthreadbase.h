@@ -150,6 +150,13 @@ namespace Util
 		{
 		}
 
+		template<typename Head, typename... Rest,
+				typename = std::enable_if_t<!std::is_same<std::decay_t<Head>, QObject*>::value>>
+		WorkerThread (const Head& head, const Rest&... rest)
+		: WorkerThread { static_cast<QObject*> (nullptr), head, rest... }
+		{
+		}
+
 		~WorkerThread ()
 		{
 			if (!IsAutoQuit_)
