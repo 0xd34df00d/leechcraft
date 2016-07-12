@@ -89,9 +89,9 @@ namespace Snails
 
 		MailTab::FillShortcutsManager (ShortcutsMgr_, proxy);
 
-		AccsMgr_ = new AccountsManager { ProgressMgr_, Storage_.get () };
+		AccsMgr_ = std::make_shared<AccountsManager> (ProgressMgr_, Storage_.get ());
 		TemplatesMgr_ = new MsgTemplatesManager;
-		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_, TemplatesMgr_ };
+		ComposeTabFactory_ = new ComposeMessageTabFactory { AccsMgr_.get (), TemplatesMgr_ };
 
 		connect (ComposeTabFactory_,
 				SIGNAL (gotTab (QString, QWidget*)),
@@ -101,7 +101,7 @@ namespace Snails
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "snailssettings.xml");
 
-		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget { AccsMgr_ });
+		XSD_->SetCustomWidget ("AccountsWidget", new AccountsListWidget { AccsMgr_.get () });
 
 		WkFontsWidget_ = new Util::WkFontsWidget { &XmlSettingsManager::Instance () };
 		XSD_->SetCustomWidget ("FontsSelector", WkFontsWidget_);
@@ -121,6 +121,7 @@ namespace Snails
 	{
 		Core::Instance ().Release ();
 
+		AccsMgr_.reset ();
 		Storage_.reset ();
 	}
 
@@ -153,7 +154,7 @@ namespace Snails
 	{
 		if (tabClass == "mail")
 		{
-			const auto mt = new MailTab { Proxy_, AccsMgr_, ComposeTabFactory_,
+			const auto mt = new MailTab { Proxy_, AccsMgr_.get (), ComposeTabFactory_,
 					Storage_.get (), MailTabClass_, ShortcutsMgr_, this };
 			handleNewTab (MailTabClass_.VisibleName_, mt);
 		}

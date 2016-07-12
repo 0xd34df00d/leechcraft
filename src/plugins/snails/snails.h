@@ -74,9 +74,9 @@ namespace Snails
 		Util::ShortcutManager *ShortcutsMgr_;
 
 		std::shared_ptr<Storage> Storage_;
+		std::shared_ptr<AccountsManager> AccsMgr_;
 
 		ProgressManager *ProgressMgr_;
-		AccountsManager *AccsMgr_;
 		ComposeMessageTabFactory *ComposeTabFactory_;
 		MsgTemplatesManager *TemplatesMgr_;
 
