@@ -190,7 +190,7 @@ namespace Snails
 		}
 		case Column::Date:
 		{
-			const auto& date = index.parent ().isValid () ?
+			const auto& date = role != Sort || index.parent ().isValid () ?
 						msg->GetDate () :
 						structItem->Fold ([] (const TreeNode *n) { return n->Msg_->GetDate (); },
 								[] (auto d1, auto d2) { return std::max (d1, d2); });

@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "application.h"
+#include <thread>
+#include <chrono>
 #include <QFont>
 #include <QSysInfo>
 #include <QDir>
@@ -63,10 +65,29 @@ namespace
 }
 #endif
 
+namespace
+{
+	void CheckDelay ()
+	{
+		const auto& delayVar = qgetenv ("LC_STARTUP_DELAY");
+		if (delayVar.isEmpty ())
+			return;
+
+		bool ok = false;
+		const auto delayVal = delayVar.toInt (&ok);
+		if (!ok)
+			return;
+
+		std::this_thread::sleep_for (std::chrono::seconds (delayVal));
+	}
+}
+
 int main (int argc, char **argv)
 {
 	int author = 0xd34df00d;
 	Q_UNUSED (author);
+
+	CheckDelay ();
 
 #if defined(Q_OS_MAC) && !defined(USE_UNIX_LAYOUT)
 	SetupLibraryPaths ();
