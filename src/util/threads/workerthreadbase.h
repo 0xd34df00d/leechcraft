@@ -58,7 +58,7 @@ namespace Util
 		void SetPaused (bool);
 
 		template<typename F>
-		QFuture<ResultOf_t<F ()>> ScheduleImpl (const F& func)
+		QFuture<ResultOf_t<F ()>> ScheduleImpl (F func)
 		{
 			QFutureInterface<ResultOf_t<F ()>> iface;
 			iface.reportStarted ();
@@ -79,9 +79,9 @@ namespace Util
 		}
 
 		template<typename F, typename... Args>
-		QFuture<ResultOf_t<F (Args...)>> ScheduleImpl (const F& f, Args&&... args)
+		QFuture<ResultOf_t<F (Args...)>> ScheduleImpl (F f, Args&&... args)
 		{
-			return ScheduleImpl ([f, args...] { return Invoke (f, args...); });
+			return ScheduleImpl ([f, args...] () mutable { return Invoke (f, args...); });
 		}
 	protected:
 		void run () override final;
@@ -171,9 +171,9 @@ namespace Util
 		}
 
 		template<typename F, typename... Args>
-		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (const F& f, Args&&... args)
+		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)
 		{
-			const auto fWrapped = [f, this] (auto... args) { return Invoke (f, Worker_.get (), args...); };
+			const auto fWrapped = [f, this] (auto... args) mutable { return Invoke (f, Worker_.get (), args...); };
 			return WorkerThreadBase::ScheduleImpl (fWrapped, std::forward<Args> (args)...);
 		}
 	protected:

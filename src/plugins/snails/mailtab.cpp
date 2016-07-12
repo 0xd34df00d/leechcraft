@@ -70,13 +70,16 @@ namespace Snails
 	MailTab::MailTab (const ICoreProxy_ptr& proxy,
 			const AccountsManager *accsMgr,
 			ComposeMessageTabFactory *cmpMsgTabFactory,
+			Storage *st,
 			const TabClassInfo& tc,
 			Util::ShortcutManager *sm,
-			QObject *pmt, QWidget *parent)
+			QObject *pmt,
+			QWidget *parent)
 	: QWidget (parent)
 	, Proxy_ (proxy)
 	, ComposeMessageTabFactory_ (cmpMsgTabFactory)
 	, AccsMgr_ (accsMgr)
+	, Storage_ (st)
 	, TabToolbar_ (new QToolBar)
 	, MsgToolbar_ (new QToolBar)
 	, TabClass_ (tc)
@@ -104,7 +107,7 @@ namespace Snails
 				{
 					if (!CurrAcc_ || !MailModel_)
 						return {};
-					return Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (),
+					return Storage_->LoadMessage (CurrAcc_.get (),
 							MailModel_->GetCurrentFolder (), id);
 				},
 				Ui_.MailTree_,
@@ -160,9 +163,11 @@ namespace Snails
 			}
 		};
 
-		auto GetActionInfos ()
+		using ActionsHash_t = QHash<QString, AugmentedActionInfo>;
+
+		const ActionsHash_t& GetActionInfos ()
 		{
-			static QHash<QString, AugmentedActionInfo> result
+			static const ActionsHash_t result
 			{
 				{ "MailTab.Fetch", { MailTab::tr ("Fetch new mail"), { "Shift+F" }, "mail-receive" } },
 				{ "MailTab.Refresh", { MailTab::tr ("Refresh the folder"), { "F" }, "view-refresh" } },
@@ -175,6 +180,7 @@ namespace Snails
 				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "text-plain" } },
 
 				{ "MailTab.SelectAllChildren", { MailTab::tr ("Select all children"), { "S" }, "edit-select-all" } },
+				{ "MailTab.ExpandAllChildren", { MailTab::tr ("Expand all children"), { "E" }, "view-list-tree" } },
 			};
 
 			return result;
@@ -210,8 +216,8 @@ namespace Snails
 			auto shortcut = new QShortcut { parent };
 
 			Util::InvokeOn (slot,
-				[&] (const char *slot) { QObject::connect (shortcut, SIGNAL (activated ()), parent, slot); },
-				[&] (auto slot) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
+					[&] (const char *slot) { QObject::connect (shortcut, SIGNAL (activated ()), parent, slot); },
+					[&] (auto slot) { QObject::connect (shortcut, &QShortcut::activated, parent, slot); });
 
 			sm->RegisterShortcut (id, info.GetInfo (proxy), shortcut);
 
@@ -348,6 +354,7 @@ namespace Snails
 
 		SetMsgActionsEnabled (false);
 
+		MakeShortcut ("MailTab.ExpandAllChildren", sm, Proxy_, this, SLOT (expandAllChildren ()));
 		MakeShortcut ("MailTab.SelectAllChildren", sm, Proxy_, this, SLOT (selectAllChildren ()));
 	}
 
@@ -735,7 +742,7 @@ namespace Snails
 		Message_ptr msg;
 		try
 		{
-			msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
+			msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
 		}
 		catch (const std::exception& e)
 		{
@@ -1021,11 +1028,21 @@ namespace Snails
 		const auto sm = Ui_.MailTree_->selectionModel ();
 		for (const auto& idx : sm->selectedRows ())
 			Recurse (idx, model,
-				[&] (const QModelIndex& idx)
-				{
-					Ui_.MailTree_->expand (idx);
-					sm->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
-				});
+					[&] (const QModelIndex& idx)
+					{
+						Ui_.MailTree_->expand (idx);
+						sm->select (idx, QItemSelectionModel::Select | QItemSelectionModel::Rows);
+					});
+	}
+
+	void MailTab::expandAllChildren ()
+	{
+		if (!CurrAcc_)
+			return;
+
+		const auto model = Ui_.MailTree_->model ();
+		for (const auto& idx : Ui_.MailTree_->selectionModel ()->selectedRows ())
+			Recurse (idx, model, [&] (const QModelIndex& idx) { Ui_.MailTree_->expand (idx); });
 	}
 
 	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
@@ -1067,7 +1084,7 @@ namespace Snails
 		if (path.isEmpty ())
 			return;
 
-		const auto& msg = Core::Instance ().GetStorage ()->LoadMessage (CurrAcc_.get (), folder, id);
+		const auto& msg = Storage_->LoadMessage (CurrAcc_.get (), folder, id);
 		CurrAcc_->FetchAttachment (msg, name, path);
 	}
 

@@ -42,7 +42,6 @@ namespace Util
 
 namespace Snails
 {
-	class Storage;
 	class ProgressManager;
 
 	class Core : public QObject
@@ -51,7 +50,6 @@ namespace Snails
 
 		ICoreProxy_ptr Proxy_;
 
-		Storage * const Storage_;
 		ProgressManager * const ProgressManager_;
 
 		std::shared_ptr<Util::ResourceLoader> MsgView_;
@@ -65,7 +63,6 @@ namespace Snails
 		ICoreProxy_ptr GetProxy () const;
 		void SendEntity (const Entity&);
 
-		Storage* GetStorage () const;
 		ProgressManager* GetProgressManager () const;
 
 		QString GetMsgViewTemplate () const;

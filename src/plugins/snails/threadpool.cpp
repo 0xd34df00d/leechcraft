@@ -39,8 +39,9 @@ namespace LeechCraft
 {
 namespace Snails
 {
-	ThreadPool::ThreadPool (const CertList_t& certList, Account *acc)
+	ThreadPool::ThreadPool (const CertList_t& certList, Account *acc, Storage *st)
 	: Acc_ { acc }
+	, Storage_ { st }
 	, CertList_ { certList }
 	{
 		auto thread = CreateThread ();
@@ -59,7 +60,8 @@ namespace Snails
 									[this] (const vmime::exceptions::authentication_error& err)
 									{
 										qWarning () << Q_FUNC_INFO
-												<< "initial thread authentication failed";
+												<< "initial thread authentication failed:"
+												<< err.what ();
 										HitLimit_ = true;
 									},
 									[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
@@ -109,7 +111,9 @@ namespace Snails
 									[this, thread] (const vmime::exceptions::authentication_error& err)
 									{
 										qWarning () << Q_FUNC_INFO
-												<< "connections limit at"
+												<< "got auth error:"
+												<< err.what ()
+												<< "; seems like connections limit at"
 												<< ExistingThreads_.size ();
 										HitLimit_ = true;
 
@@ -125,8 +129,9 @@ namespace Snails
 
 	AccountThread_ptr ThreadPool::CreateThread ()
 	{
+		const auto& threadName = "PooledThread_" + QString::number (ExistingThreads_.size ());
 		const auto thread = std::make_shared<AccountThread> (false,
-				"PooledThread_" + QString::number (ExistingThreads_.size ()), CertList_, Acc_);
+				threadName, CertList_, Acc_, Storage_);
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{

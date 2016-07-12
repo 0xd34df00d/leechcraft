@@ -59,6 +59,7 @@ namespace Snails
 	class FoldersModel;
 	class MailModelsManager;
 	class ThreadPool;
+	class Storage;
 	struct Folder;
 
 	enum class TaskPriority;
@@ -145,8 +146,9 @@ namespace Snails
 		std::shared_ptr<AccountThreadNotifier<int>> NoopNotifier_;
 
 		ProgressManager * const ProgressMgr_;
+		Storage * const Storage_;
 	public:
-		Account (ProgressManager*, QObject* = nullptr);
+		Account (Storage *st, ProgressManager*, QObject* = nullptr);
 
 		QByteArray GetID () const;
 		QString GetName () const;
@@ -162,8 +164,14 @@ namespace Snails
 		MailModelsManager* GetMailModelsManager () const;
 		QAbstractItemModel* GetFoldersModel () const;
 
-		void Synchronize ();
-		void Synchronize (const QStringList&, const QByteArray&);
+		struct SyncStats
+		{
+			size_t NewMsgsCount_ = 0;
+		};
+		using SynchronizeResult_t = Util::Either<InvokeError_t<>, SyncStats>;
+
+		QFuture<SynchronizeResult_t> Synchronize ();
+		QFuture<SynchronizeResult_t> Synchronize (const QStringList&, const QByteArray&);
 
 		using FetchWholeMessageResult_t = QFuture<WrapReturnType_t<Snails::FetchWholeMessageResult_t>>;
 		FetchWholeMessageResult_t FetchWholeMessage (const Message_ptr&);
@@ -177,7 +185,8 @@ namespace Snails
 
 		void SetReadStatus (bool, const QList<QByteArray>&, const QStringList&);
 
-		void CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
+		using CopyMessagesResult_t = Util::Either<InvokeError_t<>, Util::Void>;
+		QFuture<CopyMessagesResult_t> CopyMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
 		void MoveMessages (const QList<QByteArray>& ids, const QStringList& from, const QList<QStringList>& to);
 		void DeleteMessages (const QList<QByteArray>& ids, const QStringList& folder);
 
@@ -193,7 +202,7 @@ namespace Snails
 
 		ProgressListener_ptr MakeProgressListener (const QString&) const;
 	private:
-		void SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
+		QFuture<SynchronizeResult_t> SynchronizeImpl (const QList<QStringList>&, const QByteArray&, TaskPriority);
 		QMutex* GetMutex () const;
 
 		void UpdateNoopInterval ();

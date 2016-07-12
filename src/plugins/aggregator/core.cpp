@@ -223,9 +223,6 @@ namespace Aggregator
 			}
 
 			const auto& s = e.Additional_;
-			if (s.contains ("ShowTrayIcon"))
-				XmlSettingsManager::Instance ()->setProperty ("ShowIconInTray",
-						s.value ("ShowIconInTray").toBool ());
 			if (s.contains ("UpdateOnStartup"))
 				XmlSettingsManager::Instance ()->setProperty ("UpdateOnStartup",
 						s.value ("UpdateOnStartup").toBool ());
@@ -371,9 +368,6 @@ namespace Aggregator
 
 		XmlSettingsManager::Instance ()->
 			RegisterObject ("UpdateInterval", this, "updateIntervalChanged");
-		XmlSettingsManager::Instance ()->
-			RegisterObject ("ShowIconInTray", this, "showIconInTrayChanged");
-		UpdateUnreadItemsNumber ();
 		Initialized_ = true;
 
 		PluginManager_ = new PluginManager ();
@@ -544,8 +538,6 @@ namespace Aggregator
 			emit channelRemoved (item.ChannelID_);
 		}
 		StorageBackend_->RemoveFeed (channel.FeedID_);
-
-		UpdateUnreadItemsNumber ();
 	}
 
 	void Core::RenameFeed (const QModelIndex& index, const QString& newName)
@@ -1163,7 +1155,6 @@ namespace Aggregator
 			HandleFeedUpdated (channels, pj);
 		else if (pj.Role_ == PendingJob::RFeedExternalData)
 			HandleExternalData (pj.URL_, file);
-		UpdateUnreadItemsNumber ();
 	}
 
 	void Core::handleJobRemoved (int id)
@@ -1288,7 +1279,6 @@ namespace Aggregator
 
 		cs.Unread_ = StorageBackend_->GetUnreadItems (cs.ChannelID_);
 		ChannelsModel_->UpdateChannelData (cs);
-		UpdateUnreadItemsNumber ();
 	}
 
 	void Core::updateIntervalChanged ()
@@ -1304,11 +1294,6 @@ namespace Aggregator
 		}
 		else
 			UpdateTimer_->stop ();
-	}
-
-	void Core::showIconInTrayChanged ()
-	{
-		UpdateUnreadItemsNumber ();
 	}
 
 	void Core::handleSslError (QNetworkReply *reply)
@@ -1427,11 +1412,6 @@ namespace Aggregator
 	void Core::handleDBUpGotNewChannel (const ChannelShort& chSh)
 	{
 		ChannelsModel_->AddChannel (chSh);
-	}
-
-	void Core::UpdateUnreadItemsNumber () const
-	{
-		emit unreadNumberChanged (ChannelsModel_->GetUnreadItemsNumber ());
 	}
 
 	void Core::FetchPixmap (const Channel_ptr& channel)

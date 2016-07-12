@@ -40,7 +40,6 @@
 #include <util/sys/resourceloader.h>
 #include <interfaces/core/ientitymanager.h>
 #include "message.h"
-#include "storage.h"
 #include "progressmanager.h"
 #include "accountfoldermanager.h"
 #include "composemessagetab.h"
@@ -50,8 +49,7 @@ namespace LeechCraft
 namespace Snails
 {
 	Core::Core ()
-	: Storage_ { new Storage { this } }
-	, ProgressManager_ { new ProgressManager { this } }
+	: ProgressManager_ { new ProgressManager { this } }
 	, MsgView_ { new Util::ResourceLoader { "snails/msgview" } }
 	{
 #ifdef Q_OS_WIN32
@@ -104,11 +102,6 @@ namespace Snails
 	void Core::SendEntity (const Entity& e)
 	{
 		Proxy_->GetEntityManager ()->HandleEntity (e);
-	}
-
-	Storage* Core::GetStorage () const
-	{
-		return Storage_;
 	}
 
 	ProgressManager* Core::GetProgressManager () const

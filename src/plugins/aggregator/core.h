@@ -235,7 +235,6 @@ namespace Aggregator
 		void openLink (const QString&);
 		void updateFeeds ();
 		void updateIntervalChanged ();
-		void showIconInTrayChanged ();
 		void handleSslError (QNetworkReply*);
 	private slots:
 		void fetchExternalFile (const QString&, const QString&);
@@ -248,7 +247,6 @@ namespace Aggregator
 
 		void handleDBUpGotNewChannel (const ChannelShort&);
 	private:
-		void UpdateUnreadItemsNumber () const;
 		void FetchPixmap (const Channel_ptr&);
 		void FetchFavicon (const Channel_ptr&);
 		void HandleExternalData (const QString&, const QFile&);
@@ -261,7 +259,6 @@ namespace Aggregator
 		void HandleProvider (QObject*, int);
 		void ErrorNotification (const QString&, const QString&, bool = true) const;
 	signals:
-		void unreadNumberChanged (int) const;
 		void channelRemoved (IDType_t);
 
 		void storageChanged ();

@@ -45,6 +45,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class Account;
+	class Storage;
 	class AccountThreadWorker;
 	class TaskQueueManager;
 
@@ -267,6 +268,7 @@ namespace Snails
 		Q_OBJECT
 
 		Account * const A_;
+		Storage * const St_;
 		const bool IsListening_;
 		const QString Name_;
 		const CertList_t Certs_;
@@ -277,7 +279,7 @@ namespace Snails
 		std::atomic_bool IsRunning_;
 	public:
 		AccountThread (bool isListening, const QString& name,
-				const CertList_t& certs, Account *acc);
+				const CertList_t& certs, Account *acc, Storage *st);
 
 		template<typename F, typename... Args>
 		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)

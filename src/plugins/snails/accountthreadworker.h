@@ -51,6 +51,7 @@ namespace LeechCraft
 namespace Snails
 {
 	class Account;
+	class Storage;
 	class MessageChangeListener;
 
 	template<typename T>
@@ -67,6 +68,7 @@ namespace Snails
 		Q_OBJECT
 
 		Account * const A_;
+		Storage * const Storage_;
 
 		QTimer * const NoopTimer_;
 
@@ -91,7 +93,7 @@ namespace Snails
 			NoChange
 		};
 	public:
-		AccountThreadWorker (bool, const QString&, const CertList_t&, Account*);
+		AccountThreadWorker (bool, const QString&, const CertList_t&, Account*, Storage*);
 
 		struct FolderMessages
 		{
