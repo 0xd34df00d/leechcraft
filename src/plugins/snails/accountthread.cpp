@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "accountthread.h"
-#include <QMutexLocker>
 #include <QtDebug>
 #include "account.h"
 #include "accountthreadworker.h"
@@ -70,71 +69,9 @@ namespace Snails
 		}
 	}
 
-	AccountThread::AccountThread (bool isListening, const QString& name,
-			const CertList_t& certs, Account *parent, Storage *st)
-	: A_ { parent }
-	, St_ { st }
-	, IsListening_ { isListening }
-	, Name_ { name }
-	, Certs_ { certs }
+	size_t AccountThread::GetQueueSize ()
 	{
-	}
-
-	int AccountThread::GetQueueSize ()
-	{
-		QMutexLocker locker { &FunctionsMutex_ };
-		return Functions_.size () + IsRunning_;
-	}
-
-	void AccountThread::run ()
-	{
-		AccountThreadWorker atw { IsListening_, Name_, Certs_, A_, St_ };
-
-		Util::SlotClosure<Util::NoDeletePolicy> rotator
-		{
-			[this, &atw] { RotateFuncs (&atw); },
-			this,
-			SIGNAL (rotateFuncs ()),
-			nullptr
-		};
-
-		const auto shouldRotate = [&]
-			{
-				QMutexLocker locker { &FunctionsMutex_ };
-				return !Functions_.isEmpty ();
-			} ();
-
-		if (shouldRotate)
-			RotateFuncs (&atw);
-
-		QThread::run ();
-	}
-
-	void AccountThread::RotateFuncs (AccountThreadWorker *atw)
-	{
-		auto maybeTask = [&] () -> boost::optional<Task>
-			{
-				QMutexLocker locker { &FunctionsMutex_ };
-				if (Functions_.isEmpty ())
-					return {};
-				else
-					return Functions_.takeFirst ();
-			} ();
-
-		if (maybeTask)
-		{
-			IsRunning_ = true;
-			maybeTask->Executor_ (atw);
-			IsRunning_ = false;
-		}
-
-		const auto shouldRotate = [&]
-			{
-				QMutexLocker locker { &FunctionsMutex_ };
-				return !Functions_.isEmpty ();
-			} ();
-		if (shouldRotate)
-			emit rotateFuncs ();
+		return IsRunning_ + WorkerThread::GetQueueSize ();
 	}
 }
 }

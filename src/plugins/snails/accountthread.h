@@ -37,6 +37,7 @@
 #include <util/sll/typelist.h>
 #include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
+#include <util/threads/workerthreadbase.h>
 #include "accountthreadfwd.h"
 #include "common.h"
 
@@ -263,23 +264,11 @@ namespace Snails
 	template<typename F, typename... Args>
 	using WrapFunctionType_t = WrapReturnType_t<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>;
 
-	class AccountThread : public QThread
+	class AccountThread : public Util::WorkerThread<AccountThreadWorker>
 	{
-		Q_OBJECT
-
-		Account * const A_;
-		Storage * const St_;
-		const bool IsListening_;
-		const QString Name_;
-		const CertList_t Certs_;
-
-		QMutex FunctionsMutex_;
-		QList<Task> Functions_;
-
 		std::atomic_bool IsRunning_;
 	public:
-		AccountThread (bool isListening, const QString& name,
-				const CertList_t& certs, Account *acc, Storage *st);
+		using WorkerThread::WorkerThread;
 
 		template<typename F, typename... Args>
 		QFuture<WrapFunctionType_t<F, Args...>> Schedule (TaskPriority prio, const F& func, const Args&... args)
@@ -289,40 +278,24 @@ namespace Snails
 		}
 
 		template<typename F, typename... Args>
-		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface, TaskPriority prio, const F& func, const Args&... args)
+		QFuture<WrapFunctionType_t<F, Args...>> Schedule (QFutureInterface<WrapFunctionType_t<F, Args...>> iface, TaskPriority, const F& func, const Args&... args)
 		{
-			auto reporting = [func, iface, args...] (AccountThreadWorker *w) mutable
+			auto reporting = [this, func, iface, args...] (AccountThreadWorker *w) mutable
 			{
+				IsRunning_ = true;
+
 				iface.reportStarted ();
 				Util::ReportFutureResult (iface, detail::WrapFunction<Args...> (w, func), w, args...);
+
+				IsRunning_ = false;
 			};
 
-			{
-				QMutexLocker locker { &FunctionsMutex_ };
-
-				switch (prio)
-				{
-				case TaskPriority::High:
-					Functions_.prepend ({ reporting });
-					break;
-				case TaskPriority::Low:
-					Functions_.append ({ reporting });
-					break;
-				}
-			}
-
-			emit rotateFuncs ();
+			ScheduleImpl (std::move (reporting));
 
 			return iface.future ();
 		}
 
-		int GetQueueSize ();
-	protected:
-		void run ();
-	private:
-		void RotateFuncs (AccountThreadWorker*);
-	signals:
-		void rotateFuncs ();
+		size_t GetQueueSize () override;
 	};
 }
 }
