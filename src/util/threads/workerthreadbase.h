@@ -83,6 +83,8 @@ namespace Util
 		{
 			return ScheduleImpl ([f, args...] () mutable { return Invoke (f, args...); });
 		}
+
+		virtual size_t GetQueueSize ();
 	protected:
 		void run () override final;
 

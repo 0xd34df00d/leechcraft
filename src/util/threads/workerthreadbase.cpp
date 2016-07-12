@@ -44,6 +44,12 @@ namespace Util
 			emit rotateFuncs ();
 	}
 
+	size_t WorkerThreadBase::GetQueueSize ()
+	{
+		QMutexLocker locker { &FunctionsMutex_ };
+		return Functions_.size ();
+	}
+
 	void WorkerThreadBase::run ()
 	{
 		SlotClosure<NoDeletePolicy> rotator
