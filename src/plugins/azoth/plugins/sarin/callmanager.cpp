@@ -56,7 +56,7 @@ namespace Sarin
 		~ToxAvThread ()
 		{
 			Stop ();
-			wait (5);
+			wait (2000);
 		}
 
 		void Stop ()
