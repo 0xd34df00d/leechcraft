@@ -54,7 +54,7 @@ namespace DCAC
 
 	namespace
 	{
-		bool PrepareInverted (QImage& image, int threshold)
+		uint64_t GetGray (const QImage& image)
 		{
 			uint64_t sourceGraySumR = 0, sourceGraySumG = 0, sourceGraySumB = 0;
 
@@ -63,22 +63,40 @@ namespace DCAC
 
 			for (int y = 0; y < height; ++y)
 			{
-				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				const auto scanline = reinterpret_cast<const QRgb*> (image.scanLine (y));
 				for (int x = 0; x < width; ++x)
 				{
-					auto& color = scanline [x];
+					auto color = scanline [x];
 					sourceGraySumR += qRed (color);
 					sourceGraySumG += qGreen (color);
 					sourceGraySumB += qBlue (color);
-
-					color &= 0x00ffffff;
-					color = uint32_t { 0xffffffff } - color;
 				}
 			}
 
-			const auto sourceGraySum = (sourceGraySumR * 11 + sourceGraySumG * 16 + sourceGraySumB * 5) / (width * height * 32);
+			return sourceGraySumR * 11 + sourceGraySumG * 16 + sourceGraySumB * 5;
+		}
 
-			return sourceGraySum >= static_cast<uint64_t> (threshold);
+		bool PrepareInverted (QImage& image, int threshold)
+		{
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const auto sourceGraySum = GetGray (image) / (width * height * 32);
+			const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
+
+			if (shouldInvert)
+				for (int y = 0; y < height; ++y)
+				{
+					const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+					for (int x = 0; x < width; ++x)
+					{
+						auto& color = scanline [x];
+						color &= 0x00ffffff;
+						color = uint32_t { 0xffffffff } - color;
+					}
+				}
+
+			return shouldInvert;
 		}
 	}
 
