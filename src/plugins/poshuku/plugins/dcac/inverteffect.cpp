@@ -54,6 +54,11 @@ namespace DCAC
 
 	namespace
 	{
+		uint64_t CombineGray (uint64_t r, uint64_t g, uint64_t b)
+		{
+			return r * 11 + g * 16 + b * 5;
+		}
+
 		uint64_t GetGray (const QImage& image)
 		{
 			uint64_t sourceGraySumR = 0, sourceGraySumG = 0, sourceGraySumB = 0;
@@ -72,8 +77,8 @@ namespace DCAC
 					sourceGraySumB += qBlue (color);
 				}
 			}
+			return CombineGray (sourceGraySumR, sourceGraySumG, sourceGraySumB);
 
-			return sourceGraySumR * 11 + sourceGraySumG * 16 + sourceGraySumB * 5;
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
