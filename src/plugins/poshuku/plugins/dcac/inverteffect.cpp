@@ -32,6 +32,8 @@
 #include <QtDebug>
 #include <qwebview.h>
 
+#include <tmmintrin.h>
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -78,7 +80,87 @@ namespace DCAC
 				}
 			}
 			return CombineGray (sourceGraySumR, sourceGraySumG, sourceGraySumB);
+		}
 
+		__attribute__ ((target ("sse4")))
+		uint64_t GetGraySSE4 (const QImage& image)
+		{
+			uint32_t r = 0;
+			uint32_t g = 0;
+			uint32_t b = 0;
+
+			__m128i sum = _mm_setzero_si128 ();
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i pixel1msk = _mm_set_epi8 (0x80, 0x80, 0x80, 3,
+													0x80, 0x80, 0x80, 2,
+													0x80, 0x80, 0x80, 1,
+													0x80, 0x80, 0x80, 0);
+			const __m128i pixel2msk = _mm_set_epi8 (0x80, 0x80, 0x80, 7,
+													0x80, 0x80, 0x80, 6,
+													0x80, 0x80, 0x80, 5,
+													0x80, 0x80, 0x80, 4);
+			const __m128i pixel3msk = _mm_set_epi8 (0x80, 0x80, 0x80, 11,
+													0x80, 0x80, 0x80, 10,
+													0x80, 0x80, 0x80, 9,
+													0x80, 0x80, 0x80, 8);
+			const __m128i pixel4msk = _mm_set_epi8 (0x80, 0x80, 0x80, 15,
+													0x80, 0x80, 0x80, 14,
+													0x80, 0x80, 0x80, 13,
+													0x80, 0x80, 0x80, 12);
+
+			for (int y = 0; y < height; ++y)
+			{
+				const uchar * const scanline = image.scanLine (y);
+
+				const auto pos = scanline - static_cast<const uchar*> (nullptr);
+				int x = 0;
+
+				const auto beginUnaligned = pos % 16;
+				auto bytesCount = width * 4;
+				if (beginUnaligned)
+				{
+					x += 16 - beginUnaligned;
+					bytesCount -= 16 - beginUnaligned;
+
+					for (int i = 0; i < 16 - beginUnaligned; i += 4)
+					{
+						auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
+						r += qRed (color);
+						g += qGreen (color);
+						b += qBlue (color);
+					}
+				}
+
+				const auto endUnaligned = bytesCount % 16;
+				bytesCount -= endUnaligned;
+
+				for (; x < bytesCount; x += 16)
+				{
+					const __m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
+
+					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel1msk));
+					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel2msk));
+					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel3msk));
+					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel4msk));
+				}
+
+				for (int i = x / 4; i < width; ++i)
+				{
+					auto color = reinterpret_cast<const QRgb*> (image.scanLine (y)) [i];
+					r += qRed (color);
+					g += qGreen (color);
+					b += qBlue (color);
+				}
+			}
+
+			r += _mm_extract_epi32 (sum, 2);
+			g += _mm_extract_epi32 (sum, 1);
+			b += _mm_extract_epi32 (sum, 0);
+
+			return CombineGray (r, g, b);
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
