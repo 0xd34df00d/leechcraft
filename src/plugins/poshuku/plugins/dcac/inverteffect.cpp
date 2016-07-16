@@ -143,6 +143,7 @@ namespace DCAC
 				const auto endUnaligned = bytesCount % alignment;
 				bytesCount -= endUnaligned;
 
+				#pragma unroll(8)
 				for (; x < bytesCount; x += alignment)
 				{
 					const __m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
