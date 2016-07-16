@@ -115,6 +115,8 @@ namespace DCAC
 													0x80, 0x80, 0x80, 13,
 													0x80, 0x80, 0x80, 12);
 
+			constexpr auto alignment = 16;
+
 			for (int y = 0; y < height; ++y)
 			{
 				const uchar * const scanline = image.scanLine (y);
@@ -122,14 +124,14 @@ namespace DCAC
 				const auto pos = scanline - static_cast<const uchar*> (nullptr);
 				int x = 0;
 
-				const auto beginUnaligned = pos % 16;
+				const auto beginUnaligned = pos % alignment;
 				auto bytesCount = width * 4;
 				if (beginUnaligned)
 				{
-					x += 16 - beginUnaligned;
-					bytesCount -= 16 - beginUnaligned;
+					x += alignment - beginUnaligned;
+					bytesCount -= alignment - beginUnaligned;
 
-					for (int i = 0; i < 16 - beginUnaligned; i += 4)
+					for (int i = 0; i < alignment - beginUnaligned; i += 4)
 					{
 						auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
 						r += qRed (color);
@@ -138,10 +140,10 @@ namespace DCAC
 					}
 				}
 
-				const auto endUnaligned = bytesCount % 16;
+				const auto endUnaligned = bytesCount % alignment;
 				bytesCount -= endUnaligned;
 
-				for (; x < bytesCount; x += 16)
+				for (; x < bytesCount; x += alignment)
 				{
 					const __m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
 
