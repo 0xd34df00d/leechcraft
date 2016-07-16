@@ -34,6 +34,7 @@
 
 #ifdef Q_PROCESSOR_X86_64
 #include <tmmintrin.h>
+#include <cpuid.h>
 #endif
 
 namespace LeechCraft
@@ -63,7 +64,7 @@ namespace DCAC
 			return r * 11 + g * 16 + b * 5;
 		}
 
-		uint64_t GetGray (const QImage& image)
+		uint64_t GetGrayDefault (const QImage& image)
 		{
 			uint64_t r = 0, g = 0, b = 0;
 
@@ -166,6 +167,35 @@ namespace DCAC
 			return CombineGray (r, g, b);
 		}
 #endif
+
+		uint64_t GetGray (const QImage& image)
+		{
+#ifdef Q_PROCESSOR_X86_64
+			static const auto ptr = []
+			{
+				uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
+				if (!__get_cpuid (1, &eax, &ebx, &ecx, &edx))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "failed to get CPUID";
+					return &GetGrayDefault;
+				}
+
+				if (ecx & (1 << 19))
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "detected SSE 4.1 support";
+					return &GetGraySSE4;
+				}
+
+				return GetGrayDefault;
+			} ();
+
+			return ptr (image);
+#else
+			return GetGrayDefault (image);
+#endif
+		}
 
 		bool PrepareInverted (QImage& image, int threshold)
 		{
