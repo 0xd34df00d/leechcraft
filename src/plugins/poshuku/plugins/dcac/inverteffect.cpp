@@ -32,7 +32,9 @@
 #include <QtDebug>
 #include <qwebview.h>
 
+#ifdef Q_PROCESSOR_X86_64
 #include <tmmintrin.h>
+#endif
 
 namespace LeechCraft
 {
@@ -82,6 +84,7 @@ namespace DCAC
 			return CombineGray (r, g, b);
 		}
 
+#ifdef Q_PROCESSOR_X86_64
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
@@ -162,6 +165,7 @@ namespace DCAC
 
 			return CombineGray (r, g, b);
 		}
+#endif
 
 		bool PrepareInverted (QImage& image, int threshold)
 		{
