@@ -34,6 +34,7 @@
 
 #ifdef Q_PROCESSOR_X86_64
 #include <tmmintrin.h>
+#include <immintrin.h>
 #include <cpuid.h>
 #endif
 
