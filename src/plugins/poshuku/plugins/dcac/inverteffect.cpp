@@ -63,7 +63,7 @@ namespace DCAC
 
 		uint64_t GetGray (const QImage& image)
 		{
-			uint64_t sourceGraySumR = 0, sourceGraySumG = 0, sourceGraySumB = 0;
+			uint64_t r = 0, g = 0, b = 0;
 
 			const auto height = image.height ();
 			const auto width = image.width ();
@@ -74,12 +74,12 @@ namespace DCAC
 				for (int x = 0; x < width; ++x)
 				{
 					auto color = scanline [x];
-					sourceGraySumR += qRed (color);
-					sourceGraySumG += qGreen (color);
-					sourceGraySumB += qBlue (color);
+					r += qRed (color);
+					g += qGreen (color);
+					b += qBlue (color);
 				}
 			}
-			return CombineGray (sourceGraySumR, sourceGraySumG, sourceGraySumB);
+			return CombineGray (r, g, b);
 		}
 
 		__attribute__ ((target ("sse4")))
