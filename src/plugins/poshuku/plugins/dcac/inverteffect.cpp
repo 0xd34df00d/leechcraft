@@ -169,6 +169,108 @@ namespace DCAC
 
 			return CombineGray (r, g, b);
 		}
+
+		__attribute__ ((target ("avx2")))
+		uint64_t GetGrayAVX2 (const QImage& image)
+		{
+			uint32_t r = 0;
+			uint32_t g = 0;
+			uint32_t b = 0;
+
+			__m256i sum = _mm256_setzero_si256 ();
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m256i ppair1mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 7,
+														0x80, 0x80, 0x80, 6,
+														0x80, 0x80, 0x80, 5,
+														0x80, 0x80, 0x80, 4,
+														0x80, 0x80, 0x80, 3,
+														0x80, 0x80, 0x80, 2,
+														0x80, 0x80, 0x80, 1,
+														0x80, 0x80, 0x80, 0);
+			const __m256i ppair2mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 15,
+														0x80, 0x80, 0x80, 14,
+														0x80, 0x80, 0x80, 13,
+														0x80, 0x80, 0x80, 12,
+														0x80, 0x80, 0x80, 11,
+														0x80, 0x80, 0x80, 10,
+														0x80, 0x80, 0x80, 9,
+														0x80, 0x80, 0x80, 8);
+			const __m256i ppair3mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 23,
+														0x80, 0x80, 0x80, 22,
+														0x80, 0x80, 0x80, 21,
+														0x80, 0x80, 0x80, 20,
+														0x80, 0x80, 0x80, 19,
+														0x80, 0x80, 0x80, 18,
+														0x80, 0x80, 0x80, 17,
+														0x80, 0x80, 0x80, 16);
+			const __m256i ppair4mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 31,
+														0x80, 0x80, 0x80, 30,
+														0x80, 0x80, 0x80, 29,
+														0x80, 0x80, 0x80, 28,
+														0x80, 0x80, 0x80, 27,
+														0x80, 0x80, 0x80, 26,
+														0x80, 0x80, 0x80, 25,
+														0x80, 0x80, 0x80, 24);
+
+			constexpr auto alignment = 32;
+
+			for (int y = 0; y < height; ++y)
+			{
+				const uchar * const scanline = image.scanLine (y);
+
+				const auto pos = scanline - static_cast<const uchar*> (nullptr);
+				int x = 0;
+
+				const auto beginUnaligned = pos % alignment;
+				auto bytesCount = width * 4;
+				if (beginUnaligned)
+				{
+					x += alignment - beginUnaligned;
+					bytesCount -= alignment - beginUnaligned;
+
+					for (int i = 0; i < alignment - beginUnaligned; i += 4)
+					{
+						auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
+						r += qRed (color);
+						g += qGreen (color);
+						b += qBlue (color);
+					}
+				}
+
+				const auto endUnaligned = bytesCount % alignment;
+				bytesCount -= endUnaligned;
+
+				for (; x < bytesCount; x += alignment)
+				{
+					const __m256i eightPixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
+
+					sum = _mm256_add_epi32 (sum, _mm256_shuffle_epi8 (eightPixels, ppair1mask));
+					sum = _mm256_add_epi32 (sum, _mm256_shuffle_epi8 (eightPixels, ppair2mask));
+					sum = _mm256_add_epi32 (sum, _mm256_shuffle_epi8 (eightPixels, ppair3mask));
+					sum = _mm256_add_epi32 (sum, _mm256_shuffle_epi8 (eightPixels, ppair4mask));
+				}
+
+				for (int i = x / 4; i < width; ++i)
+				{
+					auto color = reinterpret_cast<const QRgb*> (image.scanLine (y)) [i];
+					r += qRed (color);
+					g += qGreen (color);
+					b += qBlue (color);
+				}
+			}
+
+			r += _mm256_extract_epi32 (sum, 2);
+			g += _mm256_extract_epi32 (sum, 1);
+			b += _mm256_extract_epi32 (sum, 0);
+			r += _mm256_extract_epi32 (sum, 6);
+			g += _mm256_extract_epi32 (sum, 5);
+			b += _mm256_extract_epi32 (sum, 4);
+
+			return CombineGray (r, g, b);
+		}
 #endif
 
 		uint64_t GetGray (const QImage& image)
