@@ -86,6 +86,23 @@ namespace DCAC
 			return CombineGray (r, g, b);
 		}
 
+		void InvertDefault (QImage& image)
+		{
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			for (int y = 0; y < height; ++y)
+			{
+				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				for (int x = 0; x < width; ++x)
+				{
+					auto& color = scanline [x];
+					color &= 0x00ffffff;
+					color = uint32_t { 0xffffffff } - color;
+				}
+			}
+		}
+
 #ifdef Q_PROCESSOR_X86_64
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
@@ -319,6 +336,11 @@ namespace DCAC
 #endif
 		}
 
+		void Invert (QImage& image)
+		{
+			InvertDefault (image);
+		}
+
 		bool PrepareInverted (QImage& image, int threshold)
 		{
 			const auto height = image.height ();
@@ -328,16 +350,7 @@ namespace DCAC
 			const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
 
 			if (shouldInvert)
-				for (int y = 0; y < height; ++y)
-				{
-					const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
-					for (int x = 0; x < width; ++x)
-					{
-						auto& color = scanline [x];
-						color &= 0x00ffffff;
-						color = uint32_t { 0xffffffff } - color;
-					}
-				}
+				Invert (image);
 
 			return shouldInvert;
 		}
