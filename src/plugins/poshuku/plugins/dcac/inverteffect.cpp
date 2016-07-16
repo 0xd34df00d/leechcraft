@@ -308,6 +308,8 @@ namespace DCAC
 					return &GetGraySSE4;
 				}
 
+				qDebug () << Q_FUNC_INFO
+						<< "no particularly interesting SIMD IS, using default implementation";
 				return GetGrayDefault;
 			} ();
 
