@@ -279,6 +279,20 @@ namespace DCAC
 			static const auto ptr = []
 			{
 				uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
+				if (!__get_cpuid (7, &eax, &ebx, &ecx, &edx))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "failed to get CPUID";
+					return &GetGrayDefault;
+				}
+
+				if (ebx & (1 << 5))
+				{
+					qDebug () << Q_FUNC_INFO
+							<< "detected AVX2 support";
+					return &GetGrayAVX2;
+				}
+
 				if (!__get_cpuid (1, &eax, &ebx, &ecx, &edx))
 				{
 					qWarning () << Q_FUNC_INFO
