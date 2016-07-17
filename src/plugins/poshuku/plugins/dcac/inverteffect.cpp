@@ -109,14 +109,16 @@ namespace DCAC
 		{
 			const auto beginUnaligned = (scanline - static_cast<const uchar*> (nullptr)) % Alignment;
 			bytesCount = width * 4;
-			if (!beginUnaligned)
-				return;
+			if (beginUnaligned)
+			{
+				x += Alignment - beginUnaligned;
+				bytesCount -= Alignment - beginUnaligned;
 
-			x += Alignment - beginUnaligned;
-			bytesCount -= Alignment - beginUnaligned;
+				for (int i = 0; i < Alignment - beginUnaligned; i += 4)
+					f (i);
+			}
 
-			for (int i = 0; i < Alignment - beginUnaligned; i += 4)
-				f (i);
+			bytesCount -= bytesCount % Alignment;
 		}
 
 		__attribute__ ((target ("sse4")))
@@ -165,9 +167,6 @@ namespace DCAC
 							g += qGreen (color);
 							b += qBlue (color);
 						});
-
-				const auto endUnaligned = bytesCount % alignment;
-				bytesCount -= endUnaligned;
 
 				#pragma unroll(8)
 				for (; x < bytesCount; x += alignment)
