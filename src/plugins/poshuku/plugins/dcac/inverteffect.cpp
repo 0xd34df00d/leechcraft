@@ -247,27 +247,17 @@ namespace DCAC
 			{
 				const uchar * const scanline = image.scanLine (y);
 
-				const auto pos = scanline - static_cast<const uchar*> (nullptr);
 				int x = 0;
+				int bytesCount = 0;
 
-				const auto beginUnaligned = pos % alignment;
-				auto bytesCount = width * 4;
-				if (beginUnaligned)
+				auto handler = [&r, &g, &b, scanline] (int i)
 				{
-					x += alignment - beginUnaligned;
-					bytesCount -= alignment - beginUnaligned;
-
-					for (int i = 0; i < alignment - beginUnaligned; i += 4)
-					{
-						auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
-						r += qRed (color);
-						g += qGreen (color);
-						b += qBlue (color);
-					}
-				}
-
-				const auto endUnaligned = bytesCount % alignment;
-				bytesCount -= endUnaligned;
+					auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
+					r += qRed (color);
+					g += qGreen (color);
+					b += qBlue (color);
+				};
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
 
 				for (; x < bytesCount; x += alignment)
 				{
@@ -279,13 +269,7 @@ namespace DCAC
 					sum = _mm256_add_epi32 (sum, _mm256_shuffle_epi8 (eightPixels, ppair4mask));
 				}
 
-				for (int i = x / 4; i < width; ++i)
-				{
-					auto color = reinterpret_cast<const QRgb*> (image.scanLine (y)) [i];
-					r += qRed (color);
-					g += qGreen (color);
-					b += qBlue (color);
-				}
+				HandleLoopEnd (width, x, handler);
 			}
 
 			r += _mm256_extract_epi32 (sum, 2);
