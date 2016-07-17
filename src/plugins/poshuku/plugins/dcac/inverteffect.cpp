@@ -180,9 +180,9 @@ namespace DCAC
 					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel4msk));
 				}
 
-				for (int i = x / 4; i < width; ++i)
+				for (int i = x; i < width * 4; i += 4)
 				{
-					auto color = reinterpret_cast<const QRgb*> (image.scanLine (y)) [i];
+					auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
 					r += qRed (color);
 					g += qGreen (color);
 					b += qBlue (color);
