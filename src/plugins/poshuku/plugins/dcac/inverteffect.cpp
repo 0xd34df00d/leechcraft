@@ -104,6 +104,21 @@ namespace DCAC
 		}
 
 #ifdef Q_PROCESSOR_X86_64
+		template<int Alignment, typename F>
+		void HandleLoopBegin (const uchar * const scanline, int width, int& x, int& bytesCount, F&& f)
+		{
+			const auto beginUnaligned = (scanline - static_cast<const uchar*> (nullptr)) % Alignment;
+			bytesCount = width * 4;
+			if (!beginUnaligned)
+				return;
+
+			x += Alignment - beginUnaligned;
+			bytesCount -= Alignment - beginUnaligned;
+
+			for (int i = 0; i < Alignment - beginUnaligned; i += 4)
+				f (i);
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
@@ -139,24 +154,17 @@ namespace DCAC
 			{
 				const uchar * const scanline = image.scanLine (y);
 
-				const auto pos = scanline - static_cast<const uchar*> (nullptr);
 				int x = 0;
+				int bytesCount = 0;
 
-				const auto beginUnaligned = pos % alignment;
-				auto bytesCount = width * 4;
-				if (beginUnaligned)
-				{
-					x += alignment - beginUnaligned;
-					bytesCount -= alignment - beginUnaligned;
-
-					for (int i = 0; i < alignment - beginUnaligned; i += 4)
-					{
-						auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
-						r += qRed (color);
-						g += qGreen (color);
-						b += qBlue (color);
-					}
-				}
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount,
+						[&r, &g, &b, scanline] (int i)
+						{
+							auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
+							r += qRed (color);
+							g += qGreen (color);
+							b += qBlue (color);
+						});
 
 				const auto endUnaligned = bytesCount % alignment;
 				bytesCount -= endUnaligned;
