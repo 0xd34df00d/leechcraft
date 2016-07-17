@@ -95,11 +95,7 @@ namespace DCAC
 			{
 				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
 				for (int x = 0; x < width; ++x)
-				{
-					auto& color = scanline [x];
-					color &= 0x00ffffff;
-					color = uint32_t { 0xffffffff } - color;
-				}
+					scanline [x] ^= 0x00ffffff;
 			}
 		}
 
