@@ -128,6 +128,43 @@ namespace DCAC
 				f (i);
 		}
 
+		void InvertSSE4 (QImage& image)
+		{
+			constexpr auto alignment = 16;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i andMask = _mm_set1_epi32 (0x00ffffff);
+			const __m128i subMask = _mm_set1_epi32 (0xffffffff);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline] (int i)
+				{
+					auto& color = *reinterpret_cast<QRgb*> (&scanline [i]);
+					color &= 0x00ffffff;
+					color = uint32_t { 0xffffffff } - color;
+				};
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
+
+					fourPixels = _mm_and_si128 (andMask, fourPixels);
+					fourPixels = _mm_sub_epi32 (subMask, fourPixels);
+
+					//_mm_store_si128 (reinterpret_cast<__m128i*> (scanline + x), fourPixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
