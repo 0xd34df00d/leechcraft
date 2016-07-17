@@ -49,7 +49,7 @@
 
 @implementation WindowObserver
 
-- (id) initWithMainWindow:(QMainWindow*)w;
+- (id) initWithMainWindow:(QMainWindow*)w
 {
 	if ((self = [self init]))
 		Window_ = w;
