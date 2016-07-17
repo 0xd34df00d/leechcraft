@@ -121,6 +121,13 @@ namespace DCAC
 			bytesCount -= bytesCount % Alignment;
 		}
 
+		template<typename F>
+		void HandleLoopEnd (int width, int x, F&& f)
+		{
+			for (int i = x; i < width * 4; i += 4)
+				f (i);
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
@@ -159,14 +166,14 @@ namespace DCAC
 				int x = 0;
 				int bytesCount = 0;
 
-				HandleLoopBegin<alignment> (scanline, width, x, bytesCount,
-						[&r, &g, &b, scanline] (int i)
-						{
-							auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
-							r += qRed (color);
-							g += qGreen (color);
-							b += qBlue (color);
-						});
+				auto handler = [&r, &g, &b, scanline] (int i)
+				{
+					auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
+					r += qRed (color);
+					g += qGreen (color);
+					b += qBlue (color);
+				};
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
 
 				#pragma unroll(8)
 				for (; x < bytesCount; x += alignment)
@@ -179,13 +186,7 @@ namespace DCAC
 					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel4msk));
 				}
 
-				for (int i = x; i < width * 4; i += 4)
-				{
-					auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
-					r += qRed (color);
-					g += qGreen (color);
-					b += qBlue (color);
-				}
+				HandleLoopEnd (width, x, handler);
 			}
 
 			r += _mm_extract_epi32 (sum, 2);
