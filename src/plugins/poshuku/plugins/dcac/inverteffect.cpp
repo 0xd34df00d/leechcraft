@@ -32,7 +32,11 @@
 #include <QtDebug>
 #include <qwebview.h>
 
-#ifdef Q_PROCESSOR_X86_64
+#if defined (Q_PROCESSOR_X86_64) && !defined (Q_OS_MAC)
+#define SSE_ENABLED
+#endif
+
+#ifdef SSE_ENABLED
 #include <tmmintrin.h>
 #include <immintrin.h>
 #include <cpuid.h>
@@ -99,7 +103,7 @@ namespace DCAC
 			}
 		}
 
-#ifdef Q_PROCESSOR_X86_64
+#ifdef SSE_ENABLED
 		template<int Alignment, typename F>
 		void HandleLoopBegin (const uchar * const scanline, int width, int& x, int& bytesCount, F&& f)
 		{
@@ -335,7 +339,7 @@ namespace DCAC
 
 		uint64_t GetGray (const QImage& image)
 		{
-#ifdef Q_PROCESSOR_X86_64
+#ifdef SSE_ENABLED
 			static const auto ptr = []
 			{
 				uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
