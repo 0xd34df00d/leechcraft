@@ -419,7 +419,7 @@ namespace NetStoreManager
 		}
 
 		Util::Sequence (nullptr, sfl->RefreshListing ())
-				.MultipleResults ([this, acc] (const auto& result)
+				.MultipleResults ([this, acc] (const ISupportFileListings::RefreshResult_t& result)
 						{
 							if (acc != GetCurrentAccount ())
 								return;

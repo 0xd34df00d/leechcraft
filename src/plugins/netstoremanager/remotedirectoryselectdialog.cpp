@@ -74,7 +74,7 @@ namespace NetStoreManager
 		if (auto account = am->GetAccountFromUniqueID (accId))
 			if (auto isfl = qobject_cast<ISupportFileListings*> (account->GetQObject ()))
 				Util::Sequence (this, isfl->RefreshListing ())
-						.MultipleResults ([this] (const auto& result)
+						.MultipleResults ([this] (const ISupportFileListings::RefreshResult_t& result)
 								{ HandleGotListing (result); });
 	}
 
