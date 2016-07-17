@@ -161,7 +161,6 @@ namespace NetStoreManager
 		void handleAccountAdded (QObject *accObj);
 		void handleAccountRemoved (QObject *accObj);
 
-		void handleGotListing (const QList<StorageItem>& items);
 		void handleListingUpdated (const QByteArray& parentId);
 		void handleGotNewItem (const StorageItem& item, const QByteArray& parentId);
 
