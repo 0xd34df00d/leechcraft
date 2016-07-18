@@ -67,6 +67,15 @@ namespace Snails
 		}
 	}
 
+	void MessageListEditorManager::setMailListMode (MailListMode mode)
+	{
+		if (mode == Mode_)
+			return;
+
+		Mode_ = mode;
+		handleMessageListUpdated ();
+	}
+
 	void MessageListEditorManager::handleMessageListUpdated ()
 	{
 		switch (Mode_)
