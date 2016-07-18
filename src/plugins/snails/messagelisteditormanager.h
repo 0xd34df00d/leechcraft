@@ -40,12 +40,16 @@ namespace Snails
 {
 	class MailTreeDelegate;
 
+	enum class MailListMode;
+
 	class MessageListEditorManager : public QObject
 	{
 		Q_OBJECT
 
 		QTreeView * const View_;
 		MailTreeDelegate * const Delegate_;
+
+		MailListMode Mode_;
 	public:
 		MessageListEditorManager (QTreeView*, MailTreeDelegate*, QObject* = nullptr);
 	public slots:

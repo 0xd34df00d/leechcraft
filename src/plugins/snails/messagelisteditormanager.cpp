@@ -29,6 +29,7 @@
 
 #include "messagelisteditormanager.h"
 #include <QTreeView>
+#include "common.h"
 #include "mailtreedelegate.h"
 #include "mailmodel.h"
 
@@ -41,6 +42,7 @@ namespace Snails
 	: QObject { parent }
 	, View_ { view }
 	, Delegate_ { delegate }
+	, Mode_ { MailListMode::Normal }
 	{
 		connect (View_,
 				SIGNAL (expanded (QModelIndex)),
@@ -56,16 +58,32 @@ namespace Snails
 			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
 				view->openPersistentEditor (model->index (i, 0, parent));
 		}
+
+		void CloseEditors (QTreeView *view, const QModelIndex& parent)
+		{
+			const auto model = view->model ();
+			for (int i = 0, rc = model->rowCount (parent); i < rc; ++i)
+				view->closePersistentEditor (model->index (i, 0, parent));
+		}
 	}
 
 	void MessageListEditorManager::handleMessageListUpdated ()
 	{
-		OpenEditors (View_, {});
+		switch (Mode_)
+		{
+		case MailListMode::Normal:
+			OpenEditors (View_, {});
+			break;
+		case MailListMode::MultiSelect:
+			CloseEditors (View_, {});
+			break;
+		}
 	}
 
 	void MessageListEditorManager::handleExpanded (const QModelIndex& index)
 	{
-		OpenEditors (View_, index);
+		if (Mode_ == MailListMode::Normal)
+			OpenEditors (View_, index);
 	}
 }
 }
