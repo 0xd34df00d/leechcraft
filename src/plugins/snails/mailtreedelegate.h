@@ -52,11 +52,11 @@ namespace Snails
 		Q_OBJECT
 
 		const MessageLoader_f Loader_;
-		const QTreeView * const View_;
+		QTreeView * const View_;
 
 		MailListMode Mode_;
 	public:
-		MailTreeDelegate (const MessageLoader_f&, const QTreeView*, QObject* = nullptr);
+		MailTreeDelegate (const MessageLoader_f&, QTreeView*, QObject* = nullptr);
 
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const override;

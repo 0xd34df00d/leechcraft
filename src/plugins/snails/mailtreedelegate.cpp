@@ -46,7 +46,7 @@ namespace LeechCraft
 namespace Snails
 {
 	MailTreeDelegate::MailTreeDelegate (const MessageLoader_f& loader,
-			const QTreeView *view, QObject *parent)
+			QTreeView *view, QObject *parent)
 	: QStyledItemDelegate { parent }
 	, Loader_ { loader }
 	, View_ { view }
