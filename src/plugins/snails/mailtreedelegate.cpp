@@ -89,6 +89,13 @@ namespace Snails
 					(acts.size () - 1) * spacing +
 					2 * Padding;
 		}
+
+		QStyle* GetStyle (const QStyleOptionViewItem& option)
+		{
+			return option.widget ?
+					option.widget->style () :
+					QApplication::style ();
+		}
 	}
 
 	void MailTreeDelegate::paint (QPainter *painter,
@@ -100,9 +107,7 @@ namespace Snails
 		if (!isEnabled)
 			option.font.setStrikeOut (true);
 
-		const auto style = option.widget ?
-				option.widget->style () :
-				QApplication::style ();
+		const auto style = GetStyle (option);
 
 		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
