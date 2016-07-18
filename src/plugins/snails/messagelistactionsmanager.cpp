@@ -108,7 +108,8 @@ namespace Snails
 								const QUrl fullUrl { "https://github.com/" + addrReq };
 								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
 								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							}
+							},
+							{}
 						}
 					};
 			}
@@ -154,7 +155,8 @@ namespace Snails
 								const QUrl fullUrl { url + "show_bug.cgi?id=" + bugId };
 								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
 								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							}
+							},
+							{}
 						}
 					};
 			}
@@ -199,7 +201,8 @@ namespace Snails
 								const QUrl fullUrl { "http://" + url + "/issues/" + issue };
 								const auto& entity = Util::MakeEntity (fullUrl, {}, FromUserInitiated | OnlyHandle);
 								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							}
+							},
+							{}
 						}
 					};
 			}
@@ -233,7 +236,8 @@ namespace Snails
 							{
 								const auto& entity = Util::MakeEntity (QUrl { url }, {}, FromUserInitiated | OnlyHandle);
 								Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (entity);
-							}
+							},
+							{}
 						}
 					};
 			}
@@ -376,7 +380,8 @@ namespace Snails
 									return;
 
 								HandleUnsubscribeText (StringizeCT (*vmimeText), msg, acc);
-							}
+							},
+							{}
 						}
 					};
 			}
@@ -405,7 +410,8 @@ namespace Snails
 						[acc = Acc_] (const Message_ptr& msg)
 						{
 							//new MessageAttachmentsDialog { acc, msg };
-						}
+						},
+						{}
 					}
 				};
 			}
