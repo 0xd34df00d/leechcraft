@@ -48,6 +48,8 @@ namespace Snails
 
 		bool IsAvailable_ = true;
 
+		bool IsChecked_ = false;
+
 		TreeNode () = default;
 
 		TreeNode (const Message_ptr& msg, const TreeNode_ptr& parent)
@@ -129,6 +131,10 @@ namespace Snails
 		case Qt::DisplayRole:
 		case Sort:
 			break;
+		case Qt::CheckStateRole:
+			return structItem->IsChecked_ ?
+					Qt::Checked :
+					Qt::Unchecked;
 		case Qt::TextAlignmentRole:
 		{
 			switch (column)
