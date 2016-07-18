@@ -40,6 +40,8 @@ namespace LeechCraft
 {
 namespace Snails
 {
+	enum class MailListMode;
+
 	class Message;
 	using Message_ptr = std::shared_ptr<Message>;
 
@@ -47,8 +49,12 @@ namespace Snails
 
 	class MailTreeDelegate : public QStyledItemDelegate
 	{
+		Q_OBJECT
+
 		const MessageLoader_f Loader_;
 		const QTreeView * const View_;
+
+		MailListMode Mode_;
 	public:
 		MailTreeDelegate (const MessageLoader_f&, const QTreeView*, QObject* = nullptr);
 
@@ -59,6 +65,8 @@ namespace Snails
 		void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 
 		bool eventFilter (QObject*, QEvent*) override;
+	public slots:
+		void setMailListMode (MailListMode);
 	};
 }
 }

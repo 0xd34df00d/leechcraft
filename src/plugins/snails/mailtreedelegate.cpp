@@ -36,6 +36,7 @@
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
+#include "common.h"
 #include "mailtab.h"
 #include "mailmodel.h"
 #include "messagelistactioninfo.h"
@@ -49,6 +50,7 @@ namespace Snails
 	: QStyledItemDelegate { parent }
 	, Loader_ { loader }
 	, View_ { view }
+	, Mode_ { MailListMode::Normal }
 	{
 	}
 
@@ -279,6 +281,11 @@ namespace Snails
 		const auto res = QStyledItemDelegate::eventFilter (object, event);
 		blockSignals (false);
 		return res;
+	}
+
+	void MailTreeDelegate::setMailListMode (MailListMode mode)
+	{
+		Mode_ = mode;
 	}
 }
 }
