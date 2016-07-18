@@ -285,7 +285,17 @@ namespace Snails
 
 	void MailTreeDelegate::setMailListMode (MailListMode mode)
 	{
+		if (Mode_ == mode)
+			return;
+
 		Mode_ = mode;
+
+		auto idx = View_->indexAt (View_->rect ().topLeft ());
+		while (idx.isValid ())
+		{
+			View_->update (idx);
+			idx = View_->indexBelow (idx);
+		}
 	}
 }
 }
