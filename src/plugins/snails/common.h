@@ -46,5 +46,11 @@ namespace Snails
 		High,
 		Low
 	};
+
+	enum class MailListMode
+	{
+		Normal,
+		MultiSelect
+	};
 }
 }
