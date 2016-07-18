@@ -178,6 +178,7 @@ namespace Snails
 				{ "MailTab.MarkUnread", { MailTab::tr ("Mark as unread"), { "U" }, "mail-mark-unread" } },
 				{ "MailTab.Remove", { MailTab::tr ("Delete messages"), { "D" }, "list-remove" } },
 				{ "MailTab.ViewHeaders", { MailTab::tr ("View headers"), {}, "text-plain" } },
+				{ "MailTab.MultiSelect", { MailTab::tr ("Select multiple messages mode"), {}, "" } },
 
 				{ "MailTab.SelectAllChildren", { MailTab::tr ("Select all children"), { "S" }, "edit-select-all" } },
 				{ "MailTab.ExpandAllChildren", { MailTab::tr ("Expand all children"), { "E" }, "view-list-tree" } },
@@ -197,7 +198,7 @@ namespace Snails
 			action->setProperty ("ActionIcon", info.GetIconName ());
 
 			Util::InvokeOn (slot,
-					[&] (const char *slot) { QObject::connect (action, SIGNAL (triggered ()), parent, slot); },
+					[&] (const char *slot) { QObject::connect (action, SIGNAL (triggered (bool)), parent, slot); },
 					[&] (auto slot) { QObject::connect (action, &QAction::triggered, parent, slot); });
 
 			sm->RegisterAction (id, action);
@@ -351,6 +352,10 @@ namespace Snails
 		const auto msgViewHeaders = MakeAction ("MailTab.ViewHeaders", sm, this, SLOT (handleViewHeaders ()));
 		TabToolbar_->addAction (msgViewHeaders);
 		registerMailAction (msgViewHeaders);
+
+		const auto multiSelect = MakeAction ("MailTab.MultiSelect", sm, this, SLOT (handleMultiSelect (bool)));
+		multiSelect->setCheckable (true);
+		TabToolbar_->addAction (multiSelect);
 
 		SetMsgActionsEnabled (false);
 
@@ -1004,6 +1009,15 @@ namespace Snails
 			widget->setWindowTitle (tr ("Headers for %1").arg ('"' + msg->GetSubject () + '"'));
 			widget->show ();
 		}
+	}
+
+	void MailTab::handleMultiSelect (bool checked)
+	{
+		const auto mode = checked ?
+				MailListMode::MultiSelect :
+				MailListMode::Normal;
+		MailTreeDelegate_->setMailListMode (mode);
+		MsgListEditorMgr_->setMailListMode (mode);
 	}
 
 	namespace

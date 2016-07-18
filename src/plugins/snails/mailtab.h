@@ -139,6 +139,7 @@ namespace Snails
 		void handleMarkMsgUnread ();
 		void handleRemoveMsgs ();
 		void handleViewHeaders ();
+		void handleMultiSelect (bool);
 
 		void selectAllChildren ();
 		void expandAllChildren ();
