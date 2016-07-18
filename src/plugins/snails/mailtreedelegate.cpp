@@ -35,6 +35,7 @@
 #include <QMenu>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
+#include <util/sll/delayedexecutor.h>
 #include "mailtab.h"
 #include "mailmodel.h"
 #include "messagelistactioninfo.h"
@@ -236,7 +237,7 @@ namespace Snails
 	}
 
 	QWidget* MailTreeDelegate::createEditor (QWidget *parent,
-			const QStyleOptionViewItem&, const QModelIndex& index) const
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const auto& actionsVar = index.data (MailModel::MailRole::MessageActions);
 		if (actionsVar.isNull ())
@@ -254,6 +255,8 @@ namespace Snails
 		container->setStyle (style);
 		for (const auto& actInfo : actionInfos)
 			BuildAction (std::bind (Loader_, id), container, actInfo);
+
+		Util::ExecuteLater ([=] { updateEditorGeometry (container, option, index); });
 
 		return container;
 	}
