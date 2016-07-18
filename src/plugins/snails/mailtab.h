@@ -55,6 +55,7 @@ namespace Snails
 	class ComposeMessageTabFactory;
 	class AccountsManager;
 	class Storage;
+	class MailTreeDelegate;
 
 	enum class MsgType;
 
@@ -85,6 +86,7 @@ namespace Snails
 		QObject *PMT_;
 
 		MessageListEditorManager *MsgListEditorMgr_;
+		MailTreeDelegate *MailTreeDelegate_;
 
 		std::shared_ptr<MailModel> MailModel_;
 		QSortFilterProxyModel *MailSortFilterModel_;
