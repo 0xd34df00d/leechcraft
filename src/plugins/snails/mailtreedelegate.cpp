@@ -29,6 +29,7 @@
 
 #include "mailtreedelegate.h"
 #include <QPainter>
+#include <QMouseEvent>
 #include <QToolBar>
 #include <QTreeView>
 #include <QProxyStyle>
@@ -93,6 +94,30 @@ namespace Snails
 					2 * Padding;
 		}
 
+		void DrawCheckbox (QPainter *painter, QStyle *style,
+				QStyleOptionViewItemV4& option, const QModelIndex& index)
+		{
+			QStyleOptionButton checkBoxOpt;
+			static_cast<QStyleOption&> (checkBoxOpt) = option;
+			switch (index.data (Qt::CheckStateRole).value<Qt::CheckState> ())
+			{
+			case Qt::Checked:
+				checkBoxOpt.state |= QStyle::State_On;
+				break;
+			case Qt::Unchecked:
+				checkBoxOpt.state |= QStyle::State_Off;
+				break;
+			case Qt::PartiallyChecked:
+				checkBoxOpt.state |= QStyle::State_NoChange;
+				break;
+			}
+			style->drawControl (QStyle::CE_CheckBox, &checkBoxOpt, painter);
+
+			const auto checkboxWidth = style->pixelMetric (QStyle::PM_IndicatorWidth) +
+					style->pixelMetric (QStyle::PM_CheckBoxLabelSpacing);
+			option.rect.setLeft (option.rect.left () + checkboxWidth);
+		}
+
 		QStyle* GetStyle (const QStyleOptionViewItem& option)
 		{
 			return option.widget ?
@@ -112,12 +137,15 @@ namespace Snails
 
 		const auto style = GetStyle (option);
 
-		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
-
 		painter->save ();
+
+		style->drawPrimitive (QStyle::PE_PanelItemViewItem, &option, painter, option.widget);
 
 		if (option.state & QStyle::State_Selected)
 			painter->setPen (option.palette.color (QPalette::HighlightedText));
+
+		if (Mode_ == MailListMode::MultiSelect)
+			DrawCheckbox (painter, style, option, index);
 
 		const auto& subject = GetString (index, MailModel::Column::Subject);
 
