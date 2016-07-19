@@ -93,6 +93,7 @@ namespace Snails
 		QModelIndex index (int, int, const QModelIndex& = {}) const;
 		QModelIndex parent (const QModelIndex&) const;
 		int rowCount (const QModelIndex& = {}) const;
+		bool setData (const QModelIndex&, const QVariant&, int);
 
 		void SetFolder (const QStringList&);
 		QStringList GetCurrentFolder () const;

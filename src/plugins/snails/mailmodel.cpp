@@ -268,6 +268,22 @@ namespace Snails
 		return structItem->GetRowCount ();
 	}
 
+	bool MailModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	{
+		if (role != Qt::CheckStateRole)
+			return false;
+
+		if (!index.isValid ())
+			return false;
+
+		const auto structItem = static_cast<TreeNode*> (index.internalPointer ());
+		structItem->IsChecked_ = value.toInt () == Qt::Checked;
+
+		emit dataChanged (index, index);
+
+		return true;
+	}
+
 	void MailModel::SetFolder (const QStringList& folder)
 	{
 		Folder_ = folder;
