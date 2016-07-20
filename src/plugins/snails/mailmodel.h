@@ -108,6 +108,8 @@ namespace Snails
 		bool Remove (const QByteArray&);
 
 		void MarkUnavailable (const QList<QByteArray>&);
+
+		QList<QByteArray> GetCheckedIds () const;
 	private:
 		void UpdateParentReadCount (const QByteArray&, bool);
 

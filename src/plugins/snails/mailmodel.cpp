@@ -432,6 +432,21 @@ namespace Snails
 			}
 	}
 
+	QList<QByteArray> MailModel::GetCheckedIds () const
+	{
+		QList<QByteArray> result;
+
+		for (const auto& list : FolderId2Nodes_)
+			for (const auto& node : list)
+				if (node->IsChecked_)
+					result << node->Msg_->GetMessageID ();
+
+		std::sort (result.begin (), result.end ());
+		result.erase (std::unique (result.begin (), result.end ()), result.end ());
+
+		return result;
+	}
+
 	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
 	{
 		QList<TreeNode_ptr> nodes;
