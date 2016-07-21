@@ -61,6 +61,7 @@ namespace Snails
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const override;
 
+		bool editorEvent (QEvent*, QAbstractItemModel*, const QStyleOptionViewItem&, const QModelIndex&) override;
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		void updateEditorGeometry (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 

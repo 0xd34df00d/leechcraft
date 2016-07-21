@@ -207,6 +207,42 @@ namespace Snails
 		return { width, height };
 	}
 
+	bool MailTreeDelegate::editorEvent (QEvent *event, QAbstractItemModel *model,
+			const QStyleOptionViewItem& option, const QModelIndex& index)
+	{
+		if (Mode_ != MailListMode::MultiSelect)
+			return QStyledItemDelegate::editorEvent (event, model, option, index);
+
+		switch (event->type ())
+		{
+		case QEvent::MouseButtonPress:
+		case QEvent::MouseButtonRelease:
+			break;
+		default:
+			return QStyledItemDelegate::editorEvent (event, model, option, index);
+		}
+
+		const auto mouseEvent = static_cast<QMouseEvent*> (event);
+		const auto xPos = mouseEvent->pos ().x ();
+
+		const auto style = GetStyle (option);
+		const auto checkBoxWidth = style->pixelMetric (QStyle::PM_IndicatorWidth);
+		const auto left = option.rect.left ();
+		if (xPos < left || xPos > left + checkBoxWidth)
+			return QStyledItemDelegate::editorEvent (event, model, option, index);
+
+		if (event->type () == QEvent::MouseButtonPress)
+		{
+			const auto current = index.data (Qt::CheckStateRole).toInt ();
+			const auto desired = current == Qt::Checked ?
+					Qt::Unchecked :
+					Qt::Checked;
+			model->setData (index, desired, Qt::CheckStateRole);
+		}
+
+		return true;
+	}
+
 	namespace
 	{
 		class NullMarginsStyle : public QProxyStyle
