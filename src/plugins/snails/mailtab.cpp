@@ -43,6 +43,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/visitor.h>
+#include <util/sll/util.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
