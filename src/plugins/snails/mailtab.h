@@ -117,7 +117,7 @@ namespace Snails
 		void FillTabToolbarActions (Util::ShortcutManager*);
 		QList<QByteArray> GetSelectedIds () const;
 
-		void SetMsgActionsEnabled (bool);
+		void UpdateMsgActionsStatus ();
 		QList<Folder> GetActualFolders () const;
 
 		void SetMessage (const Message_ptr&);

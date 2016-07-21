@@ -357,7 +357,7 @@ namespace Snails
 		multiSelect->setCheckable (true);
 		TabToolbar_->addAction (multiSelect);
 
-		SetMsgActionsEnabled (false);
+		UpdateMsgActionsStatus ();
 
 		MakeShortcut ("MailTab.ExpandAllChildren", sm, Proxy_, this, SLOT (expandAllChildren ()));
 		MakeShortcut ("MailTab.SelectAllChildren", sm, Proxy_, this, SLOT (selectAllChildren ()));
@@ -384,11 +384,6 @@ namespace Snails
 			ids << currentId;
 
 		return ids;
-	}
-
-	void MailTab::SetMsgActionsEnabled (bool enable)
-	{
-		emit mailActionsEnabledChanged (enable);
 	}
 
 	QList<Folder> MailTab::GetActualFolders () const
@@ -716,11 +711,20 @@ namespace Snails
 		rebuildOpsToFolders ();
 	}
 
+	void MailTab::UpdateMsgActionsStatus ()
+	{
+		if (!CurrMsg_)
+		{
+			emit mailActionsEnabledChanged (false);
+			return;
+		}
+	}
+
 	void MailTab::handleMailSelected ()
 	{
+		const auto updateActionsGuard = Util::MakeScopeGuard ([this] { UpdateMsgActionsStatus (); });
 		if (!CurrAcc_)
 		{
-			SetMsgActionsEnabled (false);
 			Ui_.MailView_->setHtml ({});
 			return;
 		}
@@ -736,7 +740,6 @@ namespace Snails
 		if (!sidx.isValid () ||
 				!Ui_.MailTree_->selectionModel ()->selectedIndexes ().contains (sidx))
 		{
-			SetMsgActionsEnabled (false);
 			Ui_.MailView_->setHtml ({});
 			return;
 		}
@@ -757,13 +760,10 @@ namespace Snails
 					<< id.toHex ()
 					<< e.what ();
 
-			SetMsgActionsEnabled (false);
 			const QString& html = tr ("<h2>Unable to load mail</h2><em>%1</em>").arg (e.what ());
 			Ui_.MailView_->setHtml (html);
 			return;
 		}
-
-		SetMsgActionsEnabled (true);
 
 		SetMessage (msg);
 
