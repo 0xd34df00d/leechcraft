@@ -99,7 +99,7 @@ namespace Snails
 		{
 			QStyleOptionButton checkBoxOpt;
 			static_cast<QStyleOption&> (checkBoxOpt) = option;
-			switch (index.data (Qt::CheckStateRole).value<Qt::CheckState> ())
+			switch (index.data (Qt::CheckStateRole).toInt ())
 			{
 			case Qt::Checked:
 				checkBoxOpt.state |= QStyle::State_On;
