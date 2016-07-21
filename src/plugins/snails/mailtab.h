@@ -88,6 +88,8 @@ namespace Snails
 		MessageListEditorManager *MsgListEditorMgr_;
 		MailTreeDelegate *MailTreeDelegate_;
 
+		MailListMode MailListMode_ = MailListMode::Normal;
+
 		std::shared_ptr<MailModel> MailModel_;
 		QSortFilterProxyModel *MailSortFilterModel_;
 		Account_ptr CurrAcc_;

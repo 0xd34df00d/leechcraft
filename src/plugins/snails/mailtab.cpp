@@ -1016,6 +1016,9 @@ namespace Snails
 		const auto mode = checked ?
 				MailListMode::MultiSelect :
 				MailListMode::Normal;
+
+		MailListMode_ = mode;
+
 		MailTreeDelegate_->setMailListMode (mode);
 		MsgListEditorMgr_->setMailListMode (mode);
 	}
