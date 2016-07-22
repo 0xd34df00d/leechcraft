@@ -105,9 +105,6 @@ namespace DCAC
 
 		void InvertHslDefault (QImage& image)
 		{
-			QElapsedTimer timer;
-			timer.start ();
-
 			const auto height = image.height ();
 			const auto width = image.width ();
 
@@ -427,7 +424,7 @@ namespace DCAC
 			const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
 
 			if (shouldInvert)
-				Invert (image);
+				InvertRgb (image);
 
 			return shouldInvert;
 		}
