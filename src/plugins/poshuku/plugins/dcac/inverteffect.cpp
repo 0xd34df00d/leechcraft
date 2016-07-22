@@ -90,7 +90,7 @@ namespace DCAC
 			return CombineGray (r, g, b);
 		}
 
-		void InvertDefault (QImage& image)
+		void InvertRgbDefault (QImage& image)
 		{
 			const auto height = image.height ();
 			const auto width = image.width ();
@@ -129,7 +129,7 @@ namespace DCAC
 		}
 
 		__attribute__ ((target ("avx")))
-		void InvertAVX (QImage& image)
+		void InvertRgbAVX (QImage& image)
 		{
 			constexpr auto alignment = 32;
 
@@ -382,9 +382,9 @@ namespace DCAC
 #endif
 		}
 
-		void Invert (QImage& image)
+		void InvertRgb (QImage& image)
 		{
-			InvertDefault (image);
+			InvertRgbDefault (image);
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
