@@ -714,10 +714,14 @@ namespace Snails
 
 	void MailTab::UpdateMsgActionsStatus ()
 	{
-		if (!CurrMsg_)
+		switch (MailListMode_)
 		{
-			emit mailActionsEnabledChanged (false);
-			return;
+		case MailListMode::Normal:
+			emit mailActionsEnabledChanged (static_cast<bool> (CurrMsg_));
+			break;
+		case MailListMode::MultiSelect:
+			emit mailActionsEnabledChanged (MailModel_->HasCheckedIds ());
+			break;
 		}
 	}
 
