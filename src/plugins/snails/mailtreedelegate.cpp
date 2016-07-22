@@ -217,6 +217,8 @@ namespace Snails
 		{
 		case QEvent::MouseButtonPress:
 		case QEvent::MouseButtonRelease:
+		case QEvent::MouseButtonDblClick:
+		case QEvent::MouseMove:
 			break;
 		default:
 			return QStyledItemDelegate::editorEvent (event, model, option, index);
