@@ -441,7 +441,7 @@ namespace Snails
 		for (const auto& list : FolderId2Nodes_)
 			for (const auto& node : list)
 				if (node->IsChecked_)
-					result << node->Msg_->GetMessageID ();
+					result << node->Msg_->GetFolderID ();
 
 		std::sort (result.begin (), result.end ());
 		result.erase (std::unique (result.begin (), result.end ()), result.end ());
