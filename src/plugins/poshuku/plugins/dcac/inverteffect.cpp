@@ -110,18 +110,13 @@ namespace DCAC
 
 			for (int y = 0; y < height; ++y)
 			{
-				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				const auto scanline = image.scanLine (y);
 				for (int x = 0; x < width; ++x)
 				{
-					auto& pixel = scanline [x];
-
-					uint8_t *arr = reinterpret_cast<uint8_t*> (&pixel);
-					arr [0] /= 3;
-					arr [1] /= 3;
-					arr [2] /= 3;
-					arr [3] /= 3;
-
-					pixel |= 0xff000000;
+					auto pixel = &scanline [x * 4];
+					pixel [0] /= 2;
+					pixel [1] /= 2;
+					pixel [2] /= 2;
 				}
 			}
 		}
