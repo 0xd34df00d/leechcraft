@@ -373,11 +373,18 @@ namespace Snails
 
 	QList<QByteArray> MailTab::GetSelectedIds () const
 	{
-		const auto& rows = Ui_.MailTree_->selectionModel ()->selectedRows ();
-
 		QList<QByteArray> ids;
-		for (const auto& index : rows)
-			ids << index.data (MailModel::MailRole::ID).toByteArray ();
+		switch (MailListMode_)
+		{
+		case MailListMode::Normal:
+			for (const auto& index : Ui_.MailTree_->selectionModel ()->selectedRows ())
+				ids << index.data (MailModel::MailRole::ID).toByteArray ();
+			break;
+		case MailListMode::MultiSelect:
+			if (MailModel_)
+				ids = MailModel_->GetCheckedIds ();
+			break;
+		}
 
 		const auto& currentId = Ui_.MailTree_->currentIndex ()
 				.data (MailModel::MailRole::ID).toByteArray ();
