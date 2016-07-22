@@ -202,6 +202,50 @@ namespace DCAC
 				HandleLoopEnd (width, x, handler);
 			}
 		}
+
+		template<char From, char To>
+		struct GenSeq;
+
+		template<char From, char To>
+		using EpiSeq = typename GenSeq<From, To>::type;
+
+		template<typename T, T... Fst, T... Snd>
+		std::integer_sequence<T, Fst..., Snd...> Concat (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
+
+		template<char From, char To>
+		struct GenSeq
+		{
+			using type = decltype (Concat (EpiSeq<From, From> {}, EpiSeq<From - 1, To> {}));
+		};
+
+		template<char E>
+		struct GenSeq<E, E>
+		{
+			using type = std::integer_sequence<uchar, 0x80, 0x80, 0x80, E>;
+		};
+
+		template<uchar>
+		struct Tag {};
+
+		template<uchar... Is>
+		auto MakeMaskImpl (Tag<4>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm_set_epi8 (Is...);
+		}
+
+		template<uchar... Is>
+		__attribute__ ((target ("xsave")))
+		auto MakeMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm256_set_epi8 (Is...);
+		}
+
+		template<char From, char To>
+		auto MakeMask ()
+		{
+			return MakeMaskImpl (Tag<From - To + 1> {}, EpiSeq<From, To> {});
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
@@ -214,22 +258,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = _mm_set_epi8 (0x80, 0x80, 0x80, 3,
-													0x80, 0x80, 0x80, 2,
-													0x80, 0x80, 0x80, 1,
-													0x80, 0x80, 0x80, 0);
-			const __m128i pixel2msk = _mm_set_epi8 (0x80, 0x80, 0x80, 7,
-													0x80, 0x80, 0x80, 6,
-													0x80, 0x80, 0x80, 5,
-													0x80, 0x80, 0x80, 4);
-			const __m128i pixel3msk = _mm_set_epi8 (0x80, 0x80, 0x80, 11,
-													0x80, 0x80, 0x80, 10,
-													0x80, 0x80, 0x80, 9,
-													0x80, 0x80, 0x80, 8);
-			const __m128i pixel4msk = _mm_set_epi8 (0x80, 0x80, 0x80, 15,
-													0x80, 0x80, 0x80, 14,
-													0x80, 0x80, 0x80, 13,
-													0x80, 0x80, 0x80, 12);
+			const __m128i pixel1msk = MakeMask<3, 0> ();
+			const __m128i pixel2msk = MakeMask<7, 4> ();
+			const __m128i pixel3msk = MakeMask<11, 8> ();
+			const __m128i pixel4msk = MakeMask<15, 12> ();
 
 			constexpr auto alignment = 16;
 
@@ -282,38 +314,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i ppair1mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 7,
-														0x80, 0x80, 0x80, 6,
-														0x80, 0x80, 0x80, 5,
-														0x80, 0x80, 0x80, 4,
-														0x80, 0x80, 0x80, 3,
-														0x80, 0x80, 0x80, 2,
-														0x80, 0x80, 0x80, 1,
-														0x80, 0x80, 0x80, 0);
-			const __m256i ppair2mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 15,
-														0x80, 0x80, 0x80, 14,
-														0x80, 0x80, 0x80, 13,
-														0x80, 0x80, 0x80, 12,
-														0x80, 0x80, 0x80, 11,
-														0x80, 0x80, 0x80, 10,
-														0x80, 0x80, 0x80, 9,
-														0x80, 0x80, 0x80, 8);
-			const __m256i ppair3mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 23,
-														0x80, 0x80, 0x80, 22,
-														0x80, 0x80, 0x80, 21,
-														0x80, 0x80, 0x80, 20,
-														0x80, 0x80, 0x80, 19,
-														0x80, 0x80, 0x80, 18,
-														0x80, 0x80, 0x80, 17,
-														0x80, 0x80, 0x80, 16);
-			const __m256i ppair4mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 31,
-														0x80, 0x80, 0x80, 30,
-														0x80, 0x80, 0x80, 29,
-														0x80, 0x80, 0x80, 28,
-														0x80, 0x80, 0x80, 27,
-														0x80, 0x80, 0x80, 26,
-														0x80, 0x80, 0x80, 25,
-														0x80, 0x80, 0x80, 24);
+			const __m256i ppair1mask = MakeMask<7, 0> ();
+			const __m256i ppair2mask = MakeMask<15, 8> ();
+			const __m256i ppair3mask = MakeMask<23, 16> ();
+			const __m256i ppair4mask = MakeMask<31, 24> ();
 
 			constexpr auto alignment = 32;
 
