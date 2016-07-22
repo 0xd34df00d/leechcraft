@@ -1082,19 +1082,19 @@ namespace Snails
 
 	void MailTab::deselectCurrent (const QList<QByteArray>& ids, const QStringList& folder)
 	{
-		const auto selModel = Ui_.MailTree_->selectionModel ();
-		if (!selModel)
+		if (folder != MailModel_->GetCurrentFolder ())
 			return;
 
-		if (folder != MailModel_->GetCurrentFolder ())
+		MailModel_->MarkUnavailable (ids);
+
+		const auto selModel = Ui_.MailTree_->selectionModel ();
+		if (!selModel)
 			return;
 
 		const auto& curIdx = Ui_.MailTree_->currentIndex ();
 		const auto& currentId = curIdx.data (MailModel::MailRole::ID).toByteArray ();
 		if (!ids.contains (currentId))
 			return;
-
-		MailModel_->MarkUnavailable (ids);
 
 		selModel->clear ();
 	}
