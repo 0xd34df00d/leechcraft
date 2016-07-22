@@ -103,7 +103,7 @@ namespace DCAC
 			}
 		}
 
-		void InvertHslDefault (QImage& image)
+		void InvertHslDefault (QImage& image, float factor)
 		{
 			const auto height = image.height ();
 			const auto width = image.width ();
@@ -114,9 +114,9 @@ namespace DCAC
 				for (int x = 0; x < width; ++x)
 				{
 					auto pixel = &scanline [x * 4];
-					pixel [0] /= 2;
-					pixel [1] /= 2;
-					pixel [2] /= 2;
+					pixel [0] /= factor;
+					pixel [1] /= factor;
+					pixel [2] /= factor;
 				}
 			}
 		}
@@ -405,9 +405,9 @@ namespace DCAC
 			InvertRgbDefault (image);
 		}
 
-		void InvertHsl (QImage& image)
+		void InvertHsl (QImage& image, float factor)
 		{
-			InvertHslDefault (image);
+			InvertHslDefault (image, factor);
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
