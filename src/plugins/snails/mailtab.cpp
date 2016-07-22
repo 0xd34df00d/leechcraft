@@ -676,10 +676,16 @@ namespace Snails
 				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
 
 		MailModel_ = CurrAcc_->GetMailModelsManager ()->CreateModel ();
+
 		connect (MailModel_.get (),
 				SIGNAL (messageListUpdated ()),
 				MsgListEditorMgr_,
 				SLOT (handleMessageListUpdated ()));
+		connect (MailModel_.get (),
+				&MailModel::messagesSelectionChanged,
+				this,
+				&MailTab::UpdateMsgActionsStatus);
+
 		MailSortFilterModel_->setSourceModel (MailModel_.get ());
 		MailSortFilterModel_->setDynamicSortFilter (true);
 		for (int i = 1; i < MailModel_->columnCount (); ++i)
