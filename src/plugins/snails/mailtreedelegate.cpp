@@ -231,7 +231,7 @@ namespace Snails
 		if (xPos < left || xPos > left + checkBoxWidth)
 			return QStyledItemDelegate::editorEvent (event, model, option, index);
 
-		if (event->type () == QEvent::MouseButtonPress)
+		if (event->type () == QEvent::MouseButtonRelease)
 		{
 			const auto current = index.data (Qt::CheckStateRole).toInt ();
 			const auto desired = current == Qt::Checked ?
