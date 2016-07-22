@@ -103,6 +103,32 @@ namespace DCAC
 			}
 		}
 
+		void InvertHslDefault (QImage& image)
+		{
+			QElapsedTimer timer;
+			timer.start ();
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			for (int y = 0; y < height; ++y)
+			{
+				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				for (int x = 0; x < width; ++x)
+				{
+					auto& pixel = scanline [x];
+
+					uint8_t *arr = reinterpret_cast<uint8_t*> (&pixel);
+					arr [0] /= 3;
+					arr [1] /= 3;
+					arr [2] /= 3;
+					arr [3] /= 3;
+
+					pixel |= 0xff000000;
+				}
+			}
+		}
+
 #ifdef SSE_ENABLED
 		template<int Alignment, typename F>
 		void HandleLoopBegin (const uchar * const scanline, int width, int& x, int& bytesCount, F&& f)
@@ -385,6 +411,11 @@ namespace DCAC
 		void InvertRgb (QImage& image)
 		{
 			InvertRgbDefault (image);
+		}
+
+		void InvertHsl (QImage& image)
+		{
+			InvertHslDefault (image);
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
