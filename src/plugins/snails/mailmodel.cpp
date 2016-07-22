@@ -281,6 +281,8 @@ namespace Snails
 
 		emit dataChanged (index, index);
 
+		emit messagesSelectionChanged ();
+
 		return true;
 	}
 

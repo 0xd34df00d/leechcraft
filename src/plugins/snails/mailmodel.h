@@ -125,6 +125,7 @@ namespace Snails
 		Message_ptr GetMessageByFolderId (const QByteArray&) const;
 	signals:
 		void messageListUpdated ();
+		void messagesSelectionChanged ();
 	};
 }
 }
