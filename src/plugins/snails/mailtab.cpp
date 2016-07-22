@@ -675,7 +675,7 @@ namespace Snails
 				this,
 				SLOT (deselectCurrent (QList<QByteArray>, QStringList)));
 
-		MailModel_.reset (CurrAcc_->GetMailModelsManager ()->CreateModel ());
+		MailModel_ = CurrAcc_->GetMailModelsManager ()->CreateModel ();
 		connect (MailModel_.get (),
 				SIGNAL (messageListUpdated ()),
 				MsgListEditorMgr_,

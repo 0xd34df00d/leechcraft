@@ -56,7 +56,7 @@ namespace Snails
 	public:
 		MailModelsManager (Account*, Storage*);
 
-		MailModel* CreateModel ();
+		std::unique_ptr<MailModel> CreateModel ();
 
 		void ShowFolder (const QStringList&, MailModel*);
 

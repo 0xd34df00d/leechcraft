@@ -46,12 +46,12 @@ namespace Snails
 	{
 	}
 
-	MailModel* MailModelsManager::CreateModel ()
+	std::unique_ptr<MailModel> MailModelsManager::CreateModel ()
 	{
-		auto model = new MailModel { MsgListActionsMgr_, Acc_ };
-		Models_ << model;
+		auto model = std::make_unique<MailModel> (MsgListActionsMgr_, Acc_);
+		Models_ << model.get ();
 
-		connect (model,
+		connect (model.get (),
 				SIGNAL (destroyed (QObject*)),
 				this,
 				SLOT (handleModelDestroyed (QObject*)));
