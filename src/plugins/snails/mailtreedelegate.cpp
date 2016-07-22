@@ -240,6 +240,20 @@ namespace Snails
 					Qt::Unchecked :
 					Qt::Checked;
 			model->setData (index, desired, Qt::CheckStateRole);
+
+			if (mouseEvent->button () == Qt::RightButton)
+			{
+				QList<QModelIndex> children { index };
+
+				while (!children.isEmpty ())
+				{
+					const auto& nextIndex = children.takeFirst ();
+					model->setData (nextIndex, desired, Qt::CheckStateRole);
+
+					for (int i = 0, rc = model->rowCount (nextIndex); i < rc; ++i)
+						children << model->index (i, 0, nextIndex);
+				}
+			}
 		}
 
 		return true;
