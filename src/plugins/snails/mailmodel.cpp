@@ -447,6 +447,16 @@ namespace Snails
 		return result;
 	}
 
+	bool MailModel::HasCheckedIds () const
+	{
+		return std::any_of (FolderId2Nodes_.begin (), FolderId2Nodes_.end (),
+				[] (const auto& list)
+				{
+					return std::any_of (list.begin (), list.end (),
+							[] (const auto& node) { return node->IsChecked_; });
+				});
+	}
+
 	void MailModel::UpdateParentReadCount (const QByteArray& folderId, bool addUnread)
 	{
 		QList<TreeNode_ptr> nodes;

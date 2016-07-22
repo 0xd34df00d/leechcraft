@@ -110,6 +110,7 @@ namespace Snails
 		void MarkUnavailable (const QList<QByteArray>&);
 
 		QList<QByteArray> GetCheckedIds () const;
+		bool HasCheckedIds () const;
 	private:
 		void UpdateParentReadCount (const QByteArray&, bool);
 
