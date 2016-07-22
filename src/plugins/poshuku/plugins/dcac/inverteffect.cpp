@@ -103,6 +103,13 @@ namespace DCAC
 			}
 		}
 
+		void InvertHslInner (unsigned char *pixel, float factor)
+		{
+			pixel [0] /= factor;
+			pixel [1] /= factor;
+			pixel [2] /= factor;
+		}
+
 		void InvertHslDefault (QImage& image, float factor)
 		{
 			const auto height = image.height ();
@@ -112,12 +119,7 @@ namespace DCAC
 			{
 				const auto scanline = image.scanLine (y);
 				for (int x = 0; x < width; ++x)
-				{
-					auto pixel = &scanline [x * 4];
-					pixel [0] /= factor;
-					pixel [1] /= factor;
-					pixel [2] /= factor;
-				}
+					InvertHslInner (&scanline [x * 4], factor);
 			}
 		}
 
