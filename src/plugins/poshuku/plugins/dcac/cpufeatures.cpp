@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "cpufeatures.h"
+#include <mutex>
 #include <QtDebug>
 
 #if defined (Q_PROCESSOR_X86)
@@ -58,6 +59,10 @@ namespace DCAC
 					<< "unable to get CPUID eax = 7";
 		else
 			Ebx7_ = ebx;
+
+		static std::once_flag dbgFlag;
+		std::call_once (dbgFlag,
+				[this] { DumpDetectedFeatures (); });
 	}
 
 	QString CpuFeatures::GetFeatureName (Feature feature)
@@ -92,6 +97,29 @@ namespace DCAC
 		case Feature::None:
 			return true;
 		}
+	}
+
+	void CpuFeatures::DumpDetectedFeatures () const
+	{
+		if (qgetenv ("DUMP_CPUFEATURES").isEmpty ())
+			return;
+
+		QStringList detected;
+		QStringList undetected;
+
+		for (int i = 0; i < static_cast<int> (Feature::None); ++i)
+		{
+			const auto feature = static_cast<Feature> (i);
+			const auto& featureName = GetFeatureName (feature);
+			if (HasFeature (feature))
+				detected << featureName;
+			else
+				undetected << featureName;
+		}
+
+		qDebug () << Q_FUNC_INFO;
+		qDebug () << "detected the following CPU features:" << detected.join (" ").toUtf8 ();
+		qDebug () << "didn't detect the following CPU features:" << undetected.join (" ").toUtf8 ();
 	}
 }
 }

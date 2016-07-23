@@ -32,6 +32,8 @@
 #include <cstdint>
 #include <utility>
 
+class QString;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -69,6 +71,8 @@ namespace DCAC
 
 			return fallback;
 		}
+	private:
+		void DumpDetectedFeatures () const;
 	};
 }
 }
