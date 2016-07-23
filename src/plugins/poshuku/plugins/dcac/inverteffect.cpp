@@ -204,19 +204,52 @@ namespace DCAC
 			}
 		}
 
+		template<typename T, T... Fst, T... Snd>
+		std::integer_sequence<T, Fst..., Snd...> ConcatImpl (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
+
+		template<typename... Seqs>
+		struct ConcatS;
+
+		template<typename... Seqs>
+		using Concat = typename ConcatS<Seqs...>::type;
+
+		template<typename Seq>
+		struct ConcatS<Seq>
+		{
+			using type = Seq;
+		};
+
+		template<typename Seq1, typename Seq2, typename... Rest>
+		struct ConcatS<Seq1, Seq2, Rest...>
+		{
+			using type = Concat<decltype (ConcatImpl (Seq1 {}, Seq2 {})), Rest...>;
+		};
+
+		template<typename T, T E, size_t C>
+		struct RepeatS
+		{
+			template<T... Is>
+			static auto RepeatImpl (std::integer_sequence<T, Is...>)
+			{
+				return std::integer_sequence<T, (Is, E)...> {};
+			}
+
+			using type = decltype (RepeatImpl (std::make_integer_sequence<T, C> {}));
+		};
+
+		template<typename T, T E, size_t C>
+		using Repeat = typename RepeatS<T, E, C>::type;
+
 		template<char From, char To>
 		struct GenSeq;
 
 		template<char From, char To>
 		using EpiSeq = typename GenSeq<From, To>::type;
 
-		template<typename T, T... Fst, T... Snd>
-		std::integer_sequence<T, Fst..., Snd...> Concat (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
-
 		template<char From, char To>
 		struct GenSeq
 		{
-			using type = decltype (Concat (EpiSeq<From, From> {}, EpiSeq<From - 1, To> {}));
+			using type = Concat<EpiSeq<From, From>, EpiSeq<From - 1, To>>;
 		};
 
 		template<char E>
@@ -224,6 +257,33 @@ namespace DCAC
 		{
 			using type = std::integer_sequence<uchar, 0x80, 0x80, 0x80, E>;
 		};
+
+		template<size_t BytesCount, size_t Bucket>
+		struct GenRevSeqS
+		{
+			static constexpr uchar EndValue = BytesCount * 4 - 4;
+			static constexpr auto TotalCount = BytesCount * 4;
+			static constexpr auto BeforeEmpty = BytesCount * Bucket;
+			static constexpr auto AfterEmpty = TotalCount - BytesCount - BeforeEmpty;
+
+			static_assert (AfterEmpty >= 0, "negative sequel size");
+			static_assert (BeforeEmpty >= 0, "negative prequel size");
+
+			template<uchar... Is>
+			static auto BytesImpl (std::integer_sequence<uchar, Is...>)
+			{
+				return std::integer_sequence<uchar, (EndValue - Is * 4)...> {};
+			}
+
+			using type = Concat<
+					Repeat<uchar, 0x80, AfterEmpty>,
+					decltype (BytesImpl (std::make_integer_sequence<uchar, BytesCount> {})),
+					Repeat<uchar, 0x80, BeforeEmpty>
+				>;
+		};
+
+		template<size_t BytesCount, size_t Bucket>
+		using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket>::type;
 
 		template<uchar>
 		struct Tag {};
@@ -245,6 +305,18 @@ namespace DCAC
 		auto MakeMask ()
 		{
 			return MakeMaskImpl (Tag<From - To + 1> {}, EpiSeq<From, To> {});
+		}
+
+		template<uchar... Is>
+		auto MakeRevMaskImpl (Tag<4>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm_set_epi8 (Is...);
+		}
+
+		template<size_t BytesCount, size_t Bucket>
+		auto MakeRevMask ()
+		{
+			return MakeRevMaskImpl (Tag<BytesCount> {}, GenRevSeq<BytesCount, Bucket> {});
 		}
 
 		__attribute__ ((target ("sse4")))
