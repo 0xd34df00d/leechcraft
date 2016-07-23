@@ -313,6 +313,12 @@ namespace DCAC
 			return _mm_set_epi8 (Is...);
 		}
 
+		template<uchar... Is>
+		auto MakeRevMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm256_set_epi8 (Is...);
+		}
+
 		template<size_t BytesCount, size_t Bucket>
 		auto MakeRevMask ()
 		{
