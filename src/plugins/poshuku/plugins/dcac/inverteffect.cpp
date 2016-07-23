@@ -314,6 +314,7 @@ namespace DCAC
 		}
 
 		template<uchar... Is>
+		__attribute__ ((target ("xsave")))
 		auto MakeRevMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
 		{
 			return _mm256_set_epi8 (Is...);
