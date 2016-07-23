@@ -39,8 +39,9 @@
 #ifdef SSE_ENABLED
 #include <tmmintrin.h>
 #include <immintrin.h>
-#include <cpuid.h>
 #endif
+
+#include "cpufeatures.h"
 
 namespace LeechCraft
 {
@@ -103,29 +104,24 @@ namespace DCAC
 			}
 		}
 
-		void InvertHslDefault (QImage& image)
+		void ReduceLightnessInner (unsigned char *pixel, float factor)
 		{
-			QElapsedTimer timer;
-			timer.start ();
+			auto recipFactor = 1 / factor;
+			pixel [0] *= recipFactor;
+			pixel [1] *= recipFactor;
+			pixel [2] *= recipFactor;
+		}
 
+		void ReduceLightnessDefault (QImage& image, float factor)
+		{
 			const auto height = image.height ();
 			const auto width = image.width ();
 
 			for (int y = 0; y < height; ++y)
 			{
-				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				const auto scanline = image.scanLine (y);
 				for (int x = 0; x < width; ++x)
-				{
-					auto& pixel = scanline [x];
-
-					uint8_t *arr = reinterpret_cast<uint8_t*> (&pixel);
-					arr [0] /= 3;
-					arr [1] /= 3;
-					arr [2] /= 3;
-					arr [3] /= 3;
-
-					pixel |= 0xff000000;
-				}
+					ReduceLightnessInner (&scanline [x * 4], factor);
 			}
 		}
 
@@ -208,6 +204,258 @@ namespace DCAC
 				HandleLoopEnd (width, x, handler);
 			}
 		}
+
+		template<typename T, T... Fst, T... Snd>
+		std::integer_sequence<T, Fst..., Snd...> ConcatImpl (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
+
+		template<typename... Seqs>
+		struct ConcatS;
+
+		template<typename... Seqs>
+		using Concat = typename ConcatS<Seqs...>::type;
+
+		template<typename Seq>
+		struct ConcatS<Seq>
+		{
+			using type = Seq;
+		};
+
+		template<typename Seq1, typename Seq2, typename... Rest>
+		struct ConcatS<Seq1, Seq2, Rest...>
+		{
+			using type = Concat<decltype (ConcatImpl (Seq1 {}, Seq2 {})), Rest...>;
+		};
+
+		template<typename T, T E, size_t C>
+		struct RepeatS
+		{
+			template<T... Is>
+			static auto RepeatImpl (std::integer_sequence<T, Is...>)
+			{
+				return std::integer_sequence<T, (Is, E)...> {};
+			}
+
+			using type = decltype (RepeatImpl (std::make_integer_sequence<T, C> {}));
+		};
+
+		template<typename T, T E, size_t C>
+		using Repeat = typename RepeatS<T, E, C>::type;
+
+		template<char From, char To>
+		struct GenSeq;
+
+		template<char From, char To>
+		using EpiSeq = typename GenSeq<From, To>::type;
+
+		template<char From, char To>
+		struct GenSeq
+		{
+			using type = Concat<EpiSeq<From, From>, EpiSeq<From - 1, To>>;
+		};
+
+		template<char E>
+		struct GenSeq<E, E>
+		{
+			using type = std::integer_sequence<uchar, 0x80, 0x80, 0x80, E>;
+		};
+
+		template<size_t BytesCount, size_t Bucket>
+		struct GenRevSeqS
+		{
+			static constexpr uchar EndValue = BytesCount * 4 - 4;
+			static constexpr auto TotalCount = BytesCount * 4;
+			static constexpr auto BeforeEmpty = BytesCount * Bucket;
+			static constexpr auto AfterEmpty = TotalCount - BytesCount - BeforeEmpty;
+
+			static_assert (AfterEmpty >= 0, "negative sequel size");
+			static_assert (BeforeEmpty >= 0, "negative prequel size");
+
+			template<uchar... Is>
+			static auto BytesImpl (std::integer_sequence<uchar, Is...>)
+			{
+				return std::integer_sequence<uchar, (EndValue - Is * 4)...> {};
+			}
+
+			using type = Concat<
+					Repeat<uchar, 0x80, AfterEmpty>,
+					decltype (BytesImpl (std::make_integer_sequence<uchar, BytesCount> {})),
+					Repeat<uchar, 0x80, BeforeEmpty>
+				>;
+		};
+
+		template<size_t BytesCount, size_t Bucket>
+		using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket>::type;
+
+		template<uchar>
+		struct Tag {};
+
+		template<uchar... Is>
+		auto MakeMaskImpl (Tag<4>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm_set_epi8 (Is...);
+		}
+
+		template<uchar... Is>
+		__attribute__ ((target ("xsave")))
+		auto MakeMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm256_set_epi8 (Is...);
+		}
+
+		template<char From, char To>
+		auto MakeMask ()
+		{
+			return MakeMaskImpl (Tag<From - To + 1> {}, EpiSeq<From, To> {});
+		}
+
+		template<uchar... Is>
+		auto MakeRevMaskImpl (Tag<4>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm_set_epi8 (Is...);
+		}
+
+		template<uchar... Is>
+		__attribute__ ((target ("xsave")))
+		auto MakeRevMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm256_set_epi8 (Is...);
+		}
+
+		template<size_t BytesCount, size_t Bucket>
+		auto MakeRevMask ()
+		{
+			return MakeRevMaskImpl (Tag<BytesCount> {}, GenRevSeq<BytesCount, Bucket> {});
+		}
+
+		__attribute__ ((target ("ssse3")))
+		void ReduceLightnessSSSE3 (QImage& image, float factor)
+		{
+			constexpr auto alignment = 16;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i pixel1msk = MakeMask<3, 0> ();
+			const __m128i pixel2msk = MakeMask<7, 4> ();
+			const __m128i pixel3msk = MakeMask<11, 8> ();
+			const __m128i pixel4msk = MakeMask<15, 12> ();
+
+			const __m128i pixel1revmask = MakeRevMask<4, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<4, 1> ();
+			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
+			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
+
+			const __m128 divisor = _mm_set_ps (1, 1 / factor, 1 / factor, 1 / factor);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline, factor] (int i) { ReduceLightnessInner (&scanline [i], factor); };
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
+
+					auto px1 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel1msk));
+					auto px2 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel2msk));
+					auto px3 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel3msk));
+					auto px4 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel4msk));
+
+					px1 = _mm_cvtps_epi32 (_mm_mul_ps (px1, divisor));
+					px2 = _mm_cvtps_epi32 (_mm_mul_ps (px2, divisor));
+					px3 = _mm_cvtps_epi32 (_mm_mul_ps (px3, divisor));
+					px4 = _mm_cvtps_epi32 (_mm_mul_ps (px4, divisor));
+
+					px1 = _mm_shuffle_epi8 (px1, pixel1revmask);
+					px2 = _mm_shuffle_epi8 (px2, pixel2revmask);
+					px3 = _mm_shuffle_epi8 (px3, pixel3revmask);
+					px4 = _mm_shuffle_epi8 (px4, pixel4revmask);
+
+					fourPixels = _mm_add_epi32 (px1, px2);
+					fourPixels = _mm_add_epi32 (fourPixels, px3);
+					fourPixels = _mm_add_epi32 (fourPixels, px4);
+
+					_mm_store_si128 (reinterpret_cast<__m128i*> (scanline + x), fourPixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
+
+		__attribute__((__always_inline__, __nodebug__, target("xsave")))
+		__m256i EmulMM256ShuffleEpi8 (__m256i reg, __m128i shuf)
+		{
+			__m128i reg0 = _mm256_castsi256_si128 (reg);
+			__m128i reg1 = _mm256_extracti128_si256 (reg, 1);
+			__m128i res0 = _mm_shuffle_epi8 (reg0, shuf);
+			__m128i res1 = _mm_shuffle_epi8 (reg1, shuf);
+			return _mm256_set_m128i (res0, res1);
+		}
+
+		__attribute__ ((target ("avx")))
+		void ReduceLightnessAVX (QImage& image, float factor)
+		{
+			constexpr auto alignment = 32;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i pixel1msk = MakeMask<3, 0> ();
+			const __m128i pixel2msk = MakeMask<7, 4> ();
+			const __m128i pixel3msk = MakeMask<11, 8> ();
+			const __m128i pixel4msk = MakeMask<15, 12> ();
+
+			const __m128i pixel1revmask = MakeRevMask<4, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<4, 1> ();
+			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
+			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
+
+			const __m256 divisor = _mm256_set_ps (1, 1 / factor, 1 / factor, 1 / factor,
+					1, 1 / factor, 1 / factor, 1 / factor);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline, factor] (int i) { ReduceLightnessInner (&scanline [i], factor); };
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m256i eightPixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
+
+					auto px1 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel1msk));
+					auto px2 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel2msk));
+					auto px3 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel3msk));
+					auto px4 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel4msk));
+
+					px1 = _mm256_cvtps_epi32 (_mm256_mul_ps (px1, divisor));
+					px2 = _mm256_cvtps_epi32 (_mm256_mul_ps (px2, divisor));
+					px3 = _mm256_cvtps_epi32 (_mm256_mul_ps (px3, divisor));
+					px4 = _mm256_cvtps_epi32 (_mm256_mul_ps (px4, divisor));
+
+					px1 = EmulMM256ShuffleEpi8 (px1, pixel1revmask);
+					px2 = EmulMM256ShuffleEpi8 (px2, pixel2revmask);
+					px3 = EmulMM256ShuffleEpi8 (px3, pixel3revmask);
+					px4 = EmulMM256ShuffleEpi8 (px4, pixel4revmask);
+
+					eightPixels = _mm256_or_ps (px1, px2);
+					eightPixels = _mm256_or_ps (eightPixels, px3);
+					eightPixels = _mm256_or_ps (eightPixels, px4);
+
+					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x), eightPixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
@@ -220,22 +468,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = _mm_set_epi8 (0x80, 0x80, 0x80, 3,
-													0x80, 0x80, 0x80, 2,
-													0x80, 0x80, 0x80, 1,
-													0x80, 0x80, 0x80, 0);
-			const __m128i pixel2msk = _mm_set_epi8 (0x80, 0x80, 0x80, 7,
-													0x80, 0x80, 0x80, 6,
-													0x80, 0x80, 0x80, 5,
-													0x80, 0x80, 0x80, 4);
-			const __m128i pixel3msk = _mm_set_epi8 (0x80, 0x80, 0x80, 11,
-													0x80, 0x80, 0x80, 10,
-													0x80, 0x80, 0x80, 9,
-													0x80, 0x80, 0x80, 8);
-			const __m128i pixel4msk = _mm_set_epi8 (0x80, 0x80, 0x80, 15,
-													0x80, 0x80, 0x80, 14,
-													0x80, 0x80, 0x80, 13,
-													0x80, 0x80, 0x80, 12);
+			const __m128i pixel1msk = MakeMask<3, 0> ();
+			const __m128i pixel2msk = MakeMask<7, 4> ();
+			const __m128i pixel3msk = MakeMask<11, 8> ();
+			const __m128i pixel4msk = MakeMask<15, 12> ();
 
 			constexpr auto alignment = 16;
 
@@ -288,38 +524,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i ppair1mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 7,
-														0x80, 0x80, 0x80, 6,
-														0x80, 0x80, 0x80, 5,
-														0x80, 0x80, 0x80, 4,
-														0x80, 0x80, 0x80, 3,
-														0x80, 0x80, 0x80, 2,
-														0x80, 0x80, 0x80, 1,
-														0x80, 0x80, 0x80, 0);
-			const __m256i ppair2mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 15,
-														0x80, 0x80, 0x80, 14,
-														0x80, 0x80, 0x80, 13,
-														0x80, 0x80, 0x80, 12,
-														0x80, 0x80, 0x80, 11,
-														0x80, 0x80, 0x80, 10,
-														0x80, 0x80, 0x80, 9,
-														0x80, 0x80, 0x80, 8);
-			const __m256i ppair3mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 23,
-														0x80, 0x80, 0x80, 22,
-														0x80, 0x80, 0x80, 21,
-														0x80, 0x80, 0x80, 20,
-														0x80, 0x80, 0x80, 19,
-														0x80, 0x80, 0x80, 18,
-														0x80, 0x80, 0x80, 17,
-														0x80, 0x80, 0x80, 16);
-			const __m256i ppair4mask = _mm256_set_epi8 (0x80, 0x80, 0x80, 31,
-														0x80, 0x80, 0x80, 30,
-														0x80, 0x80, 0x80, 29,
-														0x80, 0x80, 0x80, 28,
-														0x80, 0x80, 0x80, 27,
-														0x80, 0x80, 0x80, 26,
-														0x80, 0x80, 0x80, 25,
-														0x80, 0x80, 0x80, 24);
+			const __m256i ppair1mask = MakeMask<7, 0> ();
+			const __m256i ppair2mask = MakeMask<15, 8> ();
+			const __m256i ppair3mask = MakeMask<23, 16> ();
+			const __m256i ppair4mask = MakeMask<31, 24> ();
 
 			constexpr auto alignment = 32;
 
@@ -366,41 +574,11 @@ namespace DCAC
 		uint64_t GetGray (const QImage& image)
 		{
 #ifdef SSE_ENABLED
-			static const auto ptr = []
-			{
-				uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
-				if (!__get_cpuid (7, &eax, &ebx, &ecx, &edx))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "failed to get CPUID";
-					return &GetGrayDefault;
-				}
-
-				if (ebx & (1 << 5))
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "detected AVX2 support";
-					return &GetGrayAVX2;
-				}
-
-				if (!__get_cpuid (1, &eax, &ebx, &ecx, &edx))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "failed to get CPUID";
-					return &GetGrayDefault;
-				}
-
-				if (ecx & (1 << 19))
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "detected SSE 4.1 support";
-					return &GetGraySSE4;
-				}
-
-				qDebug () << Q_FUNC_INFO
-						<< "no particularly interesting SIMD IS, using default implementation";
-				return GetGrayDefault;
-			} ();
+			static const auto ptr = CpuFeatures::Choose ({
+						{ CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
+						{ CpuFeatures::Feature::SSE41, &GetGraySSE4 }
+					},
+					&GetGrayDefault);
 
 			return ptr (image);
 #else
@@ -413,9 +591,9 @@ namespace DCAC
 			InvertRgbDefault (image);
 		}
 
-		void InvertHsl (QImage& image)
+		void ReduceLightness (QImage& image, float factor)
 		{
-			InvertHslDefault (image);
+			ReduceLightnessDefault (image, factor);
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
@@ -427,7 +605,7 @@ namespace DCAC
 			const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
 
 			if (shouldInvert)
-				Invert (image);
+				InvertRgb (image);
 
 			return shouldInvert;
 		}

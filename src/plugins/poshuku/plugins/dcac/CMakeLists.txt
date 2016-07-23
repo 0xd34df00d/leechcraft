@@ -5,6 +5,7 @@ set (DCAC_SRCS
 	inverteffect.cpp
 	viewsmanager.cpp
 	xmlsettingsmanager.cpp
+	cpufeatures.cpp
 	)
 set (DCAC_RESOURCES
 	)
