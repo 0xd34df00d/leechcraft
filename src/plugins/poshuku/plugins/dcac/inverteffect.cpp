@@ -39,8 +39,9 @@
 #ifdef SSE_ENABLED
 #include <tmmintrin.h>
 #include <immintrin.h>
-#include <cpuid.h>
 #endif
+
+#include "cpufeatures.h"
 
 namespace LeechCraft
 {
@@ -573,41 +574,11 @@ namespace DCAC
 		uint64_t GetGray (const QImage& image)
 		{
 #ifdef SSE_ENABLED
-			static const auto ptr = []
-			{
-				uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
-				if (!__get_cpuid (7, &eax, &ebx, &ecx, &edx))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "failed to get CPUID";
-					return &GetGrayDefault;
-				}
-
-				if (ebx & (1 << 5))
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "detected AVX2 support";
-					return &GetGrayAVX2;
-				}
-
-				if (!__get_cpuid (1, &eax, &ebx, &ecx, &edx))
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "failed to get CPUID";
-					return &GetGrayDefault;
-				}
-
-				if (ecx & (1 << 19))
-				{
-					qDebug () << Q_FUNC_INFO
-							<< "detected SSE 4.1 support";
-					return &GetGraySSE4;
-				}
-
-				qDebug () << Q_FUNC_INFO
-						<< "no particularly interesting SIMD IS, using default implementation";
-				return GetGrayDefault;
-			} ();
+			static const auto ptr = CpuFeatures::Choose ({
+						{ CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
+						{ CpuFeatures::Feature::SSE41, &GetGraySSE4 }
+					},
+					&GetGrayDefault);
 
 			return ptr (image);
 #else
