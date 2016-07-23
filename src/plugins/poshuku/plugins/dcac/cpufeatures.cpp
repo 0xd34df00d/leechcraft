@@ -64,10 +64,14 @@ namespace DCAC
 	{
 		switch (feature)
 		{
-		case Feature::AVX2:
-			return Ebx7_ & (1 << 5);
+		case Feature::SSSE3:
+			return Ecx1_ & (1 << 9);
 		case Feature::SSE41:
 			return Ecx1_ & (1 << 19);
+		case Feature::AVX:
+			return Ecx1_ & (1 << 28);
+		case Feature::AVX2:
+			return Ebx7_ & (1 << 5);
 		}
 	}
 }

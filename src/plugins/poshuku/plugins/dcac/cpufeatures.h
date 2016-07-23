@@ -47,7 +47,9 @@ namespace DCAC
 
 		enum class Feature
 		{
+			SSSE3,
 			SSE41,
+			AVX,
 			AVX2
 		};
 
