@@ -31,16 +31,15 @@
 
 #include <cstdint>
 #include <utility>
+#include "sysconfig.h"
 
 class QString;
 
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-namespace DCAC
-{
-	class CpuFeatures
+	class UTIL_SYS_API CpuFeatures
 	{
 		uint32_t Ecx1_ = 0;
 		uint32_t Ebx7_ = 0;
@@ -74,6 +73,5 @@ namespace DCAC
 	private:
 		void DumpDetectedFeatures () const;
 	};
-}
 }
 }

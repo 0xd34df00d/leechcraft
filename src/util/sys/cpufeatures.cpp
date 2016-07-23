@@ -41,9 +41,7 @@
 
 namespace LeechCraft
 {
-namespace Poshuku
-{
-namespace DCAC
+namespace Util
 {
 	CpuFeatures::CpuFeatures ()
 	{
@@ -121,6 +119,5 @@ namespace DCAC
 		qDebug () << "detected the following CPU features:" << detected.join (" ").toUtf8 ();
 		qDebug () << "didn't detect the following CPU features:" << undetected.join (" ").toUtf8 ();
 	}
-}
 }
 }

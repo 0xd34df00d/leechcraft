@@ -19,6 +19,7 @@ set (SYS_SRCS
 	extensionsdata.cpp
 	util.cpp
 	fdguard.cpp
+	cpufeatures.cpp
 	)
 
 if (UNIX AND NOT APPLE)

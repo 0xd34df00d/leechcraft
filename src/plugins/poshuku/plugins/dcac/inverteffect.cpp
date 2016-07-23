@@ -41,7 +41,7 @@
 #include <immintrin.h>
 #endif
 
-#include "cpufeatures.h"
+#include <util/sys/cpufeatures.h>
 
 namespace LeechCraft
 {
@@ -577,9 +577,9 @@ namespace DCAC
 		uint64_t GetGray (const QImage& image)
 		{
 #ifdef SSE_ENABLED
-			static const auto ptr = CpuFeatures::Choose ({
-						{ CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
-						{ CpuFeatures::Feature::SSE41, &GetGraySSE4 }
+			static const auto ptr = Util::CpuFeatures::Choose ({
+						{ Util::CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
+						{ Util::CpuFeatures::Feature::SSE41, &GetGraySSE4 }
 					},
 					&GetGrayDefault);
 
