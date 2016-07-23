@@ -385,6 +385,16 @@ namespace DCAC
 			}
 		}
 
+		__attribute__((__always_inline__, __nodebug__, target("xsave")))
+		__m256i EmulMM256ShuffleEpi8 (__m256i reg, __m128i shuf)
+		{
+			__m128i reg0 = _mm256_castsi256_si128 (reg);
+			__m128i reg1 = _mm256_extracti128_si256 (reg, 1);
+			__m128i res0 = _mm_shuffle_epi8 (reg0, shuf);
+			__m128i res1 = _mm_shuffle_epi8 (reg1, shuf);
+			return _mm256_set_m128i (res0, res1);
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
