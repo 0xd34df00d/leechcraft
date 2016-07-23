@@ -386,7 +386,7 @@ namespace DCAC
 			}
 		}
 
-		__attribute__((__always_inline__, __nodebug__, target("xsave")))
+		__attribute__((__always_inline__, __nodebug__, target("avx")))
 		__m256i EmulMM256ShuffleEpi8 (__m256i reg, __m128i shuf)
 		{
 			__m128i reg0 = _mm256_castsi256_si128 (reg);
