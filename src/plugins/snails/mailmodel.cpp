@@ -426,7 +426,7 @@ namespace Snails
 		for (const auto& id : ids)
 			for (const auto& node : FolderId2Nodes_.value (id))
 			{
-				if (node->IsAvailable_ == false)
+				if (!node->IsAvailable_)
 					continue;
 
 				node->IsAvailable_ = false;
