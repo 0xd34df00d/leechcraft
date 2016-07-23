@@ -103,7 +103,7 @@ namespace DCAC
 			}
 		}
 
-		void InvertHslInner (unsigned char *pixel, float factor)
+		void ReduceLightnessInner (unsigned char *pixel, float factor)
 		{
 			auto recipFactor = 1 / factor;
 			pixel [0] *= recipFactor;
@@ -111,7 +111,7 @@ namespace DCAC
 			pixel [2] *= recipFactor;
 		}
 
-		void InvertHslDefault (QImage& image, float factor)
+		void ReduceLightnessDefault (QImage& image, float factor)
 		{
 			const auto height = image.height ();
 			const auto width = image.width ();
@@ -120,7 +120,7 @@ namespace DCAC
 			{
 				const auto scanline = image.scanLine (y);
 				for (int x = 0; x < width; ++x)
-					InvertHslInner (&scanline [x * 4], factor);
+					ReduceLightnessInner (&scanline [x * 4], factor);
 			}
 		}
 
@@ -320,7 +320,7 @@ namespace DCAC
 		}
 
 		__attribute__ ((target ("ssse3")))
-		void InvertHslSSSE3 (QImage& image, float factor)
+		void ReduceLightnessSSSE3 (QImage& image, float factor)
 		{
 			constexpr auto alignment = 16;
 
@@ -345,7 +345,7 @@ namespace DCAC
 
 				int x = 0;
 				int bytesCount = 0;
-				auto handler = [scanline, factor] (int i) { InvertHslInner (&scanline [i], factor); };
+				auto handler = [scanline, factor] (int i) { ReduceLightnessInner (&scanline [i], factor); };
 				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
 
 				for (; x < bytesCount; x += alignment)
@@ -543,9 +543,9 @@ namespace DCAC
 			InvertRgbDefault (image);
 		}
 
-		void InvertHsl (QImage& image, float factor)
+		void ReduceLightness (QImage& image, float factor)
 		{
-			InvertHslDefault (image, factor);
+			ReduceLightnessDefault (image, factor);
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
