@@ -105,9 +105,10 @@ namespace DCAC
 
 		void InvertHslInner (unsigned char *pixel, float factor)
 		{
-			pixel [0] /= factor;
-			pixel [1] /= factor;
-			pixel [2] /= factor;
+			auto recipFactor = 1 / factor;
+			pixel [0] *= recipFactor;
+			pixel [1] *= recipFactor;
+			pixel [2] *= recipFactor;
 		}
 
 		void InvertHslDefault (QImage& image, float factor)
