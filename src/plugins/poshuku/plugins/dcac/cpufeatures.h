@@ -30,6 +30,7 @@
 #pragma once
 
 #include <cstdint>
+#include <utility>
 
 namespace LeechCraft
 {
@@ -51,6 +52,17 @@ namespace DCAC
 		};
 
 		bool HasFeature (Feature) const;
+
+		template<typename T>
+		static T Choose (std::initializer_list<std::pair<Feature, T>> funcs, T fallback)
+		{
+			const CpuFeatures features;
+			for (const auto& pair : funcs)
+				if (features.HasFeature (pair.first))
+					return pair.second;
+
+			return fallback;
+		}
 	};
 }
 }
