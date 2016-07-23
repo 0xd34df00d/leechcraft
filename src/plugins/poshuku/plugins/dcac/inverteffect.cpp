@@ -395,6 +395,66 @@ namespace DCAC
 			return _mm256_set_m128i (res0, res1);
 		}
 
+		__attribute__ ((target ("avx")))
+		void ReduceLightnessAVX (QImage& image, float factor)
+		{
+			constexpr auto alignment = 32;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i pixel1msk = MakeMask<3, 0> ();
+			const __m128i pixel2msk = MakeMask<7, 4> ();
+			const __m128i pixel3msk = MakeMask<11, 8> ();
+			const __m128i pixel4msk = MakeMask<15, 12> ();
+
+			const __m128i pixel1revmask = MakeRevMask<4, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<4, 1> ();
+			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
+			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
+
+			const __m256 divisor = _mm256_set_ps (1, 1 / factor, 1 / factor, 1 / factor,
+					1, 1 / factor, 1 / factor, 1 / factor);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline, factor] (int i) { ReduceLightnessInner (&scanline [i], factor); };
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m256i eightPixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
+
+					auto px1 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel1msk));
+					auto px2 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel2msk));
+					auto px3 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel3msk));
+					auto px4 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel4msk));
+
+					px1 = _mm256_cvtps_epi32 (_mm256_mul_ps (px1, divisor));
+					px2 = _mm256_cvtps_epi32 (_mm256_mul_ps (px2, divisor));
+					px3 = _mm256_cvtps_epi32 (_mm256_mul_ps (px3, divisor));
+					px4 = _mm256_cvtps_epi32 (_mm256_mul_ps (px4, divisor));
+
+					px1 = EmulMM256ShuffleEpi8 (px1, pixel1revmask);
+					px2 = EmulMM256ShuffleEpi8 (px2, pixel2revmask);
+					px3 = EmulMM256ShuffleEpi8 (px3, pixel3revmask);
+					px4 = EmulMM256ShuffleEpi8 (px4, pixel4revmask);
+
+					eightPixels = _mm256_or_ps (px1, px2);
+					eightPixels = _mm256_or_ps (eightPixels, px3);
+					eightPixels = _mm256_or_ps (eightPixels, px4);
+
+					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x), eightPixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
