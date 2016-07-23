@@ -55,6 +55,8 @@ namespace DCAC
 
 		bool HasFeature (Feature) const;
 
+		static QString GetFeatureName (Feature);
+
 		template<typename T>
 		static T Choose (std::initializer_list<std::pair<Feature, T>> funcs, T fallback)
 		{

@@ -60,6 +60,21 @@ namespace DCAC
 			Ebx7_ = ebx;
 	}
 
+	QString CpuFeatures::GetFeatureName (Feature feature)
+	{
+		switch (feature)
+		{
+		case Feature::SSSE3:
+			return "ssse3";
+		case Feature::SSE41:
+			return "sse4.1";
+		case Feature::AVX:
+			return "avx";
+		case Feature::AVX2:
+			return "avx2";
+		}
+	}
+
 	bool CpuFeatures::HasFeature (Feature feature) const
 	{
 		switch (feature)
