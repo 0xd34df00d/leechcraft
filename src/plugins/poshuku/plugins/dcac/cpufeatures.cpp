@@ -72,6 +72,8 @@ namespace DCAC
 			return "avx";
 		case Feature::AVX2:
 			return "avx2";
+		case Feature::None:
+			return "";
 		}
 	}
 
@@ -87,6 +89,8 @@ namespace DCAC
 			return Ecx1_ & (1 << 28);
 		case Feature::AVX2:
 			return Ebx7_ & (1 << 5);
+		case Feature::None:
+			return true;
 		}
 	}
 }

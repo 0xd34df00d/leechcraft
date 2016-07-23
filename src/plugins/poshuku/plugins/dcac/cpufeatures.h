@@ -50,7 +50,9 @@ namespace DCAC
 			SSSE3,
 			SSE41,
 			AVX,
-			AVX2
+			AVX2,
+
+			None
 		};
 
 		bool HasFeature (Feature) const;
