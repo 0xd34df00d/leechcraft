@@ -319,6 +319,65 @@ namespace DCAC
 			return MakeRevMaskImpl (Tag<BytesCount> {}, GenRevSeq<BytesCount, Bucket> {});
 		}
 
+		__attribute__ ((target ("ssse3")))
+		void InvertHslSSSE3 (QImage& image, float factor)
+		{
+			constexpr auto alignment = 16;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i pixel1msk = MakeMask<3, 0> ();
+			const __m128i pixel2msk = MakeMask<7, 4> ();
+			const __m128i pixel3msk = MakeMask<11, 8> ();
+			const __m128i pixel4msk = MakeMask<15, 12> ();
+
+			const __m128i pixel1revmask = MakeRevMask<4, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<4, 1> ();
+			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
+			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
+
+			const __m128 divisor = _mm_set_ps (1, 1 / factor, 1 / factor, 1 / factor);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline, factor] (int i) { InvertHslInner (&scanline [i], factor); };
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
+
+					auto px1 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel1msk));
+					auto px2 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel2msk));
+					auto px3 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel3msk));
+					auto px4 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel4msk));
+
+					px1 = _mm_cvtps_epi32 (_mm_mul_ps (px1, divisor));
+					px2 = _mm_cvtps_epi32 (_mm_mul_ps (px2, divisor));
+					px3 = _mm_cvtps_epi32 (_mm_mul_ps (px3, divisor));
+					px4 = _mm_cvtps_epi32 (_mm_mul_ps (px4, divisor));
+
+					px1 = _mm_shuffle_epi8 (px1, pixel1revmask);
+					px2 = _mm_shuffle_epi8 (px2, pixel2revmask);
+					px3 = _mm_shuffle_epi8 (px3, pixel3revmask);
+					px4 = _mm_shuffle_epi8 (px4, pixel4revmask);
+
+					fourPixels = _mm_add_epi32 (px1, px2);
+					fourPixels = _mm_add_epi32 (fourPixels, px3);
+					fourPixels = _mm_add_epi32 (fourPixels, px4);
+
+					_mm_store_si128 (reinterpret_cast<__m128i*> (scanline + x), fourPixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
+
 		__attribute__ ((target ("sse4")))
 		uint64_t GetGraySSE4 (const QImage& image)
 		{
