@@ -104,9 +104,8 @@ namespace DCAC
 			}
 		}
 
-		void ReduceLightnessInner (unsigned char *pixel, float factor)
+		void ReduceLightnessInner (unsigned char *pixel, float recipFactor)
 		{
-			auto recipFactor = 1 / factor;
 			pixel [0] *= recipFactor;
 			pixel [1] *= recipFactor;
 			pixel [2] *= recipFactor;
@@ -121,7 +120,7 @@ namespace DCAC
 			{
 				const auto scanline = image.scanLine (y);
 				for (int x = 0; x < width; ++x)
-					ReduceLightnessInner (&scanline [x * 4], factor);
+					ReduceLightnessInner (&scanline [x * 4], 1 / factor);
 			}
 		}
 
@@ -332,6 +331,8 @@ namespace DCAC
 		{
 			constexpr auto alignment = 16;
 
+			factor = 1 / factor;
+
 			const auto height = image.height ();
 			const auto width = image.width ();
 
@@ -345,7 +346,7 @@ namespace DCAC
 			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
 			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
 
-			const __m128 divisor = _mm_set_ps (1, 1 / factor, 1 / factor, 1 / factor);
+			const __m128 divisor = _mm_set_ps (1, factor, factor, factor);
 
 			for (int y = 0; y < height; ++y)
 			{
@@ -401,6 +402,8 @@ namespace DCAC
 		{
 			constexpr auto alignment = 32;
 
+			factor = 1 / factor;
+
 			const auto height = image.height ();
 			const auto width = image.width ();
 
@@ -414,8 +417,8 @@ namespace DCAC
 			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
 			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
 
-			const __m256 divisor = _mm256_set_ps (1, 1 / factor, 1 / factor, 1 / factor,
-					1, 1 / factor, 1 / factor, 1 / factor);
+			const __m256 divisor = _mm256_set_ps (1, factor, factor, factor,
+					1, factor, factor, factor);
 
 			for (int y = 0; y < height; ++y)
 			{
