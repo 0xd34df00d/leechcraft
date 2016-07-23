@@ -45,6 +45,7 @@ namespace Util
 {
 	CpuFeatures::CpuFeatures ()
 	{
+#ifdef HAS_CPUID
 		uint32_t eax = 0, ebx = 0, ecx = 0, edx = 0;
 		if (!__get_cpuid (1, &eax, &ebx, &ecx, &edx))
 			qWarning () << Q_FUNC_INFO
@@ -57,6 +58,7 @@ namespace Util
 					<< "unable to get CPUID eax = 7";
 		else
 			Ebx7_ = ebx;
+#endif
 
 		static std::once_flag dbgFlag;
 		std::call_once (dbgFlag,
