@@ -90,7 +90,7 @@ namespace Qrosp
 			qWarning () << Q_FUNC_INFO
 					<< "unable to open file"
 					<< id;
-			return QVariantMap ();
+			return {};
 		}
 
 		QVariantMap result;
@@ -118,7 +118,7 @@ namespace Qrosp
 
 	IScript_ptr ScriptLoaderInstance::LoadScript (const QString& id)
 	{
-		return IScript_ptr (new LoadedScript (id, ID2Interpereter_ [id]));
+		return std::make_shared<LoadedScript> (id, ID2Interpereter_ [id]);
 	}
 }
 }

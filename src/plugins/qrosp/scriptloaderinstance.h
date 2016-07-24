@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
-#define PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
+#pragma once
+
 #include <QObject>
 #include <QStringList>
 #include <util/sys/resourceloader.h>
@@ -59,5 +59,3 @@ namespace Qrosp
 	};
 }
 }
-
-#endif
