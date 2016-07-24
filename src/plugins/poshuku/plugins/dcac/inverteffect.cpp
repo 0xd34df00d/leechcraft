@@ -596,7 +596,17 @@ namespace DCAC
 
 		void ReduceLightness (QImage& image, float factor)
 		{
-			ReduceLightnessDefault (image, factor);
+#ifdef SSE_ENABLED
+			static const auto ptr = Util::CpuFeatures::Choose ({
+						{ Util::CpuFeatures::Feature::AVX, &ReduceLightnessAVX },
+						{ Util::CpuFeatures::Feature::SSSE3, &ReduceLightnessSSSE3 }
+					},
+					&ReduceLightnessDefault);
+
+			return ptr (image, factor);
+#else
+			return ReduceLightnessDefault (image, factor);
+#endif
 		}
 
 		bool PrepareInverted (QImage& image, int threshold)
