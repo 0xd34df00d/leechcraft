@@ -31,6 +31,7 @@
 #define PLUGINS_QROSP_SCRIPTLOADERINSTANCE_H
 #include <QObject>
 #include <QStringList>
+#include <util/sys/resourceloader.h>
 #include <interfaces/iscriptloader.h>
 
 namespace LeechCraft
@@ -42,14 +43,13 @@ namespace Qrosp
 	{
 		Q_OBJECT
 		Q_INTERFACES (IScriptLoaderInstance)
-		
+
 		mutable QHash<QString, QString> ID2Interpereter_;
-		
-		QString RelativePath_;
-		QStringList Prefixes_;
+
+		Util::ResourceLoader Loader_;
 	public:
 		ScriptLoaderInstance (const QString&, QObject* = 0);
-		
+
 		QObject* GetQObject ();
 		void AddGlobalPrefix ();
 		void AddLocalPrefix (QString prefix);

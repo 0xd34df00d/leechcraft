@@ -41,10 +41,8 @@ namespace Qrosp
 
 	ScriptLoaderInstance::ScriptLoaderInstance (const QString& relPath, QObject *parent)
 	: QObject (parent)
-	, RelativePath_ (relPath)
+	, Loader_ ("scripts/" + relPath)
 	{
-		if (!RelativePath_.endsWith ('/'))
-			RelativePath_ += '/';
 	}
 
 	QObject* ScriptLoaderInstance::GetQObject ()
@@ -54,27 +52,12 @@ namespace Qrosp
 
 	void ScriptLoaderInstance::AddGlobalPrefix ()
 	{
-#ifdef Q_OS_MAC
-		if (QApplication::arguments ().contains ("-nobundle"))
-			Prefixes_ << "/usr/local/share/leechcraft/scripts/";
-		else
-			Prefixes_ << QString (QApplication::applicationDirPath () + "/../Resources/scripts/");
-#elif defined (Q_OS_WIN32)
-		Prefixes_ << QString (QApplication::applicationDirPath () + "/share/scripts/");
-#elif defined (INSTALL_PREFIX)
-		Prefixes_ << QString (INSTALL_PREFIX "/share/leechcraft/scripts/");
-#else
-		Prefixes_ << "/usr/local/share/leechcraft/scripts/"
-				<< "/usr/share/leechcraft/scripts/";
-#endif
+		Loader_.AddGlobalPrefix ();
 	}
 
 	void ScriptLoaderInstance::AddLocalPrefix (QString prefix)
 	{
-		if (!prefix.isEmpty () &&
-				!prefix.endsWith ('/'))
-			prefix.append ('/');
-		Prefixes_ << QDir::homePath () + "/.leechcraft/data/scripts/" + prefix;
+		Loader_.AddLocalPrefix (prefix);
 	}
 
 	QStringList ScriptLoaderInstance::EnumerateScripts () const
@@ -88,23 +71,13 @@ namespace Qrosp
 		knownExtensions ["ruby"] << "*.rb";
 
 		QStringList result;
-		for (const auto& prefix : Prefixes_)
-			for (const auto& interp : interpreters)
-				for (const auto& interpSuffix : { interp + '/', {} })
-				{
-					const auto& path = prefix + RelativePath_ + interpSuffix;
-
-					QDir dir (path);
-					const auto& entries = dir.entryList (knownExtensions [interp],
-							QDir::Readable | QDir::Files);
-
-					for (const auto& entry : entries)
-					{
-						const auto& id = path + entry;
-						ID2Interpereter_ [id] = interp;
-						result << id;
-					}
-				}
+		for (const auto& interp : interpreters)
+			for (const auto& entry : Loader_.List (interp, {}, QDir::AllEntries | QDir::NoDotAndDotDot))
+			{
+				const auto& id = entry.filePath ();
+				ID2Interpereter_ [id] = interp;
+				result << id;
+			}
 
 		return result;
 	}
