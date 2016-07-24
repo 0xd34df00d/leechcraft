@@ -176,7 +176,7 @@ namespace LeechCraft
 			 * @param[in] filters Additional filters.
 			 */
 			QFileInfoList List (const QString& option,
-					const QStringList& names = QStringList (),
+					const QStringList& names = {},
 					QDir::Filters filters = QDir::NoFilter) const;
 
 			/** @brief Returns the first found path for the list of variants.

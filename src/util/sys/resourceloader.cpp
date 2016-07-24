@@ -170,13 +170,11 @@ namespace LeechCraft
 			QFileInfoList result;
 			for (const auto& prefix : LocalPrefixesChain_ + GlobalPrefixesChain_)
 			{
-				const QString& path = prefix + RelativePath_ + option;
-				QDir dir (path);
-				const QFileInfoList& list =
-						dir.entryInfoList (nameFilters, filters);
+				const QDir dir { prefix + RelativePath_ + option };
+				const auto& list = dir.entryInfoList (nameFilters, filters);
 				for (const auto& info : list)
 				{
-					const QString& fname = info.fileName ();
+					const auto& fname = info.fileName ();
 					if (alreadyListed.contains (fname))
 						continue;
 
@@ -205,12 +203,13 @@ namespace LeechCraft
 		{
 			QStringList IconizeBasename (const QString& basename)
 			{
-				QStringList variants;
-				variants << basename + ".svg"
-						<< basename + ".png"
-						<< basename + ".jpg"
-						<< basename + ".gif";
-				return variants;
+				return
+				{
+					basename + ".svg",
+					basename + ".png",
+					basename + ".jpg",
+					basename + ".gif"
+				};
 			}
 		}
 
@@ -221,9 +220,9 @@ namespace LeechCraft
 
 		QIODevice_ptr ResourceLoader::Load (const QStringList& pathVariants, bool open) const
 		{
-			QString path = GetPath (pathVariants);
+			const auto& path = GetPath (pathVariants);
 			if (path.isNull ())
-				return QIODevice_ptr ();
+				return {};
 
 			if (CachePathContents_.contains (path))
 			{
@@ -241,8 +240,8 @@ namespace LeechCraft
 			{
 				if (result->open (QIODevice::ReadOnly))
 				{
-					const QByteArray& data = result->readAll ();
-					CachePathContents_.insert (path, new QByteArray (data), data.size ());
+					const auto& data = result->readAll ();
+					CachePathContents_.insert (path, new QByteArray { data }, data.size ());
 					result->close ();
 				}
 			}
@@ -255,7 +254,7 @@ namespace LeechCraft
 
 		QIODevice_ptr ResourceLoader::Load (const QString& pathVariant, bool open) const
 		{
-			return Load (QStringList (pathVariant), open);
+			return Load (QStringList { pathVariant }, open);
 		}
 
 		QIODevice_ptr ResourceLoader::GetIconDevice (const QString& basename, bool open) const
