@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "inverteffect.h"
+#include "effectprocessor.h"
 #include <QPainter>
 #include <QtDebug>
 #include <qwebview.h>
@@ -49,12 +49,12 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	InvertEffect::InvertEffect (QWebView *view)
+	EffectProcessor::EffectProcessor (QWebView *view)
 	: QGraphicsEffect { view }
 	{
 	}
 
-	void InvertEffect::SetThreshold (int threshold)
+	void EffectProcessor::SetThreshold (int threshold)
 	{
 		if (threshold == Threshold_)
 			return;
@@ -624,7 +624,7 @@ namespace DCAC
 		}
 	}
 
-	void InvertEffect::draw (QPainter *painter)
+	void EffectProcessor::draw (QPainter *painter)
 	{
 		QPoint offset;
 

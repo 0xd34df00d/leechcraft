@@ -39,11 +39,11 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class InvertEffect : public QGraphicsEffect
+	class EffectProcessor : public QGraphicsEffect
 	{
 		int Threshold_ = 127;
 	public:
-		InvertEffect (QWebView*);
+		EffectProcessor (QWebView*);
 
 		void SetThreshold (int);
 	protected:

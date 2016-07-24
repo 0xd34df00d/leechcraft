@@ -30,7 +30,7 @@
 #include "viewsmanager.h"
 #include <QAction>
 #include <qwebview.h>
-#include "inverteffect.h"
+#include "effectprocessor.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -48,7 +48,7 @@ namespace DCAC
 
 	void ViewsManager::AddView (QWebView *view)
 	{
-		const auto effect = new InvertEffect { view };
+		const auto effect = new EffectProcessor { view };
 		view->setGraphicsEffect (effect);
 
 		View2Effect_ [view] = effect;

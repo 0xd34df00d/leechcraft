@@ -41,13 +41,13 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class InvertEffect;
+	class EffectProcessor;
 
 	class ViewsManager : public QObject
 	{
 		Q_OBJECT
 
-		QHash<QObject*, InvertEffect*> View2Effect_;
+		QHash<QObject*, EffectProcessor*> View2Effect_;
 		QHash<QObject*, QAction*> View2EnableAction_;
 	public:
 		ViewsManager (QObject* = nullptr);
