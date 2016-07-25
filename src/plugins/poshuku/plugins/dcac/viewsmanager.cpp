@@ -105,7 +105,7 @@ namespace DCAC
 				SLOT (setEnabled (bool)));
 		View2EnableAction_ [view] = enableAct;
 
-		effect->SetEffect (GetCurrentEffect ());
+		effect->SetEffects ({ GetCurrentEffect () });
 	}
 
 	QAction* ViewsManager::GetEnableAction (QWebView *view) const
@@ -123,7 +123,7 @@ namespace DCAC
 	{
 		const auto& effect = GetCurrentEffect ();
 		for (const auto proc : View2Effect_)
-			proc->SetEffect (effect);
+			proc->SetEffects ({ effect });
 	}
 }
 }

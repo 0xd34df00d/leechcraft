@@ -60,11 +60,11 @@ namespace DCAC
 
 	class EffectProcessor : public QGraphicsEffect
 	{
-		Effect_t Effect_;
+		QList<Effect_t> Effects_;
 	public:
 		EffectProcessor (QWebView*);
 
-		void SetEffect (Effect_t);
+		void SetEffects (QList<Effect_t>);
 	protected:
 		void draw (QPainter*) override;
 	};

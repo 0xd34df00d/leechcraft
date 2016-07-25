@@ -75,12 +75,12 @@ namespace DCAC
 	{
 	}
 
-	void EffectProcessor::SetEffect (Effect_t effect)
+	void EffectProcessor::SetEffects (QList<Effect_t> effects)
 	{
-		if (effect == Effect_)
+		if (effects == Effects_)
 			return;
 
-		Effect_ = std::move (effect);
+		Effects_ = std::move (effects);
 		update ();
 	}
 
@@ -676,7 +676,12 @@ namespace DCAC
 		}
 		image.detach ();
 
-		if (ApplyEffect (Effect_, image))
+		bool hadEffects = false;
+		for (const auto& effect : Effects_)
+			if (ApplyEffect (effect, image))
+				hadEffects = true;
+
+		if (hadEffects)
 			painter->drawImage (offset, image);
 		else
 			painter->drawPixmap (offset, sourcePx);
