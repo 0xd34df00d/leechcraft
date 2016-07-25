@@ -630,7 +630,7 @@ namespace DCAC
 #endif
 		}
 
-		bool PrepareInverted (QImage& image, int threshold)
+		bool InvertColors (QImage& image, int threshold)
 		{
 			const auto height = image.height ();
 			const auto width = image.width ();
@@ -649,7 +649,7 @@ namespace DCAC
 			return Util::Visit (effect,
 					[&image] (const InvertEffect& effect)
 					{
-						return PrepareInverted (image, effect.Threshold_);
+						return InvertColors (image, effect.Threshold_);
 					},
 					[&image] (const LightnessEffect& effect)
 					{
