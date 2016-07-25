@@ -29,6 +29,7 @@
 
 #include "cpufeatures.h"
 #include <mutex>
+#include <QStringList>
 #include <QtDebug>
 
 #if defined (Q_PROCESSOR_X86)
