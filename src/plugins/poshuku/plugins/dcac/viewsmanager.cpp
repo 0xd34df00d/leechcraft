@@ -29,6 +29,7 @@
 
 #include "viewsmanager.h"
 #include <QAction>
+#include <QtDebug>
 #include <qwebview.h>
 #include "effectprocessor.h"
 #include "xmlsettingsmanager.h"
