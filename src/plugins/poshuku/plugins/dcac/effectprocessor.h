@@ -56,7 +56,7 @@ namespace DCAC
 	bool operator== (const LightnessEffect&, const LightnessEffect&);
 	bool operator!= (const LightnessEffect&, const LightnessEffect&);
 
-	using Effect_t = boost::variant<InvertEffect>;
+	using Effect_t = boost::variant<InvertEffect, LightnessEffect>;
 
 	class EffectProcessor : public QGraphicsEffect
 	{

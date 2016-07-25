@@ -650,6 +650,11 @@ namespace DCAC
 					[&image] (const InvertEffect& effect)
 					{
 						return PrepareInverted (image, effect.Threshold_);
+					},
+					[&image] (const LightnessEffect& effect)
+					{
+						ReduceLightness (image, effect.Factor_);
+						return true;
 					});
 		}
 	}
