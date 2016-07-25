@@ -48,6 +48,14 @@ namespace DCAC
 	bool operator== (const InvertEffect&, const InvertEffect&);
 	bool operator!= (const InvertEffect&, const InvertEffect&);
 
+	struct LightnessEffect
+	{
+		double Factor_ = 2;
+	};
+
+	bool operator== (const LightnessEffect&, const LightnessEffect&);
+	bool operator!= (const LightnessEffect&, const LightnessEffect&);
+
 	using Effect_t = boost::variant<InvertEffect>;
 
 	class EffectProcessor : public QGraphicsEffect

@@ -60,6 +60,16 @@ namespace DCAC
 		return !(ef1 == ef2);
 	}
 
+	bool operator== (const LightnessEffect& ef1, const LightnessEffect& ef2)
+	{
+		return ef1.Factor_ == ef2.Factor_;
+	}
+
+	bool operator!= (const LightnessEffect& ef1, const LightnessEffect& ef2)
+	{
+		return !(ef1 == ef2);
+	}
+
 	EffectProcessor::EffectProcessor (QWebView *view)
 	: QGraphicsEffect { view }
 	{
