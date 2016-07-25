@@ -5,11 +5,26 @@
 		<item type="checkbox" property="EnableNightModeByDefault" default="false">
 			<label value="Enable night mode by default" />
 		</item>
+		<item type="combobox" property="SingleEffect">
+			<label value="Night mode effect:" />
+			<option name="Invert" default="true">
+				<label value="Invert colors" />
+			</option>
+			<option name="ReduceLightness" default="true">
+				<label value="Reduce lightness" />
+			</option>
+		</item>
 		<groupbox>
-			<label value="Invert effect" />
+			<label value="Color invert effect" />
 			<item type="spinbox" property="NightModeThreshold" default="127" minimum="0" maximum="255">
 				<label value="Average brightness threshold:" />
 				<tooltip>Night mode will only be enabled for the given page if its average grayness is bigger than this value.</tooltip>
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Reduce lightness effect" />
+			<item type="doublespinbox" property="ReduceLightnessFactor" default="2" minimum="1" maximum="10">
+				<label value="Factor:" />
 			</item>
 		</groupbox>
 	</page>
