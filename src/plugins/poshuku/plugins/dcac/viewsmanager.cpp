@@ -42,8 +42,40 @@ namespace DCAC
 	ViewsManager::ViewsManager (QObject *parent)
 	: QObject { parent }
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("NightModeThreshold",
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"NightModeThreshold",
+					"ReduceLightnessFactor",
+					"SingleEffect"
+				},
 				this, "handleThresholdChanged");
+	}
+
+	namespace
+	{
+		Effect_t GetCurrentEffect ()
+		{
+			const auto effectStr = XmlSettingsManager::Instance ()
+					.property ("SingleEffect").toString ();
+			if (effectStr == "Invert")
+			{
+				const auto threshold = XmlSettingsManager::Instance ()
+						.property ("NightModeThreshold").toInt ();
+				return InvertEffect { threshold };
+			}
+			else if (effectStr == "ReduceLightness")
+			{
+				const auto factor = XmlSettingsManager::Instance ()
+						.property ("ReduceLightnessFactor").toDouble ();
+				return LightnessEffect { factor };
+			}
+			else
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unknown effect"
+						<< effectStr;
+				return {};
+			}
+		}
 	}
 
 	void ViewsManager::AddView (QWebView *view)
@@ -73,9 +105,7 @@ namespace DCAC
 				SLOT (setEnabled (bool)));
 		View2EnableAction_ [view] = enableAct;
 
-		const auto threshold = XmlSettingsManager::Instance ()
-				.property ("NightModeThreshold").toInt ();
-		effect->SetEffect (InvertEffect { threshold });
+		effect->SetEffect (GetCurrentEffect ());
 	}
 
 	QAction* ViewsManager::GetEnableAction (QWebView *view) const
@@ -91,10 +121,9 @@ namespace DCAC
 
 	void ViewsManager::handleThresholdChanged ()
 	{
-		const auto threshold = XmlSettingsManager::Instance ()
-				.property ("NightModeThreshold").toInt ();
-		for (const auto effect : View2Effect_)
-			effect->SetEffect (InvertEffect { threshold });
+		const auto& effect = GetCurrentEffect ();
+		for (const auto proc : View2Effect_)
+			proc->SetEffect (effect);
 	}
 }
 }
