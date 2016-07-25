@@ -624,9 +624,9 @@ namespace DCAC
 					},
 					&ReduceLightnessDefault);
 
-			return ptr (image, factor);
+			ptr (image, factor);
 #else
-			return ReduceLightnessDefault (image, factor);
+			ReduceLightnessDefault (image, factor);
 #endif
 		}
 
