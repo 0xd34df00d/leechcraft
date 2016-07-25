@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QGraphicsEffect>
 
 class QWebView;
@@ -39,13 +40,23 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class EffectProcessor : public QGraphicsEffect
+	struct InvertEffect
 	{
 		int Threshold_ = 127;
+	};
+
+	bool operator== (const InvertEffect&, const InvertEffect&);
+	bool operator!= (const InvertEffect&, const InvertEffect&);
+
+	using Effect_t = boost::variant<InvertEffect>;
+
+	class EffectProcessor : public QGraphicsEffect
+	{
+		Effect_t Effect_;
 	public:
 		EffectProcessor (QWebView*);
 
-		void SetThreshold (int);
+		void SetEffect (Effect_t);
 	protected:
 		void draw (QPainter*) override;
 	};

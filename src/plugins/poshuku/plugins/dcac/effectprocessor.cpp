@@ -42,6 +42,7 @@
 #endif
 
 #include <util/sys/cpufeatures.h>
+#include <util/sll/visitor.h>
 
 namespace LeechCraft
 {
@@ -49,17 +50,27 @@ namespace Poshuku
 {
 namespace DCAC
 {
+	bool operator== (const InvertEffect& ef1, const InvertEffect& ef2)
+	{
+		return ef1.Threshold_ == ef2.Threshold_;
+	}
+
+	bool operator!= (const InvertEffect& ef1, const InvertEffect& ef2)
+	{
+		return !(ef1 == ef2);
+	}
+
 	EffectProcessor::EffectProcessor (QWebView *view)
 	: QGraphicsEffect { view }
 	{
 	}
 
-	void EffectProcessor::SetThreshold (int threshold)
+	void EffectProcessor::SetEffect (Effect_t effect)
 	{
-		if (threshold == Threshold_)
+		if (effect == Effect_)
 			return;
 
-		Threshold_ = threshold;
+		Effect_ = std::move (effect);
 		update ();
 	}
 
@@ -622,6 +633,15 @@ namespace DCAC
 
 			return shouldInvert;
 		}
+
+		bool ApplyEffect (const Effect_t& effect, QImage& image)
+		{
+			return Util::Visit (effect,
+					[&image] (const InvertEffect& effect)
+					{
+						return PrepareInverted (image, effect.Threshold_);
+					});
+		}
 	}
 
 	void EffectProcessor::draw (QPainter *painter)
@@ -641,7 +661,7 @@ namespace DCAC
 		}
 		image.detach ();
 
-		if (PrepareInverted (image, Threshold_))
+		if (ApplyEffect (Effect_, image))
 			painter->drawImage (offset, image);
 		else
 			painter->drawPixmap (offset, sourcePx);

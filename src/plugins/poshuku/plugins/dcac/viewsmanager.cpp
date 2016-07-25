@@ -75,7 +75,7 @@ namespace DCAC
 
 		const auto threshold = XmlSettingsManager::Instance ()
 				.property ("NightModeThreshold").toInt ();
-		effect->SetThreshold (threshold);
+		effect->SetEffect (InvertEffect { threshold });
 	}
 
 	QAction* ViewsManager::GetEnableAction (QWebView *view) const
@@ -94,7 +94,7 @@ namespace DCAC
 		const auto threshold = XmlSettingsManager::Instance ()
 				.property ("NightModeThreshold").toInt ();
 		for (const auto effect : View2Effect_)
-			effect->SetThreshold (threshold);
+			effect->SetEffect (InvertEffect { threshold });
 	}
 }
 }
