@@ -661,6 +661,12 @@ namespace DCAC
 
 	void EffectProcessor::draw (QPainter *painter)
 	{
+		if (Effects_.isEmpty ())
+		{
+			drawSource (painter);
+			return;
+		}
+
 		QPoint offset;
 
 		const auto& sourcePx = sourcePixmap (Qt::LogicalCoordinates, &offset, QGraphicsEffect::NoPad);
