@@ -690,7 +690,7 @@ namespace DCAC
 		if (hadEffects)
 			painter->drawImage (offset, image);
 		else
-			painter->drawPixmap (offset, sourcePx);
+			drawSource (painter);
 	}
 }
 }
