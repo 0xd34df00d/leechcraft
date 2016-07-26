@@ -669,8 +669,7 @@ namespace DCAC
 
 		QPoint offset;
 
-		const auto& sourcePx = sourcePixmap (Qt::LogicalCoordinates, &offset, QGraphicsEffect::NoPad);
-		auto image = sourcePx.toImage ();
+		auto image = sourcePixmap (Qt::LogicalCoordinates, &offset, QGraphicsEffect::NoPad).toImage ();
 		switch (image.format ())
 		{
 		case QImage::Format_ARGB32:
