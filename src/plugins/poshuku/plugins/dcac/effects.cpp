@@ -27,12 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QGraphicsEffect>
 #include "effects.h"
-
-class QWebView;
 
 namespace LeechCraft
 {
@@ -40,16 +35,25 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class EffectProcessor : public QGraphicsEffect
+	bool operator== (const InvertEffect& ef1, const InvertEffect& ef2)
 	{
-		QList<Effect_t> Effects_;
-	public:
-		EffectProcessor (QWebView*);
+		return ef1.Threshold_ == ef2.Threshold_;
+	}
 
-		void SetEffects (QList<Effect_t>);
-	protected:
-		void draw (QPainter*) override;
-	};
+	bool operator!= (const InvertEffect& ef1, const InvertEffect& ef2)
+	{
+		return !(ef1 == ef2);
+	}
+
+	bool operator== (const LightnessEffect& ef1, const LightnessEffect& ef2)
+	{
+		return ef1.Factor_ == ef2.Factor_;
+	}
+
+	bool operator!= (const LightnessEffect& ef1, const LightnessEffect& ef2)
+	{
+		return !(ef1 == ef2);
+	}
 }
 }
 }

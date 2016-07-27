@@ -3,6 +3,7 @@ include_directories (${POSHUKU_INCLUDE_DIR}
 set (DCAC_SRCS
 	dcac.cpp
 	effectprocessor.cpp
+	effects.cpp
 	viewsmanager.cpp
 	xmlsettingsmanager.cpp
 	)

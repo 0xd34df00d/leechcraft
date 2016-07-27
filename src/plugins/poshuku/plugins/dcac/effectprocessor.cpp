@@ -50,26 +50,6 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	bool operator== (const InvertEffect& ef1, const InvertEffect& ef2)
-	{
-		return ef1.Threshold_ == ef2.Threshold_;
-	}
-
-	bool operator!= (const InvertEffect& ef1, const InvertEffect& ef2)
-	{
-		return !(ef1 == ef2);
-	}
-
-	bool operator== (const LightnessEffect& ef1, const LightnessEffect& ef2)
-	{
-		return ef1.Factor_ == ef2.Factor_;
-	}
-
-	bool operator!= (const LightnessEffect& ef1, const LightnessEffect& ef2)
-	{
-		return !(ef1 == ef2);
-	}
-
 	EffectProcessor::EffectProcessor (QWebView *view)
 	: QGraphicsEffect { view }
 	{

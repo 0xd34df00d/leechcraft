@@ -29,10 +29,7 @@
 
 #pragma once
 
-#include <QGraphicsEffect>
-#include "effects.h"
-
-class QWebView;
+#include <boost/variant.hpp>
 
 namespace LeechCraft
 {
@@ -40,16 +37,24 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class EffectProcessor : public QGraphicsEffect
+	struct InvertEffect
 	{
-		QList<Effect_t> Effects_;
-	public:
-		EffectProcessor (QWebView*);
-
-		void SetEffects (QList<Effect_t>);
-	protected:
-		void draw (QPainter*) override;
+		int Threshold_ = 127;
 	};
+
+	bool operator== (const InvertEffect&, const InvertEffect&);
+	bool operator!= (const InvertEffect&, const InvertEffect&);
+
+	struct LightnessEffect
+	{
+		double Factor_ = 2;
+	};
+
+	bool operator== (const LightnessEffect&, const LightnessEffect&);
+	bool operator!= (const LightnessEffect&, const LightnessEffect&);
+
+	using Effect_t = boost::variant<InvertEffect, LightnessEffect>;
+
 }
 }
 }
