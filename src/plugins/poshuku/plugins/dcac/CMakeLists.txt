@@ -27,3 +27,16 @@ install (TARGETS leechcraft_poshuku_dcac DESTINATION ${LC_PLUGINS_DEST})
 install (FILES poshukudcacsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_poshuku_dcac Widgets WebKitWidgets)
+
+option (ENABLE_POSHUKU_DCAC_TESTS "Build tests for Poshuku DCAC" ON)
+
+if (ENABLE_POSHUKU_DCAC_TESTS)
+	function (AddDCACTest _execName _cppFile _testName)
+		set (_fullExecName lc_poshuku_dcac_${_execName}_test)
+		add_executable (${_fullExecName} WIN32 ${_cppFile})
+		target_link_libraries (${_fullExecName} ${LEECHCRAFT_LIBRARIES})
+		add_test (${_testName} ${_fullExecName})
+		FindQtLibs (${_fullExecName} Test)
+		add_dependencies (${_fullExecName} leechcraft_poshuku_dcac)
+	endfunction ()
+endif ()
