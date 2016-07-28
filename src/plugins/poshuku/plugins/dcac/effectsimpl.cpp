@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "effectsimpl.h"
+#include <cmath>
 #include <QImage>
 
 #if defined (Q_PROCESSOR_X86_64) && !defined (Q_OS_MAC)
