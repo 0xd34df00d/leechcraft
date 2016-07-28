@@ -77,6 +77,27 @@ namespace DCAC
 		const auto BenchImageCount = 5;
 
 		const auto BenchRepsCount = 3;
+
+		template<typename F>
+		void BenchmarkFunction (F&& f, const QMap<QSize, QList<QImage>>& images)
+		{
+			for (const auto& pair : Util::Stlize (images))
+			{
+				const auto& list = pair.second;
+
+				for (const auto& image : list)
+					f (image);
+
+				QElapsedTimer timer;
+				timer.start ();
+
+				for (int i = 0; i < BenchRepsCount; ++i)
+					for (const auto& image : list)
+						f (image);
+
+				qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
+			}
+		}
 	}
 
 	void GetGrayTest::initTestCase ()
@@ -125,22 +146,7 @@ namespace DCAC
 
 	void GetGrayTest::benchGetGrayDefault ()
 	{
-		for (const auto& pair : Util::Stlize (BenchImages_))
-		{
-			const auto& list = pair.second;
-
-			for (const auto& image : list)
-				GetGrayDefault (image);
-
-			QElapsedTimer timer;
-			timer.start ();
-
-			for (int i = 0; i < BenchRepsCount; ++i)
-				for (const auto& image : list)
-					GetGrayDefault (image);
-
-			qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
-		}
+		BenchmarkFunction (&GetGrayDefault, BenchImages_);
 	}
 }
 }
