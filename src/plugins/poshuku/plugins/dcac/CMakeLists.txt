@@ -6,6 +6,7 @@ set (DCAC_SRCS
 	effects.cpp
 	viewsmanager.cpp
 	xmlsettingsmanager.cpp
+	effectsimpl.cpp
 	)
 set (DCAC_RESOURCES
 	)
