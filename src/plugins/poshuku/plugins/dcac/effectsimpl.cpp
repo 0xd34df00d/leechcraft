@@ -31,7 +31,7 @@
 #include <cmath>
 #include <QImage>
 
-#if defined (Q_PROCESSOR_X86_64) && !defined (Q_OS_MAC)
+#if (defined (Q_PROCESSOR_X86_64) || QT_VERSION < 0x050000) && !defined (Q_OS_MAC)
 #define SSE_ENABLED
 #endif
 
