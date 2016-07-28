@@ -39,4 +39,6 @@ if (ENABLE_POSHUKU_DCAC_TESTS)
 		FindQtLibs (${_fullExecName} Test)
 		add_dependencies (${_fullExecName} leechcraft_poshuku_dcac)
 	endfunction ()
+
+	AddDCACTest (getgray tests/getgraytest.cpp PoshukuDCACGetGrayTest)
 endif ()
