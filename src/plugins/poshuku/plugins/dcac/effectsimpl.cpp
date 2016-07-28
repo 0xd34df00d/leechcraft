@@ -378,7 +378,7 @@ namespace DCAC
 		__m256i EmulMM256ShuffleEpi8 (__m256i reg, __m128i shuf)
 		{
 			__m128i reg0 = _mm256_castsi256_si128 (reg);
-			__m128i reg1 = _mm256_extracti128_si256 (reg, 1);
+			__m128i reg1 = _mm256_extractf128_si256 (reg, 1);
 			__m128i res0 = _mm_shuffle_epi8 (reg0, shuf);
 			__m128i res1 = _mm_shuffle_epi8 (reg1, shuf);
 
