@@ -421,24 +421,24 @@ namespace DCAC
 				{
 					__m256i eightPixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
 
-					auto px1 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel1msk));
-					auto px2 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel2msk));
-					auto px3 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel3msk));
-					auto px4 = _mm256_cvtepi32_ps (EmulMM256ShuffleEpi8 (eightPixels, pixel4msk));
+					__m256i px1 = EmulMM256ShuffleEpi8 (eightPixels, pixel1msk);
+					__m256i px2 = EmulMM256ShuffleEpi8 (eightPixels, pixel2msk);
+					__m256i px3 = EmulMM256ShuffleEpi8 (eightPixels, pixel3msk);
+					__m256i px4 = EmulMM256ShuffleEpi8 (eightPixels, pixel4msk);
 
-					px1 = _mm256_cvtps_epi32 (_mm256_mul_ps (px1, divisor));
-					px2 = _mm256_cvtps_epi32 (_mm256_mul_ps (px2, divisor));
-					px3 = _mm256_cvtps_epi32 (_mm256_mul_ps (px3, divisor));
-					px4 = _mm256_cvtps_epi32 (_mm256_mul_ps (px4, divisor));
+					px1 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px1), divisor));
+					px2 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px2), divisor));
+					px3 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px3), divisor));
+					px4 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px4), divisor));
 
 					px1 = EmulMM256ShuffleEpi8 (px1, pixel1revmask);
 					px2 = EmulMM256ShuffleEpi8 (px2, pixel2revmask);
 					px3 = EmulMM256ShuffleEpi8 (px3, pixel3revmask);
 					px4 = EmulMM256ShuffleEpi8 (px4, pixel4revmask);
 
-					eightPixels = _mm256_or_ps (px1, px2);
-					eightPixels = _mm256_or_ps (eightPixels, px3);
-					eightPixels = _mm256_or_ps (eightPixels, px4);
+					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (px1), _mm256_castsi256_ps (px2)));
+					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (eightPixels), _mm256_castsi256_ps (px3)));
+					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (eightPixels), _mm256_castsi256_ps (px4)));
 
 					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x), eightPixels);
 				}
