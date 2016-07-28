@@ -34,7 +34,7 @@
 #include <util/sll/qtutil.h>
 #include "../effectsimpl.cpp"
 
-QTEST_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
+QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
 
 bool operator< (const QSize& s1, const QSize& s2)
 {
