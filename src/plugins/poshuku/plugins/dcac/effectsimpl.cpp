@@ -348,15 +348,15 @@ namespace DCAC
 				{
 					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
 
-					auto px1 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel1msk));
-					auto px2 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel2msk));
-					auto px3 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel3msk));
-					auto px4 = _mm_cvtepi32_ps (_mm_shuffle_epi8 (fourPixels, pixel4msk));
+					__m128i px1 = _mm_shuffle_epi8 (fourPixels, pixel1msk);
+					__m128i px2 = _mm_shuffle_epi8 (fourPixels, pixel2msk);
+					__m128i px3 = _mm_shuffle_epi8 (fourPixels, pixel3msk);
+					__m128i px4 = _mm_shuffle_epi8 (fourPixels, pixel4msk);
 
-					px1 = _mm_cvtps_epi32 (_mm_mul_ps (px1, divisor));
-					px2 = _mm_cvtps_epi32 (_mm_mul_ps (px2, divisor));
-					px3 = _mm_cvtps_epi32 (_mm_mul_ps (px3, divisor));
-					px4 = _mm_cvtps_epi32 (_mm_mul_ps (px4, divisor));
+					px1 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px1), divisor));
+					px2 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px2), divisor));
+					px3 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px3), divisor));
+					px4 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px4), divisor));
 
 					px1 = _mm_shuffle_epi8 (px1, pixel1revmask);
 					px2 = _mm_shuffle_epi8 (px2, pixel2revmask);
