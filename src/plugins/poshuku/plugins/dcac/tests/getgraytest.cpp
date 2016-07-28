@@ -60,6 +60,11 @@ namespace DCAC
 		const auto RefTestCount = 5;
 	}
 
+	void GetGrayTest::initTestCase ()
+	{
+		TestImages_ = GetRandomImages ({ 1920, 1080 }, RefTestCount);
+	}
+
 	void GetGrayTest::testGetGraySSE4 ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
@@ -69,10 +74,8 @@ namespace DCAC
 			return;
 		}
 
-		for (int i = 0; i < RefTestCount; ++i)
+		for (const auto& image : TestImages_)
 		{
-			const auto& image = GetRandomImage ({ 1920, 1080 });
-
 			const auto ref = GetGrayDefault (image);
 			const auto sse4 = GetGraySSE4 (image);
 
@@ -89,10 +92,8 @@ namespace DCAC
 			return;
 		}
 
-		for (int i = 0; i < RefTestCount; ++i)
+		for (const auto& image : TestImages_)
 		{
-			const auto& image = GetRandomImage ({ 1920, 1080 });
-
 			const auto ref = GetGrayDefault (image);
 			const auto avx2 = GetGrayAVX2 (image);
 

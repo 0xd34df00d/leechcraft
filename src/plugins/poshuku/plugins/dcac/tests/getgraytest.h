@@ -30,6 +30,8 @@
 #pragma once
 
 #include <QObject>
+#include <QList>
+#include <QImage>
 
 namespace LeechCraft
 {
@@ -40,7 +42,11 @@ namespace DCAC
 	class GetGrayTest : public QObject
 	{
 		Q_OBJECT
+
+		QList<QImage> TestImages_;
 	private slots:
+		void initTestCase ();
+
 		void testGetGraySSE4 ();
 		void testGetGrayAVX2 ();
 	};
