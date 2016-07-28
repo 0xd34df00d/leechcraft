@@ -38,6 +38,8 @@
 #ifdef SSE_ENABLED
 #include <tmmintrin.h>
 #include <immintrin.h>
+#include <avxintrin.h>
+#include <avx2intrin.h>
 #endif
 
 #include <util/sys/cpufeatures.h>
