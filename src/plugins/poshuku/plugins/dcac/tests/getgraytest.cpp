@@ -34,6 +34,11 @@
 
 QTEST_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
 
+bool operator< (const QSize& s1, const QSize& s2)
+{
+	return std::make_pair (s1.width (), s1.height ()) < std::make_pair (s2.width (), s2.height ());
+}
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -57,12 +62,27 @@ namespace DCAC
 			return image;
 		}
 
+		QList<QImage> GetRandomImages (const QSize& size, int count)
+		{
+			QList<QImage> result;
+			for (int i = 0; i < count; ++i)
+				result << GetRandomImage (size);
+			return result;
+		}
+
 		const auto RefTestCount = 5;
+
+		const auto BenchImageCount = 5;
+
+		const auto BenchRepsCount = 3;
 	}
 
 	void GetGrayTest::initTestCase ()
 	{
 		TestImages_ = GetRandomImages ({ 1920, 1080 }, RefTestCount);
+
+		for (auto size : QList<QSize> { { 1440, 900 }, { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 } })
+			BenchImages_ [size] = GetRandomImages (size, BenchImageCount);
 	}
 
 	void GetGrayTest::testGetGraySSE4 ()

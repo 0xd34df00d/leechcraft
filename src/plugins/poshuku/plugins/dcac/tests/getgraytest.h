@@ -30,8 +30,10 @@
 #pragma once
 
 #include <QObject>
+#include <QSize>
 #include <QList>
 #include <QImage>
+#include <QMap>
 
 namespace LeechCraft
 {
@@ -44,6 +46,8 @@ namespace DCAC
 		Q_OBJECT
 
 		QList<QImage> TestImages_;
+
+		QMap<QSize, QList<QImage>> BenchImages_;
 	private slots:
 		void initTestCase ();
 
