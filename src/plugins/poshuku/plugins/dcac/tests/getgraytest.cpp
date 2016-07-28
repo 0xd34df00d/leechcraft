@@ -148,6 +148,22 @@ namespace DCAC
 	{
 		BenchmarkFunction (&GetGrayDefault, BenchImages_);
 	}
+
+	void GetGrayTest::benchGetGraySSE4 ()
+	{
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
+			return;
+
+		BenchmarkFunction (&GetGraySSE4, BenchImages_);
+	}
+
+	void GetGrayTest::benchGetGrayAVX2 ()
+	{
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
+			return;
+
+		BenchmarkFunction (&GetGrayAVX2, BenchImages_);
+	}
 }
 }
 }

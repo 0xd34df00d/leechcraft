@@ -55,6 +55,8 @@ namespace DCAC
 		void testGetGrayAVX2 ();
 
 		void benchGetGrayDefault ();
+		void benchGetGraySSE4 ();
+		void benchGetGrayAVX2 ();
 	};
 }
 }
