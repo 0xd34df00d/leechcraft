@@ -379,7 +379,8 @@ namespace DCAC
 			__m128i reg1 = _mm256_extracti128_si256 (reg, 1);
 			__m128i res0 = _mm_shuffle_epi8 (reg0, shuf);
 			__m128i res1 = _mm_shuffle_epi8 (reg1, shuf);
-			return _mm256_set_m128i (res0, res1);
+
+			return _mm256_insertf128_si256 (_mm256_castsi128_si256 (res1), res0, 1);
 		}
 
 		__attribute__ ((target ("avx")))
