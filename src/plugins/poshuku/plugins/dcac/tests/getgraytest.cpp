@@ -32,7 +32,7 @@
 #include <QtTest>
 #include <QElapsedTimer>
 #include <util/sll/qtutil.h>
-#include "effectsimpl.cpp"
+#include "../effectsimpl.cpp"
 
 QTEST_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
 
