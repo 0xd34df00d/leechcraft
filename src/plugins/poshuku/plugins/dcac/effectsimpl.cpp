@@ -216,7 +216,7 @@ namespace DCAC
 			template<T... Is>
 			static auto RepeatImpl (std::integer_sequence<T, Is...>)
 			{
-				return std::integer_sequence<T, (Is, E)...> {};
+				return std::integer_sequence<T, (static_cast<void> (Is), E)...> {};
 			}
 
 			using type = decltype (RepeatImpl (std::make_integer_sequence<T, C> {}));
