@@ -142,7 +142,7 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i xorMask = _mm256_set1_epi32 (0x00ffffff);
+			const __m256 xorMask = _mm256_castsi256_ps (_mm256_set1_epi32 (0x00ffffff));
 
 			for (int y = 0; y < height; ++y)
 			{
@@ -167,14 +167,14 @@ namespace DCAC
 					__m256i p5 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 5));
 					__m256i p6 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 6));
 					__m256i p7 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 7));
-					p0 = _mm256_xor_ps (p0, xorMask);
-					p1 = _mm256_xor_ps (p1, xorMask);
-					p2 = _mm256_xor_ps (p2, xorMask);
-					p3 = _mm256_xor_ps (p3, xorMask);
-					p4 = _mm256_xor_ps (p4, xorMask);
-					p5 = _mm256_xor_ps (p5, xorMask);
-					p6 = _mm256_xor_ps (p6, xorMask);
-					p7 = _mm256_xor_ps (p7, xorMask);
+					p0 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p0), xorMask));
+					p1 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p1), xorMask));
+					p2 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p2), xorMask));
+					p3 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p3), xorMask));
+					p4 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p4), xorMask));
+					p5 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p5), xorMask));
+					p6 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p6), xorMask));
+					p7 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p7), xorMask));
 					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 0), p0);
 					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 1), p1);
 					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 2), p2);
