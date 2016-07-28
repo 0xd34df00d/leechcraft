@@ -53,6 +53,8 @@ namespace DCAC
 
 		void testGetGraySSE4 ();
 		void testGetGrayAVX2 ();
+
+		void benchGetGrayDefault ();
 	};
 }
 }

@@ -30,6 +30,8 @@
 #include "getgraytest.h"
 #include <random>
 #include <QtTest>
+#include <QElapsedTimer>
+#include <util/sll/qtutil.h>
 #include "effectsimpl.cpp"
 
 QTEST_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
@@ -118,6 +120,26 @@ namespace DCAC
 			const auto avx2 = GetGrayAVX2 (image);
 
 			QCOMPARE (ref, avx2);
+		}
+	}
+
+	void GetGrayTest::benchGetGrayDefault ()
+	{
+		for (const auto& pair : Util::Stlize (BenchImages_))
+		{
+			const auto& list = pair.second;
+
+			for (const auto& image : list)
+				GetGrayDefault (image);
+
+			QElapsedTimer timer;
+			timer.start ();
+
+			for (int i = 0; i < BenchRepsCount; ++i)
+				for (const auto& image : list)
+					GetGrayDefault (image);
+
+			qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
 		}
 	}
 }
