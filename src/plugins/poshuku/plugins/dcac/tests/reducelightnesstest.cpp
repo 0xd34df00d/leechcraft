@@ -61,7 +61,7 @@ namespace DCAC
 		}
 	}
 
-	void ReduceLightnessTest::testReduceLightnessAVX ()
+	void ReduceLightnessTest::testAVX ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
 		{
@@ -83,12 +83,12 @@ namespace DCAC
 		}
 	}
 
-	void ReduceLightnessTest::benchReduceLightnessDefault ()
+	void ReduceLightnessTest::benchDefault ()
 	{
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessDefault (img, 1.5); });
 	}
 
-	void ReduceLightnessTest::benchReduceLightnessAVX ()
+	void ReduceLightnessTest::benchAVX ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
 			return;

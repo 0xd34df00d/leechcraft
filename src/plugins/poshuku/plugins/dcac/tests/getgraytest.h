@@ -41,12 +41,12 @@ namespace DCAC
 	{
 		Q_OBJECT
 	private slots:
-		void testGetGraySSE4 ();
-		void testGetGrayAVX2 ();
+		void testSSE4 ();
+		void testAVX2 ();
 
-		void benchGetGrayDefault ();
-		void benchGetGraySSE4 ();
-		void benchGetGrayAVX2 ();
+		void benchDefault ();
+		void benchSSE4 ();
+		void benchAVX2 ();
 	};
 }
 }

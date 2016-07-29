@@ -39,7 +39,7 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void GetGrayTest::testGetGraySSE4 ()
+	void GetGrayTest::testSSE4 ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
 		{
@@ -57,7 +57,7 @@ namespace DCAC
 		}
 	}
 
-	void GetGrayTest::testGetGrayAVX2 ()
+	void GetGrayTest::testAVX2 ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
 		{
@@ -75,12 +75,12 @@ namespace DCAC
 		}
 	}
 
-	void GetGrayTest::benchGetGrayDefault ()
+	void GetGrayTest::benchDefault ()
 	{
 		BenchmarkFunction (&GetGrayDefault);
 	}
 
-	void GetGrayTest::benchGetGraySSE4 ()
+	void GetGrayTest::benchSSE4 ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
 			return;
@@ -88,7 +88,7 @@ namespace DCAC
 		BenchmarkFunction (&GetGraySSE4);
 	}
 
-	void GetGrayTest::benchGetGrayAVX2 ()
+	void GetGrayTest::benchAVX2 ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
 			return;
