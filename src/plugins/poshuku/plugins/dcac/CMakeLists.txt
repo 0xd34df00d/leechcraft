@@ -36,7 +36,7 @@ if (ENABLE_POSHUKU_DCAC_TESTS)
 		add_executable (${_fullExecName} WIN32 ${_cppFile} tests/testbase.cpp)
 		target_link_libraries (${_fullExecName} ${LEECHCRAFT_LIBRARIES})
 		add_test (${_testName} ${_fullExecName})
-		FindQtLibs (${_fullExecName} Test)
+		FindQtLibs (${_fullExecName} Concurrent Test)
 		add_dependencies (${_fullExecName} leechcraft_poshuku_dcac)
 	endfunction ()
 

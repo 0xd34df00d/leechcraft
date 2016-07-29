@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "testbase.h"
+#include <QtConcurrentMap>
 #include <random>
 
 namespace LeechCraft
@@ -55,10 +56,11 @@ namespace DCAC
 
 		QList<QImage> GetRandomImages (const QSize& size, int count)
 		{
-			QList<QImage> result;
-			for (int i = 0; i < count; ++i)
-				result << GetRandomImage (size);
-			return result;
+			QVector<QImage> result;
+			result.resize (count);
+			QtConcurrent::blockingMap (result,
+					[&size] (QImage& image) { image = GetRandomImage (size); });
+			return result.toList ();
 		}
 
 		const auto RefTestCount = 5;
