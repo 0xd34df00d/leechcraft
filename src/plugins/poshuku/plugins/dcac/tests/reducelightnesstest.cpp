@@ -31,7 +31,7 @@
 #include <QtTest>
 #include "../effectsimpl.cpp"
 
-QTEST_MAIN (LeechCraft::Poshuku::DCAC::ReduceLightnessTest)
+QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::ReduceLightnessTest)
 
 namespace LeechCraft
 {
