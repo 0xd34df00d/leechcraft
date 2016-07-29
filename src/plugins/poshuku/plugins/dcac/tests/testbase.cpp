@@ -27,9 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
 #include "testbase.h"
+#include <random>
 
 namespace LeechCraft
 {
@@ -37,17 +36,43 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class GetGrayTest : public TestBase
+	namespace
 	{
-		Q_OBJECT
-	private slots:
-		void testGetGraySSE4 ();
-		void testGetGrayAVX2 ();
+		QImage GetRandomImage (const QSize& size)
+		{
+			std::mt19937 gen { std::random_device {} () };
+			std::uniform_int_distribution<uint32_t> dist { 0xff000000, 0xffffffff };
 
-		void benchGetGrayDefault ();
-		void benchGetGraySSE4 ();
-		void benchGetGrayAVX2 ();
-	};
+			QImage image { size, QImage::Format_ARGB32 };
+			for (int y = 0; y < size.height (); ++y)
+			{
+				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				for (int x = 0; x < size.width (); ++x)
+					scanline [x] = dist (gen);
+			}
+			return image;
+		}
+
+		QList<QImage> GetRandomImages (const QSize& size, int count)
+		{
+			QList<QImage> result;
+			for (int i = 0; i < count; ++i)
+				result << GetRandomImage (size);
+			return result;
+		}
+
+		const auto RefTestCount = 5;
+
+		const auto BenchImageCount = 5;
+	}
+
+	void TestBase::initTestCase ()
+	{
+		TestImages_ = GetRandomImages ({ 1920, 1080 }, RefTestCount);
+
+		for (auto size : QList<QSize> { { 1440, 900 }, { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 } })
+			BenchImages_ [size] = GetRandomImages (size, BenchImageCount);
+	}
 }
 }
 }

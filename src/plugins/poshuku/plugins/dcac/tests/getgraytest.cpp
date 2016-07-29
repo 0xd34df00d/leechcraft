@@ -28,18 +28,10 @@
  **********************************************************************/
 
 #include "getgraytest.h"
-#include <random>
 #include <QtTest>
-#include <QElapsedTimer>
-#include <util/sll/qtutil.h>
 #include "../effectsimpl.cpp"
 
 QTEST_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
-
-bool operator< (const QSize& s1, const QSize& s2)
-{
-	return std::make_pair (s1.width (), s1.height ()) < std::make_pair (s2.width (), s2.height ());
-}
 
 namespace LeechCraft
 {
@@ -47,67 +39,6 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	namespace
-	{
-		QImage GetRandomImage (const QSize& size)
-		{
-			std::mt19937 gen { std::random_device {} () };
-			std::uniform_int_distribution<uint32_t> dist { 0xff000000, 0xffffffff };
-
-			QImage image { size, QImage::Format_ARGB32 };
-			for (int y = 0; y < size.height (); ++y)
-			{
-				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
-				for (int x = 0; x < size.width (); ++x)
-					scanline [x] = dist (gen);
-			}
-			return image;
-		}
-
-		QList<QImage> GetRandomImages (const QSize& size, int count)
-		{
-			QList<QImage> result;
-			for (int i = 0; i < count; ++i)
-				result << GetRandomImage (size);
-			return result;
-		}
-
-		const auto RefTestCount = 5;
-
-		const auto BenchImageCount = 5;
-
-		const auto BenchRepsCount = 3;
-
-		template<typename F>
-		void BenchmarkFunction (F&& f, const QMap<QSize, QList<QImage>>& images)
-		{
-			for (const auto& pair : Util::Stlize (images))
-			{
-				const auto& list = pair.second;
-
-				for (const auto& image : list)
-					f (image);
-
-				QElapsedTimer timer;
-				timer.start ();
-
-				for (int i = 0; i < BenchRepsCount; ++i)
-					for (const auto& image : list)
-						f (image);
-
-				qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
-			}
-		}
-	}
-
-	void GetGrayTest::initTestCase ()
-	{
-		TestImages_ = GetRandomImages ({ 1920, 1080 }, RefTestCount);
-
-		for (auto size : QList<QSize> { { 1440, 900 }, { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 } })
-			BenchImages_ [size] = GetRandomImages (size, BenchImageCount);
-	}
-
 	void GetGrayTest::testGetGraySSE4 ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
@@ -146,7 +77,7 @@ namespace DCAC
 
 	void GetGrayTest::benchGetGrayDefault ()
 	{
-		BenchmarkFunction (&GetGrayDefault, BenchImages_);
+		BenchmarkFunction (&GetGrayDefault);
 	}
 
 	void GetGrayTest::benchGetGraySSE4 ()
@@ -154,7 +85,7 @@ namespace DCAC
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
 			return;
 
-		BenchmarkFunction (&GetGraySSE4, BenchImages_);
+		BenchmarkFunction (&GetGraySSE4);
 	}
 
 	void GetGrayTest::benchGetGrayAVX2 ()
@@ -162,7 +93,7 @@ namespace DCAC
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
 			return;
 
-		BenchmarkFunction (&GetGrayAVX2, BenchImages_);
+		BenchmarkFunction (&GetGrayAVX2);
 	}
 }
 }

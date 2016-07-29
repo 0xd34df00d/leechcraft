@@ -29,7 +29,19 @@
 
 #pragma once
 
-#include "testbase.h"
+#include <QObject>
+#include <QSize>
+#include <QList>
+#include <QImage>
+#include <QMap>
+#include <QElapsedTimer>
+#include <QtDebug>
+#include <util/sll/qtutil.h>
+
+inline bool operator< (const QSize& s1, const QSize& s2)
+{
+	return std::make_pair (s1.width (), s1.height ()) < std::make_pair (s2.width (), s2.height ());
+}
 
 namespace LeechCraft
 {
@@ -37,16 +49,38 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class GetGrayTest : public TestBase
+	class TestBase : public QObject
 	{
 		Q_OBJECT
-	private slots:
-		void testGetGraySSE4 ();
-		void testGetGrayAVX2 ();
+	protected:
+		QList<QImage> TestImages_;
 
-		void benchGetGrayDefault ();
-		void benchGetGraySSE4 ();
-		void benchGetGrayAVX2 ();
+		QMap<QSize, QList<QImage>> BenchImages_;
+
+		static const int BenchRepsCount = 3;
+	protected:
+		template<typename F>
+		void BenchmarkFunction (F&& f)
+		{
+			for (const auto& pair : Util::Stlize (BenchImages_))
+			{
+				const auto& list = pair.second;
+
+				for (const auto& image : list)
+					f (image);
+
+				QElapsedTimer timer;
+				timer.start ();
+
+				for (int i = 0; i < BenchRepsCount; ++i)
+					for (const auto& image : list)
+						f (image);
+
+				qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
+			}
+		}
+	private slots:
+		void initTestCase ();
 	};
 }
 }
