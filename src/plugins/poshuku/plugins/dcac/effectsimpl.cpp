@@ -272,45 +272,45 @@ namespace DCAC
 		template<size_t BytesCount, size_t Bucket>
 		using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket>::type;
 
-		template<uchar>
+		template<uint16_t>
 		struct Tag {};
 
 		template<uchar... Is>
-		auto MakeMaskImpl (Tag<4>, std::integer_sequence<uchar, Is...>)
+		auto MakeMaskImpl (Tag<128>, std::integer_sequence<uchar, Is...>)
 		{
 			return _mm_set_epi8 (Is...);
 		}
 
 		template<uchar... Is>
 		__attribute__ ((target ("avx")))
-		auto MakeMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
+		auto MakeMaskImpl (Tag<256>, std::integer_sequence<uchar, Is...>)
 		{
-			return _mm256_set_epi8 (Is...);
+			return _mm256_set_epi8 (Is..., Is...);
 		}
 
-		template<char From, char To>
+		template<uint32_t Bits, char From, char To>
 		auto MakeMask ()
 		{
-			return MakeMaskImpl (Tag<From - To + 1> {}, EpiSeq<From, To> {});
+			return MakeMaskImpl (Tag<Bits> {}, EpiSeq<From, To> {});
 		}
 
 		template<uchar... Is>
-		auto MakeRevMaskImpl (Tag<4>, std::integer_sequence<uchar, Is...>)
+		auto MakeRevMaskImpl (Tag<128>, std::integer_sequence<uchar, Is...>)
 		{
 			return _mm_set_epi8 (Is...);
 		}
 
 		template<uchar... Is>
 		__attribute__ ((target ("avx")))
-		auto MakeRevMaskImpl (Tag<8>, std::integer_sequence<uchar, Is...>)
+		auto MakeRevMaskImpl (Tag<256>, std::integer_sequence<uchar, Is...>)
 		{
-			return _mm256_set_epi8 (Is...);
+			return _mm256_set_epi8 (Is..., Is...);
 		}
 
-		template<size_t BytesCount, size_t Bucket>
+		template<uint32_t Bits, size_t BytesCount, size_t Bucket>
 		auto MakeRevMask ()
 		{
-			return MakeRevMaskImpl (Tag<BytesCount> {}, GenRevSeq<BytesCount, Bucket> {});
+			return MakeRevMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket> {});
 		}
 
 		__attribute__ ((target ("ssse3")))
@@ -323,15 +323,15 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<3, 0> ();
-			const __m128i pixel2msk = MakeMask<7, 4> ();
-			const __m128i pixel3msk = MakeMask<11, 8> ();
-			const __m128i pixel4msk = MakeMask<15, 12> ();
+			const __m128i pixel1msk = MakeMask<128, 3, 0> ();
+			const __m128i pixel2msk = MakeMask<128, 7, 4> ();
+			const __m128i pixel3msk = MakeMask<128, 11, 8> ();
+			const __m128i pixel4msk = MakeMask<128, 15, 12> ();
 
-			const __m128i pixel1revmask = MakeRevMask<4, 0> ();
-			const __m128i pixel2revmask = MakeRevMask<4, 1> ();
-			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
-			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
+			const __m128i pixel1revmask = MakeRevMask<128, 4, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<128, 4, 1> ();
+			const __m128i pixel3revmask = MakeRevMask<128, 4, 2> ();
+			const __m128i pixel4revmask = MakeRevMask<128, 4, 3> ();
 
 			const __m128 divisor = _mm_set_ps (1, factor, factor, factor);
 
@@ -395,18 +395,18 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<3, 0> ();
-			const __m128i pixel2msk = MakeMask<7, 4> ();
-			const __m128i pixel3msk = MakeMask<11, 8> ();
-			const __m128i pixel4msk = MakeMask<15, 12> ();
+			const __m128i pixel1msk = MakeMask<128, 3, 0> ();
+			const __m128i pixel2msk = MakeMask<128, 7, 4> ();
+			const __m128i pixel3msk = MakeMask<128, 11, 8> ();
+			const __m128i pixel4msk = MakeMask<128, 15, 12> ();
 
-			const __m128i pixel1revmask = MakeRevMask<4, 0> ();
-			const __m128i pixel2revmask = MakeRevMask<4, 1> ();
-			const __m128i pixel3revmask = MakeRevMask<4, 2> ();
-			const __m128i pixel4revmask = MakeRevMask<4, 3> ();
+			const __m128i pixel1revmask = MakeRevMask<128, 4, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<128, 4, 1> ();
+			const __m128i pixel3revmask = MakeRevMask<128, 4, 2> ();
+			const __m128i pixel4revmask = MakeRevMask<128, 4, 3> ();
 
 			const __m256 divisor = _mm256_set_ps (1, factor, factor, factor,
-				1, factor, factor, factor);
+					1, factor, factor, factor);
 
 			for (int y = 0; y < height; ++y)
 			{
@@ -459,10 +459,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<3, 0> ();
-			const __m128i pixel2msk = MakeMask<7, 4> ();
-			const __m128i pixel3msk = MakeMask<11, 8> ();
-			const __m128i pixel4msk = MakeMask<15, 12> ();
+			const __m128i pixel1msk = MakeMask<128, 3, 0> ();
+			const __m128i pixel2msk = MakeMask<128, 7, 4> ();
+			const __m128i pixel3msk = MakeMask<128, 11, 8> ();
+			const __m128i pixel4msk = MakeMask<128, 15, 12> ();
 
 			constexpr auto alignment = 16;
 
@@ -515,10 +515,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i ppair1mask = MakeMask<7, 0> ();
-			const __m256i ppair2mask = MakeMask<15, 8> ();
-			const __m256i ppair3mask = MakeMask<23, 16> ();
-			const __m256i ppair4mask = MakeMask<31, 24> ();
+			const __m256i ppair1mask = MakeMask<256, 3, 0> ();
+			const __m256i ppair2mask = MakeMask<256, 7, 4> ();
+			const __m256i ppair3mask = MakeMask<256, 11, 8> ();
+			const __m256i ppair4mask = MakeMask<256, 15, 12> ();
 
 			constexpr auto alignment = 32;
 
