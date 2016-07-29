@@ -50,13 +50,8 @@ namespace DCAC
 
 		for (const auto& image : TestImages_)
 		{
-			QImage ref = image;
-			ReduceLightnessDefault (ref, 1.5);
-			QImage ssse3 = image;
-			ReduceLightnessSSSE3 (ssse3, 1.5);
-
-			const auto diff = LMaxDiff (ref, ssse3);
-
+			const auto diff = CompareModifying (image,
+					&ReduceLightnessDefault, &ReduceLightnessSSSE3, 1.5);
 			QVERIFY2 (diff <= 1, "too big difference");
 		}
 	}
@@ -66,19 +61,14 @@ namespace DCAC
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
 		{
 			qWarning () << Q_FUNC_INFO
-						<< "cannot run SSE4 test";
+					<< "cannot run AVX test";
 			return;
 		}
 
 		for (const auto& image : TestImages_)
 		{
-			QImage ref = image;
-			ReduceLightnessDefault (ref, 1.5);
-			QImage avx = image;
-			ReduceLightnessAVX (avx, 1.5);
-
-			const auto diff = LMaxDiff (ref, avx);
-
+			const auto diff = CompareModifying (image,
+					&ReduceLightnessDefault, &ReduceLightnessAVX, 1.5);
 			QVERIFY2 (diff <= 1, "too big difference");
 		}
 	}
