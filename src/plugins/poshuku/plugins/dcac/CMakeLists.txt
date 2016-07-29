@@ -41,4 +41,5 @@ if (ENABLE_POSHUKU_DCAC_TESTS)
 	endfunction ()
 
 	AddDCACTest (getgray tests/getgraytest.cpp PoshukuDCACGetGrayTest)
+	AddDCACTest (reducelightness tests/reducelightnesstest.cpp PoshukuDCACReduceLightnessTest)
 endif ()
