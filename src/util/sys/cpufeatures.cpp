@@ -29,6 +29,7 @@
 
 #include "cpufeatures.h"
 #include <mutex>
+#include <cassert>
 #include <QStringList>
 #include <QtDebug>
 
@@ -81,6 +82,8 @@ namespace Util
 		case Feature::None:
 			return "";
 		}
+
+		assert (0);
 	}
 
 	bool CpuFeatures::HasFeature (Feature feature) const
@@ -98,6 +101,8 @@ namespace Util
 		case Feature::None:
 			return true;
 		}
+
+		assert (0);
 	}
 
 	void CpuFeatures::DumpDetectedFeatures () const
