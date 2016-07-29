@@ -55,11 +55,14 @@ namespace Util
 		else
 			Ecx1_ = ecx;
 
-		if (!__get_cpuid (7, &eax, &ebx, &ecx, &edx))
+		if (__get_cpuid_max (0, nullptr) < 7)
 			qWarning () << Q_FUNC_INFO
-					<< "unable to get CPUID eax = 7";
+					<< "cpuid max less than 7";
 		else
+		{
+			__cpuid_count (7, 0, eax, ebx, ecx, edx);
 			Ebx7_ = ebx;
+		}
 #endif
 
 		static std::once_flag dbgFlag;
@@ -77,6 +80,8 @@ namespace Util
 			return "sse4.1";
 		case Feature::AVX:
 			return "avx";
+		case Feature::XSave:
+			return "xsave";
 		case Feature::AVX2:
 			return "avx2";
 		case Feature::None:
@@ -96,8 +101,10 @@ namespace Util
 			return Ecx1_ & (1 << 19);
 		case Feature::AVX:
 			return Ecx1_ & (1 << 28);
+		case Feature::XSave:
+			return Ecx1_ & (1 << 26);
 		case Feature::AVX2:
-			return Ebx7_ & (1 << 5);
+			return HasFeature (Feature::XSave) && (Ebx7_ & (1 << 5));
 		case Feature::None:
 			return true;
 		}

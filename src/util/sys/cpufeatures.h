@@ -51,6 +51,7 @@ namespace Util
 			SSSE3,
 			SSE41,
 			AVX,
+			XSave,
 			AVX2,
 
 			None
