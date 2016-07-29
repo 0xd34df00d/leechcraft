@@ -29,10 +29,11 @@
 
 #include "cpufeatures.h"
 #include <mutex>
+#include <cassert>
 #include <QStringList>
 #include <QtDebug>
 
-#if defined (Q_PROCESSOR_X86)
+#if defined (Q_PROCESSOR_X86) || QT_VERSION < 0x050000
 #define HAS_CPUID
 #endif
 
@@ -86,6 +87,8 @@ namespace Util
 		case Feature::None:
 			return "";
 		}
+
+		assert (0);
 	}
 
 	bool CpuFeatures::HasFeature (Feature feature) const
@@ -105,6 +108,8 @@ namespace Util
 		case Feature::None:
 			return true;
 		}
+
+		assert (0);
 	}
 
 	void CpuFeatures::DumpDetectedFeatures () const

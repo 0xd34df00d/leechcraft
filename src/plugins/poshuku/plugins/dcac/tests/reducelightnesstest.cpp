@@ -27,11 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "getgraytest.h"
+#include "reducelightnesstest.h"
 #include <QtTest>
 #include "../effectsimpl.cpp"
 
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
+QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::ReduceLightnessTest)
 
 namespace LeechCraft
 {
@@ -39,61 +39,59 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void GetGrayTest::testSSE4 ()
+	void ReduceLightnessTest::testSSSE3 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSSE3))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "cannot run SSE4 test";
+					<< "cannot run SSSE3 test";
 			return;
 		}
 
 		for (const auto& image : TestImages_)
 		{
-			const auto ref = GetGrayDefault (image);
-			const auto sse4 = GetGraySSE4 (image);
-
-			QCOMPARE (ref, sse4);
+			const auto diff = CompareModifying (image,
+					&ReduceLightnessDefault, &ReduceLightnessSSSE3, 1.5);
+			QVERIFY2 (diff <= 1, "too big difference");
 		}
 	}
 
-	void GetGrayTest::testAVX2 ()
+	void ReduceLightnessTest::testAVX ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "cannot run AVX2 test";
+					<< "cannot run AVX test";
 			return;
 		}
 
 		for (const auto& image : TestImages_)
 		{
-			const auto ref = GetGrayDefault (image);
-			const auto avx2 = GetGrayAVX2 (image);
-
-			QCOMPARE (ref, avx2);
+			const auto diff = CompareModifying (image,
+					&ReduceLightnessDefault, &ReduceLightnessAVX, 1.5);
+			QVERIFY2 (diff <= 1, "too big difference");
 		}
 	}
 
-	void GetGrayTest::benchDefault ()
+	void ReduceLightnessTest::benchDefault ()
 	{
-		BenchmarkFunction (&GetGrayDefault);
+		BenchmarkFunction ([] (QImage& img) { ReduceLightnessDefault (img, 1.5); });
 	}
 
-	void GetGrayTest::benchSSE4 ()
+	void ReduceLightnessTest::benchSSSE3 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSSE3))
 			return;
 
-		BenchmarkFunction (&GetGraySSE4);
+		BenchmarkFunction ([] (QImage& img) { ReduceLightnessSSSE3 (img, 1.5); });
 	}
 
-	void GetGrayTest::benchAVX2 ()
+	void ReduceLightnessTest::benchAVX ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
 			return;
 
-		BenchmarkFunction (&GetGrayAVX2);
+		BenchmarkFunction ([] (QImage& img) { ReduceLightnessAVX (img, 1.5); });
 	}
 }
 }

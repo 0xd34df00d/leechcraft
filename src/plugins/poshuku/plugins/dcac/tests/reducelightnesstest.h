@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "getgraytest.h"
-#include <QtTest>
-#include "../effectsimpl.cpp"
+#pragma once
 
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
+#include "testbase.h"
 
 namespace LeechCraft
 {
@@ -39,62 +37,17 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void GetGrayTest::testSSE4 ()
+	class ReduceLightnessTest : public TestBase
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run SSE4 test";
-			return;
-		}
+		Q_OBJECT
+	private slots:
+		void testSSSE3 ();
+		void testAVX ();
 
-		for (const auto& image : TestImages_)
-		{
-			const auto ref = GetGrayDefault (image);
-			const auto sse4 = GetGraySSE4 (image);
-
-			QCOMPARE (ref, sse4);
-		}
-	}
-
-	void GetGrayTest::testAVX2 ()
-	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run AVX2 test";
-			return;
-		}
-
-		for (const auto& image : TestImages_)
-		{
-			const auto ref = GetGrayDefault (image);
-			const auto avx2 = GetGrayAVX2 (image);
-
-			QCOMPARE (ref, avx2);
-		}
-	}
-
-	void GetGrayTest::benchDefault ()
-	{
-		BenchmarkFunction (&GetGrayDefault);
-	}
-
-	void GetGrayTest::benchSSE4 ()
-	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
-			return;
-
-		BenchmarkFunction (&GetGraySSE4);
-	}
-
-	void GetGrayTest::benchAVX2 ()
-	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-			return;
-
-		BenchmarkFunction (&GetGrayAVX2);
-	}
+		void benchDefault ();
+		void benchSSSE3 ();
+		void benchAVX ();
+	};
 }
 }
 }

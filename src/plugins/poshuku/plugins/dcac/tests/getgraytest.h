@@ -29,11 +29,7 @@
 
 #pragma once
 
-#include <QObject>
-#include <QSize>
-#include <QList>
-#include <QImage>
-#include <QMap>
+#include "testbase.h"
 
 namespace LeechCraft
 {
@@ -41,22 +37,16 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	class GetGrayTest : public QObject
+	class GetGrayTest : public TestBase
 	{
 		Q_OBJECT
-
-		QList<QImage> TestImages_;
-
-		QMap<QSize, QList<QImage>> BenchImages_;
 	private slots:
-		void initTestCase ();
+		void testSSE4 ();
+		void testAVX2 ();
 
-		void testGetGraySSE4 ();
-		void testGetGrayAVX2 ();
-
-		void benchGetGrayDefault ();
-		void benchGetGraySSE4 ();
-		void benchGetGrayAVX2 ();
+		void benchDefault ();
+		void benchSSE4 ();
+		void benchAVX2 ();
 	};
 }
 }

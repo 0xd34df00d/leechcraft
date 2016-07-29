@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "getgraytest.h"
-#include <QtTest>
-#include "../effectsimpl.cpp"
-
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
+#include "testbase.h"
+#include <QtConcurrentMap>
+#include <random>
 
 namespace LeechCraft
 {
@@ -39,61 +37,43 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void GetGrayTest::testSSE4 ()
+	namespace
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
+		QImage GetRandomImage (const QSize& size)
 		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run SSE4 test";
-			return;
+			std::mt19937 gen { std::random_device {} () };
+			std::uniform_int_distribution<uint32_t> dist { 0xff000000, 0xffffffff };
+
+			QImage image { size, QImage::Format_ARGB32 };
+			for (int y = 0; y < size.height (); ++y)
+			{
+				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
+				for (int x = 0; x < size.width (); ++x)
+					scanline [x] = dist (gen);
+			}
+			return image;
 		}
 
-		for (const auto& image : TestImages_)
+		QList<QImage> GetRandomImages (const QSize& size, int count)
 		{
-			const auto ref = GetGrayDefault (image);
-			const auto sse4 = GetGraySSE4 (image);
-
-			QCOMPARE (ref, sse4);
-		}
-	}
-
-	void GetGrayTest::testAVX2 ()
-	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run AVX2 test";
-			return;
+			QVector<QImage> result;
+			result.resize (count);
+			QtConcurrent::blockingMap (result,
+					[&size] (QImage& image) { image = GetRandomImage (size); });
+			return result.toList ();
 		}
 
-		for (const auto& image : TestImages_)
-		{
-			const auto ref = GetGrayDefault (image);
-			const auto avx2 = GetGrayAVX2 (image);
+		const auto RefTestCount = 5;
 
-			QCOMPARE (ref, avx2);
-		}
+		const auto BenchImageCount = 5;
 	}
 
-	void GetGrayTest::benchDefault ()
+	void TestBase::initTestCase ()
 	{
-		BenchmarkFunction (&GetGrayDefault);
-	}
+		TestImages_ = GetRandomImages ({ 1920, 1080 }, RefTestCount);
 
-	void GetGrayTest::benchSSE4 ()
-	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
-			return;
-
-		BenchmarkFunction (&GetGraySSE4);
-	}
-
-	void GetGrayTest::benchAVX2 ()
-	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-			return;
-
-		BenchmarkFunction (&GetGrayAVX2);
+		for (auto size : QList<QSize> { { 1440, 900 }, { 1920, 1080 }, { 2560, 1440 }, { 3840, 2160 } })
+			BenchImages_ [size] = GetRandomImages (size, BenchImageCount);
 	}
 }
 }
