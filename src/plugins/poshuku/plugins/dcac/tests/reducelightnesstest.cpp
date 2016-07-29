@@ -39,28 +39,6 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	namespace
-	{
-		uchar LMaxDiff (const QImage& image1, const QImage& image2)
-		{
-			if (image1.size () != image2.size ())
-				return std::numeric_limits<uchar>::max ();
-
-			uchar diff = 0;
-
-			for (int y = 0; y < image1.height (); ++y)
-			{
-				const auto sl1 = image1.scanLine (y);
-				const auto sl2 = image2.scanLine (y);
-
-				for (int x = 0; x < image1.width () * 4; ++x)
-					diff = std::max<uchar> (diff, std::abs (sl1 [x] - sl2 [x]));
-			}
-
-			return diff;
-		}
-	}
-
 	void ReduceLightnessTest::testAVX ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
