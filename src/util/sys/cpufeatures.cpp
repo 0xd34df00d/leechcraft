@@ -76,6 +76,8 @@ namespace Util
 			return "sse4.1";
 		case Feature::AVX:
 			return "avx";
+		case Feature::XSave:
+			return "xsave";
 		case Feature::AVX2:
 			return "avx2";
 		case Feature::None:
@@ -93,6 +95,8 @@ namespace Util
 			return Ecx1_ & (1 << 19);
 		case Feature::AVX:
 			return Ecx1_ & (1 << 28);
+		case Feature::XSave:
+			return Ecx1_ & (1 << 26);
 		case Feature::AVX2:
 			return Ebx7_ & (1 << 5);
 		case Feature::None:
