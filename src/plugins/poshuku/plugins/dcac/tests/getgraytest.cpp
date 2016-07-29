@@ -31,7 +31,7 @@
 #include <QtTest>
 #include "../effectsimpl.cpp"
 
-QTEST_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
+QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::GetGrayTest)
 
 namespace LeechCraft
 {
