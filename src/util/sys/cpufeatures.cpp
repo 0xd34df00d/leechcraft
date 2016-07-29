@@ -32,7 +32,7 @@
 #include <QStringList>
 #include <QtDebug>
 
-#if defined (Q_PROCESSOR_X86)
+#if defined (Q_PROCESSOR_X86) || QT_VERSION < 0x050000
 #define HAS_CPUID
 #endif
 
