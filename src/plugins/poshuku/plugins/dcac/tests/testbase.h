@@ -62,6 +62,12 @@ namespace DCAC
 		template<typename F>
 		void BenchmarkFunction (F&& f)
 		{
+			BenchmarkFunctionImpl (std::forward<F> (f), 0);
+		}
+	private:
+		template<typename F, typename = std::result_of_t<F (const QImage&)>>
+		void BenchmarkFunctionImpl (F&& f, int)
+		{
 			for (const auto& pair : Util::Stlize (BenchImages_))
 			{
 				const auto& list = pair.second;
@@ -77,6 +83,37 @@ namespace DCAC
 						f (image);
 
 				qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
+			}
+		}
+
+		template<typename F>
+		void BenchmarkFunctionImpl (F&& f, float)
+		{
+			for (const auto& pair : Util::Stlize (BenchImages_))
+			{
+				const auto& list = pair.second;
+
+				for (auto image : list)
+					f (image);
+
+				uint64_t counter = 0;
+				QElapsedTimer timer;
+				timer.start ();
+
+				for (int i = 0; i < BenchRepsCount; ++i)
+					for (auto image : list)
+					{
+						image.detach ();
+
+						QElapsedTimer timer;
+						timer.start ();
+
+						f (image);
+
+						counter += timer.nsecsElapsed ();
+					}
+
+				qDebug () << pair.first << ": " << counter / (1000 * BenchRepsCount * list.size ());
 			}
 		}
 	private slots:
