@@ -39,6 +39,28 @@ namespace Poshuku
 {
 namespace DCAC
 {
+	void ReduceLightnessTest::testSSSE3 ()
+	{
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSSE3))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot run SSSE3 test";
+			return;
+		}
+
+		for (const auto& image : TestImages_)
+		{
+			QImage ref = image;
+			ReduceLightnessDefault (ref, 1.5);
+			QImage ssse3 = image;
+			ReduceLightnessSSSE3 (ssse3, 1.5);
+
+			const auto diff = LMaxDiff (ref, ssse3);
+
+			QVERIFY2 (diff <= 1, "too big difference");
+		}
+	}
+
 	void ReduceLightnessTest::testAVX ()
 	{
 		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
@@ -64,6 +86,14 @@ namespace DCAC
 	void ReduceLightnessTest::benchDefault ()
 	{
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessDefault (img, 1.5); });
+	}
+
+	void ReduceLightnessTest::benchSSSE3 ()
+	{
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSSE3))
+			return;
+
+		BenchmarkFunction ([] (QImage& img) { ReduceLightnessSSSE3 (img, 1.5); });
 	}
 
 	void ReduceLightnessTest::benchAVX ()
