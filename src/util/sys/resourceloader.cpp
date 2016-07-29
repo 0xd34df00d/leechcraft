@@ -233,7 +233,7 @@ namespace LeechCraft
 				return result;
 			}
 
-			auto result = std::make_shared<QFile> ();
+			auto result = std::make_shared<QFile> (path);
 
 			if (!result->isSequential () &&
 					result->size () < CachePathContents_.maxCost () / 2)
