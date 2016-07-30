@@ -320,6 +320,13 @@ namespace DCAC
 			return MakeRevMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {});
 		}
 
+		uint32_t BSRL (uint32_t a)
+		{
+			uint32_t res;
+			__asm ("bsrl %1, %0" : "=r"(res) : "r"(a) : );
+			return res;
+		}
+
 		__attribute__ ((target ("ssse3")))
 		void ReduceLightnessSSSE3 (QImage& image, float factor)
 		{
