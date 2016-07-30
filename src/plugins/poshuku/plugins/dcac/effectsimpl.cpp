@@ -408,23 +408,21 @@ namespace DCAC
 		{
 			constexpr auto alignment = 32;
 
-			factor = 1 / factor;
-
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i pixel1msk = MakeMask<256, 3, 0> ();
-			const __m256i pixel2msk = MakeMask<256, 7, 4> ();
-			const __m256i pixel3msk = MakeMask<256, 11, 8> ();
-			const __m256i pixel4msk = MakeMask<256, 15, 12> ();
+			const __m256i pixel1msk = MakeMask<256, 7, 0, 1> ();
+			const __m256i pixel2msk = MakeMask<256, 15, 8, 1> ();
 
-			const __m256i pixel1revmask = MakeRevMask<256, 4, 0> ();
-			const __m256i pixel2revmask = MakeRevMask<256, 4, 1> ();
-			const __m256i pixel3revmask = MakeRevMask<256, 4, 2> ();
-			const __m256i pixel4revmask = MakeRevMask<256, 4, 3> ();
+			const __m256i pixel1revmask = MakeRevMask<256, 8, 0> ();
+			const __m256i pixel2revmask = MakeRevMask<256, 8, 1> ();
 
-			const __m256 divisor = _mm256_set_ps (1, factor, factor, factor,
-					1, factor, factor, factor);
+			const __m256i orMask = _mm256_set1_epi32 (0xff000000);
+
+			const Divide div { static_cast<uint16_t> (std::round (256 * factor)) };
+			const __m256i mult = _mm256_broadcastq_epi64 (div.M_);
+
+			factor = 1 / factor;
 
 			for (int y = 0; y < height; ++y)
 			{
@@ -439,24 +437,28 @@ namespace DCAC
 				{
 					__m256i eightPixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
 
-					__m256i px1 = _mm256_shuffle_epi8 (eightPixels, pixel1msk);
-					__m256i px2 = _mm256_shuffle_epi8 (eightPixels, pixel2msk);
-					__m256i px3 = _mm256_shuffle_epi8 (eightPixels, pixel3msk);
-					__m256i px4 = _mm256_shuffle_epi8 (eightPixels, pixel4msk);
+					__m256i p1 = _mm256_shuffle_epi8 (eightPixels, pixel1msk);
+					{
+						__m256i multh1 = _mm256_mulhi_epu16 (p1, mult);
+						p1 = _mm256_sub_epi16 (p1, multh1);
+						p1 = _mm256_srl_epi16 (p1, div.S1_);
+						p1 = _mm256_add_epi16 (multh1, p1);
+						p1 = _mm256_srl_epi16 (p1, div.S2_);
+					}
+					p1 = _mm256_shuffle_epi8 (p1, pixel1revmask);
 
-					px1 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px1), divisor));
-					px2 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px2), divisor));
-					px3 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px3), divisor));
-					px4 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px4), divisor));
+					__m256i p2 = _mm256_shuffle_epi8 (eightPixels, pixel2msk);
+					{
+						__m256i multh2 = _mm256_mulhi_epu16 (p2, mult);
+						p2 = _mm256_sub_epi16 (p2, multh2);
+						p2 = _mm256_srl_epi16 (p2, div.S1_);
+						p2 = _mm256_add_epi16 (multh2, p2);
+						p2 = _mm256_srl_epi16 (p2, div.S2_);
+					}
+					p2 = _mm256_shuffle_epi8 (p2, pixel2revmask);
 
-					px1 = _mm256_shuffle_epi8 (px1, pixel1revmask);
-					px2 = _mm256_shuffle_epi8 (px2, pixel2revmask);
-					px3 = _mm256_shuffle_epi8 (px3, pixel3revmask);
-					px4 = _mm256_shuffle_epi8 (px4, pixel4revmask);
-
-					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (px1), _mm256_castsi256_ps (px2)));
-					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (eightPixels), _mm256_castsi256_ps (px3)));
-					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (eightPixels), _mm256_castsi256_ps (px4)));
+					eightPixels = _mm256_or_si256 (p1, p2);
+					eightPixels = _mm256_or_si256 (eightPixels, orMask);
 
 					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x), eightPixels);
 				}
