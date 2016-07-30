@@ -153,3 +153,7 @@ namespace DCAC
 }
 }
 }
+
+#define CHECKFEATURE(x) \
+	if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::x)) \
+		QSKIP ("unsupported instruction set");
