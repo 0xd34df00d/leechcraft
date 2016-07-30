@@ -327,6 +327,23 @@ namespace DCAC
 			return res;
 		}
 
+		struct Divide
+		{
+			__m128i M_;
+			__m128i S1_;
+			__m128i S2_;
+
+			Divide (uint16_t factor)
+			{
+				const uint16_t log = BSRL (factor - 1) + 1;
+				const uint16_t twoToLog = 1 << log;
+
+				M_ = _mm_set1_epi16 (1 + static_cast<uint16_t> ((static_cast<uint32_t> (twoToLog - factor) << 16) / factor));
+				S1_ = _mm_setr_epi32 (1, 0, 0, 0);
+				S2_ = _mm_setr_epi32 (log - 1, 0, 0, 0);
+			}
+		};
+
 		__attribute__ ((target ("ssse3")))
 		void ReduceLightnessSSSE3 (QImage& image, float factor)
 		{
@@ -341,14 +358,9 @@ namespace DCAC
 			const __m128i pixel1revmask = MakeRevMask<128, 8, 0> ();
 			const __m128i pixel2revmask = MakeRevMask<128, 8, 1> ();
 
-			const uint16_t intFactor = std::round (256 * factor);
-			uint16_t log = BSRL (intFactor - 1) + 1;
-			uint16_t twoToLog = 1 << log;
-			__m128i multiplier = _mm_set1_epi16 (1 + static_cast<uint16_t> ((static_cast<uint32_t> (twoToLog - intFactor) << 16) / intFactor));
-			__m128i shift1 = _mm_setr_epi32 (1, 0, 0, 0);
-			__m128i shift2 = _mm_setr_epi32 (log - 1, 0, 0, 0);
-
 			const __m128i orMask = _mm_set1_epi32 (0xff000000);
+
+			const Divide div { static_cast<uint16_t> (std::round (256 * factor)) };
 
 			factor = 1 / factor;
 
@@ -366,19 +378,19 @@ namespace DCAC
 					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
 
 					__m128i pair1 = _mm_shuffle_epi8 (fourPixels, pixel1msk);
-					__m128i p1s1 = _mm_mulhi_epu16 (pair1, multiplier);
+					__m128i p1s1 = _mm_mulhi_epu16 (pair1, div.M_);
 					__m128i p1s2 = _mm_sub_epi16 (pair1, p1s1);
-					pair1 = _mm_srl_epi16 (p1s2, shift1);
+					pair1 = _mm_srl_epi16 (p1s2, div.S1_);
 					pair1 = _mm_add_epi16 (p1s1, pair1);
-					pair1 = _mm_srl_epi16 (pair1, shift2);
+					pair1 = _mm_srl_epi16 (pair1, div.S2_);
 					pair1 = _mm_shuffle_epi8 (pair1, pixel1revmask);
 
 					__m128i pair2 = _mm_shuffle_epi8 (fourPixels, pixel2msk);
-					__m128i p2s1 = _mm_mulhi_epu16 (pair2, multiplier);
+					__m128i p2s1 = _mm_mulhi_epu16 (pair2, div.M_);
 					__m128i p2s2 = _mm_sub_epi16 (pair2, p2s1);
-					pair2 = _mm_srl_epi16 (p2s2, shift1);
+					pair2 = _mm_srl_epi16 (p2s2, div.S1_);
 					pair2 = _mm_add_epi16 (p2s1, pair2);
-					pair2 = _mm_srl_epi16 (pair2, shift2);
+					pair2 = _mm_srl_epi16 (pair2, div.S2_);
 					pair2 = _mm_shuffle_epi8 (pair2, pixel2revmask);
 
 					fourPixels = _mm_or_si128 (pair1, pair2);
