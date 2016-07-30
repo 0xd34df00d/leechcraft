@@ -192,7 +192,8 @@ namespace DCAC
 		}
 
 		template<typename T, T... Fst, T... Snd>
-		std::integer_sequence<T, Fst..., Snd...> ConcatImpl (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
+		std::integer_sequence<T, Fst..., Snd...>
+			ConcatImpl (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
 
 		template<typename... Seqs>
 		struct ConcatS;
@@ -227,29 +228,33 @@ namespace DCAC
 		template<typename T, T E, size_t C>
 		using Repeat = typename RepeatS<T, E, C>::type;
 
-		template<char From, char To>
+		template<char From, char To, char ByteNum, char BytesPerElem>
 		struct GenSeq;
 
-		template<char From, char To>
-		using EpiSeq = typename GenSeq<From, To>::type;
+		template<char From, char To, char ByteNum, char BytesPerElem>
+		using EpiSeq = typename GenSeq<From, To, ByteNum, BytesPerElem>::type;
 
-		template<char From, char To>
+		template<char From, char To, char ByteNum, char BytesPerElem>
 		struct GenSeq
 		{
-			using type = Concat<EpiSeq<From, From>, EpiSeq<From - 1, To>>;
+			using type = Concat<EpiSeq<From, From, ByteNum, BytesPerElem>, EpiSeq<From - 1, To, ByteNum, BytesPerElem>>;
 		};
 
-		template<char E>
-		struct GenSeq<E, E>
+		template<char E, char ByteNum, char BytesPerElem>
+		struct GenSeq<E, E, ByteNum, BytesPerElem>
 		{
-			using type = std::integer_sequence<uchar, 0x80, 0x80, 0x80, E>;
+			using type = Concat<
+					Repeat<uchar, 0x80, BytesPerElem - ByteNum - 1>,
+					std::integer_sequence<uchar, E>,
+					Repeat<uchar, 0x80, ByteNum>
+				>;
 		};
 
-		template<size_t BytesCount, size_t Bucket>
+		template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
 		struct GenRevSeqS
 		{
-			static constexpr uchar EndValue = BytesCount * 4 - 4;
-			static constexpr auto TotalCount = BytesCount * 4;
+			static constexpr uchar EndValue = BytesCount * BytesPerElem - BytesPerElem;
+			static constexpr auto TotalCount = BytesCount * BytesPerElem;
 			static constexpr auto BeforeEmpty = BytesCount * Bucket;
 			static constexpr auto AfterEmpty = TotalCount - BytesCount - BeforeEmpty;
 
@@ -259,7 +264,7 @@ namespace DCAC
 			template<uchar... Is>
 			static auto BytesImpl (std::integer_sequence<uchar, Is...>)
 			{
-				return std::integer_sequence<uchar, (EndValue - Is * 4)...> {};
+				return std::integer_sequence<uchar, (EndValue - Is * BytesPerElem + ByteNum)...> {};
 			}
 
 			using type = Concat<
@@ -269,8 +274,8 @@ namespace DCAC
 				>;
 		};
 
-		template<size_t BytesCount, size_t Bucket>
-		using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket>::type;
+		template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
+		using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket, ByteNum, BytesPerElem>::type;
 
 		template<uint16_t>
 		struct Tag {};
@@ -288,10 +293,11 @@ namespace DCAC
 			return _mm256_set_epi8 (Is..., Is...);
 		}
 
-		template<uint32_t Bits, char From, char To>
+		template<uint32_t Bits, char From, char To, char ByteNum = 0>
 		auto MakeMask ()
 		{
-			return MakeMaskImpl (Tag<Bits> {}, EpiSeq<From, To> {});
+			constexpr char BytesPerElem = 16 / (From - To + 1);
+			return MakeMaskImpl (Tag<Bits> {}, EpiSeq<From, To, ByteNum, BytesPerElem> {});
 		}
 
 		template<uchar... Is>
@@ -307,10 +313,11 @@ namespace DCAC
 			return _mm256_set_epi8 (Is..., Is...);
 		}
 
-		template<uint32_t Bits, size_t BytesCount, size_t Bucket>
+		template<uint32_t Bits, size_t BytesCount, size_t Bucket, char ByteNum = 0>
 		auto MakeRevMask ()
 		{
-			return MakeRevMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket> {});
+			constexpr char BytesPerElem = 16 / BytesCount;
+			return MakeRevMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {});
 		}
 
 		__attribute__ ((target ("ssse3")))
