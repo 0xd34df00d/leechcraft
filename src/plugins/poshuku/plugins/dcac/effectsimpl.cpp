@@ -385,8 +385,8 @@ namespace DCAC
 			return _mm256_insertf128_si256 (_mm256_castsi128_si256 (res1), res0, 1);
 		}
 
-		__attribute__ ((target ("avx")))
-		void ReduceLightnessAVX (QImage& image, float factor)
+		__attribute__ ((target ("avx2")))
+		void ReduceLightnessAVX2 (QImage& image, float factor)
 		{
 			constexpr auto alignment = 32;
 
@@ -395,15 +395,15 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<128, 3, 0> ();
-			const __m128i pixel2msk = MakeMask<128, 7, 4> ();
-			const __m128i pixel3msk = MakeMask<128, 11, 8> ();
-			const __m128i pixel4msk = MakeMask<128, 15, 12> ();
+			const __m256i pixel1msk = MakeMask<256, 3, 0> ();
+			const __m256i pixel2msk = MakeMask<256, 7, 4> ();
+			const __m256i pixel3msk = MakeMask<256, 11, 8> ();
+			const __m256i pixel4msk = MakeMask<256, 15, 12> ();
 
-			const __m128i pixel1revmask = MakeRevMask<128, 4, 0> ();
-			const __m128i pixel2revmask = MakeRevMask<128, 4, 1> ();
-			const __m128i pixel3revmask = MakeRevMask<128, 4, 2> ();
-			const __m128i pixel4revmask = MakeRevMask<128, 4, 3> ();
+			const __m256i pixel1revmask = MakeRevMask<256, 4, 0> ();
+			const __m256i pixel2revmask = MakeRevMask<256, 4, 1> ();
+			const __m256i pixel3revmask = MakeRevMask<256, 4, 2> ();
+			const __m256i pixel4revmask = MakeRevMask<256, 4, 3> ();
 
 			const __m256 divisor = _mm256_set_ps (1, factor, factor, factor,
 					1, factor, factor, factor);
@@ -421,20 +421,20 @@ namespace DCAC
 				{
 					__m256i eightPixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
 
-					__m256i px1 = EmulMM256ShuffleEpi8 (eightPixels, pixel1msk);
-					__m256i px2 = EmulMM256ShuffleEpi8 (eightPixels, pixel2msk);
-					__m256i px3 = EmulMM256ShuffleEpi8 (eightPixels, pixel3msk);
-					__m256i px4 = EmulMM256ShuffleEpi8 (eightPixels, pixel4msk);
+					__m256i px1 = _mm256_shuffle_epi8 (eightPixels, pixel1msk);
+					__m256i px2 = _mm256_shuffle_epi8 (eightPixels, pixel2msk);
+					__m256i px3 = _mm256_shuffle_epi8 (eightPixels, pixel3msk);
+					__m256i px4 = _mm256_shuffle_epi8 (eightPixels, pixel4msk);
 
 					px1 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px1), divisor));
 					px2 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px2), divisor));
 					px3 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px3), divisor));
 					px4 = _mm256_cvtps_epi32 (_mm256_mul_ps (_mm256_cvtepi32_ps (px4), divisor));
 
-					px1 = EmulMM256ShuffleEpi8 (px1, pixel1revmask);
-					px2 = EmulMM256ShuffleEpi8 (px2, pixel2revmask);
-					px3 = EmulMM256ShuffleEpi8 (px3, pixel3revmask);
-					px4 = EmulMM256ShuffleEpi8 (px4, pixel4revmask);
+					px1 = _mm256_shuffle_epi8 (px1, pixel1revmask);
+					px2 = _mm256_shuffle_epi8 (px2, pixel2revmask);
+					px3 = _mm256_shuffle_epi8 (px3, pixel3revmask);
+					px4 = _mm256_shuffle_epi8 (px4, pixel4revmask);
 
 					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (px1), _mm256_castsi256_ps (px2)));
 					eightPixels = _mm256_castps_si256 (_mm256_or_ps (_mm256_castsi256_ps (eightPixels), _mm256_castsi256_ps (px3)));
@@ -591,7 +591,7 @@ namespace DCAC
 
 #ifdef SSE_ENABLED
 		static const auto ptr = Util::CpuFeatures::Choose ({
-					{ Util::CpuFeatures::Feature::AVX, &ReduceLightnessAVX },
+					{ Util::CpuFeatures::Feature::AVX2, &ReduceLightnessAVX2 },
 					{ Util::CpuFeatures::Feature::SSSE3, &ReduceLightnessSSSE3 }
 				},
 				&ReduceLightnessDefault);

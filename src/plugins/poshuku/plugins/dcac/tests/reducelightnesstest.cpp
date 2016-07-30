@@ -56,19 +56,19 @@ namespace DCAC
 		}
 	}
 
-	void ReduceLightnessTest::testAVX ()
+	void ReduceLightnessTest::testAVX2 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "cannot run AVX test";
+					<< "cannot run AVX2 test";
 			return;
 		}
 
 		for (const auto& image : TestImages_)
 		{
 			const auto diff = CompareModifying (image,
-					&ReduceLightnessDefault, &ReduceLightnessAVX, 1.5);
+					&ReduceLightnessDefault, &ReduceLightnessAVX2, 1.5);
 			QVERIFY2 (diff <= 1, "too big difference");
 		}
 	}
@@ -86,12 +86,12 @@ namespace DCAC
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessSSSE3 (img, 1.5); });
 	}
 
-	void ReduceLightnessTest::benchAVX ()
+	void ReduceLightnessTest::benchAVX2 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX))
+		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
 			return;
 
-		BenchmarkFunction ([] (QImage& img) { ReduceLightnessAVX (img, 1.5); });
+		BenchmarkFunction ([] (QImage& img) { ReduceLightnessAVX2 (img, 1.5); });
 	}
 }
 }
