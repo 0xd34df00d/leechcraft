@@ -41,12 +41,7 @@ namespace DCAC
 {
 	void GetGrayTest::testSSE4 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run SSE4 test";
-			return;
-		}
+		CHECKFEATURE (SSE41)
 
 		for (const auto& image : TestImages_)
 		{
@@ -59,12 +54,7 @@ namespace DCAC
 
 	void GetGrayTest::testAVX2 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run AVX2 test";
-			return;
-		}
+		CHECKFEATURE (AVX2)
 
 		for (const auto& image : TestImages_)
 		{
@@ -82,16 +72,14 @@ namespace DCAC
 
 	void GetGrayTest::benchSSE4 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSE41))
-			return;
+		CHECKFEATURE (SSE41)
 
 		BenchmarkFunction (&GetGraySSE4);
 	}
 
 	void GetGrayTest::benchAVX2 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-			return;
+		CHECKFEATURE (AVX2)
 
 		BenchmarkFunction (&GetGrayAVX2);
 	}

@@ -41,12 +41,7 @@ namespace DCAC
 {
 	void ReduceLightnessTest::testSSSE3 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSSE3))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run SSSE3 test";
-			return;
-		}
+		CHECKFEATURE (SSSE3)
 
 		for (const auto& image : TestImages_)
 		{
@@ -58,12 +53,7 @@ namespace DCAC
 
 	void ReduceLightnessTest::testAVX2 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "cannot run AVX2 test";
-			return;
-		}
+		CHECKFEATURE (AVX2)
 
 		for (const auto& image : TestImages_)
 		{
@@ -80,16 +70,13 @@ namespace DCAC
 
 	void ReduceLightnessTest::benchSSSE3 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::SSSE3))
-			return;
-
+		CHECKFEATURE (SSSE3)
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessSSSE3 (img, 1.5); });
 	}
 
 	void ReduceLightnessTest::benchAVX2 ()
 	{
-		if (!Util::CpuFeatures {}.HasFeature (Util::CpuFeatures::Feature::AVX2))
-			return;
+		CHECKFEATURE (AVX2)
 
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessAVX2 (img, 1.5); });
 	}
