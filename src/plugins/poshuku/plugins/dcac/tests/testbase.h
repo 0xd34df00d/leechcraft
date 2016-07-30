@@ -108,11 +108,12 @@ namespace DCAC
 				QElapsedTimer timer;
 				timer.start ();
 
-				for (int i = 0; i < BenchRepsCount; ++i)
+				int rep = 0;
+				for (; rep < BenchRepsCount && timer.nsecsElapsed () < 50 * 1000 * 1000; ++rep)
 					for (const auto& image : list)
 						f (image);
 
-				qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * BenchRepsCount * list.size ());
+				qDebug () << pair.first << ": " << timer.nsecsElapsed () / (1000 * rep * list.size ());
 			}
 		}
 
