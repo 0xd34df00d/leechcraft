@@ -332,22 +332,25 @@ namespace DCAC
 		{
 			constexpr auto alignment = 16;
 
-			factor = 1 / factor;
-
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<128, 3, 0> ();
-			const __m128i pixel2msk = MakeMask<128, 7, 4> ();
-			const __m128i pixel3msk = MakeMask<128, 11, 8> ();
-			const __m128i pixel4msk = MakeMask<128, 15, 12> ();
+			const __m128i pixel1msk = MakeMask<128, 7, 0, 1> ();
+			const __m128i pixel2msk = MakeMask<128, 15, 8, 1> ();
 
-			const __m128i pixel1revmask = MakeRevMask<128, 4, 0> ();
-			const __m128i pixel2revmask = MakeRevMask<128, 4, 1> ();
-			const __m128i pixel3revmask = MakeRevMask<128, 4, 2> ();
-			const __m128i pixel4revmask = MakeRevMask<128, 4, 3> ();
+			const __m128i pixel1revmask = MakeRevMask<128, 8, 0> ();
+			const __m128i pixel2revmask = MakeRevMask<128, 8, 1> ();
 
-			const __m128 divisor = _mm_set_ps (1, factor, factor, factor);
+			const uint16_t intFactor = std::round (256 * factor);
+			uint16_t log = BSRL (intFactor - 1) + 1;
+			uint16_t twoToLog = 1 << log;
+			__m128i multiplier = _mm_set1_epi16 (1 + static_cast<uint16_t> ((static_cast<uint32_t> (twoToLog - intFactor) << 16) / intFactor));
+			__m128i shift1 = _mm_setr_epi32 (1, 0, 0, 0);
+			__m128i shift2 = _mm_setr_epi32 (log - 1, 0, 0, 0);
+
+			const __m128i orMask = _mm_set1_epi32 (0xff000000);
+
+			factor = 1 / factor;
 
 			for (int y = 0; y < height; ++y)
 			{
@@ -362,24 +365,24 @@ namespace DCAC
 				{
 					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
 
-					__m128i px1 = _mm_shuffle_epi8 (fourPixels, pixel1msk);
-					__m128i px2 = _mm_shuffle_epi8 (fourPixels, pixel2msk);
-					__m128i px3 = _mm_shuffle_epi8 (fourPixels, pixel3msk);
-					__m128i px4 = _mm_shuffle_epi8 (fourPixels, pixel4msk);
+					__m128i pair1 = _mm_shuffle_epi8 (fourPixels, pixel1msk);
+					__m128i p1s1 = _mm_mulhi_epu16 (pair1, multiplier);
+					__m128i p1s2 = _mm_sub_epi16 (pair1, p1s1);
+					pair1 = _mm_srl_epi16 (p1s2, shift1);
+					pair1 = _mm_add_epi16 (p1s1, pair1);
+					pair1 = _mm_srl_epi16 (pair1, shift2);
+					pair1 = _mm_shuffle_epi8 (pair1, pixel1revmask);
 
-					px1 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px1), divisor));
-					px2 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px2), divisor));
-					px3 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px3), divisor));
-					px4 = _mm_cvtps_epi32 (_mm_mul_ps (_mm_cvtepi32_ps (px4), divisor));
+					__m128i pair2 = _mm_shuffle_epi8 (fourPixels, pixel2msk);
+					__m128i p2s1 = _mm_mulhi_epu16 (pair2, multiplier);
+					__m128i p2s2 = _mm_sub_epi16 (pair2, p2s1);
+					pair2 = _mm_srl_epi16 (p2s2, shift1);
+					pair2 = _mm_add_epi16 (p2s1, pair2);
+					pair2 = _mm_srl_epi16 (pair2, shift2);
+					pair2 = _mm_shuffle_epi8 (pair2, pixel2revmask);
 
-					px1 = _mm_shuffle_epi8 (px1, pixel1revmask);
-					px2 = _mm_shuffle_epi8 (px2, pixel2revmask);
-					px3 = _mm_shuffle_epi8 (px3, pixel3revmask);
-					px4 = _mm_shuffle_epi8 (px4, pixel4revmask);
-
-					fourPixels = _mm_add_epi32 (px1, px2);
-					fourPixels = _mm_add_epi32 (fourPixels, px3);
-					fourPixels = _mm_add_epi32 (fourPixels, px4);
+					fourPixels = _mm_or_si128 (pair1, pair2);
+					fourPixels = _mm_or_si128 (fourPixels, orMask);
 
 					_mm_store_si128 (reinterpret_cast<__m128i*> (scanline + x), fourPixels);
 				}
