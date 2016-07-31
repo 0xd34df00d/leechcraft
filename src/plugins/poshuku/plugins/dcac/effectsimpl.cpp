@@ -502,7 +502,9 @@ namespace DCAC
 				};
 				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
 
+#if __clang__
 				#pragma unroll(8)
+#endif
 				for (; x < bytesCount; x += alignment)
 				{
 					const __m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
