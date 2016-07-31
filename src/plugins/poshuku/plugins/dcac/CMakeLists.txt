@@ -42,4 +42,5 @@ if (ENABLE_POSHUKU_DCAC_TESTS)
 
 	AddDCACTest (getgray tests/getgraytest.cpp PoshukuDCACGetGrayTest)
 	AddDCACTest (reducelightness tests/reducelightnesstest.cpp PoshukuDCACReduceLightnessTest)
+	AddDCACTest (invertrgb tests/invertrgbtest.cpp PoshukuDCACInvertRgbTest)
 endif ()
