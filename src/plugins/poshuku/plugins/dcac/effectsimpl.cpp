@@ -43,6 +43,7 @@
 #endif
 
 #include <util/sys/cpufeatures.h>
+#include <util/sll/intseq.h>
 
 namespace LeechCraft
 {
@@ -191,43 +192,6 @@ namespace DCAC
 			}
 		}
 
-		template<typename T, T... Fst, T... Snd>
-		std::integer_sequence<T, Fst..., Snd...>
-			ConcatImpl (std::integer_sequence<T, Fst...>, std::integer_sequence<T, Snd...>);
-
-		template<typename... Seqs>
-		struct ConcatS;
-
-		template<typename... Seqs>
-		using Concat = typename ConcatS<Seqs...>::type;
-
-		template<typename Seq>
-		struct ConcatS<Seq>
-		{
-			using type = Seq;
-		};
-
-		template<typename Seq1, typename Seq2, typename... Rest>
-		struct ConcatS<Seq1, Seq2, Rest...>
-		{
-			using type = Concat<decltype (ConcatImpl (Seq1 {}, Seq2 {})), Rest...>;
-		};
-
-		template<typename T, T E, size_t C>
-		struct RepeatS
-		{
-			template<T... Is>
-			static auto RepeatImpl (std::integer_sequence<T, Is...>)
-			{
-				return std::integer_sequence<T, (static_cast<void> (Is), E)...> {};
-			}
-
-			using type = decltype (RepeatImpl (std::make_integer_sequence<T, C> {}));
-		};
-
-		template<typename T, T E, size_t C>
-		using Repeat = typename RepeatS<T, E, C>::type;
-
 		template<char From, char To, char ByteNum, char BytesPerElem>
 		struct GenSeq;
 
@@ -237,16 +201,16 @@ namespace DCAC
 		template<char From, char To, char ByteNum, char BytesPerElem>
 		struct GenSeq
 		{
-			using type = Concat<EpiSeq<From, From, ByteNum, BytesPerElem>, EpiSeq<From - 1, To, ByteNum, BytesPerElem>>;
+			using type = Util::IntSeq::Concat<EpiSeq<From, From, ByteNum, BytesPerElem>, EpiSeq<From - 1, To, ByteNum, BytesPerElem>>;
 		};
 
 		template<char E, char ByteNum, char BytesPerElem>
 		struct GenSeq<E, E, ByteNum, BytesPerElem>
 		{
-			using type = Concat<
-					Repeat<uchar, 0x80, BytesPerElem - ByteNum - 1>,
+			using type = Util::IntSeq::Concat<
+					Util::IntSeq::Repeat<uchar, 0x80, BytesPerElem - ByteNum - 1>,
 					std::integer_sequence<uchar, E>,
-					Repeat<uchar, 0x80, ByteNum>
+					Util::IntSeq::Repeat<uchar, 0x80, ByteNum>
 				>;
 		};
 
@@ -267,10 +231,10 @@ namespace DCAC
 				return std::integer_sequence<uchar, (EndValue - Is * BytesPerElem + ByteNum)...> {};
 			}
 
-			using type = Concat<
-					Repeat<uchar, 0x80, AfterEmpty>,
+			using type = Util::IntSeq::Concat<
+					Util::IntSeq::Repeat<uchar, 0x80, AfterEmpty>,
 					decltype (BytesImpl (std::make_integer_sequence<uchar, BytesCount> {})),
-					Repeat<uchar, 0x80, BeforeEmpty>
+					Util::IntSeq::Repeat<uchar, 0x80, BeforeEmpty>
 				>;
 		};
 
