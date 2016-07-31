@@ -79,12 +79,12 @@ namespace DCAC
 		}
 
 		template<typename Ref, typename F, typename... Args>
-		uchar CompareModifying (const QImage& image, Ref&& refFunc, F&& testFunc, Args...)
+		uchar CompareModifying (const QImage& image, Ref&& refFunc, F&& testFunc, Args... args)
 		{
 			auto ref = image;
-			refFunc (ref, 1.5);
+			refFunc (ref, args...);
 			auto avx = image;
-			testFunc (avx, 1.5);
+			testFunc (avx, args...);
 
 			return LMaxDiff (ref, avx);
 		}
