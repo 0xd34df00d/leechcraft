@@ -30,7 +30,7 @@
 #include "invertrgbtest.h"
 
 #include <QtTest>
-#include "../effectsimpl.cpp"
+#include "invertcolors.cpp"
 
 QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::InvertRgbTest)
 

@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "effectsimpl.h"
+#include "invertcolors.h"
 #include <cmath>
 #include <QImage>
 #include <util/sys/cpufeatures.h>
