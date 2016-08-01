@@ -39,8 +39,7 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	uint64_t GetGray (const QImage& image);
-	void InvertRgb (QImage& image);
+	bool InvertColors (QImage& image, int threshold);
 }
 }
 }

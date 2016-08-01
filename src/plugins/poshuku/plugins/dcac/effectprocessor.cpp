@@ -57,20 +57,6 @@ namespace DCAC
 
 	namespace
 	{
-		bool InvertColors (QImage& image, int threshold)
-		{
-			const auto height = image.height ();
-			const auto width = image.width ();
-
-			const auto sourceGraySum = GetGray (image) / (width * height * 32);
-			const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
-
-			if (shouldInvert)
-				InvertRgb (image);
-
-			return shouldInvert;
-		}
-
 		bool ApplyEffect (const Effect_t& effect, QImage& image)
 		{
 			return Util::Visit (effect,

@@ -258,26 +258,39 @@ namespace DCAC
 		}
 #endif
 
-	}
-
-	uint64_t GetGray (const QImage& image)
-	{
+		uint64_t GetGray (const QImage& image)
+		{
 #ifdef SSE_ENABLED
-		static const auto ptr = Util::CpuFeatures::Choose ({
-					{ Util::CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
-					{ Util::CpuFeatures::Feature::SSE41, &GetGraySSE4 }
-				},
-				&GetGrayDefault);
+			static const auto ptr = Util::CpuFeatures::Choose ({
+						{ Util::CpuFeatures::Feature::AVX2, &GetGrayAVX2 },
+						{ Util::CpuFeatures::Feature::SSE41, &GetGraySSE4 }
+					},
+					&GetGrayDefault);
 
-		return ptr (image);
+			return ptr (image);
 #else
-		return GetGrayDefault (image);
+			return GetGrayDefault (image);
 #endif
+		}
+
+		void InvertRgb (QImage& image)
+		{
+			InvertRgbDefault (image);
+		}
 	}
 
-	void InvertRgb (QImage& image)
+	bool InvertColors (QImage& image, int threshold)
 	{
-		InvertRgbDefault (image);
+		const auto height = image.height ();
+		const auto width = image.width ();
+
+		const auto sourceGraySum = GetGray (image) / (width * height * 32);
+		const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
+
+		if (shouldInvert)
+			InvertRgb (image);
+
+		return shouldInvert;
 	}
 }
 }
