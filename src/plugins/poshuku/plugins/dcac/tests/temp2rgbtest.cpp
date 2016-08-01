@@ -41,6 +41,7 @@ namespace DCAC
 {
 	namespace
 	{
+#if QT_VERSION >= 0x050500
 		struct ColorPrinter
 		{
 			QRgb Rgb_;
@@ -63,6 +64,9 @@ namespace DCAC
 					QByteArray::number (qGreen (rgb.Rgb_)) + ", " +
 					QByteArray::number (qBlue (rgb.Rgb_)) + "}");
 		}
+#else
+		using ColorPrinter = QRgb;
+#endif
 	}
 
 	void Temp2RgbTest::testTemp2Rgb_data ()
