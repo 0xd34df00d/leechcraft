@@ -30,20 +30,9 @@
 #include "effectsimpl.h"
 #include <cmath>
 #include <QImage>
-
-#if (defined (Q_PROCESSOR_X86_64) || QT_VERSION < 0x050000) && !defined (Q_OS_MAC)
-#define SSE_ENABLED
-#endif
-
-#ifdef SSE_ENABLED
-#include <tmmintrin.h>
-#include <immintrin.h>
-#include <avxintrin.h>
-#include <avx2intrin.h>
-#endif
-
 #include <util/sys/cpufeatures.h>
 #include <util/sll/intseq.h>
+#include "effectscommon.h"
 
 namespace LeechCraft
 {
