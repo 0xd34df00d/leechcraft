@@ -7,6 +7,7 @@ set (DCAC_SRCS
 	viewsmanager.cpp
 	xmlsettingsmanager.cpp
 	effectsimpl.cpp
+	reducelightness.cpp
 	)
 set (DCAC_RESOURCES
 	)

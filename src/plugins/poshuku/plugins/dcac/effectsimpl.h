@@ -41,7 +41,6 @@ namespace DCAC
 {
 	uint64_t GetGray (const QImage& image);
 	void InvertRgb (QImage& image);
-	void ReduceLightness (QImage& image, float factor);
 }
 }
 }

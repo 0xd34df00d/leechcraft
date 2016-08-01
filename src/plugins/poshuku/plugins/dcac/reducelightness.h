@@ -27,11 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "reducelightnesstest.h"
-#include <QtTest>
-#include "../reducelightness.cpp"
+#pragma once
 
-QTEST_APPLESS_MAIN (LeechCraft::Poshuku::DCAC::ReduceLightnessTest)
+class QImage;
 
 namespace LeechCraft
 {
@@ -39,47 +37,7 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void ReduceLightnessTest::testSSSE3 ()
-	{
-		CHECKFEATURE (SSSE3)
-
-		for (const auto& image : TestImages_)
-		{
-			const auto diff = CompareModifying (image,
-					&ReduceLightnessDefault, &ReduceLightnessSSSE3, 1.5);
-			QVERIFY2 (diff <= 1, "too big difference");
-		}
-	}
-
-	void ReduceLightnessTest::testAVX2 ()
-	{
-		CHECKFEATURE (AVX2)
-
-		for (const auto& image : TestImages_)
-		{
-			const auto diff = CompareModifying (image,
-					&ReduceLightnessDefault, &ReduceLightnessAVX2, 1.5);
-			QVERIFY2 (diff <= 1, "too big difference");
-		}
-	}
-
-	void ReduceLightnessTest::benchDefault ()
-	{
-		BenchmarkFunction ([] (QImage& img) { ReduceLightnessDefault (img, 1.5); });
-	}
-
-	void ReduceLightnessTest::benchSSSE3 ()
-	{
-		CHECKFEATURE (SSSE3)
-		BenchmarkFunction ([] (QImage& img) { ReduceLightnessSSSE3 (img, 1.5); });
-	}
-
-	void ReduceLightnessTest::benchAVX2 ()
-	{
-		CHECKFEATURE (AVX2)
-
-		BenchmarkFunction ([] (QImage& img) { ReduceLightnessAVX2 (img, 1.5); });
-	}
+	void ReduceLightness (QImage& image, float factor);
 }
 }
 }

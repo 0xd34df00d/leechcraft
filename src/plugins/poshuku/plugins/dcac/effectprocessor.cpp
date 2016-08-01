@@ -33,6 +33,7 @@
 #include <qwebview.h>
 #include <util/sll/visitor.h>
 #include "effectsimpl.h"
+#include "reducelightness.h"
 
 namespace LeechCraft
 {
