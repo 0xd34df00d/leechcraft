@@ -70,6 +70,11 @@ namespace DCAC
 			return Clamp (138.52 * std::log (temperature - 10) - 305.0);
 		}
 
+		/** http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/ is used.
+		 *
+		 * Even though http://www.vendian.org/mncharity/dir3/blackbody/UnstableURLs/bbr_color.html
+		 * for instance.
+		 */
 		QRgb Temp2Rgb (double temperature)
 		{
 			temperature /= 100;
