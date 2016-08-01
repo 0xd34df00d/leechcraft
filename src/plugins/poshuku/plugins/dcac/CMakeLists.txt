@@ -8,6 +8,7 @@ set (DCAC_SRCS
 	xmlsettingsmanager.cpp
 	invertcolors.cpp
 	reducelightness.cpp
+	colortemp.cpp
 	)
 set (DCAC_RESOURCES
 	)
