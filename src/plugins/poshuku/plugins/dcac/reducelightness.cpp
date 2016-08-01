@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "reducelightness.h"
+#include <cmath>
 #include <QImage>
 #include <util/sys/cpufeatures.h>
 #include "effectscommon.h"
