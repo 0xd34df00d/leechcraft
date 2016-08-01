@@ -71,8 +71,13 @@ namespace DCAC
 		QTest::addColumn<uint> ("result");
 
 #define ADD(x,r,g,b) QTest::newRow (#x) << static_cast<uint> (x) << qRgb(r,g,b);
+		ADD (4000, 255, 206, 166);
+		ADD (4500, 255, 218, 187);
 		ADD (5000, 255, 228, 206);
-		ADD (6000, 255, 243, 239);
+		ADD (5500, 255, 237, 222);
+		ADD (6000, 255, 246, 237);
+		ADD (6500, 255, 254, 250);
+		ADD (7000, 243, 242, 255);
 #undef ADD
 	}
 
