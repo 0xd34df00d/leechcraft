@@ -29,8 +29,6 @@
 
 #pragma once
 
-#include <cstdint>
-
 class QImage;
 
 namespace LeechCraft
