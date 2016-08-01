@@ -94,9 +94,15 @@ namespace DCAC
 
 		void ReduceLightnessInner (unsigned char *pixel, float recipFactor)
 		{
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
 			pixel [0] *= recipFactor;
 			pixel [1] *= recipFactor;
 			pixel [2] *= recipFactor;
+#else
+			pixel [1] *= recipFactor;
+			pixel [2] *= recipFactor;
+			pixel [3] *= recipFactor;
+#endif
 		}
 
 		void ReduceLightnessDefault (QImage& image, float factor)
