@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "colortemp.h"
+#include <cmath>
 #include <QImage>
 
 namespace LeechCraft
@@ -43,7 +44,7 @@ namespace DCAC
 			return std::max (std::min (static_cast<int> (std::round (color)), 255), 0);
 		}
 
-		int Temp2Red (int temperature)
+		int Temp2Red (double temperature)
 		{
 			if (temperature <= 66)
 				return 255;
@@ -51,7 +52,7 @@ namespace DCAC
 			return Clamp (329.6987 * (std::pow (temperature - 60, -0.1332)));
 		}
 
-		int Temp2Green (int temperature)
+		int Temp2Green (double temperature)
 		{
 			if (temperature <= 66)
 				return Clamp (99.47 * std::log (temperature) - 161.12);
@@ -59,17 +60,17 @@ namespace DCAC
 				return Clamp (288.122 * std::pow (temperature - 60, -0.0755));
 		}
 
-		int Temp2Blue (int temperature)
+		int Temp2Blue (double temperature)
 		{
 			if (temperature >= 66)
 				return 255;
-			if (temperature < 19)
+			if (temperature <= 19)
 				return 0;
 
-			return Clamp (138.5177312231 * std::log (temperature - 10) - 305.0447927307);
+			return Clamp (138.52 * std::log (temperature - 10) - 305.0);
 		}
 
-		QRgb Temp2Rgb (int temperature)
+		QRgb Temp2Rgb (double temperature)
 		{
 			temperature /= 100;
 			return qRgb (Temp2Red (temperature), Temp2Green (temperature), Temp2Blue (temperature));
