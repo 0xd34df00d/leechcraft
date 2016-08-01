@@ -39,6 +39,32 @@ namespace Poshuku
 {
 namespace DCAC
 {
+	namespace
+	{
+		struct ColorPrinter
+		{
+			QRgb Rgb_;
+			ColorPrinter (QRgb rgb)
+			: Rgb_ { rgb }
+			{
+			}
+		};
+
+		bool operator== (const ColorPrinter& left, const ColorPrinter& right)
+		{
+			return left.Rgb_ == right.Rgb_;
+		}
+
+		char* toString (const ColorPrinter& rgb)
+		{
+			using QTest::toString;
+			return toString ("RGB { " +
+					QByteArray::number (qRed (rgb.Rgb_)) + ", " +
+					QByteArray::number (qGreen (rgb.Rgb_)) + ", " +
+					QByteArray::number (qBlue (rgb.Rgb_)) + "}");
+		}
+	}
+
 	void Temp2RgbTest::testTemp2Rgb_data ()
 	{
 		QTest::addColumn<uint> ("temp");
@@ -55,7 +81,7 @@ namespace DCAC
 		QFETCH (uint, temp);
 		QFETCH (uint, result);
 
-		QCOMPARE (Temp2Rgb (temp), result);
+		QCOMPARE (ColorPrinter { Temp2Rgb (temp) }, ColorPrinter { result });
 	}
 }
 }
