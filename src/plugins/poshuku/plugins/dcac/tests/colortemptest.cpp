@@ -46,14 +46,14 @@ namespace DCAC
 		for (const auto& image : TestImages_)
 		{
 			const auto diff = CompareModifying (image,
-				&AdjustColorTemp, &AdjustColorTempSSSE3, 6000);
+				&AdjustColorTempDefault, &AdjustColorTempSSSE3, 6000);
 			QVERIFY2 (diff <= 1, ("too big difference: " + std::to_string (diff)).c_str ());
 		}
 	}
 
 	void ColorTempTest::benchDefault ()
 	{
-		BenchmarkFunction ([] (QImage& image) { AdjustColorTemp (image, 6000); });
+		BenchmarkFunction ([] (QImage& image) { AdjustColorTempDefault (image, 6000); });
 	}
 
 	void ColorTempTest::benchSSSE3 ()
