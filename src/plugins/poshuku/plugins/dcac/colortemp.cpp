@@ -30,6 +30,12 @@
 #include "colortemp.h"
 #include <cmath>
 #include <QImage>
+#include <util/sys/cpufeatures.h>
+#include "effectscommon.h"
+
+#ifdef SSE_ENABLED
+#include "ssecommon.h"
+#endif
 
 namespace LeechCraft
 {
@@ -93,6 +99,63 @@ namespace DCAC
 			pixel [3] *= blue;
 #endif
 		}
+
+#ifdef SSE_ENABLED
+		__attribute__ ((target ("ssse3")))
+		void AdjustColorTempSSSE3 (QImage& image, int temperature)
+		{
+			constexpr auto alignment = 16;
+
+			const auto rgb = Temp2Rgb (temperature);
+			const auto red = qRed (rgb);
+			const auto green = qGreen (rgb);
+			const auto blue = qBlue (rgb);
+			const auto redF = red / 255.0;
+			const auto greenF = green / 255.0;
+			const auto blueF = blue / 255.0;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m128i pixel1msk = MakeMask<128, 7, 0> ();
+			const __m128i pixel2msk = MakeMask<128, 15, 8> ();
+
+			const __m128i pixel1revmask = MakeRevMask<128, 8, 0, 1> ();
+			const __m128i pixel2revmask = MakeRevMask<128, 8, 1, 1> ();
+
+			const __m128i mul = _mm_set_epi16 (256, red, green, blue,
+					256, red, green, blue);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline, redF, greenF, blueF] (int i) { AdjustColorTempInner (&scanline [i], redF, greenF, blueF); };
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
+
+					__m128i pair1 = _mm_shuffle_epi8 (fourPixels, pixel1msk);
+					pair1 = _mm_mullo_epi16 (pair1, mul);
+					pair1 = _mm_shuffle_epi8 (pair1, pixel1revmask);
+
+					__m128i pair2 = _mm_shuffle_epi8 (fourPixels, pixel2msk);
+					pair2 = _mm_mullo_epi16 (pair2, mul);
+					pair2 = _mm_shuffle_epi8 (pair2, pixel2revmask);
+
+					fourPixels = _mm_or_si128 (pair1, pair2);
+
+					_mm_store_si128 (reinterpret_cast<__m128i*> (scanline + x), fourPixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
+#endif
 	}
 
 	void AdjustColorTemp (QImage& image, int temperature)
