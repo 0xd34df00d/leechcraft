@@ -55,6 +55,11 @@ namespace DCAC
 	{
 		BenchmarkFunction ([] (QImage& image) { AdjustColorTemp (image, 6000); });
 	}
+
+	void ColorTempTest::benchSSSE3 ()
+	{
+		BenchmarkFunction ([] (QImage& image) { AdjustColorTempSSSE3 (image, 6000); });
+	}
 }
 }
 }

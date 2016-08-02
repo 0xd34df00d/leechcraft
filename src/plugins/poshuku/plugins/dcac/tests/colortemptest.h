@@ -44,6 +44,7 @@ namespace DCAC
 		void testSSSE3 ();
 
 		void benchDefault ();
+		void benchSSSE3 ();
 	};
 }
 }
