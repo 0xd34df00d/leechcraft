@@ -80,10 +80,37 @@ namespace DCAC
 			temperature /= 100;
 			return qRgb (Temp2Red (temperature), Temp2Green (temperature), Temp2Blue (temperature));
 		}
+
+		void AdjustColorTempInner (unsigned char* pixel, float red, float green, float blue)
+		{
+#if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+			pixel [0] *= blue;
+			pixel [1] *= green;
+			pixel [2] *= red;
+#else
+			pixel [1] *= red;
+			pixel [2] *= green;
+			pixel [3] *= blue;
+#endif
+		}
 	}
 
 	void AdjustColorTemp (QImage& image, int temperature)
 	{
+		const auto rgb = Temp2Rgb (temperature);
+		const auto red = qRed (rgb) / 255.0;
+		const auto green = qGreen (rgb) / 255.0;
+		const auto blue = qBlue (rgb) / 255.0;
+
+		const auto height = image.height ();
+		const auto width = image.width ();
+
+		for (int y = 0; y < height; ++y)
+		{
+			const auto scanline = image.scanLine (y);
+			for (int x = 0; x < width; ++x)
+				AdjustColorTempInner (&scanline [x * 4], red, green, blue);
+		}
 	}
 }
 }
