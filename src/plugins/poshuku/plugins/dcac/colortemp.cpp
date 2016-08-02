@@ -100,6 +100,24 @@ namespace DCAC
 #endif
 		}
 
+		void AdjustColorTempDefault (QImage& image, int temperature)
+		{
+			const auto rgb = Temp2Rgb (temperature);
+			const auto red = qRed (rgb) / 255.0;
+			const auto green = qGreen (rgb) / 255.0;
+			const auto blue = qBlue (rgb) / 255.0;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			for (int y = 0; y < height; ++y)
+			{
+				const auto scanline = image.scanLine (y);
+				for (int x = 0; x < width; ++x)
+					AdjustColorTempInner (&scanline [x * 4], red, green, blue);
+			}
+		}
+
 #ifdef SSE_ENABLED
 		__attribute__ ((target ("ssse3")))
 		void AdjustColorTempSSSE3 (QImage& image, int temperature)
@@ -160,20 +178,16 @@ namespace DCAC
 
 	void AdjustColorTemp (QImage& image, int temperature)
 	{
-		const auto rgb = Temp2Rgb (temperature);
-		const auto red = qRed (rgb) / 255.0;
-		const auto green = qGreen (rgb) / 255.0;
-		const auto blue = qBlue (rgb) / 255.0;
+#ifdef SSE_ENABLED
+		static const auto ptr = Util::CpuFeatures::Choose ({
+				{ Util::CpuFeatures::Feature::SSSE3, &AdjustColorTempSSSE3 }
+			},
+			&AdjustColorTempDefault);
 
-		const auto height = image.height ();
-		const auto width = image.width ();
-
-		for (int y = 0; y < height; ++y)
-		{
-			const auto scanline = image.scanLine (y);
-			for (int x = 0; x < width; ++x)
-				AdjustColorTempInner (&scanline [x * 4], red, green, blue);
-		}
+		ptr (image, temperature);
+#else
+		AdjustColorTempDefault (image, factor);
+#endif
 	}
 }
 }
