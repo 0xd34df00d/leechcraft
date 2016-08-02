@@ -39,6 +39,18 @@ namespace Poshuku
 {
 namespace DCAC
 {
+	void ColorTempTest::testSSSE3 ()
+	{
+		CHECKFEATURE (SSSE3)
+
+		for (const auto& image : TestImages_)
+		{
+			const auto diff = CompareModifying (image,
+				&AdjustColorTemp, &AdjustColorTempSSSE3, 6000);
+			QVERIFY2 (diff <= 1, ("too big difference: " + std::to_string (diff)).c_str ());
+		}
+	}
+
 	void ColorTempTest::benchDefault ()
 	{
 		BenchmarkFunction ([] (QImage& image) { AdjustColorTemp (image, 6000); });
