@@ -9,9 +9,9 @@ Plugins are easily added and integrated with each other with no effort.
 A more or less up-to-date list of plugins is available here:
 http://leechcraft.org/plugins
 
-== Getting LeechCraft ==
+## Getting LeechCraft
 Getting precompiled LeechCraft for various OS is documented here:
 http://leechcraft.org/download
 
-== Building LeechCraft ==
+## Building LeechCraft
 http://leechcraft.org/development-building-from-source
