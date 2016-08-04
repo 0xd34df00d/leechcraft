@@ -42,9 +42,11 @@ namespace DCAC
 		Q_OBJECT
 	private slots:
 		void testSSSE3 ();
+		void testAVX2 ();
 
 		void benchDefault ();
 		void benchSSSE3 ();
+		void benchAVX2 ();
 	};
 }
 }

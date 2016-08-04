@@ -51,6 +51,18 @@ namespace DCAC
 		}
 	}
 
+	void ColorTempTest::testAVX2 ()
+	{
+		CHECKFEATURE (AVX2)
+
+		for (const auto& image : TestImages_)
+		{
+			const auto diff = CompareModifying (image,
+					&AdjustColorTemp, &AdjustColorTempAVX2, 6000);
+			QVERIFY2 (diff <= 1, ("too big difference: " + std::to_string (diff)).c_str ());
+		}
+	}
+
 	void ColorTempTest::benchDefault ()
 	{
 		BenchmarkFunction ([] (QImage& image) { AdjustColorTemp (image, 6000); });
@@ -61,6 +73,13 @@ namespace DCAC
 		CHECKFEATURE (SSSE3)
 
 		BenchmarkFunction ([] (QImage& image) { AdjustColorTempSSSE3 (image, 6000); });
+	}
+
+	void ColorTempTest::benchAVX2 ()
+	{
+		CHECKFEATURE (AVX2)
+
+		BenchmarkFunction ([] (QImage& image) { AdjustColorTempAVX2 (image, 6000); });
 	}
 }
 }
