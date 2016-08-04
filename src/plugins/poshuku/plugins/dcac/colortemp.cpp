@@ -173,6 +173,63 @@ namespace DCAC
 				HandleLoopEnd (width, x, handler);
 			}
 		}
+
+		__attribute__ ((target ("avx2")))
+		void AdjustColorTempAVX2 (QImage& image, int temperature)
+		{
+			constexpr auto alignment = 32;
+
+			const auto rgb = Temp2Rgb (temperature);
+			const auto red = qRed (rgb);
+			const auto green = qGreen (rgb);
+			const auto blue = qBlue (rgb);
+			const auto redF = red / 255.0;
+			const auto greenF = green / 255.0;
+			const auto blueF = blue / 255.0;
+
+			const auto height = image.height ();
+			const auto width = image.width ();
+
+			const __m256i pixel1msk = MakeMask<256, 7, 0> ();
+			const __m256i pixel2msk = MakeMask<256, 15, 8> ();
+
+			const __m256i pixel1revmask = MakeRevMask<256, 8, 0, 1> ();
+			const __m256i pixel2revmask = MakeRevMask<256, 8, 1, 1> ();
+
+			const __m256i mul = _mm256_set_epi16 (256, red, green, blue,
+					256, red, green, blue,
+					256, red, green, blue,
+					256, red, green, blue);
+
+			for (int y = 0; y < height; ++y)
+			{
+				uchar * const scanline = image.scanLine (y);
+
+				int x = 0;
+				int bytesCount = 0;
+				auto handler = [scanline, redF, greenF, blueF] (int i) { AdjustColorTempInner (&scanline [i], redF, greenF, blueF); };
+				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
+
+				for (; x < bytesCount; x += alignment)
+				{
+					__m256i pixels = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x));
+
+					__m256i part1 = _mm256_shuffle_epi8 (pixels, pixel1msk);
+					part1 = _mm256_mullo_epi16 (part1, mul);
+					part1 = _mm256_shuffle_epi8 (part1, pixel1revmask);
+
+					__m256i part2 = _mm256_shuffle_epi8 (pixels, pixel2msk);
+					part2 = _mm256_mullo_epi16 (part2, mul);
+					part2 = _mm256_shuffle_epi8 (part2, pixel2revmask);
+
+					pixels = _mm256_or_si256 (part1, part2);
+
+					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x), pixels);
+				}
+
+				HandleLoopEnd (width, x, handler);
+			}
+		}
 #endif
 	}
 
