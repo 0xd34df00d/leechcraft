@@ -237,9 +237,10 @@ namespace DCAC
 	{
 #ifdef SSE_ENABLED
 		static const auto ptr = Util::CpuFeatures::Choose ({
-				{ Util::CpuFeatures::Feature::SSSE3, &AdjustColorTempSSSE3 }
-			},
-			&AdjustColorTempDefault);
+					{ Util::CpuFeatures::Feature::AVX2, &AdjustColorTempAVX2 },
+					{ Util::CpuFeatures::Feature::SSSE3, &AdjustColorTempSSSE3 }
+				},
+				&AdjustColorTempDefault);
 
 		ptr (image, temperature);
 #else
