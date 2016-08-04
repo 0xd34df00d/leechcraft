@@ -34,6 +34,7 @@
 #include <util/sll/visitor.h>
 #include "invertcolors.h"
 #include "reducelightness.h"
+#include "colortemp.h"
 
 namespace LeechCraft
 {
@@ -67,6 +68,11 @@ namespace DCAC
 					[&image] (const LightnessEffect& effect)
 					{
 						ReduceLightness (image, effect.Factor_);
+						return true;
+					},
+					[&image] (const ColorTempEffect& effect)
+					{
+						AdjustColorTemp (image, effect.Temperature_);
 						return true;
 					});
 		}

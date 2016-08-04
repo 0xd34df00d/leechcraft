@@ -54,6 +54,16 @@ namespace DCAC
 	{
 		return !(ef1 == ef2);
 	}
+
+	bool operator== (const ColorTempEffect& ef1, const ColorTempEffect& ef2)
+	{
+		return ef1.Temperature_ == ef2.Temperature_;
+	}
+
+	bool operator!= (const ColorTempEffect& ef1, const ColorTempEffect& ef2)
+	{
+		return ef1.Temperature_ != ef2.Temperature_;
+	}
 }
 }
 }

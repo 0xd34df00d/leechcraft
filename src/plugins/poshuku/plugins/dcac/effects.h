@@ -53,7 +53,15 @@ namespace DCAC
 	bool operator== (const LightnessEffect&, const LightnessEffect&);
 	bool operator!= (const LightnessEffect&, const LightnessEffect&);
 
-	using Effect_t = boost::variant<InvertEffect, LightnessEffect>;
+	struct ColorTempEffect
+	{
+		int Temperature_ = 6500;
+	};
+
+	bool operator== (const ColorTempEffect&, const ColorTempEffect&);
+	bool operator!= (const ColorTempEffect&, const ColorTempEffect&);
+
+	using Effect_t = boost::variant<InvertEffect, LightnessEffect, ColorTempEffect>;
 
 }
 }
