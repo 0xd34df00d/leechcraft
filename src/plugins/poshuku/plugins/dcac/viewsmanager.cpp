@@ -46,7 +46,8 @@ namespace DCAC
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"NightModeThreshold",
 					"ReduceLightnessFactor",
-					"SingleEffect"
+					"SingleEffect",
+					"ColorTemperature"
 				},
 				this, "handleThresholdChanged");
 	}
@@ -68,6 +69,12 @@ namespace DCAC
 				const auto factor = XmlSettingsManager::Instance ()
 						.property ("ReduceLightnessFactor").toDouble ();
 				return LightnessEffect { factor };
+			}
+			else if (effectStr == "ColorTemp")
+			{
+				const auto temp = XmlSettingsManager::Instance ()
+						.property ("ColorTemperature").toInt ();
+				return ColorTempEffect { temp };
 			}
 			else
 			{

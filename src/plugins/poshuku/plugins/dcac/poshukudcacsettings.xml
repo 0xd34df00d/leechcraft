@@ -13,6 +13,9 @@
 			<option name="ReduceLightness" default="true">
 				<label value="Reduce lightness" />
 			</option>
+			<option name="ColorTemp">
+				<label value="Color temperature" />
+			</option>
 		</item>
 		<groupbox>
 			<label value="Color invert effect" />
@@ -25,6 +28,12 @@
 			<label value="Reduce lightness effect" />
 			<item type="doublespinbox" property="ReduceLightnessFactor" default="2" minimum="1" maximum="10">
 				<label value="Factor:" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Color temperature effect" />
+			<item type="spinbox" property="ColorTemperature" default="6500" minimum="1000" maximum="10000">
+				<label value="Color temperature:" />
 			</item>
 		</groupbox>
 	</page>
