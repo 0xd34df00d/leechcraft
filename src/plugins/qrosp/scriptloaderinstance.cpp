@@ -117,6 +117,15 @@ namespace Qrosp
 		if (ID2Interpereter_.contains (id))
 			return std::make_shared<LoadedScript> (id, ID2Interpereter_ [id]);
 
+		const QFileInfo info { id };
+		if (!info.isAbsolute ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "non-absolute file path passed:"
+					<< id;
+			return {};
+		}
+
 		const auto& interp = Qross::Manager::self ().interpreternameForFile (id);
 		if (interp.isEmpty ())
 		{
