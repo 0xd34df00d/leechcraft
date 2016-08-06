@@ -114,7 +114,19 @@ namespace Qrosp
 
 	IScript_ptr ScriptLoaderInstance::LoadScript (const QString& id)
 	{
-		return std::make_shared<LoadedScript> (id, ID2Interpereter_ [id]);
+		if (ID2Interpereter_.contains (id))
+			return std::make_shared<LoadedScript> (id, ID2Interpereter_ [id]);
+
+		const auto& interp = Qross::Manager::self ().interpreternameForFile (id);
+		if (interp.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot guess interpreter for file"
+					<< id;
+			return {};
+		}
+
+		return std::make_shared<LoadedScript> (id, interp);
 	}
 }
 }
