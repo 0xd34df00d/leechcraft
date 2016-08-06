@@ -46,7 +46,7 @@ namespace DCAC
 		Util::InstallTranslator ("poshuku_dcac");
 		ViewsManager_ = new ViewsManager;
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukudcacsettings.xml");
 	}
 
