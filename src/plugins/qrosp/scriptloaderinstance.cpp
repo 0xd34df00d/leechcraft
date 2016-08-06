@@ -65,10 +65,6 @@ namespace Qrosp
 		ID2Interpereter_.clear ();
 
 		const auto& interpreters = Qross::Manager::self ().interpreters ();
-		QMap<QString, QStringList> knownExtensions;
-		knownExtensions ["qtscript"] << "*.es" << "*.js" << "*.qs";
-		knownExtensions ["python"] << "*.py";
-		knownExtensions ["ruby"] << "*.rb";
 
 		QStringList result;
 		for (const auto& interp : interpreters)
