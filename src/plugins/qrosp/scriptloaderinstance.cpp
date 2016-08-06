@@ -31,6 +31,7 @@
 #include <QDir>
 #include <QtDebug>
 #include <qross/core/manager.h>
+#include <util/util.h>
 #include "loadedscript.h"
 
 namespace LeechCraft
@@ -126,7 +127,21 @@ namespace Qrosp
 			return {};
 		}
 
-		const auto& interp = Qross::Manager::self ().interpreternameForFile (id);
+		auto interp = Qross::Manager::self ().interpreternameForFile (id);
+
+		if (interp.isEmpty ())
+		{
+			static const auto knownInterpreters = Util::MakeMap<QString, QString> ({
+						{ "js", "qtscript" },
+						{ "qs", "qtscript" },
+						{ "es", "qtscript" },
+						{ "py", "python" },
+						{ "rb", "ruby" }
+					});
+
+			interp = knownInterpreters [info.suffix ()];
+		}
+
 		if (interp.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
