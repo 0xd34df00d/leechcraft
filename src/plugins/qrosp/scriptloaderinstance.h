@@ -48,7 +48,7 @@ namespace Qrosp
 
 		Util::ResourceLoader Loader_;
 	public:
-		ScriptLoaderInstance (const QString&, QObject* = 0);
+		ScriptLoaderInstance (const QString&, QObject* = nullptr);
 
 		QObject* GetQObject ();
 		void AddGlobalPrefix ();

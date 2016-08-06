@@ -50,7 +50,7 @@ namespace Qrosp
 		Qross::Action * const ScriptAction_;
 		bool Imported_ = false;
 	public:
-		LoadedScript (const QString&, const QString&, QObject* = 0);
+		LoadedScript (const QString&, const QString&, QObject* = nullptr);
 
 		QObject* GetQObject ();
 		QVariant InvokeMethod (const QString&, const QVariantList&);

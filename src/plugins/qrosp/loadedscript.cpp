@@ -102,7 +102,7 @@ namespace Qrosp
 		if (ScriptAction_->interpreter () != "qtscript")
 			return;
 
-		QObject *scriptEngineObject = 0;
+		QObject *scriptEngineObject = nullptr;
 		QMetaObject::invokeMethod (ScriptAction_->script (),
 				"engine",
 				Q_RETURN_ARG (QObject*, scriptEngineObject));
