@@ -140,6 +140,8 @@ namespace Qrosp
 					});
 
 			interp = knownInterpreters [info.suffix ()];
+			if (!Qross::Manager::self ().interpreters ().contains (interp))
+				interp.clear ();
 		}
 
 		if (interp.isEmpty ())
