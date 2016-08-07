@@ -44,17 +44,17 @@ namespace DCAC
 
 	QVariant ScriptObject::invert (int threshold)
 	{
-		return "invert";
+		return QVariant::fromValue<Effect_t> (InvertEffect { threshold });
 	}
 
 	QVariant ScriptObject::reduceLightness (double factor)
 	{
-		return "reduce";
+		return QVariant::fromValue<Effect_t> (LightnessEffect { factor });
 	}
 
 	QVariant ScriptObject::colorTemperature (int temperature)
 	{
-		return "temp";
+		return QVariant::fromValue<Effect_t> (ColorTempEffect { temperature });
 	}
 }
 }
