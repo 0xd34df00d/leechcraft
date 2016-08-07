@@ -39,20 +39,19 @@ namespace DCAC
 	ScriptObject::ScriptObject (QObject *parent)
 	: QObject { parent }
 	{
-
 	}
 
-	QVariant ScriptObject::invert (int threshold)
+	QVariant ScriptObject::invert (int threshold) const
 	{
 		return QVariant::fromValue<Effect_t> (InvertEffect { threshold });
 	}
 
-	QVariant ScriptObject::reduceLightness (double factor)
+	QVariant ScriptObject::reduceLightness (double factor) const
 	{
 		return QVariant::fromValue<Effect_t> (LightnessEffect { factor });
 	}
 
-	QVariant ScriptObject::colorTemperature (int temperature)
+	QVariant ScriptObject::colorTemperature (int temperature) const
 	{
 		return QVariant::fromValue<Effect_t> (ColorTempEffect { temperature });
 	}
