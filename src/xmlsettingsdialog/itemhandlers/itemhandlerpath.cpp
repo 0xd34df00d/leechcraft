@@ -85,39 +85,37 @@ namespace LeechCraft
 
 	QVariant ItemHandlerPath::GetValue (const QDomElement& item, QVariant value) const
 	{
-		if (value.isNull () ||
-				value.toString ().isEmpty ())
-		{
-			if (item.attribute ("defaultHomePath") == "true")
-				value = QDir::homePath ();
-			else if (item.hasAttribute ("default"))
-			{
-				QString text = item.attribute ("default");
-				QMap<QString, QString> str2loc;
-#if QT_VERSION < 0x050000
-				str2loc ["DOCUMENTS"] = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
-				str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
-				str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
-				str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
-#else
-				str2loc ["DOCUMENTS"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
-				str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DesktopLocation);
-				str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::MusicLocation);
-				str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
-#endif
-				str2loc ["LCDIR"] = Util::GetUserDir (Util::UserDir::LC, {}).absolutePath ();
-				str2loc ["CACHEDIR"] = Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath ();
-				for (const auto& key : str2loc.keys ())
-					if (text.startsWith ("{" + key + "}"))
-					{
-						text.replace (0, key.length () + 2, str2loc [key]);
-						break;
-					}
+		if (!value.toString ().isEmpty ())
+			return value;
 
-				value = text;
+		if (item.attribute ("defaultHomePath") == "true")
+			return QDir::homePath ();
+		if (!item.hasAttribute ("default"))
+			return {};
+
+		QString text = item.attribute ("default");
+		QMap<QString, QString> str2loc;
+#if QT_VERSION < 0x050000
+		str2loc ["DOCUMENTS"] = QDesktopServices::storageLocation (QDesktopServices::DocumentsLocation);
+		str2loc ["DESKTOP"] = QDesktopServices::storageLocation (QDesktopServices::DesktopLocation);
+		str2loc ["MUSIC"] = QDesktopServices::storageLocation (QDesktopServices::MusicLocation);
+		str2loc ["MOVIES"] = QDesktopServices::storageLocation (QDesktopServices::MoviesLocation);
+#else
+		str2loc ["DOCUMENTS"] = QStandardPaths::writableLocation (QStandardPaths::DocumentsLocation);
+		str2loc ["DESKTOP"] = QStandardPaths::writableLocation (QStandardPaths::DesktopLocation);
+		str2loc ["MUSIC"] = QStandardPaths::writableLocation (QStandardPaths::MusicLocation);
+		str2loc ["MOVIES"] = QStandardPaths::writableLocation (QStandardPaths::MoviesLocation);
+#endif
+		str2loc ["LCDIR"] = Util::GetUserDir (Util::UserDir::LC, {}).absolutePath ();
+		str2loc ["CACHEDIR"] = Util::GetUserDir (Util::UserDir::Cache, {}).absolutePath ();
+		for (const auto& key : str2loc.keys ())
+			if (text.startsWith ("{" + key + "}"))
+			{
+				text.replace (0, key.length () + 2, str2loc [key]);
+				break;
 			}
-		}
-		return value;
+
+		return text;
 	}
 
 	void ItemHandlerPath::SetValue (QWidget *widget,
