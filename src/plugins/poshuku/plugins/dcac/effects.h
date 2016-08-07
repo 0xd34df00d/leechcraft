@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QMetaType>
 #include <boost/variant.hpp>
 
 namespace LeechCraft
@@ -62,7 +63,8 @@ namespace DCAC
 	bool operator!= (const ColorTempEffect&, const ColorTempEffect&);
 
 	using Effect_t = boost::variant<InvertEffect, LightnessEffect, ColorTempEffect>;
+}
+}
+}
 
-}
-}
-}
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::DCAC::Effect_t)
