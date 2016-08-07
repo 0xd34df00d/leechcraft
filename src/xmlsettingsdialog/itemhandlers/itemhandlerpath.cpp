@@ -44,14 +44,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerPath::ItemHandlerPath ()
-	{
-	}
-
-	ItemHandlerPath::~ItemHandlerPath ()
-	{
-	}
-
 	bool ItemHandlerPath::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "path";
