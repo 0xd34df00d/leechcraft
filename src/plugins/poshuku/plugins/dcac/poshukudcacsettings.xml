@@ -16,6 +16,9 @@
 			<option name="ColorTemp">
 				<label value="Color temperature" />
 			</option>
+			<option name="Script">
+				<label value="As defined by script" />
+			</option>
 		</item>
 		<groupbox>
 			<label value="Color invert effect" />
@@ -34,6 +37,12 @@
 			<label value="Color temperature effect" />
 			<item type="spinbox" property="ColorTemperature" default="6500" minimum="1000" maximum="10000">
 				<label value="Color temperature:" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="Script options" />
+			<item type="path" property="ScriptPath">
+				<label value="Script path:" />
 			</item>
 		</groupbox>
 	</page>
