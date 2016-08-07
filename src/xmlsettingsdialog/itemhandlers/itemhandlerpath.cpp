@@ -57,8 +57,7 @@ namespace LeechCraft
 		return element.attribute ("type") == "path";
 	}
 
-	void ItemHandlerPath::Handle (const QDomElement& item,
-			QWidget *pwidget)
+	void ItemHandlerPath::Handle (const QDomElement& item, QWidget *pwidget)
 	{
 		QGridLayout *lay = qobject_cast<QGridLayout*> (pwidget->layout ());
 		QLabel *label = new QLabel (XSD_->GetLabel (item));
@@ -80,7 +79,7 @@ namespace LeechCraft
 			picker->SetFilter (item.attribute ("filter"));
 
 		connect (picker,
-				SIGNAL (textChanged (const QString&)),
+				SIGNAL (textChanged (QString)),
 				this,
 				SLOT (updatePreferences ()));
 
@@ -92,8 +91,7 @@ namespace LeechCraft
 		lay->addWidget (picker, row, 1);
 	}
 
-	QVariant ItemHandlerPath::GetValue (const QDomElement& item,
-			QVariant value) const
+	QVariant ItemHandlerPath::GetValue (const QDomElement& item, QVariant value) const
 	{
 		if (value.isNull () ||
 				value.toString ().isEmpty ())
@@ -137,8 +135,8 @@ namespace LeechCraft
 		if (!picker)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "not a FilePicker"
-				<< widget;
+					<< "not a FilePicker"
+					<< widget;
 			return;
 		}
 		picker->SetText (value.toString ());
@@ -150,10 +148,10 @@ namespace LeechCraft
 		if (!picker)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "not a FilePicker"
-				<< object;
+					<< "not a FilePicker"
+					<< object;
 			return QVariant ();
 		}
 		return picker->GetText ();
 	}
-};
+}

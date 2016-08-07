@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERPATH_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERPATH_H
+#pragma once
 
 #include "itemhandlerstringsetvalue.h"
 
@@ -47,6 +46,4 @@ namespace LeechCraft
 	protected:
 		QVariant GetObjectValue (QObject*) const;
 	};
-};
-
-#endif
+}
