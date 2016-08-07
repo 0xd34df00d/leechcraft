@@ -40,8 +40,9 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	ViewsManager::ViewsManager (QObject *parent)
+	ViewsManager::ViewsManager (IPluginsManager *ipm, QObject *parent)
 	: QObject { parent }
+	, IPM_ { ipm }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"NightModeThreshold",

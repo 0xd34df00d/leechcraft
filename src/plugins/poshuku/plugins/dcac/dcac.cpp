@@ -32,6 +32,7 @@
 #include <QMenu>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "viewsmanager.h"
 #include "xmlsettingsmanager.h"
 
@@ -41,10 +42,10 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("poshuku_dcac");
-		ViewsManager_ = new ViewsManager;
+		ViewsManager_ = new ViewsManager { proxy->GetPluginsManager () };
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukudcacsettings.xml");

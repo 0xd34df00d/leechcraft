@@ -35,6 +35,8 @@
 class QWebView;
 class QAction;
 
+class IPluginsManager;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -47,10 +49,12 @@ namespace DCAC
 	{
 		Q_OBJECT
 
+		IPluginsManager * const IPM_;
+
 		QHash<QObject*, EffectProcessor*> View2Effect_;
 		QHash<QObject*, QAction*> View2EnableAction_;
 	public:
-		ViewsManager (QObject* = nullptr);
+		ViewsManager (IPluginsManager*, QObject* = nullptr);
 
 		void AddView (QWebView*);
 
