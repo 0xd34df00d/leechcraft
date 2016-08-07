@@ -53,40 +53,6 @@ namespace DCAC
 				this, "handleThresholdChanged");
 	}
 
-	namespace
-	{
-		Effect_t GetCurrentEffect ()
-		{
-			const auto effectStr = XmlSettingsManager::Instance ()
-					.property ("SingleEffect").toString ();
-			if (effectStr == "Invert")
-			{
-				const auto threshold = XmlSettingsManager::Instance ()
-						.property ("NightModeThreshold").toInt ();
-				return InvertEffect { threshold };
-			}
-			else if (effectStr == "ReduceLightness")
-			{
-				const auto factor = XmlSettingsManager::Instance ()
-						.property ("ReduceLightnessFactor").toDouble ();
-				return LightnessEffect { factor };
-			}
-			else if (effectStr == "ColorTemp")
-			{
-				const auto temp = XmlSettingsManager::Instance ()
-						.property ("ColorTemperature").toInt ();
-				return ColorTempEffect { temp };
-			}
-			else
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unknown effect"
-						<< effectStr;
-				return {};
-			}
-		}
-	}
-
 	void ViewsManager::AddView (QWebView *view)
 	{
 		const auto effect = new EffectProcessor { view };
@@ -114,12 +80,43 @@ namespace DCAC
 				SLOT (setEnabled (bool)));
 		View2EnableAction_ [view] = enableAct;
 
-		effect->SetEffects ({ GetCurrentEffect () });
+		effect->SetEffects (GetCurrentEffects ());
 	}
 
 	QAction* ViewsManager::GetEnableAction (QWebView *view) const
 	{
 		return View2EnableAction_.value (view);
+	}
+
+	QList<Effect_t> ViewsManager::GetCurrentEffects ()
+	{
+		const auto effectStr = XmlSettingsManager::Instance ()
+				.property ("SingleEffect").toString ();
+		if (effectStr == "Invert")
+		{
+			const auto threshold = XmlSettingsManager::Instance ()
+					.property ("NightModeThreshold").toInt ();
+			return { InvertEffect { threshold } };
+		}
+		else if (effectStr == "ReduceLightness")
+		{
+			const auto factor = XmlSettingsManager::Instance ()
+					.property ("ReduceLightnessFactor").toDouble ();
+			return { LightnessEffect { factor } };
+		}
+		else if (effectStr == "ColorTemp")
+		{
+			const auto temp = XmlSettingsManager::Instance ()
+					.property ("ColorTemperature").toInt ();
+			return { ColorTempEffect { temp } };
+		}
+		else
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown effect"
+					<< effectStr;
+			return {};
+		}
 	}
 
 	void ViewsManager::handleViewDestroyed (QObject *view)
@@ -130,9 +127,9 @@ namespace DCAC
 
 	void ViewsManager::handleThresholdChanged ()
 	{
-		const auto& effect = GetCurrentEffect ();
+		const auto& effects = GetCurrentEffects ();
 		for (const auto proc : View2Effect_)
-			proc->SetEffects ({ effect });
+			proc->SetEffects (effects);
 	}
 }
 }

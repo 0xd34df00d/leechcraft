@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QHash>
+#include "effects.h"
 
 class QWebView;
 class QAction;
@@ -59,6 +60,8 @@ namespace DCAC
 		void AddView (QWebView*);
 
 		QAction* GetEnableAction (QWebView*) const;
+	private:
+		QList<Effect_t> GetCurrentEffects ();
 	private slots:
 		void handleViewDestroyed (QObject*);
 		void handleThresholdChanged ();
