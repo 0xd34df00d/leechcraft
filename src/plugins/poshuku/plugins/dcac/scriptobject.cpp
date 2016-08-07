@@ -29,6 +29,7 @@
 
 #include "scriptobject.h"
 #include <QVariant>
+#include "effects.h"
 
 namespace LeechCraft
 {
