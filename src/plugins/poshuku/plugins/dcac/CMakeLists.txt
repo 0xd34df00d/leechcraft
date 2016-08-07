@@ -9,6 +9,7 @@ set (DCAC_SRCS
 	invertcolors.cpp
 	reducelightness.cpp
 	colortemp.cpp
+	scriptobject.cpp
 	)
 set (DCAC_RESOURCES
 	)
