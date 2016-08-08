@@ -284,8 +284,10 @@ namespace DCAC
 		const auto height = image.height ();
 		const auto width = image.width ();
 
-		const auto sourceGraySum = GetGray (image) / (width * height * 32);
-		const auto shouldInvert = sourceGraySum >= static_cast<uint64_t> (threshold);
+		const auto sourceGraySum = threshold ?
+				(GetGray (image) / (width * height * 32)) :
+				0;
+		const auto shouldInvert = !threshold || sourceGraySum >= static_cast<uint64_t> (threshold);
 
 		if (shouldInvert)
 			InvertRgb (image);
