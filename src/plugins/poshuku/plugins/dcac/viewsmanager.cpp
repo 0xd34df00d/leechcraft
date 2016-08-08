@@ -52,6 +52,11 @@ namespace DCAC
 					"ColorTemperature"
 				},
 				this, "handleEffectsChanged");
+
+		connect (ScriptHandler_,
+				SIGNAL (effectsListChanged ()),
+				this,
+				SLOT (handleEffectsChanged ()));
 	}
 
 	void ViewsManager::AddView (QWebView *view)
