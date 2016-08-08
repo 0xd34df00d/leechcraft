@@ -34,6 +34,7 @@
 #include "effects.h"
 
 class QTimer;
+class QFileSystemWatcher;
 class IPluginsManager;
 
 namespace LeechCraft
@@ -54,6 +55,8 @@ namespace DCAC
 		IScript_ptr CurrentScript_;
 
 		QTimer * const DelayTimer_;
+
+		QFileSystemWatcher * const FileWatcher_;
 	public:
 		ScriptHandler (IPluginsManager*, QObject* = nullptr);
 

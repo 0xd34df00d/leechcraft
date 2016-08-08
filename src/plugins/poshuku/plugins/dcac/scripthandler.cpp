@@ -29,6 +29,7 @@
 
 #include "scripthandler.h"
 #include <QTimer>
+#include <QFileSystemWatcher>
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iscriptloader.h>
@@ -44,11 +45,17 @@ namespace DCAC
 	: QObject { parent }
 	, IPM_ { ipm }
 	, DelayTimer_ { new QTimer { this } }
+	, FileWatcher_ { new QFileSystemWatcher { this } }
 	{
 		connect (DelayTimer_,
 				SIGNAL (timeout ()),
 				this,
 				SLOT (reevaluate ()));
+
+		connect (FileWatcher_,
+				SIGNAL (fileChanged (QString)),
+				this,
+				SLOT (reload ()));
 	}
 
 	void ScriptHandler::SetScriptPath (const QString& path)
@@ -56,8 +63,14 @@ namespace DCAC
 		if (path == Path_)
 			return;
 
+		if (!Path_.isEmpty ())
+			FileWatcher_->removePath (Path_);
+
 		Path_ = path;
 		reload ();
+
+		if (!Path_.isEmpty ())
+			FileWatcher_->addPath (Path_);
 	}
 
 	QList<Effect_t> ScriptHandler::GetEffects () const
