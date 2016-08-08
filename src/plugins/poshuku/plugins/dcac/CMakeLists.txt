@@ -10,6 +10,7 @@ set (DCAC_SRCS
 	reducelightness.cpp
 	colortemp.cpp
 	scriptobject.cpp
+	scripthandler.cpp
 	)
 set (DCAC_RESOURCES
 	)
