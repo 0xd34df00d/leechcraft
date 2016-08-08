@@ -43,7 +43,7 @@ namespace DCAC
 	public:
 		ScriptObject (QObject* = nullptr);
 	public slots:
-		QVariant invert (int threshold) const;
+		QVariant invert (int threshold = 0) const;
 		QVariant reduceLightness (double factor) const;
 		QVariant colorTemperature (int temperature) const;
 	};
