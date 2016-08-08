@@ -148,7 +148,7 @@ namespace DCAC
 
 			if (map.contains ("delay"))
 			{
-				if (const auto delay = map ["delay"].toInt ())
+				if (const auto delay = map ["delay"].toDouble ())
 					DelayTimer_->start (delay * 1000);
 				else
 					qWarning () << Q_FUNC_INFO
