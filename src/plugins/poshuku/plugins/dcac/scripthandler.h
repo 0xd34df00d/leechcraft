@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/iscriptloader.h>
 #include "effects.h"
 
 class IPluginsManager;
@@ -48,6 +49,8 @@ namespace DCAC
 
 		QString Path_;
 		QList<Effect_t> Effects_;
+
+		IScript_ptr CurrentScript_;
 	public:
 		ScriptHandler (IPluginsManager*, QObject* = nullptr);
 

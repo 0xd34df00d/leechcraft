@@ -28,8 +28,10 @@
  **********************************************************************/
 
 #include "scripthandler.h"
+#include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iscriptloader.h>
+#include "scriptobject.h"
 
 namespace LeechCraft
 {
@@ -59,10 +61,47 @@ namespace DCAC
 
 	void ScriptHandler::reload ()
 	{
+		CurrentScript_.reset ();
+		Effects_.clear ();
+
+		if (Path_.isEmpty ())
+			return;
+
+		const auto loaders = IPM_->GetAllCastableTo<IScriptLoader*> ();
+		if (loaders.isEmpty ())
+			return;
+
+		const auto loader = loaders.at (0)->CreateScriptLoaderInstance ({});
+		if (!loader)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to create a script loader";
+			return;
+		}
+
+		CurrentScript_ = loader->LoadScript ("/home/lctest/test.js");
+		if (!CurrentScript_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "failed to load script";
+			return;
+		}
+
+		CurrentScript_->AddQObject (new ScriptObject, "Effects");
+
+		reevaluate ();
 	}
 
 	void ScriptHandler::reevaluate ()
 	{
+		const auto& scriptResult = CurrentScript_->InvokeMethod ("getEffects");
+		for (const auto& var : scriptResult.toList ())
+			if (var.canConvert<Effect_t> ())
+				Effects_ << var.value<Effect_t> ();
+			else
+				qWarning () << Q_FUNC_INFO
+						<< "variant is not an effect:"
+						<< var;
 	}
 }
 }
