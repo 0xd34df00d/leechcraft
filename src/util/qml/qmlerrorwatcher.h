@@ -51,7 +51,8 @@ namespace Util
 	public:
 		/** @brief Constructs the watcher for the given \em view.
 		 *
-		 * The \em view becomes the parent of the watcher.
+		 * The \em view becomes the parent of the watcher, so there no
+		 * need to delete the watcher explicitly later on.
 		 *
 		 * @param[in] view The declarative view to watch for errors.
 		 */
