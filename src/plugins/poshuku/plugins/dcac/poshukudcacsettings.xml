@@ -41,7 +41,7 @@
 		</groupbox>
 		<groupbox>
 			<label value="Script options" />
-			<item type="path" property="ScriptPath">
+			<item type="path" property="ScriptPath" pickerType="openFileName">
 				<label value="Script path:" />
 			</item>
 		</groupbox>
