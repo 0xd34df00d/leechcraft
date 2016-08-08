@@ -55,6 +55,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/themeimageprovider.h>
 #include <util/qml/colorthemeproxy.h>
+#include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/itexteditor.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
@@ -110,6 +111,9 @@ namespace Blogique
 		TagsCloud_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 		Tags_->setResizeMode (QQuickWidget::SizeRootObjectToView);
 #endif
+
+		new Util::QmlErrorWatcher { TagsCloud_ };
+		new Util::QmlErrorWatcher { Tags_ };
 
 		TagsCloud_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
 		Ui_.PluginOptionsWidget_->layout ()->addWidget (TagsCloud_);
