@@ -33,6 +33,7 @@
 #include <qwebview.h>
 #include "effectprocessor.h"
 #include "xmlsettingsmanager.h"
+#include "scripthandler.h"
 
 namespace LeechCraft
 {
@@ -42,7 +43,7 @@ namespace DCAC
 {
 	ViewsManager::ViewsManager (IPluginsManager *ipm, QObject *parent)
 	: QObject { parent }
-	, IPM_ { ipm }
+	, ScriptHandler_ { new ScriptHandler { ipm, this } }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ({
 					"NightModeThreshold",
@@ -109,6 +110,13 @@ namespace DCAC
 			const auto temp = XmlSettingsManager::Instance ()
 					.property ("ColorTemperature").toInt ();
 			return { ColorTempEffect { temp } };
+		}
+		else if (effectStr == "Script")
+		{
+			const auto& scriptPath = XmlSettingsManager::Instance ()
+					.property ("ScriptPath").toString ();
+			ScriptHandler_->SetScriptPath (scriptPath);
+			return ScriptHandler_->GetEffects ();
 		}
 		else
 		{

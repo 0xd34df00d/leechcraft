@@ -45,15 +45,16 @@ namespace Poshuku
 namespace DCAC
 {
 	class EffectProcessor;
+	class ScriptHandler;
 
 	class ViewsManager : public QObject
 	{
 		Q_OBJECT
 
-		IPluginsManager * const IPM_;
-
 		QHash<QObject*, EffectProcessor*> View2Effect_;
 		QHash<QObject*, QAction*> View2EnableAction_;
+
+		ScriptHandler * const ScriptHandler_;
 	public:
 		ViewsManager (IPluginsManager*, QObject* = nullptr);
 
