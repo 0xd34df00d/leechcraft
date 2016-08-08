@@ -33,6 +33,7 @@
 #include <interfaces/iscriptloader.h>
 #include "effects.h"
 
+class QTimer;
 class IPluginsManager;
 
 namespace LeechCraft
@@ -51,6 +52,8 @@ namespace DCAC
 		QList<Effect_t> Effects_;
 
 		IScript_ptr CurrentScript_;
+
+		QTimer * const DelayTimer_;
 	public:
 		ScriptHandler (IPluginsManager*, QObject* = nullptr);
 
@@ -59,6 +62,8 @@ namespace DCAC
 	private slots:
 		void reload ();
 		void reevaluate ();
+	signals:
+		void effectsListChanged ();
 	};
 }
 }

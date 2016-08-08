@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "scripthandler.h"
+#include <QTimer>
 #include <QtDebug>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/iscriptloader.h>
@@ -42,7 +43,12 @@ namespace DCAC
 	ScriptHandler::ScriptHandler (IPluginsManager *ipm, QObject *parent)
 	: QObject { parent }
 	, IPM_ { ipm }
+	, DelayTimer_ { new QTimer { this } }
 	{
+		connect (DelayTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (reevaluate ()));
 	}
 
 	void ScriptHandler::SetScriptPath (const QString& path)
@@ -94,14 +100,57 @@ namespace DCAC
 
 	void ScriptHandler::reevaluate ()
 	{
+		DelayTimer_->stop ();
+
+		auto handleVarList = [&] (const QVariantList& list)
+		{
+			QList<Effect_t> newEffects;
+			for (const auto& var : list)
+				if (var.canConvert<Effect_t> ())
+					newEffects << var.value<Effect_t> ();
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "variant is not an effect:"
+							<< var;
+
+			if (newEffects != Effects_)
+			{
+				using std::swap;
+				swap (newEffects, Effects_);
+				emit effectsListChanged ();
+			}
+		};
+
 		const auto& scriptResult = CurrentScript_->InvokeMethod ("getEffects");
-		for (const auto& var : scriptResult.toList ())
-			if (var.canConvert<Effect_t> ())
-				Effects_ << var.value<Effect_t> ();
-			else
-				qWarning () << Q_FUNC_INFO
-						<< "variant is not an effect:"
-						<< var;
+
+		switch (scriptResult.type ())
+		{
+		case QVariant::List:
+			handleVarList (scriptResult.toList ());
+			break;
+		case QVariant::Map:
+		{
+			const auto& map = scriptResult.toMap ();
+			handleVarList (map.value ("effects").toList ());
+
+			if (map.contains ("delay"))
+			{
+				if (const auto delay = map ["delay"].toInt ())
+					DelayTimer_->start (delay * 1000);
+				else
+					qWarning () << Q_FUNC_INFO
+							<< "non-positive delay:"
+							<< map ["delay"];
+			}
+
+			break;
+		}
+		default:
+			qWarning () << Q_FUNC_INFO
+					<< "unexpected script result:"
+					<< scriptResult;
+			break;
+		}
 	}
 }
 }
