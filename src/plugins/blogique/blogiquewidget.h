@@ -82,31 +82,31 @@ namespace Blogique
 		QQuickWidget * const Tags_;
 #endif
 
-		IEditorWidget *PostEdit_;
-		QWidget *PostEditWidget_;
+		IEditorWidget *PostEdit_ = nullptr;
+		QWidget *PostEditWidget_ = nullptr;
 		QToolBar *ToolBar_;
 		QToolBar *ProgressToolBar_;
-		QAction *AccountsBoxAction_;
+		QAction *AccountsBoxAction_ = nullptr;
 		QComboBox *AccountsBox_;
-		QComboBox *PostTargetBox_;
-		QAction *PostTargetAction_;
-		QAction *ProgressBarLabelAction_;
-		QLabel *ProgressBarLabel_;
-		QAction *ProgressBarAction_;
+		QComboBox *PostTargetBox_ = nullptr;
+		QAction *PostTargetAction_ = nullptr;
+		QAction *ProgressBarLabelAction_ = nullptr;
+		QLabel *ProgressBarLabel_ = nullptr;
+		QAction *ProgressBarAction_ = nullptr;
 		QList<QAction*> InlineTagInserters_;
 
 		DraftEntriesWidget *DraftEntriesWidget_;
 		BlogEntriesWidget *BlogEntriesWidget_;
 		CommentsWidget *CommentsWidget_;
 		QHash<int, IAccount*> Id2Account_;
-		int PrevAccountId_;
+		int PrevAccountId_ = -1;
 		QList<QWidget*> SidePluginsWidgets_;
 
-		EntryType EntryType_;
-		qint64 EntryId_;
+		EntryType EntryType_ = EntryType::None;
+		qint64 EntryId_ = -1;
 		QUrl EntryUrl_;
 
-		bool EntryChanged_;
+		bool EntryChanged_ = false;
 
 		TagsProxyModel *TagsProxyModel_;
 		QStandardItemModel *TagsModel_;
