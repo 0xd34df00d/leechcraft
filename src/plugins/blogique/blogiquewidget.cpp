@@ -161,7 +161,7 @@ namespace Blogique
 				this,
 				SLOT (fillCurrentTabWithEntry (Entry)));
 		connect (BlogEntriesWidget_,
-				SIGNAL (fillNewWidgetWithBlogEntry (Entry,QByteArray)),
+				SIGNAL (fillNewWidgetWithBlogEntry (Entry, QByteArray)),
 				this,
 				SLOT (fillNewTabWithEntry (Entry, QByteArray)));
 		connect (BlogEntriesWidget_,

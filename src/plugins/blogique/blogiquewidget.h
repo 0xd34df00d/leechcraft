@@ -117,7 +117,7 @@ namespace Blogique
 			TagFrequency = Qt::UserRole + 1
 		};
 
-		BlogiqueWidget (QWidget *parent = 0);
+		BlogiqueWidget (QWidget *parent = nullptr);
 
 		QObject* ParentMultiTabs ();
 		TabClassInfo GetTabClassInfo () const;
