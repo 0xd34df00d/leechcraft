@@ -64,7 +64,7 @@ namespace DCAC
 		QList<Effect_t> GetCurrentEffects ();
 	private slots:
 		void handleViewDestroyed (QObject*);
-		void handleThresholdChanged ();
+		void handleEffectsChanged ();
 	};
 }
 }

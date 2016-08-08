@@ -50,7 +50,7 @@ namespace DCAC
 					"SingleEffect",
 					"ColorTemperature"
 				},
-				this, "handleThresholdChanged");
+				this, "handleEffectsChanged");
 	}
 
 	void ViewsManager::AddView (QWebView *view)
@@ -125,7 +125,7 @@ namespace DCAC
 		View2EnableAction_.remove (view);
 	}
 
-	void ViewsManager::handleThresholdChanged ()
+	void ViewsManager::handleEffectsChanged ()
 	{
 		const auto& effects = GetCurrentEffects ();
 		for (const auto proc : View2Effect_)
