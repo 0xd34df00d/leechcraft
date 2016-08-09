@@ -124,7 +124,7 @@ namespace Poshuku
 			QDateTime date, QObject *browserWidget)
 	{
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
-		emit hookAddingToHistory (proxy, title, url, date, browserWidget);
+		emit hookAddingToHistory (proxy, title, url, date);
 		if (proxy->IsCancelled ())
 			return;
 

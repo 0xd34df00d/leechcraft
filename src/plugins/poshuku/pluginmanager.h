@@ -121,11 +121,9 @@ namespace Poshuku
 		 * to history.
 		 * @param url The URL of the item.
 		 * @param date Datetime of visit (usually current one).
-		 * @param browserWidget The BrowserWidget from which this
-		 * request originates.
 		 */
 		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
-				QString title, QString url, QDateTime date, QObject *browserWidget);
+				QString title, QString url, QDateTime date);
 
 		/** @brief Called when item addition to favorites is requested.
 		 *

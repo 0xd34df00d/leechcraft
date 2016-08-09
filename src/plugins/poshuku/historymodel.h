@@ -83,8 +83,7 @@ namespace Poshuku
 			* be converted to QDateTime and replace the date.
 			*/
 		void hookAddingToHistory (LeechCraft::IHookProxy_ptr proxy,
-				QString title, QString url, QDateTime date,
-				QObject *browserWidget);
+				QString title, QString url, QDateTime date);
 	};
 }
 }
