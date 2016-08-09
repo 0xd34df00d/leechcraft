@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_IBROWSERWIDGET_H
-#define PLUGINS_POSHUKU_IBROWSERWIDGET_H
+#pragma once
 
 class QWebView;
 class QLineEdit;
@@ -49,5 +48,3 @@ namespace Poshuku
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IBrowserWidget,
 		"org.Deviant.LeechCraft.Poshuku.IBrowserWidget/1.0")
-
-#endif

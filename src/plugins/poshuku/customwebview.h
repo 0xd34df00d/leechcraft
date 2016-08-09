@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
-#define PLUGINS_POSHUKU_CUSTOMWEBVIEW_H
+#pragma once
+
 #include <qwebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
@@ -121,5 +121,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
