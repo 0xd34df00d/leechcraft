@@ -116,6 +116,13 @@ namespace Murm
 			break;
 		}
 
+		if (ShouldStop_)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "got poll error while waiting for stop";
+			return;
+		}
+
 		QTimer::singleShot (1000,
 				this,
 				SLOT (poll ()));
@@ -154,6 +161,9 @@ namespace Murm
 					<< "already polling";
 			return;
 		}
+
+		if (ShouldStop_)
+			return;
 
 		const auto& url = GetURLTemplate ();
 
