@@ -60,8 +60,7 @@ namespace Poshuku
 
 		HistoryModel (QObject* = 0);
 	public slots:
-		void addItem (QString title, QString url,
-				QDateTime datetime, QObject *browserwidget = 0);
+		void addItem (QString title, QString url, QDateTime datetime);
 		QList<QMap<QString, QVariant>> getItemsMap () const;
 	private:
 		void Add (const HistoryItem&, int section);

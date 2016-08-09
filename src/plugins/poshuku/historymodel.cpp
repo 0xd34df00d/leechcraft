@@ -120,8 +120,7 @@ namespace Poshuku
 				SLOT (collectGarbage ()));
 	}
 
-	void HistoryModel::addItem (QString title, QString url,
-			QDateTime date, QObject *browserWidget)
+	void HistoryModel::addItem (QString title, QString url, QDateTime date)
 	{
 		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingToHistory (proxy, title, url, date);

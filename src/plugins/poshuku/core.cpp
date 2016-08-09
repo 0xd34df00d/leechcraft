@@ -534,8 +534,7 @@ namespace Poshuku
 				!url.isEmpty () && url != "about:blank")
 			HistoryModel_->addItem (view->title (),
 					url,
-					QDateTime::currentDateTime (),
-					view->GetBrowserWidget ());
+					QDateTime::currentDateTime ());
 	}
 
 	void Core::SetupConnections (BrowserWidget *widget)
