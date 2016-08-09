@@ -625,6 +625,23 @@ namespace Poshuku
 				Core::Instance ().GetProxy ()->GetEntityManager (), menu);
 	}
 
+	void BrowserWidget::AddStandardActions (QMenu *menu)
+	{
+		menu->addAction (Add2Favorites_);
+		menu->addSeparator ();
+		menu->addAction (Print_);
+		menu->addAction (PrintPreview_);
+		menu->addSeparator ();
+		menu->addAction (ViewSources_);
+		menu->addAction (SavePage_);
+		menu->addAction (ScreenSave_);
+		menu->addSeparator ();
+		menu->addAction (ReloadPeriodically_);
+		menu->addAction (NotifyWhenFinished_);
+		menu->addSeparator ();
+		menu->addAction (ChangeEncoding_->menuAction ());
+	}
+
 	QObject* BrowserWidget::GetQObject ()
 	{
 		return this;

@@ -369,19 +369,7 @@ namespace Poshuku
 		if (!menu->isEmpty ())
 			menu->addSeparator ();
 
-		menu->addAction (Browser_->Add2Favorites_);
-		menu->addSeparator ();
-		menu->addAction (Browser_->Print_);
-		menu->addAction (Browser_->PrintPreview_);
-		menu->addSeparator ();
-		menu->addAction (Browser_->ViewSources_);
-		menu->addAction (Browser_->SavePage_);
-		menu->addAction (Browser_->ScreenSave_);
-		menu->addSeparator ();
-		menu->addAction (Browser_->ReloadPeriodically_);
-		menu->addAction (Browser_->NotifyWhenFinished_);
-		menu->addSeparator ();
-		menu->addAction (Browser_->ChangeEncoding_->menuAction ());
+		Browser_->AddStandardActions (menu);
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
 				menu, WVSAfterFinish);

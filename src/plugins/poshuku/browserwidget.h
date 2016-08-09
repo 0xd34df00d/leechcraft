@@ -141,6 +141,7 @@ namespace Poshuku
 
 		QLineEdit* GetURLEdit () const;
 		void InsertFindAction (QMenu*, const QString&);
+		void AddStandardActions (QMenu*);
 
 		QObject* GetQObject ();
 
