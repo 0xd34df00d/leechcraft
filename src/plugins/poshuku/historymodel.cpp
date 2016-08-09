@@ -88,18 +88,18 @@ namespace Poshuku
 		{
 			switch (number)
 			{
-				case 0:
-					return QObject::tr ("Today");
-				case 1:
-					return QObject::tr ("Yesterday");
-				case 2:
-					return QObject::tr ("Two days ago");
-				case 3:
-					return QObject::tr ("Last week");
-				case 4:
-					return QObject::tr ("Last month");
-				default:
-					return QObject::tr ("Last %n month(s)", "", number - 3);
+			case 0:
+				return QObject::tr ("Today");
+			case 1:
+				return QObject::tr ("Yesterday");
+			case 2:
+				return QObject::tr ("Two days ago");
+			case 3:
+				return QObject::tr ("Last week");
+			case 4:
+				return QObject::tr ("Last month");
+			default:
+				return QObject::tr ("Last %n month(s)", "", number - 3);
 			}
 		}
 	};
