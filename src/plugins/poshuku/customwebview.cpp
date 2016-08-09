@@ -374,6 +374,7 @@ namespace Poshuku
 		if (menu->isEmpty ())
 			menu = page ()->createStandardContextMenu ();
 
+		menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 		if (!menu->isEmpty ())
 			menu->addSeparator ();
 
@@ -386,7 +387,6 @@ namespace Poshuku
 		menu->addAction (Browser_->SavePage_);
 		menu->addAction (Browser_->ScreenSave_);
 		menu->addSeparator ();
-		menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
 		menu->addAction (Browser_->ReloadPeriodically_);
 		menu->addAction (Browser_->NotifyWhenFinished_);
 		menu->addSeparator ();
