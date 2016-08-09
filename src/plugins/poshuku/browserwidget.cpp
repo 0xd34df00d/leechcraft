@@ -72,9 +72,11 @@
 #include <QMimeData>
 #include <util/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/slotclosure.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
+#include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
@@ -93,6 +95,7 @@
 #include "urleditbuttonsmanager.h"
 #include "webpagesslwatcher.h"
 #include "zoomer.h"
+#include "searchtext.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -599,6 +602,27 @@ namespace Poshuku
 	{
 		Find_->setData (text);
 		menu->addAction (Find_);
+
+		const auto searchAct = menu->addAction (tr ("Search..."));
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[text, this]
+			{
+				const auto st = new SearchText (text, this);
+				connect (st,
+						SIGNAL (gotEntity (LeechCraft::Entity)),
+						this,
+						SIGNAL (gotEntity (LeechCraft::Entity)));
+				st->setAttribute (Qt::WA_DeleteOnClose);
+				st->show ();
+			},
+			searchAct,
+			SIGNAL (triggered ()),
+			searchAct
+		};
+
+		new Util::StdDataFilterMenuCreator (text,
+				Core::Instance ().GetProxy ()->GetEntityManager (), menu);
 	}
 
 	QObject* BrowserWidget::GetQObject ()

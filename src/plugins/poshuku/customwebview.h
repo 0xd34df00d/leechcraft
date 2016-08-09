@@ -96,7 +96,6 @@ namespace Poshuku
 		void savePixmap ();
 		void copyImage ();
 		void copyImageLocation ();
-		void searchSelectedText ();
 		void renderSettingsChanged ();
 		void handleAutoscroll ();
 	signals:

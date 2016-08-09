@@ -48,13 +48,11 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
-#include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
 #include "browserwidget.h"
-#include "searchtext.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -359,14 +357,7 @@ namespace Poshuku
 			menu->addAction (pageAction (QWebPage::Paste));
 
 		if (hasSelected)
-		{
 			Browser_->InsertFindAction (menu, page ()->selectedText ());
-
-			menu->addAction (tr ("Search..."),
-					this, SLOT (searchSelectedText ()));
-			new Util::StdDataFilterMenuCreator (page ()->selectedText (),
-					Core::Instance ().GetProxy ()->GetEntityManager (), menu);
-		}
 
 		emit hookWebViewContextMenu (proxy, this, e, r,
 				menu, WVSAfterSelectedText);
@@ -605,21 +596,6 @@ namespace Poshuku
 		QClipboard *cb = QApplication::clipboard ();
 		cb->setText (url, QClipboard::Clipboard);
 		cb->setText (url, QClipboard::Selection);
-	}
-
-	void CustomWebView::searchSelectedText ()
-	{
-		QString text = page ()->selectedText ();
-		if (text.isEmpty ())
-			return;
-
-		SearchText *st = new SearchText (text, Browser_);
-		connect (st,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		st->setAttribute (Qt::WA_DeleteOnClose);
-		st->show ();
 	}
 
 	void CustomWebView::renderSettingsChanged ()
