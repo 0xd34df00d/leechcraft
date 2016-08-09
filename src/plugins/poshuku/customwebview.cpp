@@ -400,8 +400,7 @@ namespace Poshuku
 		else
 			QWebView::contextMenuEvent (e);
 
-		if (menu)
-			delete menu;
+		delete menu;
 	}
 
 	void CustomWebView::keyReleaseEvent (QKeyEvent *event)
