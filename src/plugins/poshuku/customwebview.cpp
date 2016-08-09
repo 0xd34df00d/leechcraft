@@ -360,8 +360,8 @@ namespace Poshuku
 
 		if (hasSelected)
 		{
-			Browser_->Find_->setData (page ()->selectedText ());
-			menu->addAction (Browser_->Find_);
+			Browser_->InsertFindAction (menu, page ()->selectedText ());
+
 			menu->addAction (tr ("Search..."),
 					this, SLOT (searchSelectedText ()));
 			new Util::StdDataFilterMenuCreator (page ()->selectedText (),

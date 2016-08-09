@@ -138,7 +138,10 @@ namespace Poshuku
 		void FinalizeInit ();
 
 		CustomWebView* GetView () const;
+
 		QLineEdit* GetURLEdit () const;
+		void InsertFindAction (QMenu*, const QString&);
+
 		QObject* GetQObject ();
 
 		BrowserWidgetSettings GetWidgetSettings () const;
