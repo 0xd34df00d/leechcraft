@@ -31,6 +31,8 @@
 
 class QWebView;
 class QLineEdit;
+class QMenu;
+class QString;
 
 namespace LeechCraft
 {
@@ -42,6 +44,10 @@ namespace Poshuku
 		virtual ~IBrowserWidget () {}
 
 		virtual QLineEdit* GetURLEdit () const = 0;
+
+		virtual void InsertFindAction (QMenu *menu, const QString& text) = 0;
+
+		virtual void AddStandardActions (QMenu *menu) = 0;
 	};
 }
 }
