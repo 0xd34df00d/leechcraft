@@ -179,6 +179,8 @@ namespace Poshuku
 		void SetFontSizeMultiplier (qreal factor);
 
 		void SetOnLoadScrollPoint (const QPoint&);
+	protected:
+		void keyReleaseEvent (QKeyEvent*);
 	private:
 		void PrintImpl (bool, QWebFrame*);
 		void SetActualReloadInterval (const QTime&);

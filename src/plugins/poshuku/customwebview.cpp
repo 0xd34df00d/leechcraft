@@ -386,8 +386,6 @@ namespace Poshuku
 	{
 		if (event->matches (QKeySequence::Copy))
 			pageAction (QWebPage::Copy)->trigger ();
-		else if (event->key () == Qt::Key_F6)
-			Browser_->focusLineEdit ();
 		else if (event->modifiers () == Qt::SHIFT &&
 				(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
 		{

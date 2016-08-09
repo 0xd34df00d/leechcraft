@@ -967,6 +967,14 @@ namespace Poshuku
 		OnLoadPos_ = sp;
 	}
 
+	void BrowserWidget::keyReleaseEvent (QKeyEvent *event)
+	{
+		if (event->key () == Qt::Key_F6)
+			focusLineEdit ();
+		else
+			QWidget::keyReleaseEvent (event);
+	}
+
 	void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
