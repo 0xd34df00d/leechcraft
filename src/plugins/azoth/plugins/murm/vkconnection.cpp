@@ -789,6 +789,11 @@ namespace Murm
 		if (Status_.State_ == SOffline)
 		{
 			LPManager_->Stop ();
+
+			PreparedCalls_.clear ();
+			RunningCalls_.clear ();
+			CallQueue_->Clear ();
+
 			return;
 		}
 
