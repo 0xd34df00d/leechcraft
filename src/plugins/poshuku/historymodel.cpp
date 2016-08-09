@@ -123,7 +123,7 @@ namespace Poshuku
 	void HistoryModel::addItem (QString title, QString url,
 			QDateTime date, QObject *browserWidget)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookAddingToHistory (proxy, title, url, date, browserWidget);
 		if (proxy->IsCancelled ())
 			return;
