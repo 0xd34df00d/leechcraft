@@ -146,11 +146,6 @@ namespace Poshuku
 		Browser_ = widget;
 	}
 
-	BrowserWidget* CustomWebView::GetBrowserWidget () const
-	{
-		return Browser_;
-	}
-
 	void CustomWebView::Load (const QString& string, QString title)
 	{
 		Load (Core::Instance ().MakeURL (string), title);
