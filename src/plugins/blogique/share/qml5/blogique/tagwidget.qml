@@ -6,8 +6,6 @@ Rectangle
 {
 	id: rootRectangle
 
-	anchors.fill: parent
-
 	gradient: Gradient
 	{
 		GradientStop

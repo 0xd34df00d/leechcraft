@@ -3,8 +3,6 @@ import "tagscloudlist.js" as TagsCloudList
 
 Rectangle
 {
-	anchors.fill: parent
-
 	gradient: Gradient
 	{
 		GradientStop
