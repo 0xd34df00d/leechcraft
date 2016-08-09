@@ -41,7 +41,7 @@ namespace Poshuku
 	, Text_ (text)
 	{
 		Ui_.setupUi (this);
-		Ui_.Label_->setText (tr ("Search %1 with:").arg (text));
+		Ui_.Label_->setText (tr ("Search %1 with:").arg ("<em>" + text + "</em>"));
 
 		const QStringList& categories = Core::Instance ()
 				.GetProxy ()->GetSearchCategories ();
