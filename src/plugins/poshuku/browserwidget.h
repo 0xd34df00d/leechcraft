@@ -127,8 +127,6 @@ namespace Poshuku
 		QWebInspector *WebInspector_;
 
 		static QObject* S_MultiTabsParent_;
-
-		friend class CustomWebView;
 	public:
 		BrowserWidget (QWidget* = 0);
 		virtual ~BrowserWidget ();
