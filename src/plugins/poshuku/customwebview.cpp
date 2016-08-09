@@ -103,17 +103,17 @@ namespace Poshuku
 				SLOT (handleLoadFinished (bool)));
 
 		connect (page,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
+				SIGNAL (couldHandle (LeechCraft::Entity, bool*)),
 				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
+				SIGNAL (couldHandle (LeechCraft::Entity, bool*)));
 		connect (page,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
+				SIGNAL (gotEntity (LeechCraft::Entity)),
 				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
+				SIGNAL (gotEntity (LeechCraft::Entity)));
 		connect (page,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
 				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
+				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
 		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
@@ -123,9 +123,9 @@ namespace Poshuku
 				this,
 				SIGNAL (closeRequested ()));
 		connect (page,
-				SIGNAL (storeFormData (const PageFormsData_t&)),
+				SIGNAL (storeFormData (PageFormsData_t)),
 				this,
-				SIGNAL (storeFormData (const PageFormsData_t&)));
+				SIGNAL (storeFormData (PageFormsData_t)));
 
 		QList<QByteArray> renderSettings;
 		renderSettings << "PrimitivesAntialiasing"
