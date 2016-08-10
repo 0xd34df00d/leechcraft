@@ -49,10 +49,10 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
+#include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
-#include "browserwidget.h"
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft

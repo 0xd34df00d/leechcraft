@@ -41,13 +41,13 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	class BrowserWidget;
+	class IBrowserWidget;
 
 	class CustomWebView : public QWebView
 	{
 		Q_OBJECT
 
-		BrowserWidget *Browser_;
+		IBrowserWidget *Browser_;
 		QString PreviousEncoding_;
 		QTimer *ScrollTimer_;
 		double ScrollDelta_;
@@ -56,7 +56,7 @@ namespace Poshuku
 		CustomWebView (QWidget* = 0);
 		virtual ~CustomWebView ();
 
-		void SetBrowserWidget (BrowserWidget*);
+		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QString&, QString = QString ());
 		void Load (const QUrl&, QString = QString ());
 		void Load (const QNetworkRequest&,
