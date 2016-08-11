@@ -131,10 +131,6 @@ namespace Poshuku
 		renderSettingsChanged ();
 	}
 
-	CustomWebView::~CustomWebView ()
-	{
-	}
-
 	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
 	{
 		Browser_ = widget;

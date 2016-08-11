@@ -51,7 +51,6 @@ namespace Poshuku
 		QString PreviousEncoding_;
 	public:
 		CustomWebView (QWidget* = 0);
-		virtual ~CustomWebView ();
 
 		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QString&, QString = QString ());
