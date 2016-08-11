@@ -137,48 +137,48 @@ namespace Poshuku
 
 		CustomWebView* GetView () const;
 
-		QLineEdit* GetURLEdit () const;
-		void InsertFindAction (QMenu*, const QString&);
-		void AddStandardActions (QMenu*);
+		QLineEdit* GetURLEdit () const override;
+		void InsertFindAction (QMenu*, const QString&) override;
+		void AddStandardActions (QMenu*) override;
 
-		QObject* GetQObject ();
+		QObject* GetQObject () override;
 
 		BrowserWidgetSettings GetWidgetSettings () const;
 		void SetWidgetSettings (const BrowserWidgetSettings&);
 		void SetURL (const QUrl&);
 
-		void Load (const QString&);
-		void SetHtml (const QString&, const QUrl& = QUrl ());
-		void SetNavBarVisible (bool);
-		void SetEverythingElseVisible (bool);
-		QWidget* Widget ();
+		void Load (const QString&) override;
+		void SetHtml (const QString&, const QUrl& = QUrl ()) override;
+		void SetNavBarVisible (bool) override;
+		void SetEverythingElseVisible (bool) override;
+		QWidget* Widget () override;
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;
 
-		void Remove ();
-		QToolBar* GetToolBar () const;
-		QList<QAction*> GetTabBarContextMenuActions () const;
-		QMap<QString, QList<QAction*>> GetWindowMenus () const;
-		QObject* ParentMultiTabs ();
-		TabClassInfo GetTabClassInfo () const;
+		void Remove () override;
+		QToolBar* GetToolBar () const override;
+		QList<QAction*> GetTabBarContextMenuActions () const override;
+		QMap<QString, QList<QAction*>> GetWindowMenus () const override;
+		QObject* ParentMultiTabs () override;
+		TabClassInfo GetTabClassInfo () const override;
 
-		void FillMimeData (QMimeData*);
-		void HandleDragEnter (QDragMoveEvent*);
-		void HandleDrop (QDropEvent*);
+		void FillMimeData (QMimeData*) override;
+		void HandleDragEnter (QDragMoveEvent*) override;
+		void HandleDrop (QDropEvent*) override;
 
 		void SetTabRecoverData (const QByteArray&);
-		QByteArray GetTabRecoverData () const;
-		QString GetTabRecoverName () const;
-		QIcon GetTabRecoverIcon () const;
+		QByteArray GetTabRecoverData () const override;
+		QString GetTabRecoverName () const override;
+		QIcon GetTabRecoverIcon () const override;
 
-		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font);
-		void SetFontSize (QWebSettings::FontSize type, int size);
-		void SetFontSizeMultiplier (qreal factor);
+		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font) override;
+		void SetFontSize (QWebSettings::FontSize type, int size) override;
+		void SetFontSizeMultiplier (qreal factor) override;
 
 		void SetOnLoadScrollPoint (const QPoint&);
 	protected:
-		void keyReleaseEvent (QKeyEvent*);
+		void keyReleaseEvent (QKeyEvent*) override;
 	private:
 		void PrintImpl (bool, QWebFrame*);
 		void SetActualReloadInterval (const QTime&);
@@ -234,7 +234,7 @@ namespace Poshuku
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void couldHandle (const LeechCraft::Entity&, bool*);
 		void raiseTab (QWidget*);
-		void tabRecoverDataChanged ();
+		void tabRecoverDataChanged () override;
 
 		// Hook support
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
