@@ -31,7 +31,6 @@
 #define PLUGINS_POSHUKU_PLUGINS_ONLINEBOOKMARKS_ONLINEBOOKMARKS_H
 
 #include <QObject>
-#include <QTranslator>
 #include <QMenu>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
@@ -59,7 +58,6 @@ namespace OnlineBookmarks
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.OnlineBookmarks")
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
-		std::shared_ptr<QTranslator> Translator_;
 	public:
 		// IInfo methods
 		void Init (ICoreProxy_ptr);

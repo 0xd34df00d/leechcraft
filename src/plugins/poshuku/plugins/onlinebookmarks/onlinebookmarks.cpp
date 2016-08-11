@@ -46,7 +46,7 @@ namespace OnlineBookmarks
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
-		Translator_.reset (Util::InstallTranslator ("poshuku_onlinebookmarks"));
+		Util::InstallTranslator ("poshuku_onlinebookmarks");
 		SettingsDialog_.reset (new Util::XmlSettingsDialog);
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukuonlinebookmarkssettings.xml");
