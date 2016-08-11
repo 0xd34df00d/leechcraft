@@ -70,6 +70,7 @@ set (SRCS
 	sslstatedialog.cpp
 	featurepermnotification.cpp
 	zoomer.cpp
+	webviewsmoothscroller.cpp
 	)
 set (FORMS
 	browserwidget.ui

@@ -55,6 +55,7 @@
 #include "core.h"
 #include "customwebpage.h"
 #include "xmlsettingsmanager.h"
+#include "webviewsmoothscroller.h"
 
 namespace LeechCraft
 {
@@ -62,9 +63,6 @@ namespace Poshuku
 {
 	CustomWebView::CustomWebView (QWidget *parent)
 	: QWebView (parent)
-	, ScrollTimer_ (new QTimer (this))
-	, ScrollDelta_ (0)
-	, AccumulatedScrollShift_ (0)
 	{
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
@@ -74,10 +72,7 @@ namespace Poshuku
 			setPalette (QWindowsStyle ().standardPalette ());
 #endif
 
-		connect (ScrollTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleAutoscroll ()));
+		new WebViewSmoothScroller { this };
 
 		CustomWebPage *page = new CustomWebPage (this);
 		setPage (page);
@@ -387,19 +382,6 @@ namespace Poshuku
 	{
 		if (event->matches (QKeySequence::Copy))
 			pageAction (QWebPage::Copy)->trigger ();
-		else if (event->modifiers () == Qt::SHIFT &&
-				(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
-		{
-			ScrollDelta_ += event->key () == Qt::Key_PageUp ? -0.1 : 0.1;
-			if (!ScrollTimer_->isActive ())
-				ScrollTimer_->start (30);
-		}
-		else if (event->modifiers () == Qt::SHIFT &&
-				event->key () == Qt::Key_Plus)
-		{
-			ScrollDelta_ = 0;
-			ScrollTimer_->stop ();
-		}
 		else
 			QWebView::keyReleaseEvent (event);
 	}
@@ -602,24 +584,6 @@ namespace Poshuku
 			hints |= QPainter::HighQualityAntialiasing;
 
 		setRenderHints (hints);
-	}
-
-	void CustomWebView::handleAutoscroll ()
-	{
-		if (std::fabs (ScrollDelta_) < std::numeric_limits<decltype (ScrollDelta_)>::epsilon ())
-			return;
-
-		AccumulatedScrollShift_ += ScrollDelta_;
-
-		if (std::abs (AccumulatedScrollShift_) >= 1)
-		{
-			QWebFrame *mf = page ()->mainFrame ();
-			QPoint pos = mf->scrollPosition ();
-			pos += QPoint (0, AccumulatedScrollShift_);
-			mf->setScrollPosition (pos);
-
-			AccumulatedScrollShift_ -= static_cast<int> (AccumulatedScrollShift_);
-		}
 	}
 }
 }
