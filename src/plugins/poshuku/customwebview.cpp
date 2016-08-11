@@ -136,11 +136,6 @@ namespace Poshuku
 		Browser_ = widget;
 	}
 
-	void CustomWebView::Load (const QString& string, QString title)
-	{
-		Load (Core::Instance ().MakeURL (string), title);
-	}
-
 	void CustomWebView::Load (const QUrl& url, QString title)
 	{
 		if (url.isEmpty () || !url.isValid ())
@@ -450,7 +445,8 @@ namespace Poshuku
 	void CustomWebView::openLinkInNewTab ()
 	{
 		CustomWebView *view = Core::Instance ().MakeWebView (false);
-		view->Load (qobject_cast<QAction*> (sender ())->data ().toString ());
+		const auto& urlStr = qobject_cast<QAction*> (sender ())->data ().toString ();
+		view->Load (Core::Instance ().MakeURL (urlStr));
 	}
 
 	void CustomWebView::saveLink ()

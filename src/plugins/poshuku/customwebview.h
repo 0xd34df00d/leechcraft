@@ -53,7 +53,6 @@ namespace Poshuku
 		CustomWebView (QWidget* = 0);
 
 		void SetBrowserWidget (IBrowserWidget*);
-		void Load (const QString&, QString = QString ());
 		void Load (const QUrl&, QString = QString ());
 		void Load (const QNetworkRequest&,
 				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
