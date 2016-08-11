@@ -39,6 +39,7 @@
 #include <QWebElement>
 #include <QWebHistory>
 #include <QTextCodec>
+#include <QMouseEvent>
 
 #if QT_VERSION < 0x050000
 #include <QWindowsStyle>
@@ -139,7 +140,7 @@ namespace Poshuku
 	{
 	}
 
-	void CustomWebView::SetBrowserWidget (BrowserWidget *widget)
+	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
 	{
 		Browser_ = widget;
 	}
