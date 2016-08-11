@@ -62,56 +62,6 @@ namespace LeechCraft
 {
 namespace Eleeminator
 {
-	namespace detail
-	{
-		template<typename F, typename R>
-		F TypeGetter (R (*) (F));
-
-		template<typename F>
-		auto TypeGetter (F&& f) -> decltype (TypeGetter (+f));
-
-		template<typename C, typename R, typename F>
-		F TypeGetter (R (C::*) (F) const);
-
-		template<typename C, typename R, typename F>
-		F TypeGetter (R (C::*) (F));
-
-		template<typename C>
-		decltype (TypeGetter (&C::operator ())) TypeGetter (const C& c);
-
-		template<typename F>
-		using ArgType_t = decltype (TypeGetter (*static_cast<F*> (nullptr)));
-
-		template<typename F>
-		class LambdaEventFilter : public QObject
-		{
-			const F F_;
-
-			using EventType_t = typename std::remove_pointer<ArgType_t<F>>::type;
-		public:
-			LambdaEventFilter (F&& f, QObject *parent = nullptr)
-			: QObject { parent }
-			, F_ { std::move (f) }
-			{
-			}
-
-			bool eventFilter (QObject*, QEvent *srcEv) override
-			{
-				const auto ev = dynamic_cast<EventType_t*> (srcEv);
-				if (!ev)
-					return false;
-
-				return F_ (ev);
-			}
-		};
-	}
-
-	template<typename F>
-	detail::LambdaEventFilter<Util::Decay_t<F>>* MakeLambdaEventFilter (F&& f, QObject *parent = nullptr)
-	{
-		return new detail::LambdaEventFilter<Util::Decay_t<F>> { std::forward<F> (f), parent };
-	}
-
 	namespace
 	{
 #ifdef Q_OS_MAC
