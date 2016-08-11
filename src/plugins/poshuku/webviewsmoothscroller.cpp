@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "webviewsmoothscroller.h"
+#include <cmath>
 #include <qwebview.h>
 #include <qwebpage.h>
 #include <qwebframe.h>
