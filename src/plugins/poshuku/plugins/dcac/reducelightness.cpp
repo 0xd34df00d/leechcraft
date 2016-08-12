@@ -218,8 +218,8 @@ namespace DCAC
 				HandleLoopEnd (width, x, handler);
 			}
 		}
-	}
 #endif
+	}
 
 	void ReduceLightness (QImage& image, float factor)
 	{

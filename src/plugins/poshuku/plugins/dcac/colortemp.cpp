@@ -244,7 +244,7 @@ namespace DCAC
 
 		ptr (image, temperature);
 #else
-		AdjustColorTempDefault (image, factor);
+		AdjustColorTempDefault (image, temperature);
 #endif
 	}
 }
