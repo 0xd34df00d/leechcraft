@@ -56,6 +56,7 @@
 #include "customwebpage.h"
 #include "xmlsettingsmanager.h"
 #include "webviewsmoothscroller.h"
+#include "webviewrendersettingshandler.h"
 
 namespace LeechCraft
 {
@@ -73,6 +74,7 @@ namespace Poshuku
 #endif
 
 		new WebViewSmoothScroller { this };
+		new WebViewRenderSettingsHandler { this };
 
 		CustomWebPage *page = new CustomWebPage (this);
 		setPage (page);
@@ -120,15 +122,6 @@ namespace Poshuku
 				SIGNAL (storeFormData (PageFormsData_t)),
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
-
-		QList<QByteArray> renderSettings;
-		renderSettings << "PrimitivesAntialiasing"
-			<< "TextAntialiasing"
-			<< "SmoothPixmapTransform"
-			<< "HighQualityAntialiasing";
-		XmlSettingsManager::Instance ()->RegisterObject (renderSettings,
-				this, "renderSettingsChanged");
-		renderSettingsChanged ();
 	}
 
 	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
@@ -556,25 +549,6 @@ namespace Poshuku
 		QClipboard *cb = QApplication::clipboard ();
 		cb->setText (url, QClipboard::Clipboard);
 		cb->setText (url, QClipboard::Selection);
-	}
-
-	void CustomWebView::renderSettingsChanged ()
-	{
-		QPainter::RenderHints hints;
-		if (XmlSettingsManager::Instance ()->
-				property ("PrimitivesAntialiasing").toBool ())
-			hints |= QPainter::Antialiasing;
-		if (XmlSettingsManager::Instance ()->
-				property ("TextAntialiasing").toBool ())
-			hints |= QPainter::TextAntialiasing;
-		if (XmlSettingsManager::Instance ()->
-				property ("SmoothPixmapTransform").toBool ())
-			hints |= QPainter::SmoothPixmapTransform;
-		if (XmlSettingsManager::Instance ()->
-				property ("HighQualityAntialiasing").toBool ())
-			hints |= QPainter::HighQualityAntialiasing;
-
-		setRenderHints (hints);
 	}
 }
 }

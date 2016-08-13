@@ -91,7 +91,6 @@ namespace Poshuku
 		void savePixmap ();
 		void copyImage ();
 		void copyImageLocation ();
-		void renderSettingsChanged ();
 	signals:
 		void urlChanged (const QString&);
 		void gotEntity (const LeechCraft::Entity&);
