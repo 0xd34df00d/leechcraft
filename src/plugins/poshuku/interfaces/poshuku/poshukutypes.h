@@ -30,7 +30,9 @@
 #pragma once
 
 #include <QString>
+#include <QUrl>
 #include <QDateTime>
+#include <QPixmap>
 
 namespace LeechCraft
 {
@@ -63,5 +65,18 @@ namespace Poshuku
 	};
 
 	typedef QList<HistoryItem> history_items_t;
+
+	struct ContextMenuInfo
+	{
+		bool IsContentEditable_;
+
+		QString SelectedPageText_;
+
+		QUrl LinkUrl_;
+		QString LinkText_;
+
+		QUrl ImageUrl_;
+		QPixmap ImagePixmap_;
+	};
 }
 }
