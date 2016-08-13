@@ -52,18 +52,16 @@ namespace Poshuku
 	void WebViewRenderSettingsHandler::renderSettingsChanged ()
 	{
 		QPainter::RenderHints hints;
-		if (XmlSettingsManager::Instance ()->
-				property ("PrimitivesAntialiasing").toBool ())
-			hints |= QPainter::Antialiasing;
-		if (XmlSettingsManager::Instance ()->
-				property ("TextAntialiasing").toBool ())
-			hints |= QPainter::TextAntialiasing;
-		if (XmlSettingsManager::Instance ()->
-				property ("SmoothPixmapTransform").toBool ())
-			hints |= QPainter::SmoothPixmapTransform;
-		if (XmlSettingsManager::Instance ()->
-				property ("HighQualityAntialiasing").toBool ())
-			hints |= QPainter::HighQualityAntialiasing;
+
+		auto check = [&hints] (const char *name, QPainter::RenderHint hint)
+		{
+			if (XmlSettingsManager::Instance ()->property (name).toBool ())
+				hints |= hint;
+		};
+		check ("PrimitivesAntialiasing", QPainter::Antialiasing);
+		check ("TextAntialiasing", QPainter::TextAntialiasing);
+		check ("SmoothPixmapTransform", QPainter::SmoothPixmapTransform);
+		check ("HighQualityAntialiasing", QPainter::HighQualityAntialiasing);
 
 		View_->setRenderHints (hints);
 	}
