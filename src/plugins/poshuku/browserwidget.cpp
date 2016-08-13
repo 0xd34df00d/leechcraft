@@ -77,6 +77,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
 #include "core.h"
@@ -1501,15 +1502,79 @@ namespace Poshuku
 	namespace
 	{
 		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
+
+		void SavePixmap (const QPixmap& px, const QUrl& url, IEntityManager *iem)
+		{
+			if (px.isNull ())
+				return;
+
+			const auto origName = url.scheme () == "data" ?
+					QString {} :
+					QFileInfo { url.path () }.fileName ();
+
+			QString filter;
+			auto fname = QFileDialog::getSaveFileName (0,
+					BrowserWidget::tr ("Save pixmap"),
+					QDir::homePath () + '/' + origName,
+					BrowserWidget::tr ("PNG image (*.png);;JPG image (*.jpg);;All files (*.*)"),
+					&filter);
+
+			if (fname.isEmpty ())
+				return;
+
+			if (QFileInfo { fname }.suffix ().isEmpty ())
+			{
+				if (filter.contains ("png"))
+					fname += ".png";
+				else if (filter.contains ("jpg"))
+					fname += ".jpg";
+			}
+
+			QFile file { fname };
+			if (!file.open (QIODevice::WriteOnly))
+			{
+				iem->HandleEntity (Util::MakeNotification ("Poshuku",
+						BrowserWidget::tr ("Unable to save the image. Unable to open file for writing: %1.")
+							.arg (file.errorString ()),
+						PCritical_));
+				return;
+			}
+
+			const auto& suf = QFileInfo { fname }.suffix ();
+			const bool isLossless = suf.toLower () == "png";
+			px.save (&file,
+					suf.toUtf8 ().constData (),
+					isLossless ? 0 : 100);
+		}
 	}
 
 	void BrowserWidget::handleContextMenu (const QPoint& point, const ContextMenuInfo& info)
 	{
 		QPointer<QMenu> menu (new QMenu ());
 
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+
 		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 
 		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSStart);
+
+		auto addAction = [menu] (const QString& text, auto handler)
+		{
+			auto act = menu->addAction (text);
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				handler,
+				act,
+				SIGNAL (triggered ()),
+				act
+			};
+			return act;
+		};
+		auto addWebAction = [menu, this] (QWebPage::WebAction act)
+		{
+			if (const auto actObj = WebView_->pageAction (act))
+				menu->addAction (actObj);
+		};
 
 		if (!info.LinkUrl_.isEmpty ())
 		{
@@ -1540,45 +1605,32 @@ namespace Poshuku
 					bool ch = false;
 					emit couldHandle (e, &ch);
 					if (ch)
-					{
-						QList<QVariant> datalist;
-						datalist << info.LinkUrl_
-								<< e.Mime_;
-						menu->addAction (tr ("Subscribe"),
-								WebView_,
-								SLOT (subscribeToLink ()))->setData (datalist);
-						menu->addSeparator ();
-					}
+						addAction (tr ("Subscribe"), [e, this] { emit gotEntity (e); });
 				}
 			}
 
-			menu->addAction (tr ("Open &here"),
-					WebView_, SLOT (openLinkHere ()))->setData (info.LinkUrl_);
-			menu->addAction (tr ("Open in new &tab"),
-					WebView_, SLOT (openLinkInNewTab ()))->setData (info.LinkUrl_);
+			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_); });
+			addAction (tr ("Open in new &tab"),
+					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
 			menu->addSeparator ();
-			menu->addAction (tr ("&Save link..."),
-					WebView_, SLOT (saveLink ()));
+			addWebAction (QWebPage::DownloadLinkToDisk);
 
-			QList<QVariant> datalist;
-			datalist << info.LinkUrl_
-					<< info.LinkText_;
 			menu->addAction (tr ("&Bookmark link..."),
-					WebView_, SLOT (bookmarkLink ()))->setData (datalist);
+					[&] { emit addToFavorites (info.LinkText_, info.LinkUrl_.toString ()); });
 
 			menu->addSeparator ();
 			if (!info.SelectedPageText_.isEmpty ())
-				menu->addAction (WebView_->pageAction (QWebPage::Copy));
-			menu->addAction (tr ("&Copy link"),
-					WebView_, SLOT (copyLink ()));
-			menu->addAction (WebView_->pageAction (QWebPage::InspectElement));
+				addWebAction (QWebPage::Copy);
+			addWebAction (QWebPage::CopyLinkToClipboard);
+			addWebAction (QWebPage::InspectElement);
 		}
 		else if (info.SelectedPageText_.contains (UrlInText))
-		{
-			menu->addAction (tr ("Open as link"),
-					this, SLOT (openLinkInNewTab ()))->
-					setData (info.SelectedPageText_);
-		}
+			addAction (tr ("Open as link"),
+					[&]
+					{
+						const auto& url = QUrl::fromUserInput (info.SelectedPageText_);
+						Core::Instance ().MakeWebView (false)->Load (url);
+					});
 
 		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterLink);
 
@@ -1586,24 +1638,17 @@ namespace Poshuku
 		{
 			if (!menu->isEmpty ())
 				menu->addSeparator ();
-			menu->addAction (tr ("Open image here"),
-					WebView_, SLOT (openImageHere ()))->setData (info.ImageUrl_);
-			menu->addAction (tr ("Open image in new tab"),
-					WebView_, SLOT (openImageInNewTab ()));
+			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_); });
+			addWebAction (QWebPage::OpenImageInNewWindow);
 			menu->addSeparator ();
-			menu->addAction (tr ("Save image..."),
-					WebView_, SLOT (saveImage ()));
+			addWebAction (QWebPage::DownloadImageToDisk);
 
-			QAction *spx = menu->addAction (tr ("Save pixmap..."),
-					WebView_, SLOT (savePixmap ()));
-			spx->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
-			spx->setProperty ("Poshuku/OrigPX", info.ImagePixmap_);
-			spx->setProperty ("Poshuku/OrigURL", info.ImageUrl_);
+			const auto pxAct = addAction (tr ("Save pixmap..."),
+					[&] { SavePixmap (info.ImagePixmap_, info.ImageUrl_, iem); });
+			pxAct->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
 
-			menu->addAction (tr ("Copy image"),
-					WebView_, SLOT (copyImage ()));
-			menu->addAction (tr ("Copy image location"),
-					WebView_, SLOT (copyImageLocation ()))->setData (info.ImageUrl_);
+			addWebAction (QWebPage::CopyImageToClipboard);
+			addWebAction (QWebPage::CopyImageUrlToClipboard);
 		}
 
 		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterImage);
@@ -1627,7 +1672,7 @@ namespace Poshuku
 		if (menu->isEmpty ())
 			menu = WebView_->page ()->createStandardContextMenu ();
 
-		menu->addAction (WebView_->pageAction (QWebPage::ReloadAndBypassCache));
+		addWebAction (QWebPage::ReloadAndBypassCache);
 		if (!menu->isEmpty ())
 			menu->addSeparator ();
 
