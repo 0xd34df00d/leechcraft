@@ -139,6 +139,10 @@ namespace Poshuku
 				SIGNAL (urlChanged (QUrl)),
 				sslWatcher,
 				SLOT (resetStats ()));
+		connect (WebView_,
+				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
+				this,
+				SLOT (handleContextMenu (QPoint, ContextMenuInfo)));
 
 
 		WebView_->SetBrowserWidget (this);
@@ -1492,6 +1496,148 @@ namespace Poshuku
 		w.writeEndDocument ();
 
 		GetView ()->setHtml (formatted, WebView_->url ());
+	}
+
+	namespace
+	{
+		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
+	}
+
+	void BrowserWidget::handleContextMenu (const QPoint& point, const ContextMenuInfo& info)
+	{
+		QPointer<QMenu> menu (new QMenu ());
+
+		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSStart);
+
+		if (!info.LinkUrl_.isEmpty ())
+		{
+			if (XmlSettingsManager::Instance ()->
+					property ("TryToDetectRSSLinks").toBool ())
+			{
+				bool hasAtom = info.LinkText_.contains ("Atom");
+				bool hasRSS = info.LinkText_.contains ("RSS");
+
+				if (hasAtom || hasRSS)
+				{
+					LeechCraft::Entity e;
+					if (hasAtom)
+					{
+						e.Additional_ ["UserVisibleName"] = "Atom";
+						e.Mime_ = "application/atom+xml";
+					}
+					else
+					{
+						e.Additional_ ["UserVisibleName"] = "RSS";
+						e.Mime_ = "application/rss+xml";
+					}
+
+					e.Entity_ = info.LinkUrl_;
+					e.Parameters_ = LeechCraft::FromUserInitiated |
+							LeechCraft::OnlyHandle;
+
+					bool ch = false;
+					emit couldHandle (e, &ch);
+					if (ch)
+					{
+						QList<QVariant> datalist;
+						datalist << info.LinkUrl_
+								<< e.Mime_;
+						menu->addAction (tr ("Subscribe"),
+								WebView_,
+								SLOT (subscribeToLink ()))->setData (datalist);
+						menu->addSeparator ();
+					}
+				}
+			}
+
+			menu->addAction (tr ("Open &here"),
+					WebView_, SLOT (openLinkHere ()))->setData (info.LinkUrl_);
+			menu->addAction (tr ("Open in new &tab"),
+					WebView_, SLOT (openLinkInNewTab ()))->setData (info.LinkUrl_);
+			menu->addSeparator ();
+			menu->addAction (tr ("&Save link..."),
+					WebView_, SLOT (saveLink ()));
+
+			QList<QVariant> datalist;
+			datalist << info.LinkUrl_
+					<< info.LinkText_;
+			menu->addAction (tr ("&Bookmark link..."),
+					WebView_, SLOT (bookmarkLink ()))->setData (datalist);
+
+			menu->addSeparator ();
+			if (!info.SelectedPageText_.isEmpty ())
+				menu->addAction (WebView_->pageAction (QWebPage::Copy));
+			menu->addAction (tr ("&Copy link"),
+					WebView_, SLOT (copyLink ()));
+			menu->addAction (WebView_->pageAction (QWebPage::InspectElement));
+		}
+		else if (info.SelectedPageText_.contains (UrlInText))
+		{
+			menu->addAction (tr ("Open as link"),
+					this, SLOT (openLinkInNewTab ()))->
+					setData (info.SelectedPageText_);
+		}
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterLink);
+
+		if (!info.ImageUrl_.isEmpty ())
+		{
+			if (!menu->isEmpty ())
+				menu->addSeparator ();
+			menu->addAction (tr ("Open image here"),
+					WebView_, SLOT (openImageHere ()))->setData (info.ImageUrl_);
+			menu->addAction (tr ("Open image in new tab"),
+					WebView_, SLOT (openImageInNewTab ()));
+			menu->addSeparator ();
+			menu->addAction (tr ("Save image..."),
+					WebView_, SLOT (saveImage ()));
+
+			QAction *spx = menu->addAction (tr ("Save pixmap..."),
+					WebView_, SLOT (savePixmap ()));
+			spx->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
+			spx->setProperty ("Poshuku/OrigPX", info.ImagePixmap_);
+			spx->setProperty ("Poshuku/OrigURL", info.ImageUrl_);
+
+			menu->addAction (tr ("Copy image"),
+					WebView_, SLOT (copyImage ()));
+			menu->addAction (tr ("Copy image location"),
+					WebView_, SLOT (copyImageLocation ()))->setData (info.ImageUrl_);
+		}
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterImage);
+
+		bool hasSelected = !info.SelectedPageText_.isEmpty ();
+		if (hasSelected)
+		{
+			if (!menu->isEmpty ())
+				menu->addSeparator ();
+			menu->addAction (WebView_->pageAction (QWebPage::Copy));
+		}
+
+		if (info.IsContentEditable_)
+			menu->addAction (WebView_->pageAction (QWebPage::Paste));
+
+		if (hasSelected)
+			InsertFindAction (menu, info.SelectedPageText_);
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterSelectedText);
+
+		if (menu->isEmpty ())
+			menu = WebView_->page ()->createStandardContextMenu ();
+
+		menu->addAction (WebView_->pageAction (QWebPage::ReloadAndBypassCache));
+		if (!menu->isEmpty ())
+			menu->addSeparator ();
+
+		AddStandardActions (menu);
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterFinish);
+
+		menu->exec (point);
+
+		delete menu;
 	}
 
 	void BrowserWidget::setScrollPosition ()

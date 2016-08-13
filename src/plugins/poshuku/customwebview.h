@@ -109,6 +109,8 @@ namespace Poshuku
 
 		void zoomChanged ();
 
+		void contextMenuRequested (const QPoint& globalPos,
+				const ContextMenuInfo&);
 		// Hook support signals
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
 				QWebView*, QContextMenuEvent*,

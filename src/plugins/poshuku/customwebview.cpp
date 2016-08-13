@@ -219,159 +219,18 @@ namespace Poshuku
 		QWebView::mousePressEvent (e);
 	}
 
-	namespace
-	{
-		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
-	}
-
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
-		QPointer<QMenu> menu (new QMenu ());
 		const auto& r = page ()->mainFrame ()->hitTestContent (e->pos ());
-
-		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSStart);
-
-		if (!r.linkUrl ().isEmpty ())
-		{
-			QUrl url = r.linkUrl ();
-			QString text = r.linkText ();
-
-			if (XmlSettingsManager::Instance ()->
-					property ("TryToDetectRSSLinks").toBool ())
-			{
-				bool hasAtom = text.contains ("Atom");
-				bool hasRSS = text.contains ("RSS");
-
-				if (hasAtom || hasRSS)
+		emit contextMenuRequested (mapToGlobal (e->pos ()),
 				{
-					LeechCraft::Entity e;
-					if (hasAtom)
-					{
-						e.Additional_ ["UserVisibleName"] = "Atom";
-						e.Mime_ = "application/atom+xml";
-					}
-					else
-					{
-						e.Additional_ ["UserVisibleName"] = "RSS";
-						e.Mime_ = "application/rss+xml";
-					}
-
-					e.Entity_ = url;
-					e.Parameters_ = LeechCraft::FromUserInitiated |
-						LeechCraft::OnlyHandle;
-
-					bool ch = false;
-					emit couldHandle (e, &ch);
-					if (ch)
-					{
-						QList<QVariant> datalist;
-						datalist << url
-							<< e.Mime_;
-						menu->addAction (tr ("Subscribe"),
-								this,
-								SLOT (subscribeToLink ()))->setData (datalist);
-						menu->addSeparator ();
-					}
-				}
-			}
-
-			menu->addAction (tr ("Open &here"),
-					this, SLOT (openLinkHere ()))->setData (url);
-			menu->addAction (tr ("Open in new &tab"),
-					this, SLOT (openLinkInNewTab ()))->setData (url);
-			menu->addSeparator ();
-			menu->addAction (tr ("&Save link..."),
-					this, SLOT (saveLink ()));
-
-			QList<QVariant> datalist;
-			datalist << url
-				<< text;
-			menu->addAction (tr ("&Bookmark link..."),
-					this, SLOT (bookmarkLink ()))->setData (datalist);
-
-			menu->addSeparator ();
-			if (!page ()->selectedText ().isEmpty ())
-				menu->addAction (pageAction (QWebPage::Copy));
-			menu->addAction (tr ("&Copy link"),
-					this, SLOT (copyLink ()));
-			if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
-				menu->addAction (pageAction (QWebPage::InspectElement));
-		}
-		else if (page ()->selectedText ().contains (UrlInText))
-		{
-			menu->addAction (tr ("Open as link"),
-					this, SLOT (openLinkInNewTab ()))->
-							setData (page ()->selectedText ());
-		}
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterLink);
-
-		if (!r.imageUrl ().isEmpty ())
-		{
-			if (!menu->isEmpty ())
-				menu->addSeparator ();
-			menu->addAction (tr ("Open image here"),
-					this, SLOT (openImageHere ()))->setData (r.imageUrl ());
-			menu->addAction (tr ("Open image in new tab"),
-					this, SLOT (openImageInNewTab ()));
-			menu->addSeparator ();
-			menu->addAction (tr ("Save image..."),
-					this, SLOT (saveImage ()));
-
-			QAction *spx = menu->addAction (tr ("Save pixmap..."),
-					this, SLOT (savePixmap ()));
-			spx->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
-			spx->setProperty ("Poshuku/OrigPX", r.pixmap ());
-			spx->setProperty ("Poshuku/OrigURL", r.imageUrl ());
-
-			menu->addAction (tr ("Copy image"),
-					this, SLOT (copyImage ()));
-			menu->addAction (tr ("Copy image location"),
-					this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
-		}
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterImage);
-
-		bool hasSelected = !page ()->selectedText ().isEmpty ();
-		if (hasSelected)
-		{
-			if (!menu->isEmpty ())
-				menu->addSeparator ();
-			menu->addAction (pageAction (QWebPage::Copy));
-		}
-
-		if (r.isContentEditable ())
-			menu->addAction (pageAction (QWebPage::Paste));
-
-		if (hasSelected)
-			Browser_->InsertFindAction (menu, page ()->selectedText ());
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterSelectedText);
-
-		if (menu->isEmpty ())
-			menu = page ()->createStandardContextMenu ();
-
-		menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
-		if (!menu->isEmpty ())
-			menu->addSeparator ();
-
-		Browser_->AddStandardActions (menu);
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterFinish);
-
-		if (!menu->isEmpty ())
-			menu->exec (mapToGlobal (e->pos ()));
-		else
-			QWebView::contextMenuEvent (e);
-
-		delete menu;
+					r.isContentEditable (),
+					page ()->selectedText (),
+					r.linkUrl (),
+					r.linkText (),
+					r.imageUrl (),
+					r.pixmap ()
+				});
 	}
 
 	void CustomWebView::keyReleaseEvent (QKeyEvent *event)

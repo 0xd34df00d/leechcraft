@@ -42,6 +42,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/iwkfontssettable.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/poshukutypes.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "ui_browserwidget.h"
 
@@ -212,6 +213,8 @@ namespace Poshuku
 
 		void checkLoadedDocument ();
 
+		void handleContextMenu (const QPoint&, const ContextMenuInfo&);
+
 		void setScrollPosition ();
 		void pageFocus ();
 		void handleLoadProgress (int);
@@ -278,6 +281,11 @@ namespace Poshuku
 				QObject *browserWidget);
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				QWebView*,
+				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
+				QMenu*,
+				WebViewCtxMenuStage);
 	};
 }
 }
