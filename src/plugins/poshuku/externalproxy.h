@@ -31,21 +31,21 @@
 
 #include <QObject>
 
+class IEntityManager;
+
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Poshuku
 {
 	class ExternalProxy : public QObject
 	{
 		Q_OBJECT
+
+		IEntityManager * const IEM_;
 	public:
-		ExternalProxy (QObject* = nullptr);
+		ExternalProxy (IEntityManager*, QObject* = nullptr);
 	public slots:
 		void AddSearchProvider (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }

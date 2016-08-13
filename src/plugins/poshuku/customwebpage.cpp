@@ -69,7 +69,7 @@ namespace Poshuku
 	, MouseButtons_ (Qt::NoButton)
 	, Modifiers_ (Qt::NoModifier)
 	, JSProxy_ (new JSProxy (this))
-	, ExternalProxy_ (new ExternalProxy (this))
+	, ExternalProxy_ (new ExternalProxy (iem, this))
 	{
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 

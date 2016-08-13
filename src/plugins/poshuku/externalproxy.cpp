@@ -30,14 +30,16 @@
 #include "externalproxy.h"
 #include <QUrl>
 #include <interfaces/structures.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	ExternalProxy::ExternalProxy (QObject *parent)
+	ExternalProxy::ExternalProxy (IEntityManager *iem, QObject *parent)
 	: QObject { parent }
+	, IEM_ { iem }
 	{
 	}
 
@@ -47,7 +49,7 @@ namespace Poshuku
 				url,
 				FromUserInitiated | OnlyHandle,
 				"application/opensearchdescription+xml");
-		emit gotEntity (e);
+		IEM_->HandleEntity (e);
 	}
 }
 }
