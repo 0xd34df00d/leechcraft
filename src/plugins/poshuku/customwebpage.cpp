@@ -253,10 +253,10 @@ namespace Poshuku
 					switch (error->error)
 					{
 					case QNetworkReply::ContentReSendError:
-						emit gotEntity (Util::MakeNotification ("Poshuku",
-									tr ("Unable to send the request to %1. Please try submitting it again.")
-										.arg (error->url.host ()),
-									PCritical_));
+						IEM_->HandleEntity (Util::MakeNotification ("Poshuku",
+								tr ("Unable to send the request to %1. Please try submitting it again.")
+									.arg (error->url.host ()),
+								PCritical_));
 						return false;
 					default:
 						return true;
@@ -348,7 +348,7 @@ namespace Poshuku
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-		emit gotEntity (e);
+		IEM_->HandleEntity (e);
 	}
 
 	void CustomWebPage::handleFrameCreated (QWebFrame *frame)
@@ -476,7 +476,7 @@ namespace Poshuku
 			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 			e.Additional_ ["Referer"] = QUrl::fromEncoded (referer);
 			e.Additional_ ["Operation"] = reply->operation ();
-			emit gotEntity (e);
+			IEM_->HandleEntity (e);
 
 			if (XmlSettingsManager::Instance ()->
 					property ("CloseEmptyDelegatedPages").toBool () &&
