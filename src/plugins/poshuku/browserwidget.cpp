@@ -1598,7 +1598,7 @@ namespace Poshuku
 			menu->addSeparator ();
 			addWebAction (QWebPage::DownloadLinkToDisk);
 
-			menu->addAction (tr ("&Bookmark link..."),
+			addAction (tr ("&Bookmark link..."),
 					[&] { emit addToFavorites (info.LinkText_, info.LinkUrl_.toString ()); });
 
 			menu->addSeparator ();
