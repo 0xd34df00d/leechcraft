@@ -63,8 +63,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (QWidget *parent)
-	: QWebView (parent)
+	CustomWebView::CustomWebView (IEntityManager *iem, QWidget *parent)
+	: QWebView { parent }
 	, WebInspector_
 	{
 		new QWebInspector,
@@ -84,7 +84,7 @@ namespace Poshuku
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };
 
-		CustomWebPage *page = new CustomWebPage (this);
+		const auto page = new CustomWebPage { iem, this };
 		setPage (page);
 
 		WebInspector_->setPage (page);

@@ -127,7 +127,7 @@ namespace Poshuku
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
 		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
-		WebView_ = new CustomWebView;
+		WebView_ = new CustomWebView { Core::Instance ().GetProxy ()->GetEntityManager () };
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
@@ -144,7 +144,6 @@ namespace Poshuku
 				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
 				this,
 				SLOT (handleContextMenu (QPoint, ContextMenuInfo)));
-
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,

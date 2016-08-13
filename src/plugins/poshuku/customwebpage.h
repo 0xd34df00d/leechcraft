@@ -37,6 +37,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include "pageformsdata.h"
 
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -47,6 +49,8 @@ namespace Poshuku
 	class CustomWebPage : public QWebPage
 	{
 		Q_OBJECT
+
+		IEntityManager * const IEM_;
 
 		Qt::MouseButtons MouseButtons_;
 		Qt::KeyboardModifiers Modifiers_;
@@ -60,7 +64,7 @@ namespace Poshuku
 
 		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
 	public:
-		CustomWebPage (QObject* = 0);
+		CustomWebPage (IEntityManager*, QObject* = nullptr);
 		virtual ~CustomWebPage ();
 
 		void SetButtons (Qt::MouseButtons);

@@ -63,8 +63,9 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebPage::CustomWebPage (QObject *parent)
+	CustomWebPage::CustomWebPage (IEntityManager *iem, QObject *parent)
 	: QWebPage (parent)
+	, IEM_ (iem)
 	, MouseButtons_ (Qt::NoButton)
 	, Modifiers_ (Qt::NoModifier)
 	, JSProxy_ (new JSProxy (this))

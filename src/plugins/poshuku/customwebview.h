@@ -39,6 +39,8 @@
 class QTimer;
 class QWebInspector;
 
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -54,7 +56,7 @@ namespace Poshuku
 
 		std::shared_ptr<QWebInspector> WebInspector_;
 	public:
-		CustomWebView (QWidget* = 0);
+		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
 		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QUrl&, QString = QString ());
