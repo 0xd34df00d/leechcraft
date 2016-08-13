@@ -785,10 +785,6 @@ namespace Poshuku
 			widget->setAttribute (Qt::WA_DeleteOnClose);
 			widget->setWindowModality (Qt::ApplicationModal);
 			connect (widget,
-					SIGNAL (gotEntity (const LeechCraft::Entity&)),
-					&Core::Instance (),
-					SIGNAL (gotEntity (const LeechCraft::Entity&)));
-			connect (widget,
 					SIGNAL (titleChanged (const QString&)),
 					widget,
 					SLOT (setWindowTitle (const QString&)));
