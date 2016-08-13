@@ -87,9 +87,6 @@ namespace Poshuku
 		void handleFrameState (QWebFrame*, QWebHistoryItem*);
 	signals:
 		void urlChanged (const QString&);
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void couldHandle (const LeechCraft::Entity&, bool*);
 		void printRequested (QWebFrame*);
 		void closeRequested ();
 		void storeFormData (const PageFormsData_t&);

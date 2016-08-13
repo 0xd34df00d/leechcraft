@@ -108,11 +108,8 @@ namespace Poshuku
 		void HandleForms (QWebFrame*, const QNetworkRequest&,
 				QWebPage::NavigationType);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void loadingURL (const QUrl&);
 		void storeFormData (const PageFormsData_t&);
-		void couldHandle (const LeechCraft::Entity&, bool*);
 		void delayedFillForms (QWebFrame*);
 
 		// Hook support signals

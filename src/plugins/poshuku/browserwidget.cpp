@@ -449,18 +449,6 @@ namespace Poshuku
 				this,
 				SLOT (handleStatusBarMessage (const QString&)),
 				Qt::QueuedConnection);
-		connect (WebView_,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (WebView_,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (WebView_,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 		connect (WebView_->page (),
 				SIGNAL (linkHovered (const QString&,
 						const QString&,

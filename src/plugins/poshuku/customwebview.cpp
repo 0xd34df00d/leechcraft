@@ -109,18 +109,6 @@ namespace Poshuku
 				SLOT (handleLoadFinished (bool)));
 
 		connect (page,
-				SIGNAL (couldHandle (LeechCraft::Entity, bool*)),
-				this,
-				SIGNAL (couldHandle (LeechCraft::Entity, bool*)));
-		connect (page,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (page,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
-		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
 				SIGNAL (printRequested (QWebFrame*)));
