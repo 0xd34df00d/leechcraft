@@ -37,13 +37,13 @@ namespace LeechCraft
 namespace Poshuku
 {
 	ExternalProxy::ExternalProxy (QObject *parent)
-	: QObject (parent)
+	: QObject { parent }
 	{
 	}
 
 	void ExternalProxy::AddSearchProvider (const QString& url)
 	{
-		const Entity& e = Util::MakeEntity (QUrl (url),
+		const auto& e = Util::MakeEntity (QUrl { url },
 				url,
 				FromUserInitiated | OnlyHandle,
 				"application/opensearchdescription+xml");

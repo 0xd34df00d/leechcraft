@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_EXTERNALPROXY_H
-#define PLUGINS_POSHUKU_EXTERNALPROXY_H
+#pragma once
+
 #include <QObject>
 
 namespace LeechCraft
@@ -41,7 +41,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 	public:
-		ExternalProxy (QObject* = 0);
+		ExternalProxy (QObject* = nullptr);
 	public slots:
 		void AddSearchProvider (const QString&);
 	signals:
@@ -49,5 +49,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
