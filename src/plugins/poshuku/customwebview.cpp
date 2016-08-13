@@ -75,8 +75,6 @@ namespace Poshuku
 		}
 	}
 	{
-		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
-
 #if QT_VERSION < 0x050000
 		QPalette p;
 		if (p.color (QPalette::Window) != Qt::white)
