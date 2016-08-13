@@ -39,12 +39,12 @@ namespace Poshuku
 	: QObject { view }
 	, View_ { view }
 	{
-		QList<QByteArray> renderSettings;
-		renderSettings << "PrimitivesAntialiasing"
-				<< "TextAntialiasing"
-				<< "SmoothPixmapTransform"
-				<< "HighQualityAntialiasing";
-		XmlSettingsManager::Instance ()->RegisterObject (renderSettings,
+		XmlSettingsManager::Instance ()->RegisterObject ({
+					"PrimitivesAntialiasing",
+					"TextAntialiasing",
+					"SmoothPixmapTransform",
+					"HighQualityAntialiasing"
+				},
 				this, "renderSettingsChanged");
 		renderSettingsChanged ();
 	}
