@@ -445,8 +445,7 @@ namespace Poshuku
 	void CustomWebView::openLinkInNewTab ()
 	{
 		CustomWebView *view = Core::Instance ().MakeWebView (false);
-		const auto& urlStr = qobject_cast<QAction*> (sender ())->data ().toString ();
-		view->Load (Core::Instance ().MakeURL (urlStr));
+		view->Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
 	}
 
 	void CustomWebView::saveLink ()
