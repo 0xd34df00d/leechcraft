@@ -192,10 +192,10 @@ namespace Poshuku
 
 		switch (e)
 		{
-			case ErrorPageExtension:
-				return true;
-			default:
-				return QWebPage::supportsExtension (e);
+		case ErrorPageExtension:
+			return true;
+		default:
+			return QWebPage::supportsExtension (e);
 		}
 	}
 
@@ -299,7 +299,7 @@ namespace Poshuku
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, notification, frame, feature] () -> void
+			[this, notification, frame, feature]
 			{
 				setFeaturePermission (frame, feature, PermissionGrantedByUser);
 				notification->deleteLater ();
@@ -310,7 +310,7 @@ namespace Poshuku
 		};
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, notification, frame, feature] () -> void
+			[this, notification, frame, feature]
 			{
 				setFeaturePermission (frame, feature, PermissionDeniedByUser);
 				notification->deleteLater ();
@@ -342,8 +342,8 @@ namespace Poshuku
 
 		proxy->FillValue ("request", request);
 
-		Entity e = Util::MakeEntity (request.url (),
-				QString (),
+		auto e = Util::MakeEntity (request.url (),
+				{},
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
@@ -466,11 +466,11 @@ namespace Poshuku
 		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
 		const auto& referer = reply->request ().rawHeader ("Referer");
 
-		auto sendEnt = [reply, mime, referer, this] () -> void
+		auto sendEnt = [reply, mime, referer, this]
 		{
 			auto e = Util::MakeEntity (reply->url (),
 					{},
-					LeechCraft::FromUserInitiated,
+					FromUserInitiated,
 					mime);
 			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 			e.Additional_ ["Referer"] = QUrl::fromEncoded (referer);

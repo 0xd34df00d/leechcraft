@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
+#pragma once
+
 #include <memory>
 #include <qwebpage.h>
 #include <QUrl>
@@ -203,5 +203,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
