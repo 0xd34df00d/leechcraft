@@ -360,10 +360,6 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
-		connect (WebView_,
-				SIGNAL (addToFavorites (const QString&, const QString&)),
-				this,
-				SIGNAL (addToFavorites (const QString&, const QString&)));
 		connect (Add2Favorites_,
 				SIGNAL (triggered ()),
 				this,
