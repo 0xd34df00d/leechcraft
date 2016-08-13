@@ -124,8 +124,6 @@ namespace Poshuku
 		CustomWebView *WebView_;
 		QLabel *LinkTextItem_;
 
-		QWebInspector *WebInspector_;
-
 		static QObject* S_MultiTabsParent_;
 	public:
 		BrowserWidget (QWidget* = 0);

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <qwebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
@@ -36,6 +37,7 @@
 #include "pageformsdata.h"
 
 class QTimer;
+class QWebInspector;
 
 namespace LeechCraft
 {
@@ -49,6 +51,8 @@ namespace Poshuku
 
 		IBrowserWidget *Browser_;
 		QString PreviousEncoding_;
+
+		std::shared_ptr<QWebInspector> WebInspector_;
 	public:
 		CustomWebView (QWidget* = 0);
 

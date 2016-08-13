@@ -31,6 +31,7 @@
 #include <cmath>
 #include <limits>
 #include <qwebframe.h>
+#include <qwebinspector.h>
 #include <QMenu>
 #include <QApplication>
 #include <QBuffer>
@@ -64,6 +65,15 @@ namespace Poshuku
 {
 	CustomWebView::CustomWebView (QWidget *parent)
 	: QWebView (parent)
+	, WebInspector_
+	{
+		new QWebInspector,
+		[] (QWebInspector *insp)
+		{
+			insp->hide ();
+			insp->deleteLater ();
+		}
+	}
 	{
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
@@ -78,6 +88,8 @@ namespace Poshuku
 
 		CustomWebPage *page = new CustomWebPage (this);
 		setPage (page);
+
+		WebInspector_->setPage (page);
 
 		connect (this,
 				SIGNAL (urlChanged (const QUrl&)),

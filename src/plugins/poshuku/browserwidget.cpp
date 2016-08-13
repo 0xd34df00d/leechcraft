@@ -63,7 +63,6 @@
 #include <QDomElement>
 #include <qwebhistory.h>
 #include <qwebelement.h>
-#include <QWebInspector>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
@@ -141,8 +140,6 @@ namespace Poshuku
 				sslWatcher,
 				SLOT (resetStats ()));
 
-		WebInspector_ = new QWebInspector;
-		WebInspector_->setPage (WebView_->page ());
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -542,7 +539,6 @@ namespace Poshuku
 
 	BrowserWidget::~BrowserWidget ()
 	{
-		WebInspector_->hide ();
 		if (Own_)
 			Core::Instance ().Unregister (this);
 
