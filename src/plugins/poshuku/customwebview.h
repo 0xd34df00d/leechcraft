@@ -75,9 +75,9 @@ namespace Poshuku
 		 */
 		QString URLToProperString (const QUrl& url);
 	protected:
-		virtual void mousePressEvent (QMouseEvent*);
-		virtual void contextMenuEvent (QContextMenuEvent*);
-		virtual void keyReleaseEvent (QKeyEvent*);
+		void mousePressEvent (QMouseEvent*) override;
+		void contextMenuEvent (QContextMenuEvent*) override;
+		void keyReleaseEvent (QKeyEvent*) override;
 	private:
 		void NavigatePlugins ();
 		void NavigateHome ();
