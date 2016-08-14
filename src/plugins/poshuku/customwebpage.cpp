@@ -91,11 +91,6 @@ namespace Poshuku
 				SLOT (fillForms (QWebFrame*)),
 				Qt::QueuedConnection);
 
-		connect (ExternalProxy_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-
 		connect (mainFrame (),
 				SIGNAL (javaScriptWindowObjectCleared ()),
 				this,
