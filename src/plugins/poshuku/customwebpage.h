@@ -65,7 +65,6 @@ namespace Poshuku
 		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
 	public:
 		CustomWebPage (IEntityManager*, QObject* = nullptr);
-		virtual ~CustomWebPage ();
 
 		void SetButtons (Qt::MouseButtons);
 		void SetModifiers (Qt::KeyboardModifiers);
