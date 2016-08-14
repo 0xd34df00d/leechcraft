@@ -131,6 +131,8 @@ namespace Xoox
 					break;
 				}
 			}
+			else if (!ItemId_.isNull () && Dir_ == Direction::Before)
+				q.setBefore ("");
 			q.toXml (writer);
 		}
 	}
