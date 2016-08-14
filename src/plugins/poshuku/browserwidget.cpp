@@ -131,15 +131,7 @@ namespace Poshuku
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		auto sslWatcher = new WebPageSslWatcher (WebView_->page ());
-		connect (WebView_,
-				SIGNAL (navigateRequested (QUrl)),
-				sslWatcher,
-				SLOT (resetStats ()));
-		connect (WebView_,
-				SIGNAL (urlChanged (QUrl)),
-				sslWatcher,
-				SLOT (resetStats ()));
+		auto sslWatcher = new WebPageSslWatcher { WebView_ };
 		connect (WebView_,
 				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
 				this,

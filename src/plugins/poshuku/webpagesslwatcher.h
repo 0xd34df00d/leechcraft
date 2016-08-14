@@ -37,6 +37,7 @@
 
 class QNetworkReply;
 class QUrl;
+class QWebView;
 
 namespace LeechCraft
 {
@@ -54,7 +55,7 @@ namespace Poshuku
 
 		QSslConfiguration PageConfig_;
 	public:
-		WebPageSslWatcher (QWebPage*);
+		WebPageSslWatcher (QWebView*);
 
 		enum class State
 		{

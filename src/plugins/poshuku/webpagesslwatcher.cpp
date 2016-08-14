@@ -31,6 +31,7 @@
 #include <cstring>
 #include <QSslConfiguration>
 #include <QNetworkReply>
+#include <qwebview.h>
 #include <qwebpage.h>
 #include <qwebframe.h>
 
@@ -38,10 +39,20 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	WebPageSslWatcher::WebPageSslWatcher (QWebPage *page)
-	: QObject { page }
-	, Page_ { page }
+	WebPageSslWatcher::WebPageSslWatcher (QWebView *view)
+	: QObject { view }
+	, Page_ { view->page () }
 	{
+		connect (view,
+				SIGNAL (navigateRequested (QUrl)),
+				this,
+				SLOT (resetStats ()));
+		connect (view,
+				SIGNAL (urlChanged (QUrl)),
+				this,
+				SLOT (resetStats ()));
+
+		const auto page = view->page ();
 		connect (page->networkAccessManager (),
 				SIGNAL (requestCreated (QNetworkAccessManager::Operation,
 						QNetworkRequest, QNetworkReply*)),
