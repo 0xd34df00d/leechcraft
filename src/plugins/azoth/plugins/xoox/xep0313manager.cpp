@@ -141,6 +141,9 @@ namespace Xoox
 		if (message.to ().isEmpty ())
 			return;
 
+		if (message.body ().isEmpty () && message.xhtml ().isEmpty ())
+			return;
+
 		const auto& ourJid = client ()->configuration ().jidBare ();
 
 		IMessage::Direction dir;
