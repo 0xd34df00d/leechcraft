@@ -670,8 +670,7 @@ namespace Poshuku
 
 	void CustomWebPage::handleWindowCloseRequested ()
 	{
-		emit hookWindowCloseRequested (std::make_shared<Util::DefaultHookProxy> (),
-				this);
+		emit hookWindowCloseRequested (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
