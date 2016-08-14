@@ -31,6 +31,7 @@
 #include <cmath>
 #include <limits>
 #include <qwebframe.h>
+#include <qwebinspector.h>
 #include <QMenu>
 #include <QApplication>
 #include <QBuffer>
@@ -56,16 +57,24 @@
 #include "customwebpage.h"
 #include "xmlsettingsmanager.h"
 #include "webviewsmoothscroller.h"
+#include "webviewrendersettingshandler.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (QWidget *parent)
-	: QWebView (parent)
+	CustomWebView::CustomWebView (IEntityManager *iem, QWidget *parent)
+	: QWebView { parent }
+	, WebInspector_
 	{
-		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
-
+		new QWebInspector,
+		[] (QWebInspector *insp)
+		{
+			insp->hide ();
+			insp->deleteLater ();
+		}
+	}
+	{
 #if QT_VERSION < 0x050000
 		QPalette p;
 		if (p.color (QPalette::Window) != Qt::white)
@@ -73,9 +82,12 @@ namespace Poshuku
 #endif
 
 		new WebViewSmoothScroller { this };
+		new WebViewRenderSettingsHandler { this };
 
-		CustomWebPage *page = new CustomWebPage (this);
+		const auto page = new CustomWebPage { iem, this };
 		setPage (page);
+
+		WebInspector_->setPage (page);
 
 		connect (this,
 				SIGNAL (urlChanged (const QUrl&)),
@@ -97,18 +109,6 @@ namespace Poshuku
 				SLOT (handleLoadFinished (bool)));
 
 		connect (page,
-				SIGNAL (couldHandle (LeechCraft::Entity, bool*)),
-				this,
-				SIGNAL (couldHandle (LeechCraft::Entity, bool*)));
-		connect (page,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-		connect (page,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (LeechCraft::Entity, int*, QObject**)));
-		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
 				SIGNAL (printRequested (QWebFrame*)));
@@ -120,15 +120,6 @@ namespace Poshuku
 				SIGNAL (storeFormData (PageFormsData_t)),
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
-
-		QList<QByteArray> renderSettings;
-		renderSettings << "PrimitivesAntialiasing"
-			<< "TextAntialiasing"
-			<< "SmoothPixmapTransform"
-			<< "HighQualityAntialiasing";
-		XmlSettingsManager::Instance ()->RegisterObject (renderSettings,
-				this, "renderSettingsChanged");
-		renderSettingsChanged ();
 	}
 
 	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
@@ -214,159 +205,18 @@ namespace Poshuku
 		QWebView::mousePressEvent (e);
 	}
 
-	namespace
-	{
-		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
-	}
-
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
-		QPointer<QMenu> menu (new QMenu ());
 		const auto& r = page ()->mainFrame ()->hitTestContent (e->pos ());
-
-		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSStart);
-
-		if (!r.linkUrl ().isEmpty ())
-		{
-			QUrl url = r.linkUrl ();
-			QString text = r.linkText ();
-
-			if (XmlSettingsManager::Instance ()->
-					property ("TryToDetectRSSLinks").toBool ())
-			{
-				bool hasAtom = text.contains ("Atom");
-				bool hasRSS = text.contains ("RSS");
-
-				if (hasAtom || hasRSS)
+		emit contextMenuRequested (mapToGlobal (e->pos ()),
 				{
-					LeechCraft::Entity e;
-					if (hasAtom)
-					{
-						e.Additional_ ["UserVisibleName"] = "Atom";
-						e.Mime_ = "application/atom+xml";
-					}
-					else
-					{
-						e.Additional_ ["UserVisibleName"] = "RSS";
-						e.Mime_ = "application/rss+xml";
-					}
-
-					e.Entity_ = url;
-					e.Parameters_ = LeechCraft::FromUserInitiated |
-						LeechCraft::OnlyHandle;
-
-					bool ch = false;
-					emit couldHandle (e, &ch);
-					if (ch)
-					{
-						QList<QVariant> datalist;
-						datalist << url
-							<< e.Mime_;
-						menu->addAction (tr ("Subscribe"),
-								this,
-								SLOT (subscribeToLink ()))->setData (datalist);
-						menu->addSeparator ();
-					}
-				}
-			}
-
-			menu->addAction (tr ("Open &here"),
-					this, SLOT (openLinkHere ()))->setData (url);
-			menu->addAction (tr ("Open in new &tab"),
-					this, SLOT (openLinkInNewTab ()))->setData (url);
-			menu->addSeparator ();
-			menu->addAction (tr ("&Save link..."),
-					this, SLOT (saveLink ()));
-
-			QList<QVariant> datalist;
-			datalist << url
-				<< text;
-			menu->addAction (tr ("&Bookmark link..."),
-					this, SLOT (bookmarkLink ()))->setData (datalist);
-
-			menu->addSeparator ();
-			if (!page ()->selectedText ().isEmpty ())
-				menu->addAction (pageAction (QWebPage::Copy));
-			menu->addAction (tr ("&Copy link"),
-					this, SLOT (copyLink ()));
-			if (page ()->settings ()->testAttribute (QWebSettings::DeveloperExtrasEnabled))
-				menu->addAction (pageAction (QWebPage::InspectElement));
-		}
-		else if (page ()->selectedText ().contains (UrlInText))
-		{
-			menu->addAction (tr ("Open as link"),
-					this, SLOT (openLinkInNewTab ()))->
-							setData (page ()->selectedText ());
-		}
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterLink);
-
-		if (!r.imageUrl ().isEmpty ())
-		{
-			if (!menu->isEmpty ())
-				menu->addSeparator ();
-			menu->addAction (tr ("Open image here"),
-					this, SLOT (openImageHere ()))->setData (r.imageUrl ());
-			menu->addAction (tr ("Open image in new tab"),
-					this, SLOT (openImageInNewTab ()));
-			menu->addSeparator ();
-			menu->addAction (tr ("Save image..."),
-					this, SLOT (saveImage ()));
-
-			QAction *spx = menu->addAction (tr ("Save pixmap..."),
-					this, SLOT (savePixmap ()));
-			spx->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
-			spx->setProperty ("Poshuku/OrigPX", r.pixmap ());
-			spx->setProperty ("Poshuku/OrigURL", r.imageUrl ());
-
-			menu->addAction (tr ("Copy image"),
-					this, SLOT (copyImage ()));
-			menu->addAction (tr ("Copy image location"),
-					this, SLOT (copyImageLocation ()))->setData (r.imageUrl ());
-		}
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterImage);
-
-		bool hasSelected = !page ()->selectedText ().isEmpty ();
-		if (hasSelected)
-		{
-			if (!menu->isEmpty ())
-				menu->addSeparator ();
-			menu->addAction (pageAction (QWebPage::Copy));
-		}
-
-		if (r.isContentEditable ())
-			menu->addAction (pageAction (QWebPage::Paste));
-
-		if (hasSelected)
-			Browser_->InsertFindAction (menu, page ()->selectedText ());
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterSelectedText);
-
-		if (menu->isEmpty ())
-			menu = page ()->createStandardContextMenu ();
-
-		menu->addAction (pageAction (QWebPage::ReloadAndBypassCache));
-		if (!menu->isEmpty ())
-			menu->addSeparator ();
-
-		Browser_->AddStandardActions (menu);
-
-		emit hookWebViewContextMenu (proxy, this, e, r,
-				menu, WVSAfterFinish);
-
-		if (!menu->isEmpty ())
-			menu->exec (mapToGlobal (e->pos ()));
-		else
-			QWebView::contextMenuEvent (e);
-
-		delete menu;
+					r.isContentEditable (),
+					page ()->selectedText (),
+					r.linkUrl (),
+					r.linkText (),
+					r.imageUrl (),
+					r.pixmap ()
+				});
 	}
 
 	void CustomWebView::keyReleaseEvent (QKeyEvent *event)
@@ -435,147 +285,6 @@ namespace Poshuku
 		const auto& histUrl = page ()->history ()->currentItem ().url ();
 		if (histUrl != url ())
 			remakeURL (histUrl);
-	}
-
-	void CustomWebView::openLinkHere ()
-	{
-		Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
-	}
-
-	void CustomWebView::openLinkInNewTab ()
-	{
-		CustomWebView *view = Core::Instance ().MakeWebView (false);
-		const auto& urlStr = qobject_cast<QAction*> (sender ())->data ().toString ();
-		view->Load (Core::Instance ().MakeURL (urlStr));
-	}
-
-	void CustomWebView::saveLink ()
-	{
-		pageAction (QWebPage::DownloadLinkToDisk)->trigger ();
-	}
-
-	void CustomWebView::subscribeToLink ()
-	{
-		const auto& list = qobject_cast<QAction*> (sender ())->data ().toList ();
-		Entity e = Util::MakeEntity (list.at (0),
-				QString (),
-				FromUserInitiated | OnlyHandle,
-				list.at (1).toString ());
-		emit gotEntity (e);
-	}
-
-	void CustomWebView::bookmarkLink ()
-	{
-		const auto& list = qobject_cast<QAction*> (sender ())->data ().toList ();
-		emit addToFavorites (list.at (1).toString (),
-				list.at (0).toUrl ().toString ());
-	}
-
-	void CustomWebView::copyLink ()
-	{
-		pageAction (QWebPage::CopyLinkToClipboard)->trigger ();
-	}
-
-	void CustomWebView::openImageHere ()
-	{
-		Load (qobject_cast<QAction*> (sender ())->data ().toUrl ());
-	}
-
-	void CustomWebView::openImageInNewTab ()
-	{
-		pageAction (QWebPage::OpenImageInNewWindow)->trigger ();
-	}
-
-	void CustomWebView::saveImage ()
-	{
-		pageAction (QWebPage::DownloadImageToDisk)->trigger ();
-	}
-
-	void CustomWebView::savePixmap ()
-	{
-		QAction *action = qobject_cast<QAction*> (sender ());
-		if (!action)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "sender is not an action"
-					<< sender ();
-			return;
-		}
-
-		const QPixmap& px = action->property ("Poshuku/OrigPX").value<QPixmap> ();
-		if (px.isNull ())
-			return;
-
-		const QUrl& url = action->property ("Poshuku/OrigURL").value<QUrl> ();
-		const QString origName = url.scheme () == "data" ?
-				QString () :
-				QFileInfo (url.path ()).fileName ();
-
-		QString filter;
-		QString fname = QFileDialog::getSaveFileName (0,
-				tr ("Save pixmap"),
-				QDir::homePath () + '/' + origName,
-				tr ("PNG image (*.png);;JPG image (*.jpg);;All files (*.*)"),
-				&filter);
-
-		if (fname.isEmpty ())
-			return;
-
-		if (QFileInfo (fname).suffix ().isEmpty ())
-		{
-			if (filter.contains ("png"))
-				fname += ".png";
-			else if (filter.contains ("jpg"))
-				fname += ".jpg";
-		}
-
-		QFile file (fname);
-		if (!file.open (QIODevice::WriteOnly))
-		{
-			emit gotEntity (Util::MakeNotification ("Poshuku",
-						tr ("Unable to save the image. Unable to open file for writing: %1.")
-							.arg (file.errorString ()),
-						PCritical_));
-			return;
-		}
-
-		const QString& suf = QFileInfo (fname).suffix ();
-		const bool isLossless = suf.toLower () == "png";
-		px.save (&file,
-				suf.toUtf8 ().constData (),
-				isLossless ? 0 : 100);
-	}
-
-	void CustomWebView::copyImage ()
-	{
-		pageAction (QWebPage::CopyImageToClipboard)->trigger ();
-	}
-
-	void CustomWebView::copyImageLocation ()
-	{
-		QString url = qobject_cast<QAction*> (sender ())->data ().toUrl ().toString ();
-		QClipboard *cb = QApplication::clipboard ();
-		cb->setText (url, QClipboard::Clipboard);
-		cb->setText (url, QClipboard::Selection);
-	}
-
-	void CustomWebView::renderSettingsChanged ()
-	{
-		QPainter::RenderHints hints;
-		if (XmlSettingsManager::Instance ()->
-				property ("PrimitivesAntialiasing").toBool ())
-			hints |= QPainter::Antialiasing;
-		if (XmlSettingsManager::Instance ()->
-				property ("TextAntialiasing").toBool ())
-			hints |= QPainter::TextAntialiasing;
-		if (XmlSettingsManager::Instance ()->
-				property ("SmoothPixmapTransform").toBool ())
-			hints |= QPainter::SmoothPixmapTransform;
-		if (XmlSettingsManager::Instance ()->
-				property ("HighQualityAntialiasing").toBool ())
-			hints |= QPainter::HighQualityAntialiasing;
-
-		setRenderHints (hints);
 	}
 }
 }

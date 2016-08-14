@@ -63,17 +63,18 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebPage::CustomWebPage (QObject *parent)
+	CustomWebPage::CustomWebPage (IEntityManager *iem, QObject *parent)
 	: QWebPage (parent)
+	, IEM_ (iem)
 	, MouseButtons_ (Qt::NoButton)
 	, Modifiers_ (Qt::NoModifier)
 	, JSProxy_ (new JSProxy (this))
-	, ExternalProxy_ (new ExternalProxy (this))
+	, ExternalProxy_ (new ExternalProxy (iem, this))
 	{
 		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
 
 		{
-			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+			auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 			emit hookWebPageConstructionBegin (proxy, this);
 			if (proxy->IsCancelled ())
 				return;
@@ -89,11 +90,6 @@ namespace Poshuku
 				this,
 				SLOT (fillForms (QWebFrame*)),
 				Qt::QueuedConnection);
-
-		connect (ExternalProxy_.get (),
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		connect (mainFrame (),
 				SIGNAL (javaScriptWindowObjectCleared ()),
@@ -162,15 +158,11 @@ namespace Poshuku
 		FillErrorSuggestions ();
 
 		{
-			Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+			auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 			emit hookWebPageConstructionEnd (proxy, this);
 			if (proxy->IsCancelled ())
 				return;
 		}
-	}
-
-	CustomWebPage::~CustomWebPage ()
-	{
 	}
 
 	void CustomWebPage::SetButtons (Qt::MouseButtons buttons)
@@ -185,24 +177,24 @@ namespace Poshuku
 
 	bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookSupportsExtension (proxy, this, e);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
 
 		switch (e)
 		{
-			case ErrorPageExtension:
-				return true;
-			default:
-				return QWebPage::supportsExtension (e);
+		case ErrorPageExtension:
+			return true;
+		default:
+			return QWebPage::supportsExtension (e);
 		}
 	}
 
 	bool CustomWebPage::extension (QWebPage::Extension e,
 			const QWebPage::ExtensionOption* eo, QWebPage::ExtensionReturn *er)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookExtension (proxy, this, e, eo, er);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toBool ();
@@ -252,10 +244,10 @@ namespace Poshuku
 					switch (error->error)
 					{
 					case QNetworkReply::ContentReSendError:
-						emit gotEntity (Util::MakeNotification ("Poshuku",
-									tr ("Unable to send the request to %1. Please try submitting it again.")
-										.arg (error->url.host ()),
-									PCritical_));
+						IEM_->HandleEntity (Util::MakeNotification ("Poshuku",
+								tr ("Unable to send the request to %1. Please try submitting it again.")
+									.arg (error->url.host ()),
+								PCritical_));
 						return false;
 					default:
 						return true;
@@ -299,7 +291,7 @@ namespace Poshuku
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, notification, frame, feature] () -> void
+			[this, notification, frame, feature]
 			{
 				setFeaturePermission (frame, feature, PermissionGrantedByUser);
 				notification->deleteLater ();
@@ -310,7 +302,7 @@ namespace Poshuku
 		};
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, notification, frame, feature] () -> void
+			[this, notification, frame, feature]
 			{
 				setFeaturePermission (frame, feature, PermissionDeniedByUser);
 				notification->deleteLater ();
@@ -342,12 +334,12 @@ namespace Poshuku
 
 		proxy->FillValue ("request", request);
 
-		Entity e = Util::MakeEntity (request.url (),
-				QString (),
+		auto e = Util::MakeEntity (request.url (),
+				{},
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-		emit gotEntity (e);
+		IEM_->HandleEntity (e);
 	}
 
 	void CustomWebPage::handleFrameCreated (QWebFrame *frame)
@@ -401,21 +393,20 @@ namespace Poshuku
 
 	void CustomWebPage::handleGeometryChangeRequested (const QRect& rect)
 	{
-		emit hookGeometryChangeRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookGeometryChangeRequested (std::make_shared<Util::DefaultHookProxy> (),
 				this, rect);
 	}
 
 	void CustomWebPage::handleLinkClicked (const QUrl& url)
 	{
 		emit loadingURL (url);
-		emit hookLinkClicked (IHookProxy_ptr (new Util::DefaultHookProxy),
-				this, url);
+		emit hookLinkClicked (std::make_shared<Util::DefaultHookProxy> (), this, url);
 	}
 
 	void CustomWebPage::handleLinkHovered (const QString& link,
 			const QString& title, const QString& context)
 	{
-		emit hookLinkHovered (IHookProxy_ptr (new Util::DefaultHookProxy),
+		emit hookLinkHovered (std::make_shared<Util::DefaultHookProxy> (),
 				this, link, title, context);
 	}
 
@@ -434,7 +425,7 @@ namespace Poshuku
 					"window.addEventListener('resize', centerImg, false);"
 					"centerImg();");
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookLoadFinished (proxy, this, ok);
 		if (proxy->IsCancelled ())
 			return;
@@ -444,13 +435,12 @@ namespace Poshuku
 
 	void CustomWebPage::handleLoadStarted ()
 	{
-		emit hookLoadStarted (IHookProxy_ptr (new Util::DefaultHookProxy),
-				this);
+		emit hookLoadStarted (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookUnsupportedContent (proxy, this, reply);
 		if (proxy->IsCancelled ())
 			return;
@@ -466,16 +456,16 @@ namespace Poshuku
 		const auto& mime = reply->header (QNetworkRequest::ContentTypeHeader).toString ();
 		const auto& referer = reply->request ().rawHeader ("Referer");
 
-		auto sendEnt = [reply, mime, referer, this] () -> void
+		auto sendEnt = [reply, mime, referer, this]
 		{
 			auto e = Util::MakeEntity (reply->url (),
 					{},
-					LeechCraft::FromUserInitiated,
+					FromUserInitiated,
 					mime);
 			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 			e.Additional_ ["Referer"] = QUrl::fromEncoded (referer);
 			e.Additional_ ["Operation"] = reply->operation ();
-			emit gotEntity (e);
+			IEM_->HandleEntity (e);
 
 			if (XmlSettingsManager::Instance ()->
 					property ("CloseEmptyDelegatedPages").toBool () &&
@@ -680,14 +670,13 @@ namespace Poshuku
 
 	void CustomWebPage::handleWindowCloseRequested ()
 	{
-		emit hookWindowCloseRequested (IHookProxy_ptr (new Util::DefaultHookProxy),
-				this);
+		emit hookWindowCloseRequested (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	bool CustomWebPage::acceptNavigationRequest (QWebFrame *frame,
 			const QNetworkRequest& other, QWebPage::NavigationType type)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QNetworkRequest request = other;
 		emit hookAcceptNavigationRequest (proxy, this, frame, request, type);
 		if (proxy->IsCancelled ())
@@ -735,7 +724,7 @@ namespace Poshuku
 
 	QString CustomWebPage::chooseFile (QWebFrame *frame, const QString& thsuggested)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QString suggested = thsuggested;
 		emit hookChooseFile (proxy, this, frame, suggested);
 		if (proxy->IsCancelled ())
@@ -749,7 +738,7 @@ namespace Poshuku
 	QObject* CustomWebPage::createPlugin (const QString& thclsid, const QUrl& thurl,
 			const QStringList& thnames, const QStringList& thvalues)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QString clsid = thclsid;
 		QUrl url = thurl;
 		QStringList names = thnames;
@@ -769,7 +758,7 @@ namespace Poshuku
 
 	QWebPage* CustomWebPage::createWindow (QWebPage::WebWindowType type)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookCreateWindow (proxy, this, type);
 		if (proxy->IsCancelled ())
 			return qobject_cast<QWebPage*> (proxy->GetReturnValue ().value<QObject*> ());
@@ -785,10 +774,6 @@ namespace Poshuku
 			widget->setWindowFlags (Qt::Dialog);
 			widget->setAttribute (Qt::WA_DeleteOnClose);
 			widget->setWindowModality (Qt::ApplicationModal);
-			connect (widget,
-					SIGNAL (gotEntity (const LeechCraft::Entity&)),
-					&Core::Instance (),
-					SIGNAL (gotEntity (const LeechCraft::Entity&)));
 			connect (widget,
 					SIGNAL (titleChanged (const QString&)),
 					widget,
@@ -806,7 +791,7 @@ namespace Poshuku
 
 	void CustomWebPage::javaScriptAlert (QWebFrame *frame, const QString& thmsg)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QString msg = thmsg;
 		emit hookJavaScriptAlert (proxy,
 				this, frame, msg);
@@ -820,7 +805,7 @@ namespace Poshuku
 
 	bool CustomWebPage::javaScriptConfirm (QWebFrame *frame, const QString& thmsg)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QString msg = thmsg;
 		emit hookJavaScriptConfirm (proxy,
 				this, frame, msg);
@@ -835,7 +820,7 @@ namespace Poshuku
 	void CustomWebPage::javaScriptConsoleMessage (const QString& thmsg, int line,
 			const QString& thsid)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QString msg = thmsg;
 		QString sid = thsid;
 		emit hookJavaScriptConsoleMessage (proxy,
@@ -853,7 +838,7 @@ namespace Poshuku
 	bool CustomWebPage::javaScriptPrompt (QWebFrame *frame, const QString& thpr,
 			const QString& thdef, QString *result)
 	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QString pr = thpr;
 		QString def = thdef;
 		emit hookJavaScriptPrompt (proxy,

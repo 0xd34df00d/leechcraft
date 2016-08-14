@@ -27,27 +27,25 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_EXTERNALPROXY_H
-#define PLUGINS_POSHUKU_EXTERNALPROXY_H
+#pragma once
+
 #include <QObject>
+
+class IEntityManager;
 
 namespace LeechCraft
 {
-struct Entity;
-
 namespace Poshuku
 {
 	class ExternalProxy : public QObject
 	{
 		Q_OBJECT
+
+		IEntityManager * const IEM_;
 	public:
-		ExternalProxy (QObject* = 0);
+		ExternalProxy (IEntityManager*, QObject* = nullptr);
 	public slots:
 		void AddSearchProvider (const QString&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
-
-#endif

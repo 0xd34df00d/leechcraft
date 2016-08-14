@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <qwebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
@@ -36,6 +37,9 @@
 #include "pageformsdata.h"
 
 class QTimer;
+class QWebInspector;
+
+class IEntityManager;
 
 namespace LeechCraft
 {
@@ -49,8 +53,10 @@ namespace Poshuku
 
 		IBrowserWidget *Browser_;
 		QString PreviousEncoding_;
+
+		std::shared_ptr<QWebInspector> WebInspector_;
 	public:
-		CustomWebView (QWidget* = 0);
+		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
 		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QUrl&, QString = QString ());
@@ -69,9 +75,9 @@ namespace Poshuku
 		 */
 		QString URLToProperString (const QUrl& url);
 	protected:
-		virtual void mousePressEvent (QMouseEvent*);
-		virtual void contextMenuEvent (QContextMenuEvent*);
-		virtual void keyReleaseEvent (QKeyEvent*);
+		void mousePressEvent (QMouseEvent*) override;
+		void contextMenuEvent (QContextMenuEvent*) override;
+		void keyReleaseEvent (QKeyEvent*) override;
 	private:
 		void NavigatePlugins ();
 		void NavigateHome ();
@@ -79,25 +85,8 @@ namespace Poshuku
 		void remakeURL (const QUrl&);
 		void handleLoadFinished (bool);
 		void handleFrameState (QWebFrame*, QWebHistoryItem*);
-		void openLinkHere ();
-		void openLinkInNewTab ();
-		void saveLink ();
-		void subscribeToLink ();
-		void bookmarkLink ();
-		void copyLink ();
-		void openImageHere ();
-		void openImageInNewTab ();
-		void saveImage ();
-		void savePixmap ();
-		void copyImage ();
-		void copyImageLocation ();
-		void renderSettingsChanged ();
 	signals:
 		void urlChanged (const QString&);
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
-		void couldHandle (const LeechCraft::Entity&, bool*);
-		void addToFavorites (const QString&, const QString&);
 		void printRequested (QWebFrame*);
 		void closeRequested ();
 		void storeFormData (const PageFormsData_t&);
@@ -106,11 +95,7 @@ namespace Poshuku
 
 		void zoomChanged ();
 
-		// Hook support signals
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*, QContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
-				WebViewCtxMenuStage);
+		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&);
 	};
 }
 }

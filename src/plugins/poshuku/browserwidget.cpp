@@ -63,7 +63,6 @@
 #include <QDomElement>
 #include <qwebhistory.h>
 #include <qwebelement.h>
-#include <QWebInspector>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
@@ -78,6 +77,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
 #include "core.h"
@@ -110,8 +110,6 @@ namespace Poshuku
 	BrowserWidget::BrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
-	, HtmlMode_ (false)
-	, Own_ (true)
 	{
 		Ui_.setupUi (this);
 
@@ -127,22 +125,15 @@ namespace Poshuku
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
 		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
-		WebView_ = new CustomWebView;
+		WebView_ = new CustomWebView { Core::Instance ().GetProxy ()->GetEntityManager () };
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		auto sslWatcher = new WebPageSslWatcher (WebView_->page ());
+		auto sslWatcher = new WebPageSslWatcher { WebView_ };
 		connect (WebView_,
-				SIGNAL (navigateRequested (QUrl)),
-				sslWatcher,
-				SLOT (resetStats ()));
-		connect (WebView_,
-				SIGNAL (urlChanged (QUrl)),
-				sslWatcher,
-				SLOT (resetStats ()));
-
-		WebInspector_ = new QWebInspector;
-		WebInspector_->setPage (WebView_->page ());
+				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
+				this,
+				SLOT (handleContextMenu (QPoint, ContextMenuInfo)));
 
 		WebView_->SetBrowserWidget (this);
 		connect (WebView_,
@@ -358,10 +349,6 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
-		connect (WebView_,
-				SIGNAL (addToFavorites (const QString&, const QString&)),
-				this,
-				SIGNAL (addToFavorites (const QString&, const QString&)));
 		connect (Add2Favorites_,
 				SIGNAL (triggered ()),
 				this,
@@ -452,18 +439,6 @@ namespace Poshuku
 				this,
 				SLOT (handleStatusBarMessage (const QString&)),
 				Qt::QueuedConnection);
-		connect (WebView_,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
-		connect (WebView_,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)),
-				this,
-				SIGNAL (delegateEntity (const LeechCraft::Entity&, int*, QObject**)));
-		connect (WebView_,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 		connect (WebView_->page (),
 				SIGNAL (linkHovered (const QString&,
 						const QString&,
@@ -542,7 +517,6 @@ namespace Poshuku
 
 	BrowserWidget::~BrowserWidget ()
 	{
-		WebInspector_->hide ();
 		if (Own_)
 			Core::Instance ().Unregister (this);
 
@@ -598,7 +572,7 @@ namespace Poshuku
 		return Ui_.URLFrame_->GetEdit ();
 	}
 
-	void BrowserWidget::InsertFindAction (QMenu* menu, const QString& text)
+	void BrowserWidget::InsertFindAction (QMenu *menu, const QString& text)
 	{
 		Find_->setData (text);
 		menu->addAction (Find_);
@@ -1496,6 +1470,192 @@ namespace Poshuku
 		w.writeEndDocument ();
 
 		GetView ()->setHtml (formatted, WebView_->url ());
+	}
+
+	namespace
+	{
+		const QRegExp UrlInText ("://|www\\.|\\w\\.\\w");
+
+		void SavePixmap (const QPixmap& px, const QUrl& url, IEntityManager *iem)
+		{
+			if (px.isNull ())
+				return;
+
+			const auto origName = url.scheme () == "data" ?
+					QString {} :
+					QFileInfo { url.path () }.fileName ();
+
+			QString filter;
+			auto fname = QFileDialog::getSaveFileName (0,
+					BrowserWidget::tr ("Save pixmap"),
+					QDir::homePath () + '/' + origName,
+					BrowserWidget::tr ("PNG image (*.png);;JPG image (*.jpg);;All files (*.*)"),
+					&filter);
+
+			if (fname.isEmpty ())
+				return;
+
+			if (QFileInfo { fname }.suffix ().isEmpty ())
+			{
+				if (filter.contains ("png"))
+					fname += ".png";
+				else if (filter.contains ("jpg"))
+					fname += ".jpg";
+			}
+
+			QFile file { fname };
+			if (!file.open (QIODevice::WriteOnly))
+			{
+				iem->HandleEntity (Util::MakeNotification ("Poshuku",
+						BrowserWidget::tr ("Unable to save the image. Unable to open file for writing: %1.")
+							.arg (file.errorString ()),
+						PCritical_));
+				return;
+			}
+
+			const auto& suf = QFileInfo { fname }.suffix ();
+			const bool isLossless = suf.toLower () == "png";
+			px.save (&file,
+					suf.toUtf8 ().constData (),
+					isLossless ? 0 : 100);
+		}
+	}
+
+	void BrowserWidget::handleContextMenu (const QPoint& point, const ContextMenuInfo& info)
+	{
+		QPointer<QMenu> menu (new QMenu ());
+
+		const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+
+		IHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSStart);
+
+		auto addAction = [menu] (const QString& text, auto handler)
+		{
+			auto act = menu->addAction (text);
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				handler,
+				act,
+				SIGNAL (triggered ()),
+				act
+			};
+			return act;
+		};
+		auto addWebAction = [menu, this] (QWebPage::WebAction act)
+		{
+			if (const auto actObj = WebView_->pageAction (act))
+				menu->addAction (actObj);
+		};
+
+		if (!info.LinkUrl_.isEmpty ())
+		{
+			if (XmlSettingsManager::Instance ()->
+					property ("TryToDetectRSSLinks").toBool ())
+			{
+				bool hasAtom = info.LinkText_.contains ("Atom");
+				bool hasRSS = info.LinkText_.contains ("RSS");
+
+				if (hasAtom || hasRSS)
+				{
+					LeechCraft::Entity e;
+					if (hasAtom)
+					{
+						e.Additional_ ["UserVisibleName"] = "Atom";
+						e.Mime_ = "application/atom+xml";
+					}
+					else
+					{
+						e.Additional_ ["UserVisibleName"] = "RSS";
+						e.Mime_ = "application/rss+xml";
+					}
+
+					e.Entity_ = info.LinkUrl_;
+					e.Parameters_ = LeechCraft::FromUserInitiated |
+							LeechCraft::OnlyHandle;
+
+					bool ch = false;
+					emit couldHandle (e, &ch);
+					if (ch)
+						addAction (tr ("Subscribe"), [e, this] { emit gotEntity (e); });
+				}
+			}
+
+			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_); });
+			addAction (tr ("Open in new &tab"),
+					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
+			menu->addSeparator ();
+			addWebAction (QWebPage::DownloadLinkToDisk);
+
+			addAction (tr ("&Bookmark link..."),
+					[&] { emit addToFavorites (info.LinkText_, info.LinkUrl_.toString ()); });
+
+			menu->addSeparator ();
+			if (!info.SelectedPageText_.isEmpty ())
+				addWebAction (QWebPage::Copy);
+			addWebAction (QWebPage::CopyLinkToClipboard);
+			addWebAction (QWebPage::InspectElement);
+		}
+		else if (info.SelectedPageText_.contains (UrlInText))
+			addAction (tr ("Open as link"),
+					[&]
+					{
+						const auto& url = QUrl::fromUserInput (info.SelectedPageText_);
+						Core::Instance ().MakeWebView (false)->Load (url);
+					});
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterLink);
+
+		if (!info.ImageUrl_.isEmpty ())
+		{
+			if (!menu->isEmpty ())
+				menu->addSeparator ();
+			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_); });
+			addWebAction (QWebPage::OpenImageInNewWindow);
+			menu->addSeparator ();
+			addWebAction (QWebPage::DownloadImageToDisk);
+
+			const auto pxAct = addAction (tr ("Save pixmap..."),
+					[&] { SavePixmap (info.ImagePixmap_, info.ImageUrl_, iem); });
+			pxAct->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
+
+			addWebAction (QWebPage::CopyImageToClipboard);
+			addWebAction (QWebPage::CopyImageUrlToClipboard);
+		}
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterImage);
+
+		bool hasSelected = !info.SelectedPageText_.isEmpty ();
+		if (hasSelected)
+		{
+			if (!menu->isEmpty ())
+				menu->addSeparator ();
+			menu->addAction (WebView_->pageAction (QWebPage::Copy));
+		}
+
+		if (info.IsContentEditable_)
+			menu->addAction (WebView_->pageAction (QWebPage::Paste));
+
+		if (hasSelected)
+			InsertFindAction (menu, info.SelectedPageText_);
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterSelectedText);
+
+		if (menu->isEmpty ())
+			menu = WebView_->page ()->createStandardContextMenu ();
+
+		addWebAction (QWebPage::ReloadAndBypassCache);
+		if (!menu->isEmpty ())
+			menu->addSeparator ();
+
+		AddStandardActions (menu);
+
+		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterFinish);
+
+		menu->exec (point);
+
+		delete menu;
 	}
 
 	void BrowserWidget::setScrollPosition ()

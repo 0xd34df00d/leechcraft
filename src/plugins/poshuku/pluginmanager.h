@@ -813,17 +813,14 @@ namespace Poshuku
 		 * @param proxy The standard hook proxy object.
 		 * @param view The QWebView for which the context menu is
 		 * requested.
-		 * @param event The event object that triggered the context
-		 * menu.
-		 * @param hitTestResult The result of the
-		 * QWebFrame::hitTestContent().
+		 * @param hitTestResult The structure describing the context menu
+		 * mouse hit.
 		 * @param menu The menu being built.
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
 				QWebView *view,
-				QContextMenuEvent *event,
-				const QWebHitTestResult& hitTestResult,
+				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);
 

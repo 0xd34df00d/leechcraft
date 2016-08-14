@@ -42,6 +42,7 @@
 #include <interfaces/ihaverecoverabletabs.h>
 #include <interfaces/iwkfontssettable.h>
 #include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/poshukutypes.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "ui_browserwidget.h"
 
@@ -117,14 +118,12 @@ namespace Poshuku
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
 		QString PreviousFindText_;
-		bool HtmlMode_;
-		bool Own_;
+		bool HtmlMode_ = false;
+		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		CustomWebView *WebView_;
 		QLabel *LinkTextItem_;
-
-		QWebInspector *WebInspector_;
 
 		static QObject* S_MultiTabsParent_;
 	public:
@@ -214,6 +213,8 @@ namespace Poshuku
 
 		void checkLoadedDocument ();
 
+		void handleContextMenu (const QPoint&, const ContextMenuInfo&);
+
 		void setScrollPosition ();
 		void pageFocus ();
 		void handleLoadProgress (int);
@@ -280,6 +281,11 @@ namespace Poshuku
 				QObject *browserWidget);
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				QWebView*,
+				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
+				QMenu*,
+				WebViewCtxMenuStage);
 	};
 }
 }

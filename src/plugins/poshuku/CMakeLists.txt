@@ -71,6 +71,7 @@ set (SRCS
 	featurepermnotification.cpp
 	zoomer.cpp
 	webviewsmoothscroller.cpp
+	webviewrendersettingshandler.cpp
 	)
 set (FORMS
 	browserwidget.ui

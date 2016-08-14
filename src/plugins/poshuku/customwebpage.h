@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_CUSTOMWEBPAGE_H
+#pragma once
+
 #include <memory>
 #include <qwebpage.h>
 #include <QUrl>
@@ -36,6 +36,8 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
 #include "pageformsdata.h"
+
+class IEntityManager;
 
 namespace LeechCraft
 {
@@ -47,6 +49,8 @@ namespace Poshuku
 	class CustomWebPage : public QWebPage
 	{
 		Q_OBJECT
+
+		IEntityManager * const IEM_;
 
 		Qt::MouseButtons MouseButtons_;
 		Qt::KeyboardModifiers Modifiers_;
@@ -60,8 +64,7 @@ namespace Poshuku
 
 		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
 	public:
-		CustomWebPage (QObject* = 0);
-		virtual ~CustomWebPage ();
+		CustomWebPage (IEntityManager*, QObject* = nullptr);
 
 		void SetButtons (Qt::MouseButtons);
 		void SetModifiers (Qt::KeyboardModifiers);
@@ -104,11 +107,8 @@ namespace Poshuku
 		void HandleForms (QWebFrame*, const QNetworkRequest&,
 				QWebPage::NavigationType);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 		void loadingURL (const QUrl&);
 		void storeFormData (const PageFormsData_t&);
-		void couldHandle (const LeechCraft::Entity&, bool*);
 		void delayedFillForms (QWebFrame*);
 
 		// Hook support signals
@@ -203,5 +203,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

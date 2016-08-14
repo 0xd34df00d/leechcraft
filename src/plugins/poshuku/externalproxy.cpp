@@ -30,24 +30,26 @@
 #include "externalproxy.h"
 #include <QUrl>
 #include <interfaces/structures.h>
+#include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	ExternalProxy::ExternalProxy (QObject *parent)
-	: QObject (parent)
+	ExternalProxy::ExternalProxy (IEntityManager *iem, QObject *parent)
+	: QObject { parent }
+	, IEM_ { iem }
 	{
 	}
 
 	void ExternalProxy::AddSearchProvider (const QString& url)
 	{
-		const Entity& e = Util::MakeEntity (QUrl (url),
+		const auto& e = Util::MakeEntity (QUrl { url },
 				url,
 				FromUserInitiated | OnlyHandle,
 				"application/opensearchdescription+xml");
-		emit gotEntity (e);
+		IEM_->HandleEntity (e);
 	}
 }
 }

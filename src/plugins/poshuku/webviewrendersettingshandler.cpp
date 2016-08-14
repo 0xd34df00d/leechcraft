@@ -27,65 +27,43 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QMap>
-#include <QNetworkAccessManager>
-#include <QSslConfiguration>
-#include <QWebPage>
-#include <interfaces/core/ihookproxy.h>
-
-class QNetworkReply;
-class QUrl;
-class QWebView;
+#include "webviewrendersettingshandler.h"
+#include <qwebview.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class WebPageSslWatcher : public QObject
+	WebViewRenderSettingsHandler::WebViewRenderSettingsHandler (QWebView *view)
+	: QObject { view }
+	, View_ { view }
 	{
-		Q_OBJECT
+		XmlSettingsManager::Instance ()->RegisterObject ({
+					"PrimitivesAntialiasing",
+					"TextAntialiasing",
+					"SmoothPixmapTransform",
+					"HighQualityAntialiasing"
+				},
+				this, "renderSettingsChanged");
+		renderSettingsChanged ();
+	}
 
-		QWebPage * const Page_;
+	void WebViewRenderSettingsHandler::renderSettingsChanged ()
+	{
+		QPainter::RenderHints hints;
 
-		QList<QUrl> SslResources_;
-		QList<QUrl> NonSslResources_;
-		QMap<QUrl, QList<QSslError>> ErrSslResources_;
-
-		QSslConfiguration PageConfig_;
-	public:
-		WebPageSslWatcher (QWebView*);
-
-		enum class State
+		auto check = [&hints] (const char *name, QPainter::RenderHint hint)
 		{
-			NoSsl,
-			SslErrors,
-			UnencryptedElems,
-			FullSsl
+			if (XmlSettingsManager::Instance ()->property (name).toBool ())
+				hints |= hint;
 		};
-		State GetPageState () const;
+		check ("PrimitivesAntialiasing", QPainter::Antialiasing);
+		check ("TextAntialiasing", QPainter::TextAntialiasing);
+		check ("SmoothPixmapTransform", QPainter::SmoothPixmapTransform);
+		check ("HighQualityAntialiasing", QPainter::HighQualityAntialiasing);
 
-		const QSslConfiguration& GetPageConfiguration () const;
-
-		QList<QUrl> GetNonSslUrls () const;
-		QMap<QUrl, QList<QSslError>> GetErrSslUrls () const;
-	public slots:
-		void resetStats ();
-	private slots:
-		void handleReplyFinished ();
-		void handleSslErrors (const QList<QSslError>&);
-
-		void handleReplyCreated (QNetworkAccessManager::Operation,
-				const QNetworkRequest&, QNetworkReply*);
-
-		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebFrame*,
-				const QNetworkRequest&,
-				QWebPage::NavigationType);
-	signals:
-		void sslStateChanged (WebPageSslWatcher*);
-	};
+		View_->setRenderHints (hints);
+	}
 }
 }
