@@ -97,7 +97,7 @@ CreateTrs ("bittorrent" "ar;be;de;en;eo;es;fr;it;oc;pl;ru_RU;uk_UA" COMPILED_TRA
 CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings.xml")
 
 if (APPLE)
-	add_definitions (-DWITH_SHIPPED_GEOIP_H)
+	add_definitions (-DWITH_SHIPPED_GEOIP_H -DBOOST_ASIO_DISABLE_STD_CHRONO)
 endif ()
 
 option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
