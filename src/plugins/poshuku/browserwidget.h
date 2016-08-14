@@ -118,8 +118,8 @@ namespace Poshuku
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
 		QString PreviousFindText_;
-		bool HtmlMode_;
-		bool Own_;
+		bool HtmlMode_ = false;
+		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
 		CustomWebView *WebView_;

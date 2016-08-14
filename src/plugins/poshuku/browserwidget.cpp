@@ -110,8 +110,6 @@ namespace Poshuku
 	BrowserWidget::BrowserWidget (QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
-	, HtmlMode_ (false)
-	, Own_ (true)
 	{
 		Ui_.setupUi (this);
 
