@@ -260,10 +260,6 @@ namespace Poshuku
 				bool notifyWhenFinished,
 				bool own,
 				bool htmlMode);
-		void hookPrint (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				bool preview,
-				QWebFrame *frame);
 		void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QUrl url);

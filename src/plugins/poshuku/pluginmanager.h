@@ -617,28 +617,6 @@ namespace Poshuku
 				bool own,
 				bool htmlMode);
 
-		/** @brief Called when the frame is to be printed.
-		 *
-		 * The print action could either be requested by the user
-		 * directly or, for example, by some JS running on the page.
-		 *
-		 * The hook may cancel the default handler (and no printing
-		 * would take place), or, alternatively, it may override the
-		 * value of preview by IHookProxy::SetValue() with the name
-		 * "preview" and value of type bool.
-		 *
-		 * @param proxy The standard hook proxy object.
-		 * @param browserWidget The browser widget containing the frame
-		 * to be printed.
-		 * @param preview Whether preview should be done before the
-		 * actual printing takes place.
-		 * @param frame The frame to be printed.
-		 */
-		void hookPrint (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				bool preview,
-				QWebFrame *frame);
-
 		/** @brief Called when session restore is scheduled.
 		 *
 		 * The urls contains the list of URLs that were chosen to be
