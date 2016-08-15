@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_JSPROXY_H
-#define PLUGINS_POSHUKU_JSPROXY_H
+#pragma once
+
 #include <QObject>
 #include <QVariant>
 #include "customwebpage.h"
@@ -48,5 +48,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
