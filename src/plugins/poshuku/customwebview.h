@@ -91,7 +91,6 @@ namespace Poshuku
 		void handlePrintRequested (QWebFrame*);
 	signals:
 		void urlChanged (const QString&);
-		void printRequested (QWebFrame*);
 		void closeRequested ();
 		void storeFormData (const PageFormsData_t&);
 
