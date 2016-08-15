@@ -41,8 +41,7 @@ namespace Poshuku
 	{
 		Q_OBJECT
 	public:
-		JSProxy (QObject* = 0);
-
+		using QObject::QObject;
 	public slots:
 		void debug (const QString& str);
 		void warning (const QString& str);

@@ -38,11 +38,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	JSProxy::JSProxy (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	void JSProxy::debug (const QString& string)
 	{
 		qDebug () << Q_FUNC_INFO << string;
