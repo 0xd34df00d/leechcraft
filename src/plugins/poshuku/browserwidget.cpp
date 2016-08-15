@@ -48,10 +48,7 @@
 #include <QMenu>
 #include <QMovie>
 #include <QWidgetAction>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QTimer>
-#include <QPrintPreviewDialog>
 #include <QPainter>
 #include <qwebframe.h>
 #include <QFileDialog>
@@ -353,14 +350,20 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAdd2Favorites ()));
-		connect (Print_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handlePrinting ()));
-		connect (PrintPreview_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handlePrintingWithPreview ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { WebView_->Print (false); },
+			Print_,
+			SIGNAL (triggered ()),
+			Print_
+		};
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { WebView_->Print (true); },
+			PrintWithPreview_,
+			SIGNAL (triggered ()),
+			PrintWithPreview_
+		};
 		connect (Find_,
 				SIGNAL (triggered ()),
 				this,
@@ -949,39 +952,6 @@ namespace Poshuku
 			QWidget::keyReleaseEvent (event);
 	}
 
-	void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
-	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookPrint (proxy, this, preview, frame);
-		if (proxy->IsCancelled ())
-			return;
-
-		proxy->FillValue ("preview", preview);
-
-		QPrinter printer;
-		if (preview)
-		{
-			QPrintPreviewDialog prevDialog (&printer, this);
-			connect (&prevDialog,
-					SIGNAL (paintRequested (QPrinter*)),
-					frame,
-					SLOT (print (QPrinter*)));
-
-			if (prevDialog.exec () != QDialog::Accepted)
-				return;
-		}
-		else
-		{
-			QPrintDialog dialog (&printer, this);
-			dialog.setWindowTitle (tr ("Print web page"));
-
-			if (dialog.exec () != QDialog::Accepted)
-				return;
-
-			frame->print (&printer);
-		}
-	}
-
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
 	{
 		QTime null (0, 0, 0);
@@ -1110,21 +1080,6 @@ namespace Poshuku
 			FindDialog_->SetText (act->data ().toString ());
 		FindDialog_->show ();
 		FindDialog_->setFocus ();
-	}
-
-	void BrowserWidget::handleViewPrint (QWebFrame *frame)
-	{
-		PrintImpl (false, frame);
-	}
-
-	void BrowserWidget::handlePrinting ()
-	{
-		PrintImpl (false, WebView_->page ()->mainFrame ());
-	}
-
-	void BrowserWidget::handlePrintingWithPreview ()
-	{
-		PrintImpl (true, WebView_->page ()->mainFrame ());
 	}
 
 	void BrowserWidget::handleScreenSave ()

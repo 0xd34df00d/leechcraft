@@ -179,7 +179,6 @@ namespace Poshuku
 	protected:
 		void keyReleaseEvent (QKeyEvent*) override;
 	private:
-		void PrintImpl (bool, QWebFrame*);
 		void SetActualReloadInterval (const QTime&);
 		void SetSplitterSizes (int);
 	public slots:
@@ -198,8 +197,6 @@ namespace Poshuku
 		void handleAdd2Favorites ();
 		void handleFind ();
 		void handleViewPrint (QWebFrame*);
-		void handlePrinting ();
-		void handlePrintingWithPreview ();
 		void handleScreenSave ();
 		void handleViewSources ();
 		void handleSavePage ();

@@ -74,6 +74,8 @@ namespace Poshuku
 		 * @return The \em url converted to Unicode.
 		 */
 		QString URLToProperString (const QUrl& url);
+
+		void Print (bool preview);
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;
@@ -81,10 +83,12 @@ namespace Poshuku
 	private:
 		void NavigatePlugins ();
 		void NavigateHome ();
+		void PrintImpl (bool, QWebFrame*);
 	private slots:
 		void remakeURL (const QUrl&);
 		void handleLoadFinished (bool);
 		void handleFrameState (QWebFrame*, QWebHistoryItem*);
+		void handlePrintRequested (QWebFrame*);
 	signals:
 		void urlChanged (const QString&);
 		void printRequested (QWebFrame*);

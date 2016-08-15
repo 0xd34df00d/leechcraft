@@ -41,6 +41,9 @@
 #include <QWebHistory>
 #include <QTextCodec>
 #include <QMouseEvent>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 
 #if QT_VERSION < 0x050000
 #include <QWindowsStyle>
@@ -111,7 +114,7 @@ namespace Poshuku
 		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
-				SIGNAL (printRequested (QWebFrame*)));
+				SLOT (handlePrintRequested (QWebFrame*)));
 		connect (page,
 				SIGNAL (windowCloseRequested ()),
 				this,
@@ -186,6 +189,11 @@ namespace Poshuku
 			string = url.toEncoded ();
 
 		return string;
+	}
+
+	void CustomWebView::Print (bool preview)
+	{
+		PrintImpl (preview, page ()->mainFrame ());
 	}
 
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
@@ -269,6 +277,32 @@ namespace Poshuku
 		setHtml (data);
 	}
 
+	void CustomWebView::PrintImpl (bool preview, QWebFrame *frame)
+	{
+		QPrinter printer;
+		if (preview)
+		{
+			QPrintPreviewDialog prevDialog (&printer, this);
+			connect (&prevDialog,
+					SIGNAL (paintRequested (QPrinter*)),
+					frame,
+					SLOT (print (QPrinter*)));
+
+			if (prevDialog.exec () != QDialog::Accepted)
+				return;
+		}
+		else
+		{
+			QPrintDialog dialog (&printer, this);
+			dialog.setWindowTitle (tr ("Print web page"));
+
+			if (dialog.exec () != QDialog::Accepted)
+				return;
+
+			frame->print (&printer);
+		}
+	}
+
 	void CustomWebView::remakeURL (const QUrl& url)
 	{
 		emit urlChanged (URLToProperString (url));
@@ -285,6 +319,11 @@ namespace Poshuku
 		const auto& histUrl = page ()->history ()->currentItem ().url ();
 		if (histUrl != url ())
 			remakeURL (histUrl);
+	}
+
+	void CustomWebView::handlePrintRequested (QWebFrame *frame)
+	{
+		PrintImpl (false, frame);
 	}
 }
 }
