@@ -40,7 +40,7 @@ FindQtLibs (leechcraft_poshuku_dcac Widgets WebKitWidgets)
 
 option (ENABLE_POSHUKU_DCAC_TESTS "Build tests for Poshuku DCAC" ON)
 
-if (ENABLE_POSHUKU_DCAC_TESTS)
+if (ENABLE_POSHUKU_DCAC_TESTS AND WITH_POSHUKU_DCAC_SIMD)
 	function (AddDCACTest _execName _cppFile _testName)
 		set (_fullExecName lc_poshuku_dcac_${_execName}_test)
 		add_executable (${_fullExecName} WIN32 ${_cppFile} tests/testbase.cpp)
