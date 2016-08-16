@@ -127,7 +127,7 @@ namespace Poshuku
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (QWidget* = 0);
+		BrowserWidget (QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
 
