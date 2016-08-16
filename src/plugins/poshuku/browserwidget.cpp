@@ -360,9 +360,9 @@ namespace Poshuku
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
 			[this] { WebView_->Print (true); },
-			PrintWithPreview_,
+			PrintPreview_,
 			SIGNAL (triggered ()),
-			PrintWithPreview_
+			PrintPreview_
 		};
 		connect (Find_,
 				SIGNAL (triggered ()),
