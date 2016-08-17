@@ -90,7 +90,6 @@
 #include "historywidget.h"
 #include "customwebview.h"
 #include "urleditbuttonsmanager.h"
-#include "webpagesslwatcher.h"
 #include "zoomer.h"
 #include "searchtext.h"
 
@@ -126,7 +125,6 @@ namespace Poshuku
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		auto sslWatcher = new WebPageSslWatcher { WebView_ };
 		connect (WebView_,
 				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
 				this,

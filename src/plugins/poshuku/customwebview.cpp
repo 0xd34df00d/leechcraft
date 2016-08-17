@@ -61,6 +61,7 @@
 #include "xmlsettingsmanager.h"
 #include "webviewsmoothscroller.h"
 #include "webviewrendersettingshandler.h"
+#include "webviewsslwatcherhandler.h"
 
 namespace LeechCraft
 {
@@ -77,6 +78,7 @@ namespace Poshuku
 			insp->deleteLater ();
 		}
 	}
+	, SslWatcherHandler_ { new WebViewSslWatcherHandler { this } }
 	{
 #if QT_VERSION < 0x050000
 		QPalette p;

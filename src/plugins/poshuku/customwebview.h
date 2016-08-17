@@ -48,6 +48,8 @@ namespace Poshuku
 {
 	class IBrowserWidget;
 
+	class WebViewSslWatcherHandler;
+
 	class CustomWebView : public QWebView
 						, public IWebView
 	{
@@ -58,6 +60,8 @@ namespace Poshuku
 		QString PreviousEncoding_;
 
 		std::shared_ptr<QWebInspector> WebInspector_;
+
+		const WebViewSslWatcherHandler * const SslWatcherHandler_;
 	public:
 		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
