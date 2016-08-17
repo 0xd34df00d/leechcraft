@@ -39,21 +39,17 @@
 #include "customwebview.h"
 #include "core.h"
 #include "progresslineedit.h"
-#include "webpagesslwatcher.h"
-#include "sslstatedialog.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
 	UrlEditButtonsManager::UrlEditButtonsManager (CustomWebView *view,
-			ProgressLineEdit *edit, WebPageSslWatcher *watcher, QAction *add2favs)
+			ProgressLineEdit *edit, QAction *add2favs)
 	: QObject { view }
 	, View_ { view }
 	, LineEdit_ { edit }
-	, SslWatcher_ { watcher }
 	, Add2Favorites_ { add2favs }
-	, SslStateAction_ { new QAction { this } }
 	, ExternalLinks_ { new QMenu { } }
 	, ExternalLinksAction_ { new QAction { this } }
 	{
@@ -85,19 +81,6 @@ namespace Poshuku
 
 		LineEdit_->InsertAction (Add2Favorites_, 0, true);
 
-		connect (SslWatcher_,
-				SIGNAL (sslStateChanged (WebPageSslWatcher*)),
-				this,
-				SLOT (handleSslState ()));
-
-		LineEdit_->InsertAction (SslStateAction_, 0, false);
-		LineEdit_->SetVisible (SslStateAction_, false);
-
-		connect (SslStateAction_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (showSslDialog ()));
-
 		for (auto action : view->GetActions (IWebView::ActionArea::UrlBar))
 		{
 			LineEdit_->InsertAction (action, 0, false);
@@ -114,36 +97,6 @@ namespace Poshuku
 				action
 			};
 		}
-	}
-
-	void UrlEditButtonsManager::handleSslState ()
-	{
-		QString iconName;
-		QString title;
-		switch (SslWatcher_->GetPageState ())
-		{
-		case WebPageSslWatcher::State::NoSsl:
-			LineEdit_->SetVisible (SslStateAction_, false);
-			return;
-		case WebPageSslWatcher::State::SslErrors:
-			iconName = "security-low";
-			title = tr ("Some SSL errors where encountered.");
-			break;
-		case WebPageSslWatcher::State::UnencryptedElems:
-			iconName = "security-medium";
-			title = tr ("Some elements were loaded via unencrypted connection.");
-			break;
-		case WebPageSslWatcher::State::FullSsl:
-			iconName = "security-high";
-			title = tr ("Everything is secure!");
-			break;
-		}
-
-		const auto iconMgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
-		SslStateAction_->setIcon (iconMgr->GetIcon (iconName));
-		SslStateAction_->setText (title);
-
-		LineEdit_->SetVisible (SslStateAction_, true);
 	}
 
 	void UrlEditButtonsManager::checkPageAsFavorite (const QString& url)
@@ -263,13 +216,6 @@ namespace Poshuku
 
 		auto menu = action->menu ();
 		menu->exec (QCursor::pos ());
-	}
-
-	void UrlEditButtonsManager::showSslDialog ()
-	{
-		const auto dia = new SslStateDialog { SslWatcher_ };
-		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
 	}
 
 	void UrlEditButtonsManager::updateBookmarksState ()

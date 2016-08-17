@@ -29,9 +29,7 @@
 
 #pragma once
 
-#include <memory>
 #include <QObject>
-#include <QMenu>
 
 class QAction;
 
@@ -40,27 +38,23 @@ namespace LeechCraft
 namespace Poshuku
 {
 	class CustomWebView;
-	class ProgressLineEdit;
+	class WebPageSslWatcher;
 
-	class UrlEditButtonsManager : public QObject
+	class WebViewSslWatcherHandler : public QObject
 	{
 		Q_OBJECT
 
 		CustomWebView * const View_;
-		ProgressLineEdit * const LineEdit_;
-		QAction * const Add2Favorites_;
 
-		const std::shared_ptr<QMenu> ExternalLinks_;
-		QAction * const ExternalLinksAction_;
+		WebPageSslWatcher * const SslWatcher_;
+		QAction * const SslStateAction_;
 	public:
-		UrlEditButtonsManager (CustomWebView*, ProgressLineEdit*, QAction*);
+		WebViewSslWatcherHandler (CustomWebView*);
+
+		QAction* GetStateAction () const;
 	private slots:
-		void checkPageAsFavorite (const QString&);
-
-		void checkLinkRels ();
-		void showSendersMenu ();
-
-		void updateBookmarksState ();
+		void handleSslState ();
+		void showSslDialog ();
 	};
 }
 }

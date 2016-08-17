@@ -72,6 +72,7 @@ set (SRCS
 	zoomer.cpp
 	webviewsmoothscroller.cpp
 	webviewrendersettingshandler.cpp
+	webviewsslwatcherhandler.cpp
 	)
 set (FORMS
 	browserwidget.ui
