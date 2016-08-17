@@ -36,6 +36,7 @@ namespace Poshuku
 	class IWebView
 	{
 	public:
+		virtual ~IWebView () = default;
 	};
 }
 }
