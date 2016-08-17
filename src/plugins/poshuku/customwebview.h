@@ -79,6 +79,8 @@ namespace Poshuku
 		QString URLToProperString (const QUrl& url);
 
 		void Print (bool preview);
+
+		QList<QAction*> GetActions (ActionArea) const;
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;

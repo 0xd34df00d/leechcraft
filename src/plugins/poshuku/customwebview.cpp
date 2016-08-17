@@ -196,6 +196,11 @@ namespace Poshuku
 		PrintImpl (preview, page ()->mainFrame ());
 	}
 
+	QList<QAction*> CustomWebView::GetActions (ActionArea) const
+	{
+		return {};
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
