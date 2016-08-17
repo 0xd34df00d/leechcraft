@@ -47,6 +47,8 @@ namespace Poshuku
 		{
 			UrlBar
 		};
+
+		virtual QList<QAction*> GetActions (ActionArea) const = 0;
 	};
 }
 }
