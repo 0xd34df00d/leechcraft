@@ -34,6 +34,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
+#include "interfaces/poshuku/iwebview.h"
 #include "pageformsdata.h"
 
 class QTimer;
@@ -48,8 +49,10 @@ namespace Poshuku
 	class IBrowserWidget;
 
 	class CustomWebView : public QWebView
+						, public IWebView
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
 
 		IBrowserWidget *Browser_;
 		QString PreviousEncoding_;
