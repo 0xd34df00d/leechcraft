@@ -29,6 +29,11 @@
 
 #pragma once
 
+class QAction;
+
+template<typename>
+class QList;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -37,6 +42,11 @@ namespace Poshuku
 	{
 	public:
 		virtual ~IWebView () = default;
+
+		enum class ActionArea
+		{
+			UrlBar
+		};
 	};
 }
 }
