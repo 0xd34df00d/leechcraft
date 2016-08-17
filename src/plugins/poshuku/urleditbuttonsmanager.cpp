@@ -124,6 +124,7 @@ namespace Poshuku
 
 		const auto iconMgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 		SslStateAction_->setIcon (iconMgr->GetIcon (iconName));
+		SslStateAction_->setText (title);
 
 		LineEdit_->SetVisible (SslStateAction_, true);
 	}
