@@ -198,9 +198,15 @@ namespace Poshuku
 		PrintImpl (preview, page ()->mainFrame ());
 	}
 
-	QList<QAction*> CustomWebView::GetActions (ActionArea) const
+	QList<QAction*> CustomWebView::GetActions (ActionArea area) const
 	{
-		return {};
+		switch (area)
+		{
+		case ActionArea::UrlBar:
+			return { SslWatcherHandler_->GetStateAction () };
+		}
+
+		assert (false);
 	}
 
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
