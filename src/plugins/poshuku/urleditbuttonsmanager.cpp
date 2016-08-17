@@ -97,6 +97,23 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (showSslDialog ()));
+
+		for (auto action : view->GetActions (IWebView::ActionArea::UrlBar))
+		{
+			LineEdit_->InsertAction (action, 0, false);
+			LineEdit_->SetVisible (action, action->isEnabled ());
+
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[=]
+				{
+					LineEdit_->SetVisible (action, action->isEnabled ());
+				},
+				action,
+				SIGNAL (changed ()),
+				action
+			};
+		}
 	}
 
 	void UrlEditButtonsManager::handleSslState ()
