@@ -78,7 +78,6 @@ namespace Poshuku
 			insp->deleteLater ();
 		}
 	}
-	, SslWatcherHandler_ { new WebViewSslWatcherHandler { this } }
 	{
 #if QT_VERSION < 0x050000
 		QPalette p;
@@ -91,6 +90,8 @@ namespace Poshuku
 
 		const auto page = new CustomWebPage { iem, this };
 		setPage (page);
+
+		SslWatcherHandler_ = new WebViewSslWatcherHandler { this };
 
 		WebInspector_->setPage (page);
 

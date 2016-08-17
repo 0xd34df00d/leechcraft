@@ -61,7 +61,7 @@ namespace Poshuku
 
 		std::shared_ptr<QWebInspector> WebInspector_;
 
-		const WebViewSslWatcherHandler * const SslWatcherHandler_;
+		const WebViewSslWatcherHandler *SslWatcherHandler_;
 	public:
 		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
