@@ -132,75 +132,99 @@ namespace Poshuku
 		LineEdit_->RemoveAction (ExternalLinksAction_);
 
 		ExternalLinks_->clear ();
+		const auto& mainFrameURL = View_->GetUrl ();
 
 		const auto entityMgr = Core::Instance ().GetProxy ()->GetEntityManager ();
-
-		const auto& links = View_->page ()->mainFrame ()->findAllElements ("link");
-		const auto& mainFrameURL = View_->GetUrl ();
-		bool inserted = false;
-		for (const auto& link : links)
-		{
-			if (link.attribute ("type") == "")
-				continue;
-
-			LeechCraft::Entity e;
-			e.Mime_ = link.attribute ("type");
-
-			QString entity = link.attribute ("title");
-			if (entity.isEmpty ())
-			{
-				entity = e.Mime_;
-				entity.remove ("application/");
-				entity.remove ("+xml");
-				entity = entity.toUpper ();
-			}
-
-			auto entityUrl = mainFrameURL.resolved (QUrl (link.attribute ("href")));
-			e.Entity_ = entityUrl;
-			e.Additional_ ["SourceURL"] = entityUrl;
-			e.Parameters_ = LeechCraft::FromUserInitiated |
-				LeechCraft::OnlyHandle;
-			e.Additional_ ["UserVisibleName"] = entity;
-			e.Additional_ ["LinkRel"] = link.attribute ("rel");
-			e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
-
-			if (entityMgr->CouldHandle (e))
-			{
-				QString mime = e.Mime_;
-				mime.replace ('/', '_');
-				auto act = ExternalLinks_->addAction (QIcon (QString (":/resources/images/%1.png")
-							.arg (mime)),
-						entity);
-
-				new Util::SlotClosure<Util::NoDeletePolicy>
+		View_->EvaluateJS (R"(
+					(function(){
+					var links = document.getElementsByTagName('link');
+					var result = [];
+					for (var i = 0; i < links.length; ++i)
+					{
+						var link = links[i];
+						result.push({
+								"rel": link.rel,
+								"type": link.type,
+								"href": link.href,
+								"title": link.title
+							});
+					}
+					return result;
+					})();
+				)",
+				[=] (const QVariant& res)
 				{
-					[entityMgr, e] { entityMgr->HandleEntity (e); },
-					act,
-					SIGNAL (triggered ()),
-					act
-				};
+					bool inserted = false;
+					for (const auto& var : res.toList ())
+					{
+						const auto& map = var.toMap ();
 
-				if (!inserted)
-				{
-					auto btn = LineEdit_->InsertAction (ExternalLinksAction_);
-					LineEdit_->SetVisible (ExternalLinksAction_, true);
-					btn->setMenu (ExternalLinks_.get ());
-					btn->setArrowType (Qt::NoArrow);
-					btn->setPopupMode (QToolButton::InstantPopup);
-					const QString newStyle ("::menu-indicator { image: "
-							"url(data:image/gif;base64,R0lGODlhAQABAPABAP///"
-							"wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}");
-					btn->setStyleSheet (btn->styleSheet () + newStyle);
+						const auto& type = map ["type"].toString ();
+						if (type.isEmpty ())
+							continue;
 
-					connect (ExternalLinks_->menuAction (),
-							SIGNAL (triggered ()),
-							this,
-							SLOT (showSendersMenu ()),
-							Qt::UniqueConnection);
-					inserted = true;
-				}
-			}
-		}
+						const auto& title = map ["title"].toString ();
+						const auto& href = map ["href"].toString ();
+						const auto& rel = map ["rel"].toString ();
+
+						Entity e;
+						e.Mime_ = type;
+
+						auto entity = title;
+						if (entity.isEmpty ())
+						{
+							entity = e.Mime_;
+							entity.remove ("application/");
+							entity.remove ("+xml");
+							entity = entity.toUpper ();
+						}
+
+						auto entityUrl = mainFrameURL.resolved (QUrl { href });
+						e.Entity_ = entityUrl;
+						e.Additional_ ["SourceURL"] = entityUrl;
+						e.Parameters_ = FromUserInitiated |
+										OnlyHandle;
+						e.Additional_ ["UserVisibleName"] = entity;
+						e.Additional_ ["LinkRel"] = rel;
+						e.Additional_ ["IgnorePlugins"] = QStringList { "org.LeechCraft.Poshuku" };
+
+						if (entityMgr->CouldHandle (e))
+						{
+							auto mime = e.Mime_;
+							mime.replace ('/', '_');
+							const auto& iconStr = QString { ":/resources/images/%1.png" }.arg (mime);
+							auto act = ExternalLinks_->addAction (QIcon { iconStr }, entity);
+
+							new Util::SlotClosure<Util::NoDeletePolicy>
+									{
+											[entityMgr, e] { entityMgr->HandleEntity (e); },
+											act,
+											SIGNAL (triggered ()),
+											act
+									};
+
+							if (!inserted)
+							{
+								auto btn = LineEdit_->InsertAction (ExternalLinksAction_);
+								LineEdit_->SetVisible (ExternalLinksAction_, true);
+								btn->setMenu (ExternalLinks_.get ());
+								btn->setArrowType (Qt::NoArrow);
+								btn->setPopupMode (QToolButton::InstantPopup);
+								const QString newStyle { "::menu-indicator { image: "
+										"url(data:image/gif;base64,R0lGODlhAQABAPABAP///"
+										"wAAACH5BAEKAAAALAAAAAABAAEAAAICRAEAOw==);}" };
+								btn->setStyleSheet (btn->styleSheet () + newStyle);
+
+								connect (ExternalLinks_->menuAction (),
+										SIGNAL (triggered ()),
+										this,
+										SLOT (showSendersMenu ()),
+										Qt::UniqueConnection);
+								inserted = true;
+							}
+						}
+					}
+				});
 	}
 
 	void UrlEditButtonsManager::showSendersMenu ()
