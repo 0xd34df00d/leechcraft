@@ -42,6 +42,12 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+	/** @brief Interface for QWebView-like widgets displaying HTML content.
+	 *
+	 * The implementations of this interface are also expected to have the
+	 * following signals, following QWebView API:
+	 * - loadFinished(bool)
+	 */
 	class IWebView
 	{
 	public:
