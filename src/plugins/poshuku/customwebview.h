@@ -85,7 +85,7 @@ namespace Poshuku
 		void Print (bool preview);
 
 		QList<QAction*> GetActions (ActionArea) const override;
-		QUrl GetUrl () const;
+		QUrl GetUrl () const override;
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;

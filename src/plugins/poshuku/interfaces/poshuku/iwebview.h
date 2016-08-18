@@ -29,6 +29,7 @@
 
 #pragma once
 
+class QUrl;
 class QAction;
 
 template<typename>
@@ -49,6 +50,8 @@ namespace Poshuku
 		};
 
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;
+
+		virtual QUrl GetUrl () const = 0;
 	};
 }
 }
