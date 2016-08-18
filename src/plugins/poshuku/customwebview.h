@@ -86,6 +86,7 @@ namespace Poshuku
 
 		QList<QAction*> GetActions (ActionArea) const override;
 		QUrl GetUrl () const override;
+		void EvaluateJS (const QString&, const std::function<void (QVariant)>&);
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;

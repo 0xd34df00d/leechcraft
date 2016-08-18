@@ -215,6 +215,13 @@ namespace Poshuku
 		return url ();
 	}
 
+	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& callback)
+	{
+		const auto& res = page ()->mainFrame ()->evaluateJavaScript (js);
+		if (callback)
+			callback (res);
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
