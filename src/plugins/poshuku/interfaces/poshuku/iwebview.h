@@ -29,8 +29,11 @@
 
 #pragma once
 
+#include <functional>
+
 class QUrl;
 class QAction;
+class QString;
 
 template<typename>
 class QList;
@@ -52,6 +55,9 @@ namespace Poshuku
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;
 
 		virtual QUrl GetUrl () const = 0;
+
+		virtual void EvaluateJS (const QString& js,
+				const std::function<void (QVariant)>& handler = {}) = 0;
 	};
 }
 }
