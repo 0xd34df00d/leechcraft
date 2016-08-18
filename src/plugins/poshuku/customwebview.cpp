@@ -210,6 +210,11 @@ namespace Poshuku
 		assert (false);
 	}
 
+	QUrl CustomWebView::GetUrl () const
+	{
+		return url ();
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
