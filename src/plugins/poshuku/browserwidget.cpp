@@ -475,17 +475,9 @@ namespace Poshuku
 				this,
 				SLOT (updateNavHistory ()));
 		connect (WebView_,
-				SIGNAL (printRequested (QWebFrame*)),
-				this,
-				SLOT (handleViewPrint (QWebFrame*)));
-		connect (WebView_,
 				SIGNAL (closeRequested ()),
 				this,
 				SIGNAL (needToClose ()));
-		connect (WebView_->page (),
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 
 		connect (HistoryAction_,
 				SIGNAL (triggered (bool)),
