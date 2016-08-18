@@ -101,7 +101,7 @@ namespace Poshuku
 
 	void UrlEditButtonsManager::checkPageAsFavorite (const QString& url)
 	{
-		if (url != View_->url ().toString () &&
+		if (url != View_->GetUrl ().toString () &&
 				url != LineEdit_->text ())
 			return;
 
@@ -136,7 +136,7 @@ namespace Poshuku
 		const auto entityMgr = Core::Instance ().GetProxy ()->GetEntityManager ();
 
 		const auto& links = View_->page ()->mainFrame ()->findAllElements ("link");
-		const auto& mainFrameURL = View_->page ()->mainFrame ()->url ();
+		const auto& mainFrameURL = View_->GetUrl ();
 		bool inserted = false;
 		for (const auto& link : links)
 		{
@@ -220,7 +220,7 @@ namespace Poshuku
 
 	void UrlEditButtonsManager::updateBookmarksState ()
 	{
-		checkPageAsFavorite (View_->url ().toString ());
+		checkPageAsFavorite (View_->GetUrl ().toString ());
 	}
 }
 }
