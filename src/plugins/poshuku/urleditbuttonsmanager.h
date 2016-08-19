@@ -42,18 +42,20 @@ namespace Poshuku
 	class CustomWebView;
 	class ProgressLineEdit;
 
+	class IWebView;
+
 	class UrlEditButtonsManager : public QObject
 	{
 		Q_OBJECT
 
-		CustomWebView * const View_;
+		IWebView * const View_;
 		ProgressLineEdit * const LineEdit_;
 		QAction * const Add2Favorites_;
 
 		const std::shared_ptr<QMenu> ExternalLinks_;
 		QAction * const ExternalLinksAction_;
 	public:
-		UrlEditButtonsManager (CustomWebView*, ProgressLineEdit*, QAction*);
+		UrlEditButtonsManager (IWebView*, ProgressLineEdit*, QAction*);
 	private slots:
 		void checkPageAsFavorite (const QString&);
 

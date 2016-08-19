@@ -36,7 +36,7 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ientitymanager.h>
-#include "customwebview.h"
+#include "interfaces/poshuku/iwebview.h"
 #include "core.h"
 #include "progresslineedit.h"
 
@@ -44,9 +44,9 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	UrlEditButtonsManager::UrlEditButtonsManager (CustomWebView *view,
+	UrlEditButtonsManager::UrlEditButtonsManager (IWebView *view,
 			ProgressLineEdit *edit, QAction *add2favs)
-	: QObject { view }
+	: QObject { view->GetQWidget () }
 	, View_ { view }
 	, LineEdit_ { edit }
 	, Add2Favorites_ { add2favs }
@@ -70,11 +70,11 @@ namespace Poshuku
 				SIGNAL (textChanged (const QString&)),
 				this,
 				SLOT (checkPageAsFavorite (const QString&)));
-		connect (View_,
+		connect (View_->GetQWidget (),
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (updateBookmarksState ()));
-		connect (View_,
+		connect (View_->GetQWidget (),
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (checkLinkRels ()));
