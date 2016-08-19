@@ -103,7 +103,7 @@ namespace WebAccess
 	{
 		try
 		{
-			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_));
+			SM_ = std::make_shared<ServerManager> (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_);
 		}
 		catch (const std::exception& e)
 		{
