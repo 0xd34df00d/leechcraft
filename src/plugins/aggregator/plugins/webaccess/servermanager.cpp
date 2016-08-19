@@ -83,8 +83,7 @@ namespace WebAccess
 	ServerManager::ServerManager (IProxyObject *proxy,
 			ICoreProxy_ptr coreProxy,
 			Util::AddressesModelManager *manager)
-	: CoreProxy_ { coreProxy }
-	, Server_ { new Wt::WServer }
+	: Server_ { new Wt::WServer }
 	, AddrMgr_ { manager }
 	{
 		Server_->addEntryPoint (Wt::Application,
