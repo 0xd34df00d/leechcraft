@@ -84,6 +84,7 @@ namespace Poshuku
 
 		void Print (bool preview);
 
+		QWidget* GetQWidget () override;
 		QList<QAction*> GetActions (ActionArea) const override;
 		QUrl GetUrl () const override;
 		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;

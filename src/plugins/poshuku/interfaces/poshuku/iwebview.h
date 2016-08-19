@@ -34,6 +34,7 @@
 class QUrl;
 class QAction;
 class QString;
+class QWidget;
 
 template<typename>
 class QList;
@@ -57,6 +58,8 @@ namespace Poshuku
 		{
 			UrlBar
 		};
+
+		virtual QWidget* GetQWidget () = 0;
 
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;
 

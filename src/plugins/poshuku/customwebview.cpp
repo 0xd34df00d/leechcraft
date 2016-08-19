@@ -199,6 +199,11 @@ namespace Poshuku
 		PrintImpl (preview, page ()->mainFrame ());
 	}
 
+	QWidget* CustomWebView::GetQWidget ()
+	{
+		return this;
+	}
+
 	QList<QAction*> CustomWebView::GetActions (ActionArea area) const
 	{
 		switch (area)
