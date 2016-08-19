@@ -1050,24 +1050,6 @@ namespace Aggregator
 		browser->Open (url);
 	}
 
-	namespace
-	{
-		struct IsDateSuitable
-		{
-			QDateTime DateTime_;
-
-			IsDateSuitable (const QDateTime& dt)
-			: DateTime_ (dt)
-			{
-			}
-
-			bool operator() (const Item_ptr& it)
-			{
-				return it->PubDate_ < DateTime_;
-			}
-		};
-	};
-
 	void Core::handleJobFinished (int id)
 	{
 		if (!PendingJobs_.contains (id))
