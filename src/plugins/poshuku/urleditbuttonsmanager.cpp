@@ -88,10 +88,7 @@ namespace Poshuku
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[=]
-				{
-					LineEdit_->SetVisible (action, action->isEnabled ());
-				},
+				[=] { LineEdit_->SetVisible (action, action->isEnabled ()); },
 				action,
 				SIGNAL (changed ()),
 				action
