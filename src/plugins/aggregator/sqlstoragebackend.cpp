@@ -105,6 +105,8 @@ namespace Aggregator
 		}
 
 		InitializeTables ();
+
+		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
 
 	SQLStorageBackend::~SQLStorageBackend ()

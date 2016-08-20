@@ -31,6 +31,7 @@
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <util/sll/util.h>
 #include "storagebackend.h"
 
 namespace LeechCraft
@@ -41,6 +42,7 @@ namespace Aggregator
 	{
 		Q_OBJECT
 
+		Util::DefaultScopeGuard DBRemover_;
 		QSqlDatabase DB_;
 
 		const Type Type_;
