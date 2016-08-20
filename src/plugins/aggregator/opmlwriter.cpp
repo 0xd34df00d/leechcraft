@@ -112,6 +112,8 @@ namespace Aggregator
 			QDomDocument& doc,
 			const channels_shorts_t& channels) const
 	{
+		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+
 		QDomElement body = doc.createElement ("body");
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)
@@ -129,8 +131,7 @@ namespace Aggregator
 					boost::function<void (QDomElement&, const QString&)> (TagSetter));
 			QDomElement item = doc.createElement ("outline");
 			item.setAttribute ("title", i->Title_);
-			Feed_ptr feed = Core::Instance ().GetStorageBackend ()->
-					GetFeed (i->FeedID_);
+			Feed_ptr feed = sb->GetFeed (i->FeedID_);
 			item.setAttribute ("xmlUrl", feed->URL_);
 			item.setAttribute ("htmlUrl", i->Link_);
 			inserter.appendChild (item);

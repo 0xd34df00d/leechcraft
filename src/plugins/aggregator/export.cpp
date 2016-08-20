@@ -91,12 +91,12 @@ namespace Aggregator
 	
 	void Export::SetFeeds (const channels_shorts_t& channels)
 	{
+		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 		for (channels_shorts_t::const_iterator i = channels.begin (),
 				end = channels.end (); i != end; ++i)
 		{
 			QStringList strings;
-			Feed_ptr feed = Core::Instance ().GetStorageBackend ()->
-					GetFeed (i->FeedID_);
+			Feed_ptr feed = sb->GetFeed (i->FeedID_);
 			strings << i->Title_ << feed->URL_;
 	
 			QTreeWidgetItem *item =

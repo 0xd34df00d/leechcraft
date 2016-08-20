@@ -287,7 +287,7 @@ namespace Aggregator
 
 		auto model = static_cast<const ItemsListModel*> (mapped.model ());
 		ItemShort item = model->GetItem (mapped);
-		return Core::Instance ().GetStorageBackend ()->GetItem (item.ItemID_);
+		return Core::Instance ().MakeStorageBackendForThread ()->GetItem (item.ItemID_);
 	}
 
 	QToolBar* ItemsWidget::GetToolBar () const
@@ -456,7 +456,7 @@ namespace Aggregator
 	{
 		auto is = idx.data (ItemsListModel::ItemShortDescr).value<ItemShort> ();
 		is.Unread_ = !read;
-		Core::Instance ().GetStorageBackend ()->UpdateItem (is);
+		Core::Instance ().MakeStorageBackendForThread ()->UpdateItem (is);
 	}
 
 	bool ItemsWidget::IsItemRead (int item) const
@@ -1180,7 +1180,7 @@ namespace Aggregator
 
 	void ItemsWidget::on_ActionMarkItemAsImportant__triggered ()
 	{
-		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 
 		const bool mark = Impl_->ActionMarkItemAsImportant_->isChecked ();
 
@@ -1225,7 +1225,7 @@ namespace Aggregator
 			return;
 
 		Impl_->Ui_.Items_->clearSelection ();
-		Core::Instance ().GetStorageBackend ()->RemoveItems (ids);
+		Core::Instance ().MakeStorageBackendForThread ()->RemoveItems (ids);
 	}
 
 	void ItemsWidget::on_ActionPrevUnreadItem__triggered ()
@@ -1397,8 +1397,7 @@ namespace Aggregator
 		if (current.isValid ())
 		{
 			const int idx = GetItem (current)->ItemID_;
-			const QList<ITagsManager::tag_id>& tags = Core::Instance ()
-					.GetStorageBackend ()->GetItemTags (idx);
+			const auto& tags = Core::Instance ().MakeStorageBackendForThread ()->GetItemTags (idx);
 			Impl_->ActionMarkItemAsImportant_->setChecked (tags.contains ("_important"));
 		}
 
@@ -1498,7 +1497,7 @@ namespace Aggregator
 		const int section = Impl_->Ui_.SearchType_->currentIndex ();
 		if (section == 4)
 		{
-			StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+			const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 			Impl_->CurrentItemsModel_->Reset (sb->GetItemsForTag ("_important"));
 		}
 		else
