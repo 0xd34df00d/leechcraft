@@ -75,16 +75,16 @@ namespace Aggregator
 		void RemoveItems (const QSet<IDType_t>&);
 		void ItemDataUpdated (Item_ptr);
 
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
+		int columnCount (const QModelIndex& = QModelIndex ()) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = QModelIndex ()) const override;
 	public slots:
-		void reset (const IDType_t&);
-		void selected (const QModelIndex&);
+		void reset (const IDType_t&) override;
+		void selected (const QModelIndex&) override;
 	private slots:
 		void handleChannelRemoved (IDType_t);
 		void handleItemsRemoved (const QSet<IDType_t>&);
