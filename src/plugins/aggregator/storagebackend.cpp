@@ -57,11 +57,6 @@ namespace Aggregator
 		return file.readAll ();
 	}
 
-	StorageBackend::StorageBackend (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	StorageBackend_ptr StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;
