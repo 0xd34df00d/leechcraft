@@ -30,9 +30,11 @@
 #include "servermanager.h"
 #include <cstring>
 #include <QStringList>
+#include <QDir>
 #include <QtDebug>
 #include <Wt/WServer>
 #include <util/xsd/addressesmodelmanager.h>
+#include <util/sys/paths.h>
 #include "aggregatorapp.h"
 #include "xmlsettingsmanager.h"
 
@@ -126,6 +128,10 @@ namespace WebAccess
 		gen.AddParm ("--http-address", addr.first);
 		gen.AddParm ("--http-port", addr.second);
 		Server_->setServerConfiguration (gen.GetArgc (), gen.GetArgv ());
+
+		const auto& logPath = Util::CreateIfNotExists ("aggregator/webaccess")
+				.filePath ("wt.log");
+		Server_->logger ().setFile (logPath.toStdString ());
 
 		try
 		{
