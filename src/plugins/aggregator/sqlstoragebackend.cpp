@@ -2830,8 +2830,8 @@ namespace Aggregator
 		item->NumComments_ = query.value (8).toInt ();
 		item->CommentsLink_ = query.value (9).toString ();
 		item->CommentsPageLink_ = query.value (10).toString ();
-		item->Latitude_ = query.value (11).toString ().toDouble ();
-		item->Longitude_ = query.value (12).toString ().toDouble ();
+		item->Latitude_ = query.value (11).toDouble ();
+		item->Longitude_ = query.value (12).toDouble ();
 	}
 
 	void SQLStorageBackend::GetEnclosuresVersion5 (const QString& hash, const QString& title,
@@ -3134,8 +3134,8 @@ namespace Aggregator
 		item->NumComments_ = query.value (8).toInt ();
 		item->CommentsLink_ = query.value (9).toString ();
 		item->CommentsPageLink_ = query.value (10).toString ();
-		item->Latitude_ = query.value (11).toString ().toDouble ();
-		item->Longitude_ = query.value (12).toString ().toDouble ();
+		item->Latitude_ = query.value (11).toDouble ();
+		item->Longitude_ = query.value (12).toDouble ();
 		item->ChannelID_ = query.value (13).value<IDType_t> ();
 	}
 
