@@ -1329,8 +1329,7 @@ namespace Aggregator
 		if (!ItemFullSelector_.next ())
 			throw ItemNotFoundError ();
 
-		Item_ptr item (new Item (ItemFullSelector_.value (13).toInt (),
-				itemId));
+		auto item = std::make_shared<Item> (ItemFullSelector_.value (13).toInt (), itemId);
 		FillItem (ItemFullSelector_, item);
 		ItemFullSelector_.finish ();
 
