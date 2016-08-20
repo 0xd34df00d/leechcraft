@@ -44,8 +44,6 @@ namespace Aggregator
 {
 	ItemsListModel::ItemsListModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, CurrentRow_ (-1)
-	, CurrentChannel_ (-1)
 	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-important"))
 	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-unread"))
 	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-read"))

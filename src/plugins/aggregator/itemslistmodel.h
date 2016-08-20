@@ -50,8 +50,8 @@ namespace Aggregator
 
 		QStringList ItemHeaders_;
 		items_shorts_t CurrentItems_;
-		int CurrentRow_;
-		IDType_t CurrentChannel_;
+		int CurrentRow_ = -1;
+		IDType_t CurrentChannel_ = -1;
 
 		const QIcon StarredIcon_;
 		const QIcon UnreadIcon_;
