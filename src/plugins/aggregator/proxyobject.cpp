@@ -88,21 +88,21 @@ namespace Aggregator
 	{
 		FixFeedID (feed);
 
-		Core::Instance ().GetStorageBackend ()->AddFeed (feed);
+		Core::Instance ().MakeStorageBackendForThread ()->AddFeed (feed);
 	}
 
 	void ProxyObject::AddChannel (Channel_ptr channel)
 	{
 		FixChannelID (channel);
 
-		Core::Instance ().GetStorageBackend ()->AddChannel (channel);
+		Core::Instance ().MakeStorageBackendForThread ()->AddChannel (channel);
 	}
 
 	void ProxyObject::AddItem (Item_ptr item)
 	{
 		FixItemID (item);
 
-		Core::Instance ().GetStorageBackend ()->AddItem (item);
+		Core::Instance ().MakeStorageBackendForThread ()->AddItem (item);
 	}
 
 	QAbstractItemModel* ProxyObject::GetChannelsModel () const
@@ -114,30 +114,32 @@ namespace Aggregator
 	{
 		QList<Channel_ptr> result;
 
+		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
+
 		channels_shorts_t channels;
 		Core::Instance ().GetChannels (channels);
 		Q_FOREACH (ChannelShort cs, channels)
-			result << Core::Instance ().GetStorageBackend ()->GetChannel (cs.ChannelID_, cs.FeedID_);
+			result << sb->GetChannel (cs.ChannelID_, cs.FeedID_);
 
 		return result;
 	}
 
 	int ProxyObject::CountUnreadItems (IDType_t channel) const
 	{
-		return Core::Instance ().GetStorageBackend ()->GetUnreadItems (channel);
+		return Core::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (channel);
 	}
 
 	QList<Item_ptr> ProxyObject::GetChannelItems (IDType_t channelId) const
 	{
 		// TODO rework when we change items_container_t
 		items_container_t items;
-		Core::Instance ().GetStorageBackend ()->GetItems (items, channelId);
+		Core::Instance ().MakeStorageBackendForThread ()->GetItems (items, channelId);
 		return QList<Item_ptr>::fromVector (QVector<Item_ptr>::fromStdVector (items));
 	}
 
 	Item_ptr ProxyObject::GetItem (IDType_t id) const
 	{
-		return Core::Instance ().GetStorageBackend ()->GetItem (id);
+		return Core::Instance ().MakeStorageBackendForThread ()->GetItem (id);
 	}
 
 	void ProxyObject::SetItemRead (IDType_t id, bool read) const
