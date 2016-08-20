@@ -142,7 +142,7 @@ namespace Aggregator
 
 	void ProxyObject::SetItemRead (IDType_t id, bool read) const
 	{
-		const auto sb = Core::Instance ().GetStorageBackend ();
+		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 
 		auto item = sb->GetItem (id);
 		if (!item)
