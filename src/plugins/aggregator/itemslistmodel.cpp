@@ -47,6 +47,7 @@ namespace Aggregator
 	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-important"))
 	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-unread"))
 	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-read"))
+	, SB_ (Core::Instance ().MakeStorageBackendForThread ())
 	{
 		ItemHeaders_ << tr ("Name") << tr ("Date");
 
@@ -93,7 +94,7 @@ namespace Aggregator
 			return;
 
 		item.Unread_ = false;
-		Core::Instance ().GetStorageBackend ()->UpdateItem (item);
+		SB_->UpdateItem (item);
 	}
 
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
@@ -124,7 +125,7 @@ namespace Aggregator
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
-			Core::Instance ().GetStorageBackend ()->GetItems (CurrentItems_, channel);
+			SB_->GetItems (CurrentItems_, channel);
 
 		endResetModel ();
 	}
@@ -137,9 +138,8 @@ namespace Aggregator
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
-		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
 		for (const IDType_t& itemId : items)
-			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
+			CurrentItems_.push_back (SB_->GetItem (itemId)->ToShort ());
 
 		endResetModel ();
 	}
@@ -310,8 +310,7 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
 			IDType_t id = CurrentItems_ [index.row ()].ItemID_;
-			Item_ptr item = Core::Instance ()
-					.GetStorageBackend ()->GetItem (id);
+			Item_ptr item = SB_->GetItem (id);
 			QString result = QString ("<qt><strong>%1</strong><br />").arg (item->Title_);
 			if (item->Author_.size ())
 			{
@@ -374,8 +373,7 @@ namespace Aggregator
 				return QVariant ();
 
 			const auto& item = CurrentItems_ [index.row ()];
-			if (Core::Instance ().GetStorageBackend ()->
-					GetItemTags (item.ItemID_).contains ("_important"))
+			if (SB_->GetItemTags (item.ItemID_).contains ("_important"))
 				return StarredIcon_;
 
 			return item.Unread_ ? UnreadIcon_ : ReadIcon_;

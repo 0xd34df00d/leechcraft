@@ -37,6 +37,7 @@
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "item.h"
 #include "channel.h"
+#include "storagebackend.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,8 @@ namespace Aggregator
 		const QIcon StarredIcon_;
 		const QIcon UnreadIcon_;
 		const QIcon ReadIcon_;
+
+		const StorageBackend_ptr SB_;
 	public:
 		ItemsListModel (QObject* = 0);
 
