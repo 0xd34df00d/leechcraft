@@ -227,7 +227,6 @@ namespace Aggregator
 				const QString&,
 				const std::vector<bool>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
-		StorageBackend* GetStorageBackend () const;
 
 		StorageBackend_ptr MakeStorageBackendForThread () const;
 

@@ -998,11 +998,6 @@ namespace Aggregator
 		return JobHolderRepresentation_;
 	}
 
-	StorageBackend* Core::GetStorageBackend () const
-	{
-		return StorageBackend_.get ();
-	}
-
 	StorageBackend_ptr Core::MakeStorageBackendForThread () const
 	{
 		if (QThread::currentThread () == qApp->thread ())
