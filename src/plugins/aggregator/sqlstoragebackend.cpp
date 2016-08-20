@@ -3134,7 +3134,7 @@ namespace Aggregator
 		item->CommentsPageLink_ = query.value (10).toString ();
 		item->Latitude_ = query.value (11).toString ().toDouble ();
 		item->Longitude_ = query.value (12).toString ().toDouble ();
-		item->ChannelID_ = query.value (13).toString ().toDouble ();
+		item->ChannelID_ = query.value (13).toString ().value<IDType_t> ();
 	}
 
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)
