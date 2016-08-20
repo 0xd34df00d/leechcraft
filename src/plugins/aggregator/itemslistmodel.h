@@ -34,6 +34,7 @@
 #include <QSet>
 #include <QPair>
 #include <QIcon>
+#include <QThreadStorage>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "item.h"
 #include "channel.h"
@@ -58,7 +59,7 @@ namespace Aggregator
 		const QIcon UnreadIcon_;
 		const QIcon ReadIcon_;
 
-		const StorageBackend_ptr SB_;
+		mutable QThreadStorage<StorageBackend_ptr> SB_;
 	public:
 		ItemsListModel (QObject* = nullptr);
 
@@ -82,6 +83,8 @@ namespace Aggregator
 		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
 		QModelIndex parent (const QModelIndex&) const override;
 		int rowCount (const QModelIndex& = QModelIndex ()) const override;
+	private:
+		StorageBackend_ptr GetSB () const;
 	public slots:
 		void reset (const IDType_t&) override;
 		void selected (const QModelIndex&) override;
