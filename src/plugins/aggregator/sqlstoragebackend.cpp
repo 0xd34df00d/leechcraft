@@ -55,14 +55,14 @@ namespace Aggregator
 		QString strType;
 		switch (Type_)
 		{
-			case SBSQLite:
-				strType = "QSQLITE";
-				break;
-			case SBPostgres:
-				strType = "QPSQL";
-				break;
-			case SBMysql:
-				break;
+		case SBSQLite:
+			strType = "QSQLITE";
+			break;
+		case SBPostgres:
+			strType = "QPSQL";
+			break;
+		case SBMysql:
+			break;
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
@@ -70,36 +70,36 @@ namespace Aggregator
 
 		switch (Type_)
 		{
-			case SBSQLite:
-				{
-					QDir dir = QDir::home ();
-					dir.cd (".leechcraft");
-					dir.cd ("aggregator");
-					DB_.setDatabaseName (dir.filePath ("aggregator.db"));
-				}
-				break;
-			case SBPostgres:
-				{
-					DB_.setDatabaseName (XmlSettingsManager::Instance ()->
-							property ("PostgresDBName").toString ());
-					DB_.setHostName (XmlSettingsManager::Instance ()->
-							property ("PostgresHostname").toString ());
-					DB_.setPort (XmlSettingsManager::Instance ()->
-							property ("PostgresPort").toInt ());
-					DB_.setUserName (XmlSettingsManager::Instance ()->
-							property ("PostgresUsername").toString ());
-					DB_.setPassword (XmlSettingsManager::Instance ()->
-							property ("PostgresPassword").toString ());
-				}
-				break;
-			case SBMysql:
-				break;
+		case SBSQLite:
+		{
+			QDir dir = QDir::home ();
+			dir.cd (".leechcraft");
+			dir.cd ("aggregator");
+			DB_.setDatabaseName (dir.filePath ("aggregator.db"));
+			break;
+		}
+		case SBPostgres:
+		{
+			DB_.setDatabaseName (XmlSettingsManager::Instance ()->
+					property ("PostgresDBName").toString ());
+			DB_.setHostName (XmlSettingsManager::Instance ()->
+					property ("PostgresHostname").toString ());
+			DB_.setPort (XmlSettingsManager::Instance ()->
+					property ("PostgresPort").toInt ());
+			DB_.setUserName (XmlSettingsManager::Instance ()->
+					property ("PostgresUsername").toString ());
+			DB_.setPassword (XmlSettingsManager::Instance ()->
+					property ("PostgresPassword").toString ());
+			break;
+		}
+		case SBMysql:
+			break;
 		}
 
 		if (!DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO;
-			LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
+			Util::DBLock::DumpError (DB_.lastError ());
 			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
 						.arg (DB_.lastError ().text ())));
 		}
