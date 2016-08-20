@@ -43,7 +43,7 @@ namespace Aggregator
 
 		QSqlDatabase DB_;
 
-		Type Type_;
+		const Type Type_;
 							/** Returns:
 							 * - last_update
 							 *
