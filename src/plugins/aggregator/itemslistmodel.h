@@ -60,7 +60,7 @@ namespace Aggregator
 
 		const StorageBackend_ptr SB_;
 	public:
-		ItemsListModel (QObject* = 0);
+		ItemsListModel (QObject* = nullptr);
 
 		int GetSelectedRow () const;
 		const IDType_t& GetCurrentChannel () const;
