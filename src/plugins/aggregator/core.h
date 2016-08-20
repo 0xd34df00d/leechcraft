@@ -228,6 +228,9 @@ namespace Aggregator
 				const std::vector<bool>&) const;
 		JobHolderRepresentation* GetJobHolderRepresentation () const;
 		StorageBackend* GetStorageBackend () const;
+
+		StorageBackend_ptr MakeStorageBackendForThread () const;
+
 		void GetChannels (channels_shorts_t&) const;
 		void AddFeeds (const feeds_container_t&, const QString&);
 		void SetContextMenu (QMenu*);

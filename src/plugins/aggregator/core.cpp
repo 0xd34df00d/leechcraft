@@ -1003,6 +1003,27 @@ namespace Aggregator
 		return StorageBackend_.get ();
 	}
 
+	StorageBackend_ptr Core::MakeStorageBackendForThread () const
+	{
+		if (QThread::currentThread () == qApp->thread ())
+			return StorageBackend_;
+
+		const auto& strType = XmlSettingsManager::Instance ()->
+				property ("StorageType").toString ();
+		try
+		{
+			auto mgr = StorageBackend::Create (strType, "_AuxThread");
+			mgr->Prepare ();
+			return mgr;
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot create storage for auxiliary thread";
+			return {};
+		}
+	}
+
 	void Core::GetChannels (channels_shorts_t& channels) const
 	{
 		ids_t ids;
