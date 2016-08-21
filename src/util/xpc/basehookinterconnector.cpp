@@ -52,26 +52,16 @@ namespace Util
 		}
 
 #if QT_VERSION >= 0x050000
-		QHash<QByteArray, QMetaMethod> BuildHookSlots (const QObject *obj)
+		auto BuildHookSlots (const QObject *obj)
 		{
 			const auto objMo = obj->metaObject ();
 
-			QHash<QByteArray, QMetaMethod> hookSlots;
+			QHash<QByteArray, QList<QMetaMethod>> hookSlots;
 			for (int i = 0, size = objMo->methodCount (); i < size; ++i)
 			{
 				const auto& method = objMo->method (i);
-
-				if (!IsHookMethod (method))
-					continue;
-
-				const auto& name = method.name ();
-				if (hookSlots.contains (name))
-					qWarning () << Q_FUNC_INFO
-							<< obj
-							<< "has several hook methods with name"
-							<< name;
-
-				hookSlots [name] = method;
+				if (IsHookMethod (method))
+					hookSlots [method.name ()] << method;
 			}
 
 			return hookSlots;
@@ -107,7 +97,12 @@ namespace Util
 					continue;
 				}
 
-				if (!QMetaObject::checkConnectArgs (hookSlots [rcvName], rcvMethod))
+				const auto& sndMethods = hookSlots [rcvName];
+				if (std::none_of (sndMethods.begin (), sndMethods.end (),
+							[&rcvMethod] (const QMetaMethod& sndMethod)
+							{
+								return QMetaObject::checkConnectArgs (sndMethod, rcvMethod);
+							}))
 					qWarning () << Q_FUNC_INFO
 							<< "incompatible signatures for hook"
 							<< rcvName
