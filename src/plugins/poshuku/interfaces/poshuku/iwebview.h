@@ -65,6 +65,8 @@ namespace Poshuku
 
 		virtual QUrl GetUrl () const = 0;
 
+		virtual void SetContent (const QByteArray& data, const QByteArray& mime) = 0;
+
 		virtual void EvaluateJS (const QString& js,
 				const std::function<void (QVariant)>& handler = {}) = 0;
 	};

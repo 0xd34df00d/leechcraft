@@ -220,6 +220,11 @@ namespace Poshuku
 		return url ();
 	}
 
+	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime)
+	{
+		setContent (data, mime);
+	}
+
 	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& callback)
 	{
 		const auto& res = page ()->mainFrame ()->evaluateJavaScript (js);
