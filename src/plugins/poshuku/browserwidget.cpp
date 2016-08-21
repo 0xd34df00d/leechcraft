@@ -564,6 +564,11 @@ namespace Poshuku
 		return Ui_.URLFrame_->GetEdit ();
 	}
 
+	IWebView* BrowserWidget::GetWebView () const
+	{
+		return WebView_;
+	}
+
 	void BrowserWidget::InsertFindAction (QMenu *menu, const QString& text)
 	{
 		Find_->setData (text);

@@ -38,12 +38,16 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+	class IWebView;
+
 	class IBrowserWidget
 	{
 	public:
 		virtual ~IBrowserWidget () {}
 
 		virtual QLineEdit* GetURLEdit () const = 0;
+
+		virtual IWebView* GetWebView () const = 0;
 
 		virtual void InsertFindAction (QMenu *menu, const QString& text) = 0;
 

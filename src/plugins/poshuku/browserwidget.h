@@ -137,6 +137,7 @@ namespace Poshuku
 		CustomWebView* GetView () const;
 
 		QLineEdit* GetURLEdit () const override;
+		IWebView* GetWebView () const override;
 		void InsertFindAction (QMenu*, const QString&) override;
 		void AddStandardActions (QMenu*) override;
 
