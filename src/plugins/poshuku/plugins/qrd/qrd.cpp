@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "qrd.h"
-#include <qwebview.h>
 #include <QMessageBox>
 #include <QApplication>
 #include <QDesktopWidget>
@@ -84,13 +83,13 @@ namespace QRd
 	}
 
 	void Plugin::hookWebViewContextMenu (IHookProxy_ptr,
-			QWebView *view, QContextMenuEvent*, const QWebHitTestResult&,
+			IWebView *view, const ContextMenuInfo&,
 			QMenu *menu, WebViewCtxMenuStage menuBuildStage)
 	{
 		if (menuBuildStage != WVSAfterFinish)
 			return;
 
-		const auto& url = view->url ();
+		const auto& url = view->GetUrl ();
 		if (url.isEmpty ())
 			return;
 
