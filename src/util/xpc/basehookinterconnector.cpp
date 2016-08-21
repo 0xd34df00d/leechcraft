@@ -46,6 +46,11 @@ namespace Util
 
 	namespace
 	{
+		bool IsHookMethod (const QMetaMethod& method)
+		{
+			return method.parameterTypes ().value (0) == "LeechCraft::IHookProxy_ptr";
+		}
+
 #define LC_N(a) (QMetaObject::normalizedSignature(a))
 #define LC_TOSLOT(a) ('1' + QByteArray(a))
 #define LC_TOSIGNAL(a) ('2' + QByteArray(a))
@@ -57,9 +62,8 @@ namespace Util
 				QMetaMethod method = mo->method (i);
 				if (method.methodType () != QMetaMethod::Signal)
 					continue;
-				if (method.parameterTypes ().size () == 0)
-					continue;
-				if (method.parameterTypes ().at (0) != "LeechCraft::IHookProxy_ptr")
+
+				if (!IsHookMethod (method))
 					continue;
 
 #if QT_VERSION >= 0x050000
