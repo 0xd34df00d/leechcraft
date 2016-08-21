@@ -43,6 +43,8 @@ namespace LeechCraft
 namespace Poshuku
 {
 class IProxyObject;
+class IWebView;
+class IBrowserWidget;
 
 namespace SpeedDial
 {
@@ -57,8 +59,8 @@ namespace SpeedDial
 	{
 		Q_OBJECT
 
-		QWebView * const View_;
-		QObject * const BrowserWidget_;
+		IWebView * const View_;
+		IBrowserWidget * const BrowserWidget_;
 		ImageCache * const ImageCache_;
 		IProxyObject * const PoshukuProxy_;
 
@@ -66,7 +68,7 @@ namespace SpeedDial
 
 		int PendingImages_ = 0;
 	public:
-		ViewHandler (QWebView*, QObject*, ImageCache*, CustomSitesManager*, IProxyObject*);
+		ViewHandler (IBrowserWidget*, ImageCache*, CustomSitesManager*, IProxyObject*);
 	private:
 		void LoadStatistics ();
 		void WriteTables (const QList<QPair<QString, TopList_t>>&);
