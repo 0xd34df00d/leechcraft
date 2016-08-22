@@ -112,8 +112,8 @@ namespace Util
 							<< rcv;
 			}
 #else
-			Q_UNUSED (sender)
-			Q_UNUSED (receiver)
+			Q_UNUSED (snd)
+			Q_UNUSED (rcv)
 #endif
 		}
 
