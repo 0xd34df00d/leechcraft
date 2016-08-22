@@ -89,10 +89,7 @@ namespace CleanWeb
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
 		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 

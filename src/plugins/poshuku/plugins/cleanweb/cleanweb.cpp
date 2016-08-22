@@ -100,23 +100,9 @@ namespace CleanWeb
 		return icon;
 	}
 
-	QStringList CleanWeb::Provides () const
-	{
-		return QStringList ();
-	}
-
 	QStringList CleanWeb::Needs () const
 	{
-		return QStringList ("http");
-	}
-
-	QStringList CleanWeb::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void CleanWeb::SetProvider (QObject*, const QString&)
-	{
+		return { "http" };
 	}
 
 	Util::XmlSettingsDialog_ptr CleanWeb::GetSettingsDialog () const
