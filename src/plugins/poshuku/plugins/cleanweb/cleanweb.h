@@ -100,6 +100,13 @@ namespace CleanWeb
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
+		// Core hooks
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
+				QNetworkAccessManager *manager,
+				QNetworkAccessManager::Operation *op,
+				QIODevice **dev);
+
+		// Poshuku hooks
 		void hookExtension (LeechCraft::IHookProxy_ptr,
 				QWebPage*,
 				QWebPage::Extension,
@@ -108,10 +115,6 @@ namespace CleanWeb
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr,
 				QWebPage*,
 				QWebFrame*);
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
-				QNetworkAccessManager *manager,
-				QNetworkAccessManager::Operation *op,
-				QIODevice **dev);
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
