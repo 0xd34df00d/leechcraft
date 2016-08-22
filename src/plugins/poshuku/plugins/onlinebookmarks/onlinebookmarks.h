@@ -79,7 +79,7 @@ namespace OnlineBookmarks
 		void AddPlugin (QObject*);
 	public slots:
 		void initPlugin (QObject*);
-		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QWebView*, QObject*);
+		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr, QMenu*, QObject*);
 	signals:
 		void gotEntity (const LeechCraft::Entity&);
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);

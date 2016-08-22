@@ -310,7 +310,7 @@ namespace Poshuku
 			WindowMenus_ [view] << Util::CreateSeparator (this);
 		}
 		proxy.reset (new Util::DefaultHookProxy ());
-		emit hookMoreMenuFillEnd (proxy, moreMenu, WebView_, this);
+		emit hookMoreMenuFillEnd (proxy, moreMenu, this);
 
 		if (moreMenu->actions ().size ())
 		{

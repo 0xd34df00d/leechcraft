@@ -251,7 +251,6 @@ namespace Poshuku
 				QObject *browserWidget);
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
 				QObject *browserWidget);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
 				QWebView *view,
