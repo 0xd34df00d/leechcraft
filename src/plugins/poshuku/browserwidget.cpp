@@ -550,8 +550,7 @@ namespace Poshuku
 		TextZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomReset_"));
 
 		if (Own_)
-			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (),
-					WebView_, this);
+			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	CustomWebView* BrowserWidget::GetView () const

@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <util/util.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
 #include "viewhandler.h"
 #include "imagecache.h"
 #include "customsitesmanager.h"
@@ -100,7 +101,6 @@ namespace SpeedDial
 	}
 
 	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
-			QWebView *view,
 			QObject *browserWidget)
 	{
 		new ViewHandler { qobject_cast<IBrowserWidget*> (browserWidget), Cache_, CustomSites_, PoshukuProxy_ };

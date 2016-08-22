@@ -80,9 +80,7 @@ namespace SpeedDial
 	public slots:
 		void initPlugin (QObject*);
 
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
-				QWebView*,
-				QObject*);
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr, QObject*);
 	};
 }
 }

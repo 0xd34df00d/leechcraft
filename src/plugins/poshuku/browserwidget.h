@@ -237,7 +237,6 @@ namespace Poshuku
 
 		// Hook support
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,

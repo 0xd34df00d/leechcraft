@@ -149,7 +149,6 @@ namespace Poshuku
 		 * @param browserWidget The browser widget itself.
 		 */
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget);
 
 		/** @brief Called inside QWebPage::chooseFile().
