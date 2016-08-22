@@ -50,6 +50,8 @@ namespace Poshuku
 	class ProxyObject;
 	class Core;
 
+	class IWebView;
+
 	class PluginManager : public Util::BaseHookInterconnector
 	{
 		Q_OBJECT
