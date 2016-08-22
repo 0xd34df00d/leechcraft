@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
-#define PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QMap>
@@ -85,5 +85,3 @@ namespace Fua
 }
 }
 }
-
-#endif
