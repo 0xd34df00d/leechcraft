@@ -794,7 +794,7 @@ namespace Poshuku
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
+				LeechCraft::Poshuku::IWebView *view,
 				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);

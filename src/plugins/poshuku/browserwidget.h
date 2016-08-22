@@ -273,7 +273,7 @@ namespace Poshuku
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*,
+				LeechCraft::Poshuku::IWebView*,
 				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu*,
 				WebViewCtxMenuStage);

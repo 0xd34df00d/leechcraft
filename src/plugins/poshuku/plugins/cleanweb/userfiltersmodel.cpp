@@ -42,6 +42,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qstringwrappers.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "ruleoptiondialog.h"
 #include "lineparser.h"
 #include "core.h"
@@ -322,7 +323,7 @@ namespace CleanWeb
 		emit filtersChanged ();
 	}
 
-	void UserFiltersModel::BlockImage (const QUrl& blockUrl, QWebView *view)
+	void UserFiltersModel::BlockImage (const QUrl& blockUrl, IWebView *view)
 	{
 		if (!InitiateAdd (blockUrl.toString ()))
 			return;
@@ -330,7 +331,7 @@ namespace CleanWeb
 		QString js;
 		js += "var elems = document.querySelectorAll(\"img[src='" + blockUrl.toEncoded () + "']\");";
 		js += "for (var i = 0; i < elems.length; ++i) elems[i].remove();";
-		view->page ()->mainFrame ()->evaluateJavaScript (js);
+		view->EvaluateJS (js);
 	}
 }
 }

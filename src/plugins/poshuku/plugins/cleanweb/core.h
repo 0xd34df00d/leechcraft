@@ -50,6 +50,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IWebView;
+
 namespace CleanWeb
 {
 	class UserFiltersModel;
@@ -103,8 +105,8 @@ namespace CleanWeb
 				QWebPage::Extension,
 				const QWebPage::ExtensionOption*,
 				QWebPage::ExtensionReturn*);
-		void HandleContextMenu (const QWebHitTestResult&,
-				QWebView*, QMenu*,
+		void HandleContextMenu (const ContextMenuInfo&,
+				IWebView*, QMenu*,
 				WebViewCtxMenuStage);
 
 		bool ShouldReject (const QNetworkRequest&) const;

@@ -299,11 +299,11 @@ namespace CleanWeb
 		};
 	}
 
-	void Core::HandleContextMenu (const QWebHitTestResult& r,
-			QWebView *view, QMenu *menu,
+	void Core::HandleContextMenu (const ContextMenuInfo& r,
+			IWebView *view, QMenu *menu,
 			WebViewCtxMenuStage stage)
 	{
-		QUrl iurl = r.imageUrl ();
+		const auto& iurl = r.ImageUrl_;
 		if (stage == WVSAfterImage &&
 				!iurl.isEmpty ())
 		{

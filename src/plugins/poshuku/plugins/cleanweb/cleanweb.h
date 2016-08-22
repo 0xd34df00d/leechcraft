@@ -53,6 +53,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IWebView;
+
 namespace CleanWeb
 {
 	class Core;
@@ -116,9 +118,8 @@ namespace CleanWeb
 		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
 				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*,
-				QContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
+				LeechCraft::Poshuku::IWebView*,
+				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
 				WebViewCtxMenuStage);
 	};
 }
