@@ -855,7 +855,7 @@ namespace Poshuku
 
 	QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 	{
-		const auto& ua = Core::Instance ().GetUserAgent (url, this);
+		const auto& ua = Core::Instance ().GetUserAgent (url);
 		if (!ua.isEmpty ())
 			return ua;
 

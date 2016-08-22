@@ -494,10 +494,10 @@ namespace Poshuku
 		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
 	}
 
-	QString Core::GetUserAgent (const QUrl& url, const QWebPage *page) const
+	QString Core::GetUserAgent (const QUrl& url) const
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-		emit hookUserAgentForUrlRequested (proxy, url, page);
+		emit hookUserAgentForUrlRequested (proxy, url);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toString ();
 

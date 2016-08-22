@@ -114,7 +114,7 @@ namespace Fua
 	}
 
 	void FUA::hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
-			const QUrl& url, const QWebPage*)
+			const QUrl& url)
 	{
 		const auto& host = url.host ();
 		for (int i = 0; i < Model_->rowCount (); ++i)

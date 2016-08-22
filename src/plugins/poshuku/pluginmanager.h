@@ -737,8 +737,7 @@ namespace Poshuku
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
-				const QUrl& url,
-				const QWebPage* sourcePage);
+				const QUrl& url);
 
 		/** @brief Called when the given page begins constructing.
 		 *

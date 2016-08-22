@@ -146,7 +146,7 @@ namespace Poshuku
 		IShortcutProxy* GetShortcutProxy () const;
 
 		QIcon GetIcon (const QUrl&) const;
-		QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
+		QString GetUserAgent (const QUrl&) const;
 
 		bool IsUrlInFavourites (const QString&);
 		void RemoveFromFavorites (const QString&);
@@ -196,7 +196,7 @@ namespace Poshuku
 				QWebView *view,
 				const QUrl& url);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
-				const QUrl&, const QWebPage*) const;
+				const QUrl&) const;
 	};
 }
 }
