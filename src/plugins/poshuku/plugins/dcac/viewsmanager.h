@@ -58,9 +58,9 @@ namespace DCAC
 	public:
 		ViewsManager (IPluginsManager*, QObject* = nullptr);
 
-		void AddView (QWebView*);
+		void AddView (QWidget*);
 
-		QAction* GetEnableAction (QWebView*) const;
+		QAction* GetEnableAction (QWidget*) const;
 	private:
 		QList<Effect_t> GetCurrentEffects ();
 	private slots:
