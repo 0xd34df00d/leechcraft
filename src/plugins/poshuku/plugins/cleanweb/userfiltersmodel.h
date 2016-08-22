@@ -34,6 +34,8 @@
 #include <interfaces/core/icoreproxy.h>
 #include "filter.h"
 
+class QWebView;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -69,11 +71,11 @@ namespace CleanWeb
 
 		void ReadSettings ();
 		void WriteSettings ();
+
+		void BlockImage (const QUrl&, QWebView*);
 	private:
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
-	private slots:
-		void blockImage ();
 	signals:
 		void filtersChanged ();
 	};

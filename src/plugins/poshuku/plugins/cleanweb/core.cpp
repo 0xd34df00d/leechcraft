@@ -307,11 +307,14 @@ namespace CleanWeb
 		if (stage == WVSAfterImage &&
 				!iurl.isEmpty ())
 		{
-			QAction *action = menu->addAction (tr ("Block image..."),
-					UserFilters_,
-					SLOT (blockImage ()));
-			action->setProperty ("CleanWeb/URL", iurl);
-			action->setProperty ("CleanWeb/View", QVariant::fromValue<QObject*> (view));
+			const auto action = menu->addAction (tr ("Block image..."));
+			new Util::SlotClosure<Util::DeleteLaterPolicy>
+			{
+				[=] { UserFilters_->BlockImage (iurl, view); },
+				action,
+				SIGNAL (triggered ()),
+				action
+			};
 		}
 	}
 
