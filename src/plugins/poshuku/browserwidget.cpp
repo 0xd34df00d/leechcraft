@@ -278,7 +278,7 @@ namespace Poshuku
 
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
 		QMenu *moreMenu = new QMenu (this);
-		emit hookMoreMenuFillBegin (proxy, moreMenu, WebView_, this);
+		emit hookMoreMenuFillBegin (proxy, moreMenu, this);
 		if (!proxy->IsCancelled ())
 		{
 			const QString tools = "Poshuku";
