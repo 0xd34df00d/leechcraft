@@ -569,7 +569,6 @@ namespace Poshuku
 		 */
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
 				QObject *browserWidget);
 
 		/** @brief Called when the "More" menu ends filling.
