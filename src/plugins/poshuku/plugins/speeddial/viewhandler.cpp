@@ -29,10 +29,8 @@
 
 #include "viewhandler.h"
 #include <cmath>
-#include <QWebView>
 #include <QHash>
 #include <QtConcurrentRun>
-#include <QWebFrame>
 #include <QXmlStreamWriter>
 #include <QLineEdit>
 #include <util/util.h>
