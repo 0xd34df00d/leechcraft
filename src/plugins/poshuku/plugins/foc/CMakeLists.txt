@@ -2,6 +2,7 @@ include_directories (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
 set (FOC_SRCS
 	foc.cpp
+	xmlsettingsmanager.cpp
 	)
 set (FOC_RESOURCES
 	)
