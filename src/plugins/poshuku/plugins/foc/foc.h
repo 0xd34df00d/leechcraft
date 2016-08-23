@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 
 namespace LeechCraft
 {
@@ -42,11 +43,14 @@ namespace FOC
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FOC")
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -57,6 +61,8 @@ namespace FOC
 		QIcon GetIcon () const override;
 
 		QSet<QByteArray> GetPluginClasses () const override;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 	};
 }
 }

@@ -7,7 +7,7 @@ set (FOC_SRCS
 set (FOC_RESOURCES
 	)
 #CreateTrs ("poshuku_foc" "en;ru_RU" FOC_COMPILED_TRANSLATIONS)
-CreateTrsUpTarget("poshuku_foc" "en;ru_RU" "${FOC_SRCS}" "" "")
+CreateTrsUpTarget("poshuku_foc" "en;ru_RU" "${FOC_SRCS}" "" "poshukufocsettings.xml")
 
 QtAddResources (FOC_RCCS ${FOC_RESOURCES})
 add_library (leechcraft_poshuku_foc SHARED
@@ -19,5 +19,6 @@ target_link_libraries (leechcraft_poshuku_foc
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_poshuku_foc DESTINATION ${LC_PLUGINS_DEST})
+install (FILES poshukufocsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_poshuku_foc Widgets WebKitWidgets)

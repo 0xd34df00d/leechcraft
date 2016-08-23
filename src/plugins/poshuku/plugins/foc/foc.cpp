@@ -29,6 +29,8 @@
 
 #include "foc.h"
 #include <QIcon>
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -38,6 +40,8 @@ namespace FOC
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukufocsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -73,6 +77,11 @@ namespace FOC
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 }
 }
