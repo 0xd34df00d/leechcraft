@@ -77,3 +77,5 @@ namespace FOC
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_poshuku_foc, LeechCraft::Poshuku::FOC::Plugin);
