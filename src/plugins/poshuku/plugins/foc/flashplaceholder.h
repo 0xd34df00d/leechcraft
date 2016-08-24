@@ -29,42 +29,42 @@
 
 #pragma once
 
+#include <functional>
 #include <QWidget>
-#include <QStringList>
-#include "ui_flashonclickwhitelist.h"
+#include <QUrl>
+#include "ui_flashplaceholder.h"
 
-class QStandardItemModel;
+class QWebElement;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
-	class FlashOnClickWhitelist : public QWidget
+	class FlashOnClickWhitelist;
+
+	class FlashPlaceHolder : public QWidget
 	{
 		Q_OBJECT
+		Q_PROPERTY (bool swapping READ IsSwapping)
 
-		Ui::FlashOnClickWhitelist Ui_;
-		QStandardItemModel *Model_;
+		FlashOnClickWhitelist * const WL_;
+
+		Ui::FlashPlaceHolder Ui_;
+		QUrl URL_;
+		bool Swapping_ = false;
 	public:
-		FlashOnClickWhitelist (QWidget* = 0);
+		FlashPlaceHolder (const QUrl&, FlashOnClickWhitelist*, QWidget* = 0);
 
-		QStringList GetWhitelist () const;
-		bool Matches (const QString&) const;
-		void Add (const QString&);
-	private slots:
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_Remove__released ();
-
-		void accept ();
-		void reject ();
+		bool IsSwapping () const;
 	private:
-		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
-
-		void ReadSettings ();
-		void SaveSettings ();
+		void PerformWithElements (const std::function<void (QWebElement)>&);
+	private slots:
+		void handleLoadFlash ();
+		void handleHideFlash ();
+		void handleContextMenu ();
+		void handleAddWhitelist ();
 	};
 }
 }

@@ -41,7 +41,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/istartupwizard.h>
-#include <interfaces/poshuku/iwebplugin.h>
 #include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -58,8 +57,6 @@ class IWebView;
 namespace CleanWeb
 {
 	class Core;
-	class FlashOnClickPlugin;
-	class FlashOnClickWhitelist;
 
 	class CleanWeb : public QObject
 					, public IInfo
@@ -74,9 +71,6 @@ namespace CleanWeb
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
 
 		ICoreProxy_ptr Proxy_;
-
-		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
-		FlashOnClickWhitelist *FlashOnClickWhitelist_;
 
 		std::shared_ptr<Core> Core_;
 
@@ -115,8 +109,6 @@ namespace CleanWeb
 		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr,
 				QWebPage*,
 				QWebFrame*);
-		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-				QList<IWebPlugin*>&);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
 				LeechCraft::Poshuku::IWebView*,
 				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,

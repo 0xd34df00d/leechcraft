@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
 	class FlashOnClickWhitelist;
 

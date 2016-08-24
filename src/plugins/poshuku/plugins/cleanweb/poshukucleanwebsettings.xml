@@ -30,12 +30,5 @@
 			</item>
 			<item type="customwidget" name="SubscriptionsManager" label="own" />
 		</tab>
-		<tab>
-			<label value="FlashOnClick" />
-			<item type="groupbox" checkable="true" default="false" property="EnableFlashOnClick">
-				<label value="Enable FlashOnClick" />
-				<item type="customwidget" name="FlashOnClickWhitelist" label="own" />
-			</item>
-		</tab>
 	</page>
 </settings>

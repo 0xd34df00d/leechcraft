@@ -38,8 +38,6 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "subscriptionsmanagerwidget.h"
-#include "flashonclickplugin.h"
-#include "flashonclickwhitelist.h"
 #include "userfilters.h"
 #include "wizardgenerator.h"
 #include "subscriptionsmodel.h"
@@ -59,8 +57,6 @@ namespace CleanWeb
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");
 
-		FlashOnClickWhitelist_ = new FlashOnClickWhitelist;
-
 		const auto model = new SubscriptionsModel { this };
 		const auto ufm = new UserFiltersModel { proxy, this };
 		Core_ = std::make_shared<Core> (model, ufm, proxy);
@@ -68,7 +64,6 @@ namespace CleanWeb
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 				new SubscriptionsManagerWidget (Core_.get (), model));
 		SettingsDialog_->SetCustomWidget ("UserFilters", new UserFilters (ufm));
-		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist", FlashOnClickWhitelist_);
 	}
 
 	void CleanWeb::SecondInit ()
@@ -133,14 +128,6 @@ namespace CleanWeb
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
-	}
-
-	void CleanWeb::hookWebPluginFactoryReload (IHookProxy_ptr, QList<IWebPlugin*>& plugins)
-	{
-		if (!FlashOnClickPlugin_)
-			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (Proxy_, FlashOnClickWhitelist_);
-
-		plugins << FlashOnClickPlugin_.get ();
 	}
 
 	void CleanWeb::hookInitialLayoutCompleted (IHookProxy_ptr, QWebPage *page, QWebFrame *frame)

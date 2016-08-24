@@ -27,63 +27,45 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "flashonclickplugin.h"
-#include <algorithm>
-#include <QDebug>
-#include <interfaces/poshuku/iflashoverrider.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include "xmlsettingsmanager.h"
-#include "flashplaceholder.h"
-#include "flashonclickwhitelist.h"
+#pragma once
+
+#include <QWidget>
+#include <QStringList>
+#include "ui_flashonclickwhitelist.h"
+
+class QStandardItemModel;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
-	FlashOnClickPlugin::FlashOnClickPlugin (const ICoreProxy_ptr& proxy,
-			FlashOnClickWhitelist *wl, QObject *parent)
-	: QObject { parent }
-	, Proxy_ { proxy }
-	, WL_ { wl }
+	class FlashOnClickWhitelist : public QWidget
 	{
-	}
+		Q_OBJECT
 
-	QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
-	{
-		if (isq)
-			throw "I want to be anonymous";
+		Ui::FlashOnClickWhitelist Ui_;
+		QStandardItemModel *Model_;
+	public:
+		FlashOnClickWhitelist (QWidget* = 0);
 
-		QWebPluginFactory::Plugin result;
-		result.name = "FlashOnClickPlugin";
-		QWebPluginFactory::MimeType mime;
-		mime.fileExtensions << "swf";
-		mime.name = "application/x-shockwave-flash";
-		result.mimeTypes << mime;
-		return result;
-	}
+		QStringList GetWhitelist () const;
+		bool Matches (const QString&) const;
+		void Add (const QString&);
+	private slots:
+		void on_Add__released ();
+		void on_Modify__released ();
+		void on_Remove__released ();
 
-	QWidget* FlashOnClickPlugin::Create (const QString&,
-			const QUrl& url,
-			const QStringList&,
-			const QStringList&)
-	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("EnableFlashOnClick").toBool ())
-			return nullptr;
+		void accept ();
+		void reject ();
+	private:
+		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
 
-		if (WL_->Matches (url.toString ()))
-			return nullptr;
-
-		const auto& overs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ();
-		if (std::any_of (overs.begin (), overs.end (),
-					[&url] (IFlashOverrider *plugin) { return plugin->WouldOverrideFlash (url); }))
-			return nullptr;
-
-		return new FlashPlaceHolder { url, WL_ };
-	}
+		void ReadSettings ();
+		void SaveSettings ();
+	};
 }
 }
 }
