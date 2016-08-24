@@ -5,7 +5,7 @@ import org.LC.common 1.0
 Rectangle {
     id: notifArea
     width: 450
-    height: Math.min(200, listView.count * 61)
+    height: Math.min(600, listView.contentHeight)
     smooth: true
     radius: 5
     gradient: Gradient {
