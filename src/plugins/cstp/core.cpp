@@ -658,7 +658,8 @@ namespace CSTP
 					"org.LeechCraft.CSTP",
 					AN::CatDownloads,
 					err ? AN::TypeDownloadError : AN::TypeDownloadFinished,
-					"org.LC.Plugins.CSTP.DLFinished/" + url, QStringList (QUrl (url).host ()));
+					"org.LC.Plugins.CSTP.DLFinished/" + url,
+					QStringList { QUrl { url }.host (), filename });
 			if (!err)
 			{
 				auto nah = new Util::NotificationActionHandler (e);
