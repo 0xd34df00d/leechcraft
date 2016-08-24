@@ -48,7 +48,7 @@ namespace FOC
 		Ui::FlashOnClickWhitelist Ui_;
 		QStandardItemModel *Model_;
 	public:
-		FlashOnClickWhitelist (QWidget* = 0);
+		FlashOnClickWhitelist (QWidget* = nullptr);
 
 		QStringList GetWhitelist () const;
 		bool Matches (const QString&) const;
@@ -61,7 +61,7 @@ namespace FOC
 		void accept ();
 		void reject ();
 	private:
-		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
+		void AddImpl (QString = {}, const QModelIndex& = {});
 
 		void ReadSettings ();
 		void SaveSettings ();
