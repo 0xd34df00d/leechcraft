@@ -31,6 +31,8 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
+#include "flashonclickplugin.h"
+#include "flashonclickwhitelist.h"
 
 namespace LeechCraft
 {
@@ -38,10 +40,15 @@ namespace Poshuku
 {
 namespace FOC
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		Proxy_ = proxy;
+
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukufocsettings.xml");
+
+		FlashOnClickWhitelist_ = new FlashOnClickWhitelist;
+		XSD_->SetCustomWidget ("FlashOnClickWhitelist", FlashOnClickWhitelist_);
 	}
 
 	void Plugin::SecondInit ()
@@ -82,6 +89,14 @@ namespace FOC
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	void Plugin::hookWebPluginFactoryReload (IHookProxy_ptr, QList<IWebPlugin*>& plugins)
+	{
+		if (!FlashOnClickPlugin_)
+			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (Proxy_, FlashOnClickWhitelist_);
+
+		plugins << FlashOnClickPlugin_.get ();
 	}
 }
 }

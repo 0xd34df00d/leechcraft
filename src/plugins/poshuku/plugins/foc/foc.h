@@ -33,6 +33,8 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/iwebplugin.h>
 
 namespace LeechCraft
 {
@@ -40,6 +42,9 @@ namespace Poshuku
 {
 namespace FOC
 {
+	class FlashOnClickPlugin;
+	class FlashOnClickWhitelist;
+
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
@@ -50,7 +55,11 @@ namespace FOC
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FOC")
 
+		ICoreProxy_ptr Proxy_;
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
+		FlashOnClickWhitelist *FlashOnClickWhitelist_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -63,6 +72,9 @@ namespace FOC
 		QSet<QByteArray> GetPluginClasses () const override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
+	public slots:
+		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+				QList<IWebPlugin*>&);
 	};
 }
 }
