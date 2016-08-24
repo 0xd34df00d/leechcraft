@@ -88,6 +88,10 @@ Rectangle {
                     text: extendedText
                     color: colorProxy.color_TextBox_TextColor
 
+                    wrapMode: Text.Wrap
+                    elide: Text.ElideRight
+                    maximumLineCount: 4
+
                     anchors.top: parent.top
                     anchors.left: eventPic.right
                     anchors.leftMargin: 4
