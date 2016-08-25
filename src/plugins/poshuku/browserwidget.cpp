@@ -276,7 +276,7 @@ namespace Poshuku
 
 		ToolBar_->addAction (ReloadStop_);
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QMenu *moreMenu = new QMenu (this);
 		emit hookMoreMenuFillBegin (proxy, moreMenu, this);
 		if (!proxy->IsCancelled ())
@@ -309,7 +309,7 @@ namespace Poshuku
 			WindowMenus_ [view] << TextZoomReset_;
 			WindowMenus_ [view] << Util::CreateSeparator (this);
 		}
-		proxy.reset (new Util::DefaultHookProxy ());
+		proxy = std::make_shared<Util::DefaultHookProxy> ();
 		emit hookMoreMenuFillEnd (proxy, moreMenu, this);
 
 		if (moreMenu->actions ().size ())
