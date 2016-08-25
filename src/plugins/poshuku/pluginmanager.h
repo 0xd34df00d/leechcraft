@@ -147,7 +147,6 @@ namespace Poshuku
 		 * initialized.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param view The QWebView of the browser widget.
 		 * @param browserWidget The browser widget itself.
 		 */
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
@@ -551,7 +550,7 @@ namespace Poshuku
 		/** @brief Called when the "More" menu begins filling.
 		 *
 		 * This hook is called when the "More" menu begins filling for
-		 * the given webView in the given browserWidget. The hook may
+		 * the given web view in the given browserWidget. The hook may
 		 * add new items to the menu, for example. Please note that the
 		 * menu would be empty before calling the hook, but if another
 		 * hook added items to it before your one, your hook would get
@@ -564,8 +563,7 @@ namespace Poshuku
 		 *
 		 * @param proxy The standard hook proxy object.
 		 * @param menu The menu that's going to be filled.
-		 * @param webView The QWebView the menu is associated with.
-		 * @param browserWidget The browser widget with the webView.
+		 * @param browserWidget The corresponding browser widget.
 		 *
 		 * @sa hookMoreMenuFillEnd()
 		 */
@@ -581,8 +579,7 @@ namespace Poshuku
 		 *
 		 * @param proxy The standard hook proxy object.
 		 * @param menu The menu that's finishing being filled.
-		 * @param webView The QWebView the menu is associated with.
-		 * @param browserWidget The browser widget containing webView.
+		 * @param browserWidget The corresponding browser widget.
 		 *
 		 * @sa hookMoreMenuFillBegin()
 		 */
@@ -787,7 +784,7 @@ namespace Poshuku
 		 * multiple times for the given menu.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param view The QWebView for which the context menu is
+		 * @param view The web view for which the context menu is
 		 * requested.
 		 * @param hitTestResult The structure describing the context menu
 		 * mouse hit.
