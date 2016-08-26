@@ -197,7 +197,6 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
-		void handleViewPrint (QWebFrame*);
 		void handleScreenSave ();
 		void handleViewSources ();
 		void handleSavePage ();
