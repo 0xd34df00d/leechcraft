@@ -223,11 +223,22 @@ namespace Poshuku
 
 	QAction* CustomWebView::GetPageAction (PageAction action) const
 	{
+#define ACT(x) \
+		case PageAction::x: \
+			return pageAction (QWebPage::x);
+
 		switch (action)
 		{
-		case PageAction::Reload:
-			return pageAction (QWebPage::Reload);
+		ACT (Reload)
+		ACT (Stop)
+		ACT (Back)
+		ACT (Forward)
+		ACT (Cut)
+		ACT (Copy)
+		ACT (Paste)
 		}
+
+#undef ACT
 
 		assert (false);
 	}
