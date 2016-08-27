@@ -60,9 +60,16 @@ namespace Poshuku
 			UrlBar
 		};
 
+		enum class PageAction
+		{
+			Reload
+		};
+
 		virtual QWidget* GetQWidget () = 0;
 
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;
+
+		virtual QAction* GetPageAction (PageAction) const = 0;
 
 		virtual QString GetTitle () const = 0;
 		virtual QUrl GetUrl () const = 0;

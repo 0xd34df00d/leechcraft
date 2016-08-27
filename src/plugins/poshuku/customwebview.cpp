@@ -221,6 +221,17 @@ namespace Poshuku
 		assert (false);
 	}
 
+	QAction* CustomWebView::GetPageAction (PageAction action) const
+	{
+		switch (action)
+		{
+		case PageAction::Reload:
+			return pageAction (QWebPage::Reload);
+		}
+
+		assert (false);
+	}
+
 	QString CustomWebView::GetTitle () const
 	{
 		return title ();

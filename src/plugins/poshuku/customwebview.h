@@ -67,6 +67,9 @@ namespace Poshuku
 
 		QWidget* GetQWidget () override;
 		QList<QAction*> GetActions (ActionArea) const override;
+
+		QAction* GetPageAction (PageAction) const override;
+
 		QString GetTitle () const override;
 		QUrl GetUrl () const override;
 		QString GetHumanReadableUrl () const override;
