@@ -64,7 +64,9 @@ namespace Poshuku
 
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;
 
+		virtual QString GetTitle () const = 0;
 		virtual QUrl GetUrl () const = 0;
+		virtual QString GetHumanReadableUrl () const = 0;
 
 		virtual void SetContent (const QByteArray& data, const QByteArray& mime) = 0;
 

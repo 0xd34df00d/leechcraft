@@ -177,7 +177,7 @@ namespace Poshuku
 		QWebView::load (req, op, ba);
 	}
 
-	QString CustomWebView::URLToProperString (const QUrl& url)
+	QString CustomWebView::URLToProperString (const QUrl& url) const
 	{
 		QString string = url.toString ();
 		QWebElement equivs = page ()->mainFrame ()->
@@ -220,9 +220,19 @@ namespace Poshuku
 		assert (false);
 	}
 
+	QString CustomWebView::GetTitle () const
+	{
+		return title ();
+	}
+
 	QUrl CustomWebView::GetUrl () const
 	{
 		return url ();
+	}
+
+	QString CustomWebView::GetHumanReadableUrl () const
+	{
+		return URLToProperString (url ());
 	}
 
 	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime)

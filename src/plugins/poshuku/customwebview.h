@@ -57,7 +57,7 @@ namespace Poshuku
 		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
 
 		IBrowserWidget *Browser_;
-		QString PreviousEncoding_;
+		mutable QString PreviousEncoding_;
 
 		std::shared_ptr<QWebInspector> WebInspector_;
 
@@ -65,6 +65,14 @@ namespace Poshuku
 	public:
 		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
+		QWidget* GetQWidget () override;
+		QList<QAction*> GetActions (ActionArea) const override;
+		QString GetTitle () const override;
+		QUrl GetUrl () const override;
+		QString GetHumanReadableUrl () const override;
+
+		void SetContent (const QByteArray&, const QByteArray&) override;
+		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
 
 		QPoint GetScrollPosition () const override;
 		void SetScrollPosition (const QPoint&) override;
@@ -83,16 +91,9 @@ namespace Poshuku
 		 * @param[in] url The possibly non-UTF-8 URL.
 		 * @return The \em url converted to Unicode.
 		 */
-		QString URLToProperString (const QUrl& url);
+		QString URLToProperString (const QUrl& url) const;
 
 		void Print (bool preview);
-
-		QWidget* GetQWidget () override;
-		QList<QAction*> GetActions (ActionArea) const override;
-		QUrl GetUrl () const override;
-
-		void SetContent (const QByteArray&, const QByteArray&) override;
-		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;
