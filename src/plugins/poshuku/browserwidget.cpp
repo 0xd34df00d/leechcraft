@@ -676,7 +676,7 @@ namespace Poshuku
 		if (!url.isEmpty () && url.isValid ())
 		{
 			HtmlMode_ = false;
-			WebView_->Load (url);
+			WebView_->Load (url, {});
 		}
 	}
 
@@ -1417,7 +1417,7 @@ namespace Poshuku
 			w.writeEndElement ();
 		w.writeEndDocument ();
 
-		GetView ()->setHtml (formatted, WebView_->url ());
+		WebView_->SetContent (formatted.toUtf8 (), "text/html");
 	}
 
 	namespace
@@ -1530,7 +1530,7 @@ namespace Poshuku
 				}
 			}
 
-			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_); });
+			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_, {}); });
 			addAction (tr ("Open in new &tab"),
 					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
 			menu->addSeparator ();
@@ -1559,7 +1559,7 @@ namespace Poshuku
 		{
 			if (!menu->isEmpty ())
 				menu->addSeparator ();
-			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_); });
+			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_, {}); });
 			addWebAction (QWebPage::OpenImageInNewWindow);
 			menu->addSeparator ();
 			addWebAction (QWebPage::DownloadImageToDisk);
@@ -1610,7 +1610,7 @@ namespace Poshuku
 	{
 		if (!OnLoadPos_.isNull ())
 		{
-			GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
+			WebView_->SetScrollPosition (OnLoadPos_);
 			OnLoadPos_ = QPoint ();
 		}
 	}
@@ -1867,7 +1867,7 @@ namespace Poshuku
 
 	void BrowserWidget::loadURL (const QUrl& url)
 	{
-		WebView_->Load (url);
+		WebView_->Load (url, {});
 	}
 
 	void BrowserWidget::SetSplitterSizes (int currentIndex)
