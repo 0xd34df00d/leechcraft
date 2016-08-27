@@ -377,7 +377,7 @@ namespace Poshuku
 	CustomWebView* Core::MakeWebView (bool invert)
 	{
 		if (!Initialized_)
-			return 0;
+			return nullptr;
 
 		bool raise = true;
 		if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
@@ -426,9 +426,8 @@ namespace Poshuku
 
 	void Core::ReloadAll ()
 	{
-		Q_FOREACH (BrowserWidget *widget, Widgets_)
-			widget->GetView ()->
-					pageAction (QWebPage::Reload)->trigger ();
+		for (const auto widget : Widgets_)
+			widget->GetView ()->pageAction (QWebPage::Reload)->trigger ();
 	}
 
 	FavoritesModel* Core::GetFavoritesModel () const
