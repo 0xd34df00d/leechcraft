@@ -4,7 +4,7 @@ import org.LC.common 1.0
 
 Rectangle {
     id: notifArea
-    width: 450
+    width: 550
     height: Math.min(600, listView.contentHeight)
     smooth: true
     radius: 5
