@@ -237,6 +237,16 @@ namespace Poshuku
 			callback (res);
 	}
 
+	QPoint CustomWebView::GetScrollPosition () const
+	{
+		return page ()->mainFrame ()->scrollPosition ();
+	}
+
+	void CustomWebView::SetScrollPosition (const QPoint& point)
+	{
+		page ()->mainFrame ()->setScrollPosition (point);
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());

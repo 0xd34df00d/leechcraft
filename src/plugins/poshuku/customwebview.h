@@ -65,6 +65,9 @@ namespace Poshuku
 	public:
 		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
+
+		QPoint GetScrollPosition () const override;
+		void SetScrollPosition (const QPoint&) override;
 		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QUrl&, QString = QString ());
 		void Load (const QNetworkRequest&,
