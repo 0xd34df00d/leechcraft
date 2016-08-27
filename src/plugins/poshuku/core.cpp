@@ -427,7 +427,8 @@ namespace Poshuku
 	void Core::ReloadAll ()
 	{
 		for (const auto widget : Widgets_)
-			widget->GetView ()->pageAction (QWebPage::Reload)->trigger ();
+			if (const auto act = widget->GetWebView ()->GetPageAction (IWebView::PageAction::Reload))
+				act->trigger ();
 	}
 
 	FavoritesModel* Core::GetFavoritesModel () const
