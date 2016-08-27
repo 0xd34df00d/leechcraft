@@ -954,7 +954,7 @@ namespace Poshuku
 	void BrowserWidget::handleIconChanged ()
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookIconChanged (proxy, WebView_->page (), this);
+		emit hookIconChanged (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1619,7 +1619,7 @@ namespace Poshuku
 	void BrowserWidget::handleLoadProgress (int p)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookLoadProgress (proxy, WebView_->page (), this, p);
+		emit hookLoadProgress (proxy, this, p);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1666,7 +1666,6 @@ namespace Poshuku
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookNotifyLoadFinished (proxy,
-				WebView_,
 				this,
 				ok,
 				NotifyWhenFinished_->isChecked (),

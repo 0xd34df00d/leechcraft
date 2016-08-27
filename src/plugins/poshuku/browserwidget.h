@@ -235,10 +235,8 @@ namespace Poshuku
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget);
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget,
 				int progress);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
@@ -248,7 +246,6 @@ namespace Poshuku
 				QMenu *menu,
 				QObject *browserWidget);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
