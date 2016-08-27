@@ -71,13 +71,15 @@ namespace Poshuku
 		QUrl GetUrl () const override;
 		QString GetHumanReadableUrl () const override;
 
+		void Load (const QUrl&, const QString&) override;
+
 		void SetContent (const QByteArray&, const QByteArray&) override;
 		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
 
 		QPoint GetScrollPosition () const override;
 		void SetScrollPosition (const QPoint&) override;
+
 		void SetBrowserWidget (IBrowserWidget*);
-		void Load (const QUrl&, QString = QString ());
 		void Load (const QNetworkRequest&,
 				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
 				const QByteArray& = QByteArray ());

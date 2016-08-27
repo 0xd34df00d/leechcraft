@@ -68,6 +68,8 @@ namespace Poshuku
 		virtual QUrl GetUrl () const = 0;
 		virtual QString GetHumanReadableUrl () const = 0;
 
+		virtual void Load (const QUrl& url, const QString& title = {}) = 0;
+
 		virtual void SetContent (const QByteArray& data, const QByteArray& mime) = 0;
 
 		virtual void EvaluateJS (const QString& js,

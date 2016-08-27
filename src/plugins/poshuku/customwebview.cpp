@@ -138,7 +138,7 @@ namespace Poshuku
 		Browser_ = widget;
 	}
 
-	void CustomWebView::Load (const QUrl& url, QString title)
+	void CustomWebView::Load (const QUrl& url, const QString& title)
 	{
 		if (url.isEmpty () || !url.isValid ())
 			return;
@@ -163,10 +163,11 @@ namespace Poshuku
 			return;
 		}
 
-		if (title.isEmpty ())
-			title = tr ("Loading...");
 		remakeURL (url);
-		emit titleChanged (title);
+		if (title.isEmpty ())
+			emit titleChanged (tr ("Loading..."));
+		else
+			emit titleChanged (title);
 		load (url);
 	}
 
