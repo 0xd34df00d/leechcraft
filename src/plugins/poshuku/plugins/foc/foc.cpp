@@ -30,6 +30,7 @@
 #include "foc.h"
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/util.h>
 #include "xmlsettingsmanager.h"
 #include "flashonclickplugin.h"
 #include "flashonclickwhitelist.h"
@@ -43,6 +44,8 @@ namespace FOC
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		Util::InstallTranslator ("poshuku_foc");
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukufocsettings.xml");
