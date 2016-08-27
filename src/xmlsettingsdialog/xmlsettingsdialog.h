@@ -53,7 +53,7 @@ namespace Util
 {
 	class BaseSettingsManager;
 
-	class XmlSettingsDialog : public QObject
+	class XMLSETTINGSMANAGER_API XmlSettingsDialog : public QObject
 	{
 		Q_OBJECT
 
@@ -81,13 +81,13 @@ namespace Util
 			QPair<bool, QString> SpecialValue_;
 		};
 
-		XMLSETTINGSMANAGER_API XmlSettingsDialog ();
-		XMLSETTINGSMANAGER_API virtual ~XmlSettingsDialog ();
+		XmlSettingsDialog ();
+		virtual ~XmlSettingsDialog ();
 
-		XMLSETTINGSMANAGER_API void RegisterObject (BaseSettingsManager*, const QString&);
-		XMLSETTINGSMANAGER_API BaseSettingsManager* GetManagerObject () const;
+		void RegisterObject (BaseSettingsManager*, const QString&);
+		BaseSettingsManager* GetManagerObject () const;
 
-		XMLSETTINGSMANAGER_API QWidget* GetWidget () const;
+		QWidget* GetWidget () const;
 
 		/** @brief Returns the current XML.
 		 *
@@ -96,7 +96,7 @@ namespace Util
 		 *
 		 * @return String with the current XML.
 		 */
-		XMLSETTINGSMANAGER_API QString GetXml () const;
+		QString GetXml () const;
 
 		/** @brief Sets the settings to XML's ones.
 		 *
@@ -104,9 +104,9 @@ namespace Util
 		 *
 		 * @param[in] xml The XML to take data from.
 		 */
-		XMLSETTINGSMANAGER_API void MergeXml (const QByteArray& xml);
+		void MergeXml (const QByteArray& xml);
 
-		XMLSETTINGSMANAGER_API QList<int> HighlightMatches (const QString& query);
+		QList<int> HighlightMatches (const QString& query);
 
 		/** @brief Sets custom widget mentioned in the XML.
 		 *
@@ -132,7 +132,7 @@ namespace Util
 		 * @exception std::runtime_error If there is no or more than
 		 * one name.
 		 */
-		XMLSETTINGSMANAGER_API void SetCustomWidget (const QString& name,
+		void SetCustomWidget (const QString& name,
 				QWidget *widget);
 
 		/** @brief Sets the source model for the given property.
@@ -161,24 +161,24 @@ namespace Util
 		 * @param[in] property The identifier of the property.
 		 * @param[in] source The new datasource.
 		 */
-		XMLSETTINGSMANAGER_API void SetDataSource (const QString& property,
+		void SetDataSource (const QString& property,
 				QAbstractItemModel *source);
 
 		/** @brief Sets the current page to page.
 		 *
 		 * @param[in] page Number of the page.
 		 */
-		XMLSETTINGSMANAGER_API void SetPage (int page);
+		void SetPage (int page);
 
 		/** @brief Returns the list of all the pages.
 		 *
 		 * @return The names of the pages.
 		 */
-		XMLSETTINGSMANAGER_API QStringList GetPages () const;
+		QStringList GetPages () const;
 
 		/** @brief Returns the icon associated with the given page.
 		 */
-		XMLSETTINGSMANAGER_API QIcon GetPageIcon (int page) const;
+		QIcon GetPageIcon (int page) const;
 
 		/** @brief Returns the human-readable label for the given
 		 * element.
@@ -268,9 +268,9 @@ namespace Util
 		void handlePushButtonReleased ();
 		void handleShowPageRequested (Util::BaseSettingsManager*, const QString&);
 	Q_SIGNALS:
-		XMLSETTINGSMANAGER_API void pushButtonClicked (const QString&);
-		XMLSETTINGSMANAGER_API void moreThisStuffRequested (const QString&);
-		XMLSETTINGSMANAGER_API void showPageRequested (Util::BaseSettingsManager*, const QString&);
+		void pushButtonClicked (const QString&);
+		void moreThisStuffRequested (const QString&);
+		void showPageRequested (Util::BaseSettingsManager*, const QString&);
 	};
 
 	typedef std::shared_ptr<XmlSettingsDialog> XmlSettingsDialog_ptr;
