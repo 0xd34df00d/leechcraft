@@ -127,7 +127,7 @@ namespace Poshuku
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
 
-		connect (page,
+		connect (page->mainFrame (),
 				SIGNAL (initialLayoutCompleted ()),
 				this,
 				SIGNAL (earliestViewLayout ()));
