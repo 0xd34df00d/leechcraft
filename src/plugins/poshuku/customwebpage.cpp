@@ -698,7 +698,8 @@ namespace Poshuku
 		{
 			bool invert = Modifiers_ & Qt::ShiftModifier;
 
-			CustomWebView *view = Core::Instance ().MakeWebView (invert);
+			// TODO
+			const auto view = qobject_cast<CustomWebView*> (Core::Instance ().MakeWebView (invert)->GetQWidget ());
 			view->Load (request);
 
 			MouseButtons_ = Qt::NoButton;
@@ -757,12 +758,13 @@ namespace Poshuku
 		{
 		case QWebPage::WebBrowserWindow:
 		case QWebPage::WebModalDialog:
-			return Core::Instance ().NewURL (QUrl ())->GetView ()->page ();
+			// TODO
+			return qobject_cast<CustomWebView*> (Core::Instance ().NewURL (QUrl {})->GetWebView ()->GetQWidget ())->page ();
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
 					<< type;
-			return 0;
+			return nullptr;
 		}
 	}
 

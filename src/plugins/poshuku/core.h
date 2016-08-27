@@ -124,7 +124,7 @@ namespace Poshuku
 		BrowserWidget* NewURL (const QUrl&, bool = false, const DynPropertiesList_t& = DynPropertiesList_t ());
 		BrowserWidget* NewURL (const QString&, bool = false);
 		IWebWidget* GetWidget ();
-		CustomWebView* MakeWebView (bool = false);
+		IWebView* MakeWebView (bool = false);
 		void Unregister (BrowserWidget*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots only useful in own mode.

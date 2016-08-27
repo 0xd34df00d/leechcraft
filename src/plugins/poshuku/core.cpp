@@ -374,7 +374,7 @@ namespace Poshuku
 		return widget;
 	}
 
-	CustomWebView* Core::MakeWebView (bool invert)
+	IWebView* Core::MakeWebView (bool invert)
 	{
 		if (!Initialized_)
 			return nullptr;
@@ -386,7 +386,7 @@ namespace Poshuku
 		if (invert)
 			raise = !raise;
 
-		return NewURL (QUrl (), raise)->GetView ();
+		return NewURL (QUrl (), raise)->GetWebView ();
 	}
 
 	void Core::ConnectSignals (BrowserWidget *widget)
