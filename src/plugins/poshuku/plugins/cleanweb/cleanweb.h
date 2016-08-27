@@ -101,18 +101,19 @@ namespace CleanWeb
 				QIODevice **dev);
 
 		// Poshuku hooks
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				LeechCraft::Poshuku::IWebView*,
+				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
+				WebViewCtxMenuStage);
+
+		// QtWebKit view hooks
 		void hookExtension (LeechCraft::IHookProxy_ptr,
 				QWebPage*,
 				QWebPage::Extension,
 				const QWebPage::ExtensionOption*,
 				QWebPage::ExtensionReturn*);
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebFrame*);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				LeechCraft::Poshuku::IWebView*,
-				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
-				WebViewCtxMenuStage);
 	};
 }
 }

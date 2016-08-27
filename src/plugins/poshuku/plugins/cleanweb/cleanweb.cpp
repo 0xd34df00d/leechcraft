@@ -33,6 +33,7 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
@@ -130,17 +131,17 @@ namespace CleanWeb
 		return result;
 	}
 
-	void CleanWeb::hookInitialLayoutCompleted (IHookProxy_ptr, QWebPage *page, QWebFrame *frame)
-	{
-		Core_->HandleInitialLayout (page, frame);
-	}
-
 	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
 			QNetworkAccessManager *manager,
 			QNetworkAccessManager::Operation *op,
 			QIODevice **dev)
 	{
 		Core_->Hook (proxy, manager, op, dev);
+	}
+
+	void CleanWeb::hookBrowserWidgetInitialized (IHookProxy_ptr, QObject *browserWidget)
+	{
+		Core_->HandleBrowserWidget (qobject_cast<IBrowserWidget*> (browserWidget));
 	}
 
 	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,

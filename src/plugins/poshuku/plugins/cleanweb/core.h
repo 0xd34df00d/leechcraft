@@ -43,14 +43,13 @@
 
 class QNetworkRequest;
 class QWebPage;
-class QWebView;
-class QWebHitTestResult;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
 class IWebView;
+class IBrowserWidget;
 
 namespace CleanWeb
 {
@@ -59,7 +58,7 @@ namespace CleanWeb
 
 	struct HidingWorkerResult
 	{
-		QPointer<QWebFrame> Frame_;
+		IWebView *View_;
 		QStringList Selectors_;
 	};
 
@@ -84,7 +83,7 @@ namespace CleanWeb
 		};
 		QMap<int, PendingJob> PendingJobs_;
 
-		QHash<QWebFrame*, QList<QUrl>> MoreDelayedURLs_;
+		QHash<QObject*, QList<QUrl>> MoreDelayedURLs_;
 
 		const ICoreProxy_ptr Proxy_;
 	public:
@@ -95,7 +94,8 @@ namespace CleanWeb
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
 
-		void HandleInitialLayout (QWebPage*, QWebFrame*);
+		void HandleBrowserWidget (IBrowserWidget*);
+
 		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
@@ -147,8 +147,8 @@ namespace CleanWeb
 		void Parse (const QString&);
 
 		void HideElementsChunk (HidingWorkerResult);
-		void DelayedRemoveElements (QPointer<QWebFrame>, const QUrl&);
-		void HandleFrameLayout (QPointer<QWebFrame>, bool asLoad);
+		void DelayedRemoveElements (IWebView*, const QUrl&);
+		void HandleViewLayout (IWebView*);
 	private slots:
 		void handleParsed ();
 		void update ();
@@ -158,7 +158,7 @@ namespace CleanWeb
 
 		void moreDelayedRemoveElements ();
 
-		void handleFrameDestroyed ();
+		void handleViewDestroyed (QObject*);
 
 		void regenFilterCaches ();
 	};

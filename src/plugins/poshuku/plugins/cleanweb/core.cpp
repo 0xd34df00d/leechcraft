@@ -58,6 +58,8 @@
 #include <util/sll/qstringwrappers.h>
 #include <util/sll/urlaccessor.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "xmlsettingsmanager.h"
 #include "userfiltersmodel.h"
 #include "lineparser.h"
@@ -217,13 +219,15 @@ namespace CleanWeb
 		Add (subscrUrl);
 	}
 
-	void Core::HandleInitialLayout (QWebPage*, QWebFrame *frame)
+	void Core::HandleBrowserWidget (IBrowserWidget *ibw)
 	{
-		QPointer<QWebFrame> safeFrame { frame };
-		new Util::DelayedExecutor
+		const auto view = ibw->GetWebView ();
+		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
-			[this, safeFrame] { HandleFrameLayout (safeFrame, false); },
-			0
+			[view, this] { HandleViewLayout (view); },
+			view->GetQWidget (),
+			SIGNAL (earliestViewLayout ()),
+			view->GetQWidget ()
 		};
 	}
 
@@ -255,6 +259,7 @@ namespace CleanWeb
 		hook->CancelDefault ();
 
 		qDebug () << "rejecting" << frame << reqUrl;
+		/* TODO
 		if (frame)
 		{
 			QPointer<QWebFrame> safeFrame { frame };
@@ -264,6 +269,7 @@ namespace CleanWeb
 				0
 			};
 		}
+		 */
 
 		const auto result = new Util::CustomNetworkReply (reqUrl, this);
 		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
@@ -291,12 +297,14 @@ namespace CleanWeb
 		proxy->CancelDefault ();
 		proxy->SetReturnValue (true);
 
+		/* TODO
 		const QPointer<QWebFrame> safeFrame { page->mainFrame () };
 		new Util::DelayedExecutor
 		{
 			[this, safeFrame, url] { DelayedRemoveElements (safeFrame, url); },
 			0
 		};
+		 */
 	}
 
 	void Core::HandleContextMenu (const ContextMenuInfo& r,
@@ -677,18 +685,13 @@ namespace CleanWeb
 		PendingJobs_.remove (id);
 	}
 
-	void Core::HandleFrameLayout (QPointer<QWebFrame> frame, bool asLoad)
+	void Core::HandleViewLayout (IWebView *view)
 	{
-		if (!frame)
-			return;
-
+		qDebug () << Q_FUNC_INFO;
 		if (!XmlSettingsManager::Instance ()->property ("EnableElementHiding").toBool ())
 			return;
 
-		const QUrl& frameUrl = frame->url ().isEmpty () ?
-				frame->baseUrl () :
-				frame->url ();
-		qDebug () << Q_FUNC_INFO << frame << frameUrl;
+		const auto& frameUrl = view->GetUrl ();
 		const QString& urlStr = frameUrl.toString ();
 		const auto& urlUtf8 = urlStr.toUtf8 ();
 		const QString& cinUrlStr = urlStr.toLower ();
@@ -699,7 +702,7 @@ namespace CleanWeb
 		auto allFilters = SubsModel_->GetAllFilters ();
 		allFilters << UserFilters_->GetFilter ();
 
-		auto watcher = new QFutureWatcher<HidingWorkerResult> (this);
+		auto watcher = new QFutureWatcher<HidingWorkerResult> (view->GetQWidget ());
 		connect (watcher,
 				SIGNAL (finished ()),
 				this,
@@ -721,25 +724,8 @@ namespace CleanWeb
 
 								sels << item->Option_.HideSelector_;
 							}
-						return { frame, sels };
+						return { view, sels };
 					}));
-
-		auto worker = [this, frame]
-		{
-			for (auto childFrame : frame->childFrames ())
-				HandleFrameLayout (childFrame, true);
-		};
-
-		worker ();
-
-		if (!asLoad)
-			new Util::SlotClosure<Util::DeleteLaterPolicy>
-			{
-				worker,
-				frame,
-				SIGNAL (loadFinished (bool)),
-				frame
-			};
 	}
 
 	void Core::hidingElementsFound ()
@@ -752,9 +738,6 @@ namespace CleanWeb
 
 	void Core::HideElementsChunk (HidingWorkerResult result)
 	{
-		if (!result.Frame_)
-			return;
-
 		for (auto& selector : result.Selectors_)
 			selector.replace ('\\', "\\\\")
 					.replace ('\'', "\\'")
@@ -770,22 +753,25 @@ namespace CleanWeb
 				)delim";
 		js += "})();";
 
-		const auto& res = result.Frame_->evaluateJavaScript (js);
-		if (const auto count = res.toInt ())
-			qDebug () << "removed"
-					<< count
-					<< "elements on frame with URL"
-					<< result.Frame_->url ()
-					<< result.Frame_->baseUrl ();
-		else if (!res.canConvert<int> ())
-			qWarning () << Q_FUNC_INFO
-					<< "failed to execute JS:"
-					<< js;
+		result.View_->EvaluateJS (js,
+				[result, js] (const QVariant& res)
+				{
+					if (const auto count = res.toInt ())
+						qDebug () << "removed"
+								<< count
+								<< "elements on frame with URL"
+								<< result.View_->GetUrl ();
+					else if (!res.canConvert<int> ())
+						qWarning () << Q_FUNC_INFO
+								<< "failed to execute JS:"
+								<< js;
+				});
 	}
 
 	namespace
 	{
-		bool RemoveElements (QWebFrame *frame, const QList<QUrl>& urls)
+		template<typename Cont>
+		void RemoveElements (IWebView *view, const QList<QUrl>& urls, Cont&& cont)
 		{
 			const auto& preparedUrls = Util::Map (urls,
 					[] (const QUrl& url) { return QString { '"' + url.toEncoded () + '"' }; });
@@ -805,46 +791,54 @@ namespace CleanWeb
 			js += "return removed;";
 			js += "})();";
 
-			return frame->evaluateJavaScript (js).toBool ();
+			view->EvaluateJS (js, [cont = std::move (cont)] (const QVariant& res) { cont (res.toBool ()); });
 		}
 	}
 
-	void Core::DelayedRemoveElements (QPointer<QWebFrame> frame, const QUrl& url)
+	void Core::DelayedRemoveElements (IWebView *view, const QUrl& url)
 	{
-		if (!frame)
-			return;
+		RemoveElements (view, { url },
+				[this, view, url] (bool res)
+				{
+					if (res)
+						return;
 
-		if (RemoveElements (frame, { url }))
-			return;
-
-		connect (frame,
-				SIGNAL (loadFinished (bool)),
-				this,
-				SLOT (moreDelayedRemoveElements ()),
-				Qt::UniqueConnection);
-		connect (frame,
-				SIGNAL (destroyed (QObject*)),
-				this,
-				SLOT (handleFrameDestroyed ()),
-				Qt::UniqueConnection);
-		MoreDelayedURLs_ [frame] << url;
+					const auto obj = view->GetQWidget ();
+					connect (obj,
+							SIGNAL (loadFinished (bool)),
+							this,
+							SLOT (moreDelayedRemoveElements ()),
+							Qt::UniqueConnection);
+					connect (obj,
+							SIGNAL (destroyed (QObject*)),
+							this,
+							SLOT (handleViewDestroyed (QObject*)),
+							Qt::UniqueConnection);
+					MoreDelayedURLs_ [obj] << url;
+				});
 	}
 
 	void Core::moreDelayedRemoveElements ()
 	{
-		auto frame = qobject_cast<QWebFrame*> (sender ());
+		const auto senderObj = sender ();
+		auto view = qobject_cast<IWebView*> (senderObj);
 
-		const auto& urls = MoreDelayedURLs_.take (frame);
-		if (!RemoveElements (frame, urls))
-			qWarning () << Q_FUNC_INFO
-					<< urls
-					<< "not found for"
-					<< frame;
+		const auto& urls = MoreDelayedURLs_.take (senderObj);
+		if (!urls.isEmpty ())
+			RemoveElements (view, urls,
+					[view, urls] (bool res)
+					{
+						if (!res)
+							qWarning () << Q_FUNC_INFO
+									<< urls
+									<< "not found for"
+									<< view->GetUrl ();
+					});
 	}
 
-	void Core::handleFrameDestroyed ()
+	void Core::handleViewDestroyed (QObject *obj)
 	{
-		MoreDelayedURLs_.remove (static_cast<QWebFrame*> (sender ()));
+		MoreDelayedURLs_.remove (obj);
 	}
 
 	void Core::regenFilterCaches ()
