@@ -311,11 +311,6 @@ namespace Poshuku
 		return Core::Instance ().GetWidget ();
 	}
 
-	QWebView* Poshuku::CreateWindow ()
-	{
-		return Core::Instance ().MakeWebView ();
-	}
-
 	void Poshuku::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 	{
 		if (name.startsWith ("Browser"))
