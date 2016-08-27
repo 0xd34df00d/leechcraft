@@ -62,7 +62,15 @@ namespace Poshuku
 
 		enum class PageAction
 		{
-			Reload
+			Reload,
+			Stop,
+
+			Back,
+			Forward,
+
+			Cut,
+			Copy,
+			Paste
 		};
 
 		virtual QWidget* GetQWidget () = 0;
