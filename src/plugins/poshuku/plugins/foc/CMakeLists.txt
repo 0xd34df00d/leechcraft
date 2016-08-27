@@ -13,7 +13,7 @@ set (FOC_FORMS
 	)
 set (FOC_RESOURCES
 	)
-CreateTrs ("poshuku_foc" "de;en;eo;fr;it;ru_RU" FOC_COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku_foc" "de;en;eo;fr;it;ru_RU;uk_UA" FOC_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_foc" "en;ru_RU" "${FOC_SRCS}" "${FOC_FORMS}" "poshukufocsettings.xml")
 
 QtWrapUi (FOC_UIS_H ${FOC_FORMS})
