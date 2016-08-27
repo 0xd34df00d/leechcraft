@@ -113,6 +113,8 @@ namespace Poshuku
 		void zoomChanged ();
 
 		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&);
+
+		void earliestViewLayout () override;
 	};
 }
 }

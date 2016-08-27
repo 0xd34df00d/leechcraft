@@ -70,6 +70,8 @@ namespace Poshuku
 
 		virtual void EvaluateJS (const QString& js,
 				const std::function<void (QVariant)>& handler = {}) = 0;
+	protected:
+		virtual void earliestViewLayout () = 0;
 	};
 }
 }

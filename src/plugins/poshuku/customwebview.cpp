@@ -126,6 +126,11 @@ namespace Poshuku
 				SIGNAL (storeFormData (PageFormsData_t)),
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
+
+		connect (page,
+				SIGNAL (initialLayoutCompleted ()),
+				this,
+				SIGNAL (earliestViewLayout ()));
 	}
 
 	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
