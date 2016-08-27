@@ -53,7 +53,7 @@ namespace CleanWeb
 	{
 		Util::InstallTranslator ("poshuku_cleanweb");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");
 
