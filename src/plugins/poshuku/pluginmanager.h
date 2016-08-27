@@ -354,19 +354,6 @@ namespace Poshuku
 		void hookIconRequested (LeechCraft::IHookProxy_ptr proxy,
 				const QUrl& url);
 
-		/** @brief Called when the frame is laid out for the first time.
-		 *
-		 * This hook is called whenever the frame is laid out for the
-		 * first time during web page load.
-		 *
-		 * @param proxy The standard hook proxy object.
-		 * @param page The page where the frame being laid out is.
-		 * @param frame The frame that's laid out for the first time.
-		 */
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame);
-
 		/** @brief Called from QWebPage::javaScriptAlert().
 		 *
 		 * This hook is called whenever a JS in the given frame wants to

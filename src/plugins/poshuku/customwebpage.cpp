@@ -99,10 +99,6 @@ namespace Poshuku
 				SIGNAL (urlChanged (const QUrl&)),
 				this,
 				SIGNAL (loadingURL (const QUrl&)));
-		connect (mainFrame (),
-				SIGNAL (initialLayoutCompleted ()),
-				this,
-				SLOT (handleInitialLayoutCompleted ()));
 		connect (this,
 				SIGNAL (contentsChanged ()),
 				this,
@@ -346,12 +342,6 @@ namespace Poshuku
 	{
 		emit hookFrameCreated (std::make_shared<Util::DefaultHookProxy> (),
 				this, frame);
-	}
-
-	void CustomWebPage::handleInitialLayoutCompleted ()
-	{
-		emit hookInitialLayoutCompleted (std::make_shared<Util::DefaultHookProxy> (),
-				this, mainFrame ());
 	}
 
 	void CustomWebPage::handleJavaScriptWindowObjectCleared ()
