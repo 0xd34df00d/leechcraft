@@ -151,7 +151,7 @@ namespace Poshuku
 		bool IsUrlInFavourites (const QString&);
 		void RemoveFromFavorites (const QString&);
 	private:
-		void HandleHistory (CustomWebView*);
+		void HandleHistory (IWebView*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots that are always useful, both in own
 			* and deown mode.

@@ -525,13 +525,13 @@ namespace Poshuku
 		Widgets_.erase (pos);
 	}
 
-	void Core::HandleHistory (CustomWebView *view)
+	void Core::HandleHistory (IWebView *view)
 	{
-		QString url = view->URLToProperString (view->url ());
+		const auto& url = view->GetHumanReadableUrl ();
 
-		if (!view->title ().isEmpty () &&
+		if (!view->GetTitle ().isEmpty () &&
 				!url.isEmpty () && url != "about:blank")
-			HistoryModel_->addItem (view->title (),
+			HistoryModel_->addItem (view->GetTitle (),
 					url,
 					QDateTime::currentDateTime ());
 	}
@@ -670,7 +670,7 @@ namespace Poshuku
 
 	void Core::handleURLChanged (const QString&)
 	{
-		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
+		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetWebView ());
 	}
 
 	void Core::handleIconChanged (const QIcon& newIcon)
