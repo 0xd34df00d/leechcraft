@@ -553,11 +553,6 @@ namespace Poshuku
 			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
-	CustomWebView* BrowserWidget::GetView () const
-	{
-		return WebView_;
-	}
-
 	QLineEdit* BrowserWidget::GetURLEdit () const
 	{
 		return Ui_.URLFrame_->GetEdit ();
