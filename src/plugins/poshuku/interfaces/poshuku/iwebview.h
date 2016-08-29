@@ -49,6 +49,8 @@ namespace Poshuku
 	 * following signals, following QWebView API:
 	 * - loadStarted()
 	 * - loadFinished(bool)
+	 * - urlChanged(QUrl)
+	 * - zoomChanged()
 	 */
 	class IWebView
 	{
