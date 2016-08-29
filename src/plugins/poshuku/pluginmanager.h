@@ -333,11 +333,9 @@ namespace Poshuku
 		 * The hook may cancel the default implementation.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param page The web page that has its icon changed.
 		 * @param browserWidget The widget with the browser.
 		 */
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget);
 
 		/** @brief Called whenever an icon is requested for url.
@@ -522,7 +520,6 @@ namespace Poshuku
 		 * @param progress The load progress, in percents.
 		 */
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget,
 				int progress);
 
@@ -593,7 +590,6 @@ namespace Poshuku
 		 * of loading them from an URL.
 		 */
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
