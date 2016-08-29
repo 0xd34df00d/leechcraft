@@ -79,6 +79,8 @@ namespace Poshuku
 		void SetContent (const QByteArray&, const QByteArray&) override;
 		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
 
+		void Print (bool preview) override;
+
 		QPoint GetScrollPosition () const override;
 		void SetScrollPosition (const QPoint&) override;
 
@@ -97,8 +99,6 @@ namespace Poshuku
 		 * @return The \em url converted to Unicode.
 		 */
 		QString URLToProperString (const QUrl& url) const;
-
-		void Print (bool preview);
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;

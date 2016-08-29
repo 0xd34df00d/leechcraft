@@ -90,6 +90,8 @@ namespace Poshuku
 		virtual void EvaluateJS (const QString& js,
 				const std::function<void (QVariant)>& handler = {}) = 0;
 
+		virtual void Print (bool withPreview) = 0;
+
 		virtual QPoint GetScrollPosition () const = 0;
 		virtual void SetScrollPosition (const QPoint&) = 0;
 	protected:
