@@ -142,8 +142,8 @@ namespace Poshuku
 
 		connect (ReloadTimer_,
 				SIGNAL (timeout ()),
-				WebView_,
-				SLOT (reload ()));
+				WebView_->GetPageAction (IWebView::PageAction::Reload),
+				SLOT (trigger ()));
 
 		Cut_ = WebView_->pageAction (QWebPage::Cut);
 		Cut_->setShortcutContext (Qt::WindowShortcut);
