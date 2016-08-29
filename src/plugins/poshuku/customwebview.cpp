@@ -280,6 +280,26 @@ namespace Poshuku
 		page ()->mainFrame ()->setScrollPosition (point);
 	}
 
+	double CustomWebView::GetZoomFactor () const
+	{
+		return zoomFactor ();
+	}
+
+	void CustomWebView::SetZoomFactor (double factor)
+	{
+		setZoomFactor (factor);
+	}
+
+	double CustomWebView::GetTextSizeMultiplier () const
+	{
+		return textSizeMultiplier ();
+	}
+
+	void CustomWebView::SetTextSizeMultiplier (double factor)
+	{
+		setTextSizeMultiplier (factor);
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());

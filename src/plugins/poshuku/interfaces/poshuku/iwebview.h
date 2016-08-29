@@ -94,6 +94,12 @@ namespace Poshuku
 
 		virtual QPoint GetScrollPosition () const = 0;
 		virtual void SetScrollPosition (const QPoint&) = 0;
+
+		virtual double GetZoomFactor () const = 0;
+		virtual void SetZoomFactor (double) = 0;
+
+		virtual double GetTextSizeMultiplier () const = 0;
+		virtual void SetTextSizeMultiplier (double) = 0;
 	protected:
 		virtual void earliestViewLayout () = 0;
 	};

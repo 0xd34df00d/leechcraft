@@ -83,6 +83,10 @@ namespace Poshuku
 
 		QPoint GetScrollPosition () const override;
 		void SetScrollPosition (const QPoint&) override;
+		double GetZoomFactor () const override;
+		void SetZoomFactor (double) override;
+		double GetTextSizeMultiplier () const override;
+		void SetTextSizeMultiplier (double) override;
 
 		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QNetworkRequest&,
