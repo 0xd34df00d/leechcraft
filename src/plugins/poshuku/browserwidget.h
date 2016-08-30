@@ -116,7 +116,6 @@ namespace Poshuku
 		FindDialog *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
-		QString PreviousFindText_;
 		bool HtmlMode_ = false;
 		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
