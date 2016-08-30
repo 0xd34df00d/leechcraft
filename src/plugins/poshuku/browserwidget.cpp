@@ -380,8 +380,8 @@ namespace Poshuku
 
 		const auto fullZoomer = new Zoomer
 		{
-			[this] { return WebView_->zoomFactor (); },
-			[this] (qreal f) { WebView_->setZoomFactor (f); },
+			[this] { return WebView_->GetZoomFactor (); },
+			[this] (qreal f) { WebView_->SetZoomFactor (f); },
 			this
 		};
 		fullZoomer->InstallScrollFilter (WebView_,
@@ -390,8 +390,8 @@ namespace Poshuku
 
 		const auto textZoomer = new Zoomer
 		{
-			[this] { return WebView_->textSizeMultiplier (); },
-			[this] (qreal f) { WebView_->setTextSizeMultiplier (f); },
+			[this] { return WebView_->GetTextSizeMultiplier (); },
+			[this] (qreal f) { WebView_->SetTextSizeMultiplier (f); },
 			this
 		};
 		textZoomer->InstallScrollFilter (WebView_,
