@@ -145,36 +145,36 @@ namespace Poshuku
 				WebView_->GetPageAction (IWebView::PageAction::Reload),
 				SLOT (trigger ()));
 
-		Cut_ = WebView_->pageAction (QWebPage::Cut);
+		Cut_ = WebView_->GetPageAction (IWebView::PageAction::Cut);
 		Cut_->setShortcutContext (Qt::WindowShortcut);
 		Cut_->setProperty ("ActionIcon", "edit-cut");
-		Copy_ = WebView_->pageAction (QWebPage::Copy);
+		Copy_ = WebView_->GetPageAction (IWebView::PageAction::Copy);
 		Copy_->setShortcutContext (Qt::WindowShortcut);
 		Copy_->setProperty ("ActionIcon", "edit-copy");
-		Paste_ = WebView_->pageAction (QWebPage::Paste);
+		Paste_ = WebView_->GetPageAction (IWebView::PageAction::Paste);
 		Paste_->setProperty ("ActionIcon", "edit-paste");
 
 		ToolBar_ = new QToolBar (this);
 		ToolBar_->setWindowTitle ("Poshuku");
 
-		Back_ = WebView_->pageAction (QWebPage::Back);
+		Back_ = WebView_->GetPageAction (IWebView::PageAction::Back);
 		Back_->setParent (this);
 		Back_->setProperty ("ActionIcon", "go-previous");
 
 		BackMenu_ = new QMenu ();
 
-		Forward_ = WebView_->pageAction (QWebPage::Forward);
+		Forward_ = WebView_->GetPageAction (IWebView::PageAction::Forward);
 		Forward_->setParent (this);
 		Forward_->setProperty ("ActionIcon", "go-next");
 
 		ForwardMenu_ = new QMenu ();
 
-		Reload_ = WebView_->pageAction (QWebPage::Reload);
+		Reload_ = WebView_->GetPageAction (IWebView::PageAction::Reload);
 		Reload_->setProperty ("ActionIcon", "view-refresh");
 		Reload_->setIcon (Core::Instance ()
 				.GetProxy ()->GetIconThemeManager ()->GetIcon ("view-refresh"));
 
-		Stop_ = WebView_->pageAction (QWebPage::Stop);
+		Stop_ = WebView_->GetPageAction (IWebView::PageAction::Stop);
 		Stop_->setProperty ("ActionIcon", "process-stop");
 		Stop_->setIcon (Core::Instance ()
 				.GetProxy ()->GetIconThemeManager ()->GetIcon ("process-stop"));
