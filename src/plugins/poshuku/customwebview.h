@@ -78,6 +78,7 @@ namespace Poshuku
 
 		void SetContent (const QByteArray&, const QByteArray&) override;
 		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
+		void AddJavaScriptObject (const QString&, QObject*) override;
 
 		void Print (bool preview) override;
 

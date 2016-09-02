@@ -270,6 +270,11 @@ namespace Poshuku
 			callback (res);
 	}
 
+	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
+	{
+		page ()->mainFrame ()->addToJavaScriptWindowObject (id, object);
+	}
+
 	QPoint CustomWebView::GetScrollPosition () const
 	{
 		return page ()->mainFrame ()->scrollPosition ();
