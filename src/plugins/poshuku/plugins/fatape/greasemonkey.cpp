@@ -33,6 +33,8 @@
 #include <QHash>
 #include <QTextStream>
 #include <QtDebug>
+#include <QUrl>
+#include <interfaces/poshuku/iwebview.h>
 
 namespace LeechCraft
 {
@@ -40,8 +42,8 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	GreaseMonkey::GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script)
-	: Frame_ (frame)
+	GreaseMonkey::GreaseMonkey (IWebView *view, IProxyObject *proxy, const UserScript& script)
+	: View_ (view)
 	, Proxy_ (proxy)
 	, Script_ (script)
 	{
@@ -51,13 +53,16 @@ namespace FatApe
 	{
 		const auto& orgName = QCoreApplication::organizationName ();
 		const auto& sName = QCoreApplication::applicationName () + "_Poshuku_FatApe_Storage";
-		std::shared_ptr<QSettings> settings { new QSettings { orgName, sName },
+		std::shared_ptr<QSettings> settings
+		{
+			new QSettings { orgName, sName },
 			[] (QSettings *settings)
 			{
-					settings->endGroup ();
-					settings->endGroup ();
-					delete settings;
-			} };
+				settings->endGroup ();
+				settings->endGroup ();
+				delete settings;
+			}
+		};
 		settings->beginGroup (QString::number (qHash (Script_.Namespace ())));
 		settings->beginGroup (QString::number (qHash (Script_.Name ())));
 		return settings;
@@ -70,7 +75,7 @@ namespace FatApe
 		js += "el.type = 'text/css';";
 		js += "el.innerHTML = '* { " + css.replace ('\'', "\\'") + " }'";
 		js += "document.body.insertBefore(el, document.body.firstChild);";
-		Frame_->evaluateJavaScript (js);
+		View_->EvaluateJS (js);
 	}
 
 	void GreaseMonkey::deleteValue (const QString& name)

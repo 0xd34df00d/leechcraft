@@ -33,6 +33,7 @@
 #include <QList>
 #include <QNetworkRequest>
 #include <QWebPage>
+#include <QWebFrame>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/poshuku/iproxyobject.h>
@@ -81,9 +82,8 @@ namespace FatApe
 		void SetScriptEnabled(int scriptIndex, bool value);
 		int AddScriptToManager (const UserScript& script);
 	public slots:
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame);
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget);
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				QWebFrame *frame,

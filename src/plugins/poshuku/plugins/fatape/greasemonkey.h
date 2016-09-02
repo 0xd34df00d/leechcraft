@@ -34,7 +34,6 @@
 #include <QStringList>
 #include <QSettings>
 #include <QVariant>
-#include <QWebFrame>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "userscript.h"
 
@@ -42,17 +41,19 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IWebView;
+
 namespace FatApe
 {
 	class GreaseMonkey : public QObject
 	{
 		Q_OBJECT
 
-		QWebFrame *Frame_;
+		IWebView *View_;
 		IProxyObject *Proxy_;
 		UserScript Script_;
 	public:
-		GreaseMonkey (QWebFrame *frame, IProxyObject *proxy, const UserScript& script);
+		GreaseMonkey (IWebView *view, IProxyObject *proxy, const UserScript& script);
 	private:
 		std::shared_ptr<QSettings> GetStorage () const;
 	public slots:

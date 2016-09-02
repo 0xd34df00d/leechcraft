@@ -37,7 +37,10 @@
 #include <QTranslator>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
+#include <interfaces/poshuku/iwebview.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "userscriptsmanagerwidget.h"
@@ -146,13 +149,26 @@ namespace FatApe
 		return SettingsDialog_;
 	}
 
-	void Plugin::hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr,
-			QWebPage*, QWebFrame *frame)
+	void Plugin::hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr,
+			QObject *browserWidget)
 	{
-		auto match = [frame] (const UserScript& us) { return us.MatchToPage (frame->url ().toString ()); };
-		auto inject = [frame, this] (const UserScript& us) { us.Inject (frame, Proxy_); };
+		const auto ibw = qobject_cast<IBrowserWidget*> (browserWidget);
+		const auto view = ibw->GetWebView ();
+		const auto viewWidget = view->GetQWidget ();
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[view, this]
+			{
+				const auto& url = view->GetUrl ().toString ();
+				auto match = [url] (const UserScript& us) { return us.MatchToPage (url); };
+				auto inject = [view, this] (const UserScript& us) { us.Inject (view, Proxy_); };
 
-		apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
+				apply_if (UserScripts_.begin (), UserScripts_.end (), match, inject);
+			},
+			viewWidget,
+			SIGNAL (earliestViewLayout ()),
+			viewWidget
+		};
 	}
 
 	void Plugin::initPlugin (QObject *proxy)
