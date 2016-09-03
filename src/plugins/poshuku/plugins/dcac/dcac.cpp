@@ -33,6 +33,8 @@
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "viewsmanager.h"
 #include "xmlsettingsmanager.h"
 
@@ -93,18 +95,18 @@ namespace DCAC
 	}
 
 	void Plugin::hookBrowserWidgetInitialized (IHookProxy_ptr,
-			QWebView *view,
-			QObject*)
+			QObject *browser)
 	{
-		ViewsManager_->AddView (view);
+		const auto webView = qobject_cast<IBrowserWidget*> (browser)->GetWebView ();
+		ViewsManager_->AddView (webView->GetQWidget ());
 	}
 
 	void Plugin::hookWebViewContextMenu (IHookProxy_ptr,
-			QWebView *view, QContextMenuEvent*, const QWebHitTestResult&,
+			IWebView *view, const ContextMenuInfo&,
 			QMenu *menu, WebViewCtxMenuStage menuBuildStage)
 	{
 		if (menuBuildStage == WVSAfterFinish)
-			menu->addAction (ViewsManager_->GetEnableAction (view));
+			menu->addAction (ViewsManager_->GetEnableAction (view->GetQWidget ()));
 	}
 }
 }

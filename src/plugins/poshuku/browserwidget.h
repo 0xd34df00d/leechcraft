@@ -88,7 +88,6 @@ namespace Poshuku
 		QAction *ScreenSave_;
 		QAction *ViewSources_;
 		QAction *SavePage_;
-		QAction *ContentsEditable_;
 
 		QAction *ZoomIn_;
 		QAction *ZoomOut_;
@@ -117,7 +116,6 @@ namespace Poshuku
 		FindDialog *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
-		QString PreviousFindText_;
 		bool HtmlMode_ = false;
 		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
@@ -127,16 +125,15 @@ namespace Poshuku
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (QWidget* = 0);
+		BrowserWidget (QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
 
 		void Deown ();
 		void FinalizeInit ();
 
-		CustomWebView* GetView () const;
-
 		QLineEdit* GetURLEdit () const override;
+		IWebView* GetWebView () const override;
 		void InsertFindAction (QMenu*, const QString&) override;
 		void AddStandardActions (QMenu*) override;
 
@@ -179,7 +176,6 @@ namespace Poshuku
 	protected:
 		void keyReleaseEvent (QKeyEvent*) override;
 	private:
-		void PrintImpl (bool, QWebFrame*);
 		void SetActualReloadInterval (const QTime&);
 		void SetSplitterSizes (int);
 	public slots:
@@ -197,9 +193,6 @@ namespace Poshuku
 		void handleReloadPeriodically ();
 		void handleAdd2Favorites ();
 		void handleFind ();
-		void handleViewPrint (QWebFrame*);
-		void handlePrinting ();
-		void handlePrintingWithPreview ();
 		void handleScreenSave ();
 		void handleViewSources ();
 		void handleSavePage ();
@@ -239,34 +232,24 @@ namespace Poshuku
 
 		// Hook support
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget);
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget);
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget,
 				int progress);
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
 				QObject *browserWidget);
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
 				QObject *browserWidget);
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
 				bool own,
 				bool htmlMode);
-		void hookPrint (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				bool preview,
-				QWebFrame *frame);
 		void hookSetURL (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
 				QUrl url);
@@ -282,7 +265,7 @@ namespace Poshuku
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*,
+				LeechCraft::Poshuku::IWebView*,
 				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu*,
 				WebViewCtxMenuStage);

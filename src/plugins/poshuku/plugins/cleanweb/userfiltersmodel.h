@@ -38,6 +38,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IWebView;
+
 namespace CleanWeb
 {
 	class RuleOptionDialog;
@@ -69,11 +71,11 @@ namespace CleanWeb
 
 		void ReadSettings ();
 		void WriteSettings ();
+
+		void BlockImage (const QUrl&, IWebView*);
 	private:
 		bool Add (const RuleOptionDialog&);
 		void SplitRow (int*, bool*) const;
-	private slots:
-		void blockImage ();
 	signals:
 		void filtersChanged ();
 	};

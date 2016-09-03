@@ -41,7 +41,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/istartupwizard.h>
-#include <interfaces/poshuku/iwebplugin.h>
 #include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
@@ -53,11 +52,11 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IWebView;
+
 namespace CleanWeb
 {
 	class Core;
-	class FlashOnClickPlugin;
-	class FlashOnClickWhitelist;
 
 	class CleanWeb : public QObject
 					, public IInfo
@@ -73,9 +72,6 @@ namespace CleanWeb
 
 		ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
-		FlashOnClickWhitelist *FlashOnClickWhitelist_;
-
 		std::shared_ptr<Core> Core_;
 
 		Util::XmlSettingsDialog_ptr SettingsDialog_;
@@ -87,10 +83,7 @@ namespace CleanWeb
 		QString GetName () const;
 		QString GetInfo () const;
 		QIcon GetIcon () const;
-		QStringList Provides () const;
 		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
@@ -101,25 +94,26 @@ namespace CleanWeb
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
+		// Core hooks
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
+				QNetworkAccessManager *manager,
+				QNetworkAccessManager::Operation *op,
+				QIODevice **dev);
+
+		// Poshuku hooks
+		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
+				QObject *browserWidget);
+		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
+				LeechCraft::Poshuku::IWebView*,
+				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
+				WebViewCtxMenuStage);
+
+		// QtWebKit view hooks
 		void hookExtension (LeechCraft::IHookProxy_ptr,
 				QWebPage*,
 				QWebPage::Extension,
 				const QWebPage::ExtensionOption*,
 				QWebPage::ExtensionReturn*);
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebFrame*);
-		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr proxy,
-				QNetworkAccessManager *manager,
-				QNetworkAccessManager::Operation *op,
-				QIODevice **dev);
-		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-				QList<IWebPlugin*>&);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				QWebView*,
-				QContextMenuEvent*,
-				const QWebHitTestResult&, QMenu*,
-				WebViewCtxMenuStage);
 	};
 }
 }

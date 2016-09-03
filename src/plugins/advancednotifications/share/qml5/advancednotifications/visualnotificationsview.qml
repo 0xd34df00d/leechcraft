@@ -4,8 +4,8 @@ import org.LC.common 1.0
 
 Rectangle {
     id: notifArea
-    width: 450
-    height: Math.min(200, listView.count * 61)
+    width: 550
+    height: Math.min(600, listView.contentHeight)
     smooth: true
     radius: 5
     gradient: Gradient {
@@ -21,13 +21,16 @@ Rectangle {
 
     Component {
         id: eventsDelegate
+
         Rectangle {
             id: eventRect
 
             width: listView.width
-            height: eventPic.height + 4 + actionsListView.height + 5
+            height: childrenRect.height + 5
+
             smooth: true
             radius: 5
+
             gradient: Gradient {
                 GradientStop {
                     position: 0
@@ -40,34 +43,6 @@ Rectangle {
             }
             border.color: colorProxy.color_TextBox_BorderColor
             border.width: 1
-
-            Image {
-                id: eventPic
-                source: image
-
-                height: 32
-                width: 32
-                smooth: true
-
-                anchors.top: parent.top
-                anchors.topMargin: 2
-                anchors.left: parent.left
-                anchors.leftMargin: 12
-            }
-
-            Text {
-                id: eventText
-
-                width: parent.width - eventPic.width - eventPic.anchors.leftMargin - anchors.leftMargin - dismissButton.width - 10
-
-                text: extendedText
-                color: colorProxy.color_TextBox_TextColor
-
-                anchors.top: parent.top
-                anchors.topMargin: 2
-                anchors.left: eventPic.right
-                anchors.leftMargin: 4
-            }
 
             ActionButton {
                 id: dismissButton
@@ -83,15 +58,55 @@ Rectangle {
                 height: 24
             }
 
+            Item {
+                id: eventPicAndText
+
+                height: Math.max(eventPic.height, eventText.height)
+                anchors.left: parent.left
+                anchors.leftMargin: 12
+                anchors.right: dismissButton.left
+                anchors.top: parent.top
+                anchors.topMargin: 2
+
+                Image {
+                    id: eventPic
+                    source: image
+
+                    height: 32
+                    width: 32
+                    smooth: true
+
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                }
+
+                Text {
+                    id: eventText
+
+                    width: parent.width - eventPic.width - eventPic.anchors.leftMargin - anchors.leftMargin - dismissButton.width - 10
+
+                    text: extendedText
+                    color: colorProxy.color_TextBox_TextColor
+
+                    wrapMode: Text.Wrap
+                    elide: Text.ElideRight
+                    maximumLineCount: 4
+
+                    anchors.top: parent.top
+                    anchors.left: eventPic.right
+                    anchors.leftMargin: 4
+                }
+            }
+
             ListView {
                 id: actionsListView
 
                 height: 20
-                width: parent.width
                 anchors.left: parent.left
-                anchors.leftMargin: eventPic.anchors.leftMargin
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 5
+                anchors.leftMargin: eventPicAndText.anchors.leftMargin
+                anchors.right: parent.right
+                anchors.top: eventPicAndText.bottom
+                anchors.topMargin: count ? 10 : 0
 
                 spacing: 5
 
@@ -107,6 +122,8 @@ Rectangle {
         id: actionsDelegate
 
         Rectangle {
+            id: actionRect
+
             height: 20
             width: actionText.width
             smooth: true

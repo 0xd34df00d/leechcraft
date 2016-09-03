@@ -46,7 +46,7 @@ namespace Util
 		using QObject::QObject;
 
 		virtual ~SlotClosureBase () = default;
-	public slots:
+	public Q_SLOTS:
 		/** @brief Triggers the function.
 		 */
 		virtual void run () = 0;

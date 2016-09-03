@@ -33,13 +33,12 @@
 #include <QTextCodec>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
+#include <interfaces/poshuku/ibrowserwidget.h>
 #include <util/util.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "subscriptionsmanagerwidget.h"
-#include "flashonclickplugin.h"
-#include "flashonclickwhitelist.h"
 #include "userfilters.h"
 #include "wizardgenerator.h"
 #include "subscriptionsmodel.h"
@@ -55,11 +54,9 @@ namespace CleanWeb
 	{
 		Util::InstallTranslator ("poshuku_cleanweb");
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog);
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),
 				"poshukucleanwebsettings.xml");
-
-		FlashOnClickWhitelist_ = new FlashOnClickWhitelist;
 
 		const auto model = new SubscriptionsModel { this };
 		const auto ufm = new UserFiltersModel { proxy, this };
@@ -68,7 +65,6 @@ namespace CleanWeb
 		SettingsDialog_->SetCustomWidget ("SubscriptionsManager",
 				new SubscriptionsManagerWidget (Core_.get (), model));
 		SettingsDialog_->SetCustomWidget ("UserFilters", new UserFilters (ufm));
-		SettingsDialog_->SetCustomWidget ("FlashOnClickWhitelist", FlashOnClickWhitelist_);
 	}
 
 	void CleanWeb::SecondInit ()
@@ -100,23 +96,9 @@ namespace CleanWeb
 		return icon;
 	}
 
-	QStringList CleanWeb::Provides () const
-	{
-		return QStringList ();
-	}
-
 	QStringList CleanWeb::Needs () const
 	{
-		return QStringList ("http");
-	}
-
-	QStringList CleanWeb::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void CleanWeb::SetProvider (QObject*, const QString&)
-	{
+		return { "http" };
 	}
 
 	Util::XmlSettingsDialog_ptr CleanWeb::GetSettingsDialog () const
@@ -149,25 +131,17 @@ namespace CleanWeb
 		return result;
 	}
 
-	void CleanWeb::hookWebPluginFactoryReload (IHookProxy_ptr, QList<IWebPlugin*>& plugins)
-	{
-		if (!FlashOnClickPlugin_)
-			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (Proxy_, FlashOnClickWhitelist_);
-
-		plugins << FlashOnClickPlugin_.get ();
-	}
-
-	void CleanWeb::hookInitialLayoutCompleted (IHookProxy_ptr, QWebPage *page, QWebFrame *frame)
-	{
-		Core_->HandleInitialLayout (page, frame);
-	}
-
 	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
 			QNetworkAccessManager *manager,
 			QNetworkAccessManager::Operation *op,
 			QIODevice **dev)
 	{
 		Core_->Hook (proxy, manager, op, dev);
+	}
+
+	void CleanWeb::hookBrowserWidgetInitialized (IHookProxy_ptr, QObject *browserWidget)
+	{
+		Core_->HandleBrowserWidget (qobject_cast<IBrowserWidget*> (browserWidget));
 	}
 
 	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
@@ -180,9 +154,8 @@ namespace CleanWeb
 	}
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
-			QWebView *view,
-			QContextMenuEvent*,
-			const QWebHitTestResult& r,
+			IWebView *view,
+			const ContextMenuInfo& r,
 			QMenu *menu,
 			WebViewCtxMenuStage stage)
 	{

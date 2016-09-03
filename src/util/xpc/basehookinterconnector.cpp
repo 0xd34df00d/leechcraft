@@ -46,20 +46,93 @@ namespace Util
 
 	namespace
 	{
+		bool IsHookMethod (const QMetaMethod& method)
+		{
+			return method.parameterTypes ().value (0) == "LeechCraft::IHookProxy_ptr";
+		}
+
+#if QT_VERSION >= 0x050000
+		auto BuildHookSlots (const QObject *obj)
+		{
+			const auto objMo = obj->metaObject ();
+
+			QHash<QByteArray, QList<QMetaMethod>> hookSlots;
+			for (int i = 0, size = objMo->methodCount (); i < size; ++i)
+			{
+				const auto& method = objMo->method (i);
+				if (IsHookMethod (method))
+					hookSlots [method.name ()] << method;
+			}
+
+			return hookSlots;
+		}
+#endif
+
+		void CheckMatchingSigs (const QObject *snd, const QObject *rcv)
+		{
+#if QT_VERSION >= 0x050000
+			if (!qEnvironmentVariableIsSet ("LC_VERBOSE_HOOK_CHECKS"))
+				return;
+
+			const auto& hookSlots = BuildHookSlots (snd);
+
+			const auto rcvMo = rcv->metaObject ();
+
+			for (int i = 0, size = rcvMo->methodCount (); i < size; ++i)
+			{
+				const auto& rcvMethod = rcvMo->method (i);
+				if (!IsHookMethod (rcvMethod))
+					continue;
+
+				const auto& rcvName = rcvMethod.name ();
+				if (!hookSlots.contains (rcvName))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "no method matching method"
+							<< rcvName
+							<< "(receiver"
+							<< rcv
+							<< ") in sender object"
+							<< snd;
+					continue;
+				}
+
+				const auto& sndMethods = hookSlots [rcvName];
+				if (std::none_of (sndMethods.begin (), sndMethods.end (),
+							[&rcvMethod] (const QMetaMethod& sndMethod)
+							{
+								return QMetaObject::checkConnectArgs (sndMethod, rcvMethod);
+							}))
+					qWarning () << Q_FUNC_INFO
+							<< "incompatible signatures for hook"
+							<< rcvName
+							<< "in"
+							<< snd
+							<< "and"
+							<< rcv;
+			}
+#else
+			Q_UNUSED (snd)
+			Q_UNUSED (rcv)
+#endif
+		}
+
 #define LC_N(a) (QMetaObject::normalizedSignature(a))
 #define LC_TOSLOT(a) ('1' + QByteArray(a))
 #define LC_TOSIGNAL(a) ('2' + QByteArray(a))
 		void ConnectHookSignals (QObject *sender, QObject *receiver, bool destSlot)
 		{
+			if (destSlot)
+				CheckMatchingSigs (sender, receiver);
+
 			const QMetaObject *mo = sender->metaObject ();
 			for (int i = 0, size = mo->methodCount (); i < size; ++i)
 			{
 				QMetaMethod method = mo->method (i);
 				if (method.methodType () != QMetaMethod::Signal)
 					continue;
-				if (method.parameterTypes ().size () == 0)
-					continue;
-				if (method.parameterTypes ().at (0) != "LeechCraft::IHookProxy_ptr")
+
+				if (!IsHookMethod (method))
 					continue;
 
 #if QT_VERSION >= 0x050000

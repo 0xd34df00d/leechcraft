@@ -41,7 +41,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
 	FlashPlaceHolder::FlashPlaceHolder (const QUrl& url, FlashOnClickWhitelist *wl, QWidget *parent)
 	: QWidget (parent)

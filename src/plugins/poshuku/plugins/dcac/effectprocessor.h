@@ -32,8 +32,6 @@
 #include <QGraphicsEffect>
 #include "effects.h"
 
-class QWebView;
-
 namespace LeechCraft
 {
 namespace Poshuku
@@ -44,7 +42,7 @@ namespace DCAC
 	{
 		QList<Effect_t> Effects_;
 	public:
-		EffectProcessor (QWebView*);
+		EffectProcessor (QWidget*);
 
 		void SetEffects (QList<Effect_t>);
 	protected:

@@ -29,35 +29,22 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/poshuku/iwebplugin.h>
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
-	class FlashOnClickWhitelist;
-
-	class FlashOnClickPlugin : public QObject
-							 , public IWebPlugin
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
-		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IWebPlugin)
-
-		const ICoreProxy_ptr Proxy_;
-		FlashOnClickWhitelist * const WL_;
+		XmlSettingsManager ();
 	public:
-		FlashOnClickPlugin (const ICoreProxy_ptr&,
-				FlashOnClickWhitelist*, QObject* = nullptr);
-
-		QWebPluginFactory::Plugin Plugin (bool) const;
-		QWidget* Create (const QString&,
-				const QUrl&,
-				const QStringList&,
-				const QStringList&);
+		static XmlSettingsManager& Instance ();
+	protected:
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
 }
 }

@@ -29,8 +29,8 @@
 
 #include "effectprocessor.h"
 #include <QPainter>
+#include <QWidget>
 #include <QtDebug>
-#include <qwebview.h>
 #include <util/sll/visitor.h>
 #include "invertcolors.h"
 #include "reducelightness.h"
@@ -42,7 +42,7 @@ namespace Poshuku
 {
 namespace DCAC
 {
-	EffectProcessor::EffectProcessor (QWebView *view)
+	EffectProcessor::EffectProcessor (QWidget *view)
 	: QGraphicsEffect { view }
 	{
 	}

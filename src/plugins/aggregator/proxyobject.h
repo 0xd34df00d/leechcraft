@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AGGREGATOR_PROXYOBJECT_H
-#define PLUGINS_AGGREGATOR_PROXYOBJECT_H
+#pragma once
+
 #include <QObject>
 #include "interfaces/aggregator/iproxyobject.h"
 
@@ -42,7 +42,7 @@ namespace Aggregator
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Aggregator::IProxyObject)
 	public:
-		ProxyObject (QObject* = 0);
+		ProxyObject (QObject* = nullptr);
 
 		/** @brief Adds the given feed to the storage.
 		 *
@@ -116,5 +116,3 @@ namespace Aggregator
 	};
 }
 }
-
-#endif

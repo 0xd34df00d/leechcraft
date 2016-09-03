@@ -48,10 +48,7 @@
 #include <QMenu>
 #include <QMovie>
 #include <QWidgetAction>
-#include <QPrinter>
-#include <QPrintDialog>
 #include <QTimer>
-#include <QPrintPreviewDialog>
 #include <QPainter>
 #include <qwebframe.h>
 #include <QFileDialog>
@@ -93,7 +90,6 @@
 #include "historywidget.h"
 #include "customwebview.h"
 #include "urleditbuttonsmanager.h"
-#include "webpagesslwatcher.h"
 #include "zoomer.h"
 #include "searchtext.h"
 
@@ -129,7 +125,6 @@ namespace Poshuku
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		auto sslWatcher = new WebPageSslWatcher { WebView_ };
 		connect (WebView_,
 				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
 				this,
@@ -147,39 +142,39 @@ namespace Poshuku
 
 		connect (ReloadTimer_,
 				SIGNAL (timeout ()),
-				WebView_,
-				SLOT (reload ()));
+				WebView_->GetPageAction (IWebView::PageAction::Reload),
+				SLOT (trigger ()));
 
-		Cut_ = WebView_->pageAction (QWebPage::Cut);
+		Cut_ = WebView_->GetPageAction (IWebView::PageAction::Cut);
 		Cut_->setShortcutContext (Qt::WindowShortcut);
 		Cut_->setProperty ("ActionIcon", "edit-cut");
-		Copy_ = WebView_->pageAction (QWebPage::Copy);
+		Copy_ = WebView_->GetPageAction (IWebView::PageAction::Copy);
 		Copy_->setShortcutContext (Qt::WindowShortcut);
 		Copy_->setProperty ("ActionIcon", "edit-copy");
-		Paste_ = WebView_->pageAction (QWebPage::Paste);
+		Paste_ = WebView_->GetPageAction (IWebView::PageAction::Paste);
 		Paste_->setProperty ("ActionIcon", "edit-paste");
 
 		ToolBar_ = new QToolBar (this);
 		ToolBar_->setWindowTitle ("Poshuku");
 
-		Back_ = WebView_->pageAction (QWebPage::Back);
+		Back_ = WebView_->GetPageAction (IWebView::PageAction::Back);
 		Back_->setParent (this);
 		Back_->setProperty ("ActionIcon", "go-previous");
 
 		BackMenu_ = new QMenu ();
 
-		Forward_ = WebView_->pageAction (QWebPage::Forward);
+		Forward_ = WebView_->GetPageAction (IWebView::PageAction::Forward);
 		Forward_->setParent (this);
 		Forward_->setProperty ("ActionIcon", "go-next");
 
 		ForwardMenu_ = new QMenu ();
 
-		Reload_ = WebView_->pageAction (QWebPage::Reload);
+		Reload_ = WebView_->GetPageAction (IWebView::PageAction::Reload);
 		Reload_->setProperty ("ActionIcon", "view-refresh");
 		Reload_->setIcon (Core::Instance ()
 				.GetProxy ()->GetIconThemeManager ()->GetIcon ("view-refresh"));
 
-		Stop_ = WebView_->pageAction (QWebPage::Stop);
+		Stop_ = WebView_->GetPageAction (IWebView::PageAction::Stop);
 		Stop_->setProperty ("ActionIcon", "process-stop");
 		Stop_->setIcon (Core::Instance ()
 				.GetProxy ()->GetIconThemeManager ()->GetIcon ("process-stop"));
@@ -203,7 +198,6 @@ namespace Poshuku
 
 		new UrlEditButtonsManager (WebView_,
 				Ui_.URLFrame_->GetEditAsProgressLine (),
-				sslWatcher,
 				Add2Favorites_);
 
 		Find_ = new QAction (tr ("Find..."),
@@ -282,9 +276,9 @@ namespace Poshuku
 
 		ToolBar_->addAction (ReloadStop_);
 
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
+		auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 		QMenu *moreMenu = new QMenu (this);
-		emit hookMoreMenuFillBegin (proxy, moreMenu, WebView_, this);
+		emit hookMoreMenuFillBegin (proxy, moreMenu, this);
 		if (!proxy->IsCancelled ())
 		{
 			const QString tools = "Poshuku";
@@ -315,8 +309,8 @@ namespace Poshuku
 			WindowMenus_ [view] << TextZoomReset_;
 			WindowMenus_ [view] << Util::CreateSeparator (this);
 		}
-		proxy.reset (new Util::DefaultHookProxy ());
-		emit hookMoreMenuFillEnd (proxy, moreMenu, WebView_, this);
+		proxy = std::make_shared<Util::DefaultHookProxy> ();
+		emit hookMoreMenuFillEnd (proxy, moreMenu, this);
 
 		if (moreMenu->actions ().size ())
 		{
@@ -353,14 +347,20 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleAdd2Favorites ()));
-		connect (Print_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handlePrinting ()));
-		connect (PrintPreview_,
-				SIGNAL (triggered ()),
-				this,
-				SLOT (handlePrintingWithPreview ()));
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { WebView_->Print (false); },
+			Print_,
+			SIGNAL (triggered ()),
+			Print_
+		};
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { WebView_->Print (true); },
+			PrintPreview_,
+			SIGNAL (triggered ()),
+			PrintPreview_
+		};
 		connect (Find_,
 				SIGNAL (triggered ()),
 				this,
@@ -380,8 +380,8 @@ namespace Poshuku
 
 		const auto fullZoomer = new Zoomer
 		{
-			[this] { return WebView_->zoomFactor (); },
-			[this] (qreal f) { WebView_->setZoomFactor (f); },
+			[this] { return WebView_->GetZoomFactor (); },
+			[this] (qreal f) { WebView_->SetZoomFactor (f); },
 			this
 		};
 		fullZoomer->InstallScrollFilter (WebView_,
@@ -390,8 +390,8 @@ namespace Poshuku
 
 		const auto textZoomer = new Zoomer
 		{
-			[this] { return WebView_->textSizeMultiplier (); },
-			[this] (qreal f) { WebView_->setTextSizeMultiplier (f); },
+			[this] { return WebView_->GetTextSizeMultiplier (); },
+			[this] (qreal f) { WebView_->SetTextSizeMultiplier (f); },
 			this
 		};
 		textZoomer->InstallScrollFilter (WebView_,
@@ -475,17 +475,9 @@ namespace Poshuku
 				this,
 				SLOT (updateNavHistory ()));
 		connect (WebView_,
-				SIGNAL (printRequested (QWebFrame*)),
-				this,
-				SLOT (handleViewPrint (QWebFrame*)));
-		connect (WebView_,
 				SIGNAL (closeRequested ()),
 				this,
 				SIGNAL (needToClose ()));
-		connect (WebView_->page (),
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)),
-				this,
-				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 
 		connect (HistoryAction_,
 				SIGNAL (triggered (bool)),
@@ -558,18 +550,17 @@ namespace Poshuku
 		TextZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomReset_"));
 
 		if (Own_)
-			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (),
-					WebView_, this);
-	}
-
-	CustomWebView* BrowserWidget::GetView () const
-	{
-		return WebView_;
+			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	QLineEdit* BrowserWidget::GetURLEdit () const
 	{
 		return Ui_.URLFrame_->GetEdit ();
+	}
+
+	IWebView* BrowserWidget::GetWebView () const
+	{
+		return WebView_;
 	}
 
 	void BrowserWidget::InsertFindAction (QMenu *menu, const QString& text)
@@ -680,7 +671,7 @@ namespace Poshuku
 		if (!url.isEmpty () && url.isValid ())
 		{
 			HtmlMode_ = false;
-			WebView_->Load (url);
+			WebView_->Load (url, {});
 		}
 	}
 
@@ -949,39 +940,6 @@ namespace Poshuku
 			QWidget::keyReleaseEvent (event);
 	}
 
-	void BrowserWidget::PrintImpl (bool preview, QWebFrame *frame)
-	{
-		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookPrint (proxy, this, preview, frame);
-		if (proxy->IsCancelled ())
-			return;
-
-		proxy->FillValue ("preview", preview);
-
-		QPrinter printer;
-		if (preview)
-		{
-			QPrintPreviewDialog prevDialog (&printer, this);
-			connect (&prevDialog,
-					SIGNAL (paintRequested (QPrinter*)),
-					frame,
-					SLOT (print (QPrinter*)));
-
-			if (prevDialog.exec () != QDialog::Accepted)
-				return;
-		}
-		else
-		{
-			QPrintDialog dialog (&printer, this);
-			dialog.setWindowTitle (tr ("Print web page"));
-
-			if (dialog.exec () != QDialog::Accepted)
-				return;
-
-			frame->print (&printer);
-		}
-	}
-
 	void BrowserWidget::SetActualReloadInterval (const QTime& value)
 	{
 		QTime null (0, 0, 0);
@@ -996,7 +954,7 @@ namespace Poshuku
 	void BrowserWidget::handleIconChanged ()
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookIconChanged (proxy, WebView_->page (), this);
+		emit hookIconChanged (proxy, this);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1110,21 +1068,6 @@ namespace Poshuku
 			FindDialog_->SetText (act->data ().toString ());
 		FindDialog_->show ();
 		FindDialog_->setFocus ();
-	}
-
-	void BrowserWidget::handleViewPrint (QWebFrame *frame)
-	{
-		PrintImpl (false, frame);
-	}
-
-	void BrowserWidget::handlePrinting ()
-	{
-		PrintImpl (false, WebView_->page ()->mainFrame ());
-	}
-
-	void BrowserWidget::handlePrintingWithPreview ()
-	{
-		PrintImpl (true, WebView_->page ()->mainFrame ());
 	}
 
 	void BrowserWidget::handleScreenSave ()
@@ -1469,7 +1412,7 @@ namespace Poshuku
 			w.writeEndElement ();
 		w.writeEndDocument ();
 
-		GetView ()->setHtml (formatted, WebView_->url ());
+		WebView_->SetContent (formatted.toUtf8 (), "text/html");
 	}
 
 	namespace
@@ -1582,7 +1525,7 @@ namespace Poshuku
 				}
 			}
 
-			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_); });
+			addAction (tr ("Open &here"), [&] { WebView_->Load (info.LinkUrl_, {}); });
 			addAction (tr ("Open in new &tab"),
 					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
 			menu->addSeparator ();
@@ -1611,7 +1554,7 @@ namespace Poshuku
 		{
 			if (!menu->isEmpty ())
 				menu->addSeparator ();
-			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_); });
+			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_, {}); });
 			addWebAction (QWebPage::OpenImageInNewWindow);
 			menu->addSeparator ();
 			addWebAction (QWebPage::DownloadImageToDisk);
@@ -1662,7 +1605,7 @@ namespace Poshuku
 	{
 		if (!OnLoadPos_.isNull ())
 		{
-			GetView ()->page ()->mainFrame ()->setScrollPosition (OnLoadPos_);
+			WebView_->SetScrollPosition (OnLoadPos_);
 			OnLoadPos_ = QPoint ();
 		}
 	}
@@ -1676,7 +1619,7 @@ namespace Poshuku
 	void BrowserWidget::handleLoadProgress (int p)
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
-		emit hookLoadProgress (proxy, WebView_->page (), this, p);
+		emit hookLoadProgress (proxy, this, p);
 		if (proxy->IsCancelled ())
 			return;
 
@@ -1723,7 +1666,6 @@ namespace Poshuku
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
 		emit hookNotifyLoadFinished (proxy,
-				WebView_,
 				this,
 				ok,
 				NotifyWhenFinished_->isChecked (),
@@ -1919,7 +1861,7 @@ namespace Poshuku
 
 	void BrowserWidget::loadURL (const QUrl& url)
 	{
-		WebView_->Load (url);
+		WebView_->Load (url, {});
 	}
 
 	void BrowserWidget::SetSplitterSizes (int currentIndex)

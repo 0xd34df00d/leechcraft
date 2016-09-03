@@ -71,7 +71,7 @@ namespace Aggregator
 			TaggedItems_.clear ();
 		else
 		{
-			StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+			const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 			TaggedItems_ = QSet<IDType_t>::fromList (sb->GetItemsForTag (tags.takeFirst ()));
 
 			Q_FOREACH (const ITagsManager::tag_id& tag, tags)

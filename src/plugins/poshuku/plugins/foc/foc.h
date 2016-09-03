@@ -27,63 +27,55 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "flashonclickplugin.h"
-#include <algorithm>
-#include <QDebug>
-#include <interfaces/poshuku/iflashoverrider.h>
-#include <interfaces/core/icoreproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-#include "xmlsettingsmanager.h"
-#include "flashplaceholder.h"
-#include "flashonclickwhitelist.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
+#include <interfaces/core/ihookproxy.h>
+#include <interfaces/poshuku/iwebplugin.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
-	FlashOnClickPlugin::FlashOnClickPlugin (const ICoreProxy_ptr& proxy,
-			FlashOnClickWhitelist *wl, QObject *parent)
-	: QObject { parent }
-	, Proxy_ { proxy }
-	, WL_ { wl }
+	class FlashOnClickPlugin;
+	class FlashOnClickWhitelist;
+
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IHaveSettings
 	{
-	}
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
 
-	QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
-	{
-		if (isq)
-			throw "I want to be anonymous";
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FOC")
 
-		QWebPluginFactory::Plugin result;
-		result.name = "FlashOnClickPlugin";
-		QWebPluginFactory::MimeType mime;
-		mime.fileExtensions << "swf";
-		mime.name = "application/x-shockwave-flash";
-		result.mimeTypes << mime;
-		return result;
-	}
+		ICoreProxy_ptr Proxy_;
+		Util::XmlSettingsDialog_ptr XSD_;
 
-	QWidget* FlashOnClickPlugin::Create (const QString&,
-			const QUrl& url,
-			const QStringList&,
-			const QStringList&)
-	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("EnableFlashOnClick").toBool ())
-			return nullptr;
+		std::shared_ptr<FlashOnClickPlugin> FlashOnClickPlugin_;
+		FlashOnClickWhitelist *FlashOnClickWhitelist_;
+	public:
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		if (WL_->Matches (url.toString ()))
-			return nullptr;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		const auto& overs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ();
-		if (std::any_of (overs.begin (), overs.end (),
-					[&url] (IFlashOverrider *plugin) { return plugin->WouldOverrideFlash (url); }))
-			return nullptr;
-
-		return new FlashPlaceHolder { url, WL_ };
-	}
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
+	public slots:
+		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+				QList<IWebPlugin*>&);
+	};
 }
 }
 }

@@ -2,35 +2,9 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>FlashOnClickWhitelist</name>
-    <message>
-        <location filename="flashonclickwhitelist.ui" line="25"/>
-        <source>Add...</source>
-        <translation>Добавить...</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.ui" line="32"/>
-        <source>Modify...</source>
-        <translation>Изменить...</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.ui" line="39"/>
-        <source>Remove</source>
-        <translation>Удалить</translation>
-    </message>
-</context>
-<context>
-    <name>FlashPlaceHolder</name>
-    <message>
-        <location filename="flashplaceholder.ui" line="46"/>
-        <source>Load Flash</source>
-        <translation>Загрузить Flash</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::Poshuku::CleanWeb::CleanWeb</name>
     <message>
-        <location filename="cleanweb.cpp" line="94"/>
+        <location filename="cleanweb.cpp" line="89"/>
         <source>Blocks unwanted ads.</source>
         <translation>Блокирует нежелательную рекламу.</translation>
     </message>
@@ -38,70 +12,24 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::Core</name>
     <message>
-        <location filename="core.cpp" line="284"/>
+        <location filename="core.cpp" line="271"/>
         <source>Blocked by Poshuku CleanWeb: %1</source>
         <translation>Заблокировано Poshuku CleanWeb: %1</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="323"/>
+        <location filename="core.cpp" line="310"/>
         <source>Block image...</source>
         <translation>Заблокировать изображение...</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="596"/>
+        <location filename="core.cpp" line="579"/>
         <source>The subscription %1 was successfully added.</source>
         <translation>Подписка %1 была успешно добавлена.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="626"/>
+        <location filename="core.cpp" line="609"/>
         <source>The subscription %1 wasn&apos;t delegated.</source>
         <translation>Подписка %1 не была делегирована.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::CleanWeb::FlashOnClickWhitelist</name>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="49"/>
-        <source>Whitelist</source>
-        <translation>Белый список</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="116"/>
-        <source>Add URL to whitelist</source>
-        <translation>Добавить URL в белый список</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="117"/>
-        <source>Please enter the URL to add to the FlashOnClick&apos;s whitelist</source>
-        <translation>Введите URL для добавления в белый список FlashOnClick</translation>
-    </message>
-    <message>
-        <location filename="flashonclickwhitelist.cpp" line="132"/>
-        <source>This URL is already matched by another whitelist entry.</source>
-        <translation>Этот URL уже соответствует другой записи в белом списке.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Poshuku::CleanWeb::FlashPlaceHolder</name>
-    <message>
-        <location filename="flashplaceholder.cpp" line="141"/>
-        <source>Load</source>
-        <translation>Загрузить</translation>
-    </message>
-    <message>
-        <location filename="flashplaceholder.cpp" line="147"/>
-        <source>Add URL to whitelist...</source>
-        <translation>Добавить URL в белый список...</translation>
-    </message>
-    <message>
-        <location filename="flashplaceholder.cpp" line="152"/>
-        <source>Add host to whitelist...</source>
-        <translation>Добавить хост в белый список...</translation>
-    </message>
-    <message>
-        <location filename="flashplaceholder.cpp" line="162"/>
-        <source>Hide</source>
-        <translation>Скрыть</translation>
     </message>
 </context>
 <context>
@@ -139,22 +67,32 @@
 <context>
     <name>LeechCraft::Poshuku::CleanWeb::SubscriptionsManagerWidget</name>
     <message>
-        <location filename="subscriptionsmanagerwidget.cpp" line="86"/>
-        <location filename="subscriptionsmanagerwidget.cpp" line="96"/>
-        <location filename="subscriptionsmanagerwidget.cpp" line="105"/>
-        <location filename="subscriptionsmanagerwidget.cpp" line="114"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="78"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="88"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="97"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="106"/>
         <source>Error adding subscription</source>
         <translation>Ошибка добавления подписки</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanagerwidget.cpp" line="87"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="79"/>
         <source>Invalid URL. Valid URL format is %1.</source>
         <translation>Неправильный URL. Правильный формат — %1.</translation>
     </message>
     <message>
-        <location filename="subscriptionsmanagerwidget.cpp" line="97"/>
+        <location filename="subscriptionsmanagerwidget.cpp" line="89"/>
         <source>Can&apos;t add subscription without a title.</source>
         <translation>Невозможно добавить подписку без названия.</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanagerwidget.cpp" line="98"/>
+        <source>Subscription with this title already exists.</source>
+        <translation>Подписка с этим названием уже существует.</translation>
+    </message>
+    <message>
+        <location filename="subscriptionsmanagerwidget.cpp" line="107"/>
+        <source>Subscription with this URL already exists.</source>
+        <translation>Подписка с этим URL уже существует.</translation>
     </message>
 </context>
 <context>
@@ -264,12 +202,12 @@
         <translation>Добавить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="232"/>
+        <location filename="userfiltersmodel.cpp" line="234"/>
         <source>Modify filter</source>
         <translation>Изменить фильтр</translation>
     </message>
     <message>
-        <location filename="userfiltersmodel.cpp" line="266"/>
+        <location filename="userfiltersmodel.cpp" line="268"/>
         <source>Imported %1 user filters (%2 parsed successfully).</source>
         <translation>Импортировано %1 пользовательских правил (%2 успешно разобрано).</translation>
     </message>
@@ -542,16 +480,6 @@ p, li { white-space: pre-wrap; }
         <location filename="dummy.cpp" line="12"/>
         <source> days</source>
         <translation> дней</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="13"/>
-        <source>FlashOnClick</source>
-        <translation>FlashOnClick</translation>
-    </message>
-    <message>
-        <location filename="dummy.cpp" line="14"/>
-        <source>Enable FlashOnClick</source>
-        <translation>Включить FlashOnClick</translation>
     </message>
 </context>
 </TS>

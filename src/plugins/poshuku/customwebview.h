@@ -34,6 +34,7 @@
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
+#include "interfaces/poshuku/iwebview.h"
 #include "pageformsdata.h"
 
 class QTimer;
@@ -47,19 +48,48 @@ namespace Poshuku
 {
 	class IBrowserWidget;
 
+	class WebViewSslWatcherHandler;
+
 	class CustomWebView : public QWebView
+						, public IWebView
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
 
 		IBrowserWidget *Browser_;
-		QString PreviousEncoding_;
+		mutable QString PreviousEncoding_;
 
 		std::shared_ptr<QWebInspector> WebInspector_;
+
+		const WebViewSslWatcherHandler *SslWatcherHandler_;
 	public:
 		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
+		QWidget* GetQWidget () override;
+		QList<QAction*> GetActions (ActionArea) const override;
+
+		QAction* GetPageAction (PageAction) const override;
+
+		QString GetTitle () const override;
+		QUrl GetUrl () const override;
+		QString GetHumanReadableUrl () const override;
+
+		void Load (const QUrl&, const QString&) override;
+
+		void SetContent (const QByteArray&, const QByteArray&) override;
+		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
+		void AddJavaScriptObject (const QString&, QObject*) override;
+
+		void Print (bool preview) override;
+
+		QPoint GetScrollPosition () const override;
+		void SetScrollPosition (const QPoint&) override;
+		double GetZoomFactor () const override;
+		void SetZoomFactor (double) override;
+		double GetTextSizeMultiplier () const override;
+		void SetTextSizeMultiplier (double) override;
+
 		void SetBrowserWidget (IBrowserWidget*);
-		void Load (const QUrl&, QString = QString ());
 		void Load (const QNetworkRequest&,
 				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
 				const QByteArray& = QByteArray ());
@@ -73,7 +103,7 @@ namespace Poshuku
 		 * @param[in] url The possibly non-UTF-8 URL.
 		 * @return The \em url converted to Unicode.
 		 */
-		QString URLToProperString (const QUrl& url);
+		QString URLToProperString (const QUrl& url) const;
 	protected:
 		void mousePressEvent (QMouseEvent*) override;
 		void contextMenuEvent (QContextMenuEvent*) override;
@@ -81,13 +111,14 @@ namespace Poshuku
 	private:
 		void NavigatePlugins ();
 		void NavigateHome ();
+		void PrintImpl (bool, QWebFrame*);
 	private slots:
 		void remakeURL (const QUrl&);
 		void handleLoadFinished (bool);
 		void handleFrameState (QWebFrame*, QWebHistoryItem*);
+		void handlePrintRequested (QWebFrame*);
 	signals:
 		void urlChanged (const QString&);
-		void printRequested (QWebFrame*);
 		void closeRequested ();
 		void storeFormData (const PageFormsData_t&);
 
@@ -96,6 +127,8 @@ namespace Poshuku
 		void zoomChanged ();
 
 		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&);
+
+		void earliestViewLayout () override;
 	};
 }
 }

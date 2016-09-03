@@ -124,7 +124,7 @@ namespace Poshuku
 		BrowserWidget* NewURL (const QUrl&, bool = false, const DynPropertiesList_t& = DynPropertiesList_t ());
 		BrowserWidget* NewURL (const QString&, bool = false);
 		IWebWidget* GetWidget ();
-		CustomWebView* MakeWebView (bool = false);
+		IWebView* MakeWebView (bool = false);
 		void Unregister (BrowserWidget*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots only useful in own mode.
@@ -146,12 +146,12 @@ namespace Poshuku
 		IShortcutProxy* GetShortcutProxy () const;
 
 		QIcon GetIcon (const QUrl&) const;
-		QString GetUserAgent (const QUrl&, const QWebPage* = 0) const;
+		QString GetUserAgent (const QUrl&) const;
 
 		bool IsUrlInFavourites (const QString&);
 		void RemoveFromFavorites (const QString&);
 	private:
-		void HandleHistory (CustomWebView*);
+		void HandleHistory (IWebView*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots that are always useful, both in own
 			* and deown mode.
@@ -196,7 +196,7 @@ namespace Poshuku
 				QWebView *view,
 				const QUrl& url);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
-				const QUrl&, const QWebPage*) const;
+				const QUrl&) const;
 	};
 }
 }

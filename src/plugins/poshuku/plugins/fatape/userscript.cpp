@@ -36,6 +36,7 @@
 #include <QHash>
 #include <QNetworkReply>
 #include <QNetworkRequest>
+#include <QNetworkAccessManager>
 #include <QTextCodec>
 #include <QTextStream>
 
@@ -49,6 +50,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
 #include <util/sll/slotclosure.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "greasemonkey.h"
 #include "xmlsettingsmanager.h"
 
@@ -127,7 +129,7 @@ namespace FatApe
 				!std::any_of (exclude.begin (), exclude.end (), match);
 	}
 
-	void UserScript::Inject (QWebFrame *frame, IProxyObject *proxy) const
+	void UserScript::Inject (IWebView *view, IProxyObject *proxy) const
 	{
 		if (!Enabled_)
 			return;
@@ -161,8 +163,8 @@ namespace FatApe
 				.arg (gmLayerId)
 				.arg (QString::fromUtf8 (script.readAll ()));
 
-		frame->addToJavaScriptWindowObject (gmLayerId, new GreaseMonkey { frame, proxy, *this });
-		frame->evaluateJavaScript (toInject);
+		view->AddJavaScriptObject (gmLayerId, new GreaseMonkey { view, proxy, *this });
+		view->EvaluateJS (toInject);
 	}
 
 	QString UserScript::Name () const

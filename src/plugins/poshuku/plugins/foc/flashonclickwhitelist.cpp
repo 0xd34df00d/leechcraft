@@ -40,7 +40,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
 	FlashOnClickWhitelist::FlashOnClickWhitelist (QWidget *parent)
 	: QWidget (parent)

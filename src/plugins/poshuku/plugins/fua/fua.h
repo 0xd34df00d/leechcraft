@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
-#define PLUGINS_POSHUKU_PLUGINS_FUA_FUA_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QMap>
@@ -38,7 +38,6 @@
 #include <interfaces/core/ihookproxy.h>
 
 class QStandardItemModel;
-class QWebPage;
 
 namespace LeechCraft
 {
@@ -81,11 +80,8 @@ namespace Fua
 		const QMap<QString, QString>& GetBackLookupMap () const;
 	public slots:
 		void initPlugin (QObject*);
-		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
-				const QUrl&, const QWebPage*);
+		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr, const QUrl&);
 	};
 }
 }
 }
-
-#endif

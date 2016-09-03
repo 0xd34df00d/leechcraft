@@ -99,10 +99,6 @@ namespace Poshuku
 				SIGNAL (urlChanged (const QUrl&)),
 				this,
 				SIGNAL (loadingURL (const QUrl&)));
-		connect (mainFrame (),
-				SIGNAL (initialLayoutCompleted ()),
-				this,
-				SLOT (handleInitialLayoutCompleted ()));
 		connect (this,
 				SIGNAL (contentsChanged ()),
 				this,
@@ -346,12 +342,6 @@ namespace Poshuku
 	{
 		emit hookFrameCreated (std::make_shared<Util::DefaultHookProxy> (),
 				this, frame);
-	}
-
-	void CustomWebPage::handleInitialLayoutCompleted ()
-	{
-		emit hookInitialLayoutCompleted (std::make_shared<Util::DefaultHookProxy> (),
-				this, mainFrame ());
 	}
 
 	void CustomWebPage::handleJavaScriptWindowObjectCleared ()
@@ -708,7 +698,8 @@ namespace Poshuku
 		{
 			bool invert = Modifiers_ & Qt::ShiftModifier;
 
-			CustomWebView *view = Core::Instance ().MakeWebView (invert);
+			// TODO
+			const auto view = qobject_cast<CustomWebView*> (Core::Instance ().MakeWebView (invert)->GetQWidget ());
 			view->Load (request);
 
 			MouseButtons_ = Qt::NoButton;
@@ -766,26 +757,14 @@ namespace Poshuku
 		switch (type)
 		{
 		case QWebPage::WebBrowserWindow:
-			return Core::Instance ().NewURL (QUrl ())->GetView ()->page ();
 		case QWebPage::WebModalDialog:
-		{
-			BrowserWidget *widget = new BrowserWidget (view ());
-			widget->FinalizeInit ();
-			widget->setWindowFlags (Qt::Dialog);
-			widget->setAttribute (Qt::WA_DeleteOnClose);
-			widget->setWindowModality (Qt::ApplicationModal);
-			connect (widget,
-					SIGNAL (titleChanged (const QString&)),
-					widget,
-					SLOT (setWindowTitle (const QString&)));
-			widget->show ();
-			return widget->GetView ()->page ();
-		}
+			// TODO
+			return qobject_cast<CustomWebView*> (Core::Instance ().NewURL (QUrl {})->GetWebView ()->GetQWidget ())->page ();
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
 					<< type;
-			return 0;
+			return nullptr;
 		}
 	}
 
@@ -855,7 +834,7 @@ namespace Poshuku
 
 	QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 	{
-		const auto& ua = Core::Instance ().GetUserAgent (url, this);
+		const auto& ua = Core::Instance ().GetUserAgent (url);
 		if (!ua.isEmpty ())
 			return ua;
 

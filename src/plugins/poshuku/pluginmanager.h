@@ -50,6 +50,8 @@ namespace Poshuku
 	class ProxyObject;
 	class Core;
 
+	class IWebView;
+
 	class PluginManager : public Util::BaseHookInterconnector
 	{
 		Q_OBJECT
@@ -145,11 +147,9 @@ namespace Poshuku
 		 * initialized.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param view The QWebView of the browser widget.
 		 * @param browserWidget The browser widget itself.
 		 */
 		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget);
 
 		/** @brief Called inside QWebPage::chooseFile().
@@ -333,11 +333,9 @@ namespace Poshuku
 		 * The hook may cancel the default implementation.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param page The web page that has its icon changed.
 		 * @param browserWidget The widget with the browser.
 		 */
 		void hookIconChanged (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget);
 
 		/** @brief Called whenever an icon is requested for url.
@@ -353,19 +351,6 @@ namespace Poshuku
 		 */
 		void hookIconRequested (LeechCraft::IHookProxy_ptr proxy,
 				const QUrl& url);
-
-		/** @brief Called when the frame is laid out for the first time.
-		 *
-		 * This hook is called whenever the frame is laid out for the
-		 * first time during web page load.
-		 *
-		 * @param proxy The standard hook proxy object.
-		 * @param page The page where the frame being laid out is.
-		 * @param frame The frame that's laid out for the first time.
-		 */
-		void hookInitialLayoutCompleted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
-				QWebFrame *frame);
 
 		/** @brief Called from QWebPage::javaScriptAlert().
 		 *
@@ -535,7 +520,6 @@ namespace Poshuku
 		 * @param progress The load progress, in percents.
 		 */
 		void hookLoadProgress (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page,
 				QObject *browserWidget,
 				int progress);
 
@@ -550,7 +534,7 @@ namespace Poshuku
 		/** @brief Called when the "More" menu begins filling.
 		 *
 		 * This hook is called when the "More" menu begins filling for
-		 * the given webView in the given browserWidget. The hook may
+		 * the given web view in the given browserWidget. The hook may
 		 * add new items to the menu, for example. Please note that the
 		 * menu would be empty before calling the hook, but if another
 		 * hook added items to it before your one, your hook would get
@@ -563,14 +547,12 @@ namespace Poshuku
 		 *
 		 * @param proxy The standard hook proxy object.
 		 * @param menu The menu that's going to be filled.
-		 * @param webView The QWebView the menu is associated with.
-		 * @param browserWidget The browser widget with the webView.
+		 * @param browserWidget The corresponding browser widget.
 		 *
 		 * @sa hookMoreMenuFillEnd()
 		 */
 		void hookMoreMenuFillBegin (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
 				QObject *browserWidget);
 
 		/** @brief Called when the "More" menu ends filling.
@@ -581,14 +563,12 @@ namespace Poshuku
 		 *
 		 * @param proxy The standard hook proxy object.
 		 * @param menu The menu that's finishing being filled.
-		 * @param webView The QWebView the menu is associated with.
-		 * @param browserWidget The browser widget containing webView.
+		 * @param browserWidget The corresponding browser widget.
 		 *
 		 * @sa hookMoreMenuFillBegin()
 		 */
 		void hookMoreMenuFillEnd (LeechCraft::IHookProxy_ptr proxy,
 				QMenu *menu,
-				QWebView *webView,
 				QObject *browserWidget);
 
 		/** @brief Called when a page finishes loading and user
@@ -610,34 +590,11 @@ namespace Poshuku
 		 * of loading them from an URL.
 		 */
 		void hookNotifyLoadFinished (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
 				QObject *browserWidget,
 				bool ok,
 				bool notifyWhenFinished,
 				bool own,
 				bool htmlMode);
-
-		/** @brief Called when the frame is to be printed.
-		 *
-		 * The print action could either be requested by the user
-		 * directly or, for example, by some JS running on the page.
-		 *
-		 * The hook may cancel the default handler (and no printing
-		 * would take place), or, alternatively, it may override the
-		 * value of preview by IHookProxy::SetValue() with the name
-		 * "preview" and value of type bool.
-		 *
-		 * @param proxy The standard hook proxy object.
-		 * @param browserWidget The browser widget containing the frame
-		 * to be printed.
-		 * @param preview Whether preview should be done before the
-		 * actual printing takes place.
-		 * @param frame The frame to be printed.
-		 */
-		void hookPrint (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget,
-				bool preview,
-				QWebFrame *frame);
 
 		/** @brief Called when session restore is scheduled.
 		 *
@@ -760,8 +717,7 @@ namespace Poshuku
 		void hookURLEditReturnPressed (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
-				const QUrl& url,
-				const QWebPage* sourcePage);
+				const QUrl& url);
 
 		/** @brief Called when the given page begins constructing.
 		 *
@@ -811,7 +767,7 @@ namespace Poshuku
 		 * multiple times for the given menu.
 		 *
 		 * @param proxy The standard hook proxy object.
-		 * @param view The QWebView for which the context menu is
+		 * @param view The web view for which the context menu is
 		 * requested.
 		 * @param hitTestResult The structure describing the context menu
 		 * mouse hit.
@@ -819,7 +775,7 @@ namespace Poshuku
 		 * @param menuBuildStage The stage of the menu being built.
 		 */
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
+				LeechCraft::Poshuku::IWebView *view,
 				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);

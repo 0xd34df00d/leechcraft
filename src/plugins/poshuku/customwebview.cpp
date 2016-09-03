@@ -41,6 +41,9 @@
 #include <QWebHistory>
 #include <QTextCodec>
 #include <QMouseEvent>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPrintPreviewDialog>
 
 #if QT_VERSION < 0x050000
 #include <QWindowsStyle>
@@ -58,6 +61,7 @@
 #include "xmlsettingsmanager.h"
 #include "webviewsmoothscroller.h"
 #include "webviewrendersettingshandler.h"
+#include "webviewsslwatcherhandler.h"
 
 namespace LeechCraft
 {
@@ -87,6 +91,8 @@ namespace Poshuku
 		const auto page = new CustomWebPage { iem, this };
 		setPage (page);
 
+		SslWatcherHandler_ = new WebViewSslWatcherHandler { this };
+
 		WebInspector_->setPage (page);
 
 		connect (this,
@@ -111,7 +117,7 @@ namespace Poshuku
 		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
-				SIGNAL (printRequested (QWebFrame*)));
+				SLOT (handlePrintRequested (QWebFrame*)));
 		connect (page,
 				SIGNAL (windowCloseRequested ()),
 				this,
@@ -120,6 +126,11 @@ namespace Poshuku
 				SIGNAL (storeFormData (PageFormsData_t)),
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
+
+		connect (page->mainFrame (),
+				SIGNAL (initialLayoutCompleted ()),
+				this,
+				SIGNAL (earliestViewLayout ()));
 	}
 
 	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
@@ -127,7 +138,7 @@ namespace Poshuku
 		Browser_ = widget;
 	}
 
-	void CustomWebView::Load (const QUrl& url, QString title)
+	void CustomWebView::Load (const QUrl& url, const QString& title)
 	{
 		if (url.isEmpty () || !url.isValid ())
 			return;
@@ -152,10 +163,11 @@ namespace Poshuku
 			return;
 		}
 
-		if (title.isEmpty ())
-			title = tr ("Loading...");
 		remakeURL (url);
-		emit titleChanged (title);
+		if (title.isEmpty ())
+			emit titleChanged (tr ("Loading..."));
+		else
+			emit titleChanged (title);
 		load (url);
 	}
 
@@ -166,7 +178,7 @@ namespace Poshuku
 		QWebView::load (req, op, ba);
 	}
 
-	QString CustomWebView::URLToProperString (const QUrl& url)
+	QString CustomWebView::URLToProperString (const QUrl& url) const
 	{
 		QString string = url.toString ();
 		QWebElement equivs = page ()->mainFrame ()->
@@ -186,6 +198,111 @@ namespace Poshuku
 			string = url.toEncoded ();
 
 		return string;
+	}
+
+	void CustomWebView::Print (bool preview)
+	{
+		PrintImpl (preview, page ()->mainFrame ());
+	}
+
+	QWidget* CustomWebView::GetQWidget ()
+	{
+		return this;
+	}
+
+	QList<QAction*> CustomWebView::GetActions (ActionArea area) const
+	{
+		switch (area)
+		{
+		case ActionArea::UrlBar:
+			return { SslWatcherHandler_->GetStateAction () };
+		}
+
+		assert (false);
+	}
+
+	QAction* CustomWebView::GetPageAction (PageAction action) const
+	{
+#define ACT(x) \
+		case PageAction::x: \
+			return pageAction (QWebPage::x);
+
+		switch (action)
+		{
+		ACT (Reload)
+		ACT (Stop)
+		ACT (Back)
+		ACT (Forward)
+		ACT (Cut)
+		ACT (Copy)
+		ACT (Paste)
+		}
+
+#undef ACT
+
+		assert (false);
+	}
+
+	QString CustomWebView::GetTitle () const
+	{
+		return title ();
+	}
+
+	QUrl CustomWebView::GetUrl () const
+	{
+		return url ();
+	}
+
+	QString CustomWebView::GetHumanReadableUrl () const
+	{
+		return URLToProperString (url ());
+	}
+
+	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime)
+	{
+		setContent (data, mime);
+	}
+
+	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& callback)
+	{
+		const auto& res = page ()->mainFrame ()->evaluateJavaScript (js);
+		if (callback)
+			callback (res);
+	}
+
+	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
+	{
+		page ()->mainFrame ()->addToJavaScriptWindowObject (id, object);
+	}
+
+	QPoint CustomWebView::GetScrollPosition () const
+	{
+		return page ()->mainFrame ()->scrollPosition ();
+	}
+
+	void CustomWebView::SetScrollPosition (const QPoint& point)
+	{
+		page ()->mainFrame ()->setScrollPosition (point);
+	}
+
+	double CustomWebView::GetZoomFactor () const
+	{
+		return zoomFactor ();
+	}
+
+	void CustomWebView::SetZoomFactor (double factor)
+	{
+		setZoomFactor (factor);
+	}
+
+	double CustomWebView::GetTextSizeMultiplier () const
+	{
+		return textSizeMultiplier ();
+	}
+
+	void CustomWebView::SetTextSizeMultiplier (double factor)
+	{
+		setTextSizeMultiplier (factor);
 	}
 
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
@@ -269,6 +386,32 @@ namespace Poshuku
 		setHtml (data);
 	}
 
+	void CustomWebView::PrintImpl (bool preview, QWebFrame *frame)
+	{
+		QPrinter printer;
+		if (preview)
+		{
+			QPrintPreviewDialog prevDialog (&printer, this);
+			connect (&prevDialog,
+					SIGNAL (paintRequested (QPrinter*)),
+					frame,
+					SLOT (print (QPrinter*)));
+
+			if (prevDialog.exec () != QDialog::Accepted)
+				return;
+		}
+		else
+		{
+			QPrintDialog dialog (&printer, this);
+			dialog.setWindowTitle (tr ("Print web page"));
+
+			if (dialog.exec () != QDialog::Accepted)
+				return;
+
+			frame->print (&printer);
+		}
+	}
+
 	void CustomWebView::remakeURL (const QUrl& url)
 	{
 		emit urlChanged (URLToProperString (url));
@@ -285,6 +428,11 @@ namespace Poshuku
 		const auto& histUrl = page ()->history ()->currentItem ().url ();
 		if (histUrl != url ())
 			remakeURL (histUrl);
+	}
+
+	void CustomWebView::handlePrintRequested (QWebFrame *frame)
+	{
+		PrintImpl (false, frame);
 	}
 }
 }

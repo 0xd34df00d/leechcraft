@@ -44,8 +44,6 @@ namespace Aggregator
 {
 	ItemsListModel::ItemsListModel (QObject *parent)
 	: QAbstractItemModel (parent)
-	, CurrentRow_ (-1)
-	, CurrentChannel_ (-1)
 	, StarredIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-important"))
 	, UnreadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-unread"))
 	, ReadIcon_ (Core::Instance ().GetProxy ()->GetIconThemeManager ()->GetIcon ("mail-mark-read"))
@@ -95,7 +93,7 @@ namespace Aggregator
 			return;
 
 		item.Unread_ = false;
-		Core::Instance ().GetStorageBackend ()->UpdateItem (item);
+		GetSB ()->UpdateItem (item);
 	}
 
 	const ItemShort& ItemsListModel::GetItem (const QModelIndex& index) const
@@ -126,7 +124,7 @@ namespace Aggregator
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 		if (channel != static_cast<IDType_t> (-1))
-			Core::Instance ().GetStorageBackend ()->GetItems (CurrentItems_, channel);
+			GetSB ()->GetItems (CurrentItems_, channel);
 
 		endResetModel ();
 	}
@@ -139,7 +137,7 @@ namespace Aggregator
 		CurrentRow_ = -1;
 		CurrentItems_.clear ();
 
-		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+		const auto& sb = GetSB ();
 		for (const IDType_t& itemId : items)
 			CurrentItems_.push_back (sb->GetItem (itemId)->ToShort ());
 
@@ -312,8 +310,7 @@ namespace Aggregator
 				XmlSettingsManager::Instance ()->property ("ShowItemsTooltips").toBool ())
 		{
 			IDType_t id = CurrentItems_ [index.row ()].ItemID_;
-			Item_ptr item = Core::Instance ()
-					.GetStorageBackend ()->GetItem (id);
+			Item_ptr item = GetSB ()->GetItem (id);
 			QString result = QString ("<qt><strong>%1</strong><br />").arg (item->Title_);
 			if (item->Author_.size ())
 			{
@@ -376,8 +373,7 @@ namespace Aggregator
 				return QVariant ();
 
 			const auto& item = CurrentItems_ [index.row ()];
-			if (Core::Instance ().GetStorageBackend ()->
-					GetItemTags (item.ItemID_).contains ("_important"))
+			if (GetSB ()->GetItemTags (item.ItemID_).contains ("_important"))
 				return StarredIcon_;
 
 			return item.Unread_ ? UnreadIcon_ : ReadIcon_;
@@ -421,6 +417,13 @@ namespace Aggregator
 	int ItemsListModel::rowCount (const QModelIndex& parent) const
 	{
 		return parent.isValid () ? 0 : CurrentItems_.size ();
+	}
+
+	StorageBackend_ptr ItemsListModel::GetSB () const
+	{
+		if (!SB_.hasLocalData ())
+			SB_.setLocalData (Core::Instance ().MakeStorageBackendForThread ());
+		return SB_.localData ();
 	}
 
 	void ItemsListModel::reset (const IDType_t& type)

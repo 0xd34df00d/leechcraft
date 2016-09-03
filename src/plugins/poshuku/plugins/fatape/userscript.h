@@ -32,13 +32,16 @@
 #include <QMultiMap>
 #include <QReadWriteLock>
 #include <QRegExp>
-#include <QWebFrame>
 #include <interfaces/poshuku/iproxyobject.h>
+
+class QNetworkAccessManager;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+class IWebView;
+
 namespace FatApe
 {
 	class UserScript
@@ -51,7 +54,7 @@ namespace FatApe
 		explicit UserScript (const QString& scriptPath);
 
 		bool MatchToPage (const QString& pageUrl) const;
-		void Inject (QWebFrame *frame, IProxyObject *proxy) const;
+		void Inject (IWebView *frame, IProxyObject *proxy) const;
 		QString Name () const;
 		QString Description () const;
 		QString Namespace () const;

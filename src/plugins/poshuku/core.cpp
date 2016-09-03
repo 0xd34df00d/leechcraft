@@ -374,10 +374,10 @@ namespace Poshuku
 		return widget;
 	}
 
-	CustomWebView* Core::MakeWebView (bool invert)
+	IWebView* Core::MakeWebView (bool invert)
 	{
 		if (!Initialized_)
-			return 0;
+			return nullptr;
 
 		bool raise = true;
 		if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
@@ -386,7 +386,7 @@ namespace Poshuku
 		if (invert)
 			raise = !raise;
 
-		return NewURL (QUrl (), raise)->GetView ();
+		return NewURL (QUrl (), raise)->GetWebView ();
 	}
 
 	void Core::ConnectSignals (BrowserWidget *widget)
@@ -426,9 +426,9 @@ namespace Poshuku
 
 	void Core::ReloadAll ()
 	{
-		Q_FOREACH (BrowserWidget *widget, Widgets_)
-			widget->GetView ()->
-					pageAction (QWebPage::Reload)->trigger ();
+		for (const auto widget : Widgets_)
+			if (const auto act = widget->GetWebView ()->GetPageAction (IWebView::PageAction::Reload))
+				act->trigger ();
 	}
 
 	FavoritesModel* Core::GetFavoritesModel () const
@@ -494,10 +494,10 @@ namespace Poshuku
 		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
 	}
 
-	QString Core::GetUserAgent (const QUrl& url, const QWebPage *page) const
+	QString Core::GetUserAgent (const QUrl& url) const
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy ());
-		emit hookUserAgentForUrlRequested (proxy, url, page);
+		emit hookUserAgentForUrlRequested (proxy, url);
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().toString ();
 
@@ -526,13 +526,13 @@ namespace Poshuku
 		Widgets_.erase (pos);
 	}
 
-	void Core::HandleHistory (CustomWebView *view)
+	void Core::HandleHistory (IWebView *view)
 	{
-		QString url = view->URLToProperString (view->url ());
+		const auto& url = view->GetHumanReadableUrl ();
 
-		if (!view->title ().isEmpty () &&
+		if (!view->GetTitle ().isEmpty () &&
 				!url.isEmpty () && url != "about:blank")
-			HistoryModel_->addItem (view->title (),
+			HistoryModel_->addItem (view->GetTitle (),
 					url,
 					QDateTime::currentDateTime ());
 	}
@@ -671,7 +671,7 @@ namespace Poshuku
 
 	void Core::handleURLChanged (const QString&)
 	{
-		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetView ());
+		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetWebView ());
 	}
 
 	void Core::handleIconChanged (const QIcon& newIcon)

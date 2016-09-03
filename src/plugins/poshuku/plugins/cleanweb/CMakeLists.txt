@@ -5,9 +5,6 @@ set (CLEANWEB_SRCS
 	core.cpp
 	xmlsettingsmanager.cpp
 	subscriptionsmanagerwidget.cpp
-	flashplaceholder.cpp
-	flashonclickplugin.cpp
-	flashonclickwhitelist.cpp
 	userfilters.cpp
 	userfiltersmodel.cpp
 	filter.cpp
@@ -20,8 +17,6 @@ set (CLEANWEB_SRCS
 	)
 set (CLEANWEB_FORMS
 	subscriptionsmanagerwidget.ui
-	flashplaceholder.ui
-	flashonclickwhitelist.ui
 	userfilters.ui
 	ruleoptiondialog.ui
 	subscriptionadddialog.ui

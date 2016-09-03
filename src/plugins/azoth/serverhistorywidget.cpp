@@ -219,15 +219,13 @@ namespace Azoth
 	void ServerHistoryWidget::navigatePrevious ()
 	{
 		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
-		IHSH_->FetchServerHistory (index,
-				MaxID_, GetReqMsgCount ());
+		IHSH_->FetchServerHistory (index, MaxID_, GetReqMsgCount ());
 	}
 
 	void ServerHistoryWidget::navigateNext ()
 	{
 		const auto& index = ContactsFilter_->mapToSource (Ui_.ContactsView_->currentIndex ());
-		IHSH_->FetchServerHistory (index,
-				CurrentID_, -GetReqMsgCount ());
+		IHSH_->FetchServerHistory (index, CurrentID_, -GetReqMsgCount ());
 	}
 }
 }

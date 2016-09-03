@@ -34,6 +34,7 @@
 #include <interfaces/iplugin2.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/poshukutypes.h>
+#include <interfaces/poshuku/iwebview.h>
 
 class QWebHitTestResult;
 class QWebView;
@@ -65,9 +66,8 @@ namespace QRd
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
 		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr proxy,
-				QWebView *view,
-				QContextMenuEvent *event,
-				const QWebHitTestResult& hitTestResult,
+				LeechCraft::Poshuku::IWebView *view,
+				const LeechCraft::Poshuku::ContextMenuInfo& hitTestResult,
 				QMenu *menu,
 				WebViewCtxMenuStage menuBuildStage);
 	private slots:

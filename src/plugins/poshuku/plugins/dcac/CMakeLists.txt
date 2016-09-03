@@ -17,6 +17,12 @@ set (DCAC_RESOURCES
 CreateTrs ("poshuku_dcac" "en;ru_RU" DCAC_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_dcac" "en;ru_RU" "${DCAC_SRCS}" "" "poshukudcacsettings.xml")
 
+option (WITH_POSHUKU_DCAC_SIMD "Build SIMD-enabled versions of the effects (up to 6x performance improvements!)" ON)
+
+if (NOT WITH_POSHUKU_DCAC_SIMD)
+	add_definitions (-DPOSHUKU_DCAC_NO_SIMD)
+endif ()
+
 QtAddResources (DCAC_RCCS ${DCAC_RESOURCES})
 add_library (leechcraft_poshuku_dcac SHARED
 	${DCAC_COMPILED_TRANSLATIONS}
@@ -34,7 +40,7 @@ FindQtLibs (leechcraft_poshuku_dcac Widgets WebKitWidgets)
 
 option (ENABLE_POSHUKU_DCAC_TESTS "Build tests for Poshuku DCAC" ON)
 
-if (ENABLE_POSHUKU_DCAC_TESTS)
+if (ENABLE_POSHUKU_DCAC_TESTS AND WITH_POSHUKU_DCAC_SIMD)
 	function (AddDCACTest _execName _cppFile _testName)
 		set (_fullExecName lc_poshuku_dcac_${_execName}_test)
 		add_executable (${_fullExecName} WIN32 ${_cppFile} tests/testbase.cpp)

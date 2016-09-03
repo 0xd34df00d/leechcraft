@@ -30,7 +30,6 @@
 #include "viewsmanager.h"
 #include <QAction>
 #include <QtDebug>
-#include <qwebview.h>
 #include "effectprocessor.h"
 #include "xmlsettingsmanager.h"
 #include "scripthandler.h"
@@ -59,7 +58,7 @@ namespace DCAC
 				SLOT (handleEffectsChanged ()));
 	}
 
-	void ViewsManager::AddView (QWebView *view)
+	void ViewsManager::AddView (QWidget *view)
 	{
 		const auto effect = new EffectProcessor { view };
 		view->setGraphicsEffect (effect);
@@ -89,7 +88,7 @@ namespace DCAC
 		effect->SetEffects (GetCurrentEffects ());
 	}
 
-	QAction* ViewsManager::GetEnableAction (QWebView *view) const
+	QAction* ViewsManager::GetEnableAction (QWidget *view) const
 	{
 		return View2EnableAction_.value (view);
 	}

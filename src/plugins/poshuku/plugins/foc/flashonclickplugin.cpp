@@ -27,45 +27,62 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <functional>
-#include <QWidget>
-#include <QUrl>
-#include "ui_flashplaceholder.h"
-
-class QWebElement;
+#include "flashonclickplugin.h"
+#include <algorithm>
+#include <QDebug>
+#include <interfaces/poshuku/iflashoverrider.h>
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
+#include "xmlsettingsmanager.h"
+#include "flashplaceholder.h"
+#include "flashonclickwhitelist.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
+namespace FOC
 {
-	class FlashOnClickWhitelist;
-
-	class FlashPlaceHolder : public QWidget
+	FlashOnClickPlugin::FlashOnClickPlugin (const ICoreProxy_ptr& proxy,
+			FlashOnClickWhitelist *wl, QObject *parent)
+	: QObject { parent }
+	, Proxy_ { proxy }
+	, WL_ { wl }
 	{
-		Q_OBJECT
-		Q_PROPERTY (bool swapping READ IsSwapping)
+	}
 
-		FlashOnClickWhitelist * const WL_;
+	QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
+	{
+		if (isq)
+			throw "I want to be anonymous";
 
-		Ui::FlashPlaceHolder Ui_;
-		QUrl URL_;
-		bool Swapping_ = false;
-	public:
-		FlashPlaceHolder (const QUrl&, FlashOnClickWhitelist*, QWidget* = 0);
+		QWebPluginFactory::Plugin result;
+		result.name = "FlashOnClickPlugin";
+		QWebPluginFactory::MimeType mime;
+		mime.fileExtensions << "swf";
+		mime.name = "application/x-shockwave-flash";
+		result.mimeTypes << mime;
+		return result;
+	}
 
-		bool IsSwapping () const;
-	private:
-		void PerformWithElements (const std::function<void (QWebElement)>&);
-	private slots:
-		void handleLoadFlash ();
-		void handleHideFlash ();
-		void handleContextMenu ();
-		void handleAddWhitelist ();
-	};
+	QWidget* FlashOnClickPlugin::Create (const QString&,
+			const QUrl& url,
+			const QStringList&,
+			const QStringList&)
+	{
+		if (!XmlSettingsManager::Instance ().property ("EnableFlashOnClick").toBool ())
+			return nullptr;
+
+		if (WL_->Matches (url.toString ()))
+			return nullptr;
+
+		const auto& overs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IFlashOverrider*> ();
+		if (std::any_of (overs.begin (), overs.end (),
+					[&url] (IFlashOverrider *plugin) { return plugin->WouldOverrideFlash (url); }))
+			return nullptr;
+
+		return new FlashPlaceHolder { url, WL_ };
+	}
 }
 }
 }

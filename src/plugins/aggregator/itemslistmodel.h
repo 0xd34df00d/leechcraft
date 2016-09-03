@@ -34,9 +34,11 @@
 #include <QSet>
 #include <QPair>
 #include <QIcon>
+#include <QThreadStorage>
 #include "interfaces/aggregator/iitemsmodel.h"
 #include "item.h"
 #include "channel.h"
+#include "storagebackend.h"
 
 namespace LeechCraft
 {
@@ -50,14 +52,16 @@ namespace Aggregator
 
 		QStringList ItemHeaders_;
 		items_shorts_t CurrentItems_;
-		int CurrentRow_;
-		IDType_t CurrentChannel_;
+		int CurrentRow_ = -1;
+		IDType_t CurrentChannel_ = -1;
 
 		const QIcon StarredIcon_;
 		const QIcon UnreadIcon_;
 		const QIcon ReadIcon_;
+
+		mutable QThreadStorage<StorageBackend_ptr> SB_;
 	public:
-		ItemsListModel (QObject* = 0);
+		ItemsListModel (QObject* = nullptr);
 
 		int GetSelectedRow () const;
 		const IDType_t& GetCurrentChannel () const;
@@ -72,16 +76,18 @@ namespace Aggregator
 		void RemoveItems (const QSet<IDType_t>&);
 		void ItemDataUpdated (Item_ptr);
 
-		int columnCount (const QModelIndex& = QModelIndex ()) const;
-		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
-		Qt::ItemFlags flags (const QModelIndex&) const;
-		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const;
-		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const;
-		QModelIndex parent (const QModelIndex&) const;
-		int rowCount (const QModelIndex& = QModelIndex ()) const;
+		int columnCount (const QModelIndex& = QModelIndex ()) const override;
+		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
+		Qt::ItemFlags flags (const QModelIndex&) const override;
+		QVariant headerData (int, Qt::Orientation, int = Qt::DisplayRole) const override;
+		QModelIndex index (int, int, const QModelIndex& = QModelIndex()) const override;
+		QModelIndex parent (const QModelIndex&) const override;
+		int rowCount (const QModelIndex& = QModelIndex ()) const override;
+	private:
+		StorageBackend_ptr GetSB () const;
 	public slots:
-		void reset (const IDType_t&);
-		void selected (const QModelIndex&);
+		void reset (const IDType_t&) override;
+		void selected (const QModelIndex&) override;
 	private slots:
 		void handleChannelRemoved (IDType_t);
 		void handleItemsRemoved (const QSet<IDType_t>&);

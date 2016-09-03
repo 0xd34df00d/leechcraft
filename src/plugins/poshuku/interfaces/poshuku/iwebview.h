@@ -29,43 +29,85 @@
 
 #pragma once
 
-#include <QWidget>
-#include <QStringList>
-#include "ui_flashonclickwhitelist.h"
+#include <functional>
 
-class QStandardItemModel;
+class QUrl;
+class QAction;
+class QString;
+class QWidget;
+
+template<typename>
+class QList;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace CleanWeb
-{
-	class FlashOnClickWhitelist : public QWidget
+	/** @brief Interface for QWebView-like widgets displaying HTML content.
+	 *
+	 * The implementations of this interface are also expected to have the
+	 * following signals, following QWebView API:
+	 * - loadStarted()
+	 * - loadFinished(bool)
+	 * - urlChanged(QUrl)
+	 * - zoomChanged()
+	 */
+	class IWebView
 	{
-		Q_OBJECT
-
-		Ui::FlashOnClickWhitelist Ui_;
-		QStandardItemModel *Model_;
 	public:
-		FlashOnClickWhitelist (QWidget* = 0);
+		virtual ~IWebView () = default;
 
-		QStringList GetWhitelist () const;
-		bool Matches (const QString&) const;
-		void Add (const QString&);
-	private slots:
-		void on_Add__released ();
-		void on_Modify__released ();
-		void on_Remove__released ();
+		enum class ActionArea
+		{
+			UrlBar
+		};
 
-		void accept ();
-		void reject ();
-	private:
-		void AddImpl (QString = QString (), const QModelIndex& = QModelIndex ());
+		enum class PageAction
+		{
+			Reload,
+			Stop,
 
-		void ReadSettings ();
-		void SaveSettings ();
+			Back,
+			Forward,
+
+			Cut,
+			Copy,
+			Paste
+		};
+
+		virtual QWidget* GetQWidget () = 0;
+
+		virtual QList<QAction*> GetActions (ActionArea) const = 0;
+
+		virtual QAction* GetPageAction (PageAction) const = 0;
+
+		virtual QString GetTitle () const = 0;
+		virtual QUrl GetUrl () const = 0;
+		virtual QString GetHumanReadableUrl () const = 0;
+
+		virtual void Load (const QUrl& url, const QString& title = {}) = 0;
+
+		virtual void SetContent (const QByteArray& data, const QByteArray& mime) = 0;
+
+		virtual void EvaluateJS (const QString& js,
+				const std::function<void (QVariant)>& handler = {}) = 0;
+		virtual void AddJavaScriptObject (const QString& id, QObject *object) = 0;
+
+		virtual void Print (bool withPreview) = 0;
+
+		virtual QPoint GetScrollPosition () const = 0;
+		virtual void SetScrollPosition (const QPoint&) = 0;
+
+		virtual double GetZoomFactor () const = 0;
+		virtual void SetZoomFactor (double) = 0;
+
+		virtual double GetTextSizeMultiplier () const = 0;
+		virtual void SetTextSizeMultiplier (double) = 0;
+	protected:
+		virtual void earliestViewLayout () = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IWebView,
+		"org.LeechCraft.Poshuku.IWebView/1.0")

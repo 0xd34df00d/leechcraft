@@ -508,7 +508,7 @@ namespace Aggregator
 
 	void Export2FB2Dialog::handleAccepted ()
 	{
-		StorageBackend *sb = Core::Instance ().GetStorageBackend ();
+		const auto& sb = Core::Instance ().MakeStorageBackendForThread ();
 
 		const auto& rows = Ui_.ChannelsTree_->selectionModel ()->selectedRows ();
 		bool unreadOnly = Ui_.UnreadOnly_->checkState () == Qt::Checked;

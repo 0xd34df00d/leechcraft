@@ -57,11 +57,6 @@ namespace Aggregator
 		return file.readAll ();
 	}
 
-	StorageBackend::StorageBackend (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	StorageBackend_ptr StorageBackend::Create (const QString& strType, const QString& id)
 	{
 		StorageBackend::Type type;
@@ -83,13 +78,13 @@ namespace Aggregator
 		StorageBackend_ptr result;
 		switch (type)
 		{
-			case SBSQLite:
-			case SBPostgres:
-				result = std::make_shared<SQLStorageBackend> (type, id);
-				break;
-			case SBMysql:
-				result = std::make_shared<SQLStorageBackendMysql> (type, id);
-				break;
+		case SBSQLite:
+		case SBPostgres:
+			result = std::make_shared<SQLStorageBackend> (type, id);
+			break;
+		case SBMysql:
+			result = std::make_shared<SQLStorageBackendMysql> (type, id);
+			break;
 		}
 		qDebug () << Q_FUNC_INFO
 				<< "created connection";

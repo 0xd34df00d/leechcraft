@@ -658,15 +658,17 @@ namespace CSTP
 					"org.LeechCraft.CSTP",
 					AN::CatDownloads,
 					err ? AN::TypeDownloadError : AN::TypeDownloadFinished,
-					"org.LC.Plugins.CSTP.DLFinished/" + url, QStringList (QUrl (url).host ()));
+					"org.LC.Plugins.CSTP.DLFinished/" + url,
+					QStringList { QUrl { url }.host (), filename });
 			if (!err)
 			{
 				auto nah = new Util::NotificationActionHandler (e);
-				nah->AddFunction (tr ("Handle..."), [this, filename]
+				nah->AddFunction (tr ("Handle..."),
+						[this, filename]
 						{
 							auto e = Util::MakeEntity (QUrl::fromLocalFile (filename),
-									QString (),
-									LeechCraft::FromUserInitiated);
+									{},
+									FromUserInitiated);
 							CoreProxy_->GetEntityManager ()->HandleEntity (e);
 						});
 				nah->AddFunction (tr ("Open externally"),
@@ -720,12 +722,11 @@ namespace CSTP
 
 	void Core::updateInterface ()
 	{
-		tasks_t::const_iterator it = FindTask (sender ());
+		auto it = FindTask (sender ());
 		if (it == ActiveTasks_.end ())
 			return;
 
-		int pos = std::distance<tasks_t::const_iterator>
-			(ActiveTasks_.begin (), it);
+		int pos = std::distance<tasks_t::const_iterator> (ActiveTasks_.begin (), it);
 		emit dataChanged (index (pos, 0), index (pos, columnCount () - 1));
 	}
 

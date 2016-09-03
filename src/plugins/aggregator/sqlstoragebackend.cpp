@@ -55,14 +55,14 @@ namespace Aggregator
 		QString strType;
 		switch (Type_)
 		{
-			case SBSQLite:
-				strType = "QSQLITE";
-				break;
-			case SBPostgres:
-				strType = "QPSQL";
-				break;
-			case SBMysql:
-				break;
+		case SBSQLite:
+			strType = "QSQLITE";
+			break;
+		case SBPostgres:
+			strType = "QPSQL";
+			break;
+		case SBMysql:
+			break;
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
@@ -70,41 +70,43 @@ namespace Aggregator
 
 		switch (Type_)
 		{
-			case SBSQLite:
-				{
-					QDir dir = QDir::home ();
-					dir.cd (".leechcraft");
-					dir.cd ("aggregator");
-					DB_.setDatabaseName (dir.filePath ("aggregator.db"));
-				}
-				break;
-			case SBPostgres:
-				{
-					DB_.setDatabaseName (XmlSettingsManager::Instance ()->
-							property ("PostgresDBName").toString ());
-					DB_.setHostName (XmlSettingsManager::Instance ()->
-							property ("PostgresHostname").toString ());
-					DB_.setPort (XmlSettingsManager::Instance ()->
-							property ("PostgresPort").toInt ());
-					DB_.setUserName (XmlSettingsManager::Instance ()->
-							property ("PostgresUsername").toString ());
-					DB_.setPassword (XmlSettingsManager::Instance ()->
-							property ("PostgresPassword").toString ());
-				}
-				break;
-			case SBMysql:
-				break;
+		case SBSQLite:
+		{
+			QDir dir = QDir::home ();
+			dir.cd (".leechcraft");
+			dir.cd ("aggregator");
+			DB_.setDatabaseName (dir.filePath ("aggregator.db"));
+			break;
+		}
+		case SBPostgres:
+		{
+			DB_.setDatabaseName (XmlSettingsManager::Instance ()->
+					property ("PostgresDBName").toString ());
+			DB_.setHostName (XmlSettingsManager::Instance ()->
+					property ("PostgresHostname").toString ());
+			DB_.setPort (XmlSettingsManager::Instance ()->
+					property ("PostgresPort").toInt ());
+			DB_.setUserName (XmlSettingsManager::Instance ()->
+					property ("PostgresUsername").toString ());
+			DB_.setPassword (XmlSettingsManager::Instance ()->
+					property ("PostgresPassword").toString ());
+			break;
+		}
+		case SBMysql:
+			break;
 		}
 
 		if (!DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO;
-			LeechCraft::Util::DBLock::DumpError (DB_.lastError ());
+			Util::DBLock::DumpError (DB_.lastError ());
 			throw std::runtime_error (qPrintable (QString ("Could not initialize database: %1")
 						.arg (DB_.lastError ().text ())));
 		}
 
 		InitializeTables ();
+
+		DBRemover_ = Util::MakeScopeGuard ([conn = DB_.connectionName ()] { QSqlDatabase::removeDatabase (conn); });
 	}
 
 	SQLStorageBackend::~SQLStorageBackend ()
@@ -1329,8 +1331,7 @@ namespace Aggregator
 		if (!ItemFullSelector_.next ())
 			throw ItemNotFoundError ();
 
-		Item_ptr item (new Item (ItemFullSelector_.value (13).toInt (),
-				itemId));
+		auto item = std::make_shared<Item> (ItemFullSelector_.value (13).toInt (), itemId);
 		FillItem (ItemFullSelector_, item);
 		ItemFullSelector_.finish ();
 
@@ -2829,8 +2830,8 @@ namespace Aggregator
 		item->NumComments_ = query.value (8).toInt ();
 		item->CommentsLink_ = query.value (9).toString ();
 		item->CommentsPageLink_ = query.value (10).toString ();
-		item->Latitude_ = query.value (11).toString ().toDouble ();
-		item->Longitude_ = query.value (12).toString ().toDouble ();
+		item->Latitude_ = query.value (11).toDouble ();
+		item->Longitude_ = query.value (12).toDouble ();
 	}
 
 	void SQLStorageBackend::GetEnclosuresVersion5 (const QString& hash, const QString& title,
@@ -3133,9 +3134,9 @@ namespace Aggregator
 		item->NumComments_ = query.value (8).toInt ();
 		item->CommentsLink_ = query.value (9).toString ();
 		item->CommentsPageLink_ = query.value (10).toString ();
-		item->Latitude_ = query.value (11).toString ().toDouble ();
-		item->Longitude_ = query.value (12).toString ().toDouble ();
-		item->ChannelID_ = query.value (13).toString ().toDouble ();
+		item->Latitude_ = query.value (11).toDouble ();
+		item->Longitude_ = query.value (12).toDouble ();
+		item->ChannelID_ = query.value (13).value<IDType_t> ();
 	}
 
 	void SQLStorageBackend::WriteEnclosures (const QList<Enclosure>& enclosures)

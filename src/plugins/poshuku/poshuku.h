@@ -118,7 +118,6 @@ namespace Poshuku
 
 		void Open (const QString&);
 		IWebWidget* GetWidget () const;
-		QWebView* CreateWindow ();
 
 		void SetShortcut (const QString&, const QKeySequences_t&);
 		QMap<QString, ActionInfo> GetActionInfo () const;

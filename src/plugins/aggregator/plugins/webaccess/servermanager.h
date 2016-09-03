@@ -54,8 +54,6 @@ namespace WebAccess
 	{
 		Q_OBJECT
 
-		ICoreProxy_ptr CoreProxy_;
-
 		std::shared_ptr<Wt::WServer> Server_;
 
 		Util::AddressesModelManager * const AddrMgr_;

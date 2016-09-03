@@ -52,7 +52,7 @@ namespace WebAccess
 
 		Util::InstallTranslator ("aggregator_webaccess");
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "aggregatorwebaccesssettings.xml");
 
 		XSD_->SetDataSource ("AddressesDataView", AddrMgr_->GetModel ());
@@ -103,7 +103,7 @@ namespace WebAccess
 	{
 		try
 		{
-			SM_.reset (new ServerManager (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_));
+			SM_ = std::make_shared<ServerManager> (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_);
 		}
 		catch (const std::exception& e)
 		{

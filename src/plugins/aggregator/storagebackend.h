@@ -66,7 +66,8 @@ namespace Aggregator
 			SBPostgres,
 			SBMysql
 		};
-		StorageBackend (QObject* = 0);
+
+		using QObject::QObject;
 
 		static StorageBackend_ptr Create (const QString&, const QString& = QString ());
 		static StorageBackend_ptr Create (Type, const QString& = QString ());

@@ -29,10 +29,8 @@
 
 #include "viewhandler.h"
 #include <cmath>
-#include <QWebView>
 #include <QHash>
 #include <QtConcurrentRun>
-#include <QWebFrame>
 #include <QXmlStreamWriter>
 #include <QLineEdit>
 #include <util/util.h>
@@ -41,6 +39,7 @@
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "imagecache.h"
 #include "xmlsettingsmanager.h"
 #include "customsitesmanager.h"
@@ -127,10 +126,10 @@ namespace SpeedDial
 	const size_t Rows = 2;
 	const size_t Cols = 4;
 
-	ViewHandler::ViewHandler (QWebView *view,
-			QObject *browser, ImageCache *cache, CustomSitesManager *customManager, IProxyObject *proxy)
-	: QObject { view }
-	, View_ { view }
+	ViewHandler::ViewHandler (IBrowserWidget *browser,
+			ImageCache *cache, CustomSitesManager *customManager, IProxyObject *proxy)
+	: QObject { browser->GetWebView ()->GetQWidget () }
+	, View_ { browser->GetWebView () }
 	, BrowserWidget_ { browser }
 	, ImageCache_ { cache }
 	, PoshukuProxy_ { proxy }
@@ -148,7 +147,7 @@ namespace SpeedDial
 
 	void ViewHandler::LoadStatistics ()
 	{
-		connect (View_,
+		connect (View_->GetQWidget (),
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (handleLoadStarted ()));
@@ -221,14 +220,13 @@ namespace SpeedDial
 			w.writeEndElement ();
 		w.writeEndElement ();
 
-		View_->setContent (html.toUtf8 (), "application/xhtml+xml");
+		View_->SetContent (html.toUtf8 (), "application/xhtml+xml");
 
-		const auto ibw = qobject_cast<IBrowserWidget*> (BrowserWidget_);
+		const auto edit = BrowserWidget_->GetURLEdit ();
 		new Util::DelayedExecutor
 		{
-			[ibw]
+			[edit]
 			{
-				const auto edit = ibw->GetURLEdit ();
 				const auto& text = edit->text ();
 				if (text == "about:blank")
 					edit->clear ();
@@ -319,12 +317,16 @@ namespace SpeedDial
 		js += "return true;";
 		js += "})()";
 
-		const auto& res = View_->page ()->mainFrame ()->evaluateJavaScript (js);
-		if (!res.toBool ())
-			return;
+		View_->EvaluateJS (js,
+				[this] (const QVariant& res)
+				{
+					if (!res.toBool ())
+						return;
 
-		if (!--PendingImages_)
-			deleteLater ();
+					if (!--PendingImages_)
+						deleteLater ();
+				});
+
 	}
 }
 }

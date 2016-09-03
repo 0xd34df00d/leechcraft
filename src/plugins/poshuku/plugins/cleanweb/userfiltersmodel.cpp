@@ -42,6 +42,7 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qstringwrappers.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/poshuku/iwebview.h>
 #include "ruleoptiondialog.h"
 #include "lineparser.h"
 #include "core.h"
@@ -322,27 +323,15 @@ namespace CleanWeb
 		emit filtersChanged ();
 	}
 
-	void UserFiltersModel::blockImage ()
+	void UserFiltersModel::BlockImage (const QUrl& blockUrl, IWebView *view)
 	{
-		QAction *blocker = qobject_cast<QAction*> (sender ());
-		if (!blocker)
-		{
-			qWarning () << Q_FUNC_INFO
-				<< "sender is not a QAction*"
-				<< sender ();
-			return;
-		}
-
-		QUrl blockUrl = blocker->property ("CleanWeb/URL").value<QUrl> ();
-		QWebView *view = qobject_cast<QWebView*> (blocker->
-					property ("CleanWeb/View").value<QObject*> ());
-		if (!InitiateAdd (blockUrl.toString ()) || !view)
+		if (!InitiateAdd (blockUrl.toString ()))
 			return;
 
 		QString js;
 		js += "var elems = document.querySelectorAll(\"img[src='" + blockUrl.toEncoded () + "']\");";
 		js += "for (var i = 0; i < elems.length; ++i) elems[i].remove();";
-		view->page ()->mainFrame ()->evaluateJavaScript (js);
+		view->EvaluateJS (js);
 	}
 }
 }
