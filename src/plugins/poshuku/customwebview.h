@@ -120,7 +120,6 @@ namespace Poshuku
 	signals:
 		void urlChanged (const QString&);
 		void closeRequested ();
-		void storeFormData (const PageFormsData_t&);
 
 		void navigateRequested (const QUrl&);
 
@@ -130,6 +129,7 @@ namespace Poshuku
 
 		void earliestViewLayout () override;
 		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;
+		void storeFormData (const PageFormsData_t&) override;
 	};
 }
 }

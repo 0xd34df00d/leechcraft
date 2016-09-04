@@ -30,6 +30,7 @@
 #pragma once
 
 #include <functional>
+#include "poshukutypes.h"
 
 class QUrl;
 class QAction;
@@ -113,6 +114,8 @@ namespace Poshuku
 		virtual void earliestViewLayout () = 0;
 
 		virtual void linkHovered (const QString& link, const QString& title, const QString& textContent) = 0;
+
+		virtual void storeFormData (const PageFormsData_t&) = 0;
 	};
 }
 }
