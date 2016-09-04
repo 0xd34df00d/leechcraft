@@ -122,8 +122,9 @@ namespace Poshuku
 		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
 		WebView_ = new CustomWebView { Core::Instance ().GetProxy ()->GetEntityManager () };
-		Ui_.WebFrame_->layout ()->addWidget (WebView_);
-		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+		const auto webViewWidget = WebView_->GetQWidget ();
+		Ui_.WebFrame_->layout ()->addWidget (webViewWidget);
+		webViewWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
 		connect (webViewWidget,
 				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
