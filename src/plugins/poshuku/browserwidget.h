@@ -183,7 +183,6 @@ namespace Poshuku
 		void handleShortcutHistory ();
 		void handleShortcutBookmarks ();
 		void loadURL (const QUrl&);
-		QWebView* getWebView () const;
 		QLineEdit* getAddressBar () const;
 		QWidget* getSideBar () const;
 	private slots:

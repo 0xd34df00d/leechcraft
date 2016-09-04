@@ -1119,11 +1119,6 @@ namespace Poshuku
 		edit->selectAll ();
 	}
 
-	QWebView* BrowserWidget::getWebView () const
-	{
-		return WebView_;
-	}
-
 	QLineEdit* BrowserWidget::getAddressBar () const
 	{
 		return Ui_.URLFrame_->GetEdit ();
