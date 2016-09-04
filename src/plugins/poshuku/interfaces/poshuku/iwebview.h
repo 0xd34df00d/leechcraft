@@ -38,6 +38,8 @@ class QAction;
 class QString;
 class QWidget;
 
+class QMenu;
+
 template<typename>
 class QList;
 
