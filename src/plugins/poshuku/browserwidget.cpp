@@ -682,7 +682,7 @@ namespace Poshuku
 	{
 		Ui_.URLFrame_->GetEdit ()->clear ();
 		HtmlMode_ = true;
-		WebView_->setHtml (html, base);
+		WebView_->SetContent (html.toUtf8 (), "text/html", base);
 
 		if (!Own_)
 		{
