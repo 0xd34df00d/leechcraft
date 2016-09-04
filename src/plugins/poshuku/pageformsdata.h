@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_PAGEFORMSDATA_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_PAGEFORMSDATA_H
+#pragma once
+
 #include <QMap>
 #include <QUrl>
 #include <QString>
@@ -70,5 +70,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
