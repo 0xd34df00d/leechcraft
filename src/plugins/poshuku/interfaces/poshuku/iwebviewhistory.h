@@ -40,6 +40,30 @@ namespace Poshuku
 	public:
 		virtual void Save (QDataStream& out) const = 0;
 		virtual void Load (QDataStream& in) = 0;
+
+		class IItem
+		{
+		protected:
+			virtual ~IItem () = default;
+		public:
+			virtual bool IsValid () const = 0;
+
+			virtual QString GetTitle () const = 0;
+
+			virtual QUrl GetUrl () const = 0;
+
+			virtual void Navigate () = 0;
+		};
+
+		using IItem_ptr = std::shared_ptr<IItem>;
+
+		enum class Direction
+		{
+			Backward,
+			Forward
+		};
+
+		virtual QList<IItem_ptr> GetItems (Direction dir, int maxItems) const = 0;
 	};
 }
 }

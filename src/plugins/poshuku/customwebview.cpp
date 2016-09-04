@@ -321,6 +321,38 @@ namespace Poshuku
 		class HistoryWrapper : public IWebViewHistory
 		{
 			QWebHistory * const History_;
+
+			class Item : public IItem
+			{
+				const QWebHistoryItem Item_;
+				QWebHistory * const History_;
+			public:
+				Item (const QWebHistoryItem& item, QWebHistory* const history)
+				: Item_ { item }
+				, History_ { history }
+				{
+				}
+
+				bool IsValid () const override
+				{
+					return Item_.isValid ();
+				}
+
+				QString GetTitle () const override
+				{
+					return Item_.title ();
+				}
+
+				QUrl GetUrl () const override
+				{
+					return Item_.url ();
+				}
+
+				void Navigate () override
+				{
+					History_->goToItem (Item_);
+				}
+			};
 		public:
 			HistoryWrapper (QWebHistory *history)
 			: History_ { history }
@@ -335,6 +367,30 @@ namespace Poshuku
 			void Load (QDataStream& in) override
 			{
 				in >> *History_;
+			}
+
+			QList<IItem_ptr> GetItems (Direction dir, int maxItems) const override
+			{
+				const auto& srcItems = [&]
+				{
+					switch (dir)
+					{
+					case Direction::Forward:
+						return History_->forwardItems (maxItems);
+					case Direction::Backward:
+						return History_->backItems (maxItems);
+					}
+
+					assert (false);
+				} ();
+
+				QList<IItem_ptr> result;
+				result.reserve (srcItems.size ());
+
+				for (const auto& item : srcItems)
+					result << std::make_shared<Item> (item, History_);
+
+				return result;
 			}
 		};
 	}
