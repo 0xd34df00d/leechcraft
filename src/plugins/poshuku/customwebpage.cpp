@@ -929,11 +929,6 @@ namespace Poshuku
 		if (type != NavigationTypeFormSubmitted)
 			return;
 
-		QUrl pageUrl = frame->url ();
-		// Check if this should be emitted at all
-		if (Core::Instance ().GetStorageBackend ()->GetFormsIgnored (pageUrl.toString ()))
-			return;
-
 		const auto& formsData = HarvestForms (frame ? frame : mainFrame (), request.url ()).first;
 
 		if (!CheckData (formsData, frame, request))

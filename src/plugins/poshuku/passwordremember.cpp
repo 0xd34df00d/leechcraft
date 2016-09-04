@@ -51,7 +51,19 @@ namespace Poshuku
 	{
 		TempData_ = data;
 
-		show ();
+		const auto sb = Core::Instance ().GetStorageBackend ();
+		for (auto& list : TempData_)
+			list.erase (std::remove_if (list.begin (), list.end (),
+					[sb] (const auto& ed) { return sb->GetFormsIgnored (ed.PageURL_.toString ()); }));
+
+		for (auto i = TempData_.begin (); i != TempData_.end (); )
+			if (i.value ().isEmpty ())
+				i = TempData_.erase (i);
+			else
+				++i;
+
+		if (!TempData_.isEmpty ())
+			show ();
 	}
 
 	void PasswordRemember::on_Remember__released ()
