@@ -495,7 +495,7 @@ namespace Poshuku
 		FindDialog_ = new FindDialog (WebView_);
 		FindDialog_->hide ();
 
-		RememberDialog_ = new PasswordRemember (WebView_);
+		RememberDialog_ = new PasswordRemember (WebView_->GetQWidget ());
 		RememberDialog_->hide ();
 
 		connect (webViewWidget,
@@ -1345,7 +1345,7 @@ namespace Poshuku
 			return;
 
 		LeechCraft::Entity e;
-		e.Entity_ = WebView_->url ();
+		e.Entity_ = WebView_->GetUrl ();
 		e.Mime_ = "text/xml";
 		e.Parameters_ = LeechCraft::FromUserInitiated |
 			LeechCraft::OnlyHandle;
@@ -1359,7 +1359,7 @@ namespace Poshuku
 			w.writeStartElement ("html");
 				w.writeStartElement ("head");
 					w.writeTextElement ("title",
-							Util::Escape (WebView_->url ().toString ()));
+							Util::Escape (WebView_->GetUrl ().toString ()));
 				w.writeEndElement ();
 				w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
@@ -1570,7 +1570,7 @@ namespace Poshuku
 	void BrowserWidget::pageFocus ()
 	{
 		if (!HtmlMode_ && isVisible ())
-			WebView_->setFocus ();
+			WebView_->GetQWidget ()->setFocus ();
 	}
 
 	void BrowserWidget::handleLoadProgress (int p)
@@ -1582,9 +1582,9 @@ namespace Poshuku
 
 		proxy->FillValue ("progress", p);
 
-		QString title = WebView_->title ();
+		QString title = WebView_->GetTitle ();
 		if (title.isEmpty ())
-			title = QFileInfo (WebView_->url ().path ()).fileName ();
+			title = QFileInfo (WebView_->GetUrl ().path ()).fileName ();
 
 		if (p > 0 && p < 100)
 			title.prepend (QString ("[%1%] ").arg (p));
@@ -1637,16 +1637,16 @@ namespace Poshuku
 			isVisible ())
 			return;
 
-		QString h = WebView_->title ();
+		QString h = WebView_->GetTitle ();
 		if (h.isEmpty ())
-			h = WebView_->url ().toString ();
+			h = WebView_->GetUrl ().toString ();
 		if (h.isEmpty ())
 			return;
 
 		QString text;
 		Priority prio = PInfo_;
 
-		const auto& escapedTitle = Util::Escape (WebView_->title ());
+		const auto& escapedTitle = Util::Escape (WebView_->GetTitle ());
 		if (ok)
 			text = tr ("Page load finished: %1")
 					.arg (escapedTitle);
@@ -1728,8 +1728,8 @@ namespace Poshuku
 		skip << "org.ru"
 			<< "net.ru";
 
-		QUrl url = WebView_->url ();
-		QString title = WebView_->title ();
+		QUrl url = WebView_->GetUrl ();
+		QString title = WebView_->GetTitle ();
 		if (title.isEmpty ())
 			title = tr ("No title");
 		QString host = url.host ();
@@ -1824,7 +1824,7 @@ namespace Poshuku
 	{
 		int splitterSize = XmlSettingsManager::Instance ()->
 				Property ("HistoryBoormarksPanelSize", 250).toInt ();
-		int wSize = WebView_->size ().width ();
+		int wSize = WebView_->GetQWidget ()->size ().width ();
 
 		if (!Ui_.Splitter_->sizes ().at (0))
 		{
