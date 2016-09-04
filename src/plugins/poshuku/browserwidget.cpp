@@ -77,6 +77,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
+#include "interfaces/poshuku/iwebviewhistory.h"
 #include "core.h"
 #include "historymodel.h"
 #include "finddialog.h"
@@ -614,7 +615,7 @@ namespace Poshuku
 	{
 		QByteArray ba;
 		QDataStream out (&ba, QIODevice::WriteOnly);
-		out << *WebView_->page ()->history ();
+		WebView_->GetHistory ()->Save (out);
 		return
 		{
 			WebView_->GetZoomFactor (),
@@ -647,7 +648,7 @@ namespace Poshuku
 		if (settings.WebHistorySerialized_.size ())
 		{
 			QDataStream str (settings.WebHistorySerialized_);
-			str >> *WebView_->page ()->history ();
+			WebView_->GetHistory ()->Load (str);
 		}
 
 		if (!settings.ScrollPosition_.isNull ())
