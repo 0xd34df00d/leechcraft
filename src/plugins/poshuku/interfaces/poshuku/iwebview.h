@@ -48,9 +48,15 @@ namespace Poshuku
 	 * The implementations of this interface are also expected to have the
 	 * following signals, following QWebView API:
 	 * - loadStarted()
+	 * - loadProgress(int)
 	 * - loadFinished(bool)
+	 * - iconChanged()
+	 * - titleChanged(QString)
 	 * - urlChanged(QUrl)
+	 * - urlChanged(QString)
 	 * - zoomChanged()
+	 * - statusBarMessage(QString)
+	 * - closeRequested()
 	 */
 	class IWebView
 	{
