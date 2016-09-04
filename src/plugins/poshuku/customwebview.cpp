@@ -348,6 +348,11 @@ namespace Poshuku
 					return Item_.url ();
 				}
 
+				QIcon GetIcon () const override
+				{
+					return Item_.icon ();
+				}
+
 				void Navigate () override
 				{
 					History_->goToItem (Item_);

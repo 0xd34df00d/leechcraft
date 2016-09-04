@@ -52,6 +52,8 @@ namespace Poshuku
 
 			virtual QUrl GetUrl () const = 0;
 
+			virtual QIcon GetIcon () const = 0;
+
 			virtual void Navigate () = 0;
 		};
 
