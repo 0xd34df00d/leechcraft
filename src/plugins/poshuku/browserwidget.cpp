@@ -617,13 +617,13 @@ namespace Poshuku
 		out << *WebView_->page ()->history ();
 		return
 		{
-			WebView_->zoomFactor (),
+			WebView_->GetZoomFactor (),
 			NotifyWhenFinished_->isChecked (),
 			ReloadPeriodically_->isChecked () ?
 				QTime (0, 0, 0).addMSecs (ReloadTimer_->interval ()) :
 				QTime (0, 0, 0),
 			ba,
-			WebView_->page ()->mainFrame ()->scrollPosition (),
+			WebView_->GetScrollPosition (),
 			WebView_->GetDefaultTextEncoding ()
 		};
 	}
@@ -632,7 +632,7 @@ namespace Poshuku
 	{
 		if (std::fabs (settings.ZoomFactor_ - 1) >
 				std::numeric_limits<decltype (settings.ZoomFactor_)>::epsilon ())
-			WebView_->setZoomFactor (settings.ZoomFactor_);
+			WebView_->SetZoomFactor (settings.ZoomFactor_);
 
 		NotifyWhenFinished_->setChecked (settings.NotifyWhenFinished_);
 		QTime interval = settings.ReloadInterval_;
