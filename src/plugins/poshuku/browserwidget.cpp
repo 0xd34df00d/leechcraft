@@ -900,17 +900,20 @@ namespace Poshuku
 
 	void BrowserWidget::SetFontFamily (FontFamily family, const QFont& font)
 	{
-		WebView_->settings ()->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (WebView_->GetQWidget ()))
+			iwfs->SetFontFamily (family, font);
 	}
 
 	void BrowserWidget::SetFontSize (FontSize type, int size)
 	{
-		WebView_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (WebView_->GetQWidget ()))
+			iwfs->SetFontSize (type, size);
 	}
 
 	void BrowserWidget::SetFontSizeMultiplier (qreal factor)
 	{
-		WebView_->setTextSizeMultiplier (factor);
+		if (const auto iwfs = qobject_cast<IWkFontsSettable*> (WebView_->GetQWidget ()))
+			iwfs->SetFontSizeMultiplier (factor);
 	}
 
 	void BrowserWidget::SetOnLoadScrollPoint (const QPoint& sp)
