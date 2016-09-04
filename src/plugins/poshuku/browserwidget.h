@@ -201,8 +201,6 @@ namespace Poshuku
 		void updateTitle (const QString&);
 
 		void updateNavHistory ();
-		void handleBackHistoryAction ();
-		void handleForwardHistoryAction ();
 
 		void checkLoadedDocument ();
 

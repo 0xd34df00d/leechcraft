@@ -1179,12 +1179,14 @@ namespace Poshuku
 			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
 					item.title ());
 			act->setToolTip (item.url ().toString ());
-			act->setData (i);
 
-			connect (act,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleBackHistoryAction ()));
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[history, item] { history->goToItem (item); },
+				act,
+				SIGNAL (triggered ()),
+				act
+			};
 		}
 
 		ForwardMenu_->clear ();
@@ -1197,45 +1199,15 @@ namespace Poshuku
 			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
 					item.title ());
 			act->setToolTip (item.url ().toString ());
-			act->setData (i);
 
-			connect (act,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleForwardHistoryAction ()));
+			new Util::SlotClosure<Util::NoDeletePolicy>
+			{
+				[history, item] { history->goToItem (item); },
+				act,
+				SIGNAL (triggered ()),
+				act
+			};
 		}
-	}
-
-	void BrowserWidget::handleBackHistoryAction ()
-	{
-		auto idx = qobject_cast<QAction*> (sender ())->data ().toInt ();
-
-		auto history = WebView_->history ();
-		const auto& items = history->backItems (MaxHistoryItems);
-		if (idx < 0 || idx >= items.size ())
-			return;
-
-		const auto& item = items.at (idx);
-		if (!item.isValid ())
-			return;
-
-		history->goToItem (item);
-	}
-
-	void BrowserWidget::handleForwardHistoryAction ()
-	{
-		auto idx = qobject_cast<QAction*> (sender ())->data ().toInt ();
-
-		auto history = WebView_->history ();
-		const auto& items = history->forwardItems (MaxHistoryItems);
-		if (idx < 0 || idx >= items.size ())
-			return;
-
-		const auto& item = items.at (idx);
-		if (!item.isValid ())
-			return;
-
-		history->goToItem (item);
 	}
 
 	namespace
