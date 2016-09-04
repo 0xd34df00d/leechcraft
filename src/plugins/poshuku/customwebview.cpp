@@ -53,6 +53,7 @@
 #include <QtDebug>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
+#include <util/gui/findnotificationwk.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
@@ -79,12 +80,15 @@ namespace Poshuku
 			insp->deleteLater ();
 		}
 	}
+	, FindDialog_ { new Util::FindNotificationWk { Core::Instance ().GetProxy (), this } }
 	{
 #if QT_VERSION < 0x050000
 		QPalette p;
 		if (p.color (QPalette::Window) != Qt::white)
 			setPalette (QWindowsStyle ().standardPalette ());
 #endif
+
+		FindDialog_->hide ();
 
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };
@@ -332,6 +336,14 @@ namespace Poshuku
 	void CustomWebView::SetDefaultTextEncoding (const QString& encoding)
 	{
 		settings ()->setDefaultTextEncoding (encoding);
+	}
+
+	void CustomWebView::InitiateFind (const QString& text)
+	{
+		if (!text.isEmpty ())
+			FindDialog_->SetText (text);
+		FindDialog_->show ();
+		FindDialog_->setFocus ();
 	}
 
 	QMenu* CustomWebView::CreateStandardContextMenu ()

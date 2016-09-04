@@ -73,7 +73,6 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
-#include <util/gui/findnotificationwk.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -491,9 +490,6 @@ namespace Poshuku
 		QTimer::singleShot (100,
 				this,
 				SLOT (focusLineEdit ()));
-
-		FindDialog_ = new Util::FindNotificationWk (Core::Instance ().GetProxy (), WebView_);
-		FindDialog_->hide ();
 
 		RememberDialog_ = new PasswordRemember (WebView_->GetQWidget ());
 		RememberDialog_->hide ();
@@ -1056,11 +1052,8 @@ namespace Poshuku
 
 	void BrowserWidget::handleFind ()
 	{
-		QAction *act = qobject_cast<QAction*> (sender ());
-		if (act)
-			FindDialog_->SetText (act->data ().toString ());
-		FindDialog_->show ();
-		FindDialog_->setFocus ();
+		const auto act = qobject_cast<QAction*> (sender ());
+		WebView_->InitiateFind (act ? act->data ().toString () : QString {});
 	}
 
 	void BrowserWidget::handleScreenSave ()

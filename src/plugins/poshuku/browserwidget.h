@@ -55,11 +55,6 @@ class QWebInspector;
 
 namespace LeechCraft
 {
-namespace Util
-{
-	class FindNotificationWk;
-}
-
 namespace Poshuku
 {
 	class PasswordRemember;
@@ -117,7 +112,6 @@ namespace Poshuku
 		QAction *BookmarksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
-		Util::FindNotificationWk *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
 		bool HtmlMode_ = false;

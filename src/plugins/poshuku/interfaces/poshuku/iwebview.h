@@ -64,6 +64,12 @@ namespace Poshuku
 	 * - zoomChanged()
 	 * - statusBarMessage(QString)
 	 * - closeRequested()
+	 *
+	 * The objects implementing this interface may also implement
+	 * IWkFontsSettable, in which case their fonts will be configurable
+	 * in Poshuku settings.
+	 *
+	 * @sa IWkFontSettable
 	 */
 	class IWebView
 	{
@@ -133,6 +139,8 @@ namespace Poshuku
 
 		virtual QString GetDefaultTextEncoding () const = 0;
 		virtual void SetDefaultTextEncoding (const QString& encoding) = 0;
+
+		virtual void InitiateFind (const QString& text) = 0;
 
 		virtual QMenu* CreateStandardContextMenu () = 0;
 

@@ -45,6 +45,11 @@ class IEntityManager;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class FindNotificationWk;
+}
+
 namespace Poshuku
 {
 	class WebViewSslWatcherHandler;
@@ -61,6 +66,8 @@ namespace Poshuku
 		std::shared_ptr<QWebInspector> WebInspector_;
 
 		const WebViewSslWatcherHandler *SslWatcherHandler_;
+
+		Util::FindNotificationWk * const FindDialog_;
 	public:
 		CustomWebView (IEntityManager*, QWidget* = nullptr);
 
@@ -92,6 +99,8 @@ namespace Poshuku
 
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString&) override;
+
+		void InitiateFind (const QString&) override;
 
 		QMenu* CreateStandardContextMenu () override;
 
