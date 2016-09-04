@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QDateTime>
 #include <QPixmap>
+#include <QMetaType>
 
 namespace LeechCraft
 {
