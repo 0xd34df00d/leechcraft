@@ -384,7 +384,7 @@ namespace Poshuku
 			[this] (qreal f) { WebView_->SetZoomFactor (f); },
 			this
 		};
-		fullZoomer->InstallScrollFilter (WebView_,
+		fullZoomer->InstallScrollFilter (webViewWidget,
 				[] (QWheelEvent *ev) { return ev->modifiers () == Qt::ControlModifier; });
 		fullZoomer->SetActionsTriple (ZoomIn_, ZoomOut_, ZoomReset_);
 
@@ -394,7 +394,7 @@ namespace Poshuku
 			[this] (qreal f) { WebView_->SetTextSizeMultiplier (f); },
 			this
 		};
-		textZoomer->InstallScrollFilter (WebView_,
+		textZoomer->InstallScrollFilter (webViewWidget,
 				[] (QWheelEvent *ev)
 				{
 					return ev->modifiers () == (Qt::ControlModifier | Qt::ShiftModifier);
