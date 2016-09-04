@@ -70,6 +70,7 @@ namespace Poshuku
 		QString GetTitle () const override;
 		QUrl GetUrl () const override;
 		QString GetHumanReadableUrl () const override;
+		QIcon GetIcon () const override;
 
 		void Load (const QUrl&, const QString&) override;
 

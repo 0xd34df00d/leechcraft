@@ -95,6 +95,7 @@ namespace Poshuku
 		virtual QString GetTitle () const = 0;
 		virtual QUrl GetUrl () const = 0;
 		virtual QString GetHumanReadableUrl () const = 0;
+		virtual QIcon GetIcon () const = 0;
 
 		virtual void Load (const QUrl& url, const QString& title = {}) = 0;
 

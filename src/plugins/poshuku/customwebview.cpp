@@ -259,6 +259,11 @@ namespace Poshuku
 		return URLToProperString (url ());
 	}
 
+	QIcon CustomWebView::GetIcon () const
+	{
+		return icon ();
+	}
+
 	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base)
 	{
 		setContent (data, mime, base);
