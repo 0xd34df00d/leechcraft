@@ -402,24 +402,24 @@ namespace Poshuku
 		textZoomer->SetActionsTriple (TextZoomIn_, TextZoomOut_, TextZoomReset_);
 
 		connect (Ui_.URLFrame_,
-				SIGNAL (load (const QString&)),
+				SIGNAL (load (QString)),
 				this,
-				SLOT (handleURLFrameLoad (const QString&)));
+				SLOT (handleURLFrameLoad (QString)));
 
 		connect (webViewWidget,
-				SIGNAL (titleChanged (const QString&)),
+				SIGNAL (titleChanged (QString)),
 				this,
-				SLOT (updateTitle (const QString&)));
+				SLOT (updateTitle (QString)));
 		connect (webViewWidget,
-				SIGNAL (titleChanged (const QString&)),
+				SIGNAL (titleChanged (QString)),
 				this,
 				SLOT (updateLogicalPath ()));
 		connect (webViewWidget,
-				SIGNAL (urlChanged (const QString&)),
+				SIGNAL (urlChanged (QString)),
 				this,
-				SLOT (handleUrlChanged (const QString&)));
+				SLOT (handleUrlChanged (QString)));
 		connect (webViewWidget,
-				SIGNAL (urlChanged (const QString&)),
+				SIGNAL (urlChanged (QString)),
 				this,
 				SLOT (updateLogicalPath ()));
 		connect (webViewWidget,
@@ -435,16 +435,14 @@ namespace Poshuku
 				this,
 				SLOT (handleIconChanged ()));
 		connect (webViewWidget,
-				SIGNAL (statusBarMessage (const QString&)),
+				SIGNAL (statusBarMessage (QString)),
 				this,
-				SLOT (handleStatusBarMessage (const QString&)),
+				SLOT (handleStatusBarMessage (QString)),
 				Qt::QueuedConnection);
 		connect (webViewWidget,
-				SIGNAL (linkHovered (const QString&,
-						const QString&,
-						const QString&)),
+				SIGNAL (linkHovered (QString, QString, QString)),
 				this,
-				SLOT (handleStatusBarMessage (const QString&)),
+				SLOT (handleStatusBarMessage (QString)),
 				Qt::QueuedConnection);
 		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
@@ -500,9 +498,9 @@ namespace Poshuku
 		RememberDialog_->hide ();
 
 		connect (webViewWidget,
-				SIGNAL (storeFormData (const PageFormsData_t&)),
+				SIGNAL (storeFormData (PageFormsData_t)),
 				RememberDialog_,
-				SLOT (add (const PageFormsData_t&)));
+				SLOT (add (PageFormsData_t)));
 
 		updateLogicalPath ();
 	}
