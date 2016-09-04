@@ -1177,8 +1177,10 @@ namespace Poshuku
 					continue;
 
 				const auto& url = item->GetUrl ();
-				auto act = menu->addAction (Core::Instance ().GetIcon (url),
-						item->GetTitle ());
+				auto icon = item->GetIcon ();
+				if (icon.isNull ())
+					icon = Core::Instance ().GetIcon (url);
+				auto act = menu->addAction (icon, item->GetTitle ());
 				act->setToolTip (url.toString ());
 
 				new Util::SlotClosure<Util::NoDeletePolicy>
