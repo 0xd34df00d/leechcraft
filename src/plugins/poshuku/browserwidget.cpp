@@ -795,7 +795,7 @@ namespace Poshuku
 	{
 		void Append (QList<QAction*>& result, const QList<QObject*>& objs)
 		{
-			Q_FOREACH (QObject *obj, objs)
+			for (const auto obj : objs)
 			{
 				QAction *act = qobject_cast<QAction*> (obj);
 				if (!act)
@@ -824,10 +824,10 @@ namespace Poshuku
 
 		if (!proxy->IsCancelled ())
 			result << Reload_
-				<< NotifyWhenFinished_
-				<< Add2Favorites_
-				<< Print_
-				<< Back_;
+					<< NotifyWhenFinished_
+					<< Add2Favorites_
+					<< Print_
+					<< Back_;
 
 		plugResult.clear ();
 		proxy->FillValue ("endActions", plugResult);
@@ -883,7 +883,7 @@ namespace Poshuku
 
 		QDataStream str (data);
 		str >> url
-			>> settings;
+				>> settings;
 
 		SetURL (url);
 		SetWidgetSettings (settings);
@@ -943,7 +943,7 @@ namespace Poshuku
 		QTime null (0, 0, 0);
 		int msecs = null.msecsTo (value);
 		QString tip = tr ("Reloading once in %1")
-			.arg (value.toString ());
+				.arg (value.toString ());
 		ReloadPeriodically_->setStatusTip (tip);
 		ReloadPeriodically_->setToolTip (tip);
 		ReloadTimer_->start (msecs);
@@ -1673,9 +1673,9 @@ namespace Poshuku
 		proxy->FillValue ("ok", ok);
 
 		if (!NotifyWhenFinished_->isChecked () ||
-				!Own_ ||
-				HtmlMode_ ||
-				isVisible ())
+			!Own_ ||
+			HtmlMode_ ||
+			isVisible ())
 			return;
 
 		QString h = WebView_->title ();
@@ -1690,11 +1690,11 @@ namespace Poshuku
 		const auto& escapedTitle = Util::Escape (WebView_->title ());
 		if (ok)
 			text = tr ("Page load finished: %1")
-				.arg (escapedTitle);
+					.arg (escapedTitle);
 		else
 		{
 			text = tr ("Page load failed: %1")
-				.arg (escapedTitle);
+					.arg (escapedTitle);
 			prio = PWarning_;
 		}
 
@@ -1712,9 +1712,9 @@ namespace Poshuku
 		QStringList codecs;
 		QList<int> mibs = QTextCodec::availableMibs ();
 		QMap<QString, int> name2mib;
-		Q_FOREACH (int mib, mibs)
+		for (const auto mib : mibs)
 		{
-			QString name = QTextCodec::codecForMib (mib)->name ();
+			const auto& name = QTextCodec::codecForMib (mib)->name ();
 			codecs << name;
 			name2mib [name] = mib;
 		}
@@ -1746,7 +1746,7 @@ namespace Poshuku
 		if (!action)
 		{
 			qWarning () << Q_FUNC_INFO
-				<< "action is null";
+					<< "action is null";
 			return;
 		}
 
