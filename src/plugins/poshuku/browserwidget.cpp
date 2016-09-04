@@ -841,12 +841,14 @@ namespace Poshuku
 
 	void BrowserWidget::FillMimeData (QMimeData *data)
 	{
-		const auto& url = WebView_->url ();
+		const auto& url = WebView_->GetUrl ();
 		if (!url.isEmpty () && url.isValid ())
 			data->setUrls ({ url });
 
-		QImage image (WebView_->size (), QImage::Format_ARGB32);
-		WebView_->render (&image);
+		const auto widget = WebView_->GetQWidget ();
+
+		QImage image { widget->size (), QImage::Format_ARGB32 };
+		widget->render (&image);
 		data->setImageData (image);
 	}
 
@@ -881,7 +883,7 @@ namespace Poshuku
 	{
 		QByteArray result;
 		QDataStream str (&result, QIODevice::WriteOnly);
-		str << WebView_->url ();
+		str << WebView_->GetUrl ();
 		str << GetWidgetSettings ();
 		return result;
 	}
@@ -889,13 +891,13 @@ namespace Poshuku
 	QString BrowserWidget::GetTabRecoverName () const
 	{
 		return QString ("%1 (%2)")
-				.arg (WebView_->title ())
-				.arg (WebView_->url ().toString ());
+				.arg (WebView_->GetTitle ())
+				.arg (WebView_->GetUrl ().toString ());
 	}
 
 	QIcon BrowserWidget::GetTabRecoverIcon () const
 	{
-		return WebView_->icon ();
+		return WebView_->GetIcon ();
 	}
 
 	void BrowserWidget::SetFontFamily (FontFamily family, const QFont& font)
@@ -947,9 +949,9 @@ namespace Poshuku
 		if (proxy->IsCancelled ())
 			return;
 
-		QIcon icon = WebView_->icon ();
+		auto icon = WebView_->GetIcon ();
 		if (icon.isNull ())
-			icon = Core::Instance ().GetIcon (WebView_->url ());
+			icon = Core::Instance ().GetIcon (WebView_->GetUrl ());
 
 		Ui_.URLFrame_->SetFavicon (icon);
 
@@ -972,18 +974,20 @@ namespace Poshuku
 			return;
 		}
 
+		const auto webViewWidget = WebView_->GetQWidget ();
+
 		const auto& metrics = LinkTextItem_->fontMetrics ();
-		msg = metrics.elidedText (msg, Qt::ElideMiddle, WebView_->rect ().width () * 5 / 11);
+		msg = metrics.elidedText (msg, Qt::ElideMiddle, webViewWidget->rect ().width () * 5 / 11);
 		const auto margin = LinkTextItem_->margin ();
 		LinkTextItem_->setFixedSize (metrics.width (msg) + 2 * margin, metrics.height () + 2 * margin);
 		LinkTextItem_->setText (msg);
 
-		const auto& localCursorPos = WebView_->mapFromGlobal (QCursor::pos ());
+		const auto& localCursorPos = webViewWidget->mapFromGlobal (QCursor::pos ());
 
 		const int textHeight = metrics.boundingRect (msg).height ();
-		const qreal y = WebView_->rect ().height () - textHeight - 7;
+		const qreal y = webViewWidget->rect ().height () - textHeight - 7;
 		const qreal x = QRect (QPoint (0, y), LinkTextItem_->size ()).contains (localCursorPos) ?
-				WebView_->rect ().width () - LinkTextItem_->width () + margin :
+				webViewWidget->rect ().width () - LinkTextItem_->width () + margin :
 				margin;
 		LinkTextItem_->move (x, y);
 		LinkTextItem_->show ();
@@ -1042,12 +1046,12 @@ namespace Poshuku
 
 	void BrowserWidget::handleAdd2Favorites ()
 	{
-		const auto& url = WebView_->url ().toString ();
+		const auto& url = WebView_->GetUrl ().toString ();
 
 		if (Core::Instance ().IsUrlInFavourites (url))
 			Core::Instance ().GetFavoritesModel ()->removeItem (url);
 		else
-			emit addToFavorites (WebView_->title (), url);
+			emit addToFavorites (WebView_->GetTitle (), url);
 	}
 
 	void BrowserWidget::handleFind ()
@@ -1101,7 +1105,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleSavePage ()
 	{
-		Entity e = Util::MakeEntity (WebView_->url (),
+		Entity e = Util::MakeEntity (WebView_->GetUrl (),
 				QString (),
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList ("fetch") << "save";
@@ -1149,7 +1153,7 @@ namespace Poshuku
 			return;
 		}
 
-		const auto& name = QFileInfo (WebView_->url ().path ()).fileName ();
+		const auto& name = QFileInfo (WebView_->GetUrl ().path ()).fileName ();
 		emit titleChanged (name);
 	}
 
