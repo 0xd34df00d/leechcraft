@@ -102,9 +102,9 @@ namespace Snails
 		Edit_->textCursor ().deleteChar ();
 	}
 
-	void TextEditorAdaptor::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	void TextEditorAdaptor::SetFontFamily (FontFamily family, const QFont& font)
 	{
-		if (family != QWebSettings::FixedFont)
+		if (family != FontFamily::FixedFont)
 			return;
 
 		auto cursor = Edit_->textCursor ();
@@ -119,9 +119,9 @@ namespace Snails
 		cursor.setCharFormat (fmt);
 	}
 
-	void TextEditorAdaptor::SetFontSize (QWebSettings::FontSize type, int size)
+	void TextEditorAdaptor::SetFontSize (FontSize type, int size)
 	{
-		if (type != QWebSettings::DefaultFixedFontSize)
+		if (type != FontSize::DefaultFixedFontSize)
 			return;
 
 		auto cursor = Edit_->textCursor ();

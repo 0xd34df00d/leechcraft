@@ -32,7 +32,7 @@
 #include <memory>
 #include <QWidget>
 #include <QHash>
-#include <QtWebKit/QWebSettings>
+#include <interfaces/iwkfontssettable.h>
 #include "xsdconfig.h"
 
 class QSpinBox;
@@ -41,8 +41,6 @@ namespace Ui
 {
 	class WkFontsWidget;
 }
-
-class IWkFontsSettable;
 
 namespace LeechCraft
 {
@@ -95,13 +93,13 @@ namespace Util
 		std::shared_ptr<Ui::WkFontsWidget> Ui_;
 		BaseSettingsManager * const BSM_;
 
-		QHash<QWebSettings::FontFamily, FontChooserWidget*> Family2Chooser_;
-		QHash<QWebSettings::FontFamily, QByteArray> Family2Name_;
-		QHash<QWebSettings::FontFamily, QFont> PendingFontChanges_;
+		QHash<IWkFontsSettable::FontFamily, FontChooserWidget*> Family2Chooser_;
+		QHash<IWkFontsSettable::FontFamily, QByteArray> Family2Name_;
+		QHash<IWkFontsSettable::FontFamily, QFont> PendingFontChanges_;
 
-		QHash<QWebSettings::FontSize, QSpinBox*> Size2Spinbox_;
-		QHash<QWebSettings::FontSize, QByteArray> Size2Name_;
-		QHash<QWebSettings::FontSize, int> PendingSizeChanges_;
+		QHash<IWkFontsSettable::FontSize, QSpinBox*> Size2Spinbox_;
+		QHash<IWkFontsSettable::FontSize, QByteArray> Size2Name_;
+		QHash<IWkFontsSettable::FontSize, int> PendingSizeChanges_;
 
 		QList<IWkFontsSettable*> Settables_;
 
@@ -146,7 +144,7 @@ namespace Util
 		 * been changed.
 		 * @param[out] font The new font for the given \em family.
 		 */
-		void fontChanged (QWebSettings::FontFamily family, const QFont& font);
+		void fontChanged (IWkFontsSettable::FontFamily family, const QFont& font);
 
 		/** @brief Notifies the \em size for the given font \em type has
 		 * been changed.
@@ -155,7 +153,7 @@ namespace Util
 		 * changed.
 		 * @param[out] size The new font size for the given font \em type.
 		 */
-		void sizeChanged (QWebSettings::FontSize type, int size);
+		void sizeChanged (IWkFontsSettable::FontSize type, int size);
 
 		/** @brief Notifies the text zoom \em factor has been changed.
 		 *

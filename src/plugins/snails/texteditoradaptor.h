@@ -65,8 +65,8 @@ namespace Snails
 		bool FindText (const QString&);
 		void DeleteSelection ();
 
-		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font);
-		void SetFontSize (QWebSettings::FontSize type, int size);
+		void SetFontFamily (FontFamily family, const QFont& font);
+		void SetFontSize (FontSize type, int size);
 		void SetFontSizeMultiplier (qreal factor);
 	signals:
 		void textChanged ();

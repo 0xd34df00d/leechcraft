@@ -110,8 +110,8 @@ namespace Snails
 		QToolBar* GetToolBar () const;
 
 		QObject* GetQObject ();
-		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
-		void SetFontSize (QWebSettings::FontSize type, int size);
+		void SetFontFamily (FontFamily, const QFont&);
+		void SetFontSize (FontSize type, int size);
 		void SetFontSizeMultiplier (qreal factor);
 	private:
 		void FillCommonActions (Util::ShortcutManager*);

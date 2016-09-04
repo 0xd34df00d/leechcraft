@@ -30,11 +30,10 @@
 #pragma once
 
 #include <QtPlugin>
-#include <QtWebKit/QWebSettings>
 
 class QFont;
 
-/** @brief Interface to aid WebKit-view-containing tabs to expose the view
+/** @brief Interface to aid WebKit-like-view-containing tabs to expose the view
  * fonts configuration to the user.
  *
  * The tabs implementing this interface should just be registered with an
@@ -48,6 +47,24 @@ class Q_DECL_EXPORT IWkFontsSettable
 protected:
 	virtual ~IWkFontsSettable () = default;
 public:
+	enum class FontFamily
+	{
+		StandardFont,
+		FixedFont,
+		SerifFont,
+		SansSerifFont,
+		CursiveFont,
+		FantasyFont
+	};
+
+	enum class FontSize
+	{
+		MinimumFontSize,
+		MinimumLogicalFontSize,
+		DefaultFontSize,
+		DefaultFixedFontSize
+	};
+
 	/** @brief Returns this tab as a QObject.
 	 *
 	 * @return This tab as a QObject.
@@ -61,7 +78,7 @@ public:
 	 * @param[in] family The font family to change.
 	 * @param[in] font The font to set for the font family.
 	 */
-	virtual void SetFontFamily (QWebSettings::FontFamily family, const QFont& font) = 0;
+	virtual void SetFontFamily (FontFamily family, const QFont& font) = 0;
 
 	/** @brief Sets the \em size for the given font size \em type.
 	 *
@@ -70,7 +87,7 @@ public:
 	 * @param[in] type The font type to change.
 	 * @param[in] size The font size to set.
 	 */
-	virtual void SetFontSize (QWebSettings::FontSize type, int size) = 0;
+	virtual void SetFontSize (FontSize type, int size) = 0;
 
 	/** @brief Sets the font size multiplier to the given \em factor.
 	 *
@@ -80,5 +97,15 @@ public:
 	 */
 	virtual void SetFontSizeMultiplier (qreal factor) = 0;
 };
+
+inline uint qHash (IWkFontsSettable::FontFamily f)
+{
+	return static_cast<uint> (f);
+}
+
+inline uint qHash (IWkFontsSettable::FontSize f)
+{
+	return static_cast<uint> (f);
+}
 
 Q_DECLARE_INTERFACE (IWkFontsSettable, "org.LeechCraft.IWkFontsSettable/1.0")

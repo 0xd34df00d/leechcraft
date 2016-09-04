@@ -898,14 +898,14 @@ namespace Poshuku
 		return WebView_->icon ();
 	}
 
-	void BrowserWidget::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	void BrowserWidget::SetFontFamily (FontFamily family, const QFont& font)
 	{
-		WebView_->settings ()->setFontFamily (family, font.family ());
+		WebView_->settings ()->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
 	}
 
-	void BrowserWidget::SetFontSize (QWebSettings::FontSize type, int size)
+	void BrowserWidget::SetFontSize (FontSize type, int size)
 	{
-		WebView_->settings ()->setFontSize (type, size);
+		WebView_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
 	}
 
 	void BrowserWidget::SetFontSizeMultiplier (qreal factor)

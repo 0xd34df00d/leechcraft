@@ -163,8 +163,8 @@ namespace Azoth
 		void HandleDrop (QDropEvent*);
 
 		QObject* GetQObject ();
-		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
-		void SetFontSize (QWebSettings::FontSize type, int size);
+		void SetFontFamily (FontFamily, const QFont&);
+		void SetFontSize (FontSize type, int size);
 		void SetFontSizeMultiplier (qreal factor);
 
 		void ShowUsersList ();

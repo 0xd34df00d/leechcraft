@@ -259,18 +259,18 @@ namespace Snails
 		return this;
 	}
 
-	void MailTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	void MailTab::SetFontFamily (FontFamily family, const QFont& font)
 	{
 		const auto settings = Ui_.MailView_->settings ();
 		if (font == QFont {})
-			settings->resetFontFamily (family);
+			settings->resetFontFamily (static_cast<QWebSettings::FontFamily> (family));
 		else
-			settings->setFontFamily (family, font.family ());
+			settings->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
 	}
 
-	void MailTab::SetFontSize (QWebSettings::FontSize type, int size)
+	void MailTab::SetFontSize (FontSize type, int size)
 	{
-		Ui_.MailView_->settings ()->setFontSize (type, size);
+		Ui_.MailView_->settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
 	}
 
 	void MailTab::SetFontSizeMultiplier (qreal factor)

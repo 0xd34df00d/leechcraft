@@ -35,17 +35,17 @@ namespace LeechCraft
 namespace Util
 {
 	MassFontChangeDialog::MassFontChangeDialog (const QFont& font,
-			const QList<QWebSettings::FontFamily>& families, QWidget *parent)
+			const QList<IWkFontsSettable::FontFamily>& families, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
 
-		Family2Box_ [QWebSettings::StandardFont] = Ui_.StandardBox_;
-		Family2Box_ [QWebSettings::FixedFont] = Ui_.FixedBox_;
-		Family2Box_ [QWebSettings::SerifFont] = Ui_.SerifBox_;
-		Family2Box_ [QWebSettings::SansSerifFont] = Ui_.SansSerifBox_;
-		Family2Box_ [QWebSettings::CursiveFont] = Ui_.CursiveBox_;
-		Family2Box_ [QWebSettings::FantasyFont] = Ui_.FantasyBox_;
+		Family2Box_ [IWkFontsSettable::FontFamily::StandardFont] = Ui_.StandardBox_;
+		Family2Box_ [IWkFontsSettable::FontFamily::FixedFont] = Ui_.FixedBox_;
+		Family2Box_ [IWkFontsSettable::FontFamily::SerifFont] = Ui_.SerifBox_;
+		Family2Box_ [IWkFontsSettable::FontFamily::SansSerifFont] = Ui_.SansSerifBox_;
+		Family2Box_ [IWkFontsSettable::FontFamily::CursiveFont] = Ui_.CursiveBox_;
+		Family2Box_ [IWkFontsSettable::FontFamily::FantasyFont] = Ui_.FantasyBox_;
 
 		for (const auto family : families)
 			Family2Box_ [family]->setCheckState (Qt::Checked);
@@ -58,9 +58,9 @@ namespace Util
 		return Ui_.FontChooser_->GetFont ();
 	}
 
-	QList<QWebSettings::FontFamily> MassFontChangeDialog::GetFamilies () const
+	QList<IWkFontsSettable::FontFamily> MassFontChangeDialog::GetFamilies () const
 	{
-		QList<QWebSettings::FontFamily> result;
+		QList<IWkFontsSettable::FontFamily> result;
 		for (const auto& pair : Util::Stlize (Family2Box_))
 			if (pair.second->checkState () == Qt::Checked)
 				result << pair.first;

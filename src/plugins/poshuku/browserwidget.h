@@ -168,8 +168,8 @@ namespace Poshuku
 		QString GetTabRecoverName () const override;
 		QIcon GetTabRecoverIcon () const override;
 
-		void SetFontFamily (QWebSettings::FontFamily family, const QFont& font) override;
-		void SetFontSize (QWebSettings::FontSize type, int size) override;
+		void SetFontFamily (FontFamily family, const QFont& font) override;
+		void SetFontSize (FontSize type, int size) override;
 		void SetFontSizeMultiplier (qreal factor) override;
 
 		void SetOnLoadScrollPoint (const QPoint&);

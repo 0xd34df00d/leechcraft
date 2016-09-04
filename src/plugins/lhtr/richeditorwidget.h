@@ -92,8 +92,8 @@ namespace LHTR
 		QAction* AddInlineTagInserter (const QString& tagName, const QVariantMap& params);
 		void ExecJS (const QString&);
 
-		void SetFontFamily (QWebSettings::FontFamily, const QFont&);
-		void SetFontSize (QWebSettings::FontSize, int);
+		void SetFontFamily (FontFamily, const QFont&);
+		void SetFontSize (FontSize, int);
 		void SetFontSizeMultiplier (qreal);
 
 		bool eventFilter (QObject*, QEvent*);

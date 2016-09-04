@@ -46,19 +46,19 @@ namespace Util
 	{
 		Ui_->setupUi (this);
 
-		Family2Chooser_ [QWebSettings::StandardFont] = Ui_->StandardChooser_;
-		Family2Chooser_ [QWebSettings::FixedFont] = Ui_->FixedChooser_;
-		Family2Chooser_ [QWebSettings::SerifFont] = Ui_->SerifChooser_;
-		Family2Chooser_ [QWebSettings::SansSerifFont] = Ui_->SansSerifChooser_;
-		Family2Chooser_ [QWebSettings::CursiveFont] = Ui_->CursiveChooser_;
-		Family2Chooser_ [QWebSettings::FantasyFont] = Ui_->FantasyChooser_;
+		Family2Chooser_ [IWkFontsSettable::FontFamily::StandardFont] = Ui_->StandardChooser_;
+		Family2Chooser_ [IWkFontsSettable::FontFamily::FixedFont] = Ui_->FixedChooser_;
+		Family2Chooser_ [IWkFontsSettable::FontFamily::SerifFont] = Ui_->SerifChooser_;
+		Family2Chooser_ [IWkFontsSettable::FontFamily::SansSerifFont] = Ui_->SansSerifChooser_;
+		Family2Chooser_ [IWkFontsSettable::FontFamily::CursiveFont] = Ui_->CursiveChooser_;
+		Family2Chooser_ [IWkFontsSettable::FontFamily::FantasyFont] = Ui_->FantasyChooser_;
 
-		Family2Name_ [QWebSettings::StandardFont] = "StandardFont";
-		Family2Name_ [QWebSettings::FixedFont] = "FixedFont";
-		Family2Name_ [QWebSettings::SerifFont] = "SerifFont";
-		Family2Name_ [QWebSettings::SansSerifFont] = "SansSerifFont";
-		Family2Name_ [QWebSettings::CursiveFont] = "CursiveFont";
-		Family2Name_ [QWebSettings::FantasyFont] = "FantasyFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::StandardFont] = "StandardFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::FixedFont] = "FixedFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::SerifFont] = "SerifFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::SansSerifFont] = "SansSerifFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::CursiveFont] = "CursiveFont";
+		Family2Name_ [IWkFontsSettable::FontFamily::FantasyFont] = "FantasyFont";
 
 		ResetFontChoosers ();
 
@@ -71,13 +71,13 @@ namespace Util
 				this
 			};
 
-		Size2Spinbox_ [QWebSettings::DefaultFontSize] = Ui_->SizeDefault_;
-		Size2Spinbox_ [QWebSettings::DefaultFixedFontSize] = Ui_->SizeFixedWidth_;
-		Size2Spinbox_ [QWebSettings::MinimumFontSize] = Ui_->SizeMinimum_;
+		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFontSize] = Ui_->SizeDefault_;
+		Size2Spinbox_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = Ui_->SizeFixedWidth_;
+		Size2Spinbox_ [IWkFontsSettable::FontSize::MinimumFontSize] = Ui_->SizeMinimum_;
 
-		Size2Name_ [QWebSettings::DefaultFontSize] = "FontSize";
-		Size2Name_ [QWebSettings::DefaultFixedFontSize] = "FixedFontSize";
-		Size2Name_ [QWebSettings::MinimumFontSize] = "MinimumFontSize";
+		Size2Name_ [IWkFontsSettable::FontSize::DefaultFontSize] = "FontSize";
+		Size2Name_ [IWkFontsSettable::FontSize::DefaultFixedFontSize] = "FixedFontSize";
+		Size2Name_ [IWkFontsSettable::FontSize::MinimumFontSize] = "MinimumFontSize";
 
 		ResetSizeChoosers ();
 
@@ -155,12 +155,12 @@ namespace Util
 #ifndef USE_CPP14
 		const auto dialog = new MassFontChangeDialog
 		{
-			Family2Chooser_ [QWebSettings::StandardFont]->GetFont (),
+			Family2Chooser_ [IWkFontsSettable::FontFamily::StandardFont]->GetFont (),
 			Family2Chooser_.keys (),
 			this
 		};
 #else
-		QHash<QString, QList<QWebSettings::FontFamily>> families;
+		QHash<QString, QList<IWkFontsSettable::FontFamily>> families;
 		for (const auto& pair : Util::Stlize (Family2Chooser_))
 			families [pair.second->GetFont ().family ()] << pair.first;
 

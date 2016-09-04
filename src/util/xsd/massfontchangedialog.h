@@ -31,7 +31,7 @@
 
 #include <QDialog>
 #include <QHash>
-#include <QtWebKit/QWebSettings>
+#include <interfaces/iwkfontssettable.h>
 #include "ui_massfontchangedialog.h"
 
 namespace LeechCraft
@@ -44,14 +44,14 @@ namespace Util
 
 		Ui::MassFontChangeDialog Ui_;
 
-		QHash<QWebSettings::FontFamily, QCheckBox*> Family2Box_;
+		QHash<IWkFontsSettable::FontFamily, QCheckBox*> Family2Box_;
 	public:
 		MassFontChangeDialog (const QFont&,
-				const QList<QWebSettings::FontFamily>&,
+				const QList<IWkFontsSettable::FontFamily>&,
 				QWidget* = nullptr);
 
 		QFont GetFont () const;
-		QList<QWebSettings::FontFamily> GetFamilies () const;
+		QList<IWkFontsSettable::FontFamily> GetFamilies () const;
 	};
 }
 }

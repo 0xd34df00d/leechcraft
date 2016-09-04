@@ -115,14 +115,14 @@ namespace Snails
 		return this;
 	}
 
-	void ComposeMessageTab::SetFontFamily (QWebSettings::FontFamily family, const QFont& font)
+	void ComposeMessageTab::SetFontFamily (FontFamily family, const QFont& font)
 	{
 		for (const auto editor : Ui_.Editor_->GetAllEditors ())
 			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
 				iwfs->SetFontFamily (family, font);
 	}
 
-	void ComposeMessageTab::SetFontSize (QWebSettings::FontSize type, int size)
+	void ComposeMessageTab::SetFontSize (FontSize type, int size)
 	{
 		for (const auto editor : Ui_.Editor_->GetAllEditors ())
 			if (const auto iwfs = qobject_cast<IWkFontsSettable*> (editor->GetQObject ()))
