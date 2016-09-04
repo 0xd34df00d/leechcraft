@@ -36,14 +36,14 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	QVariantMap ElementData::ToVariantMap () const
+	QVariantMap ToVariantMap (const ElementData& ed)
 	{
 		return Util::MakeMap<QString, QVariant> ({
-				{ "PageURL", PageURL_ },
-				{ "FormID", FormID_ },
-				{ "Name", Name_ },
-				{ "Type", Type_ },
-				{ "Value", Value_ }
+				{ "PageURL", ed.PageURL_ },
+				{ "FormID", ed.FormID_ },
+				{ "Name", ed.Name_ },
+				{ "Type", ed.Type_ },
+				{ "Value", ed.Value_ }
 			});
 	}
 

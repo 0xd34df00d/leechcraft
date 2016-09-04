@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QString>
 #include <QVariant>
+#include "interfaces/poshuku/poshukutypes.h"
 
 class QDebug;
 
@@ -40,16 +41,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	struct ElementData
-	{
-		QUrl PageURL_;
-		QString FormID_;
-		QString Name_;
-		QString Type_;
-		QString Value_;
-
-		QVariantMap ToVariantMap () const;
-	};
+	QVariantMap ToVariantMap (const ElementData&);
 
 	bool operator== (const ElementData&, const ElementData&);
 	bool operator< (const ElementData&, const ElementData&);
@@ -58,16 +50,6 @@ namespace Poshuku
 	QDataStream& operator>> (QDataStream&, ElementData&);
 
 	QDebug& operator<< (QDebug&, const ElementData&);
-
-	typedef QList<ElementData> ElementsData_t;
-
-	/** Holds information about all the forms on a page.
-	 *
-	 * The key of the map is the name of the `input' element, whereas
-	 * value is the ElementData structure with the information about
-	 * that element.
-	 */
-	typedef QMap<QString, ElementsData_t> PageFormsData_t;
 
 	struct ElemFinder
 	{
@@ -88,9 +70,5 @@ namespace Poshuku
 	};
 }
 }
-
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementData)
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementsData_t)
-Q_DECLARE_METATYPE (LeechCraft::Poshuku::PageFormsData_t)
 
 #endif

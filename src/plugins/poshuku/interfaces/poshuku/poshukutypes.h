@@ -78,5 +78,28 @@ namespace Poshuku
 		QUrl ImageUrl_;
 		QPixmap ImagePixmap_;
 	};
+
+	struct ElementData
+	{
+		QUrl PageURL_;
+		QString FormID_;
+		QString Name_;
+		QString Type_;
+		QString Value_;
+	};
+
+	using ElementsData_t = QList<ElementData>;
+
+	/** Holds information about all the forms on a page.
+	 *
+	 * The key of the map is the name of the `input' element, whereas
+	 * value is the ElementData structure with the information about
+	 * that element.
+	 */
+	using PageFormsData_t = QMap<QString, ElementsData_t>;
 }
 }
+
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementData)
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::ElementsData_t)
+Q_DECLARE_METATYPE (LeechCraft::Poshuku::PageFormsData_t)

@@ -91,7 +91,7 @@ namespace Poshuku
 		qRegisterMetaType<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
 		qRegisterMetaTypeStreamOperators<ElementsData_t> ("LeechCraft::Poshuku::ElementsData_t");
 
-		Util::Introspectable::Instance ().Register<ElementData> (&ElementData::ToVariantMap);
+		Util::Introspectable::Instance ().Register<ElementData> (&ToVariantMap);
 
 		TabClass_.TabClass_ = "Poshuku";
 		TabClass_.VisibleName_ = tr ("Poshuku");
