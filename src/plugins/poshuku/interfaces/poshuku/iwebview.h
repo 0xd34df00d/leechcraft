@@ -76,6 +76,7 @@ namespace Poshuku
 		enum class PageAction
 		{
 			Reload,
+			ReloadAndBypassCache,
 			Stop,
 
 			Back,
@@ -83,7 +84,17 @@ namespace Poshuku
 
 			Cut,
 			Copy,
-			Paste
+			Paste,
+
+			CopyLinkToClipboard,
+			DownloadLinkToDisk,
+
+			OpenImageInNewWindow,
+			DownloadImageToDisk,
+			CopyImageToClipboard,
+			CopyImageUrlToClipboard,
+
+			InspectElement
 		};
 
 		virtual QWidget* GetQWidget () = 0;

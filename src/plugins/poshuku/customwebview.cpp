@@ -231,12 +231,20 @@ namespace Poshuku
 		switch (action)
 		{
 		ACT (Reload)
+		ACT (ReloadAndBypassCache)
 		ACT (Stop)
 		ACT (Back)
 		ACT (Forward)
 		ACT (Cut)
 		ACT (Copy)
 		ACT (Paste)
+		ACT (CopyLinkToClipboard)
+		ACT (DownloadLinkToDisk)
+		ACT (OpenImageInNewWindow)
+		ACT (DownloadImageToDisk)
+		ACT (CopyImageToClipboard)
+		ACT (CopyImageUrlToClipboard)
+		ACT (InspectElement)
 		}
 
 #undef ACT
