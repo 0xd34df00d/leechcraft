@@ -129,6 +129,7 @@ namespace Poshuku
 		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&);
 
 		void earliestViewLayout () override;
+		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;
 	};
 }
 }

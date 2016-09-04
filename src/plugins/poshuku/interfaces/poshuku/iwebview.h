@@ -111,6 +111,8 @@ namespace Poshuku
 		virtual void SetTextSizeMultiplier (double) = 0;
 	protected:
 		virtual void earliestViewLayout () = 0;
+
+		virtual void linkHovered (const QString& link, const QString& title, const QString& textContent) = 0;
 	};
 }
 }

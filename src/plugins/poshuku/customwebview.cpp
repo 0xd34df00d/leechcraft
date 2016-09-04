@@ -127,6 +127,11 @@ namespace Poshuku
 				this,
 				SIGNAL (storeFormData (PageFormsData_t)));
 
+		connect (page,
+				SIGNAL (linkHovered (QString, QString, QString)),
+				this,
+				SIGNAL (linkHovered (QString, QString, QString)));
+
 		connect (page->mainFrame (),
 				SIGNAL (initialLayoutCompleted ()),
 				this,
