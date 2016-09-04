@@ -1165,53 +1165,43 @@ namespace Poshuku
 
 	const int MaxHistoryItems = 10;
 
+	namespace
+	{
+		void FillNavMenu (QMenu *menu, const QList<IWebViewHistory::IItem_ptr>& items)
+		{
+			menu->clear ();
+
+			for (const auto& item : items)
+			{
+				if (!item->IsValid ())
+					continue;
+
+				const auto& url = item->GetUrl ();
+				auto act = menu->addAction (Core::Instance ().GetIcon (url),
+						item->GetTitle ());
+				act->setToolTip (url.toString ());
+
+				new Util::SlotClosure<Util::NoDeletePolicy>
+				{
+					[item] { item->Navigate (); },
+					act,
+					SIGNAL (triggered ()),
+					act
+				};
+			}
+		}
+	}
+
 	void BrowserWidget::updateNavHistory ()
 	{
 		const auto& history = WebView_->GetHistory ();
 
-		BackMenu_->clear ();
-		auto items = history->GetItems (IWebViewHistory::Direction::Backward, MaxHistoryItems);
-		for (int i = items.size () - 1; i >= 0; --i)
-		{
-			const auto& item = items.at (i);
-			if (!item->IsValid ())
-				continue;
+		auto backItems = history->GetItems (IWebViewHistory::Direction::Backward, MaxHistoryItems);
+		std::reverse (backItems.begin (), backItems.end ());
+		FillNavMenu (BackMenu_, backItems);
 
-			const auto& url = item->GetUrl ();
-			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (url),
-					item->GetTitle ());
-			act->setToolTip (url.toString ());
-
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[item] { item->Navigate (); },
-				act,
-				SIGNAL (triggered ()),
-				act
-			};
-		}
-
-		ForwardMenu_->clear ();
-		items = history->GetItems (IWebViewHistory::Direction::Forward, MaxHistoryItems);
-		for (int i = 0; i < items.size (); ++i)
-		{
-			const auto& item = items.at (i);
-			if (!item->IsValid ())
-				continue;
-
-			const auto& url = item->GetUrl ();
-			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (url),
-					item->GetTitle ());
-			act->setToolTip (url.toString ());
-
-			new Util::SlotClosure<Util::NoDeletePolicy>
-			{
-				[item] { item->Navigate (); },
-				act,
-				SIGNAL (triggered ()),
-				act
-			};
-		}
+		FillNavMenu (ForwardMenu_,
+				history->GetItems (IWebViewHistory::Direction::Forward, MaxHistoryItems));
 	}
 
 	namespace
