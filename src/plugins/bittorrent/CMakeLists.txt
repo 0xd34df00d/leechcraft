@@ -13,7 +13,6 @@ if (NOT RBTorrent_FOUND)
 	message (SEND_ERROR "Rasterbar libtorrent not found, not building BitTorrent")
 endif ()
 
-
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${Boost_INCLUDE_DIR}
