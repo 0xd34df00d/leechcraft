@@ -1167,22 +1167,24 @@ namespace Poshuku
 
 	void BrowserWidget::updateNavHistory ()
 	{
-		auto history = WebView_->history ();
+		const auto& history = WebView_->GetHistory ();
 
 		BackMenu_->clear ();
-		auto items = history->backItems (MaxHistoryItems);
+		auto items = history->GetItems (IWebViewHistory::Direction::Backward, MaxHistoryItems);
 		for (int i = items.size () - 1; i >= 0; --i)
 		{
 			const auto& item = items.at (i);
-			if (!item.isValid ())
+			if (!item->IsValid ())
 				continue;
-			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
-					item.title ());
-			act->setToolTip (item.url ().toString ());
+
+			const auto& url = item->GetUrl ();
+			auto act = BackMenu_->addAction (Core::Instance ().GetIcon (url),
+					item->GetTitle ());
+			act->setToolTip (url.toString ());
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[history, item] { history->goToItem (item); },
+				[item] { item->Navigate (); },
 				act,
 				SIGNAL (triggered ()),
 				act
@@ -1190,19 +1192,21 @@ namespace Poshuku
 		}
 
 		ForwardMenu_->clear ();
-		items = history->forwardItems (MaxHistoryItems);
+		items = history->GetItems (IWebViewHistory::Direction::Forward, MaxHistoryItems);
 		for (int i = 0; i < items.size (); ++i)
 		{
 			const auto& item = items.at (i);
-			if (!item.isValid ())
+			if (!item->IsValid ())
 				continue;
-			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (item.url ()),
-					item.title ());
-			act->setToolTip (item.url ().toString ());
+
+			const auto& url = item->GetUrl ();
+			auto act = ForwardMenu_->addAction (Core::Instance ().GetIcon (url),
+					item->GetTitle ());
+			act->setToolTip (url.toString ());
 
 			new Util::SlotClosure<Util::NoDeletePolicy>
 			{
-				[history, item] { history->goToItem (item); },
+				[item] { item->Navigate (); },
 				act,
 				SIGNAL (triggered ()),
 				act
