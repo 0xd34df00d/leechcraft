@@ -439,7 +439,7 @@ namespace Poshuku
 				this,
 				SLOT (handleStatusBarMessage (const QString&)),
 				Qt::QueuedConnection);
-		connect (WebView_->page (),
+		connect (webViewWidget,
 				SIGNAL (linkHovered (const QString&,
 						const QString&,
 						const QString&)),
