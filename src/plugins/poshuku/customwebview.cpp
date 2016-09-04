@@ -334,6 +334,11 @@ namespace Poshuku
 		settings ()->setDefaultTextEncoding (encoding);
 	}
 
+	QMenu* CustomWebView::CreateStandardContextMenu ()
+	{
+		return page ()->createStandardContextMenu ();
+	}
+
 	namespace
 	{
 		class HistoryWrapper : public IWebViewHistory

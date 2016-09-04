@@ -132,6 +132,8 @@ namespace Poshuku
 		virtual QString GetDefaultTextEncoding () const = 0;
 		virtual void SetDefaultTextEncoding (const QString& encoding) = 0;
 
+		virtual QMenu* CreateStandardContextMenu () = 0;
+
 		virtual IWebViewHistory_ptr GetHistory () = 0;
 	protected:
 		virtual void earliestViewLayout () = 0;

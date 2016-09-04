@@ -93,6 +93,8 @@ namespace Poshuku
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString&) override;
 
+		QMenu* CreateStandardContextMenu () override;
+
 		IWebViewHistory_ptr GetHistory () override;
 
 		void SetFontFamily (FontFamily family, const QFont& font) override;

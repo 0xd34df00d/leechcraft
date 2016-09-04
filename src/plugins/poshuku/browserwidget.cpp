@@ -1542,7 +1542,7 @@ namespace Poshuku
 		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterSelectedText);
 
 		if (menu->isEmpty ())
-			menu = WebView_->page ()->createStandardContextMenu ();
+			menu = WebView_->CreateStandardContextMenu ();
 
 		addWebAction (QWebPage::ReloadAndBypassCache);
 		if (!menu->isEmpty ())
