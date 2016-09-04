@@ -624,7 +624,7 @@ namespace Poshuku
 				QTime (0, 0, 0),
 			ba,
 			WebView_->page ()->mainFrame ()->scrollPosition (),
-			WebView_->settings ()->defaultTextEncoding ()
+			WebView_->GetDefaultTextEncoding ()
 		};
 	}
 
@@ -653,7 +653,7 @@ namespace Poshuku
 		if (!settings.ScrollPosition_.isNull ())
 			SetOnLoadScrollPoint (settings.ScrollPosition_);
 
-		WebView_->settings ()->setDefaultTextEncoding (settings.DefaultEncoding_);
+		WebView_->SetDefaultTextEncoding (settings.DefaultEncoding_);
 	}
 
 	void BrowserWidget::SetURL (const QUrl& thurl)
@@ -1720,8 +1720,7 @@ namespace Poshuku
 		}
 		codecs.sort ();
 
-		QString defaultEncoding = WebView_->
-			settings ()->defaultTextEncoding ();
+		const auto& defaultEncoding = WebView_->GetDefaultTextEncoding ();
 		const int currentCodec = codecs.indexOf (defaultEncoding);
 
 		QAction *def = ChangeEncoding_->addAction (tr ("Default"));
@@ -1754,7 +1753,7 @@ namespace Poshuku
 		QString encoding;
 		if (mib >= 0)
 			encoding = QTextCodec::codecForMib (mib)->name ();
-		WebView_->settings ()->setDefaultTextEncoding (encoding);
+		WebView_->SetDefaultTextEncoding (encoding);
 		Reload_->trigger ();
 	}
 
