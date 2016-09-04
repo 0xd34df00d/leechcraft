@@ -410,6 +410,26 @@ namespace Poshuku
 		return std::make_shared<HistoryWrapper> (history ());
 	}
 
+	void CustomWebView::SetFontFamily (FontFamily family, const QFont& font)
+	{
+		settings ()->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
+	}
+
+	void CustomWebView::SetFontSize (FontSize type, int size)
+	{
+		settings ()->setFontSize (static_cast<QWebSettings::FontSize> (type), size);
+	}
+
+	void CustomWebView::SetFontSizeMultiplier (qreal factor)
+	{
+		setTextSizeMultiplier (factor);
+	}
+
+	QObject* CustomWebView::GetQObject ()
+	{
+		return this;
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
