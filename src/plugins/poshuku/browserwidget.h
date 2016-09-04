@@ -59,7 +59,7 @@ namespace Poshuku
 {
 	class PasswordRemember;
 	struct BrowserWidgetSettings;
-	class CustomWebView;
+	class IWebView;
 
 	class BrowserWidget : public QWidget
 						, public IBrowserWidget
@@ -118,12 +118,12 @@ namespace Poshuku
 		bool Own_ = true;
 		QMap<QString, QList<QAction*>> WindowMenus_;
 
-		CustomWebView *WebView_;
+		IWebView * const WebView_;
 		QLabel *LinkTextItem_;
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (QWidget* = nullptr);
+		BrowserWidget (IWebView*, QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
 

@@ -331,7 +331,7 @@ namespace Poshuku
 
 	QMap<QString, ActionInfo> Poshuku::GetActionInfo () const
 	{
-		BrowserWidget bw;
+		BrowserWidget bw { Core::Instance ().CreateWebView () };
 		QMap<QString, ActionInfo> result = bw.GetActionInfo ();
 		result ["EAImportXbel_"] = ActionInfo (ImportXbel_->text (),
 				QKeySequence (), ImportXbel_->icon ());

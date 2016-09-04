@@ -327,7 +327,7 @@ namespace Poshuku
 		if (!Initialized_)
 			return nullptr;
 
-		const auto widget = new BrowserWidget ();
+		const auto widget = new BrowserWidget (CreateWebView ());
 		emit browserWidgetCreated (widget);
 		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
@@ -365,7 +365,7 @@ namespace Poshuku
 		if (!Initialized_)
 			return nullptr;
 
-		const auto widget = new BrowserWidget ();
+		const auto widget = new BrowserWidget (CreateWebView ());
 		emit browserWidgetCreated (widget);
 		widget->Deown ();
 		widget->FinalizeInit ();
@@ -584,6 +584,11 @@ namespace Poshuku
 			e.Additional_ ["DataFilter"] = category.toUtf8 ();
 		}
 		emit gotEntity (e);
+	}
+
+	IWebView* Core::CreateWebView ()
+	{
+		return new CustomWebView { Proxy_ };
 	}
 
 	void Core::importXbel ()

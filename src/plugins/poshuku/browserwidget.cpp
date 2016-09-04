@@ -103,9 +103,10 @@ namespace Poshuku
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
-	BrowserWidget::BrowserWidget (QWidget *parent)
+	BrowserWidget::BrowserWidget (IWebView *view, QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
+	, WebView_ (view)
 	{
 		Ui_.setupUi (this);
 
@@ -121,7 +122,6 @@ namespace Poshuku
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
 		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
-		WebView_ = new CustomWebView { Core::Instance ().GetProxy () };
 		const auto webViewWidget = WebView_->GetQWidget ();
 		Ui_.WebFrame_->layout ()->addWidget (webViewWidget);
 		webViewWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -709,6 +709,7 @@ namespace Poshuku
 
 #define _LC_EXPANDER(Names) \
 		BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names)
+
 	void BrowserWidget::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 	{
 		QMap<QString, QAction*> name2act;

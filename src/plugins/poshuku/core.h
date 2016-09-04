@@ -60,7 +60,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	class CustomWebView;
+	class IWebView;
 	class BrowserWidget;
 	class WebPluginFactory;
 
@@ -150,6 +150,8 @@ namespace Poshuku
 
 		bool IsUrlInFavourites (const QString&);
 		void RemoveFromFavorites (const QString&);
+
+		IWebView* CreateWebView ();
 	private:
 		void HandleHistory (IWebView*);
 		/** Sets up the connections between widget's signals
