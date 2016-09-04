@@ -305,6 +305,16 @@ namespace Poshuku
 		setTextSizeMultiplier (factor);
 	}
 
+	QString CustomWebView::GetDefaultTextEncoding () const
+	{
+		return settings ()->defaultTextEncoding ();
+	}
+
+	void CustomWebView::SetDefaultTextEncoding (const QString& encoding)
+	{
+		settings ()->setDefaultTextEncoding (encoding);
+	}
+
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
 		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());

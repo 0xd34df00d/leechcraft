@@ -86,6 +86,9 @@ namespace Poshuku
 		double GetTextSizeMultiplier () const override;
 		void SetTextSizeMultiplier (double) override;
 
+		QString GetDefaultTextEncoding () const override;
+		void SetDefaultTextEncoding (const QString&) override;
+
 		void Load (const QNetworkRequest&,
 				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
 				const QByteArray& = QByteArray ());

@@ -110,6 +110,9 @@ namespace Poshuku
 
 		virtual double GetTextSizeMultiplier () const = 0;
 		virtual void SetTextSizeMultiplier (double) = 0;
+
+		virtual QString GetDefaultTextEncoding () const = 0;
+		virtual void SetDefaultTextEncoding (const QString& encoding) = 0;
 	protected:
 		virtual void earliestViewLayout () = 0;
 
