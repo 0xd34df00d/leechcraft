@@ -73,6 +73,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <util/gui/findnotificationwk.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -80,7 +81,6 @@
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "core.h"
 #include "historymodel.h"
-#include "finddialog.h"
 #include "screenshotsavedialog.h"
 #include "xmlsettingsmanager.h"
 #include "sourceviewer.h"
@@ -492,7 +492,7 @@ namespace Poshuku
 				this,
 				SLOT (focusLineEdit ()));
 
-		FindDialog_ = new FindDialog (WebView_);
+		FindDialog_ = new Util::FindNotificationWk (Core::Instance ().GetProxy (), WebView_);
 		FindDialog_->hide ();
 
 		RememberDialog_ = new PasswordRemember (WebView_->GetQWidget ());

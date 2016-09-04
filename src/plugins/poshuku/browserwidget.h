@@ -55,9 +55,13 @@ class QWebInspector;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class FindNotificationWk;
+}
+
 namespace Poshuku
 {
-	class FindDialog;
 	class PasswordRemember;
 	struct BrowserWidgetSettings;
 	class CustomWebView;
@@ -113,7 +117,7 @@ namespace Poshuku
 		QAction *BookmarksAction_;
 		QPoint OnLoadPos_;
 		QMenu *ChangeEncoding_;
-		FindDialog *FindDialog_;
+		Util::FindNotificationWk *FindDialog_;
 		PasswordRemember *RememberDialog_;
 		QTimer *ReloadTimer_;
 		bool HtmlMode_ = false;
