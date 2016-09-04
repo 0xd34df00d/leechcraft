@@ -1081,7 +1081,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleViewSources ()
 	{
-		QString html = WebView_->page ()->mainFrame ()->toHtml ();
+		const auto& html = WebView_->ToHtml ();
 
 		Entity e = Util::MakeEntity (html,
 				QString (),
@@ -1335,7 +1335,7 @@ namespace Poshuku
 
 	void BrowserWidget::checkLoadedDocument ()
 	{
-		const auto& html = WebView_->page ()->mainFrame ()->toHtml ();
+		const auto& html = WebView_->ToHtml ();
 		QDomDocument doc;
 		if (!doc.setContent (html))
 			return;
