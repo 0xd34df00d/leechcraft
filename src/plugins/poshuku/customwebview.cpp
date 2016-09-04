@@ -208,6 +208,20 @@ namespace Poshuku
 		PrintImpl (preview, page ()->mainFrame ());
 	}
 
+	QPixmap CustomWebView::MakeFullPageSnapshot ()
+	{
+		QSize contentsSize = page ()->mainFrame ()->contentsSize ();
+		QSize oldSize = page ()->viewportSize ();
+		QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
+
+		QPixmap image (contentsSize);
+		QPainter painter (&image);
+		page ()->setViewportSize (contentsSize);
+		page ()->mainFrame ()->render (&painter, clip);
+		page ()->setViewportSize (oldSize);
+		return image;
+	}
+
 	QWidget* CustomWebView::GetQWidget ()
 	{
 		return this;

@@ -90,6 +90,7 @@ namespace Poshuku
 		void AddJavaScriptObject (const QString&, QObject*) override;
 
 		void Print (bool preview) override;
+		QPixmap MakeFullPageSnapshot () override;
 
 		QPoint GetScrollPosition () const override;
 		void SetScrollPosition (const QPoint&) override;

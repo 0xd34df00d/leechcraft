@@ -37,6 +37,7 @@ class QUrl;
 class QAction;
 class QString;
 class QWidget;
+class QPixmap;
 
 class QMenu;
 
@@ -127,6 +128,7 @@ namespace Poshuku
 		virtual void AddJavaScriptObject (const QString& id, QObject *object) = 0;
 
 		virtual void Print (bool withPreview) = 0;
+		virtual QPixmap MakeFullPageSnapshot () = 0;
 
 		virtual QPoint GetScrollPosition () const = 0;
 		virtual void SetScrollPosition (const QPoint&) = 0;
