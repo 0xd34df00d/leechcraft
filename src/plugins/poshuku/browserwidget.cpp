@@ -121,7 +121,7 @@ namespace Poshuku
 		Ui_.Sidebar_->AddPage (tr ("History"), new HistoryWidget);
 		Ui_.Splitter_->setSizes ({ 0, 1000 });
 
-		WebView_ = new CustomWebView { Core::Instance ().GetProxy ()->GetEntityManager () };
+		WebView_ = new CustomWebView { Core::Instance ().GetProxy () };
 		const auto webViewWidget = WebView_->GetQWidget ();
 		Ui_.WebFrame_->layout ()->addWidget (webViewWidget);
 		webViewWidget->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);

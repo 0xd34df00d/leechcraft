@@ -33,6 +33,7 @@
 #include <qwebview.h>
 #include <interfaces/structures.h>
 #include <interfaces/iwkfontssettable.h>
+#include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
 #include "interfaces/poshuku/iwebview.h"
@@ -69,7 +70,7 @@ namespace Poshuku
 
 		Util::FindNotificationWk * const FindDialog_;
 	public:
-		CustomWebView (IEntityManager*, QWidget* = nullptr);
+		CustomWebView (const ICoreProxy_ptr&, QWidget* = nullptr);
 
 		QWidget* GetQWidget () override;
 		QList<QAction*> GetActions (ActionArea) const override;

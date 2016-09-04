@@ -58,7 +58,6 @@
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "interfaces/poshuku/poshukutypes.h"
-#include "core.h"
 #include "customwebpage.h"
 #include "xmlsettingsmanager.h"
 #include "webviewsmoothscroller.h"
@@ -69,7 +68,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (IEntityManager *iem, QWidget *parent)
+	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy, QWidget *parent)
 	: QWebView { parent }
 	, WebInspector_
 	{
@@ -80,7 +79,7 @@ namespace Poshuku
 			insp->deleteLater ();
 		}
 	}
-	, FindDialog_ { new Util::FindNotificationWk { Core::Instance ().GetProxy (), this } }
+	, FindDialog_ { new Util::FindNotificationWk { proxy, this } }
 	{
 #if QT_VERSION < 0x050000
 		QPalette p;
@@ -93,7 +92,7 @@ namespace Poshuku
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };
 
-		const auto page = new CustomWebPage { iem, this };
+		const auto page = new CustomWebPage { proxy->GetEntityManager (), this };
 		setPage (page);
 
 		SslWatcherHandler_ = new WebViewSslWatcherHandler { this };
