@@ -1442,9 +1442,9 @@ namespace Poshuku
 			};
 			return act;
 		};
-		auto addWebAction = [menu, this] (QWebPage::WebAction act)
+		auto addWebAction = [menu, this] (IWebView::PageAction act)
 		{
-			if (const auto actObj = WebView_->pageAction (act))
+			if (const auto actObj = WebView_->GetPageAction (act))
 				menu->addAction (actObj);
 		};
 
@@ -1485,16 +1485,16 @@ namespace Poshuku
 			addAction (tr ("Open in new &tab"),
 					[&] { Core::Instance ().MakeWebView (false)->Load (info.LinkUrl_); });
 			menu->addSeparator ();
-			addWebAction (QWebPage::DownloadLinkToDisk);
+			addWebAction (IWebView::PageAction::DownloadLinkToDisk);
 
 			addAction (tr ("&Bookmark link..."),
 					[&] { emit addToFavorites (info.LinkText_, info.LinkUrl_.toString ()); });
 
 			menu->addSeparator ();
 			if (!info.SelectedPageText_.isEmpty ())
-				addWebAction (QWebPage::Copy);
-			addWebAction (QWebPage::CopyLinkToClipboard);
-			addWebAction (QWebPage::InspectElement);
+				addWebAction (IWebView::PageAction::Copy);
+			addWebAction (IWebView::PageAction::CopyLinkToClipboard);
+			addWebAction (IWebView::PageAction::InspectElement);
 		}
 		else if (info.SelectedPageText_.contains (UrlInText))
 			addAction (tr ("Open as link"),
@@ -1511,16 +1511,16 @@ namespace Poshuku
 			if (!menu->isEmpty ())
 				menu->addSeparator ();
 			addAction (tr ("Open image here"), [&] { WebView_->Load (info.ImageUrl_, {}); });
-			addWebAction (QWebPage::OpenImageInNewWindow);
+			addWebAction (IWebView::PageAction::OpenImageInNewWindow);
 			menu->addSeparator ();
-			addWebAction (QWebPage::DownloadImageToDisk);
+			addWebAction (IWebView::PageAction::DownloadImageToDisk);
 
 			const auto pxAct = addAction (tr ("Save pixmap..."),
 					[&] { SavePixmap (info.ImagePixmap_, info.ImageUrl_, iem); });
 			pxAct->setToolTip (tr ("Saves the rendered pixmap without redownloading."));
 
-			addWebAction (QWebPage::CopyImageToClipboard);
-			addWebAction (QWebPage::CopyImageUrlToClipboard);
+			addWebAction (IWebView::PageAction::CopyImageToClipboard);
+			addWebAction (IWebView::PageAction::CopyImageUrlToClipboard);
 		}
 
 		emit hookWebViewContextMenu (proxy, WebView_, info, menu, WVSAfterImage);
@@ -1530,11 +1530,12 @@ namespace Poshuku
 		{
 			if (!menu->isEmpty ())
 				menu->addSeparator ();
-			menu->addAction (WebView_->pageAction (QWebPage::Copy));
+			menu->addAction (WebView_->GetPageAction (IWebView::PageAction::Copy));
 		}
 
 		if (info.IsContentEditable_)
-			menu->addAction (WebView_->pageAction (QWebPage::Paste));
+			menu->addAction (WebView_->GetPageAction (IWebView::PageAction::Paste));
+
 
 		if (hasSelected)
 			InsertFindAction (menu, info.SelectedPageText_);
@@ -1544,7 +1545,7 @@ namespace Poshuku
 		if (menu->isEmpty ())
 			menu = WebView_->CreateStandardContextMenu ();
 
-		addWebAction (QWebPage::ReloadAndBypassCache);
+		addWebAction (IWebView::PageAction::ReloadAndBypassCache);
 		if (!menu->isEmpty ())
 			menu->addSeparator ();
 
