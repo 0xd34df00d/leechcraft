@@ -130,7 +130,6 @@ namespace Poshuku
 				this,
 				SLOT (handleContextMenu (QPoint, ContextMenuInfo)));
 
-		WebView_->SetBrowserWidget (this);
 		connect (webViewWidget,
 				SIGNAL (urlChanged (QUrl)),
 				this,

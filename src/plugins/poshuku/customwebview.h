@@ -46,8 +46,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	class IBrowserWidget;
-
 	class WebViewSslWatcherHandler;
 
 	class CustomWebView : public QWebView
@@ -56,7 +54,6 @@ namespace Poshuku
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
 
-		IBrowserWidget *Browser_;
 		mutable QString PreviousEncoding_;
 
 		std::shared_ptr<QWebInspector> WebInspector_;
@@ -89,7 +86,6 @@ namespace Poshuku
 		double GetTextSizeMultiplier () const override;
 		void SetTextSizeMultiplier (double) override;
 
-		void SetBrowserWidget (IBrowserWidget*);
 		void Load (const QNetworkRequest&,
 				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
 				const QByteArray& = QByteArray ());

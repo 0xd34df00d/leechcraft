@@ -138,11 +138,6 @@ namespace Poshuku
 				SIGNAL (earliestViewLayout ()));
 	}
 
-	void CustomWebView::SetBrowserWidget (IBrowserWidget *widget)
-	{
-		Browser_ = widget;
-	}
-
 	void CustomWebView::Load (const QUrl& url, const QString& title)
 	{
 		if (url.isEmpty () || !url.isValid ())
