@@ -684,19 +684,6 @@ namespace Poshuku
 		Ui_.URLFrame_->GetEdit ()->clear ();
 		HtmlMode_ = true;
 		WebView_->SetContent (html.toUtf8 (), "text/html", base);
-
-		if (!Own_)
-		{
-			auto links = WebView_->page ()->mainFrame ()->findAllElements ("a");
-			for (int i = 0; i < links.count (); ++i)
-			{
-				auto elem = links.at (i);
-				if (elem.attribute ("target") == "_blank")
-					continue;
-
-				elem.setAttribute ("target", "_blank");
-			}
-		}
 	}
 
 	void BrowserWidget::SetNavBarVisible (bool visible)
