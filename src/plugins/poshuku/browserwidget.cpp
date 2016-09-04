@@ -1058,17 +1058,7 @@ namespace Poshuku
 
 	void BrowserWidget::handleScreenSave ()
 	{
-		QSize contentsSize = WebView_->page ()->mainFrame ()->contentsSize ();
-		QSize oldSize = WebView_->page ()->viewportSize ();
-		QRegion clip (0, 0, contentsSize.width (), contentsSize.height ());
-
-		QPixmap image (contentsSize);
-		QPainter painter (&image);
-		WebView_->page ()->setViewportSize (contentsSize);
-		WebView_->page ()->mainFrame ()->render (&painter, clip);
-		WebView_->page ()->setViewportSize (oldSize);
-
-		ScreenShotSaveDialog dia (image, this);
+		ScreenShotSaveDialog dia (WebView_->MakeFullPageSnapshot (), this);
 		dia.exec ();
 	}
 
