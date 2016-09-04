@@ -688,7 +688,6 @@ namespace Poshuku
 
 		void hookTabAdded (LeechCraft::IHookProxy_ptr proxy,
 				QObject *browserWidget,
-				QWebView *view,
 				const QUrl& url);
 
 		void hookTabRemoveRequested (LeechCraft::IHookProxy_ptr proxy,

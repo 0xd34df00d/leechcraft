@@ -350,7 +350,6 @@ namespace Poshuku
 
 		emit hookTabAdded (std::make_shared<Util::DefaultHookProxy> (),
 				widget,
-				widget->getWebView (),
 				url);
 
 		return widget;

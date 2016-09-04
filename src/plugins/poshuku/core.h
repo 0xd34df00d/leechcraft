@@ -193,7 +193,6 @@ namespace Poshuku
 				const QUrl& url) const;
 		void hookTabAdded (LeechCraft::IHookProxy_ptr,
 				QObject *browserWidget,
-				QWebView *view,
 				const QUrl& url);
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr,
 				const QUrl&) const;
