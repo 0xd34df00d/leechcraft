@@ -125,17 +125,17 @@ namespace Poshuku
 		Ui_.WebFrame_->layout ()->addWidget (WebView_);
 		WebView_->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (contextMenuRequested (QPoint, ContextMenuInfo)),
 				this,
 				SLOT (handleContextMenu (QPoint, ContextMenuInfo)));
 
 		WebView_->SetBrowserWidget (this);
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (urlChanged (QUrl)),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (zoomChanged ()),
 				this,
 				SIGNAL (tabRecoverDataChanged ()));
@@ -406,35 +406,35 @@ namespace Poshuku
 				this,
 				SLOT (handleURLFrameLoad (const QString&)));
 
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (titleChanged (const QString&)),
 				this,
 				SLOT (updateTitle (const QString&)));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (titleChanged (const QString&)),
 				this,
 				SLOT (updateLogicalPath ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (urlChanged (const QString&)),
 				this,
 				SLOT (handleUrlChanged (const QString&)));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (urlChanged (const QString&)),
 				this,
 				SLOT (updateLogicalPath ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadProgress (int)),
 				this,
 				SLOT (handleLoadProgress (int)));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadProgress (int)),
 				this,
 				SLOT (handleIconChanged ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (iconChanged ()),
 				this,
 				SLOT (handleIconChanged ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (statusBarMessage (const QString&)),
 				this,
 				SLOT (handleStatusBarMessage (const QString&)),
@@ -446,35 +446,35 @@ namespace Poshuku
 				this,
 				SLOT (handleStatusBarMessage (const QString&)),
 				Qt::QueuedConnection);
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (setScrollPosition ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (pageFocus ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (notifyLoadFinished (bool)));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (handleIconChanged ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadFinished (bool)),
 				this,
 				SLOT (checkLoadedDocument ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (enableActions ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (loadStarted ()),
 				this,
 				SLOT (updateNavHistory ()));
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (closeRequested ()),
 				this,
 				SIGNAL (needToClose ()));
@@ -499,7 +499,7 @@ namespace Poshuku
 		RememberDialog_ = new PasswordRemember (WebView_);
 		RememberDialog_->hide ();
 
-		connect (WebView_,
+		connect (webViewWidget,
 				SIGNAL (storeFormData (const PageFormsData_t&)),
 				RememberDialog_,
 				SLOT (add (const PageFormsData_t&)));
