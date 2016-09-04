@@ -258,9 +258,9 @@ namespace Poshuku
 		return URLToProperString (url ());
 	}
 
-	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime)
+	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base)
 	{
-		setContent (data, mime);
+		setContent (data, mime, base);
 	}
 
 	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& callback)

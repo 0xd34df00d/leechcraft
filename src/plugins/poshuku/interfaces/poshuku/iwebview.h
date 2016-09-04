@@ -94,7 +94,7 @@ namespace Poshuku
 
 		virtual void Load (const QUrl& url, const QString& title = {}) = 0;
 
-		virtual void SetContent (const QByteArray& data, const QByteArray& mime) = 0;
+		virtual void SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base = {}) = 0;
 
 		virtual void EvaluateJS (const QString& js,
 				const std::function<void (QVariant)>& handler = {}) = 0;
