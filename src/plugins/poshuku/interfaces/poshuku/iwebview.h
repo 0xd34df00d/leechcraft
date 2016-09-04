@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <functional>
 #include "poshukutypes.h"
 
@@ -44,6 +45,9 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+	class IWebViewHistory;
+	using IWebViewHistory_ptr = std::shared_ptr<IWebViewHistory>;
+
 	/** @brief Interface for QWebView-like widgets displaying HTML content.
 	 *
 	 * The implementations of this interface are also expected to have the
@@ -113,6 +117,8 @@ namespace Poshuku
 
 		virtual QString GetDefaultTextEncoding () const = 0;
 		virtual void SetDefaultTextEncoding (const QString& encoding) = 0;
+
+		virtual IWebViewHistory_ptr GetHistory () = 0;
 	protected:
 		virtual void earliestViewLayout () = 0;
 

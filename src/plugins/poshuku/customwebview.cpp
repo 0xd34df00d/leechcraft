@@ -55,6 +55,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
+#include "interfaces/poshuku/iwebviewhistory.h"
 #include "interfaces/poshuku/poshukutypes.h"
 #include "core.h"
 #include "customwebpage.h"
@@ -313,6 +314,34 @@ namespace Poshuku
 	void CustomWebView::SetDefaultTextEncoding (const QString& encoding)
 	{
 		settings ()->setDefaultTextEncoding (encoding);
+	}
+
+	namespace
+	{
+		class HistoryWrapper : public IWebViewHistory
+		{
+			QWebHistory * const History_;
+		public:
+			HistoryWrapper (QWebHistory *history)
+			: History_ { history }
+			{
+			}
+
+			void Save (QDataStream& out) const override
+			{
+				out << *History_;
+			}
+
+			void Load (QDataStream& in) override
+			{
+				in >> *History_;
+			}
+		};
+	}
+
+	IWebViewHistory_ptr CustomWebView::GetHistory ()
+	{
+		return std::make_shared<HistoryWrapper> (history ());
 	}
 
 	void CustomWebView::mousePressEvent (QMouseEvent *e)

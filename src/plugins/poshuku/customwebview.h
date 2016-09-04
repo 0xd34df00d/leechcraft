@@ -89,6 +89,8 @@ namespace Poshuku
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString&) override;
 
+		IWebViewHistory_ptr GetHistory () override;
+
 		void Load (const QNetworkRequest&,
 				QNetworkAccessManager::Operation = QNetworkAccessManager::GetOperation,
 				const QByteArray& = QByteArray ());
