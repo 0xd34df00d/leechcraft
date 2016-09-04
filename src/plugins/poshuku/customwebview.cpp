@@ -59,7 +59,6 @@
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "interfaces/poshuku/poshukutypes.h"
 #include "customwebpage.h"
-#include "xmlsettingsmanager.h"
 #include "webviewsmoothscroller.h"
 #include "webviewrendersettingshandler.h"
 #include "webviewsslwatcherhandler.h"
