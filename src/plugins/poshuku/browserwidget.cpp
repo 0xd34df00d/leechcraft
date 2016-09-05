@@ -77,6 +77,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
+#include "interfaces/poshuku/iwebview.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "core.h"
 #include "historymodel.h"
@@ -88,7 +89,6 @@
 #include "browserwidgetsettings.h"
 #include "bookmarkswidget.h"
 #include "historywidget.h"
-#include "customwebview.h"
 #include "urleditbuttonsmanager.h"
 #include "zoomer.h"
 #include "searchtext.h"

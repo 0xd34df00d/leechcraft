@@ -24,13 +24,11 @@ set (SRCS
 	xmlsettingsmanager.cpp
 	core.cpp
 	browserwidget.cpp
-	customwebview.cpp
 	progresslineedit.cpp
 	favoritesmodel.cpp
 	filtermodel.cpp
 	favoritesdelegate.cpp
 	favoritestreeview.cpp
-	customwebpage.cpp
 	historymodel.cpp
 	storagebackend.cpp
 	sqlstoragebackend.cpp
@@ -46,8 +44,6 @@ set (SRCS
 	pluginmanager.cpp
 	historyfiltermodel.cpp
 	proxyobject.cpp
-	jsproxy.cpp
-	externalproxy.cpp
 	passwordremember.cpp
 	pageformsdata.cpp
 	linkhistory.cpp
@@ -56,7 +52,6 @@ set (SRCS
 	reloadintervalselector.cpp
 	editbookmarkdialog.cpp
 	favoriteschecker.cpp
-	webpluginfactory.cpp
 	browserwidgetsettings.cpp
 	hideabletabwidget.cpp
 	bookmarkswidget.cpp
@@ -65,13 +60,8 @@ set (SRCS
 	importentity.cpp
 	platformplugin.cpp
 	urleditbuttonsmanager.cpp
-	webpagesslwatcher.cpp
-	sslstatedialog.cpp
 	featurepermnotification.cpp
 	zoomer.cpp
-	webviewsmoothscroller.cpp
-	webviewrendersettingshandler.cpp
-	webviewsslwatcherhandler.cpp
 	)
 set (FORMS
 	browserwidget.ui
@@ -86,7 +76,6 @@ set (FORMS
 	bookmarkswidget.ui
 	historywidget.ui
 	urlframe.ui
-	sslstatedialog.ui
 	featurepermnotification.ui
 	)
 set (RESOURCES poshukuresources.qrc)
@@ -128,6 +117,7 @@ option (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku brows
 option (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
 option (ENABLE_POSHUKU_QRD "Build QRd for showing the URL of a web page as a QR code" OFF)
 option (ENABLE_POSHUKU_SPEEDDIAL "Build Speed Dial support module" ON)
+option (ENABLE_POSHUKU_WEBKITVIEW "Build WebKit-based backend" ON)
 
 if (ENABLE_POSHUKU_AUTOSEARCH)
 	add_subdirectory (plugins/autosearch)
@@ -161,4 +151,8 @@ if (ENABLE_POSHUKU_QRD)
 endif ()
 if (ENABLE_POSHUKU_SPEEDDIAL)
 	add_subdirectory (plugins/speeddial)
+endif ()
+
+if (ENABLE_POSHUKU_WEBKITVIEW)
+	add_subdirectory (plugins/webkitview)
 endif ()

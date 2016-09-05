@@ -59,16 +59,17 @@
 #include <util/xpc/introspectable.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include "interfaces/poshuku/iwebview.h"
+#include "interfaces/poshuku/iwebviewprovider.h"
 #include "browserwidget.h"
-#include "customwebview.h"
 #include "xmlsettingsmanager.h"
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
 #include "xbelgenerator.h"
 #include "linkhistory.h"
 #include "favoriteschecker.h"
-#include "webpluginfactory.h"
 #include "importentity.h"
 
 namespace LeechCraft
@@ -169,7 +170,6 @@ namespace Poshuku
 
 	void Core::SecondInit ()
 	{
-		GetWebPluginFactory ()->refreshPlugins ();
 	}
 
 	void Core::Release ()
@@ -181,8 +181,6 @@ namespace Poshuku
 
 		XmlSettingsManager::Instance ()->setProperty ("CleanShutdown", true);
 		XmlSettingsManager::Instance ()->Release ();
-
-		delete WebPluginFactory_;
 	}
 
 	void Core::SetProxy (ICoreProxy_ptr proxy)
@@ -230,13 +228,6 @@ namespace Poshuku
 			QUrl url = e.Entity_.toUrl ();
 			NewURL (url, !e.Additional_ ["BackgroundHandle"].toBool ());
 		}
-	}
-
-	WebPluginFactory* Core::GetWebPluginFactory ()
-	{
-		if (!WebPluginFactory_)
-			WebPluginFactory_ = new WebPluginFactory (this);
-		return WebPluginFactory_;
 	}
 
 	QSet<QByteArray> Core::GetExpectedPluginClasses () const
@@ -588,7 +579,8 @@ namespace Poshuku
 
 	IWebView* Core::CreateWebView ()
 	{
-		return new CustomWebView { Proxy_ };
+		const auto& provs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebViewProvider*> ();
+		return provs.value (0)->CreateWebView ();
 	}
 
 	void Core::importXbel ()

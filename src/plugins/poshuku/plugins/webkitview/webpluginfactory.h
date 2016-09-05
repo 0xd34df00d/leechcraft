@@ -27,68 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "webviewsmoothscroller.h"
-#include <cmath>
-#include <qwebview.h>
-#include <qwebpage.h>
-#include <qwebframe.h>
-#include <QKeyEvent>
-#include <QTimer>
-#include <util/sll/lambdaeventfilter.h>
+#pragma once
+
+#include <QHash>
+#include <qwebpluginfactory.h>
+#include <interfaces/core/ihookproxy.h>
+#include "interfaces/poshuku/iwebplugin.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	WebViewSmoothScroller::WebViewSmoothScroller (QWebView *view)
-	: QObject { view }
-	, View_ { view }
-	, ScrollTimer_ { new QTimer { this } }
+namespace WebKitView
+{
+	class WebPluginFactory : public QWebPluginFactory
 	{
-		connect (ScrollTimer_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleAutoscroll ()));
+		Q_OBJECT
 
-		auto ef = Util::MakeLambdaEventFilter ([this] (QKeyEvent *event)
-				{
-					if (event->modifiers () == Qt::SHIFT &&
-						(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
-					{
-						ScrollDelta_ += event->key () == Qt::Key_PageUp ? -0.1 : 0.1;
-						if (!ScrollTimer_->isActive ())
-							ScrollTimer_->start (30);
-						return true;
-					}
-					else if (event->modifiers () == Qt::SHIFT &&
-							 event->key () == Qt::Key_Plus)
-					{
-						ScrollDelta_ = 0;
-						ScrollTimer_->stop ();
-						return true;
-					}
-					return false;
-				},
-				this);
-		view->installEventFilter (ef);
-	}
+		QList<IWebPlugin*> Plugins_;
+		typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
+		MIME2Plugin_t MIME2Plugin_;
+	public:
+		WebPluginFactory (QObject* = 0);
+		virtual ~WebPluginFactory ();
 
-	void WebViewSmoothScroller::handleAutoscroll ()
-	{
-		if (std::fabs (ScrollDelta_) < std::numeric_limits<decltype (ScrollDelta_)>::epsilon ())
-			return;
-
-		AccumulatedScrollShift_ += ScrollDelta_;
-
-		if (std::abs (AccumulatedScrollShift_) >= 1)
-		{
-			const auto mf = View_->page ()->mainFrame ();
-			auto pos = mf->scrollPosition ();
-			pos += QPoint (0, AccumulatedScrollShift_);
-			mf->setScrollPosition (pos);
-
-			AccumulatedScrollShift_ -= static_cast<int> (AccumulatedScrollShift_);
-		}
-	}
+		QObject* create (const QString&, const QUrl&,
+				const QStringList&, const QStringList&) const;
+		QList<Plugin> plugins () const;
+		void refreshPlugins ();
+	private:
+		void Reload ();
+	signals:
+		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
+				QList<IWebPlugin*>&);
+	};
+}
 }
 }

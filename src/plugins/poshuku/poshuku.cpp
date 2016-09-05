@@ -56,7 +56,6 @@
 #include <util/xsd/wkfontswidget.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "customwebview.h"
 #include "browserwidget.h"
 #include "cookieseditdialog.h"
 

@@ -27,76 +27,68 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "webpluginfactory.h"
-#include <util/xpc/defaulthookproxy.h>
-#include "core.h"
+#pragma once
+
+#include <QMap>
+#include <QNetworkAccessManager>
+#include <QSslConfiguration>
+#include <QWebPage>
+#include <interfaces/core/ihookproxy.h>
+
+class QNetworkReply;
+class QUrl;
+class QWebView;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	WebPluginFactory::WebPluginFactory (QObject *parent)
-	: QWebPluginFactory (parent)
+namespace WebKitView
+{
+	class WebPageSslWatcher : public QObject
 	{
-		Core::Instance ().GetPluginManager ()->
-				RegisterHookable (this);
-		Reload ();
-	}
+		Q_OBJECT
 
-	WebPluginFactory::~WebPluginFactory ()
-	{
-	}
+		QWebPage * const Page_;
 
-	QObject* WebPluginFactory::create (const QString& mime,
-			const QUrl& url,
-			const QStringList& args, const QStringList& params) const
-	{
-		QList<IWebPlugin*> plugins = MIME2Plugin_.values (mime);
-		Q_FOREACH (IWebPlugin *plugin, plugins)
+		QList<QUrl> SslResources_;
+		QList<QUrl> NonSslResources_;
+		QMap<QUrl, QList<QSslError>> ErrSslResources_;
+
+		QSslConfiguration PageConfig_;
+	public:
+		WebPageSslWatcher (QWebView*);
+
+		enum class State
 		{
-			QObject *result = plugin->Create (mime, url, args, params);
-			if (result)
-				return result;
-		}
-		return 0;
-	}
+			NoSsl,
+			SslErrors,
+			UnencryptedElems,
+			FullSsl
+		};
+		State GetPageState () const;
 
-	QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
-	{
-		QList<Plugin> result;
-		Q_FOREACH (IWebPlugin *plugin, Plugins_)
-		{
-			try
-			{
-				result << plugin->Plugin (true);
-			}
-			catch (...)
-			{
-				// It's ok to do a plain catch(...) {},
-				// plugins refuse to add themselves to the list with this.
-			}
-		}
-		return result;
-	}
+		const QSslConfiguration& GetPageConfiguration () const;
 
-	void WebPluginFactory::refreshPlugins ()
-	{
-		Reload ();
-		QWebPluginFactory::refreshPlugins ();
-	}
+		QList<QUrl> GetNonSslUrls () const;
+		QMap<QUrl, QList<QSslError>> GetErrSslUrls () const;
+	public slots:
+		void resetStats ();
+	private slots:
+		void handleReplyFinished ();
+		void handleSslErrors (const QList<QSslError>&);
 
-	void WebPluginFactory::Reload ()
-	{
-		Plugins_.clear ();
-		MIME2Plugin_.clear ();
+		void handleReplyCreated (QNetworkAccessManager::Operation,
+				const QNetworkRequest&, QNetworkReply*);
 
-		emit hookWebPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
-				Plugins_);
-
-		Q_FOREACH (IWebPlugin *plugin, Plugins_)
-			Q_FOREACH (const QWebPluginFactory::MimeType mime,
-					plugin->Plugin (false).mimeTypes)
-				MIME2Plugin_.insertMulti (mime.name, plugin);
-	}
+		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
+				QWebPage*,
+				QWebFrame*,
+				const QNetworkRequest&,
+				QWebPage::NavigationType);
+	signals:
+		void sslStateChanged (WebPageSslWatcher*);
+	};
+}
 }
 }

@@ -27,43 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "webviewrendersettingshandler.h"
-#include <qwebview.h>
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <QObject>
+
+class QWebView;
+class QTimer;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	WebViewRenderSettingsHandler::WebViewRenderSettingsHandler (QWebView *view)
-	: QObject { view }
-	, View_ { view }
+namespace WebKitView
+{
+	class WebViewSmoothScroller : public QObject
 	{
-		XmlSettingsManager::Instance ()->RegisterObject ({
-					"PrimitivesAntialiasing",
-					"TextAntialiasing",
-					"SmoothPixmapTransform",
-					"HighQualityAntialiasing"
-				},
-				this, "renderSettingsChanged");
-		renderSettingsChanged ();
-	}
+		Q_OBJECT
 
-	void WebViewRenderSettingsHandler::renderSettingsChanged ()
-	{
-		QPainter::RenderHints hints;
-
-		auto check = [&hints] (const char *name, QPainter::RenderHint hint)
-		{
-			if (XmlSettingsManager::Instance ()->property (name).toBool ())
-				hints |= hint;
-		};
-		check ("PrimitivesAntialiasing", QPainter::Antialiasing);
-		check ("TextAntialiasing", QPainter::TextAntialiasing);
-		check ("SmoothPixmapTransform", QPainter::SmoothPixmapTransform);
-		check ("HighQualityAntialiasing", QPainter::HighQualityAntialiasing);
-
-		View_->setRenderHints (hints);
-	}
+		QWebView * const View_;
+		QTimer * const ScrollTimer_;
+		double ScrollDelta_ = 0;
+		double AccumulatedScrollShift_ = 0;
+	public:
+		WebViewSmoothScroller (QWebView*);
+	private slots:
+		void handleAutoscroll ();
+	};
+}
 }
 }

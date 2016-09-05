@@ -35,13 +35,17 @@
 #include <QNetworkRequest>
 #include <interfaces/structures.h>
 #include <interfaces/core/ihookproxy.h>
-#include "pageformsdata.h"
-
-class IEntityManager;
+#include <interfaces/core/icoreproxyfwd.h>
+#include <interfaces/poshuku/poshukutypes.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
+{
+class IWebView;
+class IProxyObject;
+
+namespace WebKitView
 {
 	class JSProxy;
 	class ExternalProxy;
@@ -50,7 +54,8 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		IEntityManager * const IEM_;
+		const ICoreProxy_ptr Proxy_;
+		IProxyObject * const PoshukuProxy_;
 
 		Qt::MouseButtons MouseButtons_;
 		Qt::KeyboardModifiers Modifiers_;
@@ -64,7 +69,7 @@ namespace Poshuku
 
 		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
 	public:
-		CustomWebPage (IEntityManager*, QObject* = nullptr);
+		CustomWebPage (const ICoreProxy_ptr&, IProxyObject*, QObject* = nullptr);
 
 		void SetButtons (Qt::MouseButtons);
 		void SetModifiers (Qt::KeyboardModifiers);
@@ -109,6 +114,8 @@ namespace Poshuku
 		void loadingURL (const QUrl&);
 		void storeFormData (const PageFormsData_t&);
 		void delayedFillForms (QWebFrame*);
+
+		void webViewCreated (IWebView*, bool);
 
 		// Hook support signals
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
@@ -197,5 +204,6 @@ namespace Poshuku
 		void hookWindowCloseRequested (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page);
 	};
+}
 }
 }

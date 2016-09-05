@@ -27,30 +27,27 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pluginmanager.h"
-#include <stdexcept>
-#include <QtDebug>
-#include "proxyobject.h"
-#include "core.h"
+#pragma once
+
+#include <QObject>
+#include <QVariant>
+#include "customwebpage.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	PluginManager::PluginManager (QObject *parent)
-	: Util::BaseHookInterconnector (parent)
-	, ProxyObject_ (new ProxyObject)
+namespace WebKitView
+{
+	class JSProxy : public QObject
 	{
-	}
-
-	void PluginManager::AddPlugin (QObject *plugin)
-	{
-		if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
-			QMetaObject::invokeMethod (plugin,
-					"initPlugin",
-					Q_ARG (QObject*, ProxyObject_.get ()));
-
-		Util::BaseHookInterconnector::AddPlugin (plugin);
-	}
+		Q_OBJECT
+	public:
+		using QObject::QObject;
+	public slots:
+		void debug (const QString& str);
+		void warning (const QString& str);
+	};
+}
 }
 }

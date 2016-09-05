@@ -31,25 +31,24 @@
 
 #include <QObject>
 
-class QWebView;
-class QTimer;
+class IEntityManager;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class WebViewSmoothScroller : public QObject
+namespace WebKitView
+{
+	class ExternalProxy : public QObject
 	{
 		Q_OBJECT
 
-		QWebView * const View_;
-		QTimer * const ScrollTimer_;
-		double ScrollDelta_ = 0;
-		double AccumulatedScrollShift_ = 0;
+		IEntityManager *const IEM_;
 	public:
-		WebViewSmoothScroller (QWebView*);
-	private slots:
-		void handleAutoscroll ();
+		ExternalProxy (IEntityManager*, QObject* = nullptr);
+	public slots:
+		void AddSearchProvider (const QString&);
 	};
+}
 }
 }

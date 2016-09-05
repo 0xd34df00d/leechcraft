@@ -30,21 +30,36 @@
 #pragma once
 
 #include <QObject>
-#include <QVariant>
-#include "customwebpage.h"
+
+class QAction;
+class IIconThemeManager;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class JSProxy : public QObject
+namespace WebKitView
+{
+	class CustomWebView;
+	class WebPageSslWatcher;
+
+	class WebViewSslWatcherHandler : public QObject
 	{
 		Q_OBJECT
+
+		CustomWebView * const View_;
+
+		WebPageSslWatcher * const SslWatcher_;
+		QAction * const SslStateAction_;
+		IIconThemeManager * const ITM_;
 	public:
-		using QObject::QObject;
-	public slots:
-		void debug (const QString& str);
-		void warning (const QString& str);
+		WebViewSslWatcherHandler (CustomWebView*, IIconThemeManager*);
+
+		QAction* GetStateAction () const;
+	private slots:
+		void handleSslState ();
+		void showSslDialog ();
 	};
+}
 }
 }

@@ -29,63 +29,25 @@
 
 #pragma once
 
-#include <QMap>
-#include <QNetworkAccessManager>
-#include <QSslConfiguration>
-#include <QWebPage>
-#include <interfaces/core/ihookproxy.h>
-
-class QNetworkReply;
-class QUrl;
-class QWebView;
+#include <xmlsettingsdialog/basesettingsmanager.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class WebPageSslWatcher : public QObject
+namespace WebKitView
+{
+	class XmlSettingsManager : public Util::BaseSettingsManager
 	{
 		Q_OBJECT
 
-		QWebPage * const Page_;
-
-		QList<QUrl> SslResources_;
-		QList<QUrl> NonSslResources_;
-		QMap<QUrl, QList<QSslError>> ErrSslResources_;
-
-		QSslConfiguration PageConfig_;
+		XmlSettingsManager ();
 	public:
-		WebPageSslWatcher (QWebView*);
-
-		enum class State
-		{
-			NoSsl,
-			SslErrors,
-			UnencryptedElems,
-			FullSsl
-		};
-		State GetPageState () const;
-
-		const QSslConfiguration& GetPageConfiguration () const;
-
-		QList<QUrl> GetNonSslUrls () const;
-		QMap<QUrl, QList<QSslError>> GetErrSslUrls () const;
-	public slots:
-		void resetStats ();
-	private slots:
-		void handleReplyFinished ();
-		void handleSslErrors (const QList<QSslError>&);
-
-		void handleReplyCreated (QNetworkAccessManager::Operation,
-				const QNetworkRequest&, QNetworkReply*);
-
-		void handleNavigationRequest (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebFrame*,
-				const QNetworkRequest&,
-				QWebPage::NavigationType);
-	signals:
-		void sslStateChanged (WebPageSslWatcher*);
+		static XmlSettingsManager& Instance ();
+	protected:
+		QSettings* BeginSettings () const override;
+		void EndSettings (QSettings*) const override;
 	};
+}
 }
 }

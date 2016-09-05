@@ -32,16 +32,17 @@
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/network/sslerror2treeitem.h>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
 #include "webpagesslwatcher.h"
-#include "core.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	SslStateDialog::SslStateDialog (const WebPageSslWatcher *watcher, QWidget *parent)
+namespace WebKitView
+{
+	SslStateDialog::SslStateDialog (const WebPageSslWatcher *watcher,
+			IIconThemeManager *itm, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
@@ -72,7 +73,6 @@ namespace Poshuku
 
 		if (!iconName.isEmpty ())
 		{
-			const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
 			const auto& icon = itm->GetIcon (iconName);
 			Ui_.IconLabel_->setPixmap (icon.pixmap (16, 16));
 		}
@@ -186,5 +186,6 @@ namespace Poshuku
 		Ui_.StartDate_->setText (QLocale {}.toString (cert.effectiveDate ()));
 		Ui_.EndDate_->setText (QLocale {}.toString (cert.expiryDate ()));
 	}
+}
 }
 }

@@ -37,7 +37,6 @@
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
 #include "interfaces/poshuku/iwebview.h"
-#include "pageformsdata.h"
 
 class QTimer;
 class QWebInspector;
@@ -53,6 +52,10 @@ namespace Util
 
 namespace Poshuku
 {
+class IProxyObject;
+
+namespace WebKitView
+{
 	class WebViewSslWatcherHandler;
 
 	class CustomWebView : public QWebView
@@ -62,15 +65,17 @@ namespace Poshuku
 		Q_OBJECT
 		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
 
+		const ICoreProxy_ptr Proxy_;
+
 		mutable QString PreviousEncoding_;
 
 		std::shared_ptr<QWebInspector> WebInspector_;
 
 		const WebViewSslWatcherHandler *SslWatcherHandler_;
 
-		Util::FindNotificationWk * const FindDialog_;
+		Util::FindNotificationWk *FindDialog_ = nullptr;
 	public:
-		CustomWebView (const ICoreProxy_ptr&, QWidget* = nullptr);
+		CustomWebView (const ICoreProxy_ptr&, IProxyObject*, QWidget* = nullptr);
 
 		QWidget* GetQWidget () override;
 		QList<QAction*> GetActions (ActionArea) const override;
@@ -153,6 +158,9 @@ namespace Poshuku
 		void earliestViewLayout () override;
 		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;
 		void storeFormData (const PageFormsData_t&) override;
+
+		void webViewCreated (IWebView*, bool);
 	};
+}
 }
 }

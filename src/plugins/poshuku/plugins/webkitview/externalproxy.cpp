@@ -27,25 +27,32 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QObject>
-
-class IEntityManager;
+#include "externalproxy.h"
+#include <QUrl>
+#include <interfaces/structures.h>
+#include <interfaces/core/ientitymanager.h>
+#include <util/xpc/util.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class ExternalProxy : public QObject
+namespace WebKitView
+{
+	ExternalProxy::ExternalProxy (IEntityManager* iem, QObject* parent)
+	: QObject { parent }
+	, IEM_ { iem }
 	{
-		Q_OBJECT
+	}
 
-		IEntityManager * const IEM_;
-	public:
-		ExternalProxy (IEntityManager*, QObject* = nullptr);
-	public slots:
-		void AddSearchProvider (const QString&);
-	};
+	void ExternalProxy::AddSearchProvider (const QString& url)
+	{
+		const auto& e = Util::MakeEntity (QUrl { url },
+				url,
+				FromUserInitiated | OnlyHandle,
+				"application/opensearchdescription+xml");
+		IEM_->HandleEntity (e);
+	}
+}
 }
 }

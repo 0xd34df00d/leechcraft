@@ -27,29 +27,77 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "externalproxy.h"
-#include <QUrl>
-#include <interfaces/structures.h>
-#include <interfaces/core/ientitymanager.h>
-#include <util/xpc/util.h>
+#include "webpluginfactory.h"
+#include <QWidget>
+#include <util/xpc/defaulthookproxy.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	ExternalProxy::ExternalProxy (IEntityManager *iem, QObject *parent)
-	: QObject { parent }
-	, IEM_ { iem }
+namespace WebKitView
+{
+	WebPluginFactory::WebPluginFactory (QObject* parent)
+	: QWebPluginFactory (parent)
+	{
+		Reload ();
+	}
+
+	WebPluginFactory::~WebPluginFactory ()
 	{
 	}
 
-	void ExternalProxy::AddSearchProvider (const QString& url)
+	QObject* WebPluginFactory::create (const QString& mime,
+			const QUrl& url,
+			const QStringList& args, const QStringList& params) const
 	{
-		const auto& e = Util::MakeEntity (QUrl { url },
-				url,
-				FromUserInitiated | OnlyHandle,
-				"application/opensearchdescription+xml");
-		IEM_->HandleEntity (e);
+		QList<IWebPlugin*> plugins = MIME2Plugin_.values (mime);
+		Q_FOREACH (IWebPlugin *plugin, plugins)
+		{
+			QObject *result = plugin->Create (mime, url, args, params);
+			if (result)
+				return result;
+		}
+		return 0;
 	}
+
+	QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
+	{
+		QList<Plugin> result;
+		Q_FOREACH (IWebPlugin * plugin, Plugins_)
+		{
+			try
+			{
+				result << plugin->Plugin (true);
+			}
+			catch (...)
+			{
+				// It's ok to do a plain catch(...) {},
+				// plugins refuse to add themselves to the list with this.
+			}
+		}
+		return result;
+	}
+
+	void WebPluginFactory::refreshPlugins ()
+	{
+		Reload ();
+		QWebPluginFactory::refreshPlugins ();
+	}
+
+	void WebPluginFactory::Reload ()
+	{
+		Plugins_.clear ();
+		MIME2Plugin_.clear ();
+
+		emit hookWebPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
+				Plugins_);
+
+		Q_FOREACH (IWebPlugin * plugin, Plugins_)
+			Q_FOREACH (const QWebPluginFactory::MimeType mime,
+					plugin->Plugin (false).mimeTypes)
+				MIME2Plugin_.insertMulti (mime.name, plugin);
+	}
+}
 }
 }

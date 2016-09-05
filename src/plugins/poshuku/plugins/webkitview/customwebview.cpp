@@ -59,6 +59,7 @@
 #include "interfaces/poshuku/iwebviewhistory.h"
 #include "interfaces/poshuku/poshukutypes.h"
 #include "customwebpage.h"
+#include "customwebview.h"
 #include "webviewsmoothscroller.h"
 #include "webviewrendersettingshandler.h"
 #include "webviewsslwatcherhandler.h"
@@ -67,8 +68,12 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy, QWidget *parent)
+namespace WebKitView
+{
+	CustomWebView::CustomWebView (const ICoreProxy_ptr& proxy,
+			IProxyObject *poshukuProxy, QWidget *parent)
 	: QWebView { parent }
+	, Proxy_ { proxy }
 	, WebInspector_
 	{
 		new QWebInspector,
@@ -78,7 +83,6 @@ namespace Poshuku
 			insp->deleteLater ();
 		}
 	}
-	, FindDialog_ { new Util::FindNotificationWk { proxy, this } }
 	{
 #if QT_VERSION < 0x050000
 		QPalette p;
@@ -86,15 +90,17 @@ namespace Poshuku
 			setPalette (QWindowsStyle ().standardPalette ());
 #endif
 
-		FindDialog_->hide ();
-
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };
 
-		const auto page = new CustomWebPage { proxy->GetEntityManager (), this };
+		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
+		connect (page,
+				SIGNAL (webViewCreated (IWebView*, bool)),
+				this,
+				SIGNAL (webViewCreated (IWebView*, bool)));
 
-		SslWatcherHandler_ = new WebViewSslWatcherHandler { this };
+		SslWatcherHandler_ = new WebViewSslWatcherHandler { this, proxy->GetIconThemeManager () };
 
 		WebInspector_->setPage (page);
 
@@ -352,6 +358,9 @@ namespace Poshuku
 
 	void CustomWebView::InitiateFind (const QString& text)
 	{
+		if (!FindDialog_)
+			FindDialog_ = new Util::FindNotificationWk { Proxy_, this };
+
 		if (!text.isEmpty ())
 			FindDialog_->SetText (text);
 		FindDialog_->show ();
@@ -601,5 +610,6 @@ namespace Poshuku
 	{
 		PrintImpl (false, frame);
 	}
+}
 }
 }

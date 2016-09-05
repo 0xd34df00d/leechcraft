@@ -27,34 +27,36 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <QDialog>
-#include <QSslCertificate>
-#include "ui_sslstatedialog.h"
-
-class QSslError;
+#include "xmlsettingsmanager.h"
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class WebPageSslWatcher;
-
-	class SslStateDialog : public QDialog
+namespace WebKitView
+{
+	XmlSettingsManager::XmlSettingsManager ()
 	{
-		Q_OBJECT
+		Util::BaseSettingsManager::Init ();
+	}
 
-		Ui::SslStateDialog Ui_;
+	XmlSettingsManager& XmlSettingsManager::Instance ()
+	{
+		static XmlSettingsManager manager;
+		return manager;
+	}
 
-		QList<QSslCertificate> Certs_;
-	public:
-		SslStateDialog (const WebPageSslWatcher*, QWidget* = 0);
-	private:
-		void FillNonSsl (const QList<QUrl>&);
-		void FillErrors (const QMap<QUrl, QList<QSslError>>&);
-	private slots:
-		void on_CertChainBox__currentIndexChanged (int);
-	};
+	QSettings* XmlSettingsManager::BeginSettings () const
+	{
+		QSettings *settings = new QSettings (QCoreApplication::organizationName (),
+				QCoreApplication::applicationName () + "_Poshuku_WebKitView");
+		return settings;
+	}
+
+	void XmlSettingsManager::EndSettings (QSettings*) const
+	{
+	}
+}
 }
 }

@@ -39,6 +39,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+namespace WebKitView
+{
 	WebPageSslWatcher::WebPageSslWatcher (QWebView *view)
 	: QObject { view }
 	, Page_ { view->page () }
@@ -193,5 +195,6 @@ namespace Poshuku
 
 		resetStats ();
 	}
+}
 }
 }

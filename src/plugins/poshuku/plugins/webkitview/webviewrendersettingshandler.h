@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+namespace WebKitView
+{
 	class WebViewRenderSettingsHandler : public QObject
 	{
 		Q_OBJECT
@@ -47,5 +49,6 @@ namespace Poshuku
 	private slots:
 		void renderSettingsChanged ();
 	};
+}
 }
 }

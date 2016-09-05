@@ -27,25 +27,71 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "jsproxy.h"
-#include <QString>
-#include <QVariant>
-#include <QTextCodec>
-#include <QtDebug>
-#include <util/util.h>
+#include "webviewsmoothscroller.h"
+#include <cmath>
+#include <qwebview.h>
+#include <qwebpage.h>
+#include <qwebframe.h>
+#include <QKeyEvent>
+#include <QTimer>
+#include <util/sll/lambdaeventfilter.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	void JSProxy::debug (const QString& string)
+namespace WebKitView
+{
+	WebViewSmoothScroller::WebViewSmoothScroller (QWebView *view)
+	: QObject { view }
+	, View_ { view }
+	, ScrollTimer_ { new QTimer { this } }
 	{
-		qDebug () << Q_FUNC_INFO << string;
+		connect (ScrollTimer_,
+				SIGNAL (timeout ()),
+				this,
+				SLOT (handleAutoscroll ()));
+
+		auto ef = Util::MakeLambdaEventFilter ([this] (QKeyEvent *event)
+				{
+					if (event->modifiers () == Qt::SHIFT &&
+						(event->key () == Qt::Key_PageUp || event->key () == Qt::Key_PageDown))
+					{
+						ScrollDelta_ += event->key () == Qt::Key_PageUp ? -0.1 : 0.1;
+						if (!ScrollTimer_->isActive ())
+							ScrollTimer_->start (30);
+						return true;
+					}
+					else if (event->modifiers () == Qt::SHIFT &&
+							 event->key () == Qt::Key_Plus)
+					{
+						ScrollDelta_ = 0;
+						ScrollTimer_->stop ();
+						return true;
+					}
+					return false;
+				},
+				this);
+		view->installEventFilter (ef);
 	}
 
-	void JSProxy::warning (const QString& string)
+	void WebViewSmoothScroller::handleAutoscroll ()
 	{
-		qWarning () << Q_FUNC_INFO << string;
+		if (std::fabs (ScrollDelta_) < std::numeric_limits<decltype (ScrollDelta_)>::epsilon ())
+			return;
+
+		AccumulatedScrollShift_ += ScrollDelta_;
+
+		if (std::abs (AccumulatedScrollShift_) >= 1)
+		{
+			const auto mf = View_->page ()->mainFrame ();
+			auto pos = mf->scrollPosition ();
+			pos += QPoint (0, AccumulatedScrollShift_);
+			mf->setScrollPosition (pos);
+
+			AccumulatedScrollShift_ -= static_cast<int> (AccumulatedScrollShift_);
+		}
 	}
+}
 }
 }

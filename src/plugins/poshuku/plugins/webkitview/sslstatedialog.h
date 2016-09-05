@@ -29,32 +29,36 @@
 
 #pragma once
 
-#include <QObject>
+#include <QDialog>
+#include <QSslCertificate>
+#include "ui_sslstatedialog.h"
 
-class QAction;
+class QSslError;
+class IIconThemeManager;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class CustomWebView;
+namespace WebKitView
+{
 	class WebPageSslWatcher;
 
-	class WebViewSslWatcherHandler : public QObject
+	class SslStateDialog : public QDialog
 	{
 		Q_OBJECT
 
-		CustomWebView * const View_;
+		Ui::SslStateDialog Ui_;
 
-		WebPageSslWatcher * const SslWatcher_;
-		QAction * const SslStateAction_;
+		QList<QSslCertificate> Certs_;
 	public:
-		WebViewSslWatcherHandler (CustomWebView*);
-
-		QAction* GetStateAction () const;
+		SslStateDialog (const WebPageSslWatcher*, IIconThemeManager*, QWidget* = nullptr);
+	private:
+		void FillNonSsl (const QList<QUrl>&);
+		void FillErrors (const QMap<QUrl, QList<QSslError>>&);
 	private slots:
-		void handleSslState ();
-		void showSslDialog ();
+		void on_CertChainBox__currentIndexChanged (int);
 	};
+}
 }
 }

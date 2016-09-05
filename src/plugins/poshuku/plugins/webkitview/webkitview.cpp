@@ -27,30 +27,79 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pluginmanager.h"
-#include <stdexcept>
-#include <QtDebug>
-#include "proxyobject.h"
-#include "core.h"
+#include "webkitview.h"
+#include <QIcon>
+#include <interfaces/poshuku/iproxyobject.h>
+#include "customwebview.h"
+#include "customwebpage.h"
+#include "webpluginfactory.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	PluginManager::PluginManager (QObject *parent)
-	: Util::BaseHookInterconnector (parent)
-	, ProxyObject_ (new ProxyObject)
+namespace WebKitView
+{
+	void Plugin::Init (ICoreProxy_ptr proxy)
+	{
+		Proxy_ = proxy;
+		WebPluginFactory_ = new WebPluginFactory;
+	}
+
+	void Plugin::SecondInit ()
 	{
 	}
 
-	void PluginManager::AddPlugin (QObject *plugin)
+	void Plugin::Release ()
 	{
-		if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
-			QMetaObject::invokeMethod (plugin,
-					"initPlugin",
-					Q_ARG (QObject*, ProxyObject_.get ()));
+	}
 
-		Util::BaseHookInterconnector::AddPlugin (plugin);
+	QByteArray Plugin::GetUniqueID () const
+	{
+		return "org.LeechCraft.Poshuku.WebKitView";
+	}
+
+	QString Plugin::GetName () const
+	{
+		return "Poshuku WebKitView";
+	}
+
+	QString Plugin::GetInfo () const
+	{
+		return tr ("Provides QtWebKit-based backend for Poshuku.");
+	}
+
+	QIcon Plugin::GetIcon () const
+	{
+		return {};
+	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		return result;
+	}
+
+	IWebView* Plugin::CreateWebView ()
+	{
+		const auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+
+		connect (view,
+				SIGNAL (webViewCreated (IWebView*, bool)),
+				this,
+				SIGNAL (webViewCreated (IWebView*, bool)));
+		view->page ()->setPluginFactory (WebPluginFactory_);
+
+		return view;
+	}
+
+	void Plugin::initPlugin (QObject *proxyObj)
+	{
+		PoshukuProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 }
 }
+}
+
+LC_EXPORT_PLUGIN (leechcraft_poshuku_webkitview, LeechCraft::Poshuku::WebKitView::Plugin);

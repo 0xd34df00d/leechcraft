@@ -62,7 +62,6 @@ namespace Poshuku
 {
 	class IWebView;
 	class BrowserWidget;
-	class WebPluginFactory;
 
 	class Core : public QObject
 	{
@@ -78,7 +77,6 @@ namespace Poshuku
 
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
-		WebPluginFactory *WebPluginFactory_ = nullptr;
 
 		IShortcutProxy *ShortcutProxy_ = nullptr;
 
@@ -114,8 +112,6 @@ namespace Poshuku
 
 		bool CouldHandle (const Entity&) const;
 		void Handle (Entity);
-
-		WebPluginFactory* GetWebPluginFactory ();
 
 		QSet<QByteArray> GetExpectedPluginClasses () const;
 		void AddPlugin (QObject*);

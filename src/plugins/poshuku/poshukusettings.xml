@@ -172,22 +172,6 @@
 			</groupbox>
 		</tab>
 		<tab>
-			<label lang="en" value="Rendering" />
-			<groupbox>
-				<label lang="en" value="Rendering" />
-				<item type="checkbox" property="PrimitivesAntialiasing" default="off">
-					<label lang="en" value="Antialias primitives if possible" />
-				</item>
-				<item type="checkbox" property="TextAntialiasing" default="on">
-					<label lang="en" value="Antialias text if possible" />
-				</item>
-				<item type="checkbox" property="SmoothPixmapTransform" default="on">
-					<label lang="en" value="Smooth pixmap transform" />
-				</item>
-				<item type="checkbox" property="HighQualityAntialiasing" default="on">
-					<label lang="en" value="High-quality antialiasing" />
-				</item>
-			</groupbox>
 		</tab>
 	</page>
 </settings>

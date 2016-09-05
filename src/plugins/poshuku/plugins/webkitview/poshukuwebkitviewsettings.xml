@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<page>
+		<label value="Rendering" />
+		<groupbox>
+			<label value="Rendering" />
+			<item type="checkbox" property="PrimitivesAntialiasing" default="off">
+				<label value="Antialias primitives if possible" />
+			</item>
+			<item type="checkbox" property="TextAntialiasing" default="on">
+				<label value="Antialias text if possible" />
+			</item>
+			<item type="checkbox" property="SmoothPixmapTransform" default="on">
+				<label value="Smooth pixmap transform" />
+			</item>
+			<item type="checkbox" property="HighQualityAntialiasing" default="on">
+				<label value="High-quality antialiasing" />
+			</item>
+		</groupbox>
+	</page>
+</settings>

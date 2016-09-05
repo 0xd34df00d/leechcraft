@@ -45,16 +45,14 @@
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
-#include "core.h"
 #include "pluginmanager.h"
 #include "jsproxy.h"
 #include "externalproxy.h"
 #include "webpluginfactory.h"
-#include "browserwidget.h"
 #include "featurepermnotification.h"
-#include "proxyobject.h"
 
 Q_DECLARE_METATYPE (QVariantList*);
 Q_DECLARE_METATYPE (QNetworkReply*);
@@ -63,16 +61,18 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	CustomWebPage::CustomWebPage (IEntityManager *iem, QObject *parent)
+namespace WebKitView
+{
+	CustomWebPage::CustomWebPage (const ICoreProxy_ptr& coreProxy,
+			IProxyObject *poshukuProxy, QObject *parent)
 	: QWebPage (parent)
-	, IEM_ (iem)
+	, Proxy_ (coreProxy)
+	, PoshukuProxy_ (poshukuProxy)
 	, MouseButtons_ (Qt::NoButton)
 	, Modifiers_ (Qt::NoModifier)
 	, JSProxy_ (new JSProxy (this))
-	, ExternalProxy_ (new ExternalProxy (iem, this))
+	, ExternalProxy_ (new ExternalProxy (coreProxy->GetEntityManager (), this))
 	{
-		Core::Instance ().GetPluginManager ()->RegisterHookable (this);
-
 		{
 			auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 			emit hookWebPageConstructionBegin (proxy, this);
@@ -82,8 +82,7 @@ namespace Poshuku
 
 		setForwardUnsupportedContent (true);
 
-		setNetworkAccessManager (Core::Instance ().GetNetworkAccessManager ());
-		setPluginFactory (Core::Instance ().GetWebPluginFactory ());
+		setNetworkAccessManager (coreProxy->GetNetworkAccessManager ());
 
 		connect (this,
 				SIGNAL (delayedFillForms (QWebFrame*)),
@@ -219,12 +218,13 @@ namespace Poshuku
 						QString (),
 						LeechCraft::FromUserInitiated);
 				e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-				auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+				auto em = Proxy_->GetEntityManager ();
 				if (em->CouldHandle (e))
 				{
 					em->HandleEntity (e);
-					if (XmlSettingsManager::Instance ()->
-							property ("CloseEmptyDelegatedPages").toBool () &&
+					const auto closeEmpty = PoshukuProxy_->
+							GetPoshukuConfigValue ("CloseEmptyDelegatedPages").toBool ();
+					if (closeEmpty &&
 							history ()->currentItem ().url ().isEmpty ())
 						emit windowCloseRequested ();
 					return false;
@@ -240,7 +240,7 @@ namespace Poshuku
 					switch (error->error)
 					{
 					case QNetworkReply::ContentReSendError:
-						IEM_->HandleEntity (Util::MakeNotification ("Poshuku",
+						Proxy_->GetEntityManager ()->HandleEntity (Util::MakeNotification ("Poshuku",
 								tr ("Unable to send the request to %1. Please try submitting it again.")
 									.arg (error->url.host ()),
 								PCritical_));
@@ -282,6 +282,7 @@ namespace Poshuku
 		if (text.isEmpty ())
 			return;
 
+		// TODO move to Poshuku
 		const auto notification = new FeaturePermNotification { text, view () };
 		notification->show ();
 
@@ -335,7 +336,7 @@ namespace Poshuku
 				FromUserInitiated);
 		e.Additional_ ["AllowedSemantics"] = QStringList { "fetch", "save" };
 		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-		IEM_->HandleEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void CustomWebPage::handleFrameCreated (QWebFrame *frame)
@@ -455,19 +456,20 @@ namespace Poshuku
 			e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 			e.Additional_ ["Referer"] = QUrl::fromEncoded (referer);
 			e.Additional_ ["Operation"] = reply->operation ();
-			IEM_->HandleEntity (e);
+			Proxy_->GetEntityManager ()->HandleEntity (e);
 
-			if (XmlSettingsManager::Instance ()->
-					property ("CloseEmptyDelegatedPages").toBool () &&
-					history ()->currentItem ().url ().isEmpty ())
+			const auto closeEmpty = PoshukuProxy_->
+					GetPoshukuConfigValue ("CloseEmptyDelegatedPages").toBool ();
+			if (closeEmpty && history ()->currentItem ().url ().isEmpty ())
 				emit windowCloseRequested ();
 		};
 
 		switch (reply->error ())
 		{
 		case QNetworkReply::ProtocolUnknownError:
-			if (XmlSettingsManager::Instance ()->
-					property ("ExternalSchemes").toString ().split (' ')
+			if (PoshukuProxy_->GetPoshukuConfigValue ("ExternalSchemes")
+					.toString ()
+					.split (' ')
 					.contains (url.scheme ()))
 				QDesktopServices::openUrl (url);
 			else
@@ -478,9 +480,9 @@ namespace Poshuku
 			auto found = FindFrame (url);
 			if (!found)
 			{
-				if (XmlSettingsManager::Instance ()->
-						property ("ParanoidDownloadsDetection").toBool () ||
-						!mime.isEmpty ())
+				const auto paranoidDetection = PoshukuProxy_->
+						GetPoshukuConfigValue ("ParanoidDownloadsDetection").toBool ();
+				if (paranoidDetection || !mime.isEmpty ())
 				{
 					sendEnt ();
 					break;
@@ -649,7 +651,7 @@ namespace Poshuku
 
 		QBuffer ib;
 		ib.open (QIODevice::ReadWrite);
-		const auto& px = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
+		const auto& px = Proxy_->GetIconThemeManager ()->
 				GetIcon ("dialog-error").pixmap (32, 32);
 		px.save (&ib, "PNG");
 
@@ -681,7 +683,7 @@ namespace Poshuku
 			const auto& e = Util::MakeEntity (request.url (),
 					QString (),
 					FromUserInitiated);
-			auto em = Core::Instance ().GetProxy ()->GetEntityManager ();
+			auto em = Proxy_->GetEntityManager ();
 			if (em->CouldHandle (e))
 				em->HandleEntity (e);
 			else
@@ -698,8 +700,9 @@ namespace Poshuku
 		{
 			bool invert = Modifiers_ & Qt::ShiftModifier;
 
-			// TODO
-			const auto view = qobject_cast<CustomWebView*> (Core::Instance ().MakeWebView (invert)->GetQWidget ());
+			auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+			emit webViewCreated (view, invert);
+
 			view->Load (request);
 
 			MouseButtons_ = Qt::NoButton;
@@ -758,8 +761,11 @@ namespace Poshuku
 		{
 		case QWebPage::WebBrowserWindow:
 		case QWebPage::WebModalDialog:
-			// TODO
-			return qobject_cast<CustomWebView*> (Core::Instance ().NewURL (QUrl {})->GetWebView ()->GetQWidget ())->page ();
+		{
+			const auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+			emit webViewCreated (view, false);
+			return view->page ();
+		}
 		default:
 			qWarning () << Q_FUNC_INFO
 					<< "unknown type"
@@ -834,11 +840,7 @@ namespace Poshuku
 
 	QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 	{
-		const auto& ua = Core::Instance ().GetUserAgent (url);
-		if (!ua.isEmpty ())
-			return ua;
-
-		return ProxyObject {}.GetDefaultUserAgent ();
+		return PoshukuProxy_->GetUserAgent (url);
 	}
 
 	QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
@@ -990,7 +992,7 @@ namespace Poshuku
 		{
 			const auto& key = "org.LeechCraft.Poshuku.Forms.InputByName/" + name.toUtf8 ();
 			keys << key;
-			values.append (Util::GetPersistentData (key, Core::Instance ().GetProxy ()));
+			values.append (Util::GetPersistentData (key, Proxy_));
 		}
 
 		const int size = keys.size ();
@@ -1046,5 +1048,6 @@ namespace Poshuku
 
 		FilledState_ = HarvestForms (frame ? frame : mainFrame ()).first;
 	}
+}
 }
 }

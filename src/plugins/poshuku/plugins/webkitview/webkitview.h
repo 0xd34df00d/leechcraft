@@ -27,30 +27,54 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "pluginmanager.h"
-#include <stdexcept>
-#include <QtDebug>
-#include "proxyobject.h"
-#include "core.h"
+#pragma once
+
+#include <QObject>
+#include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
+#include <interfaces/poshuku/iwebviewprovider.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	PluginManager::PluginManager (QObject *parent)
-	: Util::BaseHookInterconnector (parent)
-	, ProxyObject_ (new ProxyObject)
-	{
-	}
+class IProxyObject;
 
-	void PluginManager::AddPlugin (QObject *plugin)
-	{
-		if (plugin->metaObject ()->indexOfMethod (QMetaObject::normalizedSignature ("initPlugin (QObject*)")) != -1)
-			QMetaObject::invokeMethod (plugin,
-					"initPlugin",
-					Q_ARG (QObject*, ProxyObject_.get ()));
+namespace WebKitView
+{
+	class WebPluginFactory;
 
-		Util::BaseHookInterconnector::AddPlugin (plugin);
-	}
+	class Plugin : public QObject
+				 , public IInfo
+				 , public IPlugin2
+				 , public IWebViewProvider
+	{
+		Q_OBJECT
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Poshuku::IWebViewProvider)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebKitView")
+
+		ICoreProxy_ptr Proxy_;
+		IProxyObject *PoshukuProxy_ = nullptr;
+
+		WebPluginFactory *WebPluginFactory_;
+	public:
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
+
+		QSet<QByteArray> GetPluginClasses () const override;
+
+		IWebView* CreateWebView () override;
+	public slots:
+		void initPlugin (QObject*);
+	signals:
+		void webViewCreated (IWebView*, bool) override;
+	};
+}
 }
 }

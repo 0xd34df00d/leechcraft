@@ -29,9 +29,7 @@
 
 #include "webviewsslwatcherhandler.h"
 #include <QAction>
-#include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>
-#include "core.h"
 #include "webpagesslwatcher.h"
 #include "customwebview.h"
 #include "sslstatedialog.h"
@@ -40,11 +38,14 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	WebViewSslWatcherHandler::WebViewSslWatcherHandler (CustomWebView *view)
+namespace WebKitView
+{
+	WebViewSslWatcherHandler::WebViewSslWatcherHandler (CustomWebView *view, IIconThemeManager *itm)
 	: QObject { view }
 	, View_ { view }
 	, SslWatcher_ { new WebPageSslWatcher { view } }
 	, SslStateAction_ { new QAction { this } }
+	, ITM_ { itm }
 	{
 		connect (SslWatcher_,
 				SIGNAL (sslStateChanged (WebPageSslWatcher*)),
@@ -85,17 +86,17 @@ namespace Poshuku
 			break;
 		}
 
-		const auto iconMgr = Core::Instance ().GetProxy ()->GetIconThemeManager ();
-		SslStateAction_->setIcon (iconMgr->GetIcon (iconName));
+		SslStateAction_->setIcon (ITM_->GetIcon (iconName));
 		SslStateAction_->setText (title);
 		SslStateAction_->setEnabled (true);
 	}
 
 	void WebViewSslWatcherHandler::showSslDialog ()
 	{
-		const auto dia = new SslStateDialog { SslWatcher_ };
+		const auto dia = new SslStateDialog { SslWatcher_, ITM_ };
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
 	}
+}
 }
 }

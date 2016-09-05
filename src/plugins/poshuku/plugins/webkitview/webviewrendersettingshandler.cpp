@@ -27,39 +27,46 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
-#define PLUGINS_POSHUKU_WEBPLUGINFACTORY_H
-#include <QHash>
-#include <qwebpluginfactory.h>
-#include <interfaces/core/ihookproxy.h>
-#include "interfaces/poshuku/iwebplugin.h"
+#include "webviewrendersettingshandler.h"
+#include <qwebview.h>
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-	class WebPluginFactory : public QWebPluginFactory
+namespace WebKitView
+{
+	WebViewRenderSettingsHandler::WebViewRenderSettingsHandler (QWebView *view)
+	: QObject { view }
+	, View_ { view }
 	{
-		Q_OBJECT
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"PrimitivesAntialiasing",
+					"TextAntialiasing",
+					"SmoothPixmapTransform",
+					"HighQualityAntialiasing"
+				},
+				this, "renderSettingsChanged");
+		renderSettingsChanged ();
+	}
 
-		QList<IWebPlugin*> Plugins_;
-		typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
-		MIME2Plugin_t MIME2Plugin_;
-	public:
-		WebPluginFactory (QObject* = 0);
-		virtual ~WebPluginFactory ();
+	void WebViewRenderSettingsHandler::renderSettingsChanged ()
+	{
+		QPainter::RenderHints hints;
 
-		QObject* create (const QString&, const QUrl&,
-				const QStringList&, const QStringList&) const;
-		QList<Plugin> plugins () const;
-		void refreshPlugins ();
-	private:
-		void Reload ();
-	signals:
-		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-				QList<IWebPlugin*>&);
-	};
+		auto check = [&hints] (const char *name, QPainter::RenderHint hint)
+		{
+			if (XmlSettingsManager::Instance ().property (name).toBool ())
+				hints |= hint;
+		};
+		check ("PrimitivesAntialiasing", QPainter::Antialiasing);
+		check ("TextAntialiasing", QPainter::TextAntialiasing);
+		check ("SmoothPixmapTransform", QPainter::SmoothPixmapTransform);
+		check ("HighQualityAntialiasing", QPainter::HighQualityAntialiasing);
+
+		View_->setRenderHints (hints);
+	}
 }
 }
-
-#endif
+}
