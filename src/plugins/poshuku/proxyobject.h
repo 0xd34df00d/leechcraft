@@ -42,14 +42,14 @@ namespace Poshuku
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Poshuku::IProxyObject)
 	public slots:
-		QObject* GetHistoryModel () const;
-		QObject* GetFavoritesModel () const;
-		QObject* OpenInNewTab (const QUrl&, bool) const;
+		QObject* GetHistoryModel () const override;
+		QObject* GetFavoritesModel () const override;
+		QObject* OpenInNewTab (const QUrl&, bool) const override;
 
-		IStorageBackend_ptr CreateStorageBackend ();
+		IStorageBackend_ptr CreateStorageBackend () override;
 
-		QString GetUserAgent (const QUrl&) const;
-		QString GetDefaultUserAgent () const;
+		QString GetUserAgent (const QUrl&) const override;
+		QString GetDefaultUserAgent () const override;
 
 		QVariant GetPoshukuConfigValue (const QByteArray&) const override;
 	};
