@@ -43,6 +43,8 @@ namespace Poshuku
 		virtual ~IWebViewProvider () = default;
 	public:
 		virtual IWebView* CreateWebView () = 0;
+	protected:
+		virtual void webViewCreated (IWebView *view, bool invert) = 0;
 	};
 }
 }
