@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sslstatedialog.h"
+#include <QDateTime>
 #include <util/sys/extensionsdata.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
