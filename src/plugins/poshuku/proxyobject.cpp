@@ -99,5 +99,10 @@ namespace Poshuku
 				.arg (qWebKitVersion ())
 				.arg (lcVersion.section ('-', 0, 0));
 	}
+
+	QVariant ProxyObject::GetPoshukuConfigValue (const QByteArray& name) const
+	{
+		return XmlSettingsManager::Instance ().property (name);
+	}
 }
 }

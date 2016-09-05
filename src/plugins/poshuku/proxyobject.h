@@ -50,6 +50,8 @@ namespace Poshuku
 
 		QString GetUserAgent (const QUrl&) const;
 		QString GetDefaultUserAgent () const;
+
+		QVariant GetPoshukuConfigValue (const QByteArray&) const override;
 	};
 }
 }

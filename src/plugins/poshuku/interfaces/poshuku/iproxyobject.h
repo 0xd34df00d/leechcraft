@@ -53,6 +53,8 @@ namespace Poshuku
 
 		virtual QString GetUserAgent (const QUrl&) const = 0;
 		virtual QString GetDefaultUserAgent () const = 0;
+
+		virtual QVariant GetPoshukuConfigValue (const QByteArray& name) const = 0;
 	};
 }
 }
