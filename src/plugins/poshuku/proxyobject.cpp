@@ -67,6 +67,15 @@ namespace Poshuku
 		return StorageBackend::Create ();
 	}
 
+	QString ProxyObject::GetUserAgent (const QUrl& url) const
+	{
+		const auto& result = Core::Instance ().GetUserAgent (url);
+		if (!result.isEmpty ())
+			return result;
+
+		return GetDefaultUserAgent ();
+	}
+
 	QString ProxyObject::GetDefaultUserAgent () const
 	{
 #if defined(Q_OS_WIN32)

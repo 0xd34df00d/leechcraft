@@ -48,6 +48,7 @@ namespace Poshuku
 
 		IStorageBackend_ptr CreateStorageBackend ();
 
+		QString GetUserAgent (const QUrl&) const;
 		QString GetDefaultUserAgent () const;
 	};
 }
