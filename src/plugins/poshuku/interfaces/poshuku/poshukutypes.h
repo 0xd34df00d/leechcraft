@@ -89,6 +89,32 @@ namespace Poshuku
 		QString Value_;
 	};
 
+	inline bool operator== (const ElementData& left, const ElementData& right)
+	{
+		return left.PageURL_ == right.PageURL_ &&
+			   left.FormID_ == right.FormID_ &&
+			   left.Name_ == right.Name_ &&
+			   left.Type_ == right.Type_ &&
+			   left.Value_ == right.Value_;
+	}
+
+	inline bool operator< (const ElementData& left, const ElementData& right)
+	{
+		if (left.PageURL_ != right.PageURL_)
+			return left.PageURL_ < right.PageURL_;
+
+		if (left.FormID_ != right.FormID_)
+			return left.FormID_ < right.FormID_;
+
+		if (left.Name_ != right.Name_)
+			return left.Name_ < right.Name_;
+
+		if (left.Type_ != right.Type_)
+			return left.Type_ < right.Type_;
+
+		return left.Value_ < right.Value_;
+	}
+
 	using ElementsData_t = QList<ElementData>;
 
 	/** Holds information about all the forms on a page.

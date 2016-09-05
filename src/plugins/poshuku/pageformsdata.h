@@ -43,9 +43,6 @@ namespace Poshuku
 {
 	QVariantMap ToVariantMap (const ElementData&);
 
-	bool operator== (const ElementData&, const ElementData&);
-	bool operator< (const ElementData&, const ElementData&);
-
 	QDataStream& operator<< (QDataStream&, const ElementData&);
 	QDataStream& operator>> (QDataStream&, ElementData&);
 
