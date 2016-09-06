@@ -30,6 +30,7 @@
 #include "customwebview.h"
 #include <cmath>
 #include <limits>
+#include <boost/optional.hpp>
 #include <qwebframe.h>
 #include <qwebinspector.h>
 #include <QMenu>
@@ -145,6 +146,11 @@ namespace WebKitView
 				SIGNAL (initialLayoutCompleted ()),
 				this,
 				SIGNAL (earliestViewLayout ()));
+
+		connect (page,
+				SIGNAL (featurePermissionRequested (QWebFrame*, QWebPage::Feature)),
+				this,
+				SLOT (handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature)));
 	}
 
 	void CustomWebView::Load (const QUrl& url, const QString& title)
@@ -354,6 +360,77 @@ namespace WebKitView
 	void CustomWebView::SetDefaultTextEncoding (const QString& encoding)
 	{
 		settings ()->setDefaultTextEncoding (encoding);
+	}
+
+	namespace
+	{
+		struct FrameFeatureSecurityOrigin : IWebView::IFeatureSecurityOrigin
+		{
+			QWebFrame * const Frame_;
+
+			FrameFeatureSecurityOrigin (QWebFrame *frame)
+			: Frame_ { frame }
+			{
+			}
+		};
+
+		boost::optional<IWebView::Feature> ConvertFeature (QWebPage::Feature feature)
+		{
+			switch (feature)
+			{
+			case QWebPage::Notifications:
+				return IWebView::Feature::Notifications;
+			case QWebPage::Geolocation:
+				return IWebView::Feature::Geolocation;
+			}
+
+			qWarning () << Q_FUNC_INFO
+					<< "unknown feature"
+					<< feature;
+
+			return {};
+		}
+
+		QWebPage::Feature ConvertFeature (IWebView::Feature feature)
+		{
+			switch (feature)
+			{
+			case IWebView::Feature::Notifications:
+				return QWebPage::Notifications;
+			case IWebView::Feature::Geolocation:
+				return QWebPage::Geolocation;
+			}
+
+			assert (false);
+		}
+
+		QWebPage::PermissionPolicy ConvertPerm (IWebView::Permission perm)
+		{
+			switch (perm)
+			{
+			case IWebView::Permission::Grant:
+				return QWebPage::PermissionGrantedByUser;
+			case IWebView::Permission::Deny:
+				return QWebPage::PermissionDeniedByUser;
+			}
+
+			assert (false);
+		}
+	}
+
+	void CustomWebView::SetFeaturePermission (const IFeatureSecurityOrigin_ptr& originBase,
+			Feature feature, Permission perm)
+	{
+		const auto origin = std::dynamic_pointer_cast<FrameFeatureSecurityOrigin> (originBase);
+		if (!origin)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "invalid security origin passed";
+			return;
+		}
+
+		page ()->setFeaturePermission (origin->Frame_,
+				ConvertFeature (feature), ConvertPerm (perm));
 	}
 
 	void CustomWebView::InitiateFind (const QString& text)
@@ -609,6 +686,15 @@ namespace WebKitView
 	void CustomWebView::handlePrintRequested (QWebFrame *frame)
 	{
 		PrintImpl (false, frame);
+	}
+
+	void CustomWebView::handleFeaturePermissionReq (QWebFrame *frame, QWebPage::Feature feature)
+	{
+		if (const auto converted = ConvertFeature (feature))
+		{
+			const auto origin = std::make_shared<FrameFeatureSecurityOrigin> (frame);
+			emit featurePermissionRequested (origin, *converted);
+		}
 	}
 }
 }

@@ -106,6 +106,25 @@ namespace Poshuku
 			InspectElement
 		};
 
+		enum class Feature
+		{
+			Notifications,
+			Geolocation
+		};
+
+		enum class Permission
+		{
+			Grant,
+			Deny
+		};
+
+		struct IFeatureSecurityOrigin
+		{
+		protected:
+			virtual ~IFeatureSecurityOrigin () = default;
+		};
+		using IFeatureSecurityOrigin_ptr = std::shared_ptr<IFeatureSecurityOrigin>;
+
 		virtual QWidget* GetQWidget () = 0;
 
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;
@@ -142,6 +161,9 @@ namespace Poshuku
 		virtual QString GetDefaultTextEncoding () const = 0;
 		virtual void SetDefaultTextEncoding (const QString& encoding) = 0;
 
+		virtual void SetFeaturePermission (const IWebView::IFeatureSecurityOrigin_ptr& origin,
+				Feature feature, Permission permission) = 0;
+
 		virtual void InitiateFind (const QString& text) = 0;
 
 		virtual QMenu* CreateStandardContextMenu () = 0;
@@ -153,6 +175,9 @@ namespace Poshuku
 		virtual void linkHovered (const QString& link, const QString& title, const QString& textContent) = 0;
 
 		virtual void storeFormData (const PageFormsData_t&) = 0;
+
+		virtual void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr& origin,
+				IWebView::Feature feature) = 0;
 	};
 }
 }

@@ -145,11 +145,6 @@ namespace WebKitView
 				this,
 				SLOT (handleWindowCloseRequested ()));
 
-		connect (this,
-				SIGNAL (featurePermissionRequested (QWebFrame*, QWebPage::Feature)),
-				this,
-				SLOT (handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature)));
-
 		FillErrorSuggestions ();
 
 		{
@@ -256,58 +251,6 @@ namespace WebKitView
 		default:
 			return QWebPage::extension (e, eo, er);
 	}
-	}
-
-	namespace
-	{
-		QString GetFeatureText (QWebPage::Feature feature)
-		{
-			switch (feature)
-			{
-			case QWebPage::Notifications:
-				return CustomWebPage::tr ("%1 requests access to notifications.");
-			case QWebPage::Geolocation:
-				return CustomWebPage::tr ("%1 requests access to geolocation services.");
-			}
-
-			return {};
-		}
-	}
-
-	void CustomWebPage::handleFeaturePermissionReq (QWebFrame *frame, Feature feature)
-	{
-		const auto& text = GetFeatureText (feature)
-				.arg (frame->url ().host ());
-		qDebug () << Q_FUNC_INFO << view () << text;
-		if (text.isEmpty ())
-			return;
-
-		// TODO move to Poshuku
-		const auto notification = new FeaturePermNotification { text, view () };
-		notification->show ();
-
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, notification, frame, feature]
-			{
-				setFeaturePermission (frame, feature, PermissionGrantedByUser);
-				notification->deleteLater ();
-			},
-			notification,
-			SIGNAL (granted ()),
-			notification
-		};
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[this, notification, frame, feature]
-			{
-				setFeaturePermission (frame, feature, PermissionDeniedByUser);
-				notification->deleteLater ();
-			},
-			notification,
-			SIGNAL (denied ()),
-			notification
-		};
 	}
 
 	void CustomWebPage::handleContentsChanged ()

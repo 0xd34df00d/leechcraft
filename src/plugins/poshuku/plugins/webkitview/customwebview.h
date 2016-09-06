@@ -107,6 +107,8 @@ namespace WebKitView
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString&) override;
 
+		void SetFeaturePermission (const IFeatureSecurityOrigin_ptr&, Feature, Permission) override;
+
 		void InitiateFind (const QString&) override;
 
 		QMenu* CreateStandardContextMenu () override;
@@ -145,6 +147,8 @@ namespace WebKitView
 		void handleLoadFinished (bool);
 		void handleFrameState (QWebFrame*, QWebHistoryItem*);
 		void handlePrintRequested (QWebFrame*);
+
+		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
 	signals:
 		void urlChanged (const QString&);
 		void closeRequested ();
@@ -158,6 +162,8 @@ namespace WebKitView
 		void earliestViewLayout () override;
 		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;
 		void storeFormData (const PageFormsData_t&) override;
+		void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&,
+				IWebView::Feature) override;
 
 		void webViewCreated (IWebView*, bool);
 	};

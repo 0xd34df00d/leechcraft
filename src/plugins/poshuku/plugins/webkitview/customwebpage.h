@@ -76,8 +76,6 @@ namespace WebKitView
 		bool supportsExtension (Extension) const;
 		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 	private slots:
-		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
-
 		void handleContentsChanged ();
 		void handleDatabaseQuotaExceeded (QWebFrame*, QString);
 		void handleDownloadRequested (QNetworkRequest);
