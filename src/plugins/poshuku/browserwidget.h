@@ -44,6 +44,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/poshukutypes.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
+#include "interfaces/poshuku/iwebview.h"
 #include "ui_browserwidget.h"
 
 class QToolBar;
@@ -59,7 +60,6 @@ namespace Poshuku
 {
 	class PasswordRemember;
 	struct BrowserWidgetSettings;
-	class IWebView;
 
 	class BrowserWidget : public QWidget
 						, public IBrowserWidget
@@ -211,6 +211,8 @@ namespace Poshuku
 		void handleChangeEncodingTriggered (QAction*);
 		void updateLogicalPath ();
 		void handleUrlChanged (const QString&);
+
+		void handleFeaturePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&, IWebView::Feature);
 	signals:
 		void titleChanged (const QString&);
 		void urlChanged (const QString&);

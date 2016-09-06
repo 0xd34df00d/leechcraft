@@ -92,6 +92,7 @@
 #include "urleditbuttonsmanager.h"
 #include "zoomer.h"
 #include "searchtext.h"
+#include "featurepermnotification.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -1771,6 +1772,56 @@ namespace Poshuku
 		Ui_.URLFrame_->GetEdit ()->repaint ();
 
 		emit urlChanged (value);
+	}
+
+	namespace
+	{
+		QString GetFeatureText (IWebView::Feature feature)
+		{
+			switch (feature)
+			{
+			case IWebView::Feature::Notifications:
+				return BrowserWidget::tr ("%1 requests access to notifications.");
+			case IWebView::Feature::Geolocation:
+				return BrowserWidget::tr ("%1 requests access to geolocation services.");
+			}
+
+			assert (false);
+		}
+	}
+
+	void BrowserWidget::handleFeaturePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr& origin,
+			IWebView::Feature feature)
+	{
+		const auto& text = GetFeatureText (feature)
+				.arg (origin->GetName ());
+		qDebug () << Q_FUNC_INFO << WebView_->GetUrl () << text;
+
+		const auto notification = new FeaturePermNotification { text, WebView_->GetQWidget () };
+		notification->show ();
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[notification, origin]
+			{
+				origin->SetPermission (IWebView::Permission::Grant);
+				notification->deleteLater ();
+			},
+			notification,
+			SIGNAL (granted ()),
+			notification
+		};
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[notification, origin]
+			{
+				origin->SetPermission (IWebView::Permission::Deny);
+				notification->deleteLater ();
+			},
+			notification,
+			SIGNAL (denied ()),
+			notification
+		};
 	}
 
 	void BrowserWidget::handleShortcutHistory ()
