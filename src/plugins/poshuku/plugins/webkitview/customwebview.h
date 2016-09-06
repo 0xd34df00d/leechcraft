@@ -107,8 +107,6 @@ namespace WebKitView
 		QString GetDefaultTextEncoding () const override;
 		void SetDefaultTextEncoding (const QString&) override;
 
-		void SetFeaturePermission (const IFeatureSecurityOrigin_ptr&, Feature, Permission) override;
-
 		void InitiateFind (const QString&) override;
 
 		QMenu* CreateStandardContextMenu () override;

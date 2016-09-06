@@ -118,11 +118,16 @@ namespace Poshuku
 			Deny
 		};
 
-		struct IFeatureSecurityOrigin
+		class IFeatureSecurityOrigin
 		{
 		protected:
 			virtual ~IFeatureSecurityOrigin () = default;
+		public:
+			virtual QString GetName () const = 0;
+
+			virtual void SetPermission (Permission) = 0;
 		};
+
 		using IFeatureSecurityOrigin_ptr = std::shared_ptr<IFeatureSecurityOrigin>;
 
 		virtual QWidget* GetQWidget () = 0;
@@ -160,9 +165,6 @@ namespace Poshuku
 
 		virtual QString GetDefaultTextEncoding () const = 0;
 		virtual void SetDefaultTextEncoding (const QString& encoding) = 0;
-
-		virtual void SetFeaturePermission (const IWebView::IFeatureSecurityOrigin_ptr& origin,
-				Feature feature, Permission permission) = 0;
 
 		virtual void InitiateFind (const QString& text) = 0;
 
