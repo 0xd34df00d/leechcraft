@@ -364,19 +364,20 @@ namespace Poshuku
 		return widget;
 	}
 
+	namespace
+	{
+		bool ShouldRaise (bool invert)
+		{
+			return invert == XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ();
+		}
+	}
+
 	IWebView* Core::MakeWebView (bool invert)
 	{
 		if (!Initialized_)
 			return nullptr;
 
-		bool raise = true;
-		if (XmlSettingsManager::Instance ()->property ("BackgroundNewTabs").toBool ())
-			raise = false;
-
-		if (invert)
-			raise = !raise;
-
-		return NewURL (QUrl (), raise)->GetWebView ();
+		return NewURL (QUrl {}, ShouldRaise (invert))->GetWebView ();
 	}
 
 	void Core::ConnectSignals (BrowserWidget *widget)
