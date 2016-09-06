@@ -149,6 +149,8 @@ namespace Poshuku
 
 		IWebView* CreateWebView ();
 	private:
+		BrowserWidget* CreateBrowserWidget (IWebView*, const QUrl&,
+				bool, const QList<QPair<QByteArray, QVariant>>&);
 		void HandleHistory (IWebView*);
 		/** Sets up the connections between widget's signals
 			* and our signals/slots that are always useful, both in own

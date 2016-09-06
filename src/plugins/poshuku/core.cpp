@@ -312,13 +312,10 @@ namespace Poshuku
 		return result;
 	}
 
-	BrowserWidget* Core::NewURL (const QUrl& url, bool raise,
-			const QList<QPair<QByteArray, QVariant>>& props)
+	BrowserWidget* Core::CreateBrowserWidget (IWebView *view, const QUrl& url,
+			bool raise, const QList<QPair<QByteArray, QVariant>>& props)
 	{
-		if (!Initialized_)
-			return nullptr;
-
-		const auto widget = new BrowserWidget (CreateWebView ());
+		const auto widget = new BrowserWidget { view };
 		emit browserWidgetCreated (widget);
 		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
@@ -344,6 +341,15 @@ namespace Poshuku
 				url);
 
 		return widget;
+	}
+
+	BrowserWidget* Core::NewURL (const QUrl& url, bool raise,
+			const QList<QPair<QByteArray, QVariant>>& props)
+	{
+		if (!Initialized_)
+			return nullptr;
+
+		return CreateBrowserWidget (CreateWebView (), url, raise, props);
 	}
 
 	BrowserWidget* Core::NewURL (const QString& str, bool raise)
