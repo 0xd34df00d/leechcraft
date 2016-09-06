@@ -169,6 +169,7 @@ namespace Poshuku
 		void handleAddToFavorites (QString, QString);
 		void handleStatusBarChanged (const QString&);
 		void handleTooltipChanged (QWidget*);
+		void handleWebViewCreated (IWebView*, bool);
 		void favoriteTagsUpdated (const QStringList&);
 	signals:
 		void addNewTab (const QString&, QWidget*);

@@ -240,6 +240,12 @@ namespace Poshuku
 	void Core::AddPlugin (QObject *plugin)
 	{
 		PluginManager_->AddPlugin (plugin);
+
+		if (qobject_cast<IWebViewProvider*> (plugin))
+			connect (plugin,
+					SIGNAL (webViewCreated (IWebView*, bool)),
+					this,
+					SLOT (handleWebViewCreated (IWebView*, bool)));
 	}
 
 	QUrl Core::MakeURL (QString url)
@@ -718,6 +724,11 @@ namespace Poshuku
 	void Core::handleTooltipChanged (QWidget *tip)
 	{
 		emit changeTooltip (static_cast<QWidget*> (sender ()), tip);
+	}
+
+	void Core::handleWebViewCreated (IWebView *view, bool invert)
+	{
+		CreateBrowserWidget (view, {}, ShouldRaise (invert), {});
 	}
 
 	void Core::favoriteTagsUpdated (const QStringList& tags)
