@@ -114,7 +114,7 @@ namespace WebAccess
 				return {};
 			});
 
-		auto initThread = [this] (QObject *obj) -> void
+		auto initThread = [this] (QObject *obj)
 		{
 			obj->moveToThread (ObjsThread_);
 			QObject::connect (ObjsThread_,
