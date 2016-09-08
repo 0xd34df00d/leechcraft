@@ -18,7 +18,7 @@ set (WEBKITVIEW_FORMS
 	sslstatedialog.ui
 	)
 set (WEBKITVIEW_RESOURCES)
-#CreateTrs ("poshuku_webkitview" "ar;de;en;eo;es;fr;it;pl;ru_RU;uk_UA" WEBKITVIEW_COMPILED_TRANSLATIONS)
+CreateTrs ("poshuku_webkitview" "en;ru_RU" WEBKITVIEW_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("poshuku_webkitview" "en;ru_RU" "${WEBKITVIEW_SRCS}" "${WEBKITVIEW_FORMS}" "poshukuwebkitviewsettings.xml")
 
 QtWrapUi (WEBKITVIEW_UIS_H ${WEBKITVIEW_FORMS})
