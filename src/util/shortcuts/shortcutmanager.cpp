@@ -60,11 +60,27 @@ namespace Util
 				this,
 				SLOT (handleActionDestroyed ()));
 
-		const QIcon& icon = act->icon ().isNull () ?
-				CoreProxy_->GetIconThemeManager ()->GetIcon (act->property ("ActionIcon").toString ()) :
-				act->icon ();
-		RegisterActionInfo (id,
-				{ act->text (), act->shortcuts (), icon });
+		if (HasActionInfo (id))
+		{
+			const auto& info = ActionInfo_ [id];
+			if (act->text ().isEmpty ())
+				act->setText (info.UserVisibleText_);
+			if (act->icon ().isNull () &&
+					act->property ("ActionIcon").isNull ())
+				act->setIcon (info.Icon_);
+		}
+		else
+		{
+			const auto& icon = act->icon ().isNull () ?
+					CoreProxy_->GetIconThemeManager ()->GetIcon (act->property ("ActionIcon").toString ()) :
+					act->icon ();
+			RegisterActionInfo (id,
+					{
+						act->text (),
+						act->shortcuts (),
+						icon
+					});
+		}
 
 		if (CoreProxy_->GetShortcutProxy ()->HasObject (ContextObj_))
 			SetShortcut (id,
