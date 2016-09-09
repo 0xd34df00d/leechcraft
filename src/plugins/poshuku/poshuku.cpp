@@ -78,8 +78,6 @@ namespace Poshuku
 		Core::Instance ().setParent (this);
 		Core::Instance ().SetProxy (coreProxy);
 
-		auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-
 		try
 		{
 			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/favicons").absolutePath ();
@@ -87,7 +85,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& e)
 		{
-			QMessageBox::warning (rootWM->GetPreferredWindow (),
+			QMessageBox::warning (nullptr,
 					"LeechCraft",
 					e.what ());
 		}
@@ -99,7 +97,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& e)
 		{
-			QMessageBox::warning (rootWM->GetPreferredWindow (),
+			QMessageBox::warning (nullptr,
 					"LeechCraft",
 					e.what ());
 		}
@@ -111,7 +109,7 @@ namespace Poshuku
 		}
 		catch (const std::runtime_error& e)
 		{
-			QMessageBox::warning (rootWM->GetPreferredWindow (),
+			QMessageBox::warning (nullptr,
 					"LeechCraft",
 					e.what ());
 		}
@@ -156,7 +154,7 @@ namespace Poshuku
 		{
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
-			QMessageBox::critical (rootWM->GetPreferredWindow (),
+			QMessageBox::critical (nullptr,
 					"LeechCraft",
 					tr ("Poshuku failed to initialize properly. "
 						"Check logs and talk with the developers. "
@@ -601,13 +599,10 @@ namespace Poshuku
 				setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
 
 		if (enabled && sender ())
-		{
-			auto rootWM = Core::Instance ().GetProxy ()->GetRootWindowsManager ();
-			QMessageBox::information (rootWM->GetPreferredWindow (),
+			QMessageBox::information (nullptr,
 					"LeechCraft",
 					tr ("Please note that Developer Extras would work correctly "
 						"only for pages that are loaded after enabling."));
-		}
 	}
 
 	void Poshuku::cacheSettingsChanged ()
