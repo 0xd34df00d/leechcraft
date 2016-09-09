@@ -682,14 +682,6 @@ namespace Poshuku
 		return this;
 	}
 
-	void BrowserWidget::SetShortcut (const QString& name, const QKeySequences_t& sequences)
-	{
-	}
-
-	QMap<QString, ActionInfo> BrowserWidget::GetActionInfo () const
-	{
-	}
-
 	void BrowserWidget::Remove ()
 	{
 		Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);

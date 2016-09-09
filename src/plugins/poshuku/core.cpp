@@ -187,7 +187,6 @@ namespace Poshuku
 	{
 		Proxy_ = proxy;
 		NetworkAccessManager_ = proxy->GetNetworkAccessManager ();
-		ShortcutProxy_ = proxy->GetShortcutProxy ();
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -467,17 +466,6 @@ namespace Poshuku
 	PluginManager* Core::GetPluginManager () const
 	{
 		return PluginManager_;
-	}
-
-	void Core::SetShortcut (const QString& name, const QKeySequences_t& shortcut)
-	{
-		Q_FOREACH (BrowserWidget *widget, Widgets_)
-			widget->SetShortcut (name, shortcut);
-	}
-
-	IShortcutProxy* Core::GetShortcutProxy () const
-	{
-		return ShortcutProxy_;
 	}
 
 	QIcon Core::GetIcon (const QUrl& url) const

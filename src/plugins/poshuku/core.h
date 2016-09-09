@@ -53,7 +53,6 @@ class QAbstractItemModel;
 class QNetworkReply;
 class QNetworkAccessManager;
 class IWebWidget;
-class IShortcutProxy;
 
 namespace LeechCraft
 {
@@ -81,8 +80,6 @@ namespace Poshuku
 
 		std::shared_ptr<StorageBackend> StorageBackend_;
 		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
-
-		IShortcutProxy *ShortcutProxy_ = nullptr;
 
 		ICoreProxy_ptr Proxy_;
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
@@ -144,8 +141,6 @@ namespace Poshuku
 		QNetworkAccessManager* GetNetworkAccessManager () const;
 		StorageBackend* GetStorageBackend () const;
 		PluginManager* GetPluginManager () const;
-		void SetShortcut (const QString& name, const QKeySequences_t& shortcut);
-		IShortcutProxy* GetShortcutProxy () const;
 
 		QIcon GetIcon (const QUrl&) const;
 		QString GetUserAgent (const QUrl&) const;

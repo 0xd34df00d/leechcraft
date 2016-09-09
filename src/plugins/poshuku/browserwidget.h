@@ -150,9 +150,6 @@ namespace Poshuku
 		void SetEverythingElseVisible (bool) override;
 		QWidget* Widget () override;
 
-		void SetShortcut (const QString&, const QKeySequences_t&);
-		QMap<QString, ActionInfo> GetActionInfo () const;
-
 		void Remove () override;
 		QToolBar* GetToolBar () const override;
 		QList<QAction*> GetTabBarContextMenuActions () const override;
