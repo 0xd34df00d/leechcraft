@@ -54,6 +54,7 @@
 #include <util/tags/tagscompletionmodel.h>
 #include <util/db/backendselector.h>
 #include <util/xsd/wkfontswidget.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "browserwidget.h"
@@ -113,6 +114,9 @@ namespace Poshuku
 					"LeechCraft",
 					e.what ());
 		}
+
+		ShortcutMgr_ = new Util::ShortcutManager { coreProxy };
+		ShortcutMgr_->SetObject (this);
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

@@ -52,6 +52,7 @@ namespace LeechCraft
 namespace Util
 {
 	class WkFontsWidget;
+	class ShortcutManager;
 }
 
 namespace Poshuku
@@ -89,6 +90,8 @@ namespace Poshuku
 		QAction *ReloadAll_;
 
 		Util::XmlSettingsDialog_ptr XmlSettingsDialog_;
+
+		Util::ShortcutManager *ShortcutMgr_;
 
 		Util::WkFontsWidget *FontsWidget_;
 	public:
