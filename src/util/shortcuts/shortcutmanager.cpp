@@ -88,8 +88,7 @@ namespace Util
 
 	void ShortcutManager::RegisterActionInfo (const QString& id, const ActionInfo& info)
 	{
-		if (!ActionInfo_.contains (id) ||
-				ActionInfo_ [id].UserVisibleText_.isEmpty ())
+		if (!HasActionInfo (id))
 			ActionInfo_ [id] = info;
 	}
 
@@ -157,6 +156,12 @@ namespace Util
 	{
 		RegisterAction (pair.first, pair.second);
 		return *this;
+	}
+
+	bool ShortcutManager::HasActionInfo (const QString& id) const
+	{
+		return ActionInfo_.contains (id) &&
+				!ActionInfo_ [id].UserVisibleText_.isEmpty ();
 	}
 
 	void ShortcutManager::handleActionDestroyed ()

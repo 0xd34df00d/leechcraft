@@ -207,6 +207,8 @@ namespace Util
 		 * @return The shortcut manager object.
 		 */
 		ShortcutManager& operator<< (const QPair<QString, QAction*>& pair);
+	private:
+		bool HasActionInfo (const QString&) const;
 	private slots:
 		void handleActionDestroyed ();
 		void handleShortcutDestroyed ();
