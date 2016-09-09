@@ -179,6 +179,7 @@ namespace Poshuku
 	private:
 		void SetActualReloadInterval (const QTime&);
 		void SetSplitterSizes (int);
+		void RegisterShortcuts (Util::ShortcutManager*);
 	public slots:
 		void focusLineEdit ();
 		void handleShortcutHistory ();

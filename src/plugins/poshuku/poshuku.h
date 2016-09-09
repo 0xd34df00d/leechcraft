@@ -134,6 +134,7 @@ namespace Poshuku
 	private:
 		void InitConnections ();
 		void RegisterSettings ();
+		void PrepopulateShortcuts ();
 	private slots:
 		void createTabFirstTime ();
 		void viewerSettingsChanged ();

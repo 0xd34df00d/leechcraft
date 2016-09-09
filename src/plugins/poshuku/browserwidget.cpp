@@ -73,6 +73,7 @@
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <util/shortcuts/shortcutmanager.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -502,6 +503,8 @@ namespace Poshuku
 				SLOT (add (PageFormsData_t)));
 
 		updateLogicalPath ();
+
+		RegisterShortcuts (sm);
 	}
 
 	BrowserWidget::~BrowserWidget ()
@@ -524,28 +527,6 @@ namespace Poshuku
 
 	void BrowserWidget::FinalizeInit ()
 	{
-		IShortcutProxy *proxy = Core::Instance ().GetShortcutProxy ();
-		QObject *object = Core::Instance ().parent ();
-
-		Cut_->setShortcuts (proxy->GetShortcuts (object, "BrowserCut_"));
-		Copy_->setShortcuts (proxy->GetShortcuts (object, "BrowserCopy_"));
-		Paste_->setShortcuts (proxy->GetShortcuts (object, "BrowserPaste_"));
-		Back_->setShortcuts (proxy->GetShortcuts (object, "BrowserBack_"));
-		Forward_->setShortcuts (proxy->GetShortcuts (object, "BrowserForward_"));
-		Reload_->setShortcuts (proxy->GetShortcuts (object, "BrowserReload_"));
-		Stop_->setShortcuts (proxy->GetShortcuts (object, "BrowserStop_"));
-		Add2Favorites_->setShortcuts (proxy->GetShortcuts (object, "BrowserAdd2Favorites_"));
-		Print_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrint_"));
-		PrintPreview_->setShortcuts (proxy->GetShortcuts (object, "BrowserPrintPreview_"));
-		ScreenSave_->setShortcuts (proxy->GetShortcuts (object, "BrowserScreenSave_"));
-		ViewSources_->setShortcuts (proxy->GetShortcuts (object, "BrowserViewSources_"));
-		ZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomIn_"));
-		ZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomOut_"));
-		ZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserZoomReset_"));
-		TextZoomIn_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomIn_"));
-		TextZoomOut_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomOut_"));
-		TextZoomReset_->setShortcuts (proxy->GetShortcuts (object, "BrowserTextZoomReset_"));
-
 		if (Own_)
 			emit hookBrowserWidgetInitialized (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
@@ -701,66 +682,12 @@ namespace Poshuku
 		return this;
 	}
 
-#define _LC_MERGE(a) "Browser"#a
-
-#define _LC_SINGLE(a) \
-		name2act [_LC_MERGE(a)] = a;
-
-#define _LC_TRAVERSER(z,i,array) \
-		_LC_SINGLE (BOOST_PP_SEQ_ELEM(i, array))
-
-#define _LC_EXPANDER(Names) \
-		BOOST_PP_REPEAT (BOOST_PP_SEQ_SIZE (Names), _LC_TRAVERSER, Names)
-
 	void BrowserWidget::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 	{
-		QMap<QString, QAction*> name2act;
-		_LC_EXPANDER ((Add2Favorites_)
-				(Print_)
-				(PrintPreview_)
-				(ScreenSave_)
-				(ViewSources_)
-				(ZoomIn_)
-				(ZoomOut_)
-				(ZoomReset_)
-				(TextZoomIn_)
-				(TextZoomOut_)
-				(TextZoomReset_)
-				(Cut_)
-				(Copy_)
-				(Paste_)
-				(Back_)
-				(Forward_)
-				(Reload_)
-				(Stop_));
-		if (name2act.contains (name))
-			name2act [name]->setShortcuts (sequences);
 	}
 
-#define _L(a,b) result ["Browser"#a] = ActionInfo (a->text (), \
-			b, a->icon ())
 	QMap<QString, ActionInfo> BrowserWidget::GetActionInfo () const
 	{
-		QMap<QString, ActionInfo> result;
-		_L (Add2Favorites_, tr ("Ctrl+D"));
-		_L (Print_, tr ("Ctrl+P"));
-		_L (PrintPreview_, tr ("Ctrl+Shift+P"));
-		_L (ScreenSave_, Qt::Key_F12);
-		_L (ViewSources_, tr ("Ctrl+Shift+V"));
-		_L (ZoomIn_, Qt::CTRL + Qt::Key_Plus);
-		_L (ZoomOut_, Qt::CTRL + Qt::Key_Minus);
-		_L (ZoomReset_, tr ("Ctrl+0"));
-		_L (TextZoomIn_, Qt::CTRL + Qt::SHIFT + Qt::Key_Plus);
-		_L (TextZoomOut_, Qt::CTRL + Qt::SHIFT + Qt::Key_Minus);
-		_L (TextZoomReset_, tr ("Ctrl+Shift+0"));
-		_L (Cut_, tr ("Ctrl+X"));
-		_L (Copy_, tr ("Ctrl+C"));
-		_L (Paste_, tr ("Ctrl+V"));
-		_L (Back_, Qt::ALT + Qt::Key_Left);
-		_L (Forward_, Qt::ALT + Qt::Key_Right);
-		_L (Reload_, Qt::Key_F5);
-		_L (Stop_, Qt::Key_Escape);
-		return result;
 	}
 
 	void BrowserWidget::Remove ()
@@ -1875,6 +1802,30 @@ namespace Poshuku
 				setProperty ("HistoryBoormarksPanelSize", Ui_.Splitter_->sizes ().at (0));
 			Ui_.Splitter_->setSizes (QList<int> () <<  0 << wSize);
 		}
+	}
+
+	void BrowserWidget::RegisterShortcuts (Util::ShortcutManager *sm)
+	{
+#define REG(n) sm->RegisterAction ("Browser" # n, n)
+		REG (Cut_);
+		REG (Copy_);
+		REG (Paste_);
+		REG (Back_);
+		REG (Forward_);
+		REG (Reload_);
+		REG (Stop_);
+		REG (Add2Favorites_);
+		REG (Print_);
+		REG (PrintPreview_);
+		REG (ScreenSave_);
+		REG (ViewSources_);
+		REG (ZoomIn_);
+		REG (ZoomOut_);
+		REG (ZoomReset_);
+		REG (TextZoomIn_);
+		REG (TextZoomOut_);
+		REG (TextZoomReset_);
+#undef REG
 	}
 }
 }

@@ -47,6 +47,7 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <interfaces/core/iiconthememanager.h>
 #include <interfaces/core/ishortcutproxy.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
@@ -137,19 +138,22 @@ namespace Poshuku
 		ImportXbel_ = new QAction (tr ("Import XBEL..."),
 				this);
 		ImportXbel_->setProperty ("ActionIcon", "document-import");
+		ShortcutMgr_->RegisterAction ("EAImportXbel_", ImportXbel_);
 
 		ExportXbel_ = new QAction (tr ("Export XBEL..."),
 				this);
 		ExportXbel_->setProperty ("ActionIcon", "document-export");
+		ShortcutMgr_->RegisterAction ("EAExportXbel_", ExportXbel_);
 
 		CheckFavorites_ = new QAction (tr ("Check favorites..."),
 				this);
 		CheckFavorites_->setProperty ("ActionIcon", "checkbox");
+		ShortcutMgr_->RegisterAction ("EACheckFavorites_", CheckFavorites_);
 
 		ReloadAll_ = new QAction (tr ("Reload all pages"),
 				this);
 		ReloadAll_->setProperty ("ActionIcon", "system-software-update");
-
+		ShortcutMgr_->RegisterAction ("EAReloadAll_", ReloadAll_);
 
 		try
 		{
@@ -169,6 +173,7 @@ namespace Poshuku
 		}
 
 		RegisterSettings ();
+		PrepopulateShortcuts ();
 
 		connect (Core::Instance ().GetFavoritesModel (),
 				SIGNAL (error (const QString&)),
@@ -191,12 +196,6 @@ namespace Poshuku
 				SIGNAL (triggered ()),
 				this,
 				SLOT (handleReloadAll ()));
-
-		IShortcutProxy *proxy = coreProxy->GetShortcutProxy ();
-		ImportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAImportXbel_"));
-		ExportXbel_->setShortcuts (proxy->GetShortcuts (this, "EAExportXbel_"));
-		CheckFavorites_->setShortcuts (proxy->GetShortcuts (this, "EACheckFavorites_"));
-		ReloadAll_->setShortcuts (proxy->GetShortcuts (this, "EAReloadAll_"));
 
 		ToolMenu_ = new QMenu ("Poshuku");
 		ToolMenu_->setIcon (GetIcon ());
@@ -315,33 +314,12 @@ namespace Poshuku
 
 	void Poshuku::SetShortcut (const QString& name, const QKeySequences_t& sequences)
 	{
-		if (name.startsWith ("Browser"))
-			Core::Instance ().SetShortcut (name, sequences);
-		else
-		{
-			QAction *act = 0;
-			if (name == "EAImportXbel_")
-				act = ImportXbel_;
-			else if (name == "EAExportXbel_")
-				act = ExportXbel_;
-			else if (name == "EACheckFavorites_")
-				act = CheckFavorites_;
-			if (act)
-				act->setShortcuts (sequences);
-		}
+		ShortcutMgr_->SetShortcut (name, sequences);
 	}
 
 	QMap<QString, ActionInfo> Poshuku::GetActionInfo () const
 	{
-		BrowserWidget bw { Core::Instance ().CreateWebView () };
-		QMap<QString, ActionInfo> result = bw.GetActionInfo ();
-		result ["EAImportXbel_"] = ActionInfo (ImportXbel_->text (),
-				QKeySequence (), ImportXbel_->icon ());
-		result ["EAExportXbel_"] = ActionInfo (ExportXbel_->text (),
-				QKeySequence (), ExportXbel_->icon ());
-		result ["EACheckFavorites_"] = ActionInfo (CheckFavorites_->text (),
-				QKeySequence (), CheckFavorites_->icon ());
-		return result;
+		return ShortcutMgr_->GetActionInfo ();
 	}
 
 	QString Poshuku::GetDiagInfoString () const
@@ -489,6 +467,33 @@ namespace Poshuku
 		cacheSettingsChanged ();
 	}
 
+	void Poshuku::PrepopulateShortcuts ()
+	{
+		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
+#define REG(id,name,icon,shortcut) \
+		ShortcutMgr_->RegisterActionInfo ("Browser" id, \
+				{ name, QKeySequence { shortcut }, itm->GetIcon (icon) })
+
+		REG ("Cut_", tr ("Cut"), "edit-cut", tr ("Ctrl+X"));
+		REG ("Copy_", tr ("Copy"), "edit-copy", tr ("Ctrl+C"));
+		REG ("Paste_", tr ("Paste"), "edit-paste", tr ("Ctrl+V"));
+		REG ("Back_", tr ("Back"), "go-previous", Qt::ALT + Qt::Key_Left);
+		REG ("Forward_", tr ("Forward"), "go-next", Qt::ALT + Qt::Key_Right);
+		REG ("Reload_", tr ("Reload"), "view-refresh", Qt::Key_F5);
+		REG ("Stop_", tr ("Stop"), "process-stop", Qt::Key_Escape);
+		REG ("ZoomIn_", tr ("Zoom in"), "zoom-in", Qt::CTRL + Qt::Key_Plus);
+		REG ("ZoomOut_", tr ("Zoom out"), "zoom-out", Qt::CTRL + Qt::Key_Minus);
+		REG ("ZoomReset_", tr ("Reset zoom"), "zoom-original", tr ("Ctrl+0"));
+		REG ("TextZoomIn_", tr ("Text zoom in"), {}, Qt::CTRL + Qt::SHIFT + Qt::Key_Plus);
+		REG ("TextZoomOut_", tr ("Text zoom out"), {}, Qt::CTRL + Qt::SHIFT + Qt::Key_Minus);
+		REG ("TextZoomReset_", tr ("Reset text zoom"), {}, tr ("Ctrl+Shift+0"));
+		REG ("Add2Favorites_", tr ("Bookmark..."), "bookmark-new", tr ("Ctrl+D"));
+		REG ("Print_", tr ("Print..."), "document-print", tr ("Ctrl+P"));
+		REG ("PrintPreview_", tr ("Print with preview..."), "document-print-preview", tr ("Ctrl+Shift+P"));
+		REG ("ScreenSave_", tr ("Take page's screenshot..."), "camera-photo", Qt::Key_F12);
+		REG ("ViewSources_", tr ("View sources..."), "applications-development-web", tr ("Ctrl+Shift+V"));
+#undef REG
+	}
 	void Poshuku::createTabFirstTime ()
 	{
 		bool firstTime = XmlSettingsManager::Instance ()->
