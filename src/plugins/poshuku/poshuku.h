@@ -137,7 +137,6 @@ namespace Poshuku
 		void developerExtrasChanged ();
 		void cacheSettingsChanged ();
 		void handleError (const QString&);
-		void handleNewTab ();
 		void handleSettingsClicked (const QString&);
 		void handleCheckFavorites ();
 		void handleReloadAll ();

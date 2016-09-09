@@ -628,11 +628,6 @@ namespace Poshuku
 		emit gotEntity (Util::MakeNotification ("Poshuku", msg, PWarning_));
 	}
 
-	void Poshuku::handleNewTab ()
-	{
-		Core::Instance ().NewURL ("", true);
-	}
-
 	void Poshuku::handleSettingsClicked (const QString& name)
 	{
 		if (name == "CookiesEdit")
