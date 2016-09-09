@@ -54,6 +54,11 @@ class QLabel;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Poshuku
 {
 	class PasswordRemember;
@@ -121,7 +126,7 @@ namespace Poshuku
 
 		static QObject* S_MultiTabsParent_;
 	public:
-		BrowserWidget (IWebView*, QWidget* = nullptr);
+		BrowserWidget (IWebView*, Util::ShortcutManager*, QWidget* = nullptr);
 		virtual ~BrowserWidget ();
 		static void SetParentMultiTabs (QObject*);
 

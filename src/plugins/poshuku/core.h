@@ -57,6 +57,11 @@ class IShortcutProxy;
 
 namespace LeechCraft
 {
+namespace Util
+{
+	class ShortcutManager;
+}
+
 namespace Poshuku
 {
 	class IWebView;
@@ -80,6 +85,7 @@ namespace Poshuku
 		IShortcutProxy *ShortcutProxy_ = nullptr;
 
 		ICoreProxy_ptr Proxy_;
+		Util::ShortcutManager *ShortcutMgr_ = nullptr;
 
 		bool Initialized_ = false;
 
@@ -107,6 +113,7 @@ namespace Poshuku
 		void Release ();
 		void SetProxy (ICoreProxy_ptr);
 		ICoreProxy_ptr GetProxy () const;
+		void SetShortcutManager (Util::ShortcutManager*);
 		TabClassInfo GetTabClass () const;
 
 		bool CouldHandle (const Entity&) const;

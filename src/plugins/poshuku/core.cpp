@@ -195,6 +195,11 @@ namespace Poshuku
 		return Proxy_;
 	}
 
+	void Core::SetShortcutManager (Util::ShortcutManager *sm)
+	{
+		ShortcutMgr_ = sm;
+	}
+
 	TabClassInfo Core::GetTabClass () const
 	{
 		return TabClass_;
@@ -321,7 +326,7 @@ namespace Poshuku
 	BrowserWidget* Core::CreateBrowserWidget (IWebView *view, const QUrl& url,
 			bool raise, const QList<QPair<QByteArray, QVariant>>& props)
 	{
-		const auto widget = new BrowserWidget { view };
+		const auto widget = new BrowserWidget { view, ShortcutMgr_ };
 		emit browserWidgetCreated (widget);
 		widget->FinalizeInit ();
 		Widgets_.push_back (widget);
@@ -368,7 +373,7 @@ namespace Poshuku
 		if (!Initialized_)
 			return nullptr;
 
-		const auto widget = new BrowserWidget (CreateWebView ());
+		const auto widget = new BrowserWidget { CreateWebView (), ShortcutMgr_ };
 		emit browserWidgetCreated (widget);
 		widget->Deown ();
 		widget->FinalizeInit ();

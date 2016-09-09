@@ -117,6 +117,7 @@ namespace Poshuku
 
 		ShortcutMgr_ = new Util::ShortcutManager { coreProxy };
 		ShortcutMgr_->SetObject (this);
+		Core::Instance ().SetShortcutManager (ShortcutMgr_);
 
 		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (XmlSettingsManager::Instance (),

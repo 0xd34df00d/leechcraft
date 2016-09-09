@@ -104,7 +104,8 @@ namespace Poshuku
 
 	QObject *BrowserWidget::S_MultiTabsParent_ = 0;
 
-	BrowserWidget::BrowserWidget (IWebView *view, QWidget *parent)
+	BrowserWidget::BrowserWidget (IWebView *view,
+			Util::ShortcutManager *sm, QWidget *parent)
 	: QWidget (parent)
 	, ReloadTimer_ (new QTimer (this))
 	, WebView_ (view)
