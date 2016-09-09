@@ -49,7 +49,6 @@
 class QString;
 class QWidget;
 class QIcon;
-class QWebView;
 class QAbstractItemModel;
 class QNetworkReply;
 class QNetworkAccessManager;

@@ -50,9 +50,7 @@
 class QToolBar;
 class QDataStream;
 class QShortcut;
-class QWebFrame;
 class QLabel;
-class QWebInspector;
 
 namespace LeechCraft
 {
