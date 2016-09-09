@@ -150,37 +150,25 @@ namespace Poshuku
 
 		Cut_ = WebView_->GetPageAction (IWebView::PageAction::Cut);
 		Cut_->setShortcutContext (Qt::WindowShortcut);
-		Cut_->setProperty ("ActionIcon", "edit-cut");
 		Copy_ = WebView_->GetPageAction (IWebView::PageAction::Copy);
 		Copy_->setShortcutContext (Qt::WindowShortcut);
-		Copy_->setProperty ("ActionIcon", "edit-copy");
 		Paste_ = WebView_->GetPageAction (IWebView::PageAction::Paste);
-		Paste_->setProperty ("ActionIcon", "edit-paste");
 
 		ToolBar_ = new QToolBar (this);
 		ToolBar_->setWindowTitle ("Poshuku");
 
 		Back_ = WebView_->GetPageAction (IWebView::PageAction::Back);
 		Back_->setParent (this);
-		Back_->setProperty ("ActionIcon", "go-previous");
 
 		BackMenu_ = new QMenu ();
 
 		Forward_ = WebView_->GetPageAction (IWebView::PageAction::Forward);
 		Forward_->setParent (this);
-		Forward_->setProperty ("ActionIcon", "go-next");
 
 		ForwardMenu_ = new QMenu ();
 
 		Reload_ = WebView_->GetPageAction (IWebView::PageAction::Reload);
-		Reload_->setProperty ("ActionIcon", "view-refresh");
-		Reload_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIconThemeManager ()->GetIcon ("view-refresh"));
-
 		Stop_ = WebView_->GetPageAction (IWebView::PageAction::Stop);
-		Stop_->setProperty ("ActionIcon", "process-stop");
-		Stop_->setIcon (Core::Instance ()
-				.GetProxy ()->GetIconThemeManager ()->GetIcon ("process-stop"));
 
 		ReloadStop_ = new QAction (this);
 		handleLoadProgress (0);
@@ -208,24 +196,16 @@ namespace Poshuku
 		Find_->setProperty ("ActionIcon", "edit-find");
 		Find_->setEnabled (false);
 
-		Print_ = new QAction (tr ("Print..."),
-				this);
-		Print_->setProperty ("ActionIcon", "document-print");
+		Print_ = new QAction (this);
 		Print_->setEnabled (false);
 
-		PrintPreview_ = new QAction (tr ("Print with preview..."),
-				this);
-		PrintPreview_->setProperty ("ActionIcon", "document-print-preview");
+		PrintPreview_ = new QAction (this);
 		PrintPreview_->setEnabled (false);
 
-		ScreenSave_ = new QAction (tr ("Take page's screenshot..."),
-				this);
-		ScreenSave_->setProperty ("ActionIcon", "camera-photo");
+		ScreenSave_ = new QAction (this);
 		ScreenSave_->setEnabled (false);
 
-		ViewSources_ = new QAction (tr ("View sources..."),
-				this);
-		ViewSources_->setProperty ("ActionIcon", "applications-development-web");
+		ViewSources_ = new QAction (this);
 		ViewSources_->setEnabled (false);
 
 		SavePage_ = new QAction (tr ("Save page..."),
@@ -234,24 +214,13 @@ namespace Poshuku
 		SavePage_->setEnabled (false);
 		SavePage_->setShortcut (QKeySequence (tr ("Ctrl+S")));
 
-		ZoomIn_ = new QAction (tr ("Zoom in"),
-				this);
-		ZoomIn_->setProperty ("ActionIcon", "zoom-in");
+		ZoomIn_ = new QAction (this);
+		ZoomOut_ = new QAction (this);
+		ZoomReset_ = new QAction (this);
 
-		ZoomOut_ = new QAction (tr ("Zoom out"),
-				this);
-		ZoomOut_->setProperty ("ActionIcon", "zoom-out");
-
-		ZoomReset_ = new QAction (tr ("Reset zoom"),
-				this);
-		ZoomReset_->setProperty ("ActionIcon", "zoom-original");
-
-		TextZoomIn_ = new QAction (tr ("Zoom text in"),
-				this);
-		TextZoomOut_ = new QAction (tr ("Zoom text out"),
-				this);
-		TextZoomReset_ = new QAction (tr ("Reset text zoom"),
-				this);
+		TextZoomIn_ = new QAction (this);
+		TextZoomOut_ = new QAction (this);
+		TextZoomReset_ = new QAction (this);
 
 		HistoryAction_ = new QAction (tr ("Open history"),
 				this);
