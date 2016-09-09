@@ -204,7 +204,6 @@ namespace Poshuku
 
 	void Poshuku::SecondInit ()
 	{
-		Core::Instance ().SecondInit ();
 		QTimer::singleShot (1000,
 				this,
 				SLOT (createTabFirstTime ()));

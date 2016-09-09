@@ -168,10 +168,6 @@ namespace Poshuku
 		Initialized_ = true;
 	}
 
-	void Core::SecondInit ()
-	{
-	}
-
 	void Core::Release ()
 	{
 		while (Widgets_.begin () != Widgets_.end ())
