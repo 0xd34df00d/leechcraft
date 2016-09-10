@@ -57,7 +57,6 @@ set (SRCS
 	historywidget.cpp
 	urlframe.cpp
 	importentity.cpp
-	platformplugin.cpp
 	urleditbuttonsmanager.cpp
 	featurepermnotification.cpp
 	zoomer.cpp
