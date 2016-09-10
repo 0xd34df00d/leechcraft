@@ -79,9 +79,6 @@
 				<item type="pushbutton" name="CookiesEdit">
 					<label lang="en" value="Cookies..." />
 				</item>
-				<item type="pushbutton" name="ClearIconDatabase">
-					<label lang="en" value="Clear favicon database" />
-				</item>
 			</groupbox>
 		</tab>
 		<tab>

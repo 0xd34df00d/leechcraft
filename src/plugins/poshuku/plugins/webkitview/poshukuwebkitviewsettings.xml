@@ -32,6 +32,9 @@
 				<label value="Offline storage default quota:" />
 				<suffix value=" KB" />
 			</item>
+			<item type="pushbutton" name="ClearIconDatabase">
+				<label lang="en" value="Clear favicon database" />
+			</item>
 		</groupbox>
 		<groupbox>
 			<label value="In-memory" />
