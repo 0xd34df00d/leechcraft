@@ -42,8 +42,7 @@ namespace WebKitView
 				.property ("StoreLocalLinkHistory").toBool ())
 			return;
 
-		if (!History_.contains (url))
-			History_ << url;
+		History_ << url;
 	}
 
 	bool LinkHistory::historyContains (const QString& url) const
