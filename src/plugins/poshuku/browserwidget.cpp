@@ -595,7 +595,7 @@ namespace Poshuku
 
 		if (settings.WebHistorySerialized_.size ())
 		{
-			QDataStream str (settings.WebHistorySerialized_);
+			QDataStream str { settings.WebHistorySerialized_ };
 			WebView_->GetHistory ()->Load (str);
 		}
 

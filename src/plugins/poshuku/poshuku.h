@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_POSHUKU_H
-#define PLUGINS_POSHUKU_POSHUKU_H
+#pragma once
+
 #include <memory>
 #include <QAction>
 #include <QTranslator>
@@ -163,5 +163,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

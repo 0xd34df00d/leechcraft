@@ -134,23 +134,19 @@ namespace Poshuku
 
 		InitConnections ();
 
-		ImportXbel_ = new QAction (tr ("Import XBEL..."),
-				this);
+		ImportXbel_ = new QAction (tr ("Import XBEL..."), this);
 		ImportXbel_->setProperty ("ActionIcon", "document-import");
 		ShortcutMgr_->RegisterAction ("EAImportXbel_", ImportXbel_);
 
-		ExportXbel_ = new QAction (tr ("Export XBEL..."),
-				this);
+		ExportXbel_ = new QAction (tr ("Export XBEL..."), this);
 		ExportXbel_->setProperty ("ActionIcon", "document-export");
 		ShortcutMgr_->RegisterAction ("EAExportXbel_", ExportXbel_);
 
-		CheckFavorites_ = new QAction (tr ("Check favorites..."),
-				this);
+		CheckFavorites_ = new QAction (tr ("Check favorites..."), this);
 		CheckFavorites_->setProperty ("ActionIcon", "checkbox");
 		ShortcutMgr_->RegisterAction ("EACheckFavorites_", CheckFavorites_);
 
-		ReloadAll_ = new QAction (tr ("Reload all pages"),
-				this);
+		ReloadAll_ = new QAction (tr ("Reload all pages"), this);
 		ReloadAll_->setProperty ("ActionIcon", "system-software-update");
 		ShortcutMgr_->RegisterAction ("EAReloadAll_", ReloadAll_);
 
