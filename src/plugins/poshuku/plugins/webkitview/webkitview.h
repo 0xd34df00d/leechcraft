@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavesettings.h>
 #include <interfaces/ihavediaginfo.h>
 #include <interfaces/poshuku/iwebviewprovider.h>
 
@@ -48,11 +49,12 @@ namespace WebKitView
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveSettings
 				 , public IHaveDiagInfo
 				 , public IWebViewProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveDiagInfo LeechCraft::Poshuku::IWebViewProvider)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IHaveDiagInfo LeechCraft::Poshuku::IWebViewProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebKitView")
 
@@ -60,6 +62,8 @@ namespace WebKitView
 		IProxyObject *PoshukuProxy_ = nullptr;
 
 		WebPluginFactory *WebPluginFactory_;
+
+		Util::XmlSettingsDialog_ptr XSD_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -70,6 +74,8 @@ namespace WebKitView
 		QIcon GetIcon () const override;
 
 		QSet<QByteArray> GetPluginClasses () const override;
+
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 
 		QString GetDiagInfoString () const override;
 

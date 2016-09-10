@@ -37,11 +37,13 @@
 #include <qtwebkitversion.h>
 #endif
 
+#include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 #include "customwebpage.h"
 #include "webpluginfactory.h"
 #include "linkhistory.h"
+#include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
@@ -55,6 +57,9 @@ namespace WebKitView
 		WebPluginFactory_ = new WebPluginFactory;
 
 		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
+
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
+		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuwebkitviewsettings.xml");
 	}
 
 	void Plugin::SecondInit ()
@@ -90,6 +95,11 @@ namespace WebKitView
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
+	{
+		return XSD_;
 	}
 
 	QString Plugin::GetDiagInfoString () const
