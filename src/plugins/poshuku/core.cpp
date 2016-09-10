@@ -467,19 +467,21 @@ namespace Poshuku
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().value<QIcon> ();
 
-		QIcon result = QWebSettings::iconForUrl (url);
-		if (!result.isNull ())
-			return result;
+		for (const auto prov : Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebViewProvider*> ())
+		{
+			const auto& icon = prov->GetIconForUrl (url);
+			if (!icon.isNull ())
+				return icon;
+		}
 
-		QUrl test;
-		test.setScheme (url.scheme ());
-		test.setHost (url.host ());
+		for (const auto prov : Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebViewProvider*> ())
+		{
+			const auto& icon = prov->GetDefaultUrlIcon ();
+			if (!icon.isNull ())
+				return icon;
+		}
 
-		result = QWebSettings::iconForUrl (test);
-		if (!result.isNull ())
-			return result;
-
-		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
+		return {};
 	}
 
 	QString Core::GetUserAgent (const QUrl& url) const
