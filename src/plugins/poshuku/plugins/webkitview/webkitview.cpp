@@ -32,6 +32,8 @@
 
 #if QT_VERSION < 0x050000
 #include <qwebkitversion.h>
+#else
+#include <qtwebkitversion.h>
 #endif
 
 #include <interfaces/poshuku/iproxyobject.h>
