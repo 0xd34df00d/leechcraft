@@ -34,11 +34,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	LinkHistory::LinkHistory (QObject *parent)
-	: QWebHistoryInterface (parent)
-	{
-	}
-	
 	void LinkHistory::addHistoryEntry (const QString& url)
 	{
 		if (!XmlSettingsManager::Instance ()->
@@ -48,7 +43,7 @@ namespace Poshuku
 		if (!History_.contains (url))
 			History_ << url;
 	}
-	
+
 	bool LinkHistory::historyContains (const QString& url) const
 	{
 		if (!XmlSettingsManager::Instance ()->

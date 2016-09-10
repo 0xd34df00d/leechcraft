@@ -42,7 +42,8 @@ namespace Poshuku
 
 		QSet<QString> History_;
 	public:
-		LinkHistory (QObject* = 0);
+		using QWebHistoryInterface::QWebHistoryInterface;
+
 		void addHistoryEntry (const QString& url);
 		bool historyContains (const QString& url) const;
 	};
