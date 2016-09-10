@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_PLUGINS_POSHUKU_LINKHISTORY_H
-#define PLUGINS_POSHUKU_PLUGINS_POSHUKU_LINKHISTORY_H
+#pragma once
+
 #include <qwebhistoryinterface.h>
 #include <QSet>
 
@@ -49,5 +49,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
