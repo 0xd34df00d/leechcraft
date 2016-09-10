@@ -51,9 +51,7 @@ namespace WebKitView
 				.property ("StoreLocalLinkHistory").toBool ())
 			return false;
 
-		if (History_.contains (url))
-			return true;
-		return false;
+		return History_.contains (url);
 	}
 }
 }
