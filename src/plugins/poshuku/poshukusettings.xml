@@ -134,7 +134,5 @@
 				<item type="customwidget" label="own" name="FontsSelector" />
 			</groupbox>
 		</tab>
-		<tab>
-		</tab>
 	</page>
 </settings>
