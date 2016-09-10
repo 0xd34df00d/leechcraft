@@ -237,11 +237,14 @@ namespace Poshuku
 	{
 		PluginManager_->AddPlugin (plugin);
 
-		if (qobject_cast<IWebViewProvider*> (plugin))
+		if (const auto iwvp = qobject_cast<IWebViewProvider*> (plugin))
+		{
+			WebViewProviders_ << iwvp;
 			connect (plugin,
 					SIGNAL (webViewCreated (IWebView*, bool)),
 					this,
 					SLOT (handleWebViewCreated (IWebView*, bool)));
+		}
 	}
 
 	QUrl Core::MakeURL (QString url)
@@ -467,14 +470,14 @@ namespace Poshuku
 		if (proxy->IsCancelled ())
 			return proxy->GetReturnValue ().value<QIcon> ();
 
-		for (const auto prov : Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebViewProvider*> ())
+		for (const auto prov : WebViewProviders_)
 		{
 			const auto& icon = prov->GetIconForUrl (url);
 			if (!icon.isNull ())
 				return icon;
 		}
 
-		for (const auto prov : Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebViewProvider*> ())
+		for (const auto prov : WebViewProviders_)
 		{
 			const auto& icon = prov->GetDefaultUrlIcon ();
 			if (!icon.isNull ())
@@ -579,8 +582,7 @@ namespace Poshuku
 
 	IWebView* Core::CreateWebView ()
 	{
-		const auto& provs = Proxy_->GetPluginsManager ()->GetAllCastableTo<IWebViewProvider*> ();
-		return provs.value (0)->CreateWebView ();
+		return WebViewProviders_.value (0)->CreateWebView ();
 	}
 
 	void Core::importXbel ()

@@ -64,6 +64,7 @@ namespace Util
 namespace Poshuku
 {
 	class IWebView;
+	class IWebViewProvider;
 	class BrowserWidget;
 
 	class Core : public QObject
@@ -87,6 +88,8 @@ namespace Poshuku
 		bool Initialized_ = false;
 
 		TabClassInfo TabClass_;
+
+		QList<IWebViewProvider*> WebViewProviders_;
 
 		Core ();
 	public:
