@@ -41,6 +41,32 @@ namespace WebKitView
 	: QObject { parent }
 	, Settings_ { settings }
 	{
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"MaximumPagesInCache"
+					"MinDeadCapacity",
+					"MaxDeadCapacity",
+					"TotalCapacity",
+					"OfflineStorageQuota",
+					"DNSPrefetchEnabled"
+				},
+				this, "cacheSettingsChanged");
+		cacheSettingsChanged ();
+	}
+
+	void SettingsInstanceHandler::cacheSettingsChanged ()
+	{
+		auto& xsm = XmlSettingsManager::Instance ();
+		QWebSettings::setMaximumPagesInCache (xsm.property ("MaximumPagesInCache").toInt ());
+
+		auto megs = [&xsm] (const char *prop) { return xsm.property (prop).toDouble () * 1024 * 1024; };
+		QWebSettings::setObjectCacheCapacities (megs ("MinDeadCapacity"),
+				megs ("MaxDeadCapacity"),
+				megs ("TotalCapacity"));
+
+		QWebSettings::setOfflineStorageDefaultQuota (xsm.property ("OfflineStorageQuota").toInt () * 1024);
+
+		QWebSettings::globalSettings ()->setAttribute (QWebSettings::DnsPrefetchEnabled,
+				xsm->property ("DNSPrefetchEnabled").toBool ());
 	}
 }
 }

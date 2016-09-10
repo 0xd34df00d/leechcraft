@@ -398,7 +398,6 @@ namespace Poshuku
 	{
 		QList<QByteArray> viewerSettings;
 		viewerSettings << "AutoLoadImages"
-			<< "DNSPrefetchEnabled"
 			<< "AllowJavascript"
 			<< "AllowJava"
 			<< "AllowPlugins"
@@ -420,17 +419,6 @@ namespace Poshuku
 
 		viewerSettingsChanged ();
 		developerExtrasChanged ();
-
-		QList<QByteArray> cacheSettings;
-		cacheSettings << "MaximumPagesInCache"
-			<< "MinDeadCapacity"
-			<< "MaxDeadCapacity"
-			<< "TotalCapacity"
-			<< "OfflineStorageQuota";
-		XmlSettingsManager::Instance ()->RegisterObject (cacheSettings,
-				this, "cacheSettingsChanged");
-
-		cacheSettingsChanged ();
 	}
 
 	void Poshuku::PrepopulateShortcuts ()
@@ -533,8 +521,6 @@ namespace Poshuku
 
 		global->setAttribute (QWebSettings::AutoLoadImages,
 				xsm->property ("AutoLoadImages").toBool ());
-		global->setAttribute (QWebSettings::DnsPrefetchEnabled,
-				xsm->property ("DNSPrefetchEnabled").toBool ());
 		global->setAttribute (QWebSettings::JavascriptEnabled,
 				xsm->property ("AllowJavascript").toBool ());
 		global->setAttribute (QWebSettings::JavaEnabled,
@@ -579,19 +565,6 @@ namespace Poshuku
 					"LeechCraft",
 					tr ("Please note that Developer Extras would work correctly "
 						"only for pages that are loaded after enabling."));
-	}
-
-	void Poshuku::cacheSettingsChanged ()
-	{
-		QWebSettings::setMaximumPagesInCache (XmlSettingsManager::Instance ()->
-				property ("MaximumPagesInCache").toInt ());
-		QWebSettings::setObjectCacheCapacities (
-				XmlSettingsManager::Instance ()->property ("MinDeadCapacity").toDouble () * 1024 * 1024,
-				XmlSettingsManager::Instance ()->property ("MaxDeadCapacity").toDouble () * 1024 * 1024,
-				XmlSettingsManager::Instance ()->property ("TotalCapacity").toDouble () * 1024 * 1024
-				);
-		QWebSettings::setOfflineStorageDefaultQuota (XmlSettingsManager::Instance ()->
-				property ("OfflineStorageQuota").toInt () * 1024);
 	}
 
 	void Poshuku::handleError (const QString& msg)

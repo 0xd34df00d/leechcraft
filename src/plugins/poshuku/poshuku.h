@@ -133,7 +133,6 @@ namespace Poshuku
 		void createTabFirstTime ();
 		void viewerSettingsChanged ();
 		void developerExtrasChanged ();
-		void cacheSettingsChanged ();
 		void handleError (const QString&);
 		void handleSettingsClicked (const QString&);
 		void handleCheckFavorites ();

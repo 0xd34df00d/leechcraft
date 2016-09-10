@@ -24,4 +24,38 @@
 			<label value="Store local link history" />
 		</item>
 	</page>
+	<page>
+		<label value="Cache" />
+		<groupbox>
+			<label value="Offline storage" />
+			<item type="spinbox" property="OfflineStorageQuota" default="128" minimum="0" maximum="1048576">
+				<label value="Offline storage default quota:" />
+				<suffix value=" KB" />
+			</item>
+		</groupbox>
+		<groupbox>
+			<label value="In-memory" />
+			<item type="checkbox" property="DNSPrefetchEnabled" default="on">
+				<label value="Prefetch DNS entries" />
+			</item>
+			<item type="spinbox" property="MaximumPagesInCache" default="15" minimum="5" maximum="1000" step="5">
+				<label value="Maximum pages:" />
+			</item>
+			<item type="doublespinbox" property="MinDeadCapacity" minimum="0" maximum="2048" step="8" default="1" precision="1">
+				<label value="Minimum dead capacity:" />
+				<suffix value=" MB" />
+			</item>
+			<item type="doublespinbox" property="MaxDeadCapacity" minimum="0" maximum="2048" step="8" default="32" precision="1">
+				<label value="Maximum dead capacity:" />
+				<suffix value=" MB" />
+			</item>
+			<item type="doublespinbox" property="TotalCapacity" minimum="0" maximum="2048" step="8" default="64" precision="1">
+				<label value="Total capacity:" />
+				<suffix value=" MB" />
+			</item>
+			<item type="pushbutton" name="ClearMemoryCaches">
+				<label value="Clear in-memory caches" />
+			</item>
+		</groupbox>
+	</page>
 </settings>
