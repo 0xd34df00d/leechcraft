@@ -443,7 +443,8 @@ namespace Poshuku
 		connect (webViewWidget,
 				SIGNAL (loadStarted ()),
 				this,
-				SLOT (updateNavHistory ()));
+				SLOT (updateNavHistory ()),
+				Qt::QueuedConnection);
 		connect (webViewWidget,
 				SIGNAL (closeRequested ()),
 				this,
