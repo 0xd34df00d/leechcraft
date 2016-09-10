@@ -593,7 +593,7 @@ namespace Poshuku
 			SetActualReloadInterval (interval);
 		}
 
-		if (settings.WebHistorySerialized_.size ())
+		if (!settings.WebHistorySerialized_.isEmpty ())
 		{
 			QDataStream str { settings.WebHistorySerialized_ };
 			WebView_->GetHistory ()->Load (str);
