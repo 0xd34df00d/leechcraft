@@ -44,6 +44,7 @@
 #include "webpluginfactory.h"
 #include "linkhistory.h"
 #include "xmlsettingsmanager.h"
+#include "settingsglobalhandler.h"
 
 namespace LeechCraft
 {
@@ -60,6 +61,8 @@ namespace WebKitView
 
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuwebkitviewsettings.xml");
+
+		new SettingsGlobalHandler { this };
 	}
 
 	void Plugin::SecondInit ()

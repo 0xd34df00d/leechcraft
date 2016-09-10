@@ -27,9 +27,9 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsinstancehandler.h"
-#include <qwebsettings.h>
-#include "xmlsettingsmanager.h"
+#pragma once
+
+#include <QObject>
 
 namespace LeechCraft
 {
@@ -37,20 +37,14 @@ namespace Poshuku
 {
 namespace WebKitView
 {
-	SettingsInstanceHandler::SettingsInstanceHandler (QWebSettings *settings, QObject *parent)
-	: QObject { parent }
-	, Settings_ { settings }
+	class SettingsGlobalHandler : public QObject
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("DNSPrefetchEnabled",
-				this, "cacheSettingsChanged");
-		cacheSettingsChanged ();
-	}
-
-	void SettingsInstanceHandler::cacheSettingsChanged ()
-	{
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::DnsPrefetchEnabled,
-				XmlSettingsManager::Instance ().property ("DNSPrefetchEnabled").toBool ());
-	}
+		Q_OBJECT
+	public:
+		SettingsGlobalHandler (QObject* = nullptr);
+	private slots:
+		void cacheSettingsChanged ();
+	};
 }
 }
 }

@@ -27,7 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "settingsinstancehandler.h"
+#include "settingsglobalhandler.h"
 #include <qwebsettings.h>
 #include "xmlsettingsmanager.h"
 
@@ -37,19 +37,31 @@ namespace Poshuku
 {
 namespace WebKitView
 {
-	SettingsInstanceHandler::SettingsInstanceHandler (QWebSettings *settings, QObject *parent)
+	SettingsGlobalHandler::SettingsGlobalHandler (QObject *parent)
 	: QObject { parent }
-	, Settings_ { settings }
 	{
-		XmlSettingsManager::Instance ().RegisterObject ("DNSPrefetchEnabled",
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"MaximumPagesInCache",
+					"MinDeadCapacity",
+					"MaxDeadCapacity",
+					"TotalCapacity",
+					"OfflineStorageQuota"
+				},
 				this, "cacheSettingsChanged");
 		cacheSettingsChanged ();
 	}
 
-	void SettingsInstanceHandler::cacheSettingsChanged ()
+	void SettingsGlobalHandler::cacheSettingsChanged ()
 	{
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::DnsPrefetchEnabled,
-				XmlSettingsManager::Instance ().property ("DNSPrefetchEnabled").toBool ());
+		auto& xsm = XmlSettingsManager::Instance ();
+		QWebSettings::setMaximumPagesInCache (xsm.property ("MaximumPagesInCache").toInt ());
+
+		auto megs = [&xsm] (const char *prop) { return xsm.property (prop).toDouble () * 1024 * 1024; };
+		QWebSettings::setObjectCacheCapacities (megs ("MinDeadCapacity"),
+				megs ("MaxDeadCapacity"),
+				megs ("TotalCapacity"));
+
+		QWebSettings::setOfflineStorageDefaultQuota (xsm.property ("OfflineStorageQuota").toInt () * 1024);
 	}
 }
 }
