@@ -232,20 +232,6 @@ namespace Poshuku
 		return QStringList ("webbrowser");
 	}
 
-	QStringList Poshuku::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList Poshuku::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void Poshuku::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QIcon Poshuku::GetIcon () const
 	{
 		static QIcon icon ("lcicons:/resources/images/poshuku.svg");
