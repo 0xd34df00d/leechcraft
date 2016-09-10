@@ -580,10 +580,6 @@ namespace Poshuku
 			auto dia = new CookiesEditDialog (rootWM->GetPreferredWindow ());
 			dia->show ();
 		}
-		else if (name == "ClearIconDatabase")
-			QWebSettings::clearIconDatabase ();
-		else if (name == "ClearMemoryCaches")
-			QWebSettings::clearMemoryCaches ();
 		else
 			qWarning () << Q_FUNC_INFO
 				<< "unknown name"

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "settingsglobalhandler.h"
+#include <QtDebug>
 #include <qwebsettings.h>
 #include "xmlsettingsmanager.h"
 
@@ -62,6 +63,18 @@ namespace WebKitView
 				megs ("TotalCapacity"));
 
 		QWebSettings::setOfflineStorageDefaultQuota (xsm.property ("OfflineStorageQuota").toInt () * 1024);
+	}
+
+	void SettingsGlobalHandler::handleSettingsClicked (const QString& name)
+	{
+		if (name == "ClearIconDatabase")
+			QWebSettings::clearIconDatabase ();
+		else if (name == "ClearMemoryCaches")
+			QWebSettings::clearMemoryCaches ();
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "unknown button"
+					<< name;
 	}
 }
 }

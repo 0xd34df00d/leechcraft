@@ -62,7 +62,11 @@ namespace WebKitView
 		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "poshukuwebkitviewsettings.xml");
 
-		new SettingsGlobalHandler { this };
+		const auto sgh = new SettingsGlobalHandler { this };
+		connect (XSD_.get (),
+				SIGNAL (pushButtonClicked (QString)),
+				sgh,
+				SLOT (handleSettingsClicked (QString)));
 	}
 
 	void Plugin::SecondInit ()

@@ -44,6 +44,7 @@ namespace WebKitView
 		SettingsGlobalHandler (QObject* = nullptr);
 	private slots:
 		void cacheSettingsChanged ();
+		void handleSettingsClicked (const QString&);
 	};
 }
 }
