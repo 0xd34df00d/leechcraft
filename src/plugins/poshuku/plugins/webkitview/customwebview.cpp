@@ -64,6 +64,7 @@
 #include "webviewsmoothscroller.h"
 #include "webviewrendersettingshandler.h"
 #include "webviewsslwatcherhandler.h"
+#include "settingsinstancehandler.h"
 
 namespace LeechCraft
 {
@@ -93,6 +94,8 @@ namespace WebKitView
 
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };
+
+		new SettingsInstanceHandler { settings (), this };
 
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
