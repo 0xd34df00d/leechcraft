@@ -29,6 +29,11 @@
 
 #include "webkitview.h"
 #include <QIcon>
+
+#if QT_VERSION < 0x050000
+#include <qwebkitversion.h>
+#endif
+
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 #include "customwebpage.h"
@@ -82,6 +87,17 @@ namespace WebKitView
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
+	}
+
+	QString Plugin::GetDiagInfoString () const
+	{
+		return QString ("Built with QtWebKit %1, running with QtWebKit %2")
+#ifdef QTWEBKIT_VERSION_STR
+				.arg (QTWEBKIT_VERSION_STR)
+#else
+				.arg ("unknown (QTWEBKIT_VERSION_STR is not defined)")
+#endif
+				.arg (qWebKitVersion ());
 	}
 
 	IWebView* Plugin::CreateWebView ()

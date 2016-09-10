@@ -40,9 +40,6 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <qwebpage.h>
-#if QT_VERSION < 0x050000
-#include <qwebkitversion.h>
-#endif
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
@@ -300,17 +297,6 @@ namespace Poshuku
 	QMap<QString, ActionInfo> Poshuku::GetActionInfo () const
 	{
 		return ShortcutMgr_->GetActionInfo ();
-	}
-
-	QString Poshuku::GetDiagInfoString () const
-	{
-		return QString ("Built with QtWebKit %1, running with QtWebKit %2")
-#ifdef QTWEBKIT_VERSION_STR
-				.arg (QTWEBKIT_VERSION_STR)
-#else
-				.arg ("unknown (QTWEBKIT_VERSION_STR is not defined)")
-#endif
-				.arg (qWebKitVersion ());
 	}
 
 	QList<QAction*> Poshuku::GetActions (ActionsEmbedPlace place) const

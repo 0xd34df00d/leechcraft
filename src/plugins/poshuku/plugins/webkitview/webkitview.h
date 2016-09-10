@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/ihavediaginfo.h>
 #include <interfaces/poshuku/iwebviewprovider.h>
 
 namespace LeechCraft
@@ -47,10 +48,11 @@ namespace WebKitView
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IHaveDiagInfo
 				 , public IWebViewProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Poshuku::IWebViewProvider)
+		Q_INTERFACES (IInfo IPlugin2 IHaveDiagInfo LeechCraft::Poshuku::IWebViewProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebKitView")
 
@@ -68,6 +70,8 @@ namespace WebKitView
 		QIcon GetIcon () const override;
 
 		QSet<QByteArray> GetPluginClasses () const override;
+
+		QString GetDiagInfoString () const override;
 
 		IWebView* CreateWebView () override;
 	public slots:

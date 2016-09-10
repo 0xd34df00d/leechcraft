@@ -42,7 +42,6 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
 #include <interfaces/ihaveshortcuts.h>
-#include <interfaces/ihavediaginfo.h>
 #include <interfaces/ihaverecoverabletabs.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "browserwidget.h"
@@ -64,7 +63,6 @@ namespace Poshuku
 					, public IHaveSettings
 					, public IEntityHandler
 					, public IHaveShortcuts
-					, public IHaveDiagInfo
 					, public IWebBrowser
 					, public IActionsExporter
 					, public IHaveRecoverableTabs
@@ -77,7 +75,6 @@ namespace Poshuku
 				IPluginReady
 				IWebBrowser
 				IHaveShortcuts
-				IHaveDiagInfo
 				IActionsExporter
 				IHaveRecoverableTabs)
 
