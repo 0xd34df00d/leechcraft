@@ -28,3 +28,20 @@
  **********************************************************************/
 
 #include "settingsinstancehandler.h"
+#include <qwebsettings.h>
+#include "xmlsettingsmanager.h"
+
+namespace LeechCraft
+{
+namespace Poshuku
+{
+namespace WebKitView
+{
+	SettingsInstanceHandler::SettingsInstanceHandler (QWebSettings *settings, QObject *parent)
+	: QObject { parent }
+	, Settings_ { settings }
+	{
+	}
+}
+}
+}

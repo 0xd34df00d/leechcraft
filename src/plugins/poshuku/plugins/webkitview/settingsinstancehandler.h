@@ -28,3 +28,25 @@
  **********************************************************************/
 
 #pragma once
+
+#include <QObject>
+
+class QWebSettings;
+
+namespace LeechCraft
+{
+namespace Poshuku
+{
+namespace WebKitView
+{
+	class SettingsInstanceHandler : public QObject
+	{
+		Q_OBJECT
+
+		QWebSettings * const Settings_;
+	public:
+		SettingsInstanceHandler (QWebSettings*, QObject* = nullptr);
+	};
+}
+}
+}
