@@ -34,10 +34,12 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+namespace WebKitView
+{
 	void LinkHistory::addHistoryEntry (const QString& url)
 	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("StoreLocalLinkHistory").toBool ())
+		if (!XmlSettingsManager::Instance ()
+				.property ("StoreLocalLinkHistory").toBool ())
 			return;
 
 		if (!History_.contains (url))
@@ -46,13 +48,14 @@ namespace Poshuku
 
 	bool LinkHistory::historyContains (const QString& url) const
 	{
-		if (!XmlSettingsManager::Instance ()->
-				property ("StoreLocalLinkHistory").toBool ())
+		if (!XmlSettingsManager::Instance ()
+				.property ("StoreLocalLinkHistory").toBool ())
 			return false;
 
 		if (History_.contains (url))
 			return true;
 		return false;
 	}
+}
 }
 }

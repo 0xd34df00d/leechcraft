@@ -51,7 +51,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <qwebframe.h>
-#include <qwebhistory.h>
 #include <QtDebug>
 #include <QMainWindow>
 #include <util/xpc/util.h>
@@ -68,7 +67,6 @@
 #include "sqlstoragebackend.h"
 #include "xbelparser.h"
 #include "xbelgenerator.h"
-#include "linkhistory.h"
 #include "favoriteschecker.h"
 #include "importentity.h"
 
@@ -105,8 +103,6 @@ namespace Poshuku
 		PluginManager_->RegisterHookable (URLCompletionModel_);
 		PluginManager_->RegisterHookable (HistoryModel_);
 		PluginManager_->RegisterHookable (FavoritesModel_);
-
-		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 	}
 
 	Core& Core::Instance ()

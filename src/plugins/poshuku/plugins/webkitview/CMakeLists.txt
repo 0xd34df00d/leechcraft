@@ -5,6 +5,7 @@ set (WEBKITVIEW_SRCS
 	customwebview.cpp
 	externalproxy.cpp
 	jsproxy.cpp
+	linkhistory.cpp
 	sslstatedialog.cpp
 	webkitview.cpp
 	webpagesslwatcher.cpp

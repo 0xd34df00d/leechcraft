@@ -36,6 +36,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+namespace WebKitView
+{
 	class LinkHistory : public QWebHistoryInterface
 	{
 		Q_OBJECT
@@ -47,5 +49,6 @@ namespace Poshuku
 		void addHistoryEntry (const QString& url);
 		bool historyContains (const QString& url) const;
 	};
+}
 }
 }

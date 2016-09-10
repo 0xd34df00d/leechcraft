@@ -68,9 +68,6 @@
 				<item type="checkbox" property="LocalStorageDB" state="on">
 					<label lang="en" value="Local storage database" />
 				</item>
-				<item type="checkbox" property="StoreLocalLinkHistory" state="on">
-					<label lang="en" value="Store local link history" />
-				</item>
 				<item type="spinbox" property="HistoryClearOlderThan" minimum="0" maximum="10000" default="30">
 					<label value="Clear history items older than:" />
 					<suffix value=" days" />

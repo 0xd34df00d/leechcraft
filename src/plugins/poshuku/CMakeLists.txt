@@ -46,7 +46,6 @@ set (SRCS
 	proxyobject.cpp
 	passwordremember.cpp
 	pageformsdata.cpp
-	linkhistory.cpp
 	cookiesfilter.cpp
 	searchtext.cpp
 	reloadintervalselector.cpp

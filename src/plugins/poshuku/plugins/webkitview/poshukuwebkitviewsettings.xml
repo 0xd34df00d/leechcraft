@@ -18,4 +18,10 @@
 			</item>
 		</groupbox>
 	</page>
+	<page>
+		<label value="Security" />
+		<item type="checkbox" property="StoreLocalLinkHistory" default="true">
+			<label value="Store local link history" />
+		</item>
+	</page>
 </settings>

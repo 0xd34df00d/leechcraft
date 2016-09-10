@@ -33,6 +33,7 @@
 #include "customwebview.h"
 #include "customwebpage.h"
 #include "webpluginfactory.h"
+#include "linkhistory.h"
 
 namespace LeechCraft
 {
@@ -44,6 +45,8 @@ namespace WebKitView
 	{
 		Proxy_ = proxy;
 		WebPluginFactory_ = new WebPluginFactory;
+
+		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 	}
 
 	void Plugin::SecondInit ()
