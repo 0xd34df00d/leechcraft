@@ -412,7 +412,7 @@ namespace WebKitView
 
 				QIcon GetIcon () const override
 				{
-					return Item_.icon ();
+					return {};
 				}
 
 				void Navigate () override
