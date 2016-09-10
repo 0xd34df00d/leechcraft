@@ -29,6 +29,7 @@
 
 #include "webkitview.h"
 #include <QIcon>
+#include <qwebsettings.h>
 
 #if QT_VERSION < 0x050000
 #include <qwebkitversion.h>
@@ -113,6 +114,23 @@ namespace WebKitView
 		view->page ()->setPluginFactory (WebPluginFactory_);
 
 		return view;
+	}
+
+	QIcon Plugin::GetIconForUrl (const QUrl& url) const
+	{
+		const auto& specific = QWebSettings::iconForUrl (url);
+		if (!specific.isNull ())
+			return specific;
+
+		QUrl test;
+		test.setScheme (url.scheme ());
+		test.setHost (url.host ());
+		return QWebSettings::iconForUrl (test);
+	}
+
+	QIcon Plugin::GetDefaultUrlIcon () const
+	{
+		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)

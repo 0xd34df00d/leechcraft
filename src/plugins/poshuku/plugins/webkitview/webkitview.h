@@ -74,6 +74,8 @@ namespace WebKitView
 		QString GetDiagInfoString () const override;
 
 		IWebView* CreateWebView () override;
+		QIcon GetIconForUrl (const QUrl&) const override;
+		QIcon GetDefaultUrlIcon () const override;
 	public slots:
 		void initPlugin (QObject*);
 	signals:
