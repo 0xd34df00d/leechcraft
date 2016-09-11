@@ -225,7 +225,7 @@ namespace Poshuku
 
 	QStringList Poshuku::Provides () const
 	{
-		return QStringList ("webbrowser");
+		return { "webbrowser" };
 	}
 
 	QIcon Poshuku::GetIcon () const
