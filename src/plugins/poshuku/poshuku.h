@@ -132,7 +132,6 @@ namespace Poshuku
 	private slots:
 		void createTabFirstTime ();
 		void viewerSettingsChanged ();
-		void developerExtrasChanged ();
 		void handleError (const QString&);
 		void handleSettingsClicked (const QString&);
 		void handleCheckFavorites ();

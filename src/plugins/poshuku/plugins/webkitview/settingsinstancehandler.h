@@ -47,6 +47,7 @@ namespace WebKitView
 	public:
 		SettingsInstanceHandler (QWebSettings*, QObject* = nullptr);
 	private slots:
+		void generalSettingsChanged ();
 		void cacheSettingsChanged ();
 	};
 }

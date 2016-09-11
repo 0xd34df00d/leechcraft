@@ -399,14 +399,11 @@ namespace Poshuku
 		QList<QByteArray> viewerSettings;
 		viewerSettings << "AutoLoadImages"
 			<< "AllowJavascript"
-			<< "AllowJava"
 			<< "AllowPlugins"
 			<< "JavascriptCanOpenWindows"
 			<< "JavascriptCanAccessClipboard"
 			<< "UserStyleSheet"
-			<< "OfflineStorageDB"
 			<< "LocalStorageDB"
-			<< "OfflineWebApplicationCache"
 			<< "EnableXSSAuditing"
 			<< "EnableWebGL"
 			<< "EnableHyperlinkAuditing"
@@ -414,11 +411,7 @@ namespace Poshuku
 		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
 				this, "viewerSettingsChanged");
 
-		XmlSettingsManager::Instance ()->RegisterObject ("DeveloperExtrasEnabled",
-				this, "developerExtrasChanged");
-
 		viewerSettingsChanged ();
-		developerExtrasChanged ();
 	}
 
 	void Poshuku::PrepopulateShortcuts ()
@@ -523,18 +516,12 @@ namespace Poshuku
 				xsm->property ("AutoLoadImages").toBool ());
 		global->setAttribute (QWebSettings::JavascriptEnabled,
 				xsm->property ("AllowJavascript").toBool ());
-		global->setAttribute (QWebSettings::JavaEnabled,
-				xsm->property ("AllowJava").toBool ());
 		global->setAttribute (QWebSettings::PluginsEnabled,
 				xsm->property ("AllowPlugins").toBool ());
 		global->setAttribute (QWebSettings::JavascriptCanOpenWindows,
 				xsm->property ("JavascriptCanOpenWindows").toBool ());
 		global->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
 				xsm->property ("JavascriptCanAccessClipboard").toBool ());
-		global->setAttribute (QWebSettings::OfflineStorageDatabaseEnabled,
-				xsm->property ("OfflineStorageDB").toBool ());
-		global->setAttribute (QWebSettings::OfflineWebApplicationCacheEnabled,
-				xsm->property ("OfflineWebApplicationCache").toBool ());
 		global->setAttribute (QWebSettings::LocalStorageEnabled,
 				xsm->property ("LocalStorageDB").toBool ());
 		global->setAttribute (QWebSettings::XSSAuditingEnabled,
@@ -544,27 +531,11 @@ namespace Poshuku
 		global->setAttribute (QWebSettings::WebGLEnabled,
 				xsm->property ("EnableWebGL").toBool ());
 #if QT_VERSION >= 0x050000
-		global->setAttribute (QWebSettings::NotificationsEnabled,
-				xsm->property ("EnableNotifications").toBool ());
 		global->setAttribute (QWebSettings::ScrollAnimatorEnabled,
 				xsm->property ("EnableSmoothScrolling").toBool ());
 #endif
 
 		SetUserStylesheet ();
-	}
-
-	void Poshuku::developerExtrasChanged ()
-	{
-		bool enabled = XmlSettingsManager::Instance ()->
-				property ("DeveloperExtrasEnabled").toBool ();
-		QWebSettings::globalSettings ()->
-				setAttribute (QWebSettings::DeveloperExtrasEnabled, enabled);
-
-		if (enabled && sender ())
-			QMessageBox::information (nullptr,
-					"LeechCraft",
-					tr ("Please note that Developer Extras would work correctly "
-						"only for pages that are loaded after enabling."));
 	}
 
 	void Poshuku::handleError (const QString& msg)

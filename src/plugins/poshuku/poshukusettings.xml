@@ -59,12 +59,6 @@
 					<label value="Enable hyperlink auditing" />
 					<tooltip>Enable sending hyperlink auditing pings.</tooltip>
 				</item>
-				<item type="checkbox" property="OfflineStorageDB" state="on">
-					<label lang="en" value="Offline storage database" />
-				</item>
-				<item type="checkbox" property="OfflineWebApplicationCache" state="on">
-					<label lang="en" value="Offline web application cache" />
-				</item>
 				<item type="checkbox" property="LocalStorageDB" state="on">
 					<label lang="en" value="Local storage database" />
 				</item>
@@ -98,9 +92,6 @@
 				<item type="checkbox" property="AllowJavascript" state="on">
 					<label lang="en" value="Allow Javascript" />
 				</item>
-				<item type="checkbox" property="AllowJava" state="on">
-					<label lang="en" value="Allow Java" />
-				</item>
 				<item type="checkbox" property="AllowPlugins" state="on">
 					<label lang="en" value="Allow plugins" />
 				</item>
@@ -110,17 +101,11 @@
 				<item type="checkbox" property="JavascriptCanAccessClipboard" state="on">
 					<label lang="en" value="Javascript programs can access clipboard" />
 				</item>
-				<item type="checkbox" property="EnableNotifications" default="true">
-					<label value="Enable HTML5 notifications" />
-				</item>
 				<item type="checkbox" property="EnableWebGL" default="true">
 					<label value="Enable WebGL" />
 				</item>
 				<item type="checkbox" property="EnableSmoothScrolling" default="true">
 					<label value="Enable smooth scrolling" />
-				</item>
-				<item type="checkbox" property="DeveloperExtrasEnabled" state="off">
-					<label lang="en" value="Developer extras" />
 				</item>
 			</groupbox>
 		</tab>

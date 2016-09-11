@@ -44,6 +44,34 @@ namespace WebKitView
 		XmlSettingsManager::Instance ().RegisterObject ("DNSPrefetchEnabled",
 				this, "cacheSettingsChanged");
 		cacheSettingsChanged ();
+
+		XmlSettingsManager::Instance ().RegisterObject ({
+					"AllowJava",
+					"OfflineStorageDB",
+					"OfflineWebApplicationCache",
+					"EnableNotifications",
+					"DeveloperExtrasEnabled"
+				},
+				this, "generalSettingsChanged");
+		generalSettingsChanged ();
+	}
+
+	void SettingsInstanceHandler::generalSettingsChanged ()
+	{
+		auto& xsm = XmlSettingsManager::Instance ();
+
+		auto boolOpt = [this, &xsm] (QWebSettings::WebAttribute attr, const char *name)
+		{
+			Settings_->setAttribute (attr, xsm.property (name).toBool ());
+		};
+		boolOpt (QWebSettings::JavaEnabled, "AllowJava");
+		boolOpt (QWebSettings::OfflineStorageDatabaseEnabled, "OfflineStorageDB");
+		boolOpt (QWebSettings::OfflineWebApplicationCacheEnabled, "OfflineWebApplicationCache");
+		boolOpt (QWebSettings::DeveloperExtrasEnabled, "DeveloperExtrasEnabled");
+
+#if QT_VERSION >= 0x050000
+		boolOpt (QWebSettings::NotificationsEnabled, "EnableNotifications");
+#endif
 	}
 
 	void SettingsInstanceHandler::cacheSettingsChanged ()
