@@ -118,6 +118,19 @@ namespace Poshuku
 			Deny
 		};
 
+		enum class Attribute
+		{
+			AutoLoadImages,
+			JavascriptEnabled,
+			JavascriptCanOpenWindows,
+			JavascriptCanAccessClipboard,
+			LocalStorageEnabled,
+			XSSAuditingEnabled,
+			HyperlinkAuditingEnabled,
+			WebGLEnabled,
+			ScrollAnimatorEnabled
+		};
+
 		class IFeatureSecurityOrigin
 		{
 		protected:
@@ -171,6 +184,8 @@ namespace Poshuku
 		virtual QMenu* CreateStandardContextMenu () = 0;
 
 		virtual IWebViewHistory_ptr GetHistory () = 0;
+
+		virtual void SetAttribute (Attribute, bool) = 0;
 	protected:
 		virtual void earliestViewLayout () = 0;
 

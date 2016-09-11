@@ -470,6 +470,31 @@ namespace WebKitView
 		return std::make_shared<HistoryWrapper> (history ());
 	}
 
+	void CustomWebView::SetAttribute (Attribute attribute, bool enable)
+	{
+#define ATTR(x) \
+		case Attribute::x: \
+			settings ()->setAttribute (QWebSettings::x, enable); \
+			break;
+
+		switch (attribute)
+		{
+		ATTR (AutoLoadImages)
+		ATTR (JavascriptEnabled)
+		ATTR (JavascriptCanOpenWindows)
+		ATTR (JavascriptCanAccessClipboard)
+		ATTR (LocalStorageEnabled)
+		ATTR (XSSAuditingEnabled)
+		ATTR (HyperlinkAuditingEnabled)
+		ATTR (WebGLEnabled)
+#if QT_VERSION >= 0x050000
+		ATTR (ScrollAnimatorEnabled)
+#endif
+		}
+
+#undef ATTR
+	}
+
 	void CustomWebView::SetFontFamily (FontFamily family, const QFont& font)
 	{
 		settings ()->setFontFamily (static_cast<QWebSettings::FontFamily> (family), font.family ());
