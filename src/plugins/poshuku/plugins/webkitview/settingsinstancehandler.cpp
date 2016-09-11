@@ -76,7 +76,7 @@ namespace WebKitView
 
 	void SettingsInstanceHandler::cacheSettingsChanged ()
 	{
-		QWebSettings::globalSettings ()->setAttribute (QWebSettings::DnsPrefetchEnabled,
+		Settings_->setAttribute (QWebSettings::DnsPrefetchEnabled,
 				XmlSettingsManager::Instance ().property ("DNSPrefetchEnabled").toBool ());
 	}
 }
