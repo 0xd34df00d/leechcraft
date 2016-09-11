@@ -33,7 +33,6 @@
 #include <QAction>
 #include <QTranslator>
 #include <QWidget>
-#include <QWebSettings>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/iwebbrowser.h>

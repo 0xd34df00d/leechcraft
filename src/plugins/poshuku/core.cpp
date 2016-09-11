@@ -50,7 +50,6 @@
 #include <QDesktopServices>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <qwebframe.h>
 #include <QtDebug>
 #include <QMainWindow>
 #include <util/xpc/util.h>

@@ -39,7 +39,6 @@
 #include <QInputDialog>
 #include <QMenu>
 #include <QMainWindow>
-#include <qwebpage.h>
 #include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/core/icoreproxy.h>
