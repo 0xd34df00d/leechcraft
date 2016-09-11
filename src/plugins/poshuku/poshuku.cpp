@@ -440,6 +440,7 @@ namespace Poshuku
 		REG ("ViewSources_", tr ("View sources..."), "applications-development-web", tr ("Ctrl+Shift+V"));
 #undef REG
 	}
+
 	void Poshuku::createTabFirstTime ()
 	{
 		bool firstTime = XmlSettingsManager::Instance ()->
@@ -480,29 +481,6 @@ namespace Poshuku
 			const auto& uriContents = "data:text/css;charset=utf-8;base64," + contents.toBase64 ();
 			QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
 		}
-
-#if QT_VERSION < 0x050000
-		void SetSubsts ()
-		{
-			const auto& fixedFont = XmlSettingsManager::Instance ()->
-					property ("FixedFont").value<QFont> ().family ();
-			const auto& knownFamilies = QFontDatabase {}.families ();
-			const auto& substs = QFont::substitutions ();
-
-			auto setSubst = [&fixedFont, &knownFamilies, &substs] (const QString& fontName)
-			{
-				if (knownFamilies.contains (fontName))
-					return;
-
-				if (substs.contains (fontName, Qt::CaseInsensitive))
-					QFont::removeSubstitution (fontName);
-
-				QFont::insertSubstitutions (fontName, { fixedFont, "monospace" });
-			};
-			setSubst ("Consolas");
-			setSubst ("Menlo");
-		}
-#endif
 	}
 
 	void Poshuku::viewerSettingsChanged ()
