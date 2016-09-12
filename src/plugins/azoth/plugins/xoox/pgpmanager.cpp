@@ -30,7 +30,6 @@
 #include "pgpmanager.h"
 #include <QDomElement>
 #include <QtCrypto>
-#include <QXmppConstants.h>
 #include <QXmppClient.h>
 #include <interfaces/azoth/gpgexceptions.h>
 
