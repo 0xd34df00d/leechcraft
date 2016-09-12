@@ -92,17 +92,17 @@ namespace WebKitView
 			setPalette (QWindowsStyle ().standardPalette ());
 #endif
 
-		new WebViewSmoothScroller { this };
-		new WebViewRenderSettingsHandler { this };
-
-		new SettingsInstanceHandler { settings (), this };
-
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
 		connect (page,
 				SIGNAL (webViewCreated (IWebView*, bool)),
 				this,
 				SIGNAL (webViewCreated (IWebView*, bool)));
+
+		new WebViewSmoothScroller { this };
+		new WebViewRenderSettingsHandler { this };
+
+		new SettingsInstanceHandler { settings (), this };
 
 		SslWatcherHandler_ = new WebViewSslWatcherHandler { this, proxy->GetIconThemeManager () };
 
