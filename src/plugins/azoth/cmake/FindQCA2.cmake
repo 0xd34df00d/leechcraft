@@ -25,7 +25,11 @@ else ()
 
 	if (NOT WIN32)
 		find_package(PkgConfig)
-		pkg_check_modules(PC_QCA2 QUIET qca2)
+		if (USE_QT5)
+			pkg_check_modules(PC_QCA2 QUIET qca2-qt5)
+		else ()
+			pkg_check_modules(PC_QCA2 QUIET qca2)
+		endif ()
 		set(QCA2_DEFINITIONS ${PC_QCA2_CFLAGS_OTHER})
 	endif ()
 
