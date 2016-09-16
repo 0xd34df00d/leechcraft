@@ -48,7 +48,7 @@ namespace UPower
 				"LeechCraft.Liznoo.UPower.UPowerConnector");
 		bool PowerEventsAvailable_ = false;
 	public:
-		UPowerConnector (QObject* = 0);
+		UPowerConnector (QObject* = nullptr);
 
 		bool ArePowerEventsAvailable () const;
 	private slots:
