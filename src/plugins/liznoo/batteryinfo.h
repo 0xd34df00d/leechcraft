@@ -40,25 +40,25 @@ namespace Liznoo
 	{
 		QString ID_;
 
-		char Percentage_;
+		char Percentage_ = 0;
 
 		/** Time until battery is fully charged in seconds, or 0 if
 		 * battery isn't charging.
 		 */
 		qlonglong TimeToFull_;
 		qlonglong TimeToEmpty_;
-		double Voltage_;
+		double Voltage_ = 0;
 
-		double Energy_;
-		double EnergyFull_;
-		double DesignEnergyFull_;
-		double EnergyRate_;
+		double Energy_ = 0;
+		double EnergyFull_ = 0;
+		double DesignEnergyFull_ = 0;
+		double EnergyRate_ = 0;
 
 		QString Technology_;
 
 		double Temperature_;
 
-		int CyclesCount_;
+		int CyclesCount_ = 0;
 
 		void Dump ();
 	};
