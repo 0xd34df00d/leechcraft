@@ -97,10 +97,9 @@ namespace Liznoo
 
 #if defined(Q_OS_LINUX)
 		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
-		const auto logindThread = std::make_shared<DBusThread<Logind::LogindConnector>> ();
 
 		PL_ = Events::MakeUPowerLike (upowerThread, Proxy_);
-		PL_->SubscribeAvailable ([this, logindThread] (bool avail)
+		PL_->SubscribeAvailable ([this] (bool avail)
 				{
 					if (avail)
 						return;
@@ -108,7 +107,10 @@ namespace Liznoo
 					qDebug () << Q_FUNC_INFO
 							<< "UPower events backend is not available, trying logind...";
 					Util::DelayDestruction (PL_);
+
+					const auto logindThread = std::make_shared<DBusThread<Logind::LogindConnector>> ();
 					PL_ = Events::MakeUPowerLike (logindThread, Proxy_);
+					logindThread->start (QThread::LowestPriority);
 				});
 
 		SPL_ = new Screen::Freedesktop (this);
@@ -121,7 +123,6 @@ namespace Liznoo
 	#endif
 
 		upowerThread->start (QThread::LowestPriority);
-		logindThread->start (QThread::LowestPriority);
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
