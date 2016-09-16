@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "platformlayer.h"
+#include <QFuture>
 #include <util/xpc/util.h>
 #include <interfaces/core/ientitymanager.h>
 
@@ -41,24 +42,17 @@ namespace Events
 	: QObject { parent }
 	, Proxy_ { proxy }
 	{
+		IsAvailable_.reportStarted ();
 	}
 
-	void PlatformLayer::SubscribeAvailable (const std::function<void (bool)>& f)
+	QFuture<bool> PlatformLayer::IsAvailable ()
 	{
-		if (IsAvailable_)
-			f (*IsAvailable_);
-		else
-			AvailSubscribers_ << f;
+		return IsAvailable_.future ();
 	}
 
 	void PlatformLayer::setAvailable (bool avail)
 	{
-		IsAvailable_ = avail;
-
-		for (const auto& f : AvailSubscribers_)
-			f (avail);
-
-		AvailSubscribers_.clear ();
+		IsAvailable_.reportFinished (&avail);
 	}
 
 	void PlatformLayer::emitGonnaSleep (int timeout)

@@ -99,7 +99,8 @@ namespace Liznoo
 		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
 		PL_ = Events::MakeUPowerLike (upowerThread, Proxy_);
-		PL_->SubscribeAvailable ([this] (bool avail)
+		Util::Sequence (this, PL_->IsAvailable ()) >>
+				[this] (bool avail)
 				{
 					if (avail)
 						return;
@@ -111,7 +112,7 @@ namespace Liznoo
 					const auto logindThread = std::make_shared<DBusThread<Logind::LogindConnector>> ();
 					PL_ = Events::MakeUPowerLike (logindThread, Proxy_);
 					logindThread->start (QThread::LowestPriority);
-				});
+				};
 
 		SPL_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (upowerThread);

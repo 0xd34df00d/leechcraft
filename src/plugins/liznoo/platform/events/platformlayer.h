@@ -29,10 +29,9 @@
 
 #pragma once
 
-#include <functional>
-#include <boost/optional.hpp>
 #include <QObject>
 #include <QList>
+#include <QFutureInterface>
 #include <interfaces/structures.h>
 #include <interfaces/core/icoreproxy.h>
 #include "../../batteryinfo.h"
@@ -47,14 +46,13 @@ namespace Events
 	{
 		Q_OBJECT
 
-		boost::optional<bool> IsAvailable_;
-		QList<std::function<void (bool)>> AvailSubscribers_;
+		QFutureInterface<bool> IsAvailable_;
 	protected:
 		const ICoreProxy_ptr Proxy_;
 	public:
 		PlatformLayer (const ICoreProxy_ptr&, QObject* = nullptr);
 
-		void SubscribeAvailable (const std::function<void (bool)>&);
+		QFuture<bool> IsAvailable ();
 	protected slots:
 		void setAvailable (bool);
 	public slots:
