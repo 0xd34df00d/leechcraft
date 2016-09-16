@@ -120,8 +120,8 @@ namespace Liznoo
 		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
 	#endif
 
-		upowerThread->start (QThread::IdlePriority);
-		logindThread->start (QThread::IdlePriority);
+		upowerThread->start (QThread::LowestPriority);
+		logindThread->start (QThread::LowestPriority);
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
