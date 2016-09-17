@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pmutils.h"
+#include <cassert>
 #include <QProcess>
 #include <QFutureInterface>
 #include <QtDebug>
@@ -51,10 +52,7 @@ namespace PowerActions
 				return "hibernate";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown state"
-					<< static_cast<int> (state);
-			return {};
+			assert (false);
 		}
 
 		QString MakeErrMsg (QProcess *process)

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "upower.h"
+#include <cassert>
 #include <QtConcurrentRun>
 #include <QtDBus>
 
@@ -49,10 +50,7 @@ namespace PowerActions
 				return "Hibernate";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown state"
-					<< static_cast<int> (state);
-			return {};
+			assert (false);
 		}
 	}
 
