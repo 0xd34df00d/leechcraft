@@ -17,6 +17,7 @@ set (SRCS
 	batteryinfo.cpp
 	batteryhistory.cpp
 	batteryhistorydialog.cpp
+	platformobjects.cpp
 	quarkmanager.cpp
 	xmlsettingsmanager.cpp
 	platform/battery/batteryplatform.cpp
