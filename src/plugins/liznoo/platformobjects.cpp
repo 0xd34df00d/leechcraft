@@ -96,6 +96,23 @@ namespace Liznoo
 				return Events::MakeUPowerLike (Thread_, Proxy_);
 			}
 		};
+
+		template<typename T>
+		class PowerActionsChecker final : public IChecker<PowerActions::Platform>
+		{
+			std::shared_ptr<T> Platform_;
+		public:
+			QFuture<bool> Check () override
+			{
+				Platform_ = std::make_shared<T> ();
+				return Platform_->IsAvailable ();
+			}
+
+			std::shared_ptr<PowerActions::Platform> Make () override
+			{
+				return Platform_;
+			}
+		};
 	}
 
 	PlatformObjects::PlatformObjects (const ICoreProxy_ptr& proxy, QObject *parent)
