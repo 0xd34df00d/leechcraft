@@ -66,4 +66,3 @@ namespace Liznoo
 }
 
 Q_DECLARE_METATYPE (LeechCraft::Liznoo::BatteryInfo)
-
