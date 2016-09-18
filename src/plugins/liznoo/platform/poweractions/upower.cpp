@@ -54,6 +54,18 @@ namespace PowerActions
 		}
 	}
 
+	QFuture<bool> UPower::IsAvailable ()
+	{
+		return QtConcurrent::run ([]
+				{
+					QDBusInterface face ("org.freedesktop.UPower",
+							"/org/freedesktop/UPower",
+							"org.freedesktop.UPower",
+							QDBusConnection::systemBus ());
+					return face.isValid ();
+				});
+	}
+
 	QFuture<Platform::QueryChangeStateResult> UPower::CanChangeState (State state)
 	{
 		return QtConcurrent::run ([state] () -> QueryChangeStateResult
