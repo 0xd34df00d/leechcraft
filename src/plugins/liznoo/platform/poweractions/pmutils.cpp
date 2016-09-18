@@ -109,6 +109,7 @@ namespace PowerActions
 	QFuture<Platform::QueryChangeStateResult> PMUtils::CanChangeState (State state)
 	{
 		QFutureInterface<QueryChangeStateResult> iface;
+		iface.reportStarted ();
 
 		auto process = new QProcess { this };
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
