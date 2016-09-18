@@ -35,6 +35,7 @@
 #include <dev/acpica/acpiio.h>
 #include <QMessageBox>
 #include <util/sys/fdguard.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -42,6 +43,12 @@ namespace Liznoo
 {
 namespace PowerActions
 {
+	QFuture<bool> FreeBSD::IsAvailable ()
+	{
+		// We don't have other backends for FreeBSD anyway.
+		return Util::MakeReadyFuture (true);
+	}
+
 	QFuture<Platform::QueryChangeStateResult> FreeBSD::CanChangeState (Platform::State)
 	{
 		QFutureInterface<QueryChangeStateResult> iface;
