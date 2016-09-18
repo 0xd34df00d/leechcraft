@@ -42,6 +42,7 @@ namespace PowerActions
 	public:
 		using Platform::Platform;
 
+		QFuture<bool> IsAvailable () override;
 		QFuture<QueryChangeStateResult> CanChangeState (State) override;
 		void ChangeState (State) override;
 	};

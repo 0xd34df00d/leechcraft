@@ -30,9 +30,9 @@
 #include "pmutils.h"
 #include <cassert>
 #include <QProcess>
-#include <QFutureInterface>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -70,6 +70,40 @@ namespace PowerActions
 				return origMsg;
 			}
 		}
+	}
+
+	QFuture<bool> PMUtils::IsAvailable ()
+	{
+		QFutureInterface<bool> iface;
+		iface.reportStarted ();
+
+		auto process = new QProcess { this };
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[process, iface] () mutable
+			{
+				Util::ReportFutureResult (iface, false);
+				process->deleteLater ();
+			},
+			process,
+			SIGNAL (error (QProcess::ProcessError)),
+			process
+		};
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[process, iface] () mutable
+			{
+				Util::ReportFutureResult (iface,
+						process->exitStatus () == QProcess::NormalExit);
+				process->deleteLater ();
+			},
+			process,
+			SIGNAL (finished (int, QProcess::ExitStatus)),
+			process
+		};
+		process->start ("pm-is-supported");
+
+		return iface.future ();
 	}
 
 	QFuture<Platform::QueryChangeStateResult> PMUtils::CanChangeState (State state)
