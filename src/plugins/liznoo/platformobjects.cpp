@@ -216,29 +216,24 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
-		EventsPlatform_ = Events::MakeUPowerLike (upowerThread, Proxy_);
-		Util::Sequence (this, EventsPlatform_->IsAvailable ()) >>
-				[this] (bool avail)
+		const auto eventsChecker = new AvailabilityChecker<Events::PlatformLayer>
+		{
+			MakePureChecker<Events::PlatformLayer> ([upowerThread]
+					{
+						return upowerThread->
+								ScheduleImpl (&UPower::UPowerConnector::ArePowerEventsAvailable);
+					},
+					[upowerThread, this] { return Events::MakeUPowerLike (upowerThread, Proxy_); }),
+			std::make_unique<LogindEventsChecker> (proxy)
+		};
+		Util::Sequence (this, eventsChecker->GetResult ()) >>
+				[this] (const auto& maybeEvents)
 				{
-					if (avail)
-						return Util::MakeReadyFuture (true);
-
-					qDebug () << Q_FUNC_INFO
-							<< "UPower events backend is not available, trying logind...";
-					Util::DelayDestruction (EventsPlatform_);
-
-					const auto logindThread = std::make_shared<DBusThread<Logind::LogindConnector>> ();
-					EventsPlatform_ = Events::MakeUPowerLike (logindThread, Proxy_);
-					logindThread->start (QThread::LowestPriority);
-					return EventsPlatform_->IsAvailable ();
-				} >>
-				[this] (bool avail)
-				{
-					if (avail)
-						return;
-
-					qDebug () << Q_FUNC_INFO
-							<< "logind events backend is not available, trying consolekit...";
+					if (maybeEvents)
+						EventsPlatform_ = *maybeEvents;
+					else
+						qWarning () << Q_FUNC_INFO
+								<< "no events platform";
 				};
 
 		ScreenPlatform_ = new Screen::Freedesktop (this);
