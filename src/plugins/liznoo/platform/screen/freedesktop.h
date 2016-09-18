@@ -45,7 +45,7 @@ namespace Screen
 
 		QTimer * const ActivityTimer_;
 	public:
-		Freedesktop (QObject* = 0);
+		Freedesktop (QObject* = nullptr);
 
 		void ProhibitScreensaver (bool prohibit, const QString& id);
 	private slots:
