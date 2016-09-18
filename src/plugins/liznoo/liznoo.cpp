@@ -404,6 +404,8 @@ namespace Liznoo
 				return Platform_->EmitTestSleep ();
 			else if (button == "TestWake")
 				return Platform_->EmitTestWakeup ();
+			else
+				return true;
 		} ();
 
 		if (!res)
