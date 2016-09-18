@@ -33,6 +33,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <util/threads/futures.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include "platform/screen/screenplatform.h"
 #include "platform/battery/batteryplatform.h"
@@ -139,25 +140,24 @@ namespace Liznoo
 
 	}
 
-	void PlatformObjects::ChangeState (PowerActions::Platform::State state)
+	QFuture<PlatformObjects::ChangeStateResult_t> PlatformObjects::ChangeState (PowerActions::Platform::State state)
 	{
 		if (!PowerActPlatform_)
-			return;
+			return Util::MakeReadyFuture (ChangeStateResult_t::Left ({ ChangeStateFailed::Reason::Unavailable }));
 
-		Util::Sequence (this, PowerActPlatform_->CanChangeState (state)) >>
+		return Util::Sequence (this, PowerActPlatform_->CanChangeState (state)) >>
 				[state, this] (const PowerActions::Platform::QueryChangeStateResult& res)
 				{
 					if (res.CanChangeState_)
-						PowerActPlatform_->ChangeState (state);
-					else
 					{
-						const auto& msg = res.Reason_.isEmpty () ?
-								tr ("Cannot change state.") :
-								res.Reason_;
-						const auto& entity = Util::MakeNotification ("Liznoo",
-								msg, PCritical_);
-						Proxy_->GetEntityManager ()->HandleEntity (entity);
+						PowerActPlatform_->ChangeState (state);
+						return Util::MakeReadyFuture (ChangeStateResult_t::Right ({}));
 					}
+					else
+						return Util::MakeReadyFuture (ChangeStateResult_t::Left ({
+										ChangeStateFailed::Reason::PlatformFailure,
+										res.Reason_
+								}));
 				};
 	}
 

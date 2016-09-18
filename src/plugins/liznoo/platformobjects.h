@@ -31,8 +31,13 @@
 
 #include <memory>
 #include <QObject>
+#include <util/sll/eitherfwd.h>
+#include <util/sll/void.h>
 #include <interfaces/core/icoreproxyfwd.h>
 #include "platform/poweractions/platform.h"
+
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
@@ -68,7 +73,20 @@ namespace Liznoo
 	public:
 		PlatformObjects (const ICoreProxy_ptr& proxy, QObject* = nullptr);
 
-		void ChangeState (PowerActions::Platform::State);
+		struct ChangeStateSucceeded {};
+		struct ChangeStateFailed
+		{
+			enum class Reason
+			{
+				Unavailable,
+				PlatformFailure,
+				Other
+			} Reason_;
+
+			QString ReasonString_;
+		};
+		using ChangeStateResult_t = Util::Either<ChangeStateFailed, ChangeStateSucceeded>;
+		QFuture<ChangeStateResult_t> ChangeState (PowerActions::Platform::State);
 		void ProhibitScreensaver (bool prohibit, const QString& id);
 
 		bool EmitTestSleep ();

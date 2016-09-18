@@ -39,6 +39,9 @@
 #include <interfaces/entitytesthandleresult.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/either.h>
+#include <util/sll/visitor.h>
+#include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 #include "batteryhistorydialog.h"
@@ -344,14 +347,53 @@ namespace Liznoo
 		Battery2Dialog_.remove (Battery2Dialog_.key (dia));
 	}
 
+	namespace
+	{
+		void HandleChangeStateResult (IEntityManager *iem,
+				const QFuture<PlatformObjects::ChangeStateResult_t>& future)
+		{
+			Util::Sequence (nullptr, future) >>
+					[iem] (const auto& result)
+					{
+						Util::Visit (result.AsVariant (),
+								[] (PlatformObjects::ChangeStateSucceeded) {},
+								[iem] (PlatformObjects::ChangeStateFailed f)
+								{
+									QString msg;
+									switch (f.Reason_)
+									{
+									case PlatformObjects::ChangeStateFailed::Reason::Unavailable:
+										msg = Plugin::tr ("No platform backend is available.");
+										break;
+									case PlatformObjects::ChangeStateFailed::Reason::PlatformFailure:
+										msg = Plugin::tr ("Platform backend failed.");
+										break;
+									case PlatformObjects::ChangeStateFailed::Reason::Other:
+										msg = Plugin::tr ("Unknown reason.");
+										break;
+									}
+
+									if (!f.ReasonString_.isEmpty ())
+										msg += " " + f.ReasonString_;
+
+									const auto& entity = Util::MakeNotification ("Liznoo",
+											msg, PCritical_);
+									iem->HandleEntity (entity);
+								});
+					};
+		}
+	}
+
 	void Plugin::handleSuspendRequested ()
 	{
-		Platform_->ChangeState (PowerActions::Platform::State::Suspend);
+		HandleChangeStateResult (Proxy_->GetEntityManager (),
+				Platform_->ChangeState (PowerActions::Platform::State::Suspend));
 	}
 
 	void Plugin::handleHibernateRequested ()
 	{
-		Platform_->ChangeState (PowerActions::Platform::State::Hibernate);
+		HandleChangeStateResult (Proxy_->GetEntityManager (),
+				Platform_->ChangeState (PowerActions::Platform::State::Hibernate));
 	}
 
 	void Plugin::handlePushButton (const QString& button)
