@@ -117,6 +117,31 @@ namespace Liznoo
 			}
 		};
 
+		class LogindEventsChecker final : public IChecker<Events::PlatformLayer>
+		{
+			const ICoreProxy_ptr Proxy_;
+
+			std::shared_ptr<DBusThread<Logind::LogindConnector>> Thread_;
+		public:
+			LogindEventsChecker (const ICoreProxy_ptr& proxy)
+			: Proxy_ { proxy }
+			{
+			}
+
+			QFuture<bool> Check () override
+			{
+				qDebug () << Q_FUNC_INFO;
+				Thread_ = std::make_shared<DBusThread<Logind::LogindConnector>> ();
+				Thread_->start (QThread::LowestPriority);
+				return Thread_->ScheduleImpl (&Logind::LogindConnector::ArePowerEventsAvailable);
+			}
+
+			std::shared_ptr<Events::PlatformLayer> Make () override
+			{
+				return Events::MakeUPowerLike (Thread_, Proxy_);
+			}
+		};
+
 		template<typename T>
 		IChecker_ptr<T> MakePureChecker (const typename PureChecker<T>::Checker_t& checker,
 				const typename PureChecker<T>::Maker_t& maker)
