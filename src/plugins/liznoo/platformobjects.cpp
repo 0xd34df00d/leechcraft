@@ -28,6 +28,7 @@
  */
 
 #include "platformobjects.h"
+#include <boost/optional.hpp>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
@@ -72,6 +73,64 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
+	namespace
+	{
+		template<typename T>
+		class AvailabilityChecker : public QObject
+		{
+		public:
+			struct Checker
+			{
+				std::function<QFuture<bool> ()> Check_;
+				std::function<T ()> Make_;
+			};
+
+			using Result_t = boost::optional<T>;
+		private:
+			QFutureInterface<Result_t> Iface_;
+			QList<Checker> Checkers_;
+		public:
+			AvailabilityChecker (const QList<Checker>& checkers)
+			: Checkers_ { checkers }
+			{
+				Iface_.reportStarted ();
+
+				RunChecker ();
+			}
+
+			QFuture<Result_t> GetResult ()
+			{
+				return Iface_.future ();
+			}
+		private:
+			void RunChecker ()
+			{
+				if (Checkers_.isEmpty ())
+				{
+					Util::ReportFutureResult (Iface_, Result_t {});
+
+					deleteLater ();
+					return;
+				}
+
+				const auto& checker = Checkers_.takeFirst ();
+				Util::Sequence (this, checker.Check_ ()) >>
+						[this, checker] (bool result)
+						{
+							qDebug () << Q_FUNC_INFO << result;
+
+							if (result)
+							{
+								Util::ReportFutureResult (Iface_, checker.Make_ ());
+								deleteLater ();
+							}
+							else
+								RunChecker ();
+						};
+			}
+		};
+	}
+
 	PlatformObjects::PlatformObjects (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject { parent }
 	, Proxy_ { proxy }
