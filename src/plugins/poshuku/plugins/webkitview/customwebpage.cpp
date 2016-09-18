@@ -46,6 +46,7 @@
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
 #include "customwebview.h"
 #include "pluginmanager.h"
@@ -379,8 +380,7 @@ namespace WebKitView
 		if (proxy->IsCancelled ())
 			return;
 
-		std::shared_ptr<void> replyGuard = std::shared_ptr<void> (nullptr,
-				[reply] (void*) -> void
+		const auto replyGuard = Util::MakeScopeGuard ([reply]
 				{
 					reply->abort ();
 					reply->deleteLater ();

@@ -84,10 +84,7 @@ namespace Xoox
 				return "SIGNATURE";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown message type"
-					<< static_cast<int> (type);
-			return {};
+			assert (false);
 		}
 
 		QString WrapPGP (const QString& str, PGPType type)
