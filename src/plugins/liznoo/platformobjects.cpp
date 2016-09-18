@@ -202,7 +202,10 @@ namespace Liznoo
 	QFuture<PlatformObjects::ChangeStateResult_t> PlatformObjects::ChangeState (PowerActions::Platform::State state)
 	{
 		if (!PowerActPlatform_)
-			return Util::MakeReadyFuture (ChangeStateResult_t::Left ({ ChangeStateFailed::Reason::Unavailable }));
+			return Util::MakeReadyFuture (ChangeStateResult_t::Left ({
+						ChangeStateFailed::Reason::Unavailable,
+						{}
+					}));
 
 		return Util::Sequence (this, PowerActPlatform_->CanChangeState (state)) >>
 				[state, this] (const PowerActions::Platform::QueryChangeStateResult& res)
