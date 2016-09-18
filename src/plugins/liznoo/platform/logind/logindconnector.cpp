@@ -42,12 +42,31 @@ namespace Logind
 	LogindConnector::LogindConnector (QObject *parent)
 	: QObject { parent }
 	{
-		PowerEventsAvailable_ = SB_.connect ("org.freedesktop.login1",
+		QDBusInterface iface
+		{
+			"org.freedesktop.login1",
+			"/org/freedesktop/login1",
+			"org.freedesktop.DBus.Introspectable",
+			SB_
+		};
+		if (!iface.isValid ())
+			return;
+
+		const auto& introspect = iface.call ("Introspect").arguments ().value (0).toString ();
+		if (!introspect.contains ("\"PreparingForSleep\""))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no PreparingForSleep for logind";
+			return;
+		}
+
+		SB_.connect ("org.freedesktop.login1",
 				"/org/freedesktop/login1",
 				"org.freedesktop.login1.Manager",
 				"PreparingForSleep",
 				this,
 				SLOT (handlePreparing (bool)));
+		PowerEventsAvailable_ = true;
 	}
 
 	bool LogindConnector::ArePowerEventsAvailable () const
