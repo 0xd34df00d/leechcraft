@@ -34,7 +34,6 @@
 #include <util/threads/futures.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/either.h>
-#include <util/xpc/util.h>
 #include "platform/screen/screenplatform.h"
 #include "platform/battery/batteryplatform.h"
 
