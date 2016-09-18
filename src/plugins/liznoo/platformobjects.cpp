@@ -145,11 +145,20 @@ namespace Liznoo
 		ScreenPlatform_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (upowerThread);
 
-	#ifdef USE_PMUTILS
-		PowerActPlatform_ = std::make_shared<PowerActions::PMUtils> ();
-	#else
-		PowerActPlatform_ = std::make_shared<PowerActions::UPower> ();
-	#endif
+		const auto actionsChecker = new AvailabilityChecker<PowerActions::Platform>
+		{
+			std::make_unique<PowerActionsChecker<PowerActions::UPower>> (),
+			std::make_unique<PowerActionsChecker<PowerActions::PMUtils>> ()
+		};
+		Util::Sequence (this, actionsChecker->GetResult ()) >>
+				[this] (const auto& maybeActions)
+				{
+					if (maybeActions)
+						PowerActPlatform_ = *maybeActions;
+					else
+						qWarning () << Q_FUNC_INFO
+								<< "no actions platform";
+				};
 
 		upowerThread->start (QThread::LowestPriority);
 #elif defined(Q_OS_WIN32)
