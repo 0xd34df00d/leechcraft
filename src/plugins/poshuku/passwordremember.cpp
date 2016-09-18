@@ -54,7 +54,8 @@ namespace Poshuku
 		const auto sb = Core::Instance ().GetStorageBackend ();
 		for (auto& list : TempData_)
 			list.erase (std::remove_if (list.begin (), list.end (),
-					[sb] (const auto& ed) { return sb->GetFormsIgnored (ed.PageURL_.toString ()); }));
+						[sb] (const auto& ed) { return sb->GetFormsIgnored (ed.PageURL_.toString ()); }),
+					list.end ());
 
 		for (auto i = TempData_.begin (); i != TempData_.end (); )
 			if (i.value ().isEmpty ())
