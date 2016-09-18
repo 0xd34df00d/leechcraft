@@ -44,13 +44,8 @@
 #if defined(Q_OS_LINUX)
 	#include "platform/battery/upowerplatform.h"
 	#include "platform/events/platformupowerlike.h"
-
-	#ifdef USE_PMUTILS
-		#include "platform/poweractions/pmutils.h"
-	#else
-		#include "platform/poweractions/upower.h"
-	#endif
-
+	#include "platform/poweractions/pmutils.h"
+	#include "platform/poweractions/upower.h"
 	#include "platform/screen/freedesktop.h"
 	#include "platform/common/dbusthread.h"
 	#include "platform/upower/upowerconnector.h"

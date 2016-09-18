@@ -4,8 +4,6 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (Qwt)
 
-option (USE_LIZNOO_PMUTILS "Enable pm-utils support for suspending and hibernating" OFF)
-
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
@@ -34,6 +32,7 @@ set (FBSD_SRCS
 
 set (LINUX_SRCS
 	platform/common/dbusthread.cpp
+	platform/poweractions/pmutils.cpp
 	)
 
 set (LOGIND_SRCS
@@ -43,17 +42,8 @@ set (LOGIND_SRCS
 set (UPOWER_SRCS
 	platform/battery/upowerplatform.cpp
 	platform/upower/upowerconnector.cpp
-	)
-set (UPOWER_POWERACTIONS_SRCS
 	platform/poweractions/upower.cpp
 	)
-set (PMUTILS_POWERACTIONS_SRCS)
-if (USE_LIZNOO_PMUTILS)
-	add_definitions (-DUSE_PMUTILS)
-	set (PMUTILS_POWERACTIONS_SRCS
-		platform/poweractions/pmutils.cpp
-		)
-endif ()
 
 set (MAC_SRCS
 	platform/battery/macplatform.mm
@@ -83,8 +73,6 @@ elseif (NOT WIN32)
 			${LINUX_SRCS}
 			${UPOWER_SRCS}
 			${LOGIND_SRCS}
-			${UPOWER_POWERACTIONS_SRCS}
-			${PMUTILS_POWERACTIONS_SRCS}
 			)
 	endif ()
 
