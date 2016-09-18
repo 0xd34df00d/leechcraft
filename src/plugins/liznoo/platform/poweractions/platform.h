@@ -56,6 +56,8 @@ namespace PowerActions
 			QString Reason_;
 		};
 
+		virtual QFuture<bool> IsAvailable () = 0;
+
 		virtual QFuture<QueryChangeStateResult> CanChangeState (State) = 0;
 		virtual void ChangeState (State) = 0;
 	};
