@@ -62,7 +62,9 @@ namespace PowerActions
 							"/org/freedesktop/UPower",
 							"org.freedesktop.UPower",
 							QDBusConnection::systemBus ());
-					return face.isValid ();
+					return face.isValid () &&
+							face.property ("CanSuspend").isValid () &&
+							face.property ("CanHibernate").isValid ();
 				});
 	}
 
