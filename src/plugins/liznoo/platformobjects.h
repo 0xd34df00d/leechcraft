@@ -66,8 +66,8 @@ namespace Liznoo
 
 		const ICoreProxy_ptr Proxy_;
 
-		std::shared_ptr<Events::PlatformLayer> PL_;
-		Screen::ScreenPlatform *SPL_ = nullptr;
+		std::shared_ptr<Events::PlatformLayer> EventsPlatform_;
+		Screen::ScreenPlatform *ScreenPlatform_= nullptr;
 		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
 		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
 	public:
