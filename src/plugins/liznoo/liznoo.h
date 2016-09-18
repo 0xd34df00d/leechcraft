@@ -38,33 +38,13 @@
 #include <interfaces/iquarkcomponentprovider.h>
 #include "batteryhistory.h"
 #include "batteryinfo.h"
-#include "platform/poweractions/platform.h"
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
 	class BatteryHistoryDialog;
-
-	namespace Events
-	{
-		class PlatformLayer;
-	}
-
-	namespace Screen
-	{
-		class ScreenPlatform;
-	}
-
-	namespace PowerActions
-	{
-		class Platform;
-	}
-
-	namespace Battery
-	{
-		class BatteryPlatform;
-	}
+	class PlatformObjects;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -82,10 +62,7 @@ namespace Liznoo
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		std::shared_ptr<Events::PlatformLayer> PL_;
-		Screen::ScreenPlatform *SPL_ = nullptr;
-		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
-		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
+		std::shared_ptr<PlatformObjects> Platform_;
 
 #if QT_VERSION < 0x050000
 		QMap<QString, QAction*> Battery2Action_;
@@ -119,8 +96,6 @@ namespace Liznoo
 		QuarkComponents_t GetComponents () const;
 	private:
 		void CheckNotifications (const BatteryInfo&);
-
-		void ChangeState (PowerActions::Platform::State);
 	private slots:
 		void handleBatteryInfo (Liznoo::BatteryInfo);
 		void handleUpdateHistory ();

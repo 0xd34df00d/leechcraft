@@ -29,28 +29,70 @@
 
 #pragma once
 
-#include "screenplatform.h"
+#include <memory>
+#include <QObject>
+#include <util/sll/eitherfwd.h>
+#include <util/sll/void.h>
+#include <interfaces/core/icoreproxyfwd.h>
+#include "platform/poweractions/platform.h"
 
-class QTimer;
+template<typename>
+class QFuture;
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace Screen
-{
-	class Freedesktop : public ScreenPlatform
+	namespace Events
+	{
+		class PlatformLayer;
+	}
+
+	namespace Screen
+	{
+		class ScreenPlatform;
+	}
+
+	namespace Battery
+	{
+		class BatteryPlatform;
+	}
+
+	struct BatteryInfo;
+
+	class PlatformObjects : public QObject
 	{
 		Q_OBJECT
 
-		QTimer * const ActivityTimer_;
-	public:
-		Freedesktop (QObject* = nullptr);
+		const ICoreProxy_ptr Proxy_;
 
+		std::shared_ptr<Events::PlatformLayer> PL_;
+		Screen::ScreenPlatform *SPL_ = nullptr;
+		std::shared_ptr<PowerActions::Platform> PowerActPlatform_;
+		std::shared_ptr<Battery::BatteryPlatform> BatteryPlatform_;
+	public:
+		PlatformObjects (const ICoreProxy_ptr& proxy, QObject* = nullptr);
+
+		struct ChangeStateSucceeded {};
+		struct ChangeStateFailed
+		{
+			enum class Reason
+			{
+				Unavailable,
+				PlatformFailure,
+				Other
+			} Reason_;
+
+			QString ReasonString_;
+		};
+		using ChangeStateResult_t = Util::Either<ChangeStateFailed, ChangeStateSucceeded>;
+		QFuture<ChangeStateResult_t> ChangeState (PowerActions::Platform::State);
 		void ProhibitScreensaver (bool prohibit, const QString& id);
-	private slots:
-		void handleTimeout ();
+
+		bool EmitTestSleep ();
+		bool EmitTestWakeup ();
+	signals:
+		void batteryInfoUpdated (const Liznoo::BatteryInfo&);
 	};
-}
 }
 }
