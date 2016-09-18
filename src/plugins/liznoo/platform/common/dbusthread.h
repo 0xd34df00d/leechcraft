@@ -29,125 +29,20 @@
 
 #pragma once
 
-#include <memory>
-#include <atomic>
-#include <type_traits>
-#include <functional>
-#include <QThread>
-#include <QFuture>
-#include <QTimer>
-#include <QMutex>
-#include <QMutexLocker>
-#include <QFutureInterface>
-#include <util/threads/futures.h>
+#include <util/threads/workerthreadbase.h>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-	namespace detail
-	{
-		class StartHandlersRotatorBase : public QObject
-		{
-			Q_OBJECT
-		public:
-			using QObject::QObject;
-		public slots:
-			virtual void rotate () = 0;
-		};
-	}
-
 	template<typename ConnT>
-	class DBusThread : public QThread
+	class DBusThread : public Util::WorkerThread<ConnT>
 	{
-		std::weak_ptr<ConnT> Conn_;
-
-		std::atomic_bool IsConnInitialized_ { false };
-
-		QMutex SHMutex_;
-		QList<std::function<void (ConnT*)>> StartHandlers_;
-
-		class Rotator : public detail::StartHandlersRotatorBase
-		{
-			DBusThread<ConnT> * const Thread_;
-		public:
-			Rotator (DBusThread<ConnT> *thread)
-			: Thread_ { thread }
-			{
-			}
-
-			void rotate () override
-			{
-				Thread_->RunHandlers ();
-			}
-		};
-
-		std::unique_ptr<Rotator> Rotator_;
 	public:
-		using QThread::QThread;
-
-		~DBusThread ()
+		DBusThread (QObject* parent = nullptr)
+		: Util::WorkerThread<ConnT> { parent }
 		{
-			if (!isRunning ())
-				return;
-
-			quit ();
-			if (!wait (1000))
-				terminate ();
-		}
-
-		template<typename F>
-		QFuture<typename std::result_of<F (ConnT*)>::type> ScheduleOnStart (const F& f)
-		{
-			QFutureInterface<typename std::result_of<F (ConnT*)>::type> iface;
-			iface.reportStarted ();
-
-			auto handler = [f, iface] (ConnT *conn) mutable
-			{
-				Util::ReportFutureResult (iface, f, conn);
-			};
-
-			{
-				QMutexLocker locker { &SHMutex_ };
-				StartHandlers_ << handler;
-			}
-
-			if (IsConnInitialized_)
-				QTimer::singleShot (0, Rotator_.get (), SLOT (rotate ()));
-
-			return iface.future ();
-		}
-
-		std::shared_ptr<ConnT> GetConnector () const
-		{
-			return Conn_.lock ();
-		}
-	protected:
-		void run () override
-		{
-			const auto conn = std::make_shared<ConnT> ();
-			Conn_ = conn;
-
-			Rotator_.reset (new Rotator { this });
-
-			IsConnInitialized_ = true;
-			RunHandlers ();
-
-			QThread::run ();
-		}
-	private:
-		void RunHandlers ()
-		{
-			decltype (StartHandlers_) handlers;
-
-			{
-				QMutexLocker locker { &SHMutex_ };
-				handlers.swap (StartHandlers_);
-			}
-
-			const auto conn = GetConnector ().get ();
-			for (const auto& f : handlers)
-				f (conn);
+			this->SetAutoQuit (true);
 		}
 	};
 

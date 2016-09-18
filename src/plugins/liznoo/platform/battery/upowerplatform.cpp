@@ -41,7 +41,7 @@ namespace Battery
 	: BatteryPlatform { parent }
 	, Thread_ { thread }
 	{
-		Thread_->ScheduleOnStart ([this] (UPower::UPowerConnector *conn)
+		Thread_->ScheduleImpl ([this] (UPower::UPowerConnector *conn)
 				{
 					connect (conn,
 							SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),

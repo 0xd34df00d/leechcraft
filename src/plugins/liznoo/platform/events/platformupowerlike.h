@@ -51,7 +51,7 @@ namespace Events
 		: PlatformLayer { proxy, parent }
 		, Thread_ { thread }
 		{
-			Thread_->ScheduleOnStart ([this] (ConnT *conn)
+			Thread_->ScheduleImpl ([this] (ConnT *conn)
 					{
 						connect (conn,
 								SIGNAL (gonnaSleep (int)),
