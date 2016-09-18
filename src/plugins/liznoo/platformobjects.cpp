@@ -35,7 +35,6 @@
 #include <util/threads/futures.h>
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/either.h>
-#include <util/xpc/util.h>
 #include "platform/screen/screenplatform.h"
 #include "platform/battery/batteryplatform.h"
 
@@ -138,8 +137,8 @@ namespace Liznoo
 #if defined(Q_OS_LINUX)
 		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
 
-		PL_ = Events::MakeUPowerLike (upowerThread, Proxy_);
-		Util::Sequence (this, PL_->IsAvailable ()) >>
+		EventsPlatform_ = Events::MakeUPowerLike (upowerThread, Proxy_);
+		Util::Sequence (this, EventsPlatform_->IsAvailable ()) >>
 				[this] (bool avail)
 				{
 					if (avail)
@@ -147,12 +146,12 @@ namespace Liznoo
 
 					qDebug () << Q_FUNC_INFO
 							<< "UPower events backend is not available, trying logind...";
-					Util::DelayDestruction (PL_);
+					Util::DelayDestruction (EventsPlatform_);
 
 					const auto logindThread = std::make_shared<DBusThread<Logind::LogindConnector>> ();
-					PL_ = Events::MakeUPowerLike (logindThread, Proxy_);
+					EventsPlatform_ = Events::MakeUPowerLike (logindThread, Proxy_);
 					logindThread->start (QThread::LowestPriority);
-					return PL_->IsAvailable ();
+					return EventsPlatform_->IsAvailable ();
 				} >>
 				[this] (bool avail)
 				{
@@ -163,7 +162,7 @@ namespace Liznoo
 							<< "logind events backend is not available, trying consolekit...";
 				};
 
-		SPL_ = new Screen::Freedesktop (this);
+		ScreenPlatform_ = new Screen::Freedesktop (this);
 		BatteryPlatform_ = std::make_shared<Battery::UPowerPlatform> (upowerThread);
 
 	#ifdef USE_PMUTILS
@@ -176,16 +175,16 @@ namespace Liznoo
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
-		PL_ = std::make_shared<Events::PlatformWinAPI> (widget, Proxy_);
+		EventsPlatform_ = std::make_shared<Events::PlatformWinAPI> (widget, Proxy_);
 		BatteryPlatform_ = std::make_shared<Battery::WinAPIPlatform> (widget);
 #elif defined(Q_OS_FREEBSD)
-		PL_ = std::make_shared<Events::PlatformFreeBSD> (Proxy_);
+		EventsPlatform_ = std::make_shared<Events::PlatformFreeBSD> (Proxy_);
 		PowerActPlatform_ = std::make_shared<PowerActions::FreeBSD> ();
 		BatteryPlatform_ = std::make_shared<Battery::FreeBSDPlatform> ();
-		SPL_ = new Screen::Freedesktop (this);
+		ScreenPlatform_ = new Screen::Freedesktop (this);
 #elif defined(Q_OS_MAC)
 		BatteryPlatform_ = std::make_shared<Battery::MacPlatform> ();
-		PL_ = std::make_shared<Events::PlatformMac> (Proxy_);
+		EventsPlatform_ = std::make_shared<Events::PlatformMac> (Proxy_);
 #endif
 
 		if (BatteryPlatform_)
@@ -225,39 +224,39 @@ namespace Liznoo
 
 	void PlatformObjects::ProhibitScreensaver (bool enable, const QString& id)
 	{
-		if (!SPL_)
+		if (!ScreenPlatform_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "screen platform layer unavailable, screensaver prohibiton won't work";
 			return;
 		}
 
-		SPL_->ProhibitScreensaver (enable, id);
+		ScreenPlatform_->ProhibitScreensaver (enable, id);
 	}
 
 	bool PlatformObjects::EmitTestSleep ()
 	{
-		if (!PL_)
+		if (!EventsPlatform_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "platform backend unavailable";
 			return false;
 		}
 
-		PL_->emitGonnaSleep (1000);
+		EventsPlatform_->emitGonnaSleep (1000);
 		return true;
 	}
 
 	bool PlatformObjects::EmitTestWakeup ()
 	{
-		if (!PL_)
+		if (!EventsPlatform_)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "platform backend unavailable";
 			return false;
 		}
 
-		PL_->emitWokeUp ();
+		EventsPlatform_->emitWokeUp ();
 		return true;
 	}
 }
