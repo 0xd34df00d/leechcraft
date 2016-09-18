@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "platformobjects.h"
+#include <vector>
+#include <memory>
 #include <boost/optional.hpp>
 #include <QtDebug>
 #include <interfaces/core/icoreproxy.h>
@@ -75,26 +77,79 @@ namespace Liznoo
 	namespace
 	{
 		template<typename T>
+		class IChecker
+		{
+		public:
+			virtual ~IChecker () = default;
+
+			virtual QFuture<bool> Check () = 0;
+
+			virtual std::shared_ptr<T> Make () = 0;
+		};
+
+		template<typename T>
+		using IChecker_ptr = std::unique_ptr<IChecker<T>>;
+
+		template<typename T>
+		class PureChecker final : public IChecker<T>
+		{
+		public:
+			using Checker_t = std::function<QFuture<bool> ()>;
+			using Maker_t = std::function<std::shared_ptr<T> ()>;
+		private:
+			const Checker_t Checker_;
+			const Maker_t Maker_;
+		public:
+			PureChecker (const Checker_t& checker, const Maker_t& maker)
+			: Checker_ { checker }
+			, Maker_ { maker }
+			{
+			}
+
+			QFuture<bool> Check () override
+			{
+				return Checker_ ();
+			}
+
+			std::shared_ptr<T> Make () override
+			{
+				return Maker_ ();
+			}
+		};
+
+		template<typename T>
+		IChecker_ptr<T> MakePureChecker (const typename PureChecker<T>::Checker_t& checker,
+				const typename PureChecker<T>::Maker_t& maker)
+		{
+			return std::make_unique<PureChecker<T>> (checker, maker);
+		}
+
+		template<typename T>
 		class AvailabilityChecker : public QObject
 		{
 		public:
-			struct Checker
-			{
-				std::function<QFuture<bool> ()> Check_;
-				std::function<T ()> Make_;
-			};
-
-			using Result_t = boost::optional<T>;
+			using Result_t = boost::optional<std::shared_ptr<T>>;
 		private:
 			QFutureInterface<Result_t> Iface_;
-			QList<Checker> Checkers_;
+
+			const std::vector<IChecker_ptr<T>> Checkers_;
 		public:
-			AvailabilityChecker (const QList<Checker>& checkers)
-			: Checkers_ { checkers }
+			template<typename... Checkers>
+			AvailabilityChecker (Checkers&&... checkers)
+			: Checkers_
+			{
+				[] (auto&&... checkers)
+				{
+					std::vector<IChecker_ptr<T>> result;
+					std::initializer_list<int> meh { (result.emplace_back (std::move (checkers)), 0)... };
+					Q_UNUSED (meh)
+					return result;
+				} (std::move (checkers)...)
+			}
 			{
 				Iface_.reportStarted ();
 
-				RunChecker ();
+				RunChecker (Checkers_.begin ());
 			}
 
 			QFuture<Result_t> GetResult ()
@@ -102,9 +157,9 @@ namespace Liznoo
 				return Iface_.future ();
 			}
 		private:
-			void RunChecker ()
+			void RunChecker (typename std::vector<IChecker_ptr<T>>::const_iterator it)
 			{
-				if (Checkers_.isEmpty ())
+				if (it == Checkers_.end ())
 				{
 					Util::ReportFutureResult (Iface_, Result_t {});
 
@@ -112,19 +167,18 @@ namespace Liznoo
 					return;
 				}
 
-				const auto& checker = Checkers_.takeFirst ();
-				Util::Sequence (this, checker.Check_ ()) >>
-						[this, checker] (bool result)
+				Util::Sequence (this, (*it)->Check ()) >>
+						[this, it] (bool result) mutable
 						{
 							qDebug () << Q_FUNC_INFO << result;
 
 							if (result)
 							{
-								Util::ReportFutureResult (Iface_, checker.Make_ ());
+								Util::ReportFutureResult (Iface_, (*it)->Make ());
 								deleteLater ();
 							}
 							else
-								RunChecker ();
+								RunChecker (++it);
 						};
 			}
 		};
