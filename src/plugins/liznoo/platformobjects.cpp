@@ -85,7 +85,6 @@ namespace Liznoo
 
 			QFuture<bool> Check () override
 			{
-				qDebug () << Q_FUNC_INFO;
 				Thread_ = std::make_shared<DBusThread<Logind::LogindConnector>> ();
 				Thread_->start (QThread::LowestPriority);
 				return Thread_->ScheduleImpl (&Logind::LogindConnector::ArePowerEventsAvailable);
