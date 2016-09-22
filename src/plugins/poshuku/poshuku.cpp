@@ -401,7 +401,6 @@ namespace Poshuku
 			<< "AllowPlugins"
 			<< "JavascriptCanOpenWindows"
 			<< "JavascriptCanAccessClipboard"
-			<< "UserStyleSheet"
 			<< "LocalStorageDB"
 			<< "EnableXSSAuditing"
 			<< "EnableWebGL"
@@ -453,36 +452,6 @@ namespace Poshuku
 				setProperty ("FirstTimeRun", false);
 	}
 
-	namespace
-	{
-		void SetUserStylesheet ()
-		{
-			const auto& pathStr = XmlSettingsManager::Instance ()->
-					property ("UserStyleSheet").toString ();
-			if (pathStr.isEmpty ())
-			{
-				QWebSettings::globalSettings ()->setUserStyleSheetUrl ({});
-				return;
-			}
-
-			QFile file { pathStr };
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot open"
-						<< pathStr
-						<< file.errorString ();
-				QWebSettings::globalSettings ()->setUserStyleSheetUrl ({});
-				return;
-			}
-
-			const auto& contents = file.readAll ();
-
-			const auto& uriContents = "data:text/css;charset=utf-8;base64," + contents.toBase64 ();
-			QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
-		}
-	}
-
 	void Poshuku::viewerSettingsChanged ()
 	{
 		auto xsm = XmlSettingsManager::Instance ();
@@ -511,8 +480,6 @@ namespace Poshuku
 		global->setAttribute (QWebSettings::ScrollAnimatorEnabled,
 				xsm->property ("EnableSmoothScrolling").toBool ());
 #endif
-
-		SetUserStylesheet ();
 	}
 
 	void Poshuku::handleError (const QString& msg)

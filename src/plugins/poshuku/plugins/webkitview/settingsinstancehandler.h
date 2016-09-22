@@ -49,6 +49,7 @@ namespace WebKitView
 	private slots:
 		void generalSettingsChanged ();
 		void cacheSettingsChanged ();
+		void setUserStyleSheet ();
 	};
 }
 }
