@@ -143,6 +143,8 @@ namespace Poshuku
 
 		using IFeatureSecurityOrigin_ptr = std::shared_ptr<IFeatureSecurityOrigin>;
 
+		virtual void SurroundingsInitialized () = 0;
+
 		virtual QWidget* GetQWidget () = 0;
 
 		virtual QList<QAction*> GetActions (ActionArea) const = 0;

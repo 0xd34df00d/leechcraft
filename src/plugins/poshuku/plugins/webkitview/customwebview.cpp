@@ -237,6 +237,10 @@ namespace WebKitView
 		return image;
 	}
 
+	void CustomWebView::SurroundingsInitialized ()
+	{
+	}
+
 	QWidget* CustomWebView::GetQWidget ()
 	{
 		return this;
