@@ -75,42 +75,6 @@ namespace Poshuku
 		Core::Instance ().setParent (this);
 		Core::Instance ().SetProxy (coreProxy);
 
-		try
-		{
-			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/favicons").absolutePath ();
-			QWebSettings::setIconDatabasePath (path);
-		}
-		catch (const std::runtime_error& e)
-		{
-			QMessageBox::warning (nullptr,
-					"LeechCraft",
-					e.what ());
-		}
-
-		try
-		{
-			const auto& path = Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ();
-			QWebSettings::setOfflineStoragePath (path);
-		}
-		catch (const std::runtime_error& e)
-		{
-			QMessageBox::warning (nullptr,
-					"LeechCraft",
-					e.what ());
-		}
-
-		try
-		{
-			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/offlinewebappcache").absolutePath ();
-			QWebSettings::setOfflineWebApplicationCachePath (path);
-		}
-		catch (const std::runtime_error& e)
-		{
-			QMessageBox::warning (nullptr,
-					"LeechCraft",
-					e.what ());
-		}
-
 		ShortcutMgr_ = new Util::ShortcutManager { coreProxy };
 		ShortcutMgr_->SetObject (this);
 		Core::Instance ().SetShortcutManager (ShortcutMgr_);
