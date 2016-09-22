@@ -43,9 +43,6 @@
 			<item type="lineedit" property="ExternalSchemes" default="smb nfs telnet imap pop nntp news">
 				<label lang="en" value="Open these schemes using external applications:" />
 			</item>
-			<item type="lineedit" property="UserStyleSheet">
-				<label lang="en" value="User CSS URL:" />
-			</item>
 		</tab>
 		<tab>
 			<label lang="en" value="Security" />
