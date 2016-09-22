@@ -163,7 +163,6 @@ namespace Poshuku
 			throw;
 		}
 
-		RegisterSettings ();
 		PrepopulateShortcuts ();
 
 		connect (Core::Instance ().GetFavoritesModel (),
@@ -393,25 +392,6 @@ namespace Poshuku
 				SLOT (handleError (const QString&)));
 	}
 
-	void Poshuku::RegisterSettings ()
-	{
-		QList<QByteArray> viewerSettings;
-		viewerSettings << "AutoLoadImages"
-			<< "AllowJavascript"
-			<< "AllowPlugins"
-			<< "JavascriptCanOpenWindows"
-			<< "JavascriptCanAccessClipboard"
-			<< "LocalStorageDB"
-			<< "EnableXSSAuditing"
-			<< "EnableWebGL"
-			<< "EnableHyperlinkAuditing"
-			<< "EnableSmoothScrolling";
-		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
-				this, "viewerSettingsChanged");
-
-		viewerSettingsChanged ();
-	}
-
 	void Poshuku::PrepopulateShortcuts ()
 	{
 		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
@@ -450,36 +430,6 @@ namespace Poshuku
 			Core::Instance ().NewURL ("about:home", true);
 		XmlSettingsManager::Instance ()->
 				setProperty ("FirstTimeRun", false);
-	}
-
-	void Poshuku::viewerSettingsChanged ()
-	{
-		auto xsm = XmlSettingsManager::Instance ();
-
-		auto global = QWebSettings::globalSettings ();
-
-		global->setAttribute (QWebSettings::AutoLoadImages,
-				xsm->property ("AutoLoadImages").toBool ());
-		global->setAttribute (QWebSettings::JavascriptEnabled,
-				xsm->property ("AllowJavascript").toBool ());
-		global->setAttribute (QWebSettings::PluginsEnabled,
-				xsm->property ("AllowPlugins").toBool ());
-		global->setAttribute (QWebSettings::JavascriptCanOpenWindows,
-				xsm->property ("JavascriptCanOpenWindows").toBool ());
-		global->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
-				xsm->property ("JavascriptCanAccessClipboard").toBool ());
-		global->setAttribute (QWebSettings::LocalStorageEnabled,
-				xsm->property ("LocalStorageDB").toBool ());
-		global->setAttribute (QWebSettings::XSSAuditingEnabled,
-				xsm->property ("EnableXSSAuditing").toBool ());
-		global->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
-				xsm->property ("EnableHyperlinkAuditing").toBool ());
-		global->setAttribute (QWebSettings::WebGLEnabled,
-				xsm->property ("EnableWebGL").toBool ());
-#if QT_VERSION >= 0x050000
-		global->setAttribute (QWebSettings::ScrollAnimatorEnabled,
-				xsm->property ("EnableSmoothScrolling").toBool ());
-#endif
 	}
 
 	void Poshuku::handleError (const QString& msg)

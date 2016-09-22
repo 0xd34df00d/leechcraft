@@ -94,6 +94,7 @@
 #include "zoomer.h"
 #include "searchtext.h"
 #include "featurepermnotification.h"
+#include "browserwidgetsettingshandler.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -475,6 +476,8 @@ namespace Poshuku
 		updateLogicalPath ();
 
 		RegisterShortcuts (sm);
+
+		new BrowserWidgetSettingsHandler { this };
 
 		WebView_->SurroundingsInitialized ();
 	}

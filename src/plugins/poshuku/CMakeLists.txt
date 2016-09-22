@@ -60,6 +60,7 @@ set (SRCS
 	urleditbuttonsmanager.cpp
 	featurepermnotification.cpp
 	zoomer.cpp
+	browserwidgetsettingshandler.cpp
 	)
 set (FORMS
 	browserwidget.ui
