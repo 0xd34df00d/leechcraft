@@ -30,7 +30,6 @@
 #include "poshuku.h"
 #include <stdexcept>
 #include <QMessageBox>
-#include <qwebsettings.h>
 #include <QHeaderView>
 #include <QToolBar>
 #include <QDir>

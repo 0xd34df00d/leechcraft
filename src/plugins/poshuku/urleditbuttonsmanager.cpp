@@ -30,8 +30,6 @@
 #include "urleditbuttonsmanager.h"
 #include <QToolButton>
 #include <QMenu>
-#include <qwebframe.h>
-#include <qwebelement.h>
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/iiconthememanager.h>

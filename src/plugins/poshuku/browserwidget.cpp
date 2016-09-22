@@ -47,7 +47,6 @@
 #include <QWidgetAction>
 #include <QTimer>
 #include <QPainter>
-#include <qwebframe.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
@@ -55,8 +54,6 @@
 #include <QCursor>
 #include <QDomDocument>
 #include <QDomElement>
-#include <qwebhistory.h>
-#include <qwebelement.h>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
