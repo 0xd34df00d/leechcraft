@@ -483,6 +483,7 @@ namespace WebKitView
 		switch (attribute)
 		{
 		ATTR (AutoLoadImages)
+		ATTR (PluginsEnabled)
 		ATTR (JavascriptEnabled)
 		ATTR (JavascriptCanOpenWindows)
 		ATTR (JavascriptCanAccessClipboard)

@@ -122,6 +122,7 @@ namespace Poshuku
 		{
 			AutoLoadImages,
 			JavascriptEnabled,
+			PluginsEnabled,
 			JavascriptCanOpenWindows,
 			JavascriptCanAccessClipboard,
 			LocalStorageEnabled,
