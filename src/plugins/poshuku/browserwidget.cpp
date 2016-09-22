@@ -475,6 +475,8 @@ namespace Poshuku
 		updateLogicalPath ();
 
 		RegisterShortcuts (sm);
+
+		WebView_->SurroundingsInitialized ();
 	}
 
 	BrowserWidget::~BrowserWidget ()
