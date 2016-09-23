@@ -28,11 +28,9 @@
  **********************************************************************/
 
 #include "poshuku.h"
-#include <stdexcept>
 #include <QMessageBox>
 #include <QHeaderView>
 #include <QToolBar>
-#include <QDir>
 #include <QUrl>
 #include <QTextCodec>
 #include <QInputDialog>
@@ -45,14 +43,12 @@
 #include <interfaces/core/iiconthememanager.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
-#include <util/sys/paths.h>
 #include <util/tags/tagscompletionmodel.h>
 #include <util/db/backendselector.h>
 #include <util/xsd/wkfontswidget.h>
 #include <util/shortcuts/shortcutmanager.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
-#include "browserwidget.h"
 #include "cookieseditdialog.h"
 
 namespace LeechCraft
