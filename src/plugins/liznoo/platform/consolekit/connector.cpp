@@ -27,32 +27,41 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include "../../batteryinfo.h"
-#include "../common/connectorbase.h"
+#include "connector.h"
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
+namespace ConsoleKit
 {
-	class UPowerConnector : public ConnectorBase
+	Connector::Connector (QObject *parent)
+	: ConnectorBase { "org.freedesktop.ConsoleKit", "CK", parent }
 	{
-		Q_OBJECT
-	public:
-		UPowerConnector (QObject* = nullptr);
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
-	};
+		if (!TryAutostart ())
+			return;
 
-	using UPowerConnector_ptr = std::shared_ptr<UPowerConnector>;
+		if (!CheckSignals ("/org/freedesktop/ConsoleKit/Manager", { "\"PrepareForSleep\"" }))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "no PrepareForSleep signal";
+			return;
+		}
+
+		PowerEventsAvailable_ = SB_.connect ("org.freedesktop.ConsoleKit",
+				"/org/freedesktop/ConsoleKit/Manager",
+				"org.freedesktop.ConsoleKit.Manager",
+				"PrepareForSleep",
+				this,
+				SLOT (handlePrepare (bool)));
+	}
+
+	void Connector::handlePrepare (bool active)
+	{
+		qDebug () << Q_FUNC_INFO
+				<< active;
+	}
 }
 }
 }

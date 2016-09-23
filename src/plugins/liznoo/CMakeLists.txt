@@ -32,6 +32,7 @@ set (FBSD_SRCS
 
 set (LINUX_SRCS
 	platform/common/dbusthread.cpp
+	platform/common/connectorbase.cpp
 	platform/poweractions/pmutils.cpp
 	)
 
@@ -43,6 +44,10 @@ set (UPOWER_SRCS
 	platform/battery/upowerplatform.cpp
 	platform/upower/upowerconnector.cpp
 	platform/poweractions/upower.cpp
+	)
+
+set (CONSOLEKIT_SRCS
+	platform/consolekit/connector.cpp
 	)
 
 set (MAC_SRCS
@@ -73,6 +78,7 @@ elseif (NOT WIN32)
 			${LINUX_SRCS}
 			${UPOWER_SRCS}
 			${LOGIND_SRCS}
+			${CONSOLEKIT_SRCS}
 			)
 	endif ()
 

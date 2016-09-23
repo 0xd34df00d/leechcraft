@@ -42,24 +42,10 @@ namespace Liznoo
 namespace UPower
 {
 	UPowerConnector::UPowerConnector (QObject *parent)
-	: QObject (parent)
+	: ConnectorBase { "org.freedesktop.UPower", "UPower", parent }
 	{
-		auto iface = SB_.interface ();
-		auto checkRunning = [&iface]
-			{
-				return !iface->registeredServiceNames ()
-					.value ().filter ("org.freedesktop.UPower").isEmpty ();
-			};
-		if (!checkRunning ())
-		{
-			iface->startService ("org.freedesktop.UPower");
-			if (!checkRunning ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to autostart UPower, we won't work :(";
-				return;
-			}
-		}
+		if (!TryAutostart ())
+			return;
 
 		SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",
@@ -74,14 +60,7 @@ namespace UPower
 				this,
 				SLOT (requeryDevice (QString)));
 
-		const auto& introspect = QDBusInterface
-		{
-			"org.freedesktop.UPower",
-			"/org/freedesktop/UPower",
-			"org.freedesktop.DBus.Introspectable",
-			SB_
-		}.call ("Introspect").arguments ().value (0).toString ();
-		if (!introspect.contains ("\"Sleeping\"") || !introspect.contains ("\"Resuming\""))
+		if (!CheckSignals ("/org/freedesktop/UPower", { "\"Sleeping\"", "\"Resuming\"" }))
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "no Sleeping() or Resuming() signals, we are probably on systemd";
@@ -102,11 +81,6 @@ namespace UPower
 				SIGNAL (wokeUp ()));
 
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
-	}
-
-	bool UPowerConnector::ArePowerEventsAvailable () const
-	{
-		return PowerEventsAvailable_;
 	}
 
 	void UPowerConnector::handleGonnaSleep ()

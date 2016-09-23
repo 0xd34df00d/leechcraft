@@ -27,32 +27,63 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include "../../batteryinfo.h"
-#include "../common/connectorbase.h"
+#include "connectorbase.h"
+#include <algorithm>
+#include <QDBusConnectionInterface>
+#include <QDBusInterface>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
-{
-	class UPowerConnector : public ConnectorBase
+	ConnectorBase::ConnectorBase (const QString& service,
+			const QByteArray& context, QObject* parent)
+	: QObject { parent }
+	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SystemBus,
+				"LeechCraft.Liznoo." + context + ".Connector") }
+	, Service_ { service }
 	{
-		Q_OBJECT
-	public:
-		UPowerConnector (QObject* = nullptr);
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
-	};
+	}
 
-	using UPowerConnector_ptr = std::shared_ptr<UPowerConnector>;
-}
+	bool ConnectorBase::TryAutostart ()
+	{
+		auto iface = SB_.interface ();
+		auto checkRunning = [&iface, this]
+		{
+			return !iface->registeredServiceNames ()
+					.value ().filter (Service_).isEmpty ();
+		};
+		if (checkRunning ())
+			return true;
+
+		iface->startService (Service_);
+		if (checkRunning ())
+			return true;
+
+		qWarning () << Q_FUNC_INFO
+				<< "failed to autostart"
+				<< Service_;
+		return false;
+	}
+
+	bool ConnectorBase::CheckSignals (const QString& path, const QStringList& signalsList)
+	{
+		const auto& introspect = QDBusInterface
+		{
+			Service_,
+			path,
+			"org.freedesktop.DBus.Introspectable",
+			SB_
+		}.call ("Introspect").arguments ().value (0).toString ();
+		return std::all_of (signalsList.begin (), signalsList.end (),
+				[&introspect] (const QString& signal) { return introspect.contains (signal); });
+	}
+
+	bool ConnectorBase::ArePowerEventsAvailable () const
+	{
+		return PowerEventsAvailable_;
+	}
+
 }
 }
