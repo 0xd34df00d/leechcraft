@@ -46,6 +46,10 @@ set (UPOWER_SRCS
 	platform/poweractions/upower.cpp
 	)
 
+set (CONSOLEKIT_SRCS
+	platform/consolekit/connector.cpp
+	)
+
 set (MAC_SRCS
 	platform/battery/macplatform.mm
 	platform/events/platformmac.mm
@@ -74,6 +78,7 @@ elseif (NOT WIN32)
 			${LINUX_SRCS}
 			${UPOWER_SRCS}
 			${LOGIND_SRCS}
+			${CONSOLEKIT_SRCS}
 			)
 	endif ()
 
