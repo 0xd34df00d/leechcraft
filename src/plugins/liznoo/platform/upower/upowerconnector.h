@@ -50,9 +50,6 @@ namespace UPower
 		void requeryDevice (const QString&);
 	signals:
 		void batteryInfoUpdated (Liznoo::BatteryInfo);
-
-		void gonnaSleep (int);
-		void wokeUp ();
 	};
 
 	using UPowerConnector_ptr = std::shared_ptr<UPowerConnector>;

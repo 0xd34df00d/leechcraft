@@ -52,6 +52,9 @@ namespace Liznoo
 		bool CheckSignals (const QString& path, const QStringList& signalsList);
 	public:
 		bool ArePowerEventsAvailable () const;
+	signals:
+		void gonnaSleep (int);
+		void wokeUp ();
 	};
 }
 }
