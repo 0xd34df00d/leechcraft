@@ -83,11 +83,6 @@ namespace UPower
 		PowerEventsAvailable_ = sleepConnected && resumeConnected;
 	}
 
-	bool UPowerConnector::ArePowerEventsAvailable () const
-	{
-		return PowerEventsAvailable_;
-	}
-
 	void UPowerConnector::handleGonnaSleep ()
 	{
 		emit gonnaSleep (1000);

@@ -79,5 +79,11 @@ namespace Liznoo
 		return std::all_of (signalsList.begin (), signalsList.end (),
 				[&introspect] (const QString& signal) { return introspect.contains (signal); });
 	}
+
+	bool ConnectorBase::ArePowerEventsAvailable () const
+	{
+		return PowerEventsAvailable_;
+	}
+
 }
 }

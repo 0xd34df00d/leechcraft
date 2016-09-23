@@ -50,6 +50,8 @@ namespace Liznoo
 		bool TryAutostart ();
 
 		bool CheckSignals (const QString& path, const QStringList& signalsList);
+	public:
+		bool ArePowerEventsAvailable () const;
 	};
 }
 }

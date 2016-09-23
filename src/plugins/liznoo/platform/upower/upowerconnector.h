@@ -44,8 +44,6 @@ namespace UPower
 		Q_OBJECT
 	public:
 		UPowerConnector (QObject* = nullptr);
-
-		bool ArePowerEventsAvailable () const;
 	private slots:
 		void handleGonnaSleep ();
 		void enumerateDevices ();
