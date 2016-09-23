@@ -49,7 +49,6 @@ namespace Poshuku
 		IStorageBackend_ptr CreateStorageBackend () override;
 
 		QString GetUserAgent (const QUrl&) const override;
-		QString GetDefaultUserAgent () const override;
 
 		QVariant GetPoshukuConfigValue (const QByteArray&) const override;
 	};

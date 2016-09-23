@@ -33,6 +33,11 @@
 #include <QFile>
 #include <QBuffer>
 #include <qwebframe.h>
+
+#if QT_VERSION < 0x050000
+#include <qwebkitversion.h>
+#endif
+
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
@@ -42,6 +47,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/sll/slotclosure.h>
+#include <util/sys/sysinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -781,9 +787,41 @@ namespace WebKitView
 		return QWebPage::javaScriptPrompt (frame, pr, def, result);
 	}
 
+	namespace
+	{
+		QString GetDefaultUserAgent (const ICoreProxy_ptr& proxy)
+		{
+#if defined(Q_OS_WIN32)
+			const auto platform = "Windows";
+#elif defined (Q_OS_MAC)
+			const auto platform = "Macintosh";
+#else
+			const auto platform = "X11";
+#endif
+
+			const auto& osInfo = Util::SysInfo::GetOSInfo ();
+			auto osVersion = osInfo.Flavour_;
+			if (!osInfo.Arch_.isEmpty ())
+				osVersion += " " + osInfo.Arch_;
+
+			const auto& lcVersion = proxy->GetVersion ();
+
+			return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%4 Safari/%3" }
+					.arg (platform)
+					.arg (osVersion)
+					.arg (qWebKitVersion ())
+					.arg (lcVersion.section ('-', 0, 0));
+		}
+
+	}
+
 	QString CustomWebPage::userAgentForUrl (const QUrl& url) const
 	{
-		return PoshukuProxy_->GetUserAgent (url);
+		const auto& overridden = PoshukuProxy_->GetUserAgent (url);
+		if (!overridden.isEmpty ())
+			return overridden;
+
+		return GetDefaultUserAgent (Proxy_);
 	}
 
 	QWebFrame* CustomWebPage::FindFrame (const QUrl& url)
