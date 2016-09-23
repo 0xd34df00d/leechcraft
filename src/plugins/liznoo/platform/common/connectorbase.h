@@ -48,6 +48,8 @@ namespace Liznoo
 		ConnectorBase (const QString& service, const QByteArray& context, QObject *parent = nullptr);
 
 		bool TryAutostart ();
+
+		bool CheckSignals (const QString& path, const QStringList& signalsList);
 	};
 }
 }

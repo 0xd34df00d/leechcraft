@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "connectorbase.h"
+#include <algorithm>
 #include <QDBusConnectionInterface>
+#include <QDBusInterface>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -63,6 +65,19 @@ namespace Liznoo
 				<< "failed to autostart"
 				<< Service_;
 		return false;
+	}
+
+	bool ConnectorBase::CheckSignals (const QString& path, const QStringList& signalsList)
+	{
+		const auto& introspect = QDBusInterface
+		{
+			Service_,
+			path,
+			"org.freedesktop.DBus.Introspectable",
+			SB_
+		}.call ("Introspect").arguments ().value (0).toString ();
+		return std::all_of (signalsList.begin (), signalsList.end (),
+				[&introspect] (const QString& signal) { return introspect.contains (signal); });
 	}
 }
 }

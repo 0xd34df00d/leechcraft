@@ -60,14 +60,7 @@ namespace UPower
 				this,
 				SLOT (requeryDevice (QString)));
 
-		const auto& introspect = QDBusInterface
-		{
-			"org.freedesktop.UPower",
-			"/org/freedesktop/UPower",
-			"org.freedesktop.DBus.Introspectable",
-			SB_
-		}.call ("Introspect").arguments ().value (0).toString ();
-		if (!introspect.contains ("\"Sleeping\"") || !introspect.contains ("\"Resuming\""))
+		if (!CheckSignals ("/org/freedesktop/UPower", { "\"Sleeping\"", "\"Resuming\"" }))
 		{
 			qDebug () << Q_FUNC_INFO
 					<< "no Sleeping() or Resuming() signals, we are probably on systemd";
