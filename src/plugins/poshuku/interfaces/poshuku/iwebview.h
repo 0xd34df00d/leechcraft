@@ -122,6 +122,7 @@ namespace Poshuku
 		{
 			AutoLoadImages,
 			JavascriptEnabled,
+			PluginsEnabled,
 			JavascriptCanOpenWindows,
 			JavascriptCanAccessClipboard,
 			LocalStorageEnabled,
@@ -142,6 +143,8 @@ namespace Poshuku
 		};
 
 		using IFeatureSecurityOrigin_ptr = std::shared_ptr<IFeatureSecurityOrigin>;
+
+		virtual void SurroundingsInitialized () = 0;
 
 		virtual QWidget* GetQWidget () = 0;
 

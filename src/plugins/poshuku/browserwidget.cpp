@@ -35,9 +35,6 @@
 
 #include <limits>
 #include <cmath>
-#include <boost/preprocessor/seq/size.hpp>
-#include <boost/preprocessor/seq/elem.hpp>
-#include <boost/preprocessor/repetition/repeat.hpp>
 #include <QKeyEvent>
 #include <QDesktopWidget>
 #include <QtDebug>
@@ -50,7 +47,6 @@
 #include <QWidgetAction>
 #include <QTimer>
 #include <QPainter>
-#include <qwebframe.h>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopServices>
@@ -58,8 +54,6 @@
 #include <QCursor>
 #include <QDomDocument>
 #include <QDomElement>
-#include <qwebhistory.h>
-#include <qwebelement.h>
 #include <QDataStream>
 #include <QRegExp>
 #include <QKeySequence>
@@ -94,6 +88,7 @@
 #include "zoomer.h"
 #include "searchtext.h"
 #include "featurepermnotification.h"
+#include "browserwidgetsettingshandler.h"
 
 Q_DECLARE_METATYPE (QList<QObject*>);
 
@@ -475,6 +470,10 @@ namespace Poshuku
 		updateLogicalPath ();
 
 		RegisterShortcuts (sm);
+
+		new BrowserWidgetSettingsHandler { this };
+
+		WebView_->SurroundingsInitialized ();
 	}
 
 	BrowserWidget::~BrowserWidget ()

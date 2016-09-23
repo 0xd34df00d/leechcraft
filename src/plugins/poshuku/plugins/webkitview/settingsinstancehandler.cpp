@@ -28,6 +28,9 @@
  **********************************************************************/
 
 #include "settingsinstancehandler.h"
+#include <QFile>
+#include <QUrl>
+#include <QtDebug>
 #include <qwebsettings.h>
 #include "xmlsettingsmanager.h"
 
@@ -54,6 +57,10 @@ namespace WebKitView
 				},
 				this, "generalSettingsChanged");
 		generalSettingsChanged ();
+
+		XmlSettingsManager::Instance ().RegisterObject ("UserStyleSheet",
+				this, "setUserStyleSheet");
+		setUserStyleSheet ();
 	}
 
 	void SettingsInstanceHandler::generalSettingsChanged ()
@@ -78,6 +85,33 @@ namespace WebKitView
 	{
 		Settings_->setAttribute (QWebSettings::DnsPrefetchEnabled,
 				XmlSettingsManager::Instance ().property ("DNSPrefetchEnabled").toBool ());
+	}
+
+	void SettingsInstanceHandler::setUserStyleSheet ()
+	{
+		const auto& pathStr = XmlSettingsManager::Instance ()
+				.property ("UserStyleSheet").toString ();
+		if (pathStr.isEmpty ())
+		{
+			Settings_->setUserStyleSheetUrl ({});
+			return;
+		}
+
+		QFile file { pathStr };
+		if (!file.open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "cannot open"
+					<< pathStr
+					<< file.errorString ();
+			Settings_->setUserStyleSheetUrl ({});
+			return;
+		}
+
+		const auto& contents = file.readAll ();
+
+		const auto& uriContents = "data:text/css;charset=utf-8;base64," + contents.toBase64 ();
+		Settings_->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
 	}
 }
 }

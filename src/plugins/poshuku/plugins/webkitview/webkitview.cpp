@@ -29,6 +29,7 @@
 
 #include "webkitview.h"
 #include <QIcon>
+#include <QDir>
 #include <qwebsettings.h>
 
 #if QT_VERSION < 0x050000
@@ -38,6 +39,7 @@
 #endif
 
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
+#include <util/sys/paths.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 #include "customwebpage.h"
@@ -67,6 +69,39 @@ namespace WebKitView
 				SIGNAL (pushButtonClicked (QString)),
 				sgh,
 				SLOT (handleSettingsClicked (QString)));
+
+		try
+		{
+			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/favicons").absolutePath ();
+			QWebSettings::setIconDatabasePath (path);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
+
+		try
+		{
+			const auto& path = Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ();
+			QWebSettings::setOfflineStoragePath (path);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
+
+		try
+		{
+			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/offlinewebappcache").absolutePath ();
+			QWebSettings::setOfflineWebApplicationCachePath (path);
+		}
+		catch (const std::runtime_error& e)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< e.what ();
+		}
 	}
 
 	void Plugin::SecondInit ()

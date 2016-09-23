@@ -237,6 +237,12 @@ namespace WebKitView
 		return image;
 	}
 
+	void CustomWebView::SurroundingsInitialized ()
+	{
+		FindDialog_ = new Util::FindNotificationWk { Proxy_, this };
+		FindDialog_->hide ();
+	}
+
 	QWidget* CustomWebView::GetQWidget ()
 	{
 		return this;
@@ -367,9 +373,6 @@ namespace WebKitView
 
 	void CustomWebView::InitiateFind (const QString& text)
 	{
-		if (!FindDialog_)
-			FindDialog_ = new Util::FindNotificationWk { Proxy_, this };
-
 		if (!text.isEmpty ())
 			FindDialog_->SetText (text);
 		FindDialog_->show ();
@@ -480,6 +483,7 @@ namespace WebKitView
 		switch (attribute)
 		{
 		ATTR (AutoLoadImages)
+		ATTR (PluginsEnabled)
 		ATTR (JavascriptEnabled)
 		ATTR (JavascriptCanOpenWindows)
 		ATTR (JavascriptCanAccessClipboard)

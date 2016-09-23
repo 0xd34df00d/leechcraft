@@ -31,26 +31,22 @@
 
 #include <QObject>
 
-class QWebSettings;
-
 namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace WebKitView
-{
-	class SettingsInstanceHandler : public QObject
+	class IWebView;
+	class BrowserWidget;
+
+	class BrowserWidgetSettingsHandler : public QObject
 	{
 		Q_OBJECT
 
-		QWebSettings * const Settings_;
+		IWebView * const View_;
 	public:
-		SettingsInstanceHandler (QWebSettings*, QObject* = nullptr);
+		BrowserWidgetSettingsHandler (BrowserWidget*);
 	private slots:
-		void generalSettingsChanged ();
-		void cacheSettingsChanged ();
-		void setUserStyleSheet ();
+		void viewerSettingsChanged ();
 	};
-}
 }
 }

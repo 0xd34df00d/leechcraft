@@ -77,6 +77,8 @@ namespace WebKitView
 	public:
 		CustomWebView (const ICoreProxy_ptr&, IProxyObject*, QWidget* = nullptr);
 
+		void SurroundingsInitialized () override;
+
 		QWidget* GetQWidget () override;
 		QList<QAction*> GetActions (ActionArea) const override;
 

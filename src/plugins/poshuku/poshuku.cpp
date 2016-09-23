@@ -30,7 +30,6 @@
 #include "poshuku.h"
 #include <stdexcept>
 #include <QMessageBox>
-#include <qwebsettings.h>
 #include <QHeaderView>
 #include <QToolBar>
 #include <QDir>
@@ -74,42 +73,6 @@ namespace Poshuku
 		BrowserWidget::SetParentMultiTabs (this);
 		Core::Instance ().setParent (this);
 		Core::Instance ().SetProxy (coreProxy);
-
-		try
-		{
-			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/favicons").absolutePath ();
-			QWebSettings::setIconDatabasePath (path);
-		}
-		catch (const std::runtime_error& e)
-		{
-			QMessageBox::warning (nullptr,
-					"LeechCraft",
-					e.what ());
-		}
-
-		try
-		{
-			const auto& path = Util::CreateIfNotExists ("poshuku/offlinestorage").absolutePath ();
-			QWebSettings::setOfflineStoragePath (path);
-		}
-		catch (const std::runtime_error& e)
-		{
-			QMessageBox::warning (nullptr,
-					"LeechCraft",
-					e.what ());
-		}
-
-		try
-		{
-			const auto& path = Util::GetUserDir (Util::UserDir::Cache, "poshuku/offlinewebappcache").absolutePath ();
-			QWebSettings::setOfflineWebApplicationCachePath (path);
-		}
-		catch (const std::runtime_error& e)
-		{
-			QMessageBox::warning (nullptr,
-					"LeechCraft",
-					e.what ());
-		}
 
 		ShortcutMgr_ = new Util::ShortcutManager { coreProxy };
 		ShortcutMgr_->SetObject (this);
@@ -163,7 +126,6 @@ namespace Poshuku
 			throw;
 		}
 
-		RegisterSettings ();
 		PrepopulateShortcuts ();
 
 		connect (Core::Instance ().GetFavoritesModel (),
@@ -393,26 +355,6 @@ namespace Poshuku
 				SLOT (handleError (const QString&)));
 	}
 
-	void Poshuku::RegisterSettings ()
-	{
-		QList<QByteArray> viewerSettings;
-		viewerSettings << "AutoLoadImages"
-			<< "AllowJavascript"
-			<< "AllowPlugins"
-			<< "JavascriptCanOpenWindows"
-			<< "JavascriptCanAccessClipboard"
-			<< "UserStyleSheet"
-			<< "LocalStorageDB"
-			<< "EnableXSSAuditing"
-			<< "EnableWebGL"
-			<< "EnableHyperlinkAuditing"
-			<< "EnableSmoothScrolling";
-		XmlSettingsManager::Instance ()->RegisterObject (viewerSettings,
-				this, "viewerSettingsChanged");
-
-		viewerSettingsChanged ();
-	}
-
 	void Poshuku::PrepopulateShortcuts ()
 	{
 		const auto itm = Core::Instance ().GetProxy ()->GetIconThemeManager ();
@@ -451,68 +393,6 @@ namespace Poshuku
 			Core::Instance ().NewURL ("about:home", true);
 		XmlSettingsManager::Instance ()->
 				setProperty ("FirstTimeRun", false);
-	}
-
-	namespace
-	{
-		void SetUserStylesheet ()
-		{
-			const auto& pathStr = XmlSettingsManager::Instance ()->
-					property ("UserStyleSheet").toString ();
-			if (pathStr.isEmpty ())
-			{
-				QWebSettings::globalSettings ()->setUserStyleSheetUrl ({});
-				return;
-			}
-
-			QFile file { pathStr };
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "cannot open"
-						<< pathStr
-						<< file.errorString ();
-				QWebSettings::globalSettings ()->setUserStyleSheetUrl ({});
-				return;
-			}
-
-			const auto& contents = file.readAll ();
-
-			const auto& uriContents = "data:text/css;charset=utf-8;base64," + contents.toBase64 ();
-			QWebSettings::globalSettings ()->setUserStyleSheetUrl (QUrl::fromEncoded (uriContents));
-		}
-	}
-
-	void Poshuku::viewerSettingsChanged ()
-	{
-		auto xsm = XmlSettingsManager::Instance ();
-
-		auto global = QWebSettings::globalSettings ();
-
-		global->setAttribute (QWebSettings::AutoLoadImages,
-				xsm->property ("AutoLoadImages").toBool ());
-		global->setAttribute (QWebSettings::JavascriptEnabled,
-				xsm->property ("AllowJavascript").toBool ());
-		global->setAttribute (QWebSettings::PluginsEnabled,
-				xsm->property ("AllowPlugins").toBool ());
-		global->setAttribute (QWebSettings::JavascriptCanOpenWindows,
-				xsm->property ("JavascriptCanOpenWindows").toBool ());
-		global->setAttribute (QWebSettings::JavascriptCanAccessClipboard,
-				xsm->property ("JavascriptCanAccessClipboard").toBool ());
-		global->setAttribute (QWebSettings::LocalStorageEnabled,
-				xsm->property ("LocalStorageDB").toBool ());
-		global->setAttribute (QWebSettings::XSSAuditingEnabled,
-				xsm->property ("EnableXSSAuditing").toBool ());
-		global->setAttribute (QWebSettings::HyperlinkAuditingEnabled,
-				xsm->property ("EnableHyperlinkAuditing").toBool ());
-		global->setAttribute (QWebSettings::WebGLEnabled,
-				xsm->property ("EnableWebGL").toBool ());
-#if QT_VERSION >= 0x050000
-		global->setAttribute (QWebSettings::ScrollAnimatorEnabled,
-				xsm->property ("EnableSmoothScrolling").toBool ());
-#endif
-
-		SetUserStylesheet ();
 	}
 
 	void Poshuku::handleError (const QString& msg)

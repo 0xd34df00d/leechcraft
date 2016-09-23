@@ -126,11 +126,9 @@ namespace Poshuku
 		bool HasSimilarTab (const QByteArray&, const QList<QByteArray>&) const;
 	private:
 		void InitConnections ();
-		void RegisterSettings ();
 		void PrepopulateShortcuts ();
 	private slots:
 		void createTabFirstTime ();
-		void viewerSettingsChanged ();
 		void handleError (const QString&);
 		void handleSettingsClicked (const QString&);
 		void handleCheckFavorites ();
