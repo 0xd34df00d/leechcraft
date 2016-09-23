@@ -29,35 +29,23 @@
 
 #pragma once
 
-#include <memory>
-#include "../../batteryinfo.h"
-#include "../common/connectorbase.h"
+#include <QObject>
+#include <QDBusConnection>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
-{
-	class UPowerConnector : public ConnectorBase
+	class ConnectorBase : public QObject
 	{
 		Q_OBJECT
-	public:
-		UPowerConnector (QObject* = nullptr);
+	protected:
+		QDBusConnection SB_;
+		bool PowerEventsAvailable_ = false;
 
-		bool ArePowerEventsAvailable () const;
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+		ConnectorBase (const QByteArray& context, QObject *parent = nullptr);
 
-		void gonnaSleep (int);
-		void wokeUp ();
+		bool TryAutostart (const QString& service);
 	};
-
-	using UPowerConnector_ptr = std::shared_ptr<UPowerConnector>;
-}
 }
 }

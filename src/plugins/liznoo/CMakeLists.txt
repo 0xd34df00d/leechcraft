@@ -32,6 +32,7 @@ set (FBSD_SRCS
 
 set (LINUX_SRCS
 	platform/common/dbusthread.cpp
+	platform/common/connectorbase.cpp
 	platform/poweractions/pmutils.cpp
 	)
 

@@ -42,24 +42,10 @@ namespace Liznoo
 namespace UPower
 {
 	UPowerConnector::UPowerConnector (QObject *parent)
-	: QObject (parent)
+	: ConnectorBase { "UPower", parent }
 	{
-		auto iface = SB_.interface ();
-		auto checkRunning = [&iface]
-			{
-				return !iface->registeredServiceNames ()
-					.value ().filter ("org.freedesktop.UPower").isEmpty ();
-			};
-		if (!checkRunning ())
-		{
-			iface->startService ("org.freedesktop.UPower");
-			if (!checkRunning ())
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "failed to autostart UPower, we won't work :(";
-				return;
-			}
-		}
+		if (!TryAutostart ("org.freedesktop.UPower"))
+			return;
 
 		SB_.connect ("org.freedesktop.UPower",
 				"/org/freedesktop/UPower",

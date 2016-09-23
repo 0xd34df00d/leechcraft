@@ -27,37 +27,40 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#pragma once
-
-#include <memory>
-#include "../../batteryinfo.h"
-#include "../common/connectorbase.h"
+#include "connectorbase.h"
+#include <QDBusConnectionInterface>
+#include <QtDebug>
 
 namespace LeechCraft
 {
 namespace Liznoo
 {
-namespace UPower
-{
-	class UPowerConnector : public ConnectorBase
+	ConnectorBase::ConnectorBase (const QByteArray& context, QObject* parent)
+	: QObject { parent }
+	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SystemBus,
+				"LeechCraft.Liznoo." + context + ".Connector") }
 	{
-		Q_OBJECT
-	public:
-		UPowerConnector (QObject* = nullptr);
+	}
 
-		bool ArePowerEventsAvailable () const;
-	private slots:
-		void handleGonnaSleep ();
-		void enumerateDevices ();
-		void requeryDevice (const QString&);
-	signals:
-		void batteryInfoUpdated (Liznoo::BatteryInfo);
+	bool ConnectorBase::TryAutostart (const QString& service)
+	{
+		auto iface = SB_.interface ();
+		auto checkRunning = [&iface, &service]
+		{
+			return !iface->registeredServiceNames ()
+					.value ().filter (service).isEmpty ();
+		};
+		if (checkRunning ())
+			return true;
 
-		void gonnaSleep (int);
-		void wokeUp ();
-	};
+		iface->startService (service);
+		if (checkRunning ())
+			return true;
 
-	using UPowerConnector_ptr = std::shared_ptr<UPowerConnector>;
-}
+		qWarning () << Q_FUNC_INFO
+				<< "failed to autostart"
+				<< service;
+		return false;
+	}
 }
 }
