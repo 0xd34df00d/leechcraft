@@ -41,11 +41,13 @@ namespace Liznoo
 		Q_OBJECT
 	protected:
 		QDBusConnection SB_;
+		const QString Service_;
+
 		bool PowerEventsAvailable_ = false;
 
-		ConnectorBase (const QByteArray& context, QObject *parent = nullptr);
+		ConnectorBase (const QString& service, const QByteArray& context, QObject *parent = nullptr);
 
-		bool TryAutostart (const QString& service);
+		bool TryAutostart ();
 	};
 }
 }

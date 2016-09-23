@@ -42,9 +42,9 @@ namespace Liznoo
 namespace UPower
 {
 	UPowerConnector::UPowerConnector (QObject *parent)
-	: ConnectorBase { "UPower", parent }
+	: ConnectorBase { "org.freedesktop.UPower", "UPower", parent }
 	{
-		if (!TryAutostart ("org.freedesktop.UPower"))
+		if (!TryAutostart ())
 			return;
 
 		SB_.connect ("org.freedesktop.UPower",

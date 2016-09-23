@@ -35,31 +35,33 @@ namespace LeechCraft
 {
 namespace Liznoo
 {
-	ConnectorBase::ConnectorBase (const QByteArray& context, QObject* parent)
+	ConnectorBase::ConnectorBase (const QString& service,
+			const QByteArray& context, QObject* parent)
 	: QObject { parent }
 	, SB_ { QDBusConnection::connectToBus (QDBusConnection::SystemBus,
 				"LeechCraft.Liznoo." + context + ".Connector") }
+	, Service_ { service }
 	{
 	}
 
-	bool ConnectorBase::TryAutostart (const QString& service)
+	bool ConnectorBase::TryAutostart ()
 	{
 		auto iface = SB_.interface ();
-		auto checkRunning = [&iface, &service]
+		auto checkRunning = [&iface, this]
 		{
 			return !iface->registeredServiceNames ()
-					.value ().filter (service).isEmpty ();
+					.value ().filter (Service_).isEmpty ();
 		};
 		if (checkRunning ())
 			return true;
 
-		iface->startService (service);
+		iface->startService (Service_);
 		if (checkRunning ())
 			return true;
 
 		qWarning () << Q_FUNC_INFO
 				<< "failed to autostart"
-				<< service;
+				<< Service_;
 		return false;
 	}
 }
