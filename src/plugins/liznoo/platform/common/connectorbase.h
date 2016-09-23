@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <QDBusConnection>
+#include <QStringList>
 
 namespace LeechCraft
 {
