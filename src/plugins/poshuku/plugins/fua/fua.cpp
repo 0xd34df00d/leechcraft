@@ -161,7 +161,7 @@ namespace Fua
 
 		Browser2ID_ = QList<QPair<QString, QString>>
 		{
-			{ tr ("LeechCraft (this machine)"), proxy->GetDefaultUserAgent () },
+			{ tr ("LeechCraft (this machine)"), "" },
 			{ "Android Webkit Browser (Android 2.2.1, HTC Desire Z)", "Mozilla/5.0 (Linux; U; Android 2.2.1; en-gb; HTC_DesireZ_A7272 Build/FRG83D) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1" },
 			{ "Android Webkit Browser (Android 4.0.3)", "Mozilla/5.0 (Linux; U; Android 4.0.3; de-ch; HTC Sensation Build/IML74K) AppleWebKit/534.30 (KHTML, like Gecko) Version/4.0 Mobile Safari/534.30" },
 			{ "Chromium 28.0 (Linux x86)", "Mozilla/5.0 (X11; Linux i686) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/28.0.1500.71 Chrome/28.0.1500.71 Safari/537.36" },
