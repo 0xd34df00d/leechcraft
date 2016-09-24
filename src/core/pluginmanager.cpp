@@ -1010,8 +1010,25 @@ namespace LeechCraft
 
 		QList<boost::optional<Checks::Fail>> fails;
 		if (!DBusMode_)
-			fails = QtConcurrent::mapped (PluginContainers_,
-					std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck)).results ();
+		{
+			const auto mid = std::partition (PluginContainers_.begin (), PluginContainers_.end (),
+					[] (const Loaders::IPluginLoader_ptr& loader)
+					{
+						return loader->GetManifest () ["RequireGUIThreadLibraryLoading"].toBool ();
+					});
+			auto future = QtConcurrent::mapped (mid, PluginContainers_.end (),
+					std::function<boost::optional<Checks::Fail> (Loaders::IPluginLoader_ptr)> (thrCheck));
+
+			for (auto it = PluginContainers_.begin (); it != mid; ++it)
+			{
+				qDebug () << "running checks for"
+						<< (*it)->GetFileName ()
+						<< "in main thread";
+				fails << thrCheck (*it);
+			}
+
+			fails += future.results ();
+		}
 		else
 			for (const auto loader : PluginContainers_)
 				fails << thrCheck (loader);
