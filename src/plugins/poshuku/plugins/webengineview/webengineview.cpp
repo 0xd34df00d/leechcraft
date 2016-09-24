@@ -67,6 +67,13 @@ namespace WebKitView
 	{
 		return {};
 	}
+
+	QSet<QByteArray> Plugin::GetPluginClasses () const
+	{
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		return result;
+	}
 }
 }
 }

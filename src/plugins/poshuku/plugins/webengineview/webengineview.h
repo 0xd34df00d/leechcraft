@@ -31,6 +31,7 @@
 
 #include <QObject>
 #include <interfaces/iinfo.h>
+#include <interfaces/iplugin2.h>
 
 namespace LeechCraft
 {
@@ -40,9 +41,10 @@ namespace WebKitView
 {
 	class Plugin : public QObject
 				 , public IInfo
+				 , public IPlugin2
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo)
+		Q_INTERFACES (IInfo IPlugin2)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebEngineView")
 	public:
@@ -53,6 +55,8 @@ namespace WebKitView
 		QString GetName () const override;
 		QString GetInfo () const override;
 		QIcon GetIcon () const override;
+
+		QSet<QByteArray> GetPluginClasses () const override;
 	};
 }
 }
