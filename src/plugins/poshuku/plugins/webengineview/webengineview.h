@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/poshuku/iwebviewprovider.h>
 
 namespace LeechCraft
 {
@@ -42,9 +43,10 @@ namespace WebEngineView
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IWebViewProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Poshuku::IWebViewProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebEngineView")
 	public:
@@ -57,6 +59,11 @@ namespace WebEngineView
 		QIcon GetIcon () const override;
 
 		QSet<QByteArray> GetPluginClasses () const override;
+		IWebView* CreateWebView () override;
+		QIcon GetIconForUrl (const QUrl&) const override;
+		QIcon GetDefaultUrlIcon () const override;
+	signals:
+		void webViewCreated (IWebView*, bool) override;
 	};
 }
 }

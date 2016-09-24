@@ -74,6 +74,21 @@ namespace WebEngineView
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		return result;
 	}
+
+	IWebView* Plugin::CreateWebView ()
+	{
+		return nullptr;
+	}
+
+	QIcon Plugin::GetIconForUrl (const QUrl& url) const
+	{
+		return {};
+	}
+
+	QIcon Plugin::GetDefaultUrlIcon () const
+	{
+		return {};
+	}
 }
 }
 }
