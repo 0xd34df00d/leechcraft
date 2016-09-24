@@ -101,7 +101,7 @@ install (FILES poshukusettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (DIRECTORY installed/poshuku/ DESTINATION ${LC_INSTALLEDMANIFEST_DEST}/poshuku)
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 
-FindQtLibs (leechcraft_poshuku Network PrintSupport Sql Xml WebKitWidgets)
+FindQtLibs (leechcraft_poshuku Network PrintSupport Sql Xml)
 
 set (POSHUKU_INCLUDE_DIR ${CURRENT_SOURCE_DIR})
 
