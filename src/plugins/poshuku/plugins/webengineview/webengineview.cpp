@@ -70,3 +70,5 @@ namespace WebKitView
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_poshuku_webengineview, LeechCraft::Poshuku::WebEngineView::Plugin);

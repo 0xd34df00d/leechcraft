@@ -42,6 +42,9 @@ namespace WebKitView
 				 , public IInfo
 	{
 		Q_OBJECT
+		Q_INTERFACES (IInfo)
+
+		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebEngineView")
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
