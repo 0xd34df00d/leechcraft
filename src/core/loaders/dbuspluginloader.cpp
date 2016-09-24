@@ -154,6 +154,12 @@ namespace Loaders
 		return {};
 	}
 
+	QVariantMap DBusPluginLoader::GetManifest () const
+	{
+		// TODO
+		return {};
+	}
+
 	void DBusPluginLoader::handleProcFinished ()
 	{
 		qDebug () << Q_FUNC_INFO << Proc_->exitCode () << Proc_->exitStatus ();

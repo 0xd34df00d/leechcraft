@@ -58,6 +58,7 @@ namespace Loaders
 		bool IsLoaded () const;
 		QString GetFileName () const;
 		QString GetErrorString () const;
+		QVariantMap GetManifest () const;
 	};
 }
 }

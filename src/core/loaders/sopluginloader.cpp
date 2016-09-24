@@ -29,6 +29,7 @@
 
 #include "sopluginloader.h"
 #include <QPluginLoader>
+#include <QVariantMap>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -94,6 +95,11 @@ namespace Loaders
 	QString SOPluginLoader::GetErrorString () const
 	{
 		return Loader_->errorString ();
+	}
+
+	QVariantMap SOPluginLoader::GetManifest () const
+	{
+		return {};
 	}
 }
 }

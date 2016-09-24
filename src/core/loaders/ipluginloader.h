@@ -33,7 +33,13 @@
 #include <QtGlobal>
 
 class QString;
+class QVariant;
 class QObject;
+
+template<typename, typename>
+class QMap;
+
+using QVariantMap = QMap<QString, QVariant>;
 
 namespace LeechCraft
 {
@@ -57,6 +63,8 @@ namespace Loaders
 		virtual QString GetFileName () const = 0;
 
 		virtual QString GetErrorString () const = 0;
+
+		virtual QVariantMap GetManifest () const = 0;
 	};
 
 	qint64 GetLibAPILevel (const QString&);
