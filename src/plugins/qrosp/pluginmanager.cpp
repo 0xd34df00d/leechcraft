@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <qross/core/manager.h>
 #include <qross/core/interpreter.h>
+#include <util/sll/qtutil.h>
 #include "wrapperobject.h"
 #include "typesfactory.h"
 #include "utilproxy.h"
@@ -58,8 +59,9 @@ namespace Qrosp
 				<< "found"
 				<< plugins;
 
-		Q_FOREACH (const auto& type, plugins.keys ())
+		for (const auto& pair : Util::Stlize (plugins))
 		{
+			const auto& type = pair.first;
 			if (!interpreters.contains (type))
 			{
 				qWarning () << Q_FUNC_INFO
@@ -68,7 +70,7 @@ namespace Qrosp
 						<< interpreters;
 				continue;
 			}
-			Q_FOREACH (const auto& path, plugins [type])
+			for (const auto& path : pair.second)
 				Wrappers_ << new WrapperObject (type, path);
 		}
 	}
