@@ -91,6 +91,22 @@ namespace Qrosp
 		return Wrappers_;
 	}
 
+	namespace
+	{
+		QFileInfoList Collect (const QStringList& exts, const QString& path)
+		{
+			QFileInfoList list;
+			auto dir = QDir::home ();
+			if (dir.cd (path))
+				list = dir.entryInfoList (exts,
+						QDir::Files |
+							QDir::NoDotAndDotDot |
+							QDir::Readable,
+						QDir::Name);
+			return list;
+		}
+	}
+
 	QMap<QString, QStringList> PluginManager::FindPlugins ()
 	{
 		QMap<QString, QStringList> knownExtensions;
@@ -99,29 +115,6 @@ namespace Qrosp
 		knownExtensions ["ruby"] << "*.rb";
 
 		QMap<QString, QStringList> result;
-
-		struct Collector
-		{
-			const QStringList& Extensions_;
-
-			Collector (const QStringList& exts)
-			: Extensions_ (exts)
-			{
-			}
-
-			QFileInfoList operator() (const QString& path)
-			{
-				QFileInfoList list;
-				QDir dir = QDir::home ();
-				if (dir.cd (path))
-					list = dir.entryInfoList (Extensions_,
-							QDir::Files |
-								QDir::NoDotAndDotDot |
-								QDir::Readable,
-							QDir::Name);
-				return list;
-			}
-		};
 
 		QDir dir = QDir::home ();
 		if (!dir.cd (".leechcraft/plugins/scriptable"))
@@ -145,7 +138,7 @@ namespace Qrosp
 				{
 					const auto& type = sameType.fileName ();
 					const auto& exts = knownExtensions.value (type, { "*.*" });
-					const auto& list = Collector (exts) (pluginDir.absoluteFilePath ());
+					const auto& list = Collect (exts, pluginDir.absoluteFilePath ());
 					for (const auto& fileInfo : list)
 						if (fileInfo.baseName () == pluginDir.baseName ())
 							result [type] += fileInfo.absoluteFilePath ();
