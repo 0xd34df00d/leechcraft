@@ -28,12 +28,6 @@
  **********************************************************************/
 
 #include "proxyobject.h"
-
-#if QT_VERSION < 0x050000
-#include <qwebkitversion.h>
-#endif
-
-#include <util/sys/sysinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
