@@ -116,6 +116,8 @@ option (ENABLE_POSHUKU_KEYWORDS "Build support of url keywords for Poshuku brows
 option (ENABLE_POSHUKU_ONLINEBOOKMARKS "Build support of online bookmark synchronization for Poshuku browser" ON)
 option (ENABLE_POSHUKU_QRD "Build QRd for showing the URL of a web page as a QR code" OFF)
 option (ENABLE_POSHUKU_SPEEDDIAL "Build Speed Dial support module" ON)
+
+option (ENABLE_POSHUKU_WEBENGINEVIEW "Build WebEngine-based backend" OFF)
 option (ENABLE_POSHUKU_WEBKITVIEW "Build WebKit-based backend" ON)
 
 if (ENABLE_POSHUKU_AUTOSEARCH)
@@ -152,6 +154,9 @@ if (ENABLE_POSHUKU_SPEEDDIAL)
 	add_subdirectory (plugins/speeddial)
 endif ()
 
+if (ENABLE_POSHUKU_WEBENGINEVIEW)
+	add_subdirectory (plugins/webengineview)
+endif ()
 if (ENABLE_POSHUKU_WEBKITVIEW)
 	add_subdirectory (plugins/webkitview)
 endif ()
