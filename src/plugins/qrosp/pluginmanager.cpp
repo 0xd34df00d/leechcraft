@@ -128,27 +128,30 @@ namespace Qrosp
 			qWarning () << Q_FUNC_INFO
 					<< "unable to cd into ~/.leechcraft/plugins/scriptable";
 		else
+		{
+			const auto& dirEntries = dir.entryInfoList (QDir::Dirs |
+					QDir::NoDotAndDotDot |
+					QDir::Readable);
 			// Iterate over the different types of scripts
-			Q_FOREACH (QFileInfo sameType,
-					dir.entryInfoList (QDir::Dirs |
-							QDir::NoDotAndDotDot |
-							QDir::Readable))
+			for (const auto& sameType : dirEntries)
 			{
+				const auto& pluginDirs = QDir { sameType.absoluteFilePath () }
+						.entryInfoList (QDir::Dirs |
+								QDir::NoDotAndDotDot |
+								QDir::Readable);
 				// For the same type iterate over subdirs with
 				// actual plugins.
-				Q_FOREACH (QFileInfo pluginDir,
-						QDir (sameType.absoluteFilePath ()).entryInfoList (QDir::Dirs |
-								QDir::NoDotAndDotDot |
-								QDir::Readable))
+				for (const auto& pluginDir : pluginDirs)
 				{
-					QString type = sameType.fileName ();
-					QStringList exts = knownExtensions.value (type, QStringList ("*.*"));
-					QFileInfoList list = Collector (exts) (pluginDir.absoluteFilePath ());
-					Q_FOREACH (QFileInfo fileInfo, list)
+					const auto& type = sameType.fileName ();
+					const auto& exts = knownExtensions.value (type, { "*.*" });
+					const auto& list = Collector (exts) (pluginDir.absoluteFilePath ());
+					for (const auto& fileInfo : list)
 						if (fileInfo.baseName () == pluginDir.baseName ())
 							result [type] += fileInfo.absoluteFilePath ();
 				}
 			}
+		}
 
 		return result;
 	}
