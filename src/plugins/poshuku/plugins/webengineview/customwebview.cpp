@@ -31,6 +31,8 @@
 #include <cassert>
 #include <QIcon>
 #include <QWebEngineSettings>
+#include <QWebEngineHistory>
+#include <interfaces/poshuku/iwebviewhistory.h>
 
 namespace LeechCraft
 {
@@ -194,9 +196,92 @@ namespace WebEngineView
 		return page ()->createStandardContextMenu ();
 	}
 
+	namespace
+	{
+		class HistoryWrapper : public IWebViewHistory
+		{
+			QWebEngineHistory * const History_;
+
+			class Item : public IItem
+			{
+				const QWebEngineHistoryItem Item_;
+				QWebEngineHistory * const History_;
+			public:
+				Item (const QWebEngineHistoryItem& item, QWebEngineHistory * const history)
+				: Item_ { item }
+				, History_ { history }
+				{
+				}
+
+				bool IsValid () const override
+				{
+					return Item_.isValid ();
+				}
+
+				QString GetTitle () const override
+				{
+					return Item_.title ();
+				}
+
+				QUrl GetUrl () const override
+				{
+					return Item_.url ();
+				}
+
+				QIcon GetIcon () const override
+				{
+					return {};
+				}
+
+				void Navigate () override
+				{
+					History_->goToItem (Item_);
+				}
+			};
+		public:
+			HistoryWrapper (QWebEngineHistory *history)
+			: History_ { history }
+			{
+			}
+
+			void Save (QDataStream& out) const override
+			{
+				out << *History_;
+			}
+
+			void Load (QDataStream& in) override
+			{
+			}
+
+			QList<IItem_ptr> GetItems (Direction dir, int maxItems) const override
+			{
+				const auto& srcItems = [&]
+				{
+					switch (dir)
+					{
+					case Direction::Forward:
+						return History_->forwardItems (maxItems);
+					case Direction::Backward:
+						return History_->backItems (maxItems);
+					}
+
+					assert (false);
+				} ();
+
+				QList<IItem_ptr> result;
+				result.reserve (srcItems.size ());
+
+				for (const auto& item : srcItems)
+					result << std::make_shared<Item> (item, History_);
+
+				return result;
+			}
+		};
+	}
+
 	IWebViewHistory_ptr CustomWebView::GetHistory ()
 	{
-		return nullptr;
+		return std::make_shared<HistoryWrapper> (history ());
 	}
 
 	void CustomWebView::SetAttribute (Attribute attribute, bool enable)
