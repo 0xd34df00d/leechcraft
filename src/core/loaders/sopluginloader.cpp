@@ -30,6 +30,11 @@
 #include "sopluginloader.h"
 #include <QPluginLoader>
 #include <QVariantMap>
+
+#if QT_VERSION >= 0x050000
+#include <QJsonObject>
+#endif
+
 #include <QtDebug>
 
 namespace LeechCraft
@@ -99,7 +104,11 @@ namespace Loaders
 
 	QVariantMap SOPluginLoader::GetManifest () const
 	{
+#if QT_VERSION >= 0x050000
+		return Loader_->metaData ().toVariantMap () ["MetaData"].toMap ();
+#else
 		return {};
+#endif
 	}
 }
 }
