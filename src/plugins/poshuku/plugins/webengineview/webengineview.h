@@ -37,7 +37,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace WebKitView
+namespace WebEngineView
 {
 	class Plugin : public QObject
 				 , public IInfo

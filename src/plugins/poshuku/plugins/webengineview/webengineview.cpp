@@ -34,7 +34,7 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-namespace WebKitView
+namespace WebEngineView
 {
 	void Plugin::Init (ICoreProxy_ptr)
 	{
