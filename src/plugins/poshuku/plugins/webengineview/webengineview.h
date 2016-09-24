@@ -48,7 +48,7 @@ namespace WebEngineView
 		Q_OBJECT
 		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Poshuku::IWebViewProvider)
 
-		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebEngineView")
+		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.WebEngineView" FILE "manifest.json")
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
