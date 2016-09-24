@@ -155,10 +155,8 @@ namespace Fua
 		return BackLookup_;
 	}
 
-	void FUA::initPlugin (QObject *proxyObj)
+	void FUA::initPlugin (QObject*)
 	{
-		const auto proxy = qobject_cast<IProxyObject*> (proxyObj);
-
 		Browser2ID_ = QList<QPair<QString, QString>>
 		{
 			{ tr ("LeechCraft (this machine)"), "" },
