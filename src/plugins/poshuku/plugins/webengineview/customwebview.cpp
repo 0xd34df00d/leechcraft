@@ -54,14 +54,6 @@ namespace WebEngineView
 
 	QAction* CustomWebView::GetPageAction (PageAction action) const
 	{
-		switch (action)
-		{
-		case PageAction::OpenImageInNewWindow:
-			return nullptr;
-		default:
-			break;
-		}
-
 #define ACT(x) \
 		case PageAction::x: \
 			return pageAction (QWebEnginePage::x);
@@ -82,6 +74,8 @@ namespace WebEngineView
 		ACT (CopyImageToClipboard)
 		ACT (CopyImageUrlToClipboard)
 		ACT (InspectElement)
+		case PageAction::OpenImageInNewWindow:
+			return nullptr;
 		}
 
 #undef ACT
