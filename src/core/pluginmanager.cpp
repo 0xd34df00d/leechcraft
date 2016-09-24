@@ -970,10 +970,12 @@ namespace LeechCraft
 
 		QHash<QByteArray, QString> id2source;
 
-		QList<std::function<void (Loaders::IPluginLoader_ptr)>> checks;
-		checks << Checks::IsFile
-				<< Checks::TryLoad
-				<< Checks::APILevel;
+		QList<std::function<void (Loaders::IPluginLoader_ptr)>> checks
+		{
+			Checks::IsFile,
+			Checks::TryLoad,
+			Checks::APILevel
+		};
 
 		const bool shouldDump = qgetenv ("LC_DUMP_SOCHECKS") == "1";
 
