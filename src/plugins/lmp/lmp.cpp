@@ -289,10 +289,18 @@ namespace LMP
 			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 
 		if (e.Mime_ == "x-leechcraft/data-filter-request")
-			return e.Entity_.type () == QVariant::String &&
-						e.Entity_.toString ().size () < 80 ?
-					EntityTestHandleResult { EntityTestHandleResult::PHigh } :
-					EntityTestHandleResult {};
+		{
+			if (!e.Additional_ ["DataFilter"].toString ().startsWith (GetUniqueID ()))
+				return {};
+
+			if (e.Entity_.type () != QVariant::String)
+				return {};
+
+			if (e.Entity_.toString ().size () >= 80)
+				return {};
+
+			EntityTestHandleResult { EntityTestHandleResult::PHigh };
+		}
 
 		QString path = e.Entity_.toString ();
 		const QUrl& url = e.Entity_.toUrl ();
