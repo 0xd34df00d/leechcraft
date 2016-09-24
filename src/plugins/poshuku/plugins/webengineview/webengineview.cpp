@@ -29,6 +29,7 @@
 
 #include "webengineview.h"
 #include <QIcon>
+#include "customwebview.h"
 
 namespace LeechCraft
 {
@@ -77,7 +78,7 @@ namespace WebEngineView
 
 	IWebView* Plugin::CreateWebView ()
 	{
-		return nullptr;
+		return new CustomWebView;
 	}
 
 	QIcon Plugin::GetIconForUrl (const QUrl& url) const
