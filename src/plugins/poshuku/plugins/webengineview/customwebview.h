@@ -38,8 +38,8 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
-	class CustomWebView : public QWebEngineView
-						, public IWebView
+	class CustomWebView final : public QWebEngineView
+							  , public IWebView
 	{
 		Q_OBJECT
 	public:
