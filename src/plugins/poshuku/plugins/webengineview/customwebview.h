@@ -83,6 +83,8 @@ namespace WebEngineView
 		IWebViewHistory_ptr GetHistory () override;
 
 		void SetAttribute (Attribute attribute, bool b) override;
+	protected:
+		void contextMenuEvent (QContextMenuEvent*) override;
 	signals:
 		void earliestViewLayout () override;
 		void linkHovered (const QString&, const QString&, const QString&) override;

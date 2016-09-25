@@ -32,6 +32,8 @@
 #include <QIcon>
 #include <QWebEngineSettings>
 #include <QWebEngineHistory>
+#include <QWebEngineContextMenuData>
+#include <QContextMenuEvent>
 #include <interfaces/poshuku/iwebviewhistory.h>
 
 namespace LeechCraft
@@ -322,6 +324,20 @@ namespace WebEngineView
 		}
 
 #undef ATTR
+	}
+
+	void CustomWebView::contextMenuEvent (QContextMenuEvent *event)
+	{
+		const auto& data = page ()->contextMenuData ();
+		emit contextMenuRequested (event->globalPos (),
+				{
+					data.isContentEditable (),
+					data.selectedText (),
+					data.linkUrl (),
+					data.linkText (),
+					data.mediaUrl (),
+					{}
+				});
 	}
 }
 }
