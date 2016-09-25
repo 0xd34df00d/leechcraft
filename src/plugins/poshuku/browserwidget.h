@@ -33,7 +33,6 @@
 #include <QWidget>
 #include <QTime>
 #include <QMenu>
-#include <qwebpage.h>
 #include <interfaces/ihavetabs.h>
 #include <interfaces/idndtab.h>
 #include <interfaces/iwebbrowser.h>
