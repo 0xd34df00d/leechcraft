@@ -162,14 +162,6 @@ namespace Poshuku
 				QObject *browserWidget,
 				int progress);
 
-		/** @brief Called when the given page begins loading.
-		 *
-		 * @param proxy The standard hook proxy object.
-		 * @param page The page that has started loading.
-		 */
-		void hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page);
-
 		/** @brief Called when the "More" menu begins filling.
 		 *
 		 * This hook is called when the "More" menu begins filling for
