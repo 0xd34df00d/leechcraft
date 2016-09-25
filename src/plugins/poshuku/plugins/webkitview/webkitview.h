@@ -61,7 +61,7 @@ namespace WebKitView
 		ICoreProxy_ptr Proxy_;
 		IProxyObject *PoshukuProxy_ = nullptr;
 
-		WebPluginFactory *WebPluginFactory_;
+		WebPluginFactory *WebPluginFactory_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XSD_;
 	public:

@@ -57,7 +57,6 @@ namespace WebKitView
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
-		WebPluginFactory_ = new WebPluginFactory;
 
 		QWebHistoryInterface::setDefaultInterface (new LinkHistory);
 
@@ -106,6 +105,7 @@ namespace WebKitView
 
 	void Plugin::SecondInit ()
 	{
+		WebPluginFactory_ = new WebPluginFactory {};
 	}
 
 	void Plugin::Release ()
