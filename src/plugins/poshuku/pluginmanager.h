@@ -36,7 +36,6 @@
 #include <util/xpc/basehookinterconnector.h>
 #include <interfaces/core/ihookproxy.h>
 #include "interfaces/poshuku/poshukutypes.h"
-#include "interfaces/poshuku/iwebplugin.h"
 
 class QContextMenuEvent;
 
