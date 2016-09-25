@@ -59,17 +59,8 @@ namespace WebKitView
 	{
 		QList<Plugin> result;
 		for (const auto plugin : Plugins_)
-		{
-			try
-			{
-				result << plugin->Plugin (true);
-			}
-			catch (...)
-			{
-				// It's ok to do a plain catch(...) {},
-				// plugins refuse to add themselves to the list with this.
-			}
-		}
+			if (const auto res = plugin->Plugin (true))
+				result << *res;
 		return result;
 	}
 
@@ -88,8 +79,12 @@ namespace WebKitView
 			Plugins_ += provider->GetWebPlugins ();
 
 		for (const auto plugin : Plugins_)
-			for (const auto& mime : plugin->Plugin (false).mimeTypes)
-				MIME2Plugin_.insertMulti (mime.name, plugin);
+		{
+			const auto maybeInfo = plugin->Plugin (false);
+			if (maybeInfo)
+				for (const auto& mime : maybeInfo->mimeTypes)
+					MIME2Plugin_.insertMulti (mime.name, plugin);
+		}
 	}
 }
 }

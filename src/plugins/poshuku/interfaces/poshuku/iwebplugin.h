@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/optional.hpp>
 #include <QtPlugin>
 #include <qwebpluginfactory.h>
 
@@ -55,7 +56,7 @@ namespace Poshuku
 		 * @param[in] inPlugins If queried inside the
 		 * QWebPluginFactory::plugins().
 		 */
-		virtual QWebPluginFactory::Plugin Plugin (bool inPlugins) const = 0;
+		virtual boost::optional<QWebPluginFactory::Plugin> Plugin (bool inPlugins) const = 0;
 
 		/** Askes the plugin to create its instance for the given mime,
 		 * url, args and their params.

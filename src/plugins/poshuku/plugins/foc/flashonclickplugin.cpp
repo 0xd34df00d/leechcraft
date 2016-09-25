@@ -51,10 +51,10 @@ namespace FOC
 	{
 	}
 
-	QWebPluginFactory::Plugin FlashOnClickPlugin::Plugin (bool isq) const
+	boost::optional<QWebPluginFactory::Plugin> FlashOnClickPlugin::Plugin (bool isq) const
 	{
 		if (isq)
-			throw "I want to be anonymous";
+			return {};
 
 		QWebPluginFactory::Plugin result;
 		result.name = "FlashOnClickPlugin";
