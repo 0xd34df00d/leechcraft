@@ -42,7 +42,7 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
-	void CustomWebView::SurroundingsInitialized ()
+	CustomWebView::CustomWebView ()
 	{
 		connect (page (),
 				SIGNAL (loadFinished (bool)),
@@ -60,6 +60,10 @@ namespace WebEngineView
 				&QWebEnginePage::linkHovered,
 				this,
 				[this] (const QString& url) { emit linkHovered (url, {}, {}); });
+	}
+
+	void CustomWebView::SurroundingsInitialized ()
+	{
 	}
 
 	QWidget* CustomWebView::GetQWidget ()
