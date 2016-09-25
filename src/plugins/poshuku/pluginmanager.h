@@ -38,6 +38,7 @@
 #include "interfaces/poshuku/poshukutypes.h"
 
 class QContextMenuEvent;
+class QMenu;
 
 namespace LeechCraft
 {
