@@ -199,6 +199,12 @@ namespace Poshuku
 
 		virtual void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr& origin,
 				IWebView::Feature feature) = 0;
+
+		virtual void zoomChanged () = 0;
+
+		virtual void urlChanged (const QString& url) = 0;
+
+		virtual void closeRequested () = 0;
 	};
 }
 }

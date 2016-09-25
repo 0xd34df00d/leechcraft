@@ -88,6 +88,9 @@ namespace WebEngineView
 		void linkHovered (const QString&, const QString&, const QString&) override;
 		void storeFormData (const PageFormsData_t&) override;
 		void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&, IWebView::Feature) override;
+		void zoomChanged () override;
+		void urlChanged (const QString&) override;
+		void closeRequested () override;
 	};
 }
 }
