@@ -319,18 +319,6 @@ namespace Poshuku
 		void hookUserAgentForUrlRequested (LeechCraft::IHookProxy_ptr proxy,
 				const QUrl& url);
 
-		/** @brief Called from QWebPluginFactory::refreshPlugins().
-		 *
-		 * This hook may be used to inject plugins derived from
-		 * IWebPlugin into the WebKit's QWebPluginFactory. Just append
-		 * the required plugins to the plugins list.
-		 *
-		 * @param proxy The standard hook proxy object.
-		 * @param plugins The list of plugins.
-		 */
-		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr proxy,
-				QList<IWebPlugin*>& plugins);
-
 		/** @brief Called when context menu for the view is requested.
 		 *
 		 * This hook is called when building the context menu after user
