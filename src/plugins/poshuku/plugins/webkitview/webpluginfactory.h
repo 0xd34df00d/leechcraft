@@ -31,7 +31,7 @@
 
 #include <QHash>
 #include <qwebpluginfactory.h>
-#include <interfaces/core/ihookproxy.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include "interfaces/poshuku/iwebplugin.h"
 
 namespace LeechCraft
@@ -44,11 +44,13 @@ namespace WebKitView
 	{
 		Q_OBJECT
 
+		IPluginsManager * const PM_;
+
 		QList<IWebPlugin*> Plugins_;
 		typedef QHash<QString, IWebPlugin*> MIME2Plugin_t;
 		MIME2Plugin_t MIME2Plugin_;
 	public:
-		WebPluginFactory (QObject* = 0);
+		WebPluginFactory (IPluginsManager*, QObject* = nullptr);
 		virtual ~WebPluginFactory ();
 
 		QObject* create (const QString&, const QUrl&,
@@ -57,9 +59,6 @@ namespace WebKitView
 		void refreshPlugins ();
 	private:
 		void Reload ();
-	signals:
-		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-				QList<IWebPlugin*>&);
 	};
 }
 }

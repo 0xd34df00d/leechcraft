@@ -29,7 +29,7 @@
 
 #include "webpluginfactory.h"
 #include <QWidget>
-#include <util/xpc/defaulthookproxy.h>
+#include <interfaces/poshuku/iwebpluginprovider.h>
 
 namespace LeechCraft
 {
@@ -37,8 +37,9 @@ namespace Poshuku
 {
 namespace WebKitView
 {
-	WebPluginFactory::WebPluginFactory (QObject* parent)
+	WebPluginFactory::WebPluginFactory (IPluginsManager *pm, QObject* parent)
 	: QWebPluginFactory (parent)
+	, PM_ { pm }
 	{
 		Reload ();
 	}
@@ -90,8 +91,8 @@ namespace WebKitView
 		Plugins_.clear ();
 		MIME2Plugin_.clear ();
 
-		emit hookWebPluginFactoryReload (IHookProxy_ptr (new Util::DefaultHookProxy),
-				Plugins_);
+		for (const auto provider : PM_->GetAllCastableTo<IWebPluginProvider*> ())
+			Plugins_ += provider->GetWebPlugins ();
 
 		Q_FOREACH (IWebPlugin * plugin, Plugins_)
 			Q_FOREACH (const QWebPluginFactory::MimeType mime,

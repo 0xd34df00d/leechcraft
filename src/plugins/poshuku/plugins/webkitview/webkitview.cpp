@@ -40,6 +40,7 @@
 
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/sys/paths.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 #include "customwebpage.h"
@@ -105,7 +106,7 @@ namespace WebKitView
 
 	void Plugin::SecondInit ()
 	{
-		WebPluginFactory_ = new WebPluginFactory {};
+		WebPluginFactory_ = new WebPluginFactory { Proxy_->GetPluginsManager () };
 	}
 
 	void Plugin::Release ()
