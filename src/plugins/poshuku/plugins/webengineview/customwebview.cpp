@@ -42,6 +42,22 @@ namespace WebEngineView
 {
 	void CustomWebView::SurroundingsInitialized ()
 	{
+		connect (page (),
+				SIGNAL (loadFinished (bool)),
+				this,
+				SIGNAL (earliestViewLayout ()));
+		connect (page (),
+				SIGNAL (iconChanged (const QIcon&)),
+				this,
+				SIGNAL (iconChanged ()));
+		connect (page (),
+				SIGNAL (windowCloseRequested ()),
+				this,
+				SIGNAL (closeRequested ()));
+		connect (page (),
+				&QWebEnginePage::linkHovered,
+				this,
+				[this] (const QString& url) { emit linkHovered (url, {}, {}); });
 	}
 
 	QWidget* CustomWebView::GetQWidget ()

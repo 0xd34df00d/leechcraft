@@ -91,6 +91,8 @@ namespace WebEngineView
 		void zoomChanged () override;
 		void urlChanged (const QString&) override;
 		void closeRequested () override;
+
+		void iconChanged ();
 	};
 }
 }
