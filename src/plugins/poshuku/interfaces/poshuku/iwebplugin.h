@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_INTERFACES_IWEBPLUGIN_H
-#define PLUGINS_POSHUKU_INTERFACES_IWEBPLUGIN_H
+#pragma once
+
 #include <QtPlugin>
 #include <qwebpluginfactory.h>
 
@@ -71,7 +71,4 @@ namespace Poshuku
 }
 
 Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IWebPlugin,
-		"org.Deviant.LeechCraft.Poshuku.IWebPlugin/1.0")
-
-#endif
-
+		"org.LeechCraft.Poshuku.IWebPlugin/1.0")
