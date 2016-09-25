@@ -164,7 +164,12 @@ namespace WebKitView
 				SIGNAL (webViewCreated (IWebView*, bool)),
 				this,
 				SIGNAL (webViewCreated (IWebView*, bool)));
-		view->page ()->setPluginFactory (WebPluginFactory_);
+
+		if (WebPluginFactory_)
+			view->page ()->setPluginFactory (WebPluginFactory_);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "web plugin factory isn't initialized yet";
 
 		return view;
 	}
