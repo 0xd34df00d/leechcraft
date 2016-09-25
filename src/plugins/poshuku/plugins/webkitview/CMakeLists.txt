@@ -6,6 +6,7 @@ set (WEBKITVIEW_SRCS
 	externalproxy.cpp
 	jsproxy.cpp
 	linkhistory.cpp
+	pluginmanager.cpp
 	settingsglobalhandler.cpp
 	settingsinstancehandler.cpp
 	sslstatedialog.cpp
