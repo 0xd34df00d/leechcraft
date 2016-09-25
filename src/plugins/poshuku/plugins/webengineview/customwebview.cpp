@@ -269,6 +269,7 @@ namespace WebEngineView
 
 			void Load (QDataStream& in) override
 			{
+				in >> *History_;
 			}
 
 			QList<IItem_ptr> GetItems (Direction dir, int maxItems) const override
