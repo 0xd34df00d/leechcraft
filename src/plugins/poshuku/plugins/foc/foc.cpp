@@ -94,12 +94,12 @@ namespace FOC
 		return XSD_;
 	}
 
-	void Plugin::hookWebPluginFactoryReload (IHookProxy_ptr, QList<IWebPlugin*>& plugins)
+	QList<IWebPlugin*> Plugin::GetWebPlugins ()
 	{
 		if (!FlashOnClickPlugin_)
 			FlashOnClickPlugin_ = std::make_shared<FlashOnClickPlugin> (Proxy_, FlashOnClickWhitelist_);
 
-		plugins << FlashOnClickPlugin_.get ();
+		return { FlashOnClickPlugin_.get () };
 	}
 }
 }

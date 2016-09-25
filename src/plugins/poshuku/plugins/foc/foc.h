@@ -35,6 +35,7 @@
 #include <interfaces/ihavesettings.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iwebplugin.h>
+#include <interfaces/poshuku/iwebpluginprovider.h>
 
 namespace LeechCraft
 {
@@ -49,9 +50,10 @@ namespace FOC
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IWebPluginProvider
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo IPlugin2 IHaveSettings LeechCraft::Poshuku::IWebPluginProvider)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.FOC")
 
@@ -72,9 +74,8 @@ namespace FOC
 		QSet<QByteArray> GetPluginClasses () const override;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
-	public slots:
-		void hookWebPluginFactoryReload (LeechCraft::IHookProxy_ptr,
-				QList<IWebPlugin*>&);
+
+		QList<IWebPlugin*> GetWebPlugins () override;
 	};
 }
 }
