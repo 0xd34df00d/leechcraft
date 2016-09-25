@@ -29,6 +29,9 @@
 
 #include "webengineview.h"
 #include <QIcon>
+#include <QWebEngineProfile>
+#include <util/sys/sysinfo.h>
+#include <interfaces/core/icoreproxy.h>
 #include "customwebview.h"
 
 namespace LeechCraft
@@ -37,8 +40,46 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	namespace
 	{
+		QString GetDefaultUserAgent (const ICoreProxy_ptr& proxy,
+				const QString& wkVer, const QString& chromeVer)
+		{
+#if defined(Q_OS_WIN32)
+			const auto platform = "Windows";
+#elif defined (Q_OS_MAC)
+			const auto platform = "Macintosh";
+#else
+			const auto platform = "X11";
+#endif
+
+			const auto& osInfo = Util::SysInfo::GetOSInfo ();
+			auto osVersion = osInfo.Flavour_;
+			if (!osInfo.Arch_.isEmpty ())
+				osVersion += " " + osInfo.Arch_;
+
+			const auto& lcVersion = proxy->GetVersion ();
+
+			return QString { "Mozilla/5.0 (%1; %2) AppleWebKit/%3 (KHTML, like Gecko) Leechcraft/%5 Chrome/%4 Safari/%3" }
+					.arg (platform)
+					.arg (osVersion)
+					.arg (wkVer)
+					.arg (chromeVer)
+					.arg (lcVersion.section ('-', 0, 0));
+		}
+	}
+
+	void Plugin::Init (ICoreProxy_ptr proxy)
+	{
+		const auto prof = QWebEngineProfile::defaultProfile ();
+		const auto& uaParts = prof->httpUserAgent ().split (' ');
+		auto getVer = [&uaParts] (const QByteArray& marker)
+		{
+			return uaParts.filter (marker).value (0).section ('/', 1, 1);
+		};
+		const auto& wkVer = getVer ("AppleWebKit/");
+		const auto& chromeVer = getVer ("Chrome/");
+		prof->setHttpUserAgent (GetDefaultUserAgent (proxy, wkVer, chromeVer));
 	}
 
 	void Plugin::SecondInit ()
