@@ -38,34 +38,27 @@ namespace Poshuku
 namespace WebKitView
 {
 	WebPluginFactory::WebPluginFactory (IPluginsManager *pm, QObject* parent)
-	: QWebPluginFactory (parent)
+	: QWebPluginFactory { parent }
 	, PM_ { pm }
 	{
 		Reload ();
-	}
-
-	WebPluginFactory::~WebPluginFactory ()
-	{
 	}
 
 	QObject* WebPluginFactory::create (const QString& mime,
 			const QUrl& url,
 			const QStringList& args, const QStringList& params) const
 	{
-		QList<IWebPlugin*> plugins = MIME2Plugin_.values (mime);
-		Q_FOREACH (IWebPlugin *plugin, plugins)
-		{
-			QObject *result = plugin->Create (mime, url, args, params);
-			if (result)
+		for (const auto plugin : MIME2Plugin_.values (mime))
+			if (const auto result = plugin->Create (mime, url, args, params))
 				return result;
-		}
-		return 0;
+
+		return nullptr;
 	}
 
 	QList<QWebPluginFactory::Plugin> WebPluginFactory::plugins () const
 	{
 		QList<Plugin> result;
-		Q_FOREACH (IWebPlugin * plugin, Plugins_)
+		for (const auto plugin : Plugins_)
 		{
 			try
 			{
@@ -94,9 +87,8 @@ namespace WebKitView
 		for (const auto provider : PM_->GetAllCastableTo<IWebPluginProvider*> ())
 			Plugins_ += provider->GetWebPlugins ();
 
-		Q_FOREACH (IWebPlugin * plugin, Plugins_)
-			Q_FOREACH (const QWebPluginFactory::MimeType mime,
-					plugin->Plugin (false).mimeTypes)
+		for (const auto plugin : Plugins_)
+			for (const auto& mime : plugin->Plugin (false).mimeTypes)
 				MIME2Plugin_.insertMulti (mime.name, plugin);
 	}
 }

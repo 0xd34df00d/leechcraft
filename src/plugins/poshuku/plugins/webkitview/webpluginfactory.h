@@ -51,7 +51,6 @@ namespace WebKitView
 		MIME2Plugin_t MIME2Plugin_;
 	public:
 		WebPluginFactory (IPluginsManager*, QObject* = nullptr);
-		virtual ~WebPluginFactory ();
 
 		QObject* create (const QString&, const QUrl&,
 				const QStringList&, const QStringList&) const;
