@@ -386,7 +386,7 @@ namespace WebKitView
 
 	namespace
 	{
-		class HistoryWrapper : public IWebViewHistory
+		class HistoryWrapper final : public IWebViewHistory
 		{
 			QWebHistory * const History_;
 
