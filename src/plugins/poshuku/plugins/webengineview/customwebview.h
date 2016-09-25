@@ -92,6 +92,8 @@ namespace WebEngineView
 		void urlChanged (const QString&) override;
 		void closeRequested () override;
 
+		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&) override;
+
 		void iconChanged ();
 	};
 }

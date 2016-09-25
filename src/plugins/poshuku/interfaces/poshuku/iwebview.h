@@ -205,6 +205,9 @@ namespace Poshuku
 		virtual void urlChanged (const QString& url) = 0;
 
 		virtual void closeRequested () = 0;
+
+		virtual void contextMenuRequested (const QPoint& globalPos,
+				const ContextMenuInfo& info) = 0;
 	};
 }
 }
