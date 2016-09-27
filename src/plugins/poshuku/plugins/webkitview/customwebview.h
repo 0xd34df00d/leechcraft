@@ -152,14 +152,14 @@ namespace WebKitView
 
 		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
 	signals:
-		void urlChanged (const QString&);
-		void closeRequested ();
+		void urlChanged (const QString&) override;
+		void closeRequested () override;
 
 		void navigateRequested (const QUrl&);
 
-		void zoomChanged ();
+		void zoomChanged () override;
 
-		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&);
+		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&) override;
 
 		void earliestViewLayout () override;
 		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;
