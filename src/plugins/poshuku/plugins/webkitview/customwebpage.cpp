@@ -214,7 +214,7 @@ namespace WebKitView
 			{
 			case 102:			// Delegated entity
 				return false;
-			case 301:			// Unknown protocol (should delegate)
+			case QNetworkReply::ProtocolUnknownError:
 			{
 				auto e = Util::MakeEntity (error->url,
 						QString (),
