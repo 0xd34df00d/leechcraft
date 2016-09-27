@@ -79,12 +79,9 @@ namespace WebKitView
 			Plugins_ += provider->GetWebPlugins ();
 
 		for (const auto plugin : Plugins_)
-		{
-			const auto maybeInfo = plugin->Plugin (false);
-			if (maybeInfo)
+			if (const auto maybeInfo = plugin->Plugin (false))
 				for (const auto& mime : maybeInfo->mimeTypes)
 					MIME2Plugin_.insertMulti (mime.name, plugin);
-		}
 	}
 }
 }
