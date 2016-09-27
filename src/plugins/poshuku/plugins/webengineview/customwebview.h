@@ -43,6 +43,8 @@ namespace WebEngineView
 	{
 		Q_OBJECT
 	public:
+		CustomWebView ();
+
 		void SurroundingsInitialized () override;
 
 		QWidget* GetQWidget () override;
