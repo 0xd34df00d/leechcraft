@@ -50,6 +50,7 @@
 	#include "platform/common/dbusthread.h"
 	#include "platform/upower/upowerconnector.h"
 	#include "platform/logind/logindconnector.h"
+	#include "platform/consolekit/connector.h"
 #elif defined(Q_OS_WIN32)
 	#include "platform/battery/winapiplatform.h"
 	#include "platform/events/platformwinapi.h"
@@ -120,6 +121,7 @@ namespace Liznoo
 	{
 #if defined(Q_OS_LINUX)
 		const auto upowerThread = std::make_shared<DBusThread<UPower::UPowerConnector>> ();
+		const auto ckThread = std::make_shared<DBusThread<ConsoleKit::Connector>> ();
 
 		const auto eventsChecker = new AvailabilityChecker<Events::PlatformLayer>
 		{
@@ -129,6 +131,12 @@ namespace Liznoo
 								ScheduleImpl (&UPower::UPowerConnector::ArePowerEventsAvailable);
 					},
 					[upowerThread, this] { return Events::MakeUPowerLike (upowerThread, Proxy_); }),
+			MakePureChecker<Events::PlatformLayer> ([ckThread]
+					{
+						return ckThread->
+								ScheduleImpl (&ConsoleKit::Connector::ArePowerEventsAvailable);
+					},
+					[ckThread, this] { return Events::MakeUPowerLike (ckThread, Proxy_); }),
 			std::make_unique<LogindEventsChecker> (proxy)
 		};
 		Util::Sequence (this, eventsChecker->GetResult ()) >>
@@ -160,6 +168,7 @@ namespace Liznoo
 				};
 
 		upowerThread->start (QThread::LowestPriority);
+		ckThread->start (QThread::LowestPriority);
 #elif defined(Q_OS_WIN32)
 		const auto widget = std::make_shared<WinAPI::FakeQWidgetWinAPI> ();
 
