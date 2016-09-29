@@ -30,10 +30,12 @@
 #pragma once
 
 #include <QObject>
+#include <QNetworkAccessManager>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihavediaginfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iwebviewprovider.h>
 
 namespace LeechCraft
@@ -86,6 +88,11 @@ namespace WebKitView
 		QIcon GetIconForUrl (const QUrl&) const override;
 		QIcon GetDefaultUrlIcon () const override;
 	public slots:
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
+				QNetworkAccessManager*,
+				QNetworkAccessManager::Operation*,
+				QIODevice**);
+
 		void initPlugin (QObject*);
 	signals:
 		void webViewCreated (IWebView*, bool) override;

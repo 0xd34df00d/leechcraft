@@ -141,6 +141,7 @@ namespace WebKitView
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
 	}
 
@@ -193,6 +194,13 @@ namespace WebKitView
 	QIcon Plugin::GetDefaultUrlIcon () const
 	{
 		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
+	}
+
+	void Plugin::hookNAMCreateRequest (IHookProxy_ptr proxy,
+			QNetworkAccessManager *manager,
+			QNetworkAccessManager::Operation *op,
+			QIODevice **dev)
+	{
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)
