@@ -28,6 +28,11 @@
  **********************************************************************/
 
 #include "interceptadaptor.h"
+#include <QNetworkRequest>
+#include <QWebFrame>
+#include <util/sll/visitor.h>
+#include <util/network/customnetworkreply.h>
+#include "customwebview.h"
 
 namespace LeechCraft
 {
@@ -44,11 +49,112 @@ namespace WebKitView
 		Interceptors_ << interceptor;
 	}
 
-	void InterceptAdaptor::HandleNAM (IHookProxy_ptr hook,
-			QNetworkAccessManager *manager,
-			QNetworkAccessManager::Operation *op,
-			QIODevice **dev)
+	namespace
 	{
+		IInterceptableRequests::ResourceType DeriveResourceType (const QNetworkRequest& req)
+		{
+			auto acceptList = req.rawHeader ("Accept").split (',');
+			for (auto& item : acceptList)
+			{
+				const int pos = item.indexOf (';');
+				if (pos > 0)
+					item = item.left (pos);
+			}
+			acceptList.removeAll ("*/*");
+
+			if (acceptList.isEmpty ())
+				return IInterceptableRequests::ResourceType::Unknown;
+
+#ifdef USE_CPP14
+			auto find = [&acceptList] (const auto& f)
+#else
+			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
+#endif
+			{
+				return std::any_of (acceptList.begin (), acceptList.end (), f);
+			};
+
+			if (find ([] (const QByteArray& arr) { return arr.startsWith ("image/"); }))
+				return IInterceptableRequests::ResourceType::Image;
+			if (find ([] (const QByteArray& arr) { return arr == "text/html" || arr == "application/xhtml+xml" || arr == "application/xml"; }))
+				return IInterceptableRequests::ResourceType::SubFrame;
+			if (find ([] (const QByteArray& arr) { return arr == "text/css"; }))
+				return IInterceptableRequests::ResourceType::Stylesheet;
+
+			return IInterceptableRequests::ResourceType::Unknown;
+		}
+	}
+
+	void InterceptAdaptor::HandleNAM (const IHookProxy_ptr& hook,
+			QNetworkAccessManager*,
+			QNetworkAccessManager::Operation*,
+			QIODevice**)
+	{
+		auto req = hook->GetValue ("request").value<QNetworkRequest> ();
+		if (!req.originatingObject ())
+			return;
+
+		const auto& reqUrl = req.url ();
+
+		if (reqUrl.scheme () == "data")
+			return;
+
+		const auto frame = qobject_cast<QWebFrame*> (req.originatingObject ());
+		const QWebPage * const page = frame ? frame->page () : nullptr;
+		if (frame &&
+				page &&
+				frame == page->mainFrame () &&
+				frame->requestedUrl () == reqUrl)
+			return;
+
+		IInterceptableRequests::RequestInfo info
+		{
+			reqUrl,
+			frame->requestedUrl (),
+			IInterceptableRequests::NavigationType::Unknown,
+			DeriveResourceType (req),
+			qobject_cast<CustomWebView*> (page->view ())
+		};
+
+		bool beenRedirected = false;
+
+		for (const auto& interceptor : Interceptors_)
+		{
+			const auto shouldBlock = Util::Visit (interceptor (info),
+					[] (IInterceptableRequests::Allow) { return false; },
+					[&] (const IInterceptableRequests::Redirect& r)
+					{
+						req.setUrl (r.NewUrl_);
+						info.RequestUrl_ = r.NewUrl_;
+						beenRedirected = true;
+						return false;
+					},
+					[] (IInterceptableRequests::Block) { return true; });
+
+			if (shouldBlock)
+			{
+				Reject (hook, frame, reqUrl);
+				return;
+			}
+		}
+
+		if (beenRedirected)
+			hook->SetValue ("request", QVariant::fromValue (req));
+	}
+
+	void InterceptAdaptor::Reject (const IHookProxy_ptr& hook,
+			QWebFrame *frame, const QUrl& reqUrl)
+	{
+		hook->CancelDefault ();
+
+		qDebug () << "rejecting" << frame << reqUrl;
+
+		const auto result = new Util::CustomNetworkReply { reqUrl, frame };
+		result->SetContent (QObject::tr ("Blocked"));
+		result->SetError (QNetworkReply::ContentAccessDenied,
+				QObject::tr ("Blocked: %1")
+						.arg (reqUrl.toString ()));
+		hook->SetReturnValue (QVariant::fromValue<QNetworkReply*> (result));
 	}
 }
 }

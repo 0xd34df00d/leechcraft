@@ -33,6 +33,8 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iinterceptablerequests.h>
 
+class QWebFrame;
+
 namespace LeechCraft
 {
 namespace Poshuku
@@ -51,6 +53,8 @@ namespace WebKitView
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
 				QIODevice**);
+	private:
+		void Reject (const IHookProxy_ptr&, QWebFrame*, const QUrl&);
 	};
 }
 }
