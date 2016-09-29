@@ -85,6 +85,8 @@ namespace Poshuku
 			QUrl PageUrl_;
 			NavigationType Type_;
 			ResourceType Type_;
+
+			boost::optional<IWebView*> View_;
 		};
 
 		struct Block {};
