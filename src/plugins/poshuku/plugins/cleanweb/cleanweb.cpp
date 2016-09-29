@@ -28,10 +28,8 @@
  **********************************************************************/
 
 #include "cleanweb.h"
-#include <typeinfo>
 #include <QIcon>
 #include <QTextCodec>
-#include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <util/util.h>
