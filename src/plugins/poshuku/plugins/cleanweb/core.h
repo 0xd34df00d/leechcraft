@@ -96,15 +96,11 @@ namespace CleanWeb
 
 		void HandleBrowserWidget (IBrowserWidget*);
 
-		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
-				QNetworkAccessManager*,
-				QNetworkAccessManager::Operation*,
-				QIODevice**);
+		void InstallInterceptor ();
+
 		void HandleContextMenu (const ContextMenuInfo&,
 				IWebView*, QMenu*,
 				WebViewCtxMenuStage);
-
-		bool ShouldReject (const QNetworkRequest&) const;
 
 		/** Parses the abp:-schemed url, gets subscription
 		 * name and real url from there and adds it via Load().

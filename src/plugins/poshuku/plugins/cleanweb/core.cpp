@@ -50,7 +50,6 @@
 #include <QDir>
 #include <qwebview.h>
 #include <util/xpc/util.h>
-#include <util/network/customnetworkreply.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/prelude.h>
@@ -58,8 +57,10 @@
 #include <util/sll/qstringwrappers.h>
 #include <util/sll/urlaccessor.h>
 #include <interfaces/core/ientitymanager.h>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <interfaces/poshuku/iwebview.h>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 #include "xmlsettingsmanager.h"
 #include "userfiltersmodel.h"
 #include "lineparser.h"
@@ -231,55 +232,6 @@ namespace CleanWeb
 		};
 	}
 
-	QNetworkReply* Core::Hook (IHookProxy_ptr hook,
-			QNetworkAccessManager*,
-			QNetworkAccessManager::Operation*,
-			QIODevice**)
-	{
-		const auto& req = hook->GetValue ("request").value<QNetworkRequest> ();
-		if (!req.originatingObject ())
-			return nullptr;
-
-		const auto& reqUrl = req.url ();
-
-		if (reqUrl.scheme () == "data")
-			return nullptr;
-
-		const auto frame = qobject_cast<QWebFrame*> (req.originatingObject ());
-		const QWebPage * const page = frame ? frame->page () : nullptr;
-		if (frame &&
-				page &&
-				frame == page->mainFrame () &&
-				frame->requestedUrl () == reqUrl)
-			return nullptr;
-
-		if (!ShouldReject (req))
-			return nullptr;
-
-		hook->CancelDefault ();
-
-		qDebug () << "rejecting" << frame << reqUrl;
-		/* TODO
-		if (frame)
-		{
-			QPointer<QWebFrame> safeFrame { frame };
-			new Util::DelayedExecutor
-			{
-				[this, safeFrame, reqUrl] { DelayedRemoveElements (safeFrame, reqUrl); },
-				0
-			};
-		}
-		 */
-
-		const auto result = new Util::CustomNetworkReply (reqUrl, this);
-		result->SetContent (QString ("Blocked by Poshuku CleanWeb"));
-		result->SetError (QNetworkReply::ContentAccessDenied,
-				tr ("Blocked by Poshuku CleanWeb: %1")
-					.arg (reqUrl.toString ()));
-		hook->SetReturnValue (QVariant::fromValue<QNetworkReply*> (result));
-		return result;
-	}
-
 	void Core::HandleContextMenu (const ContextMenuInfo& r,
 			IWebView *view, QMenu *menu,
 			WebViewCtxMenuStage stage)
@@ -411,82 +363,49 @@ namespace CleanWeb
 			if (value)
 				res = true;
 		}
-	}
 
-	/** We test each filter until we know that we should reject it or until
-	 * it gets whitelisted.
-	 *
-	 * So, for each filter we first iterate through the whitelist. For each
-	 * entry in the whitelist:
-	 * - First, we check if the url's domain ends with a string from a "not
-	 *   apply" list if it's not empty. If it does, we skip this whitelist
-	 *   entry and go to the next one, if it doesn't, we continue
-	 *   processing.
-	 * - Then, if we continue processing, we check if the url's domain ends
-	 *   with a string from "apply list", if this list isn't empty. If it
-	 *   ends, we continue processing, otherwise we skip this whilelist
-	 *   entry and go to the next one.
-	 * - Then, we check if the URL matches this exception, either by regexp
-	 *   or wildcard. If it should be matched only in the beginning or in
-	 *   the end, then '*' is appended or prepended and exact match is
-	 *   checked. Otherwise only something is required to match. Please not
-	 *   that the '*' is prepended by the filter parsing code, not this one.
-	 *
-	 * The same is applied to the filter strings.
-	 */
-	bool Core::ShouldReject (const QNetworkRequest& req) const
-	{
-		if (!XmlSettingsManager::Instance ()->property ("EnableFiltering").toBool ())
-			return false;
-
-		if (!req.hasRawHeader ("referer"))
-			return false;
-
-		auto acceptList = req.rawHeader ("Accept").split (',');
-		for (auto& item : acceptList)
+		FilterOption::MatchObjects ResourceType2Objs (IInterceptableRequests::ResourceType type)
 		{
-			const int pos = item.indexOf (';');
-			if (pos > 0)
-				item = item.left (pos);
-		}
-		acceptList.removeAll ("*/*");
-		FilterOption::MatchObjects objs = FilterOption::MatchObject::All;
-		if (!acceptList.isEmpty ())
-		{
-#ifdef USE_CPP14
-			auto find = [&acceptList] (const auto& f)
-#else
-			auto find = [&acceptList] (std::function<bool (QByteArray)> f)
-#endif
+			switch (type)
 			{
-				return std::any_of (acceptList.begin (), acceptList.end (), f);
-			};
-
-			if (find ([] (const QByteArray& arr) { return arr.startsWith ("image/"); }))
-				objs |= FilterOption::MatchObject::Image;
-			if (find ([] (const QByteArray& arr) { return arr == "text/html" || arr == "application/xhtml+xml" || arr == "application/xml"; }))
-				objs |= FilterOption::MatchObject::Subdocument;
-			if (find ([] (const QByteArray& arr) { return arr == "text/css"; }))
-				objs |= FilterOption::MatchObject::CSS;
+			case IInterceptableRequests::ResourceType::Image:
+				return FilterOption::MatchObject::Image;
+			case IInterceptableRequests::ResourceType::SubFrame:
+				return FilterOption::MatchObject::Subdocument;
+			case IInterceptableRequests::ResourceType::Stylesheet:
+				return FilterOption::MatchObject::CSS;
+			default:
+				return FilterOption::MatchObject::All;
+			}
 		}
 
-		const QUrl referer { req.rawHeader ("Referer") };
+		bool ShouldReject (const IInterceptableRequests::RequestInfo& req,
+				const QList<QList<FilterItem_ptr>>& exceptions,
+				const QList<QList<FilterItem_ptr>>& filters)
+		{
+			if (!XmlSettingsManager::Instance ()->property ("EnableFiltering").toBool ())
+				return false;
 
-		const QUrl& url = req.url ();
-		const QString& urlStr = url.toString ();
-		const auto& urlUtf8 = urlStr.toUtf8 ();
-		const QString& cinUrlStr = urlStr.toLower ();
-		const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
+			if (!req.PageUrl_.isValid ())
+				return false;
 
-		const QString& domain = referer.host ();
-		const bool isForeign = !url.host ().endsWith (referer.host ());
+			const auto objs = ResourceType2Objs (req.ResourceType_);
 
-		auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks) -> bool
+			const QUrl& url = req.PageUrl_;
+			const QString& urlStr = url.toString ();
+			const auto& urlUtf8 = urlStr.toUtf8 ();
+			const QString& cinUrlStr = urlStr.toLower ();
+			const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
+
+			const QString& domain = req.PageUrl_.host ();
+			const bool isForeign = !url.host ().endsWith (domain);
+
+			auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks)
 			{
 				return QtConcurrent::blockingMappedReduced (chunks.begin (), chunks.end (),
 						std::function<bool (const QList<FilterItem_ptr>&)>
 						{
-							[=] (const QList<FilterItem_ptr>& items) -> bool
+							[=] (const QList<FilterItem_ptr>& items)
 							{
 								for (const auto& item : items)
 								{
@@ -509,12 +428,32 @@ namespace CleanWeb
 							}
 						}, DumbReductor);
 			};
-		if (matches (ExceptionsCache_))
-			return false;
-		if (matches (FilterItemsCache_))
-			return true;
+			if (matches (exceptions))
+				return false;
+			if (matches (filters))
+				return true;
 
-		return false;
+			return false;
+		}
+	}
+
+	void Core::InstallInterceptor ()
+	{
+		auto interceptor = [this] (const IInterceptableRequests::RequestInfo& info)
+				-> IInterceptableRequests::Result_t
+		{
+			if (!ShouldReject (info, ExceptionsCache_, FilterItemsCache_))
+				return IInterceptableRequests::Allow {};
+
+			if (info.View_)
+				Util::ExecuteLater ([this, info] { DelayedRemoveElements (*info.View_, info.RequestUrl_); });
+
+			return IInterceptableRequests::Block {};
+		};
+
+		const auto interceptables = Proxy_->GetPluginsManager ()->GetAllCastableTo<IInterceptableRequests*> ();
+		for (const auto interceptable : interceptables)
+			interceptable->AddInterceptor (interceptor);
 	}
 
 	void Core::HandleProvider (QObject *provider)

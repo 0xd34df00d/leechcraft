@@ -67,6 +67,7 @@ namespace CleanWeb
 
 	void CleanWeb::SecondInit ()
 	{
+		Core_->InstallInterceptor ();
 	}
 
 	void CleanWeb::Release ()
@@ -127,14 +128,6 @@ namespace CleanWeb
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
 		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
-	}
-
-	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
-			QNetworkAccessManager *manager,
-			QNetworkAccessManager::Operation *op,
-			QIODevice **dev)
-	{
-		Core_->Hook (proxy, manager, op, dev);
 	}
 
 	void CleanWeb::hookBrowserWidgetInitialized (IHookProxy_ptr, QObject *browserWidget)
