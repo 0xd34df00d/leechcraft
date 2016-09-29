@@ -48,6 +48,7 @@
 #include "linkhistory.h"
 #include "xmlsettingsmanager.h"
 #include "settingsglobalhandler.h"
+#include "interceptadaptor.h"
 
 namespace LeechCraft
 {
@@ -102,6 +103,8 @@ namespace WebKitView
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
 		}
+
+		Interceptor_ = std::make_shared<InterceptAdaptor> ();
 	}
 
 	void Plugin::SecondInit ()
@@ -111,6 +114,7 @@ namespace WebKitView
 
 	void Plugin::Release ()
 	{
+		Interceptor_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const

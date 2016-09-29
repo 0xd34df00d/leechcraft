@@ -45,6 +45,7 @@ class IProxyObject;
 namespace WebKitView
 {
 	class WebPluginFactory;
+	class InterceptAdaptor;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -64,6 +65,8 @@ namespace WebKitView
 		WebPluginFactory *WebPluginFactory_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		std::shared_ptr<InterceptAdaptor> Interceptor_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
