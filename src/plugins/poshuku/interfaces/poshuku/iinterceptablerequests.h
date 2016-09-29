@@ -31,6 +31,7 @@
 
 #include <functional>
 #include <boost/variant.hpp>
+#include <boost/optional.hpp>
 #include <QUrl>
 #include <QtPlugin>
 
@@ -38,6 +39,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+	class IWebView;
+
 	class IInterceptableRequests
 	{
 	protected:
@@ -83,8 +86,8 @@ namespace Poshuku
 			QUrl RequestUrl_;
 
 			QUrl PageUrl_;
-			NavigationType Type_;
-			ResourceType Type_;
+			NavigationType NavType_;
+			ResourceType ResourceType_;
 
 			boost::optional<IWebView*> View_;
 		};
