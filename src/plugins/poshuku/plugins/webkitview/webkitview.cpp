@@ -196,11 +196,17 @@ namespace WebKitView
 		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
 	}
 
+	void Plugin::AddInterceptor (const Interceptor_t& interceptor)
+	{
+		Interceptor_->AddInterceptor (interceptor);
+	}
+
 	void Plugin::hookNAMCreateRequest (IHookProxy_ptr proxy,
 			QNetworkAccessManager *manager,
 			QNetworkAccessManager::Operation *op,
 			QIODevice **dev)
 	{
+		Interceptor_->HandleNAM (proxy, manager, op, dev);
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)

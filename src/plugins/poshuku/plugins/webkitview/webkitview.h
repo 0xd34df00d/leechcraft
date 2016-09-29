@@ -37,6 +37,7 @@
 #include <interfaces/ihavediaginfo.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iwebviewprovider.h>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 
 namespace LeechCraft
 {
@@ -55,9 +56,15 @@ namespace WebKitView
 				 , public IHaveSettings
 				 , public IHaveDiagInfo
 				 , public IWebViewProvider
+				 , public IInterceptableRequests
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IHaveDiagInfo LeechCraft::Poshuku::IWebViewProvider)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				IHaveDiagInfo
+				LeechCraft::Poshuku::IWebViewProvider
+				LeechCraft::Poshuku::IInterceptableRequests)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebKitView")
 
@@ -87,6 +94,8 @@ namespace WebKitView
 		IWebView* CreateWebView () override;
 		QIcon GetIconForUrl (const QUrl&) const override;
 		QIcon GetDefaultUrlIcon () const override;
+
+		void AddInterceptor (const Interceptor_t&) override;
 	public slots:
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,
