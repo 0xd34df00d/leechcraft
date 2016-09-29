@@ -144,14 +144,6 @@ namespace CleanWeb
 		Core_->HandleBrowserWidget (qobject_cast<IBrowserWidget*> (browserWidget));
 	}
 
-	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
-			QWebPage *page,
-			QWebPage::Extension ext,
-			const QWebPage::ExtensionOption *opt,
-			QWebPage::ExtensionReturn *ret)
-	{
-	}
-
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,
 			IWebView *view,
 			const ContextMenuInfo& r,

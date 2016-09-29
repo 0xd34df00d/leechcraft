@@ -107,13 +107,6 @@ namespace CleanWeb
 				LeechCraft::Poshuku::IWebView*,
 				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
 				WebViewCtxMenuStage);
-
-		// QtWebKit view hooks
-		void hookExtension (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebPage::Extension,
-				const QWebPage::ExtensionOption*,
-				QWebPage::ExtensionReturn*);
 	};
 }
 }
