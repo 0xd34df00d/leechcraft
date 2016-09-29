@@ -280,33 +280,6 @@ namespace CleanWeb
 		return result;
 	}
 
-	void Core::HandleExtension (LeechCraft::IHookProxy_ptr proxy,
-			QWebPage *page,
-			QWebPage::Extension ext,
-			const QWebPage::ExtensionOption *opt,
-			QWebPage::ExtensionReturn*)
-	{
-		if (ext != QWebPage::ErrorPageExtension)
-			return;
-
-		auto error = static_cast<const QWebPage::ErrorPageExtensionOption*> (opt);
-		if (error->error != QNetworkReply::ContentAccessDenied)
-			return;
-
-		auto url = error->url;
-		proxy->CancelDefault ();
-		proxy->SetReturnValue (true);
-
-		/* TODO
-		const QPointer<QWebFrame> safeFrame { page->mainFrame () };
-		new Util::DelayedExecutor
-		{
-			[this, safeFrame, url] { DelayedRemoveElements (safeFrame, url); },
-			0
-		};
-		 */
-	}
-
 	void Core::HandleContextMenu (const ContextMenuInfo& r,
 			IWebView *view, QMenu *menu,
 			WebViewCtxMenuStage stage)

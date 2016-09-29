@@ -150,7 +150,6 @@ namespace CleanWeb
 			const QWebPage::ExtensionOption *opt,
 			QWebPage::ExtensionReturn *ret)
 	{
-		Core_->HandleExtension (proxy, page, ext, opt, ret);
 	}
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,

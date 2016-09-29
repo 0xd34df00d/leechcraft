@@ -100,11 +100,6 @@ namespace CleanWeb
 				QNetworkAccessManager*,
 				QNetworkAccessManager::Operation*,
 				QIODevice**);
-		void HandleExtension (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebPage::Extension,
-				const QWebPage::ExtensionOption*,
-				QWebPage::ExtensionReturn*);
 		void HandleContextMenu (const ContextMenuInfo&,
 				IWebView*, QMenu*,
 				WebViewCtxMenuStage);
