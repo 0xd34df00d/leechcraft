@@ -217,8 +217,8 @@ namespace WebKitView
 			case QNetworkReply::ProtocolUnknownError:
 			{
 				auto e = Util::MakeEntity (error->url,
-						QString (),
-						LeechCraft::FromUserInitiated);
+						{},
+						FromUserInitiated);
 				e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
 				auto em = Proxy_->GetEntityManager ();
 				if (em->CouldHandle (e))
@@ -257,7 +257,7 @@ namespace WebKitView
 		}
 		default:
 			return QWebPage::extension (e, eo, er);
-	}
+		}
 	}
 
 	void CustomWebPage::handleContentsChanged ()
