@@ -102,7 +102,9 @@ namespace Poshuku
 
 		using Result_t = boost::variant<Block, Allow, Redirect>;
 
-		virtual void AddInterceptor (const std::function<Result_t (RequestInfo)>&) = 0;
+		using Interceptor_t = std::function<Result_t (RequestInfo)>;
+
+		virtual void AddInterceptor (const Interceptor_t&) = 0;
 	};
 }
 }
