@@ -398,7 +398,7 @@ namespace CleanWeb
 			const auto& cinUrlUtf8 = cinUrlStr.toUtf8 ();
 
 			const QString& domain = req.PageUrl_.host ();
-			const bool isForeign = !url.host ().endsWith (domain);
+			const bool isThirdParty = !url.host ().endsWith (domain);
 
 			auto matches = [=] (const QList<QList<FilterItem_ptr>>& chunks)
 			{
@@ -410,8 +410,9 @@ namespace CleanWeb
 								for (const auto& item : items)
 								{
 									const auto& opt = item->Option_;
-									if (opt.AbortForeign_ && !isForeign)
-										continue;
+									if (opt.ThirdParty_ != FilterOption::ThirdParty::Unspecified)
+										if ((opt.ThirdParty_ == FilterOption::ThirdParty::Yes) != isThirdParty)
+											continue;
 
 									if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
 											objs != FilterOption::MatchObject::All &&

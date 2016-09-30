@@ -74,7 +74,13 @@ namespace CleanWeb
 		QStringList Domains_;
 		QStringList NotDomains_;
 		QString HideSelector_;
-		bool AbortForeign_;
+
+		enum class ThirdParty
+		{
+			Yes,
+			No,
+			Unspecified
+		} ThirdParty_;
 
 		FilterOption ();
 	};
