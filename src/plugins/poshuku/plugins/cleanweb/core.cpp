@@ -656,15 +656,15 @@ namespace CleanWeb
 					.replace ('\'', "\\'")
 					;
 
-		QString js;
-		js += "(function(){";
-		js += "var elems = document.querySelectorAll('" + result.Selectors_.join (", ") + "');";
-		js += R"delim(
-				for (var i = 0; i < elems.length; ++i)
-					elems[i].remove();
-				return elems.length;
-				)delim";
-		js += "})();";
+		QString js = R"(
+					"(function(){";
+					"var elems = document.querySelectorAll('__SELECTORS__');";
+					for (var i = 0; i < elems.length; ++i)
+						elems[i].remove();
+					return elems.length;
+					"})();";
+				)";
+		js.replace ("__SELECTORS__", result.Selectors_.join (", "));
 
 		result.View_->EvaluateJS (js,
 				[result, js] (const QVariant& res)
