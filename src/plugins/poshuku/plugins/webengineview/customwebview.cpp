@@ -153,7 +153,10 @@ namespace WebEngineView
 			const std::function<void (QVariant)>& handler,
 			Util::BitFlags<EvaluateJSFlag>)
 	{
-		page ()->runJavaScript (js, handler);
+		if (handler)
+			page ()->runJavaScript (js, handler);
+		else
+			page ()->runJavaScript (js);
 	}
 
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
