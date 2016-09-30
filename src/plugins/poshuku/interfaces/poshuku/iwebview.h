@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <functional>
+#include <util/sll/bitflags.h>
 #include "poshukutypes.h"
 
 class QUrl;
@@ -163,8 +164,15 @@ namespace Poshuku
 
 		virtual QString ToHtml () const = 0;
 
+		enum class EvaluateJSFlag
+		{
+			None			 = 0b00,
+			RecurseSubframes = 0b01
+		};
+
 		virtual void EvaluateJS (const QString& js,
-				const std::function<void (QVariant)>& handler = {}) = 0;
+				const std::function<void (QVariant)>& handler = {},
+				Util::BitFlags<EvaluateJSFlag> = {}) = 0;
 		virtual void AddJavaScriptObject (const QString& id, QObject *object) = 0;
 
 		virtual void Print (bool withPreview) = 0;

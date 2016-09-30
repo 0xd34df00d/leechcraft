@@ -319,7 +319,9 @@ namespace WebKitView
 		return page ()->mainFrame ()->toHtml ();
 	}
 
-	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& callback)
+	void CustomWebView::EvaluateJS (const QString& js,
+			const std::function<void (QVariant)>& callback,
+			Util::BitFlags<EvaluateJSFlag> flags)
 	{
 		const auto& res = page ()->mainFrame ()->evaluateJavaScript (js);
 		if (callback)

@@ -149,7 +149,9 @@ namespace WebEngineView
 		return {};
 	}
 
-	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& handler)
+	void CustomWebView::EvaluateJS (const QString& js,
+			const std::function<void (QVariant)>& handler,
+			Util::BitFlags<EvaluateJSFlag>)
 	{
 		page ()->runJavaScript (js, handler);
 	}

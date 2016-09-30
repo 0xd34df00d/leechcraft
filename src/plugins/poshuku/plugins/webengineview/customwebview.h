@@ -62,7 +62,9 @@ namespace WebEngineView
 		void SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base) override;
 		QString ToHtml () const override;
 
-		void EvaluateJS (const QString& js, const std::function<void (QVariant)>& handler) override;
+		void EvaluateJS (const QString& js,
+				const std::function<void (QVariant)>& handler,
+				Util::BitFlags<EvaluateJSFlag>) override;
 		void AddJavaScriptObject (const QString& id, QObject* object) override;
 
 		void Print (bool withPreview) override;
