@@ -678,7 +678,8 @@ namespace CleanWeb
 						qWarning () << Q_FUNC_INFO
 								<< "failed to execute JS:"
 								<< js;
-				});
+				},
+				IWebView::EvaluateJSFlag::RecurseSubframes);
 	}
 
 	namespace
@@ -704,7 +705,9 @@ namespace CleanWeb
 			js += "return removed;";
 			js += "})();";
 
-			view->EvaluateJS (js, [cont = std::move (cont)] (const QVariant& res) { cont (res.toBool ()); });
+			view->EvaluateJS (js,
+					[cont = std::move (cont)] (const QVariant& res) { cont (res.toBool ()); },
+					IWebView::EvaluateJSFlag::RecurseSubframes);
 		}
 	}
 
