@@ -391,7 +391,7 @@ namespace CleanWeb
 
 			const auto objs = ResourceType2Objs (req.ResourceType_);
 
-			const QUrl& url = req.PageUrl_;
+			const QUrl& url = req.RequestUrl_;
 			const QString& urlStr = url.toString ();
 			const auto& urlUtf8 = urlStr.toUtf8 ();
 			const QString& cinUrlStr = urlStr.toLower ();
