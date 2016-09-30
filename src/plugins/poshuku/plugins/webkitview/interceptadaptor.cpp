@@ -110,7 +110,7 @@ namespace WebKitView
 		IInterceptableRequests::RequestInfo info
 		{
 			reqUrl,
-			frame->requestedUrl (),
+			page->mainFrame ()->url (),
 			IInterceptableRequests::NavigationType::Unknown,
 			DeriveResourceType (req),
 			qobject_cast<CustomWebView*> (page->view ())
