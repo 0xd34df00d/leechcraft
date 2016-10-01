@@ -44,7 +44,6 @@ namespace ConsoleKit
 		Connector (QObject* = nullptr);
 	private slots:
 		void handlePrepare (bool);
-	signals:
 	};
 }
 }
