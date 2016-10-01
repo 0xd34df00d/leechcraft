@@ -657,12 +657,12 @@ namespace CleanWeb
 					;
 
 		QString js = R"(
-					"(function(){";
-					"var elems = document.querySelectorAll('__SELECTORS__');";
+					(function(){
+					var elems = document.querySelectorAll('__SELECTORS__');
 					for (var i = 0; i < elems.length; ++i)
 						elems[i].remove();
 					return elems.length;
-					"})();";
+					})();
 				)";
 		js.replace ("__SELECTORS__", result.Selectors_.join (", "));
 
