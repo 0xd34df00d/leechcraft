@@ -45,8 +45,6 @@ namespace WebKitView
 	{
 		QList<IInterceptableRequests::Interceptor_t> Interceptors_;
 	public:
-		InterceptAdaptor ();
-
 		void AddInterceptor (const IInterceptableRequests::Interceptor_t&);
 
 		void HandleNAM (const IHookProxy_ptr&,
