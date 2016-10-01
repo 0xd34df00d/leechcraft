@@ -1363,7 +1363,6 @@ namespace Aggregator
 
 					downloader->KillTask (id);
 					ID2Downloader_.remove (id);
-					PendingJobs_.remove (id);
 					qWarning () << Q_FUNC_INFO
 						<< "killed!";
 				}
@@ -1373,6 +1372,7 @@ namespace Aggregator
 						<< provider
 						<< "; cannot kill the task";
 			}
+		PendingJobs_.clear ();
 
 		QString filename = Util::GetTemporaryName ();
 
