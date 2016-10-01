@@ -35,6 +35,8 @@
 #include <util/network/customnetworkreply.h>
 #include "customwebview.h"
 
+Q_DECLARE_METATYPE (QNetworkReply*)
+
 namespace LeechCraft
 {
 namespace Poshuku
