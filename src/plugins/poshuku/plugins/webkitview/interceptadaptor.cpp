@@ -41,10 +41,6 @@ namespace Poshuku
 {
 namespace WebKitView
 {
-	InterceptAdaptor::InterceptAdaptor ()
-	{
-	}
-
 	void InterceptAdaptor::AddInterceptor (const IInterceptableRequests::Interceptor_t& interceptor)
 	{
 		Interceptors_ << interceptor;
