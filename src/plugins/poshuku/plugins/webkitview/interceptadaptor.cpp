@@ -29,6 +29,7 @@
 
 #include "interceptadaptor.h"
 #include <QNetworkRequest>
+#include <QNetworkReply>
 #include <QWebFrame>
 #include <util/sll/visitor.h>
 #include <util/network/customnetworkreply.h>
