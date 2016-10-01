@@ -690,20 +690,27 @@ namespace CleanWeb
 			const auto& preparedUrls = Util::Map (urls,
 					[] (const QUrl& url) { return QString { '"' + url.toEncoded () + '"' }; });
 
-			QString js;
-			js += "(function(){";
-			js += "var urls = [ " + preparedUrls.join (", ") + " ];";
-			js += "var elems = document.querySelectorAll('img,script,iframe,applet,object');";
-			js += "if (elems.length == 0)";
-			js += "	return false;";
-			js += "var removed = false;";
-			js += "for (var i = 0; i < elems.length; ++i)";
-			js += "	if (urls.indexOf(elems[i].src) != -1){";
-			js += "		elems[i].remove();";
-			js += "		removed = true;";
-			js += "	}";
-			js += "return removed;";
-			js += "})();";
+			QString js = R"(
+					(function(){
+					var urls = [ __URLS__ ];
+					var elems = document.querySelectorAll('img,script,iframe,applet,object');
+					console.log("urls: " + urls);
+					if (elems.length == 0)
+						return false;
+					var removedCount = 0;
+					for (var i = 0; i < elems.length; ++i){
+						if (elems[i].tagName == "IFRAME")
+							console.log(elems[i].src);
+						if (urls.indexOf(elems[i].src) != -1){
+							elems[i].remove();
+							++removedCount;
+						}
+					}
+					return removedCount == urls.length;
+					})();
+				)";
+
+			js.replace ("__URLS__", preparedUrls.join (", "));
 
 			view->EvaluateJS (js,
 					[cont = std::move (cont)] (const QVariant& res) { cont (res.toBool ()); },
