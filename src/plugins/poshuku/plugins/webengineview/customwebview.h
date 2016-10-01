@@ -60,7 +60,7 @@ namespace WebEngineView
 		void Load (const QUrl& url, const QString& title) override;
 
 		void SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base) override;
-		QString ToHtml () const override;
+		void ToHtml (const std::function<void (QString)>&) const override;
 
 		void EvaluateJS (const QString& js,
 				const std::function<void (QVariant)>& handler,

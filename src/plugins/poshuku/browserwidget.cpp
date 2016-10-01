@@ -955,26 +955,28 @@ namespace Poshuku
 
 	void BrowserWidget::handleViewSources ()
 	{
-		const auto& html = WebView_->ToHtml ();
+		WebView_->ToHtml ([this] (const QString& html)
+				{
+					auto e = Util::MakeEntity (html,
+							{},
+							FromUserInitiated,
+							"x-leechcraft/plain-text-document");
+					e.Additional_ ["Language"] = "HTML";
+					e.Additional_ ["IsTemporaryDocument"] = true;
+					bool ch = false;
+					emit couldHandle (e, &ch);
+					if (ch)
+					{
+						emit gotEntity (e);
+						return;
+					}
 
-		Entity e = Util::MakeEntity (html,
-				QString (),
-				FromUserInitiated,
-				"x-leechcraft/plain-text-document");
-		e.Additional_ ["Language"] = "HTML";
-		e.Additional_ ["IsTemporaryDocument"] = true;
-		bool ch = false;
-		emit couldHandle (e, &ch);
-		if (ch)
-		{
-			emit gotEntity (e);
-			return;
-		}
+					SourceViewer *viewer = new SourceViewer (this);
+					viewer->setAttribute (Qt::WA_DeleteOnClose);
+					viewer->SetHtml (html);
+					viewer->show ();
+				});
 
-		SourceViewer *viewer = new SourceViewer (this);
-		viewer->setAttribute (Qt::WA_DeleteOnClose);
-		viewer->SetHtml (html);
-		viewer->show ();
 	}
 
 	void BrowserWidget::handleSavePage ()
@@ -1209,40 +1211,42 @@ namespace Poshuku
 
 	void BrowserWidget::checkLoadedDocument ()
 	{
-		const auto& html = WebView_->ToHtml ();
-		QDomDocument doc;
-		if (!doc.setContent (html))
-			return;
+		WebView_->ToHtml ([this] (const QString& html)
+				{
+					QDomDocument doc;
+					if (!doc.setContent (html))
+						return;
 
-		const auto& rootTagName = doc.documentElement ().tagName ().toLower ();
-		if (rootTagName == "html" || rootTagName == "xhtml" || rootTagName == "svg")
-			return;
+					const auto& rootTagName = doc.documentElement ().tagName ().toLower ();
+					if (rootTagName == "html" || rootTagName == "xhtml" || rootTagName == "svg")
+						return;
 
-		LeechCraft::Entity e;
-		e.Entity_ = WebView_->GetUrl ();
-		e.Mime_ = "text/xml";
-		e.Parameters_ = LeechCraft::FromUserInitiated |
-			LeechCraft::OnlyHandle;
-		e.Additional_ ["IgnorePlugins"] = QStringList ("org.LeechCraft.Poshuku");
-		e.Additional_ ["URLData"] = html;
-		emit gotEntity (e);
+					Entity e;
+					e.Entity_ = WebView_->GetUrl ();
+					e.Mime_ = "text/xml";
+					e.Parameters_ = FromUserInitiated |
+									OnlyHandle;
+					e.Additional_ ["IgnorePlugins"] = QStringList { "org.LeechCraft.Poshuku" };
+					e.Additional_ ["URLData"] = html;
+					emit gotEntity (e);
 
-		QString formatted;
-		QXmlStreamWriter w (&formatted);
-		w.writeStartDocument ();
-			w.writeStartElement ("html");
-				w.writeStartElement ("head");
+					QString formatted;
+					QXmlStreamWriter w (&formatted);
+					w.writeStartDocument ();
+					w.writeStartElement ("html");
+					w.writeStartElement ("head");
 					w.writeTextElement ("title",
 							Util::Escape (WebView_->GetUrl ().toString ()));
-				w.writeEndElement ();
-				w.writeStartElement ("body");
+					w.writeEndElement ();
+					w.writeStartElement ("body");
 					w.writeAttribute ("style", "font-family:monospace;");
 					HtmlWriter { w }.ToHtml (doc);
-				w.writeEndElement ();
-			w.writeEndElement ();
-		w.writeEndDocument ();
+					w.writeEndElement ();
+					w.writeEndElement ();
+					w.writeEndDocument ();
 
-		WebView_->SetContent (formatted.toUtf8 (), "text/html");
+					WebView_->SetContent (formatted.toUtf8 (), "text/html");
+				});
 	}
 
 	namespace

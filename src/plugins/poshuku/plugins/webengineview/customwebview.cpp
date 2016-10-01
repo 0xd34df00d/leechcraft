@@ -143,10 +143,9 @@ namespace WebEngineView
 		setContent (data, mime, base);
 	}
 
-	QString CustomWebView::ToHtml () const
+	void CustomWebView::ToHtml (const std::function<void (QString)>& handler) const
 	{
 		// TODO
-		return {};
 	}
 
 	void CustomWebView::EvaluateJS (const QString& js,

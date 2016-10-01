@@ -162,7 +162,7 @@ namespace Poshuku
 
 		virtual void SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base = {}) = 0;
 
-		virtual QString ToHtml () const = 0;
+		virtual void ToHtml (const std::function<void (QString)>&) const = 0;
 
 		enum class EvaluateJSFlag
 		{

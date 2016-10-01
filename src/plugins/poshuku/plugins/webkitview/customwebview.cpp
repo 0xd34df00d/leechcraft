@@ -314,9 +314,9 @@ namespace WebKitView
 		setContent (data, mime, base);
 	}
 
-	QString CustomWebView::ToHtml () const
+	void CustomWebView::ToHtml (const std::function<void (QString)>& handler) const
 	{
-		return page ()->mainFrame ()->toHtml ();
+		handler (page ()->mainFrame ()->toHtml ());
 	}
 
 	void CustomWebView::EvaluateJS (const QString& js,

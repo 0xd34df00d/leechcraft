@@ -92,7 +92,7 @@ namespace WebKitView
 		void Load (const QUrl&, const QString&) override;
 
 		void SetContent (const QByteArray&, const QByteArray&, const QUrl& = {}) override;
-		QString ToHtml () const override;
+		void ToHtml (const std::function<void (QString)>&) const override;
 		void EvaluateJS (const QString&,
 				const std::function<void (QVariant)>&,
 				Util::BitFlags<EvaluateJSFlag>) override;
