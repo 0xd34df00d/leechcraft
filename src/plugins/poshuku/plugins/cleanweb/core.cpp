@@ -227,7 +227,7 @@ namespace CleanWeb
 		{
 			[view, this] { HandleViewLayout (view); },
 			view->GetQWidget (),
-			SIGNAL (earliestViewLayout ()),
+			{ SIGNAL (earliestViewLayout ()), SIGNAL (loadFinished (bool)) },
 			view->GetQWidget ()
 		};
 	}
