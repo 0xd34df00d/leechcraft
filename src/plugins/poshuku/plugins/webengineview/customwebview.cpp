@@ -145,7 +145,7 @@ namespace WebEngineView
 
 	void CustomWebView::ToHtml (const std::function<void (QString)>& handler) const
 	{
-		// TODO
+		page ()->toHtml (handler);
 	}
 
 	void CustomWebView::EvaluateJS (const QString& js,
