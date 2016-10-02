@@ -125,7 +125,9 @@ namespace WebEngineView
 
 	IWebView* Plugin::CreateWebView ()
 	{
-		return new CustomWebView;
+		auto view = new CustomWebView;
+		Interceptor_->RegisterView (view);
+		return view;
 	}
 
 	QIcon Plugin::GetIconForUrl (const QUrl& url) const

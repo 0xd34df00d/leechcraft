@@ -38,13 +38,17 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
+	class CustomWebView;
+
 	class RequestInterceptor : public QWebEngineUrlRequestInterceptor
 	{
 		QList<IInterceptableRequests::Interceptor_t> Interceptors_;
+		QList<CustomWebView*> Views_;
 	public:
 		void interceptRequest (QWebEngineUrlRequestInfo&) override;
 
 		void Add (const IInterceptableRequests::Interceptor_t&);
+		void RegisterView (CustomWebView*);
 	};
 }
 }

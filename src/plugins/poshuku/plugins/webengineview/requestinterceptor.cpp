@@ -31,6 +31,8 @@
 #include <QWebEngineUrlRequestInfo>
 #include <QtDebug>
 #include <util/sll/visitor.h>
+#include <util/sll/slotclosure.h>
+#include "customwebview.h"
 
 namespace LeechCraft
 {
@@ -103,6 +105,19 @@ namespace WebEngineView
 	void RequestInterceptor::Add (const IInterceptableRequests::Interceptor_t& interceptor)
 	{
 		Interceptors_ << interceptor;
+	}
+
+	void RequestInterceptor::RegisterView (CustomWebView *view)
+	{
+		Views_ << view;
+
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[this, view] { Views_.removeOne (view); },
+			view,
+			SIGNAL (destroyed ()),
+			this
+		};
 	}
 }
 }
