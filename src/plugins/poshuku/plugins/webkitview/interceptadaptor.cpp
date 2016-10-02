@@ -99,20 +99,21 @@ namespace WebKitView
 			return;
 
 		const auto frame = qobject_cast<QWebFrame*> (req.originatingObject ());
-		const QWebPage * const page = frame ? frame->page () : nullptr;
+		const auto page = frame ? frame->page () : nullptr;
 		if (frame &&
 				page &&
 				frame == page->mainFrame () &&
 				frame->requestedUrl () == reqUrl)
 			return;
 
+		const auto view = qobject_cast<CustomWebView*> (page->view ());
 		IInterceptableRequests::RequestInfo info
 		{
 			reqUrl,
 			page->mainFrame ()->url (),
 			IInterceptableRequests::NavigationType::Unknown,
 			DeriveResourceType (req),
-			qobject_cast<CustomWebView*> (page->view ())
+			view ? boost::optional<IWebView*> { view } : boost::optional<IWebView*> {}
 		};
 
 		bool beenRedirected = false;
