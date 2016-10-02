@@ -83,7 +83,7 @@ namespace CleanWeb
 		};
 		QMap<int, PendingJob> PendingJobs_;
 
-		QHash<QObject*, QList<QUrl>> MoreDelayedURLs_;
+		QHash<QObject*, QSet<QUrl>> MoreDelayedURLs_;
 
 		const ICoreProxy_ptr Proxy_;
 	public:
