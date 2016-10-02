@@ -347,9 +347,9 @@ namespace CleanWeb
 			case FilterOption::MTPlain:
 				return urlUtf8.indexOf (item->PlainMatcher_) >= 0;
 			case FilterOption::MTBegin:
-				return urlStr.startsWith (QString::fromUtf8 (item->PlainMatcher_));
+				return urlUtf8.startsWith (item->PlainMatcher_);
 			case FilterOption::MTEnd:
-				return urlStr.endsWith (QString::fromUtf8 (item->PlainMatcher_));
+				return urlUtf8.endsWith (item->PlainMatcher_);
 			}
 
 			return false;
