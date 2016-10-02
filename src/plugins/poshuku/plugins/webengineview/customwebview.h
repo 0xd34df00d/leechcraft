@@ -42,6 +42,7 @@ namespace WebEngineView
 							  , public IWebView
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
 	public:
 		CustomWebView ();
 
