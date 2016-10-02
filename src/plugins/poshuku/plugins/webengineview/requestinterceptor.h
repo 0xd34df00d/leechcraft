@@ -29,77 +29,26 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QMap>
-#include <QTranslator>
-#include <QWebPage>
-#include <QNetworkAccessManager>
-#include <QMenu>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/istartupwizard.h>
-#include <interfaces/poshuku/poshukutypes.h>
-#include <interfaces/core/ihookproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-
-class QWebView;
-class QContextMenuEvent;
+#include <QWebEngineUrlRequestInterceptor>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-class IWebView;
-
-namespace CleanWeb
+namespace WebEngineView
 {
-	class Core;
+	class CustomWebView;
 
-	class CleanWeb : public QObject
-					, public IInfo
-					, public IHaveSettings
-					, public IEntityHandler
-					, public IStartupWizard
-					, public IPlugin2
+	class RequestInterceptor : public QWebEngineUrlRequestInterceptor
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
-
-		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
-
-		ICoreProxy_ptr Proxy_;
-
-		std::shared_ptr<Core> Core_;
-
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		QList<IInterceptableRequests::Interceptor_t> Interceptors_;
+		QList<CustomWebView*> Views_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Needs () const;
+		void interceptRequest (QWebEngineUrlRequestInfo&) override;
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		QList<QWizardPage*> GetWizardPages () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				LeechCraft::Poshuku::IWebView*,
-				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
-				WebViewCtxMenuStage);
+		void Add (const IInterceptableRequests::Interceptor_t&);
+		void RegisterView (CustomWebView*);
 	};
 }
 }

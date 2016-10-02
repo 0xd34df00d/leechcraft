@@ -33,6 +33,7 @@
 #include <util/sys/sysinfo.h>
 #include <interfaces/core/icoreproxy.h>
 #include "customwebview.h"
+#include "requestinterceptor.h"
 
 namespace LeechCraft
 {
@@ -80,6 +81,9 @@ namespace WebEngineView
 		const auto& wkVer = getVer ("AppleWebKit/");
 		const auto& chromeVer = getVer ("Chrome/");
 		prof->setHttpUserAgent (GetDefaultUserAgent (proxy, wkVer, chromeVer));
+
+		Interceptor_ = std::make_shared<RequestInterceptor> ();
+		prof->setRequestInterceptor (Interceptor_.get ());
 	}
 
 	void Plugin::SecondInit ()
@@ -88,6 +92,8 @@ namespace WebEngineView
 
 	void Plugin::Release ()
 	{
+		QWebEngineProfile::defaultProfile ()->setRequestInterceptor (nullptr);
+		Interceptor_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -119,7 +125,9 @@ namespace WebEngineView
 
 	IWebView* Plugin::CreateWebView ()
 	{
-		return new CustomWebView;
+		auto view = new CustomWebView;
+		Interceptor_->RegisterView (view);
+		return view;
 	}
 
 	QIcon Plugin::GetIconForUrl (const QUrl& url) const
@@ -130,6 +138,11 @@ namespace WebEngineView
 	QIcon Plugin::GetDefaultUrlIcon () const
 	{
 		return {};
+	}
+
+	void Plugin::AddInterceptor (const Interceptor_t& interceptor)
+	{
+		Interceptor_->Add (interceptor);
 	}
 }
 }

@@ -62,10 +62,11 @@ namespace CleanWeb
 				f.Case_ = Qt::CaseSensitive;
 
 			if (options.removeAll ("third-party"))
-				f.AbortForeign_ = true;
-
-			if (options.removeAll ("~third-party"))
-				f.AbortForeign_ = false;
+				f.ThirdParty_ = FilterOption::ThirdParty::Yes;
+			else if (options.removeAll ("~third-party"))
+				f.ThirdParty_ = FilterOption::ThirdParty::No;
+			else
+				f.ThirdParty_ = FilterOption::ThirdParty::Unspecified;
 
 			Q_FOREACH (const QString& option, options)
 				if (option.startsWith ("domain="))
@@ -195,7 +196,7 @@ namespace CleanWeb
 				case FilterOption::MTRegexp:
 					break;
 				}
-				actualLine.replace ('^', "[^a-zA-Z0-9_\\.%-]");
+				actualLine.replace ('^', "[/?=&]");
 				f.MatchType_ = FilterOption::MTRegexp;
 			}
 

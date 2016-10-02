@@ -29,78 +29,85 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QMap>
-#include <QTranslator>
-#include <QWebPage>
-#include <QNetworkAccessManager>
-#include <QMenu>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/istartupwizard.h>
-#include <interfaces/poshuku/poshukutypes.h>
-#include <interfaces/core/ihookproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
-
-class QWebView;
-class QContextMenuEvent;
+#include <functional>
+#include <boost/variant.hpp>
+#include <boost/optional.hpp>
+#include <QUrl>
+#include <QtPlugin>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-class IWebView;
+	class IWebView;
 
-namespace CleanWeb
-{
-	class Core;
-
-	class CleanWeb : public QObject
-					, public IInfo
-					, public IHaveSettings
-					, public IEntityHandler
-					, public IStartupWizard
-					, public IPlugin2
+	class IInterceptableRequests
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
-
-		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
-
-		ICoreProxy_ptr Proxy_;
-
-		std::shared_ptr<Core> Core_;
-
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+	protected:
+		virtual ~IInterceptableRequests () = default;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Needs () const;
+		enum class NavigationType
+		{
+			Unknown,
+			Link,
+			Typed,
+			FormSubmitted,
+			BackForward,
+			Reload,
+			Other
+		};
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		enum class ResourceType
+		{
+			Unknown,
+			MainFrame,
+			SubFrame,
+			Stylesheet,
+			Script,
+			Image,
+			FontResource,
+			SubResource,
+			Object,
+			Media,
+			Worker,
+			SharedWorker,
+			Prefetch,
+			Favicon,
+			Xhr,
+			Ping,
+			ServiceWorker,
+			CspReport,
+			PluginResource,
+			Other
+		};
 
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
+		struct RequestInfo
+		{
+			QUrl RequestUrl_;
 
-		QList<QWizardPage*> GetWizardPages () const;
+			QUrl PageUrl_;
+			NavigationType NavType_;
+			ResourceType ResourceType_;
 
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				LeechCraft::Poshuku::IWebView*,
-				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
-				WebViewCtxMenuStage);
+			boost::optional<IWebView*> View_;
+		};
+
+		struct Block {};
+		struct Allow {};
+
+		struct Redirect
+		{
+			QUrl NewUrl_;
+		};
+
+		using Result_t = boost::variant<Block, Allow, Redirect>;
+
+		using Interceptor_t = std::function<Result_t (RequestInfo)>;
+
+		virtual void AddInterceptor (const Interceptor_t&) = 0;
 	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Poshuku::IInterceptableRequests,
+		"org.LeechCraft.Poshuku.IInterceptableRequests/1.0")

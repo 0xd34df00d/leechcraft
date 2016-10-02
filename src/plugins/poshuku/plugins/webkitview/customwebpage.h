@@ -102,6 +102,7 @@ namespace WebKitView
 		virtual bool javaScriptPrompt (QWebFrame*, const QString&, const QString&, QString*);
 		virtual QString userAgentForUrl (const QUrl&) const;
 	private:
+		bool HandleExtensionProtocolUnknown (const ErrorPageExtensionOption*);
 		void FillErrorSuggestions ();
 		QString MakeErrorReplyContents (int, const QUrl&,
 				const QString&, ErrorDomain = WebKit) const;

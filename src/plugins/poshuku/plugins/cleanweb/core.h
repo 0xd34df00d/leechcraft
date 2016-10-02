@@ -83,7 +83,7 @@ namespace CleanWeb
 		};
 		QMap<int, PendingJob> PendingJobs_;
 
-		QHash<QObject*, QList<QUrl>> MoreDelayedURLs_;
+		QHash<QObject*, QSet<QUrl>> MoreDelayedURLs_;
 
 		const ICoreProxy_ptr Proxy_;
 	public:
@@ -96,20 +96,11 @@ namespace CleanWeb
 
 		void HandleBrowserWidget (IBrowserWidget*);
 
-		QNetworkReply* Hook (LeechCraft::IHookProxy_ptr,
-				QNetworkAccessManager*,
-				QNetworkAccessManager::Operation*,
-				QIODevice**);
-		void HandleExtension (LeechCraft::IHookProxy_ptr,
-				QWebPage*,
-				QWebPage::Extension,
-				const QWebPage::ExtensionOption*,
-				QWebPage::ExtensionReturn*);
+		void InstallInterceptor ();
+
 		void HandleContextMenu (const ContextMenuInfo&,
 				IWebView*, QMenu*,
 				WebViewCtxMenuStage);
-
-		bool ShouldReject (const QNetworkRequest&) const;
 
 		/** Parses the abp:-schemed url, gets subscription
 		 * name and real url from there and adds it via Load().

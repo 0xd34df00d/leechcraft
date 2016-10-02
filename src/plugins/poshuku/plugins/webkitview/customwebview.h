@@ -92,8 +92,10 @@ namespace WebKitView
 		void Load (const QUrl&, const QString&) override;
 
 		void SetContent (const QByteArray&, const QByteArray&, const QUrl& = {}) override;
-		QString ToHtml () const override;
-		void EvaluateJS (const QString&, const std::function<void (QVariant)>&) override;
+		void ToHtml (const std::function<void (QString)>&) const override;
+		void EvaluateJS (const QString&,
+				const std::function<void (QVariant)>&,
+				Util::BitFlags<EvaluateJSFlag>) override;
 		void AddJavaScriptObject (const QString&, QObject*) override;
 
 		void Print (bool preview) override;
@@ -152,14 +154,14 @@ namespace WebKitView
 
 		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
 	signals:
-		void urlChanged (const QString&);
-		void closeRequested ();
+		void urlChanged (const QString&) override;
+		void closeRequested () override;
 
 		void navigateRequested (const QUrl&);
 
-		void zoomChanged ();
+		void zoomChanged () override;
 
-		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&);
+		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&) override;
 
 		void earliestViewLayout () override;
 		void linkHovered (const QString& link, const QString& title, const QString& textContent) override;

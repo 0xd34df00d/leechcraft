@@ -30,11 +30,14 @@
 #pragma once
 
 #include <QObject>
+#include <QNetworkAccessManager>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ihavediaginfo.h>
+#include <interfaces/core/ihookproxy.h>
 #include <interfaces/poshuku/iwebviewprovider.h>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 
 namespace LeechCraft
 {
@@ -45,6 +48,7 @@ class IProxyObject;
 namespace WebKitView
 {
 	class WebPluginFactory;
+	class InterceptAdaptor;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -52,9 +56,15 @@ namespace WebKitView
 				 , public IHaveSettings
 				 , public IHaveDiagInfo
 				 , public IWebViewProvider
+				 , public IInterceptableRequests
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings IHaveDiagInfo LeechCraft::Poshuku::IWebViewProvider)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				IHaveDiagInfo
+				LeechCraft::Poshuku::IWebViewProvider
+				LeechCraft::Poshuku::IInterceptableRequests)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.WebKitView")
 
@@ -64,6 +74,8 @@ namespace WebKitView
 		WebPluginFactory *WebPluginFactory_ = nullptr;
 
 		Util::XmlSettingsDialog_ptr XSD_;
+
+		std::shared_ptr<InterceptAdaptor> Interceptor_;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -82,7 +94,14 @@ namespace WebKitView
 		IWebView* CreateWebView () override;
 		QIcon GetIconForUrl (const QUrl&) const override;
 		QIcon GetDefaultUrlIcon () const override;
+
+		void AddInterceptor (const Interceptor_t&) override;
 	public slots:
+		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
+				QNetworkAccessManager*,
+				QNetworkAccessManager::Operation*,
+				QIODevice**);
+
 		void initPlugin (QObject*);
 	signals:
 		void webViewCreated (IWebView*, bool) override;

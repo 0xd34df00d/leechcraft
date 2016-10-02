@@ -42,7 +42,10 @@ namespace WebEngineView
 							  , public IWebView
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
 	public:
+		CustomWebView ();
+
 		void SurroundingsInitialized () override;
 
 		QWidget* GetQWidget () override;
@@ -58,9 +61,11 @@ namespace WebEngineView
 		void Load (const QUrl& url, const QString& title) override;
 
 		void SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base) override;
-		QString ToHtml () const override;
+		void ToHtml (const std::function<void (QString)>&) const override;
 
-		void EvaluateJS (const QString& js, const std::function<void (QVariant)>& handler) override;
+		void EvaluateJS (const QString& js,
+				const std::function<void (QVariant)>& handler,
+				Util::BitFlags<EvaluateJSFlag>) override;
 		void AddJavaScriptObject (const QString& id, QObject* object) override;
 
 		void Print (bool withPreview) override;

@@ -29,77 +29,30 @@
 
 #pragma once
 
-#include <memory>
-#include <QObject>
-#include <QMap>
-#include <QTranslator>
-#include <QWebPage>
 #include <QNetworkAccessManager>
-#include <QMenu>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/ihavesettings.h>
-#include <interfaces/ientityhandler.h>
-#include <interfaces/istartupwizard.h>
-#include <interfaces/poshuku/poshukutypes.h>
 #include <interfaces/core/ihookproxy.h>
-#include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 
-class QWebView;
-class QContextMenuEvent;
+class QWebFrame;
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
-class IWebView;
-
-namespace CleanWeb
+namespace WebKitView
 {
-	class Core;
-
-	class CleanWeb : public QObject
-					, public IInfo
-					, public IHaveSettings
-					, public IEntityHandler
-					, public IStartupWizard
-					, public IPlugin2
+	class InterceptAdaptor
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo IHaveSettings IEntityHandler IStartupWizard IPlugin2)
-
-		LC_PLUGIN_METADATA ("org.LeechCraft.Poshuku.CleanWeb")
-
-		ICoreProxy_ptr Proxy_;
-
-		std::shared_ptr<Core> Core_;
-
-		Util::XmlSettingsDialog_ptr SettingsDialog_;
+		QList<IInterceptableRequests::Interceptor_t> Interceptors_;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
-		QStringList Needs () const;
+		void AddInterceptor (const IInterceptableRequests::Interceptor_t&);
 
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-
-		EntityTestHandleResult CouldHandle (const Entity&) const;
-		void Handle (Entity);
-
-		QList<QWizardPage*> GetWizardPages () const;
-
-		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void hookBrowserWidgetInitialized (LeechCraft::IHookProxy_ptr proxy,
-				QObject *browserWidget);
-		void hookWebViewContextMenu (LeechCraft::IHookProxy_ptr,
-				LeechCraft::Poshuku::IWebView*,
-				const LeechCraft::Poshuku::ContextMenuInfo&, QMenu*,
-				WebViewCtxMenuStage);
+		void HandleNAM (const IHookProxy_ptr&,
+				QNetworkAccessManager*,
+				QNetworkAccessManager::Operation*,
+				QIODevice**);
+	private:
+		void Reject (const IHookProxy_ptr&, QWebFrame*, const QUrl&);
 	};
 }
 }

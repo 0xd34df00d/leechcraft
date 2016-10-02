@@ -188,6 +188,25 @@ namespace WebKitView
 		}
 	}
 
+	bool CustomWebPage::HandleExtensionProtocolUnknown (const ErrorPageExtensionOption *error)
+	{
+		auto e = Util::MakeEntity (error->url,
+				{},
+				FromUserInitiated);
+		e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
+		auto em = Proxy_->GetEntityManager ();
+		if (!em->CouldHandle (e))
+			return false;
+
+		em->HandleEntity (e);
+		const auto closeEmpty = PoshukuProxy_->GetPoshukuConfigValue ("CloseEmptyDelegatedPages").toBool ();
+		if (closeEmpty &&
+			history ()->currentItem ().url ().isEmpty ())
+				emit windowCloseRequested ();
+
+		return true;
+	}
+
 	bool CustomWebPage::extension (QWebPage::Extension e,
 			const QWebPage::ExtensionOption* eo, QWebPage::ExtensionReturn *er)
 	{
@@ -214,24 +233,8 @@ namespace WebKitView
 			{
 			case 102:			// Delegated entity
 				return false;
-			case 301:			// Unknown protocol (should delegate)
-			{
-				auto e = Util::MakeEntity (error->url,
-						QString (),
-						LeechCraft::FromUserInitiated);
-				e.Additional_ ["IgnorePlugins"] = "org.LeechCraft.Poshuku";
-				auto em = Proxy_->GetEntityManager ();
-				if (em->CouldHandle (e))
-				{
-					em->HandleEntity (e);
-					const auto closeEmpty = PoshukuProxy_->
-							GetPoshukuConfigValue ("CloseEmptyDelegatedPages").toBool ();
-					if (closeEmpty &&
-							history ()->currentItem ().url ().isEmpty ())
-						emit windowCloseRequested ();
-					return false;
-				}
-			}
+			case QNetworkReply::ProtocolUnknownError:
+				return HandleExtensionProtocolUnknown (error);
 			default:
 			{
 				QString data = MakeErrorReplyContents (error->error,
@@ -257,7 +260,7 @@ namespace WebKitView
 		}
 		default:
 			return QWebPage::extension (e, eo, er);
-	}
+		}
 	}
 
 	void CustomWebPage::handleContentsChanged ()

@@ -314,16 +314,27 @@ namespace WebKitView
 		setContent (data, mime, base);
 	}
 
-	QString CustomWebView::ToHtml () const
+	void CustomWebView::ToHtml (const std::function<void (QString)>& handler) const
 	{
-		return page ()->mainFrame ()->toHtml ();
+		handler (page ()->mainFrame ()->toHtml ());
 	}
 
-	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& callback)
+	void CustomWebView::EvaluateJS (const QString& js,
+			const std::function<void (QVariant)>& callback,
+			Util::BitFlags<EvaluateJSFlag> flags)
 	{
-		const auto& res = page ()->mainFrame ()->evaluateJavaScript (js);
-		if (callback)
-			callback (res);
+		const std::function<void (QWebFrame*)> eval = [&] (QWebFrame *frame)
+		{
+			const auto& res = frame->evaluateJavaScript (js);
+			if (callback)
+				callback (res);
+
+			if (flags & EvaluateJSFlag::RecurseSubframes)
+				for (const auto child : frame->childFrames ())
+					eval (child);
+		};
+
+		eval (page ()->mainFrame ());
 	}
 
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)

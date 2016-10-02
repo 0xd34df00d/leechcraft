@@ -48,6 +48,7 @@
 #include "linkhistory.h"
 #include "xmlsettingsmanager.h"
 #include "settingsglobalhandler.h"
+#include "interceptadaptor.h"
 
 namespace LeechCraft
 {
@@ -102,6 +103,8 @@ namespace WebKitView
 			qWarning () << Q_FUNC_INFO
 					<< e.what ();
 		}
+
+		Interceptor_ = std::make_shared<InterceptAdaptor> ();
 	}
 
 	void Plugin::SecondInit ()
@@ -111,6 +114,7 @@ namespace WebKitView
 
 	void Plugin::Release ()
 	{
+		Interceptor_.reset ();
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -137,6 +141,7 @@ namespace WebKitView
 	{
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Poshuku.Plugins/1.0";
+		result << "org.LeechCraft.Core.Plugins/1.0";
 		return result;
 	}
 
@@ -189,6 +194,19 @@ namespace WebKitView
 	QIcon Plugin::GetDefaultUrlIcon () const
 	{
 		return QWebSettings::webGraphic (QWebSettings::DefaultFrameIconGraphic);
+	}
+
+	void Plugin::AddInterceptor (const Interceptor_t& interceptor)
+	{
+		Interceptor_->AddInterceptor (interceptor);
+	}
+
+	void Plugin::hookNAMCreateRequest (IHookProxy_ptr proxy,
+			QNetworkAccessManager *manager,
+			QNetworkAccessManager::Operation *op,
+			QIODevice **dev)
+	{
+		Interceptor_->HandleNAM (proxy, manager, op, dev);
 	}
 
 	void Plugin::initPlugin (QObject *proxyObj)

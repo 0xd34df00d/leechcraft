@@ -182,12 +182,15 @@ namespace SpeedDial
 	void ViewHandler::WriteTables (const QList<QPair<QString, TopList_t>>& tables)
 	{
 		QString html;
-		html += "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
+		html += "<!DOCTYPE html>";
 
 		QXmlStreamWriter w (&html);
 		w.writeStartElement ("html");
 		w.writeAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
 			w.writeStartElement ("head");
+				w.writeStartElement ("meta");
+					w.writeAttribute ("charset", "UTF-8");
+				w.writeEndElement ();
 				w.writeTextElement ("title", tr ("Speed dial"));
 				w.writeTextElement ("style", R"delim(
 						.centered {
@@ -220,7 +223,7 @@ namespace SpeedDial
 			w.writeEndElement ();
 		w.writeEndElement ();
 
-		View_->SetContent (html.toUtf8 (), "application/xhtml+xml");
+		View_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8");
 
 		const auto edit = BrowserWidget_->GetURLEdit ();
 		new Util::DelayedExecutor

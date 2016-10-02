@@ -39,13 +39,13 @@ namespace CleanWeb
 {
 	QDataStream& operator<< (QDataStream& out, const FilterOption& opt)
 	{
-		qint8 version = 2;
+		qint8 version = 3;
 		out << version
 			<< static_cast<qint8> (opt.Case_)
 			<< static_cast<qint8> (opt.MatchType_)
 			<< opt.Domains_
 			<< opt.NotDomains_
-			<< opt.AbortForeign_;
+			<< static_cast<qint8> (opt.ThirdParty_);
 		return out;
 	}
 
@@ -75,8 +75,20 @@ namespace CleanWeb
 			in >> opt.Domains_
 				>> opt.NotDomains_;
 		}
-		if (version >= 2)
-			in >> opt.AbortForeign_;
+		if (version == 2)
+		{
+			bool abort = false;
+			in >> abort;
+			opt.ThirdParty_ = abort ?
+					FilterOption::ThirdParty::Yes :
+					FilterOption::ThirdParty::Unspecified;
+		}
+		if (version >= 3)
+		{
+			qint8 tpVal;
+			in >> tpVal;
+			opt.ThirdParty_ = static_cast<FilterOption::ThirdParty> (tpVal);
+		}
 
 		return in;
 	}
@@ -84,13 +96,13 @@ namespace CleanWeb
 	FilterOption::FilterOption ()
 	: Case_ (Qt::CaseInsensitive)
 	, MatchType_ (MTWildcard)
-	, AbortForeign_ (false)
+	, ThirdParty_ (ThirdParty::Unspecified)
 	{
 	}
 
 	bool operator== (const FilterOption& f1, const FilterOption& f2)
 	{
-		return f1.AbortForeign_ == f2.AbortForeign_ &&
+		return f1.ThirdParty_ == f2.ThirdParty_ &&
 			f1.Case_ == f2.Case_ &&
 			f1.MatchType_ == f2.MatchType_ &&
 			f1.Domains_ == f2.Domains_ &&
@@ -111,7 +123,7 @@ namespace CleanWeb
 				<< "Domains:" << option.Domains_ << "; "
 				<< "!domains:" << option.NotDomains_ << "; "
 				<< "Selector:" << option.HideSelector_ << "; "
-				<< "Abort foreign requests:" << option.AbortForeign_
+				<< "Third party requests:" << static_cast<int> (option.ThirdParty_)
 				<< "}";
 		return dbg;
 	}

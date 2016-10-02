@@ -55,9 +55,9 @@ namespace Poshuku
 
 		std::shared_ptr<ProxyObject> ProxyObject_;
 	public:
-		PluginManager (QObject* = 0);
+		PluginManager (QObject* = nullptr);
 
-		virtual void AddPlugin (QObject*);
+		void AddPlugin (QObject*) override;
 	signals:
 		/** @brief Called when an entry is just added to the favorites.
 		 *

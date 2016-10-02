@@ -4,6 +4,7 @@ set (WEBKITVIEW_SRCS
 	customwebpage.cpp
 	customwebview.cpp
 	externalproxy.cpp
+	interceptadaptor.cpp
 	jsproxy.cpp
 	linkhistory.cpp
 	pluginmanager.cpp

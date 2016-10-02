@@ -29,53 +29,63 @@
 
 #pragma once
 
-#include <QObject>
-#include <interfaces/iinfo.h>
-#include <interfaces/iplugin2.h>
-#include <interfaces/poshuku/iwebviewprovider.h>
-#include <interfaces/poshuku/iinterceptablerequests.h>
-
 namespace LeechCraft
 {
-namespace Poshuku
+namespace Util
 {
-namespace WebEngineView
-{
-	class RequestInterceptor;
-
-	class Plugin : public QObject
-				 , public IInfo
-				 , public IPlugin2
-				 , public IWebViewProvider
-				 , public IInterceptableRequests
+	template<typename T>
+	class BitFlags
 	{
-		Q_OBJECT
-		Q_INTERFACES (IInfo
-				IPlugin2
-				LeechCraft::Poshuku::IWebViewProvider
-				LeechCraft::Poshuku::IInterceptableRequests)
-
-		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.WebEngineView" FILE "manifest.json")
-
-		std::shared_ptr<RequestInterceptor> Interceptor_;
+		using St_t = std::underlying_type_t<T>;
+		St_t Storage_ = 0;
 	public:
-		void Init (ICoreProxy_ptr) override;
-		void SecondInit () override;
-		void Release () override;
-		QByteArray GetUniqueID () const override;
-		QString GetName () const override;
-		QString GetInfo () const override;
-		QIcon GetIcon () const override;
+		BitFlags () = default;
 
-		QSet<QByteArray> GetPluginClasses () const override;
-		IWebView* CreateWebView () override;
-		QIcon GetIconForUrl (const QUrl&) const override;
-		QIcon GetDefaultUrlIcon () const override;
+		BitFlags (T t)
+				: Storage_ { static_cast<St_t> (t) }
+		{
+		}
 
-		void AddInterceptor (const Interceptor_t&) override;
-	signals:
-		void webViewCreated (IWebView*, bool) override;
+		explicit operator bool () const
+		{
+			return Storage_;
+		}
+
+		BitFlags& operator&= (BitFlags other)
+		{
+			Storage_ &= other.Storage_;
+			return *this;
+		}
+
+		BitFlags& operator|= (BitFlags other)
+		{
+			Storage_ |= other.Storage_;
+			return *this;
+		}
+
+		friend BitFlags operator& (const BitFlags& left, const BitFlags& right)
+		{
+			BitFlags res { left };
+			res &= right;
+			return res;
+		}
+
+		friend BitFlags operator| (const BitFlags& left, const BitFlags& right)
+		{
+			BitFlags res { left };
+			res |= right;
+			return res;
+		}
 	};
 }
 }
-}
+
+#define DECLARE_BIT_FLAGS(F) \
+		LeechcRaft::Util::BitFlags<F> operator& (F left, F right) \
+		{ \
+			return LeechcRaft::Util::BitFlags<F> { left } & right; \
+		} \
+		LeechcRaft::Util::BitFlags<F> operator| (F left, F right) \
+		{ \
+			return LeechcRaft::Util::BitFlags<F> { left } | right; \
+		}

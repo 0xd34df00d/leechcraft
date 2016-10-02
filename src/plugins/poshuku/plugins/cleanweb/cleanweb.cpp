@@ -28,10 +28,8 @@
  **********************************************************************/
 
 #include "cleanweb.h"
-#include <typeinfo>
 #include <QIcon>
 #include <QTextCodec>
-#include <QtDebug>
 #include <interfaces/entitytesthandleresult.h>
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <util/util.h>
@@ -69,6 +67,7 @@ namespace CleanWeb
 
 	void CleanWeb::SecondInit ()
 	{
+		Core_->InstallInterceptor ();
 	}
 
 	void CleanWeb::Release ()
@@ -131,26 +130,9 @@ namespace CleanWeb
 		return result;
 	}
 
-	void CleanWeb::hookNAMCreateRequest (IHookProxy_ptr proxy,
-			QNetworkAccessManager *manager,
-			QNetworkAccessManager::Operation *op,
-			QIODevice **dev)
-	{
-		Core_->Hook (proxy, manager, op, dev);
-	}
-
 	void CleanWeb::hookBrowserWidgetInitialized (IHookProxy_ptr, QObject *browserWidget)
 	{
 		Core_->HandleBrowserWidget (qobject_cast<IBrowserWidget*> (browserWidget));
-	}
-
-	void CleanWeb::hookExtension (LeechCraft::IHookProxy_ptr proxy,
-			QWebPage *page,
-			QWebPage::Extension ext,
-			const QWebPage::ExtensionOption *opt,
-			QWebPage::ExtensionReturn *ret)
-	{
-		Core_->HandleExtension (proxy, page, ext, opt, ret);
 	}
 
 	void CleanWeb::hookWebViewContextMenu (IHookProxy_ptr,

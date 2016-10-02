@@ -33,6 +33,7 @@
 #include <QWebEngineSettings>
 #include <QWebEngineHistory>
 #include <QWebEngineContextMenuData>
+#include <QWebChannel>
 #include <QContextMenuEvent>
 #include <interfaces/poshuku/iwebviewhistory.h>
 
@@ -71,7 +72,7 @@ namespace WebEngineView
 		return this;
 	}
 
-	QList<QAction*> CustomWebView::GetActions (ActionArea area) const
+	QList<QAction*> CustomWebView::GetActions (ActionArea) const
 	{
 		return {};
 	}
@@ -142,20 +143,79 @@ namespace WebEngineView
 		setContent (data, mime, base);
 	}
 
-	QString CustomWebView::ToHtml () const
+	void CustomWebView::ToHtml (const std::function<void (QString)>& handler) const
 	{
-		// TODO
-		return {};
+		page ()->toHtml (handler);
 	}
 
-	void CustomWebView::EvaluateJS (const QString& js, const std::function<void (QVariant)>& handler)
+	void CustomWebView::EvaluateJS (const QString& js,
+			const std::function<void (QVariant)>& handler,
+			Util::BitFlags<EvaluateJSFlag> flags)
 	{
-		page ()->runJavaScript (js, handler);
+		QString jsToRun;
+		std::function<void (QVariant)> modifiedHandler;
+		if (flags & EvaluateJSFlag::RecurseSubframes)
+		{
+			jsToRun = QString { R"(
+					(function(){
+						var result = [];
+						var f = function(document) {
+							var r = __FUNCTION__
+							result.push(r);
+						};
+						f(document);
+						var recurse = function(document) {
+							var frames = document.querySelectorAll('iframe');
+							for (var i = 0; i < frames.length; ++i) {
+								try {
+									var child = frames[i].contentDocument.children[0];
+									f(child);
+									recurse(child)
+								} catch(e) { console.log("frame read failure: " + e); };
+							}
+						};
+						recurse(document);
+						return result;
+					})();
+				)" };
+			jsToRun.replace ("__FUNCTION__", js);
+
+			modifiedHandler = [handler] (const QVariant& result)
+			{
+				for (const auto& item : result.toList ())
+					handler (item);
+			};
+		}
+		else
+		{
+			jsToRun = js;
+			modifiedHandler = handler;
+		}
+
+		if (handler)
+			page ()->runJavaScript (jsToRun, modifiedHandler);
+		else
+			page ()->runJavaScript (jsToRun);
 	}
 
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
 	{
-		// TODO
+		auto channel = page ()->webChannel ();
+		if (!channel)
+		{
+			channel = new QWebChannel;
+			page ()->setWebChannel (channel);
+		}
+
+		channel->registerObject (id, object);
+
+		auto js = QString { R"(
+					new QWebChannel(qt.webChannelTransport,
+						function(channel) {
+							window.%1 = channel.objects.%1;
+						});
+				)" }.arg (id);
+		page ()->runJavaScript (js);
 	}
 
 	void CustomWebView::Print (bool withPreview)

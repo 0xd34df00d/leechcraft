@@ -50,6 +50,7 @@ namespace Util
 		RegExp (const QString&, Qt::CaseSensitivity);
 
 		bool Matches (const QString&) const;
+		bool Matches (const QByteArray&) const;
 
 		QString GetPattern () const;
 		Qt::CaseSensitivity GetCaseSensitivity () const;
