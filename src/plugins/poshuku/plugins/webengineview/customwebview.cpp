@@ -150,12 +150,38 @@ namespace WebEngineView
 
 	void CustomWebView::EvaluateJS (const QString& js,
 			const std::function<void (QVariant)>& handler,
-			Util::BitFlags<EvaluateJSFlag>)
+			Util::BitFlags<EvaluateJSFlag> flags)
 	{
-		if (handler)
-			page ()->runJavaScript (js, handler);
+		QString jsToRun;
+		if (flags & EvaluateJSFlag::RecurseSubframes)
+		{
+			jsToRun = QString { R"(
+					(function(){
+						var f = function(document) { __FUNCTION__ };
+						var result = f(document);
+						var recurse = function(document) {
+							var frames = document.querySelectorAll('iframe');
+							for (var i = 0; i < frames.length; ++i) {
+								try {
+									var child = frames[i].contentDocument.children[0];
+									f(child);
+									recurse(child)
+								} catch(e) { console.log("frame read failure: " + e); };
+							}
+						};
+						recurse(document);
+						return result;
+					})();
+				)" };
+			jsToRun.replace ("__FUNCTION__", js);
+		}
 		else
-			page ()->runJavaScript (js);
+			jsToRun = js;
+
+		if (handler)
+			page ()->runJavaScript (jsToRun, handler);
+		else
+			page ()->runJavaScript (jsToRun);
 	}
 
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
