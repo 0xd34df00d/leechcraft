@@ -205,6 +205,18 @@ namespace Util
 #endif
 	}
 
+	bool RegExp::Matches (const QByteArray& ba) const
+	{
+		if (!Impl_)
+			return {};
+
+#ifdef USE_PCRE
+		return Impl_->PRx_.Exec (ba) >= 0;
+#else
+		return Impl_->Rx_.exactMatch (ba);
+#endif
+	}
+
 	QString RegExp::GetPattern () const
 	{
 		if (!Impl_)
