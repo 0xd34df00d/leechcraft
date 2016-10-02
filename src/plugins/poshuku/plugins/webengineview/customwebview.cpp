@@ -72,7 +72,7 @@ namespace WebEngineView
 		return this;
 	}
 
-	QList<QAction*> CustomWebView::GetActions (ActionArea area) const
+	QList<QAction*> CustomWebView::GetActions (ActionArea) const
 	{
 		return {};
 	}
