@@ -314,7 +314,7 @@ namespace CleanWeb
 #endif
 
 		bool Matches (const FilterItem_ptr& item,
-				const QString& urlStr, const QByteArray& urlUtf8, const QString& domain)
+				const QByteArray& urlUtf8, const QString& domain)
 		{
 			const auto& opt = item->Option_;
 			if (opt.MatchObjects_ != FilterOption::MatchObject::All)
@@ -419,9 +419,8 @@ namespace CleanWeb
 											!(objs & opt.MatchObjects_))
 										continue;
 
-									const auto& url = item->Option_.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
 									const auto& utf8 = item->Option_.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-									if (Matches (item, url, utf8, domain))
+									if (Matches (item, utf8, domain))
 										return true;
 								}
 
@@ -639,9 +638,8 @@ namespace CleanWeb
 									continue;
 
 								const auto& opt = item->Option_;
-								const auto& url = opt.Case_ == Qt::CaseSensitive ? urlStr : cinUrlStr;
 								const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-								if (!Matches (item, url, utf8, domain))
+								if (!Matches (item, utf8, domain))
 									continue;
 
 								sels << item->Option_.HideSelector_;
