@@ -223,7 +223,7 @@ namespace SpeedDial
 			w.writeEndElement ();
 		w.writeEndElement ();
 
-		View_->SetContent (html.toUtf8 (), "application/xhtml+xml");
+		View_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8");
 
 		const auto edit = BrowserWidget_->GetURLEdit ();
 		new Util::DelayedExecutor
