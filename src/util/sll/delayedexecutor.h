@@ -67,7 +67,7 @@ namespace Util
 		};
 	   \endcode
 	 */
-	class UTIL_SLL_API DelayedExecutor : QObject
+	class UTIL_SLL_API DelayedExecutor : public QObject
 	{
 		Q_OBJECT
 	public:
