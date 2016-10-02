@@ -447,7 +447,16 @@ namespace CleanWeb
 				return IInterceptableRequests::Allow {};
 
 			if (info.View_)
-				Util::ExecuteLater ([this, info] { DelayedRemoveElements (*info.View_, info.RequestUrl_); });
+			{
+				const auto view = *info.View_;
+				const auto reqUrl = info.RequestUrl_;
+				auto exec = new Util::DelayedExecutor
+				{
+					[this, view, reqUrl] { DelayedRemoveElements (view, reqUrl); },
+					0
+				};
+				exec->moveToThread (qApp->thread ());
+			}
 
 			return IInterceptableRequests::Block {};
 		};
