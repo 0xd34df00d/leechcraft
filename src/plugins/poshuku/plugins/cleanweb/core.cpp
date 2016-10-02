@@ -341,7 +341,7 @@ namespace CleanWeb
 			switch (opt.MatchType_)
 			{
 			case FilterOption::MTRegexp:
-				return item->RegExp_.Matches (urlStr);
+				return item->RegExp_.Matches (urlUtf8);
 			case FilterOption::MTWildcard:
 				return WildcardMatches (item->PlainMatcher_.constData (), urlUtf8.constData ());
 			case FilterOption::MTPlain:
