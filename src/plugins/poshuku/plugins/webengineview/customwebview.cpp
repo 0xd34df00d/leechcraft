@@ -153,12 +153,17 @@ namespace WebEngineView
 			Util::BitFlags<EvaluateJSFlag> flags)
 	{
 		QString jsToRun;
+		std::function<void (QVariant)> modifiedHandler;
 		if (flags & EvaluateJSFlag::RecurseSubframes)
 		{
 			jsToRun = QString { R"(
 					(function(){
-						var f = function(document) { __FUNCTION__ };
-						var result = f(document);
+						var result = [];
+						var f = function(document) {
+							var r = __FUNCTION__
+							result.push(r);
+						};
+						f(document);
 						var recurse = function(document) {
 							var frames = document.querySelectorAll('iframe');
 							for (var i = 0; i < frames.length; ++i) {
@@ -174,12 +179,21 @@ namespace WebEngineView
 					})();
 				)" };
 			jsToRun.replace ("__FUNCTION__", js);
+
+			modifiedHandler = [handler] (const QVariant& result)
+			{
+				for (const auto& item : result.toList ())
+					handler (item);
+			};
 		}
 		else
+		{
 			jsToRun = js;
+			modifiedHandler = handler;
+		}
 
 		if (handler)
-			page ()->runJavaScript (jsToRun, handler);
+			page ()->runJavaScript (jsToRun, modifiedHandler);
 		else
 			page ()->runJavaScript (jsToRun);
 	}
