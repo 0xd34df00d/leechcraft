@@ -30,6 +30,7 @@
 #include "requestinterceptor.h"
 #include <QWebEngineUrlRequestInfo>
 #include <QtDebug>
+#include <util/sll/visitor.h>
 
 namespace LeechCraft
 {
@@ -37,9 +38,71 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
+	namespace
+	{
+		IInterceptableRequests::ResourceType ConvertResourceType (QWebEngineUrlRequestInfo::ResourceType type)
+		{
+#define HANDLE(x)	case QWebEngineUrlRequestInfo::ResourceType##x: \
+						return IInterceptableRequests::ResourceType::x;
+
+			switch (type)
+			{
+			HANDLE (MainFrame)
+			HANDLE (SubFrame)
+			HANDLE (Stylesheet)
+			HANDLE (Script)
+			HANDLE (Image)
+			HANDLE (FontResource)
+			HANDLE (SubResource)
+			HANDLE (Object)
+			HANDLE (Media)
+			HANDLE (Worker)
+			HANDLE (SharedWorker)
+			HANDLE (Prefetch)
+			HANDLE (Favicon)
+			HANDLE (Xhr)
+			HANDLE (Ping)
+			HANDLE (ServiceWorker)
+			HANDLE (CspReport)
+			HANDLE (PluginResource)
+			HANDLE (Unknown)
+			}
+#undef HANDLE
+
+			return IInterceptableRequests::ResourceType::Unknown;
+		}
+	}
+
 	void RequestInterceptor::interceptRequest (QWebEngineUrlRequestInfo& info)
 	{
-		qDebug () << Q_FUNC_INFO;
+		IInterceptableRequests::RequestInfo convertedInfo
+		{
+			info.requestUrl (),
+			info.firstPartyUrl (),
+			IInterceptableRequests::NavigationType::Unknown,
+			ConvertResourceType (info.resourceType ()),
+			{}
+		};
+
+		for (const auto& interceptor : Interceptors_)
+		{
+			const auto shouldBlock = Util::Visit (interceptor (convertedInfo),
+					[] (IInterceptableRequests::Allow) { return false; },
+					[&] (const IInterceptableRequests::Redirect& r)
+					{
+						info.redirect (r.NewUrl_);
+						return false;
+					},
+					[] (IInterceptableRequests::Block) { return true; });
+
+			if (shouldBlock)
+				info.block (true);
+		}
+	}
+
+	void RequestInterceptor::Add (const IInterceptableRequests::Interceptor_t& interceptor)
+	{
+		Interceptors_ << interceptor;
 	}
 }
 }

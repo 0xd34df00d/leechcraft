@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QWebEngineUrlRequestInterceptor>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 
 namespace LeechCraft
 {
@@ -39,8 +40,11 @@ namespace WebEngineView
 {
 	class RequestInterceptor : public QWebEngineUrlRequestInterceptor
 	{
+		QList<IInterceptableRequests::Interceptor_t> Interceptors_;
 	public:
 		void interceptRequest (QWebEngineUrlRequestInfo&) override;
+
+		void Add (const IInterceptableRequests::Interceptor_t&);
 	};
 }
 }
