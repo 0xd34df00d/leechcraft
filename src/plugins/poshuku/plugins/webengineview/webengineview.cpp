@@ -137,6 +137,11 @@ namespace WebEngineView
 	{
 		return {};
 	}
+
+	void Plugin::AddInterceptor (const Interceptor_t& interceptor)
+	{
+		Interceptor_->Add (interceptor);
+	}
 }
 }
 }

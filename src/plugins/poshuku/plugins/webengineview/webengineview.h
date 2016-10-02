@@ -33,6 +33,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/poshuku/iwebviewprovider.h>
+#include <interfaces/poshuku/iinterceptablerequests.h>
 
 namespace LeechCraft
 {
@@ -46,9 +47,13 @@ namespace WebEngineView
 				 , public IInfo
 				 , public IPlugin2
 				 , public IWebViewProvider
+				 , public IInterceptableRequests
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 LeechCraft::Poshuku::IWebViewProvider)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Poshuku::IWebViewProvider
+				LeechCraft::Poshuku::IInterceptableRequests)
 
 		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.WebEngineView" FILE "manifest.json")
 
@@ -66,6 +71,8 @@ namespace WebEngineView
 		IWebView* CreateWebView () override;
 		QIcon GetIconForUrl (const QUrl&) const override;
 		QIcon GetDefaultUrlIcon () const override;
+
+		void AddInterceptor (const Interceptor_t&) override;
 	signals:
 		void webViewCreated (IWebView*, bool) override;
 	};
