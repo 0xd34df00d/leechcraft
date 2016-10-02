@@ -188,6 +188,9 @@ namespace SpeedDial
 		w.writeStartElement ("html");
 		w.writeAttribute ("xmlns", "http://www.w3.org/1999/xhtml");
 			w.writeStartElement ("head");
+				w.writeStartElement ("meta");
+					w.writeAttribute ("charset", "UTF-8");
+				w.writeEndElement ();
 				w.writeTextElement ("title", tr ("Speed dial"));
 				w.writeTextElement ("style", R"delim(
 						.centered {
