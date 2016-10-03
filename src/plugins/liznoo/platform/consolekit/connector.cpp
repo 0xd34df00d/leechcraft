@@ -59,8 +59,10 @@ namespace ConsoleKit
 
 	void Connector::handlePrepare (bool active)
 	{
-		qDebug () << Q_FUNC_INFO
-				<< active;
+		if (active)
+			emit gonnaSleep (1000);
+		else
+			emit wokeUp ();
 	}
 }
 }
