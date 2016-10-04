@@ -1,6 +1,7 @@
 include_directories (${POSHUKU_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR})
 set (WEBENGINEVIEW_SRCS
+	cookiessyncer.cpp
 	customwebview.cpp
 	requestinterceptor.cpp
 	webengineview.cpp
