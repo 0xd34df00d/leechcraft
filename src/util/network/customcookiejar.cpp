@@ -250,14 +250,17 @@ namespace Util
 		}
 
 		const auto& existing = cookiesForUrl (url);
-		Util::Sequence (this, QtConcurrent::run (CheckDifferences, existing, filtered)) >>
-				[this] (const CookiesDiff& diff)
-				{
-					if (!diff.Removed_.isEmpty ())
-						emit cookiesRemoved (diff.Removed_);
-					if (!diff.Added_.isEmpty ())
-						emit cookiesAdded (diff.Added_);
-				};
+		if (existing.isEmpty ())
+			emit cookiesAdded (filtered);
+		else
+			Util::Sequence (this, QtConcurrent::run (CheckDifferences, existing, filtered)) >>
+					[this] (const CookiesDiff& diff)
+					{
+						if (!diff.Removed_.isEmpty ())
+							emit cookiesRemoved (diff.Removed_);
+						if (!diff.Added_.isEmpty ())
+							emit cookiesAdded (diff.Added_);
+					};
 
 		return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 	}
