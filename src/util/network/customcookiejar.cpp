@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "customcookiejar.h"
-#include <memory>
 #include <QNetworkCookie>
 #include <QtDebug>
 #include <QDateTime>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -177,7 +177,7 @@ namespace Util
 				cookie.setDomain (url.host ());
 
 			bool checkWhitelist = false;
-			std::shared_ptr<void> wlGuard (nullptr, [&] (void*)
+			const auto wlGuard = Util::MakeScopeGuard ([&]
 					{
 						if (checkWhitelist && Check (WL_, cookie.domain ()))
 							filtered << cookie;
