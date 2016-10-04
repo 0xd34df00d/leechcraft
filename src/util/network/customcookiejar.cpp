@@ -28,10 +28,14 @@
  **********************************************************************/
 
 #include "customcookiejar.h"
+#include <set>
+#include <algorithm>
 #include <QNetworkCookie>
 #include <QtDebug>
 #include <QDateTime>
+#include <QtConcurrentRun>
 #include <util/sll/util.h>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -162,6 +166,51 @@ namespace Util
 
 			return false;
 		}
+
+		struct CookiesDiff
+		{
+			QList<QNetworkCookie> Added_;
+			QList<QNetworkCookie> Removed_;
+		};
+
+		auto CookieToTuple (const QNetworkCookie& c)
+		{
+			return std::make_tuple (c.isHttpOnly (),
+					c.isSecure (),
+					c.isSessionCookie (),
+					c.name (),
+					c.domain (),
+					c.path (),
+					c.value (),
+					c.expirationDate ());
+		}
+
+		struct CookieLess
+		{
+			bool operator() (const QNetworkCookie& left, const QNetworkCookie& right) const
+			{
+				return CookieToTuple (left) < CookieToTuple (right);
+			}
+		};
+
+		CookiesDiff CheckDifferences (const QList<QNetworkCookie>& previousList,
+				const QList<QNetworkCookie>& currentList)
+		{
+			using Set_t = std::set<QNetworkCookie, CookieLess>;
+			Set_t previous { previousList.begin (), previousList.end () };
+			Set_t current { currentList.begin (), currentList.end () };
+
+			CookiesDiff diff;
+			std::set_difference (previous.begin (), previous.end (),
+					current.begin (), current.end (),
+					std::back_inserter (diff.Removed_),
+					CookieLess {});
+			std::set_difference (current.begin (), current.end (),
+					previous.begin (), previous.end (),
+					std::back_inserter (diff.Added_),
+					CookieLess {});
+			return diff;
+		}
 	}
 
 	bool CustomCookieJar::setCookiesFromUrl (const QList<QNetworkCookie>& cookieList, const QUrl& url)
@@ -199,6 +248,16 @@ namespace Util
 			if (!Check (BL_, cookie.domain ()))
 				filtered << cookie;
 		}
+
+		const auto& existing = cookiesForUrl (url);
+		Util::Sequence (this, QtConcurrent::run (CheckDifferences, existing, filtered)) >>
+				[this] (const CookiesDiff& diff)
+				{
+					if (!diff.Removed_.isEmpty ())
+						emit cookiesRemoved (diff.Removed_);
+					if (!diff.Added_.isEmpty ())
+						emit cookiesAdded (diff.Added_);
+				};
 
 		return QNetworkCookieJar::setCookiesFromUrl (filtered, url);
 	}
