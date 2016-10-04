@@ -42,10 +42,6 @@ namespace Util
 	{
 	}
 
-	CustomCookieJar::~CustomCookieJar ()
-	{
-	}
-
 	void CustomCookieJar::SetFilterTrackingCookies (bool filter)
 	{
 		FilterTrackingCookies_ = filter;

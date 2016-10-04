@@ -65,10 +65,6 @@ namespace Util
 		 */
 		CustomCookieJar (QObject *parent = 0);
 
-		/** Destructs the cookie jar.
-		 */
-		virtual ~CustomCookieJar ();
-
 		/** Enables or disables filtering tracking cookies.
 		 *
 		 * @param[in] filter Whether to filter tracking cookies.
