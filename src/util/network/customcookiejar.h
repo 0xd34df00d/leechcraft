@@ -161,6 +161,9 @@ namespace Util
 
 		using QNetworkCookieJar::allCookies;
 		using QNetworkCookieJar::setAllCookies;
+	signals:
+		void cookiesAdded (const QList<QNetworkCookie>&);
+		void cookiesRemoved (const QList<QNetworkCookie>&);
 	};
 }
 }
