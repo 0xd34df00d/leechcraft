@@ -39,9 +39,6 @@ namespace Util
 {
 	CustomCookieJar::CustomCookieJar (QObject *parent)
 	: QNetworkCookieJar (parent)
-	, FilterTrackingCookies_ (false)
-	, Enabled_ (true)
-	, MatchDomainExactly_ (false)
 	{
 	}
 

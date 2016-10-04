@@ -49,9 +49,9 @@ namespace Util
 	{
 		Q_OBJECT
 
-		bool FilterTrackingCookies_;
-		bool Enabled_;
-		bool MatchDomainExactly_;
+		bool FilterTrackingCookies_ = false;
+		bool Enabled_ = true;
+		bool MatchDomainExactly_ = false;
 
 		QList<QRegExp> WL_;
 		QList<QRegExp> BL_;
