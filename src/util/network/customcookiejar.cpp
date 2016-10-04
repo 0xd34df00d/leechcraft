@@ -104,6 +104,7 @@ namespace Util
 
 			filteredCookies << cookie;
 		}
+		emit cookiesAdded (filteredCookies);
 		setAllCookies (filteredCookies);
 	}
 
