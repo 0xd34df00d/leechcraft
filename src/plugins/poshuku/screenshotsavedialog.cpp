@@ -109,7 +109,7 @@ namespace Poshuku
 			e.Additional_ ["Format"] = Ui_.FormatCombobox_->currentText ();
 			e.Additional_ ["Quality"] = Ui_.QualitySlider_->value ();
 
-			e.Additional_ ["FilterVariant"] = filter.ID_;
+			e.Additional_ ["DataFilter"] = filter.ID_;
 
 			auto ieh = qobject_cast<IEntityHandler*> (filter.Object_);
 			ieh->Handle (e);
