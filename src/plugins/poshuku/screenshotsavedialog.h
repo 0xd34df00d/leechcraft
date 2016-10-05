@@ -58,7 +58,7 @@ namespace Poshuku
 	public:
 		ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
 
-		void accept ();
+		void accept () override;
 	private:
 		void Save ();
 
