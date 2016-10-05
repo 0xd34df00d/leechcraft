@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SCREENSHOTSAVEDIALOG_H
-#define PLUGINS_POSHUKU_SCREENSHOTSAVEDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include <QPixmap>
 #include "ui_screenshotsavedialog.h"
@@ -70,5 +70,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
