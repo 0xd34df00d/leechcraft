@@ -60,7 +60,6 @@ namespace Poshuku
 	: QDialog (parent)
 	, Source_ (source)
 	, PixmapHolder_ (new QLabel ())
-	, RenderScheduled_ (false)
 	{
 		PixmapHolder_->setAlignment (Qt::AlignTop | Qt::AlignLeft);
 		Ui_.setupUi (this);

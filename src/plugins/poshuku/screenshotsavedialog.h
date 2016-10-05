@@ -47,7 +47,7 @@ namespace Poshuku
 		QPixmap Rendered_;
 		QLabel *PixmapHolder_;
 
-		bool RenderScheduled_;
+		bool RenderScheduled_ = false;
 
 		struct FilterData
 		{
