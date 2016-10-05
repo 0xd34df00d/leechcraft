@@ -49,9 +49,9 @@ namespace Util
 	{
 		Q_OBJECT
 
-		bool FilterTrackingCookies_;
-		bool Enabled_;
-		bool MatchDomainExactly_;
+		bool FilterTrackingCookies_ = false;
+		bool Enabled_ = true;
+		bool MatchDomainExactly_ = false;
 
 		QList<QRegExp> WL_;
 		QList<QRegExp> BL_;
@@ -64,10 +64,6 @@ namespace Util
 		 * @param[in] parent The parent object.
 		 */
 		CustomCookieJar (QObject *parent = 0);
-
-		/** Destructs the cookie jar.
-		 */
-		virtual ~CustomCookieJar ();
 
 		/** Enables or disables filtering tracking cookies.
 		 *
@@ -165,6 +161,9 @@ namespace Util
 
 		using QNetworkCookieJar::allCookies;
 		using QNetworkCookieJar::setAllCookies;
+	signals:
+		void cookiesAdded (const QList<QNetworkCookie>&);
+		void cookiesRemoved (const QList<QNetworkCookie>&);
 	};
 }
 }

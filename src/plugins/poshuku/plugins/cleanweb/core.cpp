@@ -77,69 +77,6 @@ namespace CleanWeb
 {
 	namespace
 	{
-		enum FilterType
-		{
-			FTName_,
-			FTFilename_,
-			FTUrl_
-		};
-
-		template<typename T>
-		struct FilterFinderBase
-		{
-			const T& ID_;
-
-			FilterFinderBase (const T& id)
-			: ID_ (id)
-			{
-			}
-		};
-
-		template<FilterType>
-			struct FilterFinder;
-
-		template<>
-			struct FilterFinder<FTName_> : FilterFinderBase<QString>
-			{
-				FilterFinder (const QString& id)
-				: FilterFinderBase<QString> (id)
-				{
-				}
-
-				bool operator() (const Filter& f) const
-				{
-					return f.SD_.Name_ == ID_;
-				}
-			};
-
-		template<>
-			struct FilterFinder<FTFilename_> : FilterFinderBase<QString>
-			{
-				FilterFinder (const QString& id)
-				: FilterFinderBase<QString> (id)
-				{
-				}
-
-				bool operator() (const Filter& f) const
-				{
-					return f.SD_.Filename_ == ID_;
-				}
-			};
-
-		template<>
-			struct FilterFinder<FTUrl_> : FilterFinderBase<QUrl>
-			{
-				FilterFinder (const QUrl& id)
-				: FilterFinderBase<QUrl> (id)
-				{
-				}
-
-				bool operator() (const Filter& f) const
-				{
-					return f.SD_.URL_ == ID_;
-				}
-			};
-
 		QList<Filter> ParseToFilters (const QStringList& paths)
 		{
 			QList<Filter> result;
