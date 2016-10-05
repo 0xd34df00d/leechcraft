@@ -31,9 +31,11 @@
 #include <QIcon>
 #include <QWebEngineProfile>
 #include <util/sys/sysinfo.h>
+#include <util/network/customcookiejar.h>
 #include <interfaces/core/icoreproxy.h>
 #include "customwebview.h"
 #include "requestinterceptor.h"
+#include "cookiessyncer.h"
 
 namespace LeechCraft
 {
@@ -84,6 +86,9 @@ namespace WebEngineView
 
 		Interceptor_ = std::make_shared<RequestInterceptor> ();
 		prof->setRequestInterceptor (Interceptor_.get ());
+
+		const auto cookieJar = proxy->GetNetworkAccessManager ()->cookieJar ();
+		new CookiesSyncer { qobject_cast<Util::CustomCookieJar*> (cookieJar), prof->cookieStore () };
 	}
 
 	void Plugin::SecondInit ()
