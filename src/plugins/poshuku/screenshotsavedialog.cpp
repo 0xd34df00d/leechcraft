@@ -60,19 +60,17 @@ namespace Poshuku
 	: QDialog (parent)
 	, Source_ (source)
 	, PixmapHolder_ (new QLabel ())
-	, RenderScheduled_ (false)
 	{
 		PixmapHolder_->setAlignment (Qt::AlignTop | Qt::AlignLeft);
 		Ui_.setupUi (this);
 
-		QList<QByteArray> formats = QImageWriter::supportedImageFormats ();
+		auto formats = QImageWriter::supportedImageFormats ();
 		formats.removeAll ("ico");
 		if (formats.contains ("jpg"))
 			formats.removeAll ("jpeg");
 		std::sort (formats.begin (), formats.end ());
-		for (QList<QByteArray>::const_iterator i = formats.begin (),
-				end = formats.end (); i != end; ++i)
-			Ui_.FormatCombobox_->addItem (i->toUpper ());
+		for (const auto& format : formats)
+			Ui_.FormatCombobox_->addItem (format.toUpper ());
 		if (formats.contains ("png"))
 			Ui_.FormatCombobox_->setCurrentIndex (formats.indexOf ("png"));
 
@@ -111,7 +109,7 @@ namespace Poshuku
 			e.Additional_ ["Format"] = Ui_.FormatCombobox_->currentText ();
 			e.Additional_ ["Quality"] = Ui_.QualitySlider_->value ();
 
-			e.Additional_ ["FilterVariant"] = filter.ID_;
+			e.Additional_ ["DataFilter"] = filter.ID_;
 
 			auto ieh = qobject_cast<IEntityHandler*> (filter.Object_);
 			ieh->Handle (e);

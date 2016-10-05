@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SCREENSHOTSAVEDIALOG_H
-#define PLUGINS_POSHUKU_SCREENSHOTSAVEDIALOG_H
+#pragma once
+
 #include <QDialog>
 #include <QPixmap>
 #include "ui_screenshotsavedialog.h"
@@ -47,7 +47,7 @@ namespace Poshuku
 		QPixmap Rendered_;
 		QLabel *PixmapHolder_;
 
-		bool RenderScheduled_;
+		bool RenderScheduled_ = false;
 
 		struct FilterData
 		{
@@ -58,7 +58,7 @@ namespace Poshuku
 	public:
 		ScreenShotSaveDialog (const QPixmap&, QWidget* = 0);
 
-		void accept ();
+		void accept () override;
 	private:
 		void Save ();
 
@@ -70,5 +70,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
