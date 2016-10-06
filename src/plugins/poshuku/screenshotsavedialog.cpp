@@ -101,7 +101,7 @@ namespace Poshuku
 		else
 		{
 			const auto& filter = Filters_.value (idx);
-			auto e = Util::MakeEntity (QVariant::fromValue (Source_.toImage ()),
+			auto e = Util::MakeEntity (QVariant::fromValue (Rendered_.toImage ()),
 					{},
 					{},
 					"x-leechcraft/data-filter-request");
@@ -147,7 +147,7 @@ namespace Poshuku
 		const auto& format = Ui_.FormatCombobox_->currentText ();
 		int quality = Ui_.QualitySlider_->value ();
 
-		if (!Source_.save (&file, qPrintable (format), quality))
+		if (!Rendered_.save (&file, qPrintable (format), quality))
 			QMessageBox::critical (this,
 					"LeechCraft",
 					tr ("Could not write screenshot to %1")
