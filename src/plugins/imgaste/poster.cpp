@@ -113,8 +113,8 @@ namespace Imgaste
 		{
 			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
 
-			QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
-				.arg (pasteUrl);
+			auto text = tr ("Image pasted: %1, the URL was copied to the clipboard")
+				.arg ("<em>" + pasteUrl + "</em>");
 			em->HandleEntity (Util::MakeNotification ("Imgaste", text, PInfo_));
 		}
 		else
