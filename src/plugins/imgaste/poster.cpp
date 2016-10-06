@@ -112,7 +112,6 @@ namespace Imgaste
 		if (!Callback_)
 		{
 			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Clipboard);
-			QApplication::clipboard ()->setText (pasteUrl, QClipboard::Selection);
 
 			QString text = tr ("Image pasted: %1, the URL was copied to the clipboard")
 				.arg (pasteUrl);
