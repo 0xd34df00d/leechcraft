@@ -230,15 +230,24 @@ namespace Imgaste
 			}
 		};
 
-		struct PomfWorker final : Worker
+		struct PomfLikeWorker final : Worker
 		{
+			const QString Prefix_;
+			const QUrl UploadUrl_;
+
+			PomfLikeWorker (const QString& prefix, const QUrl& uploadUrl)
+			: Prefix_ { prefix }
+			, UploadUrl_ { uploadUrl }
+			{
+			}
+
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am) const override
 			{
 				RequestBuilder builder;
 				builder.AddFile (format, "files[]", data);
 
-				return am->post (PrefillRequest (QUrl { "https://pomf.cat/upload.php" }, builder), builder.Build ());
+				return am->post (PrefillRequest (UploadUrl_, builder), builder.Build ());
 			}
 
 			QString GetLink (const QString& body, QNetworkReply*) const override
@@ -247,7 +256,7 @@ namespace Imgaste
 				const auto filename = json.toMap () ["files"]
 						.toList ().value (0)
 						.toMap () ["url"].toString ();
-				return "https://a.pomf.cat/" + filename;
+				return Prefix_ + filename;
 			}
 		};
 	}
@@ -263,7 +272,8 @@ namespace Imgaste
 		case HostingService::SavepicRu:
 			return std::make_unique<SavepicWorker> ();
 		case HostingService::PomfCat:
-			return std::make_unique<PomfWorker> ();
+			return std::make_unique<PomfLikeWorker> ("https://a.pomf.cat/",
+					QUrl { "https://pomf.cat/upload.php" });
 		}
 
 		assert (false);
