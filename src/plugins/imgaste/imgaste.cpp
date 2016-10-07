@@ -33,6 +33,7 @@
 #include <QUrl>
 #include <QStandardItemModel>
 #include <QMessageBox>
+#include <QImageReader>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
 #include <interfaces/entitytesthandleresult.h>
@@ -119,21 +120,52 @@ namespace Imgaste
 
 	namespace
 	{
-		IDataFilter::FilterVariant ToFilterVariant (HostingService s)
+		boost::optional<IDataFilter::FilterVariant> ToFilterVariant (HostingService s,
+				const ImageInfo& imageInfo)
 		{
-			const auto& str = ToInfo (s).Name_;
-			return { str.toUtf8 (), str, {}, {} };
+			const auto& hostingInfo = ToInfo (s);
+			if (!hostingInfo.Accepts_ (imageInfo))
+				return {};
+
+			const auto& str = hostingInfo.Name_;
+			return { { str.toUtf8 (), str, {}, {} } };
+		}
+
+		boost::optional<ImageInfo> GetImageInfo (const QVariant& data)
+		{
+			const auto& file = data.toUrl ().toLocalFile ();
+			if (QFileInfo::exists (file))
+			{
+				const quint64 filesize = QFileInfo { file }.size ();
+				return { { filesize, QImageReader { file }.size () } };
+			}
+			else if (data.canConvert<QImage> ())
+				return { { 0, data.value<QImage> ().size () } };
+			else
+				return {};
 		}
 	}
 
 	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants (const QVariant& data) const
 	{
-		return
+		const auto items =
 		{
-			ToFilterVariant (HostingService::DumpBitcheeseNet),
-			ToFilterVariant (HostingService::ImagebinCa),
-			ToFilterVariant (HostingService::SavepicRu)
+			HostingService::DumpBitcheeseNet,
+			HostingService::ImagebinCa,
+			HostingService::SavepicRu
 		};
+
+		const auto& maybeInfo = GetImageInfo (data);
+		if (!maybeInfo)
+			return {};
+
+		const auto& info = *maybeInfo;
+
+		QList<IDataFilter::FilterVariant> result;
+		for (const auto& item : items)
+			if (const auto res = ToFilterVariant (item, info))
+				result << *res;
+		return result;
 	}
 
 	QAbstractItemModel* Plugin::GetRepresentation () const
