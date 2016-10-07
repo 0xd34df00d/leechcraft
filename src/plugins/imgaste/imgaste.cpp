@@ -134,9 +134,10 @@ namespace Imgaste
 		boost::optional<ImageInfo> GetImageInfo (const QVariant& data)
 		{
 			const auto& file = data.toUrl ().toLocalFile ();
-			if (QFileInfo::exists (file))
+			const QFileInfo fileInfo { file };
+			if (fileInfo.exists ())
 			{
-				const quint64 filesize = QFileInfo { file }.size ();
+				const quint64 filesize = fileInfo.size ();
 				return { { filesize, QImageReader { file }.size () } };
 			}
 			else if (data.canConvert<QImage> ())
