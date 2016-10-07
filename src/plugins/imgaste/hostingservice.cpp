@@ -211,11 +211,11 @@ namespace Imgaste
 		switch (s)
 		{
 		case HostingService::DumpBitcheeseNet:
-			return Worker_ptr { new BitcheeseWorker };
+			return std::make_unique<BitcheeseWorker> ();
 		case HostingService::ImagebinCa:
-			return Worker_ptr { new ImagebinWorker };
+			return std::make_unique<ImagebinWorker> ();
 		case HostingService::SavepicRu:
-			return Worker_ptr { new SavepicWorker };
+			return std::make_unique<SavepicWorker> ();
 		}
 
 		assert (false);
