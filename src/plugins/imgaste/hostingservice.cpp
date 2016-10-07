@@ -62,7 +62,7 @@ namespace Imgaste
 		return [=] (const ImageInfo& info) { return info.Size_ <= sizeLimit; };
 	}
 
-	quint64 operator"" _mib (quint64 mibs)
+	constexpr quint64 operator"" _mib (quint64 mibs)
 	{
 		return mibs * 1024 * 1024;
 	}
