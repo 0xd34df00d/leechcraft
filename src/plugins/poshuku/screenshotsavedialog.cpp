@@ -75,22 +75,6 @@ namespace Poshuku
 			Ui_.FormatCombobox_->setCurrentIndex (formats.indexOf ("png"));
 
 		Ui_.Scroller_->setWidget (PixmapHolder_);
-
-		auto proxy = Core::Instance ().GetProxy ();
-		const auto& dfs = Util::GetDataFilters (QVariant::fromValue (Source_.toImage ()),
-				proxy->GetEntityManager ());
-		for (auto df : dfs)
-		{
-			auto idf = qobject_cast<IDataFilter*> (df);
-			for (const auto& var : idf->GetFilterVariants ())
-			{
-				Ui_.ActionBox_->addItem (var.Icon_, var.Name_);
-				Filters_.append ({ df, var.ID_ });
-			}
-		}
-
-		auto mgr = proxy->GetIconThemeManager ();
-		Ui_.ActionBox_->addItem (mgr->GetIcon ("document-save"), tr ("Save"));
 	}
 
 	void ScreenShotSaveDialog::accept ()
@@ -166,6 +150,30 @@ namespace Poshuku
 		RenderScheduled_ = true;
 	}
 
+	void ScreenShotSaveDialog::RepopulateActions ()
+	{
+		Ui_.ActionBox_->clear ();
+		Filters_.clear ();
+
+		const auto& imageVar = QVariant::fromValue (Rendered_.toImage ());
+
+		auto proxy = Core::Instance ().GetProxy ();
+		const auto& dfs = Util::GetDataFilters (imageVar,
+				proxy->GetEntityManager ());
+		for (auto df : dfs)
+		{
+			auto idf = qobject_cast<IDataFilter*> (df);
+			for (const auto& var : idf->GetFilterVariants ())
+			{
+				Ui_.ActionBox_->addItem (var.Icon_, var.Name_);
+				Filters_.append ({ df, var.ID_ });
+			}
+		}
+
+		auto mgr = proxy->GetIconThemeManager ();
+		Ui_.ActionBox_->addItem (mgr->GetIcon ("document-save"), tr ("Save"));
+	}
+
 	void ScreenShotSaveDialog::render ()
 	{
 		RenderScheduled_ = false;
@@ -187,6 +195,8 @@ namespace Poshuku
 		Ui_.FileSizeLabel_->setText (Util::MakePrettySize (renderData.size ()));
 		PixmapHolder_->setPixmap (Rendered_);
 		PixmapHolder_->resize (Rendered_.size ());
+
+		RepopulateActions ();
 	}
 
 	void ScreenShotSaveDialog::on_QualitySlider__valueChanged ()

@@ -63,6 +63,8 @@ namespace Poshuku
 		void Save ();
 
 		void ScheduleRender ();
+
+		void RepopulateActions ();
 	private slots:
 		void render ();
 		void on_QualitySlider__valueChanged ();
