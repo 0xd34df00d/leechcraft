@@ -84,7 +84,7 @@ namespace Imgaste
 		struct ImagebinWorker : Worker
 		{
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const
+					QNetworkAccessManager *am) const override
 			{
 				QUrl url { "https://imagebin.ca/upload.php" };
 
@@ -110,7 +110,7 @@ namespace Imgaste
 				return am->post (request, formed);
 			}
 
-			QString GetLink (const QString& contents, QNetworkReply*) const
+			QString GetLink (const QString& contents, QNetworkReply*) const override
 			{
 				const auto& lines = contents.split ('\n');
 				const auto pos = std::find_if (lines.begin (), lines.end (),
@@ -139,7 +139,7 @@ namespace Imgaste
 			}
 
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const
+					QNetworkAccessManager *am) const override
 			{
 				QUrl url ("http://savepic.ru/");
 
@@ -167,7 +167,7 @@ namespace Imgaste
 				return am->post (request, formed);
 			}
 
-			QString GetLink (const QString& contents, QNetworkReply*) const
+			QString GetLink (const QString& contents, QNetworkReply*) const override
 			{
 				if (!RegExp_.exactMatch (contents))
 					return QString ();
@@ -180,7 +180,7 @@ namespace Imgaste
 		struct BitcheeseWorker : Worker
 		{
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
-					QNetworkAccessManager *am) const
+					QNetworkAccessManager *am) const override
 			{
 				QUrl url ("http://dump.bitcheese.net/upload-image");
 
@@ -197,7 +197,7 @@ namespace Imgaste
 				return am->post (request, formed);
 			}
 
-			QString GetLink (const QString&, QNetworkReply *reply) const
+			QString GetLink (const QString&, QNetworkReply *reply) const override
 			{
 				QString str = reply->rawHeader ("Location");
 				str.chop (8);
