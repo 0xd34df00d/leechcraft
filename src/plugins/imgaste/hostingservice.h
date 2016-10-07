@@ -31,8 +31,8 @@
 
 #include <memory>
 #include <boost/optional.hpp>
+#include <QString>
 
-class QString;
 class QByteArray;
 class QNetworkReply;
 class QNetworkAccessManager;
@@ -48,8 +48,13 @@ namespace Imgaste
 		ImagebinCa
 	};
 
+	struct HostingServiceInfo
+	{
+		QString Name_;
+	};
+
 	bool operator< (HostingService, HostingService);
-	QString ToString (HostingService);
+	HostingServiceInfo ToInfo (HostingService);
 	boost::optional<HostingService> FromString (const QString&);
 
 	struct Worker

@@ -46,16 +46,16 @@ namespace Imgaste
 		return static_cast<int> (s1) < static_cast<int> (s2);
 	}
 
-	QString ToString (HostingService s)
+	HostingServiceInfo ToInfo (HostingService s)
 	{
 		switch (s)
 		{
 		case HostingService::DumpBitcheeseNet:
-			return "dump.bitcheese.net";
+			return { "dump.bitcheese.net" };
 		case HostingService::ImagebinCa:
-			return "imagebin.ca";
+			return { "imagebin.ca" };
 		case HostingService::SavepicRu:
-			return "savepic.ru";
+			return { "savepic.ru" };
 		}
 
 		assert (false);
@@ -70,7 +70,7 @@ namespace Imgaste
 			HostingService::SavepicRu
 		};
 		for (auto s : known)
-			if (ToString (s) == str)
+			if (ToInfo (s).Name_ == str)
 				return s;
 
 		qWarning () << Q_FUNC_INFO

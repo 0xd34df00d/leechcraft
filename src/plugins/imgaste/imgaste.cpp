@@ -121,7 +121,7 @@ namespace Imgaste
 	{
 		IDataFilter::FilterVariant ToFilterVariant (HostingService s)
 		{
-			const auto& str = ToString (s);
+			const auto& str = ToInfo (s).Name_;
 			return { str.toUtf8 (), str, {}, {} };
 		}
 	}
