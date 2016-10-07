@@ -149,14 +149,6 @@ namespace Imgaste
 
 	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants (const QVariant& data) const
 	{
-		const auto items =
-		{
-			HostingService::PomfCat,
-			HostingService::DumpBitcheeseNet,
-			HostingService::ImagebinCa,
-			HostingService::SavepicRu
-		};
-
 		const auto& maybeInfo = GetImageInfo (data);
 		if (!maybeInfo)
 			return {};
@@ -164,7 +156,7 @@ namespace Imgaste
 		const auto& info = *maybeInfo;
 
 		QList<IDataFilter::FilterVariant> result;
-		for (const auto& item : items)
+		for (const auto& item : GetAllServices ())
 			if (const auto res = ToFilterVariant (item, info))
 				result << *res;
 		return result;

@@ -66,6 +66,7 @@ namespace Imgaste
 	bool operator< (HostingService, HostingService);
 	HostingServiceInfo ToInfo (HostingService);
 	boost::optional<HostingService> FromString (const QString&);
+	QList<HostingService> GetAllServices ();
 
 	struct Worker
 	{

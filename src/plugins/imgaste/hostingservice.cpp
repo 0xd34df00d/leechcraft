@@ -86,14 +86,7 @@ namespace Imgaste
 
 	boost::optional<HostingService> FromString (const QString& str)
 	{
-		const auto known =
-		{
-			HostingService::PomfCat,
-			HostingService::DumpBitcheeseNet,
-			HostingService::ImagebinCa,
-			HostingService::SavepicRu
-		};
-		for (auto s : known)
+		for (auto s : GetAllServices ())
 			if (ToInfo (s).Name_ == str)
 				return s;
 
@@ -101,6 +94,17 @@ namespace Imgaste
 				<< "unknown hosting service"
 				<< str;
 		return {};
+	}
+
+	QList<HostingService> GetAllServices ()
+	{
+		return
+		{
+			HostingService::PomfCat,
+			HostingService::DumpBitcheeseNet,
+			HostingService::ImagebinCa,
+			HostingService::SavepicRu
+		};
 	}
 
 	namespace
