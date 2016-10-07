@@ -69,7 +69,7 @@ namespace Imgaste
 		void Handle (Entity);
 
 		QString GetFilterVerb () const;
-		QList<FilterVariant> GetFilterVariants () const;
+		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
 
 		QAbstractItemModel* GetRepresentation () const;
 	private:

@@ -85,7 +85,7 @@ namespace Pogooglue
 		{
 			const auto& rawCat = e.Additional_ ["DataFilter"].toByteArray ();
 			const auto& catStr = QString::fromUtf8 (rawCat.data ());
-			const auto& vars = GetFilterVariants ();
+			const auto& vars = GetFilterVariants (e.Entity_);
 			if (std::find_if (vars.begin (), vars.end (),
 					[&catStr] (decltype (vars.front ()) var)
 						{ return var.ID_ == catStr; }) == vars.end ())
@@ -112,7 +112,7 @@ namespace Pogooglue
 		return tr ("Google it!");
 	}
 
-	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants (const QVariant&) const
 	{
 		return { { GetUniqueID () + "_Google", "Google", "Google", {} } };
 	}

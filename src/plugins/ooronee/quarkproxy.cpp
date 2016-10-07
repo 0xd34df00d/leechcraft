@@ -87,7 +87,7 @@ namespace Ooronee
 			if (!idf)
 				continue;
 
-			for (const auto& var : idf->GetFilterVariants ())
+			for (const auto& var : idf->GetFilterVariants (data))
 			{
 				if (pluginId == prevPluginId &&
 						var.ID_ == prevVariantId)

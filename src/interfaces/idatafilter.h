@@ -132,7 +132,7 @@ public:
 	 *
 	 * @return The list of exact data filter variants.
 	 */
-	virtual QList<FilterVariant> GetFilterVariants () const = 0;
+	virtual QList<FilterVariant> GetFilterVariants (const QVariant& data) const = 0;
 };
 
 Q_DECLARE_METATYPE (DataFilterCallback_f)

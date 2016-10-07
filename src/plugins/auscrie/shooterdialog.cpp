@@ -119,8 +119,8 @@ namespace Auscrie
 
 		const auto& selected = RestoreFilterState ();
 
-		const auto& image = px.toImage ();
-		const auto& filters = Util::GetDataFilters (image, Proxy_->GetEntityManager ());
+		const auto& imageVar = QVariant::fromValue (px.toImage ());
+		const auto& filters = Util::GetDataFilters (imageVar, Proxy_->GetEntityManager ());
 		for (auto filter : filters)
 		{
 			auto idf = qobject_cast<IDataFilter*> (filter);
@@ -128,7 +128,7 @@ namespace Auscrie
 
 			const auto& pluginId = qobject_cast<IInfo*> (filter)->GetUniqueID ();
 
-			for (const auto& var : idf->GetFilterVariants ())
+			for (const auto& var : idf->GetFilterVariants (imageVar))
 			{
 				Filters_.append ({ filter, var.ID_ });
 				Ui_.ActionBox_->addItem (QString ("%1: %2").arg (verb).arg (var.Name_));

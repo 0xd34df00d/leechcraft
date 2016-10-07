@@ -63,7 +63,7 @@ namespace Pogooglue
 		void Handle (Entity entity);
 
 		QString GetFilterVerb () const;
-		QList<FilterVariant> GetFilterVariants () const;
+		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
 	private:
 		void GoogleIt (const QString&);
 	};

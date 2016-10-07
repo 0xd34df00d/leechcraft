@@ -163,7 +163,7 @@ namespace Poshuku
 		for (auto df : dfs)
 		{
 			auto idf = qobject_cast<IDataFilter*> (df);
-			for (const auto& var : idf->GetFilterVariants ())
+			for (const auto& var : idf->GetFilterVariants (imageVar))
 			{
 				Ui_.ActionBox_->addItem (var.Icon_, var.Name_);
 				Filters_.append ({ df, var.ID_ });

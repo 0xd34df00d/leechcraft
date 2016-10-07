@@ -71,7 +71,7 @@ namespace Util
 			if (!idf)
 				continue;
 
-			const auto& vars = idf->GetFilterVariants ();
+			const auto& vars = idf->GetFilterVariants (dataVar);
 
 			if (vars.isEmpty ())
 				continue;

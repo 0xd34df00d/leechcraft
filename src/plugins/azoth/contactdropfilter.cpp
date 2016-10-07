@@ -151,7 +151,8 @@ namespace Azoth
 			QList<std::function<void ()>>& functions,
 			const QImage& image, const QString& entryId, const QString& variant)
 	{
-		const auto& entity = Util::MakeEntity (image,
+		const auto& imageVar = QVariant::fromValue (image);
+		const auto& entity = Util::MakeEntity (imageVar,
 				{},
 				TaskParameter::NoParameters,
 				"x-leechcraft/data-filter-request");
@@ -168,7 +169,7 @@ namespace Azoth
 
 			const auto& verb = idf->GetFilterVerb ();
 
-			for (const auto& var : idf->GetFilterVariants ())
+			for (const auto& var : idf->GetFilterVariants (imageVar))
 			{
 				auto thisEnt = entity;
 				thisEnt.Additional_ ["DataFilter"] = var.Name_;

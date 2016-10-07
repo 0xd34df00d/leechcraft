@@ -447,7 +447,7 @@ namespace LMP
 		return tr ("Show artist information");
 	}
 
-	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants (const QVariant&) const
 	{
 		return
 		{

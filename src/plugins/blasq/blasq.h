@@ -96,7 +96,7 @@ namespace Blasq
 		void Handle (Entity);
 
 		QString GetFilterVerb () const;
-		QList<FilterVariant> GetFilterVariants () const;
+		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
 	private:
 		void TabOpenRequested (const QByteArray&, const DynPropertiesList_t&, QDataStream* = nullptr);
 	signals:

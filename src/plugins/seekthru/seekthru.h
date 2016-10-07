@@ -87,7 +87,7 @@ namespace SeekThru
 		void Handle (LeechCraft::Entity);
 
 		QString GetFilterVerb () const;
-		QList<FilterVariant> GetFilterVariants () const;
+		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
 
 		QList<QWizardPage*> GetWizardPages () const;
 

@@ -222,7 +222,7 @@ namespace Blasq
 		return tr ("Upload image to cloud");
 	}
 
-	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants (const QVariant&) const
 	{
 		QList<IDataFilter::FilterVariant> result;
 		for (auto acc : AccountsMgr_->GetAccounts ())

@@ -170,7 +170,7 @@ namespace SeekThru
 		return tr ("Search in OpenSearch engines");
 	}
 
-	QList<SeekThru::FilterVariant> SeekThru::GetFilterVariants () const
+	QList<SeekThru::FilterVariant> SeekThru::GetFilterVariants (const QVariant&) const
 	{
 		QList<FilterVariant> result;
 		for (const auto& cat : Core::Instance ().GetCategories ())

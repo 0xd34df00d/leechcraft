@@ -125,7 +125,7 @@ namespace LMP
 		QAbstractItemModel* GetRepresentation () const;
 
 		QString GetFilterVerb () const;
-		QList<FilterVariant> GetFilterVariants () const;
+		QList<FilterVariant> GetFilterVariants (const QVariant&) const;
 
 		QString GetDiagInfoString () const;
 	private:

@@ -126,7 +126,7 @@ namespace Imgaste
 		}
 	}
 
-	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants () const
+	QList<IDataFilter::FilterVariant> Plugin::GetFilterVariants (const QVariant& data) const
 	{
 		return
 		{
