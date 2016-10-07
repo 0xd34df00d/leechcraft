@@ -68,7 +68,7 @@ namespace Imgaste
 				reprModel->appendRow (result);
 				return result;
 			} ())
-	, RowRemoveGuard_ (nullptr, [this] (void*) { ReprModel_->removeRow (ReprRow_.first ()->row ()); })
+	, RowRemoveGuard_ (Util::MakeScopeGuard ([this] { ReprModel_->removeRow (ReprRow_.first ()->row ()); }))
 	{
 		for (const auto item : ReprRow_)
 		{
