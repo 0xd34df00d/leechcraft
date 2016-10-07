@@ -38,6 +38,7 @@ namespace Imgaste
 	class RequestBuilder
 	{
 		QByteArray Result_;
+		mutable QByteArray Built_;
 		QString Boundary_;
 	public:
 		RequestBuilder ();

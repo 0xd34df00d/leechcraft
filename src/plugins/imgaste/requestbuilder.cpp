@@ -47,6 +47,8 @@ namespace Imgaste
 
 	void RequestBuilder::AddPair (const QString& name, const QString& value)
 	{
+		Built_.clear ();
+
 		Result_ += "--";
 		Result_ += Boundary_;
 		Result_ += "\r\n";
@@ -61,6 +63,8 @@ namespace Imgaste
 	void RequestBuilder::AddFile (const QString& format,
 			const QString& name, const QByteArray& imageData)
 	{
+		Built_.clear ();
+
 		Result_ += "--";
 		Result_ += Boundary_;
 		Result_ += "\r\n";
@@ -86,13 +90,16 @@ namespace Imgaste
 
 	QByteArray RequestBuilder::Build () const
 	{
-		QByteArray formed = Result_;
+		if (!Built_.isEmpty ())
+			return Built_;
 
-		formed += "--";
-		formed += Boundary_;
-		formed += "--";
+		Built_ = Result_;
 
-		return formed;
+		Built_ += "--";
+		Built_ += Boundary_;
+		Built_ += "--";
+
+		return Built_;
 	}
 
 	QString RequestBuilder::GetBoundary () const
