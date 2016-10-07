@@ -47,7 +47,8 @@ namespace Imgaste
 	{
 		DumpBitcheeseNet,
 		SavepicRu,
-		ImagebinCa
+		ImagebinCa,
+		PomfCat
 	};
 
 	struct ImageInfo

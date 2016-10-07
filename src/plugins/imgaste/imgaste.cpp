@@ -151,6 +151,7 @@ namespace Imgaste
 	{
 		const auto items =
 		{
+			HostingService::PomfCat,
 			HostingService::DumpBitcheeseNet,
 			HostingService::ImagebinCa,
 			HostingService::SavepicRu

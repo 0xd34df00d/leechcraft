@@ -35,6 +35,7 @@
 #include <QUrl>
 #include <QRegExp>
 #include <QStringList>
+#include <util/sll/parsejson.h>
 #include "requestbuilder.h"
 
 namespace LeechCraft
@@ -76,6 +77,8 @@ namespace Imgaste
 			return { "imagebin.ca", MakeChecker (15_mib) };
 		case HostingService::SavepicRu:
 			return { "savepic.ru", MakeChecker (8_mib, { 5000, 4000 }) };
+		case HostingService::PomfCat:
+			return { "pomf.cat", MakeChecker (75_mib) };
 		}
 
 		assert (false);
@@ -85,6 +88,7 @@ namespace Imgaste
 	{
 		const auto known =
 		{
+			HostingService::PomfCat,
 			HostingService::DumpBitcheeseNet,
 			HostingService::ImagebinCa,
 			HostingService::SavepicRu
@@ -221,6 +225,27 @@ namespace Imgaste
 				return str;
 			}
 		};
+
+		struct PomfWorker final : Worker
+		{
+			QNetworkReply* Post (const QByteArray& data, const QString& format,
+					QNetworkAccessManager *am) const override
+			{
+				RequestBuilder builder;
+				builder.AddFile (format, "files[]", data);
+
+				return am->post (PrefillRequest (QUrl { "https://pomf.cat/upload.php" }, builder), builder.Build ());
+			}
+
+			QString GetLink (const QString& body, QNetworkReply*) const override
+			{
+				const auto& json = Util::ParseJson (body.toUtf8 (), Q_FUNC_INFO);
+				const auto filename = json.toMap () ["files"]
+						.toList ().value (0)
+						.toMap () ["url"].toString ();
+				return "https://a.pomf.cat/" + filename;
+			}
+		};
 	}
 
 	Worker_ptr MakeWorker (HostingService s)
@@ -233,6 +258,8 @@ namespace Imgaste
 			return std::make_unique<ImagebinWorker> ();
 		case HostingService::SavepicRu:
 			return std::make_unique<SavepicWorker> ();
+		case HostingService::PomfCat:
+			return std::make_unique<PomfWorker> ();
 		}
 
 		assert (false);
