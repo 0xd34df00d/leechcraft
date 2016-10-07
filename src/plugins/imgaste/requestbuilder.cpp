@@ -84,7 +84,7 @@ namespace Imgaste
 		Result_ += "\r\n";
 	}
 
-	QByteArray RequestBuilder::Build ()
+	QByteArray RequestBuilder::Build () const
 	{
 		QByteArray formed = Result_;
 

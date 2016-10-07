@@ -45,7 +45,7 @@ namespace Imgaste
 		void AddPair (const QString&, const QString&);
 		void AddFile (const QString&, const QString&, const QByteArray&);
 
-		QByteArray Build ();
+		QByteArray Build () const;
 		QString GetBoundary () const;
 	};
 }
