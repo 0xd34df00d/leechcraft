@@ -30,7 +30,9 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <boost/optional.hpp>
+#include <QSize>
 #include <QString>
 
 class QByteArray;
@@ -48,9 +50,16 @@ namespace Imgaste
 		ImagebinCa
 	};
 
+	struct ImageInfo
+	{
+		quint64 Size_;
+		QSize Dim_;
+	};
+
 	struct HostingServiceInfo
 	{
 		QString Name_;
+		std::function<bool (ImageInfo)> Accepts_;
 	};
 
 	bool operator< (HostingService, HostingService);

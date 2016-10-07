@@ -46,16 +46,36 @@ namespace Imgaste
 		return static_cast<int> (s1) < static_cast<int> (s2);
 	}
 
+	std::function<bool (ImageInfo)> MakeChecker (quint64 sizeLimit, const QSize& dimLimit)
+	{
+		return [=] (const ImageInfo& info)
+		{
+			return info.Size_ <= sizeLimit &&
+					info.Dim_.width () <= dimLimit.width () &&
+					info.Dim_.height () <= dimLimit.height ();
+		};
+	}
+
+	std::function<bool (ImageInfo)> MakeChecker (quint64 sizeLimit)
+	{
+		return [=] (const ImageInfo& info) { return info.Size_ <= sizeLimit; };
+	}
+
+	quint64 operator"" _mib (quint64 mibs)
+	{
+		return mibs * 1024 * 1024;
+	}
+
 	HostingServiceInfo ToInfo (HostingService s)
 	{
 		switch (s)
 		{
 		case HostingService::DumpBitcheeseNet:
-			return { "dump.bitcheese.net" };
+			return { "dump.bitcheese.net", MakeChecker (20_mib) };
 		case HostingService::ImagebinCa:
-			return { "imagebin.ca" };
+			return { "imagebin.ca", MakeChecker (15_mib) };
 		case HostingService::SavepicRu:
-			return { "savepic.ru" };
+			return { "savepic.ru", MakeChecker (8_mib, { 5000, 4000 }) };
 		}
 
 		assert (false);
