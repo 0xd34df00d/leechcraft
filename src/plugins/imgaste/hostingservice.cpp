@@ -79,6 +79,8 @@ namespace Imgaste
 			return { "savepic.ru", MakeChecker (8_mib, { 5000, 4000 }) };
 		case HostingService::PomfCat:
 			return { "pomf.cat", MakeChecker (75_mib) };
+		case HostingService::MixtapeMoe:
+			return { "mixtape.moe", MakeChecker (100_mib) };
 		}
 
 		assert (false);
@@ -101,6 +103,7 @@ namespace Imgaste
 		return
 		{
 			HostingService::PomfCat,
+			HostingService::MixtapeMoe,
 			HostingService::DumpBitcheeseNet,
 			HostingService::ImagebinCa,
 			HostingService::SavepicRu
@@ -274,6 +277,9 @@ namespace Imgaste
 		case HostingService::PomfCat:
 			return std::make_unique<PomfLikeWorker> ("https://a.pomf.cat/",
 					QUrl { "https://pomf.cat/upload.php" });
+		case HostingService::MixtapeMoe:
+			return std::make_unique<PomfLikeWorker> (QString {},
+					QUrl { "https://mixtape.moe/upload.php" });
 		}
 
 		assert (false);

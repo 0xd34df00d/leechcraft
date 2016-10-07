@@ -48,7 +48,8 @@ namespace Imgaste
 		DumpBitcheeseNet,
 		SavepicRu,
 		ImagebinCa,
-		PomfCat
+		PomfCat,
+		MixtapeMoe
 	};
 
 	struct ImageInfo
