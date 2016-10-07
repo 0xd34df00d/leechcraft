@@ -101,6 +101,17 @@ namespace Imgaste
 
 	namespace
 	{
+		QNetworkRequest PrefillRequest (const QUrl& url,
+				const RequestBuilder& builder)
+		{
+			QNetworkRequest request { url };
+			request.setHeader (QNetworkRequest::ContentTypeHeader,
+					QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
+			request.setHeader (QNetworkRequest::ContentLengthHeader,
+					QString::number (builder.Build ().size ()));
+			return request;
+		}
+
 		struct ImagebinWorker final : Worker
 		{
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
@@ -120,11 +131,7 @@ namespace Imgaste
 
 				QByteArray formed = builder.Build ();
 
-				QNetworkRequest request { url };
-				request.setHeader (QNetworkRequest::ContentTypeHeader,
-						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
-				request.setHeader (QNetworkRequest::ContentLengthHeader,
-						QString::number (formed.size ()));
+				auto request = PrefillRequest (url, builder);
 				request.setRawHeader ("Origin", "https://imagebin.ca");
 				request.setRawHeader ("Referer", "https://imagebin.ca/");
 				return am->post (request, formed);
@@ -179,12 +186,7 @@ namespace Imgaste
 
 				QByteArray formed = builder.Build ();
 
-				QNetworkRequest request (url);
-				request.setHeader (QNetworkRequest::ContentTypeHeader,
-						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
-				request.setHeader (QNetworkRequest::ContentLengthHeader,
-						QString::number (formed.size ()));
-				return am->post (request, formed);
+				return am->post (PrefillRequest (url, builder), formed);
 			}
 
 			QString GetLink (const QString& contents, QNetworkReply*) const override
@@ -209,12 +211,7 @@ namespace Imgaste
 
 				const QByteArray& formed = builder.Build () + "\r\n";
 
-				QNetworkRequest request (url);
-				request.setHeader (QNetworkRequest::ContentTypeHeader,
-						QString ("multipart/form-data; boundary=" + builder.GetBoundary ()));
-				request.setHeader (QNetworkRequest::ContentLengthHeader,
-						QString::number (formed.size ()));
-				return am->post (request, formed);
+				return am->post (PrefillRequest (url, builder), formed);
 			}
 
 			QString GetLink (const QString&, QNetworkReply *reply) const override
