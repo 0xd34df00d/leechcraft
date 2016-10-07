@@ -189,7 +189,7 @@ namespace SeekThru
 		return WizardGenerator {}.GetPages ();
 	}
 
-	ISyncProxy* SeekThru::SeekThru::GetSyncProxy ()
+	ISyncProxy* SeekThru::GetSyncProxy ()
 	{
 		// TODO ISyncProxy
 		return nullptr;
