@@ -689,6 +689,8 @@ namespace CleanWeb
 	{
 		const auto senderObj = sender ();
 		auto view = qobject_cast<IWebView*> (senderObj);
+		if (!view)
+			return;
 
 		const auto& urls = MoreDelayedURLs_.take (senderObj);
 		if (!urls.isEmpty ())
