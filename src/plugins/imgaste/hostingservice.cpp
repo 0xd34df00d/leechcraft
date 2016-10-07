@@ -81,7 +81,7 @@ namespace Imgaste
 
 	namespace
 	{
-		struct ImagebinWorker : Worker
+		struct ImagebinWorker final : Worker
 		{
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am) const override
@@ -128,7 +128,7 @@ namespace Imgaste
 			}
 		};
 
-		struct SavepicWorker : Worker
+		struct SavepicWorker final : Worker
 		{
 			QRegExp RegExp_;
 
@@ -177,7 +177,7 @@ namespace Imgaste
 			}
 		};
 
-		struct BitcheeseWorker : Worker
+		struct BitcheeseWorker final : Worker
 		{
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am) const override
