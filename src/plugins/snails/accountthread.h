@@ -38,6 +38,7 @@
 #include <util/sll/typelevel.h>
 #include <util/threads/futures.h>
 #include <util/threads/workerthreadbase.h>
+#include <vmime/security/cert/certificateException.hpp>
 #include "accountthreadfwd.h"
 #include "common.h"
 
@@ -169,6 +170,10 @@ namespace Snails
 				catch (const vmime::exceptions::socket_exception& e)
 				{
 					return (*this) (e);
+				}
+				catch (const vmime::security::cert::certificateException& e)
+				{
+					return Result::Left (e);
 				}
 				catch (const std::exception&)
 				{
