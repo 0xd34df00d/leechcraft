@@ -9,11 +9,13 @@ set (GUI_SRCS
 	lineeditbuttonmanager.cpp
 	pagenotification.cpp
 	selectablebrowser.cpp
+	sslcertificateinfowidget.cpp
 	unhoverdeletemixin.cpp
 	util.cpp
 	)
 set (GUI_FORMS
 	findnotification.ui
+	sslcertificateinfowidget.ui
 	)
 
 if (USE_QT5)
