@@ -7,13 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>897</width>
-    <height>347</height>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string/>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   </property>
    <item row="0" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,1">
      <item row="3" column="1">
@@ -198,13 +201,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="Sha1_">
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
    <item row="6" column="0">
     <widget class="QLabel" name="label_23">
      <property name="text">
@@ -266,12 +262,28 @@
      <property name="text">
       <string/>
      </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="Sha1_">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+     </property>
     </widget>
    </item>
    <item row="5" column="1">
     <widget class="QLabel" name="Sha512_">
      <property name="text">
       <string/>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
      </property>
     </widget>
    </item>
