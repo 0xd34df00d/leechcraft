@@ -43,6 +43,17 @@ namespace Util
 		Ui_->setupUi (this);
 	}
 
+	namespace
+	{
+		QByteArray FormatHash (QByteArray hash)
+		{
+			hash = hash.toUpper ();
+			for (size_t i = 2; i < hash.size (); i += 3)
+				hash.insert (i, ':');
+			return hash;
+		}
+	}
+
 	void SslCertificateInfoWidget::SetCertificate (const QSslCertificate& cert)
 	{
 		auto setSubjectInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
@@ -77,10 +88,10 @@ namespace Util
 
 		Ui_->SerialNumber_->setText (cert.serialNumber ());
 		Ui_->Md5_->setText (cert.digest (QCryptographicHash::Md5).toHex ());
-		Ui_->Sha1_->setText (cert.digest (QCryptographicHash::Sha1).toHex ());
+		Ui_->Sha1_->setText (FormatHash (cert.digest (QCryptographicHash::Sha1).toHex ()));
 #if QT_VERSION >= 0x050000
-		Ui_->Sha256_->setText (cert.digest (QCryptographicHash::Sha256).toHex ());
-		Ui_->Sha512_->setText (cert.digest (QCryptographicHash::Sha512).toHex ());
+		Ui_->Sha256_->setText (FormatHash (cert.digest (QCryptographicHash::Sha256).toHex ()));
+		Ui_->Sha512_->setText (FormatHash (cert.digest (QCryptographicHash::Sha512).toHex ()));
 #endif
 
 		Ui_->StartDate_->setText (QLocale {}.toString (cert.effectiveDate ()));
