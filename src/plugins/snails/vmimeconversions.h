@@ -1,4 +1,5 @@
 /**********************************************************************
+	 *
  * LeechCraft - modular cross-platform feature rich internet client.
  * Copyright (C) 2006-2014  Georg Rudoy
  *
@@ -36,6 +37,7 @@
 #include <vmime/utility/outputStreamStringAdapter.hpp>
 
 class QIcon;
+class QSslCertificate;
 
 namespace vmime
 {
@@ -43,6 +45,13 @@ namespace net
 {
 	class folder;
 	class messageSet;
+}
+namespace security
+{
+namespace cert
+{
+	class certificate;
+}
 }
 }
 
@@ -101,5 +110,7 @@ namespace Snails
 
 	QString GetFolderIconName (FolderType);
 	QIcon GetFolderIcon (FolderType);
+
+	QList<QSslCertificate> ToSslCerts (const vmime::shared_ptr<const vmime::security::cert::certificate>&);
 }
 }

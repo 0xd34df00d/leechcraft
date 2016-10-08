@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QIcon>
 #include <vmime/net/folder.hpp>
+#include <vmime/security/cert/certificate.hpp>
 #include <interfaces/core/iiconthememanager.h>
 #include "folder.h"
 #include "core.h"
@@ -82,5 +83,21 @@ namespace Snails
 		return Core::Instance ().GetProxy ()->
 				GetIconThemeManager ()->GetIcon (GetFolderIconName (type));
 	}
+
+	QList<QSslCertificate> ToSslCerts (const vmime::shared_ptr<const vmime::security::cert::certificate>& cert)
+	{
+		const auto& encoded = cert->getEncoded ();
+		const auto& data = QByteArray::fromRawData (reinterpret_cast<const char*> (&encoded [0]),
+				static_cast<int> (encoded.size ()));
+		const auto& qCerts = QSslCertificate::fromData (data, QSsl::Der);
+		if (!qCerts.isEmpty ())
+			return qCerts;
+
+		qDebug () << Q_FUNC_INFO
+				<< "retrying with PEM for type"
+				<< cert->getType ().c_str ();
+		return QSslCertificate::fromData (data, QSsl::Pem);
+	}
+
 }
 }

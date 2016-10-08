@@ -59,6 +59,7 @@
 #include "accountthreadnotifier.h"
 #include "progresslistener.h"
 #include "progressmanager.h"
+#include "vmimeconversions.h"
 
 Q_DECLARE_METATYPE (QList<QStringList>)
 Q_DECLARE_METATYPE (QList<QByteArray>)
@@ -90,17 +91,7 @@ namespace Snails
 						.arg (QString::fromUtf8 (err.what ())),
 					PCritical_);
 
-			const auto& cert = err.getCertificate ();
-			const auto& encoded = cert->getEncoded ();
-			const auto& data = QByteArray::fromRawData (reinterpret_cast<const char*> (&encoded [0]),
-					static_cast<int> (encoded.size ()));
-			auto qCerts = QSslCertificate::fromData (data, QSsl::Der);
-			if (qCerts.isEmpty ())
-			{
-				qDebug () << Q_FUNC_INFO
-						<< "retrying with PEM";
-				qCerts = QSslCertificate::fromData (data, QSsl::Pem);
-			}
+			const auto& qCerts = ToSslCerts (err.getCertificate ());
 			qDebug () << Q_FUNC_INFO
 					<< qCerts;
 			if (qCerts.size () == 1)
