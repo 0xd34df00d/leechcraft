@@ -142,10 +142,14 @@ namespace Snails
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (vmime::net::session::create ())
 	, CachedFolders_ (2)
-	, CertVerifier_ (vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ())
+	, CertVerifier_ ([&certs]
+		{
+			const auto& verifier = vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ();
+			verifier->setX509RootCAs (certs);
+			return verifier;
+		} ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
-		CertVerifier_->setX509RootCAs (certs);
 
 		if (IsListening_)
 			connect (ChangeListener_,
