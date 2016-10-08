@@ -32,6 +32,7 @@
 #include <boost/variant.hpp>
 #include <vmime/exception.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
+#include <vmime/security/cert/certificateException.hpp>
 #include <util/sll/void.h>
 #include <util/sll/eitherfwd.h>
 
@@ -45,6 +46,7 @@ namespace Snails
 	using InvokeError_t = boost::variant<
 				vmime::exceptions::authentication_error,
 				vmime::exceptions::connection_error,
+				vmime::security::cert::certificateException,
 				GenericExceptionWrapper,
 				Rest...
 			>;
