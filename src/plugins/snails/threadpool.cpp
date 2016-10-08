@@ -32,6 +32,7 @@
 #include <util/sll/delayedexecutor.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
+#include <util/threads/monadicfuture.h>
 #include "accountthread.h"
 #include "accountthreadworker.h"
 
@@ -51,8 +52,7 @@ namespace Snails
 		auto thread = CreateThread ();
 		ExistingThreads_ << thread;
 
-		return Util::Sequence (this,
-				thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
+		return thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity) *
 				[this, thread] (const auto& result)
 				{
 					RunScheduled (thread.get ());
@@ -72,7 +72,7 @@ namespace Snails
 										[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
 							});
 
-					return Util::MakeReadyFuture (result);
+					return result;
 				};
 	}
 
