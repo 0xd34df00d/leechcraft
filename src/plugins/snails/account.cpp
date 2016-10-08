@@ -32,6 +32,8 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QInputDialog>
+#include <QVBoxLayout>
+#include <QDialogButtonBox>
 #include <QMutex>
 #include <QStandardItemModel>
 #include <QSslSocket>
@@ -42,6 +44,8 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/monadicfuture.h>
+#include <util/xpc/notificationactionhandler.h>
+#include <util/gui/sslcertificateinfowidget.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "accountconfigdialog.h"
@@ -77,6 +81,61 @@ namespace Snails
 				certs.push_back (vmime::security::cert::X509Certificate::import (bytes, der.size ()));
 			}
 			return certs;
+		}
+
+		void HandleCertificateException (IEntityManager *iem, const QString& accountName,
+				const vmime::security::cert::certificateException& err)
+		{
+			auto entity = Util::MakeNotification ("Snails",
+					Account::tr ("Connection failed for account %1: certificate check failed. %2")
+						.arg ("<em>" + accountName + "</em>")
+						.arg (QString::fromUtf8 (err.what ())),
+					PCritical_);
+
+			const auto& cert = err.getCertificate ();
+			const auto& encoded = cert->getEncoded ();
+			const auto& data = QByteArray::fromRawData (reinterpret_cast<const char*> (&encoded [0]),
+					static_cast<int> (encoded.size ()));
+			auto qCerts = QSslCertificate::fromData (data, QSsl::Der);
+			if (qCerts.isEmpty ())
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "retrying with PEM";
+				qCerts = QSslCertificate::fromData (data, QSsl::Pem);
+			}
+			qDebug () << Q_FUNC_INFO
+					<< qCerts;
+			if (qCerts.size () == 1)
+			{
+				const auto nah = new Util::NotificationActionHandler { entity };
+				nah->AddFunction (Account::tr ("View certificate..."),
+						[qCerts]
+						{
+							auto dia = new QDialog;
+							dia->setAttribute (Qt::WA_DeleteOnClose);
+							dia->setLayout (new QVBoxLayout);
+
+							const auto certWidget = new Util::SslCertificateInfoWidget;
+							dia->layout ()->addWidget (certWidget);
+
+							const auto buttons = new QDialogButtonBox { QDialogButtonBox::Close };
+							QObject::connect (buttons,
+									SIGNAL (accepted ()),
+									dia,
+									SLOT (accept ()));
+							QObject::connect (buttons,
+									SIGNAL (rejected ()),
+									dia,
+									SLOT (reject ()));
+							dia->layout ()->addWidget (buttons);
+
+							certWidget->SetCertificate (qCerts.at (0));
+
+							dia->show ();
+						});
+			}
+
+			iem->HandleEntity (entity);
 		}
 	}
 
@@ -132,8 +191,7 @@ namespace Snails
 								},
 								[&] (const vmime::security::cert::certificateException& err)
 								{
-									emitErr (tr ("certificate check failed: %1")
-											.arg (QString::fromUtf8 (err.what ())));
+									HandleCertificateException (iem, AccName_, err);
 								},
 								[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
 					}
