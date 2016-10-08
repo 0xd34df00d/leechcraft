@@ -42,6 +42,7 @@
 #include <util/sll/visitor.h>
 #include <util/sll/qtutil.h>
 #include <util/threads/monadicfuture.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "accountconfigdialog.h"
 #include "accountthread.h"
@@ -106,8 +107,36 @@ namespace Snails
 				});
 
 		Util::Sequence (this, WorkerPool_->TestConnectivity ()) >>
-				[] (const auto& result)
+				[this] (const auto& result)
 				{
+					if (const auto left = result.MaybeLeft ())
+					{
+						const auto iem = Core::Instance ().GetProxy ()->GetEntityManager ();
+						const auto emitErr = [=] (QString text)
+						{
+							if (!text.endsWith ('.'))
+								text += '.';
+
+							iem->HandleEntity (Util::MakeNotification ("Snails",
+									tr ("Connection failed for account %1: %2")
+											.arg ("<em>" + AccName_ + "</em>")
+											.arg (text),
+									PCritical_));
+						};
+
+						Util::Visit (*left,
+								[&] (const vmime::exceptions::authentication_error& err)
+								{
+									emitErr (tr ("authentication failed: %1")
+											.arg (QString::fromUtf8 (err.what ())));
+								},
+								[&] (const vmime::security::cert::certificateException& err)
+								{
+									emitErr (tr ("certificate check failed: %1")
+											.arg (QString::fromUtf8 (err.what ())));
+								},
+								[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
+					}
 				};
 	}
 
