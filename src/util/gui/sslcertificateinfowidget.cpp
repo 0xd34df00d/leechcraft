@@ -29,6 +29,7 @@
 
 #include "sslcertificateinfowidget.h"
 #include <QSslCertificate>
+#include <QDateTime>
 #include "ui_sslcertificateinfowidget.h"
 
 namespace LeechCraft
