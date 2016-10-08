@@ -17,7 +17,7 @@
    <item row="0" column="0" colspan="2">
     <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,1">
      <item row="3" column="1">
-      <widget class="QLabel" name="SubjectUnit_1">
+      <widget class="QLabel" name="SubjectUnit_">
        <property name="text">
         <string/>
        </property>
@@ -50,21 +50,21 @@
       </widget>
      </item>
      <item row="1" column="2">
-      <widget class="QLabel" name="IssuerCommonName_1">
+      <widget class="QLabel" name="IssuerCommonName_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QLabel" name="SubjectOrganization_1">
+      <widget class="QLabel" name="SubjectOrganization_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="2" column="2">
-      <widget class="QLabel" name="IssuerOrganization_1">
+      <widget class="QLabel" name="IssuerOrganization_">
        <property name="text">
         <string/>
        </property>
@@ -85,7 +85,7 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QLabel" name="SubjectCommonName_1">
+      <widget class="QLabel" name="SubjectCommonName_">
        <property name="text">
         <string/>
        </property>
@@ -120,49 +120,49 @@
       </widget>
      </item>
      <item row="3" column="2">
-      <widget class="QLabel" name="IssuerUnit_1">
+      <widget class="QLabel" name="IssuerUnit_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="4" column="1">
-      <widget class="QLabel" name="SubjectCountry_1">
+      <widget class="QLabel" name="SubjectCountry_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="4" column="2">
-      <widget class="QLabel" name="IssuerCountry_1">
+      <widget class="QLabel" name="IssuerCountry_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="5" column="1">
-      <widget class="QLabel" name="SubjectState_1">
+      <widget class="QLabel" name="SubjectState_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="6" column="1">
-      <widget class="QLabel" name="SubjectCity_1">
+      <widget class="QLabel" name="SubjectCity_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="6" column="2">
-      <widget class="QLabel" name="IssuerCity_1">
+      <widget class="QLabel" name="IssuerCity_">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
      <item row="5" column="2">
-      <widget class="QLabel" name="IssuerState_1">
+      <widget class="QLabel" name="IssuerState_">
        <property name="text">
         <string/>
        </property>
