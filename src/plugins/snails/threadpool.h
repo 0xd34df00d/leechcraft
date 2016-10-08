@@ -62,7 +62,7 @@ namespace Snails
 	public:
 		ThreadPool (const CertList_t&, Account*, Storage*);
 
-		QFuture<Util::Either<InvokeError_t<>, Util::Void>> TestConnectivity ();
+		QFuture<EitherInvokeError_t<Util::Void>> TestConnectivity ();
 
 		AccountThread* GetThread ();
 

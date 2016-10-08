@@ -47,7 +47,7 @@ namespace Snails
 	{
 	}
 
-	QFuture<Util::Either<InvokeError_t<>, Util::Void>> ThreadPool::TestConnectivity ()
+	QFuture<EitherInvokeError_t<Util::Void>> ThreadPool::TestConnectivity ()
 	{
 		auto thread = CreateThread ();
 		ExistingThreads_ << thread;

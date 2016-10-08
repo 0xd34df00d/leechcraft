@@ -51,6 +51,9 @@ namespace Snails
 				Rest...
 			>;
 
+	template<typename R, typename... Rest>
+	using EitherInvokeError_t = Util::Either<InvokeError_t<Rest...>, R>;
+
 	using CertList_t = std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>>;
 
 	class AccountThread;
