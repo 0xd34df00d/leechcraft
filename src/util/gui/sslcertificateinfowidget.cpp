@@ -30,6 +30,9 @@
 #include "sslcertificateinfowidget.h"
 #include <QSslCertificate>
 #include <QDateTime>
+#include <QVBoxLayout>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include "ui_sslcertificateinfowidget.h"
 
 namespace LeechCraft
@@ -96,6 +99,29 @@ namespace Util
 
 		Ui_->StartDate_->setText (QLocale {}.toString (cert.effectiveDate ()));
 		Ui_->EndDate_->setText (QLocale {}.toString (cert.expiryDate ()));
+	}
+
+	QDialog* MakeCertificateViewerDialog (const QSslCertificate& cert, QWidget *parent)
+	{
+		auto dia = new QDialog { parent };
+		dia->setLayout (new QVBoxLayout);
+
+		const auto certWidget = new Util::SslCertificateInfoWidget;
+		dia->layout ()->addWidget (certWidget);
+
+		const auto buttons = new QDialogButtonBox { QDialogButtonBox::Close };
+		QObject::connect (buttons,
+				SIGNAL (accepted ()),
+				dia,
+				SLOT (accept ()));
+		QObject::connect (buttons,
+				SIGNAL (rejected ()),
+				dia,
+				SLOT (reject ()));
+		dia->layout ()->addWidget (buttons);
+
+		certWidget->SetCertificate (cert);
+		return dia;
 	}
 }
 }

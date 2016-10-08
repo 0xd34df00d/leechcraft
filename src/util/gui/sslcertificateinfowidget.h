@@ -31,6 +31,7 @@
 
 #include <memory>
 #include <QWidget>
+#include <QtNetwork/QSslCertificate>
 #include "guiconfig.h"
 
 class QSslCertificate;
@@ -52,5 +53,7 @@ namespace Util
 
 		void SetCertificate (const QSslCertificate&);
 	};
+
+	UTIL_GUI_API QDialog* MakeCertificateViewerDialog (const QSslCertificate&, QWidget* = nullptr);
 }
 }
