@@ -32,8 +32,6 @@
 #include <QUuid>
 #include <QDataStream>
 #include <QInputDialog>
-#include <QVBoxLayout>
-#include <QDialogButtonBox>
 #include <QMutex>
 #include <QStandardItemModel>
 #include <QSslSocket>
@@ -111,26 +109,8 @@ namespace Snails
 				nah->AddFunction (Account::tr ("View certificate..."),
 						[qCerts]
 						{
-							auto dia = new QDialog;
+							const auto dia = Util::MakeCertificateViewerDialog (qCerts.at (0));
 							dia->setAttribute (Qt::WA_DeleteOnClose);
-							dia->setLayout (new QVBoxLayout);
-
-							const auto certWidget = new Util::SslCertificateInfoWidget;
-							dia->layout ()->addWidget (certWidget);
-
-							const auto buttons = new QDialogButtonBox { QDialogButtonBox::Close };
-							QObject::connect (buttons,
-									SIGNAL (accepted ()),
-									dia,
-									SLOT (accept ()));
-							QObject::connect (buttons,
-									SIGNAL (rejected ()),
-									dia,
-									SLOT (reject ()));
-							dia->layout ()->addWidget (buttons);
-
-							certWidget->SetCertificate (qCerts.at (0));
-
 							dia->show ();
 						});
 			}
