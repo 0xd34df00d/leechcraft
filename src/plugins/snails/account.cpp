@@ -104,6 +104,11 @@ namespace Snails
 					t->Schedule (TaskPriority::Low,
 							&AccountThreadWorker::SetNoopTimeoutChangeNotifier, NoopNotifier_);
 				});
+
+		Util::Sequence (this, WorkerPool_->TestConnectivity ()) >>
+				[] (const auto& result)
+				{
+				};
 	}
 
 	QByteArray Account::GetID () const

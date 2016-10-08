@@ -44,29 +44,36 @@ namespace Snails
 	, Storage_ { st }
 	, CertList_ { certList }
 	{
+	}
+
+	QFuture<Util::Either<InvokeError_t<>, Util::Void>> ThreadPool::TestConnectivity ()
+	{
 		auto thread = CreateThread ();
 		ExistingThreads_ << thread;
 
-		Util::Sequence (this, thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
-			[this, thread] (const auto& result)
-			{
-				RunScheduled (thread.get ());
+		return Util::Sequence (this,
+				thread->Schedule (TaskPriority::High, &AccountThreadWorker::TestConnectivity)) >>
+				[this, thread] (const auto& result)
+				{
+					RunScheduled (thread.get ());
 
-				Util::Visit (result.AsVariant (),
-						[] (Util::Void) {},
-						[this] (const auto& err)
-						{
-							Util::Visit (err,
-									[this] (const vmime::exceptions::authentication_error& err)
-									{
-										qWarning () << Q_FUNC_INFO
-												<< "initial thread authentication failed:"
-												<< err.what ();
-										HitLimit_ = true;
-									},
-									[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
-						});
-			};
+					Util::Visit (result.AsVariant (),
+							[] (Util::Void) {},
+							[this] (const auto& err)
+							{
+								Util::Visit (err,
+										[this] (const vmime::exceptions::authentication_error& err)
+										{
+											qWarning () << Q_FUNC_INFO
+													<< "initial thread authentication failed:"
+													<< err.what ();
+											HitLimit_ = true;
+										},
+										[] (const auto& e) { qWarning () << Q_FUNC_INFO << e.what (); });
+							});
+
+					return Util::MakeReadyFuture (result);
+				};
 	}
 
 	AccountThread* ThreadPool::GetThread ()
