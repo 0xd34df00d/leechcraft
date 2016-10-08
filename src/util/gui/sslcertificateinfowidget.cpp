@@ -48,7 +48,7 @@ namespace Util
 		QByteArray FormatHash (QByteArray hash)
 		{
 			hash = hash.toUpper ();
-			for (size_t i = 2; i < hash.size (); i += 3)
+			for (int i = 2; i < hash.size (); i += 3)
 				hash.insert (i, ':');
 			return hash;
 		}
