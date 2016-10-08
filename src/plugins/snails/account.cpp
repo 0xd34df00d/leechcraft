@@ -178,8 +178,8 @@ namespace Snails
 
 							iem->HandleEntity (Util::MakeNotification ("Snails",
 									tr ("Connection failed for account %1: %2")
-											.arg ("<em>" + AccName_ + "</em>")
-											.arg (text),
+										.arg ("<em>" + AccName_ + "</em>")
+										.arg (text),
 									PCritical_));
 						};
 
