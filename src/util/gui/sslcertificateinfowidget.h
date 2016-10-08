@@ -33,6 +33,8 @@
 #include <QWidget>
 #include "guiconfig.h"
 
+class QSslCertificate;
+
 namespace Ui
 {
 	class SslCertificateInfoWidget;
@@ -47,6 +49,8 @@ namespace Util
 		std::shared_ptr<Ui::SslCertificateInfoWidget> Ui_;
 	public:
 		SslCertificateInfoWidget (QWidget* = nullptr);
+
+		void SetCertificate (const QSslCertificate&);
 	};
 }
 }

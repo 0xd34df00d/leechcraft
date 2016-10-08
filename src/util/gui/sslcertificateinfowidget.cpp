@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sslcertificateinfowidget.h"
+#include <QSslCertificate>
 #include "ui_sslcertificateinfowidget.h"
 
 namespace LeechCraft
@@ -39,6 +40,46 @@ namespace Util
 	, Ui_ { std::make_shared<Ui::SslCertificateInfoWidget> () }
 	{
 		Ui_->setupUi (this);
+	}
+
+	void SslCertificateInfoWidget::SetCertificate (const QSslCertificate& cert)
+	{
+		auto setSubjectInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
+		{
+#if QT_VERSION < 0x050000
+			label->setText (cert.subjectInfo (key));
+#else
+			label->setText (cert.subjectInfo (key).join ("; "));
+#endif
+		};
+		auto setIssuerInfo = [&cert] (QLabel *label, QSslCertificate::SubjectInfo key)
+		{
+#if QT_VERSION < 0x050000
+			label->setText (cert.issuerInfo (key));
+#else
+			label->setText (cert.issuerInfo (key).join ("; "));
+#endif
+		};
+
+		setSubjectInfo (Ui_->SubjectCommonName_, QSslCertificate::CommonName);
+		setSubjectInfo (Ui_->SubjectOrganization_, QSslCertificate::Organization);
+		setSubjectInfo (Ui_->SubjectUnit_, QSslCertificate::OrganizationalUnitName);
+		setSubjectInfo (Ui_->SubjectCountry_, QSslCertificate::CountryName);
+		setSubjectInfo (Ui_->SubjectState_, QSslCertificate::StateOrProvinceName);
+		setSubjectInfo (Ui_->SubjectCity_, QSslCertificate::LocalityName);
+		setIssuerInfo (Ui_->IssuerCommonName_, QSslCertificate::CommonName);
+		setIssuerInfo (Ui_->IssuerOrganization_, QSslCertificate::Organization);
+		setIssuerInfo (Ui_->IssuerUnit_, QSslCertificate::OrganizationalUnitName);
+		setIssuerInfo (Ui_->IssuerCountry_, QSslCertificate::CountryName);
+		setIssuerInfo (Ui_->IssuerState_, QSslCertificate::StateOrProvinceName);
+		setIssuerInfo (Ui_->IssuerCity_, QSslCertificate::LocalityName);
+
+		Ui_->SerialNumber_->setText (cert.serialNumber ());
+		Ui_->Md5_->setText (cert.digest (QCryptographicHash::Md5).toHex ());
+		Ui_->Sha1_->setText (cert.digest (QCryptographicHash::Sha1).toHex ());
+
+		Ui_->StartDate_->setText (QLocale {}.toString (cert.effectiveDate ()));
+		Ui_->EndDate_->setText (QLocale {}.toString (cert.expiryDate ()));
 	}
 }
 }
