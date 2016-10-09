@@ -120,6 +120,45 @@ namespace Snails
 
 			return pass.toUtf8 ().constData ();
 		}
+
+		class CertVerifier : public vmime::security::cert::certificateVerifier
+		{
+		public:
+			void verify (vmime::shared_ptr<vmime::security::cert::certificateChain> chain,
+					const vmime::string& host) override
+			{
+				namespace vsc = vmime::security::cert;
+
+				QList<QSslCertificate> qtChain;
+				for (size_t i = 0; i < chain->getCount (); ++i)
+				{
+					const auto& item = chain->getAt (i);
+
+					const auto& subcerts = ToSslCerts (item);
+					if (subcerts.size () != 1)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "unexpected certificates count for certificate type"
+								<< item->getType ().c_str ()
+								<< ", got"
+								<< subcerts.size ()
+								<< "certificates";
+						throw vsc::unsupportedCertificateTypeException { "unexpected certificates counts" };
+					}
+
+					qtChain << subcerts.at (0);
+				}
+
+				const auto& errs = QSslCertificate::verify (qtChain, QString::fromStdString (host));
+				if (errs.isEmpty ())
+					return;
+
+				qWarning () << Q_FUNC_INFO
+						<< errs;
+
+				throw vsc::certificateException { "other certificate error" };
+			}
+		};
 	}
 
 	const char* FolderNotFound::what () const noexcept
@@ -142,12 +181,7 @@ namespace Snails
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (vmime::net::session::create ())
 	, CachedFolders_ (2)
-	, CertVerifier_ ([&certs]
-		{
-			const auto& verifier = vmime::make_shared<vmime::security::cert::defaultCertificateVerifier> ();
-			verifier->setX509RootCAs (certs);
-			return verifier;
-		} ())
+	, CertVerifier_ (vmime::make_shared<CertVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
 
