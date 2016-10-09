@@ -39,7 +39,6 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <vmime/security/defaultAuthenticator.hpp>
-#include <vmime/security/cert/defaultCertificateVerifier.hpp>
 #include <vmime/security/cert/X509Certificate.hpp>
 #include <vmime/net/transport.hpp>
 #include <vmime/net/store.hpp>

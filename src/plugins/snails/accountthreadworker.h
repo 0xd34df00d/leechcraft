@@ -35,7 +35,7 @@
 #include <vmime/net/message.hpp>
 #include <vmime/net/folder.hpp>
 #include <vmime/net/store.hpp>
-#include <vmime/security/cert/defaultCertificateVerifier.hpp>
+#include <vmime/security/cert/certificateVerifier.hpp>
 #include <util/sll/assoccache.h>
 #include <util/sll/either.h>
 #include <interfaces/structures.h>
