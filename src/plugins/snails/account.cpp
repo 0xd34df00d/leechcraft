@@ -34,7 +34,6 @@
 #include <QInputDialog>
 #include <QMutex>
 #include <QStandardItemModel>
-#include <QSslSocket>
 #include <QElapsedTimer>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
@@ -70,18 +69,6 @@ namespace Snails
 {
 	namespace
 	{
-		CertList_t GetCerts ()
-		{
-			std::vector<vmime::shared_ptr<vmime::security::cert::X509Certificate>> certs;
-			for (const auto& sysCert : QSslSocket::systemCaCertificates ())
-			{
-				const auto& der = sysCert.toDer ();
-				const auto bytes = reinterpret_cast<const vmime::byte_t*> (der.constData ());
-				certs.push_back (vmime::security::cert::X509Certificate::import (bytes, der.size ()));
-			}
-			return certs;
-		}
-
 		void HandleCertificateException (IEntityManager *iem, const QString& accountName,
 				const vmime::security::cert::certificateException& err)
 		{
@@ -113,7 +100,7 @@ namespace Snails
 	Account::Account (Storage *st, ProgressManager *pm, QObject *parent)
 	: QObject (parent)
 	, Logger_ (new AccountLogger (this))
-	, WorkerPool_ (new ThreadPool (GetCerts (), this, st))
+	, WorkerPool_ (new ThreadPool (this, st))
 	, AccMutex_ (new QMutex (QMutex::Recursive))
 	, ID_ (QUuid::createUuid ().toByteArray ())
 	, FolderManager_ (new AccountFolderManager (this))

@@ -49,7 +49,6 @@ namespace Snails
 	{
 		Account * const Acc_;
 		Storage * const Storage_;
-		const CertList_t CertList_;
 
 		QList<AccountThread_ptr> ExistingThreads_;
 
@@ -60,7 +59,7 @@ namespace Snails
 
 		QList<std::function<void (AccountThread*)>> ThreadInitializers_;
 	public:
-		ThreadPool (const CertList_t&, Account*, Storage*);
+		ThreadPool (Account*, Storage*);
 
 		QFuture<EitherInvokeError_t<Util::Void>> TestConnectivity ();
 

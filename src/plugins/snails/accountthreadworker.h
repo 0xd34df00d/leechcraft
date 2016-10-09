@@ -93,7 +93,7 @@ namespace Snails
 			NoChange
 		};
 	public:
-		AccountThreadWorker (bool, const QString&, const CertList_t&, Account*, Storage*);
+		AccountThreadWorker (bool, const QString&, Account*, Storage*);
 
 		struct FolderMessages
 		{

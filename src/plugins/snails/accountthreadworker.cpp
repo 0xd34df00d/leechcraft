@@ -171,7 +171,7 @@ namespace Snails
 	}
 
 	AccountThreadWorker::AccountThreadWorker (bool isListening,
-			const QString& threadName, const CertList_t& certs, Account *parent, Storage *st)
+			const QString& threadName, Account *parent, Storage *st)
 	: A_ (parent)
 	, Storage_ (st)
 	, NoopTimer_ (new QTimer (this))
