@@ -39,9 +39,6 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <vmime/security/defaultAuthenticator.hpp>
-#include <vmime/security/cert/certificateExpiredException.hpp>
-#include <vmime/security/cert/certificateNotYetValidException.hpp>
-#include <vmime/security/cert/serverIdentityException.hpp>
 #include <vmime/net/transport.hpp>
 #include <vmime/net/store.hpp>
 #include <vmime/net/message.hpp>
@@ -68,6 +65,7 @@
 #include "folder.h"
 #include "tracerfactory.h"
 #include "accountthreadnotifier.h"
+#include "certificateverifier.h"
 
 namespace LeechCraft
 {
@@ -121,83 +119,6 @@ namespace Snails
 
 			return pass.toUtf8 ().constData ();
 		}
-
-		class CertVerifier : public vmime::security::cert::certificateVerifier
-		{
-		public:
-			void verify (vmime::shared_ptr<vmime::security::cert::certificateChain> chain,
-					const vmime::string& host) override
-			{
-				namespace vsc = vmime::security::cert;
-
-				QList<QSslCertificate> qtChain;
-				for (size_t i = 0; i < chain->getCount (); ++i)
-				{
-					const auto& item = chain->getAt (i);
-
-					const auto& subcerts = ToSslCerts (item);
-					if (subcerts.size () != 1)
-					{
-						qWarning () << Q_FUNC_INFO
-								<< "unexpected certificates count for certificate type"
-								<< item->getType ().c_str ()
-								<< ", got"
-								<< subcerts.size ()
-								<< "certificates";
-						throw vsc::unsupportedCertificateTypeException { "unexpected certificates counts" };
-					}
-
-					qtChain << subcerts.at (0);
-				}
-
-				const auto& errs = QSslCertificate::verify (qtChain, QString::fromStdString (host));
-				if (errs.isEmpty ())
-					return;
-
-				qWarning () << Q_FUNC_INFO
-						<< errs;
-
-				for (const auto& error : errs)
-					switch (error.error ())
-					{
-					case QSslError::CertificateExpired:
-						throw vsc::certificateExpiredException {};
-					case QSslError::CertificateNotYetValid:
-						throw vsc::certificateNotYetValidException {};
-					case QSslError::HostNameMismatch:
-						throw vsc::serverIdentityException {};
-					case QSslError::UnableToDecryptCertificateSignature:
-					case QSslError::InvalidNotAfterField:
-					case QSslError::InvalidNotBeforeField:
-					case QSslError::CertificateSignatureFailed:
-					case QSslError::PathLengthExceeded:
-					case QSslError::UnspecifiedError:
-						throw vsc::unsupportedCertificateTypeException { "incorrect format" };
-					case QSslError::UnableToGetIssuerCertificate:
-					case QSslError::UnableToGetLocalIssuerCertificate:
-					case QSslError::UnableToDecodeIssuerPublicKey:
-					case QSslError::UnableToVerifyFirstCertificate:
-					case QSslError::SubjectIssuerMismatch:
-					case QSslError::AuthorityIssuerSerialNumberMismatch:
-						throw vsc::certificateIssuerVerificationException {};
-					case QSslError::SelfSignedCertificate:
-					case QSslError::SelfSignedCertificateInChain:
-					case QSslError::CertificateRevoked:
-					case QSslError::InvalidCaCertificate:
-					case QSslError::InvalidPurpose:
-					case QSslError::CertificateUntrusted:
-					case QSslError::CertificateRejected:
-					case QSslError::NoPeerCertificate:
-					case QSslError::CertificateBlacklisted:
-						throw vsc::certificateNotTrustedException {};
-					case QSslError::NoError:
-					case QSslError::NoSslSupport:
-						break;
-					}
-
-				throw vsc::certificateException { "other certificate error" };
-			}
-		};
 	}
 
 	const char* FolderNotFound::what () const noexcept
@@ -220,7 +141,7 @@ namespace Snails
 	, ChangeListener_ (new MessageChangeListener (this))
 	, Session_ (vmime::net::session::create ())
 	, CachedFolders_ (2)
-	, CertVerifier_ (vmime::make_shared<CertVerifier> ())
+	, CertVerifier_ (vmime::make_shared<CertificateVerifier> ())
 	, InAuth_ (vmime::make_shared<VMimeAuth> (Account::Direction::In, A_))
 	{
 
