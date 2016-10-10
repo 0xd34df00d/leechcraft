@@ -34,7 +34,6 @@
 #include <QInputDialog>
 #include <QMutex>
 #include <QStandardItemModel>
-#include <QElapsedTimer>
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sll/slotclosure.h>
