@@ -59,6 +59,26 @@ namespace Util
 		return Mplus (m1) (m2);
 	}
 
+	const struct
+	{
+		template<typename Vec>
+		auto operator() (Vec&& vec) const
+		{
+			using std::begin;
+			using std::end;
+			using MP = typename Vec::value_type;
+			return std::accumulate (begin (vec), end (vec), Mzero<MP> (), &operator+<MP>);
+		}
+
+		template<typename T>
+		auto operator() (const std::initializer_list<T>& vec) const
+		{
+			using std::begin;
+			using std::end;
+			return std::accumulate (begin (vec), end (vec), Mzero<T> (), &operator+<T>);
+		}
+	} Msum {};
+
 	template<typename T>
 	struct InstanceMonadPlus<boost::optional<T>>
 	{
