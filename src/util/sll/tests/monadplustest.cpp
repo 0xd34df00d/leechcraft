@@ -56,5 +56,25 @@ namespace Util
 		QCOMPARE (res3, val1);
 		QCOMPARE (res4, nothing);
 	}
+
+	void MonadPlusTest::testBoostOptionalMsum ()
+	{
+		const boost::optional<int> val1 { 1 };
+		const boost::optional<int> val2 { 2 };
+		const boost::optional<int> val3 { 3 };
+		const auto nothing = Mzero<boost::optional<int>> ();
+
+		const auto res1 = Msum ({ val1, val2, val3 });
+		const auto res2 = Msum ({ val1, nothing });
+		const auto res3 = Msum ({ nothing, val1 });
+		const auto res4 = Msum ({ nothing, nothing });
+		const auto res5 = Msum ({ nothing });
+
+		QCOMPARE (res1, val1);
+		QCOMPARE (res2, val1);
+		QCOMPARE (res3, val1);
+		QCOMPARE (res4, nothing);
+		QCOMPARE (res5, nothing);
+	}
 }
 }
