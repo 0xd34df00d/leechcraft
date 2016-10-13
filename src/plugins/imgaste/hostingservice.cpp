@@ -29,7 +29,6 @@
 
 #include "hostingservice.h"
 #include <cassert>
-#include <QString>
 #include <QtDebug>
 #include <QNetworkReply>
 #include <QUrl>
