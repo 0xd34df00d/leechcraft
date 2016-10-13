@@ -168,13 +168,8 @@ namespace Imgaste
 
 		struct SavepicWorker final : Worker
 		{
-			QRegExp RegExp_;
-
-			SavepicWorker ()
-			: RegExp_ (".*<p class=\"img\"><a href=\"/(\\d+).htm\">.*",
-					Qt::CaseSensitive, QRegExp::RegExp2)
-			{
-			}
+			QRegExp RegExp_ { ".*<p class=\"img\"><a href=\"/(\\d+).htm\">.*",
+					Qt::CaseSensitive, QRegExp::RegExp2 };
 
 			QNetworkReply* Post (const QByteArray& data, const QString& format,
 					QNetworkAccessManager *am) const override
