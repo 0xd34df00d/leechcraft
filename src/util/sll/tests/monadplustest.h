@@ -41,6 +41,7 @@ namespace Util
 	private slots:
 		void testBoostOptionalMplus ();
 		void testBoostOptionalMsum ();
+		void testLazyBoostOptionalMsum ();
 	};
 }
 }
