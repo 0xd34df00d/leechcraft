@@ -36,7 +36,31 @@ namespace LeechCraft
 namespace Util
 {
 	template<typename T>
-	struct InstanceMonadPlus;
+	struct InstanceMonadPlus
+	{
+		using UndefinedTag = void;
+	};
+
+	namespace detail
+	{
+		template<typename T>
+		constexpr bool IsMonadPlusImpl (int, typename InstanceMonadPlus<T>::UndefinedTag* = nullptr)
+		{
+			return false;
+		}
+
+		template<typename T>
+		constexpr bool IsMonadPlusImpl (float)
+		{
+			return true;
+		}
+	}
+
+	template<typename T>
+	constexpr bool IsMonadPlus ()
+	{
+		return detail::IsMonadPlusImpl<T> (0);
+	}
 
 	template<typename MP>
 	MP Mzero ()
