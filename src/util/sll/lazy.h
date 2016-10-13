@@ -45,6 +45,12 @@ namespace Util
 		return [t] { return t; };
 	}
 
+	template<typename R, typename F>
+	Lazy_t<R> MakeLazyF (const F& l)
+	{
+		return l;
+	}
+
 	template<typename T>
 	struct InstanceMonadPlus<Lazy_t<T>, std::enable_if_t<IsMonadPlus<T> ()>>
 	{
