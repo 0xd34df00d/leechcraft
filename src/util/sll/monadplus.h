@@ -35,7 +35,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-	template<typename T>
+	template<typename T, typename SFINAE = void>
 	struct InstanceMonadPlus
 	{
 		using UndefinedTag = void;
