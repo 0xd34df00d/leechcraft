@@ -67,7 +67,7 @@ namespace Imgaste
 				ICoreProxy_ptr coreProxy,
 				DataFilterCallback_f = {},
 				QStandardItemModel* = nullptr,
-				QObject *parent = 0);
+				QObject *parent = nullptr);
 	private slots:
 		void handleFinished ();
 		void handleError ();
