@@ -37,7 +37,6 @@
 #include <util/sll/lazy.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
-#include "core.h"
 #include "storagebackend.h"
 #include "regexpmatchermanager.h"
 #include "tovarmaps.h"
