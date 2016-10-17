@@ -32,7 +32,7 @@
 namespace
 {
 	template<typename T>
-	constexpr bool TestDebuggable (typename std::add_pointer<decltype (qDebug () << T {})>::type)
+	constexpr bool TestDebuggable (typename std::add_pointer<decltype (std::declval<QDebug> () << T {})>::type)
 	{
 		return true;
 	}
