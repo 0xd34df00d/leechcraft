@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <algorithm>
+#include <numeric>
 #include <boost/optional.hpp>
 
 namespace LeechCraft
