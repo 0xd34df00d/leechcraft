@@ -30,7 +30,6 @@
 #include "lmp.h"
 #include <QIcon>
 #include <QFileInfo>
-#include <QSystemTrayIcon>
 #include <QUrl>
 
 #if QT_VERSION < 0x050000
