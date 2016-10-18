@@ -309,7 +309,7 @@ namespace LMP
 
 	void PlayerTab::SetupToolbar ()
 	{
-		QAction *previous = new QAction (tr ("Previous track"), this);
+		const auto previous = new QAction (tr ("Previous track"), this);
 		previous->setProperty ("ActionIcon", "media-skip-backward");
 		connect (previous,
 				SIGNAL (triggered ()),
@@ -326,7 +326,7 @@ namespace LMP
 				SLOT (togglePause ()));
 		TabToolbar_->addAction (PlayPause_);
 
-		QAction *stop = new QAction (tr ("Stop"), this);
+		const auto stop = new QAction (tr ("Stop"), this);
 		stop->setProperty ("ActionIcon", "media-playback-stop");
 		connect (stop,
 				SIGNAL (triggered ()),
@@ -334,7 +334,7 @@ namespace LMP
 				SLOT (stop ()));
 		TabToolbar_->addAction (stop);
 
-		QAction *next = new QAction (tr ("Next track"), this);
+		const auto next = new QAction (tr ("Next track"), this);
 		next->setProperty ("ActionIcon", "media-skip-forward");
 		connect (next,
 				SIGNAL (triggered ()),
@@ -344,7 +344,7 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
-		QAction *love = new QAction (tr ("Love"), this);
+		const auto love = new QAction (tr ("Love"), this);
 		love->setProperty ("ActionIcon", "emblem-favorite");
 		love->setShortcut (QString ("Ctrl+L"));
 		connect (love,
@@ -353,7 +353,7 @@ namespace LMP
 				SLOT (handleLoveTrack ()));
 		TabToolbar_->addAction (love);
 
-		QAction *ban = new QAction (tr ("Ban"), this);
+		const auto ban = new QAction (tr ("Ban"), this);
 		ban->setProperty ("ActionIcon", "dialog-cancel");
 		ban->setShortcut (QString ("Ctrl+B"));
 		connect (ban,
@@ -364,16 +364,16 @@ namespace LMP
 
 		TabToolbar_->addSeparator ();
 
-		auto seekSlider = new SeekSlider (Player_->GetSourceObject ());
+		const auto seekSlider = new SeekSlider (Player_->GetSourceObject ());
 		TabToolbar_->addWidget (seekSlider);
 		TabToolbar_->addSeparator ();
 
-		auto volumeSlider = new VolumeSlider (Player_->GetAudioOutput ());
+		const auto volumeSlider = new VolumeSlider (Player_->GetAudioOutput ());
 		volumeSlider->setMinimumWidth (100);
 		volumeSlider->setMaximumWidth (160);
 		TabToolbar_->addWidget (volumeSlider);
 
-		auto effectsMenuButton = new QToolButton;
+		const auto effectsMenuButton = new QToolButton;
 		effectsMenuButton->setMenu (EffectsMenu_);
 		effectsMenuButton->setPopupMode (QToolButton::InstantPopup);
 		effectsMenuButton->setProperty ("ActionIcon", "preferences-plugin");
@@ -389,7 +389,7 @@ namespace LMP
 				this,
 				SLOT (handleTrayIconActivated (QSystemTrayIcon::ActivationReason)));
 
-		QAction *closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
+		const auto closeLMP = new QAction (tr ("Close LMP"), TrayIcon_);
 		closeLMP->setProperty ("ActionIcon", "edit-delete");
 		connect (closeLMP,
 				SIGNAL (triggered ()),
