@@ -1353,6 +1353,11 @@ namespace LMP
 			UnsetRadio ();
 	}
 
+	void Player::stopAfterCurrent ()
+	{
+		SetStopAfter (Source_->GetActualSource ());
+	}
+
 	void Player::clear ()
 	{
 		UnsetRadio ();

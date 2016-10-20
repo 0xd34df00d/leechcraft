@@ -222,6 +222,7 @@ namespace LMP
 		void togglePause ();
 		void setPause ();
 		void stop ();
+		void stopAfterCurrent ();
 		void clear ();
 		void shufflePlaylist ();
 	private slots:
