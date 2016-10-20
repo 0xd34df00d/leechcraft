@@ -396,9 +396,16 @@ namespace LMP
 				this,
 				SLOT (closeLMP ()));
 
+		const auto stopAfterCurrent = new QAction (tr ("Stop after current track"));
+		connect (stopAfterCurrent,
+				SIGNAL (triggered ()),
+				Player_,
+				SLOT (stopAfterCurrent ()));
+
 		TrayMenu_->addAction (previous);
 		TrayMenu_->addAction (PlayPause_);
 		TrayMenu_->addAction (stop);
+		TrayMenu_->addAction (stopAfterCurrent);
 		TrayMenu_->addAction (next);
 		TrayMenu_->addSeparator ();
 		TrayMenu_->addAction (love);
