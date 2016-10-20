@@ -396,7 +396,7 @@ namespace LMP
 				this,
 				SLOT (closeLMP ()));
 
-		const auto stopAfterCurrent = new QAction (tr ("Stop after current track"));
+		const auto stopAfterCurrent = new QAction (tr ("Stop after current track"), TrayIcon_);
 		stopAfterCurrent->setCheckable (true);
 		connect (stopAfterCurrent,
 				SIGNAL (triggered ()),
