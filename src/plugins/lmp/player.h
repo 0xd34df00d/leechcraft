@@ -193,6 +193,7 @@ namespace LMP
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);
 
+		void SetStopAfter (const AudioSource&);
 		bool HandleCurrentStop (const AudioSource&);
 
 		void RemoveFromOneShotQueue (const AudioSource&);

@@ -426,16 +426,7 @@ namespace LMP
 		else
 			stopSource = index.data (Role::Source).value<AudioSource> ();
 
-		if (!CurrentStopSource_.IsEmpty ())
-			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
-
-		if (CurrentStopSource_ == stopSource)
-			CurrentStopSource_ = AudioSource ();
-		else
-		{
-			CurrentStopSource_ = stopSource;
-			Items_ [stopSource]->setData (true, Role::IsStop);
-		}
+		SetStopAfter (stopSource);
 	}
 
 	void Player::RestorePlayState ()
@@ -1018,6 +1009,20 @@ namespace LMP
 					ContinueAfterSorted (result);
 					emit playerAvailable (true);
 				};
+	}
+
+	void Player::SetStopAfter (const AudioSource& stopSource)
+	{
+		if (!CurrentStopSource_.IsEmpty ())
+			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
+
+		if (CurrentStopSource_ == stopSource)
+			CurrentStopSource_ = AudioSource ();
+		else
+		{
+			CurrentStopSource_ = stopSource;
+			Items_ [stopSource]->setData (true, Role::IsStop);
+		}
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
