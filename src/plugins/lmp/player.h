@@ -258,6 +258,8 @@ namespace LMP
 		void shouldClearFiltering ();
 
 		void playlistRestored ();
+
+		void currentStopSourceChanged ();
 	};
 }
 }

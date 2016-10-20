@@ -1028,6 +1028,8 @@ namespace LMP
 			CurrentStopSource_ = stopSource;
 			Items_ [stopSource]->setData (true, Role::IsStop);
 		}
+
+		emit currentStopSourceChanged ();
 	}
 
 	bool Player::HandleCurrentStop (const AudioSource& source)
