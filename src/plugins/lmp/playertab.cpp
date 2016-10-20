@@ -397,10 +397,26 @@ namespace LMP
 				SLOT (closeLMP ()));
 
 		const auto stopAfterCurrent = new QAction (tr ("Stop after current track"));
+		stopAfterCurrent->setCheckable (true);
 		connect (stopAfterCurrent,
 				SIGNAL (triggered ()),
 				Player_,
 				SLOT (stopAfterCurrent ()));
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, stopAfterCurrent]
+			{
+				const auto& stopSource = Player_->GetCurrentStopSource ();
+				const auto& current = Player_->GetSourceObject ()->GetCurrentSource ();
+				stopAfterCurrent->setChecked (stopSource == current ?
+						Qt::Checked :
+						Qt::Unchecked);
+			},
+			Player_,
+			{ SIGNAL (currentStopSourceChanged ()), SIGNAL (songChanged (MediaInfo)) },
+			Player_
+		};
 
 		TrayMenu_->addAction (previous);
 		TrayMenu_->addAction (PlayPause_);
