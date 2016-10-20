@@ -168,6 +168,7 @@ namespace LMP
 		void Dequeue (const QModelIndex&);
 		void Dequeue (const QList<AudioSource>&);
 
+		AudioSource GetCurrentStopSource () const;
 		void SetStopAfter (const QModelIndex&);
 
 		void RestorePlayState ();

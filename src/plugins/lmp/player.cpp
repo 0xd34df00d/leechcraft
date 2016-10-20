@@ -415,6 +415,11 @@ namespace LMP
 		SaveOnLoadPlaylist ();
 	}
 
+	AudioSource Player::GetCurrentStopSource () const
+	{
+		return CurrentStopSource_;
+	}
+
 	void Player::SetStopAfter (const QModelIndex& index)
 	{
 		if (!index.isValid ())
