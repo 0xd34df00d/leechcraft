@@ -479,6 +479,7 @@ namespace LMP
 		initShortcut (SLOT (previousTrack ()), QString ("Meta+V"));
 		initShortcut (SLOT (nextTrack ()), QString ("Meta+B"));
 		initShortcut (SLOT (stop ()), QString ("Meta+X"));
+		initShortcut (SLOT (stopAfterCurrent ()), QString ("Meta+Alt+X"));
 
 		auto output = PlayerTab_->GetPlayer ()->GetAudioOutput ();
 		auto controller = new VolumeNotifyController (output, PlayerTab_->GetPlayer ());
@@ -502,6 +503,7 @@ namespace LMP
 		setInfo (SLOT (previousTrack ()), tr ("Previous track"), "media-skip-backward");
 		setInfo (SLOT (nextTrack ()), tr ("Next track"), "media-skip-forward");
 		setInfo (SLOT (stop ()), tr ("Stop playback"), "media-playback-stop");
+		setInfo (SLOT (stopAfterCurrent ()), tr ("Stop playback after current track"), "process-stop");
 		setInfo (SLOT (handleLoveTrack ()), tr ("Love track"), "emblem-favorite");
 		setInfo (SIGNAL (notifyCurrentTrackRequested ()),
 				tr ("Notify about current track"),
