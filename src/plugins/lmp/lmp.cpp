@@ -256,10 +256,11 @@ namespace LMP
 
 	TabClasses_t Plugin::GetTabClasses () const
 	{
-		TabClasses_t tcs;
-		tcs << PlayerTC_;
-		tcs << ArtistBrowserTC_;
-		return tcs;
+		return
+		{
+			PlayerTC_,
+			ArtistBrowserTC_
+		};
 	}
 
 	void Plugin::TabOpenRequested (const QByteArray& tc)
@@ -369,17 +370,17 @@ namespace LMP
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
-		return QList<QAction*> ();
+		return {};
 	}
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
 	{
-		const auto& name = GetName ();
-
-		QMap<QString, QList<QAction*>> result;
-		result [name] << ActionRescan_;
-		result [name] << ActionCollectionStats_;
-		return result;
+		return Util::MakeMap<QString, QList<QAction*>> ({
+					{
+						GetName (),
+						{ ActionRescan_, ActionCollectionStats_ }
+					}
+				});
 	}
 
 	void Plugin::RecoverTabs (const QList<LeechCraft::TabRecoverInfo>& infos)
