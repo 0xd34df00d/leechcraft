@@ -108,14 +108,6 @@ namespace WebKitView
 
 		WebInspector_->setPage (page);
 
-		connect (this,
-				SIGNAL (urlChanged (const QUrl&)),
-				this,
-				SLOT (remakeURL (const QUrl&)));
-		connect (page,
-				SIGNAL (loadingURL (const QUrl&)),
-				this,
-				SLOT (remakeURL (const QUrl&)));
 		connect (page,
 				SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
 				this,
@@ -181,12 +173,12 @@ namespace WebKitView
 			return;
 		}
 
-		remakeURL (url);
 		if (title.isEmpty ())
 			emit titleChanged (tr ("Loading..."));
 		else
 			emit titleChanged (title);
 		load (url);
+		emit urlChanged (url);
 	}
 
 	void CustomWebView::Load (const QNetworkRequest& req,
@@ -635,23 +627,6 @@ namespace WebKitView
 
 			frame->print (&printer);
 		}
-	}
-
-	void CustomWebView::remakeURL (const QUrl& url)
-	{
-	}
-
-	void CustomWebView::handleLoadFinished (bool ok)
-	{
-		if (ok)
-			remakeURL (url ());
-	}
-
-	void CustomWebView::handleFrameState (QWebFrame*, QWebHistoryItem*)
-	{
-		const auto& histUrl = page ()->history ()->currentItem ().url ();
-		if (histUrl != url ())
-			remakeURL (histUrl);
 	}
 
 	void CustomWebView::handlePrintRequested (QWebFrame *frame)

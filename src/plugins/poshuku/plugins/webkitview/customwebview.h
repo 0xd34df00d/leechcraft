@@ -147,9 +147,6 @@ namespace WebKitView
 		void NavigateHome ();
 		void PrintImpl (bool, QWebFrame*);
 	private slots:
-		void remakeURL (const QUrl&);
-		void handleLoadFinished (bool);
-		void handleFrameState (QWebFrame*, QWebHistoryItem*);
 		void handlePrintRequested (QWebFrame*);
 
 		void handleFeaturePermissionReq (QWebFrame*, QWebPage::Feature);
