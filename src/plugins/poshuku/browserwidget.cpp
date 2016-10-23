@@ -386,7 +386,7 @@ namespace Poshuku
 				this,
 				SLOT (handleUrlChanged (QString)));
 		connect (webViewWidget,
-				SIGNAL (urlChanged (QString)),
+				SIGNAL (urlChanged (QUrl)),
 				this,
 				SLOT (updateLogicalPath ()));
 		connect (webViewWidget,
