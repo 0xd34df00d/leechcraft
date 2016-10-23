@@ -73,7 +73,7 @@ namespace LMP
 						"the background and won't disturb you, but can consume quite some traffic "
 						"and local storage space, especially if you have a lot of albums in your "
 						"collection.<br/><br/>You can always toggle this option later in LMP "
-						"settings"),
+						"settings."),
 					QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes;
 
 			XmlSettingsManager::Instance ().setProperty ("AutoFetchAlbumArt", fetch);
