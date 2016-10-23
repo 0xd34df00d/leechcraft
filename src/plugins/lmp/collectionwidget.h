@@ -61,6 +61,7 @@ namespace LMP
 		void handleCollectionRemove ();
 		void handleCollectionDelete ();
 		void loadFromCollection ();
+		void replaceFromCollection ();
 		void on_CollectionTree__customContextMenuRequested (const QPoint&);
 
 		void handleScanProgress (int);

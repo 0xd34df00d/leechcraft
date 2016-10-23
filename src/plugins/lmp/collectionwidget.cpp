@@ -45,6 +45,7 @@
 #include "albumartmanagerdialog.h"
 #include "collectionsmanager.h"
 #include "hookinterconnector.h"
+#include "player.h"
 
 namespace LeechCraft
 {
@@ -245,6 +246,12 @@ namespace LMP
 		Core::Instance ().GetCollectionsManager ()->Enqueue (mapped, Player_);
 	}
 
+	void CollectionWidget::replaceFromCollection ()
+	{
+		Player_->clear ();
+		loadFromCollection ();
+	}
+
 	namespace
 	{
 		MediaInfo ColIndex2MediaInfo (const QModelIndex& index)
@@ -276,6 +283,9 @@ namespace LMP
 		auto addToPlaylist = menu.addAction (tr ("Add to playlist"),
 				this, SLOT (loadFromCollection ()));
 		addToPlaylist->setProperty ("ActionIcon", "list-add");
+
+		menu.addAction (tr ("Replace playlist"),
+				this, SLOT (replaceFromCollection ()));
 
 		if (nodeType == LocalCollectionModel::NodeType::Track)
 		{
