@@ -1380,8 +1380,9 @@
     </message>
     <message>
         <location filename="rootpathsettingsmanager.cpp" line="72"/>
-        <source>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings</source>
-        <translation>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings</translation>
+        <source>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings.</source>
+        <oldsource>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings</oldsource>
+        <translation>Do you want LMP to automatically fetch missing album art? It is done in the background and won&apos;t disturb you, but can consume quite some traffic and local storage space, especially if you have a lot of albums in your collection.&lt;br/&gt;&lt;br/&gt;You can always toggle this option later in LMP settings.</translation>
     </message>
 </context>
 <context>
