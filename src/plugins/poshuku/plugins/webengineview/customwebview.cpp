@@ -136,6 +136,7 @@ namespace WebEngineView
 			emit titleChanged (title);
 
 		load (url);
+		emit loadStarted ();
 	}
 
 	void CustomWebView::SetContent (const QByteArray& data, const QByteArray& mime, const QUrl& base)
