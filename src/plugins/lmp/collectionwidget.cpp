@@ -56,8 +56,8 @@ namespace LMP
 		class CollectionFilterModel : public QSortFilterProxyModel
 		{
 		public:
-			CollectionFilterModel (QObject *parent = 0)
-			: QSortFilterProxyModel (parent)
+			CollectionFilterModel (QObject *parent = nullptr)
+			: QSortFilterProxyModel { parent }
 			{
 				setDynamicSortFilter (true);
 			}
