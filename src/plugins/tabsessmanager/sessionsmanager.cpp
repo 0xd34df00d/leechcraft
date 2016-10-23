@@ -373,6 +373,9 @@ namespace TabSessManager
 			const auto& present = plugin2recoveries.value (pair.first);
 
 			const auto ihrt = qobject_cast<IHaveRecoverableTabs*> (pair.first);
+			if (!ihrt)
+				continue;
+
 			auto& recList = pair.second;
 			recList.erase (std::remove_if (recList.begin (), recList.end (),
 						[&present, ihrt] (const RecInfo& info)
