@@ -639,7 +639,6 @@ namespace WebKitView
 
 	void CustomWebView::remakeURL (const QUrl& url)
 	{
-		emit urlChanged (URLToProperString (url));
 	}
 
 	void CustomWebView::handleLoadFinished (bool ok)
