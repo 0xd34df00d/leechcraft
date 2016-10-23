@@ -548,7 +548,7 @@ namespace Poshuku
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 		connect (widget,
-				SIGNAL (urlChanged (const QString&)),
+				SIGNAL (urlChanged (QUrl)),
 				this,
 				SLOT (handleURLChanged ()));
 	}
