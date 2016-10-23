@@ -168,6 +168,7 @@ namespace LMP
 		void Dequeue (const QModelIndex&);
 		void Dequeue (const QList<AudioSource>&);
 
+		AudioSource GetCurrentStopSource () const;
 		void SetStopAfter (const QModelIndex&);
 
 		void RestorePlayState ();
@@ -193,6 +194,7 @@ namespace LMP
 		MediaInfo GetPhononMediaInfo () const;
 		void AddToPlaylistModel (QList<AudioSource>, bool sort, bool clear);
 
+		void SetStopAfter (const AudioSource&);
 		bool HandleCurrentStop (const AudioSource&);
 
 		void RemoveFromOneShotQueue (const AudioSource&);
@@ -221,6 +223,7 @@ namespace LMP
 		void togglePause ();
 		void setPause ();
 		void stop ();
+		void stopAfterCurrent ();
 		void clear ();
 		void shufflePlaylist ();
 	private slots:
@@ -255,6 +258,8 @@ namespace LMP
 		void shouldClearFiltering ();
 
 		void playlistRestored ();
+
+		void currentStopSourceChanged ();
 	};
 }
 }

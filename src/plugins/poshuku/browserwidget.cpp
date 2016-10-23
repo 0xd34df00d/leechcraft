@@ -28,11 +28,6 @@
  **********************************************************************/
 
 #include "browserwidget.h"
-
-#ifdef ENABLE_IDN
-#include <idna.h>
-#endif
-
 #include <limits>
 #include <cmath>
 #include <QKeyEvent>
@@ -60,6 +55,11 @@
 #include <QLabel>
 #include <QXmlStreamWriter>
 #include <QMimeData>
+
+#ifdef ENABLE_IDN
+#include <idna.h>
+#endif
+
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>

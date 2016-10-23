@@ -415,6 +415,11 @@ namespace LMP
 		SaveOnLoadPlaylist ();
 	}
 
+	AudioSource Player::GetCurrentStopSource () const
+	{
+		return CurrentStopSource_;
+	}
+
 	void Player::SetStopAfter (const QModelIndex& index)
 	{
 		if (!index.isValid ())
@@ -426,16 +431,7 @@ namespace LMP
 		else
 			stopSource = index.data (Role::Source).value<AudioSource> ();
 
-		if (!CurrentStopSource_.IsEmpty ())
-			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
-
-		if (CurrentStopSource_ == stopSource)
-			CurrentStopSource_ = AudioSource ();
-		else
-		{
-			CurrentStopSource_ = stopSource;
-			Items_ [stopSource]->setData (true, Role::IsStop);
-		}
+		SetStopAfter (stopSource);
 	}
 
 	void Player::RestorePlayState ()
@@ -1020,6 +1016,22 @@ namespace LMP
 				};
 	}
 
+	void Player::SetStopAfter (const AudioSource& stopSource)
+	{
+		if (!CurrentStopSource_.IsEmpty ())
+			Items_ [CurrentStopSource_]->setData (false, Role::IsStop);
+
+		if (CurrentStopSource_ == stopSource)
+			CurrentStopSource_ = AudioSource ();
+		else
+		{
+			CurrentStopSource_ = stopSource;
+			Items_ [stopSource]->setData (true, Role::IsStop);
+		}
+
+		emit currentStopSourceChanged ();
+	}
+
 	bool Player::HandleCurrentStop (const AudioSource& source)
 	{
 		if (source != CurrentStopSource_)
@@ -1346,6 +1358,11 @@ namespace LMP
 
 		if (CurrentStation_)
 			UnsetRadio ();
+	}
+
+	void Player::stopAfterCurrent ()
+	{
+		SetStopAfter (Source_->GetActualSource ());
 	}
 
 	void Player::clear ()
