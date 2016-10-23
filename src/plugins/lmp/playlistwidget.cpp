@@ -903,11 +903,16 @@ namespace LMP
 
 	void PlaylistWidget::addToOneShot ()
 	{
-		const auto& index = PlaylistFilter_->mapToSource (Ui_.Playlist_->currentIndex ());
-		if (!index.isValid ())
+		auto selected = Ui_.Playlist_->selectionModel ()->selectedRows (0);
+		if (selected.isEmpty ())
+			selected << Ui_.Playlist_->currentIndex ();
+		const auto& mapped = Util::Map (selected,
+				[this] (const QModelIndex& index) { return PlaylistFilter_->mapToSource (index); });
+		if (mapped.isEmpty ())
 			return;
 
-		Player_->AddToOneShotQueue (index);
+		for (const auto& index : mapped)
+			Player_->AddToOneShotQueue (index);
 	}
 
 	void PlaylistWidget::removeFromOneShot ()
