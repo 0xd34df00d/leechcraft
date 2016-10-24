@@ -210,12 +210,12 @@ namespace Poshuku
 		void handleChangeEncodingAboutToShow ();
 		void handleChangeEncodingTriggered (QAction*);
 		void updateLogicalPath ();
-		void handleUrlChanged (const QString&);
+		void handleUrlChanged (const QUrl&);
 
 		void handleFeaturePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&, IWebView::Feature);
 	signals:
 		void titleChanged (const QString&);
-		void urlChanged (const QString&);
+		void urlChanged (const QUrl&);
 		void iconChanged (const QIcon&);
 		void needToClose ();
 		void tooltipChanged (QWidget*);

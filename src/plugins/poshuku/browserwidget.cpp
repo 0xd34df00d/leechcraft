@@ -382,11 +382,11 @@ namespace Poshuku
 				this,
 				SLOT (updateLogicalPath ()));
 		connect (webViewWidget,
-				SIGNAL (urlChanged (QString)),
+				SIGNAL (urlChanged (QUrl)),
 				this,
-				SLOT (handleUrlChanged (QString)));
+				SLOT (handleUrlChanged (QUrl)));
 		connect (webViewWidget,
-				SIGNAL (urlChanged (QString)),
+				SIGNAL (urlChanged (QUrl)),
 				this,
 				SLOT (updateLogicalPath ()));
 		connect (webViewWidget,
@@ -1629,9 +1629,9 @@ namespace Poshuku
 		setProperty ("WidgetLogicalPath", path);
 	}
 
-	void BrowserWidget::handleUrlChanged (const QString& value)
+	void BrowserWidget::handleUrlChanged (const QUrl& value)
 	{
-		QString userText = value;
+		auto userText = value.toString ();
 #ifdef ENABLE_IDN
 		if (userText.contains ("xn--"))
 		{

@@ -96,7 +96,6 @@ namespace WebEngineView
 		void storeFormData (const PageFormsData_t&) override;
 		void featurePermissionRequested (const IWebView::IFeatureSecurityOrigin_ptr&, IWebView::Feature) override;
 		void zoomChanged () override;
-		void urlChanged (const QString&) override;
 		void closeRequested () override;
 
 		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&) override;

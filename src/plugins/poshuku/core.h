@@ -166,7 +166,7 @@ namespace Poshuku
 		void exportXbel ();
 	private slots:
 		void handleTitleChanged (const QString&);
-		void handleURLChanged (const QString&);
+		void handleURLChanged ();
 		void handleIconChanged (const QIcon&);
 		void handleNeedToClose ();
 		void handleAddToFavorites (QString, QString);

@@ -548,9 +548,9 @@ namespace Poshuku
 				this,
 				SIGNAL (couldHandle (const LeechCraft::Entity&, bool*)));
 		connect (widget,
-				SIGNAL (urlChanged (const QString&)),
+				SIGNAL (urlChanged (QUrl)),
 				this,
-				SLOT (handleURLChanged (const QString&)));
+				SLOT (handleURLChanged ()));
 	}
 
 	void Core::HandleSearchRequest (const QString& url)
@@ -666,7 +666,7 @@ namespace Poshuku
 		emit changeTabName (dynamic_cast<QWidget*> (sender ()), newTitle);
 	}
 
-	void Core::handleURLChanged (const QString&)
+	void Core::handleURLChanged ()
 	{
 		HandleHistory (dynamic_cast<BrowserWidget*> (sender ())->GetWebView ());
 	}
