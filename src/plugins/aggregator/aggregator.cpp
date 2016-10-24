@@ -141,7 +141,6 @@ namespace Aggregator
 			setEnabled (false);
 			Impl_->AppWideActions_.ActionAddFeed_->setEnabled (false);
 			Impl_->AppWideActions_.ActionUpdateFeeds_->setEnabled (false);
-			Impl_->AppWideActions_.ActionRegexpMatcher_->setEnabled (false);
 			Impl_->AppWideActions_.ActionImportOPML_->setEnabled (false);
 			Impl_->AppWideActions_.ActionExportOPML_->setEnabled (false);
 			Impl_->AppWideActions_.ActionImportBinary_->setEnabled (false);
@@ -403,7 +402,6 @@ namespace Aggregator
 		{
 		case ActionsEmbedPlace::ToolsMenu:
 			result << Impl_->ToolMenu_->menuAction ();
-			result << Impl_->AppWideActions_.ActionRegexpMatcher_;
 			break;
 		case ActionsEmbedPlace::CommonContextMenu:
 			result << Impl_->AppWideActions_.ActionAddFeed_;
@@ -588,7 +586,6 @@ namespace Aggregator
 		auto mgr = Core::Instance ().GetShortcutManager ();
 		*mgr << ID_t ("ActionAddFeed", Impl_->AppWideActions_.ActionAddFeed_)
 				<< ID_t ("ActionUpdateFeeds_", Impl_->AppWideActions_.ActionUpdateFeeds_)
-				<< ID_t ("ActionRegexpMatcher_", Impl_->AppWideActions_.ActionRegexpMatcher_)
 				<< ID_t ("ActionImportOPML_", Impl_->AppWideActions_.ActionImportOPML_)
 				<< ID_t ("ActionExportOPML_", Impl_->AppWideActions_.ActionExportOPML_)
 				<< ID_t ("ActionImportBinary_", Impl_->AppWideActions_.ActionImportBinary_)
@@ -821,10 +818,6 @@ namespace Aggregator
 	void Aggregator::on_ActionUpdateSelectedFeed__triggered ()
 	{
 		Perform ([] (const QModelIndex& mi) { Core::Instance ().UpdateFeed (mi); });
-	}
-
-	void Aggregator::on_ActionRegexpMatcher__triggered ()
-	{
 	}
 
 	void Aggregator::on_ActionImportOPML__triggered ()
