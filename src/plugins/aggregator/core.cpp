@@ -1498,7 +1498,7 @@ namespace Aggregator
 			ChannelsModel_->AddChannel (channel->ToShort ());
 			StorageBackend_->AddChannel (channel);
 
-			emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
 					GetItems (channel));
 		}
 
