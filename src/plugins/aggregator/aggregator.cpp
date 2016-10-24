@@ -60,8 +60,6 @@
 #include "itemsfiltermodel.h"
 #include "channelsfiltermodel.h"
 #include "xmlsettingsmanager.h"
-#include "regexpmatcherui.h"
-#include "regexpmatchermanager.h"
 #include "export.h"
 #include "importbinary.h"
 #include "feedsettings.h"
@@ -93,7 +91,6 @@ namespace Aggregator
 		std::shared_ptr<Util::FlatToFoldersProxyModel> FlatToFolders_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
 		std::unique_ptr<Util::TagsCompleter> TagsLineCompleter_;
-		std::unique_ptr<RegexpMatcherUi> RegexpMatcherUi_;
 
 		QModelIndex SelectedRepr_;
 
@@ -186,8 +183,6 @@ namespace Aggregator
 		Impl_->Ui_.MergeItems_->setChecked (XmlSettingsManager::Instance ()->
 				Property ("MergeItems", false).toBool ());
 
-		Impl_->RegexpMatcherUi_.reset (new RegexpMatcherUi (this));
-
 		Impl_->FlatToFolders_.reset (new Util::FlatToFoldersProxyModel);
 		Impl_->FlatToFolders_->SetTagsManager (Core::Instance ().GetProxy ()->GetTagsManager ());
 		handleGroupChannels ();
@@ -249,11 +244,6 @@ namespace Aggregator
 
 		Impl_->Ui_.MainSplitter_->setStretchFactor (0, 5);
 		Impl_->Ui_.MainSplitter_->setStretchFactor (1, 9);
-
-		connect (&RegexpMatcherManager::Instance (),
-				SIGNAL (gotLink (const LeechCraft::Entity&)),
-				this,
-				SIGNAL (gotEntity (const LeechCraft::Entity&)));
 
 		currentChannelChanged ();
 
@@ -835,7 +825,6 @@ namespace Aggregator
 
 	void Aggregator::on_ActionRegexpMatcher__triggered ()
 	{
-		Impl_->RegexpMatcherUi_->show ();
 	}
 
 	void Aggregator::on_ActionImportOPML__triggered ()
