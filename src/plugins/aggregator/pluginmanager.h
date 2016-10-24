@@ -45,9 +45,9 @@ namespace Aggregator
 
 		std::shared_ptr<ProxyObject> ProxyObject_;
 	public:
-		PluginManager (QObject* = 0);
+		PluginManager (QObject* = nullptr);
 
-		virtual void AddPlugin (QObject*);
+		void AddPlugin (QObject*) override;
 	signals:
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
