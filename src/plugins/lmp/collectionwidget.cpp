@@ -37,7 +37,6 @@
 #include <interfaces/core/iiconthememanager.h>
 #include "core.h"
 #include "localcollection.h"
-#include "localcollectionmodel.h"
 #include "palettefixerfilter.h"
 #include "collectiondelegate.h"
 #include "audiopropswidget.h"

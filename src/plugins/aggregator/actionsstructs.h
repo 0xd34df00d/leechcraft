@@ -44,7 +44,6 @@ namespace Aggregator
 	public:
 		QAction *ActionAddFeed_;
 		QAction *ActionUpdateFeeds_;
-		QAction *ActionRegexpMatcher_;
 		QAction *ActionImportOPML_;
 		QAction *ActionExportOPML_;
 		QAction *ActionImportBinary_;

@@ -38,7 +38,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "storagebackend.h"
-#include "regexpmatchermanager.h"
 #include "tovarmaps.h"
 
 namespace LeechCraft
@@ -147,12 +146,11 @@ namespace Aggregator
 		item->ChannelID_ = channel->ChannelID_;
 		SB_->AddItem (item);
 
-		RegexpMatcherManager::Instance ().HandleItem (item);
-
-		QVariantList itemData;
-		itemData << GetItemMapItemPart (item).unite (channelDataMap);
-		emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
-				itemData);
+		const QVariantList itemData
+		{
+			GetItemMapItemPart (item).unite (channelDataMap)
+		};
+		emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (), itemData);
 
 		const auto iem = Proxy_->GetEntityManager ();
 		if (settings.AutoDownloadEnclosures_)

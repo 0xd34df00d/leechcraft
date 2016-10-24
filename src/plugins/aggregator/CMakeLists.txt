@@ -31,9 +31,6 @@ set (SRCS
 	uistatepersist.cpp
 	channelsmodel.cpp
 	channelsfiltermodel.cpp
-	regexpmatcherui.cpp
-	singleregexp.cpp
-	regexpmatchermanager.cpp
 	itemsfiltermodel.cpp
 	opmlparser.cpp
 	opmlwriter.cpp
@@ -64,8 +61,6 @@ set (SRCS
 set (FORMS
 	mainwidget.ui
 	addfeed.ui
-	regexpmatcherui.ui
-	singleregexp.ui
 	importopml.ui
 	export.ui
 	importbinary.ui

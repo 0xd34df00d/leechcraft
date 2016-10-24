@@ -46,11 +46,6 @@ namespace Aggregator
 				parent);
 		ActionUpdateFeeds_->setProperty ("ActionIcon", "mail-receive");
 
-		ActionRegexpMatcher_ = new QAction (tr ("Regexp matcher..."),
-				parent);
-		ActionRegexpMatcher_->setObjectName ("ActionRegexpMatcher_");
-		ActionRegexpMatcher_->setProperty ("ActionIcon", "view-filter");
-
 		ActionImportOPML_ = new QAction (tr ("Import from OPML..."),
 				parent);
 		ActionImportOPML_->setObjectName ("ActionImportOPML_");

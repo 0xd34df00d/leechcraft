@@ -53,7 +53,6 @@
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
 #include "core.h"
-#include "regexpmatchermanager.h"
 #include "xmlsettingsmanager.h"
 #include "parserfactory.h"
 #include "rss20parser.h"
@@ -1499,10 +1498,7 @@ namespace Aggregator
 			ChannelsModel_->AddChannel (channel->ToShort ());
 			StorageBackend_->AddChannel (channel);
 
-			for (const auto& item : channel->Items_)
-				RegexpMatcherManager::Instance ().HandleItem (item);
-
-			emit hookGotNewItems (Util::DefaultHookProxy_ptr (new Util::DefaultHookProxy),
+			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
 					GetItems (channel));
 		}
 

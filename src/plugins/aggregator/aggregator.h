@@ -148,7 +148,6 @@ namespace Aggregator
 		void on_ActionRenameFeed__triggered ();
 		void on_ActionRemoveChannel__triggered ();
 		void on_ActionUpdateSelectedFeed__triggered ();
-		void on_ActionRegexpMatcher__triggered ();
 		void on_ActionImportOPML__triggered ();
 		void on_ActionExportOPML__triggered ();
 		void on_ActionImportBinary__triggered ();
