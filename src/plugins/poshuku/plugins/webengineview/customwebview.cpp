@@ -393,6 +393,27 @@ namespace WebEngineView
 #undef ATTR
 	}
 
+	void CustomWebView::SetFontFamily (FontFamily family, const QFont& font)
+	{
+		const auto webFamily = static_cast<QWebEngineSettings::FontFamily> (family);
+		settings ()->setFontFamily (webFamily, font.family ());
+	}
+
+	void CustomWebView::SetFontSize (FontSize type, int size)
+	{
+		const auto webSize = static_cast<QWebEngineSettings::FontSize> (type);
+		settings ()->setFontSize (webSize, size);
+	}
+
+	void CustomWebView::SetFontSizeMultiplier (qreal factor)
+	{
+	}
+
+	QObject* CustomWebView::GetQObject ()
+	{
+		return this;
+	}
+
 	void CustomWebView::contextMenuEvent (QContextMenuEvent *event)
 	{
 		const auto& data = page ()->contextMenuData ();

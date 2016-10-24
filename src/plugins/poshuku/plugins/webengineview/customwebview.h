@@ -31,6 +31,7 @@
 
 #include <QWebEngineView>
 #include <interfaces/poshuku/iwebview.h>
+#include <interfaces/iwkfontssettable.h>
 
 namespace LeechCraft
 {
@@ -40,9 +41,10 @@ namespace WebEngineView
 {
 	class CustomWebView final : public QWebEngineView
 							  , public IWebView
+							  , public IWkFontsSettable
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Poshuku::IWebView)
+		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
 	public:
 		CustomWebView ();
 
@@ -88,6 +90,11 @@ namespace WebEngineView
 		IWebViewHistory_ptr GetHistory () override;
 
 		void SetAttribute (Attribute attribute, bool b) override;
+
+		void SetFontFamily (FontFamily family, const QFont& font) override;
+		void SetFontSize (FontSize type, int size) override;
+		void SetFontSizeMultiplier (qreal factor) override;
+		QObject* GetQObject () override;
 	protected:
 		void contextMenuEvent (QContextMenuEvent*) override;
 	signals:
