@@ -1458,28 +1458,33 @@ namespace Aggregator
 	void Core::HandleExternalData (const QString& url, const QFile& file)
 	{
 		ExternalData data = PendingJob2ExternalData_.take (url);
-		if (data.RelatedChannel_.get ())
+		if (!data.RelatedChannel_)
 		{
-			const QImage image { file.fileName () };
-			switch (data.Type_)
-			{
-			case ExternalData::TImage:
-				data.RelatedChannel_->Pixmap_ = image;
-				break;
-			case ExternalData::TIcon:
-				data.RelatedChannel_->Favicon_ = image.scaled (16, 16);
-				break;
-			}
+			qWarning () << Q_FUNC_INFO
+					<< "no related channel for external data"
+					<< url;
+			return;
+		}
 
-			try
-			{
-				StorageBackend_->UpdateChannel (data.RelatedChannel_);
-			}
-			catch (const std::exception& e)
-			{
-				qWarning () << Q_FUNC_INFO
-					<< e.what ();
-			}
+		const QImage image { file.fileName () };
+		switch (data.Type_)
+		{
+		case ExternalData::TImage:
+			data.RelatedChannel_->Pixmap_ = image;
+			break;
+		case ExternalData::TIcon:
+			data.RelatedChannel_->Favicon_ = image.scaled (16, 16);
+			break;
+		}
+
+		try
+		{
+			StorageBackend_->UpdateChannel (data.RelatedChannel_);
+		}
+		catch (const std::exception& e)
+		{
+			qWarning () << Q_FUNC_INFO
+				<< e.what ();
 		}
 	}
 
