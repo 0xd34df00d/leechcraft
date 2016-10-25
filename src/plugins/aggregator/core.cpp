@@ -1460,16 +1460,17 @@ namespace Aggregator
 		ExternalData data = PendingJob2ExternalData_.take (url);
 		if (data.RelatedChannel_.get ())
 		{
+			const QImage image { file.fileName () };
 			switch (data.Type_)
 			{
-				case ExternalData::TImage:
-					data.RelatedChannel_->Pixmap_ = QImage (file.fileName ());
-					break;
-				case ExternalData::TIcon:
-					data.RelatedChannel_->Favicon_ =
-							QImage (file.fileName ()).scaled (16, 16);
-					break;
+			case ExternalData::TImage:
+				data.RelatedChannel_->Pixmap_ = image;
+				break;
+			case ExternalData::TIcon:
+				data.RelatedChannel_->Favicon_ = image.scaled (16, 16);
+				break;
 			}
+
 			try
 			{
 				StorageBackend_->UpdateChannel (data.RelatedChannel_);
