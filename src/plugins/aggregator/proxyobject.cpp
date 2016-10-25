@@ -124,6 +124,18 @@ namespace Aggregator
 		return result;
 	}
 
+	Channel_ptr ProxyObject::GetChannel (IDType_t id) const
+	{
+		// TODO rework when StorageBackend::GetChannel()
+		// would be happy with just the channel ID.
+		const auto& channels = GetAllChannels ();
+		const auto pos = std::find_if (channels.begin (), channels.end (),
+				[id] (const Channel_ptr& channel) { return id == channel->ChannelID_; });
+		return pos != channels.end () ?
+				*pos :
+				Channel_ptr {};
+	}
+
 	int ProxyObject::CountUnreadItems (IDType_t channel) const
 	{
 		return Core::Instance ().MakeStorageBackendForThread ()->GetUnreadItems (channel);

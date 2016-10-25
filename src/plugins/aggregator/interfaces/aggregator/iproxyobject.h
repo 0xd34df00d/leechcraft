@@ -57,6 +57,7 @@ namespace Aggregator
 
 		virtual QAbstractItemModel* GetChannelsModel () const = 0;
 		virtual QList<Channel_ptr> GetAllChannels () const = 0;
+		virtual Channel_ptr GetChannel (IDType_t) const = 0;
 		virtual int CountUnreadItems (IDType_t) const = 0;
 		virtual QList<Item_ptr> GetChannelItems (IDType_t) const = 0;
 
