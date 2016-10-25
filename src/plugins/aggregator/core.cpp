@@ -1491,8 +1491,8 @@ namespace Aggregator
 		for (size_t i = 0; i < channels.size (); ++i)
 		{
 			Channel_ptr channel = channels [i];
-			std::for_each (channel->Items_.begin (), channel->Items_.end (),
-					[] (Item_ptr item) { item->FixDate (); });
+			for (const auto& item : channel->Items_)
+				item->FixDate ();
 
 			channel->Tags_ = pj.Tags_;
 			ChannelsModel_->AddChannel (channel->ToShort ());
