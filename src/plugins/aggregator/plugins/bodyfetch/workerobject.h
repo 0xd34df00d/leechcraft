@@ -50,8 +50,8 @@ namespace BodyFetch
 		IScriptLoaderInstance_ptr Inst_;
 		QVariantList Items_;
 
-		bool IsProcessing_;
-		bool RecheckScheduled_;
+		bool IsProcessing_ = false;
+		bool RecheckScheduled_ = false;
 
 		QStringList EnumeratedCache_;
 

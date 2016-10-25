@@ -59,8 +59,6 @@ namespace BodyFetch
 	WorkerObject::WorkerObject (QObject *parent)
 	: QObject (parent)
 	, Inst_ (0)
-	, IsProcessing_ (false)
-	, RecheckScheduled_ (false)
 	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
 	{
 		QTimer *timer = new QTimer { this };
