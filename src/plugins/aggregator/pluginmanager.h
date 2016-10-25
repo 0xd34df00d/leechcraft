@@ -52,7 +52,7 @@ namespace Aggregator
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
+				const QList<Item_cptr>& items);
 	};
 }
 }

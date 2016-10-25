@@ -309,9 +309,9 @@ namespace Aggregator
 							SLOT (handleDBUpGotNewChannel (ChannelShort)),
 							Qt::QueuedConnection);
 					connect (worker,
-							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)),
+							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)),
 							this,
-							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QVariantList)));
+							SIGNAL (hookGotNewItems (LeechCraft::IHookProxy_ptr, QList<Item_cptr>)));
 				});
 
 		connect (&StorageBackendManager::Instance (),
@@ -1501,7 +1501,8 @@ namespace Aggregator
 			StorageBackend_->AddChannel (channel);
 
 			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
-					GetItems (channel));
+					Util::Map (channel->Items_,
+							[] (const Item_ptr& item) { return Item_cptr { item }; }));
 
 			FetchPixmap (channel);
 			FetchFavicon (channel);

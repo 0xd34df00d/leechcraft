@@ -67,8 +67,7 @@ namespace Aggregator
 	signals:
 		void gotNewChannel (const ChannelShort&);
 
-		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
+		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy, const QList<Item_cptr>& items);
 	};
 }
 }
