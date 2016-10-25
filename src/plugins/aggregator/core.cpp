@@ -1488,9 +1488,8 @@ namespace Aggregator
 	void Core::HandleFeedAdded (const channels_container_t& channels,
 			const Core::PendingJob& pj)
 	{
-		for (size_t i = 0; i < channels.size (); ++i)
+		for (const auto& channel : channels)
 		{
-			Channel_ptr channel = channels [i];
 			for (const auto& item : channel->Items_)
 				item->FixDate ();
 
