@@ -108,7 +108,6 @@ namespace Aggregator
 				, TIcon
 			} Type_;
 			Channel_ptr RelatedChannel_;
-			Feed_ptr RelatedFeed_;
 		};
 		QMap<int, PendingJob> PendingJobs_;
 		QMap<QString, ExternalData> PendingJob2ExternalData_;

@@ -1480,9 +1480,6 @@ namespace Aggregator
 					<< e.what ();
 			}
 		}
-		else if (data.RelatedFeed_)
-		{
-		}
 	}
 
 	void Core::HandleFeedAdded (const channels_container_t& channels,
