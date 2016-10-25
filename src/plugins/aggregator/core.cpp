@@ -1499,12 +1499,9 @@ namespace Aggregator
 
 			emit hookGotNewItems (std::make_shared<Util::DefaultHookProxy> (),
 					GetItems (channel));
-		}
 
-		for (size_t i = 0; i < channels.size (); ++i)
-		{
-			FetchPixmap (channels [i]);
-			FetchFavicon (channels [i]);
+			FetchPixmap (channel);
+			FetchFavicon (channel);
 		}
 
 		if (pj.FeedSettings_)
