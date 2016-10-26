@@ -58,7 +58,7 @@ namespace Aggregator
 		Feed::FeedSettings GetFeedSettings (IDType_t);
 		void AddChannel (const Channel_ptr& channel, const Feed::FeedSettings& settings);
 		bool AddItem (const Item_ptr& item, const Channel_ptr& channel,
-				const QVariantMap& channelDataMap, const Feed::FeedSettings& settings);
+				const Feed::FeedSettings& settings);
 		bool UpdateItem (const Item_ptr& item, const Item_ptr& ourItem);
 		void NotifyUpdates (int newItems, int updatedItems, const Channel_ptr& channel);
 	public slots:

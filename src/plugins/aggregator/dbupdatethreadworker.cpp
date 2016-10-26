@@ -133,7 +133,7 @@ namespace Aggregator
 	}
 
 	bool DBUpdateThreadWorker::AddItem (const Item_ptr& item, const Channel_ptr& channel,
-			const QVariantMap& channelDataMap, const Feed::FeedSettings& settings)
+			const Feed::FeedSettings& settings)
 	{
 		if (item->PubDate_.isValid ())
 		{
@@ -260,8 +260,6 @@ namespace Aggregator
 				continue;
 			}
 
-			const auto& channelPart = GetItemMapChannelPart (ourChannel);
-
 			int newItems = 0;
 			int updatedItems = 0;
 
@@ -285,7 +283,7 @@ namespace Aggregator
 					if (UpdateItem (item, ourItem))
 						++updatedItems;
 				}
-				else if (AddItem (item, ourChannel, channelPart, feedSettings))
+				else if (AddItem (item, ourChannel, feedSettings))
 					++newItems;
 			}
 
