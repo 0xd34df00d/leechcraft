@@ -38,7 +38,6 @@
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 #include "storagebackend.h"
-#include "tovarmaps.h"
 
 namespace LeechCraft
 {

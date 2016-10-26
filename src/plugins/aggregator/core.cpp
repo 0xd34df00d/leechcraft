@@ -72,7 +72,6 @@
 #include "pluginmanager.h"
 #include "dbupdatethread.h"
 #include "dbupdatethreadworker.h"
-#include "tovarmaps.h"
 #include "dumbstorage.h"
 #include "storagebackendmanager.h"
 

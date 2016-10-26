@@ -54,7 +54,6 @@ set (SRCS
 	proxyobject.cpp
 	dbupdatethread.cpp
 	dbupdatethreadworker.cpp
-	tovarmaps.cpp
 	dumbstorage.cpp
 	storagebackendmanager.cpp
 	)
