@@ -100,9 +100,11 @@ namespace WebKitView
 
 		const auto frame = qobject_cast<QWebFrame*> (req.originatingObject ());
 		const auto page = frame ? frame->page () : nullptr;
-		if (frame &&
-				page &&
-				frame == page->mainFrame () &&
+
+		if (!page)
+			return;
+
+		if (frame == page->mainFrame () &&
 				frame->requestedUrl () == reqUrl)
 			return;
 
