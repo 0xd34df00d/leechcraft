@@ -152,13 +152,6 @@ namespace Util
 			Invoke (f, t);
 	}
 
-	template<typename Container, typename F, typename... ContArgs>
-	auto Map (const Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
-	{
-		auto copy = c;
-		Map (copy, f);
-	}
-
 	/*
 #ifndef USE_CPP14
 	template<typename F>
