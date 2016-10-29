@@ -148,7 +148,6 @@ namespace Murm
 
 		emit stateChanged (TSTransfer);
 
-		const auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
 		QHttpPart filePart;
 		filePart.setHeader (QNetworkRequest::ContentDispositionHeader,
 				QString ("form-data; name=\"file\"; filename=\"%1\"")
@@ -166,6 +165,8 @@ namespace Murm
 		}
 
 		filePart.setBodyDevice (file);
+
+		const auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
 		file->setParent (multipart);
 		multipart->append (filePart);
 
