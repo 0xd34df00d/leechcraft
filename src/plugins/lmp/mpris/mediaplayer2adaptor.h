@@ -68,7 +68,6 @@ namespace MPRIS
 			"")
 
 		QObject *Tab_;
-		Player *Player_;
 	public:
 		MediaPlayer2Adaptor (QObject*, Player*);
 		virtual ~MediaPlayer2Adaptor ();
