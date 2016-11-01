@@ -36,6 +36,8 @@ namespace LeechCraft
 	class ItemHandlerCheckbox : public ItemHandlerBooleanGetValue
 	{
 	public:
+		using ItemHandlerBooleanGetValue::ItemHandlerBooleanGetValue;
+
 		bool CanHandle (const QDomElement&) const override;
 		void Handle (const QDomElement&, QWidget*) override;
 		void SetValue (QWidget*, const QVariant&) const override;

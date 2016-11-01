@@ -35,10 +35,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerSpinboxRange::ItemHandlerSpinboxRange ()
-	{
-	}
-
 	ItemHandlerSpinboxRange::~ItemHandlerSpinboxRange ()
 	{
 	}

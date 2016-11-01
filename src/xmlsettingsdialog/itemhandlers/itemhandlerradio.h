@@ -36,7 +36,7 @@ namespace LeechCraft
 	class ItemHandlerRadio : public ItemHandlerOptionsSetValue
 	{
 	public:
-		ItemHandlerRadio ();
+		using ItemHandlerOptionsSetValue::ItemHandlerOptionsSetValue;
 		virtual ~ItemHandlerRadio ();
 
 		bool CanHandle (const QDomElement&) const;

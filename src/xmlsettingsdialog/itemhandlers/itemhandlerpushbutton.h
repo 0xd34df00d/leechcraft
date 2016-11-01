@@ -36,7 +36,7 @@ namespace LeechCraft
 	class ItemHandlerPushButton : public ItemHandlerNoValue
 	{
 	public:
-		ItemHandlerPushButton ();
+		using ItemHandlerNoValue::ItemHandlerNoValue;
 		virtual ~ItemHandlerPushButton ();
 
 		bool CanHandle (const QDomElement&) const;

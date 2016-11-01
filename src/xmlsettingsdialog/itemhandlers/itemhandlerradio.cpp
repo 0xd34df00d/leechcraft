@@ -37,10 +37,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerRadio::ItemHandlerRadio ()
-	{
-	}
-
 	ItemHandlerRadio::~ItemHandlerRadio ()
 	{
 	}

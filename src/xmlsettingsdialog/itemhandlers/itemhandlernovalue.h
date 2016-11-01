@@ -36,7 +36,7 @@ namespace LeechCraft
 	class ItemHandlerNoValue : public ItemHandlerBase
 	{
 	public:
-		ItemHandlerNoValue ();
+		using ItemHandlerBase::ItemHandlerBase;
 		virtual ~ItemHandlerNoValue ();
 
 		QVariant GetValue (const QDomElement&, QVariant) const;

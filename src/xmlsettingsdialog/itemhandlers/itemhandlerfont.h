@@ -36,6 +36,8 @@ namespace LeechCraft
 	class ItemHandlerFont : public ItemHandlerBase
 	{
 	public:
+		using ItemHandlerBase::ItemHandlerBase;
+
 		bool CanHandle (const QDomElement&) const override;
 		void Handle (const QDomElement&, QWidget*) override;
 		QVariant GetValue (const QDomElement&, QVariant) const override;

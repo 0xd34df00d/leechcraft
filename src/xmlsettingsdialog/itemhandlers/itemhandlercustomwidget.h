@@ -36,6 +36,8 @@ namespace LeechCraft
 	class ItemHandlerCustomWidget : public ItemHandlerNoValue
 	{
 	public:
+		using ItemHandlerNoValue::ItemHandlerNoValue;
+
 		bool CanHandle (const QDomElement&) const override;
 		void Handle (const QDomElement&, QWidget*) override;
 	};

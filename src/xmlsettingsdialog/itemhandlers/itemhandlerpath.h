@@ -36,6 +36,8 @@ namespace LeechCraft
 	class ItemHandlerPath : public ItemHandlerStringSetValue
 	{
 	public:
+		using ItemHandlerStringSetValue::ItemHandlerStringSetValue;
+
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		QVariant GetValue (const QDomElement&, QVariant) const;

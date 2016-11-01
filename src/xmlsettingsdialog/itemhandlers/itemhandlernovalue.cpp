@@ -31,10 +31,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerNoValue::ItemHandlerNoValue ()
-	{
-	}
-
 	ItemHandlerNoValue::~ItemHandlerNoValue ()
 	{
 	}

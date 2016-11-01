@@ -36,6 +36,8 @@ namespace LeechCraft
 	class ItemHandlerGroupbox : public ItemHandlerBooleanGetValue
 	{
 	public:
+		using ItemHandlerBooleanGetValue::ItemHandlerBooleanGetValue;
+
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;

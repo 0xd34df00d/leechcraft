@@ -47,6 +47,8 @@ namespace LeechCraft
 	class ItemHandlerStringSetValue : public ItemHandlerBase
 	{
 	public:
+		using ItemHandlerBase::ItemHandlerBase;
+
 		void UpdateValue (QDomElement& element,
 				const QVariant& value) const override;
 	};

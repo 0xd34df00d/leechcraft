@@ -33,10 +33,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerPushButton::ItemHandlerPushButton ()
-	{
-	}
-
 	ItemHandlerPushButton::~ItemHandlerPushButton ()
 	{
 	}

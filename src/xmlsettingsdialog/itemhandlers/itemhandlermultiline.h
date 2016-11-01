@@ -36,6 +36,8 @@ namespace LeechCraft
 	class ItemHandlerMultiLine : public ItemHandlerStringGetValue
 	{
 	public:
+		using ItemHandlerStringGetValue::ItemHandlerStringGetValue;
+
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);
 		void SetValue (QWidget*, const QVariant&) const;
