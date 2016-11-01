@@ -53,7 +53,7 @@ namespace Util
 		pcre_extra *Extra_ = nullptr;
 
 		QString Pattern_;
-		Qt::CaseSensitivity CS_;
+		Qt::CaseSensitivity CS_ = Qt::CaseSensitive;
 	public:
 		PCREWrapper () = default;
 
