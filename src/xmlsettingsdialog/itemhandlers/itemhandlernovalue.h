@@ -37,7 +37,6 @@ namespace LeechCraft
 	{
 	public:
 		using ItemHandlerBase::ItemHandlerBase;
-		virtual ~ItemHandlerNoValue ();
 
 		QVariant GetValue (const QDomElement&, QVariant) const;
 		void SetValue (QWidget*, const QVariant&) const;

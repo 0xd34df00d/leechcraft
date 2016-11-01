@@ -37,10 +37,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerRadio::~ItemHandlerRadio ()
-	{
-	}
-
 	bool ItemHandlerRadio::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "radio";

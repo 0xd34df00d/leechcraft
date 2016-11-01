@@ -37,7 +37,6 @@ namespace LeechCraft
 	{
 	public:
 		using ItemHandlerBase::ItemHandlerBase;
-		virtual ~ItemHandlerSpinboxRange ();
 
 		bool CanHandle (const QDomElement&) const;
 		void Handle (const QDomElement&, QWidget*);

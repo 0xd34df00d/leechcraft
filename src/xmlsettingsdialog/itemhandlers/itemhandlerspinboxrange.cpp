@@ -35,10 +35,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerSpinboxRange::~ItemHandlerSpinboxRange ()
-	{
-	}
-
 	bool ItemHandlerSpinboxRange::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "spinboxrange";

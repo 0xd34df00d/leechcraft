@@ -42,11 +42,6 @@ namespace LeechCraft
 	{
 	}
 
-	ItemHandlerTreeView::~ItemHandlerTreeView ()
-	{
-
-	}
-
 	bool ItemHandlerTreeView::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "treeview";

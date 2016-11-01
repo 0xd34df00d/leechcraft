@@ -33,10 +33,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerPushButton::~ItemHandlerPushButton ()
-	{
-	}
-
 	bool ItemHandlerPushButton::CanHandle (const QDomElement& element) const
 	{
 		return element.attribute ("type") == "pushbutton";

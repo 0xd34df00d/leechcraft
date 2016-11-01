@@ -31,10 +31,6 @@
 
 namespace LeechCraft
 {
-	ItemHandlerNoValue::~ItemHandlerNoValue ()
-	{
-	}
-
 	QVariant ItemHandlerNoValue::GetValue (const QDomElement&, QVariant) const
 	{
 		return QVariant ();
