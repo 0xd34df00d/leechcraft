@@ -70,7 +70,6 @@ namespace MPRIS
 		QObject *Tab_;
 	public:
 		MediaPlayer2Adaptor (QObject*, Player*);
-		virtual ~MediaPlayer2Adaptor ();
 
 	public:
 		Q_PROPERTY (bool CanQuit READ GetCanQuit)

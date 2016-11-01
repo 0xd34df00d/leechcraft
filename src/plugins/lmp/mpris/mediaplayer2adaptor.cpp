@@ -52,10 +52,6 @@ namespace MPRIS
 		setAutoRelaySignals (true);
 	}
 
-	MediaPlayer2Adaptor::~MediaPlayer2Adaptor ()
-	{
-	}
-
 	bool MediaPlayer2Adaptor::GetCanQuit () const
 	{
 		return false;
