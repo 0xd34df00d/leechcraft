@@ -30,7 +30,7 @@
 #pragma once
 
 #include "itemhandlerstringgetvalue.h"
-#include <boost/function.hpp>
+#include <functional>
 #include <QGridLayout>
 #include <QLabel>
 #include <QtDebug>
@@ -43,7 +43,7 @@ namespace LeechCraft
 	class ItemHandlerSpinboxBase : public ItemHandlerStringGetValue
 	{
 	public:
-		typedef boost::function<ValueType (QString)> Converter_t;
+		using Converter_t = std::function<ValueType (QString)>;
 	private:
 		Converter_t Converter_;
 		QString ElementType_;
