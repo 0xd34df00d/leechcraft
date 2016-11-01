@@ -41,10 +41,6 @@ namespace Util
 		setUrl (url);
 	}
 
-	CustomNetworkReply::~CustomNetworkReply ()
-	{
-	}
-
 	void CustomNetworkReply::SetError (QNetworkReply::NetworkError error, const QString& text)
 	{
 		setError (error, text);

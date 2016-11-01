@@ -63,10 +63,6 @@ namespace Util
 		 */
 		CustomNetworkReply (const QUrl& url, QObject *parent = 0);
 
-		/** @brief Virtual destructor.
-		 */
-		virtual ~CustomNetworkReply ();
-
 		/** @brief Sets the network error of this reply.
 		 *
 		 * This function can be used to set the given network error with
