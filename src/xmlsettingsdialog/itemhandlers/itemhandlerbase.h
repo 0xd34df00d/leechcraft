@@ -44,10 +44,7 @@ namespace LeechCraft
 	public:
 		typedef QMap<QString, QVariant> Prop2NewValue_t;
 
-		void SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd);
-
-		ItemHandlerBase ();
-		virtual ~ItemHandlerBase ();
+		ItemHandlerBase (Util::XmlSettingsDialog*);
 
 		/** @brief Whether this item handler can handle this particular
 		 * element.

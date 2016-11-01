@@ -40,8 +40,9 @@
 
 namespace LeechCraft
 {
-	ItemHandlerCombobox::ItemHandlerCombobox (ItemHandlerFactory *factory)
-	: Factory_ (factory)
+	ItemHandlerCombobox::ItemHandlerCombobox (ItemHandlerFactory *factory, Util::XmlSettingsDialog *xsd)
+	: ItemHandlerOptionsSetValue { xsd }
+	, Factory_ { factory }
 	{
 	}
 

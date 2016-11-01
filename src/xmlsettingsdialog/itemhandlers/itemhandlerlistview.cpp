@@ -37,8 +37,9 @@
 
 namespace LeechCraft
 {
-	ItemHandlerListView::ItemHandlerListView (ItemHandlerFactory *factory)
-	: Factory_ (factory)
+	ItemHandlerListView::ItemHandlerListView (ItemHandlerFactory *factory, Util::XmlSettingsDialog *xsd)
+	: ItemHandlerBase { xsd }
+	, Factory_ { factory }
 	{
 	}
 

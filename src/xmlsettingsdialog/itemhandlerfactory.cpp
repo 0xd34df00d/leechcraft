@@ -53,30 +53,23 @@ namespace LeechCraft
 {
 	ItemHandlerFactory::ItemHandlerFactory (Util::XmlSettingsDialog *xsd)
 	{
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCheckbox ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerLineEdit ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerMultiLine ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerGroupbox ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinbox ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxDouble ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerRadio ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCombobox (this));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxRange ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPushButton ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCustomWidget ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPath ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerFont ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor ());
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerListView (this));
-		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerTreeView (this));
-
-		for (const auto& handler : Handlers_)
-			handler->SetXmlSettingsDialog (xsd);
-	}
-
-	ItemHandlerFactory::~ItemHandlerFactory ()
-	{
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCheckbox (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerLineEdit (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerMultiLine (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerGroupbox (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinbox (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxDouble (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerRadio (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCombobox (this, xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerSpinboxRange (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPushButton (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerCustomWidget (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerPath (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerFont (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerColor (xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerDataView (this, xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerListView (this, xsd));
+		Handlers_ << ItemHandlerBase_ptr (new ItemHandlerTreeView (this, xsd));
 	}
 
 	bool ItemHandlerFactory::Handle (const QDomElement& element,

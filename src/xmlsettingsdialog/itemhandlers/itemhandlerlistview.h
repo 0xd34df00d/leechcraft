@@ -43,7 +43,7 @@ namespace LeechCraft
 		ItemHandlerFactory * const Factory_;
 		QHash<QString, QListView*> Propname2Listview_;
 	public:
-		ItemHandlerListView (ItemHandlerFactory*);
+		ItemHandlerListView (ItemHandlerFactory*, Util::XmlSettingsDialog*);
 
 		bool CanHandle (const QDomElement&) const override;
 		void Handle (const QDomElement&, QWidget*) override;

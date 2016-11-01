@@ -37,7 +37,6 @@ namespace LeechCraft
 	class ItemHandlerSpinboxDouble : public ItemHandlerSpinboxBase<QDoubleSpinBox, double>
 	{
 	public:
-		ItemHandlerSpinboxDouble ();
-		virtual ~ItemHandlerSpinboxDouble ();
+		ItemHandlerSpinboxDouble (Util::XmlSettingsDialog*);
 	};
 }

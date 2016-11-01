@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/function.hpp>
+#include <functional>
 #include <QList>
 #include <QDomElement>
 #include <QHash>
@@ -53,7 +53,6 @@ namespace LeechCraft
 		QHash<QString, DataSourceSetter_t> Propname2DataSourceSetter_;
 	public:
 		ItemHandlerFactory (Util::XmlSettingsDialog*);
-		~ItemHandlerFactory ();
 
 		/** @brief Create a visual representation for the given element
 		 * with the given parent widget.

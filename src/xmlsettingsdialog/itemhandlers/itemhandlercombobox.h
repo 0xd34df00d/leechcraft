@@ -45,7 +45,7 @@ namespace LeechCraft
 		QHash<QString, QComboBox*> Propname2Combobox_;
 		QHash<QString, QDomElement> Propname2Item_;
 	public:
-		ItemHandlerCombobox (ItemHandlerFactory*);
+		ItemHandlerCombobox (ItemHandlerFactory*, Util::XmlSettingsDialog*);
 
 		bool CanHandle (const QDomElement&) const override;
 		void Handle (const QDomElement&, QWidget*) override;

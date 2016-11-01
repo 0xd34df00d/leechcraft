@@ -37,7 +37,6 @@ namespace LeechCraft
 	class ItemHandlerSpinbox : public ItemHandlerSpinboxBase<QSpinBox, int>
 	{
 	public:
-		ItemHandlerSpinbox ();
-		virtual ~ItemHandlerSpinbox ();
+		ItemHandlerSpinbox (Util::XmlSettingsDialog*);
 	};
 }

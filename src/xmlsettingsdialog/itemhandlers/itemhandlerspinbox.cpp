@@ -31,14 +31,14 @@
 
 namespace LeechCraft
 {
-	ItemHandlerSpinbox::ItemHandlerSpinbox ()
-	: ItemHandlerSpinboxBase<QSpinBox, int> ([] (const QString& str) { return str.toInt (); },
-			"spinbox",
-			SIGNAL (valueChanged (int)))
+	ItemHandlerSpinbox::ItemHandlerSpinbox (Util::XmlSettingsDialog *xsd)
+	: ItemHandlerSpinboxBase<QSpinBox, int>
 	{
+		[] (const QString& str) { return str.toInt (); },
+		"spinbox",
+		SIGNAL (valueChanged (int)),
+		xsd
 	}
-
-	ItemHandlerSpinbox::~ItemHandlerSpinbox ()
 	{
 	}
 }

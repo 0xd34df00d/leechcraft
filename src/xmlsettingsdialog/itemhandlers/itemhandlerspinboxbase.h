@@ -49,14 +49,11 @@ namespace LeechCraft
 		QString ElementType_;
 		const char *ChangedSignal_;
 	public:
-		ItemHandlerSpinboxBase (Converter_t cvt, const QString& etype, const char *cs)
-		: Converter_ (cvt)
-		, ElementType_ (etype)
-		, ChangedSignal_ (cs)
-		{
-		}
-
-		virtual ~ItemHandlerSpinboxBase ()
+		ItemHandlerSpinboxBase (Converter_t cvt, const QString& etype, const char *cs, Util::XmlSettingsDialog *xsd)
+		: ItemHandlerStringGetValue { xsd }
+		, Converter_ { cvt }
+		, ElementType_ { etype }
+		, ChangedSignal_ { cs }
 		{
 		}
 

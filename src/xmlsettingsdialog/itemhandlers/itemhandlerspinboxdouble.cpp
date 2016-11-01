@@ -31,14 +31,14 @@
 
 namespace LeechCraft
 {
-	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble ()
-	: ItemHandlerSpinboxBase<QDoubleSpinBox, double> ([] (QString str) { return str.toDouble (); },
-			"doublespinbox",
-			SIGNAL (valueChanged (double)))
+	ItemHandlerSpinboxDouble::ItemHandlerSpinboxDouble (Util::XmlSettingsDialog *xsd)
+	: ItemHandlerSpinboxBase<QDoubleSpinBox, double>
 	{
+		[] (QString str) { return str.toDouble (); },
+		"doublespinbox",
+		SIGNAL (valueChanged (double)),
+		xsd
 	}
-
-	ItemHandlerSpinboxDouble::~ItemHandlerSpinboxDouble ()
 	{
 	}
 }

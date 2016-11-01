@@ -33,16 +33,8 @@
 
 namespace LeechCraft
 {
-	void ItemHandlerBase::SetXmlSettingsDialog (Util::XmlSettingsDialog *xsd)
-	{
-		XSD_ = xsd;
-	}
-
-	ItemHandlerBase::ItemHandlerBase ()
-	{
-	}
-
-	ItemHandlerBase::~ItemHandlerBase ()
+	ItemHandlerBase::ItemHandlerBase (Util::XmlSettingsDialog *xsd)
+	: XSD_ { xsd }
 	{
 	}
 
