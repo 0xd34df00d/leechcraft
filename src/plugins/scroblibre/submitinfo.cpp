@@ -33,10 +33,6 @@ namespace LeechCraft
 {
 namespace Scroblibre
 {
-	SubmitInfo::SubmitInfo ()
-	{
-	}
-
 	SubmitInfo::SubmitInfo (const Media::AudioInfo& info)
 	: Info_ (info)
 	, TS_ (QDateTime::currentDateTime ())

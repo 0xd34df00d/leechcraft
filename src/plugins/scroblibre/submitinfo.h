@@ -41,7 +41,7 @@ namespace Scroblibre
 		Media::AudioInfo Info_;
 		QDateTime TS_;
 
-		SubmitInfo ();
+		SubmitInfo () = default;
 		SubmitInfo (const Media::AudioInfo&);
 		SubmitInfo (const Media::AudioInfo&, const QDateTime&);
 
