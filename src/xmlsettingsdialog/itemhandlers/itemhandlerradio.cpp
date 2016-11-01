@@ -114,4 +114,4 @@ namespace LeechCraft
 		}
 		return radiogroup->GetValue ();
 	}
-};
+}

@@ -56,4 +56,4 @@ namespace LeechCraft
 	{
 		return QVariant ();
 	}
-};
+}

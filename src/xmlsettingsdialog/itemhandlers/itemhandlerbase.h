@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBASE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERBASE_H
+#pragma once
+
 #include <QMap>
 #include <QVariant>
 #include <QDomElement>
@@ -153,6 +153,4 @@ namespace LeechCraft
 	};
 
 	typedef std::shared_ptr<ItemHandlerBase> ItemHandlerBase_ptr;
-};
-
-#endif
+}

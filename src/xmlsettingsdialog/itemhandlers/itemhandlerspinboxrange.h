@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSPINBOXRANGE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSPINBOXRANGE_H
+#pragma once
+
 #include "itemhandlerbase.h"
 
 namespace LeechCraft
@@ -47,6 +47,4 @@ namespace LeechCraft
 	protected:
 		QVariant GetObjectValue (QObject *object) const;
 	};
-};
-
-#endif
+}

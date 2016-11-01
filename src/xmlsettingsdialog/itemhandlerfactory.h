@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERFACTORY_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERFACTORY_H
+#pragma once
+
 #include <boost/function.hpp>
 #include <QList>
 #include <QDomElement>
@@ -122,6 +122,4 @@ namespace LeechCraft
 
 		void RegisterDatasourceSetter (const QString&, DataSourceSetter_t);
 	};
-};
-
-#endif
+}

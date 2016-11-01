@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSPINBOXDOUBLE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSPINBOXDOUBLE_H
+#pragma once
 
 #include "itemhandlerspinboxbase.h"
 #include <QDoubleSpinBox>
@@ -41,6 +40,4 @@ namespace LeechCraft
 		ItemHandlerSpinboxDouble ();
 		virtual ~ItemHandlerSpinboxDouble ();
 	};
-};
-
-#endif
+}

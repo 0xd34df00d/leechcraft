@@ -41,4 +41,4 @@ namespace LeechCraft
 	ItemHandlerSpinbox::~ItemHandlerSpinbox ()
 	{
 	}
-};
+}

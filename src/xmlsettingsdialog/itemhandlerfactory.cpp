@@ -169,4 +169,4 @@ namespace LeechCraft
 	{
 		Propname2DataSourceSetter_ [prop] = setter;
 	}
-};
+}

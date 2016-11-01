@@ -59,4 +59,4 @@ namespace LeechCraft
 				SLOT (handlePushButtonReleased ()));
 		button->setProperty ("SearchTerms", button->text ());
 	}
-};
+}

@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSPINBOXBASE_H
-#define XMLSETTINGSDIALOG_ITEMHANDLERS_ITEMHANDLERSPINBOXBASE_H
+#pragma once
 
 #include "itemhandlerstringgetvalue.h"
 #include <boost/function.hpp>
@@ -142,6 +141,4 @@ namespace LeechCraft
 			return spinbox->value ();
 		}
 	};
-};
-
-#endif
+}

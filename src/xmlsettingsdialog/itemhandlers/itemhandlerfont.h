@@ -33,7 +33,6 @@
 
 namespace LeechCraft
 {
-
 	class ItemHandlerFont : public ItemHandlerBase
 	{
 	public:

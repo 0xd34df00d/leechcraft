@@ -26,6 +26,7 @@
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
+
 #include "itemhandlerspinboxrange.h"
 #include <QLabel>
 #include <QGridLayout>
@@ -137,4 +138,4 @@ namespace LeechCraft
 		}
 		return widget->GetRange ();
 	}
-};
+}
