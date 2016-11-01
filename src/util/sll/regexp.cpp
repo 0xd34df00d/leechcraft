@@ -49,21 +49,16 @@ namespace Util
 
 	class PCREWrapper
 	{
-		pcre *RE_;
-		pcre_extra *Extra_;
+		pcre *RE_ = nullptr;
+		pcre_extra *Extra_ = nullptr;
 
 		QString Pattern_;
 		Qt::CaseSensitivity CS_;
 	public:
-		PCREWrapper ()
-		: RE_ (0)
-		, Extra_ (0)
-		{
-		}
+		PCREWrapper () = default;
 
 		PCREWrapper (const QString& str, Qt::CaseSensitivity cs)
 		: RE_ (Compile (str, cs))
-		, Extra_ (0)
 		, Pattern_ (str)
 		, CS_ (cs)
 		{
@@ -77,8 +72,6 @@ namespace Util
 		}
 
 		PCREWrapper (const PCREWrapper& other)
-		: RE_ (0)
-		, Extra_ (0)
 		{
 			*this = other;
 		}
