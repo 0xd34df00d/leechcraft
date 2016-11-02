@@ -46,7 +46,6 @@ namespace Vrooby
 	{
 		Q_OBJECT
 
-		QAbstractItemModel *Source_;
 		QList<QPersistentModelIndex> SourceIndexes_;
 	public:
 		enum CustomRoles
