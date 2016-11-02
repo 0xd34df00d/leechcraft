@@ -38,8 +38,7 @@
 
 namespace LeechCraft
 {
-	template<typename WidgetType,
-		typename ValueType>
+	template<typename WidgetType, typename ValueType>
 	class ItemHandlerSpinboxBase : public ItemHandlerStringGetValue
 	{
 	public:
