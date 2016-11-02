@@ -85,7 +85,7 @@ namespace Snails
 	private:
 		QHash<Address, Addresses_t> Addresses_;
 	public:
-		Message (QObject* = 0);
+		using QObject::QObject;
 
 		bool IsFullyFetched () const;
 

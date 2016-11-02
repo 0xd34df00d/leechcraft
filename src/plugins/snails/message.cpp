@@ -59,11 +59,6 @@ namespace Snails
 		return in;
 	}
 
-	Message::Message (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
 	bool Message::IsFullyFetched () const
 	{
 		return !Body_.isEmpty () || !HTMLBody_.isEmpty ();
