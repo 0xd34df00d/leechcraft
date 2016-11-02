@@ -51,7 +51,7 @@ namespace Util
 		Q_OBJECT
 
 		QByteArray Content_;
-		qint64 Offset_;
+		qint64 Offset_ = 0;
 	public:
 		/** @brief Creates the reply with the given url and parent.
 		 *
