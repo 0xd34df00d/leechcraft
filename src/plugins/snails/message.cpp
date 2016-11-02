@@ -61,7 +61,6 @@ namespace Snails
 
 	Message::Message (QObject *parent)
 	: QObject (parent)
-	, IsRead_ (false)
 	{
 	}
 

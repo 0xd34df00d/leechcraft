@@ -65,7 +65,7 @@ namespace Snails
 		QList<QByteArray> InReplyTo_;
 		QList<QByteArray> References_;
 
-		bool IsRead_;
+		bool IsRead_ = false;
 
 		QList<AttDescr> Attachments_;
 
