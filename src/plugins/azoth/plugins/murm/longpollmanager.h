@@ -54,7 +54,7 @@ namespace Murm
 
 		QString LPKey_;
 		QString LPServer_;
-		qulonglong LPTS_;
+		qulonglong LPTS_ = 0;
 
 		QUrl LPURLTemplate_;
 
