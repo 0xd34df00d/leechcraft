@@ -67,7 +67,7 @@ namespace MPRIS
 	"  </interface>\n"
 			"")
 
-		QObject *Tab_;
+		QObject * const Tab_;
 	public:
 		MediaPlayer2Adaptor (QObject*, Player*);
 
