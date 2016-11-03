@@ -58,13 +58,13 @@ namespace Zheet
 
 		Direction Dir_;
 		Type MT_;
-		SubType MST_;
+		SubType MST_ = SubType::Other;
 		QString Body_;
 		QDateTime DateTime_;
 
 		bool IsDelivered_;
 
-		int MsgID_;
+		int MsgID_ = -1;
 	public:
 		MSNMessage (Direction, Type, MSNBuddyEntry*);
 		MSNMessage (MSN::Message*, MSNBuddyEntry*);

@@ -46,7 +46,6 @@ namespace Zheet
 	, Entry_ (entry)
 	, Dir_ (dir)
 	, MT_ (type)
-	, MST_ (SubType::Other)
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (dir == Direction::In)
 	, MsgID_ (-1)
@@ -61,7 +60,6 @@ namespace Zheet
 	, Body_ (ZheetUtil::FromStd (msg->getBody ()))
 	, DateTime_ (QDateTime::currentDateTime ())
 	, IsDelivered_ (true)
-	, MsgID_ (-1)
 	{
 	}
 
