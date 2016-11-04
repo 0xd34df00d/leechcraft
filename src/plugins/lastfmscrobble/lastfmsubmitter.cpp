@@ -86,11 +86,6 @@ namespace Lastfmscrobble
 				Qt::UniqueConnection);
 	}
 
-	void LastFMSubmitter::Init (QNetworkAccessManager *manager)
-	{
-		NAM_ = manager;
-	}
-
 	bool LastFMSubmitter::IsConnected () const
 	{
 		return Scrobbler_ ? true : false;

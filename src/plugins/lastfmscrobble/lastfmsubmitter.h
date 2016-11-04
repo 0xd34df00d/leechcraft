@@ -80,7 +80,6 @@ namespace Lastfmscrobble
 	public:
 		LastFMSubmitter (QNetworkAccessManager*, QObject *parent = 0);
 
-		void Init (QNetworkAccessManager *manager);
 		bool IsConnected () const;
 
 		void NowPlaying (const MediaMeta&);
