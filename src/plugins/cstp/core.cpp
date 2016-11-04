@@ -75,8 +75,6 @@ namespace CSTP
 {
 	Core::Core ()
 	: Headers_ { "URL", tr ("State"), tr ("Progress") }
-	, SaveScheduled_ (false)
-	, Toolbar_ (0)
 	{
 		setObjectName ("CSTP Core");
 		qRegisterMetaType<std::shared_ptr<QFile>> ("std::shared_ptr<QFile>");
