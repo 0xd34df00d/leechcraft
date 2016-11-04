@@ -56,7 +56,7 @@ namespace OnlineBookmarks
 		Q_OBJECT
 
 		ICoreProxy_ptr CoreProxy_;
-		QObject *PluginProxy_;
+		QObject *PluginProxy_ = nullptr;
 		std::shared_ptr<PluginManager> PluginManager_;
 		AccountsSettings *AccountsSettings_;
 
