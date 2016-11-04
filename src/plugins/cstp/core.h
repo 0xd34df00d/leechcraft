@@ -79,7 +79,7 @@ namespace CSTP
 		typedef std::vector<TaskDescr> tasks_t;
 		tasks_t ActiveTasks_;
 		bool SaveScheduled_ = false;
-		QNetworkAccessManager *NetworkAccessManager_;
+		QNetworkAccessManager *NetworkAccessManager_ = nullptr;
 		QToolBar *Toolbar_ = nullptr;
 		QSet<QNetworkReply*> FinishedReplies_;
 		QModelIndex Selected_;
