@@ -45,7 +45,7 @@ namespace DBusManager
 		Q_CLASSINFO ("D-Bus Interface", "org.LeechCraft.DBus.WebFileStorage")
 		Q_PROPERTY (QStringList ServiceVariants READ GetServiceVariants)
 
-		IWebFileStorage *WFS_;
+		IWebFileStorage * const WFS_;
 	public:
 		WebFileStorageAdaptor (QObject*);
 
