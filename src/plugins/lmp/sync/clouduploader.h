@@ -45,7 +45,7 @@ namespace LMP
 	public:
 		struct UploadJob
 		{
-			bool RemoveOnFinish_;
+			bool RemoveOnFinish_ = false;
 			QString Account_;
 			QString Filename_;
 		};

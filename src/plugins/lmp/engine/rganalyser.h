@@ -45,14 +45,14 @@ namespace LMP
 	struct TrackRgResult
 	{
 		QString TrackPath_;
-		double TrackGain_;
-		double TrackPeak_;
+		double TrackGain_ = 0;
+		double TrackPeak_ = 0;
 	};
 
 	struct AlbumRgResult
 	{
-		double AlbumGain_;
-		double AlbumPeak_;
+		double AlbumGain_ = 0;
+		double AlbumPeak_ = 0;
 
 		QList<TrackRgResult> Tracks_;
 	};
