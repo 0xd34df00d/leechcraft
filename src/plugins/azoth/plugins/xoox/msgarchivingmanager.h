@@ -83,7 +83,7 @@ namespace Xoox
 	struct MsgArchPrefs
 	{
 		bool Valid_ = false;
-		bool AutoSave_;
+		bool AutoSave_ = false;
 		MsgArchSetting Default_;
 		QMap<MsgArchMethod, MsgArchMethodPolicy> MethodPolicies_;
 
