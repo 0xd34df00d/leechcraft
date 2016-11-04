@@ -49,7 +49,7 @@ namespace Xoox
 			Roster
 		};
 	private:
-		DefaultPolicy Policy_;
+		DefaultPolicy Policy_ = DefaultPolicy::Roster;
 	public:
 		Xep0313PrefIq (Type type = QXmppIq::Get);
 
