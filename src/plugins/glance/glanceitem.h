@@ -49,7 +49,7 @@ namespace Glance
 		Q_PROPERTY (qreal Opacity READ opacity WRITE setOpacity)
 		Q_PROPERTY (qreal Scale READ scale WRITE setScale)
 
-		int Index_;		
+		int Index_ = -1;
 		qreal Scale_;
 		QPropertyAnimation *ScaleAnim_;
 		bool Current_;
