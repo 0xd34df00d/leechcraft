@@ -88,8 +88,6 @@ namespace Xoox
 		QMap<MsgArchMethod, MsgArchMethodPolicy> MethodPolicies_;
 
 		QMap<QString, MsgArchSetting> ItemSettings_;
-
-		MsgArchPrefs ();
 	};
 
 	class MsgArchivingManager : public QXmppClientExtension

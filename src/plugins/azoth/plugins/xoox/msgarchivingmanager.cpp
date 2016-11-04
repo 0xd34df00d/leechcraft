@@ -183,11 +183,6 @@ namespace Xoox
 		return static_cast<int> (m1) < static_cast<int> (m2);
 	}
 
-	MsgArchPrefs::MsgArchPrefs ()
-	: Valid_ (false)
-	{
-	}
-
 	MsgArchivingManager::MsgArchivingManager (ClientConnection *conn)
 	: Conn_ (conn)
 	{
