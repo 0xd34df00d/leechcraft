@@ -58,10 +58,9 @@ namespace Lastfmscrobble
 	struct MediaMeta
 	{
 		QString Artist_, Album_, Title_, Genre_, Date_;
-		int TrackNumber_;
-		int Length_;
+		int TrackNumber_ = 0;
+		int Length_ = 0;
 
-		MediaMeta ();
 		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
 		explicit MediaMeta (const Media::AudioInfo& tagMap);
 	};

@@ -42,12 +42,6 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	MediaMeta::MediaMeta ()
-	: TrackNumber_ (0)
-	, Length_ (0)
-	{
-	}
-
 	MediaMeta::MediaMeta (const QMap<QString, QVariant>& tagMap)
 	: Artist_ (tagMap ["Artist"].toString ())
 	, Album_ (tagMap ["Album"].toString ())
