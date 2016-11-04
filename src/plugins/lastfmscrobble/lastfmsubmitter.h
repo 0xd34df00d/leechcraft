@@ -72,7 +72,7 @@ namespace Lastfmscrobble
 
 		std::shared_ptr<lastfm::Audioscrobbler> Scrobbler_;
 
-		QNetworkAccessManager *NAM_;
+		QNetworkAccessManager * const NAM_;
 
 		QTimer *SubmitTimer_;
 
