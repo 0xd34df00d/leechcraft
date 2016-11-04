@@ -50,9 +50,9 @@ namespace Glance
 		Q_PROPERTY (qreal Scale READ scale WRITE setScale)
 
 		int Index_ = -1;
-		qreal Scale_;
+		qreal Scale_ = 0;
 		QPropertyAnimation *ScaleAnim_;
-		bool Current_;
+		bool Current_ = false;
 		QList<GlanceItem*> ItemsList_;
 		QRect CloseButtonRect_;
 		QPixmap Pixmap_;

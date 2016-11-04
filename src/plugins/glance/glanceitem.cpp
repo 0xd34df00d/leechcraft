@@ -46,9 +46,7 @@ namespace Glance
 {
 	GlanceItem::GlanceItem (const QPixmap& px, const QRect& closeButtonRect, QGraphicsItem *parent)
 	: QGraphicsPixmapItem (px, parent)
-	, Scale_ (0)
 	, ScaleAnim_ (new QPropertyAnimation (this, "Scale"))
-	, Current_ (false)
 	, CloseButtonRect_ (closeButtonRect)
 	, Pixmap_ (px)
 	{
