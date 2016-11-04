@@ -70,8 +70,9 @@ namespace Lastfmscrobble
 	{
 	}
 
-	LastFMSubmitter::LastFMSubmitter (QObject *parent)
+	LastFMSubmitter::LastFMSubmitter (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
+	, NAM_ (nam)
 	, SubmitTimer_ (new QTimer (this))
 	{
 		lastfm::ws::ApiKey = "a5ca8821e39cdb5efd2e5667070084b2";

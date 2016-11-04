@@ -65,8 +65,7 @@ namespace Lastfmscrobble
 
 		Auth_ = new Authenticator (proxy->GetNetworkAccessManager (), proxy, this);
 
-		LFSubmitter_ = new LastFMSubmitter (this);
-		LFSubmitter_->Init (Proxy_->GetNetworkAccessManager ());
+		LFSubmitter_ = new LastFMSubmitter (Proxy_->GetNetworkAccessManager (), this);
 
 		connect (Auth_,
 				SIGNAL (authenticated ()),
