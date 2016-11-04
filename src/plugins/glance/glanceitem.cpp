@@ -88,9 +88,9 @@ namespace Glance
 	void GlanceItem::hoverMoveEvent (QGraphicsSceneHoverEvent *e)
 	{
 		if (CloseButtonRect_.contains (e->pos ().toPoint ()))
-				DrawCloseButton(true);
+			DrawCloseButton (true);
 		else
-				DrawCloseButton(false);
+			DrawCloseButton (false);
 	}
 
 	void GlanceItem::hoverLeaveEvent (QGraphicsSceneHoverEvent*)
