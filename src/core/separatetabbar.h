@@ -43,15 +43,15 @@ namespace LeechCraft
 	{
 		Q_OBJECT
 
-		MainWindow *Window_;
+		MainWindow *Window_ = nullptr;
 
-		int Id_;
-		bool InMove_;
+		int Id_ = 0;
+		bool InMove_ = false;
 		SeparateTabWidget *TabWidget_;
 
 		QPoint DragStartPos_;
 
-		QWidget *AddTabButton_;
+		QWidget *AddTabButton_ = nullptr;
 		mutable QVector<int> ComputedWidths_;
 	public:
 		explicit SeparateTabBar (QWidget* = 0);

@@ -49,10 +49,6 @@ namespace LeechCraft
 {
 	SeparateTabBar::SeparateTabBar (QWidget *parent)
 	: QTabBar (parent)
-	, Window_ (0)
-	, Id_ (0)
-	, InMove_ (false)
-	, AddTabButton_ (nullptr)
 	{
 		setObjectName ("org_LeechCraft_MainWindow_CentralTabBar");
 		setExpanding (false);
