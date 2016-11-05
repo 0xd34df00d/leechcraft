@@ -42,14 +42,14 @@ namespace Aggregator
 	{
 		Q_DECLARE_TR_FUNCTIONS (AppWideActions)
 	public:
-		QAction *ActionAddFeed_;
-		QAction *ActionUpdateFeeds_;
-		QAction *ActionImportOPML_;
-		QAction *ActionExportOPML_;
-		QAction *ActionImportBinary_;
-		QAction *ActionExportBinary_;
-		QAction *ActionExportFB2_;
-		QAction *ActionMarkAllAsRead_;
+		QAction *ActionAddFeed_ = nullptr;
+		QAction *ActionUpdateFeeds_ = nullptr;
+		QAction *ActionImportOPML_ = nullptr;
+		QAction *ActionExportOPML_ = nullptr;
+		QAction *ActionImportBinary_ = nullptr;
+		QAction *ActionExportBinary_ = nullptr;
+		QAction *ActionExportFB2_ = nullptr;
+		QAction *ActionMarkAllAsRead_ = nullptr;
 
 		void SetupActionsStruct (QWidget*);
 	};
@@ -58,13 +58,13 @@ namespace Aggregator
 	{
 		Q_DECLARE_TR_FUNCTIONS (ChannelActions)
 	public:
-		QAction *ActionRemoveFeed_;
-		QAction *ActionUpdateSelectedFeed_;
-		QAction *ActionRenameFeed_;
-		QAction *ActionMarkChannelAsRead_;
-		QAction *ActionMarkChannelAsUnread_;
-		QAction *ActionRemoveChannel_;
-		QAction *ActionChannelSettings_;
+		QAction *ActionRemoveFeed_ = nullptr;
+		QAction *ActionUpdateSelectedFeed_ = nullptr;
+		QAction *ActionRenameFeed_ = nullptr;
+		QAction *ActionMarkChannelAsRead_ = nullptr;
+		QAction *ActionMarkChannelAsUnread_ = nullptr;
+		QAction *ActionRemoveChannel_ = nullptr;
+		QAction *ActionChannelSettings_ = nullptr;
 
 		void SetupActionsStruct (QWidget*);
 	};
