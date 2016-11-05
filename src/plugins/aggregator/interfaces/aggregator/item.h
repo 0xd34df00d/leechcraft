@@ -74,7 +74,7 @@ namespace Aggregator
 
 		/** @brief Length of the attached enclosure or -1 if unknown.
 			*/
-		qint64 Length_;
+		qint64 Length_ = 0;
 
 		/** @brief  For the Atom's hreflang attribute.
 			*/
@@ -110,8 +110,8 @@ namespace Aggregator
 		IDType_t MRSSThumbnailID_;
 		IDType_t MRSSEntryID_;
 		QString URL_;
-		int Width_;
-		int Height_;
+		int Width_ = 0;
+		int Height_ = 0;
 		QString Time_;
 
 		MRSSThumbnail (const IDType_t& entryId);
@@ -283,12 +283,12 @@ namespace Aggregator
 
 		/** Indicates whether this item is unread or not.
 			*/
-		bool Unread_;
+		bool Unread_ = false;
 
 		/** Number of comments for this item. Should be set to -1 if it could
 			* not be determined from the item representation in the feed.
 			*/
-		int NumComments_;
+		int NumComments_ = 0;
 
 		/** Link to the comments RSS. Should be left blank if it could not
 			* be determined from the item representation in the feed.
@@ -306,11 +306,11 @@ namespace Aggregator
 
 		/** Latitude in the GeoRSS context.
 			*/
-		double Latitude_;
+		double Latitude_ = -1;
 
 		/** Longitude in the GeoRSS context.
 			*/
-		double Longitude_;
+		double Longitude_ = -1;
 
 		/* List of MediaRSS entries.
 			*/
