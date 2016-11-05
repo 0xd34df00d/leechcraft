@@ -47,7 +47,7 @@ namespace LeechCraft
 
 		int Id_ = 0;
 		bool InMove_ = false;
-		SeparateTabWidget *TabWidget_;
+		SeparateTabWidget *TabWidget_ = nullptr;
 
 		QPoint DragStartPos_;
 
