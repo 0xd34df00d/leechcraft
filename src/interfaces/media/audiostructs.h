@@ -57,15 +57,15 @@ namespace Media
 
 		/** @brief The length of this track in seconds.
 		 */
-		qint32 Length_;
+		qint32 Length_ = 0;
 
 		/** @brief The year of the Album_ this track is on.
 		 */
-		qint32 Year_;
+		qint32 Year_ = 0;
 
 		/** @brief The number of this track on the Album_.
 		 */
-		qint32 TrackNumber_;
+		qint32 TrackNumber_ = 0;
 
 		/** @brief Other fields of this audio info.
 		 *
