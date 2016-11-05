@@ -138,7 +138,7 @@ namespace LeechCraft
 		virtual QVariant GetObjectValue (QObject *object) const = 0;
 
 		Prop2NewValue_t ChangedProperties_;
-		Util::XmlSettingsDialog *XSD_;
+		Util::XmlSettingsDialog * const XSD_;
 	protected slots:
 		/** @brief This slot should be invoked when created widget
 		 * changes value.
