@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "pluginmanager.h"
+#include "interfaces/aggregator/iaggregatorplugin.h"
 
 namespace LeechCraft
 {
@@ -41,6 +42,8 @@ namespace Aggregator
 
 	void PluginManager::AddPlugin (QObject *plugin)
 	{
+		if (const auto iap = qobject_cast<IAggregatorPlugin*> (plugin))
+			iap->InitPlugin (ProxyObject_.get ());
 		QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
 		if (plugin->metaObject ()->indexOfMethod (sig) != -1)
 			QMetaObject::invokeMethod (plugin,
