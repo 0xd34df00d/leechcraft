@@ -33,6 +33,7 @@
 #include <interfaces/iscriptloader.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
+#include <interfaces/aggregator/iproxyobject.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include "workerobject.h"
@@ -140,6 +141,11 @@ namespace BodyFetch
 		QSet<QByteArray> result;
 		result << "org.LeechCraft.Aggregator.GeneralPlugin/1.0";
 		return result;
+	}
+
+	void Plugin::initPlugin (QObject *obj)
+	{
+		AggregatorProxy_ = qobject_cast<IProxyObject*> (obj);
 	}
 
 	void Plugin::hookItemLoad (IHookProxy_ptr, Item *item)

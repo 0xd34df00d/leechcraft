@@ -41,6 +41,8 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+class IProxyObject;
+
 struct Item;
 
 namespace BodyFetch
@@ -62,6 +64,8 @@ namespace BodyFetch
 		QHash<int, QPair<QUrl, QString>> Jobs_;
 		QHash<int, QString> ContentsCache_;
 		QSet<quint64> FetchedItems_;
+
+		IProxyObject *AggregatorProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -73,6 +77,8 @@ namespace BodyFetch
 
 		QSet<QByteArray> GetPluginClasses () const;
 	public slots:
+		void initPlugin (QObject*);
+
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
