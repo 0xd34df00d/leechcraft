@@ -34,6 +34,7 @@
 #include <QDir>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/aggregator/iaggregatorplugin.h>
 #include <interfaces/aggregator/item.h>
 #include <interfaces/core/ihookproxy.h>
 
@@ -53,9 +54,12 @@ namespace BodyFetch
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IAggregatorPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				LeechCraft::Aggregator::IAggregatorPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator.BodyFetch")
 
@@ -77,9 +81,9 @@ namespace BodyFetch
 		QIcon GetIcon () const;
 
 		QSet<QByteArray> GetPluginClasses () const;
-	public slots:
-		void initPlugin (QObject*);
 
+		void InitPlugin (IProxyObject*);
+	public slots:
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,

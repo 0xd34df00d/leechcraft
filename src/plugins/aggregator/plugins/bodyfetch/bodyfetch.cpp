@@ -33,7 +33,6 @@
 #include <interfaces/iscriptloader.h>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ipluginsmanager.h>
-#include <interfaces/aggregator/iproxyobject.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include "workerobject.h"
@@ -143,9 +142,9 @@ namespace BodyFetch
 		return result;
 	}
 
-	void Plugin::initPlugin (QObject *obj)
+	void Plugin::InitPlugin (IProxyObject *proxy)
 	{
-		AggregatorProxy_ = qobject_cast<IProxyObject*> (obj);
+		AggregatorProxy_ = proxy;
 	}
 
 	void Plugin::hookItemLoad (IHookProxy_ptr, Item *item)
