@@ -35,6 +35,7 @@
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/aggregator/item.h>
+#include <interfaces/aggregator/iaggregatorplugin.h>
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/ihavesettings.h>
 
@@ -55,9 +56,13 @@ namespace WebAccess
 				 , public IInfo
 				 , public IPlugin2
 				 , public IHaveSettings
+				 , public IAggregatorPlugin
 	{
 		Q_OBJECT
-		Q_INTERFACES (IInfo IPlugin2 IHaveSettings)
+		Q_INTERFACES (IInfo
+				IPlugin2
+				IHaveSettings
+				LeechCraft::Aggregator::IAggregatorPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Aggregator.WebAccess")
 
@@ -79,8 +84,8 @@ namespace WebAccess
 		QSet<QByteArray> GetPluginClasses () const;
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
-	public Q_SLOTS:
-		void initPlugin (QObject*);
+
+		void InitPlugin (IProxyObject*);
 	Q_SIGNALS:
 		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};

@@ -29,7 +29,6 @@
 
 #include "webaccess.h"
 #include <QIcon>
-#include <interfaces/aggregator/iproxyobject.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
 #include <util/xsd/addressesmodelmanager.h>
@@ -99,11 +98,11 @@ namespace WebAccess
 		return XSD_;
 	}
 
-	void Plugin::initPlugin (QObject *proxy)
+	void Plugin::InitPlugin (IProxyObject *proxy)
 	{
 		try
 		{
-			SM_ = std::make_shared<ServerManager> (qobject_cast<IProxyObject*> (proxy), Proxy_, AddrMgr_);
+			SM_ = std::make_shared<ServerManager> (proxy, Proxy_, AddrMgr_);
 		}
 		catch (const std::exception& e)
 		{
