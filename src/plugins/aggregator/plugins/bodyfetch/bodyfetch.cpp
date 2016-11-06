@@ -71,7 +71,7 @@ namespace BodyFetch
 
 	void Plugin::SecondInit ()
 	{
-		WO_ = new WorkerObject (this);
+		WO_ = new WorkerObject (AggregatorProxy_, this);
 
 		IScriptLoader *loader = Proxy_->GetPluginsManager ()->
 				GetAllCastableTo<IScriptLoader*> ().value (0, 0);
@@ -177,7 +177,7 @@ namespace BodyFetch
 			item->Description_ = contents;
 	}
 
-	void Plugin::hookGotNewItems (IHookProxy_ptr, QVariantList items)
+	void Plugin::hookGotNewItems (IHookProxy_ptr, const QList<Item_cptr>& items)
 	{
 		if (!WO_ || !WO_->IsOk ())
 			return;

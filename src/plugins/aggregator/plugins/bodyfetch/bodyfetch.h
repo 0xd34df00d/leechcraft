@@ -44,6 +44,7 @@ namespace Aggregator
 class IProxyObject;
 
 struct Item;
+using Item_cptr = std::shared_ptr<const Item>;
 
 namespace BodyFetch
 {
@@ -82,7 +83,7 @@ namespace BodyFetch
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
 		void hookGotNewItems (LeechCraft::IHookProxy_ptr proxy,
-				QVariantList items);
+				const QList<Item_cptr>& items);
 	private slots:
 		void handleDownload (QUrl);
 		void handleJobFinished (int);

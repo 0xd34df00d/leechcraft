@@ -44,6 +44,9 @@
 #include <util/sll/util.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
+#include <interfaces/aggregator/iproxyobject.h>
+#include <interfaces/aggregator/item.h>
+#include <interfaces/aggregator/channel.h>
 
 uint qHash (IScript_ptr script)
 {
@@ -79,7 +82,7 @@ namespace BodyFetch
 		return Inst_.get ();
 	}
 
-	void WorkerObject::AppendItems (const QVariantList& items)
+	void WorkerObject::AppendItems (const QList<Item_cptr>& items)
 	{
 		Items_ << items;
 
@@ -88,7 +91,7 @@ namespace BodyFetch
 				SLOT (process ()));
 	}
 
-	void WorkerObject::ProcessItems (const QVariantList& items)
+	void WorkerObject::ProcessItems (const QList<Item_cptr>& items)
 	{
 		if (!Inst_)
 		{
@@ -104,9 +107,11 @@ namespace BodyFetch
 
 		for (const auto& item : items)
 		{
-			const auto& map = item.toMap ();
+			const auto& channelPtr = AggregatorProxy_->GetChannel (item->ChannelID_);
+			if (!channelPtr)
+				continue;
 
-			const auto& channelLinkStr = map ["ChannelLink"].toString ();
+			const auto& channelLinkStr = channelPtr->Link_;
 
 			auto script = channel2script.value (channelLinkStr);
 			if (!script)
@@ -119,19 +124,19 @@ namespace BodyFetch
 
 			const QVariantList args
 			{
-				map ["ItemLink"],
-				map ["ItemCommentsPageLink"],
-				map ["ItemDescription"]
+				item->Link_,
+				item->CommentsPageLink_,
+				item->Description_
 			};
 			auto fetchStr = script->InvokeMethod ("GetFullURL", args).toString ();
 			if (fetchStr.isEmpty ())
-				fetchStr = map ["ItemLink"].toString ();
+				fetchStr = item->Link_;
 
 			qDebug () << Q_FUNC_INFO << fetchStr << "using" << ChannelLink2ScriptID_ [channelLinkStr];
 
 			const auto& url = QUrl::fromEncoded (fetchStr.toUtf8 ());
 			URL2Script_ [url] = script;
-			URL2ItemID_ [url] = map ["ItemID"].value<quint64> ();
+			URL2ItemID_ [url] = item->ItemID_;
 			emit downloadRequested (url);
 		}
 	}
