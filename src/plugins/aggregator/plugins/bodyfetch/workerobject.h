@@ -41,11 +41,15 @@ namespace LeechCraft
 {
 namespace Aggregator
 {
+class IProxyObject;
+
 namespace BodyFetch
 {
 	class WorkerObject : public QObject
 	{
 		Q_OBJECT
+
+		IProxyObject * const AggregatorProxy_;
 
 		IScriptLoaderInstance_ptr Inst_;
 		QVariantList Items_;
@@ -65,7 +69,7 @@ namespace BodyFetch
 
 		QDir StorageDir_;
 	public:
-		WorkerObject (QObject* = 0);
+		WorkerObject (IProxyObject*, QObject* = nullptr);
 
 		void SetLoaderInstance (const IScriptLoaderInstance_ptr&);
 		bool IsOk () const;

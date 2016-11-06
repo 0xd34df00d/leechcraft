@@ -56,9 +56,10 @@ namespace Aggregator
 {
 namespace BodyFetch
 {
-	WorkerObject::WorkerObject (QObject *parent)
-	: QObject (parent)
-	, StorageDir_ (Util::CreateIfNotExists ("aggregator/bodyfetcher/storage"))
+	WorkerObject::WorkerObject (IProxyObject *proxy, QObject *parent)
+	: QObject { parent }
+	, AggregatorProxy_ { proxy }
+	, StorageDir_ { Util::CreateIfNotExists ("aggregator/bodyfetcher/storage") }
 	{
 		QTimer *timer = new QTimer { this };
 		connect (timer,
