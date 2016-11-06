@@ -65,7 +65,6 @@ namespace BodyFetch
 			}
 		}
 
-		WO_ = 0;
 		Proxy_ = proxy;
 	}
 

@@ -58,7 +58,7 @@ namespace BodyFetch
 
 		ICoreProxy_ptr Proxy_;
 		QDir StorageDir_;
-		WorkerObject *WO_;
+		WorkerObject *WO_ = nullptr;
 		QHash<int, QPair<QUrl, QString>> Jobs_;
 		QHash<int, QString> ContentsCache_;
 		QSet<quint64> FetchedItems_;
