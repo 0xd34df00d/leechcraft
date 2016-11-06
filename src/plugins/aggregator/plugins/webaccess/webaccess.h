@@ -86,8 +86,6 @@ namespace WebAccess
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
 		void InitPlugin (IProxyObject*);
-	Q_SIGNALS:
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
 	};
 }
 }
