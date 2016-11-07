@@ -127,6 +127,37 @@ namespace PDF
 	{
 		Doc_->RequestNavigation (QString (), Dest_->pageNumber () - 1, Dest_->left (), Dest_->top ());
 	}
+
+	QString TOCLink::GetDocumentFilename () const
+	{
+		return {};
+	}
+
+	int TOCLink::GetPageNumber () const
+	{
+		return Dest_->pageNumber () - 1;
+	}
+
+	double TOCLink::NewX () const
+	{
+		return Dest_->isChangeLeft () ?
+				Dest_->left () :
+				-1;
+	}
+
+	double TOCLink::NewY () const
+	{
+		return Dest_->isChangeTop () ?
+				Dest_->top () :
+				-1;
+	}
+
+	double TOCLink::NewZoom () const
+	{
+		return Dest_->isChangeZoom () ?
+				Dest_->zoom () :
+				-1;
+	}
 }
 }
 }

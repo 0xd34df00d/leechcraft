@@ -71,19 +71,27 @@ namespace PDF
 
 	class TOCLink : public QObject
 				  , public ILink
+				  , public IPageLink
 	{
 		Q_OBJECT
-		Q_INTERFACES (LeechCraft::Monocle::ILink)
+		Q_INTERFACES (LeechCraft::Monocle::ILink LeechCraft::Monocle::IPageLink)
 	protected:
 		Document *Doc_;
 		std::unique_ptr<Poppler::LinkDestination> Dest_;
 	public:
 		TOCLink (Document*, Poppler::LinkDestination*);
 
-		LinkType GetLinkType () const;
-		QRectF GetArea () const;
+		LinkType GetLinkType () const override;
+		QRectF GetArea () const override;
 
-		void Execute ();
+		void Execute () override;
+
+		QString GetDocumentFilename () const override;
+		int GetPageNumber () const override;
+
+		double NewX () const override;
+		double NewY () const override;
+		double NewZoom () const override;
 	};
 }
 }
