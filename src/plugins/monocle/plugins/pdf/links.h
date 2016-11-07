@@ -53,7 +53,6 @@ namespace PDF
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::ILink)
 
-	protected:
 		Document *Doc_;
 		std::shared_ptr<Poppler::Link> Link_;
 	public:
@@ -75,7 +74,7 @@ namespace PDF
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Monocle::ILink LeechCraft::Monocle::IPageLink)
-	protected:
+
 		Document *Doc_;
 		std::unique_ptr<Poppler::LinkDestination> Dest_;
 	public:
