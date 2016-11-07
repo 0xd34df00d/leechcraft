@@ -55,13 +55,25 @@ namespace Monocle
 		Ui_.TOCTree_->expandToDepth (0);
 	}
 
+	namespace
+	{
+		QString NormalizeName (QString name)
+		{
+			return name
+					.replace ("\r\n", "\n")
+					.replace ("\r", "\n");
+		}
+	}
+
 	template<typename T>
 	void TOCWidget::AddWorker (T addable, const TOCEntryLevel_t& level)
 	{
 		for (const auto& entry : level)
 		{
-			auto item = new QStandardItem (entry.Name_);
-			item->setToolTip (entry.Name_);
+			const auto& name = NormalizeName (entry.Name_);
+
+			auto item = new QStandardItem (name);
+			item->setToolTip (name);
 			item->setEditable (false);
 			Item2Link_ [item] = entry.Link_;
 
