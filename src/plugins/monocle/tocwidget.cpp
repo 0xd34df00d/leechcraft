@@ -35,6 +35,11 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	uint qHash (const LeechCraft::Monocle::ILink_ptr& link)
+	{
+		return ::qHash (link.get ());
+	}
+
 	TOCWidget::TOCWidget (QWidget *parent)
 	: QWidget (parent)
 	, Model_ (new QStandardItemModel (this))
