@@ -111,6 +111,27 @@ namespace Monocle
 		}
 	}
 
+	void TOCWidget::updateCurrentPage (int index)
+	{
+		const auto linkPos = std::upper_bound (IntraDocPageLinks_.begin (),
+				IntraDocPageLinks_.end (),
+				index,
+				[] (int index, const auto& link) { return index < link->GetPageNumber (); });
+		if (linkPos == IntraDocPageLinks_.begin ())
+			return;
+
+		const auto item = Link2Item_.value (std::dynamic_pointer_cast<ILink> (*std::prev (linkPos)));
+		if (!item)
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no item for page"
+					<< index;
+			return;
+		}
+
+		Ui_.TOCTree_->setCurrentIndex (item->index ());
+	}
+
 	void TOCWidget::on_TOCTree__activated (const QModelIndex& index)
 	{
 		auto item = Model_->itemFromIndex (index);

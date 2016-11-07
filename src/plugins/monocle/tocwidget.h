@@ -60,6 +60,8 @@ namespace Monocle
 	private:
 		template<typename T>
 		void AddWorker (T, const TOCEntryLevel_t&);
+	public slots:
+		void updateCurrentPage (int);
 	private slots:
 		void on_TOCTree__activated (const QModelIndex&);
 	};
