@@ -48,6 +48,7 @@ namespace Monocle
 		setEnabled (!topLevel.isEmpty ());
 
 		Item2Link_.clear ();
+		IntraDocPageLinks_.clear ();
 		Model_->clear ();
 
 		AddWorker (Model_, topLevel);
@@ -80,6 +81,10 @@ namespace Monocle
 			AddWorker (item, entry.ChildLevel_);
 
 			addable->appendRow (item);
+
+			if (const auto ipl = std::dynamic_pointer_cast<IPageLink> (entry.Link_))
+				if (ipl->GetDocumentFilename ().isEmpty ())
+					IntraDocPageLinks_ << ipl;
 		}
 	}
 

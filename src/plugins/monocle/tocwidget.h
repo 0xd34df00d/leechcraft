@@ -40,6 +40,9 @@ namespace LeechCraft
 {
 namespace Monocle
 {
+	class IPageLink;
+	using IPageLink_ptr = std::shared_ptr<IPageLink>;
+
 	class TOCWidget : public QWidget
 	{
 		Q_OBJECT
@@ -48,6 +51,7 @@ namespace Monocle
 		QStandardItemModel *Model_;
 
 		QHash<QStandardItem*, ILink_ptr> Item2Link_;
+		QList<IPageLink_ptr> IntraDocPageLinks_;
 	public:
 		TOCWidget (QWidget* = 0);
 
