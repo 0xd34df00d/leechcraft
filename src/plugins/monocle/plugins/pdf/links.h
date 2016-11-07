@@ -60,10 +60,10 @@ namespace PDF
 		explicit Link (Document*, Poppler::Link*);
 		explicit Link (Document*, Poppler::Link*, const std::shared_ptr<void>&);
 
-		LinkType GetLinkType () const;
-		QRectF GetArea () const;
+		LinkType GetLinkType () const override;
+		QRectF GetArea () const override;
 
-		void Execute ();
+		void Execute () override;
 	private:
 		void ExecutePageLink ();
 		void ExecuteCommandLink ();
