@@ -44,11 +44,6 @@ namespace Aggregator
 	{
 		if (const auto iap = qobject_cast<IAggregatorPlugin*> (plugin))
 			iap->InitPlugin (ProxyObject_.get ());
-		QByteArray sig = QMetaObject::normalizedSignature ("initPlugin (QObject*)");
-		if (plugin->metaObject ()->indexOfMethod (sig) != -1)
-			QMetaObject::invokeMethod (plugin,
-					"initPlugin",
-					Q_ARG (QObject*, ProxyObject_.get ()));
 
 		Util::BaseHookInterconnector::AddPlugin (plugin);
 	}
