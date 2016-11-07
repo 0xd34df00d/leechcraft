@@ -72,7 +72,7 @@ namespace Monocle
 		{
 			const auto& name = NormalizeName (entry.Name_);
 
-			auto item = new QStandardItem (name);
+			auto item = new QStandardItem (QString { name }.replace ('\n', ' '));
 			item->setToolTip (name);
 			item->setEditable (false);
 			Item2Link_ [item] = entry.Link_;
