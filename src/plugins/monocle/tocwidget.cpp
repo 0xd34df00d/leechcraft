@@ -63,6 +63,7 @@ namespace Monocle
 		setEnabled (!topLevel.isEmpty ());
 
 		Item2Link_.clear ();
+		Link2Item_.clear ();
 		IntraDocPageLinks_.clear ();
 		Model_->clear ();
 
@@ -98,6 +99,7 @@ namespace Monocle
 			item->setToolTip (name);
 			item->setEditable (false);
 			Item2Link_ [item] = entry.Link_;
+			Link2Item_ [entry.Link_] = item;
 
 			AddWorker (item, entry.ChildLevel_);
 

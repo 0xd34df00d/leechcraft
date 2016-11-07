@@ -51,6 +51,7 @@ namespace Monocle
 		QStandardItemModel *Model_;
 
 		QHash<QStandardItem*, ILink_ptr> Item2Link_;
+		QHash<ILink_ptr, QStandardItem*> Link2Item_;
 		QList<IPageLink_ptr> IntraDocPageLinks_;
 	public:
 		TOCWidget (QWidget* = 0);
