@@ -72,17 +72,17 @@ namespace BodyFetch
 
 		IProxyObject *AggregatorProxy_ = nullptr;
 	public:
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		QByteArray GetUniqueID () const;
-		void Release ();
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		QByteArray GetUniqueID () const override;
+		void Release () override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		void InitPlugin (IProxyObject*);
+		void InitPlugin (IProxyObject*) override;
 	public slots:
 		void hookItemLoad (LeechCraft::IHookProxy_ptr proxy,
 				Item*);
@@ -95,7 +95,7 @@ namespace BodyFetch
 	signals:
 		void downloadFinished (QUrl, QString);
 
-		void delegateEntity (const LeechCraft::Entity&, int*, QObject**);
+		void delegateEntity (const LeechCraft::Entity&, int*, QObject**) override;
 	};
 }
 }
