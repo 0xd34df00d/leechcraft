@@ -58,7 +58,7 @@ namespace Monocle
 	template<typename T>
 	void TOCWidget::AddWorker (T addable, const TOCEntryLevel_t& level)
 	{
-		Q_FOREACH (const auto& entry, level)
+		for (const auto& entry : level)
 		{
 			auto item = new QStandardItem (entry.Name_);
 			item->setToolTip (entry.Name_);
