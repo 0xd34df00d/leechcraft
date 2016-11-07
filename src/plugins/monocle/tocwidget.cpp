@@ -43,6 +43,16 @@ namespace Monocle
 		Ui_.TOCTree_->setModel (Model_);
 	}
 
+	namespace
+	{
+		auto Tuplize (const IPageLink_ptr& link)
+		{
+			return std::make_tuple (link->GetPageNumber (),
+					link->NewX (),
+					link->NewY ());
+		}
+	}
+
 	void TOCWidget::SetTOC (const TOCEntryLevel_t& topLevel)
 	{
 		setEnabled (!topLevel.isEmpty ());
@@ -52,6 +62,12 @@ namespace Monocle
 		Model_->clear ();
 
 		AddWorker (Model_, topLevel);
+
+		std::sort (IntraDocPageLinks_.begin (), IntraDocPageLinks_.end (),
+				[] (const auto& left, const auto& right)
+				{
+					return Tuplize (left) < Tuplize (right);
+				});
 
 		Ui_.TOCTree_->expandToDepth (0);
 	}
