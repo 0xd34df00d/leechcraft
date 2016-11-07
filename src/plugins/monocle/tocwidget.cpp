@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "tocwidget.h"
+#include <algorithm>
+#include <iterator>
 #include <QStandardItemModel>
 #include <QtDebug>
 
