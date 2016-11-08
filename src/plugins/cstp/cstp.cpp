@@ -117,20 +117,6 @@ namespace CSTP
 		return QStringList ("http") << "https" << "remoteable" << "resume";
 	}
 
-	QStringList CSTP::Needs () const
-	{
-		return QStringList ();
-	}
-
-	QStringList CSTP::Uses () const
-	{
-		return QStringList ();
-	}
-
-	void CSTP::SetProvider (QObject*, const QString&)
-	{
-	}
-
 	QIcon CSTP::GetIcon () const
 	{
 		static QIcon icon ("lcicons:/plugins/cstp/resources/images/cstp.svg");

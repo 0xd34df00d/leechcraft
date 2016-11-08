@@ -77,9 +77,6 @@ namespace CSTP
 		QString GetName () const;
 		QString GetInfo () const;
 		QStringList Provides () const;
-		QStringList Needs () const;
-		QStringList Uses () const;
-		void SetProvider (QObject*, const QString&);
 		QIcon GetIcon () const;
 
 		qint64 GetDownloadSpeed () const;
