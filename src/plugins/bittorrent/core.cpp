@@ -847,8 +847,16 @@ namespace BitTorrent
 
 	void Core::GetPerTracker (Core::pertrackerstats_t& stats) const
 	{
-		std::accumulate (Handles_.begin (), Handles_.end (), 0,
-				PerTrackerAccumulator (stats));
+		for (const auto& handle : Handles_)
+		{
+			const auto& s = handle.Handle_.status (0);
+			QString domain = QUrl (s.current_tracker.c_str ()).host ();
+			if (domain.size ())
+			{
+				stats [domain].DownloadRate_ += s.download_payload_rate;
+				stats [domain].UploadRate_ += s.upload_payload_rate;
+			}
+		}
 	}
 
 	int Core::GetListenPort () const
