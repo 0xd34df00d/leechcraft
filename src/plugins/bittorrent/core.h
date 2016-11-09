@@ -153,14 +153,6 @@ namespace BitTorrent
 		};
 		typedef QMap<QString, PerTrackerStats> pertrackerstats_t;
 	private:
-		struct PerTrackerAccumulator
-		{
-			pertrackerstats_t& Stats_;
-
-			PerTrackerAccumulator (pertrackerstats_t&);
-			int operator() (int, const Core::TorrentStruct& str);
-		};
-
 		CachedStatusKeeper * const StatusKeeper_;
 
 		NotifyManager *NotifyManager_;

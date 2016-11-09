@@ -111,24 +111,6 @@ namespace LeechCraft
 {
 namespace BitTorrent
 {
-	Core::PerTrackerAccumulator::PerTrackerAccumulator (Core::pertrackerstats_t& stats)
-	: Stats_ (stats)
-	{
-	}
-
-	int Core::PerTrackerAccumulator::operator() (int,
-			const Core::TorrentStruct& str)
-	{
-		const auto& s = str.Handle_.status (0);
-		QString domain = QUrl (s.current_tracker.c_str ()).host ();
-		if (domain.size ())
-		{
-			Stats_ [domain].DownloadRate_ += s.download_payload_rate;
-			Stats_ [domain].UploadRate_ += s.upload_payload_rate;
-		}
-		return 0;
-	}
-
 	Core* Core::Instance ()
 	{
 		static Core core;
