@@ -155,14 +155,9 @@ namespace Aggregator
 
 			const auto& pageData = e.Additional_ ["URLData"].toString ();
 			QXmlStreamReader xmlReader (pageData);
-			while (!xmlReader.atEnd ())
-			{
-				if (!xmlReader.readNextStartElement ())
-					return false;
-				return xmlReader.name () == "rss" || xmlReader.name () == "atom";
-			}
-
-			return false;
+			if (!xmlReader.readNextStartElement ())
+				return false;
+			return xmlReader.name () == "rss" || xmlReader.name () == "atom";
 		}
 		else
 		{
