@@ -685,7 +685,7 @@ namespace Aggregator
 	{
 		int r, g, b;
 		QApplication::palette ().color (group, role).getRgb (&r, &g, &b);
-		long color = b + (g << 8) + (r << 16);
+		int color = b + (g << 8) + (r << 16);
 		QString result ("#%1");
 		// Fill spare space with zeros.
 		return result.arg (color, 6, 16, QChar ('0'));
