@@ -30,6 +30,7 @@
 #include "itemswidget.h"
 #include <memory>
 #include <algorithm>
+#include <limits>
 #include <QFileInfo>
 #include <QHeaderView>
 #include <QSortFilterProxyModel>
@@ -683,6 +684,8 @@ namespace Aggregator
 
 	QString ItemsWidget::GetHex (QPalette::ColorRole role, QPalette::ColorGroup group)
 	{
+		static_assert (std::numeric_limits<int>::max () >= 0xffffffL, "int is too small :(");
+
 		int r, g, b;
 		QApplication::palette ().color (group, role).getRgb (&r, &g, &b);
 		int color = b + (g << 8) + (r << 16);
