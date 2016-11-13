@@ -412,10 +412,7 @@ namespace Xoox
 				entry->Convert2ODS ();
 			}
 			SelfContact_->RemoveVariant (OurResource_, true);
-		}
 
-		if (state.State_ == SOffline)
-		{
 			emit statusChanged (EntryStatus (SOffline, state.Status_));
 			Client_->disconnectFromServer ();
 			IsConnected_ = false;
