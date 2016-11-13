@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_ADDACCOUNTWIZARDFIRSTPAGE_H
-#define PLUGINS_AZOTH_ADDACCOUNTWIZARDFIRSTPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include "ui_addaccountwizardfirstpage.h"
 
@@ -43,14 +43,12 @@ namespace Azoth
 		Ui::AddAccountWizardFirstPage Ui_;
 		QList<QWidget*> Widgets_;
 	public:
-		AddAccountWizardFirstPage (QWidget* = 0);
+		AddAccountWizardFirstPage (QWidget* = nullptr);
 		
-		void initializePage ();
+		void initializePage () override;
 	private slots:
 		void readdWidgets ();
 		void handleAccepted ();
 	};
 }
 }
-
-#endif

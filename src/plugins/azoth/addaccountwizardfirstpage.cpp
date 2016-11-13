@@ -55,8 +55,7 @@ namespace Azoth
 		registerField ("AccountProto", Ui_.ProtoBox_);
 		registerField ("RegisterNewAccount", Ui_.RegisterAccount_);
 
-		const QList<IProtocol*>& protos = Core::Instance ().GetProtocols ();
-		Q_FOREACH (IProtocol *proto, protos)
+		for (const auto proto : Core::Instance ().GetProtocols ())
 		{
 			if (proto->GetFeatures () & IProtocol::PFNoAccountRegistration)
 				continue;
@@ -78,8 +77,8 @@ namespace Azoth
 		if (idx == -1)
 			return;
 
-		QObject *obj = Ui_.ProtoBox_->itemData (idx).value<QObject*> ();
-		IProtocol *proto = qobject_cast<IProtocol*> (obj);
+		const auto obj = Ui_.ProtoBox_->itemData (idx).value<QObject*> ();
+		const auto proto = qobject_cast<IProtocol*> (obj);
 		if (!proto)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -92,7 +91,7 @@ namespace Azoth
 		Ui_.RegisterAccount_->setEnabled (proto->GetFeatures () & IProtocol::PFSupportsInBandRegistration);
 		
 		const int currentId = wizard ()->currentId ();
-		Q_FOREACH (const int id, wizard ()->pageIds ())
+		for (const int id : wizard ()->pageIds ())
 			if (id > currentId)
 				wizard ()->removePage (id);
 		qDeleteAll (Widgets_);
@@ -104,10 +103,10 @@ namespace Azoth
 		if (!Widgets_.size ())
 			return;
 		
-		const QString& protoName = proto->GetProtocolName ();
-		Q_FOREACH (QWidget *widget, Widgets_)
+		const auto& protoName = proto->GetProtocolName ();
+		for (const auto widget : Widgets_)
 		{
-			QWizardPage *page = qobject_cast<QWizardPage*> (widget);
+			const auto page = qobject_cast<QWizardPage*> (widget);
 			if (!page)
 			{
 				page = new QWizardPage (wizard ());
@@ -124,8 +123,8 @@ namespace Azoth
 	
 	void AddAccountWizardFirstPage::handleAccepted ()
 	{
-		QObject *obj = Ui_.ProtoBox_->itemData (field ("AccountProto").toInt ()).value<QObject*> ();
-		IProtocol *proto = qobject_cast<IProtocol*> (obj);
+		const auto obj = Ui_.ProtoBox_->itemData (field ("AccountProto").toInt ()).value<QObject*> ();
+		const auto proto = qobject_cast<IProtocol*> (obj);
 		if (!proto)
 		{
 			qWarning () << Q_FUNC_INFO
