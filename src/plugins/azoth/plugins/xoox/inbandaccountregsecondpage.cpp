@@ -37,7 +37,6 @@
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 #include "regformhandlerwidget.h"
-#include "core.h"
 
 namespace LeechCraft
 {
