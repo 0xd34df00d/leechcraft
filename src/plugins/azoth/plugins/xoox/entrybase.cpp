@@ -694,7 +694,7 @@ namespace Xoox
 		emit statusChanged (status, variant);
 
 		if (!existed ||
-				(existed && status.State_ == SOffline) ||
+				status.State_ == SOffline ||
 				wasOffline)
 			emit availableVariantsChanged (vars);
 
