@@ -976,7 +976,6 @@ namespace Poshuku
 					viewer->SetHtml (html);
 					viewer->show ();
 				});
-
 	}
 
 	void BrowserWidget::handleSavePage ()
