@@ -112,6 +112,7 @@ set (XOOX_SRCS
 	vcardstorage.cpp
 	vcardstorageondisk.cpp
 	vcardstorageondiskwriter.cpp
+	sslerrorshandler.cpp
 	)
 set (XOOX_FORMS
 	glooxaccountconfigurationdialog.ui
