@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include <QXmppClient.h>
 
@@ -68,5 +68,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
