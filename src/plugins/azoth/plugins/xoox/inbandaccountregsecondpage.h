@@ -65,7 +65,8 @@ namespace Xoox
 		void handleConnected ();
 		void handleClientError (QXmppClient::Error);
 	signals:
-		void sslErrors (const QList<QSslError>&, const ISslErrorsReaction_ptr&) override;
+		void sslErrors (const QList<QSslError>&,
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr&) override;
 		void successfulReg ();
 		void regError (const QString&);
 	};
