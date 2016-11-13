@@ -404,7 +404,6 @@ namespace Xoox
 			CapsQueue_->Clear ();
 			VersionQueue_->Clear ();
 
-			IsConnected_ = false;
 			Q_FOREACH (const QString& jid, JID2CLEntry_.keys ())
 			{
 				auto entry = JID2CLEntry_.take (jid);
