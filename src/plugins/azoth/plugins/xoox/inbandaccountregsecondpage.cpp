@@ -49,7 +49,7 @@ namespace Xoox
 		QXmppClient* MakeClient (InBandAccountRegSecondPage *page)
 		{
 			auto client = new QXmppClient (page);
-			Q_FOREACH (auto ext, client->extensions ())
+			for (auto ext : client->extensions ())
 				client->removeExtension (ext);
 
 			client->addExtension (new XMPPBobManager);
