@@ -37,6 +37,7 @@
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 #include "regformhandlerwidget.h"
+#include "sslerrorshandler.h"
 
 namespace LeechCraft
 {
@@ -88,6 +89,11 @@ namespace Xoox
 				SIGNAL (regError (QString)),
 				this,
 				SIGNAL (regError (QString)));
+		const auto sslHandler = new SslErrorsHandler { Client_ };
+		connect (sslHandler,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				this,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 	}
 
 	void InBandAccountRegSecondPage::Register ()
