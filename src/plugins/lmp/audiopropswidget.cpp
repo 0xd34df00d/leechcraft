@@ -161,10 +161,10 @@ namespace LMP
 			}
 
 			template<typename T>
-			void operator() (T *t)
+			void operator() (const T * const)
 			{
-				if ((t = dynamic_cast<T*> (Props_)))
-					F_ (AudioPropsWidget::tr ("File type"), Parse (t));
+				if (const auto casted = dynamic_cast<T*> (Props_))
+					F_ (AudioPropsWidget::tr ("File type"), Parse (casted));
 			}
 #if HAS_APE
 			QString Parse (TagLib::APE::Properties *props)
