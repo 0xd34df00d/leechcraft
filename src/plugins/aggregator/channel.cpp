@@ -204,7 +204,7 @@ namespace Aggregator
 				in >> px
 					>> favicon;
 				chan.Pixmap_ = px.toImage ();
-				chan.Favicon_ = px.toImage ();
+				chan.Favicon_ = favicon.toImage ();
 			}
 
 			in >> size;
