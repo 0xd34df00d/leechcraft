@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "sslerrorshandler.h"
+#include <QtDebug>
 #include <QXmppClient.h>
+#include <util/sll/delayedexecutor.h>
 
 namespace LeechCraft
 {
@@ -46,8 +48,39 @@ namespace Xoox
 				SLOT (handleSslErrors (QList<QSslError>)));
 	}
 
+	namespace
+	{
+		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
+		{
+			QXmppClient * const Client_;
+		public:
+			SslErrorsReaction (QXmppClient *client)
+			: Client_ { client }
+			{
+			}
+
+			void Ignore () override
+			{
+				qDebug () << Q_FUNC_INFO;
+
+				Client_->configuration ().setIgnoreSslErrors (true);
+
+				Util::ExecuteLater ([client = Client_]
+					{
+						client->configuration ().setIgnoreSslErrors (false);
+					});
+			}
+
+			void Abort () override
+			{
+				qDebug () << Q_FUNC_INFO;
+			}
+		};
+	}
+
 	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
 	{
+		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_));
 	}
 }
 }

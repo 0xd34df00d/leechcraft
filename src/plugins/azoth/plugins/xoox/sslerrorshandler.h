@@ -30,6 +30,7 @@
 #pragma once
 
 #include <QObject>
+#include <interfaces/azoth/icanhavesslerrors.h>
 
 class QSslError;
 
@@ -53,6 +54,9 @@ namespace Xoox
 		SslErrorsHandler (QXmppClient*);
 	private slots:
 		void handleSslErrors (const QList<QSslError>&);
+	signals:
+		void sslErrors (const QList<QSslError>&,
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }
 }
