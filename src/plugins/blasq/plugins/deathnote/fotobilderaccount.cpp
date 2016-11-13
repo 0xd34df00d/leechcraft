@@ -59,8 +59,10 @@ namespace DeathNote
 		const QString Url ("http://pics.livejournal.com/interface/simple");
 		//Available sizes: 100, 300, 320, 600, 640, 900, 1000
 
-		const QString SmallSize ("320");
-		const QString MediumSize ("640");
+		const int SmallSize = 320;
+		const int MediumSize = 640;
+		const QString SmallSizeStr = QString::number (SmallSize);
+		const QString MediumSizeStr = QString::number (MediumSize);
 	}
 
 	FotoBilderAccount::FotoBilderAccount (const QString& name, FotoBilderService *service,
@@ -621,13 +623,14 @@ namespace DeathNote
 		QList<Thumbnail> GenerateThumbnails (const QUrl& originalUrl)
 		{
 			Thumbnail small;
-			small.Url_ = originalUrl.toString ().replace ("original", SmallSize);
-			small.Height_ = SmallSize.toInt ();
-			small.Width_ = SmallSize.toInt ();
+			small.Url_ = originalUrl.toString ().replace ("original", SmallSizeStr);
+			small.Height_ = SmallSize;
+			small.Width_ = SmallSize;
+
 			Thumbnail medium;
-			medium.Url_ = originalUrl.toString ().replace ("original", MediumSize);
-			medium.Height_ = MediumSize.toInt ();
-			medium.Width_ = MediumSize.toInt ();
+			medium.Url_ = originalUrl.toString ().replace ("original", MediumSizeStr);
+			medium.Height_ = MediumSize;
+			medium.Width_ = MediumSize;
 			return { small, medium };
 		}
 
