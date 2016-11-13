@@ -171,7 +171,7 @@ namespace LMP
 			const auto& thatId = Ui_.DevicesSelector_->
 					itemData (i, CommonDevRole::DevPersistentID).toString ();
 			if (thatId != LastDevice_)
-				break;
+				continue;
 
 			Ui_.DevicesSelector_->setCurrentIndex (i);
 			on_DevicesSelector__activated (i);
