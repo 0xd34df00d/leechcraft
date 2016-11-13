@@ -31,6 +31,7 @@
 
 #include <QWizardPage>
 #include <QXmppClient.h>
+#include <interfaces/azoth/icanhavesslerrors.h>
 
 namespace LeechCraft
 {
@@ -42,8 +43,10 @@ namespace Xoox
 	class RegFormHandlerWidget;
 
 	class InBandAccountRegSecondPage : public QWizardPage
+									 , public ICanHaveSslErrors
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::ICanHaveSslErrors)
 
 		QXmppClient * const Client_;
 		RegFormHandlerWidget *RegForm_;
@@ -62,6 +65,7 @@ namespace Xoox
 		void handleConnected ();
 		void handleClientError (QXmppClient::Error);
 	signals:
+		void sslErrors (const QList<QSslError>&, const ISslErrorsReaction_ptr&) override;
 		void successfulReg ();
 		void regError (const QString&);
 	};
