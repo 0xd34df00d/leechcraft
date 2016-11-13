@@ -299,7 +299,7 @@ namespace LMP
 			if (e.Entity_.toString ().size () >= 80)
 				return {};
 
-			EntityTestHandleResult { EntityTestHandleResult::PHigh };
+			return EntityTestHandleResult { EntityTestHandleResult::PHigh };
 		}
 
 		QString path = e.Entity_.toString ();
