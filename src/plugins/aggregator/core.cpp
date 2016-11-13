@@ -86,6 +86,7 @@ namespace Aggregator
 		qRegisterMetaType<QSet<IDType_t>> ("QSet<IDType_t>");
 		qRegisterMetaType<QItemSelection> ("QItemSelection");
 		qRegisterMetaType<Item_ptr> ("Item_ptr");
+		qRegisterMetaType<Item_cptr> ("Item_cptr");
 		qRegisterMetaType<ChannelShort> ("ChannelShort");
 		qRegisterMetaType<Channel_ptr> ("Channel_ptr");
 		qRegisterMetaType<channels_container_t> ("channels_container_t");
