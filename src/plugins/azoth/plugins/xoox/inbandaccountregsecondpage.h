@@ -56,8 +56,8 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetPassword () const;
 
-		bool isComplete () const;
-		void initializePage ();
+		bool isComplete () const override;
+		void initializePage () override;
 	private slots:
 		void handleConnected ();
 		void handleClientError (QXmppClient::Error);
