@@ -100,6 +100,7 @@ namespace Azoth
 		if (Ui_.RegisterAccount_->isChecked ())
 			options |= IProtocol::AAORegisterNewAccount;
 		Widgets_ = proto->GetAccountRegistrationWidgets (options);
+		setFinalPage (!Widgets_.isEmpty ());
 		if (!Widgets_.size ())
 			return;
 		
@@ -117,8 +118,6 @@ namespace Azoth
 			}
 			wizard ()->addPage (page);
 		}
-		
-		setFinalPage (false);
 	}
 	
 	void AddAccountWizardFirstPage::handleAccepted ()
