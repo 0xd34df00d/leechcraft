@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "addaccountwizardfirstpage.h"
+#include <interfaces/azoth/icanhavesslerrors.h>
 #include "core.h"
+#include "sslerrorshandler.h"
 
 namespace LeechCraft
 {
@@ -122,6 +124,9 @@ namespace Azoth
 				page->layout ()->addWidget (widget);
 			}
 			wizard ()->addPage (page);
+
+			if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (widget))
+				new SslErrorsHandler { ichse };
 		}
 	}
 	
