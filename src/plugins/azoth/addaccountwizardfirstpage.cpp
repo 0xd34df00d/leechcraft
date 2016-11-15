@@ -80,6 +80,7 @@ namespace Azoth
 			if (id > currentId)
 				wizard ()->removePage (id);
 		qDeleteAll (Widgets_);
+		Widgets_.clear ();
 	}
 
 	void AddAccountWizardFirstPage::readdWidgets ()
