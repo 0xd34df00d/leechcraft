@@ -59,7 +59,7 @@ namespace Azoth
 
 		virtual QObject* GetQObject () = 0;
 	protected:
-		virtual void sslErrors (const QList<QSslError>&, const ISslErrorsReaction_ptr&);
+		virtual void sslErrors (const QList<QSslError>&, const ISslErrorsReaction_ptr&) = 0;
 	};
 }
 }
