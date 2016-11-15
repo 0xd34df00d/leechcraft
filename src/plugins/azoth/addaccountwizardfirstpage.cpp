@@ -112,7 +112,7 @@ namespace Azoth
 		const auto& protoName = proto->GetProtocolName ();
 		for (const auto widget : Widgets_)
 		{
-			const auto page = qobject_cast<QWizardPage*> (widget);
+			auto page = qobject_cast<QWizardPage*> (widget);
 			if (!page)
 			{
 				page = new QWizardPage (wizard ());
