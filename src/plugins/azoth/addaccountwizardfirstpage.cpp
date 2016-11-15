@@ -106,7 +106,7 @@ namespace Azoth
 			options |= IProtocol::AAORegisterNewAccount;
 		Widgets_ = proto->GetAccountRegistrationWidgets (options);
 		setFinalPage (!Widgets_.isEmpty ());
-		if (!Widgets_.size ())
+		if (Widgets_.isEmpty ())
 			return;
 		
 		const auto& protoName = proto->GetProtocolName ();
