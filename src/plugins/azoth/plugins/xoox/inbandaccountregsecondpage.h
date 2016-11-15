@@ -59,6 +59,8 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetPassword () const;
 
+		QObject* GetQObject () override;
+
 		bool isComplete () const override;
 		void initializePage () override;
 	private slots:

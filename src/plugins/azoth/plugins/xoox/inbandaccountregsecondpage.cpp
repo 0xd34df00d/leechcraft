@@ -111,6 +111,11 @@ namespace Xoox
 		return RegForm_->GetPassword ();
 	}
 
+	QObject* InBandAccountRegSecondPage::GetQObject ()
+	{
+		return this;
+	}
+
 	bool InBandAccountRegSecondPage::isComplete () const
 	{
 		return RegForm_->IsComplete ();

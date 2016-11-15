@@ -56,6 +56,8 @@ namespace Azoth
 		};
 
 		using ISslErrorsReaction_ptr = std::shared_ptr<ISslErrorsReaction>;
+
+		virtual QObject* GetQObject () = 0;
 	protected:
 		virtual void sslErrors (const QList<QSslError>&, const ISslErrorsReaction_ptr&);
 	};
