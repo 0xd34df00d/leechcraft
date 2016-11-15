@@ -70,7 +70,16 @@ namespace Azoth
 				this,
 				SLOT (handleAccepted ()));
 	}
-	
+
+	void AddAccountWizardFirstPage::CleanupWidgets ()
+	{
+		const int currentId = wizard ()->currentId ();
+		for (const int id : wizard ()->pageIds ())
+			if (id > currentId)
+				wizard ()->removePage (id);
+		qDeleteAll (Widgets_);
+	}
+
 	void AddAccountWizardFirstPage::readdWidgets ()
 	{
 		const int idx = Ui_.ProtoBox_->currentIndex ();
@@ -89,12 +98,8 @@ namespace Azoth
 		}
 		
 		Ui_.RegisterAccount_->setEnabled (proto->GetFeatures () & IProtocol::PFSupportsInBandRegistration);
-		
-		const int currentId = wizard ()->currentId ();
-		for (const int id : wizard ()->pageIds ())
-			if (id > currentId)
-				wizard ()->removePage (id);
-		qDeleteAll (Widgets_);
+
+		CleanupWidgets ();
 
 		IProtocol::AccountAddOptions options = IProtocol::AAONoOptions;
 		if (Ui_.RegisterAccount_->isChecked ())

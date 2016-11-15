@@ -46,6 +46,8 @@ namespace Azoth
 		AddAccountWizardFirstPage (QWidget* = nullptr);
 		
 		void initializePage () override;
+	private:
+		void CleanupWidgets ();
 	private slots:
 		void readdWidgets ();
 		void handleAccepted ();
