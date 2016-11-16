@@ -108,9 +108,11 @@ namespace Azoth
 		if (Ui_.RegisterAccount_->isChecked ())
 			options |= IProtocol::AAORegisterNewAccount;
 		Widgets_ = proto->GetAccountRegistrationWidgets (options);
-		setFinalPage (!Widgets_.isEmpty ());
 		if (Widgets_.isEmpty ())
+		{
+			setFinalPage (true);
 			return;
+		}
 		
 		const auto& protoName = proto->GetProtocolName ();
 		for (const auto widget : Widgets_)
@@ -129,6 +131,7 @@ namespace Azoth
 			if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (widget))
 				new SslErrorsHandler { ichse };
 		}
+		setFinalPage (false);
 	}
 	
 	void AddAccountWizardFirstPage::handleAccepted ()
