@@ -49,7 +49,7 @@ namespace Xoox
 	{
 		QXmppClient* MakeClient (InBandAccountRegSecondPage *page)
 		{
-			auto client = new QXmppClient (page);
+			auto client = new QXmppClient { page };
 			for (auto ext : client->extensions ())
 				client->removeExtension (ext);
 
@@ -89,6 +89,7 @@ namespace Xoox
 				SIGNAL (regError (QString)),
 				this,
 				SIGNAL (regError (QString)));
+
 		const auto sslHandler = new SslErrorsHandler { Client_ };
 		connect (sslHandler,
 				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
