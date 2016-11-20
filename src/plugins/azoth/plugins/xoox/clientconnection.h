@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
+#pragma once
+
 #include <functional>
 #include <memory>
 #include <QObject>
@@ -351,5 +351,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

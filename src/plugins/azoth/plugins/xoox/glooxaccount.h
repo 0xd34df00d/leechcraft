@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QMap>
@@ -344,5 +344,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
