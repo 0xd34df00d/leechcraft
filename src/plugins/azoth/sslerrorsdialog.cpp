@@ -28,15 +28,20 @@
  **********************************************************************/
 
 #include "sslerrorsdialog.h"
+#include <QSslError>
+#include <util/network/sslerror2treeitem.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-	SslErrorsDialog::SslErrorsDialog (QWidget *parent)
+	SslErrorsDialog::SslErrorsDialog (const QList<QSslError>& errors, QWidget *parent)
 	: QDialog { parent }
 	{
 		Ui_.setupUi (this);
+
+		for (const auto& error : errors)
+			Ui_.ErrorsTree_->addTopLevelItem (Util::SslError2TreeItem (error));
 	}
 }
 }

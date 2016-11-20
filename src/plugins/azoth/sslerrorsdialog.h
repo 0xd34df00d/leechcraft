@@ -32,6 +32,10 @@
 #include <QDialog>
 #include "ui_sslerrorsdialog.h"
 
+template<typename T>
+class QList;
+class QSslError;
+
 namespace LeechCraft
 {
 namespace Azoth
@@ -42,7 +46,7 @@ namespace Azoth
 
 		Ui::SslErrorsDialog Ui_;
 	public:
-		SslErrorsDialog (QWidget* = nullptr);
+		SslErrorsDialog (const QList<QSslError>&, QWidget* = nullptr);
 	};
 }
 }
