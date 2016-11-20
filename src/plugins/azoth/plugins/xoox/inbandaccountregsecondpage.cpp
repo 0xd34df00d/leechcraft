@@ -126,7 +126,12 @@ namespace Xoox
 	{
 		QWizardPage::initializePage ();
 
-		const QString& server = FirstPage_->GetServerName ();
+		Reinitialize ();
+	}
+
+	void InBandAccountRegSecondPage::Reinitialize ()
+	{
+		const auto& server = FirstPage_->GetServerName ();
 
 		if (Client_->isConnected ())
 			Client_->disconnectFromServer ();
@@ -152,7 +157,7 @@ namespace Xoox
 
 		if (error == QXmppClient::SocketError &&
 				wizard ()->currentPage () == this)
-			initializePage ();
+			Reinitialize ();
 	}
 }
 }

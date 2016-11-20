@@ -63,6 +63,8 @@ namespace Xoox
 
 		bool isComplete () const override;
 		void initializePage () override;
+	private:
+		void Reinitialize ();
 	private slots:
 		void handleConnected ();
 		void handleClientError (QXmppClient::Error);
