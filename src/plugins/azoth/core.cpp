@@ -70,6 +70,7 @@
 #include "interfaces/azoth/ihaveservicediscovery.h"
 #include "interfaces/azoth/iextselfinfoaccount.h"
 #include "interfaces/azoth/ihistoryplugin.h"
+#include "interfaces/azoth/icanhavesslerrors.h"
 
 #ifdef ENABLE_CRYPT
 #include "cryptomanager.h"
@@ -102,6 +103,7 @@
 #include "notificationsmanager.h"
 #include "avatarsmanager.h"
 #include "historysyncer.h"
+#include "sslerrorshandler.h"
 
 Q_DECLARE_METATYPE (QPointer<QObject>);
 
@@ -1696,6 +1698,9 @@ namespace Azoth
 					SIGNAL (riexItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString)),
 					this,
 					SLOT (handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString)));
+
+		if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (account->GetQObject ()))
+			new SslErrorsHandler { SslErrorsHandler::Account { account->GetAccountName () }, ichse };
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
