@@ -24,14 +24,16 @@
    <item>
     <widget class="QTreeWidget" name="ErrorsTree_">
      <property name="columnCount">
-      <number>1</number>
+      <number>2</number>
      </property>
-     <attribute name="headerVisible">
-      <bool>false</bool>
-     </attribute>
      <column>
       <property name="text">
-       <string notr="true">Новый столбец</string>
+       <string notr="true"/>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string notr="true"/>
       </property>
      </column>
     </widget>
