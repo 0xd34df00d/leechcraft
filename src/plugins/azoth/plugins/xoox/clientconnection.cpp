@@ -96,6 +96,7 @@
 #include "carbonsmanager.h"
 #include "pingmanager.h"
 #include "xep0334utils.h"
+#include "sslerrorshandler.h"
 
 namespace LeechCraft
 {
@@ -349,6 +350,12 @@ namespace Xoox
 				SIGNAL (messageCarbonsSettingsChanged ()),
 				this,
 				SLOT (handleMessageCarbonsSettingsChanged ()));
+
+		const auto sslHandler = new SslErrorsHandler { Client_ };
+		connect (sslHandler,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				this,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 	}
 
 	ClientConnection::~ClientConnection ()

@@ -143,6 +143,11 @@ namespace Xoox
 	{
 		ClientConnection_.reset (new ClientConnection (this));
 
+		connect (ClientConnection_.get (),
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				this,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
+
 		TransferManager_.reset (new TransferManager (ClientConnection_->GetTransferManager (),
 					this));
 

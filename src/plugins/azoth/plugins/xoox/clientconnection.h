@@ -38,6 +38,7 @@
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/icanhavesslerrors.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
 #include "riexmanager.h"
@@ -347,6 +348,8 @@ namespace Xoox
 		void serverAuthFailed ();
 		void needPassword ();
 		void statusChanged (const EntryStatus&);
+
+		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }
 }
