@@ -52,11 +52,15 @@ namespace Xoox
 		QXmppClient * const Client_;
 	public:
 		SslErrorsHandler (QXmppClient*);
+
+		void EmitAborted ();
 	private slots:
 		void handleSslErrors (const QList<QSslError>&);
 	signals:
 		void sslErrors (const QList<QSslError>&,
 				const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
+
+		void aborted ();
 	};
 }
 }

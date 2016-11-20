@@ -48,14 +48,22 @@ namespace Xoox
 				SLOT (handleSslErrors (QList<QSslError>)));
 	}
 
+	void SslErrorsHandler::EmitAborted ()
+	{
+		emit aborted ();
+	}
+
 	namespace
 	{
 		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
 		{
 			QXmppClient * const Client_;
+
+			const QPointer<SslErrorsHandler> Handler_;
 		public:
-			SslErrorsReaction (QXmppClient *client)
+			SslErrorsReaction (QXmppClient *client, SslErrorsHandler *handler)
 			: Client_ { client }
+			, Handler_ { handler }
 			{
 			}
 
@@ -74,13 +82,15 @@ namespace Xoox
 			void Abort () override
 			{
 				qDebug () << Q_FUNC_INFO;
+				if (Handler_)
+					Handler_->EmitAborted ();
 			}
 		};
 	}
 
 	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
 	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_));
+		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_, this));
 	}
 }
 }
