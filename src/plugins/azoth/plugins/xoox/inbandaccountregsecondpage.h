@@ -51,6 +51,8 @@ namespace Xoox
 		QXmppClient * const Client_;
 		RegFormHandlerWidget *RegForm_;
 		InBandAccountRegFirstPage *FirstPage_;
+
+		bool SslAborted_ = false;
 	public:
 		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
 

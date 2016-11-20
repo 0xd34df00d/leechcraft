@@ -32,6 +32,7 @@
 #include <QMessageBox>
 #include <util/network/socketerrorstrings.h>
 #include <util/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
@@ -95,6 +96,14 @@ namespace Xoox
 				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
 				this,
 				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { SslAborted_ = true; },
+			sslHandler,
+			SIGNAL (aborted ()),
+			sslHandler
+		};
 	}
 
 	void InBandAccountRegSecondPage::Register ()
@@ -126,6 +135,8 @@ namespace Xoox
 	{
 		QWizardPage::initializePage ();
 
+		SslAborted_ = false;
+
 		Reinitialize ();
 	}
 
@@ -154,6 +165,9 @@ namespace Xoox
 				<< error
 				<< Client_->socketError ()
 				<< Client_->xmppStreamError ();
+
+		if (error == QXmppClient::SocketError && SslAborted_)
+			return;
 
 		if (error == QXmppClient::SocketError &&
 				wizard ()->currentPage () == this)
