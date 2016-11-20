@@ -30,6 +30,8 @@
 #include "sslerrorshandler.h"
 #include <QSslError>
 #include <QtDebug>
+#include <util/sll/slotclosure.h>
+#include "sslerrorsdialog.h"
 
 namespace LeechCraft
 {
@@ -52,6 +54,23 @@ namespace Azoth
 		qDebug () << Q_FUNC_INFO;
 		for (const auto& error : errors)
 			qDebug () << error.errorString ();
+
+		SslErrorsDialog dia { Context_, errors };
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[reaction] { reaction->Ignore (); },
+			&dia,
+			SIGNAL (accepted ()),
+			&dia
+		};
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[reaction] { reaction->Abort (); },
+			&dia,
+			SIGNAL (rejected ()),
+			&dia
+		};
+		dia.exec ();
 	}
 }
 }
