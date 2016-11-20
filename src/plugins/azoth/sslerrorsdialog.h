@@ -31,6 +31,7 @@
 
 #include <QDialog>
 #include "ui_sslerrorsdialog.h"
+#include "sslerrorshandler.h"
 
 template<typename T>
 class QList;
@@ -46,7 +47,7 @@ namespace Azoth
 
 		Ui::SslErrorsDialog Ui_;
 	public:
-		SslErrorsDialog (const QList<QSslError>&, QWidget* = nullptr);
+		SslErrorsDialog (const SslErrorsHandler::Context_t&, const QList<QSslError>&, QWidget* = nullptr);
 	};
 }
 }
