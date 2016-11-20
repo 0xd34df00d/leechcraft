@@ -35,8 +35,9 @@ namespace LeechCraft
 {
 namespace Azoth
 {
-	SslErrorsHandler::SslErrorsHandler (ICanHaveSslErrors *ichse)
+	SslErrorsHandler::SslErrorsHandler (const Context_t& context, ICanHaveSslErrors *ichse)
 	: QObject { ichse->GetQObject () }
+	, Context_ { context }
 	, ICHSE_ { ichse }
 	{
 		connect (ichse->GetQObject (),

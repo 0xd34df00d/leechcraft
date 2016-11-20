@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/variant.hpp>
 #include <QObject>
 #include <interfaces/azoth/icanhavesslerrors.h>
 
@@ -40,9 +41,19 @@ namespace Azoth
 	{
 		Q_OBJECT
 
+	public:
+		struct AccountRegistration {};
+		struct Account
+		{
+			QString Name_;
+		};
+
+		using Context_t = boost::variant<AccountRegistration, Account>;
+	private:
+		const Context_t Context_;
 		ICanHaveSslErrors * const ICHSE_;
 	public:
-		SslErrorsHandler (ICanHaveSslErrors*);
+		SslErrorsHandler (const Context_t&, ICanHaveSslErrors*);
 	private slots:
 		void sslErrors (const QList<QSslError>&,
 				const ICanHaveSslErrors::ISslErrorsReaction_ptr&);

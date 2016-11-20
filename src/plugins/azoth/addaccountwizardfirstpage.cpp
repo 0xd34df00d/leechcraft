@@ -129,7 +129,7 @@ namespace Azoth
 			wizard ()->addPage (page);
 
 			if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (widget))
-				new SslErrorsHandler { ichse };
+				new SslErrorsHandler { SslErrorsHandler::AccountRegistration {}, ichse };
 		}
 		setFinalPage (false);
 	}
