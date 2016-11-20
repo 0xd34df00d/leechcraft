@@ -56,6 +56,9 @@ namespace Azoth
 
 		for (const auto& error : errors)
 			Ui_.ErrorsTree_->addTopLevelItem (Util::SslError2TreeItem (error));
+
+		Ui_.ErrorsTree_->expandAll ();
+		Ui_.ErrorsTree_->resizeColumnToContents (0);
 	}
 }
 }
