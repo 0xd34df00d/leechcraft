@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "sslerrorshandler.h"
+#include <QSslError>
 #include <QtDebug>
 
 namespace LeechCraft
@@ -48,6 +49,8 @@ namespace Azoth
 			const ICanHaveSslErrors::ISslErrorsReaction_ptr& reaction)
 	{
 		qDebug () << Q_FUNC_INFO;
+		for (const auto& error : errors)
+			qDebug () << error.errorString ();
 	}
 }
 }
