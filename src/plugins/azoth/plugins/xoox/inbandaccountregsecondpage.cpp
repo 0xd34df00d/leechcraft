@@ -29,11 +29,9 @@
 
 #include "inbandaccountregsecondpage.h"
 #include <QVBoxLayout>
-#include <QMessageBox>
 #include <util/network/socketerrorstrings.h>
 #include <util/util.h>
 #include <util/sll/slotclosure.h>
-#include <interfaces/core/ientitymanager.h>
 #include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
