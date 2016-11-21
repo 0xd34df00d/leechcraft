@@ -31,7 +31,6 @@
 #include "ircserversocket.h"
 #include <QTcpSocket>
 #include <QTextCodec>
-#include <QSettings>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
