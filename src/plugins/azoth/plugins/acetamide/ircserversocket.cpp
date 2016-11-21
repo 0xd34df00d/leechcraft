@@ -38,7 +38,6 @@
 #include <util/sll/visitor.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
-#include "sslerrorsdialog.h"
 
 namespace LeechCraft
 {

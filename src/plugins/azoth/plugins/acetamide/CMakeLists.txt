@@ -45,7 +45,6 @@ set (ACETAMIDE_SRCS
 	serverparticipantentry.cpp
 	serverresponsemanager.cpp
 	sortfilterproxymodel.cpp
-	sslerrorsdialog.cpp
 	usercommandmanager.cpp
 	xmlsettingsmanager.cpp
 	vcarddialog.cpp
@@ -62,7 +61,6 @@ set (ACETAMIDE_FORMS
 	newnickservidentifydialog.ui
 	nickservidentifywidget.ui
 	serverinfowidget.ui
-	sslerrorsdialog.ui
 	vcarddialog.ui
 	)
 set (ACETAMIDE_RESOURCES azothacetamideresources.qrc)
