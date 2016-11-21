@@ -195,6 +195,12 @@ namespace oral
 		QString operator() () const { return "TEXT"; }
 	};
 
+	template<typename E>
+	struct Type2Name<E, std::enable_if_t<std::is_enum<E>::value>>
+	{
+		QString operator() () const { return "INTEGER"; }
+	};
+
 	template<typename T>
 	struct Type2Name<Unique<T>>
 	{
@@ -241,6 +247,15 @@ namespace oral
 		}
 	};
 
+	template<typename E>
+	struct ToVariant<E, std::enable_if_t<std::is_enum<E>::value>>
+	{
+		QVariant operator() (E e) const
+		{
+			return static_cast<qint64> (e);
+		}
+	};
+
 	template<typename T>
 	struct ToVariant<Unique<T>>
 	{
@@ -283,6 +298,15 @@ namespace oral
 		QDateTime operator() (const QVariant& var) const
 		{
 			return QDateTime::fromString (var.toString (), Qt::ISODate);
+		}
+	};
+
+	template<typename E>
+	struct FromVariant<E, std::enable_if_t<std::is_enum<E>::value>>
+	{
+		E operator() (const QVariant& var) const
+		{
+			return static_cast<E> (var.value<qint64> ());
 		}
 	};
 
