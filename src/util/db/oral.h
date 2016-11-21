@@ -483,10 +483,7 @@ namespace oral
 				return "INSERT OR REPLACE";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown action"
-					<< static_cast<int> (action);
-			return "INSERT";
+			assert (0);
 		}
 
 		template<typename Seq>
