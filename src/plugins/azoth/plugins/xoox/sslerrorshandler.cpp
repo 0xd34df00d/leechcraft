@@ -74,9 +74,9 @@ namespace Xoox
 				Client_->configuration ().setIgnoreSslErrors (true);
 
 				Util::ExecuteLater ([client = Client_]
-					{
-						client->configuration ().setIgnoreSslErrors (false);
-					});
+						{
+							client->configuration ().setIgnoreSslErrors (false);
+						});
 			}
 
 			void Abort () override
