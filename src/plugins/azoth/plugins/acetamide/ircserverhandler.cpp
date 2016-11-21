@@ -943,6 +943,11 @@ namespace Acetamide
 		Socket_->ConnectToHost (ServerOptions_.ServerName_,
 				ServerOptions_.ServerPort_);
 		ServerConnectionState_ = InProgress;
+
+		connect (Socket_,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				Account_,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 	}
 
 	void IrcServerHandler::DisconnectFromServer ()
