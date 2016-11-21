@@ -161,6 +161,7 @@ set (SRCS
 	historysyncer.cpp
 	sslerrorshandler.cpp
 	sslerrorsdialog.cpp
+	sslerrorschoicestorage.cpp
 	)
 set (FORMS
 	mainwidget.ui
