@@ -447,7 +447,7 @@ namespace oral
 			return HasAutogenPKeyImpl<Seq> (0);
 		}
 
-		QString GetInsertPrefix (InsertAction action)
+		inline QString GetInsertPrefix (InsertAction action)
 		{
 			switch (action)
 			{
@@ -699,7 +699,7 @@ namespace oral
 			Or
 		};
 
-		QString TypeToSql (ExprType type)
+		inline QString TypeToSql (ExprType type)
 		{
 			switch (type)
 			{
