@@ -54,14 +54,15 @@ namespace Acetamide
 	class IrcAccountConfigurationWidget;
 
 	class IrcAccount : public QObject
-						, public IAccount
-						, public IHaveConsole
-						, public ISupportBookmarks
+					 , public IAccount
+					 , public IHaveConsole
+					 , public ISupportBookmarks
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportBookmarks)
+				LeechCraft::Azoth::ISupportBookmarks
+				)
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
