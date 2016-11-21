@@ -150,7 +150,7 @@ namespace oral
 		};
 	}
 
-	template<typename T>
+	template<typename T, typename = void>
 	struct Type2Name;
 
 	template<>
@@ -223,7 +223,7 @@ namespace oral
 		}
 	};
 
-	template<typename T>
+	template<typename T, typename = void>
 	struct ToVariant
 	{
 		QVariant operator() (const T& t) const
@@ -268,7 +268,7 @@ namespace oral
 		}
 	};
 
-	template<typename T>
+	template<typename T, typename = void>
 	struct FromVariant
 	{
 		T operator() (const QVariant& var) const
