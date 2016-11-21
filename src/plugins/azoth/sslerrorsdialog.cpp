@@ -60,5 +60,10 @@ namespace Azoth
 		Ui_.ErrorsTree_->expandAll ();
 		Ui_.ErrorsTree_->resizeColumnToContents (0);
 	}
+
+	bool SslErrorsDialog::ShouldRememberChoice () const
+	{
+		return Ui_.RememberChoice_->checkState () == Qt::Checked;
+	}
 }
 }

@@ -48,6 +48,8 @@ namespace Azoth
 		Ui::SslErrorsDialog Ui_;
 	public:
 		SslErrorsDialog (const SslErrorsHandler::Context_t&, const QList<QSslError>&, QWidget* = nullptr);
+
+		bool ShouldRememberChoice () const;
 	};
 }
 }
