@@ -31,8 +31,10 @@
 #include <QStandardItemModel>
 #include <QUrl>
 #include <QSettings>
+#include <QFile>
 #include <QCoreApplication>
 #include <util/util.h>
+#include <util/sll/parsejson.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <interfaces/poshuku/iproxyobject.h>
 #include "settings.h"
@@ -153,6 +155,25 @@ namespace Fua
 	const QMap<QString, QString>& FUA::GetBackLookupMap () const
 	{
 		return BackLookup_;
+	}
+
+	namespace
+	{
+		QList<QPair<QString, QString>> LoadFromJson ()
+		{
+			QFile file { ":/poshuku/fua/resources/data/substs.json" };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "cannot open file:"
+						<< file.errorString ();
+				return {};
+			}
+
+			const auto& json = Util::ParseJson (&file, Q_FUNC_INFO);
+			qDebug () << json;
+			return {};
+		}
 	}
 
 	void FUA::initPlugin (QObject*)

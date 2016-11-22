@@ -1,5 +1,6 @@
 <RCC>
 	<qresource prefix="/poshuku/fua" >
 		<file>resources/images/poshuku_fua.svg</file>
+		<file>resources/data/substs.json</file>
 	</qresource>
 </RCC>
