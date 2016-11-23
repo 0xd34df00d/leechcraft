@@ -28,7 +28,19 @@
     "v": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36"
   },
   {
-    "n": "Epiphany 2.30.6 (Ubuntu 10.04)",
+    "n": "Chrome 54.0 (Linux x86_64)",
+    "v": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"
+  },
+  {
+    "n": "Chrome 54.0 (Windows 10)",
+    "v": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36"
+  },
+  {
+    "n": "Edge 13.0 (Windows 10)",
+    "v": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586"
+  },
+  {
+    "n": "Epiphany 2.30.6 (Ubuntu 10.04 x86_64)",
     "v": "Mozilla/5.0 (X11; U; Linux x86_64; en_US) AppleWebKit/534.26+ (KHTML, like Gecko) Ubuntu/11.04 Epiphany/2.30.6"
   },
   {
