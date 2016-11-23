@@ -50,17 +50,6 @@ namespace Poshuku
 {
 namespace Fua
 {
-	namespace
-	{
-		QMap<QString, QString> MakeLookupMap (const QList<QPair<QString, QString>>& pairs)
-		{
-			QMap<QString, QString> result;
-			for (const auto& pair : pairs)
-				result [pair.second] = pair.first;
-			return result;
-		}
-	}
-
 	void FUA::Init (ICoreProxy_ptr)
 	{
 		Util::InstallTranslator ("poshuku_fua");
@@ -190,6 +179,14 @@ namespace Fua
 				result.append ({ name, value });
 			}
 
+			return result;
+		}
+
+		QMap<QString, QString> MakeLookupMap (const QList<QPair<QString, QString>>& pairs)
+		{
+			QMap<QString, QString> result;
+			for (const auto& pair : pairs)
+				result [pair.second] = pair.first;
 			return result;
 		}
 	}
