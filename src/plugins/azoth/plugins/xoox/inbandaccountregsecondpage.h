@@ -27,10 +27,11 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_INBANDACCOUNTREGSECONDPAGE_H
+#pragma once
+
 #include <QWizardPage>
 #include <QXmppClient.h>
+#include <interfaces/azoth/icanhavesslerrors.h>
 
 namespace LeechCraft
 {
@@ -42,12 +43,16 @@ namespace Xoox
 	class RegFormHandlerWidget;
 
 	class InBandAccountRegSecondPage : public QWizardPage
+									 , public ICanHaveSslErrors
 	{
 		Q_OBJECT
+		Q_INTERFACES (LeechCraft::Azoth::ICanHaveSslErrors)
 
 		QXmppClient * const Client_;
 		RegFormHandlerWidget *RegForm_;
 		InBandAccountRegFirstPage *FirstPage_;
+
+		bool SslAborted_ = false;
 	public:
 		InBandAccountRegSecondPage (InBandAccountRegFirstPage*, QWidget* = 0);
 
@@ -56,17 +61,21 @@ namespace Xoox
 		QString GetJID () const;
 		QString GetPassword () const;
 
-		bool isComplete () const;
-		void initializePage ();
+		QObject* GetQObject () override;
+
+		bool isComplete () const override;
+		void initializePage () override;
+	private:
+		void Reinitialize ();
 	private slots:
 		void handleConnected ();
 		void handleClientError (QXmppClient::Error);
 	signals:
+		void sslErrors (const QList<QSslError>&,
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr&) override;
 		void successfulReg ();
 		void regError (const QString&);
 	};
 }
 }
 }
-
-#endif

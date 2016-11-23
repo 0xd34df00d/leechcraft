@@ -36,6 +36,7 @@
 #include <interfaces/azoth/imessage.h>
 #include <interfaces/azoth/ihaveconsole.h>
 #include <interfaces/azoth/isupportbookmarks.h>
+#include <interfaces/azoth/icanhavesslerrors.h>
 #include "core.h"
 #include "localtypes.h"
 
@@ -54,14 +55,17 @@ namespace Acetamide
 	class IrcAccountConfigurationWidget;
 
 	class IrcAccount : public QObject
-						, public IAccount
-						, public IHaveConsole
-						, public ISupportBookmarks
+					 , public IAccount
+					 , public IHaveConsole
+					 , public ISupportBookmarks
+					 , public ICanHaveSslErrors
 	{
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::Azoth::IAccount
 				LeechCraft::Azoth::IHaveConsole
-				LeechCraft::Azoth::ISupportBookmarks)
+				LeechCraft::Azoth::ISupportBookmarks
+				LeechCraft::Azoth::ICanHaveSslErrors
+				)
 
 		QString AccountName_;
 		IrcProtocol *ParentProtocol_;
@@ -158,6 +162,8 @@ namespace Acetamide
 		void gotConsolePacket (const QByteArray&, IHaveConsole::PacketDirection, const QString&);
 
 		void bookmarksChanged ();
+
+		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 
 	typedef std::shared_ptr<IrcAccount> IrcAccount_ptr;

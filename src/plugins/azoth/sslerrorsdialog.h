@@ -27,71 +27,29 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#pragma once
+
+#include <QDialog>
+#include "ui_sslerrorsdialog.h"
 #include "sslerrorshandler.h"
-#include <QtDebug>
-#include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
+
+template<typename T>
+class QList;
+class QSslError;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	SslErrorsHandler::SslErrorsHandler (QXmppClient *client)
-	: QObject { client }
-	, Client_ { client }
+	class SslErrorsDialog : public QDialog
 	{
-		connect (Client_,
-				SIGNAL (sslErrors (QList<QSslError>)),
-				this,
-				SLOT (handleSslErrors (QList<QSslError>)));
-	}
+		Q_DECLARE_TR_FUNCTIONS (SslErrorsDialog)
 
-	void SslErrorsHandler::EmitAborted ()
-	{
-		emit aborted ();
-	}
+		Ui::SslErrorsDialog Ui_;
+	public:
+		SslErrorsDialog (const SslErrorsHandler::Context_t&, const QList<QSslError>&, QWidget* = nullptr);
 
-	namespace
-	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
-		{
-			QXmppClient * const Client_;
-
-			const QPointer<SslErrorsHandler> Handler_;
-		public:
-			SslErrorsReaction (QXmppClient *client, SslErrorsHandler *handler)
-			: Client_ { client }
-			, Handler_ { handler }
-			{
-			}
-
-			void Ignore () override
-			{
-				qDebug () << Q_FUNC_INFO;
-
-				Client_->configuration ().setIgnoreSslErrors (true);
-
-				Util::ExecuteLater ([client = Client_]
-						{
-							client->configuration ().setIgnoreSslErrors (false);
-						});
-			}
-
-			void Abort () override
-			{
-				qDebug () << Q_FUNC_INFO;
-				if (Handler_)
-					Handler_->EmitAborted ();
-			}
-		};
-	}
-
-	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
-	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_, this));
-	}
-}
+		bool ShouldRememberChoice () const;
+	};
 }
 }

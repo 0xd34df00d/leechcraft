@@ -150,7 +150,7 @@ namespace oral
 		};
 	}
 
-	template<typename T>
+	template<typename T, typename = void>
 	struct Type2Name;
 
 	template<>
@@ -195,6 +195,12 @@ namespace oral
 		QString operator() () const { return "TEXT"; }
 	};
 
+	template<typename E>
+	struct Type2Name<E, std::enable_if_t<std::is_enum<E>::value>>
+	{
+		QString operator() () const { return "INTEGER"; }
+	};
+
 	template<typename T>
 	struct Type2Name<Unique<T>>
 	{
@@ -223,7 +229,7 @@ namespace oral
 		}
 	};
 
-	template<typename T>
+	template<typename T, typename = void>
 	struct ToVariant
 	{
 		QVariant operator() (const T& t) const
@@ -238,6 +244,15 @@ namespace oral
 		QVariant operator() (const QDateTime& t) const
 		{
 			return t.toString (Qt::ISODate);
+		}
+	};
+
+	template<typename E>
+	struct ToVariant<E, std::enable_if_t<std::is_enum<E>::value>>
+	{
+		QVariant operator() (E e) const
+		{
+			return static_cast<qint64> (e);
 		}
 	};
 
@@ -268,7 +283,7 @@ namespace oral
 		}
 	};
 
-	template<typename T>
+	template<typename T, typename = void>
 	struct FromVariant
 	{
 		T operator() (const QVariant& var) const
@@ -283,6 +298,15 @@ namespace oral
 		QDateTime operator() (const QVariant& var) const
 		{
 			return QDateTime::fromString (var.toString (), Qt::ISODate);
+		}
+	};
+
+	template<typename E>
+	struct FromVariant<E, std::enable_if_t<std::is_enum<E>::value>>
+	{
+		E operator() (const QVariant& var) const
+		{
+			return static_cast<E> (var.value<qint64> ());
 		}
 	};
 
@@ -447,7 +471,7 @@ namespace oral
 			return HasAutogenPKeyImpl<Seq> (0);
 		}
 
-		QString GetInsertPrefix (InsertAction action)
+		inline QString GetInsertPrefix (InsertAction action)
 		{
 			switch (action)
 			{
@@ -459,10 +483,7 @@ namespace oral
 				return "INSERT OR REPLACE";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown action"
-					<< static_cast<int> (action);
-			return "INSERT";
+			assert (0);
 		}
 
 		template<typename Seq>
@@ -699,7 +720,7 @@ namespace oral
 			Or
 		};
 
-		QString TypeToSql (ExprType type)
+		inline QString TypeToSql (ExprType type)
 		{
 			switch (type)
 			{

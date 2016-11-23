@@ -143,6 +143,11 @@ namespace Xoox
 	{
 		ClientConnection_.reset (new ClientConnection (this));
 
+		connect (ClientConnection_.get (),
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				this,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
+
 		TransferManager_.reset (new TransferManager (ClientConnection_->GetTransferManager (),
 					this));
 
@@ -161,47 +166,47 @@ namespace Xoox
 				SLOT (feedClientPassword ()));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (statusChanged (const EntryStatus&)),
+				SIGNAL (statusChanged (EntryStatus)),
 				this,
-				SIGNAL (statusChanged (const EntryStatus&)));
+				SIGNAL (statusChanged (EntryStatus)));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (gotRosterItems (const QList<QObject*>&)),
+				SIGNAL (gotRosterItems (QList<QObject*>)),
 				this,
-				SLOT (handleGotRosterItems (const QList<QObject*>&)));
+				SLOT (handleGotRosterItems (QList<QObject*>)));
 		connect (ClientConnection_.get (),
 				SIGNAL (rosterItemRemoved (QObject*)),
 				this,
 				SLOT (handleEntryRemoved (QObject*)));
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemsRemoved (const QList<QObject*>&)),
+				SIGNAL (rosterItemsRemoved (QList<QObject*>)),
 				this,
-				SIGNAL (removedCLItems (const QList<QObject*>&)));
+				SIGNAL (removedCLItems (QList<QObject*>)));
 		connect (ClientConnection_.get (),
-				SIGNAL (gotSubscriptionRequest (QObject*, const QString&)),
+				SIGNAL (gotSubscriptionRequest (QObject*, QString)),
 				this,
-				SIGNAL (authorizationRequested (QObject*, const QString&)));
+				SIGNAL (authorizationRequested (QObject*, QString)));
 
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemSubscribed (QObject*, const QString&)),
+				SIGNAL (rosterItemSubscribed (QObject*, QString)),
 				this,
-				SIGNAL (itemSubscribed (QObject*, const QString&)));
+				SIGNAL (itemSubscribed (QObject*, QString)));
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemUnsubscribed (QObject*, const QString&)),
+				SIGNAL (rosterItemUnsubscribed (QObject*, QString)),
 				this,
-				SIGNAL (itemUnsubscribed (QObject*, const QString&)));
+				SIGNAL (itemUnsubscribed (QObject*, QString)));
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemUnsubscribed (const QString&, const QString&)),
+				SIGNAL (rosterItemUnsubscribed (QString, QString)),
 				this,
-				SIGNAL (itemUnsubscribed (const QString&, const QString&)));
+				SIGNAL (itemUnsubscribed (QString, QString)));
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemCancelledSubscription (QObject*, const QString&)),
+				SIGNAL (rosterItemCancelledSubscription (QObject*, QString)),
 				this,
-				SIGNAL (itemCancelledSubscription (QObject*, const QString&)));
+				SIGNAL (itemCancelledSubscription (QObject*, QString)));
 		connect (ClientConnection_.get (),
-				SIGNAL (rosterItemGrantedSubscription (QObject*, const QString&)),
+				SIGNAL (rosterItemGrantedSubscription (QObject*, QString)),
 				this,
-				SIGNAL (itemGrantedSubscription (QObject*, const QString&)));
+				SIGNAL (itemGrantedSubscription (QObject*, QString)));
 		connect (ClientConnection_.get (),
 				SIGNAL (gotMUCInvitation (QVariantMap, QString, QString)),
 				this,

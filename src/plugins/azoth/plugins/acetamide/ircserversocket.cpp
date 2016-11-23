@@ -31,14 +31,12 @@
 #include "ircserversocket.h"
 #include <QTcpSocket>
 #include <QTextCodec>
-#include <QSettings>
 #include <interfaces/core/icoreproxy.h>
 #include <interfaces/core/ientitymanager.h>
 #include <util/xpc/util.h>
 #include <util/sll/visitor.h>
 #include "ircserverhandler.h"
 #include "clientconnection.h"
-#include "sslerrorsdialog.h"
 
 namespace LeechCraft
 {
@@ -179,49 +177,32 @@ namespace Acetamide
 			ISH_->ReadReply (socket->readLine ());
 	}
 
-	void IrcServerSocket::HandleSslErrors (const std::shared_ptr<QSslSocket>& s, const QList<QSslError>& errors)
+	namespace
 	{
-		QSettings settings (QCoreApplication::organizationName (),
-				QCoreApplication::applicationName () + "_Azoth_Acetamide");
-		settings.beginGroup ("SSL exceptions");
-		QStringList keys = settings.allKeys ();
-		const QString& key = s->peerName () + ":" + s->peerPort ();
-		if (keys.contains (key))
+		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
 		{
-			if (settings.value (key).toBool ())
-				s->ignoreSslErrors ();
-		}
-		else if (keys.contains (s->peerName ()))
-		{
-			if (settings.value (s->peerName ()).toBool ())
-				s->ignoreSslErrors ();
-		}
-		else
-		{
-			QString msg = tr ("<code>%1</code><br />has SSL errors."
-					" What do you want to do?")
-						.arg (QApplication::fontMetrics ()
-								.elidedText (key, Qt::ElideMiddle, elideWidth));
-
-			std::unique_ptr<SslErrorsDialog> errDialog (new SslErrorsDialog ());
-			errDialog->Update (msg, errors);
-
-			bool ignore = (errDialog->exec () == QDialog::Accepted);
-
-			SslErrorsDialog::RememberChoice choice = errDialog->GetRememberChoice ();
-
-			if (choice != SslErrorsDialog::RCNot)
+			std::weak_ptr<QSslSocket> Sock_;
+		public:
+			SslErrorsReaction (const std::shared_ptr<QSslSocket>& sock)
+			: Sock_ { sock }
 			{
-				if (choice == SslErrorsDialog::RCFile)
-					settings.setValue (key, ignore);
-				else
-					settings.setValue (s->peerName (), ignore);
 			}
 
-			if (ignore)
-				s->ignoreSslErrors (errors);
-		}
-		settings.endGroup ();
+			void Ignore () override
+			{
+				if (const auto sock = Sock_.lock ())
+					sock->ignoreSslErrors ();
+			}
+
+			void Abort () override
+			{
+			}
+		};
+	}
+
+	void IrcServerSocket::HandleSslErrors (const std::shared_ptr<QSslSocket>& s, const QList<QSslError>& errors)
+	{
+		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (s));
 	}
 
 	void IrcServerSocket::handleSslErrors (const QList<QSslError>& errors)

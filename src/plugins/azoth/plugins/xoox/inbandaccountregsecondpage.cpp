@@ -29,14 +29,14 @@
 
 #include "inbandaccountregsecondpage.h"
 #include <QVBoxLayout>
-#include <QMessageBox>
 #include <util/network/socketerrorstrings.h>
 #include <util/util.h>
-#include <interfaces/core/ientitymanager.h>
+#include <util/sll/slotclosure.h>
 #include "xmppbobmanager.h"
 #include "inbandaccountregfirstpage.h"
 #include "util.h"
 #include "regformhandlerwidget.h"
+#include "sslerrorshandler.h"
 
 namespace LeechCraft
 {
@@ -48,7 +48,7 @@ namespace Xoox
 	{
 		QXmppClient* MakeClient (InBandAccountRegSecondPage *page)
 		{
-			auto client = new QXmppClient (page);
+			auto client = new QXmppClient { page };
 			for (auto ext : client->extensions ())
 				client->removeExtension (ext);
 
@@ -88,6 +88,20 @@ namespace Xoox
 				SIGNAL (regError (QString)),
 				this,
 				SIGNAL (regError (QString)));
+
+		const auto sslHandler = new SslErrorsHandler { Client_ };
+		connect (sslHandler,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
+				this,
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
+
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this] { SslAborted_ = true; },
+			sslHandler,
+			SIGNAL (aborted ()),
+			sslHandler
+		};
 	}
 
 	void InBandAccountRegSecondPage::Register ()
@@ -105,6 +119,11 @@ namespace Xoox
 		return RegForm_->GetPassword ();
 	}
 
+	QObject* InBandAccountRegSecondPage::GetQObject ()
+	{
+		return this;
+	}
+
 	bool InBandAccountRegSecondPage::isComplete () const
 	{
 		return RegForm_->IsComplete ();
@@ -114,7 +133,14 @@ namespace Xoox
 	{
 		QWizardPage::initializePage ();
 
-		const QString& server = FirstPage_->GetServerName ();
+		SslAborted_ = false;
+
+		Reinitialize ();
+	}
+
+	void InBandAccountRegSecondPage::Reinitialize ()
+	{
+		const auto& server = FirstPage_->GetServerName ();
 
 		if (Client_->isConnected ())
 			Client_->disconnectFromServer ();
@@ -138,9 +164,12 @@ namespace Xoox
 				<< Client_->socketError ()
 				<< Client_->xmppStreamError ();
 
+		if (error == QXmppClient::SocketError && SslAborted_)
+			return;
+
 		if (error == QXmppClient::SocketError &&
 				wizard ()->currentPage () == this)
-			initializePage ();
+			Reinitialize ();
 	}
 }
 }

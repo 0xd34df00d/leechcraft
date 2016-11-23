@@ -159,6 +159,9 @@ set (SRCS
 	avatarsstoragethread.cpp
 	chattabnetworkaccessmanager.cpp
 	historysyncer.cpp
+	sslerrorshandler.cpp
+	sslerrorsdialog.cpp
+	sslerrorschoicestorage.cpp
 	)
 set (FORMS
 	mainwidget.ui
@@ -192,6 +195,7 @@ set (FORMS
 	groupremovedialog.ui
 	serverhistorywidget.ui
 	bookmarkeditdialog.ui
+	sslerrorsdialog.ui
 	)
 set (RESOURCES azothresources.qrc)
 

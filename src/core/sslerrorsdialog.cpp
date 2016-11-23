@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "sslerrorsdialog.h"
-#include <QDateTime>
 #include <util/network/sslerror2treeitem.h>
 
 namespace LeechCraft

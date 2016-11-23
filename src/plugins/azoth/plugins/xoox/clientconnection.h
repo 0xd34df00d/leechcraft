@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_CLIENTCONNECTION_H
+#pragma once
+
 #include <functional>
 #include <memory>
 #include <QObject>
@@ -38,6 +38,7 @@
 #include <QXmppClient.h>
 #include <QXmppMucIq.h>
 #include <interfaces/azoth/imessage.h>
+#include <interfaces/azoth/icanhavesslerrors.h>
 #include "glooxclentry.h"
 #include "glooxaccount.h"
 #include "riexmanager.h"
@@ -347,9 +348,9 @@ namespace Xoox
 		void serverAuthFailed ();
 		void needPassword ();
 		void statusChanged (const EntryStatus&);
+
+		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }
 }
 }
-
-#endif

@@ -27,71 +27,42 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sslerrorshandler.h"
-#include <QtDebug>
-#include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
+#pragma once
+
+#include <memory>
+#include <QtPlugin>
+
+template<typename>
+class QList;
+
+class QSslError;
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	SslErrorsHandler::SslErrorsHandler (QXmppClient *client)
-	: QObject { client }
-	, Client_ { client }
+	class ICanHaveSslErrors
 	{
-		connect (Client_,
-				SIGNAL (sslErrors (QList<QSslError>)),
-				this,
-				SLOT (handleSslErrors (QList<QSslError>)));
-	}
-
-	void SslErrorsHandler::EmitAborted ()
-	{
-		emit aborted ();
-	}
-
-	namespace
-	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
+	protected:
+		virtual ~ICanHaveSslErrors () = default;
+	public:
+		class ISslErrorsReaction
 		{
-			QXmppClient * const Client_;
-
-			const QPointer<SslErrorsHandler> Handler_;
+		protected:
+			~ISslErrorsReaction () = default;
 		public:
-			SslErrorsReaction (QXmppClient *client, SslErrorsHandler *handler)
-			: Client_ { client }
-			, Handler_ { handler }
-			{
-			}
-
-			void Ignore () override
-			{
-				qDebug () << Q_FUNC_INFO;
-
-				Client_->configuration ().setIgnoreSslErrors (true);
-
-				Util::ExecuteLater ([client = Client_]
-						{
-							client->configuration ().setIgnoreSslErrors (false);
-						});
-			}
-
-			void Abort () override
-			{
-				qDebug () << Q_FUNC_INFO;
-				if (Handler_)
-					Handler_->EmitAborted ();
-			}
+			virtual void Ignore () = 0;
+			virtual void Abort () = 0;
 		};
-	}
 
-	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
-	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_, this));
-	}
+		using ISslErrorsReaction_ptr = std::shared_ptr<ISslErrorsReaction>;
+
+		virtual QObject* GetQObject () = 0;
+	protected:
+		virtual void sslErrors (const QList<QSslError>&, const ISslErrorsReaction_ptr&) = 0;
+	};
 }
 }
-}
+
+Q_DECLARE_INTERFACE (LeechCraft::Azoth::ICanHaveSslErrors,
+		"org.LeechCraft.Azoth.ICanHaveSslErrors/1.0")

@@ -27,71 +27,36 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sslerrorshandler.h"
-#include <QtDebug>
-#include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
+#pragma once
+
+#include <boost/variant.hpp>
+#include <QObject>
+#include <interfaces/azoth/icanhavesslerrors.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	SslErrorsHandler::SslErrorsHandler (QXmppClient *client)
-	: QObject { client }
-	, Client_ { client }
+	class SslErrorsHandler : public QObject
 	{
-		connect (Client_,
-				SIGNAL (sslErrors (QList<QSslError>)),
-				this,
-				SLOT (handleSslErrors (QList<QSslError>)));
-	}
+		Q_OBJECT
 
-	void SslErrorsHandler::EmitAborted ()
-	{
-		emit aborted ();
-	}
-
-	namespace
-	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
+	public:
+		struct AccountRegistration {};
+		struct Account
 		{
-			QXmppClient * const Client_;
-
-			const QPointer<SslErrorsHandler> Handler_;
-		public:
-			SslErrorsReaction (QXmppClient *client, SslErrorsHandler *handler)
-			: Client_ { client }
-			, Handler_ { handler }
-			{
-			}
-
-			void Ignore () override
-			{
-				qDebug () << Q_FUNC_INFO;
-
-				Client_->configuration ().setIgnoreSslErrors (true);
-
-				Util::ExecuteLater ([client = Client_]
-						{
-							client->configuration ().setIgnoreSslErrors (false);
-						});
-			}
-
-			void Abort () override
-			{
-				qDebug () << Q_FUNC_INFO;
-				if (Handler_)
-					Handler_->EmitAborted ();
-			}
+			QString Name_;
 		};
-	}
 
-	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
-	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_, this));
-	}
-}
+		using Context_t = boost::variant<AccountRegistration, Account>;
+	private:
+		const Context_t Context_;
+		ICanHaveSslErrors * const ICHSE_;
+	public:
+		SslErrorsHandler (const Context_t&, ICanHaveSslErrors*);
+	private slots:
+		void sslErrors (const QList<QSslError>&,
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
+	};
 }
 }

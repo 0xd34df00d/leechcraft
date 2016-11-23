@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "addaccountwizardfirstpage.h"
+#include <interfaces/azoth/icanhavesslerrors.h>
 #include "core.h"
+#include "sslerrorshandler.h"
 
 namespace LeechCraft
 {
@@ -55,8 +57,7 @@ namespace Azoth
 		registerField ("AccountProto", Ui_.ProtoBox_);
 		registerField ("RegisterNewAccount", Ui_.RegisterAccount_);
 
-		const QList<IProtocol*>& protos = Core::Instance ().GetProtocols ();
-		Q_FOREACH (IProtocol *proto, protos)
+		for (const auto proto : Core::Instance ().GetProtocols ())
 		{
 			if (proto->GetFeatures () & IProtocol::PFNoAccountRegistration)
 				continue;
@@ -71,15 +72,25 @@ namespace Azoth
 				this,
 				SLOT (handleAccepted ()));
 	}
-	
+
+	void AddAccountWizardFirstPage::CleanupWidgets ()
+	{
+		const int currentId = wizard ()->currentId ();
+		for (const int id : wizard ()->pageIds ())
+			if (id > currentId)
+				wizard ()->removePage (id);
+		qDeleteAll (Widgets_);
+		Widgets_.clear ();
+	}
+
 	void AddAccountWizardFirstPage::readdWidgets ()
 	{
 		const int idx = Ui_.ProtoBox_->currentIndex ();
 		if (idx == -1)
 			return;
 
-		QObject *obj = Ui_.ProtoBox_->itemData (idx).value<QObject*> ();
-		IProtocol *proto = qobject_cast<IProtocol*> (obj);
+		const auto obj = Ui_.ProtoBox_->itemData (idx).value<QObject*> ();
+		const auto proto = qobject_cast<IProtocol*> (obj);
 		if (!proto)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -90,24 +101,23 @@ namespace Azoth
 		}
 		
 		Ui_.RegisterAccount_->setEnabled (proto->GetFeatures () & IProtocol::PFSupportsInBandRegistration);
-		
-		const int currentId = wizard ()->currentId ();
-		Q_FOREACH (const int id, wizard ()->pageIds ())
-			if (id > currentId)
-				wizard ()->removePage (id);
-		qDeleteAll (Widgets_);
+
+		CleanupWidgets ();
 
 		IProtocol::AccountAddOptions options = IProtocol::AAONoOptions;
 		if (Ui_.RegisterAccount_->isChecked ())
 			options |= IProtocol::AAORegisterNewAccount;
 		Widgets_ = proto->GetAccountRegistrationWidgets (options);
-		if (!Widgets_.size ())
-			return;
-		
-		const QString& protoName = proto->GetProtocolName ();
-		Q_FOREACH (QWidget *widget, Widgets_)
+		if (Widgets_.isEmpty ())
 		{
-			QWizardPage *page = qobject_cast<QWizardPage*> (widget);
+			setFinalPage (true);
+			return;
+		}
+		
+		const auto& protoName = proto->GetProtocolName ();
+		for (const auto widget : Widgets_)
+		{
+			auto page = qobject_cast<QWizardPage*> (widget);
 			if (!page)
 			{
 				page = new QWizardPage (wizard ());
@@ -117,15 +127,17 @@ namespace Azoth
 				page->layout ()->addWidget (widget);
 			}
 			wizard ()->addPage (page);
+
+			if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (widget))
+				new SslErrorsHandler { SslErrorsHandler::AccountRegistration {}, ichse };
 		}
-		
 		setFinalPage (false);
 	}
 	
 	void AddAccountWizardFirstPage::handleAccepted ()
 	{
-		QObject *obj = Ui_.ProtoBox_->itemData (field ("AccountProto").toInt ()).value<QObject*> ();
-		IProtocol *proto = qobject_cast<IProtocol*> (obj);
+		const auto obj = Ui_.ProtoBox_->itemData (field ("AccountProto").toInt ()).value<QObject*> ();
+		const auto proto = qobject_cast<IProtocol*> (obj);
 		if (!proto)
 		{
 			qWarning () << Q_FUNC_INFO

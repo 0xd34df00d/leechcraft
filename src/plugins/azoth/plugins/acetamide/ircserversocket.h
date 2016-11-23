@@ -33,6 +33,7 @@
 #include <boost/variant.hpp>
 #include <QObject>
 #include <QSslSocket>
+#include <interfaces/azoth/icanhavesslerrors.h>
 
 class QTcpSocket;
 
@@ -72,6 +73,8 @@ namespace Acetamide
 	private slots:
 		void readReply ();
 		void handleSslErrors (const QList<QSslError>& errors);
+	signals:
+		void sslErrors (const QList<QSslError>&, const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
 	};
 }
 }

@@ -27,46 +27,36 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SSLERRORSDIALOG_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SSLERRORSDIALOG_H
+#pragma once
 
-#include <QDialog>
-#include <QList>
+#include <boost/optional.hpp>
+#include <QSqlDatabase>
 #include <QSslError>
-#include "ui_sslerrorsdialog.h"
+#include <util/db/oralfwd.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Acetamide
-{
-	class SslErrorsDialog : public QDialog
+	class SslErrorsChoiceStorage
 	{
-		Q_OBJECT
-
-		Ui::SslErrorsDialog Ui_;
 	public:
-		enum RememberChoice
+		struct Record;
+	private:
+		QSqlDatabase DB_;
+
+		Util::oral::ObjectInfo_ptr<Record> AdaptedRecord_;
+	public:
+		SslErrorsChoiceStorage ();
+
+		enum class Action
 		{
-			RCNot
-			, RCFile
-			, RCHost
+			Ignore,
+			Abort
 		};
 
-		SslErrorsDialog (QWidget *parent = 0);
-		SslErrorsDialog (const QString& msg,
-				const QList<QSslError>& errors, QWidget *parent = 0);
-		virtual ~SslErrorsDialog ();
-
-		void Update (const QString& msg, const QList<QSslError>& errors);
-
-		RememberChoice GetRememberChoice () const;
-	private:
-		void PopulateTree (const QSslError& error);
+		boost::optional<Action> GetAction (const QByteArray&, QSslError::SslError) const;
+		void SetAction (const QByteArray&, QSslError::SslError, Action);
 	};
 }
 }
-}
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SSLERRORSDIALOG_H

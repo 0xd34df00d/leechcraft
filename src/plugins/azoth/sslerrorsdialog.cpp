@@ -27,71 +27,43 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#include "sslerrorshandler.h"
-#include <QtDebug>
-#include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
+#include "sslerrorsdialog.h"
+#include <QSslError>
+#include <util/network/sslerror2treeitem.h>
+#include <util/sll/visitor.h>
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	SslErrorsHandler::SslErrorsHandler (QXmppClient *client)
-	: QObject { client }
-	, Client_ { client }
+	SslErrorsDialog::SslErrorsDialog (const SslErrorsHandler::Context_t& context,
+			const QList<QSslError>& errors, QWidget *parent)
+	: QDialog { parent }
 	{
-		connect (Client_,
-				SIGNAL (sslErrors (QList<QSslError>)),
-				this,
-				SLOT (handleSslErrors (QList<QSslError>)));
+		Ui_.setupUi (this);
+
+		const auto& contextDescr = Util::Visit (context,
+				[] (SslErrorsHandler::AccountRegistration)
+				{
+					return tr ("SSL errors occured during account registration.");
+				},
+				[] (const SslErrorsHandler::Account& acc)
+				{
+					return tr ("SSL errors occured for account %1.")
+							.arg ("<em>" + acc.Name_ + "</em>");
+				});
+		Ui_.ContextText_->setText (contextDescr);
+
+		for (const auto& error : errors)
+			Ui_.ErrorsTree_->addTopLevelItem (Util::SslError2TreeItem (error));
+
+		Ui_.ErrorsTree_->expandAll ();
+		Ui_.ErrorsTree_->resizeColumnToContents (0);
 	}
 
-	void SslErrorsHandler::EmitAborted ()
+	bool SslErrorsDialog::ShouldRememberChoice () const
 	{
-		emit aborted ();
+		return Ui_.RememberChoice_->checkState () == Qt::Checked;
 	}
-
-	namespace
-	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
-		{
-			QXmppClient * const Client_;
-
-			const QPointer<SslErrorsHandler> Handler_;
-		public:
-			SslErrorsReaction (QXmppClient *client, SslErrorsHandler *handler)
-			: Client_ { client }
-			, Handler_ { handler }
-			{
-			}
-
-			void Ignore () override
-			{
-				qDebug () << Q_FUNC_INFO;
-
-				Client_->configuration ().setIgnoreSslErrors (true);
-
-				Util::ExecuteLater ([client = Client_]
-						{
-							client->configuration ().setIgnoreSslErrors (false);
-						});
-			}
-
-			void Abort () override
-			{
-				qDebug () << Q_FUNC_INFO;
-				if (Handler_)
-					Handler_->EmitAborted ();
-			}
-		};
-	}
-
-	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
-	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_, this));
-	}
-}
 }
 }

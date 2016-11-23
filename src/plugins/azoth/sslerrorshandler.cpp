@@ -28,70 +28,49 @@
  **********************************************************************/
 
 #include "sslerrorshandler.h"
+#include <QSslError>
 #include <QtDebug>
-#include <QXmppClient.h>
-#include <util/sll/delayedexecutor.h>
+#include <util/sll/slotclosure.h>
+#include "sslerrorsdialog.h"
 
 namespace LeechCraft
 {
 namespace Azoth
 {
-namespace Xoox
-{
-	SslErrorsHandler::SslErrorsHandler (QXmppClient *client)
-	: QObject { client }
-	, Client_ { client }
+	SslErrorsHandler::SslErrorsHandler (const Context_t& context, ICanHaveSslErrors *ichse)
+	: QObject { ichse->GetQObject () }
+	, Context_ { context }
+	, ICHSE_ { ichse }
 	{
-		connect (Client_,
-				SIGNAL (sslErrors (QList<QSslError>)),
+		connect (ichse->GetQObject (),
+				SIGNAL (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)),
 				this,
-				SLOT (handleSslErrors (QList<QSslError>)));
+				SLOT (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 	}
 
-	void SslErrorsHandler::EmitAborted ()
+	void SslErrorsHandler::sslErrors (const QList<QSslError>& errors,
+			const ICanHaveSslErrors::ISslErrorsReaction_ptr& reaction)
 	{
-		emit aborted ();
-	}
+		qDebug () << Q_FUNC_INFO;
+		for (const auto& error : errors)
+			qDebug () << error.errorString ();
 
-	namespace
-	{
-		class SslErrorsReaction : public ICanHaveSslErrors::ISslErrorsReaction
+		SslErrorsDialog dia { Context_, errors };
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			QXmppClient * const Client_;
-
-			const QPointer<SslErrorsHandler> Handler_;
-		public:
-			SslErrorsReaction (QXmppClient *client, SslErrorsHandler *handler)
-			: Client_ { client }
-			, Handler_ { handler }
-			{
-			}
-
-			void Ignore () override
-			{
-				qDebug () << Q_FUNC_INFO;
-
-				Client_->configuration ().setIgnoreSslErrors (true);
-
-				Util::ExecuteLater ([client = Client_]
-						{
-							client->configuration ().setIgnoreSslErrors (false);
-						});
-			}
-
-			void Abort () override
-			{
-				qDebug () << Q_FUNC_INFO;
-				if (Handler_)
-					Handler_->EmitAborted ();
-			}
+			[reaction] { reaction->Ignore (); },
+			&dia,
+			SIGNAL (accepted ()),
+			&dia
 		};
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[reaction] { reaction->Abort (); },
+			&dia,
+			SIGNAL (rejected ()),
+			&dia
+		};
+		dia.exec ();
 	}
-
-	void SslErrorsHandler::handleSslErrors (const QList<QSslError>& errors)
-	{
-		emit sslErrors (errors, std::make_shared<SslErrorsReaction> (Client_, this));
-	}
-}
 }
 }

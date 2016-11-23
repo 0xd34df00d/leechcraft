@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_GLOOXACCOUNT_H
+#pragma once
+
 #include <memory>
 #include <QObject>
 #include <QMap>
@@ -53,6 +53,7 @@
 #include <interfaces/azoth/ihaveserverhistory.h>
 #include <interfaces/azoth/isupportlastactivity.h>
 #include <interfaces/azoth/ihaveblacklists.h>
+#include <interfaces/azoth/icanhavesslerrors.h>
 #ifdef ENABLE_CRYPT
 #include <interfaces/azoth/isupportpgp.h>
 #endif
@@ -105,6 +106,7 @@ namespace Xoox
 					   , public IRegManagedAccount
 					   , public IHaveServerHistory
 					   , public IHaveBlacklists
+					   , public ICanHaveSslErrors
 #ifdef ENABLE_CRYPT
 					   , public ISupportPGP
 #endif
@@ -126,6 +128,7 @@ namespace Xoox
 				LeechCraft::Azoth::IRegManagedAccount
 				LeechCraft::Azoth::IHaveServerHistory
 				LeechCraft::Azoth::IHaveBlacklists
+				LeechCraft::Azoth::ICanHaveSslErrors
 			)
 
 #ifdef ENABLE_MEDIACALLS
@@ -326,6 +329,9 @@ namespace Xoox
 		void serverHistoryFetched (const QModelIndex&,
 				const QByteArray&, const SrvHistMessages_t&);
 
+		void sslErrors (const QList<QSslError>&,
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr&);
+
 #ifdef ENABLE_MEDIACALLS
 		void called (QObject*);
 #endif
@@ -344,5 +350,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
