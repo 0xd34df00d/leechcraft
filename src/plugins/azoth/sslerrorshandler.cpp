@@ -31,7 +31,10 @@
 #include <QSslError>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
+#include <util/sll/visitor.h>
+#include <util/sll/prelude.h>
 #include "sslerrorsdialog.h"
+#include "sslerrorschoicestorage.h"
 
 namespace LeechCraft
 {
@@ -48,12 +51,49 @@ namespace Azoth
 				SLOT (sslErrors (QList<QSslError>, ICanHaveSslErrors::ISslErrorsReaction_ptr)));
 	}
 
+	namespace
+	{
+		bool CheckSavedChoice (SslErrorsChoiceStorage& storage,
+				const SslErrorsHandler::Context_t& context,
+				const QList<QSslError>& errors,
+				const ICanHaveSslErrors::ISslErrorsReaction_ptr& reaction)
+		{
+			return Util::Visit (context,
+					[] (SslErrorsHandler::AccountRegistration) { return false; },
+					[&] (const SslErrorsHandler::Account& acc)
+					{
+						const auto choices = Util::Map (errors,
+								[&] (QSslError err) { return storage.GetAction (acc.ID_, err.error ()); });
+
+						if (std::any_of (choices.begin (), choices.end (),
+								[] (const auto& choice) { return choice == SslErrorsChoiceStorage::Action::Abort; }))
+						{
+							reaction->Abort ();
+							return true;
+						}
+
+						if (std::all_of (choices.begin (), choices.end (),
+								[] (const auto& choice) { return choice == SslErrorsChoiceStorage::Action::Ignore; }))
+						{
+							reaction->Ignore ();
+							return true;
+						}
+
+						return false;
+					});
+		}
+	}
+
 	void SslErrorsHandler::sslErrors (const QList<QSslError>& errors,
 			const ICanHaveSslErrors::ISslErrorsReaction_ptr& reaction)
 	{
 		qDebug () << Q_FUNC_INFO;
 		for (const auto& error : errors)
 			qDebug () << error.errorString ();
+
+		auto storage = std::make_shared<SslErrorsChoiceStorage> ();
+		if (CheckSavedChoice (*storage, Context_, errors, reaction))
+			return;
 
 		SslErrorsDialog dia { Context_, errors };
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
