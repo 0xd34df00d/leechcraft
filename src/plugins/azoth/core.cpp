@@ -1593,7 +1593,10 @@ namespace Azoth
 
 		HistorySyncer_->AddAccount (account);
 
-		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + account->GetAccountID ());
+		const auto& accountId = account->GetAccountID ();
+		const auto& accountName = account->GetAccountName ();
+
+		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + accountId);
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
@@ -1603,7 +1606,7 @@ namespace Azoth
 		CryptoManager::Instance ().AddAccount (account);
 #endif
 
-		QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
+		QStandardItem *accItem = new QStandardItem (accountName);
 		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
 		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
 		const auto accState = account->GetState ().State_;
@@ -1663,7 +1666,7 @@ namespace Azoth
 		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
 		if (proto && account->IsShownInRoster ())
 		{
-			const QByteArray& id = proto->GetProtocolID () + account->GetAccountID ();
+			const QByteArray& id = proto->GetProtocolID () + accountId;
 			const QVariant& var = XmlSettingsManager::Instance ().property (id);
 			if (!var.isNull () && var.canConvert<QByteArray> ())
 			{
