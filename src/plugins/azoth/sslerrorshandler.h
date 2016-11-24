@@ -45,6 +45,7 @@ namespace Azoth
 		struct AccountRegistration {};
 		struct Account
 		{
+			QByteArray ID_;
 			QString Name_;
 		};
 

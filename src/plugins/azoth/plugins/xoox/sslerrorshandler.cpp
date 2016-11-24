@@ -42,6 +42,7 @@ namespace Xoox
 	: QObject { client }
 	, Client_ { client }
 	{
+		Client_->configuration ().setIgnoreSslErrors (false);
 		connect (Client_,
 				SIGNAL (sslErrors (QList<QSslError>)),
 				this,
@@ -82,6 +83,8 @@ namespace Xoox
 			void Abort () override
 			{
 				qDebug () << Q_FUNC_INFO;
+
+				Client_->configuration ().setIgnoreSslErrors (false);
 				if (Handler_)
 					Handler_->EmitAborted ();
 			}

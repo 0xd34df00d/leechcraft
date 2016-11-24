@@ -1577,6 +1577,32 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		boost::optional<EntryStatus> LoadSavedStatus (IAccount *account)
+		{
+			const auto proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+			if (!proto)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "account's parent proto isn't IProtocol"
+						<< account->GetParentProtocol ();
+				return {};
+			}
+
+			const auto& id = proto->GetProtocolID () + account->GetAccountID ();
+			const auto& var = XmlSettingsManager::Instance ().property (id);
+			if (var.isNull () || !var.canConvert<QByteArray> ())
+				return {};
+
+			EntryStatus s;
+			QDataStream stream { var.toByteArray () };
+			stream >> s;
+
+			return s;
+		}
+	}
+
 	void Core::addAccount (QObject *accObject)
 	{
 		AvatarsManager_->handleAccount (accObject);
@@ -1593,7 +1619,10 @@ namespace Azoth
 
 		HistorySyncer_->AddAccount (account);
 
-		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + account->GetAccountID ());
+		const auto& accountId = account->GetAccountID ();
+		const auto& accountName = account->GetAccountName ();
+
+		const auto& showKey = QString::fromUtf8 ("ShowAccount_" + accountId);
 		const bool show = XmlSettingsManager::Instance ().Property (showKey, true).toBool ();
 		account->SetShownInRoster (show);
 
@@ -1603,7 +1632,7 @@ namespace Azoth
 		CryptoManager::Instance ().AddAccount (account);
 #endif
 
-		QStandardItem *accItem = new QStandardItem (account->GetAccountName ());
+		QStandardItem *accItem = new QStandardItem (accountName);
 		accItem->setData (QVariant::fromValue<IAccount*> (account), CLRAccountObject);
 		accItem->setData (QVariant::fromValue<CLEntryType> (CLETAccount), CLREntryType);
 		const auto accState = account->GetState ().State_;
@@ -1660,28 +1689,15 @@ namespace Azoth
 					this,
 					SLOT (handleGotSDSession (QObject*)));
 
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		if (proto && account->IsShownInRoster ())
+		if (account->IsShownInRoster ())
 		{
-			const QByteArray& id = proto->GetProtocolID () + account->GetAccountID ();
-			const QVariant& var = XmlSettingsManager::Instance ().property (id);
-			if (!var.isNull () && var.canConvert<QByteArray> ())
-			{
-				EntryStatus s;
-				QDataStream stream (var.toByteArray ());
-				stream >> s;
-				account->ChangeState (s);
-			}
+			if (const auto& s = LoadSavedStatus (account))
+				account->ChangeState (*s);
 			else
 				UpdateInitState (account->GetState ().State_);
 		}
-		else if (!proto)
-			qWarning () << Q_FUNC_INFO
-					<< "account's parent proto isn't IProtocol"
-					<< account->GetParentProtocol ();
 
-		QObject *xferMgr = account->GetTransferManager ();
-		if (xferMgr)
+		if (const auto xferMgr = account->GetTransferManager ())
 		{
 			XferJobManager_->AddAccountManager (xferMgr);
 
@@ -1700,7 +1716,7 @@ namespace Azoth
 					SLOT (handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString)));
 
 		if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (account->GetQObject ()))
-			new SslErrorsHandler { SslErrorsHandler::Account { account->GetAccountName () }, ichse };
+			new SslErrorsHandler { SslErrorsHandler::Account { accountId, accountName }, ichse };
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
