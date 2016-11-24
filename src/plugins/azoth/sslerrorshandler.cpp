@@ -95,22 +95,44 @@ namespace Azoth
 		if (CheckSavedChoice (*storage, Context_, errors, reaction))
 			return;
 
-		SslErrorsDialog dia { Context_, errors };
+		auto rememberChoice = [storage, errors, ctx = Context_] (SslErrorsChoiceStorage::Action action)
+		{
+			Util::Visit (ctx,
+					[] (SslErrorsHandler::AccountRegistration) {},
+					[&] (const SslErrorsHandler::Account& acc)
+					{
+						for (const auto& error : errors)
+							storage->SetAction (acc.ID_, error.error (), action);
+					});
+		};
+
+		auto dia = new SslErrorsDialog { Context_, errors };
+		dia->setAttribute (Qt::WA_DeleteOnClose);
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[reaction] { reaction->Ignore (); },
-			&dia,
+			[dia, reaction, rememberChoice]
+			{
+				reaction->Ignore ();
+				if (dia->ShouldRememberChoice ())
+					rememberChoice (SslErrorsChoiceStorage::Action::Ignore);
+			},
+			dia,
 			SIGNAL (accepted ()),
-			&dia
+			dia
 		};
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[reaction] { reaction->Abort (); },
-			&dia,
+			[dia, reaction, rememberChoice]
+			{
+				reaction->Abort ();
+				if (dia->ShouldRememberChoice ())
+					rememberChoice (SslErrorsChoiceStorage::Action::Abort);
+			},
+			dia,
 			SIGNAL (rejected ()),
-			&dia
+			dia
 		};
-		dia.exec ();
+		dia->exec ();
 	}
 }
 }
