@@ -1703,7 +1703,7 @@ namespace Azoth
 					SLOT (handleRIEXItemsSuggested (QList<LeechCraft::Azoth::RIEXItem>, QObject*, QString)));
 
 		if (const auto ichse = qobject_cast<ICanHaveSslErrors*> (account->GetQObject ()))
-			new SslErrorsHandler { SslErrorsHandler::Account { account->GetAccountName () }, ichse };
+			new SslErrorsHandler { SslErrorsHandler::Account { accountId, accountName }, ichse };
 	}
 
 	void Core::handleAccountRemoved (QObject *account)
