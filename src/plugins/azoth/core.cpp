@@ -1683,8 +1683,7 @@ namespace Azoth
 					<< "account's parent proto isn't IProtocol"
 					<< account->GetParentProtocol ();
 
-		QObject *xferMgr = account->GetTransferManager ();
-		if (xferMgr)
+		if (const auto xferMgr = account->GetTransferManager ())
 		{
 			XferJobManager_->AddAccountManager (xferMgr);
 
