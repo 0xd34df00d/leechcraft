@@ -1577,6 +1577,32 @@ namespace Azoth
 		}
 	}
 
+	namespace
+	{
+		boost::optional<EntryStatus> LoadSavedStatus (IAccount *account)
+		{
+			const auto proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
+			if (!proto)
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "account's parent proto isn't IProtocol"
+						<< account->GetParentProtocol ();
+				return {};
+			}
+
+			const auto& id = proto->GetProtocolID () + account->GetAccountID ();
+			const auto& var = XmlSettingsManager::Instance ().property (id);
+			if (var.isNull () || !var.canConvert<QByteArray> ())
+				return {};
+
+			EntryStatus s;
+			QDataStream stream { var.toByteArray () };
+			stream >> s;
+
+			return s;
+		}
+	}
+
 	void Core::addAccount (QObject *accObject)
 	{
 		AvatarsManager_->handleAccount (accObject);
@@ -1663,25 +1689,13 @@ namespace Azoth
 					this,
 					SLOT (handleGotSDSession (QObject*)));
 
-		IProtocol *proto = qobject_cast<IProtocol*> (account->GetParentProtocol ());
-		if (proto && account->IsShownInRoster ())
+		if (account->IsShownInRoster ())
 		{
-			const QByteArray& id = proto->GetProtocolID () + accountId;
-			const QVariant& var = XmlSettingsManager::Instance ().property (id);
-			if (!var.isNull () && var.canConvert<QByteArray> ())
-			{
-				EntryStatus s;
-				QDataStream stream (var.toByteArray ());
-				stream >> s;
-				account->ChangeState (s);
-			}
+			if (const auto& s = LoadSavedStatus (account))
+				account->ChangeState (*s);
 			else
 				UpdateInitState (account->GetState ().State_);
 		}
-		else if (!proto)
-			qWarning () << Q_FUNC_INFO
-					<< "account's parent proto isn't IProtocol"
-					<< account->GetParentProtocol ();
 
 		if (const auto xferMgr = account->GetTransferManager ())
 		{
