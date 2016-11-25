@@ -90,7 +90,7 @@ namespace Fua
 		if (!cur.isValid ())
 			return;
 
-		qDeleteAll (Model_->takeRow (cur.row ()));
+		Model_->removeRow (cur.row ());
 		Fua_->Save ();
 	}
 }
