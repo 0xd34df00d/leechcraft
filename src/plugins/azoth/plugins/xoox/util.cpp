@@ -305,6 +305,11 @@ namespace XooxUtil
 		return QString ();
 	}
 
+	StaticClientInfo GetStaticClientInfo (const QString& node)
+	{
+		return { GetClientIDName (node), GetClientHRName (node) };
+	}
+
 	QDomElement XmppElem2DomElem (const QXmppElement& elem)
 	{
 		QByteArray arr;

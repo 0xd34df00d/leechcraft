@@ -63,6 +63,17 @@ namespace XooxUtil
 	QString RoleToString (const QXmppMucItem::Role&);
 	QString AffiliationToString (const QXmppMucItem::Affiliation&);
 
+	struct StaticClientInfo
+	{
+		QString ID_;
+		QString HumanReadableName_;
+
+		bool IsEmpty () const
+		{
+			return ID_.isEmpty () || HumanReadableName_.isEmpty ();
+		}
+	};
+	StaticClientInfo GetStaticClientInfo (const QString&);
 	QString GetClientIDName (const QString&);
 	QString GetClientHRName (const QString&);
 
