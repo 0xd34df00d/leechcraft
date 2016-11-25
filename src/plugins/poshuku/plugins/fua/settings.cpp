@@ -52,12 +52,13 @@ namespace Fua
 		if (changer.exec () != QDialog::Accepted)
 			return;
 
-		QString domain = changer.GetDomain ();
-		QString identification = changer.GetID ();
-		QList<QStandardItem*> items;
-		items << new QStandardItem (domain)
-			<< new QStandardItem (Fua_->GetBackLookupMap () [identification])
-			<< new QStandardItem (identification);
+		const auto& identification = changer.GetID ();
+		const QList<QStandardItem*> items
+		{
+			new QStandardItem (changer.GetDomain ()),
+			new QStandardItem (Fua_->GetBackLookupMap () [identification]),
+			new QStandardItem (identification)
+		};
 		Model_->appendRow (items);
 		Fua_->Save ();
 	}
@@ -85,7 +86,7 @@ namespace Fua
 
 	void Settings::on_Remove__released ()
 	{
-		QModelIndex cur = Ui_.Items_->currentIndex ();
+		const auto& cur = Ui_.Items_->currentIndex ();
 		if (!cur.isValid ())
 			return;
 
