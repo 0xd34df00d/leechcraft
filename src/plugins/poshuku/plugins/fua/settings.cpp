@@ -77,7 +77,6 @@ namespace Fua
 
 		domain = changer.GetDomain ();
 		identification = changer.GetID ();
-		QList<QStandardItem*> items;
 		Model_->item (cur.row (), 0)->setText (domain);
 		Model_->item (cur.row (), 1)->setText (Fua_->GetBackLookupMap () [identification]);
 		Model_->item (cur.row (), 2)->setText (identification);
@@ -90,7 +89,7 @@ namespace Fua
 		if (!cur.isValid ())
 			return;
 
-		qDeleteAll (Model_->takeRow (cur.row ()));
+		Model_->removeRow (cur.row ());
 		Fua_->Save ();
 	}
 }

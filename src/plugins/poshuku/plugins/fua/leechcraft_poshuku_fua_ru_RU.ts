@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru_RU">
+<TS version="2.1" language="ru_RU">
 <context>
     <name>Changer</name>
     <message>
@@ -23,47 +23,39 @@
         <source>ID string:</source>
         <translation>Строка:</translation>
     </message>
-    <message>
-        <location filename="changer.ui" line="57"/>
-        <source>%Platform% and %Subplatform% are expanded to the windowing system and the operation system.
-%Security% is expanded to U if SSL is enabled, otherwise N.
-%Locale% is replaced with current locale name.
-%WebKitVersion% is expanded to WebKit version.
-%AppVersion% is expanded to the application&apos;s version.</source>
-        <translation>%Platform% и %Subplatform% заменяются оконной подсистемой и операционной системой.
-%Security% заменяется на U при доступности SSL, а в противном случае на N.
-%Locale% заменяется именем текущей локали.
-%WebKitVersion% заменяется версией движка WebKit.
-%AppVersion% заменяется версией приложения.</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="66"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Domain</source>
         <translation>Домен</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="67"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Agent</source>
         <translation>Агент</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="68"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Identification string</source>
         <translation>Строка идентификации</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="112"/>
+        <location filename="fua.cpp" line="86"/>
         <source>Allows one to set fake user agents for different sites.</source>
         <translation>Позволяет устанавливать поддельные user-agent для различных сайтов.</translation>
+    </message>
+    <message>
+        <location filename="fua.cpp" line="197"/>
+        <source>LeechCraft (this machine)</source>
+        <translation>LeechCraft (на этом компьютере)</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="settings.ui" line="27"/>
+        <location filename="settings.ui" line="24"/>
         <source>Add...</source>
         <translation>Добавить...</translation>
     </message>
@@ -73,12 +65,12 @@
         <translation>Изменить...</translation>
     </message>
     <message>
-        <location filename="settings.ui" line="41"/>
+        <location filename="settings.ui" line="44"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="settings.ui" line="65"/>
+        <location filename="settings.ui" line="71"/>
         <source>Changes would be applied immediately</source>
         <translation>Изменения будут применены сразу</translation>
     </message>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.1" language="en_US">
 <context>
     <name>Changer</name>
     <message>
@@ -23,47 +23,39 @@
         <source>ID string:</source>
         <translation>ID string:</translation>
     </message>
-    <message>
-        <location filename="changer.ui" line="57"/>
-        <source>%Platform% and %Subplatform% are expanded to the windowing system and the operation system.
-%Security% is expanded to U if SSL is enabled, otherwise N.
-%Locale% is replaced with current locale name.
-%WebKitVersion% is expanded to WebKit version.
-%AppVersion% is expanded to the application&apos;s version.</source>
-        <translation>%Platform% and %Subplatform% are expanded to the windowing system and the operation system.
-%Security% is expanded to U if SSL is enabled, otherwise N.
-%Locale% is replaced with current locale name.
-%WebKitVersion% is expanded to WebKit version.
-%AppVersion% is expanded to the application&apos;s version.</translation>
-    </message>
 </context>
 <context>
     <name>LeechCraft::Poshuku::Fua::FUA</name>
     <message>
-        <location filename="fua.cpp" line="66"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Domain</source>
         <translation>Domain</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="67"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Agent</source>
         <translation>Agent</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="68"/>
+        <location filename="fua.cpp" line="58"/>
         <source>Identification string</source>
         <translation>Identification string</translation>
     </message>
     <message>
-        <location filename="fua.cpp" line="112"/>
+        <location filename="fua.cpp" line="86"/>
         <source>Allows one to set fake user agents for different sites.</source>
         <translation>Allows one to set fake user agents for different sites.</translation>
+    </message>
+    <message>
+        <location filename="fua.cpp" line="197"/>
+        <source>LeechCraft (this machine)</source>
+        <translation>LeechCraft (this machine)</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
-        <location filename="settings.ui" line="27"/>
+        <location filename="settings.ui" line="24"/>
         <source>Add...</source>
         <translation>Add...</translation>
     </message>
@@ -73,12 +65,12 @@
         <translation>Modify...</translation>
     </message>
     <message>
-        <location filename="settings.ui" line="41"/>
+        <location filename="settings.ui" line="44"/>
         <source>Remove</source>
         <translation>Remove</translation>
     </message>
     <message>
-        <location filename="settings.ui" line="65"/>
+        <location filename="settings.ui" line="71"/>
         <source>Changes would be applied immediately</source>
         <translation>Changes would be applied immediately</translation>
     </message>
