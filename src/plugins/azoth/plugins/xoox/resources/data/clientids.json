@@ -199,7 +199,8 @@
     },
     {
       "node": "http://sip-communicator.org",
-      "id": "sip-communicator"
+      "id": "sip-communicator",
+      "name": "Jitsi"
     },
     {
       "node": "http://spectrum.im/transport",
