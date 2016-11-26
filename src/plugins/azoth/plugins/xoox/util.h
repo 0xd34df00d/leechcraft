@@ -74,8 +74,6 @@ namespace XooxUtil
 		}
 	};
 	StaticClientInfo GetStaticClientInfo (const QString&);
-	QString GetClientIDName (const QString&);
-	QString GetClientHRName (const QString&);
 
 	QDomElement XmppElem2DomElem (const QXmppElement&);
 	QXmppElement Form2XmppElem (const QXmppDataForm&);
