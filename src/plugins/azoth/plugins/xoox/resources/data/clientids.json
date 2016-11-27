@@ -68,12 +68,7 @@
       "name": "EMess"
     },
     {
-      "node": "http://fatal-bot.spb.ru/caps",
-      "id": "fatal-bot",
-      "name": "Fatal-bot"
-    },
-    {
-      "node": "http://fatal-dev.ru/bot/caps",
+      "node": [ "http://fatal-bot.spb.ru/caps", "http://fatal-dev.ru/bot/caps" ],
       "id": "fatal-bot",
       "name": "Fatal-bot"
     },
