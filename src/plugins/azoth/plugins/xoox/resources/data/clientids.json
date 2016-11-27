@@ -103,7 +103,7 @@
       "name": "Jimm"
     },
     {
-      "node": "http://jitsi.org",
+      "node": [ "http://jitsi.org", "http://sip-communicator.org" ],
       "id": "sip-communicator",
       "name": "Jitsi"
     },
@@ -186,11 +186,6 @@
       "node": "http://sawim.ru/caps",
       "id": "sawim",
       "name": "Sawim"
-    },
-    {
-      "node": "http://sip-communicator.org",
-      "id": "sip-communicator",
-      "name": "Jitsi"
     },
     {
       "node": "http://spectrum.im/transport",
