@@ -6,7 +6,7 @@
       "name": "Gajim"
     },
     {
-      "node": "http://pidgin.im/",
+      "node": [ "http://pidgin.im/", "https://pidgin.im/" ],
       "id": "pidgin",
       "name": "Pidgin IM"
     },
