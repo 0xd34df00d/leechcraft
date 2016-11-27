@@ -11,7 +11,6 @@ import System.Environment
 import Data.Aeson
 import Data.Monoid
 import Data.Foldable
-import Control.Arrow
 import GHC.Generics
 
 newtype NodeType = NodeType { getNode :: Either T.Text [T.Text] } deriving (Eq, Show, Generic)
