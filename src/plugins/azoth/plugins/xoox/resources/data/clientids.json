@@ -16,6 +16,16 @@
       "name": "QutIM"
     },
     {
+      "node": "http://sleekxmpp.com/ver/",
+      "id": "unknown",
+      "name": "Sleek XMPP library"
+    },
+    {
+      "node": "http://slixmpp.com/ver/",
+      "id": "unknown",
+      "name": "SliXMPP library"
+    },
+    {
       "node": "http://tkabber.jabber.ru",
       "id": "tkabber",
       "name": "Tkabber"
