@@ -43,6 +43,7 @@
 #include <QXmppUtils.h>
 #include <QXmppGlobal.h>
 #include <util/sll/parsejson.h>
+#include <util/sll/prelude.h>
 #include "entrybase.h"
 #include "capsdatabase.h"
 
@@ -129,18 +130,23 @@ namespace XooxUtil
 
 	namespace
 	{
-		QPair<QString, StaticClientInfo> ParseClientIdObj (const QVariantMap& map)
+		QPair<QStringList, StaticClientInfo> ParseClientIdObj (const QVariantMap& map)
 		{
-			const auto& node = map ["node"].toString ();
+			const auto& nodeVar = map ["node"];
+
+			const auto& nodes = nodeVar.canConvert<QVariantList> () ?
+					Util::Map (nodeVar.toList (), &QVariant::toString) :
+					QStringList { nodeVar.toString () };
+
 			const auto& id = map ["id"].toString ();
 			const auto& name = map ["name"].toString ();
 
-			if (node.isEmpty () || id.isEmpty () || name.isEmpty ())
+			if (nodes.isEmpty () || id.isEmpty () || name.isEmpty ())
 				qWarning () << Q_FUNC_INFO
 						<< "missing data for map"
 						<< map;
 
-			return { node, { id, name } };
+			return { nodes, { id, name } };
 		}
 
 		class StaticClientInfoHolder
@@ -164,15 +170,22 @@ namespace XooxUtil
 				for (const auto& itemVar : json ["fullMatches"].toList ())
 				{
 					const auto& pair = ParseClientIdObj (itemVar.toMap ());
-					if (FullMatches_.contains (pair.first))
-						qWarning () << Q_FUNC_INFO
-								<< "duplicate node:"
-								<< pair.first;
-					FullMatches_ [pair.first] = pair.second;
+					for (const auto& node : pair.first)
+					{
+						if (FullMatches_.contains (node))
+							qWarning () << Q_FUNC_INFO
+									<< "duplicate node:"
+									<< node;
+						FullMatches_ [node] = pair.second;
+					}
 				}
 
 				for (const auto& itemVar : json ["partialMatches"].toList ())
-					PartialMatches_ << ParseClientIdObj (itemVar.toMap ());
+				{
+					const auto& pair = ParseClientIdObj (itemVar.toMap ());
+					for (const auto& node : pair.first)
+						PartialMatches_.push_back ({ node, pair.second });
+				}
 
 				std::sort (PartialMatches_.begin (), PartialMatches_.end (),
 						[] (const auto& left, const auto& right) { return left.first < right.first; });
