@@ -23,7 +23,7 @@
   ],
   "fullMatches": [
     {
-      "node": "http://2010.qip.ru/caps",
+      "node": [ "http://2010.qip.ru/caps", "http://qip.ru/caps" ],
       "id": "qipinfium",
       "name": "QIP Infium"
     },
@@ -176,11 +176,6 @@
       "node": "http://pyicqt.googlecode.com//protocol/caps",
       "id": "pyicq-t",
       "name": "PyICQ-t"
-    },
-    {
-      "node": "http://qip.ru/caps",
-      "id": "qipinfium",
-      "name": "QIP Infium"
     },
     {
       "node": "http://qip.ru/caps?QIP Mobile Java",
