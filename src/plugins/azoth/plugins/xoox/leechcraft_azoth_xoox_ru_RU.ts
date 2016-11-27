@@ -372,34 +372,24 @@
     </message>
 </context>
 <context>
-    <name>LeechCraft::Azoth::Xoox</name>
+    <name>LeechCraft::Azoth::Xoox::AdHocCommandManager</name>
     <message>
-        <location filename="xep0313modelmanager.cpp" line="45"/>
-        <source>Entry name</source>
-        <translation>Имя контакта</translation>
+        <location filename="adhoccommandmanager.cpp" line="222"/>
+        <source>Original message: %1.</source>
+        <translation>Исходное сообщение: %1.</translation>
     </message>
-    <message>
-        <location filename="xep0313modelmanager.cpp" line="45"/>
-        <source>JID</source>
-        <translation>JID</translation>
-    </message>
-    <message>
-        <location filename="executecommanddialog.cpp" line="200"/>
-        <source>Execute another command</source>
-        <translation>Выполнить другую команду</translation>
-    </message>
-    <message>
-        <location filename="executecommanddialog.cpp" line="214"/>
-        <source>Please wait while the selected command is executed.</source>
-        <translation>Пожалуйста, подождите, пока исполнится выбранная команда.</translation>
-    </message>
+</context>
+<context>
+    <name>LeechCraft::Azoth::Xoox::AdHocCommandServer</name>
     <message>
         <location filename="adhoccommandserver.cpp" line="65"/>
+        <location filename="adhoccommandserver.cpp" line="303"/>
         <source>Change status</source>
         <translation>Изменить статус</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="75"/>
+        <location filename="adhoccommandserver.cpp" line="374"/>
         <source>Leave groupchats</source>
         <translation>Покинуть конференции</translation>
     </message>
@@ -412,27 +402,6 @@
         <location filename="adhoccommandserver.cpp" line="92"/>
         <source>Add download task</source>
         <translation>Добавить закачку</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Azoth::Xoox::AdHocCommandManager</name>
-    <message>
-        <location filename="adhoccommandmanager.cpp" line="222"/>
-        <source>Original message: %1.</source>
-        <translation>Исходное сообщение: %1.</translation>
-    </message>
-</context>
-<context>
-    <name>LeechCraft::Azoth::Xoox::AdHocCommandServer</name>
-    <message>
-        <location filename="adhoccommandserver.cpp" line="303"/>
-        <source>Change status</source>
-        <translation>Изменить статус</translation>
-    </message>
-    <message>
-        <location filename="adhoccommandserver.cpp" line="374"/>
-        <source>Leave groupchats</source>
-        <translation>Покинуть конференции</translation>
     </message>
     <message>
         <location filename="adhoccommandserver.cpp" line="283"/>
@@ -504,22 +473,22 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::ClientConnection</name>
     <message>
-        <location filename="clientconnection.cpp" line="454"/>
+        <location filename="clientconnection.cpp" line="457"/>
         <source>This room is already joined.</source>
         <translation>Вы уже в этой комнате.</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="924"/>
+        <location filename="clientconnection.cpp" line="926"/>
         <source>Data form from %1</source>
         <translation>Форма от %1</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="927"/>
+        <location filename="clientconnection.cpp" line="929"/>
         <source>You have received dataform from %1:</source>
         <translation>Вы получили форму от %1:</translation>
     </message>
     <message>
-        <location filename="clientconnection.cpp" line="1010"/>
+        <location filename="clientconnection.cpp" line="1012"/>
         <source>Using the juick.com service is discouraged. Please consider migrating to saner alternatives, like point.im.</source>
         <translation>Использование сервиса juick.com не рекомендуется. Рассмотрите возможность миграции на более адекватные альтернативы вроде point.im.</translation>
     </message>
@@ -675,7 +644,7 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::CryptHandler</name>
     <message>
-        <location filename="crypthandler.cpp" line="100"/>
+        <location filename="crypthandler.cpp" line="106"/>
         <source>This message is encrypted. Please decrypt it to view the original contents.</source>
         <translation>Это сообщение зашифровано. Пожалуйста, расшифруйте его для просмотра исходного содержимого.</translation>
     </message>
@@ -683,145 +652,155 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::EntryBase</name>
     <message>
-        <location filename="entrybase.cpp" line="90"/>
+        <location filename="entrybase.cpp" line="92"/>
         <source>Commands...</source>
         <translation>Команды...</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="91"/>
+        <location filename="entrybase.cpp" line="93"/>
         <source>Detect nick</source>
         <translation>Определить ник</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="222"/>
+        <location filename="entrybase.cpp" line="203"/>
         <source>Can&apos;t view info while offline</source>
         <translation>Невозможно просматривать информацию в оффлайне</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="328"/>
+        <location filename="entrybase.cpp" line="304"/>
         <source>Photo</source>
         <translation>Фото</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="330"/>
+        <location filename="entrybase.cpp" line="306"/>
         <source>Real name</source>
         <translation>Настоящее имя</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="331"/>
+        <location filename="entrybase.cpp" line="307"/>
         <source>Birthday</source>
         <translation>День рожденья</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="333"/>
+        <location filename="entrybase.cpp" line="309"/>
         <source>About</source>
         <translation>О себе</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="343"/>
-        <location filename="entrybase.cpp" line="363"/>
-        <location filename="entrybase.cpp" line="390"/>
+        <location filename="entrybase.cpp" line="319"/>
+        <location filename="entrybase.cpp" line="339"/>
+        <location filename="entrybase.cpp" line="366"/>
         <source>preferred</source>
         <translation>предпочтительно</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="345"/>
-        <location filename="entrybase.cpp" line="365"/>
-        <location filename="entrybase.cpp" line="384"/>
+        <location filename="entrybase.cpp" line="321"/>
+        <location filename="entrybase.cpp" line="341"/>
+        <location filename="entrybase.cpp" line="360"/>
         <source>home</source>
         <translation>домашний</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="347"/>
-        <location filename="entrybase.cpp" line="367"/>
-        <location filename="entrybase.cpp" line="386"/>
+        <location filename="entrybase.cpp" line="323"/>
+        <location filename="entrybase.cpp" line="343"/>
+        <location filename="entrybase.cpp" line="362"/>
         <source>work</source>
         <translation>рабочий</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="349"/>
+        <location filename="entrybase.cpp" line="325"/>
         <source>cell</source>
         <translation>мобильный</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="351"/>
+        <location filename="entrybase.cpp" line="327"/>
         <source>Phone</source>
         <translation>Телефон</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="388"/>
+        <location filename="entrybase.cpp" line="364"/>
         <source>postal</source>
         <translation>почтовый код</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="399"/>
+        <location filename="entrybase.cpp" line="375"/>
         <source>Country: %1</source>
         <translation>Страна: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="400"/>
+        <location filename="entrybase.cpp" line="376"/>
         <source>Region: %1</source>
         <translation>Регион: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="401"/>
+        <location filename="entrybase.cpp" line="377"/>
         <source>Locality: %1</source>
         <comment>User&apos;s locality</comment>
         <translation>Местоположение: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="402"/>
+        <location filename="entrybase.cpp" line="378"/>
         <source>Street: %1</source>
         <translation>Улица: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="403"/>
+        <location filename="entrybase.cpp" line="379"/>
         <source>Postal code: %1</source>
         <translation>Почтовый код: %1</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="405"/>
+        <location filename="entrybase.cpp" line="381"/>
         <source>Address</source>
         <translation>Адрес</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="410"/>
+        <location filename="entrybase.cpp" line="386"/>
         <source>Organization</source>
         <translation>Организация</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="411"/>
+        <location filename="entrybase.cpp" line="387"/>
         <source>Organization unit</source>
         <translation>Подразделение</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="412"/>
+        <location filename="entrybase.cpp" line="388"/>
         <source>Job title</source>
         <translation>Должность</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="413"/>
+        <location filename="entrybase.cpp" line="389"/>
         <source>Job role</source>
         <translation>Роль</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="701"/>
+        <location filename="entrybase.cpp" line="725"/>
         <source>%1 is now %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="1055"/>
+        <location filename="entrybase.cpp" line="1052"/>
         <source>Select resource</source>
         <translation>Выберите ресурс</translation>
     </message>
     <message>
-        <location filename="entrybase.cpp" line="1056"/>
+        <location filename="entrybase.cpp" line="1053"/>
         <source>Select resource for which to fetch the commands</source>
         <translation>Выберите ресурс, которым хотите командовать</translation>
     </message>
 </context>
 <context>
     <name>LeechCraft::Azoth::Xoox::ExecuteCommandDialog</name>
+    <message>
+        <location filename="executecommanddialog.cpp" line="200"/>
+        <source>Execute another command</source>
+        <translation>Выполнить другую команду</translation>
+    </message>
+    <message>
+        <location filename="executecommanddialog.cpp" line="214"/>
+        <source>Please wait while the selected command is executed.</source>
+        <translation>Пожалуйста, подождите, пока исполнится выбранная команда.</translation>
+    </message>
     <message>
         <location filename="executecommanddialog.cpp" line="224"/>
         <source>Please wait while the list of commands is fetched.</source>
@@ -862,57 +841,47 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxAccount</name>
     <message>
-        <location filename="glooxaccount.cpp" line="101"/>
+        <location filename="glooxaccount.cpp" line="106"/>
         <source>Self VCard...</source>
         <translation>Собственный VCard...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="102"/>
+        <location filename="glooxaccount.cpp" line="107"/>
         <source>Privacy lists...</source>
         <translation>Списки приватности...</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="103"/>
+        <location filename="glooxaccount.cpp" line="108"/>
         <source>Enable message carbons</source>
         <translation>Включить копирование сообщений</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="111"/>
+        <location filename="glooxaccount.cpp" line="116"/>
         <source>Deliver messages from conversations on other resources to this resource as well.</source>
         <translation>Копировать на этот ресурс все сообщения из разговоров на других ресурсах.</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="497"/>
+        <location filename="glooxaccount.cpp" line="499"/>
         <source>Why would you call yourself?</source>
         <translation>Почему вы хотите позвонить себе?</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="855"/>
+        <location filename="glooxaccount.cpp" line="862"/>
         <source>By full JID</source>
         <translation>По полному JID</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="855"/>
+        <location filename="glooxaccount.cpp" line="862"/>
         <source>By domain</source>
         <translation>По домену</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="858"/>
+        <location filename="glooxaccount.cpp" line="865"/>
         <source>Select block type:</source>
         <translation>Выберите тип блокировки:</translation>
     </message>
     <message>
-        <location filename="glooxaccount.cpp" line="934"/>
-        <source>Unable to enable encryption for entry %1: no key has been set.</source>
-        <translation>Невозможно включить шифрование для контакта %1: не задан ключ.</translation>
-    </message>
-    <message>
-        <location filename="glooxaccount.cpp" line="943"/>
-        <source>Unable to change encryption state for %1.</source>
-        <translation>Невозможно изменить состояние шифрования для %1.</translation>
-    </message>
-    <message>
-        <location filename="glooxaccount.cpp" line="971"/>
+        <location filename="glooxaccount.cpp" line="1012"/>
         <source>Cannot join something that&apos;s already added to the roster. Do you want to remove %1 from roster and retry?</source>
         <translation>Невозможно присоединиться к тому, что уже добавлено в контакт-лист. Вы желаете удалить %1 из ростера и попробовать снова?</translation>
     </message>
@@ -933,32 +902,22 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxCLEntry</name>
     <message>
-        <location filename="glooxclentry.cpp" line="141"/>
-        <source>Block contact</source>
-        <translation>Заблокировать контакт</translation>
-    </message>
-    <message>
-        <location filename="glooxclentry.cpp" line="142"/>
-        <source>Add this user to the active privacy list (not all servers support this feature).</source>
-        <translation>Добавить этого пользователя в активный список приватности (не все серверы это поддерживают).</translation>
-    </message>
-    <message>
-        <location filename="glooxclentry.cpp" line="278"/>
+        <location filename="glooxclentry.cpp" line="259"/>
         <source>Unauthorized users</source>
         <translation>Неавторизованные пользователи</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="369"/>
+        <location filename="glooxclentry.cpp" line="350"/>
         <source>Login</source>
         <translation>Зайти</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="377"/>
+        <location filename="glooxclentry.cpp" line="358"/>
         <source>Logout</source>
         <translation>Выйти</translation>
     </message>
     <message>
-        <location filename="glooxclentry.cpp" line="385"/>
+        <location filename="glooxclentry.cpp" line="366"/>
         <source>Gateway preferences...</source>
         <translation>Настройки транспорта...</translation>
     </message>
@@ -966,12 +925,12 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::GlooxProtocol</name>
     <message>
-        <location filename="glooxprotocol.cpp" line="383"/>
+        <location filename="glooxprotocol.cpp" line="389"/>
         <source>Unable to import account: malformed import data.</source>
         <translation>Невозможно импортировать учётную запись: плохие данные.</translation>
     </message>
     <message>
-        <location filename="glooxprotocol.cpp" line="392"/>
+        <location filename="glooxprotocol.cpp" line="398"/>
         <source>Account %1 already exists, cannot import another one.</source>
         <translation>Учётная запись %1 уже существует, невозможно импортировать еще раз.</translation>
     </message>
@@ -1111,7 +1070,7 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::Plugin</name>
     <message>
-        <location filename="xoox.cpp" line="97"/>
+        <location filename="xoox.cpp" line="106"/>
         <source>XMPP (Jabber) protocol module using the QXmpp library.</source>
         <oldsource>XMPP (Jabber) protocol support via Gloox library.</oldsource>
         <translation>Поддержка протокола XMPP (Jabber) с помощью библиотеки QXmpp.</translation>
@@ -1382,7 +1341,7 @@
         <translation>Запросить голос</translation>
     </message>
     <message>
-        <location filename="roomclentry.cpp" line="291"/>
+        <location filename="roomclentry.cpp" line="286"/>
         <source>%1 participants</source>
         <translation>Участники %1</translation>
     </message>
@@ -1419,123 +1378,123 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::RoomHandler</name>
     <message>
-        <location filename="roomhandler.cpp" line="147"/>
+        <location filename="roomhandler.cpp" line="146"/>
         <source>%1 has left the room</source>
         <translation>%1 покинул(а) комнату</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="169"/>
+        <location filename="roomhandler.cpp" line="168"/>
         <source>%1 joined the room as %2 and %3</source>
         <translation>%1 вошёл в комнату как %2 и %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="174"/>
+        <location filename="roomhandler.cpp" line="173"/>
         <source>%1 (%2) joined the room as %3 and %4</source>
         <translation>%1 (%2) вошёл в комнату как %3 и %4</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="193"/>
+        <location filename="roomhandler.cpp" line="192"/>
         <source>%1 changed status to %2 (%3)</source>
         <translation>%1 теперь %2 (%3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="212"/>
+        <location filename="roomhandler.cpp" line="211"/>
         <source>%1 changed nick to %2</source>
         <translation>%1 сменил ник на %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="229"/>
+        <location filename="roomhandler.cpp" line="228"/>
         <source>%1 has been kicked</source>
         <translation>%1 был кикнут</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="232"/>
+        <location filename="roomhandler.cpp" line="231"/>
         <source>%1 has been kicked: %2</source>
         <translation>%1 был кикнут: %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="249"/>
+        <location filename="roomhandler.cpp" line="248"/>
         <source>%1 has been banned</source>
         <translation>%1 был забанен</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="252"/>
+        <location filename="roomhandler.cpp" line="251"/>
         <source>%1 has been banned: %2</source>
         <translation>%1 был забанен: %2</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="273"/>
+        <location filename="roomhandler.cpp" line="272"/>
         <source>%1 is now %2 and %3</source>
         <translation>%1 теперь %2 и %3</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="278"/>
+        <location filename="roomhandler.cpp" line="277"/>
         <source>%1 is now %2 and %3: %4</source>
         <oldsource>%1 is now %2 and %3: %2</oldsource>
         <translation>%1 теперь %2 и %3: %4</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="304"/>
+        <location filename="roomhandler.cpp" line="303"/>
         <source>This room is password-protected. Please enter the password required to join this room.</source>
         <translation>Эта комната защищена паролем. Пожалуйста, введите пароль, требуемый для входа в эту комнату.</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="334"/>
+        <location filename="roomhandler.cpp" line="333"/>
         <source>nickname already taken</source>
         <translation>ник уже занят</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="338"/>
+        <location filename="roomhandler.cpp" line="337"/>
         <source>access forbidden</source>
         <translation>доступ запрещён</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="341"/>
+        <location filename="roomhandler.cpp" line="340"/>
         <source>password required</source>
         <translation>требуется пароль</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="344"/>
+        <location filename="roomhandler.cpp" line="343"/>
         <source>malformed JID</source>
         <translation>плохой JID</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="347"/>
+        <location filename="roomhandler.cpp" line="346"/>
         <source>only registered users can enter this room</source>
         <translation>только зарегистрированные пользователи могут заходить в эту комнату</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="350"/>
+        <location filename="roomhandler.cpp" line="349"/>
         <source>remote server not found (try contacting your server&apos;s administrator)</source>
         <translation>удаленный сервер не найден (попробуйте связаться с администратором вашего сервера)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="353"/>
+        <location filename="roomhandler.cpp" line="352"/>
         <source>timeout connecting to remote server (try contacting your server&apos;s administrator)</source>
         <translation>истекло время ожидания подключения к удаленному серверу (попробуйте связаться с администратором вашего сервера)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="356"/>
+        <location filename="roomhandler.cpp" line="355"/>
         <source>service unavailable</source>
         <translation>сервис недоступен</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="359"/>
+        <location filename="roomhandler.cpp" line="358"/>
         <source>unknown condition %1 (please report to developers)</source>
         <translation>неизвестное условие %1 (пожалуйста, сообщите разработчикам)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="363"/>
+        <location filename="roomhandler.cpp" line="362"/>
         <source>Error for %1: %2 (original message: %3)</source>
         <translation>Ошибка для %1: %2 (оригинальное сообщение: %3)</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="367"/>
+        <location filename="roomhandler.cpp" line="366"/>
         <source>no message</source>
         <translation>нет сообщения</translation>
     </message>
     <message>
-        <location filename="roomhandler.cpp" line="479"/>
+        <location filename="roomhandler.cpp" line="478"/>
         <source>%1 changed subject to %2</source>
         <translation>%1 изменил тему на %2</translation>
     </message>
@@ -1651,7 +1610,7 @@
 <context>
     <name>LeechCraft::Azoth::Xoox::SelfContact</name>
     <message>
-        <location filename="selfcontact.cpp" line="94"/>
+        <location filename="selfcontact.cpp" line="88"/>
         <source>Self contact</source>
         <translation>Самоконтакт</translation>
     </message>
@@ -1818,6 +1777,19 @@
     </message>
 </context>
 <context>
+    <name>LeechCraft::Azoth::Xoox::Xep0313ModelManager</name>
+    <message>
+        <location filename="xep0313modelmanager.cpp" line="45"/>
+        <source>Entry name</source>
+        <translation>Имя контакта</translation>
+    </message>
+    <message>
+        <location filename="xep0313modelmanager.cpp" line="45"/>
+        <source>JID</source>
+        <translation>JID</translation>
+    </message>
+</context>
+<context>
     <name>PrivacyListsConfigDialog</name>
     <message>
         <location filename="privacylistsconfigdialog.ui" line="14"/>
@@ -1968,53 +1940,53 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="97"/>
+        <location filename="util.cpp" line="100"/>
         <source>guest</source>
         <translation>гость</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="99"/>
+        <location filename="util.cpp" line="102"/>
         <source>visitor</source>
         <translation>посетитель</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="101"/>
+        <location filename="util.cpp" line="104"/>
         <source>participant</source>
         <translation>участник</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="103"/>
+        <location filename="util.cpp" line="106"/>
         <source>moderator</source>
         <translation>модератор</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="105"/>
-        <location filename="util.cpp" line="124"/>
+        <location filename="util.cpp" line="108"/>
+        <location filename="util.cpp" line="127"/>
         <source>unspecified</source>
         <translation>не указано</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="114"/>
+        <location filename="util.cpp" line="117"/>
         <source>outcast</source>
         <translation>изгой</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="116"/>
+        <location filename="util.cpp" line="119"/>
         <source>newcomer</source>
         <translation>новенький</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="118"/>
+        <location filename="util.cpp" line="121"/>
         <source>member</source>
         <translation>член</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="120"/>
+        <location filename="util.cpp" line="123"/>
         <source>admin</source>
         <translation>админ</translation>
     </message>
     <message>
-        <location filename="util.cpp" line="122"/>
+        <location filename="util.cpp" line="125"/>
         <source>owner</source>
         <translation>владелец</translation>
     </message>
