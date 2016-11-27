@@ -43,9 +43,9 @@ checkNonInjective descrs | null msgs = []
           msgs = map (T.unwords . concat . snd) $ filter ((> 1) . length . snd) $ M.toList $ M.fromListWith (++) $ toPair <$> descrs
 
 process :: BS.ByteString -> T.Text
-process file | Just ClientIds { .. } <- dec' = T.unlines $ checkNonInjective $ partialMatches <> fullMatches
-             | otherwise = "Invalid JSON"
-    where dec' = decode file
+process file | Right ClientIds { .. } <- dec' = T.unlines $ checkNonInjective $ partialMatches <> fullMatches
+             | Left str <- dec' = "Invalid JSON: " <> T.pack str
+    where dec' = eitherDecode file
 
 main' :: [String] -> IO ()
 main' [filename] = do
