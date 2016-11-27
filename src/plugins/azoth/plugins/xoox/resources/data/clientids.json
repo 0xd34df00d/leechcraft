@@ -238,12 +238,7 @@
       "name": "Vacuum-IM"
     },
     {
-      "node": "http://www.android.com/gtalk/client/caps",
-      "id": "android",
-      "name": "Android"
-    },
-    {
-      "node": "http://www.android.com/gtalk/client/caps2",
+      "node": [ "http://www.android.com/gtalk/client/caps", "http://www.android.com/gtalk/client/caps2" ],
       "id": "android",
       "name": "Android"
     },
