@@ -10,11 +10,23 @@ import qualified Data.Text.IO as TI
 import System.Environment
 import Data.Aeson
 import Data.Monoid
+import Data.Foldable
 import Control.Arrow
 import GHC.Generics
 
+newtype NodeType = NodeType { getNode :: Either T.Text [T.Text] } deriving (Eq, Show, Generic)
+
+instance FromJSON NodeType where
+    parseJSON (String s) = pure $ NodeType $ Left s
+    parseJSON (Array a) | Just vals' <- vals = pure $ NodeType $ Right vals'
+                        | otherwise = fail "Strings expected"
+        where vals = mapM toVal $ toList a
+              toVal (String s) = Just s
+              toVal _ = Nothing
+    parseJSON _ = fail "Unexpected node type"
+
 data ClientDescr = ClientDescr {
-                       node :: T.Text,
+                       node :: NodeType,
                        id :: T.Text,
                        name :: T.Text
                    } deriving (Eq, Show, Generic, FromJSON)
@@ -27,8 +39,8 @@ data ClientIds = ClientIds {
 checkNonInjective :: [ClientDescr] -> [T.Text]
 checkNonInjective descrs | null msgs = []
                          | otherwise = "The following nodes map to the same info:" : msgs
-    where toPair ClientDescr { .. } = ((id, name), [node])
-          msgs = map (T.unwords . snd) $ filter ((> 1) . length . snd) $ M.toList $ M.fromListWith (++) $ toPair <$> descrs
+    where toPair ClientDescr { .. } = ((id, name), [either pure Prelude.id $ getNode node])
+          msgs = map (T.unwords . concat . snd) $ filter ((> 1) . length . snd) $ M.toList $ M.fromListWith (++) $ toPair <$> descrs
 
 process :: BS.ByteString -> T.Text
 process file | Just ClientIds { .. } <- dec' = T.unlines $ checkNonInjective $ partialMatches <> fullMatches
