@@ -208,7 +208,7 @@
       "name": "Swift"
     },
     {
-      "node": "http://talk.google.com/xmpp/bot/caps",
+      "node": [ "http://talk.google.com/xmpp/bot/caps", "http://www.google.com/xmpp/client/caps" ],
       "id": "talk.google.com",
       "name": "Google Talk"
     },
@@ -246,11 +246,6 @@
       "node": "http://www.apple.com/ichat/caps",
       "id": "ichat",
       "name": "iChat"
-    },
-    {
-      "node": "http://www.google.com/xmpp/client/caps",
-      "id": "talk.google.com",
-      "name": "Google Talk"
     },
     {
       "node": "http://www.eyecu.ru",
