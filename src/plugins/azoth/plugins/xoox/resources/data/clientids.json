@@ -1,0 +1,296 @@
+{
+  "partialMatches": [
+    {
+      "node": "http://gajim.org",
+      "id": "gajim",
+      "name": "Gajim"
+    },
+    {
+      "node": "http://pidgin.im/",
+      "id": "pidgin",
+      "name": "Pidgin IM"
+    },
+    {
+      "node": "http://qutim.org",
+      "id": "qutim",
+      "name": "QutIM"
+    },
+    {
+      "node": "http://tkabber.jabber.ru",
+      "id": "tkabber",
+      "name": "Tkabber"
+    }
+  ],
+  "fullMatches": [
+    {
+      "node": "http://2010.qip.ru/caps",
+      "id": "qipinfium",
+      "name": "QIP Infium"
+    },
+    {
+      "node": "http://agent.mail.ru",
+      "id": "mailruagent",
+      "name": "Mail.Ru Agent"
+    },
+    {
+      "node": "http://bitlbee.org/xmpp/caps",
+      "id": "bitlbee",
+      "name": "Bitlbee"
+    },
+    {
+      "node": "http://bombus-im.org/java",
+      "id": "bombus",
+      "name": "Bombus"
+    },
+    {
+      "node": "http://bombusmod.net.ru/caps",
+      "id": "bombusmod",
+      "name": "BombusMod"
+    },
+    {
+      "node": "http://bombusmod-qd.wen.ru/caps",
+      "id": "bombusmodqd",
+      "name": "BombusMod-QD"
+    },
+    {
+      "node": "http://code.google.com/p/qxmpp",
+      "id": "qxmpp",
+      "name": "QXmpp library"
+    },
+    {
+      "node": "http://emacs-jabber.sourceforge.net",
+      "id": "jabber-el",
+      "name": "jabber.el"
+    },
+    {
+      "node": "http://emess.eqx.su/caps",
+      "id": "emess",
+      "name": "EMess"
+    },
+    {
+      "node": "http://fatal-bot.spb.ru/caps",
+      "id": "fatal-bot",
+      "name": "Fatal-bot"
+    },
+    {
+      "node": "http://fatal-dev.ru/bot/caps",
+      "id": "fatal-bot",
+      "name": "Fatal-bot"
+    },
+    {
+      "node": "http://isida-bot.com",
+      "id": "isida-bot",
+      "name": "iSida Bot"
+    },
+    {
+      "node": "http://isida-bot.com/4",
+      "id": "isida-bot4",
+      "name": "iSida Bot"
+    },
+    {
+      "node": "httр://jabga.ru",
+      "id": "jtalk",
+      "name": "Fin jabber"
+    },
+    {
+      "node": "http://jabiru.mzet.net/caps",
+      "id": "jabiru",
+      "name": "Jabiru"
+    },
+    {
+      "node": "http://jasmineicq.ru/caps",
+      "id": "jasmine",
+      "name": "Jasmine"
+    },
+    {
+      "node": "http://jimm.net.ru/caps",
+      "id": "jimm",
+      "name": "Jimm"
+    },
+    {
+      "node": "http://jitsi.org",
+      "id": "sip-communicator",
+      "name": "Jitsi"
+    },
+    {
+      "node": "http://jtalk.ustyugov.net/caps",
+      "id": "jtalk",
+      "name": "JTalk"
+    },
+    {
+      "node": "http://kadu.im/caps",
+      "id": "kadu",
+      "name": "Kadu IM"
+    },
+    {
+      "node": "http://kopete.kde.org/jabber/caps",
+      "id": "kopete",
+      "name": "Kopete"
+    },
+    {
+      "node": "http://leechcraft.org/azoth",
+      "id": "leechcraft-azoth",
+      "name": "LeechCraft Azoth"
+    },
+    {
+      "node": "http://mail.google.com/xmpp/client/caps",
+      "id": "mail.google.com",
+      "name": "GMail chat widget"
+    },
+    {
+      "node": "http://mcabber.com/caps",
+      "id": "mcabber",
+      "name": "MCabber"
+    },
+    {
+      "node": "http://miranda-im.org/caps",
+      "id": "miranda",
+      "name": "Miranda IM"
+    },
+    {
+      "node": "http://miranda-ng.org/caps",
+      "id": "miranda-ng",
+      "name": "Miranda NG"
+    },
+    {
+      "node": "http://online.yandex.ru/caps",
+      "id": "yaonline",
+      "name": "Ya.Online"
+    },
+    {
+      "node": "http://palringo.com/caps",
+      "id": "palringo",
+      "name": "Palringo"
+    },
+    {
+      "node": "http://pda.qip.ru/caps",
+      "id": "qippda",
+      "name": "QIP PDA"
+    },
+    {
+      "node": "http://psi-im.org/caps",
+      "id": "psi",
+      "name": "Psi"
+    },
+    {
+      "node": "http://psi-dev.googlecode.com/caps",
+      "id": "psiplus",
+      "name": "Psi+"
+    },
+    {
+      "node": "http://pyicqt.googlecode.com//protocol/caps",
+      "id": "pyicq-t",
+      "name": "PyICQ-t"
+    },
+    {
+      "node": "http://qip.ru/caps",
+      "id": "qipinfium",
+      "name": "QIP Infium"
+    },
+    {
+      "node": "http://qip.ru/caps?QIP Mobile Java",
+      "id": "qipmobile",
+      "name": "QIP Mobile"
+    },
+    {
+      "node": "http://sawim.ru/caps",
+      "id": "sawim",
+      "name": "Sawim"
+    },
+    {
+      "node": "http://sip-communicator.org",
+      "id": "sip-communicator",
+      "name": "Jitsi"
+    },
+    {
+      "node": "http://spectrum.im/transport",
+      "id": "spectrum",
+      "name": "Spectrum XMPP Gateway"
+    },
+    {
+      "node": "httр://stranger.kiev.ua/caps",
+      "id": "jtalk",
+      "name": "Fin Jimm"
+    },
+    {
+      "node": "http://swift.im",
+      "id": "swift",
+      "name": "Swift"
+    },
+    {
+      "node": "http://talk.google.com/xmpp/bot/caps",
+      "id": "talk.google.com",
+      "name": "Google Talk"
+    },
+    {
+      "node": "http://talkgadget.google.com/client/caps",
+      "id": "talkgadget.google.com",
+      "name": "Google Talk gadget"
+    },
+    {
+      "node": "http://telepathy.freedesktop.org/caps",
+      "id": "telepathy.freedesktop.org",
+      "name": "Telepathy"
+    },
+    {
+      "node": "http://trillian.im/caps",
+      "id": "trillian",
+      "name": "Trillian"
+    },
+    {
+      "node": "http://v4.isida-bot.com",
+      "id": "isida-bot4",
+      "name": "iSida Bot 4"
+    },
+    {
+      "node": "http://vacuum-im.googlecode.com",
+      "id": "vacuum",
+      "name": "Vacuum-IM"
+    },
+    {
+      "node": "http://www.android.com/gtalk/client/caps",
+      "id": "android",
+      "name": "Android"
+    },
+    {
+      "node": "http://www.android.com/gtalk/client/caps2",
+      "id": "android",
+      "name": "Android"
+    },
+    {
+      "node": "http://www.apple.com/ichat/caps",
+      "id": "ichat",
+      "name": "iChat"
+    },
+    {
+      "node": "http://www.google.com/xmpp/client/caps",
+      "id": "talk.google.com",
+      "name": "Google Talk"
+    },
+    {
+      "node": "http://www.eyecu.ru",
+      "id": "eyecu",
+      "name": "EyeCU"
+    },
+    {
+      "node": "httр://www.freq-bot.net/",
+      "id": "freqbot",
+      "name": "freQ bot"
+    },
+    {
+      "node": "http://www.igniterealtime.org/projects/smack/",
+      "id": "smack",
+      "name": "Smack XMPP library"
+    },
+    {
+      "node": "http://www.lonelycatgames.com/slick/caps",
+      "id": "slick",
+      "name": "Slick"
+    },
+    {
+      "node": "https://www.jappix.com/",
+      "id": "jappix",
+      "name": "Jappix"
+    }
+  ]
+}

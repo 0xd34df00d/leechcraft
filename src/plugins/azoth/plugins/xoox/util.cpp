@@ -37,10 +37,12 @@
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QDataStream>
+#include <QFile>
 #include <QtDebug>
 #include <QXmppPresence.h>
 #include <QXmppUtils.h>
 #include <QXmppGlobal.h>
+#include <util/sll/parsejson.h>
 #include "entrybase.h"
 #include "capsdatabase.h"
 
@@ -127,182 +129,74 @@ namespace XooxUtil
 
 	namespace
 	{
-		struct Node2ClientID
+		QPair<QString, StaticClientInfo> ParseClientIdObj (const QVariantMap& map)
 		{
-			QHash<QString, QString> Node2ClientID_;
-			QHash<QString, QString> Node2ClientIDBegin_;
+			const auto& node = map ["node"].toString ();
+			const auto& id = map ["id"].toString ();
+			const auto& name = map ["name"].toString ();
 
-			Node2ClientID ()
+			if (node.isEmpty () || id.isEmpty () || name.isEmpty ())
+				qWarning () << Q_FUNC_INFO
+						<< "missing data for map"
+						<< map;
+
+			return { node, { id, name } };
+		}
+
+		class StaticClientInfoHolder
+		{
+			QHash<QString, StaticClientInfo> FullMatches_;
+			QList<QPair<QString, StaticClientInfo>> PartialMatches_;
+		public:
+			StaticClientInfoHolder ()
 			{
-				Node2ClientID_ ["http://2010.qip.ru/caps"] = "qipinfium";
-				Node2ClientID_ ["http://agent.mail.ru"] = "mailruagent";
-				Node2ClientID_ ["http://bitlbee.org/xmpp/caps"] = "bitlbee";
-				Node2ClientID_ ["http://bombus-im.org/java"] = "bombus";
-				Node2ClientID_ ["http://bombusmod.net.ru/caps"] = "bombusmod";
-				Node2ClientID_ ["http://bombusmod-qd.wen.ru/caps"] = "bombusmodqd";
-				Node2ClientID_ ["http://code.google.com/p/qxmpp"] = "qxmpp";
-				Node2ClientID_ ["http://emacs-jabber.sourceforge.net"] = "jabber-el";
-				Node2ClientID_ ["http://emess.eqx.su/caps"] = "emess";
-				Node2ClientID_ ["http://fatal-bot.spb.ru/caps"] = "fatal-bot";
-				Node2ClientID_ ["http://fatal-dev.ru/bot/caps"] = "fatal-bot";
-				Node2ClientID_ ["http://isida-bot.com"] = "isida-bot";
-				Node2ClientID_ ["http://isida-bot.com/4"] = "isida-bot4";
-				Node2ClientID_ ["httр://jabga.ru"] = "jtalk";
-				Node2ClientID_ ["http://jabiru.mzet.net/caps"] = "jabiru";
-				Node2ClientID_ ["http://jasmineicq.ru/caps"] = "jasmine";
-				Node2ClientID_ ["http://jimm.net.ru/caps"] = "jimm";
-				Node2ClientID_ ["http://jitsi.org"] = "sip-communicator";
-				Node2ClientID_ ["http://jtalk.ustyugov.net/caps"] = "jtalk";
-				Node2ClientID_ ["http://kadu.im/caps"] = "kadu";
-				Node2ClientID_ ["http://kopete.kde.org/jabber/caps"] = "kopete";
-				Node2ClientID_ ["http://leechcraft.org/azoth"] = "leechcraft-azoth";
-				Node2ClientID_ ["http://mail.google.com/xmpp/client/caps"] = "mail.google.com";
-				Node2ClientID_ ["http://mcabber.com/caps"] = "mcabber";
-				Node2ClientID_ ["http://miranda-im.org/caps"] = "miranda";
-				Node2ClientID_ ["http://miranda-ng.org/caps"] = "miranda-ng";
-				Node2ClientID_ ["http://online.yandex.ru/caps"] = "yaonline";
-				Node2ClientID_ ["http://palringo.com/caps"] = "palringo";
-				Node2ClientID_ ["http://pda.qip.ru/caps"] = "qippda";
-				Node2ClientID_ ["http://psi-im.org/caps"] = "psi";
-				Node2ClientID_ ["http://psi-dev.googlecode.com/caps"] = "psiplus";
-				Node2ClientID_ ["http://pyicqt.googlecode.com//protocol/caps"] = "pyicq-t";
-				Node2ClientID_ ["http://qip.ru/caps"] = "qipinfium";
-				Node2ClientID_ ["http://qip.ru/caps?QIP Mobile Java"] = "qipmobile";
-				Node2ClientID_ ["http://sawim.ru/caps"] = "sawim";
-				Node2ClientID_ ["http://sip-communicator.org"] = "sip-communicator";
-				Node2ClientID_ ["http://spectrum.im/transport"] = "spectrum";
-				Node2ClientID_ ["httр://stranger.kiev.ua/caps"] = "jtalk";
-				Node2ClientID_ ["http://swift.im"] = "swift";
-				Node2ClientID_ ["http://talk.google.com/xmpp/bot/caps"] = "talk.google.com";
-				Node2ClientID_ ["http://talkgadget.google.com/client/caps"] = "talkgadget.google.com";
-				Node2ClientID_ ["http://telepathy.freedesktop.org/caps"] = "telepathy.freedesktop.org";
-				Node2ClientID_ ["http://trillian.im/caps"] = "trillian";
-				Node2ClientID_ ["http://v4.isida-bot.com"] = "isida-bot4";
-				Node2ClientID_ ["http://vacuum-im.googlecode.com"] = "vacuum";
-				Node2ClientID_ ["http://www.android.com/gtalk/client/caps"] = "android";
-				Node2ClientID_ ["http://www.android.com/gtalk/client/caps2"] = "android";
-				Node2ClientID_ ["http://www.apple.com/ichat/caps"] = "ichat";
-				Node2ClientID_ ["http://www.google.com/xmpp/client/caps"] = "talk.google.com";
-				Node2ClientID_ ["http://www.eyecu.ru"] = "eyecu";
-				Node2ClientID_ ["httр://www.freq-bot.net/"] = "freqbot";
-				Node2ClientID_ ["http://www.igniterealtime.org/projects/smack/"] = "smack";
-				Node2ClientID_ ["http://www.lonelycatgames.com/slick/caps"] = "slick";
-				Node2ClientID_ ["https://www.jappix.com/"] = "jappix";
+				QFile file { ":/azoth/xoox/resources/data/clientids.json" };
+				if (!file.open (QIODevice::ReadOnly))
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unable to open file:"
+							<< file.errorString ();
+					return;
+				}
 
-				Node2ClientIDBegin_ ["http://bombus-im.org/java#"] = "bombus";
-				Node2ClientIDBegin_ ["http://gajim.org"] = "gajim";
-				Node2ClientIDBegin_ ["http://pidgin.im/"] = "pidgin";
-				Node2ClientIDBegin_ ["http://qutim.org"] = "qutim";
-				Node2ClientIDBegin_ ["http://tkabber.jabber.ru"] = "tkabber";
+				const auto& json = Util::ParseJson (&file, Q_FUNC_INFO).toMap ();
 
-				Node2ClientID_ ["none"] = "unknown";
+				for (const auto& itemVar : json ["fullMatches"].toList ())
+				{
+					const auto& pair = ParseClientIdObj (itemVar.toMap ());
+					if (FullMatches_.contains (pair.first))
+						qWarning () << Q_FUNC_INFO
+								<< "duplicate node:"
+								<< pair.first;
+					FullMatches_ [pair.first] = pair.second;
+				}
+
+				for (const auto& itemVar : json ["partialMatches"].toList ())
+					PartialMatches_ << ParseClientIdObj (itemVar.toMap ());
+
+				std::sort (PartialMatches_.begin (), PartialMatches_.end (),
+						[] (const auto& left, const auto& right) { return left.first < right.first; });
+			}
+
+			StaticClientInfo operator[] (const QString& node) const
+			{
+				const auto pos = FullMatches_.find (node);
+				if (pos != FullMatches_.end ())
+					return *pos;
+
+				for (auto i = PartialMatches_.begin (), end = PartialMatches_.end (); i != end; ++i)
+					if (node.startsWith (i->first))
+						return i->second;
+
+				return {};
 			}
 		};
 	}
 
-	QString GetClientIDName (const QString& node)
+	StaticClientInfo GetStaticClientInfo (const QString& node)
 	{
-		static Node2ClientID n2ci;
-		const QString& result = n2ci.Node2ClientID_.value (node);
-		if (!result.isEmpty ())
-			return result;
-
-		const auto& begins = n2ci.Node2ClientIDBegin_;
-		for (auto i = begins.begin (), end = begins.end (); i != end; ++i)
-			if (node.startsWith (i.key ()))
-				return i.value ();
-
-		return QString ();
-	}
-
-	namespace
-	{
-		struct Node2ClientHR
-		{
-			QHash<QString, QString> Node2ClientHR_;
-			QHash<QString, QString> Node2ClientHRBegin_;
-
-			Node2ClientHR ()
-			{
-				Node2ClientHR_ ["http://2010.qip.ru/caps"] = "QIP Infium";
-				Node2ClientHR_ ["http://agent.mail.ru"] = "Mail.Ru Agent";
-				Node2ClientHR_ ["http://bitlbee.org/xmpp/caps"] = "Bitlbee";
-				Node2ClientHR_ ["http://bombus-im.org/java"] = "Bombus";
-				Node2ClientHR_ ["http://bombusmod.net.ru/caps"] = "BombusMod";
-				Node2ClientHR_ ["http://bombusmod-qd.wen.ru/caps"] = "BombusMod-QD";
-				Node2ClientHR_ ["http://code.google.com/p/qxmpp"] = "QXmpp library";
-				Node2ClientHR_ ["http://emacs-jabber.sourceforge.net"] = "jabber.el";
-				Node2ClientHR_ ["http://emess.eqx.su/caps"] = "EMess";
-				Node2ClientHR_ ["http://fatal-bot.spb.ru/caps"] = "Fatal-bot";
-				Node2ClientHR_ ["http://fatal-dev.ru/bot/caps"] = "Fatal-bot";
-				Node2ClientHR_ ["http://isida-bot.com"] = "iSida Bot";
-				Node2ClientHR_ ["http://isida-bot.com/4"] = "iSida Bot";
-				Node2ClientHR_ ["httр://jabga.ru"] = "Fin jabber";
-				Node2ClientHR_ ["http://jabiru.mzet.net/caps"] = "Jabiru";
-				Node2ClientHR_ ["http://jasmineicq.ru/caps"] = "Jasmine";
-				Node2ClientHR_ ["http://jimm.net.ru/caps"] = "Jimm";
-				Node2ClientHR_ ["http://jitsi.org"] = "Jitsi";
-				Node2ClientHR_ ["http://jtalk.ustyugov.net/caps"] = "JTalk";
-				Node2ClientHR_ ["http://kadu.im/caps"] = "Kadu IM";
-				Node2ClientHR_ ["http://kopete.kde.org/jabber/caps"] = "Kopete";
-				Node2ClientHR_ ["http://leechcraft.org/azoth"] = "LeechCraft Azoth";
-				Node2ClientHR_ ["http://mail.google.com/xmpp/client/caps"] = "GMail chat widget";
-				Node2ClientHR_ ["http://mcabber.com/caps"] = "MCabber";
-				Node2ClientHR_ ["http://miranda-im.org/caps"] = "Miranda IM";
-				Node2ClientHR_ ["http://miranda-ng.org/caps"] = "Miranda NG";
-				Node2ClientHR_ ["http://online.yandex.ru/caps"] = "Ya.Online";
-				Node2ClientHR_ ["http://palringo.com/caps"] = "Palringo";
-				Node2ClientHR_ ["http://pda.qip.ru/caps"] = "QIP PDA";
-				Node2ClientHR_ ["http://psi-im.org/caps"] = "Psi";
-				Node2ClientHR_ ["http://psi-dev.googlecode.com/caps"] = "Psi+";
-				Node2ClientHR_ ["http://pyicqt.googlecode.com//protocol/caps"] = "PyICQ-t";
-				Node2ClientHR_ ["http://qip.ru/caps"] = "QIP Infium";
-				Node2ClientHR_ ["http://qip.ru/caps?QIP Mobile Java"] = "QIP Mobile";
-				Node2ClientHR_ ["http://sawim.ru/caps"] = "Sawim";
-				Node2ClientHR_ ["http://sip-communicator.org"] = "SIP Communicator";
-				Node2ClientHR_ ["http://spectrum.im/transport"] = "Spectrum XMPP Gateway";
-				Node2ClientHR_ ["httр://stranger.kiev.ua/caps"] = "Fin Jimm";
-				Node2ClientHR_ ["http://swift.im"] = "Swift";
-				Node2ClientHR_ ["http://talk.google.com/xmpp/bot/caps"] = "Google Talk";
-				Node2ClientHR_ ["http://talkgadget.google.com/client/caps"] = "Google Talk gadget";
-				Node2ClientHR_ ["http://telepathy.freedesktop.org/caps"] = "Telepathy";
-				Node2ClientHR_ ["http://trillian.im/caps"] = "Trillian";
-				Node2ClientHR_ ["http://v4.isida-bot.com"] = "iSida Bot 4";
-				Node2ClientHR_ ["http://vacuum-im.googlecode.com"] = "Vacuum-IM";
-				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps"] = "Android";
-				Node2ClientHR_ ["http://www.android.com/gtalk/client/caps2"] = "Android";
-				Node2ClientHR_ ["http://www.apple.com/ichat/caps"] = "iChat";
-				Node2ClientHR_ ["http://www.google.com/xmpp/client/caps"] = "Google Talk";
-				Node2ClientHR_ ["http://www.eyecu.ru"] = "EyeCU";
-				Node2ClientHR_ ["httр://www.freq-bot.net/"] = "freQ bot";
-				Node2ClientHR_ ["http://www.igniterealtime.org/projects/smack/"] = "Smack XMPP library";
-				Node2ClientHR_ ["http://www.lonelycatgames.com/slick/caps"] = "Slick";
-				Node2ClientHR_ ["https://www.jappix.com/"] = "Jappix";
-
-				Node2ClientHRBegin_ ["http://bombus-im.org/java#"] = "Bombus";
-				Node2ClientHRBegin_ ["http://gajim.org"] = "Gajim";
-				Node2ClientHRBegin_ ["http://pidgin.im/"] = "Pidgin IM";
-				Node2ClientHRBegin_ ["http://qutim.org"] = "QutIM";
-				Node2ClientHRBegin_ ["http://tkabber.jabber.ru"] = "Tkabber";
-
-				Node2ClientHR_ ["none"] = "Unknown";
-			}
-		};
-	}
-
-	QString GetClientHRName (const QString& node)
-	{
-		static Node2ClientHR n2ch;
-		const QString& result = n2ch.Node2ClientHR_.value (node);
-		if (!result.isEmpty ())
-			return result;
-
-		const auto& begins = n2ch.Node2ClientHRBegin_;
-		for (auto i = begins.begin (), end = begins.end (); i != end; ++i)
-			if (node.startsWith (i.key ()))
-				return i.value ();
-
-		return QString ();
+		static const StaticClientInfoHolder holder;
+		return holder [node];
 	}
 
 	QDomElement XmppElem2DomElem (const QXmppElement& elem)

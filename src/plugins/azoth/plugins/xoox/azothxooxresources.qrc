@@ -1,17 +1,18 @@
 <RCC>
-  <qresource prefix="/plugins/azoth/plugins/xoox">
-    <file>resources/images/xoox.svg</file>
-    <file>resources/images/jabbericon.svg</file>
-	<file>resources/images/special/gtalk.svg</file>
-	<file>resources/images/special/facebook.svg</file>
-	<file>resources/images/special/odnoklassniki.svg</file>
-  </qresource>
-  <qresource prefix="/azoth/xoox">
-	<file>resources/sql/create_features.sql</file>
-	<file>resources/sql/create_identities.sql</file>
-	<file>resources/sql/insert_feature.sql</file>
-	<file>resources/sql/insert_identity.sql</file>
-	<file>resources/sql/select_features.sql</file>
-	<file>resources/sql/select_identities.sql</file>
-  </qresource>
+	<qresource prefix="/plugins/azoth/plugins/xoox">
+		<file>resources/images/xoox.svg</file>
+		<file>resources/images/jabbericon.svg</file>
+		<file>resources/images/special/gtalk.svg</file>
+		<file>resources/images/special/facebook.svg</file>
+		<file>resources/images/special/odnoklassniki.svg</file>
+	</qresource>
+	<qresource prefix="/azoth/xoox">
+		<file>resources/data/clientids.json</file>
+		<file>resources/sql/create_features.sql</file>
+		<file>resources/sql/create_identities.sql</file>
+		<file>resources/sql/insert_feature.sql</file>
+		<file>resources/sql/insert_identity.sql</file>
+		<file>resources/sql/select_features.sql</file>
+		<file>resources/sql/select_identities.sql</file>
+	</qresource>
 </RCC>
