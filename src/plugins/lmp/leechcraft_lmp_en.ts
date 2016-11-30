@@ -358,37 +358,42 @@
         </translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="276"/>
+        <location filename="collectionwidget.cpp" line="282"/>
         <source>Add to playlist</source>
         <translation>Add to playlist</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="282"/>
+        <location filename="collectionwidget.cpp" line="286"/>
+        <source>Replace playlist</source>
+        <translation>Replace playlist</translation>
+    </message>
+    <message>
+        <location filename="collectionwidget.cpp" line="291"/>
         <source>Show track properties</source>
         <translation>Show track properties</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="289"/>
+        <location filename="collectionwidget.cpp" line="298"/>
         <source>Show album art</source>
         <translation>Show album art</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="293"/>
+        <location filename="collectionwidget.cpp" line="302"/>
         <source>Album art manager...</source>
         <translation>Album art manager...</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="296"/>
+        <location filename="collectionwidget.cpp" line="305"/>
         <source>Show in artist browser</source>
         <translation>Show in artist browser</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="302"/>
+        <location filename="collectionwidget.cpp" line="311"/>
         <source>Remove from collection...</source>
         <translation>Remove from collection...</translation>
     </message>
     <message>
-        <location filename="collectionwidget.cpp" line="305"/>
+        <location filename="collectionwidget.cpp" line="314"/>
         <source>Delete from disk...</source>
         <translation>Delete from disk...</translation>
     </message>
@@ -1018,12 +1023,12 @@
         <translation>Existing</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1013"/>
+        <location filename="playlistwidget.cpp" line="1018"/>
         <source>Perform when %1 by %2 starts playing</source>
         <translation>Perform when %1 by %2 starts playing</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1021"/>
+        <location filename="playlistwidget.cpp" line="1026"/>
         <source>Perform when %1 by %2 stops playing</source>
         <translation>Perform when %1 by %2 stops playing</translation>
     </message>
@@ -1056,52 +1061,52 @@
         </translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1104"/>
+        <location filename="playlistwidget.cpp" line="1109"/>
         <source>Save playlist</source>
         <translation>Save playlist</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1105"/>
+        <location filename="playlistwidget.cpp" line="1110"/>
         <source>Enter name for the playlist:</source>
         <translation>Enter name for the playlist:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1114"/>
+        <location filename="playlistwidget.cpp" line="1119"/>
         <source>Playlist %1 already exists. Do you want to overwrite it?</source>
         <translation>Playlist %1 already exists. Do you want to overwrite it?</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1127"/>
+        <location filename="playlistwidget.cpp" line="1132"/>
         <source>Load files</source>
         <translation>Load files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1130"/>
+        <location filename="playlistwidget.cpp" line="1135"/>
         <source>Music files</source>
         <translation>Music files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1131"/>
+        <location filename="playlistwidget.cpp" line="1136"/>
         <source>Playlists</source>
         <translation>Playlists</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1132"/>
+        <location filename="playlistwidget.cpp" line="1137"/>
         <source>All files</source>
         <translation>All files</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1159"/>
+        <location filename="playlistwidget.cpp" line="1164"/>
         <source>Enter URL to add to the play queue:</source>
         <translation>Enter URL to add to the play queue:</translation>
     </message>
     <message>
-        <location filename="playlistwidget.cpp" line="1170"/>
+        <location filename="playlistwidget.cpp" line="1175"/>
         <source>Invalid URL.</source>
         <translation>Invalid URL.</translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="1234"/>
+        <location filename="playlistwidget.cpp" line="1239"/>
         <source>%n track(s), total duration: %1; selected duration: %2</source>
         <translation>
             <numerusform>%n track, total duration: %1; selected duration: %2</numerusform>
@@ -1109,7 +1114,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="playlistwidget.cpp" line="1238"/>
+        <location filename="playlistwidget.cpp" line="1243"/>
         <source>%n track(s), total duration: %1</source>
         <translation>
             <numerusform>%n track, total duration: %1</numerusform>
@@ -1120,85 +1125,85 @@
 <context>
     <name>LeechCraft::LMP::Plugin</name>
     <message>
-        <location filename="lmp.cpp" line="125"/>
-        <location filename="lmp.cpp" line="534"/>
+        <location filename="lmp.cpp" line="128"/>
+        <location filename="lmp.cpp" line="537"/>
         <source>Artist browser</source>
         <translation>Artist browser</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="126"/>
+        <location filename="lmp.cpp" line="129"/>
         <source>Allows one to browse information about different artists.</source>
         <oldsource>Allows to browse information about different artists.</oldsource>
         <translation>Allows to browse information about different artists.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="178"/>
+        <location filename="lmp.cpp" line="181"/>
         <source>Rescan collection</source>
         <translation>Rescan collection</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="185"/>
+        <location filename="lmp.cpp" line="188"/>
         <source>Collection statistics</source>
         <translation>Collection statistics</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="444"/>
-        <location filename="lmp.cpp" line="453"/>
+        <location filename="lmp.cpp" line="447"/>
+        <location filename="lmp.cpp" line="456"/>
         <source>Show artist information</source>
         <translation>Show artist information</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="454"/>
+        <location filename="lmp.cpp" line="457"/>
         <source>Search for artist biography, similar artists, releases and so on.</source>
         <translation>Search for artist biography, similar artists, releases and so on.</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="502"/>
+        <location filename="lmp.cpp" line="505"/>
         <source>Play/pause</source>
         <translation>Play/pause</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="503"/>
+        <location filename="lmp.cpp" line="506"/>
         <source>Previous track</source>
         <translation>Previous track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="504"/>
+        <location filename="lmp.cpp" line="507"/>
         <source>Next track</source>
         <translation>Next track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="505"/>
+        <location filename="lmp.cpp" line="508"/>
         <source>Stop playback</source>
         <translation>Stop playback</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="506"/>
+        <location filename="lmp.cpp" line="509"/>
         <source>Stop playback after current track</source>
         <translation>Stop playback after current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="507"/>
+        <location filename="lmp.cpp" line="510"/>
         <source>Love track</source>
         <translation>Love track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="509"/>
+        <location filename="lmp.cpp" line="512"/>
         <source>Notify about current track</source>
         <translation>Notify about current track</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="511"/>
+        <location filename="lmp.cpp" line="514"/>
         <source>Increase volume</source>
         <translation>Increase volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="512"/>
+        <location filename="lmp.cpp" line="515"/>
         <source>Decrease volume</source>
         <translation>Decrease volume</translation>
     </message>
     <message>
-        <location filename="lmp.cpp" line="245"/>
+        <location filename="lmp.cpp" line="248"/>
         <source>LeechCraft Music Player.</source>
         <translation>LeechCraft Music Player.</translation>
     </message>
