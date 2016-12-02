@@ -240,14 +240,27 @@ namespace
 	{
 #if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 		const int maxSize = 100;
-		void *array [maxSize];
-		size_t size = backtrace (array, maxSize);
-		char **strings = backtrace_symbols (array, size);
+		void *callstack [maxSize];
+		size_t size = backtrace (callstack, maxSize);
+		char **strings = backtrace_symbols (callstack, size);
 
 		*ostr << "Backtrace of " << size << " frames:" << std::endl;
 
 		for (size_t i = 0; i < size; ++i)
-			*ostr << i << "\t" << strings [i] << std::endl;
+		{
+			*ostr << i << "\t";
+
+			if (const auto info = GetAddrInfo (strings [i]))
+				*ostr << info->ObjectPath_
+						<< ": "
+						<< info->Symbol_
+						<< " ["
+						<< info->SourcePath_
+						<< "]"
+						<< std::endl;
+			else
+				*ostr << strings [i] << std::endl;
+		}
 
 		std::free (strings);
 #endif
