@@ -252,6 +252,11 @@ namespace
 							};
 				};
 	}
+#elif defined (Q_OS_OSX)
+	boost::optional<AddrInfo> GetAddrInfo (const char *str)
+	{
+		return {};
+	}
 #endif
 
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
