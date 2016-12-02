@@ -33,6 +33,8 @@
 #include <iostream>
 #include <iomanip>
 #include <cstdlib>
+#include <cstring>
+#include <boost/optional.hpp>
 
 #if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 #include <execinfo.h>
@@ -45,6 +47,8 @@
 #include <QThread>
 #include <QDateTime>
 #include <QDir>
+#include <QProcess>
+#include <util/sll/monad.h>
 
 QMutex G_DbgMutex;
 uint Counter = 0;
@@ -140,6 +144,97 @@ namespace
 		ostr->open (QDir::toNativeSeparators (name).toStdString (), std::ios::app);
 		return ostr;
 	}
+
+#if defined (_GNU_SOURCE)
+	struct AddrInfo
+	{
+		std::string ObjectPath_;
+		std::string SourcePath_;
+		std::string Symbol_;
+	};
+
+	using StrRange_t = std::pair<const char*, const char*>;
+
+	boost::optional<StrRange_t> FindStrRange (const char *str, char open, char close)
+	{
+		const auto strEnd = str + std::strlen (str);
+		const auto parensCount = std::count_if (str, strEnd,
+				[=] (char c) { return c == open || c == close; });
+		if (parensCount != 2)
+			return {};
+
+		const auto openParen = std::find (str, strEnd, open);
+		const auto closeParen = std::find (openParen, strEnd, close);
+		if (openParen == strEnd || closeParen == strEnd)
+			return {};
+
+		return { { openParen + 1, closeParen } };
+	}
+
+	boost::optional<AddrInfo> QueryAddr2Line (const std::string& execName,
+			const std::string& addr, bool textSection)
+	{
+		QProcess proc;
+		QStringList params { "-Cfe", QString::fromStdString (execName), QString::fromStdString (addr) };
+		if (textSection)
+			params.prepend ("-j.text");
+
+		proc.start ("addr2line", params);
+		if (!proc.waitForFinished (500))
+			return {};
+
+		if (proc.exitStatus () != QProcess::NormalExit ||
+			proc.exitCode ())
+			return {};
+
+		const auto& out = proc.readAllStandardOutput ().trimmed ().split ('\n');
+		if (out.size () != 2)
+			return {};
+
+		return { { execName, out [1].constData (), out [0].constData () } };
+	}
+
+	boost::optional<AddrInfo> QueryAddr2LineExecutable (const char *str,
+			const std::string& execName)
+	{
+		using LeechCraft::Util::operator>>;
+
+		return FindStrRange (str, '[', ']') >>
+				[&] (const auto& bracketRange)
+				{
+					return QueryAddr2Line (execName,
+							{ bracketRange.first, bracketRange.second },
+							false);
+				};
+	}
+
+	boost::optional<AddrInfo> QueryAddr2LineLibrary (const std::string& execName,
+			const StrRange_t& plusAddrRange)
+	{
+		return QueryAddr2Line (execName, { plusAddrRange.first, plusAddrRange.second }, true);
+	}
+
+	boost::optional<AddrInfo> GetAddrInfo (const char *str)
+	{
+		using LeechCraft::Util::operator>>;
+
+		return FindStrRange (str, '(', ')') >>
+				[str] (const auto& pair)
+				{
+					const std::string binaryName { str, pair.first - 1 };
+
+					const auto plusPos = std::find (pair.first, pair.second, '+');
+
+					if (plusPos == pair.second)
+						return QueryAddr2LineExecutable (str, binaryName);
+
+					if (plusPos == pair.first)
+						return QueryAddr2LineLibrary (binaryName, { plusPos, pair.second });
+
+					return boost::optional<AddrInfo> {};
+				};
+	}
+#endif
 
 	void PrintBacktrace (const std::shared_ptr<std::ostream>& ostr)
 	{
