@@ -56,7 +56,7 @@ namespace NetStoreManager
 		auto res = Proxy_->GetEntityManager ()->DelegateEntity (e);
 		if (res.ID_ == -1)
 		{
-			auto notif = Util::MakeNotification (tr ("Import error"),
+			auto notif = Util::MakeNotification ("NetStoreManager",
 				tr ("Could not find plugin to download %1.")
 						.arg (e.Entity_.toString ()),
 				PCritical_);
