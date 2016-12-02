@@ -431,7 +431,7 @@ namespace NetStoreManager
 												tr ("Unable to get file listing for the account %1: %2.")
 														.arg ("<em>" + acc->GetAccountName () + "</em>")
 														.arg (error),
-												PCritical_));
+												PCritical_);
 										Proxy_->GetEntityManager ()->HandleEntity (e);
 									},
 									[this] (const QList<StorageItem>& items)
