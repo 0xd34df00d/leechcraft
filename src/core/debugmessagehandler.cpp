@@ -38,6 +38,7 @@
 
 #if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 #include <execinfo.h>
+#include <cxxabi.h>
 #endif
 
 #include <unistd.h>
@@ -214,6 +215,19 @@ namespace
 		return QueryAddr2Line (execName, { plusAddrRange.first, plusAddrRange.second }, true);
 	}
 
+	boost::optional<std::string> GetDemangled (const char *str)
+	{
+		int status = -1;
+		const auto demangled = abi::__cxa_demangle (str, nullptr, 0, &status);
+
+		if (!demangled)
+			return {};
+
+		const std::string demangledStr { demangled };
+		free (demangled);
+		return demangledStr;
+	}
+
 	boost::optional<AddrInfo> GetAddrInfo (const char *str)
 	{
 		using LeechCraft::Util::operator>>;
@@ -231,7 +245,11 @@ namespace
 					if (plusPos == pair.first)
 						return QueryAddr2LineLibrary (binaryName, { plusPos, pair.second });
 
-					return boost::optional<AddrInfo> {};
+					return GetDemangled (pair.first) >>
+							[&] (const std::string& value)
+							{
+								return boost::optional<AddrInfo> { { binaryName, {}, value } };
+							};
 				};
 	}
 #endif
