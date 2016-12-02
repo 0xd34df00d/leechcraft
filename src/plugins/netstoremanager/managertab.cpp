@@ -427,11 +427,12 @@ namespace NetStoreManager
 							Util::Visit (result.AsVariant (),
 									[this, acc] (const QString& error)
 									{
-										QMessageBox::critical (this,
-												"LeechCraft",
-												tr ("Unable to get file listing for the account %1.")
-													.arg (acc->GetAccountName ()) +
-													" " + error);
+										const auto& e = Util::MakeNotification ("LeechCraft",
+												tr ("Unable to get file listing for the account %1: %2.")
+														.arg ("<em>" + acc->GetAccountName () + "</em>")
+														.arg (error),
+												PCritical_));
+										Proxy_->GetEntityManager ()->HandleEntity (e);
 									},
 									[this] (const QList<StorageItem>& items)
 									{
