@@ -239,7 +239,7 @@ namespace
 			using LeechCraft::Util::operator>>;
 
 			return FindStrRange (str, '(', ')') >>
-					[str] (const auto& pair)
+					[this, str] (const auto& pair)
 					{
 						const std::string binaryName { str, pair.first - 1 };
 
@@ -251,6 +251,9 @@ namespace
 						if (plusPos == pair.first)
 							return QueryAddr2LineLibrary (binaryName, { plusPos, pair.second });
 
+						if (const auto relative = QueryRelative (binaryName, str))
+							return relative;
+
 						return GetDemangled (pair.first) >>
 								[&] (const std::string& value)
 								{
@@ -259,6 +262,37 @@ namespace
 					};
 		}
 	private:
+		boost::optional<AddrInfo> QueryRelative (const std::string& binaryName, const char *str) const
+		{
+			const auto& symLinked = QFile::symLinkTarget (QString::fromStdString (binaryName));
+			const auto libAddrPos = LibAddrsCache_.find (symLinked);
+			if (libAddrPos == LibAddrsCache_.end ())
+				return {};
+
+			using LeechCraft::Util::operator>>;
+
+			return FindStrRange (str, '[', ']') >>
+					[&] (const auto& bracketRange) -> boost::optional<AddrInfo>
+					{
+						try
+						{
+							const auto addr = std::stoull (std::string {
+										bracketRange.first,
+										bracketRange.second
+									},
+									nullptr, 16);
+							std::stringstream ss;
+							ss << "0x" << std::hex << addr - libAddrPos.value ();
+							return QueryAddr2LineLibrary (binaryName, ss.str ());
+						}
+						catch (const std::invalid_argument&)
+						{
+						}
+
+						return {};
+					};
+		}
+
 		static QHash<QString, size_t> ParseLibAddrs ()
 		{
 			QFile file { QString { "/proc/%1/maps" }.arg (getpid ()) };
