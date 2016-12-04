@@ -39,6 +39,7 @@
 #if defined (_GNU_SOURCE) || defined (Q_OS_OSX)
 #include <execinfo.h>
 #include <cxxabi.h>
+#include <sys/types.h>
 #endif
 
 #include <unistd.h>
@@ -226,8 +227,14 @@ namespace
 
 	class AddrInfoGetter
 	{
+		const QHash<QString, size_t> LibAddrsCache_;
 	public:
-		boost::optional<AddrInfo> operator() (const char *str)
+		AddrInfoGetter ()
+		: LibAddrsCache_ { ParseLibAddrs () }
+		{
+		}
+
+		boost::optional<AddrInfo> operator() (const char *str) const
 		{
 			using LeechCraft::Util::operator>>;
 
@@ -250,6 +257,41 @@ namespace
 									return boost::optional<AddrInfo> { { binaryName, {}, value } };
 								};
 					};
+		}
+	private:
+		static QHash<QString, size_t> ParseLibAddrs ()
+		{
+			QFile file { QString { "/proc/%1/maps" }.arg (getpid ()) };
+			if (!file.open (QIODevice::ReadOnly))
+				return {};
+
+			QHash<QString, size_t> result;
+			for (const auto& line : file.readAll ().split ('\n'))
+			{
+				if (!line.contains ("r-xp"))
+					continue;
+
+				const auto lastSpaceIdx = line.lastIndexOf (' ');
+				const auto dashIdx = line.indexOf ('-');
+				if (lastSpaceIdx == -1)
+					continue;
+
+				const QString libName { line.begin () + lastSpaceIdx + 1 };
+
+				try
+				{
+					const auto baseAddr = std::stoull (std::string {
+								line.begin (),
+								line.begin () + dashIdx
+							},
+							nullptr, 16);
+					result.insert (libName, baseAddr);
+				}
+				catch (const std::invalid_argument&)
+				{
+				}
+			}
+			return result;
 		}
 	};
 #elif defined (Q_OS_OSX)
