@@ -50,6 +50,7 @@
 #include <QDateTime>
 #include <QDir>
 #include <QProcess>
+#include <QHash>
 #include <util/sll/monad.h>
 
 QMutex G_DbgMutex;
