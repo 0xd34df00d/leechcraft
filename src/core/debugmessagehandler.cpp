@@ -240,7 +240,7 @@ namespace
 			using LeechCraft::Util::operator>>;
 
 			return FindStrRange (str, '(', ')') >>
-					[this, str] (const auto& pair)
+					[this, str] (const StrRange_t& pair)
 					{
 						const std::string binaryName { str, pair.first - 1 };
 
