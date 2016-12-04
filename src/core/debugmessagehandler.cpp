@@ -228,30 +228,34 @@ namespace
 		return demangledStr;
 	}
 
-	boost::optional<AddrInfo> GetAddrInfo (const char *str)
+	class AddrInfoGetter
 	{
-		using LeechCraft::Util::operator>>;
+	public:
+		boost::optional<AddrInfo> operator() (const char *str)
+		{
+			using LeechCraft::Util::operator>>;
 
-		return FindStrRange (str, '(', ')') >>
-				[str] (const auto& pair)
-				{
-					const std::string binaryName { str, pair.first - 1 };
+			return FindStrRange (str, '(', ')') >>
+					[str] (const auto& pair)
+					{
+						const std::string binaryName { str, pair.first - 1 };
 
-					const auto plusPos = std::find (pair.first, pair.second, '+');
+						const auto plusPos = std::find (pair.first, pair.second, '+');
 
-					if (plusPos == pair.second)
-						return QueryAddr2LineExecutable (str, binaryName);
+						if (plusPos == pair.second)
+							return QueryAddr2LineExecutable (str, binaryName);
 
-					if (plusPos == pair.first)
-						return QueryAddr2LineLibrary (binaryName, { plusPos, pair.second });
+						if (plusPos == pair.first)
+							return QueryAddr2LineLibrary (binaryName, { plusPos, pair.second });
 
-					return GetDemangled (pair.first) >>
-							[&] (const std::string& value)
-							{
-								return boost::optional<AddrInfo> { { binaryName, {}, value } };
-							};
-				};
-	}
+						return GetDemangled (pair.first) >>
+								[&] (const std::string& value)
+								{
+									return boost::optional<AddrInfo> { { binaryName, {}, value } };
+								};
+					};
+		}
+	};
 #elif defined (Q_OS_OSX)
 	boost::optional<AddrInfo> GetAddrInfo (const char *str)
 	{
@@ -269,11 +273,13 @@ namespace
 
 		*ostr << "Backtrace of " << size << " frames:" << std::endl;
 
+		AddrInfoGetter getter;
+
 		for (size_t i = 0; i < size; ++i)
 		{
 			*ostr << i << "\t";
 
-			if (const auto info = GetAddrInfo (strings [i]))
+			if (const auto info = getter (strings [i]))
 				*ostr << info->ObjectPath_
 						<< ": "
 						<< info->Symbol_
