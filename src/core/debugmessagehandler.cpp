@@ -173,14 +173,11 @@ namespace
 	}
 
 	boost::optional<AddrInfo> QueryAddr2Line (const std::string& execName,
-			const std::string& addr, bool textSection)
+			const std::string& addr)
 	{
 		QProcess proc;
-		QStringList params { "-Cfe", QString::fromStdString (execName), QString::fromStdString (addr) };
-		if (textSection)
-			params.prepend ("-j.text");
-
-		proc.start ("addr2line", params);
+		proc.start ("addr2line",
+				{ "-Cfe", QString::fromStdString (execName), QString::fromStdString (addr) });
 		if (!proc.waitForFinished (500))
 			return {};
 
@@ -204,15 +201,14 @@ namespace
 				[&] (const auto& bracketRange)
 				{
 					return QueryAddr2Line (execName,
-							{ bracketRange.first, bracketRange.second },
-							false);
+							{ bracketRange.first, bracketRange.second });
 				};
 	}
 
 	boost::optional<AddrInfo> QueryAddr2LineLibrary (const std::string& execName,
 			const std::string& addr)
 	{
-		return QueryAddr2Line (execName, addr, true);
+		return QueryAddr2Line (execName, addr);
 	}
 
 	boost::optional<std::string> GetDemangled (const char *str)
