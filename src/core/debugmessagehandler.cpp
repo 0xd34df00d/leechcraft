@@ -210,9 +210,9 @@ namespace
 	}
 
 	boost::optional<AddrInfo> QueryAddr2LineLibrary (const std::string& execName,
-			const StrRange_t& plusAddrRange)
+			const std::string& addr)
 	{
-		return QueryAddr2Line (execName, { plusAddrRange.first, plusAddrRange.second }, true);
+		return QueryAddr2Line (execName, addr, true);
 	}
 
 	boost::optional<std::string> GetDemangled (const char *str)
