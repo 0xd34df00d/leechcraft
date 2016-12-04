@@ -502,22 +502,19 @@ namespace NetStoreManager
 	quint64 ManagerTab::GetFolderSize (const QByteArray& id) const
 	{
 		quint64 size = 0;
-		QList<StorageItem> childItems;
 		for (const auto& item : Id2Item_)
-			if (item.ParentID_ == id)
-			{
-				if (item.IsDirectory_ &&
-						((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
-						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
-					childItems << item;
-				else if (((item.IsTrashed_ && Id2Item_ [id].IsTrashed_) ||
-						(!item.IsTrashed_ && !Id2Item_ [id].IsTrashed_)))
-					size += item.Size_;
-			}
+		{
+			if (item.ParentID_ != id)
+				continue;
 
-		for (const auto& item : childItems)
-			size += GetFolderSize (item.ID_);
+			if (item.IsTrashed_ != Id2Item_ [id].IsTrashed_)
+				continue;
 
+			if (item.IsDirectory_)
+				size += GetFolderSize (item.ID_);
+			else
+				size += item.Size_;
+		}
 		return size;
 	}
 
