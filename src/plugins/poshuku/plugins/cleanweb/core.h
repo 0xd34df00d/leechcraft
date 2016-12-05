@@ -85,6 +85,8 @@ namespace CleanWeb
 
 		QHash<QObject*, QSet<QUrl>> MoreDelayedURLs_;
 
+		QSet<IWebView*> ScheduledHidings_;
+
 		const ICoreProxy_ptr Proxy_;
 	public:
 		Core (SubscriptionsModel*, UserFiltersModel*, const ICoreProxy_ptr&);

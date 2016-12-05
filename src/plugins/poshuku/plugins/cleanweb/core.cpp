@@ -48,6 +48,7 @@
 #include <QMenu>
 #include <QMainWindow>
 #include <QDir>
+#include <QElapsedTimer>
 #include <qwebview.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
@@ -546,9 +547,14 @@ namespace CleanWeb
 
 	void Core::HandleViewLayout (IWebView *view)
 	{
-		qDebug () << Q_FUNC_INFO;
 		if (!XmlSettingsManager::Instance ()->property ("EnableElementHiding").toBool ())
 			return;
+
+		if (ScheduledHidings_.contains (view))
+			return;
+
+		qDebug () << Q_FUNC_INFO << view;
+		ScheduledHidings_ << view;
 
 		const auto& frameUrl = view->GetUrl ();
 		const QString& urlStr = frameUrl.toString ();
@@ -563,6 +569,9 @@ namespace CleanWeb
 
 		const auto future = QtConcurrent::run ([=]
 				{
+					QElapsedTimer timer;
+					timer.start ();
+
 					QStringList sels;
 					for (const Filter& filter : allFilters)
 						for (const auto& item : filter.Filters_)
@@ -577,6 +586,18 @@ namespace CleanWeb
 
 							sels << item->Option_.HideSelector_;
 						}
+
+					const auto msecs = timer.nsecsElapsed () / 1000000;
+					const auto remaining = 1000 - msecs;
+					if (remaining > 0)
+					{
+						qDebug () << Q_FUNC_INFO
+								<< "sleeping for"
+								<< remaining
+								<< "ms";
+						QThread::msleep (remaining);
+					}
+
 					return HidingWorkerResult { view, sels };
 				});
 
@@ -586,6 +607,8 @@ namespace CleanWeb
 
 	void Core::HideElementsChunk (HidingWorkerResult result)
 	{
+		ScheduledHidings_.remove (result.View_);
+
 		for (auto& selector : result.Selectors_)
 			selector.replace ('\\', "\\\\")
 					.replace ('\'', "\\'")
