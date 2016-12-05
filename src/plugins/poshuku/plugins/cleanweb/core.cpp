@@ -30,6 +30,7 @@
 #include "core.h"
 #include <algorithm>
 #include <functional>
+#include <thread>
 #include <QNetworkRequest>
 #include <QRegExp>
 #include <QFile>
@@ -589,7 +590,7 @@ namespace CleanWeb
 								<< "sleeping for"
 								<< remaining
 								<< "ms";
-						QThread::msleep (remaining);
+						std::this_thread::sleep_for (std::chrono::milliseconds { remaining });
 					}
 
 					return HidingWorkerResult { view, sels };
