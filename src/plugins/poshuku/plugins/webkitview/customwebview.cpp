@@ -55,6 +55,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/gui/findnotificationwk.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/poshuku/ibrowserwidget.h"
 #include "interfaces/poshuku/iwebviewhistory.h"
@@ -315,18 +316,25 @@ namespace WebKitView
 			const std::function<void (QVariant)>& callback,
 			Util::BitFlags<EvaluateJSFlag> flags)
 	{
-		const std::function<void (QWebFrame*)> eval = [&] (QWebFrame *frame)
+		auto eval = std::make_shared<std::function<void (QWebFrame*)>> ();
+		*eval = [=] (QWebFrame *frame)
 		{
 			const auto& res = frame->evaluateJavaScript (js);
 			if (callback)
 				callback (res);
 
 			if (flags & EvaluateJSFlag::RecurseSubframes)
-				for (const auto child : frame->childFrames ())
-					eval (child);
+				Util::ExecuteLater ([eval, framePtr = QPointer<QWebFrame> { frame }]
+						{
+							if (!framePtr)
+								return;
+
+							for (const auto child : framePtr->childFrames ())
+								(*eval) (child);
+						});
 		};
 
-		eval (page ()->mainFrame ());
+		(*eval) (page ()->mainFrame ());
 	}
 
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
