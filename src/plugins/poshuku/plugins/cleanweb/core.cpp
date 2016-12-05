@@ -61,6 +61,7 @@
 #include <interfaces/poshuku/ibrowserwidget.h>
 #include <interfaces/poshuku/iwebview.h>
 #include <interfaces/poshuku/iinterceptablerequests.h>
+#include <util/threads/futures.h>
 #include "xmlsettingsmanager.h"
 #include "userfiltersmodel.h"
 #include "lineparser.h"
@@ -560,37 +561,27 @@ namespace CleanWeb
 		auto allFilters = SubsModel_->GetAllFilters ();
 		allFilters << UserFilters_->GetFilter ();
 
-		auto watcher = new QFutureWatcher<HidingWorkerResult> (view->GetQWidget ());
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (hidingElementsFound ()));
-		watcher->setFuture (QtConcurrent::run ([=] () -> HidingWorkerResult
-					{
-						QStringList sels;
-						for (const Filter& filter : allFilters)
-							for (const auto& item : filter.Filters_)
-							{
-								if (item->Option_.HideSelector_.isEmpty ())
-									continue;
+		const auto future = QtConcurrent::run ([=]
+				{
+					QStringList sels;
+					for (const Filter& filter : allFilters)
+						for (const auto& item : filter.Filters_)
+						{
+							if (item->Option_.HideSelector_.isEmpty ())
+								continue;
 
-								const auto& opt = item->Option_;
-								const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
-								if (!Matches (item, utf8, domain))
-									continue;
+							const auto& opt = item->Option_;
+							const auto& utf8 = opt.Case_ == Qt::CaseSensitive ? urlUtf8 : cinUrlUtf8;
+							if (!Matches (item, utf8, domain))
+								continue;
 
-								sels << item->Option_.HideSelector_;
-							}
-						return { view, sels };
-					}));
-	}
+							sels << item->Option_.HideSelector_;
+						}
+					return HidingWorkerResult { view, sels };
+				});
 
-	void Core::hidingElementsFound ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<HidingWorkerResult>*> (sender ());
-		watcher->deleteLater ();
-
-		HideElementsChunk (watcher->result ());
+		Util::Sequence (view->GetQWidget (), future) >>
+				[this] (const HidingWorkerResult& result) { HideElementsChunk (result); };
 	}
 
 	void Core::HideElementsChunk (HidingWorkerResult result)

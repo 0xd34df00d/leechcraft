@@ -145,7 +145,6 @@ namespace CleanWeb
 		void update ();
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
-		void hidingElementsFound ();
 
 		void moreDelayedRemoveElements ();
 
