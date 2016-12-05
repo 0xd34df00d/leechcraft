@@ -69,7 +69,6 @@
 #include "subscriptionsmodel.h"
 
 Q_DECLARE_METATYPE (QNetworkReply*);
-Q_DECLARE_METATYPE (QWebFrame*);
 
 namespace LeechCraft
 {
@@ -125,8 +124,6 @@ namespace CleanWeb
 				SIGNAL (filtersChanged ()),
 				this,
 				SLOT (regenFilterCaches ()));
-
-		qRegisterMetaType<QWebFrame*> ("QWebFrame*");
 
 		const auto& path = Util::CreateIfNotExists ("cleanweb");
 		const auto& infos = path.entryInfoList (QDir::Files | QDir::Readable);
