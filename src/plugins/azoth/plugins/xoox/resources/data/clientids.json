@@ -68,6 +68,11 @@
       "name": "QXmpp library"
     },
     {
+      "node": "http://conversations.im",
+      "id": "conversations",
+      "name": "Conversations IM"
+    },
+    {
       "node": "http://emacs-jabber.sourceforge.net",
       "id": "jabber-el",
       "name": "jabber.el"
