@@ -39,8 +39,6 @@
 #include <QTextCodec>
 #include <QMessageBox>
 #include <QDir>
-#include <qwebframe.h>
-#include <qwebpage.h>
 #include <QCoreApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
@@ -49,7 +47,6 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QElapsedTimer>
-#include <qwebview.h>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/slotclosure.h>
