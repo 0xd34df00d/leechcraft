@@ -43,7 +43,6 @@
 #include <QCoreApplication>
 #include <QtConcurrentRun>
 #include <QtConcurrentMap>
-#include <QFutureWatcher>
 #include <QMenu>
 #include <QMainWindow>
 #include <QDir>
