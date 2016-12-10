@@ -127,13 +127,15 @@ namespace CleanWeb
 		const auto& infos = path.entryInfoList (QDir::Files | QDir::Readable);
 		const auto& paths = Util::Map (infos, &QFileInfo::absoluteFilePath);
 
-		auto watcher = new QFutureWatcher<QList<Filter>> ();
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleParsed ()));
-		const auto& future = QtConcurrent::run (ParseToFilters, paths);
-		watcher->setFuture (future);
+		Util::Sequence (nullptr, QtConcurrent::run (ParseToFilters, paths)) >>
+				[this] (const QList<Filter>& filters)
+				{
+					SubsModel_->SetInitialFilters (filters);
+
+					QTimer::singleShot (0,
+							this,
+							SLOT (update ()));
+				};
 	}
 
 	ICoreProxy_ptr Core::GetProxy () const
@@ -486,18 +488,6 @@ namespace CleanWeb
 		};
 		PendingJobs_ [result.ID_] = pj;
 		return true;
-	}
-
-	void Core::handleParsed ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<QList<Filter>>*> (sender ());
-		watcher->deleteLater ();
-
-		SubsModel_->SetInitialFilters (watcher->result ());
-
-		QTimer::singleShot (0,
-				this,
-				SLOT (update ()));
 	}
 
 	void Core::update ()

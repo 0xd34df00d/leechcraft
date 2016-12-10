@@ -143,7 +143,6 @@ namespace CleanWeb
 		void DelayedRemoveElements (IWebView*, const QUrl&);
 		void HandleViewLayout (IWebView*);
 	private slots:
-		void handleParsed ();
 		void update ();
 		void handleJobFinished (int);
 		void handleJobError (int, IDownload::Error);
