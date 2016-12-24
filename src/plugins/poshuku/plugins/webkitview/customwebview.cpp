@@ -115,11 +115,6 @@ namespace WebKitView
 				SLOT (handleFrameState (QWebFrame*, QWebHistoryItem*)),
 				Qt::QueuedConnection);
 
-		connect (this,
-				SIGNAL (loadFinished (bool)),
-				this,
-				SLOT (handleLoadFinished (bool)));
-
 		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
