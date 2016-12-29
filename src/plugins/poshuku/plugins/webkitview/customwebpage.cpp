@@ -140,10 +140,6 @@ namespace WebKitView
 				this,
 				SLOT (handleLoadFinished (bool)));
 		connect (this,
-				SIGNAL (loadStarted ()),
-				this,
-				SLOT (handleLoadStarted ()));
-		connect (this,
 				SIGNAL (unsupportedContent (QNetworkReply*)),
 				this,
 				SLOT (handleUnsupportedContent (QNetworkReply*)));
@@ -375,11 +371,6 @@ namespace WebKitView
 			return;
 
 		emit delayedFillForms (mainFrame ());
-	}
-
-	void CustomWebPage::handleLoadStarted ()
-	{
-		emit hookLoadStarted (std::make_shared<Util::DefaultHookProxy> (), this);
 	}
 
 	void CustomWebPage::handleUnsupportedContent (QNetworkReply *reply)

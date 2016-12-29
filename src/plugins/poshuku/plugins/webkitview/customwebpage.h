@@ -86,7 +86,6 @@ namespace WebKitView
 		void handleLinkClicked (const QUrl&);
 		void handleLinkHovered (const QString&, const QString&, const QString&);
 		void handleLoadFinished (bool);
-		void handleLoadStarted ();
 		void handleUnsupportedContent (QNetworkReply*);
 		void handleWindowCloseRequested ();
 		void fillForms (QWebFrame*);
@@ -189,8 +188,6 @@ namespace WebKitView
 		void hookLoadFinished (LeechCraft::IHookProxy_ptr proxy,
 				QWebPage *page,
 				bool result);
-		void hookLoadStarted (LeechCraft::IHookProxy_ptr proxy,
-				QWebPage *page);
 		void hookSupportsExtension (LeechCraft::IHookProxy_ptr proxy,
 				const QWebPage *page,
 				QWebPage::Extension extension) const;
