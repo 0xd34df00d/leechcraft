@@ -49,6 +49,7 @@ namespace WebKitView
 {
 	class WebPluginFactory;
 	class InterceptAdaptor;
+	class CustomWebView;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -96,6 +97,10 @@ namespace WebKitView
 		QIcon GetDefaultUrlIcon () const override;
 
 		void AddInterceptor (const Interceptor_t&) override;
+	private:
+		void HandleView (CustomWebView*);
+	private slots:
+		void handleWebViewCreated (CustomWebView*, bool);
 	public slots:
 		void hookNAMCreateRequest (LeechCraft::IHookProxy_ptr,
 				QNetworkAccessManager*,

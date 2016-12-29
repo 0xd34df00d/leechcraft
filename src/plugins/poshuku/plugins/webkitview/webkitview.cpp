@@ -165,16 +165,7 @@ namespace WebKitView
 	{
 		const auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
 
-		connect (view,
-				SIGNAL (webViewCreated (IWebView*, bool)),
-				this,
-				SIGNAL (webViewCreated (IWebView*, bool)));
-
-		if (WebPluginFactory_)
-			view->page ()->setPluginFactory (WebPluginFactory_);
-		else
-			qWarning () << Q_FUNC_INFO
-					<< "web plugin factory isn't initialized yet";
+		HandleView (view);
 
 		return view;
 	}
@@ -199,6 +190,25 @@ namespace WebKitView
 	void Plugin::AddInterceptor (const Interceptor_t& interceptor)
 	{
 		Interceptor_->AddInterceptor (interceptor);
+	}
+
+	void Plugin::HandleView (CustomWebView *view)
+	{
+		connect (view,
+				SIGNAL (webViewCreated (CustomWebView*, bool)),
+				this,
+				SLOT (handleWebViewCreated (CustomWebView*, bool)));
+
+		if (WebPluginFactory_)
+			view->page ()->setPluginFactory (WebPluginFactory_);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "web plugin factory isn't initialized yet";
+	}
+
+	void Plugin::handleWebViewCreated (CustomWebView *view, bool invert)
+	{
+		emit webViewCreated (view, invert);
 	}
 
 	void Plugin::hookNAMCreateRequest (IHookProxy_ptr proxy,

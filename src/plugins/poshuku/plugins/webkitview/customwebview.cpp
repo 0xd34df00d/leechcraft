@@ -96,9 +96,9 @@ namespace WebKitView
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
 		connect (page,
-				SIGNAL (webViewCreated (IWebView*, bool)),
+				SIGNAL (webViewCreated (CustomWebView*, bool)),
 				this,
-				SIGNAL (webViewCreated (IWebView*, bool)));
+				SIGNAL (webViewCreated (CustomWebView*, bool)));
 
 		new WebViewSmoothScroller { this };
 		new WebViewRenderSettingsHandler { this };

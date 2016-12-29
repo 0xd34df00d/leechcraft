@@ -49,6 +49,7 @@ namespace WebKitView
 {
 	class JSProxy;
 	class ExternalProxy;
+	class CustomWebView;
 
 	class CustomWebPage : public QWebPage
 	{
@@ -114,7 +115,7 @@ namespace WebKitView
 		void storeFormData (const PageFormsData_t&);
 		void delayedFillForms (QWebFrame*);
 
-		void webViewCreated (IWebView*, bool);
+		void webViewCreated (CustomWebView*, bool);
 
 		// Hook support signals
 		void hookAcceptNavigationRequest (LeechCraft::IHookProxy_ptr proxy,
