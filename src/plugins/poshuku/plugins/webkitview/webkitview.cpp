@@ -208,6 +208,7 @@ namespace WebKitView
 
 	void Plugin::handleWebViewCreated (CustomWebView *view, bool invert)
 	{
+		HandleView (view);
 		emit webViewCreated (view, invert);
 	}
 
