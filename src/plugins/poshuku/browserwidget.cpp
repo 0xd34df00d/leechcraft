@@ -1015,16 +1015,14 @@ namespace Poshuku
 		SavePage_->setEnabled (true);
 	}
 
-	void BrowserWidget::updateTitle (const QString& title)
+	void BrowserWidget::updateTitle (QString title)
 	{
-		if (!title.isEmpty ())
-		{
-			emit titleChanged (title);
-			return;
-		}
+		if (title.isEmpty ())
+			title = WebView_->GetTitle ();
+		if (title.isEmpty ())
+			title = QFileInfo { WebView_->GetUrl ().path () }.fileName ();
 
-		const auto& name = QFileInfo (WebView_->GetUrl ().path ()).fileName ();
-		emit titleChanged (name);
+		emit titleChanged (title);
 	}
 
 	const int MaxHistoryItems = 10;

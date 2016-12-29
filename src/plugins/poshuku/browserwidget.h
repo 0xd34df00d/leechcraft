@@ -195,7 +195,7 @@ namespace Poshuku
 		void handleSavePage ();
 		void enableActions ();
 
-		void updateTitle (const QString&);
+		void updateTitle (QString);
 
 		void updateNavHistory ();
 
