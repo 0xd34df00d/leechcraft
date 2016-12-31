@@ -52,11 +52,15 @@ namespace FatApe
 		IWebView *View_;
 		IProxyObject *Proxy_;
 		UserScript Script_;
+
+		const QString InitJS_;
 	public:
-		GreaseMonkey (IWebView *view, IProxyObject *proxy, const UserScript& script);
+		GreaseMonkey (IWebView *view, IProxyObject *proxy, const QString& initJs, const UserScript& script);
 	private:
 		std::shared_ptr<QSettings> GetStorage () const;
 	public slots:
+		void init ();
+
 		void addStyle (QString css);
 		void deleteValue (const QString& name);
 		QVariant getValue (const QString& name);

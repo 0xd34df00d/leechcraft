@@ -163,8 +163,7 @@ namespace FatApe
 				.arg (gmLayerId)
 				.arg (QString::fromUtf8 (script.readAll ()));
 
-		view->AddJavaScriptObject (gmLayerId, new GreaseMonkey { view, proxy, *this });
-		view->EvaluateJS (toInject);
+		view->AddJavaScriptObject (gmLayerId, new GreaseMonkey { view, proxy, toInject, *this });
 	}
 
 	QString UserScript::Name () const

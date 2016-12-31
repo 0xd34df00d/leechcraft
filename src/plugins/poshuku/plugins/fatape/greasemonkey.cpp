@@ -42,10 +42,12 @@ namespace Poshuku
 {
 namespace FatApe
 {
-	GreaseMonkey::GreaseMonkey (IWebView *view, IProxyObject *proxy, const UserScript& script)
+	GreaseMonkey::GreaseMonkey (IWebView *view, IProxyObject *proxy,
+			const QString& initJs, const UserScript& script)
 	: View_ (view)
 	, Proxy_ (proxy)
 	, Script_ (script)
+	, InitJS_ (initJs)
 	{
 	}
 
@@ -66,6 +68,11 @@ namespace FatApe
 		settings->beginGroup (QString::number (qHash (Script_.Namespace ())));
 		settings->beginGroup (QString::number (qHash (Script_.Name ())));
 		return settings;
+	}
+
+	void GreaseMonkey::init ()
+	{
+		View_->EvaluateJS (InitJS_);
 	}
 
 	void GreaseMonkey::addStyle (QString css)
