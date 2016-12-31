@@ -30,6 +30,7 @@
 #include "customwebview.h"
 #include <cassert>
 #include <QIcon>
+#include <QFile>
 #include <QWebEngineSettings>
 #include <QWebEngineHistory>
 #include <QWebEngineContextMenuData>
@@ -207,6 +208,17 @@ namespace WebEngineView
 		{
 			channel = new QWebChannel;
 			page ()->setWebChannel (channel);
+
+			QFile file { ":/qtwebchannel/qwebchannel.js" };
+			if (!file.open (QIODevice::ReadOnly))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to open WebChannel setup file"
+						<< file.errorString ();
+				return;
+			}
+
+			page ()->runJavaScript (file.readAll ());
 		}
 
 		channel->registerObject (id, object);
