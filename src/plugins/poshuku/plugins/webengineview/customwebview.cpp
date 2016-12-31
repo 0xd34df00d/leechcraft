@@ -233,6 +233,8 @@ namespace WebEngineView
 								new QWebChannel(qt.webChannelTransport,
 									function(channel) {
 										window.%1 = channel.objects.%1;
+										if (window.%1.init)
+											window.%1.init();
 									});
 							)" }.arg (id);
 					page ()->runJavaScript (js);

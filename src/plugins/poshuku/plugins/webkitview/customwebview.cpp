@@ -335,6 +335,10 @@ namespace WebKitView
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
 	{
 		page ()->mainFrame ()->addToJavaScriptWindowObject (id, object);
+		page ()->mainFrame ()->evaluateJavaScript (R"(
+					if (window.%1.init)
+						window.%1.init();
+				)");
 	}
 
 	QPoint CustomWebView::GetScrollPosition () const
