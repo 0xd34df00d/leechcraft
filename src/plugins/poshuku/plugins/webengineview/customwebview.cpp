@@ -208,28 +208,36 @@ namespace WebEngineView
 		{
 			channel = new QWebChannel;
 			page ()->setWebChannel (channel);
-
-			QFile file { ":/qtwebchannel/qwebchannel.js" };
-			if (!file.open (QIODevice::ReadOnly))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unable to open WebChannel setup file"
-						<< file.errorString ();
-				return;
-			}
-
-			page ()->runJavaScript (file.readAll ());
 		}
 
-		channel->registerObject (id, object);
+		EvaluateJS ("typeof QWebChannel === 'undefined'",
+				[=] (const QVariant& res)
+				{
+					if (res.toBool ())
+					{
+						QFile file { ":/qtwebchannel/qwebchannel.js" };
+						if (!file.open (QIODevice::ReadOnly))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "unable to open WebChannel setup file"
+									<< file.errorString ();
+							return;
+						}
 
-		auto js = QString { R"(
-					new QWebChannel(qt.webChannelTransport,
-						function(channel) {
-							window.%1 = channel.objects.%1;
-						});
-				)" }.arg (id);
-		page ()->runJavaScript (js);
+						page ()->runJavaScript (file.readAll ());
+					}
+
+					channel->registerObject (id, object);
+
+					auto js = QString { R"(
+								new QWebChannel(qt.webChannelTransport,
+									function(channel) {
+										window.%1 = channel.objects.%1;
+									});
+							)" }.arg (id);
+					page ()->runJavaScript (js);
+				},
+				{});
 	}
 
 	void CustomWebView::Print (bool withPreview)
