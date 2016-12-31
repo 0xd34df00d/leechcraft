@@ -42,7 +42,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-class IWebView;
 class IProxyObject;
 
 namespace WebKitView
