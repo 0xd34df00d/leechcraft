@@ -41,7 +41,6 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QDesktopServices>
-#include <QSysInfo>
 #include <qwebelement.h>
 #include <qwebhistory.h>
 #include <util/xpc/util.h>
