@@ -108,6 +108,7 @@ namespace WebEngineView
 		void contextMenuRequested (const QPoint& globalPos, const ContextMenuInfo&) override;
 
 		void iconChanged ();
+		void statusBarMessage (const QString&);
 	};
 }
 }
