@@ -66,7 +66,7 @@ namespace Lastfmscrobble
 	: QObject { parent }
 	, NAM_ { nam }
 	{
-		const QNetworkRequest req { GetUrl ("artist/photos/pageurl")  };
+		const QNetworkRequest req { GetUrl ("artist/photos/pageurl") };
 		HandleReply (NAM_->post (req, "artist=" + QUrl::toPercentEncoding (artist)),
 				[this] (const QByteArray& data) { HandlePageUrl (data); });
 	}
