@@ -33,6 +33,7 @@
 #include <interfaces/media/iartistbiofetcher.h>
 
 class QNetworkAccessManager;
+class QNetworkReply;
 
 namespace LeechCraft
 {
@@ -52,6 +53,10 @@ namespace Lastfmscrobble
 		ImagesFetcher (const QString&, QNetworkAccessManager*, QObject* = nullptr);
 	private:
 		void HandleDone ();
+
+		template<typename F>
+		void HandleReply (QNetworkReply*, F);
+
 		void HandlePageUrl (const QByteArray&);
 	signals:
 		void gotImages (const QList<Media::ArtistImage>&);

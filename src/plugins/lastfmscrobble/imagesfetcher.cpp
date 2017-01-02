@@ -66,24 +66,30 @@ namespace Lastfmscrobble
 	, NAM_ { nam }
 	{
 		const QNetworkRequest req { GetUrl ("artist/photos/pageurl")  };
-		const auto reply = NAM_->post (req, "artist=" + QUrl::toPercentEncoding (artist));
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[reply, this]
-			{
-				reply->deleteLater ();
-				HandlePageUrl (reply->readAll ());
-			},
-			reply,
-			SIGNAL (finished ()),
-			this
-		};
+		HandleReply (NAM_->post (req, "artist=" + QUrl::toPercentEncoding (artist)),
+				[this] (const QByteArray& data) { HandlePageUrl (data); });
 	}
 
 	void ImagesFetcher::HandleDone ()
 	{
 		emit gotImages (Images_);
 		deleteLater ();
+	}
+
+	template<typename F>
+	void ImagesFetcher::HandleReply (QNetworkReply *reply, F f)
+	{
+		new Util::SlotClosure<Util::DeleteLaterPolicy>
+		{
+			[reply, f]
+			{
+				reply->deleteLater ();
+				f (reply->readAll ());
+			},
+			reply,
+			SIGNAL (finished ()),
+			this
+		};
 	}
 
 	void ImagesFetcher::HandlePageUrl (const QByteArray& data)
