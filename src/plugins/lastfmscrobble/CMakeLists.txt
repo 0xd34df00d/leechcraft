@@ -32,6 +32,7 @@ set (SRCS
 	eventattendmarker.cpp
 	hypedartistsfetcher.cpp
 	hypedtracksfetcher.cpp
+	imagesfetcher.cpp
 	)
 set (RESOURCES lastfmscrobbleresources.qrc)
 QtAddResources (RCCS ${RESOURCES})
