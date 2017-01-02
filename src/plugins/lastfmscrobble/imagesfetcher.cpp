@@ -31,6 +31,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QHttpMultiPart>
 #include <QtDebug>
 #include <util/sll/slotclosure.h>
 #include <util/sll/parsejson.h>
@@ -105,6 +106,39 @@ namespace Lastfmscrobble
 			HandleDone ();
 			return;
 		}
+
+		HandleReply (NAM_->get (QNetworkRequest { url }),
+				[this] (const QByteArray& data) { HandleImagesPageFetched (data); });
+	}
+
+	void ImagesFetcher::HandleImagesPageFetched (const QByteArray& data)
+	{
+		if (data.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no data from last.fm";
+			HandleDone ();
+			return;
+		}
+
+		QHttpPart contentsPart;
+		contentsPart.setHeader (QNetworkRequest::ContentTypeHeader, "text/html");
+		contentsPart.setHeader (QNetworkRequest::ContentDispositionHeader, "form-data; name=\"contents\"");
+		contentsPart.setBody (data);
+
+		auto multipart = new QHttpMultiPart { QHttpMultiPart::FormDataType };
+		multipart->append (contentsPart);
+
+		const auto reply = NAM_->post (QNetworkRequest { GetUrl ("artist/photos/parsepage") }, multipart);
+		multipart->setParent (reply);
+
+		HandleReply (reply,
+				[this] (const QByteArray& data) { HandlePageParsed (data); });
+	}
+
+	void ImagesFetcher::HandlePageParsed (const QByteArray& data)
+	{
+		qDebug () << Q_FUNC_INFO << data;
 	}
 }
 }
