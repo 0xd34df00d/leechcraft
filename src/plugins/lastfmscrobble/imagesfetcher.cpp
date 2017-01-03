@@ -138,7 +138,26 @@ namespace Lastfmscrobble
 
 	void ImagesFetcher::HandlePageParsed (const QByteArray& data)
 	{
-		qDebug () << Q_FUNC_INFO << data;
+		const auto& result = Util::ParseJson (data, Q_FUNC_INFO).toMap ();
+		if (result.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unable to parse page";
+			HandleDone ();
+			return;
+		}
+
+		for (const auto& dataVar : result ["photoList"].toList ())
+		{
+			const auto& data = dataVar.toMap ();
+
+			const auto& thumb = data ["thumb"].toString ();
+			const auto& full = data ["full"].toString ();
+
+			Images_ << Media::ArtistImage { {}, {}, {}, thumb, full };
+		}
+
+		HandleDone ();
 	}
 }
 }
