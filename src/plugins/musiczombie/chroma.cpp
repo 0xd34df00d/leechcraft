@@ -135,7 +135,7 @@ namespace MusicZombie
 				break;
 
 			std::shared_ptr<void> guard (nullptr,
-					[&packet] (void*) { if (packet.data) av_free_packet (&packet); });
+					[&packet] (void*) { if (packet.data) av_packet_unref (&packet); });
 
 			if (packet.stream_index != streamIndex)
 				continue;
