@@ -87,8 +87,6 @@ namespace MusicZombie
 
 		auto stream = formatCtx->streams [streamIndex];
 
-		bool codecOpened = false;
-
 		std::shared_ptr<AVCodecContext> codecCtx (avcodec_alloc_context3 (codec),
 				[] (AVCodecContext *ctx) { avcodec_free_context (&ctx); });
 		{
@@ -96,7 +94,6 @@ namespace MusicZombie
 			if (avcodec_open2 (codecCtx.get (), codec, nullptr) < 0)
 				throw std::runtime_error ("couldn't open the codec");
 		}
-		codecOpened = true;
 
 		if (stream->codecpar->channels <= 0)
 			throw std::runtime_error ("no channels found");
