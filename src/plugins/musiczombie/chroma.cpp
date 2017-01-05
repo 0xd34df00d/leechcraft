@@ -141,10 +141,8 @@ namespace MusicZombie
 				continue;
 
 			av_frame_unref (frame.get ());
-			int gotFrame = false;
-			auto consumed = avcodec_decode_audio4 (codecCtx.get (), frame.get (), &gotFrame, &packet);
-
-			if (consumed < 0 || !gotFrame)
+			if (avcodec_send_packet (codecCtx.get (), &packet) ||
+					avcodec_receive_frame (codecCtx.get (), frame.get ()))
 				continue;
 
 			uint8_t **data = nullptr;
