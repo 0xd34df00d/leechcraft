@@ -62,6 +62,15 @@ namespace MusicZombie
 		chromaprint_free (Ctx_);
 	}
 
+	namespace
+	{
+		template<typename T>
+		auto AdaptDeleter (void (*f) (T**))
+		{
+			return [&f] (T *item) { f (&item); };
+		}
+	}
+
 	Chroma::Result Chroma::operator() (const QString& filename)
 	{
 		std::shared_ptr<AVFormatContext> formatCtx;
@@ -70,8 +79,7 @@ namespace MusicZombie
 			if (avformat_open_input (&formatCtxRaw, filename.toLatin1 ().constData (), nullptr, nullptr))
 				throw std::runtime_error ("error opening file");
 
-			formatCtx.reset (formatCtxRaw,
-					[] (AVFormatContext *ctx) { avformat_close_input (&ctx); });
+			formatCtx.reset (formatCtxRaw, AdaptDeleter (&avformat_close_input));
 		}
 
 		{
@@ -87,8 +95,7 @@ namespace MusicZombie
 
 		auto stream = formatCtx->streams [streamIndex];
 
-		std::shared_ptr<AVCodecContext> codecCtx (avcodec_alloc_context3 (codec),
-				[] (AVCodecContext *ctx) { avcodec_free_context (&ctx); });
+		std::shared_ptr<AVCodecContext> codecCtx (avcodec_alloc_context3 (codec), AdaptDeleter (&avcodec_free_context));
 		{
 			QMutexLocker locker (&CodecMutex_);
 			if (avcodec_open2 (codecCtx.get (), codec, nullptr) < 0)
@@ -102,7 +109,7 @@ namespace MusicZombie
 		const auto sampleFormat = static_cast<AVSampleFormat> (stream->codecpar->format);
 		if (sampleFormat != AV_SAMPLE_FMT_S16)
 		{
-			swr.reset (swr_alloc (), [] (SwrContext *ctx) { if (ctx) swr_free (&ctx); });
+			swr.reset (swr_alloc (), AdaptDeleter (swr_free));
 			av_opt_set_int (swr.get (), "in_channel_layout", stream->codecpar->channel_layout, 0);
 			av_opt_set_int (swr.get (), "out_channel_layout", stream->codecpar->channel_layout,  0);
 			av_opt_set_int (swr.get (), "in_sample_rate", stream->codecpar->sample_rate, 0);
@@ -119,8 +126,7 @@ namespace MusicZombie
 		auto remaining = maxLength * stream->codecpar->channels * stream->codecpar->sample_rate;
 		chromaprint_start (Ctx_, stream->codecpar->sample_rate, stream->codecpar->channels);
 
-		std::shared_ptr<AVFrame> frame (av_frame_alloc (),
-				[] (AVFrame *frame) { av_frame_free (&frame); });
+		std::shared_ptr<AVFrame> frame (av_frame_alloc (), AdaptDeleter (&av_frame_free));
 		auto maxDstNbSamples = 0;
 
 		uint8_t *dstData [1] = { nullptr };
