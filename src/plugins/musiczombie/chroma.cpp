@@ -89,8 +89,8 @@ namespace MusicZombie
 
 		bool codecOpened = false;
 
-		std::shared_ptr<AVCodecContext> codecCtx (stream->codec,
-				[&codecOpened] (AVCodecContext *ctx) { if (codecOpened) avcodec_close (ctx); });
+		std::shared_ptr<AVCodecContext> codecCtx (avcodec_alloc_context3 (codec),
+				[] (AVCodecContext *ctx) { avcodec_free_context (&ctx); });
 		{
 			QMutexLocker locker (&CodecMutex_);
 			if (avcodec_open2 (codecCtx.get (), codec, nullptr) < 0)
