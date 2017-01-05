@@ -167,7 +167,13 @@ namespace MusicZombie
 				data = frame->data;
 
 			auto length = std::min (remaining, frame->nb_samples * codecCtx->channels);
-			if (!chromaprint_feed (Ctx_, data [0], length))
+			if (!chromaprint_feed (Ctx_,
+#if CHROMAPRINT_VERSION_MAJOR > 1 || CHROMAPRINT_VERSION_MINOR >= 4
+					reinterpret_cast<const int16_t*> (data [0]),
+#else
+					data [0],
+#endif
+					length))
 				throw std::runtime_error ("cannot feed data");
 
 			bool finished = false;
