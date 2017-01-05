@@ -102,14 +102,15 @@ namespace MusicZombie
 			throw std::runtime_error ("no channels found");
 
 		std::shared_ptr<SwrContext> swr;
-		if (codecCtx->sample_fmt != AV_SAMPLE_FMT_S16)
+		const auto sampleFormat = static_cast<AVSampleFormat> (stream->codecpar->format);
+		if (sampleFormat != AV_SAMPLE_FMT_S16)
 		{
 			swr.reset (swr_alloc (), [] (SwrContext *ctx) { if (ctx) swr_free (&ctx); });
 			av_opt_set_int (swr.get (), "in_channel_layout", stream->codecpar->channel_layout, 0);
 			av_opt_set_int (swr.get (), "out_channel_layout", stream->codecpar->channel_layout,  0);
 			av_opt_set_int (swr.get (), "in_sample_rate", stream->codecpar->sample_rate, 0);
 			av_opt_set_int (swr.get (), "out_sample_rate", stream->codecpar->sample_rate, 0);
-			av_opt_set_sample_fmt (swr.get (), "in_sample_fmt", codecCtx->sample_fmt, 0);
+			av_opt_set_sample_fmt (swr.get (), "in_sample_fmt", sampleFormat, 0);
 			av_opt_set_sample_fmt (swr.get (), "out_sample_fmt", AV_SAMPLE_FMT_S16, 0);
 			swr_init (swr.get ());
 		}
