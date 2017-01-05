@@ -97,7 +97,6 @@ namespace Lastfmscrobble
 	{
 		const auto& result = Util::ParseJson (data, Q_FUNC_INFO);
 		const auto& url = result.toMap () ["imagesUrl"].toString ();
-		qDebug () << Q_FUNC_INFO << url;
 
 		if (url.isEmpty ())
 		{
