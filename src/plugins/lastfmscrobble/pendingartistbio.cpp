@@ -47,6 +47,7 @@ namespace Lastfmscrobble
 	, NAM_ (nam)
 	, AddImages_ (addImages)
 	{
+		// TODO Qt5 initializer lists
 		QMap<QString, QString> params;
 		params ["artist"] = name;
 		params ["autocorrect"] = "1";
