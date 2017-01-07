@@ -49,7 +49,7 @@ namespace Lastfmscrobble
 
 		Media::ArtistBio Bio_;
 	public:
-		PendingArtistBio (QString, QNetworkAccessManager*, bool addImages, QObject* = 0);
+		PendingArtistBio (QString, QNetworkAccessManager*, bool addImages, QObject* = nullptr);
 
 		QObject* GetQObject ();
 		Media::ArtistBio GetArtistBio () const;
