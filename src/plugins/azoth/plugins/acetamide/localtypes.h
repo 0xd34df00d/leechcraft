@@ -54,7 +54,6 @@ namespace Acetamide
 		QString ServerNickName_;
 		int ServerPort_;
 		bool SSL_;
-		bool NickServIdentify_;
 
 		IrcServer IrcServer_;
 		QString IrcServerVersion_;
