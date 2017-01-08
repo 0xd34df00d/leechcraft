@@ -46,11 +46,11 @@ namespace DeathNote
 
 	struct FriendsGroup
 	{
-		bool Public_;
+		bool Public_ = false;
 		QString Name_;
 		uint Id_;
-		uint SortOrder_;
-		uint RealId_;
+		uint SortOrder_ = 0;
+		uint RealId_ = 0;
 	};
 
 	struct ParsedMember
