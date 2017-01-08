@@ -70,7 +70,7 @@ namespace DeathNote
 
 	public:
 		SelectGroupsDialog (const QString& login, FotoBilderAccount *acc,
-				QWidget *parent = 0);
+				QWidget *parent = nullptr);
 
 		uint GetSelectedGroupId () const;
 	private:
