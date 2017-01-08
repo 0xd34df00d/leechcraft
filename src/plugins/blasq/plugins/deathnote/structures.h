@@ -82,7 +82,7 @@ namespace DeathNote
 		QUrl Url_;
 		QString OriginalFileName_;
 		QString Description_;
-		Access Access_;
+		Access Access_ = Access::Public;
 
 		QList<Thumbnail> Thumbnails_;
 	};
