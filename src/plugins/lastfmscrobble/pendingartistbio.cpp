@@ -36,6 +36,7 @@
 #include <QWebElementCollection>
 #include <QtDebug>
 #include "util.h"
+#include "imagesfetcher.h"
 
 namespace LeechCraft
 {
@@ -73,32 +74,9 @@ namespace Lastfmscrobble
 		return Bio_;
 	}
 
-	void PendingArtistBio::handleImagesFinished ()
+	void PendingArtistBio::handleGotImages (const QList<Media::ArtistImage>& images)
 	{
-		auto page = qobject_cast<QWebPage*> (sender ());
-		page->deleteLater ();
-
-		const auto& elems = page->mainFrame ()->findAllElements ("ul > li > a > img");
-
-		for (const auto& elem : elems)
-		{
-			const auto& thumbUrl = QUrl (elem.attribute ("src"));
-			auto url = thumbUrl;
-			auto split = url.path ().split ('/');
-			if (split.size () != 4)
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "unknown image URL format"
-						<< url
-						<< split;
-				continue;
-			}
-
-			split [2] = '_';
-			url.setPath (split.join ("/"));
-
-			Bio_.OtherImages_.append ({ {}, {}, {}, thumbUrl, url });;
-		}
+		Bio_.OtherImages_ = images;
 
 		emit ready ();
 		deleteLater ();
@@ -130,19 +108,11 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		auto imagesUrl = Bio_.BasicInfo_.Page_;
-		imagesUrl.setPath (imagesUrl.path () + "/+images?sort=date");
-
-		auto webPage = new QWebPage;
-		webPage->settings ()->setAttribute (QWebSettings::AutoLoadImages, false);
-		webPage->settings ()->setAttribute (QWebSettings::JavascriptEnabled, false);
-		webPage->settings ()->setAttribute (QWebSettings::JavaEnabled, false);
-		webPage->settings ()->setAttribute (QWebSettings::PluginsEnabled, false);
-		webPage->mainFrame ()->load (imagesUrl);
-		connect (webPage,
-				SIGNAL (loadFinished (bool)),
+		const auto imgFetcher = new ImagesFetcher { Bio_.BasicInfo_.Name_, NAM_, this };
+		connect (imgFetcher,
+				SIGNAL (gotImages (QList<Media::ArtistImage>)),
 				this,
-				SLOT (handleImagesFinished ()));
+				SLOT (handleGotImages (QList<Media::ArtistImage>)));
 	}
 
 	void PendingArtistBio::handleError ()

@@ -54,7 +54,7 @@ namespace Lastfmscrobble
 		QObject* GetQObject ();
 		Media::ArtistBio GetArtistBio () const;
 	private slots:
-		void handleImagesFinished ();
+		void handleGotImages (const QList<Media::ArtistImage>&);
 
 		void handleFinished ();
 		void handleError ();
