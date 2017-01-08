@@ -124,17 +124,15 @@ namespace Acetamide
 
 	struct ChannelModes
 	{
-		ChannelModes ();
-
-		bool InviteMode_;
-		bool ModerateMode_;
-		bool BlockOutsideMessageMode_;
-		bool PrivateMode_;
-		bool SecretMode_;
-		bool ReOpMode_;
-		bool OnlyOpChangeTopicMode_;
-		QPair<bool, int> UserLimit_;
-		QPair<bool, QString> ChannelKey_;
+		bool InviteMode_ = false;
+		bool ModerateMode_ = false;
+		bool BlockOutsideMessageMode_ = false;
+		bool PrivateMode_ = false;
+		bool SecretMode_ = false;
+		bool ReOpMode_ = false;
+		bool OnlyOpChangeTopicMode_ = false;
+		QPair<bool, int> UserLimit_ { false, 0 };
+		QPair<bool, QString> ChannelKey_ { false, {} };
 	};
 
 	struct NickServIdentify

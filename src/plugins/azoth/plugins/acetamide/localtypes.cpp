@@ -43,19 +43,6 @@ namespace Acetamide
 				&& (channel1.ServerName_ == channel2.ServerName_);
 	}
 
-	ChannelModes::ChannelModes ()
-	: InviteMode_ (false)
-	, ModerateMode_ (false)
-	, BlockOutsideMessageMode_ (false)
-	, PrivateMode_ (false)
-	, SecretMode_ (false)
-	, ReOpMode_ (false)
-	, OnlyOpChangeTopicMode_ (false)
-	, UserLimit_ (qMakePair (false, 0))
-	, ChannelKey_ (qMakePair (false, QString ()))
-	{
-	}
-
 	bool operator== (const NickServIdentify& nsi1,
 					const NickServIdentify& nsi2)
 	{
