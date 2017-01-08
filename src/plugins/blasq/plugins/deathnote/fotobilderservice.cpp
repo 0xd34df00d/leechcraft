@@ -84,11 +84,12 @@ namespace DeathNote
 		{
 			auto rp = qobject_cast<RegisterPage*> (widgets.at (0));
 			const auto& login = rp->GetLogin ();
-			const auto& password = rp->GetPassword ();
-			auto acc = new FotoBilderAccount (name, this, Proxy_, login);
 			//TODO error
 			if (login.isEmpty ())
 				return;
+
+			const auto& password = rp->GetPassword ();
+			auto acc = new FotoBilderAccount (name, this, Proxy_, login);
 
 			if (!password.isEmpty ())
 				Util::SavePassword (password,
