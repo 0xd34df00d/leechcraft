@@ -47,6 +47,7 @@ namespace Lastfmscrobble
 	{
 		Q_OBJECT
 
+		const QString Artist_;
 		QNetworkAccessManager * const NAM_;
 		QList<Media::ArtistImage> Images_;
 	public:

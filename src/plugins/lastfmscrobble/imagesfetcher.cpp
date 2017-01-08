@@ -64,6 +64,7 @@ namespace Lastfmscrobble
 	ImagesFetcher::ImagesFetcher (const QString& artist,
 			QNetworkAccessManager *nam, QObject *parent)
 	: QObject { parent }
+	, Artist_ { artist }
 	, NAM_ { nam }
 	{
 		const QNetworkRequest req { GetUrl ("artist/photos/pageurl") };
@@ -101,7 +102,8 @@ namespace Lastfmscrobble
 		if (url.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "got empty page URL";
+					<< "got empty page URL for artist"
+					<< Artist_;
 			HandleDone ();
 			return;
 		}
@@ -115,7 +117,8 @@ namespace Lastfmscrobble
 		if (data.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "no data from last.fm";
+					<< "no data from last.fm for artist"
+					<< Artist_;
 			HandleDone ();
 			return;
 		}
@@ -141,7 +144,8 @@ namespace Lastfmscrobble
 		if (result.isEmpty ())
 		{
 			qWarning () << Q_FUNC_INFO
-					<< "unable to parse page";
+					<< "unable to parse page for artist"
+					<< Artist_;
 			HandleDone ();
 			return;
 		}
