@@ -84,12 +84,25 @@ namespace Rappor
 
 		const auto& info = infos.takeFirst ();
 
-		auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
-
 		const auto& path = info.FilePath_;
 
-		auto file = new QFile (path, multipart);
-		file->open (QIODevice::ReadOnly);
+		auto file = new QFile (path);
+		if (!file->open (QIODevice::ReadOnly))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "error opening file:"
+					<< path
+					<< file->errorString ();
+
+			StartUpload (server, infos);
+
+			delete file;
+
+			return;
+		}
+
+		auto multipart = new QHttpMultiPart (QHttpMultiPart::FormDataType);
+		file->setParent (multipart);
 
 		QHttpPart filePart;
 
