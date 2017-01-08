@@ -81,13 +81,13 @@ namespace DeathNote
 
 	QNetworkRequest SelectGroupsDialog::CreateNetworkRequest ()
 	{
-			QNetworkRequest request;
-			auto userAgent = "LeechCraft Blasq " + Account_->GetProxy ()->GetVersion ().toUtf8 ();
-			request.setUrl (QUrl ("http://www.livejournal.com/interface/xmlrpc"));
-			request.setRawHeader ("User-Agent", userAgent);
-			request.setHeader (QNetworkRequest::ContentTypeHeader, "text/xml");
+		QNetworkRequest request;
+		auto userAgent = "LeechCraft Blasq " + Account_->GetProxy ()->GetVersion ().toUtf8 ();
+		request.setUrl (QUrl ("http://www.livejournal.com/interface/xmlrpc"));
+		request.setRawHeader ("User-Agent", userAgent);
+		request.setHeader (QNetworkRequest::ContentTypeHeader, "text/xml");
 
-			return request;
+		return request;
 	}
 
 	namespace
