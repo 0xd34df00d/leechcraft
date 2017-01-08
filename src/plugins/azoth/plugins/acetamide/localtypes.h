@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_LOCALTYPES_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_LOCALTYPES_H
+#pragma once
 
 #include <QStringList>
 #include <QPair>
@@ -185,9 +184,6 @@ namespace Acetamide
 	bool operator== (const ChannelOptions&, const ChannelOptions&);
 
 	bool operator== (const NickServIdentify&, const NickServIdentify&);
-};
-};
-};
-
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_LOCALTYPES_H
+}
+}
+}
