@@ -33,6 +33,7 @@
 #include <QString>
 #include <QByteArray>
 #include <QtDebug>
+#include <util/sll/util.h>
 
 extern "C"
 {
@@ -130,15 +131,13 @@ namespace MusicZombie
 		auto maxDstNbSamples = 0;
 
 		uint8_t *dstData [1] = { nullptr };
-		std::shared_ptr<void> dstDataGuard (nullptr,
-				[&dstData] (void*) { if (dstData [0]) av_freep (&dstData [0]); });
+		const auto dstDataGuard = Util::MakeScopeGuard ([&dstData] { if (dstData [0]) av_freep (&dstData [0]); });
 		while (true)
 		{
 			if (av_read_frame (formatCtx.get (), &packet) < 0)
 				break;
 
-			std::shared_ptr<void> guard (nullptr,
-					[&packet] (void*) { if (packet.data) av_packet_unref (&packet); });
+			const auto guard = Util::MakeScopeGuard ([&packet] { if (packet.data) av_packet_unref (&packet); });
 
 			if (packet.stream_index != streamIndex)
 				continue;
