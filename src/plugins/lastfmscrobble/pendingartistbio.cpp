@@ -31,9 +31,6 @@
 #include <algorithm>
 #include <QNetworkReply>
 #include <QDomDocument>
-#include <QWebPage>
-#include <QWebFrame>
-#include <QWebElementCollection>
 #include <QtDebug>
 #include "util.h"
 #include "imagesfetcher.h"
