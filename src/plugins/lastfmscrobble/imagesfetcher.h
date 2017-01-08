@@ -39,10 +39,6 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	struct ImageInfo
-	{
-	};
-
 	class ImagesFetcher : public QObject
 	{
 		Q_OBJECT
