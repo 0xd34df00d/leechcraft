@@ -49,15 +49,9 @@ namespace DeathNote
 
 	struct Quota
 	{
-		quint64 Total_;
-		quint64 Used_;
-		quint64 Remaining_;
-
-		Quota ()
-		: Total_ (0)
-		, Used_ (0)
-		, Remaining_ (0)
-		{}
+		quint64 Total_ = 0;
+		quint64 Used_ = 0;
+		quint64 Remaining_ = 0;
 	};
 
 	struct Album
@@ -72,13 +66,8 @@ namespace DeathNote
 	struct Thumbnail
 	{
 		QUrl Url_;
-		int Width_;
-		int Height_;
-
-		Thumbnail ()
-		: Width_ (0)
-		, Height_ (0)
-		{}
+		int Width_ = 0;
+		int Height_ = 0;
 	};
 
 	struct Photo
@@ -86,9 +75,9 @@ namespace DeathNote
 		QByteArray ID_;
 		QString Title_;
 		QString Format_;
-		int Width_;
-		int Height_;
-		quint64 Size_;
+		int Width_ = 0;
+		int Height_ = 0;
+		quint64 Size_ = 0;
 		QByteArray MD5_;
 		QUrl Url_;
 		QString OriginalFileName_;
@@ -96,12 +85,6 @@ namespace DeathNote
 		Access Access_;
 
 		QList<Thumbnail> Thumbnails_;
-
-		Photo ()
-		: Width_ (0)
-		, Height_ (0)
-		, Size_ (0)
-		{}
 	};
 }
 }
