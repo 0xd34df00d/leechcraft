@@ -253,6 +253,8 @@ namespace Util
 		return cont;
 	}
 
+	const auto Id = [] (const auto& t) { return t; };
+
 #ifdef USE_CPP14
 	template<typename R>
 	auto ComparingBy (R r)
