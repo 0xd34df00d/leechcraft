@@ -74,7 +74,7 @@ namespace Blogique
 		} Pages_;
 
 	public:
-		explicit ExportWizard (QWidget *parent = 0);
+		explicit ExportWizard (QWidget *parent = nullptr);
 		bool validateCurrentPage ();
 		void reject ();
 	private:
