@@ -71,8 +71,7 @@ namespace Blogique
 			ContentPage,
 			OverviewPage,
 			ExportPage
-		} Pages_;
-
+		};
 	public:
 		explicit ExportWizard (QWidget *parent = nullptr);
 		bool validateCurrentPage ();
