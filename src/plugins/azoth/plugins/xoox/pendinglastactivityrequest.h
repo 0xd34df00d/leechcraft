@@ -46,7 +46,7 @@ namespace Xoox
 
 		const QString Jid_;
 
-		int Time_;
+		int Time_ = 0;
 	public:
 		PendingLastActivityRequest (const QString& jid, QObject* = nullptr);
 
