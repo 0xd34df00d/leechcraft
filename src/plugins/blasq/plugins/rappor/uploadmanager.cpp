@@ -58,13 +58,13 @@ namespace Rappor
 
 	void UploadManager::Upload (const QString& aidStr, const QList<UploadItem>& items)
 	{
-		Acc_->Schedule ([this, items, aidStr] (const QString& authKey) -> void
+		Acc_->Schedule ([this, items, aidStr] (const QString& authKey)
 			{
 				QUrl getUrl ("https://api.vk.com/method/photos.getUploadServer.xml");
 				Util::UrlOperator { getUrl }
 						("aid", aidStr)
 						("access_token", authKey);
-				RequestQueue_->Schedule ([this, getUrl, items] () -> void
+				RequestQueue_->Schedule ([this, getUrl, items]
 					{
 						auto reply = Proxy_->GetNetworkAccessManager ()->
 								get (QNetworkRequest (getUrl));
@@ -168,7 +168,7 @@ namespace Rappor
 
 		const auto& info = PhotoUpload2Info_.take (reply);
 
-		Acc_->Schedule ([this, parsed, info] (const QString& authKey) -> void
+		Acc_->Schedule ([this, parsed, info] (const QString& authKey)
 			{
 				QUrl saveUrl ("https://api.vk.com/method/photos.save.xml");
 				{
@@ -226,7 +226,7 @@ namespace Rappor
 			photoElem = photoElem.nextSiblingElement ("photo");
 		}
 
-		Acc_->Schedule ([this, ids] (const QString& authKey) -> void
+		Acc_->Schedule ([this, ids] (const QString& authKey)
 			{
 				QUrl getUrl ("https://api.vk.com/method/photos.getById.xml");
 				Util::UrlOperator { getUrl }
