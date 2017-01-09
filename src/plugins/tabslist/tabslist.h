@@ -52,7 +52,7 @@ namespace TabsList
 		LC_PLUGIN_METADATA ("org.LeechCraft.TabsList")
 
 		ICoreProxy_ptr Proxy_;
-		QAction *ShowList_;
+		QAction *ShowList_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
