@@ -44,7 +44,7 @@ namespace HotStreams
 		{
 			QString Name_;
 			QString Genre_;
-			int Bitrate_;
+			int Bitrate_ = 0;
 			QList<QUrl> URLs_;
 			QString MIME_;
 
