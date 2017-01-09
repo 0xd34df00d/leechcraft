@@ -563,8 +563,6 @@ namespace BitTorrent
 				return QString::fromStdString (status.name);
 			case ColumnState:
 				return GetStringForStatus (status);
-			{
-			}
 			case ColumnProgress:
 				if (role == Roles::FullLengthText)
 				{
