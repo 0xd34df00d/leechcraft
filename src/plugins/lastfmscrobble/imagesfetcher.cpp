@@ -44,7 +44,7 @@ namespace Lastfmscrobble
 	{
 		QString GetHost ()
 		{
-			return "127.0.0.1";
+			return "leechcraft.org";
 		}
 
 		int GetPort ()
