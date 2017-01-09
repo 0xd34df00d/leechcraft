@@ -44,11 +44,19 @@ namespace Lastfmscrobble
 	{
 		QString GetHost ()
 		{
+			static const auto& env = qgetenv ("LASTFM_IMAGES_SERVER_HOST");
+			if (!env.isEmpty ())
+				return env;
+
 			return "leechcraft.org";
 		}
 
 		int GetPort ()
 		{
+			static const auto& env = qgetenv ("LASTFM_IMAGES_SERVER_PORT");
+			if (!env.isEmpty ())
+				return env.toInt ();
+
 			return 12000;
 		}
 
