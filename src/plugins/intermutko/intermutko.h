@@ -54,7 +54,7 @@ namespace Intermutko
 
 		Util::XmlSettingsDialog_ptr XSD_;
 
-		AcceptLangWidget *AcceptLangWidget_;
+		AcceptLangWidget *AcceptLangWidget_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
