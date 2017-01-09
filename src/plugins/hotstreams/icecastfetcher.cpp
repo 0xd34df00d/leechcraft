@@ -42,6 +42,7 @@
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
 #include "icecastmodel.h"
@@ -262,10 +263,8 @@ namespace HotStreams
 			if (stations.size () > 20)
 				CoalesceOthers (stations, 20);
 
-			IcecastModel::StationInfoList_t result;
-			for (const auto& pair : Util::Stlize (stations))
-				result.append ({ pair.first, pair.second });
-			return result;
+			return Util::Map (Util::Stlize (stations),
+					[] (const auto& pair) { return qMakePair (pair.first, pair.second); });
 		}
 	}
 
