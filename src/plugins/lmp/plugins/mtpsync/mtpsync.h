@@ -90,7 +90,7 @@ namespace MTPSync
 		};
 		QList<UploadQueueItem> UploadQueue_;
 
-		QAbstractItemModel *Model_ = 0;
+		QAbstractItemModel *Model_ = nullptr;
 
 		bool FirstPoll_ = true;
 		bool IsPolling_ = false;
