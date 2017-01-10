@@ -120,9 +120,9 @@ namespace BitTorrent
 			QString message = QString::fromUtf8 (hashesError.message ().c_str ());
 			libtorrent::file_entry entry = fs.at (hashesError.value ());
 			qWarning () << Q_FUNC_INFO
-				<< "while in libtorrent::set_piece_hashes():"
-				<< message
-				<< hashesError.category ().name ();
+					<< "while in libtorrent::set_piece_hashes():"
+					<< message
+					<< hashesError.category ().name ();
 			ReportError (tr ("Torrent creation failed: %1")
 					.arg (message));
 			return;
