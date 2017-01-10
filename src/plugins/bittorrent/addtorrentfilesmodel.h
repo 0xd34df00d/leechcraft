@@ -62,7 +62,7 @@ namespace BitTorrent
 			ColumnAddListMax
 		};
 
-		AddTorrentFilesModel (QObject *parent = 0);
+		AddTorrentFilesModel (QObject *parent = nullptr);
 
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
