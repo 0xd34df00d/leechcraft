@@ -358,10 +358,10 @@ namespace BitTorrent
 		else
 			Ui_.Date_->setText ("<>");
 
-		QList<libtorrent::file_entry> torrentFiles;
+		QList<AddTorrentFilesModel::FileEntry> fileEntries;
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
-			torrentFiles << info.file_at (i);
-		FilesModel_->ResetFiles (torrentFiles);
+			fileEntries.push_back ({ info.file_at (i).path, info.file_at (i).size });
+		FilesModel_->ResetFiles (fileEntries);
 
 		Ui_.FilesView_->expandAll ();
 	}

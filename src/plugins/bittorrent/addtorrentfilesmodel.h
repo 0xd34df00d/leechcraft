@@ -62,13 +62,19 @@ namespace BitTorrent
 			ColumnAddListMax
 		};
 
+		struct FileEntry
+		{
+			std::string Path_;
+			int64_t Size_;
+		};
+
 		AddTorrentFilesModel (QObject *parent = nullptr);
 
 		QVariant data (const QModelIndex&, int = Qt::DisplayRole) const override;
 		Qt::ItemFlags flags (const QModelIndex&) const override;
 		bool setData (const QModelIndex&, const QVariant&, int = Qt::EditRole) override;
 
-		void ResetFiles (const QList<libtorrent::file_entry>&);
+		void ResetFiles (const QList<FileEntry>&);
 		QVector<bool> GetSelectedFiles () const;
 		void MarkAll ();
 		void UnmarkAll ();

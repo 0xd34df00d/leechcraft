@@ -158,7 +158,7 @@ namespace BitTorrent
 		return true;
 	}
 
-	void AddTorrentFilesModel::ResetFiles (const QList<libtorrent::file_entry>& entries)
+	void AddTorrentFilesModel::ResetFiles (const QList<FileEntry>& entries)
 	{
 		Clear ();
 
@@ -172,7 +172,7 @@ namespace BitTorrent
 		int fileIdx = 0;
 		for (const auto& entry : entries)
 		{
-			const boost::filesystem::path path { entry.path };
+			const boost::filesystem::path path { entry.Path_ };
 			const auto& parentItem = MkParentIfDoesntExist (path);
 
 			const auto& name =
@@ -186,7 +186,7 @@ namespace BitTorrent
 			item->Name_ = name;
 			item->ParentPath_ = path.branch_path ();
 			item->FileIndex_ = fileIdx++;
-			item->SubtreeSize_ = entry.size;
+			item->SubtreeSize_ = entry.Size_;
 
 			Path2Node_ [path] = item;
 		}
