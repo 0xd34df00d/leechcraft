@@ -1876,11 +1876,11 @@ namespace BitTorrent
 
 		const auto& name = QString::fromStdString (status.name);
 
-	#if LIBTORRENT_VERSION_NUM >= 10100
+#if LIBTORRENT_VERSION_NUM >= 10100
 		const auto filePtr = status.torrent_file.lock ();
-	#else
+#else
 		const auto filePtr = status.torrent_file;
-	#endif
+#endif
 		if (!filePtr)
 		{
 			qWarning () << Q_FUNC_INFO
