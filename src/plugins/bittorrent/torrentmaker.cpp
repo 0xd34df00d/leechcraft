@@ -118,7 +118,6 @@ namespace BitTorrent
 		if (hashesError)
 		{
 			QString message = QString::fromUtf8 (hashesError.message ().c_str ());
-			libtorrent::file_entry entry = fs.at (hashesError.value ());
 			qWarning () << Q_FUNC_INFO
 					<< "while in libtorrent::set_piece_hashes():"
 					<< message
