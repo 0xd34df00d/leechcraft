@@ -52,12 +52,9 @@ namespace BitTorrent
 	{
 		bool FileFilter (const boost::filesystem::path& filename)
 		{
-#if BOOST_FILESYSTEM_VERSION == 2
-			if (filename.leaf () [0] == '.')
-#else
 			if (filename.leaf ().string () [0] == '.')
-#endif
 				return false;
+
 			QFileInfo fi (QString::fromUtf8 (filename.string ().c_str ()));
 			if ((fi.isDir () ||
 						fi.isFile () ||
@@ -85,10 +82,6 @@ namespace BitTorrent
 			ReportError (tr ("Could not open file %1 for write!").arg (filename));
 			return;
 		}
-
-#if BOOST_FILESYSTEM_VERSION == 2
-		boost::filesystem::path::default_name_check (boost::filesystem::no_check);
-#endif
 
 		libtorrent::file_storage fs;
 		const auto& fullPath = std::string (params.Path_.toUtf8 ().constData ());
