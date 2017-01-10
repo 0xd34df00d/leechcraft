@@ -2365,7 +2365,11 @@ namespace BitTorrent
 
 	void Core::queryLibtorrentForWarnings ()
 	{
+#if LIBTORRENT_VERSION_NUM >= 10100
+		std::vector<libtorrent::alert*> alerts;
+#else
 		std::deque<libtorrent::alert*> alerts;
+#endif
 		const auto guard = Util::MakeScopeGuard ([&alerts]
 				{
 					for (const auto elem : alerts)
