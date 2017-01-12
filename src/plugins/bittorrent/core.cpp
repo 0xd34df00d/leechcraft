@@ -1912,7 +1912,11 @@ namespace BitTorrent
 		auto nah = new Util::NotificationActionHandler (notifyE);
 		if (info.files ().num_files () == 1)
 		{
+#if LIBTORRENT_VERSION_NUM >= 10100
+			const QByteArray path { (savePath + '/' + info.files ().file_path (0)).c_str () };
+#else
 			const QByteArray path { (savePath + '/' + info.files ().at (0).path).c_str () };
+#endif
 			nah->AddFunction (tr ("Open..."),
 					[iem, path]
 					{
