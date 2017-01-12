@@ -139,7 +139,7 @@ if (WIN32)
 	add_definitions (-DBOOST_ALL_NO_LIB)
 endif ()
 
-add_definitions(-DTORRENT_LINKING_SHARED)
+add_definitions (-DTORRENT_LINKING_SHARED)
 
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
