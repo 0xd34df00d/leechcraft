@@ -639,14 +639,14 @@ namespace BitTorrent
 		else
 			Session_->stop_dht ();
 
-		libtorrent::dht_settings settings;
+		libtorrent::dht_settings dhtSettings;
 
-		settings.max_peers_reply = XmlSettingsManager::Instance ()->property ("MaxPeersReply").toInt ();
-		settings.search_branching = XmlSettingsManager::Instance ()->property ("SearchBranching").toInt ();
-		settings.service_port = XmlSettingsManager::Instance ()->property ("ServicePort").toInt ();
-		settings.max_fail_count = XmlSettingsManager::Instance ()->property ("MaxDHTFailcount").toInt ();
+		dhtSettings.max_peers_reply = XmlSettingsManager::Instance ()->property ("MaxPeersReply").toInt ();
+		dhtSettings.search_branching = XmlSettingsManager::Instance ()->property ("SearchBranching").toInt ();
+		dhtSettings.service_port = XmlSettingsManager::Instance ()->property ("ServicePort").toInt ();
+		dhtSettings.max_fail_count = XmlSettingsManager::Instance ()->property ("MaxDHTFailcount").toInt ();
 
-		Session_->set_dht_settings (settings);
+		Session_->set_dht_settings (dhtSettings);
 	}
 
 	void SessionSettingsManager::checkStorageSettings (const QVariant& val)
