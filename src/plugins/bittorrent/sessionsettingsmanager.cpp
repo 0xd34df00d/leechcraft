@@ -613,6 +613,27 @@ namespace BitTorrent
 
 	void SessionSettingsManager::setDHTSettings ()
 	{
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+
+		auto setBool = [&settings] (int id, const char *name)
+		{
+			const auto val = XmlSettingsManager::Instance ()->property (name).toBool ();
+			settings.set_bool (id, val);
+			return val;
+		};
+		setBool (libtorrent::settings_pack::enable_lsd, "EnableLSD");
+		setBool (libtorrent::settings_pack::enable_upnp, "EnableUPNP");
+		setBool (libtorrent::settings_pack::enable_natpmp, "EnableNATPMP");
+
+		if (setBool (libtorrent::settings_pack::enable_dht, "DHTEnabled"))
+		{
+			Session_->add_dht_router ({ "router.bittorrent.com", 6881 });
+			Session_->add_dht_router ({ "router.utorrent.com", 6881 });
+			Session_->add_dht_router ({ "dht.transmissionbt.com", 6881 });
+			Session_->add_dht_router ({ "dht.aelitis.com", 6881 });
+		}
+#else
 		if (XmlSettingsManager::Instance ()->property ("EnableLSD").toBool ())
 			Session_->start_lsd ();
 		else
@@ -638,6 +659,7 @@ namespace BitTorrent
 		}
 		else
 			Session_->stop_dht ();
+#endif
 
 		libtorrent::dht_settings dhtSettings;
 
