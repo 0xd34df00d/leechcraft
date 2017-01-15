@@ -2373,12 +2373,12 @@ namespace BitTorrent
 		std::vector<libtorrent::alert*> alerts;
 #else
 		std::deque<libtorrent::alert*> alerts;
-#endif
 		const auto guard = Util::MakeScopeGuard ([&alerts]
 				{
 					for (const auto elem : alerts)
 						delete elem;
 				});
+#endif
 		Session_->pop_alerts (&alerts);
 
 		for (const auto& alert : alerts)
