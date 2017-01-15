@@ -163,6 +163,21 @@ namespace BitTorrent
 			};
 		}
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+		bool DecodeEntry (const QByteArray& data, libtorrent::bdecode_node& e)
+		{
+			boost::system::error_code ec;
+			if (libtorrent::bdecode (data.constData (), data.constData () + data.size (), e, ec))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "bad bencoding in saved torrent data"
+						<< ec.message ().c_str ();
+				return false;
+			}
+
+			return true;
+		}
+#else
 		bool DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
 		{
 			boost::system::error_code ec;
@@ -176,6 +191,7 @@ namespace BitTorrent
 
 			return true;
 		}
+#endif
 	}
 
 	void Core::DoDelayedInit ()
@@ -217,7 +233,11 @@ namespace BitTorrent
 			if (sstateVariant.isValid () &&
 					!sstateVariant.toByteArray ().isEmpty ())
 			{
+#if LIBTORRENT_VERSION_NUM >= 10100
+				libtorrent::bdecode_node state;
+#else
 				libtorrent::lazy_entry state;
+#endif
 				if (DecodeEntry (sstateVariant.toByteArray (), state))
 					Session_->load_state (state);
 			}
@@ -1831,7 +1851,11 @@ namespace BitTorrent
 	{
 		libtorrent::torrent_handle handle;
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+		libtorrent::bdecode_node e;
+#else
 		libtorrent::lazy_entry e;
+#endif
 		if (!DecodeEntry (data, e))
 			return handle;
 
