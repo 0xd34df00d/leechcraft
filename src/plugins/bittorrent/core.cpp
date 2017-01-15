@@ -144,12 +144,7 @@ namespace BitTorrent
 		{
 			QString peerIDstring = "LC";
 
-			// Build peer_id
-			// Get the tag name.
-			QString ver = proxy->GetVersion ();
-			if (ver.isEmpty ())
-				ver = "0.5.0";
-			// Get the part before the '-'.
+			auto ver = proxy->GetVersion ();
 			ver = ver.split ('-', QString::SkipEmptyParts).at (0);
 			QStringList vers = ver.split ('.', QString::SkipEmptyParts);
 			if (vers.size () != 3)
