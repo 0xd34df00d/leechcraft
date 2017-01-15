@@ -168,7 +168,14 @@ namespace BitTorrent
 	{
 		try
 		{
+#if LIBTORRENT_VERSION_NUM >= 10100
+			libtorrent::settings_pack pack;
+			pack.set_str (libtorrent::settings_pack::peer_fingerprint,
+					BuildFingerprint (Proxy_).to_string ());
+			Session_ = new libtorrent::session (pack, 0);
+#else
 			Session_ = new libtorrent::session (BuildFingerprint (Proxy_), 0);
+#endif
 			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
