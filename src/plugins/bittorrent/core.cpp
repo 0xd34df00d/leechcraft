@@ -1973,8 +1973,12 @@ namespace BitTorrent
 
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
+#if LIBTORRENT_VERSION_NUM >= 10100
+			const QByteArray path { (savePath + '/' + info.files ().file_path (i)).c_str () };
+#else
 			const auto& entry = info.file_at (i);
 			const auto& path = QByteArray ((savePath + '/' + entry.path).c_str ());
+#endif
 			e.Entity_ = QUrl::fromLocalFile (localeCodec->toUnicode (path));
 			iem->HandleEntity (e);
 		}
