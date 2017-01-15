@@ -253,12 +253,7 @@ namespace BitTorrent
 		FinishedTimer_.reset ();
 		WarningWatchdog_.reset ();
 
-		QObjectList kids = children ();
-		for (int i = 0; i < kids.size (); ++i)
-		{
-			delete kids.at (i);
-			kids [i] = 0;
-		}
+		qDeleteAll (children ());
 
 		Session_->stop_dht ();
 		delete Session_;
