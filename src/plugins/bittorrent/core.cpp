@@ -142,8 +142,6 @@ namespace BitTorrent
 	{
 		libtorrent::fingerprint BuildFingerprint (const ICoreProxy_ptr& proxy)
 		{
-			QString peerIDstring = "LC";
-
 			auto ver = proxy->GetVersion ().section ('-', 0, 0);
 			const auto& vers = ver.split ('.', QString::SkipEmptyParts);
 			if (vers.size () != 3)
@@ -157,7 +155,7 @@ namespace BitTorrent
 
 			return libtorrent::fingerprint
 			{
-				peerIDstring.toLatin1 ().constData (),
+				"LC",
 				ver.at (0).digitValue (),
 				ver.at (1).digitValue (),
 				ver.at (2).digitValue (),
