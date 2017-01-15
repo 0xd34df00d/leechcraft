@@ -255,7 +255,6 @@ namespace BitTorrent
 
 		qDeleteAll (children ());
 
-		Session_->stop_dht ();
 		delete Session_;
 		Session_ = 0;
 	}
