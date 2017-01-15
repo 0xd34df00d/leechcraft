@@ -144,8 +144,7 @@ namespace BitTorrent
 		{
 			QString peerIDstring = "LC";
 
-			auto ver = proxy->GetVersion ();
-			ver = ver.split ('-', QString::SkipEmptyParts).at (0);
+			auto ver = proxy->GetVersion ().section ('-', 0, 0);
 			const auto& vers = ver.split ('.', QString::SkipEmptyParts);
 			if (vers.size () != 3)
 				throw std::runtime_error ("Malformed version string " + ver.toStdString ());
