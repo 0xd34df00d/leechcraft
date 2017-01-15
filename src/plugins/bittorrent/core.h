@@ -348,7 +348,6 @@ namespace BitTorrent
 		void MoveToTop (int);
 		void MoveToBottom (int);
 		void RestoreTorrents ();
-		bool DecodeEntry (const QByteArray&, libtorrent::lazy_entry&);
 		libtorrent::torrent_handle RestoreSingleTorrent (const QByteArray&,
 				const QByteArray&,
 				const boost::filesystem::path&,

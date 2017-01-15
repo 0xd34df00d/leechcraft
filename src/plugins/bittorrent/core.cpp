@@ -162,6 +162,20 @@ namespace BitTorrent
 				ver.at (3).digitValue ()
 			};
 		}
+
+		bool DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
+		{
+			boost::system::error_code ec;
+			if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "bad bencoding in saved torrent data"
+						<< ec.message ().c_str ();
+				return false;
+			}
+
+			return true;
+		}
 	}
 
 	void Core::DoDelayedInit ()
@@ -1807,19 +1821,6 @@ namespace BitTorrent
 		}
 		settings.endArray ();
 		settings.endGroup ();
-	}
-
-	bool Core::DecodeEntry (const QByteArray& data, libtorrent::lazy_entry& e)
-	{
-		boost::system::error_code ec;
-		if (libtorrent::lazy_bdecode (data.constData (), data.constData () + data.size (), e, ec))
-		{
-			ShowError (tr ("Bad bencoding in saved torrent data: %1")
-						.arg (QString::fromUtf8 (ec.message ().c_str ())));
-			return false;
-		}
-
-		return true;
 	}
 
 	libtorrent::torrent_handle Core::RestoreSingleTorrent (const QByteArray& data,
