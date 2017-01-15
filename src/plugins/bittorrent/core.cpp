@@ -213,18 +213,21 @@ namespace BitTorrent
 			qWarning () << Q_FUNC_INFO << typeid (e).name () << e.what ();
 		}
 
-		Headers_ << "#"
-				<< tr ("Name")
-				<< tr ("State")
-				<< tr ("Progress")
-				<< tr ("Down speed")
-				<< tr ("Up speed")
-				<< tr ("Leechers")
-				<< tr ("Seeders")
-				<< tr ("Size")
-				<< tr ("Total downloaded")
-				<< tr ("Total uploaded")
-				<< tr ("Ratio");
+		Headers_ = QStringList
+		{
+			"#",
+			tr ("Name"),
+			tr ("State"),
+			tr ("Progress"),
+			tr ("Down speed"),
+			tr ("Up speed"),
+			tr ("Leechers"),
+			tr ("Seeders"),
+			tr ("Size"),
+			tr ("Total downloaded"),
+			tr ("Total uploaded"),
+			tr ("Ratio")
+		};
 
 		connect (FinishedTimer_.get (),
 				SIGNAL (timeout ()),
