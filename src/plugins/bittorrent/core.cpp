@@ -91,6 +91,7 @@
 #include <util/xpc/notificationactionhandler.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/prelude.h>
 #include <util/sys/paths.h>
 #include "xmlsettingsmanager.h"
 #include "piecesmodel.h"
@@ -2003,12 +2004,10 @@ namespace BitTorrent
 	QStringList Core::GetTagsForIndexImpl (int torrent) const
 	{
 		if (!CheckValidity (torrent))
-			return QStringList ();
+			return {};
 
-		QStringList result;
-		Q_FOREACH (QString id, Handles_.at (torrent).Tags_)
-			result << Proxy_->GetTagsManager ()->GetTag (id);
-		return result;
+		return Util::Map (Handles_.at (torrent).Tags_,
+				[this] (const QString& id) { return Proxy_->GetTagsManager ()->GetTag (id); });
 	}
 
 	void Core::UpdateTagsImpl (const QStringList& tags, int torrent)
@@ -2016,9 +2015,8 @@ namespace BitTorrent
 		if (!CheckValidity (torrent))
 			return;
 
-		Handles_ [torrent].Tags_.clear ();
-		Q_FOREACH (QString tag, tags)
-			Handles_ [torrent].Tags_ << Proxy_->GetTagsManager ()->GetID (tag);
+		Handles_ [torrent].Tags_ = Util::Map (tags,
+				[this] (const QString& tag) { return Proxy_->GetTagsManager ()->GetID (tag); });
 	}
 
 	void Core::ScheduleSave ()
