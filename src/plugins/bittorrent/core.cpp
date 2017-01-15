@@ -1683,11 +1683,15 @@ namespace BitTorrent
 
 		for (int i = 0, numFiles = info.num_files (); i < numFiles; ++i)
 		{
-			const auto& entry = info.file_at (i);
-
 			FileInfo fi;
+#if LIBTORRENT_VERSION_NUM >= 10100
+			fi.Path_ = info.files ().file_path (i);
+			fi.Size_ = info.files ().file_size (i);
+#else
+			const auto& entry = info.file_at (i);
 			fi.Path_ = boost::filesystem::path (entry.path);
 			fi.Size_ = entry.size;
+#endif
 			fi.Priority_ = Handles_.at (idx).FilePriorities_.at (i);
 			fi.Progress_ = fi.Size_ ?
 					prbytes.at (i) / static_cast<float> (fi.Size_) :
