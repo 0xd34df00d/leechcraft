@@ -138,15 +138,15 @@ namespace BitTorrent
 		Menu_ = menu;
 	}
 
-	void Core::DoDelayedInit ()
+	namespace
 	{
-		try
+		libtorrent::fingerprint BuildFingerprint (const ICoreProxy_ptr& proxy)
 		{
 			QString peerIDstring = "LC";
 
 			// Build peer_id
 			// Get the tag name.
-			QString ver = Proxy_->GetVersion ();
+			QString ver = proxy->GetVersion ();
 			if (ver.isEmpty ())
 				ver = "0.5.0";
 			// Get the part before the '-'.
@@ -155,22 +155,30 @@ namespace BitTorrent
 			if (vers.size () != 3)
 				throw std::runtime_error ("Malformed version string " + ver.toStdString ());
 			ver = QString ("%1%2")
-				.arg (vers.at (1).toInt (),
-						2, 10, QChar ('0'))
-				.arg (vers.at (2).toInt (),
-						2, 10, QChar ('0'));
-
+					.arg (vers.at (1).toInt (),
+							2, 10, QChar ('0'))
+					.arg (vers.at (2).toInt (),
+							2, 10, QChar ('0'));
 
 			if (ver.size () != 4)
 				ver = "1111";
 
-			Session_ = new libtorrent::session (libtorrent::fingerprint
-					(peerIDstring.toLatin1 ().constData (),
-						ver.at (0).digitValue (),
-						ver.at (1).digitValue (),
-						ver.at (2).digitValue (),
-						ver.at (3).digitValue ()),
-					0);
+			return libtorrent::fingerprint
+			{
+				peerIDstring.toLatin1 ().constData (),
+				ver.at (0).digitValue (),
+				ver.at (1).digitValue (),
+				ver.at (2).digitValue (),
+				ver.at (3).digitValue ()
+			};
+		}
+	}
+
+	void Core::DoDelayedInit ()
+	{
+		try
+		{
+			Session_ = new libtorrent::session (BuildFingerprint (Proxy_), 0);
 			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
