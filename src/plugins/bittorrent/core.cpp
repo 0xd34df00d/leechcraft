@@ -2381,7 +2381,7 @@ namespace BitTorrent
 #endif
 		Session_->pop_alerts (&alerts);
 
-		for (const auto& alert : alerts)
+		for (const auto alert : alerts)
 		{
 			SimpleDispatcher sd { Proxy_ };
 			try
