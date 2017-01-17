@@ -62,7 +62,7 @@ namespace Woodpecker
 		Delegate_ = new TwitDelegate (Ui_.TwitList_, ParentPlugin_);
 		Ui_.TwitList_->setItemDelegate (Delegate_);
 
-		Interface_ = new TwitterInterface (this);
+		Interface_ = new TwitterInterface (plugin, this);
 		connect (Interface_,
 				SIGNAL (tweetsReady (QList<Tweet_ptr>)),
 				this,
@@ -506,6 +506,7 @@ namespace Woodpecker
 		QDataStream stream (&result, QIODevice::WriteOnly);
 
 		stream << TC_.TabClass_ << PageDefaultParam_;
+		qDebug () << "Saved tabclass" << TC_.TabClass_ ;
 
 		return result;
 	}
@@ -635,4 +636,3 @@ namespace Woodpecker
 }
 }
 }
-

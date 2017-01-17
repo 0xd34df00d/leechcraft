@@ -49,13 +49,14 @@ namespace Woodpecker
 
 		qulonglong Id_;			/**< Twit id in Twitter */
 		QString Text_;			/**< Text of twit in plaintext */
-		TwitterUser_ptr Author_;	/**< Pointer to twitter author */
+		TwitterUser * const Author_;	/**< Pointer to twitter author */
 		QDateTime Created_;		/**< Twit date */
 		QTextDocument Document_;	/**< QTextDocument which is used for drawing twit */
 
 	public:
 		Tweet (QObject *parent = 0);
-		Tweet (const QString& text, TwitterUser_ptr author = TwitterUser_ptr (), QObject *parent = 0);
+		Tweet (const QString& text, const qulonglong id,
+		       TwitterUser* author, QObject *parent = 0);
 		Tweet (const Tweet& original);
 
 		/** @brief Set both plain text contents and generates a html representation */
@@ -65,8 +66,7 @@ namespace Woodpecker
 		qulonglong GetId () const;
 		void SetId (qulonglong id);
 
-		TwitterUser_ptr GetAuthor () const;
-		void setAuthor (TwitterUser_ptr newAuthor);
+		TwitterUser * GetAuthor () const;
 
 		QDateTime GetDateTime () const;
 		void SetDateTime (const QDateTime& datetime);

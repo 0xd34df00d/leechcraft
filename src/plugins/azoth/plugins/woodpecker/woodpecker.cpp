@@ -45,6 +45,7 @@ namespace Woodpecker
 {
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
+		UserManager_ = new UserManager(this);
 		Util::InstallTranslator ("azoth_woodpecker");
 
 		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
@@ -137,7 +138,7 @@ namespace Woodpecker
 
 	QIcon Plugin::GetIcon () const
 	{
-		static QIcon icon ("lcicons:/plugins/azoth/woodpecker/resources/images/woodpecker.svg");
+		static QIcon icon ("lcicons:/azoth/woodpecker/resources/images/woodpecker.svg");
 		return icon;
 	}
 
@@ -152,7 +153,7 @@ namespace Woodpecker
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
 		QSet<QByteArray> classes;
-		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IProtocolPlugin";
+		classes << "org.LeechCraft.Plugins.Azoth.Plugins.IGeneralPlugin";
 		return classes;
 	}
 
@@ -178,6 +179,11 @@ namespace Woodpecker
 		return XmlSettingsDialog_;
 	}
 
+	UserManager* Plugin::GetUserManager() const
+	{
+		return UserManager_;
+	}
+
 	void Plugin::MakeTab (QWidget *tab, const TabClassInfo& tc)
 	{
 		connect (tab,
@@ -191,22 +197,23 @@ namespace Woodpecker
 
 	void Plugin::RecoverTabs (const QList<TabRecoverInfo>& infos)
 	{
+		qDebug () << "Recovering " << infos.size () <<  "Tabs" ;
 		for (const auto& recInfo : infos)
 		{
 			QDataStream stream (recInfo.Data_);
-			char *buf;
-			stream >> buf;
+			QByteArray tabclass;
+			stream >> tabclass;
+			const QString type(tabclass);
+			qDebug () << "Restoring tabclass" << type;
 
-			const QString type (buf);
-
-			if (type.startsWith ("org.LeechCraft.Woodpecker_home"))
+			if (type.startsWith ("org.LeechCraft.Azoth.Woodpecker_home"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
 
 				TabOpenRequested (GetUniqueID () + "_home");
 			}
-			else if (type.startsWith ("org.LeechCraft.Woodpecker_user"))
+			else if (type.startsWith ("org.LeechCraft.Azoth.Woodpecker_user"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
@@ -221,7 +228,7 @@ namespace Woodpecker
 						tr ("User %1").arg (username),
 						FeedMode::UserTimeline, param);
 			}
-			else if (type.startsWith ("org.LeechCraft.Woodpecker_search"))
+			else if (type.startsWith ("org.LeechCraft.Azoth.Woodpecker_search"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);
@@ -236,7 +243,7 @@ namespace Woodpecker
 						tr ("Search").append (search),
 						FeedMode::SearchResult, param);
 			}
-			else if (type.startsWith ("org.LeechCraft.Woodpecker_favorites"))
+			else if (type.startsWith ("org.LeechCraft.Azoth.Woodpecker_favorites"))
 			{
 				for (const auto& pair : recInfo.DynProperties_)
 					setProperty (pair.first, pair.second);

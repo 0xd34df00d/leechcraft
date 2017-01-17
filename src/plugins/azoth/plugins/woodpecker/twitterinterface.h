@@ -44,6 +44,8 @@ namespace Azoth
 {
 namespace Woodpecker
 {
+	class Plugin;
+
 	enum class TwitterRequest
 	{
 		HomeTimeline,
@@ -59,6 +61,8 @@ namespace Woodpecker
 		CreateFavorite,
 		DeleteFavorite,
 		ListFavorites,
+		Followers,
+		Following,
 	};
 
 	enum class FeedMode
@@ -84,6 +88,7 @@ namespace Woodpecker
 		QString ConsumerKeySecret_;
 		QSettings *Settings_;
 		FeedMode LastRequestMode_;
+		Plugin * const ParentPlugin_;
 
 		void SignedRequest (TwitterRequest req,
 				KQOAuthRequest::RequestHttpMethod method = KQOAuthRequest::GET,
@@ -92,7 +97,7 @@ namespace Woodpecker
 		QList<Tweet_ptr> ParseReply (const QByteArray& json);
 
 	public:
-		explicit TwitterInterface (QObject *parent = 0);
+		explicit TwitterInterface (Plugin *plugin, QObject *parent = 0);
 		void SendTweet (const QString& tweet);
 		void Retweet (const qulonglong id);
 		void Reply (const qulonglong replyid, const QString& tweet);
