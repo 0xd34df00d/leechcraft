@@ -43,11 +43,33 @@ namespace Woodpecker
 	{
 	}
 
-	TwitterUser::TwitterUser (const QString& username, QObject *parent)
+	TwitterUser::TwitterUser (const qulonglong id, const QString& name,
+				  QObject *parent)
 	: QObject (parent)
+	, Id_ (id)
+	, Username_ (name)
 	, Http_ (Core::Instance ().GetCoreProxy ()->GetNetworkAccessManager ())
 	{
-		Username_ = username;
+	}
+
+	TwitterUser::TwitterUser (const TwitterUser& original)
+	: QObject ()
+	, Id_ (original.Id_)
+	, Username_ (original.Username_)
+	, Http_ (original.Http_)
+	, Avatar_ (original.Avatar_)
+	{
+	}
+
+	TwitterUser& TwitterUser::operator= (const TwitterUser& rhs)
+	{
+		if (this != &rhs)
+		{
+			Id_ = rhs.GetID ();
+			Username_ = rhs.GetUsername ();
+			Avatar_ = rhs.GetAvatar ();
+		}
+		return *this;
 	}
 
 	void TwitterUser::avatarDownloaded ()
@@ -82,11 +104,6 @@ namespace Woodpecker
 				SLOT (avatarDownloaded ()));
 	}
 
-	void TwitterUser::SetUsername (const QString& username)
-	{
-		Username_ = username;
-	}
-
 	QString TwitterUser::GetUsername () const
 	{
 		return Username_;
@@ -95,6 +112,11 @@ namespace Woodpecker
 	QPixmap TwitterUser::GetAvatar () const
 	{
 		return Avatar_;
+	}
+
+	qulonglong TwitterUser::GetID() const
+	{
+		return Id_;
 	}
 }
 }
