@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <qt4/QtCore/QObject>
+#include <QObject>
 #include "twitteruser.h"
 #include "woodpecker.h"
 
