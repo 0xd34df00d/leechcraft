@@ -437,7 +437,11 @@ namespace BitTorrent
 		}
 
 		if (!i->Info_)
+#if LIBTORRENT_VERSION_NUM >= 10100
+			i->Info_.reset (new libtorrent::torrent_info { libtorrent::bdecode_node {} });
+#else
 			i->Info_.reset (new libtorrent::torrent_info { libtorrent::lazy_entry {} });
+#endif
 
 		Ui_.TorrentControlTab_->setEnabled (true);
 		Ui_.LabelState_->setText (i->State_);
