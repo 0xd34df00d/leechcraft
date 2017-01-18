@@ -922,7 +922,7 @@ namespace BitTorrent
 #else
 				QString (),
 #endif
-				std::shared_ptr<libtorrent::peer_info> (new libtorrent::peer_info (pi))
+				std::make_shared<libtorrent::peer_info> (pi)
 			};
 			result << ppi;
 		}
