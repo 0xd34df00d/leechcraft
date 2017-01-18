@@ -145,10 +145,33 @@ namespace BitTorrent
 		setGeneralSettings ();
 	}
 
+	namespace
+	{
+		void SetOverallDownloadRateImpl (libtorrent::session_settings& settings, int val)
+		{
+			settings.download_rate_limit = val == 0 ? -1 : val * 1024;
+		}
+
+		void SetOverallUploadRateImpl (libtorrent::session_settings& settings, int val)
+		{
+			settings.upload_rate_limit = val == 0 ? -1 : val * 1024;
+		}
+
+		void SetMaxDownloadingTorrentsImpl (libtorrent::session_settings& settings, int val)
+		{
+			settings.active_downloads = val;
+		}
+
+		void SetMaxUploadingTorrentsImpl (libtorrent::session_settings& settings, int val)
+		{
+			settings.active_seeds = val;
+		}
+	}
+
 	void SessionSettingsManager::SetOverallDownloadRate (int val)
 	{
 		auto settings = Session_->settings ();
-		settings.download_rate_limit = val == 0 ? -1 : val * 1024;
+		SetOverallDownloadRateImpl (settings, val);
 		Session_->set_settings (settings);
 
 		XmlSettingsManager::Instance ()->setProperty ("DownloadRateLimit", val);
@@ -157,7 +180,7 @@ namespace BitTorrent
 	void SessionSettingsManager::SetOverallUploadRate (int val)
 	{
 		auto settings = Session_->settings ();
-		settings.upload_rate_limit = val == 0 ? -1 : val * 1024;
+		SetOverallUploadRateImpl (settings, val);
 		Session_->set_settings (settings);
 
 		XmlSettingsManager::Instance ()->setProperty ("UploadRateLimit", val);
@@ -165,18 +188,20 @@ namespace BitTorrent
 
 	void SessionSettingsManager::SetMaxDownloadingTorrents (int val)
 	{
-		XmlSettingsManager::Instance ()->setProperty ("MaxDownloadingTorrents", val);
 		libtorrent::session_settings settings = Session_->settings ();
-		settings.active_downloads = val;
+		SetMaxDownloadingTorrentsImpl (settings, val);
 		Session_->set_settings (settings);
+
+		XmlSettingsManager::Instance ()->setProperty ("MaxDownloadingTorrents", val);
 	}
 
 	void SessionSettingsManager::SetMaxUploadingTorrents (int val)
 	{
-		XmlSettingsManager::Instance ()->setProperty ("MaxUploadingTorrents", val);
 		libtorrent::session_settings settings = Session_->settings ();
-		settings.active_seeds = val;
+		SetMaxUploadingTorrentsImpl (settings, val);
 		Session_->set_settings (settings);
+
+		XmlSettingsManager::Instance ()->setProperty ("MaxUploadingTorrents", val);
 	}
 
 	int SessionSettingsManager::GetOverallDownloadRate () const
@@ -201,14 +226,16 @@ namespace BitTorrent
 
 	void SessionSettingsManager::ManipulateSettings ()
 	{
-		SetOverallDownloadRate (XmlSettingsManager::Instance ()->
-				Property ("DownloadRateLimit", 5000).toInt ());
-		SetOverallUploadRate (XmlSettingsManager::Instance ()->
-				Property ("UploadRateLimit", 5000).toInt ());
-		SetMaxDownloadingTorrents (XmlSettingsManager::Instance ()->
-				Property ("MaxDownloadingTorrents", -1).toInt ());
-		SetMaxUploadingTorrents (XmlSettingsManager::Instance ()->
-				Property ("MaxUploadingTorrents", -1).toInt ());
+		libtorrent::session_settings settings = Session_->settings ();
+		SetOverallDownloadRateImpl (settings,
+				XmlSettingsManager::Instance ()->Property ("DownloadRateLimit", 5000).toInt ());
+		SetOverallUploadRateImpl (settings,
+				XmlSettingsManager::Instance ()->Property ("UploadRateLimit", 5000).toInt ());
+		SetMaxDownloadingTorrentsImpl (settings,
+				XmlSettingsManager::Instance ()->Property ("MaxDownloadingTorrents", -1).toInt ());
+		SetMaxUploadingTorrentsImpl (settings,
+				XmlSettingsManager::Instance ()->Property ("MaxUploadingTorrents", -1).toInt ());
+		Session_->set_settings (settings);
 
 		XmlSettingsManager::Instance ()->RegisterObject ("TCPPortRange",
 				this, "tcpPortRangeChanged");
