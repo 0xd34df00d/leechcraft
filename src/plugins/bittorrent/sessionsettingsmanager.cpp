@@ -147,32 +147,52 @@ namespace BitTorrent
 
 	namespace
 	{
-		void SetOverallDownloadRateImpl (libtorrent::session_settings& settings, int val)
+#if LIBTORRENT_VERSION_NUM >= 10100
+		using LTSettings_t = libtorrent::settings_pack;
+
+	#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, val)
+#else
+		using LTSettings_t = libtorrent::session_settings;
+
+	#define LT_SET_INT_OPT(name, val) settings.name = val
+#endif
+
+		void SetOverallDownloadRateImpl (LTSettings_t& settings, int val)
 		{
-			settings.download_rate_limit = val == 0 ? -1 : val * 1024;
+			LT_SET_INT_OPT (download_rate_limit, val == 0 ? -1 : val * 1024);
 		}
 
-		void SetOverallUploadRateImpl (libtorrent::session_settings& settings, int val)
+		void SetOverallUploadRateImpl (LTSettings_t& settings, int val)
 		{
-			settings.upload_rate_limit = val == 0 ? -1 : val * 1024;
+			LT_SET_INT_OPT (upload_rate_limit, val == 0 ? -1 : val * 1024);
 		}
 
-		void SetMaxDownloadingTorrentsImpl (libtorrent::session_settings& settings, int val)
+		void SetMaxDownloadingTorrentsImpl (LTSettings_t& settings, int val)
 		{
-			settings.active_downloads = val;
+			LT_SET_INT_OPT (active_downloads, val);
 		}
 
-		void SetMaxUploadingTorrentsImpl (libtorrent::session_settings& settings, int val)
+		void SetMaxUploadingTorrentsImpl (LTSettings_t& settings, int val)
 		{
-			settings.active_seeds = val;
+			LT_SET_INT_OPT (active_seeds, val);
 		}
 
 		template<typename F>
 		void WithSettings (libtorrent::session *session, F&& f)
 		{
+#if LIBTORRENT_VERSION_NUM >= 10100
+			auto settings = session->get_settings ();
+#else
 			auto settings = session->settings ();
+#endif
+
 			f (settings);
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+			session->apply_settings (settings);
+#else
 			session->set_settings (settings);
+#endif
 		}
 
 		template<typename F, typename V>
