@@ -901,12 +901,9 @@ namespace BitTorrent
 		const auto& localPieces = Handles_.at (idx).Handle_.status (libtorrent::torrent_handle::query_pieces).pieces;
 
 		QList<int> ourMissing;
-		for (auto i = localPieces.begin (), end = localPieces.end (); i != end; ++i)
-		{
-			const bool res = *i;
-			if (!res)
-				ourMissing << res;
-		}
+		for (int i = 0, size = localPieces.size (); i < size; ++i)
+			if (!localPieces [i])
+				ourMissing << i;
 
 		for (size_t i = 0; i < peerInfos.size (); ++i)
 		{
