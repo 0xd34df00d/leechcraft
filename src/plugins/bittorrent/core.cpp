@@ -909,10 +909,8 @@ namespace BitTorrent
 		{
 			const libtorrent::peer_info& pi = peerInfos [i];
 
-			int interesting = 0;
-			Q_FOREACH (const int mis, ourMissing)
-				if (pi.pieces [mis])
-					++interesting;
+			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
+					[&pi] (int idx) { return pi.pieces [idx]; });
 
 			PeerInfo ppi =
 			{
