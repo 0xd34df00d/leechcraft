@@ -411,7 +411,13 @@ namespace BitTorrent
 		if (XmlSettingsManager::Instance ()->property ("NotificationIPBlock").toBool ())
 			mask |= libtorrent::alert::ip_block_notification;
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+		settings.set_int (libtorrent::settings_pack::alert_mask, mask);
+		Session_->apply_settings (settings);
+#else
 		Session_->set_alert_mask (mask);
+#endif
 	}
 
 	void SessionSettingsManager::tcpPortRangeChanged ()
