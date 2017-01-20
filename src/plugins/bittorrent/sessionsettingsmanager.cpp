@@ -563,22 +563,8 @@ namespace BitTorrent
 			property ("UnchokeInterval").toInt ();
 		settings.optimistic_unchoke_interval = XmlSettingsManager::Instance ()->
 			property ("OptimisticUnchokeMultiplier").toInt ();
-
-		const auto& announceIP = XmlSettingsManager::Instance ()->
-				property ("AnnounceIP").toString ();
-		try
-		{
-			settings.announce_ip = announceIP.toStdString ();
-		}
-		catch (...)
-		{
-			const auto& e = Util::MakeNotification ("BitTorrent",
-					tr ("Wrong announce address %1")
-						.arg (announceIP),
-					PCritical_);
-			Proxy_->GetEntityManager ()->HandleEntity (e);
-		}
-
+		settings.announce_ip = XmlSettingsManager::Instance ()->
+			property ("AnnounceIP").toString ().toStdString ();
 		settings.num_want = XmlSettingsManager::Instance ()->
 			property ("NumWant").toInt ();
 		settings.initial_picker_threshold = XmlSettingsManager::Instance ()->
