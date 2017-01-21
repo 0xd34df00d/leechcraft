@@ -177,6 +177,8 @@ namespace BitTorrent
 			LT_SET_INT_OPT (active_seeds, val);
 		}
 
+#undef LT_SET_INT_OPT
+
 		template<typename F>
 		void WithSettings (libtorrent::session *session, F&& f)
 		{
