@@ -60,9 +60,17 @@ namespace Lastfmscrobble
 			return 12000;
 		}
 
+		QString GetProto ()
+		{
+
+			static const auto& env = qgetenv ("LASTFM_IMAGES_NO_HTTPS");
+			return env.isEmpty () ? "https" : "http";
+		}
+
 		QString GetUrl (const QString& path)
 		{
-			return QString { "http://%1:%2/%3" }
+			return QString { "%1://%2:%3/%4" }
+					.arg (GetProto ())
 					.arg (GetHost ())
 					.arg (GetPort ())
 					.arg (path);
