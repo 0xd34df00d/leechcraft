@@ -507,15 +507,31 @@ namespace BitTorrent
 		Session_->set_proxy (peerProxySettings);
 	}
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+	#define LT_SET_BOOL_OPT(name, val) settings.set_bool (libtorrent::settings_pack::name, \
+				xsm->property (val).toBool ())
+	#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, \
+				xsm->property (val).toInt ())
+	#define LT_SET_PERCENT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, \
+				std::round (xsm->property (val).toDouble () * 100))
+	#define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::name, \
+				xsm->property (val).toInt () mod)
+#else
 	#define LT_SET_BOOL_OPT(name, val) settings.name = xsm->property (val).toBool ()
 	#define LT_SET_INT_OPT(name, val) settings.name = xsm->property (val).toInt ()
 	#define LT_SET_PERCENT_OPT(name, val) settings.name = xsm->property (val).toDouble ()
 	#define LT_SET_INT_OPT2(name, val, mod) settings.name = xsm->property (val).toInt () mod
+#endif
+
 	void SessionSettingsManager::setGeneralSettings ()
 	{
 		const auto xsm = XmlSettingsManager::Instance ();
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+#else
 		auto settings = Session_->settings ();
+#endif
 
 		LT_SET_INT_OPT (tracker_completion_timeout, "TrackerCompletionTimeout");
 		LT_SET_INT_OPT (tracker_receive_timeout, "TrackerReceiveTimeout");
@@ -586,18 +602,29 @@ namespace BitTorrent
 		if (ports.size () == 2)
 #if LIBTORRENT_VERSION_NUM >= 10100
 		{
-			settings.outgoing_port = ports.at (0).toInt ();
-			settings.num_outgoing_ports = ports.at (1).toInt () - ports.at (0).toInt ();
+			settings.set_int (libtorrent::settings_pack::outgoing_port, ports.at (0).toInt ());
+			settings.set_int (libtorrent::settings_pack::num_outgoing_ports,
+					ports.at (1).toInt () - ports.at (0).toInt ());
 		}
 #else
 			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
 #endif
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+		settings.set_str (libtorrent::settings_pack::announce_ip,
+				xsm->property ("AnnounceIP").toString ().toStdString ());
+		settings.set_str (libtorrent::settings_pack::user_agent,
+				"LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ());
+		settings.set_int (libtorrent::settings_pack::active_limit, 16384);
+
+		Session_->apply_settings (settings);
+#else
 		settings.announce_ip = xsm->property ("AnnounceIP").toString ().toStdString ();
 		settings.user_agent = "LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ();
 		settings.active_limit = 16384;
 
 		Session_->set_settings (settings);
+#endif
 	}
 
 	void SessionSettingsManager::setDHTSettings ()
