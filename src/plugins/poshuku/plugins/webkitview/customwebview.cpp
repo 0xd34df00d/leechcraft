@@ -489,6 +489,13 @@ namespace WebKitView
 		case Attribute::x: \
 			settings ()->setAttribute (QWebSettings::x, enable); \
 			break;
+#if QT_VERSION >= 0x050000
+#define ATTR5(x) ATTR(x)
+#else
+#define ATTR5(x) \
+		case Attribute::x \
+			break;
+#endif
 
 		switch (attribute)
 		{
@@ -506,6 +513,7 @@ namespace WebKitView
 #endif
 		}
 
+#undef ATTR5
 #undef ATTR
 	}
 
