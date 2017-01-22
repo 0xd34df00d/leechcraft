@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <QCoreApplication>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include "knowndictsmanager.h"
 
 Q_DECLARE_METATYPE (QSet<QString>)
@@ -70,6 +71,14 @@ namespace Rosenthal
 
 		QStringList Suggest (Hunspell *hs, QTextCodec *codec, const QByteArray& word)
 		{
+#ifdef HUNSPELL_HAS_CXX_OVERLOADS
+			return Util::Map (hs->suggest (std::string { word.data (), static_cast<size_t> (word.size ()) }),
+					[codec] (const std::string& str)
+					{
+						return codec->toUnicode (str.c_str ());
+					});
+#else
+
 			char **wlist = 0;
 			const int ns = hs->suggest (&wlist, word.data ());
 			if (!ns || !wlist)
@@ -80,6 +89,7 @@ namespace Rosenthal
 				result << codec->toUnicode (wlist [i]);
 			hs->free_list (&wlist, ns);
 			return result;
+#endif
 		}
 	}
 
