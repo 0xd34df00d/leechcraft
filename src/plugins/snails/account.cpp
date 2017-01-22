@@ -109,8 +109,6 @@ namespace Snails
 	, ProgressMgr_ (pm)
 	, Storage_ (st)
 	{
-		UpdateNoopInterval ();
-
 		connect (FolderManager_,
 				SIGNAL (foldersUpdated ()),
 				this,
@@ -121,6 +119,8 @@ namespace Snails
 					t->Schedule (TaskPriority::Low,
 							&AccountThreadWorker::SetNoopTimeoutChangeNotifier, NoopNotifier_);
 				});
+
+		UpdateNoopInterval ();
 
 		Util::Sequence (this, WorkerPool_->TestConnectivity ()) >>
 				[this] (const auto& result)
