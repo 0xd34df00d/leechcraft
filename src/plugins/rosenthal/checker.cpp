@@ -60,10 +60,17 @@ namespace Rosenthal
 
 	namespace
 	{
+#ifdef HUNSPELL_HAS_CXX_OVERLOADS
+		std::string ToString (const QByteArray& word)
+		{
+			return { word.data (), static_cast<size_t> (word.size ()) };
+		}
+#endif
+
 		bool Spell (Hunspell *hs, const QByteArray& word)
 		{
 #ifdef HUNSPELL_HAS_CXX_OVERLOADS
-			return hs->spell (std::string { word.data (), static_cast<size_t> (word.size ()) });
+			return hs->spell (ToString (word));
 #else
 			return hs->spell (word.data ());
 #endif
@@ -72,7 +79,7 @@ namespace Rosenthal
 		QStringList Suggest (Hunspell *hs, QTextCodec *codec, const QByteArray& word)
 		{
 #ifdef HUNSPELL_HAS_CXX_OVERLOADS
-			return Util::Map (hs->suggest (std::string { word.data (), static_cast<size_t> (word.size ()) }),
+			return Util::Map (hs->suggest (ToString (word)),
 					[codec] (const std::string& str)
 					{
 						return codec->toUnicode (str.c_str ());
