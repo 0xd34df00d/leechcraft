@@ -604,7 +604,7 @@ namespace BitTorrent
 		{
 			settings.set_int (libtorrent::settings_pack::outgoing_port, ports.at (0).toInt ());
 			settings.set_int (libtorrent::settings_pack::num_outgoing_ports,
-					ports.at (1).toInt () - ports.at (0).toInt ());
+					ports.at (1).toInt () - ports.at (0).toInt () + 1);
 		}
 #else
 			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
