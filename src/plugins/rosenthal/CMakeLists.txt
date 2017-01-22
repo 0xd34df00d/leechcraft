@@ -11,6 +11,11 @@ if (MSVC)
 	add_definitions (-DWIN32 -DHUNSPELL_STATIC)
 endif ()
 
+include (cmake/CheckHunspellOverloads.cmake)
+if (HUNSPELL_HAS_CXX_OVERLOADS)
+	add_definitions (-DHUNSPELL_HAS_CXX_OVERLOADS)
+endif ()
+
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
