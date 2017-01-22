@@ -478,17 +478,31 @@ namespace BitTorrent
 	void SessionSettingsManager::maxUploadsChanged ()
 	{
 		const int maxUps = XmlSettingsManager::Instance ()->property ("MaxUploads").toInt ();
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+		settings.set_int (libtorrent::settings_pack::unchoke_slots_limit, maxUps);
+		Session_->apply_settings (settings);
+#else
 		auto settings = Session_->settings ();
 		settings.unchoke_slots_limit = maxUps;
 		Session_->set_settings (settings);
+#endif
 	}
 
 	void SessionSettingsManager::maxConnectionsChanged ()
 	{
 		const int maxConn = XmlSettingsManager::Instance ()->property ("MaxConnections").toInt ();
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+		settings.set_int (libtorrent::settings_pack::connections_limit, maxConn);
+		Session_->apply_settings (settings);
+#else
 		auto settings = Session_->settings ();
 		settings.connections_limit = maxConn;
 		Session_->set_settings (settings);
+#endif
 	}
 
 	void SessionSettingsManager::setProxySettings ()
