@@ -57,25 +57,37 @@ namespace Rosenthal
 		LearntWords_ = settings.value ("LearntWords").value<QSet<QString>> ();
 	}
 
+	namespace
+	{
+		bool Spell (Hunspell *hs, const QByteArray& word)
+		{
+			return hs->spell (word.data ());
+		}
+
+		QStringList Suggest (Hunspell *hs, QTextCodec *codec, const QByteArray& word)
+		{
+			char **wlist = 0;
+			const int ns = hs->suggest (&wlist, word.data ());
+			if (!ns || !wlist)
+				return {};
+
+			QStringList result;
+			for (int i = 0; i < std::min (ns, 10); ++i)
+				result << codec->toUnicode (wlist [i]);
+			hs->free_list (&wlist, ns);
+			return result;
+		}
+	}
+
 	QStringList Checker::GetPropositions (const QString& word) const
 	{
 		QStringList result;
 		for (const auto& item : Hunspells_)
 		{
 			const auto& encoded = item.Codec_->fromUnicode (word);
-			if (item.Hunspell_->spell (encoded.data ()))
-				continue;
-
-			char **wlist = 0;
-			const int ns = item.Hunspell_->suggest (&wlist, encoded.data ());
-			if (!ns || !wlist)
-				continue;
-
-			for (int i = 0; i < std::min (ns, 10); ++i)
-				result << item.Codec_->toUnicode (wlist [i]);
-			item.Hunspell_->free_list (&wlist, ns);
+			if (!Spell (item.Hunspell_.get (), encoded))
+				result += Suggest (item.Hunspell_.get (), item.Codec_, encoded);
 		}
-
 		return result;
 	}
 
@@ -87,7 +99,7 @@ namespace Rosenthal
 		return std::any_of (Hunspells_.begin (), Hunspells_.end (),
 				[&word] (const HunspellItem& item)
 				{
-					return item.Hunspell_->spell (item.Codec_->fromUnicode (word).data ());
+					return Spell (item.Hunspell_.get (), item.Codec_->fromUnicode (word));
 				});
 	}
 
