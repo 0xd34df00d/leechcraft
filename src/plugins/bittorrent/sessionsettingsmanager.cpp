@@ -425,6 +425,18 @@ namespace BitTorrent
 	void SessionSettingsManager::tcpPortRangeChanged ()
 	{
 		const auto& ports = XmlSettingsManager::Instance ()->property ("TCPPortRange").toList ();
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+
+		QStringList portsList;
+		for (int port = ports.at (0).toInt (), endPort = ports.at (1).toInt (); port <= endPort; ++port)
+			portsList << "0.0.0.0:" + QString::number (port);
+
+		settings.set_str (libtorrent::settings_pack::listen_interfaces, portsList.join (",").toStdString ());
+
+		Session_->apply_settings (settings);
+#else
 		boost::system::error_code ec;
 		Session_->listen_on ({ ports.at (0).toInt (), ports.at (1).toInt () }, ec);
 		if (ec)
@@ -442,6 +454,7 @@ namespace BitTorrent
 			const auto& e = Util::MakeNotification ("BitTorrent", text, PCritical_);
 			Proxy_->GetEntityManager ()->HandleEntity (e);
 		}
+#endif
 	}
 
 	void SessionSettingsManager::sslPortChanged ()
