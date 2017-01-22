@@ -40,6 +40,7 @@
 #include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/irootwindowsmanager.h>
+#include <util/sll/util.h>
 #include "xmlsettingsmanager.h"
 #include "core.h"
 
@@ -507,21 +508,61 @@ namespace BitTorrent
 
 	void SessionSettingsManager::setProxySettings ()
 	{
-		libtorrent::proxy_settings peerProxySettings;
-		if (XmlSettingsManager::Instance ()->property ("PeerProxyEnabled").toBool ())
+		const auto xsm = XmlSettingsManager::Instance ();
+
+		const auto& hostname = xsm->property ("PeerProxyAddress").toString ().toStdString ();
+		const auto port = xsm->property ("PeerProxyPort").toInt ();
+		const auto& auth = xsm->property ("PeerProxyAuth").toString ().split ('@');
+		const auto& pt = xsm->property ("PeerProxyType").toString ();
+
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+		const auto settingsGuard = Util::MakeScopeGuard ([&settings, this] { Session_->apply_settings (settings); });
+
+		if (!xsm->property ("PeerProxyEnabled").toBool ())
 		{
-			peerProxySettings.hostname = XmlSettingsManager::Instance ()->
-				property ("PeerProxyAddress").toString ().toStdString ();
-			peerProxySettings.port = XmlSettingsManager::Instance ()->
-				property ("PeerProxyPort").toInt ();
-			QStringList auth = XmlSettingsManager::Instance ()->
-				property ("PeerProxyAuth").toString ().split ('@');
-			if (auth.size ())
+			settings.set_int (libtorrent::settings_pack::proxy_type,
+					libtorrent::settings_pack::proxy_type_t::none);
+			return;
+		}
+
+		settings.set_str (libtorrent::settings_pack::proxy_hostname, hostname);
+		settings.set_int (libtorrent::settings_pack::proxy_port, port);
+		if (!auth.isEmpty ())
+			settings.set_str (libtorrent::settings_pack::proxy_username, auth.at (0).toStdString ());
+		if (auth.size () > 1)
+			settings.set_str (libtorrent::settings_pack::proxy_password, auth.at (1).toStdString ());
+
+		const auto proxyType = [&]
+		{
+			bool passworded = !settings.get_str (libtorrent::settings_pack::proxy_username).empty ();
+			if (pt == "http")
+				return passworded ?
+						libtorrent::settings_pack::proxy_type_t::http_pw :
+						libtorrent::settings_pack::proxy_type_t::http;
+			else if (pt == "socks4")
+				return libtorrent::settings_pack::proxy_type_t::socks4;
+			else if (pt == "socks5")
+				return passworded ?
+						libtorrent::settings_pack::proxy_type_t::socks5_pw :
+						libtorrent::settings_pack::proxy_type_t::socks5;
+			else
+				return libtorrent::settings_pack::proxy_type_t::none;
+		} ();
+		settings.set_int (libtorrent::settings_pack::proxy_type, proxyType);
+#else
+		libtorrent::proxy_settings peerProxySettings;
+		if (xsm->property ("PeerProxyEnabled").toBool ())
+		{
+			peerProxySettings.hostname = hostname;
+			peerProxySettings.port = port;
+
+			if (!auth.isEmpty ())
 				peerProxySettings.username = auth.at (0).toStdString ();
 			if (auth.size () > 1)
 				peerProxySettings.password = auth.at (1).toStdString ();
+
 			bool passworded = peerProxySettings.username.size ();
-			QString pt = XmlSettingsManager::Instance ()->property ("PeerProxyType").toString ();
 			if (pt == "http")
 				peerProxySettings.type = passworded ?
 					libtorrent::proxy_settings::http_pw :
@@ -538,6 +579,7 @@ namespace BitTorrent
 		else
 			peerProxySettings.type = libtorrent::proxy_settings::none;
 		Session_->set_proxy (peerProxySettings);
+#endif
 	}
 
 #if LIBTORRENT_VERSION_NUM >= 10100
