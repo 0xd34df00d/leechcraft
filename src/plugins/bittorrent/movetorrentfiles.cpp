@@ -48,7 +48,7 @@ namespace BitTorrent
 			Ui_.OldLocation_->setText (oldDirectories.front ());
 		else
 		{
-			Ui_.OldLocation_->setToolTip (oldDirectories.join (tr (", ")));
+			Ui_.OldLocation_->setToolTip (oldDirectories.join (", "));
 			Ui_.OldLocation_->setPlaceholderText (tr ("Multiple directories"));
 		}
 
