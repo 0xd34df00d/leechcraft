@@ -507,92 +507,87 @@ namespace BitTorrent
 		Session_->set_proxy (peerProxySettings);
 	}
 
+	#define LT_SET_BOOL_OPT(name, val) settings.name = xsm->property (val).toBool ()
+	#define LT_SET_INT_OPT(name, val) settings.name = xsm->property (val).toInt ()
+	#define LT_SET_PERCENT_OPT(name, val) settings.name = xsm->property (val).toDouble ()
+	#define LT_SET_INT_OPT2(name, val, mod) settings.name = xsm->property (val).toInt () mod
 	void SessionSettingsManager::setGeneralSettings ()
 	{
-		libtorrent::session_settings settings = Session_->settings ();
+		auto settings = Session_->settings ();
+
+		const auto xsm = XmlSettingsManager::Instance ();
 
 		settings.user_agent = std::string ("LeechCraft BitTorrent/") +
 				Proxy_->GetVersion ().toStdString ();
-		settings.tracker_completion_timeout = XmlSettingsManager::Instance ()->
-			property ("TrackerCompletionTimeout").toInt ();
-		settings.tracker_receive_timeout = XmlSettingsManager::Instance ()->
-			property ("TrackerReceiveTimeout").toInt ();
-		settings.stop_tracker_timeout = XmlSettingsManager::Instance ()->
-			property ("StopTrackerTimeout").toInt ();
-		settings.tracker_maximum_response_length = XmlSettingsManager::Instance ()->
-			property ("TrackerMaximumResponseLength").toInt () * 1024;
-		settings.piece_timeout = XmlSettingsManager::Instance ()->
-			property ("PieceTimeout").toInt ();
-		settings.request_timeout = XmlSettingsManager::Instance ()->
-			property ("RequestTimeout").toInt ();
-		settings.request_queue_time = XmlSettingsManager::Instance ()->
-			property ("RequestQueueTime").toInt ();
-		settings.max_allowed_in_request_queue = XmlSettingsManager::Instance ()->
-			property ("MaxAllowedInRequestQueue").toInt ();
-		settings.max_out_request_queue = XmlSettingsManager::Instance ()->
-			property ("MaxOutRequestQueue").toInt ();
-		settings.whole_pieces_threshold = XmlSettingsManager::Instance ()->
-			property ("WholePiecesThreshold").toInt ();
-		settings.peer_timeout = XmlSettingsManager::Instance ()->
-			property ("PeerTimeout").toInt ();
-		settings.urlseed_timeout = XmlSettingsManager::Instance ()->
-			property ("UrlSeedTimeout").toInt ();
-		settings.urlseed_pipeline_size = XmlSettingsManager::Instance ()->
-			property ("UrlSeedPipelineSize").toInt ();
-		settings.urlseed_wait_retry = XmlSettingsManager::Instance ()->
-			property ("UrlSeedWaitRetry").toInt ();
-		settings.file_pool_size = XmlSettingsManager::Instance ()->
-			property ("FilePoolSize").toInt ();
-		settings.allow_multiple_connections_per_ip = XmlSettingsManager::Instance ()->
-			property ("AllowMultipleConnectionsPerIP").toBool ();
-		settings.max_failcount = XmlSettingsManager::Instance ()->
-			property ("MaxFailcount").toInt ();
-		settings.min_reconnect_time = XmlSettingsManager::Instance ()->
-			property ("MinReconnectTime").toInt ();
-		settings.peer_connect_timeout = XmlSettingsManager::Instance ()->
-			property ("PeerConnectTimeout").toInt ();
-		settings.ignore_limits_on_local_network = XmlSettingsManager::Instance ()->
-			property ("IgnoreLimitsOnLocalNetwork").toBool ();
-		settings.connection_speed = XmlSettingsManager::Instance ()->
-			property ("ConnectionSpeed").toInt ();
-		settings.send_redundant_have = XmlSettingsManager::Instance ()->
-			property ("SendRedundantHave").toBool ();
-		settings.lazy_bitfields = XmlSettingsManager::Instance ()->
-			property ("LazyBitfields").toBool ();
-		settings.inactivity_timeout = XmlSettingsManager::Instance ()->
-			property ("InactivityTimeout").toInt ();
-		settings.unchoke_interval = XmlSettingsManager::Instance ()->
-			property ("UnchokeInterval").toInt ();
-		settings.optimistic_unchoke_interval = XmlSettingsManager::Instance ()->
-			property ("OptimisticUnchokeMultiplier").toInt ();
+
+		LT_SET_INT_OPT (tracker_completion_timeout, "TrackerCompletionTimeout");
+		LT_SET_INT_OPT (tracker_receive_timeout, "TrackerReceiveTimeout");
+		LT_SET_INT_OPT (stop_tracker_timeout, "StopTrackerTimeout");
+		LT_SET_INT_OPT (piece_timeout, "PieceTimeout");
+		LT_SET_INT_OPT (request_timeout, "RequestTimeout");
+		LT_SET_INT_OPT (request_queue_time, "RequestQueueTime");
+		LT_SET_INT_OPT (max_allowed_in_request_queue, "MaxAllowedInRequestQueue");
+		LT_SET_INT_OPT (max_out_request_queue, "MaxOutRequestQueue");
+		LT_SET_INT_OPT (whole_pieces_threshold, "WholePiecesThreshold");
+		LT_SET_INT_OPT (peer_timeout, "PeerTimeout");
+		LT_SET_INT_OPT (urlseed_timeout, "UrlSeedTimeout");
+		LT_SET_INT_OPT (urlseed_pipeline_size, "UrlSeedPipelineSize");
+		LT_SET_INT_OPT (urlseed_wait_retry, "UrlSeedWaitRetry");
+		LT_SET_INT_OPT (file_pool_size, "FilePoolSize");
+		LT_SET_INT_OPT (allow_multiple_connections_per_ip, "AllowMultipleConnectionsPerIP");
+		LT_SET_INT_OPT (max_failcount, "MaxFailcount");
+		LT_SET_INT_OPT (min_reconnect_time, "MinReconnectTime");
+		LT_SET_INT_OPT (peer_connect_timeout, "PeerConnectTimeout");
+		LT_SET_INT_OPT (connection_speed, "ConnectionSpeed");
+		LT_SET_INT_OPT (inactivity_timeout, "InactivityTimeout");
+		LT_SET_INT_OPT (unchoke_interval, "UnchokeInterval");
+		LT_SET_INT_OPT (optimistic_unchoke_interval, "OptimisticUnchokeMultiplier");
+		LT_SET_INT_OPT (num_want, "NumWant");
+		LT_SET_INT_OPT (initial_picker_threshold, "InitialPickerThreshold");
+		LT_SET_INT_OPT (allowed_fast_set_size, "AllowedFastSetSize");
+		LT_SET_INT_OPT (handshake_timeout, "HandshakeTimeout");
+		LT_SET_INT_OPT (cache_buffer_chunk_size, "CacheBufferChunkSize");
+		LT_SET_INT_OPT (cache_expiry, "CacheExpiry");
+		LT_SET_INT_OPT (peer_tos, "PeerTOS");
+		LT_SET_INT_OPT (auto_manage_interval, "AutoManageInterval");
+		LT_SET_INT_OPT (auto_scrape_min_interval, "AutoScrapeMinInterval");
+		LT_SET_INT_OPT (max_peerlist_size, "MaxPeerListSize");
+		LT_SET_INT_OPT (min_announce_interval, "MinAnnounceInterval");
+		LT_SET_INT_OPT (seeding_piece_quota, "SeedingPieceQuota");
+		LT_SET_INT_OPT (auto_manage_startup, "AutoManageStartup");
+		LT_SET_INT_OPT (max_rejects, "MaxRejects");
+
+		LT_SET_PERCENT_OPT (share_ratio_limit, "ShareRatioLimit");
+		LT_SET_PERCENT_OPT (seed_time_ratio_limit, "SeedTimeRatioLimit");
+		LT_SET_PERCENT_OPT (peer_turnover, "PeerTurnover");
+
 		settings.announce_ip = XmlSettingsManager::Instance ()->
-			property ("AnnounceIP").toString ().toStdString ();
-		settings.num_want = XmlSettingsManager::Instance ()->
-			property ("NumWant").toInt ();
-		settings.initial_picker_threshold = XmlSettingsManager::Instance ()->
-			property ("InitialPickerThreshold").toInt ();
-		settings.allowed_fast_set_size = XmlSettingsManager::Instance ()->
-			property ("AllowedFastSetSize").toInt ();
-		settings.max_queued_disk_bytes = XmlSettingsManager::Instance ()->
-			property ("MaxOutstandingDiskBytesPerConnection").toInt () * 1024;
-		settings.handshake_timeout = XmlSettingsManager::Instance ()->
-			property ("HandshakeTimeout").toInt ();
-		settings.use_dht_as_fallback = XmlSettingsManager::Instance ()->
-			property ("UseDHTAsFallback").toBool ();
-		settings.free_torrent_hashes = XmlSettingsManager::Instance ()->
-			property ("FreeTorrentHashes").toBool ();
-		settings.upnp_ignore_nonrouters = XmlSettingsManager::Instance ()->
-			property ("UPNPIgnoreNonrouters").toBool ();
-		settings.send_buffer_watermark = XmlSettingsManager::Instance ()->
-			property ("SendBufferWatermark").toInt () * 1024;
-		settings.use_parole_mode = XmlSettingsManager::Instance ()->
-			property ("UseParoleMode").toBool ();
-		settings.cache_size = 1048576 / 16384 * XmlSettingsManager::Instance ()->
-			property ("CacheSize").value<long int> ();
-		settings.cache_buffer_chunk_size = XmlSettingsManager::Instance ()->
-			property ("CacheBufferChunkSize").toInt ();
-		settings.cache_expiry = XmlSettingsManager::Instance ()->
-			property ("CacheExpiry").toInt ();
+				property ("AnnounceIP").toString ().toStdString ();
+
+		LT_SET_INT_OPT2 (cache_size, "CacheSize", * (1048576 / 16384));
+		LT_SET_INT_OPT2 (max_queued_disk_bytes, "MaxOutstandingDiskBytesPerConnection", * 1024);
+		LT_SET_INT_OPT2 (send_buffer_watermark, "SendBufferWatermark", * 1024);
+		LT_SET_INT_OPT2 (tracker_maximum_response_length, "TrackerMaximumResponseLength", * 1024);
+		LT_SET_INT_OPT2 (seed_time_limit, "SeedTimeLimit", * 60);
+		LT_SET_INT_OPT2 (auto_scrape_interval, "AutoScrapeInterval", * 60);
+
+		LT_SET_BOOL_OPT (ignore_limits_on_local_network, "IgnoreLimitsOnLocalNetwork");
+		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
+		LT_SET_BOOL_OPT (lazy_bitfields, "LazyBitfields");
+		LT_SET_BOOL_OPT (use_dht_as_fallback, "UseDHTAsFallback");
+		LT_SET_BOOL_OPT (free_torrent_hashes, "FreeTorrentHashes");
+		LT_SET_BOOL_OPT (upnp_ignore_nonrouters, "UPNPIgnoreNonrouters");
+		LT_SET_BOOL_OPT (use_parole_mode, "UseParoleMode");
+		LT_SET_BOOL_OPT (use_read_cache, "UseReadCache");
+		LT_SET_BOOL_OPT (auto_manage_prefer_seeds, "AutoManagePreferSeeds");
+		LT_SET_BOOL_OPT (dont_count_slow_torrents, "DontCountSlowTorrents");
+		LT_SET_BOOL_OPT (close_redundant_connections, "CloseRedundantConnections");
+		LT_SET_BOOL_OPT (prioritize_partial_pieces, "PrioritizePartialPieces");
+		LT_SET_BOOL_OPT (announce_to_all_trackers, "AnnounceToAllTrackers");
+		LT_SET_BOOL_OPT (announce_to_all_tiers, "AnnounceToAllTiers");
+		LT_SET_BOOL_OPT (prefer_udp_trackers, "PreferUDPTrackers");
+		LT_SET_BOOL_OPT (strict_super_seeding, "StrictSuperSeeding");
+		LT_SET_BOOL_OPT (lock_disk_cache, "LockDiskCache");
 
 		const auto& ports = XmlSettingsManager::Instance ()->property ("OutgoingPorts").toList ();
 		if (ports.size () == 2)
@@ -604,53 +599,6 @@ namespace BitTorrent
 #else
 			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
 #endif
-
-		settings.use_read_cache = XmlSettingsManager::Instance ()->
-			property ("UseReadCache").toBool ();
-		settings.peer_tos = XmlSettingsManager::Instance ()->
-			property ("PeerTOS").toInt ();
-		settings.auto_manage_prefer_seeds = XmlSettingsManager::Instance ()->
-			property ("AutoManagePreferSeeds").toBool ();
-		settings.dont_count_slow_torrents = XmlSettingsManager::Instance ()->
-			property ("DontCountSlowTorrents").toBool ();
-		settings.auto_manage_interval = XmlSettingsManager::Instance ()->
-			property ("AutoManageInterval").toInt ();
-		settings.share_ratio_limit = XmlSettingsManager::Instance ()->
-			property ("ShareRatioLimit").toDouble ();
-		settings.seed_time_ratio_limit = XmlSettingsManager::Instance ()->
-			property ("SeedTimeRatioLimit").toDouble ();
-		settings.seed_time_limit = XmlSettingsManager::Instance ()->
-			property ("SeedTimeLimit").toULongLong () * 60;
-		settings.peer_turnover = XmlSettingsManager::Instance ()->
-			property ("PeerTurnover").toDouble ();
-		settings.close_redundant_connections = XmlSettingsManager::Instance ()->
-			property ("CloseRedundantConnections").toBool ();
-		settings.auto_scrape_interval = XmlSettingsManager::Instance ()->
-			property ("AutoScrapeInterval").toInt () * 60;
-		settings.auto_scrape_min_interval = XmlSettingsManager::Instance ()->
-			property ("AutoScrapeMinInterval").toInt ();
-		settings.max_peerlist_size = XmlSettingsManager::Instance ()->
-			property ("MaxPeerListSize").toInt ();
-		settings.min_announce_interval = XmlSettingsManager::Instance ()->
-			property ("MinAnnounceInterval").toInt ();
-		settings.prioritize_partial_pieces = XmlSettingsManager::Instance ()->
-			property ("PrioritizePartialPieces").toBool ();
-		settings.announce_to_all_trackers = XmlSettingsManager::Instance ()->
-			property ("AnnounceToAllTrackers").toBool ();
-		settings.announce_to_all_tiers = XmlSettingsManager::Instance ()->
-			property ("AnnounceToAllTiers").toBool ();
-		settings.prefer_udp_trackers = XmlSettingsManager::Instance ()->
-			property ("PreferUDPTrackers").toBool ();
-		settings.strict_super_seeding = XmlSettingsManager::Instance ()->
-			property ("StrictSuperSeeding").toBool ();
-		settings.seeding_piece_quota = XmlSettingsManager::Instance ()->
-			property ("SeedingPieceQuota").toInt ();
-		settings.auto_manage_startup = XmlSettingsManager::Instance ()->
-			property ("AutoManageStartup").toInt ();
-		settings.lock_disk_cache = XmlSettingsManager::Instance ()->
-			property ("LockDiskCache").toBool ();
-		settings.max_rejects = XmlSettingsManager::Instance ()->
-			property ("MaxRejects").toInt ();
 
 		settings.active_limit = 16384;
 
