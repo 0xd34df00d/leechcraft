@@ -508,9 +508,8 @@ namespace WebKitView
 		ATTR (XSSAuditingEnabled)
 		ATTR (HyperlinkAuditingEnabled)
 		ATTR (WebGLEnabled)
-#if QT_VERSION >= 0x050000
-		ATTR (ScrollAnimatorEnabled)
-#endif
+
+		ATTR5 (ScrollAnimatorEnabled)
 		}
 
 #undef ATTR5
