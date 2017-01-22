@@ -508,16 +508,16 @@ namespace BitTorrent
 	}
 
 #if LIBTORRENT_VERSION_NUM >= 10100
-	#define LT_SET_BOOL_OPT(name, val) settings.set_bool (libtorrent::settings_pack::name, \
+	#define LT_SET_BOOL_OPT(name, val) settings.set_bool (libtorrent::settings_pack::bool_types::name, \
 				xsm->property (val).toBool ())
-	#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, \
+	#define LT_SET_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
 				xsm->property (val).toInt ())
-	#define LT_SET_PERCENT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, \
+	#define LT_SET_PERCENT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, \
 				std::round (xsm->property (val).toDouble () * 100))
-	#define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::name, \
+	#define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::int_types::name, \
 				xsm->property (val).toInt () mod)
-	#define LT_SET_BARE_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, val)
-	#define LT_SET_BARE_STR_OPT(name, val) settings.set_str (libtorrent::settings_pack::name, val)
+	#define LT_SET_BARE_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::int_types::name, val)
+	#define LT_SET_BARE_STR_OPT(name, val) settings.set_str (libtorrent::settings_pack::string_types::name, val)
 #else
 	#define LT_SET_BOOL_OPT(name, val) settings.name = xsm->property (val).toBool ()
 	#define LT_SET_INT_OPT(name, val) settings.name = xsm->property (val).toInt ()
