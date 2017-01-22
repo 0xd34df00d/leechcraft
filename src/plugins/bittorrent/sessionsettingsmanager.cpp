@@ -513,6 +513,8 @@ namespace BitTorrent
 		const auto& hostname = xsm->property ("PeerProxyAddress").toString ().toStdString ();
 		const auto port = xsm->property ("PeerProxyPort").toInt ();
 		const auto& auth = xsm->property ("PeerProxyAuth").toString ().split ('@');
+		const auto& username = auth.value (0).toStdString ();
+		const auto& password = auth.value (1).toStdString ();
 		const auto& pt = xsm->property ("PeerProxyType").toString ();
 
 #if LIBTORRENT_VERSION_NUM >= 10100
@@ -528,14 +530,12 @@ namespace BitTorrent
 
 		settings.set_str (libtorrent::settings_pack::proxy_hostname, hostname);
 		settings.set_int (libtorrent::settings_pack::proxy_port, port);
-		if (!auth.isEmpty ())
-			settings.set_str (libtorrent::settings_pack::proxy_username, auth.at (0).toStdString ());
-		if (auth.size () > 1)
-			settings.set_str (libtorrent::settings_pack::proxy_password, auth.at (1).toStdString ());
+		settings.set_str (libtorrent::settings_pack::proxy_username, username);
+		settings.set_str (libtorrent::settings_pack::proxy_password, password);
 
 		const auto proxyType = [&]
 		{
-			bool passworded = !settings.get_str (libtorrent::settings_pack::proxy_username).empty ();
+			bool passworded = !password.empty ();
 			if (pt == "http")
 				return passworded ?
 						libtorrent::settings_pack::proxy_type_t::http_pw :
@@ -556,13 +556,10 @@ namespace BitTorrent
 		{
 			peerProxySettings.hostname = hostname;
 			peerProxySettings.port = port;
+			peerProxySettings.username = username;
+			peerProxySettings.password = password;
 
-			if (!auth.isEmpty ())
-				peerProxySettings.username = auth.at (0).toStdString ();
-			if (auth.size () > 1)
-				peerProxySettings.password = auth.at (1).toStdString ();
-
-			bool passworded = peerProxySettings.username.size ();
+			bool passworded = !username.empty ();
 			if (pt == "http")
 				peerProxySettings.type = passworded ?
 					libtorrent::proxy_settings::http_pw :
