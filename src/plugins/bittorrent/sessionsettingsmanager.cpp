@@ -569,7 +569,6 @@ namespace BitTorrent
 		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
 		LT_SET_BOOL_OPT (lazy_bitfields, "LazyBitfields");
 		LT_SET_BOOL_OPT (use_dht_as_fallback, "UseDHTAsFallback");
-		LT_SET_BOOL_OPT (free_torrent_hashes, "FreeTorrentHashes");
 		LT_SET_BOOL_OPT (upnp_ignore_nonrouters, "UPNPIgnoreNonrouters");
 		LT_SET_BOOL_OPT (use_parole_mode, "UseParoleMode");
 		LT_SET_BOOL_OPT (use_read_cache, "UseReadCache");
