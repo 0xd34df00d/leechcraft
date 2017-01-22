@@ -354,9 +354,6 @@
 				<item type="checkbox" property="UseReadCache" state="on">
 					<label lang="en" value="Use read cache" />
 				</item>
-				<item type="checkbox" property="FreeTorrentHashes" state="on">
-					<label lang="en" value="Unload hashes from memory if seeding" />
-				</item>
 				<item type="checkbox" property="LockDiskCache" state="on">
 					<label lang="en" value="Prevent disk cache from swapping out" />
 				</item>
