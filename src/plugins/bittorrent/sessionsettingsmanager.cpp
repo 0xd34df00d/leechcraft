@@ -551,7 +551,6 @@ namespace BitTorrent
 		LT_SET_INT_OPT (urlseed_pipeline_size, "UrlSeedPipelineSize");
 		LT_SET_INT_OPT (urlseed_wait_retry, "UrlSeedWaitRetry");
 		LT_SET_INT_OPT (file_pool_size, "FilePoolSize");
-		LT_SET_INT_OPT (allow_multiple_connections_per_ip, "AllowMultipleConnectionsPerIP");
 		LT_SET_INT_OPT (max_failcount, "MaxFailcount");
 		LT_SET_INT_OPT (min_reconnect_time, "MinReconnectTime");
 		LT_SET_INT_OPT (peer_connect_timeout, "PeerConnectTimeout");
@@ -585,6 +584,7 @@ namespace BitTorrent
 		LT_SET_INT_OPT2 (seed_time_limit, "SeedTimeLimit", * 60);
 		LT_SET_INT_OPT2 (auto_scrape_interval, "AutoScrapeInterval", * 60);
 
+		LT_SET_BOOL_OPT (allow_multiple_connections_per_ip, "AllowMultipleConnectionsPerIP");
 		LT_SET_BOOL_OPT (ignore_limits_on_local_network, "IgnoreLimitsOnLocalNetwork");
 		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
 		LT_SET_BOOL_OPT (lazy_bitfields, "LazyBitfields");
