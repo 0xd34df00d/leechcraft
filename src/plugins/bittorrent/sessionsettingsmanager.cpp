@@ -513,12 +513,9 @@ namespace BitTorrent
 	#define LT_SET_INT_OPT2(name, val, mod) settings.name = xsm->property (val).toInt () mod
 	void SessionSettingsManager::setGeneralSettings ()
 	{
-		auto settings = Session_->settings ();
-
 		const auto xsm = XmlSettingsManager::Instance ();
 
-		settings.user_agent = std::string ("LeechCraft BitTorrent/") +
-				Proxy_->GetVersion ().toStdString ();
+		auto settings = Session_->settings ();
 
 		LT_SET_INT_OPT (tracker_completion_timeout, "TrackerCompletionTimeout");
 		LT_SET_INT_OPT (tracker_receive_timeout, "TrackerReceiveTimeout");
@@ -561,9 +558,6 @@ namespace BitTorrent
 		LT_SET_PERCENT_OPT (seed_time_ratio_limit, "SeedTimeRatioLimit");
 		LT_SET_PERCENT_OPT (peer_turnover, "PeerTurnover");
 
-		settings.announce_ip = XmlSettingsManager::Instance ()->
-				property ("AnnounceIP").toString ().toStdString ();
-
 		LT_SET_INT_OPT2 (cache_size, "CacheSize", * (1048576 / 16384));
 		LT_SET_INT_OPT2 (max_queued_disk_bytes, "MaxOutstandingDiskBytesPerConnection", * 1024);
 		LT_SET_INT_OPT2 (send_buffer_watermark, "SendBufferWatermark", * 1024);
@@ -600,6 +594,8 @@ namespace BitTorrent
 			settings.outgoing_ports = std::make_pair (ports.at (0).toInt (), ports.at (1).toInt ());
 #endif
 
+		settings.announce_ip = xsm->property ("AnnounceIP").toString ().toStdString ();
+		settings.user_agent = "LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ();
 		settings.active_limit = 16384;
 
 		Session_->set_settings (settings);
