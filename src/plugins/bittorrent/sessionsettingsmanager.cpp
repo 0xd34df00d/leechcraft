@@ -464,9 +464,15 @@ namespace BitTorrent
 				XmlSettingsManager::Instance ()->property ("SSLPort").toInt () :
 				0;
 
+#if LIBTORRENT_VERSION_NUM >= 10100
+		auto settings = Session_->get_settings ();
+		settings.set_int (libtorrent::settings_pack::ssl_listen, sslPort);
+		Session_->apply_settings (settings);
+#else
 		auto settings = Session_->settings ();
 		settings.ssl_listen = sslPort;
 		Session_->set_settings (settings);
+#endif
 	}
 
 	void SessionSettingsManager::maxUploadsChanged ()
