@@ -517,12 +517,14 @@ namespace BitTorrent
 	#define LT_SET_INT_OPT2(name, val, mod) settings.set_int (libtorrent::settings_pack::name, \
 				xsm->property (val).toInt () mod)
 	#define LT_SET_BARE_INT_OPT(name, val) settings.set_int (libtorrent::settings_pack::name, val)
+	#define LT_SET_BARE_STR_OPT(name, val) settings.set_str (libtorrent::settings_pack::name, val)
 #else
 	#define LT_SET_BOOL_OPT(name, val) settings.name = xsm->property (val).toBool ()
 	#define LT_SET_INT_OPT(name, val) settings.name = xsm->property (val).toInt ()
 	#define LT_SET_PERCENT_OPT(name, val) settings.name = xsm->property (val).toDouble ()
 	#define LT_SET_INT_OPT2(name, val, mod) settings.name = xsm->property (val).toInt () mod
 	#define LT_SET_BARE_INT_OPT(name, val) settings.name = val
+	#define LT_SET_BARE_STR_OPT(name, val) settings.name = val
 #endif
 
 	void SessionSettingsManager::setGeneralSettings ()
@@ -612,18 +614,12 @@ namespace BitTorrent
 #endif
 
 		LT_SET_BARE_INT_OPT (active_limit, 16384);
+		LT_SET_BARE_STR_OPT (announce_ip, xsm->property ("AnnounceIP").toString ().toStdString ());
+		LT_SET_BARE_STR_OPT (user_agent, "LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ());
 
 #if LIBTORRENT_VERSION_NUM >= 10100
-		settings.set_str (libtorrent::settings_pack::announce_ip,
-				xsm->property ("AnnounceIP").toString ().toStdString ());
-		settings.set_str (libtorrent::settings_pack::user_agent,
-				"LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ());
-
 		Session_->apply_settings (settings);
 #else
-		settings.announce_ip = xsm->property ("AnnounceIP").toString ().toStdString ();
-		settings.user_agent = "LeechCraft BitTorrent/" + Proxy_->GetVersion ().toStdString ();
-
 		Session_->set_settings (settings);
 #endif
 	}
