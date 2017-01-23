@@ -243,7 +243,7 @@
       "name": "iSida Bot 4"
     },
     {
-      "node": "http://vacuum-im.googlecode.com",
+      "node": [ "http://vacuum-im.googlecode.com", "https://github.com/Vacuum-IM" ],
       "id": "vacuum",
       "name": "Vacuum-IM"
     },
