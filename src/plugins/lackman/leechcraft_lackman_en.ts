@@ -67,66 +67,66 @@
 <context>
     <name>LeechCraft::LackMan::Core</name>
     <message>
-        <location filename="core.cpp" line="131"/>
+        <location filename="core.cpp" line="108"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="410"/>
-        <location filename="core.cpp" line="428"/>
-        <location filename="core.cpp" line="456"/>
+        <location filename="core.cpp" line="403"/>
+        <location filename="core.cpp" line="421"/>
+        <location filename="core.cpp" line="449"/>
         <source>Error updating repository</source>
         <translation>Error updating repository</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="411"/>
+        <location filename="core.cpp" line="404"/>
         <source>Unable to find repository with URL %1.</source>
         <translation>Unable to find repository with URL %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="429"/>
+        <location filename="core.cpp" line="422"/>
         <source>While trying to update the repository: %1.</source>
         <translation>While trying to update the repository: %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="457"/>
+        <location filename="core.cpp" line="450"/>
         <source>Unable to remove the component `%1` which disappeared from the list of components for repo %2.</source>
         <translation>Unable to remove the component `%1` which disappeared from the list of components for repo %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="503"/>
+        <location filename="core.cpp" line="496"/>
         <source>Unable to install package</source>
         <translation>Unable to install package</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="524"/>
+        <location filename="core.cpp" line="517"/>
         <source>Unable to update package</source>
         <translation>Unable to update package</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="693"/>
-        <location filename="core.cpp" line="720"/>
-        <location filename="core.cpp" line="1087"/>
+        <location filename="core.cpp" line="604"/>
+        <location filename="core.cpp" line="631"/>
+        <location filename="core.cpp" line="996"/>
         <source>Error parsing component</source>
         <translation>Error parsing component</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="694"/>
+        <location filename="core.cpp" line="605"/>
         <source>Unable to load package ID for package `%1`-%2</source>
         <translation>Unable to load package ID for package `%1`-%2</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="721"/>
+        <location filename="core.cpp" line="632"/>
         <source>Unable to save package location for package `%1`-%2 and component %3</source>
         <translation>Unable to save package location for package `%1`-%2 and component %3</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="746"/>
+        <location filename="core.cpp" line="657"/>
         <source>Repositories updated</source>
         <translation>Repositories updated</translation>
     </message>
     <message numerus="yes">
-        <location filename="core.cpp" line="747"/>
+        <location filename="core.cpp" line="658"/>
         <source>Got %n new or updated packages, open LackMan tab to view them.</source>
         <translation>
             <numerusform>Got %n new or updated package, open LackMan tab to view.</numerusform>
@@ -134,111 +134,111 @@
         </translation>
     </message>
     <message>
-        <location filename="core.cpp" line="767"/>
-        <location filename="core.cpp" line="844"/>
+        <location filename="core.cpp" line="678"/>
+        <location filename="core.cpp" line="755"/>
         <source>Unable to remove package</source>
         <translation>Unable to remove package</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="811"/>
-        <location filename="core.cpp" line="1256"/>
+        <location filename="core.cpp" line="722"/>
+        <location filename="core.cpp" line="1165"/>
         <source>Error installing package</source>
         <translation>Error installing package</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="812"/>
+        <location filename="core.cpp" line="723"/>
         <source>Error recording package to the package DB.</source>
         <translation>Error recording package to the package DB.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1016"/>
+        <location filename="core.cpp" line="925"/>
         <source>Repository addition error</source>
         <translation>Repository addition error</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1017"/>
+        <location filename="core.cpp" line="926"/>
         <source>Incorrect URL %1.</source>
         <translation>Incorrect URL %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1048"/>
+        <location filename="core.cpp" line="957"/>
         <source>Error adding/updating repository</source>
         <translation>Error adding/updating repository</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1049"/>
+        <location filename="core.cpp" line="958"/>
         <source>While trying to add or update the repository: %1.</source>
         <translation>While trying to add or update the repository: %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1088"/>
+        <location filename="core.cpp" line="997"/>
         <source>Unable to load component ID for component %1.</source>
         <translation>Unable to load component ID for component %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1106"/>
-        <location filename="core.cpp" line="1125"/>
-        <location filename="core.cpp" line="1160"/>
+        <location filename="core.cpp" line="1015"/>
+        <location filename="core.cpp" line="1034"/>
+        <location filename="core.cpp" line="1069"/>
         <source>Error handling component</source>
         <translation>Error handling component</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1107"/>
+        <location filename="core.cpp" line="1016"/>
         <source>Unable to load packages already present in the component %1.</source>
         <translation>Unable to load packages already present in the component %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1126"/>
+        <location filename="core.cpp" line="1035"/>
         <source>Unable to load package already present in the component %1.</source>
         <translation>Unable to load package already present in the component %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1161"/>
+        <location filename="core.cpp" line="1070"/>
         <source>Unable to remove package which has been removed upstream from %1.</source>
         <translation>Unable to remove package which has been removed upstream from %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1209"/>
+        <location filename="core.cpp" line="1118"/>
         <source>Error retrieving package</source>
         <translation>Error retrieving package</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1210"/>
+        <location filename="core.cpp" line="1119"/>
         <source>Unable to save package %1.</source>
         <translation>Unable to save package %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1227"/>
+        <location filename="core.cpp" line="1136"/>
         <source>Error retrieving package icon</source>
         <translation>Error retrieving package icon</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1228"/>
+        <location filename="core.cpp" line="1137"/>
         <source>Unable to retrieve icon for package %1.</source>
         <translation>Unable to retrieve icon for package %1.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1249"/>
+        <location filename="core.cpp" line="1158"/>
         <source>Error while fetching package %1: %2.</source>
         <translation>Error while fetching package %1: %2.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1283"/>
+        <location filename="core.cpp" line="1192"/>
         <source>Package installed</source>
         <translation>Package installed</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1284"/>
+        <location filename="core.cpp" line="1193"/>
         <source>Package %1 installed successfully.</source>
         <translation>Package %1 installed successfully.</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1314"/>
+        <location filename="core.cpp" line="1223"/>
         <source>Package updated</source>
         <translation>Package updated</translation>
     </message>
     <message>
-        <location filename="core.cpp" line="1315"/>
+        <location filename="core.cpp" line="1224"/>
         <source>Package %1 updated successfully.</source>
         <translation>Package %1 updated successfully.</translation>
     </message>
@@ -246,87 +246,87 @@
 <context>
     <name>LeechCraft::LackMan::LackManTab</name>
     <message>
-        <location filename="lackmantab.cpp" line="76"/>
+        <location filename="lackmantab.cpp" line="78"/>
         <source>Package tags</source>
         <translation>Package tags</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="226"/>
+        <location filename="lackmantab.cpp" line="228"/>
         <source>Update all repos</source>
         <translation>Update all repos</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="235"/>
+        <location filename="lackmantab.cpp" line="237"/>
         <source>Upgrade all packages</source>
         <translation>Upgrade all packages</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="244"/>
+        <location filename="lackmantab.cpp" line="246"/>
         <source>Apply</source>
         <translation>Apply</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="254"/>
+        <location filename="lackmantab.cpp" line="256"/>
         <source>Cancel</source>
         <translation>Cancel</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="350"/>
+        <location filename="lackmantab.cpp" line="352"/>
         <source>Package information: %1</source>
         <translation>Package information: %1</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="353"/>
+        <location filename="lackmantab.cpp" line="355"/>
         <source>Package information</source>
         <translation>Package information</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="358"/>
+        <location filename="lackmantab.cpp" line="360"/>
         <source>not installed</source>
         <translation>not installed</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="360"/>
+        <location filename="lackmantab.cpp" line="362"/>
         <source>installed; upgradable</source>
         <translation>installed; upgradable</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="362"/>
+        <location filename="lackmantab.cpp" line="364"/>
         <source>installed</source>
         <translation>installed</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="368"/>
+        <location filename="lackmantab.cpp" line="370"/>
         <source>unknown</source>
         <translation>unknown</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="389"/>
+        <location filename="lackmantab.cpp" line="391"/>
         <source>Total size to be downloaded: %1</source>
         <translation>Total size to be downloaded: %1</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="453"/>
+        <location filename="lackmantab.cpp" line="455"/>
         <source>Uninstall</source>
         <translation>Uninstall</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="453"/>
+        <location filename="lackmantab.cpp" line="455"/>
         <source>Install</source>
         <translation>Install</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="462"/>
+        <location filename="lackmantab.cpp" line="464"/>
         <source>Upgrade</source>
         <translation>Upgrade</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="473"/>
+        <location filename="lackmantab.cpp" line="475"/>
         <source>Mark all for installation</source>
         <translation>Mark all for installation</translation>
     </message>
     <message>
-        <location filename="lackmantab.cpp" line="474"/>
+        <location filename="lackmantab.cpp" line="476"/>
         <source>Unmark all for installation</source>
         <translation>Unmark all for installation</translation>
     </message>
@@ -379,27 +379,27 @@
         <translation>Unable to unpack package archive, unpacker died with %1: %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="391"/>
+        <location filename="packageprocessor.cpp" line="389"/>
         <source>Unable to create staging directory %1.</source>
         <translation>Unable to create staging directory %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="411"/>
+        <location filename="packageprocessor.cpp" line="409"/>
         <source>No URLs for package %1.</source>
         <translation>No URLs for package %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="475"/>
+        <location filename="packageprocessor.cpp" line="473"/>
         <source>Could not copy file %1 because of %2.</source>
         <translation>Could not copy file %1 because of %2.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="500"/>
+        <location filename="packageprocessor.cpp" line="498"/>
         <source>Unable to create directory %1.</source>
         <translation>Unable to create directory %1.</translation>
     </message>
     <message>
-        <location filename="packageprocessor.cpp" line="528"/>
+        <location filename="packageprocessor.cpp" line="526"/>
         <source>Unable to update package: %1.</source>
         <translation>Unable to update package: %1.</translation>
     </message>
@@ -468,7 +468,7 @@
 <context>
     <name>LeechCraft::LackMan::Plugin</name>
     <message>
-        <location filename="lackman.cpp" line="104"/>
+        <location filename="lackman.cpp" line="108"/>
         <source>LeechCraft Package Manager.</source>
         <translation>LeechCraft Package Manager.</translation>
     </message>
@@ -476,108 +476,92 @@
 <context>
     <name>LeechCraft::LackMan::RepoInfoFetcher</name>
     <message>
-        <location filename="repoinfofetcher.cpp" line="78"/>
-        <location filename="repoinfofetcher.cpp" line="291"/>
+        <location filename="repoinfofetcher.cpp" line="76"/>
+        <location filename="repoinfofetcher.cpp" line="235"/>
         <source>Error fetching repository</source>
         <translation>Error fetching repository</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="79"/>
-        <source>Could not find plugin to fetch repository information for %1.</source>
-        <translation>Could not find plugin to fetch repository information for %1.</translation>
-    </message>
-    <message>
-        <location filename="repoinfofetcher.cpp" line="131"/>
-        <location filename="repoinfofetcher.cpp" line="341"/>
+        <location filename="repoinfofetcher.cpp" line="285"/>
         <source>Error fetching component</source>
         <translation>Error fetching component</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="132"/>
-        <source>Could not find plugin to fetch component information at %1.</source>
-        <translation>Could not find plugin to fetch component information at %1.</translation>
+        <location filename="repoinfofetcher.cpp" line="77"/>
+        <source>Could not find any plugins to fetch %1.</source>
+        <translation>Could not find any plugins to fetch %1.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="210"/>
-        <source>Error fetching package information</source>
-        <translation>Error fetching package information</translation>
-    </message>
-    <message>
-        <location filename="repoinfofetcher.cpp" line="211"/>
-        <source>Could not find plugin to fetch package information at %1.</source>
-        <translation>Could not find plugin to fetch package information at %1.</translation>
-    </message>
-    <message>
-        <location filename="repoinfofetcher.cpp" line="292"/>
-        <location filename="repoinfofetcher.cpp" line="342"/>
+        <location filename="repoinfofetcher.cpp" line="236"/>
+        <location filename="repoinfofetcher.cpp" line="286"/>
         <source>Error downloading file from %1.</source>
         <translation>Error downloading file from %1.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="390"/>
+        <location filename="repoinfofetcher.cpp" line="334"/>
         <source>Error fetching package</source>
         <translation>Error fetching package</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="391"/>
+        <location filename="repoinfofetcher.cpp" line="335"/>
         <source>Error fetching package from %1.</source>
         <translation>Error fetching package from %1.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="403"/>
+        <location filename="repoinfofetcher.cpp" line="347"/>
         <source>Repository unpack error</source>
         <translation>Repository unpack error</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="404"/>
+        <location filename="repoinfofetcher.cpp" line="348"/>
         <source>Unable to unpack the repository file. gunzip error: %1. Problematic file is at %2.</source>
         <translation>Unable to unpack the repository file. gunzip error: %1. Problematic file is at %2.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="424"/>
+        <location filename="repoinfofetcher.cpp" line="368"/>
         <source>Repository parse error</source>
         <translation>Repository parse error</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="425"/>
+        <location filename="repoinfofetcher.cpp" line="369"/>
         <source>Unable to parse repository description: %1.</source>
         <translation>Unable to parse repository description: %1.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="441"/>
-        <location filename="repoinfofetcher.cpp" line="485"/>
-        <location filename="repoinfofetcher.cpp" line="527"/>
+        <location filename="repoinfofetcher.cpp" line="385"/>
+        <location filename="repoinfofetcher.cpp" line="429"/>
+        <location filename="repoinfofetcher.cpp" line="471"/>
         <source>Component unpack error</source>
         <translation>Component unpack error</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="442"/>
-        <location filename="repoinfofetcher.cpp" line="486"/>
+        <location filename="repoinfofetcher.cpp" line="386"/>
+        <location filename="repoinfofetcher.cpp" line="430"/>
         <source>Unable to unpack the component file. gunzip error: %1. Problematic file is at %2.</source>
         <translation>Unable to unpack the component file. gunzip error: %1. Problematic file is at %2.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="462"/>
+        <location filename="repoinfofetcher.cpp" line="406"/>
         <source>Component parse error</source>
         <translation>Component parse error</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="463"/>
+        <location filename="repoinfofetcher.cpp" line="407"/>
         <source>Unable to parse component %1 description file. More information is available in logs.</source>
         <translation>Unable to parse component %1 description file. More information is available in logs.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="506"/>
+        <location filename="repoinfofetcher.cpp" line="450"/>
         <source>Package parse error</source>
         <translation>Package parse error</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="507"/>
+        <location filename="repoinfofetcher.cpp" line="451"/>
         <source>Unable to parse package description file. More information is available in logs.</source>
         <translation>Unable to parse package description file. More information is available in logs.</translation>
     </message>
     <message>
-        <location filename="repoinfofetcher.cpp" line="528"/>
+        <location filename="repoinfofetcher.cpp" line="472"/>
         <source>Unable to unpack file. Exit code: %1. Problematic file is at %2.</source>
         <translation>Unable to unpack file. Exit code: %1. Problematic file is at %2.</translation>
     </message>
