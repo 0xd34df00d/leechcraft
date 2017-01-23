@@ -2,23 +2,15 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>LeechCraft::TouchStreams</name>
-    <message>
-        <location filename="recsmanager.cpp" line="58"/>
-        <source>VKontakte: recommendations</source>
-        <translation>В Контакте: рекомендации</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::TouchStreams::AlbumsManager</name>
     <message>
         <location filename="albumsmanager.cpp" line="80"/>
-        <location filename="albumsmanager.cpp" line="102"/>
+        <location filename="albumsmanager.cpp" line="101"/>
         <source>VKontakte: your audio</source>
         <translation>ВКонтакте: ваши аудиозаписи</translation>
     </message>
     <message>
-        <location filename="albumsmanager.cpp" line="175"/>
+        <location filename="albumsmanager.cpp" line="174"/>
         <source>Uncategorized</source>
         <translation>Некатегоризованное</translation>
     </message>
@@ -53,20 +45,28 @@
 <context>
     <name>LeechCraft::TouchStreams::Plugin</name>
     <message>
-        <location filename="touchstreams.cpp" line="103"/>
+        <location filename="touchstreams.cpp" line="106"/>
         <source>VK.com music streamer.</source>
         <translation>Стример музыки из ВКонтакте.</translation>
     </message>
     <message>
-        <location filename="touchstreams.cpp" line="118"/>
+        <location filename="touchstreams.cpp" line="121"/>
         <source>VKontakte</source>
         <translation>ВКонтакте</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::TouchStreams::RecsManager</name>
+    <message>
+        <location filename="recsmanager.cpp" line="58"/>
+        <source>VKontakte: recommendations</source>
+        <translation>В Контакте: рекомендации</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="46"/>
+        <location filename="util.cpp" line="48"/>
         <source>Authenticate</source>
         <translation>Авторизоваться</translation>
     </message>

@@ -2,23 +2,15 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="en_US">
 <context>
-    <name>LeechCraft::TouchStreams</name>
-    <message>
-        <location filename="recsmanager.cpp" line="58"/>
-        <source>VKontakte: recommendations</source>
-        <translation>VKontakte: recommendations</translation>
-    </message>
-</context>
-<context>
     <name>LeechCraft::TouchStreams::AlbumsManager</name>
     <message>
         <location filename="albumsmanager.cpp" line="80"/>
-        <location filename="albumsmanager.cpp" line="102"/>
+        <location filename="albumsmanager.cpp" line="101"/>
         <source>VKontakte: your audio</source>
         <translation>VKontakte: your audio</translation>
     </message>
     <message>
-        <location filename="albumsmanager.cpp" line="175"/>
+        <location filename="albumsmanager.cpp" line="174"/>
         <source>Uncategorized</source>
         <translation>Uncategorized</translation>
     </message>
@@ -53,20 +45,28 @@
 <context>
     <name>LeechCraft::TouchStreams::Plugin</name>
     <message>
-        <location filename="touchstreams.cpp" line="103"/>
+        <location filename="touchstreams.cpp" line="106"/>
         <source>VK.com music streamer.</source>
         <translation>VK.com music streamer.</translation>
     </message>
     <message>
-        <location filename="touchstreams.cpp" line="118"/>
+        <location filename="touchstreams.cpp" line="121"/>
         <source>VKontakte</source>
         <translation>VKontakte</translation>
     </message>
 </context>
 <context>
+    <name>LeechCraft::TouchStreams::RecsManager</name>
+    <message>
+        <location filename="recsmanager.cpp" line="58"/>
+        <source>VKontakte: recommendations</source>
+        <translation>VKontakte: recommendations</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
-        <location filename="util.cpp" line="46"/>
+        <location filename="util.cpp" line="48"/>
         <source>Authenticate</source>
         <translation>Authenticate</translation>
     </message>
