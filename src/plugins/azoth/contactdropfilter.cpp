@@ -174,28 +174,6 @@ namespace Azoth
 				auto thisEnt = entity;
 				thisEnt.Additional_ ["DataFilter"] = var.Name_;
 
-				choiceItems << verb + ": " + var.Name_;
-				thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
-						[entryId, variant] (const QVariant& var)
-						{
-							const auto& url = var.toUrl ();
-							if (url.isEmpty ())
-								return;
-
-							auto entry = GetEntry<ICLEntry> (entryId);
-							if (!entry)
-								return;
-
-							const auto msgType = entry->GetEntryType () == ICLEntry::EntryType::MUC ?
-										IMessage::Type::MUCMessage :
-										IMessage::Type::ChatMessage;
-							new MsgSender { entry, msgType, url.toString (), variant };
-						});
-				functions.append ([thisEnt, obj]
-						{
-							qobject_cast<IEntityHandler*> (obj)->Handle (thisEnt);
-						});
-
 				choiceItems << verb + ": " + var.Name_ + " " + tr ("(append link to message)");
 				thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
 						[this] (const QVariant& var)
