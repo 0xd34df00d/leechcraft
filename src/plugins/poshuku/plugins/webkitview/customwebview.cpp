@@ -493,7 +493,7 @@ namespace WebKitView
 #define ATTR5(x) ATTR(x)
 #else
 #define ATTR5(x) \
-		case Attribute::x \
+		case Attribute::x: \
 			break;
 #endif
 
