@@ -174,7 +174,7 @@ namespace Azoth
 				auto thisEnt = entity;
 				thisEnt.Additional_ ["DataFilter"] = var.Name_;
 
-				choiceItems << verb + ": " + var.Name_ + " " + tr ("(append link to message)");
+				choiceItems << verb + ": " + var.Name_;
 				thisEnt.Additional_ ["DataFilterCallback"] = QVariant::fromValue<DataFilterCallback_f> (
 						[this] (const QVariant& var)
 						{
