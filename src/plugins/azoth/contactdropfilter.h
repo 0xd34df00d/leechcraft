@@ -59,7 +59,7 @@ namespace Azoth
 
 		void CollectDataFilters (QStringList& choiceItems,
 				QList<std::function<void ()>>& functions,
-				const QImage& image, const QString& entryId, const QString& variant);
+				const QImage& image);
 
 		void HandleImageDropped (const QImage&, const QUrl&);
 		void PerformChoice (const QStringList&, const QList<std::function<void ()>>&);

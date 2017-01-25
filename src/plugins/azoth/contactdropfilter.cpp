@@ -149,7 +149,7 @@ namespace Azoth
 
 	void ContactDropFilter::CollectDataFilters (QStringList& choiceItems,
 			QList<std::function<void ()>>& functions,
-			const QImage& image, const QString& entryId, const QString& variant)
+			const QImage& image)
 	{
 		const auto& imageVar = QVariant::fromValue (image);
 		const auto& entity = Util::MakeEntity (imageVar,
@@ -221,8 +221,7 @@ namespace Azoth
 							OfferURLs (GetEntry<ICLEntry> (EntryId_), { url });
 				});
 
-			CollectDataFilters (choiceItems, functions, image,
-					EntryId_, ChatTab_->GetSelectedVariant ());
+			CollectDataFilters (choiceItems, functions, image);
 		}
 
 		PerformChoice (choiceItems, functions);
