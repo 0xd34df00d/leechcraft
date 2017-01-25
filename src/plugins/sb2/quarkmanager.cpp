@@ -116,11 +116,8 @@ namespace SB2
 		auto engine = manager->GetView ()->engine ();
 		for (const auto& pair : comp->ImageProviders_)
 		{
-			if (auto old = engine->imageProvider (pair.first))
-			{
+			if (engine->imageProvider (pair.first))
 				engine->removeImageProvider (pair.first);
-				delete old;
-			}
 			engine->addImageProvider (pair.first, new ImageProvProxy (pair.second));
 		}
 
