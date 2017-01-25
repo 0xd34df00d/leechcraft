@@ -182,7 +182,7 @@ namespace Azoth
 							if (url.isEmpty ())
 								return;
 
-							ChatTab_->appendMessageText (url.toEncoded ());
+							ChatTab_->insertMessageText (url.toEncoded ());
 						});
 				functions.append ([thisEnt, obj]
 						{
