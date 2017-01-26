@@ -28,11 +28,14 @@
  **********************************************************************/
 
 #include "ipluginloader.h"
+
 #if defined __GNUC__
 #include <cstdlib>
 #include <cxxabi.h>
 #endif
+
 #include <QLibrary>
+#include <QtDebug>
 
 namespace LeechCraft
 {
@@ -43,10 +46,10 @@ namespace Loaders
 		QString TryDemangle (const QString& errorStr)
 		{
 #if defined __GNUC__
-			const QString marker ("undefined symbol: ");
+			static const QString marker { "undefined symbol: " };
 			const auto pos = errorStr.indexOf (marker);
 			if (pos == -1)
-				return QString ();
+				return {};
 
 			auto mangled = errorStr.mid (pos + marker.size ());
 			const auto endPos = mangled.indexOf (')');
@@ -62,7 +65,7 @@ namespace Loaders
 			}
 			return result;
 #else
-			return QString ();
+			return {};
 #endif
 		}
 	}
