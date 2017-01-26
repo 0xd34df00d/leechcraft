@@ -77,7 +77,15 @@ namespace Loaders
 
 		QLibrary library (file);
 		if (!library.load ())
+		{
+			const auto& demangled = TryDemangle (library.errorString ());
+			if (!demangled.isEmpty ())
+				qWarning () << Q_FUNC_INFO
+						<< "demangled name:"
+						<< demangled;
+
 			return static_cast<quint64> (-1);
+		}
 
 		typedef quint64 (*APIVersion_t) ();
 		auto getter = reinterpret_cast<APIVersion_t> (library.resolve ("GetAPILevels"));
