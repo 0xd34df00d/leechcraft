@@ -157,37 +157,31 @@ namespace DCAC
 
 			constexpr auto alignment = 16;
 
-			for (int y = 0; y < height; ++y)
+			const uchar * const bits = image.scanLine (0);
+
+			int i = 0;
+			int bytesCount = 0;
+
+			auto handler = [&r, &g, &b, bits] (int j)
 			{
-				const uchar * const scanline = image.scanLine (y);
+				auto color = *reinterpret_cast<const QRgb*> (&bits [j]);
+				r += qRed (color);
+				g += qGreen (color);
+				b += qBlue (color);
+			};
+			HandleLoopBegin<alignment> (bits, width * height, i, bytesCount, handler);
 
-				int x = 0;
-				int bytesCount = 0;
+			for (; i < bytesCount; i += alignment)
+			{
+				const __m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (bits + i));
 
-				auto handler = [&r, &g, &b, scanline] (int i)
-				{
-					auto color = *reinterpret_cast<const QRgb*> (&scanline [i]);
-					r += qRed (color);
-					g += qGreen (color);
-					b += qBlue (color);
-				};
-				HandleLoopBegin<alignment> (scanline, width, x, bytesCount, handler);
-
-#if __clang__
-				#pragma unroll(8)
-#endif
-				for (; x < bytesCount; x += alignment)
-				{
-					const __m128i fourPixels = _mm_load_si128 (reinterpret_cast<const __m128i*> (scanline + x));
-
-					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel1msk));
-					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel2msk));
-					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel3msk));
-					sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel4msk));
-				}
-
-				HandleLoopEnd (width, x, handler);
+				sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel1msk));
+				sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel2msk));
+				sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel3msk));
+				sum = _mm_add_epi32 (sum, _mm_shuffle_epi8 (fourPixels, pixel4msk));
 			}
+
+			HandleLoopEnd (width * height, i, handler);
 
 			r += _mm_extract_epi32 (sum, 2);
 			g += _mm_extract_epi32 (sum, 1);
