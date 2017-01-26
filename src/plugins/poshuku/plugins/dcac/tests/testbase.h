@@ -122,20 +122,21 @@ namespace DCAC
 		{
 			for (const auto& pair : Util::Stlize (BenchImages_))
 			{
-				const auto& list = pair.second;
+				auto list = pair.second;
 
-				for (auto image : list)
+				for (auto& image : list)
+				{
+					image.detach ();
 					f (image);
+				}
 
 				uint64_t counter = 0;
 				QElapsedTimer timer;
 				timer.start ();
 
 				for (int i = 0; i < BenchRepsCount; ++i)
-					for (auto image : list)
+					for (auto& image : list)
 					{
-						image.detach ();
-
 						QElapsedTimer timer;
 						timer.start ();
 
