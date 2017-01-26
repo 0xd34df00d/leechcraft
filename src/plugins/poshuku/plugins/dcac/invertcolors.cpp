@@ -77,12 +77,9 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			for (int y = 0; y < height; ++y)
-			{
-				const auto scanline = reinterpret_cast<QRgb*> (image.scanLine (y));
-				for (int x = 0; x < width; ++x)
-					scanline [x] ^= 0x00ffffff;
-			}
+			const auto bits = reinterpret_cast<QRgb*> (image.scanLine (0));
+			for (int i = 0; i < width * height; ++i)
+				bits [i] ^= 0x00ffffff;
 		}
 
 #ifdef SSE_ENABLED
