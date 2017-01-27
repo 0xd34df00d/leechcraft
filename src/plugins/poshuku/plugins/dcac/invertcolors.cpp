@@ -93,49 +93,24 @@ namespace DCAC
 
 			const __m256 xorMask = _mm256_castsi256_ps (_mm256_set1_epi32 (0x00ffffff));
 
-			for (int y = 0; y < height; ++y)
+			uchar * const bits = image.scanLine (0);
+
+			int i = 0;
+			int bytesCount = 0;
+			auto handler = [bits] (int j)
 			{
-				uchar * const scanline = image.scanLine (y);
+				*reinterpret_cast<QRgb*> (&bits [j]) ^= 0x00ffffff;
+			};
+			HandleLoopBegin<alignment> (bits, width * height, i, bytesCount, handler);
 
-				int x = 0;
-				int bytesCount = 0;
-				auto handler = [scanline] (int i)
-				{
-					*reinterpret_cast<QRgb*> (&scanline [i]) ^= 0x00ffffff;
-				};
-				constexpr auto unroll = 8;
-				HandleLoopBegin<alignment * unroll> (scanline, width, x, bytesCount, handler);
-
-				for (; x < bytesCount; x += alignment * unroll)
-				{
-					__m256i p0 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 0));
-					__m256i p1 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 1));
-					__m256i p2 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 2));
-					__m256i p3 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 3));
-					__m256i p4 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 4));
-					__m256i p5 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 5));
-					__m256i p6 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 6));
-					__m256i p7 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (scanline + x + alignment * 7));
-					p0 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p0), xorMask));
-					p1 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p1), xorMask));
-					p2 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p2), xorMask));
-					p3 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p3), xorMask));
-					p4 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p4), xorMask));
-					p5 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p5), xorMask));
-					p6 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p6), xorMask));
-					p7 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p7), xorMask));
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 0), p0);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 1), p1);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 2), p2);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 3), p3);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 4), p4);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 5), p5);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 6), p6);
-					_mm256_store_si256 (reinterpret_cast<__m256i*> (scanline + x + alignment * 7), p7);
-				}
-
-				HandleLoopEnd (width, x, handler);
+			for (; i < bytesCount; i += alignment)
+			{
+				__m256i p0 = _mm256_load_si256 (reinterpret_cast<const __m256i*> (bits + i));
+				p0 = _mm256_castps_si256 (_mm256_xor_ps (_mm256_castsi256_ps (p0), xorMask));
+				_mm256_store_si256 (reinterpret_cast<__m256i*> (bits + i), p0);
 			}
+
+			HandleLoopEnd (width * height, i, handler);
 		}
 
 		__attribute__ ((target ("sse4")))
