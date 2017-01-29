@@ -55,16 +55,6 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	struct MediaMeta
-	{
-		QString Artist_, Album_, Title_, Genre_, Date_;
-		int TrackNumber_ = 0;
-		int Length_ = 0;
-
-		explicit MediaMeta (const QMap<QString, QVariant>& tagMap);
-		explicit MediaMeta (const Media::AudioInfo& tagMap);
-	};
-
 	class LastFMSubmitter : public QObject
 	{
 		Q_OBJECT
@@ -81,7 +71,7 @@ namespace Lastfmscrobble
 
 		bool IsConnected () const;
 
-		void NowPlaying (const MediaMeta&);
+		void NowPlaying (const Media::AudioInfo&);
 		void Love ();
 		void Ban ();
 		void Clear ();

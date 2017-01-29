@@ -42,28 +42,6 @@ namespace LeechCraft
 {
 namespace Lastfmscrobble
 {
-	MediaMeta::MediaMeta (const QMap<QString, QVariant>& tagMap)
-	: Artist_ (tagMap ["Artist"].toString ())
-	, Album_ (tagMap ["Album"].toString ())
-	, Title_ (tagMap ["Title"].toString ())
-	, Genre_ (tagMap ["Genre"].toString ())
-	, Date_ (tagMap ["Date"].toString ())
-	, TrackNumber_ (tagMap ["TrackNumber"].toInt ())
-	, Length_ (tagMap ["Length"].toInt ())
-	{
-	}
-
-	MediaMeta::MediaMeta (const Media::AudioInfo& info)
-	: Artist_ (info.Artist_)
-	, Album_ (info.Album_)
-	, Title_ (info.Title_)
-	, Genre_ (info.Genres_.join (" / "))
-	, Date_ (QString::number (info.Year_))
-	, TrackNumber_ (info.TrackNumber_)
-	, Length_ (info.Length_)
-	{
-	}
-
 	LastFMSubmitter::LastFMSubmitter (QNetworkAccessManager *nam, QObject *parent)
 	: QObject (parent)
 	, NAM_ (nam)
@@ -87,7 +65,7 @@ namespace Lastfmscrobble
 
 	namespace
 	{
-		lastfm::MutableTrack ToLastFMTrack (const MediaMeta& info)
+		lastfm::MutableTrack ToLastFMTrack (const Media::AudioInfo& info)
 		{
 			lastfm::MutableTrack mutableTrack;
 			mutableTrack.setTitle (info.Title_);
@@ -101,7 +79,7 @@ namespace Lastfmscrobble
 		}
 	}
 
-	void LastFMSubmitter::NowPlaying (const MediaMeta& info)
+	void LastFMSubmitter::NowPlaying (const Media::AudioInfo& info)
 	{
 		SubmitTimer_->stop ();
 
