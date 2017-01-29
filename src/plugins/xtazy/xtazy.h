@@ -73,6 +73,7 @@ namespace Xtazy
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
+		bool SupportsFeature (Feature) const;
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo& audio);
 		void PlaybackStopped ();
