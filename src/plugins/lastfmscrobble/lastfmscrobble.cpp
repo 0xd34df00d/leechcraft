@@ -59,7 +59,7 @@ namespace Lastfmscrobble
 		Util::InstallTranslator ("lastfmscrobble");
 
 		Proxy_ = proxy;
-		XmlSettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		XmlSettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XmlSettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"lastfmscrobblesettings.xml");
 
