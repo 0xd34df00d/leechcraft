@@ -65,6 +65,7 @@ namespace Scroblibre
 
 		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
 
+		bool SupportsFeature (Feature) const;
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo&);
 		void PlaybackStopped ();

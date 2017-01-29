@@ -136,6 +136,17 @@ namespace Lastfmscrobble
 		return XmlSettingsDialog_;
 	}
 
+	bool Plugin::SupportsFeature (Feature feature) const
+	{
+		switch (feature)
+		{
+		case Feature::Backdating:
+			return true;
+		}
+
+		assert (false);
+	}
+
 	QString Plugin::GetServiceName () const
 	{
 		return "Last.FM";

@@ -43,6 +43,13 @@ namespace Media
 	public:
 		virtual ~IAudioScrobbler () {}
 
+		enum class Feature
+		{
+			Backdating
+		};
+
+		virtual bool SupportsFeature (Feature feature) const = 0;
+
 		/** @brief Returns the service name.
 		 *
 		 * This string returns a human-readable string with the service

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "scroblibre.h"
+#include <cassert>
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
@@ -100,6 +101,17 @@ namespace Scroblibre
 	Util::XmlSettingsDialog_ptr Plugin::GetSettingsDialog () const
 	{
 		return XSD_;
+	}
+
+	bool Plugin::SupportsFeature (Feature feature) const
+	{
+		switch (feature)
+		{
+		case Feature::Backdating:
+			return false;
+		}
+
+		assert (false);
 	}
 
 	QString Plugin::GetServiceName () const
