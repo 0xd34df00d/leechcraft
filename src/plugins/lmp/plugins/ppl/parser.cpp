@@ -87,7 +87,7 @@ namespace PPL
 			};
 
 			const auto& elems = line.split ('\t');
-			if (elems.size () != FieldsCount)
+			if (elems.size () < FieldsCount)
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "bad format for"
