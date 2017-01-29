@@ -107,6 +107,18 @@ namespace Lastfmscrobble
 			SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
 	}
 
+	namespace
+	{
+		QList<QPair<QString, QString>> MakeLoveBanParams (const lastfm::MutableTrack& track)
+		{
+			return
+			{
+				{ "track", track.title () },
+				{ "artist", track.artist () }
+			};
+		}
+	}
+
 	void LastFMSubmitter::Love ()
 	{
 		if (NextSubmit_.isNull ())
@@ -116,10 +128,7 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("track", NextSubmit_.title ());
-		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
-		QNetworkReply *reply = Request ("track.love", NAM_, params);
+		const auto reply = Request ("track.love", NAM_, MakeLoveBanParams (NextSubmit_));
 		connect (reply,
 				SIGNAL (finished ()),
 				reply,
@@ -139,10 +148,7 @@ namespace Lastfmscrobble
 			return;
 		}
 
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("track", NextSubmit_.title ());
-		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
-		QNetworkReply *reply = Request ("track.ban", NAM_, params);
+		const auto reply = Request ("track.ban", NAM_, MakeLoveBanParams (NextSubmit_));
 		connect (reply,
 				 SIGNAL (finished ()),
 				 reply,
