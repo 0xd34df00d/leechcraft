@@ -55,7 +55,7 @@ namespace Scroblibre
 				AuthMgr_,
 				SLOT (handleAccountRemoved (QUrl, QString)));
 
-		XSD_.reset (new Util::XmlSettingsDialog);
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "scroblibresettings.xml");
 		XSD_->SetDataSource ("AccountsView", AccMgr_->GetModel ());
 
