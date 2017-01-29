@@ -132,7 +132,11 @@ namespace PPL
 		Media::IAudioScrobbler::BackdatedTracks_t tracks;
 
 		auto dateConverter = GetDateConverter (QString { "UTC" });
+#if QT_VERSION >= 0x050000
 		for (auto line : data.splitRef ('\n', QString::SkipEmptyParts))
+#else
+		for (auto line : data.split ('\n', QString::SkipEmptyParts))
+#endif
 		{
 			line = line.trimmed ();
 			if (line.isEmpty ())
