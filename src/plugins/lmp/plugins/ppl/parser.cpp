@@ -96,6 +96,16 @@ namespace PPL
 				return {};
 			}
 
+			const int required [] = { Artist, Title, Duration, Rating, Timestamp };
+			if (std::any_of (std::begin (required), std::end (required),
+					[&elems] (int field) { return elems.at (field).isEmpty (); }))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "some required data is missing for line"
+						<< line;
+				return {};
+			}
+
 			if (elems.at (Rating) != "L")
 				return {};
 
