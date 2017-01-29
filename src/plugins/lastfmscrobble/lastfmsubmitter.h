@@ -67,7 +67,7 @@ namespace Lastfmscrobble
 
 		lastfm::MutableTrack NextSubmit_;
 	public:
-		LastFMSubmitter (QNetworkAccessManager*, QObject *parent = 0);
+		LastFMSubmitter (QNetworkAccessManager*, QObject *parent = nullptr);
 
 		bool IsConnected () const;
 

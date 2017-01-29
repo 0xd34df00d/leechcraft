@@ -58,7 +58,7 @@ namespace Lastfmscrobble
 
 	bool LastFMSubmitter::IsConnected () const
 	{
-		return Scrobbler_ ? true : false;
+		return static_cast<bool> (Scrobbler_);
 	}
 
 	namespace
