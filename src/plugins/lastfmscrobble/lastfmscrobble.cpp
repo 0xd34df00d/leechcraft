@@ -159,6 +159,7 @@ namespace Lastfmscrobble
 
 	void Plugin::SendBackdated (const BackdatedTracks_t& tracks)
 	{
+		LFSubmitter_->SendBackdated (tracks);
 	}
 
 	void Plugin::PlaybackStopped ()

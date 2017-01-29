@@ -72,6 +72,7 @@ namespace Lastfmscrobble
 		bool IsConnected () const;
 
 		void NowPlaying (const Media::AudioInfo&);
+		void SendBackdated (const QList<QPair<Media::AudioInfo, QDateTime>>&);
 		void Love ();
 		void Ban ();
 		void Clear ();

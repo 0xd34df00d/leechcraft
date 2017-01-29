@@ -34,6 +34,7 @@
 #include <QTimer>
 #include <interfaces/media/audiostructs.h>
 #include <util/util.h>
+#include <util/sll/prelude.h>
 #include "util.h"
 
 namespace LeechCraft
@@ -105,6 +106,20 @@ namespace Lastfmscrobble
 		NextSubmit_ = lfmTrack;
 		if (info.Length_)
 			SubmitTimer_->start (std::min (info.Length_ / 2, 240) * 1000);
+	}
+
+	void LastFMSubmitter::SendBackdated (const QList<QPair<Media::AudioInfo, QDateTime>>& backdateList)
+	{
+		const auto& submissions = Util::Map (backdateList,
+				[] (const auto& pair) -> lastfm::Track
+				{
+					auto track = ToLastFMTrack (pair.first);
+					track.setTimeStamp (pair.second);
+					return track;
+				});
+
+		Scrobbler_->cacheBatch (submissions);
+		Scrobbler_->submit ();
 	}
 
 	namespace
