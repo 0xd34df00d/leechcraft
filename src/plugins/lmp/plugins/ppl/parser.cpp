@@ -121,7 +121,7 @@ namespace PPL
 	{
 		Media::IAudioScrobbler::BackdatedTracks_t tracks;
 
-		std::function<QDateTime (QDateTime)> dateConverter;
+		auto dateConverter = GetDateConverter (QString { "UTC" });
 		for (auto line : data.splitRef ('\n', QString::SkipEmptyParts))
 		{
 			line = line.trimmed ();
