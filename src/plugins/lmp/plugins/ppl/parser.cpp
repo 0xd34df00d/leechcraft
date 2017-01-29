@@ -90,7 +90,11 @@ namespace PPL
 			{
 				qWarning () << Q_FUNC_INFO
 						<< "bad format for"
-						<< line;
+						<< line
+						<< "got"
+						<< elems.size ()
+						<< "elements:"
+						<< elems;
 				return {};
 			}
 
