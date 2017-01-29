@@ -80,7 +80,8 @@ namespace PPL
 				Duration,
 				Rating,
 				Timestamp,
-				MZTrackID,
+				// We don't really use this field, so it's OK if it's missing, let's be a more permissive parser.
+				//MZTrackID,
 
 				FieldsCount
 			};
@@ -140,10 +141,12 @@ namespace PPL
 		for (auto line : data.split ('\n', QString::SkipEmptyParts))
 #endif
 		{
-			if (line.startsWith ("#TZ/"))
-				dateConverter = GetDateConverter (line.split ('/').value (1));
-			else if (line.at (0) == '#')
+			if (line.at (0) == '#')
+			{
+				if (line.startsWith ("#TZ/"))
+					dateConverter = GetDateConverter (line.split ('/').value (1));
 				continue;
+			}
 
 			if (auto trackInfo = ParseTrack (std::move (line)))
 			{
