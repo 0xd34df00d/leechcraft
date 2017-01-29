@@ -29,14 +29,12 @@
  **********************************************************************/
 
 #include "lastfmsubmitter.h"
-#include <QCryptographicHash>
 #include <QByteArray>
 #include <QNetworkAccessManager>
 #include <QTimer>
 #include <interfaces/media/audiostructs.h>
 #include <util/util.h>
 #include "util.h"
-#include "codes.h"
 
 namespace LeechCraft
 {
