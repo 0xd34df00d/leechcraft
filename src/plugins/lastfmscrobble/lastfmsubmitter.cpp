@@ -110,12 +110,15 @@ namespace Lastfmscrobble
 	void LastFMSubmitter::Love ()
 	{
 		if (NextSubmit_.isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no track in submit queue, can't make love";
 			return;
+		}
 
 		QList<QPair<QString, QString>> params;
 		params << QPair<QString, QString> ("track", NextSubmit_.title ());
 		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
-		qDebug () << Q_FUNC_INFO << "loving" << NextSubmit_.artist () << NextSubmit_.title ();
 		QNetworkReply *reply = Request ("track.love", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
@@ -130,12 +133,15 @@ namespace Lastfmscrobble
 	void LastFMSubmitter::Ban ()
 	{
 		if (NextSubmit_.isNull ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "no track in submit queue, can't ban";
 			return;
+		}
 
 		QList<QPair<QString, QString>> params;
 		params << QPair<QString, QString> ("track", NextSubmit_.title ());
 		params << QPair<QString, QString> ("artist", NextSubmit_.artist ());
-		qDebug () << Q_FUNC_INFO << "banning" << NextSubmit_.artist () << NextSubmit_.title ();
 		QNetworkReply *reply = Request ("track.ban", NAM_, params);
 		connect (reply,
 				 SIGNAL (finished ()),
