@@ -43,6 +43,8 @@ namespace Media
 	public:
 		virtual ~IAudioScrobbler () {}
 
+		using BackdatedTracks_t = QList<QPair<Media::AudioInfo, QDateTime>>;
+
 		enum class Feature
 		{
 			Backdating
@@ -73,6 +75,8 @@ namespace Media
 		 * @param[in] audio The information about currently playing track.
 		 */
 		virtual void NowPlaying (const AudioInfo& audio) = 0;
+
+		virtual void SendBackdated (const BackdatedTracks_t& list) = 0;
 
 		/** @brief Notifies the scrobbler that playback is stopped.
 		 *

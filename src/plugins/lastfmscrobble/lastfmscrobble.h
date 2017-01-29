@@ -103,6 +103,7 @@ namespace Lastfmscrobble
 		bool SupportsFeature (Feature) const;
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo&);
+		void SendBackdated (const BackdatedTracks_t&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
 		void BanCurrentTrack ();

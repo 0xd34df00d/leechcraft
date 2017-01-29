@@ -123,6 +123,10 @@ namespace Xtazy
 		LCSource_->NowPlaying (audio);
 	}
 
+	void Plugin::SendBackdated (const BackdatedTracks_t&)
+	{
+	}
+
 	void Plugin::PlaybackStopped ()
 	{
 		LCSource_->Stopped ();

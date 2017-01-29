@@ -124,6 +124,10 @@ namespace Scroblibre
 		AuthMgr_->HandleAudio (info);
 	}
 
+	void Plugin::SendBackdated (const BackdatedTracks_t&)
+	{
+	}
+
 	void Plugin::PlaybackStopped ()
 	{
 		AuthMgr_->HandleStopped ();

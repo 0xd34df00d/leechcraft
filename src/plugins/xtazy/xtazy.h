@@ -76,6 +76,7 @@ namespace Xtazy
 		bool SupportsFeature (Feature) const;
 		QString GetServiceName () const;
 		void NowPlaying (const Media::AudioInfo& audio);
+		void SendBackdated (const BackdatedTracks_t&);
 		void PlaybackStopped ();
 		void LoveCurrentTrack ();
 		void BanCurrentTrack ();
