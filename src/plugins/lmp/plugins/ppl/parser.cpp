@@ -71,8 +71,6 @@ namespace PPL
 		template<typename S>
 		boost::optional<QPair<Media::AudioInfo, QDateTime>> ParseTrack (S&& line)
 		{
-			line = line.trimmed ();
-
 			enum
 			{
 				Artist,
@@ -138,10 +136,6 @@ namespace PPL
 		for (auto line : data.split ('\n', QString::SkipEmptyParts))
 #endif
 		{
-			line = line.trimmed ();
-			if (line.isEmpty ())
-				continue;
-
 			if (line.startsWith ("#TZ/"))
 				dateConverter = GetDateConverter (line.split ('/').value (1));
 			else if (line.at (0) == '#')
