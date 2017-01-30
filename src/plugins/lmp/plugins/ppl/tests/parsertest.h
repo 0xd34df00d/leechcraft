@@ -42,6 +42,7 @@ namespace PPL
 		Q_OBJECT
 	private slots:
 		void testBasicParsing ();
+		void testSkipping ();
 	};
 }
 }

@@ -93,6 +93,70 @@ Heart Of A Coward	Severance	Monstro	1	213	L	1470071135
 
 		QCOMPARE (result, expected);
 	}
+
+	void ParserTest::testSkipping ()
+	{
+		const QString data = R"(
+#AUDIOSCROBBLER/1.1
+#TZ/UNKNOWN
+#CLIENT/Rockbox sansaclipzip $Revision$
+Heart Of A Coward	Severance	Monstro	1	213	S	1470071129
+Heart Of A Coward	Severance	Monstro	1	213	L	1470071135
+Heart Of A Coward	Severance	Prey	2	228	L	1470071375
+Heart Of A Coward	Severance	Distance	3	238	S	470071603
+Heart Of A Coward	Severance	Nauseam	4	218	L	1470072028
+)";
+
+		const auto& result = ParseData (data);
+
+		const Media::IAudioScrobbler::BackdatedTracks_t expected
+		{
+			{
+				Media::AudioInfo
+				{
+					"Heart Of A Coward",
+					"Severance",
+					"Monstro",
+					{},
+					213,
+					0,
+					1,
+					{}
+				},
+				QDateTime::fromTime_t (1470071135).toUTC ()
+			},
+			{
+				Media::AudioInfo
+				{
+					"Heart Of A Coward",
+					"Severance",
+					"Prey",
+					{},
+					228,
+					0,
+					2,
+					{}
+				},
+				QDateTime::fromTime_t (1470071375).toUTC ()
+			},
+			{
+				Media::AudioInfo
+				{
+					"Heart Of A Coward",
+					"Severance",
+					"Nauseam",
+					{},
+					218,
+					0,
+					4,
+					{}
+				},
+				QDateTime::fromTime_t (1470072028).toUTC ()
+			}
+		};
+
+		QCOMPARE (result, expected);
+	}
 }
 }
 }
