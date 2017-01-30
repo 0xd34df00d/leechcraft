@@ -61,7 +61,6 @@ namespace Xtazy
 		Media::AudioInfo Previous_;
 
 		typedef QPair<QPointer<QObject>, QString> UploadNotifee_t;
-		QMap<QString, QList<UploadNotifee_t>> PendingUploads_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
