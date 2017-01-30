@@ -41,4 +41,6 @@ if (ENABLE_LMP_PPL_TESTS)
 		FindQtLibs (${_fullExecName} Concurrent Test)
 		add_dependencies (${_fullExecName} leechcraft_lmp_ppl)
 	endfunction ()
+
+	AddPPLTest (parser tests/parsertest.cpp LMPPPLParserTest)
 endif ()
