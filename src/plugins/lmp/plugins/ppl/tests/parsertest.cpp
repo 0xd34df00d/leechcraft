@@ -172,6 +172,36 @@ Heart Of A Coward	Severance	Monstro	213	S	1470071129
 
 		QCOMPARE (result, expected);
 	}
+
+	void ParserTest::testIgnoreMissingOptionalFields ()
+	{
+		const QString data = R"(
+#TZ/UNKNOWN
+Heart Of A Coward		Monstro		213	L	1470071135
+)";
+
+		const auto& result = ParseData (data);
+
+		const Media::IAudioScrobbler::BackdatedTracks_t expected
+		{
+			{
+				Media::AudioInfo
+				{
+					"Heart Of A Coward",
+					{},
+					"Monstro",
+					{},
+					213,
+					0,
+					0,
+					{}
+				},
+				QDateTime::fromTime_t (1470071135).toUTC ()
+			}
+		};
+
+		QCOMPARE (result, expected);
+	}
 }
 }
 }

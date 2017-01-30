@@ -44,6 +44,7 @@ namespace PPL
 		void testBasicParsing ();
 		void testSkipping ();
 		void testSkipMissingFieldsRecords ();
+		void testIgnoreMissingOptionalFields ();
 	};
 }
 }
