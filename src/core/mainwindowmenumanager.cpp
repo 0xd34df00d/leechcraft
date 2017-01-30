@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "mainwindowmenumanager.h"
+#include <cassert>
 #include <QMenu>
 #include <util/sll/qtutil.h>
 #include "interfaces/iactionsexporter.h"
@@ -79,7 +80,7 @@ namespace LeechCraft
 			return MenuView_;
 		}
 
-		return nullptr;
+		assert (false);
 	}
 
 	void MainWindowMenuManager::FillToolMenu()
