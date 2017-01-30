@@ -11,6 +11,7 @@ include_directories (${LMP_INCLUDE_DIR}
 	)
 
 set (PPL_SRCS
+	loghandler.cpp
 	parser.cpp
 	ppl.cpp
 	)
