@@ -577,7 +577,6 @@ void MainWindow::showFirstTime ()
 		IsShown_ = false;
 		hide ();
 	}
-
 }
 
 void LeechCraft::MainWindow::handleTrayIconActivated (QSystemTrayIcon::ActivationReason reason)
@@ -621,25 +620,25 @@ void LeechCraft::MainWindow::doDelayedInit ()
 
 void LeechCraft::MainWindow::FillQuickLaunch ()
 {
-	Util::DefaultHookProxy_ptr proxy (new Util::DefaultHookProxy);
+	auto proxy = std::make_shared<Util::DefaultHookProxy> ();
 	emit hookGonnaFillMenu (proxy);
 	if (proxy->IsCancelled ())
 		return;
 
 	const auto& exporters = Core::Instance ().GetPluginManager ()->GetAllCastableTo<IActionsExporter*> ();
-	Q_FOREACH (auto exp, exporters)
+	for (auto exp : exporters)
 	{
 		const auto& map = exp->GetMenuActions ();
 		if (!map.isEmpty ())
 			MenuManager_->AddMenus (map);
 	}
 
-	proxy.reset (new Util::DefaultHookProxy);
+	proxy = std::make_shared<Util::DefaultHookProxy> ();
 	emit hookGonnaFillQuickLaunch (proxy);
 	if (proxy->IsCancelled ())
 		return;
 
-	Q_FOREACH (auto exp, exporters)
+	for (auto exp : exporters)
 	{
 		const auto& actions = exp->GetActions (ActionsEmbedPlace::QuickLaunch);
 		if (actions.isEmpty ())
