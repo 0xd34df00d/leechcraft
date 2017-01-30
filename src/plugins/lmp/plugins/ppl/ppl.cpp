@@ -81,3 +81,5 @@ namespace PPL
 }
 }
 }
+
+LC_EXPORT_PLUGIN (leechcraft_lmp_ppl, LeechCraft::LMP::PPL::Plugin);
