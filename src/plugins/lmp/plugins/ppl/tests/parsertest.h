@@ -43,6 +43,7 @@ namespace PPL
 	private slots:
 		void testBasicParsing ();
 		void testSkipping ();
+		void testSkipMissingFieldsRecords ();
 	};
 }
 }

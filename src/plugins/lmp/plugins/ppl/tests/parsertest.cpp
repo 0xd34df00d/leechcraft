@@ -157,6 +157,21 @@ Heart Of A Coward	Severance	Nauseam	4	218	L	1470072028
 
 		QCOMPARE (result, expected);
 	}
+
+	void ParserTest::testSkipMissingFieldsRecords ()
+	{
+		const QString data = R"(
+#AUDIOSCROBBLER/1.1
+#TZ/UNKNOWN
+#CLIENT/Rockbox sansaclipzip $Revision$
+Heart Of A Coward	Severance	Monstro	213	S	1470071129
+)";
+
+		const auto& result = ParseData (data);
+		const Media::IAudioScrobbler::BackdatedTracks_t expected {};
+
+		QCOMPARE (result, expected);
+	}
 }
 }
 }
