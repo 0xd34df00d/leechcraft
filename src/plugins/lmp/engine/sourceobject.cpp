@@ -360,7 +360,6 @@ namespace LMP
 			gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
 #endif
 
-
 			return oldRank;
 		}
 
