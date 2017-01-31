@@ -33,6 +33,7 @@
 #include <map>
 #include <stdexcept>
 #include <algorithm>
+#include <cassert>
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
@@ -268,11 +269,7 @@ namespace LMP
 			return Metadata_ ["maximum-bitrate"];
 		}
 
-		qWarning () << Q_FUNC_INFO
-				<< "unknown field"
-				<< static_cast<int> (field);
-
-		return {};
+		assert (false);
 	}
 
 	qint64 SourceObject::GetCurrentTime ()
