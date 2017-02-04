@@ -32,6 +32,7 @@
 #include <QObject>
 #include <interfaces/iinfo.h>
 #include <interfaces/iplugin2.h>
+#include <interfaces/iactionsexporter.h>
 #include <interfaces/lmp/ilmpplugin.h>
 
 namespace LeechCraft
@@ -43,17 +44,21 @@ namespace PPL
 	class Plugin : public QObject
 				 , public IInfo
 				 , public IPlugin2
+				 , public IActionsExporter
 				 , public ILMPPlugin
 	{
 		Q_OBJECT
 		Q_INTERFACES (IInfo
 				IPlugin2
+				IActionsExporter
 				LeechCraft::LMP::ILMPPlugin)
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.LMP.PPL")
 
 		ICoreProxy_ptr Proxy_;
 		ILMPProxy_ptr LMPProxy_ = {};
+
+		QAction *ActionSync_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
@@ -65,7 +70,12 @@ namespace PPL
 
 		QSet<QByteArray> GetPluginClasses () const;
 
+		QList<QAction*> GetActions (ActionsEmbedPlace area) const;
+		QMap<QString, QList<QAction*>> GetMenuActions () const;
+
 		void SetLMPProxy (ILMPProxy_ptr);
+	signals:
+		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 	};
 }
 }
