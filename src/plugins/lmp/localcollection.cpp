@@ -253,7 +253,7 @@ namespace LMP
 			return DirStatus::RootPath;
 
 		auto pos = std::find_if (RootPaths_.begin (), RootPaths_.end (),
-				[&dir] (decltype (RootPaths_.front ()) root) { return dir.startsWith (root); });
+				[&dir] (const auto& root) { return dir.startsWith (root); });
 		return pos == RootPaths_.end () ?
 				DirStatus::None :
 				DirStatus::SubPath;
@@ -267,7 +267,7 @@ namespace LMP
 	int LocalCollection::FindArtist (const QString& artist) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
-				[&artist] (decltype (Artists_.front ()) item) { return !QString::compare (item.Name_, artist, Qt::CaseInsensitive); });
+				[&artist] (const auto& item) { return !QString::compare (item.Name_, artist, Qt::CaseInsensitive); });
 		return artistPos == Artists_.end () ?
 			-1 :
 			artistPos->ID_;
@@ -276,7 +276,7 @@ namespace LMP
 	int LocalCollection::FindAlbum (const QString& artist, const QString& album) const
 	{
 		auto artistPos = std::find_if (Artists_.begin (), Artists_.end (),
-				[&artist] (decltype (Artists_.front ()) item) { return !QString::compare (item.Name_, artist, Qt::CaseInsensitive); });
+				[&artist] (const auto& item) { return !QString::compare (item.Name_, artist, Qt::CaseInsensitive); });
 		if (artistPos == Artists_.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -288,7 +288,7 @@ namespace LMP
 
 		const auto& albums = artistPos->Albums_;
 		auto albumPos = std::find_if (albums.begin (), albums.end (),
-				[&album] (decltype (albums.front ()) item) { return !QString::compare (item->Name_, album, Qt::CaseInsensitive); });
+				[&album] (const auto& item) { return !QString::compare (item->Name_, album, Qt::CaseInsensitive); });
 		if (albumPos == albums.end ())
 		{
 			qWarning () << Q_FUNC_INFO
@@ -412,7 +412,7 @@ namespace LMP
 	Collection::Artist LocalCollection::GetArtist (int id) const
 	{
 		auto pos = std::find_if (Artists_.begin (), Artists_.end (),
-				[id] (decltype (Artists_.front ()) artist) { return artist.ID_ == id; });
+				[id] (const auto& artist) { return artist.ID_ == id; });
 		return pos != Artists_.end () ?
 				*pos :
 				Collection::Artist ();
@@ -439,8 +439,7 @@ namespace LMP
 			}
 
 			const auto pos = std::find_if (trackAlbum->Tracks_.begin (), trackAlbum->Tracks_.end (),
-					[trackIdx] (decltype (trackAlbum->Tracks_.front ()) track)
-						{ return track.ID_ == trackIdx; });
+					[trackIdx] (const auto& track) { return track.ID_ == trackIdx; });
 			const auto& track = pos != trackAlbum->Tracks_.end () ?
 					*pos :
 					Collection::Track ();
@@ -474,7 +473,7 @@ namespace LMP
 		for (const auto& artist : artists)
 		{
 			const auto pos = std::find_if (Artists_.begin (), Artists_.end (),
-					[&artist] (decltype (artist) present) { return present.ID_ == artist.ID_; });
+					[&artist] (const auto& present) { return present.ID_ == artist.ID_; });
 			if (pos == Artists_.end ())
 			{
 				const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
@@ -565,7 +564,7 @@ namespace LMP
 			return;
 
 		auto pos = std::remove_if (album->Tracks_.begin (), album->Tracks_.end (),
-				[id] (decltype (album->Tracks_.front ()) item) { return item.ID_ == id; });
+				[id] (const auto& item) { return item.ID_ == id; });
 		album->Tracks_.erase (pos, album->Tracks_.end ());
 
 		if (album->Tracks_.isEmpty ())
@@ -596,7 +595,7 @@ namespace LMP
 			auto& artist = *i;
 
 			auto pos = std::find_if (artist.Albums_.begin (), artist.Albums_.end (),
-					[id] (decltype (artist.Albums_.front ()) album) { return album->ID_ == id; });
+					[id] (const auto& album) { return album->ID_ == id; });
 			if (pos == artist.Albums_.end ())
 			{
 				++i;
