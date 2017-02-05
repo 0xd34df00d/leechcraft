@@ -71,7 +71,9 @@ namespace PPL
 
 	QSet<QByteArray> Plugin::GetPluginClasses () const
 	{
-		return {};
+		QSet<QByteArray> result;
+		result << "org.LeechCraft.LMP.General";
+		return result;
 	}
 
 	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
