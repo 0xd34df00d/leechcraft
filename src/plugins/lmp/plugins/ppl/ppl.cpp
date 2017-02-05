@@ -29,6 +29,8 @@
 
 #include "ppl.h"
 #include <QIcon>
+#include <util/util.h>
+#include <interfaces/lmp/ilmpproxy.h>
 
 namespace LeechCraft
 {
