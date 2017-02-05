@@ -402,9 +402,8 @@ namespace LMP
 		QList<int> result;
 		for (const auto& artist : Artists_)
 		{
-			if (std::find_if (artist.Albums_.begin (), artist.Albums_.end (),
-					[albumId] (decltype (artist.Albums_.front ()) album)
-						{ return album->ID_ == albumId; }) != artist.Albums_.end ())
+			if (std::any_of (artist.Albums_.begin (), artist.Albums_.end (),
+					[albumId] (const auto& album) { return album->ID_ == albumId; }))
 				result << artist.ID_;
 		}
 		return result;
