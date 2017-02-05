@@ -640,8 +640,8 @@ namespace LMP
 		RootPaths_ << paths;
 		emit rootPathsChanged (RootPaths_);
 
-		std::for_each (paths.begin (), paths.end (),
-				[this] (decltype (paths.front ()) item) { FilesWatcher_->AddPath (item); });
+		for (const auto& path : paths)
+			FilesWatcher_->AddPath (path);
 	}
 
 	void LocalCollection::RemoveRootPaths (const QStringList& paths)
