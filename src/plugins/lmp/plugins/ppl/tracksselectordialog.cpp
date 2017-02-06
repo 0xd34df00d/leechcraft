@@ -53,7 +53,6 @@ namespace PPL
 
 		const Media::IAudioScrobbler::BackdatedTracks_t Tracks_;
 
-		QVector<bool> RecordCollection_;
 		QVector<QVector<bool>> Scrobble_;
 	public:
 		TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t&,
@@ -88,8 +87,7 @@ namespace PPL
 		} ()
 	}
 	, Tracks_ { tracks }
-	, RecordCollection_ (tracks.size (), true)
-	, Scrobble_ { tracks.size (), QVector<bool> (scrobblers.size (), true) }
+	, Scrobble_ { tracks.size (), QVector<bool> (scrobblers.size () + 1, true) }
 	{
 	}
 
@@ -151,9 +149,8 @@ namespace PPL
 			case Header::Date:
 				return {};
 			case Header::Collection:
-				return RecordCollection_.value (index.row ()) ?
-						Qt::Checked :
-						Qt::Unchecked;
+				// fall through after switch
+				break;
 			}
 
 			return Scrobble_.value (index.row ()).value (index.column () - MaxPredefinedHeader) ?
