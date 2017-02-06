@@ -14,13 +14,19 @@ set (PPL_SRCS
 	loghandler.cpp
 	parser.cpp
 	ppl.cpp
+	tracksselectordialog.cpp
 	)
+set (PPL_FORMS
+	tracksselectordialog.ui
+	)
+QtWrapUi (PPL_UIS_H ${PPL_FORMS})
 
 add_definitions (${MTP_DEFINITIONS})
 
 add_library (leechcraft_lmp_ppl SHARED
 	${PPL_COMPILED_TRANSLATIONS}
 	${PPL_SRCS}
+	${PPL_UIS_H}
 	)
 target_link_libraries (leechcraft_lmp_ppl
 	${LEECHCRAFT_LIBRARIES}
