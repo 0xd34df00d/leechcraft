@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <QDateTime>
 #include "audiostructs.h"
 
 namespace Media
