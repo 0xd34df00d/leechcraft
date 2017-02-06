@@ -30,9 +30,11 @@
 #include "loghandler.h"
 #include <QFile>
 #include <QtDebug>
+#include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "parser.h"
+#include "tracksselectordialog.h"
 
 namespace LeechCraft
 {
@@ -45,13 +47,21 @@ namespace PPL
 	: QObject { parent }
 	, Collection_ { coll }
 	{
-		qDebug () << Q_FUNC_INFO;
 		QFile file { logPath };
 		if (!file.open (QIODevice::ReadOnly))
 			return;
 
-		const auto& data = ParseData (file.readAll ());
-		qDebug () << "done";
+		const auto& tracks = ParseData (file.readAll ());
+
+		const auto& scrobblers = Util::Filter (ipm->GetAllCastableTo<Media::IAudioScrobbler*> (),
+				[] (Media::IAudioScrobbler *scrob)
+				{
+					return scrob->SupportsFeature (Media::IAudioScrobbler::Feature::Backdating);
+				});
+
+		const auto dia = new TracksSelectorDialog { tracks, scrobblers };
+		dia->setAttribute (Qt::WA_DeleteOnClose);
+		dia->show ();
 	}
 }
 }
