@@ -43,7 +43,8 @@ namespace Media
 	public:
 		virtual ~IAudioScrobbler () {}
 
-		using BackdatedTracks_t = QList<QPair<Media::AudioInfo, QDateTime>>;
+		using BackdatedTrack_t = QPair<Media::AudioInfo, QDateTime>;
+		using BackdatedTracks_t = QList<BackdatedTrack_t>;
 
 		enum class Feature
 		{
