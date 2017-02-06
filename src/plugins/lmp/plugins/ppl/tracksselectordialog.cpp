@@ -63,6 +63,8 @@ namespace PPL
 		int rowCount (const QModelIndex&) const override;
 		int columnCount (const QModelIndex&) const override;
 		QVariant data (const QModelIndex&, int) const override;
+
+		QVariant headerData (int, Qt::Orientation, int) const override;
 	};
 
 	TracksSelectorDialog::TracksModel::TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t& tracks,
@@ -157,6 +159,22 @@ namespace PPL
 					Qt::Checked :
 					Qt::Unchecked;
 		}
+		default:
+			return {};
+		}
+	}
+
+	QVariant TracksSelectorDialog::TracksModel::headerData (int section, Qt::Orientation orientation, int role) const
+	{
+		if (role != Qt::DisplayRole)
+			return {};
+
+		switch (orientation)
+		{
+		case Qt::Horizontal:
+			return HeaderLabels_.value (section);
+		case Qt::Vertical:
+			return QString::number (section);
 		default:
 			return {};
 		}
