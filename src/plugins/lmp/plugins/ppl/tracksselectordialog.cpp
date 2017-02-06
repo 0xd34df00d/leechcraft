@@ -188,6 +188,7 @@ namespace PPL
 	{
 		Ui_.setupUi (this);
 		Ui_.Tracks_->setModel (Model_);
+		Ui_.Tracks_->resizeColumnsToContents ();
 	}
 }
 }
