@@ -32,6 +32,8 @@
 #include <QObject>
 #include <QString>
 
+class IPluginsManager;
+
 namespace LeechCraft
 {
 namespace LMP
@@ -46,7 +48,7 @@ namespace PPL
 
 		ILocalCollection * const Collection_;
 	public:
-		LogHandler (const QString&, ILocalCollection*, QObject* = nullptr);
+		LogHandler (const QString&, ILocalCollection*, IPluginsManager*, QObject* = nullptr);
 	};
 }
 }

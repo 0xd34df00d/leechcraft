@@ -30,6 +30,7 @@
 #include "loghandler.h"
 #include <QFile>
 #include <QtDebug>
+#include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilocalcollection.h>
 #include "parser.h"
 
@@ -40,7 +41,7 @@ namespace LMP
 namespace PPL
 {
 	LogHandler::LogHandler (const QString& logPath,
-			ILocalCollection *coll, QObject *parent)
+			ILocalCollection *coll, IPluginsManager *ipm, QObject *parent)
 	: QObject { parent }
 	, Collection_ { coll }
 	{
