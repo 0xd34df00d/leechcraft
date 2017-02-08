@@ -189,7 +189,7 @@ namespace PPL
 		case Qt::Horizontal:
 			return HeaderLabels_.value (section);
 		case Qt::Vertical:
-			return QString::number (section);
+			return QString::number (section + 1);
 		default:
 			return {};
 		}
