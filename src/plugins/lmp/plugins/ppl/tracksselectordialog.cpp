@@ -146,6 +146,14 @@ namespace PPL
 			switch (index.column ())
 			{
 			case Header::Artist:
+			{
+				const auto& flags = Scrobble_.value (index.column ());
+				if (std::all_of (flags.begin (), flags.end (), Util::Id))
+					return Qt::Checked;
+				if (std::none_of (flags.begin (), flags.end (), Util::Id))
+					return Qt::Unchecked;
+				return Qt::PartiallyChecked;
+			}
 			case Header::Album:
 			case Header::Track:
 			case Header::Date:
