@@ -29,8 +29,13 @@
 
 #include "ppl.h"
 #include <QIcon>
+#include <QAction>
+#include <QFileDialog>
 #include <util/util.h>
+#include <util/sll/slotclosure.h>
+#include <interfaces/core/icoreproxy.h>
 #include <interfaces/lmp/ilmpproxy.h>
+#include "loghandler.h"
 
 namespace LeechCraft
 {
@@ -41,6 +46,34 @@ namespace PPL
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Proxy_ = proxy;
+
+		ActionSync_ = new QAction { tr ("Sync scrobbling log"), this };
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this]
+			{
+				QFileDialog dia
+				{
+					nullptr,
+					tr ("Select .scrobbler.log"),
+					QDir::homePath (),
+					tr ("Scrobbler log (*.scrobbler.log)")
+				};
+				dia.setFilter (QDir::AllEntries | QDir::AllDirs | QDir::Hidden);
+				dia.setAcceptMode (QFileDialog::AcceptOpen);
+				if (dia.exec () != QDialog::Accepted)
+					return;
+
+				const auto& path = dia.selectedFiles ().value (0);
+				if (path.isEmpty ())
+					return;
+
+				new LogHandler { path, LMPProxy_->GetLocalCollection (), Proxy_->GetPluginsManager (), this };
+			},
+			ActionSync_,
+			SIGNAL (triggered ()),
+			ActionSync_
+		};
 	}
 
 	void Plugin::SecondInit ()
