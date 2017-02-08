@@ -140,6 +140,8 @@ namespace PPL
 			case Header::Collection:
 				return {};
 			}
+
+			return {};
 		}
 		case Qt::CheckStateRole:
 		{
