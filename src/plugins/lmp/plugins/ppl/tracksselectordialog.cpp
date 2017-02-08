@@ -43,6 +43,7 @@ namespace PPL
 
 		enum Header : uint8_t
 		{
+			Scrobble,
 			Artist,
 			Album,
 			Track,
@@ -76,6 +77,7 @@ namespace PPL
 		{
 			const QStringList predefined
 			{
+				{},
 				tr ("Artist"),
 				tr ("Album"),
 				tr ("Track"),
@@ -129,6 +131,8 @@ namespace PPL
 
 			switch (index.column ())
 			{
+			case Header::Scrobble:
+				return {};
 			case Header::Artist:
 				return record.first.Artist_;
 			case Header::Album:
@@ -147,7 +151,7 @@ namespace PPL
 		{
 			switch (index.column ())
 			{
-			case Header::Artist:
+			case Header::Scrobble:
 			{
 				const auto& flags = Scrobble_.value (index.column ());
 				if (std::all_of (flags.begin (), flags.end (), Util::Id))
@@ -156,6 +160,7 @@ namespace PPL
 					return Qt::Unchecked;
 				return Qt::PartiallyChecked;
 			}
+			case Header::Artist:
 			case Header::Album:
 			case Header::Track:
 			case Header::Date:
