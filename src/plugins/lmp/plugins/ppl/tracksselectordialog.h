@@ -59,6 +59,8 @@ namespace PPL
 		};
 
 		QList<SelectedTrack> GetSelectedTracks () const;
+	private:
+		void FixSize ();
 	};
 }
 }

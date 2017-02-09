@@ -29,6 +29,8 @@
 
 #include "tracksselectordialog.h"
 #include <QAbstractItemModel>
+#include <QApplication>
+#include <QDesktopWidget>
 #include <util/sll/prelude.h>
 
 namespace LeechCraft
@@ -255,7 +257,37 @@ namespace PPL
 	{
 		Ui_.setupUi (this);
 		Ui_.Tracks_->setModel (Model_);
+
+		FixSize ();
+	}
+
+	void TracksSelectorDialog::FixSize ()
+	{
 		Ui_.Tracks_->resizeColumnsToContents ();
+
+		const auto Margin = 50;
+
+		int totalWidth = Margin + Ui_.Tracks_->verticalHeader ()->width ();
+
+		const auto header = Ui_.Tracks_->horizontalHeader ();
+		for (int j = 0; j < Model_->columnCount ({}); ++j)
+			totalWidth += std::max (header->sectionSize (j),
+					Ui_.Tracks_->sizeHintForIndex (Model_->index (0, j, {})).width ());
+
+		if (totalWidth < size ().width ())
+			return;
+
+		const auto desktop = qApp->desktop ();
+		const auto& availableGeometry = desktop->availableGeometry (this);
+		if (totalWidth > availableGeometry.width ())
+			return;
+
+		setGeometry (QStyle::alignedRect (Qt::LeftToRight,
+				Qt::AlignCenter,
+				{ totalWidth, height () },
+				availableGeometry));
+
+		show ();
 	}
 }
 }

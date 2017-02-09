@@ -61,7 +61,6 @@ namespace PPL
 
 		const auto dia = new TracksSelectorDialog { tracks, scrobblers };
 		dia->setAttribute (Qt::WA_DeleteOnClose);
-		dia->show ();
 	}
 }
 }
