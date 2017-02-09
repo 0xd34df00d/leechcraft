@@ -43,7 +43,7 @@ namespace PPL
 
 		enum Header : uint8_t
 		{
-			Scrobble,
+			ScrobbleSummary,
 			Artist,
 			Album,
 			Track,
@@ -131,7 +131,7 @@ namespace PPL
 
 			switch (index.column ())
 			{
-			case Header::Scrobble:
+			case Header::ScrobbleSummary:
 				return {};
 			case Header::Artist:
 				return record.first.Artist_;
@@ -151,7 +151,7 @@ namespace PPL
 		{
 			switch (index.column ())
 			{
-			case Header::Scrobble:
+			case Header::ScrobbleSummary:
 			{
 				const auto& flags = Scrobble_.value (index.column ());
 				if (std::all_of (flags.begin (), flags.end (), Util::Id))
