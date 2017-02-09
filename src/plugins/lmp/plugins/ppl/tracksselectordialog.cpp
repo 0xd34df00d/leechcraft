@@ -156,7 +156,7 @@ namespace PPL
 			{
 			case Header::ScrobbleSummary:
 			{
-				const auto& flags = Scrobble_.value (index.column ());
+				const auto& flags = Scrobble_.value (index.row ());
 				if (std::all_of (flags.begin (), flags.end (), Util::Id))
 					return Qt::Checked;
 				if (std::none_of (flags.begin (), flags.end (), Util::Id))
