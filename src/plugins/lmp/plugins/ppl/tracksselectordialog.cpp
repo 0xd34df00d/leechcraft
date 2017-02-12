@@ -71,6 +71,26 @@ namespace PPL
 
 		Qt::ItemFlags flags (const QModelIndex& index) const override;
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override;
+	private:
+		template<typename Summary, typename Specific>
+		auto WithCheckableColumns (const QModelIndex& index, Summary&& summary, Specific&& specific) const
+		{
+			switch (index.column ())
+			{
+			case Header::Artist:
+			case Header::Album:
+			case Header::Track:
+			case Header::Date:
+				return std::result_of_t<Summary (int)> {};
+			case Header::ScrobbleSummary:
+				return summary (index.row ());
+			case Header::Collection:
+				// fall through after switch
+				break;
+			}
+
+			return specific (index.row (), index.column () - MaxPredefinedHeader);
+		}
 	};
 
 	TracksSelectorDialog::TracksModel::TracksModel (const Media::IAudioScrobbler::BackdatedTracks_t& tracks,
@@ -156,32 +176,23 @@ namespace PPL
 					if (role != Qt::CheckStateRole)
 						return {};
 
-					switch (index.column ())
-					{
-					case Header::ScrobbleSummary:
-					{
-						const auto enabled = std::accumulate (Scrobble_.begin (), Scrobble_.end (), 0,
-								[] (int val, const auto& subvec)
-								{
-									return std::accumulate (subvec.begin (), subvec.end (), val);
-								});
-						const auto total = Scrobble_.size () * Scrobble_ [0].size ();
-						return PartialCheck (enabled, total);
-					}
-					case Header::Artist:
-					case Header::Album:
-					case Header::Track:
-					case Header::Date:
-						return {};
-					case Header::Collection:
-						// fall through after switch
-						break;
-					}
-
-					const auto column = index.column () - MaxPredefinedHeader;
-					const auto enabled = std::accumulate (Scrobble_.begin (), Scrobble_.end (), 0,
-							[column] (int val, const auto& subvec) { return val + subvec.at (column); });
-					return PartialCheck (enabled, Scrobble_.size ());
+					return WithCheckableColumns (index,
+							[this] (int)
+							{
+								const auto enabled = std::accumulate (Scrobble_.begin (), Scrobble_.end (), 0,
+										[] (int val, const auto& subvec)
+										{
+											return std::accumulate (subvec.begin (), subvec.end (), val);
+										});
+								const auto total = Scrobble_.size () * Scrobble_ [0].size ();
+								return PartialCheck (enabled, total);
+							},
+							[this] (int, int column)
+							{
+								const auto enabled = std::accumulate (Scrobble_.begin (), Scrobble_.end (), 0,
+										[column] (int val, const auto& subvec) { return val + subvec.at (column); });
+								return PartialCheck (enabled, Scrobble_.size ());
+							});
 				},
 				[&] (const QModelIndex& index) -> QVariant
 				{
@@ -211,30 +222,22 @@ namespace PPL
 					}
 					case Qt::CheckStateRole:
 					{
-						switch (index.column ())
-						{
-						case Header::ScrobbleSummary:
-						{
-							const auto& flags = Scrobble_.value (index.row ());
-							if (std::all_of (flags.begin (), flags.end (), Util::Id))
-								return Qt::Checked;
-							if (std::none_of (flags.begin (), flags.end (), Util::Id))
-								return Qt::Unchecked;
-							return Qt::PartiallyChecked;
-						}
-						case Header::Artist:
-						case Header::Album:
-						case Header::Track:
-						case Header::Date:
-							return {};
-						case Header::Collection:
-							// fall through after switch
-							break;
-						}
-
-						return Scrobble_.value (index.row ()).value (index.column () - MaxPredefinedHeader) ?
-								Qt::Checked :
-								Qt::Unchecked;
+						return WithCheckableColumns (index,
+								[&] (int row)
+								{
+									const auto& flags = Scrobble_.value (row);
+									if (std::all_of (flags.begin (), flags.end (), Util::Id))
+										return Qt::Checked;
+									if (std::none_of (flags.begin (), flags.end (), Util::Id))
+										return Qt::Unchecked;
+									return Qt::PartiallyChecked;
+								},
+								[&] (int row, int column)
+								{
+									return Scrobble_.value (row).value (column) ?
+											Qt::Checked :
+											Qt::Unchecked;
+								});
 					}
 					default:
 						return {};
@@ -293,24 +296,21 @@ namespace PPL
 						emit dataChanged (createIndex (0, 0), createIndex (lastRow, lastColumn));
 					};
 
-					switch (index.column ())
-					{
-					case Header::Artist:
-					case Header::Album:
-					case Header::Track:
-					case Header::Date:
-						return false;
-					case Header::ScrobbleSummary:
-						for (auto& subvec : Scrobble_)
-							std::fill (subvec.begin (), subvec.end (), shouldScrobble);
-						emitDataChanged ();
-						return true;
-					default:
-						for (auto& subvec : Scrobble_)
-							subvec [index.column () - MaxPredefinedHeader] = shouldScrobble;
-						emitDataChanged ();
-						return true;
-					}
+					return WithCheckableColumns (index,
+							[&] (int)
+							{
+								for (auto& subvec : Scrobble_)
+									std::fill (subvec.begin (), subvec.end (), shouldScrobble);
+								emitDataChanged ();
+								return true;
+							},
+							[&] (int, int column)
+							{
+								for (auto& subvec : Scrobble_)
+									subvec [column] = shouldScrobble;
+								emitDataChanged ();
+								return true;
+							});
 				},
 				[&] (const QModelIndex& index)
 				{
@@ -324,22 +324,19 @@ namespace PPL
 								index.sibling (index.row (), lastColumn));
 					};
 
-					switch (index.column ())
-					{
-					case Header::Artist:
-					case Header::Album:
-					case Header::Track:
-					case Header::Date:
-						return false;
-					case Header::ScrobbleSummary:
-						std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble);
-						emitDataChanged ();
-						return true;
-					default:
-						scrobbles [index.column () - MaxPredefinedHeader] = shouldScrobble;
-						emitDataChanged ();
-						return true;
-					}
+					return WithCheckableColumns (index,
+							[&] (int)
+							{
+								std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble);
+								emitDataChanged ();
+								return true;
+							},
+							[&] (int, int column)
+							{
+								scrobbles [column] = shouldScrobble;
+								emitDataChanged ();
+								return true;
+							});
 				});
 	}
 
