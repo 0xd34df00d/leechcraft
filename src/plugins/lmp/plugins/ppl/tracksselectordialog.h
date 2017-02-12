@@ -54,8 +54,7 @@ namespace PPL
 		struct SelectedTrack
 		{
 			Media::IAudioScrobbler::BackdatedTrack_t Track_;
-			bool AddToCollection_;
-			QList<Media::IAudioScrobbler*> Scrobblers_;
+			QVector<bool> Scrobbles_;
 		};
 
 		QList<SelectedTrack> GetSelectedTracks () const;
