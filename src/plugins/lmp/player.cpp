@@ -1641,10 +1641,7 @@ namespace LMP
 
 		const auto& path = current.GetLocalPath ();
 		if (!path.isEmpty ())
-			QMetaObject::invokeMethod (Core::Instance ().GetLocalCollection (),
-					"recordPlayedTrack",
-					Qt::QueuedConnection,
-					Q_ARG (QString, path));
+			Util::ExecuteLater ([=] { Core::Instance ().GetLocalCollection ()->recordPlayedTrack (path); });
 
 		const auto& next = GetNextSource (current);
 
