@@ -51,10 +51,9 @@ namespace PPL
 			Artist,
 			Album,
 			Track,
-			Date,
-			Collection
+			Date
 		};
-		static constexpr uint8_t MaxPredefinedHeader = Header::Collection;
+		static constexpr uint8_t MaxPredefinedHeader = Header::Date;
 
 		const Media::IAudioScrobbler::BackdatedTracks_t Tracks_;
 
@@ -88,12 +87,9 @@ namespace PPL
 				return std::result_of_t<Summary (int)> {};
 			case Header::ScrobbleSummary:
 				return summary (index.row ());
-			case Header::Collection:
-				// fall through after switch
-				break;
 			}
 
-			return specific (index.row (), index.column () - MaxPredefinedHeader);
+			return specific (index.row (), index.column () - (MaxPredefinedHeader + 1));
 		}
 	};
 
@@ -110,8 +106,7 @@ namespace PPL
 				tr ("Artist"),
 				tr ("Album"),
 				tr ("Track"),
-				tr ("Date"),
-				tr ("Record in collection")
+				tr ("Date")
 			};
 			const auto& scrobbleNames = Util::Map (scrobblers,
 					[] (Media::IAudioScrobbler *scrob) { return scrob->GetServiceName (); });
@@ -218,8 +213,6 @@ namespace PPL
 							return record.first.Title_;
 						case Header::Date:
 							return record.second.toString ();
-						case Header::Collection:
-							return {};
 						}
 
 						return {};

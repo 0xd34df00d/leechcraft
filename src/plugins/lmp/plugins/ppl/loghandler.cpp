@@ -114,11 +114,14 @@ namespace PPL
 			return;
 		}
 
-		const auto& scrobblers = Util::Filter (ipm->GetAllCastableTo<Media::IAudioScrobbler*> (),
-				[] (Media::IAudioScrobbler *scrob)
-				{
-					return scrob->SupportsFeature (Media::IAudioScrobbler::Feature::Backdating);
-				});
+		auto local = new LocalCollectionScrobbler { coll, this };
+
+		const auto& scrobblers = QList<Media::IAudioScrobbler*> { local } +
+				Util::Filter (ipm->GetAllCastableTo<Media::IAudioScrobbler*> (),
+						[] (Media::IAudioScrobbler *scrob)
+						{
+							return scrob->SupportsFeature (Media::IAudioScrobbler::Feature::Backdating);
+						});
 
 		const auto dia = new TracksSelectorDialog { tracks, scrobblers };
 		dia->setAttribute (Qt::WA_DeleteOnClose);
