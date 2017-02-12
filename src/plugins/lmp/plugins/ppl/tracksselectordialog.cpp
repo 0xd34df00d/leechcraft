@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "tracksselectordialog.h"
+#include <numeric>
 #include <QAbstractItemModel>
 #include <QApplication>
 #include <QDesktopWidget>
