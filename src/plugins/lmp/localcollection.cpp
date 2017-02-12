@@ -425,7 +425,7 @@ namespace LMP
 
 	void LocalCollection::HandleExistingInfos (const QList<MediaInfo>& infos)
 	{
-		Q_FOREACH (const auto& info, infos)
+		for (const auto& info : infos)
 		{
 			const auto& path = info.LocalPath_;
 			const auto trackIdx = FindTrack (path);
@@ -631,7 +631,7 @@ namespace LMP
 
 	void LocalCollection::AddRootPaths (QStringList paths)
 	{
-		Q_FOREACH (const auto& path, RootPaths_)
+		for (const auto& path : RootPaths_)
 			paths.removeAll (path);
 		if (paths.isEmpty ())
 			return;
@@ -669,7 +669,7 @@ namespace LMP
 				pos = toRemove.erase (pos);
 		}
 
-		Q_FOREACH (const auto& path, toRemove)
+		for (const auto& path : toRemove)
 			RemoveTrack (path);
 	}
 
@@ -713,7 +713,7 @@ namespace LMP
 
 	void LocalCollection::rescanOnLoad ()
 	{
-		Q_FOREACH (const auto& rootPath, RootPaths_)
+		for (const auto& rootPath : RootPaths_)
 			Scan (rootPath, true);
 	}
 
