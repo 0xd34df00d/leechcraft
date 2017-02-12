@@ -52,6 +52,11 @@ namespace PPL
 			return;
 
 		const auto& tracks = ParseData (file.readAll ());
+		if (tracks.isEmpty ())
+		{
+			deleteLater ();
+			return;
+		}
 
 		const auto& scrobblers = Util::Filter (ipm->GetAllCastableTo<Media::IAudioScrobbler*> (),
 				[] (Media::IAudioScrobbler *scrob)
