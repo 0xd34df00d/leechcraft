@@ -116,7 +116,7 @@ namespace PPL
 	{
 		return parent.isValid () ?
 				0 :
-				Tracks_.size ();
+				Tracks_.size () + 1;
 	}
 
 	int TracksSelectorDialog::TracksModel::columnCount (const QModelIndex& parent) const
@@ -126,62 +126,120 @@ namespace PPL
 				HeaderLabels_.size ();
 	}
 
-	QVariant TracksSelectorDialog::TracksModel::data (const QModelIndex& index, int role) const
+	namespace
 	{
-		switch (role)
+		template<typename H, typename D>
+		auto WithIndex (const QModelIndex& index, H&& header, D&& data)
 		{
-		case Qt::DisplayRole:
-		{
-			const auto& record = Tracks_.value (index.row ());
-
-			switch (index.column ())
-			{
-			case Header::ScrobbleSummary:
-				return {};
-			case Header::Artist:
-				return record.first.Artist_;
-			case Header::Album:
-				return record.first.Album_;
-			case Header::Track:
-				return record.first.Title_;
-			case Header::Date:
-				return record.second.toString ();
-			case Header::Collection:
-				return {};
-			}
-
-			return {};
+			if (!index.row ())
+				return header (index);
+			else
+				return data (index.sibling (index.row () - 1, index.column ()));
 		}
-		case Qt::CheckStateRole:
+
+		Qt::CheckState PartialCheck (int enabled, int total)
 		{
-			switch (index.column ())
-			{
-			case Header::ScrobbleSummary:
-			{
-				const auto& flags = Scrobble_.value (index.row ());
-				if (std::all_of (flags.begin (), flags.end (), Util::Id))
-					return Qt::Checked;
-				if (std::none_of (flags.begin (), flags.end (), Util::Id))
-					return Qt::Unchecked;
+			if (!enabled)
+				return Qt::Unchecked;
+			else if (enabled == total)
+				return Qt::Checked;
+			else
 				return Qt::PartiallyChecked;
-			}
-			case Header::Artist:
-			case Header::Album:
-			case Header::Track:
-			case Header::Date:
-				return {};
-			case Header::Collection:
-				// fall through after switch
-				break;
-			}
+		}
+	}
 
-			return Scrobble_.value (index.row ()).value (index.column () - MaxPredefinedHeader) ?
-					Qt::Checked :
-					Qt::Unchecked;
-		}
-		default:
-			return {};
-		}
+	QVariant TracksSelectorDialog::TracksModel::data (const QModelIndex& srcIdx, int role) const
+	{
+		return WithIndex (srcIdx,
+				[&] (const QModelIndex& index) -> QVariant
+				{
+					if (role != Qt::CheckStateRole)
+						return {};
+
+					switch (index.column ())
+					{
+					case Header::ScrobbleSummary:
+					{
+						const auto enabled = std::accumulate (Scrobble_.begin (), Scrobble_.end (), 0,
+								[] (int val, const auto& subvec)
+								{
+									return std::accumulate (subvec.begin (), subvec.end (), val);
+								});
+						const auto total = Scrobble_.size () * Scrobble_ [0].size ();
+						return PartialCheck (enabled, total);
+					}
+					case Header::Artist:
+					case Header::Album:
+					case Header::Track:
+					case Header::Date:
+						return {};
+					case Header::Collection:
+						// fall through after switch
+						break;
+					}
+
+					const auto column = index.column () - MaxPredefinedHeader;
+					const auto enabled = std::accumulate (Scrobble_.begin (), Scrobble_.end (), 0,
+							[column] (int val, const auto& subvec) { return val + subvec.at (column); });
+					return PartialCheck (enabled, Scrobble_.size ());
+				},
+				[&] (const QModelIndex& index) -> QVariant
+				{
+					switch (role)
+					{
+					case Qt::DisplayRole:
+					{
+						const auto& record = Tracks_.value (index.row ());
+
+						switch (index.column ())
+						{
+						case Header::ScrobbleSummary:
+							return {};
+						case Header::Artist:
+							return record.first.Artist_;
+						case Header::Album:
+							return record.first.Album_;
+						case Header::Track:
+							return record.first.Title_;
+						case Header::Date:
+							return record.second.toString ();
+						case Header::Collection:
+							return {};
+						}
+
+						return {};
+					}
+					case Qt::CheckStateRole:
+					{
+						switch (index.column ())
+						{
+						case Header::ScrobbleSummary:
+						{
+							const auto& flags = Scrobble_.value (index.row ());
+							if (std::all_of (flags.begin (), flags.end (), Util::Id))
+								return Qt::Checked;
+							if (std::none_of (flags.begin (), flags.end (), Util::Id))
+								return Qt::Unchecked;
+							return Qt::PartiallyChecked;
+						}
+						case Header::Artist:
+						case Header::Album:
+						case Header::Track:
+						case Header::Date:
+							return {};
+						case Header::Collection:
+							// fall through after switch
+							break;
+						}
+
+						return Scrobble_.value (index.row ()).value (index.column () - MaxPredefinedHeader) ?
+								Qt::Checked :
+								Qt::Unchecked;
+					}
+					default:
+						return {};
+					}
+				});
 	}
 
 	QVariant TracksSelectorDialog::TracksModel::headerData (int section, Qt::Orientation orientation, int role) const
@@ -216,37 +274,71 @@ namespace PPL
 		}
 	}
 
-	bool TracksSelectorDialog::TracksModel::setData (const QModelIndex& index, const QVariant& value, int role)
+	bool TracksSelectorDialog::TracksModel::setData (const QModelIndex& srcIdx, const QVariant& value, int role)
 	{
 		if (role != Qt::CheckStateRole)
 			return false;
 
 		const auto shouldScrobble = value.toInt () == Qt::Checked;
 
-		auto& scrobbles = Scrobble_ [index.row ()];
+		return WithIndex (srcIdx,
+				[&] (const QModelIndex& index)
+				{
+					const auto emitDataChanged = [this, &index]
+					{
+						const auto lastRow = rowCount (index.parent ()) - 1;
+						const auto lastColumn = columnCount (index.parent ()) - 1;
+						emit dataChanged (createIndex (0, 0), createIndex (lastRow, lastColumn));
+					};
 
-		const auto emitDataChanged = [this, &index]
-		{
-			emit dataChanged (index.sibling (index.row (), 0),
-					index.sibling (index.row (), columnCount (index.parent ()) - 1));
-		};
+					switch (index.column ())
+					{
+					case Header::Artist:
+					case Header::Album:
+					case Header::Track:
+					case Header::Date:
+						return false;
+					case Header::ScrobbleSummary:
+						for (auto& subvec : Scrobble_)
+							std::fill (subvec.begin (), subvec.end (), shouldScrobble);
+						emitDataChanged ();
+						return true;
+					default:
+						for (auto& subvec : Scrobble_)
+							subvec [index.column () - MaxPredefinedHeader] = shouldScrobble;
+						emitDataChanged ();
+						return true;
+					}
+				},
+				[&] (const QModelIndex& index)
+				{
+					auto& scrobbles = Scrobble_ [index.row ()];
 
-		switch (index.column ())
-		{
-		case Header::Artist:
-		case Header::Album:
-		case Header::Track:
-		case Header::Date:
-			return false;
-		case Header::ScrobbleSummary:
-			std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble);
-			emitDataChanged ();
-			return true;
-		default:
-			scrobbles [index.column () - MaxPredefinedHeader] = shouldScrobble;
-			emitDataChanged ();
-			return true;
-		}
+					const auto emitDataChanged = [this, &index]
+					{
+						const auto lastColumn = columnCount (index.parent ()) - 1;
+						emit dataChanged (createIndex (0, 0), createIndex (0, lastColumn));
+						emit dataChanged (index.sibling (index.row (), 0),
+								index.sibling (index.row (), lastColumn));
+					};
+
+					switch (index.column ())
+					{
+					case Header::Artist:
+					case Header::Album:
+					case Header::Track:
+					case Header::Date:
+						return false;
+					case Header::ScrobbleSummary:
+						std::fill (scrobbles.begin (), scrobbles.end (), shouldScrobble);
+						emitDataChanged ();
+						return true;
+					default:
+						scrobbles [index.column () - MaxPredefinedHeader] = shouldScrobble;
+						emitDataChanged ();
+						return true;
+					}
+				});
 	}
 
 	TracksSelectorDialog::TracksSelectorDialog (const Media::IAudioScrobbler::BackdatedTracks_t& tracks,
