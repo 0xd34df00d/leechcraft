@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <util/sll/prelude.h>
+#include <util/sll/views.h>
 
 namespace LeechCraft
 {
@@ -72,6 +73,8 @@ namespace PPL
 
 		Qt::ItemFlags flags (const QModelIndex& index) const override;
 		bool setData (const QModelIndex& index, const QVariant& value, int role) override;
+
+		QList<TracksSelectorDialog::SelectedTrack> GetSelectedTracks () const;
 	private:
 		template<typename Summary, typename Specific>
 		auto WithCheckableColumns (const QModelIndex& index, Summary&& summary, Specific&& specific) const
@@ -341,6 +344,15 @@ namespace PPL
 				});
 	}
 
+	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::TracksModel::GetSelectedTracks () const
+	{
+		QList<TracksSelectorDialog::SelectedTrack> result;
+		for (const auto& pair : Util::Views::Zip<std::pair> (Tracks_, Scrobble_))
+			if (std::any_of (pair.second.begin (), pair.second.end (), Util::Id))
+				result.push_back ({ pair.first, pair.second });
+		return result;
+	}
+
 	TracksSelectorDialog::TracksSelectorDialog (const Media::IAudioScrobbler::BackdatedTracks_t& tracks,
 			const QList<Media::IAudioScrobbler*>& scrobblers,
 			QWidget *parent)
@@ -380,6 +392,11 @@ namespace PPL
 				availableGeometry));
 
 		show ();
+	}
+
+	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::GetSelectedTracks () const
+	{
+		return Model_->GetSelectedTracks ();
 	}
 }
 }
