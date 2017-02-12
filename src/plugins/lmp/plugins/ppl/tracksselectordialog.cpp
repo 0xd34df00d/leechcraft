@@ -156,7 +156,7 @@ namespace PPL
 				return data (index.sibling (index.row () - 1, index.column ()));
 		}
 
-		Qt::CheckState PartialCheck (int enabled, int total)
+		QVariant PartialCheck (int enabled, int total)
 		{
 			if (!enabled)
 				return Qt::Unchecked;
@@ -226,7 +226,7 @@ namespace PPL
 									const auto enabled = std::accumulate (flags.begin (), flags.end (), 0);
 									return PartialCheck (enabled, flags.size ());
 								},
-								[&] (int row, int column)
+								[&] (int row, int column) -> QVariant
 								{
 									return Scrobble_.value (row).value (column) ?
 											Qt::Checked :
