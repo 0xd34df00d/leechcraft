@@ -42,6 +42,62 @@ namespace LMP
 {
 namespace PPL
 {
+	namespace
+	{
+		class LocalCollectionScrobbler : public QObject
+									   , public Media::IAudioScrobbler
+		{
+			ILocalCollection * const Coll_;
+		public:
+			LocalCollectionScrobbler (ILocalCollection*, QObject*);
+
+			bool SupportsFeature (Feature feature) const override;
+			QString GetServiceName () const override;
+			void NowPlaying (const Media::AudioInfo& audio) override;
+			void SendBackdated (const BackdatedTracks_t& list) override;
+			void PlaybackStopped () override;
+			void LoveCurrentTrack () override;
+			void BanCurrentTrack () override;
+		};
+
+		LocalCollectionScrobbler::LocalCollectionScrobbler (ILocalCollection* coll, QObject *parent)
+		: QObject { parent }
+		, Coll_ { coll }
+		{
+		}
+
+		bool LocalCollectionScrobbler::SupportsFeature (Media::IAudioScrobbler::Feature) const
+		{
+			return false;
+		}
+
+		QString LocalCollectionScrobbler::GetServiceName () const
+		{
+			return tr ("Local collection");
+		}
+
+		void LocalCollectionScrobbler::NowPlaying (const Media::AudioInfo&)
+		{
+		}
+
+		void LocalCollectionScrobbler::SendBackdated (const Media::IAudioScrobbler::BackdatedTracks_t& list)
+		{
+
+		}
+
+		void LocalCollectionScrobbler::PlaybackStopped ()
+		{
+		}
+
+		void LocalCollectionScrobbler::LoveCurrentTrack ()
+		{
+		}
+
+		void LocalCollectionScrobbler::BanCurrentTrack ()
+		{
+		}
+	}
+
 	LogHandler::LogHandler (const QString& logPath,
 			ILocalCollection *coll, IPluginsManager *ipm, QObject *parent)
 	: QObject { parent }
