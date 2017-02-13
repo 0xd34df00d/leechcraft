@@ -206,6 +206,11 @@ namespace PPL
 			SIGNAL (accepted ()),
 			dia
 		};
+
+		connect (dia,
+				SIGNAL (finished (int)),
+				this,
+				SLOT (deleteLater ()));
 	}
 }
 }
