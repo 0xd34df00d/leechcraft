@@ -1641,7 +1641,7 @@ namespace LMP
 
 		const auto& path = current.GetLocalPath ();
 		if (!path.isEmpty ())
-			Util::ExecuteLater ([=] { Core::Instance ().GetLocalCollection ()->recordPlayedTrack (path); });
+			Util::ExecuteLater ([=] { Core::Instance ().GetLocalCollection ()->RecordPlayedTrack (path); });
 
 		const auto& next = GetNextSource (current);
 

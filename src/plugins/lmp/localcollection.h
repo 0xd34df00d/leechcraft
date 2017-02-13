@@ -149,6 +149,7 @@ namespace LMP
 		Collection::Artists_t GetAllArtists () const override;
 
 		void RemoveTrack (const QString&);
+		void RecordPlayedTrack (const QString&);
 	private:
 		void HandleExistingInfos (const QList<MediaInfo>&);
 		void HandleNewArtists (const Collection::Artists_t&);
@@ -161,8 +162,6 @@ namespace LMP
 		void CheckRemovedFiles (const QSet<QString>& scanned, const QString& root);
 
 		void InitiateScan (const QSet<QString>&);
-	public slots:
-		void recordPlayedTrack (const QString&);
 	private slots:
 		void rescanOnLoad ();
 		void handleLoadFinished ();

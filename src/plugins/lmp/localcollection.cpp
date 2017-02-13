@@ -694,7 +694,7 @@ namespace LMP
 		Watcher_->setFuture (future);
 	}
 
-	void LocalCollection::recordPlayedTrack (const QString& path)
+	void LocalCollection::RecordPlayedTrack (const QString& path)
 	{
 		if (!Path2Track_.contains (path))
 			return;
