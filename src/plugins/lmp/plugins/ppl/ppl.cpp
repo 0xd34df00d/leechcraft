@@ -47,6 +47,8 @@ namespace PPL
 	{
 		Proxy_ = proxy;
 
+		Util::InstallTranslator ("lmp_ppl");
+
 		ActionSync_ = new QAction { tr ("Sync scrobbling log"), this };
 		new Util::SlotClosure<Util::NoDeletePolicy>
 		{
