@@ -21,6 +21,7 @@ set (PPL_FORMS
 	)
 QtWrapUi (PPL_UIS_H ${PPL_FORMS})
 
+CreateTrs ("lmp_ppl" "en;ru_RU" PPL_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("lmp_ppl" "en;ru_RU" "${PPL_SRCS}" "${PPL_FORMS}" "")
 
 add_library (leechcraft_lmp_ppl SHARED
@@ -34,6 +35,7 @@ target_link_libraries (leechcraft_lmp_ppl
 
 install (TARGETS leechcraft_lmp_ppl DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES lmppplsettings.xml DESTINATION ${LC_SETTINGS_DEST})
+install (FILES ${PPL_COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 FindQtLibs (leechcraft_lmp_ppl Widgets)
 
