@@ -33,6 +33,13 @@
 #include <util/sll/prelude.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <interfaces/lmp/ilocalcollection.h>
+#include <util/sll/slotclosure.h>
+#include <util/sll/views.h>
+#include <util/sll/qtutil.h>
+#include <util/sll/curry.h>
+#include <util/sll/functor.h>
+#include <util/sll/monad.h>
+#include <util/sll/monadplus.h>
 #include "parser.h"
 #include "tracksselectordialog.h"
 
@@ -80,9 +87,64 @@ namespace PPL
 		{
 		}
 
+		template<typename T, typename F>
+		boost::optional<T> FindAttrRelaxed (const QList<T>& items, const QString& attr, F&& attrGetter)
+		{
+			auto finder = [&] (const auto& checker) -> boost::optional<T>
+			{
+				const auto pos = std::find_if (items.begin (), items.end (),
+						[&] (const auto& item) { return checker (Util::Invoke (attrGetter, item)); });
+				if (pos == items.end ())
+					return {};
+				return *pos;
+			};
+
+			auto normalize = [] (const QString& str)
+			{
+				return str.toLower ().remove (' ');
+			};
+			const auto& attrNorm = normalize (attr);
+
+			return Util::Msum ({
+						finder (Util::Curry (std::equal_to<> {}) (attr)),
+						finder ([&] (const QString& other) { return attr.compare (other, Qt::CaseInsensitive); }),
+						finder ([&] (const QString& other) { return normalize (other) == attrNorm; })
+					});
+		}
+
+		boost::optional<Collection::Artist> FindArtist (const Collection::Artists_t& artists, const QString& name)
+		{
+			return FindAttrRelaxed (artists, name, &Collection::Artist::Name_);
+		}
+
+		boost::optional<Collection::Album_ptr> FindAlbum (const QList<Collection::Album_ptr>& albums, const QString& name)
+		{
+			return FindAttrRelaxed (albums, name, [] (const auto& albumPtr) { return albumPtr->Name_; });
+		}
+
+		boost::optional<Collection::Track> FindTrack (const QList<Collection::Track>& tracks, const QString& name)
+		{
+			return FindAttrRelaxed (tracks, name, &Collection::Track::Name_);
+		}
+
+		boost::optional<int> FindMetadata (const Collection::Artists_t& artists, const Media::AudioInfo& info)
+		{
+			using Util::operator>>;
+			using Util::operator*;
+
+			const auto& maybeTrack = FindArtist (artists, info.Artist_) >>
+					[&] (const auto& artist) { return FindAlbum (artist.Albums_, info.Album_); } >>
+					[&] (const auto& album) { return FindTrack (album->Tracks_, info.Title_); };
+			return &Collection::Track::ID_ * maybeTrack;
+		}
+
 		void LocalCollectionScrobbler::SendBackdated (const Media::IAudioScrobbler::BackdatedTracks_t& list)
 		{
+			const auto& artists = Coll_->GetAllArtists ();
 
+			for (const auto& item : list)
+				if (const auto& maybeTrackId = FindMetadata (artists, item.first))
+					Coll_->RecordPlayedTrack (*maybeTrackId, item.second);
 		}
 
 		void LocalCollectionScrobbler::PlaybackStopped ()
