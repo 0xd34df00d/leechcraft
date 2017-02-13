@@ -326,6 +326,7 @@ namespace LMP
 		UpdateTrackStats_.bindValue (":track_id", trackId);
 		UpdateTrackStats_.bindValue (":track_id_pc", trackId);
 		UpdateTrackStats_.bindValue (":track_id_add", trackId);
+		UpdateTrackStats_.bindValue (":track_id_lp", trackId);
 		UpdateTrackStats_.bindValue (":add_date", date);
 		UpdateTrackStats_.bindValue (":play_date", date);
 
@@ -725,7 +726,7 @@ namespace LMP
 				"VALUES (:track_id, "
 				"		coalesce ((SELECT Playcount FROM statistics WHERE TrackId = :track_id_pc), 0) + 1,"
 				"		coalesce ((SELECT Added FROM statistics WHERE TrackId = :track_id_add), :add_date),"
-				"		:play_date"
+				"		max (coalesce ((SELECT LastPlay FROM statistics where TrackId = :track_id_lp), 0), :play_date)"
 				");");
 
 		GetFileIdMTime_ = QSqlQuery (DB_);
