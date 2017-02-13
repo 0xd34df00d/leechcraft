@@ -697,14 +697,14 @@ namespace LMP
 	void LocalCollection::RecordPlayedTrack (const QString& path)
 	{
 		if (Path2Track_.contains (path))
-			RecordPlayedTrack (Path2Track_ [path]);
+			RecordPlayedTrack (Path2Track_ [path], QDateTime::currentDateTime ());
 	}
 
-	void LocalCollection::RecordPlayedTrack (int trackId)
+	void LocalCollection::RecordPlayedTrack (int trackId, const QDateTime& date)
 	{
 		try
 		{
-			Storage_->RecordTrackPlayed (trackId, QDateTime::currentDateTime ());
+			Storage_->RecordTrackPlayed (trackId, date);
 		}
 		catch (const std::runtime_error& e)
 		{

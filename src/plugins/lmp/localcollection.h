@@ -150,7 +150,7 @@ namespace LMP
 
 		void RemoveTrack (const QString&);
 		void RecordPlayedTrack (const QString&);
-		void RecordPlayedTrack (int);
+		void RecordPlayedTrack (int, const QDateTime&);
 	private:
 		void HandleExistingInfos (const QList<MediaInfo>&);
 		void HandleNewArtists (const Collection::Artists_t&);
