@@ -112,7 +112,7 @@ namespace LMP
 
 		Collection::TrackStats GetTrackStats (int);
 		void SetTrackStats (const Collection::TrackStats&);
-		void RecordTrackPlayed (int);
+		void RecordTrackPlayed (int, const QDateTime&);
 
 		QDateTime GetMTime (const QString&);
 		void SetMTime (const QString&, const QDateTime&);

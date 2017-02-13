@@ -704,7 +704,7 @@ namespace LMP
 	{
 		try
 		{
-			Storage_->RecordTrackPlayed (trackId);
+			Storage_->RecordTrackPlayed (trackId, QDateTime::currentDateTime ());
 		}
 		catch (const std::runtime_error& e)
 		{

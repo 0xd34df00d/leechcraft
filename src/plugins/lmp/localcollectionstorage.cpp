@@ -315,10 +315,8 @@ namespace LMP
 		}
 	}
 
-	void LocalCollectionStorage::RecordTrackPlayed (int trackId)
+	void LocalCollectionStorage::RecordTrackPlayed (int trackId, const QDateTime& date)
 	{
-		const auto& date = QDateTime::currentDateTime ();
-
 		AppendToPlayHistory_.bindValue (":track_id", trackId);
 		AppendToPlayHistory_.bindValue (":date", date);
 
