@@ -42,6 +42,8 @@ namespace LMP
 		virtual ~ILocalCollection () {}
 
 		virtual Collection::Artists_t GetAllArtists () const = 0;
+
+		virtual void RecordPlayedTrack (int trackId, const QDateTime& date) = 0;
 	};
 }
 }
