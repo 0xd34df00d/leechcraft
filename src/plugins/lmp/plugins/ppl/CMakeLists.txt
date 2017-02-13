@@ -21,6 +21,7 @@ set (PPL_FORMS
 	)
 QtWrapUi (PPL_UIS_H ${PPL_FORMS})
 
+CreateTrsUpTarget("lmp_ppl" "en;ru_RU" "${PPL_SRCS}" "${PPL_FORMS}" "")
 
 add_library (leechcraft_lmp_ppl SHARED
 	${PPL_COMPILED_TRANSLATIONS}
