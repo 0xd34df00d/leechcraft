@@ -690,7 +690,7 @@ namespace LMP
 					});
 		};
 		const auto& future = QtConcurrent::mapped (newPaths,
-				std::function<MediaInfo (const QString&)> (worker));
+				std::function<MediaInfo (QString)> (worker));
 		Watcher_->setFuture (future);
 	}
 
