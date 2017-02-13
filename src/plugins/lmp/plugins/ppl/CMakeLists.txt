@@ -21,7 +21,6 @@ set (PPL_FORMS
 	)
 QtWrapUi (PPL_UIS_H ${PPL_FORMS})
 
-add_definitions (${MTP_DEFINITIONS})
 
 add_library (leechcraft_lmp_ppl SHARED
 	${PPL_COMPILED_TRANSLATIONS}
