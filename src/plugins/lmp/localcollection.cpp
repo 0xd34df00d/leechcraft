@@ -696,12 +696,15 @@ namespace LMP
 
 	void LocalCollection::RecordPlayedTrack (const QString& path)
 	{
-		if (!Path2Track_.contains (path))
-			return;
+		if (Path2Track_.contains (path))
+			RecordPlayedTrack (Path2Track_ [path]);
+	}
 
+	void LocalCollection::RecordPlayedTrack (int trackId)
+	{
 		try
 		{
-			Storage_->RecordTrackPlayed (Path2Track_ [path]);
+			Storage_->RecordTrackPlayed (trackId);
 		}
 		catch (const std::runtime_error& e)
 		{
