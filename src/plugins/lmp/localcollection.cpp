@@ -223,8 +223,8 @@ namespace LMP
 
 		try
 		{
-			std::for_each (toRemove.begin (), toRemove.end (),
-					[this] (const QString& path) { RemoveTrack (path); });
+			for (const auto& item : toRemove)
+				RemoveTrack (item);
 		}
 		catch (const std::runtime_error& e)
 		{
