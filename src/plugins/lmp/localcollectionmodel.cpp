@@ -32,6 +32,7 @@
 #include <QUrl>
 #include <QMimeData>
 #include <interfaces/core/iiconthememanager.h>
+#include <util/sll/prelude.h>
 #include "core.h"
 #include "localcollection.h"
 
@@ -69,11 +70,8 @@ namespace LMP
 	{
 		QList<QUrl> urls;
 		for (const auto& index : indexes)
-		{
-			const auto& paths = CollectPaths (index, this);
-			std::transform (paths.begin (), paths.end (), std::back_inserter (urls),
-					[] (const QString& path) { return QUrl::fromLocalFile (path); });
-		}
+			urls += Util::Map (CollectPaths (index, this), &QUrl::fromLocalFile);
+
 		if (urls.isEmpty ())
 			return nullptr;
 
