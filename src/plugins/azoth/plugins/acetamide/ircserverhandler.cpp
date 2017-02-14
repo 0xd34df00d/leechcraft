@@ -1013,7 +1013,7 @@ namespace Acetamide
 			return;
 		}
 		
-		if (Account_->GetNickNames ().isEmpty())
+		if (Account_->GetNickNames ().isEmpty ())
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
 			emit nicknameConflict (NickName_);

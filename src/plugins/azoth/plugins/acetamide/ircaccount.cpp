@@ -92,7 +92,7 @@ namespace Acetamide
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 	}
 
-	void IrcAccount::Release()
+	void IrcAccount::Releas ()
 	{
 		if (ClientConnection_)
 		{

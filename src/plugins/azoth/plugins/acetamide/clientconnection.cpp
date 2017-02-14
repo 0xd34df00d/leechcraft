@@ -59,13 +59,13 @@ namespace Acetamide
 
 	void ClientConnection::Release()
 	{
-		for (const auto ish : ServerHandlers_.values())
+		for (const auto ish : ServerHandlers_.values ())
 		{
 			if (!ish)
 			{
 				continue;
 			}
-			ish->Release();
+			ish->Release ();
 		}
 	}
 	
@@ -86,7 +86,7 @@ namespace Acetamide
 	QList<QObject*> ClientConnection::GetCLEntries() const
 	{
 		QList<QObject*> result;
-		for (const auto ish : ServerHandlers_.values())
+		for (const auto ish : ServerHandlers_.values ())
 		{
 			if (!ish)
 			{

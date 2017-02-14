@@ -86,7 +86,7 @@ namespace Acetamide
 	public:
 		IrcAccount (const QString&, QObject*);
 		void Init ();
-		void Release();
+		void Release ();
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;
