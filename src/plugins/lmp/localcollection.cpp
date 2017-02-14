@@ -479,9 +479,7 @@ namespace LMP
 				const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
 						[] (const Collection::Artist& a1, const Collection::Artist& a2)
 						{
-							return CompareArtists (a1.Name_, a2.Name_,
-									!XmlSettingsManager::Instance ()
-										.property ("SortWithThe").toBool ());
+							return QString::localeAwareCompare (a1.Name_, a2.Name_);
 						});
 				Artists_.insert (pos, artist);
 			}
