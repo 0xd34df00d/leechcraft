@@ -251,11 +251,11 @@ namespace LMP
 		if (RootPaths_.contains (dir))
 			return DirStatus::RootPath;
 
-		auto pos = std::find_if (RootPaths_.begin (), RootPaths_.end (),
+		const auto hasSub = std::any_of (RootPaths_.begin (), RootPaths_.end (),
 				[&dir] (const auto& root) { return dir.startsWith (root); });
-		return pos == RootPaths_.end () ?
-				DirStatus::None :
-				DirStatus::SubPath;
+		return hasSub ?
+				DirStatus::SubPath :
+				DirStatus::None;
 	}
 
 	QStringList LocalCollection::GetDirs () const
