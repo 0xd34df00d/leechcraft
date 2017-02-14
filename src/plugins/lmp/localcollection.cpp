@@ -39,6 +39,7 @@
 #include <QtDebug>
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -215,11 +216,9 @@ namespace LMP
 		if (!RootPaths_.contains (path))
 			return;
 
-		QStringList toRemove;
-		auto pred = [&path] (const QString& subPath) { return subPath.startsWith (path); };
-		std::copy_if (PresentPaths_.begin (), PresentPaths_.end (),
-				std::back_inserter (toRemove), pred);
-		PresentPaths_.subtract (QSet<QString>::fromList (toRemove));
+		const auto& toRemove = Util::Filter (PresentPaths_,
+				[&path] (const QString& subPath) { return subPath.startsWith (path); });
+		PresentPaths_.subtract (toRemove);
 
 		try
 		{
