@@ -64,10 +64,13 @@ namespace Acetamide
 		bool IsConsoleEnabled_;
 	public:
 		ClientConnection (IrcAccount*);
+		
+		void Release();
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;
 		QList<IrcServerHandler*> GetServerHandlers () const;
+		QList<QObject*> GetCLEntries() const;
 
 		bool IsServerExists (const ServerOptions&) const;
 		void JoinServer (const ServerOptions&);

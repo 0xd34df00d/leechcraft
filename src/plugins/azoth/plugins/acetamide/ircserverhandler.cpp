@@ -65,6 +65,11 @@ namespace Acetamide
 	, ErrorHandler_ (new IrcErrorHandler (this))
 	, IrcParser_ (0)
 	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
+	, Socket_ (0)
+	, CmdManager_ (0)
+	, ServerResponseManager_ (0)
+	, RplISupportParser_ (0)
+	, ChannelsManager_ (0)
 	, ServerConnectionState_ (NotConnected)
 	, IsConsoleEnabled_ (false)
 	, IsInviteDialogActive_ (false)
@@ -72,14 +77,9 @@ namespace Acetamide
 			QString::number (server.ServerPort_))
 	, NickName_ (server.ServerNickName_)
 	, ServerOptions_ (server)
+	, AutoWhoTimer_ (new QTimer (this))
+	, LastNickIndex_ (0)
 	{
-		IrcParser_ = new IrcParser (this);
-		CmdManager_ = new UserCommandManager (this);
-		ServerResponseManager_ = new ServerResponseManager (this);
-		RplISupportParser_ = new RplISupportParser (this);
-		ChannelsManager_ = new ChannelsManager (this);
-		AutoWhoTimer_ = new QTimer (this);
-
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoPeriod",
 				this, "handleUpdateWhoPeriod");
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
@@ -108,6 +108,23 @@ namespace Acetamide
 		handleSetAutoWho ();
 	}
 
+	void IrcServerHandler::Init ()
+	{
+		IrcParser_ = new IrcParser (this);
+		CmdManager_ = new UserCommandManager (this, IrcParser_);
+		ServerResponseManager_ = new ServerResponseManager (this);
+		RplISupportParser_ = new RplISupportParser (this);
+		ChannelsManager_ = new ChannelsManager (this);
+	}
+	
+	void IrcServerHandler::Release ()
+	{
+		if (Socket_)
+		{
+			Socket_->Release ();
+		}
+	}
+	
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
 	{
 		return ServerCLEntry_;
@@ -147,10 +164,15 @@ namespace Acetamide
 	{
 		QObjectList result;
 
-		result << ChannelsManager_->GetCLEntries ();
+		if (ChannelsManager_)
+		{
+			result << ChannelsManager_->GetCLEntries ();
+		}
 
 		for (const auto& spe : Nick2Entry_)
+		{
 			result << spe.get ();
+		}
 
 		return result;
 	}
@@ -960,14 +982,19 @@ namespace Acetamide
 
 		Nick2Entry_.clear ();
 
-		if (ServerConnectionState_ != NotConnected)
+		if (Socket_ && ServerConnectionState_ != NotConnected)
+		{
 			Socket_->DisconnectFromHost ();
+		}
 	}
 
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		SendToConsole (IMessage::Direction::Out, cmd.trimmed ());
-		Socket_->Send (cmd);
+		if (Socket_)
+		{
+			Socket_->Send (cmd);
+		}
 	}
 
 	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
@@ -981,22 +1008,32 @@ namespace Acetamide
 
 	void IrcServerHandler::NickCmdError ()
 	{
-		int index = Account_->GetNickNames ().indexOf (NickName_);
-
-		if (index != Account_->GetNickNames ().count () - 1)
-			NickName_ = Account_->GetNickNames ().at (++index);
+		if (!Account_)
+		{
+			return;
+		}
+		
+		if (Account_->GetNickNames ().isEmpty())
+		{
+			qDebug () << Q_FUNC_INFO << "NickName conflict";
+			emit nicknameConflict (NickName_);
+			return;
+		}
+		
+		if (LastNickIndex_ < Account_->GetNickNames ().count ())
+		{
+			NickName_ = Account_->GetNickNames ().at (LastNickIndex_++);
+		}
 		else
-			NickName_ = Account_->GetNickNames ().at (0);
-
+		{
+			qDebug () << Q_FUNC_INFO << "NickName conflict";
+			emit nicknameConflict (NickName_);
+			return;
+		}
+		
 		if (NickName_.isEmpty ())
 		{
 			NickCmdError ();
-			return;
-		}
-
-		if (NickName_ == OldNickName_)
-		{
-			emit nicknameConflict (NickName_);
 			return;
 		}
 
@@ -1035,10 +1072,6 @@ namespace Acetamide
 			ErrorHandler_->HandleError (opts);
 			if (opts.Command_ == "433")
 			{
-				if (OldNickName_.isEmpty ())
-					OldNickName_ = NickName_;
-				else if (!Account_->GetNickNames ().contains (OldNickName_))
-					OldNickName_ = Account_->GetNickNames ().first ();
 				NickCmdError ();
 			}
 		}
@@ -1203,7 +1236,10 @@ namespace Acetamide
 	{
 		ServerConnectionState_ = NotConnected;
 		ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
-		Socket_->Close ();
+		if (Socket_)
+		{
+			Socket_->Close ();
+		}
 		emit disconnected (ServerID_);
 	}
 

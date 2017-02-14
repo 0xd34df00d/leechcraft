@@ -59,6 +59,9 @@ namespace Acetamide
 		QTextCodec *LastCodec_ = nullptr;
 	public:
 		IrcServerSocket (IrcServerHandler*);
+		
+		void Release ();
+		
 		void ConnectToHost (const QString&, int);
 		void DisconnectFromHost ();
 		void Send (const QString&);

@@ -87,9 +87,13 @@ namespace Acetamide
 		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
 		QTimer *AutoWhoTimer_;
+		
+		int LastNickIndex_;
 	public:
-		IrcServerHandler (const ServerOptions&,
-				IrcAccount*);
+		IrcServerHandler (const ServerOptions& server, IrcAccount* account);
+		void Init ();
+		void Release ();
+		
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		IrcParser* GetParser () const;

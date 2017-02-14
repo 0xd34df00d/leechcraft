@@ -92,6 +92,15 @@ namespace Acetamide
 				SIGNAL (gotConsolePacket (QByteArray, IHaveConsole::PacketDirection, QString)));
 	}
 
+	void IrcAccount::Release()
+	{
+		if (ClientConnection_)
+		{
+			ClientConnection_->Release ();
+		}
+		emit removedCLItems (GetCLEntries ());
+	}
+	
 	QObject* IrcAccount::GetQObject ()
 	{
 		return this;
@@ -109,7 +118,9 @@ namespace Acetamide
 
 	QList<QObject*> IrcAccount::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		return ClientConnection_ ?
+				ClientConnection_->GetCLEntries () :
+				QList<QObject*> ();
 	}
 
 	QString IrcAccount::GetAccountName () const

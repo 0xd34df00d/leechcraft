@@ -73,8 +73,12 @@ namespace Acetamide
 		QObjectList result;
 		for (const auto& ich : ChannelHandlers_)
 		{
-			result << ich->GetParticipants ();
+			if (!ich)
+			{
+				continue;
+			}
 			result << ich->GetCLEntry ();
+			result << ich->GetParticipants ();
 		}
 
 		return result;
