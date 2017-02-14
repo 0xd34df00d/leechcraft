@@ -105,7 +105,7 @@ namespace PPL
 				{},
 				tr ("Artist"),
 				tr ("Album"),
-				tr ("Track"),
+				tr ("Title"),
 				tr ("Date")
 			};
 			const auto& scrobbleNames = Util::Map (scrobblers,
