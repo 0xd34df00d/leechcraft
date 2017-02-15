@@ -57,18 +57,11 @@ namespace Acetamide
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
-	void ClientConnection::Release()
+	ClientConnection::~ClientConnection ()
 	{
-		for (const auto ish : ServerHandlers_.values ())
-		{
-			if (!ish)
-			{
-				continue;
-			}
-			ish->Release ();
-		}
+		qDeleteAll (ServerHandlers_);
 	}
-	
+
 	void ClientConnection::Sinchronize ()
 	{
 	}
@@ -83,17 +76,16 @@ namespace Acetamide
 		return ServerHandlers_.values ();
 	}
 
-	QList<QObject*> ClientConnection::GetCLEntries() const
+	QList<QObject*> ClientConnection::GetCLEntries () const
 	{
 		QList<QObject*> result;
-		for (const auto ish : ServerHandlers_.values ())
+		for (const auto ish : ServerHandlers_)
 		{
-			if (!ish)
+			if (ish)
 			{
-				continue;
+				result << ish->GetCLEntry ();
+				result << ish->GetCLEntries ();
 			}
-			result << ish->GetCLEntry ();
-			result << ish->GetCLEntries ();
 		}
 		return result;
 	}
@@ -124,7 +116,6 @@ namespace Acetamide
 		}
 
 		IrcServerHandler *ish = new IrcServerHandler (server, Account_);
-		ish->Init ();
 		emit gotRosterItems ({ ish->GetCLEntry () });
 		connect (ish,
 				SIGNAL (gotSocketError (QAbstractSocket::SocketError, const QString&)),

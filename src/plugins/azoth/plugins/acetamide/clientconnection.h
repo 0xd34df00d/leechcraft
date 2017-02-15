@@ -64,8 +64,8 @@ namespace Acetamide
 		bool IsConsoleEnabled_;
 	public:
 		ClientConnection (IrcAccount*);
-		
-		void Release ();
+		~ClientConnection ();
+
 		void Sinchronize ();
 
 		IrcAccount* GetAccount () const;

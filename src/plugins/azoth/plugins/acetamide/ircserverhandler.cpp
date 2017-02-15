@@ -80,6 +80,12 @@ namespace Acetamide
 	, AutoWhoTimer_ (new QTimer (this))
 	, LastNickIndex_ (0)
 	{
+		IrcParser_ = new IrcParser (this);
+		CmdManager_ = new UserCommandManager (this, IrcParser_);
+		ServerResponseManager_ = new ServerResponseManager (this);
+		RplISupportParser_ = new RplISupportParser (this);
+		ChannelsManager_ = new ChannelsManager (this);
+
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoPeriod",
 				this, "handleUpdateWhoPeriod");
 		XmlSettingsManager::Instance ().RegisterObject ("AutoWhoRequest",
@@ -108,23 +114,6 @@ namespace Acetamide
 		handleSetAutoWho ();
 	}
 
-	void IrcServerHandler::Init ()
-	{
-		IrcParser_ = new IrcParser (this);
-		CmdManager_ = new UserCommandManager (this, IrcParser_);
-		ServerResponseManager_ = new ServerResponseManager (this);
-		RplISupportParser_ = new RplISupportParser (this);
-		ChannelsManager_ = new ChannelsManager (this);
-	}
-	
-	void IrcServerHandler::Release ()
-	{
-		if (Socket_)
-		{
-			Socket_->Release ();
-		}
-	}
-	
 	IrcServerCLEntry* IrcServerHandler::GetCLEntry () const
 	{
 		return ServerCLEntry_;
@@ -165,14 +154,10 @@ namespace Acetamide
 		QObjectList result;
 
 		if (ChannelsManager_)
-		{
 			result << ChannelsManager_->GetCLEntries ();
-		}
 
 		for (const auto& spe : Nick2Entry_)
-		{
 			result << spe.get ();
-		}
 
 		return result;
 	}
@@ -983,18 +968,14 @@ namespace Acetamide
 		Nick2Entry_.clear ();
 
 		if (Socket_ && ServerConnectionState_ != NotConnected)
-		{
 			Socket_->DisconnectFromHost ();
-		}
 	}
 
 	void IrcServerHandler::SendCommand (const QString& cmd)
 	{
 		SendToConsole (IMessage::Direction::Out, cmd.trimmed ());
 		if (Socket_)
-		{
 			Socket_->Send (cmd);
-		}
 	}
 
 	void IrcServerHandler::SendToConsole (IMessage::Direction dir,
@@ -1009,9 +990,7 @@ namespace Acetamide
 	void IrcServerHandler::NickCmdError ()
 	{
 		if (!Account_)
-		{
 			return;
-		}
 		
 		if (Account_->GetNickNames ().isEmpty ())
 		{
@@ -1021,9 +1000,7 @@ namespace Acetamide
 		}
 		
 		if (LastNickIndex_ < Account_->GetNickNames ().count ())
-		{
 			NickName_ = Account_->GetNickNames ().at (LastNickIndex_++);
-		}
 		else
 		{
 			qDebug () << Q_FUNC_INFO << "NickName conflict";
@@ -1237,9 +1214,7 @@ namespace Acetamide
 		ServerConnectionState_ = NotConnected;
 		ServerCLEntry_->SetStatus (EntryStatus (SOffline, QString ()));
 		if (Socket_)
-		{
 			Socket_->Close ();
-		}
 		emit disconnected (ServerID_);
 	}
 
