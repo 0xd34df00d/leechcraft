@@ -31,8 +31,8 @@
 #include <QFileSystemWatcher>
 #include <QStringList>
 #include <QDir>
-#include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -65,33 +65,17 @@ namespace LMP
 	void RecursiveDirWatcherImpl::AddRoot (const QString& root)
 	{
 		qDebug () << Q_FUNC_INFO << "scanning" << root;
-		auto watcher = new QFutureWatcher<QStringList> ();
-		watcher->setProperty ("Path", root);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleSubdirsCollected ()));
-
-		watcher->setFuture (QtConcurrent::run (CollectSubdirs, root));
+		Util::Sequence (this, QtConcurrent::run (CollectSubdirs, root)) >>
+				[this, root] (const QStringList& paths)
+				{
+					Dir2Subdirs_ [root] = paths;
+					Watcher_->addPaths (paths);
+				};
 	}
 
 	void RecursiveDirWatcherImpl::RemoveRoot (const QString& root)
 	{
 		Watcher_->removePaths (Dir2Subdirs_.take (root));
-	}
-
-	void RecursiveDirWatcherImpl::handleSubdirsCollected ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<QStringList>*> (sender ());
-		if (!watcher)
-			return;
-
-		watcher->deleteLater ();
-
-		const auto& paths = watcher->result ();
-		const auto& path = watcher->property ("Path").toString ();
-		Dir2Subdirs_ [path] = paths;
-		Watcher_->addPaths (paths);
 	}
 }
 }
