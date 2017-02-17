@@ -166,7 +166,6 @@ case $1 in
 			-DENABLE_TOUCHSTREAMS=True \
 			-DENABLE_TPI=True \
 			-DENABLE_TWIFEE=False \
-			-DENABLE_VTYULC=False \
 			-DENABLE_VROOBY=True \
 			-DENABLE_XPROXY=True \
 			-DENABLE_ZALIL=True ;;
@@ -307,7 +306,6 @@ case $1 in
 			-DENABLE_TOUCHSTREAMS=True \
 			-DENABLE_TPI=True \
 			-DENABLE_TWIFEE=False \
-			-DENABLE_VTYULC=True \
 			-DENABLE_VROOBY=True \
 			-DENABLE_ELEEMINATOR=True \
 			-DENABLE_XPROXY=False \
@@ -400,7 +398,6 @@ case $1 in
 			-DENABLE_TOUCHSTREAMS=True \
 			-DENABLE_TPI=True \
 			-DENABLE_TWIFEE=False \
-			-DENABLE_VTYULC=True \
 			-DENABLE_VROOBY=True \
 			-DENABLE_ELEEMINATOR=True \
 			-DENABLE_XPROXY=True \
@@ -518,7 +515,6 @@ case $1 in
 			-DENABLE_TOUCHSTREAMS=True \
 			-DENABLE_TPI=True \
 			-DENABLE_TWIFEE=False \
-			-DENABLE_VTYULC=False \
 			-DENABLE_VROOBY=True \
 			-DENABLE_WKPLUGINS=False \
 			-DENABLE_XPROXY=True \
