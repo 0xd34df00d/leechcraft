@@ -42,13 +42,12 @@ namespace LMP
 	{
 		QStringList CollectSubdirs (const QString& path)
 		{
-			QDir dir (path);
-			const auto& list = dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot);
+			QStringList result { path };
 
-			QStringList result (path);
-			std::for_each (list.begin (), list.end (),
-					[&dir, &result] (decltype (list.front ()) item)
-						{ result += CollectSubdirs (dir.filePath (item)); });
+			QDir dir { path };
+			for (const auto& item : dir.entryList (QDir::Dirs | QDir::NoDotAndDotDot))
+				result += CollectSubdirs (dir.filePath (item));
+
 			return result;
 		}
 	}

@@ -50,9 +50,9 @@ namespace LMP
 		RecursiveDirWatcher * const Watcher_;
 
 		QList<QString> ScheduledDirs_;
-		QTimer *ScanTimer_;
+		QTimer * const ScanTimer_;
 	public:
-		LocalCollectionWatcher (QObject* = 0);
+		LocalCollectionWatcher (QObject* = nullptr);
 
 		void AddPath (const QString&);
 		void RemovePath (const QString&);
