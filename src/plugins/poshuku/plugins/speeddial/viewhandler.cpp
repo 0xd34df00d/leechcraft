@@ -225,9 +225,12 @@ namespace SpeedDial
 
 		View_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8");
 
-		const auto edit = BrowserWidget_->GetURLEdit ();
+		const QPointer<QLineEdit> edit { BrowserWidget_->GetURLEdit () };
 		Util::ExecuteLater ([edit]
 				{
+					if (!edit)
+						return;
+
 					const auto& text = edit->text ();
 					if (text == "about:blank")
 						edit->clear ();
