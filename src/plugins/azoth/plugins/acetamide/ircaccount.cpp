@@ -67,6 +67,11 @@ namespace Acetamide
 		Init ();
 	}
 
+	IrcAccount::~IrcAccount()
+	{
+		emit removedCLItems (GetCLEntries ());
+	}
+
 	void IrcAccount::Init ()
 	{
 		ClientConnection_.reset (new ClientConnection (this));
@@ -109,7 +114,9 @@ namespace Acetamide
 
 	QList<QObject*> IrcAccount::GetCLEntries ()
 	{
-		return QList<QObject*> ();
+		return ClientConnection_ ?
+				ClientConnection_->GetCLEntries () :
+				QList<QObject*> ();
 	}
 
 	QString IrcAccount::GetAccountName () const

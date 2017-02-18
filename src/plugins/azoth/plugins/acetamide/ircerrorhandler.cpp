@@ -41,9 +41,8 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	IrcErrorHandler::IrcErrorHandler (IrcServerHandler *ish)
-	: QObject (ish)
-	, ISH_ (ish)
+	IrcErrorHandler::IrcErrorHandler (QObject *parent)
+	: QObject (parent)
 	{
 		InitErrors ();
 	}

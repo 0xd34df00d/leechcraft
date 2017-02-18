@@ -69,7 +69,7 @@ namespace LMP
 	{
 		if (ScanTimer_->isActive ())
 			ScanTimer_->stop ();
-		ScanTimer_->start (2000);
+		ScanTimer_->start (5000);
 
 		if (std::any_of (ScheduledDirs_.begin (), ScheduledDirs_.end (),
 				[&dir] (const QString& other) { return dir.startsWith (other); }))

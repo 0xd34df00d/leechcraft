@@ -49,8 +49,6 @@ namespace LMP
 
 		void AddRoot (const QString&);
 		void RemoveRoot (const QString&);
-	private slots:
-		void handleSubdirsCollected ();
 	signals:
 		void directoryChanged (const QString&);
 	};

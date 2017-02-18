@@ -39,6 +39,7 @@
 #include <QtDebug>
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
+#include <util/sll/prelude.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -215,16 +216,14 @@ namespace LMP
 		if (!RootPaths_.contains (path))
 			return;
 
-		QStringList toRemove;
-		auto pred = [&path] (const QString& subPath) { return subPath.startsWith (path); };
-		std::copy_if (PresentPaths_.begin (), PresentPaths_.end (),
-				std::back_inserter (toRemove), pred);
-		PresentPaths_.subtract (QSet<QString>::fromList (toRemove));
+		const auto& toRemove = Util::Filter (PresentPaths_,
+				[&path] (const QString& subPath) { return subPath.startsWith (path); });
+		PresentPaths_.subtract (toRemove);
 
 		try
 		{
-			std::for_each (toRemove.begin (), toRemove.end (),
-					[this] (const QString& path) { RemoveTrack (path); });
+			for (const auto& item : toRemove)
+				RemoveTrack (item);
 		}
 		catch (const std::runtime_error& e)
 		{
@@ -252,11 +251,11 @@ namespace LMP
 		if (RootPaths_.contains (dir))
 			return DirStatus::RootPath;
 
-		auto pos = std::find_if (RootPaths_.begin (), RootPaths_.end (),
+		const auto hasSub = std::any_of (RootPaths_.begin (), RootPaths_.end (),
 				[&dir] (const auto& root) { return dir.startsWith (root); });
-		return pos == RootPaths_.end () ?
-				DirStatus::None :
-				DirStatus::SubPath;
+		return hasSub ?
+				DirStatus::SubPath :
+				DirStatus::None;
 	}
 
 	QStringList LocalCollection::GetDirs () const
@@ -479,9 +478,7 @@ namespace LMP
 				const auto pos = std::lower_bound (Artists_.begin (), Artists_.end (), artist,
 						[] (const Collection::Artist& a1, const Collection::Artist& a2)
 						{
-							return CompareArtists (a1.Name_, a2.Name_,
-									!XmlSettingsManager::Instance ()
-										.property ("SortWithThe").toBool ());
+							return QString::localeAwareCompare (a1.Name_, a2.Name_);
 						});
 				Artists_.insert (pos, artist);
 			}

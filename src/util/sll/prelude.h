@@ -186,7 +186,7 @@ namespace Util
 		Container<T> result;
 		for (const auto& item : c)
 			if (Invoke (f, item))
-				result.push_back (item);
+				detail::Append (result, item);
 		return result;
 	}
 

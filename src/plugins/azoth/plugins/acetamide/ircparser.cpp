@@ -46,7 +46,8 @@ namespace Acetamide
 	using namespace boost::spirit::classic;
 
 	IrcParser::IrcParser (IrcServerHandler *sh)
-	: ISH_ (sh)
+	: QObject (sh)
+	, ISH_ (sh)
 	, ServerOptions_ (sh->GetServerOptions ())
 	{
 		LongAnswerCommands_ << "mode"

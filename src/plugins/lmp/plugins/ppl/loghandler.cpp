@@ -190,7 +190,7 @@ namespace PPL
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[dia, scrobblers]
+			[dia, scrobblers, logPath]
 			{
 				QHash<Media::IAudioScrobbler*, Media::IAudioScrobbler::BackdatedTracks_t> scrob2tracks;
 
@@ -201,6 +201,8 @@ namespace PPL
 
 				for (const auto& pair : Util::Stlize (scrob2tracks))
 					pair.first->SendBackdated (pair.second);
+
+				QFile::remove (logPath);
 			},
 			dia,
 			SIGNAL (accepted ()),
