@@ -63,22 +63,13 @@ namespace Acetamide
 			IrcAccount *account)
 	: Account_ (account)
 	, ErrorHandler_ (new IrcErrorHandler (this))
-	, IrcParser_ (0)
 	, ServerCLEntry_ (new IrcServerCLEntry (this, account))
-	, Socket_ (0)
-	, CmdManager_ (0)
-	, ServerResponseManager_ (0)
-	, RplISupportParser_ (0)
-	, ChannelsManager_ (0)
 	, ServerConnectionState_ (NotConnected)
-	, IsConsoleEnabled_ (false)
-	, IsInviteDialogActive_ (false)
 	, ServerID_ (server.ServerName_ + ":" +
 			QString::number (server.ServerPort_))
 	, NickName_ (server.ServerNickName_)
 	, ServerOptions_ (server)
 	, AutoWhoTimer_ (new QTimer (this))
-	, LastNickIndex_ (0)
 	{
 		IrcParser_ = new IrcParser (this);
 		CmdManager_ = new UserCommandManager (this, IrcParser_);

@@ -62,10 +62,6 @@ namespace Acetamide
 		qDeleteAll (ServerHandlers_);
 	}
 
-	void ClientConnection::Sinchronize ()
-	{
-	}
-
 	IrcAccount* ClientConnection::GetAccount () const
 	{
 		return Account_;
@@ -81,11 +77,8 @@ namespace Acetamide
 		QList<QObject*> result;
 		for (const auto ish : ServerHandlers_)
 		{
-			if (ish)
-			{
-				result << ish->GetCLEntry ();
-				result << ish->GetCLEntries ();
-			}
+			result << ish->GetCLEntry ();
+			result << ish->GetCLEntries ();
 		}
 		return result;
 	}

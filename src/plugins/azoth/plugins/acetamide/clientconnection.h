@@ -66,8 +66,6 @@ namespace Acetamide
 		ClientConnection (IrcAccount*);
 		~ClientConnection ();
 
-		void Sinchronize ();
-
 		IrcAccount* GetAccount () const;
 		QList<IrcServerHandler*> GetServerHandlers () const;
 		QList<QObject*> GetCLEntries () const;

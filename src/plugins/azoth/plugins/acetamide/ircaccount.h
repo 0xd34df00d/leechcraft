@@ -85,8 +85,8 @@ namespace Acetamide
 		QList<IrcBookmark> ActiveChannels_;
 	public:
 		IrcAccount (const QString&, QObject*);
+		~IrcAccount ();
 		void Init ();
-		void Release ();
 
 		QObject* GetQObject ();
 		QObject* GetParentProtocol () const;

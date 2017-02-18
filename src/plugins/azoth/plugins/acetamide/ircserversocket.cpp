@@ -62,8 +62,8 @@ namespace Acetamide
 	{
 		if (const auto socket = GetSocketPtr ())
 		{
-			socket->disconnect ();
-			socket->disconnectFromHost ();
+			QObject::disconnect (socket, 0, 0, 0);
+			socket->abort ();
 		}
 	}
 
@@ -76,8 +76,7 @@ namespace Acetamide
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		QTcpSocket *socket = GetSocketPtr ();
-		if (socket)
+		if (const auto socket = GetSocketPtr ())
 		{
 			socket->disconnectFromHost ();
 		}
