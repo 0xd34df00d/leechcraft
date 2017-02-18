@@ -64,17 +64,17 @@ namespace Acetamide
 
 		IrcAccount *Account_;
 		IrcErrorHandler *ErrorHandler_;
-		IrcParser *IrcParser_;
+		IrcParser *IrcParser_ = 0;
 		IrcServerCLEntry *ServerCLEntry_;
-		IrcServerSocket *Socket_;
-		UserCommandManager *CmdManager_;
-		ServerResponseManager *ServerResponseManager_;
-		RplISupportParser *RplISupportParser_;
-		ChannelsManager *ChannelsManager_;
+		IrcServerSocket *Socket_ = 0;
+		UserCommandManager *CmdManager_ = 0;
+		ServerResponseManager *ServerResponseManager_ = 0;
+		RplISupportParser *RplISupportParser_ = 0;
+		ChannelsManager *ChannelsManager_ = 0;
 
 		ConnectionState ServerConnectionState_;
-		bool IsConsoleEnabled_;
-		bool IsInviteDialogActive_;
+		bool IsConsoleEnabled_ = false;
+		bool IsInviteDialogActive_ = false;
 		QString ServerID_;
 		QString NickName_;
 		QString OldNickName_;
@@ -87,9 +87,11 @@ namespace Acetamide
 		QHash<QString, int> SpyWho_;
 		QHash<QString, WhoIsMessage> SpyNick2WhoIsMessage_;
 		QTimer *AutoWhoTimer_;
+		
+		int LastNickIndex_ = 0;
 	public:
-		IrcServerHandler (const ServerOptions&,
-				IrcAccount*);
+		IrcServerHandler (const ServerOptions& server, IrcAccount* account);
+		
 		IrcServerCLEntry* GetCLEntry () const;
 		IrcAccount* GetAccount () const;
 		IrcParser* GetParser () const;

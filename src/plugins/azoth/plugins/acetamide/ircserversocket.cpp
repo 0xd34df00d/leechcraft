@@ -58,6 +58,15 @@ namespace Acetamide
 		Init ();
 	}
 
+	IrcServerSocket::~IrcServerSocket ()
+	{
+		if (const auto socket = GetSocketPtr ())
+		{
+			QObject::disconnect (socket, 0, 0, 0);
+			socket->abort ();
+		}
+	}
+
 	void IrcServerSocket::ConnectToHost (const QString& host, int port)
 	{
 		Util::Visit (Socket_,
@@ -67,7 +76,10 @@ namespace Acetamide
 
 	void IrcServerSocket::DisconnectFromHost ()
 	{
-		GetSocketPtr ()->disconnectFromHost ();
+		if (const auto socket = GetSocketPtr ())
+		{
+			socket->disconnectFromHost ();
+		}
 	}
 
 	void IrcServerSocket::Send (const QString& message)

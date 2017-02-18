@@ -39,10 +39,11 @@ namespace Azoth
 {
 namespace Acetamide
 {
-	UserCommandManager::UserCommandManager (IrcServerHandler *ish)
+	UserCommandManager::UserCommandManager (IrcServerHandler *ish, 
+			IrcParser *parser)
 	: QObject (ish)
 	, ISH_ (ish)
-	, Parser_ (ish->GetParser ())
+	, Parser_ (parser)
 	{
 		Init ();
 	}

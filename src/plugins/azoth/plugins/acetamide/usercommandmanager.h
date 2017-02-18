@@ -52,7 +52,7 @@ namespace Acetamide
 		IrcParser *Parser_;
 		QHash<QString, boost::function<void (const QStringList&)>> Command2Action_;
 	public:
-		UserCommandManager (IrcServerHandler*);
+		UserCommandManager (IrcServerHandler*, IrcParser *parser);
 		QString VerifyMessage (const QString&, const QString&);
 	private:
 		void Init ();

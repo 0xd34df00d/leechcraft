@@ -57,8 +57,9 @@ namespace Acetamide
 		ProxyObject_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 
-	void ClientConnection::Sinchronize ()
+	ClientConnection::~ClientConnection ()
 	{
+		qDeleteAll (ServerHandlers_);
 	}
 
 	IrcAccount* ClientConnection::GetAccount () const
@@ -71,6 +72,17 @@ namespace Acetamide
 		return ServerHandlers_.values ();
 	}
 
+	QList<QObject*> ClientConnection::GetCLEntries () const
+	{
+		QList<QObject*> result;
+		for (const auto ish : ServerHandlers_)
+		{
+			result << ish->GetCLEntry ();
+			result << ish->GetCLEntries ();
+		}
+		return result;
+	}
+	
 	namespace
 	{
 		QString GetServerKey (const ServerOptions& server)
