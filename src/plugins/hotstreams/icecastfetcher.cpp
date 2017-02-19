@@ -163,11 +163,8 @@ namespace HotStreams
 						field = reader.readElementText (QXmlStreamReader::ErrorOnUnexpectedElement);
 						return true;
 					};
-#ifdef USE_CPP14
+
 					auto readAct = [&elementName, &reader] (const QLatin1String& tagName, const auto& action)
-#else
-					auto readAct = [&elementName, &reader] (const QLatin1String& tagName, const std::function<void (QString)>& action)
-#endif
 					{
 						if (elementName != tagName)
 							return false;
