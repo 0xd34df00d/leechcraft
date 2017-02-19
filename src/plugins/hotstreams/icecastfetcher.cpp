@@ -116,9 +116,7 @@ namespace HotStreams
 	{
 		void SortInfoList (QList<IcecastModel::StationInfo>& infos)
 		{
-			std::sort (infos.begin (), infos.end (),
-					[] (decltype (infos.at (0)) left, decltype (infos.at (0)) right)
-						{ return left.Name_ < right.Name_; });
+			std::sort (infos.begin (), infos.end (), Util::ComparingBy (&IcecastModel::StationInfo::Name_));
 		}
 
 		void CoalesceOthers (QHash<QString, QList<IcecastModel::StationInfo>>& stations, int count)
