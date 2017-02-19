@@ -37,12 +37,12 @@
 #include <QXmlStreamReader>
 #include <QTimer>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QDir>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
 #include "icecastmodel.h"
@@ -272,21 +272,12 @@ namespace HotStreams
 	{
 		Model_->SetStations ({});
 
-		auto watcher = new QFutureWatcher<IcecastModel::StationInfoList_t> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleParsed ()));
-		watcher->setFuture (QtConcurrent::run (ParseWorker));
-	}
-
-	void IcecastFetcher::handleParsed ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<IcecastModel::StationInfoList_t>*> (sender ());
-		watcher->deleteLater ();
-
-		Model_->SetStations (watcher->result ());
-		deleteLater ();
+		Util::Sequence (this, QtConcurrent::run (ParseWorker)) >>
+				[this] (const IcecastModel::StationInfoList_t& list)
+				{
+					Model_->SetStations (list);
+					deleteLater ();
+				};
 	}
 
 	void IcecastFetcher::handleJobFinished (int id)
