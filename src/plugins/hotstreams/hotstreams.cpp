@@ -33,6 +33,7 @@
 #include <QTimer>
 #include <util/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
 #include <interfaces/core/icoreproxy.h>
 #include "somafmlistfetcher.h"
 #include "stealkilllistfetcher.h"
@@ -118,9 +119,7 @@ namespace HotStreams
 
 	void Plugin::SecondInit ()
 	{
-		QTimer::singleShot (5000,
-				this,
-				SLOT (refreshRadios ()));
+		Util::ExecuteLater ([this] { RefreshItems ({}); }, 5000);
 	}
 
 	QByteArray Plugin::GetUniqueID () const
@@ -198,11 +197,6 @@ namespace HotStreams
 		models.removeAll (Model_);
 		for (auto model : models)
 			Model2Fetcher_ [model] ();
-	}
-
-	void Plugin::refreshRadios ()
-	{
-		RefreshItems ({});
 	}
 }
 }

@@ -72,8 +72,6 @@ namespace HotStreams
 		QList<QAbstractItemModel*> GetRadioListItems () const;
 		Media::IRadioStation_ptr GetRadioStation (const QModelIndex&, const QString&);
 		void RefreshItems (const QList<QModelIndex>&);
-	protected slots:
-		void refreshRadios ();
 	};
 }
 }
