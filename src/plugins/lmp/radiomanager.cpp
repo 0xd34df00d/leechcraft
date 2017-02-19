@@ -427,7 +427,7 @@ namespace LMP
 
 	void RadioManager::refreshAll ()
 	{
-		for (auto prov : Model2Prov_)
+		for (auto prov : QSet<Media::IRadioStationProvider*>::fromList (Model2Prov_.values ()))
 			prov->RefreshItems ({});
 	}
 

@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "audioaddictstreamfetcher.h"
+#include <cassert>
 #include <QNetworkRequest>
 #include <QtDebug>
 #include <util/sll/parsejson.h>
@@ -51,10 +52,7 @@ namespace HotStreams
 				return "sky";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown service"
-					<< static_cast<int> (service);
-			return QString ();
+			assert (false);
 		}
 	}
 

@@ -35,6 +35,7 @@
 #include <QStandardItem>
 #include <QFutureWatcher>
 #include <QtConcurrentRun>
+#include <util/sll/prelude.h>
 #include <interfaces/media/iradiostationprovider.h>
 #include "roles.h"
 
@@ -70,9 +71,7 @@ namespace HotStreams
 		watcher->setFuture (QtConcurrent::run ([this, data]
 				{
 					auto result = Parse (data);
-					std::sort (result.begin (), result.end (),
-							[] (decltype (result.at (0)) left, decltype (result.at (0)) right)
-								{ return QString::localeAwareCompare (left.Name_, right.Name_) < 0; });
+					std::sort (result.begin (), result.end (), Util::ComparingBy (&StreamInfo::Name_));
 					return result;
 				}));
 	}
@@ -80,9 +79,6 @@ namespace HotStreams
 	void StreamListFetcherBase::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
 		reply->deleteLater ();
 		HandleData (reply->readAll ());
 	}
