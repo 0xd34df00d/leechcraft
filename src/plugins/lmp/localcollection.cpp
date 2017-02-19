@@ -56,15 +56,11 @@ namespace LMP
 {
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
-	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new LocalCollectionModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
-	, UpdateNewArtists_ (0)
-	, UpdateNewAlbums_ (0)
-	, UpdateNewTracks_ (0)
 	{
 		connect (Watcher_,
 				SIGNAL (finished ()),
