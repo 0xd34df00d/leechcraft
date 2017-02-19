@@ -225,20 +225,19 @@ namespace SpeedDial
 
 		View_->SetContent (html.toUtf8 (), "text/html;charset=UTF-8");
 
-		const auto edit = BrowserWidget_->GetURLEdit ();
-		new Util::DelayedExecutor
-		{
-			[edit]
-			{
-				const auto& text = edit->text ();
-				if (text == "about:blank")
-					edit->clear ();
+		const QPointer<QLineEdit> edit { BrowserWidget_->GetURLEdit () };
+		Util::ExecuteLater ([edit]
+				{
+					if (!edit)
+						return;
 
-				if (text == "about:blank" || text.isEmpty ())
-					edit->setFocus (Qt::OtherFocusReason);
-			},
-			0
-		};
+					const auto& text = edit->text ();
+					if (text == "about:blank")
+						edit->clear ();
+
+					if (text == "about:blank" || text.isEmpty ())
+						edit->setFocus (Qt::OtherFocusReason);
+				});
 	}
 
 	void ViewHandler::WriteTable (QXmlStreamWriter& w, const TopList_t& items,
