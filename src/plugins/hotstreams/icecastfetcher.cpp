@@ -37,12 +37,12 @@
 #include <QXmlStreamReader>
 #include <QTimer>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QDir>
 #include <util/xpc/util.h>
 #include <util/sys/paths.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include <interfaces/idownload.h>
 #include <interfaces/core/ientitymanager.h>
 #include "icecastmodel.h"
@@ -116,9 +116,7 @@ namespace HotStreams
 	{
 		void SortInfoList (QList<IcecastModel::StationInfo>& infos)
 		{
-			std::sort (infos.begin (), infos.end (),
-					[] (decltype (infos.at (0)) left, decltype (infos.at (0)) right)
-						{ return left.Name_ < right.Name_; });
+			std::sort (infos.begin (), infos.end (), Util::ComparingBy (&IcecastModel::StationInfo::Name_));
 		}
 
 		void CoalesceOthers (QHash<QString, QList<IcecastModel::StationInfo>>& stations, int count)
@@ -165,11 +163,8 @@ namespace HotStreams
 						field = reader.readElementText (QXmlStreamReader::ErrorOnUnexpectedElement);
 						return true;
 					};
-#ifdef USE_CPP14
+
 					auto readAct = [&elementName, &reader] (const QLatin1String& tagName, const auto& action)
-#else
-					auto readAct = [&elementName, &reader] (const QLatin1String& tagName, const std::function<void (QString)>& action)
-#endif
 					{
 						if (elementName != tagName)
 							return false;
@@ -272,21 +267,12 @@ namespace HotStreams
 	{
 		Model_->SetStations ({});
 
-		auto watcher = new QFutureWatcher<IcecastModel::StationInfoList_t> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleParsed ()));
-		watcher->setFuture (QtConcurrent::run (ParseWorker));
-	}
-
-	void IcecastFetcher::handleParsed ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<IcecastModel::StationInfoList_t>*> (sender ());
-		watcher->deleteLater ();
-
-		Model_->SetStations (watcher->result ());
-		deleteLater ();
+		Util::Sequence (this, QtConcurrent::run (ParseWorker)) >>
+				[this] (const IcecastModel::StationInfoList_t& list)
+				{
+					Model_->SetStations (list);
+					deleteLater ();
+				};
 	}
 
 	void IcecastFetcher::handleJobFinished (int id)

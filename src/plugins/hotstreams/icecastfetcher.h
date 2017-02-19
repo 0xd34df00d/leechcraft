@@ -55,7 +55,6 @@ namespace HotStreams
 		void FetchList (const ICoreProxy_ptr&);
 		void ParseList ();
 	private slots:
-		void handleParsed ();
 		void handleJobFinished (int);
 	};
 }
