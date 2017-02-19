@@ -80,9 +80,6 @@ namespace HotStreams
 	void StreamListFetcherBase::handleReplyFinished ()
 	{
 		auto reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-			return;
-
 		reply->deleteLater ();
 		HandleData (reply->readAll ());
 	}
