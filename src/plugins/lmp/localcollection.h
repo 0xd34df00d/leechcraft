@@ -61,7 +61,7 @@ namespace LMP
 		Q_OBJECT
 		Q_INTERFACES (LeechCraft::LMP::ILocalCollection)
 
-		bool IsReady_;
+		bool IsReady_ = false;
 
 		QStringList RootPaths_;
 
@@ -84,9 +84,9 @@ namespace LMP
 		QFutureWatcher<MediaInfo> *Watcher_;
 		QList<QSet<QString>> NewPathsQueue_;
 
-		int UpdateNewArtists_;
-		int UpdateNewAlbums_;
-		int UpdateNewTracks_;
+		int UpdateNewArtists_ = 0;
+		int UpdateNewAlbums_ = 0;
+		int UpdateNewTracks_ = 0;
 	public:
 		enum class DynamicPlaylist
 		{

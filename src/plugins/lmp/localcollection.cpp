@@ -56,15 +56,11 @@ namespace LMP
 {
 	LocalCollection::LocalCollection (QObject *parent)
 	: QObject (parent)
-	, IsReady_ (false)
 	, Storage_ (new LocalCollectionStorage (this))
 	, CollectionModel_ (new LocalCollectionModel (this))
 	, FilesWatcher_ (new LocalCollectionWatcher (this))
 	, AlbumArtMgr_ (new AlbumArtManager (this))
 	, Watcher_ (new QFutureWatcher<MediaInfo> (this))
-	, UpdateNewArtists_ (0)
-	, UpdateNewAlbums_ (0)
-	, UpdateNewTracks_ (0)
 	{
 		connect (Watcher_,
 				SIGNAL (finished ()),
@@ -356,10 +352,8 @@ namespace LMP
 
 	QStringList LocalCollection::TrackList2PathList (const QList<int>& tracks) const
 	{
-		QStringList result;
-		std::transform (tracks.begin (), tracks.end (), std::back_inserter (result),
-				[this] (int id) { return Track2Path_ [id]; });
-		result.removeAll (QString ());
+		auto result = Util::Map (tracks, [this] (int id) { return Track2Path_ [id]; });
+		result.removeAll ({});
 		return result;
 	}
 
