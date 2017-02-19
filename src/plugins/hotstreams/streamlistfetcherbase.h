@@ -61,7 +61,7 @@ namespace HotStreams
 			QString PlaylistFormat_;
 		};
 	public:
-		StreamListFetcherBase (QStandardItem*, QNetworkAccessManager*, QObject* = 0);
+		StreamListFetcherBase (QStandardItem*, QNetworkAccessManager*, QObject* = nullptr);
 	protected:
 		void Request (const QNetworkRequest&);
 
