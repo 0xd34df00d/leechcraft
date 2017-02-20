@@ -41,21 +41,13 @@ namespace Nacheku
 	ClipboardWatcher::ClipboardWatcher (QObject *parent)
 	: QObject (parent)
 	{
-		ClipboardWatchdog_ = new QTimer (this);
-		connect (ClipboardWatchdog_,
-				SIGNAL (timeout ()),
+		connect (QApplication::clipboard (),
+				SIGNAL (changed (QClipboard::Mode)),
 				this,
-				SLOT (handleClipboardTimer ()));
-		ClipboardWatchdog_->start (5000);
+				SLOT (handleClipboardChanged ()));
 	}
 
-	ClipboardWatcher::~ClipboardWatcher ()
-	{
-		ClipboardWatchdog_->stop ();
-		delete ClipboardWatchdog_;
-	}
-
-	void ClipboardWatcher::handleClipboardTimer ()
+	void ClipboardWatcher::handleClipboardChanged ()
 	{
 		if (!XmlSettingsManager::Instance ()
 				.property ("WatchClipboard").toBool ())
