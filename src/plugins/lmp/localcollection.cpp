@@ -40,6 +40,7 @@
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/threads/futures.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -71,13 +72,19 @@ namespace LMP
 				this,
 				SIGNAL (scanProgressChanged (int)));
 
-		auto loadWatcher = new QFutureWatcher<LocalCollectionStorage::LoadResult> (this);
-		connect (loadWatcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleLoadFinished ()));
-		auto future = QtConcurrent::run ([] { return LocalCollectionStorage ().Load (); });
-		loadWatcher->setFuture (future);
+		Util::Sequence (this, QtConcurrent::run ([] { return LocalCollectionStorage ().Load (); })) >>
+				[this] (const LocalCollectionStorage::LoadResult& result)
+				{
+					Storage_->Load (result);
+					HandleNewArtists (result.Artists_);
+
+					IsReady_ = true;
+					emit collectionReady ();
+
+					QTimer::singleShot (5000,
+							this,
+							SLOT (rescanOnLoad ()));
+				};
 
 		auto& xsd = XmlSettingsManager::Instance ();
 		QStringList oldDefault (xsd.property ("CollectionDir").toString ());
@@ -709,24 +716,6 @@ namespace LMP
 	{
 		for (const auto& rootPath : RootPaths_)
 			Scan (rootPath, true);
-	}
-
-	void LocalCollection::handleLoadFinished ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<LocalCollectionStorage::LoadResult>*> (sender ());
-		watcher->deleteLater ();
-		const auto& result = watcher->result ();
-		Storage_->Load (result);
-
-		HandleNewArtists (result.Artists_);
-
-		IsReady_ = true;
-
-		emit collectionReady ();
-
-		QTimer::singleShot (5000,
-				this,
-				SLOT (rescanOnLoad ()));
 	}
 
 	void LocalCollection::handleIterateFinished ()

@@ -165,7 +165,6 @@ namespace LMP
 		void InitiateScan (const QSet<QString>&);
 	private slots:
 		void rescanOnLoad ();
-		void handleLoadFinished ();
 		void handleIterateFinished ();
 		void handleScanFinished ();
 		void saveRootPaths ();
