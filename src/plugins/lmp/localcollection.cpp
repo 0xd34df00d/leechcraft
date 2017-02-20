@@ -148,13 +148,6 @@ namespace LMP
 
 	void LocalCollection::Scan (const QString& path, bool root)
 	{
-		auto watcher = new QFutureWatcher<IterateResult> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleIterateFinished ()));
-		watcher->setProperty ("Path", path);
-
 		if (root)
 			AddRootPaths ({ path });
 
@@ -210,7 +203,16 @@ namespace LMP
 
 			return result;
 		};
-		watcher->setFuture (QtConcurrent::run (worker));
+		Util::Sequence (this, QtConcurrent::run (worker)) >>
+				[this, path] (const IterateResult& result)
+				{
+					CheckRemovedFiles (result.ChangedFiles_ + result.UnchangedFiles_, path);
+
+					if (Watcher_->isRunning ())
+						NewPathsQueue_ << result.ChangedFiles_;
+					else
+						InitiateScan (result.ChangedFiles_);
+				};
 	}
 
 	void LocalCollection::Unscan (const QString& path)
@@ -715,23 +717,6 @@ namespace LMP
 	{
 		for (const auto& rootPath : RootPaths_)
 			Scan (rootPath, true);
-	}
-
-	void LocalCollection::handleIterateFinished ()
-	{
-		sender ()->deleteLater ();
-
-		const auto& path = sender ()->property ("Path").toString ();
-
-		auto watcher = dynamic_cast<QFutureWatcher<IterateResult>*> (sender ());
-		const auto& result = watcher->result ();
-
-		CheckRemovedFiles (result.ChangedFiles_ + result.UnchangedFiles_, path);
-
-		if (Watcher_->isRunning ())
-			NewPathsQueue_ << result.ChangedFiles_;
-		else
-			InitiateScan (result.ChangedFiles_);
 	}
 
 	void LocalCollection::handleScanFinished ()
