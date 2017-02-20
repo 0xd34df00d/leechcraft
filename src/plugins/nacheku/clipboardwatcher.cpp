@@ -32,14 +32,16 @@
 #include <QTimer>
 #include <QClipboard>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Nacheku
 {
-	ClipboardWatcher::ClipboardWatcher (QObject *parent)
-	: QObject (parent)
+	ClipboardWatcher::ClipboardWatcher (IEntityManager *iem, QObject *parent)
+	: QObject { parent }
+	, IEM_ { iem }
 	{
 		connect (QApplication::clipboard (),
 				SIGNAL (changed (QClipboard::Mode)),
@@ -59,11 +61,9 @@ namespace Nacheku
 
 		PreviousClipboardContents_ = text;
 
-		const Entity& e = Util::MakeEntity (text.toUtf8 (),
-				QString (),
-				FromUserInitiated);
-
-		emit gotEntity (e);
+		IEM_->HandleEntity (Util::MakeEntity (text.toUtf8 (),
+					{},
+					FromUserInitiated));
 	}
 }
 }

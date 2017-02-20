@@ -33,6 +33,8 @@
 #include <QString>
 #include <interfaces/structures.h>
 
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Nacheku
@@ -50,18 +52,15 @@ namespace Nacheku
 	{
 		Q_OBJECT
 
+		IEntityManager * const IEM_;
 		QString PreviousClipboardContents_;
 	public:
-		ClipboardWatcher (QObject *parent = 0);
+		ClipboardWatcher (IEntityManager*, QObject *parent = 0);
 	private slots:
 		/** Checks the clipboard for new content and whether it could
 		 * be handled.
 		 */
 		void handleClipboardChanged ();
-	signals:
-		/** Notifies about new entity obtained from the clipboard.
-		 */
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
