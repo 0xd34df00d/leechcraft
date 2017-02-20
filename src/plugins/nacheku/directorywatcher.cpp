@@ -38,9 +38,9 @@ namespace LeechCraft
 {
 namespace Nacheku
 {
-	DirectoryWatcher::DirectoryWatcher (QObject *parent)
-	: QObject (parent)
-	, Watcher_ (new QFileSystemWatcher)
+	DirectoryWatcher::DirectoryWatcher (IEntityManager *iem, QObject *parent)
+	: QObject { parent }
+	, Watcher_ { std::make_unique<QFileSystemWatcher> () }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("WatchDirectory",
 				this,
