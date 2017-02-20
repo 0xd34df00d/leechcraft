@@ -711,7 +711,7 @@ namespace LMP
 		}
 	}
 
-	void LocalCollection::rescanOnLoad ()
+	void LocalCollection::RescanOnLoad ()
 	{
 		for (const auto& rootPath : RootPaths_)
 			Scan (rootPath, true);
