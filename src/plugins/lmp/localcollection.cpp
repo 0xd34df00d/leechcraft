@@ -82,7 +82,7 @@ namespace LMP
 					IsReady_ = true;
 					emit collectionReady ();
 
-					Util::ExecuteLater ([this] { rescanOnLoad (); }, 5000);
+					Util::ExecuteLater ([this] { RescanOnLoad (); }, 5000);
 				};
 
 		auto& xsd = XmlSettingsManager::Instance ();
