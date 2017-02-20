@@ -40,6 +40,7 @@
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
 #include <util/threads/futures.h>
 #include "localcollectionstorage.h"
 #include "core.h"
@@ -81,9 +82,7 @@ namespace LMP
 					IsReady_ = true;
 					emit collectionReady ();
 
-					QTimer::singleShot (5000,
-							this,
-							SLOT (rescanOnLoad ()));
+					Util::ExecuteLater ([this] { rescanOnLoad (); }, 5000);
 				};
 
 		auto& xsd = XmlSettingsManager::Instance ();
