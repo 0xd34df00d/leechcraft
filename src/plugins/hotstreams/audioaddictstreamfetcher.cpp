@@ -62,14 +62,9 @@ namespace HotStreams
 	, Service_ (service)
 	{
 		const auto& abbr = Service2ID (service);
-		if (abbr.isEmpty ())
-		{
-			deleteLater ();
-			return;
-		}
 
 		const auto& urlStr = QString ("http://api.v2.audioaddict.com/v1/%1/mobile/batch_update?asset_group_key=mobile_icons&stream_set_key=").arg (abbr);
-		auto req = QNetworkRequest (QUrl (urlStr));
+		QNetworkRequest req { QUrl { urlStr } };
 		req.setRawHeader("Authorization",
 				"Basic " + QString ("%1:%2")
 					.arg (APIUsername)
