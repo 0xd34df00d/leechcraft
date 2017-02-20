@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <QUrl>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
@@ -40,6 +41,7 @@ namespace Nacheku
 {
 	DirectoryWatcher::DirectoryWatcher (IEntityManager *iem, QObject *parent)
 	: QObject { parent }
+	, IEM_ { iem }
 	, Watcher_ { std::make_unique<QFileSystemWatcher> () }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("WatchDirectory",
@@ -99,7 +101,7 @@ namespace Nacheku
 		Olds_ = cur;
 
 		Q_FOREACH (const QFileInfo& newFi, nl)
-			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
+			IEM_->HandleEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
 						path,
 						FromUserInitiated));
 	}

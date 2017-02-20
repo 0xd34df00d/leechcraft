@@ -48,12 +48,7 @@ namespace Nacheku
 
 		const auto iem = proxy->GetEntityManager ();
 
-		auto dirW = new DirectoryWatcher (this);
-		connect (dirW,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
-
+		new DirectoryWatcher { iem, this };
 		new ClipboardWatcher { iem, this };
 	}
 
