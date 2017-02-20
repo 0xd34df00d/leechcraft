@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <QClipboard>
 #include <util/xpc/util.h>
+#include <util/sll/slotclosure.h>
 #include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
@@ -41,29 +42,29 @@ namespace Nacheku
 {
 	ClipboardWatcher::ClipboardWatcher (IEntityManager *iem, QObject *parent)
 	: QObject { parent }
-	, IEM_ { iem }
 	{
-		connect (QApplication::clipboard (),
-				SIGNAL (changed (QClipboard::Mode)),
-				this,
-				SLOT (handleClipboardChanged ()));
-	}
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, iem]
+			{
+				if (!XmlSettingsManager::Instance ()
+						.property ("WatchClipboard").toBool ())
+					return;
 
-	void ClipboardWatcher::handleClipboardChanged ()
-	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("WatchClipboard").toBool ())
-			return;
+				const QString& text = QApplication::clipboard ()->text ();
+				if (text.isEmpty () || text == PreviousClipboardContents_)
+					return;
 
-		const QString& text = QApplication::clipboard ()->text ();
-		if (text.isEmpty () || text == PreviousClipboardContents_)
-			return;
+				PreviousClipboardContents_ = text;
 
-		PreviousClipboardContents_ = text;
-
-		IEM_->HandleEntity (Util::MakeEntity (text.toUtf8 (),
-					{},
-					FromUserInitiated));
+				iem->HandleEntity (Util::MakeEntity (text.toUtf8 (),
+						{},
+						FromUserInitiated));
+			},
+			QApplication::clipboard (),
+			SIGNAL (changed (QClipboard::Mode)),
+			this
+		};
 	}
 }
 }

@@ -52,15 +52,9 @@ namespace Nacheku
 	{
 		Q_OBJECT
 
-		IEntityManager * const IEM_;
 		QString PreviousClipboardContents_;
 	public:
 		ClipboardWatcher (IEntityManager*, QObject *parent = 0);
-	private slots:
-		/** Checks the clipboard for new content and whether it could
-		 * be handled.
-		 */
-		void handleClipboardChanged ();
 	};
 }
 }
