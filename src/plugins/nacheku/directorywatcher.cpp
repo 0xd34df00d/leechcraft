@@ -83,14 +83,13 @@ namespace Nacheku
 
 	void DirectoryWatcher::handleDirectoryChanged (const QString& path)
 	{
-		QDir dir (path);
-		const auto& cur = dir.entryInfoList (QDir::Files);
+		const auto& cur = QDir { path }.entryInfoList (QDir::Files);
 		auto nl = cur;
 
-		Q_FOREACH (const QFileInfo& oldFi, Olds_)
+		for (const auto& oldFi : Olds_)
 		{
-			const QString& fname = oldFi.absoluteFilePath ();
-			Q_FOREACH (const QFileInfo& newFi, nl)
+			const auto& fname = oldFi.absoluteFilePath ();
+			for (const auto& newFi : nl)
 				if (newFi.absoluteFilePath () == fname)
 				{
 					nl.removeOne (newFi);
@@ -100,7 +99,7 @@ namespace Nacheku
 
 		Olds_ = cur;
 
-		Q_FOREACH (const QFileInfo& newFi, nl)
+		for (const auto& newFi : nl)
 			IEM_->HandleEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
 						path,
 						FromUserInitiated));
