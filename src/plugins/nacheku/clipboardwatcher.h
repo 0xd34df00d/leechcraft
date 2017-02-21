@@ -50,8 +50,6 @@ namespace Nacheku
 	 */
 	class ClipboardWatcher : public QObject
 	{
-		Q_OBJECT
-
 		QString PreviousClipboardContents_;
 	public:
 		ClipboardWatcher (IEntityManager*, QObject *parent = 0);
