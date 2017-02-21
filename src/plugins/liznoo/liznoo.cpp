@@ -41,6 +41,7 @@
 #include <util/xpc/util.h>
 #include <util/sll/either.h>
 #include <util/sll/visitor.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
@@ -300,16 +301,20 @@ namespace Liznoo
 
 	void Plugin::handleUpdateHistory ()
 	{
-		for (const QString& id : Battery2LastInfo_.keys ())
+		for (const auto& pair : Util::Stlize (Battery2LastInfo_))
 		{
+			const auto& id = pair.first;
 			auto pos = Battery2History_.find (id);
 			if (pos == Battery2History_.end ())
 				pos = Battery2History_.insert (id, BatteryHistoryList { HistSize });
-			pos->push_back (BatteryHistory { Battery2LastInfo_ [id] });
+			pos->push_back (BatteryHistory { pair.second });
 		}
 
-		for (const QString& id : Battery2Dialog_.keys ())
-			Battery2Dialog_ [id]->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
+		for (const auto& pair : Util::Stlize (Battery2Dialog_))
+		{
+			const auto& id = pair.first;
+			pair.second->UpdateHistory (Battery2History_ [id], Battery2LastInfo_ [id]);
+		}
 	}
 
 	void Plugin::handleHistoryTriggered ()
