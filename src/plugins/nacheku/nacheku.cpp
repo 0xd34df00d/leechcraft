@@ -43,7 +43,8 @@ namespace Nacheku
 	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("nacheku");
-		XSD_.reset (new Util::XmlSettingsDialog ());
+
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
 
 		const auto iem = proxy->GetEntityManager ();
@@ -88,4 +89,3 @@ namespace Nacheku
 }
 
 LC_EXPORT_PLUGIN (leechcraft_nacheku, LeechCraft::Nacheku::Plugin);
-
