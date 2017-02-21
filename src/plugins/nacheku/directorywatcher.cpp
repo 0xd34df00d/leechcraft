@@ -53,9 +53,9 @@ namespace Nacheku
 				SLOT (settingsChanged ()));
 
 		connect (Watcher_.get (),
-				SIGNAL (directoryChanged (const QString&)),
+				SIGNAL (directoryChanged (QString)),
 				this,
-				SLOT (handleDirectoryChanged (const QString&)),
+				SLOT (handleDirectoryChanged (QString)),
 				Qt::QueuedConnection);
 	}
 
