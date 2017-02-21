@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include <QLinkedList>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihavesettings.h>
 #include <interfaces/ientityhandler.h>
@@ -70,7 +69,7 @@ namespace Liznoo
 
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
-		QMap<QString, QLinkedList<BatteryHistory>> Battery2History_;
+		QMap<QString, BatteryHistoryList> Battery2History_;
 
 		QAction *Suspend_;
 		QAction *Hibernate_;

@@ -302,10 +302,10 @@ namespace Liznoo
 	{
 		for (const QString& id : Battery2LastInfo_.keys ())
 		{
-			auto& hist = Battery2History_ [id];
-			hist << BatteryHistory (Battery2LastInfo_ [id]);
-			if (hist.size () > HistSize)
-				hist.removeFirst ();
+			auto pos = Battery2History_.find (id);
+			if (pos == Battery2History_.end ())
+				pos = Battery2History_.insert (id, BatteryHistoryList { HistSize });
+			pos->push_back (BatteryHistory { Battery2LastInfo_ [id] });
 		}
 
 		for (const QString& id : Battery2Dialog_.keys ())
