@@ -138,7 +138,7 @@ namespace HotSensors
 	void LmSensorsBackend::update ()
 	{
 		Readings_t readings { static_cast<Readings_t::capacity_type> (Features_.size ()) };
-		for (auto feature : Features_)
+		for (auto& feature : Features_)
 		{
 			const auto chipName = feature.SF_.Chip_.ToSensorsChip ();
 
