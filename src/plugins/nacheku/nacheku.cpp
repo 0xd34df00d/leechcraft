@@ -31,6 +31,7 @@
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <interfaces/core/icoreproxy.h>
 #include "xmlsettingsmanager.h"
 #include "clipboardwatcher.h"
 #include "directorywatcher.h"
@@ -39,23 +40,17 @@ namespace LeechCraft
 {
 namespace Nacheku
 {
-	void Plugin::Init (ICoreProxy_ptr)
+	void Plugin::Init (ICoreProxy_ptr proxy)
 	{
 		Util::InstallTranslator ("nacheku");
-		XSD_.reset (new Util::XmlSettingsDialog ());
+
+		XSD_ = std::make_shared<Util::XmlSettingsDialog> ();
 		XSD_->RegisterObject (&XmlSettingsManager::Instance (), "nachekusettings.xml");
 
-		auto dirW = new DirectoryWatcher (this);
-		connect (dirW,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+		const auto iem = proxy->GetEntityManager ();
 
-		auto clipW = new ClipboardWatcher (this);
-		connect (clipW,
-				SIGNAL (gotEntity (LeechCraft::Entity)),
-				this,
-				SIGNAL (gotEntity (LeechCraft::Entity)));
+		new DirectoryWatcher { iem, this };
+		new ClipboardWatcher { iem, this };
 	}
 
 	void Plugin::SecondInit ()
@@ -94,4 +89,3 @@ namespace Nacheku
 }
 
 LC_EXPORT_PLUGIN (leechcraft_nacheku, LeechCraft::Nacheku::Plugin);
-

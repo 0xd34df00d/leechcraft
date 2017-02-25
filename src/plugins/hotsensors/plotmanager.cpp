@@ -94,9 +94,9 @@ namespace HotSensors
 			const bool isKnownSensor = existing.contains (name);
 			auto item = isKnownSensor ? existing.take (name) : new QStandardItem;
 
-			const auto lastTemp = pair.second.isEmpty () ?
+			const auto lastTemp = pair.second.empty () ?
 					0 :
-					static_cast<int> (pair.second.last ().Value_);
+					static_cast<int> (pair.second.front ().Value_);
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);

@@ -36,6 +36,8 @@
 #include <QFileSystemWatcher>
 #include <interfaces/structures.h>
 
+class IEntityManager;
+
 namespace LeechCraft
 {
 namespace Nacheku
@@ -46,6 +48,7 @@ namespace Nacheku
 	{
 		Q_OBJECT
 
+		IEntityManager * const IEM_;
 		std::unique_ptr<QFileSystemWatcher> Watcher_;
 		QList<QFileInfo> Olds_;
 	public:
@@ -55,7 +58,7 @@ namespace Nacheku
 		 *
 		 * @param[in] parent The parent object.
 		 */
-		DirectoryWatcher (QObject *parent = 0);
+		DirectoryWatcher (IEntityManager*, QObject *parent = 0);
 	private slots:
 		/** Handles the changed settings. Removes previous directory
 		 * from the watch list and adds a new one. Checks the new
@@ -71,10 +74,6 @@ namespace Nacheku
 		 * @param[in] dir The directory that changed.
 		 */
 		void handleDirectoryChanged (const QString& dir);
-	signals:
-		/** Emitted when a new or modified file is detected.
-		 */
-		void gotEntity (const LeechCraft::Entity& entity);
 	};
 }
 }

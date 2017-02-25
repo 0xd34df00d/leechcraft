@@ -32,46 +32,39 @@
 #include <QTimer>
 #include <QClipboard>
 #include <util/xpc/util.h>
+#include <util/sll/slotclosure.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Nacheku
 {
-	ClipboardWatcher::ClipboardWatcher (QObject *parent)
-	: QObject (parent)
+	ClipboardWatcher::ClipboardWatcher (IEntityManager *iem, QObject *parent)
+	: QObject { parent }
 	{
-		ClipboardWatchdog_ = new QTimer (this);
-		connect (ClipboardWatchdog_,
-				SIGNAL (timeout ()),
-				this,
-				SLOT (handleClipboardTimer ()));
-		ClipboardWatchdog_->start (5000);
-	}
+		new Util::SlotClosure<Util::NoDeletePolicy>
+		{
+			[this, iem]
+			{
+				if (!XmlSettingsManager::Instance ()
+						.property ("WatchClipboard").toBool ())
+					return;
 
-	ClipboardWatcher::~ClipboardWatcher ()
-	{
-		ClipboardWatchdog_->stop ();
-		delete ClipboardWatchdog_;
-	}
+				const QString& text = QApplication::clipboard ()->text ();
+				if (text.isEmpty () || text == PreviousClipboardContents_)
+					return;
 
-	void ClipboardWatcher::handleClipboardTimer ()
-	{
-		if (!XmlSettingsManager::Instance ()
-				.property ("WatchClipboard").toBool ())
-			return;
+				PreviousClipboardContents_ = text;
 
-		const QString& text = QApplication::clipboard ()->text ();
-		if (text.isEmpty () || text == PreviousClipboardContents_)
-			return;
-
-		PreviousClipboardContents_ = text;
-
-		const Entity& e = Util::MakeEntity (text.toUtf8 (),
-				QString (),
-				FromUserInitiated);
-
-		emit gotEntity (e);
+				iem->HandleEntity (Util::MakeEntity (text.toUtf8 (),
+						{},
+						FromUserInitiated));
+			},
+			QApplication::clipboard (),
+			SIGNAL (changed (QClipboard::Mode)),
+			this
+		};
 	}
 }
 }

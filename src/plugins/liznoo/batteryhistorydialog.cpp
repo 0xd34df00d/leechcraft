@@ -119,7 +119,7 @@ namespace Liznoo
 #endif
 	}
 
-	void BatteryHistoryDialog::UpdateHistory (const QLinkedList<BatteryHistory>& hist, const BatteryInfo& info)
+	void BatteryHistoryDialog::UpdateHistory (const BatteryHistoryList& hist, const BatteryInfo& info)
 	{
 		QVector<double> xdata (hist.size ());
 		QVector<double> energy (hist.size ());
@@ -127,7 +127,7 @@ namespace Liznoo
 		QVector<QPointF> percents;
 
 		bool setTemperature = false;
-		int i = 0;
+		size_t i = 0;
 		for (const auto& bh : hist)
 		{
 			if (percents.isEmpty () ||

@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/circular_buffer.hpp>
 #include <QString>
 
 namespace LeechCraft
@@ -48,6 +49,8 @@ namespace Liznoo
 
 		explicit BatteryHistory (const BatteryInfo&);
 	};
+
+	using BatteryHistoryList = boost::circular_buffer<BatteryHistory>;
 }
 }
 

@@ -137,15 +137,15 @@ namespace HotSensors
 
 	void LmSensorsBackend::update ()
 	{
-		Readings_t readings;
-		for (auto feature : Features_)
+		Readings_t readings { static_cast<Readings_t::capacity_type> (Features_.size ()) };
+		for (auto& feature : Features_)
 		{
 			const auto chipName = feature.SF_.Chip_.ToSensorsChip ();
 
 			double value = 0;
 			sensors_get_value (&chipName, feature.SF_.SF_, &value);
 
-			readings.append ({ feature.Name_, value, feature.Max_, feature.Crit_ });
+			readings.push_back ({ feature.Name_, value, feature.Max_, feature.Crit_ });
 		}
 		emit gotReadings (readings);
 	}

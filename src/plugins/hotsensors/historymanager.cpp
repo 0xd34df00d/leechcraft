@@ -59,10 +59,10 @@ namespace HotSensors
 
 		for (const auto& r : readings)
 		{
-			auto& vec = History_ [r.Name_];
-			vec << r;
-			if (vec.size () >= PointsCount)
-				vec.pop_front ();
+			auto pos = History_.find (r.Name_);
+			if (pos == History_.end ())
+				pos = History_.insert (r.Name_, Readings_t { PointsCount });
+			pos->push_back (r);
 		}
 
 		emit historyChanged (History_);

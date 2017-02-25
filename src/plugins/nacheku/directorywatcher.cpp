@@ -32,15 +32,17 @@
 #include <QTimer>
 #include <QUrl>
 #include <util/xpc/util.h>
+#include <interfaces/core/ientitymanager.h>
 #include "xmlsettingsmanager.h"
 
 namespace LeechCraft
 {
 namespace Nacheku
 {
-	DirectoryWatcher::DirectoryWatcher (QObject *parent)
-	: QObject (parent)
-	, Watcher_ (new QFileSystemWatcher)
+	DirectoryWatcher::DirectoryWatcher (IEntityManager *iem, QObject *parent)
+	: QObject { parent }
+	, IEM_ { iem }
+	, Watcher_ { std::make_unique<QFileSystemWatcher> () }
 	{
 		XmlSettingsManager::Instance ().RegisterObject ("WatchDirectory",
 				this,
@@ -51,9 +53,9 @@ namespace Nacheku
 				SLOT (settingsChanged ()));
 
 		connect (Watcher_.get (),
-				SIGNAL (directoryChanged (const QString&)),
+				SIGNAL (directoryChanged (QString)),
 				this,
-				SLOT (handleDirectoryChanged (const QString&)),
+				SLOT (handleDirectoryChanged (QString)),
 				Qt::QueuedConnection);
 	}
 
@@ -81,14 +83,13 @@ namespace Nacheku
 
 	void DirectoryWatcher::handleDirectoryChanged (const QString& path)
 	{
-		QDir dir (path);
-		const auto& cur = dir.entryInfoList (QDir::Files);
+		const auto& cur = QDir { path }.entryInfoList (QDir::Files);
 		auto nl = cur;
 
-		Q_FOREACH (const QFileInfo& oldFi, Olds_)
+		for (const auto& oldFi : Olds_)
 		{
-			const QString& fname = oldFi.absoluteFilePath ();
-			Q_FOREACH (const QFileInfo& newFi, nl)
+			const auto& fname = oldFi.absoluteFilePath ();
+			for (const auto& newFi : nl)
 				if (newFi.absoluteFilePath () == fname)
 				{
 					nl.removeOne (newFi);
@@ -98,8 +99,8 @@ namespace Nacheku
 
 		Olds_ = cur;
 
-		Q_FOREACH (const QFileInfo& newFi, nl)
-			emit gotEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
+		for (const auto& newFi : nl)
+			IEM_->HandleEntity (Util::MakeEntity (QUrl::fromLocalFile (newFi.absoluteFilePath ()),
 						path,
 						FromUserInitiated));
 	}

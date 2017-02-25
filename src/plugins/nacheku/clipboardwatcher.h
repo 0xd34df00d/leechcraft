@@ -33,7 +33,7 @@
 #include <QString>
 #include <interfaces/structures.h>
 
-class QTimer;
+class IEntityManager;
 
 namespace LeechCraft
 {
@@ -50,24 +50,9 @@ namespace Nacheku
 	 */
 	class ClipboardWatcher : public QObject
 	{
-		Q_OBJECT
-
-		QTimer *ClipboardWatchdog_;
 		QString PreviousClipboardContents_;
 	public:
-		ClipboardWatcher (QObject *parent = 0);
-		/** Stops the polling timer and destructs the watcher.
-		 */
-		virtual ~ClipboardWatcher ();
-	private slots:
-		/** Checks the clipboard for new content and whether it could
-		 * be handled.
-		 */
-		void handleClipboardTimer ();
-	signals:
-		/** Notifies about new entity obtained from the clipboard.
-		 */
-		void gotEntity (const LeechCraft::Entity&);
+		ClipboardWatcher (IEntityManager*, QObject *parent = 0);
 	};
 }
 }

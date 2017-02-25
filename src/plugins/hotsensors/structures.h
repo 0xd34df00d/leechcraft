@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <boost/circular_buffer.hpp>
 #include <QString>
 #include <QList>
 #include <QMap>
@@ -45,8 +46,8 @@ namespace HotSensors
 		double Crit_;
 	};
 
-	typedef QList<Reading> Readings_t;
+	using Readings_t = boost::circular_buffer<Reading>;
 
-	typedef QMap<QString, QList<Reading>> ReadingsHistory_t;
+	using ReadingsHistory_t = QMap<QString, Readings_t>;
 }
 }

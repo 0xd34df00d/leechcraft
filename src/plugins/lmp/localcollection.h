@@ -163,10 +163,8 @@ namespace LMP
 		void CheckRemovedFiles (const QSet<QString>& scanned, const QString& root);
 
 		void InitiateScan (const QSet<QString>&);
+		void RescanOnLoad ();
 	private slots:
-		void rescanOnLoad ();
-		void handleLoadFinished ();
-		void handleIterateFinished ();
 		void handleScanFinished ();
 		void saveRootPaths ();
 	signals:

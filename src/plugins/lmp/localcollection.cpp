@@ -40,6 +40,8 @@
 #include <util/sll/either.h>
 #include <util/xpc/util.h>
 #include <util/sll/prelude.h>
+#include <util/sll/delayedexecutor.h>
+#include <util/threads/futures.h>
 #include "localcollectionstorage.h"
 #include "core.h"
 #include "util.h"
@@ -71,13 +73,17 @@ namespace LMP
 				this,
 				SIGNAL (scanProgressChanged (int)));
 
-		auto loadWatcher = new QFutureWatcher<LocalCollectionStorage::LoadResult> (this);
-		connect (loadWatcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleLoadFinished ()));
-		auto future = QtConcurrent::run ([] { return LocalCollectionStorage ().Load (); });
-		loadWatcher->setFuture (future);
+		Util::Sequence (this, QtConcurrent::run ([] { return LocalCollectionStorage ().Load (); })) >>
+				[this] (const LocalCollectionStorage::LoadResult& result)
+				{
+					Storage_->Load (result);
+					HandleNewArtists (result.Artists_);
+
+					IsReady_ = true;
+					emit collectionReady ();
+
+					Util::ExecuteLater ([this] { RescanOnLoad (); }, 5000);
+				};
 
 		auto& xsd = XmlSettingsManager::Instance ();
 		QStringList oldDefault (xsd.property ("CollectionDir").toString ());
@@ -142,13 +148,6 @@ namespace LMP
 
 	void LocalCollection::Scan (const QString& path, bool root)
 	{
-		auto watcher = new QFutureWatcher<IterateResult> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleIterateFinished ()));
-		watcher->setProperty ("Path", path);
-
 		if (root)
 			AddRootPaths ({ path });
 
@@ -204,7 +203,16 @@ namespace LMP
 
 			return result;
 		};
-		watcher->setFuture (QtConcurrent::run (worker));
+		Util::Sequence (this, QtConcurrent::run (worker)) >>
+				[this, path] (const IterateResult& result)
+				{
+					CheckRemovedFiles (result.ChangedFiles_ + result.UnchangedFiles_, path);
+
+					if (Watcher_->isRunning ())
+						NewPathsQueue_ << result.ChangedFiles_;
+					else
+						InitiateScan (result.ChangedFiles_);
+				};
 	}
 
 	void LocalCollection::Unscan (const QString& path)
@@ -705,45 +713,10 @@ namespace LMP
 		}
 	}
 
-	void LocalCollection::rescanOnLoad ()
+	void LocalCollection::RescanOnLoad ()
 	{
 		for (const auto& rootPath : RootPaths_)
 			Scan (rootPath, true);
-	}
-
-	void LocalCollection::handleLoadFinished ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<LocalCollectionStorage::LoadResult>*> (sender ());
-		watcher->deleteLater ();
-		const auto& result = watcher->result ();
-		Storage_->Load (result);
-
-		HandleNewArtists (result.Artists_);
-
-		IsReady_ = true;
-
-		emit collectionReady ();
-
-		QTimer::singleShot (5000,
-				this,
-				SLOT (rescanOnLoad ()));
-	}
-
-	void LocalCollection::handleIterateFinished ()
-	{
-		sender ()->deleteLater ();
-
-		const auto& path = sender ()->property ("Path").toString ();
-
-		auto watcher = dynamic_cast<QFutureWatcher<IterateResult>*> (sender ());
-		const auto& result = watcher->result ();
-
-		CheckRemovedFiles (result.ChangedFiles_ + result.UnchangedFiles_, path);
-
-		if (Watcher_->isRunning ())
-			NewPathsQueue_ << result.ChangedFiles_;
-		else
-			InitiateScan (result.ChangedFiles_);
 	}
 
 	void LocalCollection::handleScanFinished ()
