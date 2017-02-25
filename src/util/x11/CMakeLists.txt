@@ -17,7 +17,8 @@ set (UTIL_SRCS ${UTIL_SRCS} PARENT_SCOPE)
 
 set (EXTRA_LIBS)
 if (USE_QT5)
-	set (EXTRA_LIBS ${EXTRA_LIBS} xcb )
+	find_package (XCB COMPONENTS XCB REQUIRED)
+	set (EXTRA_LIBS ${EXTRA_LIBS} XCB::XCB)
 endif ()
 
 add_library (leechcraft-util-x11${LC_LIBSUFFIX} SHARED
