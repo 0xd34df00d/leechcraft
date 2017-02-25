@@ -12,6 +12,7 @@
 
 find_path(QXMPP_INCLUDE_DIR
 	NAMES
+	qxmpp-qt5/QXmppClient.h
 	qxmpp/QXmppClient.h
 	HINTS
 	${QXMPP_DIR}/include
