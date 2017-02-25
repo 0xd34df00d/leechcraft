@@ -54,7 +54,8 @@ add_library (leechcraft_kbswitch SHARED
 
 set (EXTRA_LIBS)
 if (USE_QT5)
-	set (EXTRA_LIBS ${EXTRA_LIBS} xcb-xkb)
+	find_package (XCB COMPONENTS XKB REQUIRED)
+	set (EXTRA_LIBS ${EXTRA_LIBS} XCB::XKB)
 endif ()
 
 target_link_libraries (leechcraft_kbswitch
