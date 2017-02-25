@@ -57,17 +57,9 @@ set (QCA2_INCLUDE_DIR)
 set (QCA2_LIBRARIES)
 
 if (ENABLE_CRYPT)
-	find_package (QCA2)
-
-	if (NOT QCA2_FOUND)
-		set (ENABLE_CRYPT OFF)
-		message (WARNING "QCA2 is NOT found, support for PGP-signed/encrypted messages won't be built")
-	endif ()
-
+	find_package (QCA2 REQUIRED)
 	include_directories (${QCA2_INCLUDE_DIR})
-endif ()
 
-if (ENABLE_CRYPT)
 	add_definitions (-DENABLE_CRYPT)
 endif ()
 
