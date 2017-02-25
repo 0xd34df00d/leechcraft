@@ -28,6 +28,7 @@ case $1 in
 			-DENABLE_ELEEMINATOR=False \
 			-DENABLE_POSHUKU_DCAC_TESTS=False \
 			-DENABLE_XPROXY=True \
+			-DENABLE_MELLONETRAY=False \
 			-DENABLE_FONTIAC=True ;;
 	debian_cpp14*)
 		CC="/usr/bin/clang" CXX="/usr/bin/clang++" cmake ../src \
