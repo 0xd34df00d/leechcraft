@@ -54,6 +54,8 @@ namespace Popishu
 		Q_OBJECT
 		Q_INTERFACES (IInfo IHaveTabs IEntityHandler IHaveSettings IHaveRecoverableTabs)
 
+		LC_PLUGIN_METADATA ("org.LeechCraft.Popishu")
+
 		TabClassInfo TabClass_;
 		ICoreProxy_ptr Proxy_;
 		std::shared_ptr<Util::XmlSettingsDialog> XmlSettingsDialog_;
