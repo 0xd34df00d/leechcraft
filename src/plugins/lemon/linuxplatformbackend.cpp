@@ -84,6 +84,8 @@ namespace Lemon
 
 			info.Traffic_.Down_ = rtnl_link_get_stat (link, RTNL_LINK_RX_BYTES);
 			info.Traffic_.Up_ = rtnl_link_get_stat (link, RTNL_LINK_TX_BYTES);
+
+			rtnl_link_put (link);
 		}
 	}
 }
