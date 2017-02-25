@@ -4,6 +4,7 @@ case $1 in
 	debian_unstable*)
 		cmake ../src \
 			-DUSE_CPP14=True \
+			-DUSE_QT5=True \
 			-DEXTRA_WARNINGS=True \
 			-DENABLE_BLASQ=True \
 			-DENABLE_BLASQ_SPEGNERSI=False \
