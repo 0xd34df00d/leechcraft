@@ -6,10 +6,12 @@
 find_path (QWT_INCLUDE_DIRS
 	NAMES qwt_plot.h
 	PATHS
+	/usr/local/include/qwt6-qt5
 	/usr/local/include/qwt-qt5
 	/usr/local/include/qwt-qt4
 	/usr/local/include/qwt6
 	/usr/local/include/qwt
+	/usr/include/qwt6-qt5
 	/usr/include/qwt-qt5
 	/usr/include/qwt-qt4
 	/usr/include/qwt6
