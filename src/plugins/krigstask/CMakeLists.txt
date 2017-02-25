@@ -31,12 +31,13 @@ set (ADDITIONAL_LIBS
 	)
 
 if (USE_QT5)
+	find_package (XCB COMPONENTS COMPOSITE XFIXES RENDER RENDERUTIL)
 	set (ADDITIONAL_LIBS
 		${ADDITIONAL_LIBS}
-		xcb-composite
-		xcb-xfixes
-		xcb-render
-		xcb-render-util
+		XCB::COMPOSITE
+		XCB::XFIXES
+		XCB::RENDER
+		XCB::RENDERUTIL
 		)
 endif ()
 
