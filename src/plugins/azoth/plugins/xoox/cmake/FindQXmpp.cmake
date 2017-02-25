@@ -12,12 +12,10 @@
 
 find_path(QXMPP_INCLUDE_DIR
 	NAMES
-	qxmpp-qt5/QXmppClient.h
-	qxmpp/QXmppClient.h
+		QXmppClient.h
 	HINTS
-	${QXMPP_DIR}/include
-	PATH
-	ENV
+		${QXMPP_DIR}/include
+	PATH_SUFFIXES qxmpp-qt5 qxmpp
 )
 
 if (NOT USE_QT5)
@@ -48,11 +46,6 @@ if(QXMPP_LOCAL)
 endif()
 
 if(QXMPP_LIBRARIES AND QXMPP_INCLUDE_DIR)
-	if(NOT QXMPP_LOCAL)
-		set(QXMPP_INCLUDE_DIR
-			${QXMPP_INCLUDE_DIR}/qxmpp
-		)
-	endif()
 	set(QXMPP_FOUND 1)
 endif()
 
