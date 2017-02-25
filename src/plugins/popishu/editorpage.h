@@ -65,7 +65,6 @@ namespace Popishu
 
 		bool DoctypeDetected_;
 
-		QtMsgHandler DefaultMsgHandler_;
 		QObject *WrappedObject_;
 		bool TemporaryDocument_;
 

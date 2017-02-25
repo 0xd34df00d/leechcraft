@@ -75,7 +75,6 @@ namespace Popishu
 	, Toolbar_ (new QToolBar)
 	, Modified_ (false)
 	, DoctypeDetected_ (false)
-	, DefaultMsgHandler_ (0)
 	, WrappedObject_ (0)
 	, TemporaryDocument_ (false)
 	{
@@ -220,8 +219,6 @@ namespace Popishu
 
 	EditorPage::~EditorPage ()
 	{
-		if (DefaultMsgHandler_)
-			qInstallMsgHandler (DefaultMsgHandler_);
 		if (WrappedObject_)
 			Proxy_->GetPluginsManager ()->ReleasePlugin (WrappedObject_);
 	}
@@ -459,32 +456,6 @@ namespace Popishu
 		ScheduleTabRecoverSave ();
 	}
 
-	static QPlainTextEdit *S_TextEdit_ = 0;
-
-	void output (QtMsgType type, const char *msg)
-	{
-		QString line;
-		switch (type)
-		{
-		case QtDebugMsg:
-			line = "Debug: ";
-			break;
-		case QtWarningMsg:
-			line = "Warning: ";
-			break;
-		case QtCriticalMsg:
-			line = "Critical: ";
-			break;
-		case QtFatalMsg:
-			std::cerr << "Fatal: " << msg;
-			abort ();
-		}
-
-		line += msg;
-		if (S_TextEdit_)
-			S_TextEdit_->appendPlainText (line);
-	}
-
 	void EditorPage::on_Inject__released ()
 	{
 		if (!Save ())
@@ -503,9 +474,6 @@ namespace Popishu
 				break;
 			}
 
-		S_TextEdit_ = Ui_.Console_;
-		DefaultMsgHandler_ = qInstallMsgHandler (output);
-
 		emit delegateEntity (e, 0, 0);
 
 		if (!WrappedObject_)
@@ -515,11 +483,6 @@ namespace Popishu
 			QMessageBox::critical (this,
 					"LeechCraft",
 					tr ("Script wrapping failed."));
-
-			qInstallMsgHandler (DefaultMsgHandler_);
-			S_TextEdit_ = 0;
-			DefaultMsgHandler_ = 0;
-
 			return;
 		}
 
@@ -537,10 +500,6 @@ namespace Popishu
 					tr ("Script injection failed: %1")
 						.arg (e.what ()));
 			WrappedObject_->deleteLater ();
-
-			qInstallMsgHandler (DefaultMsgHandler_);
-			S_TextEdit_ = 0;
-			DefaultMsgHandler_ = 0;
 
 			return;
 		}
@@ -575,13 +534,6 @@ namespace Popishu
 			return;
 		}
 		WrappedObject_ = 0;
-
-		if (DefaultMsgHandler_)
-		{
-			S_TextEdit_ = 0;
-			qInstallMsgHandler (DefaultMsgHandler_);
-			DefaultMsgHandler_ = 0;
-		}
 	}
 
 	void EditorPage::handleMonoFontChanged ()
