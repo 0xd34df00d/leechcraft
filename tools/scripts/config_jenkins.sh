@@ -60,7 +60,6 @@ case $1 in
 			-DUSE_CPP14=True \
 			-DUSE_QT5=True \
 			-DEXTRA_WARNINGS=True \
-			-DCMAKE_CXX_FLAGS="-pipe -Werror=format-security -fexceptions --param=ssp-buffer-size=4 -fasynchronous-unwind-tables" \
 			-DSTRICT_LICENSING=True \
 			-DWITH_PCRE=True \
 			-DWITH_QWT=True \
