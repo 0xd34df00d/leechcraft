@@ -46,11 +46,7 @@ namespace LeechCraft
 {
 namespace Util
 {
-#if QT_VERSION < 0x050000
-	class UTIL_QML_API PlotItem : public QDeclarativeItem
-#else
 	class UTIL_QML_API PlotItem : public QQuickPaintedItem
-#endif
 	{
 		Q_OBJECT
 
