@@ -32,7 +32,6 @@
 #include <QDBusError>
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
-#include <QApplication>
 #include <QTimer>
 #include <interfaces/iinfo.h>
 #include <interfaces/structures.h>
