@@ -58,9 +58,10 @@ case $1 in
 		cmake ../src \
 			-DLIB_SUFFIX=64 \
 			-DUSE_CPP14=True \
-			-DCMAKE_CXX_FLAGS="-pipe -Wall -Werror=format-security -fexceptions --param=ssp-buffer-size=4 -fasynchronous-unwind-tables" \
+			-DUSE_QT5=True \
+			-DEXTRA_WARNINGS=True \
+			-DCMAKE_CXX_FLAGS="-pipe -Werror=format-security -fexceptions --param=ssp-buffer-size=4 -fasynchronous-unwind-tables" \
 			-DSTRICT_LICENSING=True \
-			-DWITH_DBUS_LOADERS=True \
 			-DWITH_PCRE=True \
 			-DWITH_QWT=True \
 			-DUSE_LIBTIDY_HTML5=False \
@@ -71,7 +72,7 @@ case $1 in
 			-DENABLE_AZOTH=True \
 			-DENABLE_AZOTH_ABBREV=True \
 			-DENABLE_AZOTH_ACETAMIDE=True \
-			-DENABLE_AZOTH_ASTRALITY=True \
+			-DENABLE_AZOTH_ASTRALITY=False \
 			-DENABLE_AZOTH_AUTOPASTE=True \
 			-DENABLE_AZOTH_MUCOMMANDS=True \
 			-DENABLE_AZOTH_MURM=True \
@@ -93,7 +94,7 @@ case $1 in
 			-DENABLE_DLNIWE=False \
 			-DENABLE_DOLOZHEE=True \
 			-DENABLE_DUMBEEP=True \
-			-DDUMBEEP_WITH_PHONON=True \
+			-DDUMBEEP_WITH_PHONON=False \
 			-DENABLE_ELEEMINATOR=True \
 			-DENABLE_FENET=True \
 			-DENABLE_FONTIAC=True \
@@ -101,7 +102,7 @@ case $1 in
 			-DWITH_GACTS_BUNDLED_QXT=True \
 			-DENABLE_GLANCE=True \
 			-DENABLE_GMAILNOTIFIER=True \
-			-DENABLE_HARBINGER=True \
+			-DENABLE_HARBINGER=False \
 			-DENABLE_HTTHARE=True \
 			-DENABLE_HOTSENSORS=True \
 			-DENABLE_HOTSTREAMS=True \
@@ -188,12 +189,13 @@ case $1 in
 			-DENABLE_AZOTH_OTROID=True \
 			-DENABLE_AZOTH_SHX=True \
 			-DENABLE_AZOTH_VELVETBIRD=True \
-			-DENABLE_AZOTH_WOODPECKER=True \
+			-DENABLE_AZOTH_WOODPECKER=False \
 			-DENABLE_AZOTH_ZHEET=False \
 			-DENABLE_MEDIACALLS=False \
 			-DENABLE_BLACKDASH=False \
 			-DENABLE_BLASQ=True \
 			-DENABLE_BLASQ_VANGOG=True \
+			-DENABLE_BLASQ_SPEGNERSI=False \
 			-DENABLE_BLOGIQUE=True \
 			-DENABLE_CERTMGR=True \
 			-DENABLE_CHOROID=False \
