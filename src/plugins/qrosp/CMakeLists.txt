@@ -54,6 +54,6 @@ target_link_libraries (leechcraft_qrosp
 	)
 install (TARGETS leechcraft_qrosp DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_qrosp Core Script)
+FindQtLibs (leechcraft_qrosp Script Widgets)
 
 include_directories (${Qt5Core_PRIVATE_INCLUDE_DIRS})
