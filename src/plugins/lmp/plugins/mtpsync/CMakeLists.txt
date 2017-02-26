@@ -31,4 +31,4 @@ target_link_libraries (leechcraft_lmp_mtpsync
 install (TARGETS leechcraft_lmp_mtpsync DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES lmpmtpsyncsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-FindQtLibs (leechcraft_lmp_mtpsync Concurrent)
+FindQtLibs (leechcraft_lmp_mtpsync Concurrent Gui)

@@ -44,4 +44,4 @@ target_link_libraries (leechcraft_lmp_jos
 
 install (TARGETS leechcraft_lmp_jos DESTINATION ${LC_PLUGINS_DEST})
 
-FindQtLibs (leechcraft_lmp_jos Concurrent)
+FindQtLibs (leechcraft_lmp_jos Concurrent Gui)
