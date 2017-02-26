@@ -36,7 +36,6 @@
 #include <QAbstractEventDispatcher>
 
 #if QT_VERSION >= 0x050000
-#include <qpa/qplatformnativeinterface.h>
 #include <QGuiApplication>
 #endif
 
