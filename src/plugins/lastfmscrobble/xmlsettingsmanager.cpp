@@ -29,7 +29,7 @@
  **********************************************************************/
 
 #include "xmlsettingsmanager.h"
-#include <QApplication>
+#include <QCoreApplication>
 
 namespace LeechCraft
 {
