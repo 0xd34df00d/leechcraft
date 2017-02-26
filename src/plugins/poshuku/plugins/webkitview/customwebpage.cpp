@@ -58,7 +58,6 @@
 #include "jsproxy.h"
 #include "externalproxy.h"
 #include "webpluginfactory.h"
-#include "featurepermnotification.h"
 
 Q_DECLARE_METATYPE (QVariantList*);
 Q_DECLARE_METATYPE (QNetworkReply*);
