@@ -3,20 +3,12 @@ project (leechcraft_sb2)
 include (InitLCPlugin OPTIONAL)
 include (CMakeDependentOption)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	set (QJSON_INCLUDE_DIR)
-	set (QJSON_LIBRARIES)
-endif ()
-
 cmake_dependent_option (WITH_X11 "Enable X11 support on Linux" ON "UNIX AND NOT APPLE" OFF)
 
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	)
 set (SRCS
 	sb2.cpp
@@ -75,7 +67,6 @@ add_library (leechcraft_sb2 SHARED
 	)
 target_link_libraries (leechcraft_sb2
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_sb2 DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/sb2 DESTINATION ${LC_QML_DEST})
