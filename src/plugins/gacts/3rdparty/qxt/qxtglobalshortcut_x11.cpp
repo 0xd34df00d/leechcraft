@@ -69,7 +69,7 @@ bool QxtGlobalShortcutPrivate::eventFilter(void* message)
     return prevEventFilter ? prevEventFilter(message) : false;
 }
 #else
-bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, void *msg, long *result)
+bool QxtGlobalShortcutPrivate::nativeEventFilter (const QByteArray& eventType, void *msg, long*)
 {
 	if (eventType != "xcb_generic_event_t")
 		return false;
