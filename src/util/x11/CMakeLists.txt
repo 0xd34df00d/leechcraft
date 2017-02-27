@@ -2,13 +2,9 @@ set (X11_SRCS
 	xwrapper.cpp
 	)
 
-find_package (X11)
+find_package (X11 REQUIRED)
 
-if (X11_FOUND)
-	add_definitions (-DHAVE_X11)
-else ()
-	message (CRITICAL "Don't try building libleechcraft-util-x11 if you don't have X11!")
-endif ()
+add_definitions (-DHAVE_X11)
 
 foreach (SRC ${X11_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/x11/${SRC}")
