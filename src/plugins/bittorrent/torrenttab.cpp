@@ -82,7 +82,7 @@ namespace BitTorrent
 
 				const auto progress = index.data (Core::SortRole).toDouble ();
 
-				QStyleOptionProgressBarV2 pbo;
+				QStyleOptionProgressBar pbo;
 				pbo.rect = option.rect;
 				pbo.minimum = 0;
 				pbo.maximum = 1000;

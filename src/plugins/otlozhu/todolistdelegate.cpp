@@ -101,7 +101,7 @@ namespace Otlozhu
 		{
 		case StorageModel::Columns::Percentage:
 		{
-			QStyleOptionProgressBarV2 pbo;
+			QStyleOptionProgressBar pbo;
 			pbo.rect = option.rect;
 			pbo.minimum = 0;
 			pbo.maximum = 100;

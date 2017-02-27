@@ -59,7 +59,7 @@ namespace Summary
 				total /= 10;
 			}
 
-			QStyleOptionProgressBarV2 pbo;
+			QStyleOptionProgressBar pbo;
 			pbo.rect = option.rect;
 			pbo.minimum = 0;
 			pbo.maximum = total;

@@ -29,7 +29,7 @@
 
 #include "splashscreen.h"
 #include <QStyle>
-#include <QStyleOptionProgressBarV2>
+#include <QStyleOptionProgressBar>
 #include <util/sll/slotclosure.h>
 #include "loadprocessbase.h"
 
@@ -67,7 +67,7 @@ namespace LeechCraft
 		const auto height = 1.3 * fontMetrics ().height ();
 		for (const auto proc : Processes_)
 		{
-			QStyleOptionProgressBarV2 opt;
+			QStyleOptionProgressBar opt;
 			opt.initFrom (this);
 
 			opt.rect.setY (ypos);
