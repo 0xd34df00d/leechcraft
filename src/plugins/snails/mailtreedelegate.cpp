@@ -95,7 +95,7 @@ namespace Snails
 		}
 
 		void DrawCheckbox (QPainter *painter, QStyle *style,
-				QStyleOptionViewItemV4& option, const QModelIndex& index)
+				QStyleOptionViewItem& option, const QModelIndex& index)
 		{
 			QStyleOptionButton checkBoxOpt;
 			static_cast<QStyleOption&> (checkBoxOpt) = option;
@@ -131,7 +131,7 @@ namespace Snails
 	{
 		const bool isEnabled = index.flags () & Qt::ItemIsEnabled;
 
-		QStyleOptionViewItemV4 option { stockItem };
+		auto option = stockItem;
 		if (!isEnabled)
 			option.font.setStrikeOut (true);
 

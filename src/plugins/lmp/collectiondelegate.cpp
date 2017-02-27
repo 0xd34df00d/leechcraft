@@ -51,10 +51,10 @@ namespace LMP
 	{
 		const int type = index.data (LocalCollectionModel::Role::Node).toInt ();
 
-		QStyleOptionViewItemV4 option = optionOld;
+		auto option = optionOld;
 
 		auto& pal = option.palette;
-		if (!(option.features & QStyleOptionViewItemV4::Alternate))
+		if (!(option.features & QStyleOptionViewItem::Alternate))
 		{
 			QLinearGradient grad (0, 0, option.rect.width (), 0);
 			grad.setColorAt (0, pal.color (QPalette::Window).darker (105));
@@ -77,7 +77,7 @@ namespace LMP
 		return result;
 	}
 
-	void CollectionDelegate::PaintBorder (QPainter *painter, QStyleOptionViewItemV4 option) const
+	void CollectionDelegate::PaintBorder (QPainter *painter, QStyleOptionViewItem option) const
 	{
 		auto& pal = option.palette;
 		QLinearGradient grad (0, 0, option.rect.width (), 0);
@@ -90,7 +90,7 @@ namespace LMP
 	}
 
 	void CollectionDelegate::PaintWPixmap (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index, const QPixmap& px) const
+			QStyleOptionViewItem option, const QModelIndex& index, const QPixmap& px) const
 	{
 		QStyle *style = option.widget ?
 				option.widget->style () :
@@ -124,7 +124,7 @@ namespace LMP
 	}
 
 	void CollectionDelegate::PaintOther (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
 		const int maxIconHeight = option.rect.height () - Padding * 2;
 		const auto& icon = index.data (Qt::DecorationRole).value<QIcon> ();
@@ -133,7 +133,7 @@ namespace LMP
 	}
 
 	void CollectionDelegate::PaintAlbum (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
 		const QString& path = index.data (LocalCollectionModel::Role::AlbumArt).value<QString> ();
 		QPixmap *cached = PXCache_ [path];

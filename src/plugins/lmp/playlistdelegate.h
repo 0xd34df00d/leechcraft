@@ -52,10 +52,10 @@ namespace LMP
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 	private:
 		void PaintOneShot (const QVariant&,
-				QStyleOptionViewItemV4&, QPainter*, QStyle*, bool) const;
-		void PaintRules (const QVariant&, QStyleOptionViewItemV4&, QPainter*, QStyle*) const;
-		void PaintTrack (QPainter*, QStyleOptionViewItemV4, const QModelIndex&) const;
-		void PaintAlbum (QPainter*, QStyleOptionViewItemV4, const QModelIndex&) const;
+				QStyleOptionViewItem&, QPainter*, QStyle*, bool) const;
+		void PaintRules (const QVariant&, QStyleOptionViewItem&, QPainter*, QStyle*) const;
+		void PaintTrack (QPainter*, QStyleOptionViewItem, const QModelIndex&) const;
+		void PaintAlbum (QPainter*, QStyleOptionViewItem, const QModelIndex&) const;
 	};
 }
 }

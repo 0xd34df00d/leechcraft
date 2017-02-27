@@ -62,7 +62,7 @@ namespace Monocle
 		painter->save ();
 		painter->translate (-View_->indentation (), 0);
 
-		QStyleOptionViewItemV4 option = opt;
+		auto option = opt;
 		option.rect.setWidth (option.rect.width () + option.decorationSize.width ());
 
 		painter->fillRect (option.rect, QColor { 255, 234, 0 });
@@ -87,7 +87,7 @@ namespace Monocle
 		if (index.data (AnnManager::Role::ItemType) != AnnManager::ItemTypes::AnnItem)
 			return QStyledItemDelegate::sizeHint (opt, index);
 
-		QStyleOptionViewItemV4 option = opt;
+		auto option = opt;
 		option.initFrom (View_->viewport ());
 		initStyleOption (&option, index);
 

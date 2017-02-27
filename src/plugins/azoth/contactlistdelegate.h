@@ -63,11 +63,11 @@ namespace Azoth
 				const QModelIndex&) const;
 	private:
 		void DrawAccount (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
+				QStyleOptionViewItem, const QModelIndex&) const;
 		void DrawCategory (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
+				QStyleOptionViewItem, const QModelIndex&) const;
 		void DrawContact (QPainter*,
-				QStyleOptionViewItemV4, const QModelIndex&) const;
+				QStyleOptionViewItem, const QModelIndex&) const;
 
 		QList<QIcon> GetContactIcons (const QModelIndex&, ICLEntry*, const QStringList&) const;
 

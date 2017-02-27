@@ -64,9 +64,8 @@ namespace Woodpecker
 	}
 
 	void TwitDelegate::paint (QPainter *painter,
-			const QStyleOptionViewItem& option, const QModelIndex& index) const
+			const QStyleOptionViewItem& o, const QModelIndex& index) const
 	{
-		const QStyleOptionViewItemV4 o = option;
 		auto r = o.rect;
 
 		const QPen linePen (o.palette.color (QPalette::AlternateBase), 1, Qt::SolidLine);
@@ -80,7 +79,7 @@ namespace Woodpecker
 		const auto& bgBrush = QBrush (o.palette.color (QPalette::Base));
 		const auto& selBgBrush = QBrush (o.palette.color (QPalette::Highlight));
 
-		if (option.state & QStyle::State_Selected)
+		if (o.state & QStyle::State_Selected)
 		{
 			painter->setBrush (selBgBrush);
 			painter->drawRect (r);
@@ -128,14 +127,14 @@ namespace Woodpecker
 		QIcon ic = QIcon (index.data (Qt::DecorationRole).value<QPixmap>());
 		if (!ic.isNull ())
 		{
-			r = option.rect.adjusted (Padding, Padding * 2, -Padding * 2, -Padding * 2);
+			r = o.rect.adjusted (Padding, Padding * 2, -Padding * 2, -Padding * 2);
 			if (r.width () > IconSize || r.height () > IconSize)
 				r.adjust (0, 0, -(r.width () - IconSize), -(r.height () - IconSize));
 			ic.paint (painter, r, Qt::AlignVCenter | Qt::AlignLeft);
 		}
 
 		// Text
-		r = option.rect.adjusted (ImageSpace + Padding, Padding, -Padding, -Padding);
+		r = o.rect.adjusted (ImageSpace + Padding, Padding, -Padding, -Padding);
 		painter->setFont (mainFont);
 		doc->setTextWidth (r.width ());
 		painter->save ();
@@ -146,7 +145,7 @@ namespace Woodpecker
 		painter->restore ();
 
 		// Author
-		r = option.rect.adjusted (ImageSpace + Padding,
+		r = o.rect.adjusted (ImageSpace + Padding,
 				r.height () - mainFont.pixelSize () - Padding * 2,
 				-Padding * 2,
 				0);
@@ -158,7 +157,7 @@ namespace Woodpecker
 		painter->drawText (author_rect, Qt::AlignLeft, author, &r);
 
 		// Time
-		r = option.rect.adjusted (ImageSpace + Padding, Padding, -Padding * 2, -Padding);
+		r = o.rect.adjusted (ImageSpace + Padding, Padding, -Padding * 2, -Padding);
 		painter->setFont (mainFont);
 		painter->drawText (r.right () - painter->fontMetrics ().width (time),
 						   r.bottom () - painter->fontMetrics ().height (),

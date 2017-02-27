@@ -92,7 +92,7 @@ namespace Azoth
 	void ContactListDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& sopt, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 o = sopt;
+		auto o = sopt;
 		Core::CLEntryType type = index.data (Core::CLREntryType).value<Core::CLEntryType> ();
 
 		painter->save ();
@@ -137,7 +137,7 @@ namespace Azoth
 	}
 
 	void ContactListDelegate::DrawAccount (QPainter *painter,
-			QStyleOptionViewItemV4 o, const QModelIndex& index) const
+			QStyleOptionViewItem o, const QModelIndex& index) const
 	{
 		QStyle *style = o.widget ?
 				o.widget->style () :
@@ -223,7 +223,7 @@ namespace Azoth
 	}
 
 	void ContactListDelegate::DrawCategory (QPainter *painter,
-			QStyleOptionViewItemV4 o, const QModelIndex& index) const
+			QStyleOptionViewItem o, const QModelIndex& index) const
 	{
 		const QRect& r = o.rect;
 
@@ -291,7 +291,7 @@ namespace Azoth
 	}
 
 	void ContactListDelegate::DrawContact (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
 		QObject *entryObj = index.data (Core::CLREntryObject).value<QObject*> ();
 		ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
@@ -359,7 +359,7 @@ namespace Azoth
 		if (selected ||
 				(option.state & QStyle::State_MouseOver))
 		{
-			QStyleOptionViewItemV4 bgOpt = option;
+			auto bgOpt = option;
 			bgOpt.rect.moveTopLeft (QPoint (0, 0));
 			style->drawPrimitive (QStyle::PE_PanelItemViewItem,
 					&bgOpt, &p, option.widget);

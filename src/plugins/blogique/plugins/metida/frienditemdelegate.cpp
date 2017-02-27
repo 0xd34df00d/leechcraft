@@ -55,7 +55,7 @@ namespace Metida
 	void FriendItemDelegate::paint (QPainter *painter,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
-		QStyleOptionViewItemV4 o = option;
+		auto o = option;
 		const QString& backgroundColor = SortModel_->mapToSource (index.sibling (index.row (), Columns::UserName))
 				.data (ItemColorRoles::BackgroundColor).toString ();
 		const QString& foregroundColor = SortModel_->mapToSource (index.sibling (index.row (), Columns::UserName))

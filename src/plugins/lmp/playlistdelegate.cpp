@@ -58,9 +58,9 @@ namespace LMP
 	{
 		const bool isAlbum = index.data (Player::Role::IsAlbum).toBool ();
 
-		QStyleOptionViewItemV4 option = optionOld;
+		auto option = optionOld;
 		auto& pal = option.palette;
-		if (!(option.features & QStyleOptionViewItemV4::Alternate))
+		if (!(option.features & QStyleOptionViewItem::Alternate))
 		{
 			QLinearGradient grad (0, 0, option.rect.width (), 0);
 			grad.setColorAt (0, pal.color (QPalette::Window).darker (105));
@@ -104,7 +104,7 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintOneShot (const QVariant& oneShotPosVar,
-			QStyleOptionViewItemV4& option, QPainter *painter, QStyle *style, bool drawSelected) const
+			QStyleOptionViewItem& option, QPainter *painter, QStyle *style, bool drawSelected) const
 	{
 		if (!oneShotPosVar.isValid ())
 			return;
@@ -136,7 +136,7 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintRules (const QVariant& rulesVar,
-			QStyleOptionViewItemV4& option, QPainter *painter, QStyle *style) const
+			QStyleOptionViewItem& option, QPainter *painter, QStyle *style) const
 	{
 		if (!rulesVar.isValid ())
 			return;
@@ -170,7 +170,7 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintTrack (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
@@ -180,7 +180,7 @@ namespace LMP
 
 		const bool isSubAlbum = index.parent ().isValid ();
 
-		QStyleOptionViewItemV4 bgOpt = option;
+		auto bgOpt = option;
 
 		painter->save ();
 
@@ -244,7 +244,7 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintAlbum (QPainter *painter,
-			QStyleOptionViewItemV4 option, const QModelIndex& index) const
+			QStyleOptionViewItem option, const QModelIndex& index) const
 	{
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 
