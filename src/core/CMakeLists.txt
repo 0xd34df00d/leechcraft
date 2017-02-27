@@ -39,7 +39,7 @@ if (WITH_DOCS)
 endif ()
 
 option (WITH_X11 "Enable X11 support on Linux" ON)
-if (WITH_X11 AND NOT APPLE AND NOT USE_QT5)
+if (WITH_X11 AND NOT APPLE)
 	find_package (X11)
 
 	if (X11_FOUND)
@@ -181,6 +181,10 @@ install (TARGETS leechcraft${LC_EXEC_SUFFIX} DESTINATION ${LC_BINDIR})
 install (FILES coresettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft${LC_EXEC_SUFFIX} Gui Network Widgets Xml Quick Qml Script Concurrent Svg)
+
+if (WITH_X11 AND NOT APPLE)
+	FindQtLibs (leechcraft${LC_EXEC_SUFFIX} X11Extras)
+endif ()
 
 if (WITH_DBUS_LOADERS)
 	add_subdirectory (loaders/dbus)
