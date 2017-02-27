@@ -12,10 +12,6 @@ set (SRCS
 	infomodelmanager.cpp
 	)
 
-if (NOT USE_QT5)
-	set (SRCS ${SRCS} tooltipview.cpp)
-endif ()
-
 add_library (leechcraft_tpi SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
@@ -27,8 +23,4 @@ install (TARGETS leechcraft_tpi DESTINATION ${LC_PLUGINS_DEST})
 install (DIRECTORY share/qml/tpi DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/tpi DESTINATION ${LC_QML5_DEST})
 
-if (NOT USE_QT5)
-	FindQtLibs (leechcraft_tpi Declarative)
-else ()
-	FindQtLibs (leechcraft_tpi Gui)
-endif ()
+FindQtLibs (leechcraft_tpi Gui)
