@@ -1,8 +1,3 @@
-if (NOT USE_QT5)
-	set (QT_USE_QTSCRIPT TRUE)
-	set (QT_USE_QTXML TRUE)
-	include (${QT_USE_FILE})
-endif ()
 include_directories (${Boost_INCLUDE_DIRS}
 	${CMAKE_CURRENT_BINARY_DIR}
 	..
@@ -50,11 +45,7 @@ set (FORMS
 	widgets/dataviewwidget.ui
 	)
 
-if (USE_QT5)
-	QT5_WRAP_UI (UIS_H ${FORMS})
-else ()
-	QT4_WRAP_UI (UIS_H ${FORMS})
-endif ()
+QT5_WRAP_UI (UIS_H ${FORMS})
 
 foreach (SRC ${SRCS})
 	set (XSD_SRCS "${XSD_SRCS};xmlsettingsdialog/${SRC}")
@@ -76,6 +67,4 @@ target_link_libraries (leechcraft-xsd${LC_LIBSUFFIX}
 set_property (TARGET leechcraft-xsd${LC_LIBSUFFIX} PROPERTY SOVERSION ${LC_SOVERSION}.2)
 install (TARGETS leechcraft-xsd${LC_LIBSUFFIX} DESTINATION ${LIBDIR})
 
-if (USE_QT5)
-	QT5_USE_MODULES (leechcraft-xsd${LC_LIBSUFFIX} Xml Sql Widgets Script Network)
-endif ()
+QT5_USE_MODULES (leechcraft-xsd${LC_LIBSUFFIX} Xml Sql Widgets Script Network)
