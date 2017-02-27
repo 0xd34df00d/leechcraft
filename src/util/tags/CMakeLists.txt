@@ -10,11 +10,7 @@ set (TAGS_FORMS
 	categoryselector.ui
 	)
 
-if (USE_QT5)
-	qt5_wrap_ui (TAGS_UIS_H ${TAGS_FORMS})
-else ()
-	QT4_WRAP_UI (TAGS_UIS_H ${TAGS_FORMS})
-endif ()
+qt5_wrap_ui (TAGS_UIS_H ${TAGS_FORMS})
 
 foreach (SRC ${TAGS_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/tags/${SRC}")

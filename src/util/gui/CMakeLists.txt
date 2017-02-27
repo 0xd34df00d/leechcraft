@@ -18,11 +18,7 @@ set (GUI_FORMS
 	sslcertificateinfowidget.ui
 	)
 
-if (USE_QT5)
-	qt5_wrap_ui (GUI_UIS_H ${GUI_FORMS})
-else ()
-	QT4_WRAP_UI (GUI_UIS_H ${GUI_FORMS})
-endif ()
+qt5_wrap_ui (GUI_UIS_H ${GUI_FORMS})
 
 foreach (SRC ${GUI_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/gui/${SRC}")

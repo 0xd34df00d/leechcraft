@@ -13,11 +13,7 @@ set (XSD_FORMS
 	wkfontswidget.ui
 	)
 
-if (USE_QT5)
-	qt5_wrap_ui (XSD_UIS_H ${XSD_FORMS})
-else ()
-	QT4_WRAP_UI (XSD_UIS_H ${XSD_FORMS})
-endif ()
+qt5_wrap_ui (XSD_UIS_H ${XSD_FORMS})
 
 foreach (SRC ${XSD_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/xsd/${SRC}")

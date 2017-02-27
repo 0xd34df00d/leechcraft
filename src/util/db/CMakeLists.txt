@@ -11,11 +11,7 @@ set (DB_FORMS
 	backendselector.ui
 	)
 
-if (USE_QT5)
-	qt5_wrap_ui (DB_UIS_H ${DB_FORMS})
-else ()
-	QT4_WRAP_UI (DB_UIS_H ${DB_FORMS})
-endif ()
+qt5_wrap_ui (DB_UIS_H ${DB_FORMS})
 
 foreach (SRC ${DB_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/db/${SRC}")
