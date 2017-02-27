@@ -76,19 +76,19 @@ namespace Woodpecker
 		TabClassInfo SearchTC_;
 		TabClassInfo FavoriteTC_;
 
-		void Init (ICoreProxy_ptr);
-		void SecondInit ();
-		void Release ();
-		QByteArray GetUniqueID () const;
-		QString GetName () const;
-		QString GetInfo () const;
-		QIcon GetIcon () const;
+		void Init (ICoreProxy_ptr) override;
+		void SecondInit () override;
+		void Release () override;
+		QByteArray GetUniqueID () const override;
+		QString GetName () const override;
+		QString GetInfo () const override;
+		QIcon GetIcon () const override;
 
-		QSet<QByteArray> GetPluginClasses () const;
+		QSet<QByteArray> GetPluginClasses () const override;
 
-		TabClasses_t GetTabClasses () const;
-		void TabOpenRequested (const QByteArray&);
-		Util::XmlSettingsDialog_ptr GetSettingsDialog () const;
+		TabClasses_t GetTabClasses () const override;
+		void TabOpenRequested (const QByteArray&) override;
+		Util::XmlSettingsDialog_ptr GetSettingsDialog () const override;
 		UserManager* GetUserManager () const;
 
 		/**
@@ -109,12 +109,12 @@ namespace Woodpecker
 					 const FeedMode mode = FeedMode::HomeTimeline,
 					 const KQOAuthParameters& params = KQOAuthParameters ());
 	signals:
-		void addNewTab (const QString&, QWidget*);
-		void removeTab (QWidget*);
-		void changeTabName (QWidget*, const QString&);
-		void changeTabIcon (QWidget*, const QIcon&);
-		void statusBarChanged (QWidget*, const QString&);
-		void raiseTab (QWidget*);
+		void addNewTab (const QString&, QWidget*) override;
+		void removeTab (QWidget*) override;
+		void changeTabName (QWidget*, const QString&) override;
+		void changeTabIcon (QWidget*, const QIcon&) override;
+		void statusBarChanged (QWidget*, const QString&) override;
+		void raiseTab (QWidget*) override;
 	};
 };
 };
