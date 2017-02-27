@@ -2,18 +2,10 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_touchstreams)
 include (InitLCPlugin OPTIONAL)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	unset (QJSON_INCLUDE_DIR)
-	unset (QJSON_LIBRARIES)
-endif ()
-
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	)
 set (SRCS
 	touchstreams.cpp
@@ -41,7 +33,6 @@ add_library (leechcraft_touchstreams SHARED
 	)
 target_link_libraries (leechcraft_touchstreams
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_touchstreams DESTINATION ${LC_PLUGINS_DEST})
 install (FILES touchstreamssettings.xml DESTINATION ${LC_SETTINGS_DEST})
