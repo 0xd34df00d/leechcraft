@@ -348,7 +348,7 @@ namespace KBSwitch
 		}
 	}
 #else
-	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, long int* result)
+	bool KBCtl::nativeEventFilter (const QByteArray& eventType, void *msg, long int*)
 	{
 		if (eventType != "xcb_generic_event_t")
 			return false;
