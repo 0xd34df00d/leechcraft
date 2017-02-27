@@ -4,8 +4,6 @@ set (X11_SRCS
 
 find_package (X11 REQUIRED)
 
-add_definitions (-DHAVE_X11)
-
 foreach (SRC ${X11_SRCS})
 	set (UTIL_SRCS "${UTIL_SRCS};util/x11/${SRC}")
 endforeach ()
