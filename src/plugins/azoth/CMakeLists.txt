@@ -49,6 +49,8 @@ if (ENABLE_MEDIACALLS)
 	else ()
 		set (QTMULTIMEDIAKIT_LIBRARIES)
 	endif ()
+
+	add_definitions (-DENABLE_MEDIACALLS)
 endif ()
 
 option (ENABLE_CRYPT "Enable QCA2-based support for PGP" ON)
@@ -61,10 +63,6 @@ if (ENABLE_CRYPT)
 	include_directories (${QCA2_INCLUDE_DIR})
 
 	add_definitions (-DENABLE_CRYPT)
-endif ()
-
-if (ENABLE_MEDIACALLS)
-	add_definitions (-DENABLE_MEDIACALLS)
 endif ()
 
 set (COMMON_SRCS
