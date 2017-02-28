@@ -55,7 +55,7 @@ namespace Util
 		{
 			friend class boost::iterator_core_access;
 
-			using Super_t = IteratorAdaptorBase<StlAssocIteratorAdaptor::template StlAssocIteratorAdaptor, Iter, PairType>;
+			using Super_t = IteratorAdaptorBase<detail::StlAssocIteratorAdaptor, Iter, PairType>;
 		public:
 			StlAssocIteratorAdaptor () = default;
 
