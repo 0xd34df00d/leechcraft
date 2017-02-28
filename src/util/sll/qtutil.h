@@ -51,7 +51,7 @@ namespace Util
 			>;
 
 		template<typename Iter, template<typename, typename> class PairType>
-		class StlAssocIteratorAdaptor : public detail::IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, PairType>
+		class StlAssocIteratorAdaptor : public IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, PairType>
 		{
 			friend class boost::iterator_core_access;
 
