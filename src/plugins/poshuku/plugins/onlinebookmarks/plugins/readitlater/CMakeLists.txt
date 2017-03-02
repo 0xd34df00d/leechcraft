@@ -1,14 +1,6 @@
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	unset (QJSON_INCLUDE_DIR)
-	unset (QJSON_LIBRARIES)
-endif ()
-
 include_directories (${ONLINEBOOKMARKS_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
-	${QJSON_INCLUDE_DIR}
 	)
 
 set (READITLATER_SRCS
@@ -36,7 +28,6 @@ add_library (leechcraft_poshuku_onlinebookmarks_readitlater SHARED
 
 target_link_libraries (leechcraft_poshuku_onlinebookmarks_readitlater
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
 
 install (TARGETS leechcraft_poshuku_onlinebookmarks_readitlater DESTINATION ${LC_PLUGINS_DEST})
