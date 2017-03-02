@@ -244,7 +244,7 @@ namespace LMP
 	}
 
 	void PlaylistDelegate::PaintAlbum (QPainter *painter,
-			QStyleOptionViewItem option, const QModelIndex& index) const
+			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{
 		const auto& info = index.data (Player::Role::Info).value<MediaInfo> ();
 

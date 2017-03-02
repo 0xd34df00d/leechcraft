@@ -47,10 +47,10 @@ namespace LMP
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 		QSize sizeHint (const QStyleOptionViewItem&, const QModelIndex&) const;
 	private:
-		void PaintBorder (QPainter*, QStyleOptionViewItem) const;
-		void PaintWPixmap (QPainter*, QStyleOptionViewItem, const QModelIndex&, const QPixmap&) const;
-		void PaintOther (QPainter*, QStyleOptionViewItem, const QModelIndex&) const;
-		void PaintAlbum (QPainter*, QStyleOptionViewItem, const QModelIndex&) const;
+		void PaintBorder (QPainter*, const QStyleOptionViewItem&) const;
+		void PaintWPixmap (QPainter*, const QStyleOptionViewItem&, const QModelIndex&, const QPixmap&) const;
+		void PaintOther (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
+		void PaintAlbum (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 	};
 }
 }

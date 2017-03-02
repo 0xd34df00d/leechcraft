@@ -55,7 +55,7 @@ namespace LMP
 				QStyleOptionViewItem&, QPainter*, QStyle*, bool) const;
 		void PaintRules (const QVariant&, QStyleOptionViewItem&, QPainter*, QStyle*) const;
 		void PaintTrack (QPainter*, QStyleOptionViewItem, const QModelIndex&) const;
-		void PaintAlbum (QPainter*, QStyleOptionViewItem, const QModelIndex&) const;
+		void PaintAlbum (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const;
 	};
 }
 }
