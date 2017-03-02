@@ -61,7 +61,7 @@ namespace PPL
 					QDir::homePath (),
 					tr ("Scrobbler log (*.scrobbler.log)")
 				};
-				dia.setFilter (QDir::AllEntries | QDir::AllDirs | QDir::Hidden);
+				dia.setFilter (QDir::AllEntries | QDir::AllDirs | QDir::Hidden | QDir::NoDotAndDotDot);
 				dia.setAcceptMode (QFileDialog::AcceptOpen);
 				if (dia.exec () != QDialog::Accepted)
 					return;
