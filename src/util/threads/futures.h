@@ -285,7 +285,7 @@ namespace Util
 		private:
 			Future Future_;
 			QFutureWatcher<RetType_t> BaseWatcher_;
-			QObject *LastWatcher_ = &BaseWatcher_;
+			QFutureWatcherBase *LastWatcher_ = &BaseWatcher_;
 		public:
 			/** @brief Constructs the sequencer.
 			 *
