@@ -51,6 +51,8 @@ namespace Util
 
 		loop.exec ();
 
+		QCoreApplication::processEvents ();
+
 		QCOMPARE (res.result (), std::string { "20" });
 	}
 
@@ -66,6 +68,8 @@ namespace Util
 				};
 
 		loop.exec ();
+
+		QCoreApplication::processEvents ();
 
 		QCOMPARE (res.result (), std::string { "10" });
 	}
