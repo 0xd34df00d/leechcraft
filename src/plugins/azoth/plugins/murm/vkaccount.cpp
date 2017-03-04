@@ -650,7 +650,7 @@ namespace Murm
 		AppInfoMgr_->PerformWithAppInfo (appId,
 				[this, entry] (const AppInfo& info)
 					{ entry->UpdateAppInfo (info, AppInfoMgr_->GetAppImage (info)); },
-				[this, entry, appInfo] { entry->UpdateAppInfo (appInfo, {}); });
+				[entry, appInfo] { entry->UpdateAppInfo (appInfo, {}); });
 	}
 
 	void VkAccount::handleMessage (const MessageInfo& info)

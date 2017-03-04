@@ -131,9 +131,9 @@ namespace Murm
 				this,
 				SLOT (handlePollData (QVariantMap)));
 
-		Dispatcher_ [1] = [this] (const QVariantList&) {};
-		Dispatcher_ [2] = [this] (const QVariantList&) {};
-		Dispatcher_ [3] = [this] (const QVariantList&) {};
+		Dispatcher_ [1] = [] (const QVariantList&) {};
+		Dispatcher_ [2] = [] (const QVariantList&) {};
+		Dispatcher_ [3] = [] (const QVariantList&) {};
 
 		Dispatcher_ [4] = [this] (const QVariantList& items) { HandleMessage (items); };
 		Dispatcher_ [8] = [this] (const QVariantList& items)
@@ -146,10 +146,10 @@ namespace Murm
 			{ emit gotTypingNotification (items.value (1).toULongLong ()); };
 
 		// Stuff has been read, we don't care
-		Dispatcher_ [6] = [this] (const QVariantList&) {};
-		Dispatcher_ [7] = [this] (const QVariantList&) {};
+		Dispatcher_ [6] = [] (const QVariantList&) {};
+		Dispatcher_ [7] = [] (const QVariantList&) {};
 
-		Dispatcher_ [101] = [this] (const QVariantList&) {};	// unknown stuff
+		Dispatcher_ [101] = [] (const QVariantList&) {};	// unknown stuff
 
 		MarkOnlineTimer_->setInterval (12 * 60 * 1000);
 		connect (MarkOnlineTimer_,
