@@ -50,6 +50,7 @@
 #include <QDateTime>
 #include <util/util.h>
 #include <util/sys/mimedetector.h>
+#include <util/sll/util.h>
 #include "connection.h"
 #include "storagemanager.h"
 #include "iconresolver.h"
@@ -499,11 +500,8 @@ namespace HttHare
 
 						auto& s = c->GetSocket ();
 
-						std::shared_ptr<void> shutdownGuard = std::shared_ptr<void> (nullptr,
-								[&s, &ec] (void*)
-								{
-									s.shutdown (boost::asio::socket_base::shutdown_both, ec);
-								});
+						auto shutdownGuard = Util::MakeScopeGuard ([&s, &ec]
+								{ s.shutdown (boost::asio::socket_base::shutdown_both, ec); }).Shared ();
 
 						if (verb != Verb::Get)
 							return;
