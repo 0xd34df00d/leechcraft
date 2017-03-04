@@ -508,7 +508,7 @@ namespace HttHare
 						if (verb != Verb::Get)
 							return;
 
-						std::shared_ptr<QFile> file { new QFile { path } };
+						auto file = std::make_shared<QFile> (path);
 						file->open (QIODevice::ReadOnly);
 
 						if (ranges.isEmpty ())
@@ -521,7 +521,7 @@ namespace HttHare
 						Sendfiler
 						{
 							s,
-							file,
+							std::move (file),
 							0,
 							headRange,
 							ranges,
