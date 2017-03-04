@@ -367,7 +367,7 @@ namespace Sarin
 
 	QFuture<ToxThread::FriendInfo> ToxThread::ResolveFriend (qint32 id)
 	{
-		return ScheduleFunction ([id, this] (Tox *tox)
+		return ScheduleFunction ([id] (Tox *tox)
 				{
 					if (!tox_friend_exists (tox, id))
 						throw std::runtime_error ("Friend not found.");
