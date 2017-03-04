@@ -275,7 +275,7 @@ namespace Util
 		 * @tparam Future The type of the initial future.
 		 */
 		template<typename Future>
-		class Sequencer : public QObject
+		class Sequencer final : public QObject
 		{
 		public:
 			/** @brief The type instantinating the QFuture returned by the
