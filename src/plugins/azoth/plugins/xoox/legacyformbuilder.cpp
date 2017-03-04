@@ -67,20 +67,20 @@ namespace Xoox
 	LegacyFormBuilder::LegacyFormBuilder ()
 	: Widget_ (0)
 	{
-		Tag2Actor_ ["username"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["username"] = [] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("Username:")); };
-		Tag2Actor_ ["password"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["password"] = [] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("Password:")); };
-		Tag2Actor_ ["registered"] = [this] (QWidget*, const QXmppElement&) {};
-		Tag2Actor_ ["first"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["registered"] = [] (QWidget*, const QXmppElement&) {};
+		Tag2Actor_ ["first"] = [] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("First name:")); };
-		Tag2Actor_ ["last"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["last"] = [] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("Last name:")); };
-		Tag2Actor_ ["nick"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["nick"] = [] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("Nick:")); };
-		Tag2Actor_ ["email"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["email"] = [] (QWidget *f, const QXmppElement& e)
 			{ LineEditActorImpl (f, e, tr ("E-Mail:")); };
-		Tag2Actor_ ["instructions"] = [this] (QWidget *f, const QXmppElement& e)
+		Tag2Actor_ ["instructions"] = [] (QWidget *f, const QXmppElement& e)
 			{ InstructionsActor (f, e); };
 	}
 
@@ -119,7 +119,7 @@ namespace Xoox
 		if (!Widget_)
 			return result;
 
-		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
+		for (auto edit : Widget_->findChildren<QLineEdit*> ("field"))
 		{
 			QXmppElement elem;
 			elem.setTagName (edit->property ("FieldName").toString ());
@@ -133,22 +133,22 @@ namespace Xoox
 	QString LegacyFormBuilder::GetUsername () const
 	{
 		if (!Widget_)
-			return QString ();
+			return {};
 
-		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
+		for (auto edit : Widget_->findChildren<QLineEdit*> ("field"))
 			if (edit->property ("FieldName").toString () == "username")
 				return edit->text ();
 
-		return QString ();
+		return {};
 	}
 
 	QString LegacyFormBuilder::GetPassword () const
 	{
-		Q_FOREACH (QLineEdit *edit, Widget_->findChildren<QLineEdit*> ("field"))
+		for (auto edit : Widget_->findChildren<QLineEdit*> ("field"))
 			if (edit->property ("FieldName").toString () == "password")
 				return edit->text ();
 
-		return QString ();
+		return {};
 	}
 }
 }
