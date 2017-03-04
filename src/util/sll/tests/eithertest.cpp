@@ -31,6 +31,7 @@
 #include <QtTest>
 #include <either.h>
 #include <curry.h>
+#include <void.h>
 
 QTEST_MAIN (LeechCraft::Util::EitherTest)
 
@@ -151,6 +152,28 @@ namespace Util
 		const auto& res = value >>
 				[] (const QString& right) { return SomeEither_t::Right (right + "_bound"); };
 		QCOMPARE (res, value);
+	}
+
+	struct NoDefaultCtor
+	{
+		NoDefaultCtor () = delete;
+		NoDefaultCtor (const QString&)
+		{
+		}
+
+		bool operator== (const NoDefaultCtor&) const
+		{
+			return true;
+		}
+	};
+
+	void EitherTest::testBindLeftNotConstructed ()
+	{
+		const auto& value = Either<NoDefaultCtor, Void>::Right ({});
+		const auto& expected = Either<NoDefaultCtor, int>::Right (5);
+		const auto res = value >>
+				[&expected] (const auto&) { return expected; };
+		QCOMPARE (res, expected);
 	}
 }
 }

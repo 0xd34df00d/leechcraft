@@ -54,6 +54,8 @@ namespace Util
 
 		void testBind ();
 		void testBindLeft ();
+
+		void testBindLeftNotConstructed ();
 	};
 }
 }
