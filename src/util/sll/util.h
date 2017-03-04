@@ -29,7 +29,9 @@
 
 #pragma once
 
+#include <memory>
 #include <functional>
+#include <stdexcept>
 
 namespace LeechCraft
 {
@@ -38,6 +40,25 @@ namespace Util
 	namespace detail
 	{
 		using DefaultScopeGuardDeleter = std::function<void ()>;
+
+		class SharedScopeGuard
+		{
+			std::shared_ptr<void> Guard_;
+		public:
+			template<typename F>
+			SharedScopeGuard (const F& f)
+			: Guard_ { nullptr, [f] (void*) { f (); } }
+			{
+			}
+
+			SharedScopeGuard () = delete;
+
+			SharedScopeGuard (const SharedScopeGuard&) = default;
+			SharedScopeGuard (SharedScopeGuard&&) = default;
+
+			SharedScopeGuard& operator= (const SharedScopeGuard&) = default;
+			SharedScopeGuard& operator= (SharedScopeGuard&&) = default;
+		};
 
 		template<typename F>
 		class ScopeGuard
@@ -97,6 +118,15 @@ namespace Util
 			operator ScopeGuard<DefaultScopeGuardDeleter> ()
 			{
 				return EraseType ();
+			}
+
+			SharedScopeGuard Shared ()
+			{
+				if (!Perform_)
+					throw std::logic_error { "this scope guard has already been converted to a shared one" };
+
+				Perform_ = false;
+				return { F_ };
 			}
 		};
 	}
