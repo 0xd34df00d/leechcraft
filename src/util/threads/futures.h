@@ -457,6 +457,11 @@ namespace Util
 						SIGNAL (started ()),
 						&BaseWatcher_
 					};
+
+				connect (&BaseWatcher_,
+						SIGNAL (finished ()),
+						this,
+						SLOT (deleteLater ()));
 			}
 		};
 
