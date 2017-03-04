@@ -33,24 +33,5 @@ namespace LeechCraft
 {
 namespace Util
 {
-	namespace detail
-	{
-		// TODO Qt5: this class won't be needed when we drop Qt4 support.
-		FutureResultHandler::FutureResultHandler (const std::function<void (int)>& handler,
-				QFutureWatcherBase *base, QObject *parent)
-		: QObject { parent }
-		, Handler_ { handler }
-		{
-			connect (base,
-					SIGNAL (resultReadyAt (int)),
-					this,
-					SLOT (handleResult (int)));
-		}
-
-		void FutureResultHandler::handleResult (int index)
-		{
-			Handler_ (index);
-		}
-	}
 }
 }

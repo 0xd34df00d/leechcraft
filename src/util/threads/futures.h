@@ -253,18 +253,6 @@ namespace Util
 
 	namespace detail
 	{
-		class UTIL_THREADS_API FutureResultHandler : public QObject
-		{
-			Q_OBJECT
-
-			const std::function<void (int)> Handler_;
-		public:
-			FutureResultHandler (const std::function<void (int)>&,
-					QFutureWatcherBase*, QObject* = nullptr);
-		public slots:
-			void handleResult (int);
-		};
-
 		/** @brief Incapsulates the sequencing logic of asynchronous
 		 * actions.
 		 *
@@ -433,12 +421,10 @@ namespace Util
 					throw std::runtime_error { "invalid multiple results handler chaining" };
 				}
 
-				new FutureResultHandler
-				{
-					[handler, this] (int index) { handler (BaseWatcher_.resultAt (index)); },
-					&BaseWatcher_,
-					&BaseWatcher_
-				};
+				connect (&BaseWatcher_,
+						&QFutureWatcherBase::resultReadyAt,
+						&BaseWatcher_,
+						[handler, this] (int index) { handler (BaseWatcher_.resultAt (index)); });
 
 				if (finishHandler)
 					new Util::SlotClosure<Util::DeleteLaterPolicy>
