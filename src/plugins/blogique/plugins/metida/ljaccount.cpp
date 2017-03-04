@@ -690,7 +690,7 @@ namespace Metida
 		Util::NotificationActionHandler *nh =
 				new Util::NotificationActionHandler (e, this);
 		nh->AddFunction (tr ("Open inbox"),
-				[this] ()
+				[]
 				{
 					Entity urlEntity = Util::MakeEntity (QUrl ("http://livejournal.com/inbox/"),
 							QString (),
@@ -699,7 +699,7 @@ namespace Metida
 				});
 		nh->AddDependentObject (this);
 		nh->AddFunction (tr ("Mark all as read"),
-				[this, ids] ()
+				[this, ids]
 				{
 					SetMessagesAsRead (ids);
 				});

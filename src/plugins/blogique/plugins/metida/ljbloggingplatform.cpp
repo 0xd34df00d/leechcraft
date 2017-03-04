@@ -294,7 +294,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljPollTag;
 		ljPollTag.TagName_ = "lj-poll";
-		ljPollTag.ToKnown_ = [this] (QDomElement& elem) -> void
+		ljPollTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& whoView = elem.attribute ("whoview");
 			const auto& whoVote = elem.attribute ("whovote");
@@ -325,7 +325,7 @@ namespace Metida
 			elem.appendChild (textElem);
 
 		};
-		ljPollTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		ljPollTag.FromKnown_ = [] (QDomElement& elem)
 		{
 			if (!elem.hasAttribute ("id") ||
 					elem.attribute ("id") != "pollDiv")
@@ -359,7 +359,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljEmbedTag;
 		ljEmbedTag.TagName_ = "lj-embed";
-		ljEmbedTag.ToKnown_ = [this] (QDomElement& elem) -> void
+		ljEmbedTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& id = elem.attribute ("id");
 			elem.removeAttribute ("id");
@@ -372,7 +372,7 @@ namespace Metida
 					.arg (id));
 			elem.appendChild (textElem);
 		};
-		ljEmbedTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		ljEmbedTag.FromKnown_ = [] (QDomElement& elem)
 		{
 			if (!elem.hasAttribute ("id") ||
 					elem.attribute ("id") != "embedTag")
@@ -391,7 +391,7 @@ namespace Metida
 
 		IAdvancedHTMLEditor::CustomTag ljLikeTag;
 		ljLikeTag.TagName_ = "lj-like";
-		ljLikeTag.ToKnown_ = [this] (QDomElement& elem) -> void
+		ljLikeTag.ToKnown_ = [] (QDomElement& elem)
 		{
 			const auto& buttons = elem.attribute ("buttons");
 			elem.removeAttribute ("buttons");
@@ -405,7 +405,7 @@ namespace Metida
 						"repost,facebook,twitter,google,vkontakte,surfingbird,tumblr,livejournal"));
 			elem.appendChild (textElem);
 		};
-		ljLikeTag.FromKnown_ = [] (QDomElement& elem) -> bool
+		ljLikeTag.FromKnown_ = [] (QDomElement& elem)
 		{
 			const auto& likes = elem.attribute ("likes");
 			if (likes.isEmpty ())
