@@ -89,7 +89,7 @@ namespace Util
 	namespace detail
 	{
 		template<template<typename...> class List, typename Tuple, size_t... Is>
-		constexpr auto InitImpl (const Tuple&, std::integer_sequence<size_t, Is...>)
+		constexpr auto InitImpl (std::integer_sequence<size_t, Is...>)
 		{
 			return List<std::tuple_element_t<Is, Tuple>...> {};
 		}
@@ -98,7 +98,7 @@ namespace Util
 	template<template<typename...> class List, typename... Args>
 	constexpr auto Init (List<Args...>)
 	{
-		return detail::InitImpl<List> (std::tuple<Args...> {}, std::make_index_sequence<sizeof... (Args) - 1> {});
+		return detail::InitImpl<List, std::tuple<Args...>> (std::make_index_sequence<sizeof... (Args) - 1> {});
 	}
 
 	namespace detail
