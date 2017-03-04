@@ -640,11 +640,9 @@ namespace Util
 				SlotClosure<DeleteLaterPolicy> *deleteGuard = nullptr;
 				if (!isEmptyDestr)
 				{
-					// TODO C++14 capture the copy directly
-					const auto destrHandler = DestrHandler_;
 					deleteGuard = new SlotClosure<DeleteLaterPolicy>
 					{
-						[destrHandler, iface] () mutable
+						[destrHandler = DestrHandler_, iface] () mutable
 						{
 							if (iface.isFinished ())
 								return;
