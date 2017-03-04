@@ -1564,18 +1564,20 @@ namespace Azoth
 
 		auto avatarSetter = [this] (QImage avatar)
 		{
-			LastAvatar_ = avatar;
+			LastAvatar_ = QImage {};
 
 			Ui_.AvatarLabel_->setVisible (!avatar.isNull ());
-			const QPixmap& px = QPixmap::fromImage (avatar);
-			if (px.isNull ())
+
+			if (avatar.isNull ())
 				return;
 
-			const auto& scaled = px.scaled ({ 18, 18 },
-					Qt::KeepAspectRatio, Qt::SmoothTransformation);
-			Ui_.AvatarLabel_->setPixmap (scaled);
-			Ui_.AvatarLabel_->resize (scaled.size ());
-			Ui_.AvatarLabel_->setMaximumSize (scaled.size ());
+			avatar = avatar.scaled ({ 18, 18 }, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+			LastAvatar_ = avatar;
+
+			const auto& px = QPixmap::fromImage (avatar);
+			Ui_.AvatarLabel_->setPixmap (px);
+			Ui_.AvatarLabel_->resize (px.size ());
+			Ui_.AvatarLabel_->setMaximumSize (px.size ());
 		};
 		AvatarChangeSubscription_ = AvatarsManager_->Subscribe (obj,
 				IHaveAvatars::Size::Thumbnail, avatarSetter);
