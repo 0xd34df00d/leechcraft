@@ -731,10 +731,7 @@ namespace Azoth
 
 		const auto nh = new Util::NotificationActionHandler { e };
 		nh->AddFunction (tr ("Open chat"),
-				[entry, this]
-				{
-					Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true);
-				});
+				[entry] { Core::Instance ().GetChatTabsManager ()->OpenChat (entry, true); });
 		nh->AddDependentObject (entry->GetQObject ());
 
 		Util::Sequence (this, BuildNotification (AvatarsMgr_, e, entry, "AttentionDrawnBy")) >>
@@ -770,8 +767,8 @@ namespace Azoth
 		e.Additional_ ["org.LC.Plugins.Azoth.Msg"] = msg;
 
 		const auto nh = new Util::NotificationActionHandler { e };
-		nh->AddFunction (tr ("Authorize"), [this, entry] { AuthorizeEntry (entry); });
-		nh->AddFunction (tr ("Deny"), [this, entry] { DenyAuthForEntry (entry); });
+		nh->AddFunction (tr ("Authorize"), [entry] { AuthorizeEntry (entry); });
+		nh->AddFunction (tr ("Deny"), [entry] { DenyAuthForEntry (entry); });
 		nh->AddFunction (tr ("View info"), [entry] { entry->ShowInfo (); });
 		nh->AddDependentObject (entry->GetQObject ());
 
