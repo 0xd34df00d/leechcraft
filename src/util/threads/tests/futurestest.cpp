@@ -55,6 +55,8 @@ namespace Util
 
 		loop.exec ();
 
+		QCoreApplication::processEvents ();
+
 		QCOMPARE (res, 400);
 	}
 
@@ -75,6 +77,8 @@ namespace Util
 				};
 
 		loop.exec ();
+
+		QCoreApplication::processEvents ();
 
 		QCOMPARE (executed, true);
 	}
@@ -97,6 +101,8 @@ namespace Util
 		QTimer::singleShot (100, &loop, SLOT (quit ()));
 
 		loop.exec ();
+
+		QCoreApplication::processEvents ();
 
 		QCOMPARE (executed, false);
 	}
@@ -129,6 +135,8 @@ namespace Util
 
 		loop.exec ();
 
+		QCoreApplication::processEvents ();
+
 		QCOMPARE (executed, true);
 		QCOMPARE (value, destructed);
 	}
@@ -147,6 +155,8 @@ namespace Util
 				[&loop] (Baz) { loop.quit (); };
 
 		loop.exec ();
+
+		QCoreApplication::processEvents ();
 
 		QCOMPARE (executed, false);
 	}
@@ -170,6 +180,8 @@ namespace Util
 				};
 
 		loop.exec ();
+
+		QCoreApplication::processEvents ();
 
 		QCOMPARE (executed, true);
 		QCOMPARE (value, finished);
@@ -199,6 +211,8 @@ namespace Util
 		iface.reportFinished ();
 
 		loop.exec ();
+
+		QCoreApplication::processEvents ();
 
 		QCOMPARE (count, 3);
 		QCOMPARE (sum, 6);
