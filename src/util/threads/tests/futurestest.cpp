@@ -114,7 +114,7 @@ namespace Util
 		{
 			QObject obj;
 			future = Sequence (&obj, MkWaiter () (100))
-					.DestructionValue ([destructed] { return destructed; }) >>
+					.DestructionValue ([] { return destructed; }) >>
 					[=] (int) { return MakeReadyFuture (finished); };
 		}
 		Sequence (nullptr, future) >>
