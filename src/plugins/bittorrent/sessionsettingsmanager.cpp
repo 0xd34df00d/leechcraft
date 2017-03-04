@@ -778,7 +778,7 @@ namespace BitTorrent
 
 		new Util::SlotClosure<Util::DeleteLaterPolicy>
 		{
-			[this, box]
+			[box]
 			{
 				box->deleteLater ();
 				if (box->standardButton (box->clickedButton ()) == QMessageBox::Yes)
