@@ -509,7 +509,14 @@ namespace HttHare
 							return;
 
 						auto file = std::make_shared<QFile> (path);
-						file->open (QIODevice::ReadOnly);
+						if (!file->open (QIODevice::ReadOnly))
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "cannot open file"
+									<< path
+									<< file->errorString ();
+							return;
+						}
 
 						if (ranges.isEmpty ())
 							ranges.append ({ 0, file->size () - 1 });
