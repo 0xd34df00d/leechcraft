@@ -130,7 +130,19 @@ namespace Azoth
 		const auto id = ++SubscriptionID_;
 		Subscriptions_ [obj] [size] [id] = handler;
 
-		return Util::MakeScopeGuard ([=] { Subscriptions_ [obj] [size].remove (id); });
+		return Util::MakeScopeGuard ([=]
+				{
+					auto& objSubscrs = Subscriptions_ [obj];
+					auto& sizeSubscrs = objSubscrs [size];
+
+					sizeSubscrs.remove (id);
+					if (!sizeSubscrs.isEmpty ())
+						return;
+
+					objSubscrs.remove (size);
+					if (objSubscrs.isEmpty ())
+						Subscriptions_.remove (obj);
+				});
 	}
 
 	void AvatarsManager::HandleSubscriptions (QObject *entry)
