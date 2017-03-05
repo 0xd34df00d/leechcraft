@@ -183,11 +183,7 @@ target_link_libraries (leechcraft_bittorrent
 install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
-	if (USE_QT5)
-		install (FILES freedesktop/leechcraft-bittorrent-qt5.desktop DESTINATION share/applications)
-	else ()
-		install (FILES freedesktop/leechcraft-bittorrent.desktop DESTINATION share/applications)
-	endif ()
+	install (FILES freedesktop/leechcraft-bittorrent-qt5.desktop DESTINATION share/applications)
 endif ()
 
 FindQtLibs (leechcraft_bittorrent Xml Widgets)
