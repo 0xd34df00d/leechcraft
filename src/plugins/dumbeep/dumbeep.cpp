@@ -33,11 +33,6 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QProcess>
-
-#ifdef WITH_PHONON
-#include <phonon/mediaobject.h>
-#endif
-
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include "xmlsettingsmanager.h"
 
@@ -125,19 +120,6 @@ namespace Dumbeep
 	void Plugin::Handle (Entity e)
 	{
 		const auto& path = GetPath (e);
-
-		if (XmlSettingsManager::Instance ().property ("PreferPhonon").toBool ())
-		{
-#ifdef WITH_PHONON
-			auto obj = Phonon::createPlayer (Phonon::NotificationCategory, QUrl::fromLocalFile (path));
-			obj->play ();
-			connect (obj,
-					SIGNAL (finished ()),
-					obj,
-					SLOT (deleteLater ()));
-			return;
-#endif
-		}
 
 		const auto& commandStr = XmlSettingsManager::Instance ()
 				.property ("PlayerCommand").toString ();

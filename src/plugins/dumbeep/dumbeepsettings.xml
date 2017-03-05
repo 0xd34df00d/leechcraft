@@ -2,9 +2,6 @@
 <settings>
 	<page>
 		<label value="Behavior" />
-		<item type="checkbox" property="PreferPhonon" default="true">
-			<label value="Prefer Phonon (if available)" />
-		</item>
 		<item type="lineedit" property="PlayerCommand" default="mplayer">
 			<label value="Player command:" />
 		</item>
