@@ -195,7 +195,7 @@ namespace BrainSlugz
 				const auto proxy = AAProv_->RequestAlbumArt ({ artist.Name_, release.Name_ });
 				new Util::OneTimeRunner
 				{
-					[this, item, proxy]
+					[item, proxy]
 					{
 						proxy->GetQObject ()->deleteLater ();
 						const auto& url = proxy->GetImageUrls ().value (0);
