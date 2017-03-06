@@ -210,7 +210,7 @@ namespace Poleemery
 							{ return exp->Rate_; });
 			case Columns::NativePrice:
 				return GetDataIf<ExpenseEntry> (entry, EntryType::Expense,
-						[&acc] (ExpenseEntry_ptr exp)
+						[] (ExpenseEntry_ptr exp)
 							{ return exp->Rate_ * exp->Amount_; });
 			case Columns::Date:
 				return entry->Date_;

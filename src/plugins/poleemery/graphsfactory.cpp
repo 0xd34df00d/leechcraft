@@ -418,12 +418,12 @@ namespace Poleemery
 
 		Infos_.append ({
 				QObject::tr ("Cumulative accounts balance"),
-				[this] (const DateSpan_t& span) { return CreateBalanceItems (span, true); },
+				[] (const DateSpan_t& span) { return CreateBalanceItems (span, true); },
 				prepareCummulative
 			});
 		Infos_.append ({
 				QObject::tr ("Comparative accounts balance"),
-				[this] (const DateSpan_t& span) { return CreateBalanceItems (span, false); },
+				[] (const DateSpan_t& span) { return CreateBalanceItems (span, false); },
 				prepareCummulative
 			});
 
@@ -447,12 +447,12 @@ namespace Poleemery
 		};
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (absolute)"),
-				[this] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, true); },
+				[] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, true); },
 				prepareAbsBreakdown
 			});
 		Infos_.append ({
 				QObject::tr ("Per-category spendings breakdown (relative)"),
-				[this] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, false); },
+				[] (const DateSpan_t& span) { return CreateSpendingBreakdownItems (span, false); },
 				prepareRelBreakdown
 			});
 
@@ -464,7 +464,7 @@ namespace Poleemery
 
 			Infos_.append ({
 					QObject::tr ("%1 to USD rate (OHLC)").arg (cur),
-					[this, cur] (const DateSpan_t& span) { return CreateCurrenciesRatesItems (span, cur, true); },
+					[cur] (const DateSpan_t& span) { return CreateCurrenciesRatesItems (span, cur, true); },
 					[] (QwtPlot *plot) -> void
 					{
 						auto curMgr = Core::Instance ().GetCurrenciesManager ();
@@ -478,7 +478,7 @@ namespace Poleemery
 				});
 			Infos_.append ({
 					QObject::tr ("%1 to USD rate (standard curve)").arg (cur),
-					[this, cur] (const DateSpan_t& span) { return CreateCurrenciesRatesItems (span, cur, false); },
+					[cur] (const DateSpan_t& span) { return CreateCurrenciesRatesItems (span, cur, false); },
 					[] (QwtPlot *plot) -> void
 					{
 						auto curMgr = Core::Instance ().GetCurrenciesManager ();
