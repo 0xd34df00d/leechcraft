@@ -242,7 +242,7 @@ namespace Krigstask
 
 		auto current = w.GetWindows ();
 		current.erase (std::remove_if (current.begin (), current.end (),
-					[this, &w] (Window wid) { return !w.ShouldShow (wid); }), current.end ());
+					[&w] (Window wid) { return !w.ShouldShow (wid); }), current.end ());
 
 		for (auto i = current.begin (); i != current.end (); )
 		{
