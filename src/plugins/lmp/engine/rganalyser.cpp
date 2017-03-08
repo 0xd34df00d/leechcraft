@@ -185,7 +185,7 @@ namespace LMP
 				.property ("EnableTagsRecoding").toBool ();
 		GstUtil::ParseTagMessage (msg, map, isEnabled ? region : QString ());
 
-		auto trySet = [&map, this] (const QString& key, std::function<void (double)> setter) -> bool
+		auto trySet = [&map] (const QString& key, std::function<void (double)> setter) -> bool
 		{
 			const auto contains = map.contains (key);
 			if (contains)
