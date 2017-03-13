@@ -119,7 +119,7 @@ namespace CpuLoad
 
 			auto setLoadPart = [&cpuLoad, total, &lastCpuStats, i] (int idx, LoadPriority prio) -> void
 			{
-				const auto& thisLoad = static_cast<double> (lastCpuStats [idx]) / total;
+				const auto thisLoad = static_cast<double> (lastCpuStats [idx]) / total;
 				cpuLoad [prio] = LoadTypeInfo { thisLoad };
 			};
 
