@@ -37,8 +37,6 @@ set (AUTOPASTE_SRCS
 
 if (WITH_AZOTH_AUTOPASTE_JSON OR USE_QT5)
 	add_definitions (-DWITH_JSON)
-
-	set (AUTOPASTE_SRCS ${AUTOPASTE_SRCS} hastebinservice.cpp)
 endif ()
 
 set (AUTOPASTE_FORMS
