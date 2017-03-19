@@ -28,13 +28,6 @@ set (SRCS
 	wrappers/tagsmanagerwrapper.cpp
 	)
 
-if (NOT USE_QT5)
-	set (SRCS
-		${SRCS}
-		third-party/qmetaobjectbuilder_48.cpp
-		)
-endif ()
-
 add_library (leechcraft_qrosp SHARED
 	${COMPILED_TRANSLATIONS}
 	${SRCS}
