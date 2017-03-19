@@ -2,12 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_azoth_murm)
 include (InitLCPlugin OPTIONAL)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-endif ()
-
 include_directories (${AZOTH_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
@@ -62,7 +57,6 @@ add_library (leechcraft_azoth_murm SHARED
 	${MURM_RCCS}
 	)
 target_link_libraries (leechcraft_azoth_murm
-	${QJSON_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
 	)
 
