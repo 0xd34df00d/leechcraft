@@ -14,17 +14,10 @@ include (InitLCPlugin OPTIONAL)
 
 find_package (QtKOAuth REQUIRED)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	set (QJSON_LIBRARIES)
-endif ()
-
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	${QTKOAUTH_INCLUDE_DIR}
 	)
 set (WOODPECKER_SRCS
@@ -57,7 +50,6 @@ add_library (leechcraft_azoth_woodpecker SHARED
 	)
 target_link_libraries (leechcraft_azoth_woodpecker
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	${QTKOAUTH_LIBRARIES}
 	)
 
