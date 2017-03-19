@@ -85,6 +85,6 @@ install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 
 FindQtLibs (leechcraft_azoth_sarin Concurrent Widgets)
 
-if (ENABLE_MEDIACALLS AND USE_QT5)
+if (ENABLE_MEDIACALLS)
 	FindQtLibs (leechcraft_azoth_sarin Multimedia)
 endif ()
