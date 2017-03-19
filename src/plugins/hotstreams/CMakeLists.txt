@@ -2,18 +2,10 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_hotstreams)
 include (InitLCPlugin OPTIONAL)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	unset (QJSON_LIBRARIES)
-	unset (QJSON_INCLUDE_DIR)
-endif ()
-
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	)
 set (SRCS
 	audioaddictstreamfetcher.cpp
@@ -41,7 +33,6 @@ add_library (leechcraft_hotstreams SHARED
 	)
 target_link_libraries (leechcraft_hotstreams
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_hotstreams DESTINATION ${LC_PLUGINS_DEST})
 
