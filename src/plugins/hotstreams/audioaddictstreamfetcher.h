@@ -29,10 +29,6 @@
 
 #pragma once
 
-#ifndef HAVE_QJSON
-#error "This header shouldn't be included if QJson isn't found"
-#endif
-
 #include "streamlistfetcherbase.h"
 
 namespace LeechCraft

@@ -16,23 +16,17 @@ include_directories (
 	${QJSON_INCLUDE_DIR}
 	)
 set (SRCS
+	audioaddictstreamfetcher.cpp
 	hotstreams.cpp
 	icecastfetcher.cpp
 	icecastmodel.cpp
 	radiostation.cpp
+	rockradiolistfetcher.cpp
 	somafmlistfetcher.cpp
 	stealkilllistfetcher.cpp
 	streamlistfetcherbase.cpp
 	stringlistradiostation.cpp
 	)
-
-if (QJSON_FOUND OR USE_QT5)
-	add_definitions (-DHAVE_QJSON)
-	set (SRCS
-		${SRCS}
-		audioaddictstreamfetcher.cpp
-		rockradiolistfetcher.cpp)
-endif ()
 
 set (RESOURCES hotstreamsresources.qrc)
 QtAddResources (RCCS ${RESOURCES})
