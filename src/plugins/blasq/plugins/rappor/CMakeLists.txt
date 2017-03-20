@@ -2,17 +2,9 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_blasq_rappor)
 include (InitLCPlugin OPTIONAL)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	set (QJSON_INCLUDE_DIR)
-	set (QJSON_LIBRARIES)
-endif ()
-
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	)
 set (RAPPOR_SRCS
@@ -43,7 +35,6 @@ add_library (leechcraft_blasq_rappor SHARED
 target_link_libraries (leechcraft_blasq_rappor
 	${QT_LIBRARIES}
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_blasq_rappor DESTINATION ${LC_PLUGINS_DEST})
 
