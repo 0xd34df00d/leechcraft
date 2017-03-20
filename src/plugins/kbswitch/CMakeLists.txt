@@ -3,6 +3,7 @@ project (leechcraft_kbswitch)
 include (InitLCPlugin OPTIONAL)
 
 find_package (X11 REQUIRED)
+find_package (XCB COMPONENTS XKB REQUIRED)
 
 if (NOT X11_Xlib_INCLUDE_PATH OR
 	NOT X11_Xutil_INCLUDE_PATH OR
@@ -52,16 +53,10 @@ add_library (leechcraft_kbswitch SHARED
 	${UIS_H}
 	)
 
-set (EXTRA_LIBS)
-if (USE_QT5)
-	find_package (XCB COMPONENTS XKB REQUIRED)
-	set (EXTRA_LIBS ${EXTRA_LIBS} XCB::XKB)
-endif ()
-
 target_link_libraries (leechcraft_kbswitch
 	${LEECHCRAFT_LIBRARIES}
 	${X11_Xkbfile_LIB}
-	${EXTRA_LIBS}
+	XCB::XKB
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
