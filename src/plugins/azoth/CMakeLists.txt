@@ -42,14 +42,6 @@ if (WITH_DOCS)
 endif ()
 
 if (ENABLE_MEDIACALLS)
-	if (NOT USE_QT5)
-		find_package (QtMultimediaKit REQUIRED)
-
-		include_directories (${QTMULTIMEDIAKIT_INCLUDE_DIRS})
-	else ()
-		set (QTMULTIMEDIAKIT_LIBRARIES)
-	endif ()
-
 	add_definitions (-DENABLE_MEDIACALLS)
 endif ()
 
@@ -213,7 +205,6 @@ add_library (leechcraft_azoth SHARED
 target_link_libraries (leechcraft_azoth
 	${Boost_LOCALE_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
-	${QTMULTIMEDIAKIT_LIBRARIES}
 	${QCA2_LIBRARIES}
 	${CUSTOM_SPEEX}
 	leechcraft_azoth_common
@@ -225,9 +216,7 @@ install (DIRECTORY interfaces DESTINATION include/leechcraft)
 
 FindQtLibs (leechcraft_azoth Concurrent Network Sql WebKitWidgets Widgets Xml)
 if (ENABLE_MEDIACALLS)
-	if (USE_QT5)
-		FindQtLibs (leechcraft_azoth Multimedia)
-	endif ()
+	FindQtLibs (leechcraft_azoth Multimedia)
 endif ()
 
 set (AZOTH_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
