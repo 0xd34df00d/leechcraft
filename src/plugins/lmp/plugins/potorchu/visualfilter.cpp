@@ -34,6 +34,7 @@
 #include <QAction>
 #include <gst/gst.h>
 #include <libprojectM/projectM.hpp>
+#include <util/sll/util.h>
 #include <util/lmp/gstutil.h>
 #include <interfaces/lmp/ilmpguiproxy.h>
 #include "viswidget.h"
@@ -189,14 +190,11 @@ namespace Potorchu
 			return;
 		}
 
+		auto mapGuard = Util::MakeScopeGuard ([buffer, &map] { gst_buffer_unmap (buffer, &map); });
+
 		const auto data = reinterpret_cast<const short*> (map.data);
 		const auto size = map.size;
 
-		std::shared_ptr<void> mapGuard
-		{
-			nullptr,
-			[buffer, &map] (void*) { gst_buffer_unmap (buffer, &map); }
-		};
 		const auto samples = size / sizeof (short) / 2;
 
 		if (ProjectM_)
