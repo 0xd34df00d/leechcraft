@@ -51,9 +51,7 @@ namespace LMP
 		gst_element_link_many (convIn,
 				TagInject_,
 				RGVol_,
-#if GST_VERSION_MAJOR < 1
 				RGLimiter_,
-#endif
 				convOut,
 				nullptr);
 
