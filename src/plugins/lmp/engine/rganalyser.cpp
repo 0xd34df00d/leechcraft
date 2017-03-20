@@ -109,11 +109,7 @@ namespace LMP
 	RgAnalyser::RgAnalyser (const QStringList& paths, QObject *parent)
 	: QObject { parent }
 	, Paths_ { paths }
-#if GST_VERSION_MAJOR < 1
-	, Pipeline_ (gst_element_factory_make ("playbin2", nullptr))
-#else
 	, Pipeline_ (gst_element_factory_make ("playbin", nullptr))
-#endif
 	, SinkBin_ { gst_bin_new (nullptr) }
 	, AConvert_ { gst_element_factory_make ("audioconvert", nullptr) }
 	, AResample_ { gst_element_factory_make ("audioresample", nullptr) }

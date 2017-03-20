@@ -216,7 +216,6 @@ namespace LMP
 		void HandleTagMsg (GstMessage*);
 		void HandleBufferingMsg (GstMessage*);
 		void HandleStateChangeMsg (GstMessage*);
-		void HandleElementMsg (GstMessage*);
 		void HandleEosMsg (GstMessage*);
 		void HandleStreamStatusMsg (GstMessage*);
 		void HandleWarningMsg (GstMessage*);
