@@ -5,10 +5,6 @@ include (CMakeDependentOption)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-if (USE_QT5)
-	set (USE_GSTREAMER_10 True)
-endif ()
-
 # This stuff won't be need by GStreamer 1.0.
 find_package (LibXml2 REQUIRED)
 find_package (GStreamer REQUIRED)
