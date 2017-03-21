@@ -220,7 +220,8 @@ namespace HttStream
 			connect (source->GetQObject (),
 					SIGNAL (stateChanged (SourceState, SourceState)),
 					this,
-					SLOT (checkCreatePad (SourceState)));
+					SLOT (checkCreatePad (SourceState)),
+					Qt::UniqueConnection);
 
 			source->SetState (SourceState::Playing);
 
