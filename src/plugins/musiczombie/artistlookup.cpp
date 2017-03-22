@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "artistlookup.h"
-#include <memory>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -37,6 +36,7 @@
 #include <QDate>
 #include <QtDebug>
 #include <util/sll/urloperator.h>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -101,8 +101,7 @@ namespace MusicZombie
 		auto artist = artists.firstChildElement ("artist");
 		while (!artist.isNull () && artist.attribute ("score").toInt () > 75)
 		{
-			std::shared_ptr<void> artistGuard { nullptr,
-					[&artist] (void*) { artist = artist.nextSiblingElement ("artist"); } };
+			const auto guard = Util::MakeScopeGuard ([&artist] { artist = artist.nextSiblingElement ("artist"); });
 
 			const auto& spanElem = artist.firstChildElement ("life-span");
 
