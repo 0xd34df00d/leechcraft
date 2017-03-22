@@ -128,7 +128,7 @@ namespace MusicZombie
 
 		if (span2id.isEmpty ())
 			span2id [0] = artists.firstChildElement ("artist").attribute ("id");
-		emit gotID (*std::reverse_iterator<decltype (span2id.end ())> { span2id.end () });
+		emit gotID (span2id.last ());
 	}
 
 	void ArtistLookup::handleError ()
