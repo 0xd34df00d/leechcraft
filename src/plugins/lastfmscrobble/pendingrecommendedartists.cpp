@@ -55,8 +55,7 @@ namespace Lastfmscrobble
 
 	void PendingRecommendedArtists::request ()
 	{
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("limit", QString::number (NumGet_));
+		const ParamsList_t params { { "limit", QString::number (NumGet_) } };
 		auto reply = Request ("user.getRecommendedArtists", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
