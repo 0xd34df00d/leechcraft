@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "pendingdisco.h"
-#include <memory>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -38,6 +37,7 @@
 #include <QPointer>
 #include <util/sll/queuemanager.h>
 #include <util/util.h>
+#include <util/sll/util.h>
 #include "artistlookup.h"
 
 namespace LeechCraft
@@ -188,8 +188,7 @@ namespace MusicZombie
 				.firstChildElement ("release");
 		while (!releaseElem.isNull ())
 		{
-			std::shared_ptr<void> guard (nullptr,
-					[&releaseElem] (void*)
+			const auto guard = Util::MakeScopeGuard ([&releaseElem]
 						{ releaseElem = releaseElem.nextSiblingElement ("release"); });
 
 			auto elemText = [&releaseElem] (const QString& sub)
