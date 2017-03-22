@@ -51,7 +51,7 @@ namespace MusicZombie
 	, Queue_ (queue)
 	, NAM_ (nam)
 	{
-		Queue_->Schedule ([this, artist, nam] () -> void
+		Queue_->Schedule ([this, artist, nam]
 			{
 				auto idLookup = new ArtistLookup (artist, nam, this);
 				connect (idLookup,
@@ -83,7 +83,7 @@ namespace MusicZombie
 	{
 		const auto urlStr = "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" + id;
 
-		Queue_->Schedule ([this, urlStr] () -> void
+		Queue_->Schedule ([this, urlStr]
 			{
 				auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
 				connect (reply,
