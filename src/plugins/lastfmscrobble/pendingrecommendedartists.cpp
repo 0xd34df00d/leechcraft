@@ -104,8 +104,7 @@ namespace Lastfmscrobble
 
 			++InfosWaiting_;
 
-			QMap<QString, QString> params;
-			params ["artist"] = name;
+			QMap<QString, QString> params { { "artist", name } };
 			AddLanguageParam (params);
 			auto infoReply = Request ("artist.getInfo", NAM_, params);
 
