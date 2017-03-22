@@ -235,7 +235,7 @@ namespace MusicZombie
 		}
 
 		std::sort (Releases_.begin (), Releases_.end (),
-				[] (decltype (Releases_.at (0)) left, decltype (Releases_.at (0)) right)
+				[] (const auto& left, const auto& right)
 					{ return left.Year_ < right.Year_; });
 
 		emit ready ();
