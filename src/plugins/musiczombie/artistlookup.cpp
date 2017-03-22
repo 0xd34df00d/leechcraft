@@ -54,7 +54,7 @@ namespace MusicZombie
 	: QObject { parent }
 	, Name_ { name }
 	{
-		QUrl url { "http://www.musicbrainz.org/ws/2/artist/" };
+		QUrl url { "https://musicbrainz.org/ws/2/artist/" };
 		Util::UrlOperator { url }
 				("query", "artist:" + NormalizeName (name));
 
