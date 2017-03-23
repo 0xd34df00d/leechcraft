@@ -58,7 +58,10 @@ namespace MusicZombie
 		Util::UrlOperator { url }
 				("query", "artist:" + NormalizeName (name));
 
-		auto reply = nam->get (QNetworkRequest (url));
+		QNetworkRequest req { url };
+		req.setHeader (QNetworkRequest::UserAgentHeader,
+				"LeechCraft MusicZombie/ver ( 0xd34df00d@gmail.com )");
+		auto reply = nam->get (req);
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
