@@ -38,6 +38,7 @@
 #include <util/sll/queuemanager.h>
 #include <util/util.h>
 #include <util/sll/util.h>
+#include <util/sll/prelude.h>
 #include "artistlookup.h"
 #include "util.h"
 
@@ -237,8 +238,7 @@ namespace MusicZombie
 		}
 
 		std::sort (Releases_.begin (), Releases_.end (),
-				[] (const auto& left, const auto& right)
-					{ return left.Year_ < right.Year_; });
+				Util::ComparingBy (&Media::ReleaseInfo::Year_));
 
 		emit ready ();
 		deleteLater ();
