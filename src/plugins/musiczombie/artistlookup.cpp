@@ -37,6 +37,7 @@
 #include <QtDebug>
 #include <util/sll/urloperator.h>
 #include <util/sll/util.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -58,10 +59,7 @@ namespace MusicZombie
 		Util::UrlOperator { url }
 				("query", "artist:" + NormalizeName (name));
 
-		QNetworkRequest req { url };
-		req.setHeader (QNetworkRequest::UserAgentHeader,
-				"LeechCraft MusicZombie/ver ( 0xd34df00d@gmail.com )");
-		auto reply = nam->get (req);
+		auto reply = nam->get (SetupRequest (QNetworkRequest { url }));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
