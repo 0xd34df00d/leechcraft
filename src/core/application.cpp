@@ -157,7 +157,7 @@ namespace LeechCraft
 		if (!VarMap_.count ("plugin") && IsAlreadyRunning ())
 			std::exit (EAlreadyRunning);
 
-		Util::InstallTranslator ("", "qt", "qt4");
+		Util::InstallTranslator ("", "qt", "qt5");
 
 		QDir home = QDir::home ();
 		if (!home.exists (".leechcraft"))
