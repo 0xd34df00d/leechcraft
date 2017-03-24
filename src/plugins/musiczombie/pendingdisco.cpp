@@ -39,6 +39,7 @@
 #include <util/util.h>
 #include <util/sll/util.h>
 #include "artistlookup.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -86,7 +87,7 @@ namespace MusicZombie
 
 		Queue_->Schedule ([this, url]
 			{
-				auto reply = NAM_->get (QNetworkRequest { url });
+				auto reply = NAM_->get (SetupRequest (QNetworkRequest { url }));
 				connect (reply,
 						SIGNAL (finished ()),
 						this,
