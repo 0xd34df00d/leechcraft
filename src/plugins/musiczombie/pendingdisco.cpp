@@ -81,11 +81,12 @@ namespace MusicZombie
 
 	void PendingDisco::handleGotID (const QString& id)
 	{
-		const auto urlStr = "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" + id;
+		static const QString pref { "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" };
+		const QUrl url { pref + id };
 
-		Queue_->Schedule ([this, urlStr]
+		Queue_->Schedule ([this, url]
 			{
-				auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
+				auto reply = NAM_->get (QNetworkRequest { url });
 				connect (reply,
 						SIGNAL (finished ()),
 						this,
