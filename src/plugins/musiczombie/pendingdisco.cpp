@@ -147,15 +147,16 @@ namespace MusicZombie
 
 			const auto& type = elem.attribute ("type");
 
-			static const auto& map = Util::MakeMap<QString, Media::ReleaseInfo::Type> ({
-						{ "Album", Media::ReleaseInfo::Type::Standard },
-						{ "EP", Media::ReleaseInfo::Type::EP },
-						{ "Single", Media::ReleaseInfo::Type::Single },
-						{ "Compilation", Media::ReleaseInfo::Type::Compilation },
-						{ "Live", Media::ReleaseInfo::Type::Live },
-						{ "Soundtrack", Media::ReleaseInfo::Type::Soundtrack },
-						{ "Other", Media::ReleaseInfo::Type::Other }
-					});
+			static const QMap<QString, Media::ReleaseInfo::Type> map
+			{
+				{ "Album", Media::ReleaseInfo::Type::Standard },
+				{ "EP", Media::ReleaseInfo::Type::EP },
+				{ "Single", Media::ReleaseInfo::Type::Single },
+				{ "Compilation", Media::ReleaseInfo::Type::Compilation },
+				{ "Live", Media::ReleaseInfo::Type::Live },
+				{ "Soundtrack", Media::ReleaseInfo::Type::Soundtrack },
+				{ "Other", Media::ReleaseInfo::Type::Other }
+			};
 
 			if (map.contains (type))
 				return map.value (type);
