@@ -126,7 +126,7 @@ namespace DCAC
 		return _mm256_set_epi8 (Is..., Is...);
 	}
 
-	template<uint32_t Bits, char From, char To, char ByteNum = 0>
+	template<uint16_t Bits, char From, char To, char ByteNum = 0>
 	auto MakeMask ()
 	{
 		constexpr char BytesPerElem = 16 / (From - To + 1);
@@ -146,7 +146,7 @@ namespace DCAC
 		return _mm256_set_epi8 (Is..., Is...);
 	}
 
-	template<uint32_t Bits, size_t BytesCount, size_t Bucket, char ByteNum = 0>
+	template<uint16_t Bits, size_t BytesCount, size_t Bucket, char ByteNum = 0>
 	auto MakeRevMask ()
 	{
 		constexpr char BytesPerElem = 16 / BytesCount;
