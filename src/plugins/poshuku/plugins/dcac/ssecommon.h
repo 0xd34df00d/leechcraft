@@ -61,57 +61,57 @@ namespace DCAC
 			f (i);
 	}
 
-	template<char From, char To, char ByteNum, char BytesPerElem>
-	struct GenSeq;
-
-	template<char From, char To, char ByteNum, char BytesPerElem>
-	using EpiSeq = typename GenSeq<From, To, ByteNum, BytesPerElem>::type;
-
-	template<char From, char To, char ByteNum, char BytesPerElem>
-	struct GenSeq
-	{
-		using type = Util::IntSeq::Concat<EpiSeq<From, From, ByteNum, BytesPerElem>, EpiSeq<From - 1, To, ByteNum, BytesPerElem>>;
-	};
-
-	template<char E, char ByteNum, char BytesPerElem>
-	struct GenSeq<E, E, ByteNum, BytesPerElem>
-	{
-		using type = Util::IntSeq::Concat<
-				Util::IntSeq::Repeat<uchar, 0x80, BytesPerElem - ByteNum - 1>,
-				std::integer_sequence<uchar, E>,
-				Util::IntSeq::Repeat<uchar, 0x80, ByteNum>
-			>;
-	};
-
-	template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
-	struct GenRevSeqS
-	{
-		static constexpr uchar EndValue = BytesCount * BytesPerElem - BytesPerElem;
-		static constexpr auto TotalCount = BytesCount * BytesPerElem;
-		static constexpr auto BeforeEmpty = BytesCount * Bucket;
-		static constexpr auto AfterEmpty = TotalCount - BytesCount - BeforeEmpty;
-
-		static_assert (AfterEmpty >= 0, "negative sequel size");
-		static_assert (BeforeEmpty >= 0, "negative prequel size");
-
-		template<uchar... Is>
-		static auto BytesImpl (std::integer_sequence<uchar, Is...>)
-		{
-			return std::integer_sequence<uchar, (EndValue - Is * BytesPerElem + ByteNum)...> {};
-		}
-
-		using type = Util::IntSeq::Concat<
-				Util::IntSeq::Repeat<uchar, 0x80, AfterEmpty>,
-				decltype (BytesImpl (std::make_integer_sequence<uchar, BytesCount> {})),
-				Util::IntSeq::Repeat<uchar, 0x80, BeforeEmpty>
-			>;
-	};
-
-	template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
-	using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket, ByteNum, BytesPerElem>::type;
-
 	namespace detail
 	{
+		template<char From, char To, char ByteNum, char BytesPerElem>
+		struct GenSeq;
+
+		template<char From, char To, char ByteNum, char BytesPerElem>
+		using EpiSeq = typename GenSeq<From, To, ByteNum, BytesPerElem>::type;
+
+		template<char From, char To, char ByteNum, char BytesPerElem>
+		struct GenSeq
+		{
+			using type = Util::IntSeq::Concat<EpiSeq<From, From, ByteNum, BytesPerElem>, EpiSeq<From - 1, To, ByteNum, BytesPerElem>>;
+		};
+
+		template<char E, char ByteNum, char BytesPerElem>
+		struct GenSeq<E, E, ByteNum, BytesPerElem>
+		{
+			using type = Util::IntSeq::Concat<
+					Util::IntSeq::Repeat<uchar, 0x80, BytesPerElem - ByteNum - 1>,
+					std::integer_sequence<uchar, E>,
+					Util::IntSeq::Repeat<uchar, 0x80, ByteNum>
+				>;
+		};
+
+		template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
+		struct GenRevSeqS
+		{
+			static constexpr uchar EndValue = BytesCount * BytesPerElem - BytesPerElem;
+			static constexpr auto TotalCount = BytesCount * BytesPerElem;
+			static constexpr auto BeforeEmpty = BytesCount * Bucket;
+			static constexpr auto AfterEmpty = TotalCount - BytesCount - BeforeEmpty;
+
+			static_assert (AfterEmpty >= 0, "negative sequel size");
+			static_assert (BeforeEmpty >= 0, "negative prequel size");
+
+			template<uchar... Is>
+			static auto BytesImpl (std::integer_sequence<uchar, Is...>)
+			{
+				return std::integer_sequence<uchar, (EndValue - Is * BytesPerElem + ByteNum)...> {};
+			}
+
+			using type = Util::IntSeq::Concat<
+					Util::IntSeq::Repeat<uchar, 0x80, AfterEmpty>,
+					decltype (BytesImpl (std::make_integer_sequence<uchar, BytesCount> {})),
+					Util::IntSeq::Repeat<uchar, 0x80, BeforeEmpty>
+				>;
+		};
+
+		template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
+		using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket, ByteNum, BytesPerElem>::type;
+
 		template<uint16_t>
 		struct MaskTag {};
 
@@ -125,14 +125,14 @@ namespace DCAC
 	namespace detail
 	{
 		template<uchar... Is>
-		auto MakeMaskImpl (detail::Mask128, std::integer_sequence<uchar, Is...>)
+		auto MakeMaskImpl (Mask128, std::integer_sequence<uchar, Is...>)
 		{
 			return _mm_set_epi8 (Is...);
 		}
 
 		template<uchar... Is>
 		__attribute__ ((target ("avx")))
-		auto MakeMaskImpl (detail::Mask256, std::integer_sequence<uchar, Is...>)
+		auto MakeMaskImpl (Mask256, std::integer_sequence<uchar, Is...>)
 		{
 			return _mm256_set_epi8 (Is..., Is...);
 		}
