@@ -133,24 +133,11 @@ namespace DCAC
 		return MakeMaskImpl (Tag<Bits> {}, EpiSeq<From, To, ByteNum, BytesPerElem> {});
 	}
 
-	template<uchar... Is>
-	auto MakeRevMaskImpl (Tag<128>, std::integer_sequence<uchar, Is...>)
-	{
-		return _mm_set_epi8 (Is...);
-	}
-
-	template<uchar... Is>
-	__attribute__ ((target ("avx")))
-	auto MakeRevMaskImpl (Tag<256>, std::integer_sequence<uchar, Is...>)
-	{
-		return _mm256_set_epi8 (Is..., Is...);
-	}
-
 	template<uint16_t Bits, size_t BytesCount, size_t Bucket, char ByteNum = 0>
 	auto MakeRevMask ()
 	{
 		constexpr char BytesPerElem = 16 / BytesCount;
-		return MakeRevMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {});
+		return MakeMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {});
 	}
 }
 }
