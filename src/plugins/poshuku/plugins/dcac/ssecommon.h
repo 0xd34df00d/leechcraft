@@ -140,6 +140,8 @@ namespace DCAC
 		template<char From, char To, char ByteNum>
 		auto MakeMaskSeq ()
 		{
+			static_assert (!(16 % (From - To + 1)), "integral byte count expected");
+
 			constexpr char BytesPerElem = 16 / (From - To + 1);
 			return EpiSeq<From, To, ByteNum, BytesPerElem> {};
 		}
@@ -147,6 +149,8 @@ namespace DCAC
 		template<size_t BytesCount, size_t Bucket, char ByteNum = 0>
 		auto MakeRevMaskSeq ()
 		{
+			static_assert (!(16 % BytesCount), "integral byte count expected");
+
 			constexpr char BytesPerElem = 16 / BytesCount;
 			return GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {};
 		}
