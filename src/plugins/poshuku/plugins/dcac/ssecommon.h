@@ -110,34 +110,72 @@ namespace DCAC
 	template<size_t BytesCount, size_t Bucket, char ByteNum, char BytesPerElem>
 	using GenRevSeq = typename GenRevSeqS<BytesCount, Bucket, ByteNum, BytesPerElem>::type;
 
-	template<uint16_t>
-	struct Tag {};
-
-	template<uchar... Is>
-	auto MakeMaskImpl (Tag<128>, std::integer_sequence<uchar, Is...>)
+	namespace detail
 	{
-		return _mm_set_epi8 (Is...);
+		template<uint16_t>
+		struct MaskTag {};
+
+		using Mask128 = MaskTag<128>;
+		using Mask256 = MaskTag<256>;
 	}
 
-	template<uchar... Is>
+	constexpr detail::Mask128 Mask128;
+	constexpr detail::Mask256 Mask256;
+
+	namespace detail
+	{
+		template<uchar... Is>
+		auto MakeMaskImpl (detail::Mask128, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm_set_epi8 (Is...);
+		}
+
+		template<uchar... Is>
+		__attribute__ ((target ("avx")))
+		auto MakeMaskImpl (detail::Mask256, std::integer_sequence<uchar, Is...>)
+		{
+			return _mm256_set_epi8 (Is..., Is...);
+		}
+
+		template<char From, char To, char ByteNum>
+		auto MakeMaskSeq ()
+		{
+			constexpr char BytesPerElem = 16 / (From - To + 1);
+			return EpiSeq<From, To, ByteNum, BytesPerElem> {};
+		}
+
+		template<size_t BytesCount, size_t Bucket, char ByteNum = 0>
+		auto MakeRevMaskSeq ()
+		{
+			constexpr char BytesPerElem = 16 / BytesCount;
+			return GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {};
+		}
+	}
+
+	template<char From, char To, char ByteNum = 0>
+	auto MakeMask (detail::Mask128 tag)
+	{
+		return MakeMaskImpl (tag, detail::MakeMaskSeq<From, To, ByteNum> ());
+	}
+
+	template<char From, char To, char ByteNum = 0>
 	__attribute__ ((target ("avx")))
-	auto MakeMaskImpl (Tag<256>, std::integer_sequence<uchar, Is...>)
+	auto MakeMask (detail::Mask256 tag)
 	{
-		return _mm256_set_epi8 (Is..., Is...);
+		return MakeMaskImpl (tag, detail::MakeMaskSeq<From, To, ByteNum> ());
 	}
 
-	template<uint16_t Bits, char From, char To, char ByteNum = 0>
-	auto MakeMask ()
+	template<size_t BytesCount, size_t Bucket, char ByteNum = 0>
+	auto MakeRevMask (detail::Mask128 tag)
 	{
-		constexpr char BytesPerElem = 16 / (From - To + 1);
-		return MakeMaskImpl (Tag<Bits> {}, EpiSeq<From, To, ByteNum, BytesPerElem> {});
+		return MakeMaskImpl (tag, detail::MakeRevMaskSeq<BytesCount, Bucket, ByteNum> ());
 	}
 
-	template<uint16_t Bits, size_t BytesCount, size_t Bucket, char ByteNum = 0>
-	auto MakeRevMask ()
+	template<size_t BytesCount, size_t Bucket, char ByteNum = 0>
+	__attribute__ ((target ("avx")))
+	auto MakeRevMask (detail::Mask256 tag)
 	{
-		constexpr char BytesPerElem = 16 / BytesCount;
-		return MakeMaskImpl (Tag<Bits> {}, GenRevSeq<BytesCount, Bucket, ByteNum, BytesPerElem> {});
+		return MakeMaskImpl (tag, detail::MakeRevMaskSeq<BytesCount, Bucket, ByteNum> ());
 	}
 }
 }

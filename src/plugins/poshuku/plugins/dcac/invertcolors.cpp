@@ -125,10 +125,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<128, 3, 0> ();
-			const __m128i pixel2msk = MakeMask<128, 7, 4> ();
-			const __m128i pixel3msk = MakeMask<128, 11, 8> ();
-			const __m128i pixel4msk = MakeMask<128, 15, 12> ();
+			const __m128i pixel1msk = MakeMask<3, 0> (Mask128);
+			const __m128i pixel2msk = MakeMask<7, 4> (Mask128);
+			const __m128i pixel3msk = MakeMask<11, 8> (Mask128);
+			const __m128i pixel4msk = MakeMask<15, 12> (Mask128);
 
 			constexpr auto alignment = 16;
 
@@ -177,10 +177,10 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i ppair1mask = MakeMask<256, 3, 0> ();
-			const __m256i ppair2mask = MakeMask<256, 7, 4> ();
-			const __m256i ppair3mask = MakeMask<256, 11, 8> ();
-			const __m256i ppair4mask = MakeMask<256, 15, 12> ();
+			const __m256i ppair1mask = MakeMask<3, 0> (Mask256);
+			const __m256i ppair2mask = MakeMask<7, 4> (Mask256);
+			const __m256i ppair3mask = MakeMask<11, 8> (Mask256);
+			const __m256i ppair4mask = MakeMask<15, 12> (Mask256);
 
 			constexpr auto alignment = 32;
 
