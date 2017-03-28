@@ -152,27 +152,6 @@ namespace Util
 			Invoke (f, t);
 	}
 
-	/*
-#ifndef USE_CPP14
-	template<typename F>
-	auto Map (const QStringList& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, QString {}))>::value,
-			WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>>>::type
-	{
-		WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>> result;
-		for (auto&& t : c)
-			result.push_back (Invoke (f, t));
-		return result;
-	}
-
-	template<typename F>
-	auto Map (const QStringList& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, QString {}))>::value>::type
-	{
-		for (auto&& t : c)
-			Invoke (f, t);
-	}
-#endif
-*/
-
 	template<typename T, template<typename U> class Container, typename F>
 	auto Map (const Container<T>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>::type
 	{
