@@ -234,7 +234,6 @@ namespace Util
 
 	const auto Id = [] (const auto& t) { return t; };
 
-#ifdef USE_CPP14
 	template<typename R>
 	auto ComparingBy (R r)
 	{
@@ -254,75 +253,5 @@ namespace Util
 	{
 		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.second); };
 	}
-#else
-	namespace detail
-	{
-		template<typename R>
-		struct ComparingByClosure
-		{
-			const R R_;
-
-			template<typename T>
-			bool operator() (const T& left, const T& right) const
-			{
-				return Invoke (R_, left) < Invoke (R_, right);
-			}
-		};
-	}
-
-	template<typename R>
-	detail::ComparingByClosure<R> ComparingBy (R r)
-	{
-		return detail::ComparingByClosure<R> { r };
-	}
-
-	struct
-	{
-		template<typename T>
-		typename std::result_of<T ()>::type operator() (const T& t) const
-		{
-			return t ();
-		}
-	} const Apply {};
-
-	namespace detail
-	{
-		template<typename F>
-		struct Fst
-		{
-			F F_;
-
-			template<typename Pair>
-			auto operator() (const Pair& pair) -> decltype (Invoke (F_, pair.first))
-			{
-				return Invoke (F_, pair.first);
-			}
-		};
-
-		template<typename F>
-		struct Snd
-		{
-			F F_;
-
-			template<typename Pair>
-			auto operator() (const Pair& pair) -> decltype (Invoke (F_, pair.second))
-			{
-				return Invoke (F_, pair.second);
-			}
-		};
-	}
-
-	template<typename F>
-	detail::Fst<F> First (F f)
-	{
-		return { f };
-	}
-
-	template<typename F>
-	detail::Snd<F> Second (F f)
-	{
-		return { f };
-	}
-#endif
 }
 }
