@@ -95,7 +95,7 @@ namespace Util
 		}
 
 		template<typename T, typename F>
-		constexpr bool IsInvokableWithConstImpl (typename std::result_of<F (const T&)>::type*)
+		constexpr bool IsInvokableWithConstImpl (std::result_of_t<F (const T&)>*)
 		{
 			return true;
 		}
@@ -109,7 +109,7 @@ namespace Util
 		template<typename T, typename F>
 		constexpr bool IsInvokableWithConst ()
 		{
-			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (0);
+			return IsInvokableWithConstImpl<std::decay_t<T>, F> (0);
 		}
 
 		template<template<typename> class Cont, typename T>
@@ -126,34 +126,34 @@ namespace Util
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
-			WrapType_t<Container<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
+	auto Map (const Container<T>& c, F f) -> std::enable_if_t<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
 	{
-		Container<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> result;
+		Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>> result;
 		for (auto&& t : c)
 			detail::Append (result, Invoke (f, t));
 		return result;
 	}
 
 	template<typename Container, typename F, template<typename> class ResultCont = QList>
-	auto Map (const Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
-			WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
+	auto Map (const Container& c, F f) -> std::enable_if_t<!detail::IsSimpleContainer<Container> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
 	{
-		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
+		ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>> cont;
 		for (auto&& t : c)
 			detail::Append (cont, Invoke (f, t));
 		return cont;
 	}
 
 	template<typename Container, typename F>
-	auto Map (Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	auto Map (Container& c, F f) -> std::enable_if_t<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>::type
+	auto Map (const Container<T>& c, F f) -> std::enable_if_t<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
@@ -179,9 +179,9 @@ namespace Util
 	}
 
 	template<template<typename...> class Container, typename... ContArgs>
-	auto Concat (const Container<ContArgs...>& containers) -> typename std::decay<decltype (*containers.begin ())>::type
+	auto Concat (const Container<ContArgs...>& containers) -> std::decay_t<decltype (*containers.begin ())>
 	{
-		typename std::decay<decltype (*containers.begin ())>::type result;
+		std::decay_t<decltype (*containers.begin ())> result;
 		for (const auto& cont : containers)
 			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
 		return result;
