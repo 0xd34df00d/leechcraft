@@ -245,13 +245,13 @@ namespace Util
 	template<typename F>
 	auto First (F&& f)
 	{
-		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.first); };
+		return [f = std::forward<F> (f)] (const auto& pair) { return Invoke (f, pair.first); };
 	}
 
 	template<typename F>
 	auto Second (F&& f)
 	{
-		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.second); };
+		return [f = std::forward<F> (f)] (const auto& pair) { return Invoke (f, pair.second); };
 	}
 }
 }
