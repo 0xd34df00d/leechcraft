@@ -190,7 +190,10 @@ namespace Acetamide
 				'^' | '{' | '|' | '}' | '-'];
 		rule<> hostmask = lexeme_d [+(ascii - ' ' - '\0' - ',' - '\r' - '\n')];
 		rule<> let_dig_hyp = alnum_p | ch_p ('-');
-		rule<> ldh_str = *(let_dig_hyp >> !ldh_str);
+
+		rule<> ldh_str;
+		ldh_str = *(let_dig_hyp >> !ldh_str);
+
 		rule<> label = alpha_p >> !(!ldh_str >> alnum_p);
 		rule<> subdomain = label >> +(label >> !ch_p ('.'));
 		rule<> host = subdomain  [assign_a (host_)];
