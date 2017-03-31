@@ -121,9 +121,7 @@ namespace Acetamide
 
 	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
-		QList<QWidget*> result;
-		result << new IrcAccountConfigurationWidget ();
-		return result;
+		return { new IrcAccountConfigurationWidget () };
 	}
 
 	void IrcProtocol::RegisterAccount (const QString& name,
