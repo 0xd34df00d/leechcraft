@@ -48,9 +48,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
-	using namespace boost::spirit::classic;
-
 	IrcProtocol::IrcProtocol (QObject *parent)
 	: QObject (parent)
 	, ParentProtocolPlugin_ (parent)
@@ -182,6 +179,8 @@ namespace Acetamide
 		bool isNick = false;
 		bool serverPass = false;
 		bool channelPass = false;
+
+		using namespace boost::spirit::classic;
 
 		range<> ascii (char (0x01), char (0x7F));
 		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
