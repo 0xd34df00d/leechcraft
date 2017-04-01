@@ -235,6 +235,13 @@ namespace Graffiti
 				}
 				else if (line.startsWith ("FILE "))
 					i = HandleFile (line.mid (5), i + 1, end, result);
+				else
+				{
+					qWarning () << Q_FUNC_INFO
+							<< "unknown field"
+							<< line;
+					++i;
+				}
 			}
 			return result;
 		}
