@@ -57,9 +57,7 @@ namespace Acetamide
 	IrcProtocol::~IrcProtocol ()
 	{
 		for (auto acc : GetRegisteredAccounts ())
-		{
 			emit accountRemoved (acc);
-		}
 	}
 
 	void IrcProtocol::Prepare ()
