@@ -50,6 +50,7 @@ namespace Sarin
 		return c1.AllowUDP_ == c2.AllowUDP_ &&
 				c1.AllowIPv6_ == c2.AllowIPv6_ &&
 				c1.AllowLocalDiscovery_ == c2.AllowLocalDiscovery_ &&
+				c1.UdpHolePunching_ == c2.UdpHolePunching_ &&
 				c1.ProxyPort_ == c2.ProxyPort_ &&
 				c1.ProxyHost_ == c2.ProxyHost_;
 	}
@@ -66,7 +67,8 @@ namespace Sarin
 				<< config.AllowIPv6_
 				<< config.ProxyHost_
 				<< config.ProxyPort_
-				<< config.AllowLocalDiscovery_;
+				<< config.AllowLocalDiscovery_
+				<< config.UdpHolePunching_;
 		return out;
 	}
 
@@ -87,7 +89,8 @@ namespace Sarin
 				>> config.ProxyHost_
 				>> config.ProxyPort_;
 		if (version >= 2)
-			in >> config.AllowLocalDiscovery_;
+			in >> config.AllowLocalDiscovery_
+					>> config.UdpHolePunching_;
 		return in;
 	}
 }
