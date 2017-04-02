@@ -38,6 +38,7 @@ set (SARIN_SRCS
 	toxaccount.cpp
 	toxthread.cpp
 	toxcontact.cpp
+	callbackmanager.cpp
 	accregisterdetailspage.cpp
 	showtoxiddialog.cpp
 	threadexceptions.cpp
