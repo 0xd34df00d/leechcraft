@@ -49,6 +49,7 @@ namespace Sarin
 	{
 		return c1.AllowUDP_ == c2.AllowUDP_ &&
 				c1.AllowIPv6_ == c2.AllowIPv6_ &&
+				c1.AllowLocalDiscovery_ == c2.AllowLocalDiscovery_ &&
 				c1.ProxyPort_ == c2.ProxyPort_ &&
 				c1.ProxyHost_ == c2.ProxyHost_;
 	}
@@ -60,11 +61,12 @@ namespace Sarin
 
 	QDataStream& operator<< (QDataStream& out, const ToxAccountConfiguration& config)
 	{
-		out << static_cast<quint8> (1)
+		out << static_cast<quint8> (2)
 				<< config.AllowUDP_
 				<< config.AllowIPv6_
 				<< config.ProxyHost_
-				<< config.ProxyPort_;
+				<< config.ProxyPort_
+				<< config.AllowLocalDiscovery_;
 		return out;
 	}
 
@@ -72,7 +74,7 @@ namespace Sarin
 	{
 		quint8 version = 0;
 		in >> version;
-		if (version != 1)
+		if (version < 1 || version > 2)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "unknown version"
@@ -84,6 +86,8 @@ namespace Sarin
 				>> config.AllowIPv6_
 				>> config.ProxyHost_
 				>> config.ProxyPort_;
+		if (version >= 2)
+			in >> config.AllowLocalDiscovery_;
 		return in;
 	}
 }
