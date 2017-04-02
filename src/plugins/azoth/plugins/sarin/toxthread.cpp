@@ -435,7 +435,7 @@ namespace Sarin
 		emit gotFriendRequest (pubkey, msg);
 	}
 
-	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t)
+	void ToxThread::HandleNameChange (uint32_t id, const uint8_t *data, uint16_t)
 	{
 		const auto& toxId = GetFriendId (Tox_.get (), id);
 		const auto& name = QString::fromUtf8 (reinterpret_cast<const char*> (data));
@@ -445,14 +445,14 @@ namespace Sarin
 		SaveState ();
 	}
 
-	void ToxThread::UpdateFriendStatus (int32_t friendId)
+	void ToxThread::UpdateFriendStatus (uint32_t friendId)
 	{
 		const auto& id = GetFriendId (Tox_.get (), friendId);
 		const auto& status = GetFriendStatus (Tox_.get (), friendId);
 		emit friendStatusChanged (id, status);
 	}
 
-	void ToxThread::HandleTypingChange (int32_t friendId, bool isTyping)
+	void ToxThread::HandleTypingChange (uint32_t friendId, bool isTyping)
 	{
 		const auto& id = GetFriendId (Tox_.get (), friendId);
 		emit friendTypingChanged (id, isTyping);
