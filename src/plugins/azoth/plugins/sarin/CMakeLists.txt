@@ -80,6 +80,7 @@ target_link_libraries (leechcraft_azoth_sarin
 	${TOXAV_LIBRARY}
 	${EXTRA_LIBRARIES}
 	)
+set_property(TARGET leechcraft_azoth_sarin PROPERTY CXX_STANDARD 17)
 install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES azothsarinsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
