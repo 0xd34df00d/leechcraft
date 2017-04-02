@@ -426,7 +426,7 @@ namespace Sarin
 			emit gotFriend (friendList [i]);
 	}
 
-	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, uint16_t size)
+	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, size_t size)
 	{
 		const auto& pubkey = ToxId2HR<TOX_PUBLIC_KEY_SIZE> (pkey);
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
