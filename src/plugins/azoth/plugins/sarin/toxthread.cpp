@@ -549,6 +549,13 @@ namespace Sarin
 			template<typename... Args>
 			void Invoke (Args... args) const
 			{
+				const auto res = boost::any_cast<std::function<void (Args...)>> (&F_);
+				if (!res)
+					qWarning () << Q_FUNC_INFO
+							<< "mismatched parameters, expected typeid:"
+							<< F_.type ().name ();
+				else
+					(*res) (args...);
 			}
 		};
 	}
