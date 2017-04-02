@@ -541,7 +541,7 @@ namespace Sarin
 				{
 					return
 					{
-						std::function<void (Args...)> { [pThis, cb] (Args... args) { cb (pThis, args...); } }
+						std::function<void (Args...)> { [pThis, cb] (Args... args) { Util::Invoke (cb, pThis, args...); } }
 					};
 				}
 			};
