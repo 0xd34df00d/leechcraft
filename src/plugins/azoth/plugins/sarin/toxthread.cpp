@@ -464,7 +464,7 @@ namespace Sarin
 		std::tuple<Args...> DetectArgsImpl (R (First::*) (Args...));
 
 		template<typename First, typename R, typename... Args>
-		std::tuple<Args...> DetectArgsImpl (R (*) (First, Args...));
+		std::tuple<Args...> DetectArgsImpl (R (*) (First*, Args...));
 
 		template<typename First, typename F>
 		auto DetectArgsImpl (F&& f) -> decltype (DetectArgsImpl<First> (+f));
@@ -574,7 +574,7 @@ namespace Sarin
 		template<auto Reg, typename F, typename This>
 		void Register (This pThis, F callback)
 		{
-			using Args = detail::DetectArgs<This, F>;
+			using Args = detail::DetectArgs<std::remove_pointer_t<This>, F>;
 
 			auto& cbList = Callbacks_ [detail::RegHolder { Reg }];
 			cbList.push_back (detail::CBHolder::Maker<This, F, Args> {} (pThis, callback));
