@@ -31,7 +31,6 @@
 #include <QUuid>
 #include <QAction>
 #include <QDataStream>
-#include <QFutureWatcher>
 #include <QtDebug>
 #include <tox/tox.h>
 #include <util/xpc/util.h>
@@ -265,69 +264,53 @@ namespace Sarin
 	{
 	}
 
-	namespace
-	{
-		void HandleAddFriendResult (ToxThread::AddFriendResult result, const ICoreProxy_ptr& proxy)
-		{
-			const auto notify = [proxy] (Priority prio, const QString& text)
-			{
-				const auto& e = Util::MakeNotification ("Azoth Sarin", text, prio);
-				proxy->GetEntityManager ()->HandleEntity (e);
-			};
-
-			switch (result)
-			{
-			case ToxThread::AddFriendResult::Added:
-				return;
-			case ToxThread::AddFriendResult::InvalidId:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added: invalid Tox ID."));
-				return;
-			case ToxThread::AddFriendResult::TooLong:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added: too long greeting message."));
-				return;
-			case ToxThread::AddFriendResult::NoMessage:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added: no message."));
-				return;
-			case ToxThread::AddFriendResult::OwnKey:
-				notify (PCritical_, ToxAccount::tr ("Why would you add yourself as friend?"));
-				return;
-			case ToxThread::AddFriendResult::AlreadySent:
-				notify (PWarning_, ToxAccount::tr ("Friend request has already been sent."));
-				return;
-			case ToxThread::AddFriendResult::BadChecksum:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added: bad Tox ID checksum."));
-				return;
-			case ToxThread::AddFriendResult::NoSpam:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added: nospam value has been changed. Get a freshier ID!"));
-				return;
-			case ToxThread::AddFriendResult::NoMem:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added: no memory (but how do you see this in that case?)."));
-				return;
-			case ToxThread::AddFriendResult::Unknown:
-				notify (PCritical_, ToxAccount::tr ("Friend was not added because of some unknown error."));
-				return;
-			}
-		}
-	}
-
 	void ToxAccount::RequestAuth (const QString& toxId, const QString& msg, const QString&, const QStringList&)
 	{
 		if (!Thread_)
 			return;
 
-		const auto watcher = new QFutureWatcher<ToxThread::AddFriendResult>;
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[watcher, this]
-			{
-				HandleAddFriendResult (watcher->result (), Proto_->GetCoreProxy ());
-				watcher->deleteLater ();
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-		watcher->setFuture (Thread_->AddFriend (toxId.toLatin1 (), msg));
+		auto iem = Proto_->GetCoreProxy ()->GetEntityManager ();
+		Util::Sequence (this, Thread_->AddFriend (toxId.toLatin1 (), msg)) >>
+				[iem] (ToxThread::AddFriendResult result)
+				{
+					const auto notify = [iem] (Priority prio, const QString& text)
+					{
+						iem->HandleEntity (Util::MakeNotification ("Azoth Sarin", text, prio));
+					};
+
+					switch (result)
+					{
+					case ToxThread::AddFriendResult::Added:
+						return;
+					case ToxThread::AddFriendResult::InvalidId:
+						notify (PCritical_, tr ("Friend was not added: invalid Tox ID."));
+						return;
+					case ToxThread::AddFriendResult::TooLong:
+						notify (PCritical_, tr ("Friend was not added: too long greeting message."));
+						return;
+					case ToxThread::AddFriendResult::NoMessage:
+						notify (PCritical_, tr ("Friend was not added: no message."));
+						return;
+					case ToxThread::AddFriendResult::OwnKey:
+						notify (PCritical_, tr ("Why would you add yourself as friend?"));
+						return;
+					case ToxThread::AddFriendResult::AlreadySent:
+						notify (PWarning_, tr ("Friend request has already been sent."));
+						return;
+					case ToxThread::AddFriendResult::BadChecksum:
+						notify (PCritical_, tr ("Friend was not added: bad Tox ID checksum."));
+						return;
+					case ToxThread::AddFriendResult::NoSpam:
+						notify (PCritical_, tr ("Friend was not added: nospam value has been changed. Get a freshier ID!"));
+						return;
+					case ToxThread::AddFriendResult::NoMem:
+						notify (PCritical_, tr ("Friend was not added: no memory (but how do you see this in that case?)."));
+						return;
+					case ToxThread::AddFriendResult::Unknown:
+						notify (PCritical_, tr ("Friend was not added because of some unknown error."));
+						return;
+					}
+				};
 	}
 
 	void ToxAccount::RemoveEntry (QObject *entryObj)
@@ -522,20 +505,8 @@ namespace Sarin
 		dialog->show ();
 		dialog->setAttribute (Qt::WA_DeleteOnClose);
 
-		auto watcher = new QFutureWatcher<QByteArray>;
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[watcher, dialog]
-			{
-				const auto& res = watcher->result ();
-				dialog->setToxId (QString::fromLatin1 (res));
-				watcher->deleteLater ();
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-		watcher->setFuture (Thread_->GetToxId ());
+		Util::Sequence (this, Thread_->GetToxId ()) >>
+				[dialog] (const QByteArray& id) { dialog->setToxId (QString::fromLatin1 (id)); };
 	}
 
 	void ToxAccount::handleToxStateChanged (const QByteArray& toxState)
@@ -546,38 +517,27 @@ namespace Sarin
 
 	void ToxAccount::handleGotFriend (qint32 id)
 	{
-		const auto watcher = new QFutureWatcher<ToxThread::FriendInfo>;
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[watcher, this]
-			{
-				watcher->deleteLater ();
-
-				try
+		Util::Sequence (this, Thread_->ResolveFriend (id)) >>
+				[this] (const ToxThread::FriendInfo& info)
 				{
-					const auto& info = watcher->result ();
-					qDebug () << Q_FUNC_INFO << info.Pubkey_ << info.Name_;
-					if (!Contacts_.contains (info.Pubkey_))
-						InitEntry (info.Pubkey_);
+					try
+					{
+						qDebug () << Q_FUNC_INFO << info.Pubkey_ << info.Name_;
+						if (!Contacts_.contains (info.Pubkey_))
+							InitEntry (info.Pubkey_);
 
-					const auto entry = Contacts_.value (info.Pubkey_);
-					entry->SetEntryName (info.Name_);
+						const auto entry = Contacts_.value (info.Pubkey_);
+						entry->SetEntryName (info.Name_);
 
-					entry->SetStatus (info.Status_);
-				}
-				catch (const std::exception& e)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "cannot get friend info:"
-							<< e.what ();
-				}
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-
-		watcher->setFuture (Thread_->ResolveFriend (id));
+						entry->SetStatus (info.Status_);
+					}
+					catch (const std::exception& e)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "cannot get friend info:"
+								<< e.what ();
+					}
+				};
 	}
 
 	void ToxAccount::handleGotFriendRequest (const QByteArray& pubkey, const QString& msg)

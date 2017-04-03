@@ -29,7 +29,6 @@
 
 #include "audiocall.h"
 #include <QFuture>
-#include <QFutureWatcher>
 #include <util/sll/functional.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/visitor.h>
