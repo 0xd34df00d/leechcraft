@@ -37,11 +37,14 @@ namespace Sarin
 {
 	void CallbackManager::SetTox (const std::shared_ptr<Tox>& tox)
 	{
-		Tox_ = tox;
+		Tox_.WithWrite ([tox] (auto& instance) { instance = tox; });
 
 		if (tox)
-			for (const auto& regger : ProxyReggers_)
-				regger (tox.get ());
+			ProxyReggers_.WithRead ([&] (const auto& reggers)
+					{
+						for (const auto& regger : reggers)
+							regger (tox.get ());
+					});
 	}
 }
 }

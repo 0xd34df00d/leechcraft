@@ -32,6 +32,7 @@
 #include <tuple>
 #include <memory>
 #include <boost/any.hpp>
+#include <QReadWriteLock>
 #include <QtDebug>
 #include <util/sll/oldcppkludges.h>
 
@@ -143,18 +144,63 @@ namespace Sarin
 					(*res) (args...);
 			}
 		};
+
+		template<typename T>
+		class Locked
+		{
+			mutable QReadWriteLock Lock_;
+			T Ent_;
+		public:
+			Locked () = default;
+
+			Locked (Locked&& other)
+			: Ent_ { other.WithWrite ([] (auto& ent) -> decltype (auto) { return std::move (ent); }) }
+			{
+			}
+
+			Locked (const Locked& other)
+			: Ent_ { other.WithRead ([] (const auto& ent) -> decltype (auto) { return ent; }) }
+			{
+			}
+
+			T& UnsafeGet ()
+			{
+				return Ent_;
+			};
+
+			const T& UnsafeGet () const
+			{
+				return Ent_;
+			}
+
+			template<typename F>
+			decltype (auto) WithRead (F&& f) const
+			{
+				QReadLocker locker { &Lock_ };
+				return Util::Invoke (f, Ent_);
+			}
+
+			template<typename F>
+			decltype (auto) WithWrite (F&& f)
+			{
+				QWriteLocker locker { &Lock_ };
+				return Util::Invoke (f, Ent_);
+			}
+		};
 	}
 
 	class CallbackManager
 	{
-		std::weak_ptr<Tox> Tox_;
+		detail::Locked<std::weak_ptr<Tox>> Tox_;
 
 		template<auto Reg, typename>
 		struct MakeWrapper;
 
-		QHash<detail::RegHolder, QList<detail::CBHolder>> Callbacks_;
+		using LockedCbList_t = detail::Locked<QList<detail::CBHolder>>;
+		using Callbacks_t = detail::Locked<QHash<detail::RegHolder, LockedCbList_t>>;
+		Callbacks_t Callbacks_;
 
-		QList<std::function<void (Tox*)>> ProxyReggers_;
+		detail::Locked<QList<std::function<void (Tox*)>>> ProxyReggers_;
 	public:
 		void SetTox (const std::shared_ptr<Tox>&);
 
@@ -163,14 +209,20 @@ namespace Sarin
 		{
 			using Args = detail::DetectArgs<std::remove_pointer_t<This>, F>;
 
-			auto& cbList = Callbacks_ [detail::RegHolder { Reg }];
-			cbList.push_back (detail::CBHolder::Maker<This, F, Args> {} (pThis, callback));
+			auto& cbList = Callbacks_.WithWrite ([] (auto& cbs) -> decltype (auto) { return cbs [detail::RegHolder { Reg }]; });
 
-			if (cbList.size () == 1)
+			const bool shouldReg = cbList.WithWrite ([&] (auto& list)
+					{
+						list.push_back (detail::CBHolder::Maker<This, F, Args> {} (pThis, callback));
+						return list.size () == 1;
+					});
+
+			if (shouldReg)
 			{
 				auto proxyRegger = [] (Tox *tox) { Reg (tox, MakeWrapper<Reg, Args> {} ()); };
-				ProxyReggers_ << proxyRegger;
-				if (const auto tox = Tox_.lock ())
+				ProxyReggers_.WithWrite ([&] (auto& regs) { regs << proxyRegger; });
+
+				if (const auto tox = Tox_.WithRead ([] (const auto& tox) { return tox.lock (); }))
 					proxyRegger (tox.get ());
 			}
 		}
@@ -178,9 +230,12 @@ namespace Sarin
 		template<auto Reg, typename... Args>
 		void InvokeCallbacks (Args... args)
 		{
-			const auto& cbList = Callbacks_ [detail::RegHolder { Reg }];
-			for (const auto& item : cbList)
-				item.Invoke (args...);
+			const auto& cbList = Callbacks_.WithRead ([] (const auto& cbs) -> decltype (auto) { return cbs [detail::RegHolder { Reg }]; });
+			cbList.WithRead ([&] (const auto& list)
+					{
+						for (const auto& item : list)
+							item.Invoke (args...);
+					});
 		}
 	};
 
