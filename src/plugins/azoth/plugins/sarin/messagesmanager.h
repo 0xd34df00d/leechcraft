@@ -70,7 +70,6 @@ namespace Sarin
 		void handleInMessage (qint32, const QString&);
 
 		void setThread (const std::shared_ptr<ToxThread>&);
-		void handleToxCreated (Tox*);
 	signals:
 		void gotMessage (const QByteArray&, const QString&);
 	};

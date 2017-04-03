@@ -59,7 +59,6 @@ namespace Sarin
 		QObject* SendFile (const QString&, const QString&, const QString&, const QString&) override;
 	public slots:
 		void handleToxThreadChanged (const std::shared_ptr<ToxThread>&);
-		void handleToxCreated (Tox*);
 	private slots:
 		void handleRequest (int32_t, const QByteArray&, uint32_t, uint64_t, const QString&);
 	signals:

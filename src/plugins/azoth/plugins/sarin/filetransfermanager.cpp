@@ -36,6 +36,7 @@
 #include "filetransferout.h"
 #include "toxcontact.h"
 #include "util.h"
+#include "callbackmanager.h"
 
 namespace LeechCraft
 {
@@ -93,52 +94,46 @@ namespace Sarin
 	void FileTransferManager::handleToxThreadChanged (const std::shared_ptr<ToxThread>& thread)
 	{
 		ToxThread_ = thread;
-	}
+		if (!thread)
+			return;
 
-	void FileTransferManager::handleToxCreated (Tox *tox)
-	{
-		tox_callback_file_recv_control (tox,
-				[] (Tox*, uint32_t frnd, uint32_t file, TOX_FILE_CONTROL type, void *udata)
-				{
-					static_cast<FileTransferManager*> (udata)->gotFileControl (frnd, file, type);
-				},
-				this);
-		tox_callback_file_recv (tox,
-				[] (Tox *tox, uint32_t friendNum,
+		const auto cbMgr = thread->GetCallbackManager ();
+		cbMgr->Register<tox_callback_file_recv_control> (this,
+				[] (FileTransferManager *pThis, uint32_t friendNum, uint32_t fileNum, TOX_FILE_CONTROL ctrl)
+					{ pThis->gotFileControl (friendNum, fileNum, ctrl); });
+		cbMgr->Register<tox_callback_file_recv> (this,
+				[] (FileTransferManager *pThis,
+						uint32_t friendNum,
 						uint32_t filenum, uint32_t kind, uint64_t filesize,
-						const uint8_t *rawFilename, size_t filenameLength,
-						void *udata)
+						const uint8_t *rawFilename, size_t filenameLength)
 				{
+					const auto thread = pThis->ToxThread_.lock ();
+					if (!thread)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "thread is dead";
+						return;
+					}
+
 					const auto filenameStr = reinterpret_cast<const char*> (rawFilename);
-					const auto& name = QString::fromUtf8 (filenameStr, filenameLength);
-					static_cast<FileTransferManager*> (udata)->requested (friendNum,
-							GetFriendId (tox, friendNum), filenum, filesize, name);
-				},
-				this);
+					const auto name = QString::fromUtf8 (filenameStr, filenameLength);
+					Util::Sequence (pThis, thread->GetFriendPubkey (friendNum)) >>
+							[=] (const QByteArray& id) { pThis->requested (friendNum, id, filenum, filesize, name); };
+				});
 		// TODO handle position and conditions.
-		tox_callback_file_recv_chunk (tox,
-				[] (Tox*,
+		cbMgr->Register<tox_callback_file_recv_chunk> (this,
+				[] (FileTransferManager *pThis,
 						uint32_t friendNum, uint32_t fileNum, uint64_t position,
-						const uint8_t *rawData, size_t rawSize,
-						void *udata)
+						const uint8_t *rawData, size_t rawSize)
 				{
 					const QByteArray data
 					{
 						reinterpret_cast<const char*> (rawData),
 						static_cast<int> (rawSize)
 					};
-					static_cast<FileTransferManager*> (udata)->gotData (friendNum, fileNum, data);
-				},
-				this);
-		tox_callback_file_chunk_request (tox,
-				[] (Tox*, uint32_t friendNum, uint32_t fileNum,
-						uint64_t position, size_t length,
-						void *udata)
-				{
-					static_cast<FileTransferManager*> (udata)->
-							gotChunkRequest (friendNum, fileNum, position, length);
-				},
-				this);
+					pThis->gotData (friendNum, fileNum, data);
+				});
+		cbMgr->Register<tox_callback_file_chunk_request> (this, &FileTransferManager::gotChunkRequest);
 	}
 
 	void FileTransferManager::handleRequest (int32_t friendNum,

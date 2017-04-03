@@ -36,6 +36,7 @@
 #include "toxthread.h"
 #include "chatmessage.h"
 #include "util.h"
+#include "callbackmanager.h"
 
 namespace LeechCraft
 {
@@ -191,36 +192,26 @@ namespace Sarin
 	void MessagesManager::setThread (const std::shared_ptr<ToxThread>& thread)
 	{
 		Thread_ = thread;
+		if (!thread)
+			return;
 
-		if (thread)
-			connect (thread.get (),
-					SIGNAL (toxCreated (Tox*)),
-					this,
-					SLOT (handleToxCreated (Tox*)),
-					Qt::BlockingQueuedConnection);
-	}
-
-	void MessagesManager::handleToxCreated (Tox *tox)
-	{
-		tox_callback_friend_message (tox,
-				[] (Tox*, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t, void *udata)
+		const auto cbMgr = thread->GetCallbackManager ();
+		cbMgr->Register<tox_callback_friend_message> (this,
+				[] (MessagesManager *pThis, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t)
 				{
 					const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (msgData));
-
-					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
+					QMetaObject::invokeMethod (pThis,
 							"handleInMessage",
 							Q_ARG (qint32, friendId),
 							Q_ARG (QString, msg));
-				},
-				this);
-		tox_callback_friend_read_receipt (tox,
-				[] (Tox*, uint32_t, uint32_t msgId, void *udata)
+				});
+		cbMgr->Register<tox_callback_friend_read_receipt> (this,
+				[] (MessagesManager *pThis, uint32_t, uint32_t msgId)
 				{
-					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
+					QMetaObject::invokeMethod (pThis,
 							"handleReadReceipt",
 							Q_ARG (quint32, msgId));
-				},
-				this);
+				});
 	}
 }
 }

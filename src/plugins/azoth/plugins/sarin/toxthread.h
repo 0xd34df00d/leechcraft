@@ -50,6 +50,7 @@ namespace Azoth
 namespace Sarin
 {
 	class CallManager;
+	class CallbackManager;
 
 	class ToxThread : public QThread
 	{
@@ -70,6 +71,8 @@ namespace Sarin
 
 		std::shared_ptr<Tox> Tox_;
 		std::shared_ptr<CallManager> CallManager_;
+
+		const std::shared_ptr<CallbackManager> CbMgr_;
 	public:
 		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
 		~ToxThread ();
@@ -104,6 +107,8 @@ namespace Sarin
 			QString Name_;
 			EntryStatus Status_;
 		};
+
+		CallbackManager* GetCallbackManager () const;
 
 		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
 		void AddFriend (QByteArray);

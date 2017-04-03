@@ -460,10 +460,6 @@ namespace Sarin
 				SIGNAL (toxCreated (Tox*)),
 				this,
 				SLOT (handleThreadReady ()));
-		connect (Thread_.get (),
-				SIGNAL (toxCreated (Tox*)),
-				XferMgr_,
-				SLOT (handleToxCreated (Tox*)));
 
 		emit threadChanged (Thread_);
 
