@@ -48,8 +48,8 @@ namespace Sarin
 
 		const QString FilePath_;
 
-		int FriendNum_;
-		int FileNum_;
+		uint32_t FriendNum_;
+		uint32_t FileNum_;
 
 		enum class State
 		{
@@ -82,8 +82,8 @@ namespace Sarin
 		void HandlePause ();
 		void HandleResume ();
 	private slots:
-		void handleFileControl (qint32, qint32, int);
-		void handleChunkRequested (qint32, qint32, uint64_t, size_t);
+		void handleFileControl (uint32_t, uint32_t, int);
+		void handleChunkRequested (uint32_t, uint32_t, uint64_t, size_t);
 	};
 }
 }

@@ -80,13 +80,13 @@ namespace Sarin
 
 		const auto transfer = new FileTransferOut { id, contact->GetPubKey (), name, toxThread };
 		connect (this,
-				SIGNAL (gotFileControl (qint32, qint32, int)),
+				SIGNAL (gotFileControl (uint32_t, uint32_t, int)),
 				transfer,
-				SLOT (handleFileControl (qint32, qint32, int)));
+				SLOT (handleFileControl (uint32_t, uint32_t, int)));
 		connect (this,
-				SIGNAL (gotChunkRequest (qint32, qint32, uint64_t, size_t)),
+				SIGNAL (gotChunkRequest (uint32_t, uint32_t, uint64_t, size_t)),
 				transfer,
-				SLOT (handleChunkRequested (qint32, qint32, uint64_t, size_t)));
+				SLOT (handleChunkRequested (uint32_t, uint32_t, uint64_t, size_t)));
 		return transfer;
 	}
 
