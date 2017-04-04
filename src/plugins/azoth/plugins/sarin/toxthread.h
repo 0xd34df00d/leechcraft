@@ -51,6 +51,7 @@ namespace Sarin
 {
 	class CallManager;
 	class CallbackManager;
+	class ToxLogger;
 
 	class ToxThread : public QThread
 	{
@@ -73,6 +74,8 @@ namespace Sarin
 		std::shared_ptr<CallManager> CallManager_;
 
 		const std::shared_ptr<CallbackManager> CbMgr_;
+
+		const std::unique_ptr<ToxLogger> Logger_;
 	public:
 		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
 		~ToxThread ();

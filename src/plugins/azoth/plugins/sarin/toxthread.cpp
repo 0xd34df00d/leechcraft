@@ -38,6 +38,7 @@
 #include "util.h"
 #include "callmanager.h"
 #include "callbackmanager.h"
+#include "toxlogger.h"
 
 namespace LeechCraft
 {
@@ -51,6 +52,7 @@ namespace Sarin
 	, ToxState_ { state }
 	, Config_ (config)
 	, CbMgr_ { std::make_shared<CallbackManager> () }
+	, Logger_ { std::make_unique<ToxLogger> (name) }
 	{
 	}
 
