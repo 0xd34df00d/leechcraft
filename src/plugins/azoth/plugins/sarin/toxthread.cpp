@@ -507,7 +507,14 @@ namespace Sarin
 			Config_.UdpHolePunching_,
 			ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
 			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
-			static_cast<size_t> (ToxState_.size ())
+			static_cast<size_t> (ToxState_.size ()),
+			[] (Tox*,
+					TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func, const char *message,
+					void *udata)
+			{
+				static_cast<ToxLogger*> (udata)->Log (level, file, line, func, message);
+			},
+			Logger_.get ()
 		};
 
 		TOX_ERR_NEW creationError {};
