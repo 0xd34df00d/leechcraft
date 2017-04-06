@@ -205,13 +205,13 @@ namespace LeechCraft
 
 	void AboutDialog::BuildDiagInfo ()
 	{
-		QString text = QString ("LeechCraft ") + CoreProxy ().GetVersion () + "\n";
+		auto text = "LeechCraft " + CoreProxy ().GetVersion () + "\n";
 		text += QString ("Built with Qt %1, running with Qt %2\n")
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());
 
-		text += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
-		text += "--------------------------------\n\n";
+		text += "Running on: " + Util::SysInfo::GetOSName ();
+		text += "\n--------------------------------\n\n";
 
 		QStringList loadedModules;
 		QStringList unPathedModules;
@@ -235,9 +235,9 @@ namespace LeechCraft
 			}
 		}
 
-		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		text += "Normal plugins:\n" + loadedModules.join ("\n") + "\n\n";
 		if (!unPathedModules.isEmpty ())
-			text += QString ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+			text += "Adapted plugins:\n" + unPathedModules.join ("\n") + "\n\n";
 
 		Ui_.DiagInfo_->setPlainText (text);
 	}
