@@ -29,6 +29,7 @@
 
 #include "aboutdialog.h"
 #include <QDomDocument>
+#include <util/sll/util.h>
 #include "util/sys/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
@@ -155,11 +156,8 @@ namespace LeechCraft
 			auto contribElem = doc.documentElement ().firstChildElement ("contrib");
 			while (!contribElem.isNull ())
 			{
-				auto nextGuard = std::shared_ptr<void> (nullptr,
-						[&contribElem] (void*)
-						{
-							contribElem = contribElem.nextSiblingElement ("contrib");
-						});
+				const auto nextGuard = Util::MakeScopeGuard ([&contribElem]
+						{ contribElem = contribElem.nextSiblingElement ("contrib"); });
 
 				if (!type.isEmpty () && contribElem.attribute ("type") != type)
 					continue;
