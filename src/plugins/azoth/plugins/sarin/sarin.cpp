@@ -56,6 +56,7 @@ namespace Sarin
 
 	void Plugin::Release ()
 	{
+		Proto_.reset ();
 	}
 
 	QString Plugin::GetName () const
