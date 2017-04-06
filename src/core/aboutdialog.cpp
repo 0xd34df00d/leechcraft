@@ -81,7 +81,7 @@ namespace LeechCraft
 							.arg (Email_);
 
 				result += "<ul>";
-				Q_FOREACH (const QString& r, Roles_)
+				for (const auto& r : Roles_)
 					result += QString ("<li>%1</li>")
 							.arg (r);
 				result += "</ul>";
@@ -206,7 +206,7 @@ namespace LeechCraft
 	void AboutDialog::BuildDiagInfo ()
 	{
 		auto text = "LeechCraft " + CoreProxy ().GetVersion () + "\n";
-		text += QString ("Built with Qt %1, running with Qt %2\n")
+		text += QString { "Built with Qt %1, running with Qt %2\n" }
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());
 
@@ -215,19 +215,18 @@ namespace LeechCraft
 
 		QStringList loadedModules;
 		QStringList unPathedModules;
-		PluginManager *pm = Core::Instance ().GetPluginManager ();
-		Q_FOREACH (QObject *plugin, pm->GetAllPlugins ())
+		const auto pm = Core::Instance ().GetPluginManager ();
+		for (const auto plugin : pm->GetAllPlugins ())
 		{
-			const QString& path = pm->GetPluginLibraryPath (plugin);
+			const auto& path = pm->GetPluginLibraryPath (plugin);
 
-			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			const auto ii = qobject_cast<IInfo*> (plugin);
 			if (path.isEmpty ())
 				unPathedModules << ("* " + ii->GetName ());
 			else
 				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
 
-			IHaveDiagInfo *diagInfo = qobject_cast<IHaveDiagInfo*> (plugin);
-			if (diagInfo)
+			if (const auto diagInfo = qobject_cast<IHaveDiagInfo*> (plugin))
 			{
 				text += "Diag info for " + ii->GetName () + ":\n";
 				text += diagInfo->GetDiagInfoString ();
