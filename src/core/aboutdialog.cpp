@@ -30,6 +30,7 @@
 #include "aboutdialog.h"
 #include <QDomDocument>
 #include <util/sll/util.h>
+#include <util/sll/prelude.h>
 #include "util/sys/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
@@ -190,15 +191,13 @@ namespace LeechCraft
 		QDomDocument authorsDoc;
 		authorsDoc.setContent (&authorsFile);
 
-		QStringList formatted;
-		for (const auto& i : ParseContributors (authorsDoc, "author"))
-			formatted << i.Fmt ();
-		Ui_.Authors_->setHtml (formatted.join ("<hr />"));
+		auto fmtAuthorInfos = [&authorsDoc] (const QString& type)
+		{
+			return Util::Map (ParseContributors (authorsDoc, type), &ContributorInfo::Fmt).join ("<hr/>");
+		};
 
-		formatted.clear ();
-		for (const auto& i : ParseContributors (authorsDoc, "contrib"))
-			formatted << i.Fmt ();
-		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
+		Ui_.Authors_->setHtml (fmtAuthorInfos ("author"));
+		Ui_.Contributors_->setHtml (fmtAuthorInfos ("contrib"));
 
 		BuildDiagInfo ();
 	}
