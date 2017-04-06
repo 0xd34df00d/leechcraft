@@ -49,18 +49,6 @@ namespace LeechCraft
 			QStringList Roles_;
 			QList<int> Years_;
 
-			ContributorInfo (const QString& name, const QString& nick,
-					const QString& jid, const QString& email,
-					const QStringList& roles, const QList<int>& years)
-			: Name_ (name)
-			, Nick_ (nick)
-			, JID_ (jid)
-			, Email_ (email)
-			, Roles_ (roles)
-			, Years_ (years)
-			{
-			}
-
 			QString Fmt () const
 			{
 				QString result = "<strong>";
