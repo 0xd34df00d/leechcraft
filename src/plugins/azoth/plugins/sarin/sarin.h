@@ -53,7 +53,7 @@ namespace Sarin
 
 		LC_PLUGIN_METADATA ("org.LeechCraft.Azoth.Sarin")
 
-		ToxProtocol *Proto_;
+		std::shared_ptr<ToxProtocol> Proto_;
 	public:
 		void Init (ICoreProxy_ptr);
 		void SecondInit ();
