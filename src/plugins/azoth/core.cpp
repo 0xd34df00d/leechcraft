@@ -1599,6 +1599,9 @@ namespace Azoth
 			QDataStream stream { var.toByteArray () };
 			stream >> s;
 
+			if (s.State_ == State::SConnecting)
+				s.State_ = State::SOnline;
+
 			return s;
 		}
 	}
