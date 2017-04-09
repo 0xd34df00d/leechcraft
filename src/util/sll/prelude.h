@@ -242,6 +242,10 @@ namespace Util
 
 	const auto Apply = [] (const auto& t) { return t (); };
 
+	const auto Fst = [] (const auto& pair) { return pair.first; };
+
+	const auto Snd = [] (const auto& pair) { return pair.second; };
+
 	template<typename F>
 	auto First (F&& f)
 	{
