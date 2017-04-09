@@ -12,27 +12,15 @@ else ()
 
 	include(FindLibraryWithDebug)
 
-	if (NOT USE_QT5)
-		find_library_with_debug(QTKOAUTH_LIBRARIES
-			WIN32_DEBUG_POSTFIX d
-			NAMES kqoauth-qt4 kqoauth kqoauth0
-			HINTS
-				${QT_LIBRARY_DIR}
-				${QTKOAUTH_DIR}
-				${PC_QTKOAUTH_LIBDIR}
-				${PC_QTKOAUTH_LIBRARY_DIRS}
-			)
-	else ()
-		find_library_with_debug(QTKOAUTH_LIBRARIES
-			WIN32_DEBUG_POSTFIX d
-			NAMES kqoauth-qt5 kqoauth kqoauth0
-			HINTS
-				${QT_LIBRARY_DIR}
-				${QTKOAUTH_DIR}
-				${PC_QTKOAUTH_LIBDIR}
-				${PC_QTKOAUTH_LIBRARY_DIRS}
-			)
-	endif ()
+	find_library_with_debug(QTKOAUTH_LIBRARIES
+		WIN32_DEBUG_POSTFIX d
+		NAMES kqoauth-qt5 kqoauth kqoauth0
+		HINTS
+			${QT_LIBRARY_DIR}
+			${QTKOAUTH_DIR}
+			${PC_QTKOAUTH_LIBDIR}
+			${PC_QTKOAUTH_LIBRARY_DIRS}
+		)
 
 	find_path(QTKOAUTH_INCLUDE_DIR
 		NAMES
