@@ -53,7 +53,7 @@ namespace Azoth
 	{
 		auto result = GetNickCompletions (pos) + GetCommandCompletions (pos);
 		result.erase (std::remove_if (result.begin (), result.end (),
-					[this, &firstPart] (const QString& completion)
+					[&firstPart] (const QString& completion)
 					{
 						return !completion.startsWith (firstPart, Qt::CaseInsensitive);
 					}),
