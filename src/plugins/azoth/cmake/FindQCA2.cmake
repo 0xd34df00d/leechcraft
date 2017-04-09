@@ -25,31 +25,19 @@ else ()
 
 	if (NOT WIN32)
 		find_package(PkgConfig)
-		if (USE_QT5)
-			pkg_check_modules(PC_QCA2 QUIET qca2-qt5)
-		else ()
-			pkg_check_modules(PC_QCA2 QUIET qca2)
-		endif ()
+		pkg_check_modules(PC_QCA2 QUIET qca2-qt5)
 		set(QCA2_DEFINITIONS ${PC_QCA2_CFLAGS_OTHER})
 	endif ()
 
-	if (USE_QT5)
-		find_library_with_debug(QCA2_LIBRARIES
-						WIN32_DEBUG_POSTFIX d
-						NAMES qca-qt5 qca
-						HINTS ${PC_QCA2_LIBDIR} ${PC_QCA2_LIBRARY_DIRS} ${QCA2_DIR}/lib
-						)
-	else ()
-		find_library_with_debug(QCA2_LIBRARIES
-						WIN32_DEBUG_POSTFIX d
-						NAMES qca
-						HINTS ${PC_QCA2_LIBDIR} ${PC_QCA2_LIBRARY_DIRS} ${QCA2_DIR}/lib
-						)
-	endif ()
+	find_library_with_debug(QCA2_LIBRARIES
+			WIN32_DEBUG_POSTFIX d
+			NAMES qca-qt5 qca
+			HINTS ${PC_QCA2_LIBDIR} ${PC_QCA2_LIBRARY_DIRS} ${QCA2_DIR}/lib
+			)
 
 	find_path(QCA2_INCLUDE_DIR QtCrypto
-				HINTS ${PC_QCA2_INCLUDEDIR} ${PC_QCA2_INCLUDE_DIRS} ${QCA2_DIR}/include
-				PATH_SUFFIXES QtCrypto)
+			HINTS ${PC_QCA2_INCLUDEDIR} ${PC_QCA2_INCLUDE_DIRS} ${QCA2_DIR}/include
+			PATH_SUFFIXES QtCrypto)
 
 
 	include(FindPackageHandleStandardArgs)
