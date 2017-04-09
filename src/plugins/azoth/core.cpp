@@ -1106,18 +1106,15 @@ namespace Azoth
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = entryObj;
 
-		const QStringList& groups = GetDisplayGroups (clEntry);
+		const auto& groups = GetDisplayGroups (clEntry);
+		for (const auto catItem : GetCategoriesItems (groups, accItem))
 		{
-			QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
-			Q_FOREACH (QStandardItem *catItem, catItems)
-			{
-				AddEntryTo (clEntry, catItem);
+			AddEntryTo (clEntry, catItem);
 
-				bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
-				if (!isMucCat)
-					isMucCat = clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
-				catItem->setData (isMucCat, CLRIsMUCCategory);
-			}
+			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
+			if (!isMucCat)
+				isMucCat = clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
+			catItem->setData (isMucCat, CLRIsMUCCategory);
 		}
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
