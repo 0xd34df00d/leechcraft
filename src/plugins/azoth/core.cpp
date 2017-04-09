@@ -150,37 +150,6 @@ namespace Azoth
 			else
 				return "ChatWindowStyle";
 		}
-
-		class ModelUpdateSafeguard
-		{
-			QAbstractItemModel *Model_;
-			const bool Recursive_;
-			const bool BlockEnabled_;
-		public:
-			ModelUpdateSafeguard (QAbstractItemModel *model)
-			: Model_ (model)
-			, Recursive_ (Model_->signalsBlocked ())
-			, BlockEnabled_ (!XmlSettingsManager::Instance ().property ("OptimizedTreeRebuild").toBool ())
-			{
-				if (!Recursive_ && BlockEnabled_)
-				{
-					QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
-					Model_->blockSignals (true);
-				}
-			}
-
-			ModelUpdateSafeguard (const ModelUpdateSafeguard&) = delete;
-			ModelUpdateSafeguard& operator= (const ModelUpdateSafeguard&) = delete;
-
-			~ModelUpdateSafeguard ()
-			{
-				if (!Recursive_ && BlockEnabled_)
-				{
-					Model_->blockSignals (false);
-					QMetaObject::invokeMethod (Model_, "modelReset");
-				}
-			}
-		};
 	}
 
 	QList<IAccount*> GetAccountsPred (const QObjectList& protocols,
@@ -1139,7 +1108,6 @@ namespace Azoth
 
 		const QStringList& groups = GetDisplayGroups (clEntry);
 		{
-			ModelUpdateSafeguard outerGuard (CLModel_);
 			QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
 			Q_FOREACH (QStandardItem *catItem, catItems)
 			{
@@ -1171,7 +1139,6 @@ namespace Azoth
 			cats << tr ("General");
 
 		QList<QStandardItem*> result;
-		ModelUpdateSafeguard guard (CLModel_);
 		for (const auto& cat : cats)
 		{
 			if (!Account2Category2Item_ [account].contains (cat))
@@ -1381,7 +1348,6 @@ namespace Azoth
 
 		ItemIconManager_->Cancel (item);
 
-		ModelUpdateSafeguard guard (CLModel_);
 		category->removeRow (item->row ());
 
 		if (!category->rowCount ())
@@ -1419,7 +1385,6 @@ namespace Azoth
 				Qt::ItemIsDragEnabled |
 				Qt::ItemIsDropEnabled);
 
-		ModelUpdateSafeguard guard (CLModel_);
 		catItem->appendRow (clItem);
 
 		Entry2Items_ [clEntry] << clItem;
@@ -1642,10 +1607,7 @@ namespace Azoth
 		ItemIconManager_->SetIcon (accItem,
 				ResourcesManager::Instance ().GetIconPathForState (accState).get ());
 
-		{
-			ModelUpdateSafeguard guard (CLModel_);
-			CLModel_->appendRow (accItem);
-		}
+		CLModel_->appendRow (accItem);
 
 		accItem->setEditable (false);
 
@@ -1743,10 +1705,7 @@ namespace Azoth
 			if (obj == accFace)
 			{
 				ItemIconManager_->Cancel (item);
-				{
-					ModelUpdateSafeguard guard (CLModel_);
-					CLModel_->removeRow (i);
-				}
+				CLModel_->removeRow (i);
 				break;
 			}
 		}
@@ -1765,8 +1724,6 @@ namespace Azoth
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
 	{
-		ModelUpdateSafeguard outerGuard (CLModel_);
-
 		QMap<const IAccount*, QStandardItem*> accountItemCache;
 		for (const auto item : items)
 		{
