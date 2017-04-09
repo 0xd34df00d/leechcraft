@@ -1285,9 +1285,9 @@ namespace Azoth
 
 	QImage Core::GetAvatar (ICLEntry *entry, int size)
 	{
-		if (Entry2SmoothAvatarCache_.contains (entry))
+		if (const auto candPtr = Entry2SmoothAvatarCache_ [entry])
 		{
-			const auto& cand = Entry2SmoothAvatarCache_ [entry];
+			const auto& cand = *candPtr;
 			if (cand.width () == size ||
 				cand.height () == size)
 				return cand;
@@ -1308,7 +1308,7 @@ namespace Azoth
 							QImage {} :
 							avatar.scaled ({ size, size },
 									Qt::KeepAspectRatio, Qt::SmoothTransformation);
-					Entry2SmoothAvatarCache_ [entry] = avatar;
+					Entry2SmoothAvatarCache_.insert (entry, new QImage { avatar }, avatar.byteCount ());
 
 					UpdateItem (obj);
 				};

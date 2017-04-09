@@ -32,6 +32,7 @@
 #include <functional>
 #include <QObject>
 #include <QSet>
+#include <QCache>
 #include <QIcon>
 #include <QDateTime>
 #include <QUrl>
@@ -116,8 +117,8 @@ namespace Azoth
 		typedef QHash<QString, QObject*> ID2Entry_t;
 		ID2Entry_t ID2Entry_;
 
-		typedef QHash<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
-		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_;
+		typedef QCache<ICLEntry*, QImage> Entry2SmoothAvatarCache_t;
+		Entry2SmoothAvatarCache_t Entry2SmoothAvatarCache_ { 5 * 1024 * 1024 };
 
 		AnimatedIconManager<QStandardItem*> *ItemIconManager_;
 
