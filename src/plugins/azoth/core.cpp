@@ -618,19 +618,17 @@ namespace Azoth
 
 	QStringList Core::GetChatGroups () const
 	{
-		QStringList result;
+		QSet<QString> result;
 		for (const auto pair : Util::Stlize (Entry2Items_))
 		{
 			const auto entry = pair.first;
 			if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
 				continue;
 
-			Q_FOREACH (const QString& group, entry->Groups ())
-				if (!result.contains (group))
-					result << group;
+			for (const auto& group : entry->Groups ())
+				result << group;
 		}
-		result.sort ();
-		return result;
+		return result.toList ();
 	}
 
 	void Core::SendEntity (const LeechCraft::Entity& e)
