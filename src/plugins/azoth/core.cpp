@@ -1461,19 +1461,13 @@ namespace Azoth
 		template<typename T>
 		T FindTop (const QMap<T, int>& map)
 		{
-			T maxT = T ();
-			int max = 0;
-			Q_FOREACH (const T& t, map.keys ())
-			{
-				const int val = map [t];
-				if (val > max)
-				{
-					max = val;
-					maxT = t;
-				}
-			}
+			if (map.isEmpty ())
+				return {};
 
-			return maxT;
+			const auto& stlized = Util::Stlize (map);
+			const auto maxPos = std::max_element (stlized.begin (), stlized.end (),
+					Util::ComparingBy (Util::Snd));
+			return maxPos->first;
 		}
 	}
 
