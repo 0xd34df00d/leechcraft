@@ -1313,12 +1313,10 @@ namespace Azoth
 
 	void Core::HandlePowerNotification (Entity e)
 	{
-		auto accs = GetAccountsPred (ProtocolPlugins_);
-
 		qDebug () << Q_FUNC_INFO << e.Entity_;
 
 		if (e.Entity_ == "Sleeping")
-			Q_FOREACH (IAccount *acc, accs)
+			for (const auto acc : GetAccountsPred (ProtocolPlugins_))
 			{
 				const auto& state = acc->GetState ();
 				if (state.State_ == SOffline)
@@ -1329,8 +1327,8 @@ namespace Azoth
 			}
 		else if (e.Entity_ == "WokeUp")
 		{
-			Q_FOREACH (IAccount *acc, SavedStatus_.keys ())
-				acc->ChangeState (SavedStatus_ [acc]);
+			for (const auto& pair : Util::Stlize (SavedStatus_))
+				pair.first->ChangeState (pair.second);
 			SavedStatus_.clear ();
 		}
 	}
@@ -1487,7 +1485,7 @@ namespace Azoth
 		const State prevTop = FindTop (StateCounter_);
 
 		StateCounter_.clear ();
-		Q_FOREACH (IAccount *acc, GetAccounts ())
+		for (const auto acc : GetAccounts ())
 			++StateCounter_ [acc->GetState ().State_];
 
 		StateCounter_.remove (SOffline);
@@ -2149,9 +2147,12 @@ namespace Azoth
 
 	void Core::handleGroupContactsChanged ()
 	{
-		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+		for (const auto& pair : Util::Stlize (Entry2Items_))
+		{
+			const auto entry = pair.first;
 			if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetQObject ());
+		}
 	}
 
 	void Core::updateItem ()
