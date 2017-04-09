@@ -51,6 +51,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
@@ -618,8 +619,9 @@ namespace Azoth
 	QStringList Core::GetChatGroups () const
 	{
 		QStringList result;
-		Q_FOREACH (const ICLEntry *entry, Entry2Items_.keys ())
+		for (const auto pair : Util::Stlize (Entry2Items_))
 		{
+			const auto entry = pair.first;
 			if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
 				continue;
 
