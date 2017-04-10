@@ -51,6 +51,8 @@ namespace Poshuku
 		QString GetUserAgent (const QUrl&) const override;
 
 		QVariant GetPoshukuConfigValue (const QByteArray&) const override;
+
+		ILinkOpenModifier_ptr GetLinkOpenModifier () const override;
 	};
 }
 }
