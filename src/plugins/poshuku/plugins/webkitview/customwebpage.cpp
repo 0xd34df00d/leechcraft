@@ -73,10 +73,9 @@ namespace WebKitView
 	: QWebPage (parent)
 	, Proxy_ (coreProxy)
 	, PoshukuProxy_ (poshukuProxy)
-	, MouseButtons_ (Qt::NoButton)
-	, Modifiers_ (Qt::NoModifier)
 	, JSProxy_ (new JSProxy (this))
 	, ExternalProxy_ (new ExternalProxy (coreProxy->GetEntityManager (), this))
+	, LinkOpenModifier_ (poshukuProxy->GetLinkOpenModifier ())
 	{
 		{
 			auto proxy = std::make_shared<Util::DefaultHookProxy> ();
@@ -156,14 +155,9 @@ namespace WebKitView
 		}
 	}
 
-	void CustomWebPage::SetButtons (Qt::MouseButtons buttons)
+	void CustomWebPage::HandleViewReady ()
 	{
-		MouseButtons_ = buttons;
-	}
-
-	void CustomWebPage::SetModifiers (Qt::KeyboardModifiers modifiers)
-	{
-		Modifiers_ = modifiers;
+		LinkOpenModifier_->InstallOn (view ());
 	}
 
 	bool CustomWebPage::supportsExtension (QWebPage::Extension e) const
@@ -635,20 +629,21 @@ namespace WebKitView
 		if (frame)
 			HandleForms (frame, request, type);
 
-		if (type == NavigationTypeLinkClicked &&
-				(MouseButtons_ == Qt::MidButton ||
-					Modifiers_ & Qt::ControlModifier))
+		if (type == NavigationTypeLinkClicked)
 		{
-			bool invert = Modifiers_ & Qt::ShiftModifier;
+			const auto suggestion = LinkOpenModifier_->GetOpenBehaviourSuggestion ();
 
-			auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
-			emit webViewCreated (view, invert);
+			LinkOpenModifier_->ResetSuggestionState ();
 
-			view->Load (request);
+			if (suggestion.NewTab_)
+			{
+				auto view = new CustomWebView { Proxy_, PoshukuProxy_ };
+				emit webViewCreated (view, suggestion.Invert_);
 
-			MouseButtons_ = Qt::NoButton;
-			Modifiers_ = Qt::NoModifier;
-			return false;
+				view->Load (request);
+
+				return false;
+			}
 		}
 
 		if (frame == mainFrame ())

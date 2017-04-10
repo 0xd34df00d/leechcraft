@@ -37,6 +37,7 @@
 #include <interfaces/core/ihookproxy.h>
 #include <interfaces/core/icoreproxyfwd.h>
 #include <interfaces/poshuku/poshukutypes.h>
+#include <interfaces/poshuku/ilinkopenmodifier.h>
 
 namespace LeechCraft
 {
@@ -57,9 +58,6 @@ namespace WebKitView
 		const ICoreProxy_ptr Proxy_;
 		IProxyObject * const PoshukuProxy_;
 
-		Qt::MouseButtons MouseButtons_;
-		Qt::KeyboardModifiers Modifiers_;
-
 		QUrl LoadingURL_;
 		std::shared_ptr<JSProxy> JSProxy_;
 		std::shared_ptr<ExternalProxy> ExternalProxy_;
@@ -68,11 +66,13 @@ namespace WebKitView
 		PageFormsData_t FilledState_;
 
 		QMap<ErrorDomain, QMap<int, QStringList>> Error2Suggestions_;
+
+		const ILinkOpenModifier_ptr LinkOpenModifier_;
 	public:
 		CustomWebPage (const ICoreProxy_ptr&, IProxyObject*, QObject* = nullptr);
 
-		void SetButtons (Qt::MouseButtons);
-		void SetModifiers (Qt::KeyboardModifiers);
+		void HandleViewReady ();
+
 		bool supportsExtension (Extension) const;
 		bool extension (Extension, const ExtensionOption*, ExtensionReturn*);
 	private slots:

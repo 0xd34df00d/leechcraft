@@ -95,6 +95,7 @@ namespace WebKitView
 
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
+		page->HandleViewReady ();
 		connect (page,
 				SIGNAL (webViewCreated (CustomWebView*, bool)),
 				this,
@@ -537,9 +538,6 @@ namespace WebKitView
 
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
-		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
-		qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
-
 		const bool mBack = e->button () == Qt::XButton1;
 		const bool mForward = e->button () == Qt::XButton2;
 		if (mBack || mForward)
