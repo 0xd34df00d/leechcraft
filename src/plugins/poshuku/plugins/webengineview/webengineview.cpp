@@ -131,7 +131,7 @@ namespace WebEngineView
 	IWebView* Plugin::CreateWebView ()
 	{
 		auto view = new CustomWebView;
-		Interceptor_->RegisterView (view);
+		HandleView (view);
 		return view;
 	}
 
@@ -148,6 +148,20 @@ namespace WebEngineView
 	void Plugin::AddInterceptor (const Interceptor_t& interceptor)
 	{
 		Interceptor_->Add (interceptor);
+	}
+
+	void Plugin::HandleView (CustomWebView *view)
+	{
+		Interceptor_->RegisterView (view);
+
+		connect (view,
+				&CustomWebView::webViewCreated,
+				this,
+				[this] (CustomWebView *view, bool invert)
+				{
+					HandleView (view);
+					emit webViewCreated (view, invert);
+				});
 	}
 }
 }
