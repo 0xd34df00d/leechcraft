@@ -64,8 +64,8 @@ namespace Util
 			using EventType_t = typename std::remove_pointer<ArgType_t<F>>::type;
 		public:
 			LambdaEventFilter (F&& f, QObject *parent = nullptr)
-					: QObject { parent }
-					, F_ { std::move (f) }
+			: QObject { parent }
+			, F_ { std::move (f) }
 			{
 			}
 
