@@ -111,12 +111,6 @@ namespace WebKitView
 		WebInspector_->setPage (page);
 
 		connect (page,
-				SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
-				this,
-				SLOT (handleFrameState (QWebFrame*, QWebHistoryItem*)),
-				Qt::QueuedConnection);
-
-		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
 				this,
 				SLOT (handlePrintRequested (QWebFrame*)));
