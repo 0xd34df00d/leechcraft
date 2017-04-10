@@ -47,6 +47,8 @@ namespace Poshuku
 		};
 
 		virtual OpenBehaviourSuggestion GetOpenBehaviourSuggestion () const = 0;
+
+		virtual void ResetSuggestionState () = 0;
 	};
 
 	using ILinkOpenModifier_ptr = std::shared_ptr<ILinkOpenModifier>;

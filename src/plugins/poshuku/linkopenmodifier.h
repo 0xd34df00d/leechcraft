@@ -43,7 +43,9 @@ namespace LeechCraft
 		Qt::KeyboardModifiers Modifiers_ = Qt::NoModifier;
 	public:
 		void InstallOn (QWidget*) override;
+
 		OpenBehaviourSuggestion GetOpenBehaviourSuggestion () const override;
+		void ResetSuggestionState () override;
 	};
 }
 }

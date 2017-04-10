@@ -60,5 +60,11 @@ namespace Poshuku
 
 		return { true, static_cast<bool> (Modifiers_ & Qt::ShiftModifier) };
 	}
+
+	void LinkOpenModifier::ResetSuggestionState ()
+	{
+		MouseButtons_ = {};
+		Modifiers_ = {};
+	}
 }
 }
