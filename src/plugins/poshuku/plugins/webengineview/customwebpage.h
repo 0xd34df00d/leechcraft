@@ -37,6 +37,8 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
+	class CustomWebView;
+
 	class CustomWebPage : public QWebEnginePage
 	{
 		Q_OBJECT
@@ -44,6 +46,8 @@ namespace WebEngineView
 		using QWebEnginePage::QWebEnginePage;
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
+	signals:
+		void webViewCreated (CustomWebView*, bool);
 	};
 }
 }
