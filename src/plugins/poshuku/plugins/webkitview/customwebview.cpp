@@ -146,8 +146,7 @@ namespace WebKitView
 
 		if (url.scheme () == "javascript")
 		{
-			QVariant result = page ()->mainFrame ()->
-				evaluateJavaScript (url.toString ().mid (11));
+			const auto& result = page ()->mainFrame ()->evaluateJavaScript (url.toString ().mid (11));
 			if (result.canConvert (QVariant::String))
 				setHtml (result.toString ());
 			return;
