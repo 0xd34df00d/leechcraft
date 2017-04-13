@@ -131,7 +131,7 @@ namespace WebEngineView
 
 	IWebView* Plugin::CreateWebView ()
 	{
-		auto view = new CustomWebView;
+		auto view = new CustomWebView { PoshukuProxy_ };
 		HandleView (view);
 		return view;
 	}

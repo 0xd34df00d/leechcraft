@@ -37,6 +37,7 @@
 #include <QWebChannel>
 #include <QContextMenuEvent>
 #include <interfaces/poshuku/iwebviewhistory.h>
+#include <interfaces/poshuku/iproxyobject.h>
 
 namespace LeechCraft
 {
@@ -44,7 +45,8 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
-	CustomWebView::CustomWebView ()
+	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
+	: PoshukuProxy_ { poshukuProxy }
 	{
 		connect (page (),
 				SIGNAL (loadFinished (bool)),

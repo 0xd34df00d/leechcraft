@@ -37,6 +37,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IProxyObject;
+
 namespace WebEngineView
 {
 	class CustomWebView final : public QWebEngineView
@@ -45,8 +47,10 @@ namespace WebEngineView
 	{
 		Q_OBJECT
 		Q_INTERFACES (IWkFontsSettable LeechCraft::Poshuku::IWebView)
+
+		IProxyObject * const PoshukuProxy_;
 	public:
-		CustomWebView ();
+		CustomWebView (IProxyObject*);
 
 		void SurroundingsInitialized () override;
 
