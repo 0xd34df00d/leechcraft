@@ -30,11 +30,14 @@
 #pragma once
 
 #include <QWebEnginePage>
+#include <interfaces/poshuku/ilinkopenmodifier.h>
 
 namespace LeechCraft
 {
 namespace Poshuku
 {
+class IProxyObject;
+
 namespace WebEngineView
 {
 	class CustomWebView;
@@ -42,8 +45,11 @@ namespace WebEngineView
 	class CustomWebPage : public QWebEnginePage
 	{
 		Q_OBJECT
+
+		IProxyObject * const PoshukuProxy_;
+		const ILinkOpenModifier_ptr LinkOpenModifier_;
 	public:
-		using QWebEnginePage::QWebEnginePage;
+		CustomWebPage (IProxyObject*, QWidget*);
 	protected:
 		bool acceptNavigationRequest (const QUrl&, NavigationType, bool) override;
 	signals:

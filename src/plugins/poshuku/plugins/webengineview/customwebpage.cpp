@@ -28,7 +28,9 @@
  **********************************************************************/
 
 #include "customwebpage.h"
-#include <QtDebug>
+#include <util/sll/delayedexecutor.h>
+#include <interfaces/poshuku/iproxyobject.h>
+#include "customwebview.h"
 
 namespace LeechCraft
 {
@@ -36,9 +38,39 @@ namespace Poshuku
 {
 namespace WebEngineView
 {
+	CustomWebPage::CustomWebPage (IProxyObject *poshukuProxy, QWidget *parent)
+	: QWebEnginePage { parent }
+	, PoshukuProxy_ { poshukuProxy }
+	, LinkOpenModifier_ { poshukuProxy->GetLinkOpenModifier () }
+	{
+		Util::ExecuteLater ([this]
+				{
+					LinkOpenModifier_->InstallOn (view ());
+					for (const auto child : view ()->findChildren<QWidget*> ())
+						LinkOpenModifier_->InstallOn (child);
+				});
+	}
+
 	bool CustomWebPage::acceptNavigationRequest (const QUrl& url,
 			NavigationType type, bool isMainFrame)
 	{
+		if (type == NavigationTypeLinkClicked)
+		{
+			const auto suggestion = LinkOpenModifier_->GetOpenBehaviourSuggestion ();
+
+			LinkOpenModifier_->ResetSuggestionState ();
+
+			if (suggestion.NewTab_)
+			{
+				auto view = new CustomWebView { PoshukuProxy_ };
+				emit webViewCreated (view, suggestion.Invert_);
+
+				view->Load (url, {});
+
+				return false;
+			}
+		}
+
 		return QWebEnginePage::acceptNavigationRequest (url, type, isMainFrame);
 	}
 }
