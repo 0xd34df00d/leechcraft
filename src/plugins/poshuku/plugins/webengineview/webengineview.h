@@ -39,6 +39,8 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
+class IProxyObject;
+
 namespace WebEngineView
 {
 	class RequestInterceptor;
@@ -59,6 +61,8 @@ namespace WebEngineView
 		Q_PLUGIN_METADATA (IID "org.LeechCraft.Poshuku.WebEngineView" FILE "manifest.json")
 
 		std::shared_ptr<RequestInterceptor> Interceptor_;
+
+		IProxyObject *PoshukuProxy_ = nullptr;
 	public:
 		void Init (ICoreProxy_ptr) override;
 		void SecondInit () override;
@@ -76,6 +80,8 @@ namespace WebEngineView
 		void AddInterceptor (const Interceptor_t&) override;
 	private:
 		void HandleView (CustomWebView*);
+	public slots:
+		void initPlugin (QObject*);
 	signals:
 		void webViewCreated (IWebView*, bool) override;
 	};

@@ -33,6 +33,7 @@
 #include <util/sys/sysinfo.h>
 #include <util/network/customcookiejar.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/poshuku/iproxyobject.h>
 #include "customwebview.h"
 #include "requestinterceptor.h"
 #include "cookiessyncer.h"
@@ -162,6 +163,11 @@ namespace WebEngineView
 					HandleView (view);
 					emit webViewCreated (view, invert);
 				});
+	}
+
+	void Plugin::initPlugin (QObject *proxyObj)
+	{
+		PoshukuProxy_ = qobject_cast<IProxyObject*> (proxyObj);
 	}
 }
 }
