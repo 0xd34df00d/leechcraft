@@ -135,7 +135,7 @@ namespace LeechCraft
 	{
 		/** @brief The device file representing the device (QString).
 		 *
-		 * For example, it could be \em{/dev/sdc1} on a Linux system.
+		 * For example, it could be \em /dev/sdc1 on a Linux system.
 		 */
 		DevFile = USBDeviceRole::USBDeviceRoleMax + 1,
 
