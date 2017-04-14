@@ -258,11 +258,11 @@ namespace XDG
 	 * This function is provided for convenience to pretty-print
 	 * contents of \em item to a debugging stream.
 	 *
-	 * @param[in] stream The stream to debug-print
+	 * @param[in] stream The debug stream to print to.
 	 * @param[in] item The XDG item to print.
 	 * @return The debugging \em stream with the contents of the \em item.
 	 */
-	QDebug operator<< (QDebug debug, const Item& item);
+	QDebug operator<< (QDebug stream, const Item& item);
 }
 }
 }
