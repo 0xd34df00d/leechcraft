@@ -150,7 +150,7 @@ namespace XProxy
 		DoOnProxiesList (proxy,
 				{
 					[this, &proxy, &targets] { Proxies_.append ({ proxy, targets }); },
-					[&proxy, &targets] (auto it) { it->second = targets; }
+					[&targets] (auto it) { it->second = targets; }
 				});
 	}
 
@@ -184,7 +184,7 @@ namespace XProxy
 			DoOnProxiesList (entry.second,
 					{
 						[this, &entry] { Proxies_.append ({ entry.second, { entry.first } }); },
-						[this, &entry] (auto it) { it->second += entry.first; }
+						[&entry] (auto it) { it->second += entry.first; }
 					});
 
 		for (const auto& entry : settings.value ("Scripts").value<QList<ScriptEntry_t>> ())

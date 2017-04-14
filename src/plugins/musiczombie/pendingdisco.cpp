@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "pendingdisco.h"
-#include <memory>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -38,7 +37,10 @@
 #include <QPointer>
 #include <util/sll/queuemanager.h>
 #include <util/util.h>
+#include <util/sll/util.h>
+#include <util/sll/prelude.h>
 #include "artistlookup.h"
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -51,7 +53,7 @@ namespace MusicZombie
 	, Queue_ (queue)
 	, NAM_ (nam)
 	{
-		Queue_->Schedule ([this, artist, nam] () -> void
+		Queue_->Schedule ([this, artist, nam]
 			{
 				auto idLookup = new ArtistLookup (artist, nam, this);
 				connect (idLookup,
@@ -81,11 +83,12 @@ namespace MusicZombie
 
 	void PendingDisco::handleGotID (const QString& id)
 	{
-		const auto urlStr = "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" + id;
+		static const QString pref { "http://musicbrainz.org/ws/2/release?limit=100&inc=recordings+release-groups&status=official&artist=" };
+		const QUrl url { pref + id };
 
-		Queue_->Schedule ([this, urlStr] () -> void
+		Queue_->Schedule ([this, url]
 			{
-				auto reply = NAM_->get (QNetworkRequest (QUrl (urlStr)));
+				auto reply = NAM_->get (SetupRequest (QNetworkRequest { url }));
 				connect (reply,
 						SIGNAL (finished ()),
 						this,
@@ -144,15 +147,16 @@ namespace MusicZombie
 
 			const auto& type = elem.attribute ("type");
 
-			static const auto& map = Util::MakeMap<QString, Media::ReleaseInfo::Type> ({
-						{ "Album", Media::ReleaseInfo::Type::Standard },
-						{ "EP", Media::ReleaseInfo::Type::EP },
-						{ "Single", Media::ReleaseInfo::Type::Single },
-						{ "Compilation", Media::ReleaseInfo::Type::Compilation },
-						{ "Live", Media::ReleaseInfo::Type::Live },
-						{ "Soundtrack", Media::ReleaseInfo::Type::Soundtrack },
-						{ "Other", Media::ReleaseInfo::Type::Other }
-					});
+			static const QMap<QString, Media::ReleaseInfo::Type> map
+			{
+				{ "Album", Media::ReleaseInfo::Type::Standard },
+				{ "EP", Media::ReleaseInfo::Type::EP },
+				{ "Single", Media::ReleaseInfo::Type::Single },
+				{ "Compilation", Media::ReleaseInfo::Type::Compilation },
+				{ "Live", Media::ReleaseInfo::Type::Live },
+				{ "Soundtrack", Media::ReleaseInfo::Type::Soundtrack },
+				{ "Other", Media::ReleaseInfo::Type::Other }
+			};
 
 			if (map.contains (type))
 				return map.value (type);
@@ -188,8 +192,7 @@ namespace MusicZombie
 				.firstChildElement ("release");
 		while (!releaseElem.isNull ())
 		{
-			std::shared_ptr<void> guard (nullptr,
-					[&releaseElem] (void*)
+			const auto guard = Util::MakeScopeGuard ([&releaseElem]
 						{ releaseElem = releaseElem.nextSiblingElement ("release"); });
 
 			auto elemText = [&releaseElem] (const QString& sub)
@@ -236,8 +239,7 @@ namespace MusicZombie
 		}
 
 		std::sort (Releases_.begin (), Releases_.end (),
-				[] (decltype (Releases_.at (0)) left, decltype (Releases_.at (0)) right)
-					{ return left.Year_ < right.Year_; });
+				Util::ComparingBy (&Media::ReleaseInfo::Year_));
 
 		emit ready ();
 		deleteLater ();

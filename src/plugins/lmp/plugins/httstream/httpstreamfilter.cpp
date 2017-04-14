@@ -83,11 +83,6 @@ namespace HttStream
 		gst_object_unref (audioPad);
 
 		g_object_set (G_OBJECT (MSS_),
-#if GST_VERSION_MAJOR < 1
-				"unit-type", GST_FORMAT_TIME,
-				"units-max", static_cast<gint64> (7 * GST_SECOND),
-				"units-soft-max", static_cast<gint64> (3 * GST_SECOND),
-#endif
 				"recover-policy", 3,
 				"sync-method", 1,
 				"async", FALSE,
@@ -225,7 +220,8 @@ namespace HttStream
 			connect (source->GetQObject (),
 					SIGNAL (stateChanged (SourceState, SourceState)),
 					this,
-					SLOT (checkCreatePad (SourceState)));
+					SLOT (checkCreatePad (SourceState)),
+					Qt::UniqueConnection);
 
 			source->SetState (SourceState::Playing);
 

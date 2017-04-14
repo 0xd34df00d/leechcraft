@@ -20,7 +20,6 @@ target_link_libraries (leechcraft_tpi
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_tpi DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml/tpi DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/tpi DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_tpi Gui)

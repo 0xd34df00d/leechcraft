@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.8)
 project (leechcraft_azoth_sarin)
 include (InitLCPlugin OPTIONAL)
 
@@ -38,6 +38,8 @@ set (SARIN_SRCS
 	toxaccount.cpp
 	toxthread.cpp
 	toxcontact.cpp
+	toxlogger.cpp
+	callbackmanager.cpp
 	accregisterdetailspage.cpp
 	showtoxiddialog.cpp
 	threadexceptions.cpp
@@ -80,11 +82,12 @@ target_link_libraries (leechcraft_azoth_sarin
 	${TOXAV_LIBRARY}
 	${EXTRA_LIBRARIES}
 	)
+set_property(TARGET leechcraft_azoth_sarin PROPERTY CXX_STANDARD 17)
 install (TARGETS leechcraft_azoth_sarin DESTINATION ${LC_PLUGINS_DEST})
 #install (FILES azothsarinsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
 FindQtLibs (leechcraft_azoth_sarin Concurrent Widgets)
 
-if (ENABLE_MEDIACALLS AND USE_QT5)
+if (ENABLE_MEDIACALLS)
 	FindQtLibs (leechcraft_azoth_sarin Multimedia)
 endif ()

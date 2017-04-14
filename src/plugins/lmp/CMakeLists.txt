@@ -5,10 +5,6 @@ include (CMakeDependentOption)
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake;${CMAKE_MODULE_PATH}")
 
-if (USE_QT5)
-	set (USE_GSTREAMER_10 True)
-endif ()
-
 # This stuff won't be need by GStreamer 1.0.
 find_package (LibXml2 REQUIRED)
 find_package (GStreamer REQUIRED)
@@ -231,11 +227,7 @@ install (DIRECTORY share/qml/lmp DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/lmp DESTINATION ${LC_QML5_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 if (UNIX AND NOT APPLE)
-	if (USE_QT5)
-		install (FILES freedesktop/leechcraft-lmp-qt5.desktop DESTINATION share/applications)
-	else ()
-		install (FILES freedesktop/leechcraft-lmp.desktop DESTINATION share/applications)
-	endif ()
+	install (FILES freedesktop/leechcraft-lmp-qt5.desktop DESTINATION share/applications)
 endif ()
 
 FindQtLibs (leechcraft_lmp Concurrent Network QuickWidgets Sql Xml)

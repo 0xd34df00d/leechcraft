@@ -142,8 +142,9 @@ namespace Azoth
 	boost::optional<QByteArray> AvatarsStorageOnDisk::GetAvatar (const QString& entryId,
 			IHaveAvatars::Size size) const
 	{
-		return Util::Fmap (AdaptedRecord_->DoSelectOneByFields_ (sph::_1 == entryId.toUtf8 () && sph::_2 == size),
-				&Record::ImageData_);
+		using Util::operator*;
+		return AdaptedRecord_->DoSelectOneByFields_ (sph::_1 == entryId.toUtf8 () && sph::_2 == size) *
+				&Record::ImageData_;
 	}
 
 	void AvatarsStorageOnDisk::DeleteAvatars (const QString& entryId) const

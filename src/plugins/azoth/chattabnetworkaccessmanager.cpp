@@ -44,7 +44,7 @@ namespace Azoth
 {
 	namespace
 	{
-		class AvatarReply : public QNetworkReply
+		class AvatarReply final : public QNetworkReply
 		{
 			QBuffer Buffer_;
 		public:

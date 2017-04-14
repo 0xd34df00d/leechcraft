@@ -95,6 +95,7 @@ namespace WebKitView
 
 		const auto page = new CustomWebPage { proxy, poshukuProxy, this };
 		setPage (page);
+		page->HandleViewReady ();
 		connect (page,
 				SIGNAL (webViewCreated (CustomWebView*, bool)),
 				this,
@@ -108,12 +109,6 @@ namespace WebKitView
 		SslWatcherHandler_ = new WebViewSslWatcherHandler { this, proxy->GetIconThemeManager () };
 
 		WebInspector_->setPage (page);
-
-		connect (page,
-				SIGNAL (saveFrameStateRequested (QWebFrame*, QWebHistoryItem*)),
-				this,
-				SLOT (handleFrameState (QWebFrame*, QWebHistoryItem*)),
-				Qt::QueuedConnection);
 
 		connect (page,
 				SIGNAL (printRequested (QWebFrame*)),
@@ -151,8 +146,7 @@ namespace WebKitView
 
 		if (url.scheme () == "javascript")
 		{
-			QVariant result = page ()->mainFrame ()->
-				evaluateJavaScript (url.toString ().mid (11));
+			const auto& result = page ()->mainFrame ()->evaluateJavaScript (url.toString ().mid (11));
 			if (result.canConvert (QVariant::String))
 				setHtml (result.toString ());
 			return;
@@ -335,10 +329,9 @@ namespace WebKitView
 	void CustomWebView::AddJavaScriptObject (const QString& id, QObject *object)
 	{
 		page ()->mainFrame ()->addToJavaScriptWindowObject (id, object);
-		page ()->mainFrame ()->evaluateJavaScript (R"(
-					if (window.%1.init)
-						window.%1.init();
-				)");
+
+		static const QString initter { "if (window.%1.init) window.%1.init();" };
+		page ()->mainFrame ()->evaluateJavaScript (initter.arg (id));
 	}
 
 	QPoint CustomWebView::GetScrollPosition () const
@@ -538,9 +531,6 @@ namespace WebKitView
 
 	void CustomWebView::mousePressEvent (QMouseEvent *e)
 	{
-		qobject_cast<CustomWebPage*> (page ())->SetButtons (e->buttons ());
-		qobject_cast<CustomWebPage*> (page ())->SetModifiers (e->modifiers ());
-
 		const bool mBack = e->button () == Qt::XButton1;
 		const bool mForward = e->button () == Qt::XButton2;
 		if (mBack || mForward)

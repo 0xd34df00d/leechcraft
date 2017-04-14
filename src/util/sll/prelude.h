@@ -95,7 +95,7 @@ namespace Util
 		}
 
 		template<typename T, typename F>
-		constexpr bool IsInvokableWithConstImpl (typename std::result_of<F (const T&)>::type*)
+		constexpr bool IsInvokableWithConstImpl (std::result_of_t<F (const T&)>*)
 		{
 			return true;
 		}
@@ -109,7 +109,7 @@ namespace Util
 		template<typename T, typename F>
 		constexpr bool IsInvokableWithConst ()
 		{
-			return IsInvokableWithConstImpl<typename std::decay<T>::type, F> (0);
+			return IsInvokableWithConstImpl<std::decay_t<T>, F> (0);
 		}
 
 		template<template<typename> class Cont, typename T>
@@ -126,55 +126,34 @@ namespace Util
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
-			WrapType_t<Container<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
+	auto Map (const Container<T>& c, F f) -> std::enable_if_t<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
 	{
-		Container<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> result;
+		Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>> result;
 		for (auto&& t : c)
 			detail::Append (result, Invoke (f, t));
 		return result;
 	}
 
 	template<typename Container, typename F, template<typename> class ResultCont = QList>
-	auto Map (const Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
-			WrapType_t<ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type>>>::type
+	auto Map (const Container& c, F f) -> std::enable_if_t<!detail::IsSimpleContainer<Container> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+			WrapType_t<ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
 	{
-		ResultCont<typename std::decay<decltype (Invoke (f, *c.begin ()))>::type> cont;
+		ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>> cont;
 		for (auto&& t : c)
 			detail::Append (cont, Invoke (f, t));
 		return cont;
 	}
 
 	template<typename Container, typename F>
-	auto Map (Container& c, F f) -> typename std::enable_if<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>::type
+	auto Map (Container& c, F f) -> std::enable_if_t<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
 	}
-
-	/*
-#ifndef USE_CPP14
-	template<typename F>
-	auto Map (const QStringList& c, F f) -> typename std::enable_if<!std::is_same<void, decltype (Invoke (f, QString {}))>::value,
-			WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>>>::type
-	{
-		WrapType_t<QList<typename std::decay<decltype (Invoke (f, QString {}))>::type>> result;
-		for (auto&& t : c)
-			result.push_back (Invoke (f, t));
-		return result;
-	}
-
-	template<typename F>
-	auto Map (const QStringList& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, QString {}))>::value>::type
-	{
-		for (auto&& t : c)
-			Invoke (f, t);
-	}
-#endif
-*/
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> typename std::enable_if<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>::type
+	auto Map (const Container<T>& c, F f) -> std::enable_if_t<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
@@ -200,9 +179,9 @@ namespace Util
 	}
 
 	template<template<typename...> class Container, typename... ContArgs>
-	auto Concat (const Container<ContArgs...>& containers) -> typename std::decay<decltype (*containers.begin ())>::type
+	auto Concat (const Container<ContArgs...>& containers) -> std::decay_t<decltype (*containers.begin ())>
 	{
-		typename std::decay<decltype (*containers.begin ())>::type result;
+		std::decay_t<decltype (*containers.begin ())> result;
 		for (const auto& cont : containers)
 			std::copy (cont.begin (), cont.end (), std::back_inserter (result));
 		return result;
@@ -255,7 +234,6 @@ namespace Util
 
 	const auto Id = [] (const auto& t) { return t; };
 
-#ifdef USE_CPP14
 	template<typename R>
 	auto ComparingBy (R r)
 	{
@@ -264,86 +242,30 @@ namespace Util
 
 	const auto Apply = [] (const auto& t) { return t (); };
 
+	const auto Fst = [] (const auto& pair) { return pair.first; };
+
+	const auto Snd = [] (const auto& pair) { return pair.second; };
+
 	template<typename F>
 	auto First (F&& f)
 	{
-		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.first); };
+		return [f = std::forward<F> (f)] (const auto& pair) { return Invoke (f, pair.first); };
 	}
 
 	template<typename F>
 	auto Second (F&& f)
 	{
-		return [f = std::move (f)] (const auto& pair) { return Invoke (f, pair.second); };
-	}
-#else
-	namespace detail
-	{
-		template<typename R>
-		struct ComparingByClosure
-		{
-			const R R_;
-
-			template<typename T>
-			bool operator() (const T& left, const T& right) const
-			{
-				return Invoke (R_, left) < Invoke (R_, right);
-			}
-		};
-	}
-
-	template<typename R>
-	detail::ComparingByClosure<R> ComparingBy (R r)
-	{
-		return detail::ComparingByClosure<R> { r };
-	}
-
-	struct
-	{
-		template<typename T>
-		typename std::result_of<T ()>::type operator() (const T& t) const
-		{
-			return t ();
-		}
-	} const Apply {};
-
-	namespace detail
-	{
-		template<typename F>
-		struct Fst
-		{
-			F F_;
-
-			template<typename Pair>
-			auto operator() (const Pair& pair) -> decltype (Invoke (F_, pair.first))
-			{
-				return Invoke (F_, pair.first);
-			}
-		};
-
-		template<typename F>
-		struct Snd
-		{
-			F F_;
-
-			template<typename Pair>
-			auto operator() (const Pair& pair) -> decltype (Invoke (F_, pair.second))
-			{
-				return Invoke (F_, pair.second);
-			}
-		};
+		return [f = std::forward<F> (f)] (const auto& pair) { return Invoke (f, pair.second); };
 	}
 
 	template<typename F>
-	detail::Fst<F> First (F f)
+	auto Flip (F&& f)
 	{
-		return { f };
+		return [f = std::forward<F> (f)] (auto&& left, auto&& right)
+		{
+			return f (std::forward<decltype (right)> (right),
+					std::forward<decltype (left)> (left));
+		};
 	}
-
-	template<typename F>
-	detail::Snd<F> Second (F f)
-	{
-		return { f };
-	}
-#endif
 }
 }

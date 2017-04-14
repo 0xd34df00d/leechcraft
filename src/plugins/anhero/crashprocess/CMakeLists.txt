@@ -19,7 +19,7 @@ set (FORMS
 QtWrapUi (UIS_H "${FORMS}")
 
 set (EXECSUFFIX)
-if (USE_QT5 AND NOT APPLE)
+if (NOT APPLE)
 	set (EXECSUFFIX "-qt5")
 endif ()
 

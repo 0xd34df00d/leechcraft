@@ -831,7 +831,7 @@ namespace Snails
 			menu->addAction ("Multiple folders...", this, multislot);
 			menu->addSeparator ();
 
-			for (const auto& folder : GetActualFolders ())
+			for (const auto& folder : folders)
 			{
 				const auto& icon = GetFolderIcon (folder.Type_);
 				const auto act = menu->addAction (icon, folder.Path_.join ("/"));

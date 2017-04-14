@@ -159,7 +159,7 @@ namespace Sarin
 		State_ = State::Transferring;
 	}
 
-	void FileTransferOut::handleFileControl (qint32 friendNum, qint32 fileNum, int type)
+	void FileTransferOut::handleFileControl (uint32_t friendNum, uint32_t fileNum, int type)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;
@@ -217,7 +217,7 @@ namespace Sarin
 		}
 	}
 
-	void FileTransferOut::handleChunkRequested (qint32 friendNum, qint32 fileNum, uint64_t offset, size_t length)
+	void FileTransferOut::handleChunkRequested (uint32_t friendNum, uint32_t fileNum, uint64_t offset, size_t length)
 	{
 		if (friendNum != FriendNum_ || fileNum != FileNum_)
 			return;

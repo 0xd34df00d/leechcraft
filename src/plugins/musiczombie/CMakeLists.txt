@@ -31,6 +31,7 @@ set (SRCS
 	musiczombie.cpp
 	artistlookup.cpp
 	pendingdisco.cpp
+	util.cpp
 	)
 if (WITH_MUSICZOMBIE_CHROMAPRINT)
 	set (SRCS

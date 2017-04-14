@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "messagesmanager.h"
-#include <QFutureWatcher>
 #include <tox/tox.h>
 #include <util/sll/slotclosure.h>
 #include <util/sll/delayedexecutor.h>
@@ -36,6 +35,7 @@
 #include "toxthread.h"
 #include "chatmessage.h"
 #include "util.h"
+#include "callbackmanager.h"
 
 namespace LeechCraft
 {
@@ -69,35 +69,8 @@ namespace Sarin
 			return;
 		}
 
-		const auto watcher = new QFutureWatcher<MessageSendResult>;
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[watcher, this]
-			{
-				watcher->deleteLater ();
-
-				const auto& result = watcher->result ();
-				if (!result.Result_)
-				{
-					qWarning () << Q_FUNC_INFO
-							<< "message was not sent, resending in 5 seconds";
-
-					new Util::DelayedExecutor
-					{
-						[result, this] { SendMessage (result.Privkey_, result.Msg_); },
-						5000
-					};
-				}
-				else
-					MsgId2Msg_ [result.Result_] = result.Msg_;
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-
 		const auto& body = msg->GetBody ();
-		watcher->setFuture (thread->ScheduleFunction ([=] (Tox *tox) -> MessageSendResult
+		const auto future = thread->ScheduleFunction ([=] (Tox *tox) -> MessageSendResult
 				{
 					const auto friendNum = GetFriendId (tox, privkey);
 					if (!friendNum)
@@ -126,7 +99,25 @@ namespace Sarin
 					}
 
 					return { id, privkey, msg };
-				}));
+				});
+
+		Util::Sequence (this, future) >>
+				[this] (const MessageSendResult& result)
+				{
+					if (!result.Result_)
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "message was not sent, resending in 5 seconds";
+
+						new Util::DelayedExecutor
+						{
+							[result, this] { SendMessage (result.Privkey_, result.Msg_); },
+							5000
+						};
+					}
+					else
+						MsgId2Msg_ [result.Result_] = result.Msg_;
+				};
 	}
 
 	void MessagesManager::handleReadReceipt (quint32 msgId)
@@ -163,64 +154,44 @@ namespace Sarin
 			return;
 		}
 
-		const auto watcher = new QFutureWatcher<QByteArray>;
-		new Util::SlotClosure<Util::DeleteLaterPolicy>
-		{
-			[msg, watcher, this]
-			{
-				watcher->deleteLater ();
-				const auto& pubkey = watcher->result ();
-				if (pubkey.isEmpty ())
+		Util::Sequence (this, thread->GetFriendPubkey (friendId)) >>
+				[msg, this] (const QByteArray& pubkey)
 				{
-					qWarning () << Q_FUNC_INFO
-							<< "cannot get pubkey for message"
-							<< msg;
-					return;
-				}
+					if (pubkey.isEmpty ())
+					{
+						qWarning () << Q_FUNC_INFO
+								<< "cannot get pubkey for message"
+								<< msg;
+						return;
+					}
 
-				emit gotMessage (pubkey, msg);
-			},
-			watcher,
-			SIGNAL (finished ()),
-			watcher
-		};
-
-		watcher->setFuture (thread->GetFriendPubkey (friendId));
+					emit gotMessage (pubkey, msg);
+				};
 	}
 
 	void MessagesManager::setThread (const std::shared_ptr<ToxThread>& thread)
 	{
 		Thread_ = thread;
+		if (!thread)
+			return;
 
-		if (thread)
-			connect (thread.get (),
-					SIGNAL (toxCreated (Tox*)),
-					this,
-					SLOT (handleToxCreated (Tox*)),
-					Qt::BlockingQueuedConnection);
-	}
-
-	void MessagesManager::handleToxCreated (Tox *tox)
-	{
-		tox_callback_friend_message (tox,
-				[] (Tox*, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t, void *udata)
+		const auto cbMgr = thread->GetCallbackManager ();
+		cbMgr->Register<tox_callback_friend_message> (this,
+				[] (MessagesManager *pThis, uint32_t friendId, TOX_MESSAGE_TYPE, const uint8_t *msgData, size_t)
 				{
 					const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (msgData));
-
-					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
+					QMetaObject::invokeMethod (pThis,
 							"handleInMessage",
 							Q_ARG (qint32, friendId),
 							Q_ARG (QString, msg));
-				},
-				this);
-		tox_callback_friend_read_receipt (tox,
-				[] (Tox*, uint32_t, uint32_t msgId, void *udata)
+				});
+		cbMgr->Register<tox_callback_friend_read_receipt> (this,
+				[] (MessagesManager *pThis, uint32_t, uint32_t msgId)
 				{
-					QMetaObject::invokeMethod (static_cast<MessagesManager*> (udata),
+					QMetaObject::invokeMethod (pThis,
 							"handleReadReceipt",
 							Q_ARG (quint32, msgId));
-				},
-				this);
+				});
 	}
 }
 }

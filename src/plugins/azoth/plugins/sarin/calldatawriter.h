@@ -33,9 +33,6 @@
 #include <QObject>
 #include "callmanager.h"
 
-template<typename T>
-class QFutureWatcher;
-
 class QAudioFormat;
 
 namespace LeechCraft

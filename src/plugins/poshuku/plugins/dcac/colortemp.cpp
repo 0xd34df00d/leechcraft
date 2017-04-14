@@ -135,11 +135,11 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m128i pixel1msk = MakeMask<128, 7, 0> ();
-			const __m128i pixel2msk = MakeMask<128, 15, 8> ();
+			const __m128i pixel1msk = MakeMask<7, 0> (Mask128);
+			const __m128i pixel2msk = MakeMask<15, 8> (Mask128);
 
-			const __m128i pixel1revmask = MakeRevMask<128, 8, 0, 1> ();
-			const __m128i pixel2revmask = MakeRevMask<128, 8, 1, 1> ();
+			const __m128i pixel1revmask = MakeRevMask<8, 0, 1> (Mask128);
+			const __m128i pixel2revmask = MakeRevMask<8, 1, 1> (Mask128);
 
 			const __m128i mul = _mm_set_epi16 (256, red, green, blue,
 					256, red, green, blue);
@@ -190,11 +190,11 @@ namespace DCAC
 			const auto height = image.height ();
 			const auto width = image.width ();
 
-			const __m256i pixel1msk = MakeMask<256, 7, 0> ();
-			const __m256i pixel2msk = MakeMask<256, 15, 8> ();
+			const __m256i pixel1msk = MakeMask<7, 0> (Mask256);
+			const __m256i pixel2msk = MakeMask<15, 8> (Mask256);
 
-			const __m256i pixel1revmask = MakeRevMask<256, 8, 0, 1> ();
-			const __m256i pixel2revmask = MakeRevMask<256, 8, 1, 1> ();
+			const __m256i pixel1revmask = MakeRevMask<8, 0, 1> (Mask256);
+			const __m256i pixel2revmask = MakeRevMask<8, 1, 1> (Mask256);
 
 			const __m256i mul = _mm256_set_epi16 (256, red, green, blue,
 					256, red, green, blue,

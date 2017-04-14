@@ -43,6 +43,8 @@ namespace Sarin
 	{
 		bool AllowUDP_ = true;
 		bool AllowIPv6_ = true;
+		bool AllowLocalDiscovery_ = true;
+		bool UdpHolePunching_ = true;
 
 		QString ProxyHost_;
 		int ProxyPort_;

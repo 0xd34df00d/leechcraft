@@ -173,7 +173,8 @@ namespace ChatHistory
 		const QString& accId = account->GetAccountID ();
 		const QString& entryId = entry->GetEntryID ();
 		Util::Sequence (this, StorageMgr_->GetChatLogs (accId, entryId, 0, num)) >>
-				std::bind (&Plugin::HandleGotChatLogs, this, entryObj, std::placeholders::_1);
+				std::bind (&Plugin::HandleGotChatLogs,
+						this, QPointer<QObject> { entryObj }, std::placeholders::_1);
 	}
 
 	QFuture<Plugin::MaxTimestampResult_t> Plugin::RequestMaxTimestamp (IAccount *acc)

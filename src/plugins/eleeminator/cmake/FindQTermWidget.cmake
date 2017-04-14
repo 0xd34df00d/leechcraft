@@ -10,33 +10,18 @@ find_path(QTERMWIDGET_INCLUDE_DIR qtermwidget.h
 		qtermwidget5
 	)
 
-if (NOT USE_QT5)
-	find_library(QTERMWIDGET_LIBRARIES
-		NAMES
-			qtermwidget4
-			qtermwidget
-		PATHS
-			${QTERMWIDGET_PATH_LIB}
-			/usr/lib/
-			/usr/lib64/
-			/usr/local/lib/
-			/usr/local/lib64/
-			/opt/local/lib/
-		)
-else ()
-	find_library(QTERMWIDGET_LIBRARIES
-		NAMES
-			qtermwidget5
-			qtermwidget
-		PATHS
-			${QTERMWIDGET_PATH_LIB}
-			/usr/lib/
-			/usr/lib64/
-			/usr/local/lib/
-			/usr/local/lib64/
-			/opt/local/lib/
-		)
-endif ()
+find_library(QTERMWIDGET_LIBRARIES
+	NAMES
+		qtermwidget5
+		qtermwidget
+	PATHS
+		${QTERMWIDGET_PATH_LIB}
+		/usr/lib/
+		/usr/lib64/
+		/usr/local/lib/
+		/usr/local/lib64/
+		/opt/local/lib/
+	)
 
 if (QTERMWIDGET_LIBRARIES AND QTERMWIDGET_INCLUDE_DIR)
 	set (QTERMWIDGET_FOUND TRUE)

@@ -61,6 +61,7 @@ set (SRCS
 	featurepermnotification.cpp
 	zoomer.cpp
 	browserwidgetsettingshandler.cpp
+	linkopenmodifier.cpp
 	)
 set (FORMS
 	browserwidget.ui

@@ -31,11 +31,7 @@ target_link_libraries (leechcraft_monocle_fxb
 install (TARGETS leechcraft_monocle_fxb DESTINATION ${LC_PLUGINS_DEST})
 install (FILES monoclefxbsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 if (UNIX AND NOT APPLE)
-	if (USE_QT5)
-		install (FILES freedesktop/leechcraft-monocle-fxb-qt5.desktop DESTINATION share/applications)
-	else ()
-		install (FILES freedesktop/leechcraft-monocle-fxb.desktop DESTINATION share/applications)
-	endif ()
+	install (FILES freedesktop/leechcraft-monocle-fxb-qt5.desktop DESTINATION share/applications)
 endif ()
 
 FindQtLibs (leechcraft_monocle_fxb Xml)

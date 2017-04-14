@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "pendingrecommendedartists.h"
-#include <memory>
 #include <QDomDocument>
 #include <QNetworkReply>
 #include <QtDebug>
+#include <util/sll/util.h>
 #include "authenticator.h"
 #include "util.h"
 
@@ -55,8 +55,7 @@ namespace Lastfmscrobble
 
 	void PendingRecommendedArtists::request ()
 	{
-		QList<QPair<QString, QString>> params;
-		params << QPair<QString, QString> ("limit", QString::number (NumGet_));
+		const ParamsList_t params { { "limit", QString::number (NumGet_) } };
 		auto reply = Request ("user.getRecommendedArtists", NAM_, params);
 		connect (reply,
 				SIGNAL (finished ()),
@@ -85,10 +84,10 @@ namespace Lastfmscrobble
 		auto artistElem = doc.documentElement ()
 				.firstChildElement ("recommendations")
 				.firstChildElement ("artist");
-		auto elemGuard = [&artistElem] (void*) { artistElem = artistElem.nextSiblingElement ("artist"); };
 		while (!artistElem.isNull ())
 		{
-			std::shared_ptr<void> guard (static_cast<void*> (0), elemGuard);
+			const auto guard = Util::MakeScopeGuard ([&artistElem]
+					{ artistElem = artistElem.nextSiblingElement ("artist"); });
 
 			const auto& name = artistElem.firstChildElement ("name").text ();
 			if (name.isEmpty ())
@@ -104,8 +103,7 @@ namespace Lastfmscrobble
 
 			++InfosWaiting_;
 
-			QMap<QString, QString> params;
-			params ["artist"] = name;
+			QMap<QString, QString> params { { "artist", name } };
 			AddLanguageParam (params);
 			auto infoReply = Request ("artist.getInfo", NAM_, params);
 

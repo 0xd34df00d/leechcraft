@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "artistlookup.h"
-#include <memory>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -37,6 +36,8 @@
 #include <QDate>
 #include <QtDebug>
 #include <util/sll/urloperator.h>
+#include <util/sll/util.h>
+#include "util.h"
 
 namespace LeechCraft
 {
@@ -54,11 +55,11 @@ namespace MusicZombie
 	: QObject { parent }
 	, Name_ { name }
 	{
-		QUrl url { "http://www.musicbrainz.org/ws/2/artist/" };
+		QUrl url { "https://musicbrainz.org/ws/2/artist/" };
 		Util::UrlOperator { url }
 				("query", "artist:" + NormalizeName (name));
 
-		auto reply = nam->get (QNetworkRequest (url));
+		auto reply = nam->get (SetupRequest (QNetworkRequest { url }));
 		connect (reply,
 				SIGNAL (finished ()),
 				this,
@@ -101,8 +102,7 @@ namespace MusicZombie
 		auto artist = artists.firstChildElement ("artist");
 		while (!artist.isNull () && artist.attribute ("score").toInt () > 75)
 		{
-			std::shared_ptr<void> artistGuard { nullptr,
-					[&artist] (void*) { artist = artist.nextSiblingElement ("artist"); } };
+			const auto guard = Util::MakeScopeGuard ([&artist] { artist = artist.nextSiblingElement ("artist"); });
 
 			const auto& spanElem = artist.firstChildElement ("life-span");
 
@@ -128,7 +128,7 @@ namespace MusicZombie
 
 		if (span2id.isEmpty ())
 			span2id [0] = artists.firstChildElement ("artist").attribute ("id");
-		emit gotID (*std::reverse_iterator<decltype (span2id.end ())> { span2id.end () });
+		emit gotID (span2id.last ());
 	}
 
 	void ArtistLookup::handleError ()

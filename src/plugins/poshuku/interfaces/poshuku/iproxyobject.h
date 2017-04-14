@@ -39,7 +39,10 @@ namespace LeechCraft
 namespace Poshuku
 {
 	class IStorageBackend;
-	typedef std::shared_ptr<IStorageBackend> IStorageBackend_ptr;
+	using IStorageBackend_ptr = std::shared_ptr<IStorageBackend>;
+
+	class ILinkOpenModifier;
+	using ILinkOpenModifier_ptr = std::shared_ptr<ILinkOpenModifier>;
 
 	class IProxyObject
 	{
@@ -54,6 +57,8 @@ namespace Poshuku
 		virtual QString GetUserAgent (const QUrl&) const = 0;
 
 		virtual QVariant GetPoshukuConfigValue (const QByteArray& name) const = 0;
+
+		virtual ILinkOpenModifier_ptr GetLinkOpenModifier () const = 0;
 	};
 }
 }

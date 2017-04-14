@@ -109,6 +109,8 @@ namespace WebEngineView
 
 		void iconChanged ();
 		void statusBarMessage (const QString&);
+
+		void webViewCreated (CustomWebView*, bool);
 	};
 }
 }

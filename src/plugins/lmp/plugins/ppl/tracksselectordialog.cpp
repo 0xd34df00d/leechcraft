@@ -34,6 +34,7 @@
 #include <QDesktopWidget>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -359,6 +360,8 @@ namespace PPL
 	{
 		Ui_.Tracks_->resizeColumnsToContents ();
 
+		const auto showGuard = Util::MakeScopeGuard ([this] { show (); });
+
 		const auto Margin = 50;
 
 		int totalWidth = Margin + Ui_.Tracks_->verticalHeader ()->width ();
@@ -380,8 +383,6 @@ namespace PPL
 				Qt::AlignCenter,
 				{ totalWidth, height () },
 				availableGeometry));
-
-		show ();
 	}
 
 	QList<TracksSelectorDialog::SelectedTrack> TracksSelectorDialog::GetSelectedTracks () const

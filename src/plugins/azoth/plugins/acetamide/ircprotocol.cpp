@@ -48,9 +48,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
-	using namespace boost::spirit::classic;
-
 	IrcProtocol::IrcProtocol (QObject *parent)
 	: QObject (parent)
 	, ParentProtocolPlugin_ (parent)
@@ -60,9 +57,7 @@ namespace Acetamide
 	IrcProtocol::~IrcProtocol ()
 	{
 		for (auto acc : GetRegisteredAccounts ())
-		{
 			emit accountRemoved (acc);
-		}
 	}
 
 	void IrcProtocol::Prepare ()
@@ -121,9 +116,7 @@ namespace Acetamide
 
 	QList<QWidget*> IrcProtocol::GetAccountRegistrationWidgets (IProtocol::AccountAddOptions)
 	{
-		QList<QWidget*> result;
-		result << new IrcAccountConfigurationWidget ();
-		return result;
+		return { new IrcAccountConfigurationWidget () };
 	}
 
 	void IrcProtocol::RegisterAccount (const QString& name,
@@ -185,12 +178,17 @@ namespace Acetamide
 		bool serverPass = false;
 		bool channelPass = false;
 
+		using namespace boost::spirit::classic;
+
 		range<> ascii (char (0x01), char (0x7F));
 		rule<> special = lexeme_d [ch_p ('[') | ']' | '\\' | '`' |
 				'^' | '{' | '|' | '}' | '-'];
 		rule<> hostmask = lexeme_d [+(ascii - ' ' - '\0' - ',' - '\r' - '\n')];
 		rule<> let_dig_hyp = alnum_p | ch_p ('-');
-		rule<> ldh_str = *(let_dig_hyp >> !ldh_str);
+
+		rule<> ldh_str;
+		ldh_str = *(let_dig_hyp >> !ldh_str);
+
 		rule<> label = alpha_p >> !(!ldh_str >> alnum_p);
 		rule<> subdomain = label >> +(label >> !ch_p ('.'));
 		rule<> host = subdomain  [assign_a (host_)];

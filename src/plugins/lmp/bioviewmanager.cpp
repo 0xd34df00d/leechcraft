@@ -240,7 +240,11 @@ namespace LMP
 		auto fetcher = qobject_cast<Media::IPendingDisco*> (sender ());
 		const auto& icon = Core::Instance ().GetProxy ()->GetIconThemeManager ()->
 				GetIcon ("media-optical").pixmap (AASize * 2, AASize * 2);
-		for (const auto& release : fetcher->GetReleases ())
+
+		auto releases = fetcher->GetReleases ();
+		std::sort (releases.begin (), releases.end (),
+				Util::Flip (Util::ComparingBy (&Media::ReleaseInfo::Year_)));
+		for (const auto& release : releases)
 		{
 			if (FindAlbumItem (release.Name_))
 				continue;

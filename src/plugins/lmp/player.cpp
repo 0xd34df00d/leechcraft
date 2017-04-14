@@ -866,7 +866,7 @@ namespace LMP
 		void LoadAlbumArt (QStandardItem *albumItem, const MediaInfo& info)
 		{
 			const int dim = 48;
-			const auto worker = [info, dim] () -> QImage
+			const auto worker = [info]
 			{
 				auto artImage = FindAlbumArt<QImage> (info.LocalPath_);
 				if (std::max (artImage.width (), artImage.height ()) > dim)
@@ -878,7 +878,7 @@ namespace LMP
 			const auto futureWatcher = new QFutureWatcher<QImage>;
 			new Util::SlotClosure<Util::DeleteLaterPolicy>
 			{
-				[albumItem, futureWatcher, dim, guardIdx] () -> void
+				[albumItem, futureWatcher, guardIdx]
 				{
 					if (!guardIdx.isValid ())
 						return;
@@ -1197,7 +1197,7 @@ namespace LMP
 				return {};
 		case PlayMode::Shuffle:
 			return GetRandomBy<int> (pos,
-					[this] (AudioSources_t::const_iterator pos, const AudioSources_t& sources)
+					[] (AudioSources_t::const_iterator pos, const AudioSources_t& sources)
 						{ return pos - sources.begin (); });
 		case PlayMode::ShuffleAlbums:
 			return GetRandomBy<QString> (pos,

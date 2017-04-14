@@ -37,6 +37,8 @@
 #include <tox/tox.h>
 #include "util.h"
 #include "callmanager.h"
+#include "callbackmanager.h"
+#include "toxlogger.h"
 
 namespace LeechCraft
 {
@@ -49,6 +51,8 @@ namespace Sarin
 	: Name_ { name }
 	, ToxState_ { state }
 	, Config_ (config)
+	, CbMgr_ { std::make_shared<CallbackManager> () }
+	, Logger_ { std::make_unique<ToxLogger> (name) }
 	{
 	}
 
@@ -174,6 +178,11 @@ namespace Sarin
 	QFuture<QByteArray> ToxThread::GetToxId ()
 	{
 		return ScheduleFunction (&GetToxAddress);
+	}
+
+	CallbackManager* ToxThread::GetCallbackManager () const
+	{
+		return CbMgr_.get ();
 	}
 
 	namespace
@@ -424,7 +433,7 @@ namespace Sarin
 			emit gotFriend (friendList [i]);
 	}
 
-	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, uint16_t size)
+	void ToxThread::HandleFriendRequest (const uint8_t *pkey, const uint8_t *data, size_t size)
 	{
 		const auto& pubkey = ToxId2HR<TOX_PUBLIC_KEY_SIZE> (pkey);
 		const auto& msg = QString::fromUtf8 (reinterpret_cast<const char*> (data), size);
@@ -433,7 +442,7 @@ namespace Sarin
 		emit gotFriendRequest (pubkey, msg);
 	}
 
-	void ToxThread::HandleNameChange (int32_t id, const uint8_t *data, uint16_t)
+	void ToxThread::HandleNameChange (uint32_t id, const uint8_t *data, uint16_t)
 	{
 		const auto& toxId = GetFriendId (Tox_.get (), id);
 		const auto& name = QString::fromUtf8 (reinterpret_cast<const char*> (data));
@@ -443,14 +452,14 @@ namespace Sarin
 		SaveState ();
 	}
 
-	void ToxThread::UpdateFriendStatus (int32_t friendId)
+	void ToxThread::UpdateFriendStatus (uint32_t friendId)
 	{
 		const auto& id = GetFriendId (Tox_.get (), friendId);
 		const auto& status = GetFriendStatus (Tox_.get (), friendId);
 		emit friendStatusChanged (id, status);
 	}
 
-	void ToxThread::HandleTypingChange (int32_t friendId, bool isTyping)
+	void ToxThread::HandleTypingChange (uint32_t friendId, bool isTyping)
 	{
 		const auto& id = GetFriendId (Tox_.get (), friendId);
 		emit friendTypingChanged (id, isTyping);
@@ -458,42 +467,28 @@ namespace Sarin
 
 	void ToxThread::SetCallbacks ()
 	{
-		tox_callback_friend_request (Tox_.get (),
-				[] (Tox*, const uint8_t *pkey, const uint8_t *data, size_t size, void *udata)
+		CbMgr_->Register<tox_callback_friend_request> (this, &ToxThread::HandleFriendRequest);
+		CbMgr_->Register<tox_callback_friend_name> (this,
+				[] (ToxThread *thread, uint32_t id, const uint8_t *name, size_t len)
 				{
-					static_cast<ToxThread*> (udata)->HandleFriendRequest (pkey, data, size);
-				},
-				this);
-		tox_callback_friend_name (Tox_.get (),
-				[] (Tox*, uint32_t id, const uint8_t *name, size_t len, void *udata)
+					thread->HandleNameChange (id, name, len + 1);
+				});
+		CbMgr_->Register<tox_callback_friend_status> (this,
+				[] (ToxThread *thread, uint32_t friendId, TOX_USER_STATUS)
 				{
-					static_cast<ToxThread*> (udata)->HandleNameChange (id, name, len + 1);
-				},
-				this);
-		tox_callback_friend_status (Tox_.get (),
-				[] (Tox*, uint32_t friendId, TOX_USER_STATUS, void *udata)
+					thread->UpdateFriendStatus (friendId);
+				});
+		CbMgr_->Register<tox_callback_friend_status_message> (this,
+				[] (ToxThread *thread, uint32_t friendId, const uint8_t*, size_t)
 				{
-					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
-				},
-				this);
-		tox_callback_friend_status_message (Tox_.get (),
-				[] (Tox*, uint32_t friendId, const uint8_t*, size_t, void *udata)
+					thread->UpdateFriendStatus (friendId);
+				});
+		CbMgr_->Register<tox_callback_friend_connection_status> (this,
+				[] (ToxThread *thread, uint32_t friendId, TOX_CONNECTION)
 				{
-					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
-				},
-				this);
-		tox_callback_friend_connection_status (Tox_.get (),
-				[] (Tox*, uint32_t friendId, TOX_CONNECTION, void *udata)
-				{
-					static_cast<ToxThread*> (udata)->UpdateFriendStatus (friendId);
-				},
-				this);
-		tox_callback_friend_typing (Tox_.get (),
-				[] (Tox*, uint32_t friendId, bool isTyping, void *udata)
-				{
-					static_cast<ToxThread*> (udata)->HandleTypingChange (friendId, isTyping);
-				},
-				this);
+					thread->UpdateFriendStatus (friendId);
+				});
+		CbMgr_->Register<tox_callback_friend_typing> (this, &ToxThread::HandleTypingChange);
 	}
 
 	void ToxThread::RunTox ()
@@ -502,21 +497,32 @@ namespace Sarin
 		{
 			Config_.AllowIPv6_,
 			Config_.AllowUDP_,
+			Config_.AllowLocalDiscovery_,
 			Config_.ProxyHost_.isEmpty () ? TOX_PROXY_TYPE_NONE : TOX_PROXY_TYPE_SOCKS5,			// TODO support HTTP proxies
 			Config_.ProxyHost_.isEmpty () ? nullptr : strdup (Config_.ProxyHost_.toLatin1 ()),
 			static_cast<uint16_t> (Config_.ProxyPort_),
 			0,			// TODO
 			0,			// TODO
 			0,			// TODO
+			Config_.UdpHolePunching_,
 			ToxState_.isEmpty () ? TOX_SAVEDATA_TYPE_NONE : TOX_SAVEDATA_TYPE_TOX_SAVE,
 			reinterpret_cast<const uint8_t*> (ToxState_.constData ()),
-			static_cast<size_t> (ToxState_.size ())
+			static_cast<size_t> (ToxState_.size ()),
+			[] (Tox*,
+					TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func, const char *message,
+					void *udata)
+			{
+				static_cast<ToxLogger*> (udata)->Log (level, file, line, func, message);
+			},
+			Logger_.get ()
 		};
 
 		TOX_ERR_NEW creationError {};
 		Tox_ = std::shared_ptr<Tox> { tox_new (&opts, &creationError), &tox_kill };
 		if (!Tox_ || creationError != TOX_ERR_NEW_OK)
 			throw MakeCommandCodeException ("tox_new", creationError);
+
+		CbMgr_->SetTox (Tox_);
 
 		CallManager_ = std::make_shared<CallManager> (this, Tox_.get ());
 
@@ -552,7 +558,7 @@ namespace Sarin
 		QEventLoop evLoop;
 		while (!ShouldStop_)
 		{
-			tox_iterate (Tox_.get ());
+			tox_iterate (Tox_.get (), CbMgr_.get ());
 			auto next = tox_iteration_interval (Tox_.get ());
 
 			if (!wasConnected && tox_self_get_connection_status (Tox_.get ()) != TOX_CONNECTION_NONE)

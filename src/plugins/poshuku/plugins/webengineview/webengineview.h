@@ -42,6 +42,7 @@ namespace Poshuku
 namespace WebEngineView
 {
 	class RequestInterceptor;
+	class CustomWebView;
 
 	class Plugin : public QObject
 				 , public IInfo
@@ -73,6 +74,8 @@ namespace WebEngineView
 		QIcon GetDefaultUrlIcon () const override;
 
 		void AddInterceptor (const Interceptor_t&) override;
+	private:
+		void HandleView (CustomWebView*);
 	signals:
 		void webViewCreated (IWebView*, bool) override;
 	};

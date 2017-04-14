@@ -50,6 +50,8 @@ namespace Azoth
 namespace Sarin
 {
 	class CallManager;
+	class CallbackManager;
+	class ToxLogger;
 
 	class ToxThread : public QThread
 	{
@@ -70,6 +72,10 @@ namespace Sarin
 
 		std::shared_ptr<Tox> Tox_;
 		std::shared_ptr<CallManager> CallManager_;
+
+		const std::shared_ptr<CallbackManager> CbMgr_;
+
+		const std::unique_ptr<ToxLogger> Logger_;
 	public:
 		ToxThread (const QString& name, const QByteArray& toxState, const ToxAccountConfiguration&);
 		~ToxThread ();
@@ -105,6 +111,8 @@ namespace Sarin
 			EntryStatus Status_;
 		};
 
+		CallbackManager* GetCallbackManager () const;
+
 		QFuture<AddFriendResult> AddFriend (QByteArray, QString);
 		void AddFriend (QByteArray);
 		void RemoveFriend (const QByteArray&);
@@ -131,10 +139,10 @@ namespace Sarin
 
 		void LoadFriends ();
 
-		void HandleFriendRequest (const uint8_t*, const uint8_t*, uint16_t);
-		void HandleNameChange (int32_t, const uint8_t*, uint16_t);
-		void UpdateFriendStatus (int32_t);
-		void HandleTypingChange (int32_t, bool);
+		void HandleFriendRequest (const uint8_t*, const uint8_t*, size_t);
+		void HandleNameChange (uint32_t, const uint8_t*, uint16_t);
+		void UpdateFriendStatus (uint32_t);
+		void HandleTypingChange (uint32_t, bool);
 
 		void SetCallbacks ();
 		void RunTox ();

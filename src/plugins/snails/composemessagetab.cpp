@@ -416,10 +416,10 @@ namespace Snails
 								Core::Instance ().GetProxy ()->
 										GetEntityManager ()->HandleEntity (notify);
 							},
-							[this] (auto err)
+							[] (auto err)
 							{
 								const auto& notify = Util::Visit (err,
-										[this] (const AttachmentsFetcher::TemporaryDirError&)
+										[] (const AttachmentsFetcher::TemporaryDirError&)
 										{
 											return Util::MakeNotification ("Snails",
 													tr ("Unable to create temporary directory to "
@@ -427,7 +427,7 @@ namespace Snails
 														"message."),
 													PCritical_);
 										},
-										[this] (const auto& e)
+										[] (const auto& e)
 										{
 											const auto& msg = QString::fromUtf8 (e.what ());
 											return Util::MakeNotification ("Snails",

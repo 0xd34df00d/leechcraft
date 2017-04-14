@@ -53,24 +53,15 @@ namespace LMP
 				.arg (TAGLIB_PATCH_VERSION);
 		Strs_ << "GStreamer plugins:";
 
-#if GST_VERSION_MAJOR < 1
-		const auto plugins = gst_default_registry_get_plugin_list ();
-#else
 		const auto plugins = gst_registry_get_plugin_list (gst_registry_get ());
-#endif
 		auto node = plugins;
 		QStringList pluginsList;
 		while (node)
 		{
 			const auto plugin = static_cast<GstPlugin*> (node->data);
 			pluginsList << QString { "* %1 (from %2)" }
-#if GST_VERSION_MAJOR < 1
-					.arg (QString::fromUtf8 (plugin->desc.name))
-					.arg (QString::fromUtf8 (plugin->filename));
-#else
 					.arg (QString::fromUtf8 (gst_plugin_get_name (plugin)))
 					.arg (QString::fromUtf8 (gst_plugin_get_filename (plugin)));
-#endif
 
 			node = g_list_next (node);
 		}

@@ -2,18 +2,10 @@ cmake_minimum_required (VERSION 2.8)
 project (leechcraft_fenet)
 include (InitLCPlugin OPTIONAL)
 
-if (NOT USE_QT5)
-	find_package (QJSON REQUIRED)
-else ()
-	unset (QJSON_INCLUDE_DIR)
-	unset (QJSON_LIBRARIES)
-endif ()
-
 include_directories (
 	${CMAKE_CURRENT_BINARY_DIR}
 	${Boost_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
-	${QJSON_INCLUDE_DIR}
 	)
 set (SRCS
 	fenet.cpp
@@ -32,7 +24,6 @@ add_library (leechcraft_fenet SHARED
 	)
 target_link_libraries (leechcraft_fenet
 	${LEECHCRAFT_LIBRARIES}
-	${QJSON_LIBRARIES}
 	)
 install (TARGETS leechcraft_fenet DESTINATION ${LC_PLUGINS_DEST})
 install (FILES leechcraft-session DESTINATION bin

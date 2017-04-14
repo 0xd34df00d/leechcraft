@@ -64,7 +64,7 @@ namespace Ooronee
 			return;
 		}
 
-		const auto getId = [&typeId, &menuSelect] (const QByteArray& prefix) -> QByteArray
+		const auto getId = [&typeId] (const QByteArray& prefix)
 		{
 			return XmlSettingsManager::Instance ()
 				.Property (prefix + typeId, {}).toByteArray ();

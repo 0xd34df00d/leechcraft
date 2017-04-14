@@ -56,10 +56,7 @@ namespace Autopaste
 		Infos_.push_back ({ "codepad.org", QIcon (), &Creator<CodepadService> });
 		Infos_.push_back ({ "paste.org.ru", QIcon (), &Creator<CodepadService> });
 		Infos_.push_back ({ "pound-python.org", QIcon (), &Creator<PoundPythonService> });
-
-#ifdef WITH_JSON
 		Infos_.push_back ({ "hastebin.com", QIcon (), &Creator<HastebinService> });
-#endif
 	}
 
 	QList<PasteServiceFactory::PasteInfo> PasteServiceFactory::GetInfos () const

@@ -51,6 +51,7 @@
 #include <util/sll/urloperator.h>
 #include <util/sll/prelude.h>
 #include <util/sll/util.h>
+#include <util/sll/qtutil.h>
 #include <util/threads/futures.h>
 #include <interfaces/iplugin2.h>
 #include <interfaces/an/constants.h>
@@ -149,37 +150,6 @@ namespace Azoth
 			else
 				return "ChatWindowStyle";
 		}
-
-		class ModelUpdateSafeguard
-		{
-			QAbstractItemModel *Model_;
-			const bool Recursive_;
-			const bool BlockEnabled_;
-		public:
-			ModelUpdateSafeguard (QAbstractItemModel *model)
-			: Model_ (model)
-			, Recursive_ (Model_->signalsBlocked ())
-			, BlockEnabled_ (!XmlSettingsManager::Instance ().property ("OptimizedTreeRebuild").toBool ())
-			{
-				if (!Recursive_ && BlockEnabled_)
-				{
-					QMetaObject::invokeMethod (Model_, "modelAboutToBeReset");
-					Model_->blockSignals (true);
-				}
-			}
-
-			ModelUpdateSafeguard (const ModelUpdateSafeguard&) = delete;
-			ModelUpdateSafeguard& operator= (const ModelUpdateSafeguard&) = delete;
-
-			~ModelUpdateSafeguard ()
-			{
-				if (!Recursive_ && BlockEnabled_)
-				{
-					Model_->blockSignals (false);
-					QMetaObject::invokeMethod (Model_, "modelReset");
-				}
-			}
-		};
 	}
 
 	QList<IAccount*> GetAccountsPred (const QObjectList& protocols,
@@ -617,18 +587,17 @@ namespace Azoth
 
 	QStringList Core::GetChatGroups () const
 	{
-		QStringList result;
-		Q_FOREACH (const ICLEntry *entry, Entry2Items_.keys ())
+		QSet<QString> result;
+		for (const auto pair : Util::Stlize (Entry2Items_))
 		{
+			const auto entry = pair.first;
 			if (entry->GetEntryType () != ICLEntry::EntryType::Chat)
 				continue;
 
-			Q_FOREACH (const QString& group, entry->Groups ())
-				if (!result.contains (group))
-					result << group;
+			for (const auto& group : entry->Groups ())
+				result << group;
 		}
-		result.sort ();
-		return result;
+		return result.toList ();
 	}
 
 	void Core::SendEntity (const LeechCraft::Entity& e)
@@ -1137,19 +1106,15 @@ namespace Azoth
 		const QString& id = clEntry->GetEntryID ();
 		ID2Entry_ [id] = entryObj;
 
-		const QStringList& groups = GetDisplayGroups (clEntry);
+		const auto& groups = GetDisplayGroups (clEntry);
+		for (const auto catItem : GetCategoriesItems (groups, accItem))
 		{
-			ModelUpdateSafeguard outerGuard (CLModel_);
-			QList<QStandardItem*> catItems = GetCategoriesItems (groups, accItem);
-			Q_FOREACH (QStandardItem *catItem, catItems)
-			{
-				AddEntryTo (clEntry, catItem);
+			AddEntryTo (clEntry, catItem);
 
-				bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
-				if (!isMucCat)
-					isMucCat = clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
-				catItem->setData (isMucCat, CLRIsMUCCategory);
-			}
+			bool isMucCat = catItem->data (CLRIsMUCCategory).toBool ();
+			if (!isMucCat)
+				isMucCat = clEntry->GetEntryType () == ICLEntry::EntryType::PrivateChat;
+			catItem->setData (isMucCat, CLRIsMUCCategory);
 		}
 
 		HandleStatusChanged (clEntry->GetStatus (), clEntry, QString ());
@@ -1171,7 +1136,6 @@ namespace Azoth
 			cats << tr ("General");
 
 		QList<QStandardItem*> result;
-		ModelUpdateSafeguard guard (CLModel_);
 		for (const auto& cat : cats)
 		{
 			if (!Account2Category2Item_ [account].contains (cat))
@@ -1283,9 +1247,9 @@ namespace Azoth
 
 	QImage Core::GetAvatar (ICLEntry *entry, int size)
 	{
-		if (Entry2SmoothAvatarCache_.contains (entry))
+		if (const auto candPtr = Entry2SmoothAvatarCache_ [entry])
 		{
-			const auto& cand = Entry2SmoothAvatarCache_ [entry];
+			const auto& cand = *candPtr;
 			if (cand.width () == size ||
 				cand.height () == size)
 				return cand;
@@ -1306,7 +1270,7 @@ namespace Azoth
 							QImage {} :
 							avatar.scaled ({ size, size },
 									Qt::KeepAspectRatio, Qt::SmoothTransformation);
-					Entry2SmoothAvatarCache_ [entry] = avatar;
+					Entry2SmoothAvatarCache_.insert (entry, new QImage { avatar }, avatar.byteCount ());
 
 					UpdateItem (obj);
 				};
@@ -1349,12 +1313,10 @@ namespace Azoth
 
 	void Core::HandlePowerNotification (Entity e)
 	{
-		auto accs = GetAccountsPred (ProtocolPlugins_);
-
 		qDebug () << Q_FUNC_INFO << e.Entity_;
 
 		if (e.Entity_ == "Sleeping")
-			Q_FOREACH (IAccount *acc, accs)
+			for (const auto acc : GetAccountsPred (ProtocolPlugins_))
 			{
 				const auto& state = acc->GetState ();
 				if (state.State_ == SOffline)
@@ -1365,8 +1327,8 @@ namespace Azoth
 			}
 		else if (e.Entity_ == "WokeUp")
 		{
-			Q_FOREACH (IAccount *acc, SavedStatus_.keys ())
-				acc->ChangeState (SavedStatus_ [acc]);
+			for (const auto& pair : Util::Stlize (SavedStatus_))
+				pair.first->ChangeState (pair.second);
 			SavedStatus_.clear ();
 		}
 	}
@@ -1381,7 +1343,6 @@ namespace Azoth
 
 		ItemIconManager_->Cancel (item);
 
-		ModelUpdateSafeguard guard (CLModel_);
 		category->removeRow (item->row ());
 
 		if (!category->rowCount ())
@@ -1419,7 +1380,6 @@ namespace Azoth
 				Qt::ItemIsDragEnabled |
 				Qt::ItemIsDropEnabled);
 
-		ModelUpdateSafeguard guard (CLModel_);
 		catItem->appendRow (clItem);
 
 		Entry2Items_ [clEntry] << clItem;
@@ -1501,19 +1461,13 @@ namespace Azoth
 		template<typename T>
 		T FindTop (const QMap<T, int>& map)
 		{
-			T maxT = T ();
-			int max = 0;
-			Q_FOREACH (const T& t, map.keys ())
-			{
-				const int val = map [t];
-				if (val > max)
-				{
-					max = val;
-					maxT = t;
-				}
-			}
+			if (map.isEmpty ())
+				return {};
 
-			return maxT;
+			const auto& stlized = Util::Stlize (map);
+			const auto maxPos = std::max_element (stlized.begin (), stlized.end (),
+					Util::ComparingBy (Util::Snd));
+			return maxPos->first;
 		}
 	}
 
@@ -1525,7 +1479,7 @@ namespace Azoth
 		const State prevTop = FindTop (StateCounter_);
 
 		StateCounter_.clear ();
-		Q_FOREACH (IAccount *acc, GetAccounts ())
+		for (const auto acc : GetAccounts ())
 			++StateCounter_ [acc->GetState ().State_];
 
 		StateCounter_.remove (SOffline);
@@ -1599,6 +1553,9 @@ namespace Azoth
 			QDataStream stream { var.toByteArray () };
 			stream >> s;
 
+			if (s.State_ == State::SConnecting)
+				s.State_ = State::SOnline;
+
 			return s;
 		}
 	}
@@ -1639,10 +1596,7 @@ namespace Azoth
 		ItemIconManager_->SetIcon (accItem,
 				ResourcesManager::Instance ().GetIconPathForState (accState).get ());
 
-		{
-			ModelUpdateSafeguard guard (CLModel_);
-			CLModel_->appendRow (accItem);
-		}
+		CLModel_->appendRow (accItem);
 
 		accItem->setEditable (false);
 
@@ -1740,10 +1694,7 @@ namespace Azoth
 			if (obj == accFace)
 			{
 				ItemIconManager_->Cancel (item);
-				{
-					ModelUpdateSafeguard guard (CLModel_);
-					CLModel_->removeRow (i);
-				}
+				CLModel_->removeRow (i);
 				break;
 			}
 		}
@@ -1762,8 +1713,6 @@ namespace Azoth
 
 	void Core::handleGotCLItems (const QList<QObject*>& items)
 	{
-		ModelUpdateSafeguard outerGuard (CLModel_);
-
 		QMap<const IAccount*, QStandardItem*> accountItemCache;
 		for (const auto item : items)
 		{
@@ -2192,9 +2141,12 @@ namespace Azoth
 
 	void Core::handleGroupContactsChanged ()
 	{
-		Q_FOREACH (ICLEntry *entry, Entry2Items_.keys ())
+		for (const auto& pair : Util::Stlize (Entry2Items_))
+		{
+			const auto entry = pair.first;
 			if (entry->GetEntryType () == ICLEntry::EntryType::Chat)
 				handleEntryGroupsChanged (GetDisplayGroups (entry), entry->GetQObject ());
+		}
 	}
 
 	void Core::updateItem ()

@@ -132,11 +132,7 @@ namespace LMP
 
 	SourceObject::SourceObject (Category cat, QObject *parent)
 	: QObject (parent)
-#if GST_VERSION_MAJOR < 1
-	, Dec_ (gst_element_factory_make ("playbin2", "play"))
-#else
 	, Dec_ (gst_element_factory_make ("playbin", "play"))
-#endif
 	, Path_ (nullptr)
 	, IsSeeking_ (false)
 	, LastCurrentTime_ (-1)
@@ -169,12 +165,8 @@ namespace LMP
 					return static_cast<GstBusSyncReply> (static_cast<SourceObject*> (udata)->
 								HandleSyncMessage (bus, msg));
 				},
-#if GST_VERSION_MAJOR < 1
-				this);
-#else
 				this,
 				nullptr);
-#endif
 
 		PopThread_->start (QThread::LowestPriority);
 	}
@@ -278,11 +270,7 @@ namespace LMP
 		{
 			auto format = GST_FORMAT_TIME;
 			gint64 position = 0;
-#if GST_VERSION_MAJOR >= 1
 			gst_element_query_position (GST_ELEMENT (Dec_), format, &position);
-#else
-			gst_element_query_position (GST_ELEMENT (Dec_), &format, &position);
-#endif
 			LastCurrentTime_ = position;
 		}
 		return LastCurrentTime_ / GST_MSECOND;
@@ -292,11 +280,7 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-#if GST_VERSION_MAJOR >= 1
 		if (!gst_element_query_duration (GST_ELEMENT (Dec_), format, &duration))
-#else
-		if (!gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
-#endif
 			return -1;
 
 		return (duration - LastCurrentTime_) / GST_MSECOND;
@@ -306,11 +290,7 @@ namespace LMP
 	{
 		auto format = GST_FORMAT_TIME;
 		gint64 duration = 0;
-#if GST_VERSION_MAJOR >= 1
 		if (gst_element_query_duration (GST_ELEMENT (Dec_), format, &duration))
-#else
-		if (gst_element_query_duration (GST_ELEMENT (Dec_), &format, &duration))
-#endif
 			return duration / GST_MSECOND;
 		return -1;
 	}
@@ -354,11 +334,7 @@ namespace LMP
 
 			const auto oldRank = gst_plugin_feature_get_rank (GST_PLUGIN_FEATURE (factory));
 			gst_plugin_feature_set_rank (GST_PLUGIN_FEATURE (factory), rank);
-#if GST_VERSION_MAJOR >= 1
 			gst_registry_add_feature (gst_registry_get (), GST_PLUGIN_FEATURE (factory));
-#else
-			gst_registry_add_feature (gst_registry_get_default (), GST_PLUGIN_FEATURE (factory));
-#endif
 
 			return oldRank;
 		}
@@ -732,26 +708,6 @@ namespace LMP
 			emit finished ();
 	}
 
-	void SourceObject::HandleElementMsg (GstMessage *msg)
-	{
-#if GST_VERSION_MAJOR < 1
-		const auto msgStruct = gst_message_get_structure (msg);
-
-		if (gst_structure_has_name (msgStruct, "playbin2-stream-changed"))
-		{
-			gchar *uri = nullptr;
-			g_object_get (Dec_, "uri", &uri, nullptr);
-			qDebug () << Q_FUNC_INFO << uri;
-			g_free (uri);
-
-			setActualSource (CurrentSource_);
-			emit currentSourceChanged (CurrentSource_);
-		}
-#else
-		Q_UNUSED (msg)
-#endif
-	}
-
 	void SourceObject::HandleEosMsg (GstMessage*)
 	{
 		qDebug () << Q_FUNC_INFO;
@@ -816,7 +772,6 @@ namespace LMP
 					SLOT (updateTotalTime ()));
 			break;
 		case GST_MESSAGE_ELEMENT:
-			HandleElementMsg (message);
 			break;
 		case GST_MESSAGE_EOS:
 			HandleEosMsg (message);
@@ -832,14 +787,12 @@ namespace LMP
 			break;
 		case GST_MESSAGE_QOS:
 			break;
-#if GST_VERSION_MAJOR >= 1
 		case GST_MESSAGE_STREAM_START:
 			setActualSource (CurrentSource_);
 			emit currentSourceChanged (CurrentSource_);
 			break;
 		case GST_MESSAGE_RESET_TIME:
 			break;
-#endif
 		default:
 			qDebug () << Q_FUNC_INFO << GST_MESSAGE_TYPE (message);
 			break;

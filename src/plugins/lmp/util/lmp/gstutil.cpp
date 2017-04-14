@@ -179,11 +179,7 @@ namespace GstUtil
 		gst_tag_list_foreach (tagList,
 				TagFunction,
 				&data);
-#if GST_VERSION_MAJOR < 1
-		gst_tag_list_free (tagList);
-#else
 		gst_tag_list_unref (tagList);
-#endif
 		return true;
 	}
 
@@ -196,7 +192,6 @@ namespace GstUtil
 			guint ID_;
 		};
 
-#if GST_VERSION_MAJOR >= 1
 		GstPadProbeReturn ProbeHandler (GstPad*, GstPadProbeInfo*, gpointer cbDataPtr)
 		{
 			const auto cbData = static_cast<CallbackData*> (cbDataPtr);
@@ -204,45 +199,13 @@ namespace GstUtil
 			delete cbData;
 			return GST_PAD_PROBE_REMOVE;
 		}
-#else
-		gboolean EventProbeHandler (GstPad *pad, GstEvent *event, CallbackData *cbData)
-		{
-			if (GST_EVENT_TYPE (event) != GST_EVENT_EOS)
-				return TRUE;
-			qDebug () << Q_FUNC_INFO << "eos";
-			gst_pad_remove_event_probe (pad, cbData->ID_);
-
-			cbData->Functor_ ();
-			delete cbData;
-
-			return FALSE;
-		}
-
-		gboolean ProbeHandler (GstPad *pad, GstMiniObject*, CallbackData *cbData)
-		{
-			qDebug () << Q_FUNC_INFO;
-			gst_pad_remove_data_probe (pad, cbData->ID_);
-
-			cbData->ID_ = gst_pad_add_event_probe (pad, G_CALLBACK (EventProbeHandler), cbData);
-
-			const auto sinkpad = cbData->SinkPad_;
-			gst_pad_send_event (sinkpad, gst_event_new_eos ());
-			gst_object_unref (sinkpad);
-
-			return TRUE;
-		}
-#endif
 	}
 
 	void PerformWProbe (GstPad *srcpad, GstPad *sinkpad, const std::function<void ()>& functor)
 	{
 		auto data = new CallbackData { functor, sinkpad, 0 };
-#if GST_VERSION_MAJOR < 1
-		data->ID_ = gst_pad_add_data_probe (srcpad, G_CALLBACK (ProbeHandler), data);
-#else
 		gst_pad_add_probe (srcpad, GST_PAD_PROBE_TYPE_IDLE,
 				ProbeHandler, data, nullptr);
-#endif
 	}
 
 	void DebugPrintState (GstElement *elem, GstClockTime time)
@@ -254,11 +217,7 @@ namespace GstUtil
 
 	const char* GetTeePadTemplateName ()
 	{
-#if GST_VERSION_MAJOR < 1
-		return "src%d";
-#else
 		return "src_%u";
-#endif
 	}
 }
 }

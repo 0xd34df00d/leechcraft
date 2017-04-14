@@ -39,12 +39,8 @@
 #include "stealkilllistfetcher.h"
 #include "icecastfetcher.h"
 #include "icecastmodel.h"
-
-#ifdef HAVE_QJSON
 #include "audioaddictstreamfetcher.h"
 #include "rockradiolistfetcher.h"
-#endif
-
 #include "radiostation.h"
 #include "roles.h"
 #include "stringlistradiostation.h"
@@ -65,7 +61,6 @@ namespace HotStreams
 
 		auto nam = Proxy_->GetNetworkAccessManager ();
 
-#ifdef HAVE_QJSON
 		auto di = new QStandardItem ("Digitally Imported");
 		di->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
 		di->setEditable (false);
@@ -95,7 +90,6 @@ namespace HotStreams
 		Root2Fetcher_ [rr] = [nam, this] (QStandardItem *rr)
 				{ new RockRadioListFetcher (rr, nam, this); };
 		Model_->appendRow (rr);
-#endif
 
 		auto somafm = new QStandardItem ("SomaFM");
 		somafm->setData (Media::RadioType::None, Media::RadioItemRole::ItemType);
@@ -193,7 +187,7 @@ namespace HotStreams
 		auto models = indices.isEmpty () ?
 				Model2Fetcher_.keys () :
 				Util::Map (indices,
-						[this] (const QModelIndex& index) { return index.model (); });
+						[] (const QModelIndex& index) { return index.model (); });
 		models.removeAll (Model_);
 		for (auto model : models)
 			Model2Fetcher_ [model] ();

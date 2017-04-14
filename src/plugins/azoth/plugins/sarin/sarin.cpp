@@ -42,7 +42,7 @@ namespace Sarin
 	{
 		qRegisterMetaType<EntryStatus> ("EntryStatus");
 
-		Proto_ = new ToxProtocol { proxy, this };
+		Proto_ = std::make_shared<ToxProtocol> (proxy, this);
 	}
 
 	void Plugin::SecondInit ()
@@ -56,6 +56,7 @@ namespace Sarin
 
 	void Plugin::Release ()
 	{
+		Proto_.reset ();
 	}
 
 	QString Plugin::GetName () const
@@ -87,7 +88,7 @@ namespace Sarin
 
 	QList<QObject*> Plugin::GetProtocols () const
 	{
-		return { Proto_ };
+		return { Proto_.get () };
 	}
 }
 }

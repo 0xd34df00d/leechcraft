@@ -63,7 +63,7 @@ namespace WebKitView
 						return true;
 					}
 					else if (event->modifiers () == Qt::SHIFT &&
-							 event->key () == Qt::Key_Plus)
+							 event->key () == Qt::Key_Delete)
 					{
 						ScrollDelta_ = 0;
 						ScrollTimer_->stop ();

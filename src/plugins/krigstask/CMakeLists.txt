@@ -24,22 +24,17 @@ add_library (leechcraft_krigstask SHARED
 	${SRCS}
 	)
 
+find_package (XCB COMPONENTS COMPOSITE XFIXES RENDER RENDERUTIL REQUIRED)
+
 set (ADDITIONAL_LIBS
 	${X11_X11_LIB}
 	${X11_Xcomposite_LIB}
 	${X11_Xfixes_LIB}
+	XCB::COMPOSITE
+	XCB::XFIXES
+	XCB::RENDER
+	XCB::RENDERUTIL
 	)
-
-if (USE_QT5)
-	find_package (XCB COMPONENTS COMPOSITE XFIXES RENDER RENDERUTIL REQUIRED)
-	set (ADDITIONAL_LIBS
-		${ADDITIONAL_LIBS}
-		XCB::COMPOSITE
-		XCB::XFIXES
-		XCB::RENDER
-		XCB::RENDERUTIL
-		)
-endif ()
 
 target_link_libraries (leechcraft_krigstask
 	${LEECHCRAFT_LIBRARIES}

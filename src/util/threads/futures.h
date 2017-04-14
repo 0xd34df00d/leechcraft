@@ -398,7 +398,7 @@ namespace Util
 
 				new SlotClosure<DeleteLaterPolicy>
 				{
-					[last, action, this]
+					[action, this]
 					{
 						action ();
 						deleteLater ();

@@ -16,61 +16,33 @@ if (LastFM_LIBRARIES AND LastFM_INCLUDE_DIRS)
 	# in cache already
 	set (LastFM_FOUND TRUE)
 else ()
-	if (NOT USE_QT5)
-		find_library (LastFM_LIBRARY
-			NAMES
-			lastfm-qt4
-			lastfm
-			PATHS
-			/usr/lib
-			/usr/local/lib
-			/usr/local/lib
-			/opt/local/lib
-			/sw/lib
-			${LASTFM_DIR}/lib
-		)
-		find_path (LastFM_INCLUDE_DIR
-			NAMES
-			global.h
-			PATH_SUFFIXES
-			lastfm
-			PATHS
-			/usr/include
-			/usr/local/include
-			/usr/local/include
-			/opt/local/include
-			/sw/include
-			${LASTFM_DIR}/include
-		)
-	else ()
-		find_library (LastFM_LIBRARY
-			NAMES
-			lastfm-qt5
-			lastfm5
-			lastfm
-			PATHS
-			/usr/lib
-			/usr/local/lib
-			/usr/local/lib
-			/opt/local/lib
-			/sw/lib
-			${LASTFM_DIR}/lib
-		)
-		find_path (LastFM_INCLUDE_DIR
-			NAMES
-			global.h
-			PATH_SUFFIXES
-			lastfm5
-			lastfm
-			PATHS
-			/usr/include
-			/usr/local/include
-			/usr/local/include
-			/opt/local/include
-			/sw/include
-			${LASTFM_DIR}/include
-		)
-	endif ()
+	find_library (LastFM_LIBRARY
+		NAMES
+		lastfm-qt5
+		lastfm5
+		lastfm
+		PATHS
+		/usr/lib
+		/usr/local/lib
+		/usr/local/lib
+		/opt/local/lib
+		/sw/lib
+		${LASTFM_DIR}/lib
+	)
+	find_path (LastFM_INCLUDE_DIR
+		NAMES
+		global.h
+		PATH_SUFFIXES
+		lastfm5
+		lastfm
+		PATHS
+		/usr/include
+		/usr/local/include
+		/usr/local/include
+		/opt/local/include
+		/sw/include
+		${LASTFM_DIR}/include
+	)
 
 	set (LastFM_INCLUDE_DIRS
 		${LastFM_INCLUDE_DIR}

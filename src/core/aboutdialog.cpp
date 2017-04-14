@@ -29,6 +29,8 @@
 
 #include "aboutdialog.h"
 #include <QDomDocument>
+#include <util/sll/util.h>
+#include <util/sll/prelude.h>
 #include "util/sys/sysinfo.h"
 #include "interfaces/ihavediaginfo.h"
 #include "core.h"
@@ -46,18 +48,6 @@ namespace LeechCraft
 			QString Email_;
 			QStringList Roles_;
 			QList<int> Years_;
-
-			ContributorInfo (const QString& name, const QString& nick,
-					const QString& jid, const QString& email,
-					const QStringList& roles, const QList<int>& years)
-			: Name_ (name)
-			, Nick_ (nick)
-			, JID_ (jid)
-			, Email_ (email)
-			, Roles_ (roles)
-			, Years_ (years)
-			{
-			}
 
 			QString Fmt () const
 			{
@@ -80,7 +70,7 @@ namespace LeechCraft
 							.arg (Email_);
 
 				result += "<ul>";
-				Q_FOREACH (const QString& r, Roles_)
+				for (const auto& r : Roles_)
 					result += QString ("<li>%1</li>")
 							.arg (r);
 				result += "</ul>";
@@ -155,11 +145,8 @@ namespace LeechCraft
 			auto contribElem = doc.documentElement ().firstChildElement ("contrib");
 			while (!contribElem.isNull ())
 			{
-				auto nextGuard = std::shared_ptr<void> (nullptr,
-						[&contribElem] (void*)
-						{
-							contribElem = contribElem.nextSiblingElement ("contrib");
-						});
+				const auto nextGuard = Util::MakeScopeGuard ([&contribElem]
+						{ contribElem = contribElem.nextSiblingElement ("contrib"); });
 
 				if (!type.isEmpty () && contribElem.attribute ("type") != type)
 					continue;
@@ -192,44 +179,41 @@ namespace LeechCraft
 		QDomDocument authorsDoc;
 		authorsDoc.setContent (&authorsFile);
 
-		QStringList formatted;
-		for (const auto& i : ParseContributors (authorsDoc, "author"))
-			formatted << i.Fmt ();
-		Ui_.Authors_->setHtml (formatted.join ("<hr />"));
+		auto fmtAuthorInfos = [&authorsDoc] (const QString& type)
+		{
+			return Util::Map (ParseContributors (authorsDoc, type), &ContributorInfo::Fmt).join ("<hr/>");
+		};
 
-		formatted.clear ();
-		for (const auto& i : ParseContributors (authorsDoc, "contrib"))
-			formatted << i.Fmt ();
-		Ui_.Contributors_->setHtml (formatted.join ("<hr />"));
+		Ui_.Authors_->setHtml (fmtAuthorInfos ("author"));
+		Ui_.Contributors_->setHtml (fmtAuthorInfos ("contrib"));
 
 		BuildDiagInfo ();
 	}
 
 	void AboutDialog::BuildDiagInfo ()
 	{
-		QString text = QString ("LeechCraft ") + CoreProxy ().GetVersion () + "\n";
-		text += QString ("Built with Qt %1, running with Qt %2\n")
+		auto text = "LeechCraft " + CoreProxy ().GetVersion () + "\n";
+		text += QString { "Built with Qt %1, running with Qt %2\n" }
 				.arg (QT_VERSION_STR)
 				.arg (qVersion ());
 
-		text += QString ("Running on: %1\n").arg (Util::SysInfo::GetOSName ());
-		text += "--------------------------------\n\n";
+		text += "Running on: " + Util::SysInfo::GetOSName ();
+		text += "\n--------------------------------\n\n";
 
 		QStringList loadedModules;
 		QStringList unPathedModules;
-		PluginManager *pm = Core::Instance ().GetPluginManager ();
-		Q_FOREACH (QObject *plugin, pm->GetAllPlugins ())
+		const auto pm = Core::Instance ().GetPluginManager ();
+		for (const auto plugin : pm->GetAllPlugins ())
 		{
-			const QString& path = pm->GetPluginLibraryPath (plugin);
+			const auto& path = pm->GetPluginLibraryPath (plugin);
 
-			IInfo *ii = qobject_cast<IInfo*> (plugin);
+			const auto ii = qobject_cast<IInfo*> (plugin);
 			if (path.isEmpty ())
 				unPathedModules << ("* " + ii->GetName ());
 			else
 				loadedModules << ("* " + ii->GetName () + " (" + path + ")");
 
-			IHaveDiagInfo *diagInfo = qobject_cast<IHaveDiagInfo*> (plugin);
-			if (diagInfo)
+			if (const auto diagInfo = qobject_cast<IHaveDiagInfo*> (plugin))
 			{
 				text += "Diag info for " + ii->GetName () + ":\n";
 				text += diagInfo->GetDiagInfoString ();
@@ -237,9 +221,9 @@ namespace LeechCraft
 			}
 		}
 
-		text += QString ("Normal plugins:") + "\n" + loadedModules.join ("\n") + "\n\n";
+		text += "Normal plugins:\n" + loadedModules.join ("\n") + "\n\n";
 		if (!unPathedModules.isEmpty ())
-			text += QString ("Adapted plugins:") + "\n" + unPathedModules.join ("\n") + "\n\n";
+			text += "Adapted plugins:\n" + unPathedModules.join ("\n") + "\n\n";
 
 		Ui_.DiagInfo_->setPlainText (text);
 	}

@@ -32,6 +32,7 @@
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "browserwidget.h"
+#include "linkopenmodifier.h"
 
 namespace LeechCraft
 {
@@ -69,6 +70,11 @@ namespace Poshuku
 	QVariant ProxyObject::GetPoshukuConfigValue (const QByteArray& name) const
 	{
 		return XmlSettingsManager::Instance ()->property (name);
+	}
+
+	ILinkOpenModifier_ptr ProxyObject::GetLinkOpenModifier () const
+	{
+		return std::make_shared<LinkOpenModifier> ();
 	}
 }
 }

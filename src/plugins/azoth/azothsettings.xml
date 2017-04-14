@@ -223,9 +223,6 @@
 			<item type="checkbox" property="ClearSearchAfterFocus" default="false">
 				<label value="Clear search field after entry activation" />
 			</item>
-			<item type="checkbox" property="OptimizedTreeRebuild" default="true">
-				<label value="Optimized tree rebuild (may lead to segfaults on buggy Qt versions)" />
-			</item>
 			<item type="combobox" property="EntryActivationType">
 				<label value="Entry activates on:" />
 				<option name="click">

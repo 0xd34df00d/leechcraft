@@ -93,7 +93,7 @@ namespace CertMgr
 		{
 			QString result;
 
-			auto add = [&result, &cert] (const QString& name, const QString& val) -> void
+			auto add = [&result] (const QString& name, const QString& val)
 			{
 				if (val.isEmpty ())
 					return;

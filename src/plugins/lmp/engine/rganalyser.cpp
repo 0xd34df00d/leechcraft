@@ -109,11 +109,7 @@ namespace LMP
 	RgAnalyser::RgAnalyser (const QStringList& paths, QObject *parent)
 	: QObject { parent }
 	, Paths_ { paths }
-#if GST_VERSION_MAJOR < 1
-	, Pipeline_ (gst_element_factory_make ("playbin2", nullptr))
-#else
 	, Pipeline_ (gst_element_factory_make ("playbin", nullptr))
-#endif
 	, SinkBin_ { gst_bin_new (nullptr) }
 	, AConvert_ { gst_element_factory_make ("audioconvert", nullptr) }
 	, AResample_ { gst_element_factory_make ("audioresample", nullptr) }
@@ -185,7 +181,7 @@ namespace LMP
 				.property ("EnableTagsRecoding").toBool ();
 		GstUtil::ParseTagMessage (msg, map, isEnabled ? region : QString ());
 
-		auto trySet = [&map, this] (const QString& key, std::function<void (double)> setter) -> bool
+		auto trySet = [&map] (const QString& key, std::function<void (double)> setter) -> bool
 		{
 			const auto contains = map.contains (key);
 			if (contains)
