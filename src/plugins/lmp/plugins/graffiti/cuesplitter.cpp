@@ -31,6 +31,7 @@
 #include <functional>
 #include <cmath>
 #include <QTime>
+#include <QThread>
 #include <QFile>
 #include <QtDebug>
 #include <QTimer>
@@ -359,17 +360,22 @@ namespace Graffiti
 
 		TotalItems_ = SplitQueue_.size ();
 
-		scheduleNext ();
+		const auto concurrency = std::max (QThread::idealThreadCount (), 1);
+		for (int i = 0, cnt = std::min (SplitQueue_.size (), concurrency); i < cnt; ++i)
+			scheduleNext ();
 	}
 
 	void CueSplitter::scheduleNext ()
 	{
-		emit splitProgress (TotalItems_ - SplitQueue_.size (), TotalItems_, this);
+		emit splitProgress (TotalItems_ - SplitQueue_.size () - CurrentlyProcessing_, TotalItems_, this);
 
 		if (SplitQueue_.isEmpty ())
 		{
-			deleteLater ();
-			emit finished (this);
+			if (!CurrentlyProcessing_)
+			{
+				deleteLater ();
+				emit finished (this);
+			}
 			return;
 		}
 
@@ -405,6 +411,7 @@ namespace Graffiti
 
 		args << item.SourceFile_ << "-o" << item.TargetFile_;
 
+		++CurrentlyProcessing_;
 		auto process = new QProcess (this);
 		process->start ("flac", args);
 
@@ -425,6 +432,8 @@ namespace Graffiti
 	void CueSplitter::handleProcessFinished (int)
 	{
 		sender ()->deleteLater ();
+
+		--CurrentlyProcessing_;
 		scheduleNext ();
 	}
 
@@ -442,6 +451,7 @@ namespace Graffiti
 			EmittedErrors_ << errorString;
 		}
 
+		--CurrentlyProcessing_;
 		scheduleNext ();
 	}
 }

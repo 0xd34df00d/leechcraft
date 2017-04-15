@@ -64,6 +64,7 @@ namespace Graffiti
 		QList<SplitQueueItem> SplitQueue_;
 
 		int TotalItems_;
+		int CurrentlyProcessing_ = 0;
 
 		QSet<QString> EmittedErrors_;
 	public:
