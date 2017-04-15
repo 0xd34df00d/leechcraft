@@ -38,6 +38,7 @@
 #include <QContextMenuEvent>
 #include <interfaces/poshuku/iwebviewhistory.h>
 #include <interfaces/poshuku/iproxyobject.h>
+#include "customwebpage.h"
 
 namespace LeechCraft
 {
@@ -48,6 +49,8 @@ namespace WebEngineView
 	CustomWebView::CustomWebView (IProxyObject *poshukuProxy)
 	: PoshukuProxy_ { poshukuProxy }
 	{
+		setPage (new CustomWebPage { poshukuProxy, this });
+
 		connect (page (),
 				SIGNAL (loadFinished (bool)),
 				this,
@@ -64,6 +67,10 @@ namespace WebEngineView
 				&QWebEnginePage::linkHovered,
 				this,
 				[this] (const QString& url) { emit linkHovered (url, {}, {}); });
+		connect (page (),
+				SIGNAL (webViewCreated (CustomWebView*, bool)),
+				this,
+				SIGNAL (webViewCreated (CustomWebView*, bool)));
 	}
 
 	void CustomWebView::SurroundingsInitialized ()
