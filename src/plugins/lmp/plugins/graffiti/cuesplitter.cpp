@@ -384,7 +384,7 @@ namespace Graffiti
 					.arg (time.msec () / 10);
 		};
 
-		QStringList args { "-8" };
+		QStringList args { "-8", "-s" };
 		if (item.From_ != QTime (0, 0))
 			args << ("--skip=" + makeTime (item.From_));
 		if (item.To_.isValid ())
