@@ -40,7 +40,7 @@ class QUrl;
  *
  * A single plugin can support multiple services, and each service can
  * be represented via multiple accounts. Each account or each accountless
- * service (like a dumb filebin) is called a \em{service variant}. The
+ * service (like a dumb filebin) is called a <em>service variant</em>. The
  * list of all service variants is returned via GetServiceVariants()
  * method.
  *
