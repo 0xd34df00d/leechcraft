@@ -326,9 +326,10 @@ namespace Graffiti
 
 			auto makeFilename = [&cue, &file] (const Track& track)
 			{
+				const auto digitsCount = static_cast<int> (std::floor (std::log10 (file.Tracks_.size ()))) + 1;
 				auto filename = QString { "%1" }
 						.arg (track.Index_,
-								std::floor (std::log10 (file.Tracks_.size ())) + 1,
+								std::max (2, digitsCount),
 								10,
 								QChar { '0' });
 				if (!cue.Performer_.isEmpty ())
