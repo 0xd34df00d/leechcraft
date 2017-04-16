@@ -610,7 +610,7 @@ namespace Snails
 				html += "<pre>" + lines.join ("\n") + "</pre>";
 			}
 
-			html += "</div>";
+			html += "</div><script language='javascript'>setupResize();</script>";
 			html += "</body></html>";
 
 			return html;
