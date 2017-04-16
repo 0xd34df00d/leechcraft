@@ -50,6 +50,14 @@
 	margin-right: 0.25em;
 }
 
+a {
+    color: $Link;
+}
+
+a:visited {
+    color; $LinkVisited;
+}
+
 body {
 	color: $Text;
 	background-color: $Base;
