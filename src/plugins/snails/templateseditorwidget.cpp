@@ -119,11 +119,6 @@ namespace Snails
 
 	void TemplatesEditorWidget::prepareEditor (int index)
 	{
-		disconnect (Ui_.Editor_->GetCurrentEditor ()->GetQObject (),
-				SIGNAL (textChanged ()),
-				this,
-				SLOT (markAsDirty ()));
-
 		SaveCurrentText ();
 
 		EditorTypeActions_.value (index)->trigger ();
@@ -140,6 +135,12 @@ namespace Snails
 				[=] (const QString& tpl)
 				{
 					auto editor = Ui_.Editor_->GetCurrentEditor ();
+
+					disconnect (editor->GetQObject (),
+							SIGNAL (textChanged ()),
+							this,
+							SLOT (markAsDirty ()));
+
 					editor->SetContents (tpl, currentType);
 
 					connect (editor->GetQObject (),
