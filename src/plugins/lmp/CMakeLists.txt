@@ -223,7 +223,6 @@ target_link_libraries (leechcraft_lmp
 install (TARGETS leechcraft_lmp DESTINATION ${LC_PLUGINS_DEST})
 install (FILES lmpsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 install (FILES lmpfilterrgsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/qml/lmp DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/lmp DESTINATION ${LC_QML5_DEST})
 install (DIRECTORY interfaces DESTINATION include/leechcraft)
 if (UNIX AND NOT APPLE)
