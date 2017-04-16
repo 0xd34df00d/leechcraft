@@ -1,7 +1,0 @@
-{
-    "quarkID": "org.LeechCraft.AdvancedNotifications.Quark",
-    "quarkName": "Advanced Notifications control",
-    "description": "Displays the controls for the AdvancedNotifications module.",
-    "icon": "preferences-desktop-notification",
-    "areas": [ "panel" ]
-}
