@@ -43,9 +43,8 @@ target_link_libraries (leechcraft_cpuload
 	${PLATFORM_LIBS}
 	)
 install (TARGETS leechcraft_cpuload DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml/cpuload DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/cpuload DESTINATION ${LC_QML5_DEST})
 
-CreateTrsQml("cpuload" "en;ru_RU" leechcraft_cpuload "share/qml/cpuload;share/qml5/cpuload")
+CreateTrsQml("cpuload" "en;ru_RU" leechcraft_cpuload "share/qml5/cpuload")
 
 FindQtLibs (leechcraft_cpuload Quick)
