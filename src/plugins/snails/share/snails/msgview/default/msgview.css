@@ -24,6 +24,9 @@
 	border-color: $Window;
 	-webkit-border-top-left-radius: 1em;
 	-webkit-border-top-right-radius: 1em;
+
+	color: $Text !important;
+	background-color: $Base !important;
 }
 
 .replyPart {
