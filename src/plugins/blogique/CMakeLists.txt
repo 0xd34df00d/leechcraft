@@ -75,7 +75,6 @@ target_link_libraries (leechcraft_blogique
 
 install (TARGETS leechcraft_blogique DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blogiquesettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/qml/blogique DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/blogique DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_blogique PrintSupport QuickWidgets Sql WebKitWidgets Xml)
