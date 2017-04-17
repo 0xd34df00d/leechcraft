@@ -71,10 +71,10 @@ namespace LastSeen
 using StatsRecord = LeechCraft::Azoth::LastSeen::OnDiskStorage::Record;
 
 BOOST_FUSION_ADAPT_STRUCT (StatsRecord,
-		(decltype (StatsRecord::EntryID_), EntryID_)
-		(decltype (StatsRecord::Available_), Available_)
-		(decltype (StatsRecord::Online_), Online_)
-		(decltype (StatsRecord::StatusChange_), StatusChange_))
+		EntryID_,
+		Available_,
+		Online_,
+		StatusChange_)
 
 namespace LeechCraft
 {
