@@ -1,7 +1,0 @@
-{
-	"quarkID": "org.LeechCraft.Ooronee.OoroneeQuark",
-	"quarkName": "Ooronee",
-	"icon": "dialog-information",
-	"areas": [ "panel" ],
-	"defaultVisibility": true
-}
