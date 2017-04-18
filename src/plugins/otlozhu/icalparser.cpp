@@ -79,16 +79,16 @@ namespace Otlozhu
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Otlozhu::Field,
-		(std::string, Name_)
-		(LeechCraft::Otlozhu::FieldVal_t, Val_));
+		Name_,
+		Val_);
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Otlozhu::Item,
-		(std::string, Name_)
-		(LeechCraft::Otlozhu::Fields_t, Fields_));
+		Name_,
+		Fields_);
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Otlozhu::ICal,
-		(LeechCraft::Otlozhu::Fields_t, Fields_)
-		(LeechCraft::Otlozhu::Items_t, Items_));
+		Fields_,
+		Items_);
 
 namespace LeechCraft
 {
