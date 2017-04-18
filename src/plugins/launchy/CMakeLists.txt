@@ -31,7 +31,6 @@ target_link_libraries (leechcraft_launchy
 	${LEECHCRAFT_LIBRARIES}
 	)
 install (TARGETS leechcraft_launchy DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml/launchy DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/launchy DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_launchy QuickWidgets)
