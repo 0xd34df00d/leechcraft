@@ -45,10 +45,9 @@ target_link_libraries (leechcraft_lemon
 	${QWT_LIBRARIES}
 	)
 install (TARGETS leechcraft_lemon DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml/lemon DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/lemon DESTINATION ${LC_QML5_DEST})
 install (FILES lemonsettings.xml DESTINATION ${LC_SETTINGS_DEST})
 
-CreateTrsQml("lemon" "en;ru_RU" leechcraft_lemon "share/qml/lemon;share/qml5/lemon")
+CreateTrsQml("lemon" "en;ru_RU" leechcraft_lemon "share/qml5/lemon")
 
 FindQtLibs (leechcraft_lemon Network Widgets)
