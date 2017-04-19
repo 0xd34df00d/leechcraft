@@ -60,7 +60,6 @@ target_link_libraries (leechcraft_kbswitch
 	)
 install (TARGETS leechcraft_kbswitch DESTINATION ${LC_PLUGINS_DEST})
 install (FILES kbswitchsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/qml/kbswitch DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/kbswitch DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_kbswitch QuickWidgets X11Extras)
