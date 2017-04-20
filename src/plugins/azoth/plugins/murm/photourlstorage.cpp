@@ -61,11 +61,9 @@ namespace Murm
 }
 }
 
-using PhotoUrlRecord = LeechCraft::Azoth::Murm::PhotoUrlStorage::Record;
-
-BOOST_FUSION_ADAPT_STRUCT (PhotoUrlRecord,
-		(decltype (PhotoUrlRecord::UserNum_), UserNum_)
-		(decltype (PhotoUrlRecord::BigPhotoUrl_), BigPhotoUrl_))
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Murm::PhotoUrlStorage::Record,
+		UserNum_,
+		BigPhotoUrl_)
 
 namespace LeechCraft
 {

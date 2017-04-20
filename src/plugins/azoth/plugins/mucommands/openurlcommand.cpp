@@ -123,12 +123,12 @@ namespace MuCommands
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlRange,
-		(boost::optional<int>, Start_)
-		(boost::optional<int>, End_));
+		Start_,
+		End_);
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::UrlComposite,
-		(LeechCraft::Azoth::MuCommands::RxableRanges_t, Range_)
-		(boost::optional<std::string>, Pat_));
+		Range_,
+		Pat_);
 
 namespace LeechCraft
 {

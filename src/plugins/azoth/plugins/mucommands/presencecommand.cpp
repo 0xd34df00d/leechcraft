@@ -70,8 +70,8 @@ namespace MuCommands
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::MuCommands::PresenceParams,
-		(LeechCraft::Azoth::MuCommands::AccName_t, AccName_)
-		(LeechCraft::Azoth::MuCommands::Status_t, Status_))
+		AccName_,
+		Status_)
 
 namespace LeechCraft
 {

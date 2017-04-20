@@ -54,11 +54,9 @@ namespace Vader
 }
 }
 
-using AvatarTimestamp = LeechCraft::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp;
-
-BOOST_FUSION_ADAPT_STRUCT (AvatarTimestamp,
-		(decltype (AvatarTimestamp::Email_), Email_)
-		(decltype (AvatarTimestamp::TS_), TS_))
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::Vader::AvatarsTimestampStorage::AvatarTimestamp,
+		Email_,
+		TS_)
 
 namespace LeechCraft
 {

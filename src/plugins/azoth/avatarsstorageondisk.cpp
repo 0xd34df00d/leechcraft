@@ -64,13 +64,11 @@ namespace Azoth
 }
 }
 
-using AvatarRecord = LeechCraft::Azoth::AvatarsStorageOnDisk::Record;
-
-BOOST_FUSION_ADAPT_STRUCT (AvatarRecord,
-		(decltype (AvatarRecord::ID_), ID_)
-		(decltype (AvatarRecord::EntryID_), EntryID_)
-		(decltype (AvatarRecord::Size_), Size_)
-		(decltype (AvatarRecord::ImageData_), ImageData_))
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::AvatarsStorageOnDisk::Record,
+		ID_,
+		EntryID_,
+		Size_,
+		ImageData_)
 
 namespace LeechCraft
 {
