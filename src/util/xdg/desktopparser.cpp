@@ -67,16 +67,16 @@ namespace XDG
 }
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::Field,
-		(std::string, Name_)
-		(LeechCraft::Util::XDG::Lang_t, Lang_)
-		(LeechCraft::Util::XDG::FieldVal_t, Val_));
+		Name_,
+		Lang_,
+		Val_)
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::Group,
-		(std::string, Name_)
-		(LeechCraft::Util::XDG::Fields_t, Fields_));
+		Name_,
+		Fields_)
 
 BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Util::XDG::File,
-		(LeechCraft::Util::XDG::Groups_t, Groups_));
+		Groups_)
 
 namespace LeechCraft
 {
