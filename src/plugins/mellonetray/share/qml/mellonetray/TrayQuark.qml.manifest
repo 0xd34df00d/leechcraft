@@ -1,6 +1,0 @@
-{
-    "quarkID": "org.LeechCraft.Mellonetray.Tray",
-    "quarkName": "System tray",
-    "icon": "system-run",
-    "areas": [ "panel" ]
-}
