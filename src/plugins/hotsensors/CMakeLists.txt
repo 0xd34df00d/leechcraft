@@ -46,7 +46,6 @@ target_link_libraries (leechcraft_hotsensors
 	${ADDITIONAL_LIBS}
 	)
 install (TARGETS leechcraft_hotsensors DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml/hotsensors DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/hotsensors DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_hotsensors QuickWidgets)
