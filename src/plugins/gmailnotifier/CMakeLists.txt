@@ -34,7 +34,6 @@ target_link_libraries(leechcraft_gmailnotifier
 )
 install(TARGETS leechcraft_gmailnotifier DESTINATION ${LC_PLUGINS_DEST})
 install(FILES gmailnotifiersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install(DIRECTORY share/qml/gmailnotifier DESTINATION ${LC_QML_DEST})
 install(DIRECTORY share/qml5/gmailnotifier DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_gmailnotifier Network QuickWidgets Xml)
