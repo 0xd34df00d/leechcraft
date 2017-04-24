@@ -45,7 +45,6 @@ target_link_libraries (leechcraft_blasq
 	)
 install (TARGETS leechcraft_blasq DESTINATION ${LC_PLUGINS_DEST})
 install (FILES blasqsettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (DIRECTORY share/qml/blasq DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/blasq DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_blasq Network QuickWidgets Widgets)
