@@ -96,7 +96,7 @@ namespace HotSensors
 
 			const auto lastTemp = pair.second.empty () ?
 					0 :
-					static_cast<int> (pair.second.front ().Value_);
+					static_cast<int> (pair.second.back ().Value_);
 			item->setData (QString::fromUtf8 ("%1°C").arg (lastTemp), SensorsGraphModel::LastTemp);
 			item->setData (name, SensorsGraphModel::SensorName);
 			item->setData (QVariant::fromValue (points), SensorsGraphModel::PointsList);
