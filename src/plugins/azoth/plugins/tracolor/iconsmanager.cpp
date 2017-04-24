@@ -66,8 +66,7 @@ namespace Tracolor
 		if (!IconsCache_.contains (entryId))
 			RegenCache (entryId);
 
-		return Util::Map (IconsCache_.value (entryId),
-				[] (const IconsCacheEntry& item) { return item.Icon_; });
+		return Util::Map (IconsCache_.value (entryId), &IconsCacheEntry::Icon_);
 	}
 
 	void IconsManager::RegenCache (const QByteArray& entryId)
