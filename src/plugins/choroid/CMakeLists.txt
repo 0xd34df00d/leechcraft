@@ -27,7 +27,6 @@ target_link_libraries (leechcraft_choroid
 	)
 install (TARGETS leechcraft_choroid DESTINATION ${LC_PLUGINS_DEST})
 install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
-install (DIRECTORY share/qml/choroid DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/choroid DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_choroid QuickWidgets Widgets)
