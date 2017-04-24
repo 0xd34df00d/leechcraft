@@ -250,15 +250,9 @@ namespace TabSessManager
 			for (const auto& info : i.value ())
 				ordered.append ({ i.key (), info });
 
-#ifdef USE_CPP14
 		std::sort (ordered.begin (), ordered.end (),
 				[] (const auto& left, const auto& right)
 					{ return left.second.Order_ < right.second.Order_; });
-#else
-		std::sort (ordered.begin (), ordered.end (),
-				[] (decltype (ordered.at (0)) left, decltype (ordered.at (0)) right)
-					{ return left.second.Order_ < right.second.Order_; });
-#endif
 
 		for (const auto& pair : ordered)
 		{

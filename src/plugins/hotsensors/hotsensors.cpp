@@ -50,11 +50,7 @@ namespace HotSensors
 	{
 		Util::InstallTranslator ("hotsensors");
 
-#ifdef USE_CPP14
 		HistoryMgr_ = std::make_unique<HistoryManager> ();
-#else
-		HistoryMgr_.reset (new HistoryManager);
-#endif
 
 #ifdef Q_OS_LINUX
 		SensorsMgr_ = std::make_shared<LmSensorsBackend> ();
@@ -68,11 +64,7 @@ namespace HotSensors
 					HistoryMgr_.get (),
 					SLOT (handleReadings (Readings_t)));
 
-#ifdef USE_CPP14
 		PlotMgr_ = std::make_unique<PlotManager> (proxy);
-#else
-		PlotMgr_.reset (new PlotManager { proxy });
-#endif
 		connect (HistoryMgr_.get (),
 				SIGNAL (historyChanged (ReadingsHistory_t)),
 				PlotMgr_.get (),

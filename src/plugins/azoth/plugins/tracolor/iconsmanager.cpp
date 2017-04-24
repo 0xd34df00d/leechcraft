@@ -119,7 +119,7 @@ namespace Tracolor
 		for (const auto& pair : Util::Stlize (oldCache))
 		{
 			RegenCache (pair.first);
-#ifdef USE_CPP14
+
 			const auto& oldEntries = pair.second;
 			const auto& newEntries = IconsCache_.value (pair.first);
 
@@ -134,7 +134,6 @@ namespace Tracolor
 										std::abs (oldEntry.Rate_ - newEntry.Rate_) >= 0.05;
 							}))
 				emit iconUpdated (pair.first);
-#endif
 		}
 	}
 }

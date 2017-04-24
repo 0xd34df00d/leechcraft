@@ -29,10 +29,6 @@
 
 #pragma once
 
-#ifndef USE_CPP14
-#include <functional>
-#endif
-
 #include <type_traits>
 #include "oldcppkludges.h"
 
@@ -52,7 +48,6 @@ namespace Util
 	 * @tparam Args The arguments to the function, besides the object
 	 * itself.
 	 */
-#ifdef USE_CPP14
 	template<typename R, typename B, typename C, typename... Args>
 	auto BindMemFn (R (B::*fn) (Args...), C *c)
 	{
@@ -66,21 +61,6 @@ namespace Util
 		static_assert (std::is_base_of<B, C> {}, "Base class where the member pointer belongs must be convertible to the binded object's class.");
 		return [fn, c] (Args... args) { return (c->*fn) (args...); };
 	}
-#else
-	template<typename R, typename B, typename C, typename... Args>
-	std::function<R (Args...)> BindMemFn (R (B::*fn) (Args...), C *c)
-	{
-		static_assert (std::is_base_of<B, C> {}, "Base class where the member pointer belongs must be convertible to the binded object's class.");
-		return [fn, c] (Args... args) { return (c->*fn) (args...); };
-	}
-
-	template<typename R, typename B, typename C, typename... Args>
-	std::function<R (Args...)> BindMemFn (R (B::*fn) (Args...) const, const C *c)
-	{
-		static_assert (std::is_base_of<B, C> {}, "Base class where the member pointer belongs must be convertible to the binded object's class.");
-		return [fn, c] (Args... args) { return (c->*fn) (args...); };
-	}
-#endif
 
 	template<typename To>
 	struct Caster

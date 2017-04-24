@@ -94,7 +94,6 @@ namespace Util
 		return Bind (value, f);
 	}
 
-#ifdef USE_CPP14
 	template<typename MV>
 	auto Do (const MV& value)
 	{
@@ -106,7 +105,6 @@ namespace Util
 	{
 		return Do (Bind (value, fHead), fArgs...);
 	}
-#endif
 
 	// Implementations
 	template<typename T>
