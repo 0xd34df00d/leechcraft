@@ -41,7 +41,6 @@ target_link_libraries (leechcraft_krigstask
 	${ADDITIONAL_LIBS}
 	)
 install (TARGETS leechcraft_krigstask DESTINATION ${LC_PLUGINS_DEST})
-install (DIRECTORY share/qml/krigstask DESTINATION ${LC_QML_DEST})
 install (DIRECTORY share/qml5/krigstask DESTINATION ${LC_QML5_DEST})
 
 FindQtLibs (leechcraft_krigstask QuickWidgets X11Extras)

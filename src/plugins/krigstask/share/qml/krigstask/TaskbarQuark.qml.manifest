@@ -1,6 +1,0 @@
-{
-    "quarkID": "org.LeechCraft.Krigstask.Taskbar",
-    "quarkName": "Taskbar",
-    "icon": "system-run",
-    "areas": [ "panel" ]
-}
