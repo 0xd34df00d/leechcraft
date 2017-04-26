@@ -858,7 +858,6 @@ install (FILES xmlsettingsdialog/datasourceroles.h DESTINATION include/leechcraf
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION include/leechcraft/)
 
 install (DIRECTORY share/leechcraft/ DESTINATION ${LC_SHARE_DEST})
-install (DIRECTORY share/qml/common DESTINATION ${LC_QML_DEST}/org/LC)
 install (DIRECTORY share/qml5/common DESTINATION ${LC_QML5_DEST}/org/LC)
 
 install (DIRECTORY freedesktop/icons/ DESTINATION share/icons/hicolor)
