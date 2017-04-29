@@ -1,6 +1,0 @@
-{
-    "quarkID": "org.LeechCraft.SB2.MainMenu",
-    "quarkName": "Main menu",
-    "icon": "leechcraft",
-    "areas": [ "panel" ]
-}
