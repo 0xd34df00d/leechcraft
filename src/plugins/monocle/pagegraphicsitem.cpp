@@ -154,7 +154,6 @@ namespace Monocle
 	{
 		if (Invalid_ && IsDisplayed ())
 		{
-			auto backendObj = Doc_->GetBackendPlugin ();
 			Invalid_ = false;
 
 			Util::Sequence (this, Doc_->RenderPage (PageNum_, XScale_, YScale_)) >>
