@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "docmanager.h"
+#include <QtDebug>
 #include "document.h"
 
 namespace LeechCraft
@@ -57,25 +58,31 @@ namespace Seen
 	void DocManager::HandleDocInfo (ddjvu_document_t *nativeDoc)
 	{
 		auto weak = Documents_ [nativeDoc];
-		auto doc = weak.lock ();
-		if (doc)
+		if (const auto& doc = weak.lock ())
 			doc->UpdateDocInfo ();
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "document is dead";
 	}
 
 	void DocManager::HandlePageInfo (ddjvu_document_t *nativeDoc, ddjvu_page_t *page)
 	{
-		auto weak = Documents_ [nativeDoc];
-		auto doc = weak.lock ();
-		if (doc)
+		const auto& weak = Documents_ [nativeDoc];
+		if (const auto doc = weak.lock ())
 			doc->UpdatePageInfo (page);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "document is dead";
 	}
 
 	void DocManager::RedrawPage (ddjvu_document_t *nativeDoc, ddjvu_page_t *page)
 	{
-		auto weak = Documents_ [nativeDoc];
-		auto doc = weak.lock ();
-		if (doc)
+		const auto& weak = Documents_ [nativeDoc];
+		if (const auto doc = weak.lock ())
 			doc->RedrawPage (page);
+		else
+			qWarning () << Q_FUNC_INFO
+					<< "document is dead";
 	}
 }
 }
