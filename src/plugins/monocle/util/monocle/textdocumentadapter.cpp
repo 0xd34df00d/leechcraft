@@ -34,6 +34,7 @@
 #include <QAbstractTextDocumentLayout>
 #include <QTextEdit>
 #include <QtDebug>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -61,7 +62,7 @@ namespace Monocle
 		return size.toSize ();
 	}
 
-	QImage TextDocumentAdapter::RenderPage (int page, double xScale, double yScale)
+	QFuture<QImage> TextDocumentAdapter::RenderPage (int page, double xScale, double yScale)
 	{
 		const auto& size = Doc_->pageSize ();
 
@@ -82,7 +83,7 @@ namespace Monocle
 		Doc_->drawContents (&painter, rect);
 		painter.end ();
 
-		return image;
+		return Util::MakeReadyFuture (image);
 	}
 
 	QList<ILink_ptr> TextDocumentAdapter::GetPageLinks (int)

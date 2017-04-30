@@ -94,7 +94,7 @@ namespace PDF
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;
 		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double, double);
+		QFuture<QImage> RenderPage (int, double, double);
 		QList<ILink_ptr> GetPageLinks (int);
 		QUrl GetDocURL () const;
 

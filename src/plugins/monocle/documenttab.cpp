@@ -51,6 +51,7 @@
 #include <QWidgetAction>
 #include <QTreeView>
 #include <QUrl>
+#include <QFuture>
 #include <util/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
 #include <util/gui/findnotification.h>
@@ -1191,7 +1192,7 @@ namespace Monocle
 				isp->PaintPage (&painter, i, resScale * scale, resScale * scale);
 			else
 			{
-				const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale);
+				const auto& img = CurrentDoc_->RenderPage (i, resScale * scale, resScale * scale).result ();
 				painter.drawImage (0, 0, img);
 			}
 

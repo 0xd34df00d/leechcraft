@@ -38,6 +38,9 @@
 
 class QUrl;
 
+template<typename>
+class QFuture;
+
 namespace LeechCraft
 {
 namespace Monocle
@@ -174,7 +177,7 @@ namespace Monocle
 		 * @param[in] yScale The scale of the <em>y</em> axis.
 		 * @return The rendering of the given page.
 		 */
-		virtual QImage RenderPage (int page, double xScale, double yScale) = 0;
+		virtual QFuture<QImage> RenderPage (int page, double xScale, double yScale) = 0;
 
 		/** @brief Returns the links found at the given \em page.
 		 *

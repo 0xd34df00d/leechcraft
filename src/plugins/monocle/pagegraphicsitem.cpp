@@ -40,6 +40,7 @@
 #include <QGraphicsView>
 #include <QMenu>
 #include <QWidgetAction>
+#include <util/threads/futures.h>
 #include "core.h"
 #include "pixmapcachemanager.h"
 #include "arbitraryrotationwidget.h"
@@ -63,9 +64,6 @@ namespace Monocle
 	PageGraphicsItem::~PageGraphicsItem ()
 	{
 		Core::Instance ().GetPixmapCacheManager ()->PixmapDeleted (this);
-
-		if (RenderFuture_)
-			RenderFuture_->waitForFinished ();
 	}
 
 	void PageGraphicsItem::SetLayoutManager (PagesLayoutManager *manager)
@@ -157,21 +155,19 @@ namespace Monocle
 		if (Invalid_ && IsDisplayed ())
 		{
 			auto backendObj = Doc_->GetBackendPlugin ();
-			if (qobject_cast<IBackendPlugin*> (backendObj)->IsThreaded ())
-			{
-				if (!RenderFuture_)
-					RequestThreadedRender ();
-
-				setPixmap (GetEmptyPixmap (true));
-			}
-			else
-			{
-				const auto& img = Doc_->RenderPage (PageNum_, XScale_, YScale_);
-				setPixmap (QPixmap::fromImage (img));
-			}
 			Invalid_ = false;
 
-			Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
+			Util::Sequence (this, Doc_->RenderPage (PageNum_, XScale_, YScale_)) >>
+					[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
+					{
+						setPixmap (QPixmap::fromImage (img));
+
+						if (std::abs (prevXScale - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
+							std::abs (prevYScale - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
+							UpdatePixmap ();
+						else
+							Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
+					};
 		}
 
 		QGraphicsPixmapItem::paint (painter, option, w);
@@ -238,30 +234,6 @@ namespace Monocle
 		return px;
 	}
 
-	void PageGraphicsItem::RequestThreadedRender ()
-	{
-		RenderFuture_.reset (new QFutureWatcher<RenderInfo>,
-				[this] (QFutureWatcher<RenderInfo> *watcher)
-				{
-					disconnect (watcher, 0, this, 0);
-					watcher->deleteLater ();
-				});
-		connect (RenderFuture_.get (),
-				SIGNAL (finished ()),
-				this,
-				SLOT (handlePixmapRendered ()));
-
-		RenderFuture_->setFuture (QtConcurrent::run ([this, xscale = XScale_, yscale = YScale_]
-				{
-					return RenderInfo
-					{
-						Doc_->RenderPage (PageNum_, yscale, yscale),
-						xscale,
-						yscale
-					};
-				}));
-	}
-
 	bool PageGraphicsItem::IsDisplayed () const
 	{
 		const auto& thisMapped = mapToScene (boundingRect ()).boundingRect ();
@@ -317,26 +289,6 @@ namespace Monocle
 			return;
 
 		ArbWidget_->setValue (rotation + LayoutManager_->GetRotation ());
-	}
-
-	void PageGraphicsItem::handlePixmapRendered ()
-	{
-		if (sender () != RenderFuture_.get ())
-			return;
-
-		const auto& result = RenderFuture_->result ();
-		RenderFuture_.reset ();
-
-		setPixmap (QPixmap::fromImage (result.Result_));
-
-		if (std::abs (result.XScale_ - XScale_) > std::numeric_limits<double>::epsilon () * XScale_ ||
-			std::abs (result.YScale_ - YScale_) > std::numeric_limits<double>::epsilon () * YScale_)
-		{
-			UpdatePixmap ();
-			return;
-		}
-
-		Core::Instance ().GetPixmapCacheManager ()->PixmapChanged (this);
 	}
 }
 }

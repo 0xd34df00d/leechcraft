@@ -32,6 +32,7 @@
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QTimer>
+#include <util/threads/futures.h>
 
 namespace LeechCraft
 {
@@ -73,10 +74,12 @@ namespace Monocle
 		auto scale = std::min (static_cast<double> (width ()) / pageSize.width (),
 				static_cast<double> (height ()) / pageSize.height ());
 
-		const auto& img = Doc_->RenderPage (page, scale, scale);
-
-		PixmapLabel_->setFixedSize (img.size ());
-		PixmapLabel_->setPixmap (QPixmap::fromImage (img));
+		Util::Sequence (this, Doc_->RenderPage (page, scale, scale)) >>
+				[&] (const QImage& img)
+				{
+					PixmapLabel_->setFixedSize (img.size ());
+					PixmapLabel_->setPixmap (QPixmap::fromImage (img));
+				};
 	}
 
 	void PresenterWidget::closeEvent (QCloseEvent *event)

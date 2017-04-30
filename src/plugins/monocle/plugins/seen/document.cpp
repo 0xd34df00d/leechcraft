@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "document.h"
+#include <util/threads/futures.h>
 #include "seen.h"
 #include "docmanager.h"
 
@@ -94,7 +95,7 @@ namespace Seen
 		return Sizes_.value (pageNum);
 	}
 
-	QImage Document::RenderPage (int pageNum, double xScale, double yScale)
+	QFuture<QImage> Document::RenderPage (int pageNum, double xScale, double yScale)
 	{
 		const auto& size = Sizes_.value (pageNum);
 
@@ -106,7 +107,7 @@ namespace Seen
 		};
 
 		if (std::max (xScale, yScale) < 0.01)
-			return getScaled ();
+			return Util::MakeReadyFuture (getScaled ());
 
 		ddjvu_page_t *page = nullptr;
 		if (PendingRenders_.contains (pageNum))
@@ -141,7 +142,7 @@ namespace Seen
 			ddjvu_page_release (page);
 		}
 
-		return getScaled ();
+		return Util::MakeReadyFuture (getScaled ());
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int)

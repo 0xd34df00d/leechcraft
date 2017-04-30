@@ -75,7 +75,7 @@ namespace Seen
 		DocumentInfo GetDocumentInfo () const;
 		int GetNumPages () const;
 		QSize GetPageSize (int) const;
-		QImage RenderPage (int, double xRes, double yRes);
+		QFuture<QImage> RenderPage (int, double xRes, double yRes);
 		QList<ILink_ptr> GetPageLinks (int);
 		QUrl GetDocURL () const;
 

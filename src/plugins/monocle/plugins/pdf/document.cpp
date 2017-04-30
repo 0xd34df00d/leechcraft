@@ -33,10 +33,12 @@
 #include <QtDebug>
 #include <QBuffer>
 #include <QFile>
+#include <QtConcurrentRun>
 #include <poppler-qt5.h>
 #include <poppler-form.h>
 #include <poppler-version.h>
 #include <util/sll/util.h>
+#include <util/threads/futures.h>
 #include "links.h"
 #include "fields.h"
 #include "annotations.h"
@@ -120,13 +122,13 @@ namespace PDF
 		return page->pageSize ();
 	}
 
-	QImage Document::RenderPage (int num, double xScale, double yScale)
+	QFuture<QImage> Document::RenderPage (int num, double xScale, double yScale)
 	{
-		std::unique_ptr<Poppler::Page> page (PDocument_->page (num));
+		std::shared_ptr<Poppler::Page> page (PDocument_->page (num));
 		if (!page)
-			return QImage ();
+			return Util::MakeReadyFuture (QImage {});
 
-		return page->renderToImage (72 * xScale, 72 * yScale);
+		return QtConcurrent::run ([=] { return page->renderToImage (72 * xScale, 72 * yScale); });
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int num)

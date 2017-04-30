@@ -63,14 +63,6 @@ namespace Monocle
 		PagesLayoutManager *LayoutManager_ = nullptr;
 
 		QPointer<ArbitraryRotationWidget> ArbWidget_;
-
-		struct RenderInfo
-		{
-			QImage Result_;
-			double XScale_;
-			double YScale_;
-		};
-		std::shared_ptr<QFutureWatcher<RenderInfo>> RenderFuture_;
 	public:
 		typedef std::function<void (QRectF)> RectSetter_f;
 	private:
@@ -111,15 +103,12 @@ namespace Monocle
 		void contextMenuEvent (QGraphicsSceneContextMenuEvent*);
 	private:
 		QPixmap GetEmptyPixmap (bool fill) const;
-		void RequestThreadedRender ();
 	private slots:
 		void rotateCCW ();
 		void rotateCW ();
 		void requestRotation (double);
 
 		void updateRotation (double, int);
-
-		void handlePixmapRendered ();
 	signals:
 		void rotateRequested (double);
 	};

@@ -108,7 +108,7 @@ namespace Monocle
 		 *
 		 * @sa SetRenderHint()
 		 */
-		QImage RenderPage (int page, double xScale, double yScale);
+		QFuture<QImage> RenderPage (int page, double xScale, double yScale);
 
 		/** @brief Returns the links found on the given \em page.
 		 *
