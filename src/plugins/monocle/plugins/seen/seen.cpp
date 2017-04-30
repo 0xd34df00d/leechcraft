@@ -129,7 +129,7 @@ namespace Seen
 
 	void Plugin::checkMessageQueue ()
 	{
-		while (const ddjvu_message_t *msg = ddjvu_message_peek (Context_))
+		while (const auto msg = ddjvu_message_peek (Context_))
 		{
 			qDebug () << Q_FUNC_INFO << msg->m_any.tag;
 

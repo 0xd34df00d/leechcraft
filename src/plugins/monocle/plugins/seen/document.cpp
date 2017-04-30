@@ -108,7 +108,7 @@ namespace Seen
 		if (std::max (xScale, yScale) < 0.01)
 			return getScaled ();
 
-		ddjvu_page_t *page = 0;
+		ddjvu_page_t *page = nullptr;
 		if (PendingRenders_.contains (pageNum))
 			page = PendingRenders_ [pageNum];
 		else
@@ -118,7 +118,7 @@ namespace Seen
 			PendingRendersNums_ [page] = pageNum;
 		}
 
-		ddjvu_rect_s rect =
+		ddjvu_rect_s rect
 		{
 			0,
 			0,
