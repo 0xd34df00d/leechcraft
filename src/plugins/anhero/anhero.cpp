@@ -109,11 +109,7 @@ namespace AnHero
 #if defined (Q_OS_MAC) && !defined (USE_UNIX_LAYOUT)
 				crashprocess,
 #else
-#if QT_VERSION > 0x050000
 				"lc_anhero_crashprocess-qt5",
-#else
-				"lc_anhero_crashprocess",
-#endif
 #endif
 				"--signal",
 				sigtxt,
