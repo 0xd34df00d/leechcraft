@@ -251,10 +251,7 @@ namespace Monocle
 				this,
 				SLOT (handlePixmapRendered ()));
 
-		// C++14
-		auto xscale = XScale_;
-		auto yscale = YScale_;
-		RenderFuture_->setFuture (QtConcurrent::run ([this, xscale, yscale]
+		RenderFuture_->setFuture (QtConcurrent::run ([this, xscale = XScale_, yscale = YScale_]
 				{
 					return RenderInfo
 					{
