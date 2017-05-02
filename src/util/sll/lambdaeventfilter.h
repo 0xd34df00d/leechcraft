@@ -30,7 +30,6 @@
 #pragma once
 
 #include <QObject>
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -83,7 +82,7 @@ namespace Util
 	template<typename F>
 	auto MakeLambdaEventFilter (F&& f, QObject *parent = nullptr)
 	{
-		return new detail::LambdaEventFilter<Util::Decay_t<F>> { std::forward<F> (f), parent };
+		return new detail::LambdaEventFilter<std::decay_t<F>> { std::forward<F> (f), parent };
 	}
 }
 }

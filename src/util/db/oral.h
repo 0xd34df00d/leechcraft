@@ -52,7 +52,6 @@
 #include <QtDebug>
 #include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
-#include <util/sll/oldcppkludges.h>
 #include <util/db/dblock.h>
 #include <util/db/util.h>
 #include "oraltypes.h"
@@ -503,7 +502,7 @@ namespace oral
 			}
 		public:
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			AdaptInsert (CachedFieldsData data, EnableIf_t<Autogen>* = nullptr)
+			AdaptInsert (CachedFieldsData data, std::enable_if_t<Autogen>* = nullptr)
 			: AdaptInsert
 			{
 				{
@@ -521,13 +520,13 @@ namespace oral
 			}
 
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			AdaptInsert (const CachedFieldsData& data, EnableIf_t<!Autogen>* = nullptr)
+			AdaptInsert (const CachedFieldsData& data, std::enable_if_t<!Autogen>* = nullptr)
 			: AdaptInsert { data, PrivateTag {} }
 			{
 			}
 
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			EnableIf_t<Autogen> operator() (Seq& t, InsertAction action = InsertAction::Default) const
+			std::enable_if_t<Autogen> operator() (Seq& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
 				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
@@ -538,7 +537,7 @@ namespace oral
 			}
 
 			template<typename SeqPrime = Seq, bool Autogen = HasAutogenPKey<SeqPrime> ()>
-			EnableIf_t<Autogen, ValueAtC_t<SeqPrime, FindPKey<SeqPrime>::result_type::value>>
+			std::enable_if_t<Autogen, ValueAtC_t<SeqPrime, FindPKey<SeqPrime>::result_type::value>>
 				operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
@@ -550,7 +549,7 @@ namespace oral
 			}
 
 			template<bool Autogen = HasAutogenPKey<Seq> ()>
-			EnableIf_t<!Autogen> operator() (const Seq& t, InsertAction action = InsertAction::Default) const
+			std::enable_if_t<!Autogen> operator() (const Seq& t, InsertAction action = InsertAction::Default) const
 			{
 				auto query = std::make_shared<QSqlQuery> (Data_.DB_);
 				query->prepare (GetInsertPrefix (action) + InsertSuffix_);
@@ -564,7 +563,7 @@ namespace oral
 			std::function<void (Seq)> Updater_;
 		public:
 			template<bool B = HasPKey>
-			AdaptUpdate (const CachedFieldsData& data, EnableIf_t<B>* = nullptr)
+			AdaptUpdate (const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
 			{
 				const auto index = FindPKey<Seq>::result_type::value;
 
@@ -588,12 +587,12 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			AdaptUpdate (const CachedFieldsData&, EnableIf_t<!B>* = nullptr)
+			AdaptUpdate (const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
 			{
 			}
 
 			template<bool B = HasPKey>
-			EnableIf_t<B> operator() (const Seq& seq)
+			std::enable_if_t<B> operator() (const Seq& seq)
 			{
 				Updater_ (seq);
 			}
@@ -605,7 +604,7 @@ namespace oral
 			std::function<void (Seq)> Deleter_;
 		public:
 			template<bool B = HasPKey>
-			AdaptDelete (const CachedFieldsData& data, EnableIf_t<B>* = nullptr)
+			AdaptDelete (const CachedFieldsData& data, std::enable_if_t<B>* = nullptr)
 			{
 				const auto index = FindPKey<Seq>::result_type::value;
 
@@ -627,12 +626,12 @@ namespace oral
 			}
 
 			template<bool B = HasPKey>
-			AdaptDelete (const CachedFieldsData&, EnableIf_t<!B>* = nullptr)
+			AdaptDelete (const CachedFieldsData&, std::enable_if_t<!B>* = nullptr)
 			{
 			}
 
 			template<bool B = HasPKey>
-			EnableIf_t<B> operator() (const Seq& seq)
+			std::enable_if_t<B> operator() (const Seq& seq)
 			{
 				Deleter_ (seq);
 			}
@@ -832,10 +831,10 @@ namespace oral
 		struct RelationalTypesCheckerBase : std::false_type {};
 
 		template<typename Seq, typename L, typename R>
-		struct RelationalTypesCheckerBase<Seq, L, R, EnableIf_t<AreComparableTypes<Seq, L, R> ()>> : std::true_type {};
+		struct RelationalTypesCheckerBase<Seq, L, R, std::enable_if_t<AreComparableTypes<Seq, L, R> ()>> : std::true_type {};
 
 		template<ExprType Type, typename Seq, typename L, typename R>
-		struct RelationalTypesChecker<Type, Seq, L, R, EnableIf_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
+		struct RelationalTypesChecker<Type, Seq, L, R, std::enable_if_t<IsRelational (Type)>> : RelationalTypesCheckerBase<Seq, L, R> {};
 
 		template<ExprType Type, typename L = void, typename R = void>
 		class ExprTree

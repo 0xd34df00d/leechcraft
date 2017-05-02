@@ -30,7 +30,6 @@
 #pragma once
 
 #include "typelist.h"
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -92,7 +91,7 @@ namespace Util
 		template<typename F, template<typename...> class List, typename... Args>
 		struct InvokableResGetter<F, List<Args...>>
 		{
-			using RetType_t = ResultOf_t<F (Args...)>;
+			using RetType_t = std::result_of_t<F (Args...)>;
 		};
 
 		template<typename F>
@@ -114,7 +113,7 @@ namespace Util
 			}
 		private:
 			template<typename... InvokableArgs, typename... Rest>
-			auto Invoke (Typelist<InvokableArgs...>, Typelist<Rest...>, Dumbify<InvokableArgs>... args, Dumbify<Rest>...) -> ResultOf_t<F (InvokableArgs...)>
+			auto Invoke (Typelist<InvokableArgs...>, Typelist<Rest...>, Dumbify<InvokableArgs>... args, Dumbify<Rest>...) -> std::result_of_t<F (InvokableArgs...)>
 			{
 				return F_ (std::forward<InvokableArgs> (args)...);
 			}

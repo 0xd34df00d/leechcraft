@@ -700,7 +700,7 @@ namespace LMP
 		NativePlaylist_t HandleRestored (const NativePlaylist_t& playlist,
 				const QHash<QPair<QString, QString>, Media::RadioRestoreVariant_t>& restored)
 		{
-			Util::Decay_t<decltype (playlist)> newPlaylist;
+			std::decay_t<decltype (playlist)> newPlaylist;
 
 			for (const auto& item : playlist)
 			{

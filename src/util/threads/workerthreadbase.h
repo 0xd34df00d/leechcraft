@@ -37,6 +37,7 @@
 #include <QFutureInterface>
 #include <QFuture>
 #include <QList>
+#include <util/sll/oldcppkludges.h>
 #include "futures.h"
 #include "threadsconfig.h"
 
@@ -58,9 +59,9 @@ namespace Util
 		void SetPaused (bool);
 
 		template<typename F>
-		QFuture<ResultOf_t<F ()>> ScheduleImpl (F func)
+		QFuture<std::result_of_t<F ()>> ScheduleImpl (F func)
 		{
-			QFutureInterface<ResultOf_t<F ()>> iface;
+			QFutureInterface<std::result_of_t<F ()>> iface;
 			iface.reportStarted ();
 
 			auto reporting = [func, iface] () mutable
@@ -79,7 +80,7 @@ namespace Util
 		}
 
 		template<typename F, typename... Args>
-		QFuture<ResultOf_t<F (Args...)>> ScheduleImpl (F f, Args&&... args)
+		QFuture<std::result_of_t<F (Args...)>> ScheduleImpl (F f, Args&&... args)
 		{
 			return ScheduleImpl ([f, args...] () mutable { return Invoke (f, args...); });
 		}
@@ -180,7 +181,7 @@ namespace Util
 		}
 
 		template<typename F, typename... Args>
-		QFuture<ResultOf_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)
+		QFuture<std::result_of_t<F (WorkerType*, Args...)>> ScheduleImpl (F f, Args&&... args)
 		{
 			const auto fWrapped = [f, this] (auto... args) mutable { return Invoke (f, Worker_.get (), args...); };
 			return WorkerThreadBase::ScheduleImpl (fWrapped, std::forward<Args> (args)...);

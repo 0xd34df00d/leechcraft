@@ -45,7 +45,7 @@ namespace LeechCraft
 namespace Util
 {
 	template<typename R, typename F, typename... Args>
-	EnableIf_t<!std::is_same<R, void>::value>
+	std::enable_if_t<!std::is_same<R, void>::value>
 		ReportFutureResult (QFutureInterface<R>& iface, F&& f, Args&&... args)
 	{
 		try
@@ -87,7 +87,7 @@ namespace Util
 	namespace detail
 	{
 		template<typename T>
-		constexpr bool IsCallableImpl (int, ResultOf_t<T ()>* = nullptr)
+		constexpr bool IsCallableImpl (int, std::result_of_t<T ()>* = nullptr)
 		{
 			return true;
 		}
@@ -106,7 +106,7 @@ namespace Util
 	}
 
 	template<typename R, typename U>
-	EnableIf_t<std::is_constructible<R, U>::value && !detail::IsCallable<U> ()>
+	std::enable_if_t<std::is_constructible<R, U>::value && !detail::IsCallable<U> ()>
 		ReportFutureResult (QFutureInterface<R>& iface, U&& value)
 	{
 		const R result { std::forward<U> (value) };
@@ -125,7 +125,7 @@ namespace Util
 		};
 
 		template<typename T>
-		struct UnwrapFutureType : UnwrapFutureTypeBase<Decay_t<T>>
+		struct UnwrapFutureType : UnwrapFutureTypeBase<std::decay_t<T>>
 		{
 		};
 	}
@@ -165,7 +165,7 @@ namespace Util
 			}
 		};
 
-		template<typename ResultHandler, typename RetType, typename = ResultOf_t<ResultHandler (RetType)>>
+		template<typename ResultHandler, typename RetType, typename = std::result_of_t<ResultHandler (RetType)>>
 		constexpr bool IsCompatibleImpl (int)
 		{
 			return true;
@@ -177,7 +177,7 @@ namespace Util
 			return false;
 		}
 
-		template<typename ResultHandler, typename = ResultOf_t<ResultHandler ()>>
+		template<typename ResultHandler, typename = std::result_of_t<ResultHandler ()>>
 		constexpr bool IsCompatibleImplVoid (int)
 		{
 			return true;
@@ -459,12 +459,12 @@ namespace Util
 		template<typename T>
 		using IsEmptyDestr_t = std::is_same<EmptyDestructionTag, T>;
 
-		template<typename Ret, typename DestrType, typename = EnableIf_t<IsEmptyDestr_t<DestrType>::value>>
+		template<typename Ret, typename DestrType, typename = std::enable_if_t<IsEmptyDestr_t<DestrType>::value>>
 		void InvokeDestructionHandler (const std::function<DestrType ()>&, QFutureInterface<Ret>&, float)
 		{
 		}
 
-		template<typename Ret, typename DestrType, typename = EnableIf_t<!IsEmptyDestr_t<DestrType>::value>>
+		template<typename Ret, typename DestrType, typename = std::enable_if_t<!IsEmptyDestr_t<DestrType>::value>>
 		void InvokeDestructionHandler (const std::function<DestrType ()>& handler, QFutureInterface<Ret>& iface, int)
 		{
 			const auto res = handler ();
@@ -572,7 +572,7 @@ namespace Util
 			 * @tparam F The type of the functor to chain.
 			 */
 			template<typename F>
-			auto Then (F&& f) -> EnableIf_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
+			auto Then (F&& f) -> std::enable_if_t<std::is_same<void, decltype (f (std::declval<Ret> ()))>::value>
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
@@ -581,7 +581,7 @@ namespace Util
 			}
 
 			template<typename F>
-			auto Then (F&& f) -> EnableIf_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
+			auto Then (F&& f) -> std::enable_if_t<std::is_same<void, Ret>::value && std::is_same<void, decltype (f ())>::value>
 			{
 				if (ThisFuture_)
 					throw std::runtime_error { "SequenceProxy::Then(): cannot chain more after being converted to a QFuture" };
@@ -596,7 +596,7 @@ namespace Util
 			}
 
 			template<typename F>
-			SequenceProxy<Ret, Future, ResultOf_t<F ()>> DestructionValue (F&& f)
+			SequenceProxy<Ret, Future, std::result_of_t<F ()>> DestructionValue (F&& f)
 			{
 				static_assert (std::is_same<DestructionTag, EmptyDestructionTag>::value,
 						"Destruction handling function has been already set.");

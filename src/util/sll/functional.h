@@ -30,7 +30,6 @@
 #pragma once
 
 #include <type_traits>
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -66,13 +65,13 @@ namespace Util
 	struct Caster
 	{
 		template<typename From>
-		EnableIf_t<!std::is_base_of<To, Decay_t<From>>::value, To> operator() (From&& from) const
+		std::enable_if_t<!std::is_base_of<To, std::decay_t<From>>::value, To> operator() (From&& from) const
 		{
 			return To { std::forward<From> (from) };
 		}
 
 		template<typename From>
-		EnableIf_t<std::is_base_of<To, Decay_t<From>>::value, To> operator() (From&& from) const
+		std::enable_if_t<std::is_base_of<To, std::decay_t<From>>::value, To> operator() (From&& from) const
 		{
 			return from;
 		}

@@ -143,7 +143,7 @@ namespace Util
 	 *
 	 * @sa InstanceFunctor
 	 */
-	template<typename T, typename F, typename = EnableIf_t<IsFunctor<T> ()>>
+	template<typename T, typename F, typename = std::enable_if_t<IsFunctor<T> ()>>
 	FmapResult_t<T, F> Fmap (const T& functor, const F& function)
 	{
 		return InstanceFunctor<T>::Apply (functor, function);
@@ -215,7 +215,7 @@ namespace Util
 	struct InstanceFunctor<boost::optional<T>>
 	{
 		template<typename F>
-		using FmapResult_t = boost::optional<Decay_t<ResultOf_t<F (T)>>>;
+		using FmapResult_t = boost::optional<std::decay_t<std::result_of_t<F (T)>>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const boost::optional<T>& t, const F& f)

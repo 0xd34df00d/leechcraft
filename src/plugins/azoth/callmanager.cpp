@@ -306,7 +306,7 @@ namespace Azoth
 			if (!info.isFormatSupported (format))
 				WarnUnsupported (info, format, "raw audio format not supported by backend");
 
-			using AudioDevice_t = Util::Decay_t<decltype (*(callState.*setter))>;
+			using AudioDevice_t = std::decay_t<decltype (*(callState.*setter))>;
 
 			const auto device = std::make_shared<AudioDevice_t> (info, format);
 

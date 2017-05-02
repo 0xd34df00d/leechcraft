@@ -30,7 +30,6 @@
 #pragma once
 
 #include <boost/optional.hpp>
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -78,7 +77,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<boost::optional<V>>
 		{
-			using Type_t = boost::optional<ResultOf_t<T (V)>>;
+			using Type_t = boost::optional<std::result_of_t<T (V)>>;
 		};
 
 		template<typename U>

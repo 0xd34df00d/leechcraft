@@ -31,7 +31,6 @@
 #include <QTimer>
 #include <util/sys/paths.h>
 #include <util/xpc/util.h>
-#include <util/sll/oldcppkludges.h>
 #include <interfaces/core/ientitymanager.h>
 #include "core.h"
 #include "xmlparsers.h"
@@ -50,7 +49,7 @@ namespace LackMan
 	namespace
 	{
 		template<typename PendingF>
-		void FetchImpl (QHash<int, Util::ResultOf_t<PendingF (QString)>>& map,
+		void FetchImpl (QHash<int, std::result_of_t<PendingF (QString)>>& map,
 				PendingF&& factory,
 				const QUrl& url,
 				const ICoreProxy_ptr& proxy,

@@ -30,7 +30,6 @@
 #pragma once
 
 #include <tuple>
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -140,13 +139,13 @@ namespace Util
 	namespace detail
 	{
 		template<template<typename> class Pred, template<typename...> class List, typename Head, typename... Tail>
-		struct Filter<Pred, List<Head, Tail...>, EnableIf_t<Pred<Head>::value>>
+		struct Filter<Pred, List<Head, Tail...>, std::enable_if_t<Pred<Head>::value>>
 		{
 			using Result_t = decltype (Concat (List<Head> {}, Filter_t<Pred, List<Tail...>> {}));
 		};
 
 		template<template<typename> class Pred, template<typename...> class List, typename Head, typename... Tail>
-		struct Filter<Pred, List<Head, Tail...>, EnableIf_t<!Pred<Head>::value>>
+		struct Filter<Pred, List<Head, Tail...>, std::enable_if_t<!Pred<Head>::value>>
 		{
 			using Result_t = Filter_t<Pred, List<Tail...>>;
 		};

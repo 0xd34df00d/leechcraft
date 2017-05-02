@@ -162,9 +162,9 @@ namespace XDG
 		template<typename T>
 		struct DiffResult
 		{
-			Util::Decay_t<T> Added_;
-			Util::Decay_t<T> Removed_;
-			Util::Decay_t<T> Intersection_;
+			std::decay_t<T> Added_;
+			std::decay_t<T> Removed_;
+			std::decay_t<T> Intersection_;
 
 			DiffResult (T&& oldCont, T&& newCont)
 			{

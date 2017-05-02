@@ -30,7 +30,6 @@
 #pragma once
 
 #include <boost/variant.hpp>
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {
@@ -39,25 +38,25 @@ namespace Util
 	namespace detail
 	{
 		template<typename Head, typename... Tail>
-		struct VisitorBase : Util::Decay_t<Head>, VisitorBase<Tail...>
+		struct VisitorBase : std::decay_t<Head>, VisitorBase<Tail...>
 		{
-			using Util::Decay_t<Head>::operator();
+			using std::decay_t<Head>::operator();
 			using VisitorBase<Tail...>::operator();
 
 			VisitorBase (Head&& head, Tail&&... tail)
-			: Util::Decay_t<Head> { std::forward<Head> (head) }
+			: std::decay_t<Head> { std::forward<Head> (head) }
 			, VisitorBase<Tail...> { std::forward<Tail> (tail)... }
 			{
 			}
 		};
 
 		template<typename Head>
-		struct VisitorBase<Head> : Util::Decay_t<Head>
+		struct VisitorBase<Head> : std::decay_t<Head>
 		{
-			using Util::Decay_t<Head>::operator();
+			using std::decay_t<Head>::operator();
 
 			VisitorBase (Head&& head)
-			: Util::Decay_t<Head> { std::forward<Head> (head) }
+			: std::decay_t<Head> { std::forward<Head> (head) }
 			{
 			}
 		};

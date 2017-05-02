@@ -61,18 +61,6 @@ namespace Util
 		return (obj->*mem) (std::forward<Rest> (rest)...);
 	}
 
-	template<typename T>
-	using ResultOf_t = typename std::result_of<T>::type;
-
-	template<bool B, class T = void>
-	using EnableIf_t = typename std::enable_if<B, T>::type;
-
-	template<typename T>
-	using Decay_t = typename std::decay<T>::type;
-
-	template<typename T, typename U>
-	using IsSame_t = typename std::is_same<T, U>::type;
-
 	namespace CPP17
 	{
 		namespace detail
@@ -88,7 +76,7 @@ namespace Util
 		auto Apply (F&& f, Tuple&& tuple)
 		{
 			return detail::ApplyImpl (std::forward<F> (f), std::forward<Tuple> (tuple),
-					std::make_index_sequence<std::tuple_size<Decay_t<Tuple>> {}> {});
+					std::make_index_sequence<std::tuple_size<std::decay_t<Tuple>> {}> {});
 		}
 	}
 }

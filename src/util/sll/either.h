@@ -65,7 +65,7 @@ namespace Util
 		}
 
 		template<typename LPrime, typename RPrime,
-				typename = EnableIf_t<std::is_convertible<LPrime, L>::value &&
+				typename = std::enable_if_t<std::is_convertible<LPrime, L>::value &&
 							std::is_convertible<RPrime, R>::value>>
 		Either (const Either<LPrime, RPrime>& other)
 		: This_ { other.AsVariant () }
@@ -147,7 +147,7 @@ namespace Util
 		}
 
 		template<typename RNew>
-		static EnableIf_t<!std::is_convertible<RNew, R>::value, Either<L, RNew>> Right (const RNew& r)
+		static std::enable_if_t<!std::is_convertible<RNew, R>::value, Either<L, RNew>> Right (const RNew& r)
 		{
 			return Either<L, RNew>::Right (r);
 		}
@@ -175,7 +175,7 @@ namespace Util
 		}
 	};
 
-	template<typename L, typename R, typename F, typename = ResultOf_t<F ()>>
+	template<typename L, typename R, typename F, typename = std::result_of_t<F ()>>
 	R RightOr (const Either<L, R>& either, F&& f)
 	{
 		return either.IsRight () ?
@@ -208,7 +208,7 @@ namespace Util
 	struct InstanceFunctor<Either<L, R>>
 	{
 		template<typename F>
-		using FmapResult_t = Either<L, ResultOf_t<F (R)>>;
+		using FmapResult_t = Either<L, std::result_of_t<F (R)>>;
 
 		template<typename F>
 		static FmapResult_t<F> Apply (const Either<L, R>& either, const F& f)
@@ -231,7 +231,7 @@ namespace Util
 		template<typename V>
 		struct GSLResult<Either<L, V>>
 		{
-			using Type_t = Either<L, ResultOf_t<R (V)>>;
+			using Type_t = Either<L, std::result_of_t<R (V)>>;
 		};
 
 		template<typename RP>
@@ -259,7 +259,7 @@ namespace Util
 	struct InstanceMonad<Either<L, R>>
 	{
 		template<typename F>
-		using BindResult_t = ResultOf_t<F (R)>;
+		using BindResult_t = std::result_of_t<F (R)>;
 
 		template<typename F>
 		static BindResult_t<F> Bind (const Either<L, R>& value, const F& f)

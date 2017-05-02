@@ -32,7 +32,6 @@
 #include <iterator>
 #include <boost/iterator/zip_iterator.hpp>
 #include <boost/range.hpp>
-#include "oldcppkludges.h"
 
 namespace LeechCraft
 {

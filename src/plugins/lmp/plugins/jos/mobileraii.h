@@ -33,7 +33,6 @@
 #include <typeinfo>
 #include <QString>
 #include <libimobiledevice/libimobiledevice.h>
-#include <util/sll/oldcppkludges.h>
 
 namespace LeechCraft
 {
@@ -93,7 +92,7 @@ namespace jOS
 	};
 
 	template<typename T, typename Creator, typename Deleter>
-	MobileRaii<T, Util::ResultOf_t<Deleter (T)>, Deleter> MakeRaii (Creator c, Deleter d)
+	MobileRaii<T, std::result_of_t<Deleter (T)>, Deleter> MakeRaii (Creator c, Deleter d)
 	{
 		return { c, d };
 	}

@@ -259,7 +259,7 @@ namespace Snails
 		template<typename... Args, typename F>
 		auto WrapFunction (AccountThreadWorker *w, const F& f)
 		{
-			return WrapFunctionTypeImpl<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (w, f);
+			return WrapFunctionTypeImpl<std::result_of_t<F (AccountThreadWorker*, Args...)>>::WrapFunction (w, f);
 		}
 	}
 
@@ -267,7 +267,7 @@ namespace Snails
 	using WrapReturnType_t = typename detail::WrapFunctionTypeImpl<T>::Result_t;
 
 	template<typename F, typename... Args>
-	using WrapFunctionType_t = WrapReturnType_t<Util::ResultOf_t<F (AccountThreadWorker*, Args...)>>;
+	using WrapFunctionType_t = WrapReturnType_t<std::result_of_t<F (AccountThreadWorker*, Args...)>>;
 
 	class AccountThread : public Util::WorkerThread<AccountThreadWorker>
 	{
