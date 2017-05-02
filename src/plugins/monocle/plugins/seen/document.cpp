@@ -82,7 +82,7 @@ namespace Seen
 
 	DocumentInfo Document::GetDocumentInfo () const
 	{
-		return DocumentInfo ();
+		return {};
 	}
 
 	int Document::GetNumPages () const
@@ -147,7 +147,7 @@ namespace Seen
 
 	QList<ILink_ptr> Document::GetPageLinks (int)
 	{
-		return QList<ILink_ptr> ();
+		return {};
 	}
 
 	QUrl Document::GetDocURL () const
