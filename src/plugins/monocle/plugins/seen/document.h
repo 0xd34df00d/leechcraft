@@ -32,6 +32,7 @@
 #include <QObject>
 #include <QHash>
 #include <QUrl>
+#include <QFutureInterface>
 #include <libdjvu/ddjvuapi.h>
 #include <libdjvu/miniexp.h>
 #include <interfaces/monocle/idocument.h>
@@ -62,6 +63,12 @@ namespace Seen
 		QHash<int, ddjvu_page_t*> PendingRenders_;
 		QHash<ddjvu_page_t*, int> PendingRendersNums_;
 
+		using RenderJobsPerScale_t = QHash<QPair<double, double>, QFutureInterface<QImage>>;
+		using RenderJobs_t = QHash<int, RenderJobsPerScale_t>;
+		RenderJobs_t RenderJobs_;
+
+		QSet<int> ScheduledRedraws_;
+
 		QUrl DocURL_;
 
 		QObject *Plugin_;
@@ -87,6 +94,7 @@ namespace Seen
 	private:
 		void TryUpdateSizes ();
 		void TryGetPageInfo (int);
+		void RunRedrawQueue ();
 	signals:
 		void navigateRequested (const QString&, int pageNum, double x, double y);
 		void printRequested (const QList<int>&);

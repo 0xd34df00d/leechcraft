@@ -28,7 +28,10 @@
  **********************************************************************/
 
 #include "document.h"
+#include <QTimer>
+#include <QtConcurrentMap>
 #include <util/threads/futures.h>
+#include <util/sll/qtutil.h>
 #include "seen.h"
 #include "docmanager.h"
 
@@ -97,6 +100,7 @@ namespace Seen
 
 	QFuture<QImage> Document::RenderPage (int pageNum, double xScale, double yScale)
 	{
+		qDebug () << Q_FUNC_INFO << pageNum << xScale << yScale;
 		const auto& size = Sizes_.value (pageNum);
 
 		if (std::max (xScale, yScale) < 0.01)
@@ -107,42 +111,14 @@ namespace Seen
 			return Util::MakeReadyFuture (scaled);
 		}
 
-		ddjvu_page_t *page = nullptr;
-		if (PendingRenders_.contains (pageNum))
-			page = PendingRenders_ [pageNum];
-		else
+		if (!PendingRenders_.contains (pageNum))
 		{
-			page = ddjvu_page_create_by_pageno (Doc_, pageNum);
+			const auto page = ddjvu_page_create_by_pageno (Doc_, pageNum);
 			PendingRenders_ [pageNum] = page;
 			PendingRendersNums_ [page] = pageNum;
 		}
 
-		ddjvu_rect_s rect
-		{
-			0,
-			0,
-			static_cast<unsigned int> (size.width ()),
-			static_cast<unsigned int> (size.height ())
-		};
-
-		QImage img { size, QImage::Format_RGB32 };
-		auto res = ddjvu_page_render (page,
-				DDJVU_RENDER_COLOR,
-				&rect,
-				&rect,
-				RenderFormat_,
-				img.bytesPerLine (),
-				reinterpret_cast<char*> (img.bits ()));
-		qDebug () << Q_FUNC_INFO << pageNum << res;
-		if (res)
-		{
-			PendingRenders_.remove (pageNum);
-			PendingRendersNums_.remove (page);
-			ddjvu_page_release (page);
-		}
-
-		return Util::MakeReadyFuture (img.scaled (img.width () * xScale, img.height () * yScale,
-					Qt::KeepAspectRatio, Qt::SmoothTransformation));
+		return RenderJobs_ [pageNum] [{ xScale, yScale }].future ();
 	}
 
 	QList<ILink_ptr> Document::GetPageLinks (int)
@@ -172,8 +148,19 @@ namespace Seen
 
 	void Document::RedrawPage (ddjvu_page_t *page)
 	{
+		if (!PendingRendersNums_.contains (page))
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "unknown page";
+			return;
+		}
+
+		if (ScheduledRedraws_.isEmpty ())
+			QTimer::singleShot (100, this, &Document::RunRedrawQueue);
+
 		auto num = PendingRendersNums_ [page];
-		emit pageContentsChanged (num);
+		qDebug () << Q_FUNC_INFO << num;
+		ScheduledRedraws_ << num;
 	}
 
 	void Document::TryUpdateSizes ()
@@ -193,6 +180,96 @@ namespace Seen
 
 		Sizes_ [pageNum] = QSize (info.width, info.height);
 		emit pageSizeChanged (pageNum);
+	}
+
+	void Document::RunRedrawQueue ()
+	{
+		qDebug () << Q_FUNC_INFO << ScheduledRedraws_;
+		if (ScheduledRedraws_.empty ())
+			return;
+
+		struct PageRedrawContext
+		{
+			int PageNum_;
+			ddjvu_page_t *Page_;
+			RenderJobsPerScale_t RenderJobs_;
+			QSize SrcSize_;
+		};
+
+		QList<PageRedrawContext> pages;
+		for (const auto num : ScheduledRedraws_)
+			pages.push_back ({ num, PendingRenders_ [num], RenderJobs_.take (num), Sizes_.value (num) });
+
+		ScheduledRedraws_.clear ();
+
+		struct Result
+		{
+			RenderJobs_t Unrendered_;
+		};
+
+		const auto& future = QtConcurrent::mappedReduced (pages,
+				std::function<Result (PageRedrawContext)>
+				{
+					[fmt = RenderFormat_] (const PageRedrawContext& ctx) -> Result
+					{
+						const auto& srcSize = ctx.SrcSize_;
+
+						Result result;
+						for (const auto& pair : Util::Stlize (ctx.RenderJobs_))
+						{
+							const auto& scale = pair.first;
+							const auto& size = srcSize.scaled (srcSize.width () * scale.first,
+								srcSize.height () * scale.second,
+								Qt::KeepAspectRatio);
+
+							QImage img { size, QImage::Format_RGB32 };
+
+							ddjvu_rect_s rect
+							{
+								0,
+								0,
+								static_cast<unsigned int> (size.width ()),
+								static_cast<unsigned int> (size.height ())
+							};
+							auto res = ddjvu_page_render (ctx.Page_,
+									DDJVU_RENDER_COLOR,
+									&rect,
+									&rect,
+									fmt,
+									img.bytesPerLine (),
+									reinterpret_cast<char*> (img.bits ()));
+							qDebug () << Q_FUNC_INFO << ctx.PageNum_ << res;
+							if (res == DDJVU_JOB_OK)
+							{
+								auto future = pair.second;
+								Util::ReportFutureResult (future, img);
+							}
+							else
+								result.Unrendered_ [ctx.PageNum_] [pair.first] = pair.second;
+						}
+						return result;
+					}
+				},
+				+[] (Result& acc, const Result& partial) { acc.Unrendered_.unite (partial.Unrendered_); });
+
+		Util::Sequence (this, future) >>
+				[this] (const Result& result)
+				{
+					RenderJobs_.unite (result.Unrendered_);
+
+					auto remainingPages = PendingRenders_.keys ().toSet ();
+					const auto& remainingJobs = RenderJobs_.keys ().toSet ();
+					remainingPages.subtract (remainingJobs);
+
+					qDebug () << Q_FUNC_INFO << "cleaning up finished" << remainingPages;
+					qDebug () << Q_FUNC_INFO << "remaining pages:" << remainingJobs;
+					for (const auto num : remainingPages)
+					{
+						const auto page = PendingRenders_.take (num);
+						PendingRendersNums_.remove (page);
+						ddjvu_page_release (page);
+					}
+				};
 	}
 }
 }
