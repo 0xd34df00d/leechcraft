@@ -14,6 +14,7 @@ find_path (QWT_INCLUDE_DIRS
 	/usr/include/qwt-qt5
 	/usr/include/qwt6
 	/usr/include/qwt
+	/usr/include/qt5/qwt6
 	/usr/include/qt5/qwt
 	/usr/local/lib/qwt.framework/Headers
 )
