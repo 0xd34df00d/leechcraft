@@ -102,7 +102,7 @@ namespace Util
 		template<typename WorkerType>
 		struct InitializerBase
 		{
-			virtual std::shared_ptr<WorkerType> Initialize () = 0;
+			virtual std::unique_ptr<WorkerType> Initialize () = 0;
 		};
 
 		template<typename WorkerType, typename... Args>
@@ -115,18 +115,18 @@ namespace Util
 			{
 			}
 
-			std::shared_ptr<WorkerType> Initialize () override
+			std::unique_ptr<WorkerType> Initialize () override
 			{
-				return CPP17::Apply ([] (auto&&... args) { return std::make_shared<WorkerType> (std::forward<Args> (args)...); }, Args_);
+				return CPP17::Apply ([] (auto&&... args) { return std::make_unique<WorkerType> (std::forward<Args> (args)...); }, Args_);
 			}
 		};
 
 		template<typename WorkerType>
 		struct Initializer<WorkerType> : InitializerBase<WorkerType>
 		{
-			std::shared_ptr<WorkerType> Initialize () override
+			std::unique_ptr<WorkerType> Initialize () override
 			{
-				return std::make_shared<WorkerType> ();
+				return std::make_unique<WorkerType> ();
 			}
 		};
 	}
@@ -136,20 +136,20 @@ namespace Util
 	{
 		std::atomic_bool IsAutoQuit_ { false };
 	protected:
-		std::shared_ptr<WorkerType> Worker_;
+		std::unique_ptr<WorkerType> Worker_;
 
-		std::shared_ptr<detail::InitializerBase<WorkerType>> Initializer_;
+		std::unique_ptr<detail::InitializerBase<WorkerType>> Initializer_;
 	public:
 		WorkerThread (QObject *parent = nullptr)
 		: WorkerThreadBase { parent }
-		, Initializer_ { std::make_shared<detail::Initializer<WorkerType>> () }
+		, Initializer_ { std::make_unique<detail::Initializer<WorkerType>> () }
 		{
 		}
 
 		template<typename... Args>
 		WorkerThread (QObject *parent, const Args&... args)
 		: WorkerThreadBase { parent }
-		, Initializer_ { std::make_shared<detail::Initializer<WorkerType, std::decay_t<Args>...>> (std::tuple<std::decay_t<Args>...> { args... }) }
+		, Initializer_ { std::make_unique<detail::Initializer<WorkerType, std::decay_t<Args>...>> (std::tuple<std::decay_t<Args>...> { args... }) }
 		{
 		}
 
