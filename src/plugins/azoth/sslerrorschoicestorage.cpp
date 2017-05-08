@@ -75,8 +75,8 @@ namespace Azoth
 	: DB_ { QSqlDatabase::addDatabase ("QSQLITE",
 			Util::GenConnectionName ("org.LeechCraft.Azoth.SslErrors")) }
 	{
-		const auto& cacheDir = Util::GetUserDir (Util::UserDir::LC, "azoth");
-		DB_.setDatabaseName (cacheDir.filePath ("sslerrors.db"));
+		const auto& dbDir = Util::GetUserDir (Util::UserDir::LC, "azoth");
+		DB_.setDatabaseName (dbDir.filePath ("sslerrors.db"));
 		if (!DB_.open ())
 		{
 			qWarning () << Q_FUNC_INFO
