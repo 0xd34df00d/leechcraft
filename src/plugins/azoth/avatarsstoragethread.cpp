@@ -36,27 +36,17 @@ namespace Azoth
 	QFuture<void> AvatarsStorageThread::SetAvatar (const QString& entryId,
 			IHaveAvatars::Size size, const QByteArray& imageData)
 	{
-		return ScheduleImpl ([=] { Storage_->SetAvatar (entryId, size, imageData); });
+		return ScheduleImpl ([=] { Worker_->SetAvatar (entryId, size, imageData); });
 	}
 
 	QFuture<boost::optional<QByteArray>> AvatarsStorageThread::GetAvatar (const QString& entryId, IHaveAvatars::Size size)
 	{
-		return ScheduleImpl ([=] { return Storage_->GetAvatar (entryId, size); });
+		return ScheduleImpl ([=] { return Worker_->GetAvatar (entryId, size); });
 	}
 
 	QFuture<void> AvatarsStorageThread::DeleteAvatars (const QString& entryId)
 	{
-		return ScheduleImpl ([=] { Storage_->DeleteAvatars (entryId); });
-	}
-
-	void AvatarsStorageThread::Initialize ()
-	{
-		Storage_.reset (new AvatarsStorageOnDisk);
-	}
-
-	void AvatarsStorageThread::Cleanup ()
-	{
-		Storage_.reset ();
+		return ScheduleImpl ([=] { Worker_->DeleteAvatars (entryId); });
 	}
 }
 }

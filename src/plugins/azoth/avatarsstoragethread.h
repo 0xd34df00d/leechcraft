@@ -40,20 +40,16 @@ namespace Azoth
 {
 	class AvatarsStorageOnDisk;
 
-	class AvatarsStorageThread final : public Util::WorkerThreadBase
+	class AvatarsStorageThread final : public Util::WorkerThread<AvatarsStorageOnDisk>
 	{
-		std::unique_ptr<AvatarsStorageOnDisk> Storage_;
 	public:
-		using Util::WorkerThreadBase::WorkerThreadBase;
+		using WorkerThread::WorkerThread;
 
 		QFuture<void> SetAvatar (const QString& entryId,
 				IHaveAvatars::Size size, const QByteArray& imageData);
 		QFuture<boost::optional<QByteArray>> GetAvatar (const QString& entryId,
 				IHaveAvatars::Size size);
 		QFuture<void> DeleteAvatars (const QString& entryId);
-	protected:
-		void Initialize () override;
-		void Cleanup () override;
 	};
 }
 }
