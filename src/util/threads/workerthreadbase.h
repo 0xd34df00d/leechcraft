@@ -136,6 +136,8 @@ namespace Util
 	{
 		std::atomic_bool IsAutoQuit_ { false };
 	protected:
+		using W = WorkerType;
+
 		std::unique_ptr<WorkerType> Worker_;
 
 		std::unique_ptr<detail::InitializerBase<WorkerType>> Initializer_;
