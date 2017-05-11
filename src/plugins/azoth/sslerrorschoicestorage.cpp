@@ -43,9 +43,11 @@ namespace Azoth
 {
 	struct SslErrorsChoiceStorage::Record
 	{
-		Util::oral::PKey<QByteArray, Util::oral::NoAutogen> AccountID_;
+		QByteArray AccountID_;
 		QSslError::SslError Error_;
 		SslErrorsChoiceStorage::Action Action_;
+
+		using Constraints = Util::oral::Constraints<Util::oral::PrimaryKey<0, 1>>;
 
 		static QString ClassName ()
 		{
