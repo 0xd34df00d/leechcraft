@@ -39,15 +39,15 @@ namespace Xoox
 {
 	class SDSession;
 
-	class SDModel : public QStandardItemModel
+	class SDModel final : public QStandardItemModel
 	{
 		SDSession * const Session_;
 	public:
 		SDModel (SDSession*);
 		
-		bool canFetchMore (const QModelIndex&) const;
-		void fetchMore (const QModelIndex&);
-		bool hasChildren (const QModelIndex&) const;
+		bool canFetchMore (const QModelIndex&) const override;
+		void fetchMore (const QModelIndex&) override;
+		bool hasChildren (const QModelIndex&) const override;
 	};
 }
 }
