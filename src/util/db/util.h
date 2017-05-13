@@ -54,7 +54,7 @@ namespace Util
 	 *
 	 * @ingroup DbUtil
 	 */
-	UTIL_DB_API void RunTextQuery (const QSqlDatabase& db, const QString& text);
+	UTIL_DB_API QSqlQuery RunTextQuery (const QSqlDatabase& db, const QString& text);
 
 	/** @brief Loads the query text from the given resource file.
 	 *

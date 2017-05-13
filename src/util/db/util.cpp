@@ -37,11 +37,14 @@ namespace LeechCraft
 {
 namespace Util
 {
-	void RunTextQuery (const QSqlDatabase& db, const QString& text)
+	QSqlQuery RunTextQuery (const QSqlDatabase& db, const QString& text)
 	{
 		QSqlQuery query { db };
 		query.prepare (text);
+
 		DBLock::Execute (query);
+
+		return query;
 	}
 
 	QString LoadQuery (const QString& pluginName, const QString& filename)
