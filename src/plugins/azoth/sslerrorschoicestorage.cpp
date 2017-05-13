@@ -35,6 +35,7 @@
 #include <util/db/util.h>
 #include <util/db/dblock.h>
 #include <util/db/oral.h>
+#include <util/db/migrate.h>
 #include <util/sll/functor.h>
 
 namespace LeechCraft
@@ -87,6 +88,8 @@ namespace Azoth
 
 		Util::RunTextQuery (DB_, "PRAGMA synchronous = NORMAL;");
 		Util::RunTextQuery (DB_, "PRAGMA journal_mode = WAL;");
+
+		Util::oral::Migrate<Record> (DB_);
 
 		AdaptedRecord_ = Util::oral::AdaptPtr<Record> (DB_);
 	}
