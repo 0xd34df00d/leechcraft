@@ -56,8 +56,8 @@ namespace Xoox
 
 		QString Query_;
 
-		SDModel *Model_;
-		GlooxAccount *Account_;
+		SDModel * const Model_;
+		GlooxAccount * const Account_;
 		QHash<QString, QHash<QString, QStandardItem*>> JID2Node2Item_;
 
 		struct ItemInfo
