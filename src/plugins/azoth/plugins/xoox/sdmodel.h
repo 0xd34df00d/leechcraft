@@ -41,8 +41,6 @@ namespace Xoox
 
 	class SDModel : public QStandardItemModel
 	{
-		Q_OBJECT
-		
 		SDSession * const Session_;
 	public:
 		SDModel (SDSession*);
