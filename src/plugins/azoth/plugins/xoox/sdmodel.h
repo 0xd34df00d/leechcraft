@@ -43,7 +43,7 @@ namespace Xoox
 	{
 		Q_OBJECT
 		
-		SDSession *Session_;
+		SDSession * const Session_;
 	public:
 		SDModel (SDSession*);
 		
