@@ -47,7 +47,17 @@ namespace oral
 			if (!result.next ())
 				return true;
 
-			return result.value (0).toString () == schema;
+			const auto& existingDDL = result.value (0).toString ();
+
+			auto figureOutFields = [] (const QString& str)
+			{
+				auto firstOpen = str.indexOf ('(');
+				auto lastClose = str.lastIndexOf (')');
+				return str.midRef (firstOpen, lastClose - firstOpen);
+			};
+			auto existing = figureOutFields (existingDDL);
+			auto suggested = figureOutFields (schema);
+			return existing == suggested;
 		}
 	}
 
