@@ -62,9 +62,7 @@ namespace Azoth
 }
 }
 
-using Record = LeechCraft::Azoth::SslErrorsChoiceStorage::Record;
-
-BOOST_FUSION_ADAPT_STRUCT (Record,
+BOOST_FUSION_ADAPT_STRUCT (LeechCraft::Azoth::SslErrorsChoiceStorage::Record,
 		AccountID_,
 		Error_,
 		Action_)
