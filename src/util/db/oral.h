@@ -1385,6 +1385,15 @@ namespace oral
 			using transform_view = typename boost::mpl::transform<objects_vector, WrapAsFunc<boost::mpl::_1, T>>::type;
 			typename boost::fusion::result_of::as_vector<transform_view>::type SingleFKeySelectors_;
 		};
+
+		template<typename T>
+		CachedFieldsData BuildCachedFieldsData (const QSqlDatabase& db, const QString& table = T::ClassName ())
+		{
+			const auto& fields = detail::GetFieldsNames<T> {} ();
+			const auto& boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
+
+			return { table, db, fields, boundFields };
+		}
 	}
 
 	template<typename T>
@@ -1420,13 +1429,9 @@ namespace oral
 	template<typename T>
 	ObjectInfo<T> Adapt (const QSqlDatabase& db)
 	{
-		const QList<QString> fields = detail::GetFieldsNames<T> {} ();
-		const QList<QString> boundFields = Util::Map (fields, [] (const QString& str) { return ':' + str; });
+		const auto& cachedData = detail::BuildCachedFieldsData<T> (db);
 
-		const auto& table = T::ClassName ();
-
-		const detail::CachedFieldsData cachedData { table, db, fields, boundFields };
-		if (db.record (table).isEmpty ())
+		if (db.record (cachedData.Table_).isEmpty ())
 			RunTextQuery (db, detail::AdaptCreateTable<T> (cachedData));
 
 		const auto& selectr = detail::AdaptSelectAll<T> (cachedData);
