@@ -70,7 +70,16 @@ namespace oral
 		const auto& schema = detail::AdaptCreateTable<Record> (detail::BuildCachedFieldsData<Record> (db, thisName));
 
 		if (detail::MatchesSchema (baseName, schema, db))
+		{
+			qDebug () << Q_FUNC_INFO
+					<< "not migrating"
+					<< db.connectionName ();
 			return;
+		}
+
+		qDebug () << Q_FUNC_INFO
+				<< "migrating"
+				<< db.connectionName ();
 
 		Util::DBLock lock { db };
 		lock.Init ();
