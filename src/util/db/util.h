@@ -49,6 +49,8 @@ namespace Util
 	 *
 	 * @param[in] db The database to execute the query \em text on.
 	 * @param[in] text The text of the query to be executed.
+	 * @return The query object, which may be used to retrieve the query
+	 * results.
 	 *
 	 * @throws std::exception If the query execution failed.
 	 *
