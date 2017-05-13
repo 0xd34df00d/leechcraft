@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <boost/function.hpp>
+#include <functional>
 #include <QObject>
 #include <QHash>
 #include <QStringList>
@@ -69,7 +69,7 @@ namespace Xoox
 		};
 		QHash<QStandardItem*, ItemInfo> Item2Info_;
 
-		typedef boost::function<void (const ItemInfo&)> ItemAction_t;
+		using ItemAction_t = std::function<void (ItemInfo)>;
 		QHash<QByteArray, ItemAction_t> ID2Action_;
 
 		enum Columns
