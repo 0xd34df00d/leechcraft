@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_SDSESSION_H
+#pragma once
+
 #include <boost/function.hpp>
 #include <QObject>
 #include <QHash>
@@ -110,5 +110,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

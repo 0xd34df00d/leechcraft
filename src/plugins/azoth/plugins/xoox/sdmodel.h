@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_SDMODEL_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_SDMODEL_H
+#pragma once
+
 #include <QStandardItemModel>
 
 namespace LeechCraft
@@ -54,5 +54,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
