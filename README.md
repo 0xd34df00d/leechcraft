@@ -1,3 +1,5 @@
+[![Build Status](http://leechcraft.org:8080/job/leechcraft/badge/icon)](http://leechcraft.org:8080/job/leechcraft/)
+
 LeechCraft is a (C++ and Qt-based) modular live environment: a kind
 of a desktop environment with a focus on the actual applications for
 some typical desktop tasks and their interoperation. For instance,
