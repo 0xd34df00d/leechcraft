@@ -76,23 +76,23 @@ namespace Util
 	namespace
 	{
 		template<typename To, typename From>
-		typename std::enable_if<std::is_same<From, To>::value, To>::type DumbCast (From from)
+		std::enable_if_t<std::is_same<From, To>::value, To> DumbCast (From from)
 		{
 			return from;
 		}
 
 		template<typename To, typename From>
-		typename std::enable_if<!std::is_same<From, To>::value &&
+		std::enable_if_t<!std::is_same<From, To>::value &&
 					std::is_integral<From>::value &&
-					std::is_integral<To>::value, To>::type DumbCast (From from)
+					std::is_integral<To>::value, To> DumbCast (From from)
 		{
 			return static_cast<To> (from);
 		}
 
 		template<typename To, typename From>
-		typename std::enable_if<!std::is_same<From, To>::value &&
+		std::enable_if_t<!std::is_same<From, To>::value &&
 					!(std::is_integral<From>::value &&
-						std::is_integral<To>::value), To>::type DumbCast (From from)
+						std::is_integral<To>::value), To> DumbCast (From from)
 		{
 			return reinterpret_cast<To> (from);
 		}
