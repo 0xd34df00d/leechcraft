@@ -129,7 +129,7 @@ namespace Xoox
 		auto idHasCat = [&info] (const QString& name)
 		{
 			return std::any_of (info.Identities_.begin (), info.Identities_.end (),
-					[&name] (decltype (*info.Identities_.begin ()) id) { return id.category () == name; });
+					[&name] (const auto& id) { return id.category () == name; });
 		};
 
 		QList<QPair<QByteArray, QString>> result;
