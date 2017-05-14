@@ -368,7 +368,7 @@ namespace MuCommands
 
 	bool ShowVersion (IProxyObject *azothProxy, ICLEntry *entry, const QString& text)
 	{
-		PerformAction ([azothProxy, entry, text] (ICLEntry *target, const QString& name) -> void
+		PerformAction ([azothProxy, entry] (ICLEntry *target, const QString& name)
 				{
 					for (const auto& var : target->Variants ())
 						ShowVersionVariant (azothProxy, entry, name, target, var, true);
