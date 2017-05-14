@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <QXmppDiscoveryIq.h>
+#include <util/sll/delayedexecutor.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "sdmodel.h"
@@ -340,12 +341,34 @@ namespace Xoox
 					item.jid (),
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
-
-			Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
-					[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
-					true,
-					item.node ());
 		}
+
+		auto requestBatch = std::make_shared<std::function<void (int)>> ();
+		*requestBatch = [ptr, iq, requestBatch] (int start)
+		{
+			if (!ptr ||
+					start >= iq.items ().size ())
+				return;
+
+			const auto batchSize = 300;
+
+			for (int end = std::min (start + batchSize, iq.items ().size ()); start < end; ++start)
+			{
+				const auto& item = iq.items ().at (start);
+				ptr->Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
+						[ptr] (const QXmppDiscoveryIq& infoIq)
+						{
+							if (ptr)
+								ptr->HandleInfo (infoIq);
+						},
+						true,
+						item.node ());
+			}
+
+			Util::ExecuteLater ([=] { (*requestBatch) (start); }, 2000);
+		};
+
+		(*requestBatch) (0);
 	}
 
 	void SDSession::QueryItem (QStandardItem *item)
