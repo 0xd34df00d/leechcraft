@@ -166,13 +166,23 @@ namespace Seen
 	void Document::TryUpdateSizes ()
 	{
 		const int numPages = GetNumPages ();
+		Sizes_.resize (numPages);
 		for (int i = 0; i < numPages; ++i)
-			if (!Sizes_.contains (i))
+			if (!Sizes_.at (i).isValid ())
 				TryGetPageInfo (i);
 	}
 
 	void Document::TryGetPageInfo (int pageNum)
 	{
+		if (pageNum >= Sizes_.size ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "page out of bounds:"
+					<< pageNum
+					<< Sizes_;
+			return;
+		}
+
 		ddjvu_pageinfo_t info;
 		auto r = ddjvu_document_get_pageinfo (Doc_, pageNum, &info);
 		if (r != DDJVU_JOB_OK)
