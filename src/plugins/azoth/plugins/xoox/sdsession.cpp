@@ -184,28 +184,6 @@ namespace Xoox
 
 	namespace
 	{
-		struct Appender
-		{
-			QStringList Strings_;
-
-			Appender ()
-			{
-			}
-
-			Appender& operator() (const QString& text, const QString& name)
-			{
-				if (!text.isEmpty ())
-					Strings_ << name + ' ' + text;
-
-				return *this;
-			}
-
-			QString operator() () const
-			{
-				return Strings_.join ("<br/>");
-			}
-		};
-
 		QString GetMUCDescr (const QXmppDataForm& form)
 		{
 			QString result;
@@ -289,14 +267,18 @@ namespace Xoox
 			if (id.name ().isEmpty ())
 				continue;
 
-			tooltip += "<li>";
-			tooltip += Appender ()
-					(id.name (), tr ("Identity name:"))
-					(id.category (), tr ("Category:"))
-					(id.type (), tr ("Type:"))
-					(id.language (), tr ("Language:"))
-					();
-			tooltip += "</li>";
+			QStringList identityDescr;
+			auto append = [&identityDescr] (const QString& text, const QString& name)
+			{
+				if (!text.isEmpty ())
+					identityDescr << name + ' ' + text;
+			};
+			append (id.name (), tr ("Identity name:"));
+			append (id.category (), tr ("Category:"));
+			append (id.type (), tr ("Type:"));
+			append (id.language (), tr ("Language:"));
+
+			tooltip += "<li>" + identityDescr.join ("<br/>") + "</li>";
 		}
 		tooltip += "</ul>";
 
