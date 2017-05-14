@@ -186,17 +186,13 @@ namespace Xoox
 	{
 		QString GetMUCDescr (const QXmppDataForm& form)
 		{
-			QString result;
 			for (const auto& field : form.fields ())
 				if (field.key () == "FORM_TYPE" && field.value () != "http://jabber.org/protocol/muc#roominfo")
-					return QString ();
+					return {};
 				else if (field.key () == "muc#roominfo_description")
-				{
-					result = field.value ().toString ();
-					break;
-				}
+					return field.value ().toString ();
 
-			return result;
+			return {};
 		}
 	}
 
