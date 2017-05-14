@@ -219,7 +219,7 @@ namespace Seen
 		const auto& future = QtConcurrent::mappedReduced (pages,
 				std::function<Result (PageRedrawContext)>
 				{
-					[fmt = RenderFormat_] (const PageRedrawContext& ctx) -> Result
+					[fmt = RenderFormat_] (const PageRedrawContext& ctx)
 					{
 						const auto& srcSize = ctx.SrcSize_;
 
