@@ -254,7 +254,7 @@ namespace Seen
 								Util::ReportFutureResult (future, img);
 							}
 							else
-								result.Unrendered_ [ctx.PageNum_] [pair.first] = pair.second;
+								result.Unrendered_ [ctx.PageNum_] [scale] = pair.second;
 						}
 						return result;
 					}
@@ -266,13 +266,17 @@ namespace Seen
 				{
 					RenderJobs_.unite (result.Unrendered_);
 
-					auto remainingPages = PendingRenders_.keys ().toSet ();
 					const auto& remainingJobs = RenderJobs_.keys ().toSet ();
-					remainingPages.subtract (remainingJobs);
 
-					qDebug () << Q_FUNC_INFO << "cleaning up finished" << remainingPages;
+					const auto finishedPages = [this, &remainingJobs]
+					{
+						auto finishedPages = PendingRenders_.keys ().toSet ();
+						return finishedPages.subtract (remainingJobs);
+					} ();
+
+					qDebug () << Q_FUNC_INFO << "cleaning up finished" << finishedPages;
 					qDebug () << Q_FUNC_INFO << "remaining pages:" << remainingJobs;
-					for (const auto num : remainingPages)
+					for (const auto num : finishedPages)
 					{
 						const auto page = PendingRenders_.take (num);
 						PendingRendersNums_.remove (page);
