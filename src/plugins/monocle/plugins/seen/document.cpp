@@ -159,7 +159,6 @@ namespace Seen
 			QTimer::singleShot (100, this, &Document::RunRedrawQueue);
 
 		auto num = PendingRendersNums_ [page];
-		qDebug () << Q_FUNC_INFO << num;
 		ScheduledRedraws_ << num;
 	}
 

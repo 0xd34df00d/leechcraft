@@ -131,8 +131,6 @@ namespace Seen
 	{
 		while (const auto msg = ddjvu_message_peek (Context_))
 		{
-			qDebug () << Q_FUNC_INFO << msg->m_any.tag;
-
 			switch (msg->m_any.tag)
 			{
 			case DDJVU_DOCINFO:
