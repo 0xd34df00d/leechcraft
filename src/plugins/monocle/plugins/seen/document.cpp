@@ -282,6 +282,12 @@ namespace Seen
 						PendingRendersNums_.remove (page);
 						ddjvu_page_release (page);
 					}
+
+					if (!remainingJobs.isEmpty ())
+					{
+						ScheduledRedraws_ += remainingJobs;
+						QTimer::singleShot (100, this, &Document::RunRedrawQueue);
+					}
 				};
 	}
 }
