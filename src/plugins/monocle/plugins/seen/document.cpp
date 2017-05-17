@@ -159,20 +159,29 @@ namespace Seen
 			QTimer::singleShot (100, this, &Document::RunRedrawQueue);
 
 		auto num = PendingRendersNums_ [page];
-		qDebug () << Q_FUNC_INFO << num;
 		ScheduledRedraws_ << num;
 	}
 
 	void Document::TryUpdateSizes ()
 	{
 		const int numPages = GetNumPages ();
+		Sizes_.resize (numPages);
 		for (int i = 0; i < numPages; ++i)
-			if (!Sizes_.contains (i))
+			if (!Sizes_.at (i).isValid ())
 				TryGetPageInfo (i);
 	}
 
 	void Document::TryGetPageInfo (int pageNum)
 	{
+		if (pageNum >= Sizes_.size ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "page out of bounds:"
+					<< pageNum
+					<< Sizes_;
+			return;
+		}
+
 		ddjvu_pageinfo_t info;
 		auto r = ddjvu_document_get_pageinfo (Doc_, pageNum, &info);
 		if (r != DDJVU_JOB_OK)
@@ -210,7 +219,7 @@ namespace Seen
 		const auto& future = QtConcurrent::mappedReduced (pages,
 				std::function<Result (PageRedrawContext)>
 				{
-					[fmt = RenderFormat_] (const PageRedrawContext& ctx) -> Result
+					[fmt = RenderFormat_] (const PageRedrawContext& ctx)
 					{
 						const auto& srcSize = ctx.SrcSize_;
 
@@ -245,7 +254,7 @@ namespace Seen
 								Util::ReportFutureResult (future, img);
 							}
 							else
-								result.Unrendered_ [ctx.PageNum_] [pair.first] = pair.second;
+								result.Unrendered_ [ctx.PageNum_] [scale] = pair.second;
 						}
 						return result;
 					}
@@ -257,17 +266,27 @@ namespace Seen
 				{
 					RenderJobs_.unite (result.Unrendered_);
 
-					auto remainingPages = PendingRenders_.keys ().toSet ();
 					const auto& remainingJobs = RenderJobs_.keys ().toSet ();
-					remainingPages.subtract (remainingJobs);
 
-					qDebug () << Q_FUNC_INFO << "cleaning up finished" << remainingPages;
+					const auto finishedPages = [this, &remainingJobs]
+					{
+						auto finishedPages = PendingRenders_.keys ().toSet ();
+						return finishedPages.subtract (remainingJobs);
+					} ();
+
+					qDebug () << Q_FUNC_INFO << "cleaning up finished" << finishedPages;
 					qDebug () << Q_FUNC_INFO << "remaining pages:" << remainingJobs;
-					for (const auto num : remainingPages)
+					for (const auto num : finishedPages)
 					{
 						const auto page = PendingRenders_.take (num);
 						PendingRendersNums_.remove (page);
 						ddjvu_page_release (page);
+					}
+
+					if (!remainingJobs.isEmpty ())
+					{
+						ScheduledRedraws_ += remainingJobs;
+						QTimer::singleShot (100, this, &Document::RunRedrawQueue);
 					}
 				};
 	}

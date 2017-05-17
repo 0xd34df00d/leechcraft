@@ -59,7 +59,7 @@ namespace Seen
 
 		DocManager *DocMgr_;
 
-		QHash<int, QSize> Sizes_;
+		QVector<QSize> Sizes_;
 		QHash<int, ddjvu_page_t*> PendingRenders_;
 		QHash<ddjvu_page_t*, int> PendingRendersNums_;
 

@@ -32,6 +32,7 @@
 #include <QDomElement>
 #include <QtDebug>
 #include <QXmppDiscoveryIq.h>
+#include <util/sll/delayedexecutor.h>
 #include "glooxaccount.h"
 #include "clientconnection.h"
 #include "sdmodel.h"
@@ -129,7 +130,7 @@ namespace Xoox
 		auto idHasCat = [&info] (const QString& name)
 		{
 			return std::any_of (info.Identities_.begin (), info.Identities_.end (),
-					[&name] (decltype (*info.Identities_.begin ()) id) { return id.category () == name; });
+					[&name] (const auto& id) { return id.category () == name; });
 		};
 
 		QList<QPair<QByteArray, QString>> result;
@@ -183,41 +184,15 @@ namespace Xoox
 
 	namespace
 	{
-		struct Appender
-		{
-			QStringList Strings_;
-
-			Appender ()
-			{
-			}
-
-			Appender& operator() (const QString& text, const QString& name)
-			{
-				if (!text.isEmpty ())
-					Strings_ << name + ' ' + text;
-
-				return *this;
-			}
-
-			QString operator() () const
-			{
-				return Strings_.join ("<br/>");
-			}
-		};
-
 		QString GetMUCDescr (const QXmppDataForm& form)
 		{
-			QString result;
 			for (const auto& field : form.fields ())
 				if (field.key () == "FORM_TYPE" && field.value () != "http://jabber.org/protocol/muc#roominfo")
-					return QString ();
+					return {};
 				else if (field.key () == "muc#roominfo_description")
-				{
-					result = field.value ().toString ();
-					break;
-				}
+					return field.value ().toString ();
 
-			return result;
+			return {};
 		}
 	}
 
@@ -288,14 +263,18 @@ namespace Xoox
 			if (id.name ().isEmpty ())
 				continue;
 
-			tooltip += "<li>";
-			tooltip += Appender ()
-					(id.name (), tr ("Identity name:"))
-					(id.category (), tr ("Category:"))
-					(id.type (), tr ("Type:"))
-					(id.language (), tr ("Language:"))
-					();
-			tooltip += "</li>";
+			QStringList identityDescr;
+			auto append = [&identityDescr] (const QString& text, const QString& name)
+			{
+				if (!text.isEmpty ())
+					identityDescr << name + ' ' + text;
+			};
+			append (id.name (), tr ("Identity name:"));
+			append (id.category (), tr ("Category:"));
+			append (id.type (), tr ("Type:"));
+			append (id.language (), tr ("Language:"));
+
+			tooltip += "<li>" + identityDescr.join ("<br/>") + "</li>";
 		}
 		tooltip += "</ul>";
 
@@ -340,12 +319,34 @@ namespace Xoox
 					item.jid (),
 					item.node ());
 			JID2Node2Item_ [item.jid ()] [item.node ()] = items.at (0);
-
-			Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
-					[ptr] (const QXmppDiscoveryIq& iq) { if (ptr) ptr->HandleInfo (iq); },
-					true,
-					item.node ());
 		}
+
+		auto requestBatch = std::make_shared<std::function<void (int)>> ();
+		*requestBatch = [ptr, iq, requestBatch] (int start)
+		{
+			if (!ptr ||
+					start >= iq.items ().size ())
+				return;
+
+			const auto batchSize = 300;
+
+			for (int end = std::min (start + batchSize, iq.items ().size ()); start < end; ++start)
+			{
+				const auto& item = iq.items ().at (start);
+				ptr->Account_->GetClientConnection ()->GetDiscoManagerWrapper ()->RequestInfo (item.jid (),
+						[ptr] (const QXmppDiscoveryIq& infoIq)
+						{
+							if (ptr)
+								ptr->HandleInfo (infoIq);
+						},
+						true,
+						item.node ());
+			}
+
+			Util::ExecuteLater ([=] { (*requestBatch) (start); }, 2000);
+		};
+
+		(*requestBatch) (0);
 	}
 
 	void SDSession::QueryItem (QStandardItem *item)

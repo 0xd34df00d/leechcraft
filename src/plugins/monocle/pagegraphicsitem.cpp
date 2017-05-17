@@ -156,6 +156,8 @@ namespace Monocle
 		{
 			Invalid_ = false;
 
+			setPixmap (GetEmptyPixmap (true));
+
 			Util::Sequence (this, Doc_->RenderPage (PageNum_, XScale_, YScale_)) >>
 					[&, prevXScale = XScale_, prevYScale = YScale_] (const QImage& img)
 					{

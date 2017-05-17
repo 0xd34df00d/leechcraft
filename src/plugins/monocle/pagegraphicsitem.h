@@ -73,7 +73,7 @@ namespace Monocle
 		};
 		QMap<QGraphicsItem*, RectInfo> Item2RectInfo_;
 	public:
-		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = 0);
+		PageGraphicsItem (IDocument_ptr, int, QGraphicsItem* = nullptr);
 		~PageGraphicsItem ();
 
 		void SetLayoutManager (PagesLayoutManager*);
