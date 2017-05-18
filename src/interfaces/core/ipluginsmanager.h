@@ -191,6 +191,22 @@ public:
 	 */
 	virtual void OpenSettings (QObject *plugin) = 0;
 
+	/** @brief Creates an object for reporting progress of a long-running
+	 * load-time operation.
+	 *
+	 * This method should be called by any plugin doing some long-running
+	 * operation during LeechCraft load (like a DB migration) because of
+	 * usability reasons.
+	 *
+	 * @param[in] thisPlugin The pointer to the instance object of the
+	 * plugin that runs the long-running operation (typically the plugin
+	 * where the code invoking this function belongs).
+	 * @return The object used to track progress of the long-running
+	 * operation. The returnd object may be used for progress reports of
+	 * multiple operations at once.
+	 *
+	 * @sa ILoadProgressReporter
+	 */
 	virtual ILoadProgressReporter_ptr CreateLoadProgressReporter (QObject *thisPlugin) = 0;
 };
 
