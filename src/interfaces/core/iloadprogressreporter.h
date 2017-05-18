@@ -43,7 +43,7 @@ public:
 
 	/** @brief Sets the current progress to \em value.
 	 *
-	 * @param value The new value for the progress.
+	 * @param[in] value The new value for the progress.
 	 */
 	virtual void ReportValue (int value) = 0;
 
@@ -75,9 +75,9 @@ public:
 
 	/** @brief Notifies about a specific long-running process during load.
 	 *
-	 * @param title The human-readable title of the operation.
-	 * @param min The initial number of steps already done.
-	 * @param max The total number of steps that should be done by.
+	 * @param[in] title The human-readable title of the operation.
+	 * @param[in] min The initial number of steps already done.
+	 * @param[in] max The total number of steps that should be done by.
 	 * @return The object used to track this exact operation.
 	 */
 	virtual ILoadProcess_ptr InitiateProcess (const QString& title, int min, int max) = 0;
