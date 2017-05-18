@@ -50,6 +50,7 @@ class Q_DECL_EXPORT IShortcutProxy
 public:
 	/** @brief Checks whether a given object has been registered already.
 	 *
+	 * @param[in] object The object to check.
 	 * @return Returns whether the \em object has been already registered.
 	 */
 	virtual bool HasObject (QObject *object) const = 0;
