@@ -79,6 +79,12 @@ public:
 	 * Each row of the model should contain data for roles defined in the
 	 * LeechCraft::CommonDevRole enum as well as LeechCraft::USBDeviceRole or
 	 * LeechCraft::MassStorageRole enums, depending on the device type.
+	 *
+	 * The returned model should be flat - in other words, no hierarchy is
+	 * assumed to be present.
+	 *
+	 * @return The model describing the currently attached removable
+	 * devices.
 	 */
 	virtual QAbstractItemModel* GetDevicesModel () const = 0;
 
@@ -87,6 +93,9 @@ public:
 	 * This function tried to mount the device identified by \em id, if
 	 * applicable. The \em id corresponds to the ID contained in the
 	 * CommonDevRole::DevID role.
+	 *
+	 * @param[in] id The identifier (as in CommonDevRole::DevID) of the
+	 * device to mount.
 	 *
 	 * @sa CommonDevRole::DevID
 	 */
