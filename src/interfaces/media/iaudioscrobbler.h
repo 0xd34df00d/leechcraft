@@ -44,14 +44,34 @@ namespace Media
 	public:
 		virtual ~IAudioScrobbler () {}
 
+		/** @brief A backdated track - a track with its real playback
+		 * time.
+		 */
 		using BackdatedTrack_t = QPair<Media::AudioInfo, QDateTime>;
+
+		/** @brief A list of backdated tracks.
+		 */
 		using BackdatedTracks_t = QList<BackdatedTrack_t>;
 
+		/** @brief A list of optional features a scrobbler may support.
+		 *
+		 * @sa HasFeature()
+		 */
 		enum class Feature
 		{
+			/** @brief Whether the scrobbler allows sending audiotracks
+			 * marked by past timestamps.
+			 *
+			 * @sa SendBackdated()
+			 */
 			Backdating
 		};
 
+		/** @brief Queries whether a given \em feature is supported.
+		 *
+		 * @param[in] feature The feature to check.
+		 * @return
+		 */
 		virtual bool SupportsFeature (Feature feature) const = 0;
 
 		/** @brief Returns the service name.
@@ -78,6 +98,14 @@ namespace Media
 		 */
 		virtual void NowPlaying (const AudioInfo& audio) = 0;
 
+		/** @brief Sends a \em list of backdated tracks.
+		 *
+		 * If a scrobbler implements this method, it's also worth making
+		 * sure SupportsFeature() returns <code>true</code> for
+		 * Feature::Backdating.
+		 *
+		 * @param[in] list The list of tracks to send.
+		 */
 		virtual void SendBackdated (const BackdatedTracks_t& list) = 0;
 
 		/** @brief Notifies the scrobbler that playback is stopped.
