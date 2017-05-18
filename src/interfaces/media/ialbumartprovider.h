@@ -52,7 +52,7 @@ namespace Media
 		QString Album_;
 	};
 
-	/** @brief Compares to AlbumInfo structures.
+	/** @brief Compares two AlbumInfo structures.
 	 */
 	inline bool operator== (const AlbumInfo& a1, const AlbumInfo& a2)
 	{
