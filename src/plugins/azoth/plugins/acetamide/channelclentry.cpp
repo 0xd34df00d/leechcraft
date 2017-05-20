@@ -363,7 +363,7 @@ namespace Acetamide
 			result ["permclass_role"] << "norole";
 		}
 		else
-			Q_FOREACH (const ChannelRole& role, entry->Roles ())
+			for (const auto& role : entry->Roles ())
 				result ["permclass_role"] << Role2Str_.value (role, "invalid");
 
 		return result;

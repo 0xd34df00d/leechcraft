@@ -182,7 +182,7 @@ namespace Acetamide
 
 	void ChannelsManager::QuitParticipant (const QString& nick, const QString& msg)
 	{
-		Q_FOREACH (auto ch, ChannelHandlers_)
+		for (auto ch : ChannelHandlers_)
 			if (ch->IsUserExists (nick))
 				ch->LeaveParticipant (nick, msg);
 	}

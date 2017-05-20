@@ -502,8 +502,8 @@ namespace Acetamide
 	void IrcAccount::SaveActiveChannels ()
 	{
 		ActiveChannels_.clear ();
-		Q_FOREACH (auto ish, ClientConnection_->GetServerHandlers ())
-			Q_FOREACH (auto ich, ish->GetChannelHandlers ())
+		for (auto ish : ClientConnection_->GetServerHandlers ())
+			for (auto ich : ish->GetChannelHandlers ())
 			{
 				IrcBookmark bookmark;
 				bookmark.ServerName_ = ish->GetServerOptions ().ServerName_;
@@ -538,7 +538,7 @@ namespace Acetamide
 		ServerOptions serverOpt;
 		ChannelOptions channelOpt;
 
-		Q_FOREACH (const IrcBookmark& bookmark, ActiveChannels_)
+		for (const auto& bookmark : ActiveChannels_)
 		{
 			if (!bookmark.AutoJoin_)
 				continue;

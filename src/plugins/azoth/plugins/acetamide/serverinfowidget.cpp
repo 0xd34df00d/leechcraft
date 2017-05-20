@@ -149,7 +149,7 @@ namespace Acetamide
 		Ui_.TargetMax_->setRowCount (list.count ());
 
 		int row = 0;
-		Q_FOREACH (const QString& param, list)
+		for (const auto& param : list)
 		{
 			const int index = param.indexOf (':');
 			QTableWidgetItem *target = new QTableWidgetItem (param.mid (0, index));

@@ -42,7 +42,7 @@ namespace Acetamide
 	: QWidget (parent)
 	{
 		Ui_.setupUi (this);
-		Q_FOREACH (const QByteArray& codec, QTextCodec::availableCodecs ())
+		for (const auto& codec : QTextCodec::availableCodecs ())
 			Ui_.DefaultEncoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.DefaultEncoding_->model ()->sort (0);
 		Ui_.DefaultEncoding_->

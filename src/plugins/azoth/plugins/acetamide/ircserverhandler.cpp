@@ -315,7 +315,7 @@ namespace Acetamide
 		if (list.isEmpty ())
 			return;
 
-		Q_FOREACH (const NickServIdentify& nsi, list)
+		for (const auto& nsi : list)
 		{
 			QRegExp authRegExp (nsi.AuthString_,
 					Qt::CaseInsensitive,
@@ -728,8 +728,7 @@ namespace Acetamide
 		{
 			if (SpyNick2WhoIsMessage_.contains (msg.Nick_))
 			{
-				Q_FOREACH (QObject *entryObj,ChannelsManager_->
-						GetParticipantsByNick (msg.Nick_))
+				for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (msg.Nick_))
 				{
 					ChannelParticipantEntry *entry =
 							qobject_cast<ChannelParticipantEntry*> (entryObj);
@@ -1057,7 +1056,7 @@ namespace Acetamide
 
 	void IrcServerHandler::JoinFromQueue ()
 	{
-		Q_FOREACH (const ChannelOptions& co, ChannelsManager_->GetChannelsQueue ())
+		for (const auto& co : ChannelsManager_->GetChannelsQueue ())
 			IrcParser_->JoinCommand (QStringList () << co.ChannelName_
 					<< co.ChannelPassword_);
 
@@ -1211,8 +1210,7 @@ namespace Acetamide
 
 	void IrcServerHandler::joinAfterInvite ()
 	{
-		Q_FOREACH (const QString& channel,
-				InviteChannelsDialog_->GetChannels ())
+		for (const auto& channel : InviteChannelsDialog_->GetChannels ())
 		{
 			ChannelOptions co;
 			co.ChannelName_ = channel;
@@ -1224,7 +1222,7 @@ namespace Acetamide
 
 	void IrcServerHandler::autoWhoRequest ()
 	{
-		Q_FOREACH (auto channel, ChannelsManager_->GetChannels ())
+		for (auto channel : ChannelsManager_->GetChannels ())
 		{
 			const QString& channelName = channel->GetChannelOptions()
 					.ChannelName_.toLower ();

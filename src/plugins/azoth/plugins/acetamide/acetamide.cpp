@@ -129,7 +129,7 @@ namespace Acetamide
 
 QDataStream& operator<< (QDataStream& out, const QList<QStringList>& list)
 {
-	Q_FOREACH (const QStringList& subList, list)
+	for (const auto& subList : list)
 		out << subList;
 
 	return out;

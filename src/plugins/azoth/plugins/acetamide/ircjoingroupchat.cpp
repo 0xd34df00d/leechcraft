@@ -48,8 +48,7 @@ namespace Acetamide
 
 		Ui_.Channel_->setMaxLength (50);
 
-		Q_FOREACH (const QByteArray& codec,
-				QTextCodec::availableCodecs ())
+		for (const auto& codec : QTextCodec::availableCodecs ())
 			Ui_.Encoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.Encoding_->model ()->sort (0);
 		Ui_.Encoding_->
