@@ -121,9 +121,7 @@ namespace Acetamide
 	void IrcProtocol::RegisterAccount (const QString& name,
 			const QList<QWidget*>& widgets)
 	{
-		IrcAccountConfigurationWidget *w =
-				qobject_cast<IrcAccountConfigurationWidget*>
-					(widgets.value (0));
+		const auto w = qobject_cast<IrcAccountConfigurationWidget*> (widgets.value (0));
 		if (!w)
 		{
 			qWarning () << Q_FUNC_INFO

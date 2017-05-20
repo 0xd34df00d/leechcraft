@@ -730,8 +730,7 @@ namespace Acetamide
 			{
 				for (const auto entryObj : ChannelsManager_->GetParticipantsByNick (msg.Nick_))
 				{
-					ChannelParticipantEntry *entry =
-							qobject_cast<ChannelParticipantEntry*> (entryObj);
+					const auto entry = qobject_cast<ChannelParticipantEntry*> (entryObj);
 					if (!entry)
 						continue;
 
@@ -1057,8 +1056,7 @@ namespace Acetamide
 	void IrcServerHandler::JoinFromQueue ()
 	{
 		for (const auto& co : ChannelsManager_->GetChannelsQueue ())
-			IrcParser_->JoinCommand (QStringList () << co.ChannelName_
-					<< co.ChannelPassword_);
+			IrcParser_->JoinCommand ({ co.ChannelName_, co.ChannelPassword_ });
 
 		ChannelsManager_->CleanQueue ();
 	}
@@ -1224,11 +1222,9 @@ namespace Acetamide
 	{
 		for (auto channel : ChannelsManager_->GetChannels ())
 		{
-			const QString& channelName = channel->GetChannelOptions()
-					.ChannelName_.toLower ();
-			IrcParser_->WhoCommand (QStringList (channelName));
-			SpyWho_ [channelName] = ChannelsManager_->
-					GetChannelUsersCount (channelName) + 1;
+			const auto& channelName = channel->GetChannelOptions().ChannelName_.toLower ();
+			IrcParser_->WhoCommand ({ channelName });
+			SpyWho_ [channelName] = ChannelsManager_->GetChannelUsersCount (channelName) + 1;
 		}
 	}
 

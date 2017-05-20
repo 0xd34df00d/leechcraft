@@ -137,8 +137,8 @@ namespace Acetamide
 	{
 		QList<NickServIdentify> list;
 		for (const auto& nsi : NickServIdentifyList_)
-		if (nsi.NickServNick_ == nickserv)
-			list << nsi;
+			if (nsi.NickServNick_ == nickserv)
+				list << nsi;
 		return list;
 	}
 
@@ -146,8 +146,8 @@ namespace Acetamide
 	{
 		QList<NickServIdentify> list;
 		for (const auto& nsi : NickServIdentifyList_)
-		if (nsi.Server_ == server)
-			list << nsi;
+			if (nsi.Server_ == server)
+				list << nsi;
 		return list;
 	}
 
@@ -160,9 +160,9 @@ namespace Acetamide
 			QRegExp nickMask (nsi.NickServNick_,
 					Qt::CaseInsensitive,
 					QRegExp::Wildcard);
-			if ((nsi.Server_ == server) &&
-					(nsi.Nick_ == nick) &&
-					(nickMask.indexIn (nickserv) == 0))
+			if (nsi.Server_ == server &&
+					nsi.Nick_ == nick &&
+					nickMask.indexIn (nickserv) == 0)
 				list << nsi;
 		}
 		return list;

@@ -351,7 +351,7 @@ namespace Acetamide
 			participant = ICH_->GetSelf ().get ();
 
 		QMap<QByteArray, QList<QByteArray>>  result;
-		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO

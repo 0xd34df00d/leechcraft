@@ -45,8 +45,7 @@ namespace Acetamide
 		for (const auto& codec : QTextCodec::availableCodecs ())
 			Ui_.DefaultEncoding_->addItem (QString::fromUtf8 (codec));
 		Ui_.DefaultEncoding_->model ()->sort (0);
-		Ui_.DefaultEncoding_->
-				setCurrentIndex (Ui_.DefaultEncoding_->findText ("UTF-8"));
+		Ui_.DefaultEncoding_->setCurrentIndex (Ui_.DefaultEncoding_->findText ("UTF-8"));
 	}
 
 	void IrcAccountConfigurationWidget::SetRealName (const QString& real)

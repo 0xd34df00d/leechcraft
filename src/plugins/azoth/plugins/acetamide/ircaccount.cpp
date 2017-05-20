@@ -519,7 +519,7 @@ namespace Acetamide
 
 	void IrcAccount::handleEntryRemoved (QObject *entry)
 	{
-		emit removedCLItems (QObjectList () << entry);
+		emit removedCLItems ({ entry });
 	}
 
 	void IrcAccount::handleGotRosterItems (const QList<QObject*>& items)
@@ -540,6 +540,7 @@ namespace Acetamide
 		{
 			if (!bookmark.AutoJoin_)
 				continue;
+
 			serverOpt.ServerName_ = bookmark.ServerName_;
 			serverOpt.ServerPort_ = bookmark.ServerPort_;
 			serverOpt.ServerPassword_ = bookmark.ServerPassword_;
@@ -557,7 +558,6 @@ namespace Acetamide
 
 		ActiveChannels_.clear ();
 	}
-
-};
-};
-};
+}
+}
+}

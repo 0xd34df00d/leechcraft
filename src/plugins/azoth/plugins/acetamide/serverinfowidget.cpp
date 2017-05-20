@@ -143,7 +143,7 @@ namespace Acetamide
 
 	void ServerInfoWidget::SetTargMax (const QString& str)
 	{
-		const QStringList& list = str.split (',');
+		const auto& list = str.split (',');
 
 		Ui_.TargetMax_->clear ();
 		Ui_.TargetMax_->setRowCount (list.count ());

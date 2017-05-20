@@ -183,7 +183,7 @@ namespace Acetamide
 
 	QList<IrcBookmark> ClientConnection::GetBookmarks () const
 	{
-		QList<QVariant> list = XmlSettingsManager::Instance ().Property ("Bookmarks",
+		const auto& list = XmlSettingsManager::Instance ().Property ("Bookmarks",
 				QList<QVariant> ()).toList ();
 
 		bool hadUnknownVersions = false;
