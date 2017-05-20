@@ -34,6 +34,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sys/sysinfo.h>
+#include <util/sll/prelude.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -264,10 +265,7 @@ namespace Azoth
 
 	QList<QObject*> ProxyObject::GetAllAccounts () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			result << acc->GetQObject ();
-		return result;
+		return Util::Map (Core::Instance ().GetAccounts (), &IAccount::GetQObject);
 	}
 
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
