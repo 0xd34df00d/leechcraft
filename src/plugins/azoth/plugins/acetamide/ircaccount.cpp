@@ -32,6 +32,7 @@
 #include <QInputDialog>
 #include <QSettings>
 #include <QTimer>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iprotocol.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "channelclentry.h"
@@ -273,52 +274,49 @@ namespace Acetamide
 
 	QVariantList IrcAccount::GetBookmarkedMUCs () const
 	{
-		QVariantList result;
-
-		const QList<IrcBookmark>& bookmarks = GetBookmarks ();
-		Q_FOREACH (const IrcBookmark& channel, bookmarks)
-		{
-			QVariantMap cm;
-			cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
-					.arg (channel.ChannelName_ )
-					.arg (channel.ServerName_)
-					.arg (channel.NickName_);
-			cm ["AccountID"] = GetAccountID ();
-			cm ["Server"] = channel.ServerName_;
-			cm ["Port"] = channel.ServerPort_;
-			cm ["ServerPassword"] = channel.ServerPassword_;
-			cm ["Encoding"] = channel.ServerEncoding_;
-			cm ["Channel"] = channel.ChannelName_;
-			cm ["Password"] = channel.ChannelPassword_;
-			cm ["Nickname"] = channel.NickName_;
-			cm ["SSL"] = channel.SSL_;
-			cm ["Autojoin"] = channel.AutoJoin_;
-			cm ["StoredName"] = channel.Name_;
-			result << cm;
-		}
-
-		return result;
+		return Util::Map (GetBookmarks (),
+				[] (const IrcBookmark& channel)
+				{
+					QVariantMap cm;
+					cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
+							.arg (channel.ChannelName_ )
+							.arg (channel.ServerName_)
+							.arg (channel.NickName_);
+					cm ["AccountID"] = GetAccountID ();
+					cm ["Server"] = channel.ServerName_;
+					cm ["Port"] = channel.ServerPort_;
+					cm ["ServerPassword"] = channel.ServerPassword_;
+					cm ["Encoding"] = channel.ServerEncoding_;
+					cm ["Channel"] = channel.ChannelName_;
+					cm ["Password"] = channel.ChannelPassword_;
+					cm ["Nickname"] = channel.NickName_;
+					cm ["SSL"] = channel.SSL_;
+					cm ["Autojoin"] = channel.AutoJoin_;
+					cm ["StoredName"] = channel.Name_;
+					return cm;
+				});
 	}
 
 	void IrcAccount::SetBookmarkedMUCs (const QVariantList& datas)
 	{
-		QList<IrcBookmark> channels;
-		Q_FOREACH (const QVariant& var, datas)
-		{
-			const QVariantMap& map = var.toMap ();
-			IrcBookmark bookmark;
-			bookmark.AutoJoin_  = map ["Autojoin"].toBool ();
-			bookmark.ServerName_ = map ["Server"].toString ();
-			bookmark.ServerPort_ = map ["Port"].toInt ();
-			bookmark.ServerPassword_ = map ["ServerPassword"].toString ();
-			bookmark.ServerEncoding_ = map ["Encoding"].toString ();
-			bookmark.ChannelName_ = map ["Channel"].toString ();
-			bookmark.ChannelPassword_ = map ["Password"].toString ();
-			bookmark.SSL_ = map ["SSL"].toBool ();
-			bookmark.NickName_ = map ["Nickname"].toString ();
-			bookmark.Name_ = map ["StoredName"].toString ();
-			channels << bookmark;
-		}
+		const auto& channels = Util::Map (datas,
+				[] (const QVariant& var)
+				{
+					const auto& map = var.toMap ();
+
+					IrcBookmark bookmark;
+					bookmark.AutoJoin_  = map ["Autojoin"].toBool ();
+					bookmark.ServerName_ = map ["Server"].toString ();
+					bookmark.ServerPort_ = map ["Port"].toInt ();
+					bookmark.ServerPassword_ = map ["ServerPassword"].toString ();
+					bookmark.ServerEncoding_ = map ["Encoding"].toString ();
+					bookmark.ChannelName_ = map ["Channel"].toString ();
+					bookmark.ChannelPassword_ = map ["Password"].toString ();
+					bookmark.SSL_ = map ["SSL"].toBool ();
+					bookmark.NickName_ = map ["Nickname"].toString ();
+					bookmark.Name_ = map ["StoredName"].toString ();
+					return bookmark;
+				});
 
 		SetBookmarks (channels);
 	}

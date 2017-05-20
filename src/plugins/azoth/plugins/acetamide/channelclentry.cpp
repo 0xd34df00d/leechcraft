@@ -323,10 +323,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 	{
-		QObjectList objs;
-		Q_FOREACH (ICLEntry *e, parts)
-			objs << e->GetQObject ();
-		emit gotNewParticipants (objs);
+		emit gotNewParticipants (Util::Map (parts, &ICLEntry::GetQObject));
 	}
 
 	void ChannelCLEntry::HandleSubjectChanged (const QString& subj)
