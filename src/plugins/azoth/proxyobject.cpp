@@ -301,12 +301,13 @@ namespace Azoth
 			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTStatusIconLoader);
 		case PRLSystemIcons:
 			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTSystemIconLoader);
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown type"
-					<< loader;
-			return 0;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown type"
+				<< loader;
+
+		assert (false);
 	}
 
 	QIcon ProxyObject::GetIconForState (State state) const
