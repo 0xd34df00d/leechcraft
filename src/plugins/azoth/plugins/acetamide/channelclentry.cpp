@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "channelclentry.h"
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"

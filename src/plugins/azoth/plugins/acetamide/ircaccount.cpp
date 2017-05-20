@@ -275,7 +275,7 @@ namespace Acetamide
 	QVariantList IrcAccount::GetBookmarkedMUCs () const
 	{
 		return Util::Map (GetBookmarks (),
-				[] (const IrcBookmark& channel)
+				[this] (const IrcBookmark& channel) -> QVariant
 				{
 					QVariantMap cm;
 					cm ["HumanReadableName"] = QString ("%1@%2 (%3)")
