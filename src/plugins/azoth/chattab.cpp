@@ -991,11 +991,7 @@ namespace Azoth
 		if (!job->GetComment ().isEmpty ())
 		{
 			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
-#if QT_VERSION < 0x050000
-			auto comment = Qt::escape (job->GetComment ());
-#else
 			auto comment = job->GetComment ().toHtmlEscaped ();
-#endif
 			comment.replace ("\n", "<br />");
 			text += comment + "</em>";
 		}
