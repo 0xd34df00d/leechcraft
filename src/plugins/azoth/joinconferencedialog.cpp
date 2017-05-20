@@ -113,9 +113,7 @@ namespace Azoth
 		}
 
 		if (Ui_.HistoryBox_->count ())
-			QMetaObject::invokeMethod (this,
-					"on_HistoryBox__activated",
-					Q_ARG (int, 0));
+			on_HistoryBox__activated (0);
 	}
 
 	JoinConferenceDialog::~JoinConferenceDialog ()
