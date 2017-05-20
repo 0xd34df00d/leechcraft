@@ -772,9 +772,7 @@ namespace Azoth
 		if (!dummyMsgs.isEmpty ())
 		{
 			messages += dummyMsgs;
-			std::sort (messages.begin (), messages.end (),
-					[] (IMessage *left, IMessage *right)
-						{ return left->GetDateTime () < right->GetDateTime (); });
+			std::sort (messages.begin (), messages.end (), Util::ComparingBy (&IMessage::GetDateTime));
 		}
 
 		for (const auto msg : messages)
