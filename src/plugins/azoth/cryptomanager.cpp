@@ -114,7 +114,7 @@ namespace Azoth
 
 		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
 		{
-			const QCA::PGPKey& key = entry.pgpSecretKey ();
+			const auto& key = entry.pgpSecretKey ();
 			if (!key.isNull ())
 				result << key;
 		}

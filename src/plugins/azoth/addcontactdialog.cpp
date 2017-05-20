@@ -108,11 +108,10 @@ namespace Azoth
 		if (idx < 0)
 			return;
 
-		IProtocol *proto = Ui_.Protocol_->
-				itemData (idx).value<IProtocol*> ();
+		const auto proto = Ui_.Protocol_->itemData (idx).value<IProtocol*> ();
 		Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
 		{
-			IAccount *acc = qobject_cast<IAccount*> (accObj);
+			const auto acc = qobject_cast<IAccount*> (accObj);
 			if (!acc)
 			{
 				qWarning () << Q_FUNC_INFO

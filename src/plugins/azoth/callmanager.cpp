@@ -140,8 +140,8 @@ namespace Azoth
 				tr ("Incoming call from %1").arg (name),
 				PInfo_);
 		const auto nh = new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Accept"), [mediaCall] () { mediaCall->Accept (); });
-		nh->AddFunction (tr ("Hangup"), [mediaCall] () { mediaCall->Hangup (); });
+		nh->AddFunction (tr ("Accept"), [mediaCall] { mediaCall->Accept (); });
+		nh->AddFunction (tr ("Hangup"), [mediaCall] { mediaCall->Hangup (); });
 		Core::Instance ().SendEntity (e);
 	}
 

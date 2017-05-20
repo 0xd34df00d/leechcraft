@@ -93,14 +93,14 @@ namespace Azoth
 						.arg (proto->GetProtocolName ()),
 					QVariant::fromValue<QObject*> (acc->GetQObject ()));
 
-			const QString& key = "JoinHistory/" + acc->GetAccountID ();
+			const auto& key = "JoinHistory/" + acc->GetAccountID ();
 			QVariantList list = XmlSettingsManager::Instance ()
 					.GetRawValue (key).toList ();
 
 			Q_FOREACH (const QVariant& var, list)
 			{
-				const QVariantMap& map = var.toMap ();
-				const QString& name = map ["HumanReadableName"].toString ();
+				const auto& map = var.toMap ();
+				const auto& name = map ["HumanReadableName"].toString ();
 				if (name.isEmpty ())
 					continue;
 

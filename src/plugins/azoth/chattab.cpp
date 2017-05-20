@@ -1799,12 +1799,12 @@ namespace Azoth
 
 		QObject *entryObj = entry->GetQObject ();
 
-		const QObjectList& histories = Core::Instance ().GetProxy ()->
+		const auto& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
 
 		Q_FOREACH (QObject *histObj, histories)
 		{
-			IHistoryPlugin *hist = qobject_cast<IHistoryPlugin*> (histObj);
+			const auto hist = qobject_cast<IHistoryPlugin*> (histObj);
 			if (!hist->IsHistoryEnabledFor (entryObj))
 				continue;
 

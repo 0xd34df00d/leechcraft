@@ -98,7 +98,7 @@ namespace Azoth
 
 	void FileSendDialog::FillSharers ()
 	{
-		auto sharers = Core::Instance ().GetProxy ()->
+		const auto& sharers = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
 		QMap<QString, QObject*> variants;
 		Q_FOREACH (auto sharerObj, sharers)
