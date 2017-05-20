@@ -61,14 +61,9 @@ namespace RIEX
 						entry &&
 						!item.Groups_.isEmpty ())
 				{
-					bool found = false;
-					const QStringList& origGroups = entry->Groups ();
-					Q_FOREACH (const QString& group, item.Groups_)
-						if (origGroups.contains (group))
-						{
-							found = true;
-							break;
-						}
+					const auto& origGroups = entry->Groups ();
+					const auto found = std::any_of (item.Groups_.begin (), item.Groups_.end (),
+							[&origGroups] (const auto& group) { return origGroups.contains (group); });
 
 					if (!found)
 						items.removeAll (item);
