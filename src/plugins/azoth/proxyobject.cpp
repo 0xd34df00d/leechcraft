@@ -255,7 +255,7 @@ namespace Azoth
 
 	QObject* ProxyObject::GetAccount (const QString& accID) const
 	{
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		for (const auto acc : Core::Instance ().GetAccounts ())
 			if (acc->GetAccountID () == accID)
 				return acc->GetQObject ();
 

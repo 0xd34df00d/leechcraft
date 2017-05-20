@@ -755,7 +755,7 @@ namespace Azoth
 
 	void ChatTab::on_View__loadFinished (bool)
 	{
-		Q_FOREACH (IMessage *msg, HistoryMessages_)
+		for (const auto msg : HistoryMessages_)
 			AppendMessage (msg);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
@@ -960,7 +960,7 @@ namespace Azoth
 
 	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
 	{
-		Q_FOREACH (QAction *action, Ui_.EventsButton_->menu ()->actions ())
+		for (const auto action : Ui_.EventsButton_->menu ()->actions ())
 			if (action->data ().value<QObject*> () == jobObj)
 			{
 				action->deleteLater ();
@@ -1801,8 +1801,7 @@ namespace Azoth
 
 		const auto& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
-
-		Q_FOREACH (QObject *histObj, histories)
+		for (const auto histObj : histories)
 		{
 			const auto hist = qobject_cast<IHistoryPlugin*> (histObj);
 			if (!hist->IsHistoryEnabledFor (entryObj))

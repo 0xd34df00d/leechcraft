@@ -140,6 +140,7 @@ namespace Azoth
 		};
 		const auto& barVar = QVariant::fromValue<QToolBar*> (ReprBar_);
 		const auto& jobObjVar = QVariant::fromValue<QObject*> (jobObj);
+		for (const auto item : items)
 		{
 			item->setData (barVar, RoleControls);
 			item->setData (jobObjVar, MRJobObject);

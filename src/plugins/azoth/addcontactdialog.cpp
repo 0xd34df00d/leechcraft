@@ -47,9 +47,8 @@ namespace Azoth
 		tc->OverrideModel (new QStringListModel (Core::Instance ().GetChatGroups (), this));
 		Ui_.Groups_->AddSelector ();
 
-		Q_FOREACH (IProtocol *proto, Core::Instance ().GetProtocols ())
-			Ui_.Protocol_->addItem (proto->GetProtocolName (),
-					QVariant::fromValue<IProtocol*> (proto));
+		for (const auto proto : Core::Instance ().GetProtocols ())
+			Ui_.Protocol_->addItem (proto->GetProtocolName (), QVariant::fromValue<IProtocol*> (proto));
 
 		if (focusAcc)
 			FocusAccount (focusAcc);
@@ -97,7 +96,7 @@ namespace Azoth
 	QStringList AddContactDialog::GetGroups () const
 	{
 		QStringList result;
-		Q_FOREACH (const QString& str, Ui_.Groups_->text ().split (';'))
+		for (const auto& str : Ui_.Groups_->text ().split (';'))
 			result << str.trimmed ();
 		return result;
 	}
@@ -109,7 +108,7 @@ namespace Azoth
 			return;
 
 		const auto proto = Ui_.Protocol_->itemData (idx).value<IProtocol*> ();
-		Q_FOREACH (QObject *accObj, proto->GetRegisteredAccounts ())
+		for (const auto accObj : proto->GetRegisteredAccounts ())
 		{
 			const auto acc = qobject_cast<IAccount*> (accObj);
 			if (!acc)

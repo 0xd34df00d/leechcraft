@@ -112,7 +112,7 @@ namespace Azoth
 
 		QCA::KeyStore store ("qca-gnupg", KeyStoreMgr_.get ());
 
-		Q_FOREACH (const QCA::KeyStoreEntry& entry, store.entryList ())
+		for (const auto& entry : store.entryList ())
 		{
 			const auto& key = entry.pgpSecretKey ();
 			if (!key.isNull ())

@@ -101,10 +101,10 @@ namespace Azoth
 		const auto& sharers = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IWebFileStorage*> ();
 		QMap<QString, QObject*> variants;
-		Q_FOREACH (auto sharerObj, sharers)
+		for (auto sharerObj : sharers)
 		{
 			auto sharer = qobject_cast<IWebFileStorage*> (sharerObj);
-			Q_FOREACH (const auto& var, sharer->GetServiceVariants ())
+			for (const auto& var : sharer->GetServiceVariants ())
 			{
 				const int idx = Ui_.TransferMethod_->count ();
 				Ui_.TransferMethod_->addItem (var);

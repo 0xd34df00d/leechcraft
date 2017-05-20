@@ -198,8 +198,7 @@ namespace Azoth
 				.property ("ActivityIcons").toString () + '/';
 		const QString& prefix = theme + general + '_';
 
-		const QStringList& values = Gen2Specific_.value (general);
-		Q_FOREACH (const QString& value, values)
+		for (const auto& value : Gen2Specific_.value (general))
 		{
 			QIcon icon (rl->GetIconPath (prefix + value));
 			Ui_.Specific_->addItem (icon, tr (value.toLatin1 ()), value);

@@ -87,7 +87,7 @@ namespace Azoth
 		if (!Ui_.URL_->text ().isEmpty ())
 			result ["uri"] = QUrl::fromUserInput (Ui_.URL_->text ());
 			
-		Q_FOREACH (const QString& key, result.keys (QString ()) + result.keys (QString ("")))
+		for (const auto& key : result.keys ({}) + result.keys (""))
 			result.remove (key);
 		
 		return result;

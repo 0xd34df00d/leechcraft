@@ -112,7 +112,7 @@ namespace Azoth
 		tab->installEventFilter (this);
 		Entry2Tab_ [id] = tab;
 
-		Q_FOREACH (const auto& prop, props)
+		for (const auto& prop : props)
 			tab->setProperty (prop.first, prop.second);
 
 		connect (tab,
