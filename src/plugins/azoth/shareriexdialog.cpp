@@ -127,10 +127,12 @@ namespace Azoth
 	{
 		Model_->clear ();
 
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
-						<< tr ("ID")
-						<< tr ("Account")
-						<< tr ("Groups"));
+		Model_->setHorizontalHeaderLabels ({
+					tr ("Name"),
+					tr ("ID"),
+					tr ("Account"),
+					tr ("Groups")
+				});
 
 		const auto acc = Entry_->GetParentAccount ();
 

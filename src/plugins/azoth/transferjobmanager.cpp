@@ -124,22 +124,22 @@ namespace Azoth
 			return;
 		}
 
-		QList<QStandardItem*> items;
-
-		const QString& name = (job->GetDirection () == TDIn ?
+		const auto& name = (job->GetDirection () == TDIn ?
 					tr ("Transferring %1 from %2") :
 					tr ("Transferring %1 to %2"))
 							.arg (job->GetName ())
 							.arg (GetContactName (job->GetSourceID ()));
-		items << new QStandardItem (name);
-		items << new QStandardItem (tr ("offered"));
-		items << new QStandardItem (tr ("%1 of %2 (%3%).")
+		QList<QStandardItem*> items
+		{
+			new QStandardItem (name),
+			new QStandardItem (tr ("offered")),
+			new QStandardItem (tr ("%1 of %2 (%3%).")
 					.arg (Util::MakePrettySize (0))
 					.arg (Util::MakePrettySize (job->GetSize ()))
-					.arg (0));
-		const QVariant& barVar = QVariant::fromValue<QToolBar*> (ReprBar_);
-		const QVariant& jobObjVar = QVariant::fromValue<QObject*> (jobObj);
-		Q_FOREACH (QStandardItem *item, items)
+					.arg (0))
+		};
+		const auto& barVar = QVariant::fromValue<QToolBar*> (ReprBar_);
+		const auto& jobObjVar = QVariant::fromValue<QObject*> (jobObj);
 		{
 			item->setData (barVar, RoleControls);
 			item->setData (jobObjVar, MRJobObject);

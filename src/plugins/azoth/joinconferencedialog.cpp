@@ -150,11 +150,10 @@ namespace Azoth
 			return;
 		}
 
-		const QVariantMap& data = imjw->GetIdentifyingData ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		if (acc)
+		const auto& data = imjw->GetIdentifyingData ();
+		if (const auto acc = qobject_cast<IAccount*> (accObj))
 		{
-			const QString& key = "JoinHistory/" + acc->GetAccountID ();
+			const auto& key = "JoinHistory/" + acc->GetAccountID ();
 			QVariantList list = XmlSettingsManager::Instance ()
 					.GetRawValue (key).toList ();
 

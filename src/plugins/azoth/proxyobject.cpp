@@ -259,7 +259,7 @@ namespace Azoth
 			if (acc->GetAccountID () == accID)
 				return acc->GetQObject ();
 
-		return 0;
+		return nullptr;
 	}
 
 	QList<QObject*> ProxyObject::GetAllAccounts () const
