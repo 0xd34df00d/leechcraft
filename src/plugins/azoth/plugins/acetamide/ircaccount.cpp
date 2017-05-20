@@ -474,23 +474,23 @@ namespace Acetamide
 
 		QString name;
 		in >> name;
-		IrcAccount *result = new IrcAccount (name, parent);
+		const auto result = new IrcAccount (name, parent);
 		in >> result->AccountID_
 				>> result->RealName_
 				>> result->UserName_
 				>> result->NickNames_;
-		if (version == 3)
-			in >> result->DefaultServer_
-				>> result->DefaultPort_
-				>> result->DefaultEncoding_
-				>> result->DefaultChannel_;
-		else if (version < 3)
+		if (version < 3)
 		{
 			result->DefaultServer_ = "chat.freenode.net";
 			result->DefaultPort_ = 8001;
 			result->DefaultEncoding_ = "UTF-8";
 			result->DefaultChannel_ = "leechcraft";
 		}
+		else
+			in >> result->DefaultServer_
+					>> result->DefaultPort_
+					>> result->DefaultEncoding_
+					>> result->DefaultChannel_;
 
 		result->Init ();
 
