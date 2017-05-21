@@ -273,8 +273,7 @@ namespace LeechCraft
 		}
 
 		QMap<Edge_t, QPair<Vertex_t, Vertex_t>> result;
-		QPair<Vertex_t, Vertex_t> pair;
-		Q_FOREACH (pair, depVertices)
+		for (const auto& pair : depVertices)
 			result [boost::add_edge (pair.first, pair.second, Graph_).first] = pair;
 		return result;
 	}

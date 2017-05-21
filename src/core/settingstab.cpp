@@ -323,7 +323,7 @@ namespace LeechCraft
 			Item2Page_ [item] = qMakePair (ihs, pgId++);
 		}
 
-		Q_FOREACH (const auto& sub, FindSubplugins (obj))
+		for (const auto& sub : FindSubplugins (obj))
 			FillPages (sub, true);
 	}
 

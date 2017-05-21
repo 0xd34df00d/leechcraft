@@ -282,7 +282,7 @@ namespace LeechCraft
 		qint64 download = 0;
 		qint64 upload = 0;
 
-		Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
+		for (const auto plugin : PluginManager_->GetAllPlugins ())
 		{
 			IDownload *di = qobject_cast<IDownload*> (plugin);
 			if (di)
@@ -325,7 +325,7 @@ namespace LeechCraft
 	{
 		const QList<ISummaryRepresentation*>& summaries =
 			PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-		Q_FOREACH (const ISummaryRepresentation *summary, summaries)
+		for (const auto summary : summaries)
 		{
 			const QModelIndex& mapped = summary->MapToSource (index);
 			if (mapped.isValid ())
@@ -428,7 +428,7 @@ namespace LeechCraft
 
 	void Core::handlePluginLoadErrors ()
 	{
-		Q_FOREACH (const QString& error, PluginManager_->GetPluginLoadErrors ())
+		for (const auto& error : PluginManager_->GetPluginLoadErrors ())
 			handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
 					error, PCritical_));
 	}

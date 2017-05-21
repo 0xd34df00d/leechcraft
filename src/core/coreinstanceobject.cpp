@@ -367,13 +367,12 @@ namespace LeechCraft
 		defaultItem->setData ("contextdependent", Qt::UserRole);
 		newTabsModel->appendRow (defaultItem);
 
-		QObjectList multitabs = Core::Instance ()
-				.GetPluginManager ()->GetAllCastableRoots<IHaveTabs*> ();
-		Q_FOREACH (QObject *object, multitabs)
+		const auto& multitabs = Core::Instance ().GetPluginManager ()->GetAllCastableRoots<IHaveTabs*> ();
+		for (const auto object : multitabs)
 		{
 			IInfo *ii = qobject_cast<IInfo*> (object);
 			IHaveTabs *iht = qobject_cast<IHaveTabs*> (object);
-			Q_FOREACH (const TabClassInfo& info, iht->GetTabClasses ())
+			for (const auto& info : iht->GetTabClasses ())
 			{
 				QStandardItem *item =
 						new QStandardItem (ii->GetName () + ": " + info.VisibleName_);

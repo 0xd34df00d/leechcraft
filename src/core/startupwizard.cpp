@@ -48,11 +48,8 @@ namespace LeechCraft
 		QList<IStartupWizard*> wizards = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IStartupWizard*> ();
 
-		Q_FOREACH (IStartupWizard *wizard, wizards)
-		{
-			QList<QWizardPage*> tp = wizard->GetWizardPages ();
-			Pages_ += tp;
-		}
+		for (const auto wizard : wizards)
+			Pages_ += wizard->GetWizardPages ();
 
 		if (!Pages_.size ())
 		{

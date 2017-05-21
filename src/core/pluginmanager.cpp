@@ -636,7 +636,7 @@ namespace LeechCraft
 	QObject* PluginManager::GetPluginByID (const QByteArray& id) const
 	{
 		if (!PluginID2PluginCache_.contains (id))
-			Q_FOREACH (QObject *plugin, GetAllPlugins ())
+			for (const auto plugin : GetAllPlugins ())
 				if (qobject_cast<IInfo*> (plugin)->GetUniqueID () == id)
 				{
 					PluginID2PluginCache_ [id] = plugin;
@@ -681,7 +681,7 @@ namespace LeechCraft
 			if (ip2)
 			{
 				QSet<QByteArray> classes = ip2->GetPluginClasses ();
-				Q_FOREACH (IPluginReady *ipr, GetAllCastableTo<IPluginReady*> ())
+				for (const auto ipr : GetAllCastableTo<IPluginReady*> ())
 					if (!ipr->GetExpectedPluginClasses ()
 							.intersect (classes).isEmpty ())
 						ipr->AddPlugin (object);
