@@ -47,6 +47,9 @@ class Q_DECL_EXPORT IWkFontsSettable
 protected:
 	virtual ~IWkFontsSettable () = default;
 public:
+	/** @brief Enumeration for possible font families.
+	 *
+	 */
 	enum class FontFamily
 	{
 		StandardFont,
@@ -57,6 +60,8 @@ public:
 		FantasyFont
 	};
 
+	/** @brief Enumeration for possible font sizes.
+	 */
 	enum class FontSize
 	{
 		MinimumFontSize,
