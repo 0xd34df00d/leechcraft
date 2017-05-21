@@ -33,6 +33,7 @@
 #include <QSettings>
 #include <QDir>
 #include <QFileDialog>
+#include <util/sll/prelude.h>
 #include "interfaces/iinfo.h"
 #include "interfaces/idownload.h"
 #include "interfaces/ientityhandler.h"
@@ -260,28 +261,25 @@ namespace LeechCraft
 		settings.endGroup ();
 
 		otherPlugins.removeAll (plugin);
-		QList<QStringList> otherTextsList;
-		Q_FOREACH (const QString& otherPlugin, otherPlugins)
-			otherTextsList.append (GetPluginSavePaths (otherPlugin));
+		auto otherTextsList = Util::Map (otherPlugins,
+				[this] (const QString& plugin) { return GetPluginSavePaths (plugin); });
 
-		for (QList<QStringList>::iterator it = otherTextsList.begin (), end = otherTextsList.end ();
-			 it != end; ++it)
-			Q_FOREACH (const QString& ptext, pluginTexts)
-				it->removeAll (ptext);
+		for (auto& otherTexts : otherTextsList)
+			for (const auto& ptext : pluginTexts)
+				otherTexts.removeAll (ptext);
 
 		QStringList otherTexts;
 		while (otherTexts.size () < 16)
 		{
 			bool added = false;
-			for (QList<QStringList>::iterator it = otherTextsList.begin (), end = otherTextsList.end ();
-				 it != end; ++it)
-			{
-				if (!it->isEmpty ())
+
+			for (auto& otherText : otherTextsList)
+				if (!otherText.isEmpty ())
 				{
-					otherTexts += it->takeFirst ();
+					otherTexts += otherText.takeFirst ();
 					added = true;
 				}
-			}
+
 			if (!added)
 				break;
 		}

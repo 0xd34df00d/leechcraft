@@ -226,8 +226,8 @@ namespace LeechCraft
 			const auto& buttons = pair.second;
 			const auto height = std::accumulate (buttons.begin (), buttons.end (), 0,
 					[] (int height, QToolButton *button) { return std::max (height, button->sizeHint ().height ()); });
-			std::for_each (buttons.begin (), buttons.end (),
-					[height] (QToolButton *button) { button->setFixedHeight (height); });
+			for (const auto button : buttons)
+				button->setFixedHeight (height);
 		}
 	}
 
@@ -273,7 +273,7 @@ namespace LeechCraft
 			const auto& expected = ihp->GetExpectedPluginClasses ();
 			const auto& settables = Core::Instance ()
 					.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
-			Q_FOREACH (auto settableObj, settables)
+			for (auto settableObj : settables)
 			{
 				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
 				if (!ip2 || QSet<QByteArray> (expected).intersect (ip2->GetPluginClasses ()).isEmpty ())
@@ -401,7 +401,7 @@ namespace LeechCraft
 			bool foundMatching = false;
 			auto objs = FindSubplugins (rootObj);
 			objs.prepend (rootObj);
-			Q_FOREACH (auto obj, objs)
+			for (auto obj : objs)
 			{
 				auto ihs = qobject_cast<IHaveSettings*> (obj);
 				const auto& list = ihs->GetSettingsDialog ()->HighlightMatches (text);

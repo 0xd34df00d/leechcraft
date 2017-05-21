@@ -73,7 +73,7 @@ namespace LeechCraft
 		bool hadAdvanced = false;
 		bool hadBasic = false;
 
-		Q_FOREACH (QWizardPage *page, Pages_)
+		for (const auto page : Pages_)
 			if (page->property ("WizardType").toInt () == StartupWizard::TAdvanced)
 				hadAdvanced = true;
 			else
@@ -147,7 +147,7 @@ namespace LeechCraft
 		setProperty ("WizardType", TAdvanced);
 
 		int i = 1;
-		Q_FOREACH (QWizardPage *page, Pages_)
+		for (const auto page : Pages_)
 		{
 			page->setProperty ("PageID", i);
 			Page2ID_ [page] = i;

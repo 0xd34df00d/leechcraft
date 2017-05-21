@@ -1117,7 +1117,7 @@ namespace LeechCraft
 
 	void PluginManager::FillInstances ()
 	{
-		Q_FOREACH (auto loader, PluginContainers_)
+		for (auto loader : PluginContainers_)
 		{
 			auto inst = loader->Instance ();
 			Plugins_ << inst;
@@ -1140,7 +1140,7 @@ namespace LeechCraft
 			CacheValid_ = false;
 
 			failedList << failed;
-			Q_FOREACH (QObject *obj, ordered)
+			for (const auto obj : ordered)
 			{
 				if (failed == obj)
 					break;
@@ -1154,7 +1154,7 @@ namespace LeechCraft
 			PluginTreeBuilder_->Calculate ();
 
 			ordered = PluginTreeBuilder_->GetResult ();
-			Q_FOREACH (QObject *obj, initialized)
+			for (const auto obj : initialized)
 				ordered.removeAll (obj);
 
 			proc->SetCount (ordered.size () + initialized.size ());
