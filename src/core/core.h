@@ -81,7 +81,6 @@ namespace LeechCraft
 			, FTTags
 		};
 
-		virtual ~Core ();
 		static Core& Instance ();
 		void Release ();
 

@@ -128,10 +128,6 @@ namespace LeechCraft
 		PluginManager_ = new PluginManager (paths, this);
 	}
 
-	Core::~Core ()
-	{
-	}
-
 	Core& Core::Instance ()
 	{
 		static Core core;
