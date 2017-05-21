@@ -1165,14 +1165,12 @@ namespace LeechCraft
 
 	Loaders::IPluginLoader_ptr PluginManager::MakeLoader (const QString& filename)
 	{
-#ifndef WITH_DBUS_LOADERS
-		return Loaders::IPluginLoader_ptr (new Loaders::SOPluginLoader (filename));
-#else
+
+#ifdef WITH_DBUS_LOADERS
 		if (DBusMode_)
-			return Loaders::IPluginLoader_ptr (new Loaders::DBusPluginLoader (filename));
-		else
-			return Loaders::IPluginLoader_ptr (new Loaders::SOPluginLoader (filename));
+			return std::make_shared<Loaders::DBusPluginLoader> (filename);
 #endif
+		return std::make_shared<Loaders::SOPluginLoader> (filename);
 	}
 
 	QList<PluginManager::Plugins_t::iterator>
