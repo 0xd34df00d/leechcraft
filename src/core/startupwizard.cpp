@@ -108,8 +108,7 @@ namespace LeechCraft
 			return QWizard::nextId ();
 		else
 		{
-			WizardTypeChoicePage *wtpage =
-					qobject_cast<WizardTypeChoicePage*> (page (TypeChoseID_));
+			const auto wtpage = qobject_cast<WizardTypeChoicePage*> (page (TypeChoseID_));
 			if (!wtpage)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -119,9 +118,8 @@ namespace LeechCraft
 			}
 
 			int nextId = QWizard::nextId ();
-			QWizardPage *nextPage = page (nextId);
-			QList<QWizardPage*>::const_iterator i =
-					std::find (Pages_.begin (), Pages_.end (), nextPage);
+			auto nextPage = page (nextId);
+			auto i = std::find (Pages_.begin (), Pages_.end (), nextPage);
 			if (i == Pages_.end ())
 			{
 				qWarning () << Q_FUNC_INFO
