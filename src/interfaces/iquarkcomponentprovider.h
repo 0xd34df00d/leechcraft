@@ -37,11 +37,7 @@
 #include <QVariant>
 #include <util/sys/paths.h>
 
-#if QT_VERSION < 0x050000
-class QDeclarativeImageProvider;
-#else
 class QQuickImageProvider;
-#endif
 
 namespace LeechCraft
 {
@@ -107,11 +103,7 @@ namespace LeechCraft
 		 * Each image provider is added to the engine under the name in
 		 * the corresponding QString upon addng the quark to the view.
 		 */
-#if QT_VERSION < 0x050000
-		QList<QPair<QString, QDeclarativeImageProvider*>> ImageProviders_;
-#else
 		QList<QPair<QString, QQuickImageProvider*>> ImageProviders_;
-#endif
 
 		/** @brief Initializes a null quark component.
 		 */
