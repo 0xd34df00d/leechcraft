@@ -304,7 +304,7 @@ namespace LeechCraft
 			}
 		}
 
-		return QPair<qint64, qint64> (download, upload);
+		return { download, upload };
 	}
 
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
@@ -319,15 +319,13 @@ namespace LeechCraft
 
 	QModelIndex Core::MapToSource (const QModelIndex& index) const
 	{
-		const QList<ISummaryRepresentation*>& summaries =
-			PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-		for (const auto summary : summaries)
+		for (const auto summary : PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ())
 		{
 			const QModelIndex& mapped = summary->MapToSource (index);
 			if (mapped.isValid ())
 				return mapped;
 		}
-		return QModelIndex ();
+		return {};
 	}
 
 	NewTabMenuManager* Core::GetNewTabMenuManager () const
@@ -358,8 +356,8 @@ namespace LeechCraft
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 				return;
 
-			CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
-			jar->setAllCookies (QList<QNetworkCookie> ());
+			const auto jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
+			jar->setAllCookies ({});
 			jar->Save ();
 		}
 		else if (name == "SetStartupPassword")
