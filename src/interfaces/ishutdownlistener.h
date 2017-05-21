@@ -31,11 +31,17 @@
 
 #include <QtPlugin>
 
+/** @brief Interface for plugins wishing to get notifications about the
+ * shutdown process.
+ */
 class Q_DECL_EXPORT IShutdownListener
 {
 public:
 	virtual ~IShutdownListener () {}
 
+	/** @brief This function is called by the LeechCraft Core to notify
+	 * the plugin that LeechCraft is shutting down.
+	 */
 	virtual void HandleShutdownInitiated () = 0;
 };
 
