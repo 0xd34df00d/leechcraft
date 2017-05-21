@@ -141,9 +141,11 @@ namespace LeechCraft
 		parentFirst->setIcon (objIcon);
 		parentFirst->setData (QVariant::fromValue<QObject*> (object), Roles::Object);
 
-		QList<QStandardItem*> parentRow;
-		parentRow << parentFirst;
-		parentRow << new QStandardItem (objDescr);
+		QList<QStandardItem*> parentRow
+		{
+			parentFirst,
+			new QStandardItem (objDescr)
+		};
 		deEdit (parentRow);
 
 		const auto& info = ihs->GetActionInfo ();
@@ -166,10 +168,12 @@ namespace LeechCraft
 			first->setData (name, Roles::OriginalName);
 			first->setData (QVariant::fromValue (sequences), Roles::Sequence);
 
-			QList<QStandardItem*> itemRow;
-			itemRow << first;
-			itemRow << new QStandardItem (sequences.value (0).toString (QKeySequence::NativeText));
-			itemRow << new QStandardItem (sequences.value (1).toString (QKeySequence::NativeText));
+			QList<QStandardItem*> itemRow
+			{
+				first,
+				new QStandardItem (sequences.value (0).toString (QKeySequence::NativeText)),
+				new QStandardItem (sequences.value (1).toString (QKeySequence::NativeText))
+			};
 			deEdit (itemRow);
 			parentRow.at (0)->appendRow (itemRow);
 
