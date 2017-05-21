@@ -34,6 +34,7 @@
 #include <QSortFilterProxyModel>
 #include <QSettings>
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 #include <interfaces/iinfo.h>
 #include <interfaces/ihaveshortcuts.h>
 #include <interfaces/core/iiconthememanager.h>
@@ -148,12 +149,14 @@ namespace LeechCraft
 		const auto& info = ihs->GetActionInfo ();
 
 		settings.beginGroup (objName);
-		Q_FOREACH (const QString& name, info.keys ())
+		for (const auto& pair : Util::Stlize (info))
 		{
+			const auto& name = pair.first;
+			const auto& value = pair.second;
 			const auto& sequences = settings.value (name,
-					QVariant::fromValue (info [name].Seqs_)).value<QKeySequences_t> ();
+					QVariant::fromValue (value.Seqs_)).value<QKeySequences_t> ();
 
-			auto first = new QStandardItem (info [name].UserVisibleText_);
+			auto first = new QStandardItem (value.UserVisibleText_);
 
 			auto icon = info [name].Icon_;
 			if (icon.isNull ())
@@ -170,7 +173,7 @@ namespace LeechCraft
 			deEdit (itemRow);
 			parentRow.at (0)->appendRow (itemRow);
 
-			if (sequences != info [name].Seqs_)
+			if (sequences != value.Seqs_)
 				ihs->SetShortcut (name, sequences);
 		}
 
