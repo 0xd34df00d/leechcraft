@@ -222,7 +222,6 @@ namespace LeechCraft
 
 		for (const auto& pair : Util::Stlize (group2buttons))
 		{
-			const auto& group = pair.first;
 			const auto& buttons = pair.second;
 			const auto height = std::accumulate (buttons.begin (), buttons.end (), 0,
 					[] (int height, QToolButton *button) { return std::max (height, button->sizeHint ().height ()); });
