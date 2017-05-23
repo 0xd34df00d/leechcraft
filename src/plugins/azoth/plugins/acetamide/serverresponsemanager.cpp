@@ -514,18 +514,18 @@ namespace Acetamide
 
 	void ServerResponseManager::GotUserHost (const IrcMessageOptions& opts)
 	{
-		Q_FOREACH (const QString& str, opts.Message_.split (' '))
+		for (const auto& str : opts.Message_.splitRef (' '))
 		{
-			const QString user = str.left (str.indexOf ('='));
-			const QString host = str.mid (str.indexOf ('=') + 1);
-			ISH_->ShowUserHost (user, host);
+			const auto& user = str.left (str.indexOf ('='));
+			const auto& host = str.mid (str.indexOf ('=') + 1);
+			ISH_->ShowUserHost (user.toString (), host.toString ());
 		}
 	}
 
 	void ServerResponseManager::GotIson (const IrcMessageOptions& opts)
 	{
-		Q_FOREACH (const QString& str, opts.Message_.split (' '))
-			ISH_->ShowIsUserOnServer (str);
+		for (const auto& str : opts.Message_.splitRef (' '))
+			ISH_->ShowIsUserOnServer (str.toString ());
 	}
 
 	void ServerResponseManager::GotWhoIsUser (const IrcMessageOptions& opts)
