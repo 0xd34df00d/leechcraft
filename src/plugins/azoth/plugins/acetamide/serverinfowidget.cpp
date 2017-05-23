@@ -29,10 +29,10 @@
 
 #include "serverinfowidget.h"
 #include <boost/bind.hpp>
-#include "ircserverclentry.h"
 #include <QtDebug>
 #include <util/sll/functional.h>
 #include <util/sll/qtutil.h>
+#include "ircserverclentry.h"
 
 namespace LeechCraft
 {
@@ -86,7 +86,7 @@ namespace Acetamide
 
 	void ServerInfoWidget::SetChanModes (const QString& modes)
 	{
-		const QStringList& list = modes.split (',');
+		const auto& list = modes.split (',');
 
 		Ui_.ChanModesA_->setText (list.at (0));
 		Ui_.ChanModesB_->setText (list.at (1));
@@ -114,10 +114,8 @@ namespace Acetamide
 
 		for (int i = 0; i < rowCount; ++i)
 		{
-			QTableWidgetItem *newMode = new QTableWidgetItem (modeStr [i]);
-			QTableWidgetItem *newPrefix = new QTableWidgetItem (prefixStr [i]);
-			Ui_.tableWidget->setItem (i, 0, newMode);
-			Ui_.tableWidget->setItem (i, 1, newPrefix);
+			Ui_.tableWidget->setItem (i, 0, new QTableWidgetItem (modeStr [i]));
+			Ui_.tableWidget->setItem (i, 1, new QTableWidgetItem (prefixStr [i]));
 		}
 	}
 
@@ -137,10 +135,8 @@ namespace Acetamide
 		for (const auto& param : list)
 		{
 			const int index = param.indexOf (':');
-			QTableWidgetItem *target = new QTableWidgetItem (param.mid (0, index));
-			QTableWidgetItem *count = new QTableWidgetItem (param.mid (index + 1));
-			Ui_.TargetMax_->setItem (row, 0, target);
-			Ui_.TargetMax_->setItem (row, 1, count);
+			Ui_.TargetMax_->setItem (row, 0, new QTableWidgetItem (param.mid (0, index)));
+			Ui_.TargetMax_->setItem (row, 1, new QTableWidgetItem (param.mid (index + 1)));
 			++row;
 		}
 	}

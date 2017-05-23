@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_SERVERRESPONSEMANAGER_H
-#define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_SERVERRESPONSEMANAGER_H
+#pragma once
 
 #include <functional>
 #include <string>
@@ -143,8 +142,6 @@ namespace Acetamide
 		void GotChannelUrl (const IrcMessageOptions& opts);
 		void GotTopicWhoTime (const IrcMessageOptions& opts);
 	};
-};
-};
-};
-
-#endif // LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_SERVERRESPONSEMANAGER_H
+}
+}
+}

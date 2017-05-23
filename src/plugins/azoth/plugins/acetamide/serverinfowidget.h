@@ -27,8 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
+#pragma once
 
 #include <functional>
 #include <QWidget>
@@ -72,5 +71,3 @@ namespace Acetamide
 }
 }
 }
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
