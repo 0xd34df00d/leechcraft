@@ -30,7 +30,7 @@
 #ifndef LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_SERVERRESPONSEMANAGER_H
 #define LEECHCRAFT_AZOTH_PLUGINS_ACETAMIDE_SERVERRESPONSEMANAGER_H
 
-#include <boost/function.hpp>
+#include <functional>
 #include <string>
 #include <QObject>
 #include <QHash>
@@ -43,7 +43,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerHandler;
 
 	class ServerResponseManager : public QObject
@@ -51,7 +50,7 @@ namespace Acetamide
 		Q_OBJECT
 
 		IrcServerHandler *ISH_;
-		QHash<QString, boost::function<void (const IrcMessageOptions&)>> Command2Action_;
+		QHash<QString, std::function<void (IrcMessageOptions)>> Command2Action_;
 		QMap<QString, IrcServer> MatchString2Server_;
 	public:
 		ServerResponseManager (IrcServerHandler*);
