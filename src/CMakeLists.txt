@@ -15,7 +15,6 @@ set (CMAKE_MACOSX_RPATH OFF)
 set (CMAKE_CXX_STANDARD 14)
 set (CMAKE_CXX_EXTENSIONS OFF)
 
-option (USE_CPP14 "Enable C++14 features and plugins" OFF)
 option (EXTRA_WARNINGS "Enable extra compiler warnings" OFF)
 
 if (MSVC)
@@ -34,9 +33,6 @@ if (WIN32)
 endif ()
 if (UNIX OR (WIN32 AND MINGW))
 	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -Wall")
-	if (USE_CPP14)
-		set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DUSE_CPP14")
-	endif ()
 
 	if (NOT APPLE)
 		set (CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--as-needed")
