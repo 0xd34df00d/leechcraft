@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "serverinfowidget.h"
-#include <boost/bind.hpp>
 #include <QtDebug>
 #include <util/sll/functional.h>
 #include <util/sll/qtutil.h>

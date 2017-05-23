@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "serverresponsemanager.h"
-#include <boost/bind.hpp>
 #include <util/sll/prelude.h>
 #include <util/sll/functional.h>
 #include <interfaces/core/icoreproxy.h>
