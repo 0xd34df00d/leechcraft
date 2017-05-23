@@ -130,6 +130,13 @@ public:
 
 	/** @brief Returns the list of concrete data filter variants.
 	 *
+	 * The passed \em data could be used to narrow down the list of
+	 * filters. For instance, an image uploader may want to check the
+	 * size and dimensions of an image and filter out filters not
+	 * supporting those specific parameters.
+	 *
+	 * @param[in] data The specific piece of data for which the variants
+	 * should be returned.
 	 * @return The list of exact data filter variants.
 	 */
 	virtual QList<FilterVariant> GetFilterVariants (const QVariant& data) const = 0;

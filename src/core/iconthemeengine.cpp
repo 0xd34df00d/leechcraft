@@ -222,10 +222,10 @@ void IconThemeEngine::FindIconSets ()
 {
 	IconSets_.clear ();
 
-	Q_FOREACH (const QString& str, QIcon::themeSearchPaths ())
+	for (const auto& str : QIcon::themeSearchPaths ())
 	{
-		QDir dir (str);
-		Q_FOREACH (const QString& subdirName, dir.entryList (QDir::Dirs))
+		QDir dir { str };
+		for (const auto& subdirName : dir.entryList (QDir::Dirs))
 		{
 			QDir subdir (dir);
 			subdir.cd (subdirName);

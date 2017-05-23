@@ -668,7 +668,7 @@ void LeechCraft::MainWindow::FillTray ()
 
 	const auto& trayMenus = Core::Instance ().GetPluginManager ()->
 			GetAllCastableTo<IActionsExporter*> ();
-	Q_FOREACH (auto o, trayMenus)
+	for (auto o : trayMenus)
 	{
 		const auto& actions = o->GetActions (ActionsEmbedPlace::TrayMenu);
 		IconThemeEngine::Instance ().UpdateIconset (actions);
@@ -812,7 +812,7 @@ void MainWindow::dragEnterEvent (QDragEnterEvent *event)
 void MainWindow::dropEvent (QDropEvent *event)
 {
 	auto mimeData = event->mimeData ();
-	Q_FOREACH (const QString& format, mimeData->formats ())
+	for (const auto& format : mimeData->formats ())
 	{
 		const Entity& e = Util::MakeEntity (mimeData->data (format),
 				QString (),

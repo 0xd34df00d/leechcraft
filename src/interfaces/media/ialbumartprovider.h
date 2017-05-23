@@ -52,7 +52,7 @@ namespace Media
 		QString Album_;
 	};
 
-	/** @brief Compares to AlbumInfo structures.
+	/** @brief Compares two AlbumInfo structures.
 	 */
 	inline bool operator== (const AlbumInfo& a1, const AlbumInfo& a2)
 	{
@@ -60,7 +60,7 @@ namespace Media
 			a1.Album_ == a2.Album_;
 	}
 
-	/** @brief A hash function for AlbumInfo to use it in QHash.
+	/** @brief A hash function for AlbumInfo to use it with QHash.
 	 */
 	inline uint qHash (const AlbumInfo& info)
 	{

@@ -89,7 +89,7 @@ namespace Media
 				Other_ == other.Other_;
 		}
 
-		/** @brief Returns whether this info isn't equal to another one.
+		/** @brief Returns whether this audio info isn't equal to another one.
 		 */
 		inline bool operator!= (const AudioInfo& other) const
 		{

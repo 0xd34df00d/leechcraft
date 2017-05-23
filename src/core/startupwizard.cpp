@@ -48,11 +48,8 @@ namespace LeechCraft
 		QList<IStartupWizard*> wizards = Core::Instance ()
 			.GetPluginManager ()->GetAllCastableTo<IStartupWizard*> ();
 
-		Q_FOREACH (IStartupWizard *wizard, wizards)
-		{
-			QList<QWizardPage*> tp = wizard->GetWizardPages ();
-			Pages_ += tp;
-		}
+		for (const auto wizard : wizards)
+			Pages_ += wizard->GetWizardPages ();
 
 		if (!Pages_.size ())
 		{
@@ -76,7 +73,7 @@ namespace LeechCraft
 		bool hadAdvanced = false;
 		bool hadBasic = false;
 
-		Q_FOREACH (QWizardPage *page, Pages_)
+		for (const auto page : Pages_)
 			if (page->property ("WizardType").toInt () == StartupWizard::TAdvanced)
 				hadAdvanced = true;
 			else
@@ -111,8 +108,7 @@ namespace LeechCraft
 			return QWizard::nextId ();
 		else
 		{
-			WizardTypeChoicePage *wtpage =
-					qobject_cast<WizardTypeChoicePage*> (page (TypeChoseID_));
+			const auto wtpage = qobject_cast<WizardTypeChoicePage*> (page (TypeChoseID_));
 			if (!wtpage)
 			{
 				qWarning () << Q_FUNC_INFO
@@ -122,9 +118,8 @@ namespace LeechCraft
 			}
 
 			int nextId = QWizard::nextId ();
-			QWizardPage *nextPage = page (nextId);
-			QList<QWizardPage*>::const_iterator i =
-					std::find (Pages_.begin (), Pages_.end (), nextPage);
+			auto nextPage = page (nextId);
+			auto i = std::find (Pages_.begin (), Pages_.end (), nextPage);
 			if (i == Pages_.end ())
 			{
 				qWarning () << Q_FUNC_INFO
@@ -150,7 +145,7 @@ namespace LeechCraft
 		setProperty ("WizardType", TAdvanced);
 
 		int i = 1;
-		Q_FOREACH (QWizardPage *page, Pages_)
+		for (const auto page : Pages_)
 		{
 			page->setProperty ("PageID", i);
 			Page2ID_ [page] = i;

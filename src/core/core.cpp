@@ -128,10 +128,6 @@ namespace LeechCraft
 		PluginManager_ = new PluginManager (paths, this);
 	}
 
-	Core::~Core ()
-	{
-	}
-
 	Core& Core::Instance ()
 	{
 		static Core core;
@@ -282,7 +278,7 @@ namespace LeechCraft
 		qint64 download = 0;
 		qint64 upload = 0;
 
-		Q_FOREACH (QObject *plugin, PluginManager_->GetAllPlugins ())
+		for (const auto plugin : PluginManager_->GetAllPlugins ())
 		{
 			IDownload *di = qobject_cast<IDownload*> (plugin);
 			if (di)
@@ -308,7 +304,7 @@ namespace LeechCraft
 			}
 		}
 
-		return QPair<qint64, qint64> (download, upload);
+		return { download, upload };
 	}
 
 	QNetworkAccessManager* Core::GetNetworkAccessManager () const
@@ -323,15 +319,13 @@ namespace LeechCraft
 
 	QModelIndex Core::MapToSource (const QModelIndex& index) const
 	{
-		const QList<ISummaryRepresentation*>& summaries =
-			PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ();
-		Q_FOREACH (const ISummaryRepresentation *summary, summaries)
+		for (const auto summary : PluginManager_->GetAllCastableTo<ISummaryRepresentation*> ())
 		{
 			const QModelIndex& mapped = summary->MapToSource (index);
 			if (mapped.isValid ())
 				return mapped;
 		}
-		return QModelIndex ();
+		return {};
 	}
 
 	NewTabMenuManager* Core::GetNewTabMenuManager () const
@@ -362,8 +356,8 @@ namespace LeechCraft
 						QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
 				return;
 
-			CustomCookieJar *jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
-			jar->setAllCookies (QList<QNetworkCookie> ());
+			const auto jar = static_cast<CustomCookieJar*> (NetworkAccessManager_->cookieJar ());
+			jar->setAllCookies ({});
 			jar->Save ();
 		}
 		else if (name == "SetStartupPassword")
@@ -428,7 +422,7 @@ namespace LeechCraft
 
 	void Core::handlePluginLoadErrors ()
 	{
-		Q_FOREACH (const QString& error, PluginManager_->GetPluginLoadErrors ())
+		for (const auto& error : PluginManager_->GetPluginLoadErrors ())
 			handleGotEntity (Util::MakeNotification (tr ("Plugin load error"),
 					error, PCritical_));
 	}

@@ -636,7 +636,7 @@ namespace LeechCraft
 	QObject* PluginManager::GetPluginByID (const QByteArray& id) const
 	{
 		if (!PluginID2PluginCache_.contains (id))
-			Q_FOREACH (QObject *plugin, GetAllPlugins ())
+			for (const auto plugin : GetAllPlugins ())
 				if (qobject_cast<IInfo*> (plugin)->GetUniqueID () == id)
 				{
 					PluginID2PluginCache_ [id] = plugin;
@@ -681,7 +681,7 @@ namespace LeechCraft
 			if (ip2)
 			{
 				QSet<QByteArray> classes = ip2->GetPluginClasses ();
-				Q_FOREACH (IPluginReady *ipr, GetAllCastableTo<IPluginReady*> ())
+				for (const auto ipr : GetAllCastableTo<IPluginReady*> ())
 					if (!ipr->GetExpectedPluginClasses ()
 							.intersect (classes).isEmpty ())
 						ipr->AddPlugin (object);
@@ -1117,7 +1117,7 @@ namespace LeechCraft
 
 	void PluginManager::FillInstances ()
 	{
-		Q_FOREACH (auto loader, PluginContainers_)
+		for (auto loader : PluginContainers_)
 		{
 			auto inst = loader->Instance ();
 			Plugins_ << inst;
@@ -1140,7 +1140,7 @@ namespace LeechCraft
 			CacheValid_ = false;
 
 			failedList << failed;
-			Q_FOREACH (QObject *obj, ordered)
+			for (const auto obj : ordered)
 			{
 				if (failed == obj)
 					break;
@@ -1154,7 +1154,7 @@ namespace LeechCraft
 			PluginTreeBuilder_->Calculate ();
 
 			ordered = PluginTreeBuilder_->GetResult ();
-			Q_FOREACH (QObject *obj, initialized)
+			for (const auto obj : initialized)
 				ordered.removeAll (obj);
 
 			proc->SetCount (ordered.size () + initialized.size ());
@@ -1165,14 +1165,12 @@ namespace LeechCraft
 
 	Loaders::IPluginLoader_ptr PluginManager::MakeLoader (const QString& filename)
 	{
-#ifndef WITH_DBUS_LOADERS
-		return Loaders::IPluginLoader_ptr (new Loaders::SOPluginLoader (filename));
-#else
+
+#ifdef WITH_DBUS_LOADERS
 		if (DBusMode_)
-			return Loaders::IPluginLoader_ptr (new Loaders::DBusPluginLoader (filename));
-		else
-			return Loaders::IPluginLoader_ptr (new Loaders::SOPluginLoader (filename));
+			return std::make_shared<Loaders::DBusPluginLoader> (filename);
 #endif
+		return std::make_shared<Loaders::SOPluginLoader> (filename);
 	}
 
 	QList<PluginManager::Plugins_t::iterator>

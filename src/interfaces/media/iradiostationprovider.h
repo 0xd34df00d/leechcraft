@@ -176,6 +176,8 @@ namespace Media
 	 * Plugins that provide access to radio stations, either static like
 	 * Icecast streams or dynamic like library radio or similar artists
 	 * radio in Last.FM should implement this interface.
+	 *
+	 * @sa IRestorableRadioStationProvider
 	 */
 	class Q_DECL_EXPORT IRadioStationProvider
 	{

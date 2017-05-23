@@ -35,6 +35,7 @@
 #include <QToolButton>
 #include <QToolBar>
 #include <QLineEdit>
+#include "util/sll/qtutil.h"
 #include "util/gui/flowlayout.h"
 #include "util/gui/clearlineeditaddon.h"
 #include "xmlsettingsdialog/xmlsettingsdialog.h"
@@ -219,13 +220,14 @@ namespace LeechCraft
 
 		qobject_cast<QBoxLayout*> (Ui_.ListContents_->layout ())->addStretch ();
 
-		Q_FOREACH (const QString& group, group2buttons.keys ())
+		for (const auto& pair : Util::Stlize (group2buttons))
 		{
-			const auto& buttons = group2buttons [group];
+			const auto& group = pair.first;
+			const auto& buttons = pair.second;
 			const auto height = std::accumulate (buttons.begin (), buttons.end (), 0,
 					[] (int height, QToolButton *button) { return std::max (height, button->sizeHint ().height ()); });
-			std::for_each (buttons.begin (), buttons.end (),
-					[height] (QToolButton *button) { button->setFixedHeight (height); });
+			for (const auto button : buttons)
+				button->setFixedHeight (height);
 		}
 	}
 
@@ -271,7 +273,7 @@ namespace LeechCraft
 			const auto& expected = ihp->GetExpectedPluginClasses ();
 			const auto& settables = Core::Instance ()
 					.GetPluginManager ()->GetAllCastableRoots<IHaveSettings*> ();
-			Q_FOREACH (auto settableObj, settables)
+			for (auto settableObj : settables)
 			{
 				auto ip2 = qobject_cast<IPlugin2*> (settableObj);
 				if (!ip2 || QSet<QByteArray> (expected).intersect (ip2->GetPluginClasses ()).isEmpty ())
@@ -323,7 +325,7 @@ namespace LeechCraft
 			Item2Page_ [item] = qMakePair (ihs, pgId++);
 		}
 
-		Q_FOREACH (const auto& sub, FindSubplugins (obj))
+		for (const auto& sub : FindSubplugins (obj))
 			FillPages (sub, true);
 	}
 
@@ -391,14 +393,15 @@ namespace LeechCraft
 			return;
 
 		LastSearch_ = text;
-		Q_FOREACH (auto toolButton, Button2SettableRoot_.keys ())
+		for (const auto& pair : Util::Stlize (Button2SettableRoot_))
 		{
-			auto rootObj = Button2SettableRoot_ [toolButton];
+			auto toolButton = pair.first;
+			auto rootObj = pair.second;
 
 			bool foundMatching = false;
 			auto objs = FindSubplugins (rootObj);
 			objs.prepend (rootObj);
-			Q_FOREACH (auto obj, objs)
+			for (auto obj : objs)
 			{
 				auto ihs = qobject_cast<IHaveSettings*> (obj);
 				const auto& list = ihs->GetSettingsDialog ()->HighlightMatches (text);
@@ -410,9 +413,10 @@ namespace LeechCraft
 
 			toolButton->setEnabled (foundMatching);
 
-			Q_FOREACH (auto item, Item2Page_.keys ())
+			for (const auto& itemPair : Util::Stlize (Item2Page_))
 			{
-				const auto& page = Item2Page_ [item];
+				const auto item = itemPair.first;
+				const auto& page = itemPair.second;
 				const bool enabled = !Obj2SearchMatchingPages_.contains (page.first) ||
 						Obj2SearchMatchingPages_ [page.first].contains (page.second);
 				auto flags = item->flags ();

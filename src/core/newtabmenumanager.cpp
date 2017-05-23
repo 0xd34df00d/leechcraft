@@ -153,15 +153,13 @@ namespace LeechCraft
 	{
 		QObject *pObj = itw->ParentMultiTabs ();
 		const auto& tabClass = itw->GetTabClassInfo ().TabClass_;
-		Q_FOREACH (auto action, NewTabMenu_->actions ())
-		{
+		for (auto action : NewTabMenu_->actions ())
 			if (action->property ("TabClass").toByteArray () == tabClass &&
 					action->property ("PluginObj").value<QObject*> () == pObj)
 			{
 				NewTabMenu_->removeAction (action);
 				HiddenActions_ [pObj] [tabClass] = action;
 			}
-		}
 	}
 
 	QString NewTabMenuManager::AccelerateName (QString name)
