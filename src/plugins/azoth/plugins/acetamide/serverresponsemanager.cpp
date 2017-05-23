@@ -29,6 +29,7 @@
 
 #include "serverresponsemanager.h"
 #include <boost/bind.hpp>
+#include <util/sll/prelude.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "ircserverhandler.h"
@@ -1076,12 +1077,8 @@ namespace Acetamide
 
 	void ServerResponseManager::GotServerInfo (const IrcMessageOptions& opts)
 	{
-		QStringList answer;
-		std::transform (opts.Parameters_.begin (), opts.Parameters_.end (),
-			std::back_inserter (answer),
-			[] (decltype (opts.Parameters_.front ()) param)
-				{ return QString::fromUtf8 (param.c_str ()); });
-		ISH_->ShowAnswer ("myinfo", answer.join (" "));
+		ISH_->ShowAnswer ("myinfo",
+				Util::Map (opts.Parameters_, &QString::fromStdString).join (" "));
 
 		QString ircServer = QString::fromUtf8 (opts.Parameters_.at (2).c_str ());
 		IrcServer server;
