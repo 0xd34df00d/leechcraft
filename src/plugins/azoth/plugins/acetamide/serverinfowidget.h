@@ -30,8 +30,8 @@
 #ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
 #define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
 
+#include <functional>
 #include <QWidget>
-#include <boost/function.hpp>
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
 
@@ -41,7 +41,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerCLEntry;
 
 	class ServerInfoWidget : public QWidget
@@ -52,7 +51,7 @@ namespace Acetamide
 
 		Ui::ServerInfoWidget Ui_;
 		IrcServerCLEntry *ISCLEntry_;
-		QHash<QString, boost::function<void (const QString&)>> Parameter2Command_;
+		QHash<QString, std::function<void (QString)>> Parameter2Command_;
 	public:
 		ServerInfoWidget (IrcServerCLEntry*, QWidget* = 0);
 	private:
