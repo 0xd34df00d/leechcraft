@@ -30,6 +30,7 @@
 #include "serverresponsemanager.h"
 #include <boost/bind.hpp>
 #include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "ircserverhandler.h"
@@ -64,203 +65,107 @@ namespace Acetamide
 
 	void ServerResponseManager::Init ()
 	{
-		Command2Action_ ["join"] = boost::bind (&ServerResponseManager::GotJoin,
-				this, _1);
-		Command2Action_ ["part"] = boost::bind (&ServerResponseManager::GotPart,
-				this, _1);
-		Command2Action_ ["quit"] = boost::bind (&ServerResponseManager::GotQuit,
-				this, _1);
-		Command2Action_ ["privmsg"] = boost::bind (&ServerResponseManager::GotPrivMsg,
-				this, _1);
-		Command2Action_ ["notice"] = boost::bind (&ServerResponseManager::GotNoticeMsg,
-				this, _1);
-		Command2Action_ ["nick"] = boost::bind (&ServerResponseManager::GotNick,
-				this, _1);
-		Command2Action_ ["ping"] = boost::bind (&ServerResponseManager::GotPing,
-				this, _1);
-		Command2Action_ ["topic"] = boost::bind (&ServerResponseManager::GotTopic,
-				this, _1);
-		Command2Action_ ["kick"] = boost::bind (&ServerResponseManager::GotKick,
-				this, _1);
-		Command2Action_ ["invite"] = boost::bind (&ServerResponseManager::GotInvitation,
-				this, _1);
-		Command2Action_ ["ctcp_rpl"] = boost::bind (&ServerResponseManager::GotCTCPReply,
-				this, _1);
-		Command2Action_ ["ctcp_rqst"] = boost::bind (&ServerResponseManager::GotCTCPRequestResult,
-				this, _1);
-		Command2Action_ ["331"] = boost::bind (&ServerResponseManager::GotTopic,
-				this, _1);
-		Command2Action_ ["332"] = boost::bind (&ServerResponseManager::GotTopic,
-				this, _1);
-		Command2Action_ ["341"] = boost::bind (&ServerResponseManager::ShowInviteMessage,
-				this, _1);
-		Command2Action_ ["353"] = boost::bind (&ServerResponseManager::GotNames,
-				this, _1);
-		Command2Action_ ["366"] = boost::bind (&ServerResponseManager::GotEndOfNames,
-				this, _1);
-		Command2Action_ ["301"] = boost::bind (&ServerResponseManager::GotAwayReply,
-				this, _1);
-		Command2Action_ ["305"] = boost::bind (&ServerResponseManager::GotSetAway,
-				this, _1);
-		Command2Action_ ["306"] = boost::bind (&ServerResponseManager::GotSetAway,
-				this, _1);
-		Command2Action_ ["302"] = boost::bind (&ServerResponseManager::GotUserHost,
-				this, _1);
-		Command2Action_ ["303"] = boost::bind (&ServerResponseManager::GotIson,
-				this, _1);
-		Command2Action_ ["311"] = boost::bind (&ServerResponseManager::GotWhoIsUser,
-				this, _1);
-		Command2Action_ ["312"] = boost::bind (&ServerResponseManager::GotWhoIsServer,
-				this, _1);
-		Command2Action_ ["313"] = boost::bind (&ServerResponseManager::GotWhoIsOperator,
-				this, _1);
-		Command2Action_ ["317"] = boost::bind (&ServerResponseManager::GotWhoIsIdle,
-				this, _1);
-		Command2Action_ ["318"] = boost::bind (&ServerResponseManager::GotEndOfWhoIs,
-				this, _1);
-		Command2Action_ ["319"] = boost::bind (&ServerResponseManager::GotWhoIsChannels,
-				this, _1);
-		Command2Action_ ["314"] = boost::bind (&ServerResponseManager::GotWhoWas,
-				this, _1);
-		Command2Action_ ["369"] = boost::bind (&ServerResponseManager::GotEndOfWhoWas,
-				this, _1);
-		Command2Action_ ["352"] = boost::bind (&ServerResponseManager::GotWho,
-				this, _1);
-		Command2Action_ ["315"] = boost::bind (&ServerResponseManager::GotEndOfWho,
-				this, _1);
-		Command2Action_ ["342"] = boost::bind (&ServerResponseManager::GotSummoning,
-				this, _1);
-		Command2Action_ ["351"] = boost::bind (&ServerResponseManager::GotVersion,
-				this, _1);
-		Command2Action_ ["364"] = boost::bind (&ServerResponseManager::GotLinks,
-				this, _1);
-		Command2Action_ ["365"] = boost::bind (&ServerResponseManager::GotEndOfLinks,
-				this, _1);
-		Command2Action_ ["371"] = boost::bind (&ServerResponseManager::GotInfo,
-				this, _1);
-		Command2Action_ ["374"] = boost::bind (&ServerResponseManager::GotEndOfInfo,
-				this, _1);
-		Command2Action_ ["372"] = boost::bind (&ServerResponseManager::GotMotd,
-				this, _1);
-		Command2Action_ ["375"] = boost::bind (&ServerResponseManager::GotMotd,
-				this, _1);
-		Command2Action_ ["376"] = boost::bind (&ServerResponseManager::GotEndOfMotd,
-				this, _1);
-		Command2Action_ ["422"] = boost::bind (&ServerResponseManager::GotMotd,
-				this, _1);
-		Command2Action_ ["381"] = boost::bind (&ServerResponseManager::GotYoureOper,
-				this, _1);
-		Command2Action_ ["382"] = boost::bind (&ServerResponseManager::GotRehash,
-				this, _1);
-		Command2Action_ ["391"] = boost::bind (&ServerResponseManager::GotTime,
-				this, _1);
-		Command2Action_ ["251"] = boost::bind (&ServerResponseManager::GotLuserOnlyMsg,
-				this, _1);
-		Command2Action_ ["252"] = boost::bind (&ServerResponseManager::GotLuserParamsWithMsg,
-				this, _1);
-		Command2Action_ ["253"] = boost::bind (&ServerResponseManager::GotLuserParamsWithMsg,
-				this, _1);
-		Command2Action_ ["254"] = boost::bind (&ServerResponseManager::GotLuserParamsWithMsg,
-				this, _1);
-		Command2Action_ ["255"] = boost::bind (&ServerResponseManager::GotLuserOnlyMsg,
-				this, _1);
-		Command2Action_ ["392"] = boost::bind (&ServerResponseManager::GotUsersStart,
-				this, _1);
-		Command2Action_ ["393"] = boost::bind (&ServerResponseManager::GotUsers,
-				this, _1);
-		Command2Action_ ["395"] = boost::bind (&ServerResponseManager::GotNoUser,
-				this, _1);
-		Command2Action_ ["394"] = boost::bind (&ServerResponseManager::GotEndOfUsers,
-				this, _1);
-		Command2Action_ ["200"] = boost::bind (&ServerResponseManager::GotTraceLink,
-				this, _1);
-		Command2Action_ ["201"] = boost::bind (&ServerResponseManager::GotTraceConnecting,
-				this, _1);
-		Command2Action_ ["202"] = boost::bind (&ServerResponseManager::GotTraceHandshake,
-				this, _1);
-		Command2Action_ ["203"] = boost::bind (&ServerResponseManager::GotTraceUnknown,
-				this, _1);
-		Command2Action_ ["204"] = boost::bind (&ServerResponseManager::GotTraceOperator,
-				this, _1);
-		Command2Action_ ["205"] = boost::bind (&ServerResponseManager::GotTraceUser,
-				this, _1);
-		Command2Action_ ["206"] = boost::bind (&ServerResponseManager::GotTraceServer,
-				this, _1);
-		Command2Action_ ["207"] = boost::bind (&ServerResponseManager::GotTraceService,
-				this, _1);
-		Command2Action_ ["208"] = boost::bind (&ServerResponseManager::GotTraceNewType,
-				this, _1);
-		Command2Action_ ["209"] = boost::bind (&ServerResponseManager::GotTraceClass,
-				this, _1);
-		Command2Action_ ["261"] = boost::bind (&ServerResponseManager::GotTraceLog,
-				this, _1);
-		Command2Action_ ["262"] = boost::bind (&ServerResponseManager::GotTraceEnd,
-				this, _1);
-		Command2Action_ ["211"] = boost::bind (&ServerResponseManager::GotStatsLinkInfo,
-				this, _1);
-		Command2Action_ ["212"] = boost::bind (&ServerResponseManager::GotStatsCommands,
-				this, _1);
-		Command2Action_ ["219"] = boost::bind (&ServerResponseManager::GotStatsEnd,
-				this, _1);
-		Command2Action_ ["242"] = boost::bind (&ServerResponseManager::GotStatsUptime,
-				this, _1);
-		Command2Action_ ["243"] = boost::bind (&ServerResponseManager::GotStatsOline,
-				this, _1);
-		Command2Action_ ["256"] = boost::bind (&ServerResponseManager::GotAdmineMe,
-				this, _1);
-		Command2Action_ ["257"] = boost::bind (&ServerResponseManager::GotAdminLoc1,
-				this, _1);
-		Command2Action_ ["258"] = boost::bind (&ServerResponseManager::GotAdminLoc2,
-				this, _1);
-		Command2Action_ ["259"] = boost::bind (&ServerResponseManager::GotAdminEmail,
-				this, _1);
-		Command2Action_ ["263"] = boost::bind (&ServerResponseManager::GotTryAgain,
-				this, _1);
-		Command2Action_ ["005"] = boost::bind (&ServerResponseManager::GotISupport,
-				this, _1);
-		Command2Action_ ["mode"] = boost::bind (&ServerResponseManager::GotChannelMode,
-				this, _1);
-		Command2Action_ ["367"] = boost::bind (&ServerResponseManager::GotBanList,
-				 this, _1);
-		Command2Action_ ["368"] = boost::bind (&ServerResponseManager::GotBanListEnd,
-				 this, _1);
-		Command2Action_ ["348"] = boost::bind (&ServerResponseManager::GotExceptList,
-				 this, _1);
-		Command2Action_ ["349"] = boost::bind (&ServerResponseManager::GotExceptListEnd,
-				 this, _1);
-		Command2Action_ ["346"] = boost::bind (&ServerResponseManager::GotInviteList,
-				 this, _1);
-		Command2Action_ ["347"] = boost::bind (&ServerResponseManager::GotInviteListEnd,
-				 this, _1);
-		Command2Action_ ["324"] = boost::bind (&ServerResponseManager::GotChannelModes,
-				 this, _1);
-		Command2Action_ ["321"] = [this] (const IrcMessageOptions& opts)
-				{ ISH_->GotChannelsListBegin (opts); };
-		Command2Action_ ["322"] = [this] (const IrcMessageOptions& opts)
-				{ ISH_->GotChannelsList (opts); };
-		Command2Action_ ["323"] = [this] (const IrcMessageOptions& opts)
-				{ ISH_->GotChannelsListEnd (opts); };
+		using Util::BindMemFn;
+
+		Command2Action_ ["join"] = BindMemFn (&ServerResponseManager::GotJoin, this);
+		Command2Action_ ["part"] = BindMemFn (&ServerResponseManager::GotPart, this);
+		Command2Action_ ["quit"] = BindMemFn (&ServerResponseManager::GotQuit, this);
+		Command2Action_ ["privmsg"] = BindMemFn (&ServerResponseManager::GotPrivMsg, this);
+		Command2Action_ ["notice"] = BindMemFn (&ServerResponseManager::GotNoticeMsg, this);
+		Command2Action_ ["nick"] = BindMemFn (&ServerResponseManager::GotNick, this);
+		Command2Action_ ["ping"] = BindMemFn (&ServerResponseManager::GotPing, this);
+		Command2Action_ ["topic"] = BindMemFn (&ServerResponseManager::GotTopic, this);
+		Command2Action_ ["kick"] = BindMemFn (&ServerResponseManager::GotKick, this);
+		Command2Action_ ["invite"] = BindMemFn (&ServerResponseManager::GotInvitation, this);
+		Command2Action_ ["ctcp_rpl"] = BindMemFn (&ServerResponseManager::GotCTCPReply, this);
+		Command2Action_ ["ctcp_rqst"] = BindMemFn (&ServerResponseManager::GotCTCPRequestResult, this);
+		Command2Action_ ["331"] = BindMemFn (&ServerResponseManager::GotTopic, this);
+		Command2Action_ ["332"] = BindMemFn (&ServerResponseManager::GotTopic, this);
+		Command2Action_ ["341"] = BindMemFn (&ServerResponseManager::ShowInviteMessage, this);
+		Command2Action_ ["353"] = BindMemFn (&ServerResponseManager::GotNames, this);
+		Command2Action_ ["366"] = BindMemFn (&ServerResponseManager::GotEndOfNames, this);
+		Command2Action_ ["301"] = BindMemFn (&ServerResponseManager::GotAwayReply, this);
+		Command2Action_ ["305"] = BindMemFn (&ServerResponseManager::GotSetAway, this);
+		Command2Action_ ["306"] = BindMemFn (&ServerResponseManager::GotSetAway, this);
+		Command2Action_ ["302"] = BindMemFn (&ServerResponseManager::GotUserHost, this);
+		Command2Action_ ["303"] = BindMemFn (&ServerResponseManager::GotIson, this);
+		Command2Action_ ["311"] = BindMemFn (&ServerResponseManager::GotWhoIsUser, this);
+		Command2Action_ ["312"] = BindMemFn (&ServerResponseManager::GotWhoIsServer, this);
+		Command2Action_ ["313"] = BindMemFn (&ServerResponseManager::GotWhoIsOperator, this);
+		Command2Action_ ["317"] = BindMemFn (&ServerResponseManager::GotWhoIsIdle, this);
+		Command2Action_ ["318"] = BindMemFn (&ServerResponseManager::GotEndOfWhoIs, this);
+		Command2Action_ ["319"] = BindMemFn (&ServerResponseManager::GotWhoIsChannels, this);
+		Command2Action_ ["314"] = BindMemFn (&ServerResponseManager::GotWhoWas, this);
+		Command2Action_ ["369"] = BindMemFn (&ServerResponseManager::GotEndOfWhoWas, this);
+		Command2Action_ ["352"] = BindMemFn (&ServerResponseManager::GotWho, this);
+		Command2Action_ ["315"] = BindMemFn (&ServerResponseManager::GotEndOfWho, this);
+		Command2Action_ ["342"] = BindMemFn (&ServerResponseManager::GotSummoning, this);
+		Command2Action_ ["351"] = BindMemFn (&ServerResponseManager::GotVersion, this);
+		Command2Action_ ["364"] = BindMemFn (&ServerResponseManager::GotLinks, this);
+		Command2Action_ ["365"] = BindMemFn (&ServerResponseManager::GotEndOfLinks, this);
+		Command2Action_ ["371"] = BindMemFn (&ServerResponseManager::GotInfo, this);
+		Command2Action_ ["374"] = BindMemFn (&ServerResponseManager::GotEndOfInfo, this);
+		Command2Action_ ["372"] = BindMemFn (&ServerResponseManager::GotMotd, this);
+		Command2Action_ ["375"] = BindMemFn (&ServerResponseManager::GotMotd, this);
+		Command2Action_ ["376"] = BindMemFn (&ServerResponseManager::GotEndOfMotd, this);
+		Command2Action_ ["422"] = BindMemFn (&ServerResponseManager::GotMotd, this);
+		Command2Action_ ["381"] = BindMemFn (&ServerResponseManager::GotYoureOper, this);
+		Command2Action_ ["382"] = BindMemFn (&ServerResponseManager::GotRehash, this);
+		Command2Action_ ["391"] = BindMemFn (&ServerResponseManager::GotTime, this);
+		Command2Action_ ["251"] = BindMemFn (&ServerResponseManager::GotLuserOnlyMsg, this);
+		Command2Action_ ["252"] = BindMemFn (&ServerResponseManager::GotLuserParamsWithMsg, this);
+		Command2Action_ ["253"] = BindMemFn (&ServerResponseManager::GotLuserParamsWithMsg, this);
+		Command2Action_ ["254"] = BindMemFn (&ServerResponseManager::GotLuserParamsWithMsg, this);
+		Command2Action_ ["255"] = BindMemFn (&ServerResponseManager::GotLuserOnlyMsg, this);
+		Command2Action_ ["392"] = BindMemFn (&ServerResponseManager::GotUsersStart, this);
+		Command2Action_ ["393"] = BindMemFn (&ServerResponseManager::GotUsers, this);
+		Command2Action_ ["395"] = BindMemFn (&ServerResponseManager::GotNoUser, this);
+		Command2Action_ ["394"] = BindMemFn (&ServerResponseManager::GotEndOfUsers, this);
+		Command2Action_ ["200"] = BindMemFn (&ServerResponseManager::GotTraceLink, this);
+		Command2Action_ ["201"] = BindMemFn (&ServerResponseManager::GotTraceConnecting, this);
+		Command2Action_ ["202"] = BindMemFn (&ServerResponseManager::GotTraceHandshake, this);
+		Command2Action_ ["203"] = BindMemFn (&ServerResponseManager::GotTraceUnknown, this);
+		Command2Action_ ["204"] = BindMemFn (&ServerResponseManager::GotTraceOperator, this);
+		Command2Action_ ["205"] = BindMemFn (&ServerResponseManager::GotTraceUser, this);
+		Command2Action_ ["206"] = BindMemFn (&ServerResponseManager::GotTraceServer, this);
+		Command2Action_ ["207"] = BindMemFn (&ServerResponseManager::GotTraceService, this);
+		Command2Action_ ["208"] = BindMemFn (&ServerResponseManager::GotTraceNewType, this);
+		Command2Action_ ["209"] = BindMemFn (&ServerResponseManager::GotTraceClass, this);
+		Command2Action_ ["261"] = BindMemFn (&ServerResponseManager::GotTraceLog, this);
+		Command2Action_ ["262"] = BindMemFn (&ServerResponseManager::GotTraceEnd, this);
+		Command2Action_ ["211"] = BindMemFn (&ServerResponseManager::GotStatsLinkInfo, this);
+		Command2Action_ ["212"] = BindMemFn (&ServerResponseManager::GotStatsCommands, this);
+		Command2Action_ ["219"] = BindMemFn (&ServerResponseManager::GotStatsEnd, this);
+		Command2Action_ ["242"] = BindMemFn (&ServerResponseManager::GotStatsUptime, this);
+		Command2Action_ ["243"] = BindMemFn (&ServerResponseManager::GotStatsOline, this);
+		Command2Action_ ["256"] = BindMemFn (&ServerResponseManager::GotAdmineMe, this);
+		Command2Action_ ["257"] = BindMemFn (&ServerResponseManager::GotAdminLoc1, this);
+		Command2Action_ ["258"] = BindMemFn (&ServerResponseManager::GotAdminLoc2, this);
+		Command2Action_ ["259"] = BindMemFn (&ServerResponseManager::GotAdminEmail, this);
+		Command2Action_ ["263"] = BindMemFn (&ServerResponseManager::GotTryAgain, this);
+		Command2Action_ ["005"] = BindMemFn (&ServerResponseManager::GotISupport, this);
+		Command2Action_ ["mode"] = BindMemFn (&ServerResponseManager::GotChannelMode, this);
+		Command2Action_ ["367"] = BindMemFn (&ServerResponseManager::GotBanList, this);
+		Command2Action_ ["368"] = BindMemFn (&ServerResponseManager::GotBanListEnd, this);
+		Command2Action_ ["348"] = BindMemFn (&ServerResponseManager::GotExceptList, this);
+		Command2Action_ ["349"] = BindMemFn (&ServerResponseManager::GotExceptListEnd, this);
+		Command2Action_ ["346"] = BindMemFn (&ServerResponseManager::GotInviteList, this);
+		Command2Action_ ["347"] = BindMemFn (&ServerResponseManager::GotInviteListEnd, this);
+		Command2Action_ ["324"] = BindMemFn (&ServerResponseManager::GotChannelModes, this);
+		Command2Action_ ["321"] = BindMemFn (&IrcServerHandler::GotChannelsListBegin, ISH_);
+		Command2Action_ ["322"] = BindMemFn (&IrcServerHandler::GotChannelsList, ISH_);
+		Command2Action_ ["323"] = BindMemFn (&IrcServerHandler::GotChannelsListEnd, ISH_);
 
 		//not from rfc
-		Command2Action_ ["330"] = boost::bind (&ServerResponseManager::GotWhoIsAccount,
-				this, _1);
-		Command2Action_ ["671"] = boost::bind (&ServerResponseManager::GotWhoIsSecure,
-				this, _1);
-		Command2Action_ ["328"] = boost::bind (&ServerResponseManager::GotChannelUrl,
-				this, _1);
-		Command2Action_ ["333"] = boost::bind (&ServerResponseManager::GotTopicWhoTime,
-				this, _1);
-		Command2Action_ ["004"] = boost::bind (&ServerResponseManager::GotServerInfo,
-				this, _1);
-		Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
-			{ ISH_->ShowAnswer ("307", opts.Message_); };
-		Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
-			{ ISH_->ShowAnswer ("310", opts.Message_); };
-		Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
-			{ ISH_->ShowAnswer ("320", opts.Message_); };
-		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
-			{ ISH_->ShowAnswer ("278", opts.Message_); };
-
+		Command2Action_ ["330"] = BindMemFn (&ServerResponseManager::GotWhoIsAccount, this);
+		Command2Action_ ["671"] = BindMemFn (&ServerResponseManager::GotWhoIsSecure, this);
+		Command2Action_ ["328"] = BindMemFn (&ServerResponseManager::GotChannelUrl, this);
+		Command2Action_ ["333"] = BindMemFn (&ServerResponseManager::GotTopicWhoTime, this);
+		Command2Action_ ["004"] = BindMemFn (&ServerResponseManager::GotServerInfo, this);
+		Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("307", opts.Message_); };
+		Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("310", opts.Message_); };
+		Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("320", opts.Message_); };
+		Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts) { ISH_->ShowAnswer ("278", opts.Message_); };
 
 		MatchString2Server_ ["unreal"] = IrcServer::UnrealIRCD;
 	}
