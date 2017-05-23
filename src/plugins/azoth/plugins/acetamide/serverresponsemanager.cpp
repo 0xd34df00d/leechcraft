@@ -651,20 +651,37 @@ namespace Acetamide
 				tr (" summoning to IRC"));
 	}
 
+	namespace
+	{
+		QString BuildParamsStr (const QList<std::string>& params)
+		{
+			QString string;
+			for (const auto& str : params)
+				string.append (QString::fromStdString (str) + " ");
+			return string;
+		}
+
+		template<int N>
+		QString BuildParamsStr (const IrcMessageOptions& opts)
+		{
+			return BuildParamsStr (opts.Parameters_.mid (N));
+		}
+
+		template<>
+		QString BuildParamsStr<0> (const IrcMessageOptions& opts)
+		{
+			return BuildParamsStr (opts.Parameters_);
+		}
+	}
+
 	void ServerResponseManager::GotVersion (const IrcMessageOptions& opts)
 	{
-		QString string;
-		Q_FOREACH (std::string str, opts.Parameters_)
-			string.append (QString::fromUtf8 (str.c_str ()) + " ");
-		ISH_->ShowAnswer ("version", string + opts.Message_);
+		ISH_->ShowAnswer ("version", BuildParamsStr<0> (opts) + opts.Message_);
 	}
 
 	void ServerResponseManager::GotLinks (const IrcMessageOptions& opts)
 	{
-		QString str;
-		for (int i = 1; i < opts.Parameters_.count (); ++i)
-			str.append (QString::fromUtf8 (opts.Parameters_ [i].c_str ()) + " ");
-		ISH_->ShowLinksReply (str + opts.Message_);
+		ISH_->ShowLinksReply (BuildParamsStr<1> (opts) + opts.Message_);
 	}
 
 	void ServerResponseManager::GotEndOfLinks (const IrcMessageOptions& opts)
@@ -754,10 +771,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceConnecting (const IrcMessageOptions& opts)
@@ -765,10 +779,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowAnswer ("trace", message);
+		ISH_->ShowAnswer ("trace", BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceHandshake (const IrcMessageOptions& opts)
@@ -776,10 +787,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceUnknown (const IrcMessageOptions& opts)
@@ -787,10 +795,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceOperator (const IrcMessageOptions& opts)
@@ -798,10 +803,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceUser (const IrcMessageOptions& opts)
@@ -809,10 +811,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceServer (const IrcMessageOptions& opts)
@@ -820,10 +819,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceService (const IrcMessageOptions& opts)
@@ -831,10 +827,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceNewType (const IrcMessageOptions& opts)
@@ -842,10 +835,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceClass (const IrcMessageOptions& opts)
@@ -853,10 +843,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceLog (const IrcMessageOptions& opts)
@@ -864,10 +851,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowTraceReply (message);
+		ISH_->ShowTraceReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotTraceEnd (const IrcMessageOptions& opts)
@@ -885,10 +869,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowStatsReply (message);
+		ISH_->ShowStatsReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotStatsCommands (const IrcMessageOptions& opts)
@@ -896,10 +877,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowStatsReply (message);
+		ISH_->ShowStatsReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotStatsEnd (const IrcMessageOptions& opts)
@@ -922,10 +900,7 @@ namespace Acetamide
 		if (opts.Parameters_.isEmpty ())
 			return;
 
-		QString message;
-		Q_FOREACH (const std::string& str, opts.Parameters_.mid (1))
-			message += QString::fromUtf8 (str.c_str ()) + " ";
-		ISH_->ShowStatsReply (message);
+		ISH_->ShowStatsReply (BuildParamsStr<1> (opts));
 	}
 
 	void ServerResponseManager::GotAdmineMe (const IrcMessageOptions& opts)
@@ -964,9 +939,7 @@ namespace Acetamide
 	{
 		ISH_->JoinFromQueue ();
 
-		QString result;
-		Q_FOREACH (const std::string& param, opts.Parameters_)
-			result.append (QString::fromUtf8 (param.c_str ())).append (" ");
+		auto result = BuildParamsStr<0> (opts);
 		result.append (":").append (opts.Message_);
 		ISH_->ParserISupport (result);
 		ISH_->ShowAnswer ("mode", result);
