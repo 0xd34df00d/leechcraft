@@ -29,7 +29,6 @@
 
 #include "serverresponsemanager.h"
 #include <boost/bind.hpp>
-#include <QTextCodec>
 #include <interfaces/core/icoreproxy.h>
 #include <util/util.h>
 #include "ircserverhandler.h"
