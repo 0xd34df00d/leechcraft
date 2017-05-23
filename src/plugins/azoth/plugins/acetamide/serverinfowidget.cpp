@@ -31,6 +31,7 @@
 #include <boost/bind.hpp>
 #include "ircserverclentry.h"
 #include <QtDebug>
+#include <util/sll/functional.h>
 #include <util/sll/qtutil.h>
 
 namespace LeechCraft
@@ -50,44 +51,27 @@ namespace Acetamide
 
 	void ServerInfoWidget::Init ()
 	{
-		Parameter2Command_ ["casemapping"] = boost::bind (&QLineEdit::setText,
-				Ui_.CaseMapping_, _1);
-		Parameter2Command_ ["chanlimit"] = boost::bind (&QLineEdit::setText,
-				Ui_.ChanLimit_, _1);
-		Parameter2Command_ ["chanmodes"] = boost::bind (&ServerInfoWidget::SetChanModes,
-				this, _1);
-		Parameter2Command_ ["channellen"] = boost::bind (&QLineEdit::setText,
-				Ui_.ChannelLen_, _1);
-		Parameter2Command_ ["chantypes"] = boost::bind (&QLineEdit::setText,
-				Ui_.ChanTypes_, _1);
-		Parameter2Command_ ["excepts"] = boost::bind (&ServerInfoWidget::SetExcepts,
-				this, _1);
-		Parameter2Command_ ["idchan"] = boost::bind (&QLineEdit::setText,
-				Ui_.IdChan_, _1);
-		Parameter2Command_ ["kicklen"] = boost::bind (&QLineEdit::setText,
-				Ui_.KickLen_, _1);
-		Parameter2Command_ ["maxlist"] = boost::bind (&QLineEdit::setText,
-				Ui_.MaxList_, _1);
-		Parameter2Command_ ["modes"] = boost::bind (&QLineEdit::setText,
-				Ui_.Modes_, _1);
-		Parameter2Command_ ["network"] = boost::bind (&QLineEdit::setText,
-				Ui_.NetworkName_, _1);
-		Parameter2Command_ ["nicklen"] = boost::bind (&QLineEdit::setText,
-				Ui_.NickLength_, _1);
-		Parameter2Command_ ["prefix"] = boost::bind (&ServerInfoWidget::SetPrefix,
-				this, _1);
-		Parameter2Command_ ["safelist"] = boost::bind (&ServerInfoWidget::SetSafeList,
-				this, _1);
-		Parameter2Command_ ["statusmsg"] = boost::bind (&QLineEdit::setText,
-				Ui_.StatusMsg_, _1);
-		Parameter2Command_ ["std"] = boost::bind (&QLineEdit::setText,
-				Ui_.Std_, _1);
-		Parameter2Command_ ["targmax"] = boost::bind (&ServerInfoWidget::SetTargMax,
-				this, _1);
-		Parameter2Command_ ["topiclen"] = boost::bind (&QLineEdit::setText,
-				Ui_.TopicLen_, _1);
-		Parameter2Command_ ["invex"] = boost::bind (&ServerInfoWidget::SetInvEx,
-				this, _1);
+		using Util::BindMemFn;
+
+		Parameter2Command_ ["casemapping"] = BindMemFn (&QLineEdit::setText, Ui_.CaseMapping_);
+		Parameter2Command_ ["chanlimit"] = BindMemFn (&QLineEdit::setText, Ui_.ChanLimit_);
+		Parameter2Command_ ["chanmodes"] = BindMemFn (&ServerInfoWidget::SetChanModes, this);
+		Parameter2Command_ ["channellen"] = BindMemFn (&QLineEdit::setText, Ui_.ChannelLen_);
+		Parameter2Command_ ["chantypes"] = BindMemFn (&QLineEdit::setText, Ui_.ChanTypes_);
+		Parameter2Command_ ["excepts"] = BindMemFn (&ServerInfoWidget::SetExcepts, this);
+		Parameter2Command_ ["idchan"] = BindMemFn (&QLineEdit::setText, Ui_.IdChan_);
+		Parameter2Command_ ["kicklen"] = BindMemFn (&QLineEdit::setText, Ui_.KickLen_);
+		Parameter2Command_ ["maxlist"] = BindMemFn (&QLineEdit::setText, Ui_.MaxList_);
+		Parameter2Command_ ["modes"] = BindMemFn (&QLineEdit::setText, Ui_.Modes_);
+		Parameter2Command_ ["network"] = BindMemFn (&QLineEdit::setText, Ui_.NetworkName_);
+		Parameter2Command_ ["nicklen"] = BindMemFn (&QLineEdit::setText, Ui_.NickLength_);
+		Parameter2Command_ ["prefix"] = BindMemFn (&ServerInfoWidget::SetPrefix, this);
+		Parameter2Command_ ["safelist"] = BindMemFn (&ServerInfoWidget::SetSafeList, this);
+		Parameter2Command_ ["statusmsg"] = BindMemFn (&QLineEdit::setText, Ui_.StatusMsg_);
+		Parameter2Command_ ["std"] = BindMemFn (&QLineEdit::setText, Ui_.Std_);
+		Parameter2Command_ ["targmax"] = BindMemFn (&ServerInfoWidget::SetTargMax, this);
+		Parameter2Command_ ["topiclen"] = BindMemFn (&QLineEdit::setText, Ui_.TopicLen_);
+		Parameter2Command_ ["invex"] = BindMemFn (&ServerInfoWidget::SetInvEx, this);
 	}
 
 	void ServerInfoWidget::SetISupport ()
