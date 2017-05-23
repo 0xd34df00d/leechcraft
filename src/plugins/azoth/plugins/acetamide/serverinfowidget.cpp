@@ -31,6 +31,7 @@
 #include <boost/bind.hpp>
 #include "ircserverclentry.h"
 #include <QtDebug>
+#include <util/sll/qtutil.h>
 
 namespace LeechCraft
 {
@@ -91,12 +92,12 @@ namespace Acetamide
 
 	void ServerInfoWidget::SetISupport ()
 	{
-		const QMap<QString, QString>& info = ISCLEntry_->GetISupport ();
-
-		for (QMap<QString, QString>::const_iterator it_begin = info.begin (),
-				it_end = info.end (); it_begin != it_end; ++it_begin)
-			if (Parameter2Command_.contains (it_begin.key ().toLower ()))
-				Parameter2Command_ [it_begin.key ().toLower ()] (it_begin.value ());
+		for (const auto& pair : Util::Stlize (ISCLEntry_->GetISupport ()))
+		{
+			const auto& key = pair.first.toLower ();
+			if (Parameter2Command_.contains (key))
+				Parameter2Command_ [key] (pair.second);
+		}
 	}
 
 	void ServerInfoWidget::SetChanModes (const QString& modes)
