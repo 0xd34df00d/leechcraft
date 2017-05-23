@@ -1095,38 +1095,38 @@ namespace Acetamide
 
 		switch (server)
 		{
-			case IrcServer::UnrealIRCD:
-				Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
-					{
-						WhoIsMessage msg;
-						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-						msg.IsRegistered_ = opts.Message_;
-						ISH_->ShowWhoIsReply (msg);
-					};
-				Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
-					{
-						WhoIsMessage msg;
-						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-						msg.IsHelpOp_ = opts.Message_;
-						ISH_->ShowWhoIsReply (msg);
-					};
-				Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
-					{
-						WhoIsMessage msg;
-						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-						msg.Mail_ = opts.Message_;
-						ISH_->ShowWhoIsReply (msg);
-					};
-				Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
-					{
-						WhoIsMessage msg;
-						msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
-						msg.ConnectedFrom_ = opts.Message_;
-						ISH_->ShowWhoIsReply (msg);
-					};
-				break;
-			default:
-				break;
+		case IrcServer::UnrealIRCD:
+			Command2Action_ ["307"] = [this] (const IrcMessageOptions& opts)
+				{
+					WhoIsMessage msg;
+					msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+					msg.IsRegistered_ = opts.Message_;
+					ISH_->ShowWhoIsReply (msg);
+				};
+			Command2Action_ ["310"] = [this] (const IrcMessageOptions& opts)
+				{
+					WhoIsMessage msg;
+					msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+					msg.IsHelpOp_ = opts.Message_;
+					ISH_->ShowWhoIsReply (msg);
+				};
+			Command2Action_ ["320"] = [this] (const IrcMessageOptions& opts)
+				{
+					WhoIsMessage msg;
+					msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+					msg.Mail_ = opts.Message_;
+					ISH_->ShowWhoIsReply (msg);
+				};
+			Command2Action_ ["378"] = [this] (const IrcMessageOptions& opts)
+				{
+					WhoIsMessage msg;
+					msg.Nick_ = QString::fromUtf8 (opts.Parameters_ [1].c_str ());
+					msg.ConnectedFrom_ = opts.Message_;
+					ISH_->ShowWhoIsReply (msg);
+				};
+			break;
+		default:
+			break;
 		}
 	}
 
