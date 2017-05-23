@@ -662,9 +662,8 @@ namespace Acetamide
 	void ServerResponseManager::GotLinks (const IrcMessageOptions& opts)
 	{
 		QString str;
-		for (int i = 0; i < opts.Parameters_.count (); ++i)
-			if (i)
-				str.append (QString::fromUtf8 (opts.Parameters_ [i].c_str ()) + " ");
+		for (int i = 1; i < opts.Parameters_.count (); ++i)
+			str.append (QString::fromUtf8 (opts.Parameters_ [i].c_str ()) + " ");
 		ISH_->ShowLinksReply (str + opts.Message_);
 	}
 
