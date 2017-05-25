@@ -62,7 +62,6 @@ namespace Acetamide
 		void SetSafeList (const QString&);
 		void SetTargMax (const QString&);
 		void SetInvEx (const QString&);
-		bool GetBoolFromString (const QString&);
 	public slots:
 		void accept ();
 	signals:

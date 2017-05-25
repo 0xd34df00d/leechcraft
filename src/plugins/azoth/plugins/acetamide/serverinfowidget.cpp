@@ -93,6 +93,14 @@ namespace Acetamide
 		Ui_.ChanModesD_->setText (list.at (3));
 	}
 
+	namespace
+	{
+		bool GetBoolFromString (const QString& str)
+		{
+			return str == "true";
+		}
+	}
+
 	void ServerInfoWidget::SetExcepts (const QString& str)
 	{
 		Ui_.Excepts_->setChecked (GetBoolFromString (str));
@@ -143,11 +151,6 @@ namespace Acetamide
 	void ServerInfoWidget::SetInvEx (const QString& str)
 	{
 		Ui_.InvEx_->setChecked (GetBoolFromString (str));
-	}
-
-	bool ServerInfoWidget::GetBoolFromString (const QString& str)
-	{
-		return str == "true";
 	}
 
 	void ServerInfoWidget::accept ()
