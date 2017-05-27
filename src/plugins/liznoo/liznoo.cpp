@@ -102,6 +102,11 @@ namespace Liznoo
 		LiznooQuark_ = std::make_shared<QuarkComponent> ("liznoo", "LiznooQuark.qml");
 		LiznooQuark_->DynamicProps_.append ({ "Liznoo_proxy", qm });
 
+		connect (Platform_.get (),
+				SIGNAL (batteryInfoUpdated (Liznoo::BatteryInfo)),
+				qm,
+				SLOT (handleBatteryInfo (Liznoo::BatteryInfo)));
+
 		connect (qm,
 				SIGNAL (batteryHistoryDialogRequested (QString)),
 				this,
