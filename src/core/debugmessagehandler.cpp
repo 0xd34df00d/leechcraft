@@ -450,13 +450,13 @@ namespace DebugHandler
 		*ostr << "["
 				<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
 				<< "] ["
-				<< DetectModule (ctx).constData ()
-				<< "] ["
-				<< QThread::currentThread ()
-				<< "] ["
 				<< std::setfill ('0')
 				<< std::setw (3)
 				<< Counter++
+				<< "] ["
+				<< QThread::currentThread ()
+				<< "] ["
+				<< Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx)).constData ()
 				<< "] "
 				<< message
 				<< std::endl;
