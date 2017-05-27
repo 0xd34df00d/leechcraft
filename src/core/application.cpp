@@ -440,9 +440,9 @@ namespace LeechCraft
 			return flags;
 		} ();
 
-		qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext&, const QString& msg)
+		qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
 				{
-					DebugHandler::Write (type, msg.toLocal8Bit ().constData (), flags);
+					DebugHandler::Write (type, ctx, msg.toLocal8Bit ().constData (), flags);
 				});
 
 		QDir lcDir = QDir::home ();

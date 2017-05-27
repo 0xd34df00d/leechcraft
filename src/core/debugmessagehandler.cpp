@@ -369,7 +369,7 @@ namespace
 
 namespace DebugHandler
 {
-	void Write (QtMsgType type, const char *message, DebugWriteFlags flags)
+	void Write (QtMsgType type, const QMessageLogContext& ctx, const char *message, DebugWriteFlags flags)
 	{
 #if !defined (Q_OS_WIN32)
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||

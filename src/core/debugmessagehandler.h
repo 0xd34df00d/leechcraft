@@ -42,7 +42,7 @@ namespace DebugHandler
 
 	Q_DECLARE_FLAGS (DebugWriteFlags, DebugWriteFlag)
 
-	void Write (QtMsgType type, const char *message, DebugWriteFlags flags);
+	void Write (QtMsgType type, const QMessageLogContext&, const char *message, DebugWriteFlags flags);
 }
 
 Q_DECLARE_OPERATORS_FOR_FLAGS (DebugHandler::DebugWriteFlags)
