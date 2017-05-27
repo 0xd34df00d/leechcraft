@@ -399,6 +399,35 @@ namespace
 
 		return file;
 	}
+
+	QByteArray Colorize (bool shouldColorize, const QByteArray& str)
+	{
+		if (!shouldColorize)
+			return str;
+
+		static const QByteArray table [] =
+		{
+			"31",
+			"32",
+			"33",
+			"34",
+			"35",
+			"36",
+			"37",
+			"1;31",
+			"1;32",
+			"1;33",
+			"1;34",
+			"1;35",
+			"1;36",
+			"1;37"
+		};
+
+		constexpr auto tableSize = sizeof (table) / sizeof (table [0]);
+
+		const auto hash = qHash (str) % tableSize;
+		return "\x1b[" + table [hash] + "m" + str + "\x1b[0m";
+	}
 }
 
 namespace DebugHandler
