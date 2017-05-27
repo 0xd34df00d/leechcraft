@@ -128,7 +128,7 @@ namespace Azoth
 
 		Ui_.DiscoveryTree_->setModel (FilterModel_);
 
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		for (const auto acc : Core::Instance ().GetAccounts ())
 		{
 			auto ihsd = qobject_cast<IHaveServiceDiscovery*> (acc->GetQObject ());
 			if (!ihsd)

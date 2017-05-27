@@ -3,7 +3,6 @@
 case $1 in
 	debian_unstable*)
 		cmake ../src \
-			-DUSE_CPP14=True \
 			-DUSE_QT5=True \
 			-DEXTRA_WARNINGS=True \
 			-DENABLE_BLASQ=True \
@@ -32,7 +31,6 @@ case $1 in
 			-DENABLE_FONTIAC=True ;;
 	debian_cpp14*)
 		CC="/usr/bin/clang" CXX="/usr/bin/clang++" cmake ../src \
-			-DUSE_CPP14=True \
 			-DENABLE_BLASQ=True \
 			-DENABLE_BLASQ_SPEGNERSI=False \
 			-DENABLE_AZOTH_WOODPECKER=False \
@@ -57,7 +55,6 @@ case $1 in
 	fedora_23*)
 		cmake ../src \
 			-DLIB_SUFFIX=64 \
-			-DUSE_CPP14=True \
 			-DUSE_QT5=True \
 			-DEXTRA_WARNINGS=True \
 			-DSTRICT_LICENSING=True \
@@ -173,7 +170,6 @@ case $1 in
 			-DENABLE_ZALIL=True ;;
 	opensuse_factory*)
 		cmake ../src -DLIB_SUFFIX=64 \
-			-DUSE_CPP14=True \
 			-DUSE_QT5=True \
 			-DEXTRA_WARNINGS=True \
 			-DCMAKE_INSTALL_PREFIX=/usr \

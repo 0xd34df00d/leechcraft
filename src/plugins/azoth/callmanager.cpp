@@ -115,21 +115,16 @@ namespace Azoth
 	{
 		QAudioDeviceInfo FindDevice (const QByteArray& property, QAudio::Mode mode)
 		{
-			const QString& name = XmlSettingsManager::Instance ()
+			const auto& name = XmlSettingsManager::Instance ()
 					.property (property).toString ();
 
-			QAudioDeviceInfo result = mode == QAudio::AudioInput ?
+			for (const auto& info : QAudioDeviceInfo::availableDevices (mode))
+				if (info.deviceName () == name)
+					return info;
+
+			return mode == QAudio::AudioInput ?
 					QAudioDeviceInfo::defaultInputDevice () :
 					QAudioDeviceInfo::defaultOutputDevice ();
-			Q_FOREACH (const QAudioDeviceInfo& info,
-					QAudioDeviceInfo::availableDevices (mode))
-				if (info.deviceName () == name)
-				{
-					result = info;
-					break;
-				}
-
-			return result;
 		}
 	}
 #endif
@@ -145,8 +140,8 @@ namespace Azoth
 				tr ("Incoming call from %1").arg (name),
 				PInfo_);
 		const auto nh = new Util::NotificationActionHandler (e, this);
-		nh->AddFunction (tr ("Accept"), [mediaCall] () { mediaCall->Accept (); });
-		nh->AddFunction (tr ("Hangup"), [mediaCall] () { mediaCall->Hangup (); });
+		nh->AddFunction (tr ("Accept"), [mediaCall] { mediaCall->Accept (); });
+		nh->AddFunction (tr ("Hangup"), [mediaCall] { mediaCall->Hangup (); });
 		Core::Instance ().SendEntity (e);
 	}
 

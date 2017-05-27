@@ -27,11 +27,10 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
-#define PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H
+#pragma once
 
+#include <functional>
 #include <QWidget>
-#include <boost/function.hpp>
 #include <interfaces/azoth/iconfigurablemuc.h>
 #include "ui_serverinfowidget.h"
 
@@ -41,7 +40,6 @@ namespace Azoth
 {
 namespace Acetamide
 {
-
 	class IrcServerCLEntry;
 
 	class ServerInfoWidget : public QWidget
@@ -52,7 +50,7 @@ namespace Acetamide
 
 		Ui::ServerInfoWidget Ui_;
 		IrcServerCLEntry *ISCLEntry_;
-		QHash<QString, boost::function<void (const QString&)>> Parameter2Command_;
+		QHash<QString, std::function<void (QString)>> Parameter2Command_;
 	public:
 		ServerInfoWidget (IrcServerCLEntry*, QWidget* = 0);
 	private:
@@ -64,7 +62,6 @@ namespace Acetamide
 		void SetSafeList (const QString&);
 		void SetTargMax (const QString&);
 		void SetInvEx (const QString&);
-		bool GetBoolFromString (const QString&);
 	public slots:
 		void accept ();
 	signals:
@@ -73,5 +70,3 @@ namespace Acetamide
 }
 }
 }
-
-#endif // PLUGINS_AZOTH_PLUGINS_ACETAMIDE_SERVERINFOWIDGET_H

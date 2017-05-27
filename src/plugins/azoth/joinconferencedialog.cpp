@@ -47,7 +47,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		setAttribute (Qt::WA_DeleteOnClose, true);
 
-		Q_FOREACH (IAccount *acc, accounts)
+		for (const auto acc : accounts)
 		{
 			if (!acc->IsShownInRoster ())
 				continue;
@@ -93,14 +93,11 @@ namespace Azoth
 						.arg (proto->GetProtocolName ()),
 					QVariant::fromValue<QObject*> (acc->GetQObject ()));
 
-			const QString& key = "JoinHistory/" + acc->GetAccountID ();
-			QVariantList list = XmlSettingsManager::Instance ()
-					.GetRawValue (key).toList ();
-
-			Q_FOREACH (const QVariant& var, list)
+			const auto& key = "JoinHistory/" + acc->GetAccountID ();
+			for (const auto& var : XmlSettingsManager::Instance ().GetRawValue (key).toList ())
 			{
-				const QVariantMap& map = var.toMap ();
-				const QString& name = map ["HumanReadableName"].toString ();
+				const auto& map = var.toMap ();
+				const auto& name = map ["HumanReadableName"].toString ();
 				if (name.isEmpty ())
 					continue;
 
@@ -113,9 +110,7 @@ namespace Azoth
 		}
 
 		if (Ui_.HistoryBox_->count ())
-			QMetaObject::invokeMethod (this,
-					"on_HistoryBox__activated",
-					Q_ARG (int, 0));
+			on_HistoryBox__activated (0);
 	}
 
 	JoinConferenceDialog::~JoinConferenceDialog ()
@@ -152,15 +147,16 @@ namespace Azoth
 			return;
 		}
 
-		const QVariantMap& data = imjw->GetIdentifyingData ();
-		IAccount *acc = qobject_cast<IAccount*> (accObj);
-		if (acc)
+		const auto& data = imjw->GetIdentifyingData ();
+		if (const auto acc = qobject_cast<IAccount*> (accObj))
 		{
-			const QString& key = "JoinHistory/" + acc->GetAccountID ();
+			const auto& key = "JoinHistory/" + acc->GetAccountID ();
 			QVariantList list = XmlSettingsManager::Instance ()
 					.GetRawValue (key).toList ();
 
-			Q_FOREACH (const QVariant& var, list)
+			// Using a range-based for loop over a container being modified is OK
+			// as the loop is terminated once the container is modified.
+			for (const auto& var : list)
 				if (var.toMap () ["HumanReadableName"] == data ["HumanReadableName"])
 				{
 					list.removeAll (var);

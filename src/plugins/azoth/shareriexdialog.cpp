@@ -105,7 +105,7 @@ namespace Azoth
 		{
 			QMap<QString, QList<ICLEntry*>> result;
 
-			Q_FOREACH (QObject *entryObj, acc->GetCLEntries ())
+			for (const auto entryObj : acc->GetCLEntries ())
 			{
 				ICLEntry *entry = qobject_cast<ICLEntry*> (entryObj);
 				if (!entry ||
@@ -115,7 +115,7 @@ namespace Azoth
 				if (entry->Groups ().isEmpty ())
 					result [""] << entry;
 				else
-					Q_FOREACH (const QString& group, entry->Groups ())
+					for (const auto& group : entry->Groups ())
 						result [group] << entry;
 			}
 
@@ -127,10 +127,12 @@ namespace Azoth
 	{
 		Model_->clear ();
 
-		Model_->setHorizontalHeaderLabels (QStringList (tr ("Name"))
-						<< tr ("ID")
-						<< tr ("Account")
-						<< tr ("Groups"));
+		Model_->setHorizontalHeaderLabels ({
+					tr ("Name"),
+					tr ("ID"),
+					tr ("Account"),
+					tr ("Groups")
+				});
 
 		const auto acc = Entry_->GetParentAccount ();
 

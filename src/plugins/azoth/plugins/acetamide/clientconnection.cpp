@@ -157,7 +157,7 @@ namespace Acetamide
 	void ClientConnection::SetBookmarks (const QList<IrcBookmark>& bookmarks)
 	{
 		QList<QVariant> res;
-		Q_FOREACH (const IrcBookmark& bookmark, bookmarks)
+		for (const auto& bookmark : bookmarks)
 		{
 			QByteArray result;
 			{
@@ -183,13 +183,13 @@ namespace Acetamide
 
 	QList<IrcBookmark> ClientConnection::GetBookmarks () const
 	{
-		QList<QVariant> list = XmlSettingsManager::Instance ().Property ("Bookmarks",
+		const auto& list = XmlSettingsManager::Instance ().Property ("Bookmarks",
 				QList<QVariant> ()).toList ();
 
 		bool hadUnknownVersions = false;
 
 		QList<IrcBookmark> bookmarks;
-		Q_FOREACH (const QVariant& variant, list)
+		for (const auto& variant : list)
 		{
 			IrcBookmark bookmark;
 			QDataStream istr (variant.toByteArray ());

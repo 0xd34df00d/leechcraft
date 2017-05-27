@@ -36,6 +36,8 @@
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QSettings>
+#include <util/sll/prelude.h>
+#include <util/sll/functional.h>
 #include <interfaces/azoth/iprotocolplugin.h>
 #include "core.h"
 #include "ircaccount.h"
@@ -87,10 +89,7 @@ namespace Acetamide
 
 	QList<QObject*> IrcProtocol::GetRegisteredAccounts ()
 	{
-		QList<QObject*> result;
-		Q_FOREACH (IrcAccount *acc, IrcAccounts_)
-			result << acc;
-		return result;
+		return Util::Map (IrcAccounts_, Util::Caster<QObject*> {});
 	}
 
 	QObject* IrcProtocol::GetParentProtocolPlugin () const
@@ -122,9 +121,7 @@ namespace Acetamide
 	void IrcProtocol::RegisterAccount (const QString& name,
 			const QList<QWidget*>& widgets)
 	{
-		IrcAccountConfigurationWidget *w =
-				qobject_cast<IrcAccountConfigurationWidget*>
-					(widgets.value (0));
+		const auto w = qobject_cast<IrcAccountConfigurationWidget*> (widgets.value (0));
 		if (!w)
 		{
 			qWarning () << Q_FUNC_INFO

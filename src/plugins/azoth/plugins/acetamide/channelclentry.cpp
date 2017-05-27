@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "channelclentry.h"
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "channelhandler.h"
@@ -323,10 +324,7 @@ namespace Acetamide
 
 	void ChannelCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 	{
-		QObjectList objs;
-		Q_FOREACH (ICLEntry *e, parts)
-			objs << e->GetQObject ();
-		emit gotNewParticipants (objs);
+		emit gotNewParticipants (Util::Map (parts, &ICLEntry::GetQObject));
 	}
 
 	void ChannelCLEntry::HandleSubjectChanged (const QString& subj)
@@ -354,7 +352,7 @@ namespace Acetamide
 			participant = ICH_->GetSelf ().get ();
 
 		QMap<QByteArray, QList<QByteArray>>  result;
-		ChannelParticipantEntry *entry = qobject_cast<ChannelParticipantEntry*> (participant);
+		const auto entry = qobject_cast<ChannelParticipantEntry*> (participant);
 		if (!entry)
 		{
 			qWarning () << Q_FUNC_INFO
@@ -363,7 +361,7 @@ namespace Acetamide
 			result ["permclass_role"] << "norole";
 		}
 		else
-			Q_FOREACH (const ChannelRole& role, entry->Roles ())
+			for (const auto& role : entry->Roles ())
 				result ["permclass_role"] << Role2Str_.value (role, "invalid");
 
 		return result;

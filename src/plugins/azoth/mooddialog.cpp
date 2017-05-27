@@ -29,6 +29,7 @@
 
 #include "mooddialog.h"
 #include <util/sys/resourceloader.h>
+#include <util/sll/qtutil.h>
 #include "core.h"
 #include "xmlsettingsmanager.h"
 #include "resourcesmanager.h"
@@ -153,9 +154,8 @@ namespace Azoth
 			list [tr (moodStr [i])] = qMakePair<QVariant, QIcon> (QString (moodStr [i]), icon);
 		}
 
-		Q_FOREACH (const QString& key, list.keys ())
-			Ui_.Mood_->addItem (list [key].second,
-					key, list [key].first);
+		for (const auto& pair : Util::Stlize (list))
+			Ui_.Mood_->addItem (pair.second.second, pair.first, pair.second.first);
 	}
 
 	QString MoodDialog::GetMood () const

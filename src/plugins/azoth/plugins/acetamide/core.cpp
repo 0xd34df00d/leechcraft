@@ -127,7 +127,7 @@ namespace Acetamide
 	QList<NickServIdentify> Core::GetNickServIdentifyWithNick (const QString& nick) const
 	{
 		QList<NickServIdentify> list;
-		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
+		for (const auto& nsi : NickServIdentifyList_)
 			if (nsi.Nick_ == nick)
 				list << nsi;
 		return list;
@@ -136,18 +136,18 @@ namespace Acetamide
 	QList<NickServIdentify> Core::GetNickServIdentifyWithNickServ (const QString& nickserv) const
 	{
 		QList<NickServIdentify> list;
-		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
-		if (nsi.NickServNick_ == nickserv)
-			list << nsi;
+		for (const auto& nsi : NickServIdentifyList_)
+			if (nsi.NickServNick_ == nickserv)
+				list << nsi;
 		return list;
 	}
 
 	QList<NickServIdentify> Core::GetNickServIdentifyWithServ (const QString& server) const
 	{
 		QList<NickServIdentify> list;
-		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
-		if (nsi.Server_ == server)
-			list << nsi;
+		for (const auto& nsi : NickServIdentifyList_)
+			if (nsi.Server_ == server)
+				list << nsi;
 		return list;
 	}
 
@@ -155,14 +155,14 @@ namespace Acetamide
 			const QString& nick, const QString& nickserv) const
 	{
 		QList<NickServIdentify> list;
-		Q_FOREACH ( const NickServIdentify& nsi, NickServIdentifyList_)
+		for (const auto& nsi : NickServIdentifyList_)
 		{
 			QRegExp nickMask (nsi.NickServNick_,
 					Qt::CaseInsensitive,
 					QRegExp::Wildcard);
-			if ((nsi.Server_ == server) &&
-					(nsi.Nick_ == nick) &&
-					(nickMask.indexIn (nickserv) == 0))
+			if (nsi.Server_ == server &&
+					nsi.Nick_ == nick &&
+					nickMask.indexIn (nickserv) == 0)
 				list << nsi;
 		}
 		return list;

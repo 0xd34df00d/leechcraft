@@ -755,7 +755,7 @@ namespace Azoth
 
 	void ChatTab::on_View__loadFinished (bool)
 	{
-		Q_FOREACH (IMessage *msg, HistoryMessages_)
+		for (const auto msg : HistoryMessages_)
 			AppendMessage (msg);
 
 		ICLEntry *e = GetEntry<ICLEntry> ();
@@ -772,9 +772,7 @@ namespace Azoth
 		if (!dummyMsgs.isEmpty ())
 		{
 			messages += dummyMsgs;
-			std::sort (messages.begin (), messages.end (),
-					[] (IMessage *left, IMessage *right)
-						{ return left->GetDateTime () < right->GetDateTime (); });
+			std::sort (messages.begin (), messages.end (), Util::ComparingBy (&IMessage::GetDateTime));
 		}
 
 		for (const auto msg : messages)
@@ -962,7 +960,7 @@ namespace Azoth
 
 	void ChatTab::handleFileNoLongerOffered (QObject *jobObj)
 	{
-		Q_FOREACH (QAction *action, Ui_.EventsButton_->menu ()->actions ())
+		for (const auto action : Ui_.EventsButton_->menu ()->actions ())
 			if (action->data ().value<QObject*> () == jobObj)
 			{
 				action->deleteLater ();
@@ -993,11 +991,7 @@ namespace Azoth
 		if (!job->GetComment ().isEmpty ())
 		{
 			text += "<br /><br />" + tr ("The file description is:") + "<br /><br /><em>";
-#if QT_VERSION < 0x050000
-			auto comment = Qt::escape (job->GetComment ());
-#else
 			auto comment = job->GetComment ().toHtmlEscaped ();
-#endif
 			comment.replace ("\n", "<br />");
 			text += comment + "</em>";
 		}
@@ -1805,12 +1799,11 @@ namespace Azoth
 
 		QObject *entryObj = entry->GetQObject ();
 
-		const QObjectList& histories = Core::Instance ().GetProxy ()->
+		const auto& histories = Core::Instance ().GetProxy ()->
 				GetPluginsManager ()->GetAllCastableRoots<IHistoryPlugin*> ();
-
-		Q_FOREACH (QObject *histObj, histories)
+		for (const auto histObj : histories)
 		{
-			IHistoryPlugin *hist = qobject_cast<IHistoryPlugin*> (histObj);
+			const auto hist = qobject_cast<IHistoryPlugin*> (histObj);
 			if (!hist->IsHistoryEnabledFor (entryObj))
 				continue;
 

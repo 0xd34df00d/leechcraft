@@ -34,6 +34,7 @@
 #include <util/xpc/util.h>
 #include <util/xpc/passutils.h>
 #include <util/sys/sysinfo.h>
+#include <util/sll/prelude.h>
 #include "interfaces/azoth/iaccount.h"
 #include "core.h"
 #include "xmlsettingsmanager.h"
@@ -255,19 +256,16 @@ namespace Azoth
 
 	QObject* ProxyObject::GetAccount (const QString& accID) const
 	{
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
+		for (const auto acc : Core::Instance ().GetAccounts ())
 			if (acc->GetAccountID () == accID)
 				return acc->GetQObject ();
 
-		return 0;
+		return nullptr;
 	}
 
 	QList<QObject*> ProxyObject::GetAllAccounts () const
 	{
-		QList<QObject*> result;
-		Q_FOREACH (IAccount *acc, Core::Instance ().GetAccounts ())
-			result << acc->GetQObject ();
-		return result;
+		return Util::Map (Core::Instance ().GetAccounts (), &IAccount::GetQObject);
 	}
 
 	QObject* ProxyObject::GetEntry (const QString& entryID, const QString&) const
@@ -303,12 +301,13 @@ namespace Azoth
 			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTStatusIconLoader);
 		case PRLSystemIcons:
 			return ResourcesManager::Instance ().GetResourceLoader (ResourcesManager::RLTSystemIconLoader);
-		default:
-			qWarning () << Q_FUNC_INFO
-					<< "unknown type"
-					<< loader;
-			return 0;
 		}
+
+		qWarning () << Q_FUNC_INFO
+				<< "unknown type"
+				<< loader;
+
+		assert (false);
 	}
 
 	QIcon ProxyObject::GetIconForState (State state) const
