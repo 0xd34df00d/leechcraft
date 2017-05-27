@@ -454,7 +454,9 @@ namespace DebugHandler
 				<< std::setw (3)
 				<< Counter++
 				<< "] ["
-				<< QThread::currentThread ()
+				<< QString { "0x%1" }
+						.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
+						.toStdString ();
 				<< "] ["
 				<< Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx)).constData ()
 				<< "] "
