@@ -365,6 +365,40 @@ namespace
 		std::free (strings);
 #endif
 	}
+
+	QByteArray DetectModule (const QMessageLogContext& ctx)
+	{
+		if (!ctx.file)
+			return "<unk>";
+
+		const auto& file = QByteArray::fromRawData (ctx.file, std::strlen (ctx.file));
+		if (file.isEmpty ())
+			return "<unk>";
+
+		static const QByteArray pluginsMarker { "src/plugins/" };
+		const auto pluginsPos = file.indexOf (pluginsMarker);
+		if (pluginsPos != -1)
+		{
+			const auto pluginNameStart = pluginsPos + pluginsMarker.size ();
+			const auto nextSlash = file.indexOf ('/', pluginNameStart + 1);
+			return nextSlash >= 0 ?
+					file.mid (pluginNameStart, nextSlash - pluginNameStart) :
+					file.mid (pluginNameStart);
+		}
+
+		if (file.contains ("src/core/"))
+			return "core";
+
+		if (file.endsWith (".qml"))
+		{
+			const auto lastSlash = file.lastIndexOf ('/');
+			const auto prelastSlash = file.lastIndexOf ('/', lastSlash - 1);
+			if (lastSlash >= 0 && prelastSlash >= 0)
+				return file.mid (prelastSlash + 1, lastSlash - prelastSlash - 1);
+		}
+
+		return file;
+	}
 }
 
 namespace DebugHandler
@@ -386,6 +420,8 @@ namespace DebugHandler
 		const auto& ostr = GetOstream (type, flags);
 		*ostr << "["
 				<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
+				<< "] ["
+				<< DetectModule (ctx).constData ()
 				<< "] ["
 				<< QThread::currentThread ()
 				<< "] ["
