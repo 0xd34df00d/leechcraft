@@ -823,14 +823,9 @@ namespace LeechCraft
 		scan (QString (INSTALL_PREFIX "/%1/leechcraft/plugins")
 				.arg (libdir));
 	#else
-		#if QT_VERSION >= 0x050000
-		const QString suffix { "-qt5" };
-		#else
-		const QString suffix {};
-		#endif
-		scan (("/usr/local/%1/leechcraft/plugins" + suffix)
+		scan (QString { "/usr/local/%1/leechcraft/plugins-qt5" }
 				.arg (libdir));
-		scan (("/usr/%1/leechcraft/plugins" + suffix)
+		scan (QString { "/usr/%1/leechcraft/plugins-qt5" }
 				.arg (libdir));
 	#endif
 #endif

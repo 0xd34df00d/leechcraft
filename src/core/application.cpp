@@ -49,12 +49,7 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <QTextCodec>
-
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#else
 #include <QtQml>
-#endif
 
 #ifdef Q_OS_MAC
 #include <QProxyStyle>
@@ -99,9 +94,7 @@ namespace LeechCraft
 		 * https://code.google.com/p/libproxy/issues/detail?id=197
 		 * https://bugzilla.novell.com/show_bug.cgi?id=866692
 		 */
-#if QT_VERSION >= 0x050000
 		qputenv ("PX_MODULE_PATH", {});
-#endif
 
 		Arguments_ = arguments ().mid (1);
 		bpo::options_description desc ("Allowed options");
@@ -132,10 +125,6 @@ namespace LeechCraft
 #endif
 			std::exit (EVersionRequested);
 		}
-
-#if QT_VERSION < 0x050000
-		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
-#endif
 
 		if (VarMap_.count ("no-app-catch"))
 			CatchExceptions_ = false;
