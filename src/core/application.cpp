@@ -438,29 +438,20 @@ namespace LeechCraft
 
 	void Application::ParseCommandLine ()
 	{
-		const bool isNoLog = VarMap_.count ("nolog");
-		const bool isBt = VarMap_.count ("bt");
+		static const auto flags = [this]
+		{
+			DebugHandler::DebugWriteFlags flags = DebugHandler::DWFNone;
+			if (VarMap_.count ("nolog"))
+				flags |= DebugHandler::DWFNoFileLog;
+			if (VarMap_.count ("bt"))
+				flags |= DebugHandler::DWFBacktrace;
+			return flags;
+		} ();
 
-		if (isNoLog && isBt)
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace | DebugHandler::DWFNoFileLog);
-					});
-		else if (isBt)
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace);
-					});
-		else if (isNoLog)
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFNoFileLog);
-					});
-		else
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFNone);
-					});
+		qInstallMsgHandler ([] (QtMsgType type, const char *msg)
+				{
+					DebugHandler::Write (type, msg, flags);
+				});
 
 		QDir lcDir = QDir::home ();
 		lcDir.cd (".leechcraft");
