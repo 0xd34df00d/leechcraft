@@ -98,14 +98,6 @@ namespace WinAPI
 			prepareBatteryStateChange (setting);
 	}
 
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-	bool FakeQWidgetWinAPI::winEvent (MSG *message, long *result)
-	{
-		if (message->message == WM_POWERBROADCAST && message->wParam == PBT_POWERSETTINGCHANGE)
-			powerSettingsChanged (reinterpret_cast<PPOWERBROADCAST_SETTING> (message->lParam));
-		return QWidget::winEvent (message, result);
-	}
-#else
 	bool FakeQWidgetWinAPI::nativeEvent (const QByteArray &eventType, void *msg, long *result)
 	{
 		static const QByteArray kGenericMSG { "windows_generic_MSG" };
@@ -119,7 +111,6 @@ namespace WinAPI
 
 		return QWidget::nativeEvent (eventType, msg, result);
 	}
-#endif
 }
 }
 }

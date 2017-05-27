@@ -52,11 +52,7 @@ namespace WinAPI
 
 		void powerSettingsChanged (PPOWERBROADCAST_SETTING setting);
 
-#if (QT_VERSION < QT_VERSION_CHECK (5, 0, 0))
-		bool winEvent (MSG *message, long *result) override;
-#else
 		bool nativeEvent (const QByteArray &eventType, void *message, long *result) override;
-#endif
 	signals:
 		void schemeChanged (QString schemeName);
 		void powerSourceChanged (QString powerSource);

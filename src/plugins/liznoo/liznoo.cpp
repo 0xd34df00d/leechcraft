@@ -158,17 +158,9 @@ namespace Liznoo
 					entity.Additional_ ["ContextID"].toString ());
 	}
 
-	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace place) const
+	QList<QAction*> Plugin::GetActions (ActionsEmbedPlace) const
 	{
-#if QT_VERSION >= 0x050000
-		Q_UNUSED (place);
 		return {};
-#else
-		QList<QAction*> result;
-		if (place == ActionsEmbedPlace::LCTray)
-			result << Battery2Action_.values ();
-		return result;
-#endif
 	}
 
 	QMap<QString, QList<QAction*>> Plugin::GetMenuActions () const
@@ -181,43 +173,8 @@ namespace Liznoo
 
 	QuarkComponents_t Plugin::GetComponents () const
 	{
-#if QT_VERSION >= 0x050000
 		return { LiznooQuark_ };
-#else
-		return {};
-#endif
 	}
-
-#if QT_VERSION < 0x050000
-	namespace
-	{
-		QString GetBattIconName (BatteryInfo info)
-		{
-			const bool isCharging = info.TimeToFull_ && !info.TimeToEmpty_;
-
-			QString name = "battery-";
-			if (isCharging)
-				name += "charging-";
-
-			if (info.Percentage_ < 15)
-				name += "low";
-			else if (info.Percentage_ < 30)
-				name += "caution";
-			else if (info.Percentage_ < 50)
-				name += "040";
-			else if (info.Percentage_ < 70)
-				name += "060";
-			else if (info.Percentage_ < 90)
-				name += "080";
-			else if (isCharging)
-				name.chop (1);
-			else
-				name += "100";
-
-			return name;
-		}
-	}
-#endif
 
 	void Plugin::CheckNotifications (const BatteryInfo& info)
 	{
@@ -270,30 +227,6 @@ namespace Liznoo
 
 	void Plugin::handleBatteryInfo (BatteryInfo info)
 	{
-#if QT_VERSION < 0x050000
-		const auto& iconName = GetBattIconName (info);
-		if (!Battery2Action_.contains (info.ID_))
-		{
-			QAction *act = new QAction (tr ("Battery status"), this);
-			act->setProperty ("WatchActionIconChange", true);
-			act->setProperty ("Liznoo/BatteryID", info.ID_);
-
-			act->setProperty ("Action/Class", GetUniqueID () + "/BatteryAction");
-			act->setProperty ("Action/ID", GetUniqueID () + "/" + info.ID_);
-			act->setProperty ("ActionIcon", iconName);
-
-			emit gotActions ({ act }, ActionsEmbedPlace::LCTray);
-			Battery2Action_ [info.ID_] = act;
-
-			connect (act,
-					SIGNAL (triggered ()),
-					this,
-					SLOT (handleHistoryTriggered ()));
-		}
-		else
-			Battery2Action_ [info.ID_]->setProperty ("ActionIcon", iconName);
-#endif
-
 		CheckNotifications (info);
 
 		Battery2LastInfo_ [info.ID_] = info;
