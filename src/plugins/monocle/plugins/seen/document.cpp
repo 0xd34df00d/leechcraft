@@ -228,8 +228,8 @@ namespace Seen
 						{
 							const auto& scale = pair.first;
 							const auto& size = srcSize.scaled (srcSize.width () * scale.first,
-								srcSize.height () * scale.second,
-								Qt::KeepAspectRatio);
+									srcSize.height () * scale.second,
+									Qt::KeepAspectRatio);
 
 							QImage img { size, QImage::Format_RGB32 };
 
