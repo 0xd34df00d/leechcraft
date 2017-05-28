@@ -240,15 +240,21 @@ namespace Seen
 								static_cast<unsigned int> (size.width ()),
 								static_cast<unsigned int> (size.height ())
 							};
-							auto res = ddjvu_page_render (ctx.Page_,
-									DDJVU_RENDER_COLOR,
-									&rect,
-									&rect,
-									fmt,
-									img.bytesPerLine (),
-									reinterpret_cast<char*> (img.bits ()));
+
+							int res = 0;
+							int retries = 0;
+							do
+							{
+								res = ddjvu_page_render (ctx.Page_,
+										DDJVU_RENDER_COLOR,
+										&rect,
+										&rect,
+										fmt,
+										img.bytesPerLine (),
+										reinterpret_cast<char*> (img.bits ()));
+							} while (res == DDJVU_JOB_STARTED && ++retries < 3);
 							qDebug () << Q_FUNC_INFO << ctx.PageNum_ << res;
-							if (res == DDJVU_JOB_OK)
+							if (res == DDJVU_JOB_OK || res == DDJVU_JOB_STARTED)
 							{
 								auto future = pair.second;
 								Util::ReportFutureResult (future, img);
