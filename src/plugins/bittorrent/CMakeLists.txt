@@ -103,10 +103,6 @@ option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (require
 
 if (ENABLE_BITTORRENT_GEOIP)
 	add_definitions (-DENABLE_GEOIP)
-elseif (ENABLE_BITTORRENT_GEOIP)
-	if (WIN32)
-		add_definitions (-DTORRENT_DISABLE_GEO_IP)
-	endif ()
 endif ()
 
 if (UNIX)
