@@ -975,9 +975,6 @@ namespace BitTorrent
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 			handle = Session_->add_torrent (atp);
-
-			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
-				handle.resolve_countries (true);
 		}
 		catch (const libtorrent::libtorrent_exception& e)
 		{
@@ -1038,8 +1035,6 @@ namespace BitTorrent
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 
 			handle = Session_->add_torrent (atp);
-			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
-				handle.resolve_countries (true);
 		}
 		catch (const libtorrent::libtorrent_exception& e)
 		{
@@ -1880,8 +1875,6 @@ namespace BitTorrent
 					std::back_inserter (atp.resume_data));
 
 			handle = Session_->add_torrent (atp);
-			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
-				handle.resolve_countries (true);
 		}
 		catch (const libtorrent::libtorrent_exception& e)
 		{
