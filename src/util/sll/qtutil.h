@@ -53,14 +53,16 @@ namespace Util
 				template<typename> class KeyMF,
 				template<typename> class ValueMF,
 				typename Iter,
-				template<typename, typename> class PairType
+				template<typename, typename> class PairType,
+				typename KeyType = MF<KeyMF, decltype (Iter {}.key ())>,
+				typename ValueType = MF<ValueMF, decltype (Iter {}.value ())>
 			>
 		using IteratorAdaptorBase = boost::iterator_adaptor<
 				This<KeyMF, ValueMF, Iter, PairType>,
 				Iter,
-				PairType<MF<KeyMF, decltype (Iter {}.key ())>, MF<ValueMF, decltype (Iter {}.value ())>>,
+				PairType<KeyType, ValueType>,
 				boost::use_default,
-				PairType<MF<KeyMF, decltype (Iter {}.key ())>, MF<ValueMF, decltype (Iter {}.value ())>>
+				PairType<KeyType, ValueType>
 			>;
 
 		template<
