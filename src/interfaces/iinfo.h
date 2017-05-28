@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IINFO_H
-#define INTERFACES_IINFO_H
+#pragma once
+
 #include <memory>
 #include <QString>
 #include <QStringList>
@@ -385,6 +385,4 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 #define LC_PLUGIN_METADATA(id)
 #else
 #define LC_PLUGIN_METADATA(id) Q_PLUGIN_METADATA (IID id)
-#endif
-
 #endif
