@@ -55,8 +55,10 @@ namespace Aggregator
 				this,
 				SLOT (handleCurrentIndexChanged (const QString&)));
 
-		QMap<QString, int> languages;
-		languages ["ru"] = 1;
+		const QMap<QString, int> languages
+		{
+			{ "ru", 1 }
+		};
 
 		QString language = Util::GetLanguage ();
 		Ui_.LocalizationBox_->setCurrentIndex (languages.contains (language) ?
