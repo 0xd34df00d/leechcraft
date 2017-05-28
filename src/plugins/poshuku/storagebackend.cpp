@@ -38,15 +38,6 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	StorageBackend::StorageBackend (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
-	StorageBackend::~StorageBackend ()
-	{
-	}
-
 	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 	{
 		switch (type)
