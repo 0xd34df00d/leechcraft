@@ -42,7 +42,8 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		Type Type_;
+		const Type Type_;
+
 		QSqlDatabase DB_;
 		const Util::DefaultScopeGuard DBGuard_;
 
