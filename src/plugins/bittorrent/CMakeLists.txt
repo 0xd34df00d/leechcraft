@@ -6,12 +6,9 @@ find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-find_package (RBTorrent)
+find_package (RBTorrent REQUIRED)
 find_package (OpenSSL REQUIRED)
 
-if (NOT RBTorrent_FOUND)
-	message (SEND_ERROR "Rasterbar libtorrent not found, not building BitTorrent")
-endif ()
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
