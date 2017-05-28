@@ -1992,8 +1992,13 @@ namespace BitTorrent
 			return;
 		}
 
-		emit fileRenamed (std::distance (Handles_.begin (), pos),
-				a.index, QString::fromUtf8 (a.name.c_str ()));
+#if LIBTORRENT_VERSION_NUM >= 10100
+		const auto& newName = QString::fromUtf8 (a.new_name ());
+#else
+		const auto& newName = QString::fromUtf8 (a.name.c_str ());
+#endif
+
+		emit fileRenamed (std::distance (Handles_.begin (), pos), a.index, newName);
 	}
 
 	QStringList Core::GetTagsForIndexImpl (int torrent) const
