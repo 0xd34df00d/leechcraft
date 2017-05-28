@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
-#define PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
+#pragma once
+
 #include "storagebackend.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -135,5 +135,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif
