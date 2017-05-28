@@ -35,6 +35,7 @@
 #include <QLineEdit>
 #include <util/util.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include <interfaces/poshuku/istoragebackend.h>
 #include <interfaces/poshuku/iproxyobject.h>
@@ -70,9 +71,7 @@ namespace SpeedDial
 			for (auto i = t.begin (), end = t.end (); i != end; ++i)
 				vec.emplace_back (i.key (), i.value ());
 
-			std::sort (vec.begin (), vec.end (),
-					[] (decltype (*vec.cbegin ()) left, decltype (*vec.cbegin ()) right)
-						{ return left.second > right.second; });
+			std::sort (vec.begin (), vec.end (), Util::Flip (Util::ComparingBy (Util::Snd)));
 			return vec;
 		}
 
