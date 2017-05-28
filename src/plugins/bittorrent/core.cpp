@@ -2365,7 +2365,7 @@ namespace BitTorrent
 		template<typename Dispatcher>
 		struct HandleAlertImpl<Dispatcher>
 		{
-			const std::type_info& Info_;
+			const int Info_;
 			Dispatcher& D_;
 
 			void operator() (libtorrent::alert*) const
@@ -2376,12 +2376,12 @@ namespace BitTorrent
 		template<typename Dispatcher, typename Head, typename... Tail>
 		struct HandleAlertImpl<Dispatcher, Head, Tail...>
 		{
-			const std::type_info& Info_;
+			const int Info_;
 			Dispatcher& D_;
 
 			void operator() (libtorrent::alert *alert) const
 			{
-				if (Info_ == typeid (Head))
+				if (Info_ == Head::alert_type)
 					D_ (*static_cast<Head*> (alert));
 				else
 					HandleAlertImpl<Dispatcher, Tail...> { Info_, D_ } (alert);
@@ -2391,7 +2391,7 @@ namespace BitTorrent
 		template<typename... Types, typename Dispatcher>
 		void HandleAlert (libtorrent::alert *alert, Dispatcher& dispatcher)
 		{
-			HandleAlertImpl<Dispatcher, Types...> { typeid (*alert), dispatcher } (alert);
+			HandleAlertImpl<Dispatcher, Types...> { alert->type (), dispatcher } (alert);
 		}
 	}
 
