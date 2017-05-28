@@ -2366,7 +2366,7 @@ namespace BitTorrent
 		struct HandleAlertImpl<Dispatcher>
 		{
 			const std::type_info& Info_;
-			Dispatcher D_;
+			Dispatcher& D_;
 
 			void operator() (libtorrent::alert*) const
 			{
@@ -2377,7 +2377,7 @@ namespace BitTorrent
 		struct HandleAlertImpl<Dispatcher, Head, Tail...>
 		{
 			const std::type_info& Info_;
-			Dispatcher D_;
+			Dispatcher& D_;
 
 			void operator() (libtorrent::alert *alert) const
 			{
@@ -2389,7 +2389,7 @@ namespace BitTorrent
 		};
 
 		template<typename... Types, typename Dispatcher>
-		void HandleAlert (libtorrent::alert *alert, const Dispatcher& dispatcher)
+		void HandleAlert (libtorrent::alert *alert, Dispatcher& dispatcher)
 		{
 			HandleAlertImpl<Dispatcher, Types...> { typeid (*alert), dispatcher } (alert);
 		}
