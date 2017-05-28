@@ -102,16 +102,16 @@ namespace SecMan
 		return MenuActions_;
 	}
 
+	IPersistentStorage_ptr Plugin::RequestStorage ()
+	{
+		return std::make_shared<PersistentStorage> ();
+	}
+
 	void Plugin::handleDisplayContents ()
 	{
 		auto dia = new ContentsDisplayDialog;
 		dia->setAttribute (Qt::WA_DeleteOnClose);
 		dia->show ();
-	}
-
-	IPersistentStorage_ptr Plugin::RequestStorage ()
-	{
-		return std::make_shared<PersistentStorage> ();
 	}
 }
 }
