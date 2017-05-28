@@ -389,6 +389,9 @@ namespace
 		if (file.contains ("src/core/"))
 			return "core";
 
+		if (file.contains ("src/util/"))
+			return "util";
+
 		if (file.endsWith (".qml"))
 		{
 			const auto lastSlash = file.lastIndexOf ('/');
