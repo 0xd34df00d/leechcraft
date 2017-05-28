@@ -31,7 +31,6 @@
 #include <QIcon>
 #include <QAction>
 #include <util/util.h>
-#include <interfaces/entitytesthandleresult.h>
 #include "core.h"
 #include "contentsdisplaydialog.h"
 #include "persistentstorage.h"
