@@ -47,13 +47,8 @@ namespace Aggregator
 		Ui_.setupUi (this);
 
 		const auto header = Ui_.Tree_->header ();
-#if QT_VERSION < 0x050000
-		header->setResizeMode (0, QHeaderView::ResizeToContents);
-		header->setResizeMode (1, QHeaderView::ResizeToContents);
-#else
 		header->setSectionResizeMode (0, QHeaderView::ResizeToContents);
 		header->setSectionResizeMode (1, QHeaderView::ResizeToContents);
-#endif
 
 		connect (Ui_.LocalizationBox_,
 				SIGNAL (currentIndexChanged (const QString&)),
