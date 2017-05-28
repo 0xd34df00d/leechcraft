@@ -39,23 +39,41 @@ namespace Util
 {
 	namespace detail
 	{
-		template<template<typename,
-					template<typename, typename> class> class This,
-				typename Iter, template<typename, typename> class PairType>
+		template<template<typename> class F, typename V>
+		using MF = typename F<V>::type;
+
+		template<typename T>
+		struct Identity
+		{
+			using type = T;
+		};
+
+		template<
+				template<template<typename> class, template<typename> class, typename, template<typename, typename> class> class This,
+				template<typename> class KeyMF,
+				template<typename> class ValueMF,
+				typename Iter,
+				template<typename, typename> class PairType
+			>
 		using IteratorAdaptorBase = boost::iterator_adaptor<
-				This<Iter, PairType>,
+				This<KeyMF, ValueMF, Iter, PairType>,
 				Iter,
-				PairType<decltype (Iter {}.key ()), decltype (Iter {}.value ())>,
+				PairType<MF<KeyMF, decltype (Iter {}.key ())>, MF<ValueMF, decltype (Iter {}.value ())>>,
 				boost::use_default,
-				PairType<decltype (Iter {}.key ()), decltype (Iter {}.value ())>
+				PairType<MF<KeyMF, decltype (Iter {}.key ())>, MF<ValueMF, decltype (Iter {}.value ())>>
 			>;
 
-		template<typename Iter, template<typename, typename> class PairType>
-		class StlAssocIteratorAdaptor : public IteratorAdaptorBase<StlAssocIteratorAdaptor, Iter, PairType>
+		template<
+				template<typename> class KeyMF,
+				template<typename> class ValueMF,
+				typename Iter,
+				template<typename, typename> class PairType
+			>
+		class StlAssocIteratorAdaptor : public IteratorAdaptorBase<StlAssocIteratorAdaptor, KeyMF, ValueMF, Iter, PairType>
 		{
 			friend class boost::iterator_core_access;
 
-			using Super_t = IteratorAdaptorBase<detail::StlAssocIteratorAdaptor, Iter, PairType>;
+			using Super_t = IteratorAdaptorBase<detail::StlAssocIteratorAdaptor, KeyMF, ValueMF, Iter, PairType>;
 		public:
 			StlAssocIteratorAdaptor () = default;
 
@@ -70,24 +88,36 @@ namespace Util
 			}
 		};
 
-		template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
+		template<
+				template<typename> class KeyMF,
+				template<typename> class ValueMF,
+				typename Iter,
+				typename Assoc,
+				template<typename K, typename V> class PairType
+			>
 		struct StlAssocRange : private std::tuple<Assoc>
-							 , public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
+							 , public boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>>
 		{
 		public:
 			StlAssocRange (Assoc&& assoc)
 			: std::tuple<Assoc> { std::move (assoc) }
-			, boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { std::get<0> (*this).begin (), std::get<0> (*this).end () }
+			, boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>> { std::get<0> (*this).begin (), std::get<0> (*this).end () }
 			{
 			}
 		};
 
-		template<typename Iter, typename Assoc, template<typename K, typename V> class PairType>
-		struct StlAssocRange<Iter, Assoc&, PairType> : public boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>>
+		template<
+				template<typename> class KeyMF,
+				template<typename> class ValueMF,
+				typename Iter,
+				typename Assoc,
+				template<typename K, typename V> class PairType
+			>
+		struct StlAssocRange<KeyMF, ValueMF, Iter, Assoc&, PairType> : public boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>>
 		{
 		public:
 			StlAssocRange (Assoc& assoc)
-			: boost::iterator_range<StlAssocIteratorAdaptor<Iter, PairType>> { assoc.begin (), assoc.end () }
+			: boost::iterator_range<StlAssocIteratorAdaptor<KeyMF, ValueMF, Iter, PairType>> { assoc.begin (), assoc.end () }
 			{
 			}
 		};
@@ -123,7 +153,13 @@ namespace Util
 	 * @tparam Assoc The type of the source Qt associative container.
 	 */
 	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
-	auto Stlize (Assoc&& assoc) -> detail::StlAssocRange<decltype (assoc.begin ()), Assoc, PairType>
+	auto Stlize (Assoc&& assoc) -> detail::StlAssocRange<detail::Identity, detail::Identity, decltype (assoc.begin ()), Assoc, PairType>
+	{
+		return { std::forward<Assoc> (assoc) };
+	}
+
+	template<template<typename K, typename V> class PairType = std::pair, typename Assoc>
+	auto StlizeCopy (Assoc&& assoc) -> detail::StlAssocRange<std::decay, std::decay, decltype (assoc.begin ()), Assoc, PairType>
 	{
 		return { std::forward<Assoc> (assoc) };
 	}
