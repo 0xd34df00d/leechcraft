@@ -2195,7 +2195,7 @@ namespace BitTorrent
 
 	struct SimpleDispatcher
 	{
-		mutable bool NeedToLog_ = true;
+		bool NeedToLog_ = true;
 
 		const ICoreProxy_ptr Proxy_;
 		IEntityManager * const IEM_;
@@ -2275,7 +2275,7 @@ namespace BitTorrent
 			Core::Instance ()->PieceRead (a);
 		}
 
-		void operator() (const libtorrent::state_update_alert& a) const
+		void operator() (const libtorrent::state_update_alert& a)
 		{
 			Core::Instance ()->UpdateStatus (a.status);
 			NeedToLog_ = false;
@@ -2297,7 +2297,7 @@ namespace BitTorrent
 			Core::Instance ()->UpdateStatus ({ a.handle.status () });
 		}
 
-		void operator() (const libtorrent::dht_announce_alert& a) const
+		void operator() (const libtorrent::dht_announce_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got announce from"
@@ -2309,7 +2309,7 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
-		void operator() (const libtorrent::dht_reply_alert& a) const
+		void operator() (const libtorrent::dht_reply_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got reply with"
@@ -2318,7 +2318,7 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
-		void operator() (const libtorrent::dht_bootstrap_alert& a) const
+		void operator() (const libtorrent::dht_bootstrap_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "bootstrapped; "
@@ -2326,7 +2326,7 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
-		void operator() (const libtorrent::dht_get_peers_alert& a) const
+		void operator() (const libtorrent::dht_get_peers_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got peers for"
