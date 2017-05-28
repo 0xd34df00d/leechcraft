@@ -183,7 +183,7 @@
       "name": "Psi"
     },
     {
-      "node": "http://psi-dev.googlecode.com/caps",
+      "node": [ "http://psi-dev.googlecode.com/caps", "http://psi-plus.com" ],
       "id": "psiplus",
       "name": "Psi+"
     },
