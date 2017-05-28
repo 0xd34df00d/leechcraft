@@ -35,6 +35,7 @@
 #include <QLineEdit>
 #include <util/util.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/qtutil.h>
 #include <util/sll/prelude.h>
 #include <util/threads/futures.h>
 #include <interfaces/poshuku/istoragebackend.h>
@@ -65,17 +66,15 @@ namespace SpeedDial
 		}
 
 		template<typename T>
-		std::vector<std::pair<typename T::key_type, typename T::mapped_type>> GetSortedVec (const T& t)
+		auto GetSortedVec (const T& t)
 		{
-			decltype (GetSortedVec (T {})) vec;
-			for (auto i = t.begin (), end = t.end (); i != end; ++i)
-				vec.emplace_back (i.key (), i.value ());
+			auto vec = Util::Map (Util::StlizeCopy (t), Util::Id);
 
 			std::sort (vec.begin (), vec.end (), Util::Flip (Util::ComparingBy (Util::Snd)));
 			return vec;
 		}
 
-		LoadResult GetTopUrls (const IStorageBackend_ptr& sb, size_t count)
+		LoadResult GetTopUrls (const IStorageBackend_ptr& sb, int count)
 		{
 			history_items_t items;
 			sb->LoadHistory (items);
@@ -97,7 +96,7 @@ namespace SpeedDial
 			const auto& hostsVec = GetSortedVec (host2score);
 
 			TopList_t topSites;
-			for (size_t i = 0; i < std::min (hostsVec.size (), count); ++i)
+			for (int i = 0; i < std::min (hostsVec.size (), count); ++i)
 			{
 				const auto& url = hostsVec [i].first.toString ();
 				topSites.append ({ url, url });
@@ -108,7 +107,7 @@ namespace SpeedDial
 			const auto& vec = GetSortedVec (url2score);
 
 			TopList_t topPages;
-			for (size_t i = 0; i < std::min (vec.size (), count); ++i)
+			for (int i = 0; i < std::min (vec.size (), count); ++i)
 			{
 				const auto& url = vec [i].first;
 
