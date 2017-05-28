@@ -32,6 +32,7 @@
 #include "storagebackend.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -43,6 +44,7 @@ namespace Poshuku
 
 		Type Type_;
 		QSqlDatabase DB_;
+		const Util::DefaultScopeGuard DBGuard_;
 
 				/** Returns:
 					* - title

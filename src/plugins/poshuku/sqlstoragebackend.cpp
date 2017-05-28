@@ -44,7 +44,8 @@ namespace LeechCraft
 namespace Poshuku
 {
 	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
-	: Type_ (type)
+	: Type_ { type }
+	, DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
 		QString strType;
 		switch (Type_)
@@ -112,8 +113,6 @@ namespace Poshuku
 			QSqlQuery vacuum (DB_);
 			vacuum.exec ("VACUUM;");
 		}
-
-		DB_.close ();
 	}
 
 	void SQLStorageBackend::Prepare ()
