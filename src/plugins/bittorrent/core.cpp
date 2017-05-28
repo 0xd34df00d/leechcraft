@@ -2228,7 +2228,11 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("Storage for torrent:<br />%1"
 						"<br />moved successfully to:<br />%2")
 					.arg (GetTorrentName (a.handle))
+#if LIBTORRENT_VERSION_NUM >= 10100
+					.arg (QString::fromUtf8 (a.storage_path ()));
+#else
 					.arg (QString::fromUtf8 (a.path.c_str ()));
+#endif
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PInfo_));
 		}
 
@@ -2337,7 +2341,11 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("File error for torrent:<br />%1<br />"
 						"file:<br />%2<br />error:<br />%3")
 					.arg (GetTorrentName (a.handle))
+#if LIBTORRENT_VERSION_NUM >= 10100
+					.arg (QString::fromUtf8 (a.filename ()))
+#else
 					.arg (QString::fromUtf8 (a.file.c_str ()))
+#endif
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
