@@ -63,6 +63,18 @@ namespace Azoth
 
 			assert (false);
 		}
+
+		boost::optional<IHaveAvatars::Size> ChooseSize (IHaveAvatars *iha, IHaveAvatars::Size size)
+		{
+			if (iha->SupportsSize (size))
+				return size;
+
+			for (auto known : { IHaveAvatars::Size::Full, IHaveAvatars::Size::Thumbnail })
+				if (iha->SupportsSize (known))
+					return known;
+
+			return {};
+		}
 	}
 
 	QFuture<QImage> AvatarsManager::GetAvatar (QObject *entryObj, IHaveAvatars::Size size)
@@ -75,6 +87,11 @@ namespace Azoth
 		const auto entry = qobject_cast<ICLEntry*> (entryObj);
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
 		if (!iha)
+			return Util::MakeReadyFuture (defaultAvatarGetter ());
+
+		if (const auto requestSize = ChooseSize (iha, size))
+			size = *requestSize;
+		else
 			return Util::MakeReadyFuture (defaultAvatarGetter ());
 
 		const auto& sizes = PendingRequests_.value (entryObj);
