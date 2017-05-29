@@ -1429,7 +1429,7 @@ namespace Xoox
 			QString resource;
 			ClientConnection::Split (jid, &bare, &resource);
 			if (RoomHandlers_.contains (bare))
-				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);;
+				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
 			break;
 		}
 		case QXmppPresence::Available:
