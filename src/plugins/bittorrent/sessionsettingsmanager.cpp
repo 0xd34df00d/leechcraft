@@ -670,7 +670,6 @@ namespace BitTorrent
 		LT_SET_BOOL_OPT (announce_to_all_tiers, "AnnounceToAllTiers");
 		LT_SET_BOOL_OPT (prefer_udp_trackers, "PreferUDPTrackers");
 		LT_SET_BOOL_OPT (strict_super_seeding, "StrictSuperSeeding");
-		LT_SET_BOOL_OPT (lock_disk_cache, "LockDiskCache");
 
 		const auto& ports = XmlSettingsManager::Instance ()->property ("OutgoingPorts").toList ();
 		if (ports.size () == 2)

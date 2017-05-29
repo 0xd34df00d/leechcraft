@@ -351,9 +351,6 @@
 				<item type="checkbox" property="UseReadCache" state="on">
 					<label lang="en" value="Use read cache" />
 				</item>
-				<item type="checkbox" property="LockDiskCache" state="on">
-					<label lang="en" value="Prevent disk cache from swapping out" />
-				</item>
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
 					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />
 				</item>
