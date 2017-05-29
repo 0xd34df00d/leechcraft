@@ -143,6 +143,8 @@ namespace Azoth
 		virtual ~IAvatarsManager () {}
 	public:
 		virtual QFuture<QImage> GetAvatar (QObject *entryObj, IHaveAvatars::Size size) = 0;
+
+		virtual QFuture<boost::optional<QByteArray>> GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size) = 0;
 	};
 
 	class IProxyObject

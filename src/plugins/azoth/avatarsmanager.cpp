@@ -130,6 +130,11 @@ namespace Azoth
 		return future;
 	}
 
+	QFuture<boost::optional<QByteArray>> AvatarsManager::GetStoredAvatarData (const QString& entryId, IHaveAvatars::Size size)
+	{
+		return Storage_->GetAvatar (entryId, size);
+	}
+
 	bool AvatarsManager::HasAvatar (QObject *entryObj) const
 	{
 		const auto iha = qobject_cast<IHaveAvatars*> (entryObj);
