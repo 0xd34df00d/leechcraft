@@ -35,11 +35,14 @@ namespace LeechCraft
 {
 namespace Azoth
 {
+class IAvatarsManager;
+
 namespace Xoox
 {
 	class PubSubManager;
 	class PEPEventBase;
 	class ClientConnection;
+	class UserAvatarMetadata;
 
 	class UserAvatarManager : public QObject
 	{
@@ -47,8 +50,9 @@ namespace Xoox
 
 		PubSubManager * const Manager_;
 		ClientConnection * const Conn_;
+		IAvatarsManager * const AvatarsMgr_;
 	public:
-		UserAvatarManager (ClientConnection*);
+		UserAvatarManager (IAvatarsManager*, ClientConnection*);
 
 		void PublishAvatar (const QImage&);
 	private:

@@ -196,7 +196,7 @@ namespace Xoox
 				this,
 				SLOT (handlePEPEvent (const QString&, PEPEventBase*)));
 
-		UserAvatarManager_ = new UserAvatarManager (this);
+		UserAvatarManager_ = new UserAvatarManager (proxy->GetAvatarsManager (), this);
 		connect (UserAvatarManager_,
 				SIGNAL (avatarUpdated (QString, QImage)),
 				this,

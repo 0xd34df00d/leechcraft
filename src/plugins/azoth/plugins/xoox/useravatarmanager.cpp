@@ -30,6 +30,7 @@
 #include "useravatarmanager.h"
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <interfaces/azoth/iproxyobject.h>
 #include "pubsubmanager.h"
 #include "useravatardata.h"
 #include "useravatarmetadata.h"
@@ -42,10 +43,11 @@ namespace Azoth
 {
 namespace Xoox
 {
-	UserAvatarManager::UserAvatarManager (ClientConnection *conn)
+	UserAvatarManager::UserAvatarManager (IAvatarsManager *avatarsMgr, ClientConnection *conn)
 	: QObject { conn }
 	, Manager_ { conn->GetPubSubManager () }
 	, Conn_ { conn }
+	, AvatarsMgr_ { avatarsMgr }
 	{
 		connect (Manager_,
 				SIGNAL (gotEvent (QString, PEPEventBase*)),
