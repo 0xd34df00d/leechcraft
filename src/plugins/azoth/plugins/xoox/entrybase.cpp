@@ -631,6 +631,21 @@ namespace Xoox
 		}
 	}
 
+	void EntryBase::SetErrorPresence (const QString& variant)
+	{
+		if (!variant.isEmpty ())
+		{
+			if (CurrentStatus_.contains (variant))
+				SetStatus ({}, variant, {});
+			return;
+		}
+
+		for (const auto& var : Variants ())
+			SetStatus ({}, var, {});
+
+		SetStatus ({ SError, {} }, {}, {});
+	}
+
 	void EntryBase::SetStatus (const EntryStatus& status, const QString& variant, const QXmppPresence& presence)
 	{
 		const bool existed = CurrentStatus_.contains (variant);
