@@ -43,9 +43,9 @@ namespace Azoth
 namespace Xoox
 {
 	UserAvatarManager::UserAvatarManager (ClientConnection *conn)
-	: QObject (conn)
-	, Manager_ (conn->GetPubSubManager ())
-	, Conn_ (conn)
+	: QObject { conn }
+	, Manager_ { conn->GetPubSubManager () }
+	, Conn_ { conn }
 	{
 		connect (Manager_,
 				SIGNAL (gotEvent (QString, PEPEventBase*)),

@@ -787,8 +787,8 @@ namespace Xoox
 			qWarning () << Q_FUNC_INFO
 					<< "unknown client for"
 					<< node;
-		Variant2ClientInfo_ [variant] ["client_type"] = staticClientInfo.ID_;
 
+		Variant2ClientInfo_ [variant] ["client_type"] = staticClientInfo.ID_;
 		Variant2ClientInfo_ [variant] ["client_name"] = staticClientInfo.HumanReadableName_;
 		Variant2ClientInfo_ [variant] ["raw_client_name"] = staticClientInfo.HumanReadableName_;
 

@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_USERAVATARMANAGER_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_USERAVATARMANAGER_H
+#pragma once
+
 #include <QXmppClientExtension.h>
 
 namespace LeechCraft
@@ -45,8 +45,8 @@ namespace Xoox
 	{
 		Q_OBJECT
 
-		PubSubManager *Manager_;
-		ClientConnection *Conn_;
+		PubSubManager * const Manager_;
+		ClientConnection * const Conn_;
 	public:
 		UserAvatarManager (ClientConnection*);
 
@@ -62,5 +62,3 @@ namespace Xoox
 }
 }
 }
-
-#endif

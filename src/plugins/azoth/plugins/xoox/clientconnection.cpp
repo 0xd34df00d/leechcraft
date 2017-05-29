@@ -178,6 +178,8 @@ namespace Xoox
 		LastState_.State_ = SOffline;
 		handlePriorityChanged (Settings_->GetPriority ());
 
+		const auto proxy = account->GetParentProtocol ()->GetProxyObject ();
+
 		PubSubManager_->RegisterCreator<UserActivity> ();
 		PubSubManager_->RegisterCreator<UserMood> ();
 		PubSubManager_->RegisterCreator<UserTune> ();
@@ -219,8 +221,7 @@ namespace Xoox
 		Client_->addExtension (JabberSearchManager_);
 		Client_->addExtension (RIEXManager_);
 		Client_->addExtension (AdHocCommandManager_);
-		Client_->addExtension (new AdHocCommandServer (this,
-					account->GetParentProtocol ()->GetProxyObject ()));
+		Client_->addExtension (new AdHocCommandServer (this, proxy));
 		Client_->addExtension (Xep0313Manager_);
 		Client_->addExtension (CarbonsManager_);
 		Client_->addExtension (PingManager_);
@@ -1292,15 +1293,14 @@ namespace Xoox
 
 	void ClientConnection::handleMessageDelivered (const QString&, const QString& msgId)
 	{
-		QPointer<GlooxMessage> msg = UndeliveredMessages_.take (msgId);
-		if (msg)
+		if (const auto msg = UndeliveredMessages_.take (msgId))
 			msg->SetDelivered (true);
 	}
 
 	void ClientConnection::handleRoomInvitation (const QString& room,
 			const QString& inviter, const QString& reason)
 	{
-		const QStringList& split = room.split ('@', QString::SkipEmptyParts);
+		const auto& split = room.split ('@', QString::SkipEmptyParts);
 
 		QVariantMap identifying;
 		identifying ["HumanReadableName"] = QString ("%2 (%1)")
@@ -1334,7 +1334,7 @@ namespace Xoox
 			if (!conf.autoJoin ())
 				continue;
 
-			JoinQueueItem item =
+			const JoinQueueItem item
 			{
 				true,
 				conf.jid (),

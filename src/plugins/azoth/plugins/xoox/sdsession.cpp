@@ -125,7 +125,7 @@ namespace Xoox
 
 		const auto& sibling = index.sibling (index.row (), CName);
 		const auto item = Model_->itemFromIndex (sibling);
-		const ItemInfo& info = Item2Info_ [item];
+		const auto& info = Item2Info_.value (item);
 
 		auto idHasCat = [&info] (const QString& name)
 		{

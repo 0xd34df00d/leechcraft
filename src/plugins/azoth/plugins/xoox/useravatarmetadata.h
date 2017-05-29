@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_AZOTH_PLUGINS_XOOX_USERAVATARMETADATA_H
-#define PLUGINS_AZOTH_PLUGINS_XOOX_USERAVATARMETADATA_H
+#pragma once
+
 #include <QImage>
 #include <QUrl>
 #include "pepeventbase.h"
@@ -66,5 +66,3 @@ namespace Xoox
 }
 }
 }
-
-#endif
