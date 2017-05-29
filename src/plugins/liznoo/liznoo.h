@@ -63,10 +63,6 @@ namespace Liznoo
 
 		std::shared_ptr<PlatformObjects> Platform_;
 
-#if QT_VERSION < 0x050000
-		QMap<QString, QAction*> Battery2Action_;
-#endif
-
 		QMap<QString, BatteryInfo> Battery2LastInfo_;
 		QMap<QString, BatteryHistoryDialog*> Battery2Dialog_;
 		QMap<QString, BatteryHistoryList> Battery2History_;

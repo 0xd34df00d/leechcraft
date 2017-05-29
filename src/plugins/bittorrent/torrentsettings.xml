@@ -144,9 +144,6 @@
 					<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
 						<label lang="en" value="Allow multiple connections per IP" />
 					</item>
-					<item type="checkbox" property="IgnoreLimitsOnLocalNetwork" state="on">
-						<label lang="en" value="Ignore limits on local network" />
-					</item>
 					<item type="checkbox" property="DontCountSlowTorrents" default="true">
 						<label lang="en" value="Don't count slow torrents" />
 					</item>
@@ -353,9 +350,6 @@
 				</item>
 				<item type="checkbox" property="UseReadCache" state="on">
 					<label lang="en" value="Use read cache" />
-				</item>
-				<item type="checkbox" property="LockDiskCache" state="on">
-					<label lang="en" value="Prevent disk cache from swapping out" />
 				</item>
 				<item type="checkbox" property="AutoManagePreferSeeds" default="true">
 					<label lang="en" value="Give slots to seeding torrents in automanaged mode" />

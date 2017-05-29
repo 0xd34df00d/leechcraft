@@ -39,9 +39,7 @@ LeechCraft::CommonJobAdder::CommonJobAdder (QWidget *parent)
 : QDialog (parent)
 {
 	setupUi (this);
-#if QT_VERSION >= 0x040700
 	What_->setPlaceholderText (What_->toolTip ());
-#endif
 	const QString &text = XmlSettingsManager::Instance ()->
 			Property ("LastWhatFolder", QString ()).toString ();
 	if (!text.isEmpty ())

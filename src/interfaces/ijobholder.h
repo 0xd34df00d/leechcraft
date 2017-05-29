@@ -30,15 +30,10 @@
 #pragma once
 
 #include <QtPlugin>
-
-#if QT_VERSION >= 0x050000
 #include <QAbstractItemModel>
-#endif
-
 #include "interfaces/structures.h"
 
 class QModelIndex;
-class QAbstractItemModel;
 class QWidget;
 
 namespace LeechCraft

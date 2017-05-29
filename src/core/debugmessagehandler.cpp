@@ -64,10 +64,8 @@ namespace
 		{
 		case QtDebugMsg:
 			return "debug.log";
-#if QT_VERSION >= 0x050500
 		case QtInfoMsg:
 			return "info.log";
-#endif
 		case QtWarningMsg:
 			return "warning.log";
 		case QtCriticalMsg:
@@ -93,9 +91,7 @@ namespace
 		switch (type)
 		{
 		case QtDebugMsg:
-#if QT_VERSION >= 0x050500
 		case QtInfoMsg:
-#endif
 			return "\x1b[32m";
 		case QtWarningMsg:
 			return "\x1b[33m";
@@ -120,11 +116,9 @@ namespace
 			case QtDebugMsg:
 				stream << "[DBG] ";
 				break;
-#if QT_VERSION >= 0x050500
 			case QtInfoMsg:
 				stream << "[INF] ";
 				break;
-#endif
 			case QtWarningMsg:
 				stream << "[WRN] ";
 				break;
@@ -371,11 +365,77 @@ namespace
 		std::free (strings);
 #endif
 	}
+
+	QByteArray DetectModule (const QMessageLogContext& ctx)
+	{
+		if (!ctx.file)
+			return "<unk>";
+
+		const auto& file = QByteArray::fromRawData (ctx.file, std::strlen (ctx.file));
+		if (file.isEmpty ())
+			return "<unk>";
+
+		static const QByteArray pluginsMarker { "src/plugins/" };
+		const auto pluginsPos = file.indexOf (pluginsMarker);
+		if (pluginsPos != -1)
+		{
+			const auto pluginNameStart = pluginsPos + pluginsMarker.size ();
+			const auto nextSlash = file.indexOf ('/', pluginNameStart + 1);
+			return nextSlash >= 0 ?
+					file.mid (pluginNameStart, nextSlash - pluginNameStart) :
+					file.mid (pluginNameStart);
+		}
+
+		if (file.contains ("src/core/"))
+			return "core";
+
+		if (file.contains ("src/util/"))
+			return "util";
+
+		if (file.endsWith (".qml"))
+		{
+			const auto lastSlash = file.lastIndexOf ('/');
+			const auto prelastSlash = file.lastIndexOf ('/', lastSlash - 1);
+			if (lastSlash >= 0 && prelastSlash >= 0)
+				return file.mid (prelastSlash + 1, lastSlash - prelastSlash - 1);
+		}
+
+		return file;
+	}
+
+	QByteArray Colorize (bool shouldColorize, const QByteArray& str)
+	{
+		if (!shouldColorize)
+			return str;
+
+		static const QByteArray table [] =
+		{
+			"31",
+			"32",
+			"33",
+			"34",
+			"35",
+			"36",
+			"37",
+			"1;31",
+			"1;32",
+			"1;33",
+			"1;34",
+			"1;35",
+			"1;36",
+			"1;37"
+		};
+
+		constexpr auto tableSize = sizeof (table) / sizeof (table [0]);
+
+		const auto hash = qHash (str) % tableSize;
+		return "\x1b[" + table [hash] + "m" + str + "\x1b[0m";
+	}
 }
 
 namespace DebugHandler
 {
-	void Write (QtMsgType type, const char *message, DebugWriteFlags flags)
+	void Write (QtMsgType type, const QMessageLogContext& ctx, const char *message, DebugWriteFlags flags)
 	{
 #if !defined (Q_OS_WIN32)
 		if (!strcmp (message, "QPixmap::handle(): Pixmap is not an X11 class pixmap") ||
@@ -387,17 +447,25 @@ namespace DebugHandler
 			return;
 #endif
 
+		const auto& now = QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ();
+		const auto& thread = QString { "0x%1" }
+				.arg (reinterpret_cast<uintptr_t> (QThread::currentThread ()), 16, 16, QChar { '0' })
+				.toStdString ();
+		const auto& module = Colorize (flags & DebugWriteFlag::DWFNoFileLog, DetectModule (ctx)).constData ();
+
 		QMutexLocker locker { &G_DbgMutex };
 
 		const auto& ostr = GetOstream (type, flags);
 		*ostr << "["
-				<< QDateTime::currentDateTime ().toString ("dd.MM.yyyy HH:mm:ss.zzz").toStdString ()
-				<< "] ["
-				<< QThread::currentThread ()
+				<< now
 				<< "] ["
 				<< std::setfill ('0')
 				<< std::setw (3)
 				<< Counter++
+				<< "] ["
+				<< thread
+				<< "] ["
+				<< module
 				<< "] "
 				<< message
 				<< std::endl;

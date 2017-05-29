@@ -27,11 +27,12 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
-#define PLUGINS_POSHUKU_SQLSTORAGEBACKEND_H
+#pragma once
+
 #include "storagebackend.h"
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <util/sll/util.h>
 
 namespace LeechCraft
 {
@@ -41,8 +42,10 @@ namespace Poshuku
 	{
 		Q_OBJECT
 
-		Type Type_;
+		const Type Type_;
+
 		QSqlDatabase DB_;
+		const Util::DefaultScopeGuard DBGuard_;
 
 				/** Returns:
 					* - title
@@ -132,5 +135,3 @@ namespace Poshuku
 	};
 }
 }
-
-#endif

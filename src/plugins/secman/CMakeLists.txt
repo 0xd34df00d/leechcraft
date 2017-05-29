@@ -14,6 +14,12 @@ include_directories (
 option (ENABLE_SECMAN_SECURESTORAGE "Enable SecMan SecureStorage, the advanced encrypted private data storage" OFF)
 option (ENABLE_SECMAN_SIMPLESTORAGE "Enable SecMan SimpleStorage, the basic unencrypted private data storage" ON)
 
+option (WITH_SECMAN_EXPOSE_CONTENTSDISPLAY "Build the GUI for viewing the data stored in SecMan" OFF)
+
+if (WITH_SECMAN_EXPOSE_CONTENTSDISPLAY)
+	add_definitions (-DSECMAN_EXPOSE_CONTENTSDISPLAY)
+endif ()
+
 if (ENABLE_SECMAN_SECURESTORAGE)
 	add_subdirectory (plugins/securestorage)
 endif ()

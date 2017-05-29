@@ -49,12 +49,7 @@
 #include <QTimer>
 #include <QCryptographicHash>
 #include <QTextCodec>
-
-#if QT_VERSION < 0x050000
-#include <QtDeclarative>
-#else
 #include <QtQml>
-#endif
 
 #ifdef Q_OS_MAC
 #include <QProxyStyle>
@@ -99,9 +94,7 @@ namespace LeechCraft
 		 * https://code.google.com/p/libproxy/issues/detail?id=197
 		 * https://bugzilla.novell.com/show_bug.cgi?id=866692
 		 */
-#if QT_VERSION >= 0x050000
 		qputenv ("PX_MODULE_PATH", {});
-#endif
 
 		Arguments_ = arguments ().mid (1);
 		bpo::options_description desc ("Allowed options");
@@ -132,10 +125,6 @@ namespace LeechCraft
 #endif
 			std::exit (EVersionRequested);
 		}
-
-#if QT_VERSION < 0x050000
-		QTextCodec::setCodecForCStrings (QTextCodec::codecForName ("UTF-8"));
-#endif
 
 		if (VarMap_.count ("no-app-catch"))
 			CatchExceptions_ = false;
@@ -439,39 +428,22 @@ namespace LeechCraft
 		}
 	}
 
-#if QT_VERSION >= 0x050000
-	#define qInstallMsgHandler(x) \
-		qInstallMessageHandler([] (QtMsgType type, const QMessageLogContext&, const QString& msg) \
-		{ \
-			(x) (type, msg.toLocal8Bit ().constData ()); \
-		})
-#endif
-
 	void Application::ParseCommandLine ()
 	{
-		const bool isNoLog = VarMap_.count ("nolog");
-		const bool isBt = VarMap_.count ("bt");
+		static const auto flags = [this]
+		{
+			DebugHandler::DebugWriteFlags flags = DebugHandler::DWFNone;
+			if (VarMap_.count ("nolog"))
+				flags |= DebugHandler::DWFNoFileLog;
+			if (VarMap_.count ("bt"))
+				flags |= DebugHandler::DWFBacktrace;
+			return flags;
+		} ();
 
-		if (isNoLog && isBt)
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace | DebugHandler::DWFNoFileLog);
-					});
-		else if (isBt)
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFBacktrace);
-					});
-		else if (isNoLog)
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFNoFileLog);
-					});
-		else
-			qInstallMsgHandler ([] (QtMsgType type, const char *msg)
-					{
-						DebugHandler::Write (type, msg, DebugHandler::DWFNone);
-					});
+		qInstallMessageHandler ([] (QtMsgType type, const QMessageLogContext& ctx, const QString& msg)
+				{
+					DebugHandler::Write (type, ctx, msg.toLocal8Bit ().constData (), flags);
+				});
 
 		QDir lcDir = QDir::home ();
 		lcDir.cd (".leechcraft");
@@ -479,10 +451,6 @@ namespace LeechCraft
 		Rotate (lcDir, "debug.log");
 		Rotate (lcDir, "warning.log");
 	}
-
-#if QT_VERSION >= 0x050000
-	#undef qInstallMsgHandler
-#endif
 
 	void Application::InitPluginsIconset ()
 	{

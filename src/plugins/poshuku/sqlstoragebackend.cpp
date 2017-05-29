@@ -44,21 +44,22 @@ namespace LeechCraft
 namespace Poshuku
 {
 	SQLStorageBackend::SQLStorageBackend (StorageBackend::Type type)
-	: Type_ (type)
+	: Type_ { type }
+	, DBGuard_ { Util::MakeScopeGuard ([this] { DB_.close (); }) }
 	{
 		QString strType;
 		switch (Type_)
 		{
-			case SBSQLite:
-				strType = "QSQLITE";
-				break;
-			case SBPostgres:
-				strType = "QPSQL";
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+			strType = "QSQLITE";
+			break;
+		case SBPostgres:
+			strType = "QPSQL";
+			break;
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 
 		DB_ = QSqlDatabase::addDatabase (strType,
@@ -112,8 +113,6 @@ namespace Poshuku
 			QSqlQuery vacuum (DB_);
 			vacuum.exec ("VACUUM;");
 		}
-
-		DB_.close ();
 	}
 
 	void SQLStorageBackend::Prepare ()
@@ -146,34 +145,34 @@ namespace Poshuku
 		HistoryRatedLoader_ = QSqlQuery (DB_);
 		switch (Type_)
 		{
-			case SBSQLite:
-				HistoryRatedLoader_.prepare ("SELECT "
-						"SUM (julianday (date)) - julianday (MIN (date)) * COUNT (date) AS rating, "
-						"title, "
-						"url "
-						"FROM history "
-						"WHERE ( title LIKE :titlebase ) "
-						"OR ( url LIKE :urlbase ) "
-						"GROUP BY url "
-						"ORDER BY rating DESC "
-						"LIMIT 100");
-				break;
-			case SBPostgres:
-				HistoryRatedLoader_.prepare ("SELECT "
-						"SUM (AGE (date)) - AGE (MIN (date)) * COUNT (date) AS rating, "
-						"MAX (title) AS title, "
-						"url "
-						"FROM history "
-						"WHERE ( title LIKE :titlebase ) "
-						"OR ( url LIKE :urlbase ) "
-						"GROUP BY url "
-						"ORDER BY rating ASC "
-						"LIMIT 100");
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+			HistoryRatedLoader_.prepare ("SELECT "
+					"SUM (julianday (date)) - julianday (MIN (date)) * COUNT (date) AS rating, "
+					"title, "
+					"url "
+					"FROM history "
+					"WHERE ( title LIKE :titlebase ) "
+					"OR ( url LIKE :urlbase ) "
+					"GROUP BY url "
+					"ORDER BY rating DESC "
+					"LIMIT 100");
+			break;
+		case SBPostgres:
+			HistoryRatedLoader_.prepare ("SELECT "
+					"SUM (AGE (date)) - AGE (MIN (date)) * COUNT (date) AS rating, "
+					"MAX (title) AS title, "
+					"url "
+					"FROM history "
+					"WHERE ( title LIKE :titlebase ) "
+					"OR ( url LIKE :urlbase ) "
+					"GROUP BY url "
+					"ORDER BY rating ASC "
+					"LIMIT 100");
+			break;
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 
 		HistoryAdder_ = QSqlQuery (DB_);
@@ -190,65 +189,65 @@ namespace Poshuku
 		HistoryEraser_ = QSqlQuery (DB_);
 		switch (Type_)
 		{
-			case SBSQLite:
-				HistoryEraser_.prepare ("DELETE FROM history "
-						"WHERE "
-						"(julianday ('now') - julianday (date) > :age)");
-				break;
-			case SBPostgres:
-				HistoryEraser_.prepare ("DELETE FROM history "
-						"WHERE "
-						"(date - now () > :age * interval '1 day')");
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+			HistoryEraser_.prepare ("DELETE FROM history "
+					"WHERE "
+					"(julianday ('now') - julianday (date) > :age)");
+			break;
+		case SBPostgres:
+			HistoryEraser_.prepare ("DELETE FROM history "
+					"WHERE "
+					"(date - now () > :age * interval '1 day')");
+			break;
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 
 		HistoryTruncater_ = QSqlQuery (DB_);
 		switch (Type_)
 		{
-			case SBSQLite:
-				HistoryTruncater_.prepare ("DELETE FROM history "
-						"WHERE date IN "
-						"(SELECT date FROM history ORDER BY date DESC "
-						"LIMIT 10000 OFFSET :num)");
-				break;
-			case SBPostgres:
-				HistoryTruncater_.prepare ("DELETE FROM history "
-						"WHERE date IN "
-						"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+			HistoryTruncater_.prepare ("DELETE FROM history "
+					"WHERE date IN "
+					"(SELECT date FROM history ORDER BY date DESC "
+					"LIMIT 10000 OFFSET :num)");
+			break;
+		case SBPostgres:
+			HistoryTruncater_.prepare ("DELETE FROM history "
+					"WHERE date IN "
+					"	(SELECT date FROM history ORDER BY date DESC OFFSET :num)");
+			break;
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 
 		FavoritesLoader_ = QSqlQuery (DB_);
 		switch (Type_)
 		{
-			case SBSQLite:
-				FavoritesLoader_.prepare ("SELECT "
-						"title, "
-						"url, "
-						"tags "
-						"FROM favorites "
-						"ORDER BY ROWID DESC");
-				break;
-			case SBPostgres:
-				FavoritesLoader_.prepare ("SELECT "
-						"title, "
-						"url, "
-						"tags "
-						"FROM favorites "
-						"ORDER BY CTID DESC");
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+			FavoritesLoader_.prepare ("SELECT "
+					"title, "
+					"url, "
+					"tags "
+					"FROM favorites "
+					"ORDER BY ROWID DESC");
+			break;
+		case SBPostgres:
+			FavoritesLoader_.prepare ("SELECT "
+					"title, "
+					"url, "
+					"tags "
+					"FROM favorites "
+					"ORDER BY CTID DESC");
+			break;
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 
 		FavoritesAdder_ = QSqlQuery (DB_);
@@ -606,28 +605,28 @@ namespace Poshuku
 		QString r;
 		switch (Type_)
 		{
-			case SBSQLite:
-				r = "INSERT OR REPLACE INTO storage_settings ("
-				"key, "
-				"value"
-				") VALUES ("
-				":key, "
-				":value"
-				")";
-				break;
-			case SBPostgres:
-				r = "INSERT INTO storage_settings ("
-				"key, "
-				"value"
-				") VALUES ("
-				":key, "
-				":value"
-				")";
-				break;
-			case SBMysql:
-				qWarning () << Q_FUNC_INFO
-						<< "it's not MySQL";
-				break;
+		case SBSQLite:
+			r = "INSERT OR REPLACE INTO storage_settings ("
+			"key, "
+			"value"
+			") VALUES ("
+			":key, "
+			":value"
+			")";
+			break;
+		case SBPostgres:
+			r = "INSERT INTO storage_settings ("
+			"key, "
+			"value"
+			") VALUES ("
+			":key, "
+			":value"
+			")";
+			break;
+		case SBMysql:
+			qWarning () << Q_FUNC_INFO
+					<< "it's not MySQL";
+			break;
 		}
 		query.prepare (r);
 		query.bindValue (":key", key);

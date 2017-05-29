@@ -975,9 +975,6 @@ namespace BitTorrent
 				atp.flags |= libtorrent::add_torrent_params::flag_paused;
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 			handle = Session_->add_torrent (atp);
-
-			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
-				handle.resolve_countries (true);
 		}
 		catch (const libtorrent::libtorrent_exception& e)
 		{
@@ -1038,8 +1035,6 @@ namespace BitTorrent
 			atp.flags |= libtorrent::add_torrent_params::flag_duplicate_is_error;
 
 			handle = Session_->add_torrent (atp);
-			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
-				handle.resolve_countries (true);
 		}
 		catch (const libtorrent::libtorrent_exception& e)
 		{
@@ -1880,8 +1875,6 @@ namespace BitTorrent
 					std::back_inserter (atp.resume_data));
 
 			handle = Session_->add_torrent (atp);
-			if (XmlSettingsManager::Instance ()->property ("ResolveCountries").toBool ())
-				handle.resolve_countries (true);
 		}
 		catch (const libtorrent::libtorrent_exception& e)
 		{
@@ -1992,8 +1985,13 @@ namespace BitTorrent
 			return;
 		}
 
-		emit fileRenamed (std::distance (Handles_.begin (), pos),
-				a.index, QString::fromUtf8 (a.name.c_str ()));
+#if LIBTORRENT_VERSION_NUM >= 10100
+		const auto& newName = QString::fromUtf8 (a.new_name ());
+#else
+		const auto& newName = QString::fromUtf8 (a.name.c_str ());
+#endif
+
+		emit fileRenamed (std::distance (Handles_.begin (), pos), a.index, newName);
 	}
 
 	QStringList Core::GetTagsForIndexImpl (int torrent) const
@@ -2195,7 +2193,7 @@ namespace BitTorrent
 
 	struct SimpleDispatcher
 	{
-		mutable bool NeedToLog_ = true;
+		bool NeedToLog_ = true;
 
 		const ICoreProxy_ptr Proxy_;
 		IEntityManager * const IEM_;
@@ -2230,7 +2228,11 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("Storage for torrent:<br />%1"
 						"<br />moved successfully to:<br />%2")
 					.arg (GetTorrentName (a.handle))
+#if LIBTORRENT_VERSION_NUM >= 10100
+					.arg (QString::fromUtf8 (a.storage_path ()));
+#else
 					.arg (QString::fromUtf8 (a.path.c_str ()));
+#endif
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PInfo_));
 		}
 
@@ -2275,7 +2277,7 @@ namespace BitTorrent
 			Core::Instance ()->PieceRead (a);
 		}
 
-		void operator() (const libtorrent::state_update_alert& a) const
+		void operator() (const libtorrent::state_update_alert& a)
 		{
 			Core::Instance ()->UpdateStatus (a.status);
 			NeedToLog_ = false;
@@ -2297,7 +2299,7 @@ namespace BitTorrent
 			Core::Instance ()->UpdateStatus ({ a.handle.status () });
 		}
 
-		void operator() (const libtorrent::dht_announce_alert& a) const
+		void operator() (const libtorrent::dht_announce_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got announce from"
@@ -2309,7 +2311,7 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
-		void operator() (const libtorrent::dht_reply_alert& a) const
+		void operator() (const libtorrent::dht_reply_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got reply with"
@@ -2318,7 +2320,7 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
-		void operator() (const libtorrent::dht_bootstrap_alert& a) const
+		void operator() (const libtorrent::dht_bootstrap_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "bootstrapped; "
@@ -2326,7 +2328,7 @@ namespace BitTorrent
 			NeedToLog_ = false;
 		}
 
-		void operator() (const libtorrent::dht_get_peers_alert& a) const
+		void operator() (const libtorrent::dht_get_peers_alert& a)
 		{
 			qDebug () << "<libtorrent> <DHT>"
 					<< "got peers for"
@@ -2339,7 +2341,11 @@ namespace BitTorrent
 			const auto& text = QObject::tr ("File error for torrent:<br />%1<br />"
 						"file:<br />%2<br />error:<br />%3")
 					.arg (GetTorrentName (a.handle))
+#if LIBTORRENT_VERSION_NUM >= 10100
+					.arg (QString::fromUtf8 (a.filename ()))
+#else
 					.arg (QString::fromUtf8 (a.file.c_str ()))
+#endif
 					.arg (QString::fromUtf8 (a.error.message ().c_str ()));
 			IEM_->HandleEntity (Util::MakeNotification ("BitTorrent", text, PCritical_));
 		}
@@ -2365,8 +2371,8 @@ namespace BitTorrent
 		template<typename Dispatcher>
 		struct HandleAlertImpl<Dispatcher>
 		{
-			const std::type_info& Info_;
-			Dispatcher D_;
+			const int Info_;
+			Dispatcher& D_;
 
 			void operator() (libtorrent::alert*) const
 			{
@@ -2376,12 +2382,12 @@ namespace BitTorrent
 		template<typename Dispatcher, typename Head, typename... Tail>
 		struct HandleAlertImpl<Dispatcher, Head, Tail...>
 		{
-			const std::type_info& Info_;
-			Dispatcher D_;
+			const int Info_;
+			Dispatcher& D_;
 
 			void operator() (libtorrent::alert *alert) const
 			{
-				if (Info_ == typeid (Head))
+				if (Info_ == Head::alert_type)
 					D_ (*static_cast<Head*> (alert));
 				else
 					HandleAlertImpl<Dispatcher, Tail...> { Info_, D_ } (alert);
@@ -2389,9 +2395,9 @@ namespace BitTorrent
 		};
 
 		template<typename... Types, typename Dispatcher>
-		void HandleAlert (libtorrent::alert *alert, const Dispatcher& dispatcher)
+		void HandleAlert (libtorrent::alert *alert, Dispatcher& dispatcher)
 		{
-			HandleAlertImpl<Dispatcher, Types...> { typeid (*alert), dispatcher } (alert);
+			HandleAlertImpl<Dispatcher, Types...> { alert->type (), dispatcher } (alert);
 		}
 	}
 

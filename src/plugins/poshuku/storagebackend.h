@@ -58,8 +58,8 @@ namespace Poshuku
 			SBMysql
 		};
 
-		StorageBackend (QObject* = 0);
-		virtual ~StorageBackend ();
+		using QObject::QObject;
+
 		static std::shared_ptr<StorageBackend> Create (Type);
 		static std::shared_ptr<StorageBackend> Create ();
 

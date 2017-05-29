@@ -6,12 +6,9 @@ find_package (Boost REQUIRED COMPONENTS date_time filesystem system thread)
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-find_package (RBTorrent)
+find_package (RBTorrent REQUIRED)
 find_package (OpenSSL REQUIRED)
 
-if (NOT RBTorrent_FOUND)
-	message (SEND_ERROR "Rasterbar libtorrent not found, not building BitTorrent")
-endif ()
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -103,10 +100,6 @@ option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (require
 
 if (ENABLE_BITTORRENT_GEOIP)
 	add_definitions (-DENABLE_GEOIP)
-elseif (ENABLE_BITTORRENT_GEOIP)
-	if (WIN32)
-		add_definitions (-DTORRENT_DISABLE_GEO_IP)
-	endif ()
 endif ()
 
 if (UNIX)

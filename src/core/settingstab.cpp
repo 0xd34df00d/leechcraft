@@ -61,10 +61,8 @@ namespace LeechCraft
 		Ui_.ListContents_->setLayout (new QVBoxLayout);
 		Ui_.DialogContents_->setLayout (new QVBoxLayout);
 
-#if QT_VERSION >= 0x040800
 		const auto catsWidth = Ui_.Cats_->minimumSize ().width ();
 		Ui_.CatsSplitter_->setSizes ({ catsWidth, catsWidth * 5 });
-#endif
 
 		ActionBack_->setProperty ("ActionIcon", "go-previous");
 		connect (ActionBack_,

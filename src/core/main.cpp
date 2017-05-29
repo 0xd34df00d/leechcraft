@@ -97,9 +97,7 @@ int main (int argc, char **argv)
 	LeechCraft::Application::setAttribute (Qt::AA_X11InitThreads);
 #endif
 
-#if QT_VERSION >= 0x050400
 	QCoreApplication::setAttribute (Qt::AA_ShareOpenGLContexts);
-#endif
 
 	LeechCraft::Application app (argc, argv);
 	return app.exec ();

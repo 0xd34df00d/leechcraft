@@ -28,6 +28,7 @@
  **********************************************************************/
 
 #include "storagebackend.h"
+#include <cassert>
 #include <stdexcept>
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
@@ -37,28 +38,18 @@ namespace LeechCraft
 {
 namespace Poshuku
 {
-	StorageBackend::StorageBackend (QObject *parent)
-	: QObject (parent)
-	{
-	}
-
-	StorageBackend::~StorageBackend ()
-	{
-	}
-
 	std::shared_ptr<StorageBackend> StorageBackend::Create (Type type)
 	{
-		std::shared_ptr<StorageBackend> result;
 		switch (type)
 		{
 		case SBSQLite:
 		case SBPostgres:
-			result.reset (new SQLStorageBackend (type));
-			break;
+			return std::make_shared<SQLStorageBackend> (type);
 		case SBMysql:
-			result.reset (new SQLStorageBackendMysql (type));
+			return std::make_shared<SQLStorageBackendMysql> (type);
 		}
-		return result;
+
+		assert (false);
 	}
 
 	std::shared_ptr<StorageBackend> StorageBackend::Create ()

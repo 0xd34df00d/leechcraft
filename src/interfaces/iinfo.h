@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef INTERFACES_IINFO_H
-#define INTERFACES_IINFO_H
+#pragma once
+
 #include <memory>
 #include <QString>
 #include <QStringList>
@@ -361,16 +361,6 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 
 #define CURRENT_API_LEVEL 20
 
-#if QT_VERSION < 0x050000
-#define LC_EXPORT_PLUGIN(name,file) Q_EXPORT_PLUGIN2(name, file) \
-	extern "C"\
-	{\
-		Q_DECL_EXPORT quint64 GetAPILevels ()\
-		{\
-			return CURRENT_API_LEVEL;\
-		}\
-	}
-#else
 #define LC_EXPORT_PLUGIN(name,file) \
 	extern "C"\
 	{\
@@ -379,12 +369,5 @@ Q_DECLARE_INTERFACE (IInfo, "org.Deviant.LeechCraft.IInfo/1.0")
 			return CURRENT_API_LEVEL;\
 		}\
 	}
-#endif
 
-#if QT_VERSION < 0x050000
-#define LC_PLUGIN_METADATA(id)
-#else
 #define LC_PLUGIN_METADATA(id) Q_PLUGIN_METADATA (IID id)
-#endif
-
-#endif
