@@ -1393,9 +1393,6 @@ namespace Xoox
 		}
 	}
 
-	/** @todo Handle action reasons in QXmppPresence::Subscribe and
-	 * QXmppPresence::Unsubscribe cases.
-	 */
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
 	{
 		qDebug () << "OtherPresence" << pres.from () << pres.type ();
@@ -1410,7 +1407,7 @@ namespace Xoox
 				emit gotRosterItems ({ entry });
 			}
 			JID2CLEntry_ [jid]->SetAuthRequested (true);
-			emit gotSubscriptionRequest (JID2CLEntry_ [jid], QString ());
+			emit gotSubscriptionRequest (JID2CLEntry_ [jid], pres.statusText ());
 			break;
 		case QXmppPresence::Subscribed:
 			if (JID2CLEntry_.contains (jid))
@@ -1418,13 +1415,13 @@ namespace Xoox
 			break;
 		case QXmppPresence::Unsubscribe:
 			if (JID2CLEntry_.contains (jid))
-				emit rosterItemUnsubscribed (JID2CLEntry_ [jid], QString ());
+				emit rosterItemUnsubscribed (JID2CLEntry_ [jid], pres.statusText ());
 			else
-				emit rosterItemUnsubscribed (jid, QString ());
+				emit rosterItemUnsubscribed (jid, pres.statusText ());
 			break;
 		case QXmppPresence::Unsubscribed:
 			if (JID2CLEntry_.contains (jid))
-				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], QString ());
+				emit rosterItemCancelledSubscription (JID2CLEntry_ [jid], pres.statusText ());
 			break;
 		case QXmppPresence::Error:
 		{
