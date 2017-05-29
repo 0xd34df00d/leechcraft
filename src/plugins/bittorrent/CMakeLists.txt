@@ -9,6 +9,15 @@ set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 find_package (RBTorrent REQUIRED)
 find_package (OpenSSL REQUIRED)
 
+option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
+
+if (ENABLE_BITTORRENT_GEOIP)
+	add_definitions (-DENABLE_GEOIP)
+	find_package (GeoIP REQUIRED)
+else ()
+	set (GEOIP_INCLUDE_DIRS)
+	set (GEOIP_LIBRARIES)
+endif ()
 
 include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -16,6 +25,7 @@ include_directories (${CMAKE_CURRENT_BINARY_DIR}
 	${RBTorrent_INCLUDE_DIR}
 	${LEECHCRAFT_INCLUDE_DIR}
 	${OPENSSL_INCLUDE_DIR}
+	${GEOIP_INCLUDE_DIRS}
 	)
 
 if (WIN32)
@@ -64,6 +74,7 @@ set (SRCS
 	torrenttabfileswidget.cpp
 	sessionsettingsmanager.cpp
 	cachedstatuskeeper.cpp
+	geoip.cpp
 	)
 
 set (FORMS
@@ -94,12 +105,6 @@ CreateTrsUpTarget ("bittorrent" "en;ru_RU" "${SRCS}" "${FORMS}" "torrentsettings
 
 if (APPLE)
 	add_definitions (-DWITH_SHIPPED_GEOIP_H -DBOOST_ASIO_DISABLE_STD_CHRONO)
-endif ()
-
-option (ENABLE_BITTORRENT_GEOIP "Enable support for GeoIP in BitTorrent (requires building libtorrent with GeoIP support)" OFF)
-
-if (ENABLE_BITTORRENT_GEOIP)
-	add_definitions (-DENABLE_GEOIP)
 endif ()
 
 if (UNIX)
@@ -172,6 +177,7 @@ target_link_libraries (leechcraft_bittorrent
 	${RBTorrent_LIBRARY}
 	${LEECHCRAFT_LIBRARIES}
 	${CRYPTOLIB}
+	${GEOIP_LIBRARIES}
 )
 install (TARGETS leechcraft_bittorrent DESTINATION ${LC_PLUGINS_DEST})
 install (FILES torrentsettings.xml DESTINATION ${LC_SETTINGS_DEST})
