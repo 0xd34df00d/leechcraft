@@ -102,6 +102,7 @@
 #include "notifymanager.h"
 #include "sessionsettingsmanager.h"
 #include "cachedstatuskeeper.h"
+#include "geoip.h"
 
 Q_DECLARE_METATYPE (QMenu*)
 Q_DECLARE_METATYPE (QToolBar*)
@@ -123,6 +124,7 @@ namespace BitTorrent
 	, NotifyManager_ { new NotifyManager { this } }
 	, FinishedTimer_ { new QTimer }
 	, WarningWatchdog_ { new QTimer }
+	, GeoIP_ { std::make_shared<GeoIP> () }
 	{
 		setObjectName ("BitTorrent Core");
 		ExternalAddress_ = tr ("Unknown");
@@ -210,24 +212,6 @@ namespace BitTorrent
 			Session_->set_ip_filter ({});
 
 			SessionSettingsMgr_ = new SessionSettingsManager { Session_, Proxy_, this };
-
-#if defined (ENABLE_GEOIP) && !defined (TORRENT_DISABLE_GEO_IP)
-			const QStringList geoipCands
-			{
-				"/usr/share/GeoIP",
-				"/usr/local/share/GeoIP",
-				"/var/lib/GeoIP"
-			};
-			for (const auto& cand : geoipCands)
-			{
-				const auto& name = cand + "/GeoIP.dat";
-				if (QFile::exists (name))
-				{
-					Session_->load_country_db (name.toUtf8 ().constData ());
-					break;
-				}
-			}
-#endif
 
 			auto sstateVariant = XmlSettingsManager::Instance ()->
 					property ("SessionState");
@@ -912,16 +896,12 @@ namespace BitTorrent
 			const int interesting = std::count_if (ourMissing.begin (), ourMissing.end (),
 					[&pi] (int idx) { return pi.pieces [idx]; });
 
-			PeerInfo ppi =
+			PeerInfo ppi
 			{
 				QString::fromStdString (pi.ip.address ().to_string ()),
 				QString::fromUtf8 (pi.client.c_str ()),
 				interesting,
-#if defined (ENABLE_GEOIP) && !defined (TORRENT_DISABLE_GEO_IP)
-				QString::fromLatin1 (QByteArray (pi.country, 2)).toLower (),
-#else
-				QString (),
-#endif
+				GeoIP_->GetCountry (pi.ip.address ()).value_or (QString {}),
 				std::make_shared<libtorrent::peer_info> (pi)
 			};
 			result << ppi;

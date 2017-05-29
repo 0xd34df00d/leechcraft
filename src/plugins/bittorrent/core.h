@@ -79,6 +79,7 @@ namespace BitTorrent
 	class LiveStreamManager;
 	class SessionSettingsManager;
 	class CachedStatusKeeper;
+	class GeoIP;
 	struct NewTorrentParams;
 
 	using BanRange_t = QPair<QString, QString>;
@@ -173,6 +174,8 @@ namespace BitTorrent
 		ICoreProxy_ptr Proxy_;
 		QMenu *Menu_ = nullptr;
 		Util::ShortcutManager *ShortcutMgr_ = nullptr;
+
+		std::shared_ptr<GeoIP> GeoIP_;
 
 		const QIcon TorrentIcon_ { "lcicons:/resources/images/bittorrent.svg" };
 
