@@ -61,10 +61,7 @@ namespace Azoth
 				return 64;
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unknown size"
-					<< static_cast<int> (size);
-			return 256;
+			assert (false);
 		}
 	}
 
