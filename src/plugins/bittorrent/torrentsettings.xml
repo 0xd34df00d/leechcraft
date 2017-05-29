@@ -144,9 +144,6 @@
 					<item type="checkbox" property="AllowMultipleConnectionsPerIP" state="off">
 						<label lang="en" value="Allow multiple connections per IP" />
 					</item>
-					<item type="checkbox" property="IgnoreLimitsOnLocalNetwork" state="on">
-						<label lang="en" value="Ignore limits on local network" />
-					</item>
 					<item type="checkbox" property="DontCountSlowTorrents" default="true">
 						<label lang="en" value="Don't count slow torrents" />
 					</item>

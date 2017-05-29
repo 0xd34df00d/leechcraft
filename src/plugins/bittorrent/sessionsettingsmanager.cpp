@@ -311,7 +311,6 @@ namespace BitTorrent
 			"MaxFailcount",
 			"MinReconnectTime",
 			"PeerConnectTimeout",
-			"IgnoreLimitsOnLocalNetwork",
 			"ConnectionSpeed",
 			"SendRedundantHave",
 			"LazyBitfields",
@@ -657,7 +656,6 @@ namespace BitTorrent
 		LT_SET_INT_OPT2 (auto_scrape_interval, "AutoScrapeInterval", * 60);
 
 		LT_SET_BOOL_OPT (allow_multiple_connections_per_ip, "AllowMultipleConnectionsPerIP");
-		LT_SET_BOOL_OPT (ignore_limits_on_local_network, "IgnoreLimitsOnLocalNetwork");
 		LT_SET_BOOL_OPT (send_redundant_have, "SendRedundantHave");
 		LT_SET_BOOL_OPT (lazy_bitfields, "LazyBitfields");
 		LT_SET_BOOL_OPT (use_dht_as_fallback, "UseDHTAsFallback");
