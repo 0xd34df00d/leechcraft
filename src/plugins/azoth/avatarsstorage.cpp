@@ -144,7 +144,7 @@ namespace Azoth
 		return Util::Sequence (this, StorageThread_->GetAvatar (entryId, size)) >>
 				[=] (const MaybeByteArray& data)
 				{
-					if (!data)
+					if (!data || data->isEmpty ())
 						return Util::MakeReadyFuture<MaybeImage> ({});
 
 					return QtConcurrent::run ([=] () -> MaybeImage
