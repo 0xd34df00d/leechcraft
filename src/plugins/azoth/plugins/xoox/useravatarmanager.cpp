@@ -70,47 +70,51 @@ namespace Xoox
 		Manager_->PublishEvent (&metadata);
 	}
 
+	void UserAvatarManager::HandleMDEvent (const QString& from, UserAvatarMetadata *mdEvent)
+	{
+		if (mdEvent->GetID ().isEmpty ())
+		{
+			emit avatarUpdated (from, QImage ());
+			return;
+		}
+
+		QString bare;
+		QString resource;
+		ClientConnection::Split (from, &bare, &resource);
+
+		/* TODO redo checks
+		ICLEntry *entry = qobject_cast<ICLEntry*> (Conn_->GetCLEntry (bare, resource));
+		if (entry && !entry->GetAvatar ().isNull ())
+		{
+			UserAvatarMetadata md (entry->GetAvatar ());
+			if (mdEvent->GetID () == md.GetID ())
+				return;
+		}
+		*/
+
+		if (mdEvent->GetURL ().isValid ())
+		{
+			QNetworkAccessManager *mgr = Core::Instance ()
+					.GetProxy ()->GetNetworkAccessManager ();
+
+			QNetworkReply *rep = mgr->get (QNetworkRequest (mdEvent->GetURL ()));
+			rep->setProperty ("Azoth/From", from);
+			connect (rep,
+					SIGNAL (finished ()),
+					this,
+					SLOT (handleHTTPFinished ()));
+		}
+		else
+			Manager_->RequestItem (bare,
+					UserAvatarData::GetNodeString (),
+					mdEvent->GetID ());
+	}
+
 	void UserAvatarManager::handleEvent (const QString& from, PEPEventBase *event)
 	{
 		if (auto mdEvent = dynamic_cast<UserAvatarMetadata*> (event))
 		{
-			if (mdEvent->GetID ().isEmpty ())
-			{
-				emit avatarUpdated (from, QImage ());
-				return;
-			}
-
-			QString bare;
-			QString resource;
-			ClientConnection::Split (from, &bare, &resource);
-
-			/* TODO redo checks
-			ICLEntry *entry = qobject_cast<ICLEntry*> (Conn_->GetCLEntry (bare, resource));
-			if (entry && !entry->GetAvatar ().isNull ())
-			{
-				UserAvatarMetadata md (entry->GetAvatar ());
-				if (mdEvent->GetID () == md.GetID ())
-					return;
-			}
-			*/
-
-			if (mdEvent->GetURL ().isValid ())
-			{
-				QNetworkAccessManager *mgr = Core::Instance ()
-						.GetProxy ()->GetNetworkAccessManager ();
-
-				QNetworkReply *rep = mgr->get (QNetworkRequest (mdEvent->GetURL ()));
-				rep->setProperty ("Azoth/From", from);
-				connect (rep,
-						SIGNAL (finished ()),
-						this,
-						SLOT (handleHTTPFinished ()));
-			}
-			else
-				Manager_->RequestItem (bare,
-						UserAvatarData::GetNodeString (),
-						mdEvent->GetID ());
-
+			HandleMDEvent (from, mdEvent);
 			return;
 		}
 

@@ -51,6 +51,8 @@ namespace Xoox
 		UserAvatarManager (ClientConnection*);
 
 		void PublishAvatar (const QImage&);
+	private:
+		void HandleMDEvent (const QString&, UserAvatarMetadata*);
 	private slots:
 		void handleEvent (const QString&, PEPEventBase*);
 		void handleHTTPFinished ();
