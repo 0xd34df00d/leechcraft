@@ -66,10 +66,6 @@ namespace BitTorrent
 				SLOT (update ()));
 	}
 
-	PeersModel::~PeersModel ()
-	{
-	}
-
 	int PeersModel::columnCount (const QModelIndex&) const
 	{
 		return Headers_.size ();

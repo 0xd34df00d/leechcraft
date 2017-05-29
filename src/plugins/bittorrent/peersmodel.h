@@ -52,7 +52,6 @@ namespace BitTorrent
 		enum { SortRole = Qt::UserRole + 1 };
 
 		PeersModel (int idx, QObject *parent = 0);
-		virtual ~PeersModel ();
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
