@@ -1395,7 +1395,6 @@ namespace Xoox
 
 	void ClientConnection::HandleOtherPresence (const QXmppPresence& pres)
 	{
-		qDebug () << "OtherPresence" << pres.from () << pres.type ();
 		const QString& jid = pres.from ();
 		switch (pres.type ())
 		{
