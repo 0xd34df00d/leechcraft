@@ -66,10 +66,6 @@ namespace BitTorrent
 				SLOT (update ()));
 	}
 
-	PeersModel::~PeersModel ()
-	{
-	}
-
 	int PeersModel::columnCount (const QModelIndex&) const
 	{
 		return Headers_.size ();
@@ -97,42 +93,38 @@ namespace BitTorrent
 				return code.isEmpty () || code == "--" || code == "00" ?
 						QString () :
 						code;
+			default:
+				return {};
 			}
 		}
 
 		if (role != Qt::DisplayRole && role != SortRole)
-			return QVariant ();
+			return {};
+
+		const auto isDisplayRole = role == Qt::DisplayRole;
 
 		switch (index.column ())
 		{
 		case 1:
-			if (role == Qt::DisplayRole)
+			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->payload_down_speed) + tr ("/s");
-			else if (role == SortRole)
+			else
 				return pi.PI_->payload_down_speed;
-			else
-				return QVariant ();
 		case 2:
-			if (role == Qt::DisplayRole)
+			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->payload_up_speed) + tr ("/s");
-			else if (role == SortRole)
+			else
 				return pi.PI_->payload_up_speed;
-			else
-				return QVariant ();
 		case 3:
-			if (role == Qt::DisplayRole)
+			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->total_download);
-			else if (role == SortRole)
+			else
 				return static_cast<qulonglong> (pi.PI_->total_download);
-			else
-				return QVariant ();
 		case 4:
-			if (role == Qt::DisplayRole)
+			if (isDisplayRole)
 				return Util::MakePrettySize (pi.PI_->total_upload);
-			else if (role == SortRole)
-				return static_cast<qulonglong> (pi.PI_->total_upload);
 			else
-				return QVariant ();
+				return static_cast<qulonglong> (pi.PI_->total_upload);
 		case 5:
 			return pi.Client_;
 		case 6:
@@ -142,6 +134,9 @@ namespace BitTorrent
 		default:
 			return "Unhandled column";
 		}
+
+		assert (false);
+		return {};
 	}
 
 	Qt::ItemFlags PeersModel::flags (const QModelIndex&) const

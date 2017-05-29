@@ -49,9 +49,9 @@ namespace BitTorrent
 
 		QString FlagsPath_;
 	public:
-		enum { SortRole = 45 };
+		enum { SortRole = Qt::UserRole + 1 };
+
 		PeersModel (int idx, QObject *parent = 0);
-		virtual ~PeersModel ();
 
 		virtual int columnCount (const QModelIndex& = QModelIndex ()) const;
 		virtual QVariant data (const QModelIndex&, int = Qt::DisplayRole) const;
