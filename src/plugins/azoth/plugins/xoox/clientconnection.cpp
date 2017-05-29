@@ -1430,6 +1430,8 @@ namespace Xoox
 			ClientConnection::Split (jid, &bare, &resource);
 			if (RoomHandlers_.contains (bare))
 				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
+			else if (JID2CLEntry_.contains (bare))
+				JID2CLEntry_ [jid]->SetErrorPresence (resource);
 			break;
 		}
 		case QXmppPresence::Available:
