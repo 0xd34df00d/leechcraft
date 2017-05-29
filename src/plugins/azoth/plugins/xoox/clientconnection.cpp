@@ -46,6 +46,7 @@
 #include <QXmppMessageReceiptManager.h>
 #include <QXmppCallManager.h>
 #include <util/sll/delayedexecutor.h>
+#include <util/sll/prelude.h>
 #include <util/xpc/util.h>
 #include <util/network/socketerrorstrings.h>
 #include <util/sys/sysinfo.h>
@@ -1446,19 +1447,17 @@ namespace Xoox
 
 	void ClientConnection::HandleRIEX (QString msgFrom, QList<RIEXManager::Item> origItems, QString body)
 	{
-		QList<RIEXItem> items;
-		for (const auto& item : origItems)
-		{
-			RIEXItem ri =
-			{
-				static_cast<RIEXItem::Action> (item.GetAction ()),
-				item.GetJID (),
-				item.GetName (),
-				item.GetGroups ()
-			};
-
-			items << ri;
-		}
+		const auto& items = Util::Map (origItems,
+				[] (const RIEXManager::Item& item)
+				{
+					return RIEXItem
+					{
+						static_cast<RIEXItem::Action> (item.GetAction ()),
+						item.GetJID (),
+						item.GetName (),
+						item.GetGroups ()
+					};
+				});
 
 		QString jid;
 		QString resource;
