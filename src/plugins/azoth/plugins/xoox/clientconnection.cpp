@@ -1271,8 +1271,9 @@ namespace Xoox
 				qWarning () << Q_FUNC_INFO
 						<< "unknown PEP event source"
 						<< from
+						<< event->Node ()
 						<< "; known entries:"
-						<< JID2CLEntry_.keys ().size ();
+						<< JID2CLEntry_.size ();
 		}
 		else
 			JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
