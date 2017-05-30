@@ -45,7 +45,7 @@
 #include <util/qml/themeimageprovider.h>
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
-#include "../core.h"
+#include "core.h"
 
 namespace LeechCraft
 {

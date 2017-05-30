@@ -31,7 +31,7 @@
 #define PLUGINS_ADVANCEDNOTIFICATIONS_QML_EVENTPROXYOBJECT_H
 #include <QObject>
 #include <QUrl>
-#include "../eventdata.h"
+#include "eventdata.h"
 
 namespace LeechCraft
 {

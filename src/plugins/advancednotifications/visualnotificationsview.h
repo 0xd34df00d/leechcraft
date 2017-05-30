@@ -29,17 +29,13 @@
 
 #pragma once
 
-#ifndef HAVE_QML
-#error "Trying to compile QML notifications view without having QML :("
-#endif
-
 #include <QtGlobal>
 #if QT_VERSION < 0x050000
 #include <QDeclarativeView>
 #else
 #include <QQuickWidget>
 #endif
-#include "../eventdata.h"
+#include "eventdata.h"
 
 namespace LeechCraft
 {

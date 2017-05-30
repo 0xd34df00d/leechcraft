@@ -28,9 +28,9 @@ set (SRCS
 	rulesmanager.cpp
 	quarkproxy.cpp
 	actionsmodel.cpp
-	qml/visualnotificationsview.cpp
-	qml/eventproxyobject.cpp
-	qml/actionsproxyobject.cpp
+	visualnotificationsview.cpp
+	eventproxyobject.cpp
+	actionsproxyobject.cpp
 	)
 set (FORMS
 	notificationruleswidget.ui
@@ -39,8 +39,6 @@ set (FORMS
 	intmatcherconfigwidget.ui
 	stringlikematcherconfigwidget.ui
 	)
-
-add_definitions(-DHAVE_QML=1)
 
 set (RESOURCES advancednotificationsresources.qrc)
 
