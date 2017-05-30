@@ -44,7 +44,7 @@ add_definitions(-DHAVE_QML=1)
 
 set (RESOURCES advancednotificationsresources.qrc)
 
-CreateTrs ("advancednotifications" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("advancednotifications" "en;es;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("advancednotifications" "en;ru_RU" "${SRCS}" "${FORMS}" "advancednotificationssettings.xml")
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
