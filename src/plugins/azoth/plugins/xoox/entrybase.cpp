@@ -782,6 +782,9 @@ namespace Xoox
 	void EntryBase::SetClientInfo (const QString& variant,
 			const QString& node, const QByteArray& ver)
 	{
+		if (Variant2VerString_ [variant] == ver)
+			return;
+
 		const auto& staticClientInfo = XooxUtil::GetStaticClientInfo (node);
 		if (staticClientInfo.IsEmpty () && !node.isEmpty ())
 			qWarning () << Q_FUNC_INFO
