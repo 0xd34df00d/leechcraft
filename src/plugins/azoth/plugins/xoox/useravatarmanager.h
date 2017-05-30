@@ -59,9 +59,8 @@ namespace Xoox
 		void HandleMDEvent (const QString&, UserAvatarMetadata*);
 	private slots:
 		void handleEvent (const QString&, PEPEventBase*);
-		void handleHTTPFinished ();
 	signals:
-		void avatarUpdated (const QString&, const QImage&);
+		void avatarUpdated (const QString&);
 	};
 }
 }

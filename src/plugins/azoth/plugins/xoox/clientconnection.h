@@ -300,7 +300,7 @@ namespace Xoox
 		void handleCarbonsMessage (const QXmppMessage&);
 
 		void handlePEPEvent (const QString&, PEPEventBase*);
-		void handlePEPAvatarUpdated (const QString&, const QImage&);
+		void handlePEPAvatarUpdated (const QString&);
 		void handleMessageDelivered (const QString&, const QString&);
 
 		void handleRoomInvitation (const QString&, const QString&, const QString&);

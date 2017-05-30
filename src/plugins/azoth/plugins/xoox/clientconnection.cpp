@@ -198,9 +198,9 @@ namespace Xoox
 
 		UserAvatarManager_ = new UserAvatarManager (proxy->GetAvatarsManager (), this);
 		connect (UserAvatarManager_,
-				SIGNAL (avatarUpdated (QString, QImage)),
+				SIGNAL (avatarUpdated (QString)),
 				this,
-				SLOT (handlePEPAvatarUpdated (QString, QImage)));
+				SLOT (handlePEPAvatarUpdated (QString)));
 
 		CryptHandler_->Init ();
 
@@ -1278,7 +1278,7 @@ namespace Xoox
 			JID2CLEntry_ [bare]->HandlePEPEvent (resource, event);
 	}
 
-	void ClientConnection::handlePEPAvatarUpdated (const QString& from, const QImage& image)
+	void ClientConnection::handlePEPAvatarUpdated (const QString& from)
 	{
 		QString bare;
 		QString resource;
@@ -1287,8 +1287,8 @@ namespace Xoox
 		if (!JID2CLEntry_.contains (from))
 			return;
 
-		// TODO
-		//JID2CLEntry_ [from]->SetAvatar (image);
+		const auto entry = JID2CLEntry_ [from];
+		entry->avatarChanged (entry);
 	}
 
 	void ClientConnection::handleMessageDelivered (const QString&, const QString& msgId)

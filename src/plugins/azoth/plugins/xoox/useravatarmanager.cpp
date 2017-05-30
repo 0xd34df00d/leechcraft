@@ -28,13 +28,12 @@
  **********************************************************************/
 
 #include "useravatarmanager.h"
-#include <QNetworkRequest>
-#include <QNetworkReply>
+#include <QCryptographicHash>
+#include <util/threads/futures.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include "pubsubmanager.h"
 #include "useravatardata.h"
 #include "useravatarmetadata.h"
-#include "core.h"
 #include "clientconnection.h"
 
 namespace LeechCraft
@@ -74,82 +73,34 @@ namespace Xoox
 
 	void UserAvatarManager::HandleMDEvent (const QString& from, UserAvatarMetadata *mdEvent)
 	{
+		const auto entry = qobject_cast<ICLEntry*> (Conn_->GetCLEntry (from));
+		if (!entry)
+			return;
+
 		if (mdEvent->GetID ().isEmpty ())
 		{
-			emit avatarUpdated (from, QImage ());
+			emit avatarUpdated (from);
 			return;
 		}
 
-		QString bare;
-		QString resource;
-		ClientConnection::Split (from, &bare, &resource);
+		const auto& id = mdEvent->GetID ();
 
-		/* TODO redo checks
-		ICLEntry *entry = qobject_cast<ICLEntry*> (Conn_->GetCLEntry (bare, resource));
-		if (entry && !entry->GetAvatar ().isNull ())
-		{
-			UserAvatarMetadata md (entry->GetAvatar ());
-			if (mdEvent->GetID () == md.GetID ())
-				return;
-		}
-		*/
+		Util::Sequence (this, AvatarsMgr_->GetStoredAvatarData (entry->GetEntryID (), IHaveAvatars::Size::Full)) >>
+				[this, id, from] (const boost::optional<QByteArray>& data)
+				{
+					if (!data || data->isEmpty ())
+						return;
 
-		if (mdEvent->GetURL ().isValid ())
-		{
-			QNetworkAccessManager *mgr = Core::Instance ()
-					.GetProxy ()->GetNetworkAccessManager ();
-
-			QNetworkReply *rep = mgr->get (QNetworkRequest (mdEvent->GetURL ()));
-			rep->setProperty ("Azoth/From", from);
-			connect (rep,
-					SIGNAL (finished ()),
-					this,
-					SLOT (handleHTTPFinished ()));
-		}
-		else
-			Manager_->RequestItem (bare,
-					UserAvatarData::GetNodeString (),
-					mdEvent->GetID ());
+					const auto& storedId = QCryptographicHash::hash (*data, QCryptographicHash::Sha1).toHex ();
+					if (storedId != id)
+						emit avatarUpdated (from);
+				};
 	}
 
 	void UserAvatarManager::handleEvent (const QString& from, PEPEventBase *event)
 	{
 		if (auto mdEvent = dynamic_cast<UserAvatarMetadata*> (event))
-		{
 			HandleMDEvent (from, mdEvent);
-			return;
-		}
-
-		if (auto dEvent = dynamic_cast<UserAvatarData*> (event))
-		{
-			const auto& image = dEvent->GetImage ();
-			if (!image.isNull ())
-				emit avatarUpdated (from, dEvent->GetImage ());
-		}
-	}
-
-	void UserAvatarManager::handleHTTPFinished ()
-	{
-		QNetworkReply *reply = qobject_cast<QNetworkReply*> (sender ());
-		if (!reply)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< sender ()
-					<< "isn't a QNetworkReply";
-			return;
-		}
-
-		reply->deleteLater ();
-
-		const QString& from = reply->property ("Azoth/From").toString ();
-		if (from.isEmpty ())
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "empty from";
-			return;
-		}
-
-		emit avatarUpdated (from, QImage::fromData (reply->readAll ()));
 	}
 }
 }
