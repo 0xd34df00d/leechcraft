@@ -745,10 +745,7 @@ namespace oral
 				return "invalid type";
 			}
 
-			qWarning () << Q_FUNC_INFO
-					<< "unhandled type"
-					<< static_cast<int> (type);
-			return {};
+			assert (false);
 		}
 
 		template<ExprType Type>
