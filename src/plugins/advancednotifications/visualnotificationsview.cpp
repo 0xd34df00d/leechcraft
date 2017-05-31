@@ -28,16 +28,9 @@
  **********************************************************************/
 
 #include "visualnotificationsview.h"
-#include <QFile>
-#if QT_VERSION < 0x050000
-#include <QDeclarativeContext>
-#include <QDeclarativeError>
-#include <QDeclarativeEngine>
-#else
 #include <QQmlContext>
 #include <QQmlError>
 #include <QQmlEngine>
-#endif
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
@@ -57,17 +50,10 @@ namespace AdvancedNotifications
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
 
-#if QT_VERSION < 0x050000
-		connect (this,
-				SIGNAL (statusChanged (QDeclarativeView::Status)),
-				this,
-				SLOT (handleStatusChanged (QDeclarativeView::Status)));
-#else
 		connect (this,
 				SIGNAL (statusChanged (QQuickWidget::Status)),
 				this,
 				SLOT (handleStatusChanged (QQuickWidget::Status)));
-#endif
 
 		const auto& fileLocation = Util::GetSysPath (Util::SysPath::QML, "advancednotifications", "visualnotificationsview.qml");
 
@@ -118,11 +104,7 @@ namespace AdvancedNotifications
 		qDeleteAll (oldEvents);
 	}
 
-#if QT_VERSION < 0x050000
-	void VisualNotificationsView::handleStatusChanged (QDeclarativeView::Status status)
-#else
 	void VisualNotificationsView::handleStatusChanged (QQuickWidget::Status status)
-#endif
 	{
 		qDebug () << Q_FUNC_INFO
 				<< status;
