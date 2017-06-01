@@ -32,11 +32,7 @@
 #include <QObject>
 #include "qmlconfig.h"
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -56,11 +52,7 @@ namespace Util
 		 *
 		 * @param[in] view The declarative view to watch for errors.
 		 */
-#if QT_VERSION < 0x050000
-		QmlErrorWatcher (QDeclarativeView *view);
-#else
 		QmlErrorWatcher (QQuickWidget *view);
-#endif
 	};
 }
 }
