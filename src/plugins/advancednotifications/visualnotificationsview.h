@@ -47,8 +47,6 @@ namespace AdvancedNotifications
 		VisualNotificationsView ();
 
 		void SetEvents (const QList<EventData>&);
-	private slots:
-		void handleStatusChanged (QQuickWidget::Status);
 	signals:
 		void actionTriggered (const QString&, int);
 		void dismissEvent (const QString&);

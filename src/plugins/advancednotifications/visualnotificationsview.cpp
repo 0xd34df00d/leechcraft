@@ -36,6 +36,7 @@
 #include <util/sys/paths.h>
 #include <util/qml/colorthemeproxy.h>
 #include <util/qml/themeimageprovider.h>
+#include <util/qml/qmlerrorwatcher.h>
 #include <interfaces/core/icoreproxy.h>
 #include "eventproxyobject.h"
 #include "core.h"
@@ -49,6 +50,8 @@ namespace AdvancedNotifications
 		setStyleSheet ("background: transparent");
 		setWindowFlags (Qt::WindowStaysOnTopHint | Qt::ToolTip);
 		setAttribute (Qt::WA_TranslucentBackground);
+
+		new Util::QmlErrorWatcher { this };
 
 		connect (this,
 				SIGNAL (statusChanged (QQuickWidget::Status)),
@@ -102,24 +105,6 @@ namespace AdvancedNotifications
 		setSource (Location_);
 
 		qDeleteAll (oldEvents);
-	}
-
-	void VisualNotificationsView::handleStatusChanged (QQuickWidget::Status status)
-	{
-		qDebug () << Q_FUNC_INFO
-				<< status;
-
-		if (status == Error)
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "got errors:"
-					<< errors ().size ();
-			for (const auto& error : errors ())
-				qWarning () << error.toString ()
-						<< "["
-						<< error.description ()
-						<< "]";
-		}
 	}
 }
 }
