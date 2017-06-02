@@ -82,7 +82,7 @@ namespace AdvancedNotifications
 
 	void VisualNotificationsView::SetEvents (const QList<EventData>& events)
 	{
-		QObjectList oldEvents = LastEvents_;
+		auto oldEvents { std::move (LastEvents_) };
 
 		LastEvents_.clear ();
 		Q_FOREACH (const EventData& ed, events)
