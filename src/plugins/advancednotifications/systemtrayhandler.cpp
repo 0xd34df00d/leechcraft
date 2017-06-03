@@ -38,6 +38,7 @@
 #include <util/gui/util.h>
 #include <util/gui/unhoverdeletemixin.h>
 #include <util/util.h>
+#include <util/sll/qtutil.h>
 #include "generalhandler.h"
 #include "xmlsettingsmanager.h"
 #include "core.h"
@@ -242,11 +243,12 @@ namespace AdvancedNotifications
 		QSet<QSystemTrayIcon*> visibleIcons;
 		QSet<QAction*> actsUpd;
 
-		for (const auto& event : Events_.keys ())
+		for (const auto& pair : Util::Stlize (Events_))
 		{
-			const EventData& data = Events_ [event];
+			const auto& event = pair.first;
+			const auto& data = pair.second;
 
-			QSystemTrayIcon *icon = Category2Icon_.value (data.Category_);
+			const auto icon = Category2Icon_.value (data.Category_);
 			if (icon)
 			{
 				icons2hide.remove (icon);
