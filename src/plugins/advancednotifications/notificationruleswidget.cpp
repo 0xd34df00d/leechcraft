@@ -502,7 +502,7 @@ namespace AdvancedNotifications
 		if (path.isEmpty ())
 			return;
 
-		const Entity& e = Util::MakeEntity (path, QString (), Internal);
+		const auto& e = Util::MakeEntity (path, {}, Internal | FromUserInitiated);
 		Core::Instance ().SendEntity (e);
 	}
 
