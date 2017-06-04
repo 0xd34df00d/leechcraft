@@ -743,7 +743,8 @@ namespace LMP
 
 		template<typename UrlInfoSetter, typename Setter, typename Clearer>
 		void CheckPlaylistRefreshes (const NativePlaylist_t& playlist,
-				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer)
+				const UrlInfoSetter& urlInfoSetter, const Setter& setter, const Clearer& clearer,
+				const ICoreProxy_ptr& proxy)
 		{
 			QHash<QByteArray, QList<RestoreInfo>> plugin2infos;
 			for (const auto& item : playlist)
@@ -764,7 +765,7 @@ namespace LMP
 
 			const auto syncer = std::make_shared<QFutureSynchronizer<Media::RadiosRestoreResult_t>> ();
 
-			const auto ipm = Core::Instance ().GetProxy ()->GetPluginsManager ();
+			const auto ipm = proxy->GetPluginsManager ();
 			for (const auto& pair : Util::Stlize (plugin2infos))
 				HandlePluginInfos (pair.first, pair.second, syncer.get (), ipm);
 
@@ -806,7 +807,8 @@ namespace LMP
 		CheckPlaylistRefreshes (playlist,
 				[this] (const QUrl& url, const MediaInfo& media) { Url2Info_ [url] = media; },
 				setter,
-				[this] { clear (); });
+				[this] { clear (); },
+				Proxy_);
 
 		setter (playlist);
 	}
@@ -1121,7 +1123,7 @@ namespace LMP
 		e.Additional_ [AN::Field::MediaTitle] = mediaInfo.Title_;
 		e.Additional_ [AN::Field::MediaLength] = mediaInfo.Length_;
 
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		Proxy_->GetEntityManager ()->HandleEntity (e);
 	}
 
 	template<typename T>
