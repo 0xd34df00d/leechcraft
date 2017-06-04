@@ -134,8 +134,9 @@ namespace LMP
 		bool ShouldClear_;
 	};
 
-	Player::Player (QObject *parent)
+	Player::Player (const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
+	, Proxy_ (proxy)
 	, PlaylistModel_ (new PlaylistModel (this))
 	, Source_ (new SourceObject (Category::Music, this))
 	, Output_ (new Output (this))
@@ -179,7 +180,7 @@ namespace LMP
 				this,
 				SIGNAL (bufferStatusChanged (int)));
 
-		const auto seh = new SourceErrorHandler { Source_, Core::Instance ().GetProxy ()->GetEntityManager () };
+		const auto seh = new SourceErrorHandler { Source_, Proxy_->GetEntityManager () };
 		connect (seh,
 				SIGNAL (nextTrack ()),
 				this,
