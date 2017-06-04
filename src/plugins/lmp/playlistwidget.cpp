@@ -436,8 +436,14 @@ namespace LMP
 			QAction *action = new QAction (pair.second, this);
 			action->setProperty ("PlayMode", static_cast<int> (pair.first));
 			action->setCheckable (true);
-			action->setChecked (hadChecked ? false : hadChecked = true);
 			action->setActionGroup (PlayModesGroup_);
+
+			if (!hadChecked)
+			{
+				action->setChecked (true);
+				hadChecked = true;
+			}
+
 			playMode->addAction (action);
 
 			connect (action,
