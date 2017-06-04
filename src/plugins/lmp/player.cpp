@@ -64,6 +64,7 @@
 #include "engine/path.h"
 #include "localcollectionmodel.h"
 #include "playerrulesmanager.h"
+#include "sourceerrorhandler.h"
 
 namespace LeechCraft
 {
@@ -178,10 +179,11 @@ namespace LMP
 				this,
 				SIGNAL (bufferStatusChanged (int)));
 
-		connect (Source_,
-				SIGNAL (error (QString, SourceError)),
+		const auto seh = new SourceErrorHandler { Source_, Core::Instance ().GetProxy ()->GetEntityManager () };
+		connect (seh,
+				SIGNAL (nextTrack ()),
 				this,
-				SLOT (handleSourceError (QString, SourceError)));
+				SLOT (nextTrack ()));
 
 		PlaylistModel_->setHorizontalHeaderLabels ({ tr ("Playlist") });
 	}
@@ -1767,51 +1769,6 @@ namespace LMP
 		LastPhononMediaInfo_ = info;
 
 		EmitStateChange (Source_->GetState ());
-	}
-
-	void Player::handleSourceError (const QString& sourceText, SourceError error)
-	{
-		QString text;
-
-		const auto& curSource = Source_->GetCurrentSource ();
-		const auto& curPath = curSource.ToUrl ().path ();
-		const auto& filename = "<em>" + QFileInfo { curPath }.fileName () + "</em>";
-		switch (error)
-		{
-		case SourceError::MissingPlugin:
-			text = tr ("Cannot find a proper audio decoder for file %1. "
-					"You probably don't have all the codec plugins installed.")
-					.arg (filename);
-			text += "<br/>" + sourceText;
-			if (PlayMode_ == PlayMode::Sequential)
-				nextTrack ();
-			break;
-		case SourceError::SourceNotFound:
-			text = tr ("Audio source %1 not found, playing next track...")
-					.arg (filename);
-			nextTrack ();
-			break;
-		case SourceError::CannotOpenSource:
-			text = tr ("Cannot open source %1, playing next track...")
-					.arg (filename);
-			nextTrack ();
-			break;
-		case SourceError::InvalidSource:
-			text = tr ("Audio source %1 is invalid, playing next track...")
-					.arg (filename);
-			nextTrack ();
-			break;
-		case SourceError::DeviceBusy:
-			text = tr ("Cannot play %1 because the output device is busy.")
-					.arg (filename);
-			break;
-		case SourceError::Other:
-			text = sourceText;
-			break;
-		}
-
-		const auto& e = Util::MakeNotification ("LMP", text, PCritical_);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void Player::refillPlaylist ()

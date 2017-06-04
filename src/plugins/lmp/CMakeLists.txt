@@ -128,6 +128,7 @@ set (SRCS
 	radiotracksgrabdialog.cpp
 	nativeplaylist.cpp
 	playlistwidgetviewexpander.cpp
+	sourceerrorhandler.cpp
 	engine/audiosource.cpp
 	engine/output.cpp
 	engine/path.cpp

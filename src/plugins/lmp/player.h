@@ -239,8 +239,6 @@ namespace LMP
 		void handleCurrentSourceChanged (const AudioSource&);
 		void handleMetadata ();
 
-		void handleSourceError (const QString&, SourceError);
-
 		void refillPlaylist ();
 	signals:
 		void songChanged (const MediaInfo&);
