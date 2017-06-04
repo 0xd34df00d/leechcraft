@@ -34,7 +34,7 @@ endif ()
 
 add_definitions (-DUNICODE)
 
-CreateTrs ("azoth_autoidler" "en;es;ru_RU;uk_UA" AUTOIDLER_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_autoidler" "en;es;ro;ru_RU;uk_UA" AUTOIDLER_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_autoidler" "en;ru_RU" "${AUTOIDLER_SRCS}" "" "azothautoidlersettings.xml")
 
 add_library (leechcraft_azoth_autoidler SHARED
