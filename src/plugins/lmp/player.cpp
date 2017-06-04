@@ -1801,6 +1801,10 @@ namespace LMP
 					.arg (filename);
 			nextTrack ();
 			break;
+		case SourceError::DeviceBusy:
+			text = tr ("Cannot play %1 because the output device is busy.")
+					.arg (filename);
+			break;
 		case SourceError::Other:
 			text = sourceText;
 			break;
