@@ -95,8 +95,6 @@ namespace AdvancedNotifications
 		QList<Entity> GetAllRules (const QString&) const;
 		void RequestRuleConfiguration (const Entity&);
 	signals:
-		void gotEntity (const LeechCraft::Entity&);
-
 		void gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace);
 
 		void rulesChanged ();
