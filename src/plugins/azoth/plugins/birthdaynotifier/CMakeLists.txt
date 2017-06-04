@@ -13,7 +13,7 @@ set (BIRTHDAYNOTIFIER_SRCS
 	)
 set (BIRTHDAYNOTIFIER_RESOURCES azothbirthdaynotifierresources.qrc)
 QtAddResources (BIRTHDAYNOTIFIER_RCCS ${BIRTHDAYNOTIFIER_RESOURCES})
-CreateTrs ("azoth_birthdaynotifier" "en;ru_RU" BIRTHDAYNOTIFIER_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_birthdaynotifier" "en;ro;ru_RU" BIRTHDAYNOTIFIER_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_birthdaynotifier" "en;ru_RU" "${BIRTHDAYNOTIFIER_SRCS}" "" "azothbirthdaynotifiersettings.xml")
 
 add_library (leechcraft_azoth_birthdaynotifier SHARED
