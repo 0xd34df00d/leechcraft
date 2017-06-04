@@ -64,6 +64,7 @@ namespace LMP
 		SourceNotFound,
 		CannotOpenSource,
 		InvalidSource,
+		DeviceBusy,
 		Other
 	};
 

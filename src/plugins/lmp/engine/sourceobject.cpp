@@ -542,6 +542,10 @@ namespace LMP
 						{
 							GST_RESOURCE_ERROR_OPEN_READ,
 							SourceError::CannotOpenSource
+						},
+						{
+							GST_RESOURCE_ERROR_BUSY,
+							SourceError::DeviceBusy
 						}
 					}
 				},
