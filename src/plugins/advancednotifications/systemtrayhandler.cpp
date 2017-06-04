@@ -325,10 +325,13 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		int eventCount = 0;
-		for (const auto& event : Events_)
-			if (event.Category_ == category)
-				eventCount += event.Count_;
+		int eventCount = std::accumulate (Events_.begin (), Events_.end (), 0,
+				[&category] (int acc, const EventData& event)
+				{
+					return event.Category_ == category ?
+							acc :
+							acc + event.Count_;
+				});
 
 		const auto& palette = qApp->palette ();
 
