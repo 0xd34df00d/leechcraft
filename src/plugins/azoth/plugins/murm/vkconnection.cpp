@@ -1073,6 +1073,13 @@ namespace Murm
 			CallQueue_->Schedule ([this, f, key]
 					{
 						const auto reply = f (key);
+						if (!reply)
+						{
+							qWarning () << Q_FUNC_INFO
+									<< "the prepared call returned a null reply";
+							return;
+						}
+
 						Logger_ (IHaveConsole::PacketDirection::Out) << reply->request ().url ();
 						RunningCalls_.append ({ reply, f });
 
