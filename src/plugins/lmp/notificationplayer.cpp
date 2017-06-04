@@ -29,6 +29,7 @@
 
 #include "notificationplayer.h"
 #include <QtDebug>
+#include <interfaces/core/icoreproxy.h>
 #include "engine/sourceobject.h"
 #include "engine/audiosource.h"
 #include "engine/output.h"
@@ -38,7 +39,8 @@ namespace LeechCraft
 {
 namespace LMP
 {
-	NotificationPlayer::NotificationPlayer (const QString& audiofile, QObject *parent)
+	NotificationPlayer::NotificationPlayer (const QString& audiofile,
+			const ICoreProxy_ptr& proxy, QObject *parent)
 	: QObject (parent)
 	{
 		qDebug () << Q_FUNC_INFO << audiofile;

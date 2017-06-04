@@ -355,7 +355,7 @@ namespace LMP
 
 		if (e.Parameters_ & Internal)
 		{
-			new NotificationPlayer (path, this);
+			new NotificationPlayer (path, Proxy_, this);
 			return;
 		}
 
