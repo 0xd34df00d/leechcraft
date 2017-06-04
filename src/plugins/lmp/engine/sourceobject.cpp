@@ -517,6 +517,53 @@ namespace LMP
 		AsyncHandlers_.AddHandler (handler, dependent);
 	}
 
+	namespace
+	{
+		const auto& GetErrorMap ()
+		{
+			static const std::map<GQuark, std::map<gint, SourceError>> errMap
+			{
+				{
+					GST_CORE_ERROR,
+					{
+						{
+							GST_CORE_ERROR_MISSING_PLUGIN,
+							SourceError::MissingPlugin
+						}
+					}
+				},
+				{
+					GST_RESOURCE_ERROR,
+					{
+						{
+							GST_RESOURCE_ERROR_NOT_FOUND,
+							SourceError::SourceNotFound
+						},
+						{
+							GST_RESOURCE_ERROR_OPEN_READ,
+							SourceError::CannotOpenSource
+						}
+					}
+				},
+				{
+					GST_STREAM_ERROR,
+					{
+						{
+							GST_STREAM_ERROR_TYPE_NOT_FOUND,
+							SourceError::InvalidSource
+						},
+						{
+							GST_STREAM_ERROR_DECODE,
+							SourceError::InvalidSource
+						}
+					}
+				}
+			};
+
+			return errMap;
+		}
+	}
+
 	void SourceObject::HandleErrorMsg (GstMessage *msg)
 	{
 		GError *gerror = nullptr;
@@ -545,45 +592,6 @@ namespace LMP
 				<< msgStr
 				<< debugStr;
 
-		static const std::map<decltype (domain), std::map<decltype (code), SourceError>> errMap
-		{
-			{
-				GST_CORE_ERROR,
-				{
-					{
-						GST_CORE_ERROR_MISSING_PLUGIN,
-						SourceError::MissingPlugin
-					}
-				}
-			},
-			{
-				GST_RESOURCE_ERROR,
-				{
-					{
-						GST_RESOURCE_ERROR_NOT_FOUND,
-						SourceError::SourceNotFound
-					},
-					{
-						GST_RESOURCE_ERROR_OPEN_READ,
-						SourceError::CannotOpenSource
-					}
-				}
-			},
-			{
-				GST_STREAM_ERROR,
-				{
-					{
-						GST_STREAM_ERROR_TYPE_NOT_FOUND,
-						SourceError::InvalidSource
-					},
-					{
-						GST_STREAM_ERROR_DECODE,
-						SourceError::InvalidSource
-					}
-				}
-			}
-		};
-
 		if (!IsDrainingMsgs_)
 		{
 			qDebug () << Q_FUNC_INFO << "draining bus";
@@ -600,7 +608,7 @@ namespace LMP
 			{
 				try
 				{
-					return errMap.at (domain).at (code);
+					return GetErrorMap ().at (domain).at (code);
 				}
 				catch (const std::out_of_range&)
 				{
