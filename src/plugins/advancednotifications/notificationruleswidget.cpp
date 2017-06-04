@@ -337,9 +337,7 @@ namespace AdvancedNotifications
 				new QTreeWidgetItem (Ui_.CommandArgsTree_, QStringList (arg));
 		}
 
-		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot () ?
-					Qt::Checked :
-					Qt::Unchecked);
+		Ui_.RuleSingleShot_->setChecked (rule.IsSingleShot ());
 
 		Ui_.ColorButton_->SetColor (rule.GetColor ());
 	}
