@@ -550,10 +550,10 @@ namespace AdvancedNotifications
 		const auto& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
 		static const QStringList filters
 		{
-				"*.ogg",
-				"*.wav",
-				"*.flac",
-				"*.mp3"
+			"*.ogg",
+			"*.wav",
+			"*.flac",
+			"*.mp3"
 		};
 
 		const auto& files = Core::Instance ().GetAudioThemeLoader ()->List (theme,

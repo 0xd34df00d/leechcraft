@@ -36,10 +36,6 @@ namespace LeechCraft
 {
 namespace AdvancedNotifications
 {
-	VisualHandler::VisualHandler ()
-	{
-	}
-
 	NotificationMethod VisualHandler::GetHandlerMethod () const
 	{
 		return NMVisual;

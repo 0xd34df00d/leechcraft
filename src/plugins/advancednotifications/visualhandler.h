@@ -27,8 +27,8 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
-#ifndef PLUGINS_ADVANCEDNOTIFICATIONS_VISUALHANDLER_H
-#define PLUGINS_ADVANCEDNOTIFICATIONS_VISUALHANDLER_H
+#pragma once
+
 #include <QObject>
 #include <interfaces/structures.h>
 #include "concretehandlerbase.h"
@@ -44,8 +44,6 @@ namespace AdvancedNotifications
 
 		QSet<QString> ActiveEvents_;
 	public:
-		VisualHandler ();
-
 		NotificationMethod GetHandlerMethod () const;
 		void Handle (const Entity&, const NotificationRule&);
 	private slots:
@@ -53,5 +51,3 @@ namespace AdvancedNotifications
 	};
 }
 }
-
-#endif
