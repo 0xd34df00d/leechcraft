@@ -36,6 +36,7 @@
 #include <interfaces/an/ianemitter.h>
 #include <interfaces/an/constants.h>
 #include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include <interfaces/core/ipluginsmanager.h>
 #include <util/sys/resourceloader.h>
 #include <util/xpc/util.h>
@@ -503,7 +504,7 @@ namespace AdvancedNotifications
 			return;
 
 		const auto& e = Util::MakeEntity (path, {}, Internal | FromUserInitiated);
-		Core::Instance ().SendEntity (e);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void NotificationRulesWidget::on_AddArgument__released()

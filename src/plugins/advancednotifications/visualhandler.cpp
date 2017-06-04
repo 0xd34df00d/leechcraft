@@ -28,6 +28,8 @@
  **********************************************************************/
 
 #include "visualhandler.h"
+#include <interfaces/core/icoreproxy.h>
+#include <interfaces/core/ientitymanager.h>
 #include "core.h"
 
 namespace LeechCraft
@@ -92,7 +94,7 @@ namespace AdvancedNotifications
 		QVariant probe = QVariant::fromValue<QObject_ptr> (probeObj);
 		e.Additional_ ["RemovalProbe"] = probe;
 
-		Core::Instance ().SendEntity (e);
+		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
 	}
 
 	void VisualHandler::handleProbeDestroyed ()

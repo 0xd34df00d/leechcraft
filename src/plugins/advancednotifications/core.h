@@ -70,10 +70,6 @@ namespace AdvancedNotifications
 
 		QList<NotificationRule> GetRules (const Entity&) const;
 		QString GetAbsoluteAudioPath (const QString&) const;
-
-		void SendEntity (const Entity&);
-	signals:
-		void gotEntity (const LeechCraft::Entity&);
 	};
 }
 }
