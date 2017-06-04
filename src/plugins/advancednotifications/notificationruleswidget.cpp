@@ -504,7 +504,12 @@ namespace AdvancedNotifications
 			return;
 
 		const auto& e = Util::MakeEntity (path, {}, Internal | FromUserInitiated);
-		Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		const bool wasHandled = Core::Instance ().GetProxy ()->GetEntityManager ()->HandleEntity (e);
+		if (!wasHandled)
+			QMessageBox::critical (this,
+					"LeechCraft",
+					tr ("No plugin has been found to play %1.")
+						.arg ("<em>" + path + "</em>"));
 	}
 
 	void NotificationRulesWidget::on_AddArgument__released()
