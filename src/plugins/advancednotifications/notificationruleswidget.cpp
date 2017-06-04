@@ -84,8 +84,7 @@ namespace AdvancedNotifications
 	void NotificationRulesWidget::ResetMatchesModel ()
 	{
 		MatchesModel_->clear ();
-		MatchesModel_->setHorizontalHeaderLabels (QStringList (tr ("Field name"))
-				<< tr ("Rule description"));
+		MatchesModel_->setHorizontalHeaderLabels ({ tr ("Field name"), tr ("Rule description") });
 	}
 
 	QString NotificationRulesWidget::GetCurrentCat () const
@@ -542,16 +541,18 @@ namespace AdvancedNotifications
 	{
 		Ui_.AudioFile_->clear ();
 
-		const QString& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
-		const QStringList filters = QStringList ("*.ogg")
-				<< "*.wav"
-				<< "*.flac"
-				<< "*.mp3";
+		const auto& theme = XmlSettingsManager::Instance ().property ("AudioTheme").toString ();
+		static const QStringList filters
+		{
+				"*.ogg",
+				"*.wav",
+				"*.flac",
+				"*.mp3"
+		};
 
-		const QFileInfoList& files = Core::Instance ()
-				.GetAudioThemeLoader ()->List (theme,
+		const auto& files = Core::Instance ().GetAudioThemeLoader ()->List (theme,
 						filters, QDir::Files | QDir::Readable);
-		Q_FOREACH (const QFileInfo& file, files)
+		for (const auto& file : files)
 			Ui_.AudioFile_->addItem (file.baseName (), file.absoluteFilePath ());
 	}
 }

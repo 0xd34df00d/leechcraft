@@ -197,7 +197,7 @@ namespace AdvancedNotifications
 
 	void SystemTrayHandler::UpdateMenu (QMenu *menu, const QString& event, const EventData& data)
 	{
-		Q_FOREACH (const QString& pathItem, data.VisualPath_)
+		for (const auto& pathItem : data.VisualPath_)
 			menu = menu->addMenu (pathItem);
 
 		if (!data.Pixmap_.isNull ())
@@ -205,7 +205,7 @@ namespace AdvancedNotifications
 		menu->setToolTip (data.ExtendedText_);
 
 		int actionIdx = 0;
-		Q_FOREACH (const QString& actionName, data.Actions_)
+		for (const auto& actionName : data.Actions_)
 		{
 			QAction *action = menu->addAction (actionName);
 			action->setProperty ("Index", actionIdx++);
@@ -230,11 +230,11 @@ namespace AdvancedNotifications
 	void SystemTrayHandler::RebuildState ()
 	{
 		auto icons2hide = Category2Icon_.values ().toSet ();
-		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
+		for (const auto icon : icons2hide)
 			icon->contextMenu ()->clear ();
 
 		auto actsDel = Category2Action_.values ().toSet ();
-		Q_FOREACH (QAction *action, actsDel)
+		for (const auto action : actsDel)
 			action->menu ()->clear ();
 
 		EventsForIcon_.clear ();
@@ -268,9 +268,9 @@ namespace AdvancedNotifications
 			UpdateMenu (action->menu (), event, data);
 		}
 
-		Q_FOREACH (QSystemTrayIcon *icon, Category2Icon_.values ())
+		for (const auto icon : Category2Icon_)
 		{
-			VisualNotificationsView *view = Icon2NotificationView_ [icon];
+			const auto view = Icon2NotificationView_ [icon];
 			if (!view->isVisible ())
 				continue;
 
@@ -280,9 +280,9 @@ namespace AdvancedNotifications
 				view->hide ();
 		}
 
-		Q_FOREACH (QAction *action, Category2Action_.values ())
+		for (const auto action : Category2Action_)
 		{
-			VisualNotificationsView *view = Action2NotificationView_ [action];
+			const auto view = Action2NotificationView_ [action];
 			if (!view->isVisible ())
 				continue;
 
@@ -292,20 +292,20 @@ namespace AdvancedNotifications
 				view->hide ();
 		}
 
-		Q_FOREACH (QSystemTrayIcon *icon, visibleIcons)
+		for (const auto icon : visibleIcons)
 		{
 			if (!icon->isVisible ())
 				icon->show ();
 			UpdateSysTrayIcon (icon);
 		}
 
-		Q_FOREACH (QAction *action, actsUpd)
+		for (const auto action : actsUpd)
 			UpdateTrayAction (action);
 
-		Q_FOREACH (QSystemTrayIcon *icon, icons2hide)
+		for (const auto icon : icons2hide)
 			icon->hide ();
 
-		Q_FOREACH (QAction *action, actsDel)
+		for (const auto action : actsDel)
 		{
 			Category2Action_.remove (Category2Action_.key (action));
 			EventsForAction_.remove (action);

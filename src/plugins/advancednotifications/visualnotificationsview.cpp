@@ -85,9 +85,9 @@ namespace AdvancedNotifications
 		auto oldEvents { std::move (LastEvents_) };
 
 		LastEvents_.clear ();
-		Q_FOREACH (const EventData& ed, events)
+		for (const auto& ed : events)
 		{
-			EventProxyObject *obj = new EventProxyObject (ed, this);
+			const auto obj = new EventProxyObject (ed, this);
 			connect (obj,
 					SIGNAL (actionTriggered (const QString&, int)),
 					this,
