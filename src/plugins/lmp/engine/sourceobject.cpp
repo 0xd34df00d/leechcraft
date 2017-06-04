@@ -746,6 +746,15 @@ namespace LMP
 		g_free (debug);
 
 		qDebug () << Q_FUNC_INFO << code << domain << msgStr << debugStr;
+
+		try
+		{
+			emit error (msgStr, GetErrorMap ().at (domain).at (code));
+		}
+		catch (const std::out_of_range&)
+		{
+			qDebug () << "not found";
+		}
 	}
 
 	int SourceObject::HandleSyncMessage (GstBus *bus, GstMessage *msg)
