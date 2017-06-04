@@ -34,6 +34,7 @@
 #include "engine/audiosource.h"
 #include "engine/output.h"
 #include "engine/path.h"
+#include "sourceerrorhandler.h"
 
 namespace LeechCraft
 {
@@ -56,6 +57,8 @@ namespace LMP
 				SIGNAL (stateChanged (SourceState, SourceState)),
 				this,
 				SLOT (handleStateChanged (SourceState, SourceState)));
+
+		new SourceErrorHandler { source, proxy->GetEntityManager () };
 	}
 
 	void NotificationPlayer::handleStateChanged (SourceState state, SourceState previous)
