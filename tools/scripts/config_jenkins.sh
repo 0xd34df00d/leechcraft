@@ -168,6 +168,7 @@ case $1 in
 			-DENABLE_ZALIL=True ;;
 	opensuse_factory*)
 		cmake ../src -DLIB_SUFFIX=64 \
+			-DLC_CXX_STANDARD=17 \
 			-DEXTRA_WARNINGS=True \
 			-DCMAKE_INSTALL_PREFIX=/usr \
 			-DSTRICT_LICENSING=True \
