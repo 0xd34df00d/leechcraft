@@ -1666,7 +1666,14 @@ namespace LMP
 		}
 
 		if (next.IsEmpty ())
+		{
+			PlaybackStopHandler_ = [this]
+			{
+				MarkAsCurrent (nullptr);
+				Source_->SetCurrentSource ({});
+			};
 			return;
+		}
 
 		Source_->PrepareNextSource (next);
 		EmitStateChange (SourceState::Stopped);
