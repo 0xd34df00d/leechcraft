@@ -85,6 +85,8 @@ namespace LMP
 		QHash<AudioSource, QStandardItem*> Items_;
 		QHash<QString, QList<QStandardItem*>> AlbumRoots_;
 
+		std::function<void ()> PlaybackStopHandler_;
+
 		AudioSource CurrentStopSource_;
 		QList<AudioSource> CurrentOneShotQueue_;
 

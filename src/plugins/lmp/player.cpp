@@ -1703,8 +1703,16 @@ namespace LMP
 		{
 		case SourceState::Stopped:
 			emit songChanged ({});
+
 			if (!CurrentQueue_.contains (Source_->GetCurrentSource ()))
 				Source_->SetCurrentSource ({});
+
+			if (PlaybackStopHandler_)
+			{
+				PlaybackStopHandler_ ();
+				PlaybackStopHandler_ = nullptr;
+			}
+
 			break;
 		default:
 			break;
