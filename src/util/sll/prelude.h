@@ -112,16 +112,22 @@ namespace Util
 			return IsInvokableWithConstImpl<std::decay_t<T>, F> (0);
 		}
 
-		template<template<typename> class Cont, typename T>
-		constexpr bool IsSimpleContainer ()
+		template<typename>
+		struct CountArgs
 		{
-			return true;
-		}
+			static const size_t value_type = 0;
+		};
+
+		template<template<typename...> class Container, typename... Args>
+		struct CountArgs<Container<Args...>>
+		{
+			static const size_t value_type = sizeof... (Args);
+		};
 
 		template<typename C>
 		constexpr bool IsSimpleContainer ()
 		{
-			return false;
+			return CountArgs<std::decay_t<C>>::value_type == 1;
 		}
 	}
 
