@@ -132,7 +132,7 @@ namespace Util
 	}
 
 	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> std::enable_if_t<!std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
+	auto Map (const Container<T>& c, F f) -> std::enable_if_t<detail::IsSimpleContainer<Container<T>> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
 			WrapType_t<Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
 	{
 		Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>> result;
