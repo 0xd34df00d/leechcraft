@@ -30,6 +30,7 @@
 #pragma once
 
 #include <memory>
+#include <functional>
 #include <QObject>
 #include <QUrl>
 #include <QTime>
