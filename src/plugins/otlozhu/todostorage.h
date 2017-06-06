@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <functional>
 #include <QObject>
 #include <QSettings>
 #include "todoitem.h"
