@@ -106,7 +106,7 @@ namespace CertMgr
 			auto addStdFields = [&add] (std::function<QString (QSslCertificate::SubjectInfo)> getter) -> void
 			{
 #else
-			auto addStdFields = [&add] (std::function<QStringList (QSslCertificate::SubjectInfo)> listGetter) -> void
+			auto addStdFields = [&add] (auto&& listGetter)
 			{
 				const auto getter = [listGetter] (QSslCertificate::SubjectInfo key)
 						{ return listGetter (key).join ("; "); };
