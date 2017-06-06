@@ -442,7 +442,7 @@ namespace AdvancedNotifications
 			return;
 		}
 
-		action->menu ()->show ();
+		ShowVNV (Action2NotificationView_ [action], EventsForAction_ [action]);
 	}
 }
 }
