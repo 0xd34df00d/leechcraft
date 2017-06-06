@@ -115,19 +115,19 @@ namespace Util
 		template<typename>
 		struct CountArgs
 		{
-			static const size_t value_type = 0;
+			static const size_t ArgsCount = 0;
 		};
 
 		template<template<typename...> class Container, typename... Args>
 		struct CountArgs<Container<Args...>>
 		{
-			static const size_t value_type = sizeof... (Args);
+			static const size_t ArgsCount = sizeof... (Args);
 		};
 
 		template<typename C>
 		constexpr bool IsSimpleContainer ()
 		{
-			return CountArgs<std::decay_t<C>>::value_type == 1;
+			return CountArgs<std::decay_t<C>>::ArgsCount == 1;
 		}
 	}
 
