@@ -54,7 +54,7 @@ namespace AdvancedNotifications
 		Proxy_ = proxy;
 		Core::Instance ().SetProxy (proxy);
 
-		SettingsDialog_.reset (new Util::XmlSettingsDialog ());
+		SettingsDialog_ = std::make_shared<Util::XmlSettingsDialog> ();
 		SettingsDialog_->RegisterObject (&XmlSettingsManager::Instance (),
 				"advancednotificationssettings.xml");
 		SettingsDialog_->SetCustomWidget ("RulesWidget",
@@ -68,7 +68,7 @@ namespace AdvancedNotifications
 				this,
 				SIGNAL (gotActions (QList<QAction*>, LeechCraft::ActionsEmbedPlace)));
 
-		Component_.reset (new QuarkComponent ("advancednotifications", "ANQuark.qml"));
+		Component_ = std::make_shared<QuarkComponent> ("advancednotifications", "ANQuark.qml");
 		Component_->StaticProps_.push_back ({ "AN_quarkTooltip", tr ("Toggle Advanced Notifications rules...") });
 		Component_->DynamicProps_.push_back ({ "AN_rulesManager", Core::Instance ().GetRulesManager () });
 		Component_->DynamicProps_.push_back ({ "AN_proxy", new QuarkProxy });
