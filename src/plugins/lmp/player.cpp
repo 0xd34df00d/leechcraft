@@ -1652,16 +1652,11 @@ namespace LMP
 
 		if (HandleCurrentStop (current))
 		{
-			if (!next.IsEmpty ())
-				new Util::SlotClosure<Util::DeleteLaterPolicy>
-				{
-					[this, next] { Source_->SetCurrentSource (next); },
-					Source_,
-					SIGNAL (finished ()),
-					Source_
-				};
-
-			MarkAsCurrent (Items_.value (next));
+			PlaybackStopHandler_ = [this, next]
+			{
+				MarkAsCurrent (Items_.value (next));
+				Source_->SetCurrentSource (next);
+			};
 			return;
 		}
 
