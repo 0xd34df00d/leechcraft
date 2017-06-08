@@ -60,7 +60,7 @@ set (RESOURCES netstoremanagerresources.qrc)
 
 QtWrapUi (UIS_H ${FORMS})
 QtAddResources (RCCS ${RESOURCES})
-CreateTrs ("netstoremanager" "en;es;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
+CreateTrs ("netstoremanager" "en;es;ro;ru_RU;uk_UA" COMPILED_TRANSLATIONS)
 CreateTrsUpTarget("netstoremanager" "en;ru_RU" "${SRCS}" "${FORMS}" "netstoremanagersettings.xml")
 
 add_library (leechcraft_netstoremanager SHARED
