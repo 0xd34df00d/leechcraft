@@ -129,37 +129,62 @@ namespace Util
 		{
 			return CountArgs<std::decay_t<C>>::ArgsCount == 1;
 		}
+
+		template<typename F, typename Cont>
+		constexpr bool DoesReturnVoid ()
+		{
+			using Ret_t = decltype (Invoke (std::declval<F> (), *std::declval<Cont> ().begin ()));
+			return std::is_same<void, Ret_t>::value;
+		}
 	}
 
-	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> std::enable_if_t<detail::IsSimpleContainer<Container<T>> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
-			WrapType_t<Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
+	template<
+			typename T,
+			template<typename U> class Container,
+			typename F,
+			typename = std::enable_if_t<detail::IsSimpleContainer<Container<T>> ()>,
+			typename = std::enable_if_t<!detail::DoesReturnVoid<F, Container<T>> ()>
+		>
+	auto Map (const Container<T>& c, F f)
 	{
-		Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>> result;
+		WrapType_t<Container<std::decay_t<decltype (Invoke (f, *c.begin ()))>>> result;
 		for (auto&& t : c)
 			detail::Append (result, Invoke (f, t));
 		return result;
 	}
 
-	template<typename Container, typename F, template<typename> class ResultCont = QList>
-	auto Map (const Container& c, F f) -> std::enable_if_t<!detail::IsSimpleContainer<Container> () && !std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value,
-			WrapType_t<ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>>>>
+	template<
+			typename Container,
+			typename F,
+			template<typename> class ResultCont = QList,
+			typename = std::enable_if_t<!detail::IsSimpleContainer<Container> ()>,
+			typename = std::enable_if_t<!detail::DoesReturnVoid<F, Container> ()>
+		>
+	auto Map (const Container& c, F f)
 	{
-		ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>> cont;
+		WrapType_t<ResultCont<std::decay_t<decltype (Invoke (f, *c.begin ()))>>> cont;
 		for (auto&& t : c)
 			detail::Append (cont, Invoke (f, t));
 		return cont;
 	}
 
-	template<typename Container, typename F>
-	auto Map (Container& c, F f) -> std::enable_if_t<!detail::IsSimpleContainer<Container> () && std::is_same<void, decltype (Invoke (f, *c.begin ()))>::value>
+	template<
+			typename Container,
+			typename F,
+			typename = std::enable_if_t<detail::DoesReturnVoid<F, Container> ()>
+		>
+	auto Map (const Container& c, F f)
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
 	}
 
-	template<typename T, template<typename U> class Container, typename F>
-	auto Map (const Container<T>& c, F f) -> std::enable_if_t<std::is_same<void, decltype (Invoke (f, std::declval<T> ()))>::value, void>
+	template<
+			typename Container,
+			typename F,
+			typename = std::enable_if_t<detail::DoesReturnVoid<F, Container> ()>
+		>
+	auto Map (Container& c, F f)
 	{
 		for (auto&& t : c)
 			Invoke (f, t);
