@@ -39,11 +39,6 @@ namespace LeechCraft
 {
 namespace CertMgr
 {
-	CertsModel::CertsModel (QObject *parent)
-	: QAbstractItemModel { parent }
-	{
-	}
-
 	QModelIndex CertsModel::index (int row, int column, const QModelIndex& parent) const
 	{
 		if (!hasIndex (row, column, parent))

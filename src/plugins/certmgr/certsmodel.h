@@ -55,7 +55,7 @@ namespace CertMgr
 
 		typedef std::shared_ptr<void> ModifyGuard_t;
 
-		CertsModel (QObject* = 0);
+		using QAbstractItemModel::QAbstractItemModel;
 
 		QModelIndex index (int row, int column, const QModelIndex& parent) const;
 		QModelIndex parent (const QModelIndex& child) const;
