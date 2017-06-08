@@ -74,7 +74,6 @@ target_link_libraries (leechcraft_netstoremanager
 	)
 install (TARGETS leechcraft_netstoremanager DESTINATION ${LC_PLUGINS_DEST})
 install (FILES netstoremanagersettings.xml DESTINATION ${LC_SETTINGS_DEST})
-install (FILES ${COMPILED_TRANSLATIONS} DESTINATION ${LC_TRANSLATIONS_DEST})
 
 FindQtLibs (leechcraft_netstoremanager Network Widgets)
 
