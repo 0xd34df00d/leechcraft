@@ -471,12 +471,9 @@ namespace LMP
 		auto menu = new QMenu (tr ("Sorting"));
 		sortButton->setMenu (menu);
 
-		auto getInts = [] (const QList<SortingCriteria>& crit) -> QVariantList
+		auto getInts = [] (const QList<SortingCriteria>& crit)
 		{
-			QVariantList result;
-			std::transform (crit.begin (), crit.end (), std::back_inserter (result),
-					[] (decltype (crit.front ()) item) { return static_cast<int> (item); });
-			return result;
+			return Util::Map (crit, [] (auto item) { return QVariant { static_cast<int> (item) }; });
 		};
 
 		const auto stdSorts =
