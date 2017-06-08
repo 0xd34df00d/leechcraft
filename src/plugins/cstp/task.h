@@ -59,7 +59,6 @@ namespace CSTP
 		double Speed_ = 0;
 		QList<QByteArray> RedirectHistory_;
 		std::shared_ptr<QFile> To_;
-		int UpdateCounter_ = 0;
 		QTimer *Timer_;
 		bool CanChangeName_ = true;
 
