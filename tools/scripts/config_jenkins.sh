@@ -54,6 +54,7 @@ case $1 in
 	fedora_23*)
 		cmake ../src \
 			-DLIB_SUFFIX=64 \
+			-DLC_CXX_STANDARD=17 \
 			-DEXTRA_WARNINGS=True \
 			-DSTRICT_LICENSING=True \
 			-DWITH_PCRE=True \
