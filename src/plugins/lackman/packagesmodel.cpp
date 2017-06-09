@@ -119,7 +119,6 @@ namespace LackMan
 					return pm->GetPendingInstall ().contains (lpi.PackageID_) ?
 							Qt::Checked :
 							Qt::Unchecked;
-				break;
 			case Columns::Upd:
 				if (!lpi.HasNewVersion_)
 					return QVariant ();
