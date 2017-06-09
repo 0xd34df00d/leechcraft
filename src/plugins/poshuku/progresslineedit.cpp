@@ -191,6 +191,7 @@ namespace Poshuku
 		case Qt::Key_Return:
 		case Qt::Key_Enter:
 			PreviousUrl_ = text ();
+			[[fallthrough]];
 		default:
 			QLineEdit::keyPressEvent (event);
 		}
