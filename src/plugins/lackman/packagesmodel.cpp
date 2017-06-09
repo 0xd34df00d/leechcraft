@@ -121,12 +121,12 @@ namespace LackMan
 							Qt::Unchecked;
 			case Columns::Upd:
 				if (!lpi.HasNewVersion_)
-					return QVariant ();
+					return {};
 				return pm->GetPendingUpdate ().contains (lpi.PackageID_) ?
 						Qt::Checked :
 						Qt::Unchecked;
 			default:
-				return QVariant ();
+				return {};
 			}
 		}
 		case PMRPackageID:
@@ -146,9 +146,8 @@ namespace LackMan
 		case PMRThumbnails:
 		case PMRScreenshots:
 		{
-			const auto& images = Core::Instance ().GetStorage ()->GetImages (lpi.Name_);
 			QStringList result;
-			Q_FOREACH (const Image& img, images)
+			for (const auto& img : Core::Instance ().GetStorage ()->GetImages (lpi.Name_))
 				if (img.Type_ == (role == PMRThumbnails ? Image::TThumbnail : Image::TScreenshot))
 					result << img.URL_;
 			return result;
@@ -156,7 +155,7 @@ namespace LackMan
 		case PMRSize:
 			return Core::Instance ().GetStorage ()->GetPackageSize (lpi.PackageID_);
 		default:
-			return QVariant ();
+			return {};
 		}
 	}
 
@@ -262,11 +261,11 @@ namespace LackMan
 
 	ListPackageInfo PackagesModel::FindPackage (const QString& name) const
 	{
-		Q_FOREACH (const ListPackageInfo& lpi, Packages_)
-			if (lpi.Name_ == name)
-				return lpi;
-
-		return ListPackageInfo ();
+		const auto pos = std::find_if (Packages_.begin (), Packages_.end (),
+				[&name] (const auto& lpi) { return lpi.Name_ == name; });
+		return pos != Packages_.end () ?
+				*pos :
+				ListPackageInfo {};
 	}
 
 	int PackagesModel::GetRow (int packageId) const
