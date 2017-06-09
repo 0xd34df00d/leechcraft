@@ -64,8 +64,10 @@ namespace Blogique
 		{
 		case ContentType::HTML:
 			setHtml (contents);
+			break;
 		case ContentType::PlainText:
 			setContent (contents.toUtf8 ());
+			break;
 		}
 	}
 
