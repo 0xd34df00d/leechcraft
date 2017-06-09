@@ -139,6 +139,7 @@ namespace Azoth
 			const auto markerSize = QString ("<root>\n").size ();
 			data.chop (markerSize + 1);
 			data = data.mid (markerSize);
+			[[fallthrough]];
 		}
 		case IHaveConsole::PacketFormat::PlainText:
 			html += QString::fromUtf8 (data
