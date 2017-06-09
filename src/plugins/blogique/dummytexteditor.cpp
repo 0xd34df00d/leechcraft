@@ -29,6 +29,7 @@
  **********************************************************************/
 
 #include "dummytexteditor.h"
+#include <cassert>
 #include <QWebFrame>
 
 namespace LeechCraft
@@ -55,7 +56,7 @@ namespace Blogique
 			return page ()->mainFrame ()->toPlainText ();
 		}
 
-		return QString ();
+		assert (false);
 	}
 
 	void DummyTextEditor::SetContents (QString contents, ContentType type)
