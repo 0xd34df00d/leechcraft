@@ -330,8 +330,8 @@ namespace AdvancedNotifications
 				[&category] (int acc, const EventData& event)
 				{
 					return event.Category_ == category ?
-							acc :
-							acc + event.Count_;
+							acc + event.Count_ :
+							acc;
 				});
 
 		const auto& palette = qApp->palette ();
