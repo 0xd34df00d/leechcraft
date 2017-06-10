@@ -233,6 +233,7 @@ namespace LastSeen
 			return;
 		case SOnline:
 			stats.Available_ = now;
+			[[fallthrough]];
 		default:
 			stats.Online_ = now;
 			break;
