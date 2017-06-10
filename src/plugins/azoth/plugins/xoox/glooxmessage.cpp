@@ -105,6 +105,7 @@ namespace Xoox
 		{
 		case Type::ChatMessage:
 			Message_.setReceiptRequested (true);
+			[[fallthrough]];
 		case Type::MUCMessage:
 			Connection_->SendMessage (this);
 			QMetaObject::invokeMethod (OtherPart (),
