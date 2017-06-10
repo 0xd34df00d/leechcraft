@@ -124,8 +124,6 @@ namespace Xoox
 			Join ();
 	}
 
-	/** @todo Detect kicks, bans and the respective actor.
-	 */
 	void RoomHandler::MakeLeaveMessage (const QXmppPresence& pres, const QString& nick)
 	{
 		QString msg = tr ("%1 has left the room").arg (nick);
