@@ -108,9 +108,7 @@ namespace Xoox
 			[[fallthrough]];
 		case Type::MUCMessage:
 			Connection_->SendMessage (this);
-			QMetaObject::invokeMethod (OtherPart (),
-					"gotMessage",
-					Q_ARG (QObject*, this));
+			qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
 			break;
 		default:
 			qWarning () << Q_FUNC_INFO
@@ -123,9 +121,7 @@ namespace Xoox
 
 	void GlooxMessage::Store ()
 	{
-		QMetaObject::invokeMethod (OtherPart (),
-				"gotMessage",
-				Q_ARG (QObject*, this));
+		qobject_cast<ICLEntry*> (OtherPart ())->gotMessage (this);
 	}
 
 	IMessage::Direction GlooxMessage::GetDirection () const
