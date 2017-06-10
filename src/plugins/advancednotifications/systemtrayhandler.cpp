@@ -170,8 +170,7 @@ namespace AdvancedNotifications
 		if (Category2Action_.contains (category))
 			return;
 
-		QAction *action = new QAction (GH_->GetIconForCategory (category), category, this);
-		action->setMenu (new QMenu ());
+		const auto action = new QAction (GH_->GetIconForCategory (category), category, this);
 		Category2Action_ [category] = action;
 
 		connect (action,
@@ -235,8 +234,6 @@ namespace AdvancedNotifications
 			icon->contextMenu ()->clear ();
 
 		auto actsDel = Category2Action_.values ().toSet ();
-		for (const auto action : actsDel)
-			action->menu ()->clear ();
 
 		EventsForIcon_.clear ();
 		EventsForAction_.clear ();
@@ -260,13 +257,13 @@ namespace AdvancedNotifications
 			actsDel.remove (action);
 			actsUpd << action;
 
-			if (icon)
-				EventsForIcon_ [icon] << data;
 			EventsForAction_ [action] << data;
 
 			if (icon)
+			{
+				EventsForIcon_ [icon] << data;
 				UpdateMenu (icon->contextMenu (), event, data);
-			UpdateMenu (action->menu (), event, data);
+			}
 		}
 
 		for (const auto icon : Category2Icon_)
