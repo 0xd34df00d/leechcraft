@@ -41,9 +41,6 @@ namespace Azoth
 {
 namespace Xoox
 {
-	const QString NsXhtmlIM = "http://jabber.org/protocol/xhtml-im";
-	const QString NsXhtml = "http://www.w3.org/1999/xhtml";
-
 	GlooxMessage::GlooxMessage (IMessage::Type type,
 			IMessage::Direction dir,
 			const QString& jid,
