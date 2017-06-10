@@ -494,7 +494,7 @@ namespace Azoth
 		/** @brief Called by Azoth when the chat with the entry is closed.
 		 */
 		virtual void ChatTabClosed () = 0;
-	protected:
+
 		/** @brief This signal should be emitted whenever a new message
 		 * is received.
 		 *
