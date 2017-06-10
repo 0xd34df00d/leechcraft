@@ -824,15 +824,21 @@ namespace Xoox
 
 	QList<QObject*> ClientConnection::GetCLEntries () const
 	{
-		QList<QObject*> result;
-		result << SelfContact_;
-		for (const auto entry : JID2CLEntry_.values () + ODSEntries_.values ())
-			result << entry;
+		QList<QObject*> result { SelfContact_ };
+
+		const auto totalRoomParticipants = std::accumulate (RoomHandlers_.begin (), RoomHandlers_.end (), 0,
+				[] (int acc, RoomHandler *rh) { return acc + rh->GetParticipants ().size (); });
+		result.reserve (1 + JID2CLEntry_.size () + ODSEntries_.size () + totalRoomParticipants + RoomHandlers_.size ());
+
+		std::copy (JID2CLEntry_.begin (), JID2CLEntry_.end (), std::back_inserter (result));
+		std::copy (ODSEntries_.begin (), ODSEntries_.end (), std::back_inserter (result));
+
 		for (const auto rh : RoomHandlers_)
 		{
 			result << rh->GetCLEntry ();
-			result << rh->GetParticipants ();
+			result += rh->GetParticipants ();
 		}
+
 		return result;
 	}
 
