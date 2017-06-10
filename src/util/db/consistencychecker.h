@@ -29,6 +29,7 @@
 
 #pragma once
 
+#include <memory>
 #include <boost/variant.hpp>
 #include <QObject>
 #include "dbconfig.h"
