@@ -72,7 +72,6 @@ namespace Xoox
 
 		QString GetRoomJID () const;
 		RoomCLEntry* GetCLEntry ();
-		void HandleVCard (const QXmppVCardIq&, const QString&);
 
 		void SetPresence (QXmppPresence);
 

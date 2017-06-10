@@ -116,21 +116,6 @@ namespace Xoox
 		return CLEntry_;
 	}
 
-	void RoomHandler::HandleVCard (const QXmppVCardIq& card, const QString& nick)
-	{
-		if (!Nick2Entry_.contains (nick))
-		{
-			qWarning () << Q_FUNC_INFO
-					<< "no such nick"
-					<< nick
-					<< "; available:"
-					<< Nick2Entry_.keys ();
-			return;
-		}
-
-		Nick2Entry_ [nick]->SetVCard (card);
-	}
-
 	void RoomHandler::SetPresence (QXmppPresence pres)
 	{
 		if (pres.type () == QXmppPresence::Unavailable)
