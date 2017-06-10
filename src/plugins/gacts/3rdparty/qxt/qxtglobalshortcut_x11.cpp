@@ -50,6 +50,7 @@ static int qxt_x_errhandler(Display* display, XErrorEvent *event)
                 //char errstr[256];
                 //XGetErrorText(dpy, err->error_code, errstr, 256);
             }
+			[[fallthrough]];
         default:
             return 0;
     }
