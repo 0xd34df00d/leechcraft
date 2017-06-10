@@ -156,8 +156,6 @@ namespace Xoox
 		CLEntry_->HandleMessage (message);
 	}
 
-	/** @todo Detect the role, affiliation and real jid, if applicable.
-	 */
 	void RoomHandler::MakeJoinMessage (const QXmppPresence& pres, const QString& nick)
 	{
 		QString affiliation = XooxUtil::AffiliationToString (pres.mucItem ().affiliation ());
