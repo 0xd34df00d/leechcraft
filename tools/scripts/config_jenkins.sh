@@ -4,6 +4,7 @@ case $1 in
 	debian_unstable*)
 		cmake ../src \
 			-DEXTRA_WARNINGS=True \
+			-DLC_CXX_STANDARD=17 \
 			-DENABLE_BLASQ=True \
 			-DENABLE_BLASQ_SPEGNERSI=False \
 			-DENABLE_AZOTH_WOODPECKER=False \
