@@ -126,6 +126,10 @@
 					<label value="Show rich text message body (if available)" />
 					<tooltip>Whether rich text body of the messages should be used, if available. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
 				</item>
+				<item type="checkbox" property="ShowRichTextEditor" default="true">
+					<label value="Show rich text editor (if available)" />
+					<tooltip>Whether rich text editor should be displayed, if supported by the protocol plugin. This is a default value, and the behavior could be changed for each opened chat window.</tooltip>
+				</item>
 				<item type="checkbox" property="ShowNormalChatResources" default="false">
 					<label value="Show client resources in normal one-to-one chats" />
 				</item>
