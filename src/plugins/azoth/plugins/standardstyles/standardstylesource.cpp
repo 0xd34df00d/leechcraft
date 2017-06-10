@@ -222,8 +222,9 @@ namespace StandardStyles
 			case IMessage::Type::ChatMessage:
 				statusIconName = "notification_chat_receive";
 				divClass = msg->GetDirection () == IMessage::Direction::In ?
-					"msgin" :
-					"msgout";
+						"msgin" :
+						"msgout";
+				[[fallthrough]];
 			case IMessage::Type::MUCMessage:
 			{
 				statusIconName = "notification_chat_receive";
