@@ -27,6 +27,7 @@
  * DEALINGS IN THE SOFTWARE.
  **********************************************************************/
 
+#include "peersmodel.h"
 #include <numeric>
 #include <QTimer>
 #include <QApplication>
@@ -35,7 +36,6 @@
 #include <util/sys/paths.h>
 #include <util/sll/unreachable.h>
 #include "core.h"
-#include "peersmodel.h"
 
 namespace LeechCraft
 {
