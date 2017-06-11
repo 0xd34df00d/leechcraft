@@ -673,6 +673,7 @@ namespace Xoox
 
 		const auto& entry = GetParticipantEntry (nick);
 		const auto& item = pres.mucItem ();
+		const auto& reason = item.reason ();
 		if (!item.nick ().isEmpty () &&
 				item.nick () != nick)
 		{
@@ -681,18 +682,12 @@ namespace Xoox
 		}
 		else if (pres.mucStatusCodes ().contains (301))
 			!us ?
-				MakeBanMessage (nick, item.reason ()) :
-				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
-							"beenBanned",
-							Qt::QueuedConnection,
-							Q_ARG (QString, item.reason ())));
+				MakeBanMessage (nick, reason) :
+				Util::ExecuteLater ([=] { CLEntry_->beenBanned (reason); });
 		else if (pres.mucStatusCodes ().contains (307))
 			!us ?
-				MakeKickMessage (nick, item.reason ()) :
-				static_cast<void> (QMetaObject::invokeMethod (CLEntry_,
-							"beenKicked",
-							Qt::QueuedConnection,
-							Q_ARG (QString, item.reason ())));
+				MakeKickMessage (nick, reason) :
+				Util::ExecuteLater ([=] { CLEntry_->beenKicked (reason); });
 		else
 			MakeLeaveMessage (pres, nick);
 
@@ -712,7 +707,7 @@ namespace Xoox
 		}
 
 		if (entry->HasUnreadMsgs ())
-			entry->SetStatus (EntryStatus (SOffline, item.reason ()),
+			entry->SetStatus (EntryStatus (SOffline, reason),
 					QString (), QXmppPresence (QXmppPresence::Unavailable));
 		else
 			RemoveEntry (entry.get ());
