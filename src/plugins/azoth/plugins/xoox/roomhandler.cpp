@@ -127,7 +127,7 @@ namespace Xoox
 		if (pres.statusText ().size ())
 			msg += ": " + pres.statusText ();
 
-		RoomPublicMessage *message = new RoomPublicMessage (msg,
+		const auto message = new RoomPublicMessage (msg,
 				IMessage::Direction::In,
 				CLEntry_,
 				IMessage::Type::StatusMessage,
@@ -486,7 +486,7 @@ namespace Xoox
 	GlooxMessage* RoomHandler::CreateMessage (IMessage::Type,
 			const QString& nick, const QString& body)
 	{
-		GlooxMessage *message = new GlooxMessage (IMessage::Type::ChatMessage,
+		const auto message = new GlooxMessage (IMessage::Type::ChatMessage,
 				IMessage::Direction::Out,
 				GetRoomJID (),
 				nick,
