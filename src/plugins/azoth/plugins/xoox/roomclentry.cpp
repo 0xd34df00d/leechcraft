@@ -32,6 +32,7 @@
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>
 #include <QXmppDiscoveryManager.h>
+#include <util/sll/prelude.h>
 #include <interfaces/azoth/iproxyobject.h>
 #include <interfaces/azoth/azothutil.h>
 #include "glooxaccount.h"
@@ -614,10 +615,7 @@ namespace Xoox
 
 	void RoomCLEntry::HandleNewParticipants (const QList<ICLEntry*>& parts)
 	{
-		QObjectList objs;
-		Q_FOREACH (ICLEntry *e, parts)
-			objs << e->GetQObject ();
-		emit gotNewParticipants (objs);
+		emit gotNewParticipants (Util::Map (parts, &ICLEntry::GetQObject));
 	}
 
 	void RoomCLEntry::HandleSubjectChanged (const QString& subj)
