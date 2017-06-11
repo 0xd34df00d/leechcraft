@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "datafilteruploader.h"
-#include <memory>
 #include <QtDebug>
 #include <QTemporaryFile>
 #include <QUrl>
@@ -94,20 +93,13 @@ namespace Blasq
 
 	void DataFilterUploader::UploadToAcc (const QByteArray& accId)
 	{
-		bool shouldCleanup = true;
-		auto deleteGuard = std::shared_ptr<void> (nullptr,
-				[this, &shouldCleanup] (void*)
-				{
-					if (shouldCleanup)
-						deleteLater ();
-				});
-
 		const auto acc = AccMgr_->GetAccount (accId);
 		if (!acc)
 		{
 			qWarning () << Q_FUNC_INFO
 					<< "no account for ID"
 					<< accId;
+			deleteLater ();
 			return;
 		}
 
@@ -121,8 +113,6 @@ namespace Blasq
 		}
 		else if (QFile::exists (localFile))
 			UploadFileName_ = localFile;
-
-		shouldCleanup = false;
 
 		const auto dia = new UploadPhotosDialog { acc->GetQObject () };
 		dia->LockFiles ();
