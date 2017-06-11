@@ -148,7 +148,7 @@ namespace Blasq
 		};
 
 		connect (dia,
-				SIGNAL (finished (int)),
+				SIGNAL (rejected ()),
 				this,
 				SLOT (deleteLater ()));
 	}
