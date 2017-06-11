@@ -1469,11 +1469,7 @@ namespace Xoox
 		Split (msgFrom, &jid, &resource);
 
 		if (!items.isEmpty ())
-			QMetaObject::invokeMethod (Account_,
-					"riexItemsSuggested",
-					Q_ARG (QList<LeechCraft::Azoth::RIEXItem>, items),
-					Q_ARG (QObject*, JID2CLEntry_.value (jid)),
-					Q_ARG (QString, body));
+			Account_->riexItemsSuggested (items, JID2CLEntry_.value (jid), body);
 	}
 
 	void ClientConnection::InvokeCallbacks (const QXmppIq& iq)
