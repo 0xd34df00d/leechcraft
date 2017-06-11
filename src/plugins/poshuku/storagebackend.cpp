@@ -28,8 +28,8 @@
  **********************************************************************/
 
 #include "storagebackend.h"
-#include <cassert>
 #include <stdexcept>
+#include <util/sll/unreachable.h>
 #include "sqlstoragebackend.h"
 #include "sqlstoragebackend_mysql.h"
 #include "xmlsettingsmanager.h"
@@ -49,7 +49,7 @@ namespace Poshuku
 			return std::make_shared<SQLStorageBackendMysql> (type);
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	std::shared_ptr<StorageBackend> StorageBackend::Create ()

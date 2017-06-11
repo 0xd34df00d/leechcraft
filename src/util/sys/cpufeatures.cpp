@@ -29,7 +29,6 @@
 
 #include "cpufeatures.h"
 #include <mutex>
-#include <cassert>
 #include <QStringList>
 #include <QtDebug>
 
@@ -40,6 +39,8 @@
 #ifdef HAS_CPUID
 #include <cpuid.h>
 #endif
+
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -88,7 +89,7 @@ namespace Util
 			return "";
 		}
 
-		assert (0);
+		Util::Unreachable ();
 	}
 
 	bool CpuFeatures::HasFeature (Feature feature) const
@@ -109,7 +110,7 @@ namespace Util
 			return true;
 		}
 
-		assert (0);
+		Util::Unreachable ();
 	}
 
 	void CpuFeatures::DumpDetectedFeatures () const

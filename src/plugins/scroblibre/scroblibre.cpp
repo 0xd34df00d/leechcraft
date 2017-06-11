@@ -28,10 +28,10 @@
  **********************************************************************/
 
 #include "scroblibre.h"
-#include <cassert>
 #include <QIcon>
 #include <xmlsettingsdialog/xmlsettingsdialog.h>
 #include <util/util.h>
+#include <util/sll/unreachable.h>
 #include "xmlsettingsmanager.h"
 #include "accountsmanager.h"
 #include "authmanager.h"
@@ -111,7 +111,7 @@ namespace Scroblibre
 			return false;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	QString Plugin::GetServiceName () const

@@ -31,6 +31,7 @@
 #include <util/threads/futures.h>
 #include <util/sll/util.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/unreachable.h>
 #include "interfaces/azoth/iaccount.h"
 #include "avatarsstorage.h"
 #include "resourcesmanager.h"
@@ -61,7 +62,7 @@ namespace Azoth
 				return 64;
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 
 		boost::optional<IHaveAvatars::Size> ChooseSize (IHaveAvatars *iha, IHaveAvatars::Size size)

@@ -33,10 +33,10 @@
 #include <map>
 #include <stdexcept>
 #include <algorithm>
-#include <cassert>
 #include <QtDebug>
 #include <QTimer>
 #include <QThread>
+#include <util/sll/unreachable.h>
 #include "util/lmp/gstutil.h"
 #include "audiosource.h"
 #include "path.h"
@@ -261,7 +261,7 @@ namespace LMP
 			return Metadata_ ["maximum-bitrate"];
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	qint64 SourceObject::GetCurrentTime ()

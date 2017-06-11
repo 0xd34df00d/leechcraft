@@ -29,8 +29,8 @@
  **********************************************************************/
 
 #include "dummytexteditor.h"
-#include <cassert>
 #include <QWebFrame>
+#include <util/sll/unreachable.h>
 
 namespace LeechCraft
 {
@@ -56,7 +56,7 @@ namespace Blogique
 			return page ()->mainFrame ()->toPlainText ();
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	void DummyTextEditor::SetContents (QString contents, ContentType type)

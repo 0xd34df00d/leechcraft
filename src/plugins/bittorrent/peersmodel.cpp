@@ -33,6 +33,7 @@
 #include <QtDebug>
 #include <util/util.h>
 #include <util/sys/paths.h>
+#include <util/sll/unreachable.h>
 #include "core.h"
 #include "peersmodel.h"
 
@@ -135,8 +136,7 @@ namespace BitTorrent
 			return "Unhandled column";
 		}
 
-		assert (false);
-		return {};
+		Util::Unreachable ();
 	}
 
 	Qt::ItemFlags PeersModel::flags (const QModelIndex&) const

@@ -35,6 +35,7 @@
 #include <util/svcauth/vkcaptchadialog.h>
 #include <util/sll/prelude.h>
 #include <util/sll/either.h>
+#include <util/sll/unreachable.h>
 #include "vkprotocol.h"
 #include "vkconnection.h"
 #include "vkentry.h"
@@ -489,7 +490,7 @@ namespace Murm
 			return false;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	void VkAccount::OpenServerHistoryConfiguration ()

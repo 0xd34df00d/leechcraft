@@ -28,11 +28,11 @@
  **********************************************************************/
 
 #include "fields.h"
-#include <cassert>
 #include <algorithm>
 #include <QtDebug>
 #include <poppler-form.h>
 #include <poppler-version.h>
+#include <util/sll/unreachable.h>
 #include "links.h"
 
 namespace LeechCraft
@@ -99,7 +99,7 @@ namespace PDF
 			return Type::File;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	int FormFieldText::GetMaximumLength () const

@@ -40,6 +40,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/unreachable.h>
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
 #include <interfaces/azoth/iaccount.h>
@@ -725,7 +726,7 @@ namespace ChatHistory
 				return "OUT";
 			}
 
-			assert (0);
+			Util::Unreachable ();
 		}
 
 		QVariant ToVariant (IMessage::EscapePolicy escPolicy)
@@ -738,7 +739,7 @@ namespace ChatHistory
 				return "NEs";
 			}
 
-			assert (0);
+			Util::Unreachable ();
 		}
 
 		QVariant ToVariant (IMessage::Type type)
@@ -757,7 +758,7 @@ namespace ChatHistory
 				return "SERVICE";
 			}
 
-			assert (0);
+			Util::Unreachable ();
 		}
 	}
 

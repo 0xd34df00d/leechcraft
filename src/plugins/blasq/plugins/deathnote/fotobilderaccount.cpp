@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "fotobilderaccount.h"
-#include <cassert>
 #include <QDomDocument>
 #include <QCryptographicHash>
 #include <QInputDialog>
@@ -45,6 +44,7 @@
 #include <util/xpc/passutils.h>
 #include <util/util.h>
 #include <util/xpc/util.h>
+#include <util/sll/unreachable.h>
 #include "albumsettingsdialog.h"
 #include "fotobilderservice.h"
 
@@ -188,7 +188,7 @@ namespace DeathNote
 			return true;
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	void FotoBilderAccount::UploadImages (const QModelIndex& collection, const QList<UploadItem>& items)

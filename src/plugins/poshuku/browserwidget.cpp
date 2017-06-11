@@ -63,6 +63,7 @@
 #include <util/util.h>
 #include <util/sll/qtutil.h>
 #include <util/sll/slotclosure.h>
+#include <util/sll/unreachable.h>
 #include <util/xpc/util.h>
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/notificationactionhandler.h>
@@ -1676,7 +1677,7 @@ namespace Poshuku
 				return BrowserWidget::tr ("%1 requests access to geolocation services.");
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 	}
 

@@ -28,13 +28,13 @@
  **********************************************************************/
 
 #include "hostingservice.h"
-#include <cassert>
 #include <QtDebug>
 #include <QNetworkReply>
 #include <QUrl>
 #include <QRegExp>
 #include <QStringList>
 #include <util/sll/parsejson.h>
+#include <util/sll/unreachable.h>
 #include "requestbuilder.h"
 
 namespace LeechCraft
@@ -82,7 +82,7 @@ namespace Imgaste
 			return { "mixtape.moe", MakeChecker (100_mib) };
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 
 	boost::optional<HostingService> FromString (const QString& str)
@@ -276,7 +276,7 @@ namespace Imgaste
 					QUrl { "https://mixtape.moe/upload.php" });
 		}
 
-		assert (false);
+		Util::Unreachable ();
 	}
 }
 }

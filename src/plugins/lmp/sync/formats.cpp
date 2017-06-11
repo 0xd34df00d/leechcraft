@@ -29,10 +29,10 @@
 
 #include "formats.h"
 #include <algorithm>
-#include <cassert>
 #include <QProcess>
 #include <QtDebug>
 #include <util/sll/prelude.h>
+#include <util/sll/unreachable.h>
 #include "transcodingparams.h"
 
 namespace LeechCraft
@@ -114,7 +114,7 @@ namespace LMP
 				return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 	};
 
@@ -146,7 +146,7 @@ namespace LMP
 			}
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 
 		QStringList ToFFmpeg (const TranscodingParams& params) const
@@ -241,7 +241,7 @@ namespace LMP
 				return { -9, -8, -7, -6, -5, -4, -3, -2, -1 };
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 	};
 

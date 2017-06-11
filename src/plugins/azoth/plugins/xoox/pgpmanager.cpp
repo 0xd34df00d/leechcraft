@@ -31,6 +31,7 @@
 #include <QDomElement>
 #include <QtCrypto>
 #include <QXmppClient.h>
+#include <util/sll/unreachable.h>
 #include <interfaces/azoth/gpgexceptions.h>
 
 namespace LeechCraft
@@ -84,7 +85,7 @@ namespace Xoox
 				return "SIGNATURE";
 			}
 
-			assert (false);
+			Util::Unreachable ();
 		}
 
 		QString WrapPGP (const QString& str, PGPType type)
