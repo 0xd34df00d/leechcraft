@@ -483,24 +483,6 @@ namespace Xoox
 		}
 	}
 
-	void RoomHandler::UpdatePerms (const QList<QXmppMucItem>& perms)
-	{
-		for (const auto& item : perms)
-		{
-			if (!Nick2Entry_.contains (item.nick ()))
-			{
-				qWarning () << Q_FUNC_INFO
-						<< "no participant with nick"
-						<< item.nick ()
-						<< Nick2Entry_.keys ();
-				continue;
-			}
-
-			Nick2Entry_ [item.nick ()]->SetAffiliation (item.affiliation ());
-			Nick2Entry_ [item.nick ()]->SetRole (item.role ());
-		}
-	}
-
 	GlooxMessage* RoomHandler::CreateMessage (IMessage::Type,
 			const QString& nick, const QString& body)
 	{
