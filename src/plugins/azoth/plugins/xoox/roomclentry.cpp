@@ -28,7 +28,6 @@
  **********************************************************************/
 
 #include "roomclentry.h"
-#include <QImage>
 #include <QtDebug>
 #include <QXmppMucManager.h>
 #include <QXmppBookmarkManager.h>
@@ -382,14 +381,12 @@ namespace Xoox
 
 	QPair<QByteArray, QByteArray> RoomCLEntry::GetKickPerm () const
 	{
-		return qMakePair<QByteArray, QByteArray> ("role",
-				Role2Str_ [QXmppMucItem::Role::NoRole]);
+		return { "role", Role2Str_ [QXmppMucItem::Role::NoRole] };
 	}
 
 	QPair<QByteArray, QByteArray> RoomCLEntry::GetBanPerm () const
 	{
-		return qMakePair<QByteArray, QByteArray> ("aff",
-				Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation]);
+		return { "aff", Aff2Str_ [QXmppMucItem::Affiliation::OutcastAffiliation] };
 	}
 
 	QByteArray RoomCLEntry::GetAffName (QObject *participant) const

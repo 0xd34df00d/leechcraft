@@ -955,7 +955,7 @@ namespace Xoox
 		msg.setType (QXmppMessage::Normal);
 		QXmppDataForm subForm = fb.GetForm ();
 		subForm.setType (QXmppDataForm::Submit);
-		msg.setExtensions (QXmppElementList () << XooxUtil::Form2XmppElem (subForm));
+		msg.setExtensions ({ XooxUtil::Form2XmppElem (subForm) });
 		Client_->sendPacket (msg);
 	}
 
@@ -967,9 +967,9 @@ namespace Xoox
 		Client_->vCardManager ().requestVCard (OurBareJID_);
 
 		connect (BMManager_,
-				SIGNAL (bookmarksReceived (const QXmppBookmarkSet&)),
+				SIGNAL (bookmarksReceived (QXmppBookmarkSet)),
 				this,
-				SLOT (handleBookmarksReceived (const QXmppBookmarkSet&)),
+				SLOT (handleBookmarksReceived (QXmppBookmarkSet)),
 				Qt::UniqueConnection);
 
 		AnnotationsManager_->refetchNotes ();
