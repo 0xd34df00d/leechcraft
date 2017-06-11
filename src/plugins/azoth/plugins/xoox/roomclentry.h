@@ -71,12 +71,13 @@ namespace Xoox
 		GlooxAccount *Account_;
 		QList<IMessage*> AllMessages_;
 		RoomHandler *RH_;
-		QMap<QByteArray, QList<QByteArray>> Perms_;
-		QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
-		QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
-		QMap<QByteArray, QString> Translations_;
 
-		mutable QAction *ActionRequestVoice_;
+		const QMap<QByteArray, QList<QByteArray>> Perms_;
+		const QMap<QXmppMucItem::Role, QByteArray> Role2Str_;
+		const QMap<QXmppMucItem::Affiliation, QByteArray> Aff2Str_;
+		const QMap<QByteArray, QString> Translations_;
+
+		mutable QAction *ActionRequestVoice_ = nullptr;
 	public:
 		RoomCLEntry (RoomHandler*, bool, GlooxAccount*);
 
