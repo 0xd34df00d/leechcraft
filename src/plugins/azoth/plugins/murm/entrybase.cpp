@@ -701,7 +701,7 @@ namespace Murm
 			pair.second.replace ('\\', "\\\\");
 			pair.second.replace ('"', "\\\"");
 
-			js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) {};")
+			js += QString ("try { document.getElementById('%1').innerHTML = \"%2\"; } catch (e) { console.log(e); };")
 					.arg (pair.first)
 					.arg (pair.second);
 		}
