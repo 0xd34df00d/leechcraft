@@ -180,6 +180,7 @@ namespace Azoth
 		Ui_.setupUi (this);
 		Ui_.View_->page ()->setNetworkAccessManager (nam);
 		Ui_.View_->installEventFilter (new ZoomEventFilter (Ui_.View_));
+		Ui_.View_->settings ()->setAttribute (QWebSettings::DeveloperExtrasEnabled, true);
 		Ui_.MsgEdit_->installEventFilter (new CopyFilter (Ui_.View_));
 		MUCEventLog_->installEventFilter (this);
 
