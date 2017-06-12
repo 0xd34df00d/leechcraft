@@ -149,6 +149,9 @@ namespace Murm
 		Dispatcher_ [6] = [] (const QVariantList&) {};
 		Dispatcher_ [7] = [] (const QVariantList&) {};
 
+		// Unread counter value change, we dont' care
+		Dispatcher_ [80] = [] (const QVariantList&) {};
+
 		Dispatcher_ [101] = [] (const QVariantList&) {};	// unknown stuff
 
 		MarkOnlineTimer_->setInterval (12 * 60 * 1000);
