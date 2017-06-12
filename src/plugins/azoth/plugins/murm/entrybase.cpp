@@ -580,10 +580,13 @@ namespace Murm
 				replacement += "<div style='text-align:right'>";
 				replacement += EntryBase::tr ("Posted on: %1")
 						.arg (info.PostDate_.toString ());
-				replacement += "<br/>";
-				replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
-				replacement += "; ";
-				replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
+				if (info.Likes_ || info.Reposts_)
+				{
+					replacement += "<br/>";
+					replacement += EntryBase::tr ("%n like(s)", 0, info.Likes_);
+					replacement += "; ";
+					replacement += EntryBase::tr ("%n repost(s)", 0, info.Reposts_);
+				}
 				replacement += "</div>";
 			}
 			return replacement;
