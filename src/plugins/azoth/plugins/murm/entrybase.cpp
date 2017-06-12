@@ -698,6 +698,7 @@ namespace Murm
 			body.replace ("<div id='" + pair.first + "'></div>",
 					"<div>" + pair.second + "</div>");
 
+			pair.second.replace ('\n', "<br/>");
 			pair.second.replace ('\\', "\\\\");
 			pair.second.replace ('"', "\\\"");
 
