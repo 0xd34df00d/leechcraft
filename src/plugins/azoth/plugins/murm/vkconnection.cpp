@@ -1500,10 +1500,15 @@ namespace Murm
 					{
 						auto history = wallMap.take ("copy_history");
 						for (const auto& obj : history.toList ())
-							HandleAttachments (repost, obj.toMap () ["attachments"], logger);
+						{
+							FullMessageInfo copyItem;
+							HandleBasicMsgInfo (copyItem, obj.toMap ());
+							HandleAttachments (copyItem, obj.toMap () ["attachments"], logger);
+							repost.ContainedReposts_ << copyItem;
+						}
 					}
 
-					info.ContainedReposts_.append (repost);
+					info.ContainedReposts_ << repost;
 				}
 				else
 					logger << "HandleAttachments" << attMap.keys ();
