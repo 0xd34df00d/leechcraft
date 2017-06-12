@@ -1589,8 +1589,7 @@ namespace Murm
 		}
 
 		std::sort (infos.begin (), infos.end (),
-				[] (const QPair<MessageInfo, FullMessageInfo>& m1, const QPair<MessageInfo, FullMessageInfo>& m2)
-					{ return m1.first.TS_ < m2.first.TS_; });
+				Util::ComparingBy ([] (const auto& pair) { return pair.first.TS_; }));
 		for (const auto& pair : infos)
 			emit gotMessage (pair.second, pair.first);
 	}
