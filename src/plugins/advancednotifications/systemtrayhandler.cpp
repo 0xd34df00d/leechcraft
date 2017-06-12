@@ -178,7 +178,7 @@ namespace AdvancedNotifications
 				this,
 				SLOT (handleLCAction ()));
 
-		emit gotActions (QList<QAction*> () << action, ActionsEmbedPlace::LCTray);
+		emit gotActions ({ action }, ActionsEmbedPlace::LCTray);
 
 		const auto vnv = new VisualNotificationsView;
 		connect (vnv,
