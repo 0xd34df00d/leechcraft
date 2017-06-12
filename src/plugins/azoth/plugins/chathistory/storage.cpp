@@ -40,6 +40,7 @@
 #include <util/sys/paths.h>
 #include <util/sll/prelude.h>
 #include <util/sll/qtutil.h>
+#include <util/sll/util.h>
 #include <util/sll/unreachable.h>
 #include <util/util.h>
 #include <interfaces/azoth/iclentry.h>
@@ -509,9 +510,9 @@ namespace ChatHistory
 
 	namespace
 	{
-		std::shared_ptr<void> CleanupQueryGuard (QSqlQuery& query)
+		auto CleanupQueryGuard (QSqlQuery& query)
 		{
-			return std::shared_ptr<void> (nullptr, [&query] (void*) { query.finish (); });
+			return Util::MakeScopeGuard ([&query] { query.finish (); });
 		}
 	}
 
