@@ -40,6 +40,7 @@
 
 #include <util/xpc/util.h>
 #include <util/xpc/stddatafiltermenucreator.h>
+#include <util/sll/util.h>
 #include <interfaces/idatafilter.h>
 #include <interfaces/core/icoreproxy.h>
 #include "interfaces/azoth/iclentry.h"
@@ -80,7 +81,7 @@ namespace Azoth
 	void ChatTabWebView::contextMenuEvent (QContextMenuEvent *e)
 	{
 		QPointer<QMenu> menu (new QMenu (this));
-		const std::shared_ptr<void> menuGuard { nullptr, [&menu] (void*) { delete menu; } };
+		const auto menuGuard = Util::MakeScopeGuard ([&menu] { delete menu; });
 
 		const auto r = page ()->mainFrame ()->hitTestContent (e->pos ());
 
