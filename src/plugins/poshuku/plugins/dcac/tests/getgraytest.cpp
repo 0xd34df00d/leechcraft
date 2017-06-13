@@ -41,6 +41,7 @@ namespace DCAC
 {
 	void GetGrayTest::testSSE4 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (SSE41)
 
 		for (const auto& image : TestImages_)
@@ -50,10 +51,12 @@ namespace DCAC
 
 			QCOMPARE (ref, sse4);
 		}
+#endif
 	}
 
 	void GetGrayTest::testAVX2 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (AVX2)
 
 		for (const auto& image : TestImages_)
@@ -63,6 +66,7 @@ namespace DCAC
 
 			QCOMPARE (ref, avx2);
 		}
+#endif
 	}
 
 	void GetGrayTest::benchDefault ()
@@ -72,16 +76,20 @@ namespace DCAC
 
 	void GetGrayTest::benchSSE4 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (SSE41)
 
 		BenchmarkFunction (&GetGraySSE4);
+#endif
 	}
 
 	void GetGrayTest::benchAVX2 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (AVX2)
 
 		BenchmarkFunction (&GetGrayAVX2);
+#endif
 	}
 }
 }

@@ -42,6 +42,7 @@ namespace DCAC
 {
 	void InvertRgbTest::testAVX ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (SSSE3)
 
 		for (const auto& image : TestImages_)
@@ -50,6 +51,7 @@ namespace DCAC
 					&InvertRgbDefault, &InvertRgbAVX);
 			QVERIFY2 (diff <= 1, "too big difference");
 		}
+#endif
 	}
 
 	void InvertRgbTest::benchDefault ()
@@ -59,9 +61,11 @@ namespace DCAC
 
 	void InvertRgbTest::benchAVX ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (AVX)
 
 		BenchmarkFunction (&InvertRgbAVX);
+#endif
 	}
 }
 }

@@ -41,6 +41,7 @@ namespace DCAC
 {
 	void ReduceLightnessTest::testSSSE3 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (SSSE3)
 
 		for (const auto& image : TestImages_)
@@ -49,10 +50,12 @@ namespace DCAC
 					&ReduceLightnessDefault, &ReduceLightnessSSSE3, 1.5);
 			QVERIFY2 (diff <= 1, "too big difference");
 		}
+#endif
 	}
 
 	void ReduceLightnessTest::testAVX2 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (AVX2)
 
 		for (const auto& image : TestImages_)
@@ -61,6 +64,7 @@ namespace DCAC
 					&ReduceLightnessDefault, &ReduceLightnessAVX2, 1.5);
 			QVERIFY2 (diff <= 1, "too big difference");
 		}
+#endif
 	}
 
 	void ReduceLightnessTest::benchDefault ()
@@ -70,15 +74,18 @@ namespace DCAC
 
 	void ReduceLightnessTest::benchSSSE3 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (SSSE3)
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessSSSE3 (img, 1.5); });
+#endif
 	}
 
 	void ReduceLightnessTest::benchAVX2 ()
 	{
+#ifdef SSE_ENABLED
 		CHECKFEATURE (AVX2)
-
 		BenchmarkFunction ([] (QImage& img) { ReduceLightnessAVX2 (img, 1.5); });
+#endif
 	}
 }
 }
