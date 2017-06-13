@@ -33,7 +33,7 @@
 #include "openurlcommand.cpp"
 #include "testutil.h"
 
-QTEST_MAIN (LeechCraft::Azoth::MuCommands::OpenUrlCommandTest)
+QTEST_APPLESS_MAIN (LeechCraft::Azoth::MuCommands::OpenUrlCommandTest)
 
 template<typename T>
 QDebug operator<< (QDebug dbg, const boost::optional<T>& opt)

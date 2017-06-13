@@ -33,7 +33,7 @@
 #include "presencecommand.cpp"
 #include "testutil.h"
 
-QTEST_MAIN (LeechCraft::Azoth::MuCommands::PresenceCommandTest)
+QTEST_APPLESS_MAIN (LeechCraft::Azoth::MuCommands::PresenceCommandTest)
 
 namespace QTest
 {
