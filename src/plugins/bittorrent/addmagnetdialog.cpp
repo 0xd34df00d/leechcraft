@@ -49,11 +49,9 @@ namespace BitTorrent
 			if (!url.isValid () || url.scheme () != "magnet")
 				return false;
 
-			for (const auto& item : QUrlQuery { url }.queryItems ())
-				if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
-					return true;
-
-			return false;
+			const auto& items = QUrlQuery { url }.queryItems ();
+			return std::any_of (items.begin (), items.end (),
+					[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
 		}
 
 		QString CheckClipboard (QClipboard::Mode mode)

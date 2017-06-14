@@ -311,10 +311,12 @@ namespace BitTorrent
 			QUrl url = e.Entity_.toUrl ();
 			if (url.scheme () == "magnet")
 			{
-				for (const auto& item : QUrlQuery { url }.queryItems ())
-					if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
-						return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
-				return EntityTestHandleResult ();
+				const auto& items = QUrlQuery { url }.queryItems ();
+				const bool hasMagnet = std::any_of (items.begin (), items.end (),
+						[] (const auto& item) { return item.first == "xt" && item.second.startsWith ("urn:btih:"); });
+				return hasMagnet ?
+						EntityTestHandleResult { EntityTestHandleResult::PIdeal } :
+						EntityTestHandleResult {};
 			}
 			else if (url.scheme () == "file")
 			{
