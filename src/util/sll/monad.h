@@ -41,7 +41,7 @@ namespace Util
 	struct InstanceMonad;
 
 	template<template<typename...> class Monad, typename... Args, typename V>
-	Monad<Args..., V> Return (const V& v)
+	auto Return (const V& v)
 	{
 		return Pure<Monad, Args...> (v);
 	}
