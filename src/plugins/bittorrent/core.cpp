@@ -56,11 +56,7 @@
 #include <QTextCodec>
 #include <QDataStream>
 #include <QDesktopServices>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include <libtorrent/bencode.hpp>
 #include <libtorrent/entry.hpp>
 #include <libtorrent/create_torrent.hpp>
@@ -315,11 +311,7 @@ namespace BitTorrent
 			QUrl url = e.Entity_.toUrl ();
 			if (url.scheme () == "magnet")
 			{
-#if QT_VERSION < 0x050000
-				for (const auto& item : url.queryItems ())
-#else
 				for (const auto& item : QUrlQuery { url }.queryItems ())
-#endif
 					if (item.first == "xt" && item.second.startsWith ("urn:btih:"))
 						return EntityTestHandleResult (EntityTestHandleResult::PIdeal);
 				return EntityTestHandleResult ();
