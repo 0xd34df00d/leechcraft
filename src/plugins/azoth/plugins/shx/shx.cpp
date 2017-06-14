@@ -126,11 +126,7 @@ namespace SHX
 	{
 		if (XmlSettingsManager::Instance ().property ("WarnAboutExecution").toBool ())
 		{
-#if QT_VERSION < 0x050000
-			const auto& escaped = Qt::escape (text);
-#else
 			const auto& escaped = text.toHtmlEscaped ();
-#endif
 			const auto& msgText = tr ("Are you sure you want to execute this command?") +
 					"<blockquote><em>" + escaped + "</em></blockquote>";
 			if (QMessageBox::question (nullptr,
