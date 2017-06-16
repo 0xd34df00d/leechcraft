@@ -349,9 +349,11 @@ namespace Azoth
 	{
 		const auto& emoPack = XmlSettingsManager::Instance ()
 				.property ("SmileIcons").toString ();
-		AddEmoticon_->setEnabled (!emoPack.isEmpty ());
 
 		const auto src = Core::Instance ().GetCurrentEmoSource ();
+
+		AddEmoticon_->setEnabled (src);
+
 		if (!src)
 			return;
 
