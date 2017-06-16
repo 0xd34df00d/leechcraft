@@ -43,7 +43,7 @@ namespace DCAC
 	void InvertRgbTest::testAVX ()
 	{
 #ifdef SSE_ENABLED
-		CHECKFEATURE (SSSE3)
+		CHECKFEATURE (AVX)
 
 		for (const auto& image : TestImages_)
 		{
