@@ -45,11 +45,7 @@
 #include <QDesktopWidget>
 #include <QMimeData>
 #include <QToolBar>
-
-#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
-#endif
-
 #include <util/xpc/defaulthookproxy.h>
 #include <util/xpc/util.h>
 #include <util/shortcuts/shortcutmanager.h>
@@ -1220,11 +1216,7 @@ namespace Azoth
 		const auto& host = url.host ();
 		if (host == "msgeditreplace")
 		{
-#if QT_VERSION < 0x050000
-			const auto& queryItems = url.queryItems ();
-#else
 			const auto& queryItems = QUrlQuery { url }.queryItems ();
-#endif
 			if (queryItems.isEmpty ())
 			{
 				Ui_.MsgEdit_->setText (url.path ().mid (1));
@@ -1260,12 +1252,7 @@ namespace Azoth
 		}
 		else if (host == "insertnick")
 		{
-#if QT_VERSION < 0x050000
-			const auto& encoded = url.encodedQueryItemValue ("nick");
-			const auto& nick = QUrl::fromPercentEncoding (encoded);
-#else
 			const auto& nick = QUrlQuery { url }.queryItemValue ("nick", QUrl::FullyDecoded);
-#endif
 			InsertNick (nick);
 
 			if (!GetMucParticipants (EntryID_).contains (nick))
@@ -1276,11 +1263,7 @@ namespace Azoth
 		}
 		else if (host == "sendentities")
 		{
-#if QT_VERSION < 0x050000
-			const auto queryObject = url;
-#else
 			const QUrlQuery queryObject { url };
-#endif
 			const auto& count = std::max (queryObject.queryItemValue ("count").toInt (), 1);
 			for (int i = 0; i < count; ++i)
 			{

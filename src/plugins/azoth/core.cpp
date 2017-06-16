@@ -959,11 +959,7 @@ namespace Azoth
 		QMap<int, QString> pos2smile;
 		for (const auto& str : src->GetEmoticonStrings (pack))
 		{
-#if QT_VERSION < 0x050000
-			const auto& escaped = Qt::escape (str);
-#else
 			const auto& escaped = str.toHtmlEscaped ();
-#endif
 			int pos = 0;
 			while ((pos = body.indexOf (escaped, pos)) != -1)
 			{
@@ -982,11 +978,7 @@ namespace Azoth
 
 		for (auto i = pos2smile.begin (); i != pos2smile.end (); ++i)
 		{
-#if QT_VERSION < 0x050000
-			const auto& escapedSmile = Qt::escape (i.value ());
-#else
 			const auto& escapedSmile = i.value ().toHtmlEscaped ();
-#endif
 			for (int j = 1; j < escapedSmile.size (); ++j)
 				pos2smile.remove (i.key () + j);
 		}
@@ -999,11 +991,7 @@ namespace Azoth
 		for (const auto& pair : reversed)
 		{
 			const auto& str = pair.second;
-#if QT_VERSION < 0x050000
-			const auto& escaped = Qt::escape (str);
-#else
 			const auto& escaped = str.toHtmlEscaped ();
-#endif
 
 			const auto& rawData = src->GetImage (pack, str).toBase64 ();
 
