@@ -299,8 +299,11 @@ namespace Azoth
 
 	IEmoticonResourceSource* Core::GetCurrentEmoSource () const
 	{
-		const QString& pack = XmlSettingsManager::Instance ()
+		const auto& pack = XmlSettingsManager::Instance ()
 				.property ("SmileIcons").toString ();
+		if (pack.isEmpty ())
+			return nullptr;
+
 		return SmilesOptionsModel_->GetSourceForOption (pack);
 	}
 
