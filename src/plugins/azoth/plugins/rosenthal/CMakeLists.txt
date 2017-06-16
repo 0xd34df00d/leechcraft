@@ -12,7 +12,7 @@ set (ROSENTHAL_SRCS
 	highlighter.cpp
 	)
 set (ROSENTHAL_RESOURCES azothrosenthalresources.qrc)
-CreateTrs ("azoth_rosenthal" "en;es;ru_RU;uk_UA" ROSENTHAL_COMPILED_TRANSLATIONS)
+CreateTrs ("azoth_rosenthal" "en;es;ro;ru_RU;uk_UA" ROSENTHAL_COMPILED_TRANSLATIONS)
 CreateTrsUpTarget ("azoth_rosenthal" "en;ru_RU" "${ROSENTHAL_SRCS}" "" "")
 QtAddResources (ROSENTHAL_RCCS ${ROSENTHAL_RESOURCES})
 
