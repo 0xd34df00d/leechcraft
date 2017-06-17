@@ -361,10 +361,12 @@ namespace Azoth
 
 		if (const auto lay = SmilesTooltip_->layout ())
 		{
-			while (lay->count ())
-				delete lay->takeAt (0);
+			while (const auto item = lay->takeAt (0))
+				delete item;
 			delete lay;
 		}
+
+		qDeleteAll (SmilesTooltip_->children ());
 
 		const auto layout = new QGridLayout (SmilesTooltip_);
 		layout->setSpacing (0);
@@ -389,7 +391,7 @@ namespace Azoth
 					this,
 					SLOT (insertEmoticon ()));
 
-			const auto button = new QToolButton;
+			const auto button = new QToolButton { SmilesTooltip_ };
 			button->setDefaultAction (action);
 			buttons << button;
 
