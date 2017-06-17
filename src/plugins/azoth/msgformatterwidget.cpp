@@ -278,26 +278,23 @@ namespace Azoth
 
 	void MsgFormatterWidget::handleBold ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontWeight (FormatBold_->isChecked () ? QFont::Bold : QFont::Normal); });
+		const auto weight = FormatBold_->isChecked () ? QFont::Bold : QFont::Normal;
+		CharFormatActor ([weight] (QTextCharFormat *fmt) { fmt->setFontWeight (weight); });
 	}
 
 	void MsgFormatterWidget::handleItalic ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontItalic (FormatItalic_->isChecked ()); });
+		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontItalic (FormatItalic_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleUnderline ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
+		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontUnderline (FormatUnderline_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleStrikeThrough ()
 	{
-		CharFormatActor ([this] (QTextCharFormat *fmt)
-				{ fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
+		CharFormatActor ([this] (QTextCharFormat *fmt) { fmt->setFontStrikeOut (FormatStrikeThrough_->isChecked ()); });
 	}
 
 	void MsgFormatterWidget::handleTextColor ()
@@ -307,8 +304,7 @@ namespace Azoth
 		if (!color.isValid ())
 			return;
 
-		CharFormatActor ([color] (QTextFormat *fmt)
-				{ fmt->setForeground (QBrush (color)); });
+		CharFormatActor ([color] (QTextFormat *fmt) { fmt->setForeground (QBrush (color)); });
 	}
 
 	void MsgFormatterWidget::handleFont ()
@@ -319,16 +315,13 @@ namespace Azoth
 		if (!ok)
 			return;
 
-		CharFormatActor ([font] (QTextCharFormat *fmt)
-				{ fmt->setFont (font); });
+		CharFormatActor ([font] (QTextCharFormat *fmt) { fmt->setFont (font); });
 	}
 
 	void MsgFormatterWidget::handleParaAlignment ()
 	{
-		Qt::Alignment alignment = static_cast<Qt::Alignment> (sender ()->
-					property ("Alignment").toInt ());
-		BlockFormatActor ([alignment] (QTextBlockFormat* fmt)
-				{ fmt->setAlignment (alignment); });
+		const auto alignment = static_cast<Qt::Alignment> (sender ()->property ("Alignment").toInt ());
+		BlockFormatActor ([alignment] (QTextBlockFormat* fmt) { fmt->setAlignment (alignment); });
 	}
 
 	void MsgFormatterWidget::handleAddEmoticon ()
