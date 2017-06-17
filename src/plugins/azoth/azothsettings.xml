@@ -145,6 +145,17 @@
 					<label value="Shorten URLs longer than:" />
 					<suffix value=" symbols" />
 				</item>
+				<item type="groupbox" checkable="true" property="LimitMaxImageSize" default="false">
+					<label value="Limit the display dimensions of images embedded in messages" />
+					<item type="spinbox" property="MaxImageWidth" default="1440" minimum="0" maximum="100000" step="10">
+						<label value="Maximum width:" />
+						<suffix value=" px" />
+					</item>
+					<item type="spinbox" property="MaxImageHeight" default="900" minimum="0" maximum="100000" step="10">
+						<label value="Maximum height:" />
+						<suffix value=" px" />
+					</item>
+				</item>
 			</groupbox>
 			<groupbox>
 				<label value="Chat tab" />

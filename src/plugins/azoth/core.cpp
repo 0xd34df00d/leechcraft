@@ -895,6 +895,51 @@ namespace Azoth
 				}
 			}
 		}
+
+		void LimitImagesSize (QString& body)
+		{
+			if (!body.contains ("img", Qt::CaseInsensitive))
+				return;
+
+			if (!XmlSettingsManager::Instance ().property ("LimitMaxImageSize").toBool ())
+				return;
+
+			QDomDocument doc;
+			QString error;
+			int errorLine;
+			if (!doc.setContent (body, &error, &errorLine))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "unable to parse the body as XML:"
+						<< error
+						<< errorLine
+						<< "for body:\n"
+						<< body;
+				return;
+			}
+
+			const auto& imgs = doc.elementsByTagName ("img");
+			if (imgs.isEmpty ())
+				return;
+
+			const auto maxWidth = XmlSettingsManager::Instance ().property ("MaxImageWidth").toInt ();
+			const auto maxHeight = XmlSettingsManager::Instance ().property ("MaxImageHeight").toInt ();
+
+			for (int i = 0; i < imgs.size (); ++i)
+			{
+				auto img = imgs.at (i).toElement ();
+				if (img.isNull ())
+					continue;
+
+				auto style = img.attribute ("style");
+				style += QString { "; max-width: %1px; max-height: %2px;" }
+						.arg (maxWidth)
+						.arg (maxHeight);
+				img.setAttribute ("style", style);
+			}
+
+			body = doc.toString (-1);
+		}
 	}
 
 	QString Core::FormatBody (QString body, IMessage *msg, const QList<QColor>& colors)
@@ -924,6 +969,9 @@ namespace Azoth
 		if (msg->GetMessageType () == IMessage::Type::MUCMessage &&
 				XmlSettingsManager::Instance ().property ("HighlightNicksInBody").toBool ())
 			HighlightNicks (body, msg, colors);
+
+		if (isRich)
+			LimitImagesSize (body);
 
 		proxy.reset (new Util::DefaultHookProxy);
 		proxy->SetValue ("body", body);
