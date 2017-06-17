@@ -102,11 +102,7 @@ namespace Xoox
 	{
 		const auto& payload = Call_->audioChannel ()->payloadType ();
 		QAudioFormat result;
-#if QT_VERSION < 0x050000
-		result.setFrequency (payload.clockrate ());
-#else
 		result.setSampleRate (payload.clockrate ());
-#endif
 		result.setChannelCount (payload.channels ());
 		result.setSampleSize (16);
 		result.setCodec ("audio/pcm");

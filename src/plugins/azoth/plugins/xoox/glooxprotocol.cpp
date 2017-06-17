@@ -290,11 +290,7 @@ namespace Xoox
 		}
 
 		QMap<QString, QString> queryItems;
-#if QT_VERSION < 0x050000
-		const auto& queryParts = QString::fromUtf8 (url.encodedQuery ()).split (';');
-#else
 		const auto& queryParts = url.query (QUrl::FullyEncoded).split (';');
-#endif
 		for (const auto& part : queryParts)
 		{
 			const auto& split = part.split ('=');
