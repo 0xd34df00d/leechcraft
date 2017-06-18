@@ -33,21 +33,11 @@
 #include <QToolBar>
 #include <QComboBox>
 #include <QMenu>
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#include <QDeclarativeNetworkAccessManagerFactory>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlNetworkAccessManagerFactory>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQuickItem>
-#endif
-
 #include <QClipboard>
 #include <QDesktopWidget>
 #include <QtDebug>
@@ -80,11 +70,7 @@ namespace Blasq
 	}
 
 	PhotosTab::PhotosTab (AccountsManager *accMgr, const TabClassInfo& tc, QObject *plugin, ICoreProxy_ptr proxy)
-#if QT_VERSION < 0x050000
-	: ImagesView_ (new QDeclarativeView)
-#else
 	: ImagesView_ (new QQuickWidget)
-#endif
 	, TC_ (tc)
 	, Plugin_ (plugin)
 	, AccMgr_ (accMgr)
@@ -96,11 +82,7 @@ namespace Blasq
 		Ui_.setupUi (this);
 		Ui_.ImagesViewContainer_->layout ()->addWidget (ImagesView_);
 
-#if QT_VERSION < 0x050000
-		ImagesView_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		ImagesView_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
 
 		auto rootCtx = ImagesView_->rootContext ();
 		rootCtx->setContextProperty ("colorProxy",

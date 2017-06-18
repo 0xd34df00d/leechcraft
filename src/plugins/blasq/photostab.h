@@ -42,11 +42,7 @@
 class QComboBox;
 class QSlider;
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -65,11 +61,7 @@ namespace Blasq
 		Q_INTERFACES (ITabWidget IRecoverableTab)
 
 		Ui::PhotosTab Ui_;
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const ImagesView_;
-#else
 		QQuickWidget * const ImagesView_;
-#endif
 
 		const TabClassInfo TC_;
 		QObject * const Plugin_;
