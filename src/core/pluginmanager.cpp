@@ -365,7 +365,7 @@ namespace LeechCraft
 
 		int GetMax () const override
 		{
-			return Count_ - 1;
+			return Count_;
 		}
 
 		int GetValue () const override
@@ -395,6 +395,8 @@ namespace LeechCraft
 
 		for (const auto obj : ordered)
 		{
+			++*proc;
+
 			const auto ii = qobject_cast<IInfo*> (obj);
 			try
 			{
@@ -427,8 +429,6 @@ namespace LeechCraft
 						<< "caught unknown exception";
 				return obj;
 			}
-
-			++*proc;
 		}
 
 		return 0;
