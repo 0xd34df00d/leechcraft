@@ -37,7 +37,6 @@ namespace Summary
 {
 	class ModelDelegate : public QStyledItemDelegate
 	{
-		Q_OBJECT
 	public:
 		using QStyledItemDelegate::QStyledItemDelegate;
 
