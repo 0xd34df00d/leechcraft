@@ -44,6 +44,7 @@
 #include <util/tags/tagscompleter.h>
 #include <util/gui/clearlineeditaddon.h>
 #include <util/gui/lineeditbuttonmanager.h>
+#include <util/gui/util.h>
 #include <util/sll/prelude.h>
 #include <util/sll/views.h>
 #include <util/xpc/util.h>
@@ -82,17 +83,13 @@ namespace BitTorrent
 
 				const auto progress = index.data (Core::SortRole).toDouble ();
 
-				const auto& srcText = index.data ().toString ();
-				const auto& elidedProgress = option.fontMetrics.elidedText (srcText,
-						Qt::ElideRight, option.rect.width ());
-
 				QStyleOptionProgressBar pbo;
 				pbo.rect = option.rect;
 				pbo.minimum = 0;
 				pbo.maximum = 1000;
 				pbo.progress = std::round (progress * 1000);
 				pbo.state = option.state;
-				pbo.text = elidedProgress;
+				pbo.text = Util::ElideProgressBarText (index.data ().toString (), option);
 				pbo.textVisible = true;
 				QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
 			}
