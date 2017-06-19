@@ -1153,6 +1153,7 @@ namespace LeechCraft
 				ordered.removeAll (obj);
 
 			proc->SetCount (ordered.size () + initialized.size ());
+			proc->ReportValue (initialized.size ());
 		}
 
 		return failedList;
