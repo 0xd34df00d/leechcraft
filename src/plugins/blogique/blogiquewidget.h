@@ -41,12 +41,7 @@ class IEditorWidget;
 class QToolBar;
 class QComboBox;
 class QProgressBar;
-
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickWidget;
-#endif
 
 namespace LeechCraft
 {
@@ -74,13 +69,8 @@ namespace Blogique
 		static QObject *S_ParentMultiTabs_;
 
 		Ui::BlogiqueWidget Ui_;
-#if QT_VERSION < 0x050000
-		QDeclarativeView * const TagsCloud_;
-		QDeclarativeView * const Tags_;
-#else
 		QQuickWidget * const TagsCloud_;
 		QQuickWidget * const Tags_;
-#endif
 
 		IEditorWidget *PostEdit_ = nullptr;
 		QWidget *PostEditWidget_ = nullptr;

@@ -29,19 +29,10 @@
  **********************************************************************/
 
 #include "commentswidget.h"
-
-#if QT_VERSION < 0x050000
-#include <QDeclarativeView>
-#include <QDeclarativeEngine>
-#include <QDeclarativeContext>
-#include <QGraphicsObject>
-#else
 #include <QQuickWidget>
 #include <QQmlEngine>
 #include <QQmlContext>
 #include <QQuickItem>
-#endif
-
 #include <QMessageBox>
 #include <interfaces/core/ientitymanager.h>
 #include <util/qml/colorthemeproxy.h>
@@ -62,11 +53,7 @@ namespace Blogique
 {
 	CommentsWidget::CommentsWidget (QWidget *parent)
 	: QWidget (parent)
-#if QT_VERSION < 0x050000
-	, View_ (new QDeclarativeView)
-#else
 	, View_ (new QQuickWidget)
-#endif
 	, CommentsModel_ (new CommentsModel (this))
 	, ProxyModel_ (new SortCommentsProxyModel (this, this))
 	{
@@ -75,12 +62,7 @@ namespace Blogique
 
 		ProxyModel_->setSourceModel (CommentsModel_);
 
-#if QT_VERSION < 0x050000
-		View_->setResizeMode (QDeclarativeView::SizeRootObjectToView);
-#else
 		View_->setResizeMode (QQuickWidget::SizeRootObjectToView);
-#endif
-
 		View_->setSizePolicy (QSizePolicy::Ignored, QSizePolicy::Ignored);
 
 		auto context = View_->rootContext ();
@@ -256,19 +238,6 @@ namespace Blogique
 		RecentComments_.clear ();
 		FillModel ();
 	}
-
-#if QT_VERSION < 0x050000
-	void CommentsWidget::setItemCursor (QGraphicsObject *object, const QString& shape)
-	{
-		Q_ASSERT (object);
-
-		const Qt::CursorShape cursor = (shape == "PointingHandCursor") ?
-			Qt::PointingHandCursor :
-			Qt::ArrowCursor;
-
-		object->setCursor (QCursor (cursor));
-	}
-#endif
 
 	QDataStream& operator<< (QDataStream& out, const LeechCraft::Blogique::CommentsWidget::CommentID& comment)
 	{
