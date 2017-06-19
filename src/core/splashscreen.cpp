@@ -65,29 +65,29 @@ namespace LeechCraft
 		const auto margin = 10;
 		int ypos = margin;
 		const auto height = 1.3 * fontMetrics ().height ();
+
+		QStyleOptionProgressBar opt;
+		opt.initFrom (this);
+		opt.rect.setWidth (width ());
+		opt.rect.setHeight (height);
+		opt.textVisible = true;
+
+		auto& p = opt.palette;
+		p.setColor (QPalette::Base, Qt::transparent);
+		p.setColor (QPalette::Window, Qt::transparent);
+		p.setColor (QPalette::Highlight, "#FF3B00");
+		p.setColor (QPalette::Text, "#FF3B00");
+		p.setColor (QPalette::HighlightedText, "#1B181F");
+
 		for (const auto proc : Processes_)
 		{
-			QStyleOptionProgressBar opt;
-			opt.initFrom (this);
-
-			opt.rect.setY (ypos);
-			opt.rect.setHeight (height);
-			opt.rect.setWidth (width ());
+			opt.rect.moveTop (ypos);
 			ypos += height;
-
-			auto& p = opt.palette;
-			p.setColor (QPalette::Base, Qt::transparent);
-			p.setColor (QPalette::Window, Qt::transparent);
-			p.setColor (QPalette::Highlight, "#FF3B00");
-			p.setColor (QPalette::Text, "#FF3B00");
-			p.setColor (QPalette::HighlightedText, "#1B181F");
 
 			opt.minimum = proc->GetMin ();
 			opt.maximum = proc->GetMax ();
 			opt.progress = proc->GetValue ();
 			opt.text = proc->GetTitle () + " " + tr ("(%1 of %2)").arg (opt.progress).arg (opt.maximum);
-			opt.textVisible = true;
-			opt.textAlignment = Qt::AlignCenter;
 
 			style ()->drawControl (QStyle::CE_ProgressBar, &opt, painter, this);
 		}
