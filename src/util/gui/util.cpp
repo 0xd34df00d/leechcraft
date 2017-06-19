@@ -149,7 +149,7 @@ namespace Util
 
 	QString ElideProgressBarText (const QString& text, const QStyleOptionViewItem& option)
 	{
-		return option.fontMetrics.elidedText (text, Qt::ElideLeft, option.rect.width ());
+		return option.fontMetrics.elidedText (text, Qt::ElideRight, option.rect.width ());
 	}
 
 	void TintPalette (QWidget *widget, const QColor& color, double alpha, const QList<QPalette::ColorRole>& roles)
