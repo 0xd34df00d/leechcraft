@@ -342,18 +342,13 @@ namespace BitTorrent
 
 	QList<int> TorrentTab::GetSelectedRows () const
 	{
-		QList<int> result;
-		Q_FOREACH (const auto& idx, GetSelectedRowIndexes ())
-			result << idx.row ();
-		return result;
+		return Util::Map (GetSelectedRowIndexes (), &QModelIndex::row);
 	}
 
 	QModelIndexList TorrentTab::GetSelectedRowIndexes () const
 	{
-		QModelIndexList result;
-		Q_FOREACH (const auto& idx, Ui_.TorrentsView_->selectionModel ()->selectedRows ())
-			result << ViewFilter_->mapToSource (idx);
-		return result;
+		return Util::Map (Ui_.TorrentsView_->selectionModel ()->selectedRows (),
+				[=] (const auto& idx) { return ViewFilter_->mapToSource (idx); });
 	}
 
 	void TorrentTab::handleTorrentSelected (const QModelIndex& index)
@@ -469,8 +464,7 @@ namespace BitTorrent
 			return;
 
 		Core::Instance ()->ClearFilter ();
-		const auto& filter = dia.GetFilter ();
-		Q_FOREACH (const auto& pair, filter)
+		for (const auto& pair : dia.GetFilter ())
 			Core::Instance ()->BanPeers (pair.first, pair.second);
 	}
 
@@ -508,7 +502,7 @@ namespace BitTorrent
 
 		std::sort (rows.begin (), rows.end (), std::greater<int> ());
 
-		Q_FOREACH (int row, rows)
+		for (int row : rows)
 			Core::Instance ()->RemoveTorrent (row, roptions);
 		Ui_.Tabs_->InvalidateSelection ();
 		setActionsEnabled ();
@@ -516,14 +510,14 @@ namespace BitTorrent
 
 	void TorrentTab::handleResumeTriggered ()
 	{
-		Q_FOREACH (int row, GetSelectedRows ())
+		for (int row : GetSelectedRows ())
 			Core::Instance ()->ResumeTorrent (row);
 		setActionsEnabled ();
 	}
 
 	void TorrentTab::handleStopTriggered ()
 	{
-		Q_FOREACH (int row, GetSelectedRows ())
+		for (int row : GetSelectedRows ())
 			Core::Instance ()->PauseTorrent (row);
 		setActionsEnabled ();
 	}
@@ -613,7 +607,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			Q_FOREACH (int torrent, GetSelectedRows ())
+			for (int torrent : GetSelectedRows ())
 				Core::Instance ()->ForceReannounce (torrent);
 		}
 		catch (const std::exception& e)
@@ -628,7 +622,7 @@ namespace BitTorrent
 	{
 		try
 		{
-			Q_FOREACH (int torrent, GetSelectedRows ())
+			for (int torrent : GetSelectedRows ())
 				Core::Instance ()->ForceRecheck (torrent);
 		}
 		catch (const std::exception& e)
@@ -644,20 +638,17 @@ namespace BitTorrent
 		const auto& sis = GetSelectedRowIndexes ();
 
 		std::vector<libtorrent::announce_entry> allTrackers;
-		Q_FOREACH (const auto& si, sis)
+		for (const auto& si : sis)
 		{
 			auto those = Core::Instance ()->GetTrackers (si.row ());
 			std::copy (those.begin (), those.end (), std::back_inserter (allTrackers));
 		}
 
 		if (allTrackers.empty ())
-			allTrackers = Core::Instance ()->
-					GetTrackers (Core::Instance ()->
-							GetCurrentTorrent ());
+			allTrackers = Core::Instance ()->GetTrackers (Core::Instance ()->GetCurrentTorrent ());
 
 		std::stable_sort (allTrackers.begin (), allTrackers.end (),
-				[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
-					{ return l.url < r.url; });
+				Util::ComparingBy (&libtorrent::announce_entry::url));
 
 		auto newLast = std::unique (allTrackers.begin (), allTrackers.end (),
 				[] (const libtorrent::announce_entry& l, const libtorrent::announce_entry& r)
@@ -674,7 +665,7 @@ namespace BitTorrent
 			return;
 
 		const auto& trackers = changer.GetTrackers ();
-		Q_FOREACH (const auto& si, sis)
+		for (const auto& si : sis)
 			Core::Instance ()->SetTrackers (trackers, si.row ());
 	}
 
