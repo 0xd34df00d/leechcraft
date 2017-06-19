@@ -40,6 +40,7 @@ class QPixmap;
 class QLabel;
 class QColor;
 class QWidget;
+class QStyleOptionViewItem;
 
 namespace LeechCraft
 {
@@ -158,6 +159,8 @@ namespace Util
 	 * @ingroup GuiUtil
 	 */
 	UTIL_GUI_API QColor TintColors (const QColor& c1, const QColor& c2, double alpha = 0.5);
+
+	UTIL_GUI_API QString ElideProgressBarText (const QString& text, const QStyleOptionViewItem& option);
 
 	/** @brief Mixes some of the widget's palette roles with the given
 	 * color.
