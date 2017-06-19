@@ -86,12 +86,13 @@ namespace BitTorrent
 			qlonglong size = index.data (TorrentFilesModel::RoleSize).toLongLong ();
 			qlonglong done = progress * size;
 			progressBarOption.progress = progress < 0 ?
-				0 :
-				static_cast<int> (progress * 100);
-			progressBarOption.text = QString (tr ("%1% (%2 of %3)")
+					0 :
+					static_cast<int> (progress * 100);
+
+			progressBarOption.text = tr ("%1% (%2 of %3)")
 					.arg (static_cast<int> (progress * 100))
 					.arg (Util::MakePrettySize (done))
-					.arg (Util::MakePrettySize (size)));
+					.arg (Util::MakePrettySize (size));
 
 			QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
 					&progressBarOption, painter);
