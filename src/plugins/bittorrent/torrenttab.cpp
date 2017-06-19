@@ -82,13 +82,17 @@ namespace BitTorrent
 
 				const auto progress = index.data (Core::SortRole).toDouble ();
 
+				const auto& srcText = index.data ().toString ();
+				const auto& elidedProgress = option.fontMetrics.elidedText (srcText,
+						Qt::ElideRight, option.rect.width ());
+
 				QStyleOptionProgressBar pbo;
 				pbo.rect = option.rect;
 				pbo.minimum = 0;
 				pbo.maximum = 1000;
 				pbo.progress = std::round (progress * 1000);
 				pbo.state = option.state;
-				pbo.text = index.data ().toString ();
+				pbo.text = elidedProgress;
 				pbo.textVisible = true;
 				QApplication::style ()->drawControl (QStyle::CE_ProgressBar, &pbo, painter);
 			}
