@@ -38,11 +38,6 @@ namespace LeechCraft
 {
 namespace Summary
 {
-	ModelDelegate::ModelDelegate (QObject *parent)
-	: QStyledItemDelegate (parent)
-	{
-	}
-
 	namespace
 	{
 		bool DrawProgress (QPainter *painter,
