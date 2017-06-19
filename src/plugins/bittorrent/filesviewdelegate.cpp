@@ -34,6 +34,7 @@
 #include <QTreeView>
 #include <QtDebug>
 #include <util/util.h>
+#include <util/gui/util.h>
 #include "filesviewdelegate.h"
 #include "torrentfilesmodel.h"
 
@@ -89,10 +90,11 @@ namespace BitTorrent
 					0 :
 					static_cast<int> (progress * 100);
 
-			progressBarOption.text = tr ("%1% (%2 of %3)")
+			const auto& text = tr ("%1% (%2 of %3)")
 					.arg (static_cast<int> (progress * 100))
 					.arg (Util::MakePrettySize (done))
 					.arg (Util::MakePrettySize (size));
+			progressBarOption.text = Util::ElideProgressBarText (text, option);
 
 			QApplication::style ()->drawControl (QStyle::CE_ProgressBar,
 					&progressBarOption, painter);
