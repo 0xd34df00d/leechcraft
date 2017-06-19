@@ -1437,7 +1437,15 @@ namespace Xoox
 			if (RoomHandlers_.contains (bare))
 				RoomHandlers_ [bare]->HandleErrorPresence (pres, resource);
 			else if (JID2CLEntry_.contains (bare))
+			{
+				qDebug () << Q_FUNC_INFO
+						<< "got error presence for"
+						<< jid
+						<< pres.error ().type ()
+						<< pres.error ().condition ()
+						<< pres.error ().text ();
 				JID2CLEntry_ [jid]->SetErrorPresence (resource);
+			}
 			break;
 		}
 		case QXmppPresence::Available:
