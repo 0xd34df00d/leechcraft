@@ -36,6 +36,9 @@
          <property name="text">
           <string>Add...</string>
          </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
+         </property>
         </widget>
        </item>
        <item>
@@ -50,6 +53,9 @@
          <property name="text">
           <string>Modify...</string>
          </property>
+         <property name="icon">
+          <iconset theme="editor"/>
+         </property>
         </widget>
        </item>
        <item>
@@ -60,6 +66,9 @@
          <property name="text">
           <string>PGP...</string>
          </property>
+         <property name="icon">
+          <iconset theme="mail-encrypted"/>
+         </property>
         </widget>
        </item>
        <item>
@@ -67,12 +76,18 @@
          <property name="text">
           <string>Delete</string>
          </property>
+         <property name="icon">
+          <iconset theme="list-remove"/>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="ResetStyles_">
          <property name="text">
           <string>Clear styles</string>
+         </property>
+         <property name="icon">
+          <iconset theme="edit-clear"/>
          </property>
         </widget>
        </item>
