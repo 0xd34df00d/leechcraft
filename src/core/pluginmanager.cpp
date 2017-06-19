@@ -365,7 +365,7 @@ namespace LeechCraft
 
 		int GetMax () const override
 		{
-			return Count_;
+			return Count_ - 1;
 		}
 
 		int GetValue () const override
