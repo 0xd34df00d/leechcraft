@@ -47,10 +47,6 @@ namespace BitTorrent
 	{
 	}
 
-	FilesViewDelegate::~FilesViewDelegate ()
-	{
-	}
-
 	QWidget* FilesViewDelegate::createEditor (QWidget *parent,
 			const QStyleOptionViewItem& option, const QModelIndex& index) const
 	{

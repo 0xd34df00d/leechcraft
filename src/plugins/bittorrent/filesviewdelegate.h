@@ -44,7 +44,6 @@ namespace BitTorrent
 		QTreeView *View_;
 	public:
 		FilesViewDelegate (QTreeView *parent = 0);
-		virtual ~FilesViewDelegate ();
 
 		QWidget* createEditor (QWidget*, const QStyleOptionViewItem&, const QModelIndex&) const override;
 		void paint (QPainter*, const QStyleOptionViewItem&, const QModelIndex&) const override;
