@@ -39,8 +39,6 @@ namespace BitTorrent
 {
 	class FilesViewDelegate : public QStyledItemDelegate
 	{
-		Q_OBJECT
-
 		QTreeView *View_;
 	public:
 		FilesViewDelegate (QTreeView *parent = 0);
