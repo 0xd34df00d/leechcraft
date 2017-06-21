@@ -293,12 +293,6 @@ namespace CleanWeb
 
 	namespace
 	{
-		void DumbReductor (bool& res, bool value)
-		{
-			if (value)
-				res = true;
-		}
-
 		FilterOption::MatchObjects ResourceType2Objs (IInterceptableRequests::ResourceType type)
 		{
 			switch (type)
@@ -361,7 +355,8 @@ namespace CleanWeb
 
 								return false;
 							}
-						}, DumbReductor);
+						},
+						+[] (bool& res, bool value) { res = res || value; });
 			};
 			if (matches (exceptions))
 				return false;
