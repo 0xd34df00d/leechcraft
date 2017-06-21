@@ -384,11 +384,13 @@ namespace CleanWeb
 			{
 				const auto view = *info.View_;
 				const auto reqUrl = info.RequestUrl_;
+
 				auto exec = new Util::DelayedExecutor
 				{
 					[this, view, reqUrl] { DelayedRemoveElements (view, reqUrl); },
-					0
+					view->GetQWidget ()
 				};
+
 				exec->moveToThread (qApp->thread ());
 			}
 
