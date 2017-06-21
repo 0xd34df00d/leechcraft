@@ -344,7 +344,6 @@ namespace CleanWeb
 											continue;
 
 									if (opt.MatchObjects_ != FilterOption::MatchObject::All &&
-											objs != FilterOption::MatchObject::All &&
 											!(objs & opt.MatchObjects_))
 										continue;
 
