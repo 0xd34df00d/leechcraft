@@ -93,20 +93,13 @@ namespace CleanWeb
 		return in;
 	}
 
-	FilterOption::FilterOption ()
-	: Case_ (Qt::CaseInsensitive)
-	, MatchType_ (MTWildcard)
-	, ThirdParty_ (ThirdParty::Unspecified)
-	{
-	}
-
 	bool operator== (const FilterOption& f1, const FilterOption& f2)
 	{
 		return f1.ThirdParty_ == f2.ThirdParty_ &&
-			f1.Case_ == f2.Case_ &&
-			f1.MatchType_ == f2.MatchType_ &&
-			f1.Domains_ == f2.Domains_ &&
-			f1.NotDomains_ == f2.NotDomains_;
+				f1.Case_ == f2.Case_ &&
+				f1.MatchType_ == f2.MatchType_ &&
+				f1.Domains_ == f2.Domains_ &&
+				f1.NotDomains_ == f2.NotDomains_;
 	}
 
 	bool operator!= (const FilterOption& f1, const FilterOption& f2)
