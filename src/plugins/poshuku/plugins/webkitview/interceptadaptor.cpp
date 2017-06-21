@@ -76,6 +76,12 @@ namespace WebKitView
 			if (find ([] (const QByteArray& arr) { return arr == "text/css"; }))
 				return IInterceptableRequests::ResourceType::Stylesheet;
 
+			const auto& path = req.url ().path ();
+			if (path.endsWith ("png") || path.endsWith ("jpg") || path.endsWith ("gif"))
+				return IInterceptableRequests::ResourceType::Image;
+			if (path.endsWith ("js"))
+				return IInterceptableRequests::ResourceType::Script;
+
 			return IInterceptableRequests::ResourceType::Unknown;
 		}
 	}
