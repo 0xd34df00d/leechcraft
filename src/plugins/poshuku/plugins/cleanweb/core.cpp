@@ -388,6 +388,7 @@ namespace CleanWeb
 				auto exec = new Util::DelayedExecutor
 				{
 					[this, view, reqUrl] { DelayedRemoveElements (view, reqUrl); },
+					0,
 					view->GetQWidget ()
 				};
 
