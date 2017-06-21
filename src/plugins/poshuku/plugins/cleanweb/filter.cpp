@@ -121,6 +121,16 @@ namespace CleanWeb
 		return dbg;
 	}
 
+	QDebug operator<< (QDebug dbg, const FilterItem& item)
+	{
+		dbg << "FilterItem {"
+				<< "RX:" << item.RegExp_.GetPattern () << "; "
+				<< "Plain: " << item.PlainMatcher_ << ": "
+				<< "Opts: " << item.Option_
+				<< "}";
+		return dbg;
+	}
+
 	QDataStream& operator<< (QDataStream& out, const FilterItem& item)
 	{
 		out << static_cast<quint8> (2)

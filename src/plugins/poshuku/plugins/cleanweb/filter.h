@@ -117,6 +117,8 @@ namespace CleanWeb
 		FilterOption Option_;
 	};
 
+	QDebug operator<< (QDebug, const FilterItem&);
+
 	typedef std::shared_ptr<FilterItem> FilterItem_ptr;
 
 	QDataStream& operator<< (QDataStream&, const FilterItem&);
