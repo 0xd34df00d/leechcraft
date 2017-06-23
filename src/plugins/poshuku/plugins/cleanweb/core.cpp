@@ -303,6 +303,8 @@ namespace CleanWeb
 				return FilterOption::MatchObject::Subdocument;
 			case IInterceptableRequests::ResourceType::Stylesheet:
 				return FilterOption::MatchObject::CSS;
+			case IInterceptableRequests::ResourceType::Script:
+				return FilterOption::MatchObject::Script;
 			default:
 				return FilterOption::MatchObject::All;
 			}
