@@ -139,7 +139,7 @@ namespace Acetamide
 			ChannelHandlers_ [chnnl]->CloseChannel ();
 	}
 
-	void ChannelsManager::CloseAllChannels () const
+	void ChannelsManager::CloseAllChannels ()
 	{
 		auto handlers = std::move (ChannelHandlers_);
 		ChannelHandlers_.clear ();
