@@ -400,36 +400,24 @@ namespace Acetamide
 		case ChannelRole::Participant:
 			break;
 		case ChannelRole::Voiced:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-v";
-			else
-				mode = "+v";
+			mode = "v";
 			break;
 		case ChannelRole::HalfOperator:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-h";
-			else
-				mode = "+h";
+			mode = "h";
 			break;
 		case ChannelRole::Operator:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-o";
-			else
-				mode = "+o";
+			mode = "o";
 			break;
 		case ChannelRole::Admin:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-a";
-			else
-				mode = "+a";
+			mode = "a";
 			break;
 		case ChannelRole::Owner:
-			if (entry->Roles ().contains (Voiced))
-				mode = "-q";
-			else
-				mode = "+q";
+			mode = "q";
 			break;
 		}
+
+		if (!mode.isEmpty ())
+			mode.prepend (entry->Roles ().contains (Voiced) ? '-' : '+');
 
 		if (!mode.isEmpty ())
 			CM_->SetNewChannelMode (ChannelOptions_.ChannelName_,
