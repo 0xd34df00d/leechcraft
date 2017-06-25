@@ -124,16 +124,19 @@ work everywhere.
 Print a short help message.
 .SH FILES
 LeechCraft stores user-specific stuff in two places: \fI~/.config/Deviant\fR
-for settings and \fI~/.leechcraft\fR for more "heavy" data like browser cache,
-RSS reader databases, and such.
+for settings and \fI~/.leechcraft\fR for more "heavy" data like RSS reader databases.
+XDG spec is not followed for the latter for hysterical raisins. Caches are stored in
+\fI$XDG_CACHE_HOME/Deviant/leechcraft\fR.
 .PP
-Plugins are loaded from \fI/usr/local/lib/leechcraft/plugins\fR and
-\fI/usr/lib/leechcraft/plugins\fR.
+Plugins are loaded from \fI/usr/local/lib/leechcraft-qt5/plugins\fR and
+\fI/usr/lib/leechcraft-qt5/plugins\fR.
 .SH BUGS
-There are many of them. Please report bugs to \fIhttp://leechcraft.org\fR.
+There are many of them. Please report bugs to
+\fIhttps://dev.leechcraft.org/projects/leechcraft/issues\fR or via the Dolozhu
+plugin right from LeechCraft.
 .SH AUTHOR
 The authors of LeechCraft are listed in its About dialog as well as on this web
-page: \fIhttp://leechcraft.org/our-team\fR.
+page: \fIhttps://leechcraft.org/our-team\fR.
 .PP
 This manual page was written by Georg Rudoy <\fI0xd34df00d@gmail.com\fR>.
 .PP
