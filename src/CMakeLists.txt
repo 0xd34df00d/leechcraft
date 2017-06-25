@@ -844,7 +844,7 @@ endif ()
 if (UNIX)
 	add_custom_target (data_leechcraft_gz ALL
 		"${CMAKE_CURRENT_SOURCE_DIR}/data/compress"
-		DEPENDS data/leechcraft.1
+		DEPENDS data/leechcraft-qt5.1
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data
 		)
 endif ()
