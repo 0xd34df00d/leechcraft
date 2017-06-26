@@ -144,7 +144,11 @@ namespace MusicZombie
 
 			if (avcodec_send_packet (codecCtx.get (), &packet) ||
 					avcodec_receive_frame (codecCtx.get (), frame.get ()))
+			{
+				qWarning () << Q_FUNC_INFO
+						<< "failed to read another frame";
 				continue;
+			}
 
 			const auto unrefGuard = Util::MakeScopeGuard ([&frame] { av_frame_unref (frame.get ()); });
 
