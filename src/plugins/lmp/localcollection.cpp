@@ -85,8 +85,8 @@ namespace LMP
 				};
 
 		auto& xsd = XmlSettingsManager::Instance ();
-		QStringList oldDefault (xsd.property ("CollectionDir").toString ());
-		oldDefault.removeAll (QString ());
+		QStringList oldDefault { xsd.property ("CollectionDir").toString () };
+		oldDefault.removeAll ({});
 		AddRootPaths (xsd.Property ("RootCollectionPaths", oldDefault).toStringList ());
 		connect (this,
 				SIGNAL (rootPathsChanged (QStringList)),
@@ -152,7 +152,7 @@ namespace LMP
 
 		const bool symLinks = XmlSettingsManager::Instance ()
 				.property ("FollowSymLinks").toBool ();
-		auto worker = [path, symLinks] () -> IterateResult
+		auto worker = [path, symLinks]
 		{
 			IterateResult result;
 
