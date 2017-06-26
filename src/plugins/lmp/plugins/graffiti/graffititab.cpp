@@ -117,6 +117,14 @@ namespace Graffiti
 
 	void GraffitiTab::SetPath (const QString& path, const QString& filename)
 	{
+		if (path.isEmpty ())
+		{
+			qWarning () << Q_FUNC_INFO
+					<< "empty path for file"
+					<< filename;
+			return;
+		}
+
 		AddToPathHistory (path);
 
 		setEnabled (false);
