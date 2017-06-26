@@ -51,7 +51,7 @@ namespace MusicZombie
 	, NAM_ (nam)
 	, Filename_ (filename)
 	{
-		auto worker = [filename] ()
+		auto worker = [filename]
 		{
 			Chroma chroma;
 			try
@@ -115,7 +115,7 @@ namespace MusicZombie
 			deleteLater ();
 		}
 
-		Queue_->Schedule ([this, result] () { Request (result.FP_, result.Duration_); }, this);
+		Queue_->Schedule ([this, result] { Request (result.FP_, result.Duration_); }, this);
 	}
 
 	void PendingTagsFetch::handleReplyFinished ()
