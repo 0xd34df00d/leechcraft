@@ -30,13 +30,13 @@
 #include "pendingtagsfetch.h"
 #include <functional>
 #include <QtConcurrentRun>
-#include <QFutureWatcher>
 #include <QNetworkRequest>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QDomDocument>
 #include <util/sll/queuemanager.h>
 #include <util/sll/urloperator.h>
+#include <util/threads/futures.h>
 #include "chroma.h"
 
 namespace LeechCraft
@@ -66,13 +66,18 @@ namespace MusicZombie
 			}
 		};
 
-		auto watcher = new QFutureWatcher<Chroma::Result> (this);
-		connect (watcher,
-				SIGNAL (finished ()),
-				this,
-				SLOT (handleGotFingerprint ()));
-		auto future = QtConcurrent::run (std::function<Chroma::Result ()> (worker));
-		watcher->setFuture (future);
+		Util::Sequence (this, QtConcurrent::run (worker)) >>
+				[this] (const Chroma::Result& result)
+				{
+					const auto& fp = result.FP_;
+					if (fp.isEmpty ())
+					{
+						emit ready (Filename_, {});
+						deleteLater ();
+					}
+
+					Queue_->Schedule ([this, result] { Request (result.FP_, result.Duration_); }, this);
+				};
 	}
 
 	QObject* PendingTagsFetch::GetQObject ()
@@ -100,22 +105,6 @@ namespace MusicZombie
 				SIGNAL (finished ()),
 				this,
 				SLOT (handleReplyFinished ()));
-	}
-
-	void PendingTagsFetch::handleGotFingerprint ()
-	{
-		auto watcher = dynamic_cast<QFutureWatcher<Chroma::Result>*> (sender ());
-		watcher->deleteLater ();
-
-		const auto& result = watcher->result ();
-		const auto& fp = result.FP_;
-		if (fp.isEmpty ())
-		{
-			emit ready (Filename_, Media::AudioInfo ());
-			deleteLater ();
-		}
-
-		Queue_->Schedule ([this, result] { Request (result.FP_, result.Duration_); }, this);
 	}
 
 	void PendingTagsFetch::handleReplyFinished ()

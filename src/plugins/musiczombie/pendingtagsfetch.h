@@ -63,7 +63,6 @@ namespace MusicZombie
 	private:
 		void Request (const QByteArray&, int);
 	private slots:
-		void handleGotFingerprint ();
 		void handleReplyFinished ();
 	signals:
 		void ready (const QString&, const Media::AudioInfo&);
