@@ -590,7 +590,6 @@ namespace Graffiti
 
 	void GraffitiTab::handlePathLine ()
 	{
-		qDebug () << Q_FUNC_INFO;
 		QString path = Ui_.PathLine_->currentText ();
 		if (path.startsWith ('~'))
 		{
