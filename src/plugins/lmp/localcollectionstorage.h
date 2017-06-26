@@ -92,7 +92,7 @@ namespace LMP
 			QHash<QString, int> PresentAlbums_;
 		};
 
-		LocalCollectionStorage (QObject* = 0);
+		LocalCollectionStorage (QObject* = nullptr);
 		~LocalCollectionStorage ();
 
 		void Clear ();

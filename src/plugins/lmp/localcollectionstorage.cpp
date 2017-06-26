@@ -544,22 +544,22 @@ namespace LMP
 			auto albumPos = newAlbums.find (albumID);
 			if (albumPos == newAlbums.end ())
 			{
-				const Collection::Album a =
+				const Collection::Album a
 				{
 					albumID,
 					getter.value (1).toString (),
 					getter.value (2).toInt (),
 					getter.value (3).toString (),
-					QList<Collection::Track> ()
+					{}
 				};
-				albumPos = newAlbums.insert (albumID, Collection::Album_ptr (new Collection::Album (a)));
+				albumPos = newAlbums.insert (albumID, std::make_shared<Collection::Album> (a));
 			}
 
 			auto albumPtr = *albumPos;
 			auto& tracks = albumPtr->Tracks_;
 
 			const int trackId = getter.value (4).toInt ();
-			Collection::Track t =
+			Collection::Track t
 			{
 				trackId,
 				getter.value (5).toInt (),
